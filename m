@@ -1,13 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:18404 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:22990 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27026986AbcDUL0Fazsg4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 21 Apr 2016 13:26:05 +0200
+        with ESMTP id S27026986AbcDULoeJh89h (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 21 Apr 2016 13:44:34 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH] MIPS: Allow emulation for unaligned [LS]DXC1 instructions
-Date: Thu, 21 Apr 2016 12:25:38 +0100
-Message-ID: <1461237938-15228-1-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <20160421101923.GA24852@aurel32.net>
-References: <20160421101923.GA24852@aurel32.net>
+Subject: [PATCH 1/2] MIPS: Disable preemption during prctl(PR_SET_FP_MODE, ...)
+Date: Thu, 21 Apr 2016 12:43:57 +0100
+Message-ID: <1461239038-19991-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -20,40 +18,44 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Aurelien Jarno <aurelien@aurel32.net>
-Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20160421112538.LwfSfSHMpEFNT5sw66mBI5gbHLqKRpCFVXSquRZHpRY@z>
+To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@imgtec.com>, "stable # v4 . 0+" <stable@vger.kernel.org>, Adam Buchbinder <adam.buchbinder@gmail.com>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>
+Message-ID: <20160421114357.1Mhyg7hI4z2vgQIaOwm-upn3ofxPi1EAYOA6ffTSCLA@z>
 
-If an address error exception occurs for a LDXC1 or SDXC1 instruction,
-within the cop1x opcode space, allow it to be passed through to the FPU
-emulator rather than resulting in a SIGILL. This causes LDXC1 & SDXC1 to
-be handled in a manner consistent with the more common LDC1 & SDC1
-instructions.
+Whilst a PR_SET_FP_MODE prctl is performed there are decisions made
+based upon whether the task is executing on the current CPU. This may
+change if we're preempted, so disable preemption to avoid such changes
+for the lifetime of the mode switch.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: Aurelien Jarno <aurelien@aurel32.net>
+Fixes: 9791554b45a2 ("MIPS,prctl: add PR_[GS]ET_FP_MODE prctl options for MIPS")
+Cc: stable <stable@vger.kernel.org> # v4.0+
 ---
-Hi Aurelien,
 
-Thanks for tracking that down. Does this simple patch fix your problem?
+ arch/mips/kernel/process.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Thanks,
-    Paul
----
- arch/mips/kernel/unaligned.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/mips/kernel/unaligned.c b/arch/mips/kernel/unaligned.c
-index 5c62065..28b3af7 100644
---- a/arch/mips/kernel/unaligned.c
-+++ b/arch/mips/kernel/unaligned.c
-@@ -1191,6 +1191,7 @@ static void emulate_load_store_insn(struct pt_regs *regs,
- 	case ldc1_op:
- 	case swc1_op:
- 	case sdc1_op:
-+	case cop1x_op:
- 		die_if_kernel("Unaligned FP access in kernel code", regs);
- 		BUG_ON(!used_math());
+diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
+index 92880ce..ce55ea0 100644
+--- a/arch/mips/kernel/process.c
++++ b/arch/mips/kernel/process.c
+@@ -601,6 +601,9 @@ int mips_set_process_fp_mode(struct task_struct *task, unsigned int value)
+ 	if (!(value & PR_FP_MODE_FR) && cpu_has_fpu && cpu_has_mips_r6)
+ 		return -EOPNOTSUPP;
  
++	/* Proceed with the mode switch */
++	preempt_disable();
++
+ 	/* Save FP & vector context, then disable FPU & MSA */
+ 	if (task->signal == current->signal)
+ 		lose_fpu(1);
+@@ -659,6 +662,7 @@ int mips_set_process_fp_mode(struct task_struct *task, unsigned int value)
+ 
+ 	/* Allow threads to use FP again */
+ 	atomic_set(&task->mm->context.fp_mode_switching, 0);
++	preempt_enable();
+ 
+ 	return 0;
+ }
 -- 
 2.8.0

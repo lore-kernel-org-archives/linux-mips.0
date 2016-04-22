@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:28839 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:46282 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27025160AbcDVQGVptfWy (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Apr 2016 18:06:21 +0200
-Date: Fri, 22 Apr 2016 17:06:05 +0100
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH 2/2] MIPS: Force CPUs to lose FP context during mode
- switches
-In-Reply-To: <1461239038-19991-2-git-send-email-paul.burton@imgtec.com>
-Message-ID: <alpine.DEB.2.00.1604221700250.21846@tp.orcam.me.uk>
-References: <1461239038-19991-1-git-send-email-paul.burton@imgtec.com> <1461239038-19991-2-git-send-email-paul.burton@imgtec.com>
+        with ESMTP id S27025160AbcDVRTgni0sU (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Apr 2016 19:19:36 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH 0/4] MIPS: Guest timekeeping improvements
+Date: Fri, 22 Apr 2016 18:19:13 +0100
+Message-ID: <1461345557-2763-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,24 +18,40 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, "stable # v4 . 0+" <stable@vger.kernel.org>, Adam Buchbinder <adam.buchbinder@gmail.com>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>
-Message-ID: <20160422160605._KA5rjQAwkYJZ5iwqaBoK1BPzuNngcsztGdCyIzxKqc@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20160422171913.UcZJnqj9L7Jz5xZjRmcGFyYyl2OjoQuQKOHlrMA0J3U@z>
 
-On Thu, 21 Apr 2016, Paul Burton wrote:
+These patches improve timekeeping of MIPS/Malta kernels running in a KVM
+guest.
 
-> Fix this by broadcasting an IPI if other CPUs may have live FP context
-> for an affected thread, with a handler causing those CPUs to relinquish
-> their FPU ownership. Threads will then be allowed to continue running
-> but will stall on the wait_on_atomic_t in enable_restore_fp_context if
-> they attempt to use FP again whilst the mode switch is still in
-> progress. The end result is less fragile poking at scheduler context
-> switch counts & a more expedient completion of the mode switch.
+Patch 2 fixes malta frequency calculation under virtualisation,
+especially on very slow targets (FPGA / emulators). Patch 1 is a minor
+fix for something I noticed while writing patch 2.
 
-Reviewed-by: Maciej W. Rozycki <macro@imgtec.com>
+Patch 3 drops the use of the PIT timer for Malta, which is slow to
+emulate with KVM + QEMU.
 
- Thanks, Paul, for your work on this problem!  I'll rebase my outstanding 
-NaN interlinking stuff (https://patchwork.linux-mips.org/patch/11491/) on 
-top of your patches -- they address the concern expressed there.
+Finally patch 4 calculates min_delta_ns of cevt-r4k dynamically to
+handle virtualised environments with software emulated Count/Compare,
+and where Count frequency may not be directly related to actual CPU
+speed (and so the static value of 0x300 may be no good).
 
-  Maciej
+James Hogan (4):
+  MIPS: malta-time: Start GIC count before syncing to RTC
+  MIPS: malta-time: Take seconds into account
+  MIPS: malta-time: Don't use PIT timer for cevt/csrc
+  MIPS: cevt-r4k: Dynamically calculate min_delta_ns
+
+ arch/mips/Kconfig                |  1 -
+ arch/mips/kernel/cevt-r4k.c      | 82 +++++++++++++++++++++++++++++++++++++++-
+ arch/mips/mti-malta/malta-time.c | 50 +++++++++++++++---------
+ 3 files changed, 113 insertions(+), 20 deletions(-)
+
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mips@linux-mips.org
+Cc: linux-kernel@vger.kernel.org
+-- 
+2.4.10

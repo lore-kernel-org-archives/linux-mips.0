@@ -1,22 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:31329 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27026707AbcDUSoPBZM8e (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 21 Apr 2016 20:44:15 +0200
-Date: Thu, 21 Apr 2016 19:44:06 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH v2 2/2] kbuild: Remove stale asm-generic wrappers
-Message-ID: <20160421184406.GG7859@jhogan-linux.le.imgtec.org>
-References: <1453210670-12596-1-git-send-email-james.hogan@imgtec.com>
- <1667268.iM977TQnEK@wuerfel>
- <20160119142213.GA12679@jhogan-linux.le.imgtec.org>
- <4206493.gjdgtfndZ8@wuerfel>
- <20160223095107.GC21143@jhogan-linux.le.imgtec.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:13354 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27006955AbcDVInzIDiGk (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Apr 2016 10:43:55 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: Allow R6 compact branch policy to be left unspecified
+Date: Fri, 22 Apr 2016 09:43:31 +0100
+Message-ID: <1461314611-15317-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="IRIOLc8eTv1AOxGv"
-Content-Disposition: inline
-In-Reply-To: <20160223095107.GC21143@jhogan-linux.le.imgtec.org>
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,101 +18,45 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Michal Marek <mmarek@suse.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Heinrich Schuchardt <xypron.glpk@gmx.de>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>, Florian Fainelli <f.fainelli@gmail.com>, linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20160421184406.EPuhTsm1ittXBU_F9fHk94FTZl8hexznIIZ9LhKAVMY@z>
+To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Cc: "Maciej W . Rozycki" <macro@imgtec.com>, fengguang.wu@intel.com, Paul Burton <paul.burton@imgtec.com>, "stable # v4 . 4+" <stable@vger.kernel.org>, linux-kernel@vger.kernel.org
+Message-ID: <20160422084331.2D-QaToj5REVwlbosM9fakqhPmJzN_k7Sr4hXOOhSs0@z>
 
---IRIOLc8eTv1AOxGv
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It turns out that some toolchains which support MIPS R6 don't support
+the -mcompact-branches flag to specify compact branch behaviour. Default
+to not providing the -mcompact-branch option to the compiler such that
+we can build with such toolchains.
 
-On Tue, Feb 23, 2016 at 09:51:07AM +0000, James Hogan wrote:
-> Hi Michal,
->=20
-> On Tue, Jan 19, 2016 at 03:27:24PM +0100, Arnd Bergmann wrote:
-> > On Tuesday 19 January 2016 14:22:13 James Hogan wrote:
-> > > On Tue, Jan 19, 2016 at 03:09:14PM +0100, Arnd Bergmann wrote:
-> > > > On Tuesday 19 January 2016 13:37:50 James Hogan wrote:
-> > > > > When a header file is removed from generic-y (often accompanied b=
-y the
-> > > > > addition of an arch specific header), the generated wrapper file =
-will
-> > > > > persist, and in some cases may still take precedence over the new=
- arch
-> > > > > header.
-> > > > >=20
-> > > > > For example commit f1fe2d21f4e1 ("MIPS: Add definitions for exten=
-ded
-> > > > > context") removed ucontext.h from generic-y in arch/mips/include/=
-asm/,
-> > > > > and added an arch/mips/include/uapi/asm/ucontext.h. The continued=
- use of
-> > > > > the wrapper when reusing a dirty build tree resulted in build fai=
-lures
-> > > > > in arch/mips/kernel/signal.c:
-> > > > >=20
-> > > > > arch/mips/kernel/signal.c: In function =E2=80=98sc_to_extcontext=
-=E2=80=99:
-> > > > > arch/mips/kernel/signal.c:142:12: error: =E2=80=98struct ucontext=
-=E2=80=99 has no member named =E2=80=98uc_extcontext=E2=80=99
-> > > > >   return &uc->uc_extcontext;
-> > > > >             ^
-> > > > >=20
-> > > > > Fix by detecting and removing wrapper headers in generated header
-> > > > > directories that do not correspond to a filename in generic-y, ge=
-nhdr-y,
-> > > > > or the newly introduced generated-y.
-> > > >=20
-> > > > Good idea.
-> > > >=20
-> > > > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> > >=20
-> > > Thanks Arnd
-> > >=20
-> > > > Can you merge this through the mips tree, or do you need me to pick=
- it
-> > > > up through asm-generic?
-> > >=20
-> > > I was envisaging the kbuild tree tbh, but I don't really mind how it
-> > > gets merged. This patch depends on patch 1, which adds generated-y to
-> > > x86 so we don't delete their other generated headers, but other than
-> > > that it doesn't really have any dependencies.
-> >=20
-> > Ok, the kbuild tree works fine too, and I guess the x86 tree would
-> > also be fine if that helps avoid the dependency.
->=20
-> Were you okay to take these patches, or would you prefer they go via the
-> MIPS tree?
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Fixes: c1a0e9bc885d ("MIPS: Allow compact branch policy to be changed")
+Cc: stable <stable@vger.kernel.org> # v4.4+
 
-I'm keen for these two patches to make their way upstream one way or
-another.
+---
 
-Ralf: Since it affects MIPS, would you be able to take them?
+ arch/mips/Kconfig.debug | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-Cheers
-James
-
---IRIOLc8eTv1AOxGv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJXGR92AAoJEGwLaZPeOHZ6I3AP/3QBag29Wj1XCKtCidDeCXl1
-XYSd2inkBsRh0HVyjBsNtyBJdxJWHYrAHAtqceSkvL9IcZKwuObQ3zGdOjFgA64B
-0X5KL+joj7fJL9v9coBMNSeWuIPkI4r4vFL6MQsPgJz+ZxHWDArNHQ8LF0ZEo4RR
-Hfcu2tY9opIOkpZg4hrdGfiej3DBS+QR050SkpswNTySpwJPPuPjTl+uzWz6C+2m
-HdLCpRKhR77O7ZL2XCbwyx41XfegoQjTwgWwbMlSXjKHuet//QLKs5QkQRvGIM1T
-SWkAKVl7RlXLqcKtszVt+IScbABM/gFB7rgjBda4I3ewxCTHWiEzxvbTRVLeOluG
-Nsicn1cs+D+CdhEQMiVIxKablmuRAg1i1fLPcQ0E5ZAjFbPWyUDtH9nQWOphU9Cd
-N5V49kg8lkR1ygQx56cOqw1OdGdh8RaSk5d78aM7BDKbqh6SXvJ10e1t7eXeabux
-WL/LAa+FT4c3oefHghWqJjI0+XMjJ2+A2MEM7xDXqMpebG9sraGv90X7ARF3d/Nf
-9pyYMkhU/Mx0A7Jo3LHZ/XwRZQo9WU4Cwz7Se8zPTxB13kmG67WXQWCwOkzbe1fm
-z0hGrDxargrmWyX9WTSHve2LNtwjRwttZng1eZJ/l436YEyLDcQRSia2mY4QG8y8
-j9TK/jNJOu3Mprt63W2I
-=fQxU
------END PGP SIGNATURE-----
-
---IRIOLc8eTv1AOxGv--
+diff --git a/arch/mips/Kconfig.debug b/arch/mips/Kconfig.debug
+index f0e314c..e91b3d1 100644
+--- a/arch/mips/Kconfig.debug
++++ b/arch/mips/Kconfig.debug
+@@ -117,7 +117,15 @@ if CPU_MIPSR6
+ 
+ choice
+ 	prompt "Compact branch policy"
+-	default MIPS_COMPACT_BRANCHES_OPTIMAL
++	default MIPS_COMPACT_BRANCHES_DEFAULT
++
++config MIPS_COMPACT_BRANCHES_DEFAULT
++	bool "Toolchain Default (don't specify)"
++	help
++	  Don't pass the -mcompact-branches flag to the compiler, allowing it
++	  to use its default (generally "optimal"). This is particularly
++	  useful for early R6-supporting toolchains which don't support the
++	  -mcompact-branches flag.
+ 
+ config MIPS_COMPACT_BRANCHES_NEVER
+ 	bool "Never (force delay slot branches)"
+-- 
+2.8.0

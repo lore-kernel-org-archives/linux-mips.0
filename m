@@ -1,15 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:33782 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:8059 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27027301AbcDVP1Dq1c5y (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Apr 2016 17:27:03 +0200
+        with ESMTP id S27025160AbcDVPsYoSLxy (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Apr 2016 17:48:24 +0200
+Date: Fri, 22 Apr 2016 16:48:17 +0100
 From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH 2/2] genirq: Add error code reporting to irq_{reserve,destroy}_ipi
-Date: Fri, 22 Apr 2016 16:26:49 +0100
-Message-ID: <1461338809-10590-2-git-send-email-matt.redfearn@imgtec.com>
-In-Reply-To: <1461338809-10590-1-git-send-email-matt.redfearn@imgtec.com>
+Subject: Re: [PATCH 2/2] genirq: Add error code reporting to
+ irq_{reserve,destroy}_ipi
+Message-ID: <20160422154816.GA10886@mredfearn-linux>
 References: <1461338809-10590-1-git-send-email-matt.redfearn@imgtec.com>
+ <1461338809-10590-2-git-send-email-matt.redfearn@imgtec.com>
+ <alpine.DEB.2.11.1604221735250.3941@nanos>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.11.1604221735250.3941@nanos>
 Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -21,152 +25,23 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Thomas Gleixner <tglx@linutronix.de>
-Cc: lisa.parratt@imgtec.com, jason@lakedaemon.net, ralf@linux-mips.org, linux-kernel@vger.kernel.org, jiang.liu@linux.intel.com, marc.zyngier@arm.com, linux-mips@linux-mips.org, Qais Yousef <qsyousef@gmail.com>, Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <20160422152649.fHhZu1eZMw6W5M72bvNOrIGEec9hMvJIBxCOKjfegDU@z>
+Cc: lisa.parratt@imgtec.com, jason@lakedaemon.net, ralf@linux-mips.org, linux-kernel@vger.kernel.org, jiang.liu@linux.intel.com, marc.zyngier@arm.com, linux-mips@linux-mips.org, Qais Yousef <qsyousef@gmail.com>
+Message-ID: <20160422154817.zNNY8phWAj4bp58lhmtYmWRUcekEv349prdMfAGllr8@z>
 
-Make these functions return appropriate error codes when something goes
-wrong.
+On Fri, Apr 22, 2016 at 05:35:46PM +0200, Thomas Gleixner wrote:
+> On Fri, 22 Apr 2016, Matt Redfearn wrote:
+> 
+> > Make these functions return appropriate error codes when something goes
+> > wrong.
+> 
+> And the reason for this change is?
 
-There are currently no users of this function that would break from the
-API change.
+Hi Thomas,
 
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
----
+Mainly for irq_destroy_ipi, where the first patch in the set makes
+it possible for the request to fail. But in general with both of these
+functions it is possible for them to silently fail without giving the
+caller any idication if inapropriate arguments are passed.
 
- include/linux/irqdomain.h |  5 ++---
- kernel/irq/ipi.c          | 31 +++++++++++++++++--------------
- 2 files changed, 19 insertions(+), 17 deletions(-)
-
-diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index e1b81d35e7a3..736abd74c135 100644
---- a/include/linux/irqdomain.h
-+++ b/include/linux/irqdomain.h
-@@ -346,9 +346,8 @@ int irq_domain_xlate_onetwocell(struct irq_domain *d, struct device_node *ctrlr,
- 			irq_hw_number_t *out_hwirq, unsigned int *out_type);
- 
- /* IPI functions */
--unsigned int irq_reserve_ipi(struct irq_domain *domain,
--			     const struct cpumask *dest);
--void irq_destroy_ipi(unsigned int irq, const struct cpumask *dest);
-+int irq_reserve_ipi(struct irq_domain *domain, const struct cpumask *dest);
-+int irq_destroy_ipi(unsigned int irq, const struct cpumask *dest);
- 
- /* V2 interfaces to support hierarchy IRQ domains. */
- extern struct irq_data *irq_domain_get_irq_data(struct irq_domain *domain,
-diff --git a/kernel/irq/ipi.c b/kernel/irq/ipi.c
-index bedc995ae214..c42742208e5e 100644
---- a/kernel/irq/ipi.c
-+++ b/kernel/irq/ipi.c
-@@ -19,9 +19,9 @@
-  *
-  * Allocate a virq that can be used to send IPI to any CPU in dest mask.
-  *
-- * On success it'll return linux irq number and 0 on failure
-+ * On success it'll return linux irq number and error code on failure
-  */
--unsigned int irq_reserve_ipi(struct irq_domain *domain,
-+int irq_reserve_ipi(struct irq_domain *domain,
- 			     const struct cpumask *dest)
- {
- 	unsigned int nr_irqs, offset;
-@@ -30,18 +30,18 @@ unsigned int irq_reserve_ipi(struct irq_domain *domain,
- 
- 	if (!domain ||!irq_domain_is_ipi(domain)) {
- 		pr_warn("Reservation on a non IPI domain\n");
--		return 0;
-+		return -EINVAL;
- 	}
- 
- 	if (!cpumask_subset(dest, cpu_possible_mask)) {
- 		pr_warn("Reservation is not in possible_cpu_mask\n");
--		return 0;
-+		return -EINVAL;
- 	}
- 
- 	nr_irqs = cpumask_weight(dest);
- 	if (!nr_irqs) {
- 		pr_warn("Reservation for empty destination mask\n");
--		return 0;
-+		return -EINVAL;
- 	}
- 
- 	if (irq_domain_is_ipi_single(domain)) {
-@@ -72,14 +72,14 @@ unsigned int irq_reserve_ipi(struct irq_domain *domain,
- 			next = cpumask_next(next, dest);
- 		if (next < nr_cpu_ids) {
- 			pr_warn("Destination mask has holes\n");
--			return 0;
-+			return -EINVAL;
- 		}
- 	}
- 
- 	virq = irq_domain_alloc_descs(-1, nr_irqs, 0, NUMA_NO_NODE);
- 	if (virq <= 0) {
- 		pr_warn("Can't reserve IPI, failed to alloc descs\n");
--		return 0;
-+		return -ENOMEM;
- 	}
- 
- 	virq = __irq_domain_alloc_irqs(domain, virq, nr_irqs, NUMA_NO_NODE,
-@@ -100,7 +100,7 @@ unsigned int irq_reserve_ipi(struct irq_domain *domain,
- 
- free_descs:
- 	irq_free_descs(virq, nr_irqs);
--	return 0;
-+	return -EBUSY;
- }
- 
- /**
-@@ -108,10 +108,12 @@ free_descs:
-  * @irq:	linux irq number to be destroyed
-  * @dest:	cpumask of cpus which should have the IPI removed
-  *
-- * Return the IPIs allocated with irq_reserve_ipi() to the system destroying
-- * all virqs associated with them.
-+ * The IPIs allocated with irq_reserve_ipi() are retuerned to the system
-+ * destroying all virqs associated with them.
-+ *
-+ * Return 0 on success or error code on failure.
-  */
--void irq_destroy_ipi(unsigned int irq, const struct cpumask *dest)
-+int irq_destroy_ipi(unsigned int irq, const struct cpumask *dest)
- {
- 	struct irq_data *data = irq_get_irq_data(irq);
- 	struct cpumask *ipimask = data ? irq_data_get_affinity_mask(data) : NULL;
-@@ -119,7 +121,7 @@ void irq_destroy_ipi(unsigned int irq, const struct cpumask *dest)
- 	unsigned int nr_irqs;
- 
- 	if (!irq || !data || !ipimask)
--		return;
-+		return -EINVAL;
- 
- 	domain = data->domain;
- 	if (WARN_ON(domain == NULL))
-@@ -127,7 +129,7 @@ void irq_destroy_ipi(unsigned int irq, const struct cpumask *dest)
- 
- 	if (!irq_domain_is_ipi(domain)) {
- 		pr_warn("Trying to destroy a non IPI domain!\n");
--		return;
-+		return -EINVAL;
- 	}
- 
- 	if (WARN_ON(!cpumask_subset(dest, ipimask)))
-@@ -135,7 +137,7 @@ void irq_destroy_ipi(unsigned int irq, const struct cpumask *dest)
- 		 * Must be destroying a subset of CPUs to which this IPI
- 		 * was set up to target
- 		 */
--		return;
-+		return -EINVAL;
- 
- 	if (irq_domain_is_ipi_per_cpu(domain)) {
- 		irq = irq + cpumask_first(dest) - data->common->ipi_offset;
-@@ -145,6 +147,7 @@ void irq_destroy_ipi(unsigned int irq, const struct cpumask *dest)
- 	}
- 
- 	irq_domain_free_irqs(irq, nr_irqs);
-+	return 0;
- }
- 
- /**
--- 
-2.5.0
+Thanks,
+Matt

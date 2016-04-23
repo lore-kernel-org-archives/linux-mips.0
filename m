@@ -1,20 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:57000 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27006649AbcDVTXSiRdOU (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Apr 2016 21:23:18 +0200
-Date: Fri, 22 Apr 2016 20:23:12 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH 3/4] MIPS: malta-time: Don't use PIT timer for cevt/csrc
-Message-ID: <20160422192312.GM7859@jhogan-linux.le.imgtec.org>
-References: <1461345557-2763-1-git-send-email-james.hogan@imgtec.com>
- <1461345557-2763-4-git-send-email-james.hogan@imgtec.com>
- <alpine.DEB.2.00.1604221951290.21846@tp.orcam.me.uk>
+Received: from szxga02-in.huawei.com ([119.145.14.65]:62690 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27026834AbcDWAzAg0vIf (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 23 Apr 2016 02:55:00 +0200
+Date: Sat, 23 Apr 2016 08:51:24 +0800
+From: Wei Yang <richard.weiyang@huawei.com>
+Subject: Re: [PATCH v4 2/2] KVM: move vcpu id checking to archs
+Message-ID: <20160423005124.GB1718@linux-gk3p>
+Reply-To: Wei Yang <richard.weiyang@huawei.com>
+References: <146124809455.32509.15232948272580716135.stgit@bahia.huguette.org> <146124811255.32509.17679765789502091772.stgit@bahia.huguette.org> <20160422092103.GA3851@linux-gk3p> <20160422113045.14560b66@bahia.huguette.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="/hP/389S7qb5BOej"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.00.1604221951290.21846@tp.orcam.me.uk>
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <20160422113045.14560b66@bahia.huguette.org>
+Return-Path: <richard.weiyang@huawei.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,76 +22,151 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Maciej W. Rozycki" <macro@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20160422192312.uDVMDsjMtXTfnnpf1A2GUp4otQStCjvw9FHplLRgObw@z>
+To: Greg Kurz <gkurz@linux.vnet.ibm.com>
+Cc: Wei Yang <richard.weiyang@huawei.com>, Paolo Bonzini <pbonzini@redhat.com>, james.hogan@imgtec.com, mingo@redhat.com, linux-mips@linux-mips.org, kvm@vger.kernel.org, rkrcmar@redhat.com, linux-kernel@vger.kernel.org, David Hildenbrand <dahi@linux.vnet.ibm.com>, qemu-ppc@nongnu.org, Cornelia Huck <cornelia.huck@de.ibm.com>, Paul Mackerras <paulus@samba.org>, David Gibson <david@gibson.dropbear.id.au>
+Message-ID: <20160423005124.bq_ub8OMNV7c55xvgOgn3NqRgSTsGP6hmVIPDXZ8OEc@z>
 
---/hP/389S7qb5BOej
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Apr 22, 2016 at 11:30:45AM +0200, Greg Kurz wrote:
+>On Fri, 22 Apr 2016 17:21:03 +0800
+>Wei Yang <richard.weiyang@huawei.com> wrote:
+>
+>> Hi, Greg
+>> 
+>
+>Hi Wei !
+>
+>> One confusion.
+>> 
+>> There are 5 kvm_arch_vcpu_create() while in this patch you changed 2 of them.
+>> Some particular reason?
+>> 
+>
+>Yes and the reason is given in the changelog:
+>- ARM and s390 already have such a check
+>- PowerPC can live without this check
+>- this patch simply moves the check to MIPS and x86
+>
+>Does it clarify ?
+>
 
-On Fri, Apr 22, 2016 at 07:57:11PM +0100, Maciej W. Rozycki wrote:
-> On Fri, 22 Apr 2016, James Hogan wrote:
->=20
-> > The PIT timer is slow, especially under virtualisation, compared with
-> > the r4k timer, and doesn't really provide any advantage on Malta since
-> > it doesn't support clock scaling (which is where the PIT has an
-> > advantage).
->=20
->  I'm not sure I'm able to parse this correctly: are you saying that the=
-=20
-> i8254-compatible PIT in Malta's southbridge does not support clock scalin=
-g=20
-> for some reason, unlike the same implementation on other platforms? =20
-> What's the reason then, the southbridge is the same as in many x86 PCs?
+Sure, thanks :-)
 
-Sorry, that wasn't written very well. the "it" on 3rd line is referring
-to our malta support. I mean something more like this:
+>Cheers.
+>
+>--
+>Greg
+>
+>> On Thu, Apr 21, 2016 at 04:20:53PM +0200, Greg Kurz wrote:
+>> >Commit 338c7dbadd26 ("KVM: Improve create VCPU parameter (CVE-2013-4587)")
+>> >introduced a check to prevent potential kernel memory corruption in case
+>> >the vcpu id is too great.
+>> >
+>> >Unfortunately this check assumes vcpu ids grow in sequence with a common
+>> >difference of 1, which is wrong: archs are free to use vcpu id as they fit.
+>> >For example, QEMU originated vcpu ids for PowerPC cpus running in boot3s_hv
+>> >mode, can grow with a common difference of 2, 4 or 8: if KVM_MAX_VCPUS is
+>> >1024, guests may be limited down to 128 vcpus on POWER8.
+>> >
+>> >This means the check does not belong here and should be moved to some arch
+>> >specific function: kvm_arch_vcpu_create() looks like a good candidate.
+>> >
+>> >ARM and s390 already have such a check.
+>> >
+>> >I could not spot any path in the PowerPC or common KVM code where a vcpu
+>> >id is used as described in the above commit: I believe PowerPC can live
+>> >without this check.
+>> >
+>> >In the end, this patch simply moves the check to MIPS and x86. While here,
+>> >we also update the documentation to dissociate vcpu ids from the maximum
+>> >number of vcpus per virtual machine.
+>> >
+>> >Acked-by: James Hogan <james.hogan@imgtec.com>
+>> >Acked-by: Cornelia Huck <cornelia.huck@de.ibm.com>
+>> >Signed-off-by: Greg Kurz <gkurz@linux.vnet.ibm.com>
+>> >---
+>> >v4: - updated subject for more clarity on what the patch does
+>> >    - added James's and Connie's A-b tags
+>> >    - updated documentation
+>> >
+>> > Documentation/virtual/kvm/api.txt |    7 +++----
+>> > arch/mips/kvm/mips.c              |    7 ++++++-
+>> > arch/x86/kvm/x86.c                |    3 +++
+>> > virt/kvm/kvm_main.c               |    3 ---
+>> > 4 files changed, 12 insertions(+), 8 deletions(-)
+>> >
+>> >diff --git a/Documentation/virtual/kvm/api.txt b/Documentation/virtual/kvm/api.txt
+>> >index 4d0542c5206b..486a1d783b82 100644
+>> >--- a/Documentation/virtual/kvm/api.txt
+>> >+++ b/Documentation/virtual/kvm/api.txt
+>> >@@ -199,11 +199,10 @@ Type: vm ioctl
+>> > Parameters: vcpu id (apic id on x86)
+>> > Returns: vcpu fd on success, -1 on error
+>> > 
+>> >-This API adds a vcpu to a virtual machine.  The vcpu id is a small integer
+>> >-in the range [0, max_vcpus).
+>> >+This API adds a vcpu to a virtual machine.  The vcpu id is a positive integer.
+>> > 
+>> >-The recommended max_vcpus value can be retrieved using the KVM_CAP_NR_VCPUS of
+>> >-the KVM_CHECK_EXTENSION ioctl() at run-time.
+>> >+The recommended maximum number of vcpus (max_vcpus) can be retrieved using the
+>> >+KVM_CAP_NR_VCPUS of the KVM_CHECK_EXTENSION ioctl() at run-time.
+>> > The maximum possible value for max_vcpus can be retrieved using the
+>> > KVM_CAP_MAX_VCPUS of the KVM_CHECK_EXTENSION ioctl() at run-time.
+>> > 
+>> >diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+>> >index 70ef1a43c114..0278ea146db5 100644
+>> >--- a/arch/mips/kvm/mips.c
+>> >+++ b/arch/mips/kvm/mips.c
+>> >@@ -248,9 +248,14 @@ struct kvm_vcpu *kvm_arch_vcpu_create(struct kvm *kvm, unsigned int id)
+>> > 	int err, size, offset;
+>> > 	void *gebase;
+>> > 	int i;
+>> >+	struct kvm_vcpu *vcpu;
+>> > 
+>> >-	struct kvm_vcpu *vcpu = kzalloc(sizeof(struct kvm_vcpu), GFP_KERNEL);
+>> >+	if (id >= KVM_MAX_VCPUS) {
+>> >+		err = -EINVAL;
+>> >+		goto out;
+>> >+	}
+>> > 
+>> >+	vcpu = kzalloc(sizeof(struct kvm_vcpu), GFP_KERNEL);
+>> > 	if (!vcpu) {
+>> > 		err = -ENOMEM;
+>> > 		goto out;
+>> >diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> >index 9b7798c7b210..7738202edcce 100644
+>> >--- a/arch/x86/kvm/x86.c
+>> >+++ b/arch/x86/kvm/x86.c
+>> >@@ -7358,6 +7358,9 @@ struct kvm_vcpu *kvm_arch_vcpu_create(struct kvm *kvm,
+>> > {
+>> > 	struct kvm_vcpu *vcpu;
+>> > 
+>> >+	if (id >= KVM_MAX_VCPUS)
+>> >+		return ERR_PTR(-EINVAL);
+>> >+
+>> > 	if (check_tsc_unstable() && atomic_read(&kvm->online_vcpus) != 0)
+>> > 		printk_once(KERN_WARNING
+>> > 		"kvm: SMP vm created on host with unstable TSC; "
+>> >diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+>> >index 4fd482fb9260..6b6cca3cb488 100644
+>> >--- a/virt/kvm/kvm_main.c
+>> >+++ b/virt/kvm/kvm_main.c
+>> >@@ -2272,9 +2272,6 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm, u32 id)
+>> > 	int r;
+>> > 	struct kvm_vcpu *vcpu;
+>> > 
+>> >-	if (id >= KVM_MAX_VCPUS)
+>> >-		return -EINVAL;
+>> >-
+>> > 	vcpu = kvm_arch_vcpu_create(kvm, id);
+>> > 	if (IS_ERR(vcpu))
+>> > 		return PTR_ERR(vcpu);
+>> >
+>> >--
+>> >To unsubscribe from this list: send the line "unsubscribe kvm" in
+>> >the body of a message to majordomo@vger.kernel.org
+>> >More majordomo info at  http://vger.kernel.org/majordomo-info.html  
+>> 
 
-The PIT timer is slow under KVM+QEMU virtualisation compared with the
-r4k timer, and doesn't really provide any advantage on Malta since we
-don't support clock scaling on Malta, which is where the PIT would have
-an advantage over the CPU clock based r4k timer.
-
->=20
-> > Drop the use of the PIT timer on Malta so that the r4k or GIC timer will
-> > be used in preference.
->=20
->  Not everyone uses virtualisation, so it's a functional regression for=20
-> them.  Can't you lower the priority for the timer instead so that it is=
-=20
-> not selected by default, just as it's done with other platforms providing=
-=20
-> a choice of timers?
-
-I'll look into that. Looking back at my IRC logs I suspect I meant to
-check why the PIT was taking priority before submitting upstream, but
-forgot.
-
-Thanks!
-James
-
---/hP/389S7qb5BOej
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJXGnogAAoJEGwLaZPeOHZ6nfYQAJvtgFeKsvc9lVj5jJuAUWw5
-jxd0ud3ls3w7YD3OyTo3JSKWGJ9cxYWxMrJ303CKOuJkKzdWdKJ90vZ6en73Ypdg
-AN8kn4KeKxyqEI9l1lsqD3e9IK9WlWEPvxR5wNW/vb0sKo2CrsaedyeEGwKEeK/r
-YpR5X1Bp9puyhMfmKYve/O6+ol8oE4KidV/a5AVqIxDGtcsiSwNQxybXjEzylGnI
-EiCBaSaFhP2Nr7Z/DI8fe6X6UuFaxmFP/yHb4v/GatqO+k/c7Q2OCptoqavX4yr8
-+VEEVSsBbIV8Cypmh4kWeGpwrOndfseMy0YONYsfSjxMVCZicE0TKYwS1X2bU7Ju
-932kpauX0+si2RI8jDM3dYgQm9zZ6FeLE8iUYIDOMb4dILAEt0mDhdqUyNOf6QXw
-abpdJo+vnLDBy/5Aq5vHZ6PWyb1IWfpz9YwGcRQSHaiKHeI+d/gt6aGLmaXKP237
-IZyrfRyPQA+05XYj7DK2aKxp17wqTB7VeJAy+pSURJxaeLJKcRZXqYgrfyXgUdaS
-V2uE1NoARii3mfBuDQ3Ox9tU5wQR2O9Dh5NwxeeNq/ZsyxMNTa7I245GzKBs8c6d
-BePcR6oDw3vtL3AqdPPBb9c9UyHMTAGwydJwmUywEmq7MQ6w1eKKIzYQBWawh9Cf
-MRW55brQ9iKvU7iXBgpn
-=KsPE
------END PGP SIGNATURE-----
-
---/hP/389S7qb5BOej--
+-- 
+Richard Yang\nHelp you, Help me

@@ -1,18 +1,14 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65]:62690 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27026834AbcDWAzAg0vIf (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 23 Apr 2016 02:55:00 +0200
-Date: Sat, 23 Apr 2016 08:51:24 +0800
-From: Wei Yang <richard.weiyang@huawei.com>
-Subject: Re: [PATCH v4 2/2] KVM: move vcpu id checking to archs
-Message-ID: <20160423005124.GB1718@linux-gk3p>
-Reply-To: Wei Yang <richard.weiyang@huawei.com>
-References: <146124809455.32509.15232948272580716135.stgit@bahia.huguette.org> <146124811255.32509.17679765789502091772.stgit@bahia.huguette.org> <20160422092103.GA3851@linux-gk3p> <20160422113045.14560b66@bahia.huguette.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:45267 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27026331AbcDYHOfaYx9P (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 25 Apr 2016 09:14:35 +0200
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Subject: [PATCH v2 1/2] genirq: Make irq_destroy_ipi take a cpumask of IPIs to destroy
+Date: Mon, 25 Apr 2016 08:14:23 +0100
+Message-ID: <1461568464-31701-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20160422113045.14560b66@bahia.huguette.org>
-Return-Path: <richard.weiyang@huawei.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,151 +18,84 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Greg Kurz <gkurz@linux.vnet.ibm.com>
-Cc: Wei Yang <richard.weiyang@huawei.com>, Paolo Bonzini <pbonzini@redhat.com>, james.hogan@imgtec.com, mingo@redhat.com, linux-mips@linux-mips.org, kvm@vger.kernel.org, rkrcmar@redhat.com, linux-kernel@vger.kernel.org, David Hildenbrand <dahi@linux.vnet.ibm.com>, qemu-ppc@nongnu.org, Cornelia Huck <cornelia.huck@de.ibm.com>, Paul Mackerras <paulus@samba.org>, David Gibson <david@gibson.dropbear.id.au>
-Message-ID: <20160423005124.bq_ub8OMNV7c55xvgOgn3NqRgSTsGP6hmVIPDXZ8OEc@z>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: lisa.parratt@imgtec.com, jason@lakedaemon.net, ralf@linux-mips.org, linux-kernel@vger.kernel.org, jiang.liu@linux.intel.com, marc.zyngier@arm.com, linux-mips@linux-mips.org, Qais Yousef <qsyousef@gmail.com>, Matt Redfearn <matt.redfearn@imgtec.com>
+Message-ID: <20160425071423.4BYasTPTShQU89Bdh6Ne69aw0cqUyT9yI2-lsDYq3JU@z>
 
-On Fri, Apr 22, 2016 at 11:30:45AM +0200, Greg Kurz wrote:
->On Fri, 22 Apr 2016 17:21:03 +0800
->Wei Yang <richard.weiyang@huawei.com> wrote:
->
->> Hi, Greg
->> 
->
->Hi Wei !
->
->> One confusion.
->> 
->> There are 5 kvm_arch_vcpu_create() while in this patch you changed 2 of them.
->> Some particular reason?
->> 
->
->Yes and the reason is given in the changelog:
->- ARM and s390 already have such a check
->- PowerPC can live without this check
->- this patch simply moves the check to MIPS and x86
->
->Does it clarify ?
->
+Previously irq_destroy_ipi() would destroy IPIs to all CPUs that were
+configured by irq_reserve_ipi(). This change makes it possible to
+destroy just a subset of the IPIs. This may be useful to remove IPIs to
+CPUs that have been hot removed so that the IRQ numbers allocated within
+the IPI domain can be re-used.
 
-Sure, thanks :-)
+The original behaviour is restored by passing the complete mask that the
+IPI was created with.
 
->Cheers.
->
->--
->Greg
->
->> On Thu, Apr 21, 2016 at 04:20:53PM +0200, Greg Kurz wrote:
->> >Commit 338c7dbadd26 ("KVM: Improve create VCPU parameter (CVE-2013-4587)")
->> >introduced a check to prevent potential kernel memory corruption in case
->> >the vcpu id is too great.
->> >
->> >Unfortunately this check assumes vcpu ids grow in sequence with a common
->> >difference of 1, which is wrong: archs are free to use vcpu id as they fit.
->> >For example, QEMU originated vcpu ids for PowerPC cpus running in boot3s_hv
->> >mode, can grow with a common difference of 2, 4 or 8: if KVM_MAX_VCPUS is
->> >1024, guests may be limited down to 128 vcpus on POWER8.
->> >
->> >This means the check does not belong here and should be moved to some arch
->> >specific function: kvm_arch_vcpu_create() looks like a good candidate.
->> >
->> >ARM and s390 already have such a check.
->> >
->> >I could not spot any path in the PowerPC or common KVM code where a vcpu
->> >id is used as described in the above commit: I believe PowerPC can live
->> >without this check.
->> >
->> >In the end, this patch simply moves the check to MIPS and x86. While here,
->> >we also update the documentation to dissociate vcpu ids from the maximum
->> >number of vcpus per virtual machine.
->> >
->> >Acked-by: James Hogan <james.hogan@imgtec.com>
->> >Acked-by: Cornelia Huck <cornelia.huck@de.ibm.com>
->> >Signed-off-by: Greg Kurz <gkurz@linux.vnet.ibm.com>
->> >---
->> >v4: - updated subject for more clarity on what the patch does
->> >    - added James's and Connie's A-b tags
->> >    - updated documentation
->> >
->> > Documentation/virtual/kvm/api.txt |    7 +++----
->> > arch/mips/kvm/mips.c              |    7 ++++++-
->> > arch/x86/kvm/x86.c                |    3 +++
->> > virt/kvm/kvm_main.c               |    3 ---
->> > 4 files changed, 12 insertions(+), 8 deletions(-)
->> >
->> >diff --git a/Documentation/virtual/kvm/api.txt b/Documentation/virtual/kvm/api.txt
->> >index 4d0542c5206b..486a1d783b82 100644
->> >--- a/Documentation/virtual/kvm/api.txt
->> >+++ b/Documentation/virtual/kvm/api.txt
->> >@@ -199,11 +199,10 @@ Type: vm ioctl
->> > Parameters: vcpu id (apic id on x86)
->> > Returns: vcpu fd on success, -1 on error
->> > 
->> >-This API adds a vcpu to a virtual machine.  The vcpu id is a small integer
->> >-in the range [0, max_vcpus).
->> >+This API adds a vcpu to a virtual machine.  The vcpu id is a positive integer.
->> > 
->> >-The recommended max_vcpus value can be retrieved using the KVM_CAP_NR_VCPUS of
->> >-the KVM_CHECK_EXTENSION ioctl() at run-time.
->> >+The recommended maximum number of vcpus (max_vcpus) can be retrieved using the
->> >+KVM_CAP_NR_VCPUS of the KVM_CHECK_EXTENSION ioctl() at run-time.
->> > The maximum possible value for max_vcpus can be retrieved using the
->> > KVM_CAP_MAX_VCPUS of the KVM_CHECK_EXTENSION ioctl() at run-time.
->> > 
->> >diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
->> >index 70ef1a43c114..0278ea146db5 100644
->> >--- a/arch/mips/kvm/mips.c
->> >+++ b/arch/mips/kvm/mips.c
->> >@@ -248,9 +248,14 @@ struct kvm_vcpu *kvm_arch_vcpu_create(struct kvm *kvm, unsigned int id)
->> > 	int err, size, offset;
->> > 	void *gebase;
->> > 	int i;
->> >+	struct kvm_vcpu *vcpu;
->> > 
->> >-	struct kvm_vcpu *vcpu = kzalloc(sizeof(struct kvm_vcpu), GFP_KERNEL);
->> >+	if (id >= KVM_MAX_VCPUS) {
->> >+		err = -EINVAL;
->> >+		goto out;
->> >+	}
->> > 
->> >+	vcpu = kzalloc(sizeof(struct kvm_vcpu), GFP_KERNEL);
->> > 	if (!vcpu) {
->> > 		err = -ENOMEM;
->> > 		goto out;
->> >diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> >index 9b7798c7b210..7738202edcce 100644
->> >--- a/arch/x86/kvm/x86.c
->> >+++ b/arch/x86/kvm/x86.c
->> >@@ -7358,6 +7358,9 @@ struct kvm_vcpu *kvm_arch_vcpu_create(struct kvm *kvm,
->> > {
->> > 	struct kvm_vcpu *vcpu;
->> > 
->> >+	if (id >= KVM_MAX_VCPUS)
->> >+		return ERR_PTR(-EINVAL);
->> >+
->> > 	if (check_tsc_unstable() && atomic_read(&kvm->online_vcpus) != 0)
->> > 		printk_once(KERN_WARNING
->> > 		"kvm: SMP vm created on host with unstable TSC; "
->> >diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
->> >index 4fd482fb9260..6b6cca3cb488 100644
->> >--- a/virt/kvm/kvm_main.c
->> >+++ b/virt/kvm/kvm_main.c
->> >@@ -2272,9 +2272,6 @@ static int kvm_vm_ioctl_create_vcpu(struct kvm *kvm, u32 id)
->> > 	int r;
->> > 	struct kvm_vcpu *vcpu;
->> > 
->> >-	if (id >= KVM_MAX_VCPUS)
->> >-		return -EINVAL;
->> >-
->> > 	vcpu = kvm_arch_vcpu_create(kvm, id);
->> > 	if (IS_ERR(vcpu))
->> > 		return PTR_ERR(vcpu);
->> >
->> >--
->> >To unsubscribe from this list: send the line "unsubscribe kvm" in
->> >the body of a message to majordomo@vger.kernel.org
->> >More majordomo info at  http://vger.kernel.org/majordomo-info.html  
->> 
+There are currently no users of this function that would break from the
+API change.
 
+Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+---
+
+Changes in v2: None
+
+ include/linux/irqdomain.h |  2 +-
+ kernel/irq/ipi.c          | 18 ++++++++++++++----
+ 2 files changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
+index 2aed04396210..e1b81d35e7a3 100644
+--- a/include/linux/irqdomain.h
++++ b/include/linux/irqdomain.h
+@@ -348,7 +348,7 @@ int irq_domain_xlate_onetwocell(struct irq_domain *d, struct device_node *ctrlr,
+ /* IPI functions */
+ unsigned int irq_reserve_ipi(struct irq_domain *domain,
+ 			     const struct cpumask *dest);
+-void irq_destroy_ipi(unsigned int irq);
++void irq_destroy_ipi(unsigned int irq, const struct cpumask *dest);
+ 
+ /* V2 interfaces to support hierarchy IRQ domains. */
+ extern struct irq_data *irq_domain_get_irq_data(struct irq_domain *domain,
+diff --git a/kernel/irq/ipi.c b/kernel/irq/ipi.c
+index 14777af8e097..bedc995ae214 100644
+--- a/kernel/irq/ipi.c
++++ b/kernel/irq/ipi.c
+@@ -106,11 +106,12 @@ free_descs:
+ /**
+  * irq_destroy_ipi() - unreserve an IPI that was previously allocated
+  * @irq:	linux irq number to be destroyed
++ * @dest:	cpumask of cpus which should have the IPI removed
+  *
+  * Return the IPIs allocated with irq_reserve_ipi() to the system destroying
+  * all virqs associated with them.
+  */
+-void irq_destroy_ipi(unsigned int irq)
++void irq_destroy_ipi(unsigned int irq, const struct cpumask *dest)
+ {
+ 	struct irq_data *data = irq_get_irq_data(irq);
+ 	struct cpumask *ipimask = data ? irq_data_get_affinity_mask(data) : NULL;
+@@ -129,10 +130,19 @@ void irq_destroy_ipi(unsigned int irq)
+ 		return;
+ 	}
+ 
+-	if (irq_domain_is_ipi_per_cpu(domain))
+-		nr_irqs = cpumask_weight(ipimask);
+-	else
++	if (WARN_ON(!cpumask_subset(dest, ipimask)))
++		/*
++		 * Must be destroying a subset of CPUs to which this IPI
++		 * was set up to target
++		 */
++		return;
++
++	if (irq_domain_is_ipi_per_cpu(domain)) {
++		irq = irq + cpumask_first(dest) - data->common->ipi_offset;
++		nr_irqs = cpumask_weight(dest);
++	} else {
+ 		nr_irqs = 1;
++	}
+ 
+ 	irq_domain_free_irqs(irq, nr_irqs);
+ }
 -- 
-Richard Yang\nHelp you, Help me
+2.5.0

@@ -1,32 +1,14 @@
-Received: from e35.co.us.ibm.com ([32.97.110.153]:33614 "EHLO
-        e35.co.us.ibm.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27027570AbcD0JlbxD36y (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 27 Apr 2016 11:41:31 +0200
-Received: from localhost
-        by e35.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-mips@linux-mips.org> from <gkurz@linux.vnet.ibm.com>;
-        Wed, 27 Apr 2016 03:41:25 -0600
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by d03dlp01.boulder.ibm.com (Postfix) with ESMTP id B1C7A1FF0049
-        for <linux-mips@linux-mips.org>; Wed, 27 Apr 2016 03:40:40 -0600 (MDT)
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id u3R9etLJ27066574
-        for <linux-mips@linux-mips.org>; Wed, 27 Apr 2016 09:40:55 GMT
-Received: from d01av02.pok.ibm.com (localhost [127.0.0.1])
-        by d01av02.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id u3R9eso7029825
-        for <linux-mips@linux-mips.org>; Wed, 27 Apr 2016 05:40:54 -0400
-Date: Wed, 27 Apr 2016 05:40:52 -0400
-Message-ID: <20160427054052.Horde.SSxGXKxS_wcijUfLJchjWw2@ltc.linux.ibm.com>
-From: Gerg Kurz <gkurz@linux.vnet.ibm.com>
-Subject: Re: [PATCH v4 1/2] KVM: remove NULL return path for vcpu ids >=
- KVM_MAX_VCPUS
-References: <146124809455.32509.15232948272580716135.stgit@bahia.huguette.org>
- <146124810201.32509.2946887043729554992.stgit@bahia.huguette.org>
-In-Reply-To: <146124810201.32509.2946887043729554992.stgit@bahia.huguette.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed; DelSp=Yes
+Received: from mailapp01.imgtec.com ([195.59.15.196]:20318 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27027385AbcD1QGybodv6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 28 Apr 2016 18:06:54 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH] MIPS: netlogic: Fix CP0_EBASE redefinition warnings
+Date: Thu, 28 Apr 2016 17:06:16 +0100
+Message-ID: <1461859576-7036-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Return-Path: <gkurz@linux.vnet.ibm.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -36,64 +18,109 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paolo Bonzini <pbonzini@redhat.com>, james.hogan@imgtec.com, mingo@redhat.com
-Cc: linux-mips@linux-mips.org, kvm@vger.kernel.org, rkrcmar@redhat.com, linux-kernel@vger.kernel.org, David Hildenbrand <dahi@linux.vnet.ibm.com>, qemu-ppc@nongnu.org, Cornelia Huck <cornelia.huck@de.ibm.com>, Paul Mackerras <paulus@samba.org>, David Gibson <david@gibson.dropbear.id.au>Radim =?utf-8?b?S3LEjW3DocWZ?= <rkrcmar@redhat.com>
-Message-ID: <20160427094052.kWXA4X33Jh0OEY-TTaUDptqQ4gTd2XNEF0NUyIK6pMs@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, Jayachandran C <jchandra@broadcom.com>, linux-mips@linux-mips.org
+Message-ID: <20160428160616.abJHZGzeM7R-2sb0qZtjHTeOEF-nKO3ibq5gW3J77Ss@z>
 
+A couple of netlogic assembly files define CP0_EBASE to $15, the same as
+CP0_PRID in mipsregs.h, and use it for accessing both CP0_PRId and
+CP0_EBase registers. However commit 609cf6f2291a ("MIPS: CPS: Early
+debug using an ns16550-compatible UART") added a different definition of
+CP0_EBASE to mipsregs.h, which included a register select of 1. This
+causes harmless build warnings like the following:
 
-Quoting Greg Kurz <gkurz@linux.vnet.ibm.com>:
+  arch/mips/netlogic/common/reset.S:53:0: warning: "CP0_EBASE" redefined
+  #define CP0_EBASE $15
+  ^
+  In file included from arch/mips/netlogic/common/reset.S:41:0:
+  ./arch/mips/include/asm/mipsregs.h:63:0: note: this is the location of the previous definition
+  #define CP0_EBASE $15, 1
+  ^
 
-> Commit c896939f7cff ("KVM: use heuristic for fast VCPU lookup by id") added
-> a return path that prevents vcpu ids to exceed KVM_MAX_VCPUS. This is a
-> problem for powerpc where vcpu ids can grow up to 8*KVM_MAX_VCPUS.
->
-> This patch simply reverses the logic so that we only try fast path if the
-> vcpu id can be tried as an index in kvm->vcpus[]. The slow path is not
-> affected by the change.
->
-> Signed-off-by: Greg Kurz <gkurz@linux.vnet.ibm.com>
-> ---
+Update the code to use the definitions from mipsregs.h for accessing
+both registers.
 
-Radim,
+Fixes: 609cf6f2291a ("MIPS: CPS: Early debug using an ns16550-compatible UART")
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Jayachandran C <jchandra@broadcom.com>
+Cc: linux-mips@linux-mips.org
+---
+ arch/mips/netlogic/common/reset.S   | 11 +++++------
+ arch/mips/netlogic/common/smpboot.S |  4 +---
+ 2 files changed, 6 insertions(+), 9 deletions(-)
 
-I think this sanity check is only needed because kvm_get_vcpu() use the
-id as an index in kvm->vcpus[]. Checking against the new KVM_MAX_VCPU_ID
-would be clearly wrong here.
-
-And this patch got two R-b tags already. Do you agree we keep it ?
-
-Cheers.
-
---
-Greg
-
->  include/linux/kvm_host.h |    7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 5276fe0916fc..23bfe1bd159c 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -447,12 +447,13 @@ static inline struct kvm_vcpu  
-> *kvm_get_vcpu(struct kvm *kvm, int i)
->
->  static inline struct kvm_vcpu *kvm_get_vcpu_by_id(struct kvm *kvm, int id)
->  {
-> -	struct kvm_vcpu *vcpu;
-> +	struct kvm_vcpu *vcpu = NULL;
->  	int i;
->
-> -	if (id < 0 || id >= KVM_MAX_VCPUS)
-> +	if (id < 0)
->  		return NULL;
-> -	vcpu = kvm_get_vcpu(kvm, id);
-> +	if (id < KVM_MAX_VCPUS)
-> +		vcpu = kvm_get_vcpu(kvm, id);
->  	if (vcpu && vcpu->vcpu_id == id)
->  		return vcpu;
->  	kvm_for_each_vcpu(i, vcpu, kvm)
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe kvm" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/arch/mips/netlogic/common/reset.S b/arch/mips/netlogic/common/reset.S
+index edbab9b8691f..c474981a6c0d 100644
+--- a/arch/mips/netlogic/common/reset.S
++++ b/arch/mips/netlogic/common/reset.S
+@@ -50,7 +50,6 @@
+ #include <asm/netlogic/xlp-hal/sys.h>
+ #include <asm/netlogic/xlp-hal/cpucontrol.h>
+ 
+-#define CP0_EBASE	$15
+ #define SYS_CPU_COHERENT_BASE	CKSEG1ADDR(XLP_DEFAULT_IO_BASE) + \
+ 			XLP_IO_SYS_OFFSET(0) + XLP_IO_PCI_HDRSZ + \
+ 			SYS_CPU_NONCOHERENT_MODE * 4
+@@ -92,7 +91,7 @@
+  * registers. On XLPII CPUs, usual cache instructions work.
+  */
+ .macro	xlp_flush_l1_dcache
+-	mfc0	t0, CP0_EBASE, 0
++	mfc0	t0, CP0_PRID
+ 	andi	t0, t0, PRID_IMP_MASK
+ 	slt	t1, t0, 0x1200
+ 	beqz	t1, 15f
+@@ -171,7 +170,7 @@ FEXPORT(nlm_reset_entry)
+ 	nop
+ 
+ 1:	/* Entry point on core wakeup */
+-	mfc0	t0, CP0_EBASE, 0	/* processor ID */
++	mfc0	t0, CP0_PRID		/* processor ID */
+ 	andi	t0, PRID_IMP_MASK
+ 	li	t1, 0x1500		/* XLP 9xx */
+ 	beq	t0, t1, 2f		/* does not need to set coherent */
+@@ -182,8 +181,8 @@ FEXPORT(nlm_reset_entry)
+ 	nop
+ 
+ 	/* set bit in SYS coherent register for the core */
+-	mfc0	t0, CP0_EBASE, 1
+-	mfc0	t1, CP0_EBASE, 1
++	mfc0	t0, CP0_EBASE
++	mfc0	t1, CP0_EBASE
+ 	srl	t1, 5
+ 	andi	t1, 0x3			/* t1 <- node */
+ 	li	t2, 0x40000
+@@ -232,7 +231,7 @@ EXPORT(nlm_boot_siblings)
+ 
+ 	 * NOTE: All GPR contents are lost after the mtcr above!
+ 	 */
+-	mfc0	v0, CP0_EBASE, 1
++	mfc0	v0, CP0_EBASE
+ 	andi	v0, 0x3ff		/* v0 <- node/core */
+ 
+ 	/*
+diff --git a/arch/mips/netlogic/common/smpboot.S b/arch/mips/netlogic/common/smpboot.S
+index 805355b0bd05..f0cc4c9de2bb 100644
+--- a/arch/mips/netlogic/common/smpboot.S
++++ b/arch/mips/netlogic/common/smpboot.S
+@@ -48,8 +48,6 @@
+ #include <asm/netlogic/xlp-hal/sys.h>
+ #include <asm/netlogic/xlp-hal/cpucontrol.h>
+ 
+-#define CP0_EBASE	$15
+-
+ 	.set	noreorder
+ 	.set	noat
+ 	.set	arch=xlr		/* for mfcr/mtcr, XLR is sufficient */
+@@ -86,7 +84,7 @@ NESTED(nlm_boot_secondary_cpus, 16, sp)
+ 	PTR_L	gp, 0(t1)
+ 
+ 	/* a0 has the processor id */
+-	mfc0	a0, CP0_EBASE, 1
++	mfc0	a0, CP0_EBASE
+ 	andi	a0, 0x3ff		/* a0 <- node/core */
+ 	PTR_LA	t0, nlm_early_init_secondary
+ 	jalr	t0
+-- 
+2.4.10

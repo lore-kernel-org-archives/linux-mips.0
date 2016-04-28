@@ -1,22 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:19531 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27027451AbcD1Qgwg0Wv8 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 28 Apr 2016 18:36:52 +0200
-Date: Thu, 28 Apr 2016 17:36:43 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH 3/4] MIPS: malta-time: Don't use PIT timer for cevt/csrc
-Message-ID: <20160428163643.GD2467@jhogan-linux.le.imgtec.org>
-References: <1461345557-2763-1-git-send-email-james.hogan@imgtec.com>
- <1461345557-2763-4-git-send-email-james.hogan@imgtec.com>
- <alpine.DEB.2.00.1604221951290.21846@tp.orcam.me.uk>
- <20160422192312.GM7859@jhogan-linux.le.imgtec.org>
- <20160422192906.GO24051@linux-mips.org>
+Received: from mail-io0-f193.google.com ([209.85.223.193]:35790 "EHLO
+        mail-io0-f193.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27027725AbcD1RvMZ3Icr (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 28 Apr 2016 19:51:12 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="TybLhxa8M7aNoW+V"
-Content-Disposition: inline
-In-Reply-To: <20160422192906.GO24051@linux-mips.org>
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <20160428164856.10120.qmail@ns.horizon.com>
+References: <1461843824-19853-1-git-send-email-zengzhaoxiu@163.com>
+        <20160428164856.10120.qmail@ns.horizon.com>
+Date: Thu, 28 Apr 2016 19:51:06 +0200
+Message-ID: <CAMuHMdU2e2PdwKYVaEsJ73X8Di1XHNPqnxuunr8R8bN8udazxw@mail.gmail.com>
+Subject: Re: [patch V3] lib: GCD: add binary GCD algorithm
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <geert.uytterhoeven@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,64 +21,32 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: "Maciej W. Rozycki" <macro@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20160428163643.YcosGHQmgvyU11FIsFkuuREB5BOneQ0-U29EXl9Rbnw@z>
+To: George Spelvin <linux@horizon.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, zengzhaoxiu@163.com, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Helge Deller <deller@gmx.de>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, James Hogan <james.hogan@imgtec.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jonas Bonn <jonas@southpole.se>, Lennox Wu <lennox.wu@gmail.com>, Ley Foon Tan <lftan@altera.com>, alpha <linux-alpha@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:METAG ARCHITECTURE" <linux-metag@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Parisc List <linux-parisc@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, Russell King <linux@arm.linux.org.uk>, linux <linux@lists.openrisc.net>, Chen Liqin <liqin.linux@gmail.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, nios2-dev@lists.rocketboards.org, Ralf Baechle <ralf@linux-mips.org>, Richard Henderson <rth@twiddle.net>, sparclinux <sparclinux@vger.kernel.org>, uclinux-h8-devel@lists.sourceforge.jp, Yoshinori Sato <ysato@users.sourceforge.jp>, zhaoxiu.zeng@gmail.com
+Message-ID: <20160428175106.rwigue8ZdRWD_eq5c40A9U933fCSBNM4mumx69tGjl8@z>
 
---TybLhxa8M7aNoW+V
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Apr 28, 2016 at 6:48 PM, George Spelvin <linux@horizon.com> wrote:
+> Another few comments:
+>
+> 1. Would ARCH_HAS_FAST_FFS involve fewer changes than CPU_NO_EFFICIENT_FFS?
 
-On Fri, Apr 22, 2016 at 09:29:07PM +0200, Ralf Baechle wrote:
-> On Fri, Apr 22, 2016 at 08:23:12PM +0100, James Hogan wrote:
->=20
-> > >  Not everyone uses virtualisation, so it's a functional regression fo=
-r=20
-> > > them.  Can't you lower the priority for the timer instead so that it =
-is=20
-> > > not selected by default, just as it's done with other platforms provi=
-ding=20
-> > > a choice of timers?
-> >=20
-> > I'll look into that. Looking back at my IRC logs I suspect I meant to
-> > check why the PIT was taking priority before submitting upstream, but
-> > forgot.
->=20
-> The PIT already has a very low rating and should only be used if everythi=
-ng
-> else fails.  Clock scaling for example would make the cycle counter
-> unusable, there might be no GIC available etc.  Otoh with SMP the PIT is
-> only usable as a clock source but not clock event device.
+No, as you want to _disable_ ARCH_HAS_FAST_FFS / _enable_
+CPU_NO_EFFICIENT_FFS as soon as you're enabling support for a
+CPU that doesn't support it.
 
-I can't even reproduce the problem any longer. Even with the PIT drivers
-loaded and a message in the log about PIT clocksource it doesn't seem to
-be used, so we can just drop this one anyway. I've marked this patch as
-rejected in patchwork. Sorry for the noise.
+Logical OR is easier in both the Kconfig and C preprocessor languages
+than logical NAND.
 
-Thanks
-James
+E.g. in Kconfig, a CPU core not supporting it can just select
+CPU_NO_EFFICIENT_FFS.
 
---TybLhxa8M7aNoW+V
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Gr{oetje,eeting}s,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+                        Geert
 
-iQIcBAEBCAAGBQJXIjwbAAoJEGwLaZPeOHZ6WYQP/3twJUaDi0YbVzaFxfWqOAGI
-EAuIU+Js0pi0XibTh74riAInmXPU7W7L/h6hZsDXIp/zLZ8WphPilAs39A2qy4cO
-AhJvxbI4MXt598BVlOjNPIdCl9vjndrl3/BclZlsDT3bWiPKvwevvs9BNQzljp+J
-0T+3c9GDSTuymzfUTS49faToKlkvwWSVcbgqD0ltkvtve1W59UCGX48qXjrEeJvQ
-CZ4wXPIxjbyvuKbLCgFTcgfU7R2JqA7e/6GFn88a3rniNSGiG6H4crAFMpX/CYj6
-a1TCchOVxQ2KjJLX3KR9BlcwrdicSoSlP+en5EnbESdfJgJDyBEva9jZkpuSZfpb
-X59s3KRsDqLu7tK/a+EBW45n0H7cnHuiL9FGFbVL2Hvvz6rHdr+OvD5/sJc4SsXZ
-jDFrYgbEw1w0dzbqEYAlUmO5WGrnz+wfhQVvqqDTcsQPjF1UqoIl82Y/1h/uTu/b
-cKq63DWJ2zt6Ff8hLaVQMTI19T10m0BzyYlD8HoyLgH/j6DemI0SENn+9awNWVsU
-0RVEzsAgawJKTWtSlutAYyp/ggIljSldsLPr8QNf6JG+sztQdEHvYmdAym6UCvZi
-cQhGeOUcQRJHxqm9Q2sS1/MsBXSIgBcQMJVilE2utzIR1KO4Lx0ba6MuU1lhs9Ox
-vnKiSgHHTtf/XYPgRCnh
-=j4rr
------END PGP SIGNATURE-----
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---TybLhxa8M7aNoW+V--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

@@ -1,13 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:20318 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27027385AbcD1QGybodv6 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 28 Apr 2016 18:06:54 +0200
+Received: from mailapp01.imgtec.com ([195.59.15.196]:19531 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27027451AbcD1Qgwg0Wv8 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 28 Apr 2016 18:36:52 +0200
+Date: Thu, 28 Apr 2016 17:36:43 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: netlogic: Fix CP0_EBASE redefinition warnings
-Date: Thu, 28 Apr 2016 17:06:16 +0100
-Message-ID: <1461859576-7036-1-git-send-email-james.hogan@imgtec.com>
+Subject: Re: [PATCH 3/4] MIPS: malta-time: Don't use PIT timer for cevt/csrc
+Message-ID: <20160428163643.GD2467@jhogan-linux.le.imgtec.org>
+References: <1461345557-2763-1-git-send-email-james.hogan@imgtec.com>
+ <1461345557-2763-4-git-send-email-james.hogan@imgtec.com>
+ <alpine.DEB.2.00.1604221951290.21846@tp.orcam.me.uk>
+ <20160422192312.GM7859@jhogan-linux.le.imgtec.org>
+ <20160422192906.GO24051@linux-mips.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="TybLhxa8M7aNoW+V"
+Content-Disposition: inline
+In-Reply-To: <20160422192906.GO24051@linux-mips.org>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -19,108 +27,63 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, Jayachandran C <jchandra@broadcom.com>, linux-mips@linux-mips.org
-Message-ID: <20160428160616.abJHZGzeM7R-2sb0qZtjHTeOEF-nKO3ibq5gW3J77Ss@z>
+Cc: "Maciej W. Rozycki" <macro@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20160428163643.YcosGHQmgvyU11FIsFkuuREB5BOneQ0-U29EXl9Rbnw@z>
 
-A couple of netlogic assembly files define CP0_EBASE to $15, the same as
-CP0_PRID in mipsregs.h, and use it for accessing both CP0_PRId and
-CP0_EBase registers. However commit 609cf6f2291a ("MIPS: CPS: Early
-debug using an ns16550-compatible UART") added a different definition of
-CP0_EBASE to mipsregs.h, which included a register select of 1. This
-causes harmless build warnings like the following:
+--TybLhxa8M7aNoW+V
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  arch/mips/netlogic/common/reset.S:53:0: warning: "CP0_EBASE" redefined
-  #define CP0_EBASE $15
-  ^
-  In file included from arch/mips/netlogic/common/reset.S:41:0:
-  ./arch/mips/include/asm/mipsregs.h:63:0: note: this is the location of the previous definition
-  #define CP0_EBASE $15, 1
-  ^
+On Fri, Apr 22, 2016 at 09:29:07PM +0200, Ralf Baechle wrote:
+> On Fri, Apr 22, 2016 at 08:23:12PM +0100, James Hogan wrote:
+>=20
+> > >  Not everyone uses virtualisation, so it's a functional regression fo=
+r=20
+> > > them.  Can't you lower the priority for the timer instead so that it =
+is=20
+> > > not selected by default, just as it's done with other platforms provi=
+ding=20
+> > > a choice of timers?
+> >=20
+> > I'll look into that. Looking back at my IRC logs I suspect I meant to
+> > check why the PIT was taking priority before submitting upstream, but
+> > forgot.
+>=20
+> The PIT already has a very low rating and should only be used if everythi=
+ng
+> else fails.  Clock scaling for example would make the cycle counter
+> unusable, there might be no GIC available etc.  Otoh with SMP the PIT is
+> only usable as a clock source but not clock event device.
 
-Update the code to use the definitions from mipsregs.h for accessing
-both registers.
+I can't even reproduce the problem any longer. Even with the PIT drivers
+loaded and a message in the log about PIT clocksource it doesn't seem to
+be used, so we can just drop this one anyway. I've marked this patch as
+rejected in patchwork. Sorry for the noise.
 
-Fixes: 609cf6f2291a ("MIPS: CPS: Early debug using an ns16550-compatible UART")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Jayachandran C <jchandra@broadcom.com>
-Cc: linux-mips@linux-mips.org
----
- arch/mips/netlogic/common/reset.S   | 11 +++++------
- arch/mips/netlogic/common/smpboot.S |  4 +---
- 2 files changed, 6 insertions(+), 9 deletions(-)
+Thanks
+James
 
-diff --git a/arch/mips/netlogic/common/reset.S b/arch/mips/netlogic/common/reset.S
-index edbab9b8691f..c474981a6c0d 100644
---- a/arch/mips/netlogic/common/reset.S
-+++ b/arch/mips/netlogic/common/reset.S
-@@ -50,7 +50,6 @@
- #include <asm/netlogic/xlp-hal/sys.h>
- #include <asm/netlogic/xlp-hal/cpucontrol.h>
- 
--#define CP0_EBASE	$15
- #define SYS_CPU_COHERENT_BASE	CKSEG1ADDR(XLP_DEFAULT_IO_BASE) + \
- 			XLP_IO_SYS_OFFSET(0) + XLP_IO_PCI_HDRSZ + \
- 			SYS_CPU_NONCOHERENT_MODE * 4
-@@ -92,7 +91,7 @@
-  * registers. On XLPII CPUs, usual cache instructions work.
-  */
- .macro	xlp_flush_l1_dcache
--	mfc0	t0, CP0_EBASE, 0
-+	mfc0	t0, CP0_PRID
- 	andi	t0, t0, PRID_IMP_MASK
- 	slt	t1, t0, 0x1200
- 	beqz	t1, 15f
-@@ -171,7 +170,7 @@ FEXPORT(nlm_reset_entry)
- 	nop
- 
- 1:	/* Entry point on core wakeup */
--	mfc0	t0, CP0_EBASE, 0	/* processor ID */
-+	mfc0	t0, CP0_PRID		/* processor ID */
- 	andi	t0, PRID_IMP_MASK
- 	li	t1, 0x1500		/* XLP 9xx */
- 	beq	t0, t1, 2f		/* does not need to set coherent */
-@@ -182,8 +181,8 @@ FEXPORT(nlm_reset_entry)
- 	nop
- 
- 	/* set bit in SYS coherent register for the core */
--	mfc0	t0, CP0_EBASE, 1
--	mfc0	t1, CP0_EBASE, 1
-+	mfc0	t0, CP0_EBASE
-+	mfc0	t1, CP0_EBASE
- 	srl	t1, 5
- 	andi	t1, 0x3			/* t1 <- node */
- 	li	t2, 0x40000
-@@ -232,7 +231,7 @@ EXPORT(nlm_boot_siblings)
- 
- 	 * NOTE: All GPR contents are lost after the mtcr above!
- 	 */
--	mfc0	v0, CP0_EBASE, 1
-+	mfc0	v0, CP0_EBASE
- 	andi	v0, 0x3ff		/* v0 <- node/core */
- 
- 	/*
-diff --git a/arch/mips/netlogic/common/smpboot.S b/arch/mips/netlogic/common/smpboot.S
-index 805355b0bd05..f0cc4c9de2bb 100644
---- a/arch/mips/netlogic/common/smpboot.S
-+++ b/arch/mips/netlogic/common/smpboot.S
-@@ -48,8 +48,6 @@
- #include <asm/netlogic/xlp-hal/sys.h>
- #include <asm/netlogic/xlp-hal/cpucontrol.h>
- 
--#define CP0_EBASE	$15
--
- 	.set	noreorder
- 	.set	noat
- 	.set	arch=xlr		/* for mfcr/mtcr, XLR is sufficient */
-@@ -86,7 +84,7 @@ NESTED(nlm_boot_secondary_cpus, 16, sp)
- 	PTR_L	gp, 0(t1)
- 
- 	/* a0 has the processor id */
--	mfc0	a0, CP0_EBASE, 1
-+	mfc0	a0, CP0_EBASE
- 	andi	a0, 0x3ff		/* a0 <- node/core */
- 	PTR_LA	t0, nlm_early_init_secondary
- 	jalr	t0
--- 
-2.4.10
+--TybLhxa8M7aNoW+V
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJXIjwbAAoJEGwLaZPeOHZ6WYQP/3twJUaDi0YbVzaFxfWqOAGI
+EAuIU+Js0pi0XibTh74riAInmXPU7W7L/h6hZsDXIp/zLZ8WphPilAs39A2qy4cO
+AhJvxbI4MXt598BVlOjNPIdCl9vjndrl3/BclZlsDT3bWiPKvwevvs9BNQzljp+J
+0T+3c9GDSTuymzfUTS49faToKlkvwWSVcbgqD0ltkvtve1W59UCGX48qXjrEeJvQ
+CZ4wXPIxjbyvuKbLCgFTcgfU7R2JqA7e/6GFn88a3rniNSGiG6H4crAFMpX/CYj6
+a1TCchOVxQ2KjJLX3KR9BlcwrdicSoSlP+en5EnbESdfJgJDyBEva9jZkpuSZfpb
+X59s3KRsDqLu7tK/a+EBW45n0H7cnHuiL9FGFbVL2Hvvz6rHdr+OvD5/sJc4SsXZ
+jDFrYgbEw1w0dzbqEYAlUmO5WGrnz+wfhQVvqqDTcsQPjF1UqoIl82Y/1h/uTu/b
+cKq63DWJ2zt6Ff8hLaVQMTI19T10m0BzyYlD8HoyLgH/j6DemI0SENn+9awNWVsU
+0RVEzsAgawJKTWtSlutAYyp/ggIljSldsLPr8QNf6JG+sztQdEHvYmdAym6UCvZi
+cQhGeOUcQRJHxqm9Q2sS1/MsBXSIgBcQMJVilE2utzIR1KO4Lx0ba6MuU1lhs9Ox
+vnKiSgHHTtf/XYPgRCnh
+=j4rr
+-----END PGP SIGNATURE-----
+
+--TybLhxa8M7aNoW+V--

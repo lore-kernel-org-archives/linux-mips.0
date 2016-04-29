@@ -1,19 +1,16 @@
-Received: from mail-io0-f196.google.com ([209.85.223.196]:36366 "EHLO
-        mail-io0-f196.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27027719AbcD1SLissnbr (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 28 Apr 2016 20:11:38 +0200
+Received: from mailapp01.imgtec.com ([195.59.15.196]:28390 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27027765AbcD2NqQd5LGi (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 29 Apr 2016 15:46:16 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH 2/5] MIPS: Add defs & probing of 64-bit CP0_EBase
+Date: Fri, 29 Apr 2016 14:46:00 +0100
+Message-ID: <1461937563-13199-3-git-send-email-james.hogan@imgtec.com>
+In-Reply-To: <1461937563-13199-1-git-send-email-james.hogan@imgtec.com>
+References: <1461937563-13199-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20160428175843.GZ21636@brightrain.aerifal.cx>
-References: <1461843824-19853-1-git-send-email-zengzhaoxiu@163.com>
-        <20160428164856.10120.qmail@ns.horizon.com>
-        <CAMuHMdU2e2PdwKYVaEsJ73X8Di1XHNPqnxuunr8R8bN8udazxw@mail.gmail.com>
-        <20160428175843.GZ21636@brightrain.aerifal.cx>
-Date: Thu, 28 Apr 2016 20:11:32 +0200
-Message-ID: <CAMuHMdUBWqdyS4w7EKsnvQLXJVgQh624AQsjgQvxT9FRW4s_6g@mail.gmail.com>
-Subject: Re: [patch V3] lib: GCD: add binary GCD algorithm
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <geert.uytterhoeven@gmail.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,47 +20,130 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rich Felker <dalias@libc.org>
-Cc: George Spelvin <linux@horizon.com>, Andrew Morton <akpm@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, zengzhaoxiu@163.com, "David S. Miller" <davem@davemloft.net>, Helge Deller <deller@gmx.de>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, James Hogan <james.hogan@imgtec.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jonas Bonn <jonas@southpole.se>, Lennox Wu <lennox.wu@gmail.com>, Ley Foon Tan <lftan@altera.com>, alpha <linux-alpha@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:METAG ARCHITECTURE" <linux-metag@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Parisc List <linux-parisc@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, Russell King <linux@arm.linux.org.uk>, linux <linux@lists.openrisc.net>, Chen Liqin <liqin.linux@gmail.com>, Matt Turner <mattst88@gmail.com>, Michal Simek <monstr@monstr.eu>, nios2-dev@lists.rocketboards.org, Ralf Baechle <ralf@linux-mips.org>, Richard Henderson <rth@twiddle.net>, sparclinux <sparclinux@vger.kernel.org>, uclinux-h8-devel@lists.sourceforge.jp, Yoshinori Sato <ysato@users.sourceforge.jp>, zhaoxiu.zeng@gmail.com
-Message-ID: <20160428181132.8_DqF6iorLNnn3cgKiolUsJTdS6loExfTLw7JXZFaHM@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20160429134600.9RjkcYnCutsXAswW73HKxmA-FMpI-NxFonkRQrsu-Hs@z>
 
-On Thu, Apr 28, 2016 at 7:58 PM, Rich Felker <dalias@libc.org> wrote:
-> On Thu, Apr 28, 2016 at 07:51:06PM +0200, Geert Uytterhoeven wrote:
->> On Thu, Apr 28, 2016 at 6:48 PM, George Spelvin <linux@horizon.com> wrote:
->> > Another few comments:
->> >
->> > 1. Would ARCH_HAS_FAST_FFS involve fewer changes than CPU_NO_EFFICIENT_FFS?
->>
->> No, as you want to _disable_ ARCH_HAS_FAST_FFS / _enable_
->> CPU_NO_EFFICIENT_FFS as soon as you're enabling support for a
->> CPU that doesn't support it.
->>
->> Logical OR is easier in both the Kconfig and C preprocessor languages
->> than logical NAND.
->>
->> E.g. in Kconfig, a CPU core not supporting it can just select
->> CPU_NO_EFFICIENT_FFS.
->
-> How does a CPU lack an efficient ffs/ctz anyway? There are all sorts
-> of ways to implement it without a native insn, some of which are
-> almost or just as fast as the native insn on cpus that have the
-> latter. On anything with a fast multiply, the de Bruijn sequence
-> approach is near-optimal, and otherwise one of the binary-search type
-> approaches (possibly branchless) can be used. If the compiler doesn't
-> generate an appropriate one for __builtin_ctz, that's arguably a
-> compiler bug.
+MIPS64r2 and later cores may optionally have a 64-bit CP0_EBase
+register, with a write gate (WG) bit to allow the upper half to be
+written. The presence of this feature will need to be known about for VZ
+support in order to correctly save and restore the guest CP0_EBase
+register, so add CPU feature definitions and probing for this
+capability.
 
-m68k-linux-gcc 4.6.3 generates:
+Probing the WG bit is a bit fiddly, since 64-bit COP0 register access
+instructions were UNDEFINED for 32-bit registers prior to MIPS r6, and
+it'd be nice to be able to probe without clobbering the existing state,
+so there are 3 potential paths:
 
-        jsr __ctzsi2
+- If we do a 32-bit read of CP0_EBase and the WG bit is already set, the
+  register must be 64-bit.
 
-Gr{oetje,eeting}s,
+- On MIPS r6 we can do a 64-bit read-modify-write to set CP0_EBase.WG,
+  since the upper bits will read 0 and be ignored on write if the
+  register is 32-bit.
 
-                        Geert
+- On pre-r6 cores, we do a 32-bit read-modify-write of CP0_EBase. This
+  avoids the potentially UNDEFINED behaviour, but will clobber the upper
+  32-bits of CP0_EBase if it isn't a simple sign extension (which also
+  requires us to ensure BEV=1 or modifying the exception base would be
+  UNDEFINED too). It is hopefully unlikely a bootloader would set up
+  CP0_EBase to a 64-bit segment and leave WG=0.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+---
+ arch/mips/include/asm/cpu-features.h |  4 ++++
+ arch/mips/include/asm/cpu.h          |  1 +
+ arch/mips/include/asm/mipsregs.h     |  3 +++
+ arch/mips/kernel/cpu-probe.c         | 35 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 43 insertions(+)
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
+index da92d513a395..a3d3de8ab145 100644
+--- a/arch/mips/include/asm/cpu-features.h
++++ b/arch/mips/include/asm/cpu-features.h
+@@ -432,4 +432,8 @@
+ #define cpu_has_nan_2008	(cpu_data[0].options & MIPS_CPU_NAN_2008)
+ #endif
+ 
++#ifndef cpu_has_ebase64
++# define cpu_has_ebase64	(cpu_data[0].options & MIPS_CPU_EBASE64)
++#endif
++
+ #endif /* __ASM_CPU_FEATURES_H */
+diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+index 79ce9ae0a3c7..11a7f78bb1f7 100644
+--- a/arch/mips/include/asm/cpu.h
++++ b/arch/mips/include/asm/cpu.h
+@@ -403,6 +403,7 @@ enum cpu_type_enum {
+ #define MIPS_CPU_NAN_2008	MBIT_ULL(39)	/* 2008 NaN implemented */
+ #define MIPS_CPU_VP		MBIT_ULL(40)	/* MIPSr6 Virtual Processors (multi-threading) */
+ #define MIPS_CPU_LDPTE		MBIT_ULL(41)	 /* CPU has ldpte/lddir instructions */
++#define MIPS_CPU_EBASE64	MBIT_ULL(42)	/* CPU has 64-bit EBase */
+ 
+ /*
+  * CPU ASE encodings
+diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+index 24904f1f6fe1..cc17f4886f00 100644
+--- a/arch/mips/include/asm/mipsregs.h
++++ b/arch/mips/include/asm/mipsregs.h
+@@ -1456,6 +1456,9 @@ do {									\
+ #define read_c0_ebase()		__read_32bit_c0_register($15, 1)
+ #define write_c0_ebase(val)	__write_32bit_c0_register($15, 1, val)
+ 
++#define read_c0_ebase_64()	__read_64bit_c0_register($15, 1)
++#define write_c0_ebase_64(val)	__write_64bit_c0_register($15, 1, val)
++
+ #define read_c0_cdmmbase()	__read_ulong_c0_register($15, 2)
+ #define write_c0_cdmmbase(val)	__write_ulong_c0_register($15, 2, val)
+ 
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index b766952afc5c..eb62c730b97f 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -845,6 +845,41 @@ static void decode_configs(struct cpuinfo_mips *c)
+ 	if (ok)
+ 		ok = decode_config5(c);
+ 
++	/* Probe the size of the EBase register */
++	if (config_enabled(CONFIG_64BIT) && cpu_has_mips_r2_r6) {
++		unsigned long ebase;
++		unsigned int status;
++
++		/* {read,write}_c0_ebase_64() may be UNDEFINED prior to r6 */
++		ebase = cpu_has_mips64r6 ? read_c0_ebase_64()
++					 : (s32)read_c0_ebase();
++		if (ebase & MIPS_EBASE_WG) {
++			/* WG bit already set, we can avoid the clumsy probe */
++			c->options |= MIPS_CPU_EBASE64;
++		} else {
++			/* Its UNDEFINED to change EBase while BEV=0 */
++			status = read_c0_status();
++			write_c0_status(status | ST0_BEV);
++			irq_enable_hazard();
++			/*
++			 * On pre-r6 cores, this may well clobber the upper bits
++			 * of EBase. This is hard to avoid without potentially
++			 * hitting UNDEFINED dm*c0 behaviour if EBase is 32-bit.
++			 */
++			if (cpu_has_mips64r6)
++				write_c0_ebase_64(ebase | MIPS_EBASE_WG);
++			else
++				write_c0_ebase(ebase | MIPS_EBASE_WG);
++			back_to_back_c0_hazard();
++			/* Restore BEV */
++			write_c0_status(status);
++			if (read_c0_ebase() & MIPS_EBASE_WG) {
++				c->options |= MIPS_CPU_EBASE64;
++				write_c0_ebase(ebase);
++			}
++		}
++	}
++
+ 	mips_probe_watch_registers(c);
+ 
+ #ifndef CONFIG_MIPS_CPS
+-- 
+2.4.10

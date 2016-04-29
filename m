@@ -1,13 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:29537 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:61559 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27027781AbcD2NqSIJOWi (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 29 Apr 2016 15:46:18 +0200
+        with ESMTP id S27027781AbcD2NxVv5Ngi (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 29 Apr 2016 15:53:21 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 5/5] MIPS: Add perf counter feature
-Date: Fri, 29 Apr 2016 14:46:03 +0100
-Message-ID: <1461937563-13199-6-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <1461937563-13199-1-git-send-email-james.hogan@imgtec.com>
-References: <1461937563-13199-1-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH 0/6] MIPS: Exposure & handling of VZ state
+Date: Fri, 29 Apr 2016 14:53:02 +0100
+Message-ID: <1461937988-13787-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <James.Hogan@imgtec.com>
@@ -21,109 +19,46 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Robert Richter <rric@kernel.org>, linux-mips@linux-mips.org, oprofile-list@lists.sf.net
-Message-ID: <20160429134603.3IEgPsjOHm99mWVAsLtp4BXUwWO-_PNfAY4fpcnbzC8@z>
+Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20160429135302.4hlEZ4BSDDmIOMtQbgrjTXzPYjT12ZosOltEbE2RvV0@z>
 
-Add CPU feature for standard MIPS r2 performance counters, as determined
-by the Config1.PC bit. Both perf_events and oprofile probe this bit, so
-lets combine the probing and change both to use cpu_has_perf.
+This patchset is based on the one titled "[PATCH 0/5] MIPS: Add feature
+probing ready for KVM/VZ" which I submitted earlier today.
 
-This will also be used for VZ support in KVM to know whether performance
-counters exist which can be exposed to guests.
+It adds general MIPS handling and exposure of the VZ COP0 and hardware
+guest state.
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Specifically:
+- Access to VZ specific COP0 registers.
+- Access to the COP0 registers of the VZ "guest" context (which are
+  mostly separate to the normal ("root") COP0 registers).
+- Probing and exposure of various VZ features.
+- Probing and exposure of various features available in the VZ guest
+  context.
+- Inline helpers for VZ specific COP0 instructions such as those for
+  accessing the guest TLB.
+- Handling & dumping of extra root TLB state. Specifically the GuestID,
+  which is an optional field added to the root TLB to distinguish the
+  normal root virtual address space with a GuestID of 0 from multiple
+  guest physical address spaces with non-zero GuestIDs.
+
+James Hogan (6):
+  MIPS: Avoid magic numbers probing kscratch_mask
+  MIPS: Add register definitions for VZ ASE registers
+  MIPS: Add guest CP0 accessors
+  MIPS: Add probing & defs for VZ & guest features
+  MIPS: dump_tlb: Preserve and dump GuestID
+  MIPS: Print GuestCtl1 on machine check exception
+
+ arch/mips/include/asm/cpu-features.h |  98 ++++++++
+ arch/mips/include/asm/cpu-info.h     |  14 ++
+ arch/mips/include/asm/cpu.h          |   5 +
+ arch/mips/include/asm/mipsregs.h     | 461 ++++++++++++++++++++++++++++++++++-
+ arch/mips/kernel/cpu-probe.c         | 235 +++++++++++++++++-
+ arch/mips/lib/dump_tlb.c             |  19 +-
+ 6 files changed, 816 insertions(+), 16 deletions(-)
+
 Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Robert Richter <rric@kernel.org>
 Cc: linux-mips@linux-mips.org
-Cc: oprofile-list@lists.sf.net
----
- arch/mips/include/asm/cpu-features.h | 4 ++++
- arch/mips/include/asm/cpu.h          | 1 +
- arch/mips/kernel/cpu-probe.c         | 2 ++
- arch/mips/kernel/perf_event_mipsxx.c | 4 +---
- arch/mips/oprofile/op_model_mipsxx.c | 4 +---
- 5 files changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
-index e29e9841c597..952a2388c22e 100644
---- a/arch/mips/include/asm/cpu-features.h
-+++ b/arch/mips/include/asm/cpu-features.h
-@@ -448,4 +448,8 @@
- # define cpu_has_contextconfig	(cpu_data[0].options & MIPS_CPU_CTXTC)
- #endif
- 
-+#ifndef cpu_has_perf
-+# define cpu_has_perf		(cpu_data[0].options & MIPS_CPU_PERF)
-+#endif
-+
- #endif /* __ASM_CPU_FEATURES_H */
-diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-index 989378d28059..36cf2a717a3d 100644
---- a/arch/mips/include/asm/cpu.h
-+++ b/arch/mips/include/asm/cpu.h
-@@ -407,6 +407,7 @@ enum cpu_type_enum {
- #define MIPS_CPU_BADINSTR	MBIT_ULL(43)	/* CPU has BadInstr register */
- #define MIPS_CPU_BADINSTRP	MBIT_ULL(44)	/* CPU has BadInstrP register */
- #define MIPS_CPU_CTXTC		MBIT_ULL(45)	/* CPU has [X]ConfigContext registers */
-+#define MIPS_CPU_PERF		MBIT_ULL(46)	/* CPU has MIPS performance counters */
- 
- /*
-  * CPU ASE encodings
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index b3db08d05483..a0b7ff3353bd 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -648,6 +648,8 @@ static inline unsigned int decode_config1(struct cpuinfo_mips *c)
- 
- 	if (config1 & MIPS_CONF1_MD)
- 		c->ases |= MIPS_ASE_MDMX;
-+	if (config1 & MIPS_CONF1_PC)
-+		c->options |= MIPS_CPU_PERF;
- 	if (config1 & MIPS_CONF1_WR)
- 		c->options |= MIPS_CPU_WATCH;
- 	if (config1 & MIPS_CONF1_CA)
-diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
-index 656769c166fc..302af8c975df 100644
---- a/arch/mips/kernel/perf_event_mipsxx.c
-+++ b/arch/mips/kernel/perf_event_mipsxx.c
-@@ -101,8 +101,6 @@ struct mips_pmu {
- 
- static struct mips_pmu mipspmu;
- 
--#define M_CONFIG1_PC	(1 << 4)
--
- #define M_PERFCTL_EXL			(1	<<  0)
- #define M_PERFCTL_KERNEL		(1	<<  1)
- #define M_PERFCTL_SUPERVISOR		(1	<<  2)
-@@ -754,7 +752,7 @@ static void handle_associated_event(struct cpu_hw_events *cpuc,
- 
- static int __n_counters(void)
- {
--	if (!(read_c0_config1() & M_CONFIG1_PC))
-+	if (!cpu_has_perf)
- 		return 0;
- 	if (!(read_c0_perfctrl0() & M_PERFCTL_MORE))
- 		return 1;
-diff --git a/arch/mips/oprofile/op_model_mipsxx.c b/arch/mips/oprofile/op_model_mipsxx.c
-index 8f988a61b7a8..45cb27469fba 100644
---- a/arch/mips/oprofile/op_model_mipsxx.c
-+++ b/arch/mips/oprofile/op_model_mipsxx.c
-@@ -269,11 +269,9 @@ static int mipsxx_perfcount_handler(void)
- 	return handled;
- }
- 
--#define M_CONFIG1_PC	(1 << 4)
--
- static inline int __n_counters(void)
- {
--	if (!(read_c0_config1() & M_CONFIG1_PC))
-+	if (!cpu_has_perf)
- 		return 0;
- 	if (!(read_c0_perfctrl0() & M_PERFCTL_MORE))
- 		return 1;
 -- 
 2.4.10

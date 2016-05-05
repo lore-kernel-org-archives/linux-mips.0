@@ -1,18 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:46087 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27028019AbcEEV6GizMC5 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 5 May 2016 23:58:06 +0200
-Date: Thu, 5 May 2016 22:58:00 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH v2] MIPS: Remove no longer needed work_on_cpu() call
-Message-ID: <20160505215800.GA11557@jhogan-linux.le.imgtec.org>
-References: <1462179649-55112-1-git-send-email-anna-maria@linutronix.de>
+Received: from mail-bn1on0096.outbound.protection.outlook.com ([157.56.110.96]:21472
+        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S27028096AbcEEWxv2pDkb (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 6 May 2016 00:53:51 +0200
+Subject: Re: [PATCH] MIPS: Octeon: byteswap initramfs in little endian mode
+References: <1462484017-29988-1-git-send-email-aurelien@aurel32.net>
+ <572BBDB8.8000300@caviumnetworks.com> <20160505221649.GA29979@aurel32.net>
+From: David Daney <ddaney@caviumnetworks.com>
+Message-ID: <572BCECE.7040600@caviumnetworks.com>
+Date: Thu, 5 May 2016 15:53:02 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
-Content-Disposition: inline
-In-Reply-To: <1462179649-55112-1-git-send-email-anna-maria@linutronix.de>
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <20160505221649.GA29979@aurel32.net>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@caviumnetworks.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,102 +23,88 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Anna-Maria Gleixner <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, rt@linutronix.de, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20160505215800.4Mr0fXFd0qLy1Mx1su5A2TvaCNJjGyCVIu2RyJlhCrs@z>
+To: linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>
+Message-ID: <20160505225302.7D65P1Jw5i4a9BLN7x2cfjRUCMg9zPurAtPGuvLhqLA@z>
 
---zhXaljGHf11kAtnf
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 02, 2016 at 11:00:49AM +0200, Anna-Maria Gleixner wrote:
-> Since commit 3b9d6da67e11 ("cpu/hotplug: Fix rollback during error-out
-> in __cpu_disable()") it is ensured that callbacks of CPU_ONLINE and
-> CPU_DOWN_PREPARE are processed on the hotplugged CPU. Due to this
-> work_on_cpu() calls are no longer required.
->=20
-> Replace work_on_cpu() with a direct call of mips_cdmm_bus_up() or
-> mips_cdmm_bus_down(). Description of those functions are adapted.
->=20
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: linux-mips@linux-mips.org
-> Signed-off-by: Anna-Maria Gleixner <anna-maria@linutronix.de>
 
-Thanks, looks reasonable to me,
-Acked-by: James Hogan <james.hogan@imgtec.com>
+On 05/05/2016 03:16 PM, Aurelien Jarno wrote:
+> On 2016-05-05 14:40, David Daney wrote:
+>> On 05/05/2016 02:33 PM, Aurelien Jarno wrote:
+>>> The initramfs if loaded in memory by U-Boot running in big endian mode.
+>>> When the kernel is running in little endian mode, we need to byteswap it
+>>> as it is accessed byte by byte.
+>>
+>> Ouch!
+>>
+>> Really it should be fixed in the bootloader, but that probably won't happen.
+>
+> How would you see that fixed in the bootloader? I doubt it's difficult
+> to autodetect that, as the initramfs is basically loaded in memory
+> first, and later only the address and size are passed on the kernel
+> command line using the rd_start= and rd_size= options.
+>
+> The other alternative would be to provide reversed endian fatload,
+> ext2load, ext4load, ... versions. Or maybe a better alternative would be
+> a function to byteswap a memory area, it could be inserted in a bootcmd
+> between the load and the bootoctlinux.
 
-Cheers,
-James
+The easiest thing might be to byteswap it before u-boot ever gets 
+involved, and leave the kernel alone.
 
-> ---
-> Changes in v2:
-> 	- Adapt referenced commit in commit message
->=20
->  drivers/bus/mips_cdmm.c |   12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
->=20
-> --- a/drivers/bus/mips_cdmm.c
-> +++ b/drivers/bus/mips_cdmm.c
-> @@ -599,8 +599,8 @@ BUILD_PERDEV_HELPER(cpu_up)         /* i
->   * mips_cdmm_bus_down() - Tear down the CDMM bus.
->   * @data:	Pointer to unsigned int CPU number.
->   *
-> - * This work_on_cpu callback function is executed on a given CPU to call=
- the
-> - * CDMM driver cpu_down callback for all devices on that CPU.
-> + * This function is executed on the hotplugged CPU and calls the CDMM
-> + * driver cpu_down callback for all devices on that CPU.
->   */
->  static long mips_cdmm_bus_down(void *data)
->  {
-> @@ -630,7 +630,9 @@ static long mips_cdmm_bus_down(void *dat
->   * CDMM devices on that CPU, or to call the CDMM driver cpu_up callback =
-for all
->   * devices already discovered on that CPU.
->   *
-> - * It is used during initialisation and when CPUs are brought online.
-> + * It is used as work_on_cpu callback function during
-> + * initialisation. When CPUs are brought online the function is
-> + * invoked directly on the hotplugged CPU.
->   */
->  static long mips_cdmm_bus_up(void *data)
->  {
-> @@ -677,10 +679,10 @@ static int mips_cdmm_cpu_notify(struct n
->  	switch (action & ~CPU_TASKS_FROZEN) {
->  	case CPU_ONLINE:
->  	case CPU_DOWN_FAILED:
-> -		work_on_cpu(cpu, mips_cdmm_bus_up, &cpu);
-> +		mips_cdmm_bus_up(&cpu);
->  		break;
->  	case CPU_DOWN_PREPARE:
-> -		work_on_cpu(cpu, mips_cdmm_bus_down, &cpu);
-> +		mips_cdmm_bus_down(&cpu);
->  		break;
->  	default:
->  		return NOTIFY_DONE;
->=20
+>
+>> I wonder, is there a magic number that the initrd has?  If so, we could
+>> probe for a byteswapped initrd and not do the byte reversal unconditionally.
+>
+> There is a magic number... after it has been uncompressed. The magics
+> for the compressed version are defined in lib/decompress.c. Maybe we can
+> call decompress_method() from the finalize_initrd with the first 8 bytes
+> byteswapped and check for the result.
 
---zhXaljGHf11kAtnf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+I guess you could look for magic numbers of the supported compression 
+protocols (gzip, xz, etc), but that could be error prone.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+I don't really object to the original patch, but was just trying to 
+consider alternatives.
 
-iQIcBAEBCAAGBQJXK8HoAAoJEGwLaZPeOHZ6a6wQALRVK6fpbcIXrOCngzj5eWI5
-aOVGVjUSPT/ArjguOJjwSRj2hI7hbLoqDPCUXYPAsbt7dWiWl6Il+mRZfWzcSH68
-7BDZeAkhjX6d+oXbJ4WJtSVMxTIFJeMwylRxMtUhIwzf/tEpLHO9krGS/MIfOg/d
-k9HQU2hiNSABJOEL4AEXzFjYC5Uc85zxj6ZvDJp7KRWRniu221pPn1/pTLKPYFWi
-VYHQdBgprJhwjmSSlbD5URggjs+ZahvExhS47bRhzi0tcopAmOPbO/J5zpU+kwUh
-lJq3XjvngRcEbDfomXOa8GXK9Yk8ZEoE5OFx56dTc1CW0s8ol/5ptTwfglvxhGyT
-aQDVVSaf1fA7Ey2n2SQmg/N8Ju1g7s5ewoc9kchry8x6cMVMFSv4423bD1naeX5P
-DXyypH/TdHSorU+YoG8PVFychkOe058Ug2Vwjfcff27Wol3ZdqzCkGiNIfWj/bhr
-oyxB798pNOSlebFRZz9bAZVKmcCCqcEy6WmgnfgMlc6hrOIt7yBOocdV76ZHdf0d
-GDA8+6EKqnRd31wDT7sCcPQUK9huwwNkOM/9osNDYChsN8foDeOSggsEzJscttDq
-lzQin/MqigHyeFTWiNKkOiW1dXniZVmwscxfSM6Ea6PB01oZiR4eUgHNt9WJ17xG
-6cSVkMCa64iFqftAC7jd
-=6TBg
------END PGP SIGNATURE-----
 
---zhXaljGHf11kAtnf--
+>
+>> The logic seems correct, we need to byte swap each 8-byte aligned 8-byte
+>> word in the image.
+>>
+>>>
+>>> Cc: David Daney <david.daney@cavium.com>
+>>> Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+>>> ---
+>>>   arch/mips/kernel/setup.c | 10 ++++++++++
+>>>   1 file changed, 10 insertions(+)
+>>>
+>>> Note: It might not be the best place to byteswap the initramfs not the
+>>> best way to do it. At least it shows the problem and what shoudl be done.
+>>> Suggestions to improve the patch are welcome.
+>>>
+>>> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+>>> index 4f60734..e7d015e 100644
+>>> --- a/arch/mips/kernel/setup.c
+>>> +++ b/arch/mips/kernel/setup.c
+>>> @@ -263,6 +263,16 @@ static void __init finalize_initrd(void)
+>>>   		goto disable;
+>>>   	}
+>>>
+>>> +#if defined(CONFIG_CPU_CAVIUM_OCTEON) && defined(CONFIG_CPU_LITTLE_ENDIAN)
+>>> +	{
+>>> +		unsigned long i;
+>>> +		pr_info("Cavium Octeon kernel in little endian mode "
+>>> +			"detected, byteswapping ramdisk\n");
+>>> +		for (i = initrd_start; i < ALIGN(initrd_end, 8); i += 8)
+>>> +			*((unsigned long *)i) = swab64(*((unsigned long *)i));
+>>> +	}
+>>> +#endif
+>>> +
+>>>   	reserve_bootmem(__pa(initrd_start), size, BOOTMEM_DEFAULT);
+>>>   	initrd_below_start_ok = 1;
+>>>
+>>>
+>>
+>>
+>

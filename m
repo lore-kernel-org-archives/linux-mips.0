@@ -1,19 +1,14 @@
-Received: from mail-bn1on0096.outbound.protection.outlook.com ([157.56.110.96]:21472
-        "EHLO na01-bn1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27028096AbcEEWxv2pDkb (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 6 May 2016 00:53:51 +0200
-Subject: Re: [PATCH] MIPS: Octeon: byteswap initramfs in little endian mode
-References: <1462484017-29988-1-git-send-email-aurelien@aurel32.net>
- <572BBDB8.8000300@caviumnetworks.com> <20160505221649.GA29979@aurel32.net>
-From: David Daney <ddaney@caviumnetworks.com>
-Message-ID: <572BCECE.7040600@caviumnetworks.com>
-Date: Thu, 5 May 2016 15:53:02 -0700
+Received: from mailapp01.imgtec.com ([195.59.15.196]:11295 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27028035AbcEFMfa2bk2G (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 6 May 2016 14:35:30 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: Implement __arch_bitrev* using bitswap for MIPSr6
+Date: Fri, 6 May 2016 13:35:03 +0100
+Message-ID: <1462538103-6633-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20160505221649.GA29979@aurel32.net>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@caviumnetworks.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,88 +18,72 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>
-Message-ID: <20160505225302.7D65P1Jw5i4a9BLN7x2cfjRUCMg9zPurAtPGuvLhqLA@z>
+To: linux-mips@linux-mips.org
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20160506123503.LH2lHnL1SxHgNDmfmJNEmsFboQN-s9heJUpcnlY3V7I@z>
 
+Release 6 of the MIPS architecture introduced the bitswap instruction,
+which reverses the bits within each byte of a word. Make use of this
+instruction to implement the __arch_bitrev* functions, which should be
+faster for most MIPSr6 CPUs, reduces code size slightly and allows us to
+avoid the lookup table used by the generic implementation, saving 256
+bytes in the kernel binary by dropping that.
 
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+---
 
-On 05/05/2016 03:16 PM, Aurelien Jarno wrote:
-> On 2016-05-05 14:40, David Daney wrote:
->> On 05/05/2016 02:33 PM, Aurelien Jarno wrote:
->>> The initramfs if loaded in memory by U-Boot running in big endian mode.
->>> When the kernel is running in little endian mode, we need to byteswap it
->>> as it is accessed byte by byte.
->>
->> Ouch!
->>
->> Really it should be fixed in the bootloader, but that probably won't happen.
->
-> How would you see that fixed in the bootloader? I doubt it's difficult
-> to autodetect that, as the initramfs is basically loaded in memory
-> first, and later only the address and size are passed on the kernel
-> command line using the rd_start= and rd_size= options.
->
-> The other alternative would be to provide reversed endian fatload,
-> ext2load, ext4load, ... versions. Or maybe a better alternative would be
-> a function to byteswap a memory area, it could be inserted in a bootcmd
-> between the load and the bootoctlinux.
+ arch/mips/Kconfig              |  1 +
+ arch/mips/include/asm/bitrev.h | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 31 insertions(+)
+ create mode 100644 arch/mips/include/asm/bitrev.h
 
-The easiest thing might be to byteswap it before u-boot ever gets 
-involved, and leave the kernel alone.
-
->
->> I wonder, is there a magic number that the initrd has?  If so, we could
->> probe for a byteswapped initrd and not do the byte reversal unconditionally.
->
-> There is a magic number... after it has been uncompressed. The magics
-> for the compressed version are defined in lib/decompress.c. Maybe we can
-> call decompress_method() from the finalize_initrd with the first 8 bytes
-> byteswapped and check for the result.
-
-I guess you could look for magic numbers of the supported compression 
-protocols (gzip, xz, etc), but that could be error prone.
-
-I don't really object to the original patch, but was just trying to 
-consider alternatives.
-
-
->
->> The logic seems correct, we need to byte swap each 8-byte aligned 8-byte
->> word in the image.
->>
->>>
->>> Cc: David Daney <david.daney@cavium.com>
->>> Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
->>> ---
->>>   arch/mips/kernel/setup.c | 10 ++++++++++
->>>   1 file changed, 10 insertions(+)
->>>
->>> Note: It might not be the best place to byteswap the initramfs not the
->>> best way to do it. At least it shows the problem and what shoudl be done.
->>> Suggestions to improve the patch are welcome.
->>>
->>> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
->>> index 4f60734..e7d015e 100644
->>> --- a/arch/mips/kernel/setup.c
->>> +++ b/arch/mips/kernel/setup.c
->>> @@ -263,6 +263,16 @@ static void __init finalize_initrd(void)
->>>   		goto disable;
->>>   	}
->>>
->>> +#if defined(CONFIG_CPU_CAVIUM_OCTEON) && defined(CONFIG_CPU_LITTLE_ENDIAN)
->>> +	{
->>> +		unsigned long i;
->>> +		pr_info("Cavium Octeon kernel in little endian mode "
->>> +			"detected, byteswapping ramdisk\n");
->>> +		for (i = initrd_start; i < ALIGN(initrd_end, 8); i += 8)
->>> +			*((unsigned long *)i) = swab64(*((unsigned long *)i));
->>> +	}
->>> +#endif
->>> +
->>>   	reserve_bootmem(__pa(initrd_start), size, BOOTMEM_DEFAULT);
->>>   	initrd_below_start_ok = 1;
->>>
->>>
->>
->>
->
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index dd2b372..5b8fd2e 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2046,6 +2046,7 @@ config CPU_MIPSR2
+ config CPU_MIPSR6
+ 	bool
+ 	default y if CPU_MIPS32_R6 || CPU_MIPS64_R6
++	select HAVE_ARCH_BITREVERSE
+ 	select MIPS_ASID_BITS_VARIABLE
+ 	select MIPS_SPRAM
+ 
+diff --git a/arch/mips/include/asm/bitrev.h b/arch/mips/include/asm/bitrev.h
+new file mode 100644
+index 0000000..bc739a4
+--- /dev/null
++++ b/arch/mips/include/asm/bitrev.h
+@@ -0,0 +1,30 @@
++#ifndef __MIPS_ASM_BITREV_H__
++#define __MIPS_ASM_BITREV_H__
++
++#include <linux/swab.h>
++
++static __always_inline __attribute_const__ u32 __arch_bitrev32(u32 x)
++{
++	u32 ret;
++
++	asm("bitswap	%0, %1" : "=r"(ret) : "r"(__swab32(x)));
++	return ret;
++}
++
++static __always_inline __attribute_const__ u16 __arch_bitrev16(u16 x)
++{
++	u16 ret;
++
++	asm("bitswap	%0, %1" : "=r"(ret) : "r"(__swab16(x)));
++	return ret;
++}
++
++static __always_inline __attribute_const__ u8 __arch_bitrev8(u8 x)
++{
++	u8 ret;
++
++	asm("bitswap	%0, %1" : "=r"(ret) : "r"(x));
++	return ret;
++}
++
++#endif /* __MIPS_ASM_BITREV_H__ */
+-- 
+2.8.2

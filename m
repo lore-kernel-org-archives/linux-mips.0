@@ -1,21 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:5108 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27028415AbcEJPem3JIXj (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 10 May 2016 17:34:42 +0200
-Date: Tue, 10 May 2016 16:34:35 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH 2/5] MIPS: Add defs & probing of 64-bit CP0_EBase
-Message-ID: <20160510153435.GJ23699@jhogan-linux.le.imgtec.org>
-References: <1461937563-13199-1-git-send-email-james.hogan@imgtec.com>
- <1461937563-13199-3-git-send-email-james.hogan@imgtec.com>
- <20160510100209.GB12554@jhogan-linux.le.imgtec.org>
- <20160510102406.GF16402@linux-mips.org>
+Received: from mail-bl2on0098.outbound.protection.outlook.com ([65.55.169.98]:58656
+        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S27028799AbcEJX05DmzeB (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 11 May 2016 01:26:57 +0200
+Subject: Re: [PATCH v2] MIPS: Octeon: detect and fix byte swapped initramfs
+References: <1462920603-17512-1-git-send-email-aurelien@aurel32.net>
+From: David Daney <ddaney@caviumnetworks.com>
+Message-ID: <57326E36.6060708@caviumnetworks.com>
+Date: Tue, 10 May 2016 16:26:46 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="/qIPZgKzMPM+y5U5"
-Content-Disposition: inline
-In-Reply-To: <20160510102406.GF16402@linux-mips.org>
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <1462920603-17512-1-git-send-email-aurelien@aurel32.net>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,59 +22,89 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <Matt.Redfearn@imgtec.com>
-Message-ID: <20160510153435.GXwpiuQLtjAhdCW96xjiEVwWmK8cOumL3E1vkccVjjA@z>
+To: Aurelien Jarno <aurelien@aurel32.net>, linux-mips@linux-mips.org
+Cc: Ralf Baechle <ralf@linux-mips.org>, David Daney <david.daney@cavium.com>
+Message-ID: <20160510232646.T6BfI6WylIu6V4-TQe5YkR6U4vhDo7q-v9FnCkEEiOE@z>
 
---/qIPZgKzMPM+y5U5
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 05/10/2016 03:50 PM, Aurelien Jarno wrote:
+> Octeon machines support running in little endian mode. U-Boot usually
+> runs in big endian-mode. Therefore the initramfs is loaded in big endian
+> mode, and the kernel later tries to access it in little endian mode.
+>
+> This patch fixes that by detecting byte swapped initramfs using either the
+> CPIO header or the header from standard compression methods, and
+> byte swaps it if needed. It first checks that the header doesn't match
+> in the native endianness to avoid false detections. It uses the kernel
+> decompress library so that we don't have to maintain the list of magics
+> if some decompression methods are added to the kernel.
+>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: David Daney <david.daney@cavium.com>
+> Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
 
-On Tue, May 10, 2016 at 12:24:06PM +0200, Ralf Baechle wrote:
-> On Tue, May 10, 2016 at 11:02:09AM +0100, James Hogan wrote:
->=20
-> > On Fri, Apr 29, 2016 at 02:46:00PM +0100, James Hogan wrote:
-> > > MIPS64r2 and later cores may optionally have a 64-bit CP0_EBase
-> > > register, with a write gate (WG) bit to allow the upper half to be
-> > > written. The presence of this feature will need to be known about for=
- VZ
-> > > support in order to correctly save and restore the guest CP0_EBase
-> > > register, so add CPU feature definitions and probing for this
-> > > capability.
-> >=20
-> > Okay, so it turns out EBase.WG can be present on MIPS32 too, to allow
-> > writing of bits 31:30 (thanks Matt!), so this needs a little more
-> > thought.
->=20
-> So drop the series for now or do you want to patch it up later?
+I haven't tested it, but this looks good to me:
 
-Yes, please drop it. I'll submit a v2 which probes for WG instead (i.e.
-detects it on MIPS32 too).
+Acked-by: David Daney <david.daney@cavium.com>
 
-Thanks
-James
-
---/qIPZgKzMPM+y5U5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJXMf+LAAoJEGwLaZPeOHZ6yIQP/1OUynuniMpTI77R6tJ5kQgw
-8+NsLQx3ITHtdeLqJAcAp82h9lo0HwQ66i0aCUrIpEL5qrfzmM3EDk94SzKFCUln
-PPvOUws/ZhsJ84x70hWLSH5TBf2jpG23nT8O6GiQV7y3xgtHQvv07c/nVsMoLLFU
-Kii+JJsXYbRFohJFQ9UHDIje/RBDDWz12ZA6EkcVt1imkRykMO4/VRWU1otwiGtU
-a3lUUJdsxKSzkn25rHqcjbLyTJCciL4LmYEMm7+mPxTTttRTpMV3Kn5Y7rcQt84l
-L9Qto/G+gdeeHW+RAmKNgLn4GYbNRm2s+MH1mVayIVmQUW9ntEnaQiOCtSBg+1WH
-vd7XqEQ0mCoOOWAsrNspyHqzEd/BnRAA5DvOY6n4Dsptwfsu5/nVO3sDMHjuhVeB
-B3wVDa+0PzMkzwwbbm6sl1lSuuW5L1pCZe05wUiX9qU0EbTo0RyZVJd44uhJYboI
-gL168+xavyH2cJY6ch0xxEMGHkPc0V4UUGDAvO8LYcI7vhzp+s3DonA5ogiulmWN
-NsC8aUwgr++0Ib2klJQuU7Jyigix0TjuMvk5Ozo4c8YeXCHyw+pjtIR9c8UNJdSl
-28fnFaUIFetEROXFl2+6UTtyGtQAdW/jtleKeDvP4GZ8nfVa+srmvV8KryGLgu9L
-2YwZXhvRA/J5VDHj9Kyv
-=m6JZ
------END PGP SIGNATURE-----
-
---/qIPZgKzMPM+y5U5--
+> ---
+>   arch/mips/kernel/setup.c | 32 ++++++++++++++++++++++++++++++++
+>   1 file changed, 32 insertions(+)
+>
+> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+> index 4f60734..8841d7982 100644
+> --- a/arch/mips/kernel/setup.c
+> +++ b/arch/mips/kernel/setup.c
+> @@ -26,6 +26,7 @@
+>   #include <linux/sizes.h>
+>   #include <linux/device.h>
+>   #include <linux/dma-contiguous.h>
+> +#include <linux/decompress/generic.h>
+>
+>   #include <asm/addrspace.h>
+>   #include <asm/bootinfo.h>
+> @@ -250,6 +251,35 @@ disable:
+>   	return 0;
+>   }
+>
+> +/* In some conditions (e.g. big endian bootloader with a little endian
+> +   kernel), the initrd might appear byte swapped.  Try to detect this and
+> +   byte swap it if needed.  */
+> +static void __init maybe_bswap_initrd(void)
+> +{
+> +#if defined(CONFIG_CPU_CAVIUM_OCTEON)
+> +	u64 buf;
+> +
+> +	/* Check for CPIO signature */
+> +	if (!memcmp((void *)initrd_start, "070701", 6))
+> +		return;
+> +
+> +	/* Check for compressed initrd */
+> +	if (decompress_method((unsigned char *)initrd_start, 8, NULL))
+> +		return;
+> +
+> +	/* Try again with a byte swapped header */
+> +	buf = swab64p((u64 *)initrd_start);
+> +	if (!memcmp(&buf, "070701", 6) ||
+> +	    decompress_method((unsigned char *)(&buf), 8, NULL)) {
+> +		unsigned long i;
+> +
+> +		pr_info("Byteswapped initrd detected\n");
+> +		for (i = initrd_start; i < ALIGN(initrd_end, 8); i += 8)
+> +			swab64s((u64 *)i);
+> +	}
+> +#endif
+> +}
+> +
+>   static void __init finalize_initrd(void)
+>   {
+>   	unsigned long size = initrd_end - initrd_start;
+> @@ -263,6 +293,8 @@ static void __init finalize_initrd(void)
+>   		goto disable;
+>   	}
+>
+> +	maybe_bswap_initrd();
+> +
+>   	reserve_bootmem(__pa(initrd_start), size, BOOTMEM_DEFAULT);
+>   	initrd_below_start_ok = 1;
+>
+>

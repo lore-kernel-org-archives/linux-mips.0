@@ -1,18 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:54780 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:5108 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27028613AbcEJKCSRxm8l (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 10 May 2016 12:02:18 +0200
-Date: Tue, 10 May 2016 11:02:09 +0100
+        by eddie.linux-mips.org with ESMTP id S27028415AbcEJPem3JIXj (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 10 May 2016 17:34:42 +0200
+Date: Tue, 10 May 2016 16:34:35 +0100
 From: James Hogan <james.hogan@imgtec.com>
 Subject: Re: [PATCH 2/5] MIPS: Add defs & probing of 64-bit CP0_EBase
-Message-ID: <20160510100209.GB12554@jhogan-linux.le.imgtec.org>
+Message-ID: <20160510153435.GJ23699@jhogan-linux.le.imgtec.org>
 References: <1461937563-13199-1-git-send-email-james.hogan@imgtec.com>
  <1461937563-13199-3-git-send-email-james.hogan@imgtec.com>
+ <20160510100209.GB12554@jhogan-linux.le.imgtec.org>
+ <20160510102406.GF16402@linux-mips.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="NDin8bjvE/0mNLFQ"
+        protocol="application/pgp-signature"; boundary="/qIPZgKzMPM+y5U5"
 Content-Disposition: inline
-In-Reply-To: <1461937563-13199-3-git-send-email-james.hogan@imgtec.com>
+In-Reply-To: <20160510102406.GF16402@linux-mips.org>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -25,172 +27,57 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org, Matt Redfearn <Matt.Redfearn@imgtec.com>
-Message-ID: <20160510100209._P9RKHMHY8kJzD_yymKGGQbso_JzwShe7brVVsSGMAo@z>
+Message-ID: <20160510153435.GXwpiuQLtjAhdCW96xjiEVwWmK8cOumL3E1vkccVjjA@z>
 
---NDin8bjvE/0mNLFQ
+--/qIPZgKzMPM+y5U5
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 29, 2016 at 02:46:00PM +0100, James Hogan wrote:
-> MIPS64r2 and later cores may optionally have a 64-bit CP0_EBase
-> register, with a write gate (WG) bit to allow the upper half to be
-> written. The presence of this feature will need to be known about for VZ
-> support in order to correctly save and restore the guest CP0_EBase
-> register, so add CPU feature definitions and probing for this
-> capability.
+On Tue, May 10, 2016 at 12:24:06PM +0200, Ralf Baechle wrote:
+> On Tue, May 10, 2016 at 11:02:09AM +0100, James Hogan wrote:
+>=20
+> > On Fri, Apr 29, 2016 at 02:46:00PM +0100, James Hogan wrote:
+> > > MIPS64r2 and later cores may optionally have a 64-bit CP0_EBase
+> > > register, with a write gate (WG) bit to allow the upper half to be
+> > > written. The presence of this feature will need to be known about for=
+ VZ
+> > > support in order to correctly save and restore the guest CP0_EBase
+> > > register, so add CPU feature definitions and probing for this
+> > > capability.
+> >=20
+> > Okay, so it turns out EBase.WG can be present on MIPS32 too, to allow
+> > writing of bits 31:30 (thanks Matt!), so this needs a little more
+> > thought.
+>=20
+> So drop the series for now or do you want to patch it up later?
 
-Okay, so it turns out EBase.WG can be present on MIPS32 too, to allow
-writing of bits 31:30 (thanks Matt!), so this needs a little more
-thought.
+Yes, please drop it. I'll submit a v2 which probes for WG instead (i.e.
+detects it on MIPS32 too).
 
-Cheers
+Thanks
 James
 
->=20
-> Probing the WG bit is a bit fiddly, since 64-bit COP0 register access
-> instructions were UNDEFINED for 32-bit registers prior to MIPS r6, and
-> it'd be nice to be able to probe without clobbering the existing state,
-> so there are 3 potential paths:
->=20
-> - If we do a 32-bit read of CP0_EBase and the WG bit is already set, the
->   register must be 64-bit.
->=20
-> - On MIPS r6 we can do a 64-bit read-modify-write to set CP0_EBase.WG,
->   since the upper bits will read 0 and be ignored on write if the
->   register is 32-bit.
->=20
-> - On pre-r6 cores, we do a 32-bit read-modify-write of CP0_EBase. This
->   avoids the potentially UNDEFINED behaviour, but will clobber the upper
->   32-bits of CP0_EBase if it isn't a simple sign extension (which also
->   requires us to ensure BEV=3D1 or modifying the exception base would be
->   UNDEFINED too). It is hopefully unlikely a bootloader would set up
->   CP0_EBase to a 64-bit segment and leave WG=3D0.
->=20
-> Signed-off-by: James Hogan <james.hogan@imgtec.com>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: linux-mips@linux-mips.org
-> ---
->  arch/mips/include/asm/cpu-features.h |  4 ++++
->  arch/mips/include/asm/cpu.h          |  1 +
->  arch/mips/include/asm/mipsregs.h     |  3 +++
->  arch/mips/kernel/cpu-probe.c         | 35 ++++++++++++++++++++++++++++++=
-+++++
->  4 files changed, 43 insertions(+)
->=20
-> diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm=
-/cpu-features.h
-> index da92d513a395..a3d3de8ab145 100644
-> --- a/arch/mips/include/asm/cpu-features.h
-> +++ b/arch/mips/include/asm/cpu-features.h
-> @@ -432,4 +432,8 @@
->  #define cpu_has_nan_2008	(cpu_data[0].options & MIPS_CPU_NAN_2008)
->  #endif
-> =20
-> +#ifndef cpu_has_ebase64
-> +# define cpu_has_ebase64	(cpu_data[0].options & MIPS_CPU_EBASE64)
-> +#endif
-> +
->  #endif /* __ASM_CPU_FEATURES_H */
-> diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-> index 79ce9ae0a3c7..11a7f78bb1f7 100644
-> --- a/arch/mips/include/asm/cpu.h
-> +++ b/arch/mips/include/asm/cpu.h
-> @@ -403,6 +403,7 @@ enum cpu_type_enum {
->  #define MIPS_CPU_NAN_2008	MBIT_ULL(39)	/* 2008 NaN implemented */
->  #define MIPS_CPU_VP		MBIT_ULL(40)	/* MIPSr6 Virtual Processors (multi-th=
-reading) */
->  #define MIPS_CPU_LDPTE		MBIT_ULL(41)	 /* CPU has ldpte/lddir instruction=
-s */
-> +#define MIPS_CPU_EBASE64	MBIT_ULL(42)	/* CPU has 64-bit EBase */
-> =20
->  /*
->   * CPU ASE encodings
-> diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mip=
-sregs.h
-> index 24904f1f6fe1..cc17f4886f00 100644
-> --- a/arch/mips/include/asm/mipsregs.h
-> +++ b/arch/mips/include/asm/mipsregs.h
-> @@ -1456,6 +1456,9 @@ do {									\
->  #define read_c0_ebase()		__read_32bit_c0_register($15, 1)
->  #define write_c0_ebase(val)	__write_32bit_c0_register($15, 1, val)
-> =20
-> +#define read_c0_ebase_64()	__read_64bit_c0_register($15, 1)
-> +#define write_c0_ebase_64(val)	__write_64bit_c0_register($15, 1, val)
-> +
->  #define read_c0_cdmmbase()	__read_ulong_c0_register($15, 2)
->  #define write_c0_cdmmbase(val)	__write_ulong_c0_register($15, 2, val)
-> =20
-> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-> index b766952afc5c..eb62c730b97f 100644
-> --- a/arch/mips/kernel/cpu-probe.c
-> +++ b/arch/mips/kernel/cpu-probe.c
-> @@ -845,6 +845,41 @@ static void decode_configs(struct cpuinfo_mips *c)
->  	if (ok)
->  		ok =3D decode_config5(c);
-> =20
-> +	/* Probe the size of the EBase register */
-> +	if (config_enabled(CONFIG_64BIT) && cpu_has_mips_r2_r6) {
-> +		unsigned long ebase;
-> +		unsigned int status;
-> +
-> +		/* {read,write}_c0_ebase_64() may be UNDEFINED prior to r6 */
-> +		ebase =3D cpu_has_mips64r6 ? read_c0_ebase_64()
-> +					 : (s32)read_c0_ebase();
-> +		if (ebase & MIPS_EBASE_WG) {
-> +			/* WG bit already set, we can avoid the clumsy probe */
-> +			c->options |=3D MIPS_CPU_EBASE64;
-> +		} else {
-> +			/* Its UNDEFINED to change EBase while BEV=3D0 */
-> +			status =3D read_c0_status();
-> +			write_c0_status(status | ST0_BEV);
-> +			irq_enable_hazard();
-> +			/*
-> +			 * On pre-r6 cores, this may well clobber the upper bits
-> +			 * of EBase. This is hard to avoid without potentially
-> +			 * hitting UNDEFINED dm*c0 behaviour if EBase is 32-bit.
-> +			 */
-> +			if (cpu_has_mips64r6)
-> +				write_c0_ebase_64(ebase | MIPS_EBASE_WG);
-> +			else
-> +				write_c0_ebase(ebase | MIPS_EBASE_WG);
-> +			back_to_back_c0_hazard();
-> +			/* Restore BEV */
-> +			write_c0_status(status);
-> +			if (read_c0_ebase() & MIPS_EBASE_WG) {
-> +				c->options |=3D MIPS_CPU_EBASE64;
-> +				write_c0_ebase(ebase);
-> +			}
-> +		}
-> +	}
-> +
->  	mips_probe_watch_registers(c);
-> =20
->  #ifndef CONFIG_MIPS_CPS
-> --=20
-> 2.4.10
->=20
-
---NDin8bjvE/0mNLFQ
+--/qIPZgKzMPM+y5U5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCAAGBQJXMbGhAAoJEGwLaZPeOHZ614sQAJcOcDtnixfr/nPirtF8xZiV
-Pilstfjs8oFBfk9p7L++lIHnRKFyv01MOrcL6nkD+174bAGNhHEjJoQeeSnKlPWi
-3IZe1ovitn2mS31Q9XvxQXx0TH3DFWArV4D29W+XeaDm2AODbbVc/zQeSN5CkEKH
-8JQjji/PC+ighXCEGMU+H6AQszQ6EF18Lc4h9lNqw1ZpnwHmDQoIdrEdWrVv0O3g
-w3hd/MYwZtYoG8a2HLkXiaSqhNOHpETDoqg5M+AiAzhm4U4twDiYYn180gLmgn7C
-FSQt2LviqEqGzGmrkjFlZULfQnz34lQrrD3Jns1/ZFoQpS051MM4XYf9yvtfUo4b
-arld5nrF8xULXcTVGnA4PBqtuoBa6vvtUV2B6mJ8UVDVJn/8TR0pCFjwbO3jYAEV
-mM/c2mwb/oNsvQznc0vWTvaG5TtYpZYiL9jUeD1mFCyZlhwGh1eaHPePOdR6D9Cb
-o1cuR0Hv2iGVnbM9SigeJoeF0QhM30tspvK7rBOd135hkKNg+n5C7g4ybVxShN38
-ZmmqtA9Yww6sjcIoYR0y0WiWwZwTlTMOtp0/gCZkRtUBF6A5yed1Tweq4Zl2BTWz
-RnkUGN5NoA9YABJdCVae8k3Kmovps6tPNJj0U+lIQnRM0aSgi4ED/k65fL5sHBA6
-EY8kj+8N77RymyoiLgno
-=vHQY
+iQIcBAEBCAAGBQJXMf+LAAoJEGwLaZPeOHZ6yIQP/1OUynuniMpTI77R6tJ5kQgw
+8+NsLQx3ITHtdeLqJAcAp82h9lo0HwQ66i0aCUrIpEL5qrfzmM3EDk94SzKFCUln
+PPvOUws/ZhsJ84x70hWLSH5TBf2jpG23nT8O6GiQV7y3xgtHQvv07c/nVsMoLLFU
+Kii+JJsXYbRFohJFQ9UHDIje/RBDDWz12ZA6EkcVt1imkRykMO4/VRWU1otwiGtU
+a3lUUJdsxKSzkn25rHqcjbLyTJCciL4LmYEMm7+mPxTTttRTpMV3Kn5Y7rcQt84l
+L9Qto/G+gdeeHW+RAmKNgLn4GYbNRm2s+MH1mVayIVmQUW9ntEnaQiOCtSBg+1WH
+vd7XqEQ0mCoOOWAsrNspyHqzEd/BnRAA5DvOY6n4Dsptwfsu5/nVO3sDMHjuhVeB
+B3wVDa+0PzMkzwwbbm6sl1lSuuW5L1pCZe05wUiX9qU0EbTo0RyZVJd44uhJYboI
+gL168+xavyH2cJY6ch0xxEMGHkPc0V4UUGDAvO8LYcI7vhzp+s3DonA5ogiulmWN
+NsC8aUwgr++0Ib2klJQuU7Jyigix0TjuMvk5Ozo4c8YeXCHyw+pjtIR9c8UNJdSl
+28fnFaUIFetEROXFl2+6UTtyGtQAdW/jtleKeDvP4GZ8nfVa+srmvV8KryGLgu9L
+2YwZXhvRA/J5VDHj9Kyv
+=m6JZ
 -----END PGP SIGNATURE-----
 
---NDin8bjvE/0mNLFQ--
+--/qIPZgKzMPM+y5U5--

@@ -1,18 +1,16 @@
-Received: from mail-bl2on0098.outbound.protection.outlook.com ([65.55.169.98]:58656
-        "EHLO na01-bl2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27028799AbcEJX05DmzeB (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 11 May 2016 01:26:57 +0200
-Subject: Re: [PATCH v2] MIPS: Octeon: detect and fix byte swapped initramfs
-References: <1462920603-17512-1-git-send-email-aurelien@aurel32.net>
-From: David Daney <ddaney@caviumnetworks.com>
-Message-ID: <57326E36.6060708@caviumnetworks.com>
-Date: Tue, 10 May 2016 16:26:46 -0700
+Received: from mailapp01.imgtec.com ([195.59.15.196]:27122 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27028949AbcEKMviSFGX2 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 11 May 2016 14:51:38 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH v2 2/5] MIPS: Add defs & probing of extended CP0_EBase
+Date: Wed, 11 May 2016 13:50:50 +0100
+Message-ID: <1462971053-25622-3-git-send-email-james.hogan@imgtec.com>
+In-Reply-To: <1462971053-25622-1-git-send-email-james.hogan@imgtec.com>
+References: <1462971053-25622-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <1462920603-17512-1-git-send-email-aurelien@aurel32.net>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@cavium.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,89 +20,141 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Aurelien Jarno <aurelien@aurel32.net>, linux-mips@linux-mips.org
-Cc: Ralf Baechle <ralf@linux-mips.org>, David Daney <david.daney@cavium.com>
-Message-ID: <20160510232646.T6BfI6WylIu6V4-TQe5YkR6U4vhDo7q-v9FnCkEEiOE@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, Matt Redfearn <matt.redfearn@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20160511125050.UjP6QUdvUqV7KsnzTR0RvAQs99U1GgJP5OCgwe5Yln0@z>
 
-On 05/10/2016 03:50 PM, Aurelien Jarno wrote:
-> Octeon machines support running in little endian mode. U-Boot usually
-> runs in big endian-mode. Therefore the initramfs is loaded in big endian
-> mode, and the kernel later tries to access it in little endian mode.
->
-> This patch fixes that by detecting byte swapped initramfs using either the
-> CPIO header or the header from standard compression methods, and
-> byte swaps it if needed. It first checks that the header doesn't match
-> in the native endianness to avoid false detections. It uses the kernel
-> decompress library so that we don't have to maintain the list of magics
-> if some decompression methods are added to the kernel.
->
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: David Daney <david.daney@cavium.com>
-> Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+The CP0_EBase register may optionally have a write gate (WG) bit to
+allow the upper bits to be written, i.e. bits 31:30 on MIPS32 since r3
+(to allow for an exception base outside of KSeg0/KSeg1 when segmentation
+control is in use) and bits 63:30 on MIPS64 (which also implies the
+extension of CP0_EBase to 64 bits long).
 
-I haven't tested it, but this looks good to me:
+The presence of this feature will need to be known about for VZ support
+in order to correctly save and restore all the bits of the guest
+CP0_EBase register, so add CPU feature definition and probing for this
+feature.
 
-Acked-by: David Daney <david.daney@cavium.com>
+Probing the WG bit on MIPS64 can be a bit fiddly, since 64-bit COP0
+register access instructions were UNDEFINED for 32-bit registers prior
+to MIPS r6, and it'd be nice to be able to probe without clobbering the
+existing state, so there are 3 potential paths:
 
-> ---
->   arch/mips/kernel/setup.c | 32 ++++++++++++++++++++++++++++++++
->   1 file changed, 32 insertions(+)
->
-> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-> index 4f60734..8841d7982 100644
-> --- a/arch/mips/kernel/setup.c
-> +++ b/arch/mips/kernel/setup.c
-> @@ -26,6 +26,7 @@
->   #include <linux/sizes.h>
->   #include <linux/device.h>
->   #include <linux/dma-contiguous.h>
-> +#include <linux/decompress/generic.h>
->
->   #include <asm/addrspace.h>
->   #include <asm/bootinfo.h>
-> @@ -250,6 +251,35 @@ disable:
->   	return 0;
->   }
->
-> +/* In some conditions (e.g. big endian bootloader with a little endian
-> +   kernel), the initrd might appear byte swapped.  Try to detect this and
-> +   byte swap it if needed.  */
-> +static void __init maybe_bswap_initrd(void)
-> +{
-> +#if defined(CONFIG_CPU_CAVIUM_OCTEON)
-> +	u64 buf;
-> +
-> +	/* Check for CPIO signature */
-> +	if (!memcmp((void *)initrd_start, "070701", 6))
-> +		return;
-> +
-> +	/* Check for compressed initrd */
-> +	if (decompress_method((unsigned char *)initrd_start, 8, NULL))
-> +		return;
-> +
-> +	/* Try again with a byte swapped header */
-> +	buf = swab64p((u64 *)initrd_start);
-> +	if (!memcmp(&buf, "070701", 6) ||
-> +	    decompress_method((unsigned char *)(&buf), 8, NULL)) {
-> +		unsigned long i;
-> +
-> +		pr_info("Byteswapped initrd detected\n");
-> +		for (i = initrd_start; i < ALIGN(initrd_end, 8); i += 8)
-> +			swab64s((u64 *)i);
-> +	}
-> +#endif
-> +}
-> +
->   static void __init finalize_initrd(void)
->   {
->   	unsigned long size = initrd_end - initrd_start;
-> @@ -263,6 +293,8 @@ static void __init finalize_initrd(void)
->   		goto disable;
->   	}
->
-> +	maybe_bswap_initrd();
-> +
->   	reserve_bootmem(__pa(initrd_start), size, BOOTMEM_DEFAULT);
->   	initrd_below_start_ok = 1;
->
->
+- If we do a 32-bit read of CP0_EBase and the WG bit is already set, the
+  register must be 64-bit.
+
+- On MIPS r6 we can do a 64-bit read-modify-write to set CP0_EBase.WG,
+  since the upper bits will read 0 and be ignored on write if the
+  register is 32-bit.
+
+- On pre-r6 cores, we do a 32-bit read-modify-write of CP0_EBase. This
+  avoids the potentially UNDEFINED behaviour, but will clobber the upper
+  32-bits of CP0_EBase if it isn't a simple sign extension (which also
+  requires us to ensure BEV=1 or modifying the exception base would be
+  UNDEFINED too). It is hopefully unlikely a bootloader would set up
+  CP0_EBase to a 64-bit segment and leave WG=0.
+
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Matt Redfearn <matt.redfearn@imgtec.com>
+Cc: linux-mips@linux-mips.org
+---
+Changes in v2:
+- Changed to handle MIPS32r3+, which can also have a WG bit to allow
+  bits 31:30 to be written. The feature provided is now just the
+  presence of the WG bit rather than the extension of CP0_EBase to
+  64-bits (which is implied if WG is present on MIPS64).
+---
+ arch/mips/include/asm/cpu-features.h |  4 ++++
+ arch/mips/include/asm/cpu.h          |  1 +
+ arch/mips/include/asm/mipsregs.h     |  3 +++
+ arch/mips/kernel/cpu-probe.c         | 35 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 43 insertions(+)
+
+diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
+index da92d513a395..3d82a4043e80 100644
+--- a/arch/mips/include/asm/cpu-features.h
++++ b/arch/mips/include/asm/cpu-features.h
+@@ -432,4 +432,8 @@
+ #define cpu_has_nan_2008	(cpu_data[0].options & MIPS_CPU_NAN_2008)
+ #endif
+ 
++#ifndef cpu_has_ebase_wg
++# define cpu_has_ebase_wg	(cpu_data[0].options & MIPS_CPU_EBASE_WG)
++#endif
++
+ #endif /* __ASM_CPU_FEATURES_H */
+diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+index 79ce9ae0a3c7..379beefefb5c 100644
+--- a/arch/mips/include/asm/cpu.h
++++ b/arch/mips/include/asm/cpu.h
+@@ -403,6 +403,7 @@ enum cpu_type_enum {
+ #define MIPS_CPU_NAN_2008	MBIT_ULL(39)	/* 2008 NaN implemented */
+ #define MIPS_CPU_VP		MBIT_ULL(40)	/* MIPSr6 Virtual Processors (multi-threading) */
+ #define MIPS_CPU_LDPTE		MBIT_ULL(41)	 /* CPU has ldpte/lddir instructions */
++#define MIPS_CPU_EBASE_WG	MBIT_ULL(42)	/* CPU has EBase.WG */
+ 
+ /*
+  * CPU ASE encodings
+diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+index 57d72f2bf745..4e8ad9d6038a 100644
+--- a/arch/mips/include/asm/mipsregs.h
++++ b/arch/mips/include/asm/mipsregs.h
+@@ -1458,6 +1458,9 @@ do {									\
+ #define read_c0_ebase()		__read_32bit_c0_register($15, 1)
+ #define write_c0_ebase(val)	__write_32bit_c0_register($15, 1, val)
+ 
++#define read_c0_ebase_64()	__read_64bit_c0_register($15, 1)
++#define write_c0_ebase_64(val)	__write_64bit_c0_register($15, 1, val)
++
+ #define read_c0_cdmmbase()	__read_ulong_c0_register($15, 2)
+ #define write_c0_cdmmbase(val)	__write_ulong_c0_register($15, 2, val)
+ 
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index a6ce1db191aa..c4795568c1f2 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -858,6 +858,41 @@ static void decode_configs(struct cpuinfo_mips *c)
+ 	if (ok)
+ 		ok = decode_config5(c);
+ 
++	/* Probe the EBase.WG bit */
++	if (cpu_has_mips_r2_r6) {
++		u64 ebase;
++		unsigned int status;
++
++		/* {read,write}_c0_ebase_64() may be UNDEFINED prior to r6 */
++		ebase = cpu_has_mips64r6 ? read_c0_ebase_64()
++					 : (s32)read_c0_ebase();
++		if (ebase & MIPS_EBASE_WG) {
++			/* WG bit already set, we can avoid the clumsy probe */
++			c->options |= MIPS_CPU_EBASE_WG;
++		} else {
++			/* Its UNDEFINED to change EBase while BEV=0 */
++			status = read_c0_status();
++			write_c0_status(status | ST0_BEV);
++			irq_enable_hazard();
++			/*
++			 * On pre-r6 cores, this may well clobber the upper bits
++			 * of EBase. This is hard to avoid without potentially
++			 * hitting UNDEFINED dm*c0 behaviour if EBase is 32-bit.
++			 */
++			if (cpu_has_mips64r6)
++				write_c0_ebase_64(ebase | MIPS_EBASE_WG);
++			else
++				write_c0_ebase(ebase | MIPS_EBASE_WG);
++			back_to_back_c0_hazard();
++			/* Restore BEV */
++			write_c0_status(status);
++			if (read_c0_ebase() & MIPS_EBASE_WG) {
++				c->options |= MIPS_CPU_EBASE_WG;
++				write_c0_ebase(ebase);
++			}
++		}
++	}
++
+ 	mips_probe_watch_registers(c);
+ 
+ #ifndef CONFIG_MIPS_CPS
+-- 
+2.4.10

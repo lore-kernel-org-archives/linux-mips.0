@@ -1,16 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:39561 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:23396 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27029027AbcEKOu6DqWpz (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 11 May 2016 16:50:58 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH v2 6/6] MIPS: Print GuestCtl1 on machine check exception
-Date: Wed, 11 May 2016 15:50:32 +0100
-Message-ID: <1462978232-10670-7-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <1462978232-10670-1-git-send-email-james.hogan@imgtec.com>
-References: <1462978232-10670-1-git-send-email-james.hogan@imgtec.com>
+        with ESMTP id S27029141AbcEKVQMjJ5oG (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 11 May 2016 23:16:12 +0200
+Date: Wed, 11 May 2016 22:15:51 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH 00/12] TLB/XPA fixes & cleanups
+In-Reply-To: <57338536.9040209@gmail.com>
+Message-ID: <alpine.DEB.2.00.1605112159010.6794@tp.orcam.me.uk>
+References: <1460716620-13382-1-git-send-email-paul.burton@imgtec.com> <20160510124426.GG16402@linux-mips.org> <57321EC4.5030301@gmail.com> <20160511100335.GA14397@linux-mips.org> <57338536.9040209@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,35 +20,40 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20160511145032.PDYZEqQNq5Pw6itUvj5prIZB59o0ncmpy-qU3Yd6W3U@z>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org, James Hogan <james.hogan@imgtec.com>, Adam Buchbinder <adam.buchbinder@gmail.com>, Joshua Kinard <kumba@gentoo.org>, Huacai Chen <chenhc@lemote.com>, "Maciej W. Rozycki" <macro@linux-mips.org>, Paul Gortmaker <paul.gortmaker@windriver.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, "Peter
+ Zijlstra (Intel)" <peterz@infradead.org>, David Hildenbrand <dahi@linux.vnet.ibm.com>, Andrew Morton <akpm@linux-foundation.org>, David Daney <david.daney@cavium.com>, Jonas Gorski <jogo@openwrt.org>, Markos Chandras <markos.chandras@imgtec.com>, Ingo Molnar <mingo@kernel.org>, Alex Smith <alex.smith@imgtec.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Message-ID: <20160511211551.OIVd_hFPVN7V4ZGBR-_MaIh7wt3Qxz9TfeY_5vN-6hU@z>
 
-The GuestCtl1 CP0 register can contain the GuestID used for root TLB
-operations, which affects TLB matching. The other TLB registers are
-already dumped out to the log on a machine check exception due to
-multiple matching TLB entries, so also dump the value of the GuestCtl1
-register if GuestIDs are supported.
+On Wed, 11 May 2016, Florian Fainelli wrote:
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
----
- arch/mips/lib/dump_tlb.c | 2 ++
- 1 file changed, 2 insertions(+)
+> >>> Applied - but "MIPS: Separate XPA CPU feature into LPA and MVH" causes
+> >>> a massive conflict with Florian's RIXI patches
+> >>>
+> >>>   [3/6] MIPS: Allow RIXI to be used on non-R2 or R6 core
+> >>>   [4/6] MIPS: Move RIXI exception enabling after vendor-specific cpu_probe
+> >>>   [5/6] MIPS: BMIPS: BMIPS4380 and BMIPS5000 support RIXI
+> >>>
+> >>> I figured unapplying those three, applying Paul's series then re-applying
+> >>> Florian's patch on top of the whole series will be the easier path as in
+> >>> leaving me with the smaller rejects to manage.
+> >>
+> >> Did you already push that to mips-for-linux-next? I can give it a quick
+> >> spin once you do so.
+> > 
+> > I just pushed a tree with everything applied.  HEAD of tree is
+> > 22702a86997c5aed2e479bfe0b24d10d66b09604 dated May 11 11:58:06; a version
+> > from earlier today was broken.
+> 
+> Boot tested on BMIPS5000 (BCM7425):
+> 
+> Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 
-diff --git a/arch/mips/lib/dump_tlb.c b/arch/mips/lib/dump_tlb.c
-index 2cb10dba8838..0f80b936e75e 100644
---- a/arch/mips/lib/dump_tlb.c
-+++ b/arch/mips/lib/dump_tlb.c
-@@ -19,6 +19,8 @@ void dump_tlb_regs(void)
- 
- 	pr_info("Index    : %0x\n", read_c0_index());
- 	pr_info("PageMask : %0x\n", read_c0_pagemask());
-+	if (cpu_has_guestid)
-+		pr_info("GuestCtl1: %0x\n", read_c0_guestctl1());
- 	pr_info("EntryHi  : %0*lx\n", field, read_c0_entryhi());
- 	pr_info("EntryLo0 : %0*lx\n", field, read_c0_entrylo0());
- 	pr_info("EntryLo1 : %0*lx\n", field, read_c0_entrylo1());
--- 
-2.4.10
+ NB it's not that the RIXI feature first appeared only with the MIPS32r2 
+ISA.  It was introduced with the SmartMIPS ASE as a part of the original 
+MIPS32r1 ISA.  And similarly there's no separate RIXI config register bit 
+provided for MIPS32r1 SmartMIPS processors, the presence of the feature is 
+implied solely by the Config3.SM (SmartMIPS) bit, so your implementation 
+looks like the right direction to me.  Thanks for your contribution!
+
+  Maciej

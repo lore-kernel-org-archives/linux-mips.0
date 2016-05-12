@@ -1,16 +1,20 @@
-Received: from mga11.intel.com ([192.55.52.93]:32170 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S27029294AbcELLqEI5wUn (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 12 May 2016 13:46:04 +0200
-From: Felipe Balbi <felipe.balbi@linux.intel.com>
-Subject: Re: [PATCH] usb: dwc2: fix regression on big-endian PowerPC/ARM systems
-In-Reply-To: <2809110.sWekaCNVxS@wuerfel>
-References: <1463050104-2788693-1-git-send-email-arnd@arndb.de> <8760ujecw2.fsf@linux.intel.com> <2809110.sWekaCNVxS@wuerfel>
-Date: Thu, 12 May 2016 14:43:43 +0300
-Message-ID: <87y47fcxhs.fsf@linux.intel.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:5414 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27006153AbcELPzxwR530 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 12 May 2016 17:55:53 +0200
+Date: Thu, 12 May 2016 16:55:47 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH v2 3/6] MIPS: Add guest CP0 accessors
+Message-ID: <20160512155547.GP23699@jhogan-linux.le.imgtec.org>
+References: <1462978232-10670-1-git-send-email-james.hogan@imgtec.com>
+ <1462978232-10670-4-git-send-email-james.hogan@imgtec.com>
+ <5733CB17.9000904@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <felipe.balbi@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="pvq4FPIYehQuVelz"
+Content-Disposition: inline
+In-Reply-To: <5733CB17.9000904@gmail.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,68 +24,71 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Arnd Bergmann <arnd@arndb.de>, John Youn <johnyoun@synopsys.com>
-Cc: Christian Lamparter <chunkeey@googlemail.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linux-mips@linux-mips.org, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, a.seppala@gmail.com, linuxppc-dev@lists.ozlabs.org, Douglas Anderson <dianders@chromium.org>, Gregory Herrero <gregory.herrero@intel.com>, Mian Yousaf Kaukab <yousaf.kaukab@intel.com>, Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <20160512114343.d1pC0h6T-TytWV1bFM_Rx2DBREdmpbVJ93knarTYi38@z>
+To: David Daney <ddaney.cavm@gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20160512155547.eFg2OKowAD7pP4HSVwNG1tRCzhnPfz_lEs0DiFRUMw8@z>
 
+--pvq4FPIYehQuVelz
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Wed, May 11, 2016 at 05:15:19PM -0700, David Daney wrote:
+> On 05/11/2016 07:50 AM, James Hogan wrote:
+> > Add guest CP0 accessors and guest TLB operations along the same lines as
+> > the existing macros and functions for the root CP0.
+> >
+> > Signed-off-by: James Hogan <james.hogan@imgtec.com>
+> > Cc: Ralf Baechle <ralf@linux-mips.org>
+> > Cc: linux-mips@linux-mips.org
+>=20
+> Not tested, but this looks correct.
+>=20
+> We are tying ourselves to binutils versions that understand the "virt"=20
+> instructions, but that is probably OK.
+>=20
+> Acked-by: David Daney <david.daney@cavium.com>
 
-(Arnd, you didn't Cc dwc2's maintainer. I'm also not part of TI anymore)
+Thanks for taking a look David,
 
-Arnd Bergmann <arnd@arndb.de> writes:
-> On Thursday 12 May 2016 14:25:49 Felipe Balbi wrote:
->> >  {
->> >       u32 value = __raw_readl(addr);
->> >  
->> > -     /* In order to preserve endianness __raw_* operation is used. Therefore
->> > -      * a barrier is needed to ensure IO access is not re-ordered across
->> > +     /* in order to preserve endianness __raw_* operation is used. therefore
->> > +      * a barrier is needed to ensure io access is not re-ordered across
->> >        * reads or writes
->> >        */
->> >       mb();
->> > @@ -81,15 +93,32 @@ static inline void dwc2_writel(u32 value, void __iomem *addr)
->> >       __raw_writel(value, addr);
->> >  
->> >       /*
->> > -      * In order to preserve endianness __raw_* operation is used. Therefore
->> > -      * a barrier is needed to ensure IO access is not re-ordered across
->> > +      * in order to preserve endianness __raw_* operation is used. therefore
->> > +      * a barrier is needed to ensure io access is not re-ordered across
->> >        * reads or writes
->> >        */
->> >       mb();
->> > -#ifdef DWC2_LOG_WRITES
->> > -     pr_info("INFO:: wrote %08x to %p\n", value, addr);
->> > +#ifdef dwc2_log_writes
->> > +     pr_info("info:: wrote %08x to %p\n", value, addr);
->> >  #endif
->> >  }
->> > +#else
->
-> Oops, the accidental lowercase conversion is still in here, I'll fix it
-> up once we agree on the approach.
->
->> I still think this is something that should be handled at MIPS side, no ?
->
-> As I explained, there isn't really anything we can do in MIPS code
-> because of the way they have to handle PCI.
->
->> How many more drivers will we have to 'fix' like this ?
->
-> Endianess problems will keep coming up, and we have hundreds or thousands
-> of drivers that are written with a particular design in mind that could
-> be wrong as soon as someone chooses to build an SoC that does things
-> differently. Once that happens, we'll fix them.
->
-> Also, Christian has already posted a better version of the patch
-> that fixes this driver in an architecture independent way, but we still
-> need a workaround for the stable backports.
+Yes, i think its supported since binutils 2.24, which is now over 2
+years old.
 
-hmmm, at least dwc3 (also from SNPS) has a couple bits where we can
-choose endianess for registers and DMA descriptors. John, do we have the
-same for dwc2 ? Wouldn't that be a better way to solve the problem ?
+What's the policy regarding binutils support for this sort of thing? I
+know we have hacks for assemblers that don't support MSA yet, but was
+hoping to avoid that sort of thing if possible here.
 
--- 
-balbi
+Cheers
+James
+
+>=20
+> > ---
+> >   arch/mips/include/asm/mipsregs.h | 341 ++++++++++++++++++++++++++++++=
++++++++--
+> >   1 file changed, 330 insertions(+), 11 deletions(-)
+> >
+> [...]
+
+--pvq4FPIYehQuVelz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJXNKeDAAoJEGwLaZPeOHZ6ofQQAJa5jQy6W0O2ul6xT4+Ked2Y
+Z0ZWsIwtik57nbocJhZ3mSRjyw9YuCWog2jJLbWnYBP1JWTiZC5ZPKf7uJkL4RRo
+g3xTBXOuBbeE5FkGcdv03j2+1PXFHdl61EtMiA3Xs7vW3MXWNRHjzkL+1mG6OxCI
+h8YVqKls/R5CF5DPb6nDw2Yrf6HexMwgOuLHHAiSaPfXJpZoupup+R1v/PuBvrVs
+J0ygG5gQWo1Krk+neopW8TB/7zXhDLmvG21ECmvujRNtugCZ2zXijNRInPxkja4a
+Mq8sJ/QZ3676mwmolMFqMjwbz5EqrxFLR03R0cfYduLiR/MeKhCS4qeUUQkZ8NR7
+UkLuemwLTD3FX443mJkkAADClV9RpDyZIpjqGb3OPnzymsiG3Lg8deLfa2ZOarWk
+PFyERnil2gG6lqirGbBW1I79XIgv+VsV0hWuy1gEIrxhv0ANDqFCiTU4ZsBBkXs9
+x8ylo9+o1lkUf7x+9clvgzeeACfNU7j+wqOPD7oZUQJhN72zE2RKKlVnPnDzbaEH
+j2tw9Zt39FD/Xm6gTpz+CbsMUkcS+qQvznewVU8E9XPp4h/Kmkw9b9dToWD2B3/n
+YeP9Gml/eA6KkWOhtTpfPjB0Jtg21LLlO3kHy3q8jYvv/lZjE0eceUj+0KjqxLhi
+8f9HCNZijwrmSMyipfVb
+=M/Ep
+-----END PGP SIGNATURE-----
+
+--pvq4FPIYehQuVelz--

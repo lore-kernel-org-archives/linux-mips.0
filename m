@@ -1,13 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:55703 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:7772 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27029187AbcELBK4Rvcbb (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 12 May 2016 03:10:56 +0200
-Date: Thu, 12 May 2016 02:10:41 +0100
+        with ESMTP id S27028152AbcELBcRSujEE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 12 May 2016 03:32:17 +0200
+Date: Thu, 12 May 2016 02:32:00 +0100
 From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH v2 2/5] MIPS: Add defs & probing of extended CP0_EBase
-In-Reply-To: <1462971053-25622-3-git-send-email-james.hogan@imgtec.com>
-Message-ID: <alpine.DEB.2.00.1605120115470.6794@tp.orcam.me.uk>
-References: <1462971053-25622-1-git-send-email-james.hogan@imgtec.com> <1462971053-25622-3-git-send-email-james.hogan@imgtec.com>
+Subject: Re: [PATCH] MIPS: tools: Ignore relocation tool
+In-Reply-To: <1462994177-6460-1-git-send-email-f.fainelli@gmail.com>
+Message-ID: <alpine.DEB.2.00.1605120218540.6794@tp.orcam.me.uk>
+References: <1462994177-6460-1-git-send-email-f.fainelli@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <Maciej.Rozycki@imgtec.com>
@@ -20,63 +20,15 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Matt Redfearn <matt.redfearn@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20160512011041.u-5IIxj3vv5ZTwfjdZDVh0zQZHsqwha9c5qiJ3UeAKI@z>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, matt.redfearn@imgtec.com
+Message-ID: <20160512013200.3E9NWKjrted1M7-ytBy4EgakDL1nHghYPuV-K6gCXQY@z>
 
-Hi James,
+On Wed, 11 May 2016, Florian Fainelli wrote:
 
-> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-> index a6ce1db191aa..c4795568c1f2 100644
-> --- a/arch/mips/kernel/cpu-probe.c
-> +++ b/arch/mips/kernel/cpu-probe.c
-> @@ -858,6 +858,41 @@ static void decode_configs(struct cpuinfo_mips *c)
->  	if (ok)
->  		ok = decode_config5(c);
->  
-> +	/* Probe the EBase.WG bit */
-> +	if (cpu_has_mips_r2_r6) {
-> +		u64 ebase;
-> +		unsigned int status;
-> +
-> +		/* {read,write}_c0_ebase_64() may be UNDEFINED prior to r6 */
-> +		ebase = cpu_has_mips64r6 ? read_c0_ebase_64()
-> +					 : (s32)read_c0_ebase();
-> +		if (ebase & MIPS_EBASE_WG) {
-> +			/* WG bit already set, we can avoid the clumsy probe */
-> +			c->options |= MIPS_CPU_EBASE_WG;
+> Add a .gitignore ignoring arch/mips/boot/tools/relocs.
 
- You may additionally check for bits 31:30 != 0b10 as a satisfactory 
-condition for WG's presence, under the assumption that 0b10 is not very 
-likely if a truly 64-bit exception base has been loaded.  E.g.:
-
-#define MIPS_EBASE_SEG_MASK (3 << 30)
-		s32 mask;
-
-		/* Avoid the clumsy probe if contents indicate 64 bits.  */
-		mask = MIPS_EBASE_SEG_MASK | MIPS_CPU_EBASE_WG;
-		if ((ebase & mask) != CKSEG0) {
-			c->options |= MIPS_CPU_EBASE_WG;
-
-or so.
-
- NB I find the current description of EBase questionable to say the least.  
-This statement:
-
-"The addition of the base address and the exception offset is performed 
-inhibiting a carry between bits 29 and 30 of the final exception address." 
-
-is repeated twice as if a leftover from the days before WG support.  I 
-think this needs to be clarified in the case of bits 31:30 != 0b10.  Also 
-I think the effect on the Cache Error exception vector in this case has to 
-be better specified.  Can you please raise it with the architecture 
-documentation maintainers?
-
- Also the description of DMFC0 is inconsistent with the corresponding 
-pseudo code.  As from r6.04 of the instruction set document the pseudo 
-code has been updated to take into account the R6 semantics for 32-bit 
-registers you rely on here, however the description still claims such 
-operation is UNDEFINED.  Can you please raise it with the architecture 
-documentation maintainers as well?
+ It's also left behind after `make distclean' so looks like it's missing a 
+clean-up rule or one hasn't been properly wired.
 
   Maciej

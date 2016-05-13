@@ -1,16 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:14919 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27028474AbcEMGVzS51JL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 13 May 2016 08:21:55 +0200
-Date: Fri, 13 May 2016 07:21:40 +0100
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: [PATCH 3/3] MIPS: ELF: Unify ABI classification macros
-In-Reply-To: <alpine.DEB.2.00.1605121036270.6794@tp.orcam.me.uk>
-Message-ID: <alpine.DEB.2.00.1605130357500.6794@tp.orcam.me.uk>
-References: <alpine.DEB.2.00.1605121036270.6794@tp.orcam.me.uk>
+Received: from exsmtp03.microchip.com ([198.175.253.49]:52034 "EHLO
+        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27028494AbcEMHyjtTzZ0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 13 May 2016 09:54:39 +0200
+From: Purna Chandra Mandal <purna.mandal@microchip.com>
+Subject: [PATCH v11 0/3] PIC32MZDA Clock Driver
+Date: Fri, 13 May 2016 13:22:38 +0530
+Message-ID: <1463125961-10706-1-git-send-email-purna.mandal@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Purna.Mandal@microchip.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,188 +18,42 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20160513062140.DNT9l1_Eo-9XJsqO0IM4i9zKn7lGfBPjexyJPITp318@z>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, linux-clk@vger.kernel.org, Purna Chandra Mandal <purna.mandal@microchip.com>, devicetree@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Kumar Gala <galak@codeaurora.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Herring <robh+dt@kernel.org>, Joshua Henderson <joshua.henderson@microchip.com>, Pawel Moll <pawel.moll@arm.com>, Sandeep Sheriker <sandeepsheriker.mallikarjun@microchip.com>, Mark Rutland <mark.rutland@arm.com>
+Message-ID: <20160513075238.X1ha1uhD3zyuLW0gan1h3maK5dXXqCUcJlBymgkLSt0@z>
 
-Remove a duplicate o32 `elf_check_arch' implementation, move all macro 
-variants to <asm/elf.h> and define them unconditionally under indvidual 
-names, substituting alias `elf_check_arch' definitions in variant code.
+Clock bindings got acked and then essentially unacked, while the clock
+driver never made it upstream. In the meantime, the initial DTS file
+made it upstream. This latest patch series includes a patch to go back
+and correct the DTS files to reflect the new clock bindings in this
+patch series.
 
-Signed-off-by: Maciej W. Rozycki <macro@imgtec.com>
----
-linux-mips-elf-check-arch.diff
-Index: linux-sfr-test/arch/mips/include/asm/elf.h
-===================================================================
---- linux-sfr-test.orig/arch/mips/include/asm/elf.h	2016-05-12 19:24:09.000000000 +0100
-+++ linux-sfr-test/arch/mips/include/asm/elf.h	2016-05-13 02:47:23.868157000 +0100
-@@ -214,25 +214,7 @@ typedef elf_fpreg_t elf_fpregset_t[ELF_N
- /*
-  * This is used to ensure we don't load something for the wrong architecture.
-  */
--#define elf_check_arch(hdr)						\
--({									\
--	int __res = 1;							\
--	struct elfhdr *__h = (hdr);					\
--									\
--	if (!mips_elf_check_machine(__h))				\
--		__res = 0;						\
--	if (__h->e_ident[EI_CLASS] != ELFCLASS32)			\
--		__res = 0;						\
--	if ((__h->e_flags & EF_MIPS_ABI2) != 0)				\
--		__res = 0;						\
--	if (((__h->e_flags & EF_MIPS_ABI) != 0) &&			\
--	    ((__h->e_flags & EF_MIPS_ABI) != EF_MIPS_ABI_O32))		\
--		__res = 0;						\
--	if (__h->e_flags & __MIPS_O32_FP64_MUST_BE_ZERO)		\
--		__res = 0;						\
--									\
--	__res;								\
--})
-+#define elf_check_arch elfo32_check_arch
- 
- /*
-  * These are used to set parameters in the core dumps.
-@@ -245,18 +227,7 @@ typedef elf_fpreg_t elf_fpregset_t[ELF_N
- /*
-  * This is used to ensure we don't load something for the wrong architecture.
-  */
--#define elf_check_arch(hdr)						\
--({									\
--	int __res = 1;							\
--	struct elfhdr *__h = (hdr);					\
--									\
--	if (!mips_elf_check_machine(__h))				\
--		__res = 0;						\
--	if (__h->e_ident[EI_CLASS] != ELFCLASS64)			\
--		__res = 0;						\
--									\
--	__res;								\
--})
-+#define elf_check_arch elfn64_check_arch
- 
- /*
-  * These are used to set parameters in the core dumps.
-@@ -294,6 +265,64 @@ typedef elf_fpreg_t elf_fpregset_t[ELF_N
- #define vmcore_elf32_check_arch mips_elf_check_machine
- #define vmcore_elf64_check_arch mips_elf_check_machine
- 
-+/*
-+ * Return non-zero if HDR identifies an o32 ELF binary.
-+ */
-+#define elfo32_check_arch(hdr)						\
-+({									\
-+	int __res = 1;							\
-+	struct elfhdr *__h = (hdr);					\
-+									\
-+	if (!mips_elf_check_machine(__h))				\
-+		__res = 0;						\
-+	if (__h->e_ident[EI_CLASS] != ELFCLASS32)			\
-+		__res = 0;						\
-+	if ((__h->e_flags & EF_MIPS_ABI2) != 0)				\
-+		__res = 0;						\
-+	if (((__h->e_flags & EF_MIPS_ABI) != 0) &&			\
-+	    ((__h->e_flags & EF_MIPS_ABI) != EF_MIPS_ABI_O32))		\
-+		__res = 0;						\
-+	if (__h->e_flags & __MIPS_O32_FP64_MUST_BE_ZERO)		\
-+		__res = 0;						\
-+									\
-+	__res;								\
-+})
-+
-+/*
-+ * Return non-zero if HDR identifies an n64 ELF binary.
-+ */
-+#define elfn64_check_arch(hdr)						\
-+({									\
-+	int __res = 1;							\
-+	struct elfhdr *__h = (hdr);					\
-+									\
-+	if (!mips_elf_check_machine(__h))				\
-+		__res = 0;						\
-+	if (__h->e_ident[EI_CLASS] != ELFCLASS64)			\
-+		__res = 0;						\
-+									\
-+	__res;								\
-+})
-+
-+/*
-+ * Return non-zero if HDR identifies an n32 ELF binary.
-+ */
-+#define elfn32_check_arch(hdr)						\
-+({									\
-+	int __res = 1;							\
-+	struct elfhdr *__h = (hdr);					\
-+									\
-+	if (!mips_elf_check_machine(__h))				\
-+		__res = 0;						\
-+	if (__h->e_ident[EI_CLASS] != ELFCLASS32)			\
-+		__res = 0;						\
-+	if (((__h->e_flags & EF_MIPS_ABI2) == 0) ||			\
-+	    ((__h->e_flags & EF_MIPS_ABI) != 0))			\
-+		__res = 0;						\
-+									\
-+	__res;								\
-+})
-+
- struct mips_abi;
- 
- extern struct mips_abi mips_abi;
-Index: linux-sfr-test/arch/mips/kernel/binfmt_elfn32.c
-===================================================================
---- linux-sfr-test.orig/arch/mips/kernel/binfmt_elfn32.c	2016-05-13 02:48:27.667690000 +0100
-+++ linux-sfr-test/arch/mips/kernel/binfmt_elfn32.c	2016-05-13 02:37:06.394017000 +0100
-@@ -30,21 +30,7 @@ typedef elf_fpreg_t elf_fpregset_t[ELF_N
- /*
-  * This is used to ensure we don't load something for the wrong architecture.
-  */
--#define elf_check_arch(hdr)						\
--({									\
--	int __res = 1;							\
--	struct elfhdr *__h = (hdr);					\
--									\
--	if (!mips_elf_check_machine(__h))				\
--		__res = 0;						\
--	if (__h->e_ident[EI_CLASS] != ELFCLASS32)			\
--		__res = 0;						\
--	if (((__h->e_flags & EF_MIPS_ABI2) == 0) ||			\
--	    ((__h->e_flags & EF_MIPS_ABI) != 0))			\
--		__res = 0;						\
--									\
--	__res;								\
--})
-+#define elf_check_arch elfn32_check_arch
- 
- #define TASK32_SIZE		0x7fff8000UL
- #undef ELF_ET_DYN_BASE
-Index: linux-sfr-test/arch/mips/kernel/binfmt_elfo32.c
-===================================================================
---- linux-sfr-test.orig/arch/mips/kernel/binfmt_elfo32.c	2016-05-12 19:24:09.000000000 +0100
-+++ linux-sfr-test/arch/mips/kernel/binfmt_elfo32.c	2016-05-13 02:36:37.589772000 +0100
-@@ -30,25 +30,7 @@ typedef elf_fpreg_t elf_fpregset_t[ELF_N
- /*
-  * This is used to ensure we don't load something for the wrong architecture.
-  */
--#define elf_check_arch(hdr)						\
--({									\
--	int __res = 1;							\
--	struct elfhdr *__h = (hdr);					\
--									\
--	if (!mips_elf_check_machine(__h))				\
--		__res = 0;						\
--	if (__h->e_ident[EI_CLASS] != ELFCLASS32)			\
--		__res = 0;						\
--	if ((__h->e_flags & EF_MIPS_ABI2) != 0)				\
--		__res = 0;						\
--	if (((__h->e_flags & EF_MIPS_ABI) != 0) &&			\
--	    ((__h->e_flags & EF_MIPS_ABI) != EF_MIPS_ABI_O32))		\
--		__res = 0;						\
--	if (__h->e_flags & __MIPS_O32_FP64_MUST_BE_ZERO)		\
--		__res = 0;						\
--									\
--	__res;								\
--})
-+#define elf_check_arch elfo32_check_arch
- 
- #ifdef CONFIG_KVM_GUEST
- #define TASK32_SIZE		0x3fff8000UL
+Note: Please pull this complete series through the MIPS tree.
+
+Purna Chandra Mandal (3):
+  dt/bindings/clk: Add PIC32 clock binding documentation.
+  clk: microchip: Add Microchip PIC32 clock driver.
+  MIPS: dts: pic32: Update dts to reflect new PIC32MZDA clk binding
+
+ .../devicetree/bindings/clock/microchip,pic32.txt  |   39 +
+ arch/mips/boot/dts/pic32/pic32mzda-clk.dtsi        |  236 -----
+ arch/mips/boot/dts/pic32/pic32mzda.dtsi            |   63 +-
+ arch/mips/boot/dts/pic32/pic32mzda_sk.dts          |    5 +-
+ drivers/clk/Kconfig                                |    3 +
+ drivers/clk/Makefile                               |    1 +
+ drivers/clk/microchip/Makefile                     |    2 +
+ drivers/clk/microchip/clk-core.c                   | 1031 ++++++++++++++++++++
+ drivers/clk/microchip/clk-core.h                   |   84 ++
+ drivers/clk/microchip/clk-pic32mzda.c              |  275 ++++++
+ include/dt-bindings/clock/microchip,pic32-clock.h  |   42 +
+ 11 files changed, 1522 insertions(+), 259 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/microchip,pic32.txt
+ delete mode 100644 arch/mips/boot/dts/pic32/pic32mzda-clk.dtsi
+ create mode 100644 drivers/clk/microchip/Makefile
+ create mode 100644 drivers/clk/microchip/clk-core.c
+ create mode 100644 drivers/clk/microchip/clk-core.h
+ create mode 100644 drivers/clk/microchip/clk-pic32mzda.c
+ create mode 100644 include/dt-bindings/clock/microchip,pic32-clock.h
+
+-- 
+1.8.3.1

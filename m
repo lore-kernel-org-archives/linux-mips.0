@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:46302 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27029297AbcEPSctrV2J5 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 16 May 2016 20:32:49 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: perf: Fix I6400 event numbers
-Date: Mon, 16 May 2016 19:32:35 +0100
-Message-ID: <1463423555-5184-1-git-send-email-james.hogan@imgtec.com>
+Received: from exsmtp01.microchip.com ([198.175.253.37]:21924 "EHLO
+        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27029438AbcEQFH7vYwV6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 17 May 2016 07:07:59 +0200
+From: Purna Chandra Mandal <purna.mandal@microchip.com>
+Subject: [PATCH 01/11] clk: microchip: use readl_poll_timeout() in pbclk_set_rate().
+Date: Tue, 17 May 2016 10:35:50 +0530
+Message-ID: <1463461560-9629-1-git-send-email-purna.mandal@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <Purna.Mandal@microchip.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,106 +18,39 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20160516183235.iaLDoY87ECCJqlsYbHIj_XigmsBSa8hsUv2eX8TnmNo@z>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Purna Chandra Mandal <purna.mandal@microchip.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, linux-clk@vger.kernel.org
+Message-ID: <20160517050550.ejkOl1JUxSaecr1YtknHrXwlkkVcxk0DZtxjmjTA8kM@z>
 
-Fix perf hardware performance counter event numbers for I6400. This core
-does not follow the performance event numbering scheme of previous MIPS
-cores. All performance counters (both odd and even) are capable of
-counting any of the available events.
+pbclk_set_rate() is using readl_poll_timeout_atomic() even
+though spinlock is released. Fix it by replacing with
+readl_poll_timeout().
 
-Fixes: 4e88a8621301 ("MIPS: Add cases for CPU_I6400")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: linux-mips@linux-mips.org
-Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Purna Chandra Mandal <purna.mandal@microchip.com>
 ---
- arch/mips/kernel/perf_event_mipsxx.c | 54 ++++++++++++++++++++++++++++++++++--
- 1 file changed, 52 insertions(+), 2 deletions(-)
+Note: Please pull this complete series through the MIPS tree.
 
-diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
-index 9bc1191b1ab0..d1d17d99a830 100644
---- a/arch/mips/kernel/perf_event_mipsxx.c
-+++ b/arch/mips/kernel/perf_event_mipsxx.c
-@@ -825,6 +825,16 @@ static const struct mips_perf_event mipsxxcore_event_map2
- 	[PERF_COUNT_HW_BRANCH_MISSES] = { 0x27, CNTR_ODD, T },
- };
+---
+
+ drivers/clk/microchip/clk-core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/clk/microchip/clk-core.c b/drivers/clk/microchip/clk-core.c
+index ca85cea..c3b3014 100644
+--- a/drivers/clk/microchip/clk-core.c
++++ b/drivers/clk/microchip/clk-core.c
+@@ -199,9 +199,9 @@ static int pbclk_set_rate(struct clk_hw *hw, unsigned long rate,
  
-+static const struct mips_perf_event i6400_event_map[PERF_COUNT_HW_MAX] = {
-+	[PERF_COUNT_HW_CPU_CYCLES]          = { 0x00, CNTR_EVEN | CNTR_ODD },
-+	[PERF_COUNT_HW_INSTRUCTIONS]        = { 0x01, CNTR_EVEN | CNTR_ODD },
-+	/* These only count dcache, not icache */
-+	[PERF_COUNT_HW_CACHE_REFERENCES]    = { 0x45, CNTR_EVEN | CNTR_ODD },
-+	[PERF_COUNT_HW_CACHE_MISSES]        = { 0x48, CNTR_EVEN | CNTR_ODD },
-+	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS] = { 0x15, CNTR_EVEN | CNTR_ODD },
-+	[PERF_COUNT_HW_BRANCH_MISSES]       = { 0x16, CNTR_EVEN | CNTR_ODD },
-+};
-+
- static const struct mips_perf_event loongson3_event_map[PERF_COUNT_HW_MAX] = {
- 	[PERF_COUNT_HW_CPU_CYCLES] = { 0x00, CNTR_EVEN },
- 	[PERF_COUNT_HW_INSTRUCTIONS] = { 0x00, CNTR_ODD },
-@@ -1015,6 +1025,46 @@ static const struct mips_perf_event mipsxxcore_cache_map2
- },
- };
+ 	spin_unlock_irqrestore(&pb->core->reg_lock, flags);
  
-+static const struct mips_perf_event i6400_cache_map
-+				[PERF_COUNT_HW_CACHE_MAX]
-+				[PERF_COUNT_HW_CACHE_OP_MAX]
-+				[PERF_COUNT_HW_CACHE_RESULT_MAX] = {
-+[C(L1D)] = {
-+	[C(OP_READ)] = {
-+		[C(RESULT_ACCESS)]	= { 0x46, CNTR_EVEN | CNTR_ODD },
-+		[C(RESULT_MISS)]	= { 0x49, CNTR_EVEN | CNTR_ODD },
-+	},
-+	[C(OP_WRITE)] = {
-+		[C(RESULT_ACCESS)]	= { 0x47, CNTR_EVEN | CNTR_ODD },
-+		[C(RESULT_MISS)]	= { 0x4a, CNTR_EVEN | CNTR_ODD },
-+	},
-+},
-+[C(L1I)] = {
-+	[C(OP_READ)] = {
-+		[C(RESULT_ACCESS)]	= { 0x84, CNTR_EVEN | CNTR_ODD },
-+		[C(RESULT_MISS)]	= { 0x85, CNTR_EVEN | CNTR_ODD },
-+	},
-+},
-+[C(DTLB)] = {
-+	/* Can't distinguish read & write */
-+	[C(OP_READ)] = {
-+		[C(RESULT_ACCESS)]	= { 0x40, CNTR_EVEN | CNTR_ODD },
-+		[C(RESULT_MISS)]	= { 0x41, CNTR_EVEN | CNTR_ODD },
-+	},
-+	[C(OP_WRITE)] = {
-+		[C(RESULT_ACCESS)]	= { 0x40, CNTR_EVEN | CNTR_ODD },
-+		[C(RESULT_MISS)]	= { 0x41, CNTR_EVEN | CNTR_ODD },
-+	},
-+},
-+[C(BPU)] = {
-+	/* Conditional branches / mispredicted */
-+	[C(OP_READ)] = {
-+		[C(RESULT_ACCESS)]	= { 0x15, CNTR_EVEN | CNTR_ODD },
-+		[C(RESULT_MISS)]	= { 0x16, CNTR_EVEN | CNTR_ODD },
-+	},
-+},
-+};
-+
- static const struct mips_perf_event loongson3_cache_map
- 				[PERF_COUNT_HW_CACHE_MAX]
- 				[PERF_COUNT_HW_CACHE_OP_MAX]
-@@ -1720,8 +1770,8 @@ init_hw_perf_events(void)
- 		break;
- 	case CPU_I6400:
- 		mipspmu.name = "mips/I6400";
--		mipspmu.general_event_map = &mipsxxcore_event_map2;
--		mipspmu.cache_event_map = &mipsxxcore_cache_map2;
-+		mipspmu.general_event_map = &i6400_event_map;
-+		mipspmu.cache_event_map = &i6400_cache_map;
- 		break;
- 	case CPU_1004K:
- 		mipspmu.name = "mips/1004K";
+-	/* wait again, for pbdivready */
+-	err = readl_poll_timeout_atomic(pb->ctrl_reg, v, v & PB_DIV_READY,
+-					1, LOCK_TIMEOUT_US);
++	/* wait again for DIV_READY */
++	err = readl_poll_timeout(pb->ctrl_reg, v, v & PB_DIV_READY,
++				 1, LOCK_TIMEOUT_US);
+ 	if (err)
+ 		return err;
+ 
 -- 
-2.4.10
+1.8.3.1

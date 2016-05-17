@@ -1,16 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:19852 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:46202 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27029683AbcEQO4nWIqoo (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 17 May 2016 16:56:43 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2 2/2] MIPS: Error out if unsupported compact branch policy is set
-Date: Tue, 17 May 2016 15:55:54 +0100
-Message-ID: <1463496954-24713-2-git-send-email-paul.burton@imgtec.com>
-In-Reply-To: <1463496954-24713-1-git-send-email-paul.burton@imgtec.com>
-References: <1463496954-24713-1-git-send-email-paul.burton@imgtec.com>
+        with ESMTP id S27029381AbcEQXJBvFQCp (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 18 May 2016 01:09:01 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH] MIPS: Fix incomplete separation of XPA CPU feature
+Date: Wed, 18 May 2016 00:08:49 +0100
+Message-ID: <1463526529-4087-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,47 +19,49 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: "Maciej W . Rozycki" <Maciej.Rozycki@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, "stable # v4 . 4+" <stable@vger.kernel.org>, linux-kernel@vger.kernel.org
-Message-ID: <20160517145554.YHF1Win8DFFUFB5ZqfI2f7pVBDYHTvRfqD1iw2Q6Tp8@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20160517230849.GaZsw2tLIhIL-PcgXvnXKxrvkchUvxIcgU8Pxi_aCG4@z>
 
-If an explicit compact branch policy is requested by the user via the
-debug options in Kconfig, and the toolchain does not support specifying
-an explicit compact branch policy, then error out with an understandable
-error message to make it clearer what's happened.
+Commit 12822570a29b ("MIPS: Separate XPA CPU feature into LPA and MVH")
+wasn't fully applied, possibly due to a conflict with commit
+f270d881fa55 ("MIPS: Detect MIPSr6 Virtual Processor support"). This
+left decode_config5() referring to the non-existent MIPS_CPU_XPA, which
+breaks the build when XPA is enabled:
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Fixes: c1a0e9bc885d ("MIPS: Allow compact branch policy to be changed")
-Cc: stable <stable@vger.kernel.org> # v4.4+
+arch/mips/kernel/cpu-probe.c In function ‘decode_config5’:
+arch/mips/kernel/cpu-probe.c:838:17: error: ‘MIPS_CPU_XPA’ undeclared (first use in this function)
+   c->options |= MIPS_CPU_XPA;
+                    ^
 
+Apply the missing hunk, dropping the CONFIG_XPA ifdef and setting the
+MIPS_CPU_MVH option when Config5.MVH is set.
+
+Fixes: 12822570a29b ("MIPS: Separate XPA CPU feature into LPA and MVH")
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: linux-mips@linux-mips.org
+Patchwork: https://patchwork.linux-mips.org/patch/13112/
 ---
+ arch/mips/kernel/cpu-probe.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Changes in v2:
-- New patch.
-
- arch/mips/Makefile | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index e78d60d..1ac4612 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -194,9 +194,13 @@ toolchain-msa				:= $(call cc-option-yn,$(mips-cflags) -mhard-float -mfp64 -Wa$(
- cflags-$(toolchain-msa)			+= -DTOOLCHAIN_SUPPORTS_MSA
- endif
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index 5ac5c3e23460..a88d44247cc8 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -833,10 +833,8 @@ static inline unsigned int decode_config5(struct cpuinfo_mips *c)
+ 		c->options |= MIPS_CPU_MAAR;
+ 	if (config5 & MIPS_CONF5_LLB)
+ 		c->options |= MIPS_CPU_RW_LLB;
+-#ifdef CONFIG_XPA
+ 	if (config5 & MIPS_CONF5_MVH)
+-		c->options |= MIPS_CPU_XPA;
+-#endif
++		c->options |= MIPS_CPU_MVH;
+ 	if (cpu_has_mips_r6 && (config5 & MIPS_CONF5_VP))
+ 		c->options |= MIPS_CPU_VP;
  
--cflags-$(CONFIG_MIPS_COMPACT_BRANCHES_NEVER)	+= -mcompact-branches=never
--cflags-$(CONFIG_MIPS_COMPACT_BRANCHES_OPTIMAL)	+= -mcompact-branches=optimal
--cflags-$(CONFIG_MIPS_COMPACT_BRANCHES_ALWAYS)	+= -mcompact-branches=always
-+ifeq ($(call cc-option-yn,-mcompact-branches=optimal), y)
-+  cflags-$(CONFIG_MIPS_COMPACT_BRANCHES_NEVER)		+= -mcompact-branches=never
-+  cflags-$(CONFIG_MIPS_COMPACT_BRANCHES_OPTIMAL)	+= -mcompact-branches=optimal
-+  cflags-$(CONFIG_MIPS_COMPACT_BRANCHES_ALWAYS)		+= -mcompact-branches=always
-+else ifneq ($(CONFIG_MIPS_COMPACT_BRANCHES_DEFAULT),y)
-+  $(error Compact branch policy specified, but lacking toolchain support)
-+endif
- 
- #
- # Firmware support
 -- 
-2.8.2
+2.4.10

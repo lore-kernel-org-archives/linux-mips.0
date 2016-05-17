@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:53367 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:65080 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27029648AbcEQNocw6PVc (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 17 May 2016 15:44:32 +0200
-Date: Tue, 17 May 2016 14:44:19 +0100
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH] MIPS: MSA: Fix a link error on `_init_msa_upper' with
- older GCC
-In-Reply-To: <20160517131654.GI14481@linux-mips.org>
-Message-ID: <alpine.DEB.2.00.1605171440100.6794@tp.orcam.me.uk>
-References: <alpine.DEB.2.00.1605162325170.6794@tp.orcam.me.uk> <20160517131654.GI14481@linux-mips.org>
+        with ESMTP id S27006514AbcEQObadGkgo (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 17 May 2016 16:31:30 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH 0/3] External Interrupt Controller (EIC) fixes
+Date: Tue, 17 May 2016 15:31:03 +0100
+Message-ID: <1463495466-29689-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,18 +18,26 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20160517134419.OhhPGJ5IMlHBQu7TPoM0VZF0uOd88s6gUCX3_LRHjBc@z>
+To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Cc: Matt Redfearn <matt.redfearn@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Guenter Roeck <linux@roeck-us.net>, Qais Yousef <qais.yousef@imgtec.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Joe Perches <joe@perches.com>, James Hogan <james.hogan@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Marc Zyngier <marc.zyngier@arm.com>
+Message-ID: <20160517143103.7CxccPx3WiCZLzVA7aZIvmr_U5ImOw4feNQsG0_2ZJ8@z>
 
-On Tue, 17 May 2016, Ralf Baechle wrote:
+This series fixes a few small issues with support for External Interrupt
+Controllers (cpu_has_veic), ensuring that it is configured to service
+all interrupts by default & that when a GIC is present it's enabled when
+expected.
 
-> > --- a/vmlinux.dump	2016-05-17 01:01:03.655891000 +0100
-> > +++ b/vmlinux.dump	2016-05-17 02:11:49.264564000 +0100
-> 
-> Applied with this junk segment dropped.
+Applies atop v4.6.
 
- Ah, I didn't realise it would confuse `git am' -- otherwise I would have 
-escaped it or mangled somehow.  Thanks for taking care of it then.
+Paul Burton (3):
+  MIPS: Clear Status IPL field when using EIC
+  MIPS: smp-cps: Clear Status IPL field when using EIC
+  irqchip: mips-gic: Setup EIC mode on each CPU if it's in use
 
-  Maciej
+ arch/mips/kernel/irq.c         |  3 +++
+ arch/mips/kernel/smp-cps.c     |  8 ++++++--
+ drivers/irqchip/irq-mips-gic.c | 10 +++++++++-
+ 3 files changed, 18 insertions(+), 3 deletions(-)
+
+-- 
+2.8.2

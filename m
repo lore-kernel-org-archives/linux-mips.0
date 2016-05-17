@@ -1,11 +1,11 @@
-Received: from smtpout.microchip.com ([198.175.253.82]:15523 "EHLO
+Received: from exsmtp01.microchip.com ([198.175.253.37]:22124 "EHLO
         email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27029444AbcEQFIQWiU06 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 17 May 2016 07:08:16 +0200
+        by eddie.linux-mips.org with ESMTP id S27029446AbcEQFI3hQrA6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 17 May 2016 07:08:29 +0200
 From: Purna Chandra Mandal <purna.mandal@microchip.com>
-Subject: [PATCH 03/11] MIPS: pic32mzda: fix getting timer clock rate.
-Date: Tue, 17 May 2016 10:35:52 +0530
-Message-ID: <1463461560-9629-3-git-send-email-purna.mandal@microchip.com>
+Subject: [PATCH 04/11] irqchip: irq-pic32-evic: Fix bug with external interrupts.
+Date: Tue, 17 May 2016 10:35:53 +0530
+Message-ID: <1463461560-9629-4-git-send-email-purna.mandal@microchip.com>
 In-Reply-To: <1463461560-9629-1-git-send-email-purna.mandal@microchip.com>
 References: <1463461560-9629-1-git-send-email-purna.mandal@microchip.com>
 MIME-Version: 1.0
@@ -21,65 +21,33 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Purna Chandra Mandal <purna.mandal@microchip.com>, Joshua Henderson <digitalpeer@digitalpeer.com>, Joshua Henderson <joshua.henderson@microchip.com>
-Message-ID: <20160517050552.f8Uf_egGszhFgNtISl_q6q-qksphsYvFqGJO0I5t9MI@z>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Joshua Henderson <digitalpeer@digitalpeer.com>, Purna Chandra Mandal <purna.mandal@microchip.com>, Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <marc.zyngier@arm.com>
+Message-ID: <20160517050553.RITuna3lXpnQCOXobaUHgosEqm4yoRo5oWCgt4K6drQ@z>
 
-PIC32 clock driver is now implemented as platform driver instead of
-as part of of_clk_init(). It meants all the clock modules are available
-quite late in the boot sequence. So request for CPU clock by clk_get_sys()
-and clk_get_rate() to find c0_timer rate fails.
+From: Joshua Henderson <digitalpeer@digitalpeer.com>
 
-To fix this use PIC32 specific early clock functions implemented for early
-console support.
+The wrong external interrupt bits are being set, offset by 1.
 
+Signed-off-by: Joshua Henderson <digitalpeer@digitalpeer.com>
 Signed-off-by: Purna Chandra Mandal <purna.mandal@microchip.com>
 
 ---
-Note: Please pull this complete series through the MIPS tree.
 
----
+ drivers/irqchip/irq-pic32-evic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/mips/pic32/pic32mzda/time.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
-
-diff --git a/arch/mips/pic32/pic32mzda/time.c b/arch/mips/pic32/pic32mzda/time.c
-index ca6a62b..62a0a78 100644
---- a/arch/mips/pic32/pic32mzda/time.c
-+++ b/arch/mips/pic32/pic32mzda/time.c
-@@ -11,13 +11,12 @@
-  *  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-  *  for more details.
-  */
--#include <linux/clk.h>
- #include <linux/clk-provider.h>
- #include <linux/clocksource.h>
- #include <linux/init.h>
-+#include <linux/irqdomain.h>
- #include <linux/of.h>
- #include <linux/of_irq.h>
--#include <linux/irqdomain.h>
- 
- #include <asm/time.h>
- 
-@@ -58,16 +57,12 @@ unsigned int get_c0_compare_int(void)
- 
- void __init plat_time_init(void)
- {
--	struct clk *clk;
-+	unsigned long rate = pic32_get_pbclk(7);
- 
- 	of_clk_init(NULL);
--	clk = clk_get_sys("cpu_clk", NULL);
--	if (IS_ERR(clk))
--		panic("unable to get CPU clock, err=%ld", PTR_ERR(clk));
- 
--	clk_prepare_enable(clk);
--	pr_info("CPU Clock: %ldMHz\n", clk_get_rate(clk) / 1000000);
--	mips_hpt_frequency = clk_get_rate(clk) / 2;
-+	pr_info("CPU Clock: %ldMHz\n", rate / 1000000);
-+	mips_hpt_frequency = rate / 2;
- 
- 	clocksource_probe();
- }
+diff --git a/drivers/irqchip/irq-pic32-evic.c b/drivers/irqchip/irq-pic32-evic.c
+index e7155db..73addb4 100644
+--- a/drivers/irqchip/irq-pic32-evic.c
++++ b/drivers/irqchip/irq-pic32-evic.c
+@@ -91,7 +91,7 @@ static int pic32_set_type_edge(struct irq_data *data,
+ 	/* set polarity for external interrupts only */
+ 	for (i = 0; i < ARRAY_SIZE(priv->ext_irqs); i++) {
+ 		if (priv->ext_irqs[i] == data->hwirq) {
+-			ret = pic32_set_ext_polarity(i + 1, flow_type);
++			ret = pic32_set_ext_polarity(i, flow_type);
+ 			if (ret)
+ 				return ret;
+ 		}
 -- 
 1.8.3.1

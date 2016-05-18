@@ -1,18 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:59710 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:4887 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27029837AbcERGyPu-6HY (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 18 May 2016 08:54:15 +0200
-Subject: Re: [PATCH 3/3] irqchip: mips-gic: Setup EIC mode on each CPU if it's
- in use
-References: <1463495466-29689-1-git-send-email-paul.burton@imgtec.com>
- <1463495466-29689-4-git-send-email-paul.burton@imgtec.com>
+        with ESMTP id S27026667AbcEROqxMf5nY (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 18 May 2016 16:46:53 +0200
 From: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <573C1191.80707@imgtec.com>
-Date: Wed, 18 May 2016 07:54:09 +0100
+Subject: [PATCH 1/2] MIPS: Add definitions of SegCtl registers and use them
+Date: Wed, 18 May 2016 15:45:21 +0100
+Message-ID: <1463582722-31420-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <1463495466-29689-4-git-send-email-paul.burton@imgtec.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,55 +18,64 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Marc Zyngier <marc.zyngier@arm.com>, Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Message-ID: <20160518065409.fOzztBLAP-p5IqLnv0FBF_wU3Jlc9a-hZLqDmnBX0qQ@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Matt Redfearn <matt.redfearn@imgtec.com>, linux-mips@linux-mips.org, Joshua Kinard <kumba@gentoo.org>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Chris Packham <judge.packham@gmail.com>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20160518144521.4FUt3TeVzXw9gDKt66OXvQv3ygp9J2cZ7WWAeYU0LyM@z>
 
+The SegCtl registers are standard for MIPSr3..MIPSr5. Add definitions of
+these registers and use them rather than constants
 
+Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+---
 
-On 17/05/16 15:31, Paul Burton wrote:
-> When EIC mode is in use (cpu_has_veic is true) enable it on each CPU
-> during GIC initialisation. Otherwise there may be a mismatch between the
-> hardware default interrupt model & that expected by the kernel.
->
-> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-> ---
->
->   drivers/irqchip/irq-mips-gic.c | 10 +++++++++-
->   1 file changed, 9 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-> index 4dffccf..bc23c92 100644
-> --- a/drivers/irqchip/irq-mips-gic.c
-> +++ b/drivers/irqchip/irq-mips-gic.c
-> @@ -956,7 +956,7 @@ static void __init __gic_init(unsigned long gic_base_addr,
->   			      unsigned int cpu_vec, unsigned int irqbase,
->   			      struct device_node *node)
->   {
-> -	unsigned int gicconfig;
-> +	unsigned int gicconfig, cpu;
->   	unsigned int v[2];
->   
->   	__gic_base_addr = gic_base_addr;
-> @@ -973,6 +973,14 @@ static void __init __gic_init(unsigned long gic_base_addr,
->   	gic_vpes = gic_vpes + 1;
->   
->   	if (cpu_has_veic) {
-> +		/* Set EIC mode for all VPEs */
-> +		for_each_present_cpu(cpu) {
-> +			gic_write(GIC_REG(VPE_LOCAL, GIC_VPE_OTHER_ADDR),
-> +				  mips_cm_vp_id(cpu));
-> +			gic_write(GIC_REG(VPE_OTHER, GIC_VPE_CTL),
-> +				  GIC_VPE_CTL_EIC_MODE_MSK);
-> +		}
-> +
->   		/* Always use vector 1 in EIC mode */
->   		gic_cpu_pin = 0;
->   		timer_cpu_pin = gic_cpu_pin;
-Hi Paul
+ arch/mips/include/asm/mach-malta/kernel-entry-init.h | 6 +++---
+ arch/mips/include/asm/mipsregs.h                     | 3 +++
+ 2 files changed, 6 insertions(+), 3 deletions(-)
 
-Reviewed-by: Matt Redfearn <matt.redfearn@imgtec.com>
-Tested-by: Matt Redfearn <matt.redfearn@imgtec.com>
-
-Thanks,
-Matt
+diff --git a/arch/mips/include/asm/mach-malta/kernel-entry-init.h b/arch/mips/include/asm/mach-malta/kernel-entry-init.h
+index 0cf8622db27f..ab03eb3fadac 100644
+--- a/arch/mips/include/asm/mach-malta/kernel-entry-init.h
++++ b/arch/mips/include/asm/mach-malta/kernel-entry-init.h
+@@ -56,7 +56,7 @@
+ 		(0 << MIPS_SEGCFG_PA_SHIFT) |				\
+ 		(1 << MIPS_SEGCFG_EU_SHIFT)) << 16)
+ 	or	t0, t2
+-	mtc0	t0, $5, 2
++	mtc0	t0, CP0_SEGCTL0
+ 
+ 	/* SegCtl1 */
+ 	li      t0, ((MIPS_SEGCFG_MUSUK << MIPS_SEGCFG_AM_SHIFT) |	\
+@@ -67,7 +67,7 @@
+ 		(0 << MIPS_SEGCFG_PA_SHIFT) |				\
+ 		(1 << MIPS_SEGCFG_EU_SHIFT)) << 16)
+ 	ins	t0, t1, 16, 3
+-	mtc0	t0, $5, 3
++	mtc0	t0, CP0_SEGCTL1
+ 
+ 	/* SegCtl2 */
+ 	li	t0, ((MIPS_SEGCFG_MUSUK << MIPS_SEGCFG_AM_SHIFT) |	\
+@@ -77,7 +77,7 @@
+ 		(4 << MIPS_SEGCFG_PA_SHIFT) |				\
+ 		(1 << MIPS_SEGCFG_EU_SHIFT)) << 16)
+ 	or	t0, t2
+-	mtc0	t0, $5, 4
++	mtc0	t0, CP0_SEGCTL2
+ 
+ 	jal	mips_ihb
+ 	mfc0    t0, $16, 5
+diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+index 3ad19ad04d8a..639137f12f1a 100644
+--- a/arch/mips/include/asm/mipsregs.h
++++ b/arch/mips/include/asm/mipsregs.h
+@@ -48,6 +48,9 @@
+ #define CP0_CONF $3
+ #define CP0_CONTEXT $4
+ #define CP0_PAGEMASK $5
++#define CP0_SEGCTL0 $5, 2
++#define CP0_SEGCTL1 $5, 3
++#define CP0_SEGCTL2 $5, 4
+ #define CP0_WIRED $6
+ #define CP0_INFO $7
+ #define CP0_HWRENA $7, 0
+-- 
+2.5.0

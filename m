@@ -1,15 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:46202 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:22162 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27029381AbcEQXJBvFQCp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 18 May 2016 01:09:01 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: Fix incomplete separation of XPA CPU feature
-Date: Wed, 18 May 2016 00:08:49 +0100
-Message-ID: <1463526529-4087-1-git-send-email-james.hogan@imgtec.com>
+        with ESMTP id S27008982AbcERGxbZfCEY (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 18 May 2016 08:53:31 +0200
+Subject: Re: [PATCH 1/3] MIPS: Clear Status IPL field when using EIC
+References: <1463495466-29689-1-git-send-email-paul.burton@imgtec.com>
+ <1463495466-29689-2-git-send-email-paul.burton@imgtec.com>
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Message-ID: <573C1161.6060608@imgtec.com>
+Date: Wed, 18 May 2016 07:53:21 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <1463495466-29689-2-git-send-email-paul.burton@imgtec.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,49 +22,41 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20160517230849.GaZsw2tLIhIL-PcgXvnXKxrvkchUvxIcgU8Pxi_aCG4@z>
+To: Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Cc: Guenter Roeck <linux@roeck-us.net>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>, James Hogan <james.hogan@imgtec.com>
+Message-ID: <20160518065321.M2SP17OYZwQ27blMAoMm3Fg-Z7V6h9Nba8YMG-opJqo@z>
 
-Commit 12822570a29b ("MIPS: Separate XPA CPU feature into LPA and MVH")
-wasn't fully applied, possibly due to a conflict with commit
-f270d881fa55 ("MIPS: Detect MIPSr6 Virtual Processor support"). This
-left decode_config5() referring to the non-existent MIPS_CPU_XPA, which
-breaks the build when XPA is enabled:
 
-arch/mips/kernel/cpu-probe.c In function ‘decode_config5’:
-arch/mips/kernel/cpu-probe.c:838:17: error: ‘MIPS_CPU_XPA’ undeclared (first use in this function)
-   c->options |= MIPS_CPU_XPA;
-                    ^
 
-Apply the missing hunk, dropping the CONFIG_XPA ifdef and setting the
-MIPS_CPU_MVH option when Config5.MVH is set.
+On 17/05/16 15:31, Paul Burton wrote:
+> When using an external interrupt controller (EIC) the interrupt mask
+> bits in the cop0 Status register are reused for the Interrupt Priority
+> Level, and any interrupts with a priority lower than the field will be
+> ignored. Clear the field to 0 by default such that all interrupts are
+> serviced. Without doing so we default to arbitrarily ignoring all or
+> some subset of interrupts.
+>
+> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> ---
+>
+>   arch/mips/kernel/irq.c | 3 +++
+>   1 file changed, 3 insertions(+)
+>
+> diff --git a/arch/mips/kernel/irq.c b/arch/mips/kernel/irq.c
+> index 8eb5af8..f25f7ea 100644
+> --- a/arch/mips/kernel/irq.c
+> +++ b/arch/mips/kernel/irq.c
+> @@ -54,6 +54,9 @@ void __init init_IRQ(void)
+>   	for (i = 0; i < NR_IRQS; i++)
+>   		irq_set_noprobe(i);
+>   
+> +	if (cpu_has_veic)
+> +		clear_c0_status(ST0_IM);
+> +
+>   	arch_init_irq();
+>   }
+>   
+Hi Paul
 
-Fixes: 12822570a29b ("MIPS: Separate XPA CPU feature into LPA and MVH")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org
-Patchwork: https://patchwork.linux-mips.org/patch/13112/
----
- arch/mips/kernel/cpu-probe.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index 5ac5c3e23460..a88d44247cc8 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -833,10 +833,8 @@ static inline unsigned int decode_config5(struct cpuinfo_mips *c)
- 		c->options |= MIPS_CPU_MAAR;
- 	if (config5 & MIPS_CONF5_LLB)
- 		c->options |= MIPS_CPU_RW_LLB;
--#ifdef CONFIG_XPA
- 	if (config5 & MIPS_CONF5_MVH)
--		c->options |= MIPS_CPU_XPA;
--#endif
-+		c->options |= MIPS_CPU_MVH;
- 	if (cpu_has_mips_r6 && (config5 & MIPS_CONF5_VP))
- 		c->options |= MIPS_CPU_VP;
- 
--- 
-2.4.10
+Reviewed-by: Matt Redfearn <matt.redfearn@imgtec.com>
+Tested-by: Matt Redfearn <matt.redfearn@imgtec.com>

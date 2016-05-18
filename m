@@ -1,15 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:27930 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:59710 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27008982AbcERGxveTurY (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 18 May 2016 08:53:51 +0200
-Subject: Re: [PATCH 2/3] MIPS: smp-cps: Clear Status IPL field when using EIC
+        with ESMTP id S27029837AbcERGyPu-6HY (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 18 May 2016 08:54:15 +0200
+Subject: Re: [PATCH 3/3] irqchip: mips-gic: Setup EIC mode on each CPU if it's
+ in use
 References: <1463495466-29689-1-git-send-email-paul.burton@imgtec.com>
- <1463495466-29689-3-git-send-email-paul.burton@imgtec.com>
+ <1463495466-29689-4-git-send-email-paul.burton@imgtec.com>
 From: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <573C1179.8060306@imgtec.com>
-Date: Wed, 18 May 2016 07:53:45 +0100
+Message-ID: <573C1191.80707@imgtec.com>
+Date: Wed, 18 May 2016 07:54:09 +0100
 MIME-Version: 1.0
-In-Reply-To: <1463495466-29689-3-git-send-email-paul.burton@imgtec.com>
+In-Reply-To: <1463495466-29689-4-git-send-email-paul.burton@imgtec.com>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Matt.Redfearn@imgtec.com>
@@ -23,43 +24,50 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Qais Yousef <qais.yousef@imgtec.com>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20160518065345.DuPFAaZlLTb0LJxAHVhoxyBB6du8xDurk9ND7mQkJRw@z>
+Cc: Marc Zyngier <marc.zyngier@arm.com>, Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Message-ID: <20160518065409.fOzztBLAP-p5IqLnv0FBF_wU3Jlc9a-hZLqDmnBX0qQ@z>
 
 
 
 On 17/05/16 15:31, Paul Burton wrote:
-> When using an external interrupt controller (EIC) the interrupt mask
-> bits in the cop0 Status register are reused for the Interrupt Priority
-> Level, and any interrupts with a priority lower than the field will be
-> ignored. Clear the field to 0 by default such that all interrupts are
-> serviced.
+> When EIC mode is in use (cpu_has_veic is true) enable it on each CPU
+> during GIC initialisation. Otherwise there may be a mismatch between the
+> hardware default interrupt model & that expected by the kernel.
 >
 > Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 > ---
 >
->   arch/mips/kernel/smp-cps.c | 8 ++++++--
->   1 file changed, 6 insertions(+), 2 deletions(-)
+>   drivers/irqchip/irq-mips-gic.c | 10 +++++++++-
+>   1 file changed, 9 insertions(+), 1 deletion(-)
 >
-> diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-> index 253e140..f19f0d3 100644
-> --- a/arch/mips/kernel/smp-cps.c
-> +++ b/arch/mips/kernel/smp-cps.c
-> @@ -307,8 +307,12 @@ static void cps_init_secondary(void)
->   	if (cpu_has_mipsmt)
->   		dmt();
+> diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+> index 4dffccf..bc23c92 100644
+> --- a/drivers/irqchip/irq-mips-gic.c
+> +++ b/drivers/irqchip/irq-mips-gic.c
+> @@ -956,7 +956,7 @@ static void __init __gic_init(unsigned long gic_base_addr,
+>   			      unsigned int cpu_vec, unsigned int irqbase,
+>   			      struct device_node *node)
+>   {
+> -	unsigned int gicconfig;
+> +	unsigned int gicconfig, cpu;
+>   	unsigned int v[2];
 >   
-> -	change_c0_status(ST0_IM, STATUSF_IP2 | STATUSF_IP3 | STATUSF_IP4 |
-> -				 STATUSF_IP5 | STATUSF_IP6 | STATUSF_IP7);
-> +	if (cpu_has_veic)
-> +		clear_c0_status(ST0_IM);
-> +	else
-> +		change_c0_status(ST0_IM, STATUSF_IP2 | STATUSF_IP3 |
-> +					 STATUSF_IP4 | STATUSF_IP5 |
-> +					 STATUSF_IP6 | STATUSF_IP7);
->   }
+>   	__gic_base_addr = gic_base_addr;
+> @@ -973,6 +973,14 @@ static void __init __gic_init(unsigned long gic_base_addr,
+>   	gic_vpes = gic_vpes + 1;
 >   
->   static void cps_smp_finish(void)
+>   	if (cpu_has_veic) {
+> +		/* Set EIC mode for all VPEs */
+> +		for_each_present_cpu(cpu) {
+> +			gic_write(GIC_REG(VPE_LOCAL, GIC_VPE_OTHER_ADDR),
+> +				  mips_cm_vp_id(cpu));
+> +			gic_write(GIC_REG(VPE_OTHER, GIC_VPE_CTL),
+> +				  GIC_VPE_CTL_EIC_MODE_MSK);
+> +		}
+> +
+>   		/* Always use vector 1 in EIC mode */
+>   		gic_cpu_pin = 0;
+>   		timer_cpu_pin = gic_cpu_pin;
 Hi Paul
 
 Reviewed-by: Matt Redfearn <matt.redfearn@imgtec.com>

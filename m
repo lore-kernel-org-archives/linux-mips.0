@@ -1,20 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:13346 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:63425 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27030674AbcESHGpTOoie (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 19 May 2016 09:06:45 +0200
-Subject: Re: [PATCH v2 2/2] MIPS: CPS: Copy EVA configuration when starting
- secondary VPs.
-References: <1463587956-9160-1-git-send-email-matt.redfearn@imgtec.com>
- <1463587956-9160-2-git-send-email-matt.redfearn@imgtec.com>
- <20160518223457.GA1529@NP-P-BURTON>
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <573D65FE.7050801@imgtec.com>
-Date: Thu, 19 May 2016 08:06:38 +0100
+        with ESMTP id S27031437AbcETIBy3oDfR (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 20 May 2016 10:01:54 +0200
+Date: Fri, 20 May 2016 09:01:33 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH] MIPS: Fix write_gc0_* macros when writing zero
+In-Reply-To: <1463587478-5815-1-git-send-email-james.hogan@imgtec.com>
+Message-ID: <alpine.DEB.2.00.1605200848410.6794@tp.orcam.me.uk>
+References: <1463587478-5815-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20160518223457.GA1529@NP-P-BURTON>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,76 +20,30 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20160519070638.6Oxkg3nmE3boeGn9mDIUU9k77QOR0xgxWouPF6Hbou8@z>
+To: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20160520080133.z1pV6mDi3qPM2y92LgnasUo-ozkFT51Aj3S9riW9jJE@z>
 
-Hi Paul,
+On Wed, 18 May 2016, James Hogan wrote:
 
-On 18/05/16 23:34, Paul Burton wrote:
-> On Wed, May 18, 2016 at 05:12:36PM +0100, Matt Redfearn wrote:
->> When starting secondary VPEs which support EVA and the SegCtl registers,
->> copy the memory segmentation configuration from the running VPE to ensure
->> that all VPEs in the core have a consistent virtual memory map.
->>
->> The EVA configuration of secondary cores is dealt with when starting the
->> core via the CM.
->>
->> Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
->> ---
->>
->> Changes in v2:
->> - Skip check for config3 existing - we know it must to be doing
->> multithreading
->> - Use a unique lable name in the function
->>
->>   arch/mips/kernel/cps-vec.S | 15 +++++++++++++++
->>   1 file changed, 15 insertions(+)
->>
->> diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
->> index ac81edd44563..f8eae9189e38 100644
->> --- a/arch/mips/kernel/cps-vec.S
->> +++ b/arch/mips/kernel/cps-vec.S
->> @@ -431,6 +431,21 @@ LEAF(mips_cps_boot_vpes)
->>   	mfc0	t0, CP0_CONFIG
->>   	mttc0	t0, CP0_CONFIG
->>   
->> +	/*
->> +	 * Copy the EVA config from this VPE if the CPU supports it.
->> +	 * CONFIG3 must exist to be running MT startup - just read it.
->> +	 */
->> +	mfc0	t0, CP0_CONFIG, 3
->> +	and	t0, t0, MIPS_CONF3_SC
-> Tiny nit - I'd prefer "andi" here since we're using an immediate. The
-> assembler will figure it out though, so it's not a big deal.
-Yeah, I would have too, and I did have that to start off with, but the 
-assembler gave me:
-arch/mips/kernel/cps-vec.S: Assembler messages:
-arch/mips/kernel/cps-vec.S:450: Error: operand 3 out of range `andi 
-$8,$8,((1)<<25)'
-So I fell back to letting the assembler generate the LUI and AND.
->
-> For both in the series:
->
->      Reviewed-by: Paul Burton <paul.burton@imgtec.com>
-Thanks Paul,
-Matt
+> The versions of the __write_{32,64}bit_gc0_register() macros for when
+> there is no virt support in the assembler use the "J" inline asm
+> constraint to allow integer zero, but this needs to be accompanied by
+> the "z" formatting string so that it turns into $0. Fix both macros to
+> do this.
 
-> Thanks,
->      Paul
->
->> +	beqz	t0, 3f
->> +	 nop
->> +	mfc0    t0, CP0_SEGCTL0
->> +	mttc0	t0, CP0_SEGCTL0
->> +	mfc0    t0, CP0_SEGCTL1
->> +	mttc0	t0, CP0_SEGCTL1
->> +	mfc0    t0, CP0_SEGCTL2
->> +	mttc0	t0, CP0_SEGCTL2
->> +3:
->>   	/* Ensure no software interrupts are pending */
->>   	mttc0	zero, CP0_CAUSE
->>   	mttc0	zero, CP0_STATUS
->> -- 
->> 2.5.0
->>
+ NB `z' here is an "operand code" in GCC-speak.  There's a list of the 
+MIPS-specific ones in gcc/config/mips/mips.c above `mips_print_operand'.  
+There are a few generic operand codes as well, most notably `a' to print 
+an address, matching the `p' constraint.  I think it would be good to have 
+this all documented in the GCC manual sometime.
+
+> Fixes: bad50d79255a ("MIPS: Fix VZ probe gas errors with binutils <2.24")
+> Signed-off-by: James Hogan <james.hogan@imgtec.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: linux-mips@linux-mips.org
+> ---
+
+Reviewed-by: Maciej W. Rozycki <macro@imgtec.com>
+
+  Maciej

@@ -1,15 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:64601 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27031996AbcETW3E6bU1C (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 21 May 2016 00:29:04 +0200
+Received: from mailapp01.imgtec.com ([195.59.15.196]:3382 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27032096AbcETXhnv6cQM (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 21 May 2016 01:37:43 +0200
+Date: Sat, 21 May 2016 00:37:37 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 5/5] MIPS: Simplify DSP instruction encoding macros
-Date: Fri, 20 May 2016 23:28:41 +0100
-Message-ID: <1463783321-24442-6-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <1463783321-24442-1-git-send-email-james.hogan@imgtec.com>
+Subject: Re: [PATCH 0/5] MIPS: microMIPS encoding fixes
+Message-ID: <20160520233737.GA1124@jhogan-linux.le.imgtec.org>
 References: <1463783321-24442-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="72pTQ1Q5L511SwPT"
+Content-Disposition: inline
+In-Reply-To: <1463783321-24442-1-git-send-email-james.hogan@imgtec.com>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -21,198 +23,83 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20160520222841.sg4r0lsf3eqWShuJUGY30_hFIwJXGeHxhurtyR1qjlQ@z>
-
-Simplify the DSP instruction wrapper macros which use explicit encodings
-for microMIPS and normal MIPS by using the new encoding macros and
-removing duplication.
-
-To me this makes it easier to read since it is much shorter, but it also
-ensures .insn is used, preventing objdump disassembling the microMIPS
-code as normal MIPS.
-
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
----
- arch/mips/include/asm/mipsregs.h | 113 +++++++--------------------------------
- 1 file changed, 20 insertions(+), 93 deletions(-)
+Message-ID: <20160520233737.vWAcYNNXShRVV7r5p82eqTuOoJegj3urn2KhtuhUa5E@z>
 
-diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index e4f6339a60b3..a5951f0981cc 100644
---- a/arch/mips/include/asm/mipsregs.h
-+++ b/arch/mips/include/asm/mipsregs.h
-@@ -2279,7 +2279,6 @@ do {									\
- 
- #else
- 
--#ifdef CONFIG_CPU_MICROMIPS
- #define rddsp(mask)							\
- ({									\
- 	unsigned int __res;						\
-@@ -2288,8 +2287,8 @@ do {									\
- 	"	.set	push					\n"	\
- 	"	.set	noat					\n"	\
- 	"	# rddsp $1, %x1					\n"	\
--	"	.hword	((0x0020067c | (%x1 << 14)) >> 16)	\n"	\
--	"	.hword	((0x0020067c | (%x1 << 14)) & 0xffff)	\n"	\
-+	_ASM_INSN_IF_MIPS(0x7c000cb8 | (%x1 << 16))			\
-+	_ASM_INSN32_IF_MM(0x0020067c | (%x1 << 14))			\
- 	"	move	%0, $1					\n"	\
- 	"	.set	pop					\n"	\
- 	: "=r" (__res)							\
-@@ -2304,98 +2303,13 @@ do {									\
- 	"	.set	noat					\n"	\
- 	"	move	$1, %0					\n"	\
- 	"	# wrdsp $1, %x1					\n"	\
--	"	.hword	((0x0020167c | (%x1 << 14)) >> 16)	\n"	\
--	"	.hword	((0x0020167c | (%x1 << 14)) & 0xffff)	\n"	\
-+	_ASM_INSN_IF_MIPS(0x7c2004f8 | (%x1 << 11))			\
-+	_ASM_INSN32_IF_MM(0x0020167c | (%x1 << 14))			\
- 	"	.set	pop					\n"	\
- 	:								\
- 	: "r" (val), "i" (mask));					\
- } while (0)
- 
--#define _umips_dsp_mfxxx(ins)						\
--({									\
--	unsigned long __treg;						\
--									\
--	__asm__ __volatile__(						\
--	"	.set	push					\n"	\
--	"	.set	noat					\n"	\
--	"	.hword	0x0001					\n"	\
--	"	.hword	%x1					\n"	\
--	"	move	%0, $1					\n"	\
--	"	.set	pop					\n"	\
--	: "=r" (__treg)							\
--	: "i" (ins));							\
--	__treg;								\
--})
--
--#define _umips_dsp_mtxxx(val, ins)					\
--do {									\
--	__asm__ __volatile__(						\
--	"	.set	push					\n"	\
--	"	.set	noat					\n"	\
--	"	move	$1, %0					\n"	\
--	"	.hword	0x0001					\n"	\
--	"	.hword	%x1					\n"	\
--	"	.set	pop					\n"	\
--	:								\
--	: "r" (val), "i" (ins));					\
--} while (0)
--
--#define _umips_dsp_mflo(reg) _umips_dsp_mfxxx((reg << 14) | 0x107c)
--#define _umips_dsp_mfhi(reg) _umips_dsp_mfxxx((reg << 14) | 0x007c)
--
--#define _umips_dsp_mtlo(val, reg) _umips_dsp_mtxxx(val, ((reg << 14) | 0x307c))
--#define _umips_dsp_mthi(val, reg) _umips_dsp_mtxxx(val, ((reg << 14) | 0x207c))
--
--#define mflo0() _umips_dsp_mflo(0)
--#define mflo1() _umips_dsp_mflo(1)
--#define mflo2() _umips_dsp_mflo(2)
--#define mflo3() _umips_dsp_mflo(3)
--
--#define mfhi0() _umips_dsp_mfhi(0)
--#define mfhi1() _umips_dsp_mfhi(1)
--#define mfhi2() _umips_dsp_mfhi(2)
--#define mfhi3() _umips_dsp_mfhi(3)
--
--#define mtlo0(x) _umips_dsp_mtlo(x, 0)
--#define mtlo1(x) _umips_dsp_mtlo(x, 1)
--#define mtlo2(x) _umips_dsp_mtlo(x, 2)
--#define mtlo3(x) _umips_dsp_mtlo(x, 3)
--
--#define mthi0(x) _umips_dsp_mthi(x, 0)
--#define mthi1(x) _umips_dsp_mthi(x, 1)
--#define mthi2(x) _umips_dsp_mthi(x, 2)
--#define mthi3(x) _umips_dsp_mthi(x, 3)
--
--#else  /* !CONFIG_CPU_MICROMIPS */
--#define rddsp(mask)							\
--({									\
--	unsigned int __res;						\
--									\
--	__asm__ __volatile__(						\
--	"	.set	push				\n"		\
--	"	.set	noat				\n"		\
--	"	# rddsp $1, %x1				\n"		\
--	"	.word	0x7c000cb8 | (%x1 << 16)	\n"		\
--	"	move	%0, $1				\n"		\
--	"	.set	pop				\n"		\
--	: "=r" (__res)							\
--	: "i" (mask));							\
--	__res;								\
--})
--
--#define wrdsp(val, mask)						\
--do {									\
--	__asm__ __volatile__(						\
--	"	.set	push					\n"	\
--	"	.set	noat					\n"	\
--	"	move	$1, %0					\n"	\
--	"	# wrdsp $1, %x1					\n"	\
--	"	.word	0x7c2004f8 | (%x1 << 11)		\n"	\
--	"	.set	pop					\n"	\
--        :								\
--	: "r" (val), "i" (mask));					\
--} while (0)
--
- #define _dsp_mfxxx(ins)							\
- ({									\
- 	unsigned long __treg;						\
-@@ -2403,7 +2317,8 @@ do {									\
- 	__asm__ __volatile__(						\
- 	"	.set	push					\n"	\
- 	"	.set	noat					\n"	\
--	"	.word	(0x00000810 | %1)			\n"	\
-+	_ASM_INSN_IF_MIPS(0x00000810 | %X1)				\
-+	_ASM_INSN32_IF_MM(0x0001007c | %x1)				\
- 	"	move	%0, $1					\n"	\
- 	"	.set	pop					\n"	\
- 	: "=r" (__treg)							\
-@@ -2417,18 +2332,31 @@ do {									\
- 	"	.set	push					\n"	\
- 	"	.set	noat					\n"	\
- 	"	move	$1, %0					\n"	\
--	"	.word	(0x00200011 | %1)			\n"	\
-+	_ASM_INSN_IF_MIPS(0x00200011 | %X1)				\
-+	_ASM_INSN32_IF_MM(0x0001207c | %x1)				\
- 	"	.set	pop					\n"	\
- 	:								\
- 	: "r" (val), "i" (ins));					\
- } while (0)
- 
-+#ifdef CONFIG_CPU_MICROMIPS
-+
-+#define _dsp_mflo(reg) _dsp_mfxxx((reg << 14) | 0x1000)
-+#define _dsp_mfhi(reg) _dsp_mfxxx((reg << 14) | 0x0000)
-+
-+#define _dsp_mtlo(val, reg) _dsp_mtxxx(val, ((reg << 14) | 0x1000))
-+#define _dsp_mthi(val, reg) _dsp_mtxxx(val, ((reg << 14) | 0x0000))
-+
-+#else  /* !CONFIG_CPU_MICROMIPS */
-+
- #define _dsp_mflo(reg) _dsp_mfxxx((reg << 21) | 0x0002)
- #define _dsp_mfhi(reg) _dsp_mfxxx((reg << 21) | 0x0000)
- 
- #define _dsp_mtlo(val, reg) _dsp_mtxxx(val, ((reg << 11) | 0x0002))
- #define _dsp_mthi(val, reg) _dsp_mtxxx(val, ((reg << 11) | 0x0000))
- 
-+#endif /* CONFIG_CPU_MICROMIPS */
-+
- #define mflo0() _dsp_mflo(0)
- #define mflo1() _dsp_mflo(1)
- #define mflo2() _dsp_mflo(2)
-@@ -2449,7 +2377,6 @@ do {									\
- #define mthi2(x) _dsp_mthi(x, 2)
- #define mthi3(x) _dsp_mthi(x, 3)
- 
--#endif /* CONFIG_CPU_MICROMIPS */
- #endif
- 
- /*
--- 
-2.4.10
+--72pTQ1Q5L511SwPT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Whoops, forgot to Cc linux-mips on the cover letter! Sorry about that!
+
+On Fri, May 20, 2016 at 11:28:36PM +0100, James Hogan wrote:
+> These patches add & fix some explicit instruction encodings in assembly
+> code to take microMIPS into account. Comments most welcome.
+>=20
+> Patches 1 and 2 are needed for v4.7 to add microMIPS encodings to
+> recently added VZ instruction wrappers, otherwise a microMIPS kernel
+> built with an old toolchain will fail to boot on M5150 which has both
+> microMIPS and VZ.
+>=20
+> The other patches are lower priority, and can wait until v4.8.
+>=20
+> Patch 1 adds an abstraction for encoding MIPS and microMIPS instructions
+> explicitly in inline assembly, and is used by all the other patches.
+>=20
+> As mentioned, patch 2 adds microMIPS encodings of VZ instructions to fix
+> a regression on M5150.
+>=20
+> Patch 3 fixes microMIPS encodings of MSA instructions (especially for
+> little endian). I'm not aware of any cores supporting both, but it was
+> plain wrong before so lets fix it.
+>=20
+> Patch 4 adds microMIPS encodings for the tlbinvf, mfhc0 & mthc0 (XPA)
+> wrappers. Again I'm not aware of any microMIPS cores which support
+> either tlbinv or XPA, but the encodings exist, so lets use them.
+>=20
+> Finally Patch 5 simplifies the existing DSP wrappers which already
+> handle microMIPS (although with a couple of missing .insn directives),
+> to use the macros introduced in patch 1. Asside from the .insn change
+> (which fixes some disassembly output), this change is a no-op.
+>=20
+> James Hogan (5):
+>   MIPS: Add inline asm encoding helpers
+>   MIPS: Add missing VZ accessor microMIPS encodings
+>   MIPS: Fix little endian microMIPS MSA encodings
+>   MIPS: Add missing tlbinvf/XPA microMIPS encodings
+>   MIPS: Simplify DSP instruction encoding macros
+>=20
+>  arch/mips/include/asm/asmmacro.h |  99 +++++++++++-----------
+>  arch/mips/include/asm/mipsregs.h | 179 ++++++++++++++++-----------------=
+------
+>  arch/mips/include/asm/msa.h      |  21 ++---
+>  3 files changed, 130 insertions(+), 169 deletions(-)
+>=20
+> --=20
+> 2.4.10
+>=20
+
+--72pTQ1Q5L511SwPT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJXP5/BAAoJEGwLaZPeOHZ6eXwQAKnZ0mquty7pW13etSSoJDqE
+7LShmnL1iqRKZqTOoHtCwQVNOajSTi/VgmpFNJw28TJ1YCQgBFt/u92FrMmgmPDD
+i3TkEjq19jYkxOMaQ2TUcl2tlRAI6OGMdRCQsT+cFSEZPlhR/PicaeMP9eyKWiKe
+r6dUBAqcr0vYZGPcR+zYzAMLssDZZeqME5kmSPshsZO/5AGFmnv7Uk9rdl9/rfOE
+K/8YcpDu24PYwJ767cWHbKxWbscqwbcU3rGLyrMHPm4P074h8+5gcOlWbCp1cUTE
+/iSyMyHgTdcmwF3Gq3Pp88YU+Y89ps2Rd1Z5fm9OH9nibHFUQSoUxyz3ijoK99Jr
+OJuBAtdEIuLt8t8EXPD+ktOkrpD+Z+5vBEX+0/FHOrIXozKhpl5kRtenYyRVU6Ee
+ScR/I+0FNjKfRFv8K8clQnzVB6sJ3DOHa3KGWv49RUEiFeaiY89tXsnNV8nqufkh
+tC3PHPUnhbUZa0y5gD2TBpaLlX6V5EcyVNiXp+VZYDw4dVS5ABqe4h3j7NEycPYc
+EmU2p7hvOhqdOSzc0OGZpgqUfvFLZGtqmX6LLGQO56VwOM2cULYaiF1AzDR1I+8n
+TLP8KMIue2fbOUnARg4LOjzmsk/Y+SxiDXSFOeIJhQ4lC0bvZ5UR7XSm4x055eCR
+RF6Vih0codrCxAIYnFds
+=SLV8
+-----END PGP SIGNATURE-----
+
+--72pTQ1Q5L511SwPT--

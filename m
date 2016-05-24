@@ -1,16 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:45945 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:18895 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27033565AbcEXIfbLso2X (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 24 May 2016 10:35:31 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 2/2] MIPS: Build microMIPS VDSO for microMIPS kernels
-Date: Tue, 24 May 2016 09:35:11 +0100
-Message-ID: <1464078911-21468-3-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <1464078911-21468-1-git-send-email-james.hogan@imgtec.com>
-References: <1464078911-21468-1-git-send-email-james.hogan@imgtec.com>
+        with ESMTP id S27030917AbcEXKmoe46OM (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 24 May 2016 12:42:44 +0200
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Subject: [PATCH] genirq: Fix missing return value in irq_destroy_ipi()
+Date: Tue, 24 May 2016 11:42:30 +0100
+Message-ID: <1464086550-24734-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,35 +19,40 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20160524083511.nZGGYiCQitI04RFEyr5gj4UMnv3JKV0pCUVrbJzuXVE@z>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, linux-kernel@vger.kernel.org
+Message-ID: <20160524104230.Uht2RWHkMD6Sq6l4NHKdaximP-LvLxIStg015HVGQbU@z>
 
-MicroMIPS kernels may be expected to run on microMIPS only cores which
-don't support the normal MIPS instruction set, so be sure to pass the
--mmicromips flag through to the VDSO cflags.
+Commit 7cec18a3906b ("genirq: Add error code reporting to
+irq_{reserve,destroy}_ipi") changed the return type of irq_destroy_ipi
+to int, but missed adding a value to one return statement. Fix this to
+silence the resultant compiler warning:
 
-Fixes: ebb5e78cc634 ("MIPS: Initial implementation of a VDSO")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org
-Cc: <stable@vger.kernel.org> # 4.4.x-
+kernel/irq/ipi.c In function ‘irq_destroy_ipi’:
+kernel/irq/ipi.c:128:3: warning: ‘return’ with no value, in function returning non-void [-Wreturn-type]
+  return;
+  ^
+Fixes: 7cec18a3906b ("genirq: Add error code reporting to
+irq_{reserve,destroy}_ipi")
+Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+
 ---
- arch/mips/vdso/Makefile | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-index b369509e9753..a5ec3e5274c4 100644
---- a/arch/mips/vdso/Makefile
-+++ b/arch/mips/vdso/Makefile
-@@ -5,6 +5,7 @@ obj-vdso-y := elf.o gettimeofday.o sigreturn.o
- ccflags-vdso := \
- 	$(filter -I%,$(KBUILD_CFLAGS)) \
- 	$(filter -E%,$(KBUILD_CFLAGS)) \
-+	$(filter -mmicromips,$(KBUILD_CFLAGS)) \
- 	$(filter -march=%,$(KBUILD_CFLAGS))
- cflags-vdso := $(ccflags-vdso) \
- 	$(filter -W%,$(filter-out -Wa$(comma)%,$(KBUILD_CFLAGS))) \
+ kernel/irq/ipi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/irq/ipi.c b/kernel/irq/ipi.c
+index c42742208e5e..89b49f6773f0 100644
+--- a/kernel/irq/ipi.c
++++ b/kernel/irq/ipi.c
+@@ -125,7 +125,7 @@ int irq_destroy_ipi(unsigned int irq, const struct cpumask *dest)
+ 
+ 	domain = data->domain;
+ 	if (WARN_ON(domain == NULL))
+-		return;
++		return -EINVAL;
+ 
+ 	if (!irq_domain_is_ipi(domain)) {
+ 		pr_warn("Trying to destroy a non IPI domain!\n");
 -- 
-2.4.10
+2.5.0

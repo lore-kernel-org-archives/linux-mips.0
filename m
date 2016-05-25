@@ -1,14 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:16640 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:58805 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27029060AbcEYL6v3GY00 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 25 May 2016 13:58:51 +0200
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH v2] MIPS: Pistachio: Enable KASLR
-Date: Wed, 25 May 2016 12:58:40 +0100
-Message-ID: <1464177520-19751-1-git-send-email-matt.redfearn@imgtec.com>
+        with ESMTP id S27033797AbcEYQCmhLE9y (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 25 May 2016 18:02:42 +0200
+Subject: Re: [PATCH 03/11] MIPS: pic32mzda: fix getting timer clock rate.
+References: <1463461560-9629-1-git-send-email-purna.mandal@microchip.com>
+ <1463461560-9629-3-git-send-email-purna.mandal@microchip.com>
+From: Harvey Hunt <harvey.hunt@imgtec.com>
+Message-ID: <062abb47-931c-c47f-bcc1-1642db0c0def@imgtec.com>
+Date: Wed, 25 May 2016 17:02:35 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@imgtec.com>
+In-Reply-To: <1463461560-9629-3-git-send-email-purna.mandal@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Harvey.Hunt@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,59 +22,64 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Matt Redfearn <matt.redfearn@imgtec.com>, linux-mips@linux-mips.org, Andrew Bresticker <abrestic@chromium.org>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Jonas Gorski <jogo@openwrt.org>
-Message-ID: <20160525115840.NbsI0Ejns0slT-rFPmA1SY5MXZPnlCKKmxKJWi0zikI@z>
+To: Purna Chandra Mandal <purna.mandal@microchip.com>, linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Joshua Henderson <digitalpeer@digitalpeer.com>, Joshua Henderson <joshua.henderson@microchip.com>
+Message-ID: <20160525160235.JBr90cy2d-ey4Ie2t0RAeKib7M4qlfkQblooL1Sk-4E@z>
 
-Allow KASLR to be selected on Pistachio based systems. Tested on a
-Creator Ci40.
+Hi Purna,
 
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
+On 17/05/16 06:05, Purna Chandra Mandal wrote:
+> PIC32 clock driver is now implemented as platform driver instead of
+> as part of of_clk_init(). It meants all the clock modules are available
+> quite late in the boot sequence. So request for CPU clock by clk_get_sys()
+> and clk_get_rate() to find c0_timer rate fails.
+>
+> To fix this use PIC32 specific early clock functions implemented for early
+> console support.
+>
+> Signed-off-by: Purna Chandra Mandal <purna.mandal@microchip.com>
+>
+> ---
+> Note: Please pull this complete series through the MIPS tree.
+>
+> ---
+>
+>  arch/mips/pic32/pic32mzda/time.c | 13 ++++---------
+>  1 file changed, 4 insertions(+), 9 deletions(-)
+>
+> diff --git a/arch/mips/pic32/pic32mzda/time.c b/arch/mips/pic32/pic32mzda/time.c
+> index ca6a62b..62a0a78 100644
+> --- a/arch/mips/pic32/pic32mzda/time.c
+> +++ b/arch/mips/pic32/pic32mzda/time.c
+> @@ -11,13 +11,12 @@
+>   *  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+>   *  for more details.
+>   */
+> -#include <linux/clk.h>
+>  #include <linux/clk-provider.h>
+>  #include <linux/clocksource.h>
+>  #include <linux/init.h>
+> +#include <linux/irqdomain.h>
+>  #include <linux/of.h>
+>  #include <linux/of_irq.h>
+> -#include <linux/irqdomain.h>
+>
+>  #include <asm/time.h>
+>
+> @@ -58,16 +57,12 @@ unsigned int get_c0_compare_int(void)
+>
+>  void __init plat_time_init(void)
+>  {
+> -	struct clk *clk;
+> +	unsigned long rate = pic32_get_pbclk(7);
 
----
+pic32_get_pbclk() is defined in arch/mips/pic32/pic32mzda/early_clk.c. 
+When CONFIG_EARLY_PRINTK isn't set, early_clk.c isn't compiled and so a 
+linker error occurs.
 
-Changes in v2:
-Add SYS_SUPPORTS_RELOCATABLE to Kconfig in alphabetical order
+Maybe it's best to always build the early_clk.c file, or perhaps there 
+is a better place to put pic32_get_pbclk()?
 
- arch/mips/Kconfig          | 1 +
- arch/mips/pistachio/init.c | 8 ++++++--
- 2 files changed, 7 insertions(+), 2 deletions(-)
+Thanks,
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index c5bedce4122d..b8613c251d72 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -397,6 +397,7 @@ config MACH_PISTACHIO
- 	select SYS_SUPPORTS_LITTLE_ENDIAN
- 	select SYS_SUPPORTS_MIPS_CPS
- 	select SYS_SUPPORTS_MULTITHREADING
-+	select SYS_SUPPORTS_RELOCATABLE
- 	select SYS_SUPPORTS_ZBOOT
- 	select SYS_HAS_EARLY_PRINTK
- 	select USE_GENERIC_EARLY_PRINTK_8250
-diff --git a/arch/mips/pistachio/init.c b/arch/mips/pistachio/init.c
-index 96ba2cc9ad3e..95f8767ce52e 100644
---- a/arch/mips/pistachio/init.c
-+++ b/arch/mips/pistachio/init.c
-@@ -52,12 +52,16 @@ static void __init plat_setup_iocoherency(void)
- 	}
- }
- 
--void __init plat_mem_setup(void)
-+void __init *plat_get_fdt(void)
- {
- 	if (fw_arg0 != -2)
- 		panic("Device-tree not present");
-+	return (void *)fw_arg1;
-+}
- 
--	__dt_setup_arch((void *)fw_arg1);
-+void __init plat_mem_setup(void)
-+{
-+	__dt_setup_arch(plat_get_fdt());
- 
- 	plat_setup_iocoherency();
- }
--- 
-2.5.0
+Harvey

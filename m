@@ -1,18 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:58805 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:2127 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27033797AbcEYQCmhLE9y (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 25 May 2016 18:02:42 +0200
-Subject: Re: [PATCH 03/11] MIPS: pic32mzda: fix getting timer clock rate.
-References: <1463461560-9629-1-git-send-email-purna.mandal@microchip.com>
- <1463461560-9629-3-git-send-email-purna.mandal@microchip.com>
-From: Harvey Hunt <harvey.hunt@imgtec.com>
-Message-ID: <062abb47-931c-c47f-bcc1-1642db0c0def@imgtec.com>
-Date: Wed, 25 May 2016 17:02:35 +0100
+        with ESMTP id S27034483AbcEZL4BvcMOG (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 26 May 2016 13:56:01 +0200
+Date: Thu, 26 May 2016 12:55:45 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: [PATCH] MIPS: VDSO: Build with `-fno-strict-aliasing'
+Message-ID: <alpine.DEB.2.00.1605261239340.9344@tp.orcam.me.uk>
 MIME-Version: 1.0
-In-Reply-To: <1463461560-9629-3-git-send-email-purna.mandal@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Harvey.Hunt@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,64 +18,49 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Purna Chandra Mandal <purna.mandal@microchip.com>, linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Joshua Henderson <digitalpeer@digitalpeer.com>, Joshua Henderson <joshua.henderson@microchip.com>
-Message-ID: <20160525160235.JBr90cy2d-ey4Ie2t0RAeKib7M4qlfkQblooL1Sk-4E@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Tejun Heo <tj@kernel.org>, linux-mips@linux-mips.org
+Message-ID: <20160526115545.q6s9e33GSI1qads4c6lG9DrqTkdhRXjTiki4d9Eajdw@z>
 
-Hi Purna,
+Avoid an aliasing issue causing a build error in VDSO:
 
-On 17/05/16 06:05, Purna Chandra Mandal wrote:
-> PIC32 clock driver is now implemented as platform driver instead of
-> as part of of_clk_init(). It meants all the clock modules are available
-> quite late in the boot sequence. So request for CPU clock by clk_get_sys()
-> and clk_get_rate() to find c0_timer rate fails.
->
-> To fix this use PIC32 specific early clock functions implemented for early
-> console support.
->
-> Signed-off-by: Purna Chandra Mandal <purna.mandal@microchip.com>
->
-> ---
-> Note: Please pull this complete series through the MIPS tree.
->
-> ---
->
->  arch/mips/pic32/pic32mzda/time.c | 13 ++++---------
->  1 file changed, 4 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/mips/pic32/pic32mzda/time.c b/arch/mips/pic32/pic32mzda/time.c
-> index ca6a62b..62a0a78 100644
-> --- a/arch/mips/pic32/pic32mzda/time.c
-> +++ b/arch/mips/pic32/pic32mzda/time.c
-> @@ -11,13 +11,12 @@
->   *  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
->   *  for more details.
->   */
-> -#include <linux/clk.h>
->  #include <linux/clk-provider.h>
->  #include <linux/clocksource.h>
->  #include <linux/init.h>
-> +#include <linux/irqdomain.h>
->  #include <linux/of.h>
->  #include <linux/of_irq.h>
-> -#include <linux/irqdomain.h>
->
->  #include <asm/time.h>
->
-> @@ -58,16 +57,12 @@ unsigned int get_c0_compare_int(void)
->
->  void __init plat_time_init(void)
->  {
-> -	struct clk *clk;
-> +	unsigned long rate = pic32_get_pbclk(7);
+In file included from include/linux/srcu.h:34:0,
+                 from include/linux/notifier.h:15,
+                 from ./arch/mips/include/asm/uprobes.h:9,
+                 from include/linux/uprobes.h:61,
+                 from include/linux/mm_types.h:13,
+                 from ./arch/mips/include/asm/vdso.h:14,
+                 from arch/mips/vdso/vdso.h:27,
+                 from arch/mips/vdso/gettimeofday.c:11:
+include/linux/workqueue.h: In function 'work_static':
+include/linux/workqueue.h:186:2: error: dereferencing type-punned pointer will break strict-aliasing rules [-Werror=strict-aliasing]
+  return *work_data_bits(work) & WORK_STRUCT_STATIC;
+  ^
+cc1: all warnings being treated as errors
+make[2]: *** [arch/mips/vdso/gettimeofday.o] Error 1
 
-pic32_get_pbclk() is defined in arch/mips/pic32/pic32mzda/early_clk.c. 
-When CONFIG_EARLY_PRINTK isn't set, early_clk.c isn't compiled and so a 
-linker error occurs.
+with a CONFIG_DEBUG_OBJECTS_WORK configuration and GCC 5.2.0.  Include 
+`-fno-strict-aliasing' along with compiler options used, as required for 
+kernel code, fixing a problem present since the introduction of VDSO 
+with commit ebb5e78cc634 ("MIPS: Initial implementation of a VDSO").
 
-Maybe it's best to always build the early_clk.c file, or perhaps there 
-is a better place to put pic32_get_pbclk()?
+Thanks to Tejun for diagnosing this properly!
 
-Thanks,
-
-Harvey
+Signed-off-by: Maciej W. Rozycki <macro@imgtec.com>
+Cc: stable@vger.kernel.org # v4.3+
+---
+linux-vdso-strict-aliasing.diff
+Index: linux-sfr-test/arch/mips/vdso/Makefile
+===================================================================
+--- linux-sfr-test.orig/arch/mips/vdso/Makefile	2016-01-29 14:11:03.000000000 +0000
++++ linux-sfr-test/arch/mips/vdso/Makefile	2016-05-26 12:37:55.327782000 +0100
+@@ -8,7 +8,8 @@ ccflags-vdso := \
+ 	$(filter -march=%,$(KBUILD_CFLAGS))
+ cflags-vdso := $(ccflags-vdso) \
+ 	$(filter -W%,$(filter-out -Wa$(comma)%,$(KBUILD_CFLAGS))) \
+-	-O2 -g -fPIC -fno-common -fno-builtin -G 0 -DDISABLE_BRANCH_PROFILING \
++	-O2 -g -fPIC -fno-strict-aliasing -fno-common -fno-builtin -G 0 \
++	-DDISABLE_BRANCH_PROFILING \
+ 	$(call cc-option, -fno-stack-protector)
+ aflags-vdso := $(ccflags-vdso) \
+ 	$(filter -I%,$(KBUILD_CFLAGS)) \

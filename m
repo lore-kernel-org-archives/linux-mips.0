@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:34938 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27040881AbcEaMSeZNJ-i (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 31 May 2016 14:18:34 +0200
-Subject: Re: [PATCH] MIPS: lib: Mark intrinsics notrace
-References: <20160525100635.22541-1-harvey.hunt@imgtec.com>
- <20160529210340.GA25587@linux-mips.org>
-From: Harvey Hunt <harvey.hunt@imgtec.com>
-Message-ID: <eab5a895-a174-9d2c-16ba-f660c04190ba@imgtec.com>
-Date: Tue, 31 May 2016 13:18:28 +0100
+Received: from smtpout.microchip.com ([198.175.253.82]:17767 "EHLO
+        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27033582AbcFBE4vGLttY (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 2 Jun 2016 06:56:51 +0200
+Subject: Re: [PATCH] clk: microchip: Remove CLK_IS_ROOT
+References: <20160601215521.31309-1-sboyd@codeaurora.org>
+From: Purna Chandra Mandal <purna.mandal@microchip.com>
+Message-ID: <574FBC18.8070608@microchip.com>
+Date: Thu, 2 Jun 2016 10:24:48 +0530
 MIME-Version: 1.0
-In-Reply-To: <20160529210340.GA25587@linux-mips.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <20160601215521.31309-1-sboyd@codeaurora.org>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-Path: <Harvey.Hunt@imgtec.com>
+Return-Path: <Purna.Mandal@microchip.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,36 +21,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, "# 4 . 2 . x-" <stable@vger.kernel.org>
-Message-ID: <20160531121828.6k4ogARWtv0fO9jBkFZJ-_9AuJQ5DVT_BSyKSpxQOe4@z>
+To: Stephen Boyd <sboyd@codeaurora.org>, Michael Turquette <mturquette@baylibre.com>
+Cc: linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20160602045448.01z_xHd3YXRKR_mpw_GrBYJBGRf_70KXs8dmQvmsPE0@z>
 
-Hi Ralf,
+On 06/02/2016 03:25 AM, Stephen Boyd wrote:
 
-On 29/05/16 22:03, Ralf Baechle wrote:
-> On Wed, May 25, 2016 at 11:06:35AM +0100, Harvey Hunt wrote:
+> This flag is a no-op now (see commit 47b0eeb3dc8a "clk: Deprecate
+> CLK_IS_ROOT", 2016-02-02) so remove it.
 >
->> On certain MIPS32 devices, the ftrace tracer "function_graph" uses
->> __lshrdi3() during the capturing of trace data. ftrace then attempts to
->> trace __lshrdi3() which leads to infinite recursion and a stack overflow.
->> Fix this by marking __lshrdi3() as notrace. Mark the other compiler
->> intrinsics as notrace in case the compiler decides to use them in the
->> ftrace path.
+> Cc: Purna Chandra Mandal <purna.mandal@microchip.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: <linux-mips@linux-mips.org>
+> Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
+> ---
 >
-> Makes perfect sense - but I'm wondering how you triggered it.  Was this
-> a build with the GCC option -Os that is CONFIG_CC_OPTIMIZE_FOR_SIZE?
-> Usually people build with CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE that is -O2
-> which results in intrinsics being inlined.
-
-This is triggered by building with CONFIG_CC_OPTIMIZE_FOR_SIZE. This 
-explains why I only saw it on certain MIPS32 devices - Malta's 
-defconfigs don't have CONFIG_CC_OPTIMIZE_FOR_SIZE enabled, but the 
-pistachio and Ci20 defconfigs do.
-
+> I'm going to send this to Linus tomorrow or Friday so we can finally
+> remove this flag entirely.
 >
->   Ralf
+>  drivers/clk/microchip/clk-pic32mzda.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 >
+> diff --git a/drivers/clk/microchip/clk-pic32mzda.c b/drivers/clk/microchip/clk-pic32mzda.c
+> index 020a29acc5b0..51f54380474b 100644
+> --- a/drivers/clk/microchip/clk-pic32mzda.c
+> +++ b/drivers/clk/microchip/clk-pic32mzda.c
+> @@ -180,15 +180,15 @@ static int pic32mzda_clk_probe(struct platform_device *pdev)
+>  
+>  	/* register fixed rate clocks */
+>  	clks[POSCCLK] = clk_register_fixed_rate(&pdev->dev, "posc_clk", NULL,
+> -						CLK_IS_ROOT, 24000000);
+> +						0, 24000000);
+>  	clks[FRCCLK] =  clk_register_fixed_rate(&pdev->dev, "frc_clk", NULL,
+> -						CLK_IS_ROOT, 8000000);
+> +						0, 8000000);
+>  	clks[BFRCCLK] = clk_register_fixed_rate(&pdev->dev, "bfrc_clk", NULL,
+> -						CLK_IS_ROOT, 8000000);
+> +						0, 8000000);
+>  	clks[LPRCCLK] = clk_register_fixed_rate(&pdev->dev, "lprc_clk", NULL,
+> -						CLK_IS_ROOT, 32000);
+> +						0, 32000);
+>  	clks[UPLLCLK] = clk_register_fixed_rate(&pdev->dev, "usbphy_clk", NULL,
+> -						CLK_IS_ROOT, 24000000);
+> +						0, 24000000);
+>  	/* fixed rate (optional) clock */
+>  	if (of_find_property(np, "microchip,pic32mzda-sosc", NULL)) {
+>  		pr_info("pic32-clk: dt requests SOSC.\n");
 
-Thanks,
-
-Harvey
+Tested-by: Purna Chandra Mandal <purna.mandal@microchip.com>

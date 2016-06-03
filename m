@@ -1,14 +1,16 @@
-Received: from smtpout.microchip.com ([198.175.253.82]:59897 "EHLO
-        email.microchip.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27033337AbcFBJXwLw1ty (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 2 Jun 2016 11:23:52 +0200
-From: Purna Chandra Mandal <purna.mandal@microchip.com>
-Subject: [PATCH v2] MIPS: pic32mzda: fix linker error for pic32_get_pbclk().
-Date: Thu, 2 Jun 2016 14:51:42 +0530
-Message-ID: <1464859302-26537-1-git-send-email-purna.mandal@microchip.com>
+Received: from mail-it0-f68.google.com ([209.85.214.68]:34301 "EHLO
+        mail-it0-f68.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27033863AbcFCHRGoqf70 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 3 Jun 2016 09:17:06 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Purna.Mandal@microchip.com>
+In-Reply-To: <1464881987-13203-3-git-send-email-k.kozlowski@samsung.com>
+References: <1464881987-13203-1-git-send-email-k.kozlowski@samsung.com> <1464881987-13203-3-git-send-email-k.kozlowski@samsung.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 3 Jun 2016 09:17:00 +0200
+Message-ID: <CAMuHMdXWMf7Dt77wSUj8NytQqb99jzDiAz46kJkAEz+6BX3Uvw@mail.gmail.com>
+Subject: Re: [RFC v3 02/45] dma-mapping: Use unsigned long for dma_attrs
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <geert.uytterhoeven@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,48 +20,41 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Purna Chandra Mandal <purna.mandal@microchip.com>, Harvey Hunt <harvey.hunt@imgtec.com>, Joshua Henderson <digitalpeer@digitalpeer.com>
-Message-ID: <20160602092142.8TuY1uDpmDW0y7kmto7_r4Bof5I9QhhmpU463Yu7wvY@z>
+To: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+Cc: Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Stefano Stabellini <sstabellini@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Haavard Skinnemoen <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Steven Miao <realmz6@gmail.com>, Mark Salter <msalter@redhat.com>, Aurelien Jacquiot <a-jacquiot@ti.com>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, James Hogan <james.hogan@imgtec.com>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>, Ley Foon Tan <lftan@altera.com>, Jonas Bonn <jonas@southpole.se>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Geoff Levand <geoff@infradead.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, the arch/x86 maintainers <x86@kernel.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, David Vrabel <david.vrabel@citrix.com>, Juergen Gross <jgross@suse.com>, Muli Ben-Yehuda <muli@il.ibm.com>, Bjorn Helgaas <bhelgaas@google.com>, David Airlie <airlied@linux.ie>, Joerg Roedel <joro@8bytes.org>, David Woodhouse <dwmw2@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, alpha <linux-alpha@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, xen-devel@lists.xenproject.org, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, linux-c6x-dev@linux-c6x.org, Cris <linux-cris-kernel@axis.com>, uclinux-h8-devel@lists.sourceforge.jp, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:METAG ARCHITECTURE" <linux-metag@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "moderated list:PANASONIC MN10300..." <linux-am33-list@redhat.com>, nios2-dev@lists.rocketboards.org, Parisc List <linux-parisc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, discuss@x86-64.org, linux-pci <linux-pci@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, DRI Development <dri-devel@lists.freedesktop.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, linux-mediatek@lists.infradead.org, "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>, freedreno@lists.freedesktop.org, nouveau@lists.freedesktop.org, "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>, linux-rdma <linux-rdma@vger.kernel.org>, iommu@lists.linux-foundation.org, Linux Media Mailing List <linux-media@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Linux Fbdev development list <linux-fbdev@vger.kernel.org>, Christoph Hellwig <hch@infradead.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Message-ID: <20160603071700.x17gMFhNftxBgtLbsdV9h02PgClW-yFqWMXryoB23tI@z>
 
-Early clock API pic32_get_pbclk() is defined in early_clk.c and
-used by time.c and early_console.c. When CONFIG_EARLY_PRINTK isn't
-set, early_clk.c isn't compiled and time.c fails to link.
+Hi Krzysztof,
 
-Fix it by compiling early_clk.c always. Also sort files in
-alphabetical order.
+On Thu, Jun 2, 2016 at 5:39 PM, Krzysztof Kozlowski
+<k.kozlowski@samsung.com> wrote:
+> --- a/include/linux/dma-mapping.h
+> +++ b/include/linux/dma-mapping.h
+> @@ -5,13 +5,25 @@
 
-Cc: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Cc: Joshua Henderson <digitalpeer@digitalpeer.com>
+> +/**
+> + * List of possible attributes associated with a DMA mapping. The semantics
+> + * of each attribute should be defined in Documentation/DMA-attributes.txt.
+> + */
+> +#define DMA_ATTR_WRITE_BARRIER         (1UL << 1)
 
-Reported-by: Harvey Hunt <harvey.hunt@imgtec.com>
-Signed-off-by: Purna Chandra Mandal <purna.mandal@microchip.com>
-Reviewed-by: Harvey Hunt <harvey.hunt@imgtec.com>
+Any particular reason they start at 2, not 1?
 
----
+> +#define DMA_ATTR_WEAK_ORDERING         (1UL << 2)
+> +#define DMA_ATTR_WRITE_COMBINE         (1UL << 3)
+> +#define DMA_ATTR_NON_CONSISTENT                (1UL << 4)
+> +#define DMA_ATTR_NO_KERNEL_MAPPING     (1UL << 5)
+> +#define DMA_ATTR_SKIP_CPU_SYNC         (1UL << 6)
+> +#define DMA_ATTR_FORCE_CONTIGUOUS      (1UL << 7)
+> +#define DMA_ATTR_ALLOC_SINGLE_PAGES    (1UL << 8)
 
-Changes in v2:
-- update commit message
+Gr{oetje,eeting}s,
 
- arch/mips/pic32/pic32mzda/Makefile | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+                        Geert
 
-diff --git a/arch/mips/pic32/pic32mzda/Makefile b/arch/mips/pic32/pic32mzda/Makefile
-index 4a4c272..c286496 100644
---- a/arch/mips/pic32/pic32mzda/Makefile
-+++ b/arch/mips/pic32/pic32mzda/Makefile
-@@ -2,8 +2,7 @@
- # Joshua Henderson, <joshua.henderson@microchip.com>
- # Copyright (C) 2015 Microchip Technology, Inc.  All rights reserved.
- #
--obj-y			:= init.o time.o config.o
-+obj-y			:= config.o early_clk.o init.o time.o
- 
- obj-$(CONFIG_EARLY_PRINTK)	+= early_console.o      \
--				   early_pin.o		\
--				   early_clk.o
-+				   early_pin.o
--- 
-1.8.3.1
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

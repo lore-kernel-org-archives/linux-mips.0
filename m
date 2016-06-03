@@ -1,19 +1,14 @@
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:10269 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27039906AbcFCHuwY3yqm (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 3 Jun 2016 09:50:52 +0200
-Subject: Re: [RFC v3 02/45] dma-mapping: Use unsigned long for dma_attrs
-References: <1464881987-13203-1-git-send-email-k.kozlowski@samsung.com>
- <1464881987-13203-3-git-send-email-k.kozlowski@samsung.com>
- <CAMuHMdXWMf7Dt77wSUj8NytQqb99jzDiAz46kJkAEz+6BX3Uvw@mail.gmail.com>
-From: Krzysztof Kozlowski <k.kozlowski@samsung.com>
-Message-ID: <575136D0.6000101@samsung.com>
-Date: Fri, 03 Jun 2016 09:50:40 +0200
-MIME-version: 1.0
-In-reply-to: <CAMuHMdXWMf7Dt77wSUj8NytQqb99jzDiAz46kJkAEz+6BX3Uvw@mail.gmail.com>
-Content-type: text/plain; charset=utf-8
-Content-transfer-encoding: 7bit
-Return-Path: <k.kozlowski@samsung.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:37143 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27041868AbcFCIgerHVq8 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 3 Jun 2016 10:36:34 +0200
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Subject: [PATCH] MIPS: pistachio: Remove plat_setup_iocoherency
+Date: Fri, 3 Jun 2016 09:35:00 +0100
+Message-ID: <1464942900-39960-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <Zubair.Kakakhel@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,30 +18,80 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Stefano Stabellini <sstabellini@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Haavard Skinnemoen <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Steven Miao <realmz6@gmail.com>, Mark Salter <msalter@redhat.com>, Aurelien Jacquiot <a-jacquiot@ti.com>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, James Hogan <james.hogan@imgtec.com>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, David Howells <dhowells@redhat.com>, Ley Foon Tan <lftan@altera.com>, Jonas Bonn <jonas@southpole.se>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>, Geoff Levand <geoff@infradead.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, the arch/x86 maintainers <x86@kernel.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, David Vrabel <david.vrabel@citrix.com>, Juergen Gross <jgross@suse.com>, Bjorn Helgaas <bhelgaas@google.com>, David Airlie <airlied@linux.ie>, Joerg Roedel <joro@8bytes.org>, David Woodhouse <dwmw2@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, alpha <linux-alpha@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, xen-devel@lists.xenproject.org, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, linux-c6x-dev@linux-c6x.org, Cris <linux-cris-kernel@axis.com>, uclinux-h8-devel@lists.sourceforge.jp, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:METAG ARCHITECTURE" <linux-metag@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "moderated list:PANASONIC MN10300..." <linux-am33-list@redhat.com>, nios2-dev@lists.rocketboards.org, Parisc List <linux-parisc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, discuss@x86-64.org, linux-pci <linux-pci@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, DRI Development <dri-devel@lists.freedesktop.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, linux-mediatek@lists.infradead.org, "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>, freedreno@lists.freedesktop.org, nouveau@lists.freedesktop.org, "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>, linux-rdma <linux-rdma@vger.kernel.org>, iommu@lists.linux-foundation.org, Linux Media Mailing List <linux-media@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Linux Fbdev development list <linux-fbdev@vger.kernel.org>, Christoph Hellwig <hch@infradead.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Message-ID: <20160603075040.WZTr0pEy33BRSXLSC3sp8qNfZ8NnkS0LF9cmsLW1n3g@z>
+To: ralf@linux-mips.org
+Cc: James.Hartley@imgtec.com, Zubair.Kakakhel@imgtec.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20160603083500.sPMIBabKtbt0csPpLxcKIbUzi-IFPafY5cFqkRZgSYU@z>
 
-On 06/03/2016 09:17 AM, Geert Uytterhoeven wrote:
-> Hi Krzysztof,
-> 
-> On Thu, Jun 2, 2016 at 5:39 PM, Krzysztof Kozlowski
-> <k.kozlowski@samsung.com> wrote:
->> --- a/include/linux/dma-mapping.h
->> +++ b/include/linux/dma-mapping.h
->> @@ -5,13 +5,25 @@
-> 
->> +/**
->> + * List of possible attributes associated with a DMA mapping. The semantics
->> + * of each attribute should be defined in Documentation/DMA-attributes.txt.
->> + */
->> +#define DMA_ATTR_WRITE_BARRIER         (1UL << 1)
-> 
-> Any particular reason they start at 2, not 1?
+The Pistachio SoC does not have an IOCU.
+Hence, DMA is non-coherent.
 
-No reason. I'll fix this in next version (and trim Cc-list). Anyway the
-values of constants won't match old ones but that should not be problem
-(unless they are hard-coded somewhere).
+Remove the function checking for iocoherency and select
+CONFIG_DMA_NONCOHERENT in Kconfig
 
-Best regards,
-Krzysztof
+This code is probably accidentally inherited from Malta.
+
+Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Reviewed-by: James Hartley <james.hartley@imgtec.com>
+---
+ arch/mips/Kconfig          |  2 +-
+ arch/mips/pistachio/init.c | 25 -------------------------
+ 2 files changed, 1 insertion(+), 26 deletions(-)
+
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index ac91939..266650e 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -384,7 +384,7 @@ config MACH_PISTACHIO
+ 	select CLKSRC_MIPS_GIC
+ 	select COMMON_CLK
+ 	select CSRC_R4K
+-	select DMA_MAYBE_COHERENT
++	select DMA_NONCOHERENT
+ 	select GPIOLIB
+ 	select IRQ_MIPS_CPU
+ 	select LIBFDT
+diff --git a/arch/mips/pistachio/init.c b/arch/mips/pistachio/init.c
+index ab79828..387b9df 100644
+--- a/arch/mips/pistachio/init.c
++++ b/arch/mips/pistachio/init.c
+@@ -60,29 +60,6 @@ const char *get_system_type(void)
+ 	return sys_type;
+ }
+ 
+-static void __init plat_setup_iocoherency(void)
+-{
+-	/*
+-	 * Kernel has been configured with software coherency
+-	 * but we might choose to turn it off and use hardware
+-	 * coherency instead.
+-	 */
+-	if (mips_cm_numiocu() != 0) {
+-		/* Nothing special needs to be done to enable coherency */
+-		pr_info("CMP IOCU detected\n");
+-		hw_coherentio = 1;
+-		if (coherentio == 0)
+-			pr_info("Hardware DMA cache coherency disabled\n");
+-		else
+-			pr_info("Hardware DMA cache coherency enabled\n");
+-	} else {
+-		if (coherentio == 1)
+-			pr_info("Hardware DMA cache coherency unsupported, but enabled from command line!\n");
+-		else
+-			pr_info("Software DMA cache coherency enabled\n");
+-	}
+-}
+-
+ void __init *plat_get_fdt(void)
+ {
+ 	if (fw_arg0 != -2)
+@@ -93,8 +70,6 @@ void __init *plat_get_fdt(void)
+ void __init plat_mem_setup(void)
+ {
+ 	__dt_setup_arch(plat_get_fdt());
+-
+-	plat_setup_iocoherency();
+ }
+ 
+ #define DEFAULT_CPC_BASE_ADDR	0x1bde0000
+-- 
+1.9.1

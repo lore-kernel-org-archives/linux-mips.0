@@ -1,11 +1,11 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:49776 "EHLO
+Received: from mail.linuxfoundation.org ([140.211.169.12]:49954 "EHLO
         mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27042248AbcFDSlLdLG8q (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 4 Jun 2016 20:41:11 +0200
-Subject: Patch "MIPS: lib: Mark intrinsics notrace" has been added to the 4.5-stable tree
+        by eddie.linux-mips.org with ESMTP id S27042264AbcFDSlckUzwq (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 4 Jun 2016 20:41:32 +0200
+Subject: Patch "MIPS: lib: Mark intrinsics notrace" has been added to the 4.6-stable tree
 From: <gregkh@linuxfoundation.org>
-Date: Sat, 04 Jun 2016 11:41:10 -0700
-Message-ID: <1465065670153144@kroah.com>
+Date: Sat, 04 Jun 2016 11:41:23 -0700
+Message-ID: <146506568321020@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -21,19 +21,19 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: harvey.hunt@imgtec.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, ralf@linux-mips.org
 Cc: stable@vger.kernel.org, stable-commits@vger.kernel.org
-Message-ID: <20160604184110.9YlTtg6koilStWMOIkR_Ap0AUdIhDRDHQbYQbmT6eBc@z>
+Message-ID: <20160604184123.rBbUZJDvXUInX_gn2QrlzD8aB6RNKDpKA7CQ6qf5Jo0@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
     MIPS: lib: Mark intrinsics notrace
 
-to the 4.5-stable tree which can be found at:
+to the 4.6-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      mips-lib-mark-intrinsics-notrace.patch
-and it can be found in the queue-4.5 subdirectory.
+and it can be found in the queue-4.6 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.

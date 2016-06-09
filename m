@@ -1,21 +1,18 @@
-Received: from mail-vk0-f65.google.com ([209.85.213.65]:33554 "EHLO
-        mail-vk0-f65.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27034973AbcFIWgmxpMBr (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 10 Jun 2016 00:36:42 +0200
-Received: by mail-vk0-f65.google.com with SMTP id z65so8634924vka.0
-        for <linux-mips@linux-mips.org>; Thu, 09 Jun 2016 15:36:42 -0700 (PDT)
+Received: from mail-oi0-f41.google.com ([209.85.218.41]:36343 "EHLO
+        mail-oi0-f41.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27034973AbcFIWqhs4Mkr (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 10 Jun 2016 00:46:37 +0200
+Received: by mail-oi0-f41.google.com with SMTP id p204so86683630oih.3
+        for <linux-mips@linux-mips.org>; Thu, 09 Jun 2016 15:46:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAE9FiQWw0pUB=1iDrX_1qyMFAUGQidSaV7CPc0aNb2CzPB-fZw@mail.gmail.com>
-References: <20160604000642.28162-1-yinghai@kernel.org> <20160604000642.28162-2-yinghai@kernel.org>
- <20160608210322.GA4248@localhost> <CAE9FiQXPmG6UYYGHG52_i8vaBJ5yPm6Z4Zfx_BhQxVhyWC5fnw@mail.gmail.com>
- <CAE9FiQWw0pUB=1iDrX_1qyMFAUGQidSaV7CPc0aNb2CzPB-fZw@mail.gmail.com>
-From: Yinghai Lu <yinghai@kernel.org>
-Date: Thu, 9 Jun 2016 15:36:35 -0700
-Message-ID: <CAE9FiQUNZ9xShfCHFvKobOJQ4zBfOrq_s=uYQAcR+YguigNjrQ@mail.gmail.com>
-Subject: Re: [PATCH v12 01/15] PCI: Let pci_mmap_page_range() take extra
- resource pointer
+In-Reply-To: <1465506124-21866-6-git-send-email-keescook@chromium.org>
+References: <1465506124-21866-1-git-send-email-keescook@chromium.org> <1465506124-21866-6-git-send-email-keescook@chromium.org>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Thu, 9 Jun 2016 15:46:10 -0700
+Message-ID: <CALCETrUsqr3YbD=5mA9mRmgYqiHeEoLpWi-teyexUo_jR1BaFA@mail.gmail.com>
+Subject: Re: [PATCH 05/14] seccomp: recheck the syscall after RET_TRACE
 Content-Type: text/plain; charset=UTF-8
-Return-Path: <yhlu.kernel@gmail.com>
+Return-Path: <luto@amacapital.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,30 +22,35 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, David Miller <davem@davemloft.net>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Linus Torvalds <torvalds@linux-foundation.org>, Wei Yang <weiyang@linux.vnet.ibm.com>, Khalid Aziz <khalid.aziz@oracle.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-cris-kernel@axis.com, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, linux-am33-list@redhat.com, linux-parisc@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-sh@vger.kernel.org, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, linux-xtensa@linux-xtensa.org
-Message-ID: <20160609223635.q_x4tV87vC4KPLiFCQPIqWbmHHvo9WO8s5IA4QJRspI@z>
+To: Kees Cook <keescook@chromium.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Andy Lutomirski <luto@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Metcalf <cmetcalf@mellanox.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>, James Hogan <james.hogan@imgtec.com>, Jeff Dike <jdike@addtoit.com>, linux-arch <linux-arch@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "Maciej W. Rozycki" <macro@imgtec.com>, Mark Rutland <mark.rutland@arm.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Paul Mackerras <paulus@samba.org>, Ralf Baechle <ralf@linux-mips.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Will Deacon <will.deacon@arm.com>, X86 ML <x86@kernel.org>
+Message-ID: <20160609224610.Ezbtgz5FrfgvIfQ5zUCQMjKXRsxsew_Av8T4U2HJyfY@z>
 
-On Wed, Jun 8, 2016 at 5:00 PM, Yinghai Lu <yinghai@kernel.org> wrote:
-> On Wed, Jun 8, 2016 at 3:35 PM, Yinghai Lu <yinghai@kernel.org> wrote:
+On Thu, Jun 9, 2016 at 2:01 PM, Kees Cook <keescook@chromium.org> wrote:
+> When RET_TRACE triggers, a tracer may change a syscall into something that
+> should be filtered by seccomp. This re-runs seccomp after a trace event
+> to make sure things continue to pass.
 >
->> At the same time, can you kill __pci_mmap_set_pgprot() for powerpc.
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> ---
+>  kernel/seccomp.c | 21 ++++++++++++++++++---
+>  1 file changed, 18 insertions(+), 3 deletions(-)
 >
-> Can you please put your two patches and this attached one into to pci/next?
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index 14a37d71b612..54d15eb2b701 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -556,7 +556,8 @@ void secure_computing_strict(int this_syscall)
+>  #else
 >
-> Then I could send updated PCI: Let pci_mmap_page_range() take resource address.
+>  #ifdef CONFIG_SECCOMP_FILTER
+> -static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd)
+> +static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+> +                           const bool recheck_after_trace)
 
-Thanks for putting those patches in pci/resource branch.
+This patch looks good with one minor nit: I read this as "pass true if
+you want to recheck after trace", which is exactly the opposite of how
+it works.
 
-I just re post updated for second patch.
-
-[v12.update2,02/15] PCI: Let pci_mmap_page_range() take resource address
-http://patchwork.ozlabs.org/patch/633399/
-
-And the [v12 01/15] is not needed anymore.
-
-patch3 to patch15 should still can be applied to pci/resource without problem.
-
-Thanks
-
-Yinghai
+--Andy

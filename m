@@ -1,19 +1,19 @@
-Received: from mail-wm0-f44.google.com ([74.125.82.44]:35482 "EHLO
-        mail-wm0-f44.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27033640AbcFJCBvsvO5W (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 10 Jun 2016 04:01:51 +0200
-Received: by mail-wm0-f44.google.com with SMTP id v199so129873715wmv.0
-        for <linux-mips@linux-mips.org>; Thu, 09 Jun 2016 19:01:51 -0700 (PDT)
+Received: from smtprelay.synopsys.com ([198.182.60.111]:44934 "EHLO
+        smtprelay.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27041564AbcFJK4PJ0Od8 convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 10 Jun 2016 12:56:15 +0200
+From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Subject: Re: [PATCH v4 43/44] dma-mapping: Remove dma_get_attr
+Date: Fri, 10 Jun 2016 10:55:52 +0000
+Message-ID: <C2D7FE5348E1B147BCA15975FBA2307501069390A9@US01WEMBX2.internal.synopsys.com>
+References: <1465553521-27303-1-git-send-email-k.kozlowski@samsung.com>
+ <1465553521-27303-44-git-send-email-k.kozlowski@samsung.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <CALCETrVk-UauwaRtZZR0fKQO6kyAx-r=ZCurKRdhQk9nA-TqeQ@mail.gmail.com>
-References: <1465506124-21866-1-git-send-email-keescook@chromium.org>
- <1465506124-21866-7-git-send-email-keescook@chromium.org> <CALCETrVk-UauwaRtZZR0fKQO6kyAx-r=ZCurKRdhQk9nA-TqeQ@mail.gmail.com>
-From: Kees Cook <keescook@chromium.org>
-Date: Thu, 9 Jun 2016 19:01:45 -0700
-Message-ID: <CAGXu5jKzOzfzMuOqfVCpgyzXrPrKYC60-AOYQmRVQUiqFpB0JQ@mail.gmail.com>
-Subject: Re: [PATCH 06/14] x86/ptrace: run seccomp after ptrace
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <keescook@google.com>
+Return-Path: <Vineet.Gupta1@synopsys.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,67 +23,16 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>, Andy Lutomirski <luto@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Metcalf <cmetcalf@mellanox.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Helge Deller <deller@gmx.de>, "James E.J. Bottomley" <jejb@parisc-linux.org>, James Hogan <james.hogan@imgtec.com>, Jeff Dike <jdike@addtoit.com>, linux-arch <linux-arch@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-parisc <linux-parisc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "Maciej W. Rozycki" <macro@imgtec.com>, Mark Rutland <mark.rutland@arm.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Paul Mackerras <paulus@samba.org>, Ralf Baechle <ralf@linux-mips.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, "user-mode-linux-devel@lists.sourceforge.net" <user-mode-linux-devel@lists.sourceforge.net>, Will Deacon <will.deacon@arm.com>
-Message-ID: <20160610020145.ITIoPd3yENG5eWnVWOdDmXRFlpuq3WRXcQtnBtWK8p0@z>
+To: Krzysztof Kozlowski <k.kozlowski@samsung.com>, Andrew Morton <akpm@linux-foundation.org>
+Cc: "hch@infradead.org" <hch@infradead.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Jonathan Corbet <corbet@lwn.net>, Vineet Gupta <Vineet.Gupta1@synopsys.com>, Russell King <linux@armlinux.org.uk>, Stefano Stabellini <sstabellini@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Haavard Skinnemoen <hskinnemoen@gmail.com>, Hans-Christian Egtvedt <egtvedt@samfundet.no>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Jonas Bonn <jonas@southpole.se>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Mark Yao <mark.yao@rock-chips.com>, David Airlie <airlied@linux.ie>, Heiko Stuebner <heiko@sntech.de>, Joerg Roedel <joro@8bytes.org>, Pawel Osciak <pawel@osciak.com>, Marek Szyprowski <m.szyprowski@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, Mauro Carvalho Chehab <mchehab@osg.samsung.com>, Andrea Gelmini <andrea.gelmini@gelma.net>, Alexey Brodkin <Alexey.Brodkin@synopsys.com>, Rabin Vincent <rabin@rab.in>, Alexandre Courbot <acourbot@nvidia.com>, Doug Anderson <armlinux@m.disordat.com>, Robin Murphy <Robin.Murphy@arm.com>, Jisheng Zhang <jszhang@marvell.com>, "Suthikulpanit, Suravee" <Suravee.Suthikulpanit@amd.com>, Mel Gorman <mgorman@techsingularity.net>, Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@suse.com>, Max Filippov <jcmvbkbc@gmail.com>, Guenter Roeck <linux@roeck-us.net>, Alex Smith <alex.smith@imgtec.com>, Qais Yousef <qais.yousef@imgtec.com>, Matt Redfearn <matt.redfearn@imgtec.com>, Akinobu Mita <akinobu.mita@gmail.com>, "Luis R. Rodriguez" <mcgrof@suse.com>, Christian Borntraeger <borntraeger@de.ibm.com>, Zhen Lei <thunder.leizhen@huawei.com>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-rockchip@lists.infradead.org" <linux-rockchip@lists.infradead.org>, "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+Message-ID: <20160610105552.qgpkWpecXmTuxDat91Pq5UYlTYWpbMGrgwefNFRk8Us@z>
 
-On Thu, Jun 9, 2016 at 3:52 PM, Andy Lutomirski <luto@amacapital.net> wrote:
-> On Thu, Jun 9, 2016 at 2:01 PM, Kees Cook <keescook@chromium.org> wrote:
->> This moves seccomp after ptrace on x86 to that seccomp can catch changes
->> made by ptrace. Emulation should skip the rest of processing too.
->>
->> We can get rid of test_thread_flag because there's no longer any
->> opportunity for seccomp to mess with ptrace state before invoking
->> ptrace.
->>
->> Suggested-by: Andy Lutomirski <luto@kernel.org>
->> Signed-off-by: Kees Cook <keescook@chromium.org>
->> Cc: x86@kernel.org
->> Cc: Andy Lutomirski <luto@kernel.org>
->> ---
->>  arch/x86/entry/common.c | 22 ++++++++++++----------
->>  1 file changed, 12 insertions(+), 10 deletions(-)
->>
->> diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
->> index df56ca394877..81c0e12d831c 100644
->> --- a/arch/x86/entry/common.c
->> +++ b/arch/x86/entry/common.c
->> @@ -73,6 +73,7 @@ static long syscall_trace_enter(struct pt_regs *regs)
->>
->>         struct thread_info *ti = pt_regs_to_thread_info(regs);
->>         unsigned long ret = 0;
->> +       bool emulated = false;
->>         u32 work;
->>
->>         if (IS_ENABLED(CONFIG_DEBUG_ENTRY))
->> @@ -80,11 +81,19 @@ static long syscall_trace_enter(struct pt_regs *regs)
->>
->>         work = ACCESS_ONCE(ti->flags) & _TIF_WORK_SYSCALL_ENTRY;
->>
->> +       if (unlikely(work & _TIF_SYSCALL_EMU))
->> +               emulated = true;
->> +
->> +       if ((emulated || (work & _TIF_SYSCALL_TRACE)) &&
->> +           tracehook_report_syscall_entry(regs))
->> +               return -1L;
->> +
->> +       if (emulated)
->> +               return -1L;
->> +
+On Friday 10 June 2016 03:44 PM, Krzysztof Kozlowski wrote:
+> After switching DMA attributes to unsigned long it is easier to just
+> compare the bits.
 >
-> I think that this code will result in ptrace-induced skips calling the
-> audit exit hook but not the audit entry hook.  I don't know whether
-> this is a problem.  It's also worth making sure that ptracing a
-> seccomp-skipped syscall calls the exit hook with the right regs.
->
-> I suspect it's fine, but I want to think about it a little bit more.
+> Signed-off-by: Krzysztof Kozlowski <k.kozlowski@samsung.com>
+> [for avr32]
+> Acked-by: Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>
 
-I don't think this is true, since all architectures already needed to
-handle an immediate return from seccomp, so audit shouldn't be touched
-on the exit path either.
-
--Kees
-
--- 
-Kees Cook
-Chrome OS & Brillo Security
+Acked-by: Vineet Gupta <vgupta@synopsys.com>   #for arch/arc

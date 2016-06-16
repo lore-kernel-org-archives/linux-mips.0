@@ -1,16 +1,15 @@
-Received: from mail-oi0-f52.google.com ([209.85.218.52]:35956 "EHLO
-        mail-oi0-f52.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S27042522AbcFPGRXLOvNj convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 16 Jun 2016 08:17:23 +0200
+Received: from mailapp01.imgtec.com ([195.59.15.196]:20686 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S27042510AbcFPPfvx1CF9 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 16 Jun 2016 17:35:51 +0200
+From: Harvey Hunt <harvey.hunt@imgtec.com>
+Subject: [PATCH] MIPS: tools: Fix relocs tool compiler warnings
+Date: Thu, 16 Jun 2016 16:35:39 +0100
+Message-ID: <20160616153539.10600-1-harvey.hunt@imgtec.com>
 MIME-Version: 1.0
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Date: Thu, 16 Jun 2016 08:17:16 +0200
-Message-ID: <CACna6rwCPFWj1wJpm8sW2ZSfNpTRxi9-9MmzKSbJ617HW7LTNw@mail.gmail.com>
-Subject: BCM4704 stopped booting with 4.4 (due to vmlinux size?)
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Return-Path: <zajec5@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-Path: <Harvey.Hunt@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,8 +19,73 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, David Daney <ddaney.cavm@gmail.com>, David Daney <david.daney@cavium.com>, =?UTF-8?Q?Michael_B=C3=BCsch?= <m@bues.ch>, Hauke Mehrtens <hauke@hauke-m.de>, Larry Finger <larry.finger@lwfinger.net>, Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>, Paul Wassi <p.wassi@gmx.at>
-Message-ID: <20160616061716.ZgiS7AOCBOUeczmPvFnRHGXcGnXxSe53oVyDB-NQxfM@z>
+To: ralf@linux-mips.org
+Cc: Harvey Hunt <harvey.hunt@imgtec.com>, Matt Redfearn <matt.redfearn@imgtec.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20160616153539.nTWPtTU6BfWTnzoj0czNLdQFCEiIghgGyCvOKQLqOR4@z>
 
-Hello,
+When using clang as HOSTCC, the following warnings appear:
+
+In file included from arch/mips/boot/tools/relocs_64.c:27:0:
+arch/mips/boot/tools/relocs.c: In function ‘read_relocs’:
+arch/mips/boot/tools/relocs.c:397:4: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+    ELF_R_SYM(rel->r_info) = elf32_to_cpu(ELF_R_SYM(rel->r_info));
+    ^~~~~~~~~
+arch/mips/boot/tools/relocs.c:397:4: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+arch/mips/boot/tools/relocs.c: In function ‘walk_relocs’:
+arch/mips/boot/tools/relocs.c:491:4: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+    Elf_Sym *sym = &sh_symtab[ELF_R_SYM(rel->r_info)];
+    ^~~~~~~
+arch/mips/boot/tools/relocs.c: In function ‘do_reloc’:
+arch/mips/boot/tools/relocs.c:502:2: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+  unsigned r_type = ELF_R_TYPE(rel->r_info);
+  ^~~~~~~~
+arch/mips/boot/tools/relocs.c: In function ‘do_reloc_info’:
+arch/mips/boot/tools/relocs.c:641:3: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+   rel_type(ELF_R_TYPE(rel->r_info)),
+   ^~~~~~~~
+
+Fix them by making Elf64_Mips_Rela a union
+
+Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
+Cc: Matt Redfearn <matt.redfearn@imgtec.com>
+Cc: linux-mips@linux-mips.org
+Cc: linux-kernel@vger.kernel.org
+---
+ arch/mips/boot/tools/relocs_64.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
+
+diff --git a/arch/mips/boot/tools/relocs_64.c b/arch/mips/boot/tools/relocs_64.c
+index b671b5e..06066e6a 100644
+--- a/arch/mips/boot/tools/relocs_64.c
++++ b/arch/mips/boot/tools/relocs_64.c
+@@ -9,17 +9,20 @@
+ 
+ typedef uint8_t Elf64_Byte;
+ 
+-typedef struct {
+-	Elf64_Word r_sym;	/* Symbol index.  */
+-	Elf64_Byte r_ssym;	/* Special symbol.  */
+-	Elf64_Byte r_type3;	/* Third relocation.  */
+-	Elf64_Byte r_type2;	/* Second relocation.  */
+-	Elf64_Byte r_type;	/* First relocation.  */
++typedef union {
++	struct {
++		Elf64_Word r_sym;	/* Symbol index.  */
++		Elf64_Byte r_ssym;	/* Special symbol.  */
++		Elf64_Byte r_type3;	/* Third relocation.  */
++		Elf64_Byte r_type2;	/* Second relocation.  */
++		Elf64_Byte r_type;	/* First relocation.  */
++	} fields;
++	Elf64_Xword unused;
+ } Elf64_Mips_Rela;
+ 
+ #define ELF_CLASS               ELFCLASS64
+-#define ELF_R_SYM(val)          (((Elf64_Mips_Rela *)(&val))->r_sym)
+-#define ELF_R_TYPE(val)         (((Elf64_Mips_Rela *)(&val))->r_type)
++#define ELF_R_SYM(val)          (((Elf64_Mips_Rela *)(&val))->fields.r_sym)
++#define ELF_R_TYPE(val)         (((Elf64_Mips_Rela *)(&val))->fields.r_type)
+ #define ELF_ST_TYPE(o)          ELF64_ST_TYPE(o)
+ #define ELF_ST_BIND(o)          ELF64_ST_BIND(o)
+ #define ELF_ST_VISIBILITY(o)    ELF64_ST_VISIBILITY(o)
+-- 
+2.8.3

@@ -1,15 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:20686 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27042510AbcFPPfvx1CF9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 16 Jun 2016 17:35:51 +0200
-From: Harvey Hunt <harvey.hunt@imgtec.com>
-Subject: [PATCH] MIPS: tools: Fix relocs tool compiler warnings
-Date: Thu, 16 Jun 2016 16:35:39 +0100
-Message-ID: <20160616153539.10600-1-harvey.hunt@imgtec.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-Path: <Harvey.Hunt@imgtec.com>
+Received: from mail-wm0-f52.google.com ([74.125.82.52]:38099 "EHLO
+        mail-wm0-f52.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27042654AbcFPV32ey0o- (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 16 Jun 2016 23:29:28 +0200
+Received: by mail-wm0-f52.google.com with SMTP id m124so86982025wme.1
+        for <linux-mips@linux-mips.org>; Thu, 16 Jun 2016 14:29:28 -0700 (PDT)
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH V2 57/63] clocksource/drivers/ralink: Convert init function to return error
+Date: Thu, 16 Jun 2016 23:27:16 +0200
+Message-ID: <1466112442-31105-58-git-send-email-daniel.lezcano@linaro.org>
+In-Reply-To: <1466112442-31105-1-git-send-email-daniel.lezcano@linaro.org>
+References: <1466112442-31105-1-git-send-email-daniel.lezcano@linaro.org>
+Return-Path: <daniel.lezcano@linaro.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,73 +20,76 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org
-Cc: Harvey Hunt <harvey.hunt@imgtec.com>, Matt Redfearn <matt.redfearn@imgtec.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20160616153539.nTWPtTU6BfWTnzoj0czNLdQFCEiIghgGyCvOKQLqOR4@z>
+To: daniel.lezcano@linaro.org, tglx@linutronix.de
+Cc: linux-kernel@vger.kernel.org, John Crispin <john@phrozen.org>, Ralf Baechle <ralf@linux-mips.org>, "open list:RALINK MIPS ARCHI..." <linux-mips@linux-mips.org>
+Message-ID: <20160616212716.2KOQoJEfua_uwN7U6rnswjaD1NxdRO6pjSCgMDWlH00@z>
 
-When using clang as HOSTCC, the following warnings appear:
+The init functions do not return any error. They behave as the following:
 
-In file included from arch/mips/boot/tools/relocs_64.c:27:0:
-arch/mips/boot/tools/relocs.c: In function ‘read_relocs’:
-arch/mips/boot/tools/relocs.c:397:4: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
-    ELF_R_SYM(rel->r_info) = elf32_to_cpu(ELF_R_SYM(rel->r_info));
-    ^~~~~~~~~
-arch/mips/boot/tools/relocs.c:397:4: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
-arch/mips/boot/tools/relocs.c: In function ‘walk_relocs’:
-arch/mips/boot/tools/relocs.c:491:4: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
-    Elf_Sym *sym = &sh_symtab[ELF_R_SYM(rel->r_info)];
-    ^~~~~~~
-arch/mips/boot/tools/relocs.c: In function ‘do_reloc’:
-arch/mips/boot/tools/relocs.c:502:2: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
-  unsigned r_type = ELF_R_TYPE(rel->r_info);
-  ^~~~~~~~
-arch/mips/boot/tools/relocs.c: In function ‘do_reloc_info’:
-arch/mips/boot/tools/relocs.c:641:3: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
-   rel_type(ELF_R_TYPE(rel->r_info)),
-   ^~~~~~~~
+  - panic, thus leading to a kernel crash while another timer may work and
+       make the system boot up correctly
 
-Fix them by making Elf64_Mips_Rela a union
+  or
 
-Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: Matt Redfearn <matt.redfearn@imgtec.com>
-Cc: linux-mips@linux-mips.org
-Cc: linux-kernel@vger.kernel.org
+  - print an error and let the caller unaware if the state of the system
+
+Change that by converting the init functions to return an error conforming
+to the CLOCKSOURCE_OF_RET prototype.
+
+Proper error handling (rollback, errno value) will be changed later case
+by case, thus this change just return back an error or success in the init
+function.
+
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
- arch/mips/boot/tools/relocs_64.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ arch/mips/ralink/cevt-rt3352.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/arch/mips/boot/tools/relocs_64.c b/arch/mips/boot/tools/relocs_64.c
-index b671b5e..06066e6a 100644
---- a/arch/mips/boot/tools/relocs_64.c
-+++ b/arch/mips/boot/tools/relocs_64.c
-@@ -9,17 +9,20 @@
+diff --git a/arch/mips/ralink/cevt-rt3352.c b/arch/mips/ralink/cevt-rt3352.c
+index 3ad0b07..f2d3c79 100644
+--- a/arch/mips/ralink/cevt-rt3352.c
++++ b/arch/mips/ralink/cevt-rt3352.c
+@@ -117,11 +117,13 @@ static int systick_set_oneshot(struct clock_event_device *evt)
+ 	return 0;
+ }
  
- typedef uint8_t Elf64_Byte;
+-static void __init ralink_systick_init(struct device_node *np)
++static int __init ralink_systick_init(struct device_node *np)
+ {
++	int ret;
++
+ 	systick.membase = of_iomap(np, 0);
+ 	if (!systick.membase)
+-		return;
++		return -ENXIO;
  
--typedef struct {
--	Elf64_Word r_sym;	/* Symbol index.  */
--	Elf64_Byte r_ssym;	/* Special symbol.  */
--	Elf64_Byte r_type3;	/* Third relocation.  */
--	Elf64_Byte r_type2;	/* Second relocation.  */
--	Elf64_Byte r_type;	/* First relocation.  */
-+typedef union {
-+	struct {
-+		Elf64_Word r_sym;	/* Symbol index.  */
-+		Elf64_Byte r_ssym;	/* Special symbol.  */
-+		Elf64_Byte r_type3;	/* Third relocation.  */
-+		Elf64_Byte r_type2;	/* Second relocation.  */
-+		Elf64_Byte r_type;	/* First relocation.  */
-+	} fields;
-+	Elf64_Xword unused;
- } Elf64_Mips_Rela;
+ 	systick_irqaction.name = np->name;
+ 	systick.dev.name = np->name;
+@@ -131,16 +133,21 @@ static void __init ralink_systick_init(struct device_node *np)
+ 	systick.dev.irq = irq_of_parse_and_map(np, 0);
+ 	if (!systick.dev.irq) {
+ 		pr_err("%s: request_irq failed", np->name);
+-		return;
++		return -EINVAL;
+ 	}
  
- #define ELF_CLASS               ELFCLASS64
--#define ELF_R_SYM(val)          (((Elf64_Mips_Rela *)(&val))->r_sym)
--#define ELF_R_TYPE(val)         (((Elf64_Mips_Rela *)(&val))->r_type)
-+#define ELF_R_SYM(val)          (((Elf64_Mips_Rela *)(&val))->fields.r_sym)
-+#define ELF_R_TYPE(val)         (((Elf64_Mips_Rela *)(&val))->fields.r_type)
- #define ELF_ST_TYPE(o)          ELF64_ST_TYPE(o)
- #define ELF_ST_BIND(o)          ELF64_ST_BIND(o)
- #define ELF_ST_VISIBILITY(o)    ELF64_ST_VISIBILITY(o)
+-	clocksource_mmio_init(systick.membase + SYSTICK_COUNT, np->name,
+-			SYSTICK_FREQ, 301, 16, clocksource_mmio_readl_up);
++	ret = clocksource_mmio_init(systick.membase + SYSTICK_COUNT, np->name,
++				    SYSTICK_FREQ, 301, 16,
++				    clocksource_mmio_readl_up);
++	if (ret)
++		return ret;
+ 
+ 	clockevents_register_device(&systick.dev);
+ 
+ 	pr_info("%s: running - mult: %d, shift: %d\n",
+ 			np->name, systick.dev.mult, systick.dev.shift);
++
++	return 0;
+ }
+ 
+-CLOCKSOURCE_OF_DECLARE(systick, "ralink,cevt-systick", ralink_systick_init);
++CLOCKSOURCE_OF_DECLARE_RET(systick, "ralink,cevt-systick", ralink_systick_init);
 -- 
-2.8.3
+1.9.1

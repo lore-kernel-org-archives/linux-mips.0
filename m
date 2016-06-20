@@ -1,18 +1,17 @@
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:60171 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27041677AbcFTHo6KaFlp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 20 Jun 2016 09:44:58 +0200
-Subject: Re: [PATCH V2 63/63] clocksources: Switch back to the clksrc table
-References: <1466112442-31105-1-git-send-email-daniel.lezcano@linaro.org>
- <1466112442-31105-64-git-send-email-daniel.lezcano@linaro.org>
-From: Patrice Chotard <patrice.chotard@st.com>
-Message-ID: <57679E99.6090607@st.com>
-Date: Mon, 20 Jun 2016 09:43:21 +0200
+Received: from mailapp01.imgtec.com ([195.59.15.196]:10593 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S27041697AbcFTVRUP6SBy (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 20 Jun 2016 23:17:20 +0200
+Date: Mon, 20 Jun 2016 22:17:12 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Please apply to stable, commit d7de413475f4 ("MIPS: Fix 64k page
+ support for 32 bit kernels.")
+Message-ID: <20160620211712.GO30921@jhogan-linux.le.imgtec.org>
 MIME-Version: 1.0
-In-Reply-To: <1466112442-31105-64-git-send-email-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <patrice.chotard@st.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="5G50dybFf3pRZKd7"
+Content-Disposition: inline
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,38 +21,43 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>, tglx@linutronix.de
-Cc: linux-kernel@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Michal Simek <monstr@monstr.eu>, John Crispin <john@phrozen.org>, Ralf Baechle <ralf@linux-mips.org>, Ley Foon Tan <lftan@altera.com>, Srinivas Kandagatla <srinivas.kandagatla@gmail.com>, Maxime Coquelin <maxime.coquelin@st.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, =?UTF-8?Q?S=c3=b6ren_Brinkmann?= <soren.brinkmann@xilinx.com>, Linus Walleij <linus.walleij@linaro.org>, Alexander Shiyan <shc_work@mail.ru>, Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Carlo Caione <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Liviu Dudau <liviu.dudau@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Matthias Brugger <matthias.bgg@gmail.com>, Heiko Stuebner <heiko@sntech.de>, Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, Thierry Reding <thierry.reding@gmail.com>, Alexandre Courbot <gnurou@gmail.com>, =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <kernel@pengutronix.de>, Joachim Eastwood <manabian@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>, Barry Song <baohua@kernel.org>, Baruch Siach <baruch@tkos.co.il>, Santosh Shilimkar <ssantosh@kernel.org>, Neil Armstrong <narmstrong@baylibre.com>, Tony Prisk <linux@prisktech.co.nz>, Arnd Bergmann <arnd@arndb.de>, John Stultz <john.stultz@linaro.org>, Noam Camus <noamc@ezchip.com>, Viresh Kumar <viresh.kumar@linaro.org>, Adam Buchbinder <adam.buchbinder@gmail.com>, Tony Lindgren <tony@atomide.com>, Mark Rutland <mark.rutland@arm.com>, Felipe Balbi <balbi@ti.com>, Marc Gonzalez <marc_gonzalez@sigmadesigns.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Hanjun Guo <hanjun.guo@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <Marc.Zyngier@arm.com>, "open list:SYNOPSYS ARC ARCH..." <linux-snps-arc@lists.infradead.org>, "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>, "open list:RALINK MIPS ARCHI..." <linux-mips@linux-mips.org>, "moderated list:NIOS2 ARCHITECTURE" <nios2-dev@lists.rocketboards.org>, "open list:ARM/STI ARCHITECTURE" <kernel@stlinux.com>, "moderated list:BROADCOM BCM2835..." <linux-rpi-kernel@lists.infradead.org>, "open list:BROADCOM BCM281XX..." <bcm-kernel-feedback-list@broadcom.com>, "moderated list:ARM/SAMSUNG EXYNO..." <linux-samsung-soc@vger.kernel.org>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>, "moderated list:ARM/Mediatek SoC..." <linux-mediatek@lists.infradead.org>, "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>, "open list:TEGRA ARCHITECTUR..." <linux-tegra@vger.kernel.org>, "open list:GENERIC INCLUDE/A..." <linux-arch@vger.kernel.org>
-Message-ID: <20160620074321.fsAVqbmJ1Cu2KpH2HOXpBq9LkWDbKW8VcDV_Of6KOWg@z>
+To: stable@vger.kernel.org
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Harvey Hunt <Harvey.Hunt@imgtec.com>
+Message-ID: <20160620211712.UqKPdddffArolG1CU32-UutWR7G5xVxNl2_pqLulhbk@z>
 
+--5G50dybFf3pRZKd7
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
+Hi stable maintainers,
 
-On 06/16/2016 11:27 PM, Daniel Lezcano wrote:
-> All the clocksource drivers's init function are now converted to return
-> an error code. CLOCKSOURCE_OF_DECLARE is no longer used as well as the
-> clksrc-of table.
->
-> Let's convert back the names:
->   - CLOCKSOURCE_OF_DECLARE_RET => CLOCKSOURCE_OF_DECLARE
->   - clksrc-of-ret              => clksrc-of
->
->
->   drivers/clocksource/clksrc_st_lpc.c       |  2 +-
-> diff --git a/drivers/clocksource/clksrc_st_lpc.c b/drivers/clocksource/clksrc_st_lpc.c
-> index c9022a9..03cc492 100644
-> --- a/drivers/clocksource/clksrc_st_lpc.c
-> +++ b/drivers/clocksource/clksrc_st_lpc.c
-> @@ -132,4 +132,4 @@ static int __init st_clksrc_of_register(struct device_node *np)
->   
->   	return ret;
->   }
-> -CLOCKSOURCE_OF_DECLARE_RET(ddata, "st,stih407-lpc", st_clksrc_of_register);
-> +CLOCKSOURCE_OF_DECLARE(ddata, "st,stih407-lpc", st_clksrc_of_register);
->
-
-
-For STi :
-
-Acked-by: Patrice Chotard <patrice.chotard@st.com>
+Please could commit d7de413475f443957a0c1d256e405d19b3a2cb22 ("MIPS: Fix
+64k page support for 32 bit kernels.") be applied to stable branches.
+This fix was merged into mainline for v4.5-rc4.
 
 Thanks
+James
+
+--5G50dybFf3pRZKd7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJXaF1YAAoJEGwLaZPeOHZ6bRoP/2+qYAvs8YX1yi6ggeCLdHcq
+hL0JK350Zmu9s8Ph5pLvti3ZfR6bHtyPUVyuDuAOEBdfQQM7UwglFRdrJ+5wlQDy
+rQDz56oR+HaLfg7vy8c5e0Q9OXtVAud90zaIUKKhf8mPgy0i6uViI8r80ETi7O4z
+dzFc9/BttlsRYPYw9f1G7VFVSYU+fn69kdIrh3LiYNMecjN3KmcOygazId+6IkoZ
+o7wpwtC+vQCICzps6x7HpFhVt4dtXhhZNS2TuBVw/IirwiYu++1lzkcRutcXRrD+
+UxjYH/TCLgTj585mcNa/KX2OIZEWm9ProwWAHKwlsa/6rl1KFjtQCb51WNrWjScQ
+uJEEEwQhSXrH2PFdntLuEtv384CudzvQHkhOmsdCTJy89+5NzFJYlHxRRksfJ7eE
+qYHQzyeb1aJD+wvUPhQbXnRIxhJ5+1t8NR3gtKb28gWCnFRTzbJJKyEILLJEBR3X
+D44h6R+YuQxdVnug1QFxEODOdgAO0XmUzBGyWSbfN5IR9J5AilzwHe/uvVmaPzxE
+KjBY0DgZfKjnV6UpJJPHRemhgoqOuCINcOXfXiUUgROzFo+LfjE0IGXyeof50EpX
+j8DFBVbPnZpctxcHoG3HEBV0UJuTWhBtMAhRArnQepY9oIbC/bCPaxOj8KeLNTYX
+jHOAuHgDLj9DAPlM6p5+
+=KnJT
+-----END PGP SIGNATURE-----
+
+--5G50dybFf3pRZKd7--

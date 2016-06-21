@@ -1,17 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:10593 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S27041697AbcFTVRUP6SBy (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 20 Jun 2016 23:17:20 +0200
-Date: Mon, 20 Jun 2016 22:17:12 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Please apply to stable, commit d7de413475f4 ("MIPS: Fix 64k page
- support for 32 bit kernels.")
-Message-ID: <20160620211712.GO30921@jhogan-linux.le.imgtec.org>
+Received: from smtprelay.synopsys.com ([198.182.47.9]:57501 "EHLO
+        smtprelay.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S27041988AbcFUFauFGjM- convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 21 Jun 2016 07:30:50 +0200
+From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Subject: Re: [PATCH] devpts: remove DEVPTS_MULTIPLE_INSTANCES from all
+ configs
+Date: Tue, 21 Jun 2016 05:30:40 +0000
+Message-ID: <C2D7FE5348E1B147BCA15975FBA230750106944A83@us01wembx1.internal.synopsys.com>
+References: <20160620091258.11233-1-00moses.alexander00@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5G50dybFf3pRZKd7"
-Content-Disposition: inline
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <Vineet.Gupta1@synopsys.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,43 +23,17 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: stable@vger.kernel.org
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Harvey Hunt <Harvey.Hunt@imgtec.com>
-Message-ID: <20160620211712.UqKPdddffArolG1CU32-UutWR7G5xVxNl2_pqLulhbk@z>
+To: Alexandru Moise <00moses.alexander00@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>, "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "bamvor.zhangjian@linaro.org" <bamvor.zhangjian@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20160621053040.D0As1Ud9Eui0Os4Fq3AYWB3grn5VBiPRSdrce0h96lc@z>
 
---5G50dybFf3pRZKd7
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+On Monday 20 June 2016 02:44 PM, Alexandru Moise wrote:
+> As each mount of devpts is now an independent filesystem,
+> the DEVPTS_MULTIPLE_INSTANCES config option no longer exists.
+> So remove it.
+>
+> Signed-off-by: Alexandru Moise <00moses.alexander00@gmail.com>
 
-Hi stable maintainers,
+For arch/arc
 
-Please could commit d7de413475f443957a0c1d256e405d19b3a2cb22 ("MIPS: Fix
-64k page support for 32 bit kernels.") be applied to stable branches.
-This fix was merged into mainline for v4.5-rc4.
-
-Thanks
-James
-
---5G50dybFf3pRZKd7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJXaF1YAAoJEGwLaZPeOHZ6bRoP/2+qYAvs8YX1yi6ggeCLdHcq
-hL0JK350Zmu9s8Ph5pLvti3ZfR6bHtyPUVyuDuAOEBdfQQM7UwglFRdrJ+5wlQDy
-rQDz56oR+HaLfg7vy8c5e0Q9OXtVAud90zaIUKKhf8mPgy0i6uViI8r80ETi7O4z
-dzFc9/BttlsRYPYw9f1G7VFVSYU+fn69kdIrh3LiYNMecjN3KmcOygazId+6IkoZ
-o7wpwtC+vQCICzps6x7HpFhVt4dtXhhZNS2TuBVw/IirwiYu++1lzkcRutcXRrD+
-UxjYH/TCLgTj585mcNa/KX2OIZEWm9ProwWAHKwlsa/6rl1KFjtQCb51WNrWjScQ
-uJEEEwQhSXrH2PFdntLuEtv384CudzvQHkhOmsdCTJy89+5NzFJYlHxRRksfJ7eE
-qYHQzyeb1aJD+wvUPhQbXnRIxhJ5+1t8NR3gtKb28gWCnFRTzbJJKyEILLJEBR3X
-D44h6R+YuQxdVnug1QFxEODOdgAO0XmUzBGyWSbfN5IR9J5AilzwHe/uvVmaPzxE
-KjBY0DgZfKjnV6UpJJPHRemhgoqOuCINcOXfXiUUgROzFo+LfjE0IGXyeof50EpX
-j8DFBVbPnZpctxcHoG3HEBV0UJuTWhBtMAhRArnQepY9oIbC/bCPaxOj8KeLNTYX
-jHOAuHgDLj9DAPlM6p5+
-=KnJT
------END PGP SIGNATURE-----
-
---5G50dybFf3pRZKd7--
+Acked-by: Vineet Gupta <vgupta@synopsys.com>

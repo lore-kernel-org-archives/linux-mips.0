@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:7589 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:15429 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S27043854AbcFWQfE3qyZz (ORCPT
+        with ESMTP id S27043855AbcFWQfEy38sz (ORCPT
         <rfc822;linux-mips@linux-mips.org>); Thu, 23 Jun 2016 18:35:04 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 10/14] MIPS: KVM: Check MSA presence at uasm time
-Date: Thu, 23 Jun 2016 17:34:43 +0100
-Message-ID: <1466699687-24791-11-git-send-email-james.hogan@imgtec.com>
+Subject: [PATCH 11/14] MIPS: KVM: Drop redundant restore of DDATA_LO
+Date: Thu, 23 Jun 2016 17:34:44 +0100
+Message-ID: <1466699687-24791-12-git-send-email-james.hogan@imgtec.com>
 In-Reply-To: <1466699687-24791-1-git-send-email-james.hogan@imgtec.com>
 References: <1466699687-24791-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -23,12 +23,13 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>
 Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, kvm@vger.kernel.org
-Message-ID: <20160623163443.aMZIlxoKj5bj8TnXgjr9TRWkIrbDyfcAZVHZthdNy3o@z>
+Message-ID: <20160623163444.fK8jwsbl3GStENVFT3cTBC8TD6g0m-KegXC0fj8hj3Y@z>
 
-Check for presence of MSA at uasm assembly time rather than at runtime
-in the generated KVM host entry code. This optimises the guest exit path
-by eliminating the MSA code entirely if not present, and eliminating the
-read of Config3.MSAP and conditional branch if MSA is present.
+On return from the exit handler to the host (without re-entering the
+guest) we restore the saved value of the DDATA_LO register which we use
+as a scratch register. However we've already restored it ready for
+calling the exit handler so there is no need to do it again, so drop
+that code.
 
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Paolo Bonzini <pbonzini@redhat.com>
@@ -37,61 +38,23 @@ Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 Cc: kvm@vger.kernel.org
 ---
- arch/mips/kvm/entry.c | 35 +++++++++++++++--------------------
- 1 file changed, 15 insertions(+), 20 deletions(-)
+ arch/mips/kvm/entry.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/arch/mips/kvm/entry.c b/arch/mips/kvm/entry.c
-index c0d9f551c1c1..53e1e576d18a 100644
+index 53e1e576d18a..6395bfa7e542 100644
 --- a/arch/mips/kvm/entry.c
 +++ b/arch/mips/kvm/entry.c
-@@ -55,7 +55,6 @@
- #define C0_CAUSE	13, 0
- #define C0_EPC		14, 0
- #define C0_EBASE	15, 1
--#define C0_CONFIG3	16, 3
- #define C0_CONFIG5	16, 5
- #define C0_DDATA_LO	28, 3
- #define C0_ERROREPC	30, 0
-@@ -409,25 +408,21 @@ void *kvm_mips_build_exit(void *addr)
- 		uasm_l_fpu_1(&l, p);
- 	}
+@@ -581,10 +581,6 @@ static void *kvm_mips_build_ret_to_host(void *addr)
+ 	UASM_i_LW(&p, K1, offsetof(struct kvm_vcpu_arch, host_stack), K1);
+ 	uasm_i_addiu(&p, K1, K1, -(int)sizeof(struct pt_regs));
  
--#ifdef CONFIG_CPU_HAS_MSA
--	/*
--	 * If MSA is enabled, save MSACSR and clear it so that later
--	 * instructions don't trigger MSAFPE for pending exceptions.
--	 */
--	uasm_i_mfc0(&p, T0, C0_CONFIG3);
--	uasm_i_ext(&p, T0, T0, 28, 1); /* MIPS_CONF3_MSAP */
--	uasm_il_beqz(&p, &r, T0, label_msa_1);
--	 uasm_i_nop(&p);
--	uasm_i_mfc0(&p, T0, C0_CONFIG5);
--	uasm_i_ext(&p, T0, T0, 27, 1); /* MIPS_CONF5_MSAEN */
--	uasm_il_beqz(&p, &r, T0, label_msa_1);
--	 uasm_i_nop(&p);
--	uasm_i_cfcmsa(&p, T0, MSA_CSR);
--	uasm_i_sw(&p, T0, offsetof(struct kvm_vcpu_arch, fpu.msacsr),
--		  K1);
--	uasm_i_ctcmsa(&p, MSA_CSR, ZERO);
--	uasm_l_msa_1(&l, p);
--#endif
-+	if (cpu_has_msa) {
-+		/*
-+		 * If MSA is enabled, save MSACSR and clear it so that later
-+		 * instructions don't trigger MSAFPE for pending exceptions.
-+		 */
-+		uasm_i_mfc0(&p, T0, C0_CONFIG5);
-+		uasm_i_ext(&p, T0, T0, 27, 1); /* MIPS_CONF5_MSAEN */
-+		uasm_il_beqz(&p, &r, T0, label_msa_1);
-+		 uasm_i_nop(&p);
-+		uasm_i_cfcmsa(&p, T0, MSA_CSR);
-+		uasm_i_sw(&p, T0, offsetof(struct kvm_vcpu_arch, fpu.msacsr),
-+			  K1);
-+		uasm_i_ctcmsa(&p, MSA_CSR, ZERO);
-+		uasm_l_msa_1(&l, p);
-+	}
- 
- 	/* Now that the new EBASE has been loaded, unset BEV and KSU_USER */
- 	uasm_i_addiu(&p, AT, ZERO, ~(ST0_EXL | KSU_USER | ST0_IE));
+-	/* Restore host DDATA_LO */
+-	UASM_i_LW(&p, K0, offsetof(struct pt_regs, cp0_epc), K1);
+-	uasm_i_mtc0(&p, K0, C0_DDATA_LO);
+-
+ 	/*
+ 	 * r2/v0 is the return code, shift it down by 2 (arithmetic)
+ 	 * to recover the err code
 -- 
 2.4.10

@@ -1,20 +1,19 @@
-Received: from mail-am1on0076.outbound.protection.outlook.com ([157.56.112.76]:43552
-        "EHLO emea01-am1-obe.outbound.protection.outlook.com"
+Received: from mail-db5eur01on0123.outbound.protection.outlook.com ([104.47.2.123]:22176
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S27043322AbcFUGqGGdfUh convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 21 Jun 2016 08:46:06 +0200
-From: Noam Camus <noamca@mellanox.com>
-Subject: RE: [PATCH V2 63/63] clocksources: Switch back to the clksrc table
-Date: Tue, 21 Jun 2016 06:45:58 +0000
-Message-ID: <HE1PR05MB162581196C0157F45749344FAA2B0@HE1PR05MB1625.eurprd05.prod.outlook.com>
-References: <1466112442-31105-1-git-send-email-daniel.lezcano@linaro.org>
- <1466112442-31105-64-git-send-email-daniel.lezcano@linaro.org>
-In-Reply-To: <1466112442-31105-64-git-send-email-daniel.lezcano@linaro.org>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        id S27043802AbcFWML1G9F3u (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 23 Jun 2016 14:11:27 +0200
+Date: Thu, 23 Jun 2016 15:08:01 +0300
+From: Aaro Koskinen <aaro.koskinen@nokia.com>
+Subject: Re: THP broken on OCTEON?
+Message-ID: <20160623120757.GQ3012@ak-desktop.emea.nsn-net.net>
+References: <20160523151346.GA23204@ak-desktop.emea.nsn-net.net>
+ <576B0B91.2020608@gmail.com>
 MIME-Version: 1.0
-Return-Path: <noamca@mellanox.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <576B0B91.2020608@gmail.com>
+Return-Path: <aaro.koskinen@nokia.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,104 +23,122 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>, "tglx@linutronix.de" <tglx@linutronix.de>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Michal Simek <monstr@monstr.eu>, John Crispin <john@phrozen.org>, Ralf Baechle <ralf@linux-mips.org>, Ley Foon Tan <lftan@altera.com>, Srinivas Kandagatla <srinivas.kandagatla@gmail.com>, Maxime Coquelin <maxime.coquelin@st.com>, Patrice Chotard <patrice.chotard@st.com>, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, S?ren Brinkmann <soren.brinkmann@xilinx.com>, Linus Walleij <linus.walleij@linaro.org>, Alexander Shiyan <shc_work@mail.ru>, Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <k.kozlowski@samsung.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Carlo Caione <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Liviu Dudau <liviu.dudau@arm.com>, Sudeep Holla <sudeep.holla@arm.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Matthias Brugger <matthias.bgg@gmail.com>, Heiko Stuebner <heiko@sntech.de>, Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, Thierry Reding <thierry.reding@gmail.com>, Alexandre Courbot <gnurou@gmail.com>, Uwe Kleine-K?nig <kernel@pengutronix.de>, Joachim Eastwood <manabian@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>, Barry Song <baohua@kernel.org>, Baruch Siach <baruch@tkos.co.il>, Santosh Shilimkar <ssantosh@kernel.org>, Neil Armstrong <narmstrong@baylibre.com>, Tony Prisk <linux@prisktech.co.nz>, Arnd Bergmann <arnd@arndb.de>, John Stultz <john.stultz@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>, Adam Buchbinder <adam.buchbinder@gmail.com>, Tony Lindgren <tony@atomide.com>, Mark Rutland <mark.rutland@arm.com>, Felipe Balbi <balbi@ti.com>, Marc Gonzalez <marc_gonzalez@sigmadesigns.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Hanjun Guo <hanjun.guo@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <Marc.Zyngier@arm.com>, "open list:SYNOPSYS ARC ARCH..." <linux-snps-arc@lists.infradead.org>, "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>, "open list:RALINK MIPS ARCHI..." <linux-mips@linux-mips.org>, "moderated list:NIOS2 ARCHITECTURE" <nios2-dev@lists.rocketboards.org>, "open list:ARM/STI ARCHITECTURE" <kernel@stlinux.com>, "moderated list:BROADCOM BCM2835..." <linux-rpi-kernel@lists.infradead.org>, "open list:BROADCOM BCM281XX..." <bcm-kernel-feedback-list@broadcom.com>, "moderated list:ARM/SAMSUNG EXYNO..." <linux-samsung-soc@vger.kernel.org>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>, "moderated list:ARM/Mediatek SoC..." <linux-mediatek@lists.infradead.org>, "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>, "open list:TEGRA ARCHITECTUR..." <linux-tegra@vger.kernel.org>, "open list:GENERIC INCLUDE/A..." <linux-arch@vger.kernel.org>
-Message-ID: <20160621064558.ktCqMphPjGyokP5_PX0eCavSzOGc1uPGwfU16ldZ5zs@z>
+To: David Daney <ddaney.cavm@gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, "Kirill A. Shutemov" <kirill@shutemov.name>
+Message-ID: <20160623120801.rTSnDfAfEnpG6iYZ94yt2ZwzlinjHtD53Oli7rDvK_4@z>
 
->From: Daniel Lezcano [mailto:daniel.lezcano@linaro.org] 
->Sent: Friday, June 17, 2016 12:27 AM
+Hi,
 
->All the clocksource drivers's init function are now converted to return an error code. CLOCKSOURCE_OF_DECLARE is no longer used as well as the clksrc-of table.
+On Wed, Jun 22, 2016 at 03:05:05PM -0700, David Daney wrote:
+> This is caused by a config bug.
+> 
+> For THP to work you must have both:
+> 
+> CONFIG_TRANSPARENT_HUGEPAGE=y
+> and
+> CONFIG_HUGETLBFS=y
 
->Let's convert back the names:
-> - CLOCKSOURCE_OF_DECLARE_RET => CLOCKSOURCE_OF_DECLARE
-> - clksrc-of-ret              => clksrc-of
+Oh... I guess this is with MIPS only?
 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
-> arch/arc/kernel/time.c                    |  6 +++---
-> arch/arm/kernel/smp_twd.c                 |  6 +++---
-> arch/microblaze/kernel/timer.c            |  2 +-
-> arch/mips/ralink/cevt-rt3352.c            |  2 +-
-> arch/nios2/kernel/time.c                  |  2 +-
-> drivers/clocksource/arm_arch_timer.c      |  6 +++---
-> drivers/clocksource/arm_global_timer.c    |  2 +-
-> drivers/clocksource/armv7m_systick.c      |  2 +-
-> drivers/clocksource/asm9260_timer.c       |  2 +-
-> drivers/clocksource/bcm2835_timer.c       |  2 +-
-> drivers/clocksource/bcm_kona_timer.c      |  4 ++--
-> drivers/clocksource/cadence_ttc_timer.c   |  2 +-
-> drivers/clocksource/clksrc-dbx500-prcmu.c |  2 +-
-> drivers/clocksource/clksrc-probe.c        | 14 --------------
-> drivers/clocksource/clksrc_st_lpc.c       |  2 +-
-> drivers/clocksource/clps711x-timer.c      |  2 +-
-> drivers/clocksource/dw_apb_timer_of.c     |  8 ++++----
-> drivers/clocksource/exynos_mct.c          |  4 ++--
-> drivers/clocksource/fsl_ftm_timer.c       |  2 +-
-> drivers/clocksource/h8300_timer16.c       |  2 +-
-> drivers/clocksource/h8300_timer8.c        |  2 +-
-> drivers/clocksource/h8300_tpu.c           |  2 +-
-> drivers/clocksource/meson6_timer.c        |  2 +-
-> drivers/clocksource/mips-gic-timer.c      |  2 +-
-> drivers/clocksource/moxart_timer.c        |  2 +-
-> drivers/clocksource/mps2-timer.c          |  2 +-
-> drivers/clocksource/mtk_timer.c           |  2 +-
-> drivers/clocksource/mxs_timer.c           |  2 +-
-> drivers/clocksource/nomadik-mtu.c         |  2 +-
-> drivers/clocksource/pxa_timer.c           |  2 +-
-> drivers/clocksource/qcom-timer.c          |  4 ++--
-> drivers/clocksource/rockchip_timer.c      |  8 ++++----
-> drivers/clocksource/samsung_pwm_timer.c   |  8 ++++----
-> drivers/clocksource/sun4i_timer.c         |  2 +-
-> drivers/clocksource/tango_xtal.c          |  2 +-
-> drivers/clocksource/tegra20_timer.c       |  4 ++--
-> drivers/clocksource/time-armada-370-xp.c  |  6 +++---
-> drivers/clocksource/time-efm32.c          |  4 ++--
-> drivers/clocksource/time-lpc32xx.c        |  2 +-
-> drivers/clocksource/time-orion.c          |  2 +-
-> drivers/clocksource/time-pistachio.c      |  2 +-
-> drivers/clocksource/timer-atlas7.c        |  2 +-
-> drivers/clocksource/timer-atmel-pit.c     |  2 +-
-> drivers/clocksource/timer-atmel-st.c      |  2 +-
-> drivers/clocksource/timer-digicolor.c     |  2 +-
-> drivers/clocksource/timer-imx-gpt.c       | 24 ++++++++++++------------
-> drivers/clocksource/timer-integrator-ap.c |  2 +-
-> drivers/clocksource/timer-keystone.c      |  2 +-
-> drivers/clocksource/timer-nps.c           |  4 ++--
-> drivers/clocksource/timer-oxnas-rps.c     |  4 ++--
-> drivers/clocksource/timer-prima2.c        |  2 +-
-> drivers/clocksource/timer-sp804.c         |  4 ++--
-> drivers/clocksource/timer-stm32.c         |  2 +-
-> drivers/clocksource/timer-sun5i.c         |  4 ++--
-> drivers/clocksource/timer-ti-32k.c        |  2 +-
-> drivers/clocksource/timer-u300.c          |  2 +-
-> drivers/clocksource/versatile.c           |  4 ++--
-> drivers/clocksource/vf_pit_timer.c        |  2 +-
-> drivers/clocksource/vt8500_timer.c        |  2 +-
-> drivers/clocksource/zevio-timer.c         |  2 +-
-> include/asm-generic/vmlinux.lds.h         |  2 --
-> include/linux/clocksource.h               |  5 +----
-> 62 files changed, 98 insertions(+), 117 deletions(-)
+> Please try testing with both of those set as well as applying:
+> 
+> https://www.linux-mips.org/archives/linux-mips/2016-06/msg00397.html
 
-[..]
+Works! Now the system is stable. EBH5600 built dozen of different packages
+without any issues and THP being used:
 
-> diff --git a/drivers/clocksource/timer-nps.c b/drivers/clocksource/timer-nps.c index b5c7b2b..70c149a 100644
-> --- a/drivers/clocksource/timer-nps.c
-> +++ b/drivers/clocksource/timer-nps.c
-> @@ -96,5 +96,5 @@ static int __init nps_timer_init(struct device_node *node)
-> 	return nps_setup_clocksource(node, clk);  }
- 
-> -CLOCKSOURCE_OF_DECLARE_RET(ezchip_nps400_clksrc, "ezchip,nps400-timer",
-> -			   nps_timer_init);
-> +CLOCKSOURCE_OF_DECLARE(ezchip_nps400_clksrc, "ezchip,nps400-timer",
-> +		       nps_timer_init);
-> diff --git a/drivers/clocksource/timer-oxnas-rps.c b/drivers/clocksource/timer-oxnas-rps.c
-> index 0d99f40..bd887e2 100644
-> --- a/drivers/clocksource/timer-oxnas-rps.c
-> +++ b/drivers/clocksource/timer-oxnas-rps.c
-> @@ -293,5 +293,5 @@ err_alloc:
->  	return ret;
-> }
- 
+root@localhost:~$ grep thp /proc/vmstat 
+thp_fault_alloc 2271
+thp_fault_fallback 0
+thp_collapse_alloc 2049
+thp_collapse_alloc_failed 0
+thp_split_page 0
+thp_split_page_failed 0
+thp_deferred_split_page 3996
+thp_split_pmd 186
+thp_zero_page_alloc 0
+thp_zero_page_alloc_failed 0
 
-Acked-by: Noam Camus <noamca@mellanox.com>
+Thanks a lot,
+
+A. 
+
+> I will look into either a Kconfig fix, or fixing the code that currently
+> depends on CONFIG_HUGETLBFS, but is needed for all huge pages.
+> 
+> The faults I saw are caused by:
+> 
+>    #define pmd_huge(x)	0
+> 
+> In include/linux/hugetlb.h
+> 
+> Really we need to replace all occurrences of pmd_huge() under arch/mips with
+> something like pte_huge(), but I don't know if that is sufficient.  There
+> may be other things gated by CONFIG_HUGETLBFS that I didn't see.
+> 
+> David.
+> 
+> On 05/23/2016 08:13 AM, Aaro Koskinen wrote:
+> >Hi,
+> >
+> >I'm getting kernel crashes (see below) reliably when building Perl in
+> >parallel (make -j16) on OCTEON EBH5600 board (8 cores, 4 GB RAM) with
+> >Linux 4.6.
+> >
+> >It seems that CONFIG_TRANSPARENT_HUGEPAGE has something to do with the
+> >issue - disabling it makes build go through fine.
+> >
+> >Any ideas?
+> >
+> >A.
+> >
+> >[ 2457.467155] Got mcheck at 00000001200a82b4
+> >[ 2457.479447] CPU: 6 PID: 15916 Comm: lib/unicore/mkt Not tainted 4.6.0-octeon-distro.git-v2.16-1-gfc3b10e-dirty-00001-g16a7aa0 #1
+> >[ 2457.514121] task: 80000000eccf2b80 ti: 80000000ecda4000 task.ti: 80000000ecda4000
+> >[ 2457.536551] $ 0   : 0000000000000000 3e000000105bc006 0000000000000000 ffffffff957e4728
+> >[ 2457.560686] $ 4   : 00000000000000f2 0000000000000067 000000012015e8ab 00000000332295cf
+> >[ 2457.584822] $ 8   : 0000000000000000 0000000000000000 0000000000000001 0000000000000003
+> >[ 2457.608957] $12   : 00000001204e04d8 0000000000000008 0000000000000001 ffffffffffffffff
+> >[ 2457.633093] $16   : 0000000120383d60 00000001203a3828 00000000332295cf 000000000000000b
+> >[ 2457.657228] $20   : 000000012015e8a0 0000000000000000 000000000000000c 0000000000000000
+> >[ 2457.681363] $24   : 0000000000000010 00000001200a80e8
+> >[ 2457.705496] $28   : 00000001201a0300 000000ffffda82a0 000000012019b9b8 0000000120039f5c
+> >[ 2457.729631] Hi    : 0000000000000000
+> >[ 2457.740341] Lo    : 0000000000000008
+> >[ 2457.751055] epc   : 00000001200a82b4 0x1200a82b4
+> >[ 2457.764891] ra    : 0000000120039f5c 0x120039f5c
+> >[ 2457.778726] Status: 00308cf3	KX SX UX USER EXL IE
+> >[ 2457.793284] Cause : 00800060 (ExcCode 18)
+> >[ 2457.805296] PrId  : 000d0409 (Cavium Octeon+)
+> >[ 2457.818350] Index    : 80000000
+> >[ 2457.827759] PageMask : 1fe000
+> >[ 2457.836646] EntryHi  : 00000001203820f4
+> >[ 2457.848136] EntryLo0 : 00000000105b8006
+> >[ 2457.859628] EntryLo1 : 00000000105bc006
+> >[ 2457.871119] Wired    : 0
+> >[ 2457.878704] PageGrain: e0000000
+> >[ 2457.888111]
+> >[ 2457.892573] Index: 25 pgmask=4kb va=00120456000 asid=f4
+> >[ 2457.908256] 	[ri=0 xi=0 pa=000e47d3000 c=0 d=1 v=1 g=0] [ri=0 xi=0 pa=000c31bc000 c=0 d=1 v=1 g=0]
+> >[ 2457.935230] Index: 26 pgmask=4kb va=001200a8000 asid=f4
+> >[ 2457.950915] 	[ri=0 xi=0 pa=000e0e1c000 c=0 d=0 v=1 g=0] [ri=0 xi=0 pa=000c50ed000 c=0 d=0 v=1 g=0]
+> >[ 2457.977888] Index: 27 pgmask=4kb va=001203a2000 asid=f4
+> >[ 2457.993574] 	[ri=0 xi=0 pa=00000000000 c=0 d=0 v=0 g=0] [ri=0 xi=1 pa=0009005a000 c=1 d=0 v=1 g=0]
+> >[ 2458.020548]
+> >[ 2458.025008]
+> >Code: de100000  1200001c  00000000 <de110008> 8e220000  1452fffa  00000000  8e220004  1453fff7
+> >[ 2458.054470] Kernel panic - not syncing: Caught Machine Check exception - caused by multiple matching entries in the TLB.
+> >[ 2458.087614] ---[ end Kernel panic - not syncing: Caught Machine Check exception - caused by multiple matching entries in the TLB.
+> >[ 2458.122835]
+> >do_page_fault(): sending SIGSEGV to make for invalid write access to 0000000000000012[ 2458.149565]
+> >[ 2458.149565] do_page_fault(): sending SIGSEGV to miniperl for invalid write access to 0000000000000010epc = 0000000120089500 in miniperl[120000000+181000]ra  = 00000001200c18a4 in miniperl[120000000+181000][ 2458.149590]
+> >
+> >[ 2458.212999] epc = 0000000120015400 in make[120000000+35000]
+> >[ 2458.229780] ra  = 000000ffeca7f570 in[ 2458.240797]
+> >
+> >*** NMI Watchdog interrupt on Core 0x0 ***
+> >
+> >A.
+> >
+> >
+> 

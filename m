@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:34489 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:28314 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992247AbcGGPAlfW5Ag (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 7 Jul 2016 17:00:41 +0200
-From: James Hartley <james.hartley@imgtec.com>
-Subject: [PATCH] MAINTAINERS: Add pistachio SoC Support
-Date: Thu, 7 Jul 2016 16:00:21 +0100
-Message-ID: <1467903621-3175-1-git-send-email-james.hartley@imgtec.com>
+        with ESMTP id S23992521AbcGHKGpNu3f6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 8 Jul 2016 12:06:45 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH v5 0/2] MIPS non-executable stack support
+Date: Fri, 8 Jul 2016 11:06:18 +0100
+Message-ID: <20160708100620.4754-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <James.Hartley@imgtec.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,39 +18,43 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: davem@davemloft.net
-Cc: geert@linux-m68k.org, gregkh@linuxfoundation.org, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, ralf@linux-mips.org, ionela.voinescu@imgtec.com, James Hartley <james.hartley@imgtec.com>
-Message-ID: <20160707150021.AnPIsQd6dTgw1UbicgPE8H2gIxwvsULIhCsjQOPxAz4@z>
+To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Cc: Leonid Yegoshin <leonid.yegoshin@imgtec.com>, Maciej Rozycki <maciej.rozycki@imgtec.com>, Faraz Shahbazker <faraz.shahbazker@imgtec.com>, Raghu Gandham <raghu.gandham@imgtec.com>, Matthew Fortune <matthew.fortune@imgtec.com>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20160708100618.ZwG9zM0RibBGZVaok9dlQRUQj61nlnJw0d5--H_qpLg@z>
 
-The Pistachio SoC from Imagination Technologies currently has no
-entry in the MAINTAINERS file, so add one.
+This series allows us to support non-executable stacks on systems with
+RIXI by moving delay slot instruction emulation off of the user stack &
+into a dedicated page.
 
-Signed-off-by: James Hartley <james.hartley@imgtec.com>
-Reviewed-by: Ionela Voinescu <ionela.voinescu@imgtec.com>
----
- MAINTAINERS | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+This is a revision of patches 6114/6125 & 6115 from a few years back:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b532c8d..ba20ad8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9188,6 +9188,16 @@ W:	http://www.st.com/spear
- S:	Maintained
- F:	drivers/pinctrl/spear/
- 
-+PISTACHIO SOC SUPPORT
-+M:      James Hartley <james.hartley@imgtec.com>
-+M:      Ionela Voinescu <ionela.voinescu@imgtec.com>
-+L:      linux-mips@linux-mips.org
-+S:      Maintained
-+F:      arch/mips/pistachio/
-+F:      arch/mips/include/asm/mach-pistachio/
-+F:      arch/mips/boot/dts/pistachio/
-+F:      arch/mips/configs/pistachio*_defconfig
-+
- PKTCDVD DRIVER
- M:	Jiri Kosina <jikos@kernel.org>
- S:	Maintained
+    https://patchwork.linux-mips.org/patch/6114
+    https://patchwork.linux-mips.org/patch/6125
+    https://patchwork.linux-mips.org/patch/6115
+
+The series applies atop v4.7-rc6.
+
+Paul Burton (2):
+  MIPS: use per-mm page to execute branch delay slot instructions
+  MIPS: non-exec stack & heap when non-exec PT_GNU_STACK is present
+
+ arch/mips/Kconfig                     |   1 +
+ arch/mips/include/asm/dsemul.h        |  92 ++++++++++
+ arch/mips/include/asm/elf.h           |   3 +
+ arch/mips/include/asm/fpu_emulator.h  |  17 +-
+ arch/mips/include/asm/mmu.h           |   9 +
+ arch/mips/include/asm/mmu_context.h   |   6 +
+ arch/mips/include/asm/page.h          |   6 +-
+ arch/mips/include/asm/processor.h     |  18 +-
+ arch/mips/kernel/elf.c                |  19 ++
+ arch/mips/kernel/mips-r2-to-r6-emul.c |   8 +-
+ arch/mips/kernel/process.c            |  14 ++
+ arch/mips/kernel/signal.c             |   8 +
+ arch/mips/kernel/vdso.c               |  10 +
+ arch/mips/math-emu/cp1emu.c           |   8 +-
+ arch/mips/math-emu/dsemul.c           | 333 +++++++++++++++++++++++-----------
+ 15 files changed, 417 insertions(+), 135 deletions(-)
+ create mode 100644 arch/mips/include/asm/dsemul.h
+
 -- 
-2.7.4
+2.9.0

@@ -1,16 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:8845 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:9123 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992648AbcGHKHX6A956 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 8 Jul 2016 12:07:23 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v5 2/2] MIPS: non-exec stack & heap when non-exec PT_GNU_STACK is present
-Date: Fri, 8 Jul 2016 11:06:20 +0100
-Message-ID: <20160708100620.4754-3-paul.burton@imgtec.com>
-In-Reply-To: <20160708100620.4754-1-paul.burton@imgtec.com>
-References: <20160708100620.4754-1-paul.burton@imgtec.com>
+        with ESMTP id S23992777AbcGHNFxEyhTV (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 8 Jul 2016 15:05:53 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH] MIPS: uasm: Handle low values in uasm_in_compat_space_p()
+Date: Fri, 8 Jul 2016 14:05:26 +0100
+Message-ID: <1467983126-30121-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,108 +18,61 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Leonid Yegoshin <leonid.yegoshin@imgtec.com>, Maciej Rozycki <maciej.rozycki@imgtec.com>, Faraz Shahbazker <faraz.shahbazker@imgtec.com>, Raghu Gandham <raghu.gandham@imgtec.com>, Matthew Fortune <matthew.fortune@imgtec.com>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20160708100620.xn4TNLs9C5kRtQmcqoWQ7Gg0usfzqZ9ieSK90xSIE48@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20160708130526.a7Vdoero4OTqzHlmU-hGf3JCPIhSUJVaglZuG6rvX2s@z>
 
-The stack and heap have both been executable by default on MIPS until
-now. This patch changes the default to be non-executable, but only for
-ELF binaries with a non-executable PT_GNU_STACK header present. This
-does apply to both the heap & the stack, despite the name PT_GNU_STACK,
-and this matches the behaviour of other architectures like ARM & x86.
+uasm_in_compat_space_p() determines whether the given value is in the
+32-bit compatibility part of the 64-bit address space, i.e. is in 32-bit
+sign-extended form, however it only handles the top half of the value
+space (corresponding to the kernel compatibility segments in the upper
+half of the address space). Since values < 2^31 (corresponding to the
+low 2GiB of the address space) can also be handled using 32-bit
+instructions (e.g. a LUI and ADDIU) rather than convoluted 64-bit
+immediate generation, rewrite it with a cast to check whether the
+address matches its 32-bit sign extended form.
 
-Current MIPS toolchains do not produce the PT_GNU_STACK header, which
-means that we can rely upon this patch not changing the behaviour of
-existing binaries. The new default will only take effect for newly
-compiled binaries once toolchains are updated to support PT_GNU_STACK,
-and since those binaries are newly compiled they can be compiled
-expecting the change in default behaviour. Again this matches the way in
-which the ARM & x86 architectures handled their implementations of
-non-executable memory.
+This allows UASM_i_LA to be used to generate arbitrary 32-bit immediates
+more efficiently on 64-bit CPUs, i.e. more like the li (load immediate)
+pseudo-instruction.
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+For example this code to load the immediate (ST0_EXL | KSU_USER |
+ST0_BEV | ST0_KX) into k0 with UASM_i_LA():
 
+ lui        k0,0x0
+ dsll       k0,k0,0x10
+ daddiu     k0,k0,64
+ dsll       k0,k0,0x10
+ daddiu     k0,k0,146
+
+Changes to this more efficient version:
+
+ lui        k0,0x40
+ addiu      k0,k0,146
+
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
 ---
+ arch/mips/mm/uasm.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-Changes in v5:
-- Use void* for the ELF header parameter to avoid build failures on 64 bit.
-
-Changes in v4: None
-Changes in v3:
-- Rebase atop v4.7-rc5.
-
-Changes in v2: None
-
- arch/mips/include/asm/elf.h  |  3 +++
- arch/mips/include/asm/page.h |  6 ++++--
- arch/mips/kernel/elf.c       | 19 +++++++++++++++++++
- 3 files changed, 26 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/include/asm/elf.h b/arch/mips/include/asm/elf.h
-index f5f4571..e81cc55 100644
---- a/arch/mips/include/asm/elf.h
-+++ b/arch/mips/include/asm/elf.h
-@@ -498,4 +498,7 @@ extern int arch_check_elf(void *ehdr, bool has_interpreter, void *interp_ehdr,
- extern void mips_set_personality_nan(struct arch_elf_state *state);
- extern void mips_set_personality_fp(struct arch_elf_state *state);
- 
-+#define elf_read_implies_exec(ex, stk) mips_elf_read_implies_exec(&(ex), stk)
-+extern int mips_elf_read_implies_exec(void *elf_ex, int exstack);
-+
- #endif /* _ASM_ELF_H */
-diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
-index 21ed715..74cb004 100644
---- a/arch/mips/include/asm/page.h
-+++ b/arch/mips/include/asm/page.h
-@@ -229,8 +229,10 @@ extern int __virt_addr_valid(const volatile void *kaddr);
- #define virt_addr_valid(kaddr)						\
- 	__virt_addr_valid((const volatile void *) (kaddr))
- 
--#define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
--				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
-+#define VM_DATA_DEFAULT_FLAGS \
-+	(VM_READ | VM_WRITE | \
-+	 ((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0) | \
-+	 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
- 
- #define UNCAC_ADDR(addr)	((addr) - PAGE_OFFSET + UNCAC_BASE)
- #define CAC_ADDR(addr)		((addr) - UNCAC_BASE + PAGE_OFFSET)
-diff --git a/arch/mips/kernel/elf.c b/arch/mips/kernel/elf.c
-index 891f5ee..824b037 100644
---- a/arch/mips/kernel/elf.c
-+++ b/arch/mips/kernel/elf.c
-@@ -8,9 +8,12 @@
-  * option) any later version.
-  */
- 
-+#include <linux/binfmts.h>
- #include <linux/elf.h>
-+#include <linux/export.h>
- #include <linux/sched.h>
- 
-+#include <asm/cpu-features.h>
- #include <asm/cpu-info.h>
- 
- /* Whether to accept legacy-NaN and 2008-NaN user binaries.  */
-@@ -326,3 +329,19 @@ void mips_set_personality_nan(struct arch_elf_state *state)
- 		BUG();
- 	}
+diff --git a/arch/mips/mm/uasm.c b/arch/mips/mm/uasm.c
+index ad718debc35a..0b373405766a 100644
+--- a/arch/mips/mm/uasm.c
++++ b/arch/mips/mm/uasm.c
+@@ -370,11 +370,7 @@ UASM_EXPORT_SYMBOL(ISAFUNC(uasm_build_label));
+ int ISAFUNC(uasm_in_compat_space_p)(long addr)
+ {
+ 	/* Is this address in 32bit compat space? */
+-#ifdef CONFIG_64BIT
+-	return (((addr) & 0xffffffff00000000L) == 0xffffffff00000000L);
+-#else
+-	return 1;
+-#endif
++	return addr == (int)addr;
  }
-+
-+int mips_elf_read_implies_exec(void *elf_ex, int exstack)
-+{
-+	if (exstack != EXSTACK_DISABLE_X) {
-+		/* The binary doesn't request a non-executable stack */
-+		return 1;
-+	}
-+
-+	if (!cpu_has_rixi) {
-+		/* The CPU doesn't support non-executable memory */
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(mips_elf_read_implies_exec);
+ UASM_EXPORT_SYMBOL(ISAFUNC(uasm_in_compat_space_p));
+ 
 -- 
-2.9.0
+2.4.10

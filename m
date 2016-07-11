@@ -1,15 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:36824 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:10399 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993275AbcGKSCSl-0EV (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 11 Jul 2016 20:02:18 +0200
-Message-ID: <5783DF18.1080408@imgtec.com>
-Date: Mon, 11 Jul 2016 11:02:00 -0700
+        with ESMTP id S23993361AbcGKSF7uke3V (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 11 Jul 2016 20:05:59 +0200
+Message-ID: <5783DFF5.3060401@imgtec.com>
+Date: Mon, 11 Jul 2016 11:05:41 -0700
 From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 MIME-Version: 1.0
-Subject: Re: MIPS: We need to clear MMU contexts of all other processes when
- asid_cache(cpu) wraps to 0.
-References: <80B78A8B8FEE6145A87579E8435D78C30205D5F3@fzex.ruijie.com.cn>
-In-Reply-To: <80B78A8B8FEE6145A87579E8435D78C30205D5F3@fzex.ruijie.com.cn>
+Subject: [PATCH] MIPS: We need to clear MMU contexts of all other processes
+ when asid_cache(cpu) wraps to 0.
+References: <80B78A8B8FEE6145A87579E8435D78C30205D5F3@fzex.ruijie.com.cn> <5783DF18.1080408@imgtec.com>
+In-Reply-To: <5783DF18.1080408@imgtec.com>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Leonid.Yegoshin@imgtec.com>
@@ -24,29 +24,34 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: yhb@ruijie.com.cn, ralf@linux-mips.org
 Cc: linux-mips@linux-mips.org
-Message-ID: <20160711180200.Aw2v2q_G98jswDLhEzWD0Kl9uKfpvWm2H7Nuhnp6QNI@z>
+Message-ID: <20160711180541.P_GJY9LY9m4apzDQSvWTfsuOdb2bjH05HNjZ2sa6YfE@z>
 
-On 07/10/2016 06:04 AM, yhb@ruijie.com.cn wrote:
-> Subject: [PATCH] MIPS: We need to clear MMU contexts of all other processes
->   when asid_cache(cpu) wraps to 0.
->
-> Suppose that asid_cache(cpu) wraps to 0 every n days.
-> case 1:
-> (1)Process 1 got ASID 0x101.
-> (2)Process 1 slept for n days.
-> (3)asid_cache(cpu) wrapped to 0x101, and process 2 got ASID 0x101.
-> (4)Process 1 is woken,and ASID of process 1 is same as ASID of process 2.
->
-> case 2:
-> (1)Process 1 got ASID 0x101 on CPU 1.
-> (2)Process 1 migrated to CPU 2.
-> (3)Process 1 migrated to CPU 1 after n days.
-> (4)asid_cache on CPU 1 wrapped to 0x101, and process 2 got ASID 0x101.
-> (5)Process 1 is scheduled, and ASID of process 1 is same as ASID of process 2.
->
-> So we need to clear MMU contexts of all other processes when asid_cache(cpu) wraps to 0.
->
-> Signed-off-by: yhb <yhb@ruijie.com.cn>
+> On 07/10/2016 06:04 AM, yhb@ruijie.com.cn wrote:
+>> Subject: [PATCH] MIPS: We need to clear MMU contexts of all other 
+>> processes
+>>   when asid_cache(cpu) wraps to 0.
+>>
+>> Suppose that asid_cache(cpu) wraps to 0 every n days.
+>> case 1:
+>> (1)Process 1 got ASID 0x101.
+>> (2)Process 1 slept for n days.
+>> (3)asid_cache(cpu) wrapped to 0x101, and process 2 got ASID 0x101.
+>> (4)Process 1 is woken,and ASID of process 1 is same as ASID of 
+>> process 2.
+>>
+>> case 2:
+>> (1)Process 1 got ASID 0x101 on CPU 1.
+>> (2)Process 1 migrated to CPU 2.
+>> (3)Process 1 migrated to CPU 1 after n days.
+>> (4)asid_cache on CPU 1 wrapped to 0x101, and process 2 got ASID 0x101.
+>> (5)Process 1 is scheduled, and ASID of process 1 is same as ASID of 
+>> process 2.
+>>
+>> So we need to clear MMU contexts of all other processes when 
+>> asid_cache(cpu) wraps to 0.
+>>
+>> Signed-off-by: yhb <yhb@ruijie.com.cn>
+>>
 >
 I think a more clear description should be given here - there is no 
 indication that wrap happens over 32bit integer.
@@ -59,4 +64,4 @@ first to hit this.
 It seems to be some localized stuff in get_new_mmu_context() instead of 
 widespread patching.
 
-- Leonid.
+- Leonid

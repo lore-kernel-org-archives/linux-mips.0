@@ -1,17 +1,18 @@
-Received: from fzex.ruijie.com.cn ([120.35.11.201]:50403 "EHLO
-        mxfz.ruijie.com.cn" rhost-flags-OK-FAIL-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992329AbcGLDtcfdGxP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 12 Jul 2016 05:49:32 +0200
-From: <yhb@ruijie.com.cn>
-Subject: Re: [PATCH] MIPS: We need to clear MMU contexts of all other
- processes when asid_cache(cpu) wraps to 0.
-Date: Tue, 12 Jul 2016 03:48:01 +0000
-Message-ID: <80B78A8B8FEE6145A87579E8435D78C30206CA9A@fzex.ruijie.com.cn>
-Content-Language: zh-CN
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mailapp01.imgtec.com ([195.59.15.196]:62483 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23995171AbcGMLLPeXHa3 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 13 Jul 2016 13:11:15 +0200
+Date: Wed, 13 Jul 2016 12:11:09 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: SMP regression on MIPS 34Kc (Lantiq VRX220)
+Message-ID: <20160713111109.GB29839@jhogan-linux.le.imgtec.org>
+References: <7f6f4ddd-5cac-520e-2e14-1fe0d7288e6f@nbd.name>
 MIME-Version: 1.0
-Return-Path: <yhb@ruijie.com.cn>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="wq9mPyueHGvFACwf"
+Content-Disposition: inline
+In-Reply-To: <7f6f4ddd-5cac-520e-2e14-1fe0d7288e6f@nbd.name>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,139 +22,157 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20160712034801.Za0Wo-1ZHHhWLW6jJHzpqnrWPXJ9p1K6Zvzzg-5RrJ0@z>
+To: Felix Fietkau <nbd@nbd.name>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20160713111109.49UlLx0qSIYJtRIdsaAm4h3C6cX3oWpq-blYFaiXiGs@z>
 
-VGhhbmsgYWxsIGZyaWVuZHMgZm9yIHlvdXIgYWR2aWNlcy4NCg0KSSBmaW5kIG15IHBhdGNoIGlu
-dHJvZHVjZXMgYSBkZWFkbG9jayBidWc6DQpleGVjX21tYXANCiAgdGFza19sb2NrKHRzayk7DQog
-IGFjdGl2YXRlX21tKGFjdGl2ZV9tbSwgbW0pOw0KICAgIGdldF9uZXdfbW11X2NvbnRleHQNCiAg
-ICAgIGNsZWFyX290aGVyX21tdV9jb250ZXh0cw0KICAgICAgICByZWFkX2xvY2soJnRhc2tsaXN0
-X2xvY2spOw0KICAgICAgICB0ID0gZmluZF9sb2NrX3Rhc2tfbW0ocCwgJmlycWZsYWdzKTsNCiAg
-ICAgICAgICB0YXNrX2xvY2sodCwgaXJxZmxhZ3MpOyAgICAgICAgICAgICAgLyogUG9zc2libGUg
-ZGVhZGxvY2shICovDQoNCkkgdGhpbmsgb3V0IGFub3RoZXIgc29sdXRpb246DQpMaW5rIGFsbCBt
-bSdzIGluIGEgbGlua2VkIGxpc3QsIHdoaWNoIGlzIHByb3RlY3RlZCBieSBtbWxpbmtfbG9jay4N
-CnN0YXRpYyBpbmxpbmUgdm9pZCBjbGVhcl9vdGhlcl9tbXVfY29udGV4dHMoc3RydWN0IG1tX3N0
-cnVjdCAqbW0sDQoJCQkJCQl1bnNpZ25lZCBsb25nIGNwdSkNCnsNCgl1bnNpZ25lZCBsb25nIGZs
-YWdzOw0KCXN0cnVjdCBtbV9zdHJ1Y3QgKnA7DQoNCglzcGluX2xvY2tfaXJxc2F2ZSgmbW1saW5r
-X2xvY2ssIGZsYWdzKTsNCglsaXN0X2Zvcl9lYWNoX2VudHJ5KHAsICZtbWxpc3QsIG1tbGluaykg
-ew0KCQlpZiAoKHAgIT0gbW0pICYmIGNwdV9jb250ZXh0KGNwdSwgcCkpDQoJCQljcHVfY29udGV4
-dChjcHUsIHApID0gMDsNCgl9DQoJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmbW1saW5rX2xvY2ss
-IGZsYWdzKTsNCn0NCkkgY29tbWl0IG5ldyBwYXRjaC4NCg0KU2lnbmVkLW9mZi1ieTogWXUgSHVh
-YmluZyA8eWhiQHJ1aWppZS5jb20uY24+DQotLS0NCiBhcmNoL21pcHMvaW5jbHVkZS9hc20vbW11
-X2NvbnRleHQuaCB8IDQxICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0NCiBh
-cmNoL3g4Ni9rZXJuZWwvdGJvb3QuYyAgICAgICAgICAgICB8ICAxICsNCiBkcml2ZXJzL2Zpcm13
-YXJlL2VmaS9hcm0tcnVudGltZS5jICB8ICAxICsNCiBpbmNsdWRlL2xpbnV4L21tX3R5cGVzLmgg
-ICAgICAgICAgICB8ICA0ICsrKysNCiBrZXJuZWwvZm9yay5jICAgICAgICAgICAgICAgICAgICAg
-ICB8IDEyICsrKysrKysrKysrDQogbW0vaW5pdC1tbS5jICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgMSArDQogbW0vbWVtb3J5LmMgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNCArKysrDQog
-NyBmaWxlcyBjaGFuZ2VkLCA2MiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KDQpkaWZm
-IC0tZ2l0IGEvYXJjaC9taXBzL2luY2x1ZGUvYXNtL21tdV9jb250ZXh0LmggYi9hcmNoL21pcHMv
-aW5jbHVkZS9hc20vbW11X2NvbnRleHQuaA0KaW5kZXggNDU5MTRiNS4uNTc2N2EwOCAxMDA2NDQN
-Ci0tLSBhL2FyY2gvbWlwcy9pbmNsdWRlL2FzbS9tbXVfY29udGV4dC5oDQorKysgYi9hcmNoL21p
-cHMvaW5jbHVkZS9hc20vbW11X2NvbnRleHQuaA0KQEAgLTk3LDYgKzk3LDQxIEBAIHN0YXRpYyBp
-bmxpbmUgdm9pZCBlbnRlcl9sYXp5X3RsYihzdHJ1Y3QgbW1fc3RydWN0ICptbSwgc3RydWN0IHRh
-c2tfc3RydWN0ICp0c2spDQogI2RlZmluZSBBU0lEX1ZFUlNJT05fTUFTSyAgKCh1bnNpZ25lZCBs
-b25nKX4oQVNJRF9NQVNLfChBU0lEX01BU0stMSkpKQ0KICNkZWZpbmUgQVNJRF9GSVJTVF9WRVJT
-SU9OICgodW5zaWduZWQgbG9uZykofkFTSURfVkVSU0lPTl9NQVNLKSArIDEpDQogDQorLyoNCisg
-KiBZdSBIdWFiaW5nDQorICogU3VwcG9zZSB0aGF0IGFzaWRfY2FjaGUoY3B1KSB3cmFwcyB0byAw
-IGV2ZXJ5IG4gZGF5cy4NCisgKiBjYXNlIDE6DQorICogKDEpUHJvY2VzcyAxIGdvdCBBU0lEIDB4
-MTAxLg0KKyAqICgyKVByb2Nlc3MgMSBzbGVwdCBmb3IgbiBkYXlzLg0KKyAqICgzKWFzaWRfY2Fj
-aGUoY3B1KSB3cmFwcGVkIHRvIDB4MTAxLCBhbmQgcHJvY2VzcyAyIGdvdCBBU0lEIDB4MTAxLg0K
-KyAqICg0KVByb2Nlc3MgMSBpcyB3b2tlbixhbmQgQVNJRCBvZiBwcm9jZXNzIDEgaXMgc2FtZSBh
-cyBBU0lEIG9mIHByb2Nlc3MgMi4NCisgKg0KKyAqIGNhc2UgMjoNCisgKiAoMSlQcm9jZXNzIDEg
-Z290IEFTSUQgMHgxMDEgb24gQ1BVIDEuDQorICogKDIpUHJvY2VzcyAxIG1pZ3JhdGVkIHRvIENQ
-VSAyLg0KKyAqICgzKVByb2Nlc3MgMSBtaWdyYXRlZCB0byBDUFUgMSBhZnRlciBuIGRheXMuDQor
-ICogKDQpYXNpZF9jYWNoZSBvbiBDUFUgMSB3cmFwcGVkIHRvIDB4MTAxLCBhbmQgcHJvY2VzcyAy
-IGdvdCBBU0lEIDB4MTAxLg0KKyAqICg1KVByb2Nlc3MgMSBpcyBzY2hlZHVsZWQsYW5kIEFTSUQg
-b2YgcHJvY2VzcyAxIGlzIHNhbWUgYXMgQVNJRCBvZiBwcm9jZXNzIDIuDQorICoNCisgKiBTbyB3
-ZSBuZWVkIHRvIGNsZWFyIE1NVSBjb250ZXh0cyBvZiBhbGwgb3RoZXIgcHJvY2Vzc2VzIHdoZW4g
-YXNpZF9jYWNoZShjcHUpDQorICogd3JhcHMgdG8gMC4NCisgKg0KKyAqIFRoaXMgZnVuY3Rpb24g
-bWlnaHQgYmUgY2FsbGVkIGZyb20gaGFyZGlycSBjb250ZXh0IG9yIHByb2Nlc3MgY29udGV4dC4N
-CisgKi8NCitzdGF0aWMgaW5saW5lIHZvaWQgY2xlYXJfb3RoZXJfbW11X2NvbnRleHRzKHN0cnVj
-dCBtbV9zdHJ1Y3QgKm1tLA0KKwkJCQkJCXVuc2lnbmVkIGxvbmcgY3B1KQ0KK3sNCisJdW5zaWdu
-ZWQgbG9uZyBmbGFnczsNCisJc3RydWN0IG1tX3N0cnVjdCAqcDsNCisNCisJc3Bpbl9sb2NrX2ly
-cXNhdmUoJm1tbGlua19sb2NrLCBmbGFncyk7DQorCWxpc3RfZm9yX2VhY2hfZW50cnkocCwgJm1t
-bGlzdCwgbW1saW5rKSB7DQorCQlpZiAoKHAgIT0gbW0pICYmIGNwdV9jb250ZXh0KGNwdSwgcCkp
-DQorCQkJY3B1X2NvbnRleHQoY3B1LCBwKSA9IDA7DQorCX0NCisJc3Bpbl91bmxvY2tfaXJxcmVz
-dG9yZSgmbW1saW5rX2xvY2ssIGZsYWdzKTsNCit9DQorDQogLyogTm9ybWFsLCBjbGFzc2ljIE1J
-UFMgZ2V0X25ld19tbXVfY29udGV4dCAqLw0KIHN0YXRpYyBpbmxpbmUgdm9pZA0KIGdldF9uZXdf
-bW11X2NvbnRleHQoc3RydWN0IG1tX3N0cnVjdCAqbW0sIHVuc2lnbmVkIGxvbmcgY3B1KQ0KQEAg
-LTExMiw4ICsxNDcsMTAgQEAgZ2V0X25ld19tbXVfY29udGV4dChzdHJ1Y3QgbW1fc3RydWN0ICpt
-bSwgdW5zaWduZWQgbG9uZyBjcHUpDQogI2Vsc2UNCiAJCWxvY2FsX2ZsdXNoX3RsYl9hbGwoKTsJ
-Lyogc3RhcnQgbmV3IGFzaWQgY3ljbGUgKi8NCiAjZW5kaWYNCi0JCWlmICghYXNpZCkJCS8qIGZp
-eCB2ZXJzaW9uIGlmIG5lZWRlZCAqLw0KLQkJCWFzaWQgPSBBU0lEX0ZJUlNUX1ZFUlNJT047DQor
-CQlpZiAoIWFzaWQpIHsNCisJCQlhc2lkID0gQVNJRF9GSVJTVF9WRVJTSU9OOyAvKiBmaXggdmVy
-c2lvbiBpZiBuZWVkZWQgKi8NCisJCQljbGVhcl9vdGhlcl9tbXVfY29udGV4dHMobW0sIGNwdSk7
-DQorCQl9DQogCX0NCiANCiAJY3B1X2NvbnRleHQoY3B1LCBtbSkgPSBhc2lkX2NhY2hlKGNwdSkg
-PSBhc2lkOw0KZGlmZiAtLWdpdCBhL2FyY2gveDg2L2tlcm5lbC90Ym9vdC5jIGIvYXJjaC94ODYv
-a2VybmVsL3Rib290LmMNCmluZGV4IGU3MmEwN2YuLjRlMmViNjggMTAwNjQ0DQotLS0gYS9hcmNo
-L3g4Ni9rZXJuZWwvdGJvb3QuYw0KKysrIGIvYXJjaC94ODYva2VybmVsL3Rib290LmMNCkBAIC0x
-MTIsNiArMTEyLDcgQEAgc3RhdGljIHN0cnVjdCBtbV9zdHJ1Y3QgdGJvb3RfbW0gPSB7DQogCS5t
-bV9jb3VudCAgICAgICA9IEFUT01JQ19JTklUKDEpLA0KIAkubW1hcF9zZW0gICAgICAgPSBfX1JX
-U0VNX0lOSVRJQUxJWkVSKGluaXRfbW0ubW1hcF9zZW0pLA0KIAkucGFnZV90YWJsZV9sb2NrID0g
-IF9fU1BJTl9MT0NLX1VOTE9DS0VEKGluaXRfbW0ucGFnZV90YWJsZV9sb2NrKSwNCisJLm1tbGlu
-ayAgICAgICAgID0gTElTVF9IRUFEX0lOSVQodGJvb3RfbW0ubW1saW5rKSwNCiAJLm1tbGlzdCAg
-ICAgICAgID0gTElTVF9IRUFEX0lOSVQoaW5pdF9tbS5tbWxpc3QpLA0KIH07DQogDQpkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9maXJtd2FyZS9lZmkvYXJtLXJ1bnRpbWUuYyBiL2RyaXZlcnMvZmlybXdh
-cmUvZWZpL2FybS1ydW50aW1lLmMNCmluZGV4IDZhZTIxZTQuLjdiMWIyNTAgMTAwNjQ0DQotLS0g
-YS9kcml2ZXJzL2Zpcm13YXJlL2VmaS9hcm0tcnVudGltZS5jDQorKysgYi9kcml2ZXJzL2Zpcm13
-YXJlL2VmaS9hcm0tcnVudGltZS5jDQpAQCAtMzYsNiArMzYsNyBAQCBzdGF0aWMgc3RydWN0IG1t
-X3N0cnVjdCBlZmlfbW0gPSB7DQogCS5tbV9jb3VudAkJPSBBVE9NSUNfSU5JVCgxKSwNCiAJLm1t
-YXBfc2VtCQk9IF9fUldTRU1fSU5JVElBTElaRVIoZWZpX21tLm1tYXBfc2VtKSwNCiAJLnBhZ2Vf
-dGFibGVfbG9jawk9IF9fU1BJTl9MT0NLX1VOTE9DS0VEKGVmaV9tbS5wYWdlX3RhYmxlX2xvY2sp
-LA0KKwkubW1saW5rCQkJPSBMSVNUX0hFQURfSU5JVChlZmlfbW0ubW1saW5rKSwNCiAJLm1tbGlz
-dAkJCT0gTElTVF9IRUFEX0lOSVQoZWZpX21tLm1tbGlzdCksDQogfTsNCiANCmRpZmYgLS1naXQg
-YS9pbmNsdWRlL2xpbnV4L21tX3R5cGVzLmggYi9pbmNsdWRlL2xpbnV4L21tX3R5cGVzLmgNCmlu
-ZGV4IGMyZDc1YjQuLmJkZTBjNzkgMTAwNjQ0DQotLS0gYS9pbmNsdWRlL2xpbnV4L21tX3R5cGVz
-LmgNCisrKyBiL2luY2x1ZGUvbGludXgvbW1fdHlwZXMuaA0KQEAgLTQxMiw2ICs0MTIsNyBAQCBz
-dHJ1Y3QgbW1fc3RydWN0IHsNCiAJc3BpbmxvY2tfdCBwYWdlX3RhYmxlX2xvY2s7CQkvKiBQcm90
-ZWN0cyBwYWdlIHRhYmxlcyBhbmQgc29tZSBjb3VudGVycyAqLw0KIAlzdHJ1Y3Qgcndfc2VtYXBo
-b3JlIG1tYXBfc2VtOw0KIA0KKwlzdHJ1Y3QgbGlzdF9oZWFkIG1tbGluazsJCS8qIExpc3Qgb2Yg
-YWxsIG1tJ3MsIGFuZCBoZWFkIGlzIG1tbGlzdC4gKi8NCiAJc3RydWN0IGxpc3RfaGVhZCBtbWxp
-c3Q7CQkvKiBMaXN0IG9mIG1heWJlIHN3YXBwZWQgbW0ncy4JVGhlc2UgYXJlIGdsb2JhbGx5IHN0
-cnVuZw0KIAkJCQkJCSAqIHRvZ2V0aGVyIG9mZiBpbml0X21tLm1tbGlzdCwgYW5kIGFyZSBwcm90
-ZWN0ZWQNCiAJCQkJCQkgKiBieSBtbWxpc3RfbG9jaw0KQEAgLTUxMSw2ICs1MTIsOSBAQCBzdHJ1
-Y3QgbW1fc3RydWN0IHsNCiAjZW5kaWYNCiB9Ow0KIA0KK2V4dGVybiBzdHJ1Y3QgbGlzdF9oZWFk
-IG1tbGlzdDsNCitleHRlcm4gc3BpbmxvY2tfdCBtbWxpbmtfbG9jazsNCisNCiBzdGF0aWMgaW5s
-aW5lIHZvaWQgbW1faW5pdF9jcHVtYXNrKHN0cnVjdCBtbV9zdHJ1Y3QgKm1tKQ0KIHsNCiAjaWZk
-ZWYgQ09ORklHX0NQVU1BU0tfT0ZGU1RBQ0sNCmRpZmYgLS1naXQgYS9rZXJuZWwvZm9yay5jIGIv
-a2VybmVsL2ZvcmsuYw0KaW5kZXggZDI3N2U4My4uODEzZjVkZiAxMDA2NDQNCi0tLSBhL2tlcm5l
-bC9mb3JrLmMNCisrKyBiL2tlcm5lbC9mb3JrLmMNCkBAIC02MDMsNiArNjAzLDcgQEAgc3RhdGlj
-IHN0cnVjdCBtbV9zdHJ1Y3QgKm1tX2luaXQoc3RydWN0IG1tX3N0cnVjdCAqbW0sIHN0cnVjdCB0
-YXNrX3N0cnVjdCAqcCkNCiAJYXRvbWljX3NldCgmbW0tPm1tX3VzZXJzLCAxKTsNCiAJYXRvbWlj
-X3NldCgmbW0tPm1tX2NvdW50LCAxKTsNCiAJaW5pdF9yd3NlbSgmbW0tPm1tYXBfc2VtKTsNCisJ
-SU5JVF9MSVNUX0hFQUQoJm1tLT5tbWxpbmspOw0KIAlJTklUX0xJU1RfSEVBRCgmbW0tPm1tbGlz
-dCk7DQogCW1tLT5jb3JlX3N0YXRlID0gTlVMTDsNCiAJYXRvbWljX2xvbmdfc2V0KCZtbS0+bnJf
-cHRlcywgMCk7DQpAQCAtNzA3LDYgKzcwOCwxMiBAQCB2b2lkIG1tcHV0KHN0cnVjdCBtbV9zdHJ1
-Y3QgKm1tKQ0KIAltaWdodF9zbGVlcCgpOw0KIA0KIAlpZiAoYXRvbWljX2RlY19hbmRfdGVzdCgm
-bW0tPm1tX3VzZXJzKSkgew0KKwkJdW5zaWduZWQgbG9uZyBmbGFnczsNCisNCisJCXNwaW5fbG9j
-a19pcnFzYXZlKCZtbWxpbmtfbG9jaywgZmxhZ3MpOw0KKwkJbGlzdF9kZWwoJm1tLT5tbWxpbmsp
-Ow0KKwkJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmbW1saW5rX2xvY2ssIGZsYWdzKTsNCisNCiAJ
-CXVwcm9iZV9jbGVhcl9zdGF0ZShtbSk7DQogCQlleGl0X2FpbyhtbSk7DQogCQlrc21fZXhpdCht
-bSk7DQpAQCAtOTI0LDYgKzkzMSw3IEBAIHN0YXRpYyBzdHJ1Y3QgbW1fc3RydWN0ICpkdXBfbW0o
-c3RydWN0IHRhc2tfc3RydWN0ICp0c2spDQogew0KIAlzdHJ1Y3QgbW1fc3RydWN0ICptbSwgKm9s
-ZG1tID0gY3VycmVudC0+bW07DQogCWludCBlcnI7DQorCXVuc2lnbmVkIGxvbmcgZmxhZ3M7DQog
-DQogCW1tID0gYWxsb2NhdGVfbW0oKTsNCiAJaWYgKCFtbSkNCkBAIC05NDQsNiArOTUyLDEwIEBA
-IHN0YXRpYyBzdHJ1Y3QgbW1fc3RydWN0ICpkdXBfbW0oc3RydWN0IHRhc2tfc3RydWN0ICp0c2sp
-DQogCWlmIChtbS0+YmluZm10ICYmICF0cnlfbW9kdWxlX2dldChtbS0+YmluZm10LT5tb2R1bGUp
-KQ0KIAkJZ290byBmcmVlX3B0Ow0KIA0KKwlzcGluX2xvY2tfaXJxc2F2ZSgmbW1saW5rX2xvY2ss
-IGZsYWdzKTsNCisJbGlzdF9hZGRfdGFpbCgmbW0tPm1tbGluaywgJm1tbGlzdCk7DQorCXNwaW5f
-dW5sb2NrX2lycXJlc3RvcmUoJm1tbGlua19sb2NrLCBmbGFncyk7DQorDQogCXJldHVybiBtbTsN
-CiANCiBmcmVlX3B0Og0KZGlmZiAtLWdpdCBhL21tL2luaXQtbW0uYyBiL21tL2luaXQtbW0uYw0K
-aW5kZXggYTU2YTg1MS4uMzBkNTU0ZSAxMDA2NDQNCi0tLSBhL21tL2luaXQtbW0uYw0KKysrIGIv
-bW0vaW5pdC1tbS5jDQpAQCAtMjAsNiArMjAsNyBAQCBzdHJ1Y3QgbW1fc3RydWN0IGluaXRfbW0g
-PSB7DQogCS5tbV9jb3VudAk9IEFUT01JQ19JTklUKDEpLA0KIAkubW1hcF9zZW0JPSBfX1JXU0VN
-X0lOSVRJQUxJWkVSKGluaXRfbW0ubW1hcF9zZW0pLA0KIAkucGFnZV90YWJsZV9sb2NrID0gIF9f
-U1BJTl9MT0NLX1VOTE9DS0VEKGluaXRfbW0ucGFnZV90YWJsZV9sb2NrKSwNCisJLm1tbGluawkJ
-PSBMSVNUX0hFQURfSU5JVChpbml0X21tLm1tbGluayksDQogCS5tbWxpc3QJCT0gTElTVF9IRUFE
-X0lOSVQoaW5pdF9tbS5tbWxpc3QpLA0KIAlJTklUX01NX0NPTlRFWFQoaW5pdF9tbSkNCiB9Ow0K
-ZGlmZiAtLWdpdCBhL21tL21lbW9yeS5jIGIvbW0vbWVtb3J5LmMNCmluZGV4IDA3NDkzZTMuLmVi
-OTY5M2UgMTAwNjQ0DQotLS0gYS9tbS9tZW1vcnkuYw0KKysrIGIvbW0vbWVtb3J5LmMNCkBAIC03
-OCw2ICs3OCwxMCBAQA0KICN3YXJuaW5nIFVuZm9ydHVuYXRlIE5VTUEgYW5kIE5VTUEgQmFsYW5j
-aW5nIGNvbmZpZywgZ3Jvd2luZyBwYWdlLWZyYW1lIGZvciBsYXN0X2NwdXBpZC4NCiAjZW5kaWYN
-CiANCisvKiBMaW5rIGFsbCBtbSdzIGluIGEgbGlua2VkIGxpc3QsIHdoaWNoIGlzIHByb3RlY3Rl
-ZCBieSBtbWxpbmtfbG9jay4gKi8NCitMSVNUX0hFQUQobW1saXN0KTsNCitERUZJTkVfU1BJTkxP
-Q0sobW1saW5rX2xvY2spOw0KKw0KICNpZm5kZWYgQ09ORklHX05FRURfTVVMVElQTEVfTk9ERVMN
-CiAvKiB1c2UgdGhlIHBlci1wZ2RhdCBkYXRhIGluc3RlYWQgZm9yIGRpc2NvbnRpZ21lbSAtIG1i
-bGlnaCAqLw0KIHVuc2lnbmVkIGxvbmcgbWF4X21hcG5yOw0KLS0NCg0K
+--wq9mPyueHGvFACwf
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Felix,
+
+On Fri, Jun 10, 2016 at 08:54:44PM +0200, Felix Fietkau wrote:
+> Hi,
+>=20
+> commit cccf34e9411c41b0cbfb41980fe55fc8e7c98fd2
+> MIPS: c-r4k: Fix cache flushing for MT cores
+>=20
+> This commit breaks SMP on Lantiq VRX220. When r4k_on_each_cpu is called
+> for a cache flush, I get the following oops very early when user space=20
+> starts:
+>=20
+> [    1.689913] CPU 0 Unable to handle kernel paging request at virtual ad=
+dress fffd7000, epc =3D=3D 80028fd4, ra =3D=3D 80096240
+> [    1.699095] Oops[#1]:
+> [    1.701365] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 4.4.12 #2
+> [    1.707280] task: 805278d8 ti: 80518000 task.ti: 80518000
+> [    1.712663] $ 0   : 00000000 00000003 80530000 fffd8000
+> [    1.717884] $ 4   : fffd7000 00000000 00000001 00000000
+> [    1.723105] $ 8   : 1100ff00 1000001f 00000000 00000001
+> [    1.728328] $12   : eac0c6e6 00000000 00000000 7748c2b0
+> [    1.733551] $16   : 82e6bdb0 00000000 80029a14 fffd7000
+> [    1.738773] $20   : 80499e0c 8051a140 80498424 80520000
+> [    1.743995] $24   : 00000000 80028fc0                 =20
+> [    1.749217] $28   : 80518000 80519d08 80520000 80096240
+> [    1.754441] Hi    : 013b114e
+> [    1.757316] Lo    : 6eff374b
+> [    1.760209] epc   : 80028fd4 r4k_blast_dcache_page_dc32+0x14/0xb8
+> [    1.766299] ra    : 80096240 generic_smp_call_function_single_interrup=
+t+0x160/0x200
+> [    1.773941] Status: 1100fd02 KERNEL EXL=20
+> [    1.777858] Cause : 00800008 (ExcCode 02)
+> [    1.781862] BadVA : fffd7000
+> [    1.784734] PrId  : 00019556 (MIPS 34Kc)
+> [    1.788648] Modules linked in:
+> [    1.791706] Process swapper/0 (pid: 0, threadinfo=3D80518000, task=3D8=
+05278d8, tls=3D00000000)
+> [    1.799789] Stack : 00000001 8007d3f4 00000000 80520000 80528cc0 80530=
+620 00000000 00000000
+>          00000001 8000e4f0 00010000 80a922a4 00000001 80520000 00000001 8=
+0071ad4
+>          80490000 80071c64 00000024 00000100 8051a040 8051a068 8049844c 8=
+0498460
+>          8051a140 80530620 8052470c 80a922a4 00000001 80520000 00000001 8=
+0520000
+>          80490000 80076214 804965b0 fffedc9a 80520000 00200000 00000000 0=
+0000001
+>          ...
+> [    1.835300] Call Trace:
+> [    1.837757] [<80028fd4>] r4k_blast_dcache_page_dc32+0x14/0xb8
+> [    1.843506] [<80096240>] generic_smp_call_function_single_interrupt+0x=
+160/0x200
+> [    1.850834] [<8000e4f0>] ipi_call_interrupt+0x10/0x20
+> [    1.855874] [<80071ad4>] handle_irq_event_percpu+0x78/0x1b4
+> [    1.861445] [<80076214>] handle_percpu_irq+0x88/0xb8
+> [    1.866397] [<800711a0>] generic_handle_irq+0x40/0x58
+> [    1.871445] [<80015528>] do_IRQ+0x1c/0x2c
+> [    1.875447] [<80002430>] ret_from_irq+0x0/0x4
+> [    1.879796] [<80015494>] r4k_wait_irqoff+0x18/0x20
+> [    1.884606] [<80069464>] cpu_startup_entry+0x164/0x1c4
+> [    1.889740] [<80542c28>] start_kernel+0x4a4/0x4c4
+> [    1.894416]=20
+> [    1.895878]=20
+> Code: 00002821  10000026  8c46ab2c <bc950000> bc950020  bc950040  bc95006=
+0  bc950080  bc9500a0=20
+> [    1.905894] ---[ end trace e17f61a2b2391e19 ]---
+>=20
+> If I add a #ifndef CONFIG_MIPS_MT_SMP around the smp_call_function_many c=
+all,
+> everything works fine again. From what I can tell, we should not do any I=
+PIs
+> for cache flushing on that device, since there are only two threads on the
+> same core.
+
+While it seems clear (and correct) that fixing cpu_foreign_map to
+exclude sibling CPUs would resolve this issue (I have a patch for that),
+that still doesn't explain why the IPI call would be problematic in the
+first place.
+
+This is probably getting called via r4k_flush_data_cache_page() on the
+other thread.
+
+The virtual address is a fixmap address, and it would appear to be
+fixmap index 0x9, which appears to be mapped by __kmap_pgprot() based on
+a page colour of 0x7.
+
+The case that fits that pattern is the cache alias handling in
+__flush_anon_page(), which does kmap_coherent() and
+flush_data_cache_page() on the resulting address. kmap_coherent disables
+preemption, and directly injects a wired entry into the TLB. An IPI call
+on that address is clearly unsafe as it doesn't inject an entry into the
+page tables so other CPUs wouldn't pick it up.
+
+So my prediction is that you have PREEMPT_COUNT=3Dn in your kernel config,
+which is causing in_atomic() in r4k_flush_data_cache_page() to always
+return false. This in_atomic() has been on my radar for a few weeks now,
+but I hadn't figured out what it was meant to solve. Given that
+preemption being disabled isn't technically a problem when doing the IPI
+calls (we disable preemption around it anyway, it doesn't sleep), I'm
+wondering if this is the case the in_atomic() is meant for.
+
+So, should the flush_anon_page() be flushing other CPU's caches too? I
+suspect it should for systems where address based cache ops aren't
+globalized by hardware. MIPS/ImgTec CM based SMP systems *do* globalize
+hit based cache ops in hardware, so they don't need an IPI call (I have
+a patch for that too).
+
+Does other MIPS (non MIPS Technologies / ImgTec) multi-core SMP hardware
+exist which uses c-r4k.c, doesn't globalize hit cache ops in hardware,
+is also vulnerable to cache aliasing, and which people care about
+running with software cache alias handling?
+
+If so, it should probably be fixed to work with IPI calls (inject into
+page tables temporarily or do the kmap_coherent on each CPU).
+
+If not, the in_atomic() should be fixed to detect this case when
+PREEMPT_COUNT=3Dn, or rather the caller should call the local version
+somehow to make its intentions clear.
+
+Thanks
+James
+
+--wq9mPyueHGvFACwf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJXhiHNAAoJEGwLaZPeOHZ6fJAQAK7/ey8P0KNW2dgaxlTlOuS7
+ODo/r+4cZD35DKjknSMGOHoW4HnXA/dWwmQN9fpl6gDAvJQIf74Uf2ClrNiOrkES
+U9kQcpr97ESvwLKRHRU7IxL80UgN9h4HhdhNNvA4Q/eKBBO92SRJH+IJskkrkfSl
+ywwnLng22OkrolcCSIgiWcq4MYavQoRDAP5Ssvj5TMDUUzS63pp/GHCvhnZ7tx6/
+fgViAfXomzFos9w9mT8hjWkFljPkII3Eca+5g4ObhTQLjmIL+nAjcdSq0Xx5J3AF
+ykx5+2MShfdnY4A0ltWV1bmSRIE4QqFq4UVGr6uaU/zr6+u8no4DL134yGGQlGEQ
+d4/2xKVK0gMk0dv9iWIeLZh0c/U8E7AXLX55Qb+3ilh627LS9MUYmQbPKArueAtD
+C5SEaHmNURNLVpe2r7tT3XkOFLYFE58yUdk9sh83Q2M3+yQhrDacclpNDtV1mJ+u
+e+krCZF5ll1+R5IvT0d2ExFE0lZLC/rfWpNEdCLOqF1nNemUudxpBbmb6VTRG6H1
+4ndVbUzUeIBTRpP/krjyfUDpHO89R0QKawFenWEN31k9p0dsNr//oZ7vZzNRNXby
+p4RtVQB5JdYCsuTCPhbBzbA49O8hJk6P+Z09niAGbeB9nEb3I5jTH3Lb9OskigNU
+O4+xZ/PZduL6DWsq/MAg
+=RfdQ
+-----END PGP SIGNATURE-----
+
+--wq9mPyueHGvFACwf--

@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:65171 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:12004 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992742AbcGMROlQ574I (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 13 Jul 2016 19:14:41 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [BACKPORT 3.14.y] MIPS: KVM: Fix modular KVM under QEMU
-Date: Wed, 13 Jul 2016 18:14:19 +0100
-Message-ID: <1468430059-7958-1-git-send-email-james.hogan@imgtec.com>
-In-Reply-To: <146827994122156@kroah.com>
-References: <146827994122156@kroah.com>
+        with ESMTP id S23992607AbcGSOIQ4E7hv (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 19 Jul 2016 16:08:16 +0200
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Subject: [PATCH] MIPS: OCTEON: cavium_octeon_defconfig: Enable OCTEON SATA
+Date: Tue, 19 Jul 2016 15:08:06 +0100
+Message-ID: <1468937286-13454-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,112 +18,32 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: stable@vger.kernel.org
-Cc: gregkh@linuxfoundation.org, rkrcmar@redhat.com, James Hogan <james.hogan@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20160713171419.7pohxF_2U1YY16dhY4_NH4VZqJELuRNLGCIF-yYSfIg@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Matt Redfearn <matt.redfearn@imgtec.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20160719140806.1ibewB5VCBpDgE3o0xfL1lG-o2qMrVq-euglqxxVhlA@z>
 
-commit 797179bc4fe06c89e47a9f36f886f68640b423f8 upstream.
+Commit a2127e400edd ("libata: support AHCI on OCTEON platform") added a
+driver for the OCTEON AHCI controller. Enable this driver in the OCTEON
+defconfig.
 
-Copy __kvm_mips_vcpu_run() into unmapped memory, so that we can never
-get a TLB refill exception in it when KVM is built as a module.
-
-This was observed to happen with the host MIPS kernel running under
-QEMU, due to a not entirely transparent optimisation in the QEMU TLB
-handling where TLB entries replaced with TLBWR are copied to a separate
-part of the TLB array. Code in those pages continue to be executable,
-but those mappings persist only until the next ASID switch, even if they
-are marked global.
-
-An ASID switch happens in __kvm_mips_vcpu_run() at exception level after
-switching to the guest exception base. Subsequent TLB mapped kernel
-instructions just prior to switching to the guest trigger a TLB refill
-exception, which enters the guest exception handlers without updating
-EPC. This appears as a guest triggered TLB refill on a host kernel
-mapped (host KSeg2) address, which is not handled correctly as user
-(guest) mode accesses to kernel (host) segments always generate address
-error exceptions.
-
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Radim Krčmář <rkrcmar@redhat.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: kvm@vger.kernel.org
-Cc: linux-mips@linux-mips.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-[james.hogan@imgtec.com: backported for stable 3.14]
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
 ---
- arch/mips/include/asm/kvm_host.h |  1 +
- arch/mips/kvm/kvm_locore.S       |  1 +
- arch/mips/kvm/kvm_mips.c         | 11 ++++++++++-
- arch/mips/kvm/kvm_mips_int.h     |  2 ++
- 4 files changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
-index a995fce87791..3ff5b4921b76 100644
---- a/arch/mips/include/asm/kvm_host.h
-+++ b/arch/mips/include/asm/kvm_host.h
-@@ -342,6 +342,7 @@ struct kvm_mips_tlb {
- #define KVM_MIPS_GUEST_TLB_SIZE     64
- struct kvm_vcpu_arch {
- 	void *host_ebase, *guest_ebase;
-+	int (*vcpu_run)(struct kvm_run *run, struct kvm_vcpu *vcpu);
- 	unsigned long host_stack;
- 	unsigned long host_gp;
- 
-diff --git a/arch/mips/kvm/kvm_locore.S b/arch/mips/kvm/kvm_locore.S
-index ba5ce99c021d..d1fa2a57218b 100644
---- a/arch/mips/kvm/kvm_locore.S
-+++ b/arch/mips/kvm/kvm_locore.S
-@@ -229,6 +229,7 @@ FEXPORT(__kvm_mips_load_k0k1)
- 
- 	/* Jump to guest */
- 	eret
-+EXPORT(__kvm_mips_vcpu_run_end)
- 
- VECTOR(MIPSX(exception), unknown)
- /*
-diff --git a/arch/mips/kvm/kvm_mips.c b/arch/mips/kvm/kvm_mips.c
-index 12d850b68763..2b2dd4ec03fb 100644
---- a/arch/mips/kvm/kvm_mips.c
-+++ b/arch/mips/kvm/kvm_mips.c
-@@ -348,6 +348,15 @@ struct kvm_vcpu *kvm_arch_vcpu_create(struct kvm *kvm, unsigned int id)
- 	memcpy(gebase + offset, mips32_GuestException,
- 	       mips32_GuestExceptionEnd - mips32_GuestException);
- 
-+#ifdef MODULE
-+	offset += mips32_GuestExceptionEnd - mips32_GuestException;
-+	memcpy(gebase + offset, (char *)__kvm_mips_vcpu_run,
-+	       __kvm_mips_vcpu_run_end - (char *)__kvm_mips_vcpu_run);
-+	vcpu->arch.vcpu_run = gebase + offset;
-+#else
-+	vcpu->arch.vcpu_run = __kvm_mips_vcpu_run;
-+#endif
-+
- 	/* Invalidate the icache for these ranges */
- 	mips32_SyncICache((unsigned long) gebase, ALIGN(size, PAGE_SIZE));
- 
-@@ -431,7 +440,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run *run)
- 
- 	kvm_guest_enter();
- 
--	r = __kvm_mips_vcpu_run(run, vcpu);
-+	r = vcpu->arch.vcpu_run(run, vcpu);
- 
- 	kvm_guest_exit();
- 	local_irq_enable();
-diff --git a/arch/mips/kvm/kvm_mips_int.h b/arch/mips/kvm/kvm_mips_int.h
-index 20da7d29eede..bf41ea36210e 100644
---- a/arch/mips/kvm/kvm_mips_int.h
-+++ b/arch/mips/kvm/kvm_mips_int.h
-@@ -27,6 +27,8 @@
- #define MIPS_EXC_MAX                12
- /* XXXSL More to follow */
- 
-+extern char __kvm_mips_vcpu_run_end[];
-+
- #define C_TI        (_ULCAST_(1) << 30)
- 
- #define KVM_MIPS_IRQ_DELIVER_ALL_AT_ONCE (0)
+ arch/mips/configs/cavium_octeon_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/mips/configs/cavium_octeon_defconfig b/arch/mips/configs/cavium_octeon_defconfig
+index dcac308cec39..d470d08362c0 100644
+--- a/arch/mips/configs/cavium_octeon_defconfig
++++ b/arch/mips/configs/cavium_octeon_defconfig
+@@ -59,6 +59,8 @@ CONFIG_EEPROM_AT25=y
+ CONFIG_BLK_DEV_SD=y
+ CONFIG_ATA=y
+ CONFIG_SATA_AHCI=y
++CONFIG_SATA_AHCI_PLATFORM=y
++CONFIG_AHCI_OCTEON=y
+ CONFIG_PATA_OCTEON_CF=y
+ CONFIG_SATA_SIL=y
+ CONFIG_NETDEVICES=y
 -- 
-2.4.10
+2.7.4

@@ -1,14 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:12004 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992607AbcGSOIQ4E7hv (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 19 Jul 2016 16:08:16 +0200
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH] MIPS: OCTEON: cavium_octeon_defconfig: Enable OCTEON SATA
-Date: Tue, 19 Jul 2016 15:08:06 +0100
-Message-ID: <1468937286-13454-1-git-send-email-matt.redfearn@imgtec.com>
+Received: from mail-co1nam03on0053.outbound.protection.outlook.com ([104.47.40.53]:60110
+        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23993082AbcGSSbWxuPOH (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 19 Jul 2016 20:31:22 +0200
+Subject: Re: [PATCH V8 2/2] mmc: OCTEON: Add host driver for OCTEON MMC
+ controller.
+References: <57853474.9050108@cavium.com>
+From: "Steven J. Hill" <Steven.Hill@caviumnetworks.com>
+Message-ID: <578E71E6.2020700@caviumnetworks.com>
+Date: Tue, 19 Jul 2016 13:31:02 -0500
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@imgtec.com>
+In-Reply-To: <57853474.9050108@cavium.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Steven.Hill@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,32 +23,19 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Matt Redfearn <matt.redfearn@imgtec.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20160719140806.1ibewB5VCBpDgE3o0xfL1lG-o2qMrVq-euglqxxVhlA@z>
+To: linux-mmc@vger.kernel.org, devicetree@vger.kernel.org, linux-mips@linux-mips.org
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20160719183102.rXC8YAwJAb137U5yrYTxALs4eVCkRePB5TtUde7tuRQ@z>
 
-Commit a2127e400edd ("libata: support AHCI on OCTEON platform") added a
-driver for the OCTEON AHCI controller. Enable this driver in the OCTEON
-defconfig.
+On 07/12/2016 01:18 PM, Steven J. Hill wrote:
+> The OCTEON MMC controller is currently found on cn61XX and cn71XX
+> devices. Device parameters are configured from device tree data.
+> eMMC, MMC and SD devices are supported. Tested on Rhino labs UTM8
+> and Cavium CN7130 board.
+>
+> Signed-off-by: Steven J. Hill <steven.hill@cavium.com>
+> Acked-by: David Daney <david.daney@cavium.com>
+>
+Has anyone reviewed the driver or have any comments? Thanks.
 
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
----
-
- arch/mips/configs/cavium_octeon_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/mips/configs/cavium_octeon_defconfig b/arch/mips/configs/cavium_octeon_defconfig
-index dcac308cec39..d470d08362c0 100644
---- a/arch/mips/configs/cavium_octeon_defconfig
-+++ b/arch/mips/configs/cavium_octeon_defconfig
-@@ -59,6 +59,8 @@ CONFIG_EEPROM_AT25=y
- CONFIG_BLK_DEV_SD=y
- CONFIG_ATA=y
- CONFIG_SATA_AHCI=y
-+CONFIG_SATA_AHCI_PLATFORM=y
-+CONFIG_AHCI_OCTEON=y
- CONFIG_PATA_OCTEON_CF=y
- CONFIG_SATA_SIL=y
- CONFIG_NETDEVICES=y
--- 
-2.7.4
+Steve

@@ -1,14 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:49418 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992319AbcGYQAX4KCLE (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 25 Jul 2016 18:00:23 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 0/5] Define AT_VECTOR_SIZE_ARCH correctly
-Date: Mon, 25 Jul 2016 16:59:49 +0100
-Message-ID: <1469462394-8970-1-git-send-email-james.hogan@imgtec.com>
+Received: from mail-dm3nam03on0041.outbound.protection.outlook.com ([104.47.41.41]:46240
+        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23991964AbcGYVJCMAXwo (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 25 Jul 2016 23:09:02 +0200
+Message-ID: <57967FE4.4000405@caviumnetworks.com>
+Date: Mon, 25 Jul 2016 14:08:52 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Subject: Re: [PATCH] MIPS: Octeon: Remove forced mappings of USB interrupts.
+References: <57967A25.4080502@bethel-hill.org>
+In-Reply-To: <57967A25.4080502@bethel-hill.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,64 +22,26 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-arch@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Russell King <linux@armlinux.org.uk>, Nathan Lynch <nathan_lynch@mentor.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Chris Metcalf <cmetcalf@mellanox.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, linux-mips@linux-mips.org, linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net
-Message-ID: <20160725155949.b_tORar7S-apAQt6pUE0ehE1wbPUAtYLk-qUNyITGk8@z>
+To: "Steven J. Hill" <sjhill@bethel-hill.org>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, David Daney <david.daney@cavium.com>
+Message-ID: <20160725210852.ArWV2ORSj9MvVuyIsDxLTojQiFP1D2qfonISpkA9F3Q@z>
 
-Several architectures define ARCH_DLINFO to [sometimes] contain
-NEW_AUX_ENT entries, but don't define AT_VECTOR_SIZE_ARCH with the
-corresponding maximum number of NEW_AUX_ENT entries.
+On 07/25/2016 01:44 PM, Steven J. Hill wrote:
+> Get rid of unnecessary forced interrupt mappings for
+> the USB host controller on OCTEON II.
+>
 
-In practice this doesn't cause any problems as AT_VECTOR_SIZE_BASE
-includes space for AT_BASE_PLATFORM which none of these arches use, but
-nevertheless lets define it now and add the comment above ARCH_DLINFO as
-found in several other architectures to remind future modifiers of
-ARCH_DLINFO to keep AT_VECTOR_SIZE_ARCH up to date.
+What makes the mappings unnecessary, is that the corresponding symbols 
+are unused.  This is essentially an exercise in dead code removal.
 
-Arch maintainers, please take via your own trees if you're happy to do
-so.
+David.
 
-- I haven't included an update for x86/um as it doesn't follow the same
-  pattern as other architectures so it is unclear to me whether it has
-  the same issue.
-
-- Build tested on MIPS, ARM & tile.
-
-- Tested on MIPS.
-
-James Hogan (5):
-  MIPS: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
-  ARM: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
-  arm64: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
-  s390: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
-  tile: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
-
- arch/arm/include/asm/elf.h           | 1 +
- arch/arm/include/uapi/asm/auxvec.h   | 2 ++
- arch/arm64/include/asm/elf.h         | 1 +
- arch/arm64/include/uapi/asm/auxvec.h | 2 ++
- arch/mips/include/asm/elf.h          | 1 +
- arch/mips/include/uapi/asm/auxvec.h  | 2 ++
- arch/s390/include/asm/elf.h          | 1 +
- arch/s390/include/uapi/asm/auxvec.h  | 2 ++
- arch/tile/include/asm/elf.h          | 1 +
- arch/tile/include/uapi/asm/auxvec.h  | 2 ++
- 10 files changed, 15 insertions(+)
-
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Nathan Lynch <nathan_lynch@mentor.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will.deacon@arm.com>
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Chris Metcalf <cmetcalf@mellanox.com>
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: linux-mips@linux-mips.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-s390@vger.kernel.org
-Cc: user-mode-linux-devel@lists.sourceforge.net
--- 
-2.4.10
+> Signed-off-by: Steven J. Hill <steven.hill@cavium.com>
+> Acked-by: David Daney <david.daney@cavium.com>
+> Signed-off-by: Steven J. Hill <Steven.Hill@cavium.com>
+> ---
+>   arch/mips/cavium-octeon/octeon-irq.c           | 12 ------------
+>   arch/mips/include/asm/mach-cavium-octeon/irq.h |  2 --
+>   2 files changed, 14 deletions(-)
+>
+[...]

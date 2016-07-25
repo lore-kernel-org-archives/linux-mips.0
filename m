@@ -1,16 +1,16 @@
-Received: from mail-dm3nam03on0041.outbound.protection.outlook.com ([104.47.41.41]:46240
-        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
+Received: from mail-sn1nam02on0086.outbound.protection.outlook.com ([104.47.36.86]:52688
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23991964AbcGYVJCMAXwo (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 25 Jul 2016 23:09:02 +0200
-Message-ID: <57967FE4.4000405@caviumnetworks.com>
-Date: Mon, 25 Jul 2016 14:08:52 -0700
+        id S23992186AbcGYVuCWZhEk (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 25 Jul 2016 23:50:02 +0200
+Message-ID: <5796897F.8050007@caviumnetworks.com>
+Date: Mon, 25 Jul 2016 14:49:51 -0700
 From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: Octeon: Remove forced mappings of USB interrupts.
-References: <57967A25.4080502@bethel-hill.org>
-In-Reply-To: <57967A25.4080502@bethel-hill.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH] MIPS: Octeon: Improve USB reset code for OCTEON II.
+References: <57967A2C.3020002@bethel-hill.org> <20160725211545.GB17344@blackmetal.musicnaut.iki.fi>
+In-Reply-To: <20160725211545.GB17344@blackmetal.musicnaut.iki.fi>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <David.Daney@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
@@ -22,26 +22,29 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Steven J. Hill" <sjhill@bethel-hill.org>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>, "Steven J. Hill" <sjhill@bethel-hill.org>
 Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, David Daney <david.daney@cavium.com>
-Message-ID: <20160725210852.ArWV2ORSj9MvVuyIsDxLTojQiFP1D2qfonISpkA9F3Q@z>
+Message-ID: <20160725214951.KDEYZqKizkqEIbbJyZ-4ZGu9CAE-Zg0DEuSRe8ppymI@z>
 
-On 07/25/2016 01:44 PM, Steven J. Hill wrote:
-> Get rid of unnecessary forced interrupt mappings for
-> the USB host controller on OCTEON II.
+On 07/25/2016 02:15 PM, Aaro Koskinen wrote:
+> Hi,
 >
+> On Mon, Jul 25, 2016 at 03:44:28PM -0500, Steven J. Hill wrote:
+>> -	.dma_mask_64	= 1,
+>> +	/*
+>> +	 * We can DMA from anywhere. But the descriptors must be in
+>> +	 * the lower 4GB.
+>> +	 */
+>> +	.dma_mask_64	= 0,
+>
+> Is this change really related to USB reset code?
 
-What makes the mappings unnecessary, is that the corresponding symbols 
-are unused.  This is essentially an exercise in dead code removal.
+In a word ... no.
 
+It is still needed though on systems with 4GB or more of RAM.
+
+Steven, can you split the patch in two?   One patch with the reset 
+enhancements, and a second with this change to restrict the DMA mask.
+
+Thanks,
 David.
-
-> Signed-off-by: Steven J. Hill <steven.hill@cavium.com>
-> Acked-by: David Daney <david.daney@cavium.com>
-> Signed-off-by: Steven J. Hill <Steven.Hill@cavium.com>
-> ---
->   arch/mips/cavium-octeon/octeon-irq.c           | 12 ------------
->   arch/mips/include/asm/mach-cavium-octeon/irq.h |  2 --
->   2 files changed, 14 deletions(-)
->
-[...]

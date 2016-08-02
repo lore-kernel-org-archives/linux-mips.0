@@ -1,17 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:14898 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992866AbcHAQv1sXiuR (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 1 Aug 2016 18:51:27 +0200
-Subject: Re: [PATCH v2] MIPS: Use CPHYSADDR to implement mips32 __pa
-References: <1455644478-23415-1-git-send-email-paul.burton@imgtec.com>
-From: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <eb5c9780-f0ed-8a91-d727-46119e1ee192@imgtec.com>
-Date: Mon, 1 Aug 2016 17:51:10 +0100
+Received: from mailapp01.imgtec.com ([195.59.15.196]:22638 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992951AbcHBJralmLeL (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Aug 2016 11:47:30 +0200
+Date: Tue, 2 Aug 2016 10:47:20 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH RESEND v4 7/9] MIPS: Loongson-1A: Enable SPARSEMEN and
+ HIGHMEM
+Message-ID: <20160802094720.GZ1292@jhogan-linux.le.imgtec.org>
+References: <1463621912-9883-1-git-send-email-zhoubb@lemote.com>
+ <1463621912-9883-6-git-send-email-zhoubb@lemote.com>
+ <20160802082923.GA15910@linux-mips.org>
 MIME-Version: 1.0
-In-Reply-To: <1455644478-23415-1-git-send-email-paul.burton@imgtec.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="L4xCDQ7GT+ph8Lmk"
+Content-Disposition: inline
+In-Reply-To: <20160802082923.GA15910@linux-mips.org>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,85 +26,75 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>
-Message-ID: <20160801165110.2-NQRs59S_-ChLOjJLkZ_D256GnJMfNWi5GjfLAlyn8@z>
+Cc: Binbin Zhou <zhoubb@lemote.com>, John Crispin <john@phrozen.org>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, Kelvin Cheung <keguang.zhang@gmail.com>, Chunbo Cui <cuichboo@163.com>, Huacai Chen <chenhc@lemote.com>
+Message-ID: <20160802094720.umUelCGNURskAbsaCdUY7hlBgQ7YgFMHF9XK5_lkq3A@z>
 
-On 16/02/16 17:41, Paul Burton wrote:
-> Use CPHYSADDR to implement the __pa macro converting from a virtual to a
-> physical address for MIPS32, much as is already done for MIPS64 (though
-> without the complication of having both compatibility & XKPHYS
-> segments).
->
-> This allows for __pa to work regardless of whether the address being
-> translated is in kseg0 or kseg1, unlike the previous subtraction based
-> approach which only worked for addresses in kseg0. Working for kseg1
-> addresses is important if __pa is used on addresses allocated by
-> dma_alloc_coherent, where on systems with non-coherent I/O we provide
-> addresses in kseg1. If this address is then used with
-> dma_map_single_attrs then it is provided to virt_to_page, which in turn
-> calls virt_to_phys which is a wrapper around __pa. The result is that we
-> end up with a physical address 0x20000000 bytes (ie. the size of kseg0)
-> too high.
->
-> In addition to providing consistency with MIPS64 & fixing the kseg1 case
-> above this has the added bonus of generating smaller code for systems
-> implementing MIPS32r2 & beyond, where a single ext instruction can
-> extract the physical address rather than needing to load an immediate
-> into a temp register & subtract it. This results in ~1.3KB savings for a
-> boston_defconfig kernel adjusted to set CONFIG_32BIT=y.
->
-> This patch does not change the EVA case, which may or may not have
-> similar issues around handling both cached & uncached addresses but is
-> beyond the scope of this patch.
->
-> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
->
+--L4xCDQ7GT+ph8Lmk
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi Ralf,
+On Tue, Aug 02, 2016 at 10:29:23AM +0200, Ralf Baechle wrote:
+> On Thu, May 19, 2016 at 09:38:30AM +0800, Binbin Zhou wrote:
+>=20
+> > diff --git a/arch/mips/include/asm/sparsemem.h b/arch/mips/include/asm/=
+sparsemem.h
+> > index b1071c1..f73e671 100644
+> > --- a/arch/mips/include/asm/sparsemem.h
+> > +++ b/arch/mips/include/asm/sparsemem.h
+> > @@ -11,7 +11,11 @@
+> >  #else
+> >  # define SECTION_SIZE_BITS	28
+> >  #endif
+> > -#define MAX_PHYSMEM_BITS	48
+> > +#ifdef CONFIG_64BIT
+> > +# define MAX_PHYSMEM_BITS	48
+> > +#else
+> > +# define MAX_PHYSMEM_BITS	36
+> > +#endif
+>=20
+> This doesn't look right for XPA.  What do you think, James?
 
-Any thoughts on this one? It matters for Boston (where it affects the 
-pch_gbe ethernet driver) which I'll be submitting again for the 4.9 cycle.
+XPA appears to naturally support up to 59 physical address bits, but
+with a "practical limit" of 40 bits. I haven't quite figured out what
+the practical limit means to be honest (maybe MIPS32 XPA implementations
+are simply expected not to exceed 40 bits in practice).
 
-Thanks,
-     Paul
+So yeh, it should probably be at least 40 when CONFIG_XPA is enabled,
+although I'm unclear about the consequences. E.g. a bigger
+MAX_PHYSMEM_BITS increases the number of segment id bits
+(MAX_PHYSMEM_BITS - SECTION_SIZE_BITS).
 
-> ---
->
-> Changes in v2:
-> - Leave the EVA case as-is.
->
->  arch/mips/include/asm/page.h | 20 ++++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
-> index 21ed715..ac0c1b7 100644
-> --- a/arch/mips/include/asm/page.h
-> +++ b/arch/mips/include/asm/page.h
-> @@ -169,8 +169,24 @@ typedef struct { unsigned long pgprot; } pgprot_t;
->      __x < CKSEG0 ? XPHYSADDR(__x) : CPHYSADDR(__x);			\
->  })
->  #else
-> -#define __pa(x)								\
-> -    ((unsigned long)(x) - PAGE_OFFSET + PHYS_OFFSET)
-> +static inline unsigned long __pa(unsigned long x)
-> +{
-> +	if (!config_enabled(CONFIG_EVA)) {
-> +		/*
-> +		 * We're using the standard MIPS32 legacy memory map, ie.
-> +		 * the address x is going to be in kseg0 or kseg1. We can
-> +		 * handle either case by masking out the desired bits using
-> +		 * CPHYSADDR.
-> +		 */
-> +		return CPHYSADDR(x);
-> +	}
-> +
-> +	/*
-> +	 * EVA is in use so the memory map could be anything, making it not
-> +	 * safe to just mask out bits.
-> +	 */
-> +	return x - PAGE_OFFSET + PHYS_OFFSET;
-> +}
->  #endif
->  #define __va(x)		((void *)((unsigned long)(x) + PAGE_OFFSET - PHYS_OFFSET))
->  #include <asm/io.h>
->
+>=20
+> I think we don't use sparsemem on XPA atm so I can apply this safely -
+> but it should be fixed properly.
+
+Right, sparsemem seems to be enabled depending on the platform, so it
+may only be a matter of time.
+
+Cheers
+James
+
+--L4xCDQ7GT+ph8Lmk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJXoGwoAAoJEGwLaZPeOHZ6jeMQAKkivsf6+54DExQOYIOBwyHv
+AwMrn8k9uL/M1L0PINHhKBl9kRDgA2Yos8xkfecJpoBfjAFoWwWrYKglpnLlbjX6
+1qzBHlEtwAjrHYRKqxugODteChG508Z6lHzBWsC3TRypZKm8bPbFPjN8aut9xDfj
+Hd9ZFr5fZn10fVkVu8IdtfhMU0cHnLRAyEUVwNczlrwRRhXoWX3xfDgBEYGSLzT6
+RFpsq3rysbci41cPBXtnrPFxc54hgZq3+VQaNLarM9gOqrOeODtm/cSvbBS4TjbO
+v4IijnIwhWlNY6gqr0T2lSmdLUMu8JXf3pIK4T/5I+gJnh+BYUFWbjUT4waOTNvb
+H8TsgXj0lns01qfJbKXARuixddK8WNOSgHRW15sVxfrdshPHQXBRIHUQqv/wt0kh
+USsORLtIFx0q4TkXO+f6CSWHojYQVS3S2I0hsRc6vO/d9wCz9Mfae3eS19bf050f
+9d0Vdq1K1fj4Ye0oOo6oK4ngCJwFqggCCnt4J4uudYrnnqNZtLyojnDxs59BUhM+
+rXX3OL2IU2RaOdsOWkUVNky07Gyiy1aFO/jRt3RDWw2gn5gtOUMuXOIbWoKW2f0g
+xU9twDJQkMCi7fDPDLLa/0sGphTvnz84V6jOEgV1fBMeuP99Seq0hMe8rkOOUKz9
+ULVtOzeEBnl8fVrHWPps
+=/cbS
+-----END PGP SIGNATURE-----
+
+--L4xCDQ7GT+ph8Lmk--

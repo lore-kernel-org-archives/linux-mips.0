@@ -1,13 +1,18 @@
-Received: from mail5.windriver.com ([192.103.53.11]:54764 "EHLO mail5.wrs.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23993127AbcHBSz0VzB5x (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 2 Aug 2016 20:55:26 +0200
+Received: from mail.windriver.com ([147.11.1.11]:32778 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993214AbcHCNcV3vKQt (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 3 Aug 2016 15:32:21 +0200
+Date: Wed, 3 Aug 2016 09:31:37 -0400
 From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH] mips: lantiq: fix irq_chip name to not land in new parent field
-Date: Tue, 2 Aug 2016 14:54:47 -0400
-Message-ID: <20160802185447.3831-1-paul.gortmaker@windriver.com>
+Subject: Re: [PATCH] mips: lantiq: fix irq_chip name to not land in new
+ parent field
+Message-ID: <20160803133136.GJ29630@windriver.com>
+References: <20160802185447.3831-1-paul.gortmaker@windriver.com>
+ <20160803055653.GG15910@linux-mips.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20160803055653.GG15910@linux-mips.org>
 Return-Path: <Paul.Gortmaker@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -18,74 +23,52 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, Jon Hunter <jonathanh@nvidia.com>, Kevin Hilman <khilman@baylibre.com>, Marc Zyngier <marc.zyngier@arm.com>, John Crispin <john@phrozen.org>, Ralf Baechle <ralf@linux-mips.org>, Thomas Gleixner <tglx@linutronix.de>, linux-mips@linux-mips.org
-Message-ID: <20160802185447.uFFtpui2VQBN2VX4aJ9Auu6Xfcmqo604h0KhFa8zWWI@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-kernel@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>, Kevin Hilman <khilman@baylibre.com>, Marc Zyngier <marc.zyngier@arm.com>, John Crispin <john@phrozen.org>, Thomas Gleixner <tglx@linutronix.de>, linux-mips@linux-mips.org, Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+Message-ID: <20160803133137.6JF2-dMI0yGZaVA2Md_VWw7w26znbuuq-RTU6aIsbcg@z>
 
-As of commit be45beb2df69 ("genirq: Add runtime power management
-support for IRQ chips") the irq_chip struct got a struct *device
-parent_device field added to it.  However, it was added at the
-beginning of the struct, which previously was the "name" entry.
+[Re: [PATCH] mips: lantiq: fix irq_chip name to not land in new parent field] On 03/08/2016 (Wed 07:56) Ralf Baechle wrote:
 
-The driver here was using a mix of ordered struct init entries and
-named init entries.  It was supplying the name assuming it was the 1st
-in the order, and hence when that became a struct *device we get:
+> On Tue, Aug 02, 2016 at 02:54:47PM -0400, Paul Gortmaker wrote:
+> 
+> > As of commit be45beb2df69 ("genirq: Add runtime power management
+> > support for IRQ chips") the irq_chip struct got a struct *device
+> > parent_device field added to it.  However, it was added at the
+> > beginning of the struct, which previously was the "name" entry.
+> > 
+> > The driver here was using a mix of ordered struct init entries and
+> > named init entries.  It was supplying the name assuming it was the 1st
+> > in the order, and hence when that became a struct *device we get:
+> > 
+> > arch/mips/lantiq/irq.c:209:2: warning: initialization from incompatible pointer type [enabled by default]
+> > arch/mips/lantiq/irq.c:209:2: warning: (near initialization for 'ltq_irq_type.parent_device') [enabled by default]
+> > arch/mips/lantiq/irq.c:219:2: warning: initialization from incompatible pointer type [enabled by default]
+> > arch/mips/lantiq/irq.c:219:2: warning: (near initialization for 'ltq_eiu_type.parent_device') [enabled by default]
+> > 
+> > While not runtime tested, I can't imagine trying to dereference a
+> > a struct device field from a char string will end well.
+> > 
+> > Here we've used named element init entries for the name string as well
+> > to fix it.
+> > 
+> > Fixes: be45beb2df69 ("genirq: Add runtime power management support for IRQ chips")
+> > Cc: Jon Hunter <jonathanh@nvidia.com>
+> > Cc: Kevin Hilman <khilman@baylibre.com>
+> > Cc: Marc Zyngier <marc.zyngier@arm.com>
+> > Cc: John Crispin <john@phrozen.org>
+> > Cc: Ralf Baechle <ralf@linux-mips.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: linux-mips@linux-mips.org
+> > Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+> 
+> Thanks for the patch but I've already applied the identical patch
+> https://patchwork.linux-mips.org/patch/13684/.
 
-arch/mips/lantiq/irq.c:209:2: warning: initialization from incompatible pointer type [enabled by default]
-arch/mips/lantiq/irq.c:209:2: warning: (near initialization for 'ltq_irq_type.parent_device') [enabled by default]
-arch/mips/lantiq/irq.c:219:2: warning: initialization from incompatible pointer type [enabled by default]
-arch/mips/lantiq/irq.c:219:2: warning: (near initialization for 'ltq_eiu_type.parent_device') [enabled by default]
+Patchwork shows that patch was from June, however I still saw the issue
+on the linux-next from yesterday (or maybe the weekend?).   Is the
+branch you applied it to being fed into sfr's daily merge queue?
 
-While not runtime tested, I can't imagine trying to dereference a
-a struct device field from a char string will end well.
-
-Here we've used named element init entries for the name string as well
-to fix it.
-
-Fixes: be45beb2df69 ("genirq: Add runtime power management support for IRQ chips")
-Cc: Jon Hunter <jonathanh@nvidia.com>
-Cc: Kevin Hilman <khilman@baylibre.com>
-Cc: Marc Zyngier <marc.zyngier@arm.com>
-Cc: John Crispin <john@phrozen.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-mips@linux-mips.org
-Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
----
-
-[
-  in mainline via: commit a5c8a01968fc9dc94f182172cee7ab40bc496ea4
-    Merge: ff5b706f5189 3faf24ea894a
-    Author: Thomas Gleixner <tglx@linutronix.de>
-    Date:   Mon Jun 13 16:33:48 2016 +0200
-
-    Merge tag 'irqchip-for-4.8' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/core
-]
-
- arch/mips/lantiq/irq.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/lantiq/irq.c b/arch/mips/lantiq/irq.c
-index ff17669e30a3..02c0252b49a3 100644
---- a/arch/mips/lantiq/irq.c
-+++ b/arch/mips/lantiq/irq.c
-@@ -206,7 +206,7 @@ static void ltq_shutdown_eiu_irq(struct irq_data *d)
- }
- 
- static struct irq_chip ltq_irq_type = {
--	"icu",
-+	.name = "icu",
- 	.irq_enable = ltq_enable_irq,
- 	.irq_disable = ltq_disable_irq,
- 	.irq_unmask = ltq_enable_irq,
-@@ -216,7 +216,7 @@ static struct irq_chip ltq_irq_type = {
- };
- 
- static struct irq_chip ltq_eiu_type = {
--	"eiu",
-+	.name = "eiu",
- 	.irq_startup = ltq_startup_eiu_irq,
- 	.irq_shutdown = ltq_shutdown_eiu_irq,
- 	.irq_enable = ltq_enable_irq,
--- 
-2.8.4
+P.
+--
+> 
+>   Ralf

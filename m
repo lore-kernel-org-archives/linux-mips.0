@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:6210 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:63047 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992535AbcHIMWLtYLyf (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 9 Aug 2016 14:22:11 +0200
+        with ESMTP id S23992544AbcHIMWMOVJKf (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 9 Aug 2016 14:22:12 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 1/2] MIPS: Allow memory reaching top of physical
-Date: Tue, 9 Aug 2016 13:21:48 +0100
-Message-ID: <97c186f23c1176b8d0eaaf7a8b0dad1a16b851de.1470745146.git-series.james.hogan@imgtec.com>
+Subject: [PATCH 2/2] MIPS: MAAR: Fix address alignment
+Date: Tue, 9 Aug 2016 13:21:49 +0100
+Message-ID: <90055c0cfa8675f589aa5cf28e77a38b676881df.1470745146.git-series.james.hogan@imgtec.com>
 In-Reply-To: <cover.842913b0756706569a896ef308bb5bf98be4f0ce.1470745146.git-series.james.hogan@imgtec.com>
 References: <cover.842913b0756706569a896ef308bb5bf98be4f0ce.1470745146.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -21,56 +21,62 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20160809122148.o4B_yPVE60itRzivCe3d2R_wlCAEpwsMu13sxPag1fw@z>
+Cc: James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20160809122149.qSO0cgEHiH8XQ2NxPiBJFRIkYEXLeimGZWz4maQPqS4@z>
 
-Memory regions added with add_memory_region() at the top of the physical
-address space will have their end address overflow to 0. This causes
-them to be rejected as invalid, and would cause various other issues
-later on.
+The alignment of MIPS MAAR region addresses isn't quite right.
 
-This causes issues on Malta and Boston platforms when wanting to use all
-2GB of RAM on a 32-bit kernel, either via highmem (using physical
-addresses 0x90000000..0xFFFFFFFF), or with the Malta Enhanced Virtual
-Addressing (EVA) layout which exposes the whole 0x80000000..0xFFFFFFFF
-physical address range to kernel mode at 0x00000000..0x7FFFFFFF.
+- It rounds an already 64 KiB aligned start address up to the next
+  64 KiB boundary, e.g. 0x80000000 is rounded up to 0x80010000.
 
-Due to the abundance of these non-overflow assumptions and the fact that
-memblock already avoids the arithmetic overflow by limiting the size of
-new memory regions without the arch code knowing it (in particular
-mem_init_free_highmem() will trigger a page dump due to nonzero mapcount
-on the last page), it is simpler and safer to just limit the size of the
-region in a similar way to memblock but at the arch level to allow most
-of the RAM to be used without arithmetic overflows.
+- It assumes the end address is already on a 64 KiB boundary and doesn't
+  round it down. Should that not be the case it will hit the second
+  BUG_ON() in write_maar_pair().
 
-Therefore we detect this case specifically and reduce the size of the
-region slightly to avoid the arithmetic overflows and cause the last
-page to be ignored.
+Both cases are addressed by rounding up and down to 64 KiB boundaries in
+the more traditional way of adding 0xffff (for rounding up) and masking
+off the low 16 bits.
 
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@imgtec.com>
 Cc: linux-mips@linux-mips.org
 ---
- arch/mips/kernel/setup.c | 7 +++++++
- 1 file changed, 7 insertions(+), 0 deletions(-)
+ arch/mips/mm/init.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 36cf8d65c47d..3be0e6ba2797 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -87,6 +87,13 @@ void __init add_memory_region(phys_addr_t start, phys_addr_t size, long type)
- 	int x = boot_mem_map.nr_map;
- 	int i;
+diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
+index a5509e7dcad2..2c3749d98f04 100644
+--- a/arch/mips/mm/init.c
++++ b/arch/mips/mm/init.c
+@@ -261,7 +261,6 @@ unsigned __weak platform_maar_init(unsigned num_pairs)
+ {
+ 	struct maar_config cfg[BOOT_MEM_MAP_MAX];
+ 	unsigned i, num_configured, num_cfg = 0;
+-	phys_addr_t skip;
  
-+	/*
-+	 * If the region reaches the top of the physical address space, adjust
-+	 * the size slightly so that (start + size) doesn't overflow
-+	 */
-+	if (start + size - 1 == (phys_addr_t)ULLONG_MAX)
-+		--size;
-+
- 	/* Sanity check */
- 	if (start + size < start) {
- 		pr_warn("Trying to add an invalid memory region, skipped\n");
+ 	for (i = 0; i < boot_mem_map.nr_map; i++) {
+ 		switch (boot_mem_map.map[i].type) {
+@@ -272,14 +271,14 @@ unsigned __weak platform_maar_init(unsigned num_pairs)
+ 			continue;
+ 		}
+ 
+-		skip = 0x10000 - (boot_mem_map.map[i].addr & 0xffff);
+-
++		/* Round lower up */
+ 		cfg[num_cfg].lower = boot_mem_map.map[i].addr;
+-		cfg[num_cfg].lower += skip;
++		cfg[num_cfg].lower = (cfg[num_cfg].lower + 0xffff) & ~0xffff;
+ 
+-		cfg[num_cfg].upper = cfg[num_cfg].lower;
+-		cfg[num_cfg].upper += boot_mem_map.map[i].size - 1;
+-		cfg[num_cfg].upper -= skip;
++		/* Round upper down */
++		cfg[num_cfg].upper = boot_mem_map.map[i].addr +
++					boot_mem_map.map[i].size;
++		cfg[num_cfg].upper = (cfg[num_cfg].upper & ~0xffff) - 1;
+ 
+ 		cfg[num_cfg].attrs = MIPS_MAAR_S;
+ 		num_cfg++;
 -- 
 git-series 0.8.7

@@ -1,12 +1,14 @@
-Received: from mail-pf0-f194.google.com ([209.85.192.194]:34814 "EHLO
-        mail-pf0-f194.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992466AbcHIIWuW7mIG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 9 Aug 2016 10:22:50 +0200
-From: Keguang Zhang <keguang.zhang@gmail.com>
-Subject: [PATCH V1] MIPS: Loongson1B: Provide DMA filter callbacks via platform data
-Date: Tue,  9 Aug 2016 16:22:25 +0800
-Message-Id: <1470730945-24456-1-git-send-email-keguang.zhang@gmail.com>
-Return-Path: <keguang.zhang@gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:46847 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23992200AbcHIMWK59cGf (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 9 Aug 2016 14:22:10 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH 0/2] MIPS: Memory setup tweaks
+Date: Tue, 9 Aug 2016 13:21:47 +0100
+Message-ID: <cover.842913b0756706569a896ef308bb5bf98be4f0ce.1470745146.git-series.james.hogan@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -16,74 +18,33 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Cc: Ralf Baechle <ralf@linux-mips.org>, Kelvin Cheung <keguang.zhang@gmail.com>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20160809122147.kURWzvTq4ZgesQso4LfpLoou_Zf_SkqcZlvGIwl0wsI@z>
 
-From: Kelvin Cheung <keguang.zhang@gmail.com>
+Here are a couple of tweaks for MIPS memory setup, primarily in order to
+handle memory which extends right up to the end of physical memory on
+32-bit systems with 32-bit phys_addr_t. More specifically we omit the
+final page of physical memory to avoid the overflow (see patch 1 for
+details).
 
-This patch provides DMA filter callbacks via platform data
-to make NAND driver independent of single DMA engine driver.
+Patch 2 improves the rounding in the MAAR setup, so as to include the
+first full page of an already aligned region, and to avoid a BUG_ON for
+regions with non 64-KByte aligned end addresses (which I happened to hit
+while working on a different version of patch 1 which wasn't correctly
+merging the kernel data section into the main RAM region).
 
-Signed-off-by: Kelvin Cheung <keguang.zhang@gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: linux-mips@linux-mips.org
 
----
-v1:
-   Fix the build error
----
- arch/mips/include/asm/mach-loongson32/dma.h  | 4 ++++
- arch/mips/include/asm/mach-loongson32/nand.h | 3 +--
- arch/mips/loongson32/ls1b/board.c            | 3 +++
- 3 files changed, 8 insertions(+), 2 deletions(-)
+James Hogan (2):
+  MIPS: Allow memory reaching top of physical
+  MIPS: MAAR: Fix address alignment
 
-diff --git a/arch/mips/include/asm/mach-loongson32/dma.h b/arch/mips/include/asm/mach-loongson32/dma.h
-index ad1dec7..d3ae391 100644
---- a/arch/mips/include/asm/mach-loongson32/dma.h
-+++ b/arch/mips/include/asm/mach-loongson32/dma.h
-@@ -12,6 +12,8 @@
- #ifndef __ASM_MACH_LOONGSON32_DMA_H
- #define __ASM_MACH_LOONGSON32_DMA_H
- 
-+#include <linux/dmaengine.h>
-+
- #define LS1X_DMA_CHANNEL0	0
- #define LS1X_DMA_CHANNEL1	1
- #define LS1X_DMA_CHANNEL2	2
-@@ -22,4 +24,6 @@ struct plat_ls1x_dma {
- 
- extern struct plat_ls1x_dma ls1b_dma_pdata;
- 
-+bool ls1x_dma_filter(struct dma_chan *chan, void *param);
-+
- #endif /* __ASM_MACH_LOONGSON32_DMA_H */
-diff --git a/arch/mips/include/asm/mach-loongson32/nand.h b/arch/mips/include/asm/mach-loongson32/nand.h
-index e274912..a1f8704 100644
---- a/arch/mips/include/asm/mach-loongson32/nand.h
-+++ b/arch/mips/include/asm/mach-loongson32/nand.h
-@@ -21,10 +21,9 @@ struct plat_ls1x_nand {
- 
- 	int hold_cycle;
- 	int wait_cycle;
-+	bool (*dma_filter)(struct dma_chan *chan, void *param);
- };
- 
- extern struct plat_ls1x_nand ls1b_nand_pdata;
- 
--bool ls1x_dma_filter_fn(struct dma_chan *chan, void *param);
--
- #endif /* __ASM_MACH_LOONGSON32_NAND_H */
-diff --git a/arch/mips/loongson32/ls1b/board.c b/arch/mips/loongson32/ls1b/board.c
-index 38a1d40..dac1cbb 100644
---- a/arch/mips/loongson32/ls1b/board.c
-+++ b/arch/mips/loongson32/ls1b/board.c
-@@ -38,6 +38,9 @@ struct plat_ls1x_nand ls1x_nand_pdata = {
- 	.nr_parts	= ARRAY_SIZE(ls1x_nand_parts),
- 	.hold_cycle	= 0x2,
- 	.wait_cycle	= 0xc,
-+#ifdef CONFIG_LOONGSON1_DMA
-+	.dma_filter	= ls1x_dma_filter,
-+#endif
- };
- 
- static const struct gpio_led ls1x_gpio_leds[] __initconst = {
+ arch/mips/kernel/setup.c |  7 +++++++
+ arch/mips/mm/init.c      | 13 ++++++-------
+ 2 files changed, 13 insertions(+), 7 deletions(-)
+
 -- 
-1.9.1
+git-series 0.8.7

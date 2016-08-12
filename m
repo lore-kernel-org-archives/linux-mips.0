@@ -1,19 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:10291 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992728AbcHKLbDB9sQ8 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 11 Aug 2016 13:31:03 +0200
-Subject: Re: [PATCH] MIPS: Delete unused file smp-gic.c
-References: <1470845463-25269-1-git-send-email-matt.redfearn@imgtec.com>
- <a284afa7-caf7-b4fa-e936-03486ef14a7d@imgtec.com>
- <57AC54D1.5020900@imgtec.com>
-From: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <7087eb68-9369-f2e6-a8ec-97ad8a6e8968@imgtec.com>
-Date: Thu, 11 Aug 2016 12:30:45 +0100
+Received: from mail-cys01nam02on0040.outbound.protection.outlook.com ([104.47.37.40]:37765
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23993483AbcHLWgbJrqsp (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sat, 13 Aug 2016 00:36:31 +0200
+Message-ID: <57AE4F63.4010506@caviumnetworks.com>
+Date: Fri, 12 Aug 2016 15:36:19 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-In-Reply-To: <57AC54D1.5020900@imgtec.com>
-Content-Type: text/plain; charset="windows-1252"
+Subject: Re: [PATCH] MIPS: OCTEON: Changes to support readq()/writeq() usage.
+References: <5780652D.2030604@cavium.com> <20160812213801.GC10648@raspberrypi.musicnaut.iki.fi>
+In-Reply-To: <20160812213801.GC10648@raspberrypi.musicnaut.iki.fi>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <Paul.Burton@imgtec.com>
+Return-Path: <David.Daney@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,53 +22,57 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Matt Redfearn <matt.redfearn@imgtec.com>, ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20160811113045.HdCBZFmtLNySWJTRyYjxRtuOp3mtweOhhdysU-mVYJw@z>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: "Steven J. Hill" <steven.hill@cavium.com>, David Daney <david.daney@cavium.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20160812223619.m6PLxuKy-UG050ewkQLFjyFkaQxNFJoWUEBFwSXoJus@z>
 
-On 11/08/16 11:34, Matt Redfearn wrote:
->>> -    gic_send_ipi(intr);
->>> -
->>> -    if (mips_cpc_present() && (core != current_cpu_data.core)) {
->>> -        while (!cpumask_test_cpu(cpu, &cpu_coherent_mask)) {
->>> -            mips_cm_lock_other(core, 0);
->>> -            mips_cpc_lock_other(core);
->>> -            write_cpc_co_cmd(CPC_Cx_CMD_PWRUP);
->>> -            mips_cpc_unlock_other();
->>> -            mips_cm_unlock_other();
->>> -        }
->>> -    }
->> Hi Matt,
+On 08/12/2016 02:38 PM, Aaro Koskinen wrote:
+> Hi,
+>
+> On Fri, Jul 08, 2016 at 09:45:01PM -0500, Steven J. Hill wrote:
+>> Update OCTEON port mangling code to support readq() and
+>> writeq() functions to allow driver code to be more portable.
+>> Updates also for word and long function pairs. We also
+>> remove SWAP_IO_SPACE for OCTEON platforms as the function
+>> macros are redundant with the new mangling code.
 >>
->> This patch itself makes sense, but it does bring to light that the IPI
->> IRQ domain stuff will have broken cpuidle. When a core goes into one of
->> the deeper power saving states (becoming clock gated or power gated) it
->> won't automatically wake back up upon interrupts, which is why the bit
->> of code above exists to bring it back out of the power saving state via
->> the CPC.
-> 
-> There is equivalent code to that removed by the IPI IRQ domain here:
-> http://lxr.free-electrons.com/source/arch/mips/kernel/smp.c#L185.
-> 
-> With a 2c2t Interaptiv, core 1 does seem to be getting clock & power gated:
-> # cat /sys/devices/system/cpu/cpu2/cpuidle/state2/desc
-> core clock gated
-> # cat /sys/devices/system/cpu/cpu2/cpuidle/state3/desc
-> core power gated
-> # cat /sys/devices/system/cpu/cpu2/cpuidle/state2/time
-> 7007
-> # cat /sys/devices/system/cpu/cpu2/cpuidle/state3/time
-> 300549307
-> # cat /sys/devices/system/cpu/cpu3/cpuidle/state2/time
-> 8556
-> # cat /sys/devices/system/cpu/cpu3/cpuidle/state3/time
-> 301527771
-> 
-> So I think it's all good.
+>> Signed-off-by: Steven J. Hill <steven.hill@cavium.com>
+>> Acked-by: David Daney <david.daney@cavium.com>
+>
+> [...]
+>
+>> +static inline bool __should_swizzle_bits(volatile void *a)
+>> +{
+>> +	extern const bool octeon_should_swizzle_table[];
+>> +
+>> +	unsigned long did = ((unsigned long)a >> 40) & 0xff;
+>> +	return octeon_should_swizzle_table[did];
+>> +}
+>
+> v4.8-rc1 OCTEON build is now broken with GCC 6.1 when support for 32-bit
+> ABIs is enabled:
 
-Hi Matt,
+I don't get it.  The kernel is always 64-bit, so unsigned long will have 
+a width of 64.
 
-Right you are :) I hadn't realised the code had been copied there.
+What kernel config are you using?
 
-Thanks,
-    Paul
+>
+>    CC      arch/mips/vdso/gettimeofday-o32.o
+> In file included from /home/aaro/los/work/shared/linux-v4.8-rc1/arch/mips/includ
+> e/asm/io.h:32:0,
+>                   from /home/aaro/los/work/shared/linux-v4.8-rc1/arch/mips/includ
+> e/asm/page.h:194,
+>                   from /home/aaro/los/work/shared/linux-v4.8-rc1/arch/mips/vdso/v
+> dso.h:26,
+>                   from /home/aaro/los/work/shared/linux-v4.8-rc1/arch/mips/vdso/g
+> ettimeofday.c:11:
+> /home/aaro/los/work/shared/linux-v4.8-rc1/arch/mips/include/asm/mach-cavium-octe
+> on/mangle-port.h: In function '__should_swizzle_bits':
+> /home/aaro/los/work/shared/linux-v4.8-rc1/arch/mips/include/asm/mach-cavium-octe
+> on/mangle-port.h:19:40: error: right shift count >= width of type [-Werror=shift
+> -count-overflow]
+>    unsigned long did = ((unsigned long)a >> 40) & 0xff;
+>
+> A.
+>

@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:60917 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:49271 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992486AbcHON4EOMUkj (ORCPT
+        with ESMTP id S23992501AbcHON4ExLIij (ORCPT
         <rfc822;linux-mips@linux-mips.org>); Mon, 15 Aug 2016 15:56:04 +0200
 From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [PATCH 2/9] irqchip: xilinx: Add support for parent intc
-Date: Mon, 15 Aug 2016 14:55:28 +0100
-Message-ID: <1471269335-58747-3-git-send-email-Zubair.Kakakhel@imgtec.com>
+Subject: [PATCH 3/9] MIPS: xilfpga: Use irqchip_init instead of the legacy way
+Date: Mon, 15 Aug 2016 14:55:29 +0100
+Message-ID: <1471269335-58747-4-git-send-email-Zubair.Kakakhel@imgtec.com>
 In-Reply-To: <1471269335-58747-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 References: <1471269335-58747-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 MIME-Version: 1.0
@@ -22,75 +22,37 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: monstr@monstr.eu, ralf@linux-mips.org, tglx@linutronix.de
 Cc: jason@lakedaemon.net, marc.zyngier@arm.com, Zubair.Kakakhel@imgtec.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Message-ID: <20160815135528.FKgq5dDnjnMYU8Z6PkEKWAR0r6aSnzyzAFNMuf26fYI@z>
+Message-ID: <20160815135529.Xk0GebSwrCFBVOv18gek_VILYRH92REO-9GOpApotvM@z>
 
-The MIPS based xilfpga platform has the following IRQ structure
-
-Peripherals --> xilinx_intcontroller -> mips_cpu_int controller
-
-Add support for the driver to chain the irq handler
+This prepares the code use the Xilinx AXI Interrupt Controller
+driver now available in drivers/irqchip/irq-xilinx.c
 
 Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
 ---
- drivers/irqchip/irq-xilinx.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+ arch/mips/xilfpga/intc.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/irqchip/irq-xilinx.c b/drivers/irqchip/irq-xilinx.c
-index 90bec7d..a0be6fa 100644
---- a/drivers/irqchip/irq-xilinx.c
-+++ b/drivers/irqchip/irq-xilinx.c
-@@ -15,6 +15,7 @@
- #include <linux/of_address.h>
- #include <linux/io.h>
- #include <linux/bug.h>
-+#include <linux/of_irq.h>
+diff --git a/arch/mips/xilfpga/intc.c b/arch/mips/xilfpga/intc.c
+index c4d1a71..a127cca 100644
+--- a/arch/mips/xilfpga/intc.c
++++ b/arch/mips/xilfpga/intc.c
+@@ -11,15 +11,12 @@
  
- static void __iomem *intc_baseaddr;
+ #include <linux/of.h>
+ #include <linux/of_irq.h>
++#include <linux/irqchip.h>
  
-@@ -135,11 +136,26 @@ static const struct irq_domain_ops xintc_irq_domain_ops = {
- 	.map = xintc_map,
- };
+ #include <asm/irq_cpu.h>
  
-+static void xil_intc_irq_handler(struct irq_desc *desc)
-+{
-+	u32 pending = get_irq();
-+
-+	if (pending != -1U) {
-+		while (true) {
-+			pending = get_irq();
-+			generic_handle_irq(pending);
-+			if (pending == -1U)
-+				break;
-+		}
-+	}
-+}
-+
- static int __init xilinx_intc_of_init(struct device_node *intc,
- 					     struct device_node *parent)
+-static struct of_device_id of_irq_ids[] __initdata = {
+-	{ .compatible = "mti,cpu-interrupt-controller", .data = mips_cpu_irq_of_init },
+-	{},
+-};
+ 
+ void __init arch_init_irq(void)
  {
- 	u32 nr_irq, intr_mask;
--	int ret;
-+	int ret, irq;
-+	struct device_node *parent_node;
- 
- 	intc_baseaddr = of_iomap(intc, 0);
- 	BUG_ON(!intc_baseaddr);
-@@ -188,6 +204,16 @@ static int __init xilinx_intc_of_init(struct device_node *intc,
- 	root_domain = irq_domain_add_linear(intc, nr_irq, &xintc_irq_domain_ops,
- 							(void *)intr_mask);
- 
-+	parent_node = of_irq_find_parent(intc);
-+	if (parent_node) {
-+		irq = irq_of_parse_and_map(intc, 0);
-+		if (irq)
-+			irq_set_chained_handler_and_data(irq,
-+							 xil_intc_irq_handler,
-+							 root_domain);
-+
-+	}
-+
- 	irq_set_default_host(root_domain);
- 
- 	return 0;
+-	of_irq_init(of_irq_ids);
++	irqchip_init();
+ }
 -- 
 1.9.1

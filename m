@@ -1,20 +1,16 @@
-Received: from mail-wm0-f45.google.com ([74.125.82.45]:36655 "EHLO
-        mail-wm0-f45.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992630AbcHPN5hYVYH4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Aug 2016 15:57:37 +0200
-Received: by mail-wm0-f45.google.com with SMTP id q128so145657686wma.1
-        for <linux-mips@linux-mips.org>; Tue, 16 Aug 2016 06:57:36 -0700 (PDT)
-Subject: Re: [PATCH] clocksource: mips-gic-timer: make gic_clocksource_of_init
- return int
-References: <20160801033546.26472-1-paul.gortmaker@windriver.com>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <57B31BC7.8000401@linaro.org>
-Date: Tue, 16 Aug 2016 15:57:27 +0200
+Received: from mail-eopbgr30116.outbound.protection.outlook.com ([40.107.3.116]:44544
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23992717AbcHPPBnihUbb (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 16 Aug 2016 17:01:43 +0200
+Date: Tue, 16 Aug 2016 18:00:57 +0300
+From: Aaro Koskinen <aaro.koskinen@nokia.com>
+Subject: [BISECTED REGRESSION] v4.8-rc: DT/OCTEON driver probing broken
+Message-ID: <20160816150056.GD18731@ak-desktop.emea.nsn-net.net>
 MIME-Version: 1.0
-In-Reply-To: <20160801033546.26472-1-paul.gortmaker@windriver.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-Path: <daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Return-Path: <aaro.koskinen@nokia.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,50 +20,29 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Gortmaker <paul.gortmaker@windriver.com>, linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org
+To: Kefeng Wang <wangkefeng.wang@huawei.com>, Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, David Daney <david.daney@cavium.com>
+Cc: linux-kernel@vger.kernel.org, Thorsten Leemhuis <regressions@leemhuis.info>
+Message-ID: <20160816150057.LPk_3KCKROv_RcQg4yul9hgj-bk6IQ0CWLUZO6KI7Ds@z>
 
-On 08/01/2016 05:35 AM, Paul Gortmaker wrote:
-> In commit d8152bf85d2c057fc39c3e20a4d623f524d9f09c:
->   ("clocksource/drivers/mips-gic-timer: Convert init function to return error")
-> 
-> several return values were added to a void function resulting in:
-> 
->  clocksource/mips-gic-timer.c: In function 'gic_clocksource_of_init':
->  clocksource/mips-gic-timer.c:175:3: warning: 'return' with a value, in function returning void [enabled by default]
->  clocksource/mips-gic-timer.c:183:4: warning: 'return' with a value, in function returning void [enabled by default]
->  clocksource/mips-gic-timer.c:190:3: warning: 'return' with a value, in function returning void [enabled by default]
->  clocksource/mips-gic-timer.c:195:3: warning: 'return' with a value, in function returning void [enabled by default]
->  clocksource/mips-gic-timer.c:200:3: warning: 'return' with a value, in function returning void [enabled by default]
->  clocksource/mips-gic-timer.c:211:2: warning: 'return' with a value, in function returning void [enabled by default]
->  clocksource/mips-gic-timer.c: At top level:
->  clocksource/mips-gic-timer.c:213:1: warning: comparison of distinct pointer types lacks a cast [enabled by default]
->  clocksource/mips-gic-timer.c: In function 'gic_clocksource_of_init':
->  clocksource/mips-gic-timer.c:183:18: warning: ignoring return value of 'PTR_ERR', declared with attribute warn_unused_result [-Wunused-result]
-> 
-> Given that the addition of the return values was intentional, it seems
-> that the conversion of the containing function from void to int was
-> simply overlooked.
-> 
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: linux-mips@linux-mips.org
-> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-> ---
+Hi,
 
-Hi Paul,
+Commit 44a7185c2ae6 ("of/platform: Add common method to populate default
+bus") added new arch_initcall of_platform_default_populate_init() that
+will be called before device_initcall octeon_publish_devices(). Now the
+of_platform_bus_probe() called in octeon_publish_devices() is apparently
+doing nothing:
 
-Thomas is in vacation and I'm returning back.
+[   52.331353] calling  octeon_publish_devices+0x0/0x14 @ 1
+[   52.331358] OF: of_platform_bus_probe()
+[   52.331362] OF:  starting at: /
+[   52.331378] OF: of_platform_bus_create() - skipping /soc@0, already populated
+[   52.331394] initcall octeon_publish_devices+0x0/0x14 returned 0 after 29 usecs
 
-So I applied this patch as a fix.
+This also means that USB etc. won't get probed.
 
-Thanks!
+Any ideas what would be the proper fix for this? Changing
+octeon_publish_devices() to arch_initcall seems to work but that may be
+a bit hackish... Also, there might be also other MIPS boards affected
+(arch/mips/netlogic/xlp/dt.c, arch/mips/mti-malta/malta-dt.c).
 
-  -- Daniel
-
-
--- 
- <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+A.

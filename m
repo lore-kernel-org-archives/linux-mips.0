@@ -1,18 +1,20 @@
-Received: from mail-pa0-f66.google.com ([209.85.220.66]:36132 "EHLO
-        mail-pa0-f66.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992974AbcHPKwEDNcUa convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 16 Aug 2016 12:52:04 +0200
-Content-Type: text/plain; charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Subject: Re: [v3 3/5] MIPS: BMIPS: Add support SDHCI device nodes
-From: Jaedon Shin <jaedon.shin@gmail.com>
-In-Reply-To: <2d8ad754-e9b7-e80e-9925-15ccd9c15856@gmail.com>
-Date: Tue, 16 Aug 2016 19:51:56 +0900
-Content-Transfer-Encoding: 8BIT
-Message-ID: <68351690-87EA-44E4-A6D3-6BB298855F5B@gmail.com>
-References: <20160812085231.53290-1-jaedon.shin@gmail.com> <20160812085231.53290-4-jaedon.shin@gmail.com> <2d8ad754-e9b7-e80e-9925-15ccd9c15856@gmail.com>
-Return-Path: <jaedon.shin@gmail.com>
+Received: from mail-wm0-f45.google.com ([74.125.82.45]:36655 "EHLO
+        mail-wm0-f45.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992630AbcHPN5hYVYH4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Aug 2016 15:57:37 +0200
+Received: by mail-wm0-f45.google.com with SMTP id q128so145657686wma.1
+        for <linux-mips@linux-mips.org>; Tue, 16 Aug 2016 06:57:36 -0700 (PDT)
+Subject: Re: [PATCH] clocksource: mips-gic-timer: make gic_clocksource_of_init
+ return int
+References: <20160801033546.26472-1-paul.gortmaker@windriver.com>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <57B31BC7.8000401@linaro.org>
+Date: Tue, 16 Aug 2016 15:57:27 +0200
+MIME-Version: 1.0
+In-Reply-To: <20160801033546.26472-1-paul.gortmaker@windriver.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-Path: <daniel.lezcano@linaro.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,41 +24,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Jonas Gorski <jonas.gorski@gmail.com>, Kevin Cernekee <cernekee@gmail.com>, Rob Herring <robh+dt@kernel.org>, MIPS Mailing List <linux-mips@linux-mips.org>
-Message-ID: <20160816105156.0-GFyAEq1KWWg_F8-5BTB2ATOr3HG0cfiDG8oN2mpXc@z>
+To: Paul Gortmaker <paul.gortmaker@windriver.com>, linux-kernel@vger.kernel.org
+Cc: linux-mips@linux-mips.org
 
-Hi Florian,
+On 08/01/2016 05:35 AM, Paul Gortmaker wrote:
+> In commit d8152bf85d2c057fc39c3e20a4d623f524d9f09c:
+>   ("clocksource/drivers/mips-gic-timer: Convert init function to return error")
+> 
+> several return values were added to a void function resulting in:
+> 
+>  clocksource/mips-gic-timer.c: In function 'gic_clocksource_of_init':
+>  clocksource/mips-gic-timer.c:175:3: warning: 'return' with a value, in function returning void [enabled by default]
+>  clocksource/mips-gic-timer.c:183:4: warning: 'return' with a value, in function returning void [enabled by default]
+>  clocksource/mips-gic-timer.c:190:3: warning: 'return' with a value, in function returning void [enabled by default]
+>  clocksource/mips-gic-timer.c:195:3: warning: 'return' with a value, in function returning void [enabled by default]
+>  clocksource/mips-gic-timer.c:200:3: warning: 'return' with a value, in function returning void [enabled by default]
+>  clocksource/mips-gic-timer.c:211:2: warning: 'return' with a value, in function returning void [enabled by default]
+>  clocksource/mips-gic-timer.c: At top level:
+>  clocksource/mips-gic-timer.c:213:1: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+>  clocksource/mips-gic-timer.c: In function 'gic_clocksource_of_init':
+>  clocksource/mips-gic-timer.c:183:18: warning: ignoring return value of 'PTR_ERR', declared with attribute warn_unused_result [-Wunused-result]
+> 
+> Given that the addition of the return values was intentional, it seems
+> that the conversion of the containing function from void to int was
+> simply overlooked.
+> 
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: linux-mips@linux-mips.org
+> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+> ---
 
-On Aug 13, 2016, at 8:24 AM, Florian Fainelli <f.fainelli@gmail.com> wrote:
-> 
-> On 08/12/2016 01:52 AM, Jaedon Shin wrote:
->> Adds SDHCI device nodes to BCM7xxx MIPS based SoCs.
-> 
-> While this looks good, I don't think you will have working SDHCI
-> interfaces on the 7425/7435 without additional pinmuxing, because
-> sometimes the bootloader indicates in a scratch register whether the
-> SDHCI0 is usable and the default pinmuxing does not necessarily make
-> this possible:
-> 
-> https://github.com/Broadcom/stblinux-3.3/blob/master/linux/drivers/brcmstb/board.c#L325
-> 
-> We have some currently out of tree patches using the pinctrl-single and
-> some CFE shim to fix that.
-> 
-> Other than that:
-> 
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-> -- 
-> Florian
+Hi Paul,
 
-Sure, It is need to set pinmux, scratch register, endian and avoid broken enable, but I
-think that is CFE's role. (eg. BCM7346 should be set the endian while run in little
-endian mode) If we cannot update the CFE, we should consider adding sun_top_ctrl_pin_mux
-and aon_pin_ctrl_pin_mux_ctrl in device tree with counterpart and endian patch in
-sdhci-brcmstb.
+Thomas is in vacation and I'm returning back.
 
-Anyway, that's not the work of device tree.
+So I applied this patch as a fix.
 
-Thanks,
-Jaedon 
+Thanks!
+
+  -- Daniel
+
+
+-- 
+ <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog

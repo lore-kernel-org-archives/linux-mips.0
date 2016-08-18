@@ -1,14 +1,12 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:42381 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:46927 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993187AbcHRJF7Da5nd (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Aug 2016 11:05:59 +0200
+        with ESMTP id S23993159AbcHRJF5YwgBd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Aug 2016 11:05:57 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH BACKPORT 3.17-4.4 2/4] MIPS: KVM: Add missing gfn range check
-Date: Thu, 18 Aug 2016 10:05:30 +0100
-Message-ID: <5ae3371dc11534460b722864ea8c6ef27e8506d1.1471018436.git-series.james.hogan@imgtec.com>
+Subject: [PATCH BACKPORT 3.17-4.4 0/4] MIPS: KVM: Fix MMU/TLB management issues
+Date: Thu, 18 Aug 2016 10:05:28 +0100
+Message-ID: <cover.6970eb00e72f05828fc82d97b7283d20eac8951e.1471018436.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <cover.6970eb00e72f05828fc82d97b7283d20eac8951e.1471018436.git-series.james.hogan@imgtec.com>
-References: <cover.6970eb00e72f05828fc82d97b7283d20eac8951e.1471018436.git-series.james.hogan@imgtec.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
 Return-Path: <James.Hogan@imgtec.com>
@@ -23,74 +21,27 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: stable@vger.kernel.org
 Cc: James Hogan <james.hogan@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, kvm@vger.kernel.org
-Message-ID: <20160818090530.MOv8tthr9-ph6ycW21IoEEe2PIQX-4slhP6US1YpcPE@z>
+Message-ID: <20160818090528.DCyJIIwugO0Ds-MG0OZ_F-VpckxzyEiwgEfBPu6nw3E@z>
 
-commit 8985d50382359e5bf118fdbefc859d0dbf6cebc7 upstream.
+These patches backport fixes for several issues in the management of
+MIPS KVM TLB faults to 4.4, and should apply back to 3.17 too.
 
-kvm_mips_handle_mapped_seg_tlb_fault() calculates the guest frame number
-based on the guest TLB EntryLo values, however it is not range checked
-to ensure it lies within the guest_pmap. If the physical memory the
-guest refers to is out of range then dump the guest TLB and emit an
-internal error.
-
-Fixes: 858dd5d45733 ("KVM/MIPS32: MMU/TLB operations for the Guest.")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Paolo Bonzini <pbonzini@redhat.com>
 Cc: "Radim Krčmář" <rkrcmar@redhat.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 Cc: kvm@vger.kernel.org
-Signed-off-by: Radim Krčmář <rkrcmar@redhat.com>
-[james.hogan@imgtec.com: Backport to v3.17.y - v4.4.y]
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
----
- arch/mips/kvm/tlb.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+Cc: <stable@vger.kernel.org>
 
-diff --git a/arch/mips/kvm/tlb.c b/arch/mips/kvm/tlb.c
-index d3c5715426c4..59e885fa4c65 100644
---- a/arch/mips/kvm/tlb.c
-+++ b/arch/mips/kvm/tlb.c
-@@ -361,6 +361,7 @@ int kvm_mips_handle_mapped_seg_tlb_fault(struct kvm_vcpu *vcpu,
- 	unsigned long entryhi = 0, entrylo0 = 0, entrylo1 = 0;
- 	struct kvm *kvm = vcpu->kvm;
- 	pfn_t pfn0, pfn1;
-+	gfn_t gfn0, gfn1;
- 	long tlb_lo[2];
- 
- 	tlb_lo[0] = tlb->tlb_lo0;
-@@ -374,18 +375,24 @@ int kvm_mips_handle_mapped_seg_tlb_fault(struct kvm_vcpu *vcpu,
- 			VPN2_MASK & (PAGE_MASK << 1)))
- 		tlb_lo[(KVM_GUEST_COMMPAGE_ADDR >> PAGE_SHIFT) & 1] = 0;
- 
--	if (kvm_mips_map_page(kvm, mips3_tlbpfn_to_paddr(tlb_lo[0])
--				   >> PAGE_SHIFT) < 0)
-+	gfn0 = mips3_tlbpfn_to_paddr(tlb_lo[0]) >> PAGE_SHIFT;
-+	gfn1 = mips3_tlbpfn_to_paddr(tlb_lo[1]) >> PAGE_SHIFT;
-+	if (gfn0 >= kvm->arch.guest_pmap_npages ||
-+	    gfn1 >= kvm->arch.guest_pmap_npages) {
-+		kvm_err("%s: Invalid gfn: [%#llx, %#llx], EHi: %#lx\n",
-+			__func__, gfn0, gfn1, tlb->tlb_hi);
-+		kvm_mips_dump_guest_tlbs(vcpu);
-+		return -1;
-+	}
-+
-+	if (kvm_mips_map_page(kvm, gfn0) < 0)
- 		return -1;
- 
--	if (kvm_mips_map_page(kvm, mips3_tlbpfn_to_paddr(tlb_lo[1])
--				   >> PAGE_SHIFT) < 0)
-+	if (kvm_mips_map_page(kvm, gfn1) < 0)
- 		return -1;
- 
--	pfn0 = kvm->arch.guest_pmap[mips3_tlbpfn_to_paddr(tlb_lo[0])
--				    >> PAGE_SHIFT];
--	pfn1 = kvm->arch.guest_pmap[mips3_tlbpfn_to_paddr(tlb_lo[1])
--				    >> PAGE_SHIFT];
-+	pfn0 = kvm->arch.guest_pmap[gfn0];
-+	pfn1 = kvm->arch.guest_pmap[gfn1];
- 
- 	if (hpa0)
- 		*hpa0 = pfn0 << PAGE_SHIFT;
+James Hogan (4):
+  MIPS: KVM: Fix mapped fault broken commpage handling
+  MIPS: KVM: Add missing gfn range check
+  MIPS: KVM: Fix gfn range check in kseg0 tlb faults
+  MIPS: KVM: Propagate kseg0/mapped tlb fault errors
+
+ arch/mips/kvm/emulate.c | 40 +++++++++++++++++--------
+ arch/mips/kvm/tlb.c     | 68 +++++++++++++++++++++++++++---------------
+ 2 files changed, 72 insertions(+), 36 deletions(-)
+
 -- 
 git-series 0.8.8

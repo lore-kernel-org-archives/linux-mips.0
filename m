@@ -1,16 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:56210 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:36439 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993145AbcHRJ7jfF16P (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Aug 2016 11:59:39 +0200
-Subject: Re: [PATCH 1/9] microblaze: irqchip: Move intc driver to irqchip
+        with ESMTP id S23993253AbcHRKBZk2sgP (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Aug 2016 12:01:25 +0200
+Subject: Re: [PATCH 8/9] MIPS: xilfpga: Add DT node for AXI emaclite
 References: <1471269335-58747-1-git-send-email-Zubair.Kakakhel@imgtec.com>
- <1471269335-58747-2-git-send-email-Zubair.Kakakhel@imgtec.com>
- <20160815152250.GE3353@io.lakedaemon.net>
+ <1471269335-58747-9-git-send-email-Zubair.Kakakhel@imgtec.com>
+ <20160815151703.GD3353@io.lakedaemon.net>
 From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Message-ID: <6d594557-f2b2-5b43-1aaa-18ec6b165b5f@imgtec.com>
-Date: Thu, 18 Aug 2016 10:59:22 +0100
+Message-ID: <1cfb22d7-1cf0-fe97-5995-ed9671575e57@imgtec.com>
+Date: Thu, 18 Aug 2016 11:01:08 +0100
 MIME-Version: 1.0
-In-Reply-To: <20160815152250.GE3353@io.lakedaemon.net>
+In-Reply-To: <20160815151703.GD3353@io.lakedaemon.net>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Zubair.Kakakhel@imgtec.com>
@@ -25,40 +25,53 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Jason Cooper <jason@lakedaemon.net>
 Cc: monstr@monstr.eu, ralf@linux-mips.org, tglx@linutronix.de, marc.zyngier@arm.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Message-ID: <20160818095922.bvHQLnEJjKftWPz6rO3fqRdqs95q0Fi58_BQ23SxuCE@z>
+Message-ID: <20160818100108.Ks2Nsvq6P_I5Ql1TP62VMZgEMupYCoXetjS0Fnvwsls@z>
 
 Hi,
 
-On 08/15/2016 04:22 PM, Jason Cooper wrote:
+On 08/15/2016 04:17 PM, Jason Cooper wrote:
 > Hi Zubair,
 >
-> On Mon, Aug 15, 2016 at 02:55:27PM +0100, Zubair Lutfullah Kakakhel wrote:
->> The Xilinx AXI Interrupt Controller IP block is used by the MIPS
->> based xilfpga platform.
+> On Mon, Aug 15, 2016 at 02:55:34PM +0100, Zubair Lutfullah Kakakhel wrote:
+>> The xilfpga platform has a Xilinx AXI emaclite block.
 >>
->> Move the interrupt controller code out of arch/microblaze so that
->> it can be used by everyone
+>> Add the DT node to use it.
 >>
 >> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
 >> ---
->>  arch/microblaze/Kconfig                                       | 1 +
->>  arch/microblaze/kernel/Makefile                               | 2 +-
->>  drivers/irqchip/Kconfig                                       | 4 ++++
->>  drivers/irqchip/Makefile                                      | 1 +
->>  arch/microblaze/kernel/intc.c => drivers/irqchip/irq-xilinx.c | 0
->>  5 files changed, 7 insertions(+), 1 deletion(-)
->>  rename arch/microblaze/kernel/intc.c => drivers/irqchip/irq-xilinx.c (100%)
+>>  arch/mips/boot/dts/xilfpga/nexys4ddr.dts | 27 +++++++++++++++++++++++++++
+>>  1 file changed, 27 insertions(+)
+>>
+>> diff --git a/arch/mips/boot/dts/xilfpga/nexys4ddr.dts b/arch/mips/boot/dts/xilfpga/nexys4ddr.dts
+>> index 3658e21..58bc62f 100644
+>> --- a/arch/mips/boot/dts/xilfpga/nexys4ddr.dts
+>> +++ b/arch/mips/boot/dts/xilfpga/nexys4ddr.dts
+>> @@ -42,6 +42,33 @@
+>>  		xlnx,tri-default = <0xffffffff>;
+>>  	} ;
+>>
+>> +	axi_ethernetlite: ethernet@10e00000 {
+>> +		compatible = "xlnx,xps-ethernetlite-3.00.a";
 >
-> When you send the next version, please disable rename detection.  The
-> driver looks pretty straight forward, but I'd like to take the
-> opportunity to clean up the abstraction around read and write.  As well
-> as making it easier for everyone to review on-list.
+> This one also isn't documented.
 
-Thanks for the review.
+These are sort of documented. Although checkpatch probably won't find them.
 
-I'll send the v2 in a while.
+Xilinx IP blocks follow a generic DT style as documented here.
 
-Regards,
+http://lxr.free-electrons.com/source/Documentation/devicetree/bindings/xilinx.txt
+
+>
+>> +		device_type = "network";
+>> +		interrupt-parent = <&axi_intc>;
+>> +		interrupts = <1>;
+>> +		local-mac-address = [08 86 4C 0D F7 09];
+>
+> I'm pretty sure you don't want this in the mainline dts file.
+
+Oops. Sorry. I'll remove it.
+
+Thanks
 ZubairLK
 
 >
@@ -66,3 +79,30 @@ ZubairLK
 >
 > Jason.
 >
+>> +		phy-handle = <&phy0>;
+>> +		reg = <0x10e00000 0x10000>;
+>> +		xlnx,duplex = <0x1>;
+>> +		xlnx,include-global-buffers = <0x1>;
+>> +		xlnx,include-internal-loopback = <0x0>;
+>> +		xlnx,include-mdio = <0x1>;
+>> +		xlnx,instance = "axi_ethernetlite_inst";
+>> +		xlnx,rx-ping-pong = <0x1>;
+>> +		xlnx,s-axi-id-width = <0x1>;
+>> +		xlnx,tx-ping-pong = <0x1>;
+>> +		xlnx,use-internal = <0x0>;
+>> +		mdio {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			phy0: phy@1 {
+>> +				device_type = "ethernet-phy";
+>> +				reg = <1>;
+>> +			};
+>> +		};
+>> +	};
+>> +
+>>  	axi_uart16550: serial@10400000 {
+>>  		compatible = "ns16550a";
+>>  		reg = <0x10400000 0x10000>;
+>> --
+>> 1.9.1
+>>

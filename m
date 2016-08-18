@@ -1,18 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:36439 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:59433 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993253AbcHRKBZk2sgP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Aug 2016 12:01:25 +0200
-Subject: Re: [PATCH 8/9] MIPS: xilfpga: Add DT node for AXI emaclite
-References: <1471269335-58747-1-git-send-email-Zubair.Kakakhel@imgtec.com>
- <1471269335-58747-9-git-send-email-Zubair.Kakakhel@imgtec.com>
- <20160815151703.GD3353@io.lakedaemon.net>
+        with ESMTP id S23992474AbcHRNoIIczTI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Aug 2016 15:44:08 +0200
 From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Message-ID: <1cfb22d7-1cf0-fe97-5995-ed9671575e57@imgtec.com>
-Date: Thu, 18 Aug 2016 11:01:08 +0100
+Subject: [PATCH V2 00/10] microblaze/MIPS: xilfpga: intc and peripheral
+Date: Thu, 18 Aug 2016 14:43:14 +0100
+Message-ID: <1471527804-26175-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20160815151703.GD3353@io.lakedaemon.net>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-Path: <Zubair.Kakakhel@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,86 +18,60 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Jason Cooper <jason@lakedaemon.net>
-Cc: monstr@monstr.eu, ralf@linux-mips.org, tglx@linutronix.de, marc.zyngier@arm.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Message-ID: <20160818100108.Ks2Nsvq6P_I5Ql1TP62VMZgEMupYCoXetjS0Fnvwsls@z>
+To: monstr@monstr.eu, ralf@linux-mips.org, tglx@linutronix.de
+Cc: jason@lakedaemon.net, marc.zyngier@arm.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, Zubair.Kakakhel@imgtec.com
+Message-ID: <20160818134314.i0Ap8nT85nuQ8MctBW-3i4-RiQTN-LIHWvopH_LuYmE@z>
 
 Hi,
 
-On 08/15/2016 04:17 PM, Jason Cooper wrote:
-> Hi Zubair,
->
-> On Mon, Aug 15, 2016 at 02:55:34PM +0100, Zubair Lutfullah Kakakhel wrote:
->> The xilfpga platform has a Xilinx AXI emaclite block.
->>
->> Add the DT node to use it.
->>
->> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
->> ---
->>  arch/mips/boot/dts/xilfpga/nexys4ddr.dts | 27 +++++++++++++++++++++++++++
->>  1 file changed, 27 insertions(+)
->>
->> diff --git a/arch/mips/boot/dts/xilfpga/nexys4ddr.dts b/arch/mips/boot/dts/xilfpga/nexys4ddr.dts
->> index 3658e21..58bc62f 100644
->> --- a/arch/mips/boot/dts/xilfpga/nexys4ddr.dts
->> +++ b/arch/mips/boot/dts/xilfpga/nexys4ddr.dts
->> @@ -42,6 +42,33 @@
->>  		xlnx,tri-default = <0xffffffff>;
->>  	} ;
->>
->> +	axi_ethernetlite: ethernet@10e00000 {
->> +		compatible = "xlnx,xps-ethernetlite-3.00.a";
->
-> This one also isn't documented.
+The MIPS based Xilfpga platform uses the axi interrupt controller
+daisy chained to the MIPS microAptiv cpu interrupt controller.
+This patch series moves the axi interrupt controller driver out
+of arch/microblaze to drivers/irqchip. This makes it usable by
+MIPS. The rest of the series basically enables drivers and adds dt
+nodes.
 
-These are sort of documented. Although checkpatch probably won't find them.
+Would make sense for this to go via the MIPS tree.
+Hence, ACKs from microblaze. irqchip and net welcome.
 
-Xilinx IP blocks follow a generic DT style as documented here.
+Compile tested on microblaze-el only!
+Based on v4.8-rc2
 
-http://lxr.free-electrons.com/source/Documentation/devicetree/bindings/xilinx.txt
-
->
->> +		device_type = "network";
->> +		interrupt-parent = <&axi_intc>;
->> +		interrupts = <1>;
->> +		local-mac-address = [08 86 4C 0D F7 09];
->
-> I'm pretty sure you don't want this in the mainline dts file.
-
-Oops. Sorry. I'll remove it.
-
-Thanks
+Regards,
 ZubairLK
 
->
-> thx,
->
-> Jason.
->
->> +		phy-handle = <&phy0>;
->> +		reg = <0x10e00000 0x10000>;
->> +		xlnx,duplex = <0x1>;
->> +		xlnx,include-global-buffers = <0x1>;
->> +		xlnx,include-internal-loopback = <0x0>;
->> +		xlnx,include-mdio = <0x1>;
->> +		xlnx,instance = "axi_ethernetlite_inst";
->> +		xlnx,rx-ping-pong = <0x1>;
->> +		xlnx,s-axi-id-width = <0x1>;
->> +		xlnx,tx-ping-pong = <0x1>;
->> +		xlnx,use-internal = <0x0>;
->> +		mdio {
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
->> +			phy0: phy@1 {
->> +				device_type = "ethernet-phy";
->> +				reg = <1>;
->> +			};
->> +		};
->> +	};
->> +
->>  	axi_uart16550: serial@10400000 {
->>  		compatible = "ns16550a";
->>  		reg = <0x10400000 0x10000>;
->> --
->> 1.9.1
->>
+V1 -> V2
+Resubmitting without truncating the diff output for file moves
+Removed accidental local mac address entry
+Individual logs have more detail
+
+Zubair Lutfullah Kakakhel (10):
+  microblaze: irqchip: Move intc driver to irqchip
+  irqchip: xilinx: Add support for parent intc
+  MIPS: xilfpga: Use irqchip_init instead of the legacy way
+  MIPS: xilfpga: Use Xilinx AXI Interrupt Controller
+  MIPS: xilfpga: Update DT node and specify uart irq
+  MIPS: Xilfpga: Add DT node for AXI I2C
+  net: ethernet: xilinx: Generate random mac if none found
+  net: ethernet: xilinx: Enable emaclite for MIPS
+  MIPS: xilfpga: Add DT node for AXI emaclite
+  MIPS: xilfpga: Update defconfig
+
+ arch/microblaze/Kconfig                       |   1 +
+ arch/microblaze/kernel/Makefile               |   2 +-
+ arch/microblaze/kernel/intc.c                 | 196 -----------------------
+ arch/mips/Kconfig                             |   1 +
+ arch/mips/boot/dts/xilfpga/nexys4ddr.dts      |  63 ++++++++
+ arch/mips/configs/xilfpga_defconfig           |  37 ++++-
+ arch/mips/xilfpga/intc.c                      |   7 +-
+ drivers/irqchip/Kconfig                       |   4 +
+ drivers/irqchip/Makefile                      |   1 +
+ drivers/irqchip/irq-axi-intc.c                | 222 ++++++++++++++++++++++++++
+ drivers/net/ethernet/xilinx/Kconfig           |   4 +-
+ drivers/net/ethernet/xilinx/xilinx_emaclite.c |   6 +-
+ 12 files changed, 337 insertions(+), 207 deletions(-)
+ delete mode 100644 arch/microblaze/kernel/intc.c
+ create mode 100644 drivers/irqchip/irq-axi-intc.c
+
+-- 
+1.9.1

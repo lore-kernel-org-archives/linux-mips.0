@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:45273 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:41179 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993164AbcHRNoLSSaXI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Aug 2016 15:44:11 +0200
+        with ESMTP id S23993233AbcHRNoMI-Y1I (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Aug 2016 15:44:12 +0200
 From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [PATCH V2 05/10] MIPS: xilfpga: Update DT node and specify uart irq
-Date: Thu, 18 Aug 2016 14:43:19 +0100
-Message-ID: <1471527804-26175-6-git-send-email-Zubair.Kakakhel@imgtec.com>
+Subject: [PATCH V2 06/10] MIPS: Xilfpga: Add DT node for AXI I2C
+Date: Thu, 18 Aug 2016 14:43:20 +0100
+Message-ID: <1471527804-26175-7-git-send-email-Zubair.Kakakhel@imgtec.com>
 In-Reply-To: <1471527804-26175-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 References: <1471527804-26175-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 MIME-Version: 1.0
@@ -22,9 +22,12 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: monstr@monstr.eu, ralf@linux-mips.org, tglx@linutronix.de
 Cc: jason@lakedaemon.net, marc.zyngier@arm.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, Zubair.Kakakhel@imgtec.com
-Message-ID: <20160818134319.vAYuYswZT-imAhYdKjXGh7OCeaAxSNIA7wA2vNkhOhA@z>
+Message-ID: <20160818134320.tZLu9EnuPdjArbqzwSYZLAlZeScfFB1KKaZvo529LrY@z>
 
-Update the DT node with the UART irq
+The xilfpga platform has an AXI I2C Bus master with a temperature
+sensor connected to it.
+
+Add the device tree node to use them.
 
 Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
 
@@ -33,22 +36,41 @@ V1 -> V2
 
 No change
 ---
- arch/mips/boot/dts/xilfpga/nexys4ddr.dts | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/mips/boot/dts/xilfpga/nexys4ddr.dts | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
 diff --git a/arch/mips/boot/dts/xilfpga/nexys4ddr.dts b/arch/mips/boot/dts/xilfpga/nexys4ddr.dts
-index 8db660b..d285c8d 100644
+index d285c8d..3658e21 100644
 --- a/arch/mips/boot/dts/xilfpga/nexys4ddr.dts
 +++ b/arch/mips/boot/dts/xilfpga/nexys4ddr.dts
-@@ -50,6 +50,9 @@
- 		reg-offset = <0x1000>;
- 
- 		clocks	= <&ext>;
-+
-+		interrupt-parent = <&axi_intc>;
-+		interrupts = <0>;
+@@ -54,6 +54,28 @@
+ 		interrupt-parent = <&axi_intc>;
+ 		interrupts = <0>;
  	};
++
++	axi_i2c: i2c@10A00000 {
++	    compatible = "xlnx,xps-iic-2.00.a";
++	    interrupt-parent = <&axi_intc>;
++	    interrupts = <4>;
++	    reg = < 0x10A00000 0x10000 >;
++	    clocks = <&ext>;
++	    xlnx,clk-freq = <0x5f5e100>;
++	    xlnx,family = "Artix7";
++	    xlnx,gpo-width = <0x1>;
++	    xlnx,iic-freq = <0x186a0>;
++	    xlnx,scl-inertial-delay = <0x0>;
++	    xlnx,sda-inertial-delay = <0x0>;
++	    xlnx,ten-bit-adr = <0x0>;
++	    #address-cells = <1>;
++	    #size-cells = <0>;
++
++	    ad7420@4B {
++		compatible = "adt7420";
++		reg = <0x4B>;
++	    };
++	} ;
  };
  
+ &ext {
 -- 
 1.9.1

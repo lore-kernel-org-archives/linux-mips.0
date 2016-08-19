@@ -1,13 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:23923 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:15775 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992500AbcHSROjT7IDr (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 19 Aug 2016 19:14:39 +0200
+        with ESMTP id S23992500AbcHSRQMzrsgr (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 19 Aug 2016 19:16:12 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 3/3] MIPS: sc-mips: L2 cache is inclusive of L1 dcache for CM3
-Date: Fri, 19 Aug 2016 18:13:36 +0100
-Message-ID: <20160819171336.28401-3-paul.burton@imgtec.com>
-In-Reply-To: <20160819171336.28401-1-paul.burton@imgtec.com>
-References: <20160819171336.28401-1-paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: Fix BUILD_ROLLBACK_PROLOGUE for microMIPS
+Date: Fri, 19 Aug 2016 18:15:40 +0100
+Message-ID: <20160819171540.28673-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -22,28 +20,41 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20160819171336.NNefVzPYRkJbAk9TOsk5VrW8RI7K9FpLHIeGuoxnelE@z>
+Message-ID: <20160819171540.BIxOrDJui-EdjOKhJX84Z-oZodkBoiPFvHSprlm9RmE@z>
 
-In systems with CM3 & higher, the L2 cache is inclusive of the L1
-dcache. Indicate this such that cpu_has_inclusive_pcaches evaluates true
-& we avoid some unnecessary cache ops during DMA cache maintenance.
+When the kernel is built for microMIPS, branches targets need to be
+known to be microMIPS code in order to result in bit 0 of the PC being
+set. The branch target in the BUILD_ROLLBACK_PROLOGUE macro was simply
+the end of the macro, which may be pointing at padding rather than at
+code. This results in recent enough GNU linkers complaining like so:
+
+    mips-img-linux-gnu-ld: arch/mips/built-in.o: .text+0x3e3c: Unsupported branch between ISA modes.
+    mips-img-linux-gnu-ld: final link failed: Bad value
+    Makefile:936: recipe for target 'vmlinux' failed
+    make: *** [vmlinux] Error 1
+
+Fix this by changing the branch target to be the start of the
+appropriate handler, skipping over any padding.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
- arch/mips/mm/sc-mips.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/kernel/genex.S | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
-index 286a4d5..c909c334 100644
---- a/arch/mips/mm/sc-mips.c
-+++ b/arch/mips/mm/sc-mips.c
-@@ -181,6 +181,7 @@ static int __init mips_sc_probe_cm3(void)
- 
- 	if (c->scache.linesz) {
- 		c->scache.flags &= ~MIPS_CACHE_NOT_PRESENT;
-+		c->options |= MIPS_CPU_INCLUSIVE_CACHES;
- 		return 1;
- 	}
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index 17326a9..dc0b296 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -142,9 +142,8 @@ LEAF(__r4k_wait)
+ 	PTR_LA	k1, __r4k_wait
+ 	ori	k0, 0x1f	/* 32 byte rollback region */
+ 	xori	k0, 0x1f
+-	bne	k0, k1, 9f
++	bne	k0, k1, \handler
+ 	MTC0	k0, CP0_EPC
+-9:
+ 	.set pop
+ 	.endm
  
 -- 
 2.9.3

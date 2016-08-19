@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:59032 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:36046 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992474AbcHSROKtXhdr (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 19 Aug 2016 19:14:10 +0200
+        with ESMTP id S23992494AbcHSROZBFnjr (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 19 Aug 2016 19:14:25 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 1/3] MIPS: c-r4k: Treat I6400 dcache as though physically indexed
-Date: Fri, 19 Aug 2016 18:13:34 +0100
-Message-ID: <20160819171336.28401-1-paul.burton@imgtec.com>
+Subject: [PATCH 2/3] MIPS: c-r4k: Treat physically indexed dcaches as not aliasing
+Date: Fri, 19 Aug 2016 18:13:35 +0100
+Message-ID: <20160819171336.28401-2-paul.burton@imgtec.com>
+In-Reply-To: <20160819171336.28401-1-paul.burton@imgtec.com>
+References: <20160819171336.28401-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -20,44 +22,31 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20160819171334.nkgyMAoAdEv27KJGh76t_oKw4XhIWJURmrj6ATczhBQ@z>
+Message-ID: <20160819171335.KEkpkvcKwVPK39hdVVD58rCNQXJxvIvZNarSmD68470@z>
 
-The L1 data cache in I6400 CPUs is indexed by physical address bits if
-an entry for the address is present in the DTLB early enough in the
-pipelined execution of a memory access instruction. If an entry is not
-present then it's indexed by virtual address bits, but hardware will
-check in a later pipeline stage when a DTLB entry has been created
-whether the virtual address bits used match the physical address bits,
-and if not will transparently restart the memory access instruction.
-
-This means that although it isn't always physically indexed, it appears
-so to software & we can treat the I6400 L1 data cache as being
-physically indexed in order to avoid considering aliasing.
+Physically indexed caches cannot suffer from virtual aliasing, so clear
+the MIPS_CACHE_ALIASES bit in order to ensure we don't do extra work
+avoiding aliasing that cannot happen.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
- arch/mips/mm/c-r4k.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/mm/c-r4k.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-index ef7f925..7a64a8a81 100644
+index 7a64a8a81..d519c9e 100644
 --- a/arch/mips/mm/c-r4k.c
 +++ b/arch/mips/mm/c-r4k.c
-@@ -1266,6 +1266,7 @@ static void probe_pcache(void)
+@@ -1311,6 +1311,10 @@ static void probe_pcache(void)
+ 			c->dcache.flags |= MIPS_CACHE_ALIASES;
+ 	}
+ 
++	/* Physically indexed caches don't suffer from virtual aliasing */
++	if (c->dcache.flags & MIPS_CACHE_PINDEX)
++		c->dcache.flags &= ~MIPS_CACHE_ALIASES;
++
  	switch (current_cpu_type()) {
  	case CPU_20KC:
- 	case CPU_25KF:
-+	case CPU_I6400:
- 	case CPU_SB1:
- 	case CPU_SB1A:
- 	case CPU_XLR:
-@@ -1292,7 +1293,6 @@ static void probe_pcache(void)
- 	case CPU_PROAPTIV:
- 	case CPU_M5150:
- 	case CPU_QEMU_GENERIC:
--	case CPU_I6400:
- 	case CPU_P6600:
- 	case CPU_M6250:
- 		if (!(read_c0_config7() & MIPS_CONF7_IAR) &&
+ 		/*
 -- 
 2.9.3

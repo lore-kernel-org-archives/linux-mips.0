@@ -1,19 +1,14 @@
-Received: from mx2.suse.de ([195.135.220.15]:56665 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23993411AbcHROMrlplkI (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 18 Aug 2016 16:12:47 +0200
-Date: Thu, 18 Aug 2016 16:12:42 +0200
-From: Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCH v8 1/4] nmi_backtrace: add more trigger_*_cpu_backtrace()
- methods
-Message-ID: <20160818141242.GK26194@pathway.suse.cz>
-References: <1471377024-2244-1-git-send-email-cmetcalf@mellanox.com>
- <1471377024-2244-2-git-send-email-cmetcalf@mellanox.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:38699 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23991104AbcHSLEeMHmay (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 19 Aug 2016 13:04:34 +0200
+From: James Hartley <james.hartley@imgtec.com>
+Subject: [PATCH] pinctrl: pistachio: fix mfio pll_lock pinmux
+Date: Fri, 19 Aug 2016 12:03:23 +0100
+Message-ID: <1471604603-23221-1-git-send-email-james.hartley@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1471377024-2244-2-git-send-email-cmetcalf@mellanox.com>
-Return-Path: <pmladek@suse.com>
+Content-Type: text/plain
+Return-Path: <James.Hartley@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,58 +18,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Chris Metcalf <cmetcalf@mellanox.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Russell King <linux@arm.linux.org.uk>, Thomas Gleixner <tglx@linutronix.de>, Aaron Tomlin <atomlin@redhat.com>, Ingo Molnar <mingo@redhat.com>, Andrew Morton <akpm@osdl.org>, Daniel Thompson <daniel.thompson@linaro.org>, "Ralf Baechle ralf @ linux-mips . org David S. Miller" <davem@davemloft.net>, linux-mips@linux-mips.org, sparclinux@vger.kernel.org, x86@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Message-ID: <20160818141242.Ha1qi0tvc4aCGOXtEnlM1wkE6ls-eg8fS6ZaPiY9G1A@z>
+To: linus.walleij@linaro.org, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: abrestic@chromium.org, Damien.Horsley@imgtec.com, linux-mips@linux-mips.org, James Hartley <james.hartley@imgtec.com>, "# 4 . 4 . x-" <stable@vger.kernel.org>
+Message-ID: <20160819110323.e_ETSalwoneyez3797GFnvxsuTs7CXGPjxWImHl95UQ@z>
 
-On Tue 2016-08-16 15:50:21, Chris Metcalf wrote:
-> Currently you can only request a backtrace of either all cpus, or
-> all cpus but yourself.  It can also be helpful to request a remote
-> backtrace of a single cpu, and since we want that, the logical
-> extension is to support a cpumask as the underlying primitive.
-> 
-> This change modifies the existing lib/nmi_backtrace.c code to take
-> a cpumask as its basic primitive, and modifies the linux/nmi.h code
-> to use the new "cpumask" method instead.
-> 
-> The mips code ignored the "include_self" boolean but with this change
-> it will now also dump a local backtrace if requested.
-> 
-> diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-> index 7429ad09fbe3..fea1fa7726e3 100644
-> --- a/arch/mips/kernel/process.c
-> +++ b/arch/mips/kernel/process.c
-> @@ -569,9 +569,16 @@ static void arch_dump_stack(void *info)
->  	dump_stack();
->  }
->  
-> -void arch_trigger_all_cpu_backtrace(bool include_self)
-> +void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
->  {
-> -	smp_call_function(arch_dump_stack, NULL, 1);
-> +	long this_cpu = get_cpu();
-> +
-> +	if (cpumask_test_cpu(this_cpu, mask) && !exclude_self)
-> +		dump_stack();
+A previous patch attempted to fix the pinmuxes for mfio 84 - 89, but it
+omitted a change to pistachio_pin_group pistachio_groups, which results
+in incorrect pll_lock signals being routed.
 
-The bit is not cleared in the mask. Therefore arch_dump_stack
-will get called for this CPU as well.
+Apply the correct mux settings throughout the driver.
 
-We could either use similar tricks as in lib/nmi_backtrace().
-I mean to copy the mask into a global variable and prevent
-parallel call with a backtrace_flag.
+fixes: cefc03e5995e ("pinctrl: Add Pistachio SoC pin control driver")
+fixes: e9adb336d0bf ("pinctrl: pistachio: fix mfio84-89 function description and pinmux.")
 
-Or we could ignore the exclude_self flag as it was done
-before. It is a separate problem after all and it need
-not be solved in this patch(set).
+Cc: <stable@vger.kernel.org> # 4.4.x-
 
-> +
-> +	smp_call_function_many(mask, arch_dump_stack, NULL, 1);
-> +
-> +	put_cpu();
->  }
+Signed-off-by: James Hartley <james.hartley@imgtec.com>
+Reviewed-by: Sifan Naeem <Sifan.Naeem@imgtec.com>
 
-Otherwise the patch patch looks good to me.
-
-Best Regards,
-Petr
+diff --git a/drivers/pinctrl/pinctrl-pistachio.c b/drivers/pinctrl/pinctrl-pistachio.c
+index 7bad200..55375b1 100644
+--- a/drivers/pinctrl/pinctrl-pistachio.c
++++ b/drivers/pinctrl/pinctrl-pistachio.c
+@@ -809,17 +809,17 @@ static const struct pistachio_pin_group pistachio_groups[] = {
+ 			   PADS_FUNCTION_SELECT2, 12, 0x3),
+ 	MFIO_MUX_PIN_GROUP(83, MIPS_PLL_LOCK, MIPS_TRACE_DATA, USB_DEBUG,
+ 			   PADS_FUNCTION_SELECT2, 14, 0x3),
+-	MFIO_MUX_PIN_GROUP(84, SYS_PLL_LOCK, MIPS_TRACE_DATA, USB_DEBUG,
++	MFIO_MUX_PIN_GROUP(84, AUDIO_PLL_LOCK, MIPS_TRACE_DATA, USB_DEBUG,
+ 			   PADS_FUNCTION_SELECT2, 16, 0x3),
+-	MFIO_MUX_PIN_GROUP(85, WIFI_PLL_LOCK, MIPS_TRACE_DATA, SDHOST_DEBUG,
++	MFIO_MUX_PIN_GROUP(85, RPU_V_PLL_LOCK, MIPS_TRACE_DATA, SDHOST_DEBUG,
+ 			   PADS_FUNCTION_SELECT2, 18, 0x3),
+-	MFIO_MUX_PIN_GROUP(86, BT_PLL_LOCK, MIPS_TRACE_DATA, SDHOST_DEBUG,
++	MFIO_MUX_PIN_GROUP(86, RPU_L_PLL_LOCK, MIPS_TRACE_DATA, SDHOST_DEBUG,
+ 			   PADS_FUNCTION_SELECT2, 20, 0x3),
+-	MFIO_MUX_PIN_GROUP(87, RPU_V_PLL_LOCK, DREQ2, SOCIF_DEBUG,
++	MFIO_MUX_PIN_GROUP(87, SYS_PLL_LOCK, DREQ2, SOCIF_DEBUG,
+ 			   PADS_FUNCTION_SELECT2, 22, 0x3),
+-	MFIO_MUX_PIN_GROUP(88, RPU_L_PLL_LOCK, DREQ3, SOCIF_DEBUG,
++	MFIO_MUX_PIN_GROUP(88, WIFI_PLL_LOCK, DREQ3, SOCIF_DEBUG,
+ 			   PADS_FUNCTION_SELECT2, 24, 0x3),
+-	MFIO_MUX_PIN_GROUP(89, AUDIO_PLL_LOCK, DREQ4, DREQ5,
++	MFIO_MUX_PIN_GROUP(89, BT_PLL_LOCK, DREQ4, DREQ5,
+ 			   PADS_FUNCTION_SELECT2, 26, 0x3),
+ 	PIN_GROUP(TCK, "tck"),
+ 	PIN_GROUP(TRSTN, "trstn"),
+-- 
+2.7.4

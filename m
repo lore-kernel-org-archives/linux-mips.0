@@ -1,17 +1,21 @@
-Received: from mail5.windriver.com ([192.103.53.11]:45864 "EHLO mail5.wrs.com"
+Received: from mx2.suse.de ([195.135.220.15]:54322 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992473AbcHUT7DdJmNn (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 21 Aug 2016 21:59:03 +0200
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH 5/5] mips/kvm: Audit and remove any unnecessary uses of module.h
-Date: Sun, 21 Aug 2016 15:58:17 -0400
-Message-ID: <20160821195817.5802-6-paul.gortmaker@windriver.com>
-In-Reply-To: <20160821195817.5802-1-paul.gortmaker@windriver.com>
-References: <20160821195817.5802-1-paul.gortmaker@windriver.com>
+        id S23991977AbcHVIdoI0E6h (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 22 Aug 2016 10:33:44 +0200
+Date: Mon, 22 Aug 2016 10:33:42 +0200
+From: Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH v8 1/4] nmi_backtrace: add more trigger_*_cpu_backtrace()
+ methods
+Message-ID: <20160822083342.GA4866@pathway.suse.cz>
+References: <1471377024-2244-1-git-send-email-cmetcalf@mellanox.com>
+ <1471377024-2244-2-git-send-email-cmetcalf@mellanox.com>
+ <20160818141242.GK26194@pathway.suse.cz>
+ <233b9270-2f35-b3c5-2520-bf513153f260@mellanox.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-Path: <Paul.Gortmaker@windriver.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <233b9270-2f35-b3c5-2520-bf513153f260@mellanox.com>
+Return-Path: <pmladek@suse.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,105 +25,55 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org
-Message-ID: <20160821195817.-epnAvfoG4gBehh91p_s3QaWBibwEW8IY4hIv7eFnGY@z>
+To: Chris Metcalf <cmetcalf@mellanox.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Russell King <linux@arm.linux.org.uk>, Thomas Gleixner <tglx@linutronix.de>, Aaron Tomlin <atomlin@redhat.com>, Ingo Molnar <mingo@redhat.com>, Andrew Morton <akpm@osdl.org>, Daniel Thompson <daniel.thompson@linaro.org>, "Ralf Baechle ralf @ linux-mips . org David S. Miller" <davem@davemloft.net>, linux-mips@linux-mips.org, sparclinux@vger.kernel.org, x86@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Message-ID: <20160822083342.RSd0qG_OybFOsOoJTXWg3KD1DGXiY076PYpW-yt-IEM@z>
 
-Historically a lot of these existed because we did not have
-a distinction between what was modular code and what was providing
-support to modules via EXPORT_SYMBOL and friends.  That changed
-when we forked out support for the latter into the export.h file.
+On Fri 2016-08-19 21:54:31, Chris Metcalf wrote:
+> On 8/18/2016 10:12 AM, Petr Mladek wrote:
+> >On Tue 2016-08-16 15:50:21, Chris Metcalf wrote:
+> >>Currently you can only request a backtrace of either all cpus, or
+> >>all cpus but yourself.  It can also be helpful to request a remote
+> >>backtrace of a single cpu, and since we want that, the logical
+> >>extension is to support a cpumask as the underlying primitive.
+> >>
+> >>This change modifies the existing lib/nmi_backtrace.c code to take
+> >>a cpumask as its basic primitive, and modifies the linux/nmi.h code
+> >>to use the new "cpumask" method instead.
+> >>
+> >>The mips code ignored the "include_self" boolean but with this change
+> >>it will now also dump a local backtrace if requested.
+> >>
+> >>diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
+> >>index 7429ad09fbe3..fea1fa7726e3 100644
+> >>--- a/arch/mips/kernel/process.c
+> >>+++ b/arch/mips/kernel/process.c
+> >>@@ -569,9 +569,16 @@ static void arch_dump_stack(void *info)
+> >>  	dump_stack();
+> >>  }
+> >>-void arch_trigger_all_cpu_backtrace(bool include_self)
+> >>+void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool exclude_self)
+> >>  {
+> >>-	smp_call_function(arch_dump_stack, NULL, 1);
+> >>+	long this_cpu = get_cpu();
+> >>+
+> >>+	if (cpumask_test_cpu(this_cpu, mask) && !exclude_self)
+> >>+		dump_stack();
+> >The bit is not cleared in the mask. Therefore arch_dump_stack
+> >will get called for this CPU as well.
+> 
+> Actually, and kind of confusingly, smp_call_function_many() never calls
+> the current cpu, even if it is in the mask.  So this code is OK as-is.
 
-This means we should be able to reduce the usage of module.h
-in code that is obj-y Makefile or bool Kconfig.  In the case of
-kvm where it is modular, we can extend that to also include files
-that are building basic support functionality but not related
-to loading or registering the final module; such files also have
-no need whatsoever for module.h
+I see it now.
 
-The advantage in removing such instances is that module.h itself
-sources about 15 other headers; adding significantly to what we feed
-cpp, and it can obscure what headers we are effectively using.
+> >Otherwise the patch patch looks good to me.
+> 
+> Great, thanks!  Should I add your Reviewed-by?
 
-Since module.h was the source for init.h (for __init) and for
-export.h (for EXPORT_SYMBOL) we consider each instance for the
-presence of either and replace as needed.  In this case, we did
-not need to add either to any files.
+Yup. This patch looks fine then:
 
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: "Radim Krčmář" <rkrcmar@redhat.com>
-Cc: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: kvm@vger.kernel.org
-Cc: linux-mips@linux-mips.org
-Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
----
- arch/mips/kvm/commpage.c  | 1 -
- arch/mips/kvm/dyntrans.c  | 1 -
- arch/mips/kvm/emulate.c   | 1 -
- arch/mips/kvm/interrupt.c | 1 -
- arch/mips/kvm/trap_emul.c | 1 -
- 5 files changed, 5 deletions(-)
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-diff --git a/arch/mips/kvm/commpage.c b/arch/mips/kvm/commpage.c
-index a36b77e1705c..f43629979a0e 100644
---- a/arch/mips/kvm/commpage.c
-+++ b/arch/mips/kvm/commpage.c
-@@ -12,7 +12,6 @@
- 
- #include <linux/errno.h>
- #include <linux/err.h>
--#include <linux/module.h>
- #include <linux/vmalloc.h>
- #include <linux/fs.h>
- #include <linux/bootmem.h>
-diff --git a/arch/mips/kvm/dyntrans.c b/arch/mips/kvm/dyntrans.c
-index d280894915ed..b36c8ddc03ea 100644
---- a/arch/mips/kvm/dyntrans.c
-+++ b/arch/mips/kvm/dyntrans.c
-@@ -13,7 +13,6 @@
- #include <linux/err.h>
- #include <linux/highmem.h>
- #include <linux/kvm_host.h>
--#include <linux/module.h>
- #include <linux/vmalloc.h>
- #include <linux/fs.h>
- #include <linux/bootmem.h>
-diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
-index e788515f766b..68fd666f8cb9 100644
---- a/arch/mips/kvm/emulate.c
-+++ b/arch/mips/kvm/emulate.c
-@@ -13,7 +13,6 @@
- #include <linux/err.h>
- #include <linux/ktime.h>
- #include <linux/kvm_host.h>
--#include <linux/module.h>
- #include <linux/vmalloc.h>
- #include <linux/fs.h>
- #include <linux/bootmem.h>
-diff --git a/arch/mips/kvm/interrupt.c b/arch/mips/kvm/interrupt.c
-index ad28dac6b7e9..e88403b3dcdd 100644
---- a/arch/mips/kvm/interrupt.c
-+++ b/arch/mips/kvm/interrupt.c
-@@ -11,7 +11,6 @@
- 
- #include <linux/errno.h>
- #include <linux/err.h>
--#include <linux/module.h>
- #include <linux/vmalloc.h>
- #include <linux/fs.h>
- #include <linux/bootmem.h>
-diff --git a/arch/mips/kvm/trap_emul.c b/arch/mips/kvm/trap_emul.c
-index 091553942bcb..21d80274ccff 100644
---- a/arch/mips/kvm/trap_emul.c
-+++ b/arch/mips/kvm/trap_emul.c
-@@ -11,7 +11,6 @@
- 
- #include <linux/errno.h>
- #include <linux/err.h>
--#include <linux/module.h>
- #include <linux/vmalloc.h>
- 
- #include <linux/kvm_host.h>
--- 
-2.8.4
+Best Regards,
+Petr

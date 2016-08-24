@@ -1,15 +1,17 @@
-Received: from mail-by2nam01on0041.outbound.protection.outlook.com ([104.47.34.41]:53022
-        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
+Received: from mail-bl2nam02on0084.outbound.protection.outlook.com ([104.47.38.84]:5664
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23992160AbcHXQmPXRTFO (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 24 Aug 2016 18:42:15 +0200
-Subject: Re: [BISECTED REGRESSION] v4.8-rc: gpio-leds broken on OCTEON
-References: <20160823203605.GA12169@raspberrypi.musicnaut.iki.fi>
+        id S23992160AbcHXQvFnDttO (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 24 Aug 2016 18:51:05 +0200
+Subject: Re: [PATCH] MIPS: OCTEON: mangle-port: fix build failure with VDSO
+ code
+References: <20160822220735.13865-1-aaro.koskinen@iki.fi>
+ <57BB82F3.2030103@caviumnetworks.com>
 From: "Steven J. Hill" <Steven.Hill@cavium.com>
-Message-ID: <57BDCE58.20200@cavium.com>
-Date: Wed, 24 Aug 2016 11:42:00 -0500
+Message-ID: <57BDD06C.6030004@cavium.com>
+Date: Wed, 24 Aug 2016 11:50:52 -0500
 MIME-Version: 1.0
-In-Reply-To: <20160823203605.GA12169@raspberrypi.musicnaut.iki.fi>
+In-Reply-To: <57BB82F3.2030103@caviumnetworks.com>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Steven.Hill@cavium.com>
@@ -22,38 +24,22 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Aaro Koskinen <aaro.koskinen@iki.fi>, David Daney <ddaney@caviumnetworks.com>, Jon Hunter <jonathanh@nvidia.com>, Rob Herring <robh@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Thorsten Leemhuis <regressions@leemhuis.info>
-Message-ID: <20160824164200.NT8KyDZNvThLFIYxS3KlZs1jKRa8MbuTMDttkzxJ3Z4@z>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: David Daney <ddaney@caviumnetworks.com>, Ralf Baechle <ralf@linux-mips.org>, David Daney <david.daney@cavium.com>, linux-mips@linux-mips.org, Alex Smith <alex.smith@imgtec.com>
+Message-ID: <20160824165052.CPhYaei_CP8886xVteTFWu1QF5-N4OV2_r4eT-olurs@z>
 
-On 08/23/2016 03:36 PM, Aaro Koskinen wrote:
-> Hi,
+On 08/22/2016 05:55 PM, David Daney wrote:
 >
-> gpio-leds fails to probe on OCTEON with v4.8-rc3 and when using
-> arch/mips/boot/dts/cavium-octeon/dlink_dsr-1000n.dts. Leds still
-> worked with v4.7.
+> This looks like it should work.
 >
-> I bisected this to:
+> Steven, can you test this patch for us to get independent confirmation
+> that it works?
 >
-> 	commit 15cc2ed6dcf91a8658e084be4e140147161819d7
-> 	Author: Jon Hunter <jonathanh@nvidia.com>
-> 	Date:   Mon Jun 20 14:49:18 2016 +0100
->
-> 	of/irq: Mark initialised interrupt controllers as populated
->
-> I have no idea how this is related to gpio-leds, except that on OCTEON
-> DTBs the gpio node is also interrupt controller...
+> If testing shows that it is good, please add Acked-by: David Daney
+> <david.daney@cavium.com>
 >
 Hey Aaro.
 
-It is actually two patches that cause the breakage. The other is:
-
-    commit e55aeb6ba4e8cc3549bff1e75ea1d029324bce21
-    of/irq: Mark interrupt controllers as populated before initialisation
-
-I needed to revert both of these in order to get MMC working on our 71xx 
-and 78xx boards. For our MMC, I got error messages from the MMC core of 
-"Invalid POWER GPIO" until I applied the second patch. I will have a fix 
-worthy of upstreaming today which will be posted today.
+Patch tests out good. Go ahead add David's ack. Thanks.
 
 Steve

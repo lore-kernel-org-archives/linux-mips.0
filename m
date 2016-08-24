@@ -1,18 +1,18 @@
-Received: from mail-dm3nam03on0068.outbound.protection.outlook.com ([104.47.41.68]:27386
-        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
+Received: from mail-by2nam01on0041.outbound.protection.outlook.com ([104.47.34.41]:53022
+        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23991963AbcHWT7p628r2 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 23 Aug 2016 21:59:45 +0200
-Message-ID: <57BCAB27.8060502@caviumnetworks.com>
-Date: Tue, 23 Aug 2016 12:59:35 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+        id S23992160AbcHXQmPXRTFO (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 24 Aug 2016 18:42:15 +0200
+Subject: Re: [BISECTED REGRESSION] v4.8-rc: gpio-leds broken on OCTEON
+References: <20160823203605.GA12169@raspberrypi.musicnaut.iki.fi>
+From: "Steven J. Hill" <Steven.Hill@cavium.com>
+Message-ID: <57BDCE58.20200@cavium.com>
+Date: Wed, 24 Aug 2016 11:42:00 -0500
 MIME-Version: 1.0
-Subject: Re: [PATCH V8 2/2] mmc: OCTEON: Add host driver for OCTEON MMC controller.
-References: <57853474.9050108@cavium.com> <CAPDyKFqaGLWxkG+CqViqDfPqeffKE5rutgR0gduuGs9F0DX+zg@mail.gmail.com> <57BC8ACA.1040506@caviumnetworks.com> <CAPDyKFp047jKEZngegTxk1grvwPivqj+tqAX1ekF82s1zDE53Q@mail.gmail.com>
-In-Reply-To: <CAPDyKFp047jKEZngegTxk1grvwPivqj+tqAX1ekF82s1zDE53Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+In-Reply-To: <20160823203605.GA12169@raspberrypi.musicnaut.iki.fi>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@cavium.com>
+Return-Path: <Steven.Hill@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,36 +22,38 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: "Steven J. Hill" <steven.hill@cavium.com>, linux-mmc <linux-mmc@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, linux-mips@linux-mips.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20160823195935.ctJMdLAXzXDASAVZMSEwmre3SZ3NSRFHKtY6yEyFoJQ@z>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>, David Daney <ddaney@caviumnetworks.com>, Jon Hunter <jonathanh@nvidia.com>, Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Thorsten Leemhuis <regressions@leemhuis.info>
+Message-ID: <20160824164200.NT8KyDZNvThLFIYxS3KlZs1jKRa8MbuTMDttkzxJ3Z4@z>
 
-On 08/23/2016 12:46 PM, Ulf Hansson wrote:
-> On 23 August 2016 at 19:41, David Daney <ddaney@caviumnetworks.com> wrote:
->> On 08/23/2016 07:53 AM, Ulf Hansson wrote:
->>>
->>> On 12 July 2016 at 20:18, Steven J. Hill <steven.hill@cavium.com> wrote:
->>
->> [...]
->>
->>>> +#include <asm/byteorder.h>
->>>> +#include <asm/octeon/octeon.h>
->>>
->>>
->>
->> OK, we will duplicate any needed definitions from octeon.h into the driver
->> source file.
+On 08/23/2016 03:36 PM, Aaro Koskinen wrote:
+> Hi,
 >
-> Why can't you share it via a platfrom data header at
-> include/linux/platform_data/* ?
+> gpio-leds fails to probe on OCTEON with v4.8-rc3 and when using
+> arch/mips/boot/dts/cavium-octeon/dlink_dsr-1000n.dts. Leds still
+> worked with v4.7.
 >
+> I bisected this to:
+>
+> 	commit 15cc2ed6dcf91a8658e084be4e140147161819d7
+> 	Author: Jon Hunter <jonathanh@nvidia.com>
+> 	Date:   Mon Jun 20 14:49:18 2016 +0100
+>
+> 	of/irq: Mark initialised interrupt controllers as populated
+>
+> I have no idea how this is related to gpio-leds, except that on OCTEON
+> DTBs the gpio node is also interrupt controller...
+>
+Hey Aaro.
 
-It isn't "platform_data", it is register layout definitions (thousands 
-of lines of them), so I don't think it it appropriate to place in 
-include/linux.
+It is actually two patches that cause the breakage. The other is:
 
-I think the cleanest approach is to put the register definitions in the 
-driver file, which is the only user, and delete the definition header 
-files in arch/mips/include/...
+    commit e55aeb6ba4e8cc3549bff1e75ea1d029324bce21
+    of/irq: Mark interrupt controllers as populated before initialisation
 
-David.
+I needed to revert both of these in order to get MMC working on our 71xx 
+and 78xx boards. For our MMC, I got error messages from the MMC core of 
+"Invalid POWER GPIO" until I applied the second patch. I will have a fix 
+worthy of upstreaming today which will be posted today.
+
+Steve

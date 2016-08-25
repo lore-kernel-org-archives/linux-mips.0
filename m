@@ -1,15 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:52861 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991965AbcHYRh5K1yUs (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 25 Aug 2016 19:37:57 +0200
-Subject: [PATCH] MIPS64: MULTU/MADDU/MSUBU emulation bugfix
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Date: Thu, 25 Aug 2016 10:37:38 -0700
-Message-ID: <20160825173737.2482.86135.stgit@ubuntu-yegoshin>
+Received: from mail-bn3nam01on0088.outbound.protection.outlook.com ([104.47.33.88]:19728
+        "EHLO NAM01-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23992250AbcHYWVImsJuv (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 26 Aug 2016 00:21:08 +0200
+Message-ID: <57BF6F47.4030803@caviumnetworks.com>
+Date: Thu, 25 Aug 2016 15:20:55 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Subject: Re: [PATCH] MIPS: Octeon: mark GPIO controller node not populated
+ IRQ, init.
+References: <422712ab-4b0d-2b6d-4600-b917c2d327a9@cavium.com>
+In-Reply-To: <422712ab-4b0d-2b6d-4600-b917c2d327a9@cavium.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Return-Path: <David.Daney@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,56 +23,45 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, paul.burton@imgtec.com, Nikola.Veljkovic@imgtec.com, ralf@linux-mips.org, yamada.masahiro@socionext.com, akpm@linux-foundation.org, andrea.gelmini@gelma.net, macro@imgtec.com
-Message-ID: <20160825173738.GuTbCfvCRh3vj7gB1ispfiGbdY1h_fge7Y4EZeuvIso@z>
+To: "Steven J. Hill" <steven.hill@cavium.com>, Rob Herring <robh@kernel.org>, Jon Hunter <jonathanh@nvidia.com>
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, David Daney <david.daney@cavium.com>, devicetree@vger.kernel.org
+Message-ID: <20160825222055.mSGP8PTciAGe_0PtDVmmEKX8qn6aaRYZQ_TLwv2m6hg@z>
 
-MIPS instructions MULTU, MADDU and MSUBU emulation requires registers HI/LO
-to be converted to signed 32bits before 64bit sign extension on MIPS64.
+On 08/25/2016 02:22 PM, Steven J. Hill wrote:
+> We clear the OF_POPULATED flag for the GPIO controller node, otherwise
+> the GPIO lines used by the MMC driver are never probed.
+>
+> Fixes: 15cc2ed6dcf9 ("of/irq: Mark initialised interrupt controllers as populated")
+> Signed-off-by: Steven J. Hill <Steven.Hill@cavium.com>
+> ---
+>   arch/mips/cavium-octeon/octeon-irq.c | 7 +++++++
+>   1 file changed, 7 insertions(+)
+>
+> diff --git a/arch/mips/cavium-octeon/octeon-irq.c b/arch/mips/cavium-octeon/octeon-irq.c
+> index 5a9b87b..41d12d4 100644
+> --- a/arch/mips/cavium-octeon/octeon-irq.c
+> +++ b/arch/mips/cavium-octeon/octeon-irq.c
+> @@ -1619,6 +1619,13 @@ static int __init octeon_irq_init_gpio(
+>   		return -ENOMEM;
+>   	}
+>
+> +	/*
+> +	 * Clear the OF_POPULATED flag that was set above for the
 
-Bug was found on running MIPS32 R2 test application on MIPS64 R6 kernel.
+Can we s/above/in of_irq_init()/ to be less ambiguous?
 
-Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Reported-by: Nikola.Veljkovic@imgtec.com
----
- arch/mips/kernel/mips-r2-to-r6-emul.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/mips/kernel/mips-r2-to-r6-emul.c b/arch/mips/kernel/mips-r2-to-r6-emul.c
-index c3372cac6db2..697f84385665 100644
---- a/arch/mips/kernel/mips-r2-to-r6-emul.c
-+++ b/arch/mips/kernel/mips-r2-to-r6-emul.c
-@@ -434,8 +434,8 @@ static int multu_func(struct pt_regs *regs, u32 ir)
- 	rs = regs->regs[MIPSInst_RS(ir)];
- 	res = (u64)rt * (u64)rs;
- 	rt = res;
--	regs->lo = (s64)rt;
--	regs->hi = (s64)(res >> 32);
-+	regs->lo = (s64)(s32)rt;
-+	regs->hi = (s64)(s32)(res >> 32);
- 
- 	MIPS_R2_STATS(muls);
- 
-@@ -671,9 +671,9 @@ static int maddu_func(struct pt_regs *regs, u32 ir)
- 	res += ((((s64)rt) << 32) | (u32)rs);
- 
- 	rt = res;
--	regs->lo = (s64)rt;
-+	regs->lo = (s64)(s32)rt;
- 	rs = res >> 32;
--	regs->hi = (s64)rs;
-+	regs->hi = (s64)(s32)rs;
- 
- 	MIPS_R2_STATS(dsps);
- 
-@@ -729,9 +729,9 @@ static int msubu_func(struct pt_regs *regs, u32 ir)
- 	res = ((((s64)rt) << 32) | (u32)rs) - res;
- 
- 	rt = res;
--	regs->lo = (s64)rt;
-+	regs->lo = (s64)(s32)rt;
- 	rs = res >> 32;
--	regs->hi = (s64)rs;
-+	regs->hi = (s64)(s32)rs;
- 
- 	MIPS_R2_STATS(dsps);
- 
+> +	 * GPIO controller so that the lines used by the MMC driver
+
+I suspect that it is not just MMC that was broken by commit 
+15cc2ed6dcf9.  Can we get a real description of exactly which kernel 
+facilities are impacted?  Is it all GPIO, or what?
+
+> +	 * will not be skipped.
+> +	 */
+> +	of_node_clear_flag(gpio_node, OF_POPULATED);
+> +
+>   	return 0;
+>   }
+>   /*
+>

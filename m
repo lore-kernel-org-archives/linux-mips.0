@@ -1,20 +1,16 @@
-Received: from mail-bl2nam02on0084.outbound.protection.outlook.com ([104.47.38.84]:5664
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23992160AbcHXQvFnDttO (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 24 Aug 2016 18:51:05 +0200
-Subject: Re: [PATCH] MIPS: OCTEON: mangle-port: fix build failure with VDSO
- code
-References: <20160822220735.13865-1-aaro.koskinen@iki.fi>
- <57BB82F3.2030103@caviumnetworks.com>
-From: "Steven J. Hill" <Steven.Hill@cavium.com>
-Message-ID: <57BDD06C.6030004@cavium.com>
-Date: Wed, 24 Aug 2016 11:50:52 -0500
+Received: from mail-it0-f66.google.com ([209.85.214.66]:34907 "EHLO
+        mail-it0-f66.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23991948AbcHYHwyU7qxT (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 25 Aug 2016 09:52:54 +0200
 MIME-Version: 1.0
-In-Reply-To: <57BB82F3.2030103@caviumnetworks.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Steven.Hill@cavium.com>
+In-Reply-To: <1472059613-30551-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1472059613-30551-1-git-send-email-yamada.masahiro@socionext.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 25 Aug 2016 09:52:47 +0200
+Message-ID: <CAMuHMdUC9d4KNPTDY51DCptmMFQ1F2jLmRDO9WLt=WZA09qRew@mail.gmail.com>
+Subject: Re: [PATCH v3] clk: let clk_disable() return immediately if clk is NULL
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <geert.uytterhoeven@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,22 +20,30 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc: David Daney <ddaney@caviumnetworks.com>, Ralf Baechle <ralf@linux-mips.org>, David Daney <david.daney@cavium.com>, linux-mips@linux-mips.org, Alex Smith <alex.smith@imgtec.com>
-Message-ID: <20160824165052.CPhYaei_CP8886xVteTFWu1QF5-N4OV2_r4eT-olurs@z>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-clk <linux-clk@vger.kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, Ralf Baechle <ralf@linux-mips.org>, Michael Turquette <mturquette@baylibre.com>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Eric Miao <eric.y.miao@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Greg Ungerer <gerg@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, bcm-kernel-feedback-list@broadcom.com, Wan ZongShun <mcuos.com@gmail.com>, Steven Miao <realmz6@gmail.com>, Russell King <linux@armlinux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20160825075247.2MVWfr2J9Z1z9578GFeIX3PkQVKsD1azFaLWk40YpxU@z>
 
-On 08/22/2016 05:55 PM, David Daney wrote:
+On Wed, Aug 24, 2016 at 7:26 PM, Masahiro Yamada
+<yamada.masahiro@socionext.com> wrote:
+> Many of clk_disable() implementations just return for NULL pointer,
+> but this check is missing from some.  Let's make it tree-wide
+> consistent.  It will allow clock consumers to call clk_disable()
+> without NULL pointer check.
 >
-> This looks like it should work.
->
-> Steven, can you test this patch for us to get independent confirmation
-> that it works?
->
-> If testing shows that it is good, please add Acked-by: David Daney
-> <david.daney@cavium.com>
->
-Hey Aaro.
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Acked-by: Greg Ungerer <gerg@uclinux.org>
+> Acked-by: Wan Zongshun <mcuos.com@gmail.com>
 
-Patch tests out good. Go ahead add David's ack. Thanks.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Steve
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

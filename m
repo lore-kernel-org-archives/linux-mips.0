@@ -1,16 +1,15 @@
-Received: from mail-it0-f66.google.com ([209.85.214.66]:34907 "EHLO
-        mail-it0-f66.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991948AbcHYHwyU7qxT (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 25 Aug 2016 09:52:54 +0200
+Received: from mailapp01.imgtec.com ([195.59.15.196]:52861 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23991965AbcHYRh5K1yUs (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 25 Aug 2016 19:37:57 +0200
+Subject: [PATCH] MIPS64: MULTU/MADDU/MSUBU emulation bugfix
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Date: Thu, 25 Aug 2016 10:37:38 -0700
+Message-ID: <20160825173737.2482.86135.stgit@ubuntu-yegoshin>
 MIME-Version: 1.0
-In-Reply-To: <1472059613-30551-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1472059613-30551-1-git-send-email-yamada.masahiro@socionext.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 25 Aug 2016 09:52:47 +0200
-Message-ID: <CAMuHMdUC9d4KNPTDY51DCptmMFQ1F2jLmRDO9WLt=WZA09qRew@mail.gmail.com>
-Subject: Re: [PATCH v3] clk: let clk_disable() return immediately if clk is NULL
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <geert.uytterhoeven@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,30 +19,56 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-clk <linux-clk@vger.kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, Ralf Baechle <ralf@linux-mips.org>, Michael Turquette <mturquette@baylibre.com>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Eric Miao <eric.y.miao@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Greg Ungerer <gerg@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, bcm-kernel-feedback-list@broadcom.com, Wan ZongShun <mcuos.com@gmail.com>, Steven Miao <realmz6@gmail.com>, Russell King <linux@armlinux.org.uk>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Message-ID: <20160825075247.2MVWfr2J9Z1z9578GFeIX3PkQVKsD1azFaLWk40YpxU@z>
+To: linux-mips@linux-mips.org, paul.burton@imgtec.com, Nikola.Veljkovic@imgtec.com, ralf@linux-mips.org, yamada.masahiro@socionext.com, akpm@linux-foundation.org, andrea.gelmini@gelma.net, macro@imgtec.com
+Message-ID: <20160825173738.GuTbCfvCRh3vj7gB1ispfiGbdY1h_fge7Y4EZeuvIso@z>
 
-On Wed, Aug 24, 2016 at 7:26 PM, Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
-> Many of clk_disable() implementations just return for NULL pointer,
-> but this check is missing from some.  Let's make it tree-wide
-> consistent.  It will allow clock consumers to call clk_disable()
-> without NULL pointer check.
->
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Acked-by: Greg Ungerer <gerg@uclinux.org>
-> Acked-by: Wan Zongshun <mcuos.com@gmail.com>
+MIPS instructions MULTU, MADDU and MSUBU emulation requires registers HI/LO
+to be converted to signed 32bits before 64bit sign extension on MIPS64.
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Bug was found on running MIPS32 R2 test application on MIPS64 R6 kernel.
 
-Gr{oetje,eeting}s,
+Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Reported-by: Nikola.Veljkovic@imgtec.com
+---
+ arch/mips/kernel/mips-r2-to-r6-emul.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/arch/mips/kernel/mips-r2-to-r6-emul.c b/arch/mips/kernel/mips-r2-to-r6-emul.c
+index c3372cac6db2..697f84385665 100644
+--- a/arch/mips/kernel/mips-r2-to-r6-emul.c
++++ b/arch/mips/kernel/mips-r2-to-r6-emul.c
+@@ -434,8 +434,8 @@ static int multu_func(struct pt_regs *regs, u32 ir)
+ 	rs = regs->regs[MIPSInst_RS(ir)];
+ 	res = (u64)rt * (u64)rs;
+ 	rt = res;
+-	regs->lo = (s64)rt;
+-	regs->hi = (s64)(res >> 32);
++	regs->lo = (s64)(s32)rt;
++	regs->hi = (s64)(s32)(res >> 32);
+ 
+ 	MIPS_R2_STATS(muls);
+ 
+@@ -671,9 +671,9 @@ static int maddu_func(struct pt_regs *regs, u32 ir)
+ 	res += ((((s64)rt) << 32) | (u32)rs);
+ 
+ 	rt = res;
+-	regs->lo = (s64)rt;
++	regs->lo = (s64)(s32)rt;
+ 	rs = res >> 32;
+-	regs->hi = (s64)rs;
++	regs->hi = (s64)(s32)rs;
+ 
+ 	MIPS_R2_STATS(dsps);
+ 
+@@ -729,9 +729,9 @@ static int msubu_func(struct pt_regs *regs, u32 ir)
+ 	res = ((((s64)rt) << 32) | (u32)rs) - res;
+ 
+ 	rt = res;
+-	regs->lo = (s64)rt;
++	regs->lo = (s64)(s32)rt;
+ 	rs = res >> 32;
+-	regs->hi = (s64)rs;
++	regs->hi = (s64)(s32)rs;
+ 
+ 	MIPS_R2_STATS(dsps);
+ 

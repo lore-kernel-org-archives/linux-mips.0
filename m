@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:32739 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:61383 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992501AbcHZPk6Mkk4I (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 26 Aug 2016 17:40:58 +0200
+        with ESMTP id S23992500AbcHZPlNlL4PI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 26 Aug 2016 17:41:13 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 11/26] dt-bindings: Document mti,mips-cpc binding
-Date: Fri, 26 Aug 2016 16:37:10 +0100
-Message-ID: <20160826153725.11629-12-paul.burton@imgtec.com>
+Subject: [PATCH 12/26] MIPS: CPC: Provide a default mips_cpc_default_phys_base
+Date: Fri, 26 Aug 2016 16:37:11 +0100
+Message-ID: <20160826153725.11629-13-paul.burton@imgtec.com>
 In-Reply-To: <20160826153725.11629-1-paul.burton@imgtec.com>
 References: <20160826153725.11629-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -21,33 +21,56 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>, devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Message-ID: <20160826153710.jvgdoNWb7lUGGQK9u0fEKePGOA7emlOKVt3kt-Hd1C8@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, linux-kernel@vger.kernel.org
+Message-ID: <20160826153711.2dsB2_CEd4RoAgXewoYqcfgMYg4Y4e1ECurjuNb63fQ@z>
 
-Document a binding for the MIPS Cluster Power Controller (CPC) which
-simply allows the device tree to specify where the CPC registers should
-be mapped.
+Provide a weak default implementation of mips_cpc_default_phys_base
+which reads the base address of the CPC from the device tree if
+possible, and failing that returns the existing physical address of the
+CPC as read from CPC base address GCR. This allows for platforms to make
+use of the CPC without requiring platform code.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
 
- Documentation/devicetree/bindings/misc/mti,mips-cpc.txt | 8 ++++++++
- 1 file changed, 8 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/misc/mti,mips-cpc.txt
+ arch/mips/kernel/mips-cpc.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/misc/mti,mips-cpc.txt b/Documentation/devicetree/bindings/misc/mti,mips-cpc.txt
-new file mode 100644
-index 0000000..92eb08f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/misc/mti,mips-cpc.txt
-@@ -0,0 +1,8 @@
-+Binding for MIPS Cluster Power Controller (CPC).
+diff --git a/arch/mips/kernel/mips-cpc.c b/arch/mips/kernel/mips-cpc.c
+index 566b8d2..b188787 100644
+--- a/arch/mips/kernel/mips-cpc.c
++++ b/arch/mips/kernel/mips-cpc.c
+@@ -9,6 +9,8 @@
+  */
+ 
+ #include <linux/errno.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
+ #include <linux/percpu.h>
+ #include <linux/spinlock.h>
+ 
+@@ -21,6 +23,22 @@ static DEFINE_PER_CPU_ALIGNED(spinlock_t, cpc_core_lock);
+ 
+ static DEFINE_PER_CPU_ALIGNED(unsigned long, cpc_core_lock_flags);
+ 
++__weak phys_addr_t mips_cpc_default_phys_base(void)
++{
++	struct device_node *cpc_node;
++	struct resource res;
++	int err;
 +
-+This binding allows a system to specify where the CPC registers should be
-+mapped using device tree.
++	cpc_node = of_find_compatible_node(of_root, NULL, "mti,mips-cpc");
++	if (cpc_node) {
++		err = of_address_to_resource(cpc_node, 0, &res);
++		if (!err)
++			return res.start;
++	}
 +
-+Required properties:
-+compatible : Should be "mti,mips-cpc".
-+regs: Should describe the address & size of the CPC register region.
++	return read_gcr_cpc_base() & CM_GCR_CPC_BASE_CPCBASE_MSK;
++}
++
+ /**
+  * mips_cpc_phys_base - retrieve the physical base address of the CPC
+  *
 -- 
 2.9.3

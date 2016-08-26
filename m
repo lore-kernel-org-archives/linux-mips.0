@@ -1,19 +1,17 @@
-Received: from mail-bn3nam01on0088.outbound.protection.outlook.com ([104.47.33.88]:19728
-        "EHLO NAM01-BN3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23992250AbcHYWVImsJuv (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 26 Aug 2016 00:21:08 +0200
-Message-ID: <57BF6F47.4030803@caviumnetworks.com>
-Date: Thu, 25 Aug 2016 15:20:55 -0700
-From: David Daney <ddaney@caviumnetworks.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:44901 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23992437AbcHZNlfgjFCn (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 26 Aug 2016 15:41:35 +0200
+Subject: Re: [PATCH V2 00/10] microblaze/MIPS: xilfpga: intc and peripheral
+References: <1471527804-26175-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Message-ID: <dfa01405-34da-89b7-0082-9f83a3c3fb18@imgtec.com>
+Date: Fri, 26 Aug 2016 14:41:16 +0100
 MIME-Version: 1.0
-Subject: Re: [PATCH] MIPS: Octeon: mark GPIO controller node not populated
- IRQ, init.
-References: <422712ab-4b0d-2b6d-4600-b917c2d327a9@cavium.com>
-In-Reply-To: <422712ab-4b0d-2b6d-4600-b917c2d327a9@cavium.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+In-Reply-To: <1471527804-26175-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@cavium.com>
+Return-Path: <Zubair.Kakakhel@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,45 +21,68 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Steven J. Hill" <steven.hill@cavium.com>, Rob Herring <robh@kernel.org>, Jon Hunter <jonathanh@nvidia.com>
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, David Daney <david.daney@cavium.com>, devicetree@vger.kernel.org
-Message-ID: <20160825222055.mSGP8PTciAGe_0PtDVmmEKX8qn6aaRYZQ_TLwv2m6hg@z>
+To: monstr@monstr.eu, ralf@linux-mips.org, tglx@linutronix.de
+Cc: jason@lakedaemon.net, marc.zyngier@arm.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Message-ID: <20160826134116.feQO8RtkGnB-A8zlp2PxRwm7kbuN9bTQaaGHoB0Pfe4@z>
 
-On 08/25/2016 02:22 PM, Steven J. Hill wrote:
-> We clear the OF_POPULATED flag for the GPIO controller node, otherwise
-> the GPIO lines used by the MMC driver are never probed.
+Hi,
+
+
+On 08/18/2016 02:43 PM, Zubair Lutfullah Kakakhel wrote:
+> Hi,
 >
-> Fixes: 15cc2ed6dcf9 ("of/irq: Mark initialised interrupt controllers as populated")
-> Signed-off-by: Steven J. Hill <Steven.Hill@cavium.com>
-> ---
->   arch/mips/cavium-octeon/octeon-irq.c | 7 +++++++
->   1 file changed, 7 insertions(+)
+> The MIPS based Xilfpga platform uses the axi interrupt controller
+> daisy chained to the MIPS microAptiv cpu interrupt controller.
+> This patch series moves the axi interrupt controller driver out
+> of arch/microblaze to drivers/irqchip. This makes it usable by
+> MIPS. The rest of the series basically enables drivers and adds dt
+> nodes.
 >
-> diff --git a/arch/mips/cavium-octeon/octeon-irq.c b/arch/mips/cavium-octeon/octeon-irq.c
-> index 5a9b87b..41d12d4 100644
-> --- a/arch/mips/cavium-octeon/octeon-irq.c
-> +++ b/arch/mips/cavium-octeon/octeon-irq.c
-> @@ -1619,6 +1619,13 @@ static int __init octeon_irq_init_gpio(
->   		return -ENOMEM;
->   	}
+> Would make sense for this to go via the MIPS tree.
+> Hence, ACKs from microblaze. irqchip and net welcome.
 >
-> +	/*
-> +	 * Clear the OF_POPULATED flag that was set above for the
+> Compile tested on microblaze-el only!
+> Based on v4.8-rc2
 
-Can we s/above/in of_irq_init()/ to be less ambiguous?
+Ping. Would be nice to see this in for v4.9.
 
+Thanks
+ZubairLK
 
-> +	 * GPIO controller so that the lines used by the MMC driver
-
-I suspect that it is not just MMC that was broken by commit 
-15cc2ed6dcf9.  Can we get a real description of exactly which kernel 
-facilities are impacted?  Is it all GPIO, or what?
-
-> +	 * will not be skipped.
-> +	 */
-> +	of_node_clear_flag(gpio_node, OF_POPULATED);
-> +
->   	return 0;
->   }
->   /*
+>
+> Regards,
+> ZubairLK
+>
+> V1 -> V2
+> Resubmitting without truncating the diff output for file moves
+> Removed accidental local mac address entry
+> Individual logs have more detail
+>
+> Zubair Lutfullah Kakakhel (10):
+>   microblaze: irqchip: Move intc driver to irqchip
+>   irqchip: xilinx: Add support for parent intc
+>   MIPS: xilfpga: Use irqchip_init instead of the legacy way
+>   MIPS: xilfpga: Use Xilinx AXI Interrupt Controller
+>   MIPS: xilfpga: Update DT node and specify uart irq
+>   MIPS: Xilfpga: Add DT node for AXI I2C
+>   net: ethernet: xilinx: Generate random mac if none found
+>   net: ethernet: xilinx: Enable emaclite for MIPS
+>   MIPS: xilfpga: Add DT node for AXI emaclite
+>   MIPS: xilfpga: Update defconfig
+>
+>  arch/microblaze/Kconfig                       |   1 +
+>  arch/microblaze/kernel/Makefile               |   2 +-
+>  arch/microblaze/kernel/intc.c                 | 196 -----------------------
+>  arch/mips/Kconfig                             |   1 +
+>  arch/mips/boot/dts/xilfpga/nexys4ddr.dts      |  63 ++++++++
+>  arch/mips/configs/xilfpga_defconfig           |  37 ++++-
+>  arch/mips/xilfpga/intc.c                      |   7 +-
+>  drivers/irqchip/Kconfig                       |   4 +
+>  drivers/irqchip/Makefile                      |   1 +
+>  drivers/irqchip/irq-axi-intc.c                | 222 ++++++++++++++++++++++++++
+>  drivers/net/ethernet/xilinx/Kconfig           |   4 +-
+>  drivers/net/ethernet/xilinx/xilinx_emaclite.c |   6 +-
+>  12 files changed, 337 insertions(+), 207 deletions(-)
+>  delete mode 100644 arch/microblaze/kernel/intc.c
+>  create mode 100644 drivers/irqchip/irq-axi-intc.c
 >

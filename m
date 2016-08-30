@@ -1,19 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:50786 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:54393 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23990451AbcH3IOvovpqe (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 30 Aug 2016 10:14:51 +0200
-Subject: Re: [PATCH 1/2] tracing/syscalls: allow multiple syscall numbers per
- syscall
-References: <1472463007-6469-1-git-send-email-marcin.nowakowski@imgtec.com>
- <CALCETrW1m9ozck-ugX6AKnL7oNA8rvMTjhFGqtVSvKL9BMXMZA@mail.gmail.com>
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Message-ID: <f40020e1-200c-f113-5174-5fe4d4c000dc@imgtec.com>
-Date: Tue, 30 Aug 2016 10:14:34 +0200
+        with ESMTP id S23992009AbcH3Om1KTvSJ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 30 Aug 2016 16:42:27 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH v2 10/19] leds: Remove SEAD3 driver
+References: <20160826141751.13121-1-paul.burton@imgtec.com>
+ <20160826141751.13121-11-paul.burton@imgtec.com>
+ <5f2e6c11-d4a7-dfa0-e94a-cf2a1cd66541@samsung.com>
+Message-ID: <a3339cb1-e405-dfb8-9a73-42756bb4fe67@imgtec.com>
+Date: Tue, 30 Aug 2016 15:42:09 +0100
 MIME-Version: 1.0
-In-Reply-To: <CALCETrW1m9ozck-ugX6AKnL7oNA8rvMTjhFGqtVSvKL9BMXMZA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <5f2e6c11-d4a7-dfa0-e94a-cf2a1cd66541@samsung.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-Path: <Marcin.Nowakowski@imgtec.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,87 +23,162 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: Linux API <linux-api@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, open list <linux-kernel@vger.kernel.org>, linux-mips@linux-mips.org
-Message-ID: <20160830081434.hMGPjNg7levl5nKvoTeBGnPIa3lp5gp25owioEn0oF8@z>
+To: Jacek Anaszewski <j.anaszewski@samsung.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Richard Purdie <rpurdie@rpsys.net>, linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <20160830144209.SAy6anEPTfXX5m3J6D5LTCmfrKaHCpW18vP1Sw0JoR8@z>
 
-
-
-On 30.08.2016 01:55, Andy Lutomirski wrote:
-> On Aug 29, 2016 11:30 AM, "Marcin Nowakowski"
-> <marcin.nowakowski@imgtec.com> wrote:
+On 29/08/16 09:55, Jacek Anaszewski wrote:
+> Hi Paul,
+> 
+> On 08/26/2016 04:17 PM, Paul Burton wrote:
+>> SEAD3 is now using the generic syscon & regmap based register-bit-led
+>> driver, so remove the unused custom SEAD3 LED driver.
 >>
->> Syscall metadata makes an assumption that only a single syscall number
->> corresponds to a given method. This is true for most archs, but
->> can break tracing otherwise.
+>> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+>> ---
 >>
->> For MIPS platforms, depending on the choice of supported ABIs, up to 3
->> system call numbers can correspond to the same call - depending on which
->> ABI the userspace app uses.
->
-> MIPS isn't special here.  x86 does the same thing.  Why isn't this a
-> problem on x86?
->
+>> Changes in v2: None
+>>
+>>  drivers/leds/Kconfig      | 10 ------
+>>  drivers/leds/Makefile     |  1 -
+>>  drivers/leds/leds-sead3.c | 78 -----------------------------------------------
+>>  3 files changed, 89 deletions(-)
+>>  delete mode 100644 drivers/leds/leds-sead3.c
+>>
+>> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+>> index 9dcc9b1..025de7e 100644
+>> --- a/drivers/leds/Kconfig
+>> +++ b/drivers/leds/Kconfig
+>> @@ -574,16 +574,6 @@ config LEDS_KTD2692
+>>
+>>        Say Y to enable this driver.
+>>
+>> -config LEDS_SEAD3
+>> -    tristate "LED support for the MIPS SEAD 3 board"
+>> -    depends on LEDS_CLASS && MIPS_SEAD3
+>> -    help
+>> -      Say Y here to include support for the FLED and PLED LEDs on SEAD3 eval
+>> -      boards.
+>> -
+>> -      This driver can also be built as a module. If so the module
+>> -      will be called leds-sead3.
+>> -
+>>  config LEDS_IS31FL32XX
+>>      tristate "LED support for ISSI IS31FL32XX I2C LED controller family"
+>>      depends on LEDS_CLASS && I2C && OF
+>> diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+>> index 0684c86..da594cf 100644
+>> --- a/drivers/leds/Makefile
+>> +++ b/drivers/leds/Makefile
+>> @@ -66,7 +66,6 @@ obj-$(CONFIG_LEDS_VERSATILE)        += leds-versatile.o
+>>  obj-$(CONFIG_LEDS_MENF21BMC)        += leds-menf21bmc.o
+>>  obj-$(CONFIG_LEDS_KTD2692)        += leds-ktd2692.o
+>>  obj-$(CONFIG_LEDS_POWERNV)        += leds-powernv.o
+>> -obj-$(CONFIG_LEDS_SEAD3)        += leds-sead3.o
+>>  obj-$(CONFIG_LEDS_IS31FL32XX)        += leds-is31fl32xx.o
+>>
+>>  # LED SPI Drivers
+>> diff --git a/drivers/leds/leds-sead3.c b/drivers/leds/leds-sead3.c
+>> deleted file mode 100644
+>> index eb97a32..0000000
+>> --- a/drivers/leds/leds-sead3.c
+>> +++ /dev/null
+>> @@ -1,78 +0,0 @@
+>> -/*
+>> - * This file is subject to the terms and conditions of the GNU General Public
+>> - * License.  See the file "COPYING" in the main directory of this archive
+>> - * for more details.
+>> - *
+>> - * Copyright (C) 2012 MIPS Technologies, Inc.  All rights reserved.
+>> - * Copyright (C) 2015 Imagination Technologies, Inc.
+>> - */
+>> -#include <linux/kernel.h>
+>> -#include <linux/module.h>
+>> -#include <linux/init.h>
+>> -#include <linux/platform_device.h>
+>> -#include <linux/leds.h>
+>> -#include <linux/err.h>
+>> -#include <linux/io.h>
+>> -
+>> -#include <asm/mips-boards/sead3-addr.h>
+>> -
+>> -static void sead3_pled_set(struct led_classdev *led_cdev,
+>> -        enum led_brightness value)
+>> -{
+>> -    writel(value, (void __iomem *)SEAD3_CPLD_P_LED);
+>> -}
+>> -
+>> -static void sead3_fled_set(struct led_classdev *led_cdev,
+>> -        enum led_brightness value)
+>> -{
+>> -    writel(value, (void __iomem *)SEAD3_CPLD_F_LED);
+>> -}
+>> -
+>> -static struct led_classdev sead3_pled = {
+>> -    .name        = "sead3::pled",
+>> -    .brightness_set = sead3_pled_set,
+>> -    .flags        = LED_CORE_SUSPENDRESUME,
+>> -};
+>> -
+>> -static struct led_classdev sead3_fled = {
+>> -    .name        = "sead3::fled",
+>> -    .brightness_set = sead3_fled_set,
+>> -    .flags        = LED_CORE_SUSPENDRESUME,
+>> -};
+>> -
+>> -static int sead3_led_probe(struct platform_device *pdev)
+>> -{
+>> -    int ret;
+>> -
+>> -    ret = led_classdev_register(&pdev->dev, &sead3_pled);
+>> -    if (ret < 0)
+>> -        return ret;
+>> -
+>> -    ret = led_classdev_register(&pdev->dev, &sead3_fled);
+>> -    if (ret < 0)
+>> -        led_classdev_unregister(&sead3_pled);
+>> -
+>> -    return ret;
+>> -}
+>> -
+>> -static int sead3_led_remove(struct platform_device *pdev)
+>> -{
+>> -    led_classdev_unregister(&sead3_pled);
+>> -    led_classdev_unregister(&sead3_fled);
+>> -
+>> -    return 0;
+>> -}
+>> -
+>> -static struct platform_driver sead3_led_driver = {
+>> -    .probe        = sead3_led_probe,
+>> -    .remove        = sead3_led_remove,
+>> -    .driver        = {
+>> -        .name        = "sead3-led",
+>> -    },
+>> -};
+>> -
+>> -module_platform_driver(sead3_led_driver);
+>> -
+>> -MODULE_AUTHOR("Kristian Kielhofner <kris@krisk.org>");
+>> -MODULE_DESCRIPTION("SEAD3 LED driver");
+>> -MODULE_LICENSE("GPL");
+>>
+> 
+> Currently the patch doesn't apply cleanly on the linux-leds.git,
+> for-next branch, due to the fresh changes in the surrounding code in
+> the drivers/leds/Makefile and Kconfig. Does this patch depend on
+> the previous patches in this series, or I can take it now and apply
+> to the LEDs git?
 
-Hi Andy,
+Hi Jacek,
 
-My understanding is that MIPS is quite different to what most other 
-architectures do ...
-First of all x86 disables tracing of compat syscalls as that didn't work 
-properly because of wrong mapping of syscall numbers to syscalls:
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=f431b634f
+Ideally the patches to the SEAD-3 board code & DT would go in first such
+that the board switches to the register-bit-led driver before this
+custom driver is removed. Otherwise we'll lose support for the LEDs in
+between you applying this patch & Ralf applying the rest.
 
-Moreover, when trace_syscalls is initialised, the syscall metadata is 
-updated to include the right syscall numbers. That uses 
-arch_syscall_addr method, which has a default implementation in 
-kernel/trace/trace_syscalls.c:
+Having said that I doubt anyone actually uses the SEAD-3 LEDs so I don't
+mind so much if you & Ralf decide that's the easiest path forwards.
 
-unsigned long __init __weak arch_syscall_addr(int nr)
-{
-         return (unsigned long)sys_call_table[nr];
-}
-
-that works for x86 and only uses 'native' syscalls, ie. for x86_64 will 
-not map any of the ia32_sys_call_table entries. So on one hand we have 
-the code that disables tracing for x86_64 compat, on the other we only 
-ensure that the native calls are mapped.
-It is quite different for MIPS where syscall numbers for different ABIs 
-have distinct call numbers, so the following code maps the syscalls
-(for O32 -> 4xxx, N64 -> 5xxx, N32 -> 6xxx):
-
-unsigned long __init arch_syscall_addr(int nr)
-{
-         if (nr >= __NR_N32_Linux && nr <= __NR_N32_Linux + 
-__NR_N32_Linux_syscalls)
-                 return (unsigned long)sysn32_call_table[nr - 
-__NR_N32_Linux];
-         if (nr >= __NR_64_Linux  && nr <= __NR_64_Linux + 
-__NR_64_Linux_syscalls)
-                 return (unsigned long)sys_call_table[nr - __NR_64_Linux];
-         if (nr >= __NR_O32_Linux && nr <= __NR_O32_Linux + 
-__NR_O32_Linux_syscalls)
-                 return (unsigned long)sys32_call_table[nr - 
-__NR_O32_Linux];
-         return (unsigned long) &sys_ni_syscall;
-}
-
-As a result when init_ftrace_syscalls() loops through all the possible 
-syscall numbers,  it first finds an O32 implementation, then N64 and 
-finally N32. As the current code doesn't expect multiple references to a 
-given syscall number, it always overrides the metadata with the last 
-found - as a result only N32 syscalls are mapped.
-This is generally unexpected and wrong behaviour, and to makes things 
-worse - since when N32 support is enabled, it overwrites N64 entries, it 
-becomes impossible to trace native syscalls.
-
- > Also, you seem to be partially reinventing AUDIT_ARCH here.  Can you
- > use that and integrate with syscall_get_arch()?
-
-Please correct me if I don't understand what you meant here, but I don't 
-see how these can be integrated ...
-For MIPS syscall_get_arch() properly determines arch type and calling 
-convention, but that information is not enough to determine what call 
-was made and how to map it to syscall metadata from another calling 
-convention.
-
-Marcin
+Thanks,
+    Paul

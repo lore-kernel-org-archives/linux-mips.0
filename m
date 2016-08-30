@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:63943 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:50405 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992009AbcH3Ra4Qgnk0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 30 Aug 2016 19:30:56 +0200
+        with ESMTP id S23992257AbcH3RbIBfYM0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 30 Aug 2016 19:31:08 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2 02/26] MIPS: PCI: Make pcibios_set_cache_line_size an initcall
-Date: Tue, 30 Aug 2016 18:29:05 +0100
-Message-ID: <20160830172929.16948-3-paul.burton@imgtec.com>
+Subject: [PATCH v2 03/26] MIPS: PCI: Inline pcibios_assign_all_busses
+Date: Tue, 30 Aug 2016 18:29:06 +0100
+Message-ID: <20160830172929.16948-4-paul.burton@imgtec.com>
 In-Reply-To: <20160830172929.16948-1-paul.burton@imgtec.com>
 References: <20160830172929.16948-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -21,51 +21,54 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Bjorn Helgaas <bhelgaas@google.com>, linux-kernel@vger.kernel.org, Sergey Ryazanov <ryazanov.s.a@gmail.com>, Yinghai Lu <yinghai@kernel.org>
-Message-ID: <20160830172905.EwTZmh-okVYULAEQ344winZHX2d3hoeUM1MJc9YZ7wo@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Bjorn Helgaas <bhelgaas@google.com>, linux-kernel@vger.kernel.org, Sergey Ryazanov <ryazanov.s.a@gmail.com>, Yinghai Lu <yinghai@kernel.org>, Will Deacon <will.deacon@arm.com>
+Message-ID: <20160830172906.o7tD_DeBqnWpFVunvT5alH4IrSsOONyhNqc1w7PLiWE@z>
 
-In preparation for allowing configurations in which pcibios_init is not
-included, make pcibios_set_cache_line_size an initcall. arch_initcall is
-used such that it runs before the pcibios_init subsys_initcall for
-platforms that continue to use it.
+The MIPS implementation of pcibios_assign_all_busses trivially returns
+1. Implement it as a static function in asm/pci.h such that the compiler
+can inline it & optimise out never-taken paths.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
 
 Changes in v2: None
 
- arch/mips/pci/pci.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/mips/include/asm/pci.h | 6 ++++--
+ arch/mips/pci/pci.c         | 5 -----
+ 2 files changed, 4 insertions(+), 7 deletions(-)
 
+diff --git a/arch/mips/include/asm/pci.h b/arch/mips/include/asm/pci.h
+index 0564692..acc651e 100644
+--- a/arch/mips/include/asm/pci.h
++++ b/arch/mips/include/asm/pci.h
+@@ -66,8 +66,10 @@ extern int pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin);
+ /* Can be used to override the logic in pci_scan_bus for skipping
+    already-configured bus numbers - to be used for buggy BIOSes
+    or architectures with incomplete PCI setup by the loader */
+-
+-extern unsigned int pcibios_assign_all_busses(void);
++static inline unsigned int pcibios_assign_all_busses(void)
++{
++	return 1;
++}
+ 
+ extern unsigned long PCIBIOS_MIN_IO;
+ extern unsigned long PCIBIOS_MIN_MEM;
 diff --git a/arch/mips/pci/pci.c b/arch/mips/pci/pci.c
-index 5207c04..30320a4 100644
+index 30320a4..8cc6ea4 100644
 --- a/arch/mips/pci/pci.c
 +++ b/arch/mips/pci/pci.c
-@@ -220,7 +220,7 @@ out:
- 	       "Skipping PCI bus scan due to resource conflict\n");
+@@ -297,11 +297,6 @@ static int pcibios_enable_resources(struct pci_dev *dev, int mask)
+ 	return 0;
  }
  
--static void __init pcibios_set_cache_line_size(void)
-+static int __init pcibios_set_cache_line_size(void)
- {
- 	struct cpuinfo_mips *c = &current_cpu_data;
- 	unsigned int lsize;
-@@ -238,14 +238,14 @@ static void __init pcibios_set_cache_line_size(void)
- 	pci_dfl_cache_line_size = lsize >> 2;
- 
- 	pr_debug("PCI: pci_cache_line_size set to %d bytes\n", lsize);
-+	return 0;
- }
-+arch_initcall(pcibios_set_cache_line_size);
- 
- static int __init pcibios_init(void)
- {
- 	struct pci_controller *hose;
- 
--	pcibios_set_cache_line_size();
+-unsigned int pcibios_assign_all_busses(void)
+-{
+-	return 1;
+-}
 -
- 	/* Scan all of the recorded PCI controllers.  */
- 	list_for_each_entry(hose, &controllers, list)
- 		pcibios_scanbus(hose);
+ int pcibios_enable_device(struct pci_dev *dev, int mask)
+ {
+ 	int err;
 -- 
 2.9.3

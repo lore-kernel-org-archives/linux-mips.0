@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:54285 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:55596 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992009AbcH3Rcs60iW0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 30 Aug 2016 19:32:48 +0200
+        with ESMTP id S23992221AbcH3RdDGb-z0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 30 Aug 2016 19:33:03 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2 10/26] MIPS: Print CM error reports upon bus errors
-Date: Tue, 30 Aug 2016 18:29:13 +0100
-Message-ID: <20160830172929.16948-11-paul.burton@imgtec.com>
+Subject: [PATCH v2 11/26] dt-bindings: Document mti,mips-cpc binding
+Date: Tue, 30 Aug 2016 18:29:14 +0100
+Message-ID: <20160830172929.16948-12-paul.burton@imgtec.com>
 In-Reply-To: <20160830172929.16948-1-paul.burton@imgtec.com>
 References: <20160830172929.16948-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -21,97 +21,35 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>, Matt Redfearn <matt.redfearn@imgtec.com>, "Maciej W. Rozycki" <macro@imgtec.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Paolo Bonzini <pbonzini@redhat.com>, Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Andrew Morton <akpm@linux-foundation.org>, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20160830172913.-S_0Iw0VjCw8WGVekTiYg6UvaylmBQMrLShea5hEcc8@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
+Message-ID: <20160830172914.pSfPb5i8hfxm7EB0lvagoTCGAU52elWZhHWEPI6Yjek@z>
 
-If a bus error occurs on a system with a MIPS Coherence Manager (CM)
-then the CM may hold useful diagnostic information. Printing this out
-has so far been left up to boards, with the requirement that they
-register a board_be_handler function & call mips_cm_error_decode() from
-there.
-
-In order to avoid boards other than Malta needing to duplicate this
-code, call mips_cm_error_decode() automatically if the board registers
-no board_be_handler, and remove the Malta implementation of that.
-
-This patch results in no functional change, but removes a further piece
-of platform-specific code.
+Document a binding for the MIPS Cluster Power Controller (CPC) which
+simply allows the device tree to specify where the CPC registers should
+be mapped.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
 
 Changes in v2: None
 
- arch/mips/kernel/traps.c          |  3 +++
- arch/mips/mti-malta/malta-int.c   | 15 ---------------
- arch/mips/mti-malta/malta-setup.c |  6 ------
- 3 files changed, 3 insertions(+), 21 deletions(-)
+ Documentation/devicetree/bindings/misc/mti,mips-cpc.txt | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/misc/mti,mips-cpc.txt
 
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 3de85be..e2c571d 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -48,6 +48,7 @@
- #include <asm/fpu.h>
- #include <asm/fpu_emulator.h>
- #include <asm/idle.h>
-+#include <asm/mips-cm.h>
- #include <asm/mips-r2-to-r6-emul.h>
- #include <asm/mipsregs.h>
- #include <asm/mipsmtregs.h>
-@@ -444,6 +445,8 @@ asmlinkage void do_be(struct pt_regs *regs)
- 
- 	if (board_be_handler)
- 		action = board_be_handler(regs, fixup != NULL);
-+	else
-+		mips_cm_error_report();
- 
- 	switch (action) {
- 	case MIPS_BE_DISCARD:
-diff --git a/arch/mips/mti-malta/malta-int.c b/arch/mips/mti-malta/malta-int.c
-index c6a6c7a..548130d 100644
---- a/arch/mips/mti-malta/malta-int.c
-+++ b/arch/mips/mti-malta/malta-int.c
-@@ -376,18 +376,3 @@ void __init arch_init_irq(void)
- 	setup_irq(i8259_irq, &i8259irq);
- 	setup_irq(corehi_irq, &corehi_irqaction);
- }
--
--void malta_be_init(void)
--{
--	/* Could change CM error mask register. */
--}
--
--int malta_be_handler(struct pt_regs *regs, int is_fixup)
--{
--	/* This duplicates the handling in do_be which seems wrong */
--	int retval = is_fixup ? MIPS_BE_FIXUP : MIPS_BE_FATAL;
--
--	mips_cm_error_report();
--
--	return retval;
--}
-diff --git a/arch/mips/mti-malta/malta-setup.c b/arch/mips/mti-malta/malta-setup.c
-index d7d151f..2f25930 100644
---- a/arch/mips/mti-malta/malta-setup.c
-+++ b/arch/mips/mti-malta/malta-setup.c
-@@ -39,9 +39,6 @@
- #include <linux/console.h>
- #endif
- 
--extern void malta_be_init(void);
--extern int malta_be_handler(struct pt_regs *regs, int is_fixup);
--
- static struct resource standard_io_resources[] = {
- 	{
- 		.name = "dma1",
-@@ -295,7 +292,4 @@ void __init plat_mem_setup(void)
- #if defined(CONFIG_VT) && defined(CONFIG_VGA_CONSOLE)
- 	screen_info_setup();
- #endif
--
--	board_be_init = malta_be_init;
--	board_be_handler = malta_be_handler;
- }
+diff --git a/Documentation/devicetree/bindings/misc/mti,mips-cpc.txt b/Documentation/devicetree/bindings/misc/mti,mips-cpc.txt
+new file mode 100644
+index 0000000..92eb08f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/misc/mti,mips-cpc.txt
+@@ -0,0 +1,8 @@
++Binding for MIPS Cluster Power Controller (CPC).
++
++This binding allows a system to specify where the CPC registers should be
++mapped using device tree.
++
++Required properties:
++compatible : Should be "mti,mips-cpc".
++regs: Should describe the address & size of the CPC register region.
 -- 
 2.9.3

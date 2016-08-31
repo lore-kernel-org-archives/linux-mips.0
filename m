@@ -1,15 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:3864 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:50366 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992257AbcHaKpIZmI3D (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 31 Aug 2016 12:45:08 +0200
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH 10/10] cpuidle: cpuidle-cps: Enable use with MIPSr6 CPUs.
-Date: Wed, 31 Aug 2016 11:44:39 +0100
-Message-ID: <1472640279-26593-11-git-send-email-matt.redfearn@imgtec.com>
-In-Reply-To: <1472640279-26593-1-git-send-email-matt.redfearn@imgtec.com>
+        with ESMTP id S23992036AbcHaNgodKA6f (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 31 Aug 2016 15:36:44 +0200
+Subject: Re: [PATCH 06/10] MIPS: pm-cps: Use MIPS standard lightweight
+ ordering barrier
 References: <1472640279-26593-1-git-send-email-matt.redfearn@imgtec.com>
+ <1472640279-26593-7-git-send-email-matt.redfearn@imgtec.com>
+ <20160831114847.GB10153@twins.programming.kicks-ass.net>
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Message-ID: <4c91d6c3-8141-594a-562c-96ea56776d2e@imgtec.com>
+Date: Wed, 31 Aug 2016 14:36:26 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20160831114847.GB10153@twins.programming.kicks-ass.net>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -20,46 +24,41 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <20160831104439.TTxD4X3aACk0jpzZSWx3QjrF_rxsF0Fr_VHc4NitFTU@z>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Adam Buchbinder <adam.buchbinder@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Masahiro Yamada <yamada.masahiro@socionext.com>, linux-kernel@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>, Markos Chandras <markos.chandras@imgtec.com>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20160831133626.vRliJqduuHcIwMaID_XlC48YPbH6W63CB_1V9P1Nl6Q@z>
 
-This patch enables the MIPS CPS driver for MIPSr6 CPUs.
 
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
-Reviewed-by: Paul Burton <paul.burton@imgtec.com>
 
----
+On 31/08/16 12:48, Peter Zijlstra wrote:
+> On Wed, Aug 31, 2016 at 11:44:35AM +0100, Matt Redfearn wrote:
+>> Since R2 of the MIPS architecture, SYNC(0x10) has been an optional but
+>> architecturally defined ordering barrier. If a CPU does not implement it,
+>> the arch specifies that it must fall back to SYNC(0).
+>>
+>> Define the barrier type and always use it in the pm-cps code rather than
+>> falling back to the heavyweight sync(0) such that we can benefit from
+>> the lighter weight sync.
+>>
+> Changelog does not explain what 0x10 is, nor why its sufficient for this
+> case.
 
- drivers/cpuidle/Kconfig.mips  | 2 +-
- drivers/cpuidle/cpuidle-cps.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Hi Peter,
 
-diff --git a/drivers/cpuidle/Kconfig.mips b/drivers/cpuidle/Kconfig.mips
-index 4102be01d06a..512ee37b374b 100644
---- a/drivers/cpuidle/Kconfig.mips
-+++ b/drivers/cpuidle/Kconfig.mips
-@@ -5,7 +5,7 @@ config MIPS_CPS_CPUIDLE
- 	bool "CPU Idle driver for MIPS CPS platforms"
- 	depends on CPU_IDLE && MIPS_CPS
- 	depends on SYS_SUPPORTS_MIPS_CPS
--	select ARCH_NEEDS_CPU_IDLE_COUPLED if MIPS_MT
-+	select ARCH_NEEDS_CPU_IDLE_COUPLED if MIPS_MT || CPU_MIPSR6
- 	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
- 	select MIPS_CPS_PM
- 	default y
-diff --git a/drivers/cpuidle/cpuidle-cps.c b/drivers/cpuidle/cpuidle-cps.c
-index 1adb6980b707..926ba9871c62 100644
---- a/drivers/cpuidle/cpuidle-cps.c
-+++ b/drivers/cpuidle/cpuidle-cps.c
-@@ -163,7 +163,7 @@ static int __init cps_cpuidle_init(void)
- 		core = cpu_data[cpu].core;
- 		device = &per_cpu(cpuidle_dev, cpu);
- 		device->cpu = cpu;
--#ifdef CONFIG_MIPS_MT
-+#ifdef CONFIG_ARCH_NEEDS_CPU_IDLE_COUPLED
- 		cpumask_copy(&device->coupled_cpus, &cpu_sibling_map[cpu]);
- #endif
- 
--- 
-2.7.4
+The code previously had 0x10 as a magic number, this patch just replaces 
+that with a #defined name. The value is documented in the MIPS64 
+instruction set manual, https://imgtec.com/?do-download=4302, table 6.5.
+
+This sync type has been standard since MIPSr2. That document also states 
+that "If an implementation does not use one of these non-zero values to 
+define a different synchronization behavior, then that non-zero value of 
+stype must act the same as stype zero completion barrier." As such, 
+stype_ordering can always be set to this sync type rather than setting 
+it only for certain CPUs.
+
+Thanks,
+Matt
+
+>
+> Changelog also fails to explain why you do this.
+> How do you expect anybody to review this?

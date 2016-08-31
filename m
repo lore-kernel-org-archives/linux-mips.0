@@ -1,22 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:12432 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:12325 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992002AbcHaPtlaprJE (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 31 Aug 2016 17:49:41 +0200
-Subject: Re: [PATCH 06/10] MIPS: pm-cps: Use MIPS standard lightweight
- ordering barrier
-References: <1472640279-26593-1-git-send-email-matt.redfearn@imgtec.com>
- <1472640279-26593-7-git-send-email-matt.redfearn@imgtec.com>
- <20160831114847.GB10153@twins.programming.kicks-ass.net>
- <4c91d6c3-8141-594a-562c-96ea56776d2e@imgtec.com>
- <20160831142821.GF10138@twins.programming.kicks-ass.net>
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <3ea993af-5b60-8ade-4d79-8f494ecb45a6@imgtec.com>
-Date: Wed, 31 Aug 2016 16:49:24 +0100
+        with ESMTP id S23992002AbcHaQhC7LWfq (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 31 Aug 2016 18:37:02 +0200
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Subject: [Patch v3 00/11] microblaze/MIPS: xilfpga: intc and peripheral
+Date: Wed, 31 Aug 2016 17:35:41 +0100
+Message-ID: <1472661352-11983-1-git-send-email-Zubair.Kakakhel@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20160831142821.GF10138@twins.programming.kicks-ass.net>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Zubair.Kakakhel@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,55 +18,65 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Adam Buchbinder <adam.buchbinder@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Masahiro Yamada <yamada.masahiro@socionext.com>, linux-kernel@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>, Markos Chandras <markos.chandras@imgtec.com>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20160831154924.WedU0xh4KK4VPy6_obQnJCk3CrhTtbz8F3IDzZrGUYQ@z>
+To: monstr@monstr.eu, ralf@linux-mips.org, tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com
+Cc: soren.brinkmann@xilinx.com, Zubair.Kakakhel@imgtec.com, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, michal.simek@xilinx.com, netdev@vger.kernel.org
+Message-ID: <20160831163541.fLmf1k8XfExVLgiZUDiPG7o3I8DRA1ODfWSXZZG_pCA@z>
 
+Hi,
 
+The MIPS based Xilfpga platform uses the axi interrupt controller
+daisy chained to the MIPS microAptiv cpu interrupt controller.
+This patch series moves the axi interrupt controller driver out
+of arch/microblaze to drivers/irqchip and then cleans it up a bit.
+This makes it usable by MIPS. The rest of the series basically
+enables drivers and adds dt nodes.
 
-On 31/08/16 15:28, Peter Zijlstra wrote:
-> On Wed, Aug 31, 2016 at 02:36:26PM +0100, Matt Redfearn wrote:
->> The code previously had 0x10 as a magic number, this patch just replaces
->> that with a #defined name. The value is documented in the MIPS64 instruction
->> set manual, https://imgtec.com/?do-download=4302, table 6.5.
->>
->> This sync type has been standard since MIPSr2. That document also states
->> that "If an implementation does not use one of these non-zero values to
->> define a different synchronization behavior, then that non-zero value of
->> stype must act the same as stype zero completion barrier." As such,
->> stype_ordering can always be set to this sync type rather than setting it
->> only for certain CPUs.
+Would make sense for this to go via the MIPS tree.
+Hence, ACKs from microblaze. irqchip and net welcome.
 
-Hi Peter,
+Compile tested on microblaze-el only!
+Based on v4.8-rc4
 
-> Right. We all had a bunch of fun trying to decode that manual a while
-> back, and IIRC were left with a bunch of questions on what it all meant
-> in 3+ CPU scenarios.
+Regards,
+ZubairLK
 
-Yes, I remember that fun....
+V2 -> V3
+Cleanup the interrupt controller driver a bit based on feedback
+Rebase to v4.8-rc4
 
->
-> In anycase, not sure why I was Cc'ed to this patch, but in general I
+V1 -> V2
+Resubmitting without truncating the diff output for file moves
+Removed accidental local mac address entry
+Individual logs have more detail
 
-Patman decided to CC you as you've touched arch/mips/include/barrier.h I 
-suppose.
+Zubair Lutfullah Kakakhel (11):
+  microblaze: irqchip: Move intc driver to irqchip
+  irqchip: axi-intc: Clean up irqdomain argument and read/write
+  irqchip: axi-intc: Add support for parent intc
+  MIPS: xilfpga: Use irqchip_init instead of the legacy way
+  MIPS: xilfpga: Use Xilinx AXI Interrupt Controller
+  MIPS: xilfpga: Update DT node and specify uart irq
+  MIPS: Xilfpga: Add DT node for AXI I2C
+  net: ethernet: xilinx: Generate random mac if none found
+  net: ethernet: xilinx: Enable emaclite for MIPS
+  MIPS: xilfpga: Add DT node for AXI emaclite
+  MIPS: xilfpga: Update defconfig
 
-> have low confidence in barrier patches that lack lots of detail. And the
-> code in question has woefully inadequate comments:
->
->                  /* Ordering barrier */
->                  uasm_i_sync(&p, stype_ordering);
->
-> Order what against what and why? Is my first question. A comment really
-> should explain.
+ arch/microblaze/Kconfig                       |   1 +
+ arch/microblaze/kernel/Makefile               |   2 +-
+ arch/microblaze/kernel/intc.c                 | 196 ---------------------
+ arch/mips/Kconfig                             |   1 +
+ arch/mips/boot/dts/xilfpga/nexys4ddr.dts      |  63 +++++++
+ arch/mips/configs/xilfpga_defconfig           |  37 +++-
+ arch/mips/xilfpga/intc.c                      |   7 +-
+ drivers/irqchip/Kconfig                       |   4 +
+ drivers/irqchip/Makefile                      |   1 +
+ drivers/irqchip/irq-axi-intc.c                | 241 ++++++++++++++++++++++++++
+ drivers/net/ethernet/xilinx/Kconfig           |   4 +-
+ drivers/net/ethernet/xilinx/xilinx_emaclite.c |   6 +-
+ 12 files changed, 356 insertions(+), 207 deletions(-)
+ delete mode 100644 arch/microblaze/kernel/intc.c
+ create mode 100644 drivers/irqchip/irq-axi-intc.c
 
-Fair enough - we'll put something together to improve the comments.
-
->
-> In any case, you've removed the only (runtime) assignment to the
-> variable, it can become 'const'.
-
-True enough.
-
-Thanks,
-Matt
+-- 
+1.9.1

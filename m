@@ -1,17 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:53695 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:22228 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23990519AbcIAKlVhRrFD (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 1 Sep 2016 12:41:21 +0200
-Subject: Re: [Patch v3 02/11] irqchip: axi-intc: Clean up irqdomain argument
- and read/write
+        with ESMTP id S23990519AbcIALCFPSHMD (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 1 Sep 2016 13:02:05 +0200
+Subject: Re: [Patch v3 03/11] irqchip: axi-intc: Add support for parent intc
 References: <1472661352-11983-1-git-send-email-Zubair.Kakakhel@imgtec.com>
- <1472661352-11983-3-git-send-email-Zubair.Kakakhel@imgtec.com>
- <57C70B43.6010107@arm.com>
+ <1472661352-11983-4-git-send-email-Zubair.Kakakhel@imgtec.com>
+ <57C70C71.3060603@arm.com>
 From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Message-ID: <97c89803-915f-5f3b-ceaf-b7697d5f6bca@imgtec.com>
-Date: Thu, 1 Sep 2016 11:41:03 +0100
+Message-ID: <81b5f75c-51b5-0482-50d1-f51c5687edbc@imgtec.com>
+Date: Thu, 1 Sep 2016 12:01:47 +0100
 MIME-Version: 1.0
-In-Reply-To: <57C70B43.6010107@arm.com>
+In-Reply-To: <57C70C71.3060603@arm.com>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Zubair.Kakakhel@imgtec.com>
@@ -26,128 +25,141 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Marc Zyngier <marc.zyngier@arm.com>, monstr@monstr.eu, ralf@linux-mips.org, tglx@linutronix.de, jason@lakedaemon.net
 Cc: soren.brinkmann@xilinx.com, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, michal.simek@xilinx.com, netdev@vger.kernel.org
-Message-ID: <20160901104103.n_Rtj5yMJrRfdqtJh7tuuSZZCQ5ZflWpqk4AfRkpNgo@z>
+Message-ID: <20160901110147.zGowoEYdQmQ037-yMTSrwz-bZM8D8vl2QAW7BLDx0_k@z>
 
 Hi,
 
-Thank you for the reviews.
+Thanks for the review
+Comments inline.
 
-Some comments below
-
-On 08/31/2016 05:52 PM, Marc Zyngier wrote:
+On 08/31/2016 05:57 PM, Marc Zyngier wrote:
 > On 31/08/16 17:35, Zubair Lutfullah Kakakhel wrote:
->> The drivers read/write function handling is a bit quirky.
->> And the irqmask is passed directly to the handler.
+>> The MIPS based xilfpga platform has the following IRQ structure
 >>
->> Add a new irqchip struct to pass to the handler and
->> cleanup read/write handling.
+>> Peripherals --> xilinx_intcontroller -> mips_cpu_int controller
+>>
+>> Add support for the driver to chain the irq handler
 >>
 >> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
 >>
 >> ---
 >> V2 -> V3
->> New patch. Cleans up driver structure
+>> Reused existing parent node instead of finding again.
+>> Cleanup up handler based on review
+>>
+>> V1 -> V2
+>>
+>> No change
 >> ---
-...
+>>  drivers/irqchip/irq-axi-intc.c | 24 +++++++++++++++++++++++-
+>>  1 file changed, 23 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/irqchip/irq-axi-intc.c b/drivers/irqchip/irq-axi-intc.c
+>> index cb69241..30bb084 100644
+>> --- a/drivers/irqchip/irq-axi-intc.c
+>> +++ b/drivers/irqchip/irq-axi-intc.c
+>> @@ -15,6 +15,7 @@
+>>  #include <linux/of_address.h>
+>>  #include <linux/io.h>
+>>  #include <linux/bug.h>
+>> +#include <linux/of_irq.h>
+>>
+>>  /* No one else should require these constants, so define them locally here. */
+>>  #define ISR 0x00			/* Interrupt Status Register */
+>> @@ -154,11 +155,23 @@ static const struct irq_domain_ops xintc_irq_domain_ops = {
+>>  	.map = xintc_map,
+>>  };
+>>
+>> +static void xil_intc_irq_handler(struct irq_desc *desc)
+>> +{
+>> +	u32 pending;
+>> +
+>> +	do {
+>> +		pending = get_irq();
+>> +		if (pending == -1U)
+>> +			break;
+>> +		generic_handle_irq(pending);
+>> +	} while (true);
+>> +}
+>> +
 >>  static int __init xilinx_intc_of_init(struct device_node *intc,
 >>  					     struct device_node *parent)
 >>  {
->> -	u32 nr_irq, intr_mask;
->> +	u32 nr_irq;
->>  	int ret;
->> +	struct xintc_irq_chip *irqc;
->> +
->> +	irqc = kzalloc(sizeof(*irqc), GFP_KERNEL);
->
-> Now that you dynamically allocate things, how are you handling failures?
->
->> +	if (!irqc)
->> +		return -ENOMEM;
->> +
->> +	xintc_irqc = irqc;
+>>  	u32 nr_irq;
+>> -	int ret;
+>> +	int ret, irq;
+>>  	struct xintc_irq_chip *irqc;
 >>
->> -	intc_baseaddr = of_iomap(intc, 0);
->> -	BUG_ON(!intc_baseaddr);
->> +	irqc->base = of_iomap(intc, 0);
->> +	BUG_ON(!irqc->base);
->>
->>  	ret = of_property_read_u32(intc, "xlnx,num-intr-inputs", &nr_irq);
->>  	if (ret < 0) {
->> @@ -150,43 +176,40 @@ static int __init xilinx_intc_of_init(struct device_node *intc,
->>  		return ret;
->
-> All the return paths should now take care of releasing the allocated
-> resources.
->
-
-Thanks for pointing it out. I'll fix it in the next series.
-
->>  	}
->>
->> -	ret = of_property_read_u32(intc, "xlnx,kind-of-intr", &intr_mask);
->> +	ret = of_property_read_u32(intc, "xlnx,kind-of-intr", &irqc->intr_mask);
->>  	if (ret < 0) {
->>  		pr_err("%s: unable to read xlnx,kind-of-intr\n", __func__);
->>  		return ret;
->>  	}
->>
->> -	if (intr_mask >> nr_irq)
->> +	if (irqc->intr_mask >> nr_irq)
->>  		pr_warn("%s: mismatch in kind-of-intr param\n", __func__);
->>
->>  	pr_info("%s: num_irq=%d, edge=0x%x\n",
->> -		intc->full_name, nr_irq, intr_mask);
->> +		intc->full_name, nr_irq, irqc->intr_mask);
->>
->> -	write_fn = intc_write32;
->> -	read_fn = intc_read32;
->> +	irqc->read = intc_read32;
->> +	irqc->write = intc_write32;
->>
->>  	/*
->>  	 * Disable all external interrupts until they are
->>  	 * explicity requested.
->>  	 */
->> -	write_fn(0, intc_baseaddr + IER);
->> +	xintc_write(irqc, IER, 0);
->>
->>  	/* Acknowledge any pending interrupts just in case. */
->> -	write_fn(0xffffffff, intc_baseaddr + IAR);
->> +	xintc_write(irqc, IAR, 0xffffffff);
->>
->>  	/* Turn on the Master Enable. */
->> -	write_fn(MER_HIE | MER_ME, intc_baseaddr + MER);
->> -	if (!(read_fn(intc_baseaddr + MER) & (MER_HIE | MER_ME))) {
->> -		write_fn = intc_write32_be;
->> -		read_fn = intc_read32_be;
->> -		write_fn(MER_HIE | MER_ME, intc_baseaddr + MER);
->> +	xintc_write(irqc, MER, MER_HIE | MER_ME);
->> +	if (!(xintc_read(irqc, MER) & (MER_HIE | MER_ME))) {
->> +		irqc->read = intc_read32_be;
->> +		irqc->write = intc_write32_be;
->> +		xintc_write(irqc, MER, MER_HIE | MER_ME);
->>  	}
->>
->> -	/* Yeah, okay, casting the intr_mask to a void* is butt-ugly, but I'm
->> -	 * lazy and Michal can clean it up to something nicer when he tests
->> -	 * and commits this patch.  ~~gcl */
+>>  	irqc = kzalloc(sizeof(*irqc), GFP_KERNEL);
+>> @@ -211,6 +224,15 @@ static int __init xilinx_intc_of_init(struct device_node *intc,
 >>  	root_domain = irq_domain_add_linear(intc, nr_irq, &xintc_irq_domain_ops,
->> -							(void *)intr_mask);
->> +					    irqc);
+>>  					    irqc);
 >>
+>> +	if (parent) {
+>> +		irq = irq_of_parse_and_map(intc, 0);
+>> +		if (irq)
+>> +			irq_set_chained_handler_and_data(irq,
+>> +							 xil_intc_irq_handler,
+>> +							 root_domain);
+>> +
+>> +	}
+>> +
 >>  	irq_set_default_host(root_domain);
 >>
+>>  	return 0;
 >>
 >
-> You haven't addressed the comment on get_irq() which could be static (at
-> least from solely looking at this file).
+> This doesn't seem right. You've now overridden the xintc_irqc pointer,
+> so I don't know how you can still process interrupts once you've
+> discovered a secondary interrupt controller. You've also allocated a
+> second root_domain, changed the default domain to point to the secondary
+> controller...
+>
+> Have you tested this code? Or am I missing something obvious?
 
-Apologies. In a rush to get a series out before heading home, it slipped my mind.
-It is needed as it is used in arch/microblaze/kernel/irq.c
+Yes it works. I'll try to explain the platform setup a bit.
+Perhaps that will make it clear about what I'm trying to do.
 
-But I'll add a patch to rename it correctly. get_irq is far too generic outside arch code.
+UART IRQ -> AXI INTC -> MIPS internal INTC -> CPU
 
-Thanks,
+MIPS Internal Interrupt controller in drivers/irqchip/irq-mips-cpu.c
+uses irq_domain_add_legacy while AXI Intc uses irq_domain_add_linear
+
+My aim was to set up a chained irq handler with least disturbance.
+
+Hence the above code.
+
+Your concerns are valid. The code is working because read/writes rely
+on the static xintc_irqc in the file.
+And the second root domain is also not breaking the platform because
+the irq-mips-cpu.c uses irq_domain_add_legacy and doesn't use
+irq_set_default_host.
+
+# cat /proc/interrupts
+            CPU0
+   7:      43493      MIPS   7  timer
+   8:         83  Xilinx INTC   1-level     eth0
+   9:        417  Xilinx INTC   0-level     serial
+  10:         15  Xilinx INTC   4-level     10a00000.i2c
+ERR:          0
+#
+
+Given the above concerns. How about doing things this way?
+
+	if (parent) {
+		irq = irq_of_parse_and_map(intc, 0);
+		if (irq)
+			irq_set_chained_handler_and_data(irq,
+							 xil_intc_irq_handler,
+							 irqc);
+
+	} else
+		irq_set_default_host(root_domain);
+
+default host is only set if no parent exists.
+And the irqc pointer is passed as the data.
+
+Thanks
 ZubairLK
 
 >

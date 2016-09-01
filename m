@@ -1,15 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:39022 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:53695 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992285AbcHaQhMQjmJq (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 31 Aug 2016 18:37:12 +0200
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [Patch v3 11/11] MIPS: xilfpga: Update defconfig
-Date: Wed, 31 Aug 2016 17:35:52 +0100
-Message-ID: <1472661352-11983-12-git-send-email-Zubair.Kakakhel@imgtec.com>
-In-Reply-To: <1472661352-11983-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+        with ESMTP id S23990519AbcIAKlVhRrFD (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 1 Sep 2016 12:41:21 +0200
+Subject: Re: [Patch v3 02/11] irqchip: axi-intc: Clean up irqdomain argument
+ and read/write
 References: <1472661352-11983-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+ <1472661352-11983-3-git-send-email-Zubair.Kakakhel@imgtec.com>
+ <57C70B43.6010107@arm.com>
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Message-ID: <97c89803-915f-5f3b-ceaf-b7697d5f6bca@imgtec.com>
+Date: Thu, 1 Sep 2016 11:41:03 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <57C70B43.6010107@arm.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-Path: <Zubair.Kakakhel@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -20,92 +24,134 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: monstr@monstr.eu, ralf@linux-mips.org, tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com
-Cc: soren.brinkmann@xilinx.com, Zubair.Kakakhel@imgtec.com, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, michal.simek@xilinx.com, netdev@vger.kernel.org
-Message-ID: <20160831163552.eP415X58gy07ocmoUEKhVwEu3ZfwK3Rsi9FikwpGgGc@z>
+To: Marc Zyngier <marc.zyngier@arm.com>, monstr@monstr.eu, ralf@linux-mips.org, tglx@linutronix.de, jason@lakedaemon.net
+Cc: soren.brinkmann@xilinx.com, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, michal.simek@xilinx.com, netdev@vger.kernel.org
+Message-ID: <20160901104103.n_Rtj5yMJrRfdqtJh7tuuSZZCQ5ZflWpqk4AfRkpNgo@z>
 
-Update defconfig to enable emaclite, i2c, temp sensor found on the
-xilfpga platform
+Hi,
 
-Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Thank you for the reviews.
 
----
-V2 -> V3
-No change
+Some comments below
 
-V1 -> V2
-No change
----
- arch/mips/configs/xilfpga_defconfig | 37 ++++++++++++++++++++++++++++++++++++-
- 1 file changed, 36 insertions(+), 1 deletion(-)
+On 08/31/2016 05:52 PM, Marc Zyngier wrote:
+> On 31/08/16 17:35, Zubair Lutfullah Kakakhel wrote:
+>> The drivers read/write function handling is a bit quirky.
+>> And the irqmask is passed directly to the handler.
+>>
+>> Add a new irqchip struct to pass to the handler and
+>> cleanup read/write handling.
+>>
+>> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+>>
+>> ---
+>> V2 -> V3
+>> New patch. Cleans up driver structure
+>> ---
+...
+>>  static int __init xilinx_intc_of_init(struct device_node *intc,
+>>  					     struct device_node *parent)
+>>  {
+>> -	u32 nr_irq, intr_mask;
+>> +	u32 nr_irq;
+>>  	int ret;
+>> +	struct xintc_irq_chip *irqc;
+>> +
+>> +	irqc = kzalloc(sizeof(*irqc), GFP_KERNEL);
+>
+> Now that you dynamically allocate things, how are you handling failures?
+>
+>> +	if (!irqc)
+>> +		return -ENOMEM;
+>> +
+>> +	xintc_irqc = irqc;
+>>
+>> -	intc_baseaddr = of_iomap(intc, 0);
+>> -	BUG_ON(!intc_baseaddr);
+>> +	irqc->base = of_iomap(intc, 0);
+>> +	BUG_ON(!irqc->base);
+>>
+>>  	ret = of_property_read_u32(intc, "xlnx,num-intr-inputs", &nr_irq);
+>>  	if (ret < 0) {
+>> @@ -150,43 +176,40 @@ static int __init xilinx_intc_of_init(struct device_node *intc,
+>>  		return ret;
+>
+> All the return paths should now take care of releasing the allocated
+> resources.
+>
 
-diff --git a/arch/mips/configs/xilfpga_defconfig b/arch/mips/configs/xilfpga_defconfig
-index ed1dce3..829c637 100644
---- a/arch/mips/configs/xilfpga_defconfig
-+++ b/arch/mips/configs/xilfpga_defconfig
-@@ -7,6 +7,12 @@ CONFIG_EMBEDDED=y
- CONFIG_SLAB=y
- # CONFIG_BLOCK is not set
- # CONFIG_SUSPEND is not set
-+CONFIG_NET=y
-+CONFIG_PACKET=y
-+CONFIG_UNIX=y
-+CONFIG_INET=y
-+# CONFIG_IPV6 is not set
-+# CONFIG_WIRELESS is not set
- # CONFIG_UEVENT_HELPER is not set
- CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
-@@ -14,6 +20,30 @@ CONFIG_DEVTMPFS_MOUNT=y
- # CONFIG_PREVENT_FIRMWARE_BUILD is not set
- # CONFIG_FW_LOADER is not set
- # CONFIG_ALLOW_DEV_COREDUMP is not set
-+CONFIG_NETDEVICES=y
-+# CONFIG_NET_CORE is not set
-+# CONFIG_NET_VENDOR_ARC is not set
-+# CONFIG_NET_CADENCE is not set
-+# CONFIG_NET_VENDOR_BROADCOM is not set
-+# CONFIG_NET_VENDOR_EZCHIP is not set
-+# CONFIG_NET_VENDOR_INTEL is not set
-+# CONFIG_NET_VENDOR_MARVELL is not set
-+# CONFIG_NET_VENDOR_MICREL is not set
-+# CONFIG_NET_VENDOR_NATSEMI is not set
-+# CONFIG_NET_VENDOR_NETRONOME is not set
-+# CONFIG_NET_VENDOR_QUALCOMM is not set
-+# CONFIG_NET_VENDOR_RENESAS is not set
-+# CONFIG_NET_VENDOR_ROCKER is not set
-+# CONFIG_NET_VENDOR_SAMSUNG is not set
-+# CONFIG_NET_VENDOR_SEEQ is not set
-+# CONFIG_NET_VENDOR_SMSC is not set
-+# CONFIG_NET_VENDOR_STMICRO is not set
-+# CONFIG_NET_VENDOR_SYNOPSYS is not set
-+# CONFIG_NET_VENDOR_VIA is not set
-+# CONFIG_NET_VENDOR_WIZNET is not set
-+CONFIG_XILINX_EMACLITE=y
-+CONFIG_SMSC_PHY=y
-+# CONFIG_WLAN is not set
- # CONFIG_INPUT_MOUSEDEV is not set
- # CONFIG_INPUT_KEYBOARD is not set
- # CONFIG_INPUT_MOUSE is not set
-@@ -25,13 +55,18 @@ CONFIG_SERIAL_8250=y
- CONFIG_SERIAL_8250_CONSOLE=y
- CONFIG_SERIAL_OF_PLATFORM=y
- # CONFIG_HW_RANDOM is not set
-+CONFIG_I2C=y
-+CONFIG_I2C_CHARDEV=y
-+# CONFIG_I2C_HELPER_AUTO is not set
-+CONFIG_I2C_XILINX=y
- CONFIG_GPIO_SYSFS=y
- CONFIG_GPIO_XILINX=y
--# CONFIG_HWMON is not set
-+CONFIG_SENSORS_ADT7410=y
- # CONFIG_USB_SUPPORT is not set
- # CONFIG_MIPS_PLATFORM_DEVICES is not set
- # CONFIG_IOMMU_SUPPORT is not set
- # CONFIG_PROC_PAGE_MONITOR is not set
-+CONFIG_TMPFS=y
- # CONFIG_MISC_FILESYSTEMS is not set
- CONFIG_PANIC_ON_OOPS=y
- # CONFIG_SCHED_DEBUG is not set
--- 
-1.9.1
+Thanks for pointing it out. I'll fix it in the next series.
+
+>>  	}
+>>
+>> -	ret = of_property_read_u32(intc, "xlnx,kind-of-intr", &intr_mask);
+>> +	ret = of_property_read_u32(intc, "xlnx,kind-of-intr", &irqc->intr_mask);
+>>  	if (ret < 0) {
+>>  		pr_err("%s: unable to read xlnx,kind-of-intr\n", __func__);
+>>  		return ret;
+>>  	}
+>>
+>> -	if (intr_mask >> nr_irq)
+>> +	if (irqc->intr_mask >> nr_irq)
+>>  		pr_warn("%s: mismatch in kind-of-intr param\n", __func__);
+>>
+>>  	pr_info("%s: num_irq=%d, edge=0x%x\n",
+>> -		intc->full_name, nr_irq, intr_mask);
+>> +		intc->full_name, nr_irq, irqc->intr_mask);
+>>
+>> -	write_fn = intc_write32;
+>> -	read_fn = intc_read32;
+>> +	irqc->read = intc_read32;
+>> +	irqc->write = intc_write32;
+>>
+>>  	/*
+>>  	 * Disable all external interrupts until they are
+>>  	 * explicity requested.
+>>  	 */
+>> -	write_fn(0, intc_baseaddr + IER);
+>> +	xintc_write(irqc, IER, 0);
+>>
+>>  	/* Acknowledge any pending interrupts just in case. */
+>> -	write_fn(0xffffffff, intc_baseaddr + IAR);
+>> +	xintc_write(irqc, IAR, 0xffffffff);
+>>
+>>  	/* Turn on the Master Enable. */
+>> -	write_fn(MER_HIE | MER_ME, intc_baseaddr + MER);
+>> -	if (!(read_fn(intc_baseaddr + MER) & (MER_HIE | MER_ME))) {
+>> -		write_fn = intc_write32_be;
+>> -		read_fn = intc_read32_be;
+>> -		write_fn(MER_HIE | MER_ME, intc_baseaddr + MER);
+>> +	xintc_write(irqc, MER, MER_HIE | MER_ME);
+>> +	if (!(xintc_read(irqc, MER) & (MER_HIE | MER_ME))) {
+>> +		irqc->read = intc_read32_be;
+>> +		irqc->write = intc_write32_be;
+>> +		xintc_write(irqc, MER, MER_HIE | MER_ME);
+>>  	}
+>>
+>> -	/* Yeah, okay, casting the intr_mask to a void* is butt-ugly, but I'm
+>> -	 * lazy and Michal can clean it up to something nicer when he tests
+>> -	 * and commits this patch.  ~~gcl */
+>>  	root_domain = irq_domain_add_linear(intc, nr_irq, &xintc_irq_domain_ops,
+>> -							(void *)intr_mask);
+>> +					    irqc);
+>>
+>>  	irq_set_default_host(root_domain);
+>>
+>>
+>
+> You haven't addressed the comment on get_irq() which could be static (at
+> least from solely looking at this file).
+
+Apologies. In a rush to get a series out before heading home, it slipped my mind.
+It is needed as it is used in arch/microblaze/kernel/irq.c
+
+But I'll add a patch to rename it correctly. get_irq is far too generic outside arch code.
+
+Thanks,
+ZubairLK
+
+>
+> Thanks,
+>
+> 	M.
+>

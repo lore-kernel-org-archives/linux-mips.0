@@ -1,16 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:22207 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992338AbcIAQv4690y2 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 1 Sep 2016 18:51:56 +0200
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [Patch v4 12/12] MIPS: xilfpga: Update defconfig
-Date: Thu, 1 Sep 2016 17:51:05 +0100
-Message-ID: <1472748665-47774-13-git-send-email-Zubair.Kakakhel@imgtec.com>
-In-Reply-To: <1472748665-47774-1-git-send-email-Zubair.Kakakhel@imgtec.com>
-References: <1472748665-47774-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+Received: from mail-sn1nam02on0055.outbound.protection.outlook.com ([104.47.36.55]:5024
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23992307AbcIAXAqOdHbb (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 2 Sep 2016 01:00:46 +0200
+Message-ID: <57C8B313.6030206@caviumnetworks.com>
+Date: Thu, 1 Sep 2016 16:00:35 -0700
+From: David Daney <ddaney@caviumnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Zubair.Kakakhel@imgtec.com>
+Subject: Re: [PATCH 5/6] MIPS: OCTEON: delete legacy code for PHY access
+References: <20160901204400.16562-1-aaro.koskinen@iki.fi> <20160901204400.16562-6-aaro.koskinen@iki.fi>
+In-Reply-To: <20160901204400.16562-6-aaro.koskinen@iki.fi>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,95 +22,29 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: monstr@monstr.eu, ralf@linux-mips.org, tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com
-Cc: soren.brinkmann@xilinx.com, Zubair.Kakakhel@imgtec.com, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, michal.simek@xilinx.com, netdev@vger.kernel.org
-Message-ID: <20160901165105.jd8MVSxkqzlHwXpoGgNBF7pCKfrwtjshQ0q__MOwPng@z>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20160901230035.fAhosjl-M2HrCL5ahV5Y6ftzjAJBsHxRDeoFLj0Imqs@z>
 
-Update defconfig to enable emaclite, i2c, temp sensor found on the
-xilfpga platform
+On 09/01/2016 01:43 PM, Aaro Koskinen wrote:
+> PHY access through the board helper should be impossible with the
+> current drivers, so delete this code and add BUG_ON().
+>
+> Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+> ---
+>   .../cavium-octeon/executive/cvmx-helper-board.c    | 110 +--------------------
+>   1 file changed, 5 insertions(+), 105 deletions(-)
+>
+> diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper-board.c b/arch/mips/cavium-octeon/executive/cvmx-helper-board.c
+> index 5572e39..8d75242 100644
+> --- a/arch/mips/cavium-octeon/executive/cvmx-helper-board.c
+> +++ b/arch/mips/cavium-octeon/executive/cvmx-helper-board.c
+[...]
+> +	BUG_ON(cvmx_helper_board_get_mii_address(ipd_port) != -1);
+>
 
-Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Can we do WARN_ON instead?
 
----
-V3 -> V4
-No change
+No need to crash the kernel for this I think.
 
-V2 -> V3
-No change
-
-V1 -> V2
-No change
----
- arch/mips/configs/xilfpga_defconfig | 37 ++++++++++++++++++++++++++++++++++++-
- 1 file changed, 36 insertions(+), 1 deletion(-)
-
-diff --git a/arch/mips/configs/xilfpga_defconfig b/arch/mips/configs/xilfpga_defconfig
-index ed1dce3..829c637 100644
---- a/arch/mips/configs/xilfpga_defconfig
-+++ b/arch/mips/configs/xilfpga_defconfig
-@@ -7,6 +7,12 @@ CONFIG_EMBEDDED=y
- CONFIG_SLAB=y
- # CONFIG_BLOCK is not set
- # CONFIG_SUSPEND is not set
-+CONFIG_NET=y
-+CONFIG_PACKET=y
-+CONFIG_UNIX=y
-+CONFIG_INET=y
-+# CONFIG_IPV6 is not set
-+# CONFIG_WIRELESS is not set
- # CONFIG_UEVENT_HELPER is not set
- CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
-@@ -14,6 +20,30 @@ CONFIG_DEVTMPFS_MOUNT=y
- # CONFIG_PREVENT_FIRMWARE_BUILD is not set
- # CONFIG_FW_LOADER is not set
- # CONFIG_ALLOW_DEV_COREDUMP is not set
-+CONFIG_NETDEVICES=y
-+# CONFIG_NET_CORE is not set
-+# CONFIG_NET_VENDOR_ARC is not set
-+# CONFIG_NET_CADENCE is not set
-+# CONFIG_NET_VENDOR_BROADCOM is not set
-+# CONFIG_NET_VENDOR_EZCHIP is not set
-+# CONFIG_NET_VENDOR_INTEL is not set
-+# CONFIG_NET_VENDOR_MARVELL is not set
-+# CONFIG_NET_VENDOR_MICREL is not set
-+# CONFIG_NET_VENDOR_NATSEMI is not set
-+# CONFIG_NET_VENDOR_NETRONOME is not set
-+# CONFIG_NET_VENDOR_QUALCOMM is not set
-+# CONFIG_NET_VENDOR_RENESAS is not set
-+# CONFIG_NET_VENDOR_ROCKER is not set
-+# CONFIG_NET_VENDOR_SAMSUNG is not set
-+# CONFIG_NET_VENDOR_SEEQ is not set
-+# CONFIG_NET_VENDOR_SMSC is not set
-+# CONFIG_NET_VENDOR_STMICRO is not set
-+# CONFIG_NET_VENDOR_SYNOPSYS is not set
-+# CONFIG_NET_VENDOR_VIA is not set
-+# CONFIG_NET_VENDOR_WIZNET is not set
-+CONFIG_XILINX_EMACLITE=y
-+CONFIG_SMSC_PHY=y
-+# CONFIG_WLAN is not set
- # CONFIG_INPUT_MOUSEDEV is not set
- # CONFIG_INPUT_KEYBOARD is not set
- # CONFIG_INPUT_MOUSE is not set
-@@ -25,13 +55,18 @@ CONFIG_SERIAL_8250=y
- CONFIG_SERIAL_8250_CONSOLE=y
- CONFIG_SERIAL_OF_PLATFORM=y
- # CONFIG_HW_RANDOM is not set
-+CONFIG_I2C=y
-+CONFIG_I2C_CHARDEV=y
-+# CONFIG_I2C_HELPER_AUTO is not set
-+CONFIG_I2C_XILINX=y
- CONFIG_GPIO_SYSFS=y
- CONFIG_GPIO_XILINX=y
--# CONFIG_HWMON is not set
-+CONFIG_SENSORS_ADT7410=y
- # CONFIG_USB_SUPPORT is not set
- # CONFIG_MIPS_PLATFORM_DEVICES is not set
- # CONFIG_IOMMU_SUPPORT is not set
- # CONFIG_PROC_PAGE_MONITOR is not set
-+CONFIG_TMPFS=y
- # CONFIG_MISC_FILESYSTEMS is not set
- CONFIG_PANIC_ON_OOPS=y
- # CONFIG_SCHED_DEBUG is not set
--- 
-1.9.1
+David Daney

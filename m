@@ -1,15 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:3320 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:34479 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23990522AbcIBMrguhr7Y (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 2 Sep 2016 14:47:36 +0200
-Subject: Re: [PATCH v2 3/4] hw_random: jz4780-rng: Add RNG node to jz4780.dtsi
-References: <1472321697-3094-1-git-send-email-prasannatsmkumar@gmail.com>
- <1472321697-3094-4-git-send-email-prasannatsmkumar@gmail.com>
+        with ESMTP id S23990522AbcIBNdwBNdC4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 2 Sep 2016 15:33:52 +0200
+Subject: Re: [PATCH 24/26] dt-bindings: Document img,boston-clock binding
+References: <20160826153725.11629-1-paul.burton@imgtec.com>
+ <20160826153725.11629-25-paul.burton@imgtec.com>
+ <20160826174446.GX19826@codeaurora.org>
+ <f0633969-1df4-64c9-a003-8745ad331bc8@imgtec.com>
+ <20160902125433.GA4066@rob-hp-laptop>
 From: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <4a7fb1cb-e0d4-31b7-7016-35adb63a659d@imgtec.com>
-Date: Fri, 2 Sep 2016 13:47:18 +0100
+Message-ID: <4646ff43-93bf-57d7-d01e-aa6132ba9fb0@imgtec.com>
+Date: Fri, 2 Sep 2016 14:33:34 +0100
 MIME-Version: 1.0
-In-Reply-To: <1472321697-3094-4-git-send-email-prasannatsmkumar@gmail.com>
+In-Reply-To: <20160902125433.GA4066@rob-hp-laptop>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 Return-Path: <Paul.Burton@imgtec.com>
@@ -22,58 +25,90 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Cc: mpm@selenic.com, herbert@gondor.apana.org.au, robh+dt@kernel.org, mark.rutland@arm.com, ralf@linux-mips.org, gregkh@linuxfoundation.org, boris.brezillon@free-electrons.com, harvey.hunt@imgtec.com, prarit@redhat.com, f.fainelli@gmail.com, joshua.henderson@microchip.com, narmstrong@baylibre.com, linus.walleij@linaro.org, linux-crypto@vger.kernel.org, devicetree@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20160902124718.HQxc0MTVK_qwIsv5pyEbY9ngYoyUd1Sb2PI7aWHj6dU@z>
+To: Rob Herring <robh@kernel.org>
+Cc: Stephen Boyd <sboyd@codeaurora.org>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, devicetree@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>, linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, linux-clk@vger.kernel.org
+Message-ID: <20160902133334.H43HG43rJF69Ef-MxMxsgU6iobetRPn9a_sfHQn5bbc@z>
 
-
-
-On 27/08/16 19:14, PrasannaKumar Muralidharan wrote:
-> This patch adds RNG node to jz4780.dtsi.
+On 02/09/16 13:54, Rob Herring wrote:
+> On Tue, Aug 30, 2016 at 04:53:01PM +0100, Paul Burton wrote:
+>> On 26/08/16 18:44, Stephen Boyd wrote:
+>>> On 08/26, Paul Burton wrote:
+>>>> diff --git a/Documentation/devicetree/bindings/clock/img,boston-clock.txt b/Documentation/devicetree/bindings/clock/img,boston-clock.txt
+>>>> new file mode 100644
+>>>> index 0000000..c01ea60
+>>>> --- /dev/null
+>>>> +++ b/Documentation/devicetree/bindings/clock/img,boston-clock.txt
+>>>> @@ -0,0 +1,27 @@
+>>>> +Binding for Imagination Technologies MIPS Boston clock sources.
+>>>> +
+>>>> +This binding uses the common clock binding[1].
+>>>> +
+>>>> +[1] Documentation/devicetree/bindings/clock/clock-bindings.txt
+>>>> +
+>>>> +Required properties:
+>>>> +- compatible : Should be "img,boston-clock".
+>>>> +- #clock-cells : Should be set to 1.
+>>>> +  Values available for clock consumers can be found in the header file:
+>>>> +    <dt-bindings/clock/boston-clock.h>
+>>>> +- regmap : Phandle to the Boston platform register system controller.
+>>>> +  This should contain a phandle to the system controller node covering the
+>>>> +  platform registers provided by the Boston board.
+>>>> +
+>>>> +Example:
+>>>> +
+>>>> +	clk_boston: clock {
+>>>> +		compatible = "img,boston-clock";
+>>>> +		#clock-cells = <1>;
+>>>> +		regmap = <&plat_regs>;
+>>>
+>>> Isn't syscon more standard than regmap as the property name? Is
+>>> there a binding for the plat_regs device? Is there any reason the
+>>> clks can't be populated in that syscon driver?
+>>
+>> Hi Stephen,
+>>
+>> The plat_regs device doesn't have a custom driver, it simply makes use
+>> of the generic "syscon" driver which can provide a regmap.
+>>
+>> It would be possible to register the clocks from a register for the
+>> plat_regs device, but I don't think it would make much sense. The
+>> platform registers in question are essentially just a convenient place
+>> where various bits of information about the system are exposed,
+>> including the clock frequencies but also other bits & pieces like
+>> connectivity of PCIe controllers or I/O coherence units, the RTL
+>> revision of the CPU or the wrapper RTL that runs on this FPGA-based
+>> board, a register that allows for resetting the board, etc. It's not a
+>> single piece of hardware, more a dumping ground for miscellanea. So in
+>> my opinion using the syscon approach works best here, and drivers for
+>> well defined pieces of hardware or functionality can reference that
+>> syscon to retrieve the regmap.
 > 
-> Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-> ---
->  arch/mips/boot/dts/ingenic/jz4780.dtsi | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+> That is all quite common for any SoC. Whether it's 2 nodes or 2 drivers 
+> are independent questions. You can easily have 1 node and 2 drivers. The 
+> decision factor is really how many registers we're dealing with. We 
+> don't want to end up with a node per register or register field. That's 
+> too fine grained.
+
+Absolutely, I don't think we disagree there.
+
+>> As for whether "syscon" is a more standard property name than "regmap",
+>> both seem to be used based on a grep of
+>> Documentation/devicetree/bindings/. I believe I picked up use of
+>> "regmap" from the generic syscon-poweroff & syscon-reboot drivers, which
+>> both use "regmap" as a property name.
 > 
-> diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> index b868b42..f11d139 100644
-> --- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> @@ -36,7 +36,7 @@
->  
->  	cgu: jz4780-cgu@10000000 {
->  		compatible = "ingenic,jz4780-cgu";
-> -		reg = <0x10000000 0x100>;
-> +		reg = <0x10000000 0xD8>;
+> syscon is much more common.
+> 
+> Avoid the phandle altogether and make this a child node.
 
-Hi PrasannaKumar,
-
-I don't like this change. The RNG registers are documented as a part of
-the same hardware block as the clock & power stuff which the CGU driver
-handles, and indeed in the M200 SoC there is a power-related register
-after the RNG registers. So shortening the range covered by the CGU
-driver is not the right way to go.
-
-Perhaps you could instead have the CGU driver make use of the syscon
-infrastructure to expose a regmap which your RNG driver could pick up & use?
+I could do that, but it would feel rather odd to describe the clock
+hardware as a child of a bunch of miscellaneous registers that happen to
+expose some information about those clocks. Is that really what you
+prefer? I think as-is the DT is a better description of the hardware.
 
 Thanks,
     Paul
 
->  
->  		clocks = <&ext>, <&rtc>;
->  		clock-names = "ext", "rtc";
-> @@ -44,6 +44,11 @@
->  		#clock-cells = <1>;
->  	};
->  
-> +	rng: jz4780-rng@100000D8 {
-> +		compatible = "ingenic,jz4780-rng";
-> +		reg = <0x100000D8 0x8>;
-> +	};
-> +
->  	uart0: serial@10030000 {
->  		compatible = "ingenic,jz4780-uart";
->  		reg = <0x10030000 0x100>;
+> 
+> Rob
 > 

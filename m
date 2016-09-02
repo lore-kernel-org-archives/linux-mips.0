@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:27378 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:28478 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992087AbcIBOSzHtIc4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 2 Sep 2016 16:18:55 +0200
+        with ESMTP id S23992127AbcIBOTflBq04 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 2 Sep 2016 16:19:35 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH] MIPS: netlogic: Fix assembler warning from smpboot.S
-Date: Fri, 2 Sep 2016 15:18:21 +0100
-Message-ID: <20160902141822.2350-1-paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: dec: Avoid la pseudo-instruction in delay slots
+Date: Fri, 2 Sep 2016 15:19:01 +0100
+Message-ID: <20160902141902.2478-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -19,41 +19,70 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Jayachandran C <jchandra@broadcom.com>
-Message-ID: <20160902141821.7ygmNttV42ls8a9PYJYKvXNf5Oy8nxXi6NalDDi2G00@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, "Maciej W. Rozycki" <macro@linux-mips.org>, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org
+Message-ID: <20160902141901.wmnESjw_KjJ88nJeQp8v_utACPaY9xOIkhlWh2XNKSk@z>
 
-The netlogic platform can be built for either MIPS32 or MIPS64, and when
-built for MIPS32 (as by nlm_xlr_defconfig) the use of the dla
-pseudo-instruction leads to warnings such as the following from recent
-versions of the GNU assembler:
+When expanding the la or dla pseudo-instruction in a delay slot the GNU
+assembler will complain should the pseudo-instruction expand to multiple
+actual instructions, since only the first of them will be in the delay
+slot leading to the pseudo-instruction being only partially executed if
+the branch is taken. Use of PTR_LA in the dec int-handler.S leads to
+such warnings:
 
-  arch/mips/netlogic/common/smpboot.S: Assembler messages:
-  arch/mips/netlogic/common/smpboot.S:62: Warning: dla used to load 32-bit register; recommend using la instead
-  arch/mips/netlogic/common/smpboot.S:63: Warning: dla used to load 32-bit register; recommend using la instead
+  arch/mips/dec/int-handler.S: Assembler messages:
+  arch/mips/dec/int-handler.S:149: Warning: macro instruction expanded into multiple instructions in a branch delay slot
+  arch/mips/dec/int-handler.S:198: Warning: macro instruction expanded into multiple instructions in a branch delay slot
 
-Avoid these warnings by using the PTR_LA macro to make use of the
-appropriate la or dla pseudo-instruction for the build.
+Avoid this by placing nops in the delay slots of the affected branches,
+leading to the PTR_LA macros being placed after the branches & their
+delay slots. Although the nop isn't strictly needed, it's an
+insignificant cost & satisfies the assembler easily with more
+readable code than the possible alternative of manually expanding the
+la/dla pseudo-instructions & placing the appropriate first instruction
+into the delay slots.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
 
- arch/mips/netlogic/common/smpboot.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/mips/dec/int-handler.S | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/netlogic/common/smpboot.S b/arch/mips/netlogic/common/smpboot.S
-index f0cc4c9..509c1a7 100644
---- a/arch/mips/netlogic/common/smpboot.S
-+++ b/arch/mips/netlogic/common/smpboot.S
-@@ -59,8 +59,8 @@ NESTED(xlp_boot_core0_siblings, PT_SIZE, sp)
- 	sync
- 	/* find the location to which nlm_boot_siblings was relocated */
- 	li	t0, CKSEG1ADDR(RESET_VEC_PHYS)
--	dla	t1, nlm_reset_entry
--	dla	t2, nlm_boot_siblings
-+	PTR_LA	t1, nlm_reset_entry
-+	PTR_LA	t2, nlm_boot_siblings
- 	dsubu	t2, t1
- 	daddu	t2, t0
- 	/* call it */
+diff --git a/arch/mips/dec/int-handler.S b/arch/mips/dec/int-handler.S
+index d7b9918..54ddca1 100644
+--- a/arch/mips/dec/int-handler.S
++++ b/arch/mips/dec/int-handler.S
+@@ -137,16 +137,16 @@
+ 		and	t0,t1			# isolate allowed ones
+ 
+ 		beqz	t0,spurious
+-
+ #ifdef CONFIG_32BIT
+ 		 and	t2,t0
+ 		bnez	t2,fpu			# handle FPU immediately
+ #endif
++		 nop
+ 
+ 		/*
+ 		 * Find irq with highest priority
+ 		 */
+-		 PTR_LA	t1,cpu_mask_nr_tbl
++		PTR_LA	t1,cpu_mask_nr_tbl
+ 1:		lw	t2,(t1)
+ 		nop
+ 		and	t2,t0
+@@ -191,11 +191,12 @@
+ 1:		and	t0,t1			# mask out allowed ones
+ 
+ 		beqz	t0,spurious
++		 nop
+ 
+ 		/*
+ 		 * Find irq with highest priority
+ 		 */
+-		 PTR_LA	t1,asic_mask_nr_tbl
++		PTR_LA	t1,asic_mask_nr_tbl
+ 2:		lw	t2,(t1)
+ 		nop
+ 		and	t2,t0
 -- 
 2.9.3

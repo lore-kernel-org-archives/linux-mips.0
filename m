@@ -1,20 +1,14 @@
-Received: from mail-by2nam01on0044.outbound.protection.outlook.com ([104.47.34.44]:52352
-        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23990522AbcIBHIoWWr1q (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 2 Sep 2016 09:08:44 +0200
-Subject: Re: [Patch v4 09/12] net: ethernet: xilinx: Generate random mac if
- none found
-References: <1472748665-47774-1-git-send-email-Zubair.Kakakhel@imgtec.com>
- <1472748665-47774-10-git-send-email-Zubair.Kakakhel@imgtec.com>
-From: Michal Simek <michal.simek@xilinx.com>
-Message-ID: <97b7241b-941e-006c-498f-2dbffdb9d951@xilinx.com>
-Date: Fri, 2 Sep 2016 09:08:25 +0200
+Received: from mailapp01.imgtec.com ([195.59.15.196]:13116 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23990522AbcIBINzybcfm (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 2 Sep 2016 10:13:55 +0200
+From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Subject: [PATCH] MIPS: select HAVE_REGS_AND_STACK_ACCESS_API
+Date: Fri, 2 Sep 2016 10:13:21 +0200
+Message-ID: <1472804001-1060-1-git-send-email-marcin.nowakowski@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <1472748665-47774-10-git-send-email-Zubair.Kakakhel@imgtec.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-Path: <michals@xilinx.com>
+Content-Type: text/plain
+Return-Path: <Marcin.Nowakowski@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,56 +18,31 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, monstr@monstr.eu, ralf@linux-mips.org, tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com
-Cc: soren.brinkmann@xilinx.com, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, michal.simek@xilinx.com, netdev@vger.kernel.org
-Message-ID: <20160902070825.rlM3G_24BBFzuotP5GV2Srt212Qx-mwU-rtpGfEgnKg@z>
+To: linux-mips@linux-mips.org, ralf@linux-mips.org
+Cc: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Message-ID: <20160902081321.NfoDENV1qY3qZG4I0f2Uq_HDc3Uj31F1uSYg4JvMIVY@z>
 
-On 1.9.2016 18:51, Zubair Lutfullah Kakakhel wrote:
-> At the moment, if the emaclite device doesn't find a mac address
-> from any source, it simply uses 0x0 with a warning printed.
-> 
-> Instead of using a 0x0 mac address, use a randomly generated one.
-> 
-> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-> 
-> ---
-> V3 -> V4
-> Curly braces after if check for correct styling
-> 
-> V2 -> V3
-> No change
-> 
-> V1 -> V2
-> New patch
-> ---
->  drivers/net/ethernet/xilinx/xilinx_emaclite.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/xilinx/xilinx_emaclite.c b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
-> index 3cee84a..efc8d2e 100644
-> --- a/drivers/net/ethernet/xilinx/xilinx_emaclite.c
-> +++ b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
-> @@ -1131,11 +1131,13 @@ static int xemaclite_of_probe(struct platform_device *ofdev)
->  	lp->rx_ping_pong = get_bool(ofdev, "xlnx,rx-ping-pong");
->  	mac_address = of_get_mac_address(ofdev->dev.of_node);
->  
-> -	if (mac_address)
-> +	if (mac_address) {
->  		/* Set the MAC address. */
->  		memcpy(ndev->dev_addr, mac_address, ETH_ALEN);
-> -	else
-> -		dev_warn(dev, "No MAC address found\n");
-> +	} else {
-> +		dev_warn(dev, "No MAC address found. Generating Random one\n");
-> +		eth_hw_addr_random(ndev);
-> +	}
->  
->  	/* Clear the Tx CSR's in case this is a restart */
->  	__raw_writel(0, lp->base_addr + XEL_TSR_OFFSET);
-> 
+All the required methods for HAVE_REGS_AND_STACK_ACCESS_API symbol have
+been available in the MIPS tree since commit
+40e084a506eb ('MIPS: Add uprobes support.'), but the required config symbol
+had not been selected
 
-You should remove these 2 emaclite patches and send them separately
-because they should go via netdev tree.
+Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+---
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks,
-Michal
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 2638856..212ff92 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -65,6 +65,7 @@ config MIPS
+ 	select ARCH_CLOCKSOURCE_DATA
+ 	select HANDLE_DOMAIN_IRQ
+ 	select HAVE_EXIT_THREAD
++	select HAVE_REGS_AND_STACK_ACCESS_API
+ 
+ menu "Machine selection"
+ 
+-- 
+2.7.4

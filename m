@@ -1,16 +1,17 @@
-Received: from mail-bl2nam02on0059.outbound.protection.outlook.com ([104.47.38.59]:58480
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+Received: from mail-by2nam01on0065.outbound.protection.outlook.com ([104.47.34.65]:37792
+        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23990511AbcIBF5JlySU0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 2 Sep 2016 07:57:09 +0200
-Subject: Re: [Patch v4 01/12] microblaze: irqchip: Move intc driver to irqchip
+        id S23990511AbcIBF62j3oo0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 2 Sep 2016 07:58:28 +0200
+Subject: Re: [Patch v4 03/12] irqchip: axi-intc: Rename get_irq to
+ xintc_get_irq
 References: <1472748665-47774-1-git-send-email-Zubair.Kakakhel@imgtec.com>
- <1472748665-47774-2-git-send-email-Zubair.Kakakhel@imgtec.com>
+ <1472748665-47774-4-git-send-email-Zubair.Kakakhel@imgtec.com>
 From: Michal Simek <michal.simek@xilinx.com>
-Message-ID: <33b0c20d-a939-0e26-4443-dc41ba06f250@xilinx.com>
-Date: Fri, 2 Sep 2016 07:56:47 +0200
+Message-ID: <d5777f16-0eaf-c3e9-c012-faa5da6ed600@xilinx.com>
+Date: Fri, 2 Sep 2016 07:58:08 +0200
 MIME-Version: 1.0
-In-Reply-To: <1472748665-47774-2-git-send-email-Zubair.Kakakhel@imgtec.com>
+In-Reply-To: <1472748665-47774-4-git-send-email-Zubair.Kakakhel@imgtec.com>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 Return-Path: <michals@xilinx.com>
@@ -25,24 +26,78 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, monstr@monstr.eu, ralf@linux-mips.org, tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com
 Cc: soren.brinkmann@xilinx.com, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, michal.simek@xilinx.com, netdev@vger.kernel.org
-Message-ID: <20160902055647.aHEXaRvchYoWKx76gBpK1z4l3K4trc_QMYW-22WrM-Q@z>
+Message-ID: <20160902055808.7dLmQXIr3cNUwWdv2FlKT7XyhVZUFy2SkilJ4t9Tx3I@z>
 
 On 1.9.2016 18:50, Zubair Lutfullah Kakakhel wrote:
-> The Xilinx AXI Interrupt Controller IP block is used by the MIPS
-> based xilfpga platform.
+> Now that the driver is generic and used by multiple archs,
+> get_irq is too generic.
 > 
-> Move the interrupt controller code out of arch/microblaze so that
-> it can be used by everyone
+> Rename get_irq to xintc_get_irq to avoid any conflicts
+> 
+> Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+> 
+> ---
+> V3 -> V4
+> New patch.
+> ---
+>  arch/microblaze/include/asm/irq.h | 2 +-
+>  arch/microblaze/kernel/irq.c      | 4 ++--
+>  drivers/irqchip/irq-axi-intc.c    | 4 ++--
+>  3 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/microblaze/include/asm/irq.h b/arch/microblaze/include/asm/irq.h
+> index bab3b13..d785def 100644
+> --- a/arch/microblaze/include/asm/irq.h
+> +++ b/arch/microblaze/include/asm/irq.h
+> @@ -16,6 +16,6 @@ struct pt_regs;
+>  extern void do_IRQ(struct pt_regs *regs);
+>  
+>  /* should be defined in each interrupt controller driver */
+> -extern unsigned int get_irq(void);
+> +extern unsigned int xintc_get_irq(void);
+>  
+>  #endif /* _ASM_MICROBLAZE_IRQ_H */
+> diff --git a/arch/microblaze/kernel/irq.c b/arch/microblaze/kernel/irq.c
+> index 11e24de..903dad8 100644
+> --- a/arch/microblaze/kernel/irq.c
+> +++ b/arch/microblaze/kernel/irq.c
+> @@ -29,12 +29,12 @@ void __irq_entry do_IRQ(struct pt_regs *regs)
+>  	trace_hardirqs_off();
+>  
+>  	irq_enter();
+> -	irq = get_irq();
+> +	irq = xintc_get_irq();
+>  next_irq:
+>  	BUG_ON(!irq);
+>  	generic_handle_irq(irq);
+>  
+> -	irq = get_irq();
+> +	irq = xintc_get_irq();
+>  	if (irq != -1U) {
+>  		pr_debug("next irq: %d\n", irq);
+>  		++concurrent_irq;
+> diff --git a/drivers/irqchip/irq-axi-intc.c b/drivers/irqchip/irq-axi-intc.c
+> index 7ab0762..ac31548 100644
+> --- a/drivers/irqchip/irq-axi-intc.c
+> +++ b/drivers/irqchip/irq-axi-intc.c
+> @@ -119,7 +119,7 @@ static struct irq_chip intc_dev = {
+>  
+>  static struct irq_domain *root_domain;
+>  
+> -unsigned int get_irq(void)
+> +unsigned int xintc_get_irq(void)
+>  {
+>  	unsigned int hwirq, irq = -1;
+>  
+> @@ -127,7 +127,7 @@ unsigned int get_irq(void)
+>  	if (hwirq != -1U)
+>  		irq = irq_find_mapping(root_domain, hwirq);
+>  
+> -	pr_debug("get_irq: hwirq=%d, irq=%d\n", hwirq, irq);
+> +	pr_debug("xintc_get_irq: hwirq=%d, irq=%d\n", hwirq, irq);
 
-if this is just move that you should setup your git right that it won't
-be remove on one side and add on other side.
 
-It should look like this when git mv is used and git setup is right.
-
-diff --git a/Makefile b/Makefile2
-similarity index 100%
-rename from Makefile
-rename to Makefile2
+%s and __func__ instead.
 
 Thanks,
 Michal

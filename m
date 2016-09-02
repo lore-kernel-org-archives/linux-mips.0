@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:13116 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:38827 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23990522AbcIBINzybcfm (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 2 Sep 2016 10:13:55 +0200
+        with ESMTP id S23990522AbcIBIUJA1hAm (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 2 Sep 2016 10:20:09 +0200
 From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Subject: [PATCH] MIPS: select HAVE_REGS_AND_STACK_ACCESS_API
-Date: Fri, 2 Sep 2016 10:13:21 +0200
-Message-ID: <1472804001-1060-1-git-send-email-marcin.nowakowski@imgtec.com>
+Subject: [PATCH] uprobes: remove function declarations from arch/{mips,s390}
+Date: Fri, 2 Sep 2016 10:19:44 +0200
+Message-ID: <1472804384-17830-1-git-send-email-marcin.nowakowski@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Marcin.Nowakowski@imgtec.com>
@@ -18,31 +18,60 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, ralf@linux-mips.org
+To: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, ralf@linux-mips.org, linux-s390@vger.kernel.org, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com
 Cc: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Message-ID: <20160902081321.NfoDENV1qY3qZG4I0f2Uq_HDc3Uj31F1uSYg4JvMIVY@z>
+Message-ID: <20160902081944.mcMNtGEnFezAUO5NG-TMU51RQ8M1nXmgfB5qcbw08D0@z>
 
-All the required methods for HAVE_REGS_AND_STACK_ACCESS_API symbol have
-been available in the MIPS tree since commit
-40e084a506eb ('MIPS: Add uprobes support.'), but the required config symbol
-had not been selected
+The declarations of arch-specific functions have been moved to a common
+header in commit 3820b4d2789f ('uprobes: Move function declarations out of
+arch'), but MIPS and S390 has added them to their own trees later.
+Remove the unnecessary duplicates.
 
 Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
 ---
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/include/asm/uprobes.h | 12 ------------
+ arch/s390/include/asm/uprobes.h | 10 ----------
+ 2 files changed, 22 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 2638856..212ff92 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -65,6 +65,7 @@ config MIPS
- 	select ARCH_CLOCKSOURCE_DATA
- 	select HANDLE_DOMAIN_IRQ
- 	select HAVE_EXIT_THREAD
-+	select HAVE_REGS_AND_STACK_ACCESS_API
+diff --git a/arch/mips/include/asm/uprobes.h b/arch/mips/include/asm/uprobes.h
+index 34c325c..28ab364 100644
+--- a/arch/mips/include/asm/uprobes.h
++++ b/arch/mips/include/asm/uprobes.h
+@@ -43,16 +43,4 @@ struct arch_uprobe_task {
+ 	unsigned long saved_trap_nr;
+ };
  
- menu "Machine selection"
+-extern int arch_uprobe_analyze_insn(struct arch_uprobe *aup,
+-	struct mm_struct *mm, unsigned long addr);
+-extern int arch_uprobe_pre_xol(struct arch_uprobe *aup, struct pt_regs *regs);
+-extern int arch_uprobe_post_xol(struct arch_uprobe *aup, struct pt_regs *regs);
+-extern bool arch_uprobe_xol_was_trapped(struct task_struct *tsk);
+-extern int arch_uprobe_exception_notify(struct notifier_block *self,
+-	unsigned long val, void *data);
+-extern void arch_uprobe_abort_xol(struct arch_uprobe *aup,
+-	struct pt_regs *regs);
+-extern unsigned long arch_uretprobe_hijack_return_addr(
+-	unsigned long trampoline_vaddr, struct pt_regs *regs);
+-
+ #endif /* __ASM_UPROBES_H */
+diff --git a/arch/s390/include/asm/uprobes.h b/arch/s390/include/asm/uprobes.h
+index 1411dff..658393c 100644
+--- a/arch/s390/include/asm/uprobes.h
++++ b/arch/s390/include/asm/uprobes.h
+@@ -29,14 +29,4 @@ struct arch_uprobe {
+ struct arch_uprobe_task {
+ };
  
+-int arch_uprobe_analyze_insn(struct arch_uprobe *aup, struct mm_struct *mm,
+-			     unsigned long addr);
+-int arch_uprobe_pre_xol(struct arch_uprobe *aup, struct pt_regs *regs);
+-int arch_uprobe_post_xol(struct arch_uprobe *aup, struct pt_regs *regs);
+-bool arch_uprobe_xol_was_trapped(struct task_struct *tsk);
+-int arch_uprobe_exception_notify(struct notifier_block *self, unsigned long val,
+-				 void *data);
+-void arch_uprobe_abort_xol(struct arch_uprobe *ap, struct pt_regs *regs);
+-unsigned long arch_uretprobe_hijack_return_addr(unsigned long trampoline,
+-						struct pt_regs *regs);
+ #endif	/* _ASM_UPROBES_H */
 -- 
 2.7.4

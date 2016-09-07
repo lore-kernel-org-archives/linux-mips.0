@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:33880 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:32970 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992211AbcIGJpstaAXS (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 7 Sep 2016 11:45:48 +0200
+        with ESMTP id S23992215AbcIGJptCJIpS (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 7 Sep 2016 11:45:49 +0200
 From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH v2 07/12] MIPS: pm-cps: Use MIPS standard completion barrier
-Date: Wed, 7 Sep 2016 10:45:15 +0100
-Message-ID: <1473241520-14917-8-git-send-email-matt.redfearn@imgtec.com>
+Subject: [PATCH v2 09/12] MIPS: pm-cps: Add MIPSr6 CPU support
+Date: Wed, 7 Sep 2016 10:45:17 +0100
+Message-ID: <1473241520-14917-10-git-send-email-matt.redfearn@imgtec.com>
 In-Reply-To: <1473241520-14917-1-git-send-email-matt.redfearn@imgtec.com>
 References: <1473241520-14917-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
@@ -21,15 +21,20 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, Adam Buchbinder <adam.buchbinder@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@imgtec.com>, Markos Chandras <markos.chandras@imgtec.com>, Andrew Morton <akpm@linux-foundation.org>
-Message-ID: <20160907094515.sd_4mPYcrs4nKNNYECoFC2Vmet-pFRk-yDoRLZ46vfo@z>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, Adam Buchbinder <adam.buchbinder@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org, Markos Chandras <markos.chandras@imgtec.com>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20160907094517.o59PwCEkV1PLUPXDAHg1XgDdyXSOxv8SGquYrC5kUes@z>
 
-SYNC type 0 is defined in the MIPS architecture as a completion barrier
-where all loads/stores in the pipeline before the sync instruction must
-complete before any loads/stores subsequent to the sync instruction.
+This patch adds support for CPUs implementing the MIPSr6 ISA to the CPS
+power management code. Three changes are necessary:
 
-In places where we require loads / stores be globally completed, use the
-standard completion sync stype.
+1. In MIPSr6, coupled coherence is necessary when CPUS implement multiple
+   Virtual Processors (VPs).
+
+2. MIPSr6 virtual processors are more like real cores and cannot yield
+   to other VPs on the same core, so drop the MT ASE yield instruction.
+
+3. To halt a MIPSr6 VP, the CPC VP_STOP register is used rather than the
+   MT ASE TCHalt CP0 register.
 
 Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
 Reviewed-by: Paul Burton <paul.burton@imgtec.com>
@@ -37,57 +42,75 @@ Reviewed-by: Paul Burton <paul.burton@imgtec.com>
 
 Changes in v2: None
 
- arch/mips/kernel/pm-cps.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/mips/include/asm/pm-cps.h |  6 ++++--
+ arch/mips/kernel/pm-cps.c      | 22 ++++++++++++++++++----
+ 2 files changed, 22 insertions(+), 6 deletions(-)
 
+diff --git a/arch/mips/include/asm/pm-cps.h b/arch/mips/include/asm/pm-cps.h
+index 625eda53d571..89d58d80b77b 100644
+--- a/arch/mips/include/asm/pm-cps.h
++++ b/arch/mips/include/asm/pm-cps.h
+@@ -13,10 +13,12 @@
+ 
+ /*
+  * The CM & CPC can only handle coherence & power control on a per-core basis,
+- * thus in an MT system the VPEs within each core are coupled and can only
++ * thus in an MT system the VP(E)s within each core are coupled and can only
+  * enter or exit states requiring CM or CPC assistance in unison.
+  */
+-#ifdef CONFIG_MIPS_MT
++#if defined(CONFIG_CPU_MIPSR6)
++# define coupled_coherence cpu_has_vp
++#elif defined(CONFIG_MIPS_MT)
+ # define coupled_coherence cpu_has_mipsmt
+ #else
+ # define coupled_coherence 0
 diff --git a/arch/mips/kernel/pm-cps.c b/arch/mips/kernel/pm-cps.c
-index d7037fe00d1c..953ff0db9061 100644
+index b3a7d36ada5a..440e79259566 100644
 --- a/arch/mips/kernel/pm-cps.c
 +++ b/arch/mips/kernel/pm-cps.c
-@@ -315,7 +315,7 @@ static int __init cps_gen_flush_fsb(u32 **pp, struct uasm_label **pl,
- 	}
+@@ -129,7 +129,7 @@ int cps_pm_enter_state(enum cps_pm_state state)
+ 		return -EINVAL;
  
- 	/* Barrier ensuring previous cache invalidates are complete */
--	uasm_i_sync(pp, stype_memory);
-+	uasm_i_sync(pp, STYPE_SYNC);
- 	uasm_i_ehb(pp);
- 
- 	/* Check whether the pipeline stalled due to the FSB being full */
-@@ -467,7 +467,7 @@ static void * __init cps_gen_entry_code(unsigned cpu, enum cps_pm_state state)
- 			      Index_Writeback_Inv_D, lbl_flushdcache);
- 
- 	/* Barrier ensuring previous cache invalidates are complete */
--	uasm_i_sync(&p, stype_memory);
-+	uasm_i_sync(&p, STYPE_SYNC);
- 	uasm_i_ehb(&p);
- 
- 	/*
-@@ -480,7 +480,7 @@ static void * __init cps_gen_entry_code(unsigned cpu, enum cps_pm_state state)
- 	uasm_i_lw(&p, t0, 0, r_pcohctl);
- 
- 	/* Barrier to ensure write to coherence control is complete */
--	uasm_i_sync(&p, stype_intervention);
-+	uasm_i_sync(&p, STYPE_SYNC);
- 	uasm_i_ehb(&p);
- 
- 	/* Disable coherence */
-@@ -526,7 +526,7 @@ static void * __init cps_gen_entry_code(unsigned cpu, enum cps_pm_state state)
- 		}
- 
- 		/* Barrier to ensure write to CPC command is complete */
--		uasm_i_sync(&p, stype_memory);
-+		uasm_i_sync(&p, STYPE_SYNC);
- 		uasm_i_ehb(&p);
- 	}
- 
-@@ -561,7 +561,7 @@ static void * __init cps_gen_entry_code(unsigned cpu, enum cps_pm_state state)
- 	uasm_i_lw(&p, t0, 0, r_pcohctl);
- 
- 	/* Barrier to ensure write to coherence control is complete */
--	uasm_i_sync(&p, stype_memory);
-+	uasm_i_sync(&p, STYPE_SYNC);
- 	uasm_i_ehb(&p);
- 
- 	if (coupled_coherence && (state == CPS_PM_NC_WAIT)) {
+ 	/* Calculate which coupled CPUs (VPEs) are online */
+-#ifdef CONFIG_MIPS_MT
++#if defined(CONFIG_MIPS_MT) || defined(CONFIG_CPU_MIPSR6)
+ 	if (cpu_online(cpu)) {
+ 		cpumask_and(coupled_mask, cpu_online_mask,
+ 			    &cpu_sibling_map[cpu]);
+@@ -431,7 +431,8 @@ static void * __init cps_gen_entry_code(unsigned cpu, enum cps_pm_state state)
+ 			uasm_i_lw(&p, t0, 0, r_nc_count);
+ 			uasm_il_bltz(&p, &r, t0, lbl_secondary_cont);
+ 			uasm_i_ehb(&p);
+-			uasm_i_yield(&p, zero, t1);
++			if (cpu_has_mipsmt)
++				uasm_i_yield(&p, zero, t1);
+ 			uasm_il_b(&p, &r, lbl_poll_cont);
+ 			uasm_i_nop(&p);
+ 		} else {
+@@ -439,8 +440,21 @@ static void * __init cps_gen_entry_code(unsigned cpu, enum cps_pm_state state)
+ 			 * The core will lose power & this VPE will not continue
+ 			 * so it can simply halt here.
+ 			 */
+-			uasm_i_addiu(&p, t0, zero, TCHALT_H);
+-			uasm_i_mtc0(&p, t0, 2, 4);
++			if (cpu_has_mipsmt) {
++				/* Halt the VPE via C0 tchalt register */
++				uasm_i_addiu(&p, t0, zero, TCHALT_H);
++				uasm_i_mtc0(&p, t0, 2, 4);
++			} else if (cpu_has_vp) {
++				/* Halt the VP via the CPC VP_STOP register */
++				unsigned int vpe_id;
++
++				vpe_id = cpu_vpe_id(&cpu_data[cpu]);
++				uasm_i_addiu(&p, t0, zero, 1 << vpe_id);
++				UASM_i_LA(&p, t1, (long)addr_cpc_cl_vp_stop());
++				uasm_i_sw(&p, t0, 0, t1);
++			} else {
++				BUG();
++			}
+ 			uasm_build_label(&l, p, lbl_secondary_hang);
+ 			uasm_il_b(&p, &r, lbl_secondary_hang);
+ 			uasm_i_nop(&p);
 -- 
 2.7.4

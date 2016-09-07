@@ -1,16 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:16215 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992312AbcIGJpvC0enS (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 7 Sep 2016 11:45:51 +0200
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH v2 12/12] cpuidle: cpuidle-cps: Enable use with MIPSr6 CPUs.
-Date: Wed, 7 Sep 2016 10:45:20 +0100
-Message-ID: <1473241520-14917-13-git-send-email-matt.redfearn@imgtec.com>
-In-Reply-To: <1473241520-14917-1-git-send-email-matt.redfearn@imgtec.com>
-References: <1473241520-14917-1-git-send-email-matt.redfearn@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:55177 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992215AbcIGMXjda0me (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 7 Sep 2016 14:23:39 +0200
+Date: Wed, 7 Sep 2016 13:23:33 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH] MIPS: vDSO: Fix Malta EVA mapping to vDSO page structs
+Message-ID: <20160907122332.GB1196@jhogan-linux.le.imgtec.org>
+References: <49347b5b8c218600ffddb91e651274af476fe6e6.1472731205.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="WhfpMioaduB5tiZL"
+Content-Disposition: inline
+In-Reply-To: <49347b5b8c218600ffddb91e651274af476fe6e6.1472731205.git-series.james.hogan@imgtec.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,47 +23,97 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <20160907094520.JiILznN5jUNHZlnNdT7tyykWQzeGJ-24sDFYpuOFaro@z>
+Cc: Leonid Yegoshin <leonid.yegoshin@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20160907122333.6EWbPaqwrSqI85UnZfzrc1VzXYBKxxfdfnP_hIhCbvs@z>
 
-This patch enables the MIPS CPS driver for MIPSr6 CPUs.
+--WhfpMioaduB5tiZL
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
-Reviewed-by: Paul Burton <paul.burton@imgtec.com>
+Hi Ralf,
 
----
+On Thu, Sep 01, 2016 at 01:04:25PM +0100, James Hogan wrote:
+> The page structures associated with the vDSO pages in the kernel image
+> are calculated using virt_to_page(), which uses __pa() under the hood to
+> find the pfn associated with the virtual address. The vDSO data pointers
+> however point to kernel symbols, so __pa_symbol() should really be used
+> instead.
+>=20
+> Since there is no equivalent to virt_to_page() which uses __pa_symbol(),
+> fix init_vdso_image() to work directly with pfns, calculated with
+> PHYS_PFN(__pa_symbol(...)).
+>=20
+> This issue broke the Malta Enhanced Virtual Addressing (EVA)
+> configuration which has a non-default implementation of __pa_symbol().
+> This is because it uses a physical alias so that the kernel executes
+> from KSeg0 (VA 0x80000000 -> PA 0x00000000), while RAM is provided to
+> the kernel in the KUSeg range (VA 0x00000000 -> PA 0x80000000) which
+> uses the same underlying RAM.
+>=20
+> Since there are no page structures associated with the low physical
+> address region, some arbitrary kernel memory would be interpreted as a
+> page structure for the vDSO pages and badness ensues.
+>=20
+> Fixes: ebb5e78cc634 ("MIPS: Initial implementation of a VDSO")
+> Signed-off-by: James Hogan <james.hogan@imgtec.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Leonid Yegoshin <leonid.yegoshin@imgtec.com>
+> Cc: linux-mips@linux-mips.org
+> Cc: <stable@vger.kernel.org> # 4.4.x-
+> ---
+>  arch/mips/kernel/vdso.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/arch/mips/kernel/vdso.c b/arch/mips/kernel/vdso.c
+> index 9abe447a4b48..e4a8d8846eac 100644
+> --- a/arch/mips/kernel/vdso.c
+> +++ b/arch/mips/kernel/vdso.c
+> @@ -39,16 +39,16 @@ static struct vm_special_mapping vdso_vvar_mapping =
+=3D {
+>  static void __init init_vdso_image(struct mips_vdso_image *image)
+>  {
+>  	unsigned long num_pages, i;
+> +	unsigned long data_pfn;
+> =20
+>  	BUG_ON(!PAGE_ALIGNED(image->data));
+>  	BUG_ON(!PAGE_ALIGNED(image->size));
+> =20
+>  	num_pages =3D image->size / PAGE_SIZE;
+> =20
+> -	for (i =3D 0; i < num_pages; i++) {
+> -		image->mapping.pages[i] =3D
+> -			virt_to_page(image->data + (i * PAGE_SIZE));
+> -	}
+> +	data_pfn =3D PHYS_PFN(__pa_symbol(image->data));
 
-Changes in v2: None
+Actually PHYS_PFN() was only added in v4.5, and we need this patch
+applied as far back as v4.4, so I'll send a v2 using __phys_to_pfn()
+instead.
 
- drivers/cpuidle/Kconfig.mips  | 2 +-
- drivers/cpuidle/cpuidle-cps.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Cheers
+James
 
-diff --git a/drivers/cpuidle/Kconfig.mips b/drivers/cpuidle/Kconfig.mips
-index 4102be01d06a..512ee37b374b 100644
---- a/drivers/cpuidle/Kconfig.mips
-+++ b/drivers/cpuidle/Kconfig.mips
-@@ -5,7 +5,7 @@ config MIPS_CPS_CPUIDLE
- 	bool "CPU Idle driver for MIPS CPS platforms"
- 	depends on CPU_IDLE && MIPS_CPS
- 	depends on SYS_SUPPORTS_MIPS_CPS
--	select ARCH_NEEDS_CPU_IDLE_COUPLED if MIPS_MT
-+	select ARCH_NEEDS_CPU_IDLE_COUPLED if MIPS_MT || CPU_MIPSR6
- 	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
- 	select MIPS_CPS_PM
- 	default y
-diff --git a/drivers/cpuidle/cpuidle-cps.c b/drivers/cpuidle/cpuidle-cps.c
-index 1adb6980b707..926ba9871c62 100644
---- a/drivers/cpuidle/cpuidle-cps.c
-+++ b/drivers/cpuidle/cpuidle-cps.c
-@@ -163,7 +163,7 @@ static int __init cps_cpuidle_init(void)
- 		core = cpu_data[cpu].core;
- 		device = &per_cpu(cpuidle_dev, cpu);
- 		device->cpu = cpu;
--#ifdef CONFIG_MIPS_MT
-+#ifdef CONFIG_ARCH_NEEDS_CPU_IDLE_COUPLED
- 		cpumask_copy(&device->coupled_cpus, &cpu_sibling_map[cpu]);
- #endif
- 
--- 
-2.7.4
+--WhfpMioaduB5tiZL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJX0AbEAAoJEGwLaZPeOHZ6HykP/jx+Pmep1ZXGtc0dDpbyh8ML
++MhyhzwdeL4rJbCrdLkNgCTKzeRwYh8CCt3qJBm7bVydAztyb49mYcUTqCM2ptT8
+eBKoub+mentuzKUzlAGKeugytntNeAcMqrzSSs9AnRjnKz/PdhbPiV+RMum4cvH5
+vAqq4G7godwFEJAspGWknL1LJzxS1z+2hJwj/QN38+zD4lBMSiDjtOrXcJGwI6D0
+lGlAI5zWqAeTLln1wXqT79EF4ZEbgP8ETrffEMgYuNtuMehF9uwyXh3/enIqq5Ed
+u9CDbb0sLTtpEd8oQ7ecE4kpjyDy7L9xE9WD/9mZQFFWrihx7Ytt81vkA9CXCTyp
+1C7eGVuJjZ1tGLNzsJpAx87fuZaaOOT677+9qyaPqmoBHmtYbYy0GMkXrseziiC1
+WbBNOcS+a3fzSsaH9OzTuTb9IqRNx8HOEXqvyJb+qIDjemivV6iYB5CgaSoTiD1t
+TqNRpUsqv6qWCbHxRT0C5v7h0OthI+Sq37hvLRT8dQSiUxZJ6IAOh58EcizGuRPK
+uM/m8zPLvygDfJ+VmXzcpK0XgQKHsr4q0OMNIXcypH2cTC+i0bFVNucYCAV4vcvs
+t9Q2QvGroTTHWB5M6dNg3cq05/wQYca7kEmEqumLVwoHiy0MTGNCV0iFSo4YE/x/
+RUqaCxrcTeuoHGrkaAfw
+=JoN5
+-----END PGP SIGNATURE-----
+
+--WhfpMioaduB5tiZL--

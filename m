@@ -1,20 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:50380 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992990AbcIIOvFhzzAs (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 9 Sep 2016 16:51:05 +0200
-Date: Fri, 9 Sep 2016 15:50:58 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: highmem issues with 3.14.10 (LST)
-Message-ID: <20160909145058.GD26885@jhogan-linux.le.imgtec.org>
-References: <CAFwMWxtUHa_Av34RrzFp3Dar0y-ghQRJNeXeUqYeUo3149zOsw@mail.gmail.com>
- <20160909123652.GA1846@jhogan-linux.le.imgtec.org>
- <CAFwMWxsQ6tpj7D1NnatEeVis32pRwKRsKkPXFgGrkvyCES0yHA@mail.gmail.com>
+Received: from mail-by2nam01on0065.outbound.protection.outlook.com ([104.47.34.65]:11588
+        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23992993AbcIIQ1uKCevZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 9 Sep 2016 18:27:50 +0200
+Subject: [PATCH v2] usb: dwc3: OCTEON: add support for device tree
+From: "Steven J. Hill" <Steven.Hill@cavium.com>
+Message-ID: <57D2E2F4.8030707@cavium.com>
+Date: Fri, 9 Sep 2016 11:27:32 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="MAH+hnPXVZWQ5cD/"
-Content-Disposition: inline
-In-Reply-To: <CAFwMWxsQ6tpj7D1NnatEeVis32pRwKRsKkPXFgGrkvyCES0yHA@mail.gmail.com>
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Steven.Hill@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,153 +20,150 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Sagar Borikar <sagar.borikar@gmail.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20160909145058.dPIWtJXqYgOrSuPWx6BkOCn5QOC1Y9f_nJ96GfeUfKE@z>
+To: linux-usb@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>
+Message-ID: <20160909162732.O5W7Tjacabm8e4j1A_mkiozgb1I1HOgx_c2gA11n4_4@z>
 
---MAH+hnPXVZWQ5cD/
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch adds support to parse the data for
+the dwc3-octeon driver using device tree. The
+DWC3 IP core is found on OCTEON III processors.
 
-On Fri, Sep 09, 2016 at 06:17:13AM -0700, Sagar Borikar wrote:
-> Thanks James.
->=20
-> On Fri, Sep 9, 2016 at 5:36 AM, James Hogan <james.hogan@imgtec.com> wrot=
-e:
-> > Hi Sagar,
-> >
-> > On Thu, Sep 08, 2016 at 08:33:57PM -0700, Sagar Borikar wrote:
-> >> Hello,
-> >>
-> >> I am upgrading kernel for a MIPS Interaptive CPU from 3.10.60 to
-> >> 3.14.10 (stable) from:
-> >> https://www.linux-mips.org/wiki/Malta_Linux_Repository
-> >
-> > Unfortunately that wiki page needs updating.
-> >
-> > If you're upgrading anyway, I think we'd recommend switching all the way
-> > to a recent mainline kernel release / stable branch, e.g. 4.4 (LTS) or
-> > 4.7 (and maybe update to 4.9 (LTS) when it is released or when 4.7 goes
-> > EOL). I think all the stuff you'll need for interAptiv should be in
-> > mainline now anyway.
->=20
-> I see. We generally upgrade to malta repo as its maintained by mips
-> (imgtec). I presume you are referring to kernel.org. I think linux-mti
-> is having  4.1.7 as stable, right?
+Signed-off-by: Steven J. Hill <Steven.Hill@cavium.com>
 
-Yeh I was referring to kernel.org. 3.14 was the last linux-mti branch.
-A lot of stuff in mti-3.10 got upstreamed (with a lot of changes and
-clean ups made along the way), and I think as a result mti-3.14 was
-mostly backported patches from mainline. That may explain this
-regression.
+Changes in v2:
+- Changed comment block to acurately describe why the DMA
+  properties are being set.
+- Deleted 'dwc3_octeon_remove()' function as it serves
+  no purpose. Also changed driver from tristate to a
+  boolen as we have no plans to make it modular.
+- Changed driver dependency from CAVIUM_OCTEON_SOC to
+  CPU_CAVIUM_OCTEON || COMPILE_TEST per Balbi's request.
 
-We're now trying to focus a lot more on mainline (although we have
-engineering branches in that same linux-mti repository, which are more
-for supporting new architecture features & new cores before they've
-found their way into mainline).
+---
+ drivers/usb/dwc3/Kconfig       | 10 +++++
+ drivers/usb/dwc3/Makefile      |  1 +
+ drivers/usb/dwc3/dwc3-octeon.c | 85 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 96 insertions(+)
+ create mode 100644 drivers/usb/dwc3/dwc3-octeon.c
 
-> >>  The platform has non-contiguous low memory and high memory. After the
-> >> upgrade, highmem is not getting enabled due to max_low_pfn and
-> >> highend_pfn not being the same.
-> >>
-> >> The commit cce335ae47e231398269fb05fa48e0e9cbf289e0 introduced the
-> >> change apparently for sibyte platform. That change doesn't hold good
-> >> for all platforms where the high memory and low memory is sparsed.
-> >>
-> >> If I comment out only following change in arch/mips/mm/init.c, highmem
-> >> gets initialized properly.
-> >>
-> >> 296     if (cpu_has_dc_aliases && max_low_pfn !=3D highend_pfn) {
-> >> 297         printk(KERN_WARNING "This processor doesn't support highme=
-m."
-> >> 298                " %ldk highmem ignored\n",
-> >> 299                (highend_pfn - max_low_pfn) << (PAGE_SHIFT - 10));
-> >> 300         max_zone_pfns[ZONE_HIGHMEM] =3D max_low_pfn;
-> >> 301         lastpfn =3D max_low_pfn;
-> >> 302     }
-> >
-> > I don't think we ever supported DCache aliasing + highmem in
-> > combination.
->=20
-> Interesting. We are currently running 3.10.60 and apparently it seems
-> to work. Are you saying it may cause any issues? So far we haven't
-> seen any problems. What kind of issues it might end up into?
+diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
+index a64ce1c..f2cb24b 100644
+--- a/drivers/usb/dwc3/Kconfig
++++ b/drivers/usb/dwc3/Kconfig
+@@ -105,4 +105,14 @@ config USB_DWC3_ST
+ 	  inside (i.e. STiH407).
+ 	  Say 'Y' or 'M' if you have one such device.
 
-Sorry, I was thinking of mainline.
-
-Mti-3.10 seems to have had changes which didn't make it upstream which
-would have made this possible, from which commit 15de36a4c3cf
-("mm/highmem: make kmap cache coloring aware") was derived (which was
-merged for v3.17, in August 2014). There were attempts to add the MIPS
-support after this, but none of them made it upstream:
-
-https://patchwork.linux-mips.org/project/linux-mips/list/?state=3D*&q=3Dfix=
-es+for+cache+aliasing
-
->=20
-> >
-> > If you want to use that memory your options are probably:
-> > - increase the page size to avoid dcache aliasing.
->=20
-> Ok thanks. I would need to experiment with this but I am bit baffled
-> how its working in 3.10.60.
-> Generally, is there any reference platforms based on interaptiv which
-> uses highmem and dcache aliasing? I might have missed but couldn't
-> find any platform which comes close in both trees.
-
-Its probably possible to configure malta in such a way (4k pages, big
-cache, alias removal disabled in hardware, highmem).
-
->=20
-> > - OR use EVA to increase the size of lowmem, which at the moment is a
-> >   bit more involved. How much RAM do you have, and what does your
-> >   physical memory map look like?
->=20
-> Total memory is 2GB. memory map looks like this:
->=20
-> low mem(~66MB) :
->=20
->  * 0x04300000 +-----------------+
->  *                    |     Linux       |
->  * 0x00043000 +-----------------+
->=20
-> high mem (128MB):
->=20
->  * 0x28000000 +-----------------+
->  *                   |     linuxhi     |
->  * 0x20000000 +-----------------+
->=20
-> Rest of the blocks are reserved.
-
-It should be possible to use EVA to expand lowmem to cover these two
-regions. Fitting in the whole 2GB would probably be a little trickier
-depending on other stuff (how much IO memory is needed, IOCU in use,
-etc).
-
-Cheers
-James
-
---MAH+hnPXVZWQ5cD/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJX0sxSAAoJEGwLaZPeOHZ6Y2kQAI9tQwwfNVPaa2OFtOaNxxgt
-jizUfV72FnkDcFifQWDlUqoptJdRyyxtuinYOx1JoYVZ7Lkbbym/8umAQRi7NOkk
-XPXgAroI/MeKaNW08TG3DJpyrRaLsyWr2a+ISzOHtcKxzEmOuFIC+05H24jsWN3T
-41ctCm2zlSCFeXyGhqLJDjPv1dd5zrur44CccIHQdaKqTUGJew/YSqOnF+xFJ2sj
-H81gdJviserGUk13yAkq3Q+NzA3FxDoHiTb39n91JQEkrhjKjNvgZjsKWHbEvIDV
-vR67Lkz8RI8Mdm+OSMGkgbVP4Z4AYnX3X1bZyhSS/NtDJkBW2OPsdvXB2jBOujqF
-22o8H7IqRy/77lDbKtZaZRjAWLvqz0tV1TPe5z1fGS0yvkKnjYQYJBO4puP7JN/o
-LzaAQlERhMCTBDBC0+VSlZQe+UjeHt0G1e1wsUjxoqGUgmbMD94kz5ECXa+yPhGZ
-GjUXMiWBX0YulFqA+3ObTLTQUUWDgRgmgm07DXHG464Hz1Twl2bvppiwsXCmXAmB
-XTH0RlI81ntyvn2cQiP206vNEeYsJkwcVyvPJUjqjPS7xUTnMjFth6yD929MXvS/
-taGaz0zxjmPUmXlYEB+T0aBEPOPPhNkYgrTsEPiEziucGjbWG68JXt/LIdBeM9S7
-hln2L3w0KP8CdgXsc+f8
-=yelh
------END PGP SIGNATURE-----
-
---MAH+hnPXVZWQ5cD/--
++config USB_DWC3_OCTEON
++	bool "Cavium OCTEON III Platforms"
++	depends on CPU_CAVIUM_OCTEON || COMPILE_TEST
++	depends on OF
++	default USB_DWC3
++	help
++	  Cavium OCTEON III SoCs with one DesignWare Core USB3 IP
++	  inside (i.e. cn71xx and cn78xx).
++	  Say 'Y' or 'M' if you have one such device.
++
+ endif
+diff --git a/drivers/usb/dwc3/Makefile b/drivers/usb/dwc3/Makefile
+index 22420e1..f1a7a3e 100644
+--- a/drivers/usb/dwc3/Makefile
++++ b/drivers/usb/dwc3/Makefile
+@@ -39,3 +39,4 @@ obj-$(CONFIG_USB_DWC3_PCI)		+= dwc3-pci.o
+ obj-$(CONFIG_USB_DWC3_KEYSTONE)		+= dwc3-keystone.o
+ obj-$(CONFIG_USB_DWC3_OF_SIMPLE)	+= dwc3-of-simple.o
+ obj-$(CONFIG_USB_DWC3_ST)		+= dwc3-st.o
++obj-$(CONFIG_USB_DWC3_OCTEON)		+= dwc3-octeon.o
+diff --git a/drivers/usb/dwc3/dwc3-octeon.c b/drivers/usb/dwc3/dwc3-octeon.c
+new file mode 100644
+index 0000000..de46939
+--- /dev/null
++++ b/drivers/usb/dwc3/dwc3-octeon.c
+@@ -0,0 +1,85 @@
++/**
++ * dwc3-octeon.c - Cavium OCTEON III DWC3 Specific Glue Layer
++ *
++ * Copyright (C) 2016 Cavium Networks
++ *
++ * Author: Steven J. Hill <steven.hill@cavium.com>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2  of
++ * the License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * Inspired by dwc3-exynos.c and dwc3-st.c files.
++ */
++
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/of.h>
++#include <linux/dma-mapping.h>
++
++struct dwc3_octeon {
++	struct device		*dev;
++	void __iomem		*usbctl;
++	int			index;
++};
++
++static int dwc3_octeon_probe(struct platform_device *pdev)
++{
++	struct device		*dev = &pdev->dev;
++	struct resource		*res;
++	struct dwc3_octeon	*octeon;
++	int			ret;
++
++	octeon = devm_kzalloc(dev, sizeof(*octeon), GFP_KERNEL);
++	if (!octeon)
++		return - ENOMEM;
++
++	/*
++	 * Right now device-tree probed devices do not provide
++	 * "dma-ranges" or "dma-coherent" properties.
++	 */
++	ret = dma_coerce_mask_and_coherent(dev, DMA_BIT_MASK(64));
++	if (ret)
++		return ret;
++
++	platform_set_drvdata(pdev, octeon);
++	octeon->dev = dev;
++
++	/* Resources for lower level OCTEON USB control. */
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	octeon->usbctl = devm_ioremap_resource(dev, res);
++	if (IS_ERR(octeon->usbctl))
++		return PTR_ERR(octeon->usbctl);
++
++	/* Controller index. */
++	octeon->index = ((u64)octeon->usbctl >> 24) & 1;
++
++	return 0;
++}
++
++static const struct of_device_id octeon_dwc3_match[] = {
++	{ .compatible = "cavium,octeon-7130-usb-uctl", },
++	{},
++};
++MODULE_DEVICE_TABLE(of, octeon_dwc3_match);
++
++static struct platform_driver dwc3_octeon_driver = {
++	.probe		= dwc3_octeon_probe,
++	.driver		= {
++		.name	= "octeon-dwc3",
++		.of_match_table = octeon_dwc3_match,
++		.pm	= NULL,
++	},
++};
++module_platform_driver(dwc3_octeon_driver);
++
++MODULE_ALIAS("platform:octeon-dwc3");
++MODULE_AUTHOR("Steven J. Hill <steven.hill@cavium.com");
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("DesignWare USB3 OCTEON Glue Layer");
+-- 
+1.9.1

@@ -1,12 +1,12 @@
-Received: from mail-by2nam01on0065.outbound.protection.outlook.com ([104.47.34.65]:11588
-        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
+Received: from mail-bn3nam01on0049.outbound.protection.outlook.com ([104.47.33.49]:41312
+        "EHLO NAM01-BN3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23992993AbcIIQ1uKCevZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 9 Sep 2016 18:27:50 +0200
-Subject: [PATCH v2] usb: dwc3: OCTEON: add support for device tree
+        id S23991998AbcIJUy4NT4bH (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sat, 10 Sep 2016 22:54:56 +0200
+Subject: [PATCH v3] usb: dwc3: OCTEON: add support for device tree
 From: "Steven J. Hill" <Steven.Hill@cavium.com>
-Message-ID: <57D2E2F4.8030707@cavium.com>
-Date: Fri, 9 Sep 2016 11:27:32 -0500
+Message-ID: <57D47313.7040109@cavium.com>
+Date: Sat, 10 Sep 2016 15:54:43 -0500
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -22,14 +22,17 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-usb@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>
-Message-ID: <20160909162732.O5W7Tjacabm8e4j1A_mkiozgb1I1HOgx_c2gA11n4_4@z>
+Message-ID: <20160910205443.lg7OW3r177mTz_K7PX0Skc0CeXe27jleuVYuj0YVEfI@z>
 
-This patch adds support to parse the data for
+This patch adds support to parse probe data for
 the dwc3-octeon driver using device tree. The
 DWC3 IP core is found on OCTEON III processors.
 
 Signed-off-by: Steven J. Hill <Steven.Hill@cavium.com>
 
+Changes in v3:
+- Massive simplification of glue logic. Almost all the
+  work is done in the SoC platform code.
 Changes in v2:
 - Changed comment block to acurately describe why the DMA
   properties are being set.
@@ -40,10 +43,10 @@ Changes in v2:
   CPU_CAVIUM_OCTEON || COMPILE_TEST per Balbi's request.
 
 ---
- drivers/usb/dwc3/Kconfig       | 10 +++++
+ drivers/usb/dwc3/Kconfig       | 10 +++++++
  drivers/usb/dwc3/Makefile      |  1 +
- drivers/usb/dwc3/dwc3-octeon.c | 85 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 96 insertions(+)
+ drivers/usb/dwc3/dwc3-octeon.c | 61 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 72 insertions(+)
  create mode 100644 drivers/usb/dwc3/dwc3-octeon.c
 
 diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
@@ -76,10 +79,10 @@ index 22420e1..f1a7a3e 100644
 +obj-$(CONFIG_USB_DWC3_OCTEON)		+= dwc3-octeon.o
 diff --git a/drivers/usb/dwc3/dwc3-octeon.c b/drivers/usb/dwc3/dwc3-octeon.c
 new file mode 100644
-index 0000000..de46939
+index 0000000..ae84a01
 --- /dev/null
 +++ b/drivers/usb/dwc3/dwc3-octeon.c
-@@ -0,0 +1,85 @@
+@@ -0,0 +1,61 @@
 +/**
 + * dwc3-octeon.c - Cavium OCTEON III DWC3 Specific Glue Layer
 + *
@@ -105,22 +108,10 @@ index 0000000..de46939
 +#include <linux/of.h>
 +#include <linux/dma-mapping.h>
 +
-+struct dwc3_octeon {
-+	struct device		*dev;
-+	void __iomem		*usbctl;
-+	int			index;
-+};
-+
 +static int dwc3_octeon_probe(struct platform_device *pdev)
 +{
 +	struct device		*dev = &pdev->dev;
-+	struct resource		*res;
-+	struct dwc3_octeon	*octeon;
 +	int			ret;
-+
-+	octeon = devm_kzalloc(dev, sizeof(*octeon), GFP_KERNEL);
-+	if (!octeon)
-+		return - ENOMEM;
 +
 +	/*
 +	 * Right now device-tree probed devices do not provide
@@ -129,18 +120,6 @@ index 0000000..de46939
 +	ret = dma_coerce_mask_and_coherent(dev, DMA_BIT_MASK(64));
 +	if (ret)
 +		return ret;
-+
-+	platform_set_drvdata(pdev, octeon);
-+	octeon->dev = dev;
-+
-+	/* Resources for lower level OCTEON USB control. */
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	octeon->usbctl = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(octeon->usbctl))
-+		return PTR_ERR(octeon->usbctl);
-+
-+	/* Controller index. */
-+	octeon->index = ((u64)octeon->usbctl >> 24) & 1;
 +
 +	return 0;
 +}

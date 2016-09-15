@@ -1,16 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:11184 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:62355 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992240AbcINKB2id1Ad (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 14 Sep 2016 12:01:28 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 2/2] MIPS: pm-cps: Generate idle state entry code when CPUs are onlined
-Date: Wed, 14 Sep 2016 11:00:27 +0100
-Message-ID: <20160914100027.20945-2-paul.burton@imgtec.com>
-In-Reply-To: <20160914100027.20945-1-paul.burton@imgtec.com>
-References: <20160914100027.20945-1-paul.burton@imgtec.com>
+        with ESMTP id S23992244AbcIOVv3ucVIl (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 15 Sep 2016 23:51:29 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH BACKPORT 3.17-4.7] MIPS: KVM: Check for pfn noslot case
+Date: Thu, 15 Sep 2016 22:51:08 +0100
+Message-ID: <947668829a347e094a2b1e4af7792857d0960a6b.1473976044.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,147 +19,53 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>, Adam Buchbinder <adam.buchbinder@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, linux-kernel@vger.kernel.org, Markos Chandras <markos.chandras@imgtec.com>
-Message-ID: <20160914100027.fpEE03b09p4h4DzxJiHFRwB20sVH7GN84jCQMREyxtA@z>
+To: stable@vger.kernel.org
+Cc: James Hogan <james.hogan@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, kvm@vger.kernel.org
+Message-ID: <20160915215108.t9Dqggyl8jYc8iy2pCl2G_0jFJN9WCELefrRe0vkQqY@z>
 
-The MIPS Coherent Processing System (CPS) power management code has
-previously generated code used to enter low power idle states once
-during boot for all CPUs. This has the drawback that if a CPU is present
-in the system but not being used (for example due to the maxcpus kernel
-parameter) then we encounter problems due to not having probed that CPU
-for information about its type & properties. The result of this is that
-we generate entry code which is both unused, potentially entirely
-invalid & likely to be unsuitable for the CPU in question anyway.
+commit ba913e4f72fc9cfd03dad968dfb110eb49211d80 upstream.
 
-Avoid this by generating idle state entry code only when a CPU is
-brought online. This way we only ever generate code for CPUs that we
-know we've probed the properties of, and that will actually be used.
+When mapping a page into the guest we error check using is_error_pfn(),
+however this doesn't detect a value of KVM_PFN_NOSLOT, indicating an
+error HVA for the page. This can only happen on MIPS right now due to
+unusual memslot management (e.g. being moved / removed / resized), or
+with an Enhanced Virtual Memory (EVA) configuration where the default
+KVM_HVA_ERR_* and kvm_is_error_hva() definitions are unsuitable (fixed
+in a later patch). This case will be treated as a pfn of zero, mapping
+the first page of physical memory into the guest.
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+It would appear the MIPS KVM port wasn't updated prior to being merged
+(in v3.10) to take commit 81c52c56e2b4 ("KVM: do not treat noslot pfn as
+a error pfn") into account (merged v3.8), which converted a bunch of
+is_error_pfn() calls to is_error_noslot_pfn(). Switch to using
+is_error_noslot_pfn() instead to catch this case properly.
 
+Fixes: 858dd5d45733 ("KVM/MIPS32: MMU/TLB operations for the Guest.")
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: "Radim Krčmář" <rkrcmar@redhat.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Cc: kvm@vger.kernel.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+[james.hogan@imgtec.com: Backport to v4.7.y]
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
 ---
+ arch/mips/kvm/tlb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/mips/kernel/pm-cps.c | 45 +++++++++++++++++++--------------------------
- 1 file changed, 19 insertions(+), 26 deletions(-)
-
-diff --git a/arch/mips/kernel/pm-cps.c b/arch/mips/kernel/pm-cps.c
-index 5b31a94..522a466 100644
---- a/arch/mips/kernel/pm-cps.c
-+++ b/arch/mips/kernel/pm-cps.c
-@@ -8,6 +8,7 @@
-  * option) any later version.
-  */
+diff --git a/arch/mips/kvm/tlb.c b/arch/mips/kvm/tlb.c
+index ed021ae7867a..4e0a8f23af78 100644
+--- a/arch/mips/kvm/tlb.c
++++ b/arch/mips/kvm/tlb.c
+@@ -159,7 +159,7 @@ static int kvm_mips_map_page(struct kvm *kvm, gfn_t gfn)
+ 	srcu_idx = srcu_read_lock(&kvm->srcu);
+ 	pfn = kvm_mips_gfn_to_pfn(kvm, gfn);
  
-+#include <linux/cpuhotplug.h>
- #include <linux/init.h>
- #include <linux/percpu.h>
- #include <linux/slab.h>
-@@ -70,8 +71,8 @@ static DEFINE_PER_CPU_ALIGNED(atomic_t, pm_barrier);
- DEFINE_PER_CPU_ALIGNED(struct mips_static_suspend_state, cps_cpu_state);
- 
- /* A somewhat arbitrary number of labels & relocs for uasm */
--static struct uasm_label labels[32] __initdata;
--static struct uasm_reloc relocs[32] __initdata;
-+static struct uasm_label labels[32];
-+static struct uasm_reloc relocs[32];
- 
- /* CPU dependant sync types */
- static unsigned stype_intervention;
-@@ -198,10 +199,10 @@ int cps_pm_enter_state(enum cps_pm_state state)
- 	return 0;
- }
- 
--static void __init cps_gen_cache_routine(u32 **pp, struct uasm_label **pl,
--					 struct uasm_reloc **pr,
--					 const struct cache_desc *cache,
--					 unsigned op, int lbl)
-+static void cps_gen_cache_routine(u32 **pp, struct uasm_label **pl,
-+				  struct uasm_reloc **pr,
-+				  const struct cache_desc *cache,
-+				  unsigned op, int lbl)
- {
- 	unsigned cache_size = cache->ways << cache->waybit;
- 	unsigned i;
-@@ -242,10 +243,10 @@ static void __init cps_gen_cache_routine(u32 **pp, struct uasm_label **pl,
- 	uasm_i_nop(pp);
- }
- 
--static int __init cps_gen_flush_fsb(u32 **pp, struct uasm_label **pl,
--				    struct uasm_reloc **pr,
--				    const struct cpuinfo_mips *cpu_info,
--				    int lbl)
-+static int cps_gen_flush_fsb(u32 **pp, struct uasm_label **pl,
-+			     struct uasm_reloc **pr,
-+			     const struct cpuinfo_mips *cpu_info,
-+			     int lbl)
- {
- 	unsigned i, fsb_size = 8;
- 	unsigned num_loads = (fsb_size * 3) / 2;
-@@ -340,9 +341,9 @@ static int __init cps_gen_flush_fsb(u32 **pp, struct uasm_label **pl,
- 	return 0;
- }
- 
--static void __init cps_gen_set_top_bit(u32 **pp, struct uasm_label **pl,
--				       struct uasm_reloc **pr,
--				       unsigned r_addr, int lbl)
-+static void cps_gen_set_top_bit(u32 **pp, struct uasm_label **pl,
-+				struct uasm_reloc **pr,
-+				unsigned r_addr, int lbl)
- {
- 	uasm_i_lui(pp, t0, uasm_rel_hi(0x80000000));
- 	uasm_build_label(pl, *pp, lbl);
-@@ -353,7 +354,7 @@ static void __init cps_gen_set_top_bit(u32 **pp, struct uasm_label **pl,
- 	uasm_i_nop(pp);
- }
- 
--static void * __init cps_gen_entry_code(unsigned cpu, enum cps_pm_state state)
-+static void *cps_gen_entry_code(unsigned cpu, enum cps_pm_state state)
- {
- 	struct uasm_label *l = labels;
- 	struct uasm_reloc *r = relocs;
-@@ -628,7 +629,7 @@ out_err:
- 	return NULL;
- }
- 
--static int __init cps_gen_core_entries(unsigned cpu)
-+static int cps_pm_online_cpu(unsigned int cpu)
- {
- 	enum cps_pm_state state;
- 	unsigned core = cpu_data[cpu].core;
-@@ -670,9 +671,6 @@ static int __init cps_gen_core_entries(unsigned cpu)
- 
- static int __init cps_pm_init(void)
- {
--	unsigned cpu;
--	int err;
--
- 	/* Detect appropriate sync types for the system */
- 	switch (current_cpu_data.cputype) {
- 	case CPU_INTERAPTIV:
-@@ -692,7 +690,7 @@ static int __init cps_pm_init(void)
- 	/* A CM is required for all non-coherent states */
- 	if (!mips_cm_present()) {
- 		pr_warn("pm-cps: no CM, non-coherent states unavailable\n");
--		goto out;
-+		return 0;
- 	}
- 
- 	/*
-@@ -722,12 +720,7 @@ static int __init cps_pm_init(void)
- 		pr_warn("pm-cps: no CPC, clock & power gating unavailable\n");
- 	}
- 
--	for_each_present_cpu(cpu) {
--		err = cps_gen_core_entries(cpu);
--		if (err)
--			return err;
--	}
--out:
--	return 0;
-+	return cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "AP_PM_CPS_CPU_ONLINE",
-+				 cps_pm_online_cpu, NULL);
- }
- arch_initcall(cps_pm_init);
+-	if (kvm_mips_is_error_pfn(pfn)) {
++	if (is_error_noslot_pfn(pfn)) {
+ 		kvm_err("Couldn't get pfn for gfn %#" PRIx64 "!\n", gfn);
+ 		err = -EFAULT;
+ 		goto out;
 -- 
-2.9.3
+git-series 0.8.10

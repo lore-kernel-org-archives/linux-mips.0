@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:62355 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:65495 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992244AbcIOVv3ucVIl (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 15 Sep 2016 23:51:29 +0200
+        with ESMTP id S23992195AbcIOVvupnVrl (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 15 Sep 2016 23:51:50 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH BACKPORT 3.17-4.7] MIPS: KVM: Check for pfn noslot case
-Date: Thu, 15 Sep 2016 22:51:08 +0100
-Message-ID: <947668829a347e094a2b1e4af7792857d0960a6b.1473976044.git-series.james.hogan@imgtec.com>
+Subject: [PATCH BACKPORT 3.10-3.16] MIPS: KVM: Check for pfn noslot case
+Date: Thu, 15 Sep 2016 22:51:27 +0100
+Message-ID: <8d00898f91834454a4daf5c4944ddace9c6866f4.1473975914.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
@@ -21,7 +21,7 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: stable@vger.kernel.org
 Cc: James Hogan <james.hogan@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, kvm@vger.kernel.org
-Message-ID: <20160915215108.t9Dqggyl8jYc8iy2pCl2G_0jFJN9WCELefrRe0vkQqY@z>
+Message-ID: <20160915215127.I1XMxyxEHyQZyQ4IYyswOqWPFnhd2pATlQaqQl2wbso@z>
 
 commit ba913e4f72fc9cfd03dad968dfb110eb49211d80 upstream.
 
@@ -48,18 +48,18 @@ Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 Cc: kvm@vger.kernel.org
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-[james.hogan@imgtec.com: Backport to v4.7.y]
+[james.hogan@imgtec.com: Backport to v3.16.y]
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 ---
- arch/mips/kvm/tlb.c | 2 +-
+ arch/mips/kvm/kvm_tlb.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/kvm/tlb.c b/arch/mips/kvm/tlb.c
-index ed021ae7867a..4e0a8f23af78 100644
---- a/arch/mips/kvm/tlb.c
-+++ b/arch/mips/kvm/tlb.c
-@@ -159,7 +159,7 @@ static int kvm_mips_map_page(struct kvm *kvm, gfn_t gfn)
- 	srcu_idx = srcu_read_lock(&kvm->srcu);
+diff --git a/arch/mips/kvm/kvm_tlb.c b/arch/mips/kvm/kvm_tlb.c
+index 8a5a700ad8de..16cac5b9c604 100644
+--- a/arch/mips/kvm/kvm_tlb.c
++++ b/arch/mips/kvm/kvm_tlb.c
+@@ -155,7 +155,7 @@ static int kvm_mips_map_page(struct kvm *kvm, gfn_t gfn)
+         srcu_idx = srcu_read_lock(&kvm->srcu);
  	pfn = kvm_mips_gfn_to_pfn(kvm, gfn);
  
 -	if (kvm_mips_is_error_pfn(pfn)) {

@@ -1,22 +1,20 @@
-Received: from mail-wm0-f49.google.com ([74.125.82.49]:38581 "EHLO
-        mail-wm0-f49.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991960AbcIPNf6N9rWn (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Sep 2016 15:35:58 +0200
-Received: by mail-wm0-f49.google.com with SMTP id 1so42181063wmz.1
-        for <linux-mips@linux-mips.org>; Fri, 16 Sep 2016 06:35:58 -0700 (PDT)
-Message-ID: <1474032950.9425.12.camel@gmail.com>
-Subject: Re: genirq: Setting trigger mode 0 for irq 11 failed
- (txx9_irq_set_type+0x0/0xb8)
-From: Alban Browaeys <alban.browaeys@gmail.com>
-Date: Fri, 16 Sep 2016 15:35:50 +0200
-In-Reply-To: <57DBEBC8.7000209@arm.com>
-References: <CAMuHMdVW1eTn20=EtYcJ8hkVwohaSuH_yQXrY2MGBEvZ8fpFOg@mail.gmail.com>
-         <1473980577.17787.21.camel@gmail.com> <57DBA464.9010506@arm.com>
-         <1474023805.17258.10.camel@gmail.com> <57DBEBC8.7000209@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-Path: <alban.browaeys@gmail.com>
+Received: from smtp.codeaurora.org ([198.145.29.96]:35003 "EHLO
+        smtp.codeaurora.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23992110AbcIPXL30IHhR (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 17 Sep 2016 01:11:29 +0200
+Date: Fri, 16 Sep 2016 16:11:25 -0700
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [PATCH v3] clk: let clk_disable() return immediately if clk is
+ NULL
+Message-ID: <20160916231125.GW7243@codeaurora.org>
+References: <1472059613-30551-1-git-send-email-yamada.masahiro@socionext.com>
+ <194aebe5-38dd-f43d-fb4d-16ce592a68e8@gmail.com>
+ <CAK7LNARaV6Ga5G1GnYf9hywrr+YwOqqm-v1AzBpfXtM4u9ofBA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNARaV6Ga5G1GnYf9hywrr+YwOqqm-v1AzBpfXtM4u9ofBA@mail.gmail.com>
+Return-Path: <sboyd@codeaurora.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,21 +24,59 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Marc Zyngier <marc.zyngier@arm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Atsushi Nemoto <anemo@mba.ocn.ne.jp>, Krzysztof Kozlowski <k.kozlowski.k@gmail.com>, Kukjin Kim <kgene@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Cc: Linux MIPS Mailing List <linux-mips@linux-mips.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <20160916133550.cJyPP_ENYKxW-1T5gpYaAGJkZ7gtol4ZC4FECkkQDu8@z>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Michael Turquette <mturquette@baylibre.com>, linux-clk <linux-clk@vger.kernel.org>, linux-mips@linux-mips.org, Eric Miao <eric.y.miao@gmail.com>, Wan ZongShun <mcuos.com@gmail.com>, Steven Miao <realmz6@gmail.com>, Russell King <linux@armlinux.org.uk>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, Broadcom Kernel Feedback List <bcm-kernel-feedback-list@broadcom.com>, Ralf Baechle <ralf@linux-mips.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Florian Fainelli <f.fainelli@gmail.com>, Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <20160916231125.OlizLKPO8NAquwXYzZtJfFuoaIxFzHkzYfTPOfqDgsM@z>
 
-Le vendredi 16 septembre 2016 à 13:55 +0100, Marc Zyngier a écrit :
-> At that stage, I'm not sure I should care. Does the workaround make
-> your
-> platform usable?
+On 09/16, Masahiro Yamada wrote:
+> Hi Stephen, Michael,
+> 
+> 2016-08-26 0:27 GMT+09:00 Florian Fainelli <f.fainelli@gmail.com>:
+> > On 08/24/2016 10:26 AM, Masahiro Yamada wrote:
+> >> Many of clk_disable() implementations just return for NULL pointer,
+> >> but this check is missing from some.  Let's make it tree-wide
+> >> consistent.  It will allow clock consumers to call clk_disable()
+> >> without NULL pointer check.
+> >>
+> >> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> >> Acked-by: Greg Ungerer <gerg@uclinux.org>
+> >> Acked-by: Wan Zongshun <mcuos.com@gmail.com>
+> >> ---
+> >>
+> >> I came back after a long pause.
+> >> You can see the discussion about the previous version:
+> >> https://www.linux-mips.org/archives/linux-mips/2016-04/msg00063.html
+> >>
+> >>
+> >> Changes in v3:
+> >>   - Return only when clk is NULL.  Do not take care of error pointer.
+> >>
+> >> Changes in v2:
+> >>   - Rebase on Linux 4.6-rc1
+> >>
+> >>  arch/arm/mach-mmp/clock.c        | 3 +++
+> >>  arch/arm/mach-w90x900/clock.c    | 3 +++
+> >>  arch/blackfin/mach-bf609/clock.c | 3 +++
+> >>  arch/m68k/coldfire/clk.c         | 4 ++++
+> >>  arch/mips/bcm63xx/clk.c          | 3 +++
+> >
+> 
+> 
+> Gentle ping...
+> 
+> 
+> If you are not keen on this,
+> shall I split it per-arch and send to each arch subsystem?
+> 
 
-However awkward this was all about logs and clearing worries. There was
-no change in behavior  between the three cases : upstream, upstream
-commit reverted and patched upstream.
+If we get acks from more arch maintainers we could take it
+through clk tree, but we really don't maintain these other clk
+implementations so it isn't very appropriate to take it through
+clk tree anyway. Perhaps splitting it up per arch and sending it
+that way and then Ccing akpm (aka the patch collector) would make
+sure things get merged in a timely manner. Or Andrew could just
+pick up this patch as is.
 
-Mind this hardware (the Odroid U2) has no hardware buttons. Only power
-on plug.
-
-Best regards,
-Alban
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project

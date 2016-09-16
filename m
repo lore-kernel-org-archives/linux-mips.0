@@ -1,15 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:65495 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992195AbcIOVvupnVrl (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 15 Sep 2016 23:51:50 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH BACKPORT 3.10-3.16] MIPS: KVM: Check for pfn noslot case
-Date: Thu, 15 Sep 2016 22:51:27 +0100
-Message-ID: <8d00898f91834454a4daf5c4944ddace9c6866f4.1473975914.git-series.james.hogan@imgtec.com>
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:58791 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23991960AbcIPHpXGOOo6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Sep 2016 09:45:23 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <194aebe5-38dd-f43d-fb4d-16ce592a68e8@gmail.com>
+References: <1472059613-30551-1-git-send-email-yamada.masahiro@socionext.com> <194aebe5-38dd-f43d-fb4d-16ce592a68e8@gmail.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Fri, 16 Sep 2016 16:44:50 +0900
+Message-ID: <CAK7LNARaV6Ga5G1GnYf9hywrr+YwOqqm-v1AzBpfXtM4u9ofBA@mail.gmail.com>
+Subject: Re: [PATCH v3] clk: let clk_disable() return immediately if clk is NULL
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <yamada.masahiro@socionext.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,53 +20,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: stable@vger.kernel.org
-Cc: James Hogan <james.hogan@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, kvm@vger.kernel.org
-Message-ID: <20160915215127.I1XMxyxEHyQZyQ4IYyswOqWPFnhd2pATlQaqQl2wbso@z>
+To: Stephen Boyd <sboyd@codeaurora.org>, Michael Turquette <mturquette@baylibre.com>
+Cc: linux-clk <linux-clk@vger.kernel.org>, linux-mips@linux-mips.org, Eric Miao <eric.y.miao@gmail.com>, Wan ZongShun <mcuos.com@gmail.com>, Steven Miao <realmz6@gmail.com>, Russell King <linux@armlinux.org.uk>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, Broadcom Kernel Feedback List <bcm-kernel-feedback-list@broadcom.com>, Ralf Baechle <ralf@linux-mips.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <20160916074450.K47wlCEGb0pI8js_ENphPM7QsZ8rBcZf-EDLbKDeeHo@z>
 
-commit ba913e4f72fc9cfd03dad968dfb110eb49211d80 upstream.
+Hi Stephen, Michael,
 
-When mapping a page into the guest we error check using is_error_pfn(),
-however this doesn't detect a value of KVM_PFN_NOSLOT, indicating an
-error HVA for the page. This can only happen on MIPS right now due to
-unusual memslot management (e.g. being moved / removed / resized), or
-with an Enhanced Virtual Memory (EVA) configuration where the default
-KVM_HVA_ERR_* and kvm_is_error_hva() definitions are unsuitable (fixed
-in a later patch). This case will be treated as a pfn of zero, mapping
-the first page of physical memory into the guest.
+2016-08-26 0:27 GMT+09:00 Florian Fainelli <f.fainelli@gmail.com>:
+> On 08/24/2016 10:26 AM, Masahiro Yamada wrote:
+>> Many of clk_disable() implementations just return for NULL pointer,
+>> but this check is missing from some.  Let's make it tree-wide
+>> consistent.  It will allow clock consumers to call clk_disable()
+>> without NULL pointer check.
+>>
+>> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+>> Acked-by: Greg Ungerer <gerg@uclinux.org>
+>> Acked-by: Wan Zongshun <mcuos.com@gmail.com>
+>> ---
+>>
+>> I came back after a long pause.
+>> You can see the discussion about the previous version:
+>> https://www.linux-mips.org/archives/linux-mips/2016-04/msg00063.html
+>>
+>>
+>> Changes in v3:
+>>   - Return only when clk is NULL.  Do not take care of error pointer.
+>>
+>> Changes in v2:
+>>   - Rebase on Linux 4.6-rc1
+>>
+>>  arch/arm/mach-mmp/clock.c        | 3 +++
+>>  arch/arm/mach-w90x900/clock.c    | 3 +++
+>>  arch/blackfin/mach-bf609/clock.c | 3 +++
+>>  arch/m68k/coldfire/clk.c         | 4 ++++
+>>  arch/mips/bcm63xx/clk.c          | 3 +++
+>
 
-It would appear the MIPS KVM port wasn't updated prior to being merged
-(in v3.10) to take commit 81c52c56e2b4 ("KVM: do not treat noslot pfn as
-a error pfn") into account (merged v3.8), which converted a bunch of
-is_error_pfn() calls to is_error_noslot_pfn(). Switch to using
-is_error_noslot_pfn() instead to catch this case properly.
 
-Fixes: 858dd5d45733 ("KVM/MIPS32: MMU/TLB operations for the Guest.")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: "Radim Krčmář" <rkrcmar@redhat.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Cc: kvm@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-[james.hogan@imgtec.com: Backport to v3.16.y]
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
----
- arch/mips/kvm/kvm_tlb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Gentle ping...
 
-diff --git a/arch/mips/kvm/kvm_tlb.c b/arch/mips/kvm/kvm_tlb.c
-index 8a5a700ad8de..16cac5b9c604 100644
---- a/arch/mips/kvm/kvm_tlb.c
-+++ b/arch/mips/kvm/kvm_tlb.c
-@@ -155,7 +155,7 @@ static int kvm_mips_map_page(struct kvm *kvm, gfn_t gfn)
-         srcu_idx = srcu_read_lock(&kvm->srcu);
- 	pfn = kvm_mips_gfn_to_pfn(kvm, gfn);
- 
--	if (kvm_mips_is_error_pfn(pfn)) {
-+	if (is_error_noslot_pfn(pfn)) {
- 		kvm_err("Couldn't get pfn for gfn %#" PRIx64 "!\n", gfn);
- 		err = -EFAULT;
- 		goto out;
+
+If you are not keen on this,
+shall I split it per-arch and send to each arch subsystem?
+
+
+
 -- 
-git-series 0.8.10
+Best Regards
+Masahiro Yamada

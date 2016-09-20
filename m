@@ -1,17 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:34938 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:14272 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992836AbcITMGSn-dB6 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Sep 2016 14:06:18 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 4/4] KVM: MIPS: Drop dubious EntryHi optimisation
-Date: Tue, 20 Sep 2016 13:05:57 +0100
-Message-ID: <6c11917e34276ec1175d920950be665ef869c119.1474372617.git-series.james.hogan@imgtec.com>
+        with ESMTP id S23993058AbcITNxYaaO-Y (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Sep 2016 15:53:24 +0200
+Subject: Re: [PATCH v2 6/6] MIPS: Deprecate VPE Loader
+References: <1474361249-31064-1-git-send-email-matt.redfearn@imgtec.com>
+ <1474361249-31064-7-git-send-email-matt.redfearn@imgtec.com>
+ <20160920131934.GE14137@linux-mips.org>
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Message-ID: <fc65f123-6e32-4637-ac16-458e08029944@imgtec.com>
+Date: Tue, 20 Sep 2016 14:53:08 +0100
 MIME-Version: 1.0
-In-Reply-To: <cover.b4aaacd5414bd20c4eb4d53417956b268d69d1af.1474372617.git-series.james.hogan@imgtec.com>
-References: <cover.b4aaacd5414bd20c4eb4d53417956b268d69d1af.1474372617.git-series.james.hogan@imgtec.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <20160920131934.GE14137@linux-mips.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,44 +23,37 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: kvm@vger.kernel.org
-Cc: Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, James Hogan <james.hogan@imgtec.com>
-Message-ID: <20160920120557.8J-xHBepjBMwNGnJngI5q_l9gptAlo62ZcGaiN_IIpQ@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>, Ohad Ben-Cohen <ohad@wizery.com>, Thomas Gleixner <tglx@linutronix.de>, linux-mips@linux-mips.org, linux-remoteproc@vger.kernel.org, lisa.parratt@imgtec.com, linux-kernel@vger.kernel.org
+Message-ID: <20160920135308.eJfBUL7YKTYLx1inwT7feBwwLH41dkcW2A9qXRjF7fY@z>
 
-There exists a slightly dubious optimisation in the implementation of
-the MIPS KVM EntryHi emulation which skips TLB invalidation if the
-EntryHi points to an address in the guest KSeg0 region, intended to
-catch guest TLB invalidations where the ASID is almost immediately
-restored to the previous value.
+Hi Ralf,
 
-Now that we perform lazy host ASID regeneration for guest user mode when
-the guest ASID changes we should be able to drop the optimisation
-without a significant impact (only the extra TLB refills for the small
-amount of code while the TLB is being invalidated).
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: "Radim Krčmář" <rkrcmar@redhat.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Cc: kvm@vger.kernel.org
----
- arch/mips/kvm/emulate.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+On 20/09/16 14:19, Ralf Baechle wrote:
+> On Tue, Sep 20, 2016 at 09:47:29AM +0100, Matt Redfearn wrote:
+>
+>> The MIPS remote processor driver (CONFIG_MIPS_RPROC) provides a more
+>> standard mechanism for using one or more VPs as coprocessors running
+>> separate firmware.
+>>
+>> Here we deprecate this mechanism before it is removed.
+> The world will be a better place once this is removed.
 
-diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
-index 8dc9e64346e6..4db4c0370859 100644
---- a/arch/mips/kvm/emulate.c
-+++ b/arch/mips/kvm/emulate.c
-@@ -1162,8 +1162,7 @@ enum emulation_result kvm_mips_emulate_CP0(union mips_instruction inst,
- 			} else if (rd == MIPS_CP0_TLB_HI && sel == 0) {
- 				u32 nasid =
- 					vcpu->arch.gprs[rt] & KVM_ENTRYHI_ASID;
--				if ((KSEGX(vcpu->arch.gprs[rt]) != CKSEG0) &&
--				    ((kvm_read_c0_guest_entryhi(cop0) &
-+				if (((kvm_read_c0_guest_entryhi(cop0) &
- 				      KVM_ENTRYHI_ASID) != nasid)) {
- 					trace_kvm_asid_change(vcpu,
- 						kvm_read_c0_guest_entryhi(cop0)
--- 
-git-series 0.8.10
+Indeed :-)
+
+>
+> I receive the occasional minor cleanup or robopatch (coccinelle or similar)
+> for the VPE loader but I have no indication this is actually being used
+> by anybody, so is thee any reason why not to delete it right away?
+
+I'd like to get the remote processor implementation in, then delete the 
+VPE loader in the next kernel revision, if that's ok with you. Once it 
+is removed, we should also be able to remove the CMP SMP implementation, 
+and other bits of infrastructure that'll no longer be needed.
+
+Thanks,
+Matt
+
+>
+>    Ralf

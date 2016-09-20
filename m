@@ -1,16 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:14272 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:41442 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993058AbcITNxYaaO-Y (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Sep 2016 15:53:24 +0200
-Subject: Re: [PATCH v2 6/6] MIPS: Deprecate VPE Loader
+        with ESMTP id S23992161AbcITPcIJnryo (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Sep 2016 17:32:08 +0200
+Subject: Re: [PATCH v2 5/6] remoteproc/MIPS: Add a remoteproc driver for MIPS
 References: <1474361249-31064-1-git-send-email-matt.redfearn@imgtec.com>
- <1474361249-31064-7-git-send-email-matt.redfearn@imgtec.com>
- <20160920131934.GE14137@linux-mips.org>
+ <1474361249-31064-6-git-send-email-matt.redfearn@imgtec.com>
+ <alpine.DEB.2.20.1609201141120.6905@nanos>
 From: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <fc65f123-6e32-4637-ac16-458e08029944@imgtec.com>
-Date: Tue, 20 Sep 2016 14:53:08 +0100
+Message-ID: <95f3d60f-5d4d-aa6d-c94c-c21f717872d0@imgtec.com>
+Date: Tue, 20 Sep 2016 16:31:51 +0100
 MIME-Version: 1.0
-In-Reply-To: <20160920131934.GE14137@linux-mips.org>
+In-Reply-To: <alpine.DEB.2.20.1609201141120.6905@nanos>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Matt.Redfearn@imgtec.com>
@@ -23,37 +23,65 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>, Ohad Ben-Cohen <ohad@wizery.com>, Thomas Gleixner <tglx@linutronix.de>, linux-mips@linux-mips.org, linux-remoteproc@vger.kernel.org, lisa.parratt@imgtec.com, linux-kernel@vger.kernel.org
-Message-ID: <20160920135308.eJfBUL7YKTYLx1inwT7feBwwLH41dkcW2A9qXRjF7fY@z>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, Ohad Ben-Cohen <ohad@wizery.com>, linux-mips@linux-mips.org, linux-remoteproc@vger.kernel.org, lisa.parratt@imgtec.com, linux-kernel@vger.kernel.org
+Message-ID: <20160920153151.1gsY-2n9c1V_WvBNVpur0ZvDjh9-t6jkhXcXnXJYjy0@z>
 
-Hi Ralf,
+Hi Thomas,
 
 
-On 20/09/16 14:19, Ralf Baechle wrote:
-> On Tue, Sep 20, 2016 at 09:47:29AM +0100, Matt Redfearn wrote:
+On 20/09/16 10:47, Thomas Gleixner wrote:
+> On Tue, 20 Sep 2016, Matt Redfearn wrote:
+>> +/* Intercept CPU hotplug events for syfs purposes */
+>> +static int mips_rproc_callback(struct notifier_block *nfb, unsigned long action,
+>> +			       void *hcpu)
+>> +{
+> Please convert to cpu hotplug state machine.
+
+OK, I've done that for this and the MIPS GIC patch, using the dynamic 
+CPUHP_AP_ONLINE_DYN state - I hope that is ok.
+
 >
->> The MIPS remote processor driver (CONFIG_MIPS_RPROC) provides a more
->> standard mechanism for using one or more VPs as coprocessors running
->> separate firmware.
->>
->> Here we deprecate this mechanism before it is removed.
-> The world will be a better place once this is removed.
+>> +	unsigned int cpu = (unsigned long)hcpu;
+>> +
+>> +	switch (action) {
+>> +	case CPU_UP_PREPARE:
+>> +	case CPU_DOWN_FAILED:
+>> +		mips_rproc_device_unregister(cpu);
+>> +		break;
+>> +	case CPU_DOWN_PREPARE:
+>> +		mips_rproc_device_register(cpu);
+>> +		break;
+>> +	}
+> There is no reason why you need to setup the rproc device on
+> DOWN_PREPARE. It's sufficient to do that when the CPU is dead, so you can
+> use a symetric callback prep/dead.
 
-Indeed :-)
+Sure, the new state machine makes this much nicer registering the 
+on/offline callbacks on one state.
 
 >
-> I receive the occasional minor cleanup or robopatch (coccinelle or similar)
-> for the VPE loader but I have no indication this is actually being used
-> by anybody, so is thee any reason why not to delete it right away?
+>> +	/* Dynamically create mips-rproc class devices based on hotplug data */
+>> +	get_online_cpus();
+>> +	for_each_possible_cpu(cpu)
+>> +		if (!cpu_online(cpu))
+>> +			mips_rproc_device_register(cpu);
+>> +	register_hotcpu_notifier(&mips_rproc_notifier);
+>> +	put_online_cpus();
+> Perhaps we should add support for "reverse" functionality to the state
+> machine core. I'll have a look later how hard that'd be.
 
-I'd like to get the remote processor implementation in, then delete the 
-VPE loader in the next kernel revision, if that's ok with you. Once it 
-is removed, we should also be able to remove the CMP SMP implementation, 
-and other bits of infrastructure that'll no longer be needed.
+Yeah - I've had to work around the framework a little here since we 
+require the opposite sense to the callbacks - activate the driver when 
+the cpu is offlined and vice versa. In practice the only issue this gave 
+me was that by default the framework invokes the teardown callback when 
+the state is removed, so I used __cpuhp_remove_state() to avoid creating 
+a remote processor device as the driver is being removed.
 
 Thanks,
 Matt
 
 >
->    Ralf
+> Thanks,
+>
+> 	tglx

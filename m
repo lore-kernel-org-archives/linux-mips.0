@@ -1,19 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:15691 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:53542 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991344AbcITKe4qRVGp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Sep 2016 12:34:56 +0200
-Subject: Re: [PATCH v2 09/14] MIPS: Malta: Probe RTC via DT
-References: <20160919212132.28893-1-paul.burton@imgtec.com>
- <20160919212132.28893-10-paul.burton@imgtec.com>
- <55c977d1-21dd-4cf8-d0f9-10d96b452573@cogentembedded.com>
-From: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <762c9f70-911c-0e48-ef8e-8f8b9e006592@imgtec.com>
-Date: Tue, 20 Sep 2016 11:34:39 +0100
+        with ESMTP id S23991984AbcITMDAXuVW6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Sep 2016 14:03:00 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH 0/4] KVM: MIPS: SMP & TLB invalidation fixes
+Date: Tue, 20 Sep 2016 13:02:26 +0100
+Message-ID: <cover.b4aaacd5414bd20c4eb4d53417956b268d69d1af.1474372617.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <55c977d1-21dd-4cf8-d0f9-10d96b452573@cogentembedded.com>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Return-Path: <Paul.Burton@imgtec.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,68 +19,46 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Message-ID: <20160920103439.Va4fjojLdQYg1ba6Jc_fa3Tiv8ZDF6laQPLiHG8SkKw@z>
+To: kvm@vger.kernel.org
+Cc: James Hogan <james.hogan@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20160920120226.IboNxNsaWJjKtIYmfE3rYnf4AwZ9d-tTKJ0IpPOrvDw@z>
 
-On 20/09/16 11:21, Sergei Shtylyov wrote:
-> Hello.
-> 
-> On 9/20/2016 12:21 AM, Paul Burton wrote:
-> 
->> Add the DT node required to probe the RTC, and remove the platform code
->> that was previously doing it.
->>
->> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
->>
->> ---
->>
->> Changes in v2:
->> - Remove rtc DT node label
-> 
->    Haven't you also renamed the node?
+This patchset primarily fixes MIPS KVM guest TLB invalidation on SMP
+hosts (patch 1, for 4.8 and stable), and optimises this code a little
+(patches 2-4, for 4.9).
 
-Hi Sergei,
+The main fix effectively invalidates the guest's TLB on all other CPUs
+by clearing their host ASIDs for this vCPU's guest kernel (and guest
+user) mode. This happens whenever a change to the guest mappings takes
+place, and is in addition to the TLB invalidation on the local CPU. This
+ensures that upon their next execution of this vCPU that stale mappings
+aren't used.
 
-Yes, strictly speaking I could have been more verbose & elaborated in
-the changelog on every aspect of the simple change from "rtc:
-mc146818@70" to "rtc@70". I didn't, but as it's obviously clear to you
-what changed and it has no effect on either the code or the commit that
-would end up in git I don't really see the point of your bringing it up.
+The rest of the patches convert the local invalidation to use clearing
+of ASIDs too, makes that lazy for guest user mode mappings when the
+guest ASID changes, and drops a dubious optimisation around guest ASID
+changes. The use of ASID clearing is faster and doesn't flush TLB
+entries from other address spaces, but does result in entries for guest
+KSeg0 (which don't actually change) being invalidated too.
 
-Thanks,
-    Paul
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: "Radim Krčmář" <rkrcmar@redhat.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Cc: kvm@vger.kernel.org
+Cc: stable@vger.kernel.org
 
->>  arch/mips/boot/dts/mti/malta.dts     | 15 +++++++++++++++
->>  arch/mips/mti-malta/malta-platform.c | 21 ---------------------
->>  2 files changed, 15 insertions(+), 21 deletions(-)
->>
->> diff --git a/arch/mips/boot/dts/mti/malta.dts
->> b/arch/mips/boot/dts/mti/malta.dts
->> index af765af..fecbca8 100644
->> --- a/arch/mips/boot/dts/mti/malta.dts
->> +++ b/arch/mips/boot/dts/mti/malta.dts
->> @@ -49,4 +49,19 @@
->>          interrupt-parent = <&gic>;
->>          interrupts = <GIC_SHARED 3 IRQ_TYPE_LEVEL_HIGH>;
->>      };
->> +
->> +    isa {
->> +        compatible = "isa";
->> +        #address-cells = <2>;
->> +        #size-cells = <1>;
->> +        ranges = <1 0 0 0x1000>;
->> +
->> +        rtc@70 {
->> +            compatible = "motorola,mc146818";
->> +            reg = <1 0x70 0x8>;
->> +
->> +            interrupt-parent = <&i8259>;
->> +            interrupts = <8>;
->> +        };
->> +    };
->>  };
-> [...]
-> 
-> MBR, Sergei
-> 
+James Hogan (4):
+  KVM: MIPS: Drop other CPU ASIDs on guest MMU changes
+  KVM: MIPS: Split kernel/user ASID regeneration
+  KVM: MIPS: Invalidate TLB by regenerating ASIDs
+  KVM: MIPS: Drop dubious EntryHi optimisation
+
+ arch/mips/include/asm/kvm_host.h |  3 +-
+ arch/mips/kvm/emulate.c          | 78 +++++++++++++++++++++++++++------
+ arch/mips/kvm/mips.c             | 30 +++++++++++++-
+ arch/mips/kvm/mmu.c              | 16 ++++++-
+ 4 files changed, 111 insertions(+), 16 deletions(-)
+
+-- 
+git-series 0.8.10

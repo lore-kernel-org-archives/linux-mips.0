@@ -1,20 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:27657 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:53820 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991970AbcIUPBm4rF-1 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 21 Sep 2016 17:01:42 +0200
-Subject: Re: [PATCH 1/9] MIPS: traps: 64bit kernels should read CP0_EBase
- 64bit
-References: <cover.d93e43428f3c573bdd18d7c874830705b39c3a8a.1472747205.git-series.james.hogan@imgtec.com>
- <e826225b15736539cd96a1b6b2a99e2bb2b4eb87.1472747205.git-series.james.hogan@imgtec.com>
- <20160921130852.GA10899@linux-mips.org>
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <73eede89-af68-eb17-b0b3-2537084da819@imgtec.com>
-Date: Wed, 21 Sep 2016 16:01:26 +0100
+        with ESMTP id S23991970AbcIUSQQc9ttI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 21 Sep 2016 20:16:16 +0200
+Message-ID: <57E2CE5B.8020406@imgtec.com>
+Date: Wed, 21 Sep 2016 11:15:55 -0700
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20160921130852.GA10899@linux-mips.org>
+Subject: Re: [PATCH 7/9] MIPS: uprobes: Flush icache via kernel address
+References: <cover.d93e43428f3c573bdd18d7c874830705b39c3a8a.1472747205.git-series.james.hogan@imgtec.com> <0d915756776de050b8a92b5bb5d4e7ffbe784d66.1472747205.git-series.james.hogan@imgtec.com> <20160921132656.GF14137@linux-mips.org>
+In-Reply-To: <20160921132656.GF14137@linux-mips.org>
 Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@imgtec.com>
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,48 +23,57 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20160921150126.0iusib9qEuR6dxH1ipcaew4_Jh-fLX1Im-mT40svXhk@z>
+Message-ID: <20160921181555.We8Yl-12mLGEnr1cOMx2nUe6tuiZ612cPLiI3g51_-g@z>
 
-Hi Ralf,
-
-
-On 21/09/16 14:08, Ralf Baechle wrote:
-> On Thu, Sep 01, 2016 at 05:30:07PM +0100, James Hogan wrote:
+On 09/21/2016 06:26 AM, Ralf Baechle wrote:
+> On Thu, Sep 01, 2016 at 05:30:13PM +0100, James Hogan wrote:
 >
->> When reading the CP0_EBase register containing the WG (write gate) bit,
->> the ebase variable should be set to the full value of the register, i.e.
->> on a 64-bit kernel the full 64-bit width of the register via
->> read_cp0_ebase_64(), and on a 32-bit kernel the full 32-bit width
->> including bits 31:30 which may be writeable.
-> How about changing the definition of read/write_c0_ebase to
->
-> #define read_c0_ebase()         __read_ulong_c0_register($15, 1)
-> #define write_c0_ebase(val)     __write_ulong_c0_register($15, 1, val)
-
-James added the {read,write}_c0_ebase_64 functions in 
-37fb60f8e3f011c25c120081a73886ad8dbc42fd, because performing a 64bit 
-access to 32bit cp0 registers (like ebase on 32bit cpus) was an 
-undefined operation pre-r6, so we can't always access them as longs.
-
->
-> or using a new variant like
->
-> #define read_c0_ebase_ulong()         __read_ulong_c0_register($15, 1)
-> #define write_c0_ebase_ulong(val)     __write_ulong_c0_register($15, 1, val)
->
-> to avoid the ifdefery?  This could also make this bit
->
->                  ebase = cpu_has_mips64r6 ? read_c0_ebase_64()
->                                           : (s32)read_c0_ebase();
-
-This relies on being able to determine a 64bit value for ebase, either 
-by reading it in its entirety on a 64bit cpu (including on a 32bit 
-kernel) or sign extending it from a 32bit read.
-
-Thanks,
-Matt
-
->
-> in cpu-probe.c prettier.
+>> Update arch_uprobe_copy_ixol() to use the kmap_atomic() based kernel
+>> address to flush the icache with flush_icache_range(), rather than the
+>> user mapping. We have the kernel mapping available anyway and this
+>> avoids having to switch to using the new __flush_icache_user_range() for
+>> the sake of Enhanced Virtual Addressing (EVA) where flush_icache_range()
+>> will become ineffective on user addresses.
+>>
+>> Signed-off-by: James Hogan <james.hogan@imgtec.com>
+>> Cc: Ralf Baechle <ralf@linux-mips.org>
+>> Cc: Leonid Yegoshin <leonid.yegoshin@imgtec.com>
+>> Cc: linux-mips@linux-mips.org
+>> ---
+>>   arch/mips/kernel/uprobes.c | 13 ++++---------
+>>   1 file changed, 4 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/arch/mips/kernel/uprobes.c b/arch/mips/kernel/uprobes.c
+>> index 8452d933a645..9a507ab1ea38 100644
+>> --- a/arch/mips/kernel/uprobes.c
+>> +++ b/arch/mips/kernel/uprobes.c
+>> @@ -301,19 +301,14 @@ int set_orig_insn(struct arch_uprobe *auprobe, struct mm_struct *mm,
+>>   void __weak arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
+>>   				  void *src, unsigned long len)
+>>   {
+>> -	void *kaddr;
+>> +	void *kaddr, kstart;
+>>   
+>>   	/* Initialize the slot */
+>>   	kaddr = kmap_atomic(page);
+>> -	memcpy(kaddr + (vaddr & ~PAGE_MASK), src, len);
+>> +	kstart = kaddr + (vaddr & ~PAGE_MASK);
+>> +	memcpy(kstart, src, len);
+>> +	flush_icache_range(kstart, kstart + len);
+>>   	kunmap_atomic(kaddr);
+>> -
+>> -	/*
+>> -	 * The MIPS version of flush_icache_range will operate safely on
+>> -	 * user space addresses and more importantly, it doesn't require a
+>> -	 * VMA argument.
+>> -	 */
+>> -	flush_icache_range(vaddr, vaddr + len);
+> I can't convince myself this is right wrt. to cache aliases ...
 >
 >    Ralf
+>
+It is incorrect if there is I-cache aliasing (very rare) and there is no 
+HIGHMEM cache aliasing fix (not fixed). But top tree Linux doesn't work 
+with I-cache aliasing either.
+
+- Leonid.

@@ -1,16 +1,14 @@
-Received: from mailapp02.imgtec.com ([217.156.133.132]:61178 "EHLO
+Received: from mailapp02.imgtec.com ([217.156.133.132]:62363 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992143AbcIVNivXRBAr (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 22 Sep 2016 15:38:51 +0200
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Subject: [PATCH 3/3] MIPS: uprobes: fix use of uninitialised variable
-Date: Thu, 22 Sep 2016 15:38:33 +0200
-Message-ID: <1474551513-30647-4-git-send-email-marcin.nowakowski@imgtec.com>
-In-Reply-To: <1474551513-30647-1-git-send-email-marcin.nowakowski@imgtec.com>
-References: <1474551513-30647-1-git-send-email-marcin.nowakowski@imgtec.com>
+        by eddie.linux-mips.org with ESMTP id S23992196AbcIVOsOv9hLD (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 22 Sep 2016 16:48:14 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: Fix delay slot emulation count in debugfs
+Date: Thu, 22 Sep 2016 15:47:40 +0100
+Message-ID: <20160922144740.4273-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Marcin.Nowakowski@imgtec.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,45 +18,35 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, ralf@linux-mips.org
-Cc: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Message-ID: <20160922133833.xSOh74-1o2lA6ByXNOn6QHNzbRbQx1OFGjFbtu4a0zM@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20160922144740.g_UZWjoa0Nt2gSYozwRiMciifPqxbY3qfT3yh4AF16A@z>
 
-arch_uprobe_pre_xol needs to emulate a branch if a branch instruction
-has been replaced with a breakpoint, but in fact an uninitialised local
-variable was passed to the emulator routine instead of the original
-instruction
+Commit 432c6bacbd0c ("MIPS: Use per-mm page to execute branch delay slot
+instructions") accidentally removed use of the MIPS_FPU_EMU_INC_STATS
+macro from do_dsemulret, leading to the ds_emul file in debugfs always
+returning zero even though we perform delay slot emulations.
 
-Fixes: 40e084a506eb ('MIPS: Add uprobes support.')
-Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Fix this by re-adding the use of the MIPS_FPU_EMU_INC_STATS macro.
+
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Fixes: 432c6bacbd0c ("MIPS: Use per-mm page to execute branch delay slot instructions")
+Cc: linux-mips@linux-mips.org
+Cc: Ralf Baechle <ralf@linux-mips.org>
 ---
- arch/mips/kernel/uprobes.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ arch/mips/math-emu/dsemul.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/kernel/uprobes.c b/arch/mips/kernel/uprobes.c
-index 3b8accb..4c7c155 100644
---- a/arch/mips/kernel/uprobes.c
-+++ b/arch/mips/kernel/uprobes.c
-@@ -157,7 +157,6 @@ bool is_trap_insn(uprobe_opcode_t *insn)
- int arch_uprobe_pre_xol(struct arch_uprobe *aup, struct pt_regs *regs)
- {
- 	struct uprobe_task *utask = current->utask;
--	union mips_instruction insn;
- 
- 	/*
- 	 * Now find the EPC where to resume after the breakpoint has been
-@@ -168,10 +167,10 @@ int arch_uprobe_pre_xol(struct arch_uprobe *aup, struct pt_regs *regs)
- 		unsigned long epc;
- 
- 		epc = regs->cp0_epc;
--		__compute_return_epc_for_insn(regs, insn);
-+		__compute_return_epc_for_insn(regs,
-+			(union mips_instruction) aup->insn[0]);
- 		aup->resume_epc = regs->cp0_epc;
- 	}
--
- 	utask->autask.saved_trap_nr = current->thread.trap_nr;
- 	current->thread.trap_nr = UPROBE_TRAP_NR;
- 	regs->cp0_epc = current->utask->xol_vaddr;
+diff --git a/arch/mips/math-emu/dsemul.c b/arch/mips/math-emu/dsemul.c
+index 72a4642..4a094f7 100644
+--- a/arch/mips/math-emu/dsemul.c
++++ b/arch/mips/math-emu/dsemul.c
+@@ -298,5 +298,6 @@ bool do_dsemulret(struct pt_regs *xcp)
+ 	/* Set EPC to return to post-branch instruction */
+ 	xcp->cp0_epc = current->thread.bd_emu_cont_pc;
+ 	pr_debug("dsemulret to 0x%08lx\n", xcp->cp0_epc);
++	MIPS_FPU_EMU_INC_STATS(ds_emul);
+ 	return true;
+ }
 -- 
-2.7.4
+2.10.0

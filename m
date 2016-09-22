@@ -1,17 +1,21 @@
-Received: from mailapp02.imgtec.com ([217.156.133.132]:27387 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992143AbcIVQPzKWZaO (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 22 Sep 2016 18:15:55 +0200
-Subject: Re: [RFC] Timing hazard in arch/mips/kernel/smp.c:start_secondary
-References: <CAJx26kX1ygnds8wD_L95fxwKZRiQhFAkC7DivZmvrGgjas+WLg@mail.gmail.com>
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <de7895bb-c8c3-65b0-392d-d0618a1e074d@imgtec.com>
-Date: Thu, 22 Sep 2016 17:15:47 +0100
+Received: from mailapp01.imgtec.com ([195.59.15.196]:23934 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992160AbcIVVPdYB6-T (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 22 Sep 2016 23:15:33 +0200
+Date: Thu, 22 Sep 2016 22:15:27 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH 7/9] MIPS: uprobes: Flush icache via kernel address
+Message-ID: <20160922211527.GB7352@jhogan-linux.le.imgtec.org>
+References: <cover.d93e43428f3c573bdd18d7c874830705b39c3a8a.1472747205.git-series.james.hogan@imgtec.com>
+ <0d915756776de050b8a92b5bb5d4e7ffbe784d66.1472747205.git-series.james.hogan@imgtec.com>
+ <20160921132656.GF14137@linux-mips.org>
+ <57E2CE5B.8020406@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJx26kX1ygnds8wD_L95fxwKZRiQhFAkC7DivZmvrGgjas+WLg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="neYutvxvOLaeuPCA"
+Content-Disposition: inline
+In-Reply-To: <57E2CE5B.8020406@imgtec.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,190 +25,100 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Justin Chen <justinpopo6@gmail.com>, linux-mips@linux-mips.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <20160922161547.TrxGSR3GD9BXZVoNSOydIy1rv9nGbYiwmz2FH5ZFYBk@z>
+To: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20160922211527.rH1BTbxC4JH0nXFOQrXwYGI00uYbgkSXddIOcHdB0g4@z>
 
-Hi Justin,
+--neYutvxvOLaeuPCA
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Nice catch! Funnily enough I ran into the same deadlock today so your 
-debugging helped arrive at a quick solution. The following patch fixes 
-the issue for me, does it fix it for you?
+On Wed, Sep 21, 2016 at 11:15:55AM -0700, Leonid Yegoshin wrote:
+> On 09/21/2016 06:26 AM, Ralf Baechle wrote:
+> > On Thu, Sep 01, 2016 at 05:30:13PM +0100, James Hogan wrote:
+> >
+> >> Update arch_uprobe_copy_ixol() to use the kmap_atomic() based kernel
+> >> address to flush the icache with flush_icache_range(), rather than the
+> >> user mapping. We have the kernel mapping available anyway and this
+> >> avoids having to switch to using the new __flush_icache_user_range() f=
+or
+> >> the sake of Enhanced Virtual Addressing (EVA) where flush_icache_range=
+()
+> >> will become ineffective on user addresses.
+> >>
+> >> Signed-off-by: James Hogan <james.hogan@imgtec.com>
+> >> Cc: Ralf Baechle <ralf@linux-mips.org>
+> >> Cc: Leonid Yegoshin <leonid.yegoshin@imgtec.com>
+> >> Cc: linux-mips@linux-mips.org
+> >> ---
+> >>   arch/mips/kernel/uprobes.c | 13 ++++---------
+> >>   1 file changed, 4 insertions(+), 9 deletions(-)
+> >>
+> >> diff --git a/arch/mips/kernel/uprobes.c b/arch/mips/kernel/uprobes.c
+> >> index 8452d933a645..9a507ab1ea38 100644
+> >> --- a/arch/mips/kernel/uprobes.c
+> >> +++ b/arch/mips/kernel/uprobes.c
+> >> @@ -301,19 +301,14 @@ int set_orig_insn(struct arch_uprobe *auprobe, s=
+truct mm_struct *mm,
+> >>   void __weak arch_uprobe_copy_ixol(struct page *page, unsigned long v=
+addr,
+> >>   				  void *src, unsigned long len)
+> >>   {
+> >> -	void *kaddr;
+> >> +	void *kaddr, kstart;
+> >>  =20
+> >>   	/* Initialize the slot */
+> >>   	kaddr =3D kmap_atomic(page);
+> >> -	memcpy(kaddr + (vaddr & ~PAGE_MASK), src, len);
+> >> +	kstart =3D kaddr + (vaddr & ~PAGE_MASK);
+> >> +	memcpy(kstart, src, len);
+> >> +	flush_icache_range(kstart, kstart + len);
+> >>   	kunmap_atomic(kaddr);
+> >> -
+> >> -	/*
+> >> -	 * The MIPS version of flush_icache_range will operate safely on
+> >> -	 * user space addresses and more importantly, it doesn't require a
+> >> -	 * VMA argument.
+> >> -	 */
+> >> -	flush_icache_range(vaddr, vaddr + len);
+> > I can't convince myself this is right wrt. to cache aliases ...
+> >
+> >    Ralf
+> >
+> It is incorrect if there is I-cache aliasing (very rare) and there is no=
+=20
+> HIGHMEM cache aliasing fix (not fixed). But top tree Linux doesn't work=
+=20
+> with I-cache aliasing either.
 
+Well its pretty trivial to just use the newly introduced
+__flush_icache_user_range() on the user address instead of using
+flush_icache_range().
 
-     MIPS: smp: Fix possibility of deadlock when bringing CPUs online
+Cheers
+James
 
-     This patch fixes the possibility of a deadlock when bringing up
-     secondary CPUs.
-     The deadlock occurs because the set_cpu_online() is called before
-     synchronise_count_slave(). This can cause a deadlock if the boot CPU,
-     having scheduled another thread, attempts to send an IPI to the
-     secondary CPU, which it sees has been marked online. The secondary is
-     blocked in synchronise_count_slave() waiting for the boot CPU to enter
-     synchronise_count_master(), but the boot cpu is blocked in
-     smp_call_function_many() waiting for the secondary to respond to it's
-     IPI request.
+--neYutvxvOLaeuPCA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-     Fix this by marking the CPU online in cpu_callin_map and synchronising
-     counters before declaring the CPU online and calculating the maps for
-     IPIs.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-     Cc: stable@vger.kernel.org # v4.2+
-     Reported-by: Justin Chen <justinpopo6@gmail.com>
-     Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+iQIcBAEBCAAGBQJX5EnvAAoJEGwLaZPeOHZ6ZBYP/3CgYpCJhmWrVaokcucmAI8I
+WWKVJDyWJaxLLL8iR9p7D28+Dx2vlG4H72CNNbkySNdbjh7kC83CGOw0hwb5pHON
+4rcSBhOj+CtJDJQRQ9NK746Zv68f++npnow9Y07fT2/3UedQVrlbxZgWJWYYwr9r
+YDY+OWKO1ocwGQYbU9sjhU9RHBviLvMYvUGYQU7MZbrMLKWZHh1kBmgPIxqLbsvk
+CiCMht0jPvLWY+1HIt9qRrYi32CdhmL4VaAxLtcQnXDLju7V68DwF+knqXfDFrF3
+yrtzj9wMxDYOgkaoGU71sBmXjw9g5D6Jlo5RFKjxCvpmI3VHdi75soqfrxMWIhcC
+ZSMMXYLpNlXKf3aW6uAt3E8NVwCGgNK3B0Kbd1aFIAFzg6IiNjQKbTt5gDPD5rKs
+jhVxlBeU1jtOzFHT4reUuZ811yto5GWNvm2flxQDPbcJeqSS4MAbhAuut/cZDP96
+AjvITsLCnEX00S3CQs+yhmuJ9g6XZG44mo0GMOaV12w5u2HwLLmecD5HkOWAfnCY
+akujGe4PuwCy9Of/uUfvBI1VeTI9/o4Jeqx5MtmSv01ngKUO0LpZlefYX8wRr2eY
+RGNwc0xS16iPZmeD08XSW5rxcbUnYblKFCiXFB7M+eyctDe6GGZ3dd1CHd7E5VfF
+fk7cWoHFFY+4/c7yns/q
+=v/1L
+-----END PGP SIGNATURE-----
 
-diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-index f95f094f36e4..b0baf48951fa 100644
---- a/arch/mips/kernel/smp.c
-+++ b/arch/mips/kernel/smp.c
-@@ -322,6 +322,9 @@ asmlinkage void start_secondary(void)
-         cpumask_set_cpu(cpu, &cpu_coherent_mask);
-         notify_cpu_starting(cpu);
-
-+       cpumask_set_cpu(cpu, &cpu_callin_map);
-+       synchronise_count_slave(cpu);
-+
-         set_cpu_online(cpu, true);
-
-         set_cpu_sibling_map(cpu);
-@@ -329,10 +332,6 @@ asmlinkage void start_secondary(void)
-
-         calculate_cpu_foreign_map();
-
--       cpumask_set_cpu(cpu, &cpu_callin_map);
--
--       synchronise_count_slave(cpu);
--
-         /*
-          * irq will be enabled in ->smp_finish(), enabling it too early
-          * is dangerous.
-~
-
-If so, I will send the patch to Ralf.
-
-Thanks,
-
-Matt
-
-
-
-On 21/09/16 22:32, Justin Chen wrote:
-> Hello everyone,
->
-> I am running into a deadlock while testing bmips power management
-> code. Currently attempting to add power management functionality to
-> arch/mips/configs/bmips_stb_defconfig. The kernel locks up when coming
-> back from a suspend state. I am working on a bcm7435 board.
->
-> In arch/mips/kernel/smp.c:start_secondary
-> ---
-> asmlinkage void start_secondary(void)
-> {
->          ....
->          set_cpu_online(cpu, true);
->
->          set_cpu_sibling_map(cpu);
->          set_cpu_core_map(cpu);
->
->          calculate_cpu_foreign_map();
->
->          cpumask_set_cpu(cpu, &cpu_callin_map);
->
->          synchronise_count_slave(cpu);
->          ....
-> }
-> ---
-> The deadlock occurs because the set_cpu_online() is called before
-> synchronise_count_slave(). This can cause a deadlock if the boot cpu
-> sees that the secondary cpu is online and tries to execute a function
-> on it before it synchronizes with it. The boot cpu ends up waiting for
-> the secondary cpu to execute a function, while the secondary cpu waits
-> for the boot cpu to synchronise with it.
->
-> Lets assume the following occurs.
->
-> 1. CPU0 starts CPU1. CPU0 starts waiting for CPU1 to start up.
-> CPU0 ends up at arch/mips/kernel/smp.c:__cpu_up().
-> ---
-> int __cpu_up(unsigned int cpu, struct task_struct *tidle)
-> {
->          mp_ops->boot_secondary(cpu, tidle);
->
->          /*
->           * Trust is futile.  We should really have timeouts ...
->           */
->          while (!cpumask_test_cpu(cpu, &cpu_callin_map)) {
->                  udelay(100);
->                  schedule();
->          }
->
->          synchronise_count_master(cpu);
->          return 0;
-> }
-> ---
-> While CPU0 waits for CPU1 it schedules another thread.
->
-> 2. CPU0 begins executing a new thread and eventually ends up at
-> kernel/smp.c:smp_call_function_many()
-> ---
-> void smp_call_function_many(const struct cpumask *mask,
->                              smp_call_func_t func, void *info, bool wait)
-> {
->          ....
->          /* No online cpus?  We're done. */
->          if (cpu >= nr_cpu_ids)
->                  return;
->
->          /* Do we have another CPU which isn't us? */
->          next_cpu = cpumask_next_and(cpu, mask, cpu_online_mask);
->          if (next_cpu == this_cpu)
->                  next_cpu = cpumask_next_and(next_cpu, mask, cpu_online_mask);
->
->          /* Fastpath: do that cpu by itself. */
->          if (next_cpu >= nr_cpu_ids) {
->                  smp_call_function_single(cpu, func, info, wait);
->                  return;
->          }
->          ....
-> }
-> ---
-> 3. CPU1 executes set_cpu_online() and blocks at
-> synchronise_count_slave(). Thus CPU1 is blocked, however it tells
-> everyone it is online.
->
-> 4. CPU0(in kernel/smp.c:smp_call_function_many()) sees that one CPU is
-> online and attempts to a run a function on that CPU(which is CPU1).
-> CPU0 then blocks with no preempt and irqs off. Thus both CPUs are
-> deadlocked.
-> CPU0 is blocked at smp_call_function_single()
-> CPU1 is blocked at synchronise_count_slave()
->
-> I am running into this issue with this execution.
-> kernel/power/standby.c: suspend_enter()
-> kernel/power/standby.c: syscore_resume() (Coming out of suspend, only 1 cpu up)
-> kernel/time/timekeeping.c: timekeeping_resume() (syscore calls the
-> timekeeping resume hook)
-> kernel/time/hrtimer.c: hrtimer_resume()
-> kernel/time/hrtimer.c: clock_was_set_delayed() (We schedule some work for later)
-> ...
-> CPU0 then starts up CPU1
-> arch/mips/kernel/smp.c: __cpu_up() (Comes here and decides to schedule
-> the hrtimer thread)
-> kernel/time/hrtimer.c: clock_was_set_work()
-> kernel/time/hrtimer.c: clock_was_set()
-> kernel/time/hrtimer.c: on_each_cpu() (and this is where we get screwed)
-> ...
-> kernel/smp.c: smp_call_function_many() (Eventually gets here and
-> blocks if CPU1 already executed set_cpu_online())
->
-> The deadlock doesn't happen when I test pm with no_console_suspend. I
-> am assuming this happens because things get printed out before
-> "set_cpu_online()" gets executed. Thus delaying the timing. Then CPU0
-> does not see that CPU1 is online when running
-> "smp_call_function_many()".
->
-> Am I seeing this correctly? What would be the proper fix to this?
->
-> Thanks,
-> Justin
->
+--neYutvxvOLaeuPCA--

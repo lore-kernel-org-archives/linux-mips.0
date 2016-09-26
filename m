@@ -1,14 +1,18 @@
-Received: from mailapp02.imgtec.com ([217.156.133.132]:35522 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23991932AbcIWPjDGFDBi (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 23 Sep 2016 17:39:03 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH] of: Prevent unaligned access in of_alias_scan()
-Date: Fri, 23 Sep 2016 16:38:27 +0100
-Message-ID: <20160923153827.8263-1-paul.burton@imgtec.com>
+Received: from emh07.mail.saunalahti.fi ([62.142.5.117]:41032 "EHLO
+        emh07.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992043AbcIZUlCUn3M7 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 26 Sep 2016 22:41:02 +0200
+Date: Mon, 26 Sep 2016 23:41:01 +0300
+From: Aaro Koskinen <aaro.koskinen@iki.fi>
+Subject: Re: [PATCH v2] MIPS: Octeon: mark GPIO controller node not populated
+ after IRQ init.
+Message-ID: <20160926204101.GB19498@raspberrypi.musicnaut.iki.fi>
+References: <57C0922C.40907@cavium.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <57C0922C.40907@cavium.com>
+Return-Path: <aaro.koskinen@iki.fi>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,43 +22,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20160923153827.r5sK6FuGAfqXEoGNvZJPbytRxTV9ush3nXMaMCnCVRU@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, "Steven J. Hill" <Steven.Hill@cavium.com>
+Message-ID: <20160926204101.YhHN03v6DDbOoBZNZldRo63V0mkfZ2iw6onYpU_vl_w@z>
 
-When allocating a struct alias_prop, of_alias_scan() only requested that
-it be aligned on a 4 byte boundary. The struct contains pointers which
-leads to us attempting 64 bit writes on 64 bit systems, and if the CPU
-doesn't support unaligned memory accesses then this causes problems -
-for example on some MIPS64r2 CPUs including the "mips64r2-generic" QEMU
-emulated CPU it will trigger an address error exception.
+Hi,
 
-Fix this by requesting alignment for the struct alias_prop allocation
-matching that which the compiler expects, using the __alignof__ keyword.
+On Fri, Aug 26, 2016 at 02:02:04PM -0500, Steven J. Hill wrote:
+> We clear the OF_POPULATED flag for the GPIO controller node on Octeon
+> processors. Otherwise, none of the devices hanging on the GPIO lines
+> are probed. The 'gpio-leds' driver on OCTEON failed to probe in addition
+> to other devices on Cavium 71xx and 78xx development boards.
+> 
+> Fixes: 15cc2ed6dcf9 ("of/irq: Mark initialised interrupt controllers as populated")
+> Signed-off-by: Steven J. Hill <steven.hill@cavium.com>
+> Tested-by: Aaro Koskinen <aaro.koskinen@iki.fi>
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: devicetree@vger.kernel.org
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Frank Rowand <frowand.list@gmail.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org
-Cc: Ralf Baechle <ralf@linux-mips.org>
----
- drivers/of/base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ralf, I think this patch should be still included in v4.8 final.
 
-diff --git a/drivers/of/base.c b/drivers/of/base.c
-index 3ce6953..448aa40 100644
---- a/drivers/of/base.c
-+++ b/drivers/of/base.c
-@@ -2042,7 +2042,7 @@ void of_alias_scan(void * (*dt_alloc)(u64 size, u64 align))
- 			continue;
- 
- 		/* Allocate an alias_prop with enough space for the stem */
--		ap = dt_alloc(sizeof(*ap) + len + 1, 4);
-+		ap = dt_alloc(sizeof(*ap) + len + 1, __alignof__(*ap));
- 		if (!ap)
- 			continue;
- 		memset(ap, 0, sizeof(*ap) + len + 1);
--- 
-2.10.0
+Thanks,
+
+A.
+
+> ---
+>  arch/mips/cavium-octeon/octeon-irq.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/arch/mips/cavium-octeon/octeon-irq.c b/arch/mips/cavium-octeon/octeon-irq.c
+> index 5a9b87b..c1eb1ff 100644
+> --- a/arch/mips/cavium-octeon/octeon-irq.c
+> +++ b/arch/mips/cavium-octeon/octeon-irq.c
+> @@ -1619,6 +1619,12 @@ static int __init octeon_irq_init_gpio(
+>  		return -ENOMEM;
+>  	}
+> 
+> +	/*
+> +	 * Clear the OF_POPULATED flag that was set by of_irq_init()
+> +	 * so that all GPIO devices will be probed.
+> +	 */
+> +	of_node_clear_flag(gpio_node, OF_POPULATED);
+> +
+>  	return 0;
+>  }
+>  /*
+> -- 
+> 1.9.1
+> 
+> 

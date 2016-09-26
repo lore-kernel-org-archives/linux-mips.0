@@ -1,18 +1,20 @@
-Received: from emh07.mail.saunalahti.fi ([62.142.5.117]:41032 "EHLO
-        emh07.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992043AbcIZUlCUn3M7 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 26 Sep 2016 22:41:02 +0200
-Date: Mon, 26 Sep 2016 23:41:01 +0300
-From: Aaro Koskinen <aaro.koskinen@iki.fi>
+Received: from mail-co1nam03on0049.outbound.protection.outlook.com ([104.47.40.49]:43072
+        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23992043AbcIZWWTxIpVP (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 27 Sep 2016 00:22:19 +0200
 Subject: Re: [PATCH v2] MIPS: Octeon: mark GPIO controller node not populated
  after IRQ init.
-Message-ID: <20160926204101.GB19498@raspberrypi.musicnaut.iki.fi>
 References: <57C0922C.40907@cavium.com>
+ <20160926204101.GB19498@raspberrypi.musicnaut.iki.fi>
+From: "Steven J. Hill" <Steven.Hill@cavium.com>
+Message-ID: <da926586-ee9e-07c6-afb1-863093a0895e@cavium.com>
+Date: Mon, 26 Sep 2016 17:21:58 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57C0922C.40907@cavium.com>
-Return-Path: <aaro.koskinen@iki.fi>
+In-Reply-To: <20160926204101.GB19498@raspberrypi.musicnaut.iki.fi>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Steven.Hill@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,50 +24,16 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, "Steven J. Hill" <Steven.Hill@cavium.com>
-Message-ID: <20160926204101.YhHN03v6DDbOoBZNZldRo63V0mkfZ2iw6onYpU_vl_w@z>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>, Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Message-ID: <20160926222158.cluq5he1jHBwlcIoFyUyogfldxOefijDxVrTP59f2_E@z>
 
-Hi,
-
-On Fri, Aug 26, 2016 at 02:02:04PM -0500, Steven J. Hill wrote:
-> We clear the OF_POPULATED flag for the GPIO controller node on Octeon
-> processors. Otherwise, none of the devices hanging on the GPIO lines
-> are probed. The 'gpio-leds' driver on OCTEON failed to probe in addition
-> to other devices on Cavium 71xx and 78xx development boards.
+On 09/26/2016 03:41 PM, Aaro Koskinen wrote:
 > 
-> Fixes: 15cc2ed6dcf9 ("of/irq: Mark initialised interrupt controllers as populated")
-> Signed-off-by: Steven J. Hill <steven.hill@cavium.com>
-> Tested-by: Aaro Koskinen <aaro.koskinen@iki.fi>
-
-Ralf, I think this patch should be still included in v4.8 final.
-
-Thanks,
-
-A.
-
-> ---
->  arch/mips/cavium-octeon/octeon-irq.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+> Ralf, I think this patch should be still included in v4.8 final.
 > 
-> diff --git a/arch/mips/cavium-octeon/octeon-irq.c b/arch/mips/cavium-octeon/octeon-irq.c
-> index 5a9b87b..c1eb1ff 100644
-> --- a/arch/mips/cavium-octeon/octeon-irq.c
-> +++ b/arch/mips/cavium-octeon/octeon-irq.c
-> @@ -1619,6 +1619,12 @@ static int __init octeon_irq_init_gpio(
->  		return -ENOMEM;
->  	}
+> Thanks,
 > 
-> +	/*
-> +	 * Clear the OF_POPULATED flag that was set by of_irq_init()
-> +	 * so that all GPIO devices will be probed.
-> +	 */
-> +	of_node_clear_flag(gpio_node, OF_POPULATED);
-> +
->  	return 0;
->  }
->  /*
-> -- 
-> 1.9.1
+> A.
 > 
-> 
+Yes, please put it in 4.8 final. Thanks!

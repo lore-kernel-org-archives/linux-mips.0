@@ -1,16 +1,17 @@
-Received: from mailapp02.imgtec.com ([217.156.133.132]:17289 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23991965AbcI3JeBB11Le (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 30 Sep 2016 11:34:01 +0200
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Subject: [PATCH 2/2] MIPS: tracing: disable uprobe/kprobe on compact branch instructions
-Date: Fri, 30 Sep 2016 11:33:46 +0200
-Message-ID: <1475228026-25831-2-git-send-email-marcin.nowakowski@imgtec.com>
-In-Reply-To: <1475228026-25831-1-git-send-email-marcin.nowakowski@imgtec.com>
-References: <1475228026-25831-1-git-send-email-marcin.nowakowski@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:47975 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992166AbcI3OlAbWqPd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 30 Sep 2016 16:41:00 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH v2 01/14] irqchip: i8259: Add domain before mapping parent irq
+Date: Fri, 30 Sep 2016 15:40:48 +0100
+Message-ID: <7469373.vRGg21xy4h@np-p-burton>
+In-Reply-To: <20160919212132.28893-2-paul.burton@imgtec.com>
+References: <20160919212132.28893-1-paul.burton@imgtec.com> <20160919212132.28893-2-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Marcin.Nowakowski@imgtec.com>
+Content-Type: multipart/signed; boundary="nextPart4762191.RMUhLO6Eyp";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,120 +21,87 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, ralf@linux-mips.org
-Cc: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Message-ID: <20160930093346.PiGezDjAkOxkzueyTnvA91ZGvvSRZbFuyg4Vl_Jm1No@z>
+To: Marc Zyngier <marc.zyngier@arm.com>, Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org
+Message-ID: <20160930144048.QszMNxkHbsAzzqd20OeuCI60f0mcAbwh-XACMthBDnM@z>
 
-Current instruction decoder for uprobe/kprobe handler only handles
-branches with delay slots. For compact branches the behaviour is rather
-unpredictable - and depending on the encoding of a compact branch
-instruction may result in one (or more) of:
-- executing an instruction that follows a branch which wasn't in a delay
-  slot and shouldn't have been executed
-- incorrectly emulating a branch leading to a jump to a wrong location
-- unexpected branching out of the single-stepped code and never reaching
-  the breakpoint that should terminate the probe handler
+--nextPart4762191.RMUhLO6Eyp
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Results of these actions are generally unpredictable, but can end up
-with a probed application or kernel crash, so disable placing probes on
-compact branches until they are handled properly.
+On Monday, 19 September 2016 22:21:18 BST Paul Burton wrote:
+> Mapping the parent IRQ will use a virq number which may conflict with
+> the hardcoded I8259A_IRQ_BASE..I8259A_IRQ_BASE+15 range that the i8259
+> driver expects to be free. If this occurs then we'll hit errors when
+> adding the i8259 IRQ domain, since one of its virq numbers will already
+> be in use.
+> 
+> Avoid this by adding the i8259 domain before mapping the parent IRQ,
+> such that the i8259 virq numbers become used before the parent interrupt
+> controller gets a chance to use any of them.
 
-Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
----
- arch/mips/kernel/branch.c        | 34 ++++++++++++++++++++++++++++++++++
- arch/mips/kernel/kprobes.c       |  6 ++++++
- arch/mips/kernel/probes-common.h |  2 ++
- arch/mips/kernel/uprobes.c       |  6 ++++++
- 4 files changed, 48 insertions(+)
+Hello,
 
-diff --git a/arch/mips/kernel/branch.c b/arch/mips/kernel/branch.c
-index 46c227f..c3dce43 100644
---- a/arch/mips/kernel/branch.c
-+++ b/arch/mips/kernel/branch.c
-@@ -866,3 +866,37 @@ unaligned:
- 	force_sig(SIGBUS, current);
- 	return -EFAULT;
- }
-+
-+#if (defined CONFIG_KPROBES) || (defined CONFIG_UPROBES)
-+
-+int __insn_is_compact_branch(union mips_instruction insn)
-+{
-+	if (!cpu_has_mips_r6)
-+		return 0;
-+
-+	switch (insn.i_format.opcode) {
-+	case blezl_op:
-+	case bgtzl_op:
-+	case blez_op:
-+	case bgtz_op:
-+		/*
-+		 * blez[l] and bgtz[l] opcodes with non-zero rt
-+		 * are MIPS R6 compact branches
-+		 */
-+		if (insn.i_format.rt)
-+			return 1;
-+		break;
-+	case bc6_op:
-+	case balc6_op:
-+	case pop10_op:
-+	case pop30_op:
-+	case pop66_op:
-+	case pop76_op:
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(__insn_is_compact_branch);
-+
-+#endif  /* CONFIG_KPROBES || CONFIG_UPROBES */
-diff --git a/arch/mips/kernel/kprobes.c b/arch/mips/kernel/kprobes.c
-index 747e3bf..f5c8bce 100644
---- a/arch/mips/kernel/kprobes.c
-+++ b/arch/mips/kernel/kprobes.c
-@@ -106,6 +106,12 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
- 		goto out;
- 	}
- 
-+	if (__insn_is_compact_branch(insn)) {
-+		pr_notice("Kprobes for compact branches are not supported\n");
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
- 	/* insn: must be on special executable page on mips. */
- 	p->ainsn.insn = get_insn_slot();
- 	if (!p->ainsn.insn) {
-diff --git a/arch/mips/kernel/probes-common.h b/arch/mips/kernel/probes-common.h
-index c979c37..dd08e41 100644
---- a/arch/mips/kernel/probes-common.h
-+++ b/arch/mips/kernel/probes-common.h
-@@ -13,6 +13,8 @@
- 
- #include <asm/inst.h>
- 
-+int __insn_is_compact_branch(union mips_instruction insn);
-+
- static inline int __insn_has_delay_slot(const union mips_instruction insn)
- {
- 	switch (insn.i_format.opcode) {
-diff --git a/arch/mips/kernel/uprobes.c b/arch/mips/kernel/uprobes.c
-index a30ca7b..d3c82ad 100644
---- a/arch/mips/kernel/uprobes.c
-+++ b/arch/mips/kernel/uprobes.c
-@@ -36,6 +36,12 @@ int arch_uprobe_analyze_insn(struct arch_uprobe *aup,
- 		return -EINVAL;
- 
- 	inst.word = aup->insn[0];
-+
-+	if (__insn_is_compact_branch(inst)) {
-+		pr_notice("Uprobes for compact branches are not supported\n");
-+		return -EINVAL;
-+	}
-+
- 	aup->ixol[0] = aup->insn[insn_has_delay_slot(inst)];
- 	aup->ixol[1] = UPROBE_BRK_UPROBE_XOL;		/* NOP  */
- 
--- 
-2.7.4
+Any chance of getting reviews/acks on this & the following 2 patches in the 
+series so Ralf can take them through the MIPS tree? The lack of these (well, 
+patches 1 & 2 anyway) blocks applying many of the Malta patches later in the 
+series.
+
+Thanks,
+    Paul
+
+> 
+> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> ---
+> 
+> Changes in v2: None
+> 
+>  drivers/irqchip/irq-i8259.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/irq-i8259.c b/drivers/irqchip/irq-i8259.c
+> index 6b304eb..85897fd 100644
+> --- a/drivers/irqchip/irq-i8259.c
+> +++ b/drivers/irqchip/irq-i8259.c
+> @@ -370,13 +370,15 @@ int __init i8259_of_init(struct device_node *node,
+> struct device_node *parent) struct irq_domain *domain;
+>  	unsigned int parent_irq;
+> 
+> +	domain = __init_i8259_irqs(node);
+> +
+>  	parent_irq = irq_of_parse_and_map(node, 0);
+>  	if (!parent_irq) {
+>  		pr_err("Failed to map i8259 parent IRQ\n");
+> +		irq_domain_remove(domain);
+>  		return -ENODEV;
+>  	}
+> 
+> -	domain = __init_i8259_irqs(node);
+>  	irq_set_chained_handler_and_data(parent_irq, i8259_irq_dispatch,
+>  					 domain);
+>  	return 0;
+
+
+--nextPart4762191.RMUhLO6Eyp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAABCAAGBQJX7nlwAAoJEIIg2fppPBxl8N4P/jZ9FoGAcVQjbyMxpzBga4Ca
+T6WTqClJgPRok6Qh6xs8hCkWXgoBQB/Mv5EX80DW2AnFU1bBQ31rwO2qEckqcFhj
+wn9fllhY15SMMU3zDt3e0j73rwyfIbg9lj1rfG7tLhgZAvD/y+SvGXWcKz7nlyrp
+XUHk5gl1DbCSzdPx4vGU/2DIQn7zOpM4Bn7Jd80R1QHOUmu34XwuSYQr8y1Rtx0m
+IeCwsU43UYvd2PNNgAY1DOznOqa0PylAWXj80RkCXmkN70YQfO6R3dU0y1yii0zG
+EkAosOK8x44JYo4++qY/DGhrEMwWoBH7Npi5YRF3w25W51a0tKgHDK9Jk+MUwD4P
+JE/5DOSy4u/M2oSy2Rk76hIipvrz2KvTmGzqBQLSIXFbYA1pVXfiR5LW0/OkhD6K
+MH6YNE0KDvnlHxHQ1D7bnkN6ZvGQm6ewXcBMzI42hXlRThA8FeONsEnuXys50A/L
+JU63wmXxYug/gZ2cvHidRXTSHNAKJmJHCHJ3pG847+MKcvv/2tiKBSLvfUaEoaNt
+7x1zwAIE+YDX8Mo+swL3lL5ilxT16JwU+vIZ6OQ8DatQ/Zv3y+sIeskWFg2jVYJq
+P34wufB1gA5pwNbJ0XkeaF2rHG6DljfaUoqDEcc7ngW6I2eqg0JLPmqbJwOwYLYr
+EtI2zWyWui2F2wcI0gve
+=1rjx
+-----END PGP SIGNATURE-----
+
+--nextPart4762191.RMUhLO6Eyp--

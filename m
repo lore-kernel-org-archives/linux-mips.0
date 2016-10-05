@@ -1,11 +1,11 @@
-Received: from mailapp02.imgtec.com ([217.156.133.132]:27385 "EHLO
+Received: from mailapp02.imgtec.com ([217.156.133.132]:58459 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992236AbcJERVqFqAVu (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 5 Oct 2016 19:21:46 +0200
+        by eddie.linux-mips.org with ESMTP id S23992155AbcJERWAXH5Zu (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 5 Oct 2016 19:22:00 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v3 11/18] MIPS: Print CM error reports upon bus errors
-Date: Wed, 5 Oct 2016 18:18:17 +0100
-Message-ID: <20161005171824.18014-12-paul.burton@imgtec.com>
+Subject: [PATCH v3 12/18] MIPS: Adjust MIPS64 CAC_BASE to reflect Config.K0
+Date: Wed, 5 Oct 2016 18:18:18 +0100
+Message-ID: <20161005171824.18014-13-paul.burton@imgtec.com>
 In-Reply-To: <20161005171824.18014-1-paul.burton@imgtec.com>
 References: <20161005171824.18014-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,20 +22,25 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20161005171817.X8iXsTecIh2tc64UStlwA0MMujxy_8WyE8c7G8ZE4i0@z>
+Message-ID: <20161005171818.fVUDYT4TcG9QhUVtLoGFmaMjpmF-glyBOOzERXPwjGQ@z>
 
-If a bus error occurs on a system with a MIPS Coherence Manager (CM)
-then the CM may hold useful diagnostic information. Printing this out
-has so far been left up to boards, with the requirement that they
-register a board_be_handler function & call mips_cm_error_decode() from
-there.
+On MIPS64 we define the default CAC_BASE as one of the xkphys regions of
+the virtual address space. Since the CCA is encoded in bits 61:59 of
+xkphys addresses, fixing CAC_BASE to any particular one prevents us from
+dynamically changing the CCA as we do for MIPS32 where CAC_BASE is
+placed within kseg0. In order to make the kernel more generic, drop the
+current kludge that gives CAC_BASE CCA=3 if CONFIG_DMA_NONCOHERENT is
+selected (disregarding CONFIG_DMA_MAYBE_COHERENT) & CCA=5 (which is not
+standardised by the architecture) otherwise. Instead read Config.K0 and
+generate the appropriate offset into xkphys, presuming that either the
+bootloader or early kernel code will have configured Config.K0
+appropriately. This seems like the best option for a generic
+implementation.
 
-In order to avoid boards other than Malta needing to duplicate this
-code, call mips_cm_error_decode() automatically if the board registers
-no board_be_handler, and remove the Malta implementation of that.
-
-This patch results in no functional change, but removes a further piece
-of platform-specific code.
+The ip27 spaces.h is adjusted to set its former value of CAC_BASE, since
+it's the only user of CAC_BASE from assembly (in its smp_slave_setup
+macro). This allows the generic case to focus solely on C code without
+breaking ip27.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 ---
@@ -43,76 +48,62 @@ Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 Changes in v3: None
 Changes in v2: None
 
- arch/mips/kernel/traps.c          |  3 +++
- arch/mips/mti-malta/malta-int.c   | 15 ---------------
- arch/mips/mti-malta/malta-setup.c |  6 ------
- 3 files changed, 3 insertions(+), 21 deletions(-)
+ arch/mips/include/asm/addrspace.h           | 3 +--
+ arch/mips/include/asm/mach-generic/spaces.h | 8 +++-----
+ arch/mips/include/asm/mach-ip27/spaces.h    | 1 +
+ 3 files changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 0c0270c..1f5fdee 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -49,6 +49,7 @@
- #include <asm/fpu.h>
- #include <asm/fpu_emulator.h>
- #include <asm/idle.h>
-+#include <asm/mips-cm.h>
- #include <asm/mips-r2-to-r6-emul.h>
- #include <asm/mipsregs.h>
- #include <asm/mipsmtregs.h>
-@@ -445,6 +446,8 @@ asmlinkage void do_be(struct pt_regs *regs)
+diff --git a/arch/mips/include/asm/addrspace.h b/arch/mips/include/asm/addrspace.h
+index c5b04e7..4856adc 100644
+--- a/arch/mips/include/asm/addrspace.h
++++ b/arch/mips/include/asm/addrspace.h
+@@ -126,8 +126,7 @@
+ #define PHYS_TO_XKSEG_UNCACHED(p)	PHYS_TO_XKPHYS(K_CALG_UNCACHED, (p))
+ #define PHYS_TO_XKSEG_CACHED(p)		PHYS_TO_XKPHYS(K_CALG_COH_SHAREABLE, (p))
+ #define XKPHYS_TO_PHYS(p)		((p) & TO_PHYS_MASK)
+-#define PHYS_TO_XKPHYS(cm, a)		(_CONST64_(0x8000000000000000) | \
+-					 (_CONST64_(cm) << 59) | (a))
++#define PHYS_TO_XKPHYS(cm, a)		(XKPHYS | (_ACAST64_(cm) << 59) | (a))
  
- 	if (board_be_handler)
- 		action = board_be_handler(regs, fixup != NULL);
-+	else
-+		mips_cm_error_report();
+ /*
+  * The ultimate limited of the 64-bit MIPS architecture:  2 bits for selecting
+diff --git a/arch/mips/include/asm/mach-generic/spaces.h b/arch/mips/include/asm/mach-generic/spaces.h
+index afc96ec..952b0fd 100644
+--- a/arch/mips/include/asm/mach-generic/spaces.h
++++ b/arch/mips/include/asm/mach-generic/spaces.h
+@@ -12,6 +12,8 @@
  
- 	switch (action) {
- 	case MIPS_BE_DISCARD:
-diff --git a/arch/mips/mti-malta/malta-int.c b/arch/mips/mti-malta/malta-int.c
-index 9f83224..cb675ec 100644
---- a/arch/mips/mti-malta/malta-int.c
-+++ b/arch/mips/mti-malta/malta-int.c
-@@ -290,18 +290,3 @@ void __init arch_init_irq(void)
+ #include <linux/const.h>
  
- 	setup_irq(corehi_irq, &corehi_irqaction);
- }
--
--void malta_be_init(void)
--{
--	/* Could change CM error mask register. */
--}
--
--int malta_be_handler(struct pt_regs *regs, int is_fixup)
--{
--	/* This duplicates the handling in do_be which seems wrong */
--	int retval = is_fixup ? MIPS_BE_FIXUP : MIPS_BE_FATAL;
--
--	mips_cm_error_report();
--
--	return retval;
--}
-diff --git a/arch/mips/mti-malta/malta-setup.c b/arch/mips/mti-malta/malta-setup.c
-index f1b60748..a01d5de 100644
---- a/arch/mips/mti-malta/malta-setup.c
-+++ b/arch/mips/mti-malta/malta-setup.c
-@@ -42,9 +42,6 @@
- #define ROCIT_CONFIG_GEN0		0x1f403000
- #define  ROCIT_CONFIG_GEN0_PCI_IOCU	BIT(7)
++#include <asm/mipsregs.h>
++
+ /*
+  * This gives the physical RAM offset.
+  */
+@@ -52,11 +54,7 @@
+ #ifdef CONFIG_64BIT
  
--extern void malta_be_init(void);
--extern int malta_be_handler(struct pt_regs *regs, int is_fixup);
--
- static struct resource standard_io_resources[] = {
- 	{
- 		.name = "dma1",
-@@ -301,7 +298,4 @@ void __init plat_mem_setup(void)
- #if defined(CONFIG_VT) && defined(CONFIG_VGA_CONSOLE)
- 	screen_info_setup();
+ #ifndef CAC_BASE
+-#ifdef CONFIG_DMA_NONCOHERENT
+-#define CAC_BASE		_AC(0x9800000000000000, UL)
+-#else
+-#define CAC_BASE		_AC(0xa800000000000000, UL)
+-#endif
++#define CAC_BASE	PHYS_TO_XKPHYS(read_c0_config() & CONF_CM_CMASK, 0)
  #endif
--
--	board_be_init = malta_be_init;
--	board_be_handler = malta_be_handler;
- }
+ 
+ #ifndef IO_BASE
+diff --git a/arch/mips/include/asm/mach-ip27/spaces.h b/arch/mips/include/asm/mach-ip27/spaces.h
+index b18802a..4775a11 100644
+--- a/arch/mips/include/asm/mach-ip27/spaces.h
++++ b/arch/mips/include/asm/mach-ip27/spaces.h
+@@ -19,6 +19,7 @@
+ #define IO_BASE			0x9200000000000000
+ #define MSPEC_BASE		0x9400000000000000
+ #define UNCAC_BASE		0x9600000000000000
++#define CAC_BASE		0xa800000000000000
+ 
+ #define TO_MSPEC(x)		(MSPEC_BASE | ((x) & TO_PHYS_MASK))
+ #define TO_HSPEC(x)		(HSPEC_BASE | ((x) & TO_PHYS_MASK))
 -- 
 2.10.0

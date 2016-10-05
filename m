@@ -1,16 +1,23 @@
-Received: from mailapp02.imgtec.com ([217.156.133.132]:65219 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23991346AbcJFMdRgXfkK (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Oct 2016 14:33:17 +0200
-From: Rahul Bedarkar <rahul.bedarkar@imgtec.com>
-Subject: [PATCH 2/2] MIPS: DTS: img: add device tree for Marduk board
-Date: Thu, 6 Oct 2016 18:01:34 +0530
-Message-ID: <1475757094-31089-2-git-send-email-rahul.bedarkar@imgtec.com>
-In-Reply-To: <1475757094-31089-1-git-send-email-rahul.bedarkar@imgtec.com>
-References: <1475757094-31089-1-git-send-email-rahul.bedarkar@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:39191 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23991346AbcJFQDJbkvBp (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Oct 2016 18:03:09 +0200
+Date: Wed, 5 Oct 2016 16:56:54 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH 1/9] MIPS: traps: 64bit kernels should read CP0_EBase
+ 64bit
+Message-ID: <20161005155653.GG15578@jhogan-linux.le.imgtec.org>
+References: <cover.d93e43428f3c573bdd18d7c874830705b39c3a8a.1472747205.git-series.james.hogan@imgtec.com>
+ <e826225b15736539cd96a1b6b2a99e2bb2b4eb87.1472747205.git-series.james.hogan@imgtec.com>
+ <20160921130852.GA10899@linux-mips.org>
+ <73eede89-af68-eb17-b0b3-2537084da819@imgtec.com>
+ <alpine.LFD.2.20.1610021038190.25303@eddie.linux-mips.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Rahul.Bedarkar@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="WkfBGePaEyrk4zXB"
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.2.20.1610021038190.25303@eddie.linux-mips.org>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,257 +27,93 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, James Hartley <james.hartley@imgtec.com>
-Cc: linux-mips@linux-mips.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Rahul Bedarkar <rahul.bedarkar@imgtec.com>
-Message-ID: <20161006123134.886Iv-mXq6-wYHurzS7UHC_2zRa-wKAwM8c1hdR6RGM@z>
+To: "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc: Matt Redfearn <matt.redfearn@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20161005155654.wIgahK1UUNkDWswFNR_zwuz9TDHpm3Cug5kHQAKzqxA@z>
 
-Add support for Imagination Technologies' Marduk board which is based
-on Pistachio SoC. It is also known as Creator Ci40. Marduk is legacy
-name and will be there for decades.
+--WkfBGePaEyrk4zXB
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Documentation for this board can be found on
-https://docs.creatordev.io/ci40/
+Hi Maciej,
 
-This patch adds initial support for board with following peripherals:
+On Sun, Oct 02, 2016 at 11:30:13AM +0100, Maciej W. Rozycki wrote:
+> On Wed, 21 Sep 2016, Matt Redfearn wrote:
+>=20
+> > > > When reading the CP0_EBase register containing the WG (write gate) =
+bit,
+> > > > the ebase variable should be set to the full value of the register,=
+ i.e.
+> > > > on a 64-bit kernel the full 64-bit width of the register via
+> > > > read_cp0_ebase_64(), and on a 32-bit kernel the full 32-bit width
+> > > > including bits 31:30 which may be writeable.
+> > > How about changing the definition of read/write_c0_ebase to
+> > >
+> > > #define read_c0_ebase()         __read_ulong_c0_register($15, 1)
+> > > #define write_c0_ebase(val)     __write_ulong_c0_register($15, 1, val)
+> >=20
+> > James added the {read,write}_c0_ebase_64 functions in
+> > 37fb60f8e3f011c25c120081a73886ad8dbc42fd, because performing a 64bit ac=
+cess to
+> > 32bit cp0 registers (like ebase on 32bit cpus) was an undefined operati=
+on
+> > pre-r6, so we can't always access them as longs.
+>=20
+>  Well, `long' is 32-bit with 32-bit processors, however in older (as in:=
+=20
+> before 3.50) architecture revisions EBase was 32-bit even with 64-bit=20
+> processors,
+> so I take it you meant "like ebase on 64bit cpus", right?
+>=20
+> > > or using a new variant like
+> > >
+> > > #define read_c0_ebase_ulong()         __read_ulong_c0_register($15, 1)
+> > > #define write_c0_ebase_ulong(val)     __write_ulong_c0_register($15, =
+1, val)
+> > >
+> > > to avoid the ifdefery?  This could also make this bit
+> > >
+> > >                  ebase =3D cpu_has_mips64r6 ? read_c0_ebase_64()
+> > > : (s32)read_c0_ebase();
+> >=20
+> > This relies on being able to determine a 64bit value for ebase, either =
+by
+> > reading it in its entirety on a 64bit cpu (including on a 32bit kernel)=
+ or sign
+> > extending it from a 32bit read.
+>=20
+>  This does look wrong to me, as I noted above EBase is 64-bit with MIPS64=
+=20
+> processors as from architecture revision 3.50.  Also I don't think we wan=
+t=20
 
-* PWM based heartbeat LED
-* GPIO based buttons
-* SPI NOR flash on SPI1
-* UART0 and UART1
-* SD card
-* Ethernet
-* USB
-* PWM
-* ADC
-* I2C
+MIPS64 PRA (I'm looking at r5 and r6) seems to allow for write-gate not
+to be implemented, in which case the register is only 32-bits.
 
-Signed-off-by: Rahul Bedarkar <rahul.bedarkar@imgtec.com>
----
- .../bindings/mips/img/pistachio-marduk.txt         |  10 ++
- MAINTAINERS                                        |   6 +
- arch/mips/boot/dts/img/Makefile                    |   9 ++
- arch/mips/boot/dts/img/pistachio_marduk.dts        | 163 +++++++++++++++++++++
- 4 files changed, 188 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mips/img/pistachio-marduk.txt
- create mode 100644 arch/mips/boot/dts/img/Makefile
- create mode 100644 arch/mips/boot/dts/img/pistachio_marduk.dts
+Cheers
+James
 
-diff --git a/Documentation/devicetree/bindings/mips/img/pistachio-marduk.txt b/Documentation/devicetree/bindings/mips/img/pistachio-marduk.txt
-new file mode 100644
-index 0000000..2d5126d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mips/img/pistachio-marduk.txt
-@@ -0,0 +1,10 @@
-+Imagination Technologies' Pistachio SoC based Marduk Board
-+==========================================================
-+
-+Compatible string must be "img,pistachio-marduk", "img,pistachio"
-+
-+Hardware and other related documentation is available at
-+https://docs.creatordev.io/ci40/
-+
-+It is also known as Creator Ci40. Marduk is legacy name and will
-+be there for decades.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 98bcf06..8e6c962b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7515,6 +7515,12 @@ W:	http://www.kernel.org/doc/man-pages
- L:	linux-man@vger.kernel.org
- S:	Maintained
- 
-+MARDUK (CREATOR CI40) DEVICE TREE SUPPORT
-+M:	Rahul Bedarkar <rahul.bedarkar@imgtec.com>
-+L:	linux-mips@linux-mips.org
-+S:	Maintained
-+F:	arch/mips/boot/dts/img/pistachio_marduk.dts
-+
- MARVELL 88E6XXX ETHERNET SWITCH FABRIC DRIVER
- M:	Andrew Lunn <andrew@lunn.ch>
- M:	Vivien Didelot <vivien.didelot@savoirfairelinux.com>
-diff --git a/arch/mips/boot/dts/img/Makefile b/arch/mips/boot/dts/img/Makefile
-new file mode 100644
-index 0000000..69a65f0
---- /dev/null
-+++ b/arch/mips/boot/dts/img/Makefile
-@@ -0,0 +1,9 @@
-+dtb-$(CONFIG_MACH_PISTACHIO)	+= pistachio_marduk.dtb
-+
-+obj-y				+= $(patsubst %.dtb, %.dtb.o, $(dtb-y))
-+
-+# Force kbuild to make empty built-in.o if necessary
-+obj-				+= dummy.o
-+
-+always				:= $(dtb-y)
-+clean-files			:= *.dtb *.dtb.S
-diff --git a/arch/mips/boot/dts/img/pistachio_marduk.dts b/arch/mips/boot/dts/img/pistachio_marduk.dts
-new file mode 100644
-index 0000000..378381e
---- /dev/null
-+++ b/arch/mips/boot/dts/img/pistachio_marduk.dts
-@@ -0,0 +1,163 @@
-+/*
-+ * Copyright (C) 2015, 2016 Imagination Technologies Ltd.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * IMG Marduk board is also known as Creator Ci40.
-+ */
-+
-+/dts-v1/;
-+
-+#include "pistachio.dtsi"
-+
-+/ {
-+	model = "IMG Marduk (Creator Ci40)";
-+	compatible = "img,pistachio-marduk", "img,pistachio";
-+
-+	aliases {
-+		serial0 = &uart0;
-+		serial1 = &uart1;
-+		ethernet0 = &enet;
-+		spi0 = &spfi0;
-+		spi1 = &spfi1;
-+	};
-+
-+	chosen {
-+		bootargs = "root=/dev/sda1 rootwait ro lpj=723968";
-+		stdout-path = "serial1:115200";
-+	};
-+
-+	memory {
-+		device_type = "memory";
-+		reg =  <0x00000000 0x08000000>;
-+	};
-+
-+	reg_1v8: fixed-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "aux_adc_vref";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-boot-on;
-+	};
-+
-+	internal_dac_supply: internal_dac_supply {
-+		compatible = "regulator-fixed";
-+		regulator-name = "internal_dac_supply";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+	};
-+
-+	pwm_leds {
-+		compatible = "pwm-leds";
-+		heartbeat {
-+			label = "marduk:red:heartbeat";
-+			pwms = <&pwm 3 300000>;
-+			max-brightness = <255>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+	};
-+
-+	gpio_keys {
-+		compatible = "gpio-keys";
-+		button@1 {
-+			label = "Button 1";
-+			linux,code = <0x101>; /* BTN_1 */
-+			gpios = <&gpio3 6 GPIO_ACTIVE_LOW>;
-+		};
-+		button@2 {
-+			label = "Button 2";
-+			linux,code = <0x102>; /* BTN_2 */
-+			gpios = <&gpio2 14 GPIO_ACTIVE_LOW>;
-+		};
-+	};
-+};
-+
-+&internal_dac {
-+	VDD-supply = <&internal_dac_supply>;
-+};
-+
-+&spfi1 {
-+	status = "okay";
-+
-+	pinctrl-0 = <&spim1_pins>, <&spim1_quad_pins>, <&spim1_cs0_pin>,
-+		    <&spim1_cs1_pin>;
-+	pinctrl-names = "default";
-+	cs-gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>, <&gpio0 1 GPIO_ACTIVE_HIGH>;
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <50000000>;
-+	};
-+};
-+
-+&uart0 {
-+	status = "okay";
-+	assigned-clock-rates = <114278400>, <1843200>;
-+};
-+
-+&uart1 {
-+	status = "okay";
-+};
-+
-+&usb {
-+	status = "okay";
-+};
-+
-+&enet {
-+	status = "okay";
-+};
-+
-+&pin_enet {
-+	drive-strength = <2>;
-+};
-+
-+&pin_enet_phy_clk {
-+	drive-strength = <2>;
-+};
-+
-+&sdhost {
-+	status = "okay";
-+	bus-width = <4>;
-+	disable-wp;
-+};
-+
-+&pin_sdhost_cmd {
-+	drive-strength = <2>;
-+};
-+
-+&pin_sdhost_data {
-+	drive-strength = <2>;
-+};
-+
-+&pwm {
-+	status = "okay";
-+
-+	pinctrl-0 = <&pwmpdm0_pin>, <&pwmpdm1_pin>, <&pwmpdm2_pin>,
-+		    <&pwmpdm3_pin>;
-+	pinctrl-names = "default";
-+};
-+
-+&adc {
-+	status = "okay";
-+	vref-supply = <&reg_1v8>;
-+	adc-reserved-channels = <0x10>;
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+
-+	tpm@20 {
-+		compatible = "infineon,slb9645tt";
-+		reg = <0x20>;
-+	};
-+
-+};
-+
-+&i2c3 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+};
--- 
-2.6.2
+--WkfBGePaEyrk4zXB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJX9SLFAAoJEGwLaZPeOHZ6RVUP/11hsK4w45xvj68msYCJEZWG
+yKY1l+jN3E9FMdNb3xhnfqKypOoIQV9RrTtB16ITJrWeDN6NEarq/mMc1WJZnFCX
+gt7XYvxKhKn348LtKbW4WkVZz5jsETQuEgTPXCUzgC2A2ZsACuz9ycJlVxyHti7o
+uvEhOro474V+FLhJeQ7K4ZkyJcXZUYvugfgxZPKmGOgId74GgRXjtiGIQJaAUEAt
+ENQdVuWoKcEs1QGMBA7iOuyTh4bJoxAJUtLsTKzKjabAKYgWfl1hJLM4zgX+iHYY
+CizHy91i7AAmSbjTBRgD/YQYIHwMaqPPXjXcUyKzDJdr+DVN8iJThbjYrXqxGdpP
+frSaqMRs6AVXzFCxGzoF2BNzBobf9oczd56bgkwgOGy6jUVzummsN6zfWxQUgmux
+L53NeH94D2T60UXi3w9E1SsaTA99y8wrvefpVCNq+Pt9hNK1HaneWPZ8o3I5EAox
+gVoQEL54/KG1YdAuETyiciv2kO8VtaaETzp/nYz2RJF63usegF1iBVZx8blejmQr
+mIelg6J19JqgfgsyrVda8wBK5ZDpF6aymnDMiHIZB0ShHVlHxCryzOhCx3FLkls7
+qQLb94M7bvzhFKfAa2vTjbZt+IZbI0I65Ym6oCxpfMXtcNqzugGjPtyzZntty2T8
+MrEA5g7uArluzgCyS90E
+=jcTF
+-----END PGP SIGNATURE-----
+
+--WkfBGePaEyrk4zXB--

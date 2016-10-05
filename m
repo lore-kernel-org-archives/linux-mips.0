@@ -1,19 +1,19 @@
-Received: from mail-co1nam03on0089.outbound.protection.outlook.com ([104.47.40.89]:19648
-        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23991172AbcJDBTMzDmmD (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 4 Oct 2016 03:19:12 +0200
-Subject: Re: [PATCH v9] mmc: OCTEON: Add host driver for OCTEON MMC
- controller.
-References: <836c0ca9-18f0-f6b5-bb79-8d0301d54154@cavium.com>
-From: "Steven J. Hill" <Steven.Hill@cavium.com>
-Message-ID: <c1d0ccad-10e2-9d5d-8192-2bbd7d7357b3@cavium.com>
-Date: Mon, 3 Oct 2016 20:18:59 -0500
+Received: from mailapp02.imgtec.com ([217.156.133.132]:33398 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23990557AbcJEGKQok4St (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 5 Oct 2016 08:10:16 +0200
+Subject: Re: [PATCH 1/2] MIPS: tracing: move insn_has_delay_slot to a shared
+ header
+References: <1475228026-25831-1-git-send-email-marcin.nowakowski@imgtec.com>
+ <20161004231809.GC14676@linux-mips.org>
+From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Message-ID: <205d3e96-0dc2-ba59-43da-dff1cde17a7a@imgtec.com>
+Date: Wed, 5 Oct 2016 08:10:09 +0200
 MIME-Version: 1.0
-In-Reply-To: <836c0ca9-18f0-f6b5-bb79-8d0301d54154@cavium.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20161004231809.GC14676@linux-mips.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <Steven.Hill@cavium.com>
+Return-Path: <Marcin.Nowakowski@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,21 +23,37 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, linux-mmc@vger.kernel.org
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, Mark Rutland <mark.rutland@arm.com>, David Daney <david.daney@cavium.com>
-Message-ID: <20161004011859.3npZu9BZdqJGhSNXxUBwANdtDE8cZytC7e5hTsKASaI@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20161005061009.wJYn6nDllcuKE_5GLgPFtmKSlqyMHGFd8rxSqKtvH6Q@z>
 
-On 09/19/2016 03:24 PM, Steven J. Hill wrote:
-> The OCTEON MMC controller is currently found on cn61XX and cn71XX
-> devices. Device parameters are configured from device tree data.
-> eMMC, MMC and SD devices are supported. Tested on Cavium CN7130.
-> 
-> Signed-off-by: Steven J. Hill <steven.hill@cavium.com>
-> Acked-by: David Daney <david.daney@cavium.com>
-> 
-Hello.
+On 05.10.2016 01:18, Ralf Baechle wrote:
+> On Fri, Sep 30, 2016 at 11:33:45AM +0200, Marcin Nowakowski wrote:
+>
+>> Currently both kprobes and uprobes code have definitions of the
+>> insn_has_delay_slot method. Move it to a separate header as an inline
+>> method that each probe-specific method can later use.
+>> No functional change intended, although the methods slightly varied in
+>> the constraints they set for the methods - the uprobes one was chosen as
+>> it is slightly more specific when filtering opcode fields.
+>
+> Applied - but this is way to big for an inline function and will end up
+> getting expanded two times in uprobes.c for no good reason.  I think this
+> function should become go to something like arch/mips/kernel/branch.c -
+> or maybe a helper library like arch/mips/lib/bdelay.c.
+>
+>   Ralf
+>
 
-Have any MMC maintainers gotten a chance to review our driver now
-that v4.8 is out? Thanks.
+Well - that's the behaviour my change hasn't modified.
+But I agree that it may be better to simply make it a library function 
+that could be used everywhere. The main reason I didn't do it in the 
+first place was to keep the implementation in kprobes in __kprobes 
+section like the original code did, but I guess it won't do any harm for 
+the code that is used in the uprobes path to exist in the kprobe section 
+as well?
 
-Steve
+It's probably not the last change in this area yet so I'll keep this in 
+mind and will update later.
+
+Marcin

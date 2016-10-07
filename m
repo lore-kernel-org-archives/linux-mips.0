@@ -1,14 +1,16 @@
-Received: from mailapp02.imgtec.com ([217.156.133.132]:11771 "EHLO
+Received: from mailapp02.imgtec.com ([217.156.133.132]:30498 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23991759AbcJGJYJfdoAY (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 7 Oct 2016 11:24:09 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: VDSO: Drop duplicated -I*/-E* aflags
-Date: Fri, 7 Oct 2016 10:23:46 +0100
-Message-ID: <21016db2fc628c73bc6efa1530ebeb866a30d6ae.1475832139.git-series.james.hogan@imgtec.com>
+        by eddie.linux-mips.org with ESMTP id S23992226AbcJGPTKxCikZ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 7 Oct 2016 17:19:10 +0200
+Date: Fri, 7 Oct 2016 16:18:54 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH] MIPS: Fix -mabi=64 build of vdso.lds
+In-Reply-To: <20161007083858.GK19354@jhogan-linux.le.imgtec.org>
+Message-ID: <alpine.DEB.2.00.1610071615090.31859@tp.orcam.me.uk>
+References: <a226de28606d340f3e4cf0d6f6f4b4d12e766a69.1475791723.git-series.james.hogan@imgtec.com> <alpine.DEB.2.00.1610062349100.31859@tp.orcam.me.uk> <20161007083858.GK19354@jhogan-linux.le.imgtec.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,36 +20,31 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: "Maciej W . Rozycki" <macro@imgtec.com>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20161007092346.SINQ35YEL2IbLY3H2yDFL0kcnyHc6gcPlt8-LiOQW0s@z>
+To: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20161007151854.VDjksVGThSnVfoSptNzQmLXIAtzkRRaX2vWTlu00jQo@z>
 
-The aflags-vdso is based on ccflags-vdso, which already contains the -I*
-and -EL/-EB flags from KBUILD_CFLAGS, but those flags are needlessly
-added again to aflags-vdso.
+On Fri, 7 Oct 2016, James Hogan wrote:
 
-Drop the duplication.
+> >  Also I've noticed $(aflags-vdso) duplicate `-I' and `-E' options already 
+> > included with $(ccflags-vdso); I wonder if the duplicates should simply be 
+> > removed or whether $(cflags-vdso) ought to filter from $(KBUILD_CFLAGS) 
+> > and $(aflags-vdso) -- from $(KBUILD_AFLAGS) instead (or $(ccflags-vdso) 
+> > should just take the options from $(KBUILD_CPPFLAGS)).  Also why `-E' is 
+> > supposed to take an argument?  Can you please have a look at it?
+> 
+> I think -E is to catch -EL / -EB.
 
-Reported-by: Maciej W. Rozycki <macro@imgtec.com>
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
----
- arch/mips/vdso/Makefile | 2 --
- 1 file changed, 0 insertions(+), 2 deletions(-)
+ Ahh, forgot about the existence of these!
 
-diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-index de9e8836d248..c3dc12a8b7d9 100644
---- a/arch/mips/vdso/Makefile
-+++ b/arch/mips/vdso/Makefile
-@@ -13,8 +13,6 @@ cflags-vdso := $(ccflags-vdso) \
- 	-DDISABLE_BRANCH_PROFILING \
- 	$(call cc-option, -fno-stack-protector)
- aflags-vdso := $(ccflags-vdso) \
--	$(filter -I%,$(KBUILD_CFLAGS)) \
--	$(filter -E%,$(KBUILD_CFLAGS)) \
- 	-D__ASSEMBLY__ -Wa,-gdwarf-2
- 
- #
--- 
-git-series 0.8.10
+> Removing the duplication is easily
+> fixed (I'll post a patch soon). As for whether it should filter from the
+> other KBUILD_ flags, I'm inclined to avoid changing it unless we can be
+> sure it will be more robust as a result.
+
+ I've only been trying to figure out what Alex might have intended here.  
+Obviously given that otherwise the current setup seems to work I tend to 
+agree with you in that a simple removal of the duplication is the safest 
+path of the least resistance fix.
+
+  Maciej

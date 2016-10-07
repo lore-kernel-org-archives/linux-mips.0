@@ -1,13 +1,13 @@
-Received: from mailapp02.imgtec.com ([217.156.133.132]:30498 "EHLO
+Received: from mailapp02.imgtec.com ([217.156.133.132]:17659 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992226AbcJGPTKxCikZ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 7 Oct 2016 17:19:10 +0200
-Date: Fri, 7 Oct 2016 16:18:54 +0100
+        by eddie.linux-mips.org with ESMTP id S23992226AbcJGPXOBayAE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 7 Oct 2016 17:23:14 +0200
+Date: Fri, 7 Oct 2016 16:22:59 +0100
 From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH] MIPS: Fix -mabi=64 build of vdso.lds
-In-Reply-To: <20161007083858.GK19354@jhogan-linux.le.imgtec.org>
-Message-ID: <alpine.DEB.2.00.1610071615090.31859@tp.orcam.me.uk>
-References: <a226de28606d340f3e4cf0d6f6f4b4d12e766a69.1475791723.git-series.james.hogan@imgtec.com> <alpine.DEB.2.00.1610062349100.31859@tp.orcam.me.uk> <20161007083858.GK19354@jhogan-linux.le.imgtec.org>
+Subject: Re: [PATCH] MIPS: VDSO: Drop duplicated -I*/-E* aflags
+In-Reply-To: <21016db2fc628c73bc6efa1530ebeb866a30d6ae.1475832139.git-series.james.hogan@imgtec.com>
+Message-ID: <alpine.DEB.2.00.1610071622400.31859@tp.orcam.me.uk>
+References: <21016db2fc628c73bc6efa1530ebeb866a30d6ae.1475832139.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <Maciej.Rozycki@imgtec.com>
@@ -21,30 +21,23 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20161007151854.VDjksVGThSnVfoSptNzQmLXIAtzkRRaX2vWTlu00jQo@z>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20161007152259.MlEKIVtnfJb2YGAv8oIbeWyOWtCufclcUGK52d6DhG8@z>
 
 On Fri, 7 Oct 2016, James Hogan wrote:
 
-> >  Also I've noticed $(aflags-vdso) duplicate `-I' and `-E' options already 
-> > included with $(ccflags-vdso); I wonder if the duplicates should simply be 
-> > removed or whether $(cflags-vdso) ought to filter from $(KBUILD_CFLAGS) 
-> > and $(aflags-vdso) -- from $(KBUILD_AFLAGS) instead (or $(ccflags-vdso) 
-> > should just take the options from $(KBUILD_CPPFLAGS)).  Also why `-E' is 
-> > supposed to take an argument?  Can you please have a look at it?
+> The aflags-vdso is based on ccflags-vdso, which already contains the -I*
+> and -EL/-EB flags from KBUILD_CFLAGS, but those flags are needlessly
+> added again to aflags-vdso.
 > 
-> I think -E is to catch -EL / -EB.
+> Drop the duplication.
+> 
+> Reported-by: Maciej W. Rozycki <macro@imgtec.com>
+> Signed-off-by: James Hogan <james.hogan@imgtec.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: linux-mips@linux-mips.org
+> ---
 
- Ahh, forgot about the existence of these!
-
-> Removing the duplication is easily
-> fixed (I'll post a patch soon). As for whether it should filter from the
-> other KBUILD_ flags, I'm inclined to avoid changing it unless we can be
-> sure it will be more robust as a result.
-
- I've only been trying to figure out what Alex might have intended here.  
-Obviously given that otherwise the current setup seems to work I tend to 
-agree with you in that a simple removal of the duplication is the safest 
-path of the least resistance fix.
+Reviewed-by: Maciej W. Rozycki <macro@imgtec.com>
 
   Maciej

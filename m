@@ -1,16 +1,16 @@
-Received: from mailapp02.imgtec.com ([217.156.133.132]:22616 "EHLO
+Received: from mailapp02.imgtec.com ([217.156.133.132]:25132 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992110AbcJNF5J10S5s (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 14 Oct 2016 07:57:09 +0200
-From: Rahul Bedarkar <rahul.bedarkar@imgtec.com>
-Subject: [PATCH v2 2/2] MIPS: DTS: img: add device tree for Marduk board
-Date: Fri, 14 Oct 2016 11:25:55 +0530
-Message-ID: <1476424555-22629-2-git-send-email-rahul.bedarkar@imgtec.com>
-In-Reply-To: <1476424555-22629-1-git-send-email-rahul.bedarkar@imgtec.com>
-References: <1476424555-22629-1-git-send-email-rahul.bedarkar@imgtec.com>
+        by eddie.linux-mips.org with ESMTP id S23991859AbcJNJTHON5ar (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 14 Oct 2016 11:19:07 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH 1/2] mfd: syscon: Support native-endian regmaps
+Date: Fri, 14 Oct 2016 10:17:31 +0100
+Message-ID: <20161014091732.27536-1-paul.burton@imgtec.com>
+In-Reply-To: <e50cd48c-e0c4-9bfc-b265-383a33eac569@roeck-us.net>
+References: <e50cd48c-e0c4-9bfc-b265-383a33eac569@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Rahul.Bedarkar@imgtec.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,263 +20,41 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, James Hartley <james.hartley@imgtec.com>
-Cc: linux-mips@linux-mips.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Rahul Bedarkar <rahul.bedarkar@imgtec.com>
-Message-ID: <20161014055555.iRMzScxIP2BQtAczMc7IweQIapadQDXUsXMLIjD6Y8E@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>, Lee Jones <lee.jones@linaro.org>, Arnd Bergmann <arnd@arndb.de>, Guenter Roeck <linux@roeck-us.net>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20161014091731.b2roIrIViR5VVFCbS4Ef1Glw8ckuMDicdkVDO_Ddy8w@z>
 
-Add support for Imagination Technologies' Marduk board which is based
-on Pistachio SoC. It is also known as Creator Ci40. Marduk is legacy
-name and will be there for decades.
+The regmap devicetree binding documentation states that a native-endian
+property should be supported as well as big-endian & little-endian,
+however syscon in its duplication of the parsing of these properties
+omits support for native-endian. Fix this by setting
+REGMAP_ENDIAN_NATIVE when a native-endian property is found.
 
-Documentation for this board can be found on
-https://docs.creatordev.io/ci40/
-
-This patch adds initial support for board with following peripherals:
-
-* PWM based heartbeat LED
-* GPIO based buttons
-* SPI NOR flash on SPI1
-* UART0 and UART1
-* SD card
-* Ethernet
-* USB
-* PWM
-* ADC
-* I2C
-
-Signed-off-by: Rahul Bedarkar <rahul.bedarkar@imgtec.com>
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
 ---
-Changes in v2:
-  - Correct RAM size. It is 256MB instead of 128MB.
-  - Rename nodes pwm_leds -> leds and gpio_keys -> keys (Suggested by Rob Herring)
-  - Don't use '_' in node name for internal_dac_supply (Suggested by Rob Herring)
-  - Add part name in compatible string for spi-nor (Suggested by Rob Herring)
----
- .../bindings/mips/img/pistachio-marduk.txt         |  10 ++
- MAINTAINERS                                        |   6 +
- arch/mips/boot/dts/img/Makefile                    |   9 ++
- arch/mips/boot/dts/img/pistachio_marduk.dts        | 163 +++++++++++++++++++++
- 4 files changed, 188 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mips/img/pistachio-marduk.txt
- create mode 100644 arch/mips/boot/dts/img/Makefile
- create mode 100644 arch/mips/boot/dts/img/pistachio_marduk.dts
+ drivers/mfd/syscon.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mips/img/pistachio-marduk.txt b/Documentation/devicetree/bindings/mips/img/pistachio-marduk.txt
-new file mode 100644
-index 0000000..2d5126d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mips/img/pistachio-marduk.txt
-@@ -0,0 +1,10 @@
-+Imagination Technologies' Pistachio SoC based Marduk Board
-+==========================================================
-+
-+Compatible string must be "img,pistachio-marduk", "img,pistachio"
-+
-+Hardware and other related documentation is available at
-+https://docs.creatordev.io/ci40/
-+
-+It is also known as Creator Ci40. Marduk is legacy name and will
-+be there for decades.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 98bcf06..8e6c962b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7515,6 +7515,12 @@ W:	http://www.kernel.org/doc/man-pages
- L:	linux-man@vger.kernel.org
- S:	Maintained
+diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
+index 2f2225e..b93fe4c 100644
+--- a/drivers/mfd/syscon.c
++++ b/drivers/mfd/syscon.c
+@@ -73,8 +73,10 @@ static struct syscon *of_syscon_register(struct device_node *np)
+ 	/* Parse the device's DT node for an endianness specification */
+ 	if (of_property_read_bool(np, "big-endian"))
+ 		syscon_config.val_format_endian = REGMAP_ENDIAN_BIG;
+-	 else if (of_property_read_bool(np, "little-endian"))
++	else if (of_property_read_bool(np, "little-endian"))
+ 		syscon_config.val_format_endian = REGMAP_ENDIAN_LITTLE;
++	else if (of_property_read_bool(np, "native-endian"))
++		syscon_config.val_format_endian = REGMAP_ENDIAN_NATIVE;
  
-+MARDUK (CREATOR CI40) DEVICE TREE SUPPORT
-+M:	Rahul Bedarkar <rahul.bedarkar@imgtec.com>
-+L:	linux-mips@linux-mips.org
-+S:	Maintained
-+F:	arch/mips/boot/dts/img/pistachio_marduk.dts
-+
- MARVELL 88E6XXX ETHERNET SWITCH FABRIC DRIVER
- M:	Andrew Lunn <andrew@lunn.ch>
- M:	Vivien Didelot <vivien.didelot@savoirfairelinux.com>
-diff --git a/arch/mips/boot/dts/img/Makefile b/arch/mips/boot/dts/img/Makefile
-new file mode 100644
-index 0000000..69a65f0
---- /dev/null
-+++ b/arch/mips/boot/dts/img/Makefile
-@@ -0,0 +1,9 @@
-+dtb-$(CONFIG_MACH_PISTACHIO)	+= pistachio_marduk.dtb
-+
-+obj-y				+= $(patsubst %.dtb, %.dtb.o, $(dtb-y))
-+
-+# Force kbuild to make empty built-in.o if necessary
-+obj-				+= dummy.o
-+
-+always				:= $(dtb-y)
-+clean-files			:= *.dtb *.dtb.S
-diff --git a/arch/mips/boot/dts/img/pistachio_marduk.dts b/arch/mips/boot/dts/img/pistachio_marduk.dts
-new file mode 100644
-index 0000000..cf9cebd
---- /dev/null
-+++ b/arch/mips/boot/dts/img/pistachio_marduk.dts
-@@ -0,0 +1,163 @@
-+/*
-+ * Copyright (C) 2015, 2016 Imagination Technologies Ltd.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * IMG Marduk board is also known as Creator Ci40.
-+ */
-+
-+/dts-v1/;
-+
-+#include "pistachio.dtsi"
-+
-+/ {
-+	model = "IMG Marduk (Creator Ci40)";
-+	compatible = "img,pistachio-marduk", "img,pistachio";
-+
-+	aliases {
-+		serial0 = &uart0;
-+		serial1 = &uart1;
-+		ethernet0 = &enet;
-+		spi0 = &spfi0;
-+		spi1 = &spfi1;
-+	};
-+
-+	chosen {
-+		bootargs = "root=/dev/sda1 rootwait ro lpj=723968";
-+		stdout-path = "serial1:115200";
-+	};
-+
-+	memory {
-+		device_type = "memory";
-+		reg =  <0x00000000 0x10000000>;
-+	};
-+
-+	reg_1v8: fixed-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "aux_adc_vref";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-boot-on;
-+	};
-+
-+	internal_dac_supply: internal-dac-supply {
-+		compatible = "regulator-fixed";
-+		regulator-name = "internal_dac_supply";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+	};
-+
-+	leds {
-+		compatible = "pwm-leds";
-+		heartbeat {
-+			label = "marduk:red:heartbeat";
-+			pwms = <&pwm 3 300000>;
-+			max-brightness = <255>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+	};
-+
-+	keys {
-+		compatible = "gpio-keys";
-+		button@1 {
-+			label = "Button 1";
-+			linux,code = <0x101>; /* BTN_1 */
-+			gpios = <&gpio3 6 GPIO_ACTIVE_LOW>;
-+		};
-+		button@2 {
-+			label = "Button 2";
-+			linux,code = <0x102>; /* BTN_2 */
-+			gpios = <&gpio2 14 GPIO_ACTIVE_LOW>;
-+		};
-+	};
-+};
-+
-+&internal_dac {
-+	VDD-supply = <&internal_dac_supply>;
-+};
-+
-+&spfi1 {
-+	status = "okay";
-+
-+	pinctrl-0 = <&spim1_pins>, <&spim1_quad_pins>, <&spim1_cs0_pin>,
-+		    <&spim1_cs1_pin>;
-+	pinctrl-names = "default";
-+	cs-gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>, <&gpio0 1 GPIO_ACTIVE_HIGH>;
-+
-+	flash@0 {
-+		compatible = "spansion,s25fl016k", "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <50000000>;
-+	};
-+};
-+
-+&uart0 {
-+	status = "okay";
-+	assigned-clock-rates = <114278400>, <1843200>;
-+};
-+
-+&uart1 {
-+	status = "okay";
-+};
-+
-+&usb {
-+	status = "okay";
-+};
-+
-+&enet {
-+	status = "okay";
-+};
-+
-+&pin_enet {
-+	drive-strength = <2>;
-+};
-+
-+&pin_enet_phy_clk {
-+	drive-strength = <2>;
-+};
-+
-+&sdhost {
-+	status = "okay";
-+	bus-width = <4>;
-+	disable-wp;
-+};
-+
-+&pin_sdhost_cmd {
-+	drive-strength = <2>;
-+};
-+
-+&pin_sdhost_data {
-+	drive-strength = <2>;
-+};
-+
-+&pwm {
-+	status = "okay";
-+
-+	pinctrl-0 = <&pwmpdm0_pin>, <&pwmpdm1_pin>, <&pwmpdm2_pin>,
-+		    <&pwmpdm3_pin>;
-+	pinctrl-names = "default";
-+};
-+
-+&adc {
-+	status = "okay";
-+	vref-supply = <&reg_1v8>;
-+	adc-reserved-channels = <0x10>;
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+
-+	tpm@20 {
-+		compatible = "infineon,slb9645tt";
-+		reg = <0x20>;
-+	};
-+
-+};
-+
-+&i2c3 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+};
+ 	/*
+ 	 * search for reg-io-width property in DT. If it is not provided,
 -- 
-2.6.2
+2.10.0

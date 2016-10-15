@@ -1,14 +1,16 @@
-Received: from mailapp02.imgtec.com ([217.156.133.132]:50882 "EHLO
+Received: from mailapp02.imgtec.com ([217.156.133.132]:62961 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992028AbcJNKUL3YXBI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 14 Oct 2016 12:20:11 +0200
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH] MIPS: IP22: Fix build error in IP22 cache code
-Date: Fri, 14 Oct 2016 11:19:57 +0100
-Message-ID: <1476440397-13042-1-git-send-email-matt.redfearn@imgtec.com>
+        by eddie.linux-mips.org with ESMTP id S23992121AbcJOWEIqiiKW (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 16 Oct 2016 00:04:08 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: CPC: Provide default mips_cpc_default_phys_base to ignore CPC
+Date: Sat, 15 Oct 2016 23:03:43 +0100
+Message-ID: <20161015220343.14512-1-paul.burton@imgtec.com>
+In-Reply-To: <201610160506.fUCu3h9s%fengguang.wu@intel.com>
+References: <201610160506.fUCu3h9s%fengguang.wu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Matt.Redfearn@imgtec.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,46 +20,64 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, stable@vger.kernel.org, Adam Buchbinder <adam.buchbinder@gmail.com>, linux-kernel@vger.kernel.org
-Message-ID: <20161014101957.Fneja08U7zfEef1R_wNvCJYj48L9c28SGDqVhT8pMBE@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20161015220343.yg1glLqULI42SVdRFzjgCJVtdrkbbKJ8HIbBZktU-04@z>
 
-Recent MIPS toolchains complain about the use of an immediate larger
-than 32bits when compiling a 32bit kernel, leading to the following
-build failure:
-{standard input}: Assembler messages:
-{standard input}:131: Error: number (0x9000000080000000) larger than 32
-bits
-{standard input}:154: Error: number (0x9000000080000000) larger than 32
-bits
-{standard input}:191: Error: number (0x9000000080000000) larger than 32
-bits
+Provide a default implementation of mips_cpc_default_phys_base() which
+simply returns 0, and adjust mips_cpc_phys_base() to allow for
+mips_cpc_default_phys_base() returning 0. This allows kernels which
+include CPC support to be built without platform code & simply ignore
+the CPC if it wasn't already enabled by the bootloader.
 
-Fix this by specifying registers are 64bit via the .set gp=64 directive.
+This fixes link failures such as the following from generic defconfigs:
 
-Since IP22 is the default MIPS machine, this is causing allnoconfig
-build failures.
+   arch/mips/built-in.o: In function `mips_cpc_phys_base':
+   arch/mips/kernel/mips-cpc.c:47: undefined reference to `mips_cpc_default_phys_base'
 
-Fixes: 1da177e4c3f4
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
-
-Cc: stable@vger.kernel.org
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Cc: linux-mips@linux-mips.org
+Cc: Ralf Baechle <ralf@linux-mips.org>
 ---
+Hi Ralf,
 
- arch/mips/mm/sc-ip22.c | 1 +
- 1 file changed, 1 insertion(+)
+Please could this one be merged for v4.9 - it fixes some fallout due to
+the CPC parts of the generic kernel series not being merged, which I had
+overlooked when we discussed the series previously.
+---
+ arch/mips/kernel/mips-cpc.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/mm/sc-ip22.c b/arch/mips/mm/sc-ip22.c
-index 026cb59a914d..6551ca37d308 100644
---- a/arch/mips/mm/sc-ip22.c
-+++ b/arch/mips/mm/sc-ip22.c
-@@ -35,6 +35,7 @@ static inline void indy_sc_wipe(unsigned long first, unsigned long last)
- 	".set\tnoreorder\n\t"
- 	".set\tmips3\n\t"
- 	".set\tnoat\n\t"
-+	".set\tgp=64\n\t"
- 	"mfc0\t%2, $12\n\t"
- 	"li\t$1, 0x80\t\t\t# Go 64 bit\n\t"
- 	"mtc0\t$1, $12\n\t"
+diff --git a/arch/mips/kernel/mips-cpc.c b/arch/mips/kernel/mips-cpc.c
+index 2a45867..da64cd5 100644
+--- a/arch/mips/kernel/mips-cpc.c
++++ b/arch/mips/kernel/mips-cpc.c
+@@ -21,6 +21,11 @@ static DEFINE_PER_CPU_ALIGNED(spinlock_t, cpc_core_lock);
+ 
+ static DEFINE_PER_CPU_ALIGNED(unsigned long, cpc_core_lock_flags);
+ 
++__weak phys_addr_t mips_cpc_default_phys_base(void)
++{
++	return 0;
++}
++
+ /**
+  * mips_cpc_phys_base - retrieve the physical base address of the CPC
+  *
+@@ -43,8 +48,12 @@ static phys_addr_t mips_cpc_phys_base(void)
+ 	if (cpc_base & CM_GCR_CPC_BASE_CPCEN_MSK)
+ 		return cpc_base & CM_GCR_CPC_BASE_CPCBASE_MSK;
+ 
+-	/* Otherwise, give it the default address & enable it */
++	/* Otherwise, use the default address */
+ 	cpc_base = mips_cpc_default_phys_base();
++	if (!cpc_base)
++		return cpc_base;
++
++	/* Enable the CPC, mapped at the default address */
+ 	write_gcr_cpc_base(cpc_base | CM_GCR_CPC_BASE_CPCEN_MSK);
+ 	return cpc_base;
+ }
 -- 
-2.7.4
+2.10.0

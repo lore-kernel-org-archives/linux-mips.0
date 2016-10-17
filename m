@@ -1,18 +1,14 @@
-Received: from mail-out.m-online.net ([212.18.0.10]:46956 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992186AbcJPSHYbZde9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 16 Oct 2016 20:07:24 +0200
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: Re: [PATCH v2] console: Don't prefer first registered if DT specifies stdout-path
-References: <20160809125010.14150-1-paul.burton@imgtec.com>
-        <20160809151937.26118-1-paul.burton@imgtec.com>
-Date: Sun, 16 Oct 2016 20:07:18 +0200
-In-Reply-To: <20160809151937.26118-1-paul.burton@imgtec.com> (Paul Burton's
-        message of "Tue, 9 Aug 2016 16:19:37 +0100")
-Message-ID: <87bmyk88x5.fsf@linux-m68k.org>
+Received: from mailapp02.imgtec.com ([217.156.133.132]:57716 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23990864AbcJQJJu15iMv (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Oct 2016 11:09:50 +0200
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Subject: [PATCH] MIPS: Fix build of compressed image
+Date: Mon, 17 Oct 2016 10:09:39 +0100
+Message-ID: <1476695379-1808-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <whitebox@nefkom.net>
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,26 +18,44 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Tejun Heo <tj@kernel.org>, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Jiri Slaby <jslaby@suse.cz>, Daniel Vetter <daniel.vetter@ffwll.ch>, Ivan Delalande <colona@arista.com>, Thierry Reding <treding@nvidia.com>, Borislav Petkov <bp@suse.de>, Jan Kara <jack@suse.com>, Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Frank Rowand <frowand.list@gmail.com>, linuxppc-dev@lists.ozlabs.org
-Message-ID: <20161016180718.Jr156Dibm0Efa03D7TNyTyeHArb2VwyZTz1kuU5eDrA@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, linux-kernel@vger.kernel.org
+Message-ID: <20161017090939.SnWk-JVGdDNBqEN35VGbBauJkIzFsFKNnI7sim4nCkw@z>
 
-On Aug 09 2016, Paul Burton <paul.burton@imgtec.com> wrote:
+Changes introduced to arch/mips/Makefile for the generic kernel resulted
+in build errors when making a compressed image if platform-y has multiple
+values, like this:
 
-> Fix this by not automatically preferring the first registered console if
-> one is specified by the device tree. This allows consoles to be
-> registered but not enabled, and once the driver for the console selected
-> by stdout-path calls of_console_check() the driver will be added to the
-> list of preferred consoles before any other console has been enabled.
-> When that console is then registered via register_console() it will be
-> enabled as expected.
+make[2]: *** No rule to make target `alchemy/'.
+make[1]: *** [vmlinuz] Error 2
+make[1]: Target `_all' not remade because of errors.
+make: *** [sub-make] Error 2
+make: Target `_all' not remade because of errors.
 
-This breaks the console on PowerMac.  There is no output and it panics
-eventually.
+Fix this by quoting $(platform-y) as it is passed to the Makefile in
+arch/mips/boot/compressed/Makefile
 
-Andreas.
+Reported-by: kernelci.org bot <bot@kernelci.org>
+Link: https://storage.kernelci.org/next/next-20161017/mips-gpr_defconfig/build.log
+Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
 
+---
+
+ arch/mips/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index fbf40d3c8123..1a6bac7b076f 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -263,7 +263,7 @@ KBUILD_CPPFLAGS += -DDATAOFFSET=$(if $(dataoffset-y),$(dataoffset-y),0)
+ 
+ bootvars-y	= VMLINUX_LOAD_ADDRESS=$(load-y) \
+ 		  VMLINUX_ENTRY_ADDRESS=$(entry-y) \
+-		  PLATFORM=$(platform-y)
++		  PLATFORM="$(platform-y)"
+ ifdef CONFIG_32BIT
+ bootvars-y	+= ADDR_BITS=32
+ endif
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+2.7.4

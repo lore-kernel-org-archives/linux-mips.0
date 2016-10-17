@@ -1,16 +1,19 @@
-Received: from mailapp02.imgtec.com ([217.156.133.132]:23885 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992996AbcJQQxRD6Ncz (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Oct 2016 18:53:17 +0200
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [Patch v5 04/12] irqchip: xilinx: Add support for parent intc
-Date: Mon, 17 Oct 2016 17:52:48 +0100
-Message-ID: <1476723176-39891-5-git-send-email-Zubair.Kakakhel@imgtec.com>
-In-Reply-To: <1476723176-39891-1-git-send-email-Zubair.Kakakhel@imgtec.com>
-References: <1476723176-39891-1-git-send-email-Zubair.Kakakhel@imgtec.com>
+Received: from mail-out.m-online.net ([212.18.0.10]:51602 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992226AbcJQRkH0T42Z (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Oct 2016 19:40:07 +0200
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: Re: [PATCH v2] console: Don't prefer first registered if DT specifies stdout-path
+References: <20160809125010.14150-1-paul.burton@imgtec.com>
+        <20160809151937.26118-1-paul.burton@imgtec.com>
+        <87bmyk88x5.fsf@linux-m68k.org> <4033254.tBrl4yKcsP@np-p-burton>
+Date: Mon, 17 Oct 2016 19:39:57 +0200
+In-Reply-To: <4033254.tBrl4yKcsP@np-p-burton> (Paul Burton's message of "Mon,
+        17 Oct 2016 11:33:55 +0100")
+Message-ID: <87oa2ij2mq.fsf@linux-m68k.org>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Zubair.Kakakhel@imgtec.com>
+Return-Path: <whitebox@nefkom.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,92 +23,28 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: monstr@monstr.eu, ralf@linux-mips.org, tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, alistair@popple.id.au, mporter@kernel.crashing.org
-Cc: soren.brinkmann@xilinx.com, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, michal.simek@xilinx.com, linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au, paulus@samba.org, benh@kernel.crashing.org
-Message-ID: <20161017165248.-rpKGW1GT5mO7y5KH78qEJUWrFG_AGu4fEEjKuJ5JPA@z>
+To: Paul Burton <paul.burton@imgtec.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Tejun Heo <tj@kernel.org>, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Jiri Slaby <jslaby@suse.cz>, Daniel Vetter <daniel.vetter@ffwll.ch>, Ivan Delalande <colona@arista.com>, Thierry Reding <treding@nvidia.com>, Borislav Petkov <bp@suse.de>, Jan Kara <jack@suse.com>, Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Frank Rowand <frowand.list@gmail.com>, linuxppc-dev@lists.ozlabs.org
+Message-ID: <20161017173957.g52DecStziN6BRCOdmV6CRCRh0K-15Ec1_N6YHuqpuA@z>
 
-The MIPS based xilfpga platform has the following IRQ structure
+On Okt 17 2016, Paul Burton <paul.burton@imgtec.com> wrote:
 
-Peripherals --> xilinx_intcontroller -> mips_cpu_int controller
+> Could you share the device tree from your system?
 
-Add support for the driver to chain the irq handler
+This is the contents of chosen/linux,stdout-path on the systems I have:
 
-Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+chosen/linux,stdout-path
+                 "/pci@f0000000/ATY,SnowyParent@10/ATY,Snowy_A@0"
 
----
-V4 -> V5
-Rebased to v4.9-rc1
-Missing curly braces
+chosen/linux,stdout-path                                                        
+                 "/pci@0,f0000000/NVDA,Parent@10/NVDA,Display-B@1"
 
-V3 -> V4
-Clean up if/else when a parent is found
-Pass irqchip structure to handler as data
+Is that what you need?  There is also chosen/stdout, but no
+aliases/stdout.
 
-V2 -> V3
-Reused existing parent node instead of finding again.
-Cleanup up handler based on review
+Andreas.
 
-V1 -> V2
-
-No change
----
- drivers/irqchip/irq-xilinx-intc.c | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/irqchip/irq-xilinx-intc.c b/drivers/irqchip/irq-xilinx-intc.c
-index 45e5154..dbf8b0c 100644
---- a/drivers/irqchip/irq-xilinx-intc.c
-+++ b/drivers/irqchip/irq-xilinx-intc.c
-@@ -15,6 +15,7 @@
- #include <linux/of_address.h>
- #include <linux/io.h>
- #include <linux/bug.h>
-+#include <linux/of_irq.h>
- 
- /* No one else should require these constants, so define them locally here. */
- #define ISR 0x00			/* Interrupt Status Register */
-@@ -154,11 +155,23 @@ static int xintc_map(struct irq_domain *d, unsigned int irq, irq_hw_number_t hw)
- 	.map = xintc_map,
- };
- 
-+static void xil_intc_irq_handler(struct irq_desc *desc)
-+{
-+	u32 pending;
-+
-+	do {
-+		pending = xintc_get_irq();
-+		if (pending == -1U)
-+			break;
-+		generic_handle_irq(pending);
-+	} while (true);
-+}
-+
- static int __init xilinx_intc_of_init(struct device_node *intc,
- 					     struct device_node *parent)
- {
- 	u32 nr_irq;
--	int ret;
-+	int ret, irq;
- 	struct xintc_irq_chip *irqc;
- 
- 	if (xintc_irqc) {
-@@ -221,7 +234,16 @@ static int __init xilinx_intc_of_init(struct device_node *intc,
- 		goto err_alloc;
- 	}
- 
--	irq_set_default_host(root_domain);
-+	if (parent) {
-+		irq = irq_of_parse_and_map(intc, 0);
-+		if (irq)
-+			irq_set_chained_handler_and_data(irq,
-+							 xil_intc_irq_handler,
-+							 irqc);
-+
-+	} else {
-+		irq_set_default_host(root_domain);
-+	}
- 
- 	return 0;
- 
 -- 
-1.9.1
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."

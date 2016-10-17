@@ -1,11 +1,11 @@
-Received: from mailapp02.imgtec.com ([217.156.133.132]:52153 "EHLO
+Received: from mailapp02.imgtec.com ([217.156.133.132]:16045 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23990864AbcJQOfnM3iA4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Oct 2016 16:35:43 +0200
+        by eddie.linux-mips.org with ESMTP id S23991759AbcJQOf4HKFb4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Oct 2016 16:35:56 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 3/4] MIPS: Allow pre-r6 emulation on SMP MIPSr6 kernels
-Date: Mon, 17 Oct 2016 15:34:37 +0100
-Message-ID: <20161017143438.17298-4-paul.burton@imgtec.com>
+Subject: [PATCH 4/4] MIPS: Remove RESTORE_ALL_AND_RET
+Date: Mon, 17 Oct 2016 15:34:38 +0100
+Message-ID: <20161017143438.17298-5-paul.burton@imgtec.com>
 In-Reply-To: <20161017143438.17298-1-paul.burton@imgtec.com>
 References: <20161017143438.17298-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,41 +22,35 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20161017143437.pjBD35NvrOpoEaRs6Kn4Jv79PVK4ayFqhKCXN9m8uFE@z>
+Message-ID: <20161017143438.sgxluaThwAj73G8S_8-XBmnDLXc3jCPAqZti8DRB5N4@z>
 
-There's no reason for the pre-r6 instruction emulation code to be
-limited to uniprocessor kernels. We already emulate atomic memory access
-instructions in a way that works for SMP systems, and nothing else
-should be affected. Remove the artificial limitation, allowing pre-r6
-instruction emulation to be used with SMP kernels.
+The RESTORE_ALL_AND_RET macro is never used. Remove the dead code.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+
 ---
 
- arch/mips/Kconfig | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/mips/include/asm/stackframe.h | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index b3c5bde..5582ce1 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -2286,7 +2286,7 @@ config MIPS_MT_FPAFF
+diff --git a/arch/mips/include/asm/stackframe.h b/arch/mips/include/asm/stackframe.h
+index 41e6836..b183d5e 100644
+--- a/arch/mips/include/asm/stackframe.h
++++ b/arch/mips/include/asm/stackframe.h
+@@ -380,14 +380,6 @@
+ 		RESTORE_SP
+ 		.endm
  
- config MIPSR2_TO_R6_EMULATOR
- 	bool "MIPS R2-to-R6 emulator"
--	depends on CPU_MIPSR6 && !SMP
-+	depends on CPU_MIPSR6
- 	default y
- 	help
- 	  Choose this option if you want to run non-R6 MIPS userland code.
-@@ -2294,8 +2294,6 @@ config MIPSR2_TO_R6_EMULATOR
- 	  default. You can enable it using the 'mipsr2emu' kernel option.
- 	  The only reason this is a build-time option is to save ~14K from the
- 	  final kernel image.
--comment "MIPS R2-to-R6 emulator is only available for UP kernels"
--	depends on SMP && CPU_MIPSR6
- 
- config MIPS_VPE_LOADER
- 	bool "VPE loader support."
+-		.macro	RESTORE_ALL_AND_RET
+-		RESTORE_TEMP
+-		RESTORE_STATIC
+-		RESTORE_AT
+-		RESTORE_SOME
+-		RESTORE_SP_AND_RET
+-		.endm
+-
+ /*
+  * Move to kernel mode and disable interrupts.
+  * Set cp0 enable bit as sign that we're running on the kernel stack
 -- 
 2.10.0

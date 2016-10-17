@@ -1,11 +1,11 @@
-Received: from mailapp02.imgtec.com ([217.156.133.132]:57716 "EHLO
+Received: from mailapp02.imgtec.com ([217.156.133.132]:25110 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23990864AbcJQJJu15iMv (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Oct 2016 11:09:50 +0200
+        by eddie.linux-mips.org with ESMTP id S23990521AbcJQKFELThuU (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Oct 2016 12:05:04 +0200
 From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH] MIPS: Fix build of compressed image
-Date: Mon, 17 Oct 2016 10:09:39 +0100
-Message-ID: <1476695379-1808-1-git-send-email-matt.redfearn@imgtec.com>
+Subject: [PATCH] MIPS: KASLR: Fix handling of NULL FDT
+Date: Mon, 17 Oct 2016 11:04:54 +0100
+Message-ID: <1476698694-6685-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Matt.Redfearn@imgtec.com>
@@ -19,43 +19,35 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, linux-kernel@vger.kernel.org
-Message-ID: <20161017090939.SnWk-JVGdDNBqEN35VGbBauJkIzFsFKNnI7sim4nCkw@z>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, "# 4 . 7+" <stable@vger.kernel.org>, linux-kernel@vger.kernel.org
+Message-ID: <20161017100454.Fjmoq9KEDRxcIMv_KMn2hJK_7cZS9HneMdkdQE_X_EY@z>
 
-Changes introduced to arch/mips/Makefile for the generic kernel resulted
-in build errors when making a compressed image if platform-y has multiple
-values, like this:
+If platform code returns a NULL pointer to the FDT, initial_boot_params
+will not get set to a valid pointer and attempting to find the /chosen
+node in it will cause a NULL pointer dereference and the kernel to crash
+immediately on startup - with no output to the console.
 
-make[2]: *** No rule to make target `alchemy/'.
-make[1]: *** [vmlinuz] Error 2
-make[1]: Target `_all' not remade because of errors.
-make: *** [sub-make] Error 2
-make: Target `_all' not remade because of errors.
+Fix this by checking that initial_boot_params is valid before using it.
 
-Fix this by quoting $(platform-y) as it is passed to the Makefile in
-arch/mips/boot/compressed/Makefile
-
-Reported-by: kernelci.org bot <bot@kernelci.org>
-Link: https://storage.kernelci.org/next/next-20161017/mips-gpr_defconfig/build.log
+Fixes: 405bc8fd12f5 ("MIPS: Kernel: Implement KASLR using CONFIG_RELOCATABLE")
+Cc: <stable@vger.kernel.org> # 4.7+
 Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
-
 ---
 
- arch/mips/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/kernel/relocate.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index fbf40d3c8123..1a6bac7b076f 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -263,7 +263,7 @@ KBUILD_CPPFLAGS += -DDATAOFFSET=$(if $(dataoffset-y),$(dataoffset-y),0)
+diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
+index ca1cc30c0891..8810183840ca 100644
+--- a/arch/mips/kernel/relocate.c
++++ b/arch/mips/kernel/relocate.c
+@@ -200,6 +200,7 @@ static inline __init unsigned long get_random_boot(void)
  
- bootvars-y	= VMLINUX_LOAD_ADDRESS=$(load-y) \
- 		  VMLINUX_ENTRY_ADDRESS=$(entry-y) \
--		  PLATFORM=$(platform-y)
-+		  PLATFORM="$(platform-y)"
- ifdef CONFIG_32BIT
- bootvars-y	+= ADDR_BITS=32
- endif
+ #if defined(CONFIG_USE_OF)
+ 	/* Get any additional entropy passed in device tree */
++	if (initial_boot_params)
+ 	{
+ 		int node, len;
+ 		u64 *prop;
 -- 
 2.7.4

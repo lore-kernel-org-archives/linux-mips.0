@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:58322 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:26063 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23990521AbcJQKWiNCNzU (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Oct 2016 12:22:38 +0200
-Date: Mon, 17 Oct 2016 11:22:31 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH] MIPS: generic: Fix KASLR for generic kernel.
-Message-ID: <20161017102231.GB9443@jhogan-linux.le.imgtec.org>
-References: <1476698709-6771-1-git-send-email-matt.redfearn@imgtec.com>
+        by eddie.linux-mips.org with ESMTP id S23990521AbcJQKeIZwdz9 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Oct 2016 12:34:08 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH v2] console: Don't prefer first registered if DT specifies stdout-path
+Date: Mon, 17 Oct 2016 11:33:55 +0100
+Message-ID: <4033254.tBrl4yKcsP@np-p-burton>
+In-Reply-To: <87bmyk88x5.fsf@linux-m68k.org>
+References: <20160809125010.14150-1-paul.burton@imgtec.com> <20160809151937.26118-1-paul.burton@imgtec.com> <87bmyk88x5.fsf@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mojUlQ0s9EVzWg2t"
-Content-Disposition: inline
-In-Reply-To: <1476698709-6771-1-git-send-email-matt.redfearn@imgtec.com>
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: multipart/signed; boundary="nextPart3065225.SPOVmq47Dl";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,109 +21,55 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Matt Redfearn <matt.redfearn@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20161017102231.v5hzPc48X4zqAyYEDHZaqAuErkVRwnboo-Ci-iCXbvs@z>
+To: Andreas Schwab <schwab@linux-m68k.org>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Tejun Heo <tj@kernel.org>, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Jiri Slaby <jslaby@suse.cz>, Daniel Vetter <daniel.vetter@ffwll.ch>, Ivan Delalande <colona@arista.com>, Thierry Reding <treding@nvidia.com>, Borislav Petkov <bp@suse.de>, Jan Kara <jack@suse.com>, Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Frank Rowand <frowand.list@gmail.com>, linuxppc-dev@lists.ozlabs.org
+Message-ID: <20161017103355.mdHrZBv_Kt3FPkxmmvvnLADeC7K2JyiWbXBllKHsu68@z>
 
---mojUlQ0s9EVzWg2t
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+--nextPart3065225.SPOVmq47Dl
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Hi Matt,
+On Sunday, 16 October 2016 20:07:18 BST Andreas Schwab wrote:
+> On Aug 09 2016, Paul Burton <paul.burton@imgtec.com> wrote:
+> > Fix this by not automatically preferring the first registered console if
+> > one is specified by the device tree. This allows consoles to be
+> > registered but not enabled, and once the driver for the console selected
+> > by stdout-path calls of_console_check() the driver will be added to the
+> > list of preferred consoles before any other console has been enabled.
+> > When that console is then registered via register_console() it will be
+> > enabled as expected.
+> 
+> This breaks the console on PowerMac.  There is no output and it panics
+> eventually.
+> 
+> Andreas.
 
-On Mon, Oct 17, 2016 at 11:05:09AM +0100, Matt Redfearn wrote:
-> The KASLR code requires that the plat_get_fdt() function return the
-> address of the device tree, and it must be available early in the boot,
-> before prom_init() is called. Move the code determining the address of
-> the device tree into plat_get_fdt, and call that from prom_init().
->=20
-> The fdt pointer will be set up by plat_get_fdt() called from
-> relocate_kernel initially and once the relocated kernel has started,
-> prom_init() will use it again to determine the address in the relocated
-> image.
->=20
-> Fixes: eed0eabd12ef
+Hi Andreas,
 
-I believe this is the preferred form:
+Could you share the device tree from your system?
 
-Fixes: eed0eabd12ef ("MIPS: generic: Introduce generic DT-based board suppo=
-rt")
-
-Otherwise looks good to me
-
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
-
-Cheers
-James
-
-> Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
-> ---
->=20
->  arch/mips/generic/init.c | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
->=20
-> diff --git a/arch/mips/generic/init.c b/arch/mips/generic/init.c
-> index 0ea73e845440..d493ccbf274a 100644
-> --- a/arch/mips/generic/init.c
-> +++ b/arch/mips/generic/init.c
-> @@ -30,9 +30,19 @@ static __initdata const void *mach_match_data;
-> =20
->  void __init prom_init(void)
->  {
-> +	plat_get_fdt();
-> +	BUG_ON(!fdt);
-> +}
-> +
-> +void __init *plat_get_fdt(void)
-> +{
->  	const struct mips_machine *check_mach;
->  	const struct of_device_id *match;
-> =20
-> +	if (fdt)
-> +		/* Already set up */
-> +		return (void *)fdt;
-> +
->  	if ((fw_arg0 =3D=3D -2) && !fdt_check_header((void *)fw_arg1)) {
->  		/*
->  		 * We booted using the UHI boot protocol, so we have been
-> @@ -75,12 +85,6 @@ void __init prom_init(void)
->  		/* Retrieve the machine's FDT */
->  		fdt =3D mach->fdt;
->  	}
-> -
-> -	BUG_ON(!fdt);
-> -}
-> -
-> -void __init *plat_get_fdt(void)
-> -{
->  	return (void *)fdt;
->  }
-> =20
-> --=20
-> 2.7.4
->=20
->=20
-
---mojUlQ0s9EVzWg2t
+Thanks,
+    Paul
+--nextPart3065225.SPOVmq47Dl
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJYBKZnAAoJEGwLaZPeOHZ6X44P/1QazgHAsom8vidd2KFIL1Ii
-V245WTuSzuh+Cpzeln1PmJ9blAlv5k03gg2hgYnIGDg+pfOb67qlI2r5yqfkzRTt
-22GUFiwFXiyHOzj//9jLc4fal2PlyYDKCWiFf8QOn2l45VyjahIAlItssQ/M/PYf
-EfeNFp4Q6Y6gPMz3lbVQGQXbUvPov7hFXbx1ErsZ2GJu8KZPu/Y7rh5oOjNeB6ef
-PhQ4kpnl6iMLdmiwJfbxSTgD4dLaxLx5+bDfRo9d7VQYb6s5tqE+3gyN+8Yd9KBw
-/aRqkv6B0SiCcJdNPWwj/pi8zqgXAECQHKAbpdkej4jemyX/sI2rSQjOpX11XUCb
-B8e9O3VXndTZrjwPaMUAOtOhVyuCXRNntAB9Z0DT6zw1Et+3b8kl39dsm4PqvbBj
-22OW4tIJ8sAaAd9zeaQ15IdEq8K0bemJSuB0bHFWw8kkrfZIqDT5PF6eM9JXdD7U
-m8zEwPiFIsw+qCA7rasTJ63e5Ub9oZ5EmyOA+BiZjXPolm8MxO5tHeE0ucAeHTF9
-KiV1J7IaPs61JYnGC4eTUr8CSUNbiCitUGeEgQwthLXnoHfdVNWhnalIrtdAxXY0
-QIhU+RR7g+ArB/DgE2JiM8NiCuaVcaCyjHFHSNJ3AyiHQUY2d6sGJVHM4IlJX7GJ
-tK6+QOE+VWNikAVpWszF
-=jOH6
+iQIcBAABCAAGBQJYBKkTAAoJEIIg2fppPBxl1oAP/RAIYEhMTK2tf/pX7/5z4Y4m
+x2cl84qdY844A2UNXEP89g3CuqMaEefDBSU/8HKitoCl+Cu+bR2RKQPYBiiVNTnv
+77tgOCK1J4IYwqZi0xT+QcmUwAGvJ69+HdiXorIgzPWzXqgAPBql75mOtQMoTXZy
+XVdpHnW2GVwV5kRdEG0HalLjMvNTh6hLAMK2YDVdyuV0+Ox8XPPTXskmMqHb092m
+ATVfilJ5x8AHQIA7EHuYA72lPLEFE8aokeO317EH3k0GL2cUDTh1/IqXYvrS2g/f
+BMcAzkXujR53jp/8PGztyEWEzjToc7p2dapQ8dmqWId965D3CUdO9y279EdUUUmV
+MvI2HLzX1joW5W6MMBH3ts1QZVrtHkb8cSoudSgbyhY5+TR3GCJ6li5e4FIduLFp
+Ttl5YoNWHZdylSEXA6vY2ZKdzcAONz481tJIwaabEtbktPiTWrl95Vc+X+ejC7up
+3/50FdPlpt31NuGaqNMiu2AOB2NIxRMazxDhrlf7ee3UEve0xsRy9UjJrl3lP1iQ
+6sJhRUhaqBk92cvP/HV5HCWhRUcQmyicUMJB5JTYv0zELxJQSGtq9eXAgv7q+E5J
+3jRTAIZ3chWxUona9nMiu5Q1jgyhDcmBKJatFGilcTzHi0fLijdOTMgq4woC+biW
+Yr7i8EOdJDRYShgWsxKz
+=hh/A
 -----END PGP SIGNATURE-----
 
---mojUlQ0s9EVzWg2t--
+--nextPart3065225.SPOVmq47Dl--

@@ -1,19 +1,17 @@
-Received: from mail-out.m-online.net ([212.18.0.10]:51602 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992226AbcJQRkH0T42Z (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Oct 2016 19:40:07 +0200
-From: Andreas Schwab <schwab@linux-m68k.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:59598 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992942AbcJRJVtrpiKd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 18 Oct 2016 11:21:49 +0200
+From: Paul Burton <paul.burton@imgtec.com>
 Subject: Re: [PATCH v2] console: Don't prefer first registered if DT specifies stdout-path
-References: <20160809125010.14150-1-paul.burton@imgtec.com>
-        <20160809151937.26118-1-paul.burton@imgtec.com>
-        <87bmyk88x5.fsf@linux-m68k.org> <4033254.tBrl4yKcsP@np-p-burton>
-Date: Mon, 17 Oct 2016 19:39:57 +0200
-In-Reply-To: <4033254.tBrl4yKcsP@np-p-burton> (Paul Burton's message of "Mon,
-        17 Oct 2016 11:33:55 +0100")
-Message-ID: <87oa2ij2mq.fsf@linux-m68k.org>
+Date: Tue, 18 Oct 2016 10:21:36 +0100
+Message-ID: <2401691.yKn6kY81q4@np-p-burton>
+In-Reply-To: <87oa2ij2mq.fsf@linux-m68k.org>
+References: <20160809125010.14150-1-paul.burton@imgtec.com> <4033254.tBrl4yKcsP@np-p-burton> <87oa2ij2mq.fsf@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <whitebox@nefkom.net>
+Content-Type: multipart/signed; boundary="nextPart1491817.ehho7IUxQd";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,28 +21,61 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
+To: Andreas Schwab <schwab@linux-m68k.org>
 Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Tejun Heo <tj@kernel.org>, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Jiri Slaby <jslaby@suse.cz>, Daniel Vetter <daniel.vetter@ffwll.ch>, Ivan Delalande <colona@arista.com>, Thierry Reding <treding@nvidia.com>, Borislav Petkov <bp@suse.de>, Jan Kara <jack@suse.com>, Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Frank Rowand <frowand.list@gmail.com>, linuxppc-dev@lists.ozlabs.org
-Message-ID: <20161017173957.g52DecStziN6BRCOdmV6CRCRh0K-15Ec1_N6YHuqpuA@z>
+Message-ID: <20161018092136.T3trYT6qwayTDjpcv_s_PMGNA0V6Br0yb8TXdg_biQ8@z>
 
-On Okt 17 2016, Paul Burton <paul.burton@imgtec.com> wrote:
+--nextPart1491817.ehho7IUxQd
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-> Could you share the device tree from your system?
+On Monday, 17 October 2016 19:39:57 BST Andreas Schwab wrote:
+> On Okt 17 2016, Paul Burton <paul.burton@imgtec.com> wrote:
+> > Could you share the device tree from your system?
+> 
+> This is the contents of chosen/linux,stdout-path on the systems I have:
+> 
+> chosen/linux,stdout-path
+>                  "/pci@f0000000/ATY,SnowyParent@10/ATY,Snowy_A@0"
+> 
+> chosen/linux,stdout-path
+>                  "/pci@0,f0000000/NVDA,Parent@10/NVDA,Display-B@1"
+> 
+> Is that what you need?  There is also chosen/stdout, but no
+> aliases/stdout.
+> 
+> Andreas.
 
-This is the contents of chosen/linux,stdout-path on the systems I have:
+Hi Andreas,
 
-chosen/linux,stdout-path
-                 "/pci@f0000000/ATY,SnowyParent@10/ATY,Snowy_A@0"
+I think I see the problem & I'm hoping this patch will fix it:
 
-chosen/linux,stdout-path                                                        
-                 "/pci@0,f0000000/NVDA,Parent@10/NVDA,Display-B@1"
+https://lkml.org/lkml/2016/10/18/142
 
-Is that what you need?  There is also chosen/stdout, but no
-aliases/stdout.
+Could you give it a try & let me know?
 
-Andreas.
+Thanks,
+    Paul
+--nextPart1491817.ehho7IUxQd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAABCAAGBQJYBemgAAoJEIIg2fppPBxl/ocP/RsSGhUJsbbXOzHH0zhvW5/0
+lmP447zgfYfSB63uNeLJ/uZwmyYVy5/6by9+88bPp+pnw5IvbH2oWOcClRXBopP2
+a03Yn/sGYx1nybguqE0CIMql9keWdudPQB2W3008pg7jMRx7DeOnWLLJqgDK2eRH
+/0dqLH8ISm7olbbfbJOmSZhKI/cip2mB3utR0/wln/f89bXbFKDkyf/S9m2p0+/o
+agKLZNbxlT8ApQIgTdy2wYYJej3DIwNe7jofxKVlQ/hjvVBq4T80kbEuLeBYVn9L
+7bUoIplFzLHidsNYCXUm+uuaC8ogtu0kV9akIHzx1yTtwsEiKP59I/N7IjvcvNDU
+AygRucuIiYL6OzXFwktChzqLmG07deHNPSxBS+Tsx82Gt5IO984nFLuOZwYmQFSY
+yWCsTZS/R74GQBth1vhH1hBtMViHPqW6UFvQ5xhUGV/dLsevO+azgSlcYnDFr2GE
+TfZJ/laYn3mh2zSlGmJX5KU8eiqIUuF47eAx29twD3W/6XSMWDj/mJe4LnW9/zqb
+G3WSOoLrv2gYvNaaCGGyAfJMshQqlod9QCCifsXPAnB3jge2VW3AJT47KeBeNzJV
+WtQR5w5PK2iPE05lbcOoLICopg0Utlb005M6UYGzzVSaKD4xkNrDWaOAaTlCfkn8
+SNxS0sVuI8lxwzZNdr3V
+=dSrA
+-----END PGP SIGNATURE-----
+
+--nextPart1491817.ehho7IUxQd--

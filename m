@@ -1,15 +1,16 @@
-Received: from mailapp02.imgtec.com ([217.156.133.132]:28945 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23993008AbcJRXpoPTdPz (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 19 Oct 2016 01:45:44 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] KVM: MIPS: Add missing uaccess.h include
-Date: Wed, 19 Oct 2016 00:45:18 +0100
-Message-ID: <d852b5f35e84e60c930589eeb14a6df21ea9b1cb.1476834183.git-series.james.hogan@imgtec.com>
+Received: from ozlabs.org ([103.22.144.67]:51591 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23992078AbcJSLKwtufFg (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 19 Oct 2016 13:10:52 +0200
+From: Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 10/10] mm: replace access_process_vm() write parameter with gup_flags
+In-Reply-To: <20161013002020.3062-11-lstoakes@gmail.com>
+References: <20161013002020.3062-1-lstoakes@gmail.com> <20161013002020.3062-11-lstoakes@gmail.com>
+Date: Wed, 19 Oct 2016 22:10:46 +1100
+Message-ID: <87twc84mrt.fsf@concordia.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <mpe@ellerman.id.au>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,44 +20,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org
-Message-ID: <20161018234518.WVTTc7S2LLamP7f2MXuJSLfGhCrXWhS9ZDmJ4eRp9gU@z>
+To: Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org
+Cc: linux-mips@linux-mips.org, linux-fbdev@vger.kernel.org, Jan Kara <jack@suse.cz>, kvm@vger.kernel.org, linux-sh@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org, netdev@vger.kernel.org, sparclinux@vger.kernel.org, linux-ia64@vger.kernel.org, linux-s390@vger.kernel.org, linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org, x86@kernel.org, Hugh Dickins <hughd@google.com>, linux-media@vger.kernel.org, Rik van Riel <riel@redhat.com>, intel-gfx@lists.freedesktop.org, adi-buildroot-devel@lists.sourceforge.net, ceph-devel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-cris-kernel@axis.com, Linus Torvalds <torvalds@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, linux-alpha@vger.kernel.org, linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Mel Gorman <mgorman@te>, chsingularity.net
+Message-ID: <20161019111046.o3O2EpdNMwQIISUInKREGU8b7ULvA8Oisv2N-YtdCEk@z>
 
-MIPS KVM uses user memory accessors but mips.c doesn't directly include
-uaccess.h, so include it now.
+Lorenzo Stoakes <lstoakes@gmail.com> writes:
 
-This wasn't too much of a problem before v4.9-rc1 as asm/module.h
-included asm/uaccess.h, however since commit 29abfbd9cbba ("mips:
-separate extable.h, switch module.h to it") this is no longer the case.
+> diff --git a/arch/powerpc/kernel/ptrace32.c b/arch/powerpc/kernel/ptrace32.c
+> index f52b7db3..010b7b3 100644
+> --- a/arch/powerpc/kernel/ptrace32.c
+> +++ b/arch/powerpc/kernel/ptrace32.c
+> @@ -74,7 +74,7 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
+>  			break;
+>  
+>  		copied = access_process_vm(child, (u64)addrOthers, &tmp,
+> -				sizeof(tmp), 0);
+> +				sizeof(tmp), FOLL_FORCE);
+>  		if (copied != sizeof(tmp))
+>  			break;
+>  		ret = put_user(tmp, (u32 __user *)data);
 
-This resulted in build failures when trace points were disabled, as
-trace/define_trace.h includes trace/trace_events.h only ifdef
-TRACEPOINTS_ENABLED, which goes on to include asm/uaccess.h via a couple
-of other headers.
+LGTM.
 
-Fixes: 29abfbd9cbba ("mips: separate extable.h, switch module.h to it")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: "Radim Krčmář" <rkrcmar@redhat.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Cc: kvm@vger.kernel.org
----
- arch/mips/kvm/mips.c | 1 +
- 1 file changed, 1 insertion(+), 0 deletions(-)
+> @@ -179,7 +179,8 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
+>  			break;
+>  		ret = 0;
+>  		if (access_process_vm(child, (u64)addrOthers, &tmp,
+> -					sizeof(tmp), 1) == sizeof(tmp))
+> +					sizeof(tmp),
+> +					FOLL_FORCE | FOLL_WRITE) == sizeof(tmp))
+>  			break;
+>  		ret = -EIO;
+>  		break;
 
-diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-index ce961495b5e1..622037d851a3 100644
---- a/arch/mips/kvm/mips.c
-+++ b/arch/mips/kvm/mips.c
-@@ -14,6 +14,7 @@
- #include <linux/err.h>
- #include <linux/kdebug.h>
- #include <linux/module.h>
-+#include <linux/uaccess.h>
- #include <linux/vmalloc.h>
- #include <linux/fs.h>
- #include <linux/bootmem.h>
--- 
-git-series 0.8.10
+If you're respinning this anyway, can you format that as:
+
+		if (access_process_vm(child, (u64)addrOthers, &tmp, sizeof(tmp),
+				      FOLL_FORCE | FOLL_WRITE) == sizeof(tmp))
+  			break;
+
+I realise you probably deliberately didn't do that to make the diff clearer.
+
+Either way:
+
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+
+
+cheers

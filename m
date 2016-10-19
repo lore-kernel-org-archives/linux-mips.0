@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:15453 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:18535 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991948AbcJSNdepA8b0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 19 Oct 2016 15:33:34 +0200
+        with ESMTP id S23991978AbcJSNdfcI0H0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 19 Oct 2016 15:33:35 +0200
 From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH 1/4] MIPS: traps: Fix output of show_backtrace
-Date: Wed, 19 Oct 2016 14:33:20 +0100
-Message-ID: <1476884003-17306-2-git-send-email-matt.redfearn@imgtec.com>
+Subject: [PATCH 2/4] MIPS: traps: Fix output of show_stacktrace
+Date: Wed, 19 Oct 2016 14:33:21 +0100
+Message-ID: <1476884003-17306-3-git-send-email-matt.redfearn@imgtec.com>
 In-Reply-To: <1476884003-17306-1-git-send-email-matt.redfearn@imgtec.com>
 References: <1476884003-17306-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
@@ -22,32 +22,55 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, "Maciej W. Rozycki" <macro@imgtec.com>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20161019133320.w8oV7H3RVHdg8ffXqH4yW9ooMFTLVyJ59K8UpxSPyKg@z>
+Message-ID: <20161019133321.HlYtz5c5oq2kzKBAKs0mZMPomT3ynEoQlj3fL4YIaik@z>
 
 Since commit 4bcc595ccd80 ("printk: reinstate KERN_CONT for printing
-continuation lines") the output from show_backtrace on MIPS has been
+continuation lines") the output from show_stacktrace on MIPS has been
 pretty unreadable due to the lack of KERN_CONT markers. Use pr_cont to
-provide the appropriate markers & restore the expected output.
+provide the appropriate markers & restore the expected output. Also
+start a new line with printk such that the presence of timing
+information does not interfere with output.
 
 Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
-
 ---
 
- arch/mips/kernel/traps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/kernel/traps.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 1f5fdee1dfc3..6ae5ea752d4c 100644
+index 6ae5ea752d4c..25ce866b2895 100644
 --- a/arch/mips/kernel/traps.c
 +++ b/arch/mips/kernel/traps.c
-@@ -156,7 +156,7 @@ static void show_backtrace(struct task_struct *task, const struct pt_regs *regs)
- 		print_ip_sym(pc);
- 		pc = unwind_stack(task, &sp, pc, &ra);
- 	} while (pc);
+@@ -174,22 +174,24 @@ static void show_stacktrace(struct task_struct *task,
+ 	printk("Stack :");
+ 	i = 0;
+ 	while ((unsigned long) sp & (PAGE_SIZE - 1)) {
+-		if (i && ((i % (64 / field)) == 0))
+-			printk("\n	 ");
++		if (i && ((i % (64 / field)) == 0)) {
++			pr_cont("\n");
++			printk("       ");
++		}
+ 		if (i > 39) {
+-			printk(" ...");
++			pr_cont(" ...");
+ 			break;
+ 		}
+ 
+ 		if (__get_user(stackdata, sp++)) {
+-			printk(" (Bad stack address)");
++			pr_cont(" (Bad stack address)");
+ 			break;
+ 		}
+ 
+-		printk(" %0*lx", field, stackdata);
++		pr_cont(" %0*lx", field, stackdata);
+ 		i++;
+ 	}
 -	printk("\n");
 +	pr_cont("\n");
+ 	show_backtrace(task, regs);
  }
  
- /*
 -- 
 2.7.4

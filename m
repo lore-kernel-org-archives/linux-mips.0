@@ -1,18 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:30141 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23993008AbcJTNQgkIkqy (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Oct 2016 15:16:36 +0200
-Date: Thu, 20 Oct 2016 14:16:30 +0100
+Received: from mailapp01.imgtec.com ([195.59.15.196]:33121 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993008AbcJTNwzIKBER (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Oct 2016 15:52:55 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH] KVM: MIPS: Add missing uaccess.h include
-Message-ID: <20161020131630.GL7370@jhogan-linux.le.imgtec.org>
-References: <d852b5f35e84e60c930589eeb14a6df21ea9b1cb.1476834183.git-series.james.hogan@imgtec.com>
- <20161020131054.GF8573@potion>
+Subject: [GIT PULL] MIPS KVM fix for v4.9-rc2
+Date: Thu, 20 Oct 2016 14:52:33 +0100
+Message-ID: <1476971554-1215-1-git-send-email-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="WR+jf/RUebEcofwt"
-Content-Disposition: inline
-In-Reply-To: <20161020131054.GF8573@potion>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,74 +19,48 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Radim =?utf-8?B?S3LEjW3DocWZ?= <rkrcmar@redhat.com>
-Cc: linux-mips@linux-mips.org, Paolo Bonzini <pbonzini@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org
-Message-ID: <20161020131630.YBFe58lNH--nFuX0WEWMgfzVZSK6cXFdPeGw0x7iAo4@z>
+To: Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>
+Cc: James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, kvm@vger.kernel.org
+Message-ID: <20161020135233.KxTdaXKyZ0wBsfmme_21BqCV-e01xrLaOIWzzljwF1U@z>
 
---WR+jf/RUebEcofwt
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Radim, Paolo,
 
-Hi Radim,
+The following changes since commit 1001354ca34179f3db924eb66672442a173147dc:
 
-On Thu, Oct 20, 2016 at 03:10:54PM +0200, Radim Kr=C4=8Dm=C3=A1=C5=99 wrote:
-> 2016-10-19 00:45+0100, James Hogan:
-> > MIPS KVM uses user memory accessors but mips.c doesn't directly include
-> > uaccess.h, so include it now.
-> >=20
-> > This wasn't too much of a problem before v4.9-rc1 as asm/module.h
-> > included asm/uaccess.h, however since commit 29abfbd9cbba ("mips:
-> > separate extable.h, switch module.h to it") this is no longer the case.
-> >=20
-> > This resulted in build failures when trace points were disabled, as
-> > trace/define_trace.h includes trace/trace_events.h only ifdef
-> > TRACEPOINTS_ENABLED, which goes on to include asm/uaccess.h via a couple
-> > of other headers.
-> >=20
-> > Fixes: 29abfbd9cbba ("mips: separate extable.h, switch module.h to it")
-> > Signed-off-by: James Hogan <james.hogan@imgtec.com>
-> > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > Cc: "Radim Kr=C4=8Dm=C3=A1=C5=99" <rkrcmar@redhat.com>
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > Cc: linux-mips@linux-mips.org
-> > Cc: kvm@vger.kernel.org
-> > ---
->=20
-> We'd like to have this patch in 4.9-rc2 and I see it in kvm-mips/next.
-> Would you prefer to send a pull request?
+  Linux 4.9-rc1 (2016-10-15 12:17:50 -0700)
 
-Yes, I've applied it to my next branch and was going to send a pull
-request this afternoon.
+are available in the git repository at:
 
-BTW, generally speaking do you always prefer pull requests to have the
-patches sent in reply to it, or only if they haven't already been posted
-for review?
+  git://git.kernel.org/pub/scm/linux/kernel/git/jhogan/kvm-mips.git tags/kvm_mips_4.9_2
 
-> (I can apply it directly just as well.)
+for you to fetch changes up to d852b5f35e84e60c930589eeb14a6df21ea9b1cb:
 
-Thanks
+  KVM: MIPS: Add missing uaccess.h include (2016-10-19 00:37:05 +0100)
+
+I'd already based this on v4.9-rc1 rather than the kvm next branch which
+isn't up to v4.9-rc1 yet. If thats a problem I can easily rebase, or
+feel free to apply the patch directly.
+
+Cheers
 James
 
---WR+jf/RUebEcofwt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+----------------------------------------------------------------
+MIPS KVM fix for v4.9-rc2
 
------BEGIN PGP SIGNATURE-----
+- Fix build error introduced during the 4.9 merge window when
+  tracepoints are disabled.
 
-iQIcBAEBCAAGBQJYCMOmAAoJEGwLaZPeOHZ65hsP/jGIwoeoSQu4b1x6FuXSu5bJ
-f5iZpTvopa9/ShCm321ZPppp3QgcpSV/V8Yvol1sQmfCMPqeEnLUThWGKVfkjXWp
-b9/b37OeHhxwD19XZpFCkwhjbD6nyG3jWqRyTa6e4lh/XNjOIMQEqjGkQ9sIIH92
-2CJjB4c+XSeLAvapwP2kLBew09EeIJyB+rG20gVaJj343X+te3qx96mMYB19kpCJ
-2TIvTB9Z37Vujbv7196Jn8oN8eNZrMa3Nja+tnauKa3hTmQQXS3vE8u8QriB4+VF
-DBTJJNT3hti1NWpilDcRpQBinlTpvn2m4oy9Fgic6h8pL1ScWbA3AAL/btFn9Bf7
-9XrTm96OApcQZWWYOQ3eEWCTvD2+j0eeY3FriuPX8h6q8L9IBWfuzX6x4xTdiMXh
-74/OejmCsnR2b1K/HTnI3WHvLgoTtL0T54kDO/N4p81EcgVzJwg+YB4RqE/DUj79
-uCeKywb8ULEQf/7R361UIKn4GIa/W5xzUgYTtqNKzT4ndjdhApq0cUNEXfBWHydO
-BE/6sOMj+XT5nUt7zFwfxlxvuDfk053NhrnbJvmRPpPTL6pTvjpqD29yg0BhSY/n
-AYmQ1HTBzi7a6GVax9xYNBsG4f9+pOD8gcy4ROk7iKXnELbBNPybhBPucMnKXx1z
-/20qsHY0XYdGKok+VHVf
-=YfQv
------END PGP SIGNATURE-----
+----------------------------------------------------------------
+James Hogan (1):
+      KVM: MIPS: Add missing uaccess.h include
 
---WR+jf/RUebEcofwt--
+ arch/mips/kvm/mips.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: "Radim Krčmář" <rkrcmar@redhat.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Cc: kvm@vger.kernel.org
+-- 
+2.7.3

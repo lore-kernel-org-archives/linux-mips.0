@@ -1,19 +1,14 @@
-Received: from mail-pf0-f196.google.com ([209.85.192.196]:32783 "EHLO
-        mail-pf0-f196.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990513AbcJUIrgsUpCg (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 21 Oct 2016 10:47:36 +0200
-Date: Fri, 21 Oct 2016 19:47:18 +1100
-From: Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 0/6] MIPS: Use thin archives & dead code elimination
-Message-ID: <20161021194718.2cd4b93e@roar.ozlabs.ibm.com>
-In-Reply-To: <1724594.nvOo2qz5cT@np-p-burton>
-References: <20161020202705.3783-1-paul.burton@imgtec.com>
-        <20161021115147.0f6eea51@roar.ozlabs.ibm.com>
-        <1724594.nvOo2qz5cT@np-p-burton>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:33024 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23992544AbcJUTGxdzLqp (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 21 Oct 2016 21:06:53 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH] MIPS: dump_tlb: Fix printk continuations
+Date: Fri, 21 Oct 2016 20:06:40 +0100
+Message-ID: <dcfde84a37e7536b6a145d12e4021bb7d25cf058.1477076684.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-Path: <npiggin@gmail.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,66 +18,130 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20161021084718.7b_cXh-W33OHN8P85Ag5hkgTGM9iFkQgOH0MrVPs87Q@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, "Maciej W . Rozycki" <macro@imgtec.com>
+Message-ID: <20161021190640.Bouz7jiiT7Nhb7PwV4zmJVwj4AfNb8gK3c-ck4Csq3E@z>
 
-On Fri, 21 Oct 2016 08:45:47 +0100
-Paul Burton <paul.burton@imgtec.com> wrote:
+Since commit 4bcc595ccd80 ("printk: reinstate KERN_CONT for printing
+continuation lines") the output from TLB dumps on MIPS has been
+pretty unreadable due to the lack of KERN_CONT markers. Use pr_cont to
+provide the appropriate markers & restore the expected output.
 
-> Hi Nick,
-> 
-> On Friday, 21 October 2016 11:51:47 BST Nicholas Piggin wrote:
-> > Paul Burton <paul.burton@imgtec.com> wrote:  
-> > > This series fixes a few issues with CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-> > > and then enables it, along with CONFIG_THIN_ARCHIVES, for MIPS. This
-> > > 
-> > > leads to a typical generic kernel build becoming ~5% smaller:
-> > >   add/remove: 0/3028 grow/shrink: 1/14 up/down: 18/-457362 (-457344)
-> > >   ...
-> > >   Total: Before=9001030, After=8543686, chg -5.08%
-> > > 
-> > > Applies atop v4.9-rc1.  
-> > 
-> > Very nice, and thanks for the kbuild fixes, I think they all look sane.
-> > 
-> > Let's try to get those kbuild fixes in through the kbuild tree first
-> > (which has some other fixes required for 4.9). I can take them and send
-> > them to kbuild maintainer if you like.  
-> 
-> That sounds great :)
-> 
-> > On powerpc we'll likely provide an option to select these manually for
-> > 4.9 because there has been the odd toolchain issue come up, so that's
-> > something to consider.  
-> 
-> I imagine the MIPS bits will probably be v4.10 material, but hopefully Ralf 
-> can get them into -next as soon as possible after the kbuild bits are in, 
-> which should give us some time to discover any toolchain issues.
+Continuation is also used for the second line of each TLB entry printed
+in dump_tlb.c even though it has a newline, since it is a continuation
+of the interpretation of the same TLB entry. For example:
 
-Okay, whatever works for you.
+[   46.371884] Index:  0 pgmask=16kb va=77654000 asid=73 gid=00
+        [ri=0 xi=0 pa=ffc18000 c=5 d=0 v=1 g=0] [ri=0 xi=0 pa=ffc1c000 c=5 d=0 v=1 g=0]
+[   46.385380] Index: 12 pgmask=16kb va=004b4000 asid=73 gid=00
+        [ri=0 xi=0 pa=00000000 c=0 d=0 v=0 g=0] [ri=0 xi=0 pa=ffb00000 c=5 d=1 v=1 g=0]
 
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Cc: Maciej W. Rozycki <macro@imgtec.com>
+---
+ arch/mips/lib/dump_tlb.c     | 44 ++++++++++++++++++-------------------
+ arch/mips/lib/r3k_dump_tlb.c | 18 +++++++--------
+ 2 files changed, 31 insertions(+), 31 deletions(-)
 
-> > For your linker script, you may consider putting the function sections
-> > into the same input as other text. TEXT_TEXT does not include .text.*,
-> > so mips's .text.* below it will catch those.
-> > 
-> > You may just open-code your TEXT_TEXT, and have:
-> > 
-> > *(.text.hot .text .text.fixup .text.unlikely .text.[0-9a-zA-Z_]*)
-> > 
-> > or similar.  
-> 
-> Ah, so are you saying that would give the linker more scope for discarding 
-> things?
-
-I don't think discarding, but it will allow those sections to be placed
-together with more scope for reordering. This can reduce the amount of
-branch trampolines required.
-
-Aside from that, it just gives less change in behaviour. Without
--ffunction-sections, those functions would be placed in .text section,
-so you ideally want to keep them there when enabling it.
-
-Thanks,
-Nick
+diff --git a/arch/mips/lib/dump_tlb.c b/arch/mips/lib/dump_tlb.c
+index 0f80b936e75e..6eb50a7137db 100644
+--- a/arch/mips/lib/dump_tlb.c
++++ b/arch/mips/lib/dump_tlb.c
+@@ -135,42 +135,42 @@ static void dump_tlb(int first, int last)
+ 		c0 = (entrylo0 & ENTRYLO_C) >> ENTRYLO_C_SHIFT;
+ 		c1 = (entrylo1 & ENTRYLO_C) >> ENTRYLO_C_SHIFT;
+ 
+-		printk("va=%0*lx asid=%0*lx",
+-		       vwidth, (entryhi & ~0x1fffUL),
+-		       asidwidth, entryhi & asidmask);
++		pr_cont("va=%0*lx asid=%0*lx",
++			vwidth, (entryhi & ~0x1fffUL),
++			asidwidth, entryhi & asidmask);
+ 		if (cpu_has_guestid)
+-			printk(" gid=%02lx",
+-			       (guestctl1 & MIPS_GCTL1_RID)
++			pr_cont(" gid=%02lx",
++				(guestctl1 & MIPS_GCTL1_RID)
+ 					>> MIPS_GCTL1_RID_SHIFT);
+ 		/* RI/XI are in awkward places, so mask them off separately */
+ 		pa = entrylo0 & ~(MIPS_ENTRYLO_RI | MIPS_ENTRYLO_XI);
+ 		if (xpa)
+ 			pa |= (unsigned long long)readx_c0_entrylo0() << 30;
+ 		pa = (pa << 6) & PAGE_MASK;
+-		printk("\n\t[");
++		pr_cont("\n\t[");
+ 		if (cpu_has_rixi)
+-			printk("ri=%d xi=%d ",
+-			       (entrylo0 & MIPS_ENTRYLO_RI) ? 1 : 0,
+-			       (entrylo0 & MIPS_ENTRYLO_XI) ? 1 : 0);
+-		printk("pa=%0*llx c=%d d=%d v=%d g=%d] [",
+-		       pwidth, pa, c0,
+-		       (entrylo0 & ENTRYLO_D) ? 1 : 0,
+-		       (entrylo0 & ENTRYLO_V) ? 1 : 0,
+-		       (entrylo0 & ENTRYLO_G) ? 1 : 0);
++			pr_cont("ri=%d xi=%d ",
++				(entrylo0 & MIPS_ENTRYLO_RI) ? 1 : 0,
++				(entrylo0 & MIPS_ENTRYLO_XI) ? 1 : 0);
++		pr_cont("pa=%0*llx c=%d d=%d v=%d g=%d] [",
++			pwidth, pa, c0,
++			(entrylo0 & ENTRYLO_D) ? 1 : 0,
++			(entrylo0 & ENTRYLO_V) ? 1 : 0,
++			(entrylo0 & ENTRYLO_G) ? 1 : 0);
+ 		/* RI/XI are in awkward places, so mask them off separately */
+ 		pa = entrylo1 & ~(MIPS_ENTRYLO_RI | MIPS_ENTRYLO_XI);
+ 		if (xpa)
+ 			pa |= (unsigned long long)readx_c0_entrylo1() << 30;
+ 		pa = (pa << 6) & PAGE_MASK;
+ 		if (cpu_has_rixi)
+-			printk("ri=%d xi=%d ",
+-			       (entrylo1 & MIPS_ENTRYLO_RI) ? 1 : 0,
+-			       (entrylo1 & MIPS_ENTRYLO_XI) ? 1 : 0);
+-		printk("pa=%0*llx c=%d d=%d v=%d g=%d]\n",
+-		       pwidth, pa, c1,
+-		       (entrylo1 & ENTRYLO_D) ? 1 : 0,
+-		       (entrylo1 & ENTRYLO_V) ? 1 : 0,
+-		       (entrylo1 & ENTRYLO_G) ? 1 : 0);
++			pr_cont("ri=%d xi=%d ",
++				(entrylo1 & MIPS_ENTRYLO_RI) ? 1 : 0,
++				(entrylo1 & MIPS_ENTRYLO_XI) ? 1 : 0);
++		pr_cont("pa=%0*llx c=%d d=%d v=%d g=%d]\n",
++			pwidth, pa, c1,
++			(entrylo1 & ENTRYLO_D) ? 1 : 0,
++			(entrylo1 & ENTRYLO_V) ? 1 : 0,
++			(entrylo1 & ENTRYLO_G) ? 1 : 0);
+ 	}
+ 	printk("\n");
+ 
+diff --git a/arch/mips/lib/r3k_dump_tlb.c b/arch/mips/lib/r3k_dump_tlb.c
+index 744f4a7bc49d..85b4086e553e 100644
+--- a/arch/mips/lib/r3k_dump_tlb.c
++++ b/arch/mips/lib/r3k_dump_tlb.c
+@@ -53,15 +53,15 @@ static void dump_tlb(int first, int last)
+ 			 */
+ 			printk("Index: %2d ", i);
+ 
+-			printk("va=%08lx asid=%08lx"
+-			       "  [pa=%06lx n=%d d=%d v=%d g=%d]",
+-			       entryhi & PAGE_MASK,
+-			       entryhi & asid_mask,
+-			       entrylo0 & PAGE_MASK,
+-			       (entrylo0 & R3K_ENTRYLO_N) ? 1 : 0,
+-			       (entrylo0 & R3K_ENTRYLO_D) ? 1 : 0,
+-			       (entrylo0 & R3K_ENTRYLO_V) ? 1 : 0,
+-			       (entrylo0 & R3K_ENTRYLO_G) ? 1 : 0);
++			pr_cont("va=%08lx asid=%08lx"
++				"  [pa=%06lx n=%d d=%d v=%d g=%d]",
++				entryhi & PAGE_MASK,
++				entryhi & asid_mask,
++				entrylo0 & PAGE_MASK,
++				(entrylo0 & R3K_ENTRYLO_N) ? 1 : 0,
++				(entrylo0 & R3K_ENTRYLO_D) ? 1 : 0,
++				(entrylo0 & R3K_ENTRYLO_V) ? 1 : 0,
++				(entrylo0 & R3K_ENTRYLO_G) ? 1 : 0);
+ 		}
+ 	}
+ 	printk("\n");
+-- 
+git-series 0.8.10

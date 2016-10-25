@@ -1,13 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:34246 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:30469 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991977AbcJYKslVUCF5 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 25 Oct 2016 12:48:41 +0200
-Date: Tue, 25 Oct 2016 11:48:27 +0100
+        with ESMTP id S23992121AbcJYK4GpRej5 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 25 Oct 2016 12:56:06 +0200
+Date: Tue, 25 Oct 2016 11:55:49 +0100
 From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH 2/2] MIPS: malta: Fixup reboot
-In-Reply-To: <20161014091732.27536-2-paul.burton@imgtec.com>
-Message-ID: <alpine.DEB.2.00.1610251148010.31859@tp.orcam.me.uk>
-References: <e50cd48c-e0c4-9bfc-b265-383a33eac569@roeck-us.net> <20161014091732.27536-1-paul.burton@imgtec.com> <20161014091732.27536-2-paul.burton@imgtec.com>
+Subject: Re: [PATCH v2 11/14] MIPS: Malta: Use syscon-reboot driver to
+ reboot
+In-Reply-To: <2861325.0K2k6plxiD@np-p-burton>
+Message-ID: <alpine.DEB.2.00.1610251003330.31859@tp.orcam.me.uk>
+References: <20160919212132.28893-1-paul.burton@imgtec.com> <20160919212132.28893-12-paul.burton@imgtec.com> <alpine.DEB.2.00.1610220956020.31859@tp.orcam.me.uk> <2861325.0K2k6plxiD@np-p-burton>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <Maciej.Rozycki@imgtec.com>
@@ -21,27 +22,40 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20161025104827.8cnzv-tUYG3hNzdoj1CWraIv3Hh0Jqi25Zyo47Azycw@z>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, devicetree@vger.kernel.org, Stephan Linz <linz@li-pro.net>, Jacek Anaszewski <j.anaszewski@samsung.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Message-ID: <20161025105549.9RD98RncF_9SxadAAb811vw6F8-4K-9X7KbSJHNbfQE@z>
 
-On Fri, 14 Oct 2016, Paul Burton wrote:
+Hi Paul,
 
-> Commit 10b6ea0959de ("MIPS: Malta: Use syscon-reboot driver to reboot")
-> converted the Malta board to use the generic syscon-reboot driver to
-> handle reboots, but incorrectly used the value 0x4d rather than 0x42 as
-> the magic to write to the reboot register.
+> >  This has broken reboot support, all I get now is:
+> > 
+> > reboot: Restarting system
+> > Unable to restart system
+> > Reboot failed -- System halted
+> > 
+> > at which point I need to issue a serial BREAK to regain control of the
+> > board and get back to YAMON; fortunately the board is wired for that.
 > 
-> I also incorrectly believed that syscon/regmap would default to native
-> endianness, but this isn't the case. Force this by specifying with a
-> native-endian property in the devicetree.
+> This was already reported over here:
 > 
-> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-> Fixes: 10b6ea0959de ("MIPS: Malta: Use syscon-reboot driver to reboot")
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: linux-mips@linux-mips.org
-> ---
+> https://www.linux-mips.org/archives/linux-mips/2016-10/msg00120.html 
+> 
+> These 2 patches fix it:
+> 
+> https://patchwork.linux-mips.org/patch/14395/ 
+> https://patchwork.linux-mips.org/patch/14396/ 
 
-Tested-by: Maciej W. Rozycki <macro@imgtec.com>
+ Thanks, good to know and sorry to raise a late alarm then.
+
+ As it happens the board I've been fiddling with has been temporarily 
+sitting idle, so I went ahead and verified that these changes have indeed 
+removed the regression in my configuration.  So you've got a confirmation 
+from a real Malta hardware user now too (QEMU may have its own quirks).
+
+> I've asked Ralf if we can get those, along with a few others, in ASAP - 
+> preferrably for -rc3.
+
+ As these are fixes to a functional regression I also recommend merging 
+them ASAP.
 
   Maciej

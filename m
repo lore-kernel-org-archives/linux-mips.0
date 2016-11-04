@@ -1,19 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:41684 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:25188 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23990509AbcKDIqwZBpwt (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 4 Nov 2016 09:46:52 +0100
-Subject: Re: [PATCH 5/6] MIPS: Ensure bss section ends on a long-aligned
- address
-References: <20161020202705.3783-1-paul.burton@imgtec.com>
- <20161020202705.3783-6-paul.burton@imgtec.com>
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Message-ID: <99627bd7-3dc7-9b9b-0e34-bc4fc251de1a@imgtec.com>
-Date: Fri, 4 Nov 2016 09:46:45 +0100
+        with ESMTP id S23990509AbcKDJ3J0WgR0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 4 Nov 2016 10:29:09 +0100
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Subject: [PATCH 0/3] SMP Startup Improvements
+Date: Fri, 4 Nov 2016 09:28:55 +0000
+Message-ID: <1478251738-13593-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20161020202705.3783-6-paul.burton@imgtec.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Marcin.Nowakowski@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,24 +18,41 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20161104084645.avDtX3vCaE9pWA6-5ZpUkPClffFlSjV7l1g4CK5xhNQ@z>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Cc: Matt Redfearn <matt.redfearn@imgtec.com>, "Maciej W. Rozycki" <macro@imgtec.com>, Jiri Slaby <jslaby@suse.cz>, James Hogan <james.hogan@imgtec.com>, Qais Yousef <qsyousef@gmail.com>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, Huacai Chen <chenhc@lemote.com>, Chris Metcalf <cmetcalf@mellanox.com>, Thomas Gleixner <tglx@linutronix.de>, Florian Fainelli <f.fainelli@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Adam Buchbinder <adam.buchbinder@gmail.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Paul Gortmaker <paul.gortmaker@windriver.com>, Paul Burton <paul.burton@imgtec.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Kevin Cernekee <cernekee@gmail.com>, linux-kernel@vger.kernel.org, Yang Shi <yang.shi@windriver.com>, Anna-Maria Gleixner <anna-maria@linutronix.de>, David Daney <david.daney@cavium.com>
+Message-ID: <20161104092855.MzOekHJ-2WSrDSCYIkoR0Sh8Wbe07NjyWMaz5sRTB20@z>
 
-Hi Paul,
 
-On 20.10.2016 22:27, Paul Burton wrote:
-> diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
-> index d5de675..d1f5401 100644
-> --- a/arch/mips/kernel/vmlinux.lds.S
-> +++ b/arch/mips/kernel/vmlinux.lds.S
-> @@ -1,3 +1,4 @@
-> +#include <asm/asm.h>
->  #include <asm/asm-offsets.h>
->  #include <asm/thread_info.h>
+This series improves the startup of SMP processors for MIPS. Firstly,
+replace the use of a bitmask of CPUs to detect secondard CPUs starting
+with a completion event. This change means that secondary CPUs can fail
+to start, and this will be detected and handled rather than hanging the
+kernel.
+The second patch removes the now redundant CPU bitmask.
+The third patch improves error handling in the CPS SMP implementation.
+In an unlikely corner case where no online CPU is available in a core
+to start a secondary VPE, previously the kernel would BUG(), this patch
+causes a warning to be printed and the situation handled more
+gracefully.
 
-This patch (and specifically including asm/asm.h) causes a build error 
-when CONFIG_RELOCATABLE=y as there's a LONG() linker command that gets 
-converted to '.[d]word' as a result of including the assembly macros ...
+This series is based on v4.9-rc1 and has been tested on Boston, Malta,
+SEAD3, Octeon and Pistachio Ci40 platforms.
 
-Marcin
+
+
+Matt Redfearn (3):
+  MIPS: smp: Use a completion event to signal CPU up
+  MIPS: smp: Remove cpu_callin_map
+  MIPS: smp-cps: Don't BUG if a CPU fails to start
+
+ arch/mips/cavium-octeon/smp.c         |  1 -
+ arch/mips/include/asm/smp.h           |  2 --
+ arch/mips/kernel/process.c            |  4 +---
+ arch/mips/kernel/smp-bmips.c          |  1 -
+ arch/mips/kernel/smp-cps.c            |  7 +++++--
+ arch/mips/kernel/smp.c                | 17 +++++++++--------
+ arch/mips/loongson64/loongson-3/smp.c |  1 -
+ 7 files changed, 15 insertions(+), 18 deletions(-)
+
+-- 
+2.7.4

@@ -1,14 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:23902 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:2883 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991964AbcKGLbIIQyns (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 7 Nov 2016 12:31:08 +0100
+        with ESMTP id S23991986AbcKGLsdrmXks (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 7 Nov 2016 12:48:33 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH] MIPS: netlogic: Exclude netlogic,xlp-pic code from XLR builds
-Date: Mon, 7 Nov 2016 11:30:41 +0000
-Message-ID: <20161107113042.15821-1-paul.burton@imgtec.com>
+Subject: [PATCH v2 05/10] MIPS: Export _mcount alongside its definition
+Date: Mon, 7 Nov 2016 11:48:04 +0000
+Message-ID: <20161107114804.22409-1-paul.burton@imgtec.com>
+In-Reply-To: <20161107111417.11486-6-paul.burton@imgtec.com>
+References: <20161107111417.11486-6-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -20,57 +21,62 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, Jayachandran C <jchandra@broadcom.com>
-Message-ID: <20161107113041.-QqeKyIDVJlIDopNFdFfj4tHBtKFQY-OI_yRKVZ5nXY@z>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20161107114804.2G2ItVdUPgk9w7TGl0edl5qUOpS7ByaZoGVz3mY6Ec8@z>
 
-Code in arch/mips/netlogic/common/irq.c which handles the XLP PIC fails
-to build in XLR configurations due to cpu_is_xlp9xx not being defined,
-leading to the following build failure:
-
-    arch/mips/netlogic/common/irq.c: In function ‘xlp_of_pic_init’:
-    arch/mips/netlogic/common/irq.c:298:2: error: implicit declaration
-    of function ‘cpu_is_xlp9xx’ [-Werror=implicit-function-declaration]
-      if (cpu_is_xlp9xx()) {
-      ^
-
-Although the code was conditional upon CONFIG_OF which is indirectly
-selected by CONFIG_NLM_XLP_BOARD but not CONFIG_NLM_XLR_BOARD, the
-failing XLR with CONFIG_OF configuration can be configured manually or
-by randconfig.
-
-Fix the build failure by making the affected XLP PIC code conditional
-upon CONFIG_CPU_XLP which is used to guard the inclusion of
-asm/netlogic/xlp-hal/xlp.h that provides the required cpu_is_xlp9xx
-function.
+Now that EXPORT_SYMBOL can be used from assembly source, move the
+EXPORT_SYMBOL invocation for _mcount to be alongside its definition.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: Jayachandran C <jchandra@broadcom.com>
+
 ---
 
- arch/mips/netlogic/common/irq.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changes in v2:
+- Inlcude asm/export.h
 
-diff --git a/arch/mips/netlogic/common/irq.c b/arch/mips/netlogic/common/irq.c
-index 3660dc6..b04eca1 100644
---- a/arch/mips/netlogic/common/irq.c
-+++ b/arch/mips/netlogic/common/irq.c
-@@ -275,7 +275,7 @@ asmlinkage void plat_irq_dispatch(void)
- 	do_IRQ(nlm_irq_to_xirq(node, i));
- }
+ arch/mips/kernel/mcount.S     | 3 +++
+ arch/mips/kernel/mips_ksyms.c | 4 ----
+ 2 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/arch/mips/kernel/mcount.S b/arch/mips/kernel/mcount.S
+index 2f7c734..f2ee7e1 100644
+--- a/arch/mips/kernel/mcount.S
++++ b/arch/mips/kernel/mcount.S
+@@ -10,6 +10,7 @@
+  * Author: Wu Zhangjin <wuzhangjin@gmail.com>
+  */
  
--#ifdef CONFIG_OF
-+#if defined(CONFIG_CPU_XLP) && defined(CONFIG_OF)
- static const struct irq_domain_ops xlp_pic_irq_domain_ops = {
- 	.xlate = irq_domain_xlate_onetwocell,
- };
-@@ -348,7 +348,7 @@ void __init arch_init_irq(void)
- #if defined(CONFIG_CPU_XLR)
- 	nlm_setup_fmn_irq();
++#include <asm/export.h>
+ #include <asm/regdef.h>
+ #include <asm/stackframe.h>
+ #include <asm/ftrace.h>
+@@ -66,6 +67,7 @@
+ NESTED(ftrace_caller, PT_SIZE, ra)
+ 	.globl _mcount
+ _mcount:
++EXPORT_SYMBOL(_mcount)
+ 	b	ftrace_stub
+ #ifdef CONFIG_32BIT
+ 	 addiu sp,sp,8
+@@ -114,6 +116,7 @@ ftrace_stub:
+ #else	/* ! CONFIG_DYNAMIC_FTRACE */
+ 
+ NESTED(_mcount, PT_SIZE, ra)
++EXPORT_SYMBOL(_mcount)
+ 	PTR_LA	t1, ftrace_stub
+ 	PTR_L	t2, ftrace_trace_function /* Prepare t2 for (1) */
+ 	bne	t1, t2, static_trace
+diff --git a/arch/mips/kernel/mips_ksyms.c b/arch/mips/kernel/mips_ksyms.c
+index 84f169b..d12d243 100644
+--- a/arch/mips/kernel/mips_ksyms.c
++++ b/arch/mips/kernel/mips_ksyms.c
+@@ -80,7 +80,3 @@ EXPORT_SYMBOL(__csum_partial_copy_from_user);
  #endif
--#if defined(CONFIG_OF)
-+#if defined(CONFIG_CPU_XLP) && defined(CONFIG_OF)
- 	of_irq_init(xlp_pic_irq_ids);
- #endif
- }
+ 
+ EXPORT_SYMBOL(invalid_pte_table);
+-#ifdef CONFIG_FUNCTION_TRACER
+-/* _mcount is defined in arch/mips/kernel/mcount.S */
+-EXPORT_SYMBOL(_mcount);
+-#endif
 -- 
 2.10.2

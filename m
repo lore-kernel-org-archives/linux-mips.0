@@ -1,14 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:40888 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:1385 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991986AbcKGSjiIHo5T (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 7 Nov 2016 19:39:38 +0100
-Subject: [PATCH] MIPS: R2-on-R6 emulation bugfix of BLEZL and BGTZL
- instructions
+        with ESMTP id S23991986AbcKGUG1XjW58 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 7 Nov 2016 21:06:27 +0100
+Message-ID: <5820DEBA.6080800@imgtec.com>
+Date: Mon, 7 Nov 2016 12:06:18 -0800
 From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Date: Mon, 7 Nov 2016 10:39:28 -0800
-Message-ID: <20161107183928.27456.13089.stgit@ubuntu-yegoshin>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Subject: Re: MIPS: MIPS74K needs post dma flush
+References: <20161107194128.25086-2-svens@stackframe.org>
+In-Reply-To: <20161107194128.25086-2-svens@stackframe.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
@@ -20,53 +21,13 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, paul.burton@imgtec.com, linux-kernel@vger.kernel.org, ralf@linux-mips.org, yamada.masahiro@socionext.com, macro@imgtec.com
-Message-ID: <20161107183928.suseAOSNpX5HvEu4rBIhn1nlIEliX0mGVcimLJKs-jM@z>
+To: Sven Schnelle <svens@stackframe.org>, linux-mips@linux-mips.org
+Message-ID: <20161107200618.SI_iWWeT_3ByNsQQRTPVlMxwf14Buw9FB1oF7WNWazY@z>
 
-MIPS R2 emulation doesn't take into account that BLEZL and BGTZL instructions
-require register RT = 0. If it is not zero it can be some legitimate MIPS R6
-instruction.
+74K does NOT have an aggressive speculation, never for D-Cache, never 
+for I-cache. D-Cache doesn't an advance speculation load at all, I-cache 
+never does a wrong speculation.
 
-Problem happens after emulation optimization then emulation routine tries
-to pipeline emulation and after emulation of one instruction it picks up
-a next candidate. In single pass strategy it does not happen because CPU
-doesn't trap on branch-compacts which share opcode space with BLEZL/BGTZL
-(but has RT != 0, of course).
+So, post-DMA flush is not needed in any form.
 
-Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-Reported-by: Douglas Leung <Douglas.Leung@imgtec.com>
----
- arch/mips/kernel/mips-r2-to-r6-emul.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/kernel/mips-r2-to-r6-emul.c b/arch/mips/kernel/mips-r2-to-r6-emul.c
-index 22dedd62818a..b0c86b08c0b9 100644
---- a/arch/mips/kernel/mips-r2-to-r6-emul.c
-+++ b/arch/mips/kernel/mips-r2-to-r6-emul.c
-@@ -919,6 +919,7 @@ int mipsr2_decoder(struct pt_regs *regs, u32 inst, unsigned long *fcr31)
- 		BUG();
- 		return SIGEMT;
- 	}
-+	err = 0;
- 	pr_debug("Emulating the 0x%08x R2 instruction @ 0x%08lx (pass=%d))\n",
- 		 inst, epc, pass);
- 
-@@ -1096,10 +1097,16 @@ int mipsr2_decoder(struct pt_regs *regs, u32 inst, unsigned long *fcr31)
- 		}
- 		break;
- 
--	case beql_op:
--	case bnel_op:
- 	case blezl_op:
- 	case bgtzl_op:
-+		/* return MIPS R6 instruction to CPU execution */
-+		if (MIPSInst_RT(inst)) {
-+			err = SIGILL;
-+			break;
-+		}
-+
-+	case beql_op:
-+	case bnel_op:
- 		if (delay_slot(regs)) {
- 			err = SIGILL;
- 			break;
+- Leonid.

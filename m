@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:13697 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:6765 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991759AbcKGLOjq3-Od (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 7 Nov 2016 12:14:39 +0100
+        with ESMTP id S23991965AbcKGLO5AZOdd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 7 Nov 2016 12:14:57 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 00/10] MIPS: Cleanup EXPORT_SYMBOL usage
-Date: Mon, 7 Nov 2016 11:14:06 +0000
-Message-ID: <20161107111417.11486-1-paul.burton@imgtec.com>
+Subject: [PATCH 01/10] MIPS: Use generic asm/export.h
+Date: Mon, 7 Nov 2016 11:14:07 +0000
+Message-ID: <20161107111417.11486-2-paul.burton@imgtec.com>
+In-Reply-To: <20161107111417.11486-1-paul.burton@imgtec.com>
+References: <20161107111417.11486-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -20,52 +22,28 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20161107111406.DuyZbU5A8g7SKd98risieDwaX2AO_WpzFscn5kVUJhw@z>
+Message-ID: <20161107111407.JIF2tKseY-zH5jMH5gzWPsGLvsjAy24qgl3ItRKq8HU@z>
 
-This series takes advantage of the recent support for using
-EXPORT_SYMBOL from assembly source to move symbols exports for functions
-written in assembly to be performed close to the definition of the
-function itself. The result is that mips_ksyms.c can be removed
-entirely.
+Include export.h in the list of generic headers used by the MIPS
+architecture for use by later patches.
 
-Along the way we make the handling of functions written (or at least
-stubbed) in assembly a little more consistent for microMIPS kernels.
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+---
 
-Applies atop v4.9-rc4.
+ arch/mips/include/asm/Kbuild | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-Paul Burton (10):
-  MIPS: Use generic asm/export.h
-  MIPS: tlbex: Clear ISA bit when writing to handle_tlb{l,m,s}
-  MIPS: End asm function prologue macros with .insn
-  MIPS: Export _save_fp & _save_msa alongside their definitions
-  MIPS: Export _mcount alongside its definition
-  MIPS: Export invalid_pte_table alongside its definition
-  MIPS: Export csum functions alongside their definitions
-  MIPS: Export string functions alongside their definitions
-  MIPS: Export memcpy & memset functions alongside their definitions
-  MIPS: Export {copy,clear}_page functions alongside their definitions
-
- arch/mips/cavium-octeon/octeon-memcpy.S |  5 ++
- arch/mips/include/asm/Kbuild            |  1 +
- arch/mips/include/asm/asm.h             | 10 ++--
- arch/mips/kernel/Makefile               |  2 +-
- arch/mips/kernel/mcount.S               |  2 +
- arch/mips/kernel/mips_ksyms.c           | 94 ---------------------------------
- arch/mips/kernel/r2300_switch.S         |  2 +
- arch/mips/kernel/r4k_switch.S           |  3 ++
- arch/mips/lib/csum_partial.S            |  6 +++
- arch/mips/lib/memcpy.S                  |  9 ++++
- arch/mips/lib/memset.S                  |  5 ++
- arch/mips/lib/strlen_user.S             |  2 +
- arch/mips/lib/strncpy_user.S            |  5 ++
- arch/mips/lib/strnlen_user.S            |  3 ++
- arch/mips/mm/init.c                     |  2 +
- arch/mips/mm/page-funcs.S               |  3 ++
- arch/mips/mm/page.c                     |  2 +
- arch/mips/mm/tlbex.c                    |  6 +--
- 18 files changed, 60 insertions(+), 102 deletions(-)
- delete mode 100644 arch/mips/kernel/mips_ksyms.c
-
+diff --git a/arch/mips/include/asm/Kbuild b/arch/mips/include/asm/Kbuild
+index 9740066..bcfb360 100644
+--- a/arch/mips/include/asm/Kbuild
++++ b/arch/mips/include/asm/Kbuild
+@@ -5,6 +5,7 @@ generic-y += cputime.h
+ generic-y += current.h
+ generic-y += dma-contiguous.h
+ generic-y += emergency-restart.h
++generic-y += export.h
+ generic-y += irq_work.h
+ generic-y += local64.h
+ generic-y += mcs_spinlock.h
 -- 
 2.10.2

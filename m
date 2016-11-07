@@ -1,15 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:19422 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992022AbcKGPJlJzpKw (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 7 Nov 2016 16:09:41 +0100
+Received: from mailapp01.imgtec.com ([195.59.15.196]:51197 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23991964AbcKGPSYwqaRw (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 7 Nov 2016 16:18:24 +0100
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 6/6] MIPS: Handle microMIPS jumps in the same way as MIPS32/MIPS64 jumps
-Date: Mon, 7 Nov 2016 15:07:07 +0000
-Message-ID: <20161107150707.5079-7-paul.burton@imgtec.com>
-In-Reply-To: <20161107150707.5079-1-paul.burton@imgtec.com>
-References: <20161107150707.5079-1-paul.burton@imgtec.com>
+Subject: Re: [PATCH 03/10] MIPS: End asm function prologue macros with .insn
+Date: Mon, 7 Nov 2016 15:18:13 +0000
+Message-ID: <12999809.y5kg6YqSxt@np-p-burton>
+In-Reply-To: <alpine.DEB.2.20.17.1611071400340.10580@tp.orcam.me.uk>
+References: <20161107111417.11486-1-paul.burton@imgtec.com> <20161107111417.11486-4-paul.burton@imgtec.com> <alpine.DEB.2.20.17.1611071400340.10580@tp.orcam.me.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="nextPart2929313.q0WNSp2J4G";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -20,40 +21,68 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>, Tony Wu <tung7970@gmail.com>, "# v3 . 10+" <stable@vger.kernel.org>
-Message-ID: <20161107150707.TDZ5eE3Ep3WWdo3MtZBaHXjYmzN-Vsw8KagFkr48_NE@z>
+To: "Maciej W. Rozycki" <macro@imgtec.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20161107151813.abS0CbOqK-Ica-d5Rk82s7HfWmuKi5SjphDkvKF8n2U@z>
 
-is_jump_ins() checks for plain jump ("j") instructions since commit
-e7438c4b893e ("MIPS: Fix sibling call handling in get_frame_info") but
-that commit didn't make the same change to the microMIPS code, leaving
-it inconsistent with the MIPS32/MIPS64 code. Handle the microMIPS
-encoding of the jump instruction too such that it behaves consistently.
+--nextPart2929313.q0WNSp2J4G
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Fixes: e7438c4b893e ("MIPS: Fix sibling call handling in get_frame_info")
-Cc: linux-mips@linux-mips.org
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Tony Wu <tung7970@gmail.com>
-Cc: <stable@vger.kernel.org> # v3.10+
+Hi Maciej,
 
----
+On Monday, 7 November 2016 14:33:03 GMT Maciej W. Rozycki wrote:
+>  As these macros can be used at such places too I think it makes sense to
+> imply `.insn' with the macro itself so that it's semantically consistent
+> rather than requiring people to explicitly place the pseudo-op at macro
+> expansion sites as required.  I'm not sure if I indeed like the idea of
+> placing EXPORT_SYMBOL in the middle of a code block, as I find it
+> inconsistent with C usage where, by convention, it only comes at the end
+> of a function's body.  That is a separate matter though, so for this
+> change only:
+> 
+> Reviewed-by: Maciej W. Rozycki <macro@imgtec.com>
+> 
+>  Thank you for your work in this area!
 
- arch/mips/kernel/process.c | 2 ++
- 1 file changed, 2 insertions(+)
+And thanks for your review :)
 
-diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-index 39c946f..1652f36 100644
---- a/arch/mips/kernel/process.c
-+++ b/arch/mips/kernel/process.c
-@@ -293,6 +293,8 @@ static inline int is_jump_ins(union mips_instruction *ip)
- 		return 0;
- 	}
- 
-+	if (ip->j_format.opcode == mm_j32_op)
-+		return 1;
- 	if (ip->j_format.opcode == mm_jal32_op)
- 		return 1;
- 	if (ip->r_format.opcode != mm_pool32a_op ||
--- 
-2.10.2
+For the record, the reason I went with placing the EXPORT_SYMBOL invocations 
+at the start of the functions rather than the end is that the end isn't always 
+the end of the code in question. For example (until another patch of mine) 
+memcpy ends part way through user_copy, with code continuing afterwards. We 
+would then need to place a .insn after the use of EXPORT_SYMBOL if any code 
+may branch there. Containing the need for .insn to the start of the function 
+seems neater since a function should always begin with an instruction, which 
+after this patch will be marked as such, and users of the macros will just get 
+behaviour that seems natural & expected.
+
+Of course another alternative would be to place EXPORT_SYMBOL before LEAF/
+NESTED/FEXPORT, but I don't think that would really make any difference  
+presuming people agree that this patch is a good idea regardless.
+
+Thanks,
+    Paul
+--nextPart2929313.q0WNSp2J4G
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAABCAAGBQJYIJs1AAoJEIIg2fppPBxlhfoP/0V0D7tLGnX8Q7ZkA0KYqqle
+gluhs3CRPj1yJTLr25k1Dtkzdis+oKdBpF4IvFSvTPMVHzooGzuaxKmFFsf7be/L
+FrD62536t869ZjJl2OaCQjMQmsZxU8C4F8q4J0BPlv/2mHFf2qGjKfimAMoVKium
+7HI1EHdJPL926O6OLH0DYFILQZHmutbYQj6o1SIZiJghXVnwiwMjMe/YWWyF23Nu
+a9zcCqfiugUlOl7UGlr1u4gq2xujK+xS/a/BSOPRZZ4TJ3nErdE+RwIOLRsIRpw7
+XfW4u7HUR3hm97tIwB8t7IpNSJxXFnFHpBvfuQVtQKCwXII2H8A1ZpYjJuLuZMPk
+YUEXXm4A4MSYPv4nfVyqVcMNdWO/zUwR03iWmqFW37oPN3HeWfu6NAguYQYk2eXi
+qCCePxHrivf346VyNXlkZiqKt1hwTLo5KI1fs+P1yr96aeCiVm/90iTuD6M86Ggi
+4p/iNHTFZxiQ3K9AxK0ZndnYcfIxAeHwpdJG3EvDknRoSKqEASQdLBwKKQ9Dotvk
+dcihk8ow7hr4tzhuRa+Do4cYQjwIGhCIN7WtS6zzM/uSU93i2Nab+UlmrCDub1Rt
+6LI3Pk3SxR3jNBr1biziCDM3V0pFwmlL5EaZ3BalOgyXzLO9501AUeEcINNfNRGs
+/v63O1l0hXRtiPziAo3G
+=RNQ2
+-----END PGP SIGNATURE-----
+
+--nextPart2929313.q0WNSp2J4G--

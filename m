@@ -1,20 +1,15 @@
-Received: from mail-bl2nam02on0077.outbound.protection.outlook.com ([104.47.38.77]:46016
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23992544AbcKIOnwzKo1E (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 9 Nov 2016 15:43:52 +0100
-Date: Wed, 9 Nov 2016 15:43:31 +0100
-From: Jan Glauber <jan.glauber@caviumnetworks.com>
-Subject: Re: [PATCH 1/2] i2c: octeon: Fix register access
-Message-ID: <20161109144331.GF2960@hardcore>
-References: <20161107200921.30284-1-paul.burton@imgtec.com>
- <20161108071337.GA4601@hardcore>
- <10136944.jCslgNClvG@np-p-burton>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:57839 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23992544AbcKIOqBkzKnE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 9 Nov 2016 15:46:01 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [BACKPORT PATCH 3.17..4.4] KVM: MIPS: Drop other CPU ASIDs on guest MMU changes
+Date: Wed, 9 Nov 2016 14:45:44 +0000
+Message-ID: <20161109144544.16608-1-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <10136944.jCslgNClvG@np-p-burton>
-Return-Path: <Jan.Glauber@cavium.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,79 +19,148 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-i2c@vger.kernel.org, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, Wolfram Sang <wsa@the-dreams.de>, stable@vger.kernel.org
-Message-ID: <20161109144331.b0exYqPVEXMV2F10CAvBwBGNaBkBTRrJ0TszdmmC89U@z>
+To: stable@vger.kernel.org
+Cc: Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, kvm@vger.kernel.org, James Hogan <james.hogan@imgtec.com>
+Message-ID: <20161109144544.cEz4uBS-jqyX0t4SIy95C0-rcNyMLig4oiiIPzG-YvI@z>
 
-On Wed, Nov 09, 2016 at 02:09:38PM +0000, Paul Burton wrote:
-> On Tuesday, 8 November 2016 08:13:37 GMT Jan Glauber wrote:
-> > On Mon, Nov 07, 2016 at 08:09:20PM +0000, Paul Burton wrote:
-> > > Commit 70121f7f3725 ("i2c: octeon: thunderx: Limit register access
-> > > retries") attempted to replace potentially infinite loops with ones
-> > > which will time out using readq_poll_timeout, but in doing so it
-> > > inverted the condition for exiting this loop.
-> > > 
-> > > Tested on a Rhino Labs UTM-8 with Octeon CN7130.
-> > > 
-> > > Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-> > > Cc: Jan Glauber <jglauber@cavium.com>
-> > > Cc: David Daney <david.daney@cavium.com>
-> > > Cc: Wolfram Sang <wsa@the-dreams.de>
-> > > Cc: linux-i2c@vger.kernel.org
-> > > 
-> > > ---
-> > 
-> > Acked-by: Jan Glauber <jglauber@cavium.com>
-> > 
-> > Thanks for spotting this. I think this should go into stable too for
-> > 4.8, so adding Cc: stable@vger.kernel.org.
-> 
-> Hi Jan,
-> 
-> ...but the bad patch was only merged for v4.9-rc1?
+commit 91e4f1b6073dd680d86cdb7e42d7cccca9db39d8 upstream.
 
-true, I've misread it.
+When a guest TLB entry is replaced by TLBWI or TLBWR, we only invalidate
+TLB entries on the local CPU. This doesn't work correctly on an SMP host
+when the guest is migrated to a different physical CPU, as it could pick
+up stale TLB mappings from the last time the vCPU ran on that physical
+CPU.
 
-> Thanks,
->     Paul
-> 
-> > 
-> > >  drivers/i2c/busses/i2c-octeon-core.h | 7 ++++---
-> > >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/i2c/busses/i2c-octeon-core.h
-> > > b/drivers/i2c/busses/i2c-octeon-core.h index 1db7c83..d980406 100644
-> > > --- a/drivers/i2c/busses/i2c-octeon-core.h
-> > > +++ b/drivers/i2c/busses/i2c-octeon-core.h
-> > > @@ -146,8 +146,9 @@ static inline void octeon_i2c_reg_write(struct
-> > > octeon_i2c *i2c, u64 eop_reg, u8> 
-> > >  	__raw_writeq(SW_TWSI_V | eop_reg | data, i2c->twsi_base + 
-> SW_TWSI(i2c));
-> > > 
-> > > -	readq_poll_timeout(i2c->twsi_base + SW_TWSI(i2c), tmp, tmp & 
-> SW_TWSI_V,
-> > > -			   I2C_OCTEON_EVENT_WAIT, i2c->adap.timeout);
-> > > +	readq_poll_timeout(i2c->twsi_base + SW_TWSI(i2c), tmp,
-> > > +			   !(tmp & SW_TWSI_V), I2C_OCTEON_EVENT_WAIT,
-> > > +			   i2c->adap.timeout);
-> > > 
-> > >  }
-> > >  
-> > >  #define octeon_i2c_ctl_write(i2c, val)					\
-> > > 
-> > > @@ -173,7 +174,7 @@ static inline int octeon_i2c_reg_read(struct
-> > > octeon_i2c *i2c, u64 eop_reg,> 
-> > >  	__raw_writeq(SW_TWSI_V | eop_reg | SW_TWSI_R, i2c->twsi_base +
-> > >  	SW_TWSI(i2c));
-> > >  	
-> > >  	ret = readq_poll_timeout(i2c->twsi_base + SW_TWSI(i2c), tmp,
-> > > 
-> > > -				 tmp & SW_TWSI_V, I2C_OCTEON_EVENT_WAIT,
-> > > +				 !(tmp & SW_TWSI_V), I2C_OCTEON_EVENT_WAIT,
-> > > 
-> > >  				 i2c->adap.timeout);
-> > >  	
-> > >  	if (error)
-> > >  	
-> > >  		*error = ret;
-> 
+Therefore invalidate both user and kernel host ASIDs on other CPUs,
+which will cause new ASIDs to be generated when it next runs on those
+CPUs.
+
+We're careful only to do this if the TLB entry was already valid, and
+only for the kernel ASID where the virtual address it mapped is outside
+of the guest user address range.
+
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: "Radim Krčmář" <rkrcmar@redhat.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Cc: kvm@vger.kernel.org
+Cc: <stable@vger.kernel.org> # 3.17.x-
+[james.hogan@imgtec.com: Backport to 3.17..4.4]
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+---
+Unfortunately the original commit went in to v4.4.25 as commit
+d450527ad04a, without fixing up the references to tlb_lo[0/1] to
+tlb_lo0/1 which broke the MIPS KVM build, and I didn't twig that I
+already had a correct backport outstanding (sorry!). That commit should
+be reverted before applying this backport to 4.4.
+---
+ arch/mips/kvm/emulate.c | 63 +++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 53 insertions(+), 10 deletions(-)
+
+diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
+index d6476d11212e..03344f5ec499 100644
+--- a/arch/mips/kvm/emulate.c
++++ b/arch/mips/kvm/emulate.c
+@@ -807,6 +807,47 @@ enum emulation_result kvm_mips_emul_tlbr(struct kvm_vcpu *vcpu)
+ 	return EMULATE_FAIL;
+ }
+ 
++/**
++ * kvm_mips_invalidate_guest_tlb() - Indicates a change in guest MMU map.
++ * @vcpu:	VCPU with changed mappings.
++ * @tlb:	TLB entry being removed.
++ *
++ * This is called to indicate a single change in guest MMU mappings, so that we
++ * can arrange TLB flushes on this and other CPUs.
++ */
++static void kvm_mips_invalidate_guest_tlb(struct kvm_vcpu *vcpu,
++					  struct kvm_mips_tlb *tlb)
++{
++	int cpu, i;
++	bool user;
++
++	/* No need to flush for entries which are already invalid */
++	if (!((tlb->tlb_lo0 | tlb->tlb_lo1) & MIPS3_PG_V))
++		return;
++	/* User address space doesn't need flushing for KSeg2/3 changes */
++	user = tlb->tlb_hi < KVM_GUEST_KSEG0;
++
++	preempt_disable();
++
++	/*
++	 * Probe the shadow host TLB for the entry being overwritten, if one
++	 * matches, invalidate it
++	 */
++	kvm_mips_host_tlb_inv(vcpu, tlb->tlb_hi);
++
++	/* Invalidate the whole ASID on other CPUs */
++	cpu = smp_processor_id();
++	for_each_possible_cpu(i) {
++		if (i == cpu)
++			continue;
++		if (user)
++			vcpu->arch.guest_user_asid[i] = 0;
++		vcpu->arch.guest_kernel_asid[i] = 0;
++	}
++
++	preempt_enable();
++}
++
+ /* Write Guest TLB Entry @ Index */
+ enum emulation_result kvm_mips_emul_tlbwi(struct kvm_vcpu *vcpu)
+ {
+@@ -826,11 +867,8 @@ enum emulation_result kvm_mips_emul_tlbwi(struct kvm_vcpu *vcpu)
+ 	}
+ 
+ 	tlb = &vcpu->arch.guest_tlb[index];
+-	/*
+-	 * Probe the shadow host TLB for the entry being overwritten, if one
+-	 * matches, invalidate it
+-	 */
+-	kvm_mips_host_tlb_inv(vcpu, tlb->tlb_hi);
++
++	kvm_mips_invalidate_guest_tlb(vcpu, tlb);
+ 
+ 	tlb->tlb_mask = kvm_read_c0_guest_pagemask(cop0);
+ 	tlb->tlb_hi = kvm_read_c0_guest_entryhi(cop0);
+@@ -859,11 +897,7 @@ enum emulation_result kvm_mips_emul_tlbwr(struct kvm_vcpu *vcpu)
+ 
+ 	tlb = &vcpu->arch.guest_tlb[index];
+ 
+-	/*
+-	 * Probe the shadow host TLB for the entry being overwritten, if one
+-	 * matches, invalidate it
+-	 */
+-	kvm_mips_host_tlb_inv(vcpu, tlb->tlb_hi);
++	kvm_mips_invalidate_guest_tlb(vcpu, tlb);
+ 
+ 	tlb->tlb_mask = kvm_read_c0_guest_pagemask(cop0);
+ 	tlb->tlb_hi = kvm_read_c0_guest_entryhi(cop0);
+@@ -982,6 +1016,7 @@ enum emulation_result kvm_mips_emulate_CP0(uint32_t inst, uint32_t *opc,
+ 	int32_t rt, rd, copz, sel, co_bit, op;
+ 	uint32_t pc = vcpu->arch.pc;
+ 	unsigned long curr_pc;
++	int cpu, i;
+ 
+ 	/*
+ 	 * Update PC and hold onto current PC in case there is
+@@ -1089,8 +1124,16 @@ enum emulation_result kvm_mips_emulate_CP0(uint32_t inst, uint32_t *opc,
+ 						vcpu->arch.gprs[rt]
+ 						& ASID_MASK);
+ 
++					preempt_disable();
+ 					/* Blow away the shadow host TLBs */
+ 					kvm_mips_flush_host_tlb(1);
++					cpu = smp_processor_id();
++					for_each_possible_cpu(i)
++						if (i != cpu) {
++							vcpu->arch.guest_user_asid[i] = 0;
++							vcpu->arch.guest_kernel_asid[i] = 0;
++						}
++					preempt_enable();
+ 				}
+ 				kvm_write_c0_guest_entryhi(cop0,
+ 							   vcpu->arch.gprs[rt]);
+-- 
+2.10.1

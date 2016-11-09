@@ -1,13 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:38150 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:57141 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992544AbcKIN0jchQv0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 9 Nov 2016 14:26:39 +0100
+        with ESMTP id S23992544AbcKINa2M0Oe0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 9 Nov 2016 14:30:28 +0100
+Subject: Re: [PATCH v4 0/4] MIPS: Remote processor driver
+References: <1478103063-17653-1-git-send-email-matt.redfearn@imgtec.com>
+ <alpine.DEB.2.20.1611091111041.3501@nanos>
 From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH v2] MIPS: mm: Fix output of __do_page_fault
-Date: Wed, 9 Nov 2016 13:26:25 +0000
-Message-ID: <1478697985-5332-1-git-send-email-matt.redfearn@imgtec.com>
+Message-ID: <b06e60b3-6175-db52-1cc8-706a4d3a04f0@imgtec.com>
+Date: Wed, 9 Nov 2016 13:30:18 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <alpine.DEB.2.20.1611091111041.3501@nanos>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -18,48 +22,78 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-kernel@vger.kernel.org, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>
-Message-ID: <20161109132625.0DjheFEVM8Odf0BuMKzLtDoBlcZ0JhRe7XP7rJ6vk-s@z>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, Ohad Ben-Cohen <ohad@wizery.com>, linux-mips@linux-mips.org, linux-remoteproc@vger.kernel.org, Lisa Parratt <lisa.parratt@imgtec.com>, LKML <linux-kernel@vger.kernel.org>, Qais Yousef <qsyousef@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, Jason Cooper <jason@lakedaemon.net>, James Hogan <james.hogan@imgtec.com>, Marc Zyngier <marc.zyngier@arm.com>, Paul Burton <paul.burton@imgtec.com>, Peter Zijlstra <peterz@infradead.org>
+Message-ID: <20161109133018.6u8dPLbGeIhO1OIthLy0GGkQ0Lv_twzxFs1qHrVa8v0@z>
 
-Since commit 4bcc595ccd80 ("printk: reinstate KERN_CONT for printing
-continuation lines") the output from __do_page_fault on MIPS has been
-pretty unreadable due to the lack of KERN_CONT markers. Use pr_cont
-to provide the appropriate markers & restore the expected output.
+Hi Thomas,
 
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
 
----
+On 09/11/16 10:15, Thomas Gleixner wrote:
+> On Wed, 2 Nov 2016, Matt Redfearn wrote:
+>> The MIPS remote processor driver allows non-Linux firmware to take
+>> control of and execute on one of the systems VPEs. The CPU must be
+>> offlined from Linux first. A sysfs interface is created which allows
+>> firmware to be loaded and changed at runtime. A full description is
+>> available at [1]. An example firmware that can be used with this driver
+>> is available at [2].
+>>
+>> This is useful to allow running bare metal code, or an RTOS, on one or
+>> more CPUs while allowing Linux to continue running on those remaining.
+> And how is actually guaranteed that these two things are properly seperated
+> (memory, devices, interrupts etc.) ?
 
- arch/mips/mm/fault.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Memory separation is primarily handled by the remoteproc subsystem, 
+which will allocate and map memory as required by the firmware, though 
+because the CPU is executing in kernel mode there is nothing preventing 
+it accessing anything in the system. But that is of course the same as 
+any root process which could do the same thing via /dev/mem. One must be 
+root to offline the CPU from Linux and load firmware to it, so there is 
+no greater hazard to the system than that firmware running as a root 
+process within userland.
 
-diff --git a/arch/mips/mm/fault.c b/arch/mips/mm/fault.c
-index d56a855828c2..3bef306cdfdb 100644
---- a/arch/mips/mm/fault.c
-+++ b/arch/mips/mm/fault.c
-@@ -209,17 +209,18 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
- 		if (show_unhandled_signals &&
- 		    unhandled_signal(tsk, SIGSEGV) &&
- 		    __ratelimit(&ratelimit_state)) {
--			pr_info("\ndo_page_fault(): sending SIGSEGV to %s for invalid %s %0*lx",
-+			pr_info("do_page_fault(): sending SIGSEGV to %s for invalid %s %0*lx\n",
- 				tsk->comm,
- 				write ? "write access to" : "read access from",
- 				field, address);
- 			pr_info("epc = %0*lx in", field,
- 				(unsigned long) regs->cp0_epc);
--			print_vma_addr(" ", regs->cp0_epc);
-+			print_vma_addr(KERN_CONT " ", regs->cp0_epc);
-+			pr_cont("\n");
- 			pr_info("ra  = %0*lx in", field,
- 				(unsigned long) regs->regs[31]);
--			print_vma_addr(" ", regs->regs[31]);
--			pr_info("\n");
-+			print_vma_addr(KERN_CONT " ", regs->regs[31]);
-+			pr_cont("\n");
- 		}
- 		current->thread.trap_nr = (regs->cp0_cause >> 2) & 0x1f;
- 		info.si_signo = SIGSEGV;
--- 
-2.7.4
+Separation of devices and interrupts is a system design issue, as this 
+feature will find use in embedded systems where the system will be 
+partitioned into Linux and bare metal components. This is done where 
+there are requirements such as needing to run real time code as well as 
+Linux, or enforce separation through firmware binaries running 
+separately to Linux.
+This would be useful, for example, for a modem driver running as bare 
+metal code within one of the system VPEs and providing a virtio-net 
+interface to the kernel. There would be no kernel driver present for 
+such a device, therefore there would be no resource conflicts.
+
+There only different thing about the MIPS implementation of remoteproc 
+is that it turns one of the general purpose Linux CPUs into a remote 
+processor, rather than there being a separate remote CPU within the SoC, 
+as is the case with most remoteproc drivers. But unless there is some 
+form of MMU between that CPU and the system bus, then it will have the 
+same ability to access all system resources as is the case with this 
+driver. Again I don't think there is any greater risk to the system here 
+as there would be with any other remoteproc based system.
+
+>
+> We have rejected attempts to do exactly the same thing on x86 in the
+> past. There is virtualization and NOHZ_FULL to do it proper and not just
+> with a horrible hackery.
+
+There is already a mechanism to do this in the upstream MIPS kernel - 
+the VPE loader, which has been there 2005 (commit 
+e01402b115cccb6357f956649487aca2c6f7fbba). One user of the VPE loader 
+was Lantiq, who used it to load a proprietary modem driver, for which 
+there is no GPL driver.
+What we are proposing here is to move from that MIPS specific mechanism 
+of running bare metal code to the standardized remoteproc subsystem such 
+that people wanting to design a MIPS based system with both real time 
+firmware and general Linux processing tasks may do so using standardized 
+kernel interfaces.
+
+Thanks,
+Matt
+
+>
+> Thanks,
+>
+> 	tglx
+>
+>

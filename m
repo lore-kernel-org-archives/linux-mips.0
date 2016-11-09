@@ -1,18 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:14119 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992309AbcKIJx7dQJOp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 9 Nov 2016 10:53:59 +0100
-Date: Wed, 9 Nov 2016 09:53:53 +0000
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH] MIPS: fix duplicate define
-Message-ID: <20161109095352.GD9443@jhogan-linux.le.imgtec.org>
-References: <1478641415-6986-1-git-send-email-sudipm.mukherjee@gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:38150 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23992544AbcKIN0jchQv0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 9 Nov 2016 14:26:39 +0100
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Subject: [PATCH v2] MIPS: mm: Fix output of __do_page_fault
+Date: Wed, 9 Nov 2016 13:26:25 +0000
+Message-ID: <1478697985-5332-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="+KJYzRxRHjYqLGl5"
-Content-Disposition: inline
-In-Reply-To: <1478641415-6986-1-git-send-email-sudipm.mukherjee@gmail.com>
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,112 +18,48 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20161109095353.51I81gDLa4Y7VaWMIuxH4JrYI13az0_V0p0xtXIhA8E@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-kernel@vger.kernel.org, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <20161109132625.0DjheFEVM8Odf0BuMKzLtDoBlcZ0JhRe7XP7rJ6vk-s@z>
 
---+KJYzRxRHjYqLGl5
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Since commit 4bcc595ccd80 ("printk: reinstate KERN_CONT for printing
+continuation lines") the output from __do_page_fault on MIPS has been
+pretty unreadable due to the lack of KERN_CONT markers. Use pr_cont
+to provide the appropriate markers & restore the expected output.
 
-On Tue, Nov 08, 2016 at 09:43:35PM +0000, Sudip Mukherjee wrote:
-> The mips build of ip27_defconfig is failing with the error:
-> In file included from ../arch/mips/include/asm/mach-ip27/spaces.h:29:0,
->                  from ../arch/mips/include/asm/page.h:12,
->                  from ../arch/mips/vdso/vdso.h:26,
->                  from ../arch/mips/vdso/gettimeofday.c:11:
-> ../arch/mips/include/asm/mach-generic/spaces.h:28:0:
-> 	error: "CAC_BASE" redefined [-Werror]
->  #define CAC_BASE  _AC(0x80000000, UL)
-> =20
-> In file included from ../arch/mips/include/asm/page.h:12:0,
->                  from ../arch/mips/vdso/vdso.h:26,
->                  from ../arch/mips/vdso/gettimeofday.c:11:
-> ../arch/mips/include/asm/mach-ip27/spaces.h:22:0:
-> 	note: this is the location of the previous definition
->  #define CAC_BASE  0xa800000000000000
->=20
-> Add a condition to check if CAC_BASE is already defined, and define it
-> only if it is not yet defined.
->=20
-> Fixes: 3ffc17d8768b ("MIPS: Adjust MIPS64 CAC_BASE to reflect Config.K0")
-> Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-> ---
->=20
-> Build log is at:
-> https://travis-ci.org/sudipm-mukherjee/parport/jobs/174134289
->=20
->  arch/mips/include/asm/mach-generic/spaces.h | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/arch/mips/include/asm/mach-generic/spaces.h b/arch/mips/incl=
-ude/asm/mach-generic/spaces.h
-> index 952b0fd..61b75da 100644
-> --- a/arch/mips/include/asm/mach-generic/spaces.h
-> +++ b/arch/mips/include/asm/mach-generic/spaces.h
-> @@ -23,10 +23,12 @@
-> =20
->  #ifdef CONFIG_32BIT
->  #ifdef CONFIG_KVM_GUEST
-> +#ifndef CAC_BASE
+Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
 
-This is wrong. Should it be one line up? Note the else...
+---
 
->  #define CAC_BASE		_AC(0x40000000, UL)
->  #else
+ arch/mips/mm/fault.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-here ^^^
-
-i.e. you appear to be changing
-CONFIG_KVM_GUEST:
-	CAC_BASE=3D0x40000000
-!CONFIG_KVM_GUEST:
-	CAC_BASE=3D0x80000000
-
-to:
-
-CONFIG_KVM_GUEST:
-	!CAC_BASE:
-		CAC_BASE=3D0x40000000
-	CAC_BASE:
-		CAC_BASE=3D0x80000000
-!CONFIG_KVM_GUEST:
-	(nothing)
-
-Cheers
-James
-
->  #define CAC_BASE		_AC(0x80000000, UL)
->  #endif
-> +#endif
->  #ifndef IO_BASE
->  #define IO_BASE			_AC(0xa0000000, UL)
->  #endif
-> --=20
-> 1.9.1
->=20
->=20
-
---+KJYzRxRHjYqLGl5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIcBAEBCAAGBQJYIvIwAAoJEGwLaZPeOHZ6KmwP/jhZZtDGqHFHYJjbchpGQkYv
-6tDZNyCa2jkQnlx+KEcEWEO2z1qprMIy9xjDxs+2HIQn2+8EzMXwCrNVH5ueTmT3
-LM7WZaHVGhcApMyE1wrzSdBlkJDiaE9y5eKefszj8AcP1tFsjqmRgA3wXxHMLikN
-gKUXZKLO9iCAWnZwH4s8xhPt2NfwnGRHCvSrDFRDvsC9oihBPdkdw92uKs6VifUQ
-ktK8JHL0WXTPywQqVZf2tml5qNEIbW3MTapUW+jEfCrZCKvgR/cdemW3N13b+3Vg
-AiHI1B+w7xEG2pGTXXv5673mu+yQpu3IYCLXZW5giDHnEXe3bJDk8OsUPKagzbKb
-RayoioHBJuhwdCkFNaiDoaw4Q4W53T6+tiIRkI+Ci/FQoTGSCRR5Yun3DOArYIqL
-IjyRkAYX4cP0b9Ixha6vVKivAXxWKvChGv4K4ViY4VXDMNOBOCJZuaZ37qq+RSE9
-DnHQR+lfwYkqbTTdthEtvrenxmMkFlnlnQQgl8S3TyLPlk+JloM7IPC2TjBoBOGK
-wq6JVEhQBArzB9mJDJLBgJ+ECHIAVLrAHRli03Gcp/OpMYXDVcOW8uNbCViE8/Pe
-wSIowukaeqkabWnvOiUY6w3fb4aWcJYAzV3gA47WoGl/DSAireu3zPYbEINGacLd
-6R+iyr0ioHw/3qh7i1Fw
-=XIBl
------END PGP SIGNATURE-----
-
---+KJYzRxRHjYqLGl5--
+diff --git a/arch/mips/mm/fault.c b/arch/mips/mm/fault.c
+index d56a855828c2..3bef306cdfdb 100644
+--- a/arch/mips/mm/fault.c
++++ b/arch/mips/mm/fault.c
+@@ -209,17 +209,18 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
+ 		if (show_unhandled_signals &&
+ 		    unhandled_signal(tsk, SIGSEGV) &&
+ 		    __ratelimit(&ratelimit_state)) {
+-			pr_info("\ndo_page_fault(): sending SIGSEGV to %s for invalid %s %0*lx",
++			pr_info("do_page_fault(): sending SIGSEGV to %s for invalid %s %0*lx\n",
+ 				tsk->comm,
+ 				write ? "write access to" : "read access from",
+ 				field, address);
+ 			pr_info("epc = %0*lx in", field,
+ 				(unsigned long) regs->cp0_epc);
+-			print_vma_addr(" ", regs->cp0_epc);
++			print_vma_addr(KERN_CONT " ", regs->cp0_epc);
++			pr_cont("\n");
+ 			pr_info("ra  = %0*lx in", field,
+ 				(unsigned long) regs->regs[31]);
+-			print_vma_addr(" ", regs->regs[31]);
+-			pr_info("\n");
++			print_vma_addr(KERN_CONT " ", regs->regs[31]);
++			pr_cont("\n");
+ 		}
+ 		current->thread.trap_nr = (regs->cp0_cause >> 2) & 0x1f;
+ 		info.si_signo = SIGSEGV;
+-- 
+2.7.4

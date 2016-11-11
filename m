@@ -1,21 +1,21 @@
-Received: from mail-bn3nam01on0056.outbound.protection.outlook.com ([104.47.33.56]:53280
-        "EHLO NAM01-BN3-obe.outbound.protection.outlook.com"
+Received: from mail-dm3nam03on0079.outbound.protection.outlook.com ([104.47.41.79]:1694
+        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23992105AbcKKI5b6wyZo (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 11 Nov 2016 09:57:31 +0100
-Date: Fri, 11 Nov 2016 09:57:07 +0100
-From: Jan Glauber <jan.glauber@caviumnetworks.com>
+        id S23991940AbcKKUvU2GfRc (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 11 Nov 2016 21:51:20 +0100
 Subject: Re: [PATCH 2/2] i2c: octeon: Fix waiting for operation completion
-Message-ID: <20161111085707.GC16907@hardcore>
 References: <20161107200921.30284-1-paul.burton@imgtec.com>
  <20161107200921.30284-2-paul.burton@imgtec.com>
- <20161109134103.GC2960@hardcore>
- <1595446.2T31j1Ekg5@np-p-burton>
+ <20161109134103.GC2960@hardcore> <1595446.2T31j1Ekg5@np-p-burton>
+ <20161111085707.GC16907@hardcore>
+From: "Steven J. Hill" <Steven.Hill@cavium.com>
+Message-ID: <2702c562-ca4a-b7e0-4828-85f0df7d8f9b@cavium.com>
+Date: Fri, 11 Nov 2016 14:51:08 -0600
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="T4sUOijqQbZv57TR"
-Content-Disposition: inline
-In-Reply-To: <1595446.2T31j1Ekg5@np-p-burton>
-Return-Path: <Jan.Glauber@cavium.com>
+In-Reply-To: <20161111085707.GC16907@hardcore>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Steven.Hill@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,40 +25,26 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-i2c@vger.kernel.org, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, Peter Swain <pswain@cavium.com>, Wolfram Sang <wsa@the-dreams.de>, "Steven J. Hill" <Steven.Hill@cavium.com>
-Message-ID: <20161111085707.q8P71DEEFNYsuTX_UVIqFQU-4kvFOFB1aTM3ZOcnlec@z>
+To: Jan Glauber <jan.glauber@caviumnetworks.com>, Paul Burton <paul.burton@imgtec.com>
+Cc: linux-i2c@vger.kernel.org, linux-mips@linux-mips.org, David Daney <david.daney@cavium.com>, Peter Swain <pswain@cavium.com>, Wolfram Sang <wsa@the-dreams.de>
+Message-ID: <20161111205108.0uIWE6WgZjTuNlZed_3UNGczWvdBYfOaoMR53EcumGE@z>
 
---T4sUOijqQbZv57TR
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-
-> As you can see octeon_i2c_driver_init never returns. Are you able to test on 
-> one of your MIPS-based systems?
+On 11/11/2016 02:57 AM, Jan Glauber wrote:
 > 
-> Thanks,
->     Paul
+> we can reproduce the problem on our side, but I don't have direct access
+> to a MIPS system so I'm still just guessing what happens. If you want
+> you can try the attached patches.
+> 
+> I'm trying to get rid of the polling around the interrupt altogether.
+> It works fine on Thunderx, sometimes I run into an interrupt timeout 
+> after a lost-arbitration but recovery/retry is able to clean that up.
+> 
+> Please also revert 70121f7 as before. The last patch adds some debugging
+> output to see if we run into timeouts or recovery.
+> 
+Using your three patches without reverting 70121f7 fails on both 71xx
+and 78xx boards. Paul's "[PATCH 1/2] i2c: octeon: Fix register access"
+eliminates the i2c probe hang and both boards boot properly. Tested
+on top of Linus' v4.9-rc4 tag.
 
-Hi Paul,
-
-we can reproduce the problem on our side, but I don't have direct access
-to a MIPS system so I'm still just guessing what happens. If you want
-you can try the attached patches.
-
-I'm trying to get rid of the polling around the interrupt altogether.
-It works fine on Thunderx, sometimes I run into an interrupt timeout 
-after a lost-arbitration but recovery/retry is able to clean that up.
-
-Please also revert 70121f7 as before. The last patch adds some debugging
-output to see if we run into timeouts or recovery.
-
-thanks,
-Jan
-
---T4sUOijqQbZv57TR
-Content-Type: text/x-diff; charset="us-ascii"
-Content-Disposition: attachment;
-	filename="0001-i2c-octeon-thunderx-TWSI-software-reset-in-recovery.patch"
-
-
---T4sUOijqQbZv57TR--
+Steve

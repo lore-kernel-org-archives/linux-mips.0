@@ -1,13 +1,12 @@
-Received: from mail-cys01nam02on0046.outbound.protection.outlook.com ([104.47.37.46]:54530
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+Received: from mail-dm3nam03on0043.outbound.protection.outlook.com ([104.47.41.43]:20224
+        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993188AbcKVToea0hnv (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 22 Nov 2016 20:44:34 +0100
-Subject: [PATCH 4/5] MIPS: OCTEON: Add plat_get_fdt() function for Cavium
- platforms.
+        id S23993169AbcKVTom6VeOv (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 22 Nov 2016 20:44:42 +0100
+Subject: [PATCH 5/5] MIPS: OCTEON: Enable KASLR
 From: "Steven J. Hill" <Steven.Hill@cavium.com>
-Message-ID: <d6661543-da93-b164-8cd3-480b33165bac@cavium.com>
-Date: Tue, 22 Nov 2016 13:44:20 -0600
+Message-ID: <2e360c84-4257-fc07-85cd-4a6bb888635e@cavium.com>
+Date: Tue, 22 Nov 2016 13:44:30 -0600
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -23,32 +22,35 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: ralf@linux-mips.org
-Message-ID: <20161122194420.QUmF17J7AJmqJtRLaa-_AE3fg8JJyqLpLZG9-32NZQQ@z>
+Message-ID: <20161122194430.QPTXFlFXkgSnS5tk32Lp7E10PBCAvGRfBMA_gCNLdbQ@z>
 
-Add in the function needed for OCTEON platforms to support KASLR.
+Add KASLR to be selected on OCTEON systems.
 
-Signed-off-by: Steven J. Hill <Steven.Hill@cavium.com>
+Signed-off-by: Steven J. Hill <steven.hill@cavium.com>
 ---
- arch/mips/cavium-octeon/setup.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/mips/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
-index 4809ce4..d9dbeb0 100644
---- a/arch/mips/cavium-octeon/setup.c
-+++ b/arch/mips/cavium-octeon/setup.c
-@@ -965,6 +965,13 @@ void __init fw_init_cmdline(void)
- 	}
- }
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index b3c5bde..65d7e20 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -909,6 +909,7 @@ config CAVIUM_OCTEON_SOC
+ 	select NR_CPUS_DEFAULT_16
+ 	select BUILTIN_DTB
+ 	select MTD_COMPLEX_MAPPINGS
++	select SYS_SUPPORTS_RELOCATABLE
+ 	help
+ 	  This option supports all of the Octeon reference boards from Cavium
+ 	  Networks. It builds a kernel that dynamically determines the Octeon
+@@ -2570,7 +2571,7 @@ config SYS_SUPPORTS_NUMA
 
-+void __init *plat_get_fdt(void)
-+{
-+	octeon_bootinfo =
-+		cvmx_phys_to_ptr(octeon_boot_desc_ptr->cvmx_desc_vaddr);
-+	return phys_to_virt(octeon_bootinfo->fdt_addr);
-+}
-+
- void __init plat_mem_setup(void)
- {
- 	uint64_t mem_alloc_size;
+ config RELOCATABLE
+ 	bool "Relocatable kernel"
+-	depends on SYS_SUPPORTS_RELOCATABLE && (CPU_MIPS32_R2 || CPU_MIPS64_R2 || CPU_MIPS32_R6 || CPU_MIPS64_R6)
++	depends on SYS_SUPPORTS_RELOCATABLE && (CPU_MIPS32_R2 || CPU_MIPS64_R2 || CPU_MIPS32_R6 || CPU_MIPS64_R6 || CAVIUM_OCTEON_SOC)
+ 	help
+ 	  This builds a kernel image that retains relocation information
+ 	  so it can be loaded someplace besides the default 1MB.
 -- 
 1.9.1

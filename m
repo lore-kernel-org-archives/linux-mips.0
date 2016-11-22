@@ -1,12 +1,12 @@
-Received: from mail-by2nam01on0075.outbound.protection.outlook.com ([104.47.34.75]:62592
-        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
+Received: from mail-bl2nam02on0059.outbound.protection.outlook.com ([104.47.38.59]:61880
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993120AbcKVTn5p4Qxv (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 22 Nov 2016 20:43:57 +0100
-Subject: [PATCH 0/5] Enable KASLR for OCTEON platforms.
+        id S23993150AbcKVToFb-2Ev (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 22 Nov 2016 20:44:05 +0100
+Subject: [PATCH 1/5] MIPS: FW: Make fw_init_cmdline() to be __weak.
 From: "Steven J. Hill" <Steven.Hill@cavium.com>
-Message-ID: <088264c9-75b8-37ff-6514-0f536b1f8e55@cavium.com>
-Date: Tue, 22 Nov 2016 13:43:39 -0600
+Message-ID: <b14ef49d-f39c-4e13-2da8-ab94804395a2@cavium.com>
+Date: Tue, 22 Nov 2016 13:43:54 -0600
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -22,22 +22,28 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: ralf@linux-mips.org
-Message-ID: <20161122194339.hCY3xC6ObhX1AAm-6OxsKsxHbhUVAFgTpz06HfVO0Pg@z>
+Message-ID: <20161122194354.IskBSQQKSiyFsowjxQuwGpZqMhP2zSjV9DhBprxf1GU@z>
 
-This patchset enables support of KASLR for OCTEON platforms.
+Some bootloaders pass the kernel parameters in different registers.
+Allow for platform-specific initialization of the command line.
 
-Steven J. Hill (5):
-  MIPS: FW: Make fw_init_cmdline() to be __weak.
-  MIPS: Fix vmlinux.64 target for CONFIG_RELOCATABLE
-  MIPS: OCTEON: Add fw_init_cmdline() for Cavium platforms.
-  MIPS: OCTEON: Add plat_get_fdt() function for Cavium platforms.
-  MIPS: OCTEON: Enable KASLR
+Signed-off-by: Steven J. Hill <Steven.Hill@cavium.com>
+---
+ arch/mips/include/asm/fw/fw.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/mips/Kconfig               |  3 ++-
- arch/mips/Makefile              |  5 +++++
- arch/mips/cavium-octeon/setup.c | 23 +++++++++++++++++++++++
- arch/mips/include/asm/fw/fw.h   |  2 +-
- 4 files changed, 31 insertions(+), 2 deletions(-)
+diff --git a/arch/mips/include/asm/fw/fw.h b/arch/mips/include/asm/fw/fw.h
+index d0ef8b4..0fcd63e 100644
+--- a/arch/mips/include/asm/fw/fw.h
++++ b/arch/mips/include/asm/fw/fw.h
+@@ -21,7 +21,7 @@
+ #define fw_argv(index)		((char *)(long)_fw_argv[(index)])
+ #define fw_envp(index)		((char *)(long)_fw_envp[(index)])
 
+-extern void fw_init_cmdline(void);
++extern void __weak fw_init_cmdline(void);
+ extern char *fw_getcmdline(void);
+ extern void fw_meminit(void);
+ extern char *fw_getenv(char *name);
 -- 
 1.9.1

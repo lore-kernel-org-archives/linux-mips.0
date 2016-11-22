@@ -1,16 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:59794 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993193AbcKVRxABt2vE (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Nov 2016 18:53:00 +0100
-From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [PATCH 5/6] MIPS: xilfpga: Add DT node for AXI emaclite
-Date: Tue, 22 Nov 2016 17:52:42 +0000
-Message-ID: <20161122175243.8853-6-Zubair.Kakakhel@imgtec.com>
-In-Reply-To: <20161122175243.8853-1-Zubair.Kakakhel@imgtec.com>
-References: <20161122175243.8853-1-Zubair.Kakakhel@imgtec.com>
+Received: from mail-by2nam01on0075.outbound.protection.outlook.com ([104.47.34.75]:62592
+        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23993120AbcKVTn5p4Qxv (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 22 Nov 2016 20:43:57 +0100
+Subject: [PATCH 0/5] Enable KASLR for OCTEON platforms.
+From: "Steven J. Hill" <Steven.Hill@cavium.com>
+Message-ID: <088264c9-75b8-37ff-6514-0f536b1f8e55@cavium.com>
+Date: Tue, 22 Nov 2016 13:43:39 -0600
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Zubair.Kakakhel@imgtec.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Steven.Hill@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,55 +20,24 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org
-Cc: Zubair.Kakakhel@imgtec.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20161122175242.BSogOBneumWbXxlhUMDC18n1u6IxBF7cI_twerORCIo@z>
+To: linux-mips@linux-mips.org
+Cc: ralf@linux-mips.org
+Message-ID: <20161122194339.hCY3xC6ObhX1AAm-6OxsKsxHbhUVAFgTpz06HfVO0Pg@z>
 
-The xilfpga platform has a Xilinx AXI emaclite block.
+This patchset enables support of KASLR for OCTEON platforms.
 
-Add the DT node to use it.
+Steven J. Hill (5):
+  MIPS: FW: Make fw_init_cmdline() to be __weak.
+  MIPS: Fix vmlinux.64 target for CONFIG_RELOCATABLE
+  MIPS: OCTEON: Add fw_init_cmdline() for Cavium platforms.
+  MIPS: OCTEON: Add plat_get_fdt() function for Cavium platforms.
+  MIPS: OCTEON: Enable KASLR
 
-Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
----
- arch/mips/boot/dts/xilfpga/nexys4ddr.dts | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ arch/mips/Kconfig               |  3 ++-
+ arch/mips/Makefile              |  5 +++++
+ arch/mips/cavium-octeon/setup.c | 23 +++++++++++++++++++++++
+ arch/mips/include/asm/fw/fw.h   |  2 +-
+ 4 files changed, 31 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/boot/dts/xilfpga/nexys4ddr.dts b/arch/mips/boot/dts/xilfpga/nexys4ddr.dts
-index f5ebab8..09a62f2 100644
---- a/arch/mips/boot/dts/xilfpga/nexys4ddr.dts
-+++ b/arch/mips/boot/dts/xilfpga/nexys4ddr.dts
-@@ -42,6 +42,32 @@
- 		xlnx,tri-default = <0xffffffff>;
- 	} ;
- 
-+	axi_ethernetlite: ethernet@10e00000 {
-+		compatible = "xlnx,xps-ethernetlite-3.00.a";
-+		device_type = "network";
-+		interrupt-parent = <&axi_intc>;
-+		interrupts = <1>;
-+		phy-handle = <&phy0>;
-+		reg = <0x10e00000 0x10000>;
-+		xlnx,duplex = <0x1>;
-+		xlnx,include-global-buffers = <0x1>;
-+		xlnx,include-internal-loopback = <0x0>;
-+		xlnx,include-mdio = <0x1>;
-+		xlnx,instance = "axi_ethernetlite_inst";
-+		xlnx,rx-ping-pong = <0x1>;
-+		xlnx,s-axi-id-width = <0x1>;
-+		xlnx,tx-ping-pong = <0x1>;
-+		xlnx,use-internal = <0x0>;
-+		mdio {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			phy0: phy@1 {
-+				device_type = "ethernet-phy";
-+				reg = <1>;
-+			};
-+		};
-+	};
-+
- 	axi_uart16550: serial@10400000 {
- 		compatible = "ns16550a";
- 		reg = <0x10400000 0x10000>;
 -- 
-2.10.2
+1.9.1

@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:1433 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:34253 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993111AbcKVRwyy8KPE (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Nov 2016 18:52:54 +0100
+        with ESMTP id S23993120AbcKVRwzkgwWE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Nov 2016 18:52:55 +0100
 From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Subject: [PATCH 1/6] MIPS: xilfpga: Use irqchip instead of the legacy way
-Date: Tue, 22 Nov 2016 17:52:38 +0000
-Message-ID: <20161122175243.8853-2-Zubair.Kakakhel@imgtec.com>
+Subject: [PATCH 2/6] MIPS: xilfpga: Use Xilinx Interrupt Controller
+Date: Tue, 22 Nov 2016 17:52:39 +0000
+Message-ID: <20161122175243.8853-3-Zubair.Kakakhel@imgtec.com>
 In-Reply-To: <20161122175243.8853-1-Zubair.Kakakhel@imgtec.com>
 References: <20161122175243.8853-1-Zubair.Kakakhel@imgtec.com>
 MIME-Version: 1.0
@@ -22,37 +22,53 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: ralf@linux-mips.org
 Cc: Zubair.Kakakhel@imgtec.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20161122175238.uwi7J7fXwkUsqOEp8zuOQLYo2jZ4AfVnYrXthS22X3E@z>
+Message-ID: <20161122175239.UxXyribMtI28s4jf7jZsSe2bG4LHsX7rF2BA4mujuD8@z>
 
-This prepares the code to use the Xilinx Interrupt Controller
-driver in drivers/irqchip/irq-xilinx-intc.c
+IRQs from peripherals such as i2c/uart/ethernet come via
+the AXI Interrupt controller.
+
+Select it in Kconfig for xilfpga and add the DT node
 
 Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
 ---
- arch/mips/xilfpga/intc.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ arch/mips/Kconfig                        |  1 +
+ arch/mips/boot/dts/xilfpga/nexys4ddr.dts | 12 ++++++++++++
+ 2 files changed, 13 insertions(+)
 
-diff --git a/arch/mips/xilfpga/intc.c b/arch/mips/xilfpga/intc.c
-index c4d1a71..a127cca 100644
---- a/arch/mips/xilfpga/intc.c
-+++ b/arch/mips/xilfpga/intc.c
-@@ -11,15 +11,12 @@
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index b3c5bde..3d681c6 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -478,6 +478,7 @@ config MACH_XILFPGA
+ 	select SYS_SUPPORTS_ZBOOT_UART16550
+ 	select USE_OF
+ 	select USE_GENERIC_EARLY_PRINTK_8250
++	select XILINX_INTC
+ 	help
+ 	  This enables support for the IMG University Program MIPSfpga platform.
  
- #include <linux/of.h>
- #include <linux/of_irq.h>
-+#include <linux/irqchip.h>
+diff --git a/arch/mips/boot/dts/xilfpga/nexys4ddr.dts b/arch/mips/boot/dts/xilfpga/nexys4ddr.dts
+index 48d2112..8db660b 100644
+--- a/arch/mips/boot/dts/xilfpga/nexys4ddr.dts
++++ b/arch/mips/boot/dts/xilfpga/nexys4ddr.dts
+@@ -17,6 +17,18 @@
+ 		compatible = "mti,cpu-interrupt-controller";
+ 	};
  
- #include <asm/irq_cpu.h>
- 
--static struct of_device_id of_irq_ids[] __initdata = {
--	{ .compatible = "mti,cpu-interrupt-controller", .data = mips_cpu_irq_of_init },
--	{},
--};
- 
- void __init arch_init_irq(void)
- {
--	of_irq_init(of_irq_ids);
-+	irqchip_init();
- }
++	axi_intc: interrupt-controller@10200000 {
++		#interrupt-cells = <1>;
++		compatible = "xlnx,xps-intc-1.00.a";
++		interrupt-controller;
++		reg = <0x10200000 0x10000>;
++		xlnx,kind-of-intr = <0x0>;
++		xlnx,num-intr-inputs = <0x6>;
++
++		interrupt-parent = <&cpuintc>;
++		interrupts = <6>;
++	};
++
+ 	axi_gpio: gpio@10600000 {
+ 		#gpio-cells = <1>;
+ 		compatible = "xlnx,xps-gpio-1.00.a";
 -- 
 2.10.2

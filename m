@@ -1,21 +1,14 @@
-Received: from mail-sn1nam01on0069.outbound.protection.outlook.com ([104.47.32.69]:24550
-        "EHLO NAM01-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993064AbcKVO4BMT45R (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 22 Nov 2016 15:56:01 +0100
-Date: Tue, 22 Nov 2016 15:55:39 +0100
-From: Jan Glauber <jan.glauber@caviumnetworks.com>
-Subject: Re: [PATCH v2 0/3] i2c: octeon: thunder: Fix i2c not working on
- Octeon
-Message-ID: <20161122145539.GA7716@hardcore>
-References: <1479149445-4663-1-git-send-email-jglauber@cavium.com>
- <99500824-4c63-b769-ad66-c136529b14b2@cavium.com>
- <20161122120106.GB3993@katana>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:33971 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993107AbcKVRwyri88E (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 22 Nov 2016 18:52:54 +0100
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Subject: [PATCH 0/6] MIPS: xilfpga: Use irq-xilinx-intc
+Date: Tue, 22 Nov 2016 17:52:37 +0000
+Message-ID: <20161122175243.8853-1-Zubair.Kakakhel@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20161122120106.GB3993@katana>
-Return-Path: <Jan.Glauber@cavium.com>
+Content-Type: text/plain
+Return-Path: <Zubair.Kakakhel@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,39 +18,43 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Steven J. Hill" <Steven.Hill@cavium.com>
-Cc: Wolfram Sang <wsa@the-dreams.de>, linux-i2c@vger.kernel.org, linux-mips@linux-mips.org, Paul Burton <paul.burton@imgtec.com>, David Daney <david.daney@cavium.com>
-Message-ID: <20161122145539.LpVxoc2NeHHoscgNOz46VkgJpTWwPD7qU6Cv7M-JG9A@z>
+To: ralf@linux-mips.org
+Cc: Zubair.Kakakhel@imgtec.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20161122175237.QKWi8-5Kpevy4ZCg9_aUvoARNhXHhIb05YUU2QUTw2A@z>
 
-On Tue, Nov 22, 2016 at 01:01:06PM +0100, Wolfram Sang wrote:
-> On Mon, Nov 14, 2016 at 01:53:40PM -0600, Steven J. Hill wrote:
-> > On 11/14/2016 12:50 PM, Jan Glauber wrote:
-> > > 
-> > > Since time is running out for 4.9 (or might have already if you're not
-> > > going to send another pull request) I'm going for the safe option
-> > > to fix the Octeon i2c problems, which is:
-> > > 
-> > > 1. Reverting the readq_poll_timeout patch since it is broken
-> > > 2. Apply Patch #2 from Paul
-> > > 3. Add a small fix for the recovery that makes Paul's patch
-> > >    work on ThunderX
-> > > 
-> > > I'll try to come up with a better solution for 4.10. My plan is to get rid
-> > > of the polling-around-interrupt thing completely, but for that we need more
-> > > time to make it work on Octeon.
-> > > 
-> > > Please consider for 4.9.
-> > > 
-> > Hey Jan.
-> > 
-> > This does not work on Octeon 71xx platforms. I will look at it more
-> > closely tomorrow.
-> 
-> What's the outcome here? It seems we want a bugfix for 4.9 but this
-> report keeps me reluctant to apply the series.
-> 
+Hi,
 
-Steven, did you have a chance to check which of the patches makes
-Octeon 71xx fail?
+The interrupt controller driver was in arch/microblaze.
+The patches to move the driver out from arch/microblaze
+to drivers/irqchip/irq-xilinx-intc.c have now been accepted [1]
 
---Jan
+Hence, xilfpga can make use of the driver in v4.10.
+
+These patches do the following:
+- Use the irqchip driver
+- Add Device Tree nodes for various peripherals that were blocked
+- Enable those drivers in the defconfig
+
+Based on v4.9-rc6
+
+Regards,
+ZubairLK
+
+[1] https://lkml.org/lkml/2016/11/22/186
+
+Zubair Lutfullah Kakakhel (6):
+  MIPS: xilfpga: Use irqchip instead of the legacy way
+  MIPS: xilfpga: Use Xilinx Interrupt Controller
+  MIPS: xilfpga: Update DT node and specify uart irq
+  MIPS: xilfpga: Add DT node for AXI I2C
+  MIPS: xilfpga: Add DT node for AXI emaclite
+  MIPS: xilfpga: Update defconfig
+
+ arch/mips/Kconfig                        |  1 +
+ arch/mips/boot/dts/xilfpga/nexys4ddr.dts | 63 ++++++++++++++++++++++++++++++++
+ arch/mips/configs/xilfpga_defconfig      | 37 ++++++++++++++++++-
+ arch/mips/xilfpga/intc.c                 |  7 +---
+ 4 files changed, 102 insertions(+), 6 deletions(-)
+
+-- 
+2.10.2

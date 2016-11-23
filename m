@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:55614 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:35526 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992663AbcKWNoDvYO8G (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 23 Nov 2016 14:44:03 +0100
+        with ESMTP id S23993008AbcKWNoEzXwXG (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 23 Nov 2016 14:44:04 +0100
 From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Subject: [PATCH 02/10] MIPS: init: ensure reserved memory regions are not added to bootmem
-Date: Wed, 23 Nov 2016 14:43:44 +0100
-Message-ID: <1479908632-30392-3-git-send-email-marcin.nowakowski@imgtec.com>
+Subject: [PATCH 03/10] MIPS: init: ensure bootmem does not corrupt reserved memory
+Date: Wed, 23 Nov 2016 14:43:45 +0100
+Message-ID: <1479908632-30392-4-git-send-email-marcin.nowakowski@imgtec.com>
 In-Reply-To: <1479908632-30392-1-git-send-email-marcin.nowakowski@imgtec.com>
 References: <1479908632-30392-1-git-send-email-marcin.nowakowski@imgtec.com>
 MIME-Version: 1.0
@@ -21,35 +21,125 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20161123134344.mldsj1tYMlzGGn6SEjt7AIPiZHgRSyYU-dNov8OEw4U@z>
+Message-ID: <20161123134345.Ofs4id-BZhveHPrrxt3hoGD3mBi16e7oWbFAXAHFy_A@z>
 
-Memories managed through boot_mem_map are generally expected to define
-non-crossing areas. However, if part of a larger memory block is marked
-as reserved, it would still be added to bootmem allocator as an
-available block and could end up being overwritten by the allocator.
-
-Prevent this by explicitly marking the memory as reserved it if exists
-in the range used by bootmem allocator.
+Current init code initialises bootmem allocator with all of the low
+memory that it assumes is available, but does not check for reserved
+memory block, which can lead to corruption of data that may be stored
+there.
+Move bootmem's allocation map to a location that does not cross any
+reserved regions
 
 Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
 ---
- arch/mips/kernel/setup.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/mips/kernel/setup.c | 74 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 71 insertions(+), 3 deletions(-)
 
 diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 0058fea..8ebad24 100644
+index 8ebad24..64b38d4 100644
 --- a/arch/mips/kernel/setup.c
 +++ b/arch/mips/kernel/setup.c
-@@ -483,6 +483,10 @@ static void __init bootmem_init(void)
- 			continue;
- 		default:
- 			/* Not usable memory */
-+			if (start > min_low_pfn && end < max_low_pfn)
-+				reserve_bootmem(boot_mem_map.map[i].addr,
-+						boot_mem_map.map[i].size,
-+						BOOTMEM_DEFAULT);
- 			continue;
- 		}
+@@ -153,6 +153,35 @@ void __init detect_memory_region(phys_addr_t start, phys_addr_t sz_min, phys_add
+ 	add_memory_region(start, size, BOOT_MEM_RAM);
+ }
  
++bool __init memory_region_available(phys_addr_t start, phys_addr_t size)
++{
++	int i;
++	bool in_ram = false, free = true;
++
++	for (i = 0; i < boot_mem_map.nr_map; i++) {
++		phys_addr_t start_, end_;
++
++		start_ = boot_mem_map.map[i].addr;
++		end_ = boot_mem_map.map[i].addr + boot_mem_map.map[i].size;
++
++		switch (boot_mem_map.map[i].type) {
++		case BOOT_MEM_RAM:
++			if (start >= start_ && start + size <= end_)
++				in_ram = true;
++			break;
++		case BOOT_MEM_RESERVED:
++			if ((start >= start_ && start < end_) ||
++			    (start < start_ && start + size >= start_))
++				free = false;
++			break;
++		default:
++			continue;
++		}
++	}
++
++	return in_ram && free;
++}
++
+ static void __init print_memory_map(void)
+ {
+ 	int i;
+@@ -332,11 +361,19 @@ static void __init bootmem_init(void)
+ 
+ #else  /* !CONFIG_SGI_IP27 */
+ 
++static unsigned long __init bootmap_bytes(unsigned long pages)
++{
++	unsigned long bytes = DIV_ROUND_UP(pages, 8);
++
++	return ALIGN(bytes, sizeof(long));
++}
++
+ static void __init bootmem_init(void)
+ {
+ 	unsigned long reserved_end;
+ 	unsigned long mapstart = ~0UL;
+ 	unsigned long bootmap_size;
++	bool bootmap_valid = false;
+ 	int i;
+ 
+ 	/*
+@@ -430,11 +467,42 @@ static void __init bootmem_init(void)
+ #endif
+ 
+ 	/*
+-	 * Initialize the boot-time allocator with low memory only.
++	 * check that mapstart doesn't overlap with any of
++	 * memory regions that have been reserved through eg. DTB
+ 	 */
+-	bootmap_size = init_bootmem_node(NODE_DATA(0), mapstart,
+-					 min_low_pfn, max_low_pfn);
++	bootmap_size = bootmap_bytes(max_low_pfn - min_low_pfn);
++
++	bootmap_valid = memory_region_available(PFN_PHYS(mapstart),
++						bootmap_size);
++	for (i = 0; i < boot_mem_map.nr_map && !bootmap_valid; i++) {
++		unsigned long mapstart_addr;
++
++		switch (boot_mem_map.map[i].type) {
++		case BOOT_MEM_RESERVED:
++			mapstart_addr = PFN_ALIGN(boot_mem_map.map[i].addr +
++						boot_mem_map.map[i].size);
++			if (PHYS_PFN(mapstart_addr) < mapstart)
++				break;
++
++			bootmap_valid = memory_region_available(mapstart_addr,
++								bootmap_size);
++			if (bootmap_valid)
++				mapstart = PHYS_PFN(mapstart_addr);
++			break;
++		default:
++			break;
++		}
++	}
+ 
++	if (!bootmap_valid)
++		panic("No memory area to place a bootmap bitmap");
++
++	/*
++	 * Initialize the boot-time allocator with low memory only.
++	 */
++	if (bootmap_size != init_bootmem_node(NODE_DATA(0), mapstart,
++					 min_low_pfn, max_low_pfn))
++		panic("Unexpected memory size required for bootmap");
+ 
+ 	for (i = 0; i < boot_mem_map.nr_map; i++) {
+ 		unsigned long start, end;
 -- 
 2.7.4

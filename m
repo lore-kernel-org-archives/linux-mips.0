@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:4284 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:16972 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993297AbcKXRc5r-WS2 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 24 Nov 2016 18:32:57 +0100
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH] MIPS: Add support for ARCH_MMAP_RND_{COMPAT_}BITS
-Date: Thu, 24 Nov 2016 17:32:45 +0000
-Message-ID: <1480008765-3876-1-git-send-email-matt.redfearn@imgtec.com>
+        with ESMTP id S23991894AbcKYSqlT0sTI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 25 Nov 2016 19:46:41 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH 0/3] MIPS: A few DMA & caching fixes
+Date: Fri, 25 Nov 2016 18:46:08 +0000
+Message-ID: <20161125184611.28396-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Matt.Redfearn@imgtec.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,87 +18,26 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, kernel-hardening@lists.openwall.com, Matt Redfearn <matt.redfearn@imgtec.com>, Kees Cook <keescook@chromium.org>, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-kernel@vger.kernel.org, Daniel Cashman <dcashman@android.com>, Andrew Morton <akpm@linux-foundation.org>
-Message-ID: <20161124173245.oQnLtkLwtLeIFxEjJjwIlwFGo9ZKler4NcCjbwPtHNU@z>
+To: linux-mips@linux-mips.org
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20161125184608.WFm7nH3DK_HlTOIQp4RO2-B1LMcFKh7wHyL2ysApgDI@z>
 
-arch_mmap_rnd() uses hard-coded limits of 16MB for the randomisation
-of mmap within 32bit processes and 256MB in 64bit processes. Since v4.4
-other arches support tuning this value in /proc/sys/vm/mmap_rnd_bits.
-Add support for this to MIPS.
+This series fixes a few issues with caching around DMA operations.
+Please see individual commit messages for further details &
+descriptions.
 
-Set the minimum(default) number of bits randomisation for 32bit to 8 -
-which with 4k pagesize is unchanged from the current 16MB total
-randomness. The minimum(default) for 64bit is 12bits, again with 4k
-pagesize this is the same as the current 256MB.
+The series applies atop v4.9-rc6.
 
-This patch is necessary for MIPS32 to pass the Android CTS tests, with
-the number of random bits set to 15.
 
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
----
+Paul Burton (3):
+  MIPS: WARN_ON invalid DMA cache maintenance, not BUG_ON
+  MIPS: Don't writeback when cache-invalidating DMA buffers
+  MIPS: Sanitise DMA unmapping cache sync operations
 
- arch/mips/Kconfig   | 16 ++++++++++++++++
- arch/mips/mm/mmap.c | 10 +++++-----
- 2 files changed, 21 insertions(+), 5 deletions(-)
+ arch/mips/mm/c-r4k.c       | 13 +++++++++++--
+ arch/mips/mm/dma-default.c |  4 ++--
+ arch/mips/mm/sc-mips.c     | 36 ++++++++++++++++++++++++++++++++++--
+ 3 files changed, 47 insertions(+), 6 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index b3c5bde43d34..d72cf6129b2c 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -13,6 +13,8 @@ config MIPS
- 	select HAVE_PERF_EVENTS
- 	select PERF_USE_VMALLOC
- 	select HAVE_ARCH_KGDB
-+	select HAVE_ARCH_MMAP_RND_BITS if MMU
-+	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if MMU && COMPAT
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_CBPF_JIT if !CPU_MICROMIPS
-@@ -3073,6 +3075,20 @@ config MMU
- 	bool
- 	default y
- 
-+config ARCH_MMAP_RND_BITS_MIN
-+	default 12 if 64BIT
-+	default 8
-+
-+config ARCH_MMAP_RND_BITS_MAX
-+	default 18 if 64BIT
-+	default 15
-+
-+config ARCH_MMAP_RND_COMPAT_BITS_MIN
-+       default 8
-+
-+config ARCH_MMAP_RND_COMPAT_BITS_MAX
-+       default 15
-+
- config I8253
- 	bool
- 	select CLKSRC_I8253
-diff --git a/arch/mips/mm/mmap.c b/arch/mips/mm/mmap.c
-index d08ea3ff0f53..d6d92c02308d 100644
---- a/arch/mips/mm/mmap.c
-+++ b/arch/mips/mm/mmap.c
-@@ -146,14 +146,14 @@ unsigned long arch_mmap_rnd(void)
- {
- 	unsigned long rnd;
- 
--	rnd = get_random_long();
--	rnd <<= PAGE_SHIFT;
-+#ifdef CONFIG_COMPAT
- 	if (TASK_IS_32BIT_ADDR)
--		rnd &= 0xfffffful;
-+		rnd = get_random_long() & ((1UL << mmap_rnd_compat_bits) - 1);
- 	else
--		rnd &= 0xffffffful;
-+#endif /* CONFIG_COMPAT */
-+		rnd = get_random_long() & ((1UL << mmap_rnd_bits) - 1);
- 
--	return rnd;
-+	return rnd << PAGE_SHIFT;
- }
- 
- void arch_pick_mmap_layout(struct mm_struct *mm)
 -- 
-2.7.4
+2.10.2

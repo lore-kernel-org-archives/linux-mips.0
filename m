@@ -1,17 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:56047 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:3276 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992123AbcLERmJEmrEK (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 5 Dec 2016 18:42:09 +0100
-Date: Mon, 5 Dec 2016 17:41:49 +0000
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH 3/5] MIPS: Only change $28 to thread_info if coming from
- user mode
-In-Reply-To: <40031221.jIbnRxB01Q@np-p-burton>
-Message-ID: <alpine.DEB.2.00.1612051733070.6743@tp.orcam.me.uk>
-References: <1480685957-18809-1-git-send-email-matt.redfearn@imgtec.com> <1480685957-18809-4-git-send-email-matt.redfearn@imgtec.com> <alpine.DEB.2.00.1612051605590.6743@tp.orcam.me.uk> <40031221.jIbnRxB01Q@np-p-burton>
+        with ESMTP id S23992285AbcLGJZ7zbCtt (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 7 Dec 2016 10:25:59 +0100
+Subject: Re: [PATCH 1/5] MIPS: Introduce irq_stack
+References: <1480685957-18809-1-git-send-email-matt.redfearn@imgtec.com>
+ <1480685957-18809-2-git-send-email-matt.redfearn@imgtec.com>
+ <CAHmME9pFdLALj9sigunS7Uk+NqJi4GcoUGP+Tgpbku0v1ADk=w@mail.gmail.com>
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Message-ID: <09b9fc86-d2ed-6d97-4b46-0d526da68a8c@imgtec.com>
+Date: Wed, 7 Dec 2016 09:25:53 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+In-Reply-To: <CAHmME9pFdLALj9sigunS7Uk+NqJi4GcoUGP+Tgpbku0v1ADk=w@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,23 +23,29 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: Matt Redfearn <matt.redfearn@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, "Jason A . Donenfeld" <Jason@zx2c4.com>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>
-Message-ID: <20161205174149.WTw_cXETM8l_rLJopiVz8UB_513440YouJLebTEYrO8@z>
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Thomas Gleixner <tglx@linutronix.de>, Paolo Bonzini <pbonzini@redhat.com>, Chris Metcalf <cmetcalf@mellanox.com>, Petr Mladek <pmladek@suse.com>, LKML <linux-kernel@vger.kernel.org>, James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Aaron Tomlin <atomlin@redhat.com>, Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <20161207092553.wRI2BOgocxJXV_CqHGusK6U8wqHni3QOXnGjBPEI7K0@z>
 
-On Mon, 5 Dec 2016, Paul Burton wrote:
+Hi Jason,
 
-> Agreed we ought to use .set reorder (or rather, not use .set noreorder) 
-> wherever possible but FYI one thing I've only noticed recently is that we 
-> don't actually get any reordering anyway, presumably because we don't provide 
-> any -O flags when building asm source. I haven't yet done the legwork or 
-> figuring out whether we've ever had optimisation & if so what changed...
 
- Reordering or `-O2' is the default for GAS, you actually have to pass a 
-different `-O*' option explicitly to GAS to disable it.  NB it's *not* the 
-same as passing one of the `-O*' options to GCC, you'd need e.g. `-Wa,-O'.
+On 06/12/16 22:13, Jason A. Donenfeld wrote:
+> On Fri, Dec 2, 2016 at 2:39 PM, Matt Redfearn <matt.redfearn@imgtec.com> wrote:
+>> +void *irq_stack[NR_CPUS];
+> I'm curious why you implemented it this way rather than using
+> DEFINE_PER_CPU and the related percpu helper functions.
+Because in the IRQ entry point in assembler we have to look up the 
+address of this CPU's IRQ stack. Doing so with a simple array can be 
+done with fewer instructions than a per-cpu variable. The kernel stack 
+pointer for each CPU is held in a similar array.
 
- So perhaps one of our Makefiles or a particular configuration of the GCC 
-driver does the wrong thing?
+MIPS does not have a particularly optimized per-cpu implementation with 
+the per-cpu offset being held somewhere easily accessible, so right now 
+it has be looked up from the __per_cpu_offset array, and then applied to 
+the per-cpu pointer. Obviously doing the first lookup is analogous to 
+what I am doing, and the subsequent application to the per-cpu pointer 
+would be additional instructions.
 
-  Maciej
+Thanks,
+Matt

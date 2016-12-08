@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:50543 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:19644 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992309AbcLGJaaR7uLt (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 7 Dec 2016 10:30:30 +0100
-Subject: Re: [PATCH 0/5] MIPS: Add per-cpu IRQ stack
-References: <1480685957-18809-1-git-send-email-matt.redfearn@imgtec.com>
- <CAHmME9pEB6uBJN0AWh4igmfbxSya1e8eYXdDp_dwRZZZGPjVug@mail.gmail.com>
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <9f778311-6d4d-cc57-00db-db2141803416@imgtec.com>
-Date: Wed, 7 Dec 2016 09:30:23 +0000
+        with ESMTP id S23993403AbcLHX1M20SjC (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 9 Dec 2016 00:27:12 +0100
+Message-ID: <5849EC43.2070802@imgtec.com>
+Date: Thu, 8 Dec 2016 15:26:59 -0800
+From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHmME9pEB6uBJN0AWh4igmfbxSya1e8eYXdDp_dwRZZZGPjVug@mail.gmail.com>
+Subject: Re: [RFC] MIPS: Add cacheinfo support
+References: <20161208011626.20885-1-justinpopo6@gmail.com>
+In-Reply-To: <20161208011626.20885-1-justinpopo6@gmail.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@imgtec.com>
+Return-Path: <Leonid.Yegoshin@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,85 +21,40 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Thomas Gleixner <tglx@linutronix.de>, Paolo Bonzini <pbonzini@redhat.com>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, Chris Metcalf <cmetcalf@mellanox.com>, Petr Mladek <pmladek@suse.com>, LKML <linux-kernel@vger.kernel.org>, Andrea Gelmini <andrea.gelmini@gelma.net>, James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Jiri Slaby <jslaby@suse.cz>, "Maciej W. Rozycki" <macro@imgtec.com>, Aaron Tomlin <atomlin@redhat.com>, Andrew Morton <akpm@linux-foundation.org>
-Message-ID: <20161207093023.QgJXdA6hvbqhISA_R7GsZj80ZkUQKzYaEcYrm8xhu9M@z>
+To: Justin Chen <justinpopo6@gmail.com>, linux-mips@linux-mips.org
+Cc: bcm-kernel-feedback-list@broadcom.com, f.fainelli@gmail.com, Justin Chen <justin.chen@broadcom.com>
+Message-ID: <20161208232659.5mYUKlDzt_Ws1pTHIHWjd9s5SRt6xFEiJ6TRy7CTZpI@z>
 
-Hi Jason,
-
-
-On 06/12/16 22:09, Jason A. Donenfeld wrote:
-> Hi Matt,
+On 12/07/2016 05:16 PM, Justin Chen wrote:
+> From: Justin Chen <justin.chen@broadcom.com>
 >
-> Thanks for submitting this. A happy OpenWRT/WireGuard user has
-> reported to me that this patch set frees ~1300 bytes of stack on a
-> small MIPS router. This kind of savings should allow me to reintroduce
-> my crypto operations to be on the stack, rather than the conditional
-> MIPS kmallocing, which will be a performance win.
-
-Excellent.
-
+> Add cacheinfo support for MIPS architectures.
 >
-> By the way, it looks like x86 and SPARC have separately allocated hard
-> IRQ and soft IRQ stacks. ARM has only one for both, similar to this
-> MIPS patchset.
-
-The separate stack for soft-IRQs could be added as well, but of course 
-there is a tradeoff against the additional memory consumed by it. I 
-believe that most soft IRQs will now be handled on the new irq stack, 
-because HAVE_IRQ_EXIT_ON_IRQ_STACK causes them to be invoked within 
-irq_exit, while still executing on the irq stack
-
-Thanks,
-Matt
-
+> Use information from the cpuinfo_mips struct to populate the
+> cacheinfo struct. This allows an architecture agnostic approach,
+> however this also means if cache information is not properly
+> populated within the cpuinfo_mips struct, there is nothing
+> we can do. (I.E. c-r3k.c)
 >
-> Jason
 >
-> On Fri, Dec 2, 2016 at 2:39 PM, Matt Redfearn <matt.redfearn@imgtec.com> wrote:
->> This series adds a separate stack for each CPU wihin the system to use
->> when handling IRQs. Previously IRQs were handled on the kernel stack of
->> the current task. If that task was deep down a call stack at the point
->> of the interrupt, and handling the interrupt required a deep IRQ stack,
->> then there was a likelihood of stack overflow. Since the kernel stack
->> is in normal unmapped memory, overflowing it can lead to silent
->> corruption of other kernel data, with weird and wonderful results.
->>
->> Before this patch series, ftracing the maximum stack size of a v4.9-rc6
->> kernel running on a Ci40 board gave:
->> 4996
->>
->> And with this series:
->> 4084
->>
->> Handling interrupts on a separate stack reduces the maximum kernel stack
->> usage in this configuration by ~900 bytes.
->>
->> Since do_IRQ is now invoked on a separate stack, we select
->> HAVE_IRQ_EXIT_ON_IRQ_STACK so that softirqs will also be executed on the
->> irq stack rather than attempting to switch with do_softirq_own_stack().
->>
->> This series has been tested on MIPS Boston, Malta and SEAD3 platforms,
->> Pistachio on the Creator Ci40 board and Cavium Octeon III.
->>
->>
->>
->> Matt Redfearn (5):
->>    MIPS: Introduce irq_stack
->>    MIPS: Stack unwinding while on IRQ stack
->>    MIPS: Only change $28 to thread_info if coming from user mode
->>    MIPS: Switch to the irq_stack in interrupts
->>    MIPS: Select HAVE_IRQ_EXIT_ON_IRQ_STACK
->>
->>   arch/mips/Kconfig                  |  1 +
->>   arch/mips/include/asm/irq.h        | 12 ++++++
->>   arch/mips/include/asm/stackframe.h | 10 +++++
->>   arch/mips/kernel/asm-offsets.c     |  1 +
->>   arch/mips/kernel/genex.S           | 81 +++++++++++++++++++++++++++++++++++---
->>   arch/mips/kernel/irq.c             | 11 ++++++
->>   arch/mips/kernel/process.c         | 15 ++++++-
->>   7 files changed, 125 insertions(+), 6 deletions(-)
->>
->> --
->> 2.7.4
->>
+
+Justin, for architecture agnostic approach of work with caches the 
+cpuinfo_mips lacks more information:
+
+1.  L1I-L1D coherency status (is L1I coherent to L1D)
+2.  L1D-L2 coherency status (is L1D coherent to L2)
+3.  L1I-L2 coherency status (is L1I coherent to L2)
+4.  L1I refill from L1D (snoops L1D) or L2 (may require L1D flush)?
+5.  L1D cache aliasing disabled by HW
+6.  L1I cache aliasing disabled by HW
+7.  Barrier existence and it's type between various cache flushes as is 
+as between cache flush and final (completed) state.
+8.  Cache ownership (current: assumed that sibling CPUs share L1 - may 
+be shared_cpu_map?)
+9.  Is address cache flush operation global in system or pure local?
+10. Is index cache flush operation global in system or pure local?
+
+Without that the proposed cpuinfo_mips struct is basically useless.
+
+Regards,
+- Leonid

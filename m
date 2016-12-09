@@ -1,17 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:55546 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991976AbcLIBCBzPaC0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 9 Dec 2016 02:02:01 +0100
-Message-ID: <584A0281.3040505@imgtec.com>
-Date: Thu, 8 Dec 2016 17:01:53 -0800
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Received: from mail-dm3nam03on0082.outbound.protection.outlook.com ([104.47.41.82]:54240
+        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23992111AbcLIIgcmzSA2 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 9 Dec 2016 09:36:32 +0100
+Subject: [PATCH] MIPS: Relocatable: Provide plat_post_relocation hook
+From: "Steven J. Hill" <Steven.Hill@cavium.com>
+Message-ID: <8b0da9cb-62a4-f3f6-d1bf-761c4a7bfa15@cavium.com>
+Date: Fri, 9 Dec 2016 02:36:22 -0600
 MIME-Version: 1.0
-Subject: Re: [RFC] MIPS: Add cacheinfo support
-References: <20161208011626.20885-1-justinpopo6@gmail.com> <5849EC43.2070802@imgtec.com> <CAJx26kW0e-HC0VUTObZ5Or+XjFvE9KmtOToKbFvKYvhE--Vw5A@mail.gmail.com>
-In-Reply-To: <CAJx26kW0e-HC0VUTObZ5Or+XjFvE9KmtOToKbFvKYvhE--Vw5A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Return-Path: <Steven.Hill@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,61 +20,60 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Justin Chen <justinpopo6@gmail.com>
-Cc: linux-mips@linux-mips.org, bcm-kernel-feedback-list@broadcom.com, Florian Fainelli <f.fainelli@gmail.com>, Justin Chen <justin.chen@broadcom.com>
-Message-ID: <20161209010153.vurH6raERczztGMOYYmpyT-uaGMxvabbKnd0vNkLopw@z>
+To: linux-mips@linux-mips.org
+Cc: ralf@linux-mips.org
+Message-ID: <20161209083622.547n6Jzf54uCepyBO_aYDpayIb82LFAc3BI3jXFwzdQ@z>
 
-On 12/08/2016 04:28 PM, Justin Chen wrote:
-> Thanks for the comments Leonid.
->
-> We should consider the scope of this patch. The information we are
-> trying to expose to userspace is limited to the struct cacheinfo
-> located at include/linux/cacheinfo.c (of course this can always be
-> expanded). So the question is what information would be useful to
-> expose to userspace.
-> Some justification for exposing the current information in the
-> cacheinfo struct could be: (Pulled from another email chain)
-> "Agreed. So far I have got requests from GCC, JIT and graphics guys.
-> IIUC they need this to support cache flushing for user applications like
-> gcc trampolines and JIT compilers. I am also told that having knowledge
-> of cache architecture can help optimal code strategies, though I don't
-> have much details on that."
-> https://patchwork.kernel.org/patch/5867721/
->
-> There may be justification for including the points you mentioned
-> above, but I believe that is outside the scope of this patch. The
-> cache information exposed in this patch is limited, but I do not
-> believe it is useless. The points above can be added, but it will
-> require a rework of the base cacheinfo driver. driver/base/cacheinfo.c
->
->
-Justin,
+This hook provides the platform the chance to perform any required
+setup before the boot processor switches to the relocated kernel.
+The relocated kernel has been copied and fixed up ready for execution
+at this point. Secondary CPUs may wish to switch to it early. There
+is also the opportunity for the platform to abort jumping to the
+relocated kernel if there is anything wrong with the chosen offset.
 
-CACHE instruction is not available in user space, only SYNCI on MIPS R2+ 
-for trampoline.
-Any operation with CACHE requires a syscall.
+Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+Signed-off-by: Steven J. Hill <Steven.Hill@cavium.com>
+---
+ arch/mips/kernel/relocate.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-As for SYNCI (trampoline from L1D->L1I) the following information in 
-user space is needed:
+diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
+index 1958910..c822885 100644
+--- a/arch/mips/kernel/relocate.c
++++ b/arch/mips/kernel/relocate.c
+@@ -31,6 +31,17 @@
+ extern long __start___ex_table;	/* Start exception table */
+ extern long __stop___ex_table;	/* End exception table */
 
-     1. L1 line size (available via RDHWR $x, $1). It is available now 
-directly from CPU, but may be better to supply from kernel because some 
-cores has no that.
++/*
++ * This function may be defined for a platform to perform any post-relocation
++ * fixup necessary.
++ * Return non-zero to abort relocation
++ */
++int __weak plat_post_relocation(long offset)
++{
++	return 0;
++}
++
++
+ static inline u32 __init get_synci_step(void)
+ {
+ 	u32 res;
+@@ -338,6 +349,15 @@ void *__init relocate_kernel(void)
+ 		 */
+ 		memcpy(RELOCATED(&__bss_start), &__bss_start, bss_length);
 
-     2. The flag that L1I is NOT coherent with L1D and SYNCI is needed 
-and available
++		/*
++		 * Last chance for the platform to abort relocation.
++		 * This may also be used by the platform to perform any
++		 * initialisation required now that the new kernel is
++		 * resident in memory and ready to be executed.
++		 */
++		if (plat_post_relocation(offset))
++			goto out;
++
+ 		/* The current thread is now within the relocated image */
+ 		__current_thread_info = RELOCATED(&init_thread_union);
 
-The knowledge about L1/L2 sizes is not needed for regular application... 
-well, if application wants to get advantage of cache sizes, well, in 
-this case it can be supplied.
-
-But it is unreliable because app may be rescheduled into different kind 
-of core which has a different L1 size (in heterogeneous system, BTW). It 
-can be fixed by setting affinity, of course (not sure - can it be 
-reliably done in BIG/LITTLE approach). But that requires in application 
-the knowledge and understanding of system CPU structure... well why we 
-can allow all that stuff besides information purpose? It corrupts the 
-all efforts and optimization in kernel about performance and powersaving.
-
-Regards,
-- Leonid.
+-- 
+1.9.1

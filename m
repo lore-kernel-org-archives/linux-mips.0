@@ -1,16 +1,19 @@
-Received: from mail-by2nam03on0078.outbound.protection.outlook.com ([104.47.42.78]:46528
-        "EHLO NAM03-BY2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23990644AbcLIUF5PPRBD (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 9 Dec 2016 21:05:57 +0100
-Subject: [PATCH v2] MIPS: OCTEON: Enable KASLR
-From: "Steven J. Hill" <Steven.Hill@cavium.com>
-Message-ID: <accb5b67-2a15-21bb-ed81-3bd463b5ff04@cavium.com>
-Date: Fri, 9 Dec 2016 14:05:40 -0600
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Steven.Hill@cavium.com>
+Received: from mx.sealand.io ([193.160.39.68]:50117 "EHLO mx.sealand.io"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23993164AbcLJWbhNFchc convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 10 Dec 2016 23:31:37 +0100
+Content-Type: text/plain; charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 10.1 \(3251\))
+Subject: Re: Misalignment, MIPS, and ip_hdr(skb)->version
+From: =?utf-8?Q?Dan_L=C3=BCdtke?= <mail@danrl.com>
+In-Reply-To: <87vauvhwdu.fsf@alice.fifthhorseman.net>
+Date: Sat, 10 Dec 2016 23:18:14 +0100
+Content-Transfer-Encoding: 8BIT
+Message-ID: <CE942916-BF45-44CC-A5F5-3838CF9C93BC@danrl.com>
+References: <CAHmME9o_eCNXpVztOZKW55kpRtE+1KSEQTQOjUBVn68Y2+or2g@mail.gmail.com>
+ <095cac5b-b757-6f4a-e699-8eedf9ed7221@stressinduktion.org>
+ <87vauvhwdu.fsf@alice.fifthhorseman.net>
+Return-Path: <mail@danrl.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,130 +23,26 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: ralf@linux-mips.org
-Message-ID: <20161209200540.wuWk9RAyTg4_TstOtrbueYqoFUxINSdoFbLhi1D-fkk@z>
+To: Daniel Kahn Gillmor <dkg@fifthhorseman.net>
+Cc: Hannes Frederic Sowa <hannes@stressinduktion.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>, Netdev <netdev@vger.kernel.org>, linux-mips@linux-mips.org, LKML <linux-kernel@vger.kernel.org>, WireGuard mailing list <wireguard@lists.zx2c4.com>
+Message-ID: <20161210221814.7VIDMmdQXjcFUGaPuT27A911HVeCvjAtqjjOIydCRAQ@z>
 
-This patch enables KASLR for OCTEON systems. The SMP startup code is
-such that the secondaries monitor the volatile variable
-'octeon_processor_relocated_kernel_entry' for any non-zero value.
-The 'plat_post_relocation hook' is used to set that value to the
-kernel entry point of the relocated kernel. The secondary CPUs will
-then jusmp to the new kernel, perform their initialization again
-and begin waiting for the boot CPU to start them via the relocated
-loop 'octeon_spin_wait_boot'. Inspired by Steven's code from Cavium.
 
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
-Signed-off-by: Steven J. Hill <Steven.Hill@cavium.com>
----
-Changes in v2:
-  - Add missing code to set 'octeon_processor_relocated_kernel_entry'
-    which was forgotten. Mental note, don't submit patches at 3a.m.
----
- arch/mips/Kconfig                                    |  3 ++-
- arch/mips/cavium-octeon/smp.c                        | 20 ++++++++++++++++++--
- .../asm/mach-cavium-octeon/kernel-entry-init.h       | 15 ++++++++++++++-
- 3 files changed, 34 insertions(+), 4 deletions(-)
+> On 8 Dec 2016, at 05:34, Daniel Kahn Gillmor <dkg@fifthhorseman.net> wrote:
+> 
+> On Wed 2016-12-07 19:30:34 -0500, Hannes Frederic Sowa wrote:
+>> Your custom protocol should be designed in a way you get an aligned ip
+>> header. Most protocols of the IETF follow this mantra and it is always
+>> possible to e.g. pad options so you end up on aligned boundaries for the
+>> next header.
+> 
+> fwiw, i'm not convinced that "most protocols of the IETF follow this
+> mantra".  we've had multiple discussions in different protocol groups
+> about shaving or bloating by a few bytes here or there in different
+> protocols, and i don't think anyone has brought up memory alignment as
+> an argument in any of the discussions i've followed.
+> 
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index b3c5bde..65d7e20 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -909,6 +909,7 @@ config CAVIUM_OCTEON_SOC
- 	select NR_CPUS_DEFAULT_16
- 	select BUILTIN_DTB
- 	select MTD_COMPLEX_MAPPINGS
-+	select SYS_SUPPORTS_RELOCATABLE
- 	help
- 	  This option supports all of the Octeon reference boards from Cavium
- 	  Networks. It builds a kernel that dynamically determines the Octeon
-@@ -2570,7 +2571,7 @@ config SYS_SUPPORTS_NUMA
+If the trade-off is between 1 padding byte and 2 byte alignment versus 3 padding bytes and 4 byte alignment I would definitely opt for 3 padding bytes. I know how that waste feels like to a protocol designer, but I think it is worth it. Maybe the padding/reserved will be useful some day for an additional feature.
 
- config RELOCATABLE
- 	bool "Relocatable kernel"
--	depends on SYS_SUPPORTS_RELOCATABLE && (CPU_MIPS32_R2 || CPU_MIPS64_R2 || CPU_MIPS32_R6 || CPU_MIPS64_R6)
-+	depends on SYS_SUPPORTS_RELOCATABLE && (CPU_MIPS32_R2 || CPU_MIPS64_R2 || CPU_MIPS32_R6 || CPU_MIPS64_R6 || CAVIUM_OCTEON_SOC)
- 	help
- 	  This builds a kernel image that retains relocation information
- 	  so it can be loaded someplace besides the default 1MB.
-diff --git a/arch/mips/cavium-octeon/smp.c b/arch/mips/cavium-octeon/smp.c
-index 256fe6f..889c3f4 100644
---- a/arch/mips/cavium-octeon/smp.c
-+++ b/arch/mips/cavium-octeon/smp.c
-@@ -24,12 +24,17 @@
- volatile unsigned long octeon_processor_boot = 0xff;
- volatile unsigned long octeon_processor_sp;
- volatile unsigned long octeon_processor_gp;
-+#ifdef CONFIG_RELOCATABLE
-+volatile unsigned long octeon_processor_relocated_kernel_entry;
-+#endif /* CONFIG_RELOCATABLE */
-
- #ifdef CONFIG_HOTPLUG_CPU
- uint64_t octeon_bootloader_entry_addr;
- EXPORT_SYMBOL(octeon_bootloader_entry_addr);
- #endif
-
-+extern void kernel_entry(unsigned long arg1, ...);
-+
- static void octeon_icache_flush(void)
- {
- 	asm volatile ("synci 0($0)\n");
-@@ -180,6 +185,19 @@ static void __init octeon_smp_setup(void)
- 	octeon_smp_hotplug_setup();
- }
-
-+
-+#ifdef CONFIG_RELOCATABLE
-+int plat_post_relocation(long offset)
-+{
-+	unsigned long entry = (unsigned long)kernel_entry;
-+
-+	/* Send secondaries into relocated kernel */
-+	octeon_processor_relocated_kernel_entry = entry + offset;
-+
-+	return 0;
-+}
-+#endif /* CONFIG_RELOCATABLE */
-+
- /**
-  * Firmware CPU startup hook
-  *
-@@ -333,8 +351,6 @@ void play_dead(void)
- 		;
- }
-
--extern void kernel_entry(unsigned long arg1, ...);
--
- static void start_after_reset(void)
- {
- 	kernel_entry(0, 0, 0);	/* set a2 = 0 for secondary core */
-diff --git a/arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h b/arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h
-index c4873e8..f69611c 100644
---- a/arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h
-+++ b/arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h
-@@ -99,9 +99,22 @@
- 	# to begin
- 	#
-
-+octeon_spin_wait_boot:
-+#ifdef CONFIG_RELOCATABLE
-+	PTR_LA	t0, octeon_processor_relocated_kernel_entry
-+	LONG_L	t0, (t0)
-+	beq	zero, t0, 1f
-+
-+	/* If kernel has been relocated, jump to it's new entry point */
-+	move	a0, zero
-+	move	a1, zero
-+	move	a2, zero
-+	jr	t0
-+1:
-+#endif /* CONFIG_RELOCATABLE */
-+
- 	# This is the variable where the next core to boot os stored
- 	PTR_LA	t0, octeon_processor_boot
--octeon_spin_wait_boot:
- 	# Get the core id of the next to be booted
- 	LONG_L	t1, (t0)
- 	# Keep looping if it isn't me
--- 
-1.9.1
+I remember alignment being discussed and taken very seriously in 6man a couple of times. Often, though, protocol designers did align without much discussion. Implementing unaligned protocols is a pain I've experienced first hand.

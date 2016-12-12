@@ -1,24 +1,20 @@
-Received: from unicorn.mansr.com ([81.2.72.234]:49228 "EHLO unicorn.mansr.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23993006AbcLLQbzELFOa convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 12 Dec 2016 17:31:55 +0100
-From: =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
-Subject: Re: Misalignment, MIPS, and ip_hdr(skb)->version
-References: <CAHmME9o_eCNXpVztOZKW55kpRtE+1KSEQTQOjUBVn68Y2+or2g@mail.gmail.com>
-        <CAA93jw7hcmkcyD=t4VRrQFfHk+n+EkSVgY6KFDq0_-DGpMADYw@mail.gmail.com>
-        <20161207.135127.789629809982860453.davem@davemloft.net>
-        <CAHmME9oLgjDA2F0gkFzHU2Es8-XCxQHRABS18OKF0EnZgt1=LQ@mail.gmail.com>
-        <040bcdb2-2725-c8de-11d9-a4f77b75d9d8@nbd.name>
-        <yw1x37hvykzk.fsf@unicorn.mansr.com>
-        <063D6719AE5E284EB5DD2968C1650D6DB023BF78@AcuExch.aculab.com>
-Date: Mon, 12 Dec 2016 16:31:47 +0000
-In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6DB023BF78@AcuExch.aculab.com>
-        (David Laight's message of "Mon, 12 Dec 2016 16:19:17 +0000")
-Message-ID: <yw1xd1gxw1l8.fsf@unicorn.mansr.com>
+Received: from mail-bl2nam02on0042.outbound.protection.outlook.com ([104.47.38.42]:53207
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23993005AbcLLSwxI39Ln (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 12 Dec 2016 19:52:53 +0100
+Subject: Re: [PATCH] MIPS: OCTEON: Enable KASLR
+References: <4bc97883-39b4-1a00-6e06-518c598bbf3c@cavium.com>
+ <bb09e7fa-d13d-979d-8496-83006014cedc@caviumnetworks.com>
+ <d7c6f6b5-bbe4-2ede-4f68-7543db918bbe@imgtec.com>
+From: David Daney <ddaney@caviumnetworks.com>
+Message-ID: <dca26961-ba25-d256-36c0-aa0f8a848439@caviumnetworks.com>
+Date: Mon, 12 Dec 2016 10:52:41 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
-Return-Path: <mans@mansr.com>
+In-Reply-To: <d7c6f6b5-bbe4-2ede-4f68-7543db918bbe@imgtec.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -28,32 +24,196 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Laight <David.Laight@ACULAB.COM>
-Cc: Felix Fietkau <nbd@nbd.name>, "Jason A. Donenfeld" <Jason@zx2c4.com>, David Miller <davem@davemloft.net>, Netdev <netdev@vger.kernel.org>, WireGuard mailing list <wireguard@lists.zx2c4.com>, LKML <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Message-ID: <20161212163147.WWyxwCYWJvyB4vMFwSbIxiBjICmnkuANe2id0VES9yg@z>
+To: Matt Redfearn <matt.redfearn@imgtec.com>, "Steven J. Hill" <Steven.Hill@cavium.com>, linux-mips@linux-mips.org, ralf@linux-mips.org
+Message-ID: <20161212185241.C9YVW1pL6b8mmqhl7iObELCIqYRHiqPJQmBZXsJ11Mk@z>
 
-David Laight <David.Laight@ACULAB.COM> writes:
-
-> From: Måns Rullgård
->> Sent: 10 December 2016 13:25
-> ...
->> I solved this problem in an Ethernet driver by copying the initial part
->> of the packet to an aligned skb and appending the remainder using
->> skb_add_rx_frag().  The kernel network stack only cares about the
->> headers, so the alignment of the packet payload doesn't matter.
+On 12/12/2016 01:56 AM, Matt Redfearn wrote:
+> Hi David,
 >
-> That rather depends on where the packet payload ends up.
-> It is likely that it will be copied to userspace (or maybe
-> into some aligned kernel buffer).
-> In which case you get an expensive misaligned copy.
+>
+> On 09/12/16 18:46, David Daney wrote:
+>> On 12/09/2016 01:35 AM, Steven J. Hill wrote:
+>>> This patch enables KASLR for OCTEON systems. The SMP startup code is
+>>> such that the secondaries monitor the volatile variable
+>>> 'octeon_processor_relocated_kernel_entry' for any non-zero value.
+>>> The 'plat_post_relocation hook' is used to set that value to the
+>>> kernel entry point of the relocated kernel. The secondary CPUs will
+>>> then jumps to the new kernel, perform their initialization again
+>>> and begin waiting for the boot CPU to start them via the relocated
+>>> loop 'octeon_spin_wait_boot'. Inspired by Steven's code from Cavium.
+>>>
+>>> Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+>>> Signed-off-by: Steven J. Hill <Steven.Hill@cavium.com>
+>>> ---
+>>>  arch/mips/Kconfig                                         |  3 ++-
+>>>  arch/mips/cavium-octeon/smp.c                             |  7 +++++--
+>>>  .../include/asm/mach-cavium-octeon/kernel-entry-init.h    | 15
+>>> ++++++++++++++-
+>>>  3 files changed, 21 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+>>> index b3c5bde..65d7e20 100644
+>>> --- a/arch/mips/Kconfig
+>>> +++ b/arch/mips/Kconfig
+>>> @@ -909,6 +909,7 @@ config CAVIUM_OCTEON_SOC
+>>>      select NR_CPUS_DEFAULT_16
+>>>      select BUILTIN_DTB
+>>>      select MTD_COMPLEX_MAPPINGS
+>>> +    select SYS_SUPPORTS_RELOCATABLE
+>>>      help
+>>>        This option supports all of the Octeon reference boards from
+>>> Cavium
+>>>        Networks. It builds a kernel that dynamically determines the
+>>> Octeon
+>>> @@ -2570,7 +2571,7 @@ config SYS_SUPPORTS_NUMA
+>>>
+>>>  config RELOCATABLE
+>>>      bool "Relocatable kernel"
+>>> -    depends on SYS_SUPPORTS_RELOCATABLE && (CPU_MIPS32_R2 ||
+>>> CPU_MIPS64_R2 || CPU_MIPS32_R6 || CPU_MIPS64_R6)
+>>> +    depends on SYS_SUPPORTS_RELOCATABLE && (CPU_MIPS32_R2 ||
+>>> CPU_MIPS64_R2 || CPU_MIPS32_R6 || CPU_MIPS64_R6 || CAVIUM_OCTEON_SOC)
+>>>      help
+>>>        This builds a kernel image that retains relocation information
+>>>        so it can be loaded someplace besides the default 1MB.
+>>> diff --git a/arch/mips/cavium-octeon/smp.c
+>>> b/arch/mips/cavium-octeon/smp.c
+>>> index 256fe6f..65c8369 100644
+>>> --- a/arch/mips/cavium-octeon/smp.c
+>>> +++ b/arch/mips/cavium-octeon/smp.c
+>>> @@ -24,12 +24,17 @@
+>>>  volatile unsigned long octeon_processor_boot = 0xff;
+>>>  volatile unsigned long octeon_processor_sp;
+>>>  volatile unsigned long octeon_processor_gp;
+>>> +#ifdef CONFIG_RELOCATABLE
+>>> +volatile unsigned long octeon_processor_relocated_kernel_entry;
+>>> +#endif /* CONFIG_RELOCATABLE */
+>>>
+>>>  #ifdef CONFIG_HOTPLUG_CPU
+>>>  uint64_t octeon_bootloader_entry_addr;
+>>>  EXPORT_SYMBOL(octeon_bootloader_entry_addr);
+>>>  #endif
+>>>
+>>> +extern void kernel_entry(unsigned long arg1, ...);
+>>> +
+>>>  static void octeon_icache_flush(void)
+>>>  {
+>>>      asm volatile ("synci 0($0)\n");
+>>> @@ -333,8 +338,6 @@ void play_dead(void)
+>>>          ;
+>>>  }
+>>>
+>>> -extern void kernel_entry(unsigned long arg1, ...);
+>>> -
+>>>  static void start_after_reset(void)
+>>>  {
+>>>      kernel_entry(0, 0, 0);    /* set a2 = 0 for secondary core */
+>>> diff --git
+>>> a/arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h
+>>> b/arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h
+>>> index c4873e8..f69611c 100644
+>>> --- a/arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h
+>>> +++ b/arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h
+>>> @@ -99,9 +99,22 @@
+>>>      # to begin
+>>>      #
+>>>
+>>> +octeon_spin_wait_boot:
+>>> +#ifdef CONFIG_RELOCATABLE
+>>> +    PTR_LA    t0, octeon_processor_relocated_kernel_entry
+>>> +    LONG_L    t0, (t0)
+>>> +    beq    zero, t0, 1f
+>>> +
+>>
+>> This doesn't look correct.
+>>
+>> Please explain how this code implements:
+>>
+>>    loop here until octeon_processor_relocated_kernel_entry is set.
+>
+> This part of the loop is checking if
+> octeon_processor_relocated_kernel_entry becomes set, in which case don't
+> take the branch and jump to the relocated kernel entry point that has
+> been stored in octeon_processor_relocated_kernel_entry by the boot CPU
+> (that part was missing from Stephens v1 post of this patch). Otherwise
+> the semantics of the loop remain the same as before, checking for
+> octeon_processor_boot to be non-zero to start a secondary running this
+> kernel.
+>
+> This same loop is executed in the relocated kernel and of course in that
+> case octeon_processor_relocated_kernel_entry will not be set, just
+> octeon_processor_boot will be set when the boot CPU is starting the
+> secondary CPUs.
 
-There's not much to be done about that.  The only other option is to
-bypass DMA entirely, and that's sure to be even worse.
+OK, I now understand what is being done.
 
-> What do the hardware engineers think the ethernet interface will
-> be used for!
+Is it ever the case that we will have CONFIG_RELOCATABLE, and not do the 
+relocation?
 
-Ticking boxes in marketing material.
+If not, before relocation we never need to poll octeon_processor_boot 
+before relocation.  We could branch to a point that polls 
+octeon_processor_boot after we leave the loop that waits for the 
+relocation to complete.
 
--- 
-Måns Rullgård
+Maybe it is not that big a deal.
+
+>
+>>
+>>
+>>
+>>> +    /* If kernel has been relocated, jump to it's new entry point */
+>>> +    move    a0, zero
+>>> +    move    a1, zero
+>>> +    move    a2, zero
+>>
+>> Why change the values of a*?  Don't these registers already contain
+>> the proper values from the bootloader?
+>
+> I don't see where the secondaries make use of any arguments passed from
+> the bootloader in the entry code.
+
+
+In the line that says:
+    bne	a2, zero, octeon_main_processor
+
+
+> But this follows the same semantics as
+> the CPU hotplug code, which restarts secondaries with their arguments
+> set to 0.
+
+Yes, for the secondaries the argument registers are set to zero, but 
+that is so that when they pass through the branch shown above that they 
+get to the proper place.
+
+In this code, we are coming from the bootloader, and these registers 
+already have the proper value.
+
+Adding these three MOVE instructions makes it look like you are taking 
+some needed action when in fact it is unneeded code that only serves to 
+confuse.
+
+I would really like that removed as it just clutters things up and will 
+lead people to think that it is necessary.
+
+
+David.
+
+>
+> Thanks,
+> Matt
+>
+>>
+>>> +    jr    t0
+>>> +1:
+>>> +#endif /* CONFIG_RELOCATABLE */
+>>> +
+>>>      # This is the variable where the next core to boot os stored
+>>>      PTR_LA    t0, octeon_processor_boot
+>>> -octeon_spin_wait_boot:
+>>>      # Get the core id of the next to be booted
+>>>      LONG_L    t1, (t0)
+>>>      # Keep looping if it isn't me
+>>>
+>>
+>>
+>

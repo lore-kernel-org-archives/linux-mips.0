@@ -1,17 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:37325 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993072AbcLMUQCtIVZD (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Dec 2016 21:16:02 +0100
-Message-ID: <585056F9.7010101@imgtec.com>
-Date: Tue, 13 Dec 2016 12:15:53 -0800
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Received: from mail-bn3nam01on0045.outbound.protection.outlook.com ([104.47.33.45]:1697
+        "EHLO NAM01-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23992992AbcLMUZrLCVSv (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 13 Dec 2016 21:25:47 +0100
+Subject: [PATCH v3] MIPS: OCTEON: Enable KASLR
+From: "Steven J. Hill" <Steven.Hill@cavium.com>
+Message-ID: <086dba14-cbbf-5fb8-ae39-bfb2f725d91a@cavium.com>
+Date: Tue, 13 Dec 2016 14:25:37 -0600
 MIME-Version: 1.0
-Subject: Re: [RFC] MIPS: Add cacheinfo support
-References: <20161208011626.20885-1-justinpopo6@gmail.com> <5849EC43.2070802@imgtec.com> <CAJx26kW0e-HC0VUTObZ5Or+XjFvE9KmtOToKbFvKYvhE--Vw5A@mail.gmail.com> <584A0281.3040505@imgtec.com> <3004fca6-3688-65bb-7c86-248603482088@gmail.com> <584F0C71.5010004@imgtec.com> <6981ff1e-685e-2df7-4b6e-c67c3aa735e7@gmail.com> <584F3E9D.9030501@imgtec.com> <alpine.DEB.2.00.1612131101200.6743@tp.orcam.me.uk> <58504983.2050608@imgtec.com> <CAJx26kWV70vKE-2A_zStOF=L2=xVpuX-eNnHtnM=XWyKurfvBg@mail.gmail.com> <31824f14-e8b0-2f14-2ade-1c30e6e3cce5@gmail.com>
-In-Reply-To: <31824f14-e8b0-2f14-2ade-1c30e6e3cce5@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Return-Path: <Steven.Hill@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,63 +20,132 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Florian Fainelli <f.fainelli@gmail.com>, Justin Chen <justinpopo6@gmail.com>
-Cc: "Maciej W. Rozycki" <macro@imgtec.com>, linux-mips@linux-mips.org, bcm-kernel-feedback-list@broadcom.com, Justin Chen <justin.chen@broadcom.com>
-Message-ID: <20161213201553.XJFHgXTZLy9keUS3jQXVVamD3GtAvVFVH7s37F3u-vY@z>
+To: linux-mips@linux-mips.org
+Cc: ralf@linux-mips.org
+Message-ID: <20161213202537.lZuzqs_mGdZ94Em9MGP1hZS650EZTiJp-RAzXmYlNok@z>
 
-On 12/13/2016 12:05 PM, Florian Fainelli wrote:
-> On 12/13/2016 12:01 PM, Justin Chen wrote:
->> On Tue, Dec 13, 2016 at 11:18 AM, Leonid Yegoshin
->> <Leonid.Yegoshin@imgtec.com> wrote:
->>> On 12/13/2016 03:09 AM, Maciej W. Rozycki wrote:
->>>> On Tue, 13 Dec 2016, Leonid Yegoshin wrote:
->>>>
->>>>> Well, I prefer the collection of 3 flags:
->>>>>
->>>>> flush_required        - or flush to next level is required to force
->>>>> coherency
->>>>> between this level and next after update of this level
->>>>> invalidate_required   - or invalidate is required to force coherency
->>>>> between
->>>>> this level and next after update of next level
->>>>> coherent_to_level     - object is coherent with this level (only one
->>>>> domain of
->>>>> coherency on this level is assumed)
->>>>    A "flush" has always been an ambiguous term -- meaning anything from
->>>> "write-back", through "write-back+invalidate" to "invalidate".  What is
->>>> "flush" is supposed to exactly mean here?  If specifically any of the two
->>>> formers (the latter is obviously the other flag), then I suggest using the
->>>> respective name, or otherwise if it is meant to be generic "do what is
->>>> needed", then perhaps "synchronize" will work, like with the name of the
->>>> SYNCI instruction?
->>>>
->>> Well, I am not expert in choosing names, you know. I just would like to make
->>> a distinguishing between "transfer data from this level to next one" - any
->>> way - writeback or write-back-invalidate, and "clear data in this level to
->>> be pulled on demand from next level".
->>>
->>> This is an information purpose as Florian described, so details can be
->>> skipped. The only useful info here - some efforts are needed after event
->>> (see above) and that efforts are not cheap from performance point of view.
->>>
->>> If we put here details then it is a long way because we need a lot of
->>> details, see my original post. However, I would like to differ "flush" and
->>> "invalidate" because it is triggered by different kind of event (from
->>> upstream or from downstream).
->>>
->>> - Leonid.
->> I can add in the flags mentioned by Leonid. However, I would suggest
->> these flags be added in as a separate patch series as it will require
->> modifications to the cacheinfo code to propagate the information to
->> the sysfs.
->>
->> Would it be ok to accept this patch series as is while I work with the
->> cacheinfo maintainers to include these new flags?
-> Seems entirely reasonable to me. You may want to make a new patch
-> submission without "RFC", just to make it clear that this is a patch
-> ready for review/acceptance.
->
-> Thanks!
-I agree.
+This patch enables KASLR for OCTEON systems. The SMP startup code is
+such that the secondaries monitor the volatile variable
+'octeon_processor_relocated_kernel_entry' for any non-zero value.
+The 'plat_post_relocation hook' is used to set that value to the
+kernel entry point of the relocated kernel. The secondary CPUs will
+then jusmp to the new kernel, perform their initialization again
+and begin waiting for the boot CPU to start them via the relocated
+loop 'octeon_spin_wait_boot'. Inspired by Steven's code from Cavium.
 
-- Leonid.
+Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+Signed-off-by: Steven J. Hill <steven.hill@cavium.com>
+---
+Changes in v3:
+  - Remove unneeded instructions and correct spelling.
+
+Changes in v2:
+  - Add missing code to set 'octeon_processor_relocated_kernel_entry'
+    which was forgotten. Mental note, don't submit patches at 3a.m.
+---
+ arch/mips/Kconfig                                    |  3 ++-
+ arch/mips/cavium-octeon/smp.c                        | 20 ++++++++++++++++++--
+ .../asm/mach-cavium-octeon/kernel-entry-init.h       | 15 +++++++++++++--
+ 3 files changed, 33 insertions(+), 5 deletions(-)
+
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index b3c5bde..65d7e20 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -909,6 +909,7 @@ config CAVIUM_OCTEON_SOC
+ 	select NR_CPUS_DEFAULT_16
+ 	select BUILTIN_DTB
+ 	select MTD_COMPLEX_MAPPINGS
++	select SYS_SUPPORTS_RELOCATABLE
+ 	help
+ 	  This option supports all of the Octeon reference boards from Cavium
+ 	  Networks. It builds a kernel that dynamically determines the Octeon
+@@ -2570,7 +2571,7 @@ config SYS_SUPPORTS_NUMA
+
+ config RELOCATABLE
+ 	bool "Relocatable kernel"
+-	depends on SYS_SUPPORTS_RELOCATABLE && (CPU_MIPS32_R2 || CPU_MIPS64_R2 || CPU_MIPS32_R6 || CPU_MIPS64_R6)
++	depends on SYS_SUPPORTS_RELOCATABLE && (CPU_MIPS32_R2 || CPU_MIPS64_R2 || CPU_MIPS32_R6 || CPU_MIPS64_R6 || CAVIUM_OCTEON_SOC)
+ 	help
+ 	  This builds a kernel image that retains relocation information
+ 	  so it can be loaded someplace besides the default 1MB.
+diff --git a/arch/mips/cavium-octeon/smp.c b/arch/mips/cavium-octeon/smp.c
+index 256fe6f..889c3f4 100644
+--- a/arch/mips/cavium-octeon/smp.c
++++ b/arch/mips/cavium-octeon/smp.c
+@@ -24,12 +24,17 @@
+ volatile unsigned long octeon_processor_boot = 0xff;
+ volatile unsigned long octeon_processor_sp;
+ volatile unsigned long octeon_processor_gp;
++#ifdef CONFIG_RELOCATABLE
++volatile unsigned long octeon_processor_relocated_kernel_entry;
++#endif /* CONFIG_RELOCATABLE */
+
+ #ifdef CONFIG_HOTPLUG_CPU
+ uint64_t octeon_bootloader_entry_addr;
+ EXPORT_SYMBOL(octeon_bootloader_entry_addr);
+ #endif
+
++extern void kernel_entry(unsigned long arg1, ...);
++
+ static void octeon_icache_flush(void)
+ {
+ 	asm volatile ("synci 0($0)\n");
+@@ -180,6 +185,19 @@ static void __init octeon_smp_setup(void)
+ 	octeon_smp_hotplug_setup();
+ }
+
++
++#ifdef CONFIG_RELOCATABLE
++int plat_post_relocation(long offset)
++{
++	unsigned long entry = (unsigned long)kernel_entry;
++
++	/* Send secondaries into relocated kernel */
++	octeon_processor_relocated_kernel_entry = entry + offset;
++
++	return 0;
++}
++#endif /* CONFIG_RELOCATABLE */
++
+ /**
+  * Firmware CPU startup hook
+  *
+@@ -333,8 +351,6 @@ void play_dead(void)
+ 		;
+ }
+
+-extern void kernel_entry(unsigned long arg1, ...);
+-
+ static void start_after_reset(void)
+ {
+ 	kernel_entry(0, 0, 0);	/* set a2 = 0 for secondary core */
+diff --git a/arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h b/arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h
+index c4873e8..c38b38c 100644
+--- a/arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h
++++ b/arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h
+@@ -99,9 +99,20 @@
+ 	# to begin
+ 	#
+
+-	# This is the variable where the next core to boot os stored
+-	PTR_LA	t0, octeon_processor_boot
+ octeon_spin_wait_boot:
++#ifdef CONFIG_RELOCATABLE
++	PTR_LA	t0, octeon_processor_relocated_kernel_entry
++	LONG_L	t0, (t0)
++	beq	zero, t0, 1f
++	nop
++
++	jr	t0
++	nop
++1:
++#endif /* CONFIG_RELOCATABLE */
++
++	# This is the variable where the next core to boot is stored
++	PTR_LA	t0, octeon_processor_boot
+ 	# Get the core id of the next to be booted
+ 	LONG_L	t1, (t0)
+ 	# Keep looping if it isn't me
+-- 
+1.9.1

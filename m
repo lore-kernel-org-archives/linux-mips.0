@@ -1,17 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:6864 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993006AbcLLUpqj0JLS (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 12 Dec 2016 21:45:46 +0100
-Message-ID: <584F0C71.5010004@imgtec.com>
-Date: Mon, 12 Dec 2016 12:45:37 -0800
-From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
+Received: from rere.qmqm.pl ([84.10.57.10]:37580 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23993076AbcLMAMlk4Uhz (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 13 Dec 2016 01:12:41 +0100
+Message-ID: <3cad1213a287755f5b6d698b45d839ca76d6d841.1481586602.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <cover.1481586602.git.mirq-linux@rere.qmqm.pl>
+References: <cover.1481586602.git.mirq-linux@rere.qmqm.pl>
+From: =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Subject: [PATCH net-next 18/27] net/skbuff: add macros for VLAN_PRESENT bit
 MIME-Version: 1.0
-Subject: Re: [RFC] MIPS: Add cacheinfo support
-References: <20161208011626.20885-1-justinpopo6@gmail.com> <5849EC43.2070802@imgtec.com> <CAJx26kW0e-HC0VUTObZ5Or+XjFvE9KmtOToKbFvKYvhE--Vw5A@mail.gmail.com> <584A0281.3040505@imgtec.com> <3004fca6-3688-65bb-7c86-248603482088@gmail.com>
-In-Reply-To: <3004fca6-3688-65bb-7c86-248603482088@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Leonid.Yegoshin@imgtec.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Date: Tue, 13 Dec 2016 01:12:38 +0100 (CET)
+Return-Path: <mirq@rere.qmqm.pl>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,35 +21,33 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Florian Fainelli <f.fainelli@gmail.com>, Justin Chen <justinpopo6@gmail.com>
-Cc: linux-mips@linux-mips.org, bcm-kernel-feedback-list@broadcom.com, Justin Chen <justin.chen@broadcom.com>
-Message-ID: <20161212204537.E0qPEYB-HbSbwFYvVGDdSzOrRjCYhChn9mVnR20Mn4o@z>
+To: netdev@vger.kernel.org
+Cc: Russell King <linux@armlinux.org.uk>, "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>, Ralf Baechle <ralf@linux-mips.org>, "open list:MIPS" <linux-mips@linux-mips.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, "open list:LINUX FOR POWERPC 32-BIT AND
+        64-BIT" <linuxppc-dev@lists.ozlabs.org>, "David S. Miller" <davem@davemloft.net>, "open list:SPARC + UltraSPARC
+        sparc/sparc64" <sparclinux@vger.kernel.org>
+Message-ID: <20161213001238.E14nqrUrv914I9O76wi1Cg1Q-jjAGsk7pk_-eT2Bl4Q@z>
 
-On 12/12/2016 10:24 AM, Florian Fainelli wrote:
->
-> What Justin's patch is about is not so much about providing hints to
-> user-space to bypass the kernel's own management of caches, (even though
-> that has been used as an argument by the original introduction of
-> cacheinfo), but more to provide some information to user-space about the
-> cache topology and hierarchy.
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+---
+ include/linux/skbuff.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-I missed that, if it is for information purpose only, then it is OK.
-
->
-> Even though this is limited information this is still helpful to
-> applications like lshw and others out there.
->
-> What would be needed from your perspective to get cacheinfo added to
-> MIPS, shall we go back and address your initial comment about all the
-> little details about coherency, snooping and re-filling strategy?
-
-It depends. Initially, I thought Justin wants to replace 
-arch/mips/mm/c-XXX.c with some universal approach and listed the missed 
-stuff for that (I actually missed some more points in that list).
-
-But for information purpose I don't have any more addition to Justin's 
-patch... may be the coherency status, it has impact on performance: 
-coherency of L1D->L2, L2->memory and L1I->L1D/L2.
-
-
-- Leonid
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 332e767..4a85a1f 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -768,6 +768,12 @@ struct sk_buff {
+ 	__u32			priority;
+ 	int			skb_iif;
+ 	__u32			hash;
++#define PKT_VLAN_PRESENT_BIT	4	// CFI (12-th bit) in TCI
++#ifdef __BIG_ENDIAN
++#define PKT_VLAN_PRESENT_OFFSET()	offsetof(struct sk_buff, vlan_tci)
++#else
++#define PKT_VLAN_PRESENT_OFFSET()	(offsetof(struct sk_buff, vlan_tci) + 1)
++#endif
+ 	__be16			vlan_proto;
+ 	__u16			vlan_tci;
+ #if defined(CONFIG_NET_RX_BUSY_POLL) || defined(CONFIG_XPS)
+-- 
+2.10.2

@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:53917 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:8401 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992183AbcLMKlGOJYTS (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Dec 2016 11:41:06 +0100
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Subject: [PATCH] uprobes: allow for a cache flush after ixol breakpoint creation
-Date: Tue, 13 Dec 2016 11:40:57 +0100
-Message-ID: <1481625657-22850-1-git-send-email-marcin.nowakowski@imgtec.com>
+        with ESMTP id S23992183AbcLMK7QtM0-S (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Dec 2016 11:59:16 +0100
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Subject: [PATCH v2 0/5] MIPS: Add per-cpu IRQ stack
+Date: Tue, 13 Dec 2016 10:59:00 +0000
+Message-ID: <1481626745-4290-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Marcin.Nowakowski@imgtec.com>
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,46 +18,55 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Victor Kamensky <victor.kamensky@linaro.org>
-Message-ID: <20161213104057.yT-lOTiU6hAOvbZXLn-KNtvAK0xhgkbz6IN0NT1x_Pg@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, "Jason A . Donenfeld" <Jason@zx2c4.com>, Thomas Gleixner <tglx@linutronix.de>, Matt Redfearn <matt.redfearn@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, Chris Metcalf <cmetcalf@mellanox.com>, Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org, Adam Buchbinder <adam.buchbinder@gmail.com>, James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Jiri Slaby <jslaby@suse.cz>, "Maciej W. Rozycki" <macro@imgtec.com>, Aaron Tomlin <atomlin@redhat.com>, Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <20161213105900.OkiUxFo7SrfAeqOX2aAhkYoF7Oj9_AD5IbQbqgZSEgw@z>
 
-Commit 72e6ae285a1d ('ARM: 8043/1: uprobes need icache flush after xol
-write' has introduced an arch-specific method to ensure all caches are
-flushed appropriately after an instruction is written to an XOL page.
 
-However, when the XOL area is created and the out-of-line breakpoint
-instruction is copied, caches are not flushed at all and stale data may
-be found in icache.
+This series adds a separate stack for each CPU wihin the system to use
+when handling IRQs. Previously IRQs were handled on the kernel stack of
+the current task. If that task was deep down a call stack at the point
+of the interrupt, and handling the interrupt required a deep IRQ stack,
+then there was a likelihood of stack overflow. Since the kernel stack
+is in normal unmapped memory, overflowing it can lead to silent
+corruption of other kernel data, with weird and wonderful results.
 
-Replace a simple copy_to_page() with arch_uprobe_copy_ixol() to allow
-the arch to ensure all caches are updated accordingly.
+Before this patch series, ftracing the maximum stack size of a v4.9
+kernel running on a Ci40 board gave:
+4996
 
-This change fixes uprobes on MIPS InterAptiv (tested on Creator Ci40).
+And with this series:
+4084
 
-Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-CC: Peter Zijlstra <peterz@infradead.org>
-CC: Ingo Molnar <mingo@redhat.com>
-CC: Arnaldo Carvalho de Melo <acme@kernel.org>
-CC: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-CC: Victor Kamensky <victor.kamensky@linaro.org>
+Handling interrupts on a separate stack reduces the maximum kernel stack
+usage in this configuration by ~900 bytes.
 
----
- kernel/events/uprobes.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Since do_IRQ is now invoked on a separate stack, we select
+HAVE_IRQ_EXIT_ON_IRQ_STACK so that softirqs will also be executed on the
+irq stack rather than attempting to switch with do_softirq_own_stack().
 
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index f9ec9ad..b5916b4 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -1194,7 +1194,7 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
- 	/* Reserve the 1st slot for get_trampoline_vaddr() */
- 	set_bit(0, area->bitmap);
- 	atomic_set(&area->slot_count, 1);
--	copy_to_page(area->pages[0], 0, &insn, UPROBE_SWBP_INSN_SIZE);
-+	arch_uprobe_copy_ixol(area->pages[0], 0, &insn, UPROBE_SWBP_INSN_SIZE);
- 
- 	if (!xol_add_vma(mm, area))
- 		return area;
+This series has been tested on MIPS Boston, Malta and SEAD3 platforms,
+Pistachio on the Creator Ci40 board and Cavium Octeon III.
+
+
+Changes in v2:
+Drop .set reorder/noreorder when updating $28
+
+Matt Redfearn (5):
+  MIPS: Introduce irq_stack
+  MIPS: Stack unwinding while on IRQ stack
+  MIPS: Only change $28 to thread_info if coming from user mode
+  MIPS: Switch to the irq_stack in interrupts
+  MIPS: Select HAVE_IRQ_EXIT_ON_IRQ_STACK
+
+ arch/mips/Kconfig                  |  1 +
+ arch/mips/include/asm/irq.h        | 12 ++++++
+ arch/mips/include/asm/stackframe.h |  8 ++++
+ arch/mips/kernel/asm-offsets.c     |  1 +
+ arch/mips/kernel/genex.S           | 81 +++++++++++++++++++++++++++++++++++---
+ arch/mips/kernel/irq.c             | 11 ++++++
+ arch/mips/kernel/process.c         | 15 ++++++-
+ 7 files changed, 123 insertions(+), 6 deletions(-)
+
 -- 
 2.7.4

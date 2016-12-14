@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:14431 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:7724 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992240AbcLNPJ4ZPob4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 14 Dec 2016 16:09:56 +0100
+        with ESMTP id S23992255AbcLNPJ5uwMw4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 14 Dec 2016 16:09:57 +0100
 From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH 1/2] MIPS: Kconfig: Set default MIPS system type as generic
-Date: Wed, 14 Dec 2016 15:09:42 +0000
-Message-ID: <1481728183-16776-1-git-send-email-matt.redfearn@imgtec.com>
+Subject: [PATCH 2/2] MIPS: Set defconfig target to a generic system for 32r2el
+Date: Wed, 14 Dec 2016 15:09:43 +0000
+Message-ID: <1481728183-16776-2-git-send-email-matt.redfearn@imgtec.com>
+In-Reply-To: <1481728183-16776-1-git-send-email-matt.redfearn@imgtec.com>
+References: <1481728183-16776-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Matt.Redfearn@imgtec.com>
@@ -19,59 +21,33 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, David Howells <dhowells@redhat.com>, Borislav Petkov <bp@suse.de>, linux-kernel@vger.kernel.org
-Message-ID: <20161214150942.0OYsSFOQLmTowTNSfAwp7NueU9Se-GfcYRr_4Wnpx4I@z>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, linux-kernel@vger.kernel.org
+Message-ID: <20161214150943.EyrWcg5v_2o79D16rIl7Vq4U4SuQsRjzg6qLcPxH0NI@z>
 
-The generic MIPS system type allows building a board agnostic kernel and
-should be the default starting point for users, so set it as the default
-system type in Kconfig.
-Since ip22 is no longer the default, update ip22_defconfig to select
-CONFIG_SGI_IP22.
+The default system type should be a MIPS generic kernel. In order to
+include some level of board support, select a 32r2el generic defconfig
+by default. The alternative would be to use "generic_defconfig" but
+rather unintuitvely that is a bare bones configuration with no platform
+support so is not usable in practice.
 
 Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
-
 ---
 
-This patch "fixes" the build errors reported by kernelci.org for the
-allnoconfig, generic_defconfig and tinyconfig targets.
+ arch/mips/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-There is another workaround for the actual build failure in patchwork
-here https://patchwork.linux-mips.org/patch/14397/, but since that patch
-just works around a toolchain bug it is not ideal either. Since
-toolchains that produce failures here are out in the wild, banning
-binutils 2.25 & 2.26 doesn't seem helpful as that will just trigger more
-problems.
-
-So perhaps the best thing to do is to update the default system to
-something which does not suffer the issue and is additionally more modern
-and actively maintained.
-
----
- arch/mips/Kconfig                | 2 +-
- arch/mips/configs/ip22_defconfig | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index b3c5bde43d34..005085e75a66 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -71,7 +71,7 @@ menu "Machine selection"
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index 1a6bac7b076f..51b0e7479f99 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -15,7 +15,7 @@
+ archscripts: scripts_basic
+ 	$(Q)$(MAKE) $(build)=arch/mips/boot/tools relocs
  
- choice
- 	prompt "System type"
--	default SGI_IP22
-+	default MIPS_GENERIC
+-KBUILD_DEFCONFIG := ip22_defconfig
++KBUILD_DEFCONFIG := 32r2el_defconfig
  
- config MIPS_GENERIC
- 	bool "Generic board-agnostic MIPS kernel"
-diff --git a/arch/mips/configs/ip22_defconfig b/arch/mips/configs/ip22_defconfig
-index 5d83ff755547..4b9e759d8b87 100644
---- a/arch/mips/configs/ip22_defconfig
-+++ b/arch/mips/configs/ip22_defconfig
-@@ -1,3 +1,4 @@
-+CONFIG_SGI_IP22=y
- CONFIG_ARC_CONSOLE=y
- CONFIG_CPU_R5000=y
- CONFIG_NO_HZ=y
+ #
+ # Select the object file format to substitute into the linker script.
 -- 
 2.7.4

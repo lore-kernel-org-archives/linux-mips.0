@@ -1,14 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:14698 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:17145 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991948AbcLOLwPPN0yy (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 15 Dec 2016 12:52:15 +0100
-Date: Thu, 15 Dec 2016 11:51:54 +0000
+        with ESMTP id S23992186AbcLPCWgRYvTO (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Dec 2016 03:22:36 +0100
+Date: Fri, 16 Dec 2016 02:22:16 +0000
 From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH v2 3/5] MIPS: Only change $28 to thread_info if coming
- from user mode
-In-Reply-To: <1481626745-4290-4-git-send-email-matt.redfearn@imgtec.com>
-Message-ID: <alpine.DEB.2.00.1612150120400.6743@tp.orcam.me.uk>
-References: <1481626745-4290-1-git-send-email-matt.redfearn@imgtec.com> <1481626745-4290-4-git-send-email-matt.redfearn@imgtec.com>
+Subject: Re: MIPS: IP22: Fix binutils due to binutils 2.25 uselessnes.
+In-Reply-To: <S23993072AbcLOP7sNw5Hx/20161215155948Z+1597@eddie.linux-mips.org>
+Message-ID: <alpine.DEB.2.00.1612160206450.6743@tp.orcam.me.uk>
+References: <S23993072AbcLOP7sNw5Hx/20161215155948Z+1597@eddie.linux-mips.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <Maciej.Rozycki@imgtec.com>
@@ -21,33 +20,30 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Matt Redfearn <matt.redfearn@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, "Jason A . Donenfeld" <Jason@zx2c4.com>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20161215115154.rVsUHs0TJzDygW351jkUnq-JZOHlexe4N-X1s9lakmE@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20161216022216.J8Wx-nij3XCVa1_vyU9nWqngE1vBP3p5E6nXlxvaS0U@z>
 
-On Tue, 13 Dec 2016, Matt Redfearn wrote:
+On Thu, 15 Dec 2016, linux-mips@linux-mips.org wrote:
 
-> diff --git a/arch/mips/include/asm/stackframe.h b/arch/mips/include/asm/stackframe.h
-> index eebf39549606..e13164daf9c2 100644
-> --- a/arch/mips/include/asm/stackframe.h
-> +++ b/arch/mips/include/asm/stackframe.h
-> @@ -216,12 +216,20 @@
->  		LONG_S	$25, PT_R25(sp)
->  		LONG_S	$28, PT_R28(sp)
->  		LONG_S	$31, PT_R31(sp)
-> +
-> +		/* Set thread_info if we're coming from user mode */
-> +		mfc0	k0, CP0_STATUS
-> +		sll	k0, 3		/* extract cu0 bit */
-> +		bltz	k0, 9f
-> +		 nop
-> +
+> Fix build with binutils 2.25 by open coding the offending
+> 
+> 	dli $1, 0x9000000080000000
+> 
+> as
+> 
+> 	li	$1, 0x9000
+> 	dsll	$1, $1, 48
+> 
+> which is ugly be the only thing that will build on all binutils vintages.
 
- Have you actually verified the machine code generated as expected with 
-such a change?  This supposedly delay-slot NOP can be dropped as this is 
-`.set reorder' code, so GAS will have scheduled a NOP itself already, 
-having found there is an SLL->BLTZ data dependency and consequently the 
-two instructions cannot be swapped.  So now there'll be an extraneous NOP 
-there, wasting code space and execution time.
+ What about bit #31?  Shouldn't this be say:
+
+	lui	$1, 0x9000
+	dsll	$1, $1, 16
+	ori	$1, $1, 0x8000
+	dsll	$1, $1, 16
+
+?
 
   Maciej

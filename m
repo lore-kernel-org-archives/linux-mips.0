@@ -1,19 +1,15 @@
-Received: from mail-by2nam01on0084.outbound.protection.outlook.com ([104.47.34.84]:32096
-        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr00125.outbound.protection.outlook.com ([40.107.0.125]:21323
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993349AbcLUSIYd0mVh (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 21 Dec 2016 19:08:24 +0100
-Subject: Re: [PATCH 1/5] MIPS: FW: Make fw_init_cmdline() to be __weak.
-References: <b14ef49d-f39c-4e13-2da8-ab94804395a2@cavium.com>
- <20161221171015.GA13689@linux-mips.org>
-From: David Daney <ddaney@caviumnetworks.com>
-Message-ID: <892fff47-d83e-fbb5-92a5-248d6e3a3eea@caviumnetworks.com>
-Date: Wed, 21 Dec 2016 10:08:11 -0800
+        id S23992571AbcL3QAQNmD0E (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 30 Dec 2016 17:00:16 +0100
+From: Dmitry Safonov <dsafonov@virtuozzo.com>
+Subject: [RFC 0/4] x86: keep TASK_SIZE in sync with mm->task_size
+Date: Fri, 30 Dec 2016 18:56:30 +0300
+Message-ID: <20161230155634.8692-1-dsafonov@virtuozzo.com>
 MIME-Version: 1.0
-In-Reply-To: <20161221171015.GA13689@linux-mips.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@cavium.com>
+Content-Type: text/plain
+Return-Path: <dsafonov@virtuozzo.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,48 +19,61 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, "Steven J. Hill" <Steven.Hill@cavium.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20161221180811.xjvbUQ5rqufeCcIG6uHrbWrFLu_Pp0SmskzzWIkfXkc@z>
+To: linux-kernel@vger.kernel.org
+Cc: 0x7f454c46@gmail.com, Dmitry Safonov <dsafonov@virtuozzo.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>, x86@kernel.org, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ralf Baechle <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, "David S. Miller" <davem@davemloft.net>, Peter Zijlstra <peterz@infradead.org>, linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
+Message-ID: <20161230155630._yGeV9p1zTgZcq8sH1lfSDcQfEf2RLzCoFvtXWVGtsE@z>
 
-On 12/21/2016 09:10 AM, Ralf Baechle wrote:
-> On Tue, Nov 22, 2016 at 01:43:54PM -0600, Steven J. Hill wrote:
->
->> Some bootloaders pass the kernel parameters in different registers.
->> Allow for platform-specific initialization of the command line.
->>
->> Signed-off-by: Steven J. Hill <Steven.Hill@cavium.com>
->> ---
->>  arch/mips/include/asm/fw/fw.h | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/mips/include/asm/fw/fw.h b/arch/mips/include/asm/fw/fw.h
->> index d0ef8b4..0fcd63e 100644
->> --- a/arch/mips/include/asm/fw/fw.h
->> +++ b/arch/mips/include/asm/fw/fw.h
->> @@ -21,7 +21,7 @@
->>  #define fw_argv(index)		((char *)(long)_fw_argv[(index)])
->>  #define fw_envp(index)		((char *)(long)_fw_envp[(index)])
->>
->> -extern void fw_init_cmdline(void);
->> +extern void __weak fw_init_cmdline(void);
->>  extern char *fw_getcmdline(void);
->>  extern void fw_meminit(void);
->>  extern char *fw_getenv(char *name);
->
-> Nice try - expect it doesn't work.
+At this moment, we have following task_size-related things:
+- TASK_SIZE_OF() macro, which is unused;
+- current->mm->task_size which is used in half and TASK_SIZE() macro
+  which is used in the other half of code
+- TIF_ADDR32, which is used to detect 32-bit address space and is
+  x86-specific, where some other arches misused TIF_32BIT
+- personality ADDR_LIMIT_32BIT, which is used on arm/alpha
+- ADDR_LIMIT_3GB, which is x86-specific and can be used to change
+  running task's TASK_SIZE 3GB <-> 4GB
 
-Ralf,  Can you drop this unneeded patch, and still apply the other 
-OCTEON KASLR patches in this set?
+This patches set removes unused definition of TASK_SIZE_OF (1),
+defines TASK_SIZE macro as current->mm->task_size (3).
+I would suggest define TASK_SIZE this way in generic version,
+but currently I test it only on x86.
+It also frees thread info flag (2) and adds arch_prctl()
+on x86_64 to get/set current virtual address space size - as
+it's needed by now only for CRIU, hide it under CHECKPOINT_RESTORE
+config.
+Hope those patches will help to clean task_size-related code
+at least a bit (and helps me to restore vaddr limits).
 
-Thanks,
-David Daney
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: x86@kernel.org
 
+Dmitry Safonov (4):
+  mm: remove unused TASK_SIZE_OF()
+  x86/thread_info: kill TIF_ADDR32 in favour of ADDR_LIMIT_32BIT
+  x86/mm: define TASK_SIZE as current->mm->task_size
+  x86/arch_prctl: add ARCH_{GET,SET}_TASK_SIZE
 
->
-> The definition of the function needs to be marked __weak; marking the
-> declaration will only kindly express your wishes to GCC and it being
-> GCC will ignore them ;-)
->
->   Ralf
->
+ arch/arm64/include/asm/memory.h       |  2 --
+ arch/mips/include/asm/processor.h     |  3 ---
+ arch/parisc/include/asm/processor.h   |  3 +--
+ arch/powerpc/include/asm/processor.h  |  3 +--
+ arch/s390/include/asm/processor.h     |  3 +--
+ arch/sparc/include/asm/processor_64.h |  3 ---
+ arch/x86/include/asm/elf.h            |  7 +++++--
+ arch/x86/include/asm/processor.h      | 19 +++++++++----------
+ arch/x86/include/asm/thread_info.h    |  4 +---
+ arch/x86/include/uapi/asm/prctl.h     |  3 +++
+ arch/x86/kernel/process_64.c          | 17 +++++++++++++++--
+ arch/x86/kernel/sys_x86_64.c          |  4 ++--
+ arch/x86/um/asm/segment.h             |  2 +-
+ arch/x86/xen/mmu.c                    |  4 ++--
+ fs/exec.c                             | 17 +++++++++++------
+ include/linux/sched.h                 |  4 ----
+ 16 files changed, 52 insertions(+), 46 deletions(-)
+
+-- 
+2.11.0

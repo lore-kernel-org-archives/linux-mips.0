@@ -1,18 +1,13 @@
-Received: from skprod3.natinst.com ([130.164.80.24]:35075 "EHLO ni.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23991965AbdADQio7RvUM (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 4 Jan 2017 17:38:44 +0100
-Date: Wed, 4 Jan 2017 10:38:36 -0600
-From: Nathan Sullivan <nathan.sullivan@ni.com>
-Subject: Re: [PATCH] MIPS: NI 169445 board support
-Message-ID: <20170104163836.GA18069@nathan3500-linux-VM>
-References: <1480693329-22265-1-git-send-email-nathan.sullivan@ni.com>
- <20161220163434.GA15962@linux-mips.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20161220163434.GA15962@linux-mips.org>
-Return-Path: <nathan.sullivan@ni.com>
+Received: from mezzanine.sirena.org.uk ([106.187.55.193]:49790 "EHLO
+        mezzanine.sirena.org.uk" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992100AbdADShznq8GZ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 4 Jan 2017 19:37:55 +0100
+From: Mark Brown <broonie@kernel.org>
+In-Reply-To: <20161230063001.944-2-jaedon.shin@gmail.com>
+Message-ID: <E1cOqRW-00028h-2T@debutante>
+Date: Wed, 04 Jan 2017 18:37:46 +0000
+Subject: Applied "spi: bcm-qspi: Enable the driver on BMIPS_GENERIC" to the spi tree
+Return-Path: <broonie@sirena.org.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,43 +17,33 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <20170104163836.yHheh-QKcAZtr1zvvANwFyoOeRS5RuzGT0TrZYxGnXw@z>
+To: Jaedon Shin <jaedon.shin@gmail.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>, Mark Brown <broonie@kernel.org>, Ralf Baechle <ralf@linux-mips.org>Florian Fainelli <f.fainelli@gmail.com>Mark Brown <broonie@kernel.org>, Kevin Cernekee <cernekee@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-mips@linux-mips.org, devicetree@vger.kernel.org, linux-spi@vger.kernel.org
+Message-ID: <20170104183746.4EGn-VP5RXkcrTQDQbQKuveKLuLpOlhjevYs2fWYZKM@z>
 
-On Tue, Dec 20, 2016 at 05:34:34PM +0100, Ralf Baechle wrote:
-> On Fri, Dec 02, 2016 at 09:42:09AM -0600, Nathan Sullivan wrote:
-> > Date:   Fri, 2 Dec 2016 09:42:09 -0600
-> > From: Nathan Sullivan <nathan.sullivan@ni.com>
-> > To: ralf@linux-mips.org, mark.rutland@arm.com, robh+dt@kernel.org
-> > CC: linux-mips@linux-mips.org, devicetree@vger.kernel.org,
-> >  linux-kernel@vger.kernel.org, Nathan Sullivan <nathan.sullivan@ni.com>
-> > Subject: [PATCH] MIPS: NI 169445 board support
-> > Content-Type: text/plain
-> > 
-> > Support the National Instruments 169445 board.
-> 
-> Nathan,
-> 
-> I assume you're going to repost the changes Rob asked for in
-> https://patchwork.linux-mips.org/patch/14641/#26924 and resubmit?
-> 
-> Thanks,
-> 
->   Ralf
+The patch
 
-Hmm, I found the issue with the generic MIPS config and dwc_eth_qos.  The NIC
-driver attempts to cache align a descriptor ring using the ___cacheline_aligned
-attribute on the descriptor struct, in combination with a "skip" feature in
-hardware.  However, the skip feature only has a three bit field, and the generic
-MIPS config selects MIPS_L1_CACHE_SHIFT_7.  So, the line size is 128, and with a
-64-bit bus, that means the NIC descriptor skip field would need to be set to
-14 to align the 16-byte descriptors...
+   spi: bcm-qspi: Enable the driver on BMIPS_GENERIC
 
-I guess it makes sense for a generic MIPS kernel to align everything for 128 byte
-cache lines, and for me to fix the dwc_eth_qos driver to handle cases where the
-line size is too big for the hardware skip feature, right?
+has been applied to the spi tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-
-   Nathan
+Mark

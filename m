@@ -1,19 +1,19 @@
-Received: from mail-ua0-x230.google.com ([IPv6:2607:f8b0:400c:c08::230]:33197
-        "EHLO mail-ua0-x230.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992535AbdAERy4Q1c-u (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 5 Jan 2017 18:54:56 +0100
-Received: by mail-ua0-x230.google.com with SMTP id i68so280686709uad.0
-        for <linux-mips@linux-mips.org>; Thu, 05 Jan 2017 09:54:56 -0800 (PST)
+Received: from bes.se.axis.com ([195.60.68.10]:53639 "EHLO bes.se.axis.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23992328AbdAES2dZ-xxa (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 5 Jan 2017 19:28:33 +0100
+Subject: Re: Re: [PATCH] MIPS: NI 169445 board support
+References: <1480693329-22265-1-git-send-email-nathan.sullivan@ni.com>
+ <20161220163434.GA15962@linux-mips.org>
+ <20170104163836.GA18069@nathan3500-linux-VM>
+From: Niklas Cassel <niklas.cassel@axis.com>
+Message-ID: <5d5a087f-68ec-e633-0232-0248edf11ee0@axis.com>
+Date: Thu, 5 Jan 2017 19:28:24 +0100
 MIME-Version: 1.0
-In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6DB0258289@AcuExch.aculab.com>
-References: <20161230155634.8692-1-dsafonov@virtuozzo.com> <20161230155634.8692-2-dsafonov@virtuozzo.com>
- <063D6719AE5E284EB5DD2968C1650D6DB0258289@AcuExch.aculab.com>
-From: Andy Lutomirski <luto@amacapital.net>
-Date: Thu, 5 Jan 2017 09:54:30 -0800
-Message-ID: <CALCETrXUB8AeEzJ-WtW3kW9c189AcOe+GBq8TE7GPE+xrvXS8g@mail.gmail.com>
-Subject: Re: [RFC 1/4] mm: remove unused TASK_SIZE_OF()
-Content-Type: text/plain; charset=UTF-8
-Return-Path: <luto@amacapital.net>
+In-Reply-To: <20170104163836.GA18069@nathan3500-linux-VM>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <niklas.cassel@axis.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,23 +23,59 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Laight <David.Laight@aculab.com>
-Cc: Dmitry Safonov <dsafonov@virtuozzo.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Peter Zijlstra <peterz@infradead.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, Helge Deller <deller@gmx.de>, "x86@kernel.org" <x86@kernel.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Will Deacon <will.deacon@arm.com>, Ingo Molnar <mingo@redhat.com>, Catalin Marinas <catalin.marinas@arm.com>, "0x7f454c46@gmail.com" <0x7f454c46@gmail.com>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "David S. Miller" <davem@davemloft.net>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Message-ID: <20170105175430.ksx7ZqmCz826I7YpUH7sDpPoglnK2a69hsHPLsaKnic@z>
+To: Nathan Sullivan <nathan.sullivan@ni.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Cc: davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Lars Persson <larper@axis.com>, Joao Pinto <Joao.Pinto@synopsys.com>
+Message-ID: <20170105182824.xAHH12gUk4QuSycvOyIUW-VivuRNZVF5GDk0zCubET0@z>
 
-On Thu, Jan 5, 2017 at 1:51 AM, David Laight <David.Laight@aculab.com> wrote:
-> From: Dmitry Safonov
->> Sent: 30 December 2016 15:57
->> All users of TASK_SIZE_OF(tsk) have migrated to mm->task_size or
->> TASK_SIZE_MAX since:
->> commit d696ca016d57 ("x86/fsgsbase/64: Use TASK_SIZE_MAX for
->> FSBASE/GSBASE upper limits"),
->> commit a06db751c321 ("pagemap: check permissions and capabilities at
->> open time"),
-> ...
->> +#define TASK_SIZE            (current->thread.task_size)
+On 01/04/2017 05:38 PM, Nathan Sullivan wrote:
+> On Tue, Dec 20, 2016 at 05:34:34PM +0100, Ralf Baechle wrote:
+>> On Fri, Dec 02, 2016 at 09:42:09AM -0600, Nathan Sullivan wrote:
+>>> Date:   Fri, 2 Dec 2016 09:42:09 -0600
+>>> From: Nathan Sullivan <nathan.sullivan@ni.com>
+>>> To: ralf@linux-mips.org, mark.rutland@arm.com, robh+dt@kernel.org
+>>> CC: linux-mips@linux-mips.org, devicetree@vger.kernel.org,
+>>>  linux-kernel@vger.kernel.org, Nathan Sullivan <nathan.sullivan@ni.com>
+>>> Subject: [PATCH] MIPS: NI 169445 board support
+>>> Content-Type: text/plain
+>>>
+>>> Support the National Instruments 169445 board.
+>> Nathan,
+>>
+>> I assume you're going to repost the changes Rob asked for in
+>> https://patchwork.linux-mips.org/patch/14641/#26924 and resubmit?
+>>
+>> Thanks,
+>>
+>>   Ralf
+> Hmm, I found the issue with the generic MIPS config and dwc_eth_qos.  The NIC
+> driver attempts to cache align a descriptor ring using the ___cacheline_aligned
+> attribute on the descriptor struct, in combination with a "skip" feature in
+> hardware.  However, the skip feature only has a three bit field, and the generic
+> MIPS config selects MIPS_L1_CACHE_SHIFT_7.  So, the line size is 128, and with a
+> 64-bit bus, that means the NIC descriptor skip field would need to be set to
+> 14 to align the 16-byte descriptors...
 >
-> I'm not sure I like he hidden 'current' argument to an
-> apparent constant.
+> I guess it makes sense for a generic MIPS kernel to align everything for 128 byte
+> cache lines, and for me to fix the dwc_eth_qos driver to handle cases where the
+> line size is too big for the hardware skip feature, right?
 
-Me neither.  But this patch is merely changing the implementation.
+I don't know if you've been following the discussion regarding
+dwc_eth_qos on netdev, but Joao Pinto from Synopsys is
+planning on removing the driver (since the stmmac driver
+now supports the same version of the IP, together with older
+versions of the IP).
+
+Since device tree bindings are treated as an ABI,
+Joao has implemented a glue layer for stmmac that parses
+the dwc_eth_qos binding, but uses stmmac under the hood.
+
+You can use any of the bindings, but since the dwc_eth_qos
+binding will be marked as deprecated, you might want to
+consider moving to the stmmac binding.
+
+>
+> Thanks,
+>
+>    Nathan
+>
+>

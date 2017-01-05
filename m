@@ -1,13 +1,20 @@
-Received: from mezzanine.sirena.org.uk ([106.187.55.193]:49790 "EHLO
-        mezzanine.sirena.org.uk" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992100AbdADShznq8GZ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 4 Jan 2017 19:37:55 +0100
-From: Mark Brown <broonie@kernel.org>
-In-Reply-To: <20161230063001.944-2-jaedon.shin@gmail.com>
-Message-ID: <E1cOqRW-00028h-2T@debutante>
-Date: Wed, 04 Jan 2017 18:37:46 +0000
-Subject: Applied "spi: bcm-qspi: Enable the driver on BMIPS_GENERIC" to the spi tree
-Return-Path: <broonie@sirena.org.uk>
+Received: from smtp-out4.electric.net ([192.162.216.187]:56804 "EHLO
+        smtp-out4.electric.net" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992143AbdAEJvpe7S1B convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 5 Jan 2017 10:51:45 +0100
+From: David Laight <David.Laight@ACULAB.COM>
+Subject: RE: [RFC 1/4] mm: remove unused TASK_SIZE_OF()
+Date: Thu, 5 Jan 2017 09:51:26 +0000
+Message-ID: <063D6719AE5E284EB5DD2968C1650D6DB0258289@AcuExch.aculab.com>
+References: <20161230155634.8692-1-dsafonov@virtuozzo.com>
+ <20161230155634.8692-2-dsafonov@virtuozzo.com>
+In-Reply-To: <20161230155634.8692-2-dsafonov@virtuozzo.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+Return-Path: <David.Laight@ACULAB.COM>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -17,33 +24,22 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Jaedon Shin <jaedon.shin@gmail.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>, Mark Brown <broonie@kernel.org>, Ralf Baechle <ralf@linux-mips.org>Florian Fainelli <f.fainelli@gmail.com>Mark Brown <broonie@kernel.org>, Kevin Cernekee <cernekee@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-mips@linux-mips.org, devicetree@vger.kernel.org, linux-spi@vger.kernel.org
-Message-ID: <20170104183746.4EGn-VP5RXkcrTQDQbQKuveKLuLpOlhjevYs2fWYZKM@z>
+To: 'Dmitry Safonov' <dsafonov@virtuozzo.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Peter Zijlstra <peterz@infradead.org>, Heiko Carstens <heiko.carstens@de.ibm.com>, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, Helge Deller <deller@gmx.de>, "x86@kernel.org" <x86@kernel.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Will Deacon <will.deacon@arm.com>, Ingo Molnar <mingo@redhat.com>, Catalin Marinas <catalin.marinas@arm.com>, "0x7f454c46@gmail.com" <0x7f454c46@gmail.com>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "David S. Miller" <davem@davemloft.net>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Message-ID: <20170105095126.z3leKiv3QP1xBob1NaM3QcVKvsmaJu2JsMI8oGLa-rA@z>
 
-The patch
+From: Dmitry Safonov
+> Sent: 30 December 2016 15:57
+> All users of TASK_SIZE_OF(tsk) have migrated to mm->task_size or
+> TASK_SIZE_MAX since:
+> commit d696ca016d57 ("x86/fsgsbase/64: Use TASK_SIZE_MAX for
+> FSBASE/GSBASE upper limits"),
+> commit a06db751c321 ("pagemap: check permissions and capabilities at
+> open time"),
+...
+> +#define TASK_SIZE	        (current->thread.task_size)
 
-   spi: bcm-qspi: Enable the driver on BMIPS_GENERIC
+I'm not sure I like he hidden 'current' argument to an
+apparent constant.
 
-has been applied to the spi tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+	David

@@ -1,17 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:7698 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993146AbdAFBd6WMSuu (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 6 Jan 2017 02:33:58 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 30/30] KVM: MIPS/MMU: Drop kvm_get_new_mmu_context()
-Date: Fri, 6 Jan 2017 01:33:02 +0000
-Message-ID: <f202859d752c9cbcc6861270f75b5102bee50076.1483665879.git-series.james.hogan@imgtec.com>
+Received: from smtp6-v.fe.bosch.de ([IPv6:2a03:cc00:ff0:100::2]:19350 "EHLO
+        smtp6-v.fe.bosch.de" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23992328AbdAFKHiBv475 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 6 Jan 2017 11:07:38 +0100
+From: "Anurag Raghavan (RBEI/ETW11)" <Raghavan.Anurag@in.bosch.com>
+Subject: ubi_io_read: error -74 (ECC error) 
+Date: Fri, 6 Jan 2017 10:07:29 +0000
+Message-ID: <38f0cfac3dbe4ea89da84c7fbf667833@SGPMBX1023.APAC.bosch.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <cover.d6d201de414322ed2c1372e164254e6055ef7db9.1483665879.git-series.james.hogan@imgtec.com>
-References: <cover.d6d201de414322ed2c1372e164254e6055ef7db9.1483665879.git-series.james.hogan@imgtec.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <Raghavan.Anurag@in.bosch.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,123 +20,30 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org
-Message-ID: <20170106013302.GlhQXs3U7l-y1xPqolokaWQKHIQYWj4lq2-i7-PjhsE@z>
+To: Nicolas Dichtel <nicolas.dichtel@6wind.com>, "arnd@arndb.de" <arnd@arndb.de>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "airlied@linux.ie" <airlied@linux.ie>, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-am33-list@redhat.com" <linux-am33-list@redhat.com>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "coreteam@netfilter.org" <coreteam@netfilter.org>, "fcoe-devel@open-fcoe.org" <fcoe-devel@open-fcoe.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "uclinux-h8-devel@lists.sourceforge.jp" <uclinux-h8-devel@lists.sourceforge.jp>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "mmarek@suse.com" <mmarek@suse.com>, "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "nios2-dev@lists.rocketboards.org" <nios2-dev@lists.rocketboards.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "davem@davemloft.net" <davem@davemloft.net>
+Message-ID: <20170106100729.n9WC_vy6CXS7NjO7zOfgMRve59CxURrJRc5h0-HdPzs@z>
 
-MIPS KVM uses its own variation of get_new_mmu_context() which takes an
-extra vcpu pointer (unused) and does exactly the same thing.
+Hi All,
 
-Switch to just using get_new_mmu_context() directly and drop KVM's
-version of it as it doesn't really serve any purpose.
+My appdata partition could not be mounted or where the partition was not able to be used. Anyone can help me to find out the root cause of this. What are the possibilities of this ubifs corruption. Any patched are available to fix this issue.
 
-The nearby declarations of kvm_mips_alloc_new_mmu_context(),
-kvm_mips_vcpu_load() and kvm_mips_vcpu_put() are also removed from
-kvm_host.h, as no definitions or users exist.
+I am using the kernel version-30.3.5
+Any kernel patches are available to solve this issue...??
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: "Radim Krčmář" <rkrcmar@redhat.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Cc: kvm@vger.kernel.org
----
- arch/mips/include/asm/kvm_host.h |  5 -----
- arch/mips/kvm/emulate.c          |  3 +--
- arch/mips/kvm/mmu.c              | 19 -------------------
- arch/mips/kvm/trap_emul.c        |  6 +++---
- 4 files changed, 4 insertions(+), 29 deletions(-)
+Error logs:
 
-diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
-index 39f0ae1ab3e3..06bdcf215a37 100644
---- a/arch/mips/include/asm/kvm_host.h
-+++ b/arch/mips/include/asm/kvm_host.h
-@@ -635,11 +635,6 @@ void kvm_mips_flush_gva_pt(pgd_t *pgd, enum kvm_mips_flush flags);
- void kvm_mmu_free_memory_caches(struct kvm_vcpu *vcpu);
- void kvm_trap_emul_invalidate_gva(struct kvm_vcpu *vcpu, unsigned long addr,
- 				  bool user);
--extern void kvm_get_new_mmu_context(struct mm_struct *mm, unsigned long cpu,
--				    struct kvm_vcpu *vcpu);
--extern void kvm_mips_alloc_new_mmu_context(struct kvm_vcpu *vcpu);
--extern void kvm_mips_vcpu_load(struct kvm_vcpu *vcpu, int cpu);
--extern void kvm_mips_vcpu_put(struct kvm_vcpu *vcpu);
- 
- /* Emulation */
- u32 kvm_get_inst(u32 *opc, struct kvm_vcpu *vcpu);
-diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
-index cd11d787d9dc..67ea39973b96 100644
---- a/arch/mips/kvm/emulate.c
-+++ b/arch/mips/kvm/emulate.c
-@@ -1198,8 +1198,7 @@ enum emulation_result kvm_mips_emulate_CP0(union mips_instruction inst,
- 					 */
- 					preempt_disable();
- 					cpu = smp_processor_id();
--					kvm_get_new_mmu_context(kern_mm,
--								cpu, vcpu);
-+					get_new_mmu_context(kern_mm, cpu);
- 					for_each_possible_cpu(i)
- 						if (i != cpu)
- 							cpu_context(i, kern_mm) = 0;
-diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
-index cf832ea963d8..aab604e75d3b 100644
---- a/arch/mips/kvm/mmu.c
-+++ b/arch/mips/kvm/mmu.c
-@@ -443,25 +443,6 @@ int kvm_mips_handle_commpage_tlb_fault(unsigned long badvaddr,
- 	return 0;
- }
- 
--void kvm_get_new_mmu_context(struct mm_struct *mm, unsigned long cpu,
--			     struct kvm_vcpu *vcpu)
--{
--	unsigned long asid = asid_cache(cpu);
--
--	asid += cpu_asid_inc();
--	if (!(asid & cpu_asid_mask(&cpu_data[cpu]))) {
--		if (cpu_has_vtag_icache)
--			flush_icache_all();
--
--		local_flush_tlb_all();      /* start new asid cycle */
--
--		if (!asid)      /* fix version if needed */
--			asid = asid_first_version(cpu);
--	}
--
--	cpu_context(cpu, mm) = asid_cache(cpu) = asid;
--}
--
- /**
-  * kvm_mips_migrate_count() - Migrate timer.
-  * @vcpu:	Virtual CPU.
-diff --git a/arch/mips/kvm/trap_emul.c b/arch/mips/kvm/trap_emul.c
-index 7b6ccd2ce26b..17e6d9bd01cf 100644
---- a/arch/mips/kvm/trap_emul.c
-+++ b/arch/mips/kvm/trap_emul.c
-@@ -706,7 +706,7 @@ static int kvm_trap_emul_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 
- 	if ((cpu_context(cpu, kern_mm) ^ asid_cache(cpu)) &
- 						asid_version_mask(cpu)) {
--		kvm_get_new_mmu_context(kern_mm, cpu, vcpu);
-+		get_new_mmu_context(kern_mm, cpu);
- 
- 		kvm_debug("[%d]: cpu_context: %#lx\n", cpu,
- 			  cpu_context(cpu, current->mm));
-@@ -716,7 +716,7 @@ static int kvm_trap_emul_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 
- 	if ((cpu_context(cpu, user_mm) ^ asid_cache(cpu)) &
- 						asid_version_mask(cpu)) {
--		kvm_get_new_mmu_context(user_mm, cpu, vcpu);
-+		get_new_mmu_context(user_mm, cpu);
- 
- 		kvm_debug("[%d]: cpu_context: %#lx\n", cpu,
- 			  cpu_context(cpu, current->mm));
-@@ -781,7 +781,7 @@ static void kvm_trap_emul_vcpu_reenter(struct kvm_run *run,
- 		gasid = kvm_read_c0_guest_entryhi(cop0) & KVM_ENTRYHI_ASID;
- 		if (gasid != vcpu->arch.last_user_gasid) {
- 			kvm_mips_flush_gva_pt(user_mm->pgd, KMF_USER);
--			kvm_get_new_mmu_context(user_mm, cpu, vcpu);
-+			get_new_mmu_context(user_mm, cpu);
- 			for_each_possible_cpu(i)
- 				if (i != cpu)
- 					cpu_context(i, user_mm) = 0;
--- 
-git-series 0.8.10
+[    1.797141] UBI error: ubi_io_read: error -74 (ECC error) while reading 253952 bytes from PEB 445:8192, read 253952 bytes
+[    1.808274] UBIFS error (pid 491): ubifs_scan: corrupt empty space at LEB 489:233760
+[    1.816037] UBIFS error (pid 491): ubifs_scanned_corruption: corruption at LEB 489:233760
+[    1.828660] UBIFS error (pid 491): ubifs_scan: LEB 489 scanning failed
+[    1.835215] UBIFS warning (pid 491): ubifs_ro_mode: switched to read-only mode, error -117
+[    1.843502] UBIFS error (pid 491): make_reservation: cannot reserve 58 bytes in jhead 2, error -117
+[    1.852569] UBIFS error (pid 491): do_writepage: cannot write page 0 of inode 76584, error -117
+dpkg: error: unable to sync new file '/var/lib/dpkg/arch-new': Structure needs cleaning
+
+Best regards
+
+Raghavan Anurag
+RBEI/ETW1  
+
+Tel. +91(422)667-4001 | Mobil 9986968950

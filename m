@@ -1,17 +1,15 @@
-Received: from mail.free-electrons.com ([62.4.15.54]:43440 "EHLO
-        mail.free-electrons.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992036AbdAFLd5ZCDlE (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 6 Jan 2017 12:33:57 +0100
-Date: Fri, 6 Jan 2017 12:30:53 +0100
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: ubi_io_read: error -74 (ECC error)
-Message-ID: <20170106123053.4a5ffabc@bbrezillon>
-In-Reply-To: <38f0cfac3dbe4ea89da84c7fbf667833@SGPMBX1023.APAC.bosch.com>
-References: <38f0cfac3dbe4ea89da84c7fbf667833@SGPMBX1023.APAC.bosch.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:45491 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23990508AbdAFOqFF5O7a (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 6 Jan 2017 15:46:05 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH 0/3] KVM: MIPS: Use CP0_BadInstr[P] for emulation
+Date: Fri, 6 Jan 2017 14:44:40 +0000
+Message-ID: <cover.bf96bfd5329a1b0bbde5c97362c9284cafcc0300.1483713106.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-Path: <boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,58 +19,43 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Anurag Raghavan (RBEI/ETW11)" <Raghavan.Anurag@in.bosch.com>
-Cc: Nicolas Dichtel <nicolas.dichtel@6wind.com>, "arnd@arndb.de" <arnd@arndb.de>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "airlied@linux.ie" <airlied@linux.ie>, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-am33-list@redhat.com" <linux-am33-list@redhat.com>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "coreteam@netfilter.org" <coreteam@netfilter.org>, "fcoe-devel@open-fcoe.org" <fcoe-devel@open-fcoe.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "uclinux-h8-devel@lists.sourceforge.jp" <uclinux-h8-devel@lists.sourceforge.jp>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "mmarek@suse.com" <mmarek@suse.com>, "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "nios2-dev@lists.rocketboards.org" <nios2-dev@lists.rocketboards.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "davem@davemloft.net" <davem@davemloft.net>
-Message-ID: <20170106113053.7Ln92SPQdgiYOXEDg7FZcFnLBy7R0JRJhw5SHaHTCqg@z>
+To: linux-mips@linux-mips.org
+Cc: James Hogan <james.hogan@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org
+Message-ID: <20170106144440.icqFUYhpKVXecPJAQ6g4t1stRZppBi9HzQiFNaoQh-w@z>
 
-Hi Raghavan,
+This series implements the use of the CP0_BadInstr and CP0_BadInstrP
+registers for instruction emulation in MIPS KVM when they are available.
+These provide the encoding of a faulting instruction (and its prior
+branch instruction if applicable).
 
-On Fri, 6 Jan 2017 10:07:29 +0000
-"Anurag Raghavan (RBEI/ETW11)" <Raghavan.Anurag@in.bosch.com> wrote:
+The use of these registers should be more robust than using
+kvm_get_inst(), as it actually gives the instruction encoding seen by
+the hardware rather than relying on user accessors after the fact, which
+can be fooled by incoherent icache or a racing code modification. It
+will also work with VZ, where the guest virtual memory isn't directly
+accessible by the host with user accessors.
 
-> Hi All,
-> 
-> My appdata partition could not be mounted or where the partition was not able to be used. Anyone can help me to find out the root cause of this. What are the possibilities of this ubifs corruption. Any patched are available to fix this issue.
+The series is based on my recent "KVM: MIPS: Implement GVA page tables"
+series
 
-Can you please stop sending over and over the same message in the hope
-that someone will magically solve the problem for you. Pinging
-maintainers is accepted but not 3 times in 2 days.
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: "Radim Krčmář" <rkrcmar@redhat.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Cc: kvm@vger.kernel.org
 
-> 
-> I am using the kernel version-30.3.5
+James Hogan (3):
+  KVM: MIPS/T&E: Don't treat code fetch faults as MMIO
+  KVM: MIPS: Improve kvm_get_inst() error return
+  KVM: MIPS: Use CP0_BadInstr[P] for emulation
 
-It's not even a valid kernel version (probably a kerne, and we'll need a
-lot more than the 10 lines of log you provided to help you debug your
-driver, like the boot logs, a reference to the kernel sources you're
-using, after how much time this problem occurred...
+ arch/mips/include/asm/kvm_host.h |  34 +++++++-
+ arch/mips/kvm/emulate.c          | 132 +++++++++++++++++++++-----------
+ arch/mips/kvm/entry.c            |  14 +++-
+ arch/mips/kvm/mips.c             |   7 +-
+ arch/mips/kvm/mmu.c              |   9 +--
+ arch/mips/kvm/trap_emul.c        |  12 +++-
+ 6 files changed, 155 insertions(+), 53 deletions(-)
 
-> Any kernel patches are available to solve this issue...??
-
-What's your NAND controller? It seems related to a NAND driver issue.
-
-Regards,
-
-Boris
-
-> 
-> Error logs:
-> 
-> [    1.797141] UBI error: ubi_io_read: error -74 (ECC error) while reading 253952 bytes from PEB 445:8192, read 253952 bytes
-> [    1.808274] UBIFS error (pid 491): ubifs_scan: corrupt empty space at LEB 489:233760
-> [    1.816037] UBIFS error (pid 491): ubifs_scanned_corruption: corruption at LEB 489:233760
-> [    1.828660] UBIFS error (pid 491): ubifs_scan: LEB 489 scanning failed
-> [    1.835215] UBIFS warning (pid 491): ubifs_ro_mode: switched to read-only mode, error -117
-> [    1.843502] UBIFS error (pid 491): make_reservation: cannot reserve 58 bytes in jhead 2, error -117
-> [    1.852569] UBIFS error (pid 491): do_writepage: cannot write page 0 of inode 76584, error -117
-> dpkg: error: unable to sync new file '/var/lib/dpkg/arch-new': Structure needs cleaning
-> 
-> Best regards
-> 
-> Raghavan Anurag
-> RBEI/ETW1  
-> 
-> Tel. +91(422)667-4001 | Mobil 9986968950
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+-- 
+git-series 0.8.10

@@ -1,21 +1,19 @@
-Received: from mail-oi0-x22d.google.com ([IPv6:2607:f8b0:4003:c06::22d]:34699
-        "EHLO mail-oi0-x22d.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990508AbdAFSpih3PGN convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 6 Jan 2017 19:45:38 +0100
-Received: by mail-oi0-x22d.google.com with SMTP id 3so442042956oih.1
-        for <linux-mips@linux-mips.org>; Fri, 06 Jan 2017 10:45:38 -0800 (PST)
+Received: from mail-qk0-x242.google.com ([IPv6:2607:f8b0:400d:c09::242]:34065
+        "EHLO mail-qk0-x242.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990508AbdAFUuk4X-Rh (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 6 Jan 2017 21:50:40 +0100
+Received: by mail-qk0-x242.google.com with SMTP id e1so8137723qkh.1
+        for <linux-mips@linux-mips.org>; Fri, 06 Jan 2017 12:50:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <m2d1g0avn8.fsf@baylibre.com>
-References: <586f741b.e8c8c20a.bd7e9.6a97@mx.google.com> <m2d1g0avn8.fsf@baylibre.com>
-From: Kevin Hilman <khilman@baylibre.com>
-Date: Fri, 6 Jan 2017 10:45:32 -0800
-Message-ID: <CAOi56cW4YxDePcOW3jo2SWFp4k_u1M4VdvceL8VFc3crMgNccw@mail.gmail.com>
-Subject: Re: mainline build: 207 builds: 2 failed, 205 passed, 4 errors, 58
- warnings (v4.10-rc2-207-g88ba6cae15e3)
+In-Reply-To: <1483695839-18660-5-git-send-email-nicolas.dichtel@6wind.com>
+References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
+ <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com> <1483695839-18660-5-git-send-email-nicolas.dichtel@6wind.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Fri, 6 Jan 2017 22:50:34 +0200
+Message-ID: <CAHp75VdDfopdSy-7oy87ZeosDB9+FN4zFBhErPWLQB7tH81zTw@mail.gmail.com>
+Subject: Re: [PATCH v2 4/7] x86: put msr-index.h in uapi
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Return-Path: <khilman@baylibre.com>
+Return-Path: <andy.shevchenko@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,70 +23,19 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: Kernel Build Reports Mailman List <kernel-build-reports@lists.linaro.org>, Arnd Bergmann <arnd@arndb.de>
-Message-ID: <20170106184532.ihZVlBKGrOdJM3xeZq6UABlgXXuXgJU2ZtbigL4ORAw@z>
+To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, mmarek@suse.com, linux-kbuild@vger.kernel.org, Linux Documentation List <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, Cris <linux-cris-kernel@axis.com>, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" <linuxppc-dev@lists.ozlabs.org>, linux-s390@vger.kernel.org, Linux-SH <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, Linux-Arch <linux-arch@vger.kernel.org>, dri-devel@lists.freedesktop.org, netdev <netdev@vger.kernel.org>, Linux Media Mailing List <linux-media@vger.kernel.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, linux-nfs@vger.kernel.org, linux-raid@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>, "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>, linux-rdma@vger.kernel.org, fcoe-devel@open-fcoe.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, linux-fbdev@vger.kernel.org, xen-devel@lists.xenproject.org, David Airlie <airlied@linux.ie>, "David S. Miller" <davem@davemloft.net>
+Message-ID: <20170106205034.3wQQitWDFXB6V1NoY_ByeM4iKWzw920jbqkFuCmtQ-s@z>
 
-On Fri, Jan 6, 2017 at 10:30 AM, Kevin Hilman <khilman@baylibre.com> wrote:
-> + Ralf, linux-mips
->
-> kernelci.org bot <bot@kernelci.org> writes:
->
->> mainline build: 207 builds: 2 failed, 205 passed, 4 errors, 58 warnings (v4.10-rc2-207-g88ba6cae15e3)
->>
->> Full Build Summary: https://kernelci.org/build/mainline/kernel/v4.10-rc2-207-g88ba6cae15e3/
->>
->> Tree: mainline
->> Branch: local/master
->> Git Describe: v4.10-rc2-207-g88ba6cae15e3
->> Git Commit: 88ba6cae15e38f609aba4f3881e1c404c432596c
->> Git URL: http://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->> Built: 4 unique architectures
->>
->> Build Failures Detected:
->>
->> mips:    gcc version 6.3.0 (GCC)
->>
->>     ip27_defconfig: FAIL
->>     ip28_defconfig: FAIL
->>
->
-> [...]
->
->> Errors summary:
->>
->>       2  arch/mips/include/asm/mach-generic/spaces.h:28:0: error: "CAC_BASE" redefined [-Werror]
->>       1  drivers/net/ethernet/qlogic/qlge/qlge_main.c:4819:1: internal compiler error: in extract_constrain_insn, at recog.c:2190
->>       1  drivers/net/ethernet/qlogic/qlge/qlge_main.c:4819:1: error: insn does not satisfy its constraints:
->
-> [...]
->
->> ================================================================================
->>
->> Detailed per-defconfig build reports:
->
-> [...]
->
->> --------------------------------------------------------------------------------
->> ip27_defconfig (mips) — FAIL, 4 errors, 1 warning, 0 section mismatches
->>
->> Errors:
->>     arch/mips/include/asm/mach-generic/spaces.h:28:0: error: "CAC_BASE" redefined [-Werror]
->>     arch/mips/include/asm/mach-generic/spaces.h:28:0: error: "CAC_BASE" redefined [-Werror]
->>     drivers/net/ethernet/qlogic/qlge/qlge_main.c:4819:1: error: insn does not satisfy its constraints:
->>     drivers/net/ethernet/qlogic/qlge/qlge_main.c:4819:1: internal compiler error: in extract_constrain_insn, at recog.c:2190
->>
->> Warnings:
->>     arch/mips/configs/ip27_defconfig:136:warning: symbol value 'm' invalid for SCSI_DH
->>
->> --------------------------------------------------------------------------------
->> ip28_defconfig (mips) — FAIL, 0 errors, 0 warnings, 0 section mismatches
+On Fri, Jan 6, 2017 at 11:43 AM, Nicolas Dichtel
+<nicolas.dichtel@6wind.com> wrote:
+> This header file is exported, thus move it to uapi.
 
-The "0 errors" count is confusing here, I know.  Our error count
-detection is not catching "gcc does not support" errors, so we need to
-fix that.  The actual error message here is:
+Just hint for the future:
+-M (move)
+-C (copy)
+-D (delete) [though this is NOT for applying]
 
-../arch/mips/sgi-ip22/Platform:29: *** gcc doesn't support needed
-option -mr10k-cache-barrier=store.  Stop.
-
-Kevin
+-- 
+With Best Regards,
+Andy Shevchenko

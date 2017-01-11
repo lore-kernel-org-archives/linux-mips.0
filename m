@@ -1,18 +1,22 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:6775 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993896AbdAKRkdq3Jsi (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Jan 2017 18:40:33 +0100
-Date: Wed, 11 Jan 2017 17:40:16 +0000
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [Patch ,gcc/MIPS] add an build-time/runtime option to disable
- madd.fmt
-In-Reply-To: <6BFA91F2-1B3B-422C-AD1C-D6F4A00D625A@imgtec.com>
-Message-ID: <alpine.DEB.2.00.1701111725080.6936@tp.orcam.me.uk>
-References: <7FDC38C0-90D4-4A32-8FD5-ED65DC469055@imgtec.com> <585AF58B.5030601@codesourcery.com> <6D39441BF12EF246A7ABCE6654B0235380B0684E@HHMAIL01.hh.imgtec.org> <878tr8geud.fsf@googlemail.com> <9CE78A41-A06C-49E3-A198-1389418ED8EC@imgtec.com>
- <1F820539-D3AD-4FF4-A710-D9F1C76C6219@imgtec.com> <87vaucey35.fsf@googlemail.com> <12EFBD0A-5AC7-409A-B08C-86A5032801E5@imgtec.com> <CAKjxQH=aePXvOeP807MCKxDpG5RDAaNgB6LjH=cNi=XysrFW2A@mail.gmail.com> <6BFA91F2-1B3B-422C-AD1C-D6F4A00D625A@imgtec.com>
+Received: from mail-by2nam03on0055.outbound.protection.outlook.com ([104.47.42.55]:51712
+        "EHLO NAM03-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23993896AbdAKSESuJmai convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Jan 2017 19:04:18 +0100
+From: Bart Van Assche <Bart.VanAssche@sandisk.com>
+Subject: Re: [PATCH 2/9] Move dma_ops from archdata into struct device
+Date: Wed, 11 Jan 2017 18:03:15 +0000
+Message-ID: <1484157772.2619.12.camel@sandisk.com>
+References: <20170111005648.14988-1-bart.vanassche@sandisk.com>
+         <20170111005648.14988-3-bart.vanassche@sandisk.com>
+         <20170111064624.GA26893@kroah.com>
+In-Reply-To: <20170111064624.GA26893@kroah.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <2D8D123C7F88F844A85318B500FF63FE@sandisk.com>
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Return-Path: <Bart.VanAssche@sandisk.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,32 +26,49 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Yunqiang Su <Yunqiang.Su@imgtec.com>
-Cc: Paul Hua <paul.hua.gm@gmail.com>, Richard Sandiford <rdsandiford@googlemail.com>, Matthew Fortune <Matthew.Fortune@imgtec.com>, Sandra Loosemore <sandra@codesourcery.com>, gcc-patches <gcc-patches@gcc.gnu.org>, "Moore, Catherine (Catherine_Moore@mentor.com)" <Catherine_Moore@mentor.com>, "huangpei@loongson.cn" <huangpei@loongson.cn>, linux-mips@linux-mips.org
-Message-ID: <20170111174016.sR7uqrx-o5K5xpHKLYh7WFRtp7LI4E2qiPL2lS3eza8@z>
+To: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc: "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, "ysato@users.sourceforge.jp" <ysato@users.sourceforge.jp>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "jesper.nilsson@axis.com" <jesper.nilsson@axis.com>, "mulix@mulix.org" <mulix@mulix.org>, "hpa@zytor.com" <hpa@zytor.com>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>, "uclinux-h8-devel@lists.sourceforge.jp" <uclinux-h8-devel@lists.sourceforge.jp>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "geoff@infradead.org" <geoff@infradead.org>, "jcmvbkbc@gmail.com" <jcmvbkbc@gmail.com>, "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-am33-list@redhat.com" <linux-am33-list@redhat.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "a-jacquiot@ti.com" <a-jacquiot@ti.com>, "dalias@libc.org" <dalias@libc.org>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, "nios2-dev@lists.rocketboards.org" <nios2-dev@lists.rocketboards.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "shorne@gmail.com" <shorne@gmail.com>, "lftan@altera.com" <lftan@altera.com>, "deller@gmx.de" <deller@gmx.de>, "jdmason@kudzu.us" <jdmason@kudzu.us>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "chris@zankel.net" <chris@zankel.net>, "davem@davemloft.net" <davem@davemloft.net>, "joro@8bytes.org" <joro@8bytes.org>, "tglx@linutronix.de" <tglx@linutronix.de>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "x86@kernel.org" <x86@kernel.org>, "fenghua.yu@intel.com" <fenghua.yu@intel.com>, "jejb@parisc-linux.org" <jejb@parisc-linux.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "msalter@redhat.com" <msalter@redhat.com>, "dledford@redhat.com" <dledford@redhat.com>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "starvik@axis.com" <starvik@axis.com>, "dhowells@redhat.com" <dhowells@redhat.com>, "hskinnemoen@gmail.com" <hskinnemoen@gmail.com>, "mingo@redhat.com" <mingo@redhat.com>, "stefan.kristiansson@saunalahti.fi" <stefan.kristiansson@saunalahti.fi>, "tony.luck@intel.com" <tony.luck@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "jonas@southpole.se" <jonas@southpole.se>, "geert@linux-m68k.org" <geert@linux-m68k.org>, "egtvedt@samfundet.no" <egtvedt@samfundet.no>, "will.deacon@arm.com" <will.deacon@arm.com>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>
+Message-ID: <20170111180315.ic_BXw3BEs5e8eNAxBGuIS1HlUE-D4HR7wCqeEu6PLw@z>
 
-On Fri, 23 Dec 2016, Yunqiang Su wrote:
-
-> > 3, kernel: the emulation  when a float exception taken.
+On Wed, 2017-01-11 at 07:46 +0100, Greg Kroah-Hartman wrote:
+> On Tue, Jan 10, 2017 at 04:56:41PM -0800, Bart Van Assche wrote:
+> > Several RDMA drivers, e.g. drivers/infiniband/hw/qib, use the CPU to
+> > transfer data between memory and PCIe adapter. Because of performance
+> > reasons it is important that the CPU cache is not flushed when such
+> > drivers transfer data. Make this possible by allowing these drivers to
+> > override the dma_map_ops pointer. Additionally, introduce the function
+> > set_dma_ops() that will be used by a later patch in this series.
+> > 
+> > Signed-off-by: Bart Van Assche <bart.vanassche@sandisk.com>
+> > Cc: [ ... ]
 > 
-> The big problem is that Loongson use the same encode for (unfused) 
-> madd.fmt to (fused) madd.fmt. We cannot trap this in kernel.
+> That's a crazy cc: list, you should break this up into smaller pieces,
+> otherwise it's going to bounce...
 
- Why is that a problem?  Just add a setting like `cpu_has_fused_madd' to 
-<asm/cpu-features.h>, switch processing in the emulator accordingly and 
-initialise the setting early on in bootstrap as processor features are 
-determined.  We'd have to do it likewise for the R8000 MIPS IV CPU Richard 
-referred to previously if we had full support for this processor (unlikely 
-to happen).
+That's a subset of what scripts/get_maintainer.pl came up with. Suggestions
+for a more appropriate cc-list for a patch like this that touches all
+architectures would be welcome.
 
- Cc-ing <linux-mips@linux-mips.org> in case you want to discuss it further 
-with the kernel developers; arguably it's a kernel bug already that the 
-FPU as perceived by user software has different semantics on FPU Loongson 
-hardware depending on whether or not the `nofpu' kernel parameter has been 
-set (I don't know if denormals are handled by Loongson FPU hardware or 
-trap with an Unimplemented Operation exception, but if the former, then 
-this inconsistency applies for such data in the regular FPU mode as well).
+> > diff --git a/include/linux/device.h b/include/linux/device.h
+> > index 491b4c0ca633..c7cb225d36b0 100644
+> > --- a/include/linux/device.h
+> > +++ b/include/linux/device.h
+> > @@ -885,6 +885,8 @@ struct dev_links_info {
+> >   * a higher-level representation of the device.
+> >   */
+> >  struct device {
+> > +	const struct dma_map_ops *dma_ops; /* See also get_dma_ops() */
+> > +
+> >  	struct device		*parent;
+> >  
+> >  	struct device_private	*p;
+> 
+> Why not put this new pointer down with the other dma fields in this
+> structure?  Any specific reason it needs to be first?
 
- HTH,
+Are there CPU architectures for which access to the first member of a
+structure can be encoded and/or executed more efficiently than access to
+other members of a structure? If not, I'm fine with moving the new pointer
+further down.
 
-  Maciej
+Bart.

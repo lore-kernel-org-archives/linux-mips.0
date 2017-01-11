@@ -1,22 +1,12 @@
-Received: from mail-bl2nam02on0081.outbound.protection.outlook.com ([104.47.38.81]:22848
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993908AbdAKSRYQ84Ji convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Jan 2017 19:17:24 +0100
-From: Bart Van Assche <Bart.VanAssche@sandisk.com>
-Subject: Re: [PATCH 2/9] Move dma_ops from archdata into struct device
-Date: Wed, 11 Jan 2017 18:17:03 +0000
-Message-ID: <1484158589.2619.14.camel@sandisk.com>
-References: <20170111005648.14988-1-bart.vanassche@sandisk.com>
-         <20170111005648.14988-3-bart.vanassche@sandisk.com>
-         <20170111064803.GB26893@kroah.com>
-In-Reply-To: <20170111064803.GB26893@kroah.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-ID: <BC3FC4DDD21E1E498D9A2E0C11F30769@sandisk.com>
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-Return-Path: <Bart.VanAssche@sandisk.com>
+Received: from lpdvsmtp01.broadcom.com ([192.19.211.62]:41172 "EHLO
+        relay.smtp.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993908AbdAKToxPNcNY (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Jan 2017 20:44:53 +0100
+From: justinpopo6@gmail.com
+Subject: [PATCH] MIPS: Add cacheinfo support
+Date: Wed, 11 Jan 2017 11:44:32 -0800
+Message-Id: <20170111194432.24283-1-justinpopo6@gmail.com>
+Return-Path: <justinpopo6@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,44 +16,129 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc: "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, "ysato@users.sourceforge.jp" <ysato@users.sourceforge.jp>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "jesper.nilsson@axis.com" <jesper.nilsson@axis.com>, "mulix@mulix.org" <mulix@mulix.org>, "hpa@zytor.com" <hpa@zytor.com>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>, "uclinux-h8-devel@lists.sourceforge.jp" <uclinux-h8-devel@lists.sourceforge.jp>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "geoff@infradead.org" <geoff@infradead.org>, "jcmvbkbc@gmail.com" <jcmvbkbc@gmail.com>, "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-am33-list@redhat.com" <linux-am33-list@redhat.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "a-jacquiot@ti.com" <a-jacquiot@ti.com>, "dalias@libc.org" <dalias@libc.org>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, "nios2-dev@lists.rocketboards.org" <nios2-dev@lists.rocketboards.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "shorne@gmail.com" <shorne@gmail.com>, "lftan@altera.com" <lftan@altera.com>, "deller@gmx.de" <deller@gmx.de>, "jdmason@kudzu.us" <jdmason@kudzu.us>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "chris@zankel.net" <chris@zankel.net>, "davem@davemloft.net" <davem@davemloft.net>, "joro@8bytes.org" <joro@8bytes.org>, "tglx@linutronix.de" <tglx@linutronix.de>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "x86@kernel.org" <x86@kernel.org>, "fenghua.yu@intel.com" <fenghua.yu@intel.com>, "jejb@parisc-linux.org" <jejb@parisc-linux.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "msalter@redhat.com" <msalter@redhat.com>, "dledford@redhat.com" <dledford@redhat.com>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "starvik@axis.com" <starvik@axis.com>, "dhowells@redhat.com" <dhowells@redhat.com>, "hskinnemoen@gmail.com" <hskinnemoen@gmail.com>, "mingo@redhat.com" <mingo@redhat.com>, "stefan.kristiansson@saunalahti.fi" <stefan.kristiansson@saunalahti.fi>, "tony.luck@intel.com" <tony.luck@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "jonas@southpole.se" <jonas@southpole.se>, "geert@linux-m68k.org" <geert@linux-m68k.org>, "egtvedt@samfundet.no" <egtvedt@samfundet.no>, "will.deacon@arm.com" <will.deacon@arm.com>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>
-Message-ID: <20170111181703.pW6Ng4bymz7RvDQJX2eF9RRdSYxt_JB9KzSZc2jKNjk@z>
+To: linux-mips@linux-mips.org
+Cc: bcm-kernel-feedback-list@broadcom.com, leonid.yegoshin@imgtec.com, f.fainelli@gmail.com, Justin Chen <justin.chen@broadcom.com>
 
-On Wed, 2017-01-11 at 07:48 +0100, Greg Kroah-Hartman wrote:
-> On Tue, Jan 10, 2017 at 04:56:41PM -0800, Bart Van Assche wrote:
-> > Several RDMA drivers, e.g. drivers/infiniband/hw/qib, use the CPU to
-> > transfer data between memory and PCIe adapter. Because of performance
-> > reasons it is important that the CPU cache is not flushed when such
-> > drivers transfer data. Make this possible by allowing these drivers to
-> > override the dma_map_ops pointer. Additionally, introduce the function
-> > set_dma_ops() that will be used by a later patch in this series.
-> 
-> When you say things like "additionally", that's a huge flag that this
-> needs to be split up into multiple patches.  No need to add
-> set_dma_ops() here in this patch.
+From: Justin Chen <justin.chen@broadcom.com>
 
-Hello Greg,
+Add cacheinfo support for MIPS architectures.
 
-Some architectures already define a set_dma_ops() function. So what this
-patch does is to move both the dma_ops pointer and the set_dma_ops()
-function from architecture-specific to architecture independent code. I
-don't think that it is possible to separate these two changes. But I
-understand that how I formulated the patch description caused confusion. I
-will rewrite the patch description to make it more clear before I repost
-this patch series.
+Use information from the cpuinfo_mips struct to populate the
+cacheinfo struct. This allows an architecture agnostic approach,
+however this also means if cache information is not properly
+populated within the cpuinfo_mips struct, there is nothing
+we can do. (I.E. c-r3k.c)
 
-> And I'd argue that it should be dma_ops_set(), and dma_ops_get(), just
-> to keep the namespace sane, but that's probably a different set of
-> patches...
+Signed-off-by: Justin Chen <justin.chen@broadcom.com>
+---
+ arch/mips/kernel/Makefile    |  2 +-
+ arch/mips/kernel/cacheinfo.c | 85 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 86 insertions(+), 1 deletion(-)
+ create mode 100644 arch/mips/kernel/cacheinfo.c
 
-Every time I rebase and retest this patch series on top of a new kernel
-version I have to modify some of the patches to compensate for changes in
-the architecture code. So I expect that once Linus merges these patches that
-he will have to resolve one or more merge conflicts. Including a rename of
-the functions that query and set the dma_ops pointer in this patch series
-would increase the number of merge conflicts triggered by this patch series
-and would make Linus' job harder. So I hope that you will allow me to
-postpone that rename until a later time ...
-
-Bart.
+diff --git a/arch/mips/kernel/Makefile b/arch/mips/kernel/Makefile
+index 4a603a3..904a9c4 100644
+--- a/arch/mips/kernel/Makefile
++++ b/arch/mips/kernel/Makefile
+@@ -7,7 +7,7 @@ extra-y		:= head.o vmlinux.lds
+ obj-y		+= cpu-probe.o branch.o elf.o entry.o genex.o idle.o irq.o \
+ 		   process.o prom.o ptrace.o reset.o setup.o signal.o \
+ 		   syscall.o time.o topology.o traps.o unaligned.o watch.o \
+-		   vdso.o
++		   vdso.o cacheinfo.o
+ 
+ ifdef CONFIG_FUNCTION_TRACER
+ CFLAGS_REMOVE_ftrace.o = -pg
+diff --git a/arch/mips/kernel/cacheinfo.c b/arch/mips/kernel/cacheinfo.c
+new file mode 100644
+index 0000000..a92bbba
+--- /dev/null
++++ b/arch/mips/kernel/cacheinfo.c
+@@ -0,0 +1,85 @@
++/*
++ * MIPS cacheinfo support
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
++ * kind, whether express or implied; without even the implied warranty
++ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++#include <linux/cacheinfo.h>
++
++/* Populates leaf and increments to next leaf */
++#define populate_cache(cache, leaf, c_level, c_type)		\
++	leaf->type = c_type;					\
++	leaf->level = c_level;					\
++	leaf->coherency_line_size = c->cache.linesz;		\
++	leaf->number_of_sets = c->cache.sets;			\
++	leaf->ways_of_associativity = c->cache.ways;		\
++	leaf->size = c->cache.linesz * c->cache.sets *		\
++		c->cache.ways;					\
++	leaf++;
++
++static int __init_cache_level(unsigned int cpu)
++{
++	struct cpuinfo_mips *c = &current_cpu_data;
++	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
++	int levels = 0, leaves = 0;
++
++	/*
++	 * If Dcache is not set, we assume the cache structures
++	 * are not properly initialized.
++	 */
++	if (c->dcache.waysize)
++		levels += 1;
++	else
++		return -ENOENT;
++
++
++	leaves += (c->icache.waysize) ? 2 : 1;
++
++	if (c->scache.waysize) {
++		levels++;
++		leaves++;
++	}
++
++	if (c->tcache.waysize) {
++		levels++;
++		leaves++;
++	}
++
++	this_cpu_ci->num_levels = levels;
++	this_cpu_ci->num_leaves = leaves;
++	return 0;
++}
++
++static int __populate_cache_leaves(unsigned int cpu)
++{
++	struct cpuinfo_mips *c = &current_cpu_data;
++	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
++	struct cacheinfo *this_leaf = this_cpu_ci->info_list;
++
++	if (c->icache.waysize) {
++		populate_cache(dcache, this_leaf, 1, CACHE_TYPE_DATA);
++		populate_cache(icache, this_leaf, 1, CACHE_TYPE_INST);
++	} else {
++		populate_cache(dcache, this_leaf, 1, CACHE_TYPE_UNIFIED);
++	}
++
++	if (c->scache.waysize)
++		populate_cache(scache, this_leaf, 2, CACHE_TYPE_UNIFIED);
++
++	if (c->tcache.waysize)
++		populate_cache(tcache, this_leaf, 3, CACHE_TYPE_UNIFIED);
++
++	return 0;
++}
++
++DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
++DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
+-- 
+2.10.2

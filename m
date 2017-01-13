@@ -1,16 +1,22 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:1432 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991964AbdAMHo5xxOPz (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 13 Jan 2017 08:44:57 +0100
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Subject: [PATCH 2/2] MIPS: ptrace: disable watchpoints if hit in kernel mode
-Date: Fri, 13 Jan 2017 08:44:47 +0100
-Message-ID: <1484293487-5770-2-git-send-email-marcin.nowakowski@imgtec.com>
-In-Reply-To: <1484293487-5770-1-git-send-email-marcin.nowakowski@imgtec.com>
-References: <1484293487-5770-1-git-send-email-marcin.nowakowski@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:41298 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992078AbdAMJtpa-0iM (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 13 Jan 2017 10:49:45 +0100
+Date: Fri, 13 Jan 2017 09:49:39 +0000
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH v3 0/5] MIPS: Add per-cpu IRQ stack
+Message-ID: <20170113094939.GI10569@jhogan-linux.le.imgtec.org>
+References: <1482157260-18730-1-git-send-email-matt.redfearn@imgtec.com>
+ <CAHmME9pRnCW5875vL=mr_D0Lq8nPZ69L-7gVaaHuO7EMTBp6Ew@mail.gmail.com>
+ <CAHmME9ogK=NsWgks2Uarty5AeWSZuYmujjBovQO6FWAAXKsopQ@mail.gmail.com>
+ <20170111012032.GE31072@linux-mips.org>
+ <CAHmME9qXeO=qFvWXenVO6gVAftk1M2vdQt7nwABRDqvDcV3dPg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Marcin.Nowakowski@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="HkfZ6fDZyisrdUtK"
+Content-Disposition: inline
+In-Reply-To: <CAHmME9qXeO=qFvWXenVO6gVAftk1M2vdQt7nwABRDqvDcV3dPg@mail.gmail.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,65 +26,72 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20170113074447.vV30b48BiRRysuWyKYpMgN-g4ddn4Rghj0m6DnNZlYo@z>
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Matt Redfearn <matt.redfearn@imgtec.com>, linux-mips@linux-mips.org, Thomas Gleixner <tglx@linutronix.de>, Paolo Bonzini <pbonzini@redhat.com>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, Chris Metcalf <cmetcalf@mellanox.com>, Petr Mladek <pmladek@suse.com>, LKML <linux-kernel@vger.kernel.org>, Adam Buchbinder <adam.buchbinder@gmail.com>, Paul Burton <paul.burton@imgtec.com>, Jiri Slaby <jslaby@suse.cz>, "Maciej W. Rozycki" <macro@imgtec.com>, Aaron Tomlin <atomlin@redhat.com>, Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <20170113094939.DSU8DOsNOxoePPEOh_9bqoaxrUMHJaYxIZ-ThlThWU8@z>
 
-If a watchpoint is hit when in kernel mode it is possible for the system
-to end up in an infinite loop processing the watchpoint. This can happen
-if a user sets a watchpoint in the kernel addess space (which is
-possible in certain EVA configurations) or if a user sets a watchpoint
-in a user area accessed directly by the kernel (eg. a user buffer
-accessed via a syscall).
+--HkfZ6fDZyisrdUtK
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-To prevent the infinite loop ensure that the watchpoint was hit in
-userspace, and clear the watchpoint registers otherwise.
+On Thu, Jan 12, 2017 at 12:32:52AM +0100, Jason A. Donenfeld wrote:
+> On Wed, Jan 11, 2017 at 2:20 AM, Ralf Baechle <ralf@linux-mips.org> wrote:
+> > On Wed, Jan 11, 2017 at 12:32:38AM +0100, Jason A. Donenfeld wrote:
+> >
+> >> Was this ever picked up for 4.10 or 4.11?
+> >
+> > Still sitting in -next as commit 3cc3434fd630 and its four parent commi=
+ts.
+>=20
+> Oh, good, so it's progressing normally. I just didn't see any
+> acknowledgement on this thread so I was worried.
+>=20
+> Can this propagate to stable? A few OpenWRT MIPS people are
+> complaining to me about sporadic crashes when stacking too many
+> virtual network drivers (batman over gre over ppp over ...), which is
+> solved by this patchset.
+>=20
+> Jason
 
-As this change could mean that a watchpoint is not hit when it should be
-(when returning to the interrupted traced task on exception exit), the
-resume_userspace path needs to be extended to conditionally restore the
-watchpoint configuration. If a task switch occurs when returning to
-userspace, the watchpoints will be restored in a typical way in the
-switch_to() handler.
+Its quite a significant change/feature, especially in terms of potential
+for further breakage. I don't think its really stable material to be
+honest.
 
-Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
----
- arch/mips/kernel/entry.S | 9 ++++++++-
- arch/mips/kernel/traps.c | 2 +-
- 2 files changed, 9 insertions(+), 2 deletions(-)
+The actual stable kernel rules are here though:
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Docume=
+ntation/process/stable-kernel-rules.rst
 
-diff --git a/arch/mips/kernel/entry.S b/arch/mips/kernel/entry.S
-index ef69a64..b15a9a9 100644
---- a/arch/mips/kernel/entry.S
-+++ b/arch/mips/kernel/entry.S
-@@ -55,7 +55,14 @@ resume_userspace:
- 	LONG_L	a2, TI_FLAGS($28)	# current->work
- 	andi	t0, a2, _TIF_WORK_MASK	# (ignoring syscall_trace)
- 	bnez	t0, work_pending
--	j	restore_all
-+#ifdef CONFIG_HARDWARE_WATCHPOINTS
-+	li	t0, _TIF_LOAD_WATCH
-+	and	t0, a2, t0
-+	beqz	t0, 1f
-+	PTR_L	a0, TI_TASK($28)
-+	jal	mips_install_watch_registers
-+#endif
-+1:	j	restore_all
- 
- #ifdef CONFIG_PREEMPT
- resume_kernel:
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index b86ce85..d92169e 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -1527,7 +1527,7 @@ asmlinkage void do_watch(struct pt_regs *regs)
- 	 * their values and send SIGTRAP.  Otherwise another thread
- 	 * left the registers set, clear them and continue.
- 	 */
--	if (test_tsk_thread_flag(current, TIF_LOAD_WATCH)) {
-+	if (user_mode(regs) && test_tsk_thread_flag(current, TIF_LOAD_WATCH)) {
- 		mips_read_watch_registers();
- 		local_irq_enable();
- 		force_sig_info(SIGTRAP, &info, current);
--- 
-2.7.4
+Do the OpenWRT issues affect mainline kernels? (if its due to excessive
+stack frame sizes in out of tree code, then that should be fixed out of
+tree). It sounds bad if the kernel stack requirement can be made
+arbitrarily large by stacking too many drivers.
+
+Is there a simpler fix/workaround for the issue that would satisfy
+stable kernel users until they can upgrade to a kernel with irqstacks?
+
+Cheers
+James
+
+--HkfZ6fDZyisrdUtK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJYeKKeAAoJEGwLaZPeOHZ6UxAP/2R/TOh5d017b02J/480VvMH
+qkJIUFpW1d7GvniS2ruUDUQchtZkqoGIHHI3oXiWjvIAWnXPha1jzL3QVPFQCwpd
++yWhG3mQbhhyTkEVDbk4ISsLUixIzxJRjBuqecnIkZfOXUrLNI5QyJ4E4ysHepYQ
+ALoPK6V3wOBqStut7dMYWCk/Py2iMpmgdyUxekHNimp6k+nrb3LMsJGnFmCsATet
+sNwsvLNlEgiLOkAauGgJAjWbHNtX7yD77Yjo5eJ+1hmViuhsOu4XIy/yAtYskdwl
+EGxhlS9xd+5xHuNEIZX7+CXgQh0UMZneKV6YMM63aByhKpkIIrLke/IH28xSgi/w
+ZfCuSu7MpPZFXLIhohc2dfhhtjN4e6Ti6XwhTFj2TmatKtU8AKK77HupXCSQI4Ic
+y/54c+NMkMVq/lBLYXPNxoM9SYDsAjBrgJaDaZPECvX0WCn6LUokFkh7dh/9DNwR
+f1ipw/cl9wex3MN6K9OXSLXObRdShZrzdarX08DtlK5tWkZb2OS1acQfbndjpxq+
+94C/lbudwrIHw5kr8J3xnfxOqdVv7R+AYuUwbkD80pHyLek3TQ1TAn1/COk3UD96
+aMMnPt7KL+dSaoD1NulEOtOftxs79BZ2iJarL4wMfJYwqaXelU4DuOGHGYzKibRq
+X+lIXy3xXe+qIkMrNAk0
+=PhbQ
+-----END PGP SIGNATURE-----
+
+--HkfZ6fDZyisrdUtK--

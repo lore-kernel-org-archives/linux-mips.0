@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:51780 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:30188 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992800AbdALJkDeYxS1 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 12 Jan 2017 10:40:03 +0100
-Subject: Re: [PATCH] MIPS: Add cacheinfo support
-References: <20170111194432.24283-1-justinpopo6@gmail.com>
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <f29103b9-d215-b832-54dd-28298b6045cf@imgtec.com>
-Date: Thu, 12 Jan 2017 09:39:54 +0000
+        with ESMTP id S23990519AbdAMHo5bTRFz (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 13 Jan 2017 08:44:57 +0100
+From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Subject: [PATCH 1/2] MIPS: ptrace: protect watchpoint handling code from setting watchpoints
+Date: Fri, 13 Jan 2017 08:44:46 +0100
+Message-ID: <1484293487-5770-1-git-send-email-marcin.nowakowski@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20170111194432.24283-1-justinpopo6@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Marcin.Nowakowski@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,147 +18,133 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: justinpopo6@gmail.com, linux-mips@linux-mips.org
-Cc: bcm-kernel-feedback-list@broadcom.com, leonid.yegoshin@imgtec.com, f.fainelli@gmail.com, Justin Chen <justin.chen@broadcom.com>
-Message-ID: <20170112093954.fNlFRotcLAuepBWoV6xjM9c4-Dym96zPQIBnaL2E9h4@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20170113074446.J-4YGNmdFf8OuDfSmbuXNhDHUnxZ5-Qr1feAHWqfYJg@z>
 
-Hi Justin,
+With certain EVA configurations it is possible for the kernel address
+space to overlap user address space, which allows the user to set
+watchpoints on kernel addresses via ptrace.
 
+If a watchpoint is set in the watch exception handling code (after
+exception level has been cleared) then the system will hang in an
+infinite loop when hitting a watchpoint while trying to process it.
 
-On 11/01/17 19:44, justinpopo6@gmail.com wrote:
-> From: Justin Chen <justin.chen@broadcom.com>
->
-> Add cacheinfo support for MIPS architectures.
->
-> Use information from the cpuinfo_mips struct to populate the
-> cacheinfo struct. This allows an architecture agnostic approach,
-> however this also means if cache information is not properly
-> populated within the cpuinfo_mips struct, there is nothing
-> we can do. (I.E. c-r3k.c)
->
-> Signed-off-by: Justin Chen <justin.chen@broadcom.com>
-> ---
->   arch/mips/kernel/Makefile    |  2 +-
->   arch/mips/kernel/cacheinfo.c | 85 ++++++++++++++++++++++++++++++++++++++++++++
->   2 files changed, 86 insertions(+), 1 deletion(-)
->   create mode 100644 arch/mips/kernel/cacheinfo.c
->
-> diff --git a/arch/mips/kernel/Makefile b/arch/mips/kernel/Makefile
-> index 4a603a3..904a9c4 100644
-> --- a/arch/mips/kernel/Makefile
-> +++ b/arch/mips/kernel/Makefile
-> @@ -7,7 +7,7 @@ extra-y		:= head.o vmlinux.lds
->   obj-y		+= cpu-probe.o branch.o elf.o entry.o genex.o idle.o irq.o \
->   		   process.o prom.o ptrace.o reset.o setup.o signal.o \
->   		   syscall.o time.o topology.o traps.o unaligned.o watch.o \
-> -		   vdso.o
-> +		   vdso.o cacheinfo.o
+To prevent that place all watch exception entry/exit code in a single
+named section and disallow placing watchpoints in that area.
 
-Please maintain alphabetical order.
+Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+---
+ arch/mips/kernel/entry.S       |  2 +-
+ arch/mips/kernel/genex.S       |  2 ++
+ arch/mips/kernel/ptrace.c      | 14 ++++++++++++++
+ arch/mips/kernel/traps.c       |  2 ++
+ arch/mips/kernel/vmlinux.lds.S |  8 ++++++++
+ 5 files changed, 27 insertions(+), 1 deletion(-)
 
->   
->   ifdef CONFIG_FUNCTION_TRACER
->   CFLAGS_REMOVE_ftrace.o = -pg
-> diff --git a/arch/mips/kernel/cacheinfo.c b/arch/mips/kernel/cacheinfo.c
-> new file mode 100644
-> index 0000000..a92bbba
-> --- /dev/null
-> +++ b/arch/mips/kernel/cacheinfo.c
-> @@ -0,0 +1,85 @@
-> +/*
-> + * MIPS cacheinfo support
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed "as is" WITHOUT ANY WARRANTY of any
-> + * kind, whether express or implied; without even the implied warranty
-> + * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-> + */
-> +#include <linux/cacheinfo.h>
-> +
-> +/* Populates leaf and increments to next leaf */
-> +#define populate_cache(cache, leaf, c_level, c_type)		\
-
-The way "cache" is used within this macro is unclear, and you don't pass 
-"c" as a parameter. I think it would be clearer to pass cache as 
-(&c->dcache) etc.
-
-> +	leaf->type = c_type;					\
-> +	leaf->level = c_level;					\
-> +	leaf->coherency_line_size = c->cache.linesz;		\
-> +	leaf->number_of_sets = c->cache.sets;			\
-> +	leaf->ways_of_associativity = c->cache.ways;		\
-> +	leaf->size = c->cache.linesz * c->cache.sets *		\
-> +		c->cache.ways;					\
-> +	leaf++;
-
-I don't like this side effect incrementing leaf - please do it when 
-invoking the macro so it is more obvious.
-
-Thanks,
-Matt
-
-> +
-> +static int __init_cache_level(unsigned int cpu)
-> +{
-> +	struct cpuinfo_mips *c = &current_cpu_data;
-> +	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
-> +	int levels = 0, leaves = 0;
-> +
-> +	/*
-> +	 * If Dcache is not set, we assume the cache structures
-> +	 * are not properly initialized.
-> +	 */
-> +	if (c->dcache.waysize)
-> +		levels += 1;
-> +	else
-> +		return -ENOENT;
-> +
-> +
-> +	leaves += (c->icache.waysize) ? 2 : 1;
-> +
-> +	if (c->scache.waysize) {
-> +		levels++;
-> +		leaves++;
-> +	}
-> +
-> +	if (c->tcache.waysize) {
-> +		levels++;
-> +		leaves++;
-> +	}
-> +
-> +	this_cpu_ci->num_levels = levels;
-> +	this_cpu_ci->num_leaves = leaves;
-> +	return 0;
-> +}
-> +
-> +static int __populate_cache_leaves(unsigned int cpu)
-> +{
-> +	struct cpuinfo_mips *c = &current_cpu_data;
-> +	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
-> +	struct cacheinfo *this_leaf = this_cpu_ci->info_list;
-> +
-> +	if (c->icache.waysize) {
-> +		populate_cache(dcache, this_leaf, 1, CACHE_TYPE_DATA);
-> +		populate_cache(icache, this_leaf, 1, CACHE_TYPE_INST);
-> +	} else {
-> +		populate_cache(dcache, this_leaf, 1, CACHE_TYPE_UNIFIED);
-> +	}
-> +
-> +	if (c->scache.waysize)
-> +		populate_cache(scache, this_leaf, 2, CACHE_TYPE_UNIFIED);
-> +
-> +	if (c->tcache.waysize)
-> +		populate_cache(tcache, this_leaf, 3, CACHE_TYPE_UNIFIED);
-> +
-> +	return 0;
-> +}
-> +
-> +DEFINE_SMP_CALL_CACHE_FUNCTION(init_cache_level)
-> +DEFINE_SMP_CALL_CACHE_FUNCTION(populate_cache_leaves)
+diff --git a/arch/mips/kernel/entry.S b/arch/mips/kernel/entry.S
+index 7791840..ef69a64 100644
+--- a/arch/mips/kernel/entry.S
++++ b/arch/mips/kernel/entry.S
+@@ -24,7 +24,7 @@
+ #define __ret_from_irq	ret_from_exception
+ #endif
+ 
+-	.text
++	.section .text..no_watch
+ 	.align	5
+ #ifndef CONFIG_PREEMPT
+ FEXPORT(ret_from_exception)
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index dc0b296..102a9e8 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -433,6 +433,7 @@ NESTED(nmi_handler, PT_SIZE, sp)
+ 	BUILD_HANDLER ftlb ftlb none silent		/* #16 */
+ 	BUILD_HANDLER msa msa sti silent		/* #21 */
+ 	BUILD_HANDLER mdmx mdmx sti silent		/* #22 */
++.section .text..no_watch
+ #ifdef	CONFIG_HARDWARE_WATCHPOINTS
+ 	/*
+ 	 * For watch, interrupts will be enabled after the watch
+@@ -442,6 +443,7 @@ NESTED(nmi_handler, PT_SIZE, sp)
+ #else
+ 	BUILD_HANDLER watch watch sti verbose		/* #23 */
+ #endif
++.previous
+ 	BUILD_HANDLER mcheck mcheck cli verbose		/* #24 */
+ 	BUILD_HANDLER mt mt sti silent			/* #25 */
+ 	BUILD_HANDLER dsp dsp sti silent		/* #26 */
+diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
+index c8ba260..1c8d75c 100644
+--- a/arch/mips/kernel/ptrace.c
++++ b/arch/mips/kernel/ptrace.c
+@@ -235,6 +235,17 @@ int ptrace_get_watch_regs(struct task_struct *child,
+ 	return 0;
+ }
+ 
++static int ptrace_watch_in_watch_code_region(unsigned long addr)
++{
++	extern unsigned long __nowatch_text_start, __nowatch_text_end;
++	unsigned long start, end;
++
++	start = (((unsigned long)&__nowatch_text_start) & ~MIPS_WATCHLO_IRW);
++	end = (((unsigned long)&__nowatch_text_end) & ~MIPS_WATCHLO_IRW);
++
++	return addr >= start && addr < end;
++}
++
+ int ptrace_set_watch_regs(struct task_struct *child,
+ 			  struct pt_watch_regs __user *addr)
+ {
+@@ -262,6 +273,9 @@ int ptrace_set_watch_regs(struct task_struct *child,
+ 				return -EINVAL;
+ 		}
+ #endif
++		if (ptrace_watch_in_watch_code_region(lt[i]))
++			return -EINVAL;
++
+ 		__get_user(ht[i], &addr->WATCH_STYLE.watchhi[i]);
+ 		if (ht[i] & ~MIPS_WATCHHI_MASK)
+ 			return -EINVAL;
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 6c7f9d7..b86ce85 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -1509,6 +1509,8 @@ asmlinkage void do_mdmx(struct pt_regs *regs)
+  * Called with interrupts disabled.
+  */
+ asmlinkage void do_watch(struct pt_regs *regs)
++	__attribute__((section(".text..no_watch")));
++asmlinkage void do_watch(struct pt_regs *regs)
+ {
+ 	siginfo_t info = { .si_signo = SIGTRAP, .si_code = TRAP_HWBKPT };
+ 	enum ctx_state prev_state;
+diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
+index d5de675..f76f481 100644
+--- a/arch/mips/kernel/vmlinux.lds.S
++++ b/arch/mips/kernel/vmlinux.lds.S
+@@ -32,6 +32,13 @@ PHDRS {
+ 	jiffies	 = jiffies_64;
+ #endif
+ 
++#define NOWATCH_TEXT							\
++		ALIGN_FUNCTION();					\
++		VMLINUX_SYMBOL(__nowatch_text_start) = .;		\
++		*(.text..no_watch)					\
++		VMLINUX_SYMBOL(__nowatch_text_end) = .;
++
++
+ SECTIONS
+ {
+ #ifdef CONFIG_BOOT_ELF64
+@@ -54,6 +61,7 @@ SECTIONS
+ 	_text = .;	/* Text and read-only data */
+ 	.text : {
+ 		TEXT_TEXT
++		NOWATCH_TEXT
+ 		SCHED_TEXT
+ 		CPUIDLE_TEXT
+ 		LOCK_TEXT
+-- 
+2.7.4

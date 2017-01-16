@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:7995 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:62579 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993886AbdAPMtzxI03k (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 16 Jan 2017 13:49:55 +0100
+        with ESMTP id S23993966AbdAPMt4kBrdk (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 16 Jan 2017 13:49:56 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 10/13] KVM: MIPS/MMU: Pass GPA PTE bits to KSeg0 GVA PTEs
-Date: Mon, 16 Jan 2017 12:49:31 +0000
-Message-ID: <555238b387306895a8285cf719f3e9c6e520edde.1484570878.git-series.james.hogan@imgtec.com>
+Subject: [PATCH 11/13] KVM: MIPS/MMU: Pass GPA PTE bits to mapped GVA PTEs
+Date: Mon, 16 Jan 2017 12:49:32 +0000
+Message-ID: <fea11ed8c2676b601831977d92db88575c6a4c87.1484570878.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
 In-Reply-To: <cover.99eec1b2ac935212acbcf2effacaab95cf6cdbf1.1484570878.git-series.james.hogan@imgtec.com>
 References: <cover.99eec1b2ac935212acbcf2effacaab95cf6cdbf1.1484570878.git-series.james.hogan@imgtec.com>
@@ -23,17 +23,19 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: James Hogan <james.hogan@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org
-Message-ID: <20170116124931.pAs40MEtQ5HbsxZ0kxf7BfL_zPHrd4lrjnBbd7R1mbE@z>
+Message-ID: <20170116124932.HuNR0n3C02g2rYP4tuj8w8rJ9HCNPk82yuTvDCLcpUM@z>
 
-Propagate the GPA PTE protection bits on to the GVA PTEs on a KSeg0
-fault (except _PAGE_WRITE), rather than always overriding the
-protection. This allows dirty page tracking to work in KSeg0 as a clear
-dirty bit in the GPA PTE will propagate to the GVA PTEs.
+Propagate the GPA PTE protection bits on to the GVA PTEs on a mapped
+fault (except _PAGE_WRITE, and filtered by the guest TLB entry), rather
+than always overriding the protection. This allows dirty page tracking
+to work in mapped guest segments as a clear dirty bit in the GPA PTE
+will propagate to the GVA PTEs even when the guest TLB has the dirty bit
+set.
 
-This makes it simpler to use a single kvm_mips_map_page() to obtain both
-the main GPA PTE and its buddy (which may be invalid), which also allows
-memory regions to be fully accessible when they don't start and end on a
-2*PAGE_SIZE boundary.
+Since the filtering of protection bits is now abstracted, if the buddy
+GVA PTE is also valid, we obtain the corresponding GPA PTE using a
+simple non-allocating walk and load that into the GVA PTE similarly
+(which may itself be invalid).
 
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Paolo Bonzini <pbonzini@redhat.com>
@@ -42,90 +44,96 @@ Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 Cc: kvm@vger.kernel.org
 ---
- arch/mips/kvm/mmu.c | 49 ++++++++++++++++++++++++----------------------
- 1 file changed, 26 insertions(+), 23 deletions(-)
+ arch/mips/kvm/mmu.c | 56 ++++++++++++++++++++++++++++++----------------
+ 1 file changed, 37 insertions(+), 19 deletions(-)
 
 diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
-index 7962eea4ebc3..9cc941864aa8 100644
+index 9cc941864aa8..8a01bbd276fc 100644
 --- a/arch/mips/kvm/mmu.c
 +++ b/arch/mips/kvm/mmu.c
-@@ -769,15 +769,27 @@ void kvm_mips_flush_gva_pt(pgd_t *pgd, enum kvm_mips_flush flags)
- 	}
+@@ -782,6 +782,15 @@ static pte_t kvm_mips_gpa_pte_to_gva_unmapped(pte_t pte)
+ 	return pte;
  }
  
-+static pte_t kvm_mips_gpa_pte_to_gva_unmapped(pte_t pte)
++static pte_t kvm_mips_gpa_pte_to_gva_mapped(pte_t pte, long entrylo)
 +{
-+	/*
-+	 * Don't leak writeable but clean entries from GPA page tables. We don't
-+	 * want the normal Linux tlbmod handler to handle dirtying when KVM
-+	 * accesses guest memory.
-+	 */
-+	if (!pte_dirty(pte))
-+		pte = pte_wrprotect(pte);
++	/* Guest EntryLo overrides host EntryLo */
++	if (!(entrylo & ENTRYLO_D))
++		pte = pte_mkclean(pte);
 +
-+	return pte;
++	return kvm_mips_gpa_pte_to_gva_unmapped(pte);
 +}
 +
  /* XXXKYMA: Must be called with interrupts disabled */
  int kvm_mips_handle_kseg0_tlb_fault(unsigned long badvaddr,
  				    struct kvm_vcpu *vcpu,
- 				    bool write_fault)
+@@ -825,39 +834,48 @@ int kvm_mips_handle_mapped_seg_tlb_fault(struct kvm_vcpu *vcpu,
+ 					 unsigned long gva,
+ 					 bool write_fault)
  {
- 	unsigned long gpa;
--	kvm_pfn_t pfn0, pfn1;
--	unsigned long vaddr;
- 	pte_t pte_gpa[2], *ptep_gva;
-+	int idx;
+-	kvm_pfn_t pfn;
+-	long tlb_lo = 0;
+-	pte_t pte_gpa, *ptep_gva;
+-	unsigned int idx;
++	struct kvm *kvm = vcpu->kvm;
++	long tlb_lo[2];
++	pte_t pte_gpa[2], *ptep_buddy, *ptep_gva;
++	unsigned int idx = TLB_LO_IDX(*tlb, gva);
+ 	bool kernel = KVM_GUEST_KERNEL_MODE(vcpu);
  
- 	if (KVM_GUEST_KSEGX(badvaddr) != KVM_GUEST_KSEG0) {
- 		kvm_err("%s: Invalid BadVaddr: %#lx\n", __func__, badvaddr);
-@@ -785,35 +797,26 @@ int kvm_mips_handle_kseg0_tlb_fault(unsigned long badvaddr,
- 		return -1;
- 	}
++	tlb_lo[0] = tlb->tlb_lo[0];
++	tlb_lo[1] = tlb->tlb_lo[1];
++
+ 	/*
+ 	 * The commpage address must not be mapped to anything else if the guest
+ 	 * TLB contains entries nearby, or commpage accesses will break.
+ 	 */
+-	idx = TLB_LO_IDX(*tlb, gva);
+-	if ((gva ^ KVM_GUEST_COMMPAGE_ADDR) & VPN2_MASK & PAGE_MASK)
+-		tlb_lo = tlb->tlb_lo[idx];
++	if (!((gva ^ KVM_GUEST_COMMPAGE_ADDR) & VPN2_MASK & (PAGE_MASK << 1)))
++		tlb_lo[TLB_LO_IDX(*tlb, KVM_GUEST_COMMPAGE_ADDR)] = 0;
  
--	/* Find host PFNs */
--
--	gpa = KVM_GUEST_CPHYSADDR(badvaddr & (PAGE_MASK << 1));
--	vaddr = badvaddr & (PAGE_MASK << 1);
--
--	if (kvm_mips_map_page(vcpu, gpa, write_fault, &pte_gpa[0], NULL) < 0)
--		return -1;
--
--	if (kvm_mips_map_page(vcpu, gpa | PAGE_SIZE, write_fault, &pte_gpa[1],
--			      NULL) < 0)
+-	/* Find host PFN */
+-	if (kvm_mips_map_page(vcpu, mips3_tlbpfn_to_paddr(tlb_lo), write_fault,
+-			      &pte_gpa, NULL) < 0)
 +	/* Get the GPA page table entry */
-+	gpa = KVM_GUEST_CPHYSADDR(badvaddr);
-+	idx = (badvaddr >> PAGE_SHIFT) & 1;
-+	if (kvm_mips_map_page(vcpu, gpa, write_fault, &pte_gpa[idx],
-+			      &pte_gpa[!idx]) < 0)
++	if (kvm_mips_map_page(vcpu, mips3_tlbpfn_to_paddr(tlb_lo[idx]),
++			      write_fault, &pte_gpa[idx], NULL) < 0)
  		return -1;
+-	pfn = pte_pfn(pte_gpa);
  
--	pfn0 = pte_pfn(pte_gpa[0]);
--	pfn1 = pte_pfn(pte_gpa[1]);
--
 -	/* Find GVA page table entry */
--
--	ptep_gva = kvm_trap_emul_pte_for_gva(vcpu, vaddr);
-+	/* Get the GVA page table entry */
-+	ptep_gva = kvm_trap_emul_pte_for_gva(vcpu, badvaddr & ~PAGE_SIZE);
+-	ptep_gva = kvm_trap_emul_pte_for_gva(vcpu, gva);
++	/* And its GVA buddy's GPA page table entry if it also exists */
++	pte_gpa[!idx] = pfn_pte(0, __pgprot(0));
++	if (tlb_lo[!idx] & ENTRYLO_V) {
++		spin_lock(&kvm->mmu_lock);
++		ptep_buddy = kvm_mips_pte_for_gpa(kvm, NULL,
++					mips3_tlbpfn_to_paddr(tlb_lo[!idx]));
++		if (ptep_buddy)
++			pte_gpa[!idx] = *ptep_buddy;
++		spin_unlock(&kvm->mmu_lock);
++	}
++
++	/* Get the GVA page table entry pair */
++	ptep_gva = kvm_trap_emul_pte_for_gva(vcpu, gva & ~PAGE_SIZE);
  	if (!ptep_gva) {
--		kvm_err("No ptep for gva %lx\n", vaddr);
-+		kvm_err("No ptep for gva %lx\n", badvaddr);
+ 		kvm_err("No ptep for gva %lx\n", gva);
  		return -1;
  	}
  
--	/* Write host PFNs into GVA page table */
--	ptep_gva[0] = pte_mkyoung(pte_mkdirty(pfn_pte(pfn0, PAGE_SHARED)));
--	ptep_gva[1] = pte_mkyoung(pte_mkdirty(pfn_pte(pfn1, PAGE_SHARED)));
+-	/* Write PFN into GVA page table, taking attributes from Guest TLB */
+-	*ptep_gva = pfn_pte(pfn, (!(tlb_lo & ENTRYLO_V)) ? __pgprot(0) :
+-				 (tlb_lo & ENTRYLO_D) ? PAGE_SHARED :
+-				 PAGE_READONLY);
+-	if (pte_present(*ptep_gva))
+-		*ptep_gva = pte_mkyoung(pte_mkdirty(*ptep_gva));
 +	/* Copy a pair of entries from GPA page table to GVA page table */
-+	ptep_gva[0] = kvm_mips_gpa_pte_to_gva_unmapped(pte_gpa[0]);
-+	ptep_gva[1] = kvm_mips_gpa_pte_to_gva_unmapped(pte_gpa[1]);
++	ptep_gva[0] = kvm_mips_gpa_pte_to_gva_mapped(pte_gpa[0], tlb_lo[0]);
++	ptep_gva[1] = kvm_mips_gpa_pte_to_gva_mapped(pte_gpa[1], tlb_lo[1]);
  
- 	/* Invalidate this entry in the TLB, guest kernel ASID only */
--	kvm_mips_host_tlb_inv(vcpu, vaddr, false, true);
-+	kvm_mips_host_tlb_inv(vcpu, badvaddr, false, true);
- 	return 0;
- }
- 
+ 	/* Invalidate this entry in the TLB, current guest mode ASID only */
+ 	kvm_mips_host_tlb_inv(vcpu, gva, !kernel, kernel);
 -- 
 git-series 0.8.10

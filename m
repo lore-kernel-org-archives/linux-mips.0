@@ -1,20 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:60953 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992227AbdAQKSD34I8n (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Jan 2017 11:18:03 +0100
-Subject: Re: [PATCH v1] irqchip: irq-mips-gic:- Handle return NULL error from
- ioremap_nocache
-References: <1483949306-9712-1-git-send-email-arvind.yadav.cs@gmail.com>
- <120995f1-6cdb-9736-f6da-b85925f27451@arm.com>
- <4b306a43-7b8f-e4c4-95f8-bb0cd52f4336@gmail.com>
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <574c27a3-cee8-6649-ef20-9903a1d9850d@imgtec.com>
-Date: Tue, 17 Jan 2017 10:17:57 +0000
+Received: from mailapp01.imgtec.com ([195.59.15.196]:31931 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23993889AbdAQN14cOyE0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Jan 2017 14:27:56 +0100
+Date: Tue, 17 Jan 2017 13:27:49 +0000
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH 2/13] KVM: MIPS: Pass type of fault down to
+ kvm_mips_map_page()
+Message-ID: <20170117132749.GA11733@jhogan-linux.le.imgtec.org>
+References: <201701171906397244491@zte.com.cn>
 MIME-Version: 1.0
-In-Reply-To: <4b306a43-7b8f-e4c4-95f8-bb0cd52f4336@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
+Content-Disposition: inline
+In-Reply-To: <201701171906397244491@zte.com.cn>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,67 +23,130 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Arvind Yadav <arvind.yadav.cs@gmail.com>, Marc Zyngier <marc.zyngier@arm.com>, tglx@linutronix.de, jason@lakedaemon.net
-Cc: linux-kernel@vger.kernel.org, Linux MIPS Mailing List <linux-mips@linux-mips.org>
-Message-ID: <20170117101757.7q6wbS8hiqRoJ4mN6AHwn4XUxlAeA4m5CPhnaUYB8sE@z>
+To: jiang.biao2@zte.com.cn
+Cc: linux-mips@linux-mips.org, pbonzini@redhat.com, rkrcmar@redhat.com, ralf@linux-mips.org, kvm@vger.kernel.org
+Message-ID: <20170117132749.Le07xp6nD3tQoACDC3zv0GYfRDSHGEQRSqJDePp93IA@z>
 
+--k+w/mQv8wyuph6w0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
 
-On 17/01/17 10:10, Arvind Yadav wrote:
-> Hi Matt,
->
-> Please Acknowledge this.
->
-> Regards
-> Arvind Yadav
+On Tue, Jan 17, 2017 at 07:06:39PM +0800, jiang.biao2@zte.com.cn wrote:
+> =EF=BC=9E kvm_mips_map_page() will need to know whether the fault was due=
+ to a
+> =EF=BC=9E read or a write in order to support dirty page tracking,
+> =EF=BC=9E KVM_CAP_SYNC_MMU, and read only memory regions, so get that inf=
+ormation
+> =EF=BC=9E passed down to it via new bool write_fault arguments to various
+> =EF=BC=9E functions.
+>=20
+> Hi, James,
+>=20
+>=20
+> Maybe it's not good idea to add an argument and pass it down to various f=
+unctions,  it will ,
+>=20
+> make the the interface more complicated,  have more possibolity, and more=
+ difficult to test.
+>=20
 
-Hi Arvind,
+kvm_mips_map_page() needs to know is whether it is being triggered in
+response to a write, but it is abstracted and independent from what host
+exception triggered it. It is only really concerned with the GPA space.
 
-Acked-by: Matt Redfearn <matt.redfearn@imgtec.com>
+>=20
+>=20
+>=20
+> As far as I can see,  what you need is to let kvm_mips_map_page() know th=
+e *reason*.
+>=20
+> would it be better to let kvm_mips_map_page() get *exccode* from the CP0 =
+directly, or=20
+>=20
+>=20
+> provide any interface to get the fault reason?
 
+I presume you mean from the saved host cause register in the VCPU
+context (since intervening exceptions/interrupts will clobber the actual
+CP0 Cause register).
 
->
-> On Monday 09 January 2017 02:30 PM, Marc Zyngier wrote:
->> On 09/01/17 08:08, Arvind Yadav wrote:
->>> Here, If ioremap_nocache will fail. It will return NULL.
->>> Kernel can run into a NULL-pointer dereference.
->>> This error check will avoid NULL pointer dereference.
->>>
->>> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
->>> ---
->>>   drivers/irqchip/irq-mips-gic.c | 2 ++
->>>   1 file changed, 2 insertions(+)
->>>
->>> diff --git a/drivers/irqchip/irq-mips-gic.c 
->>> b/drivers/irqchip/irq-mips-gic.c
->>> index c01c09e..eeea2e8 100644
->>> --- a/drivers/irqchip/irq-mips-gic.c
->>> +++ b/drivers/irqchip/irq-mips-gic.c
->>> @@ -979,6 +979,8 @@ static void __init __gic_init(unsigned long 
->>> gic_base_addr,
->>>       __gic_base_addr = gic_base_addr;
->>>         gic_base = ioremap_nocache(gic_base_addr, gic_addrspace_size);
->>> +    if (!gic_base)
->>> +        panic("Failed to map GIC memory");
->> So you're replacing a panic due to dereferencing a NULL pointer with
->> another panic -- not much progress here. I appreciate that the message
->> is a bit more explicit, but is there something slightly less drastic we
->> could do? Like returning an error code and see if the kernel otherwise
->> recovers (possibly with reduced functionality)?
+It directly needs to know whether it can get away with a read-only
+mapping, and although it directly depends on a GVA segment, it doesn't
+necessarily relate to a memory access made by the guest.
 
-Marc, there's really not much that can be done without the GIC 
-initializing sucessfully. This should not happen if platform code / 
-device tree is set up correctly, so an explicit panic if that is not the 
-case is helpful.
+kvm_mips_map_page() is called via:
 
-Thanks,
-Matt
+ - kvm_mips_handle_kseg0_tlb_fault()
+   for faults in guest KSeg0
 
->>
->>>         gicconfig = gic_read(GIC_REG(SHARED, GIC_SH_CONFIG));
->>>       gic_shared_intrs = (gicconfig & GIC_SH_CONFIG_NUMINTRS_MSK) >>
->>>
->> Thanks,
->>
->>     M.
->
+ - kvm_mips_handle_mapped_seg_tlb_fault()
+   for faults in guest TLB mapped segments
+
+=46rom these functions:
+
+ - kvm_trap_emul_handle_tlb_mod() (write_fault =3D true)
+   in response to a write to a read-only page (exccode =3D MOD)
+
+ - kvm_trap_emul_handle_tlb_miss() (write_fault =3D true or false)
+   in response to a read or write when TLB mapping absent or invalid
+   (exccode =3D TLBL/TLBS)
+
+ - via the kvm_trap_emul_gva_fault() helper when KVM needs to directly
+   access GVA space:
+
+   - kvm_get_inst() (write_fault =3D false)
+     when reading an instruction from guest RAM (when BadInstr/BadInstrP
+     registers unavailable) which needs to be emulated, i.e. reserved
+     instruction (exccode =3D RI), cop0 unusuable (exccode =3D CPU), MMIO
+     load/store (TLBL/TLBS/MOD/ADEL/ADES), branch delay slot handling
+     for MMIO load/store, or debug output for an unhandled exccode
+     (exccode =3D ?)
+
+   - kvm_mips_trans_replace() (write_fault =3D true)
+     to write a replacement instruction into guest memory (mainly
+     exccode =3D CPU)
+
+   - kvm_mips_guest_cache_op() (write_fault =3D false)
+     cache instruction emulation (exccode =3D CPU)
+
+So there is a many:many mapping from exccode to write_fault for these
+exccodes:
+
+ - CPU (CoProcessor Unusable)
+   could be reading instruction or servicing a CACHE instruction
+   (write_fault =3D false) or replacing an instruction (write_fault =3D
+   true).
+
+ - MOD, TLBS, ADES
+   could be the write itself (write_fault =3D true), or a read of the
+   instruction triggering the exception or the prior branch instruction
+   (write_fault =3D false).
+
+Cheers
+James
+
+--k+w/mQv8wyuph6w0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJYfhvNAAoJEGwLaZPeOHZ6suEP/0w/DeLtVqw+oUaJWfx7r1Un
+L6PUhdg5vkwVP4fFqwxa5DLwTiX2nxbr1k8HMyeryiZamKLCFTmyUg4Rohl+ODUp
+WMouUc44TnoxeqrqIRLMy1If6h9rFjvNE8UjNOtx1uzQR1pWjpkQA+zXVW2FuPJJ
+4cPGBM9GkvAvTGb1zoW0qUDgqV/brcimbJIuJ/CtkguJFGaZz0bYPnXHWHqBYOKe
+HVQD7i4x0Au2GpfNnaJ434YRawkVGOCvqqhR1fn41QOl1Z4X92a8ZAt7XfkQWw9y
+3owDZvQQrgR24wClp7NrcUQ1RqY4s6GCgtfvMM96ar2U9VjDta6uH3uUgm4MAekV
+W9sNMfMFIkUNRRwJbZGDLTQxM6vf4aKealKG8Sem7o1fNSXYbBwpE65bo9i/D4FW
+rgTCo7EmJd5Rc7Ispaa/RdjTv3dv/o4AL1gZOXT7iq+hqYaPFiUcOgRmzIBsTgPW
+dgYe7XBZ3Y+Zb6UYFJKfB/W/RbsvvjryQRIjBvKXCUP8npwnaH/eYNn+7ZhSI7aS
+MTkdI5B3p21HEyQ1Ph6bT5cahaOjgZFEC10Nbis7g7gwH9IkWsLe+XuQL9fIwhtj
+aMwvibMsEwsFWCE2PGufWaiEHHxeJqb1b/Y+09qQSqAnmUk1rKkHxpsnrx90xJPG
+fxRF5xb/Xcbp/0jXVmCq
+=CEw7
+-----END PGP SIGNATURE-----
+
+--k+w/mQv8wyuph6w0--

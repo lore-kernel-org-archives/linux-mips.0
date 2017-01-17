@@ -1,15 +1,18 @@
-Received: from mail-he1eur01on0117.outbound.protection.outlook.com ([104.47.0.117]:28255
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+Received: from mail-by2nam03on0087.outbound.protection.outlook.com ([104.47.42.87]:34334
+        "EHLO NAM03-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993889AbdAQRhykVpY0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 17 Jan 2017 18:37:54 +0100
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Subject: [PATCH] mips: rapidio: Drop dependency on PCI
-Date: Tue, 17 Jan 2017 18:37:39 +0100
-Message-ID: <20170117173739.28036-1-alexander.sverdlin@nokia.com>
+        id S23993890AbdAQR6ZVvVl0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 17 Jan 2017 18:58:25 +0100
+Subject: Re: [PATCH] octeon: prom_putchar() must be void
+References: <20170117173644.27984-1-alexander.sverdlin@nokia.com>
+From: David Daney <ddaney@caviumnetworks.com>
+Message-ID: <3cdd9280-1ef1-78a4-ea75-290b9c91cf93@caviumnetworks.com>
+Date: Tue, 17 Jan 2017 09:58:13 -0800
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <alexander.sverdlin@nokia.com>
+In-Reply-To: <20170117173644.27984-1-alexander.sverdlin@nokia.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <David.Daney@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,31 +22,52 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Cc: Alexander Sverdlin <alexander.sverdlin@nsn.com>, Alexander Sverdlin <alexander.sverdlin@nokia.com>, linux-mips@linux-mips.org
-Message-ID: <20170117173739.BJd8dEK1iFOYxsWycIEog7DTdLzMBNuAp4S_mHj4aCQ@z>
+To: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, David Daney <david.daney@cavium.com>, Aaro Koskinen <aaro.koskinen@nokia.com>, "Steven J. Hill" <steven.hill@cavium.com>, linux-mips@linux-mips.org
+Message-ID: <20170117175813.AkWLI7DI2xaC8XwJSk4tTa8V5Cooy2Kb7KGjSJrZZ4I@z>
 
-From: Alexander Sverdlin <alexander.sverdlin@nsn.com>
+On 01/17/2017 09:36 AM, Alexander Sverdlin wrote:
+> From: Alexander Sverdlin <alexander.sverdlin@nsn.com>
+>
+> Correct the function return type.
+>
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 
-Cavium Octeon is an example of the SoC where RAPIDIO works without PCI.
-So drop the unnecessary dependency.
+This will make it conflict with the declaration in
+drivers/watchdog/octeon-wdt-main.c
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Cc: linux-mips@linux-mips.org
----
- arch/mips/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+*Iff* you also fix the watchdog site, you can add Acked-by: David Daney 
+<david.daney@cavium.com>
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index b3c5bde43d34..a97fbd6cbe0a 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -3089,7 +3089,6 @@ source "drivers/pcmcia/Kconfig"
- 
- config RAPIDIO
- 	tristate "RapidIO support"
--	depends on PCI
- 	default n
- 	help
- 	  If you say Y here, the kernel will include drivers and
--- 
-2.11.0
+
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: David Daney <david.daney@cavium.com>
+> Cc: Aaro Koskinen <aaro.koskinen@nokia.com>
+> Cc: "Steven J. Hill" <steven.hill@cavium.com>
+> Cc: linux-mips@linux-mips.org
+> ---
+>  arch/mips/cavium-octeon/setup.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
+> index 9a2db1c013d9..bb613d3e5246 100644
+> --- a/arch/mips/cavium-octeon/setup.c
+> +++ b/arch/mips/cavium-octeon/setup.c
+> @@ -1095,7 +1095,7 @@ void __init plat_mem_setup(void)
+>   * Emit one character to the boot UART.	 Exported for use by the
+>   * watchdog timer.
+>   */
+> -int prom_putchar(char c)
+> +void prom_putchar(char c)
+>  {
+>  	uint64_t lsrval;
+>
+> @@ -1106,7 +1106,6 @@ int prom_putchar(char c)
+>
+>  	/* Write the byte */
+>  	cvmx_write_csr(CVMX_MIO_UARTX_THR(octeon_uart), c & 0xffull);
+> -	return 1;
+>  }
+>  EXPORT_SYMBOL(prom_putchar);
+>
+>

@@ -1,19 +1,19 @@
-Received: from mail-cys01nam02on0068.outbound.protection.outlook.com ([104.47.37.68]:34944
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993889AbdAQUAfMtrAm (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 17 Jan 2017 21:00:35 +0100
-Subject: Re: [PATCH 11/13] MIPS: octeon: avoid empty-body warning
-References: <20170117151911.4109452-1-arnd@arndb.de>
- <20170117151911.4109452-11-arnd@arndb.de>
-From: David Daney <ddaney@caviumnetworks.com>
-Message-ID: <4d7895e9-5554-8cfa-f33f-37f84c1d26db@caviumnetworks.com>
-Date: Tue, 17 Jan 2017 12:00:23 -0800
+Received: from mailapp01.imgtec.com ([195.59.15.196]:23870 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992078AbdARMMnAmmre (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Jan 2017 13:12:43 +0100
+Date: Wed, 18 Jan 2017 12:12:36 +0000
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH 2/13] KVM: MIPS: Pass type of fault down to
+ kvm_mips_map_page()
+Message-ID: <20170118121236.GA31545@jhogan-linux.le.imgtec.org>
+References: <201701181618464411994@zte.com.cn>
 MIME-Version: 1.0
-In-Reply-To: <20170117151911.4109452-11-arnd@arndb.de>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@cavium.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="PNTmBPCT7hxwcZjr"
+Content-Disposition: inline
+In-Reply-To: <201701181618464411994@zte.com.cn>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,60 +23,120 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Arnd Bergmann <arnd@arndb.de>, Ralf Baechle <ralf@linux-mips.org>, "Hill, Steven" <Steven.Hill@caviumnetworks.com>
-Cc: linux-mips@linux-mips.org, Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>, Vineet Gupta <vgupta@synopsys.com>, linux-kernel@vger.kernel.org
-Message-ID: <20170117200023.5ERXL7EtD1H1ftWWx1DidjNCIq_WEDLSICBWiwwJkY0@z>
+To: jiang.biao2@zte.com.cn
+Cc: linux-mips@linux-mips.org, pbonzini@redhat.com, rkrcmar@redhat.com, ralf@linux-mips.org, kvm@vger.kernel.org
+Message-ID: <20170118121236.8_UpfVEFSmqSnkOrdLpn8UOJXCbd5qSa3dvA5_meZ-8@z>
 
-On 01/17/2017 07:18 AM, Arnd Bergmann wrote:
-> gcc-6 reports a harmless build warning:
->
-> arch/mips/cavium-octeon/dma-octeon.c: In function 'octeon_dma_alloc_coherent':
-> arch/mips/cavium-octeon/dma-octeon.c:179:3: error: suggest braces around empty body in an 'else' statement [-Werror=empty-body]
->
-> We can fix this by rearranging the code slightly using the
-> IS_ENABLED() macro.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+--PNTmBPCT7hxwcZjr
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: David Daney <david.daney@cavium.com>
+Hi,
 
-Steven: Please test this patch.
+On Wed, Jan 18, 2017 at 04:18:46PM +0800, jiang.biao2@zte.com.cn wrote:
+> Hi,
+>=20
+> =EF=BC=9E I presume you mean from the saved host cause register in the VC=
+PU
+> =EF=BC=9E context (since intervening exceptions/interrupts will clobber t=
+he actual
+> =EF=BC=9E CP0 Cause register).
+> =EF=BC=9E=20
+> =EF=BC=9E It directly needs to know whether it can get away with a read-o=
+nly
+> =EF=BC=9E mapping, and although it directly depends on a GVA segment, it =
+doesn't
+> =EF=BC=9E necessarily relate to a memory access made by the guest.
+> =EF=BC=9E=20
+> =EF=BC=9E kvm_mips_map_page() is called via:
+> =EF=BC=9E=20
+> =EF=BC=9E - kvm_mips_handle_kseg0_tlb_fault()
+> =EF=BC=9E   for faults in guest KSeg0
+> =EF=BC=9E=20
+> =EF=BC=9E  - kvm_mips_handle_mapped_seg_tlb_fault()
+> =EF=BC=9E    for faults in guest TLB mapped segments
+> =EF=BC=9E=20
+> =EF=BC=9E From these functions:
+> =EF=BC=9E=20
+> =EF=BC=9E  - kvm_trap_emul_handle_tlb_mod() (write_fault =3D true)
+> =EF=BC=9E   in response to a write to a read-only page (exccode =3D MOD)
+> =EF=BC=9E=20
+> =EF=BC=9E - kvm_trap_emul_handle_tlb_miss() (write_fault =3D true or fals=
+e)
+> =EF=BC=9E   in response to a read or write when TLB mapping absent or inv=
+alid
+> =EF=BC=9E   (exccode =3D TLBL/TLBS)
+> =EF=BC=9E
+> =EF=BC=9E=20
+> =EF=BC=9E So there is a many:many mapping from exccode to write_fault for=
+ these
+> =EF=BC=9E exccodes:
+> =EF=BC=9E=20
+> =EF=BC=9E  - CPU (CoProcessor Unusable)
+> =EF=BC=9E    could be reading instruction or servicing a CACHE instruction
+> =EF=BC=9E    (write_fault =3D false) or replacing an instruction (write_f=
+ault =3D
+> =EF=BC=9E    true).
+>=20
+> =EF=BC=9E  - MOD, TLBS, ADES
+> =EF=BC=9E   could be the write itself (write_fault =3D true), or a read o=
+f the
+> =EF=BC=9E   instruction triggering the exception or the prior branch inst=
+ruction
+> =EF=BC=9E   (write_fault =3D false).
+> =EF=BC=9E=20
+> Thanks for the detail, it is more complicted than I thought.
+>=20
+> But there may be still bad smell from the long parameters, espacially fro=
+m=20
+>=20
+>=20
+> bool type ones. =20
 
+Whats wrong with bool parameters?
 
-Thanks,
-David Daney
+It needs a GPA mapping created, either for a read or a write depending
+on the caller. bool would seem ideally suited for just such a situation,
+and in fact its exactly what the KVM GPA fault code path does to pass
+whether the page needs to be writable:
 
-> ---
->  arch/mips/cavium-octeon/dma-octeon.c | 15 +++++----------
->  1 file changed, 5 insertions(+), 10 deletions(-)
->
-> diff --git a/arch/mips/cavium-octeon/dma-octeon.c b/arch/mips/cavium-octeon/dma-octeon.c
-> index fd69528b24fb..1226965e1e4f 100644
-> --- a/arch/mips/cavium-octeon/dma-octeon.c
-> +++ b/arch/mips/cavium-octeon/dma-octeon.c
-> @@ -164,19 +164,14 @@ static void *octeon_dma_alloc_coherent(struct device *dev, size_t size,
->  	/* ignore region specifiers */
->  	gfp &= ~(__GFP_DMA | __GFP_DMA32 | __GFP_HIGHMEM);
->
-> -#ifdef CONFIG_ZONE_DMA
-> -	if (dev == NULL)
-> +	if (IS_ENABLED(CONFIG_ZONE_DMA) && dev == NULL)
->  		gfp |= __GFP_DMA;
-> -	else if (dev->coherent_dma_mask <= DMA_BIT_MASK(24))
-> +	else if (IS_ENABLED(CONFIG_ZONE_DMA) &&
-> +		 dev->coherent_dma_mask <= DMA_BIT_MASK(24))
->  		gfp |= __GFP_DMA;
-> -	else
-> -#endif
-> -#ifdef CONFIG_ZONE_DMA32
-> -	     if (dev->coherent_dma_mask <= DMA_BIT_MASK(32))
-> +	else if (IS_ENABLED(CONFIG_ZONE_DMA32) &&
-> +		 dev->coherent_dma_mask <= DMA_BIT_MASK(32))
->  		gfp |= __GFP_DMA32;
-> -	else
-> -#endif
-> -		;
->
->  	/* Don't invoke OOM killer */
->  	gfp |= __GFP_NORETRY;
->
+kvm_mips_map_page() -> gfn_to_pfn_prot() -> __gfn_to_pfn_memslot() ->
+hva_to_pfn() -> hva_to_pfn_slow().
+
+so all this really does is extend that pattern up the other way as
+necessary to be able to provide that information to gfn_to_pfn_prot().
+
+Cheers
+James
+
+>=20
+>=20
+> Maybe there is better way to handle that, but I can not figure it out rig=
+ht now=20
+>=20
+>=20
+> because of the complexity.
+
+--PNTmBPCT7hxwcZjr
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJYf1utAAoJEGwLaZPeOHZ6ftcQAL8jD4XSQweX6Ayh7FRjNyiq
+Hy7ajtlGjKvH/YuidrUvkqRxjB4XOqwVfFAaGPURiA9d7PUv8UKfbKSQsxCfysM+
+A+K6jbEPi1D2tQIpB3bhPlaYTmbrcCkhG5bppUgmYHU4X0Y+Iq8rHisQXl7jPxZH
+D0vuEp1s4GYJky2BNodgY07gKs2iDCnY9BQNRjMVa2RkMYNh8q8MLSACJsIny6kX
+eM3LtdkGU6Qz/clia7uz0yxK605FstRT5rulAwqz30jTnzJyEIzcXRAhEAWb0Lr9
+iIdhiWy3UFGVQ4EoVtDvUWdHf02WtmE/FM/WRvW0I3H+9X5/U5ed1zO8HkrqGVnY
+6mG/XZEYceNYr1VjnoAtafrcK8HSC8CHOGf2nvpmCbYIYF0kNYF2NmqhhWstLt13
+Hx1d+YnWeTu+j5d3UrC9eJU69OXf3X4r4kAH6k3Ed+yJbRYFgDT8fTQSySGmeESD
+YZDzC+lHsnev0zI8XFYeCvJOR3LzzFRu8LiiJVp8IcX/HYWY5oJ8LxXUq4WuMhwe
+c4qMhWgycYA60pATdIaQ6D2rZabgRJfXAlwsrcN1XCpX6iRt4dYotHXd93ENEgrP
+gvD9iAhF1cO6gnFXby31fjjzDfGDbu8oIGd9uwTCKNj13Bsm8wRQAon4+thfUnQm
+YcyQKm3LiQ8X+mmecf4Q
+=PrX6
+-----END PGP SIGNATURE-----
+
+--PNTmBPCT7hxwcZjr--

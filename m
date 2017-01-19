@@ -1,18 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:23870 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:28827 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992078AbdARMMnAmmre (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Jan 2017 13:12:43 +0100
-Date: Wed, 18 Jan 2017 12:12:36 +0000
+        by eddie.linux-mips.org with ESMTP id S23993014AbdASJIJnpgm0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 19 Jan 2017 10:08:09 +0100
+Date: Thu, 19 Jan 2017 09:08:03 +0000
 From: James Hogan <james.hogan@imgtec.com>
 Subject: Re: [PATCH 2/13] KVM: MIPS: Pass type of fault down to
  kvm_mips_map_page()
-Message-ID: <20170118121236.GA31545@jhogan-linux.le.imgtec.org>
-References: <201701181618464411994@zte.com.cn>
+Message-ID: <20170119090803.GE31545@jhogan-linux.le.imgtec.org>
+References: <201701191629518310684@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="PNTmBPCT7hxwcZjr"
+        protocol="application/pgp-signature"; boundary="r7U+bLA8boMOj+mD"
 Content-Disposition: inline
-In-Reply-To: <201701181618464411994@zte.com.cn>
+In-Reply-To: <201701191629518310684@zte.com.cn>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -25,118 +25,83 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: jiang.biao2@zte.com.cn
 Cc: linux-mips@linux-mips.org, pbonzini@redhat.com, rkrcmar@redhat.com, ralf@linux-mips.org, kvm@vger.kernel.org
-Message-ID: <20170118121236.8_UpfVEFSmqSnkOrdLpn8UOJXCbd5qSa3dvA5_meZ-8@z>
+Message-ID: <20170119090803.tugZhjjn5bBe9Nqz4a9BEryDrRmY_6cmXQy8VZFiEYQ@z>
 
---PNTmBPCT7hxwcZjr
+--r7U+bLA8boMOj+mD
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-On Wed, Jan 18, 2017 at 04:18:46PM +0800, jiang.biao2@zte.com.cn wrote:
-> Hi,
->=20
-> =EF=BC=9E I presume you mean from the saved host cause register in the VC=
-PU
-> =EF=BC=9E context (since intervening exceptions/interrupts will clobber t=
-he actual
-> =EF=BC=9E CP0 Cause register).
-> =EF=BC=9E=20
-> =EF=BC=9E It directly needs to know whether it can get away with a read-o=
-nly
-> =EF=BC=9E mapping, and although it directly depends on a GVA segment, it =
-doesn't
-> =EF=BC=9E necessarily relate to a memory access made by the guest.
-> =EF=BC=9E=20
-> =EF=BC=9E kvm_mips_map_page() is called via:
-> =EF=BC=9E=20
-> =EF=BC=9E - kvm_mips_handle_kseg0_tlb_fault()
-> =EF=BC=9E   for faults in guest KSeg0
-> =EF=BC=9E=20
-> =EF=BC=9E  - kvm_mips_handle_mapped_seg_tlb_fault()
-> =EF=BC=9E    for faults in guest TLB mapped segments
-> =EF=BC=9E=20
-> =EF=BC=9E From these functions:
-> =EF=BC=9E=20
-> =EF=BC=9E  - kvm_trap_emul_handle_tlb_mod() (write_fault =3D true)
-> =EF=BC=9E   in response to a write to a read-only page (exccode =3D MOD)
-> =EF=BC=9E=20
-> =EF=BC=9E - kvm_trap_emul_handle_tlb_miss() (write_fault =3D true or fals=
-e)
-> =EF=BC=9E   in response to a read or write when TLB mapping absent or inv=
-alid
-> =EF=BC=9E   (exccode =3D TLBL/TLBS)
-> =EF=BC=9E
-> =EF=BC=9E=20
-> =EF=BC=9E So there is a many:many mapping from exccode to write_fault for=
- these
-> =EF=BC=9E exccodes:
-> =EF=BC=9E=20
-> =EF=BC=9E  - CPU (CoProcessor Unusable)
-> =EF=BC=9E    could be reading instruction or servicing a CACHE instruction
-> =EF=BC=9E    (write_fault =3D false) or replacing an instruction (write_f=
-ault =3D
-> =EF=BC=9E    true).
->=20
-> =EF=BC=9E  - MOD, TLBS, ADES
-> =EF=BC=9E   could be the write itself (write_fault =3D true), or a read o=
-f the
-> =EF=BC=9E   instruction triggering the exception or the prior branch inst=
-ruction
-> =EF=BC=9E   (write_fault =3D false).
-> =EF=BC=9E=20
-> Thanks for the detail, it is more complicted than I thought.
->=20
-> But there may be still bad smell from the long parameters, espacially fro=
-m=20
+On Thu, Jan 19, 2017 at 04:29:51PM +0800, jiang.biao2@zte.com.cn wrote:
+> Hi, James
 >=20
 >=20
-> bool type ones. =20
+>=20
+>=20
+>=20
+>=20
+>=20
+> =EF=BC=9E Whats wrong with bool parameters?
+> =EF=BC=9E=20
+> =EF=BC=9E It needs a GPA mapping created, either for a read or a write de=
+pending
+> =EF=BC=9E on the caller. bool would seem ideally suited for just such a s=
+ituation,
+> =EF=BC=9E and in fact its exactly what the KVM GPA fault code path does t=
+o pass
+> =EF=BC=9E whether the page needs to be writable:
+> =EF=BC=9E=20
+> =EF=BC=9E kvm_mips_map_page() -=EF=BC=9E gfn_to_pfn_prot() -=EF=BC=9E __g=
+fn_to_pfn_memslot() -=EF=BC=9E
+> =EF=BC=9E hva_to_pfn() -=EF=BC=9E hva_to_pfn_slow().
+> =EF=BC=9E=20
+> =EF=BC=9E so all this really does is extend that pattern up the other way=
+ as
+> =EF=BC=9E necessary to be able to provide that information to gfn_to_pfn_=
+prot().
+> Bool parameter may make the code less readable.  :-)
+>=20
+>=20
+> The way used is indeed consistent with the exist pattern, but the tramp d=
+ata=20
+>=20
+>=20
+> passed around and long parameters list maybe code smell(not for sure for=
+=20
+>=20
+>=20
+> the kernel :-) ),  which may be improved by some means.
+>=20
+> No offense,  just personal opinion. :-)
 
-Whats wrong with bool parameters?
+No offense taken :-)
 
-It needs a GPA mapping created, either for a read or a write depending
-on the caller. bool would seem ideally suited for just such a situation,
-and in fact its exactly what the KVM GPA fault code path does to pass
-whether the page needs to be writable:
-
-kvm_mips_map_page() -> gfn_to_pfn_prot() -> __gfn_to_pfn_memslot() ->
-hva_to_pfn() -> hva_to_pfn_slow().
-
-so all this really does is extend that pattern up the other way as
-necessary to be able to provide that information to gfn_to_pfn_prot().
+Thanks again for reviewing,
 
 Cheers
 James
 
->=20
->=20
-> Maybe there is better way to handle that, but I can not figure it out rig=
-ht now=20
->=20
->=20
-> because of the complexity.
-
---PNTmBPCT7hxwcZjr
+--r7U+bLA8boMOj+mD
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJYf1utAAoJEGwLaZPeOHZ6ftcQAL8jD4XSQweX6Ayh7FRjNyiq
-Hy7ajtlGjKvH/YuidrUvkqRxjB4XOqwVfFAaGPURiA9d7PUv8UKfbKSQsxCfysM+
-A+K6jbEPi1D2tQIpB3bhPlaYTmbrcCkhG5bppUgmYHU4X0Y+Iq8rHisQXl7jPxZH
-D0vuEp1s4GYJky2BNodgY07gKs2iDCnY9BQNRjMVa2RkMYNh8q8MLSACJsIny6kX
-eM3LtdkGU6Qz/clia7uz0yxK605FstRT5rulAwqz30jTnzJyEIzcXRAhEAWb0Lr9
-iIdhiWy3UFGVQ4EoVtDvUWdHf02WtmE/FM/WRvW0I3H+9X5/U5ed1zO8HkrqGVnY
-6mG/XZEYceNYr1VjnoAtafrcK8HSC8CHOGf2nvpmCbYIYF0kNYF2NmqhhWstLt13
-Hx1d+YnWeTu+j5d3UrC9eJU69OXf3X4r4kAH6k3Ed+yJbRYFgDT8fTQSySGmeESD
-YZDzC+lHsnev0zI8XFYeCvJOR3LzzFRu8LiiJVp8IcX/HYWY5oJ8LxXUq4WuMhwe
-c4qMhWgycYA60pATdIaQ6D2rZabgRJfXAlwsrcN1XCpX6iRt4dYotHXd93ENEgrP
-gvD9iAhF1cO6gnFXby31fjjzDfGDbu8oIGd9uwTCKNj13Bsm8wRQAon4+thfUnQm
-YcyQKm3LiQ8X+mmecf4Q
-=PrX6
+iQIcBAEBCAAGBQJYgIHNAAoJEGwLaZPeOHZ6IyQP/jllVPA7nALx5P8aUJgaGv+4
+AOhW44B+iNtVkPyPZfgpf+m2EKAmx7E8UXdlkZpRQN0Mqbe6Xd/qD+xd/XDhZjow
+/HaFmJBZpbbsFmyBlQAA9r/Kgxl0G/u+8oToJ476LHu4y8zf18w6EuZpSgsf9x0S
+MwrZ/ZfvExssY9FnYyUivLnL0nZ0v7b1by7hk4MfT0q42OC098pjOImuqap67me4
+hBC8cVO9e0R6OaKQWCb20NRLRV0DqalU7dd0h+ZbFkkb79JW4yHSdqGGrBCT76PY
+EDSWu3huhsq3q5aZp84MKAFx5ZiaU/WazKSTYeE0AdzehEfQ4R8YbkCJU/egzHRc
+Nn0z6ZyaCgB49YELO3GeQfIWm6wOHSGvxchI/3w8a3KfSnWcabR/XcuxBGcSuNNh
+G1kpxBc2M4oE9L4aNNfUvD4l24+wCq4Xhlm09b1XOfrJ9O3q4a63bGiW8Rne1o5J
+WHwV90wzU0kqKwWSwt3l9rhXL0vsB5nUWFLvcCRshjlW1EspvvYMGeP/BkwpoiAE
+mt3d+19uQ6fjsDGOtWhMrLTVq4UsD2nqtsKerHLfjiDpiwhSEQuDEfXlqRCmS0Ak
+VhwuiVKVdbVUSEVvS2aoZd5dqNDmz3hzuA6zzDBY8mmBKEXov/Ok9+B+Wo/vshLX
+ZFJr/+506JixbFaKiLEm
+=22k9
 -----END PGP SIGNATURE-----
 
---PNTmBPCT7hxwcZjr--
+--r7U+bLA8boMOj+mD--

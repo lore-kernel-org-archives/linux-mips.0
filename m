@@ -1,16 +1,18 @@
-Received: from mga02.intel.com ([134.134.136.20]:50553 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992029AbdAVRuH4scSs (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 22 Jan 2017 18:50:07 +0100
-Date: Mon, 23 Jan 2017 01:49:25 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH v2 04/14] GPIO: Add gpio-ingenic driver
-Message-ID: <201701230130.T42P6EcW%fengguang.wu@intel.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:44204 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23990506AbdAWHzLJCnzi (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Jan 2017 08:55:11 +0100
+Subject: Re: [PATCH 00/21] MIPS memblock: Remove bootmem code and switch to
+ NO_BOOTMEM
+References: <1482113266-13207-1-git-send-email-fancer.lancer@gmail.com>
+From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Message-ID: <7c333d34-fda6-9302-b84e-c0785c23733e@imgtec.com>
+Date: Mon, 23 Jan 2017 08:55:02 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170122144947.16158-5-paul@crapouillou.net>
-Return-Path: <fengguang.wu@intel.com>
+In-Reply-To: <1482113266-13207-1-git-send-email-fancer.lancer@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Marcin.Nowakowski@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,25 +22,85 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: kbuild-all@01.org, Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Ulf Hansson <ulf.hansson@linaro.org>, Boris Brezillon <boris.brezillon@free-electrons.com>, Thierry Reding <thierry.reding@gmail.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Maarten ter Huurne <maarten@treewalker.org>, Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org, linux-fbdev@vger.kernel.org, james.hogan@imgtec.com
-Message-ID: <20170122174925.vT7KkXcBiDaB_U9x9VObQN1s5HMGECZS2iKP7I9zGSE@z>
+To: Serge Semin <fancer.lancer@gmail.com>, ralf@linux-mips.org, paul.burton@imgtec.com, rabinv@axis.com, matt.redfearn@imgtec.com, james.hogan@imgtec.com, alexander.sverdlin@nokia.com, robh+dt@kernel.org, frowand.list@gmail.com
+Cc: Sergey.Semin@t-platforms.ru, linux-mips@linux-mips.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <20170123075502.n4N9MUxcDzIE6QESdQpYHGRKAmW_LbUQDT0UnycEK5c@z>
 
-Hi Paul,
+Hi Serge,
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v4.10-rc4 next-20170120]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
-
-url:    https://github.com/0day-ci/linux/commits/Paul-Cercueil/Ingenic-JZ4740-JZ4780-pinctrl-driver/20170122-232326
+Thanks for this patch series, it's really useful. I've tested it on 
+Malta and Ci40 and it seems to work well (I've posted a few small 
+comments separately).
 
 
-coccinelle warnings: (new ones prefixed by >>)
+On 19.12.2016 03:07, Serge Semin wrote:
+> Most of the modern platforms supported by linux kernel have already
+> been cleaned up of old bootmem allocator by moving to nobootmem
+> interface wrapping up the memblock. This patchset is the first
+> attempt to do the similar improvement for MIPS for UMA systems
+> only.
+>
+> Even though the porting was performed as much careful as possible
+> there still might be problem with support of some platforms,
+> especially Loonson3 or SGI IP27, which perform early memory manager
+> initialization by their self.
 
->> drivers/gpio/gpio-ingenic.c:101:2-3: Unneeded semicolon
+> The patchset is split so individual patch being consistent in
+> functional and buildable ways. But the MIPS early memory manager
+> will work correctly only either with or without the whole set being
+> applied. For the same reason a reviewer should not pay much attention
+> to methods bootmem_init(), arch_mem_init(), paging_init() and
+> mem_init() until they are fully refactored.
 
-Please review and possibly fold the followup patch.
+I'm not sure this can be merged that way? It would be up to Ralf to 
+decide, but it is generally expected that all intermediate patches not 
+only build, but also work correctly. I understand that this might be 
+difficult to achieve given the scale of changes required here.
 
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+> The patchset is applied on top of kernel v4.9.
+
+Can you please work on cleaning up the issues discussed in the comments 
+so far as well as rebasing (and updating) the changes onto linux-next? 
+There are a few patches I made related to kexec and kernel relocation 
+that will force changes in your code (although I admit that the changes 
+I did for kexec/relocation were in some places unnecessarily complex 
+because of the mess in the bootmem handling in MIPS that you are now 
+trying to clean up).
+
+
+Thanks,
+Marcin
+
+> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+>
+> Serge Semin (21):
+>   MIPS memblock: Unpin dts memblock sanity check method
+>   MIPS memblock: Add dts mem and reserved-mem callbacks
+>   MIPS memblock: Alter traditional add_memory_region() method
+>   MIPS memblock: Alter user-defined memory parameter parser
+>   MIPS memblock: Alter initrd memory reservation method
+>   MIPS memblock: Alter kexec-crashkernel parameters parser
+>   MIPS memblock: Alter elfcorehdr parameters parser
+>   MIPS memblock: Move kernel parameters parser into individual method
+>   MIPS memblock: Move kernel memory reservation to individual method
+>   MIPS memblock: Discard bootmem allocator initialization
+>   MIPS memblock: Add memblock sanity check method
+>   MIPS memblock: Add memblock print outs in debug
+>   MIPS memblock: Add memblock allocator initialization
+>   MIPS memblock: Alter IO resources initialization method
+>   MIPS memblock: Alter weakened MAAR initialization method
+>   MIPS memblock: Alter paging initialization method
+>   MIPS memblock: Alter high memory freeing method
+>   MIPS memblock: Slightly improve buddy allocator init method
+>   MIPS memblock: Add print out method of kernel virtual memory layout
+>   MIPS memblock: Add free low memory test method call
+>   MIPS memblock: Deactivate old bootmem allocator
+>
+>  arch/mips/Kconfig        |   2 +-
+>  arch/mips/kernel/prom.c  |  32 +-
+>  arch/mips/kernel/setup.c | 958 +++++++++++++++--------------
+>  arch/mips/mm/init.c      | 234 ++++---
+>  drivers/of/fdt.c         |  47 +-
+>  include/linux/of_fdt.h   |   1 +
+>  6 files changed, 739 insertions(+), 535 deletions(-)
+>

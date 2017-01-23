@@ -1,16 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:58260 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:2714 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991976AbdAWJSnS2cxc (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Jan 2017 10:18:43 +0100
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Subject: [PATCH v2 2/2] MIPS: ptrace: disable watchpoints if hit in kernel mode
-Date: Mon, 23 Jan 2017 10:18:33 +0100
-Message-ID: <1485163113-21780-2-git-send-email-marcin.nowakowski@imgtec.com>
-In-Reply-To: <1485163113-21780-1-git-send-email-marcin.nowakowski@imgtec.com>
-References: <1485163113-21780-1-git-send-email-marcin.nowakowski@imgtec.com>
+        with ESMTP id S23992123AbdAWOIYuLV4F (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Jan 2017 15:08:24 +0100
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Subject: [PATCH] MIPS: Generic: Fix big endian CPUs on generic machine
+Date: Mon, 23 Jan 2017 14:08:13 +0000
+Message-ID: <1485180493-22949-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Marcin.Nowakowski@imgtec.com>
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,64 +19,35 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20170123091833.vgpvN3MeMoDC3g-FZCi7sIU185K503_dyx2VWDiBznw@z>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, linux-kernel@vger.kernel.org
+Message-ID: <20170123140813.RAWDt52XVu0YdCSSISIM6oAkqdpRmCjfBi4ygxAa4QU@z>
 
-If a watchpoint is hit when in kernel mode it is possible for the system
-to end up in an infinite loop processing the watchpoint. This can happen
-if a user sets a watchpoint in the kernel addess space (which is
-possible in certain EVA configurations) or if a user sets a watchpoint
-in a user area accessed directly by the kernel (eg. a user buffer
-accessed via a syscall).
+Big endian CPUs require SWAP_IO_SPACE enabled to swap accesses to little
+endian peripherals.
 
-To prevent the infinite loop ensure that the watchpoint was hit in
-userspace, and clear the watchpoint registers otherwise.
+Without this patch, big endian kernels fail to communicate with little
+endian periperals, such as PCI devices, on QEMU and FPGA based
+platforms.
 
-As this change could mean that a watchpoint is not hit when it should be
-(when returning to the interrupted traced task on exception exit), the
-resume_userspace path needs to be extended to conditionally restore the
-watchpoint configuration. If a task switch occurs when returning to
-userspace, the watchpoints will be restored in a typical way in the
-switch_to() handler.
+Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+Fixes: eed0eabd12ef ("MIPS: generic: Introduce generic DT-based board support")
 
-Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
 ---
- arch/mips/kernel/entry.S | 9 ++++++++-
- arch/mips/kernel/traps.c | 2 +-
- 2 files changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/kernel/entry.S b/arch/mips/kernel/entry.S
-index 7791840..1982fc6 100644
---- a/arch/mips/kernel/entry.S
-+++ b/arch/mips/kernel/entry.S
-@@ -55,7 +55,14 @@ resume_userspace:
- 	LONG_L	a2, TI_FLAGS($28)	# current->work
- 	andi	t0, a2, _TIF_WORK_MASK	# (ignoring syscall_trace)
- 	bnez	t0, work_pending
--	j	restore_all
-+#ifdef CONFIG_HARDWARE_WATCHPOINTS
-+	li	t0, _TIF_LOAD_WATCH
-+	and	t0, a2, t0
-+	beqz	t0, 1f
-+	PTR_L	a0, TI_TASK($28)
-+	jal	mips_install_watch_registers
-+#endif
-+1:	j	restore_all
- 
- #ifdef CONFIG_PREEMPT
- resume_kernel:
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 6c7f9d7..5371cb0 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -1525,7 +1525,7 @@ asmlinkage void do_watch(struct pt_regs *regs)
- 	 * their values and send SIGTRAP.  Otherwise another thread
- 	 * left the registers set, clear them and continue.
- 	 */
--	if (test_tsk_thread_flag(current, TIF_LOAD_WATCH)) {
-+	if (user_mode(regs) && test_tsk_thread_flag(current, TIF_LOAD_WATCH)) {
- 		mips_read_watch_registers();
- 		local_irq_enable();
- 		force_sig_info(SIGTRAP, &info, current);
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index b3c5bde43d34..82dff20edaf9 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -94,6 +94,7 @@ config MIPS_GENERIC
+ 	select PCI_DRIVERS_GENERIC
+ 	select PINCTRL
+ 	select SMP_UP if SMP
++	select SWAP_IO_SPACE
+ 	select SYS_HAS_CPU_MIPS32_R1
+ 	select SYS_HAS_CPU_MIPS32_R2
+ 	select SYS_HAS_CPU_MIPS32_R6
 -- 
 2.7.4

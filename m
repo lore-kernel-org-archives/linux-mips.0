@@ -1,20 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:40982 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23991346AbdAXSy6aFege (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 24 Jan 2017 19:54:58 +0100
-Date: Tue, 24 Jan 2017 18:54:52 +0000
-From: James Hogan <james.hogan@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:18033 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993939AbdAXUwl1q7kS (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 24 Jan 2017 21:52:41 +0100
+Date: Tue, 24 Jan 2017 20:52:22 +0000
+From: "Maciej W. Rozycki" <macro@imgtec.com>
 Subject: Re: [PATCH v2 1/2] MIPS: ptrace: disallow setting watchpoints in
  kernel address space
-Message-ID: <20170124185452.GL29015@jhogan-linux.le.imgtec.org>
-References: <1485163113-21780-1-git-send-email-marcin.nowakowski@imgtec.com>
- <alpine.DEB.2.00.1701232258380.13564@tp.orcam.me.uk>
+In-Reply-To: <20170124185452.GL29015@jhogan-linux.le.imgtec.org>
+Message-ID: <alpine.DEB.2.00.1701241909540.13564@tp.orcam.me.uk>
+References: <1485163113-21780-1-git-send-email-marcin.nowakowski@imgtec.com> <alpine.DEB.2.00.1701232258380.13564@tp.orcam.me.uk> <20170124185452.GL29015@jhogan-linux.le.imgtec.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FnOKg9Ah4tDwTfQS"
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.00.1701232258380.13564@tp.orcam.me.uk>
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,106 +21,88 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Maciej W. Rozycki" <macro@imgtec.com>
+To: James Hogan <james.hogan@imgtec.com>
 Cc: Marcin Nowakowski <marcin.nowakowski@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20170124185452.60ZYG128j892UgmnJNr45ujRStvAVIT7onpPsxI1-oo@z>
+Message-ID: <20170124205222.vu9Hh6g0jp89T3SFXZ0K3rqAUjh73dAt1S15VChdcLA@z>
 
---FnOKg9Ah4tDwTfQS
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, 24 Jan 2017, James Hogan wrote:
 
-Hi Maciej,
+> >  Can't for example the low-level exception handling entry/exit code be 
+> > moved out of the way of the EVA overlap range and then all watchpoints 
+> > masked for the duration of kernel mode execution?  This would be quite 
+> > expensive, however it could only be executed if a task flag indicates 
+> > watchpoints are being used.
+> 
+> That doesn't cover data watches. RAM would still need accessing, e.g. to
+> save/restore the watch state from the thread context, or even to read
+> the task flag, and stack accesses in C code.
 
-On Tue, Jan 24, 2017 at 05:09:32PM +0000, Maciej W. Rozycki wrote:
-> On Mon, 23 Jan 2017, Marcin Nowakowski wrote:
->=20
-> > With certain EVA configurations it is possible for the kernel address
-> > space to overlap user address space, which allows the user to set
-> > watchpoints on kernel addresses via ptrace.
-> >=20
-> > If a watchpoint is set in the watch exception handling code (after
-> > exception level has been cleared) then the system will hang in an
-> > infinite loop when hitting a watchpoint while trying to process it.
-> >=20
-> > To prevent that simply disallow placing any watchpoints at addresses
-> > above start of kernel that overlap userspace.
->=20
->  This can be severely crippling for user debugging.  Is there no better=
-=20
-> way?
+ All the critical data structures would have to be outside the EVA 
+overlap.
 
-See the v1 patches, but as you say below, an architectural fix is vastly
-preferable. Other proposed solutions have so far added complexity and
-fragility, while struggling to completely plug the original problem.
+> The only safe way for it to work would be to somehow disable or inhibit 
+> watchpoints before clearing EXL, and re-enable them after setting EXL, 
+> though you'd still get a loop of deferred watchpoints if it hit on the 
+> way out to user mode unless cleared at the last moment before ERET.
 
->=20
->  Can't for example the low-level exception handling entry/exit code be=20
-> moved out of the way of the EVA overlap range and then all watchpoints=20
-> masked for the duration of kernel mode execution?  This would be quite=20
-> expensive, however it could only be executed if a task flag indicates=20
-> watchpoints are being used.
+ Ah, I forgot about CP0.Cause.WP -- is it not enough to clear the bit to 
+have any pending exception cancelled?  If so (and the architecture manual 
+is actually clear that it is) then it looks like we have a solution and we 
+don't have to place any code or data specially, although it'll have to be 
+carefully coded.
 
-That doesn't cover data watches. RAM would still need accessing, e.g. to
-save/restore the watch state from the thread context, or even to read
-the task flag, and stack accesses in C code. The only safe way for it to
-work would be to somehow disable or inhibit watchpoints before clearing
-EXL, and re-enable them after setting EXL, though you'd still get a loop
-of deferred watchpoints if it hit on the way out to user mode unless
-cleared at the last moment before ERET.
+> > Alternatively perhaps we could clobber 
+> > CP0.EntryHi.ASID, at least temporarily; that would be cheaper.
+> 
+> Kernel mode still needs to access the user address space.
 
-> Alternatively perhaps we could clobber=20
-> CP0.EntryHi.ASID, at least temporarily; that would be cheaper.
+ Sure, that's why it would have to be temporary.  Low-level exception 
+entry/exit code is not supposed to have a need to access user memory.
 
-Kernel mode still needs to access the user address space.
+ So we can put aside a certain ASID value, say 0 (for easy pasting with 
+INS from $0), and never use it for a real context.  Then it can be cleared 
+right away at the general exception entry point if EVA is in use, say:
 
-Alternatively we could set WatchHi.ASID to a reserved one, and only
-clear/set the WatchHi.G bit (to bypass the ASID match) at the first/last
-moment while EXL=3D1. It still wouldn't protect against code watches
-around there exposing the kernel address of that code by the resulting
-hang though, so would need to move the ebase out of the overlap range
-too (which would have to be platform specific).
+	<d>mfc0	$k0, $10
+	<d>ins	$k0, $zero, 0, 10
+	<d>mtc0	$k0, $10
 
-Cheers
-James
+(there'll be a hazard here, but we can clear it later on if needed).  
+There is no neeed to save the old ASID as we can retrieve the original 
+from our data structures.
 
->=20
->  Overall I think this situation is asking for a watchpoint flag to be=20
-> added to inhibit hits in the kernel mode in hardware; for completeness=20
-> this probably actually ought to be a field to cover the kernel, superviso=
-r=20
-> and user modes separately -- either a plain bitmask for arbitrary control=
-=20
-> or an encoded value similar to CP0.Status.KSU which would indicate the=20
-> most privileged mode to accept a watchpoint in.
->=20
->  I had a recollection of such a facility already being available for JTAG=
-=20
-> debugging, but I can't track it down in the specification, so perhaps it=
-=20
-> was for another architecture and it would be completely new for ours.
->=20
->   Maciej
+ Then we can proceed with the usual switch to the kernel mode, switching 
+stacks, saving registers, etc.  We can then check CP0.Cause.WP and stash 
+it away for further processing if needed (though discarding it would I 
+think be the usual if not only choice) and clear, with a hazard barrier, 
+right before CP0.Status.EXL is cleared.
 
---FnOKg9Ah4tDwTfQS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+ Now that we're in the regular kernel mode, with ASID still set to 0, we 
+can check if process tracing has been enabled and if so, then iterate over 
+the watchpoints registers masking them all.  At this point we can restore 
+the correct ASID in CP0.EntryHi and proceed with the exception handler.
 
------BEGIN PGP SIGNATURE-----
+ And then we'd do the reverse in the exception epilogue, only restoring 
+the ASID as the last instruction before final ERET.
 
-iQIcBAEBCAAGBQJYh6L1AAoJEGwLaZPeOHZ6eJMQAJ0r/0mXKVxsBTe0rSt2uGfe
-emYzxLGBCxHF8NxzKk7Hp2rco8g5WJA59pllAV8CqziK+NHdB2i6sbK1UpQIgTG9
-dkRIToNfhx+XenOYZBu3I+fT1cegpfNExS+p7qSsCnNRWCMJKIiaFzxoIPXtLI3a
-ejF5rZGN+AawlOyLaC4MjLvoNcUnv6xdiOlJtO0pBb+1RZLvZMOwwt4iw5452cwO
-kPVQUX4Z2/k0BvHNSEmGllrO8dexo3JnRS1z3JpGiuWguRV8AryaMWNCntiPPrAj
-R4BMB8I9sDRfhFGiYMVGyTiFHkQZAy2tUp5uPIju8NOtCeMpylcbDpIPwdxfikLs
-jGTMOSe4DpfX1hBI02NoTAswQxHNV46pkrNri6/fGCinrGhiTn5Gdm3pL6ALu36h
-/JFJm1j7Rnupi1UhHFstLndiCS+jh4EToOFmSXBHJ29o73fx7slJi5jjNxnXnH8k
-yyJgIQcNBmnKKN02rl7gjbARQjhj8DlBDOxnkF0LKKauTqdscetFWdCY9+RLcIBl
-SIx0bzgyXRPYWZ9t1lrNwL5wqCS9tn/RWpVCLMHYm7Qpx9VwTrYVheLnzaKqSw/a
-ZI/7dffWesmPUcY4mfX3Qwx9Bos3yNHVa7U/ITZKsu5ZFPeW9H/fIiazLDMoUTmz
-vg4/uG2haZyX39+bbC35
-=bIQs
------END PGP SIGNATURE-----
+> Alternatively we could set WatchHi.ASID to a reserved one, and only
+> clear/set the WatchHi.G bit (to bypass the ASID match) at the first/last
+> moment while EXL=1. It still wouldn't protect against code watches
+> around there exposing the kernel address of that code by the resulting
+> hang though, so would need to move the ebase out of the overlap range
+> too (which would have to be platform specific).
 
---FnOKg9Ah4tDwTfQS--
+ You'd still have to iterate over all WatchHi registers, a variable number 
+up to 8 architecturally, which I think would be too expensive for the 
+common exception path.
+
+ Poking at ASID as I described above is just a couple of instructions at 
+entry and exit, and the rest would only be done if tracing is active.  
+Plus you don't actually have to move anything away, except from the final 
+ERET, though likely not even that, owing to the delayed nature of an ASID 
+update.
+
+ So can you find a flaw in my proposal so far?  We'll have to think about 
+the TLB refill handler yet though.
+
+  Maciej

@@ -1,14 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:2714 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992123AbdAWOIYuLV4F (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Jan 2017 15:08:24 +0100
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH] MIPS: Generic: Fix big endian CPUs on generic machine
-Date: Mon, 23 Jan 2017 14:08:13 +0000
-Message-ID: <1485180493-22949-1-git-send-email-matt.redfearn@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:46735 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23993932AbdAXPpnG5nwR (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 24 Jan 2017 16:45:43 +0100
+Date: Tue, 24 Jan 2017 15:45:37 +0000
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: gcc-6.3.x miscompiling code for IP27?
+Message-ID: <20170124154536.GK29015@jhogan-linux.le.imgtec.org>
+References: <ee417407-6877-f49c-5893-f3b3dbc2d103@gentoo.org>
+ <44d9e9df-2d77-df23-266b-9cb90b0db4c9@gentoo.org>
+ <1cbb8434-d7ef-36e2-1f3e-ccbb5c52ce85@gentoo.org>
+ <62c49213-812b-a9c2-b1a6-797ecdfa2829@gentoo.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="5mZBmBd1ZkdwT1ny"
+Content-Disposition: inline
+In-Reply-To: <62c49213-812b-a9c2-b1a6-797ecdfa2829@gentoo.org>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,36 +25,104 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, linux-kernel@vger.kernel.org
-Message-ID: <20170123140813.RAWDt52XVu0YdCSSISIM6oAkqdpRmCjfBi4ygxAa4QU@z>
+To: Joshua Kinard <kumba@gentoo.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20170124154537.5IFxX0J3xhpqPZCDF0MOQMKGbyHGEmssyaepyXQGyZQ@z>
 
-Big endian CPUs require SWAP_IO_SPACE enabled to swap accesses to little
-endian peripherals.
+--5mZBmBd1ZkdwT1ny
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Without this patch, big endian kernels fail to communicate with little
-endian periperals, such as PCI devices, on QEMU and FPGA based
-platforms.
+Hi Joshua,
 
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
-Fixes: eed0eabd12ef ("MIPS: generic: Introduce generic DT-based board support")
+On Mon, Jan 23, 2017 at 01:00:52PM -0500, Joshua Kinard wrote:
+> On 01/22/2017 21:24, Joshua Kinard wrote:
+> > On 01/22/2017 20:03, Joshua Kinard wrote:
+> >> On 01/22/2017 18:28, Joshua Kinard wrote:
+> >>> I think I've run into a really odd gcc-6.3.x miscompile bug here on I=
+P27.
+> >>> But I'm not sure.  I've reproduced the issue on 4.9.5, 4.8.17, and now
+> >>> 4.7.10 (which I KNOW should boot).  If I recompile the same 4.7.10 ke=
+rnel
+> >>> with gcc-5.4.0, though, it boots as expected.  The fault appears to b=
+e in
+> >>> the assembly for _raw_spin_lock_irq.
+>=20
+> [snip]
+>=20
+> > I am not sure what to call this.  This is definitely not happening with=
+ a
+> > gcc-5.4.x-built kernel, so it's a code-generation issue of some kind:
+>=20
+> With some help from the gcc mailing list, the "sd" instructions emitted a=
+t the
+> beginning of every function is from the -fstack-check flag.  It enables
+> stack-probing to ensure there is sufficient space on the stack, else it'll
+> trigger a SEGV.  My guess is for IP27, at this early point in boot, the m=
+emory
+> system isn't up and running yet, due to IP27's somewhat-unique nature.  T=
+hus,
+> this stack-probe will fail and trigger the NULL deref in _raw_spin_lock_i=
+rq().
+>=20
+> The workaround I am going to go with is to add -fno-stack-check to IP27's
+> arch/mips/sgi-ip27/Platform file to disable stack-checking.  As far as I =
+can
+> tell, this solves the issue on IP27 by not emitted these instructions any=
+more
+> (verified w/ objdump).  Not sure where this flag is getting set from.  Co=
+uld be
+> set in my distro's toolchain somewhere.  But since at least IP30 is not
+> affected, I am going to assume it's specific to IP27 for now.
 
----
+Interesting. It definitely looks like an option we should not be using
+in the kernel, regardless of platform, since kernel stacks are
+relatively small, put in unmapped virtual memory and don't grow when
+overflowed. At least until we get mapped stacks (which has its own set
+of hurdles) its more likely to just corrupt other kernel memory and
+cause seemingly random crashes like this one.
 
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Cheers
+James
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index b3c5bde43d34..82dff20edaf9 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -94,6 +94,7 @@ config MIPS_GENERIC
- 	select PCI_DRIVERS_GENERIC
- 	select PINCTRL
- 	select SMP_UP if SMP
-+	select SWAP_IO_SPACE
- 	select SYS_HAS_CPU_MIPS32_R1
- 	select SYS_HAS_CPU_MIPS32_R2
- 	select SYS_HAS_CPU_MIPS32_R6
--- 
-2.7.4
+>=20
+> I'll send a patch in later this week...
+>=20
+> --=20
+> Joshua Kinard
+> Gentoo/MIPS
+> kumba@gentoo.org
+> 6144R/F5C6C943 2015-04-27
+> 177C 1972 1FB8 F254 BAD0 3E72 5C63 F4E3 F5C6 C943
+>=20
+> "The past tempts us, the present confuses us, the future frightens us.  A=
+nd our
+> lives slip away, moment by moment, lost in that vast, terrible in-between=
+=2E"
+>=20
+> --Emperor Turhan, Centauri Republic
+>=20
+
+--5mZBmBd1ZkdwT1ny
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJYh3aYAAoJEGwLaZPeOHZ6j6EQAIg0LAEnmSa7Qgx6QrXZxrUa
+xmLhD+p8IwlZuWp5l3+L181hjYYs2qZpTzi9ZZmo/iF3PyyTBEems9VORhE9WTXQ
+tHORV4/z6E7SZo3+JOco4BGdfhJJejakeaTxa2BE68z8xIEu3XTTkeT3rKlwadSp
+BzF0f/PUOJfAajR6pP5ZXdSitOxAc0CEpairYIMo6V8w2AxTxExaMee5wv1r0iTv
++p7XxGXKETmCI2/fpVnf6TxMJi3vEYqoMonJInRfx8qaru/6vZI71P7ngOoa7xdy
+z0kFsm35cuZsWzAzuvw2uao1DiEdQwemyGt2YgAw77MtVpIWiVvAeSDYn6ZpjRlF
+fEgFTvyLQDaU+OkmUEOY/F7VQ65brr65rI0t9cAod9tO/eRSfwQ4Zd01tLrA5IoI
+zgEDyCO59yJhNzOJ9OSrBiPC56o1hxLwvR/86FvodsVmR4AGWpgmbxeTrw8Klny+
+ijDgluA4OY7tWdwPA2++z9Zhox+l4nK0oZQgnUVimydOK0Cz06wT05Cyksw2ns5d
+I/m6kbhW7y3GPBL38MG0yl5gcbolNvfPF1e1bcxaIvByp3pT5fSaKmCVGCoppkpP
+WIWxjA78PQ1Wik9cTG1i6Brv//ob6K+N+zIe9RRRPbKKcbK8cBOaf0hiOtZY8fcA
+kmvCmg9WnteTaC1RsS0P
+=+jbK
+-----END PGP SIGNATURE-----
+
+--5mZBmBd1ZkdwT1ny--

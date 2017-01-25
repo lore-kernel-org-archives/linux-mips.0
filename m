@@ -1,18 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:62674 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:33223 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993874AbdAYOjwSw9Sy (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Jan 2017 15:39:52 +0100
-Date: Wed, 25 Jan 2017 14:39:36 +0000
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH v2 1/2] MIPS: ptrace: disallow setting watchpoints in
- kernel address space
-In-Reply-To: <alpine.DEB.2.00.1701242229480.13564@tp.orcam.me.uk>
-Message-ID: <alpine.DEB.2.00.1701251427190.13564@tp.orcam.me.uk>
-References: <1485163113-21780-1-git-send-email-marcin.nowakowski@imgtec.com> <alpine.DEB.2.00.1701232258380.13564@tp.orcam.me.uk> <20170124185452.GL29015@jhogan-linux.le.imgtec.org> <alpine.DEB.2.00.1701241909540.13564@tp.orcam.me.uk>
- <20170124220554.GM29015@jhogan-linux.le.imgtec.org> <alpine.DEB.2.00.1701242229480.13564@tp.orcam.me.uk>
+        with ESMTP id S23993882AbdAYRAhzgsnk (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Jan 2017 18:00:37 +0100
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Subject: [PATCH] MIPS: IRQ Stack: Fix erroneous jal to plat_irq_dispatch
+Date: Wed, 25 Jan 2017 17:00:25 +0000
+Message-ID: <1485363625-10789-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,41 +18,40 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@imgtec.com>
-Cc: Marcin Nowakowski <marcin.nowakowski@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20170125143936.34Kb6doWjoxXON8MgMWI6241EO2I27_1ZIGYa1C8Pfs@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20170125170025.OBrhhDkRCjzw48d4dFjkW03I_KzY760Eepx2qkE8Xhg@z>
 
-On Tue, 24 Jan 2017, Maciej W. Rozycki wrote:
+Commit dda45f701c9d ("MIPS: Switch to the irq_stack in interrupts")
+changed both the normal and vectored interrupt handlers. Unfortunately
+the vectored version, "except_vec_vi_handler", was incorrectly modified
+to unconditionally jal to plat_irq_dispatch, rather than doing a jalr to
+the vectored handler that has been set up. This is ok for many platforms
+which set the vectored handler to plat_irq_dispatch anyway, but will
+cause problems with platforms that use other handlers.
 
-> However if we can prove that we won't need the IP[1:0] bits in scenarios 
-> that involve a TLB refill, then we could just quickly do a short sequence, 
-> say:
-> 
-> 	lui	$k0, 1 << 23
+Fixes: dda45f701c9d ("MIPS: Switch to the irq_stack in interrupts")
+Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+---
 
- Umm, thinko here, this obviously has to be:
+Ralf, if possible please could you squash this?
 
-	li	$k0, 1 << 23
+---
+ arch/mips/kernel/genex.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-or alternatively:
-
-	lui	$k0, 1 << (23 - 16)
-
-(GAS will emit a single LUI instruction in either case).
-
-> 	mtc0	$13, $k0
-> 	eret
-> 
-> Otherwise we'll have to do a full RMW sequence; fortunately a single INS 
-> from $0 will do here again to clear CP0.Cause.WP and keep the remaining 
-> bits.  Maybe we could do just the same in the regular exception epilogue 
-> to avoid the dependency on a hazard (and consequently an issue with QEMU).
-
- Of course a similar hazard is still there, so the same precautions apply.  
-
- Also I think we do need to clear CP0.Cause.WP in all cases before ERET, 
-including the various exception fast paths, such as in the TLBL/TLBS/TLBM 
-handlers, which also means we don't have to fiddle with CP0.EntryHi.ASID 
-in handler execution paths that run at EXL entirely to completion.
-
-  Maciej
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index 0a7ba4b2f687..7ec9612cb007 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -329,7 +329,7 @@ NESTED(except_vec_vi_handler, 0, sp)
+ 	PTR_ADD sp, t0, t1
+ 
+ 2:
+-	jal	plat_irq_dispatch
++	jalr	v0
+ 
+ 	/* Restore sp */
+ 	move	sp, s1
+-- 
+2.7.4

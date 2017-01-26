@@ -1,15 +1,17 @@
-Received: from mail-ve1eur01on0097.outbound.protection.outlook.com ([104.47.1.97]:58080
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993893AbdAZOeobuL07 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 26 Jan 2017 15:34:44 +0100
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Subject: [PATCH] mips: vdso: Explicitly use -fno-asynchronous-unwind-tables
-Date: Thu, 26 Jan 2017 15:34:08 +0100
-Message-ID: <20170126143408.2456-1-alexander.sverdlin@nokia.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:16169 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993893AbdAZOt5Vpbl7 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 26 Jan 2017 15:49:57 +0100
+Date: Thu, 26 Jan 2017 14:49:40 +0000
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH] mips: vdso: Explicitly use
+ -fno-asynchronous-unwind-tables
+In-Reply-To: <20170126143408.2456-1-alexander.sverdlin@nokia.com>
+Message-ID: <alpine.DEB.2.00.1701261445520.13564@tp.orcam.me.uk>
+References: <20170126143408.2456-1-alexander.sverdlin@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <alexander.sverdlin@nokia.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,42 +21,16 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Cc: Alexander Sverdlin <alexander.sverdlin@nokia.com>, Robert Schiele <rschiele@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, "Maciej W. Rozycki" <macro@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20170126143408.mgBirYaVK5Ek35mkyZNF2wdlAR82MbiyfHjvW1i5jls@z>
+To: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Cc: Robert Schiele <rschiele@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20170126144940.Rp4suPUl7fnDyCAgMd62SVyyECVnzA88lRiWXhjuNLY@z>
 
-From: Robert Schiele <rschiele@gmail.com>
+On Thu, 26 Jan 2017, Alexander Sverdlin wrote:
 
-Not every toolchain has -fno-asynchronous-unwind-tables per default on MIPS.
-This patch specifies the necessary option explicitly for VDSO library build.
+> Not every toolchain has -fno-asynchronous-unwind-tables per default on MIPS.
+> This patch specifies the necessary option explicitly for VDSO library build.
 
-This prevents the following build failure:
-GENVDSO arch/mips/vdso/vdso-image.c
-arch/mips/vdso/genvdso: 'arch/mips/vdso/vdso.so.dbg' contains relocation sections
-.../arch/mips/vdso/Makefile:84: recipe for target 'arch/mips/vdso/vdso-image.c' failed
+ It looks reasonable to me, but you need to wrap it into `$(call 
+cc-option,...)' as older compilers didn't have this option.
 
-Signed-off-by: Robert Schiele <rschiele@gmail.com>
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>
-Cc: "Maciej W. Rozycki" <macro@imgtec.com>
-Cc: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Cc: linux-mips@linux-mips.org
----
- arch/mips/vdso/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-index c3dc12a8b7d9..0512f56685c2 100644
---- a/arch/mips/vdso/Makefile
-+++ b/arch/mips/vdso/Makefile
-@@ -10,7 +10,7 @@ ccflags-vdso := \
- cflags-vdso := $(ccflags-vdso) \
- 	$(filter -W%,$(filter-out -Wa$(comma)%,$(KBUILD_CFLAGS))) \
- 	-O2 -g -fPIC -fno-strict-aliasing -fno-common -fno-builtin -G 0 \
--	-DDISABLE_BRANCH_PROFILING \
-+	-DDISABLE_BRANCH_PROFILING -fno-asynchronous-unwind-tables \
- 	$(call cc-option, -fno-stack-protector)
- aflags-vdso := $(ccflags-vdso) \
- 	-D__ASSEMBLY__ -Wa,-gdwarf-2
--- 
-2.11.0
+  Maciej

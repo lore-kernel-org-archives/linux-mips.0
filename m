@@ -1,17 +1,17 @@
-Received: from mail-ve1eur01on0128.outbound.protection.outlook.com ([104.47.1.128]:3584
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993890AbdAZPBH4KY77 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 26 Jan 2017 16:01:07 +0100
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Subject: [PATCH v2] mips: vdso: Explicitly use -fno-asynchronous-unwind-tables
-Date: Thu, 26 Jan 2017 16:00:05 +0100
-Message-ID: <20170126150005.2621-1-alexander.sverdlin@nokia.com>
-In-Reply-To: <alpine.DEB.2.00.1701261445520.13564@tp.orcam.me.uk>
-References: <alpine.DEB.2.00.1701261445520.13564@tp.orcam.me.uk>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:20657 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993894AbdAZQRuTs4GJ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 26 Jan 2017 17:17:50 +0100
+Date: Thu, 26 Jan 2017 16:17:34 +0000
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: gcc-6.3.x miscompiling code for IP27?
+In-Reply-To: <addded89-4410-f818-9eb8-c1428f561795@gentoo.org>
+Message-ID: <alpine.DEB.2.00.1701261612230.13564@tp.orcam.me.uk>
+References: <ee417407-6877-f49c-5893-f3b3dbc2d103@gentoo.org> <44d9e9df-2d77-df23-266b-9cb90b0db4c9@gentoo.org> <1cbb8434-d7ef-36e2-1f3e-ccbb5c52ce85@gentoo.org> <62c49213-812b-a9c2-b1a6-797ecdfa2829@gentoo.org> <20170124154536.GK29015@jhogan-linux.le.imgtec.org>
+ <addded89-4410-f818-9eb8-c1428f561795@gentoo.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <alexander.sverdlin@nokia.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,41 +21,20 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Cc: Alexander Sverdlin <alexander.sverdlin@nokia.com>, Robert Schiele <rschiele@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, "Maciej W. Rozycki" <macro@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20170126150005.X4-yXvK0u3Fx0vj5X78gFuEhQngIHajKTnUhL3ZIpK4@z>
+To: Joshua Kinard <kumba@gentoo.org>
+Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20170126161734.CDhJARzqGbaDS9xlNZLwJdBGerNX6euqznMmSnxvcr8@z>
 
-From: Robert Schiele <rschiele@gmail.com>
+On Wed, 25 Jan 2017, Joshua Kinard wrote:
 
-Not every toolchain has -fno-asynchronous-unwind-tables per default on MIPS.
-This patch specifies the necessary option explicitly for VDSO library build.
+> Instead of making -fno-stack-check IP27-only, I can do a patch for the main
+> arch/mips/Makefile instead to turn it off globally.  It looks like this option
+> has been available in gcc as far back as at least 3.0.4, so would any kind of
+> compatibility/version check for gcc be needed?  I'm not sure what the oldest
+> gcc supported by the MIPS code currently is.
 
-This prevents the following build failure:
-GENVDSO arch/mips/vdso/vdso-image.c
-arch/mips/vdso/genvdso: 'arch/mips/vdso/vdso.so.dbg' contains relocation sections
-.../arch/mips/vdso/Makefile:84: recipe for target 'arch/mips/vdso/vdso-image.c' failed
+ Wrapping a compiler option into `$(call cc-option,...)' is always safe to 
+do if unsure.  In this case however Documentation/Changes states 3.2 as 
+the minimum GCC version so it looks to me like no such check is required.
 
-Signed-off-by: Robert Schiele <rschiele@gmail.com>
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>
-Cc: "Maciej W. Rozycki" <macro@imgtec.com>
-Cc: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Cc: linux-mips@linux-mips.org
----
- arch/mips/vdso/Makefile | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-index c3dc12a8b7d9..c08077e43e73 100644
---- a/arch/mips/vdso/Makefile
-+++ b/arch/mips/vdso/Makefile
-@@ -11,6 +11,7 @@ cflags-vdso := $(ccflags-vdso) \
- 	$(filter -W%,$(filter-out -Wa$(comma)%,$(KBUILD_CFLAGS))) \
- 	-O2 -g -fPIC -fno-strict-aliasing -fno-common -fno-builtin -G 0 \
- 	-DDISABLE_BRANCH_PROFILING \
-+	$(call cc-option, -fno-asynchronous-unwind-tables) \
- 	$(call cc-option, -fno-stack-protector)
- aflags-vdso := $(ccflags-vdso) \
- 	-D__ASSEMBLY__ -Wa,-gdwarf-2
--- 
-2.11.0
+  Maciej

@@ -1,14 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:9840 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991960AbdA3J6ojbccP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 30 Jan 2017 10:58:44 +0100
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH] MIPS: Fix distclean with Makefile.postlink
-Date: Mon, 30 Jan 2017 09:58:34 +0000
-Message-ID: <1485770314-29891-1-git-send-email-matt.redfearn@imgtec.com>
+Received: from mail-oi0-f66.google.com ([209.85.218.66]:34480 "EHLO
+        mail-oi0-f66.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993877AbdA3UgXzQgpy (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 30 Jan 2017 21:36:23 +0100
+Date: Mon, 30 Jan 2017 14:36:17 -0600
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 01/14] Documentation: dt/bindings: Document
+ pinctrl-ingenic
+Message-ID: <20170130203617.hpljtcmzava3rq2n@rob-hp-laptop>
+References: <27071da2f01d48141e8ac3dfaa13255d@mail.crapouillou.net>
+ <20170125185207.23902-1-paul@crapouillou.net>
+ <20170125185207.23902-2-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@imgtec.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170125185207.23902-2-paul@crapouillou.net>
+Return-Path: <robherring2@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,42 +24,42 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, linux-kernel@vger.kernel.org
-Message-ID: <20170130095834.LVenPP6vBIKBKbkGp4uww-Y6fNhoat-9nxYJCO4Jgwk@z>
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Ulf Hansson <ulf.hansson@linaro.org>, Boris Brezillon <boris.brezillon@free-electrons.com>, Thierry Reding <thierry.reding@gmail.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Maarten ter Huurne <maarten@treewalker.org>, Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org, linux-fbdev@vger.kernel.org, james.hogan@imgtec.com
+Message-ID: <20170130203617.VeiU7hhsroNVhjy4tmUZUHgWntJqw14lpI4QrPUnCoQ@z>
 
-The postlink Makefile must include include/config/auto.conf to get the
-kernel configuration variables. But in a clean kernel directory this
-file does not exist, causing make to bail with the error:
-
-arch/mips/Makefile.postlink:10:
-include/config/auto.conf: No such file or directory
-make[1]: *** No rule to make target
-'include/config/auto.conf'.  Stop.
-Makefile:1290: recipe for target 'vmlinuxclean' failed
-
-Fix this by using "-include" to not cause a Make error when the file
-does not exist.
-
-Fixes: 44079d3509ae ("MIPS: Use Makefile.postlink to insert relocations into vmlinux")
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
----
-
- arch/mips/Makefile.postlink | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/mips/Makefile.postlink b/arch/mips/Makefile.postlink
-index b0ddf0701a31..4b7f5a648c79 100644
---- a/arch/mips/Makefile.postlink
-+++ b/arch/mips/Makefile.postlink
-@@ -7,7 +7,7 @@
- PHONY := __archpost
- __archpost:
- 
--include include/config/auto.conf
-+-include include/config/auto.conf
- include scripts/Kbuild.include
- 
- CMD_RELOCS = arch/mips/boot/tools/relocs
--- 
-2.7.4
+On Wed, Jan 25, 2017 at 07:51:54PM +0100, Paul Cercueil wrote:
+> This commit adds documentation for the devicetree bidings of the
+> pinctrl-ingenic driver, which handles pin configuration and pin
+> muxing of the Ingenic SoCs currently supported by the Linux kernel.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  .../bindings/pinctrl/ingenic,pinctrl.txt           | 77 ++++++++++++++++++++++
+>  1 file changed, 77 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.txt
+> 
+> v2: Rewrote the documentation for the new pinctrl-ingenic driver
+> v3: No changes
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.txt b/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.txt
+> new file mode 100644
+> index 000000000000..ead5b01ad471
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.txt
+> @@ -0,0 +1,77 @@
+> +Ingenic jz47xx pin controller
+> +
+> +Please refer to pinctrl-bindings.txt in this directory for details of the
+> +common pinctrl bindings used by client devices, including the meaning of the
+> +phrase "pin configuration node".
+> +
+> +For the jz47xx SoCs, pin control is tightly bound with GPIO ports. All pins may
+> +be used as GPIOs, multiplexed device functions are configured within the
+> +GPIO port configuration registers and it is typical to refer to pins using the
+> +naming scheme "PxN" where x is a character identifying the GPIO port with
+> +which the pin is associated and N is an integer from 0 to 31 identifying the
+> +pin within that GPIO port. For example PA0 is the first pin in GPIO port A, and
+> +PB31 is the last pin in GPIO port B. The jz4740 contains 4 GPIO ports, PA to
+> +PD, for a total of 128 pins. The jz4780 contains 6 GPIO ports, PA to PF, for a
+> +total of 192 pins.

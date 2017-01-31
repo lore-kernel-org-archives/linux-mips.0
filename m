@@ -1,20 +1,22 @@
-Received: from mail-oi0-f66.google.com ([209.85.218.66]:34480 "EHLO
-        mail-oi0-f66.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993877AbdA3UgXzQgpy (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 30 Jan 2017 21:36:23 +0100
-Date: Mon, 30 Jan 2017 14:36:17 -0600
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 01/14] Documentation: dt/bindings: Document
- pinctrl-ingenic
-Message-ID: <20170130203617.hpljtcmzava3rq2n@rob-hp-laptop>
-References: <27071da2f01d48141e8ac3dfaa13255d@mail.crapouillou.net>
- <20170125185207.23902-1-paul@crapouillou.net>
- <20170125185207.23902-2-paul@crapouillou.net>
+Received: from mail-sn1nam01on0077.outbound.protection.outlook.com ([104.47.32.77]:11840
+        "EHLO NAM01-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23993899AbdAaTcYclwvi convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 31 Jan 2017 20:32:24 +0100
+From: Bart Van Assche <Bart.VanAssche@sandisk.com>
+Subject: Re: [PATCH 4.10-rc3 09/13] iscsi: fix build errors when
+ linux/phy*.h is removed from net/dsa.h
+Date: Tue, 31 Jan 2017 19:32:10 +0000
+Message-ID: <1485891116.3113.2.camel@sandisk.com>
+References: <20170131191704.GA8281@n2100.armlinux.org.uk>
+         <E1cYdxN-0000Wr-AS@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1cYdxN-0000Wr-AS@rmk-PC.armlinux.org.uk>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <C15BF99F1975BB4F8A878C6D0FDBB237@sandisk.com>
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170125185207.23902-2-paul@crapouillou.net>
-Return-Path: <robherring2@gmail.com>
+Return-Path: <Bart.VanAssche@sandisk.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,42 +26,31 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Ulf Hansson <ulf.hansson@linaro.org>, Boris Brezillon <boris.brezillon@free-electrons.com>, Thierry Reding <thierry.reding@gmail.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Maarten ter Huurne <maarten@treewalker.org>, Lars-Peter Clausen <lars@metafoo.de>, Paul Burton <paul.burton@imgtec.com>, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org, linux-fbdev@vger.kernel.org, james.hogan@imgtec.com
-Message-ID: <20170130203617.VeiU7hhsroNVhjy4tmUZUHgWntJqw14lpI4QrPUnCoQ@z>
+To: "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, "rmk+kernel@armlinux.org.uk" <rmk+kernel@armlinux.org.uk>, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+Cc: "davem@davemloft.net" <davem@davemloft.net>, "f.fainelli@gmail.com" <f.fainelli@gmail.com>, "nab@linux-iscsi.org" <nab@linux-iscsi.org>
+Message-ID: <20170131193210.GyZ8pQ-NDxBxM78vGjvGRvyuO1Mzw8SZ1hwIIjlLiHc@z>
 
-On Wed, Jan 25, 2017 at 07:51:54PM +0100, Paul Cercueil wrote:
-> This commit adds documentation for the devicetree bidings of the
-> pinctrl-ingenic driver, which handles pin configuration and pin
-> muxing of the Ingenic SoCs currently supported by the Linux kernel.
+On Tue, 2017-01-31 at 19:19 +0000, Russell King wrote:
+> drivers/target/iscsi/iscsi_target_login.c:1135:7: error: implicit declaration of function 'try_module_get' [-Werror=implicit-function-declaration]
 > 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Add linux/module.h to iscsi_target_login.c.
+> 
+> Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 > ---
->  .../bindings/pinctrl/ingenic,pinctrl.txt           | 77 ++++++++++++++++++++++
->  1 file changed, 77 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.txt
+>  drivers/target/iscsi/iscsi_target_login.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> v2: Rewrote the documentation for the new pinctrl-ingenic driver
-> v3: No changes
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.txt b/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.txt
-> new file mode 100644
-> index 000000000000..ead5b01ad471
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.txt
-> @@ -0,0 +1,77 @@
-> +Ingenic jz47xx pin controller
-> +
-> +Please refer to pinctrl-bindings.txt in this directory for details of the
-> +common pinctrl bindings used by client devices, including the meaning of the
-> +phrase "pin configuration node".
-> +
-> +For the jz47xx SoCs, pin control is tightly bound with GPIO ports. All pins may
-> +be used as GPIOs, multiplexed device functions are configured within the
-> +GPIO port configuration registers and it is typical to refer to pins using the
-> +naming scheme "PxN" where x is a character identifying the GPIO port with
-> +which the pin is associated and N is an integer from 0 to 31 identifying the
-> +pin within that GPIO port. For example PA0 is the first pin in GPIO port A, and
-> +PB31 is the last pin in GPIO port B. The jz4740 contains 4 GPIO ports, PA to
-> +PD, for a total of 128 pins. The jz4780 contains 6 GPIO ports, PA to PF, for a
-> +total of 192 pins.
+> diff --git a/drivers/target/iscsi/iscsi_target_login.c b/drivers/target/iscsi/iscsi_target_login.c
+> index 450f51deb2a2..eab274d17b5c 100644
+> --- a/drivers/target/iscsi/iscsi_target_login.c
+> +++ b/drivers/target/iscsi/iscsi_target_login.c
+> @@ -17,6 +17,7 @@
+>   ******************************************************************************/
+>  
+>  #include <crypto/hash.h>
+> +#include <linux/module.h>
+>  #include <linux/string.h>
+>  #include <linux/kthread.h>
+>  #include <linux/idr.h>
+
+Reviewed-by: Bart Van Assche <bart.vanassche@sandisk.com>

@@ -1,20 +1,17 @@
-Received: from mail-by2nam01on0068.outbound.protection.outlook.com ([104.47.34.68]:41594
-        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993877AbdBATI4wGygL (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 1 Feb 2017 20:08:56 +0100
-Date: Wed, 1 Feb 2017 11:07:40 -0800
-From: Felix Manlunas <felix.manlunas@cavium.com>
-Subject: Re: [PATCH 4.10-rc3 11/13] net: liquidio: fix build errors when
- linux/phy*.h is removed from net/dsa.h
-Message-ID: <20170201190740.GA10128@felix.cavium.com>
-References: <20170131191704.GA8281@n2100.armlinux.org.uk>
- <E1cYdxX-0000X5-Hz@rmk-PC.armlinux.org.uk>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:6867 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993883AbdBBME7zCIIv (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 2 Feb 2017 13:04:59 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH v2 1/30] MIPS: Move pgd_alloc() out of header
+Date: Thu, 2 Feb 2017 12:04:14 +0000
+Message-ID: <21f45e82ab0d734ea1ef614551639f2e8d900557.1486036366.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <E1cYdxX-0000X5-Hz@rmk-PC.armlinux.org.uk>
-Return-Path: <Felix.Manlunas@cavium.com>
+In-Reply-To: <cover.e37f86dece46fc3ed00a075d68119cab361cda8e.1486036366.git-series.james.hogan@imgtec.com>
+References: <cover.e37f86dece46fc3ed00a075d68119cab361cda8e.1486036366.git-series.james.hogan@imgtec.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,99 +21,101 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Russell King <rmk+kernel@armlinux.org.uk>
-Cc: linux-mips@linux-mips.org, linux-nfs@vger.kernel.org, linux-scsi@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, target-devel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Florian Fainelli <f.fainelli@gmail.com>, Derek Chickles <derek.chickles@caviumnetworks.com>, Satanand Burla <satananda.burla@caviumnetworks.com>, Felix Manlunas <felix.manlunas@caviumnetworks.com>, Raghu Vatsavayi <raghu.vatsavayi@caviumnetworks.com>
-Message-ID: <20170201190740.UHBkYhDOp-GDe0j8xI_ydbDT65Xs0gwG2INCGXVXsXs@z>
+To: linux-mips@linux-mips.org
+Cc: James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, kvm@vger.kernel.org
+Message-ID: <20170202120414.3UyNxCs6UYNVhCd3MNxAw434GwvDKYkwYSl1JqHFOUU@z>
 
-Russell King <rmk+kernel@armlinux.org.uk> wrote on Tue [2017-Jan-31 19:19:19 +0000]:
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:30: error: expected declaration specifiers or '...' before string constant
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:30: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:30: error: type defaults to 'int' in declaration of 'MODULE_AUTHOR'
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:30: error: function declaration isn't a prototype
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:31: error: expected declaration specifiers or '...' before string constant
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:31: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:31: error: type defaults to 'int' in declaration of 'MODULE_DESCRIPTION'
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:31: error: function declaration isn't a prototype
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:32: error: expected declaration specifiers or '...' before string constant
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:32: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:32: error: type defaults to 'int' in declaration of 'MODULE_LICENSE'
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:32: error: function declaration isn't a prototype
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:33: error: expected declaration specifiers or '...' before string constant
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:33: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:33: error: type defaults to 'int' in declaration of 'MODULE_VERSION'
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:33: error: function declaration isn't a prototype
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:36: error: expected ')' before 'int'
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:37: error: expected ')' before string constant
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:325: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:325: error: type defaults to 'int' in declaration of 'MODULE_DEVICE_TABLE'
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:325: warning: parameter names (without types) in function declaration
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:3250: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:3250: error: type defaults to 'int' in declaration of 'module_init'
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:3250: warning: parameter names (without types) in function declaration
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:3251: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:3251: error: type defaults to 'int' in declaration of 'module_exit'
-> drivers/net/ethernet/cavium/liquidio/lio_vf_main.c:3251: warning: parameter names (without types) in function declaration
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:36: error: expected declaration specifiers or '...' before string constant
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:36: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:36: error: type defaults to 'int' in declaration of 'MODULE_AUTHOR'
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:36: error: function declaration isn't a prototype
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:37: error: expected declaration specifiers or '...' before string constant
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:37: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:37: error: type defaults to 'int' in declaration of 'MODULE_DESCRIPTION'
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:37: error: function declaration isn't a prototype
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:38: error: expected declaration specifiers or '...' before string constant
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:38: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:38: error: type defaults to 'int' in declaration of 'MODULE_LICENSE'
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:38: error: function declaration isn't a prototype
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:39: error: expected declaration specifiers or '...' before string constant
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:39: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:39: error: type defaults to 'int' in declaration of 'MODULE_VERSION'
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:39: error: function declaration isn't a prototype
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:40: error: expected declaration specifiers or '...' before string constant
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:40: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:40: error: type defaults to 'int' in declaration of 'MODULE_FIRMWARE'
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:40: error: function declaration isn't a prototype
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:41: error: expected declaration specifiers or '...' before string constant
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:41: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:41: error: type defaults to 'int' in declaration of 'MODULE_FIRMWARE'
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:41: error: function declaration isn't a prototype
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:42: error: expected declaration specifiers or '...' before string constant
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:42: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:42: error: type defaults to 'int' in declaration of 'MODULE_FIRMWARE'
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:42: error: function declaration isn't a prototype
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:43: error: expected declaration specifiers or '...' before string constant
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:43: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:43: error: type defaults to 'int' in declaration of 'MODULE_FIRMWARE'
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:43: error: function declaration isn't a prototype
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:46: error: expected ')' before 'int'
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:48: error: expected ')' before string constant
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:53: error: expected ')' before 'int'
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:54: error: expected ')' before string constant
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:57: error: expected ')' before 'sizeof'
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:58: error: expected ')' before string constant
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:498: warning: data definitionhas no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:498: error: type defaults to 'int' in declaration of 'MODULE_DEVICE_TABLE'
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:498: warning: parameter names (without types) in function declaration
-> drivers/net/ethernet/cavium/liquidio/lio_main.c: In function 'octeon_recv_vf_drv_notice':
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:4393: error: implicit declaration of function 'try_module_get'
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:4400: error: implicit declaration of function 'module_put'
-> drivers/net/ethernet/cavium/liquidio/lio_main.c: At top level:
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:4670: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:4670: error: type defaults to 'int' in declaration of 'module_init'
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:4670: warning: parameter names (without types) in function declaration
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:4671: warning: data definition has no type or storage class
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:4671: error: type defaults to 'int' in declaration of 'module_exit'
-> drivers/net/ethernet/cavium/liquidio/lio_main.c:4671: warning: parameter names (without types) in function declaration
-> 
-> Add linux/module.h to both these files.
-> 
-> drivers/net/ethernet/cavium/liquidio/octeon_console.c:40:31: error: expected ')' before 'int'
-> drivers/net/ethernet/cavium/liquidio/octeon_console.c:42:4: error: expected ')' before string constant
-> 
-> Add linux/moduleparam.h to this file.
-> 
-> Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+pgd_alloc() references init_mm which is not exported to modules. In
+order for KVM to be able to use pgd_alloc() to allocate GVA page tables,
+move pgd_alloc() into a new pgtable.c file and export it to modules.
 
-Acked-by: Felix Manlunas <felix.manlunas@cavium.com>
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: "Radim Krčmář" <rkrcmar@redhat.com>
+Cc: linux-mips@linux-mips.org
+Cc: kvm@vger.kernel.org
+---
+Changes in v2:
+- Move pgd_alloc() into C code rather than exporting init_mm itself
+  (feedback from Arjan van de Ven).
+---
+ arch/mips/include/asm/pgalloc.h | 16 +---------------
+ arch/mips/mm/Makefile           |  2 +-
+ arch/mips/mm/pgtable.c          | 25 +++++++++++++++++++++++++
+ 3 files changed, 27 insertions(+), 16 deletions(-)
+ create mode 100644 arch/mips/mm/pgtable.c
 
-Thank you.
+diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
+index a03e86969f78..a8705f6c8180 100644
+--- a/arch/mips/include/asm/pgalloc.h
++++ b/arch/mips/include/asm/pgalloc.h
+@@ -43,21 +43,7 @@ static inline void pud_populate(struct mm_struct *mm, pud_t *pud, pmd_t *pmd)
+  * Initialize a new pgd / pmd table with invalid pointers.
+  */
+ extern void pgd_init(unsigned long page);
+-
+-static inline pgd_t *pgd_alloc(struct mm_struct *mm)
+-{
+-	pgd_t *ret, *init;
+-
+-	ret = (pgd_t *) __get_free_pages(GFP_KERNEL, PGD_ORDER);
+-	if (ret) {
+-		init = pgd_offset(&init_mm, 0UL);
+-		pgd_init((unsigned long)ret);
+-		memcpy(ret + USER_PTRS_PER_PGD, init + USER_PTRS_PER_PGD,
+-		       (PTRS_PER_PGD - USER_PTRS_PER_PGD) * sizeof(pgd_t));
+-	}
+-
+-	return ret;
+-}
++extern pgd_t *pgd_alloc(struct mm_struct *mm);
+ 
+ static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
+ {
+diff --git a/arch/mips/mm/Makefile b/arch/mips/mm/Makefile
+index b4c64bd3f723..b4cc8811a664 100644
+--- a/arch/mips/mm/Makefile
++++ b/arch/mips/mm/Makefile
+@@ -4,7 +4,7 @@
+ 
+ obj-y				+= cache.o dma-default.o extable.o fault.o \
+ 				   gup.o init.o mmap.o page.o page-funcs.o \
+-				   tlbex.o tlbex-fault.o tlb-funcs.o
++				   pgtable.o tlbex.o tlbex-fault.o tlb-funcs.o
+ 
+ ifdef CONFIG_CPU_MICROMIPS
+ obj-y				+= uasm-micromips.o
+diff --git a/arch/mips/mm/pgtable.c b/arch/mips/mm/pgtable.c
+new file mode 100644
+index 000000000000..05560b042d82
+--- /dev/null
++++ b/arch/mips/mm/pgtable.c
+@@ -0,0 +1,25 @@
++/*
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file "COPYING" in the main directory of this archive
++ * for more details.
++ */
++#include <linux/export.h>
++#include <linux/mm.h>
++#include <linux/string.h>
++#include <asm/pgalloc.h>
++
++pgd_t *pgd_alloc(struct mm_struct *mm)
++{
++	pgd_t *ret, *init;
++
++	ret = (pgd_t *) __get_free_pages(GFP_KERNEL, PGD_ORDER);
++	if (ret) {
++		init = pgd_offset(&init_mm, 0UL);
++		pgd_init((unsigned long)ret);
++		memcpy(ret + USER_PTRS_PER_PGD, init + USER_PTRS_PER_PGD,
++		       (PTRS_PER_PGD - USER_PTRS_PER_PGD) * sizeof(pgd_t));
++	}
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(pgd_alloc);
+-- 
+git-series 0.8.10

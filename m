@@ -1,17 +1,15 @@
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:27187 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23990522AbdBETOit1isJ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 5 Feb 2017 20:14:38 +0100
-From: Willy Tarreau <w@1wt.eu>
-Subject: [PATCH 3.10 023/319] KVM: MIPS: Precalculate MMIO load resume PC
-Date: Sun,  5 Feb 2017 20:09:27 +0100
-Message-ID: <1486322063-7558-24-git-send-email-w@1wt.eu>
-In-Reply-To: <1486322063-7558-1-git-send-email-w@1wt.eu>
-References: <1486322063-7558-1-git-send-email-w@1wt.eu>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:18394 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23991061AbdBFKrMU-x5l (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 6 Feb 2017 11:47:12 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH 0/4] KVM: MIPS: Hypercalls
+Date: Mon, 6 Feb 2017 10:46:45 +0000
+Message-ID: <cover.3a9aba89648ae37be335c79cc2b18cf6bf57ef08.1486377433.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=latin1
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Return-Path: <w@1wt.eu>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,126 +19,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org, linux@roeck-us.net
-Cc: James Hogan <james.hogan@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?=20Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, kvm@vger.kernel.org, Fixunusedvariablebuildwarning@pcw.home.local, stable@vger.kernel.org#3.10.x-3.16.x, Willy Tarreau <w@1wt.eu>
-Message-ID: <20170205190927.MNsaxa7HcVFG7if_JgHl0MIqFh3ROgYn2cri27LLbVM@z>
+To: linux-mips@linux-mips.org
+Cc: James Hogan <james.hogan@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, Andreas Herrmann <andreas.herrmann@caviumnetworks.com>, David Daney <david.daney@cavium.com>, Jonathan Corbet <corbet@lwn.net>, kvm@vger.kernel.org, linux-doc@vger.kernel.org
+Message-ID: <20170206104645.iZSqFYlIppukVAkuzxun8ryDH4tb2Yhe43KoS4wYAB8@z>
 
-From: James Hogan <james.hogan@imgtec.com>
+This series implements some basic hypercalls for MIPS KVM, as used by
+the MIPS paravirtual platform support in Linux and provided by Cavium's
+VZ KVM implementation.
 
-commit e1e575f6b026734be3b1f075e780e91ab08ca541 upstream.
+- Patch 1 hooks up trap & emulate to some minimal hypercall
+  infrastructure without any hypercalls implemented yet. VZ support when
+  it comes will also hook into the same infrastructure.
 
-The advancing of the PC when completing an MMIO load is done before
-re-entering the guest, i.e. before restoring the guest ASID. However if
-the load is in a branch delay slot it may need to access guest code to
-read the prior branch instruction. This isn't safe in TLB mapped code at
-the moment, nor in the future when we'll access unmapped guest segments
-using direct user accessors too, as it could read the branch from host
-user memory instead.
+- Patches 2-3 implement GET_CLOCK_FREQ and EXIT_VM hypercalls.
 
-Therefore calculate the resume PC in advance while we're still in the
-right context and save it in the new vcpu->arch.io_pc (replacing the no
-longer needed vcpu->arch.pending_load_cause), and restore it on MMIO
-completion.
+- Patch 4 implements the console output hypercall by using
+  KVM_EXIT_HYPERCALL (i.e. delegating the hypercall to userland). Its
+  unclear if there is a more preferable approach to this, so comments
+  particularly appreciated here.
 
-Fixes: e685c689f3a8 ("KVM/MIPS32: Privileged instruction/target branch emulation.")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: "Radim Krčmář <rkrcmar@redhat.com>
+Cc: "Radim Krčmář" <rkrcmar@redhat.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
+Cc: David Daney <david.daney@cavium.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: linux-mips@linux-mips.org
 Cc: kvm@vger.kernel.org
-Cc: <stable@vger.kernel.org> # 3.10.x-3.16.x: 5f508c43a764: MIPS: KVM: Fix unused variable build warning
-Cc: <stable@vger.kernel.org> # 3.10.x-3.16.x
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-[james.hogan@imgtec.com: Backport to 3.10..3.16]
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Signed-off-by: Willy Tarreau <w@1wt.eu>
----
- arch/mips/include/asm/kvm_host.h |  7 ++++---
- arch/mips/kvm/kvm_mips_emul.c    | 25 +++++++++++++++----------
- 2 files changed, 19 insertions(+), 13 deletions(-)
+Cc: linux-doc@vger.kernel.org
 
-diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
-index 883a162..05863e3 100644
---- a/arch/mips/include/asm/kvm_host.h
-+++ b/arch/mips/include/asm/kvm_host.h
-@@ -375,7 +375,10 @@ struct kvm_vcpu_arch {
- 	/* Host KSEG0 address of the EI/DI offset */
- 	void *kseg0_commpage;
- 
--	u32 io_gpr;		/* GPR used as IO source/target */
-+	/* Resume PC after MMIO completion */
-+	unsigned long io_pc;
-+	/* GPR used as IO source/target */
-+	u32 io_gpr;
- 
- 	/* Used to calibrate the virutal count register for the guest */
- 	int32_t host_cp0_count;
-@@ -386,8 +389,6 @@ struct kvm_vcpu_arch {
- 	/* Bitmask of pending exceptions to be cleared */
- 	unsigned long pending_exceptions_clr;
- 
--	unsigned long pending_load_cause;
--
- 	/* Save/Restore the entryhi register when are are preempted/scheduled back in */
- 	unsigned long preempt_entryhi;
- 
-diff --git a/arch/mips/kvm/kvm_mips_emul.c b/arch/mips/kvm/kvm_mips_emul.c
-index 5c2d70b..e5977f2 100644
---- a/arch/mips/kvm/kvm_mips_emul.c
-+++ b/arch/mips/kvm/kvm_mips_emul.c
-@@ -773,6 +773,7 @@ kvm_mips_emulate_load(uint32_t inst, uint32_t cause,
- 		      struct kvm_run *run, struct kvm_vcpu *vcpu)
- {
- 	enum emulation_result er = EMULATE_DO_MMIO;
-+	unsigned long curr_pc;
- 	int32_t op, base, rt, offset;
- 	uint32_t bytes;
- 
-@@ -781,7 +782,18 @@ kvm_mips_emulate_load(uint32_t inst, uint32_t cause,
- 	offset = inst & 0xffff;
- 	op = (inst >> 26) & 0x3f;
- 
--	vcpu->arch.pending_load_cause = cause;
-+	/*
-+	 * Find the resume PC now while we have safe and easy access to the
-+	 * prior branch instruction, and save it for
-+	 * kvm_mips_complete_mmio_load() to restore later.
-+	 */
-+	curr_pc = vcpu->arch.pc;
-+	er = update_pc(vcpu, cause);
-+	if (er == EMULATE_FAIL)
-+		return er;
-+	vcpu->arch.io_pc = vcpu->arch.pc;
-+	vcpu->arch.pc = curr_pc;
-+
- 	vcpu->arch.io_gpr = rt;
- 
- 	switch (op) {
-@@ -1617,9 +1629,8 @@ kvm_mips_complete_mmio_load(struct kvm_vcpu *vcpu, struct kvm_run *run)
- 		goto done;
- 	}
- 
--	er = update_pc(vcpu, vcpu->arch.pending_load_cause);
--	if (er == EMULATE_FAIL)
--		return er;
-+	/* Restore saved resume PC */
-+	vcpu->arch.pc = vcpu->arch.io_pc;
- 
- 	switch (run->mmio.len) {
- 	case 4:
-@@ -1641,12 +1652,6 @@ kvm_mips_complete_mmio_load(struct kvm_vcpu *vcpu, struct kvm_run *run)
- 		break;
- 	}
- 
--	if (vcpu->arch.pending_load_cause & CAUSEF_BD)
--		kvm_debug
--		    ("[%#lx] Completing %d byte BD Load to gpr %d (0x%08lx) type %d\n",
--		     vcpu->arch.pc, run->mmio.len, vcpu->arch.io_gpr, *gpr,
--		     vcpu->mmio_needed);
--
- done:
- 	return er;
- }
+James Hogan (4):
+  KVM: MIPS: Implement HYPCALL emulation
+  KVM: MIPS: Implement GET_CLOCK_FREQ hypercall
+  KVM: MIPS: Implement EXIT_VM hypercall
+  KVM: MIPS: Implement console output hypercall
+
+ Documentation/virtual/kvm/hypercalls.txt | 27 +++++++-
+ arch/mips/include/asm/kvm_host.h         | 11 +++-
+ arch/mips/include/uapi/asm/inst.h        |  2 +-
+ arch/mips/kvm/Makefile                   |  1 +-
+ arch/mips/kvm/emulate.c                  |  3 +-
+ arch/mips/kvm/hypcall.c                  | 94 +++++++++++++++++++++++++-
+ arch/mips/kvm/mips.c                     |  3 +-
+ arch/mips/kvm/trap_emul.c                |  4 +-
+ 8 files changed, 144 insertions(+), 1 deletion(-)
+ create mode 100644 arch/mips/kvm/hypcall.c
+
 -- 
-2.8.0.rc2.1.gbe9624a
+git-series 0.8.10

@@ -1,17 +1,16 @@
-Received: from foss.arm.com ([217.140.101.70]:53808 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23991359AbdBHORAcjEmQ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 8 Feb 2017 15:17:00 +0100
-From: Marc Zyngier <marc.zyngier@arm.com>
-Subject: Re: [PATCH 1/1] irqchip/mips-gic: Fix local interrupts
-In-Reply-To: <1485353305-23672-1-git-send-email-marcin.nowakowski@imgtec.com>
-        (Marcin Nowakowski's message of "Wed, 25 Jan 2017 15:08:25 +0100")
-References: <1485353305-23672-1-git-send-email-marcin.nowakowski@imgtec.com>
-Date: Wed, 08 Feb 2017 14:16:45 +0000
-Message-ID: <8737fo938y.fsf@on-the-bus.cambridge.arm.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:18530 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23992221AbdBHV4fMyQL3 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 8 Feb 2017 22:56:35 +0100
+Date: Wed, 8 Feb 2017 21:56:14 +0000
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH] MIPS: Fix protected_cache(e)_op() for microMIPS
+In-Reply-To: <20170208103547.22560-1-james.hogan@imgtec.com>
+Message-ID: <alpine.DEB.2.00.1702082127060.26999@tp.orcam.me.uk>
+References: <20170208103547.22560-1-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <marc.zyngier@arm.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,37 +20,55 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Cc: linux-kernel@vger.kernel.org, Paul Burton <paul.burton@imgtec.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, linux-mips@linux-mips.org
-Message-ID: <20170208141645.rVZ8Yf06r7urBRzCDNvcRdylAd5QR2ZyEYlA9sLnBmM@z>
+To: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20170208215614.9Iwc114laL-0JJzDUzAAswndlP6uflmfYIjAYK0-MQ4@z>
 
-On Wed, Jan 25 2017 at  2:08:25 pm GMT, Marcin Nowakowski <marcin.nowakowski@imgtec.com> wrote:
-> Some local interrupts are not initialised properly at the moment and
-> cannot be used since the domain's alloc method is never called for them.
->
-> This has been observed earlier and partially fixed in commit
-> e875bd66dfb ("irqchip/mips-gic: Fix local interrupts"), but that change
-> still relied on the interrupt to be requested by an external driver (eg.
-> drivers/clocksource/mips-gic-timer.c).
->
-> This does however not solve the issue for interrupts that are not
-> referenced by any driver through the device tree and results in
-> request_irq() calls returning -ENOSYS. It can be observed when attempting
-> to use perf tool to access hardware performance counters.
->
-> Fix this by explicitly calling irq_create_fwspec_mapping() for local
-> interrupts.
->
-> Fixes: e875bd66dfb ("irqchip/mips-gic: Fix local interrupts")
-> Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-> Cc: Paul Burton <paul.burton@imgtec.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Jason Cooper <jason@lakedaemon.net>
-> Cc: Marc Zyngier <marc.zyngier@arm.com>
-> Cc: linux-mips@linux-mips.org
+On Wed, 8 Feb 2017, James Hogan wrote:
 
-Queued, thanks.
+> When building for microMIPS we need to ensure that the assembler always
+> knows that there is code at the target of a branch or jump. Commit
+> 7170bdc77755 ("MIPS: Add return errors to protected cache ops")
+> introduced a fixup path to protected_cache(e)_op() which does not meet
+> this requirement. The fixup path jumps to the "2" label but we don't
+> know what will be placed at that label since it's at the end of the
+> inline asm. If the inline asm happens to be followed by an instruction
+> manually encoded with .word or similar then the toolchain will not know
+> that "2" labels code and linking will fail with:
+> 
+>   mips-img-linux-gnu-ld: arch/mips/mm/c-r4k.o: .fixup+0x0: Unsupported
+>   jump between ISA modes; consider recompiling with interlinking
+>   enabled.
 
-	M.
--- 
-Jazz is not dead, it just smell funny.
+ That is not really the cause.  The cause is the `.section' pseudo-op that 
+immediately physically follows, and which causes GAS to fix its current 
+state.  Since by this point it hasn't seen an instruction any outstanding 
+labels that haven't been finalised will be marked as `object' (i.e. data).  
+So it doesn't really matter what follows the inline asm, an ISA mode 
+mismatch will always happen here.
+
+ The amount of infrastructure that would be required to have state saved 
+and then restored where applicable to "see through section switches" is 
+substantial enough for no one to have tried implementing it so far. 
+
+ Consequently all places where a code label is immediately followed by one 
+of the section switch directives (technically, by the syntax rules of the 
+assembly language, such a label is attached to the directive), such as 
+`.section', `.previous', `.popsection', etc., need to have `.insn' added 
+to be treated correctly (arguably we could make them mark labels as 
+`function' instead, however I fear it may break something out there in a 
+subtler way as you won't get a similar error for data accesses and the 
+semantics has been like this since the introduction of MIPS16 support back 
+in 1996).
+
+ I suggest that you send an update with the description amended so as not 
+to confuse people about the actual cause.  Overall, unless you have done 
+that already, I think it would be the best if our sources were reviewed 
+for any remaining places across the MIPS port where a code label is 
+followed by a section switch and `.insn' added there right away.  It will 
+prevent people sneaking in new bad code by copying and pasting from the 
+wrong place.
+
+ I'll be happy to ack a patch with an updated description.
+
+  Maciej

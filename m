@@ -1,16 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:18530 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:18850 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992221AbdBHV4fMyQL3 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 8 Feb 2017 22:56:35 +0100
-Date: Wed, 8 Feb 2017 21:56:14 +0000
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH] MIPS: Fix protected_cache(e)_op() for microMIPS
-In-Reply-To: <20170208103547.22560-1-james.hogan@imgtec.com>
-Message-ID: <alpine.DEB.2.00.1702082127060.26999@tp.orcam.me.uk>
-References: <20170208103547.22560-1-james.hogan@imgtec.com>
+        with ESMTP id S23990601AbdBIOFr0qvhz (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Feb 2017 15:05:47 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH v2] MIPS: Fix protected_cache(e)_op() for microMIPS
+Date: Thu, 9 Feb 2017 14:04:53 +0000
+Message-ID: <20170209140453.26188-1-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,55 +18,68 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20170208215614.9Iwc114laL-0JJzDUzAAswndlP6uflmfYIjAYK0-MQ4@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@imgtec.com>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, "Maciej W. Rozycki" <macro@imgtec.com>
+Message-ID: <20170209140453.DAwjl1WpFy4_InBvQVNQ4uYGffP-FwTygtqKj8Qx7Ec@z>
 
-On Wed, 8 Feb 2017, James Hogan wrote:
+From: Paul Burton <paul.burton@imgtec.com>
 
-> When building for microMIPS we need to ensure that the assembler always
-> knows that there is code at the target of a branch or jump. Commit
-> 7170bdc77755 ("MIPS: Add return errors to protected cache ops")
-> introduced a fixup path to protected_cache(e)_op() which does not meet
-> this requirement. The fixup path jumps to the "2" label but we don't
-> know what will be placed at that label since it's at the end of the
-> inline asm. If the inline asm happens to be followed by an instruction
-> manually encoded with .word or similar then the toolchain will not know
-> that "2" labels code and linking will fail with:
-> 
->   mips-img-linux-gnu-ld: arch/mips/mm/c-r4k.o: .fixup+0x0: Unsupported
->   jump between ISA modes; consider recompiling with interlinking
->   enabled.
+When building for microMIPS we need to ensure that the assembler always
+knows that there is code at the target of a branch or jump. Commit
+7170bdc77755 ("MIPS: Add return errors to protected cache ops")
+introduced a fixup path to protected_cache(e)_op() which does not meet
+this requirement. The fixup path jumps to the "2" label but the .section
+pseudo-op immediately following it causes the label to be marked as
+data. Linking then fails with:
 
- That is not really the cause.  The cause is the `.section' pseudo-op that 
-immediately physically follows, and which causes GAS to fix its current 
-state.  Since by this point it hasn't seen an instruction any outstanding 
-labels that haven't been finalised will be marked as `object' (i.e. data).  
-So it doesn't really matter what follows the inline asm, an ISA mode 
-mismatch will always happen here.
+  mips-img-linux-gnu-ld: arch/mips/mm/c-r4k.o: .fixup+0x0: Unsupported
+  jump between ISA modes; consider recompiling with interlinking
+  enabled.
 
- The amount of infrastructure that would be required to have state saved 
-and then restored where applicable to "see through section switches" is 
-substantial enough for no one to have tried implementing it so far. 
+Fix this by declaring that "2" labels code using the .insn directive.
 
- Consequently all places where a code label is immediately followed by one 
-of the section switch directives (technically, by the syntax rules of the 
-assembly language, such a label is attached to the directive), such as 
-`.section', `.previous', `.popsection', etc., need to have `.insn' added 
-to be treated correctly (arguably we could make them mark labels as 
-`function' instead, however I fear it may break something out there in a 
-subtler way as you won't get a similar error for data accesses and the 
-semantics has been like this since the introduction of MIPS16 support back 
-in 1996).
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Fixes: 7170bdc77755 ("MIPS: Add return errors to protected cache ops")
+Cc: linux-mips@linux-mips.org
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: "Maciej W. Rozycki" <macro@imgtec.com>
+---
+Ralf: This fixes microMIPS build since a patch that is already merged
+into kvm/next. I was going to send you a pull request for those patches
+anyway, so it probably makes sense if I just append to that branch first
+and let the fix get upstream via the MIPS tree.
 
- I suggest that you send an update with the description amended so as not 
-to confuse people about the actual cause.  Overall, unless you have done 
-that already, I think it would be the best if our sources were reviewed 
-for any remaining places across the MIPS port where a code label is 
-followed by a section switch and `.insn' added there right away.  It will 
-prevent people sneaking in new bad code by copying and pasting from the 
-wrong place.
+Changes in v2:
+- Correct description, its the .section, not any following assembly
+  which triggers the issue (Maciej)
+---
+ arch/mips/include/asm/r4kcache.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
- I'll be happy to ack a patch with an updated description.
-
-  Maciej
+diff --git a/arch/mips/include/asm/r4kcache.h b/arch/mips/include/asm/r4kcache.h
+index 7227c158cbf8..55fd94e6cd0b 100644
+--- a/arch/mips/include/asm/r4kcache.h
++++ b/arch/mips/include/asm/r4kcache.h
+@@ -154,7 +154,8 @@ static inline void flush_scache_line(unsigned long addr)
+ 	"	.set	noreorder		\n"		\
+ 	"	.set "MIPS_ISA_ARCH_LEVEL"	\n"		\
+ 	"1:	cache	%1, (%2)		\n"		\
+-	"2:	.set	pop			\n"		\
++	"2:	.insn				\n"		\
++	"	.set	pop			\n"		\
+ 	"	.section .fixup,\"ax\"		\n"		\
+ 	"3:	li	%0, %3			\n"		\
+ 	"	j	2b			\n"		\
+@@ -177,7 +178,8 @@ static inline void flush_scache_line(unsigned long addr)
+ 	"	.set	mips0			\n"		\
+ 	"	.set	eva			\n"		\
+ 	"1:	cachee	%1, (%2)		\n"		\
+-	"2:	.set	pop			\n"		\
++	"2:	.insn				\n"		\
++	"	.set	pop			\n"		\
+ 	"	.section .fixup,\"ax\"		\n"		\
+ 	"3:	li	%0, %3			\n"		\
+ 	"	j	2b			\n"		\
+-- 
+2.11.0

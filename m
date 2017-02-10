@@ -1,15 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:24638 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992236AbdBJXBhUaW0t (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 11 Feb 2017 00:01:37 +0100
+Received: from mailapp01.imgtec.com ([195.59.15.196]:56368 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992123AbdBJXonqKRHW (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 11 Feb 2017 00:44:43 +0100
+Date: Fri, 10 Feb 2017 23:44:37 +0000
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: Fix cacheinfo overflow
-Date: Fri, 10 Feb 2017 23:01:20 +0000
-Message-ID: <20170210230120.21588-1-james.hogan@imgtec.com>
-In-Reply-To: <20170208234523.GA13263@roeck-us.net>
+Subject: Re: [PATCH] MIPS: Fix cacheinfo overflow
+Message-ID: <20170210234437.GB9246@jhogan-linux.le.imgtec.org>
 References: <20170208234523.GA13263@roeck-us.net>
+ <20170210230120.21588-1-james.hogan@imgtec.com>
+ <d63e0019-5861-ccca-7959-631916e6c882@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="gj572EiMnwbLXET9"
+Content-Disposition: inline
+In-Reply-To: <d63e0019-5861-ccca-7959-631916e6c882@broadcom.com>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -20,57 +24,67 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Guenter Roeck <linux@roeck-us.net>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Justin Chen <justin.chen@broadcom.com>, Florian Fainelli <f.fainelli@gmail.com>, bcm-kernel-feedback-list@broadcom.com
-Message-ID: <20170210230120.egCf57m0byJQ68kqkT4P-YI5J7L5FX_rjzcfcp6jTkE@z>
+To: Justin Chen <justin.chen@broadcom.com>
+Cc: linux-mips@linux-mips.org, Guenter Roeck <linux@roeck-us.net>, Ralf Baechle <ralf@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>, bcm-kernel-feedback-list@broadcom.com
+Message-ID: <20170210234437.ncqE-Yd8ZAi4pu2Us2_h7StU7FBDogBu1joqBi69_lE@z>
 
-The recently added MIPS cacheinfo support used a macro populate_cache()
-to populate the cacheinfo structures depending on which caches are
-present. However the macro contains multiple statements without
-enclosing them in a do {} while (0) loop, so the L2 and L3 cache
-conditionals in populate_cache_leaves() only conditionalised the first
-statement in the macro.
+--gj572EiMnwbLXET9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This overflows the buffer allocated by detect_cache_attributes(),
-resulting in boot failures under QEMU where neither the L2 or L2 caches
-are present.
+Hi Justin,
 
-Enclose the macro statements in a do {} while (0) block to keep the
-whole macro inside the conditionals.
+On Fri, Feb 10, 2017 at 03:10:47PM -0800, Justin Chen wrote:
+> I actually submitted a v2 of the patch sometime back located here:
+> https://patchwork.linux-mips.org/patch/15107/
+>=20
+> The v2 had some code review changes from Matt Redfearn. These changes=20
+> indirectly got rid of the error, which was why I wasn't running into the=
+=20
+> crash.
 
-Fixes: ef462f3b64e9 ("MIPS: Add cacheinfo support")
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Justin Chen <justin.chen@broadcom.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: linux-mips@linux-mips.org
-Cc: bcm-kernel-feedback-list@broadcom.com
----
- arch/mips/kernel/cacheinfo.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Ah yes. It looks like Ralf applied the original patch on January 3rd,
+before the last 3 submissions of the patch.
 
-diff --git a/arch/mips/kernel/cacheinfo.c b/arch/mips/kernel/cacheinfo.c
-index a92bbbae969b..97d5239ca47b 100644
---- a/arch/mips/kernel/cacheinfo.c
-+++ b/arch/mips/kernel/cacheinfo.c
-@@ -17,6 +17,7 @@
- 
- /* Populates leaf and increments to next leaf */
- #define populate_cache(cache, leaf, c_level, c_type)		\
-+do {								\
- 	leaf->type = c_type;					\
- 	leaf->level = c_level;					\
- 	leaf->coherency_line_size = c->cache.linesz;		\
-@@ -24,7 +25,8 @@
- 	leaf->ways_of_associativity = c->cache.ways;		\
- 	leaf->size = c->cache.linesz * c->cache.sets *		\
- 		c->cache.ways;					\
--	leaf++;
-+	leaf++;							\
-+} while (0)
- 
- static int __init_cache_level(unsigned int cpu)
- {
--- 
-2.11.0
+Incidentally, in future I'd recommend incrementing the patch version
+number each time you submit a new version, and mentioning what has
+changed in a comment at the bottom of the commit message (anything after
+"---" gets dropped when the patch is applied).
+
+A random example:
+https://patchwork.linux-mips.org/patch/15134/
+
+>=20
+> Either way, whatever makes more sense, we can drop the other v1 patch=20
+> and add v2 or just add this patch on top.
+
+Since the patch has already been applied for a while and the merge
+window is imminent, I think its best to make do with fixup patches on
+top this time around.
+
+Thanks
+James
+
+--gj572EiMnwbLXET9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJYnlBdAAoJEGwLaZPeOHZ69lQP/A9Dok74IIjpdhVC1Ju6IoPx
+X2lsxKLFcCS6D3kqzctzxEXTGvn7sHJ7SjBeUzmpSyWj4cKGzax9ZEySyefYLJrK
+io9Ddf77cEfqmyDxAGxYe5wHYwQk2i3FuBLJIOqI8BZKR6BVyzQj9fx29aPW3hT/
+n7AjHquo+//gPvwUHcLV5ctjCQDkyn9CKQTyzDb1Sjm7ixvUg6T5iqFc5oODH8PG
+07OheCN3WvhI0d6sEg3DQ4g+PsX821sTtduimDy2kj2v13IvoayLubvbwaj7ptsp
+pc4/8wo6Ridl75I+qtg8+bX7lVx0Z5DbHgkELL/5GJsxks9QgHBychsmcGuTd5ZE
+zpo3uCcQkxh4qz7BIRBRJqsXU3pgf6o/H7O9YAyDob2kYiVjDKZAmQXh6P1JKiuS
+2COrjUjKPWLC1ZkjKrtWLyspBdp0uFpMTvt4fnzOP1t2a+HoQPMPxqFVoxk26zpz
+ainjoNdavE8qIkg32QzzPDIkbvCxg5TDix/fa3IbTfX1YTnLNfn9NEwWJydAOYCg
+cknnXjlHCkGwkgPcqAnxHNgP1xii+GFr22w0Y7yCLqEtQtHqFsXWD2uf7E8BlrR2
+p+LgJCkgvMR2eAmpWpqoW4P7MzdDzx0cNtz0SkLxzJ3771iDaDXoRXrQ4PhwtVOM
+k7+iMP4C974nDMTPpZDU
+=+G3H
+-----END PGP SIGNATURE-----
+
+--gj572EiMnwbLXET9--

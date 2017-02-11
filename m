@@ -1,19 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:56368 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:55806 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992123AbdBJXonqKRHW (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 11 Feb 2017 00:44:43 +0100
-Date: Fri, 10 Feb 2017 23:44:37 +0000
+        by eddie.linux-mips.org with ESMTP id S23992213AbdBKV1vlmzE6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 11 Feb 2017 22:27:51 +0100
+Date: Sat, 11 Feb 2017 21:27:45 +0000
 From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH] MIPS: Fix cacheinfo overflow
-Message-ID: <20170210234437.GB9246@jhogan-linux.le.imgtec.org>
-References: <20170208234523.GA13263@roeck-us.net>
- <20170210230120.21588-1-james.hogan@imgtec.com>
- <d63e0019-5861-ccca-7959-631916e6c882@broadcom.com>
+Subject: Re: [PATCH] MIPS: Fix distclean with Makefile.postlink
+Message-ID: <20170211212745.GE24226@jhogan-linux.le.imgtec.org>
+References: <1485770314-29891-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="gj572EiMnwbLXET9"
+        protocol="application/pgp-signature"; boundary="//IivP0gvsAy3Can"
 Content-Disposition: inline
-In-Reply-To: <d63e0019-5861-ccca-7959-631916e6c882@broadcom.com>
+In-Reply-To: <1485770314-29891-1-git-send-email-matt.redfearn@imgtec.com>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -24,67 +22,80 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Justin Chen <justin.chen@broadcom.com>
-Cc: linux-mips@linux-mips.org, Guenter Roeck <linux@roeck-us.net>, Ralf Baechle <ralf@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>, bcm-kernel-feedback-list@broadcom.com
-Message-ID: <20170210234437.ncqE-Yd8ZAi4pu2Us2_h7StU7FBDogBu1joqBi69_lE@z>
+To: Matt Redfearn <matt.redfearn@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20170211212745.M_uhbwDzaVaQ6_9UjBa24NA6N5lIb6lpCJhuQ-NCRwM@z>
 
---gj572EiMnwbLXET9
+--//IivP0gvsAy3Can
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Justin,
-
-On Fri, Feb 10, 2017 at 03:10:47PM -0800, Justin Chen wrote:
-> I actually submitted a v2 of the patch sometime back located here:
-> https://patchwork.linux-mips.org/patch/15107/
+On Mon, Jan 30, 2017 at 09:58:34AM +0000, Matt Redfearn wrote:
+> The postlink Makefile must include include/config/auto.conf to get the
+> kernel configuration variables. But in a clean kernel directory this
+> file does not exist, causing make to bail with the error:
 >=20
-> The v2 had some code review changes from Matt Redfearn. These changes=20
-> indirectly got rid of the error, which was why I wasn't running into the=
-=20
-> crash.
-
-Ah yes. It looks like Ralf applied the original patch on January 3rd,
-before the last 3 submissions of the patch.
-
-Incidentally, in future I'd recommend incrementing the patch version
-number each time you submit a new version, and mentioning what has
-changed in a comment at the bottom of the commit message (anything after
-"---" gets dropped when the patch is applied).
-
-A random example:
-https://patchwork.linux-mips.org/patch/15134/
-
+> arch/mips/Makefile.postlink:10:
+> include/config/auto.conf: No such file or directory
+> make[1]: *** No rule to make target
+> 'include/config/auto.conf'.  Stop.
+> Makefile:1290: recipe for target 'vmlinuxclean' failed
 >=20
-> Either way, whatever makes more sense, we can drop the other v1 patch=20
-> and add v2 or just add this patch on top.
+> Fix this by using "-include" to not cause a Make error when the file
+> does not exist.
+>=20
+> Fixes: 44079d3509ae ("MIPS: Use Makefile.postlink to insert relocations i=
+nto vmlinux")
+> Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
 
-Since the patch has already been applied for a while and the merge
-window is imminent, I think its best to make do with fixup patches on
-top this time around.
+Applied
 
 Thanks
 James
 
---gj572EiMnwbLXET9
+> ---
+>=20
+>  arch/mips/Makefile.postlink | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/arch/mips/Makefile.postlink b/arch/mips/Makefile.postlink
+> index b0ddf0701a31..4b7f5a648c79 100644
+> --- a/arch/mips/Makefile.postlink
+> +++ b/arch/mips/Makefile.postlink
+> @@ -7,7 +7,7 @@
+>  PHONY :=3D __archpost
+>  __archpost:
+> =20
+> -include include/config/auto.conf
+> +-include include/config/auto.conf
+>  include scripts/Kbuild.include
+> =20
+>  CMD_RELOCS =3D arch/mips/boot/tools/relocs
+> --=20
+> 2.7.4
+>=20
+>=20
+
+--//IivP0gvsAy3Can
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJYnlBdAAoJEGwLaZPeOHZ69lQP/A9Dok74IIjpdhVC1Ju6IoPx
-X2lsxKLFcCS6D3kqzctzxEXTGvn7sHJ7SjBeUzmpSyWj4cKGzax9ZEySyefYLJrK
-io9Ddf77cEfqmyDxAGxYe5wHYwQk2i3FuBLJIOqI8BZKR6BVyzQj9fx29aPW3hT/
-n7AjHquo+//gPvwUHcLV5ctjCQDkyn9CKQTyzDb1Sjm7ixvUg6T5iqFc5oODH8PG
-07OheCN3WvhI0d6sEg3DQ4g+PsX821sTtduimDy2kj2v13IvoayLubvbwaj7ptsp
-pc4/8wo6Ridl75I+qtg8+bX7lVx0Z5DbHgkELL/5GJsxks9QgHBychsmcGuTd5ZE
-zpo3uCcQkxh4qz7BIRBRJqsXU3pgf6o/H7O9YAyDob2kYiVjDKZAmQXh6P1JKiuS
-2COrjUjKPWLC1ZkjKrtWLyspBdp0uFpMTvt4fnzOP1t2a+HoQPMPxqFVoxk26zpz
-ainjoNdavE8qIkg32QzzPDIkbvCxg5TDix/fa3IbTfX1YTnLNfn9NEwWJydAOYCg
-cknnXjlHCkGwkgPcqAnxHNgP1xii+GFr22w0Y7yCLqEtQtHqFsXWD2uf7E8BlrR2
-p+LgJCkgvMR2eAmpWpqoW4P7MzdDzx0cNtz0SkLxzJ3771iDaDXoRXrQ4PhwtVOM
-k7+iMP4C974nDMTPpZDU
-=+G3H
+iQIcBAEBCAAGBQJYn4HKAAoJEGwLaZPeOHZ6ClEP/A2OA6Ilc65ApLvpBzwRjndZ
+Ux/rkY62f3JonBUwFPdX1ogmYdfbe61w6uFR/fPZEVPkJ51qqUZujFANhrvs++aM
+SImT6aupFdiBi9iVszccqL1VDZgZSV5eBfbhtjBiKLajIfyzr4qIpZKhZspxzWi1
+qYFqgPEmTOylZLL5BjFdR2GC/3CIKJgD8mqmJyWUPHLKhJPamMKw5zTTA/RJVSeK
+NjkjWFcvUY3gEEXz+l1UJ9j+/cXOFnoi0HkPXZ8ZQDnmK5NWOpL08o9n4WgYVAU6
+FPZrZvJTzGaGEKzk4thaJ5+3pK4zTavGjsV7JK5766eWYyN6C82jjxDbmK6S+i5D
+2JhXv2KPZtga0oVEMx7PP4ugAXBgieoGx94ocWCnbrru1B2SPPD60aZcm410J9+u
+U5zdDRkqwYXIyRkQbUofxcOCvXO3lSTgAOXMO7fIAqUcuKfmBWeZmPmd+EeY9MQ1
+ZkeO7cFMC67NqiBdtqfk+4YSbdwTntMQGu5mDMhyDHbGkKBDt8REqZ2chV1AQ5f/
+E6mwL8zNA1YVNMaZ4Hjr1bE2kuBH4S+3TbCpo1Bx4FC3k44hcnWkET8uiEUcYT1b
+/egJFxZf18QVOMGLkFsdtpG0F5cu03T7SMmkA6o7Qtged/2/ejnNlghTP1llk5St
+pjcue+Y8yNh3Iokv3kzo
+=R99h
 -----END PGP SIGNATURE-----
 
---gj572EiMnwbLXET9--
+--//IivP0gvsAy3Can--

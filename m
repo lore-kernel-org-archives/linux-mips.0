@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:2208 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:45733 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992942AbdBKWBfivsU6 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 11 Feb 2017 23:01:35 +0100
-Date: Sat, 11 Feb 2017 22:01:29 +0000
+        by eddie.linux-mips.org with ESMTP id S23992213AbdBKWTYnwMI6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 11 Feb 2017 23:19:24 +0100
+Date: Sat, 11 Feb 2017 22:19:18 +0000
 From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH v4 3/3] MIPS: ath79: Fix the USB PHY reset names
-Message-ID: <20170211220129.GG24226@jhogan-linux.le.imgtec.org>
-References: <1486324352-15188-1-git-send-email-albeu@free.fr>
- <1486324352-15188-3-git-send-email-albeu@free.fr>
+Subject: Re: [PATCH] MIPS: sync-r4k: Fix KERN_CONT fallout
+Message-ID: <20170211221918.GH24226@jhogan-linux.le.imgtec.org>
+References: <1486041724-19524-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Cgrdyab2wu3Akvjd"
+        protocol="application/pgp-signature"; boundary="EemXnrF2ob+xzFeB"
 Content-Disposition: inline
-In-Reply-To: <1486324352-15188-3-git-send-email-albeu@free.fr>
+In-Reply-To: <1486041724-19524-1-git-send-email-matt.redfearn@imgtec.com>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,68 +22,82 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alban <albeu@free.fr>
-Cc: linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Antony Pavlov <antonynpavlov@gmail.com>, devicetree@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20170211220129._vysgR0lEJpJZjssa-8SDsYbO9UZOXlOxHbBxHxlQWQ@z>
+To: Matt Redfearn <matt.redfearn@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20170211221918.vtkqHBNyGrYkF29RhTayAHfae-BJ56hXu43LEcbRgEw@z>
 
---Cgrdyab2wu3Akvjd
+--EemXnrF2ob+xzFeB
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Alban,
-
-On Sun, Feb 05, 2017 at 08:52:32PM +0100, Alban wrote:
-> From: Alban Bedel <albeu@free.fr>
+On Thu, Feb 02, 2017 at 01:22:04PM +0000, Matt Redfearn wrote:
+> Since commit 4bcc595ccd80 ("printk: reinstate KERN_CONT for printing
+> continuation lines") the output of counter synchornisation has been
+> split across lines:
+> [ 0.665181] Synchronize counters for CPU 1:
+> [ 0.678578] done.
 >=20
-> The binding for the USB PHY went thru before the driver. However the
-> new version of the driver now use the PHY core support for reset, and
-> this expect the reset to be named "phy". So remove the "usb-" prefix
-> from the the reset names.
+> Fix this by using pr_cont, and replace printk with pr_info.
 >=20
-> Signed-off-by: Alban Bedel <albeu@free.fr>
-> ---
->  Documentation/devicetree/bindings/phy/phy-ath79-usb.txt | 4 ++--
->  arch/mips/boot/dts/qca/ar9132.dtsi                      | 2 +-
+> Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
 
-<snip>
+Applied
 
-> diff --git a/arch/mips/boot/dts/qca/ar9132.dtsi b/arch/mips/boot/dts/qca/=
-ar9132.dtsi
-> index 302f0a8..808c2bb 100644
-> --- a/arch/mips/boot/dts/qca/ar9132.dtsi
-> +++ b/arch/mips/boot/dts/qca/ar9132.dtsi
-> @@ -160,7 +160,7 @@
->  	usb_phy: usb-phy {
->  		compatible =3D "qca,ar7100-usb-phy";
-> =20
-> -		reset-names =3D "usb-phy", "usb-suspend-override";
-> +		reset-names =3D "phy", "suspend-override";
-
-Does arch/mips/boot/dts/qca/ar9331.dtsi need updating too?
-
-Cheers
+Thanks
 James
 
---Cgrdyab2wu3Akvjd
+> ---
+>=20
+>  arch/mips/kernel/sync-r4k.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/arch/mips/kernel/sync-r4k.c b/arch/mips/kernel/sync-r4k.c
+> index 4472a7f98577..1df1160b6a47 100644
+> --- a/arch/mips/kernel/sync-r4k.c
+> +++ b/arch/mips/kernel/sync-r4k.c
+> @@ -29,7 +29,7 @@ void synchronise_count_master(int cpu)
+>  	int i;
+>  	unsigned long flags;
+> =20
+> -	printk(KERN_INFO "Synchronize counters for CPU %u: ", cpu);
+> +	pr_info("Synchronize counters for CPU %u: ", cpu);
+> =20
+>  	local_irq_save(flags);
+> =20
+> @@ -83,7 +83,7 @@ void synchronise_count_master(int cpu)
+>  	 * count registers were almost certainly out of sync
+>  	 * so no point in alarming people
+>  	 */
+> -	printk("done.\n");
+> +	pr_cont("done.\n");
+>  }
+> =20
+>  void synchronise_count_slave(int cpu)
+> --=20
+> 2.7.4
+>=20
+>=20
+
+--EemXnrF2ob+xzFeB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJYn4m5AAoJEGwLaZPeOHZ6XkYP/3a3EJjcO6KRWAcUXp4vm5wR
-yCmBsyBfzKJUWqbHO/XmHir5ERVrySuE5iDDEHzqWjgD9E/o1VF0m9N4/BlHdiy+
-OUhGm5j88wN6S99tXUrIaJGy93kIrMnQT1gxrYqIcDB+/kywfKUUH5exWAlFfXW0
-mcN6YWrPSkw8At65pml2an5JmJRX0ROIhwTonBO+18WX6UyUg3CyoxESNcnkb6Hi
-fWUi6em8cOYFTZF3jgSvBMe/PGIBxDGHvzJsre4TzzguP6a4OSe28lC+IJda08d7
-jIek8Tcc1Nyvu64Lc4uomdcBMzHPrThW35DfuvtjEDf/fYgSGH5/7qpt2FXvDOVN
-ofPAgzB7eRzayi8HjDx1F1CUbEkkjK7G90xN72onDMBhVYlxQUvOW8lKJevVMA5U
-Dq2L0eHfVzkZVrJNbz8lE18d4BtsMCfwCYpeIdmaVEUTfU6e+H9U22j/2NagnaiK
-8mvhFOZISDWukUnxoxgbpwFp4i1TSCAmx97FaGeakO8lNwrX77ltH9mODf2gmThh
-V7qZDcLE/e3M0g9S7vuN+/IK+ERQlx6qWA3WIbGKC236CPRHvpv4Hbl6iWoDs6T4
-3sZ88YRsKwio4ONQKqY4cbrlzXVt6cFjdSHdw2Mm0c5LTPVQ51WQlIsce1yowMDT
-JqM7QnZznw/MPUU5Wbtf
-=RsVl
+iQIcBAEBCAAGBQJYn43mAAoJEGwLaZPeOHZ6EugQAJUhwCavUWGqQ4H/GNmO3zr7
+BDwTXmCrSgRAjnmfZCPKlBAIWjQ5tpc8ZzRhn+w3guz3O78IaAjRbPkC7vXsEDcS
+3/1znac+gI+rGVVOUq1yOKUzyjU/IAHBnr14jaNhZVqgh8y+zN6PlAeHzRyXX8kw
+RhXr4Xe+ZSyd5rzT0LTn0vhWp1MVDMaWPgSS60dQjqxbpDBqPSF0xDmh5yPgGgWg
+kZNvUsrWrcwUBqBm17CvP+IUCfiTijPgZDauFLopibEKKA0a8bOopltAPVCQPwYY
+roGmuRW/LUOwKtCSdAcHjLfWTQT40vs8R6AoQQOVMbnQy0jBcrN7exeWA6adH5MY
+musAVHKdCxFFesIlDjJdAxOKa4dGtL2ZmjRGkS3Px+zSCztxa6J+WbcjpBb9sMJ3
+3PY/WE8fxxFeT76ui7Blk5YRsQQCgY+yp3qgy/CbM1MzImAUXSaAicGb/ARC9bnz
+sMNmpjY/vC3SRhaiITqqeS8o4dHJ3Q0kOgq7NESrkJKnUy8wGDQeQqeG5DHzlbt+
+5zNYZy7Duu8n426tP19t90iT3a00MjkW+ox2yrajzGu0FVr/M0K9XrsStjX0oNpS
+zsQkdk9F8s07o5AqWNyVZZ+mnWqDI6+WFD1X/hsG9qifVJQ7az1aRdwbP2EzVRML
+JVE0u/Pgo73qauRy/F/t
+=x/mw
 -----END PGP SIGNATURE-----
 
---Cgrdyab2wu3Akvjd--
+--EemXnrF2ob+xzFeB--

@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:22367 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:37185 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23993552AbdBMPUYAEXP2 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 13 Feb 2017 16:20:24 +0100
-Date: Mon, 13 Feb 2017 15:20:17 +0000
+        by eddie.linux-mips.org with ESMTP id S23993877AbdBMV4SfvArk (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 13 Feb 2017 22:56:18 +0100
+Date: Mon, 13 Feb 2017 21:56:11 +0000
 From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH v5 0/8] MIPS: Loongson: Add the Loongson-1A processor
- support
-Message-ID: <20170213152017.GK24226@jhogan-linux.le.imgtec.org>
-References: <1486519069-9364-1-git-send-email-zhoubb@lemote.com>
+Subject: Re: [PATCH] MIPS: Lantiq: Keep ethernet enabled during boot
+Message-ID: <20170213215610.GL24226@jhogan-linux.le.imgtec.org>
+References: <20170119132009.55709-1-nbd@nbd.name>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5mZBmBd1ZkdwT1ny"
+        protocol="application/pgp-signature"; boundary="FnOKg9Ah4tDwTfQS"
 Content-Disposition: inline
-In-Reply-To: <1486519069-9364-1-git-send-email-zhoubb@lemote.com>
+In-Reply-To: <20170119132009.55709-1-nbd@nbd.name>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,134 +22,101 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Binbin Zhou <zhoubb@lemote.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, John Crispin <john@phrozen.org>, "Steven J . Hill" <Steven.Hill@imgtec.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, Kelvin Cheung <keguang.zhang@gmail.com>, Yang Ling <gnaygnil@gmail.com>, Huacai Chen <chenhc@lemote.com>
-Message-ID: <20170213152017.E4lwWIIXBV00CVnRZ3jFSFdjjeN4FwYlzbPgwqSQUaY@z>
+To: Felix Fietkau <nbd@nbd.name>
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, john@phrozen.org, hauke.mehrtens@lantiq.com
+Message-ID: <20170213215611.oByDgrz6ciFWsEgtGSgZ3YvNUxs4UgVBmhLJQNiM7c4@z>
 
---5mZBmBd1ZkdwT1ny
+--FnOKg9Ah4tDwTfQS
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Thu, Jan 19, 2017 at 02:20:09PM +0100, Felix Fietkau wrote:
+> Disabling ethernet during reboot (only to enable it again when the
+> ethernet driver attaches) can put the chip into a faulty state where it
+> corrupts the header of all incoming packets.
+>=20
+> This happens if packets arrive during the time window where the core is
+> disabled, and it can be easily reproduced by rebooting while sending a
+> flood ping to the broadcast address.
+>=20
+> Cc: john@phrozen.org
+> Cc: hauke.mehrtens@lantiq.com
+> Cc: stable@vger.kernel.org
+> Fixes: 95135bfa7ead ("MIPS: Lantiq: Deactivate most of the devices by def=
+ault")
+> Signed-off-by: Felix Fietkau <nbd@nbd.name>
 
-On Wed, Feb 08, 2017 at 09:57:41AM +0800, Binbin Zhou wrote:
-> The Loongson-1A CPU is similar with Loongson-1B/1C, which is a 32-bit SoC.
->=20
-> It is a cost-effective single chip system based on LS232 processor core,
-> and is applicable to fields such as industrial control, and security appl=
-ications.
->=20
-> It implements the MIPS32 release 2 instruction set.
->=20
-> They share the same PRID, so we rewrite them into PRID_REV_LOONGSON1ABC,
-> and use their CPU macros to distinguish.
->=20
-> Changes since v1:
->=20
-> 1. According commit c908656a7531771ae7642990a7c5f3c7307bd612
->    (MIPS: Loongson: Naming style cleanup and rework) to fix the naming st=
-yle.
->=20
-> Changes since v2:
->=20
-> 1. Remove __irq_set_handler_locked()
-> 2. Rebases on top of v4.5-rc5.
->=20
-> Changes since v3:
->=20
-> 1. Rename the Loongson-1 series's PRID name
-> 2. Rewite Loongson-1A's clk driver
-> 2. Rebases on top of v4.10-rc2.
->=20
-> Changes since v4:
->=20
-> 1. Fix some commit message error
+Applied
 
-Please can you look back at review comments from previous revisions, as
-most of them seem to be unaddressed & unanswered unless I'm missing
-something, and the common clock framework maintainers still aren't Cc'd
-on the relevant patches.
-
-Regarding switching to devicetree, note that it can usually be done
-incrementally and without any boot ABI changes by embedding the
-flattened devicetree(s) in the kernel.
-
-Cheers
+Thanks
 James
 
+> ---
+>  arch/mips/lantiq/xway/sysctrl.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 >=20
-> Binbin Zhou(8):
->  MIPS: Loongson: Merge PRID macro for Loongson-1A/1B/1C
->  MIPS: Loongson: Expand Loongson-1's register definition
->  MIPS: Loongson: Add basic Loongson-1A CPU support
->  MIPS: Loongson: Add Loongson-1A Kconfig options
->  MIPS: Loongson: Add platform devices for Loongson-1A
->  MIPS: Loongson: Add Loongson-1A board support
->  clk: Loongson: Add Loongson-1A clock support
->  MIPS: Loongson: Add Loongson-1A default config file
->=20
-> Signed-off-by: Binbin Zhou <zhoubb@lemote.com>
-> Signed-off-by: Huacai Chen <chenhc@lemote.com>
+> diff --git a/arch/mips/lantiq/xway/sysctrl.c b/arch/mips/lantiq/xway/sysc=
+trl.c
+> index 236193b5210b..9a61671c00a7 100644
+> --- a/arch/mips/lantiq/xway/sysctrl.c
+> +++ b/arch/mips/lantiq/xway/sysctrl.c
+> @@ -545,7 +545,7 @@ void __init ltq_soc_init(void)
+>  		clkdev_add_pmu("1a800000.pcie", "msi", 1, 1, PMU1_PCIE2_MSI);
+>  		clkdev_add_pmu("1a800000.pcie", "pdi", 1, 1, PMU1_PCIE2_PDI);
+>  		clkdev_add_pmu("1a800000.pcie", "ctl", 1, 1, PMU1_PCIE2_CTL);
+> -		clkdev_add_pmu("1e108000.eth", NULL, 1, 0, PMU_SWITCH | PMU_PPE_DP);
+> +		clkdev_add_pmu("1e108000.eth", NULL, 0, 0, PMU_SWITCH | PMU_PPE_DP);
+>  		clkdev_add_pmu("1da00000.usif", "NULL", 1, 0, PMU_USIF);
+>  		clkdev_add_pmu("1e103100.deu", NULL, 1, 0, PMU_DEU);
+>  	} else if (of_machine_is_compatible("lantiq,ar10")) {
+> @@ -553,7 +553,7 @@ void __init ltq_soc_init(void)
+>  				  ltq_ar10_fpi_hz(), ltq_ar10_pp32_hz());
+>  		clkdev_add_pmu("1e101000.usb", "ctl", 1, 0, PMU_USB0);
+>  		clkdev_add_pmu("1e106000.usb", "ctl", 1, 0, PMU_USB1);
+> -		clkdev_add_pmu("1e108000.eth", NULL, 1, 0, PMU_SWITCH |
+> +		clkdev_add_pmu("1e108000.eth", NULL, 0, 0, PMU_SWITCH |
+>  			       PMU_PPE_DP | PMU_PPE_TC);
+>  		clkdev_add_pmu("1da00000.usif", "NULL", 1, 0, PMU_USIF);
+>  		clkdev_add_pmu("1f203000.rcu", "gphy", 1, 0, PMU_GPHY);
+> @@ -575,11 +575,11 @@ void __init ltq_soc_init(void)
+>  		clkdev_add_pmu(NULL, "ahb", 1, 0, PMU_AHBM | PMU_AHBS);
+> =20
+>  		clkdev_add_pmu("1da00000.usif", "NULL", 1, 0, PMU_USIF);
+> -		clkdev_add_pmu("1e108000.eth", NULL, 1, 0,
+> +		clkdev_add_pmu("1e108000.eth", NULL, 0, 0,
+>  				PMU_SWITCH | PMU_PPE_DPLUS | PMU_PPE_DPLUM |
+>  				PMU_PPE_EMA | PMU_PPE_TC | PMU_PPE_SLL01 |
+>  				PMU_PPE_QSB | PMU_PPE_TOP);
+> -		clkdev_add_pmu("1f203000.rcu", "gphy", 1, 0, PMU_GPHY);
+> +		clkdev_add_pmu("1f203000.rcu", "gphy", 0, 0, PMU_GPHY);
+>  		clkdev_add_pmu("1e103000.sdio", NULL, 1, 0, PMU_SDIO);
+>  		clkdev_add_pmu("1e103100.deu", NULL, 1, 0, PMU_DEU);
+>  		clkdev_add_pmu("1e116000.mei", "dfe", 1, 0, PMU_DFE);
 > --=20
->  arch/mips/Kconfig                                 |  12 +++++++++
->  arch/mips/configs/loongson1a_defconfig            | 131 ++++++++++++++++=
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  arch/mips/include/asm/cpu-type.h                  |   3 ++-
->  arch/mips/include/asm/cpu.h                       |   3 +--
->  arch/mips/include/asm/mach-loongson32/irq.h       |  16 ++++++++----
->  arch/mips/include/asm/mach-loongson32/loongson1.h | 172 ++++++++++++++++=
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
-++++++++---------------------
->  arch/mips/include/asm/mach-loongson32/platform.h  |   2 ++
->  arch/mips/include/asm/mach-loongson32/regs-clk.h  |  30 ++++++++++++++++=
-++++-
->  arch/mips/include/asm/mach-loongson32/regs-mux.h  |  36 ++++++++++++++++=
-++++++++-
->  arch/mips/kernel/cpu-probe.c                      |   6 ++++-
->  arch/mips/loongson32/Kconfig                      |  20 ++++++++++++++
->  arch/mips/loongson32/Makefile                     |   6 +++++
->  arch/mips/loongson32/Platform                     |   1 +
->  arch/mips/loongson32/common/irq.c                 |   2 +-
->  arch/mips/loongson32/common/platform.c            |  83 ++++++++++++++++=
-++++++++++++++++++++++++++++++++----------
->  arch/mips/loongson32/common/setup.c               |   6 +++--
->  arch/mips/loongson32/ls1a/Makefile                |   5 ++++
->  arch/mips/loongson32/ls1a/board.c                 |  31 ++++++++++++++++=
-++++++
->  arch/mips/mm/c-r4k.c                              |  10 +++++++
->  drivers/clk/loongson1/Makefile                    |   1 +
->  drivers/clk/loongson1/clk-loongson1a.c            |  75 ++++++++++++++++=
-++++++++++++++++++++++++++++++++++++
->  21 files changed, 593 insertions(+), 58 deletions(-)
->  create mode 100644 arch/mips/configs/loongson1a_defconfig
->  create mode 100644 arch/mips/loongson32/ls1a/Makefile
->  create mode 100644 arch/mips/loongson32/ls1a/board.c
->  create mode 100644 drivers/clk/loongson1/clk-loongson1a.c
-> --
-> 1.9.0
+> 2.11.0
 >=20
 >=20
 
---5mZBmBd1ZkdwT1ny
+--FnOKg9Ah4tDwTfQS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJYoc6pAAoJEGwLaZPeOHZ6XwoP/RgXLLuyFzd46QXFsQ8nwWid
-26UsFjc8qB3L0UjWSQ4sJyl/nd1ytxCFO/0ww/6B57r8uVHqxWDIPBjZh6XwD+RZ
-EUMSfh/Qesz+qAV+MUJdjAmpyKgwXN630/OphN7x8JNargyuTLCVBRi1hOghOoMF
-Xn2uBoIfu4lcA5eLutORGff07kEkARR6LHNqAUY7BD0DKqAwt+6DidWq57oQSv4n
-rdN09vLmXc1yXx107Em8I3AiMgY4P4oL9taJL/TurIfqLqW1wS8GT5v2+U/VBiLH
-/vCS6Hm3oruS9XNB1xxboCGEa4VFpYqoKaPrgZvbuaZpBiaCeYGhZkY21eLSrJgn
-kIgsv/NAY2jiA5NkTohpRmsSyXLZW5twbrazJHkMSQT/i5V6O4kZxICN1e+uzxKM
-vhsleqHI9snGLSUmD/k80/C5h0cLgDE6b9LuYU2cgnfwBRJgFtdPY26VU4SFbSWs
-MJsQj3hmAdpXER+cg0/77/Qkn8pBAxlwPGQWiqQu0lFpzSv6IkHmHUB7l6VPeXtL
-m/PTIQqF7dTEQfC1jMWnar3b5/Cq63JTSiGvJ60OuCNGnFahYAOuM5Wx33COBKHl
-Txpxma49++SLxmfClxWSulGIBSO2gPXghsOyoq5MdlUGB+2+Duk0f5M+RQcrcmYn
-5iSKZOJ7bdfVh8mqLhD4
-=KTVz
+iQIcBAEBCAAGBQJYoitqAAoJEGwLaZPeOHZ68ZsQALhj0GEQIH2XP6jP3sgyJ1LI
+x7FNQ6MiVURR82/UmEvLLyx0wiyvM2w/gUNPDCOheTNt89fuIPEvJj8NOiXp9d/B
+XZGdOLaIpxLSZJxgXcznJ2iTztKyiysrdDG4B51fPXvgX4U6BSn3/upDnH71TU9v
+RhXStbCV0qBS6+i3JTcXJJW5QiGG4JmGrGuzMPu4XhBXxLv2yFr37kVcEbGQ5WUn
+AQ7GCOfcVSYDNst5lFSX0rc/wiQLZ1NlvT/WvuTVNsDkR01LlFCwNZNHsoinAbKV
+tO4yGfwGIhLgd/UlkPOrFhCstEzKPVzwUldIY0qYNn3GJ0IYvs6vqnFF6YGCY5UW
+3svz8zJLCS7vtL8hDta3zZY1k1cSouYCNiR9Jr0bgT+qnhwucxCKBoHulRc1vUdo
+0BpdVRdTJxrG+HOVy2Xwq8zBSHPmVspER3NS6IUTW8KOIztWrl0AvyW5zbjW2p3e
+0tQliGePny5FCYPrvKuOh84RHTFxbXpcBjimGFzQjALLe1F65NzOAkuCfAanCNjd
+LNmK83gU9zTr+ylyIus1bw9o1KOx4/wlqNeK0NdBJslroTzj0Hhrf7oVNjWqlOEY
+nPVefQJqNwv9CeAslqiQyoXCqgfi9J2ObqrYauKLKbzKl1jUGDiHVF9hntfbpWvT
+F0mqxTtFAP8yRamk3WvD
+=ARlv
 -----END PGP SIGNATURE-----
 
---5mZBmBd1ZkdwT1ny--
+--FnOKg9Ah4tDwTfQS--

@@ -1,19 +1,14 @@
-Received: from smtp5-g21.free.fr ([IPv6:2a01:e0c:1:1599::14]:59212 "EHLO
-        smtp5-g21.free.fr" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993331AbdBMIaiztOVQ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 13 Feb 2017 09:30:38 +0100
-Date: Mon, 13 Feb 2017 09:30:07 +0100
-From: Alban <albeu@free.fr>
-Subject: Re: [PATCH v4 3/3] MIPS: ath79: Fix the USB PHY reset names
-Message-ID: <20170213093007.7b76fd7c@tock>
-In-Reply-To: <20170211220129.GG24226@jhogan-linux.le.imgtec.org>
-References: <1486324352-15188-1-git-send-email-albeu@free.fr>
-        <1486324352-15188-3-git-send-email-albeu@free.fr>
-        <20170211220129.GG24226@jhogan-linux.le.imgtec.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:7283 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993411AbdBMKQQomphb (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 13 Feb 2017 11:16:16 +0100
+From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Subject: [PATCH RESEND] Kbuild: add cpp_its_S in ksym_dep_filter
+Date: Mon, 13 Feb 2017 11:15:56 +0100
+Message-ID: <1486980956-4733-1-git-send-email-marcin.nowakowski@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/3VoXh3x+sdCmcgfQ3sw6haQ"; protocol="application/pgp-signature"
-Return-Path: <albeu@free.fr>
+Content-Type: text/plain
+Return-Path: <Marcin.Nowakowski@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,74 +18,32 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@imgtec.com>
-Cc: Aban Bedel <albeu@free.fr>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Antony Pavlov <antonynpavlov@gmail.com>, devicetree@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20170213083007.fTvxf2NCXmybaCZWozjHtwuzxdrTOt8xoRv43Ql7j1Q@z>
+To: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
+Cc: Michal Marek <mmarek@suse.com>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Message-ID: <20170213101556.alK3Bes6mNEX5pbcwkiL7rA7X7DG81sqBtnxw8eXUO0@z>
 
---Sig_/3VoXh3x+sdCmcgfQ3sw6haQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Add a new command cpp_its_S introduced in:
+cf2a5e0bb4c6 ("MIPS: Support generating Flattened Image Trees (.itb)")
+to ksym_dep_filter handler - otherwise a warning is produced during the
+build of MIPS platforms (when vmlinux.*.itb target is chosen)
 
-On Sat, 11 Feb 2017 22:01:29 +0000
-James Hogan <james.hogan@imgtec.com> wrote:
+Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+---
+ scripts/Kbuild.include | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Hi Alban,
->=20
-> On Sun, Feb 05, 2017 at 08:52:32PM +0100, Alban wrote:
-> > From: Alban Bedel <albeu@free.fr>
-> >=20
-> > The binding for the USB PHY went thru before the driver. However the
-> > new version of the driver now use the PHY core support for reset, and
-> > this expect the reset to be named "phy". So remove the "usb-" prefix
-> > from the the reset names.
-> >=20
-> > Signed-off-by: Alban Bedel <albeu@free.fr>
-> > ---
-> >  Documentation/devicetree/bindings/phy/phy-ath79-usb.txt | 4 ++--
-> >  arch/mips/boot/dts/qca/ar9132.dtsi                      | 2 +- =20
->=20
-> <snip>
->=20
-> > diff --git a/arch/mips/boot/dts/qca/ar9132.dtsi b/arch/mips/boot/dts/qc=
-a/ar9132.dtsi
-> > index 302f0a8..808c2bb 100644
-> > --- a/arch/mips/boot/dts/qca/ar9132.dtsi
-> > +++ b/arch/mips/boot/dts/qca/ar9132.dtsi
-> > @@ -160,7 +160,7 @@
-> >  	usb_phy: usb-phy {
-> >  		compatible =3D "qca,ar7100-usb-phy";
-> > =20
-> > -		reset-names =3D "usb-phy", "usb-suspend-override";
-> > +		reset-names =3D "phy", "suspend-override"; =20
->=20
-> Does arch/mips/boot/dts/qca/ar9331.dtsi need updating too?
-
-Right, I forgot the AR9331 had been added since then, I'll send a new
-series.
-
-Alban
-
-
---Sig_/3VoXh3x+sdCmcgfQ3sw6haQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJYoW6PAAoJEHSUmkuduC280acQAIT2+u5HojN3Bw2JIrqUp3XZ
-49QEccjGIhhHpO30tp0qhqa0C6fLWoF0SQ7Vb2i0ECPGpEjezUMg5ri2FWUMTcyi
-oDA92ZG9AA0jBG0U58TgolECPGlommEi5Qr+2dWHuoNdKgleXel8v72KKVRfIgqZ
-zBfHjGyG4yRZQ6EoXg/fcSFAcy2BlkJgOX3ez88sedAQNGcPFjZV8216LsHWKiMM
-yiuiHegxXsultB0O8GHc9lp2Vqb16O2zfCyk5eMTryeiIdpW+yzEYaC5rejDDVE2
-tY/03adHFWZG7msU3/ZfYMs9DaKhsG4u+Pzrq33W9zrZGe45EhypHNVXVSY8YB4g
-2nRddep4srCufKfHC5yfBq1XFAentMxqMwu1/+WEgVJPZu70yO9JlCBkmb2s4tD/
-ZxRR3qtf66BlhomYJftwxEU5p1YOE8QNDcB/mv9prqVfm5n/B5ro4jhkOo3JQaxI
-vOudSdIYHr2px+TGs3+TUzKBC7ee143261c/zQ2gEdtAxIXjS1tiW/SD/vuP71dz
-4AtyEdKj1A8MXCnauiqnkppk+SGkVOoTJHW2g7bVSsQzcJqLF4DzVo7xjd2j48p2
-1qoGkQB8nd9r+18Dc4qEt+HMFue13YcqaFEGOA8BmkOvfEc7O3x5YPibauYL0avT
-/4D2ZpAiHeMbYsD5yFB/
-=0uzD
------END PGP SIGNATURE-----
-
---Sig_/3VoXh3x+sdCmcgfQ3sw6haQ--
+diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
+index 1792198..d6ca649 100644
+--- a/scripts/Kbuild.include
++++ b/scripts/Kbuild.include
+@@ -284,7 +284,7 @@ ksym_dep_filter =                                                            \
+ 	    $(CPP) $(call flags_nodeps,c_flags) -D__KSYM_DEPS__ $< ;;        \
+ 	  as_*_S|cpp_s_S)                                                    \
+ 	    $(CPP) $(call flags_nodeps,a_flags) -D__KSYM_DEPS__ $< ;;        \
+-	  boot*|build*|*cpp_lds_S|dtc|host*|vdso*) : ;;                      \
++	  boot*|build*|cpp_its_S|*cpp_lds_S|dtc|host*|vdso*) : ;;            \
+ 	  *) echo "Don't know how to preprocess $(1)" >&2; false ;;          \
+ 	esac | tr ";" "\n" | sed -rn 's/^.*=== __KSYM_(.*) ===.*$$/KSYM_\1/p'
+ 
+-- 
+2.7.4

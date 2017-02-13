@@ -1,18 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:61238 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23993201AbdBKXTMgLMvd (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 12 Feb 2017 00:19:12 +0100
-Date: Sat, 11 Feb 2017 23:19:06 +0000
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH] MIPS: Lantiq: Fix cascaded IRQ setup
-Message-ID: <20170211231906.GI24226@jhogan-linux.le.imgtec.org>
-References: <20170119112822.59445-1-nbd@nbd.name>
+Received: from smtp5-g21.free.fr ([IPv6:2a01:e0c:1:1599::14]:59212 "EHLO
+        smtp5-g21.free.fr" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993331AbdBMIaiztOVQ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 13 Feb 2017 09:30:38 +0100
+Date: Mon, 13 Feb 2017 09:30:07 +0100
+From: Alban <albeu@free.fr>
+Subject: Re: [PATCH v4 3/3] MIPS: ath79: Fix the USB PHY reset names
+Message-ID: <20170213093007.7b76fd7c@tock>
+In-Reply-To: <20170211220129.GG24226@jhogan-linux.le.imgtec.org>
+References: <1486324352-15188-1-git-send-email-albeu@free.fr>
+        <1486324352-15188-3-git-send-email-albeu@free.fr>
+        <20170211220129.GG24226@jhogan-linux.le.imgtec.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="v2/QI0iRXglpx0hK"
-Content-Disposition: inline
-In-Reply-To: <20170119112822.59445-1-nbd@nbd.name>
-Return-Path: <James.Hogan@imgtec.com>
+ boundary="Sig_/3VoXh3x+sdCmcgfQ3sw6haQ"; protocol="application/pgp-signature"
+Return-Path: <albeu@free.fr>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,141 +23,74 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Felix Fietkau <nbd@nbd.name>
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, john@phrozen.org
-Message-ID: <20170211231906.OiTWRycv-7LHrFcPWmZNyJmOZsZmoc8WwNYWiI0CnIY@z>
+To: James Hogan <james.hogan@imgtec.com>
+Cc: Aban Bedel <albeu@free.fr>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Antony Pavlov <antonynpavlov@gmail.com>, devicetree@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20170213083007.fTvxf2NCXmybaCZWozjHtwuzxdrTOt8xoRv43Ql7j1Q@z>
 
---v2/QI0iRXglpx0hK
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+--Sig_/3VoXh3x+sdCmcgfQ3sw6haQ
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hi Felix,
+On Sat, 11 Feb 2017 22:01:29 +0000
+James Hogan <james.hogan@imgtec.com> wrote:
 
-On Thu, Jan 19, 2017 at 12:28:22PM +0100, Felix Fietkau wrote:
-> With the IRQ stack changes integrated, the XRX200 devices started
-> emitting a constant stream of kernel messages like this:
+> Hi Alban,
 >=20
-> [  565.415310] Spurious IRQ: CAUSE=3D0x1100c300
+> On Sun, Feb 05, 2017 at 08:52:32PM +0100, Alban wrote:
+> > From: Alban Bedel <albeu@free.fr>
+> >=20
+> > The binding for the USB PHY went thru before the driver. However the
+> > new version of the driver now use the PHY core support for reset, and
+> > this expect the reset to be named "phy". So remove the "usb-" prefix
+> > from the the reset names.
+> >=20
+> > Signed-off-by: Alban Bedel <albeu@free.fr>
+> > ---
+> >  Documentation/devicetree/bindings/phy/phy-ath79-usb.txt | 4 ++--
+> >  arch/mips/boot/dts/qca/ar9132.dtsi                      | 2 +- =20
 >=20
-> This appears to be caused by IP0 firing for some reason without being
-> handled. Fix this by setting up IP2-6 as a proper chained IRQ handler and
-> calling do_IRQ for all MIPS CPU interrupts.
+> <snip>
 >=20
-> Cc: john@phrozen.org
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Felix Fietkau <nbd@nbd.name>
+> > diff --git a/arch/mips/boot/dts/qca/ar9132.dtsi b/arch/mips/boot/dts/qc=
+a/ar9132.dtsi
+> > index 302f0a8..808c2bb 100644
+> > --- a/arch/mips/boot/dts/qca/ar9132.dtsi
+> > +++ b/arch/mips/boot/dts/qca/ar9132.dtsi
+> > @@ -160,7 +160,7 @@
+> >  	usb_phy: usb-phy {
+> >  		compatible =3D "qca,ar7100-usb-phy";
+> > =20
+> > -		reset-names =3D "usb-phy", "usb-suspend-override";
+> > +		reset-names =3D "phy", "suspend-override"; =20
+>=20
+> Does arch/mips/boot/dts/qca/ar9331.dtsi need updating too?
 
-Is this still applicable after Matt's fix is applied?
-https://patchwork.linux-mips.org/patch/15110/
+Right, I forgot the AR9331 had been added since then, I'll send a new
+series.
 
-Cheers
-James
+Alban
 
-> ---
->  arch/mips/lantiq/irq.c | 38 +++++++++++++++++---------------------
->  1 file changed, 17 insertions(+), 21 deletions(-)
->=20
-> diff --git a/arch/mips/lantiq/irq.c b/arch/mips/lantiq/irq.c
-> index 8ac0e5994ed2..0ddf3698b85d 100644
-> --- a/arch/mips/lantiq/irq.c
-> +++ b/arch/mips/lantiq/irq.c
-> @@ -269,6 +269,11 @@ static void ltq_hw5_irqdispatch(void)
->  DEFINE_HWx_IRQDISPATCH(5)
->  #endif
-> =20
-> +static void ltq_hw_irq_handler(struct irq_desc *desc)
-> +{
-> +	ltq_hw_irqdispatch(irq_desc_get_irq(desc) - 2);
-> +}
-> +
->  #ifdef CONFIG_MIPS_MT_SMP
->  void __init arch_init_ipiirq(int irq, struct irqaction *action)
->  {
-> @@ -313,23 +318,19 @@ static struct irqaction irq_call =3D {
->  asmlinkage void plat_irq_dispatch(void)
->  {
->  	unsigned int pending =3D read_c0_status() & read_c0_cause() & ST0_IM;
-> -	unsigned int i;
-> -
-> -	if ((MIPS_CPU_TIMER_IRQ =3D=3D 7) && (pending & CAUSEF_IP7)) {
-> -		do_IRQ(MIPS_CPU_TIMER_IRQ);
-> -		goto out;
-> -	} else {
-> -		for (i =3D 0; i < MAX_IM; i++) {
-> -			if (pending & (CAUSEF_IP2 << i)) {
-> -				ltq_hw_irqdispatch(i);
-> -				goto out;
-> -			}
-> -		}
-> +	int irq;
-> +
-> +	if (!pending) {
-> +		spurious_interrupt();
-> +		return;
->  	}
-> -	pr_alert("Spurious IRQ: CAUSE=3D0x%08x\n", read_c0_status());
-> =20
-> -out:
-> -	return;
-> +	pending >>=3D CAUSEB_IP;
-> +	while (pending) {
-> +		irq =3D fls(pending) - 1;
-> +		do_IRQ(MIPS_CPU_IRQ_BASE + irq);
-> +		pending &=3D ~BIT(irq);
-> +	}
->  }
-> =20
->  static int icu_map(struct irq_domain *d, unsigned int irq, irq_hw_number=
-_t hw)
-> @@ -354,11 +355,6 @@ static const struct irq_domain_ops irq_domain_ops =
-=3D {
->  	.map =3D icu_map,
->  };
-> =20
-> -static struct irqaction cascade =3D {
-> -	.handler =3D no_action,
-> -	.name =3D "cascade",
-> -};
-> -
->  int __init icu_of_init(struct device_node *node, struct device_node *par=
-ent)
->  {
->  	struct device_node *eiu_node;
-> @@ -390,7 +386,7 @@ int __init icu_of_init(struct device_node *node, stru=
-ct device_node *parent)
->  	mips_cpu_irq_init();
-> =20
->  	for (i =3D 0; i < MAX_IM; i++)
-> -		setup_irq(i + 2, &cascade);
-> +		irq_set_chained_handler(i + 2, ltq_hw_irq_handler);
-> =20
->  	if (cpu_has_vint) {
->  		pr_info("Setting up vectored interrupts\n");
-> --=20
-> 2.11.0
->=20
->=20
 
---v2/QI0iRXglpx0hK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+--Sig_/3VoXh3x+sdCmcgfQ3sw6haQ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-iQIcBAEBCAAGBQJYn5vqAAoJEGwLaZPeOHZ6SA4P/2YSE/MqngZiTtQ5A8v0K3wN
-yNxBaLZZpolrYMHke5wS5COFJK7+zOK7+lBggV59jBoIU0ZwdB9uMtRfKp9TYckC
-W+W6yzg2gAOZuV2/R9xUeG7GcCfif2YNl4/23/jD2JVZWbG7svzp5he2IzOHQmWT
-nbzbX6zBezZWpCUWub8btmPXEZmtzEZbzNCiZDVUOcu5EsKzE8PVUf69OKROVKE7
-yanUahHVsxVcaYI+yCMPHk9EzN1OGtMjaVPTY93FKq5ygMH+BIsMtrTCkPJkdqxx
-6YujF5zL9GapA67AKP415dFKRlQBuNKqpbMhFwYZzulIIKdHoZVy8f0UcAvTVldp
-JHxQtO7Wsv5/4yokjFNb4OohzTW5/2U5JhadbSCnKeSdPG6zGuzc+kDCgSTDjYVt
-z1eu2SaOuLm99vvNt/CWiEd5ZPZSpOsg6CZaekuPhze0QThYa/kmTcnifIF5paee
-/+ofR/gwmjmJ1dYedjV1UyHSVah9WvlfbtGcqzB5vAMIHqLLBk1wWkQjvOMGeWsq
-PH60kIgUq/nCxn+7jNu4UcOJgAinpKkWUQZZwdfCe5+wQoNm/LWb53nMMc7exdVM
-D0pHiOA4qphv4dHZldvQEjR7ns1O3cmIqfcccJS0sb57F69bHRrhEgzUOGrwpBlY
-M42wBmjfJ5KGjL+m8OAY
-=tHYS
+iQIcBAEBCAAGBQJYoW6PAAoJEHSUmkuduC280acQAIT2+u5HojN3Bw2JIrqUp3XZ
+49QEccjGIhhHpO30tp0qhqa0C6fLWoF0SQ7Vb2i0ECPGpEjezUMg5ri2FWUMTcyi
+oDA92ZG9AA0jBG0U58TgolECPGlommEi5Qr+2dWHuoNdKgleXel8v72KKVRfIgqZ
+zBfHjGyG4yRZQ6EoXg/fcSFAcy2BlkJgOX3ez88sedAQNGcPFjZV8216LsHWKiMM
+yiuiHegxXsultB0O8GHc9lp2Vqb16O2zfCyk5eMTryeiIdpW+yzEYaC5rejDDVE2
+tY/03adHFWZG7msU3/ZfYMs9DaKhsG4u+Pzrq33W9zrZGe45EhypHNVXVSY8YB4g
+2nRddep4srCufKfHC5yfBq1XFAentMxqMwu1/+WEgVJPZu70yO9JlCBkmb2s4tD/
+ZxRR3qtf66BlhomYJftwxEU5p1YOE8QNDcB/mv9prqVfm5n/B5ro4jhkOo3JQaxI
+vOudSdIYHr2px+TGs3+TUzKBC7ee143261c/zQ2gEdtAxIXjS1tiW/SD/vuP71dz
+4AtyEdKj1A8MXCnauiqnkppk+SGkVOoTJHW2g7bVSsQzcJqLF4DzVo7xjd2j48p2
+1qoGkQB8nd9r+18Dc4qEt+HMFue13YcqaFEGOA8BmkOvfEc7O3x5YPibauYL0avT
+/4D2ZpAiHeMbYsD5yFB/
+=0uzD
 -----END PGP SIGNATURE-----
 
---v2/QI0iRXglpx0hK--
+--Sig_/3VoXh3x+sdCmcgfQ3sw6haQ--

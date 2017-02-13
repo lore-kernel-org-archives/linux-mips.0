@@ -1,17 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:37185 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:52315 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23993877AbdBMV4SfvArk (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 13 Feb 2017 22:56:18 +0100
-Date: Mon, 13 Feb 2017 21:56:11 +0000
+        by eddie.linux-mips.org with ESMTP id S23993875AbdBMWTwzhb1k (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 13 Feb 2017 23:19:52 +0100
+Date: Mon, 13 Feb 2017 22:19:45 +0000
 From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH] MIPS: Lantiq: Keep ethernet enabled during boot
-Message-ID: <20170213215610.GL24226@jhogan-linux.le.imgtec.org>
-References: <20170119132009.55709-1-nbd@nbd.name>
+Subject: Re: [PATCH v2] MIPS: Allow compressed images to be loaded at any
+ address
+Message-ID: <20170213221945.GM24226@jhogan-linux.le.imgtec.org>
+References: <1487018290-10451-1-git-send-email-albeu@free.fr>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FnOKg9Ah4tDwTfQS"
+        protocol="application/pgp-signature"; boundary="UUMz/kfoogzZ9WLZ"
 Content-Disposition: inline
-In-Reply-To: <20170119132009.55709-1-nbd@nbd.name>
+In-Reply-To: <1487018290-10451-1-git-send-email-albeu@free.fr>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -22,101 +23,124 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Felix Fietkau <nbd@nbd.name>
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, john@phrozen.org, hauke.mehrtens@lantiq.com
-Message-ID: <20170213215611.oByDgrz6ciFWsEgtGSgZ3YvNUxs4UgVBmhLJQNiM7c4@z>
+To: Alban <albeu@free.fr>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Jonas Gorski <jogo@openwrt.org>, linux-kernel@vger.kernel.org, Matt Redfearn <Matt.Redfearn@imgtec.com>
+Message-ID: <20170213221945.ytGrWAK7iG0QgmD0HvB70WCX0WMIQFoGrW3IOV-2HXw@z>
 
---FnOKg9Ah4tDwTfQS
+--UUMz/kfoogzZ9WLZ
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 19, 2017 at 02:20:09PM +0100, Felix Fietkau wrote:
-> Disabling ethernet during reboot (only to enable it again when the
-> ethernet driver attaches) can put the chip into a faulty state where it
-> corrupts the header of all incoming packets.
->=20
-> This happens if packets arrive during the time window where the core is
-> disabled, and it can be easily reproduced by rebooting while sending a
-> flood ping to the broadcast address.
->=20
-> Cc: john@phrozen.org
-> Cc: hauke.mehrtens@lantiq.com
-> Cc: stable@vger.kernel.org
-> Fixes: 95135bfa7ead ("MIPS: Lantiq: Deactivate most of the devices by def=
-ault")
-> Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Hi Alban,
 
-Applied
+On Mon, Feb 13, 2017 at 09:38:08PM +0100, Alban wrote:
+> From: Alban Bedel <albeu@free.fr>
+>=20
+> Compressed images (vmlinuz.bin) have to be loaded at a specific
+> address that differ from the address normaly used for vmlinux.bin.
+> This is because the decompressor just write its output at the address
+> vmlinux.bin should be loaded at, and it shouldn't overwrite itself.
+> This limitation mean that the bootloader must be configured differently
+> when loading a vmlinux.bin or a vmlinuz.bin image, this is annoying
+> and a source of error.
+>=20
+> To workaround this we extend the compressed loader to cope with being
+> loaded at (nearly) any address. During the early init a jump is used
+> to compute the offset between the current address and the linked
+> address, if they differ the whole image is first copied to the linked
+> address before proceeding.
+>=20
+> Some load address won't work, for example if there is an overlap with
+> the range where vmlinuz.bin should be loaded. However for the typical
+> case of using the vmlinux.bin address that won't be the case.
+>=20
+> Signed-off-by: Alban Bedel <albeu@free.fr>
+> Suggested-by: Jonas Gorski <jonas.gorski@gmail.com>
+> ---
+> Changelog:
+> v2: * Rework the code as suggested by Jonas Gorski to autodetect the
+>       load address and remove the need for a Kconfig option.
+> ---
+>  arch/mips/boot/compressed/head.S | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+>=20
+> diff --git a/arch/mips/boot/compressed/head.S b/arch/mips/boot/compressed=
+/head.S
+> index 409cb48..3c25a96 100644
+> --- a/arch/mips/boot/compressed/head.S
+> +++ b/arch/mips/boot/compressed/head.S
+> @@ -25,6 +25,29 @@ start:
+>  	move	s2, a2
+>  	move	s3, a3
+> =20
+> +	/* Get the offset between the current address and linked address */
+> +	PTR_LA	t0, reloc_label
+> +	bal	reloc_label
+> +	 nop
+> +reloc_label:
+> +	subu	t0, ra, t0
+> +
+> +	/* If there is no offset no reloc is needed */
+> +	beqz	t0, clear_bss
+> +	 nop
+> +
+> +	/* Move the text, data section and DTB to the correct address */
+> +	PTR_LA	a0, .text
+> +	addu	a1, t0, a0
+> +	PTR_LA	a2, _edata
+> +copy_vmlinuz:
+> +	lw	a3, 0(a1)
+> +	sw	a3, 0(a0)
+> +	addiu	a0, a0, 4
+> +	bne	a2, a0, copy_vmlinuz
+> +	 addiu	a1, a1, 4
 
-Thanks
+Does this need to sync the icache and resolve the instruction hazard
+before jumping into the newly written code?
+
+E.g. on mips32/64 r2 and later you could I think "synci" at SYNCI_Step
+intervals (as determined by RDHWR instruction), followed by a "sync" and
+then using "jr.hb" instead of "jr" to clear the instruction hazard while
+jumping to the newly written code.
+
+That is roughly what arch/mips/kernel/relocate.c and
+arch/mips/kernel/head.S do, but as mentioned that assumes MIPS32/64 r2+,
+and at least 2 platforms selecting SYS_SUPPORTS_ZBOOT* also select
+CPU_HAS_CPU_MIPS32_R1.
+
+Cheers
 James
 
-> ---
->  arch/mips/lantiq/xway/sysctrl.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/arch/mips/lantiq/xway/sysctrl.c b/arch/mips/lantiq/xway/sysc=
-trl.c
-> index 236193b5210b..9a61671c00a7 100644
-> --- a/arch/mips/lantiq/xway/sysctrl.c
-> +++ b/arch/mips/lantiq/xway/sysctrl.c
-> @@ -545,7 +545,7 @@ void __init ltq_soc_init(void)
->  		clkdev_add_pmu("1a800000.pcie", "msi", 1, 1, PMU1_PCIE2_MSI);
->  		clkdev_add_pmu("1a800000.pcie", "pdi", 1, 1, PMU1_PCIE2_PDI);
->  		clkdev_add_pmu("1a800000.pcie", "ctl", 1, 1, PMU1_PCIE2_CTL);
-> -		clkdev_add_pmu("1e108000.eth", NULL, 1, 0, PMU_SWITCH | PMU_PPE_DP);
-> +		clkdev_add_pmu("1e108000.eth", NULL, 0, 0, PMU_SWITCH | PMU_PPE_DP);
->  		clkdev_add_pmu("1da00000.usif", "NULL", 1, 0, PMU_USIF);
->  		clkdev_add_pmu("1e103100.deu", NULL, 1, 0, PMU_DEU);
->  	} else if (of_machine_is_compatible("lantiq,ar10")) {
-> @@ -553,7 +553,7 @@ void __init ltq_soc_init(void)
->  				  ltq_ar10_fpi_hz(), ltq_ar10_pp32_hz());
->  		clkdev_add_pmu("1e101000.usb", "ctl", 1, 0, PMU_USB0);
->  		clkdev_add_pmu("1e106000.usb", "ctl", 1, 0, PMU_USB1);
-> -		clkdev_add_pmu("1e108000.eth", NULL, 1, 0, PMU_SWITCH |
-> +		clkdev_add_pmu("1e108000.eth", NULL, 0, 0, PMU_SWITCH |
->  			       PMU_PPE_DP | PMU_PPE_TC);
->  		clkdev_add_pmu("1da00000.usif", "NULL", 1, 0, PMU_USIF);
->  		clkdev_add_pmu("1f203000.rcu", "gphy", 1, 0, PMU_GPHY);
-> @@ -575,11 +575,11 @@ void __init ltq_soc_init(void)
->  		clkdev_add_pmu(NULL, "ahb", 1, 0, PMU_AHBM | PMU_AHBS);
-> =20
->  		clkdev_add_pmu("1da00000.usif", "NULL", 1, 0, PMU_USIF);
-> -		clkdev_add_pmu("1e108000.eth", NULL, 1, 0,
-> +		clkdev_add_pmu("1e108000.eth", NULL, 0, 0,
->  				PMU_SWITCH | PMU_PPE_DPLUS | PMU_PPE_DPLUM |
->  				PMU_PPE_EMA | PMU_PPE_TC | PMU_PPE_SLL01 |
->  				PMU_PPE_QSB | PMU_PPE_TOP);
-> -		clkdev_add_pmu("1f203000.rcu", "gphy", 1, 0, PMU_GPHY);
-> +		clkdev_add_pmu("1f203000.rcu", "gphy", 0, 0, PMU_GPHY);
->  		clkdev_add_pmu("1e103000.sdio", NULL, 1, 0, PMU_SDIO);
->  		clkdev_add_pmu("1e103100.deu", NULL, 1, 0, PMU_DEU);
->  		clkdev_add_pmu("1e116000.mei", "dfe", 1, 0, PMU_DFE);
+> +
+> +clear_bss:
+>  	/* Clear BSS */
+>  	PTR_LA	a0, _edata
+>  	PTR_LA	a2, _end
 > --=20
-> 2.11.0
+> 2.7.4
 >=20
 >=20
 
---FnOKg9Ah4tDwTfQS
+--UUMz/kfoogzZ9WLZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJYoitqAAoJEGwLaZPeOHZ68ZsQALhj0GEQIH2XP6jP3sgyJ1LI
-x7FNQ6MiVURR82/UmEvLLyx0wiyvM2w/gUNPDCOheTNt89fuIPEvJj8NOiXp9d/B
-XZGdOLaIpxLSZJxgXcznJ2iTztKyiysrdDG4B51fPXvgX4U6BSn3/upDnH71TU9v
-RhXStbCV0qBS6+i3JTcXJJW5QiGG4JmGrGuzMPu4XhBXxLv2yFr37kVcEbGQ5WUn
-AQ7GCOfcVSYDNst5lFSX0rc/wiQLZ1NlvT/WvuTVNsDkR01LlFCwNZNHsoinAbKV
-tO4yGfwGIhLgd/UlkPOrFhCstEzKPVzwUldIY0qYNn3GJ0IYvs6vqnFF6YGCY5UW
-3svz8zJLCS7vtL8hDta3zZY1k1cSouYCNiR9Jr0bgT+qnhwucxCKBoHulRc1vUdo
-0BpdVRdTJxrG+HOVy2Xwq8zBSHPmVspER3NS6IUTW8KOIztWrl0AvyW5zbjW2p3e
-0tQliGePny5FCYPrvKuOh84RHTFxbXpcBjimGFzQjALLe1F65NzOAkuCfAanCNjd
-LNmK83gU9zTr+ylyIus1bw9o1KOx4/wlqNeK0NdBJslroTzj0Hhrf7oVNjWqlOEY
-nPVefQJqNwv9CeAslqiQyoXCqgfi9J2ObqrYauKLKbzKl1jUGDiHVF9hntfbpWvT
-F0mqxTtFAP8yRamk3WvD
-=ARlv
+iQIcBAEBCAAGBQJYojEBAAoJEGwLaZPeOHZ6NioQAJLokQUFZQWcBnQ5xi66wunb
+pwIxfKiYWrv3lkTgKVQph23gXv7tymdQxOgqu52cu6+vt+UDSrS8K0TWs79cAX2Y
+mOqmF2t8PrLazFUBrDlHFhZdg/T+zzqjzo2dHGi3fOZMAWnJTOFtNaCVR8Mn38+S
+/Myki9/LcQ8sqTmRc3LTAhkD+7JvURLwsvGbRn/hn8U+f+8JbDnlnBzM8M+5eIug
+jcno7Aps68tT4J3h3vXHxqpspqTHXBLZ4RQocTGdGI/ZWNv1HBHax+wtuJ1f8JR2
+V86il1RT6OG3aWb9LSKmzySAggUov4Z/JCjjHDqPxia4hzJQtM6HPsVN6wWlgOxS
+49YslL1Qco+ZiUSUboFksQAxlGBXcsLR3G391ffzSnaGftb4xqWhhmLt4Aq7WW9a
+1inK1rKBonlAT29f3Mrbv5mvP5JbCOHvL5wk7Vw4FZfdra4eAZ7yXyEqtuI/NcnP
+Ly7WbzOweB8vQmB+RX13tL3kEEODxEwBAxkvjZAL2n23J3Fjqi8Lh/VowPv2F8bI
+yPzPfYHCzdYv9FAGPkYOxc/zNARoUDksK1tdILCPqa78FqoB1HBqbEghXTE9Q8xq
+My0f6g0kruLGva2i0xCD9I2zC4nm5JVxDKike3jJFvsH0aN0bhpGl2OnCE8Pm8XQ
+Kzel/ygUrXFS8iBAPDj3
+=ZIHG
 -----END PGP SIGNATURE-----
 
---FnOKg9Ah4tDwTfQS--
+--UUMz/kfoogzZ9WLZ--

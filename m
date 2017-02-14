@@ -1,22 +1,19 @@
-Received: from mail.kernel.org ([198.145.29.136]:37426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23993877AbdBMWpXB9-67 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 13 Feb 2017 23:45:23 +0100
-Date: Mon, 13 Feb 2017 16:45:12 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-Subject: Re: [PATCH 12/12] MIPS: PCI: Fix IP27 for the PCI_PROBE_ONLY case
-Message-ID: <20170213224512.GA8080@bhelgaas-glaptop.roam.corp.google.com>
-References: <20170207061356.8270-1-kumba@gentoo.org>
- <20170207061356.8270-13-kumba@gentoo.org>
- <CAErSpo6yKAE1_c1eZJapnjD1g0pocyOxed3_Eumdp_026uhDuA@mail.gmail.com>
- <eafc94c6-1931-e2ce-7e03-d84d8e181e81@gentoo.org>
- <CAErSpo4LsrPCtdZwp6CyT0jKhXLt3j=fGSiFjpRRTPUjFoKHtQ@mail.gmail.com>
- <c7ed6a1d-f625-d294-8910-dd2d93d34292@gentoo.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:45152 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23990522AbdBNJIKqT6gD (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Feb 2017 10:08:10 +0100
+Date: Tue, 14 Feb 2017 09:08:04 +0000
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH v2] MIPS: pic32mzda: fix linker error for
+ pic32_get_pbclk().
+Message-ID: <20170214090804.GO24226@jhogan-linux.le.imgtec.org>
+References: <1464859302-26537-1-git-send-email-purna.mandal@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="0lsrIB+s628ok5gC"
 Content-Disposition: inline
-In-Reply-To: <c7ed6a1d-f625-d294-8910-dd2d93d34292@gentoo.org>
-Return-Path: <helgaas@kernel.org>
+In-Reply-To: <1464859302-26537-1-git-send-email-purna.mandal@microchip.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,47 +23,86 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Joshua Kinard <kumba@gentoo.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Linux/MIPS <linux-mips@linux-mips.org>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
-Message-ID: <20170213224512.VRYrgjCiFHjbE5q1Z8xloyEAxHhK_VZom5h3BYtOh10@z>
+To: Purna Chandra Mandal <purna.mandal@microchip.com>
+Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Harvey Hunt <harvey.hunt@imgtec.com>, Joshua Henderson <digitalpeer@digitalpeer.com>
+Message-ID: <20170214090804.LkYDtGDhY-q6H0VSPMJbl21qrOvtHE57ugy1lk6Fn8E@z>
 
-It looks like IP30 is using some code that's not upstream yet, so I'll
-just point out some things that don't look right.  I'm ignoring the
-IP27 stuff here in case that has different issues.
+--0lsrIB+s628ok5gC
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Joshua wrote:
-> On 02/07/2017 13:29, Bjorn Helgaas wrote:
->> Is there any chance you can collect complete dmesg logs and
->> /proc/iomem contents from IP27 and IP30?  Maybe "lspci -vv" output,
->> too?  I'm not sure where to look to understand the ioremap() behavior.
-> 
-> ...
-> A note about IP30, since that's part of an external patch set, the
-> dmesg output is a little different, as it is using the newer
-> BRIDGE/Xtalk code I just sent in as patches.  ...
-> 
-> Also, IP30 doesn't use the PCI_PROBE_ONLY thing anymore.  This causes
-> /proc/iomem to be far more detailed than it used to be.
-> 
-> IP30's /proc/iomem:
->     00000000-00003fff : reserved
->     1d200000-1d9fffff : Bridge MEM
->       d080000000-d080003fff : 0001:00:03.0
->       1d204000-1d204fff : 0001:00:02.0
->       1d205000-1d205fff : 0001:00:02.1
->       1d206000-1d206fff : 0001:00:02.2
->       1d207000-1d2070ff : 0001:00:02.3
->       1d207100-1d20717f : 0001:00:01.0
->     1f200000-1f9fffff : Bridge MEM
->       f080100000-f0801fffff : 0000:00:02.0
->       f080010000-f08001ffff : 0000:00:00.0
->       f080030000-f08003ffff : 0000:00:01.0
->       f080000000-f080000fff : 0000:00:00.0
->       f080020000-f080020fff : 0000:00:01.0
->     20004000-209b8fff : reserved
->       20004000-206acb13 : Kernel code
->       206acb14-208affff : Kernel data
->     209b9000-20efffff : System RAM
->     20f00000-20ffffff : System RAM
->     21000000-9fffffff : System RAM
->     f080100000-f0801fffff : ioc3
+On Thu, Jun 02, 2016 at 02:51:42PM +0530, Purna Chandra Mandal wrote:
+> Early clock API pic32_get_pbclk() is defined in early_clk.c and
+> used by time.c and early_console.c. When CONFIG_EARLY_PRINTK isn't
+> set, early_clk.c isn't compiled and time.c fails to link.
+>=20
+> Fix it by compiling early_clk.c always. Also sort files in
+> alphabetical order.
+>=20
+> Cc: Harvey Hunt <harvey.hunt@imgtec.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: linux-mips@linux-mips.org
+> Cc: Joshua Henderson <digitalpeer@digitalpeer.com>
+>=20
+> Reported-by: Harvey Hunt <harvey.hunt@imgtec.com>
+> Signed-off-by: Purna Chandra Mandal <purna.mandal@microchip.com>
+> Reviewed-by: Harvey Hunt <harvey.hunt@imgtec.com>
+
+Applied
+
+Thanks
+James
+
+>=20
+> ---
+>=20
+> Changes in v2:
+> - update commit message
+>=20
+>  arch/mips/pic32/pic32mzda/Makefile | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/arch/mips/pic32/pic32mzda/Makefile b/arch/mips/pic32/pic32mz=
+da/Makefile
+> index 4a4c272..c286496 100644
+> --- a/arch/mips/pic32/pic32mzda/Makefile
+> +++ b/arch/mips/pic32/pic32mzda/Makefile
+> @@ -2,8 +2,7 @@
+>  # Joshua Henderson, <joshua.henderson@microchip.com>
+>  # Copyright (C) 2015 Microchip Technology, Inc.  All rights reserved.
+>  #
+> -obj-y			:=3D init.o time.o config.o
+> +obj-y			:=3D config.o early_clk.o init.o time.o
+> =20
+>  obj-$(CONFIG_EARLY_PRINTK)	+=3D early_console.o      \
+> -				   early_pin.o		\
+> -				   early_clk.o
+> +				   early_pin.o
+> --=20
+> 1.8.3.1
+>=20
+>=20
+
+--0lsrIB+s628ok5gC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJYosjtAAoJEGwLaZPeOHZ6VGsP/3kU+YWzbLWUM4+gC8DeHRy2
+p538StI6XrDv+cvQP0et9dKMi1hMXk5Xx1gSZCn8yLYSLPPvLnKeJRBlwIjas2rh
+SrZ2q0Ob5NPrfxZ77/m/CcqtMyorWDOlAUAHCP7mY+Cq/uDKqiPqMEER8ccNQs8n
+931SbCGSRb6LOzshZlsRN6vRb1oirQqWKIZoyaoacaOat7/S1ig56ynv3rhnZODa
+ZpzHrBS0CBcrPZUUw6qLYEZ2DWRwrMrwRNn7IxuVjZ1sQQN/kdDbeJO03VPYjxrq
+pNBp62y6ZfN6lKqIq7Q1dPYm7oqWPycurrzt8Ua5UmDULUt2YHLsd54+earSo7wC
+btyLyCPkTe/duoZd2USQMt2APUej3NiYBnZbrgvln7sJeCKLxbxd/9HOL60Bcs3N
+0DCTPo+Ycg97JNUvqu9l9c9+XdOrMn8mY6FHmTJyhjsLhS9KLUpDfevtFxJi7OYu
+OZ4hOyCTcqW0fPuA5D46sJ5LWaZ9rhMQBTuGORC16ca28RRHZXkr+edan/eUkgh6
+l+h7kmeXCe92WrPsnzd4SZ5QFhOuHhOdNxLp4PEzA3XFS/+TgcRjY+B89Gvawcgm
+cgZLizeTEmHeTY0MceJNCExNaN0UtcnSIzN5UYgHS8d+Yn6hL0WUbD37PEKKq+fL
+PsChPiJ+IKKtpQ2jCyqK
+=cIk7
+-----END PGP SIGNATURE-----
+
+--0lsrIB+s628ok5gC--

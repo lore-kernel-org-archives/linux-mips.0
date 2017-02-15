@@ -1,17 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:47615 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:31606 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993877AbdBONNzsT1pE (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Feb 2017 14:13:55 +0100
-Subject: Re: [PATCH 1/4] MIPS: SMP: Constify smp ops
-References: <1487083028-19724-1-git-send-email-matt.redfearn@imgtec.com>
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <29523659-7c89-027b-f4a0-b04f06e75c05@imgtec.com>
-Date: Wed, 15 Feb 2017 13:13:47 +0000
+        with ESMTP id S23993884AbdBORR3l8KVj (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Feb 2017 18:17:29 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH] MIPS: OCTEON: Enable DEVTMPFS
+Date: Wed, 15 Feb 2017 17:17:14 +0000
+Message-ID: <671051812ff6eee41f009753e22e79eed98f7502.1487178952.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <1487083028-19724-1-git-send-email-matt.redfearn@imgtec.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@imgtec.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,195 +19,33 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, David Daney <david.daney@cavium.com>, linux-mips@linux-mips.org
+Message-ID: <20170215171714.QEENzWLDFc4VRh_dno6hXFFPPuarIRSKOnjBW88IIW4@z>
+
+Recent versions of udev and systemd require the kernel to be compiled
+with CONFIG_DEVTMPFS in order to populate the /dev directory. Most MIPS
+platforms have it enabled by default, so enable it for the Cavium Octeon
+defconfig as well. This will assist with automated kernel boot testing.
+
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: David Daney <david.daney@cavium.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20170215131347.YwRM7zkrBIy48V_kq6Fdgy8YN66-hKjUXCFnj5I910g@z>
+---
+ arch/mips/configs/cavium_octeon_defconfig | 1 +
+ 1 file changed, 1 insertion(+), 0 deletions(-)
 
-
-
-On 14/02/17 14:37, Matt Redfearn wrote:
-> smp_ops providers do not modify their ops structures, so they may be
-> made const.
->
-> This change saves 128 bytes of kernel text on a pistachio_defconfig.
-> Before:
->     text	   data	    bss	    dec	    hex	filename
-> 7187239	1772752	 470224	9430215	 8fe4c7	vmlinux
-> After:
->     text	   data	    bss	    dec	    hex	filename
-> 7187111	1772752	 470224	9430087	 8fe447	vmlinux
->
-> Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
-
-Forget this one, it misses a whole bunch of smp_ops providers. I'll send 
-a v2 after the merge window.
-
-Thanks,
-Matt
-
-> ---
->
->   arch/mips/include/asm/smp-ops.h | 10 +++++-----
->   arch/mips/include/asm/smp.h     | 10 +++++-----
->   arch/mips/kernel/smp-cps.c      |  4 ++--
->   arch/mips/kernel/smp-mt.c       |  2 +-
->   arch/mips/kernel/smp-up.c       |  2 +-
->   arch/mips/kernel/smp.c          |  4 ++--
->   6 files changed, 16 insertions(+), 16 deletions(-)
->
-> diff --git a/arch/mips/include/asm/smp-ops.h b/arch/mips/include/asm/smp-ops.h
-> index db7c322f057f..cf12bde3aa78 100644
-> --- a/arch/mips/include/asm/smp-ops.h
-> +++ b/arch/mips/include/asm/smp-ops.h
-> @@ -35,11 +35,11 @@ struct plat_smp_ops {
->   #endif
->   };
->   
-> -extern void register_smp_ops(struct plat_smp_ops *ops);
-> +extern void register_smp_ops(const struct plat_smp_ops *ops);
->   
->   static inline void plat_smp_setup(void)
->   {
-> -	extern struct plat_smp_ops *mp_ops;	/* private */
-> +	extern const struct plat_smp_ops *mp_ops;	/* private */
->   
->   	mp_ops->smp_setup();
->   }
-> @@ -66,7 +66,7 @@ static inline void register_smp_ops(struct plat_smp_ops *ops)
->   static inline int register_up_smp_ops(void)
->   {
->   #ifdef CONFIG_SMP_UP
-> -	extern struct plat_smp_ops up_smp_ops;
-> +	extern const struct plat_smp_ops up_smp_ops;
->   
->   	register_smp_ops(&up_smp_ops);
->   
-> @@ -79,7 +79,7 @@ static inline int register_up_smp_ops(void)
->   static inline int register_cmp_smp_ops(void)
->   {
->   #ifdef CONFIG_MIPS_CMP
-> -	extern struct plat_smp_ops cmp_smp_ops;
-> +	extern const struct plat_smp_ops cmp_smp_ops;
->   
->   	if (!mips_cm_present())
->   		return -ENODEV;
-> @@ -95,7 +95,7 @@ static inline int register_cmp_smp_ops(void)
->   static inline int register_vsmp_smp_ops(void)
->   {
->   #ifdef CONFIG_MIPS_MT_SMP
-> -	extern struct plat_smp_ops vsmp_smp_ops;
-> +	extern const struct plat_smp_ops vsmp_smp_ops;
->   
->   	register_smp_ops(&vsmp_smp_ops);
->   
-> diff --git a/arch/mips/include/asm/smp.h b/arch/mips/include/asm/smp.h
-> index 98a117a05fbc..572191ac2961 100644
-> --- a/arch/mips/include/asm/smp.h
-> +++ b/arch/mips/include/asm/smp.h
-> @@ -58,7 +58,7 @@ extern void calculate_cpu_foreign_map(void);
->    */
->   static inline void smp_send_reschedule(int cpu)
->   {
-> -	extern struct plat_smp_ops *mp_ops;	/* private */
-> +	extern const struct plat_smp_ops *mp_ops;	/* private */
->   
->   	mp_ops->send_ipi_single(cpu, SMP_RESCHEDULE_YOURSELF);
->   }
-> @@ -66,14 +66,14 @@ static inline void smp_send_reschedule(int cpu)
->   #ifdef CONFIG_HOTPLUG_CPU
->   static inline int __cpu_disable(void)
->   {
-> -	extern struct plat_smp_ops *mp_ops;	/* private */
-> +	extern const struct plat_smp_ops *mp_ops;	/* private */
->   
->   	return mp_ops->cpu_disable();
->   }
->   
->   static inline void __cpu_die(unsigned int cpu)
->   {
-> -	extern struct plat_smp_ops *mp_ops;	/* private */
-> +	extern const struct plat_smp_ops *mp_ops;	/* private */
->   
->   	mp_ops->cpu_die(cpu);
->   }
-> @@ -97,14 +97,14 @@ int mips_smp_ipi_free(const struct cpumask *mask);
->   
->   static inline void arch_send_call_function_single_ipi(int cpu)
->   {
-> -	extern struct plat_smp_ops *mp_ops;	/* private */
-> +	extern const struct plat_smp_ops *mp_ops;	/* private */
->   
->   	mp_ops->send_ipi_mask(cpumask_of(cpu), SMP_CALL_FUNCTION);
->   }
->   
->   static inline void arch_send_call_function_ipi_mask(const struct cpumask *mask)
->   {
-> -	extern struct plat_smp_ops *mp_ops;	/* private */
-> +	extern const struct plat_smp_ops *mp_ops;	/* private */
->   
->   	mp_ops->send_ipi_mask(mask, SMP_CALL_FUNCTION);
->   }
-> diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-> index a2544c2394e4..77c0db4d46e2 100644
-> --- a/arch/mips/kernel/smp-cps.c
-> +++ b/arch/mips/kernel/smp-cps.c
-> @@ -549,7 +549,7 @@ static void cps_cpu_die(unsigned int cpu)
->   
->   #endif /* CONFIG_HOTPLUG_CPU */
->   
-> -static struct plat_smp_ops cps_smp_ops = {
-> +static const struct plat_smp_ops cps_smp_ops = {
->   	.smp_setup		= cps_smp_setup,
->   	.prepare_cpus		= cps_prepare_cpus,
->   	.boot_secondary		= cps_boot_secondary,
-> @@ -565,7 +565,7 @@ static struct plat_smp_ops cps_smp_ops = {
->   
->   bool mips_cps_smp_in_use(void)
->   {
-> -	extern struct plat_smp_ops *mp_ops;
-> +	extern const struct plat_smp_ops *mp_ops;
->   	return mp_ops == &cps_smp_ops;
->   }
->   
-> diff --git a/arch/mips/kernel/smp-mt.c b/arch/mips/kernel/smp-mt.c
-> index e077ea3e11fb..22db83be8349 100644
-> --- a/arch/mips/kernel/smp-mt.c
-> +++ b/arch/mips/kernel/smp-mt.c
-> @@ -279,7 +279,7 @@ static void __init vsmp_prepare_cpus(unsigned int max_cpus)
->   	mips_mt_set_cpuoptions();
->   }
->   
-> -struct plat_smp_ops vsmp_smp_ops = {
-> +const struct plat_smp_ops vsmp_smp_ops = {
->   	.send_ipi_single	= vsmp_send_ipi_single,
->   	.send_ipi_mask		= vsmp_send_ipi_mask,
->   	.init_secondary		= vsmp_init_secondary,
-> diff --git a/arch/mips/kernel/smp-up.c b/arch/mips/kernel/smp-up.c
-> index 17878d71ef2b..4cf015a624d1 100644
-> --- a/arch/mips/kernel/smp-up.c
-> +++ b/arch/mips/kernel/smp-up.c
-> @@ -63,7 +63,7 @@ static void up_cpu_die(unsigned int cpu)
->   }
->   #endif
->   
-> -struct plat_smp_ops up_smp_ops = {
-> +const struct plat_smp_ops up_smp_ops = {
->   	.send_ipi_single	= up_send_ipi_single,
->   	.send_ipi_mask		= up_send_ipi_mask,
->   	.init_secondary		= up_init_secondary,
-> diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-> index 8c60a296294c..9f01a6f28f49 100644
-> --- a/arch/mips/kernel/smp.c
-> +++ b/arch/mips/kernel/smp.c
-> @@ -146,10 +146,10 @@ void calculate_cpu_foreign_map(void)
->   			       &temp_foreign_map, &cpu_sibling_map[i]);
->   }
->   
-> -struct plat_smp_ops *mp_ops;
-> +const struct plat_smp_ops *mp_ops;
->   EXPORT_SYMBOL(mp_ops);
->   
-> -void register_smp_ops(struct plat_smp_ops *ops)
-> +void register_smp_ops(const struct plat_smp_ops *ops)
->   {
->   	if (mp_ops)
->   		printk(KERN_WARNING "Overriding previously set SMP ops\n");
+diff --git a/arch/mips/configs/cavium_octeon_defconfig b/arch/mips/configs/cavium_octeon_defconfig
+index d470d08362c0..31e3c4d9adb0 100644
+--- a/arch/mips/configs/cavium_octeon_defconfig
++++ b/arch/mips/configs/cavium_octeon_defconfig
+@@ -45,6 +45,7 @@ CONFIG_SYN_COOKIES=y
+ # CONFIG_INET_LRO is not set
+ CONFIG_IPV6=y
+ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
++CONFIG_DEVTMPFS=y
+ # CONFIG_FW_LOADER is not set
+ CONFIG_MTD=y
+ # CONFIG_MTD_OF_PARTS is not set
+-- 
+git-series 0.8.10

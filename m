@@ -1,14 +1,18 @@
-Received: from mail-qk0-x243.google.com ([IPv6:2607:f8b0:400d:c09::243]:33440
-        "EHLO mail-qk0-x243.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993875AbdBOAmIo5j4W (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Feb 2017 01:42:08 +0100
-Received: by mail-qk0-x243.google.com with SMTP id 11so21308787qkl.0
-        for <linux-mips@linux-mips.org>; Tue, 14 Feb 2017 16:42:08 -0800 (PST)
-From: Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH] soc: bcm: brcmstb: Match additional compatible strings
-Date: Tue, 14 Feb 2017 16:41:57 -0800
-Message-ID: <20170215004159.11096-1-florian.fainelli@broadcom.com>
-Return-Path: <f.fainelli@gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:24734 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23993877AbdBOKhaurP1v (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Feb 2017 11:37:30 +0100
+Date: Wed, 15 Feb 2017 10:37:24 +0000
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH] MIPS: lantiq: set physical_memsize
+Message-ID: <20170215103724.GW24226@jhogan-linux.le.imgtec.org>
+References: <20161227153143.8601-1-hauke@hauke-m.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="5KENZRfAmuo1v8rU"
+Content-Disposition: inline
+In-Reply-To: <20161227153143.8601-1-hauke@hauke-m.de>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,50 +22,74 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>, Brian Norris <computersforpeace@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, "maintainer:BROADCOM BCM7XXX ARM
-        ARCHITECTURE" <bcm-kernel-feedback-list@broadcom.com>, Justin Chen <justin.chen@broadcom.com>, Scott Branden <scott.branden@broadcom.com>, Arnd Bergmann <arnd@arndb.de>, "moderated list:BROADCOM BCM7XXX
-        ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>
-Message-ID: <20170215004157.iar3hYhqfVHu75SkJCUa17iHLM-q29NmEmAMMAOyxng@z>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: ralf@linux-mips.org, paul.gortmaker@windriver.com, linux-mips@linux-mips.org, john@phrozen.org, lkp@intel.com
+Message-ID: <20170215103724.8FUF3q_hWV6aHRGI6YpidjURY7xmrze_-x0G70PWG_Q@z>
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+--5KENZRfAmuo1v8rU
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Match all known sun-top-ctrl compatible strings from our MIPS chips
-counterparts. This allows us to properly report the SoC information to
-user-space through our SoC driver.
+On Tue, Dec 27, 2016 at 04:31:43PM +0100, Hauke Mehrtens wrote:
+> physical_memsize is needed by the vpe loader code and the platform
+> specific code has to define it. This value will be given to the
+> firmware loaded with the VPE loader. I am not aware of any standard
+> interface or better value to provide here.
+>=20
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
-Ralf, James,
+Applied
 
-I usually take patches touching this file through an ARM SoC pull request,
-posting to linux-mips for people working on BMIPS STB to get a chance to review
-this.
+Thanks
+James
 
-Thanks!
+> ---
+>  arch/mips/lantiq/prom.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>=20
+> diff --git a/arch/mips/lantiq/prom.c b/arch/mips/lantiq/prom.c
+> index 4cbb000e778e..96773bed8a8a 100644
+> --- a/arch/mips/lantiq/prom.c
+> +++ b/arch/mips/lantiq/prom.c
+> @@ -26,6 +26,12 @@ DEFINE_SPINLOCK(ebu_lock);
+>  EXPORT_SYMBOL_GPL(ebu_lock);
+> =20
+>  /*
+> + * This is needed by the VPE loader code, just set it to 0 and assume
+> + * that the firmware hardcodes this value to something useful.
+> + */
+> +unsigned long physical_memsize =3D 0L;
+> +
+> +/*
+>   * this struct is filled by the soc specific detection code and holds
+>   * information about the specific soc type, revision and name
+>   */
+> --=20
+> 2.11.0
+>=20
+>=20
 
- drivers/soc/bcm/brcmstb/common.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+--5KENZRfAmuo1v8rU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-diff --git a/drivers/soc/bcm/brcmstb/common.c b/drivers/soc/bcm/brcmstb/common.c
-index 94e7335553f4..b6195fdf0d00 100644
---- a/drivers/soc/bcm/brcmstb/common.c
-+++ b/drivers/soc/bcm/brcmstb/common.c
-@@ -41,6 +41,15 @@ bool soc_is_brcmstb(void)
- }
- 
- static const struct of_device_id sun_top_ctrl_match[] = {
-+	{ .compatible = "brcm,bcm7125-sun-top-ctrl", },
-+	{ .compatible = "brcm,bcm7346-sun-top-ctrl", },
-+	{ .compatible = "brcm,bcm7358-sun-top-ctrl", },
-+	{ .compatible = "brcm,bcm7360-sun-top-ctrl", },
-+	{ .compatible = "brcm,bcm7362-sun-top-ctrl", },
-+	{ .compatible = "brcm,bcm7420-sun-top-ctrl", },
-+	{ .compatible = "brcm,bcm7425-sun-top-ctrl", },
-+	{ .compatible = "brcm,bcm7429-sun-top-ctrl", },
-+	{ .compatible = "brcm,bcm7425-sun-top-ctrl", },
- 	{ .compatible = "brcm,brcmstb-sun-top-ctrl", },
- 	{ }
- };
--- 
-2.11.0
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJYpC9kAAoJEGwLaZPeOHZ6vsIP/08QXS4p5WlMaq/MEtcBLpMa
+Fbz+HouNsRA8CNjT6SpSWvJeMLtM8CrjntfeZRR4ARBBZSKbSlUJrOJf2EFrX7SH
+o/TSB4GJJwt1BjoONHqC/gcMyFkdzMlF8pqU+O7nd4vwINS6/0If4Utpv7smbNDz
+64hxd7755xpPm6hMaHUiLP5V+UOli7J8GnfstWG/mmI+mlc636Og8CbSNWxAIQdU
+YbAWb0cDQhCqgNyVTLvmX5tgrQOdsZtI/5PZLFEREqJavozc+6eoIztqiBZDPZjT
+R6ltv9XTqw/FGI3usO70YT3InfOxQyYbOD0tnhingzdxXkku5Bxw7K5ho8T4+Fo/
+R4A0ronw8zmfyWtjh9zfQgec1z+CYQdBIYPUynTfKxXhgW3ufQECpHGTVe9DLLHa
+LQERGCgkW+zKOic57CsbIpaJhMWQIuuxv1a09lklNF8P5Tsxvg15TfxyeWC2AtcR
+gTxxkwtx/90Zo4hm0dRUTutKot3n6DxQHUCJUELDvc2hS7reG899mPtVS8lqVDM/
+rLRyNc6N24zR4ZvLdrNjEPVcBWLQdiYv9iQ54qVpruxfFYPg5TsLjzDUMtFUjXJ8
+DgOSVR678Hkvh3QF6xm6WG/210jAzY+4KoIOwcG1I20btz+ks0NInyPi9zEyaA/X
+QijfgcirhnmcO076NZy7
+=jxkP
+-----END PGP SIGNATURE-----
+
+--5KENZRfAmuo1v8rU--

@@ -1,14 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:31606 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:14125 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993884AbdBORR3l8KVj (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Feb 2017 18:17:29 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: OCTEON: Enable DEVTMPFS
-Date: Wed, 15 Feb 2017 17:17:14 +0000
-Message-ID: <671051812ff6eee41f009753e22e79eed98f7502.1487178952.git-series.james.hogan@imgtec.com>
+        with ESMTP id S23993890AbdBPJ1WGe1-w (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 16 Feb 2017 10:27:22 +0100
+Subject: Re: [PATCH 1/2] pwm: loongson1: Add PWM driver for Loongson1 SoC
+References: <20170213152801.GA32019@ubuntu>
+ <f27d34d4-b0ac-2fd6-bc75-89a6c913ba3c@imgtec.com>
+ <20170215130902.GA32795@ubuntu>
+From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Message-ID: <0d0c43f5-1016-4cb5-01f8-9ca82860b8ad@imgtec.com>
+Date: Thu, 16 Feb 2017 10:27:15 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <20170215130902.GA32795@ubuntu>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Marcin.Nowakowski@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,34 +23,56 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, David Daney <david.daney@cavium.com>, linux-mips@linux-mips.org
-Message-ID: <20170215171714.QEENzWLDFc4VRh_dno6hXFFPPuarIRSKOnjBW88IIW4@z>
+To: Yang Ling <gnaygnil@gmail.com>
+Cc: thierry.reding@gmail.com, keguang.zhang@gmail.com, linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20170216092715.k79JZ25JkzFiPw3uG9gSCAEEs9tc6hWF9lwyHMXapVQ@z>
 
-Recent versions of udev and systemd require the kernel to be compiled
-with CONFIG_DEVTMPFS in order to populate the /dev directory. Most MIPS
-platforms have it enabled by default, so enable it for the Cavium Octeon
-defconfig as well. This will assist with automated kernel boot testing.
+Hi Yang,
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: David Daney <david.daney@cavium.com>
-Cc: linux-mips@linux-mips.org
----
- arch/mips/configs/cavium_octeon_defconfig | 1 +
- 1 file changed, 1 insertion(+), 0 deletions(-)
+On 15.02.2017 14:09, Yang Ling wrote:
 
-diff --git a/arch/mips/configs/cavium_octeon_defconfig b/arch/mips/configs/cavium_octeon_defconfig
-index d470d08362c0..31e3c4d9adb0 100644
---- a/arch/mips/configs/cavium_octeon_defconfig
-+++ b/arch/mips/configs/cavium_octeon_defconfig
-@@ -45,6 +45,7 @@ CONFIG_SYN_COOKIES=y
- # CONFIG_INET_LRO is not set
- CONFIG_IPV6=y
- CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
-+CONFIG_DEVTMPFS=y
- # CONFIG_FW_LOADER is not set
- CONFIG_MTD=y
- # CONFIG_MTD_OF_PARTS is not set
--- 
-git-series 0.8.10
+>>> +	tmp = (unsigned long long)clk_get_rate(pc->clk) * period_ns;
+>>> +	do_div(tmp, 1000000000);
+
+NSEC_PER_SEC ?
+
+>>> +	period = tmp;
+>>> +
+>>> +	tmp = (unsigned long long)period * duty_ns;
+>>> +	do_div(tmp, period_ns);
+>>> +	duty = period - tmp;
+>>> +
+>>> +	if (duty >= period)
+>>> +		duty = period - 1;
+>>> +
+>>> +	if (duty >> 24 || period >> 24)
+>>> +		return -EINVAL;
+>>> +
+>>> +	chan->period_ns = period_ns;
+>>> +	chan->duty_ns = duty_ns;
+>>> +
+>>> +	writel(duty, pc->base + PWM_HRC(pwm->hwpwm));
+>>> +	writel(period, pc->base + PWM_LRC(pwm->hwpwm));
+>>> +	writel(0x00, pc->base + PWM_CNT(pwm->hwpwm));
+>>> +
+>>
+>> PWM_HRC and PWM_LRC names suggest that you're using high/low state
+>> counters here rather than duty/period - but with no documentation
+>> I'm just guessing here.
+>
+> Indeed, the high/low state counters is used here.
+> Change the name to duty_cnt/period_cnt.
+>
+>
+
+What I was referring to here is that if you have a high/low value 
+counters that you enter then these are not the same as duty/period, in 
+simple terms:
+high_cnt = duty_cnt
+low_cnt = period_cnt - duty_cnt
+
+so please double check that this is what you want to be doing? As the 
+names used suggest that this code may be wrong. Or maybe what you're 
+doing is correct but the register access macros have misleading names?
+
+Marcin

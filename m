@@ -1,17 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:5656 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:41611 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23990552AbdBQKEAvcdC4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 17 Feb 2017 11:04:00 +0100
-Date: Fri, 17 Feb 2017 10:03:54 +0000
+        by eddie.linux-mips.org with ESMTP id S23991672AbdBQNi6Q4cEM (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 17 Feb 2017 14:38:58 +0100
+Date: Fri, 17 Feb 2017 13:38:52 +0000
 From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH] MIPS: DTS: add img directory to Makefile
-Message-ID: <20170217100354.GC9246@jhogan-linux.le.imgtec.org>
-References: <1487248410-9493-1-git-send-email-Ian.Pozella@imgtec.com>
+Subject: Re: [PATCH v2] mips: vdso: Explicitly use
+ -fno-asynchronous-unwind-tables
+Message-ID: <20170217133851.GZ24226@jhogan-linux.le.imgtec.org>
+References: <alpine.DEB.2.00.1701261445520.13564@tp.orcam.me.uk>
+ <20170126150005.2621-1-alexander.sverdlin@nokia.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="+RqgOR8y65RRYhVY"
+        protocol="application/pgp-signature"; boundary="CjAlqr6ZqJYkDGFX"
 Content-Disposition: inline
-In-Reply-To: <1487248410-9493-1-git-send-email-Ian.Pozella@imgtec.com>
+In-Reply-To: <20170126150005.2621-1-alexander.sverdlin@nokia.com>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -22,63 +24,62 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ian Pozella <Ian.Pozella@imgtec.com>
-Cc: ralf@linux-mips.org, linux-mips@linux-mips.org
+To: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Cc: Robert Schiele <rschiele@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, "Maciej W. Rozycki" <macro@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20170217133852.csi7JqmhzNZj-LB4BpQYL9sxHgAzfC_0vR11dEjBXMI@z>
 
---+RqgOR8y65RRYhVY
+--CjAlqr6ZqJYkDGFX
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 16, 2017 at 12:33:30PM +0000, Ian Pozella wrote:
-> An img directory exists for the Pistchio Soc but the directory
-> itself isn't in the dts Makefile meaning the dtbs never get built.
+On Thu, Jan 26, 2017 at 04:00:05PM +0100, Alexander Sverdlin wrote:
+> From: Robert Schiele <rschiele@gmail.com>
 >=20
-> Signed-off-by: Ian Pozella <Ian.Pozella@imgtec.com>
+> Not every toolchain has -fno-asynchronous-unwind-tables per default on MI=
+PS.
+> This patch specifies the necessary option explicitly for VDSO library bui=
+ld.
+>=20
+> This prevents the following build failure:
+> GENVDSO arch/mips/vdso/vdso-image.c
+> arch/mips/vdso/genvdso: 'arch/mips/vdso/vdso.so.dbg' contains relocation =
+sections
+> .../arch/mips/vdso/Makefile:84: recipe for target 'arch/mips/vdso/vdso-im=
+age.c' failed
+>=20
+> Signed-off-by: Robert Schiele <rschiele@gmail.com>
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: James Hogan <james.hogan@imgtec.com>
+> Cc: "Maciej W. Rozycki" <macro@imgtec.com>
+> Cc: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> Cc: linux-mips@linux-mips.org
 
 Applied
 
 Thanks
 James
 
-> ---
->  arch/mips/boot/dts/Makefile | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
-> index fc7a0a9..b9db492 100644
-> --- a/arch/mips/boot/dts/Makefile
-> +++ b/arch/mips/boot/dts/Makefile
-> @@ -1,5 +1,6 @@
->  dts-dirs	+=3D brcm
->  dts-dirs	+=3D cavium-octeon
-> +dts-dirs	+=3D img
->  dts-dirs	+=3D ingenic
->  dts-dirs	+=3D lantiq
->  dts-dirs	+=3D mti
-> --=20
-> 2.7.4
->=20
-
---+RqgOR8y65RRYhVY
+--CjAlqr6ZqJYkDGFX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJYpsqKAAoJEGwLaZPeOHZ6zy8P/1nUZ39rgFSf3nBsDvpBae/E
-A03mTU22+LoGD5y2WiBD0EWZYgeEg2oyLzWsSR5k5BvmhP7kX41sTXW7PemJ8ldo
-HLGMYHujk/Wm7ldMEOTXtUQ/doskdhYua9eRH4sFOQRhyENkaulSs+hOgGWBqFJX
-ya9L2gVTr2VNZMc2iqWowuPjKYGf9V/bFi0qRlr0OWXN3ka7qIJ96yS0SMh2sCJE
-BgsorfQuhG6bjCb5Pfp52GsTXzOnenZgFlEbArG1xX4a8K3/QcGA+lgdE6VmyFMK
-mDiwpF1Tl/lPn0Q5WCVQbkQo9yuA1yWB2d1EqdeznnuQPV04C14VWhIuHdoCv6OB
-/BfOjk1DO/kCj2c3CL80bdvGK+8S9GXVYttbqoHVLSl/du7nGJKArtz60bHSP1xy
-kzVH51W+kFXiqTNkgkr+9Pu2r3Yoo9dKT06G0zg0V+KTykejEDQPIwaDlqYxaguu
-QWo0F60Kxdhta8LeVq45fwuqtky7BJ31SHh9jBfz+qE4kBJT18tj87dBllYPo6tE
-kGqFrQ8eB4h0jK5Ny2+CjgOy9POfWj7dLisrUCeI6bx7oTBnixbdvP1jBoCDctb0
-ETBR35w9zGn1Qajk1aAwarcceYGrl760RRX38USrNUTvaWNA9CYFlia60fuTWV+v
-L9dFtGw1hMBhhfveC1UL
-=BaRP
+iQIcBAEBCAAGBQJYpvzaAAoJEGwLaZPeOHZ6bfoP/3g48uJtsUi9+MeoM+eDIE/b
+Wml3pKikX45r3V4dk3URLw38D2TAOS/1YUT70Ds6pqlxfGDe8pUoMOntDZViewpU
+cySlLz1jd7dCNpli77oWL/e8u4G4E4M+PJZ617yKF5LI9VcF4r6CZr8PvNod8wH5
+fpigI0tQWYnD+ILApT8Db/8D4r05ulzQBU7oY7xcPQT6warc6J1jHS2xd+lX/fB5
+ZIpLE/g0EiIbT5AQtV54ey+hs7Vb/iMy1zw8gjyPO6iVDgQcJLGi4m1SnaN/8FE2
+C4lICUkB4XWa8HST4vxawYAZgeXgrmxnziaWvp6nXFe11RPF1njR2Xt+0H1hCerq
+m5VM6V789v1YV/JebsTUGfkca2gGjDx2AAAP2Cog56FgmrT9n1OAYfy9TjkAMuPk
+KB5/6Wkg6JA/A57hviFxoZlfCyPaAwHZ3l9vHf6h2xJ8abgoDbSnvXF+Bv5juADP
+cOPG59oi3n6yKLK6TpLN9kAWCYTwmgcNnK4I9KCp1aEWUVnsETvtN9sGtutR7XuU
+UfDdU2CtiSCuRvzuzcCQzTYiW5b10QUwhwbTWRs938my1HEtQxPu1Zp078Z6b4a8
+Rj0LKlzhfU+LgCvj2zg1wgpsmh6uwGkm+TUFm5WKWFhDhE5D55X2q48ypKoupI2U
+20qtWOMKkKB6zy4a1csP
+=N53x
 -----END PGP SIGNATURE-----
 
---+RqgOR8y65RRYhVY--
+--CjAlqr6ZqJYkDGFX--

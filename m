@@ -1,16 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:8812 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992111AbdBWPh7nUBuR (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 23 Feb 2017 16:37:59 +0100
-Date: Thu, 23 Feb 2017 15:37:39 +0000
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH] MIPS: End spinlocks with .insn
-In-Reply-To: <dea55f438343246636ca4b033cd8cdfef5f45b0d.1487861280.git-series.james.hogan@imgtec.com>
-Message-ID: <alpine.DEB.2.00.1702231536580.26999@tp.orcam.me.uk>
-References: <dea55f438343246636ca4b033cd8cdfef5f45b0d.1487861280.git-series.james.hogan@imgtec.com>
+Received: from mail.aknet.kz ([88.151.176.20]:45905 "EHLO aknet.kz"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23992111AbdBWRNlBeR6k (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 23 Feb 2017 18:13:41 +0100
+Subject: RE:
+Date: Thu, 23 Feb 2017 20:09:29 +0500
+From: Qin's Yanjun <Qin.Yanjun@null.net>
+Reply-to: Qin's Yanjun <Qin.Yanjun@null.net>
+Message-ID: <cf3faff95fb3db02602e6f37c5cd928f@mail.aknet.kz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Return-Path: <Qin.Yanjun@null.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,16 +20,16 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Paul Burton <paul.burton@imgtec.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-Message-ID: <20170223153739.N6V4wIkI41hhCtXVfOGGFoVku9ucsPPQKsINzd5qmAk@z>
+Message-ID: <20170223150929.-Ki3HLXqNOrRV_o84l3UIThQUQUn7eioPmVIeFwHdWg@z>
 
-On Thu, 23 Feb 2017, James Hogan wrote:
 
-> ---
->  arch/mips/include/asm/spinlock.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+How are you today and your family? I require your attention and honest
+co-operation about some issues which i will really want to discuss with you
+which.  Looking forward to read from you soon.  
 
-Reviewed-by: Maciej W. Rozycki <macro@imgtec.com>
+Qin's
 
-  Maciej
+
+______________________________
+
+Sky Silk, http://aknet.kz

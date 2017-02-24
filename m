@@ -1,16 +1,17 @@
-Received: from mail.aknet.kz ([88.151.176.20]:45905 "EHLO aknet.kz"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23992111AbdBWRNlBeR6k (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 23 Feb 2017 18:13:41 +0100
-Subject: RE:
-Date: Thu, 23 Feb 2017 20:09:29 +0500
-From: Qin's Yanjun <Qin.Yanjun@null.net>
-Reply-to: Qin's Yanjun <Qin.Yanjun@null.net>
-Message-ID: <cf3faff95fb3db02602e6f37c5cd928f@mail.aknet.kz>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:22505 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992155AbdBXWJ6S0hOB (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 24 Feb 2017 23:09:58 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH] MIPS: Octeon: Cleanup of core PCIe file.
+Date: Fri, 24 Feb 2017 14:09:43 -0800
+Message-ID: <1631008.KKB1CGQd07@np-p-burton>
+In-Reply-To: <1487886594-2161-1-git-send-email-steven.hill@cavium.com>
+References: <1487886594-2161-1-git-send-email-steven.hill@cavium.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="iso-8859-1"
-Return-Path: <Qin.Yanjun@null.net>
+Content-Type: multipart/signed; boundary="nextPart1620368.gIyHYvCFNz";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,16 +21,200 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Message-ID: <20170223150929.-Ki3HLXqNOrRV_o84l3UIThQUQUn7eioPmVIeFwHdWg@z>
+To: "Steven J. Hill" <steven.hill@cavium.com>
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org
+Message-ID: <20170224220943.Qq_PdEsaVnLE3-w_J1acoL8e-Sl8tGVy5CBjZgqF-H8@z>
+
+--nextPart1620368.gIyHYvCFNz
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+Hi Steven,
+
+On Thursday, 23 February 2017 13:49:54 PST Steven J. Hill wrote:
+> From: "Steven J. Hill" <Steven.Hill@cavium.com>
+> 
+>  * Remove unused header files and sort them by filename.
+>  * Convert 'union cvmx_pcie_address' to a bitfield.
+
+It's already a bitfield - this patch is about making that bitfield endian-
+safe, right? That seems to be the only significant change here so I'd suggest 
+changing the commit subject & message to reflect that.
+
+>  * Update copyright date.
+
+I really don't see the point of mentioning trivia like that when you could 
+instead describe what your use of the __BITFIELD_FIELD macro is for (ie. 
+endianness).
+
+Additionally it looks like this & your other patch "MIPS: Octeon: Enable PCIe 
+for little endian" probably ought to be a series, I imagine with this one 
+coming first.
+
+Thanks,
+    Paul
+
+> 
+> Signed-off-by: Steven J. Hill <steven.hill@cavium.com>
+> Signed-off-by: David Daney <david.daney@cavium.com>
+> ---
+>  arch/mips/pci/pcie-octeon.c | 84
+> ++++++++++++++++++++++++--------------------- 1 file changed, 44
+> insertions(+), 40 deletions(-)
+> 
+> diff --git a/arch/mips/pci/pcie-octeon.c b/arch/mips/pci/pcie-octeon.c
+> index 9f672ce..8f267bf 100644
+> --- a/arch/mips/pci/pcie-octeon.c
+> +++ b/arch/mips/pci/pcie-octeon.c
+> @@ -3,27 +3,24 @@
+>   * License.  See the file "COPYING" in the main directory of this archive
+>   * for more details.
+>   *
+> - * Copyright (C) 2007, 2008, 2009, 2010, 2011 Cavium Networks
+> + * Copyright (C) 2007, 2008, 2009, 2010, 2017 Cavium Networks
+>   */
+> -#include <linux/kernel.h>
+> -#include <linux/init.h>
+>  #include <linux/pci.h>
+>  #include <linux/interrupt.h>
+> -#include <linux/time.h>
+>  #include <linux/delay.h>
+>  #include <linux/moduleparam.h>
+> 
+>  #include <asm/octeon/octeon.h>
+> +#include <asm/octeon/pci-octeon.h>
+> +#include <asm/octeon/cvmx-dpi-defs.h>
+> +#include <asm/octeon/cvmx-helper-errata.h>
+>  #include <asm/octeon/cvmx-npei-defs.h>
+>  #include <asm/octeon/cvmx-pciercx-defs.h>
+> +#include <asm/octeon/cvmx-pemx-defs.h>
+>  #include <asm/octeon/cvmx-pescx-defs.h>
+>  #include <asm/octeon/cvmx-pexp-defs.h>
+> -#include <asm/octeon/cvmx-pemx-defs.h>
+> -#include <asm/octeon/cvmx-dpi-defs.h>
+>  #include <asm/octeon/cvmx-sli-defs.h>
+>  #include <asm/octeon/cvmx-sriox-defs.h>
+> -#include <asm/octeon/cvmx-helper-errata.h>
+> -#include <asm/octeon/pci-octeon.h>
+> 
+>  #define MRRS_CN5XXX 0 /* 128 byte Max Read Request Size */
+>  #define MPS_CN5XXX  0 /* 128 byte Max Packet Size (Limit of most PCs) */
+> @@ -40,55 +37,62 @@
+>  union cvmx_pcie_address {
+>  	uint64_t u64;
+>  	struct {
+> -		uint64_t upper:2;	/* Normally 2 for XKPHYS */
+> -		uint64_t reserved_49_61:13;	/* Must be zero */
+> -		uint64_t io:1;	/* 1 for IO space access */
+> -		uint64_t did:5; /* PCIe DID = 3 */
+> -		uint64_t subdid:3;	/* PCIe SubDID = 1 */
+> -		uint64_t reserved_36_39:4;	/* Must be zero */
+> -		uint64_t es:2;	/* Endian swap = 1 */
+> -		uint64_t port:2;	/* PCIe port 0,1 */
+> -		uint64_t reserved_29_31:3;	/* Must be zero */
+> +		__BITFIELD_FIELD(uint64_t upper:2,  /* Normally 2 for XKPHYS */
+> +		__BITFIELD_FIELD(uint64_t reserved_49_61:13,  /* Must be zero */
+> +		__BITFIELD_FIELD(uint64_t io:1, /* 1 for IO space access */
+> +		__BITFIELD_FIELD(uint64_t did:5,  /* PCIe DID = 3 */
+> +		__BITFIELD_FIELD(uint64_t subdid:3,  /* PCIe SubDID = 1 */
+> +		__BITFIELD_FIELD(uint64_t reserved_36_39:4,  /* Must be zero */
+> +		__BITFIELD_FIELD(uint64_t es:2,  /* Endian swap = 1 */
+> +		__BITFIELD_FIELD(uint64_t port:2,  /* PCIe port 0,1 */
+> +		__BITFIELD_FIELD(uint64_t reserved_29_31:3,  /* Must be zero */
+>  		/*
+>  		 * Selects the type of the configuration request (0 = type 0,
+>  		 * 1 = type 1).
+>  		 */
+> -		uint64_t ty:1;
+> -		/* Target bus number sent in the ID in the request. */
+> -		uint64_t bus:8;
+> +		__BITFIELD_FIELD(uint64_t ty:1,
+> +		/*
+> +		 * Target bus number sent in the ID in the request.
+> +		 */
+> +		__BITFIELD_FIELD(uint64_t bus:8,
+>  		/*
+>  		 * Target device number sent in the ID in the
+>  		 * request. Note that Dev must be zero for type 0
+>  		 * configuration requests.
+>  		 */
+> -		uint64_t dev:5;
+> -		/* Target function number sent in the ID in the request. */
+> -		uint64_t func:3;
+> +		__BITFIELD_FIELD(uint64_t dev:5,
+> +		/*
+> +		 * Target function number sent in the ID in the request.
+> +		 */
+> +		__BITFIELD_FIELD(uint64_t func:3,
+>  		/*
+>  		 * Selects a register in the configuration space of
+>  		 * the target.
+>  		 */
+> -		uint64_t reg:12;
+> +		__BITFIELD_FIELD(uint64_t reg:12,
+> +		;))))))))))))))
+>  	} config;
+>  	struct {
+> -		uint64_t upper:2;	/* Normally 2 for XKPHYS */
+> -		uint64_t reserved_49_61:13;	/* Must be zero */
+> -		uint64_t io:1;	/* 1 for IO space access */
+> -		uint64_t did:5; /* PCIe DID = 3 */
+> -		uint64_t subdid:3;	/* PCIe SubDID = 2 */
+> -		uint64_t reserved_36_39:4;	/* Must be zero */
+> -		uint64_t es:2;	/* Endian swap = 1 */
+> -		uint64_t port:2;	/* PCIe port 0,1 */
+> -		uint64_t address:32;	/* PCIe IO address */
+> +		__BITFIELD_FIELD(uint64_t upper:2,  /* Normally 2 for XKPHYS */
+> +		__BITFIELD_FIELD(uint64_t reserved_49_61:13,  /* Must be zero */
+> +		__BITFIELD_FIELD(uint64_t io:1,  /* 1 for IO space access */
+> +		__BITFIELD_FIELD(uint64_t did:5,  /* PCIe DID = 3 */
+> +		__BITFIELD_FIELD(uint64_t subdid:3,  /* PCIe SubDID = 2 */
+> +		__BITFIELD_FIELD(uint64_t reserved_36_39:4,  /* Must be zero */
+> +		__BITFIELD_FIELD(uint64_t es:2,  /* Endian swap = 1 */
+> +		__BITFIELD_FIELD(uint64_t port:2,  /* PCIe port 0,1 */
+> +		__BITFIELD_FIELD(uint64_t address:32,  /* PCIe IO address */
+> +		;)))))))))
+>  	} io;
+>  	struct {
+> -		uint64_t upper:2;	/* Normally 2 for XKPHYS */
+> -		uint64_t reserved_49_61:13;	/* Must be zero */
+> -		uint64_t io:1;	/* 1 for IO space access */
+> -		uint64_t did:5; /* PCIe DID = 3 */
+> -		uint64_t subdid:3;	/* PCIe SubDID = 3-6 */
+> -		uint64_t reserved_36_39:4;	/* Must be zero */
+> -		uint64_t address:36;	/* PCIe Mem address */
+> +		__BITFIELD_FIELD(uint64_t upper:2,  /* Normally 2 for XKPHYS */
+> +		__BITFIELD_FIELD(uint64_t reserved_49_61:13,  /* Must be zero */
+> +		__BITFIELD_FIELD(uint64_t io:1,  /* 1 for IO space access */
+> +		__BITFIELD_FIELD(uint64_t did:5,  /* PCIe DID = 3 */
+> +		__BITFIELD_FIELD(uint64_t subdid:3,  /* PCIe SubDID = 3-6 */
+> +		__BITFIELD_FIELD(uint64_t reserved_36_39:4,  /* Must be zero */
+> +		__BITFIELD_FIELD(uint64_t address:36,  /* PCIe Mem address */
+> +		;)))))))
+>  	} mem;
+>  };
 
 
-How are you today and your family? I require your attention and honest
-co-operation about some issues which i will really want to discuss with you
-which.  Looking forward to read from you soon.  
+--nextPart1620368.gIyHYvCFNz
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-Qin's
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAliwrygACgkQgiDZ+mk8
+HGWz8g//cMMnTp/xPXiWW0HgFHEDA+Cnb75uuqgYJ/ARPYmpy5Ex3q6qFMAr2G0G
+FCEC11Bd0hD4ufhllSIYew0LkEwjurf4j/hSIX1xtvc5xev8S+OJchbG655H5cb7
+Fiyv+eeKBWIFR70nkKoyW8mRqXOp4XTkC05mkdKhZpCIHb02giplm6wHxEd11Bau
+lUHCQL6sjcesnmlrT92OPgX51Hop1EsbjFMN1POsXPkeVef83ZwWJcuaaa5LlueK
+iI+q2MeX/xqT1UfVqR5sqTVzn+8lCaFAuIAsKxKIvUE6qpq+5EypuPnxiL8GzHca
+yMV3d0g7384REtoWG07mfa1CHYyhA1fG99zJxKFpqp9jqmywyxePoJ0r8DR2Bndc
+Ef5uJ0x9SMC4qeJVUBY/COHJFlCk5MjoFIwJ5ncMkvES1bdQGVTpW0HQbyweOSwE
+fCupiAWOFPPFEdYeg5cCyNGDMZ6e/MZ526k7glOpZRxxzR4TvLAqZKq+dPP2ZvEK
+Hvih1YazxJ+tmNBwYgzssyAXC0rCzMStH79oavBumN/2tY/1SKkEH05GPQyWcOE2
+PdVqPaTDs2YQdp7TrcBsEalBIUsZ72MweKf4mdroFAAcbJBOcK+NsFS+HZ9ouMZg
+UiBwQ0E2DlG7KDVpY6nyKPvLDKd43KU9GLFvSKJR8xNJz8xZw2M=
+=1D0q
+-----END PGP SIGNATURE-----
 
-______________________________
-
-Sky Silk, http://aknet.kz
+--nextPart1620368.gIyHYvCFNz--

@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:53760 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:42642 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992267AbdB1PjTkirNK (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Feb 2017 16:39:19 +0100
+        with ESMTP id S23993870AbdB1PjVRe2uK (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Feb 2017 16:39:21 +0100
 From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH 3/4] MIPS: Stacktrace: Fix __usermode() of uninitialised regs
-Date: Tue, 28 Feb 2017 15:37:57 +0000
-Message-ID: <1488296279-23057-4-git-send-email-matt.redfearn@imgtec.com>
+Subject: [PATCH 4/4] MIPS: microMIPS: Fix decoding of swsp16 instruction
+Date: Tue, 28 Feb 2017 15:37:58 +0000
+Message-ID: <1488296279-23057-5-git-send-email-matt.redfearn@imgtec.com>
 In-Reply-To: <1488296279-23057-1-git-send-email-matt.redfearn@imgtec.com>
 References: <1488296279-23057-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
@@ -21,51 +21,57 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, linux-kernel@vger.kernel.org
-Message-ID: <20170228153757.IiAyjpXD-_h330dB_RPwsAzg-OUsOStVFL5Glu02934@z>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, Huacai Chen <chenhc@lemote.com>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Andrew Morton <akpm@linux-foundation.org>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20170228153758.zx2I1XyAJsITEUlEYTjd1CYmp4cP2oZ69cv18US0Tv0@z>
 
-Commit 81a76d7119f6 ("MIPS: Avoid using unwind_stack() with usermode")
-added a check if the passed regs are from user mode, and perform a raw
-backtrace if so.
-When WARN() is invoked, __dump_stack calls show_stack()
-with NULL task and stack pointers. This leads show_stack to create a
-pt_regs struct on the stack, and initialise it via prepare_frametrace().
-When show_backtrace() examines the regs, the value of the status
-register checked by user_mode() is unpredictable, depending on the
-uninitialised content of the stack. This leads to show_backtrace()
-sometimes showing raw backtraces instead of correctly walking the kernel
-stack.
+When the immediate encoded in the instruction is accessed, it is sign
+extended due to being a signed value being assigned to a signed integer.
+The ISA specifies that this operation is an unsigned operation.
+The sign extension leads us to incorrectly decode:
 
-Fix this by initialising the contents of the saved status register in
-prepare_frametrace().
+801e9c8e:       cbf1            sw      ra,68(sp)
 
-Fixes: 81a76d7119f6 ("MIPS: Avoid using unwind_stack() with usermode")
+As having an immediate of 1073741809.
+
+Since the instruction format does not specify signed/unsigned, and this
+is currently the only location to use this instuction format, change it
+to an unsigned immediate.
+
+Fixes: bb9bc4689b9c ("MIPS: Calculate microMIPS ra properly when unwinding the stack")
+Suggested-by: Paul Burton <paul.burton@imgtec.com>
 Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+
 ---
 
- arch/mips/include/asm/stacktrace.h | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/mips/include/uapi/asm/inst.h | 2 +-
+ arch/mips/kernel/process.c        | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/include/asm/stacktrace.h b/arch/mips/include/asm/stacktrace.h
-index 780ee2c2a2ac..4845945d02a5 100644
---- a/arch/mips/include/asm/stacktrace.h
-+++ b/arch/mips/include/asm/stacktrace.h
-@@ -1,6 +1,7 @@
- #ifndef _ASM_STACKTRACE_H
- #define _ASM_STACKTRACE_H
+diff --git a/arch/mips/include/uapi/asm/inst.h b/arch/mips/include/uapi/asm/inst.h
+index 77429d1622b3..711d9b8465b8 100644
+--- a/arch/mips/include/uapi/asm/inst.h
++++ b/arch/mips/include/uapi/asm/inst.h
+@@ -964,7 +964,7 @@ struct mm16_r3_format {		/* Load from global pointer format */
+ struct mm16_r5_format {		/* Load/store from stack pointer format */
+ 	__BITFIELD_FIELD(unsigned int opcode : 6,
+ 	__BITFIELD_FIELD(unsigned int rt : 5,
+-	__BITFIELD_FIELD(signed int simmediate : 5,
++	__BITFIELD_FIELD(unsigned int imm : 5,
+ 	__BITFIELD_FIELD(unsigned int : 16, /* Ignored */
+ 	;))))
+ };
+diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
+index 6ba5b775579c..67182baaf719 100644
+--- a/arch/mips/kernel/process.c
++++ b/arch/mips/kernel/process.c
+@@ -212,7 +212,7 @@ static inline int is_ra_save_ins(union mips_instruction *ip, int *poff)
+ 			if (ip->mm16_r5_format.rt != 31)
+ 				return 0;
  
-+#include <asm/asm.h>
- #include <asm/ptrace.h>
+-			*poff = ip->mm16_r5_format.simmediate;
++			*poff = ip->mm16_r5_format.imm;
+ 			*poff = (*poff << 2) / sizeof(ulong);
+ 			return 1;
  
- #ifdef CONFIG_KALLSYMS
-@@ -47,6 +48,8 @@ static __always_inline void prepare_frametrace(struct pt_regs *regs)
- 		: "=m" (regs->cp0_epc),
- 		"=m" (regs->regs[29]), "=m" (regs->regs[31])
- 		: : "memory");
-+	/* show_backtrace behaviour depends on user_mode(regs) */
-+	regs->cp0_status = read_c0_status();
- }
- 
- #endif /* _ASM_STACKTRACE_H */
 -- 
 2.7.4

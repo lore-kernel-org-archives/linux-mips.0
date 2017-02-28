@@ -1,18 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:23203 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992121AbdB0MyjYBZrY (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Feb 2017 13:54:39 +0100
-Date: Mon, 27 Feb 2017 12:54:33 +0000
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH V2] arch: mips: ralink: fix typos in rt3883 pinctrl
-Message-ID: <20170227125433.GB2878@jhogan-linux.le.imgtec.org>
-References: <1488020063-2385-1-git-send-email-john@phrozen.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:31037 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23992236AbdB1PjJS1m5K (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Feb 2017 16:39:09 +0100
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Subject: [PATCH 0/4] MIPS: Further microMIPS stack unwinding fixes
+Date: Tue, 28 Feb 2017 15:37:54 +0000
+Message-ID: <1488296279-23057-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="IrhDeMKUP4DT/M7F"
-Content-Disposition: inline
-In-Reply-To: <1488020063-2385-1-git-send-email-john@phrozen.org>
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,79 +18,27 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: John Crispin <john@phrozen.org>
-Cc: linux-mips@linux-mips.org, Daniel Golle <daniel@makrotopia.org>
-Message-ID: <20170227125433.enSbdYIfakYprdYDElCQHIsnoL75-CZBFUAyTg0nQSI@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, Huacai Chen <chenhc@lemote.com>, Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Andrew Morton <akpm@linux-foundation.org>, "Maciej W. Rozycki" <macro@imgtec.com>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20170228153754.betz-8VdV1xTPnGLpEK66S3YmK_AKykbV-mAo0JRFHw@z>
 
---IrhDeMKUP4DT/M7F
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+4.11 includes a bunch of stack unwinding fixes for microMIPS, but some
+of those fixes require additional fixup, provided by this series.
+These patches have been tested on qemu M14Kc micromips and tested for
+regression on ci40, Boston, Octeon III & malta.
 
-On Sat, Feb 25, 2017 at 11:54:23AM +0100, John Crispin wrote:
-> There are two copy & paste errors in the definition of the 5GHz LNA and
-> second ethernet pinmux.
->=20
-> Signed-off-by: John Crispin <john@phrozen.org>
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+This series is based on mips-for-linux-next
 
-Thanks John, Applied
+Matt Redfearn (4):
+  MIPS: Handle non word sized instructions when examining frame
+  MIPS: microMIPS: Fix decoding of addiusp instruction
+  MIPS: Stacktrace: Fix __usermode() of uninitialised regs
+  MIPS: microMIPS: Fix decoding of swsp16 instruction
 
-Cheers
-James
+ arch/mips/include/asm/stacktrace.h |  3 +++
+ arch/mips/include/uapi/asm/inst.h  |  2 +-
+ arch/mips/kernel/process.c         | 14 ++++++++++----
+ 3 files changed, 14 insertions(+), 5 deletions(-)
 
-> ---
->  arch/mips/ralink/rt3883.c |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/arch/mips/ralink/rt3883.c b/arch/mips/ralink/rt3883.c
-> index c4ffd43..48ce701 100644
-> --- a/arch/mips/ralink/rt3883.c
-> +++ b/arch/mips/ralink/rt3883.c
-> @@ -35,7 +35,7 @@
->  static struct rt2880_pmx_func jtag_func[] =3D { FUNC("jtag", 0, 17, 5) };
->  static struct rt2880_pmx_func mdio_func[] =3D { FUNC("mdio", 0, 22, 2) };
->  static struct rt2880_pmx_func lna_a_func[] =3D { FUNC("lna a", 0, 32, 3)=
- };
-> -static struct rt2880_pmx_func lna_g_func[] =3D { FUNC("lna a", 0, 35, 3)=
- };
-> +static struct rt2880_pmx_func lna_g_func[] =3D { FUNC("lna g", 0, 35, 3)=
- };
->  static struct rt2880_pmx_func pci_func[] =3D {
->  	FUNC("pci-dev", 0, 40, 32),
->  	FUNC("pci-host2", 1, 40, 32),
-> @@ -43,7 +43,7 @@
->  	FUNC("pci-fnc", 3, 40, 32)
->  };
->  static struct rt2880_pmx_func ge1_func[] =3D { FUNC("ge1", 0, 72, 12) };
-> -static struct rt2880_pmx_func ge2_func[] =3D { FUNC("ge1", 0, 84, 12) };
-> +static struct rt2880_pmx_func ge2_func[] =3D { FUNC("ge2", 0, 84, 12) };
-> =20
->  static struct rt2880_pmx_group rt3883_pinmux_data[] =3D {
->  	GRP("i2c", i2c_func, 1, RT3883_GPIO_MODE_I2C),
-> --=20
-> 1.7.10.4
->=20
-
---IrhDeMKUP4DT/M7F
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIcBAEBCAAGBQJYtCGCAAoJEGwLaZPeOHZ6j54QAJDE0wriTE9jS3oT6kfGDtFE
-fcAT6b+mhpqaGFGNFBV/XdDqL0OyjvFgN9btbTahCEax2Ae6S6IFTo4awq7XwR66
-ekSkpW9icYSVBUZp/SOX/TvP7xbVDw75zJNFXE8ujGTwU3Fd0dyCnzFwEysDe4N5
-Eu1xWSQpMW2GTM0uIPIGgQSBLIVZPRvSBDFv9zCBmz1BWpvQTgEznk2cWajdzkjl
-DEgwaaMso0M8k+cjeDfGosFL44x5+vFU/U9/FJ9TRITvoo2oTCMb3ndh6sXCEP+E
-6ZOM0xe06YRlT6Ka1RAr6uzqa4PW5ozRgcJ9Xc9uqV4kOXSe3x5+Y2Zo5GEEE1wJ
-AiTsrfPa4e52rnN9g+6mtf5XCUsY0eSa0I3WMN/LxCfRJzrxKgj4QZTS2wx/vcdl
-AHAi848+shJRKw4eqGK34jBWS7yEU8A8RgQZx2I8OOjjj0roYvyeAN3LrFPKu0gb
-xfabieMXpSnF55hW8RTD6swxG/05pypla+7x0LzFbXT+jVVgP1hv7JJdCJVtQD4/
-GtzodlPSubYge264qCPNn/zb1Tjlw76wrNbqe8eQC5b6ggGFZcccq0kBRUpJ3xiK
-z9EUTDBxHejuznvRyV7XsM3jqLxbjFM1hl7Ja1YL5m4jNdU8L2lZz91csf4oScTt
-X42xODB13YK+5Qxvd1If
-=d+nT
------END PGP SIGNATURE-----
-
---IrhDeMKUP4DT/M7F--
+-- 
+2.7.4

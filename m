@@ -1,19 +1,17 @@
-Received: from mail-qk0-x242.google.com ([IPv6:2607:f8b0:400d:c09::242]:35981
-        "EHLO mail-qk0-x242.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993177AbdB1U3eG2LzN (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Feb 2017 21:29:34 +0100
-Received: by mail-qk0-x242.google.com with SMTP id u188so5616550qkc.3
-        for <linux-mips@linux-mips.org>; Tue, 28 Feb 2017 12:29:34 -0800 (PST)
-Subject: Re: [PATCH] soc: bcm: brcmstb: Match additional compatible strings
-References: <20170215004159.11096-1-florian.fainelli@broadcom.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <3df8fb67-1809-3781-6f7b-b1057b137f40@gmail.com>
-Date: Tue, 28 Feb 2017 12:29:25 -0800
+Received: from mailapp01.imgtec.com ([195.59.15.196]:52311 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993177AbdB1Uy3ObKyN (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Feb 2017 21:54:29 +0100
+Date: Tue, 28 Feb 2017 20:54:09 +0000
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH 1/4] MIPS: Handle non word sized instructions when
+ examining frame
+In-Reply-To: <1488296279-23057-2-git-send-email-matt.redfearn@imgtec.com>
+Message-ID: <alpine.DEB.2.00.1702282050410.26999@tp.orcam.me.uk>
+References: <1488296279-23057-1-git-send-email-matt.redfearn@imgtec.com> <1488296279-23057-2-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20170215004159.11096-1-florian.fainelli@broadcom.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-Path: <f.fainelli@gmail.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,28 +21,28 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Brian Norris <computersforpeace@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" <bcm-kernel-feedback-list@broadcom.com>, Justin Chen <justin.chen@broadcom.com>, Scott Branden <scott.branden@broadcom.com>, Arnd Bergmann <arnd@arndb.de>, "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>
-Message-ID: <20170228202925.NmTz3YI4amn8aYhEiyx5SvUBKl7G2ar4ms8sANx_qYM@z>
+To: Matt Redfearn <matt.redfearn@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20170228205409.QO9ITr4jYFhkUP2GyjBnD-zht3xAEJ4Af47AULBDw6s@z>
 
-On 02/14/2017 04:41 PM, Florian Fainelli wrote:
-> From: Florian Fainelli <f.fainelli@gmail.com>
-> 
-> Match all known sun-top-ctrl compatible strings from our MIPS chips
-> counterparts. This allows us to properly report the SoC information to
-> user-space through our SoC driver.
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+On Tue, 28 Feb 2017, Matt Redfearn wrote:
 
-Applied.
+> Since the instruction modifying the stack pointer is usually the first
+> in the function, that one is ususally handled correctly. But the
 
-> ---
-> Ralf, James,
-> 
-> I usually take patches touching this file through an ARM SoC pull request,
-> posting to linux-mips for people working on BMIPS STB to get a chance to review
-> this.
-> 
-> Thanks!
--- 
-Florian
+ s/ususally/usually/
+
+> diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
+> index 803e255b6fc3..5b1e932ae973 100644
+> --- a/arch/mips/kernel/process.c
+> +++ b/arch/mips/kernel/process.c
+> @@ -347,6 +347,7 @@ static int get_frame_info(struct mips_frame_info *info)
+>  	union mips_instruction insn, *ip, *ip_end;
+>  	const unsigned int max_insns = 128;
+>  	unsigned int i;
+> +	unsigned int last_insn_size = 0;
+
+ Please keep declarations in the reverse Christmas tree order, i.e. swap 
+the last two.
+
+  Maciej

@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:27571 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:55571 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993637AbdCAOleTEnBI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 1 Mar 2017 15:41:34 +0100
+        with ESMTP id S23993876AbdCAOlgnF-oI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 1 Mar 2017 15:41:36 +0100
 From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH v2 0/5] MIPS: Further microMIPS stack unwinding fixes
-Date: Wed, 1 Mar 2017 14:41:15 +0000
-Message-ID: <1488379280-2954-1-git-send-email-matt.redfearn@imgtec.com>
+Subject: [PATCH v2 1/5] MIPS: Handle non word sized instructions when examining frame
+Date: Wed, 1 Mar 2017 14:41:16 +0000
+Message-ID: <1488379280-2954-2-git-send-email-matt.redfearn@imgtec.com>
+In-Reply-To: <1488379280-2954-1-git-send-email-matt.redfearn@imgtec.com>
+References: <1488379280-2954-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Matt.Redfearn@imgtec.com>
@@ -19,32 +21,71 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, Huacai Chen <chenhc@lemote.com>, Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, "Maciej W. Rozycki" <macro@imgtec.com>, Andrew Morton <akpm@linux-foundation.org>
-Message-ID: <20170301144115.y4kE5bvAdCpfrcsZOM5LOs2busQEQfD2ZTyI2-jVKh8@z>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@imgtec.com>, Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <20170301144116.bwXg0uIXuoufgPpbVTNJ7p6ABjD-PUgBDkqpOLnjs1o@z>
 
-4.11 includes a bunch of stack unwinding fixes for microMIPS, but some
-of those fixes require additional fixup, provided by this series.
-These patches have been tested on qemu M14Kc micromips and tested for
-regression on ci40, Boston, Octeon III & malta.
+Commit b6c7a324df37 ("MIPS: Fix get_frame_info() handling of microMIPS
+function size") goes some way to fixing get_frame_info() to iterate over
+microMIPS instuctions, but increments the instruction pointer using a
+postincrement of the instruction pointer, which is of union
+mips_instruction type. Since the union is sized to the largest member (a
+word), but microMIPS instructions are a mix of halfword and word sizes,
+the function does not always iterate correctly, ending up misaligned
+with the instruction stream and interpreting it incorrectly.
 
-This series is based on mips-for-linux-next
+Since the instruction modifying the stack pointer is usually the first
+in the function, that one is usually handled correctly. But the
+instruction which saves the return address to the sp is some variable
+number of instructions into the frame and is frequently missed due to
+not being on a word boundary, leading to incomplete walking of the
+stack.
+
+Fix this by incrementing the instruction pointer based on the size of
+the previously decoded instruction.
+
+Fixes: b6c7a324df37 ("MIPS: Fix get_frame_info() handling of microMIPS function size")
+Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+
+---
 
 Changes in v2:
 - Keep locals in reverse christmas tree order
-- Replace conditional with xor and subtract
-- Refactor is_sp_move_ins to interpret immediate inline.
 
-Matt Redfearn (5):
-  MIPS: Handle non word sized instructions when examining frame
-  MIPS: microMIPS: Fix decoding of addiusp instruction
-  MIPS: Refactor handling of stack pointer in get_frame_info
-  MIPS: Stacktrace: Fix __usermode() of uninitialised regs
-  MIPS: microMIPS: Fix decoding of swsp16 instruction
+ arch/mips/kernel/process.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
- arch/mips/include/asm/stacktrace.h |  3 ++
- arch/mips/include/uapi/asm/inst.h  |  2 +-
- arch/mips/kernel/process.c         | 66 ++++++++++++++++++++------------------
- 3 files changed, 39 insertions(+), 32 deletions(-)
-
+diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
+index 803e255b6fc3..df69ebd361fc 100644
+--- a/arch/mips/kernel/process.c
++++ b/arch/mips/kernel/process.c
+@@ -346,6 +346,7 @@ static int get_frame_info(struct mips_frame_info *info)
+ 	bool is_mmips = IS_ENABLED(CONFIG_CPU_MICROMIPS);
+ 	union mips_instruction insn, *ip, *ip_end;
+ 	const unsigned int max_insns = 128;
++	unsigned int last_insn_size = 0;
+ 	unsigned int i;
+ 
+ 	info->pc_offset = -1;
+@@ -357,15 +358,19 @@ static int get_frame_info(struct mips_frame_info *info)
+ 
+ 	ip_end = (void *)ip + info->func_size;
+ 
+-	for (i = 0; i < max_insns && ip < ip_end; i++, ip++) {
++	for (i = 0; i < max_insns && ip < ip_end; i++) {
++		ip = (void *)ip + last_insn_size;
+ 		if (is_mmips && mm_insn_16bit(ip->halfword[0])) {
+ 			insn.halfword[0] = 0;
+ 			insn.halfword[1] = ip->halfword[0];
++			last_insn_size = sizeof(unsigned short);
+ 		} else if (is_mmips) {
+ 			insn.halfword[0] = ip->halfword[1];
+ 			insn.halfword[1] = ip->halfword[0];
++			last_insn_size = sizeof(unsigned int);
+ 		} else {
+ 			insn.word = ip->word;
++			last_insn_size = sizeof(unsigned int);
+ 		}
+ 
+ 		if (is_jump_ins(&insn))
 -- 
 2.7.4

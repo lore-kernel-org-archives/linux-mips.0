@@ -1,20 +1,16 @@
-Received: from mail-sn1nam02on0070.outbound.protection.outlook.com ([104.47.36.70]:28112
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993875AbdCBTYfuBkmR (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 2 Mar 2017 20:24:35 +0100
-Subject: Re: [PATCH] module: set __jump_table alignment to 8
-References: <20170301220453.4756-1-david.daney@cavium.com>
- <20170302131119.6f52203f@gandalf.local.home>
- <20170302182625.GB13268@packer-debian-8-amd64.digitalocean.com>
-From: David Daney <ddaney@caviumnetworks.com>
-Message-ID: <f38431ab-ad33-ac14-03b5-7cb4a172be64@caviumnetworks.com>
-Date: Thu, 2 Mar 2017 11:24:23 -0800
+Received: from mailapp01.imgtec.com ([195.59.15.196]:5788 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993876AbdCBWFk6QqhB (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 2 Mar 2017 23:05:40 +0100
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH v2] MIPS: pm-cps: Drop manual cache-line alignment of ready_count
+Date: Thu, 2 Mar 2017 14:02:40 -0800
+Message-ID: <20170302220240.17615-1-paul.burton@imgtec.com>
+In-Reply-To: <20170302183128.22883-1-paul.burton@imgtec.com>
+References: <20170302183128.22883-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20170302182625.GB13268@packer-debian-8-amd64.digitalocean.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <David.Daney@cavium.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,58 +20,79 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Jessica Yu <jeyu@redhat.com>, Steven Rostedt <rostedt@goodmis.org>
-Cc: Rusty Russell <rusty@rustcorp.com.au>, David Daney <david.daney@cavium.com>, Jason Baron <jbaron@akamai.com>, Michael Ellerman <mpe@ellerman.id.au>, Sachin Sant <sachinp@linux.vnet.ibm.com>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, Chris Metcalf <cmetcalf@mellanox.com>, Ralf Baechle <ralf@linux-mips.org>, Russell King <linux@armlinux.org.uk>, Rabin Vincent <rabin@rab.in>, Paul Mackerras <paulus@samba.org>, Anton Blanchard <anton@samba.org>, Ingo Molnar <mingo@kernel.org>, Zhigang Lu <zlu@ezchip.com>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>, Bryan O'Donoghue <bryan.odonoghue@imgtec.com>, ralf@linux-mips.org, "stable # v3 . 16+" <stable@vger.kernel.org>
+Message-ID: <20170302220240.DaF6iUb0JXCh7tFbtr6dKxD5LTOFZz-9S4G_56BrBcQ@z>
 
-On 03/02/2017 10:26 AM, Jessica Yu wrote:
-> +++ Steven Rostedt [02/03/17 13:11 -0500]:
->>
->> Can I get an Ack from a module maintainer?
->
-> Acked-by: Jessica Yu <jeyu@redhat.com>
->
-> Thanks!
->
-> Jessica
+We allocate memory for a ready_count variable per-CPU, which is accessed
+via a cached non-coherent TLB mapping to perform synchronisation between
+threads within the core using LL/SC instructions. In order to ensure
+that the variable is contained within its own data cache line we
+allocate 2 lines worth of memory & align the resulting pointer to a line
+boundary. This is however unnecessary, since kmalloc is guaranteed to
+return memory which is at least cache-line aligned (see
+ARCH_DMA_MINALIGN). Stop the redundant manual alignment.
 
-Thanks Jessica,
+Besides cleaning up the code & avoiding needless work, this has the side
+effect of avoiding an arithmetic error found by Bryan on 64 bit systems
+due to the 32 bit size of the former dlinesz. This led the ready_count
+variable to have its upper 32b cleared erroneously for MIPS64 kernels,
+causing problems when ready_count was later used on MIPS64 via cpuidle.
 
-Can you also add scripts/module-common.lds to MAINTAINERS so that 
-get_maintainers.pl will indicate that Jessica Yu and Rusty Russell be 
-CCed on things like this in the future?
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Fixes: 3179d37ee1ed ("MIPS: pm-cps: add PM state entry code for CPS systems")
+Reported-by: Bryan O'Donoghue <bryan.odonoghue@imgtec.com>
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@imgtec.com>
+Tested-by: Bryan O'Donoghue <bryan.odonoghue@imgtec.com>
+Cc: Bryan O'Donoghue <bryan.odonoghue@imgtec.com>
+Cc: linux-mips@linux-mips.org
+Cc: ralf@linux-mips.org
+Cc: stable <stable@vger.kernel.org> # v3.16+
+---
+Changes in v2:
+  - Change kmalloc size to the 4 bytes we use with LL/SC.
+  - Fix mis-spelling of Bryan's name.
+---
+ arch/mips/kernel/pm-cps.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-
->
->> On Wed,  1 Mar 2017 14:04:53 -0800
->> David Daney <david.daney@cavium.com> wrote:
->>
->>> For powerpc the __jump_table section in modules is not aligned, this
->>> causes a WARN_ON() splat when loading a module containing a
->>> __jump_table.
->>>
->>> Strict alignment became necessary with commit 3821fd35b58d
->>> ("jump_label: Reduce the size of struct static_key"), currently in
->>> linux-next, which uses the two least significant bits of pointers to
->>> __jump_table elements.
->>>
->>> Fix by forcing __jump_table to 8, which is the same alignment used for
->>> this section in the kernel proper.
->>>
->>> Signed-off-by: David Daney <david.daney@cavium.com>
->>> Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
->>> ---
->>>  scripts/module-common.lds | 2 ++
->>>  1 file changed, 2 insertions(+)
->>>
->>> diff --git a/scripts/module-common.lds b/scripts/module-common.lds
->>> index 73a2c7d..53234e8 100644
->>> --- a/scripts/module-common.lds
->>> +++ b/scripts/module-common.lds
->>> @@ -19,4 +19,6 @@ SECTIONS {
->>>
->>>      . = ALIGN(8);
->>>      .init_array        0 : { *(SORT(.init_array.*)) *(.init_array) }
->>> +
->>> +    __jump_table        0 : ALIGN(8) { KEEP(*(__jump_table)) }
->>>  }
->>
+diff --git a/arch/mips/kernel/pm-cps.c b/arch/mips/kernel/pm-cps.c
+index 5f928c34c148..d99416094ba9 100644
+--- a/arch/mips/kernel/pm-cps.c
++++ b/arch/mips/kernel/pm-cps.c
+@@ -56,7 +56,6 @@ DECLARE_BITMAP(state_support, CPS_PM_STATE_COUNT);
+  * state. Actually per-core rather than per-CPU.
+  */
+ static DEFINE_PER_CPU_ALIGNED(u32*, ready_count);
+-static DEFINE_PER_CPU_ALIGNED(void*, ready_count_alloc);
+ 
+ /* Indicates online CPUs coupled with the current CPU */
+ static DEFINE_PER_CPU_ALIGNED(cpumask_t, online_coupled);
+@@ -642,7 +641,6 @@ static int cps_pm_online_cpu(unsigned int cpu)
+ {
+ 	enum cps_pm_state state;
+ 	unsigned core = cpu_data[cpu].core;
+-	unsigned dlinesz = cpu_data[cpu].dcache.linesz;
+ 	void *entry_fn, *core_rc;
+ 
+ 	for (state = CPS_PM_NC_WAIT; state < CPS_PM_STATE_COUNT; state++) {
+@@ -662,16 +660,11 @@ static int cps_pm_online_cpu(unsigned int cpu)
+ 	}
+ 
+ 	if (!per_cpu(ready_count, core)) {
+-		core_rc = kmalloc(dlinesz * 2, GFP_KERNEL);
++		core_rc = kmalloc(sizeof(u32), GFP_KERNEL);
+ 		if (!core_rc) {
+ 			pr_err("Failed allocate core %u ready_count\n", core);
+ 			return -ENOMEM;
+ 		}
+-		per_cpu(ready_count_alloc, core) = core_rc;
+-
+-		/* Ensure ready_count is aligned to a cacheline boundary */
+-		core_rc += dlinesz - 1;
+-		core_rc = (void *)((unsigned long)core_rc & ~(dlinesz - 1));
+ 		per_cpu(ready_count, core) = core_rc;
+ 	}
+ 
+-- 
+2.12.0

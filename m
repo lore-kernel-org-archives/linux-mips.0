@@ -1,16 +1,22 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:5788 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993876AbdCBWFk6QqhB (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 2 Mar 2017 23:05:40 +0100
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2] MIPS: pm-cps: Drop manual cache-line alignment of ready_count
-Date: Thu, 2 Mar 2017 14:02:40 -0800
-Message-ID: <20170302220240.17615-1-paul.burton@imgtec.com>
-In-Reply-To: <20170302183128.22883-1-paul.burton@imgtec.com>
-References: <20170302183128.22883-1-paul.burton@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:24313 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23993876AbdCCAVfd13C8 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 3 Mar 2017 01:21:35 +0100
+Date: Fri, 3 Mar 2017 00:21:29 +0000
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH v2 1/1] serial: 8250_dw: Allow hardware flow control to
+ be used
+Message-ID: <20170303002129.GS996@jhogan-linux.le.imgtec.org>
+References: <1484164100-9805-1-git-send-email-jason.uy@broadcom.com>
+ <1484164100-9805-2-git-send-email-jason.uy@broadcom.com>
+ <CAAG0J9-n0toSJL8Ze8Esq81dYnpfrTd42bMiR94zw_btBLjsww@mail.gmail.com>
+ <1488394220.20145.68.camel@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="+bDoS+V4AJZnUgoC"
+Content-Disposition: inline
+In-Reply-To: <1488394220.20145.68.camel@linux.intel.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,79 +26,102 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, Bryan O'Donoghue <bryan.odonoghue@imgtec.com>, ralf@linux-mips.org, "stable # v3 . 16+" <stable@vger.kernel.org>
-Message-ID: <20170302220240.DaF6iUb0JXCh7tFbtr6dKxD5LTOFZz-9S4G_56BrBcQ@z>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Jason Uy <jason.uy@broadcom.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jslaby@suse.com>, Kefeng Wang <wangkefeng.wang@huawei.com>, Noam Camus <noamc@ezchip.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Wang Hongcheng <annie.wang@amd.com>, linux-serial@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, bcm-kernel-feedback-list@broadcom.com, Linux MIPS Mailing List <linux-mips@linux-mips.org>, David Daney <david.daney@cavium.com>, Russell King <linux@armlinux.org.uk>, linux-clk@vger.kernel.org, Viresh Kumar <viresh.kumar@st.com>
+Message-ID: <20170303002129.fMQemeL5wkQVZOar0fHKYQJRnmpGZH03m7bpdZIbUJY@z>
 
-We allocate memory for a ready_count variable per-CPU, which is accessed
-via a cached non-coherent TLB mapping to perform synchronisation between
-threads within the core using LL/SC instructions. In order to ensure
-that the variable is contained within its own data cache line we
-allocate 2 lines worth of memory & align the resulting pointer to a line
-boundary. This is however unnecessary, since kmalloc is guaranteed to
-return memory which is at least cache-line aligned (see
-ARCH_DMA_MINALIGN). Stop the redundant manual alignment.
+--+bDoS+V4AJZnUgoC
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Besides cleaning up the code & avoiding needless work, this has the side
-effect of avoiding an arithmetic error found by Bryan on 64 bit systems
-due to the 32 bit size of the former dlinesz. This led the ready_count
-variable to have its upper 32b cleared erroneously for MIPS64 kernels,
-causing problems when ready_count was later used on MIPS64 via cpuidle.
+On Wed, Mar 01, 2017 at 08:50:20PM +0200, Andy Shevchenko wrote:
+> On Wed, 2017-03-01 at 18:02 +0000, James Hogan wrote:
+> > On 11 January 2017 at 19:48, Jason Uy <jason.uy@broadcom.com> wrote:
+> > > In the most common use case, the Synopsys DW UART driver does not
+> > > set the set_termios callback function.=C2=A0 This prevents UPSTAT_AUT=
+OCTS
+> > > from being set when the UART flag CRTSCTS is set.=C2=A0 As a result, =
+the
+> > > driver will use software flow control as opposed to hardware flow
+> > > control.
+> > >=20
+> > > To fix the problem, the set_termios callback function is set to the
+> > > DW specific function.=C2=A0 The logic to set UPSTAT_AUTOCTS is moved =
+so
+> > > that any clock error will not affect setting the hardware flow
+> > > control.
+>=20
+> > Bisection shows that this patch, commit
+> > 6a171b29937984a5e0bf29d6577b055998f03edb, has broken boot of the
+> > Cavium Octeon III based UTM-8 board (MIPS architecture).
+> >=20
+> > I now get the following warning:
+>=20
+> > [<ffffffff8149c2e4>] uart_get_baud_rate+0xfc/0x1f0
+> > [<ffffffff814a5098>] serial8250_do_set_termios+0xb0/0x440
+> > [<ffffffff8149c710>] uart_set_options+0xe8/0x190
+> > [<ffffffff814a6cdc>] serial8250_console_setup+0x84/0x158
+> > [<ffffffff814a11ec>] univ8250_console_setup+0x54/0x70
+> > [<ffffffff811901a0>] register_console+0x1c8/0x418
+> > [<ffffffff8149f004>] uart_add_one_port+0x434/0x4b0
+> > [<ffffffff814a1af8>] serial8250_register_8250_port+0x2d8/0x440
+> > [<ffffffff814aa620>] dw8250_probe+0x388/0x5e8
+>=20
+> > Then it hangs and the watchdog restarts the machine.
+> >=20
+> > Any ideas?
+>=20
+> 1. Does it use clock on that platform?
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Fixes: 3179d37ee1ed ("MIPS: pm-cps: add PM state entry code for CPS systems")
-Reported-by: Bryan O'Donoghue <bryan.odonoghue@imgtec.com>
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@imgtec.com>
-Tested-by: Bryan O'Donoghue <bryan.odonoghue@imgtec.com>
-Cc: Bryan O'Donoghue <bryan.odonoghue@imgtec.com>
-Cc: linux-mips@linux-mips.org
-Cc: ralf@linux-mips.org
-Cc: stable <stable@vger.kernel.org> # v3.16+
----
-Changes in v2:
-  - Change kmalloc size to the 4 bytes we use with LL/SC.
-  - Fix mis-spelling of Bryan's name.
----
- arch/mips/kernel/pm-cps.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+btw, sorry for HTML email blocked from lists, gmail tricked me into it
+:-(
 
-diff --git a/arch/mips/kernel/pm-cps.c b/arch/mips/kernel/pm-cps.c
-index 5f928c34c148..d99416094ba9 100644
---- a/arch/mips/kernel/pm-cps.c
-+++ b/arch/mips/kernel/pm-cps.c
-@@ -56,7 +56,6 @@ DECLARE_BITMAP(state_support, CPS_PM_STATE_COUNT);
-  * state. Actually per-core rather than per-CPU.
-  */
- static DEFINE_PER_CPU_ALIGNED(u32*, ready_count);
--static DEFINE_PER_CPU_ALIGNED(void*, ready_count_alloc);
- 
- /* Indicates online CPUs coupled with the current CPU */
- static DEFINE_PER_CPU_ALIGNED(cpumask_t, online_coupled);
-@@ -642,7 +641,6 @@ static int cps_pm_online_cpu(unsigned int cpu)
- {
- 	enum cps_pm_state state;
- 	unsigned core = cpu_data[cpu].core;
--	unsigned dlinesz = cpu_data[cpu].dcache.linesz;
- 	void *entry_fn, *core_rc;
- 
- 	for (state = CPS_PM_NC_WAIT; state < CPS_PM_STATE_COUNT; state++) {
-@@ -662,16 +660,11 @@ static int cps_pm_online_cpu(unsigned int cpu)
- 	}
- 
- 	if (!per_cpu(ready_count, core)) {
--		core_rc = kmalloc(dlinesz * 2, GFP_KERNEL);
-+		core_rc = kmalloc(sizeof(u32), GFP_KERNEL);
- 		if (!core_rc) {
- 			pr_err("Failed allocate core %u ready_count\n", core);
- 			return -ENOMEM;
- 		}
--		per_cpu(ready_count_alloc, core) = core_rc;
--
--		/* Ensure ready_count is aligned to a cacheline boundary */
--		core_rc += dlinesz - 1;
--		core_rc = (void *)((unsigned long)core_rc & ~(dlinesz - 1));
- 		per_cpu(ready_count, core) = core_rc;
- 	}
- 
--- 
-2.12.0
+I've now dug a little deeper. Essentially what is going on is:
+
+1) CONFIG_HAVE_CLK=3Dn (Octeon doesn't select it)
+2) The CONFIG_HAVE_CLK=3Dn implementation of devm_clk_get() returns NULL
+3) The "if (IS_ERR(d->clk) || !old) {" check in dw8250_set_termios()
+   doesn't match, since !IS_ERR(NULL)
+4) The CONFIG_HAVE_CLK=3Dn implementation of clk_round_rate() returns 0
+5) The CONFIG_HAVE_CLK=3Dn implementation of clk_set_rate(d->clk, 0)
+   returns 0
+6) dw8250_set_termios() thinks the frequency for that baud rate has been
+   set successfully and writes 0 into uartclk
+7) it all goes wrong from there...
+
+The CONFIG_HAVE_CLK=3Dn implementation of devm_clk_get() in particular
+seems highly questionable to me, given that commit 93abe8e4b13a ("clk:
+add non CONFIG_HAVE_CLK routines") which added it 5 years ago says:
+
+> These calls will return error for platforms that don't select HAVE_CLK
+
+And NULL isn't an error in this API.
+
+Cc'ing some clk folk.
+
+Cheers
+James
+
+--+bDoS+V4AJZnUgoC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJYuLcJAAoJEGwLaZPeOHZ6cDkP/3mvQE+yaNnKdwh4G/K0ezr8
+zWYFYPAhQWH/gvGkgN6jetBBz7Ffxt51754pBAoXQQk5TddtzDqCGOlZQBpIBTJB
+GEqnq3hf/i9KBwIvWodveOT13U8EIydeQquXRrsVx6SwIln/YlcszzQrDcB4ZRxr
+AL93SMFr+ko79ZgSWvCOt2+aEtmeL2apVuQaWeEq6cCcOfStdv4hPlO4kPQTTbB/
+/YNWvx3s33vWzlwxQ9Npm1/38xPiPWrkVzv25LbyC4lg1Wtg8a0xWrh866UAj8+S
+eaqnm0czRo8NV0fOXjVjDZ0NKtmyV5CScnU0Xmw/dW7lyfsLilKraOw8x8qVBc1K
+ZTnOcnif2+mdKNflK3AWTfU+b+MTte0w7s29LbFuSy3j6coKyMfEAcBaEs36xuJ6
+c8J4cwz5juwq4FIDmSNKOPZxlC+5i1xbJesrbfk20Z0JmM57kSbz1bqFZKOVs9KP
+ovqiZy0FG3McoF1+e4bFnr3+07MsbIBby/gNQDQd/HgTtEHXAwvJ8oZPOw1AuJ47
+yl6YQO+t2k5MOeLemLdxcUcat63YlYNUbMnNx3sOO0gNJ+fDp+aPtg/R79ftKMN9
+0axOINy9M42PAHWK4uSLddVTh9JuEE+vgGh8hk8BDeZovfT6xqaf80ni2dq9htys
+UljKoCl2yxuzgP1pDeWo
+=OgmA
+-----END PGP SIGNATURE-----
+
+--+bDoS+V4AJZnUgoC--

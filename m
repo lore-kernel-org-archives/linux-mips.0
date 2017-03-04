@@ -1,14 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:39602 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993420AbdCDAmSYGtek (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 4 Mar 2017 01:42:18 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: Wire up statx system call
-Date: Sat, 4 Mar 2017 00:41:25 +0000
-Message-ID: <20170304004125.6447-1-james.hogan@imgtec.com>
+Received: from ozlabs.org ([103.22.144.67]:56635 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23990513AbdCDMtyXh2YM (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sat, 4 Mar 2017 13:49:54 +0100
+From: Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 1/3] futex: remove duplicated code
+In-Reply-To: <20170303122712.13353-1-jslaby@suse.cz>
+References: <20170303122712.13353-1-jslaby@suse.cz>
+Date: Sat, 04 Mar 2017 23:49:44 +1100
+Message-ID: <877f45cil2.fsf@concordia.ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <mpe@ellerman.id.au>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,127 +20,22 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20170304004125.iJ_XgItwf-X_KsS9E6X9rYCaKKOojyIOBtow3zGekYU@z>
+To: Jiri Slaby <jslaby@suse.cz>, akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, C hris Metcalf <cmetcalf@mellanox.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@linux-mips.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
+Message-ID: <20170304124944.8tavTOjeuAUHS1L_RL91jyJqZRBGJWkOtz3sc8GBESY@z>
 
-Wire up the statx system call for MIPS, which was introduced in commit
-a528d35e8bfc ("statx: Add a system call to make enhanced file info
-available").
+Jiri Slaby <jslaby@suse.cz> writes:
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
----
- arch/mips/include/uapi/asm/unistd.h | 15 +++++++++------
- arch/mips/kernel/scall32-o32.S      |  1 +
- arch/mips/kernel/scall64-64.S       |  1 +
- arch/mips/kernel/scall64-n32.S      |  1 +
- arch/mips/kernel/scall64-o32.S      |  1 +
- 5 files changed, 13 insertions(+), 6 deletions(-)
+> There is code duplicated over all architecture's headers for
+> futex_atomic_op_inuser. Namely op decoding, access_ok check for uaddr,
+> and comparison of the result.
+>
+> Remove this duplication and leave up to the arches only the needed
+> assembly which is now in arch_futex_atomic_op_inuser.
 
-diff --git a/arch/mips/include/uapi/asm/unistd.h b/arch/mips/include/uapi/asm/unistd.h
-index 3e940dbe0262..78faf4292e90 100644
---- a/arch/mips/include/uapi/asm/unistd.h
-+++ b/arch/mips/include/uapi/asm/unistd.h
-@@ -386,17 +386,18 @@
- #define __NR_pkey_mprotect		(__NR_Linux + 363)
- #define __NR_pkey_alloc			(__NR_Linux + 364)
- #define __NR_pkey_free			(__NR_Linux + 365)
-+#define __NR_statx			(__NR_Linux + 366)
- 
- 
- /*
-  * Offset of the last Linux o32 flavoured syscall
-  */
--#define __NR_Linux_syscalls		365
-+#define __NR_Linux_syscalls		366
- 
- #endif /* _MIPS_SIM == _MIPS_SIM_ABI32 */
- 
- #define __NR_O32_Linux			4000
--#define __NR_O32_Linux_syscalls		365
-+#define __NR_O32_Linux_syscalls		366
- 
- #if _MIPS_SIM == _MIPS_SIM_ABI64
- 
-@@ -730,16 +731,17 @@
- #define __NR_pkey_mprotect		(__NR_Linux + 323)
- #define __NR_pkey_alloc			(__NR_Linux + 324)
- #define __NR_pkey_free			(__NR_Linux + 325)
-+#define __NR_statx			(__NR_Linux + 326)
- 
- /*
-  * Offset of the last Linux 64-bit flavoured syscall
-  */
--#define __NR_Linux_syscalls		325
-+#define __NR_Linux_syscalls		326
- 
- #endif /* _MIPS_SIM == _MIPS_SIM_ABI64 */
- 
- #define __NR_64_Linux			5000
--#define __NR_64_Linux_syscalls		325
-+#define __NR_64_Linux_syscalls		326
- 
- #if _MIPS_SIM == _MIPS_SIM_NABI32
- 
-@@ -1077,15 +1079,16 @@
- #define __NR_pkey_mprotect		(__NR_Linux + 327)
- #define __NR_pkey_alloc			(__NR_Linux + 328)
- #define __NR_pkey_free			(__NR_Linux + 329)
-+#define __NR_statx			(__NR_Linux + 330)
- 
- /*
-  * Offset of the last N32 flavoured syscall
-  */
--#define __NR_Linux_syscalls		329
-+#define __NR_Linux_syscalls		330
- 
- #endif /* _MIPS_SIM == _MIPS_SIM_NABI32 */
- 
- #define __NR_N32_Linux			6000
--#define __NR_N32_Linux_syscalls		329
-+#define __NR_N32_Linux_syscalls		330
- 
- #endif /* _UAPI_ASM_UNISTD_H */
-diff --git a/arch/mips/kernel/scall32-o32.S b/arch/mips/kernel/scall32-o32.S
-index c29d397eee86..80ed68b2c95e 100644
---- a/arch/mips/kernel/scall32-o32.S
-+++ b/arch/mips/kernel/scall32-o32.S
-@@ -600,3 +600,4 @@ EXPORT(sys_call_table)
- 	PTR	sys_pkey_mprotect
- 	PTR	sys_pkey_alloc
- 	PTR	sys_pkey_free			/* 4365 */
-+	PTR	sys_statx
-diff --git a/arch/mips/kernel/scall64-64.S b/arch/mips/kernel/scall64-64.S
-index 0687f96ee912..49765b44aa9b 100644
---- a/arch/mips/kernel/scall64-64.S
-+++ b/arch/mips/kernel/scall64-64.S
-@@ -438,4 +438,5 @@ EXPORT(sys_call_table)
- 	PTR	sys_pkey_mprotect
- 	PTR	sys_pkey_alloc
- 	PTR	sys_pkey_free			/* 5325 */
-+	PTR	sys_statx
- 	.size	sys_call_table,.-sys_call_table
-diff --git a/arch/mips/kernel/scall64-n32.S b/arch/mips/kernel/scall64-n32.S
-index 0331ba39a065..90bad2d1b2d3 100644
---- a/arch/mips/kernel/scall64-n32.S
-+++ b/arch/mips/kernel/scall64-n32.S
-@@ -433,4 +433,5 @@ EXPORT(sysn32_call_table)
- 	PTR	sys_pkey_mprotect
- 	PTR	sys_pkey_alloc
- 	PTR	sys_pkey_free
-+	PTR	sys_statx			/* 6330 */
- 	.size	sysn32_call_table,.-sysn32_call_table
-diff --git a/arch/mips/kernel/scall64-o32.S b/arch/mips/kernel/scall64-o32.S
-index 5a47042dd25f..2dd70bd104e1 100644
---- a/arch/mips/kernel/scall64-o32.S
-+++ b/arch/mips/kernel/scall64-o32.S
-@@ -588,4 +588,5 @@ EXPORT(sys32_call_table)
- 	PTR	sys_pkey_mprotect
- 	PTR	sys_pkey_alloc
- 	PTR	sys_pkey_free			/* 4365 */
-+	PTR	sys_statx
- 	.size	sys32_call_table,.-sys32_call_table
--- 
-2.11.1
+Looks OK and boots on powerpc. But I don't think anything's actually
+calling those futex ops. Is there a test suite I should run?
+
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+
+cheers

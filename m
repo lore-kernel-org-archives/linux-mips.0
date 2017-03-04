@@ -1,16 +1,16 @@
-Received: from ozlabs.org ([103.22.144.67]:56635 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23990513AbdCDMtyXh2YM (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 4 Mar 2017 13:49:54 +0100
-From: Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH 1/3] futex: remove duplicated code
-In-Reply-To: <20170303122712.13353-1-jslaby@suse.cz>
-References: <20170303122712.13353-1-jslaby@suse.cz>
-Date: Sat, 04 Mar 2017 23:49:44 +1100
-Message-ID: <877f45cil2.fsf@concordia.ellerman.id.au>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:2308 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993423AbdCDNKNvp0sM (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 4 Mar 2017 14:10:13 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH] serial: 8250_dw: Fix breakage when HAVE_CLK=n
+Date: Sat, 4 Mar 2017 13:09:58 +0000
+Message-ID: <20170304130958.23655-1-james.hogan@imgtec.com>
+In-Reply-To: <CAHp75Ved2h2WyWBokEOsDmAyB3w3iM=uh-9Bq01mU1ST4FapWQ@mail.gmail.com>
+References: <CAHp75Ved2h2WyWBokEOsDmAyB3w3iM=uh-9Bq01mU1ST4FapWQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <mpe@ellerman.id.au>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,22 +20,70 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Jiri Slaby <jslaby@suse.cz>, akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, C hris Metcalf <cmetcalf@mellanox.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>, x86@kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@linux-mips.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-Message-ID: <20170304124944.8tavTOjeuAUHS1L_RL91jyJqZRBGJWkOtz3sc8GBESY@z>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Jason Uy <jason.uy@broadcom.com>, Kefeng Wang <wangkefeng.wang@huawei.com>, Heiko Stuebner <heiko@sntech.de>, David Daney <david.daney@cavium.com>, Russell King <linux@armlinux.org.uk>, linux-serial@vger.kernel.org, linux-clk@vger.kernel.org, linux-mips@linux-mips.org, bcm-kernel-feedback-list@broadcom.com
+Message-ID: <20170304130958.W-Nh0b2Gi_wT2mAIHoSqb9h4xDdk1lYiAzKZVBOYiPU@z>
 
-Jiri Slaby <jslaby@suse.cz> writes:
+Commit 6a171b299379 ("serial: 8250_dw: Allow hardware flow control to be
+used") recently broke the 8250_dw driver on platforms which don't select
+HAVE_CLK, as dw8250_set_termios() gets confused by the behaviour of the
+fallback HAVE_CLK=n clock API in linux/clk.h which pretends everything
+is fine but returns (valid) NULL clocks and 0 HZ clock rates.
 
-> There is code duplicated over all architecture's headers for
-> futex_atomic_op_inuser. Namely op decoding, access_ok check for uaddr,
-> and comparison of the result.
->
-> Remove this duplication and leave up to the arches only the needed
-> assembly which is now in arch_futex_atomic_op_inuser.
+That 0 rate is written into the uartclk resulting in a crash at boot,
+e.g. on Cavium Octeon III based UTM-8 we get something like this:
 
-Looks OK and boots on powerpc. But I don't think anything's actually
-calling those futex ops. Is there a test suite I should run?
+1180000000800.serial: ttyS0 at MMIO 0x1180000000800 (irq = 41, base_baud = 25000000) is a OCTEON
+------------[ cut here ]------------
+WARNING: CPU: 2 PID: 1 at drivers/tty/serial/serial_core.c:441 uart_get_baud_rate+0xfc/0x1f0
+...
+Call Trace:
+...
+[<ffffffff8149c2e4>] uart_get_baud_rate+0xfc/0x1f0
+[<ffffffff814a5098>] serial8250_do_set_termios+0xb0/0x440
+[<ffffffff8149c710>] uart_set_options+0xe8/0x190
+[<ffffffff814a6cdc>] serial8250_console_setup+0x84/0x158
+[<ffffffff814a11ec>] univ8250_console_setup+0x54/0x70
+[<ffffffff811901a0>] register_console+0x1c8/0x418
+[<ffffffff8149f004>] uart_add_one_port+0x434/0x4b0
+[<ffffffff814a1af8>] serial8250_register_8250_port+0x2d8/0x440
+[<ffffffff814aa620>] dw8250_probe+0x388/0x5e8
+...
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+The clock API is defined such that NULL is a valid clock handle so it
+wouldn't be right to check explicitly for NULL. Instead treat a
+clk_round_rate() return value of 0 as an error which prevents uartclk
+being overwritten.
 
-cheers
+Fixes: 6a171b299379 ("serial: 8250_dw: Allow hardware flow control to be used")
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Jason Uy <jason.uy@broadcom.com>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Heiko Stuebner <heiko@sntech.de>
+Cc: David Daney <david.daney@cavium.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: linux-serial@vger.kernel.org
+Cc: linux-clk@vger.kernel.org
+Cc: linux-mips@linux-mips.org
+Cc: bcm-kernel-feedback-list@broadcom.com
+---
+ drivers/tty/serial/8250/8250_dw.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
+index 223ac234ddb2..e65808c482f1 100644
+--- a/drivers/tty/serial/8250/8250_dw.c
++++ b/drivers/tty/serial/8250/8250_dw.c
+@@ -267,6 +267,8 @@ static void dw8250_set_termios(struct uart_port *p, struct ktermios *termios,
+ 	rate = clk_round_rate(d->clk, baud * 16);
+ 	if (rate < 0)
+ 		ret = rate;
++	else if (rate == 0)
++		ret = -ENOENT;
+ 	else
+ 		ret = clk_set_rate(d->clk, rate);
+ 	clk_prepare_enable(d->clk);
+-- 
+2.11.1

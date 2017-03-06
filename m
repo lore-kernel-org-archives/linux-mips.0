@@ -1,18 +1,20 @@
-Received: from mail1.windriver.com ([147.11.146.13]:57256 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23990514AbdCFH7chTF0d (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 6 Mar 2017 08:59:32 +0100
-Subject: Re: [PATCH] MIPS: reset all task's asid to 0 after asid_cache(cpu)
- overflows
-References: <80B78A8B8FEE6145A87579E8435D78C307943B56@FZEX3.ruijie.com.cn>
-From: jsun4 <Jiwei.Sun@windriver.com>
-Message-ID: <58BD170A.3080302@windriver.com>
-Date: Mon, 6 Mar 2017 16:00:10 +0800
+Received: from mailapp01.imgtec.com ([195.59.15.196]:48175 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23990517AbdCFKQK2woT0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 6 Mar 2017 11:16:10 +0100
+Date: Mon, 6 Mar 2017 10:16:04 +0000
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH] serial: 8250_dw: Fix breakage when HAVE_CLK=n
+Message-ID: <20170306101603.GW996@jhogan-linux.le.imgtec.org>
+References: <CAHp75Ved2h2WyWBokEOsDmAyB3w3iM=uh-9Bq01mU1ST4FapWQ@mail.gmail.com>
+ <20170304130958.23655-1-james.hogan@imgtec.com>
+ <CAHp75Vc=VmxvkqjP7nY6K4CKXBJC-NND0CUMbzwjV2nmQ-5OTw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <80B78A8B8FEE6145A87579E8435D78C307943B56@FZEX3.ruijie.com.cn>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Jiwei.Sun@windriver.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6h64vBu9tReNbGLX"
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vc=VmxvkqjP7nY6K4CKXBJC-NND0CUMbzwjV2nmQ-5OTw@mail.gmail.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,85 +24,85 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: yhb@ruijie.com.cn
-Cc: linux-mips@linux-mips.org
-Message-ID: <20170306080010.xReRyq1hSWGCvoUxjO6tbFl1JaAAYyRsuFdkz7DI4cU@z>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Jason Uy <jason.uy@broadcom.com>, Kefeng Wang <wangkefeng.wang@huawei.com>, Heiko Stuebner <heiko@sntech.de>, David Daney <david.daney@cavium.com>, Russell King <linux@armlinux.org.uk>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, linux-clk@vger.kernel.org, linux-mips@linux-mips.org, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
+Message-ID: <20170306101604.8ove68p6cL13_lD6SsmOHWVThtJXmpyBsddZpMwfK6g@z>
 
-Hello yhb,
+--6h64vBu9tReNbGLX
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for your reply and review.
+On Sat, Mar 04, 2017 at 04:37:17PM +0200, Andy Shevchenko wrote:
+> On Sat, Mar 4, 2017 at 3:09 PM, James Hogan <james.hogan@imgtec.com> wrot=
+e:
+> > Commit 6a171b299379 ("serial: 8250_dw: Allow hardware flow control to be
+> > used") recently broke the 8250_dw driver on platforms which don't select
+> > HAVE_CLK, as dw8250_set_termios() gets confused by the behaviour of the
+> > fallback HAVE_CLK=3Dn clock API in linux/clk.h which pretends everything
+> > is fine but returns (valid) NULL clocks and 0 HZ clock rates.
+> >
+> > That 0 rate is written into the uartclk resulting in a crash at boot,
+> > e.g. on Cavium Octeon III based UTM-8 we get something like this:
+> >
+> > 1180000000800.serial: ttyS0 at MMIO 0x1180000000800 (irq =3D 41, base_b=
+aud =3D 25000000) is a OCTEON
+> > ------------[ cut here ]------------
+> > WARNING: CPU: 2 PID: 1 at drivers/tty/serial/serial_core.c:441 uart_get=
+_baud_rate+0xfc/0x1f0
+> > ...
+> > Call Trace:
+> > ...
+> > [<ffffffff8149c2e4>] uart_get_baud_rate+0xfc/0x1f0
+> > [<ffffffff814a5098>] serial8250_do_set_termios+0xb0/0x440
+> > [<ffffffff8149c710>] uart_set_options+0xe8/0x190
+> > [<ffffffff814a6cdc>] serial8250_console_setup+0x84/0x158
+> > [<ffffffff814a11ec>] univ8250_console_setup+0x54/0x70
+> > [<ffffffff811901a0>] register_console+0x1c8/0x418
+> > [<ffffffff8149f004>] uart_add_one_port+0x434/0x4b0
+> > [<ffffffff814a1af8>] serial8250_register_8250_port+0x2d8/0x440
+> > [<ffffffff814aa620>] dw8250_probe+0x388/0x5e8
+> > ...
+> >
+> > The clock API is defined such that NULL is a valid clock handle so it
+> > wouldn't be right to check explicitly for NULL. Instead treat a
+> > clk_round_rate() return value of 0 as an error which prevents uartclk
+> > being overwritten.
+> >
+>=20
+> You forgot to add that it is dependent to Heiko's patch
+> http://www.spinics.net/lists/linux-serial/msg25314.html
 
-On 03/06/2017 10:44 AM, yhb@ruijie.com.cn wrote:
-> +		if (!asid) {		/* fix version if needed */
-> +			struct task_struct *p;
-> +
-> +			for_each_process(p) {
-> +				if ((p->mm))
-> +					cpu_context(cpu, p->mm) = 0;
-> +			}
->   It is not safe. When the processor is executing these codes, another processor is freeing task_struct, setting p->mm to NULL, and freeing mm_struct.
+Indeed I did. Sorry about that.
 
-Yes, I overlooked this point. There are else code in order to resolve this question,
+>=20
+> Patch looks good to me and shouldn't bring any regression to Intel
+> hardware (x86 is using clock framework).
+>=20
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-diff --git a/arch/mips/include/asm/mmu_context.h b/arch/mips/include/asm/mmu_context.h
-index 2abf94f..b1c0911 100644
---- a/arch/mips/include/asm/mmu_context.h
-+++ b/arch/mips/include/asm/mmu_context.h
-@@ -105,8 +105,20 @@ static inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
-		if (cpu_has_vtag_icache)
-			flush_icache_all();
-		local_flush_tlb_all(); /* start new asid cycle */
--	 	if (!asid) /* fix version if needed */
-+		if (!asid) { /* fix version if needed */
-+	 		struct task_struct *p;
-+
-+		 	read_lock(&tasklist_lock);
-+ 			for_each_process(p) {
-+ 				task_lock(p);
-+ 				if (p->mm)
-+ 					cpu_context(cpu, p->mm) = 0;
-+ 				task_unlock(p);
-+ 			}
-+	 		read_unlock(&tasklist_lock);
-+
-+			asid = asid_first_version(cpu);
-+ 		}
-	}
+Thanks
+James
 
-Because before another processor frees mm_struct, it will get the lock p->alloc_lock.
-543 /* more a memory barrier than a real lock */
-544 task_lock(current);
-545 current->mm = NULL;
-546 up_read(&mm->mmap_sem);
-547 enter_lazy_tlb(mm, current);
-548 task_unlock(current);
+--6h64vBu9tReNbGLX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
->   I committed a patch to solve this problem.Please see https://patchwork.linux-mips.org/patch/13789/.
-> 
-I saw the patch that you list in the link.
-Why did you add a list and a lot of else codes(else arch and mm/, kernel/) to resolve this
-risk that is difficult to hit? I don't think this is a good idea.
-And in clear_other_mmu_contexts()
-+	static inline void clear_other_mmu_contexts(struct mm_struct *mm,
-+ 	unsigned long cpu)
-+	{
-+ 		unsigned long flags;
-+ 		struct mm_struct *p;
-+
-+ 		spin_lock_irqsave(&mmlink_lock, flags);
-+ 		list_for_each_entry(p, &mmlist, mmlink) {
-+ 			if ((p != mm) && cpu_context(cpu, p))
+-----BEGIN PGP SIGNATURE-----
 
-"(p != mm)" is not essential, because cpu_context(cpu, mm) will be changed to asid_first_version(cpu) in
-get_new_mmu_context(struct mm_struct *mm, unsigned long cpu), and it is inefficient.
-And "cpu_context(cpu, p)" is not essential too, I think. 
+iQIcBAEBCAAGBQJYvTbQAAoJEGwLaZPeOHZ6PR0P/Ri3CSMyjhXUgiu1LIRrGyyp
+QZIEbmylYFH5egbu1IFmK7J0+h8hT0PikUDtcEGxsVVXqS8EL7CkIuoo1IMJcVeV
+Zsbb2B/qxiezbjwyFOjucyE7ilxxu37fmsDBKMOUoZFvTrfc9HMfHKZBIEAGlNc3
+93pEEdv9f6gKk8B8wGLLuRDkCdTxyQv3RoCp6TNo7X+qJMnmYpk/RRTPBFd/aUft
+s/ziHb5WIJWTiY4bwVBI2Atr51inx61IU8uUDJahAJClFYOhMb2OgOfaO1jofPBP
+c14bDcbDUlvGisfvBOLxMB2/MTO4mtRrksEQ7TlqA4NacRncR6yjjndmfgbKvuU1
+IlamLaknN667/7Aefb5OuiLdArRH+Wy0+DTlAXEnQYG1jKYPg3h5xYiR1ynUFmux
+CaJFa0zwjf6O2cIt8qlJpzObfs7E6i3jUkXxiqLJjfyOrL8intPFgf9ckYQIadNG
+IpGk1V9gJwe99EjpQNndI8GApYSDHuehffA2Hzjvc7IRCl5eiC3m/AD2mMYp82h9
+300ufzUcZYu0nnHLh0bM30CohxNp3gA5GP75n5JnvIflid7+EB5gFGPohhCiUMqw
+/i8fWPQXIYxNG9Q1tfRSM7oDQ4qDpBp4Ri4VPdloIzioqg7HFKr/STcCfbaWca0I
+zWohi2YkPlD6NQ3Abe8H
+=ebpd
+-----END PGP SIGNATURE-----
 
-+ 				cpu_context(cpu, p) = 0;
-+ 		}
-+ 		spin_unlock_irqrestore(&mmlink_lock, flags);
-+	}
-+
-
-Thanks,
-Best regards,
-Jiwei
+--6h64vBu9tReNbGLX--

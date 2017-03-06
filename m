@@ -1,14 +1,17 @@
-Received: from mail5.windriver.com ([192.103.53.11]:57350 "EHLO mail5.wrs.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23990600AbdCEDXp4sFmt (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 5 Mar 2017 04:23:45 +0100
-From: Jiwei Sun <jiwei.sun@windriver.com>
-Subject: [PATCH] MIPS: reset all task's asid to 0 after asid_cache(cpu) overflows
-Date: Sun, 5 Mar 2017 11:24:20 +0800
-Message-ID: <1488684260-18867-1-git-send-email-jiwei.sun@windriver.com>
+Received: from fzex.ruijie.com.cn ([120.35.11.201]:22658 "EHLO
+        FZEX4.ruijie.com.cn" rhost-flags-OK-FAIL-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992155AbdCFCokjcN6M (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 6 Mar 2017 03:44:40 +0100
+From: <yhb@ruijie.com.cn>
+Subject: Re: [PATCH] MIPS: reset all task's asid to 0 after asid_cache(cpu)
+ overflows
+Date: Mon, 6 Mar 2017 02:44:27 +0000
+Message-ID: <80B78A8B8FEE6145A87579E8435D78C307943B56@FZEX3.ruijie.com.cn>
+Content-Language: zh-CN
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Jiwei.Sun@windriver.com>
+Return-Path: <yhb@ruijie.com.cn>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,61 +21,15 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org, paul.burton@imgtec.com, james.hogan@imgtec.com
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, jiwei.sun.bj@qq.com
-Message-ID: <20170305032420.3eCRqnzIk4ZSyNHPrNYrD7B3tmrLFIR80YnSQsJMNYs@z>
+To: jiwei.sun@windriver.com
+Cc: linux-mips@linux-mips.org
+Message-ID: <20170306024427.pEzKTqaKIqy9ZuZbbsiEJnayM2QNQOIU9tOIayNJv6g@z>
 
-If asid_cache(cpu) overflows, there may be two tasks with the same
-asid. It is a risk that the two different tasks may have the same
-address space.
-
-A process will update its asid to newer version only when switch_mm()
-is called and matches the following condition:
-    if ((cpu_context(cpu, next) ^ asid_cache(cpu))
-                    & asid_version_mask(cpu))
-            get_new_mmu_context(next, cpu);
-If asid_cache(cpu) overflows, cpu_context(cpu,next) and asid_cache(cpu)
-will be reset to asid_first_version(cpu), and start a new cycle. It
-can result in two tasks that have the same ASID in the process list.
-
-For example, in CONFIG_CPU_MIPS32_R2, task named A's asid on CPU1 is
-0x100, and has been sleeping and been not scheduled. After a long period
-of time, another running task named B's asid on CPU1 is 0xffffffff, and
-asid cached in the CPU1 is 0xffffffff too, next task named C is forked,
-when schedule from B to C on CPU1, asid_cache(cpu) will overflow, so C's
-asid on CPU1 will be 0x100 according to get_new_mmu_context(). A's asid
-is the same as C, if now A is rescheduled on CPU1, A's asid is not able
-to renew according to 'if' clause, and the local TLB entry can't be
-flushed too, A's address space will be the same as C.
-
-If asid_cache(cpu) overflows, all of user space task's asid on this CPU
-are able to set a invalid value (such as 0), it will avoid the risk.
-
-Signed-off-by: Jiwei Sun <jiwei.sun@windriver.com>
----
- arch/mips/include/asm/mmu_context.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/arch/mips/include/asm/mmu_context.h b/arch/mips/include/asm/mmu_context.h
-index ddd57ad..1f60efc 100644
---- a/arch/mips/include/asm/mmu_context.h
-+++ b/arch/mips/include/asm/mmu_context.h
-@@ -108,8 +108,15 @@ static inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
- #else
- 		local_flush_tlb_all();	/* start new asid cycle */
- #endif
--		if (!asid)		/* fix version if needed */
-+		if (!asid) {		/* fix version if needed */
-+			struct task_struct *p;
-+
-+			for_each_process(p) {
-+				if ((p->mm))
-+					cpu_context(cpu, p->mm) = 0;
-+			}
- 			asid = asid_first_version(cpu);
-+		}
- 	}
- 
- 	cpu_context(cpu, mm) = asid_cache(cpu) = asid;
--- 
-1.9.1
+KwkJaWYgKCFhc2lkKSB7CQkvKiBmaXggdmVyc2lvbiBpZiBuZWVkZWQgKi8NCisJCQlzdHJ1Y3Qg
+dGFza19zdHJ1Y3QgKnA7DQorDQorCQkJZm9yX2VhY2hfcHJvY2VzcyhwKSB7DQorCQkJCWlmICgo
+cC0+bW0pKQ0KKwkJCQkJY3B1X2NvbnRleHQoY3B1LCBwLT5tbSkgPSAwOw0KKwkJCX0NCiAgSXQg
+aXMgbm90IHNhZmUuIFdoZW4gdGhlIHByb2Nlc3NvciBpcyBleGVjdXRpbmcgdGhlc2UgY29kZXMs
+IGFub3RoZXIgcHJvY2Vzc29yIGlzIGZyZWVpbmcgdGFza19zdHJ1Y3QsIHNldHRpbmcgcC0+bW0g
+dG8gTlVMTCwgYW5kIGZyZWVpbmcgbW1fc3RydWN0Lg0KICBJIGNvbW1pdHRlZCBhIHBhdGNoIHRv
+IHNvbHZlIHRoaXMgcHJvYmxlbS5QbGVhc2Ugc2VlIGh0dHBzOi8vcGF0Y2h3b3JrLmxpbnV4LW1p
+cHMub3JnL3BhdGNoLzEzNzg5Ly4NCg0K

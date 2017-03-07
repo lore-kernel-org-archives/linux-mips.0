@@ -1,17 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:28196 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:2421 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23993886AbdCFXU12Vd3r (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 7 Mar 2017 00:20:27 +0100
-Date: Mon, 6 Mar 2017 23:20:20 +0000
+        by eddie.linux-mips.org with ESMTP id S23990720AbdCGJdtikMbH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 7 Mar 2017 10:33:49 +0100
+Date: Tue, 7 Mar 2017 09:33:40 +0000
 From: James Hogan <james.hogan@imgtec.com>
 Subject: Re: [PATCH v3] MIPS: Fix build breakage caused by header file changes
-Message-ID: <20170306232019.GG2878@jhogan-linux.le.imgtec.org>
+Message-ID: <20170307093339.GC996@jhogan-linux.le.imgtec.org>
 References: <1488827635-7708-1-git-send-email-linux@roeck-us.net>
+ <20170306232019.GG2878@jhogan-linux.le.imgtec.org>
+ <146eef7a-44dd-48ff-3f09-0b342d844bd6@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="yZnyZsPjQYjG7xG7"
+        protocol="application/pgp-signature"; boundary="ITEy4z2kE7rjCDPK"
 Content-Disposition: inline
-In-Reply-To: <1488827635-7708-1-git-send-email-linux@roeck-us.net>
+In-Reply-To: <146eef7a-44dd-48ff-3f09-0b342d844bd6@roeck-us.net>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -24,198 +26,75 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Guenter Roeck <linux@roeck-us.net>
 Cc: Ralf Baechle <ralf@linux-mips.org>, Herbert Xu <herbert@gondor.apana.org.au>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
-Message-ID: <20170306232020.4ivptw8uo2zg3nNbScbH5_VtxSm37P3lFlpm5F6Q49k@z>
+Message-ID: <20170307093340.AT763P2cjDnxE5Jp99_THFsV9Q0fLqzyypiK6Nc5OTQ@z>
 
---yZnyZsPjQYjG7xG7
+--ITEy4z2kE7rjCDPK
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Guenter,
-
-On Mon, Mar 06, 2017 at 11:13:55AM -0800, Guenter Roeck wrote:
-> Since commit f3ac60671954 ("sched/headers: Move task-stack related
-> APIs from <linux/sched.h> to <linux/sched/task_stack.h>") and commit
-> f780d89a0e82 ("sched/headers: Remove <asm/ptrace.h> from
-> <linux/sched.h>"), various mips builds fail as follows.
+On Mon, Mar 06, 2017 at 07:30:05PM -0800, Guenter Roeck wrote:
+> On 03/06/2017 03:20 PM, James Hogan wrote:
+> > On Mon, Mar 06, 2017 at 11:13:55AM -0800, Guenter Roeck wrote:
+> >> Since commit f3ac60671954 ("sched/headers: Move task-stack related
+> >> APIs from <linux/sched.h> to <linux/sched/task_stack.h>") and commit
+> >> f780d89a0e82 ("sched/headers: Remove <asm/ptrace.h> from
+> >> <linux/sched.h>"), various mips builds fail as follows.
+> >>
+> >> arch/mips/kernel/smp-mt.c: In function =E2=80=98vsmp_boot_secondary=E2=
+=80=99:
+> >> arch/mips/include/asm/processor.h:384:41: error:
+> >> 	implicit declaration of function =E2=80=98task_stack_page=E2=80=99
+> >>
+> >> In file included from
+> >> 	/opt/buildbot/slave/hwmon-testing/build/arch/mips/kernel/pm.c:
+> >> arch/mips/include/asm/fpu.h: In function '__own_fpu':
+> >> arch/mips/include/asm/processor.h:385:31: error:
+> >> 	invalid application of 'sizeof' to incomplete type 'struct pt_regs'
+> >
+> > This one is in an inline function, so I think it'd affect multiple
+> > includes of <asm/fpu.h> even if __own_fpu isn't used, so I think the
+> > following patch which adds the include ptrace.h in fpu.h is more robust
+> > than adding to the individual c files affected:
+> > https://patchwork.linux-mips.org/patch/15386/
+> >
+> Agreed.
 >=20
-> arch/mips/kernel/smp-mt.c: In function =E2=80=98vsmp_boot_secondary=E2=80=
-=99:
-> arch/mips/include/asm/processor.h:384:41: error:
-> 	implicit declaration of function =E2=80=98task_stack_page=E2=80=99
+> > Admitedly it could probably have a more specific subject line since
+> > there are more similar errors.
 >=20
-> In file included from
-> 	/opt/buildbot/slave/hwmon-testing/build/arch/mips/kernel/pm.c:
-> arch/mips/include/asm/fpu.h: In function '__own_fpu':
-> arch/mips/include/asm/processor.h:385:31: error:
-> 	invalid application of 'sizeof' to incomplete type 'struct pt_regs'
+> Does that fix all compile problems ? Seems to me that we'll still need
+>=20
+> -#include <linux/sched.h>
+> +#include <linux/sched/task_stack.h>
+>=20
+> or did you prepare a patch for this as well ?
 
-This one is in an inline function, so I think it'd affect multiple
-includes of <asm/fpu.h> even if __own_fpu isn't used, so I think the
-following patch which adds the include ptrace.h in fpu.h is more robust
-than adding to the individual c files affected:
-https://patchwork.linux-mips.org/patch/15386/
-
-Admitedly it could probably have a more specific subject line since
-there are more similar errors.
+It fixed the config I was using at the time. I didn't do a full build
+test of all configs at the time so didn't fix the above.
 
 Cheers
 James
 
->=20
-> arch/mips/netlogic/common/smp.c: In function 'nlm_boot_secondary':
-> arch/mips/netlogic/common/smp.c:157:2: error:
-> 	implicit declaration of function 'task_stack_page'
->=20
-> and more similar errors.
->=20
-> Fixes: f3ac60671954 ("sched/headers: Move task-stack related APIs ...")
-> Fixes: f780d89a0e82 ("sched/headers: Remove <asm/ptrace.h> from ...")
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> v3: Catch more build errors
->=20
->  arch/mips/cavium-octeon/cpu.c                  | 3 ++-
->  arch/mips/cavium-octeon/crypto/octeon-crypto.c | 1 +
->  arch/mips/cavium-octeon/smp.c                  | 2 +-
->  arch/mips/kernel/pm.c                          | 1 +
->  arch/mips/kernel/smp-mt.c                      | 2 +-
->  arch/mips/netlogic/common/smp.c                | 1 +
->  arch/mips/netlogic/xlp/cop2-ex.c               | 3 ++-
->  arch/mips/power/cpu.c                          | 1 +
->  8 files changed, 10 insertions(+), 4 deletions(-)
->=20
-> diff --git a/arch/mips/cavium-octeon/cpu.c b/arch/mips/cavium-octeon/cpu.c
-> index a5b427909b5c..b826b7a87c57 100644
-> --- a/arch/mips/cavium-octeon/cpu.c
-> +++ b/arch/mips/cavium-octeon/cpu.c
-> @@ -10,7 +10,8 @@
->  #include <linux/irqflags.h>
->  #include <linux/notifier.h>
->  #include <linux/prefetch.h>
-> -#include <linux/sched.h>
-> +#include <linux/ptrace.h>
-> +#include <linux/sched/task_stack.h>
-> =20
->  #include <asm/cop2.h>
->  #include <asm/current.h>
-> diff --git a/arch/mips/cavium-octeon/crypto/octeon-crypto.c b/arch/mips/c=
-avium-octeon/crypto/octeon-crypto.c
-> index 4d22365844af..cfb4a146cf17 100644
-> --- a/arch/mips/cavium-octeon/crypto/octeon-crypto.c
-> +++ b/arch/mips/cavium-octeon/crypto/octeon-crypto.c
-> @@ -9,6 +9,7 @@
->  #include <asm/cop2.h>
->  #include <linux/export.h>
->  #include <linux/interrupt.h>
-> +#include <linux/sched/task_stack.h>
-> =20
->  #include "octeon-crypto.h"
-> =20
-> diff --git a/arch/mips/cavium-octeon/smp.c b/arch/mips/cavium-octeon/smp.c
-> index 4b94b7fbafa3..d475c0146347 100644
-> --- a/arch/mips/cavium-octeon/smp.c
-> +++ b/arch/mips/cavium-octeon/smp.c
-> @@ -10,8 +10,8 @@
->  #include <linux/smp.h>
->  #include <linux/interrupt.h>
->  #include <linux/kernel_stat.h>
-> -#include <linux/sched.h>
->  #include <linux/sched/hotplug.h>
-> +#include <linux/sched/task_stack.h>
->  #include <linux/init.h>
->  #include <linux/export.h>
-> =20
-> diff --git a/arch/mips/kernel/pm.c b/arch/mips/kernel/pm.c
-> index dc814892133c..fab05022ab39 100644
-> --- a/arch/mips/kernel/pm.c
-> +++ b/arch/mips/kernel/pm.c
-> @@ -11,6 +11,7 @@
-> =20
->  #include <linux/cpu_pm.h>
->  #include <linux/init.h>
-> +#include <linux/ptrace.h>
-> =20
->  #include <asm/dsp.h>
->  #include <asm/fpu.h>
-> diff --git a/arch/mips/kernel/smp-mt.c b/arch/mips/kernel/smp-mt.c
-> index e077ea3e11fb..effc1ed18954 100644
-> --- a/arch/mips/kernel/smp-mt.c
-> +++ b/arch/mips/kernel/smp-mt.c
-> @@ -18,7 +18,7 @@
->   * Copyright (C) 2006 Ralf Baechle (ralf@linux-mips.org)
->   */
->  #include <linux/kernel.h>
-> -#include <linux/sched.h>
-> +#include <linux/sched/task_stack.h>
->  #include <linux/cpumask.h>
->  #include <linux/interrupt.h>
->  #include <linux/irqchip/mips-gic.h>
-> diff --git a/arch/mips/netlogic/common/smp.c b/arch/mips/netlogic/common/=
-smp.c
-> index 10d86d54880a..9035558920c1 100644
-> --- a/arch/mips/netlogic/common/smp.c
-> +++ b/arch/mips/netlogic/common/smp.c
-> @@ -37,6 +37,7 @@
->  #include <linux/init.h>
->  #include <linux/smp.h>
->  #include <linux/irq.h>
-> +#include <linux/sched/task_stack.h>
-> =20
->  #include <asm/mmu_context.h>
-> =20
-> diff --git a/arch/mips/netlogic/xlp/cop2-ex.c b/arch/mips/netlogic/xlp/co=
-p2-ex.c
-> index 52bc5de42005..d990b7fc84aa 100644
-> --- a/arch/mips/netlogic/xlp/cop2-ex.c
-> +++ b/arch/mips/netlogic/xlp/cop2-ex.c
-> @@ -13,7 +13,8 @@
->  #include <linux/irqflags.h>
->  #include <linux/notifier.h>
->  #include <linux/prefetch.h>
-> -#include <linux/sched.h>
-> +#include <linux/ptrace.h>
-> +#include <linux/sched/task_stack.h>
-> =20
->  #include <asm/cop2.h>
->  #include <asm/current.h>
-> diff --git a/arch/mips/power/cpu.c b/arch/mips/power/cpu.c
-> index 2129e67723ff..6ecccc26bf7f 100644
-> --- a/arch/mips/power/cpu.c
-> +++ b/arch/mips/power/cpu.c
-> @@ -7,6 +7,7 @@
->   * Author: Hu Hongbing <huhb@lemote.com>
->   *	   Wu Zhangjin <wuzhangjin@gmail.com>
->   */
-> +#include <linux/ptrace.h>
->  #include <asm/sections.h>
->  #include <asm/fpu.h>
->  #include <asm/dsp.h>
-> --=20
-> 2.7.4
->=20
->=20
-
---yZnyZsPjQYjG7xG7
+--ITEy4z2kE7rjCDPK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJYve6zAAoJEGwLaZPeOHZ6oNwQALQSrLL6zvv8KKSmyGrPAwmj
-/saYz2fpM85GmGQILkTUM3aAs9NSEXHhImk0584nwWHw8INnckNvEqEqdRqDuRcT
-PAZQGdCrvXh5rL65LPWpU66G+c/ZxWJNGfJl7yPFpNJOhe8IY5Vpsp+VvOXg1uGY
-awu2ufZkQ3nZ/0pOd+/IwE8s+oji7U/d91aBnKsiRhbuL/CZtk9RhTzjyII31DjM
-meEt478vn7GkEgDweQlKy4UiHaE6Odm+ag1q2UWBORMHpHF6lI+9krTv7it5D98V
-fQljMD6cXmfl8ERMaTbnpgme0HIXX4jRayoZJXUKtmNz0Jub5WPfO0qL4+KRoUYN
-HG/Ca9v7UYvFXV9CkfDAl6cxYM5+RNWljblD7Q1/cmPiGpfQl+0IOKjHznWYQ5vB
-rNTsgULIyfoIi6KfI7TrU5opLqGznBTf4pki07JQM0lhKLd0hkVLLnNIL+DSumZM
-xBu3C4omo6E0rP8AzdPPysW7BX0+8cxv/0DYW9Y2ziueDsCzFL/L3pImG0hb+Y+0
-9Gu3UPC+EYxzMBV8/dCaIHUx9FjC6bMObtoJpRfhdHcP5PhZs11N8GffEFSxfojW
-HOSH/zZMWfDc2r5TYjjEtszpEDLnPUzAV6XR+snbQvkUkfE1llm+rY6d3xTjVNHw
-41e9XEeVI0EG4LT2kCse
-=tVu/
+iQIcBAEBCAAGBQJYvn5zAAoJEGwLaZPeOHZ6OIYQAIjfncWCgMZcVUAwzUhZRsRe
+BTDF2GVodln+VQ/bTNgA/vOarAHbJ0rYiPrlVWCgXmqpuKHSNkKN6vd+lgtxCAE8
+K36XMfhaS+4dCB1Vzec0CVZVAEXNbkz33oQXi1F9+5crKZ+KTbjEqQdedVCXUOiK
+D3bjvQ/dY1KRMwgvoZdjY2auS1cZYhiHb0Ojskbc3/H7xXAS0IXRMT9d3FHsq9TU
+y214UFld//wgrqpcWjUxlN1FbxvHTFYcPN77DE9LfY/dTxlYpwJX9XFip5Dxi3EJ
+uLx4raQmk55g7/bhpnYQusoN4xk1bUhl//FOQ0zo1Yd83UASAplwSTvhTcreJFSI
+1XcxVwWoZnHxxPBwlNdK0jTdv8phwaaJVnHCY5zOQ/cuf3ocsmdiQ+hRiJxKo+PH
+L8XdP5z7XnwvIucKrKV7iURCM6qoVl6qe7LmJtmBwhsMW2u15hgFDUdrE8GLRxng
+DEkjQuKygLssZNIovoszVVKImjCs5jokmGHz1tFAJSdM+8zanhJfU8L0Elv/BsWi
+iMayyB2k1SHtgk/LdT2Ahxwlace8reNjbBZgC5CfWjZ3HSZIO1OIydBwPQ4QTs9F
+ibQFsJPmGRtft7M3rXNLS5VYCrosM6kP1NBsq0X5vt3LtnJxxmmTFDlwIR8TXWJU
+DpEcmpoBs9OU6D8kxWF4
+=mM3q
 -----END PGP SIGNATURE-----
 
---yZnyZsPjQYjG7xG7--
+--ITEy4z2kE7rjCDPK--

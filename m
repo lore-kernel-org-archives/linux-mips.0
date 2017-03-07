@@ -1,21 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:14676 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23991172AbdCGKbmwMz22 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 7 Mar 2017 11:31:42 +0100
-Date: Tue, 7 Mar 2017 10:31:36 +0000
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH v3] MIPS: Fix build breakage caused by header file changes
-Message-ID: <20170307103136.GH2878@jhogan-linux.le.imgtec.org>
-References: <1488827635-7708-1-git-send-email-linux@roeck-us.net>
- <20170306232019.GG2878@jhogan-linux.le.imgtec.org>
- <146eef7a-44dd-48ff-3f09-0b342d844bd6@roeck-us.net>
- <20170307093339.GC996@jhogan-linux.le.imgtec.org>
+Received: from mail.windriver.com ([147.11.1.11]:43824 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23991359AbdCGMGHhJyPd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 7 Mar 2017 13:06:07 +0100
+Subject: Re: [PATCH] MIPS: reset all task's asid to 0 after asid_cache(cpu)
+ overflows
+References: <1488684260-18867-1-git-send-email-jiwei.sun@windriver.com>
+ <6054d364-5095-d13b-ebf8-a7b6bf8b2024@cogentembedded.com>
+ <58BD0E0A.9000402@windriver.com>
+ <702ff6e3-9bc7-755b-56ec-86394d959230@cogentembedded.com>
+From: Jiwei Sun <Jiwei.Sun@windriver.com>
+Message-ID: <58BEA251.9070200@windriver.com>
+Date: Tue, 7 Mar 2017 20:06:41 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="U3BNvdZEnlJXqmh+"
-Content-Disposition: inline
-In-Reply-To: <20170307093339.GC996@jhogan-linux.le.imgtec.org>
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <702ff6e3-9bc7-755b-56ec-86394d959230@cogentembedded.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-Path: <Jiwei.Sun@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,92 +25,83 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Herbert Xu <herbert@gondor.apana.org.au>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
-Message-ID: <20170307103136.brj1y-4Ce9I7UGP-UxzxGljolQzWGEn6H20bVwjFDU4@z>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, jiwei.sun.bj@qq.com
+Message-ID: <20170307120641.hcm1CDuKMIBivhQgFoIFpxt5S4ocxuyrcnpjxXx-mEc@z>
 
---U3BNvdZEnlJXqmh+
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Guenter,
 
-On Tue, Mar 07, 2017 at 09:33:40AM +0000, James Hogan wrote:
-> On Mon, Mar 06, 2017 at 07:30:05PM -0800, Guenter Roeck wrote:
-> > On 03/06/2017 03:20 PM, James Hogan wrote:
-> > > On Mon, Mar 06, 2017 at 11:13:55AM -0800, Guenter Roeck wrote:
-> > >> Since commit f3ac60671954 ("sched/headers: Move task-stack related
-> > >> APIs from <linux/sched.h> to <linux/sched/task_stack.h>") and commit
-> > >> f780d89a0e82 ("sched/headers: Remove <asm/ptrace.h> from
-> > >> <linux/sched.h>"), various mips builds fail as follows.
-> > >>
-> > >> arch/mips/kernel/smp-mt.c: In function =E2=80=98vsmp_boot_secondary=
-=E2=80=99:
-> > >> arch/mips/include/asm/processor.h:384:41: error:
-> > >> 	implicit declaration of function =E2=80=98task_stack_page=E2=80=99
-> > >>
-> > >> In file included from
-> > >> 	/opt/buildbot/slave/hwmon-testing/build/arch/mips/kernel/pm.c:
-> > >> arch/mips/include/asm/fpu.h: In function '__own_fpu':
-> > >> arch/mips/include/asm/processor.h:385:31: error:
-> > >> 	invalid application of 'sizeof' to incomplete type 'struct pt_regs'
-> > >
-> > > This one is in an inline function, so I think it'd affect multiple
-> > > includes of <asm/fpu.h> even if __own_fpu isn't used, so I think the
-> > > following patch which adds the include ptrace.h in fpu.h is more robu=
-st
-> > > than adding to the individual c files affected:
-> > > https://patchwork.linux-mips.org/patch/15386/
-> > >
-> > Agreed.
-> >=20
-> > > Admitedly it could probably have a more specific subject line since
-> > > there are more similar errors.
-> >=20
-> > Does that fix all compile problems ? Seems to me that we'll still need
-> >=20
-> > -#include <linux/sched.h>
-> > +#include <linux/sched/task_stack.h>
-> >=20
-> > or did you prepare a patch for this as well ?
->=20
-> It fixed the config I was using at the time. I didn't do a full build
-> test of all configs at the time so didn't fix the above.
+On 03/06/2017 04:34 PM, Sergei Shtylyov wrote:
+> On 3/6/2017 10:21 AM, jsun4 wrote:
+> 
+>>>> If asid_cache(cpu) overflows, there may be two tasks with the same
+>>>> asid. It is a risk that the two different tasks may have the same
+>>>> address space.
+>>>>
+>>>> A process will update its asid to newer version only when switch_mm()
+>>>> is called and matches the following condition:
+>>>>     if ((cpu_context(cpu, next) ^ asid_cache(cpu))
+>>>>                     & asid_version_mask(cpu))
+>>>>             get_new_mmu_context(next, cpu);
+>>>> If asid_cache(cpu) overflows, cpu_context(cpu,next) and asid_cache(cpu)
+>>>> will be reset to asid_first_version(cpu), and start a new cycle. It
+>>>> can result in two tasks that have the same ASID in the process list.
+>>>>
+>>>> For example, in CONFIG_CPU_MIPS32_R2, task named A's asid on CPU1 is
+>>>> 0x100, and has been sleeping and been not scheduled. After a long period
+>>>> of time, another running task named B's asid on CPU1 is 0xffffffff, and
+>>>> asid cached in the CPU1 is 0xffffffff too, next task named C is forked,
+>>>> when schedule from B to C on CPU1, asid_cache(cpu) will overflow, so C's
+>>>> asid on CPU1 will be 0x100 according to get_new_mmu_context(). A's asid
+>>>> is the same as C, if now A is rescheduled on CPU1, A's asid is not able
+>>>> to renew according to 'if' clause, and the local TLB entry can't be
+>>>> flushed too, A's address space will be the same as C.
+>>>>
+>>>> If asid_cache(cpu) overflows, all of user space task's asid on this CPU
+>>>> are able to set a invalid value (such as 0), it will avoid the risk.
+>>>>
+>>>> Signed-off-by: Jiwei Sun <jiwei.sun@windriver.com>
+>>>> ---
+>>>>  arch/mips/include/asm/mmu_context.h | 9 ++++++++-
+>>>>  1 file changed, 8 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/arch/mips/include/asm/mmu_context.h b/arch/mips/include/asm/mmu_context.h
+>>>> index ddd57ad..1f60efc 100644
+>>>> --- a/arch/mips/include/asm/mmu_context.h
+>>>> +++ b/arch/mips/include/asm/mmu_context.h
+>>>> @@ -108,8 +108,15 @@ static inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
+>>>>  #else
+>>>>          local_flush_tlb_all();    /* start new asid cycle */
+>>>>  #endif
+>>>> -        if (!asid)        /* fix version if needed */
+>>>> +        if (!asid) {        /* fix version if needed */
+>>>> +            struct task_struct *p;
+>>>> +
+>>>> +            for_each_process(p) {
+>>>> +                if ((p->mm))
+>>>
+>>>    Why double parens?
+>>
+>> At the beginning, the code was written as following
+>>     if ((p->mm) && (p->mm != mm))
+>>         cpu_context(cpu, p->mm) = 0;
+>>
+>> Because cpu_context(cpu,mm) will be changed to asid_first_version(cpu) after 'for' loop,
+>> and in order to improve the efficiency of the loop, I deleted "&& (p->mm != mm)",
+>> but I forgot to delete the redundant parentheses.
+> 
+>    Note that parens around 'p->mm' were never needed. And neither around the right operand of &&.
 
-More specifically your changes to the following files:
-arch/mips/kernel/pm.c
-arch/mips/power/cpu.c
+You are right, I will pay attention to similar problems next time.
+Thanks for your reminder.
 
-Don't appear to be necessary with my patch above, but the rest look good
-to me. With those changes removed:
+Best regards,
+Jiwei
 
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
-
-Build testing of that in progress...
-
-Thanks
-James
-
---U3BNvdZEnlJXqmh+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIcBAEBCAAGBQJYvowIAAoJEGwLaZPeOHZ6ku8P/jF6F7+FHFE37m/nQNmA3lPe
-sKWXy2WtyJJFiwYD4xwl0eXH1ymAH2s7pDd+3/kcS3z1Q4jLpRnwNPavSoLPaW9Z
-yRIpJPzH/qpcRVZU0IeqiLDUkNu60BJmGELpQhAIgsTNbph51wF5AdsQpxwd/4/0
-FSYS6BJ7UUATv9ypqZcMA/c0kFcJAxa0rW8aPdYaCZ8VE5ALl4BOToD33AYkWgGE
-it+YwtJz6Ho1J7I8TY9FPuvbf86ct8Fr/19r3SRPxhDieQZiO49AdZbwkzORF4rO
-mOy030yM4HXrT5uflPtu25CKFZiT2hFvWXYXGQlk2ViSNy/4mn8D+e8HcBUOW+h8
-D6Mx//zyRH66H+KF0sm8Q0xN/VtI3ce9wq3zycRP9UBJI/K6O0ZEOFPnvoPFqsmT
-wdr1+UwN83DQr3q+qEYKl9fAiXNuoVxc6jgwEME3iUYt4yUa7pCWxD5CWjKYKBCf
-Zd3IYlGA17Y6JyutZ93UXs/VPcPqXz3v3Fi5fCCMijVN/nMra6/lWHxoeCdwSxVM
-Y9/SbkRdJ1AdBSsSeIuHasRe7/1Gp58OxsCT7P+0DhxSZVB/+EjblhhCAcVmIyT0
-jQQGFspQFYLaDml7xyWJBLJuqFPoVtCML8pFgqnHPnhVOG+9ibXTnY9a22gRSX53
-kpZEkcGapwSlBMLSyHjp
-=ul4T
------END PGP SIGNATURE-----
-
---U3BNvdZEnlJXqmh+--
+> 
+>> Thanks,
+>> Best regards,
+>> Jiwei
+> 
+> MBR, Sergei
+> 

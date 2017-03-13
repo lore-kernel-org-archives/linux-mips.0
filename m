@@ -1,16 +1,19 @@
-Received: from mx0a-00010702.pphosted.com ([148.163.156.75]:41689 "EHLO
-        mx0b-00010702.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23993896AbdCHTgSRL2eF (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 8 Mar 2017 20:36:18 +0100
-From: Nathan Sullivan <nathan.sullivan@ni.com>
-Subject: [PATCH 2/2] MIPS: NI 169445 board support
-Date: Wed, 8 Mar 2017 13:35:44 -0600
-Message-ID: <1489001744-26545-3-git-send-email-nathan.sullivan@ni.com>
-In-Reply-To: <1489001744-26545-1-git-send-email-nathan.sullivan@ni.com>
-References: <1489001744-26545-1-git-send-email-nathan.sullivan@ni.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:39595 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23990519AbdCMJsENECJU (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 13 Mar 2017 10:48:04 +0100
+Date: Mon, 13 Mar 2017 09:47:57 +0000
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: NFS corruption, fixed by echo 1 > /proc/sys/vm/drop_caches --
+ next debugging steps?
+Message-ID: <20170313094757.GI2878@jhogan-linux.le.imgtec.org>
+References: <CAEdQ38HcOgAT6wJWWKY3P0hzYwkBGSQkRSQ2a=eaGmD6c6rwXA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <nathan.sullivan@ni.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ev7mvGV+3JQuI2Eo"
+Content-Disposition: inline
+In-Reply-To: <CAEdQ38HcOgAT6wJWWKY3P0hzYwkBGSQkRSQ2a=eaGmD6c6rwXA@mail.gmail.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,272 +23,92 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linus.walleij@linaro.org, gnurou@gmail.com, mark.rutland@arm.com, devicetree@vger.kernel.org, robh+dt@kernel.org, ralf@linux-mips.org
-Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, linux-mips@linux-mips.org, Nathan Sullivan <nathan.sullivan@ni.com>
-Message-ID: <20170308193544.lkEpLatynY-s7-sWIhy9tSr5DYc4GPPcGOCLIEZIdEA@z>
+To: Matt Turner <mattst88@gmail.com>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, linux-nfs@vger.kernel.org, Manuel Lauss <manuel.lauss@gmail.com>, LKML <linux-kernel@vger.kernel.org>
+Message-ID: <20170313094757.d2JZ17HuFdcIV1PbBVQ6KAGVQwYw1lRgFmidZ_q6Yek@z>
 
-Support the National Instruments 169445 board.
+--ev7mvGV+3JQuI2Eo
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Nathan Sullivan <nathan.sullivan@ni.com>
----
- Documentation/devicetree/bindings/mips/ni.txt   |   7 ++
- MAINTAINERS                                     |   8 ++
- arch/mips/boot/dts/Makefile                     |   1 +
- arch/mips/boot/dts/ni/169445.dts                | 101 ++++++++++++++++++++++++
- arch/mips/boot/dts/ni/Makefile                  |   7 ++
- arch/mips/configs/generic/board-ni169445.config |  27 +++++++
- arch/mips/generic/Kconfig                       |   6 ++
- arch/mips/generic/vmlinux.its.S                 |  25 ++++++
- 8 files changed, 182 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mips/ni.txt
- create mode 100644 arch/mips/boot/dts/ni/169445.dts
- create mode 100644 arch/mips/boot/dts/ni/Makefile
- create mode 100644 arch/mips/configs/generic/board-ni169445.config
+On Sun, Mar 12, 2017 at 06:43:47PM -0700, Matt Turner wrote:
+> On a Broadcom BCM91250a MIPS system I can reliably trigger NFS
+> corruption on the first file read.
+>=20
+> To demonstrate, I downloaded five identical copies of the gcc-5.4.0
+> source tarball. On the NFS server, they hash to the same value:
+>=20
+> server distfiles # md5sum gcc-5.4.0.tar.bz2*
+> 4c626ac2a83ef30dfb9260e6f59c2b30  gcc-5.4.0.tar.bz2
+> 4c626ac2a83ef30dfb9260e6f59c2b30  gcc-5.4.0.tar.bz2.1
+> 4c626ac2a83ef30dfb9260e6f59c2b30  gcc-5.4.0.tar.bz2.2
+> 4c626ac2a83ef30dfb9260e6f59c2b30  gcc-5.4.0.tar.bz2.3
+> 4c626ac2a83ef30dfb9260e6f59c2b30  gcc-5.4.0.tar.bz2.4
+>=20
+> On the MIPS system (the NFS client):
+>=20
+> bcm91250a-le distfiles # md5sum gcc-5.4.0.tar.bz2.2
+> 35346975989954df8a8db2b034da610d  gcc-5.4.0.tar.bz2.2
+> bcm91250a-le distfiles # md5sum gcc-5.4.0.tar.bz2*
+> 4c626ac2a83ef30dfb9260e6f59c2b30  gcc-5.4.0.tar.bz2
+> 4c626ac2a83ef30dfb9260e6f59c2b30  gcc-5.4.0.tar.bz2.1
+> 35346975989954df8a8db2b034da610d  gcc-5.4.0.tar.bz2.2
+> 4c626ac2a83ef30dfb9260e6f59c2b30  gcc-5.4.0.tar.bz2.3
+> 4c626ac2a83ef30dfb9260e6f59c2b30  gcc-5.4.0.tar.bz2.4
+>=20
+> The first file read will contain some corruption, and it is persistent un=
+til...
+>=20
+> bcm91250a-le distfiles # echo 1 > /proc/sys/vm/drop_caches
+> bcm91250a-le distfiles # md5sum gcc-5.4.0.tar.bz2*
+> 4c626ac2a83ef30dfb9260e6f59c2b30  gcc-5.4.0.tar.bz2
+> 4c626ac2a83ef30dfb9260e6f59c2b30  gcc-5.4.0.tar.bz2.1
+> 4c626ac2a83ef30dfb9260e6f59c2b30  gcc-5.4.0.tar.bz2.2
+> 4c626ac2a83ef30dfb9260e6f59c2b30  gcc-5.4.0.tar.bz2.3
+> 4c626ac2a83ef30dfb9260e6f59c2b30  gcc-5.4.0.tar.bz2.4
+>=20
+> the caches are dropped, at which point it reads back properly.
+>=20
+> Note that the corruption is different across reboots, both in the size
+> of the corruption and the location. I saw 1900~ and 1400~ byte
+> sequences corrupted on separate occasions, which don't correspond to
+> the system's 16kB page size.
+>=20
+> I've tested kernels from v3.19 to 4.11-rc1+ (master branch from
+> today). All exhibit this behavior with differing frequencies. Earlier
+> kernels seem to reproduce the issue less often, while more recent
+> kernels reliably exhibit the problem every boot.
+>=20
+> How can I further debug this?
 
-diff --git a/Documentation/devicetree/bindings/mips/ni.txt b/Documentation/devicetree/bindings/mips/ni.txt
-new file mode 100644
-index 0000000..722bf2d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mips/ni.txt
-@@ -0,0 +1,7 @@
-+National Instruments MIPS platforms
-+
-+required root node properties:
-+	- compatible: must be "ni,169445"
-+
-+CPU Nodes
-+	- compatible: must be "mti,mips14KEc"
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c265a5f..b72f059 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8887,6 +8887,14 @@ F:	include/linux/sunrpc/
- F:	include/uapi/linux/nfs*
- F:	include/uapi/linux/sunrpc/
- 
-+NI169445 MIPS ARCHITECTURE
-+M:	Nathan Sullivan <nathan.sullivan@ni.com>
-+L:	linux-mips@linux-mips.org
-+S:	Maintained
-+F:	arch/mips/boot/dts/ni/
-+F:	arch/mips/configs/generic/board-ni169445.config
-+F:	Documentation/devicetree/bindings/mips/ni.txt
-+
- NILFS2 FILESYSTEM
- M:	Ryusuke Konishi <konishi.ryusuke@lab.ntt.co.jp>
- L:	linux-nilfs@vger.kernel.org
-diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
-index b9db492..27b0f37 100644
---- a/arch/mips/boot/dts/Makefile
-+++ b/arch/mips/boot/dts/Makefile
-@@ -4,6 +4,7 @@ dts-dirs	+= img
- dts-dirs	+= ingenic
- dts-dirs	+= lantiq
- dts-dirs	+= mti
-+dts-dirs	+= ni
- dts-dirs	+= netlogic
- dts-dirs	+= pic32
- dts-dirs	+= qca
-diff --git a/arch/mips/boot/dts/ni/169445.dts b/arch/mips/boot/dts/ni/169445.dts
-new file mode 100644
-index 0000000..58e74b5
---- /dev/null
-+++ b/arch/mips/boot/dts/ni/169445.dts
-@@ -0,0 +1,101 @@
-+/dts-v1/;
-+
-+/ {
-+	#address-cells = <1>;
-+	#size-cells = <1>;
-+	compatible = "ni,169445";
-+
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		cpu@0 {
-+			device_type = "cpu";
-+			compatible = "mti,mips14KEc";
-+			clocks = <&baseclk>;
-+			reg = <0>;
-+		};
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x10000000>;
-+	};
-+
-+	baseclk: baseclock {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <50000000>;
-+	};
-+
-+	cpu_intc: cpu_intc {
-+		#address-cells = <0>;
-+		compatible = "mti,cpu-interrupt-controller";
-+		interrupt-controller;
-+		#interrupt-cells = <1>;
-+	};
-+
-+	ahb@0 {
-+		compatible = "simple-bus";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges = <0x0 0x1f300000 0x80FFF>;
-+
-+		gpio1:gpio-controller@1f300010 {
-+			compatible = "ni,169445-nand-gpio";
-+			reg = <0x10 0x4>;
-+			reg-names = "dat";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			ngpios = <5>;
-+		};
-+
-+		gpio2:gpio-controller@1f300014 {
-+			compatible = "ni,169445-nand-gpio";
-+			reg = <0x14 0x4>;
-+			reg-names = "dat";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			ngpios = <1>;
-+		};
-+
-+		nand@1f300000 {
-+			compatible = "gpio-control-nand";
-+			nand-on-flash-bbt;
-+			nand-ecc-mode = "soft_bch";
-+			nand-ecc-step-size = <512>;
-+			nand-ecc-strength = <4>;
-+			reg = <0x0 4>;
-+			gpios = <&gpio2 0 0>, /* rdy */
-+				<&gpio1 1 0>, /* nce */
-+				<&gpio1 2 0>, /* ale */
-+				<&gpio1 3 0>, /* cle */
-+				<&gpio1 4 0>; /* nwp */
-+		};
-+
-+		serial@1f380000 {
-+			compatible = "ns16550a";
-+			reg = <0x80000 0x1000>;
-+			interrupt-parent = <&cpu_intc>;
-+			interrupts = <6>;
-+			clocks = <&baseclk>;
-+			reg-shift = <0>;
-+		};
-+
-+		ethernet@1f340000 {
-+			compatible = "snps,dwmac-4.10a";
-+			interrupt-parent = <&cpu_intc>;
-+			interrupts = <5>;
-+			interrupt-names = "macirq";
-+			reg = <0x40000 0x2000>;
-+			clock-names = "stmmaceth", "pclk";
-+			clocks = <&baseclk>, <&baseclk>;
-+
-+			phy-mode = "rgmii";
-+
-+			fixed-link {
-+				speed = <1000>;
-+				full-duplex;
-+			};
-+		};
-+	};
-+};
-diff --git a/arch/mips/boot/dts/ni/Makefile b/arch/mips/boot/dts/ni/Makefile
-new file mode 100644
-index 0000000..66cfdff
---- /dev/null
-+++ b/arch/mips/boot/dts/ni/Makefile
-@@ -0,0 +1,7 @@
-+dtb-$(CONFIG_FIT_IMAGE_FDT_NI169445)	+= 169445.dtb
-+
-+# Force kbuild to make empty built-in.o if necessary
-+obj-					+= dummy.o
-+
-+always					:= $(dtb-y)
-+clean-files				:= *.dtb *.dtb.S
-diff --git a/arch/mips/configs/generic/board-ni169445.config b/arch/mips/configs/generic/board-ni169445.config
-new file mode 100644
-index 0000000..0bae1f8
---- /dev/null
-+++ b/arch/mips/configs/generic/board-ni169445.config
-@@ -0,0 +1,27 @@
-+CONFIG_FIT_IMAGE_FDT_NI169445=y
-+
-+CONFIG_SERIAL_8250=y
-+CONFIG_SERIAL_8250_CONSOLE=y
-+CONFIG_SERIAL_OF_PLATFORM=y
-+
-+CONFIG_GPIOLIB=y
-+CONFIG_GPIO_SYSFS=y
-+CONFIG_GPIO_GENERIC_PLATFORM=y
-+
-+CONFIG_MTD=y
-+CONFIG_MTD_BLOCK=y
-+CONFIG_MTD_CMDLINE_PARTS=y
-+
-+CONFIG_MTD_NAND_ECC=y
-+CONFIG_MTD_NAND_ECC_BCH=y
-+CONFIG_MTD_NAND=y
-+CONFIG_MTD_NAND_GPIO=y
-+CONFIG_MTD_NAND_IDS=y
-+
-+CONFIG_MTD_UBI=y
-+CONFIG_MTD_UBI_BLOCK=y
-+
-+CONFIG_NETDEVICES=y
-+CONFIG_STMMAC_ETH=y
-+CONFIG_STMMAC_PLATFORM=y
-+CONFIG_DWMAC_GENERIC=y
-diff --git a/arch/mips/generic/Kconfig b/arch/mips/generic/Kconfig
-index a606b3f..fbf0813 100644
---- a/arch/mips/generic/Kconfig
-+++ b/arch/mips/generic/Kconfig
-@@ -16,4 +16,10 @@ config LEGACY_BOARD_SEAD3
- 	  Enable this to include support for booting on MIPS SEAD-3 FPGA-based
- 	  development boards, which boot using a legacy boot protocol.
- 
-+config FIT_IMAGE_FDT_NI169445
-+	bool "Include FDT for NI 169445"
-+	help
-+	  Enable this to include the FDT for the 169445 platform from
-+	  National Instruments in the FIT kernel image.
-+
- endif
-diff --git a/arch/mips/generic/vmlinux.its.S b/arch/mips/generic/vmlinux.its.S
-index f67fbf1..de851f7 100644
---- a/arch/mips/generic/vmlinux.its.S
-+++ b/arch/mips/generic/vmlinux.its.S
-@@ -29,3 +29,28 @@
- 		};
- 	};
- };
-+
-+#ifdef CONFIG_FIT_IMAGE_FDT_NI169445
-+/ {
-+	images {
-+		fdt@ni169445 {
-+			description = "NI 169445 device tree";
-+			data = /incbin/("boot/dts/ni/169445.dtb");
-+			type = "flat_dt";
-+			arch = "mips";
-+			compression = "none";
-+			hash@0 {
-+				algo = "sha1";
-+			};
-+		};
-+	};
-+
-+	configurations {
-+		conf@ni169445 {
-+			description = "NI 169445 Linux Kernel";
-+			kernel = "kernel@0";
-+			fdt = "fdt@ni169445";
-+		};
-+	};
-+};
-+#endif
--- 
-2.1.4
+It smells a bit like a DMA / caching issue.
+
+Can you provide a full kernel log. That might provide some information
+about caching that might be relevant (e.g. does dcache have aliases?).
+
+Cheers
+James
+
+--ev7mvGV+3JQuI2Eo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJYxmrGAAoJEGwLaZPeOHZ6f3IP/Am5NSzZnkBChs3z0bpCai5V
+e7HoDsZaZl57hxeuMgs2YMUvqVKqZHKwug2ZtTPeJXdrkzKmc29HhphoDdjAchb8
+eqtXsobKSXTorr4WF7OfFR7udNgLQPR013+QaUyErH6ffP5eBiuUgwJSjeFv+RZF
+jN4NbU23W/FkrB7IFGQM4+dyeBH6QfXysNmFLvCvs3T16vOtJlIvQmPMG3LG4KwL
+QTGP2eLf09PnBoh6b1W/ZMnvpF+zxazXsSPtH1MOOLtCNdKJ4OStABfjVUBdMLKu
+qs9AN2k5Jvk4icEE0r4TOJW9qbj8lsBYHsbprkUM1J2CSKT/NHpKpflxf1zyih0L
+BFnRc8XtTTzHVW3URgVU43g/18TJnC55CTwSTgLfcxDH4hS74pOzZtNh2E8oSwBr
+oKp03H6nKrHssAdsWjCGXwR0fE0cYXw4spAwoPVwt8DiTrIHtC1iYGTu8UlIcJYU
+8mmT/r/d1YvfYnY3Ewd3Sxmv4MQypYA4qftfL7a6JEWnxWZr1yytJ+Uj1iyZqStk
+Vmys90Iu/X4G8jvRs5s8ZDiHYt+s/HQEAdZp9lmAWTWviWmwT8n0W2GTDION/QCC
+YNQAO37ef4fXX8j/wqK/92GwCj0PPt+p7gp9djG4Eiy4+CQsQY12j7vF9QxDP361
+/cDqMwMqg3O+eXuM3GIn
+=UVuQ
+-----END PGP SIGNATURE-----
+
+--ev7mvGV+3JQuI2Eo--

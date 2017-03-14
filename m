@@ -1,17 +1,21 @@
-Received: from mail-wr0-x243.google.com ([IPv6:2a00:1450:400c:c0c::243]:36278
-        "EHLO mail-wr0-x243.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994766AbdCNCHSafopb (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Mar 2017 03:07:18 +0100
-From: Till Smejkal <till.smejkal@googlemail.com>
-Date: Mon, 13 Mar 2017 19:07:09 -0700
-Subject: Re: [RFC PATCH 00/13] Introduce first class virtual address spaces
-Message-ID: <20170314020709.vxeglus54k76i7rn@arch-dev>
+Received: from mail-ua0-x22d.google.com ([IPv6:2607:f8b0:400c:c08::22d]:33721
+        "EHLO mail-ua0-x22d.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992143AbdCNFhyP-ixf convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 14 Mar 2017 06:37:54 +0100
+Received: by mail-ua0-x22d.google.com with SMTP id u30so165944606uau.0
+        for <linux-mips@linux-mips.org>; Mon, 13 Mar 2017 22:37:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALCETrWe8uOi3m8qXUbMA4017+rxbi1C8hzZ0bwjVHmfdE4FnQ@mail.gmail.com>
-Return-Path: <till.smejkal@googlemail.com>
+In-Reply-To: <20170314020709.vxeglus54k76i7rn@arch-dev>
+References: <CALCETrWe8uOi3m8qXUbMA4017+rxbi1C8hzZ0bwjVHmfdE4FnQ@mail.gmail.com>
+ <20170314020709.vxeglus54k76i7rn@arch-dev>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Mon, 13 Mar 2017 22:37:27 -0700
+Message-ID: <CALCETrXKvNWv1OtoSo_HWf5ZHSvyGS1NsuQod6Zt+tEg3MT5Sg@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/13] Introduce first class virtual address spaces
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Return-Path: <luto@amacapital.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,85 +25,41 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andy Lutomirski <luto@kernel.org>
-Cc: Till Smejkal <till.smejkal@googlemail.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@mellanox.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Pawel Osciak <pawel@osciak.com>, Marek Szyprowski <m.szyprowski@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>, Felipe Balbi <balbi@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Benjamin LaHaise <bcrl@kvack.org>, Nadia Yvette Chambers <nyc@holomorphy.com>, Jeff Layton <jlayton@poochiereds.net>, "J. Bruce Fields" <bfields@fieldses.org>, Peter Zijlstra <peterz@infradead.org>, Hugh Dickins <hughd@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-alpha@vger.kernel.org, arcml <linux-snps-arc@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, adi-buildroot-devel@lists.sourceforge.net, linux-hexagon@vger.kernel.org, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, linux-metag@vger.kernel.org, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-parisc@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, Linux Media Mailing List <linux-media@vger.kernel.org>, linux-mtd@lists.infradead.org, USB list <linux-usb@vger.kernel.org>, Linux FS Devel <linux-fsdevel@vger.kernel.org>, linux-aio@kvack.org, "linux-mm@kvack.org" <linux-mm@kvack.org>, Linux API <linux-api@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>
-Message-ID: <20170314020709.MiD67SFGO5xPI9m2zTe7bUFcPZlqZDB9RCbVNgAm-WU@z>
+To: Andy Lutomirski <luto@kernel.org>, Till Smejkal <till.smejkal@googlemail.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@mellanox.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Pawel Osciak <pawel@osciak.com>, Marek Szyprowski <m.szyprowski@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>, Felipe Balbi <balbi@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Benjamin LaHaise <bcrl@kvack.org>, Nadia Yvette Chambers <nyc@holomorphy.com>, Jeff Layton <jlayton@poochiereds.net>, "J. Bruce Fields" <bfields@fieldses.org>, Peter Zijlstra <peterz@infradead.org>, Hugh Dickins <hughd@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-alpha@vger.kernel.org, arcml <linux-snps-arc@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, adi-buildroot-devel@lists.sourceforge.net, linux-hexagon@vger.kernel.org, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, linux-metag@vger.kernel.org, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-parisc@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, Linux Media Mailing List <linux-media@vger.kernel.org>, linux-mtd@lists.infradead.org, USB list <linux-usb@vger.kernel.org>, Linux FS Devel <linux-fsdevel@vger.kernel.org>, linux-aio@kvack.org, "linux-mm@kvack.org" <linux-mm@kvack.org>, Linux API <linux-api@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>
+Message-ID: <20170314053727.5QKKvdv2z8WKCR6HAg_pD-3Y2DRrQH1b2h9J7JkkrMk@z>
 
-On Mon, 13 Mar 2017, Andy Lutomirski wrote:
-> On Mon, Mar 13, 2017 at 3:14 PM, Till Smejkal
-> <till.smejkal@googlemail.com> wrote:
-> > This patchset extends the kernel memory management subsystem with a new
-> > type of address spaces (called VAS) which can be created and destroyed
-> > independently of processes by a user in the system. During its lifetime
-> > such a VAS can be attached to processes by the user which allows a process
-> > to have multiple address spaces and thereby multiple, potentially
-> > different, views on the system's main memory. During its execution the
-> > threads belonging to the process are able to switch freely between the
-> > different attached VAS and the process' original AS enabling them to
-> > utilize the different available views on the memory.
-> 
-> Sounds like the old SKAS feature for UML.
+On Mon, Mar 13, 2017 at 7:07 PM, Till Smejkal
+<till.smejkal@googlemail.com> wrote:
+> On Mon, 13 Mar 2017, Andy Lutomirski wrote:
+>> This sounds rather complicated.  Getting TLB flushing right seems
+>> tricky.  Why not just map the same thing into multiple mms?
+>
+> This is exactly what happens at the end. The memory region that is described by the
+> VAS segment will be mapped in the ASes that use the segment.
 
-I haven't heard of this feature before, but after shortly looking at the description
-on the UML website it actually has some similarities with what I am proposing. But as
-far as I can see this was not merged into the mainline kernel, was it? In addition, I
-think that first class virtual address spaces goes even one step further by allowing
-AS to live independently of processes.
+So why is this kernel feature better than just doing MAP_SHARED
+manually in userspace?
 
-> > In addition to the concept of first class virtual address spaces, this
-> > patchset introduces yet another feature called VAS segments. VAS segments
-> > are memory regions which have a fixed size and position in the virtual
-> > address space and can be shared between multiple first class virtual
-> > address spaces. Such shareable memory regions are especially useful for
-> > in-memory pointer-based data structures or other pure in-memory data.
-> 
-> This sounds rather complicated.  Getting TLB flushing right seems
-> tricky.  Why not just map the same thing into multiple mms?
 
-This is exactly what happens at the end. The memory region that is described by the
-VAS segment will be mapped in the ASes that use the segment.
+>> Ick.  Please don't do this.  Can we please keep an mm as just an mm
+>> and not make it look magically different depending on which process
+>> maps it?  If you need a trampoline (which you do, of course), just
+>> write a trampoline in regular user code and map it manually.
+>
+> Did I understand you correctly that you are proposing that the switching thread
+> should make sure by itself that its code, stack, … memory regions are properly setup
+> in the new AS before/after switching into it? I think, this would make using first
+> class virtual address spaces much more difficult for user applications to the extend
+> that I am not even sure if they can be used at all. At the moment, switching into a
+> VAS is a very simple operation for an application because the kernel will just simply
+> do the right thing.
 
-> >
-> >             |     VAS     |  processes  |
-> >     -------------------------------------
-> >     switch  |       468ns |      1944ns |
-> 
-> The solution here is IMO to fix the scheduler.
+Yes.  I think that having the same mm_struct look different from
+different tasks is problematic.  Getting it right in the arch code is
+going to be nasty.  The heuristics of what to share are also tough --
+why would text + data + stack or whatever you're doing be adequate?
+What if you're in a thread?  What if two tasks have their stacks in
+the same place?
 
-IMHO it will be very difficult for the scheduler code to reach the same switching
-time as the pure VAS switch because switching between VAS does not involve saving any
-registers or FPU state and does not require selecting the next runnable task. VAS
-switch is basically a system call that just changes the AS of the current thread
-which makes it a very lightweight operation.
-
-> Also, FWIW, I have patches (that need a little work) that will make
-> switch_mm() waaaay faster on x86.
-
-These patches will also improve the speed of the VAS switch operation. We are also
-using the switch_mm function in the background to perform the actual hardware switch
-between the two ASes. The main reason why the VAS switch is faster than the task
-switch is that it just has to do fewer things.
-
-> > At the current state of the development, first class virtual address spaces
-> > have one limitation, that we haven't been able to solve so far. The feature
-> > allows, that different threads of the same process can execute in different
-> > AS at the same time. This is possible, because the VAS-switch operation
-> > only changes the active mm_struct for the task_struct of the calling
-> > thread. However, when a thread switches into a first class virtual address
-> > space, some parts of its original AS are duplicated into the new one to
-> > allow the thread to continue its execution at its current state.
-> 
-> Ick.  Please don't do this.  Can we please keep an mm as just an mm
-> and not make it look magically different depending on which process
-> maps it?  If you need a trampoline (which you do, of course), just
-> write a trampoline in regular user code and map it manually.
-
-Did I understand you correctly that you are proposing that the switching thread
-should make sure by itself that its code, stack, … memory regions are properly setup
-in the new AS before/after switching into it? I think, this would make using first
-class virtual address spaces much more difficult for user applications to the extend
-that I am not even sure if they can be used at all. At the moment, switching into a
-VAS is a very simple operation for an application because the kernel will just simply
-do the right thing.
-
-Till
+I could imagine something like a sigaltstack() mode that lets you set
+a signal up to also switch mm could be useful.

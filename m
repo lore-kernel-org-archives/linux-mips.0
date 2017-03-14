@@ -1,17 +1,17 @@
-Received: from mail-wm0-x242.google.com ([IPv6:2a00:1450:400c:c09::242]:33207
-        "EHLO mail-wm0-x242.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993411AbdCNQTF2Lkde (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Mar 2017 17:19:05 +0100
-From: Till Smejkal <till.smejkal@googlemail.com>
-Date: Tue, 14 Mar 2017 09:18:55 -0700
-Subject: Re: [RFC PATCH 07/13] kernel/fork: Split and export 'mm_alloc' and
- 'mm_init'
-Message-ID: <20170314161855.2g2gc3ff4ifj2lqt@arch-dev>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:62841 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993942AbdCNRAUUGuSE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Mar 2017 18:00:20 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH 1/2] KVM: MIPS/Emulate: Fix TLBWR with wired for T&E
+Date: Tue, 14 Mar 2017 17:00:07 +0000
+Message-ID: <8083c96f7d942288a45a5f23d7bfd39bfceb273e.1489510483.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6DCFFB03F4@AcuExch.aculab.com>
-Return-Path: <till.smejkal@googlemail.com>
+In-Reply-To: <cover.57583f73c169e83d499329fbda19909b816c0024.1489510483.git-series.james.hogan@imgtec.com>
+References: <cover.57583f73c169e83d499329fbda19909b816c0024.1489510483.git-series.james.hogan@imgtec.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,42 +21,48 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Laight <David.Laight@ACULAB.COM>
-Cc: 'Till Smejkal' <till.smejkal@googlemail.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@mellanox.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>, Andy Lutomirski <luto@amacapital.net>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Pawel Osciak <pawel@osciak.com>, Marek Szyprowski <m.szyprowski@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>, Felipe Balbi <balbi@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Benjamin LaHaise <bcrl@kvack.org>, Nadia Yvette Chambers <nyc@holomorphy.com>, Jeff Layton <jlayton@poochiereds.net>, "J. Bruce Fields" <bfields@fieldses.org>, Peter Zijlstra <peterz@infradead.org>, Hugh Dickins <hughd@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-aio@kvack.org" <linux-aio@kvack.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>, "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Message-ID: <20170314161855.-su8vx6XqAqqvcvTO_VpRWPvtWCke4JZdm1i72LJIOc@z>
+To: linux-mips@linux-mips.org
+Cc: James Hogan <james.hogan@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org, "# 3 . 10 . x-" <stable@vger.kernel.org>
+Message-ID: <20170314170007.TTFEmIJL77HN0S9MpXzQOyUVptOPMCC2MZagwPcYERQ@z>
 
-On Tue, 14 Mar 2017, David Laight wrote:
-> From: Linuxppc-dev Till Smejkal
-> > Sent: 13 March 2017 22:14
-> > The only way until now to create a new memory map was via the exported
-> > function 'mm_alloc'. Unfortunately, this function not only allocates a new
-> > memory map, but also completely initializes it. However, with the
-> > introduction of first class virtual address spaces, some initialization
-> > steps done in 'mm_alloc' are not applicable to the memory maps needed for
-> > this feature and hence would lead to errors in the kernel code.
-> > 
-> > Instead of introducing a new function that can allocate and initialize
-> > memory maps for first class virtual address spaces and potentially
-> > duplicate some code, I decided to split the mm_alloc function as well as
-> > the 'mm_init' function that it uses.
-> > 
-> > Now there are four functions exported instead of only one. The new
-> > 'mm_alloc' function only allocates a new mm_struct and zeros it out. If one
-> > want to have the old behavior of mm_alloc one can use the newly introduced
-> > function 'mm_alloc_and_setup' which not only allocates a new mm_struct but
-> > also fully initializes it.
-> ...
-> 
-> That looks like bugs waiting to happen.
-> You need unchanged code to fail to compile.
+The implementation of the TLBWR instruction for Trap & Emulate does not
+take the CP0_Wired register into account, allowing the guest's wired
+entries to be easily overwritten during normal guest TLB refill
+operation.
 
-Thank you for this hint. I can give the new mm_alloc function a different name so
-that code that uses the *old* mm_alloc function will fail to compile. I just reused
-the old name when I wrote the code, because mm_alloc was only used in very few
-locations in the kernel (2 times in the whole kernel source) which made identifying
-and changing them very easy. I also don't think that there will be many users in the
-kernel for mm_alloc in the future because it is a relatively low level data
-structure. But if it is better to use a different name for the new function, I am
-very happy to change this.
+Offset the random TLB index by CP0_Wired and keep it in the range of
+valid non-wired entries with a modulo operation instead of a mask. This
+allows wired TLB entries to be properly preserved.
 
-Till
+Fixes: e685c689f3a8 ("KVM/MIPS32: Privileged instruction/target ...")
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: "Radim Krčmář" <rkrcmar@redhat.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Cc: kvm@vger.kernel.org
+Cc: <stable@vger.kernel.org> # 3.10.x-
+---
+ arch/mips/kvm/emulate.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
+index 4833ebad89d9..dd47f2bda01b 100644
+--- a/arch/mips/kvm/emulate.c
++++ b/arch/mips/kvm/emulate.c
+@@ -1094,10 +1094,12 @@ enum emulation_result kvm_mips_emul_tlbwr(struct kvm_vcpu *vcpu)
+ 	struct mips_coproc *cop0 = vcpu->arch.cop0;
+ 	struct kvm_mips_tlb *tlb = NULL;
+ 	unsigned long pc = vcpu->arch.pc;
++	unsigned int wired;
+ 	int index;
+ 
+ 	get_random_bytes(&index, sizeof(index));
+-	index &= (KVM_MIPS_GUEST_TLB_SIZE - 1);
++	wired = kvm_read_c0_guest_wired(cop0) & (KVM_MIPS_GUEST_TLB_SIZE - 1);
++	index = wired + index % (KVM_MIPS_GUEST_TLB_SIZE - wired);
+ 
+ 	tlb = &vcpu->arch.guest_tlb[index];
+ 
+-- 
+git-series 0.8.10

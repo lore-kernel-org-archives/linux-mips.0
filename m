@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:45166 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:14493 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23994819AbdCNKS23GjsU (ORCPT
+        with ESMTP id S23994818AbdCNKS227LVU (ORCPT
         <rfc822;linux-mips@linux-mips.org>); Tue, 14 Mar 2017 11:18:28 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH v2 23/33] KVM: MIPS: Update exit handler for VZ
-Date: Tue, 14 Mar 2017 10:15:30 +0000
-Message-ID: <78d149c2db28076d1adff84980aca7cba9144514.1489485940.git-series.james.hogan@imgtec.com>
+Subject: [PATCH v2 22/33] KVM: MIPS/Emulate: Drop CACHE emulation for VZ
+Date: Tue, 14 Mar 2017 10:15:29 +0000
+Message-ID: <c916890e0543cb63ca5935e91d309335cf4b27d6.1489485940.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
 In-Reply-To: <cover.26e10ec77a4ed0d3177ccf4fabf57bc95ea030f8.1489485940.git-series.james.hogan@imgtec.com>
 References: <cover.26e10ec77a4ed0d3177ccf4fabf57bc95ea030f8.1489485940.git-series.james.hogan@imgtec.com>
@@ -23,18 +23,11 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, kvm@vger.kernel.org
 Cc: James Hogan <james.hogan@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20170314101530.QGkYcr8bqkhtVu2EqNzVNqdFD3-HBTnI-YcitHi98Lw@z>
+Message-ID: <20170314101529.WGH8vbWThnDurF3FPzWqQD_C97VBFcVH0CWF2VphUW0@z>
 
-The general guest exit handler needs a few tweaks for VZ compared to
-trap & emulate, which for now are made directly depending on
-CONFIG_KVM_MIPS_VZ:
-
-- There is no need to re-enable the hardware page table walker (HTW), as
-  it can be left enabled during guest mode operation with VZ.
-
-- There is no need to perform a privilege check, as any guest privilege
-  violations should have already been detected by the hardware and
-  triggered the appropriate guest exception.
+Ifdef out the trap & emulate CACHE instruction emulation functions for
+VZ. We will provide separate CACHE instruction emulation in vz.c, and we
+need to avoid linker errors due to the use of T&E specific MMU helpers.
 
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Paolo Bonzini <pbonzini@redhat.com>
@@ -43,64 +36,28 @@ Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 Cc: kvm@vger.kernel.org
 ---
- arch/mips/kvm/mips.c | 31 ++++++++++++++++++-------------
- 1 file changed, 18 insertions(+), 13 deletions(-)
+ arch/mips/kvm/emulate.c | 2 ++
+ 1 file changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-index 1fa088854cb6..8c10148a345c 100644
---- a/arch/mips/kvm/mips.c
-+++ b/arch/mips/kvm/mips.c
-@@ -1230,7 +1230,8 @@ int kvm_mips_handle_exit(struct kvm_run *run, struct kvm_vcpu *vcpu)
- 	vcpu->mode = OUTSIDE_GUEST_MODE;
- 
- 	/* re-enable HTW before enabling interrupts */
--	htw_start();
-+	if (!IS_ENABLED(CONFIG_KVM_MIPS_VZ))
-+		htw_start();
- 
- 	/* Set a default exit reason */
- 	run->exit_reason = KVM_EXIT_UNKNOWN;
-@@ -1248,17 +1249,20 @@ int kvm_mips_handle_exit(struct kvm_run *run, struct kvm_vcpu *vcpu)
- 			cause, opc, run, vcpu);
- 	trace_kvm_exit(vcpu, exccode);
- 
--	/*
--	 * Do a privilege check, if in UM most of these exit conditions end up
--	 * causing an exception to be delivered to the Guest Kernel
--	 */
--	er = kvm_mips_check_privilege(cause, opc, run, vcpu);
--	if (er == EMULATE_PRIV_FAIL) {
--		goto skip_emul;
--	} else if (er == EMULATE_FAIL) {
--		run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
--		ret = RESUME_HOST;
--		goto skip_emul;
-+	if (!IS_ENABLED(CONFIG_KVM_MIPS_VZ)) {
-+		/*
-+		 * Do a privilege check, if in UM most of these exit conditions
-+		 * end up causing an exception to be delivered to the Guest
-+		 * Kernel
-+		 */
-+		er = kvm_mips_check_privilege(cause, opc, run, vcpu);
-+		if (er == EMULATE_PRIV_FAIL) {
-+			goto skip_emul;
-+		} else if (er == EMULATE_FAIL) {
-+			run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
-+			ret = RESUME_HOST;
-+			goto skip_emul;
-+		}
- 	}
- 
- 	switch (exccode) {
-@@ -1418,7 +1422,8 @@ int kvm_mips_handle_exit(struct kvm_run *run, struct kvm_vcpu *vcpu)
- 	}
- 
- 	/* Disable HTW before returning to guest or host */
--	htw_stop();
-+	if (!IS_ENABLED(CONFIG_KVM_MIPS_VZ))
-+		htw_stop();
- 
- 	return ret;
+diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
+index 42424822898c..bb0449296cd6 100644
+--- a/arch/mips/kvm/emulate.c
++++ b/arch/mips/kvm/emulate.c
+@@ -1665,6 +1665,7 @@ enum emulation_result kvm_mips_emulate_load(union mips_instruction inst,
+ 	return EMULATE_DO_MMIO;
  }
+ 
++#ifndef CONFIG_KVM_MIPS_VZ
+ static enum emulation_result kvm_mips_guest_cache_op(int (*fn)(unsigned long),
+ 						     unsigned long curr_pc,
+ 						     unsigned long addr,
+@@ -1872,6 +1873,7 @@ enum emulation_result kvm_mips_emulate_inst(u32 cause, u32 *opc,
+ 
+ 	return er;
+ }
++#endif /* CONFIG_KVM_MIPS_VZ */
+ 
+ /**
+  * kvm_mips_guest_exception_base() - Find guest exception vector base address.
 -- 
 git-series 0.8.10

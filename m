@@ -1,15 +1,26 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:5394 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23994627AbdCNAFjDovRY (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Mar 2017 01:05:39 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] KVM: MIPS/Emulate: Fix preemption warning
-Date: Tue, 14 Mar 2017 00:05:15 +0000
-Message-ID: <20170314000515.26573-1-james.hogan@imgtec.com>
+Received: from mail.kernel.org ([198.145.29.136]:55218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23994627AbdCNA6lOZguc (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 14 Mar 2017 01:58:41 +0100
+Received: from mail.kernel.org (localhost [127.0.0.1])
+        by mail.kernel.org (Postfix) with ESMTP id E07AC2047C
+        for <linux-mips@linux-mips.org>; Tue, 14 Mar 2017 00:58:36 +0000 (UTC)
+Received: from mail-ua0-f181.google.com (mail-ua0-f181.google.com [209.85.217.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E69AB2043C
+        for <linux-mips@linux-mips.org>; Tue, 14 Mar 2017 00:58:33 +0000 (UTC)
+Received: by mail-ua0-f181.google.com with SMTP id q7so146035941uaf.2
+        for <linux-mips@linux-mips.org>; Mon, 13 Mar 2017 17:58:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-Path: <James.Hogan@imgtec.com>
+In-Reply-To: <20170313221415.9375-1-till.smejkal@gmail.com>
+References: <20170313221415.9375-1-till.smejkal@gmail.com>
+From: Andy Lutomirski <luto@kernel.org>
+Date: Mon, 13 Mar 2017 17:58:01 -0700
+Message-ID: <CALCETrWe8uOi3m8qXUbMA4017+rxbi1C8hzZ0bwjVHmfdE4FnQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/13] Introduce first class virtual address spaces
+Content-Type: text/plain; charset=UTF-8
+Return-Path: <luto@kernel.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,54 +30,56 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org, stable@vger.kernel.org, James Hogan <james.hogan@imgtec.com>
-Message-ID: <20170314000515.xOZZhFGyYcQ41Nx2krLiIDfC9GI1GoxQFeF_nXDZz0w@z>
+To: Till Smejkal <till.smejkal@googlemail.com>
+Cc: Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@mellanox.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Pawel Osciak <pawel@osciak.com>, Marek Szyprowski <m.szyprowski@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>, Felipe Balbi <balbi@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Benjamin LaHaise <bcrl@kvack.org>, Nadia Yvette Chambers <nyc@holomorphy.com>, Jeff Layton <jlayton@poochiereds.net>, "J. Bruce Fields" <bfields@fieldses.org>, Peter Zijlstra <peterz@infradead.org>, Hugh Dickins <hughd@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-alpha@vger.kernel.org, arcml <linux-snps-arc@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, adi-buildroot-devel@lists.sourceforge.net, linux-hexagon@vger.kernel.org, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, linux-metag@vger.kernel.org, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-parisc@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, Linux Media Mailing List <linux-media@vger.kernel.org>, linux-mtd@lists.infradead.org, USB list <linux-usb@vger.kernel.org>, Linux FS Devel <linux-fsdevel@vger.kernel.org>, linux-aio@kvack.org, "linux-mm@kvack.org" <linux-mm@kvack.org>, Linux API <linux-api@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>
+Message-ID: <20170314005801.nW2tp1amGemzhH8Vk56l_RYxFucPWhk6oLusqLxf3rE@z>
 
-Host kernels with preemption enabled will emit the following preemption
-warning when the guest FPU is used:
+On Mon, Mar 13, 2017 at 3:14 PM, Till Smejkal
+<till.smejkal@googlemail.com> wrote:
+> This patchset extends the kernel memory management subsystem with a new
+> type of address spaces (called VAS) which can be created and destroyed
+> independently of processes by a user in the system. During its lifetime
+> such a VAS can be attached to processes by the user which allows a process
+> to have multiple address spaces and thereby multiple, potentially
+> different, views on the system's main memory. During its execution the
+> threads belonging to the process are able to switch freely between the
+> different attached VAS and the process' original AS enabling them to
+> utilize the different available views on the memory.
 
-BUG: using smp_processor_id() in preemptible [00000000] code: qemu-system-mip/1495
-caller is kvm_mips_emulate_CP0+0xa48/0xea0 [kvm]
-...
-Call Trace:
-[<ffffffff81122d50>] show_stack+0x88/0xa8
-[<ffffffff814307ac>] dump_stack+0x9c/0xd0
-[<ffffffff81459f24>] check_preemption_disabled+0x124/0x130
-[<ffffffffc000e908>] kvm_mips_emulate_CP0+0xa48/0xea0 [kvm]
-[<ffffffffc000f9f0>] kvm_mips_emulate_inst+0x190/0x268 [kvm]
-[<ffffffffc0016220>] kvm_trap_emul_handle_cop_unusable+0x48/0x160 [kvm]
-[<ffffffffc000c120>] kvm_mips_handle_exit+0x520/0x7e0 [kvm]
+Sounds like the old SKAS feature for UML.
 
-This is due to the use of current_cpu_data.fpu_id from a preemptible
-context to read the MIPS_FPIR_F64 bit. We don't currently support
-asymmetric FPU capabilities with KVM, so just use boot_cpu_data instead
-to silence the warning.
+> In addition to the concept of first class virtual address spaces, this
+> patchset introduces yet another feature called VAS segments. VAS segments
+> are memory regions which have a fixed size and position in the virtual
+> address space and can be shared between multiple first class virtual
+> address spaces. Such shareable memory regions are especially useful for
+> in-memory pointer-based data structures or other pure in-memory data.
 
-Fixes: 6cdc65e31d4f ("MIPS: KVM: Emulate FPU bits in COP0 interface")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: "Radim Krčmář" <rkrcmar@redhat.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Cc: kvm@vger.kernel.org
-Cc: <stable@vger.kernel.org> # 4.1.x-
----
- arch/mips/kvm/emulate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This sounds rather complicated.  Getting TLB flushing right seems
+tricky.  Why not just map the same thing into multiple mms?
 
-diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
-index d40cfaad4529..9bc55619252a 100644
---- a/arch/mips/kvm/emulate.c
-+++ b/arch/mips/kvm/emulate.c
-@@ -1279,7 +1279,7 @@ enum emulation_result kvm_mips_emulate_CP0(union mips_instruction inst,
- 				 * Also don't allow FR to be set if host doesn't
- 				 * support it.
- 				 */
--				if (!(current_cpu_data.fpu_id & MIPS_FPIR_F64))
-+				if (!(boot_cpu_data.fpu_id & MIPS_FPIR_F64))
- 					val &= ~ST0_FR;
- 
- 
--- 
-2.11.1
+>
+>             |     VAS     |  processes  |
+>     -------------------------------------
+>     switch  |       468ns |      1944ns |
+
+The solution here is IMO to fix the scheduler.
+
+Also, FWIW, I have patches (that need a little work) that will make
+switch_mm() waaaay faster on x86.
+
+> At the current state of the development, first class virtual address spaces
+> have one limitation, that we haven't been able to solve so far. The feature
+> allows, that different threads of the same process can execute in different
+> AS at the same time. This is possible, because the VAS-switch operation
+> only changes the active mm_struct for the task_struct of the calling
+> thread. However, when a thread switches into a first class virtual address
+> space, some parts of its original AS are duplicated into the new one to
+> allow the thread to continue its execution at its current state.
+
+Ick.  Please don't do this.  Can we please keep an mm as just an mm
+and not make it look magically different depending on which process
+maps it?  If you need a trampoline (which you do, of course), just
+write a trampoline in regular user code and map it manually.
+
+--Andy

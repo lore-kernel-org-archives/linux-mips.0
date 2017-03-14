@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:63447 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:44406 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23994913AbdCNK0EQerOH (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Mar 2017 11:26:04 +0100
+        with ESMTP id S23994914AbdCNK0GobxLH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Mar 2017 11:26:06 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 4/8] KVM: MIPS/T&E: Report correct dcache line size
-Date: Tue, 14 Mar 2017 10:25:47 +0000
-Message-ID: <8d3b879d1550f684cd780f3134e9799e026d4e85.1489486985.git-series.james.hogan@imgtec.com>
+Subject: [PATCH 6/8] KVM: MIPS/VZ: Emulate hit CACHE ops for Octeon III
+Date: Tue, 14 Mar 2017 10:25:49 +0000
+Message-ID: <bac1a61ae21ab646b7973d93a9ad711eba90467a.1489486985.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
 In-Reply-To: <cover.79b3feae3a98cb166c2d40a7bd4e854a5faedc89.1489486985.git-series.james.hogan@imgtec.com>
 References: <cover.79b3feae3a98cb166c2d40a7bd4e854a5faedc89.1489486985.git-series.james.hogan@imgtec.com>
@@ -23,11 +23,16 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, kvm@vger.kernel.org
 Cc: James Hogan <james.hogan@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, David Daney <david.daney@cavium.com>, Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
-Message-ID: <20170314102547.Xe8-d_75W20cSiVedYSQDUwxKx1O1Z3hUF5y1bvUqvU@z>
+Message-ID: <20170314102549.K1rWbPkVUaUcLa3chRJzt6iaNObEseteM6L3LPmre8k@z>
 
-Octeon CPUs don't report the correct dcache line size in CP0_Config1.DL,
-so encode the correct value for the guest CP0_Config1.DL based on
-cpu_dcache_line_size().
+Octeon III doesn't implement the optional GuestCtl0.CG bit to allow
+guest mode to execute virtual address based CACHE instructions, so
+implement emulation of a few important ones specifically for Octeon III
+in response to a GPSI exception.
+
+Currently the main reason to perform these operations is for icache
+synchronisation, so they are implemented as a simple icache flush with
+local_flush_icache_range().
 
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Paolo Bonzini <pbonzini@redhat.com>
@@ -38,34 +43,30 @@ Cc: Andreas Herrmann <andreas.herrmann@caviumnetworks.com>
 Cc: linux-mips@linux-mips.org
 Cc: kvm@vger.kernel.org
 ---
- arch/mips/kvm/trap_emul.c | 8 ++++++++
- 1 file changed, 8 insertions(+), 0 deletions(-)
+ arch/mips/kvm/vz.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+), 0 deletions(-)
 
-diff --git a/arch/mips/kvm/trap_emul.c b/arch/mips/kvm/trap_emul.c
-index 75ba3c4b7cd5..a563759fd142 100644
---- a/arch/mips/kvm/trap_emul.c
-+++ b/arch/mips/kvm/trap_emul.c
-@@ -12,6 +12,7 @@
- #include <linux/errno.h>
- #include <linux/err.h>
- #include <linux/kvm_host.h>
-+#include <linux/log2.h>
- #include <linux/uaccess.h>
- #include <linux/vmalloc.h>
- #include <asm/mmu_context.h>
-@@ -644,6 +645,13 @@ static int kvm_trap_emul_vcpu_setup(struct kvm_vcpu *vcpu)
- 	/* Read the cache characteristics from the host Config1 Register */
- 	config1 = (read_c0_config1() & ~0x7f);
- 
-+	/* DCache line size not correctly reported in Config1 on Octeon CPUs */
-+	if (cpu_dcache_line_size()) {
-+		config1 &= ~MIPS_CONF1_DL;
-+		config1 |= ((ilog2(cpu_dcache_line_size()) - 1) <<
-+			    MIPS_CONF1_DL_SHF) & MIPS_CONF1_DL;
-+	}
+diff --git a/arch/mips/kvm/vz.c b/arch/mips/kvm/vz.c
+index 21f4495feb15..5c495277bf44 100644
+--- a/arch/mips/kvm/vz.c
++++ b/arch/mips/kvm/vz.c
+@@ -1105,6 +1105,17 @@ static enum emulation_result kvm_vz_gpsi_cache(union mips_instruction inst,
+ 	case Index_Writeback_Inv_D:
+ 		flush_dcache_line_indexed(va);
+ 		return EMULATE_DONE;
++	case Hit_Invalidate_I:
++	case Hit_Invalidate_D:
++	case Hit_Writeback_Inv_D:
++		if (boot_cpu_type() == CPU_CAVIUM_OCTEON3) {
++			/* We can just flush entire icache */
++			local_flush_icache_range(0, 0);
++			return EMULATE_DONE;
++		}
 +
- 	/* Set up MMU size */
- 	config1 &= ~(0x3f << 25);
- 	config1 |= ((KVM_MIPS_GUEST_TLB_SIZE - 1) << 25);
++		/* So far, other platforms support guest hit cache ops */
++		break;
+ 	default:
+ 		break;
+ 	};
 -- 
 git-series 0.8.10

@@ -1,14 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:64222 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:5394 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993962AbdCMO5Yk4Bad (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 13 Mar 2017 15:57:24 +0100
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Subject: [PATCH] MIPS: generic: fix out-of-tree defconfig target builds
-Date: Mon, 13 Mar 2017 15:57:14 +0100
-Message-ID: <1489417034-12258-1-git-send-email-marcin.nowakowski@imgtec.com>
+        with ESMTP id S23994627AbdCNAFjDovRY (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Mar 2017 01:05:39 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH] KVM: MIPS/Emulate: Fix preemption warning
+Date: Tue, 14 Mar 2017 00:05:15 +0000
+Message-ID: <20170314000515.26573-1-james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Marcin.Nowakowski@imgtec.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,73 +19,54 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20170313145714.osfR65BoaxB56mJqOVwJFhwsvxDSknAawfN6D2DxneI@z>
+To: linux-mips@linux-mips.org
+Cc: Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, kvm@vger.kernel.org, stable@vger.kernel.org, James Hogan <james.hogan@imgtec.com>
+Message-ID: <20170314000515.xOZZhFGyYcQ41Nx2krLiIDfC9GI1GoxQFeF_nXDZz0w@z>
 
-When specifying a generic defconfig target with O=... option set, make
-is invoked in the output location before a target makefile wrapper is
-created. Ensure that the correct makefile is used by specifying the
-kernel source makefile during make invocation.
+Host kernels with preemption enabled will emit the following preemption
+warning when the guest FPU is used:
 
-This fixes the either of the following errors:
+BUG: using smp_processor_id() in preemptible [00000000] code: qemu-system-mip/1495
+caller is kvm_mips_emulate_CP0+0xa48/0xea0 [kvm]
+...
+Call Trace:
+[<ffffffff81122d50>] show_stack+0x88/0xa8
+[<ffffffff814307ac>] dump_stack+0x9c/0xd0
+[<ffffffff81459f24>] check_preemption_disabled+0x124/0x130
+[<ffffffffc000e908>] kvm_mips_emulate_CP0+0xa48/0xea0 [kvm]
+[<ffffffffc000f9f0>] kvm_mips_emulate_inst+0x190/0x268 [kvm]
+[<ffffffffc0016220>] kvm_trap_emul_handle_cop_unusable+0x48/0x160 [kvm]
+[<ffffffffc000c120>] kvm_mips_handle_exit+0x520/0x7e0 [kvm]
 
-$ make sead3_defoncifg ARCH=mips O=test
-make[1]: Entering directory '/mnt/ssd/MIPS/linux-next/test'
-make[2]: *** No rule to make target '32r2el_defconfig'.  Stop.
-arch/mips/Makefile:506: recipe for target 'sead3_defconfig' failed
-make[1]: *** [sead3_defconfig] Error 2
-make[1]: Leaving directory '/mnt/ssd/MIPS/linux-next/test'
-Makefile:152: recipe for target 'sub-make' failed
-make: *** [sub-make] Error 2
+This is due to the use of current_cpu_data.fpu_id from a preemptible
+context to read the MIPS_FPIR_F64 bit. We don't currently support
+asymmetric FPU capabilities with KVM, so just use boot_cpu_data instead
+to silence the warning.
 
-$ make 32r2el_defconfig ARCH=mips O=test
-make[1]: Entering directory '/mnt/ssd/MIPS/linux-next/test'
-Using ../arch/mips/configs/generic_defconfig as base
-Merging ../arch/mips/configs/generic/32r2.config
-Merging ../arch/mips/configs/generic/el.config
-Merging ../arch/mips/configs/generic/board-sead-3.config
-!
-! merged configuration written to .config (needs make)
-!
-make[2]: *** No rule to make target 'olddefconfig'.  Stop.
-arch/mips/Makefile:489: recipe for target '32r2el_defconfig' failed
-make[1]: *** [32r2el_defconfig] Error 2
-make[1]: Leaving directory '/mnt/ssd/MIPS/linux-next/test'
-Makefile:152: recipe for target 'sub-make' failed
-make: *** [sub-make] Error 2
-
-Fixes: eed0eabd12ef ('MIPS: generic: Introduce generic DT-based board support')
-Fixes: 3f5f0a4475e1 ('MIPS: generic: Convert SEAD-3 to a generic board')
-Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Cc: Paul Burton <paul.burton@imgtec.com>
+Fixes: 6cdc65e31d4f ("MIPS: KVM: Emulate FPU bits in COP0 interface")
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: "Radim Krčmář" <rkrcmar@redhat.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Cc: kvm@vger.kernel.org
+Cc: <stable@vger.kernel.org> # 4.1.x-
 ---
- arch/mips/Makefile | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/mips/kvm/emulate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index 8ef9c02..02a1787 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -489,7 +489,7 @@ $(generic_defconfigs):
- 	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/kconfig/merge_config.sh \
- 		-m -O $(objtree) $(srctree)/arch/$(ARCH)/configs/generic_defconfig $^ \
- 		$(foreach board,$(BOARDS),$(generic_config_dir)/board-$(board).config)
--	$(Q)$(MAKE) olddefconfig
-+	$(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
+diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
+index d40cfaad4529..9bc55619252a 100644
+--- a/arch/mips/kvm/emulate.c
++++ b/arch/mips/kvm/emulate.c
+@@ -1279,7 +1279,7 @@ enum emulation_result kvm_mips_emulate_CP0(union mips_instruction inst,
+ 				 * Also don't allow FR to be set if host doesn't
+ 				 * support it.
+ 				 */
+-				if (!(current_cpu_data.fpu_id & MIPS_FPIR_F64))
++				if (!(boot_cpu_data.fpu_id & MIPS_FPIR_F64))
+ 					val &= ~ST0_FR;
  
- #
- # Prevent generic merge_config rules attempting to merge single fragments
-@@ -503,8 +503,8 @@ $(generic_config_dir)/%.config: ;
- #
- .PHONY: sead3_defconfig
- sead3_defconfig:
--	$(Q)$(MAKE) 32r2el_defconfig BOARDS=sead-3
-+	$(Q)$(MAKE) -f $(srctree)/Makefile 32r2el_defconfig BOARDS=sead-3
  
- .PHONY: sead3micro_defconfig
- sead3micro_defconfig:
--	$(Q)$(MAKE) micro32r2el_defconfig BOARDS=sead-3
-+	$(Q)$(MAKE) -f $(srctree)/Makefile micro32r2el_defconfig BOARDS=sead-3
 -- 
-2.7.4
+2.11.1

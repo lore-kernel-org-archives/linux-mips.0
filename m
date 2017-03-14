@@ -1,16 +1,17 @@
-Received: from mx0a-00010702.pphosted.com ([148.163.156.75]:55247 "EHLO
-        mx0b-00010702.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23993420AbdCNQNrz08ue (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Mar 2017 17:13:47 +0100
-From: Nathan Sullivan <nathan.sullivan@ni.com>
-Subject: [PATCH 2/2] MIPS: NI 169445 board support
-Date: Tue, 14 Mar 2017 11:13:23 -0500
-Message-ID: <1489508003-25288-3-git-send-email-nathan.sullivan@ni.com>
-In-Reply-To: <1489508003-25288-1-git-send-email-nathan.sullivan@ni.com>
-References: <1489508003-25288-1-git-send-email-nathan.sullivan@ni.com>
+Received: from mail-wm0-x242.google.com ([IPv6:2a00:1450:400c:c09::242]:33207
+        "EHLO mail-wm0-x242.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993411AbdCNQTF2Lkde (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Mar 2017 17:19:05 +0100
+From: Till Smejkal <till.smejkal@googlemail.com>
+Date: Tue, 14 Mar 2017 09:18:55 -0700
+Subject: Re: [RFC PATCH 07/13] kernel/fork: Split and export 'mm_alloc' and
+ 'mm_init'
+Message-ID: <20170314161855.2g2gc3ff4ifj2lqt@arch-dev>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <nathan.sullivan@ni.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6DCFFB03F4@AcuExch.aculab.com>
+Return-Path: <till.smejkal@googlemail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,271 +21,42 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linus.walleij@linaro.org, gnurou@gmail.com, mark.rutland@arm.com, devicetree@vger.kernel.org, robh+dt@kernel.org, ralf@linux-mips.org
-Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, linux-mips@linux-mips.org, Nathan Sullivan <nathan.sullivan@ni.com>
-Message-ID: <20170314161323.2L3xJ4XezFxUv_IwbHxjWUpqcYpJhVWZSe1teuKSp9E@z>
+To: David Laight <David.Laight@ACULAB.COM>
+Cc: 'Till Smejkal' <till.smejkal@googlemail.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@mellanox.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>, Andy Lutomirski <luto@amacapital.net>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Pawel Osciak <pawel@osciak.com>, Marek Szyprowski <m.szyprowski@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>, Felipe Balbi <balbi@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Benjamin LaHaise <bcrl@kvack.org>, Nadia Yvette Chambers <nyc@holomorphy.com>, Jeff Layton <jlayton@poochiereds.net>, "J. Bruce Fields" <bfields@fieldses.org>, Peter Zijlstra <peterz@infradead.org>, Hugh Dickins <hughd@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-aio@kvack.org" <linux-aio@kvack.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>, "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Message-ID: <20170314161855.-su8vx6XqAqqvcvTO_VpRWPvtWCke4JZdm1i72LJIOc@z>
 
-Support the National Instruments 169445 board.
+On Tue, 14 Mar 2017, David Laight wrote:
+> From: Linuxppc-dev Till Smejkal
+> > Sent: 13 March 2017 22:14
+> > The only way until now to create a new memory map was via the exported
+> > function 'mm_alloc'. Unfortunately, this function not only allocates a new
+> > memory map, but also completely initializes it. However, with the
+> > introduction of first class virtual address spaces, some initialization
+> > steps done in 'mm_alloc' are not applicable to the memory maps needed for
+> > this feature and hence would lead to errors in the kernel code.
+> > 
+> > Instead of introducing a new function that can allocate and initialize
+> > memory maps for first class virtual address spaces and potentially
+> > duplicate some code, I decided to split the mm_alloc function as well as
+> > the 'mm_init' function that it uses.
+> > 
+> > Now there are four functions exported instead of only one. The new
+> > 'mm_alloc' function only allocates a new mm_struct and zeros it out. If one
+> > want to have the old behavior of mm_alloc one can use the newly introduced
+> > function 'mm_alloc_and_setup' which not only allocates a new mm_struct but
+> > also fully initializes it.
+> ...
+> 
+> That looks like bugs waiting to happen.
+> You need unchanged code to fail to compile.
 
-Signed-off-by: Nathan Sullivan <nathan.sullivan@ni.com>
----
- Documentation/devicetree/bindings/mips/ni.txt   |   7 ++
- MAINTAINERS                                     |   8 ++
- arch/mips/boot/dts/Makefile                     |   1 +
- arch/mips/boot/dts/ni/169445.dts                | 100 ++++++++++++++++++++++++
- arch/mips/boot/dts/ni/Makefile                  |   7 ++
- arch/mips/configs/generic/board-ni169445.config |  27 +++++++
- arch/mips/generic/Kconfig                       |   6 ++
- arch/mips/generic/vmlinux.its.S                 |  25 ++++++
- 8 files changed, 181 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mips/ni.txt
- create mode 100644 arch/mips/boot/dts/ni/169445.dts
- create mode 100644 arch/mips/boot/dts/ni/Makefile
- create mode 100644 arch/mips/configs/generic/board-ni169445.config
+Thank you for this hint. I can give the new mm_alloc function a different name so
+that code that uses the *old* mm_alloc function will fail to compile. I just reused
+the old name when I wrote the code, because mm_alloc was only used in very few
+locations in the kernel (2 times in the whole kernel source) which made identifying
+and changing them very easy. I also don't think that there will be many users in the
+kernel for mm_alloc in the future because it is a relatively low level data
+structure. But if it is better to use a different name for the new function, I am
+very happy to change this.
 
-diff --git a/Documentation/devicetree/bindings/mips/ni.txt b/Documentation/devicetree/bindings/mips/ni.txt
-new file mode 100644
-index 0000000..722bf2d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mips/ni.txt
-@@ -0,0 +1,7 @@
-+National Instruments MIPS platforms
-+
-+required root node properties:
-+	- compatible: must be "ni,169445"
-+
-+CPU Nodes
-+	- compatible: must be "mti,mips14KEc"
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c265a5f..b72f059 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8887,6 +8887,14 @@ F:	include/linux/sunrpc/
- F:	include/uapi/linux/nfs*
- F:	include/uapi/linux/sunrpc/
- 
-+NI169445 MIPS ARCHITECTURE
-+M:	Nathan Sullivan <nathan.sullivan@ni.com>
-+L:	linux-mips@linux-mips.org
-+S:	Maintained
-+F:	arch/mips/boot/dts/ni/
-+F:	arch/mips/configs/generic/board-ni169445.config
-+F:	Documentation/devicetree/bindings/mips/ni.txt
-+
- NILFS2 FILESYSTEM
- M:	Ryusuke Konishi <konishi.ryusuke@lab.ntt.co.jp>
- L:	linux-nilfs@vger.kernel.org
-diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
-index b9db492..27b0f37 100644
---- a/arch/mips/boot/dts/Makefile
-+++ b/arch/mips/boot/dts/Makefile
-@@ -4,6 +4,7 @@ dts-dirs	+= img
- dts-dirs	+= ingenic
- dts-dirs	+= lantiq
- dts-dirs	+= mti
-+dts-dirs	+= ni
- dts-dirs	+= netlogic
- dts-dirs	+= pic32
- dts-dirs	+= qca
-diff --git a/arch/mips/boot/dts/ni/169445.dts b/arch/mips/boot/dts/ni/169445.dts
-new file mode 100644
-index 0000000..9746576
---- /dev/null
-+++ b/arch/mips/boot/dts/ni/169445.dts
-@@ -0,0 +1,100 @@
-+/dts-v1/;
-+
-+/ {
-+	#address-cells = <1>;
-+	#size-cells = <1>;
-+	compatible = "ni,169445";
-+
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		cpu@0 {
-+			device_type = "cpu";
-+			compatible = "mti,mips14KEc";
-+			clocks = <&baseclk>;
-+			reg = <0>;
-+		};
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x10000000>;
-+	};
-+
-+	baseclk: baseclock {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <50000000>;
-+	};
-+
-+	cpu_intc: cpu_intc {
-+		#address-cells = <0>;
-+		compatible = "mti,cpu-interrupt-controller";
-+		interrupt-controller;
-+		#interrupt-cells = <1>;
-+	};
-+
-+	ahb@0 {
-+		compatible = "simple-bus";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges = <0x0 0x1f300000 0x80FFF>;
-+
-+		gpio1:gpio-controller@1f300010 {
-+			compatible = "ni,169445-nand-gpio";
-+			reg = <0x10 0x4>;
-+			reg-names = "dat";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+		};
-+
-+		gpio2:gpio-controller@1f300014 {
-+			compatible = "ni,169445-nand-gpio";
-+			reg = <0x14 0x4>;
-+			reg-names = "dat";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			no-output;
-+		};
-+
-+		nand@1f300000 {
-+			compatible = "gpio-control-nand";
-+			nand-on-flash-bbt;
-+			nand-ecc-mode = "soft_bch";
-+			nand-ecc-step-size = <512>;
-+			nand-ecc-strength = <4>;
-+			reg = <0x0 4>;
-+			gpios = <&gpio2 0 0>, /* rdy */
-+				<&gpio1 1 0>, /* nce */
-+				<&gpio1 2 0>, /* ale */
-+				<&gpio1 3 0>, /* cle */
-+				<&gpio1 4 0>; /* nwp */
-+		};
-+
-+		serial@1f380000 {
-+			compatible = "ns16550a";
-+			reg = <0x80000 0x1000>;
-+			interrupt-parent = <&cpu_intc>;
-+			interrupts = <6>;
-+			clocks = <&baseclk>;
-+			reg-shift = <0>;
-+		};
-+
-+		ethernet@1f340000 {
-+			compatible = "snps,dwmac-4.10a";
-+			interrupt-parent = <&cpu_intc>;
-+			interrupts = <5>;
-+			interrupt-names = "macirq";
-+			reg = <0x40000 0x2000>;
-+			clock-names = "stmmaceth", "pclk";
-+			clocks = <&baseclk>, <&baseclk>;
-+
-+			phy-mode = "rgmii";
-+
-+			fixed-link {
-+				speed = <1000>;
-+				full-duplex;
-+			};
-+		};
-+	};
-+};
-diff --git a/arch/mips/boot/dts/ni/Makefile b/arch/mips/boot/dts/ni/Makefile
-new file mode 100644
-index 0000000..66cfdff
---- /dev/null
-+++ b/arch/mips/boot/dts/ni/Makefile
-@@ -0,0 +1,7 @@
-+dtb-$(CONFIG_FIT_IMAGE_FDT_NI169445)	+= 169445.dtb
-+
-+# Force kbuild to make empty built-in.o if necessary
-+obj-					+= dummy.o
-+
-+always					:= $(dtb-y)
-+clean-files				:= *.dtb *.dtb.S
-diff --git a/arch/mips/configs/generic/board-ni169445.config b/arch/mips/configs/generic/board-ni169445.config
-new file mode 100644
-index 0000000..0bae1f8
---- /dev/null
-+++ b/arch/mips/configs/generic/board-ni169445.config
-@@ -0,0 +1,27 @@
-+CONFIG_FIT_IMAGE_FDT_NI169445=y
-+
-+CONFIG_SERIAL_8250=y
-+CONFIG_SERIAL_8250_CONSOLE=y
-+CONFIG_SERIAL_OF_PLATFORM=y
-+
-+CONFIG_GPIOLIB=y
-+CONFIG_GPIO_SYSFS=y
-+CONFIG_GPIO_GENERIC_PLATFORM=y
-+
-+CONFIG_MTD=y
-+CONFIG_MTD_BLOCK=y
-+CONFIG_MTD_CMDLINE_PARTS=y
-+
-+CONFIG_MTD_NAND_ECC=y
-+CONFIG_MTD_NAND_ECC_BCH=y
-+CONFIG_MTD_NAND=y
-+CONFIG_MTD_NAND_GPIO=y
-+CONFIG_MTD_NAND_IDS=y
-+
-+CONFIG_MTD_UBI=y
-+CONFIG_MTD_UBI_BLOCK=y
-+
-+CONFIG_NETDEVICES=y
-+CONFIG_STMMAC_ETH=y
-+CONFIG_STMMAC_PLATFORM=y
-+CONFIG_DWMAC_GENERIC=y
-diff --git a/arch/mips/generic/Kconfig b/arch/mips/generic/Kconfig
-index a606b3f..fbf0813 100644
---- a/arch/mips/generic/Kconfig
-+++ b/arch/mips/generic/Kconfig
-@@ -16,4 +16,10 @@ config LEGACY_BOARD_SEAD3
- 	  Enable this to include support for booting on MIPS SEAD-3 FPGA-based
- 	  development boards, which boot using a legacy boot protocol.
- 
-+config FIT_IMAGE_FDT_NI169445
-+	bool "Include FDT for NI 169445"
-+	help
-+	  Enable this to include the FDT for the 169445 platform from
-+	  National Instruments in the FIT kernel image.
-+
- endif
-diff --git a/arch/mips/generic/vmlinux.its.S b/arch/mips/generic/vmlinux.its.S
-index f67fbf1..de851f7 100644
---- a/arch/mips/generic/vmlinux.its.S
-+++ b/arch/mips/generic/vmlinux.its.S
-@@ -29,3 +29,28 @@
- 		};
- 	};
- };
-+
-+#ifdef CONFIG_FIT_IMAGE_FDT_NI169445
-+/ {
-+	images {
-+		fdt@ni169445 {
-+			description = "NI 169445 device tree";
-+			data = /incbin/("boot/dts/ni/169445.dtb");
-+			type = "flat_dt";
-+			arch = "mips";
-+			compression = "none";
-+			hash@0 {
-+				algo = "sha1";
-+			};
-+		};
-+	};
-+
-+	configurations {
-+		conf@ni169445 {
-+			description = "NI 169445 Linux Kernel";
-+			kernel = "kernel@0";
-+			fdt = "fdt@ni169445";
-+		};
-+	};
-+};
-+#endif
--- 
-2.1.4
+Till

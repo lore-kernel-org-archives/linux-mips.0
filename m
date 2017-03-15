@@ -1,17 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:37345 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:45761 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23990514AbdCOHGZccyNH (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Mar 2017 08:06:25 +0100
+        with ESMTP id S23992028AbdCOHYSrHuJF (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Mar 2017 08:24:18 +0100
 Subject: Re: [PATCH 0/2] cpu-features.h rename
 References: <1489412018-30387-1-git-send-email-marcin.nowakowski@imgtec.com>
  <f5870aae-0974-6213-2499-bbfb365cf063@gmail.com>
- <a868cad2-a129-167b-69ad-8fb1163f4fc2@gentoo.org>
+ <be773311-fb5b-949e-378e-09db2baa8cd4@imgtec.com>
+ <20170314082906.GG26432@linux-mips.org>
+ <d1b970e6-f87e-3e35-7c74-7fc0a6a4c0f2@imgtec.com>
+ <80d2de6c-2196-5851-ebd6-308be40ea78f@gmail.com>
 From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Message-ID: <8d824e13-3ffe-b57e-f500-e18f41c50071@imgtec.com>
-Date: Wed, 15 Mar 2017 08:06:18 +0100
+Message-ID: <bf7bb5eb-abeb-7ac5-3610-2a9ce6ad3f66@imgtec.com>
+Date: Wed, 15 Mar 2017 08:24:11 +0100
 MIME-Version: 1.0
-In-Reply-To: <a868cad2-a129-167b-69ad-8fb1163f4fc2@gentoo.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <80d2de6c-2196-5851-ebd6-308be40ea78f@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-Path: <Marcin.Nowakowski@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
@@ -23,50 +26,103 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Joshua Kinard <kumba@gentoo.org>, Florian Fainelli <f.fainelli@gmail.com>, ralf@linux-mips.org
+To: Florian Fainelli <f.fainelli@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20170315070618.Y06LxO6up2BODGMsm1DidMKaR4cpqy4m4YbEZxTOiZU@z>
+Message-ID: <20170315072411._yNZttwbLjzNkg5kiX2Ij76QE7mj0trlsxTBBDVePFI@z>
 
-Hi Joshua,
+Hi Florian,
 
-On 14.03.2017 21:22, Joshua Kinard wrote:
-> On 03/13/2017 13:08, Florian Fainelli wrote:
->> On 03/13/2017 06:33 AM, Marcin Nowakowski wrote:
->>> Since the introduction of GENERIC_CPU_AUTOPROBE
->>> (https://patchwork.linux-mips.org/patch/15395/) we've got 2 very similarily
->>> named headers: cpu-features.h and cpufeature.h.
->>> Since the latter is used by all platforms that implement
->>> GENERIC_CPU_AUTOPROBE functionality, it's better to rename the MIPS-specific
->>> cpu-features.h.
+On 15.03.2017 03:04, Florian Fainelli wrote:
+>
+>
+> On 03/14/2017 01:45 AM, Marcin Nowakowski wrote:
+>> Hi Ralf,
+>>
+>> On 14.03.2017 09:29, Ralf Baechle wrote:
+>>> On Tue, Mar 14, 2017 at 08:40:21AM +0100, Marcin Nowakowski wrote:
 >>>
->>> Marcin Nowakowski (2):
->>>   MIPS: mach-rm: Remove recursive include of cpu-feature-overrides.h
->>>   MIPS: rename cpu-features.h -> cpucaps.h
+>>>> On 13.03.2017 18:08, Florian Fainelli wrote:
+>>>>> On 03/13/2017 06:33 AM, Marcin Nowakowski wrote:
+>>>>>> Since the introduction of GENERIC_CPU_AUTOPROBE
+>>>>>> (https://patchwork.linux-mips.org/patch/15395/) we've got 2 very
+>>>>>> similarily
+>>>>>> named headers: cpu-features.h and cpufeature.h.
+>>>>>> Since the latter is used by all platforms that implement
+>>>>>> GENERIC_CPU_AUTOPROBE functionality, it's better to rename the
+>>>>>> MIPS-specific
+>>>>>> cpu-features.h.
+>>>>>>
+>>>>>> Marcin Nowakowski (2):
+>>>>>>   MIPS: mach-rm: Remove recursive include of cpu-feature-overrides.h
+>>>>>>   MIPS: rename cpu-features.h -> cpucaps.h
+>>>>>
+>>>>> That's a lot of churn that could cause some good headaches in
+>>>>> backporting stable changes affecting cpu-feature-overrides.h.
+>>>>>
+>>>>> Can we just do the cpu-features.h -> cpucaps.h rename and keep
+>>>>> cpu-feature-overrides.h around?
+>>>>
+>>>> That's of course possible, but I think it would make the naming quite
+>>>> confusing as well, as it would be very unclear for any reader as to
+>>>> why a
+>>>> 'cpu-feature-overrides' overrides 'cpucaps'.
+>>>>
+>>>> I've looked at the change history of these files and most receive very
+>>>> little updates (which is hardly surprising given the changes are done
+>>>> mostly
+>>>> during initial integration of a new cpu or soon after), and none of the
+>>>> changes in those files were marked for stable. I think it's safe to
+>>>> assume
+>>>> that this pattern is not likely to change, would you agree?
+>>>
+>>> I've noticed the same pattern - and it's a little concerning.  Not adding
+>>> values for later features means the'll probably be runtime detected
+>>> resulting in a bigger, slower kernel.
 >>
->> That's a lot of churn that could cause some good headaches in
->> backporting stable changes affecting cpu-feature-overrides.h.
->>
->> Can we just do the cpu-features.h -> cpucaps.h rename and keep
->> cpu-feature-overrides.h around?
+>> But that is a type of optimisation that may (should?) be done when new
+>> features are added, which in most cases doesn't make it a candidate for
+>> backporting to stable.
 >
-> Instead of "cpucaps.h", which is somewhat short of a filename and doesn't
-> clearly convey its purpose, can we instead go with something more descriptive
-> like "cpu-capabilities.h"?  This would, however, make the overrides file have a
-> bit of a long name at "cpu-capabilities-overrides.h".
->
+> You may be fixing actual bugs by patching this file, e.g: selecting the
+> correct value for e.g: cpu_has_dc_aliases, cpu_has_ic_fills_ic,
+> cpu_dcache_line_size() and so on. Ideally every feature in there has
+> been properly set/cleared in arch/mips/kernel/cpu-probe.c but there
+> could be platform relying exclusively on cpu-feature-overrides.h to
+> provide the correct value.
 
-There are currently a few '*caps.[ch]' files in the kernel and no file 
-named '*capabilities.[ch]'.
+Yes, of course that is possible and I'm not dismissing that fact.
+I've only stated that looking at the git history of these files (which 
+dates back to 2008 when they were moved from a different location), 
+there have been only a few changes to them and most of the changes were 
+not bugfixes for specific cores but general code changes applied 
+throughout the tree.
+So in an unlikely case that a bug is discovered that will be fixed by 
+updating a specific cpu(caps|feature)-override.h, there would be a 
+slightly increased effort required to backport the patch due to a 
+filename difference, but IMO that's hardly a reason to prevent any 
+changes and to keep the filenames inconsistent?
+It's not like I'm changing the whole logic behind cpu_has functionality ...
 
-caps and capabilities are interchangeably used in variable and type 
-declarations, so both are common and I think should be clear enough to 
-most users ...
 
-grep -RIn " .*capabilities.*" | wc -l  -> 3823
-grep -RIn " .*caps.*" | wc -l -> 11356
+> If not about the backport argument, just changing that many files at
+> once (have they actually been build tested at least?)
 
-The latter seems to be more prevailing as well (especially that 
-'capabilities' much more often appears in documentation and comments).
+I have build-tested this with some defconfigs affected.
+
+> just does not seem
+> practical nor worth it to me.
+
+I think having a sensible file naming scheme is worth the change and 
+you seem to see this change as a much bigger one than I do. From my 
+perspective this change is a really trivial one.
+
+
+> Just put a big fat disclaimer: this is not
+> to be conflated with cpucaps.h (and vice versa).
+
+But I'm not in any way changing the behaviour or meaning of these files. 
+They are exactly as they have been for the past 10 (or more) years ... 
+it's just a change of name.
 
 
 Marcin

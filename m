@@ -1,16 +1,18 @@
-Received: from mail-wr0-x241.google.com ([IPv6:2a00:1450:400c:c0c::241]:36597
-        "EHLO mail-wr0-x241.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992126AbdCPRun0jJJu (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 16 Mar 2017 18:50:43 +0100
-From: Till Smejkal <till.smejkal@googlemail.com>
-Date: Thu, 16 Mar 2017 10:50:33 -0700
-Subject: Re: [RFC PATCH 00/13] Introduce first class virtual address spaces
-Message-ID: <20170316175033.pgkep75iszqy3csb@arch-dev>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:13552 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992214AbdCQO7x2sM0h (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 17 Mar 2017 15:59:53 +0100
+Date: Fri, 17 Mar 2017 14:59:47 +0000
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH] MIPS: disable page faults in syscall_get_arguments
+Message-ID: <20170317145947.GK2878@jhogan-linux.le.imgtec.org>
+References: <1489744570-16929-1-git-send-email-larper@axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ogUXNSQj4OI1q3LQ"
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.20.1703161841220.3586@nanos>
-Return-Path: <till.smejkal@googlemail.com>
+In-Reply-To: <1489744570-16929-1-git-send-email-larper@axis.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,27 +22,107 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Till Smejkal <till.smejkal@googlemail.com>, Andy Lutomirski <luto@amacapital.net>, Andy Lutomirski <luto@kernel.org>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Chris Metcalf <cmetcalf@mellanox.com>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Pawel Osciak <pawel@osciak.com>, Marek Szyprowski <m.szyprowski@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@atmel.com>, Felipe Balbi <balbi@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Benjamin LaHaise <bcrl@kvack.org>, Nadia Yvette Chambers <nyc@holomorphy.com>, Jeff Layton <jlayton@poochiereds.net>, "J. Bruce Fields" <bfields@fieldses.org>, Peter Zijlstra <peterz@infradead.org>, Hugh Dickins <hughd@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-alpha@vger.kernel.org, arcml <linux-snps-arc@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, adi-buildroot-devel@lists.sourceforge.net, linux-hexagon@vger.kernel.org, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, linux-metag@vger.kernel.org, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-parisc@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, Linux Media Mailing List <linux-media@vger.kernel.org>, linux-mtd@lists.infradead.org, USB list <linux-usb@vger.kernel.org>, Linux FS Devel <linux-fsdevel@vger.kernel.org>, linux-aio@kvack.org, "linux-mm@kvack.org" <linux-mm@kvack.org>, Linux API <linux-api@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>
-Message-ID: <20170316175033.1nUplQ42xk7l0z4Ugzf7zcrykPiyD6TxZKVlT9uyTGg@z>
+To: Lars Persson <lars.persson@axis.com>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org, Lars Persson <larper@axis.com>
+Message-ID: <20170317145947.76VZzNi2SYalTVl1oosk_g2nURvCtR0Mv4FSblHh4h4@z>
 
-On Thu, 16 Mar 2017, Thomas Gleixner wrote:
-> On Thu, 16 Mar 2017, Till Smejkal wrote:
-> > On Thu, 16 Mar 2017, Thomas Gleixner wrote:
-> > > Why do we need yet another mechanism to represent something which looks
-> > > like a file instead of simply using existing mechanisms and extend them?
-> > 
-> > You are right. I also recognized during the discussion with Andy, Chris,
-> > Matthew, Luck, Rich and the others that there are already other
-> > techniques in the Linux kernel that can achieve the same functionality
-> > when combined. As I said also to the others, I will drop the VAS segments
-> > for future versions. The first class virtual address space feature was
-> > the more interesting part of the patchset anyways.
-> 
-> While you are at it, could you please drop this 'first class' marketing as
-> well? It has zero technical value, really.
+--ogUXNSQj4OI1q3LQ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes of course. I am sorry for the trouble that I caused already.
+On Fri, Mar 17, 2017 at 10:56:10AM +0100, Lars Persson wrote:
+> We call a sleeping function in MIPS' get_syscall_arguments to read
+> from the userspace stack. Disable page faults around these calls to
+> prevent sleep in atomic contexts.
+>=20
+> The problem was observed as the following splat with ftrace system
+> call tracing enabled:
+>=20
+> BUG: sleeping function called from invalid context at arch/mips/include/a=
+sm/syscall.h:48
+> in_atomic(): 1, irqs_disabled(): 0, pid: 1389, name: sh
+> Preemption disabled at:
+> [<801d31d4>] __fd_install+0x50/0x194
+> CPU: 2 PID: 1389 Comm: sh Not tainted 4.9.14-axis4-devel #6
+> Stack : 809d7bfa 0000003b 00000000 00000000 00000000 00000000 800a5438 80=
+8c3507
+>         8e77599c 0000056d 00000002 809c4f44 8fc060e0 8dc07f68 00000005 80=
+0a5468
+>         00000005 80403b30 00000000 00000000 807f5b64 8dc07e0c 8dc07df4 80=
+14a36c
+>         00000000 8004927c 809d7bf8 00000024 8dc07e0c 00000000 00000002 80=
+7eaf58
+>         00000000 00000000 00000000 00000000 00000000 00000000 00000000 00=
+000000
+>         ...
+> Call Trace:
+> [<80021a68>] show_stack+0x94/0xb0
+> [<803f4e38>] dump_stack+0x98/0xd0
+> [<80074838>] ___might_sleep+0x160/0x1e4
+> [<801205f8>] ftrace_syscall_enter+0x1c8/0x3ac
+> [<8001f77c>] syscall_trace_enter+0x18c/0x1f8
+> [<8002b3f8>] syscall_trace_entry+0x44/0x94
 
-Thanks
-Till
+Hmm, tricky. If for some reason the stack page was swapped out before
+syscall_get_arguments() was called, then by disabling page faults the
+args would be left uninitialised, even when not called from IRQ disabled
+context...
+
+We already copy the args to the kernel stack in handle_sys (with IRQs
+enabled), but thats as arguments to the syscall handler function and I
+suppose there's nothing to stop it overwriting those arguments.
+
+Cheers
+James
+
+>=20
+> Signed-off-by: Lars Persson <larper@axis.com>
+> ---
+>  arch/mips/include/asm/syscall.h | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/arch/mips/include/asm/syscall.h b/arch/mips/include/asm/sysc=
+all.h
+> index d878825..270a6d5 100644
+> --- a/arch/mips/include/asm/syscall.h
+> +++ b/arch/mips/include/asm/syscall.h
+> @@ -104,8 +104,10 @@ static inline void syscall_get_arguments(struct task=
+_struct *task,
+>  	    (regs->regs[2] =3D=3D __NR_syscall))
+>  		i++;
+> =20
+> +	pagefault_disable();
+>  	while (n--)
+>  		ret |=3D mips_get_syscall_arg(args++, task, regs, i++);
+> +	pagefault_enable();
+> =20
+>  	/*
+>  	 * No way to communicate an error because this is a void function.
+> --=20
+> 2.1.4
+>=20
+>=20
+
+--ogUXNSQj4OI1q3LQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJYy/nTAAoJEGwLaZPeOHZ6hkQP/0P+u8LQ+BE6QxkZa8B0fw0F
+YzUriM76DPX3ZBPmcT3D9kAUP0GfJzzqOv52RqyUfhIHOiF/5CHlk582egxryCoA
+MeKR9caygTJbYelE/TjWmcA4RugkBOcFeHqELRGroz/siHes+CNjSY93gaaxB46s
+yMSU3WrB7GGRLXxL/ekv0eK+Zqmy8Xh+BwQAVN9f6dIxK4Cp8sduJYczdBwPcpQ1
+YP/RnxCfcgPMNOz3cBVAx8qRoRdT4gOwExoOsDOgxgCeiPEJyid2llL1GdYeIO2E
+ELlKxaahLniiiBDmsu0xC+mi9IftfOoMAyC+uTZGOMs9KxQErncTWhSwAyMgAaFK
+XVMw+6nvff1LiXxRB3fnLTcORsv+WGv11TYPY3KMYcvUMPwovQWB8UPsv+btNNob
+t5qqdbfVg7PMqGAr14C2u6Q0wTBFoUCkIBrALYah2zQNW4JmVym1VCunRU/cJHNJ
+/PhC8phFL72jqmLjfakwS8k+g+E3Izv7xWTW+zKjwjsnZ4mZR/DTyI8vQleYuZZ7
+uCbfIRdSlCa3P15T3mIcgXFLh3wKPW1y3hYU1GPzdmdKTCGCHK8CqQRzcc5KPFX0
+L+J0D3S7xl4G7Sf/JWauk+2sf1I5xCyLfnqQPMcnIHN6TY9258/8zpFNVMsvNfyQ
+wZrWfKGTX0vq4pdRCVIE
+=+9Bj
+-----END PGP SIGNATURE-----
+
+--ogUXNSQj4OI1q3LQ--

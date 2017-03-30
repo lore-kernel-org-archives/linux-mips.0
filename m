@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:52677 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:13310 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993612AbdC2Mfbr4I0g (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 29 Mar 2017 14:35:31 +0200
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Subject: [PATCH] MIPS: kernel/proc: expose elf_hwcap flags through cpuinfo
-Date: Wed, 29 Mar 2017 14:35:20 +0200
-Message-ID: <1490790920-5629-1-git-send-email-marcin.nowakowski@imgtec.com>
+        with ESMTP id S23992155AbdC3PGQRRqO8 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 30 Mar 2017 17:06:16 +0200
+From: James Hogan <james.hogan@imgtec.com>
+Subject: [PATCH] MIPS: KGDB: Use kernel context for sleeping threads
+Date: Thu, 30 Mar 2017 16:06:02 +0100
+Message-ID: <c34c16db9efabb09ca200d5b2b14ad0e870a0b1c.1490876180.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Marcin.Nowakowski@imgtec.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,63 +19,124 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Message-ID: <20170329123520.5tT3a7B66fkXPsSEysMtwItgVSPFAx4U9-Gm2r5UeJY@z>
+Cc: James Hogan <james.hogan@imgtec.com>, Jason Wessel <jason.wessel@windriver.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20170330150602.WujA6dMbbkPqRc-B5mi2ScrLFshwQhO-bHmYOQi7EzU@z>
 
-According to the kernel man pages for getauxval, all flags that are
-exposed through AT_HWCAP should also be presented in human-readable form
-in /proc/cpuinfo. MIPS currently lacks that feature.
+KGDB is a kernel debug stub and it can't be used to debug userland as it
+can only safely access kernel memory.
 
-At the moment only 2 flags (r6, msa) are available which somewhat
-duplicates information already exposed through the 'isa' and 'ASEs'
-fields of cpuinfo, but they are scattered around various fields now that
-do not directly map to the AT_HWCAP flags. This field will also be
-useful when more feature flags are available that do not map to features
-exposed through existing interfaces.
+On MIPS however KGDB has always got the register state of sleeping
+processes from the userland register context at the beginning of the
+kernel stack. This is meaningless for kernel threads (which never enter
+userland), and for user threads it prevents the user seeing what it is
+doing while in the kernel:
 
-Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+(gdb) info threads
+  Id   Target Id         Frame
+  ...
+  3    Thread 2 (kthreadd) 0x0000000000000000 in ?? ()
+  2    Thread 1 (init)   0x000000007705c4b4 in ?? ()
+  1    Thread -2 (shadowCPU0) 0xffffffff8012524c in arch_kgdb_breakpoint () at arch/mips/kernel/kgdb.c:201
+
+Get the register state instead from the (partial) kernel register
+context stored in the task's thread_struct for resume() to restore. All
+threads now correctly appear to be in context_switch():
+
+(gdb) info threads
+  Id   Target Id         Frame
+  ...
+  3    Thread 2 (kthreadd) context_switch (rq=<optimized out>, cookie=..., next=<optimized out>, prev=0x0) at kernel/sched/core.c:2903
+  2    Thread 1 (init)   context_switch (rq=<optimized out>, cookie=..., next=<optimized out>, prev=0x0) at kernel/sched/core.c:2903
+  1    Thread -2 (shadowCPU0) 0xffffffff8012524c in arch_kgdb_breakpoint () at arch/mips/kernel/kgdb.c:201
+
+Call clobbered registers which aren't saved and exception registers
+(BadVAddr & Cause) which can't be easily determined without stack
+unwinding are reported as 0. The PC is taken from the return address,
+such that the state presented matches that found immediately after
+returning from resume().
+
+Fixes: 8854700115ec ("[MIPS] kgdb: add arch support for the kernel's kgdb core")
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Jason Wessel <jason.wessel@windriver.com>
+Cc: linux-mips@linux-mips.org
+Cc: stable@vger.kernel.org
 ---
- arch/mips/kernel/proc.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ arch/mips/kernel/kgdb.c | 48 ++++++++++++++++++++++++++++--------------
+ 1 file changed, 33 insertions(+), 15 deletions(-)
 
-diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
-index 4eff2ae..593aaac 100644
---- a/arch/mips/kernel/proc.c
-+++ b/arch/mips/kernel/proc.c
-@@ -10,6 +10,7 @@
- #include <asm/bootinfo.h>
- #include <asm/cpu.h>
- #include <asm/cpu-features.h>
-+#include <asm/elf.h>
- #include <asm/idle.h>
- #include <asm/mipsregs.h>
- #include <asm/processor.h>
-@@ -32,6 +33,12 @@ int proc_cpuinfo_notifier_call_chain(unsigned long val, void *v)
- 	return raw_notifier_call_chain(&proc_cpuinfo_chain, val, v);
+diff --git a/arch/mips/kernel/kgdb.c b/arch/mips/kernel/kgdb.c
+index 1f4bd222ba76..eb6c0d582626 100644
+--- a/arch/mips/kernel/kgdb.c
++++ b/arch/mips/kernel/kgdb.c
+@@ -244,9 +244,6 @@ static int compute_signal(int tt)
+ void sleeping_thread_to_gdb_regs(unsigned long *gdb_regs, struct task_struct *p)
+ {
+ 	int reg;
+-	struct thread_info *ti = task_thread_info(p);
+-	unsigned long ksp = (unsigned long)ti + THREAD_SIZE - 32;
+-	struct pt_regs *regs = (struct pt_regs *)ksp - 1;
+ #if (KGDB_GDB_REG_SIZE == 32)
+ 	u32 *ptr = (u32 *)gdb_regs;
+ #else
+@@ -254,25 +251,46 @@ void sleeping_thread_to_gdb_regs(unsigned long *gdb_regs, struct task_struct *p)
+ #endif
+ 
+ 	for (reg = 0; reg < 16; reg++)
+-		*(ptr++) = regs->regs[reg];
++		*(ptr++) = 0;
+ 
+ 	/* S0 - S7 */
+-	for (reg = 16; reg < 24; reg++)
+-		*(ptr++) = regs->regs[reg];
++	*(ptr++) = p->thread.reg16;
++	*(ptr++) = p->thread.reg17;
++	*(ptr++) = p->thread.reg18;
++	*(ptr++) = p->thread.reg19;
++	*(ptr++) = p->thread.reg20;
++	*(ptr++) = p->thread.reg21;
++	*(ptr++) = p->thread.reg22;
++	*(ptr++) = p->thread.reg23;
+ 
+ 	for (reg = 24; reg < 28; reg++)
+ 		*(ptr++) = 0;
+ 
+ 	/* GP, SP, FP, RA */
+-	for (reg = 28; reg < 32; reg++)
+-		*(ptr++) = regs->regs[reg];
+-
+-	*(ptr++) = regs->cp0_status;
+-	*(ptr++) = regs->lo;
+-	*(ptr++) = regs->hi;
+-	*(ptr++) = regs->cp0_badvaddr;
+-	*(ptr++) = regs->cp0_cause;
+-	*(ptr++) = regs->cp0_epc;
++	*(ptr++) = (long)p;
++	*(ptr++) = p->thread.reg29;
++	*(ptr++) = p->thread.reg30;
++	*(ptr++) = p->thread.reg31;
++
++	*(ptr++) = p->thread.cp0_status;
++
++	/* lo, hi */
++	*(ptr++) = 0;
++	*(ptr++) = 0;
++
++	/*
++	 * BadVAddr, Cause
++	 * Ideally these would come from the last exception frame up the stack
++	 * but that requires unwinding, otherwise we can't know much for sure.
++	 */
++	*(ptr++) = 0;
++	*(ptr++) = 0;
++
++	/*
++	 * PC
++	 * use return address (RA), i.e. the moment after return from resume()
++	 */
++	*(ptr++) = p->thread.reg31;
  }
  
-+static const char *const hwcap_str[] = {
-+	"r6",
-+	"msa",
-+	NULL
-+};
-+
- static int show_cpuinfo(struct seq_file *m, void *v)
- {
- 	struct proc_cpuinfo_notifier_args proc_cpuinfo_notifier_args;
-@@ -122,7 +129,12 @@ static int show_cpuinfo(struct seq_file *m, void *v)
- 	if (cpu_has_eva)	seq_printf(m, "%s", " eva");
- 	if (cpu_has_htw)	seq_printf(m, "%s", " htw");
- 	if (cpu_has_xpa)	seq_printf(m, "%s", " xpa");
--	seq_printf(m, "\n");
-+
-+	seq_puts(m, "\nfeatures\t\t: ");
-+	for (i = 0; hwcap_str[i]; i++)
-+		if (elf_hwcap & (1 << i))
-+			seq_printf(m, "%s ", hwcap_str[i]);
-+	seq_puts(m, "\n");
- 
- 	if (cpu_has_mmips) {
- 		seq_printf(m, "micromips kernel\t: %s\n",
+ void kgdb_arch_set_pc(struct pt_regs *regs, unsigned long pc)
 -- 
-2.7.4
+git-series 0.8.10

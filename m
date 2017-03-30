@@ -1,13 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:15288 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:35231 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993871AbdC3TINWOlNr (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 30 Mar 2017 21:08:13 +0200
+        with ESMTP id S23992366AbdC3UwYkbDqH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 30 Mar 2017 22:52:24 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 5/5] MIPS: Stengthen IPI IRQ domain sanity check
-Date: Thu, 30 Mar 2017 12:06:13 -0700
-Message-ID: <20170330190614.14844-6-paul.burton@imgtec.com>
-In-Reply-To: <20170330190614.14844-1-paul.burton@imgtec.com>
-References: <20170330190614.14844-1-paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: Remove CONFIG_ARCH_HAS_ILOG2_U{32,64}
+Date: Thu, 30 Mar 2017 13:51:59 -0700
+Message-ID: <20170330205200.25635-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -21,69 +19,42 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <marc.zyngier@arm.com>, Jason Cooper <jason@lakedaemon.net>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20170330190613.oyJ34WSdjlBU7GdVgl_2LF3_oZDnCCva5qbRgaXtMQ0@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, trivial@kernel.org
+Message-ID: <20170330205159.O9g3mvNGMaApk4bJtVKAWYKlcGdFC2o42emvYfzC-pE@z>
 
-Commit fbde2d7d8290 ("MIPS: Add generic SMP IPI support") introduced a
-sanity check that an IPI IRQ domain can be found during boot, in order
-to ensure that IPIs are able to be set up in systems using such domains.
-However it was added at a point where systems may have used an IPI IRQ
-domain in some situations but not others, and we could not know which
-were the case until runtime, so commit 578bffc82ec5 ("MIPS: Don't BUG_ON
-when no IPI domain is found") made that check simply skip IPI init if no
-domain were found in order to fix the boot for systems such as QEMU
-Malta.
-
-We now use IPI IRQ domains for the MIPS CPU interrupt controller, which
-means systems which make use of IPI IRQ domains will always do so when
-running on multiple CPUs. As a result we now strengthen the sanity check
-to ensure that an IPI IRQ domain is found when multiple CPUs are present
-in the system.
+We declare CONFIG_ARCH_HAS_ILOG2_U32 & CONFIG_ARCH_HAS_ILOG2_U64 in
+Kconfig, but they are always false since nothing ever selects them. The
+generic fls-based implementation is efficient for MIPS anyway. Remove
+the redundant Kconfig entries.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: Marc Zyngier <marc.zyngier@arm.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
+Cc: trivial@kernel.org
 
 ---
 
- arch/mips/kernel/smp.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ arch/mips/Kconfig | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-index 6e71130549ea..aba1afb64b62 100644
---- a/arch/mips/kernel/smp.c
-+++ b/arch/mips/kernel/smp.c
-@@ -261,16 +261,20 @@ int mips_smp_ipi_allocate(const struct cpumask *mask)
- 		ipidomain = irq_find_matching_host(NULL, DOMAIN_BUS_IPI);
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index a008a9f03072..33bc84ffd6b2 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -1040,14 +1040,6 @@ config RWSEM_GENERIC_SPINLOCK
+ config RWSEM_XCHGADD_ALGORITHM
+ 	bool
  
- 	/*
--	 * There are systems which only use IPI domains some of the time,
--	 * depending upon configuration we don't know until runtime. An
--	 * example is Malta where we may compile in support for GIC & the
--	 * MT ASE, but run on a system which has multiple VPEs in a single
--	 * core and doesn't include a GIC. Until all IPI implementations
--	 * have been converted to use IPI domains the best we can do here
--	 * is to return & hope some other code sets up the IPIs.
-+	 * There are systems which use IPI IRQ domains, but only have one
-+	 * registered when some runtime condition is met. For example a Malta
-+	 * kernel may include support for GIC & CPU interrupt controller IPI
-+	 * IRQ domains, but if run on a system with no GIC & no MT ASE then
-+	 * neither will be supported or registered.
-+	 *
-+	 * We only have a problem if we're actually using multiple CPUs so fail
-+	 * loudly if that is the case. Otherwise simply return, skipping IPI
-+	 * setup, if we're running with only a single CPU.
- 	 */
--	if (!ipidomain)
-+	if (!ipidomain) {
-+		BUG_ON(num_present_cpus() > 1);
- 		return 0;
-+	}
- 
- 	virq = irq_reserve_ipi(ipidomain, mask);
- 	BUG_ON(!virq);
+-config ARCH_HAS_ILOG2_U32
+-	bool
+-	default n
+-
+-config ARCH_HAS_ILOG2_U64
+-	bool
+-	default n
+-
+ config GENERIC_HWEIGHT
+ 	bool
+ 	default y
 -- 
 2.12.1

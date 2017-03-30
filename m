@@ -1,13 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:13310 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992155AbdC3PGQRRqO8 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 30 Mar 2017 17:06:16 +0200
+Received: from mailapp01.imgtec.com ([195.59.15.196]:47225 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992366AbdC3PzcrxoN0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 30 Mar 2017 17:55:32 +0200
+Date: Thu, 30 Mar 2017 16:55:26 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: KGDB: Use kernel context for sleeping threads
-Date: Thu, 30 Mar 2017 16:06:02 +0100
-Message-ID: <c34c16db9efabb09ca200d5b2b14ad0e870a0b1c.1490876180.git-series.james.hogan@imgtec.com>
+Subject: Re: [PATCH] MIPS: KGDB: Use kernel context for sleeping threads
+Message-ID: <20170330155526.GA21492@jhogan-linux.le.imgtec.org>
+References: <c34c16db9efabb09ca200d5b2b14ad0e870a0b1c.1490876180.git-series.james.hogan@imgtec.com>
+ <b8d4921a-2a88-c69d-1272-5589a0bfbbe9@cogentembedded.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
+Content-Disposition: inline
+In-Reply-To: <b8d4921a-2a88-c69d-1272-5589a0bfbbe9@cogentembedded.com>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -18,125 +23,56 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, Jason Wessel <jason.wessel@windriver.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20170330150602.WujA6dMbbkPqRc-B5mi2ScrLFshwQhO-bHmYOQi7EzU@z>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Jason Wessel <jason.wessel@windriver.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20170330155526.uogQMLGs8sKkDP4i4tUGPf3N2meuhuWd8wino87FdOI@z>
 
-KGDB is a kernel debug stub and it can't be used to debug userland as it
-can only safely access kernel memory.
+--mP3DRpeJDSE+ciuQ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On MIPS however KGDB has always got the register state of sleeping
-processes from the userland register context at the beginning of the
-kernel stack. This is meaningless for kernel threads (which never enter
-userland), and for user threads it prevents the user seeing what it is
-doing while in the kernel:
+Hi Sergei,
 
-(gdb) info threads
-  Id   Target Id         Frame
-  ...
-  3    Thread 2 (kthreadd) 0x0000000000000000 in ?? ()
-  2    Thread 1 (init)   0x000000007705c4b4 in ?? ()
-  1    Thread -2 (shadowCPU0) 0xffffffff8012524c in arch_kgdb_breakpoint () at arch/mips/kernel/kgdb.c:201
+On Thu, Mar 30, 2017 at 06:42:08PM +0300, Sergei Shtylyov wrote:
+> On 03/30/2017 06:06 PM, James Hogan wrote:
+> > @@ -254,25 +251,46 @@ void sleeping_thread_to_gdb_regs(unsigned long *g=
+db_regs, struct task_struct *p)
+> >  #endif
+> >
+> >  	for (reg =3D 0; reg < 16; reg++)
+> > -		*(ptr++) =3D regs->regs[reg];
+> > +		*(ptr++) =3D 0;
+>=20
+>     Parens are not really necessary, you can get rid of them, while at it.
 
-Get the register state instead from the (partial) kernel register
-context stored in the task's thread_struct for resume() to restore. All
-threads now correctly appear to be in context_switch():
+While not technically required, I disagree that we should get rid of
+them, simply because after coding in C for almost 20 years I still had
+to look at an operator precedence table to check which of post++ and
+dereference operators take precedence.
 
-(gdb) info threads
-  Id   Target Id         Frame
-  ...
-  3    Thread 2 (kthreadd) context_switch (rq=<optimized out>, cookie=..., next=<optimized out>, prev=0x0) at kernel/sched/core.c:2903
-  2    Thread 1 (init)   context_switch (rq=<optimized out>, cookie=..., next=<optimized out>, prev=0x0) at kernel/sched/core.c:2903
-  1    Thread -2 (shadowCPU0) 0xffffffff8012524c in arch_kgdb_breakpoint () at arch/mips/kernel/kgdb.c:201
+Cheers
+James
 
-Call clobbered registers which aren't saved and exception registers
-(BadVAddr & Cause) which can't be easily determined without stack
-unwinding are reported as 0. The PC is taken from the return address,
-such that the state presented matches that found immediately after
-returning from resume().
+--mP3DRpeJDSE+ciuQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Fixes: 8854700115ec ("[MIPS] kgdb: add arch support for the kernel's kgdb core")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Jason Wessel <jason.wessel@windriver.com>
-Cc: linux-mips@linux-mips.org
-Cc: stable@vger.kernel.org
----
- arch/mips/kernel/kgdb.c | 48 ++++++++++++++++++++++++++++--------------
- 1 file changed, 33 insertions(+), 15 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/arch/mips/kernel/kgdb.c b/arch/mips/kernel/kgdb.c
-index 1f4bd222ba76..eb6c0d582626 100644
---- a/arch/mips/kernel/kgdb.c
-+++ b/arch/mips/kernel/kgdb.c
-@@ -244,9 +244,6 @@ static int compute_signal(int tt)
- void sleeping_thread_to_gdb_regs(unsigned long *gdb_regs, struct task_struct *p)
- {
- 	int reg;
--	struct thread_info *ti = task_thread_info(p);
--	unsigned long ksp = (unsigned long)ti + THREAD_SIZE - 32;
--	struct pt_regs *regs = (struct pt_regs *)ksp - 1;
- #if (KGDB_GDB_REG_SIZE == 32)
- 	u32 *ptr = (u32 *)gdb_regs;
- #else
-@@ -254,25 +251,46 @@ void sleeping_thread_to_gdb_regs(unsigned long *gdb_regs, struct task_struct *p)
- #endif
- 
- 	for (reg = 0; reg < 16; reg++)
--		*(ptr++) = regs->regs[reg];
-+		*(ptr++) = 0;
- 
- 	/* S0 - S7 */
--	for (reg = 16; reg < 24; reg++)
--		*(ptr++) = regs->regs[reg];
-+	*(ptr++) = p->thread.reg16;
-+	*(ptr++) = p->thread.reg17;
-+	*(ptr++) = p->thread.reg18;
-+	*(ptr++) = p->thread.reg19;
-+	*(ptr++) = p->thread.reg20;
-+	*(ptr++) = p->thread.reg21;
-+	*(ptr++) = p->thread.reg22;
-+	*(ptr++) = p->thread.reg23;
- 
- 	for (reg = 24; reg < 28; reg++)
- 		*(ptr++) = 0;
- 
- 	/* GP, SP, FP, RA */
--	for (reg = 28; reg < 32; reg++)
--		*(ptr++) = regs->regs[reg];
--
--	*(ptr++) = regs->cp0_status;
--	*(ptr++) = regs->lo;
--	*(ptr++) = regs->hi;
--	*(ptr++) = regs->cp0_badvaddr;
--	*(ptr++) = regs->cp0_cause;
--	*(ptr++) = regs->cp0_epc;
-+	*(ptr++) = (long)p;
-+	*(ptr++) = p->thread.reg29;
-+	*(ptr++) = p->thread.reg30;
-+	*(ptr++) = p->thread.reg31;
-+
-+	*(ptr++) = p->thread.cp0_status;
-+
-+	/* lo, hi */
-+	*(ptr++) = 0;
-+	*(ptr++) = 0;
-+
-+	/*
-+	 * BadVAddr, Cause
-+	 * Ideally these would come from the last exception frame up the stack
-+	 * but that requires unwinding, otherwise we can't know much for sure.
-+	 */
-+	*(ptr++) = 0;
-+	*(ptr++) = 0;
-+
-+	/*
-+	 * PC
-+	 * use return address (RA), i.e. the moment after return from resume()
-+	 */
-+	*(ptr++) = p->thread.reg31;
- }
- 
- void kgdb_arch_set_pc(struct pt_regs *regs, unsigned long pc)
--- 
-git-series 0.8.10
+iQIcBAEBCAAGBQJY3SpuAAoJEGwLaZPeOHZ6OXgP/3Ez7yXtEuk9Q5jzVbps096S
+nqdc14AX2gI8GJgK4HezcBnrU9aoycOCAT02Co7+xVpMil2ZyMP7IrwE36AsgbBT
+l/ZoorvMEN6trDM08mrbIigX/xKiaJurjihGcn+StWc+O4gDCE647DTKqRA4rZKZ
+BP2U2HvBD3AhLAtJEQfb3X88n5OFxIYzhMhB3/oAZai1+oKvjiOdtZYY2lU6u+sx
+z6S/EUmGZSAxXgAoQS9y0AVIA5nhvvaX9jqO7Lo3kkbJRkGj+30JIfKtXHgc2wok
+nVtY85oBrMlKLZO33Kzcnng7o4B/hlRU/d104mCHgAk6X82z2HOFTZSdp+5YKt6/
+Q61P59Gm3CiDiCxpy3fVWHYKAvRpfTG4op/p5NWqUU37fQLWmLz2qtx1+UC8A3u7
+mVP2kr1di+VY/QL/QieRghWiGRtlc88kurbpp9PRYwxiv1YEQcGLbjZ3GMyZ/yWX
+lnFlXE63+Hy8yffFBkP1a+1Vz6pM3RV+YoBsoB6YqILsFTGmUhyHmVZA+GeEbIc/
+GRNiOsdHG7ZyHr8kIHg8t2StQ7AE+GrMhdDtkCMysKH9MzedvB6o5tbz4bs2Ca5R
+q1w+c451NWk21dakBi0SjAOFiRVrKET8WjsiqUcIpkwAeU5f1ZoRC1C4CTetVJ11
+zCBJ7xDfc88RFkZjl0L6
+=pGZD
+-----END PGP SIGNATURE-----
+
+--mP3DRpeJDSE+ciuQ--

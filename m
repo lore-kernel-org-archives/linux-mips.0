@@ -1,14 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:18206 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:45528 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992155AbdC3VQ7EijEH (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 30 Mar 2017 23:16:59 +0200
+        with ESMTP id S23992366AbdC3V13EHldH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 30 Mar 2017 23:27:29 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH] MIPS: MSP71xx: Fix missing asm/setup.h include
-Date: Thu, 30 Mar 2017 14:16:32 -0700
-Message-ID: <20170330211633.29731-1-paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: Remove confusing else statement in __do_page_fault()
+Date: Thu, 30 Mar 2017 14:27:02 -0700
+Message-ID: <20170330212703.32066-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -21,20 +20,18 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>, trivial@kernel.org
-Message-ID: <20170330211632.Y_G8NkBwEl8JtmCNkRSIv0I7fw0qXC2-XrLPs0hDEpo@z>
+Message-ID: <20170330212702.c-whS37lnw_G6jpEbKYVWB_esFE8aKh-_JiWMUOmO0o@z>
 
-Building msp71xx_defconfig currently fails due to a missing inclusion of
-asm/setup.h leading to:
+Commit 41c594ab65fc ("[MIPS] MT: Improved multithreading support.")
+added an else case to an if statement in do_page_fault() (which has
+since gained 2 leading underscores) for some unclear reason. If the
+condition in the if statement evaluates true then we execute a goto &
+branch elsewhere anyway, so the else has no effect. Combined with an #if
+0 block with misleading indentation introduced in the same commit it
+makes the code less clear than it could be.
 
-  arch/mips/pmcs-msp71xx/msp_smp.c: In function ‘msp_vsmp_int_init’:
-  arch/mips/pmcs-msp71xx/msp_smp.c:72:2: error: implicit declaration of
-  function ‘set_vi_handler’ [-Werror=implicit-function-declaration]
-    set_vi_handler(MIPS_CPU_IPI_RESCHED_IRQ, ipi_resched_dispatch);
-    ^
-  cc1: all warnings being treated as errors
-
-Fix this by including asm/setup.h to obtain the declaration of
-set_vi_handler().
+Remove the unnecessary else statement & de-indent the printk within
+the #if 0 block in order to make the code easier for humans to parse.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
@@ -43,20 +40,40 @@ Cc: trivial@kernel.org
 
 ---
 
- arch/mips/pmcs-msp71xx/msp_smp.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/mm/fault.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/mips/pmcs-msp71xx/msp_smp.c b/arch/mips/pmcs-msp71xx/msp_smp.c
-index ffa0f7101a97..6441bd2514c5 100644
---- a/arch/mips/pmcs-msp71xx/msp_smp.c
-+++ b/arch/mips/pmcs-msp71xx/msp_smp.c
-@@ -21,6 +21,7 @@
-  */
- #include <linux/smp.h>
- #include <linux/interrupt.h>
-+#include <asm/setup.h>
- 
- #ifdef CONFIG_MIPS_MT_SMP
- #define MIPS_CPU_IPI_RESCHED_IRQ 0	/* SW int 0 for resched */
+diff --git a/arch/mips/mm/fault.c b/arch/mips/mm/fault.c
+index 3bef306cdfdb..4f8f5bf46977 100644
+--- a/arch/mips/mm/fault.c
++++ b/arch/mips/mm/fault.c
+@@ -267,19 +267,19 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
+ 	/* Kernel mode? Handle exceptions or die */
+ 	if (!user_mode(regs))
+ 		goto no_context;
+-	else
++
+ 	/*
+ 	 * Send a sigbus, regardless of whether we were in kernel
+ 	 * or user mode.
+ 	 */
+ #if 0
+-		printk("do_page_fault() #3: sending SIGBUS to %s for "
+-		       "invalid %s\n%0*lx (epc == %0*lx, ra == %0*lx)\n",
+-		       tsk->comm,
+-		       write ? "write access to" : "read access from",
+-		       field, address,
+-		       field, (unsigned long) regs->cp0_epc,
+-		       field, (unsigned long) regs->regs[31]);
++	printk("do_page_fault() #3: sending SIGBUS to %s for "
++	       "invalid %s\n%0*lx (epc == %0*lx, ra == %0*lx)\n",
++	       tsk->comm,
++	       write ? "write access to" : "read access from",
++	       field, address,
++	       field, (unsigned long) regs->cp0_epc,
++	       field, (unsigned long) regs->regs[31]);
+ #endif
+ 	current->thread.trap_nr = (regs->cp0_cause >> 2) & 0x1f;
+ 	tsk->thread.cp0_badvaddr = address;
 -- 
 2.12.1

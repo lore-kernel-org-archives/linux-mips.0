@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:27391 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:43843 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992126AbdCaKvVlwH5d (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 31 Mar 2017 12:51:21 +0200
+        with ESMTP id S23993302AbdCaKvnZLwmd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 31 Mar 2017 12:51:43 +0200
 From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH] MIPS: smp-cps: Fix potentially uninitialised value of core
-Date: Fri, 31 Mar 2017 11:51:08 +0100
-Message-ID: <1490957468-27255-1-git-send-email-matt.redfearn@imgtec.com>
+Subject: [PATCH] MIPS: KASLR: Add missing header files
+Date: Fri, 31 Mar 2017 11:51:33 +0100
+Message-ID: <1490957493-27329-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Matt.Redfearn@imgtec.com>
@@ -19,44 +19,32 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@imgtec.com>, Ingo Molnar <mingo@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Message-ID: <20170331105108.qZ_Y13VUJh2_cPXbjrRpqSnXHalmdTagS-CKwSPuMzM@z>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, linux-kernel@vger.kernel.org, "Steven J. Hill" <Steven.Hill@cavium.com>
+Message-ID: <20170331105133.sBo4UmiWILZDPW7np1Qku-8w-srsqEiL0SqeJ0BnYfA@z>
 
-Turning on DEBUG in smp-cps.c, or compiling the kernel with
-CONFIG_DYNAMIC_DEBUG enabled results the build error:
+After the split of linux/sched.h, KASLR stopped building.
 
-arch/mips/kernel/smp-cps.c: In function 'play_dead':
-./include/linux/dynamic_debug.h:126:3: error: 'core' may be used
-uninitialized in this function [-Werror=maybe-uninitialized]
+Fix this by including the correct header file for init_thread_union
 
-Fix this by always initialising the variable.
-
-Fixes: 0d2808f338c7 ("MIPS: smp-cps: Add support for CPU hotplug of MIPSr6 processors")
 Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
 
 ---
 
- arch/mips/kernel/smp-cps.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/mips/kernel/relocate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-index 6d45f05538c8..795b4aaf8927 100644
---- a/arch/mips/kernel/smp-cps.c
-+++ b/arch/mips/kernel/smp-cps.c
-@@ -422,13 +422,12 @@ void play_dead(void)
- 	local_irq_disable();
- 	idle_task_exit();
- 	cpu = smp_processor_id();
-+	core = cpu_data[cpu].core;
- 	cpu_death = CPU_DEATH_POWER;
- 
- 	pr_debug("CPU%d going offline\n", cpu);
- 
- 	if (cpu_has_mipsmt || cpu_has_vp) {
--		core = cpu_data[cpu].core;
--
- 		/* Look for another online VPE within the core */
- 		for_each_online_cpu(cpu_death_sibling) {
- 			if (cpu_data[cpu_death_sibling].core != core)
+diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
+index 9103bebc9a8e..2d1a0c438771 100644
+--- a/arch/mips/kernel/relocate.c
++++ b/arch/mips/kernel/relocate.c
+@@ -18,7 +18,7 @@
+ #include <linux/kernel.h>
+ #include <linux/libfdt.h>
+ #include <linux/of_fdt.h>
+-#include <linux/sched.h>
++#include <linux/sched/task.h>
+ #include <linux/start_kernel.h>
+ #include <linux/string.h>
+ #include <linux/printk.h>
 -- 
 2.7.4

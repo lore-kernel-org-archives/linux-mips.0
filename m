@@ -1,15 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:3809 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:28999 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23991346AbdDFI2AfPfOK (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Apr 2017 10:28:00 +0200
-Date: Thu, 6 Apr 2017 09:27:54 +0100
+        by eddie.linux-mips.org with ESMTP id S23990519AbdDFJ3xtafWJ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Apr 2017 11:29:53 +0200
+Date: Thu, 6 Apr 2017 10:29:47 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [GIT PULL] KVM: MIPS: VZ support, Octeon III, and TLBR
-Message-ID: <20170406082754.GP31606@jhogan-linux.le.imgtec.org>
+Subject: Re: [PATCH v2 for-4.9 04/32] MIPS: Lantiq: Fix cascaded IRQ setup
+Message-ID: <20170406092947.GQ31606@jhogan-linux.le.imgtec.org>
+References: <1491388344-13521-1-git-send-email-amit.pundir@linaro.org>
+ <1491388344-13521-5-git-send-email-amit.pundir@linaro.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Q4RbCnAmn9VrkE5p"
+        protocol="application/pgp-signature"; boundary="8HHeiRpSfOSMcPVo"
 Content-Disposition: inline
+In-Reply-To: <1491388344-13521-5-git-send-email-amit.pundir@linaro.org>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -20,152 +23,74 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paolo Bonzini <pbonzini@redhat.com>, Radim =?utf-8?B?S3LEjW3DocWZ?= <rkrcmar@redhat.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, kvm@vger.kernel.org
-Message-ID: <20170406082754.umIEmyMdatcnOb0XJE_S0p25eTNCUoSadev9W-gm8mk@z>
+To: Amit Pundir <amit.pundir@linaro.org>
+Cc: stable@vger.kernel.org, gregkh@linuxfoundation.org, Felix Fietkau <nbd@nbd.name>, linux-mips@linux-mips.org
+Message-ID: <20170406092947.yHYGacq1uLZUTMABHb9us1DFRYBlMBQfxiDJKsEoFUQ@z>
 
---Q4RbCnAmn9VrkE5p
+--8HHeiRpSfOSMcPVo
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi Paolo, Radim,
+Hi Amit,
 
-Here are the main KVM MIPS changes for 4.12, mainly to add VZ support.
-Please consider pulling.
+On Wed, Apr 05, 2017 at 04:01:56PM +0530, Amit Pundir wrote:
+> From: Felix Fietkau <nbd@nbd.name>
+>=20
+> With the IRQ stack changes integrated, the XRX200 devices started
+> emitting a constant stream of kernel messages like this:
+>=20
+> [  565.415310] Spurious IRQ: CAUSE=3D0x1100c300
+>=20
+> This is caused by IP0 getting handled by plat_irq_dispatch() rather than
+> its vectored interrupt handler, which is fixed by commit de856416e714
+> ("MIPS: IRQ Stack: Fix erroneous jal to plat_irq_dispatch").
+>=20
+> Fix plat_irq_dispatch() to handle non-vectored IPI interrupts correctly
+> by setting up IP2-6 as proper chained IRQ handlers and calling do_IRQ
+> for all MIPS CPU interrupts.
+>=20
+> Signed-off-by: Felix Fietkau <nbd@nbd.name>
+> Acked-by: John Crispin <john@phrozen.org>
+> Cc: linux-mips@linux-mips.org
+> Patchwork: https://patchwork.linux-mips.org/patch/15077/
+> [james.hogan@imgtec.com: tweaked commit message]
+> Signed-off-by: James Hogan <james.hogan@imgtec.com>
+>=20
+> (cherry picked from commit 6c356eda225e3ee134ed4176b9ae3a76f793f4dd)
+> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
 
-Thanks
+Is there a particular reason this is desired in stable? I was under the
+impression it was only helpful in the presence of a bug in the separate
+IRQ stack stuff in 4.11, which was fixed in the above mentioned commit
+de856416e714 ("MIPS: IRQ Stack: Fix erroneous jal to
+plat_irq_dispatch"), and otherwise just a nice to have cleanup.
+
+If you've cherry picked the IRQ stack work, have you also cherry-picked
+de856416e714?
+
+Cheers
 James
 
-The following changes since commit 97da3854c526d3a6ee05c849c96e48d21527606c:
-
-  Linux 4.11-rc3 (2017-03-19 19:09:39 -0700)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/jhogan/kvm-mips.git tags/kvm_mips_4.12_1
-
-for you to fetch changes up to dc44abd6aad22411f7f9890e39fd4753dabf0d03:
-
-  KVM: MIPS/Emulate: Properly implement TLBR for T&E (2017-03-28 16:31:37 +0100)
-
-----------------------------------------------------------------
-KVM: MIPS: VZ support, Octeon III, and TLBR
-
-Add basic support for the MIPS Virtualization Module (generally known as
-MIPS VZ) in KVM. We primarily support the ImgTec P5600, P6600, I6400,
-and Cavium Octeon III cores so far. Support is included for the
-following VZ / guest hardware features:
-- MIPS32 and MIPS64, r5 (VZ requires r5 or later) and r6
-- TLBs with GuestID (IMG cores) or Root ASID Dealias (Octeon III)
-- Shared physical root/guest TLB (IMG cores)
-- FPU / MSA
-- Cop0 timer (up to 1GHz for now due to soft timer limit)
-- Segmentation control (EVA)
-- Hardware page table walker (HTW) both for root and guest TLB
-
-Also included is a proper implementation of the TLBR instruction for the
-trap & emulate MIPS KVM implementation.
-
-Preliminary MIPS architecture changes are applied directly with Ralf's
-ack.
-
-----------------------------------------------------------------
-James Hogan (42):
-      MIPS: Add defs & probing of UFR
-      MIPS: Separate MAAR V bit into VL and VH for XPA
-      MIPS: Probe guest CP0_UserLocal
-      MIPS: Probe guest MVH
-      MIPS: Add some missing guest CP0 accessors & defs
-      MIPS: asm/tlb.h: Add UNIQUE_GUEST_ENTRYHI() macro
-      KVM: MIPS: Implement HYPCALL emulation
-      KVM: MIPS/Emulate: De-duplicate MMIO emulation
-      KVM: MIPS/Emulate: Implement 64-bit MMIO emulation
-      KVM: MIPS: Update kvm_lose_fpu() for VZ
-      KVM: MIPS: Extend counters & events for VZ GExcCodes
-      KVM: MIPS: Add VZ & TE capabilities
-      KVM: MIPS: Add 64BIT capability
-      KVM: MIPS: Init timer frequency from callback
-      KVM: MIPS: Add callback to check extension
-      KVM: MIPS: Add hardware_{enable,disable} callback
-      KVM: MIPS: Add guest exit exception callback
-      KVM: MIPS: Abstract guest CP0 register access for VZ
-      KVM: MIPS/Entry: Update entry code to support VZ
-      KVM: MIPS/TLB: Add VZ TLB management
-      KVM: MIPS/Emulate: Update CP0_Compare emulation for VZ
-      KVM: MIPS/Emulate: Drop CACHE emulation for VZ
-      KVM: MIPS: Update exit handler for VZ
-      KVM: MIPS: Implement VZ support
-      KVM: MIPS: Add VZ support to build system
-      KVM: MIPS/VZ: Support guest CP0_BadInstr[P]
-      KVM: MIPS/VZ: Support guest CP0_[X]ContextConfig
-      KVM: MIPS/VZ: Support guest segmentation control
-      KVM: MIPS/VZ: Support guest hardware page table walker
-      KVM: MIPS/VZ: Support guest load-linked bit
-      KVM: MIPS/VZ: Emulate MAARs when necessary
-      KVM: MIPS/VZ: Support hardware guest timer
-      KVM: MIPS/VZ: Trace guest mode changes
-      MIPS: Add Octeon III register accessors & definitions
-      KVM: MIPS/Emulate: Adapt T&E CACHE emulation for Octeon
-      KVM: MIPS/TLB: Handle virtually tagged icaches
-      KVM: MIPS/T&E: Report correct dcache line size
-      KVM: MIPS/VZ: VZ hardware setup for Octeon III
-      KVM: MIPS/VZ: Emulate hit CACHE ops for Octeon III
-      KVM: MIPS/VZ: Handle Octeon III guest.PRid register
-      MIPS: Allow KVM to be enabled on Octeon CPUs
-      KVM: MIPS/Emulate: Properly implement TLBR for T&E
-
- Documentation/virtual/kvm/api.txt        |   90 +-
- Documentation/virtual/kvm/hypercalls.txt |    5 +
- arch/mips/Kconfig                        |    1 +
- arch/mips/include/asm/cpu-features.h     |   10 +
- arch/mips/include/asm/cpu-info.h         |    2 +
- arch/mips/include/asm/cpu.h              |    1 +
- arch/mips/include/asm/kvm_host.h         |  467 ++++-
- arch/mips/include/asm/maar.h             |   10 +-
- arch/mips/include/asm/mipsregs.h         |   62 +-
- arch/mips/include/asm/tlb.h              |    6 +-
- arch/mips/include/uapi/asm/inst.h        |    2 +-
- arch/mips/include/uapi/asm/kvm.h         |   20 +-
- arch/mips/kernel/cpu-probe.c             |   13 +-
- arch/mips/kernel/time.c                  |    1 +
- arch/mips/kvm/Kconfig                    |   27 +-
- arch/mips/kvm/Makefile                   |    9 +-
- arch/mips/kvm/emulate.c                  |  500 +++--
- arch/mips/kvm/entry.c                    |  132 +-
- arch/mips/kvm/hypcall.c                  |   53 +
- arch/mips/kvm/interrupt.h                |    5 +
- arch/mips/kvm/mips.c                     |  120 +-
- arch/mips/kvm/mmu.c                      |   20 +
- arch/mips/kvm/tlb.c                      |  441 ++++
- arch/mips/kvm/trace.h                    |   74 +-
- arch/mips/kvm/trap_emul.c                |   73 +-
- arch/mips/kvm/vz.c                       | 3223 ++++++++++++++++++++++++++++++
- arch/mips/mm/cache.c                     |    1 +
- arch/mips/mm/init.c                      |    2 +-
- include/uapi/linux/kvm.h                 |    7 +
- 29 files changed, 5010 insertions(+), 367 deletions(-)
- create mode 100644 arch/mips/kvm/hypcall.c
- create mode 100644 arch/mips/kvm/vz.c
-
---Q4RbCnAmn9VrkE5p
+--8HHeiRpSfOSMcPVo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJY5fwDAAoJEGwLaZPeOHZ6xxQP/i8dqz0UWdSrYLUqP3a+Lsha
-QbS6V3X5Dxs//RJGeNHmSVVP0qWq6h7PZzfP2mSDyfIY1xzDgQ0pOag0LyMPXq3P
-iZPLZPgrGopxCSl0ZG+lHgEj+z5qya1UzqVScsGotKcUFKd7iTafgQbv9yq0g0Lq
-9qNiAbt8l82ub1uAWqfBhdyBWc7vcsSzsDzEph8mb2TEwRNC68+Wnu9C6JCod/vx
-JmbT6y2yMgv09tb5RHFpLfwq6yUrlyeQ3hQ+magiS0Rj4laF7nl5CS9oHnnGqjt6
-ULpOKo4cWqEg4pQmGWceQUjtlV6BXRWENFNZDQr1MpM8gKSoejLzMfqAYomXvTwy
-p5qdATkuCiwaZeYJ3fgWe60aHIvO+VPKoiQq1dH3JhgkfuXEFO9COJF8I7c1yGTV
-RjA63HOV7iYzlH7LwzdHpM5+v3iHMd73TDnZOsdm6I+C6qZIPVAMpXm3LTgDk/Ph
-HdmEARcBx4mJlv3UDu+Q70Z7G/7n0ypJlbWRxB26T86px66Kh3riA+gV4PVxUIc+
-n/oDjGfU/gzzCzQzC/dsTYNl1K2KSvyMkYr8gf+BcIGkVEYEb8d9eFEPmcq1MJOU
-DczU2/I1fdez6m0g87dJ/VvCu5NEvkNB/KfZ5BJNVErxFNGdBy3+shtQXLaD2M+H
-lQDS6dsLAXuYe9szCOAY
-=kONu
+iQIcBAEBCAAGBQJY5gqEAAoJEGwLaZPeOHZ6PAEQAIqVEPVRWYEM2dwbTEeUmkSh
+1ycYD7wXDIsi6RNXqtIr35+L0lRUE758BKAWom1SIWHKrQh32XUO7s0QnLUoSA8v
+BWQBBkmOIHfSFwbbXM08ep89CcexxVWqljgOC8qgMD1HI9raXpuhABQMZy96xtHH
+IfOua1NpYZuFPCVTpo/r2qHPXDy5TK1JHl2pcm9E+NgkDcA+q9yTcmN9nulzbtdV
+5kZDpU+9J0V/KnyiugRnAGl5OIoCG2TwtCm9AwZk/5X1TXL9YSGgtFsBCa/HBffx
+rBRqFhNRbZIyPru+Lsc/YRpZbmsl8S833raR2gDmKR5ezN6eA347Q679oHUgU5cQ
+STv5Q/xW/qEx7P419W3d3QMN8KxWRM4n1w4Mze7rOaY/xsxsOKU4Iw8om5xBuujd
+LgIZwRd9YZqwf6/h6/EGL8p1/7w7ne8LDYCXLuk0i6di+e8lwQZDnpNZMlB7iarF
+rVbvon50OURuS5exG8llnR5k6FwZsX/OQKHfNCwSfx+hYNEJAsMvVN/1FZsArub4
+3YrL5hUWOknCFrcPE60EaV/CvlhH+joHhul2UGBgWX9cvDfBm78MWRE+vLnK1kVu
+dQD/1uUY4laDNl057iupAeKnAjgy9YghxT1RoUaqmR8b6HVEY0BRDukXHJIOz5S8
+JtSALxKqh6eFuBQW5jmW
+=ZbgZ
 -----END PGP SIGNATURE-----
 
---Q4RbCnAmn9VrkE5p--
+--8HHeiRpSfOSMcPVo--

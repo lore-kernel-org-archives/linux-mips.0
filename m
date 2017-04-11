@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:55517 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:59135 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23990514AbdDKMwH6bQvW (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 11 Apr 2017 14:52:07 +0200
+        with ESMTP id S23991346AbdDKMwKXYZ0W (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 11 Apr 2017 14:52:10 +0200
 From: James Cowgill <James.Cowgill@imgtec.com>
-Subject: [PATCH] MIPS: avoid BUG warning in arch_check_elf
-Date: Tue, 11 Apr 2017 13:51:07 +0100
-Message-ID: <20170411125108.30107-1-James.Cowgill@imgtec.com>
+Subject: [PATCH] MIPS: fix modversioning of _mcount symbol
+Date: Tue, 11 Apr 2017 13:51:08 +0100
+Message-ID: <20170411125108.30107-2-James.Cowgill@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <James.Cowgill@imgtec.com>
@@ -20,42 +20,34 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
 Cc: James.Cowgill@imgtec.com
-Message-ID: <20170411125107.pR_2-ngN4EodJozpT-9ID_bcsuI35Pa5wsawQPBlIWY@z>
+Message-ID: <20170411125108.FZUDF7QiTxiUy4qN6rfyOFc1PNrSVZHuvQc9tIfkXgM@z>
 
-arch_check_elf contains a usage of current_cpu_data that will call
-smp_processor_id() with preemption enabled and therefore triggers a
-"BUG: using smp_processor_id() in preemptible" warning when an fpxx
-executable is loaded.
+In commit 827456e71036 ("MIPS: Export _mcount alongside its definition")
+the EXPORT_SYMBOL macro exporting _mcount was moved from C code into
+assembly. Unlike C, exported assembly symbols need to have a function
+prototype in asm/asm-prototypes.h for modversions to work properly.
+Without this, modpost prints out this warning:
 
-As a follow-up to commit b244614a60ab ("MIPS: Avoid a BUG warning during
-prctl(PR_SET_FP_MODE, ...)"), apply the same fix to arch_check_elf by
-using raw_current_cpu_data instead. The rationale quoted from the previous
-commit:
+     WARNING: EXPORT symbol "_mcount" [vmlinux] version generation failed,
+     symbol will not be versioned.
 
-"It is assumed throughout the kernel that if any CPU has an FPU, then
-all CPUs would have an FPU as well, so it is safe to perform the check
-with preemption enabled - change the code to use raw_ variant of the
-check to avoid the warning."
+Fix by including asm/ftrace.h (where _mcount is declared) in
+asm/asm-prototypes.h.
 
-Fixes: 46490b572544 ("MIPS: kernel: elf: Improve the overall ABI and FPU mode checks")
+Fixes: 827456e71036 ("MIPS: Export _mcount alongside its definition")
 Signed-off-by: James Cowgill <James.Cowgill@imgtec.com>
-CC: <stable@vger.kernel.org> # 4.0+
 ---
- arch/mips/kernel/elf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/include/asm/asm-prototypes.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/kernel/elf.c b/arch/mips/kernel/elf.c
-index 6430bff21fff..5c429d70e17f 100644
---- a/arch/mips/kernel/elf.c
-+++ b/arch/mips/kernel/elf.c
-@@ -257,7 +257,7 @@ int arch_check_elf(void *_ehdr, bool has_interpreter, void *_interp_ehdr,
- 	else if ((prog_req.fr1 && prog_req.frdefault) ||
- 		 (prog_req.single && !prog_req.frdefault))
- 		/* Make sure 64-bit MIPS III/IV/64R1 will not pick FR1 */
--		state->overall_fp_mode = ((current_cpu_data.fpu_id & MIPS_FPIR_F64) &&
-+		state->overall_fp_mode = ((raw_current_cpu_data.fpu_id & MIPS_FPIR_F64) &&
- 					  cpu_has_mips_r2_r6) ?
- 					  FP_FR1 : FP_FR0;
- 	else if (prog_req.fr1)
+diff --git a/arch/mips/include/asm/asm-prototypes.h b/arch/mips/include/asm/asm-prototypes.h
+index a160cf69bb92..6e28971fe73a 100644
+--- a/arch/mips/include/asm/asm-prototypes.h
++++ b/arch/mips/include/asm/asm-prototypes.h
+@@ -3,3 +3,4 @@
+ #include <asm/fpu.h>
+ #include <asm-generic/asm-prototypes.h>
+ #include <asm/uaccess.h>
++#include <asm/ftrace.h>
 -- 
 2.11.0

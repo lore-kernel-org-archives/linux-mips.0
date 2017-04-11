@@ -1,14 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:59135 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991346AbdDKMwKXYZ0W (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 11 Apr 2017 14:52:10 +0200
-From: James Cowgill <James.Cowgill@imgtec.com>
-Subject: [PATCH] MIPS: fix modversioning of _mcount symbol
-Date: Tue, 11 Apr 2017 13:51:08 +0100
-Message-ID: <20170411125108.30107-2-James.Cowgill@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:39726 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992974AbdDKR44zj3ZX (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 11 Apr 2017 19:56:56 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH 2/2] irqchip/mips-gic: Fix Local compare interrupt
+Date: Tue, 11 Apr 2017 10:56:42 -0700
+Message-ID: <1787874.Cz8gmWEnDJ@np-p-burton>
+In-Reply-To: <a71e58d4-b223-7bc7-803a-937e3b6837bb@imgtec.com>
+References: <1490958332-31094-1-git-send-email-matt.redfearn@imgtec.com> <9298882.YeGiCV4jUY@np-p-burton> <a71e58d4-b223-7bc7-803a-937e3b6837bb@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Cowgill@imgtec.com>
+Content-Type: multipart/signed; boundary="nextPart5159577.nx1DIkd7Ij";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,36 +21,94 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: James.Cowgill@imgtec.com
-Message-ID: <20170411125108.FZUDF7QiTxiUy4qN6rfyOFc1PNrSVZHuvQc9tIfkXgM@z>
+To: Matt Redfearn <matt.redfearn@imgtec.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, Marc Zyngier <marc.zyngier@arm.com>, Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Message-ID: <20170411175642.dDCqF4R5vgdvUXF5ISedkrbXYJilZoWyhcPB8Scp7a8@z>
 
-In commit 827456e71036 ("MIPS: Export _mcount alongside its definition")
-the EXPORT_SYMBOL macro exporting _mcount was moved from C code into
-assembly. Unlike C, exported assembly symbols need to have a function
-prototype in asm/asm-prototypes.h for modversions to work properly.
-Without this, modpost prints out this warning:
+--nextPart5159577.nx1DIkd7Ij
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-     WARNING: EXPORT symbol "_mcount" [vmlinux] version generation failed,
-     symbol will not be versioned.
+Hi Matt,
 
-Fix by including asm/ftrace.h (where _mcount is declared) in
-asm/asm-prototypes.h.
+On Tuesday, 11 April 2017 01:20:35 PDT Matt Redfearn wrote:
+> On 10/04/17 23:06, Paul Burton wrote:
+> > On Friday, 31 March 2017 04:05:32 PDT Matt Redfearn wrote:
+> >> Commit 4cfffcfa5106 ("irqchip/mips-gic: Fix local interrupts") added
+> >> mapping of several local interrupts during initialisation of the gic
+> >> driver. This associates virq numbers with these interrupts.
+> >> Unfortunately, as not all of the interrupts are mapped in hardware
+> >> order, when drivers subsequently request these interrupts they conflict
+> >> with the mappings that have already been set up. For example, this
+> >> manifests itself in the gic clocksource driver, which fails to probe
+> >> with the message:
+> >> 
+> >> clocksource: GIC: mask: 0xffffffffffffffff max_cycles: 0x7350c9738,
+> >> max_idle_ns: 440795203769 ns
+> >> GIC timer IRQ 25 setup failed: -22
+> >> 
+> >> This is because virq 25 (the correct IRQ number specified via device
+> >> tree) was allocated to the PERFCTR interrupt (and 24 to the timer, 26 to
+> >> the FDC).
+> > 
+> > I'm confused by this - the DT doesn't specify VIRQs, it specifies hardware
+> > IRQ numbers. Which VIRQ is used should be irrelevant. Is this on a system
+> > using gic_clocksource_init() from platform code? (Malta?) and therefore
+> > relying on MIPS_GIC_IRQ_BASE?
+> 
+> Yes, this is on Malta, which as you say, uses MIPS_GIC_IRQ_BASE. On
+> Malta that ends up, through the definition of I8259A_IRQ_BASE and
+> MIPS_CPU_IRQ_BASE, to be 24. Therefore hardware interrupt 1 of the GIC
+> ends up expecting to be allocated at virq 25. But since 4cfffcfa5106,
+> that virq number was allocated to the PERFCTR interrupt. Everything
+> about the order-dependent and hardcoded bases of Maltas IRQs seems bad
+> and needs looking at but this was the easiest fix for this cycle.
+> 
+> > If so I think this would be much more cleanly fixed by moving to probe the
+> > clocksource using DT
+> 
+> Not sure that would help if Maltas expected virq for this source had
+> already been allocated?
 
-Fixes: 827456e71036 ("MIPS: Export _mcount alongside its definition")
-Signed-off-by: James Cowgill <James.Cowgill@imgtec.com>
----
- arch/mips/include/asm/asm-prototypes.h | 1 +
- 1 file changed, 1 insertion(+)
+Well the problem is that Malta expects a particular VIRQ - if it instead 
+probed the clock event driver via DT, which specifies a hardware interrupt 
+number, then that problem goes away & it doesn't matter which VIRQ is used.
 
-diff --git a/arch/mips/include/asm/asm-prototypes.h b/arch/mips/include/asm/asm-prototypes.h
-index a160cf69bb92..6e28971fe73a 100644
---- a/arch/mips/include/asm/asm-prototypes.h
-+++ b/arch/mips/include/asm/asm-prototypes.h
-@@ -3,3 +3,4 @@
- #include <asm/fpu.h>
- #include <asm-generic/asm-prototypes.h>
- #include <asm/uaccess.h>
-+#include <asm/ftrace.h>
--- 
-2.11.0
+For example the generic platform (including the Malta board support for it in 
+the downstream engineering kernels) ought to work fine without this because 
+there isn't an expectation for a particular VIRQ. Hopefully I'll have time to 
+submit some more of that code for the v4.13 cycle & we can eventually scrap 
+all of these hardcoded VIRQs along with the mti-malta board code that commits 
+the sins.
+
+An alternative might be to have the Malta board code use irq_create_mapping() 
+to map the hardware IRQ to a VIRQ rather than hardcoding the VIRQ, which would 
+be an improvement but would then require that the board code have access to 
+the GIC's struct irq_domain. Given that we want to move Malta towards DT 
+anyway that doesn't seem worth much effort.
+
+Thanks,
+    Paul
+--nextPart5159577.nx1DIkd7Ij
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAljtGNoACgkQgiDZ+mk8
+HGVmvg/+Nh7/mkmyEcPXq7RApDXkRfdbr9kCCgjqdpAkngEgtKPyVz/FCN8BBXH7
+Hx+COTNGsAW+iU2cSFRO6LuJYvFeovdabd1mOXKK39GxYkdPYhUcW25fdMbznzyl
+Xr5ZIFv3Rf652LziDlbE7/IrhDuP+Ci8KWXQDUKIlNBdkaxyEZL+656779qQkPWT
+cANEYjqjsqHT9cmyOraumXt4VmyqgEtPRpr+tJeq+fRbgrUBnMHw8n+JwG1hLb/8
+HfJtp9I/NLeN9i80CikbqZY4dYEk506iWemezu0RM0Cf0U98e2CLb33oizJ3TKfH
+CYZzSxjnH1WCurI16EYXxtuKU5YFg6lH38IM4p1I4ERTKOH+cZwv+8MFNNOlFsMV
+t3ewoJ+Sswf7lRUUFxx2aIQkqaHcrkfXrTLu71dQffoJVdyudGaFlKffYAVBd8sp
+C/lV6iyU/IIy5C2EPf2SPTpF4kjhRdRTXicVrs6vXbCYDQcjxL2+8tsb+eKB9zmL
+rhmXMXkeddPStr6GMIMtCYjGw5aUa2UzQvFBh5BpWBjSy+uerdu3cmEI1FroSbMm
+uEHIINS76J8PPhCjvnk8p08wlBGaXFUv2cP03w+k3/FvLphg3Py43CsRsnlyU5TX
+lvfDNO1KH44ptybEMiVzcDbwnPsDBDsxUn+1do7VaUsgf1Zn2GE=
+=g3MV
+-----END PGP SIGNATURE-----
+
+--nextPart5159577.nx1DIkd7Ij--

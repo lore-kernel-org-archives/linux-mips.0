@@ -1,19 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:36214 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:55517 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992366AbdDKIUmy7NLx (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 11 Apr 2017 10:20:42 +0200
-Subject: Re: [PATCH 2/2] irqchip/mips-gic: Fix Local compare interrupt
-References: <1490958332-31094-1-git-send-email-matt.redfearn@imgtec.com>
- <1490958332-31094-3-git-send-email-matt.redfearn@imgtec.com>
- <9298882.YeGiCV4jUY@np-p-burton>
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <a71e58d4-b223-7bc7-803a-937e3b6837bb@imgtec.com>
-Date: Tue, 11 Apr 2017 09:20:35 +0100
+        with ESMTP id S23990514AbdDKMwH6bQvW (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 11 Apr 2017 14:52:07 +0200
+From: James Cowgill <James.Cowgill@imgtec.com>
+Subject: [PATCH] MIPS: avoid BUG warning in arch_check_elf
+Date: Tue, 11 Apr 2017 13:51:07 +0100
+Message-ID: <20170411125108.30107-1-James.Cowgill@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <9298882.YeGiCV4jUY@np-p-burton>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@imgtec.com>
+Content-Type: text/plain
+Return-Path: <James.Cowgill@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,87 +18,44 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, Marc Zyngier <marc.zyngier@arm.com>, Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Message-ID: <20170411082035.04OklIKMdplEwHssBoPQE3rA4OlOCzHBXFcbszBrTwU@z>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Cc: James.Cowgill@imgtec.com
+Message-ID: <20170411125107.pR_2-ngN4EodJozpT-9ID_bcsuI35Pa5wsawQPBlIWY@z>
 
-Hi Paul,
+arch_check_elf contains a usage of current_cpu_data that will call
+smp_processor_id() with preemption enabled and therefore triggers a
+"BUG: using smp_processor_id() in preemptible" warning when an fpxx
+executable is loaded.
 
+As a follow-up to commit b244614a60ab ("MIPS: Avoid a BUG warning during
+prctl(PR_SET_FP_MODE, ...)"), apply the same fix to arch_check_elf by
+using raw_current_cpu_data instead. The rationale quoted from the previous
+commit:
 
-On 10/04/17 23:06, Paul Burton wrote:
-> Hi Matt,
->
-> On Friday, 31 March 2017 04:05:32 PDT Matt Redfearn wrote:
->> Commit 4cfffcfa5106 ("irqchip/mips-gic: Fix local interrupts") added
->> mapping of several local interrupts during initialisation of the gic
->> driver. This associates virq numbers with these interrupts.
->> Unfortunately, as not all of the interrupts are mapped in hardware
->> order, when drivers subsequently request these interrupts they conflict
->> with the mappings that have already been set up. For example, this
->> manifests itself in the gic clocksource driver, which fails to probe
->> with the message:
->>
->> clocksource: GIC: mask: 0xffffffffffffffff max_cycles: 0x7350c9738,
->> max_idle_ns: 440795203769 ns
->> GIC timer IRQ 25 setup failed: -22
->>
->> This is because virq 25 (the correct IRQ number specified via device
->> tree) was allocated to the PERFCTR interrupt (and 24 to the timer, 26 to
->> the FDC).
-> I'm confused by this - the DT doesn't specify VIRQs, it specifies hardware IRQ
-> numbers. Which VIRQ is used should be irrelevant. Is this on a system using
-> gic_clocksource_init() from platform code? (Malta?) and therefore relying on
-> MIPS_GIC_IRQ_BASE?
+"It is assumed throughout the kernel that if any CPU has an FPU, then
+all CPUs would have an FPU as well, so it is safe to perform the check
+with preemption enabled - change the code to use raw_ variant of the
+check to avoid the warning."
 
-Yes, this is on Malta, which as you say, uses MIPS_GIC_IRQ_BASE. On 
-Malta that ends up, through the definition of I8259A_IRQ_BASE and 
-MIPS_CPU_IRQ_BASE, to be 24. Therefore hardware interrupt 1 of the GIC 
-ends up expecting to be allocated at virq 25. But since 4cfffcfa5106, 
-that virq number was allocated to the PERFCTR interrupt. Everything 
-about the order-dependent and hardcoded bases of Maltas IRQs seems bad 
-and needs looking at but this was the easiest fix for this cycle.
+Fixes: 46490b572544 ("MIPS: kernel: elf: Improve the overall ABI and FPU mode checks")
+Signed-off-by: James Cowgill <James.Cowgill@imgtec.com>
+CC: <stable@vger.kernel.org> # 4.0+
+---
+ arch/mips/kernel/elf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> If so I think this would be much more cleanly fixed by moving to probe the
-> clocksource using DT
-
-Not sure that would help if Maltas expected virq for this source had 
-already been allocated?
-
-Thanks,
-Matt
-
-> than by adding more fragile order-dependent mappings in
-> the GIC driver. Perhaps we have to live with it for this cycle though...
->
-> Thanks,
->      Paul
->
->> To fix this, map all of these local interrupts in the hardware
->> order so as to associate their virq numbers with the correct hw
->> interrupts.
->>
->> Fixes: 4cfffcfa5106 ("irqchip/mips-gic: Fix local interrupts")
->> Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
->> ---
->>
->>   drivers/irqchip/irq-mips-gic.c | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
->> index 11d12bccc4e7..cd20df12d63d 100644
->> --- a/drivers/irqchip/irq-mips-gic.c
->> +++ b/drivers/irqchip/irq-mips-gic.c
->> @@ -991,8 +991,12 @@ static void __init gic_map_single_int(struct
->> device_node *node,
->>
->>   static void __init gic_map_interrupts(struct device_node *node)
->>   {
->> +	gic_map_single_int(node, GIC_LOCAL_INT_WD);
->> +	gic_map_single_int(node, GIC_LOCAL_INT_COMPARE);
->>   	gic_map_single_int(node, GIC_LOCAL_INT_TIMER);
->>   	gic_map_single_int(node, GIC_LOCAL_INT_PERFCTR);
->> +	gic_map_single_int(node, GIC_LOCAL_INT_SWINT0);
->> +	gic_map_single_int(node, GIC_LOCAL_INT_SWINT1);
->>   	gic_map_single_int(node, GIC_LOCAL_INT_FDC);
->>   }
+diff --git a/arch/mips/kernel/elf.c b/arch/mips/kernel/elf.c
+index 6430bff21fff..5c429d70e17f 100644
+--- a/arch/mips/kernel/elf.c
++++ b/arch/mips/kernel/elf.c
+@@ -257,7 +257,7 @@ int arch_check_elf(void *_ehdr, bool has_interpreter, void *_interp_ehdr,
+ 	else if ((prog_req.fr1 && prog_req.frdefault) ||
+ 		 (prog_req.single && !prog_req.frdefault))
+ 		/* Make sure 64-bit MIPS III/IV/64R1 will not pick FR1 */
+-		state->overall_fp_mode = ((current_cpu_data.fpu_id & MIPS_FPIR_F64) &&
++		state->overall_fp_mode = ((raw_current_cpu_data.fpu_id & MIPS_FPIR_F64) &&
+ 					  cpu_has_mips_r2_r6) ?
+ 					  FP_FR1 : FP_FR0;
+ 	else if (prog_req.fr1)
+-- 
+2.11.0

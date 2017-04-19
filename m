@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:26491 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:36400 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993201AbdDLFVu2TWz2 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 12 Apr 2017 07:21:50 +0200
+        with ESMTP id S23990924AbdDSMHxtklRL (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 19 Apr 2017 14:07:53 +0200
 From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Subject: [PATCH] MIPS: smp-cps: add missing include
-Date: Wed, 12 Apr 2017 07:21:39 +0200
-Message-ID: <1491974499-28414-1-git-send-email-marcin.nowakowski@imgtec.com>
+Subject: [PATCH] MIPS: perf: remove odd/even counter handling for I6400
+Date: Wed, 19 Apr 2017 14:07:43 +0200
+Message-ID: <1492603663-26855-1-git-send-email-marcin.nowakowski@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Marcin.Nowakowski@imgtec.com>
@@ -20,32 +20,42 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org, Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Message-ID: <20170412052139.uBNM7BACFSbCpXQ5eSYQtjCwcc8hAZbJ52mrvqq8w6Q@z>
+Message-ID: <20170419120743.O0aLvmvWh13m_BvWjYoRYRgN38U5A1iGXT5O352HyC4@z>
 
-An earlier change ('MIPS: Use common outgoing-CPU-notification code')
-is missing a required header with cpu notification method declarations
-leading to build failures.
+All performance counters on I6400 (odd and even) are capable of counting
+any of the available events, so drop current logic of using the extra
+bit to determine which counter to use.
 
 Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Fixes: 4e88a8621301 ("MIPS: Add cases for CPU_I6400")
+Fixes: fd716fca10fc ("MIPS: perf: Fix I6400 event numbers")
 ---
+ arch/mips/kernel/perf_event_mipsxx.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Ralf,
- Could you squash this patch together with the original commit?
-
- arch/mips/kernel/smp-cps.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-index 0aee71b..306b4a6 100644
---- a/arch/mips/kernel/smp-cps.c
-+++ b/arch/mips/kernel/smp-cps.c
-@@ -8,6 +8,7 @@
-  * option) any later version.
-  */
- 
-+#include <linux/cpu.h>
- #include <linux/delay.h>
- #include <linux/io.h>
- #include <linux/irqchip/mips-gic.h>
+diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
+index 8c35b31..2374cda 100644
+--- a/arch/mips/kernel/perf_event_mipsxx.c
++++ b/arch/mips/kernel/perf_event_mipsxx.c
+@@ -1597,7 +1597,6 @@ static const struct mips_perf_event *mipsxx_pmu_map_raw_event(u64 config)
+ 		break;
+ 	case CPU_P5600:
+ 	case CPU_P6600:
+-	case CPU_I6400:
+ 		/* 8-bit event numbers */
+ 		raw_id = config & 0x1ff;
+ 		base_id = raw_id & 0xff;
+@@ -1610,6 +1609,11 @@ static const struct mips_perf_event *mipsxx_pmu_map_raw_event(u64 config)
+ 		raw_event.range = P;
+ #endif
+ 		break;
++	case CPU_I6400:
++		/* 8-bit event numbers */
++		base_id = config & 0xff;
++		raw_event.cntr_mask = CNTR_EVEN | CNTR_ODD;
++		break;
+ 	case CPU_1004K:
+ 		if (IS_BOTH_COUNTERS_1004K_EVENT(base_id))
+ 			raw_event.cntr_mask = CNTR_EVEN | CNTR_ODD;
 -- 
 2.7.4

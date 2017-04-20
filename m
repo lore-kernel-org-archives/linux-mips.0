@@ -1,13 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:6821 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:4674 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23990845AbdDSM05oeX0u (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 19 Apr 2017 14:26:57 +0200
+        with ESMTP id S23991087AbdDTJHrhuoid (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Apr 2017 11:07:47 +0200
 From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH 2/2] Clocksource: mips-gic: Remove redundant non devicetree init
-Date: Wed, 19 Apr 2017 13:26:46 +0100
-Message-ID: <1492604806-23420-2-git-send-email-matt.redfearn@imgtec.com>
-In-Reply-To: <1492604806-23420-1-git-send-email-matt.redfearn@imgtec.com>
-References: <1492604806-23420-1-git-send-email-matt.redfearn@imgtec.com>
+Subject: [PATCH 0/3] irqchip: mips-gic: Remove dev domain & fixes
+Date: Thu, 20 Apr 2017 10:07:33 +0100
+Message-ID: <1492679256-14513-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Matt.Redfearn@imgtec.com>
@@ -20,57 +18,34 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20170419122646.F9JDpIw89mCo4UONFpJqCb3ITgEcjRauxNdy582-V8U@z>
+To: Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <marc.zyngier@arm.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Matt Redfearn <matt.redfearn@imgtec.com>, Jason Cooper <jason@lakedaemon.net>, linux-kernel@vger.kernel.org
+Message-ID: <20170420090733.MD8i26kufKq07ZLZREz0FH-smEScXzxfhwt7bUsUzt8@z>
 
-Malta was the only platform probing this driver from platform code
-without using device tree. With that code removed, gic_clocksource_init
-is redundant so remove it.
 
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+This series fixes a couple of issues with the MIPS GIC driver and also
+vastly simplifies it by removing the separate dev domain.
 
----
+The first patch fixes a long standing issue with IPI reservation.
+The second patch reqorks the driver to simplify it by removing the
+overly complex device IRQ domain.
+The third fixes an issue seen in v4.11 which broke the Malta platforms
+legacy IRQ controller.
 
- drivers/clocksource/mips-gic-timer.c | 13 -------------
- include/linux/irqchip/mips-gic.h     |  1 -
- 2 files changed, 14 deletions(-)
+These patches have been tested on multiple MIPS platforms including
+Malta, Boston, Ci40 and SEAD3.
 
-diff --git a/drivers/clocksource/mips-gic-timer.c b/drivers/clocksource/mips-gic-timer.c
-index d9ef7a61e093..0bce89c1266d 100644
---- a/drivers/clocksource/mips-gic-timer.c
-+++ b/drivers/clocksource/mips-gic-timer.c
-@@ -154,19 +154,6 @@ static int __init __gic_clocksource_init(void)
- 	return ret;
- }
- 
--void __init gic_clocksource_init(unsigned int frequency)
--{
--	gic_frequency = frequency;
--	gic_timer_irq = MIPS_GIC_IRQ_BASE +
--		GIC_LOCAL_TO_HWIRQ(GIC_LOCAL_INT_COMPARE);
--
--	__gic_clocksource_init();
--	gic_clockevent_init();
--
--	/* And finally start the counter */
--	gic_start_count();
--}
--
- static int __init gic_clocksource_of_init(struct device_node *node)
- {
- 	struct clk *clk;
-diff --git a/include/linux/irqchip/mips-gic.h b/include/linux/irqchip/mips-gic.h
-index 7b49c71c968b..2b0e56619e53 100644
---- a/include/linux/irqchip/mips-gic.h
-+++ b/include/linux/irqchip/mips-gic.h
-@@ -258,7 +258,6 @@ extern unsigned int gic_present;
- extern void gic_init(unsigned long gic_base_addr,
- 	unsigned long gic_addrspace_size, unsigned int cpu_vec,
- 	unsigned int irqbase);
--extern void gic_clocksource_init(unsigned int);
- extern u64 gic_read_count(void);
- extern unsigned int gic_get_count_width(void);
- extern u64 gic_read_compare(void);
+
+
+Matt Redfearn (1):
+  irqchip: mips-gic: Replace static map with dynamic
+
+Paul Burton (2):
+  irqchip: mips-gic: Separate IPI reservation & usage tracking
+  irqchip: mips-gic: Remove device IRQ domain
+
+ drivers/irqchip/irq-mips-gic.c | 338 +++++++++++++----------------------------
+ 1 file changed, 106 insertions(+), 232 deletions(-)
+
 -- 
 2.7.4

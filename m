@@ -1,16 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:24730 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992178AbdDTJHycAm9d (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Apr 2017 11:07:54 +0200
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH 3/3] irqchip: mips-gic: Replace static map with dynamic
-Date: Thu, 20 Apr 2017 10:07:36 +0100
-Message-ID: <1492679256-14513-4-git-send-email-matt.redfearn@imgtec.com>
-In-Reply-To: <1492679256-14513-1-git-send-email-matt.redfearn@imgtec.com>
-References: <1492679256-14513-1-git-send-email-matt.redfearn@imgtec.com>
+Received: from fllnx210.ext.ti.com ([198.47.19.17]:36612 "EHLO
+        fllnx210.ext.ti.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23992178AbdDUKrjzKVZy (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 21 Apr 2017 12:47:39 +0200
+Subject: Re: next/master build: 206 builds: 2 failed, 204 passed, 9 errors, 10
+ warnings (next-20170420)
+References: <58f869bd.84a0df0a.dc1f9.4547@mx.google.com>
+ <CAK8P3a2uZFGXhNq+nwDQmgzNL5WH0VejQmotUZp3=0fKwsU1=w@mail.gmail.com>
+From: Sekhar Nori <nsekhar@ti.com>
+Message-ID: <34ef293f-dc8b-5ab8-8130-90f723089e45@ti.com>
+Date: Fri, 21 Apr 2017 16:17:15 +0530
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@imgtec.com>
+In-Reply-To: <CAK8P3a2uZFGXhNq+nwDQmgzNL5WH0VejQmotUZp3=0fKwsU1=w@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Return-Path: <nsekhar@ti.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,143 +23,89 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <marc.zyngier@arm.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Matt Redfearn <matt.redfearn@imgtec.com>, Jason Cooper <jason@lakedaemon.net>, linux-kernel@vger.kernel.org
-Message-ID: <20170420090736.Y8ewQQX4ecWGJfDRFiIkTLiSaqdv2cmjz79lfNr-zUE@z>
+To: Arnd Bergmann <arnd@arndb.de>, "kernelci.org bot" <bot@kernelci.org>
+Cc: kernel-build-reports@lists.linaro.org, "Steven J. Hill" <Steven.Hill@cavium.com>, David Daney <david.daney@cavium.com>, linux-mips@linux-mips.org, Al Viro <viro@zeniv.linux.org.uk>, Ulf Hansson <ulf.hansson@linaro.org>, Kevin Hilman <khilman@kernel.org>, Marc Zyngier <marc.zyngier@arm.com>
+Message-ID: <20170421104715.EjlVUxygENaqC0OGL_nRdIctsdAxeOeU30f1YWegiAE@z>
 
-Commit 4cfffcfa5106 ("irqchip/mips-gic: Fix local interrupts") fixed
-local interrupts by creating virq mappings for them all at startup.
-Unfortunately this change broke legacy IRQ controllers in the same
-system, such as the i8259 on the Malta platform, as it allocates virq
-numbers that were expected to be available for the legacy controller.
+Hi Arnd,
 
-Instead of creating the mappings statically when the GIC is probed,
-re-introduce the irq domain .map function, removed by commit e875bd66dfb
-("irqchip/mips-gic: Fix local interrupts") and use it to set up the irq
-handler and chip. Since a good deal of the required functionality is
-already implemented by gic_irq_domain_alloc, repurpose that function for
-gic_irq_domain_map and add a new gic_irq_domain_alloc which wraps
-gic_irq_domain_map with the necessary conversion.
+On Thursday 20 April 2017 02:53 PM, Arnd Bergmann wrote:
+>> davinci_all_defconfig (arm) — PASS, 0 errors, 0 warnings, 0 section
+>> mismatches
+>>
+>> Section mismatches:
+>> WARNING: modpost: Found 1 section mismatch(es).
+>> WARNING: modpost: Found 1 section mismatch(es).
 
-This change fixes the legacy interrupt controller of the Malta platform
-without breaking the perf interrupt fixed by commit e875bd66dfb
-("irqchip/mips-gic: Fix local interrupts").
+> The 'section mismatches' detection in kernelci appears to be broken, so we
+> don't actually see what happened. I can't reproduce it at the moment,
+> so it's likely that this is fixed by an older patch of mine:
 
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+I cannot reproduce this as well.
 
----
+> 
+> commit aae89d7dddb831aece31997cdc1c5014fb5a51c1
+> Author: Arnd Bergmann <arnd@arndb.de>
+> Date:   Sat Oct 10 21:19:48 2015 +0200
+> 
+>     [WRONG] davinci_mmc: remove incorrect __exit annotation
+> 
+>     WARNING: drivers/built-in.o(.exit.text+0x28ec): Section mismatch
+> in reference from the function davinci_mmcsd_remove() to the function
+> .init.text:davinci_release_dma_channels()
+>     The function __exit davinci_mmcsd_remove() references
+>     a function __init davinci_release_dma_channels().
+>     This is often seen when error handling in the exit function
+>     uses functionality in the init path.
+>     The fix is often to remove the __init annotation of
+>     davinci_release_dma_channels() so it may be used outside an init section.
+> 
+>     Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> diff --git a/drivers/mmc/host/davinci_mmc.c b/drivers/mmc/host/davinci_mmc.c
+> index 621ce47e0e4a..9758d42f19a1 100644
+> --- a/drivers/mmc/host/davinci_mmc.c
+> +++ b/drivers/mmc/host/davinci_mmc.c
+> @@ -496,7 +496,7 @@ static int mmc_davinci_start_dma_transfer(struct
+> mmc_davinci_host *host,
+>         return ret;
+>  }
+> 
+> -static void __init_or_module
+> +static void
+>  davinci_release_dma_channels(struct mmc_davinci_host *host)
+>  {
+>         if (!host->use_dma)
+> @@ -1361,7 +1361,7 @@ static int __init davinci_mmcsd_probe(struct
+> platform_device *pdev)
+>         return ret;
+>  }
+> 
+> -static int __exit davinci_mmcsd_remove(struct platform_device *pdev)
+> +static int davinci_mmcsd_remove(struct platform_device *pdev)
+>  {
+>         struct mmc_davinci_host *host = platform_get_drvdata(pdev);
+> 
+> @@ -1414,7 +1414,7 @@ static struct platform_driver davinci_mmcsd_driver = {
+>                 .pm     = davinci_mmcsd_pm_ops,
+>                 .of_match_table = davinci_mmc_dt_ids,
+>         },
+> -       .remove         = __exit_p(davinci_mmcsd_remove),
+> +       .remove         = davinci_mmcsd_remove,
+>         .id_table       = davinci_mmc_devtype,
+>  };
+> 
+> This is a very old patch and I don't remember why I never submitted
+> it or marked it as [WRONG], and I don't see why it only now showed
+> up in kernelci.
 
- drivers/irqchip/irq-mips-gic.c | 60 +++++++++++++-----------------------------
- 1 file changed, 18 insertions(+), 42 deletions(-)
+I quite don't see how the existing code is wrong.
+davinci_release_dma_channels() is marked __init_or_module and is
+accessed in the .remove() routine. If modules are enabled,
+davinci_release_dma_channels() is available at the time of module
+removal since __init_or_module evaluates to nothing. And if modules are
+disabled, then davinci_release_dma_channels() is marked as __init but
+davinci_mmcsd_remove() is never called.
 
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index eb448a1d57b4..eb7fbe159963 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -700,16 +700,12 @@ static int gic_irq_domain_xlate(struct irq_domain *d, struct device_node *ctrlr,
- 	return 0;
- }
- 
--static int gic_irq_domain_alloc(struct irq_domain *d, unsigned int virq,
--				unsigned int nr_irqs, void *arg)
-+static int gic_irq_domain_map(struct irq_domain *d, unsigned int virq,
-+			      irq_hw_number_t hwirq)
- {
--	struct irq_fwspec *fwspec = arg;
--	irq_hw_number_t hwirq;
- 	int err;
- 
--	if (fwspec->param[0] == GIC_SHARED) {
--		hwirq = GIC_SHARED_TO_HWIRQ(fwspec->param[1]);
--
-+	if (hwirq >= GIC_SHARED_HWIRQ_BASE) {
- 		/* verify that shared irqs don't conflict with an IPI irq */
- 		if (test_bit(GIC_HWIRQ_TO_SHARED(hwirq), ipi_resrv))
- 			return -EBUSY;
-@@ -723,8 +719,6 @@ static int gic_irq_domain_alloc(struct irq_domain *d, unsigned int virq,
- 		return gic_shared_irq_domain_map(d, virq, hwirq, 0);
- 	}
- 
--	hwirq = GIC_LOCAL_TO_HWIRQ(fwspec->param[1]);
--
- 	switch (GIC_HWIRQ_TO_LOCAL(hwirq)) {
- 	case GIC_LOCAL_INT_TIMER:
- 	case GIC_LOCAL_INT_PERFCTR:
-@@ -758,6 +752,20 @@ static int gic_irq_domain_alloc(struct irq_domain *d, unsigned int virq,
- 	return gic_local_irq_domain_map(d, virq, hwirq);
- }
- 
-+static int gic_irq_domain_alloc(struct irq_domain *d, unsigned int virq,
-+				unsigned int nr_irqs, void *arg)
-+{
-+	struct irq_fwspec *fwspec = arg;
-+	irq_hw_number_t hwirq;
-+
-+	if (fwspec->param[0] == GIC_SHARED)
-+		hwirq = GIC_SHARED_TO_HWIRQ(fwspec->param[1]);
-+	else
-+		hwirq = GIC_LOCAL_TO_HWIRQ(fwspec->param[1]);
-+
-+	return gic_irq_domain_map(d, virq, hwirq);
-+}
-+
- void gic_irq_domain_free(struct irq_domain *d, unsigned int virq,
- 			 unsigned int nr_irqs)
- {
-@@ -767,6 +775,7 @@ static const struct irq_domain_ops gic_irq_domain_ops = {
- 	.xlate = gic_irq_domain_xlate,
- 	.alloc = gic_irq_domain_alloc,
- 	.free = gic_irq_domain_free,
-+	.map = gic_irq_domain_map,
- };
- 
- static int gic_ipi_domain_xlate(struct irq_domain *d, struct device_node *ctrlr,
-@@ -872,38 +881,6 @@ static struct irq_domain_ops gic_ipi_domain_ops = {
- 	.match = gic_ipi_domain_match,
- };
- 
--static void __init gic_map_single_int(struct device_node *node,
--				      unsigned int irq)
--{
--	unsigned int linux_irq;
--	struct irq_fwspec local_int_fwspec = {
--		.fwnode         = &node->fwnode,
--		.param_count    = 3,
--		.param          = {
--			[0]     = GIC_LOCAL,
--			[1]     = irq,
--			[2]     = IRQ_TYPE_NONE,
--		},
--	};
--
--	if (!gic_local_irq_is_routable(irq))
--		return;
--
--	linux_irq = irq_create_fwspec_mapping(&local_int_fwspec);
--	WARN_ON(!linux_irq);
--}
--
--static void __init gic_map_interrupts(struct device_node *node)
--{
--	gic_map_single_int(node, GIC_LOCAL_INT_WD);
--	gic_map_single_int(node, GIC_LOCAL_INT_COMPARE);
--	gic_map_single_int(node, GIC_LOCAL_INT_TIMER);
--	gic_map_single_int(node, GIC_LOCAL_INT_PERFCTR);
--	gic_map_single_int(node, GIC_LOCAL_INT_SWINT0);
--	gic_map_single_int(node, GIC_LOCAL_INT_SWINT1);
--	gic_map_single_int(node, GIC_LOCAL_INT_FDC);
--}
--
- static void __init __gic_init(unsigned long gic_base_addr,
- 			      unsigned long gic_addrspace_size,
- 			      unsigned int cpu_vec, unsigned int irqbase,
-@@ -997,7 +974,6 @@ static void __init __gic_init(unsigned long gic_base_addr,
- 
- 	bitmap_copy(ipi_available, ipi_resrv, GIC_MAX_INTRS);
- 	gic_basic_init();
--	gic_map_interrupts(node);
- }
- 
- void __init gic_init(unsigned long gic_base_addr,
--- 
-2.7.4
+Thanks,
+Sekhar

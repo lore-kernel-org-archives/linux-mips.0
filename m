@@ -1,18 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:64093 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23993417AbdD1IgkKj0el (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 28 Apr 2017 10:36:40 +0200
-Date: Fri, 28 Apr 2017 09:36:33 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: Commit 10b6ea0959de broke qemu reboot/exit.
-Message-ID: <20170428083633.GL1105@jhogan-linux.le.imgtec.org>
-References: <bb1f5b37-26ca-10ff-c514-33899f21ea24@landley.net>
+Received: from mx2.rt-rk.com ([89.216.37.149]:44011 "EHLO mail.rt-rk.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23993911AbdEHPZebMGqC (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 8 May 2017 17:25:34 +0200
+From: "Petar Jovanovic" <petar.jovanovic@rt-rk.com>
+References: <1489600751-82884-1-git-send-email-petar.jovanovic@rt-rk.com>,<001b01d2ae25$d7554b80$85ffe280$@rt-rk.com> <56EA75BA695AE044ACFB41322F6D2BF4013D036343@BADAG02.ba.imgtec.org>
+In-Reply-To: <56EA75BA695AE044ACFB41322F6D2BF4013D036343@BADAG02.ba.imgtec.org>
+Subject: RE: [PATCH] MIPS: Octeon: Expose support for mips32r1, mips32r2 and mips64r1
+Date: Mon, 8 May 2017 17:25:28 +0200
+Message-ID: <002c01d2c80f$52e66060$f8b32120$@rt-rk.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="M9kwpIYUMbI/2cCx"
-Content-Disposition: inline
-In-Reply-To: <bb1f5b37-26ca-10ff-c514-33899f21ea24@landley.net>
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-us
+Return-Path: <petar.jovanovic@rt-rk.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,90 +23,69 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rob Landley <rob@landley.net>
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, paul.burton@imgtec.com
-Message-ID: <20170428083633.MlqguNXFhkWbCJz0PL-LssKsvJfpnMzfFKUJ6HDVTcw@z>
+To: 'Petar Jovanovic' <Petar.Jovanovic@imgtec.com>, linux-mips@linux-mips.org
+Cc: ralf@linux-mips.org, david.daney@cavium.com
+Message-ID: <20170508152528.50HrBtU2bjypR5vbLXGLPRS4PSkWf5RqUq4AWeLVMOk@z>
 
---M9kwpIYUMbI/2cCx
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Can anyone take a look at this? Thank you.
 
-Hi Rob,
+-----Original Message-----
+From: Petar Jovanovic [mailto:Petar.Jovanovic@imgtec.com] 
+Sent: Tuesday, April 25, 2017 7:25 PM
+To: Petar Jovanovic <petar.jovanovic@rt-rk.com>; linux-mips@linux-mips.org
+Cc: ralf@linux-mips.org; david.daney@cavium.com
+Subject: RE: [PATCH] MIPS: Octeon: Expose support for mips32r1, mips32r2 and
+mips64r1
 
-On Fri, Apr 28, 2017 at 02:39:39AM -0500, Rob Landley wrote:
-> QEMU fails to reboot with current kernels, instead it hangs eating CPU:
->=20
->   # exit
->   reboot: Restarting system
->   Reboot failed -- System halted
->=20
-> I bisected it to "MIPS: Malta: Use syscon-reboot driver to reboot"
-> commit 10b6ea0959de back in September. To reproduce, build a kernel with:
->=20
-> cat > mini.conf << EOF
-> # CONFIG_EMBEDDED is not set
-> CONFIG_EARLY_PRINTK=3Dy
-> CONFIG_BLK_DEV_INITRD=3Dy
-> CONFIG_RD_GZIP=3Dy
-> CONFIG_BINFMT_ELF=3Dy
-> CONFIG_BINFMT_SCRIPT=3Dy
-> CONFIG_MISC_FILESYSTEMS=3Dy
-> CONFIG_DEVTMPFS=3Dy
->=20
-> CONFIG_MIPS_MALTA=3Dy
-> CONFIG_CPU_MIPS32_R2=3Dy
-> CONFIG_SERIAL_8250=3Dy
-> CONFIG_SERIAL_8250_CONSOLE=3Dy
-> CONFIG_PM=3Dy
-> CONFIG_PCNET32=3Dy
-> CONFIG_BLK_DEV_PIIX=3Dy
-> EOF
->=20
-> make ARCH=3Dmips allnoconfig KCONFIG_ALLCONFIG=3Dmini.conf
-> make ARCH=3Dmips CROSS_COMPILE=3Dblah-
->=20
-> And then boot qemu with a simple initramfs:
->=20
-> qemu-system-mips -M malta -nographic -no-reboot -kernel vmlinux \
->   -append "console=3DttyS0 panic=3D1" -initrd root.cpio.gz
->=20
-> And then try to shut it down. Before that commit it did, after it
-> doesn't. (I rebuilt qemu from git this morning and that didn't help,
-> same behavior as last year's build. New kernel doesn't know how to tell
-> it to shut down, old one did.)
+ping
+________________________________________
+From: Petar Jovanovic [petar.jovanovic@rt-rk.com]
+Sent: Wednesday, April 05, 2017 6:01 PM
+To: linux-mips@linux-mips.org
+Cc: ralf@linux-mips.org; david.daney@cavium.com; Petar Jovanovic
+Subject: RE: [PATCH] MIPS: Octeon: Expose support for mips32r1, mips32r2 and
+mips64r1
 
-I presume this is due to the following missing from your config:
-CONFIG_POWER_RESET=3Dy
-CONFIG_POWER_RESET_SYSCON=3Dy
+ping.
 
-The commit added these to the Malta defconfigs, but perhaps should have
-selected them from CONFIG_MIPS_MALTA instead, as CONFIG_ARCH_EXYNOS
-does, since its pretty core functionality that didn't used to be
-optional?
+-----Original Message-----
+From: Petar Jovanovic [mailto:petar.jovanovic@rt-rk.com]
+Sent: Wednesday, March 15, 2017 6:59 PM
+To: linux-mips@linux-mips.org
+Cc: ralf@linux-mips.org; david.daney@cavium.com; petar.jovanovic@imgtec.com;
+Petar Jovanovic <petar.jovanovic@rt-rk.com>
+Subject: [PATCH] MIPS: Octeon: Expose support for mips32r1, mips32r2 and
+mips64r1
 
-Cheers
-James
+Define Cavium Octeon as a CPU that has support for mips32r1, mips32r2 and
+mips64r1. This will affect show_cpuinfo() that will now correctly expose
+mips32r1, mips32r2 and mips64r1 as supported ISAs.
 
---M9kwpIYUMbI/2cCx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Signed-off-by: Petar Jovanovic <petar.jovanovic@rt-rk.com>
+---
+ arch/mips/include/asm/mach-cavium-octeon/cpu-feature-overrides.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git
+a/arch/mips/include/asm/mach-cavium-octeon/cpu-feature-overrides.h
+b/arch/mips/include/asm/mach-cavium-octeon/cpu-feature-overrides.h
+index bd8b9bb..a4f7986 100644
+--- a/arch/mips/include/asm/mach-cavium-octeon/cpu-feature-overrides.h
++++ b/arch/mips/include/asm/mach-cavium-octeon/cpu-feature-overrides.h
+@@ -46,9 +46,9 @@
+ #define cpu_has_64bits         1
+ #define cpu_has_octeon_cache   1
+ #define cpu_has_saa            octeon_has_saa()
+-#define cpu_has_mips32r1       0
+-#define cpu_has_mips32r2       0
+-#define cpu_has_mips64r1       0
++#define cpu_has_mips32r1       1
++#define cpu_has_mips32r2       1
++#define cpu_has_mips64r1       1
+ #define cpu_has_mips64r2       1
+ #define cpu_has_dsp            0
+ #define cpu_has_dsp2           0
+--
+1.9.1
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlkC/vMACgkQbAtpk944
-dnpvkw//c3F9tS3JYooS9JxzP82fFnzVqdXMb2cgEeafQkayMLZ/SEUc6nkmRN0Q
-2vRtezbhx3PVAmSkTSG5yEXdKREA/HYgfufBdWi8I5iceNOHS4vdh06tSE2iNG/v
-JYyO78NeL+Yz3cF5fij8EEkBdsOJ2aZ4zdM3+66utHH/iBBbsfH6iAGVrrDTGw3O
-/3fqoK1bZembbrt05BJDlWMzHwRXsc/oEaZcp0EuhWq3kI2C3aHIN842VjQAMgmF
-GnW8Op6+7Agi5uWQJqEV7I+szJaHhZ3j/m4sWPLBqi/F1mPgE9J+nPIAw3ExDt2Q
-9UtmScpCOurX/LfDFMa+3+hGFfXjKQusNv1vpyyAfmKOZwbOKAFm19eqx3i+lN3J
-aPxsSPi4SPXYFzGKuF2/aCwEyoNzfTINubyhjoToQTTNas95C9nxHIZ6enZlQEuG
-BJFJUt4ETnJb3vVwmQfxoxHIpzfAO3tiVHqclF5Qp6VFL9nAMfhCH0Npt7YYAP0K
-Zr/DVqkvPvCLEI6zWJsuq5LJ28g/xhcCvit14stv2lp0SkaV6A2JGT6cKUogvj4H
-G2N0Gc4jX1I/KVLtqZvmSyr/TDJnKRDP2oo05JqF0sUNmx/Jluqt5UNAjS8JGX1x
-CULpE2Oy8wpB4llIO9CneCMHPwLx4DCWKdOX3sYWE50a0mpkfyU=
-=cXKX
------END PGP SIGNATURE-----
-
---M9kwpIYUMbI/2cCx--
+=

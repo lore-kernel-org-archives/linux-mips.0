@@ -1,20 +1,24 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:25711 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992213AbdEVMTRDSL2Y (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 22 May 2017 14:19:17 +0200
+Received: from mail-eopbgr00132.outbound.protection.outlook.com ([40.107.0.132]:29504
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23993552AbdEVNW6odd5N (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 22 May 2017 15:22:58 +0200
 Subject: Re: [PATCH 00/21] MIPS memblock: Remove bootmem code and switch to
  NO_BOOTMEM
 References: <1482113266-13207-1-git-send-email-fancer.lancer@gmail.com>
  <be0b6614-708d-a32a-029d-7e606a673e5b@imgtec.com>
  <20170522102643.GA17763@mobilestation>
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Message-ID: <eeb52dd6-3fdd-01b9-6774-236ab50e3f4d@imgtec.com>
-Date: Mon, 22 May 2017 14:19:09 +0200
+ <ef3d7a8c-2a73-2082-0d64-bdb4f95df204@gentoo.org>
+ <20170522130348.GA20910@mobilestation>
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Message-ID: <f14c7a41-ae2d-b19d-fb86-d6e9c9c53949@nokia.com>
+Date: Mon, 22 May 2017 15:20:44 +0200
 MIME-Version: 1.0
-In-Reply-To: <20170522102643.GA17763@mobilestation>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <20170522130348.GA20910@mobilestation>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Return-Path: <Marcin.Nowakowski@imgtec.com>
+Return-Path: <alexander.sverdlin@nokia.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,31 +28,43 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: ralf@linux-mips.org, paul.burton@imgtec.com, rabinv@axis.com, matt.redfearn@imgtec.com, james.hogan@imgtec.com, alexander.sverdlin@nokia.com, robh+dt@kernel.org, frowand.list@gmail.com, Sergey.Semin@t-platforms.ru, linux-mips@linux-mips.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <20170522121909.-VfzvCpr1tvfwgDb8Lx1v1MZVa1FSZQgW2Db08ZV6CA@z>
+To: Serge Semin <fancer.lancer@gmail.com>, Joshua Kinard <kumba@gentoo.org>
+Cc: Marcin Nowakowski <marcin.nowakowski@imgtec.com>, ralf@linux-mips.org, paul.burton@imgtec.com, rabinv@axis.com, matt.redfearn@imgtec.com, james.hogan@imgtec.com, robh+dt@kernel.org, frowand.list@gmail.com, Sergey.Semin@t-platforms.ru, linux-mips@linux-mips.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <20170522132044.Qvdl3Y6Pk1JbT-HKsMtTv7eyYzihsEx2KbzVSE2izis@z>
 
-Hi Serge,
+Hello Serge,
 
-On 22.05.2017 12:26, Serge Semin wrote:
+On 22/05/17 15:03, Serge Semin wrote:
+>> I have an SGI Onyx2 and just recently acquired a working SGI Origin 200.  The
+>> Onyx2 has NUMA issues yet to be hunted down, but I got ~3 days uptime out of
+>> the Origin 200 running compiles before powering it down.  Mainline needs 2-3
+>> small patches to make IP27 workable, last I tested.
+>>
+>> I'd have to look at the IP27 code again and see if I can make sense of what
+>> it's doing.  I think it dealt with either setting up memory for an initrd
+>> (which I haven't used in over a decade), or it's for the NUMA stuff to discover
+>> all memory on each node.
+>>
+>> -- 
+>> Joshua Kinard
+>> Gentoo/MIPS
+>> kumba@gentoo.org
+>> 6144R/F5C6C943 2015-04-27
+>> 177C 1972 1FB8 F254 BAD0 3E72 5C63 F4E3 F5C6 C943
+>>
+>> "The past tempts us, the present confuses us, the future frightens us.  And our
+>> lives slip away, moment by moment, lost in that vast, terrible in-between."
+>>
+>> --Emperor Turhan, Centauri Republic
+> It's great to hear of your willingness to help. Since both Loonson64 and SGI IP27
+> problematic architecture-specific code will be appropriately altered, I'll publish
+> the fixed general MIPS-memblock patchset within two months. I'll also try to
+> involve Ralf in it when I'm ready, so to make sure all my alterations are made
+> within kernel arch-code coding style. While I'm working on it, you can still use
+> the current patchset for some limited tests.
 
-> Regarding the patchset. I'm still pretty much eager to make it being
-> part of kernel MIPS arch. But there was a problem I outlined
-> in the patchset header message, which I can't fix by myself.
-> Particulary It's connected with Loonson3 or SGI IP27 code alteration,
-> so to make it free of ancient boot_mem_map dependencies (see the
-> patchset header message). Without a help from someone, who has
-> Loonson64 and SGI IP27 hardware and strong desire to make it free of
-> old bootmem allocator, it is useless to make any progress from my
-> side. That's why Ralf moved this email-thread into RFC actually.
-> Anyway If either you or someone else has got such hardware and is
-> interested in the cooperation, I'll be more than happy to push
-> my efforts forward with this patchset contribution. But only after
-> I got a bit less busy with my work. As I said it will happen within
-> next 1-2 months. So do you have the hardware and desire to be part
-> of this?
+Please Cc me in this case, I should be able to test on Octeon MIPS64 platform.
 
-I should be able to update/test the changes on a Loongson64 platform.
-
-
-Marcin
+-- 
+Best regards,
+Alexander Sverdlin.

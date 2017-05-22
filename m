@@ -1,14 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:42773 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:22332 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991955AbdEOJqqHh3Yr (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 15 May 2017 11:46:46 +0200
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH] MIPS: Sort MIPS Kconfig Alphabetically.
-Date: Mon, 15 May 2017 10:46:35 +0100
-Message-ID: <1494841595-8954-1-git-send-email-matt.redfearn@imgtec.com>
+        with ESMTP id S23992517AbdEVJsns3U-X (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 22 May 2017 11:48:43 +0200
+Subject: Re: [PATCH 00/21] MIPS memblock: Remove bootmem code and switch to
+ NO_BOOTMEM
+References: <1482113266-13207-1-git-send-email-fancer.lancer@gmail.com>
+From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Message-ID: <be0b6614-708d-a32a-029d-7e606a673e5b@imgtec.com>
+Date: Mon, 22 May 2017 11:48:36 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@imgtec.com>
+In-Reply-To: <1482113266-13207-1-git-send-email-fancer.lancer@gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-Path: <Marcin.Nowakowski@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,154 +22,36 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, linux-kernel@vger.kernel.org
-Message-ID: <20170515094635.-gDt2c6I2xrsF33DNXNl7BOKqfVuykURDbXCrUmjSaU@z>
+To: Serge Semin <fancer.lancer@gmail.com>, ralf@linux-mips.org, paul.burton@imgtec.com, rabinv@axis.com, matt.redfearn@imgtec.com, james.hogan@imgtec.com, alexander.sverdlin@nokia.com, robh+dt@kernel.org, frowand.list@gmail.com
+Cc: Sergey.Semin@t-platforms.ru, linux-mips@linux-mips.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <20170522094836.GzolKfNxA4Fd2dAaxnayxcUHqiaHYHJuJIGZ1wfQP8o@z>
 
-Sort the entries in config MIPS alphabetically so as to make entries
-easier to find.
+Hi Serge,
 
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+On 19.12.2016 03:07, Serge Semin wrote:
+> Most of the modern platforms supported by linux kernel have already
+> been cleaned up of old bootmem allocator by moving to nobootmem
+> interface wrapping up the memblock. This patchset is the first
+> attempt to do the similar improvement for MIPS for UMA systems
+> only.
+>
+> Even though the porting was performed as much careful as possible
+> there still might be problem with support of some platforms,
+> especially Loonson3 or SGI IP27, which perform early memory manager
+> initialization by their self.
+>
+> The patchset is split so individual patch being consistent in
+> functional and buildable ways. But the MIPS early memory manager
+> will work correctly only either with or without the whole set being
+> applied. For the same reason a reviewer should not pay much attention
+> to methods bootmem_init(), arch_mem_init(), paging_init() and
+> mem_init() until they are fully refactored.
+>
+> The patchset is applied on top of kernel v4.9.
 
----
+Have you progressed any further with these patches?
+They would definitely be useful to include for MIPS arch, so can you let 
+us know if you are planning to send any updated version?
 
-
-This patch is based on 4.12-rc1. My intention would be for it to be
-applied during the -rc's when it is less likely to cause merge conflicts
-with other patches changing config MIPS.
-
----
- arch/mips/Kconfig | 98 +++++++++++++++++++++++++++----------------------------
- 1 file changed, 49 insertions(+), 49 deletions(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 2828ecde133d..0b15978c0f88 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1,75 +1,75 @@
- config MIPS
- 	bool
- 	default y
--	select ARCH_SUPPORTS_UPROBES
-+	select ARCH_BINFMT_ELF_STATE
-+	select ARCH_CLOCKSOURCE_DATA
-+	select ARCH_DISCARD_MEMBLOCK
-+	select ARCH_HAS_ELF_RANDOMIZE
-+	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_MIGHT_HAVE_PC_SERIO
--	select ARCH_USE_CMPXCHG_LOCKREF if 64BIT
-+	select ARCH_SUPPORTS_UPROBES
- 	select ARCH_USE_BUILTIN_BSWAP
--	select HAVE_CONTEXT_TRACKING
--	select HAVE_GENERIC_DMA_COHERENT
--	select HAVE_IDE
--	select HAVE_IRQ_EXIT_ON_IRQ_STACK
--	select HAVE_OPROFILE
--	select HAVE_PERF_EVENTS
--	select PERF_USE_VMALLOC
-+	select ARCH_USE_CMPXCHG_LOCKREF if 64BIT
-+	select ARCH_WANT_IPC_PARSE_VERSION
-+	select BUILDTIME_EXTABLE_SORT
-+	select CLONE_BACKWARDS
-+	select CPU_PM if CPU_IDLE
-+	select GENERIC_ATOMIC64 if !64BIT
-+	select GENERIC_CLOCKEVENTS
-+	select GENERIC_CMOS_UPDATE
-+	select GENERIC_CPU_AUTOPROBE
-+	select GENERIC_IRQ_PROBE
-+	select GENERIC_IRQ_SHOW
-+	select GENERIC_PCI_IOMAP
-+	select GENERIC_SCHED_CLOCK if !CAVIUM_OCTEON_SOC
-+	select GENERIC_SMP_IDLE_THREAD
-+	select GENERIC_TIME_VSYSCALL
-+	select HANDLE_DOMAIN_IRQ
-+	select HAVE_ARCH_JUMP_LABEL
- 	select HAVE_ARCH_KGDB
- 	select HAVE_ARCH_MMAP_RND_BITS if MMU
- 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if MMU && COMPAT
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_TRACEHOOK
-+	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if CPU_SUPPORTS_HUGEPAGES && 64BIT
- 	select HAVE_CBPF_JIT if !CPU_MICROMIPS
--	select HAVE_FUNCTION_TRACER
-+	select HAVE_CC_STACKPROTECTOR
-+	select HAVE_CONTEXT_TRACKING
-+	select HAVE_COPY_THREAD_TLS
-+	select HAVE_C_RECORDMCOUNT
-+	select HAVE_DEBUG_KMEMLEAK
-+	select HAVE_DEBUG_STACKOVERFLOW
-+	select HAVE_DMA_API_DEBUG
-+	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_DYNAMIC_FTRACE
-+	select HAVE_EXIT_THREAD
- 	select HAVE_FTRACE_MCOUNT_RECORD
--	select HAVE_C_RECORDMCOUNT
- 	select HAVE_FUNCTION_GRAPH_TRACER
-+	select HAVE_FUNCTION_TRACER
-+	select HAVE_GENERIC_DMA_COHERENT
-+	select HAVE_IDE
-+	select HAVE_IRQ_EXIT_ON_IRQ_STACK
-+	select HAVE_IRQ_TIME_ACCOUNTING
- 	select HAVE_KPROBES
- 	select HAVE_KRETPROBES
--	select HAVE_SYSCALL_TRACEPOINTS
--	select HAVE_DEBUG_KMEMLEAK
--	select HAVE_SYSCALL_TRACEPOINTS
--	select ARCH_HAS_ELF_RANDOMIZE
--	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if CPU_SUPPORTS_HUGEPAGES && 64BIT
--	select RTC_LIB if !MACH_LOONGSON64
--	select GENERIC_ATOMIC64 if !64BIT
--	select HAVE_DMA_CONTIGUOUS
--	select HAVE_DMA_API_DEBUG
--	select GENERIC_IRQ_PROBE
--	select GENERIC_IRQ_SHOW
--	select GENERIC_PCI_IOMAP
--	select HAVE_ARCH_JUMP_LABEL
--	select ARCH_WANT_IPC_PARSE_VERSION
--	select IRQ_FORCED_THREADING
- 	select HAVE_MEMBLOCK
- 	select HAVE_MEMBLOCK_NODE_MAP
--	select ARCH_DISCARD_MEMBLOCK
--	select GENERIC_SMP_IDLE_THREAD
--	select BUILDTIME_EXTABLE_SORT
--	select GENERIC_CPU_AUTOPROBE
--	select GENERIC_CLOCKEVENTS
--	select GENERIC_SCHED_CLOCK if !CAVIUM_OCTEON_SOC
--	select GENERIC_CMOS_UPDATE
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_NMI
--	select VIRT_TO_BUS
--	select MODULES_USE_ELF_REL if MODULES
-+	select HAVE_OPROFILE
-+	select HAVE_PERF_EVENTS
-+	select HAVE_REGS_AND_STACK_ACCESS_API
-+	select HAVE_SYSCALL_TRACEPOINTS
-+	select HAVE_SYSCALL_TRACEPOINTS
-+	select HAVE_VIRT_CPU_ACCOUNTING_GEN
-+	select IRQ_FORCED_THREADING
- 	select MODULES_USE_ELF_RELA if MODULES && 64BIT
--	select CLONE_BACKWARDS
--	select HAVE_DEBUG_STACKOVERFLOW
--	select HAVE_CC_STACKPROTECTOR
--	select CPU_PM if CPU_IDLE
--	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
--	select ARCH_BINFMT_ELF_STATE
-+	select MODULES_USE_ELF_REL if MODULES
-+	select PERF_USE_VMALLOC
-+	select RTC_LIB if !MACH_LOONGSON64
- 	select SYSCTL_EXCEPTION_TRACE
--	select HAVE_VIRT_CPU_ACCOUNTING_GEN
--	select HAVE_IRQ_TIME_ACCOUNTING
--	select GENERIC_TIME_VSYSCALL
--	select ARCH_CLOCKSOURCE_DATA
--	select HANDLE_DOMAIN_IRQ
--	select HAVE_EXIT_THREAD
--	select HAVE_REGS_AND_STACK_ACCESS_API
--	select HAVE_COPY_THREAD_TLS
-+	select VIRT_TO_BUS
- 
- menu "Machine selection"
- 
--- 
-2.7.4
+thanks,
+Marcin

@@ -1,18 +1,14 @@
-Received: from mail-it0-x235.google.com ([IPv6:2607:f8b0:4001:c0b::235]:35979
-        "EHLO mail-it0-x235.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993612AbdEWJgBc3Hmt (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 23 May 2017 11:36:01 +0200
-Received: by mail-it0-x235.google.com with SMTP id o5so15835140ith.1
-        for <linux-mips@linux-mips.org>; Tue, 23 May 2017 02:36:01 -0700 (PDT)
+Received: from mailapp01.imgtec.com ([195.59.15.196]:18902 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993868AbdEWK5Zgd39- (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 23 May 2017 12:57:25 +0200
+From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Subject: [PATCH] MIPS: ftrace: fix init functions tracing
+Date: Tue, 23 May 2017 12:56:43 +0200
+Message-ID: <1495537003-1013-1-git-send-email-marcin.nowakowski@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20170521215727.1243-3-wsa@the-dreams.de>
-References: <20170521215727.1243-1-wsa@the-dreams.de> <20170521215727.1243-3-wsa@the-dreams.de>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 23 May 2017 11:35:53 +0200
-Message-ID: <CACRpkdZzrtP0Jr5ZnOJrN9CZQDO1CXgW7Z9jTw1Mt_MkP0Saqw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] gpio: pcf857x: move header file out of I2C realm
-Content-Type: text/plain; charset="UTF-8"
-Return-Path: <linus.walleij@linaro.org>
+Content-Type: text/plain
+Return-Path: <Marcin.Nowakowski@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,32 +18,92 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Wolfram Sang <wsa@the-dreams.de>
-Cc: "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>, Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Jonathan Cameron <jic23@cam.ac.uk>, Ralf Baechle <ralf@linux-mips.org>, Alexandre Courbot <gnurou@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Linux MIPS <linux-mips@linux-mips.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
-Message-ID: <20170523093553.jSLk0LycsDPKwRV9BtwZjSkXpLn1xiinI6JxiS_rhlY@z>
+To: Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>, Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Message-ID: <20170523105643.-61VD9VN0cCYfaoIq0mhO1V0QOIf-rH9G9jGSSeuwU4@z>
 
-On Sun, May 21, 2017 at 11:57 PM, Wolfram Sang <wsa@the-dreams.de> wrote:
+Since introduction of tracing for init functions the in_kernel_space()
+check is no longer correct, as it ignores the init sections. As a
+result, when probes are inserted (and disabled) in the init functions,
+a branch instruction is inserted instead of a nop, which is likely to
+result in random crashes during boot.
 
-> include/linux/i2c is not for client devices. Move the header file to a
-> more appropriate location.
->
-> Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
-> ---
->  arch/arm/mach-davinci/board-da830-evm.c        | 2 +-
->  arch/arm/mach-davinci/board-dm644x-evm.c       | 2 +-
->  arch/arm/mach-davinci/board-dm646x-evm.c       | 2 +-
->  arch/arm/mach-pxa/balloon3.c                   | 2 +-
->  arch/arm/mach-pxa/stargate2.c                  | 2 +-
->  arch/mips/ath79/mach-pb44.c                    | 2 +-
->  drivers/gpio/gpio-pcf857x.c                    | 2 +-
->  include/linux/{i2c => platform_data}/pcf857x.h | 0
->  8 files changed, 7 insertions(+), 7 deletions(-)
->  rename include/linux/{i2c => platform_data}/pcf857x.h (100%)
+Remove the MIPS-specific in_kernel_space() method and replace it with a
+generic core_kernel_text() that also checks for init sections during
+system boot stage.
 
-Patch applied.
+Fixes: 42c269c88dc1 ("ftrace: Allow for function tracing to record init functions on boot up")
+Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+---
+ arch/mips/kernel/ftrace.c | 24 +++++-------------------
+ 1 file changed, 5 insertions(+), 19 deletions(-)
 
-BTW ARM SoC maintainers be warned, I optimistically assume this will
-not collide with any ARM SoC work...
-
-Yours,
-Linus Walleij
+diff --git a/arch/mips/kernel/ftrace.c b/arch/mips/kernel/ftrace.c
+index 30a3b75..9d9b8fba 100644
+--- a/arch/mips/kernel/ftrace.c
++++ b/arch/mips/kernel/ftrace.c
+@@ -38,20 +38,6 @@ void arch_ftrace_update_code(int command)
+ 
+ #endif
+ 
+-/*
+- * Check if the address is in kernel space
+- *
+- * Clone core_kernel_text() from kernel/extable.c, but doesn't call
+- * init_kernel_text() for Ftrace doesn't trace functions in init sections.
+- */
+-static inline int in_kernel_space(unsigned long ip)
+-{
+-	if (ip >= (unsigned long)_stext &&
+-	    ip <= (unsigned long)_etext)
+-		return 1;
+-	return 0;
+-}
+-
+ #ifdef CONFIG_DYNAMIC_FTRACE
+ 
+ #define JAL 0x0c000000		/* jump & link: ip --> ra, jump to target */
+@@ -198,7 +184,7 @@ int ftrace_make_nop(struct module *mod,
+ 	 * If ip is in kernel space, no long call, otherwise, long call is
+ 	 * needed.
+ 	 */
+-	new = in_kernel_space(ip) ? INSN_NOP : INSN_B_1F;
++	new = core_kernel_text(ip) ? INSN_NOP : INSN_B_1F;
+ #ifdef CONFIG_64BIT
+ 	return ftrace_modify_code(ip, new);
+ #else
+@@ -218,12 +204,12 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
+ 	unsigned int new;
+ 	unsigned long ip = rec->ip;
+ 
+-	new = in_kernel_space(ip) ? insn_jal_ftrace_caller : insn_la_mcount[0];
++	new = core_kernel_text(ip) ? insn_jal_ftrace_caller : insn_la_mcount[0];
+ 
+ #ifdef CONFIG_64BIT
+ 	return ftrace_modify_code(ip, new);
+ #else
+-	return ftrace_modify_code_2r(ip, new, in_kernel_space(ip) ?
++	return ftrace_modify_code_2r(ip, new, core_kernel_text(ip) ?
+ 						INSN_NOP : insn_la_mcount[1]);
+ #endif
+ }
+@@ -289,7 +275,7 @@ unsigned long ftrace_get_parent_ra_addr(unsigned long self_ra, unsigned long
+ 	 * instruction "lui v1, hi_16bit_of_mcount"(offset is 24), but for
+ 	 * kernel, move after the instruction "move ra, at"(offset is 16)
+ 	 */
+-	ip = self_ra - (in_kernel_space(self_ra) ? 16 : 24);
++	ip = self_ra - (core_kernel_text(self_ra) ? 16 : 24);
+ 
+ 	/*
+ 	 * search the text until finding the non-store instruction or "s{d,w}
+@@ -394,7 +380,7 @@ void prepare_ftrace_return(unsigned long *parent_ra_addr, unsigned long self_ra,
+ 	 * entries configured through the tracing/set_graph_function interface.
+ 	 */
+ 
+-	insns = in_kernel_space(self_ra) ? 2 : MCOUNT_OFFSET_INSNS + 1;
++	insns = core_kernel_text(self_ra) ? 2 : MCOUNT_OFFSET_INSNS + 1;
+ 	trace.func = self_ra - (MCOUNT_INSN_SIZE * insns);
+ 
+ 	/* Only trace if the calling function expects to */
+-- 
+2.7.4

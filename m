@@ -1,16 +1,17 @@
-Received: from mail-pf0-x241.google.com ([IPv6:2607:f8b0:400e:c00::241]:34096
-        "EHLO mail-pf0-x241.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23995035AbdEWWGzIfNac (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 24 May 2017 00:06:55 +0200
-Received: by mail-pf0-x241.google.com with SMTP id w69so30199598pfk.1
-        for <linux-mips@linux-mips.org>; Tue, 23 May 2017 15:06:54 -0700 (PDT)
-From: Palmer Dabbelt <palmer@dabbelt.com>
-Subject: [PATCH 7/7] sparc: Use lib/{cmpdi2,ucmpdi2}.c
-Date: Tue, 23 May 2017 15:05:46 -0700
-Message-ID: <20170523220546.16758-8-palmer@dabbelt.com>
-In-Reply-To: <20170523220546.16758-1-palmer@dabbelt.com>
-References: <20170523220546.16758-1-palmer@dabbelt.com>
-Return-Path: <palmer@dabbelt.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:38480 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23994944AbdEWWW3Chr0c (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 24 May 2017 00:22:29 +0200
+Date: Tue, 23 May 2017 23:21:44 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH 4/4] MIPS16e2: Provide feature overrides for non-MIPS16
+ systems
+In-Reply-To: <5cb0253e-8523-bf57-722a-a5ea19873121@gmail.com>
+Message-ID: <alpine.DEB.2.00.1705232220190.2590@tp.orcam.me.uk>
+References: <alpine.DEB.2.00.1705180145220.2590@tp.orcam.me.uk> <alpine.DEB.2.00.1705230345530.2590@tp.orcam.me.uk> <5cb0253e-8523-bf57-722a-a5ea19873121@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,139 +21,46 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: monstr@monstr.eu, ralf@linux-mips.org, liqin.linux@gmail.com, lennox.wu@gmail.com, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, geert@linux-m68k.org, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Message-ID: <20170523220546.naspcuDd1HI709ks0wWWOVO1Mycl78i8el2tUjO7Z0E@z>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20170523222144.jJ1xHZAdt654ivaRWH32-i23ArhcDbTIEgTbqPUTKh8@z>
 
-These files are functionally identical to the shared copies that I
-recently added.
+On Tue, 23 May 2017, Florian Fainelli wrote:
 
-Signed-off-by: Palmer Dabbelt <palmer@dabbelt.com>
----
- arch/sparc/Kconfig       |  2 ++
- arch/sparc/lib/Makefile  |  4 ++--
- arch/sparc/lib/cmpdi2.c  | 27 ---------------------------
- arch/sparc/lib/libgcc.h  | 18 ------------------
- arch/sparc/lib/ucmpdi2.c | 19 -------------------
- 5 files changed, 4 insertions(+), 66 deletions(-)
- delete mode 100644 arch/sparc/lib/cmpdi2.c
- delete mode 100644 arch/sparc/lib/libgcc.h
- delete mode 100644 arch/sparc/lib/ucmpdi2.c
+> > Hardcode the absence of the MIPS16e2 ASE for all the systems that do so 
+> > for the MIPS16 ASE already, providing for code to be optimized away.
+> > 
+> > Signed-off-by: Maciej W. Rozycki <macro@imgtec.com>
+> > ---
+> 
+> Could you switch to using git format-patch such that we have a diffstat
+> at the beginning of the patch which helps the reviewer figure out which
+> files are being touched?
 
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index 58243b0d21c0..80ed2338812b 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -52,6 +52,8 @@ config SPARC32
- 	select CLZ_TAB
- 	select HAVE_UID16
- 	select OLD_SIGACTION
-+	select LIB_CMPDI2
-+	select LIB_UCMPDI2
- 
- config SPARC64
- 	def_bool 64BIT
-diff --git a/arch/sparc/lib/Makefile b/arch/sparc/lib/Makefile
-index 69912d2f8b54..815b4a336aa8 100644
---- a/arch/sparc/lib/Makefile
-+++ b/arch/sparc/lib/Makefile
-@@ -14,7 +14,7 @@ lib-$(CONFIG_SPARC32) += divdi3.o udivdi3.o
- lib-$(CONFIG_SPARC32) += copy_user.o locks.o
- lib-$(CONFIG_SPARC64) += atomic_64.o
- lib-$(CONFIG_SPARC32) += lshrdi3.o ashldi3.o
--lib-$(CONFIG_SPARC32) += muldi3.o bitext.o cmpdi2.o
-+lib-$(CONFIG_SPARC32) += muldi3.o bitext.o
- 
- lib-$(CONFIG_SPARC64) += copy_page.o clear_page.o bzero.o
- lib-$(CONFIG_SPARC64) += csum_copy.o csum_copy_from_user.o csum_copy_to_user.o
-@@ -42,5 +42,5 @@ lib-$(CONFIG_SPARC64) += copy_in_user.o memmove.o
- lib-$(CONFIG_SPARC64) += mcount.o ipcsum.o xor.o hweight.o ffs.o
- 
- obj-$(CONFIG_SPARC64) += iomap.o
--obj-$(CONFIG_SPARC32) += atomic32.o ucmpdi2.o
-+obj-$(CONFIG_SPARC32) += atomic32.o
- obj-$(CONFIG_SPARC64) += PeeCeeI.o
-diff --git a/arch/sparc/lib/cmpdi2.c b/arch/sparc/lib/cmpdi2.c
-deleted file mode 100644
-index 8c1306437ed1..000000000000
---- a/arch/sparc/lib/cmpdi2.c
-+++ /dev/null
-@@ -1,27 +0,0 @@
--#include <linux/module.h>
--
--#include "libgcc.h"
--
--word_type __cmpdi2(long long a, long long b)
--{
--	const DWunion au = {
--		.ll = a
--	};
--	const DWunion bu = {
--		.ll = b
--	};
--
--	if (au.s.high < bu.s.high)
--		return 0;
--	else if (au.s.high > bu.s.high)
--		return 2;
--
--	if ((unsigned int) au.s.low < (unsigned int) bu.s.low)
--		return 0;
--	else if ((unsigned int) au.s.low > (unsigned int) bu.s.low)
--		return 2;
--
--	return 1;
--}
--
--EXPORT_SYMBOL(__cmpdi2);
-diff --git a/arch/sparc/lib/libgcc.h b/arch/sparc/lib/libgcc.h
-deleted file mode 100644
-index b84fd797f3ea..000000000000
---- a/arch/sparc/lib/libgcc.h
-+++ /dev/null
-@@ -1,18 +0,0 @@
--#ifndef __ASM_LIBGCC_H
--#define __ASM_LIBGCC_H
--
--#include <asm/byteorder.h>
--
--typedef int word_type __attribute__ ((mode (__word__)));
--
--struct DWstruct {
--	int high, low;
--};
--
--typedef union
--{
--	struct DWstruct s;
--	long long ll;
--} DWunion;
--
--#endif /* __ASM_LIBGCC_H */
-diff --git a/arch/sparc/lib/ucmpdi2.c b/arch/sparc/lib/ucmpdi2.c
-deleted file mode 100644
-index 1e06ed500682..000000000000
---- a/arch/sparc/lib/ucmpdi2.c
-+++ /dev/null
-@@ -1,19 +0,0 @@
--#include <linux/module.h>
--#include "libgcc.h"
--
--word_type __ucmpdi2(unsigned long long a, unsigned long long b)
--{
--	const DWunion au = {.ll = a};
--	const DWunion bu = {.ll = b};
--
--	if ((unsigned int) au.s.high < (unsigned int) bu.s.high)
--		return 0;
--	else if ((unsigned int) au.s.high > (unsigned int) bu.s.high)
--		return 2;
--	if ((unsigned int) au.s.low < (unsigned int) bu.s.low)
--		return 0;
--	else if ((unsigned int) au.s.low > (unsigned int) bu.s.low)
--		return 2;
--	return 1;
--}
--EXPORT_SYMBOL(__ucmpdi2);
--- 
-2.13.0
+ My workflow that I have found efficient and I have been using for years 
+now does not involve using GIT for outstanding patch management, so I 
+don't think I can adjust to your request easily, without losing that 
+efficiency or introducing processing errors from the additional final GIT 
+import step.
+
+ However separate `diffstat' information is redundant in that it is 
+already carried by the patch itself and can be easily recreated by piping 
+the containing e-mail to `diffstat' from the MUA while reading the 
+message.  Is that a solution that would work for you?
+
+> It just occurred to me that a bunch of other platforms are lacking a
+> cpu-feature-overrides.h file, but presumably would never be able to
+> support mips16e2, like ar7, emma2rh, pnx833x and so on.
+
+ I have explicitly noted in the change description that only platforms 
+that already have an override for the base MIPS16 ASE have been changed 
+(for consistency, anyway).  It's an optimisation only anyway, not a 
+correctness issue.
+
+ If there are platforms that may or may not have the MIPS16 ASE available, 
+however are known to never have the MIPS16e2 ASE in the future, e.g. 
+because they have been already obsoleted and no new CPU modules will ever 
+be introduced, then the respective platform maintainers can add an 
+override if desired.
+
+  Maciej

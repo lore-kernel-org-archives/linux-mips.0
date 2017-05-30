@@ -1,18 +1,19 @@
-Received: from mail-it0-x231.google.com ([IPv6:2607:f8b0:4001:c0b::231]:35731
-        "EHLO mail-it0-x231.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993935AbdE1NwePDSdB (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 28 May 2017 15:52:34 +0200
-Received: by mail-it0-x231.google.com with SMTP id c15so16280524ith.0
-        for <linux-mips@linux-mips.org>; Sun, 28 May 2017 06:52:34 -0700 (PDT)
+Received: from smtprelay.synopsys.com ([198.182.47.9]:48516 "EHLO
+        smtprelay.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993996AbdE3QgXz6pN3 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 30 May 2017 18:36:23 +0200
+Subject: Re: [PATCH 2/7] clocksource: Rename CLOCKSOURCE_OF_DECLARE
+References: <1495879129-28109-1-git-send-email-daniel.lezcano@linaro.org>
+ <1495879129-28109-2-git-send-email-daniel.lezcano@linaro.org>
+From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Message-ID: <1cc18f5a-2181-7be9-183d-270ae093b844@synopsys.com>
+Date: Tue, 30 May 2017 09:36:00 -0700
 MIME-Version: 1.0
-In-Reply-To: <1495879129-28109-6-git-send-email-daniel.lezcano@linaro.org>
-References: <1495879129-28109-1-git-send-email-daniel.lezcano@linaro.org> <1495879129-28109-6-git-send-email-daniel.lezcano@linaro.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Sun, 28 May 2017 15:52:27 +0200
-Message-ID: <CACRpkda5za9vPJAsvD0FfgWLNep0hLpbhSZyuMgrT6QEGYQ-yA@mail.gmail.com>
-Subject: Re: [PATCH 6/7] clocksource: Rename CLKSRC_OF to TIMER_OF
-Content-Type: text/plain; charset="UTF-8"
-Return-Path: <linus.walleij@linaro.org>
+In-Reply-To: <1495879129-28109-2-git-send-email-daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Return-Path: <Vineet.Gupta1@synopsys.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,20 +23,55 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Russell King <linux@armlinux.org.uk>, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, "maintainer:BROADCOM BCM281XX/BCM11XXX/BCM216XX ARM ARCHITE..." <bcm-kernel-feedback-list@broadcom.com>, Alexander Shiyan <shc_work@mail.ru>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Fabio Estevam <fabio.estevam@nxp.com>, Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Javier Martinez Canillas <javier@osg.samsung.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Michal Simek <monstr@monstr.eu>, John Crispin <john@phrozen.org>, Ralf Baechle <ralf@linux-mips.org>, Ley Foon Tan <lftan@altera.com>, Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@codeaurora.org>, Stephen Rothwell <sfr@canb.auug.org.au>, Olof Johansson <olof@lixom.net>, "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" <linux-samsung-soc@vger.kernel.org>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>, "moderated list:NIOS2 ARCHITECTURE" <nios2-dev@lists.rocketboards.org>, "open list:SUPERH" <linux-sh@vger.kernel.org>, "open list:GENERIC INCLUDE/ASM HEADER FILES" <linux-arch@vger.kernel.org>
-Message-ID: <20170528135227.qKUNGR7ActCP7fSm9wo6Wc5B5Jc0lAKWUAhop3FL9XA@z>
+To: Daniel Lezcano <daniel.lezcano@linaro.org>, tglx@linutronix.de
+Cc: Mark Rutland <mark.rutland@arm.com>, "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>, Baruch Siach <baruch@tkos.co.il>, Heiko Stuebner <heiko@sntech.de>, Neil Armstrong <narmstrong@baylibre.com>, Linus Walleij <linus.walleij@linaro.org>, Santosh Shilimkar <ssantosh@kernel.org>, Liviu Dudau <liviu.dudau@arm.com>, "moderated list:ARM/OXNAS platform support" <linux-oxnas@lists.tuxfamily.org>, Patrice Chotard <patrice.chotard@st.com>, Eric Anholt <eric@anholt.net>, Thierry Reding <thierry.reding@gmail.com>, Ingo Molnar <mingo@kernel.org>, "open list:ARM/STI ARCHITECTURE" <kernel@stlinux.com>, Alexandre Courbot <gnurou@gmail.com>, "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" <linux-samsung-soc@vger.kernel.org>, Florian Fainelli <f.fainelli@gmail.com>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>
+Message-ID: <20170530163600.7sEyumcVHCWF0xZvaFvxv0UmlYyL7dMpGAyl_Uy5UiU@z>
 
-On Sat, May 27, 2017 at 11:58 AM, Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
+On 05/27/2017 02:58 AM, Daniel Lezcano wrote:
 
-> The config option name is now renamed to 'TIMER_OF' for consistency with
-> the CLOCKSOURCE_OF_DECLARE => TIMER_OF_DECLARE change.
->
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+...
 
-After fixing the offset thing found by Shawn:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> So instead of dealing with a named clocksource macro, let's use a more generic
+> one: TIMER_OF_DECLARE.
+> 
+> The patch has not functional changes.
+> 
+...
 
-Yours,
-Linus Walleij
+>   drivers/clocksource/arc_timer.c           |  6 +++---
+
+...
+
+> diff --git a/drivers/clocksource/arc_timer.c b/drivers/clocksource/arc_timer.c
+> index 2164973..4927355 100644
+> --- a/drivers/clocksource/arc_timer.c
+> +++ b/drivers/clocksource/arc_timer.c
+> @@ -99,7 +99,7 @@ static int __init arc_cs_setup_gfrc(struct device_node *node)
+>   
+>   	return clocksource_register_hz(&arc_counter_gfrc, arc_timer_freq);
+>   }
+> -CLOCKSOURCE_OF_DECLARE(arc_gfrc, "snps,archs-timer-gfrc", arc_cs_setup_gfrc);
+> +TIMER_OF_DECLARE(arc_gfrc, "snps,archs-timer-gfrc", arc_cs_setup_gfrc);
+>   
+>   #define AUX_RTC_CTRL	0x103
+>   #define AUX_RTC_LOW	0x104
+> @@ -158,7 +158,7 @@ static int __init arc_cs_setup_rtc(struct device_node *node)
+>   
+>   	return clocksource_register_hz(&arc_counter_rtc, arc_timer_freq);
+>   }
+> -CLOCKSOURCE_OF_DECLARE(arc_rtc, "snps,archs-timer-rtc", arc_cs_setup_rtc);
+> +TIMER_OF_DECLARE(arc_rtc, "snps,archs-timer-rtc", arc_cs_setup_rtc);
+>   
+>   #endif
+>   
+> @@ -333,4 +333,4 @@ static int __init arc_of_timer_init(struct device_node *np)
+>   
+>   	return ret;
+>   }
+> -CLOCKSOURCE_OF_DECLARE(arc_clkevt, "snps,arc-timer", arc_of_timer_init);
+> +TIMER_OF_DECLARE(arc_clkevt, "snps,arc-timer", arc_of_timer_init);
+
+Acked-by: Vineet Gupta vgupta@snyopsys.com
+
+Thx,
+-Vineet

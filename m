@@ -1,15 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:24777 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993457AbdEaPUKBChQT (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 31 May 2017 17:20:10 +0200
+Received: from mailapp01.imgtec.com ([195.59.15.196]:40763 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992517AbdEaPlRGxq8n (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 31 May 2017 17:41:17 +0200
+Date: Wed, 31 May 2017 16:41:11 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 3/4] MIPS: Fix mips_atomic_set() with EVA
-Date: Wed, 31 May 2017 16:19:49 +0100
-Message-ID: <59e14bb75b1fb34271dc3214edfbd9d01221f511.1496240182.git-series.james.hogan@imgtec.com>
-In-Reply-To: <cover.5633df325dbcbc41dbf9cc60df22b38f7812e73a.1496240182.git-series.james.hogan@imgtec.com>
-References: <cover.5633df325dbcbc41dbf9cc60df22b38f7812e73a.1496240182.git-series.james.hogan@imgtec.com>
+Subject: Re: [PATCH] MIPS: Sort MIPS Kconfig Alphabetically.
+Message-ID: <20170531154110.GA15577@jhogan-linux.le.imgtec.org>
+References: <1494841595-8954-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
+Content-Disposition: inline
+In-Reply-To: <1494841595-8954-1-git-send-email-matt.redfearn@imgtec.com>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -20,49 +22,42 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20170531151949.YrhHN9TYV9kMPtS1RKumtCPC7Zv1Z6UfxyPjf527fpQ@z>
+To: Matt Redfearn <matt.redfearn@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20170531154111.rMzAoIegH9EZWKf-0BfNUxnN2LqqY10D0Xjpq3lM3EY@z>
 
-EVA linked loads (LLE) and conditional stores (SCE) should be used on
-EVA kernels for the MIPS_ATOMIC_SET operation of the sysmips system
-call, or else the atomic set will apply to the kernel view of the
-virtual address space (potentially unmapped on EVA kernels) rather than
-the user view (TLB mapped).
+--pf9I7BMVVzbSWLtt
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Cc: <stable@vger.kernel.org> # 3.15.x-
----
- arch/mips/kernel/syscall.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+On Mon, May 15, 2017 at 10:46:35AM +0100, Matt Redfearn wrote:
+> +	select HAVE_SYSCALL_TRACEPOINTS
+> +	select HAVE_SYSCALL_TRACEPOINTS
 
-diff --git a/arch/mips/kernel/syscall.c b/arch/mips/kernel/syscall.c
-index 3971220ea925..ca54ac40252b 100644
---- a/arch/mips/kernel/syscall.c
-+++ b/arch/mips/kernel/syscall.c
-@@ -29,6 +29,7 @@
- #include <linux/sched/task_stack.h>
- 
- #include <asm/asm.h>
-+#include <asm/asm-eva.h>
- #include <asm/branch.h>
- #include <asm/cachectl.h>
- #include <asm/cacheflush.h>
-@@ -131,9 +132,11 @@ static inline int mips_atomic_set(unsigned long addr, unsigned long new)
- 		__asm__ __volatile__ (
- 		"	.set	"MIPS_ISA_ARCH_LEVEL"			\n"
- 		"	li	%[err], 0				\n"
--		"1:	ll	%[old], (%[addr])			\n"
-+		"1:							\n"
-+		user_ll("%[old]", "(%[addr])")
- 		"	move	%[tmp], %[new]				\n"
--		"2:	sc	%[tmp], (%[addr])			\n"
-+		"2:							\n"
-+		user_sc("%[tmp]", "(%[addr])")
- 		"	beqz	%[tmp], 4f				\n"
- 		"3:							\n"
- 		"	.insn						\n"
--- 
-git-series 0.8.10
+Maybe we could remove duplicates while we're at it?
+
+Cheers
+James
+
+--pf9I7BMVVzbSWLtt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlku5BMACgkQbAtpk944
+dnqz8w/7BZXpJYZduSe7RbaVhk9/cJy/QKOK2sJ19Y8KktzrGF2vpTVYPkG0eF/y
+LgwbMJMCO9GLNlgPtyvKLGtRalqVHwJHgU5HykFmQ2Im08jl0D4FNXhH8BD3Jnp0
+18d9HOhhyBBCCZ1b0EiTUwwhnp8fRpf7Zol0ZsgreVJpeyjd6gzaLpIiX+0yJmDw
+dWaPlnP3NxP/TXaaPvdEEHz2UWW1jNGsggLjfDvldh5G3MR7BVbxrnTL83xx6pSN
+dSceOfMC6U5lhVuOhMz+kzR1HdIbERHLmct3qwN3Gx8Vyd5FeNElWzh2T6GkqfN6
+VRFNWIxR2RsYW7yHxCUUatFX1Le7SIaPLUvxGDBw3S2uZuhiHCqHf2vk4+jj8/BZ
+rnz2Hi1tQGuzFEToMAZLOgkX+PZRUpik01EjlB/VwYL7/+9gAnNQV7ufyIDraQw0
+En27rOpZPZwxPQAm9NmdvFjDwhP/NM+b2IhBxt1OMiP5c1TqwwOryDI9mfuFfeZ0
+4j4vFz3lVQ2gzAg/ZIfBHDoLFENB8S0xsKBGX+Hwg4zKYUS2uqpJLnHhpg2bH6iz
+w6DPF2UMD+oFkmv8tGRDQgOxcbGe32CVFl34Hy621FaEAvRXBDV6LRgPi3YZVo4s
+1dNdItCoaM0Ciii0b2Yh/Qmd7jhJHM1zWAySTNftumTdGuzVSCo=
+=qAbn
+-----END PGP SIGNATURE-----
+
+--pf9I7BMVVzbSWLtt--

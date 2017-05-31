@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:24460 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:53791 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993179AbdEaPUH5iqpT (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 31 May 2017 17:20:07 +0200
+        with ESMTP id S23993419AbdEaPUJ7GGOT (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 31 May 2017 17:20:09 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 2/4] MIPS: Save static registers before sysmips
-Date: Wed, 31 May 2017 16:19:48 +0100
-Message-ID: <28c2c48b282b4441ba3ec6160bc8c1e48427a6bd.1496240182.git-series.james.hogan@imgtec.com>
+Subject: [PATCH 4/4] MIPS: Branch straight to ll in mips_atomic_set()
+Date: Wed, 31 May 2017 16:19:50 +0100
+Message-ID: <c17c30b035caec45c1de97f4d069ab31fec2067e.1496240182.git-series.james.hogan@imgtec.com>
 In-Reply-To: <cover.5633df325dbcbc41dbf9cc60df22b38f7812e73a.1496240182.git-series.james.hogan@imgtec.com>
 References: <cover.5633df325dbcbc41dbf9cc60df22b38f7812e73a.1496240182.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -21,99 +21,39 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20170531151948.fTN2NQp0lpBTKN-Zn5K4on-L4xA0YUwtu8zSjPU7YLM@z>
+Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20170531151950.CRQuiBrP5i_gh1iQqBRrvtOyERlC1OZX2Cgqtnj3OGI@z>
 
-The MIPS sysmips system call handler may return directly from the
-MIPS_ATOMIC_SET case (mips_atomic_set()) to syscall_exit. This path
-restores the static (callee saved) registers, however they won't have
-been saved on entry to the system call.
+Adjust the atomic loop in the MIPS_ATOMIC_SET operation of the sysmips
+system call to branch straight back to the linked load rather than
+jumping via a different subsection (whose purpose remains a mystery to
+me).
 
-Use the save_static_function() macro to create a __sys_sysmips wrapper
-function which saves the static registers before calling sys_sysmips, so
-that the correct static register state is restored by syscall_exit.
-
-Fixes: f1e39a4a616c ("MIPS: Rewrite sysmips(MIPS_ATOMIC_SET, ...) in C with inline assembler")
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
-Cc: stable@vger.kernel.org
 ---
- arch/mips/kernel/scall32-o32.S | 2 +-
- arch/mips/kernel/scall64-64.S  | 2 +-
- arch/mips/kernel/scall64-n32.S | 2 +-
- arch/mips/kernel/scall64-o32.S | 2 +-
- arch/mips/kernel/syscall.c     | 6 ++++++
- 5 files changed, 10 insertions(+), 4 deletions(-)
+ arch/mips/kernel/syscall.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/arch/mips/kernel/scall32-o32.S b/arch/mips/kernel/scall32-o32.S
-index 80ed68b2c95e..27c2f90eeb21 100644
---- a/arch/mips/kernel/scall32-o32.S
-+++ b/arch/mips/kernel/scall32-o32.S
-@@ -371,7 +371,7 @@ EXPORT(sys_call_table)
- 	PTR	sys_writev
- 	PTR	sys_cacheflush
- 	PTR	sys_cachectl
--	PTR	sys_sysmips
-+	PTR	__sys_sysmips
- 	PTR	sys_ni_syscall			/* 4150 */
- 	PTR	sys_getsid
- 	PTR	sys_fdatasync
-diff --git a/arch/mips/kernel/scall64-64.S b/arch/mips/kernel/scall64-64.S
-index 49765b44aa9b..65d5aeeb9bdb 100644
---- a/arch/mips/kernel/scall64-64.S
-+++ b/arch/mips/kernel/scall64-64.S
-@@ -311,7 +311,7 @@ EXPORT(sys_call_table)
- 	PTR	sys_sched_getaffinity
- 	PTR	sys_cacheflush
- 	PTR	sys_cachectl
--	PTR	sys_sysmips
-+	PTR	__sys_sysmips
- 	PTR	sys_io_setup			/* 5200 */
- 	PTR	sys_io_destroy
- 	PTR	sys_io_getevents
-diff --git a/arch/mips/kernel/scall64-n32.S b/arch/mips/kernel/scall64-n32.S
-index 90bad2d1b2d3..cbf190ef9e8a 100644
---- a/arch/mips/kernel/scall64-n32.S
-+++ b/arch/mips/kernel/scall64-n32.S
-@@ -302,7 +302,7 @@ EXPORT(sysn32_call_table)
- 	PTR	compat_sys_sched_getaffinity
- 	PTR	sys_cacheflush
- 	PTR	sys_cachectl
--	PTR	sys_sysmips
-+	PTR	__sys_sysmips
- 	PTR	compat_sys_io_setup			/* 6200 */
- 	PTR	sys_io_destroy
- 	PTR	compat_sys_io_getevents
-diff --git a/arch/mips/kernel/scall64-o32.S b/arch/mips/kernel/scall64-o32.S
-index 2dd70bd104e1..c30bc520885f 100644
---- a/arch/mips/kernel/scall64-o32.S
-+++ b/arch/mips/kernel/scall64-o32.S
-@@ -371,7 +371,7 @@ EXPORT(sys32_call_table)
- 	PTR	compat_sys_writev
- 	PTR	sys_cacheflush
- 	PTR	sys_cachectl
--	PTR	sys_sysmips
-+	PTR	__sys_sysmips
- 	PTR	sys_ni_syscall			/* 4150 */
- 	PTR	sys_getsid
- 	PTR	sys_fdatasync
 diff --git a/arch/mips/kernel/syscall.c b/arch/mips/kernel/syscall.c
-index 9dd0788fc56d..3971220ea925 100644
+index ca54ac40252b..6c6bf43d681b 100644
 --- a/arch/mips/kernel/syscall.c
 +++ b/arch/mips/kernel/syscall.c
-@@ -192,6 +192,12 @@ static inline int mips_atomic_set(unsigned long addr, unsigned long new)
- 	unreachable();
- }
- 
-+/*
-+ * mips_atomic_set() normally returns directly via syscall_exit potentially
-+ * clobbering static registers, so be sure to preserve them.
-+ */
-+save_static_function(sys_sysmips);
-+
- SYSCALL_DEFINE3(sysmips, long, cmd, long, arg1, long, arg2)
- {
- 	switch (cmd) {
+@@ -137,13 +137,9 @@ static inline int mips_atomic_set(unsigned long addr, unsigned long new)
+ 		"	move	%[tmp], %[new]				\n"
+ 		"2:							\n"
+ 		user_sc("%[tmp]", "(%[addr])")
+-		"	beqz	%[tmp], 4f				\n"
++		"	beqz	%[tmp], 1b				\n"
+ 		"3:							\n"
+ 		"	.insn						\n"
+-		"	.subsection 2					\n"
+-		"4:	b	1b					\n"
+-		"	.previous					\n"
+-		"							\n"
+ 		"	.section .fixup,\"ax\"				\n"
+ 		"5:	li	%[err], %[efault]			\n"
+ 		"	j	3b					\n"
 -- 
 git-series 0.8.10

@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:44204 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:25846 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992213AbdEaPUFAno0T (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 31 May 2017 17:20:05 +0200
+        with ESMTP id S23992517AbdEaPUGkYSET (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 31 May 2017 17:20:06 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 0/4] MIPS: sysmips(MIPS_ATOMIC_SET, ...) fixes
-Date: Wed, 31 May 2017 16:19:46 +0100
-Message-ID: <cover.5633df325dbcbc41dbf9cc60df22b38f7812e73a.1496240182.git-series.james.hogan@imgtec.com>
+Subject: [PATCH 1/4] MIPS: Fix mips_atomic_set() retry condition
+Date: Wed, 31 May 2017 16:19:47 +0100
+Message-ID: <a673943ade3863746a0f9c12f0fe9218969dff85.1496240182.git-series.james.hogan@imgtec.com>
+In-Reply-To: <cover.5633df325dbcbc41dbf9cc60df22b38f7812e73a.1496240182.git-series.james.hogan@imgtec.com>
+References: <cover.5633df325dbcbc41dbf9cc60df22b38f7812e73a.1496240182.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <James.Hogan@imgtec.com>
@@ -20,47 +22,38 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20170531151946.RkycHD-uZpLQgNBCwq0Jqqr64h-fHHSKrHjuqCKklEo@z>
+Message-ID: <20170531151947.acrYMURfHrVA10v7Dz2Eh_M1mGoEs3vScTJTsXwwS5U@z>
 
-These patches fix a few issues with the sysmips(MIPS_ATOMIC_SET, ...)
-system call. This system call is pretty much deprecated and no longer
-used by glibc, however it is still provided for compatibility so we
-should keep it working.
+The inline asm retry check in the MIPS_ATOMIC_SET operation of the
+sysmips system call has been backwards since commit f1e39a4a616c ("MIPS:
+Rewrite sysmips(MIPS_ATOMIC_SET, ...) in C with inline assembler")
+merged in v2.6.32, resulting in the non R10000_LLSC_WAR case retrying
+until the operation was inatomic, before returning the new value that
+was probably just written multiple times instead of the old value.
 
-Patch 1 fixes a longstanding broken atomic retry condition which results
-in the loop retrying until the the operation was *NOT* atomic:
-- The new (instead of old) value will usually be returned.
-- If the operation fails first time it won't be repeated (otherwise
-  it'll repeat until it does fail, which is slow).
+Invert the branch condition to fix that particular issue.
 
-Patch 2 fixes a similarly longstanding clobbering of callee saved
-registers in the common path, which tends to crash userland soon
-afterwards.
-
-Patch 3 fixes an EVA specific issue where normal LL/SC instructions are
-used instead of the EVA specific LLE/SCE instructions.
-
-Finally patch 4 simplifies the assembly slightly to avoid the apparently
-redundant branch via a subsection. If anybody knows why this was there
-and whether it is still needed I'm all ears. This is the only patch not
-tagged for stable.
-
+Fixes: f1e39a4a616c ("MIPS: Rewrite sysmips(MIPS_ATOMIC_SET, ...) in C with inline assembler")
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 Cc: stable@vger.kernel.org
+---
+ arch/mips/kernel/syscall.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-James Hogan (4):
-  MIPS: Fix mips_atomic_set() retry condition
-  MIPS: Save static registers before sysmips
-  MIPS: Fix mips_atomic_set() with EVA
-  MIPS: Branch straight to ll in mips_atomic_set()
-
- arch/mips/kernel/scall32-o32.S |  2 +-
- arch/mips/kernel/scall64-64.S  |  2 +-
- arch/mips/kernel/scall64-n32.S |  2 +-
- arch/mips/kernel/scall64-o32.S |  2 +-
- arch/mips/kernel/syscall.c     | 19 ++++++++++++-------
- 5 files changed, 16 insertions(+), 11 deletions(-)
-
+diff --git a/arch/mips/kernel/syscall.c b/arch/mips/kernel/syscall.c
+index f1d17ece4181..9dd0788fc56d 100644
+--- a/arch/mips/kernel/syscall.c
++++ b/arch/mips/kernel/syscall.c
+@@ -134,7 +134,7 @@ static inline int mips_atomic_set(unsigned long addr, unsigned long new)
+ 		"1:	ll	%[old], (%[addr])			\n"
+ 		"	move	%[tmp], %[new]				\n"
+ 		"2:	sc	%[tmp], (%[addr])			\n"
+-		"	bnez	%[tmp], 4f				\n"
++		"	beqz	%[tmp], 4f				\n"
+ 		"3:							\n"
+ 		"	.insn						\n"
+ 		"	.subsection 2					\n"
 -- 
 git-series 0.8.10

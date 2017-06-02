@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:25523 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:8273 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993940AbdFBXl4xBU74 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 3 Jun 2017 01:41:56 +0200
+        with ESMTP id S23993941AbdFBXmSDI1O4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 3 Jun 2017 01:42:18 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v3 1/7] net: pch_gbe: Mark Minnow PHY reset GPIO active low
-Date: Fri, 2 Jun 2017 16:40:36 -0700
-Message-ID: <20170602234042.22782-2-paul.burton@imgtec.com>
+Subject: [PATCH v3 2/7] net: pch_gbe: Pull PHY GPIO handling out of Minnow code
+Date: Fri, 2 Jun 2017 16:40:37 -0700
+Message-ID: <20170602234042.22782-3-paul.burton@imgtec.com>
 In-Reply-To: <20170602234042.22782-1-paul.burton@imgtec.com>
 References: <20170602234042.22782-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,13 +22,13 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: netdev@vger.kernel.org
 Cc: Tobias Klauser <tklauser@distanz.ch>, "David S . Miller" <davem@davemloft.net>, Jarod Wilson <jarod@redhat.com>, linux-mips@linux-mips.org, Eric Dumazet <edumazet@google.com>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20170602234036.Fs1ocR-2MEcMgvTp-0vqg0CiOThtoxrtPqq9XtzopjQ@z>
+Message-ID: <20170602234037.jDWDzwNy914hn_CBPxo7mTVFapOwalBZSjv9rAIcBWo@z>
 
-The Minnow PHY reset GPIO is set to 0 to enter reset & 1 to leave reset
-- that is, it is an active low GPIO. In order to allow for the code to
-be made more generic by further patches, indicate to the GPIO subsystem
-that the GPIO is active low & invert the values it is set to such that
-they reflect logically whether the device is being reset or not.
+The MIPS Boston development board uses the Intel EG20T Platform
+Controller Hub, including its gigabit ethernet controller, and requires
+that its RTL8211E PHY be reset much like the Minnow platform. Pull the
+PHY reset GPIO handling out of Minnow-specific code such that it can be
+shared by later patches.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 Cc: David S. Miller <davem@davemloft.net>
@@ -39,36 +39,102 @@ Cc: linux-mips@linux-mips.org
 Cc: netdev@vger.kernel.org
 ---
 
-Changes in v3: None
+Changes in v3:
+- Use adapter->pdata as arg to platform_init, to fix bisectability.
+
 Changes in v2: None
 
- drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe.h    |  4 ++-
+ .../net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c   | 33 +++++++++++++++-------
+ 2 files changed, 26 insertions(+), 11 deletions(-)
 
+diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe.h b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe.h
+index 8d710a3b4db0..de1dd08050f4 100644
+--- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe.h
++++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe.h
+@@ -580,15 +580,17 @@ struct pch_gbe_hw_stats {
+ 
+ /**
+  * struct pch_gbe_privdata - PCI Device ID driver data
++ * @phy_reset_gpio:		PHY reset GPIO descriptor.
+  * @phy_tx_clk_delay:		Bool, configure the PHY TX delay in software
+  * @phy_disable_hibernate:	Bool, disable PHY hibernation
+  * @platform_init:		Platform initialization callback, called from
+  *				probe, prior to PHY initialization.
+  */
+ struct pch_gbe_privdata {
++	struct gpio_desc *phy_reset_gpio;
+ 	bool phy_tx_clk_delay;
+ 	bool phy_disable_hibernate;
+-	int (*platform_init)(struct pci_dev *pdev);
++	int (*platform_init)(struct pci_dev *, struct pch_gbe_privdata *);
+ };
+ 
+ /**
 diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-index 5ae9681a2da7..d38198718005 100644
+index d38198718005..cb9b904786e4 100644
 --- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
 +++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-@@ -2696,7 +2696,8 @@ static int pch_gbe_probe(struct pci_dev *pdev,
+@@ -360,6 +360,16 @@ static void pch_gbe_mac_mar_set(struct pch_gbe_hw *hw, u8 * addr, u32 index)
+ 	pch_gbe_wait_clr_bit(&hw->reg->ADDR_MASK, PCH_GBE_BUSY);
+ }
+ 
++static void pch_gbe_phy_set_reset(struct pch_gbe_hw *hw, int value)
++{
++	struct pch_gbe_adapter *adapter = pch_gbe_hw_to_adapter(hw);
++
++	if (!adapter->pdata || !adapter->pdata->phy_reset_gpio)
++		return;
++
++	gpiod_set_value(adapter->pdata->phy_reset_gpio, value);
++}
++
+ /**
+  * pch_gbe_mac_reset_hw - Reset hardware
+  * @hw:	Pointer to the HW structure
+@@ -2601,7 +2611,14 @@ static int pch_gbe_probe(struct pci_dev *pdev,
+ 	adapter->hw.reg = pcim_iomap_table(pdev)[PCH_GBE_PCI_BAR];
+ 	adapter->pdata = (struct pch_gbe_privdata *)pci_id->driver_data;
+ 	if (adapter->pdata && adapter->pdata->platform_init)
+-		adapter->pdata->platform_init(pdev);
++		adapter->pdata->platform_init(pdev, adapter->pdata);
++
++	if (adapter->pdata && adapter->pdata->phy_reset_gpio) {
++		pch_gbe_phy_set_reset(&adapter->hw, 1);
++		usleep_range(1250, 1500);
++		pch_gbe_phy_set_reset(&adapter->hw, 0);
++		usleep_range(1250, 1500);
++	}
+ 
+ 	adapter->ptp_pdev = pci_get_bus_and_slot(adapter->pdev->bus->number,
+ 					       PCI_DEVFN(12, 4));
+@@ -2694,7 +2711,8 @@ static int pch_gbe_probe(struct pci_dev *pdev,
+ /* The AR803X PHY on the MinnowBoard requires a physical pin to be toggled to
+  * ensure it is awake for probe and init. Request the line and reset the PHY.
   */
- static int pch_gbe_minnow_platform_init(struct pci_dev *pdev)
+-static int pch_gbe_minnow_platform_init(struct pci_dev *pdev)
++static int pch_gbe_minnow_platform_init(struct pci_dev *pdev,
++					struct pch_gbe_privdata *pdata)
  {
--	unsigned long flags = GPIOF_DIR_OUT | GPIOF_INIT_HIGH | GPIOF_EXPORT;
-+	unsigned long flags = GPIOF_DIR_OUT | GPIOF_INIT_LOW |
-+		GPIOF_EXPORT | GPIOF_ACTIVE_LOW;
- 	unsigned gpio = MINNOW_PHY_RESET_GPIO;
- 	int ret;
+ 	unsigned long flags = GPIOF_DIR_OUT | GPIOF_INIT_LOW |
+ 		GPIOF_EXPORT | GPIOF_ACTIVE_LOW;
+@@ -2703,16 +2721,11 @@ static int pch_gbe_minnow_platform_init(struct pci_dev *pdev)
  
-@@ -2708,10 +2709,10 @@ static int pch_gbe_minnow_platform_init(struct pci_dev *pdev)
- 		return ret;
- 	}
- 
+ 	ret = devm_gpio_request_one(&pdev->dev, gpio, flags,
+ 				    "minnow_phy_reset");
+-	if (ret) {
++	if (!ret)
++		pdata->phy_reset_gpio = gpio_to_desc(gpio);
++	else
+ 		dev_err(&pdev->dev,
+ 			"ERR: Can't request PHY reset GPIO line '%d'\n", gpio);
+-		return ret;
+-	}
+-
+-	gpio_set_value(gpio, 1);
+-	usleep_range(1250, 1500);
 -	gpio_set_value(gpio, 0);
 -	usleep_range(1250, 1500);
- 	gpio_set_value(gpio, 1);
- 	usleep_range(1250, 1500);
-+	gpio_set_value(gpio, 0);
-+	usleep_range(1250, 1500);
  
  	return ret;
  }

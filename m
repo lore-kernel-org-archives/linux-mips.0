@@ -1,16 +1,17 @@
-Received: from mga14.intel.com ([192.55.52.115]:62713 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23990511AbdFCGgygLkrf (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 3 Jun 2017 08:36:54 +0200
-Date: Sat, 3 Jun 2017 14:36:42 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH v3 4/7] net: pch_gbe: Add device tree support
-Message-ID: <201706031442.vYKOKOkq%fengguang.wu@intel.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:11211 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23991672AbdFCMoVpnXVK (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 3 Jun 2017 14:44:21 +0200
+Date: Sat, 3 Jun 2017 13:43:37 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: QEMU Malta emulation using I6400: runaway loop modprobe
+ binfmt-464c
+In-Reply-To: <996c275d-d969-508e-6b4e-bef22d8e7385@longlandclan.id.au>
+Message-ID: <alpine.DEB.2.00.1706031310470.2590@tp.orcam.me.uk>
+References: <996c275d-d969-508e-6b4e-bef22d8e7385@longlandclan.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170602234042.22782-5-paul.burton@imgtec.com>
-Return-Path: <fengguang.wu@intel.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,25 +21,52 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: kbuild-all@01.org, netdev@vger.kernel.org, Tobias Klauser <tklauser@distanz.ch>, "David S . Miller" <davem@davemloft.net>, Jarod Wilson <jarod@redhat.com>, linux-mips@linux-mips.org, Eric Dumazet <edumazet@google.com>
-Message-ID: <20170603063642.srHhf5bGz_cTk5i1O7WQbPhfAHaC-5_-Z3oQeAvq4Pg@z>
+To: Stuart Longland <stuartl@longlandclan.id.au>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20170603124337.2lcC6j0GvAwmzyYQ0QoHSWQtBlleUFy0o8qQji7SDJQ@z>
 
-Hi Paul,
+On Sat, 3 Jun 2017, Stuart Longland wrote:
 
-[auto build test WARNING on net-next/master]
-[also build test WARNING on v4.12-rc3 next-20170602]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+> Now, on a single-processor MIPS64r2 VM, this same root filesystem works.
+>  It won't work though for a 8-core I6400 system.  If I try to run a SMP
+> MIPS64r2 VM, I get "unable to proceed without a CM", so clearly there is
+> a feature in the I6400 that doesn't exist in the MIPS64r2.
 
-url:    https://github.com/0day-ci/linux/commits/Paul-Burton/net-pch_gbe-Fixes-MIPS-support/20170603-112042
+ Your userland likely requires the legacy NaN encoding (as specified by 
+the IEEE 754-1985 floating point standard) whereas I6400 hardware only 
+supports the 2008 NaN encoding (as specified by the IEEE 754-2008 floating 
+point standard), as per the R6 architecture requirement.  These encodings 
+are incompatible with each other and all binaries are annotated in their 
+ELF header as to which is required; use `readelf -h' and check `Flags:' 
+for the presence of `nan2008' among the features reported.
 
+ There are a couple of ways to move forward.
 
-coccinelle warnings: (new ones prefixed by >>)
+ First is rebuilding your userland for the 2008 NaN encoding.  I'm sure 
+someone already did it, but I don't have a pointer at hand.  This might be 
+the best option however.
 
->> drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c:2587:9-16: WARNING: ERR_CAST can be used with gpio
+ Second, since you're running on a simulator anyway, disabling the use of 
+FPU hardware and using the Linux kernel FPU emulator should have little 
+performance impact, although there surely be some for the Coprocessor 
+Unusable exception handling overhead.  The Linux kernel FPU emulator 
+supports both NaN encodings at once, so any userland will work 
+irrespectively of which NaN encoding it requires and produce correct 
+results.  Use the "nofpu" kernel parameter to activate this option.
 
-Please review and possibly fold the followup patch.
+ Finally, you might also ask the kernel to ignore the binary 
+incompatibility and let binaries requiring the wrong NaN encoding run 
+anyway.  This will make IEEE 754 floating point produce incorrect results 
+in the uncommon case of software relying on NaN arithmetic; it may crash 
+for example.  The vast majority of software does not rely on NaN 
+arithmetic though.  Use the "ieee754=relaxed" kernel parameter to activate 
+this option.
 
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+ You can have a look at Documentation/admin-guide/kernel-parameters.txt in 
+the kernel sources for some further discussion about these kernel 
+parameters.  These will have to be added to the QEMU's `-append' command 
+line option.
+
+ HTH,
+
+  Maciej

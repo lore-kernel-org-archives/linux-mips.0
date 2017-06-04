@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:4107 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:45551 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993417AbdFDPNJyN0kE (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 4 Jun 2017 17:13:09 +0200
-Date: Sun, 4 Jun 2017 16:12:53 +0100
+        with ESMTP id S23993417AbdFDPsi4C1og (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 4 Jun 2017 17:48:38 +0200
+Date: Sun, 4 Jun 2017 16:48:24 +0100
 From: "Maciej W. Rozycki" <macro@imgtec.com>
 Subject: Re: QEMU Malta emulation using I6400: runaway loop modprobe
  binfmt-464c
-In-Reply-To: <81bca3a5-88dc-d6af-9c6a-3e17d9a8bda5@longlandclan.id.au>
-Message-ID: <alpine.DEB.2.00.1706041556050.10864@tp.orcam.me.uk>
-References: <996c275d-d969-508e-6b4e-bef22d8e7385@longlandclan.id.au> <alpine.DEB.2.00.1706031310470.2590@tp.orcam.me.uk> <81bca3a5-88dc-d6af-9c6a-3e17d9a8bda5@longlandclan.id.au>
+In-Reply-To: <B0501081-3292-48D8-ACFF-043C3BA87D8C@imgtec.com>
+Message-ID: <alpine.DEB.2.00.1706041613440.10864@tp.orcam.me.uk>
+References: <996c275d-d969-508e-6b4e-bef22d8e7385@longlandclan.id.au> <alpine.DEB.2.00.1706031310470.2590@tp.orcam.me.uk> <81bca3a5-88dc-d6af-9c6a-3e17d9a8bda5@longlandclan.id.au> <B0501081-3292-48D8-ACFF-043C3BA87D8C@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <Maciej.Rozycki@imgtec.com>
@@ -21,71 +21,44 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Stuart Longland <stuartl@longlandclan.id.au>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20170604151253.3CSkw5qG7Bs9Bz183IL1bDp3xXVzd9omewqd1kTQGnY@z>
+To: James Hogan <james.hogan@imgtec.com>
+Cc: linux-mips@linux-mips.org, Stuart Longland <stuartl@longlandclan.id.au>
+Message-ID: <20170604154824.Vp_mEyXkTyUIJvJ6G2NEandjv9XiDhMSHRiwDsRKcDo@z>
 
-Hi Stuart,
+On Sun, 4 Jun 2017, James Hogan wrote:
 
-> >  First is rebuilding your userland for the 2008 NaN encoding.  I'm sure 
-> > someone already did it, but I don't have a pointer at hand.  This might be 
-> > the best option however.
+> >The ultimate target for this is
+> >Loongson 2F which probably uses the old encoding.
 > 
-> This will be a lengthy process, is there a particular compiler flag I
-> should be using for that?  `man gcc` seems to mention the following:
-> 
-> >        -mabs=2008
-> >        -mabs=legacy
-> >            These options control the treatment of the special not-a-number (NaN) IEEE 754 floating-point data with the "abs.fmt" and "neg.fmt"
-> >            machine instructions.
-> > 
-> >            By default or when -mabs=legacy is used the legacy treatment is selected.  In this case these instructions are considered arithmetic and
-> >            avoided where correct operation is required and the input operand might be a NaN.  A longer sequence of instructions that manipulate the
-> >            sign bit of floating-point datum manually is used instead unless the -ffinite-math-only option has also been specified.
-> > 
-> >            The -mabs=2008 option selects the IEEE 754-2008 treatment.  In this case these instructions are considered non-arithmetic and therefore
-> >            operating correctly in all cases, including in particular where the input operand is a NaN.  These instructions are therefore always used
-> >            for the respective operations.
-> > 
-> >        -mnan=2008
-> >        -mnan=legacy
-> >            These options control the encoding of the special not-a-number (NaN) IEEE 754 floating-point data.
-> > 
-> >            The -mnan=legacy option selects the legacy encoding.  In this case quiet NaNs (qNaNs) are denoted by the first bit of their trailing
-> >            significand field being 0, whereas signalling NaNs (sNaNs) are denoted by the first bit of their trailing significand field being 1.
-> > 
-> >            The -mnan=2008 option selects the IEEE 754-2008 encoding.  In this case qNaNs are denoted by the first bit of their trailing significand
-> >            field being 1, whereas sNaNs are denoted by the first bit of their trailing significand field being 0.
-> > 
-> >            The default is -mnan=legacy unless GCC has been configured with --with-nan=2008.
-> 
-> If I understand correctly, the right thing to do would be to use
-> -mnan=2008 then?
+> indeed. i think nan2008 is optional in r5, required in r6.
 
- I suggest keeping the two settings in sync, because this is what in 
-reality hardware does even though the architecture allows them to be 
-independent (which is also why these are two separate settings).  That is 
-`-mnan=2008 -mabs=2008' or `-mnan=legacy -mabs=legacy'.
+ Support for 2008 NaN has been first added to R3 with run-time selection 
+between the legacy-NaN and the 2008-NaN encoding allowed, but not mandated 
+by the architecture.  No actual hardware has implemented this selection, 
+so in reality all R3 hardware is hardwired to either legacy NaN or 2008 
+NaN.
 
- You could also configure GCC itself with one of the `--with-nan=2008' and 
-`--with-nan=legacy' options, which would set the defaults for both 
-`-mnan=' and `-mabs=' settings accordingly.  In the absence of the 
-`--with-nan=' option in the configuration process GCC defaults to 
-inferring the `-mnan=' and `-mabs=' settings from the architecture 
-specified with `-march=', which is `legacy' for `mips32r5'/`mips64r5' and 
-older, or `2008' for `mips32r6'/`mips64r6' (and likewise according to the 
-architecture level implemented by any specific processor requested with 
-`-march=').
+ The kernel emulator does implement the run-time selection though, as 
+specified by the architecture, which is why with the `nofpu' kernel 
+parameter or on non-FPU hardware you can run both legacy-NaN and 2008-NaN 
+user software.  To make people's lives easier the run-time selection is 
+allowed regardless of the architecture level implemented by the CPU 
+(although for legacy hardware only with `ieee754=relaxed').  I can't speak 
+for QEMU -- the patches I made a while ago and submitted upstream did 
+provide for run-time selection, on a per emulated CPU basis, but then 
+someone else took over that effort and reimplemented the feature, and I 
+have no idea how much of the original work has been preserved.
 
- NB the default for `-march=' can also be specified in configuration, with 
-the use of the `--with-arch=' option.
+ In R5 the architecture mandates the NaN setting to be hardwired, and 
+2008-NaN support is required if the MSA module has been implemented, or 
+otherwise implementing either legacy NaN or 2008 NaN is allowed, but no 
+run-time selection.
 
->  What's the effect on pre-2008 CPUs?
+ In R6 the architecture indeed mandates the NaN setting to be hardwired to 
+2008.
 
- The same as with running legacy-NaN software on a 2008-NaN processor -- 
-by default the kernel will refuse execution of such a binary, or you can 
-use the kernel options I quoted to change that, and likewise with the 
-`ieee754=relaxed' option you risk incorrect results, including a possible 
-crash.  There is symmetry here.
+ In all architecture revisions the current NaN setting and the ability to 
+change it can be determined at run time by software, which can then adapt 
+accordingly.
 
   Maciej

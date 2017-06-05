@@ -1,19 +1,12 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:19607 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991061AbdFELQZcQOpd (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 5 Jun 2017 13:16:25 +0200
-Subject: Re: [PATCH] MIPS: ftrace: fix init functions tracing
-References: <1495537003-1013-1-git-send-email-marcin.nowakowski@imgtec.com>
- <20170523153240.72a8ecd5@vmware.local.home>
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Message-ID: <19a41533-d203-f87b-603a-fcb311c2060f@imgtec.com>
-Date: Mon, 5 Jun 2017 13:16:18 +0200
-MIME-Version: 1.0
-In-Reply-To: <20170523153240.72a8ecd5@vmware.local.home>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <Marcin.Nowakowski@imgtec.com>
+Received: from mail-wr0-x243.google.com ([IPv6:2a00:1450:400c:c0c::243]:35437
+        "EHLO mail-wr0-x243.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23991512AbdFERKs0UoFK (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 5 Jun 2017 19:10:48 +0200
+From: Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH] MIPS: Make individual platforms select ARCH_MIGHT_HAVE_PC_SERIO
+Date: Mon,  5 Jun 2017 10:10:32 -0700
+Message-ID: <20170605171033.15008-1-f.fainelli@gmail.com>
+Return-Path: <f.fainelli@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,86 +16,55 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20170605111618.LLyHKBJg52ka2esaUyQCHuxG_q_wXzuhBoZVUZ4_9pw@z>
+To: linux-mips@linux-mips.org
+Cc: msalter@redhat.com, dmitry.torokhov@gmail.com, Florian Fainelli <f.fainelli@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, open list <linux-kernel@vger.kernel.org>
+Message-ID: <20170605171032.4yevKGIIMtWsn3vmjvzQmY2wWn6mikk1ghFCQd07O0Y@z>
 
-Hi Steven,
+Out of the many MIPS platforms only 3 appear to be actually using an
+I8042 keyboard controller: SGI, JAZZ and LOOGSON64, remove
+ARCH_MIGHT_HAVE_PC_SERIO from the top-level MIPS Kconfig symbol and move
+it down to those platforms that need it.
 
-On 23.05.2017 21:32, Steven Rostedt wrote:
-> On Tue, 23 May 2017 12:56:43 +0200
-> Marcin Nowakowski <marcin.nowakowski@imgtec.com> wrote:
-> 
->> Since introduction of tracing for init functions the in_kernel_space()
->> check is no longer correct, as it ignores the init sections. As a
->> result, when probes are inserted (and disabled) in the init functions,
->> a branch instruction is inserted instead of a nop, which is likely to
->> result in random crashes during boot.
->>
->> Remove the MIPS-specific in_kernel_space() method and replace it with
->> a generic core_kernel_text() that also checks for init sections during
->> system boot stage.
->>
->> Fixes: 42c269c88dc1 ("ftrace: Allow for function tracing to record
->> init functions on boot up") Signed-off-by: Marcin Nowakowski
->> <marcin.nowakowski@imgtec.com> ---
->>   arch/mips/kernel/ftrace.c | 24 +++++-------------------
->>   1 file changed, 5 insertions(+), 19 deletions(-)
->>
->>
-> 
-> Thanks for doing this.
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ arch/mips/Kconfig | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-There's one issue with this patch that I haven't noticed initially - 
-while this fixes the MIPS boot issue, it introduces a problem due to use 
-of core_kernel_text in the function graph trace path ... as the 
-core_kernel_text function is traced as well, we end up with a recursive 
-call to core_kernel_text from its function graph handler, something that 
-shows up in a backtrace as:
-
-[    2.972075] Call Trace:
-[    2.972111]
-[    2.976731] [<80506584>] ftrace_return_to_handler+0x50/0x128
-[    2.983379] [<8045478c>] core_kernel_text+0x10/0x1b8
-[    2.989146] [<804119b8>] prepare_ftrace_return+0x6c/0x114
-[    2.995402] [<80411b2c>] ftrace_graph_caller+0x20/0x44
-[    3.001362] [<80411b60>] return_to_handler+0x10/0x30
-[    3.007159] [<80411b50>] return_to_handler+0x0/0x30
-[    3.012827] [<80411b50>] return_to_handler+0x0/0x30
-[    3.018621] [<804e589c>] ftrace_ops_no_ops+0x114/0x1bc
-[    3.024602] [<8045478c>] core_kernel_text+0x10/0x1b8
-[    3.030377] [<8045478c>] core_kernel_text+0x10/0x1b8
-[    3.036140] [<8045478c>] core_kernel_text+0x10/0x1b8
-[    3.041915] [<804e589c>] ftrace_ops_no_ops+0x114/0x1bc
-[    3.047923] [<8045478c>] core_kernel_text+0x10/0x1b8
-[    3.053682] [<804119b8>] prepare_ftrace_return+0x6c/0x114
-[    3.059938] [<80411b2c>] ftrace_graph_caller+0x20/0x44
-(and many many more repetitions before we run out of stack)
-
-Would a simple patch like:
-
---- a/kernel/extable.c
-+++ b/kernel/extable.c
-@@ -69,7 +69,7 @@ static inline int init_kernel_text(unsigned long addr)
-         return 0;
-  }
-
--int core_kernel_text(unsigned long addr)
-+int notrace core_kernel_text(unsigned long addr)
-  {
-         if (addr >= (unsigned long)_stext &&
-             addr < (unsigned long)_etext)
-
-
-be acceptable here to solve this problem? It needs to modify the generic 
-kernel code due to a dependency that is specific to MIPS only, so it 
-might not be the best solution, but an alternative is to add restore a 
-copy of that method in arch/mips - which doesn't seem very nice either.
-The core_kernel_text function is not something that is extremely 
-valuable to be traced IMO anyway, so it shouldn't be a big loss.
-
-What's your opinion?
-If this change is OK I'll send out a patch
-
-thanks
-Marcin
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 0b15978c0f88..c96547cdca61 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -7,7 +7,6 @@ config MIPS
+ 	select ARCH_HAS_ELF_RANDOMIZE
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT
+-	select ARCH_MIGHT_HAVE_PC_SERIO
+ 	select ARCH_SUPPORTS_UPROBES
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_CMPXCHG_LOCKREF if 64BIT
+@@ -347,6 +346,7 @@ config MACH_JAZZ
+ 	select I8253
+ 	select I8259
+ 	select ISA
++	select ARCH_MIGHT_HAVE_PC_SERIO
+ 	select SYS_HAS_CPU_R4X00
+ 	select SYS_SUPPORTS_32BIT_KERNEL
+ 	select SYS_SUPPORTS_64BIT_KERNEL
+@@ -423,6 +423,7 @@ config MACH_LOONGSON32
+ 
+ config MACH_LOONGSON64
+ 	bool "Loongson-2/3 family of machines"
++	select ARCH_MIGHT_HAVE_PC_SERIO
+ 	select SYS_SUPPORTS_ZBOOT
+ 	help
+ 	  This enables the support of Loongson-2/3 family of machines.
+@@ -1294,6 +1295,7 @@ config SGI_HAS_ZILOG
+ 	bool
+ 
+ config SGI_HAS_I8042
++	select ARCH_MIGHT_HAVE_PC_SERIO
+ 	bool
+ 
+ config DEFAULT_SGI_PARTITION
+-- 
+2.9.3

@@ -1,17 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:45551 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:19607 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993417AbdFDPsi4C1og (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 4 Jun 2017 17:48:38 +0200
-Date: Sun, 4 Jun 2017 16:48:24 +0100
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: QEMU Malta emulation using I6400: runaway loop modprobe
- binfmt-464c
-In-Reply-To: <B0501081-3292-48D8-ACFF-043C3BA87D8C@imgtec.com>
-Message-ID: <alpine.DEB.2.00.1706041613440.10864@tp.orcam.me.uk>
-References: <996c275d-d969-508e-6b4e-bef22d8e7385@longlandclan.id.au> <alpine.DEB.2.00.1706031310470.2590@tp.orcam.me.uk> <81bca3a5-88dc-d6af-9c6a-3e17d9a8bda5@longlandclan.id.au> <B0501081-3292-48D8-ACFF-043C3BA87D8C@imgtec.com>
+        with ESMTP id S23991061AbdFELQZcQOpd (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 5 Jun 2017 13:16:25 +0200
+Subject: Re: [PATCH] MIPS: ftrace: fix init functions tracing
+References: <1495537003-1013-1-git-send-email-marcin.nowakowski@imgtec.com>
+ <20170523153240.72a8ecd5@vmware.local.home>
+From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Message-ID: <19a41533-d203-f87b-603a-fcb311c2060f@imgtec.com>
+Date: Mon, 5 Jun 2017 13:16:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+In-Reply-To: <20170523153240.72a8ecd5@vmware.local.home>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Return-Path: <Marcin.Nowakowski@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,44 +23,86 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@imgtec.com>
-Cc: linux-mips@linux-mips.org, Stuart Longland <stuartl@longlandclan.id.au>
-Message-ID: <20170604154824.Vp_mEyXkTyUIJvJ6G2NEandjv9XiDhMSHRiwDsRKcDo@z>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20170605111618.LLyHKBJg52ka2esaUyQCHuxG_q_wXzuhBoZVUZ4_9pw@z>
 
-On Sun, 4 Jun 2017, James Hogan wrote:
+Hi Steven,
 
-> >The ultimate target for this is
-> >Loongson 2F which probably uses the old encoding.
+On 23.05.2017 21:32, Steven Rostedt wrote:
+> On Tue, 23 May 2017 12:56:43 +0200
+> Marcin Nowakowski <marcin.nowakowski@imgtec.com> wrote:
 > 
-> indeed. i think nan2008 is optional in r5, required in r6.
+>> Since introduction of tracing for init functions the in_kernel_space()
+>> check is no longer correct, as it ignores the init sections. As a
+>> result, when probes are inserted (and disabled) in the init functions,
+>> a branch instruction is inserted instead of a nop, which is likely to
+>> result in random crashes during boot.
+>>
+>> Remove the MIPS-specific in_kernel_space() method and replace it with
+>> a generic core_kernel_text() that also checks for init sections during
+>> system boot stage.
+>>
+>> Fixes: 42c269c88dc1 ("ftrace: Allow for function tracing to record
+>> init functions on boot up") Signed-off-by: Marcin Nowakowski
+>> <marcin.nowakowski@imgtec.com> ---
+>>   arch/mips/kernel/ftrace.c | 24 +++++-------------------
+>>   1 file changed, 5 insertions(+), 19 deletions(-)
+>>
+>>
+> 
+> Thanks for doing this.
 
- Support for 2008 NaN has been first added to R3 with run-time selection 
-between the legacy-NaN and the 2008-NaN encoding allowed, but not mandated 
-by the architecture.  No actual hardware has implemented this selection, 
-so in reality all R3 hardware is hardwired to either legacy NaN or 2008 
-NaN.
+There's one issue with this patch that I haven't noticed initially - 
+while this fixes the MIPS boot issue, it introduces a problem due to use 
+of core_kernel_text in the function graph trace path ... as the 
+core_kernel_text function is traced as well, we end up with a recursive 
+call to core_kernel_text from its function graph handler, something that 
+shows up in a backtrace as:
 
- The kernel emulator does implement the run-time selection though, as 
-specified by the architecture, which is why with the `nofpu' kernel 
-parameter or on non-FPU hardware you can run both legacy-NaN and 2008-NaN 
-user software.  To make people's lives easier the run-time selection is 
-allowed regardless of the architecture level implemented by the CPU 
-(although for legacy hardware only with `ieee754=relaxed').  I can't speak 
-for QEMU -- the patches I made a while ago and submitted upstream did 
-provide for run-time selection, on a per emulated CPU basis, but then 
-someone else took over that effort and reimplemented the feature, and I 
-have no idea how much of the original work has been preserved.
+[    2.972075] Call Trace:
+[    2.972111]
+[    2.976731] [<80506584>] ftrace_return_to_handler+0x50/0x128
+[    2.983379] [<8045478c>] core_kernel_text+0x10/0x1b8
+[    2.989146] [<804119b8>] prepare_ftrace_return+0x6c/0x114
+[    2.995402] [<80411b2c>] ftrace_graph_caller+0x20/0x44
+[    3.001362] [<80411b60>] return_to_handler+0x10/0x30
+[    3.007159] [<80411b50>] return_to_handler+0x0/0x30
+[    3.012827] [<80411b50>] return_to_handler+0x0/0x30
+[    3.018621] [<804e589c>] ftrace_ops_no_ops+0x114/0x1bc
+[    3.024602] [<8045478c>] core_kernel_text+0x10/0x1b8
+[    3.030377] [<8045478c>] core_kernel_text+0x10/0x1b8
+[    3.036140] [<8045478c>] core_kernel_text+0x10/0x1b8
+[    3.041915] [<804e589c>] ftrace_ops_no_ops+0x114/0x1bc
+[    3.047923] [<8045478c>] core_kernel_text+0x10/0x1b8
+[    3.053682] [<804119b8>] prepare_ftrace_return+0x6c/0x114
+[    3.059938] [<80411b2c>] ftrace_graph_caller+0x20/0x44
+(and many many more repetitions before we run out of stack)
 
- In R5 the architecture mandates the NaN setting to be hardwired, and 
-2008-NaN support is required if the MSA module has been implemented, or 
-otherwise implementing either legacy NaN or 2008 NaN is allowed, but no 
-run-time selection.
+Would a simple patch like:
 
- In R6 the architecture indeed mandates the NaN setting to be hardwired to 
-2008.
+--- a/kernel/extable.c
++++ b/kernel/extable.c
+@@ -69,7 +69,7 @@ static inline int init_kernel_text(unsigned long addr)
+         return 0;
+  }
 
- In all architecture revisions the current NaN setting and the ability to 
-change it can be determined at run time by software, which can then adapt 
-accordingly.
+-int core_kernel_text(unsigned long addr)
++int notrace core_kernel_text(unsigned long addr)
+  {
+         if (addr >= (unsigned long)_stext &&
+             addr < (unsigned long)_etext)
 
-  Maciej
+
+be acceptable here to solve this problem? It needs to modify the generic 
+kernel code due to a dependency that is specific to MIPS only, so it 
+might not be the best solution, but an alternative is to add restore a 
+copy of that method in arch/mips - which doesn't seem very nice either.
+The core_kernel_text function is not something that is extremely 
+valuable to be traced IMO anyway, so it shouldn't be a big loss.
+
+What's your opinion?
+If this change is OK I'll send out a patch
+
+thanks
+Marcin

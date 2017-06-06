@@ -1,17 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:33443 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:54211 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993873AbdFEXUpLg1qM (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 6 Jun 2017 01:20:45 +0200
-Date: Tue, 6 Jun 2017 00:20:30 +0100
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: [PATCH 9/9] MIPS: math-emu: For MFHC1/MTHC1 also return SIGILL right
- away
-In-Reply-To: <alpine.DEB.2.00.1706040314270.10864@tp.orcam.me.uk>
-Message-ID: <alpine.DEB.2.00.1706051834110.21750@tp.orcam.me.uk>
-References: <alpine.DEB.2.00.1706040314270.10864@tp.orcam.me.uk>
+        with ESMTP id S23992110AbdFFOKVwPXRu (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 6 Jun 2017 16:10:21 +0200
+Subject: Re: [PATCH v3 6/7] net: pch_gbe: Allow longer for resets
+References: <20170602234042.22782-1-paul.burton@imgtec.com>
+ <20170602234042.22782-7-paul.burton@imgtec.com>
+From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Message-ID: <bb3deb9d-26b5-af4b-455f-a94155adc472@imgtec.com>
+Date: Tue, 6 Jun 2017 16:10:14 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+In-Reply-To: <20170602234042.22782-7-paul.burton@imgtec.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Return-Path: <Marcin.Nowakowski@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,50 +23,60 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20170605232030.Ij0Z5EBGEzp4af4ZuDk8uVWzhuvaJrATxTyKwP-c2IA@z>
+To: Paul Burton <paul.burton@imgtec.com>, netdev@vger.kernel.org
+Cc: Tobias Klauser <tklauser@distanz.ch>, "David S . Miller" <davem@davemloft.net>, Jarod Wilson <jarod@redhat.com>, linux-mips@linux-mips.org, Eric Dumazet <edumazet@google.com>
+Message-ID: <20170606141014.qJxsOEfXfgSE2K83Ptp-OD1wXxbvb9rDQOLuUZ8o3Jc@z>
 
-Update commit 1ac944007bed ("MIPS: math-emu: Add mfhc1 & mthc1 
-support.") and like done throughout `cop1Emulate' for other cases also 
-for the MFHC1 and MTHC1 instructions return SIGILL right away rather 
-than jumping to a single `return' statement.
+Hi Paul,
 
-Signed-off-by: Maciej W. Rozycki <macro@imgtec.com>
----
- No functional change, just a coding consistency fix, so no need to 
-backport.
+On 03.06.2017 01:40, Paul Burton wrote:
+> Resets of the EG20T MAC on the MIPS Boston development board take longer
+> than the 1000 loops that pch_gbe_wait_clr_bit was performing. Rather
+> than simply increasing the number of loops, switch to using
+> readl_poll_timeout_atomic() from linux/iopoll.h in order to provide some
+> independence from the speed of the CPU.
+> 
+>   #define DRV_VERSION     "1.01"
+> @@ -318,13 +319,11 @@ s32 pch_gbe_mac_read_mac_addr(struct pch_gbe_hw *hw)
+>    */
+>   static void pch_gbe_wait_clr_bit(void *reg, u32 bit)
+>   {
+> +	int err;
+>   	u32 tmp;
+>   
+> -	/* wait busy */
+> -	tmp = 1000;
+> -	while ((ioread32(reg) & bit) && --tmp)
+> -		cpu_relax();
+> -	if (!tmp)
+> +	err = readl_poll_timeout_atomic(reg, tmp, !(tmp & bit), 10, 500);
+> +	if (err)
+>   		pr_err("Error: busy bit is not cleared\n");
+>   }
 
-  Maciej
+This new timeout value appears to be too low - I'm seeing plenty of 
+timeout warnings now and ultimately the device fails to initialise:
 
-linux-mips-cp1emu-sigill.diff
-Index: linux-sfr-test/arch/mips/math-emu/cp1emu.c
-===================================================================
---- linux-sfr-test.orig/arch/mips/math-emu/cp1emu.c	2017-06-05 05:11:05.344496000 +0100
-+++ linux-sfr-test/arch/mips/math-emu/cp1emu.c	2017-06-05 05:22:21.552958000 +0100
-@@ -1142,7 +1142,7 @@ static int cop1Emulate(struct pt_regs *x
- 
- 		case mfhc_op:
- 			if (!cpu_has_mips_r2_r6)
--				goto sigill;
-+				return SIGILL;
- 
- 			/* copregister rd -> gpr[rt] */
- 			if (MIPSInst_RT(ir) != 0) {
-@@ -1153,7 +1153,7 @@ static int cop1Emulate(struct pt_regs *x
- 
- 		case mthc_op:
- 			if (!cpu_has_mips_r2_r6)
--				goto sigill;
-+				return SIGILL;
- 
- 			/* copregister rd <- gpr[rt] */
- 			SITOHREG(xcp->regs[MIPSInst_RT(ir)], MIPSInst_RD(ir));
-@@ -1376,7 +1376,6 @@ static int cop1Emulate(struct pt_regs *x
- 				xcp->regs[MIPSInst_RS(ir)];
- 		break;
- 	default:
--sigill:
- 		return SIGILL;
- 	}
- 
+[    7.541876] pch_gbe: EG20T PCH Gigabit Ethernet Driver - version 1.01
+[    7.566451] pch_gbe: Error: busy bit is not cleared
+[    7.572654] pch_gbe: Error: busy bit is not cleared
+[    7.578727] pch_gbe: Error: busy bit is not cleared
+[    7.587814] pch_gbe 0000:02:00.1: Invalid MAC address, interface 
+disabled.
+[    7.595605] pch_gbe 0000:02:00.1: MAC address : 00:00:00:00:00:00
+[    7.606451] pch_gbe: Error: busy bit is not cleared
+[    7.612572] pch_gbe: Error: busy bit is not cleared
+[    7.618618] pch_gbe: Error: busy bit is not cleared
+<...>
+[   10.063351] pch_gbe 0000:02:00.1 eth0: Error: Invalid MAC address
+[   10.074713] pch_gbe: Error: busy bit is not cleared
+[   10.081030] pch_gbe: Error: busy bit is not cleared
+[   10.087178] pch_gbe: Error: busy bit is not cleared
+[   10.093328] pch_gbe: Error: busy bit is not cleared
+[   10.100883] pch_gbe 0000:02:00.1 eth0: Error End
+[   10.106272] IP-Config: Failed to open eth0
+
+My tests show that a timeout value as big as 20000 may be required to 
+make it work reliably ...
+
+Marcin

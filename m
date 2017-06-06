@@ -1,17 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:34486 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992110AbdFFQNSH92X3 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 6 Jun 2017 18:13:18 +0200
-Date: Tue, 6 Jun 2017 17:13:01 +0100
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH 5/9] MIPS: Rename `sigill_r6' to `sigill_r2r6' in
- `__compute_return_epc_for_insn'
-In-Reply-To: <20170606060643.GA25486@kroah.com>
-Message-ID: <alpine.DEB.2.00.1706061658310.21750@tp.orcam.me.uk>
-References: <alpine.DEB.2.00.1706040314270.10864@tp.orcam.me.uk> <alpine.DEB.2.00.1706051739400.21750@tp.orcam.me.uk> <20170606060643.GA25486@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Received: from mail-pg0-x244.google.com ([IPv6:2607:f8b0:400e:c05::244]:33943
+        "EHLO mail-pg0-x244.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993870AbdFFTKdv3YmB (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 6 Jun 2017 21:10:33 +0200
+Received: by mail-pg0-x244.google.com with SMTP id v14so10146935pgn.1
+        for <linux-mips@linux-mips.org>; Tue, 06 Jun 2017 12:10:33 -0700 (PDT)
+From: Palmer Dabbelt <palmer@dabbelt.com>
+Subject: Unify the various copies of libgcc into lib v2
+Date: Tue,  6 Jun 2017 12:10:16 -0700
+Message-ID: <20170606191023.24581-1-palmer@dabbelt.com>
+In-Reply-To: <20170523220546.16758-1-palmer@dabbelt.com>
+References: <20170523220546.16758-1-palmer@dabbelt.com>
+Return-Path: <palmer@dabbelt.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,34 +20,32 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20170606161301.w72X28L6XNkTgy-mL7m4hp7S_vIix8s6__1DMhga0NA@z>
+To: monstr@monstr.eu, ralf@linux-mips.org, liqin.linux@gmail.com, lennox.wu@gmail.com, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, geert@linux-m68k.org, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Message-ID: <20170606191016.yBSjceALXRdbxiuni9WYU2XtDP-AQO4bNIzl1ff0iYU@z>
 
-Hi Greg,
+Thanks to everyone who responded to my original patch set.  I believe I've
+responded to everyone's comments.  There have been a handful of changes since
+the original patch set:
 
-> > Cc: stable@vger.kernel.org # 3.19+
-> > Signed-off-by: Maciej W. Rozycki <macro@imgtec.com>
-> > ---
-> >  Not a fix by itself, but needed for the next 2 changes.
-> 
-> And why isn't that info in the changelog text?  I know I will not take
-> patches without any changelog text, I don't know of other maintainers
-> are more "lax" about that :)
+ * The Kconfig names for the routines are now GENERIC_* instead of LIB_*.  This
+   matches the existing generic implementation Kconfig names.
+ * Tracing is disabled, which matches the MIPS behavior and seems correct
+   globally.
+ * I've cross compiled this to make sure it builds, and fixed all the build
+   errors I found.
+ * The MIPS patches actually do what they say in the commit message.
 
- Umm, I didn't know about your rule and thought the change along with its 
-heading speaks for itself.  Sorry about that.  On second thoughts I agree 
-a proper justification is due even for such a mechanical change.
+I don't know of any remaining problems with this patch set, so hopefully it's
+ready to get merged.  I'll be including patch 1 in our RISC-V submissions, but
+as I'm somewhat new to this I don't have a tree that anyone pulls from yet.
 
- Obviously the quoted explanatory sentence as it stands would qualify as 
-clutter if recorded in GIT for posterity, i.e. what would be its value for 
-someone examining past changes say 10 years from now?  I'll think of 
-something more suitable then and repost the series in a few days' time in 
-case someone has further comments I'll take into account about any of 
-these changes, so as to minimise noise (which has become hard to deal with 
-already).  Ralf seems to have vanished recently, so I guess it'll take a 
-bit for these changes to move forward anyway.
+If everyone is happy with this patch set then I'd be willing to use this as a
+first attempt to get patches upstream myself.
 
- Thanks for your feedback, always appreciated.
-
-  Maciej
+[PATCH 1/7] lib: Add shared copies of some GCC library routines
+[PATCH 2/7] m32r: Use lib/ucmpdi2.c
+[PATCH 3/7] microblaze: Use libgcc files from lib/
+[PATCH 4/7] score: Use lib/{ashldi3,ashrdi3,cmpdi2,lshrdi3,ucmpdi2}.c
+[PATCH 5/7] sh: Use lib/ashldi3,ashrdi3,lshrdi3}.c
+[PATCH 6/7] sparc: Use lib/{cmpdi2,ucmpdi2}.c
+[PATCH 7/7] MIPS: Use generic libgcc intrinsics

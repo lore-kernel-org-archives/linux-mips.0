@@ -1,17 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:45663 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993911AbdFHPIBmGtp4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 8 Jun 2017 17:08:01 +0200
-Date: Thu, 8 Jun 2017 16:07:44 +0100
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH 4/4] MIPS: Branch straight to ll in mips_atomic_set()
-In-Reply-To: <20170608115748.GU6973@jhogan-linux.le.imgtec.org>
-Message-ID: <alpine.DEB.2.00.1706081604060.21750@tp.orcam.me.uk>
-References: <cover.5633df325dbcbc41dbf9cc60df22b38f7812e73a.1496240182.git-series.james.hogan@imgtec.com> <c17c30b035caec45c1de97f4d069ab31fec2067e.1496240182.git-series.james.hogan@imgtec.com> <580e1148-aaf9-895c-09ec-8b38772a9154@gmail.com>
- <20170531164754.GM6973@jhogan-linux.le.imgtec.org> <d671ae4e-f58b-6f7e-4814-f8ef764a8625@gmail.com> <alpine.DEB.2.00.1706080734010.21750@tp.orcam.me.uk> <20170608115748.GU6973@jhogan-linux.le.imgtec.org>
+Received: from mga05.intel.com ([192.55.52.43]:19897 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23990509AbdFHQcWAurkp (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 8 Jun 2017 18:32:22 +0200
+Subject: Re: [PATCH 03/44] dmaengine: ioat: don't use DMA_ERROR_CODE
+References: <20170608132609.32662-1-hch@lst.de>
+ <20170608132609.32662-4-hch@lst.de>
+From: Dave Jiang <dave.jiang@intel.com>
+Message-ID: <bf0a16a3-75d9-25c9-98d3-f1e7624dc5d7@intel.com>
+Date: Thu, 8 Jun 2017 09:32:18 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+In-Reply-To: <20170608132609.32662-4-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Return-Path: <dave.jiang@intel.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,23 +23,77 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@imgtec.com>
-Cc: David Daney <ddaney.cavm@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20170608150744.rZL12NI3nNjTWCAlbBGKatQ3-NmjJSYL07nMYXMFL1Y@z>
+To: Christoph Hellwig <hch@lst.de>, "x86@kernel.org" <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <20170608163218.uoi-TbpUIrWZQT_9mH8gERKZte_Igv3r-Xp-lAt8BQ4@z>
 
-On Thu, 8 Jun 2017, James Hogan wrote:
-
-> >  A PAUSE might be in order here.
+On 06/08/2017 06:25 AM, Christoph Hellwig wrote:
+> DMA_ERROR_CODE is not a public API and will go away.  Instead properly
+> unwind based on the loop counter.
 > 
-> Quite possibly, though I'm not sure its worth bothering to optimise this
-> old/unused code.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
- Well, given that...
+Acked-by: Dave Jiang <dave.jiang@intel.com>
 
-> I had a patch somewhere to add PAUSE to spinlock loops...
-
-... I advise doing it consistently throughout, so that someone does not 
-copy-&-paste the wrong piece if nothing else.  On it's own I agree it 
-would be quite odd to only have the least used piece optimised.
-
-  Maciej
+> ---
+>  drivers/dma/ioat/init.c | 24 +++++++-----------------
+>  1 file changed, 7 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/dma/ioat/init.c b/drivers/dma/ioat/init.c
+> index 6ad4384b3fa8..ed8ed1192775 100644
+> --- a/drivers/dma/ioat/init.c
+> +++ b/drivers/dma/ioat/init.c
+> @@ -839,8 +839,6 @@ static int ioat_xor_val_self_test(struct ioatdma_device *ioat_dma)
+>  		goto free_resources;
+>  	}
+>  
+> -	for (i = 0; i < IOAT_NUM_SRC_TEST; i++)
+> -		dma_srcs[i] = DMA_ERROR_CODE;
+>  	for (i = 0; i < IOAT_NUM_SRC_TEST; i++) {
+>  		dma_srcs[i] = dma_map_page(dev, xor_srcs[i], 0, PAGE_SIZE,
+>  					   DMA_TO_DEVICE);
+> @@ -910,8 +908,6 @@ static int ioat_xor_val_self_test(struct ioatdma_device *ioat_dma)
+>  
+>  	xor_val_result = 1;
+>  
+> -	for (i = 0; i < IOAT_NUM_SRC_TEST + 1; i++)
+> -		dma_srcs[i] = DMA_ERROR_CODE;
+>  	for (i = 0; i < IOAT_NUM_SRC_TEST + 1; i++) {
+>  		dma_srcs[i] = dma_map_page(dev, xor_val_srcs[i], 0, PAGE_SIZE,
+>  					   DMA_TO_DEVICE);
+> @@ -965,8 +961,6 @@ static int ioat_xor_val_self_test(struct ioatdma_device *ioat_dma)
+>  	op = IOAT_OP_XOR_VAL;
+>  
+>  	xor_val_result = 0;
+> -	for (i = 0; i < IOAT_NUM_SRC_TEST + 1; i++)
+> -		dma_srcs[i] = DMA_ERROR_CODE;
+>  	for (i = 0; i < IOAT_NUM_SRC_TEST + 1; i++) {
+>  		dma_srcs[i] = dma_map_page(dev, xor_val_srcs[i], 0, PAGE_SIZE,
+>  					   DMA_TO_DEVICE);
+> @@ -1017,18 +1011,14 @@ static int ioat_xor_val_self_test(struct ioatdma_device *ioat_dma)
+>  	goto free_resources;
+>  dma_unmap:
+>  	if (op == IOAT_OP_XOR) {
+> -		if (dest_dma != DMA_ERROR_CODE)
+> -			dma_unmap_page(dev, dest_dma, PAGE_SIZE,
+> -				       DMA_FROM_DEVICE);
+> -		for (i = 0; i < IOAT_NUM_SRC_TEST; i++)
+> -			if (dma_srcs[i] != DMA_ERROR_CODE)
+> -				dma_unmap_page(dev, dma_srcs[i], PAGE_SIZE,
+> -					       DMA_TO_DEVICE);
+> +		while (--i >= 0)
+> +			dma_unmap_page(dev, dma_srcs[i], PAGE_SIZE,
+> +				       DMA_TO_DEVICE);
+> +		dma_unmap_page(dev, dest_dma, PAGE_SIZE, DMA_FROM_DEVICE);
+>  	} else if (op == IOAT_OP_XOR_VAL) {
+> -		for (i = 0; i < IOAT_NUM_SRC_TEST + 1; i++)
+> -			if (dma_srcs[i] != DMA_ERROR_CODE)
+> -				dma_unmap_page(dev, dma_srcs[i], PAGE_SIZE,
+> -					       DMA_TO_DEVICE);
+> +		while (--i >= 0)
+> +			dma_unmap_page(dev, dma_srcs[i], PAGE_SIZE,
+> +				       DMA_TO_DEVICE);
+>  	}
+>  free_resources:
+>  	dma->device_free_chan_resources(dma_chan);
+> 

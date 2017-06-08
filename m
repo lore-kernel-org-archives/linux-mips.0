@@ -1,19 +1,23 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:35909 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23990519AbdFHHbUUByEs (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 8 Jun 2017 09:31:20 +0200
-Subject: Re: [PATCH 06/15] serial: 8250_ingenic: Parse earlycon options
-References: <20170607200439.24450-1-paul@crapouillou.net>
- <20170607200439.24450-7-paul@crapouillou.net>
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Message-ID: <939febde-f962-6e2b-3657-a9b6c719dac1@imgtec.com>
-Date: Thu, 8 Jun 2017 09:31:13 +0200
+Received: from mailapp01.imgtec.com ([195.59.15.196]:4313 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23990517AbdFHL5ySs4Ru (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 8 Jun 2017 13:57:54 +0200
+Date: Thu, 8 Jun 2017 12:57:48 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH 4/4] MIPS: Branch straight to ll in mips_atomic_set()
+Message-ID: <20170608115748.GU6973@jhogan-linux.le.imgtec.org>
+References: <cover.5633df325dbcbc41dbf9cc60df22b38f7812e73a.1496240182.git-series.james.hogan@imgtec.com>
+ <c17c30b035caec45c1de97f4d069ab31fec2067e.1496240182.git-series.james.hogan@imgtec.com>
+ <580e1148-aaf9-895c-09ec-8b38772a9154@gmail.com>
+ <20170531164754.GM6973@jhogan-linux.le.imgtec.org>
+ <d671ae4e-f58b-6f7e-4814-f8ef764a8625@gmail.com>
+ <alpine.DEB.2.00.1706080734010.21750@tp.orcam.me.uk>
 MIME-Version: 1.0
-In-Reply-To: <20170607200439.24450-7-paul@crapouillou.net>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <Marcin.Nowakowski@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="udzYTtuEmHLUHegf"
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.00.1706080734010.21750@tp.orcam.me.uk>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,78 +27,58 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Cercueil <paul@crapouillou.net>, Ralf Baechle <ralf@linux-mips.org>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Rob Herring <robh+dt@kernel.org>
-Cc: Paul Burton <paul.burton@imgtec.com>, Maarten ter Huurne <maarten@treewalker.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux-clk@vger.kernel.org
-Message-ID: <20170608073113.ow3XIPP5x--9a3FxrpP2ja1Vlj7DhRaO-jyIzCuCEB8@z>
+To: "Maciej W. Rozycki" <macro@imgtec.com>
+Cc: David Daney <ddaney.cavm@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20170608115748.dHJDjPPwPGKee2gdIUryCJHju8GeXcJRbJorRepv6EQ@z>
 
-Hi Paul,
+--udzYTtuEmHLUHegf
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 07.06.2017 22:04, Paul Cercueil wrote:
-> In the devicetree, it is possible to specify the baudrate, parity,
-> bits, flow of the early console, by passing a configuration string like
-> this:
-> 
-> aliases {
-> 	serial0 = &uart0;
-> };
-> 
-> chosen {
-> 	stdout-path = "serial0:57600n8";
-> };
-> 
-> This, for instance, will configure the early console for a baudrate of
-> 57600 bps, no parity, and 8 bits per baud.
-> 
-> This patches implements parsing of this configuration string in the
-> 8250_ingenic driver, which previously just ignored it.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->   drivers/tty/serial/8250/8250_ingenic.c | 14 ++++++++++++--
->   1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_ingenic.c b/drivers/tty/serial/8250/8250_ingenic.c
-> index b31b2ca552d1..59f3e632df49 100644
-> --- a/drivers/tty/serial/8250/8250_ingenic.c
-> +++ b/drivers/tty/serial/8250/8250_ingenic.c
-> @@ -99,14 +99,24 @@ static int __init ingenic_early_console_setup(struct earlycon_device *dev,
->   					      const char *opt)
->   {
->   	struct uart_port *port = &dev->port;
-> -	unsigned int baud, divisor;
-> +	unsigned int divisor;
-> +	int baud = 115200;
->   
->   	if (!dev->port.membase)
->   		return -ENODEV;
->   
-> +	if (opt) {
-> +		char options[256];
-> +		unsigned int parity, bits, flow; /* unused for now */
-> +
-> +		strlcpy(options, opt, sizeof(options));
+On Thu, Jun 08, 2017 at 07:37:14AM +0100, Maciej W. Rozycki wrote:
+> On Wed, 31 May 2017, David Daney wrote:
+>=20
+> > > > The subsection keeps the code for the (hopefully) cold path out of =
+line
+> > > > which should result in a smaller cache footprint in the hot path.
+> > >=20
+> > > Hmm, yes that would make sense if it did something useful there, but =
+it
+> > > just immediately jumps back to the ll.
+> >=20
+> > In this case, it could be that the pattern was copied without carefully
+> > examining what was being done.
+>=20
+>  A PAUSE might be in order here.
 
-Rather than adding this extra local copy maybe you could instead:
+Quite possibly, though I'm not sure its worth bothering to optimise this
+old/unused code.
 
--void uart_parse_options(char *options, int *baud, int *parity, int *bits,
-+void uart_parse_options(const char *options, int *baud, int *parity, 
-int *bits,
+I had a patch somewhere to add PAUSE to spinlock loops...
 
-I cannot see any reason why uart_parse_options shouldn't take 'const 
-char *options' as an argument.
+Cheers
+James
 
-> +		uart_parse_options(options, &baud, &parity, &bits, &flow);
-> +	}
-> +
->   	ingenic_early_console_setup_clock(dev);
->   
-> -	baud = dev->baud ?: 115200;
-> +	if (dev->baud)
-> +		baud = dev->baud;
->   	divisor = DIV_ROUND_CLOSEST(port->uartclk, 16 * baud);
->   
->   	early_out(port, UART_IER, 0);
-> 
+--udzYTtuEmHLUHegf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
 
-Marcin
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlk5O6wACgkQbAtpk944
+dnqfTxAAnN+9nmOfMJym9gJ5Ul83irC8NMfC8rIyEptKvrgtGoq9qyvCeUX7XUt7
+8YOl0aX+XFp0jeodcP9GibCHhVKX9nPjZUUs+qn/Jyc1tuk6R9/0ccobYpNlzSmg
+k7sPwMD70A6JUolA8njCxnAHepqZaSPKNXcENHQNpuo7ZFzoEGxHi7BuDQCc/p2E
+UWsqPFZZtT/ytsuoY8xdtEvq4X1FmLqGgAD5/YPrT7bZ+8aNtBtjNfMdigVqg/vA
+O2yiT+DFkTtyKzq340R0lO2uXY+w9gOJM2Nauwsx/8TWlpgzVWfs4UU/YJ+3tbeh
+6xIiOCJ8riUuYqp5duGXzNB2rxN7RA8I0pQE7mNBqt/PH6DieOsyQMhpTjR0HyyR
+B64VQFrcIh6VDSEe3zdu8Eh9Lf/Dvr21d18lIHgGGXs3cYz0sMrdTdPUOU0I35En
+c33sR3L23ylO6vGBOT1x4lVp2pX3hEjmmXsLxpJftoxSzmZXOEKeQCvOqNddScie
+RM9RSnYzMYnbAYloqHD7+bvsCDRWNr9OGqx9tPdmoftqoPrwxO962RE1jjy/Wrp2
+DCFW91WyG9XpxUraWEK0n+iGPcBckMd2rDmFXG7z0xJqZKPl35sTeRS8yYeOiedH
++/OcLcH4MthjZcxZWQ5LnL+oolwjEJQ/3tSxLHEap38urq2xIDI=
+=DEaM
+-----END PGP SIGNATURE-----
+
+--udzYTtuEmHLUHegf--

@@ -1,14 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:29671 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993867AbdFMJXvL0Sfd (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Jun 2017 11:23:51 +0200
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Subject: [PATCH] MIPS: perf: add I6500 handling
-Date: Tue, 13 Jun 2017 11:23:39 +0200
-Message-ID: <1497345819-27779-1-git-send-email-marcin.nowakowski@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:2731 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23993911AbdFMQsmzPXt5 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Jun 2017 18:48:42 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH v4 3/4] MIPS: DTS: img: Don't attempt to build-in all .dtb files
+Date: Tue, 13 Jun 2017 09:48:34 -0700
+Message-ID: <1699079.Kf0ib7BVPQ@np-p-burton>
+In-Reply-To: <CA+NV+V=gUdcu_tRKnyLrSauuge88Bou1CB4Q+n75A48d+MqJyg@mail.gmail.com>
+References: <20170602182003.16269-1-paul.burton@imgtec.com> <20170602182003.16269-4-paul.burton@imgtec.com> <CA+NV+V=gUdcu_tRKnyLrSauuge88Bou1CB4Q+n75A48d+MqJyg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Marcin.Nowakowski@imgtec.com>
+Content-Type: multipart/signed; boundary="nextPart2070560.9WQ2B9pHYu";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,72 +21,99 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Cc: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Message-ID: <20170613092339.boyiL-pxNBBnFpItmfL1zZ0oSLXyl5na6hcPfIaU6wc@z>
+To: Rahul Bedarkar <rahulbedarkar89@gmail.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Rahul Bedarkar <rahul.bedarkar@imgtec.com>
+Message-ID: <20170613164834.fiHahMU2PoHW0XKPpm40pr-spIpabnkLl3fo9R61FW8@z>
 
-Add a definition of the perf registers for the new I6500 core.
+--nextPart2070560.9WQ2B9pHYu
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Since I6500 has the same event definitions as I6400, re-use the existing
-i6400 map structures by renaming them to a slightly more generic
-'i6x00_***_map'.
+Hi Rahul,
 
-Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+On Tuesday, 13 June 2017 09:13:12 PDT Rahul Bedarkar wrote:
+> Hi Paul,
+> 
+> On Fri, Jun 2, 2017 at 11:50 PM, Paul Burton <paul.burton@imgtec.com> wrote:
+> > When building a FIT image we may want the kernel to build multiple .dtb
+> > files, but we don't want to build them all into the kernel binary as
+> > object files since they'll instead be included in the FIT image.
+> > 
+> > Commit daa10170da27 ("MIPS: DTS: img: add device tree for Marduk board")
+> > however created arch/mips/boot/dts/img/Makefile with a line that builds
+> > any enabled .dtb files into the kernel. Remove this & build the
+> > pistachio object specifically, in preparation for adding .dtb targets
+> > which we don't want to build into the kernel.
+> > 
+> > Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> > Cc: Rahul Bedarkar <rahul.bedarkar@imgtec.com>
+> > Cc: Ralf Baechle <ralf@linux-mips.org>
+> > Cc: linux-mips@linux-mips.org
+> > 
+> > ---
+> > 
+> > Changes in v4:
+> > - New patch.
+> > 
+> > Changes in v3: None
+> > Changes in v2: None
+> > 
+> >  arch/mips/boot/dts/img/Makefile | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> It looks good to me.
+> 
+> Reviewed-by: Rahul Bedarkar <rahulbedarkar89@gmail.com>
 
----
-This patch applies onto current -next and requires
-https://patchwork.linux-mips.org/patch/16190/
-to be applied
+Thanks for reviewing :)
 
----
- arch/mips/kernel/perf_event_mipsxx.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+> > diff --git a/arch/mips/boot/dts/img/Makefile
+> > b/arch/mips/boot/dts/img/Makefile index 69a65f0f82d2..c178cf56f5b8 100644
+> > --- a/arch/mips/boot/dts/img/Makefile
+> > +++ b/arch/mips/boot/dts/img/Makefile
+> > @@ -1,6 +1,5 @@
+> > 
+> >  dtb-$(CONFIG_MACH_PISTACHIO)   += pistachio_marduk.dtb
+> > 
+> > -
+> > -obj-y                          += $(patsubst %.dtb, %.dtb.o, $(dtb-y))
+> 
+> It was probably copy/paste from other board Makefiles. But If I
+> understand it correctly, please correct me if I am wrong, linking of
+> object file of device tree to kernel image is useful if boot loader
+> doesn't support loading external device tree and in that case kernel
+> can use inbuilt device tree.
+> 
+> Thanks,
+> Rahul
 
-diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
-index f3e301f..9e6c74b 100644
---- a/arch/mips/kernel/perf_event_mipsxx.c
-+++ b/arch/mips/kernel/perf_event_mipsxx.c
-@@ -814,7 +814,7 @@ static const struct mips_perf_event mipsxxcore_event_map2
- 	[PERF_COUNT_HW_BRANCH_MISSES] = { 0x27, CNTR_ODD, T },
- };
- 
--static const struct mips_perf_event i6400_event_map[PERF_COUNT_HW_MAX] = {
-+static const struct mips_perf_event i6x00_event_map[PERF_COUNT_HW_MAX] = {
- 	[PERF_COUNT_HW_CPU_CYCLES]          = { 0x00, CNTR_EVEN | CNTR_ODD },
- 	[PERF_COUNT_HW_INSTRUCTIONS]        = { 0x01, CNTR_EVEN | CNTR_ODD },
- 	/* These only count dcache, not icache */
-@@ -1014,7 +1014,7 @@ static const struct mips_perf_event mipsxxcore_cache_map2
- },
- };
- 
--static const struct mips_perf_event i6400_cache_map
-+static const struct mips_perf_event i6x00_cache_map
- 				[PERF_COUNT_HW_CACHE_MAX]
- 				[PERF_COUNT_HW_CACHE_OP_MAX]
- 				[PERF_COUNT_HW_CACHE_RESULT_MAX] = {
-@@ -1610,6 +1610,7 @@ static const struct mips_perf_event *mipsxx_pmu_map_raw_event(u64 config)
- #endif
- 		break;
- 	case CPU_I6400:
-+	case CPU_I6500:
- 		/* 8-bit event numbers */
- 		base_id = config & 0xff;
- 		raw_event.cntr_mask = CNTR_EVEN | CNTR_ODD;
-@@ -1770,8 +1771,13 @@ init_hw_perf_events(void)
- 		break;
- 	case CPU_I6400:
- 		mipspmu.name = "mips/I6400";
--		mipspmu.general_event_map = &i6400_event_map;
--		mipspmu.cache_event_map = &i6400_cache_map;
-+		mipspmu.general_event_map = &i6x00_event_map;
-+		mipspmu.cache_event_map = &i6x00_cache_map;
-+		break;
-+	case CPU_I6500:
-+		mipspmu.name = "mips/I6500";
-+		mipspmu.general_event_map = &i6x00_event_map;
-+		mipspmu.cache_event_map = &i6x00_cache_map;
- 		break;
- 	case CPU_1004K:
- 		mipspmu.name = "mips/1004K";
--- 
-2.7.4
+Yes, it can be useful & there's nothing wrong with building in the .dtb for a 
+platform like pistachio. For the generic kernel however we put the various 
+device tree binaries into the FIT image so that the bootloader can pick out 
+the right one, so building them into the kernel is unnecessary.
+
+Thanks,
+    Paul
+--nextPart2070560.9WQ2B9pHYu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAllAF2IACgkQgiDZ+mk8
+HGX7jQ//dffaC/wdXkWuTlIUNA1Y/Zs7Xnfu/ThpkN7b7DSaJCNopMRHLx2bLSUu
+pjZbYL/3opfDBVSTZuHH8jpJkoPXIGmU2QPUydwFq8DIp14IjhC5rL9bmVHIkGjR
+BpOcvQdIG7Zu2DKHhp5GcLc2+J61CqgOZ3xa9l0AeS26Xtx0+AtSeyrWvM2u5WHl
+j8Gy3/X6TdS0db0fJuqaeVr+5FJM7czJGMbKAH2Gnlz0He31RFDHJ75swXRkUIaY
+/j+5z2Jjmbm+Rzs3dyH6hyW1eXIcdwFxP6ZyYib006traJQxgzrIIAKp2/vAwnY3
+5GqUj9RFFonuCKOfYjzE6fNTwUB4ANARDXzBzrndiW67ilSEuZcaNVqA9eh/6tqq
+9QWZFNX6qXUC2KCR0PxQSsDBirDKYkhCQOQAoW0llX0oaEtPK0aA0+pjtF1vKGCu
+IbxgOH5Mj+68xwXMPaMDpRYG25Sz9CX0NfLjzB9pTbOHIbGXrC5WSv4n8iLS8p8t
+IrWqizYStb1VD6B4Dcq2V6afuX6eULq1k9ZPZ7zCEZrWQUPkthodq2+eGBTEfM9l
+BXSbhv5UGIGabP3eJ/rQW95v3uKxKfwOHWPhHonDd6i/e3OyovKFVO16NdXHm1j0
+7BoT7/WS0Bsj5X3OLhKqrAuNfqdfDq6LcSeMacZIJgjclnlx6uc=
+=7w/F
+-----END PGP SIGNATURE-----
+
+--nextPart2070560.9WQ2B9pHYu--

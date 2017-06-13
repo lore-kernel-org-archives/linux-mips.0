@@ -1,17 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:61591 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993911AbdFMRByts0x5 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Jun 2017 19:01:54 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2] MIPS: Perform post-DMA cache flushes on systems with MAARs
-Date: Tue, 13 Jun 2017 10:01:08 -0700
-Message-ID: <20170613170108.15875-1-paul.burton@imgtec.com>
-In-Reply-To: <20170612214218.25370-1-paul.burton@imgtec.com>
-References: <20170612214218.25370-1-paul.burton@imgtec.com>
+Received: from mail-by2nam03on0078.outbound.protection.outlook.com ([104.47.42.78]:23616
+        "EHLO NAM03-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23994624AbdFMW27BnM7u (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 14 Jun 2017 00:28:59 +0200
+From: David Daney <david.daney@cavium.com>
+Subject: [PATCH v2 0/5] MIPS: Implement eBPF JIT.
+Date: Tue, 13 Jun 2017 15:28:42 -0700
+Message-ID: <20170613222847.7122-1-david.daney@cavium.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain
+Return-Path: <David.Daney@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,87 +19,26 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, Bryan O'Donoghue <Bryan.ODonoghue@imgtec.com>, Ed Blake <ed.blake@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20170613170108.ic_BNv8o1KRWNsfhRd-UOkC_KwEfrDSEuInNGNk8VwA@z>
-
-Recent CPUs from Imagination Technologies such as the I6400 or P6600 are
-able to speculatively fetch data from memory into caches. This means
-that if used in a system with non-coherent DMA they require that caches
-be invalidated after a device performs DMA, and before the CPU reads the
-DMA'd data, in order to ensure that stale values weren't speculatively
-prefetched.
-
-Such CPUs also introduced Memory Accessibility Attribute Registers
-(MAARs) in order to control the regions in which they are allowed to
-speculate. Thus we can use the presence of MAARs as a good indication
-that the CPU requires the above cache maintenance. Use the presence of
-MAARs to determine the result of cpu_needs_post_dma_flush() in the
-default case, in order to handle these recent CPUs correctly.
-
-Note that the return type of cpu_needs_post_dma_flush() is changed to
-bool, such that it's clearer what's happening when cpu_has_maar is cast
-to bool for the return value. If this patch were backported to a
-pre-v4.7 kernel then MIPS_CPU_MAAR was 1ull<<34, so when cast to an int
-we would incorrectly return 0. It so happens that MIPS_CPU_MAAR is
-currently 1ull<<30, so when truncated to an int gives a non-zero value
-anyway, but even so the implicit conversion from long long int to bool
-makes it clearer to understand what will happen than the implicit
-conversion from long long int to int would. The bool return type also
-fits this usage better semantically, so seems like an all-round win.
-
-Thanks to Ed for spotting the issue for pre-v4.7 kernels & suggesting
-the return type change.
-
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: Bryan O'Donoghue <Bryan.ODonoghue@imgtec.com>
-Cc: Ed Blake <ed.blake@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-
----
+To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, ralf@linux-mips.org
+Cc: Markos Chandras <markos.chandras@imgtec.com>, Matt Redfearn <matt.redfearn@imgtec.com>, David Daney <david.daney@cavium.com>
+Message-ID: <20170613222842.1xG6hpJxkaErzqytssBr02h3nBE-l6uGzYwEXuhrR4o@z>
 
 Changes in v2:
-- Change cpu_needs_post_dma_flush() return type to bool.
-- Comment explaining the default cpu_has_maar case.
 
- arch/mips/mm/dma-default.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+  - Squash a couple of the uasm cleanups.
 
-diff --git a/arch/mips/mm/dma-default.c b/arch/mips/mm/dma-default.c
-index fe8df14b6169..e08598c70b3e 100644
---- a/arch/mips/mm/dma-default.c
-+++ b/arch/mips/mm/dma-default.c
-@@ -68,12 +68,25 @@ static inline struct page *dma_addr_to_page(struct device *dev,
-  * systems and only the R10000 and R12000 are used in such systems, the
-  * SGI IP28 Indigo² rsp. SGI IP32 aka O2.
-  */
--static inline int cpu_needs_post_dma_flush(struct device *dev)
-+static inline bool cpu_needs_post_dma_flush(struct device *dev)
- {
--	return !plat_device_is_coherent(dev) &&
--	       (boot_cpu_type() == CPU_R10000 ||
--		boot_cpu_type() == CPU_R12000 ||
--		boot_cpu_type() == CPU_BMIPS5000);
-+	if (plat_device_is_coherent(dev))
-+		return false;
-+
-+	switch (boot_cpu_type()) {
-+	case CPU_R10000:
-+	case CPU_R12000:
-+	case CPU_BMIPS5000:
-+		return true;
-+
-+	default:
-+		/*
-+		 * Presence of MAARs suggests that the CPU supports
-+		 * speculatively prefetching data, and therefore requires
-+		 * the post-DMA flush/invalidate.
-+		 */
-+		return cpu_has_maar;
-+	}
- }
- 
- static gfp_t massage_gfp_flags(const struct device *dev, gfp_t gfp)
--- 
-2.13.1
+  - Make insn_table_MM const (suggested by Matt Redfearn)
+
+  - Put the eBPF in its own source file (should fix build
+    warnings/errors on 32-bit kernel builds).
+
+  - Use bpf_jit_binary_alloc() (suggested by Daniel Borkmann)
+
+  - Implement tail calls.
+
+  - Fix system call tracing to extract arguments for
+    kprobe/__seccomp_filter() tracing (perhaps not really part the the
+    JIT, but necessary to have fun with the samples/bpf programs).
+
+Most things in samples/bpf work, still working on the incantations to
+build tools/testing/selftests/bpf/ ... 

@@ -1,13 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:49174 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:18904 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23994787AbdFOXQas6-Gr (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Jun 2017 01:16:30 +0200
-Date: Fri, 16 Jun 2017 00:16:15 +0100
+        with ESMTP id S23994800AbdFOXS1ajz7r (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Jun 2017 01:18:27 +0200
+Date: Fri, 16 Jun 2017 00:18:11 +0100
 From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: [PATCH v2 09/10] MIPS: math-emu: For MFHC1/MTHC1 also return SIGILL
- right away
+Subject: [PATCH v2 10/10] MIPS: Use `pr_debug' for messages from
+ `__compute_return_epc_for_insn'
 In-Reply-To: <alpine.DEB.2.00.1706150032240.23046@tp.orcam.me.uk>
-Message-ID: <alpine.DEB.2.00.1706150159470.23046@tp.orcam.me.uk>
+Message-ID: <alpine.DEB.2.00.1706150201350.23046@tp.orcam.me.uk>
 References: <alpine.DEB.2.00.1706150032240.23046@tp.orcam.me.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
@@ -23,45 +23,45 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20170615231615.zd61NIWta2vfp1U9D83Rt0jIxQg8M0BJKRbIRJlC404@z>
+Message-ID: <20170615231811.XP8TV_yHnrLaUawdqOiKRHYcrZS_9JEXtpOLjfF5YK4@z>
 
-Update commit 1ac944007bed ("MIPS: math-emu: Add mfhc1 & mthc1 
-support.") and like done throughout `cop1Emulate' for other cases also 
-for the MFHC1 and MTHC1 instructions return SIGILL right away rather 
-than jumping to a single `return' statement.
+Reduce the log level for branch emulation error messages issued before 
+sending SIGILL by `__compute_return_epc_for_insn' as these are triggered 
+by user software and are not an event that would normally require any 
+attention.  The same signal sent from elsewhere does not actually leave
+any trace in the kernel log at all.
 
 Signed-off-by: Maciej W. Rozycki <macro@imgtec.com>
 ---
-Unchanged from v1.
+New in v2.
 
-linux-mips-cp1emu-sigill.diff
-Index: linux-sfr-test/arch/mips/math-emu/cp1emu.c
+linux-mips-epc-for-insn-sigill-pr-debug.diff
+Index: linux-sfr-test/arch/mips/kernel/branch.c
 ===================================================================
---- linux-sfr-test.orig/arch/mips/math-emu/cp1emu.c	2017-06-05 05:11:05.344496000 +0100
-+++ linux-sfr-test/arch/mips/math-emu/cp1emu.c	2017-06-05 05:22:21.552958000 +0100
-@@ -1142,7 +1142,7 @@ static int cop1Emulate(struct pt_regs *x
+--- linux-sfr-test.orig/arch/mips/kernel/branch.c	2017-06-05 19:40:09.000000000 +0100
++++ linux-sfr-test/arch/mips/kernel/branch.c	2017-06-15 00:42:08.603934000 +0100
+@@ -816,18 +816,18 @@ int __compute_return_epc_for_insn(struct
+ 	return ret;
  
- 		case mfhc_op:
- 			if (!cpu_has_mips_r2_r6)
--				goto sigill;
-+				return SIGILL;
- 
- 			/* copregister rd -> gpr[rt] */
- 			if (MIPSInst_RT(ir) != 0) {
-@@ -1153,7 +1153,7 @@ static int cop1Emulate(struct pt_regs *x
- 
- 		case mthc_op:
- 			if (!cpu_has_mips_r2_r6)
--				goto sigill;
-+				return SIGILL;
- 
- 			/* copregister rd <- gpr[rt] */
- 			SITOHREG(xcp->regs[MIPSInst_RT(ir)], MIPSInst_RD(ir));
-@@ -1376,7 +1376,6 @@ static int cop1Emulate(struct pt_regs *x
- 				xcp->regs[MIPSInst_RS(ir)];
- 		break;
- 	default:
--sigill:
- 		return SIGILL;
- 	}
- 
+ sigill_dsp:
+-	pr_info("%s: DSP branch but not DSP ASE - sending SIGILL.\n",
+-		current->comm);
++	pr_debug("%s: DSP branch but not DSP ASE - sending SIGILL.\n",
++		 current->comm);
+ 	force_sig(SIGILL, current);
+ 	return -EFAULT;
+ sigill_r2r6:
+-	pr_info("%s: R2 branch but r2-to-r6 emulator is not present - sending SIGILL.\n",
+-		current->comm);
++	pr_debug("%s: R2 branch but r2-to-r6 emulator is not present - sending SIGILL.\n",
++		 current->comm);
+ 	force_sig(SIGILL, current);
+ 	return -EFAULT;
+ sigill_r6:
+-	pr_info("%s: R6 branch but no MIPSr6 ISA support - sending SIGILL.\n",
+-		current->comm);
++	pr_debug("%s: R6 branch but no MIPSr6 ISA support - sending SIGILL.\n",
++		 current->comm);
+ 	force_sig(SIGILL, current);
+ 	return -EFAULT;
+ }

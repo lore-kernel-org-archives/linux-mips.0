@@ -1,14 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:42448 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:62282 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993887AbdFOR1v1D6li (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 15 Jun 2017 19:27:51 +0200
-Date: Thu, 15 Jun 2017 18:27:34 +0100
+        with ESMTP id S23994787AbdFOXEcOhqGr (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Jun 2017 01:04:32 +0200
+Date: Fri, 16 Jun 2017 00:04:15 +0100
 From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH 5/6] MIPS: tlbex: Use ErrorEPC as scratch when KScratch
- isn't available
-In-Reply-To: <20170602223806.5078-6-paul.burton@imgtec.com>
-Message-ID: <alpine.DEB.2.00.1706151806310.23046@tp.orcam.me.uk>
-References: <20170602223806.5078-1-paul.burton@imgtec.com> <20170602223806.5078-6-paul.burton@imgtec.com>
+Subject: [PATCH v2 00/10] Instruction emulation fixes
+Message-ID: <alpine.DEB.2.00.1706150032240.23046@tp.orcam.me.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <Maciej.Rozycki@imgtec.com>
@@ -21,32 +18,24 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20170615172734.ssvpFOv9gc7yIf6Fo7OciLs4zXq-PZr9fEdBvRz2_Qs@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20170615230415.LBr7Q3FeEZzp1e5tYBuc7jzf7pALwZ3IlM8_1E8fP0I@z>
 
-On Fri, 2 Jun 2017, Paul Burton wrote:
+Ralf,
 
-> This patch changes this such that when KScratch registers aren't
-> implemented we use the coprocessor 0 ErrorEPC register as scratch
-> instead. The only downside to this is that we will need to ensure that
-> TLB exceptions don't occur whilst handling error exceptions, or at least
-> before the handlers for such exceptions have read the ErrorEPC register.
-> As the kernel always runs unmapped, or using a wired TLB entry for
-> certain SGI ip27 configurations, this constraint is currently always
-> satisfied. In the future should the kernel become mapped we will need to
-> cover exception handling code with a wired entry anyway such that TLB
-> exception handlers don't themselves trigger TLB exceptions, so the
-> constraint should be satisfied there too.
+ Here is a bunch of instruction emulation fixes and clean-ups, mostly 
+though not only affecting branches in the FPU emulator.  The severity of 
+failures addressed varies, see the individual patch descriptions for 
+details.  These patches have been verified to a varying extent, depending 
+on the nature of the individual change, by running the GCC and glibc test 
+suites for the MIPS16 o32 little-endian multilib.
 
- All error exception handlers run from (C)KSEG1 and with (X)KUSEG forcibly 
-unmapped, so a TLB exception could only ever happen with an access to the 
-kernel stack or static data located in (C)KSEG2 or XKSEG.  I think this 
-can be easily avoided, and actually should, to avoid cascading errors.
+ Version 2 addresses points raised in the review of the original 
+submission: missing proper justification for changes #5 and #8 and an 
+entirely new change #10 to lower the log priority of the noise produced.
 
- Isn't the reverse a problem though, i.e. getting an error exception while 
-running a TLB exception handler and consequently getting the value stashed 
-in CP0.ErrorEPC clobbered?  Or do we assume all error exceptions are fatal 
-and the kernel shall panic without ever getting back?
+ Please queue for the next release cycle and backport as noted with each 
+of the patches.
 
   Maciej

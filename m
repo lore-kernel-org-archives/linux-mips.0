@@ -1,13 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:34563 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:49174 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23994787AbdFOXPj1Gvkr (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Jun 2017 01:15:39 +0200
-Date: Fri, 16 Jun 2017 00:15:22 +0100
+        with ESMTP id S23994787AbdFOXQas6-Gr (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Jun 2017 01:16:30 +0200
+Date: Fri, 16 Jun 2017 00:16:15 +0100
 From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: [PATCH v2 08/10] MIPS: Fix a typo: s/preset/present/ in r2-to-r6
- emulation error message
+Subject: [PATCH v2 09/10] MIPS: math-emu: For MFHC1/MTHC1 also return SIGILL
+ right away
 In-Reply-To: <alpine.DEB.2.00.1706150032240.23046@tp.orcam.me.uk>
-Message-ID: <alpine.DEB.2.00.1706150156170.23046@tp.orcam.me.uk>
+Message-ID: <alpine.DEB.2.00.1706150159470.23046@tp.orcam.me.uk>
 References: <alpine.DEB.2.00.1706150032240.23046@tp.orcam.me.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
@@ -22,30 +22,46 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20170615231522.qMlUbK1ywFjCddP7NXlPBu0tJMxUFkf-p3TLsYC1BOw@z>
+Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20170615231615.zd61NIWta2vfp1U9D83Rt0jIxQg8M0BJKRbIRJlC404@z>
 
-This is a user-visible message, so we want it to be spelled correctly.
+Update commit 1ac944007bed ("MIPS: math-emu: Add mfhc1 & mthc1 
+support.") and like done throughout `cop1Emulate' for other cases also 
+for the MFHC1 and MTHC1 instructions return SIGILL right away rather 
+than jumping to a single `return' statement.
 
-Cc: stable@vger.kernel.org # 3.19+
-Fixes: 5f9f41c474be ("MIPS: kernel: Prepare the JR instruction for emulation on MIPS R6")
 Signed-off-by: Maciej W. Rozycki <macro@imgtec.com>
 ---
-Changes from v1:
+Unchanged from v1.
 
-- add justification.
-
-linux-mips-epc-for-insn-sigill-r2r6-typo.diff
-Index: linux-sfr-test/arch/mips/kernel/branch.c
+linux-mips-cp1emu-sigill.diff
+Index: linux-sfr-test/arch/mips/math-emu/cp1emu.c
 ===================================================================
---- linux-sfr-test.orig/arch/mips/kernel/branch.c	2017-06-05 05:11:05.340498000 +0100
-+++ linux-sfr-test/arch/mips/kernel/branch.c	2017-06-05 05:30:41.432034000 +0100
-@@ -821,7 +821,7 @@ int __compute_return_epc_for_insn(struct
- 	force_sig(SIGILL, current);
- 	return -EFAULT;
- sigill_r2r6:
--	pr_info("%s: R2 branch but r2-to-r6 emulator is not preset - sending SIGILL.\n",
-+	pr_info("%s: R2 branch but r2-to-r6 emulator is not present - sending SIGILL.\n",
- 		current->comm);
- 	force_sig(SIGILL, current);
- 	return -EFAULT;
+--- linux-sfr-test.orig/arch/mips/math-emu/cp1emu.c	2017-06-05 05:11:05.344496000 +0100
++++ linux-sfr-test/arch/mips/math-emu/cp1emu.c	2017-06-05 05:22:21.552958000 +0100
+@@ -1142,7 +1142,7 @@ static int cop1Emulate(struct pt_regs *x
+ 
+ 		case mfhc_op:
+ 			if (!cpu_has_mips_r2_r6)
+-				goto sigill;
++				return SIGILL;
+ 
+ 			/* copregister rd -> gpr[rt] */
+ 			if (MIPSInst_RT(ir) != 0) {
+@@ -1153,7 +1153,7 @@ static int cop1Emulate(struct pt_regs *x
+ 
+ 		case mthc_op:
+ 			if (!cpu_has_mips_r2_r6)
+-				goto sigill;
++				return SIGILL;
+ 
+ 			/* copregister rd <- gpr[rt] */
+ 			SITOHREG(xcp->regs[MIPSInst_RT(ir)], MIPSInst_RD(ir));
+@@ -1376,7 +1376,6 @@ static int cop1Emulate(struct pt_regs *x
+ 				xcp->regs[MIPSInst_RS(ir)];
+ 		break;
+ 	default:
+-sigill:
+ 		return SIGILL;
+ 	}
+ 

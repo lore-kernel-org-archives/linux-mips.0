@@ -1,19 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:60976 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23994786AbdFOQh4F2thI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 15 Jun 2017 18:37:56 +0200
-Subject: Re: [PATCH v2 4/5] MIPS: Add support for eBPF JIT.
-References: <20170613222847.7122-1-david.daney@cavium.com>
- <20170613222847.7122-5-david.daney@cavium.com>
-From: James Cowgill <James.Cowgill@imgtec.com>
-Message-ID: <1d9025c9-7e4a-551e-9937-a2439e11a852@imgtec.com>
-Date: Thu, 15 Jun 2017 17:37:45 +0100
+Received: from mailapp01.imgtec.com ([195.59.15.196]:42448 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993887AbdFOR1v1D6li (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 15 Jun 2017 19:27:51 +0200
+Date: Thu, 15 Jun 2017 18:27:34 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH 5/6] MIPS: tlbex: Use ErrorEPC as scratch when KScratch
+ isn't available
+In-Reply-To: <20170602223806.5078-6-paul.burton@imgtec.com>
+Message-ID: <alpine.DEB.2.00.1706151806310.23046@tp.orcam.me.uk>
+References: <20170602223806.5078-1-paul.burton@imgtec.com> <20170602223806.5078-6-paul.burton@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20170613222847.7122-5-david.daney@cavium.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature";
-        boundary="UQmGoB0P2dsTTWeItqoSdcNN5kTEH031O"
-Return-Path: <James.Cowgill@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,106 +21,32 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20170615163745.mZtKbZSImky26BDLY-eHMTGAujQsAyCxIo-ZQb52zd0@z>
+To: Paul Burton <paul.burton@imgtec.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20170615172734.ssvpFOv9gc7yIf6Fo7OciLs4zXq-PZr9fEdBvRz2_Qs@z>
 
---UQmGoB0P2dsTTWeItqoSdcNN5kTEH031O
-Content-Type: multipart/mixed; boundary="R5MJXauersSJCxMISOHLObXXcbs5gmemn";
- protected-headers="v1"
-From: James Cowgill <James.Cowgill@imgtec.com>
-To: ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <1d9025c9-7e4a-551e-9937-a2439e11a852@imgtec.com>
-Subject: Re: [PATCH v2 4/5] MIPS: Add support for eBPF JIT.
-References: <20170613222847.7122-1-david.daney@cavium.com>
- <20170613222847.7122-5-david.daney@cavium.com>
-In-Reply-To: <20170613222847.7122-5-david.daney@cavium.com>
+On Fri, 2 Jun 2017, Paul Burton wrote:
 
---R5MJXauersSJCxMISOHLObXXcbs5gmemn
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+> This patch changes this such that when KScratch registers aren't
+> implemented we use the coprocessor 0 ErrorEPC register as scratch
+> instead. The only downside to this is that we will need to ensure that
+> TLB exceptions don't occur whilst handling error exceptions, or at least
+> before the handlers for such exceptions have read the ErrorEPC register.
+> As the kernel always runs unmapped, or using a wired TLB entry for
+> certain SGI ip27 configurations, this constraint is currently always
+> satisfied. In the future should the kernel become mapped we will need to
+> cover exception handling code with a wired entry anyway such that TLB
+> exception handlers don't themselves trigger TLB exceptions, so the
+> constraint should be satisfied there too.
 
-Hi Ralf,
+ All error exception handlers run from (C)KSEG1 and with (X)KUSEG forcibly 
+unmapped, so a TLB exception could only ever happen with an access to the 
+kernel stack or static data located in (C)KSEG2 or XKSEG.  I think this 
+can be easily avoided, and actually should, to avoid cascading errors.
 
-On 13/06/17 23:28, David Daney wrote:
-> Since the eBPF machine has 64-bit registers, we only support this in
-> 64-bit kernels.  As of the writing of this commit log test-bpf is showi=
-ng:
->=20
->   test_bpf: Summary: 316 PASSED, 0 FAILED, [308/308 JIT'ed]
->=20
-> All current test cases are successfully compiled.
->=20
-> Many examples in samples/bpf are usable, specifically tracex5 which
-> uses tail calls works.
->=20
-> Signed-off-by: David Daney <david.daney@cavium.com>
+ Isn't the reverse a problem though, i.e. getting an error exception while 
+running a TLB exception handler and consequently getting the value stashed 
+in CP0.ErrorEPC clobbered?  Or do we assume all error exceptions are fatal 
+and the kernel shall panic without ever getting back?
 
-I think you've misapplied this patch to upstream-sfr. I see the
-following commit, but it's missing the ebpf_jit.c file.
-
-commit bb45edc82b3c1608026b5a7aeb0876ec31735359
-Author: David Daney <david.daney@cavium.com>
-Date:   Tue Jun 13 15:28:46 2017 -0700
-
-    MIPS: Add support for eBPF JIT.
-   =20
-    Since the eBPF machine has 64-bit registers, we only support this in
-    64-bit kernels.  As of the writing of this commit log test-bpf is sho=
-wing:
-   =20
-      test_bpf: Summary: 316 PASSED, 0 FAILED, [308/308 JIT'ed]
-   =20
-    All current test cases are successfully compiled.
-   =20
-    Many examples in samples/bpf are usable, specifically tracex5 which
-    uses tail calls works.
-   =20
-    Signed-off-by: David Daney <david.daney@cavium.com>
-    Cc: Alexei Starovoitov <ast@kernel.org>
-    Cc: Daniel Borkmann <daniel@iogearbox.net>
-    Cc: Markos Chandras <markos.chandras@imgtec.com>
-    Cc: Matt Redfearn <matt.redfearn@imgtec.com>
-    Cc: netdev@vger.kernel.org
-    Cc: linux-kernel@vger.kernel.org
-    Cc: linux-mips@linux-mips.org
-    Patchwork: https://patchwork.linux-mips.org/patch/16369/
-    Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
-
- arch/mips/Kconfig      | 12 +++++++++++-
- arch/mips/net/Makefile |  3 ++-
- 2 files changed, 13 insertions(+), 2 deletions(-)
-
-This is causing my builds to fail with:
-make[4]: *** No rule to make target 'arch/mips/net/ebpf_jit.o', needed by=
- 'arch/mips/net/built-in.o'.  Stop.
-
-James
-
-
---R5MJXauersSJCxMISOHLObXXcbs5gmemn--
-
---UQmGoB0P2dsTTWeItqoSdcNN5kTEH031O
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE+Ixt5DaZ6POztUwQx/FnbeotAe8FAllCt9kACgkQx/Fnbeot
-Ae/C3xAAo6I7z9xUYiq1c6fKMXuEECSyiU2lqFOm9dwOssNwO43zd+NKZ1CJWENn
-LeDLSsrLj43XYFoKoB7wCk6KnDccNELStOa1TRYVTHMwjw8ngCMxO5m8eO277WZY
-/2LhNHKd1YtEwPES4DzjGotvYNfKw67ZbEUP5uuoTDm/Acrxq9rQhEplKmtTiDOr
-nxUiOR9BUVgU6rVwDSIZIq1UHqkKUPrrq5DHuE5Ng0Zk6Ha+xcNy841cnkUubXsu
-Fe4nEBNbQ1rTF3/5Ucet3C+SNGy6dHtIiPCGeP2Cjc2ozIMolopDuK3ftAyJjrLz
-tBKTxlJ4M+rQCkQlcRwUibIdxJYYqD3/+P4aX/91pe5tjr7nZz10K5uW8SWSAENP
-WMIZxEySCEA2EFn2fuBF+DuBFZ9ryUCqPPUtVXY0I6QUFNG10Go7HqvTDcP434f8
-ktr/9Q2Sh5SQDVAMwKw2bMn0n+CaynOlZzdl4bNbNzGnyR4YmkTm773B4fYBe8sP
-btvxL9EDRFa7vyYZxxnjlI89KzBbaxTPwEkdjd15Xpp/LYCOE2OiqGHJQn6MG1/4
-2UTdqtE3fv4nMgatGrlSu8JI4n5+Sd0x3bQcXch8nMhWipC8bybnZGoBanc77Q2O
-cjbyAd7eLXrv/lrHiKFuZpUoPN+ilCf5OqpB3MEu8N2ISAqWbco=
-=4jcg
------END PGP SIGNATURE-----
-
---UQmGoB0P2dsTTWeItqoSdcNN5kTEH031O--
+  Maciej

@@ -1,16 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:56545 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993859AbdFPCznPpmgY (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Jun 2017 04:55:43 +0200
-Date: Fri, 16 Jun 2017 03:55:26 +0100
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH 0/5] MIPS: FP cleanup & no-FP support
-In-Reply-To: <20170605182131.16853-1-paul.burton@imgtec.com>
-Message-ID: <alpine.DEB.2.00.1706160348450.23046@tp.orcam.me.uk>
-References: <20170605182131.16853-1-paul.burton@imgtec.com>
+Received: from verein.lst.de ([213.95.11.211]:60875 "EHLO newverein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23993859AbdFPIjH2rEKU (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 16 Jun 2017 10:39:07 +0200
+Date: Fri, 16 Jun 2017 10:39:07 +0200
+From: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 33/44] openrisc: remove arch-specific dma_supported
+        implementation
+Message-ID: <20170616083907.GB10582@lst.de>
+References: <20170608132609.32662-1-hch@lst.de> <20170608132609.32662-34-hch@lst.de> <CAMuHMdUPeFJJtz8eJkQEAR-2w9oHt-fXeGHvvKFLfU2A4YyviQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUPeFJJtz8eJkQEAR-2w9oHt-fXeGHvvKFLfU2A4YyviQ@mail.gmail.com>
+Return-Path: <hch@lst.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,36 +22,16 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20170616025526.KprdH_32tYmrmR3P-6_ZOm_pqopKYuGWdmq5oi1R8fQ@z>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Christoph Hellwig <hch@lst.de>, the arch/x86 maintainers <x86@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, xen-devel@lists.xenproject.org, linux-c6x-dev@linux-c6x.org, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, openrisc@lists.librecores.org, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org, DRI Development <dri-devel@lists.freedesktop.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, iommu@lists.linux-foundation.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <20170616083907.P9NKQuHLRkJRt7WZEBSQ-tzUkrruMCk0DRD2-z5q41w@z>
 
-On Mon, 5 Jun 2017, Paul Burton wrote:
-
-> This series tidies up support for floating point a little, then
-> introduces support for disabling it via Kconfig. The end result is that
-> it becomes possible to compile a kernel which does not include any
-> support for userland which makes use of floating point instructions -
-> meaning that it never enables an FPU & does not include the FPU
-> emulator. The benefit of this is that if you know your userland code
-> will not use FP instructions then you can shrink the kernel by around
-> 65KiB.
+On Fri, Jun 09, 2017 at 02:20:42PM +0200, Geert Uytterhoeven wrote:
+> Hi Christoph,
 > 
-> Applies atop v4.12-rc4.
+> On Thu, Jun 8, 2017 at 3:25 PM, Christoph Hellwig <hch@lst.de> wrote:
+> > This implementation is simply bogus - hexagon only has a simple
 > 
-> Paul Burton (5):
->   MIPS: Remove unused R6000 support
->   MIPS: Move r4k FP code from r4k_switch.S to r4k_fpu.S
->   MIPS: Move r2300 FP code from r2300_switch.S to r2300_fpu.S
->   MIPS: Remove unused ST_OFF from r2300_switch.S
->   MIPS: Allow floating point support to be disabled
+> openrisc?
 
- Doesn't ptrace(2) require suitable updates for requests that deal with 
-the FP context?  Preferably along with the last change (or maybe ahead of 
-it) so that we don't have a kernel revision that presents rubbish to the 
-userland (of course tools like GDB will have to be updated accordingly to 
-cope, but that's out of scope for Linux itself).
-
- Also how about those prctl(2) calls that also operate on FP state?
-
-  Maciej
+Yeah.

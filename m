@@ -1,19 +1,14 @@
-Received: from gate.crashing.org ([63.228.1.57]:46410 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23994901AbdFQUux6PJVF (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 17 Jun 2017 22:50:53 +0200
-Message-ID: <1497732627.2897.128.camel@kernel.crashing.org>
-Subject: Re: [PATCH 42/44] powerpc/cell: use the dma_supported method for
- ops switching
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Date: Sun, 18 Jun 2017 06:50:27 +1000
-In-Reply-To: <20170616181059.19206-43-hch@lst.de>
-References: <20170616181059.19206-1-hch@lst.de>
-         <20170616181059.19206-43-hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-Path: <benh@kernel.crashing.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:27353 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23994901AbdFQUxwaVzdF (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 17 Jun 2017 22:53:52 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH v5 0/4] MIPS Boston support
+Date: Sat, 17 Jun 2017 13:52:45 -0700
+Message-ID: <20170617205249.1391-1-paul.burton@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,24 +18,55 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Christoph Hellwig <hch@lst.de>, x86@kernel.org, linux-arm-kernel@lists.infradead.org, xen-devel@lists.xenproject.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@linux-mips.org, openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org, iommu@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Message-ID: <20170617205027.KfNjJYG41KHmpBXBQMRz6LSNLz1yw5vmntdijUnxfaU@z>
+To: linux-mips@linux-mips.org
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20170617205245.mPuQF12iwCeizHZUZQZ_v8eWvtzqk7UOEtAZc5VymU0@z>
 
-On Fri, 2017-06-16 at 20:10 +0200, Christoph Hellwig wrote:
-> Besides removing the last instance of the set_dma_mask method this also
-> reduced the code duplication.
+This series introduces support for the MIPS Boston development board,
+allowing generic kernels to run on it. Typically a Boston board will be
+running the U-Boot bootloader & we make use of the Flattened Image Tree
+(FIT) image format for the kernel.
 
-What is your rationale here ? (I have missed patch 0 it seems).
+If physical Boston hardware is unavailable this series can be tested
+using QEMU built from the master branch (or v2.9 onwards). To do so,
+configure the kernel for the generic 64r6el_defconfig & run QEMU like
+so:
 
-dma_supported() was supposed to be pretty much a "const" function
-simply informing whether a given setup is possible. Having it perform
-an actual switch of ops seems to be pushing it...
+  $ make ARCH=mips 64r6el_defconfig
+  $ make ARCH=mips CROSS_COMPILE=my-toolchain-
+  $ qemu-system-mips64el -M boston \
+      -kernel arch/mips/boot/vmlinux.gz.itb \
+      serial stdio
 
-What if a driver wants to test various dma masks and then pick one ?
+Applies atop v4.12-rc5.
 
-Where does the API documents that if a driver calls dma_supported() it
-then *must* set the corresponding mask and use that ?
+Paul Burton (4):
+  dt-bindings: Document img,boston-clock binding
+  clk: boston: Add a driver for MIPS Boston board clocks
+  MIPS: DTS: img: Don't attempt to build-in all .dtb files
+  MIPS: generic: Support MIPS Boston development boards
 
-I don't like a function that is a "boolean query" like this one to have
-such a major side effect.
+ .../devicetree/bindings/clock/img,boston-clock.txt |  31 +++
+ MAINTAINERS                                        |  10 +
+ arch/mips/boot/dts/img/Makefile                    |   5 +-
+ arch/mips/boot/dts/img/boston.dts                  | 224 +++++++++++++++++++++
+ arch/mips/configs/generic/board-boston.config      |  48 +++++
+ arch/mips/generic/Kconfig                          |  12 ++
+ arch/mips/generic/vmlinux.its.S                    |  25 +++
+ drivers/clk/Kconfig                                |   1 +
+ drivers/clk/Makefile                               |   1 +
+ drivers/clk/imgtec/Kconfig                         |   9 +
+ drivers/clk/imgtec/Makefile                        |   1 +
+ drivers/clk/imgtec/clk-boston.c                    | 103 ++++++++++
+ include/dt-bindings/clock/boston-clock.h           |  14 ++
+ 13 files changed, 482 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/img,boston-clock.txt
+ create mode 100644 arch/mips/boot/dts/img/boston.dts
+ create mode 100644 arch/mips/configs/generic/board-boston.config
+ create mode 100644 drivers/clk/imgtec/Kconfig
+ create mode 100644 drivers/clk/imgtec/Makefile
+ create mode 100644 drivers/clk/imgtec/clk-boston.c
+ create mode 100644 include/dt-bindings/clock/boston-clock.h
+
+-- 
+2.13.1

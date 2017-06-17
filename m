@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:18383 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:60949 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23994901AbdFQT6l3QcRh (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 17 Jun 2017 21:58:41 +0200
+        with ESMTP id S23994904AbdFQT7BBEJsh (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 17 Jun 2017 21:59:01 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v5 2/4] PCI: xilinx: Unify INTx & MSI interrupt decode
-Date: Sat, 17 Jun 2017 12:57:39 -0700
-Message-ID: <20170617195741.12757-3-paul.burton@imgtec.com>
+Subject: [PATCH v5 3/4] PCI: xilinx: Don't enable config completion interrupts
+Date: Sat, 17 Jun 2017 12:57:40 -0700
+Message-ID: <20170617195741.12757-4-paul.burton@imgtec.com>
 In-Reply-To: <20170617195741.12757-1-paul.burton@imgtec.com>
 References: <20170617195741.12757-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,18 +22,14 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-pci@vger.kernel.org
 Cc: Bharat Kumar Gogada <bharatku@xilinx.com>, Ravikiran Gummaluri <rgummal@xilinx.com>, Bjorn Helgaas <bhelgaas@google.com>, Michal Simek <michal.simek@xilinx.com>, linux-mips@linux-mips.org, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20170617195739.kYqPHHeCiKGzZslHbA0hufYqdbhETtY1zAN-A3a4HQo@z>
+Message-ID: <20170617195740.FPKREAEpFVzhw6ejnS6hREUbfOM0FCFx9pfr512luq0@z>
 
-The INTx & MSI interrupt decode paths duplicated a fair bit of common
-functionality. They also strictly handled interrupts in order of INTx
-then MSI, so if both types of interrupt were to be asserted
-simultaneously and the MSI interrupt were first in the FIFO then the
-INTx code would read it & ignore it before the MSI code then had to read
-it again, wasting the original FIFO read.
+The Xilinx AXI bridge for PCI Express device provides interrupts
+indicating the completion of config space accesses. We have previously
+enabled/unmasked them but do nothing with them besides acknowledge them.
 
-Unify the INTx & MSI decode in order to reduce that duplication & allow
-a single FIFO read to be performed for each interrupt regardless of its
-type.
+Leave the interrupts masked in order to avoid servicing a large number
+of pointless interrupts during boot.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 Cc: Bharat Kumar Gogada <bharatku@xilinx.com>
@@ -48,86 +44,31 @@ Changes in v4: None
 Changes in v3: None
 Changes in v2: None
 
- drivers/pci/host/pcie-xilinx.c | 48 +++++++++++++-----------------------------
- 1 file changed, 15 insertions(+), 33 deletions(-)
+ drivers/pci/host/pcie-xilinx.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pci/host/pcie-xilinx.c b/drivers/pci/host/pcie-xilinx.c
-index 94c71fb91648..5436657d142d 100644
+index 5436657d142d..176ad1608d88 100644
 --- a/drivers/pci/host/pcie-xilinx.c
 +++ b/drivers/pci/host/pcie-xilinx.c
-@@ -384,7 +384,7 @@ static irqreturn_t xilinx_pcie_intr_handler(int irq, void *data)
- {
- 	struct xilinx_pcie_port *port = (struct xilinx_pcie_port *)data;
- 	struct device *dev = port->dev;
--	u32 val, mask, status, msi_data;
-+	u32 val, mask, status;
+@@ -60,6 +60,7 @@
+ #define XILINX_PCIE_INTR_MST_SLVERR	BIT(27)
+ #define XILINX_PCIE_INTR_MST_ERRP	BIT(28)
+ #define XILINX_PCIE_IMR_ALL_MASK	0x1FF30FED
++#define XILINX_PCIE_IMR_ENABLE_MASK	0x1FF30F0D
+ #define XILINX_PCIE_IDR_ALL_MASK	0xFFFFFFFF
  
- 	/* Read interrupt decode and mask registers */
- 	val = pcie_read(port, XILINX_PCIE_REG_IDR);
-@@ -424,8 +424,7 @@ static irqreturn_t xilinx_pcie_intr_handler(int irq, void *data)
- 		xilinx_pcie_clear_err_interrupts(port);
- 	}
+ /* Root Port Error FIFO Read Register definitions */
+@@ -553,8 +554,8 @@ static void xilinx_pcie_init_port(struct xilinx_pcie_port *port)
+ 			 XILINX_PCIE_IMR_ALL_MASK,
+ 		   XILINX_PCIE_REG_IDR);
  
--	if (status & XILINX_PCIE_INTR_INTX) {
--		/* INTx interrupt received */
-+	if (status & (XILINX_PCIE_INTR_INTX | XILINX_PCIE_INTR_MSI)) {
- 		val = pcie_read(port, XILINX_PCIE_REG_RPIFR1);
+-	/* Enable all interrupts */
+-	pcie_write(port, XILINX_PCIE_IMR_ALL_MASK, XILINX_PCIE_REG_IMR);
++	/* Enable all interrupts we handle */
++	pcie_write(port, XILINX_PCIE_IMR_ENABLE_MASK, XILINX_PCIE_REG_IMR);
  
- 		/* Check whether interrupt valid */
-@@ -434,41 +433,24 @@ static irqreturn_t xilinx_pcie_intr_handler(int irq, void *data)
- 			goto error;
- 		}
- 
--		if (!(val & XILINX_PCIE_RPIFR1_MSI_INTR)) {
--			/* Clear interrupt FIFO register 1 */
--			pcie_write(port, XILINX_PCIE_RPIFR1_ALL_MASK,
--				   XILINX_PCIE_REG_RPIFR1);
--
--			/* Handle INTx Interrupt */
-+		/* Decode the IRQ number */
-+		if (val & XILINX_PCIE_RPIFR1_MSI_INTR) {
-+			val = pcie_read(port, XILINX_PCIE_REG_RPIFR2) &
-+				XILINX_PCIE_RPIFR2_MSG_DATA;
-+		} else {
- 			val = ((val & XILINX_PCIE_RPIFR1_INTR_MASK) >>
- 				XILINX_PCIE_RPIFR1_INTR_SHIFT) + 1;
--			generic_handle_irq(irq_find_mapping(port->leg_domain,
--							    val));
-+			val = irq_find_mapping(port->leg_domain, val);
- 		}
--	}
- 
--	if (status & XILINX_PCIE_INTR_MSI) {
--		/* MSI Interrupt */
--		val = pcie_read(port, XILINX_PCIE_REG_RPIFR1);
-+		/* Clear interrupt FIFO register 1 */
-+		pcie_write(port, XILINX_PCIE_RPIFR1_ALL_MASK,
-+			   XILINX_PCIE_REG_RPIFR1);
- 
--		if (!(val & XILINX_PCIE_RPIFR1_INTR_VALID)) {
--			dev_warn(dev, "RP Intr FIFO1 read error\n");
--			goto error;
--		}
--
--		if (val & XILINX_PCIE_RPIFR1_MSI_INTR) {
--			msi_data = pcie_read(port, XILINX_PCIE_REG_RPIFR2) &
--				   XILINX_PCIE_RPIFR2_MSG_DATA;
--
--			/* Clear interrupt FIFO register 1 */
--			pcie_write(port, XILINX_PCIE_RPIFR1_ALL_MASK,
--				   XILINX_PCIE_REG_RPIFR1);
--
--			if (IS_ENABLED(CONFIG_PCI_MSI)) {
--				/* Handle MSI Interrupt */
--				generic_handle_irq(msi_data);
--			}
--		}
-+		/* Handle the interrupt */
-+		if (IS_ENABLED(CONFIG_PCI_MSI) ||
-+		    !(val & XILINX_PCIE_RPIFR1_MSI_INTR))
-+			generic_handle_irq(val);
- 	}
- 
- 	if (status & XILINX_PCIE_INTR_SLV_UNSUPP)
+ 	/* Enable the Bridge enable bit */
+ 	pcie_write(port, pcie_read(port, XILINX_PCIE_REG_RPSC) |
 -- 
 2.13.1

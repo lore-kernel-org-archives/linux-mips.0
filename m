@@ -1,19 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:37715 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:29724 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991955AbdFTIEXlHCZt (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Jun 2017 10:04:23 +0200
-Subject: Re: [PATCH 3/8] MIPS: R6: Fix PREF instruction usage by memcpy for
- MIPS R6
-References: <1497887415-13825-1-git-send-email-aleksandar.markovic@rt-rk.com>
- <1497887415-13825-4-git-send-email-aleksandar.markovic@rt-rk.com>
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <a5842e4b-a75b-2dde-d835-6a488790dbda@imgtec.com>
-Date: Tue, 20 Jun 2017 09:04:16 +0100
+        with ESMTP id S23992078AbdFTJ6Si7Zxm (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Jun 2017 11:58:18 +0200
+From: James Cowgill <James.Cowgill@imgtec.com>
+Subject: [PATCH v2] KVM: MIPS: Fix maybe-uninitialized build failure
+Date: Tue, 20 Jun 2017 10:57:51 +0100
+Message-ID: <20170620095751.5443-1-James.Cowgill@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <1497887415-13825-4-git-send-email-aleksandar.markovic@rt-rk.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@imgtec.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-Path: <James.Cowgill@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,54 +19,62 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Aleksandar Markovic <aleksandar.markovic@rt-rk.com>, linux-mips@linux-mips.org, James.Hogan@imgtec.com, Paul.Burton@imgtec.com
-Cc: Raghu.Gandham@imgtec.com, Leonid.Yegoshin@imgtec.com, Douglas.Leung@imgtec.com, Petar.Jovanovic@imgtec.com, Miodrag.Dinic@imgtec.com, Goran.Ferenc@imgtec.com
-Message-ID: <20170620080416.S9E-IOkt8Ep4HwZOEtAed0AQdlq-hIQXIxHXNBXoOE4@z>
+To: James Hogan <james.hogan@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, kvm@vger.kernel.org, James Cowgill <James.Cowgill@imgtec.com>
+Message-ID: <20170620095751.4sc9x8dYuda5wDvGZBRRRaw-lAEuG5sezTOh2vgtvIA@z>
 
-Hi Aleksandar,
+This commit fixes a "maybe-uninitialized" build failure in
+arch/mips/kvm/tlb.c when KVM, DYNAMIC_DEBUG and JUMP_LABEL are all
+enabled. The failure is:
 
-Wouldn't the more correct thing be to modify the memcpy loop such that 
-prefetches do not fetch the larger offset? Just turning off prefetch 
-altogether in memcpy for r6 seems like a heavy hammer to me...
+In file included from ./include/linux/printk.h:329:0,
+                 from ./include/linux/kernel.h:13,
+                 from ./include/asm-generic/bug.h:15,
+                 from ./arch/mips/include/asm/bug.h:41,
+                 from ./include/linux/bug.h:4,
+                 from ./include/linux/thread_info.h:11,
+                 from ./include/asm-generic/current.h:4,
+                 from ./arch/mips/include/generated/asm/current.h:1,
+                 from ./include/linux/sched.h:11,
+                 from arch/mips/kvm/tlb.c:13:
+arch/mips/kvm/tlb.c: In function ‘kvm_mips_host_tlb_inv’:
+./include/linux/dynamic_debug.h:126:3: error: ‘idx_kernel’ may be used uninitialized in this function [-Werror=maybe-uninitialized]
+   __dynamic_pr_debug(&descriptor, pr_fmt(fmt), \
+   ^~~~~~~~~~~~~~~~~~
+arch/mips/kvm/tlb.c:169:16: note: ‘idx_kernel’ was declared here
+  int idx_user, idx_kernel;
+                ^~~~~~~~~~
 
-Thanks,
+There is a similar error relating to "idx_user". Both errors were
+observed with GCC 6.
 
-Matt
+As far as I can tell, it is impossible for either idx_user or idx_kernel
+to be uninitialized when they are later read in the calls to kvm_debug,
+but to satisfy the compiler, add zero initializers to both variables.
 
+Signed-off-by: James Cowgill <James.Cowgill@imgtec.com>
+Fixes: 57e3869cfaae ("KVM: MIPS/TLB: Generalise host TLB invalidate to kernel ASID")
+Cc: <stable@vger.kernel.org> # 4.11+
+---
+ arch/mips/kvm/tlb.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-On 19/06/17 16:50, Aleksandar Markovic wrote:
-> From: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
->
-> Disable usage of PREF instruction usage by memcpy for MIPS R6.
->
-> MIPS R6 redefines PREF instruction with smaller offset than
-> ordinary MIPS. However, the memcpy code uses PREF instruction
-> with offsets bigger than +-256 bytes.
->
-> Malta kernels already disable usage of PREF for memcpy.
->
-> This was found during adaptation of MIPS R6 for virtual board
-> used by Android emulator.
->
-> Signed-off-by: Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>
-> Signed-off-by: Miodrag Dinic <miodrag.dinic@imgtec.com>
-> Signed-off-by: Goran Ferenc <goran.ferenc@imgtec.com>
-> Signed-off-by: Aleksandar Markovic <aleksandar.markovic@imgtech.com>
-> ---
->   arch/mips/lib/memcpy.S | 3 +++
->   1 file changed, 3 insertions(+)
->
-> diff --git a/arch/mips/lib/memcpy.S b/arch/mips/lib/memcpy.S
-> index 3114a2e..03e3304 100644
-> --- a/arch/mips/lib/memcpy.S
-> +++ b/arch/mips/lib/memcpy.S
-> @@ -28,6 +28,9 @@
->   #ifdef CONFIG_MIPS_MALTA
->   #undef CONFIG_CPU_HAS_PREFETCH
->   #endif
-> +#ifdef CONFIG_CPU_MIPSR6
-> +#undef CONFIG_CPU_HAS_PREFETCH
-> +#endif
->   
->   #include <asm/asm.h>
->   #include <asm/asm-offsets.h>
+diff --git a/arch/mips/kvm/tlb.c b/arch/mips/kvm/tlb.c
+index 7c6336dd2638..7cd92166a0b9 100644
+--- a/arch/mips/kvm/tlb.c
++++ b/arch/mips/kvm/tlb.c
+@@ -166,7 +166,11 @@ static int _kvm_mips_host_tlb_inv(unsigned long entryhi)
+ int kvm_mips_host_tlb_inv(struct kvm_vcpu *vcpu, unsigned long va,
+ 			  bool user, bool kernel)
+ {
+-	int idx_user, idx_kernel;
++	/*
++	 * Initialize idx_user and idx_kernel to workaround bogus
++	 * maybe-initialized warning when using GCC 6.
++	 */
++	int idx_user = 0, idx_kernel = 0;
+ 	unsigned long flags, old_entryhi;
+ 
+ 	local_irq_save(flags);
+-- 
+2.11.0

@@ -1,17 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:5766 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23991978AbdFVVgdaV2Ua (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 22 Jun 2017 23:36:33 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH v5 1/4] dt-bindings: Document img,boston-clock binding
-Date: Thu, 22 Jun 2017 14:36:24 -0700
-Message-ID: <13746237.zQXctdWVES@np-p-burton>
-In-Reply-To: <20170622205655.2sp2v3hva3jtsuay@rob-hp-laptop>
-References: <20170617205249.1391-1-paul.burton@imgtec.com> <20170617205249.1391-2-paul.burton@imgtec.com> <20170622205655.2sp2v3hva3jtsuay@rob-hp-laptop>
+Received: from mail.kernel.org ([198.145.29.99]:49318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23992186AbdFVWKz3nata (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 23 Jun 2017 00:10:55 +0200
+Date: Thu, 22 Jun 2017 18:10:50 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH] kernel/extable.c: mark core_kernel_text notrace
+Message-ID: <20170622181050.220c23a3@gandalf.local.home>
+In-Reply-To: <1498028607-6765-1-git-send-email-marcin.nowakowski@imgtec.com>
+References: <1498028607-6765-1-git-send-email-marcin.nowakowski@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart6873910.WAOfOn81ZG";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-Path: <SRS0=sOnO=53=goodmis.org=rostedt@kernel.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,84 +21,70 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rob Herring <robh@kernel.org>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Frank Rowand <frowand.list@gmail.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, devicetree@vger.kernel.org, linux-clk@vger.kernel.org
-Message-ID: <20170622213624.dPbXvYLBvS08LgcQ4O5OUwN73s6j_PO0hoYkuAlOoYw@z>
+To: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, Thomas Meyer <thomas@m3y3r.de>, Ingo Molnar <mingo@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Paul Gortmaker <paul.gortmaker@windriver.com>, Masami Hiramatsu <mhiramat@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20170622221050.X5zxwaEoduFoVPu41LSB-MKPflgjZAfnrjspE7Sq0f4@z>
 
---nextPart6873910.WAOfOn81ZG
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+On Wed, 21 Jun 2017 09:03:26 +0200
+Marcin Nowakowski <marcin.nowakowski@imgtec.com> wrote:
 
-Hi Rob,
-
-On Thursday, 22 June 2017 13:56:55 PDT Rob Herring wrote:
-> On Sat, Jun 17, 2017 at 01:52:46PM -0700, Paul Burton wrote:
-> > Add device tree binding documentation for the clocks provided by the
-> > MIPS Boston development board from Imagination Technologies, and a
-> > header file describing the available clocks for use by device trees &
-> > driver.
-> > 
-> > Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-> > Cc: Frank Rowand <frowand.list@gmail.com>
-> > Cc: Michael Turquette <mturquette@baylibre.com>
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Stephen Boyd <sboyd@codeaurora.org>
-> > Cc: devicetree@vger.kernel.org
-> > Cc: linux-clk@vger.kernel.org
-> > Cc: linux-mips@linux-mips.org
-> > 
-> > ---
-> > 
-> > Changes in v5: None
+> core_kernel_text is used by MIPS in its function graph trace processing,
+> so having this method traced leads to an infinite set of recursive calls
+> such as:
 > 
-> I reviewed v4. Please add acks/reviewed-by when posting new versions.
-
-Apologies, this one slipped by unnoticed.
-
-Thanks,
-    Paul
-
+> [    2.972075] Call Trace:
+> [    2.972111]
+> [    2.976731] [<80506584>] ftrace_return_to_handler+0x50/0x128
+> [    2.983379] [<8045478c>] core_kernel_text+0x10/0x1b8
+> [    2.989146] [<804119b8>] prepare_ftrace_return+0x6c/0x114
+> [    2.995402] [<80411b2c>] ftrace_graph_caller+0x20/0x44
+> [    3.001362] [<80411b60>] return_to_handler+0x10/0x30
+> [    3.007159] [<80411b50>] return_to_handler+0x0/0x30
+> [    3.012827] [<80411b50>] return_to_handler+0x0/0x30
+> [    3.018621] [<804e589c>] ftrace_ops_no_ops+0x114/0x1bc
+> [    3.024602] [<8045478c>] core_kernel_text+0x10/0x1b8
+> [    3.030377] [<8045478c>] core_kernel_text+0x10/0x1b8
+> [    3.036140] [<8045478c>] core_kernel_text+0x10/0x1b8
+> [    3.041915] [<804e589c>] ftrace_ops_no_ops+0x114/0x1bc
+> [    3.047923] [<8045478c>] core_kernel_text+0x10/0x1b8
+> [    3.053682] [<804119b8>] prepare_ftrace_return+0x6c/0x114
+> [    3.059938] [<80411b2c>] ftrace_graph_caller+0x20/0x44
+> (...)
 > 
-> > Changes in v4:
-> > - Move img,boston-clock node under platform register syscon node.
-> > - Add MAINTAINERS entry.
-> > 
-> > Changes in v3: None
-> > 
-> > Changes in v2:
-> > - Add BOSTON_CLK_INPUT to expose the input clock.
-> > 
-> >  .../devicetree/bindings/clock/img,boston-clock.txt | 31
-> >  ++++++++++++++++++++++ MAINTAINERS                                      
-> >   |  7 +++++
-> >  include/dt-bindings/clock/boston-clock.h           | 14 ++++++++++
-> >  3 files changed, 52 insertions(+)
-> >  create mode 100644
-> >  Documentation/devicetree/bindings/clock/img,boston-clock.txt create mode
-> >  100644 include/dt-bindings/clock/boston-clock.h
+> Mark the function notrace to avoid it being traced.
+> 
+> Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+> ---
+>  kernel/extable.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/extable.c b/kernel/extable.c
+> index 2676d7f..4efaf26 100644
+> --- a/kernel/extable.c
+> +++ b/kernel/extable.c
+> @@ -70,7 +70,7 @@ static inline int init_kernel_text(unsigned long addr)
+>  	return 0;
+>  }
+>  
+> -int core_kernel_text(unsigned long addr)
+> +int notrace core_kernel_text(unsigned long addr)
+
+Is mips the only one with this issue. I hate adding notrace to general
+functions if it is only an issue with a single arch.
+
+Can we add a: mips_notrace? where we have:
+
+#ifdef CONFIG_MIPS
+# define mips_notrace notrace
+#else 
+# define mips_notrace
+#endif
+
+??
+
+-- Steve
 
 
---nextPart6873910.WAOfOn81ZG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAllMOFgACgkQgiDZ+mk8
-HGVzEw//Yorvn4hI/K3R7irnxQ7EzT2cMjBI/+Gx1feWA12CfYongJuZJlRC+8bd
-uFM8Bx4WF54mx1FUgv5xr+1/lYDXn6YgwFLaaLvUQr4v450/Lg1ZeB9mG0CH2B7f
-OJdwqAi7anZbElaH8hohZ1uCKyYUKgKO5EYKqtosBkwbx7OzW3qbqY7ow9+hVoSm
-maTD8GQyrGyXwj/pKo0JXzDdTb9xgvp0JTy5O4Vinp7GrTo+IDRhnR2pjMtCxpj2
-hfeOjQ6Kb6aFNFQQqNoVb+GaHEaaM6+9NNjpTF8+bxdyEGldWwKxIW8ITD+mJ6Nh
-PTS90uGDNHioLhdSr5iISy6KYvEMu7WopxJlZV5hEIN5IR01ZOCGobrXtv4I1WLK
-ZdU682vcRFl/MVMFT93qEcyo66WopmZ5KQ2nbuqTfbsixSdsI/qjyFqImsJswn5v
-/o9JWfAeN56WaWW+wCV4O0ou87wevO4uVTKe6/7oNS/xfRi06uUdGyYtgneNspwQ
-vPDMYxfs6HodpVrAP7Di3bSMe6b6uXzoVMI/77j80dIcN1XoHn9TLKPr32wKd3Gp
-faZf6fEPtxIGfP8Y50ILZ7lyQ0x6kzyn4E+Q4CHteevGQltxzWe7r4RO+qQDVARc
-9Wg/HiFYfbCb2DxoFV/HJPeFET/LtZY1rUfeSYWfLTCF3P9ok9g=
-=B9d8
------END PGP SIGNATURE-----
-
---nextPart6873910.WAOfOn81ZG--
+>  {
+>  	if (addr >= (unsigned long)_stext &&
+>  	    addr < (unsigned long)_etext)

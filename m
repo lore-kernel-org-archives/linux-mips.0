@@ -1,13 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:64524 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:43724 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23990506AbdFUHDhqH1KY (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 21 Jun 2017 09:03:37 +0200
+        with ESMTP id S23990519AbdFVHVKIBAki (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 22 Jun 2017 09:21:10 +0200
+Subject: Re: [PATCH v2 15/17] MIPS: JZ4770: Workaround for corrupted DMA
+ transfers
+References: <20170607200439.24450-2-paul@crapouillou.net>
+ <20170620151855.19399-1-paul@crapouillou.net>
+ <20170620151855.19399-15-paul@crapouillou.net>
 From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Subject: [PATCH] kernel/extable.c: mark core_kernel_text notrace
-Date: Wed, 21 Jun 2017 09:03:26 +0200
-Message-ID: <1498028607-6765-1-git-send-email-marcin.nowakowski@imgtec.com>
+Message-ID: <ca37b50d-951c-2264-fa37-cca7149ed4ba@imgtec.com>
+Date: Thu, 22 Jun 2017 09:21:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20170620151855.19399-15-paul@crapouillou.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Return-Path: <Marcin.Nowakowski@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -18,52 +25,94 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andrew Morton <akpm@linux-foundation.org>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, Thomas Meyer <thomas@m3y3r.de>, Ingo Molnar <mingo@kernel.org>, "Steven Rostedt (VMware)" <rostedt@goodmis.org>, Daniel Borkmann <daniel@iogearbox.net>, Paul Gortmaker <paul.gortmaker@windriver.com>, Masami Hiramatsu <mhiramat@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org, Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Message-ID: <20170621070326.eoDG1PHToELCa4FZnpI90LjlUhYtlsk-flUS23G8ix4@z>
+To: Paul Cercueil <paul@crapouillou.net>, Ralf Baechle <ralf@linux-mips.org>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, Rob Herring <robh+dt@kernel.org>
+Cc: Paul Burton <paul.burton@imgtec.com>, Maarten ter Huurne <maarten@treewalker.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linux-clk@vger.kernel.org
+Message-ID: <20170622072102.SP2HytITq1IYrAaFsw5KQF6Vlnz2pZG1mQBKeNHDObQ@z>
 
-core_kernel_text is used by MIPS in its function graph trace processing,
-so having this method traced leads to an infinite set of recursive calls
-such as:
+Hi Paul, Maarten,
 
-[    2.972075] Call Trace:
-[    2.972111]
-[    2.976731] [<80506584>] ftrace_return_to_handler+0x50/0x128
-[    2.983379] [<8045478c>] core_kernel_text+0x10/0x1b8
-[    2.989146] [<804119b8>] prepare_ftrace_return+0x6c/0x114
-[    2.995402] [<80411b2c>] ftrace_graph_caller+0x20/0x44
-[    3.001362] [<80411b60>] return_to_handler+0x10/0x30
-[    3.007159] [<80411b50>] return_to_handler+0x0/0x30
-[    3.012827] [<80411b50>] return_to_handler+0x0/0x30
-[    3.018621] [<804e589c>] ftrace_ops_no_ops+0x114/0x1bc
-[    3.024602] [<8045478c>] core_kernel_text+0x10/0x1b8
-[    3.030377] [<8045478c>] core_kernel_text+0x10/0x1b8
-[    3.036140] [<8045478c>] core_kernel_text+0x10/0x1b8
-[    3.041915] [<804e589c>] ftrace_ops_no_ops+0x114/0x1bc
-[    3.047923] [<8045478c>] core_kernel_text+0x10/0x1b8
-[    3.053682] [<804119b8>] prepare_ftrace_return+0x6c/0x114
-[    3.059938] [<80411b2c>] ftrace_graph_caller+0x20/0x44
-(...)
+On 20.06.2017 17:18, Paul Cercueil wrote:
+> From: Maarten ter Huurne <maarten@treewalker.org>
+> 
+> We have seen MMC DMA transfers read corrupted data from SDRAM when
+> a burst interval ends at physical address 0x10000000. To avoid this
+> problem, we remove the final page of low memory from the memory map.
+> 
+> Signed-off-by: Maarten ter Huurne <maarten@treewalker.org>
+> ---
+>   arch/mips/jz4740/setup.c | 24 ++++++++++++++++++++++++
+>   arch/mips/kernel/setup.c |  8 ++++++++
+>   2 files changed, 32 insertions(+)
+> 
+>   v2: No change
+> 
+> diff --git a/arch/mips/jz4740/setup.c b/arch/mips/jz4740/setup.c
+> index afd84ee966e8..6948b133a15d 100644
+> --- a/arch/mips/jz4740/setup.c
+> +++ b/arch/mips/jz4740/setup.c
+> @@ -23,6 +23,7 @@
+>   
+>   #include <asm/bootinfo.h>
+>   #include <asm/mips_machine.h>
+> +#include <asm/page.h>
+>   #include <asm/prom.h>
+>   
+>   #include <asm/mach-jz4740/base.h>
+> @@ -102,6 +103,29 @@ void __init arch_init_irq(void)
+>   	irqchip_init();
+>   }
+>   
+> +/*
+> + * We have seen MMC DMA transfers read corrupted data from SDRAM when a burst
+> + * interval ends at physical address 0x10000000. To avoid this problem, we
+> + * remove the final page of low memory from the memory map.
+> + */
+> +void __init jz4770_reserve_unsafe_for_dma(void)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < boot_mem_map.nr_map; i++) {
+> +		struct boot_mem_map_entry *entry = boot_mem_map.map + i;
+> +
+> +		if (entry->type != BOOT_MEM_RAM)
+> +			continue;
+> +
+> +		if (entry->addr + entry->size != 0x10000000)
+> +			continue;
+> +
+> +		entry->size -= PAGE_SIZE;
+> +		break;
+> +	}
+> +}
+> +
+>   static int __init jz4740_machine_setup(void)
+>   {
+>   	mips_machine_setup();
+> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+> index 89785600fde4..cccfd7ba89fe 100644
+> --- a/arch/mips/kernel/setup.c
+> +++ b/arch/mips/kernel/setup.c
+> @@ -838,6 +838,14 @@ static void __init arch_mem_init(char **cmdline_p)
+>   
+>   	parse_early_param();
+>   
+> +#ifdef CONFIG_MACH_JZ4770
+> +	if (current_cpu_type() == CPU_JZRISC &&
+> +				mips_machtype == MACH_INGENIC_JZ4770) {
+> +		extern void __init jz4770_reserve_unsafe_for_dma(void);
+> +		jz4770_reserve_unsafe_for_dma();
+> +	}
+> +#endif
+> +
 
-Mark the function notrace to avoid it being traced.
+This part doesn't look good in the platform-agnostic code ... is there a 
+reason why you wouldn't do that from within plat_mem_setup()?
 
-Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
----
- kernel/extable.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/extable.c b/kernel/extable.c
-index 2676d7f..4efaf26 100644
---- a/kernel/extable.c
-+++ b/kernel/extable.c
-@@ -70,7 +70,7 @@ static inline int init_kernel_text(unsigned long addr)
- 	return 0;
- }
- 
--int core_kernel_text(unsigned long addr)
-+int notrace core_kernel_text(unsigned long addr)
- {
- 	if (addr >= (unsigned long)_stext &&
- 	    addr < (unsigned long)_etext)
--- 
-2.7.4
+>   	if (usermem) {
+>   		pr_info("User-defined physical RAM map:\n");
+>   		print_memory_map();
+> 
+
+
+Marcin

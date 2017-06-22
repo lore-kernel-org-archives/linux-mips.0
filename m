@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:45578 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:5766 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23990686AbdFVMcGKxdq9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 22 Jun 2017 14:32:06 +0200
-Date: Thu, 22 Jun 2017 13:31:59 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH] MIPS: Fix a long-standing mistake in mips_atomic_set()
-Message-ID: <20170622123159.GA31455@jhogan-linux.le.imgtec.org>
-References: <1498128345-6827-1-git-send-email-chenhc@lemote.com>
+        by eddie.linux-mips.org with ESMTP id S23991978AbdFVVgdaV2Ua (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 22 Jun 2017 23:36:33 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH v5 1/4] dt-bindings: Document img,boston-clock binding
+Date: Thu, 22 Jun 2017 14:36:24 -0700
+Message-ID: <13746237.zQXctdWVES@np-p-burton>
+In-Reply-To: <20170622205655.2sp2v3hva3jtsuay@rob-hp-laptop>
+References: <20170617205249.1391-1-paul.burton@imgtec.com> <20170617205249.1391-2-paul.burton@imgtec.com> <20170622205655.2sp2v3hva3jtsuay@rob-hp-laptop>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="J/dobhs11T7y2rNN"
-Content-Disposition: inline
-In-Reply-To: <1498128345-6827-1-git-send-email-chenhc@lemote.com>
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: multipart/signed; boundary="nextPart6873910.WAOfOn81ZG";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,80 +21,84 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Huacai Chen <chenhc@lemote.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, John Crispin <john@phrozen.org>, "Steven J . Hill" <Steven.Hill@cavium.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, stable@vger.kernel.org
-Message-ID: <20170622123159.dzhSzHS6tE5yn42WeCo0LJL_lA3bEhxYibUEvHGhUdc@z>
+To: Rob Herring <robh@kernel.org>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Frank Rowand <frowand.list@gmail.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>, devicetree@vger.kernel.org, linux-clk@vger.kernel.org
+Message-ID: <20170622213624.dPbXvYLBvS08LgcQ4O5OUwN73s6j_PO0hoYkuAlOoYw@z>
 
---J/dobhs11T7y2rNN
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+--nextPart6873910.WAOfOn81ZG
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Hi Huacai,
+Hi Rob,
 
-On Thu, Jun 22, 2017 at 06:45:45PM +0800, Huacai Chen wrote:
-> This mistake comes from the commit f1e39a4a616cd99 ("MIPS: Rewrite
-> sysmips(MIPS_ATOMIC_SET, ...) in C with inline assembler"). In the
-> common case 'bnez' should be 'beqz' (as same as older kernels before
-> 2.6.32), otherwise this syscall may cause an endless loop.
->=20
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Huacai Chen <chenhc@lemote.com>
+On Thursday, 22 June 2017 13:56:55 PDT Rob Herring wrote:
+> On Sat, Jun 17, 2017 at 01:52:46PM -0700, Paul Burton wrote:
+> > Add device tree binding documentation for the clocks provided by the
+> > MIPS Boston development board from Imagination Technologies, and a
+> > header file describing the available clocks for use by device trees &
+> > driver.
+> > 
+> > Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> > Cc: Frank Rowand <frowand.list@gmail.com>
+> > Cc: Michael Turquette <mturquette@baylibre.com>
+> > Cc: Ralf Baechle <ralf@linux-mips.org>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: Stephen Boyd <sboyd@codeaurora.org>
+> > Cc: devicetree@vger.kernel.org
+> > Cc: linux-clk@vger.kernel.org
+> > Cc: linux-mips@linux-mips.org
+> > 
+> > ---
+> > 
+> > Changes in v5: None
+> 
+> I reviewed v4. Please add acks/reviewed-by when posting new versions.
 
-Thats a coincidence. 8 years its been broken and I submitted an
-identical patch only a few weeks ago, along with some other related
-fixes:
+Apologies, this one slipped by unnoticed.
 
-https://patchwork.linux-mips.org/project/linux-mips/list/?series=3D313&stat=
-e=3D*
+Thanks,
+    Paul
 
-Cheers
-James
+> 
+> > Changes in v4:
+> > - Move img,boston-clock node under platform register syscon node.
+> > - Add MAINTAINERS entry.
+> > 
+> > Changes in v3: None
+> > 
+> > Changes in v2:
+> > - Add BOSTON_CLK_INPUT to expose the input clock.
+> > 
+> >  .../devicetree/bindings/clock/img,boston-clock.txt | 31
+> >  ++++++++++++++++++++++ MAINTAINERS                                      
+> >   |  7 +++++
+> >  include/dt-bindings/clock/boston-clock.h           | 14 ++++++++++
+> >  3 files changed, 52 insertions(+)
+> >  create mode 100644
+> >  Documentation/devicetree/bindings/clock/img,boston-clock.txt create mode
+> >  100644 include/dt-bindings/clock/boston-clock.h
 
-> ---
->  arch/mips/kernel/syscall.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/mips/kernel/syscall.c b/arch/mips/kernel/syscall.c
-> index 1dfa7f5..95e1b30 100644
-> --- a/arch/mips/kernel/syscall.c
-> +++ b/arch/mips/kernel/syscall.c
-> @@ -134,7 +134,7 @@ static inline int mips_atomic_set(unsigned long addr,=
- unsigned long new)
->  		"1:	ll	%[old], (%[addr])			\n"
->  		"	move	%[tmp], %[new]				\n"
->  		"2:	sc	%[tmp], (%[addr])			\n"
-> -		"	bnez	%[tmp], 4f				\n"
-> +		"	beqz	%[tmp], 4f				\n"
->  		"3:							\n"
->  		"	.insn						\n"
->  		"	.subsection 2					\n"
-> --=20
-> 2.7.0
->=20
->=20
->=20
->=20
 
---J/dobhs11T7y2rNN
+--nextPart6873910.WAOfOn81ZG
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAllLuLUACgkQbAtpk944
-dnpATxAAq2eDkeuNDyPukE80pkgm3AewioKAK2lMzCvOSDWMao7iK0fd6jlmD643
-HyvI0IQFKqdGTLcs4gpZtnMqXaGlKZHMQE4ug/P5EXh6ZsVEJKtbAzPsnRyslEH8
-zy8kjJsPFxR2s0SKtEINssbtVIbmGxZKxzFEe9XhzEe5ykmi0cLXzOOTU0zc4p49
-c9Kc55XJdLQxv7hsazJMl31OLsYsnJq4WLXo+RIVSZK9CIxqZZUjovcsXT17B3ri
-zmhGGRepbW+U5Li2X6gBbi5FdskYYVzmE5GJyjrI1tigj6F3imncVLKLqX+PACGt
-ROE4D1mrg7kflYC1xrVe4LoRTc2/Pk0kyjPkjeaDo0J80PU35hul78z0JoARgCQd
-Cz31QtNfySh93S0uBhjXtTNzvDaRXNCTR2YVXgi7WgfYmLwCFUvuFCFRBc1kIZBn
-oWrc5kbfq2fofm+S2v7vXqbLoXb0eWO4LomGwzPHmidXMmBiZKj0PFiW87kChQeP
-H2ljEt4v6D9K3z41yBJbeELqksgvjMZHAIa4fMc3gfPfOLz3y7bmt2XWGWlDJWDA
-dx41CKa9v9rpZpWWtaUcLouQEucckUHNps7KMXAYOIjd7oU1vMokZ8xRfvad4oa+
-7zQ38/3O7FDd2rzJHQmI6yc4Bo8A1ySbEMDZSXc/zw6U6yMaE7U=
-=rpRM
+iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAllMOFgACgkQgiDZ+mk8
+HGVzEw//Yorvn4hI/K3R7irnxQ7EzT2cMjBI/+Gx1feWA12CfYongJuZJlRC+8bd
+uFM8Bx4WF54mx1FUgv5xr+1/lYDXn6YgwFLaaLvUQr4v450/Lg1ZeB9mG0CH2B7f
+OJdwqAi7anZbElaH8hohZ1uCKyYUKgKO5EYKqtosBkwbx7OzW3qbqY7ow9+hVoSm
+maTD8GQyrGyXwj/pKo0JXzDdTb9xgvp0JTy5O4Vinp7GrTo+IDRhnR2pjMtCxpj2
+hfeOjQ6Kb6aFNFQQqNoVb+GaHEaaM6+9NNjpTF8+bxdyEGldWwKxIW8ITD+mJ6Nh
+PTS90uGDNHioLhdSr5iISy6KYvEMu7WopxJlZV5hEIN5IR01ZOCGobrXtv4I1WLK
+ZdU682vcRFl/MVMFT93qEcyo66WopmZ5KQ2nbuqTfbsixSdsI/qjyFqImsJswn5v
+/o9JWfAeN56WaWW+wCV4O0ou87wevO4uVTKe6/7oNS/xfRi06uUdGyYtgneNspwQ
+vPDMYxfs6HodpVrAP7Di3bSMe6b6uXzoVMI/77j80dIcN1XoHn9TLKPr32wKd3Gp
+faZf6fEPtxIGfP8Y50ILZ7lyQ0x6kzyn4E+Q4CHteevGQltxzWe7r4RO+qQDVARc
+9Wg/HiFYfbCb2DxoFV/HJPeFET/LtZY1rUfeSYWfLTCF3P9ok9g=
+=B9d8
 -----END PGP SIGNATURE-----
 
---J/dobhs11T7y2rNN--
+--nextPart6873910.WAOfOn81ZG--

@@ -1,17 +1,20 @@
-Received: from mail.kernel.org ([198.145.29.99]:49318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992186AbdFVWKz3nata (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 23 Jun 2017 00:10:55 +0200
-Date: Thu, 22 Jun 2017 18:10:50 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH] kernel/extable.c: mark core_kernel_text notrace
-Message-ID: <20170622181050.220c23a3@gandalf.local.home>
-In-Reply-To: <1498028607-6765-1-git-send-email-marcin.nowakowski@imgtec.com>
-References: <1498028607-6765-1-git-send-email-marcin.nowakowski@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:54589 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992974AbdFWOzBkcuZp (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 23 Jun 2017 16:55:01 +0200
+Date: Fri, 23 Jun 2017 15:54:53 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH V7 9/9] MIPS: Loongson: Introduce and use
+ LOONGSON_LLSC_WAR
+Message-ID: <20170623145453.GB31455@jhogan-linux.le.imgtec.org>
+References: <1498144016-9111-1-git-send-email-chenhc@lemote.com>
+ <1498144016-9111-10-git-send-email-chenhc@lemote.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-Path: <SRS0=sOnO=53=goodmis.org=rostedt@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="eAbsdosE1cNLO4uF"
+Content-Disposition: inline
+In-Reply-To: <1498144016-9111-10-git-send-email-chenhc@lemote.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,70 +24,67 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, Thomas Meyer <thomas@m3y3r.de>, Ingo Molnar <mingo@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Paul Gortmaker <paul.gortmaker@windriver.com>, Masami Hiramatsu <mhiramat@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20170622221050.X5zxwaEoduFoVPu41LSB-MKPflgjZAfnrjspE7Sq0f4@z>
+To: Huacai Chen <chenhc@lemote.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, John Crispin <john@phrozen.org>, "Steven J . Hill" <Steven.Hill@cavium.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>
+Message-ID: <20170623145453.ekikPKlDkWu_JX2h31LIfm-qXxHVW-BWELKlntumlpw@z>
 
-On Wed, 21 Jun 2017 09:03:26 +0200
-Marcin Nowakowski <marcin.nowakowski@imgtec.com> wrote:
+--eAbsdosE1cNLO4uF
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-> core_kernel_text is used by MIPS in its function graph trace processing,
-> so having this method traced leads to an infinite set of recursive calls
-> such as:
-> 
-> [    2.972075] Call Trace:
-> [    2.972111]
-> [    2.976731] [<80506584>] ftrace_return_to_handler+0x50/0x128
-> [    2.983379] [<8045478c>] core_kernel_text+0x10/0x1b8
-> [    2.989146] [<804119b8>] prepare_ftrace_return+0x6c/0x114
-> [    2.995402] [<80411b2c>] ftrace_graph_caller+0x20/0x44
-> [    3.001362] [<80411b60>] return_to_handler+0x10/0x30
-> [    3.007159] [<80411b50>] return_to_handler+0x0/0x30
-> [    3.012827] [<80411b50>] return_to_handler+0x0/0x30
-> [    3.018621] [<804e589c>] ftrace_ops_no_ops+0x114/0x1bc
-> [    3.024602] [<8045478c>] core_kernel_text+0x10/0x1b8
-> [    3.030377] [<8045478c>] core_kernel_text+0x10/0x1b8
-> [    3.036140] [<8045478c>] core_kernel_text+0x10/0x1b8
-> [    3.041915] [<804e589c>] ftrace_ops_no_ops+0x114/0x1bc
-> [    3.047923] [<8045478c>] core_kernel_text+0x10/0x1b8
-> [    3.053682] [<804119b8>] prepare_ftrace_return+0x6c/0x114
-> [    3.059938] [<80411b2c>] ftrace_graph_caller+0x20/0x44
-> (...)
-> 
-> Mark the function notrace to avoid it being traced.
-> 
-> Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-> ---
->  kernel/extable.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/extable.c b/kernel/extable.c
-> index 2676d7f..4efaf26 100644
-> --- a/kernel/extable.c
-> +++ b/kernel/extable.c
-> @@ -70,7 +70,7 @@ static inline int init_kernel_text(unsigned long addr)
->  	return 0;
->  }
->  
-> -int core_kernel_text(unsigned long addr)
-> +int notrace core_kernel_text(unsigned long addr)
+On Thu, Jun 22, 2017 at 11:06:56PM +0800, Huacai Chen wrote:
+> diff --git a/arch/mips/include/asm/atomic.h b/arch/mips/include/asm/atomic.h
+> index 0ab176b..e0002c58 100644
+> --- a/arch/mips/include/asm/atomic.h
+> +++ b/arch/mips/include/asm/atomic.h
+> @@ -56,6 +56,22 @@ static __inline__ void atomic_##op(int i, atomic_t * v)			      \
+>  		"	.set	mips0					\n"   \
+>  		: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (v->counter)	      \
+>  		: "Ir" (i));						      \
+> +	} else if (kernel_uses_llsc && LOONGSON_LLSC_WAR) {		      \
+> +		int temp;						      \
+> +									      \
+> +		do {							      \
+> +			__asm__ __volatile__(				      \
+> +			"	.set	"MIPS_ISA_LEVEL"		\n"   \
+> +			__WEAK_LLSC_MB					      \
+> +			"	ll	%0, %1		# atomic_" #op "\n"   \
+> +			"	" #asm_op " %0, %2			\n"   \
+> +			"	sc	%0, %1				\n"   \
+> +			"	.set	mips0				\n"   \
+> +			: "=&r" (temp), "+" GCC_OFF_SMALL_ASM() (v->counter)      \
+> +			: "Ir" (i));					      \
+> +		} while (unlikely(!temp));				      \
 
-Is mips the only one with this issue. I hate adding notrace to general
-functions if it is only an issue with a single arch.
+Can loongson use the common versions of all these bits of assembly by
+adding a LOONGSON_LLSC_WAR dependent smp_mb__before_llsc()-like macro
+before the asm?
 
-Can we add a: mips_notrace? where we have:
+It would save a lot of duplication, avoid potential bitrot and
+divergence, and make the patch much easier to review.
 
-#ifdef CONFIG_MIPS
-# define mips_notrace notrace
-#else 
-# define mips_notrace
-#endif
+Cheers
+James
 
-??
+--eAbsdosE1cNLO4uF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
--- Steve
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAllNK7IACgkQbAtpk944
+dnq9vxAAqy/3vGH4UL1RaL2CP26MAm9SvrArghceQK55eL09YLIHmj12BvLyGCSd
+sVPSJ9e53hoKB1onnBk2V1uk8TLtBqamq2JKJgeFaH7p2ft2FLoL/B7qcrxRdedH
+Q6UEG2b9Ig2VYa9/P33pCLVaw8qWLd6r4c5qo8alrmMqKa1JR0Znp4rtEW3r1h7h
+W+cw7ntNw269qYyBrHPL/EIUrQR7D9y71AoO3oa+uMtYoYItuhKJif9IVdVgNLu6
+xleNYGlZNbO8+jrL3Pq9sz4iLl49PSdSf8rQmB2BfsOYhTfVnXMSLmG05Zyqi435
+7z5c0mUCVtpOlOBuom38+q+cwsEtBygc4i1C2UYmRK5SQ0po0OOZQYfbwSi0PBYk
+EbwViHJ5SZGY6TaRcxhZGaCDlQKKOrcfSXSsIZUKCbqVVtB8PV1SjksXQOI6bkuR
+J9LEm9Kwr7xoPcNGt9REPDRxLF8ZJkGhTTVKQ1hf58BmvhPaECFHxUlh6EmpnFNg
+fOlG8cVA226UmSzHItpFYXt26cOHkXTWlhawffbwS/E4jhLvmj4Gb83xUc26S7l3
+7xeAxQewSw0TrlRqR+pZOfnK8NBrFZVNTvG61WSv/f42tE4qlLYwvVxRFPsCGWwT
+Q8Y572SjEPDObNP+/BI15vt5NSttJFrc+LTnwiZQkRzTqivrc9w=
+=NNDp
+-----END PGP SIGNATURE-----
 
->  {
->  	if (addr >= (unsigned long)_stext &&
->  	    addr < (unsigned long)_etext)
+--eAbsdosE1cNLO4uF--

@@ -1,18 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:50553 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993420AbdFZGo41T1oE (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 26 Jun 2017 08:44:56 +0200
-Subject: Re: [PATCH] MIPS: perf: fix build failure
-References: <1498254731-5248-1-git-send-email-sudipm.mukherjee@gmail.com>
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Message-ID: <2816265a-d5be-60eb-1428-4dd93e2aeb72@imgtec.com>
-Date: Mon, 26 Jun 2017 08:44:48 +0200
+Received: from mail-it0-x244.google.com ([IPv6:2607:f8b0:4001:c0b::244]:35275
+        "EHLO mail-it0-x244.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993894AbdFZH01i5jVZ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 26 Jun 2017 09:26:27 +0200
 MIME-Version: 1.0
-In-Reply-To: <1498254731-5248-1-git-send-email-sudipm.mukherjee@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <Marcin.Nowakowski@imgtec.com>
+In-Reply-To: <201706261344.OUjMGlsQ%fengguang.wu@intel.com>
+References: <20170623220857.28774-2-palmer@dabbelt.com> <201706261344.OUjMGlsQ%fengguang.wu@intel.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 26 Jun 2017 09:26:20 +0200
+Message-ID: <CAMuHMdXSrfbSX2de2q35Hj6vQwi+sr23M1LEg82JL+FyLq4OJw@mail.gmail.com>
+Subject: Re: [PATCH] pci: Add and use PCI_GENERIC_SETUP Kconfig entry
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <geert.uytterhoeven@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,55 +20,38 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20170626064448.VURaVZ0nu8dsXxIXVjKJX07mdQCMer0R4ueB2LjTd3A@z>
+To: kbuild test robot <lkp@intel.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, "kbuild-all@01.org" <kbuild-all@01.org>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, cmetcalf@mellanox.com, Guan Xuetao <gxt@mprc.pku.edu.cn>, Bjorn Helgaas <bhelgaas@google.com>, Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, alpha <linux-alpha@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, linux-pci <linux-pci@vger.kernel.org>, Christoph Hellwig <hch@infradead.org>
+Message-ID: <20170626072620.3FGlK5jyHnO4ReZlwdkg9n8g3sPSOpi92WwSUQnuPxI@z>
 
-Hi Sudip,
+On Mon, Jun 26, 2017 at 7:39 AM, kbuild test robot <lkp@intel.com> wrote:
+> [auto build test WARNING on linus/master]
+> [also build test WARNING on v4.12-rc6]
+> [cannot apply to next-20170623]
+> [if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+>
+> url:    https://github.com/0day-ci/linux/commits/Palmer-Dabbelt/pci-Add-and-use-PCI_GENERIC_SETUP-Kconfig-entry/20170626-043558
+> config: m68k-allnoconfig (attached as .config)
+> compiler: m68k-linux-gcc (GCC) 4.9.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/01org/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # save the attached .config to linux build tree
+>         make.cross ARCH=m68k
+>
+> All warnings (new ones prefixed by >>):
+>
+> warning: (M68K) selects PCI_GENERIC_SETUP which has unmet direct dependencies (MMU)
 
-This patch fixes the build error, but leaves the I6500 handling incorrect.
-I had explained to Ralf how the build should be fixed a while ago so 
-hopefully he will fix it up in his -next branch (dd71e57bacb5 should 
-have been applied on top of f7a31b5e7874, but in Ralf's tree 
-f7a31b5e7874 is applied on v4.12-rc4 while dd71e57bacb5 is applied on 
-v4.12-rc2).
-You can see what those commits should look like by examining patchwork 
-submissions (links available in commit descriptions).
+I can't seem to find this dependency of PCI_GENERIC_SETUP on MMU?
 
-Marcin
+Gr{oetje,eeting}s,
 
-On 23.06.2017 23:52, Sudip Mukherjee wrote:
-> The build of gpr_defconfig is failing with the error:
-> arch/mips/kernel/perf_event_mipsxx.c:
-> 	In function 'mipsxx_pmu_map_raw_event':
-> arch/mips/kernel/perf_event_mipsxx.c:1614:2:
-> 	error: duplicate case value
-> 
-> Patch - f7a31b5e7874 ("MIPS: perf: Remove incorrect odd/even counter
-> handling for I6400") removed the previous case and added it as a
-> separate case. But patch dd71e57bacb5 ("MIPS: perf: add I6500 handling")
-> added it back to its old location and thus giving us two duplicate case.
-> 
-> Fixes: dd71e57bacb5 ("MIPS: perf: add I6500 handling")
-> Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-> ---
-> 
-> The build log is available at:
-> https://travis-ci.org/sudipm-mukherjee/parport/jobs/246092909
-> 
->   arch/mips/kernel/perf_event_mipsxx.c | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
-> index 4b93cc0..733b612 100644
-> --- a/arch/mips/kernel/perf_event_mipsxx.c
-> +++ b/arch/mips/kernel/perf_event_mipsxx.c
-> @@ -1597,7 +1597,6 @@ static const struct mips_perf_event *mipsxx_pmu_map_raw_event(u64 config)
->   		break;
->   	case CPU_P5600:
->   	case CPU_P6600:
-> -	case CPU_I6400:
->   	case CPU_I6500:
->   		/* 8-bit event numbers */
->   		raw_id = config & 0x1ff;
-> 
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

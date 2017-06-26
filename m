@@ -1,17 +1,12 @@
-Received: from mail-pf0-x242.google.com ([IPv6:2607:f8b0:400e:c00::242]:35127
-        "EHLO mail-pf0-x242.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993964AbdFZU2LUxpOH (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 26 Jun 2017 22:28:11 +0200
-Received: by mail-pf0-x242.google.com with SMTP id s66so1649795pfs.2
-        for <linux-mips@linux-mips.org>; Mon, 26 Jun 2017 13:28:11 -0700 (PDT)
-From: Palmer Dabbelt <palmer@dabbelt.com>
-Subject: [PATCH] pci:  Add and use PCI_GENERIC_SETUP Kconfig entry
-Date: Mon, 26 Jun 2017 13:27:56 -0700
-Message-ID: <20170626202756.22220-2-palmer@dabbelt.com>
-In-Reply-To: <20170626202756.22220-1-palmer@dabbelt.com>
-References: <CAMuHMdXSrfbSX2de2q35Hj6vQwi+sr23M1LEg82JL+FyLq4OJw@mail.gmail.com>
- <20170626202756.22220-1-palmer@dabbelt.com>
-Return-Path: <palmer@dabbelt.com>
+Received: from mail-qk0-x243.google.com ([IPv6:2607:f8b0:400d:c09::243]:32891
+        "EHLO mail-qk0-x243.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993879AbdFZWdxlaeqt (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 27 Jun 2017 00:33:53 +0200
+From: Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH v2 0/4] Broadcom STB S2/S3/S5 support for ARM and MIPS
+Date: Mon, 26 Jun 2017 15:32:40 -0700
+Message-ID: <20170626223248.14199-1-f.fainelli@gmail.com>
+Return-Path: <f.fainelli@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,194 +16,67 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@synopsys.com, linux@armlinux.org.uk, catalin.marinas@arm.com, will.deacon@arm.com, geert@linux-m68k.org, ralf@linux-mips.org, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, cmetcalf@mellanox.com, gxt@mprc.pku.edu.cn, bhelgaas@google.com, viro@zeniv.linux.org.uk, james.hogan@imgtec.com, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-pci@vger.kernel.org
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Message-ID: <20170626202756.L5-daSx8ouMZ9kbJQF_cJVegGWw9hg5dXVJBUxuawiU@z>
+To: linux-arm-kernel@lists.infradead.org
+Cc: Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Brian Norris <computersforpeace@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, "maintainer:BROADCOM BCM7XXX ARM
+        ARCHITECTURE" <bcm-kernel-feedback-list@broadcom.com>, Hauke Mehrtens <hauke@hauke-m.de>, =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, Markus Mayer <mmayer@broadcom.com>, Arnd Bergmann <arnd@arndb.de>, Eric Anholt <eric@anholt.net>, Justin Chen <justinpopo6@gmail.com>, Doug Berger <opendmb@gmail.com>, "open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, "open list:BROADCOM BCM47XX MIPS ARCHITECTURE" <linux-mips@linux-mips.org>, linux-pm@vger.kernerl.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Message-ID: <20170626223240.sThgOgxzj8Z09u6UdQngc8RiglX6_HDn43WTP7v1dSc@z>
 
-We wanted to add RISC-V to the list of architectures that used the
-generic PCI setup-irq.o inside the Makefile and it was suggested that
-instead we define a Kconfig entry and use that.
+Hi,
 
-I've done very minimal testing on this: I just checked to see that
-an aarch64 defconfig still build setup-irq.o with the patch applied.
-The intention is that this patch doesn't change the behavior of any
-build.
+This patch series adds support for S2/S3/S5 suspend/resume states on
+ARM and MIPS based Broadcom STB SoCs.
 
-Signed-off-by: Palmer Dabbelt <palmer@dabbelt.com>
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
-Acked-by: Russell King <rmk+kernel@armlinux.org.uk>
-Acked-by: Richard Henderson <rth@twiddle.net>
-Acked-by: Vineet Gupta <vgupta@synopsys.com>   [arch/arc]
----
- arch/alpha/Kconfig     |  1 +
- arch/arc/Kconfig       |  1 +
- arch/arm/Kconfig       |  1 +
- arch/arm64/Kconfig     |  1 +
- arch/m68k/Kconfig.bus  |  1 +
- arch/mips/Kconfig      |  1 +
- arch/sh/Kconfig        |  1 +
- arch/sparc/Kconfig     |  1 +
- arch/tile/Kconfig      |  1 +
- arch/unicore32/Kconfig |  1 +
- drivers/pci/Kconfig    |  3 +++
- drivers/pci/Makefile   | 11 +----------
- 12 files changed, 14 insertions(+), 10 deletions(-)
+This was submitted a long time ago by Brian, and I am now picking this
+up and trying to get this included with support for our latest chips.
 
-diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-index 0e49d39ea74a..30f4e711f681 100644
---- a/arch/alpha/Kconfig
-+++ b/arch/alpha/Kconfig
-@@ -26,6 +26,7 @@ config ALPHA
- 	select ODD_RT_SIGACTION
- 	select OLD_SIGSUSPEND
- 	select CPU_NO_EFFICIENT_FFS if !ALPHA_EV67
-+	select PCI_GENERIC_SETUP
- 	help
- 	  The Alpha is a 64-bit general-purpose processor designed and
- 	  marketed by the Digital Equipment Corporation of blessed memory,
-diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-index a5459698f0ee..dd1f64858118 100644
---- a/arch/arc/Kconfig
-+++ b/arch/arc/Kconfig
-@@ -44,6 +44,7 @@ config ARC
- 	select HAVE_GENERIC_DMA_COHERENT
- 	select HAVE_KERNEL_GZIP
- 	select HAVE_KERNEL_LZMA
-+	select PCI_GENERIC_SETUP
- 
- config MIGHT_HAVE_PCI
- 	bool
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 4c1a35f15838..4f910c4c37b2 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -93,6 +93,7 @@ config ARM
- 	select OF_RESERVED_MEM if OF
- 	select OLD_SIGACTION
- 	select OLD_SIGSUSPEND3
-+	select PCI_GENERIC_SETUP
- 	select PERF_USE_VMALLOC
- 	select RTC_LIB
- 	select SYS_SUPPORTS_APM_EMULATION
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index b2024db225a9..02d4676cb00e 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -110,6 +110,7 @@ config ARM64
- 	select OF_EARLY_FLATTREE
- 	select OF_RESERVED_MEM
- 	select PCI_ECAM if ACPI
-+	select PCI_GENERIC_SETUP
- 	select POWER_RESET
- 	select POWER_SUPPLY
- 	select SPARSE_IRQ
-diff --git a/arch/m68k/Kconfig.bus b/arch/m68k/Kconfig.bus
-index 675b087198f6..bcab783f0487 100644
---- a/arch/m68k/Kconfig.bus
-+++ b/arch/m68k/Kconfig.bus
-@@ -61,6 +61,7 @@ config GENERIC_ISA_DMA
- config PCI
- 	bool "PCI support"
- 	depends on M54xx
-+	select PCI_GENERIC_SETUP
- 	help
- 	  Enable the PCI bus. Support for the PCI bus hardware built into the
- 	  ColdFire 547x and 548x processors.
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 2828ecde133d..474a7c710686 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -70,6 +70,7 @@ config MIPS
- 	select HAVE_EXIT_THREAD
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_COPY_THREAD_TLS
-+	select PCI_GENERIC_SETUP
- 
- menu "Machine selection"
- 
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index ee086958b2b2..90a98ac526fb 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -48,6 +48,7 @@ config SUPERH
- 	select HAVE_ARCH_AUDITSYSCALL
- 	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_NMI
-+	select PCI_GENERIC_SETUP
- 	help
- 	  The SuperH is a RISC processor targeted for use in embedded systems
- 	  and consumer electronics; it was also used in the Sega Dreamcast
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index 5639c9fe5b55..24cea64104bd 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -424,6 +424,7 @@ config SPARC_LEON
- 	depends on SPARC32
- 	select USB_EHCI_BIG_ENDIAN_MMIO
- 	select USB_EHCI_BIG_ENDIAN_DESC
-+	select PCI_GENERIC_SETUP
- 	---help---
- 	  If you say Y here if you are running on a SPARC-LEON processor.
- 	  The LEON processor is a synthesizable VHDL model of the
-diff --git a/arch/tile/Kconfig b/arch/tile/Kconfig
-index 4583c0320059..451000db8c62 100644
---- a/arch/tile/Kconfig
-+++ b/arch/tile/Kconfig
-@@ -28,6 +28,7 @@ config TILE
- 	select HAVE_PERF_EVENTS
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select MODULES_USE_ELF_RELA
-+	select PCI_GENERIC_SETUP
- 	select SYSCTL_EXCEPTION_TRACE
- 	select SYS_HYPERVISOR
- 	select USER_STACKTRACE_SUPPORT
-diff --git a/arch/unicore32/Kconfig b/arch/unicore32/Kconfig
-index 0769066929c6..162a7d3def0c 100644
---- a/arch/unicore32/Kconfig
-+++ b/arch/unicore32/Kconfig
-@@ -18,6 +18,7 @@ config UNICORE32
- 	select ARCH_WANT_FRAME_POINTERS
- 	select GENERIC_IOMAP
- 	select MODULES_USE_ELF_REL
-+	select PCI_GENERIC_SETUP
- 	help
- 	  UniCore-32 is 32-bit Instruction Set Architecture,
- 	  including a series of low-power-consumption RISC chip
-diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
-index e0cacb7b8563..72a1c4c65926 100644
---- a/drivers/pci/Kconfig
-+++ b/drivers/pci/Kconfig
-@@ -131,6 +131,9 @@ config PCI_HYPERV
-           The PCI device frontend driver allows the kernel to import arbitrary
-           PCI devices from a PCI backend to support PCI driver domains.
- 
-+config PCI_GENERIC_SETUP
-+	bool
-+
- source "drivers/pci/hotplug/Kconfig"
- source "drivers/pci/dwc/Kconfig"
- source "drivers/pci/host/Kconfig"
-diff --git a/drivers/pci/Makefile b/drivers/pci/Makefile
-index 462c1f5f5546..26f4710c88ec 100644
---- a/drivers/pci/Makefile
-+++ b/drivers/pci/Makefile
-@@ -31,16 +31,7 @@ obj-$(CONFIG_PCI_IOV) += iov.o
- #
- # Some architectures use the generic PCI setup functions
- #
--obj-$(CONFIG_ALPHA) += setup-irq.o
--obj-$(CONFIG_ARC) += setup-irq.o
--obj-$(CONFIG_ARM) += setup-irq.o
--obj-$(CONFIG_ARM64) += setup-irq.o
--obj-$(CONFIG_UNICORE32) += setup-irq.o
--obj-$(CONFIG_SUPERH) += setup-irq.o
--obj-$(CONFIG_MIPS) += setup-irq.o
--obj-$(CONFIG_TILE) += setup-irq.o
--obj-$(CONFIG_SPARC_LEON) += setup-irq.o
--obj-$(CONFIG_M68K) += setup-irq.o
-+obj-$(CONFIG_PCI_GENERIC_SETUP) += setup-irq.o
- 
- #
- # ACPI Related PCI FW Functions
+Provided that I can collect the necessary Acks from Rob (DT) and other
+people (Rafael?) I would probably take this via the Broadcom ARM SoC
+pull requests.
+
+Thank you!
+
+Changes in v2:
+
+- clarify the first patch's subject (Rob)
+- removed patch #2 which was creating a bisectability problem (kbuild)
+- added proper AFLAGS to get s2-arm.S to build properly (kbuild)
+- improved MIPS power management binding document (Rob)
+
+Brian Norris (1):
+  soc: bcm: brcmstb: Add support for S2/S3/S5 suspend states (ARM)
+
+Florian Fainelli (2):
+  dt-bindings: ARM: brcmstb: Update Broadcom STB Power Management
+    binding
+  dt-bindings: Document MIPS Broadcom STB power management nodes
+
+Justin Chen (1):
+  soc bcm: brcmstb: Add support for S2/S3/S5 suspend states (MIPS)
+
+ .../devicetree/bindings/arm/bcm/brcm,brcmstb.txt   |   6 +-
+ .../devicetree/bindings/mips/brcm/soc.txt          | 153 ++++
+ drivers/soc/bcm/Kconfig                            |   2 +
+ drivers/soc/bcm/brcmstb/Kconfig                    |   9 +
+ drivers/soc/bcm/brcmstb/Makefile                   |   1 +
+ drivers/soc/bcm/brcmstb/pm/Makefile                |   3 +
+ drivers/soc/bcm/brcmstb/pm/aon_defs.h              | 113 +++
+ drivers/soc/bcm/brcmstb/pm/pm-arm.c                | 836 +++++++++++++++++++++
+ drivers/soc/bcm/brcmstb/pm/pm-mips.c               | 461 ++++++++++++
+ drivers/soc/bcm/brcmstb/pm/pm.h                    |  89 +++
+ drivers/soc/bcm/brcmstb/pm/s2-arm.S                |  76 ++
+ drivers/soc/bcm/brcmstb/pm/s2-mips.S               | 200 +++++
+ drivers/soc/bcm/brcmstb/pm/s3-mips.S               | 146 ++++
+ 13 files changed, 2094 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/soc/bcm/brcmstb/Kconfig
+ create mode 100644 drivers/soc/bcm/brcmstb/pm/Makefile
+ create mode 100644 drivers/soc/bcm/brcmstb/pm/aon_defs.h
+ create mode 100644 drivers/soc/bcm/brcmstb/pm/pm-arm.c
+ create mode 100644 drivers/soc/bcm/brcmstb/pm/pm-mips.c
+ create mode 100644 drivers/soc/bcm/brcmstb/pm/pm.h
+ create mode 100644 drivers/soc/bcm/brcmstb/pm/s2-arm.S
+ create mode 100644 drivers/soc/bcm/brcmstb/pm/s2-mips.S
+ create mode 100644 drivers/soc/bcm/brcmstb/pm/s3-mips.S
+
 -- 
-2.13.0
+2.9.3

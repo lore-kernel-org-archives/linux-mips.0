@@ -1,18 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:5871 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:45218 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23993942AbdF0UbiEfKog (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 27 Jun 2017 22:31:38 +0200
-Date: Tue, 27 Jun 2017 21:31:31 +0100
+        by eddie.linux-mips.org with ESMTP id S23993942AbdF0Wd7CUOBb (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 28 Jun 2017 00:33:59 +0200
+Date: Tue, 27 Jun 2017 23:33:52 +0100
 From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [RESEND PATCH] MIPS: head: Reorder instructions missing a delay
- slot
-Message-ID: <20170627203131.GH31455@jhogan-linux.le.imgtec.org>
-References: <20170627192216.29364-1-karl.beldan+oss@gmail.com>
+Subject: Re: [PATCH 7/7] MIPS: uaccess: Use standard __user_copy* function
+ calls
+Message-ID: <20170627223352.GI31455@jhogan-linux.le.imgtec.org>
+References: <20161107111802.12071-1-paul.burton@imgtec.com>
+ <20161107111802.12071-8-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qM81t570OJUP5TU/"
+        protocol="application/pgp-signature"; boundary="VkVuOCYP9O7H3CXI"
 Content-Disposition: inline
-In-Reply-To: <20170627192216.29364-1-karl.beldan+oss@gmail.com>
+In-Reply-To: <20161107111802.12071-8-paul.burton@imgtec.com>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,77 +24,58 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Karl Beldan <karl.beldan@gmail.com>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Karl Beldan <karl.beldan+oss@gmail.com>, stable@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Jonas Gorski <jogo@openwrt.org>
-Message-ID: <20170627203131.vLF63REDH4-P_pyf4UnMXyXjbuEpO3F7S57HLP2o4rw@z>
+To: Paul Burton <paul.burton@imgtec.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20170627223352.IOO3FwxjHS2TdkWjtwSFhXSTn39Mj6_9m9xHeGMqVEA@z>
 
---qM81t570OJUP5TU/
+--VkVuOCYP9O7H3CXI
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 27, 2017 at 07:22:16PM +0000, Karl Beldan wrote:
-> In this sequence the 'move' is assumed in the delay slot of the 'beq',
-> but head.S is in reorder mode and the former gets pushed one 'nop'
-> farther by the assembler.
->=20
-> The corrected behavior made booting with an UHI supplied dtb erratic.
->=20
-> Fixes: 15f37e158892 ("MIPS: store the appended dtb address in a variable")
-> Cc: <stable@vger.kernel.org>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Jonas Gorski <jogo@openwrt.org>
-> Signed-off-by: Karl Beldan <karl.beldan+oss@gmail.com>
+Hi Paul,
 
-Ouch, nice catch.
+On Mon, Nov 07, 2016 at 11:18:02AM +0000, Paul Burton wrote:
+> -#define __invoke_copy_from_user(to, from, n)				\
+> -({									\
+> -	register long __cu_ret_r __asm__("$2");				\
+> -	register void *__cu_to_r __asm__("$4");				\
+> -	register const void __user *__cu_from_r __asm__("$5");		\
+> -	register long __cu_len_r __asm__("$6");				\
+> -									\
+> -	__cu_to_r = (to);						\
+> -	__cu_from_r = (from);						\
+> -	__cu_len_r = (n);						\
+> -	__asm__ __volatile__(						\
+> -	".set\tnoreorder\n\t"						\
+> -	__MODULE_JAL(__copy_user)					\
+> -	".set\tnoat\n\t"						\
+> -	__UA_ADDU "\t$7, %1, %2\n\t"					\
 
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
+I believe __UA_ADDU is no longer used, so could now be removed from the
+top of uaccess.h.
 
 Cheers
 James
 
-> ---
->  arch/mips/kernel/head.S | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/mips/kernel/head.S b/arch/mips/kernel/head.S
-> index cf05220..d1bb506 100644
-> --- a/arch/mips/kernel/head.S
-> +++ b/arch/mips/kernel/head.S
-> @@ -106,8 +106,8 @@ NESTED(kernel_entry, 16, sp)			# kernel entry point
->  	beq		t0, t1, dtb_found
->  #endif
->  	li		t1, -2
-> -	beq		a0, t1, dtb_found
->  	move		t2, a1
-> +	beq		a0, t1, dtb_found
-> =20
->  	li		t2, 0
->  dtb_found:
-> --=20
-> 2.10.1
->=20
->=20
-
---qM81t570OJUP5TU/
+--VkVuOCYP9O7H3CXI
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAllSwJgACgkQbAtpk944
-dnp1DQ/+IEdOAz26vchVYYc5yqErxCK4ArA/5eZ+gcCbm0HkUrg1nSU28KKPI6Lu
-w8UcdNCi5EoeST4aN6/BySKGPubdq20aJLxzKRr6e+m8+/w7i/8zYuHCmpwcNxMe
-YpiuUsddUfaahwXfpI1Icwo+HQfyLXEUcglMwojVXT8tktnEWZaUWQQ+JeiQxwsR
-OHFWMHBF7rHrxzIuK9+rI33Eb83UnbBzCuR+NzrAZBMP8htiaN90JCk+dIDDmvsv
-bEQSZO5E+YKwvwmt5JA/CuSHJPJ7TaCZgROmQ8I/vmjWJa1xk+qPcFHBEredz4Fc
-8QqV+zZY2KcMswtf4nZUhHUznfGAKHw63EnfQm0GpnOBuOTo8U9bE8Z7moUKlk7K
-D781bn0kvvYsBIxHeIe4JsNOrqPjfmS/A0PKgVaeLEByUZNdGTrzznk7sEa0LyXV
-3ccTPztZlbvgGn2CSNjW9d/KENOqjtcFu3fTWTzh7udVN+VLd4SbeuNtT/LhM3RS
-Va3fQJtMxuz2YGTWlqUTIHXn7DH5+ArbgAaEigx6vDjRa0u7Q7ac47Zrs2uKKdhv
-Hp5oKJDxA2sXRrJpEdnHpn1QkauI6M6rA3V8NfB40JRKtIxPen3zVui+YDrfjwZy
-VuUGtCX1DuMPVa0zKBjIfqMKOubgjH6UT44g6DBH8yGVL034beU=
-=TLTq
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAllS3UUACgkQbAtpk944
+dnq9JxAAt7oa8QlMygd8VYnzJN6kclMjFpHYme/IAMSPZLePuRWFTm09aXwc8lHy
+Vjeu1oBFU8vyjZoST1bBrtvJGMg6T8Fpp2h7GNVYr7dcUBp6E1FmuliBa4Kedky8
+VFCEi7t/h+RRUiVVJbTqlPXs/bT+Xxr1u9QC/9mPYwzLIKEc6C5q1m+dhA8lJ6wK
+UAYrUVw6Lygc+pxHnGhPVc+ws+afA8ez2TZHj/SPzkEO7CmoSR721E6t3CS2pZRh
+X3XM21uTm1dV10NgtiSFq5ih/wEXGvMbUAlQCmbW0NjvumkIVgVtHJJLmlLDpp1G
+zvIrndEPKpr4EvAtk777pkNKdQUkDiFzjAnNUcPFdHPryX23KT+ewGv24oxyUaz1
+zfX/TmM5h83LceaXGC1JOGuZxwOknV63UhinjnjGCE4S/+8ZW7FJuyXUUShZyqIi
+nKHU8kjO/9SEyBbIMCA1NB1yYPrcFiNCWu+h30AhSYyVMfep+Rzwd5ooYVvI7alq
+IFnOJj2fRZPSStb5HsXW0pjIQWpAZw3R2/74Xawt8hjVvyzWv5E1lSgR7soISw2G
+XhutvNG3hRY5lCRSvcv0FrHJG3FKT+vLvA10znRCfetDdGQpFItqoJExSKaetOGT
+rEz2YafUIu6s+UiIYd6EsKypSeZLBJRIKDvCjqAm5afJOTHc9JU=
+=M1QJ
 -----END PGP SIGNATURE-----
 
---qM81t570OJUP5TU/--
+--VkVuOCYP9O7H3CXI--

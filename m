@@ -1,17 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:63356 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993945AbdF1Bf7hviXs (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 28 Jun 2017 03:35:59 +0200
-Date: Wed, 28 Jun 2017 02:35:37 +0100
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH 3/8] MIPS: R6: Fix PREF instruction usage by memcpy for
- MIPS R6
-In-Reply-To: <20170628005853.GC6738@linux-mips.org>
-Message-ID: <alpine.DEB.2.00.1706280224120.31404@tp.orcam.me.uk>
-References: <1497887415-13825-1-git-send-email-aleksandar.markovic@rt-rk.com> <1497887415-13825-4-git-send-email-aleksandar.markovic@rt-rk.com> <a5842e4b-a75b-2dde-d835-6a488790dbda@imgtec.com> <20170628005853.GC6738@linux-mips.org>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:16284 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23993898AbdF1OaLzUPZr (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 28 Jun 2017 16:30:11 +0200
+Date: Wed, 28 Jun 2017 15:30:05 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH V7 2/9] MIPS: c-r4k: Add r4k_blast_scache_node for
+ Loongson-3
+Message-ID: <20170628143005.GJ31455@jhogan-linux.le.imgtec.org>
+References: <1498144016-9111-1-git-send-email-chenhc@lemote.com>
+ <1498144016-9111-3-git-send-email-chenhc@lemote.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="va4/JQ6j8/8uipEp"
+Content-Disposition: inline
+In-Reply-To: <1498144016-9111-3-git-send-email-chenhc@lemote.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,53 +24,79 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Matt Redfearn <matt.redfearn@imgtec.com>, Aleksandar Markovic <aleksandar.markovic@rt-rk.com>, linux-mips@linux-mips.org, James Hogan <James.Hogan@imgtec.com>, Paul.Burton@imgtec.com, Raghu.Gandham@imgtec.com, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Douglas.Leung@imgtec.com, Petar.Jovanovic@imgtec.com, Miodrag.Dinic@imgtec.com, Goran.Ferenc@imgtec.com
-Message-ID: <20170628013537.lqjpaQnXev4wj-SqGs6r5DX6La0-zcU7NDGRPrM_gQ8@z>
+To: Huacai Chen <chenhc@lemote.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, John Crispin <john@phrozen.org>, "Steven J . Hill" <Steven.Hill@cavium.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, stable@vger.kernel.org
+Message-ID: <20170628143005.NUn5PKrrb43-8rftTKi52MiLmZEwBHVhUpxPqSdvUjs@z>
 
-On Wed, 28 Jun 2017, Ralf Baechle wrote:
+--va4/JQ6j8/8uipEp
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > Wouldn't the more correct thing be to modify the memcpy loop such that
-> > prefetches do not fetch the larger offset? Just turning off prefetch
-> > altogether in memcpy for r6 seems like a heavy hammer to me...
-> 
-> It's the same heavy hammer we've been using for ages to deal with this
-> problem for other configurations as well.  So while you're right I don't
-> want to force Aleksandar to come up with The One Perfect Fix.  Though
-> that would be lovely :)
+Hi Huacai,
 
- The The One Perfect Fix is to switch to the `at' assembly mode as with 
-PREFE (which suffers from the same limitation and uses the same internal 
-operand code even), as GAS does the right thing automagically if allowed, 
-even for R6:
+On Thu, Jun 22, 2017 at 11:06:49PM +0800, Huacai Chen wrote:
+> @@ -839,9 +860,12 @@ static void r4k_dma_cache_wback_inv(unsigned long ad=
+dr, unsigned long size)
+> =20
+>  	preempt_disable();
+>  	if (cpu_has_inclusive_pcaches) {
+> -		if (size >=3D scache_size)
+> -			r4k_blast_scache();
+> -		else
+> +		if (size >=3D scache_size) {
+> +			if (current_cpu_type() !=3D CPU_LOONGSON3)
+> +				r4k_blast_scache();
+> +			else
+> +				r4k_blast_scache_node(pa_to_nid(addr));
+> +		} else
+>  			blast_scache_range(addr, addr + size);
+>  		preempt_enable();
+>  		__sync();
+> @@ -872,9 +896,12 @@ static void r4k_dma_cache_inv(unsigned long addr, un=
+signed long size)
+> =20
+>  	preempt_disable();
+>  	if (cpu_has_inclusive_pcaches) {
+> -		if (size >=3D scache_size)
+> -			r4k_blast_scache();
+> -		else {
+> +		if (size >=3D scache_size) {
+> +			if (current_cpu_type() !=3D CPU_LOONGSON3)
+> +				r4k_blast_scache();
+> +			else
+> +				r4k_blast_scache_node(pa_to_nid(addr));
 
-$ cat pref.s
-	.text
-foo:
-	pref	0, 32767($2)
-$ as -32 -mips32 -o pref.o pref.s
-$ as -32 -mips32r6 -o pref6.o pref.s
-$ objdump -d pref*.o
+malta_defconfig now fails to build:
 
-pref.o:     file format elf32-tradbigmips
+arch/mips/mm/c-r4k.c: In function =E2=80=98r4k_dma_cache_wback_inv=E2=80=99:
+arch/mips/mm/c-r4k.c:867:5: error: implicit declaration of function =E2=80=
+=98pa_to_nid=E2=80=99 [-Werror=3Dimplicit-function-declaration]
+     r4k_blast_scache_node(pa_to_nid(addr));
+     ^
 
+Cheers
+James
 
-Disassembly of section .text:
+--va4/JQ6j8/8uipEp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-00000000 <foo>:
-   0:	cc407fff 	pref	0x0,32767(v0)
-	...
+-----BEGIN PGP SIGNATURE-----
 
-pref6.o:     file format elf32-tradbigmips
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAllTvWIACgkQbAtpk944
+dnqtUQ//Y2RZHO/wqrQxVrepKG4SyAYXRtT4a0TzuvVI/EWzhRLy2c5ZHN5i33ef
+Ifn28O+ZhxlUsGwHUdaWC5/34J5FM+GPui43MmSE5WqU3372AvMGMp2NZIrfW9/M
+NsYO4ioJuaFlxzVfD0sN6WfgQaN83/O2RLSdg6vbrdj1MYnGzaXhjhjxNY1Rbs2I
+mQ7pvbZVmqO9tLjq8ZSy8rsTLqBoX1QJIBTzIFBop2/BKNZqZKlpaWITUGnnbdAo
+5+RIUCOjlO12Tsbswc7L+dMu83p158wCN26Pjjz5/LBXodYt0fThZ558s4n/Q5hF
+1CQycp1uEnOKT0j1QuJfI3zpuTXRngu0NCjDgv2joVjPNbL9bhDLZ3fRRVwD2xCd
+MiY2KRd6W1Q0GVEGGAKBqnaAAGhqD7WebBZLpITU/IdVdEWwQ56u7KFwMUFeROqu
+KYYNAx0qB3BqBn7KS3fQJ98cHYXZZRqKe7OHBr+u99Lpi9x7lJ+2PxxYtCiuwa+v
+IAnsDMAARWEmKVP8WKaVAsbZfWZnrt1waUhYqQMBeg7LXBbpmPjS5v5S2IAPYBKf
+2shFh18eWYTsNMxqzcT7pRLzdiuDoLCdgWzd0XruGaCGgTlxjTN6h8HFM6CU3R7S
+YSEKvpypsXMDlU+URkLxxxelhsMKG6nP26AOsGqEV/XyF3OsPyg=
+=gZur
+-----END PGP SIGNATURE-----
 
-
-Disassembly of section .text:
-
-00000000 <foo>:
-   0:	24417fff 	addiu	at,v0,32767
-   4:	7c200035 	pref	0x0,0(at)
-	...
-
-Implementing it should be a trivial exercise given the existing example.
-
-  Maciej
+--va4/JQ6j8/8uipEp--

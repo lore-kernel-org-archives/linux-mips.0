@@ -1,21 +1,14 @@
-Received: from mail-wm0-x241.google.com ([IPv6:2a00:1450:400c:c09::241]:34883
-        "EHLO mail-wm0-x241.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991965AbdF2FqUfc0KI convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 29 Jun 2017 07:46:20 +0200
-Received: by mail-wm0-x241.google.com with SMTP id u23so424230wma.2
-        for <linux-mips@linux-mips.org>; Wed, 28 Jun 2017 22:46:20 -0700 (PDT)
-Date: Thu, 29 Jun 2017 06:46:13 +0100
-In-Reply-To: <CAAhV-H7+0v0TE=V29DVYtEhxN2fUjVhh9MP9gNV96jzkq_1yrg@mail.gmail.com>
-References: <1498144016-9111-1-git-send-email-chenhc@lemote.com> <1498144016-9111-3-git-send-email-chenhc@lemote.com> <20170628143005.GJ31455@jhogan-linux.le.imgtec.org> <CAAhV-H7+0v0TE=V29DVYtEhxN2fUjVhh9MP9gNV96jzkq_1yrg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Subject: Re: [PATCH V7 2/9] MIPS: c-r4k: Add r4k_blast_scache_node for Loongson-3
+Received: from mailapp01.imgtec.com ([195.59.15.196]:45336 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23992054AbdF2JM5VTdTW (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 29 Jun 2017 11:12:57 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Message-ID: <64E99F82-4E2B-4D53-8750-FCE90F84A29B@imgtec.com>
-Return-Path: <james@albanarts.com>
+Subject: [PATCH 0/4] MIPS: Syscall tracing fixes
+Date: Thu, 29 Jun 2017 10:12:32 +0100
+Message-ID: <cover.7467c3bd7867c61afc334e409c93dac28541f5e6.1498727356.git-series.james.hogan@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,75 +18,43 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, Huacai Chen <chenhc@lemote.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, John Crispin <john@phrozen.org>, "Steven J . Hill" <Steven.Hill@cavium.com>, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, stable <stable@vger.kernel.org>
-Message-ID: <20170629054613.0Q29R_hBZpWQxeAkWD1r6PkX9hdn8Pzex9uLuRdlTHI@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>, Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20170629091232.PX_uX1pQihSPPuRv8upET1vqJOXhjsPI5Dpkwcsko_4@z>
 
-On 29 June 2017 02:33:28 BST, Huacai Chen <chenhc@lemote.com> wrote:
->Hi, James,
->
->Is it suitable to add this line in arch/mips/include/asm/mmzone.h?
->#define pa_to_nid(addr) 0
+These patches fix several issues in the MIPS syscall tracing support.
+They are based on mips-for-linux-next (152e63e374cd).
 
-It was basically malta_defconfig.
+Patch 1 drops a harmless redundant select in Kconfig.
 
-OTOH when i tried including asm/mmzone.h, that tries including <mmzone.h> which it can't find.
+Patch 2 ensures erroring syscalls have negated return value in the
+sys_exit trace event, so errors can be distinguished from success
+(tagged for stable).
 
-Cheers
-Jamee
+Patch 3 corrects a probably harmless inconsistency between normal
+syscall error return ($a3=1) and modified error return via
+syscall_set_return_value() ($a3=-1), e.g. due to seccomp
+SECCOMP_RET_ERRNO.
 
->
->Huacai
->
->On Wed, Jun 28, 2017 at 10:30 PM, James Hogan <james.hogan@imgtec.com>
->wrote:
->> Hi Huacai,
->>
->> On Thu, Jun 22, 2017 at 11:06:49PM +0800, Huacai Chen wrote:
->>> @@ -839,9 +860,12 @@ static void r4k_dma_cache_wback_inv(unsigned
->long addr, unsigned long size)
->>>
->>>       preempt_disable();
->>>       if (cpu_has_inclusive_pcaches) {
->>> -             if (size >= scache_size)
->>> -                     r4k_blast_scache();
->>> -             else
->>> +             if (size >= scache_size) {
->>> +                     if (current_cpu_type() != CPU_LOONGSON3)
->>> +                             r4k_blast_scache();
->>> +                     else
->>> +                            
->r4k_blast_scache_node(pa_to_nid(addr));
->>> +             } else
->>>                       blast_scache_range(addr, addr + size);
->>>               preempt_enable();
->>>               __sync();
->>> @@ -872,9 +896,12 @@ static void r4k_dma_cache_inv(unsigned long
->addr, unsigned long size)
->>>
->>>       preempt_disable();
->>>       if (cpu_has_inclusive_pcaches) {
->>> -             if (size >= scache_size)
->>> -                     r4k_blast_scache();
->>> -             else {
->>> +             if (size >= scache_size) {
->>> +                     if (current_cpu_type() != CPU_LOONGSON3)
->>> +                             r4k_blast_scache();
->>> +                     else
->>> +                            
->r4k_blast_scache_node(pa_to_nid(addr));
->>
->> malta_defconfig now fails to build:
->>
->> arch/mips/mm/c-r4k.c: In function ‘r4k_dma_cache_wback_inv’:
->> arch/mips/mm/c-r4k.c:867:5: error: implicit declaration of function
->‘pa_to_nid’ [-Werror=implicit-function-declaration]
->>      r4k_blast_scache_node(pa_to_nid(addr));
->>      ^
->>
->> Cheers
->> James
+Patch 4 fixes the probably harmless broken error return from negative
+syscall numbers when syscall tracing is enabled.
 
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: linux-mips@linux-mips.org
+Cc: stable@vger.kernel.org
 
---
-James Hogan
+James Hogan (4):
+  MIPS: Drop duplicate HAVE_SYSCALL_TRACEPOINTS select
+  MIPS: Negate error syscall return in trace
+  MIPS: Correct forced syscall errors
+  MIPS: Traced negative syscalls should return -ENOSYS
+
+ arch/mips/Kconfig               |  1 -
+ arch/mips/include/asm/syscall.h |  2 +-
+ arch/mips/kernel/ptrace.c       |  9 ++++++++-
+ 3 files changed, 9 insertions(+), 3 deletions(-)
+
+-- 
+git-series 0.8.10

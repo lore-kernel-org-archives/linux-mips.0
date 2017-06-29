@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:31366 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:5718 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992675AbdF2JNAg23BW (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 29 Jun 2017 11:13:00 +0200
+        with ESMTP id S23993866AbdF2JNCqg87W (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 29 Jun 2017 11:13:02 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 4/4] MIPS: Traced negative syscalls should return -ENOSYS
-Date: Thu, 29 Jun 2017 10:12:36 +0100
-Message-ID: <4f9a8ba0f34ea6b363d79f7942a59746f897f35e.1498727356.git-series.james.hogan@imgtec.com>
+Subject: [PATCH 1/4] MIPS: Drop duplicate HAVE_SYSCALL_TRACEPOINTS select
+Date: Thu, 29 Jun 2017 10:12:33 +0100
+Message-ID: <013df3113da2ad1d4f95b528a54df971ee342f6d.1498727356.git-series.james.hogan@imgtec.com>
 In-Reply-To: <cover.7467c3bd7867c61afc334e409c93dac28541f5e6.1498727356.git-series.james.hogan@imgtec.com>
 References: <cover.7467c3bd7867c61afc334e409c93dac28541f5e6.1498727356.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -22,46 +22,35 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
 Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20170629091236.yf8md4opXBvGINSEolfPjkuf069Cqj0JpONhnrpp9Xw@z>
+Message-ID: <20170629091233.RnJKh8yWHw0h-p88YS6O8K4gpksEJKagJHLlzxRPW6Y@z>
 
-If a negative system call number is used when system call tracing is
-enabled, syscall_trace_enter() will return that negative system call
-number without having written the return value and error flag into the
-pt_regs.
+MIPS selects HAVE_SYSCALL_TRACEPOINTS twice. The first was added back in
+v3.13 by commit 2d7bf993e073 ("MIPS: ftrace: Add support for syscall
+tracepoints."), but then a second redundant one was added in v4.2 by
+commit fb59e394c30c ("MIPS: ftrace: Enable support for syscall
+tracepoints.").
 
-The caller then treats it as a cancelled system call and assumes that
-the return value and error flag are already written, leaving the
-negative system call number in the return register ($v0), and the 4th
-system call argument in the error register ($a3).
+Drop the duplicate select.
 
-Add a special case to detect this at the end of syscall_trace_enter(),
-to set the return value to error -ENOSYS when this happens.
-
-Fixes: d218af78492a ("MIPS: scall: Always run the seccomp syscall filters")
+Fixes: fb59e394c30c ("MIPS: ftrace: Enable support for syscall tracepoints.")
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 ---
- arch/mips/kernel/ptrace.c | 7 +++++++
- 1 file changed, 7 insertions(+), 0 deletions(-)
+ arch/mips/Kconfig | 1 -
+ 1 file changed, 0 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
-index 8e2ea86dc23e..6dd13641a418 100644
---- a/arch/mips/kernel/ptrace.c
-+++ b/arch/mips/kernel/ptrace.c
-@@ -894,6 +894,13 @@ asmlinkage long syscall_trace_enter(struct pt_regs *regs, long syscall)
- 
- 	audit_syscall_entry(syscall, regs->regs[4], regs->regs[5],
- 			    regs->regs[6], regs->regs[7]);
-+
-+	/*
-+	 * Negative syscall numbers are mistaken for rejected syscalls, but
-+	 * won't have had the return value set appropriately, so we do so now.
-+	 */
-+	if (syscall < 0)
-+		syscall_set_return_value(current, regs, -ENOSYS, 0);
- 	return syscall;
- }
- 
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 609986e8b21e..55e48a3e7f05 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -64,7 +64,6 @@ config MIPS
+ 	select HAVE_PERF_EVENTS
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
+ 	select HAVE_SYSCALL_TRACEPOINTS
+-	select HAVE_SYSCALL_TRACEPOINTS
+ 	select HAVE_VIRT_CPU_ACCOUNTING_GEN
+ 	select IRQ_FORCED_THREADING
+ 	select MODULES_USE_ELF_RELA if MODULES && 64BIT
 -- 
 git-series 0.8.10

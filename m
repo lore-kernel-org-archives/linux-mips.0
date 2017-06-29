@@ -1,14 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:61399 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:38244 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993866AbdF2OF1pYpTH (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 29 Jun 2017 16:05:27 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 1/1] MIPS: Avoid accidental raw backtrace
-Date: Thu, 29 Jun 2017 15:05:04 +0100
-Message-ID: <913e3161e788882af01f96be523b1b67ae549039.1498744803.git-series.james.hogan@imgtec.com>
+        with ESMTP id S23993976AbdF2QkDCk7hg (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 29 Jun 2017 18:40:03 +0200
+Date: Thu, 29 Jun 2017 17:39:44 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH 5/6] MIPS: tlbex: Use ErrorEPC as scratch when KScratch
+ isn't available
+In-Reply-To: <20170628152535.GA2698@linux-mips.org>
+Message-ID: <alpine.DEB.2.00.1706291729220.31404@tp.orcam.me.uk>
+References: <20170602223806.5078-1-paul.burton@imgtec.com> <20170602223806.5078-6-paul.burton@imgtec.com> <alpine.DEB.2.00.1706151806310.23046@tp.orcam.me.uk> <20170628152535.GA2698@linux-mips.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,44 +22,26 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20170629140504.6Sdyf7qFGafqTseQUOBh0OsKnYDN0UFheRbU9Fwfxwc@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20170629163944.Z-_YUNPsNqDl3N7M3IetFWZRVvMEPk6pBB3hIoMQFWI@z>
 
-Since commit 81a76d7119f6 ("MIPS: Avoid using unwind_stack() with
-usermode") show_backtrace() invokes the raw backtracer when
-cp0_status & ST0_KSU indicates user mode to fix issues on EVA kernels
-where user and kernel address spaces overlap.
+On Wed, 28 Jun 2017, Ralf Baechle wrote:
 
-However this is used by show_stack() which creates its own pt_regs on
-the stack and leaves cp0_status uninitialised in most of the code paths.
-This results in the non deterministic use of the raw back tracer
-depending on the previous stack content.
+> So I think while it's a nice hack I think this patch should be reserved
+> for system that don't support parity or ECC or where generally a tiny bit
+> of performance is more important that reliability.
 
-show_stack() deals exclusively with kernel mode stacks anyway, so
-explicitly initialise regs.cp0_status to KSU_KERNEL (i.e. 0) to ensure
-we get a useful backtrace.
+ One problem I can see here is that AFAICT we use this somewhat costly 
+scratch setup even in cases where it is not needed (i.e. the scratch 
+remains unused throughout the handler), defeating the intent of the TLB 
+handler generator, which was created for the very purpose of avoiding any 
+wasted cycles that static universal handlers necessarily incurred.
 
-Fixes: 81a76d7119f6 ("MIPS: Avoid using unwind_stack() with usermode")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
-Cc: <stable@vger.kernel.org> # 3.15+
----
- arch/mips/kernel/traps.c | 2 ++
- 1 file changed, 2 insertions(+), 0 deletions(-)
+ I think this is what has to be addressed instead, removing the penalty 
+from configurations that do not need it, i.e. no RIXI, no HTW, etc.  Then 
+chances are the more complex configurations will often have the required 
+scratch resources available such as KScratch or SRS registers, which can 
+then be used appropriately (and if some don't then it'll be them only 
+that'll take the penalty they deserve).
 
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 9681b5877140..38dfa27730ff 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -201,6 +201,8 @@ void show_stack(struct task_struct *task, unsigned long *sp)
- {
- 	struct pt_regs regs;
- 	mm_segment_t old_fs = get_fs();
-+
-+	regs.cp0_status = KSU_KERNEL;
- 	if (sp) {
- 		regs.regs[29] = (unsigned long)sp;
- 		regs.regs[31] = 0;
--- 
-git-series 0.8.10
+  Maciej

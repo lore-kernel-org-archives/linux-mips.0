@@ -1,19 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:61150 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23994624AbdGCUc4fSOPZ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 3 Jul 2017 22:32:56 +0200
-Date: Mon, 3 Jul 2017 21:32:50 +0100
+Received: from mailapp01.imgtec.com ([195.59.15.196]:53535 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993904AbdGCWmGriBUk (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 4 Jul 2017 00:42:06 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH 4/4] MIPS16e2: Provide feature overrides for non-MIPS16
- systems
-Message-ID: <20170703203250.GN31455@jhogan-linux.le.imgtec.org>
-References: <alpine.DEB.2.00.1705180145220.2590@tp.orcam.me.uk>
- <alpine.DEB.2.00.1705230345530.2590@tp.orcam.me.uk>
+Subject: [PATCH] MIPS: Fix MIPS64 FP save/restore on 32-bit kernels
+Date: Mon, 3 Jul 2017 23:41:47 +0100
+Message-ID: <9a0f24583ac74fd8da19e3edb1739dc6bb6d6d5d.1499121677.git-series.james.hogan@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="SgT04PEqo/+yUDw3"
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.00.1705230345530.2590@tp.orcam.me.uk>
+Content-Type: text/plain
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -24,327 +18,130 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Maciej W. Rozycki" <macro@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20170703203250.-N-OfUZk8yx1V-8kCX4LteulMZqxDe2CROAP2ORRmUQ@z>
+To: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>
+Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20170703224147.jgVKjaYa9wD7Fv_H5eNu1ziDVbAg80IHA5dMHrsJwNQ@z>
 
---SgT04PEqo/+yUDw3
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+32-bit kernels can be configured to support MIPS64, in which case
+neither CONFIG_64BIT or CONFIG_CPU_MIPS32_R* will be set. This causes
+the CP0_Status.FR checks at the point of floating point register save
+and restore to be compiled out, which results in odd FP registers not
+being saved or restored to the task or signal context even when
+CP0_Status.FR is set.
 
-On Tue, May 23, 2017 at 01:40:23PM +0100, Maciej W. Rozycki wrote:
-> Hardcode the absence of the MIPS16e2 ASE for all the systems that do so=
-=20
-> for the MIPS16 ASE already, providing for code to be optimized away.
->=20
-> Signed-off-by: Maciej W. Rozycki <macro@imgtec.com>
+Fix the ifdefs to use CONFIG_CPU_MIPSR2 and CONFIG_CPU_MIPSR6, which are
+enabled for the relevant revisions of either MIPS32 or MIPS64, along
+with some other CPUs such as Octeon (r2), Loongson1 (r2), XLP (r2),
+Loongson 3A R2.
 
-I'm inclined to agree with Florian, that git formatted patches are
-slightly easier to review, perhaps they just subjectively look more
-familiar. Out of interest, do you not use git for retrieving kernel
-source already?
+The suspect code originates from commit 597ce1723e0f ("MIPS: Support for
+64-bit FP with O32 binaries") in v3.14, however the code in
+__enable_fpu() was consistent and refused to set FR=1, falling back to
+software FPU emulation. This was suboptimal but should be functionally
+correct.
 
-Anyway the actual changes look acceptable to me, so
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
+Commit fcc53b5f6c38 ("MIPS: fpu.h: Allow 64-bit FPU on a 64-bit MIPS R6
+CPU") in v4.2 (and stable tagged back to 4.0) later introduced the bug
+by updating __enable_fpu() to set FR=1 but failing to update the other
+similar ifdefs to enable FR=1 state handling.
 
-Thanks for the series.
-James
+Fixes: fcc53b5f6c38 ("MIPS: fpu.h: Allow 64-bit FPU on a 64-bit MIPS R6 CPU")
+Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Cc: linux-mips@linux-mips.org
+Cc: <stable@vger.kernel.org> # 4.0+
+---
+ arch/mips/include/asm/asmmacro.h |  8 ++++----
+ arch/mips/kernel/r4k_fpu.S       | 12 ++++++------
+ arch/mips/kernel/r4k_switch.S    |  8 ++++----
+ 3 files changed, 14 insertions(+), 14 deletions(-)
 
-> ---
-> linux-mips16e2-ase-optim.diff
-> Index: linux-sfr-test/arch/mips/include/asm/mach-ath25/cpu-feature-overri=
-des.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-sfr-test.orig/arch/mips/include/asm/mach-ath25/cpu-feature-over=
-rides.h	2017-05-22 22:42:15.000000000 +0100
-> +++ linux-sfr-test/arch/mips/include/asm/mach-ath25/cpu-feature-overrides=
-=2Eh	2017-05-22 22:57:28.987400000 +0100
-> @@ -40,6 +40,7 @@
->  #endif
-> =20
->  #define cpu_has_mips16			0
-> +#define cpu_has_mips16e2		0
->  #define cpu_has_mdmx			0
->  #define cpu_has_mips3d			0
->  #define cpu_has_smartmips		0
-> Index: linux-sfr-test/arch/mips/include/asm/mach-au1x00/cpu-feature-overr=
-ides.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-sfr-test.orig/arch/mips/include/asm/mach-au1x00/cpu-feature-ove=
-rrides.h	2017-05-22 22:42:15.000000000 +0100
-> +++ linux-sfr-test/arch/mips/include/asm/mach-au1x00/cpu-feature-override=
-s.h	2017-05-22 22:57:28.991406000 +0100
-> @@ -31,6 +31,7 @@
->  #define cpu_has_ejtag			1
->  #define cpu_has_llsc			1
->  #define cpu_has_mips16			0
-> +#define cpu_has_mips16e2		0
->  #define cpu_has_mdmx			0
->  #define cpu_has_mips3d			0
->  #define cpu_has_smartmips		0
-> Index: linux-sfr-test/arch/mips/include/asm/mach-bcm63xx/cpu-feature-over=
-rides.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-sfr-test.orig/arch/mips/include/asm/mach-bcm63xx/cpu-feature-ov=
-errides.h	2017-05-22 22:42:15.000000000 +0100
-> +++ linux-sfr-test/arch/mips/include/asm/mach-bcm63xx/cpu-feature-overrid=
-es.h	2017-05-22 22:57:28.995412000 +0100
-> @@ -19,6 +19,7 @@
->  #define cpu_has_ejtag			1
->  #define cpu_has_llsc			1
->  #define cpu_has_mips16			0
-> +#define cpu_has_mips16e2		0
->  #define cpu_has_mdmx			0
->  #define cpu_has_mips3d			0
->  #define cpu_has_smartmips		0
-> Index: linux-sfr-test/arch/mips/include/asm/mach-cobalt/cpu-feature-overr=
-ides.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-sfr-test.orig/arch/mips/include/asm/mach-cobalt/cpu-feature-ove=
-rrides.h	2017-05-22 22:42:15.000000000 +0100
-> +++ linux-sfr-test/arch/mips/include/asm/mach-cobalt/cpu-feature-override=
-s.h	2017-05-22 22:57:29.001406000 +0100
-> @@ -37,6 +37,7 @@
->  #endif
-> =20
->  #define cpu_has_mips16		0
-> +#define cpu_has_mips16e2	0
->  #define cpu_has_mdmx		0
->  #define cpu_has_mips3d		0
->  #define cpu_has_smartmips	0
-> Index: linux-sfr-test/arch/mips/include/asm/mach-dec/cpu-feature-override=
-s.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-sfr-test.orig/arch/mips/include/asm/mach-dec/cpu-feature-overri=
-des.h	2017-05-22 22:42:15.000000000 +0100
-> +++ linux-sfr-test/arch/mips/include/asm/mach-dec/cpu-feature-overrides.h=
-	2017-05-22 22:57:29.006398000 +0100
-> @@ -27,6 +27,7 @@
->  #define cpu_has_mcheck			0
->  #define cpu_has_ejtag			0
->  #define cpu_has_mips16			0
-> +#define cpu_has_mips16e2		0
->  #define cpu_has_mdmx			0
->  #define cpu_has_mips3d			0
->  #define cpu_has_smartmips		0
-> Index: linux-sfr-test/arch/mips/include/asm/mach-ip22/cpu-feature-overrid=
-es.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-sfr-test.orig/arch/mips/include/asm/mach-ip22/cpu-feature-overr=
-ides.h	2017-05-22 22:42:15.000000000 +0100
-> +++ linux-sfr-test/arch/mips/include/asm/mach-ip22/cpu-feature-overrides.=
-h	2017-05-22 22:57:29.010397000 +0100
-> @@ -19,6 +19,7 @@
->  #define cpu_has_32fpr		1
->  #define cpu_has_counter		1
->  #define cpu_has_mips16		0
-> +#define cpu_has_mips16e2	0
->  #define cpu_has_divec		0
->  #define cpu_has_cache_cdex_p	1
->  #define cpu_has_prefetch	0
-> Index: linux-sfr-test/arch/mips/include/asm/mach-ip27/cpu-feature-overrid=
-es.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-sfr-test.orig/arch/mips/include/asm/mach-ip27/cpu-feature-overr=
-ides.h	2017-05-22 22:42:15.000000000 +0100
-> +++ linux-sfr-test/arch/mips/include/asm/mach-ip27/cpu-feature-overrides.=
-h	2017-05-22 22:57:29.020398000 +0100
-> @@ -43,6 +43,7 @@
->  #define cpu_has_ejtag			0
->  #define cpu_has_llsc			1
->  #define cpu_has_mips16			0
-> +#define cpu_has_mips16e2		0
->  #define cpu_has_mdmx			0
->  #define cpu_has_mips3d			0
->  #define cpu_has_smartmips		0
-> Index: linux-sfr-test/arch/mips/include/asm/mach-ip28/cpu-feature-overrid=
-es.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-sfr-test.orig/arch/mips/include/asm/mach-ip28/cpu-feature-overr=
-ides.h	2017-05-22 22:42:15.000000000 +0100
-> +++ linux-sfr-test/arch/mips/include/asm/mach-ip28/cpu-feature-overrides.=
-h	2017-05-22 22:57:29.024398000 +0100
-> @@ -16,6 +16,7 @@
->   */
->  #define cpu_has_watch		1
->  #define cpu_has_mips16		0
-> +#define cpu_has_mips16e2	0
->  #define cpu_has_divec		0
->  #define cpu_has_vce		0
->  #define cpu_has_cache_cdex_p	0
-> Index: linux-sfr-test/arch/mips/include/asm/mach-ip32/cpu-feature-overrid=
-es.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-sfr-test.orig/arch/mips/include/asm/mach-ip32/cpu-feature-overr=
-ides.h	2017-05-22 22:42:15.000000000 +0100
-> +++ linux-sfr-test/arch/mips/include/asm/mach-ip32/cpu-feature-overrides.=
-h	2017-05-22 22:57:29.028408000 +0100
-> @@ -29,6 +29,7 @@
->  #define cpu_has_32fpr		1
->  #define cpu_has_counter		1
->  #define cpu_has_mips16		0
-> +#define cpu_has_mips16e2	0
->  #define cpu_has_vce		0
->  #define cpu_has_cache_cdex_s	0
->  #define cpu_has_mcheck		0
-> Index: linux-sfr-test/arch/mips/include/asm/mach-jz4740/cpu-feature-overr=
-ides.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-sfr-test.orig/arch/mips/include/asm/mach-jz4740/cpu-feature-ove=
-rrides.h	2017-05-22 22:42:15.000000000 +0100
-> +++ linux-sfr-test/arch/mips/include/asm/mach-jz4740/cpu-feature-override=
-s.h	2017-05-22 22:57:29.032407000 +0100
-> @@ -23,6 +23,7 @@
->  #define cpu_has_ejtag 1
->  #define cpu_has_llsc		1
->  #define cpu_has_mips16 0
-> +#define cpu_has_mips16e2	0
->  #define cpu_has_mdmx 0
->  #define cpu_has_mips3d 0
->  #define cpu_has_smartmips 0
-> Index: linux-sfr-test/arch/mips/include/asm/mach-loongson64/cpu-feature-o=
-verrides.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-sfr-test.orig/arch/mips/include/asm/mach-loongson64/cpu-feature=
--overrides.h	2017-05-22 22:42:16.000000000 +0100
-> +++ linux-sfr-test/arch/mips/include/asm/mach-loongson64/cpu-feature-over=
-rides.h	2017-05-22 22:57:29.043398000 +0100
-> @@ -32,6 +32,7 @@
->  #define cpu_has_mcheck		0
->  #define cpu_has_mdmx		0
->  #define cpu_has_mips16		0
-> +#define cpu_has_mips16e2	0
->  #define cpu_has_mips3d		0
->  #define cpu_has_mipsmt		0
->  #define cpu_has_smartmips	0
-> Index: linux-sfr-test/arch/mips/include/asm/mach-netlogic/cpu-feature-ove=
-rrides.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-sfr-test.orig/arch/mips/include/asm/mach-netlogic/cpu-feature-o=
-verrides.h	2017-05-22 22:42:16.000000000 +0100
-> +++ linux-sfr-test/arch/mips/include/asm/mach-netlogic/cpu-feature-overri=
-des.h	2017-05-22 22:57:29.047397000 +0100
-> @@ -13,6 +13,7 @@
->  #define cpu_has_4k_cache	1
->  #define cpu_has_watch		1
->  #define cpu_has_mips16		0
-> +#define cpu_has_mips16e2	0
->  #define cpu_has_counter		1
->  #define cpu_has_divec		1
->  #define cpu_has_vce		0
-> Index: linux-sfr-test/arch/mips/include/asm/mach-rc32434/cpu-feature-over=
-rides.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-sfr-test.orig/arch/mips/include/asm/mach-rc32434/cpu-feature-ov=
-errides.h	2017-05-22 22:42:16.000000000 +0100
-> +++ linux-sfr-test/arch/mips/include/asm/mach-rc32434/cpu-feature-overrid=
-es.h	2017-05-22 22:57:29.051411000 +0100
-> @@ -48,6 +48,7 @@
->  #define cpu_has_llsc			1
-> =20
->  #define cpu_has_mips16			0
-> +#define cpu_has_mips16e2		0
->  #define cpu_has_mdmx			0
->  #define cpu_has_mips3d			0
->  #define cpu_has_smartmips		0
-> Index: linux-sfr-test/arch/mips/include/asm/mach-rm/cpu-feature-overrides=
-=2Eh
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-sfr-test.orig/arch/mips/include/asm/mach-rm/cpu-feature-overrid=
-es.h	2017-05-22 22:42:16.000000000 +0100
-> +++ linux-sfr-test/arch/mips/include/asm/mach-rm/cpu-feature-overrides.h	=
-2017-05-22 22:57:29.066402000 +0100
-> @@ -17,6 +17,7 @@
->  #define cpu_has_counter		1
->  #define cpu_has_watch		0
->  #define cpu_has_mips16		0
-> +#define cpu_has_mips16e2	0
->  #define cpu_has_divec		0
->  #define cpu_has_cache_cdex_p	1
->  #define cpu_has_prefetch	0
-> Index: linux-sfr-test/arch/mips/include/asm/mach-sibyte/cpu-feature-overr=
-ides.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-sfr-test.orig/arch/mips/include/asm/mach-sibyte/cpu-feature-ove=
-rrides.h	2017-05-22 22:42:16.000000000 +0100
-> +++ linux-sfr-test/arch/mips/include/asm/mach-sibyte/cpu-feature-override=
-s.h	2017-05-22 22:57:29.070404000 +0100
-> @@ -13,6 +13,7 @@
->   */
->  #define cpu_has_watch		1
->  #define cpu_has_mips16		0
-> +#define cpu_has_mips16e2	0
->  #define cpu_has_divec		1
->  #define cpu_has_vce		0
->  #define cpu_has_cache_cdex_p	0
-> Index: linux-sfr-test/arch/mips/include/asm/mach-tx49xx/cpu-feature-overr=
-ides.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-sfr-test.orig/arch/mips/include/asm/mach-tx49xx/cpu-feature-ove=
-rrides.h	2017-05-22 22:42:16.000000000 +0100
-> +++ linux-sfr-test/arch/mips/include/asm/mach-tx49xx/cpu-feature-override=
-s.h	2017-05-22 22:57:29.074404000 +0100
-> @@ -6,6 +6,7 @@
->  #define cpu_has_inclusive_pcaches	0
-> =20
->  #define cpu_has_mips16		0
-> +#define cpu_has_mips16e2	0
->  #define cpu_has_mdmx		0
->  #define cpu_has_mips3d		0
->  #define cpu_has_smartmips	0
-
---SgT04PEqo/+yUDw3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAllaqfEACgkQbAtpk944
-dnpkEQ//ZORZJjvGKp3/e33ivMg5724/HzJHHDr+BknV+mPYmG3YOCSehVjDZPbE
-gMWeZ9GIiziQDaVYAEvqtNx8VGp+dpBGipBZ/H8r9Fbkmpe5piHCchdsRdDe0Yyn
-/IQXQTPj4KQ7w+pnJe7u8iWTBkeMGU3lx9OcgdJ8D2aHmT4FngPchhpiy1iDLWFN
-1ZX9oEUetTBOwMFYakQHeqKuIt+6/rCeFYElWT35W/KIMDJDorP6HhStUB+oUJI6
-68R5+tJCmUZSrEb7rALJlzgWw+IpCx4s7aEf6sT/SfOndldiPBFSa8GDBLFVBf4B
-JWpeEQR7aZ0XlBRRDu/5Jt4Hk8e1eCydVGvQXrY1z9dZIjkgwKBTp5KZwyqJNBdA
-jiY/+SlH4601gG5cCqV4qvTGoU46F70SmCC7UyuS5djT8CXLoawG6jM1AtN4+XPW
-dsXudw4iIJ/DmLM1k5W0prKx8MEgzcTKKoXngKodLpZ//Kd1t06rST/TqmNm5AQi
-VXtz0LA6ionVHgm7t0q2O6gyKPFVcg6vfKJr4aLK2PLWKtRWVoa7hCsfM2ZZCT8K
-eaf36+c34yyJc93RNQVifMbCbC5s5R1bRs8vmGKVT5eh/j8Xw8L8QFJ0t4B9BAGM
-9xQ1WEqM0IWzhpj831SRm6OS15SPelB7lQREjXxSHpHvaEKa0d0=
-=+Ds4
------END PGP SIGNATURE-----
-
---SgT04PEqo/+yUDw3--
+diff --git a/arch/mips/include/asm/asmmacro.h b/arch/mips/include/asm/asmmacro.h
+index 83054f79f72a..b815d7b3bd27 100644
+--- a/arch/mips/include/asm/asmmacro.h
++++ b/arch/mips/include/asm/asmmacro.h
+@@ -126,8 +126,8 @@
+ 	.endm
+ 
+ 	.macro	fpu_save_double thread status tmp
+-#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2) || \
+-		defined(CONFIG_CPU_MIPS32_R6)
++#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPSR2) || \
++		defined(CONFIG_CPU_MIPSR6)
+ 	sll	\tmp, \status, 5
+ 	bgez	\tmp, 10f
+ 	fpu_save_16odd \thread
+@@ -184,8 +184,8 @@
+ 	.endm
+ 
+ 	.macro	fpu_restore_double thread status tmp
+-#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2) || \
+-		defined(CONFIG_CPU_MIPS32_R6)
++#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPSR2) || \
++		defined(CONFIG_CPU_MIPSR6)
+ 	sll	\tmp, \status, 5
+ 	bgez	\tmp, 10f				# 16 register mode?
+ 
+diff --git a/arch/mips/kernel/r4k_fpu.S b/arch/mips/kernel/r4k_fpu.S
+index 56d86b09c917..93b1745def16 100644
+--- a/arch/mips/kernel/r4k_fpu.S
++++ b/arch/mips/kernel/r4k_fpu.S
+@@ -50,11 +50,11 @@ LEAF(_save_fp_context)
+ 	cfc1	t1, fcr31
+ 	.set	pop
+ 
+-#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2) || \
+-		defined(CONFIG_CPU_MIPS32_R6)
++#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPSR2) || \
++		defined(CONFIG_CPU_MIPSR6)
+ 	.set	push
+ 	SET_HARDFLOAT
+-#ifdef CONFIG_CPU_MIPS32_R2
++#ifdef CONFIG_CPU_MIPSR2
+ 	.set	mips32r2
+ 	.set	fp=64
+ 	mfc0	t0, CP0_STATUS
+@@ -118,11 +118,11 @@ LEAF(_save_fp_context)
+ LEAF(_restore_fp_context)
+ 	EX	lw t1, 0(a1)
+ 
+-#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2)  || \
+-		defined(CONFIG_CPU_MIPS32_R6)
++#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPSR2)  || \
++		defined(CONFIG_CPU_MIPSR6)
+ 	.set	push
+ 	SET_HARDFLOAT
+-#ifdef CONFIG_CPU_MIPS32_R2
++#ifdef CONFIG_CPU_MIPSR2
+ 	.set	mips32r2
+ 	.set	fp=64
+ 	mfc0	t0, CP0_STATUS
+diff --git a/arch/mips/kernel/r4k_switch.S b/arch/mips/kernel/r4k_switch.S
+index 7b386d54fd65..5508d3a03dbf 100644
+--- a/arch/mips/kernel/r4k_switch.S
++++ b/arch/mips/kernel/r4k_switch.S
+@@ -71,8 +71,8 @@
+  */
+ LEAF(_save_fp)
+ EXPORT_SYMBOL(_save_fp)
+-#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2) || \
+-		defined(CONFIG_CPU_MIPS32_R6)
++#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPSR2) || \
++		defined(CONFIG_CPU_MIPSR6)
+ 	mfc0	t0, CP0_STATUS
+ #endif
+ 	fpu_save_double a0 t0 t1		# clobbers t1
+@@ -83,8 +83,8 @@ EXPORT_SYMBOL(_save_fp)
+  * Restore a thread's fp context.
+  */
+ LEAF(_restore_fp)
+-#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2) || \
+-		defined(CONFIG_CPU_MIPS32_R6)
++#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPSR2) || \
++		defined(CONFIG_CPU_MIPSR6)
+ 	mfc0	t0, CP0_STATUS
+ #endif
+ 	fpu_restore_double a0 t0 t1		# clobbers t1
+-- 
+git-series 0.8.10

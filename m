@@ -1,21 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:46351 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23993859AbdGDPjXryYO7 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 4 Jul 2017 17:39:23 +0200
-Date: Tue, 4 Jul 2017 16:39:17 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH 3/4] MIPS16e2: Report ASE presence in /proc/cpuinfo
-Message-ID: <20170704153917.GA6973@jhogan-linux.le.imgtec.org>
-References: <alpine.DEB.2.00.1705180145220.2590@tp.orcam.me.uk>
- <alpine.DEB.2.00.1705230230220.2590@tp.orcam.me.uk>
- <20170703202323.GM31455@jhogan-linux.le.imgtec.org>
- <alpine.DEB.2.00.1707041635000.3339@tp.orcam.me.uk>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:63184 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993906AbdGDPuRYIIQ7 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 4 Jul 2017 17:50:17 +0200
+Date: Tue, 4 Jul 2017 16:50:00 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH 4/4] MIPS16e2: Provide feature overrides for non-MIPS16
+ systems
+In-Reply-To: <20170703203250.GN31455@jhogan-linux.le.imgtec.org>
+Message-ID: <alpine.DEB.2.00.1707041636350.3339@tp.orcam.me.uk>
+References: <alpine.DEB.2.00.1705180145220.2590@tp.orcam.me.uk> <alpine.DEB.2.00.1705230345530.2590@tp.orcam.me.uk> <20170703203250.GN31455@jhogan-linux.le.imgtec.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="SPLgQB0HFVQkxokU"
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.00.1707041635000.3339@tp.orcam.me.uk>
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,54 +21,38 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Maciej W. Rozycki" <macro@imgtec.com>
+To: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20170704153917.CclMrIgrBKw-3_dWqxTDzzhiTUGcM4cxKQfj0ANtOzM@z>
+Message-ID: <20170704155000.25E3_bnPhBRQSLWY2iWA8mDCDbOsyQt8aAkv9RNZqq4@z>
 
---SPLgQB0HFVQkxokU
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, 3 Jul 2017, James Hogan wrote:
 
-On Tue, Jul 04, 2017 at 04:35:51PM +0100, Maciej W. Rozycki wrote:
-> On Mon, 3 Jul 2017, James Hogan wrote:
->=20
-> > >  Submitted third in the series so that the presence of "mips16e2" in=
-=20
-> > > /proc/cpuinfo not only indicates the hardware feature, but our correc=
-t=20
-> > > unaligned emulation as well.
-> >=20
-> > This should be mentioned in the commit description (not the 3rd in the
-> > series bit, the "it indicates both the hw feature and unaligned
-> > emulation" bit).
->=20
->  Shall I repost the series with this piece amended?  Or will just 3/4 do?
+> > Hardcode the absence of the MIPS16e2 ASE for all the systems that do so 
+> > for the MIPS16 ASE already, providing for code to be optimized away.
+> > 
+> > Signed-off-by: Maciej W. Rozycki <macro@imgtec.com>
+> 
+> I'm inclined to agree with Florian, that git formatted patches are
+> slightly easier to review, perhaps they just subjectively look more
+> familiar. Out of interest, do you not use git for retrieving kernel
+> source already?
 
-Just 3/4 should do I think.
+ I do use GIT for managing the sources themselves of course, however I 
+keep using `quilt' for patches for two main reasons:
 
-Thanks
-James
+1. It works efficiently for the work flow I've got used to, e.g. how do I 
+   hand-edit 16th previous diff with GIT; how do I swap patches; how do I 
+   move individual hunks between patches? -- these actions are trivial 
+   with `quilt'.
 
---SPLgQB0HFVQkxokU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+2. I don't use the same system for development as I do for submissions, 
+   also to make sure no unwanted bits leak by accident.
 
------BEGIN PGP SIGNATURE-----
+Maybe `quilt' can be taught to prepend `diffstat' automagically itself; 
+I'll check.
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAllbtpYACgkQbAtpk944
-dnrELxAAvlJnsFZSBOCenwPzozpgtobSCQR2j33EWuaS1GmZHKCsOFa2FTJhcUxj
-0WADH+020L8J0rOGF5RtOIepwtmqCcmBq3Da9sTLd2MHGzRoZZyaRPOILWgyeMWD
-SSxzZGxxZ530eyPGTl3qTsHOBcXEuNW+iPJ7QcPKfRTHMBLCJab3SEc5696SDfPy
-APDkBcZc+vP0HUPQ+tQ2Ihq4X9vQEKKomqExgNUOKho1ttfNVIBLxiL/gwFoCX4D
-OILYLUzL6UjIe52T+StfOPl+Pux/jOBSUd/XtZ+FR09bYk03Jb3XVbI0RCpFGkTL
-WlgJy01DIsQcxSH0swh5Ok/Z5sFVoSZYK0tLAK/HM1+RQEEVz81/zT/ZjG2kCIOP
-8UsUNb6OApV8F8PzWMfaKnKxfrYA7gbbv1AXZWr0lJrawCnNV9s8Bx6irMLQdt2G
-dVrxsnjwBVRKCJmGub3DKH6lz6tgNphkFszZTYKrXViFgO3WQfjQgj9ZAw+TgECg
-R+2V/xJ6pni+v88V0aeA08rDin3sMak5GqKEkc/owDHx3FJrCzuAXV9ouYp9KKGe
-5zSaMLbhw3rSPQdLH5saP7zxKjw5qbVxF96AzTpA6yyWpiTkFyEhu0jJOdMZ6wT7
-baX88thBwMS6aM3l8pZcJDsIjLQcJVzs0C7o9k59tRR6/S3oI48=
-=LQJ7
------END PGP SIGNATURE-----
+> Thanks for the series.
 
---SPLgQB0HFVQkxokU--
+ Thanks for your review!
+
+  Maciej

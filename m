@@ -1,14 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:53535 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:64370 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993904AbdGCWmGriBUk (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 4 Jul 2017 00:42:06 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: Fix MIPS64 FP save/restore on 32-bit kernels
-Date: Mon, 3 Jul 2017 23:41:47 +0100
-Message-ID: <9a0f24583ac74fd8da19e3edb1739dc6bb6d6d5d.1499121677.git-series.james.hogan@imgtec.com>
+        with ESMTP id S23993859AbdGDPdOZYPN7 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 4 Jul 2017 17:33:14 +0200
+Date: Tue, 4 Jul 2017 16:32:56 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH for-3.18 4/5] MIPS: UAPI: Ignore __arch_swab{16,32,64}
+ when using MIPS16
+In-Reply-To: <1499168664-25980-5-git-send-email-amit.pundir@linaro.org>
+Message-ID: <alpine.DEB.2.00.1707041525150.3339@tp.orcam.me.uk>
+References: <1499168664-25980-1-git-send-email-amit.pundir@linaro.org> <1499168664-25980-5-git-send-email-amit.pundir@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,130 +21,122 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>
-Cc: James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20170703224147.jgVKjaYa9wD7Fv_H5eNu1ziDVbAg80IHA5dMHrsJwNQ@z>
+To: Amit Pundir <amit.pundir@linaro.org>
+Cc: Greg KH <gregkh@linuxfoundation.org>, Stable <stable@vger.kernel.org>, Yousong Zhou <yszhou4tech@gmail.com>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20170704153256.lNNWLs4tUZ3uyTuZV3sEYd8TTy5xlX7UyFIidLaB6LY@z>
 
-32-bit kernels can be configured to support MIPS64, in which case
-neither CONFIG_64BIT or CONFIG_CPU_MIPS32_R* will be set. This causes
-the CP0_Status.FR checks at the point of floating point register save
-and restore to be compiled out, which results in odd FP registers not
-being saved or restored to the task or signal context even when
-CP0_Status.FR is set.
+On Tue, 4 Jul 2017, Amit Pundir wrote:
 
-Fix the ifdefs to use CONFIG_CPU_MIPSR2 and CONFIG_CPU_MIPSR6, which are
-enabled for the relevant revisions of either MIPS32 or MIPS64, along
-with some other CPUs such as Octeon (r2), Loongson1 (r2), XLP (r2),
-Loongson 3A R2.
+> From: Yousong Zhou <yszhou4tech@gmail.com>
+> 
+> commit 71a0a72456b48de972d7ed613b06a22a3aa9057f upstream.
+> 
+> Some GCC versions (e.g. 4.8.3) can incorrectly inline a function with
+> MIPS32 instructions into another function with MIPS16 code [1], causing
+> the assembler to genereate incorrect binary code or fail right away
+> complaining about unrecognized opcode.
+> 
+> In the case of __arch_swab{16,32}, when inlined by the compiler with
+> flags `-mips32r2 -mips16 -Os', the assembler can fail with the following
+> error.
+> 
+>     {standard input}:79: Error: unrecognized opcode `wsbh $2,$2'
+> 
+> For performance concerns and to workaround the issue already existing in
+> older compilers, just ignore these 2 functions when compiling with
+> mips16 enabled.
+> 
+>  [1] Inlining nomips16 function into mips16 function can result in
+>      undefined builtins, https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55777
 
-The suspect code originates from commit 597ce1723e0f ("MIPS: Support for
-64-bit FP with O32 binaries") in v3.14, however the code in
-__enable_fpu() was consistent and refused to set FR=1, falling back to
-software FPU emulation. This was suboptimal but should be functionally
-correct.
+ The patch is correct, however the description does not match reality.  
+There is no GCC bug involved here as: "Some GCC versions (e.g. 4.8.3) can 
+incorrectly inline a function [...]" would suggest, and GCC PR 
+target/55777 has nothing to do with it.
 
-Commit fcc53b5f6c38 ("MIPS: fpu.h: Allow 64-bit FPU on a 64-bit MIPS R6
-CPU") in v4.2 (and stable tagged back to 4.0) later introduced the bug
-by updating __enable_fpu() to set FR=1 but failing to update the other
-similar ifdefs to enable FR=1 state handling.
+ Here you have inline functions including an inline asm each with assembly 
+instructions that do not have a MIPS16 representation.  Unlike with GCC PR 
+target/55777 these functions are *not* marked with 
+`__attribute__((nomips16))', so the compiler is free to inline them into 
+any code, including MIPS16 code in particular, not being aware that the 
+inline asm is incompatible with MIPS16 assembly.  It can't be aware as the 
+compiler is not an assembler and it does not interpret the string 
+representing assembly code to be produced from an inline asm (beyond 
+counting assembly instruction separators).
 
-Fixes: fcc53b5f6c38 ("MIPS: fpu.h: Allow 64-bit FPU on a 64-bit MIPS R6 CPU")
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org
-Cc: <stable@vger.kernel.org> # 4.0+
----
- arch/mips/include/asm/asmmacro.h |  8 ++++----
- arch/mips/kernel/r4k_fpu.S       | 12 ++++++------
- arch/mips/kernel/r4k_switch.S    |  8 ++++----
- 3 files changed, 14 insertions(+), 14 deletions(-)
+ Marking these functions with `__attribute__((nomips16))' would instruct 
+the compiler to compile these functions as well as any function they get 
+inlined into as regular MIPS code, which may or may not be desirable (plus 
+*then* you might hit GCC PR target/55777, and IIRC some other bugs in 
+older compilers).  So excluding them from MIPS16 code instead seems like a 
+reasonable choice.
 
-diff --git a/arch/mips/include/asm/asmmacro.h b/arch/mips/include/asm/asmmacro.h
-index 83054f79f72a..b815d7b3bd27 100644
---- a/arch/mips/include/asm/asmmacro.h
-+++ b/arch/mips/include/asm/asmmacro.h
-@@ -126,8 +126,8 @@
- 	.endm
- 
- 	.macro	fpu_save_double thread status tmp
--#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2) || \
--		defined(CONFIG_CPU_MIPS32_R6)
-+#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPSR2) || \
-+		defined(CONFIG_CPU_MIPSR6)
- 	sll	\tmp, \status, 5
- 	bgez	\tmp, 10f
- 	fpu_save_16odd \thread
-@@ -184,8 +184,8 @@
- 	.endm
- 
- 	.macro	fpu_restore_double thread status tmp
--#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2) || \
--		defined(CONFIG_CPU_MIPS32_R6)
-+#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPSR2) || \
-+		defined(CONFIG_CPU_MIPSR6)
- 	sll	\tmp, \status, 5
- 	bgez	\tmp, 10f				# 16 register mode?
- 
-diff --git a/arch/mips/kernel/r4k_fpu.S b/arch/mips/kernel/r4k_fpu.S
-index 56d86b09c917..93b1745def16 100644
---- a/arch/mips/kernel/r4k_fpu.S
-+++ b/arch/mips/kernel/r4k_fpu.S
-@@ -50,11 +50,11 @@ LEAF(_save_fp_context)
- 	cfc1	t1, fcr31
- 	.set	pop
- 
--#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2) || \
--		defined(CONFIG_CPU_MIPS32_R6)
-+#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPSR2) || \
-+		defined(CONFIG_CPU_MIPSR6)
- 	.set	push
- 	SET_HARDFLOAT
--#ifdef CONFIG_CPU_MIPS32_R2
-+#ifdef CONFIG_CPU_MIPSR2
- 	.set	mips32r2
- 	.set	fp=64
- 	mfc0	t0, CP0_STATUS
-@@ -118,11 +118,11 @@ LEAF(_save_fp_context)
- LEAF(_restore_fp_context)
- 	EX	lw t1, 0(a1)
- 
--#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2)  || \
--		defined(CONFIG_CPU_MIPS32_R6)
-+#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPSR2)  || \
-+		defined(CONFIG_CPU_MIPSR6)
- 	.set	push
- 	SET_HARDFLOAT
--#ifdef CONFIG_CPU_MIPS32_R2
-+#ifdef CONFIG_CPU_MIPSR2
- 	.set	mips32r2
- 	.set	fp=64
- 	mfc0	t0, CP0_STATUS
-diff --git a/arch/mips/kernel/r4k_switch.S b/arch/mips/kernel/r4k_switch.S
-index 7b386d54fd65..5508d3a03dbf 100644
---- a/arch/mips/kernel/r4k_switch.S
-+++ b/arch/mips/kernel/r4k_switch.S
-@@ -71,8 +71,8 @@
-  */
- LEAF(_save_fp)
- EXPORT_SYMBOL(_save_fp)
--#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2) || \
--		defined(CONFIG_CPU_MIPS32_R6)
-+#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPSR2) || \
-+		defined(CONFIG_CPU_MIPSR6)
- 	mfc0	t0, CP0_STATUS
- #endif
- 	fpu_save_double a0 t0 t1		# clobbers t1
-@@ -83,8 +83,8 @@ EXPORT_SYMBOL(_save_fp)
-  * Restore a thread's fp context.
-  */
- LEAF(_restore_fp)
--#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPS32_R2) || \
--		defined(CONFIG_CPU_MIPS32_R6)
-+#if defined(CONFIG_64BIT) || defined(CONFIG_CPU_MIPSR2) || \
-+		defined(CONFIG_CPU_MIPSR6)
- 	mfc0	t0, CP0_STATUS
- #endif
- 	fpu_restore_double a0 t0 t1		# clobbers t1
--- 
-git-series 0.8.10
+ OTOH, generic MIPS16 byte-swap code produced is awful, especially 
+`swab32' (and `swab64' does not apply as we don't support 64-bit MIPS16 
+code under Linux), so perhaps for MIPS16 code these really ought to be 
+`__attribute__((nomips16, noinline))' instead, avoiding turning the caller 
+into regular MIPS code as well as any old `nomips16' function inlining 
+bugs; although the benefit might outweigh the cost if one of these 
+functions is called from an otherwise leaf function and spilling registers 
+to the stack turns out necessary where it otherwise would not be.
+
+ Finally, for regular MIPS compilations contemporary versions of GCC 
+already produce the same assembly as our <uapi/asm/swab.h> provides, e.g. 
+from:
+
+$ cat swap.c
+unsigned short int swap16(unsigned short int i)
+{
+	return i << 8 | i >> 8;
+}
+
+unsigned int swap32(unsigned int i)
+{
+	return i << 24 | (i & 0xff00) << 8 | (i & 0xff0000) >> 8 | i >> 24;
+}
+
+unsigned long long int swap64(unsigned long long int i)
+{
+	return (i << 56 | (i & 0xff00LL) << 40 |
+		(i & 0xff0000LL) << 24 | (i & 0xff000000LL) << 8 |
+		(i & 0xff00000000LL) >> 8 | (i & 0xff0000000000LL) >> 24 |
+		(i & 0xff000000000000LL) >> 40 | i >> 56);
+}
+$ 
+
+you get:
+
+$ gcc -O2 -mabi=64 -march=mips64r2 -c swap.c
+$ objdump -d swap.o
+
+swap.o:     file format elf64-tradbigmips
+
+
+Disassembly of section .text:
+
+0000000000000000 <swap16>:
+   0:	7c0410a0 	wsbh	v0,a0
+   4:	03e00008 	jr	ra
+   8:	3042ffff 	andi	v0,v0,0xffff
+   c:	00000000 	nop
+
+0000000000000010 <swap32>:
+  10:	7c0410a0 	wsbh	v0,a0
+  14:	03e00008 	jr	ra
+  18:	00221402 	ror	v0,v0,0x10
+  1c:	00000000 	nop
+
+0000000000000020 <swap64>:
+  20:	7c0410a4 	dsbh	v0,a0
+  24:	03e00008 	jr	ra
+  28:	7c021164 	dshd	v0,v0
+  2c:	00000000 	nop
+$ 
+
+so I think we ought to make all this conditional on GCC being old enough, 
+as the compiler is always better suited to make code scheduling decisions 
+when there's no inline asm involved.
+
+ FWIW,
+
+  Maciej

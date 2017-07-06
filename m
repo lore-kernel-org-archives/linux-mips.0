@@ -1,23 +1,12 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:25311 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23993920AbdGFOJSNgFhn (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 6 Jul 2017 16:09:18 +0200
-Date: Thu, 6 Jul 2017 15:09:12 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH v2 2/4] MIPS: VDSO: Add implementation of clock_gettime()
- fallback
-Message-ID: <20170706140911.GG6973@jhogan-linux.le.imgtec.org>
-References: <1498665337-28845-1-git-send-email-aleksandar.markovic@rt-rk.com>
- <1498665337-28845-3-git-send-email-aleksandar.markovic@rt-rk.com>
- <alpine.DEB.2.00.1707060055470.3339@tp.orcam.me.uk>
- <20170706090553.GO31455@jhogan-linux.le.imgtec.org>
- <alpine.DEB.2.00.1707061405410.3339@tp.orcam.me.uk>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Xv6Km4yt4judTFSp"
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.00.1707061405410.3339@tp.orcam.me.uk>
-Return-Path: <James.Hogan@imgtec.com>
+Received: from mail-wr0-x244.google.com ([IPv6:2a00:1450:400c:c0c::244]:33040
+        "EHLO mail-wr0-x244.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993939AbdGFWZBV9Xw7 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 7 Jul 2017 00:25:01 +0200
+From: Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH v3 0/4] Broadcom STB S2/S3/S5 support for ARM and MIPS
+Date: Thu,  6 Jul 2017 15:22:21 -0700
+Message-ID: <20170706222225.9758-1-f.fainelli@gmail.com>
+Return-Path: <f.fainelli@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,58 +16,74 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Maciej W. Rozycki" <macro@imgtec.com>
-Cc: Aleksandar Markovic <aleksandar.markovic@rt-rk.com>, linux-mips@linux-mips.org, Goran Ferenc <goran.ferenc@imgtec.com>, Miodrag Dinic <miodrag.dinic@imgtec.com>, Aleksandar Markovic <aleksandar.markovic@imgtec.com>, Douglas Leung <douglas.leung@imgtec.com>, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@imgtec.com>, Petar Jovanovic <petar.jovanovic@imgtec.com>, Raghu Gandham <raghu.gandham@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20170706140912.xg6DbFfTbR0s6qSATkiV93bIQGdlKUZeAIoVRSOYQho@z>
+To: linux-kernel@vger.kernel.org
+Cc: Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Brian Norris <computersforpeace@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, "maintainer:BROADCOM BCM7XXX ARM
+        ARCHITECTURE" <bcm-kernel-feedback-list@broadcom.com>, Hauke Mehrtens <hauke@hauke-m.de>, =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, Markus Mayer <mmayer@broadcom.com>, Arnd Bergmann <arnd@arndb.de>, Eric Anholt <eric@anholt.net>, Justin Chen <justinpopo6@gmail.com>, Doug Berger <opendmb@gmail.com>, "open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, "moderated list:BROADCOM BCM7XXX
+        ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, "open list:BROADCOM BCM47XX MIPS ARCHITECTURE" <linux-mips@linux-mips.org>, linux-pm@vger.kernerl.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Message-ID: <20170706222221.RKx4HZqJ2aRBBTQR4Iw9B5dBnStplA4W3yxOMH5Sj9o@z>
 
---Xv6Km4yt4judTFSp
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On Thu, Jul 06, 2017 at 02:12:37PM +0100, Maciej W. Rozycki wrote:
-> On Thu, 6 Jul 2017, James Hogan wrote:
-> > > (and would have to forcibly use the 32-bit encoding in the microMIPS
-> > > case)?
-> >=20
-> > I don't believe there is a 16-bit SYSCALL encoding in microMIPS, at
-> > least I can't see one in the 5.04 manual.
->=20
->  I referred to the preceding instruction, presumably LI, that does have a=
-=20
-> 16-bit variant in the microMIPS instruction set.
+This patch series adds support for S2/S3/S5 suspend/resume states on
+ARM and MIPS based Broadcom STB SoCs.
 
-Ah yes, I see what you mean.
+This was submitted a long time ago by Brian, and I am now picking this
+up and trying to get this included with support for our latest chips.
 
-Hopefully microMIPS support is new enough for that not to matter.
+Provided that I can collect the necessary Acks from Rob (DT) and other
+people (Rafael?) I would probably take this via the Broadcom ARM SoC
+pull requests.
 
-It appears that the restart behaviour was improved in v2.6.36 in commit
-8f5a00eb422e ("MIPS: Sanitize restart logics"), whereas first mentions
-of micromips are in v3.9, in commit f8fa4811dbb2 ("MIPS: Add support for
-the M14KEc core.").
+Thank you!
 
-Cheers
-James
+Changes in v3:
 
---Xv6Km4yt4judTFSp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+- make SRAM mapping uncached
+- make SWAP_STACK + brcmstb_pm_s3_finish a single asm volatile statement
+- added Rob's Acked-by to first patch
 
------BEGIN PGP SIGNATURE-----
+Changes in v2:
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlleRHsACgkQbAtpk944
-dnr5YA/+NYnq2IOaUfnAk8+buZjf3Z1yYRGYKiiB3bygfEBpxge9mb++d5J2olOM
-tA15j9aNiqyZ8RRoV8sVwkbXQliwjMbiRdnc+zCMVJZGTIfkq4nLY/Eh4aG0Hg7D
-lx1UGBDixpB9/RcuOsKbDwms8jnaRKgFsCQ+JEKotAmdrYcYN7K4kesnIPxWTpYy
-o4J4/pVLUIF5s46okSNYQf2pPH7IV8JYbqt5ls9seKwzVcReb99BpaNF1uhE2vEE
-8IxOntJkbUjk7QtF7cRm4Ao/LWc4fVh+c/ZkDpa2TMRkJw1I4QEYCY3n5RAi7IAe
-YG7xq9RsjAG1ec/CYklAguXw3Rz8QJM+vF4zmVOBhCBecKMEu0jXJVR+R5nmj+oM
-/W0lppuRbWhYti3Nub5f6WPKQHvpnRCYZ9/h5uo4Hws4QKrxEOWPwjXVpO3/LbJR
-Y3sYN5yU4F8BjXSZeBpj4DChK2MGkZ5f+w19yDBEpxARr2wnuIOQ7sF9dF6k5fL2
-KC+zJhOD0vueWmvI5fIpgSCRZSZKyHTs8iAFr1EZFSGR9Sf87kazfcC180Mc1DKh
-ZN1ts1Vb5e2g5lGdamNRkEEelScRUR2gjSXedw80zBdrIBM+HyuA2zdMX+MvXTli
-IT6FyXxrZiyShYQCApW/OkBiA5r1I/Bcrchfxe5eMt9pu0MFZbo=
-=qOWk
------END PGP SIGNATURE-----
+- clarify the first patch's subject (Rob)
+- removed patch #2 which was creating a bisectability problem (kbuild)
+- added proper AFLAGS to get s2-arm.S to build properly (kbuild)
+- improved MIPS power management binding document (Rob)
 
---Xv6Km4yt4judTFSp--
+Brian Norris (1):
+  soc: bcm: brcmstb: Add support for S2/S3/S5 suspend states (ARM)
+
+Florian Fainelli (2):
+  dt-bindings: ARM: brcmstb: Update Broadcom STB Power Management
+    binding
+  dt-bindings: Document MIPS Broadcom STB power management nodes
+
+Justin Chen (1):
+  soc bcm: brcmstb: Add support for S2/S3/S5 suspend states (MIPS)
+
+ .../devicetree/bindings/arm/bcm/brcm,brcmstb.txt   |   6 +-
+ .../devicetree/bindings/mips/brcm/soc.txt          | 153 ++++
+ drivers/soc/bcm/Kconfig                            |   2 +
+ drivers/soc/bcm/brcmstb/Kconfig                    |   9 +
+ drivers/soc/bcm/brcmstb/Makefile                   |   1 +
+ drivers/soc/bcm/brcmstb/pm/Makefile                |   3 +
+ drivers/soc/bcm/brcmstb/pm/aon_defs.h              | 113 +++
+ drivers/soc/bcm/brcmstb/pm/pm-arm.c                | 836 +++++++++++++++++++++
+ drivers/soc/bcm/brcmstb/pm/pm-mips.c               | 461 ++++++++++++
+ drivers/soc/bcm/brcmstb/pm/pm.h                    |  89 +++
+ drivers/soc/bcm/brcmstb/pm/s2-arm.S                |  76 ++
+ drivers/soc/bcm/brcmstb/pm/s2-mips.S               | 200 +++++
+ drivers/soc/bcm/brcmstb/pm/s3-mips.S               | 146 ++++
+ 13 files changed, 2094 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/soc/bcm/brcmstb/Kconfig
+ create mode 100644 drivers/soc/bcm/brcmstb/pm/Makefile
+ create mode 100644 drivers/soc/bcm/brcmstb/pm/aon_defs.h
+ create mode 100644 drivers/soc/bcm/brcmstb/pm/pm-arm.c
+ create mode 100644 drivers/soc/bcm/brcmstb/pm/pm-mips.c
+ create mode 100644 drivers/soc/bcm/brcmstb/pm/pm.h
+ create mode 100644 drivers/soc/bcm/brcmstb/pm/s2-arm.S
+ create mode 100644 drivers/soc/bcm/brcmstb/pm/s2-mips.S
+ create mode 100644 drivers/soc/bcm/brcmstb/pm/s3-mips.S
+
+-- 
+2.9.3

@@ -1,16 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:24388 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993945AbdGGQMrGb7p- (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 7 Jul 2017 18:12:47 +0200
-From: Harvey Hunt <harvey.hunt@imgtec.com>
-Subject: [PATCH 2/2] MIPS: dts: Ci20: Add ethernet and fixed-regulator nodes
-Date: Fri, 7 Jul 2017 17:12:08 +0100
-Message-ID: <1499443928-10620-2-git-send-email-harvey.hunt@imgtec.com>
-In-Reply-To: <1499443928-10620-1-git-send-email-harvey.hunt@imgtec.com>
-References: <1499443928-10620-1-git-send-email-harvey.hunt@imgtec.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Harvey.Hunt@imgtec.com>
+Received: from mail-qk0-x243.google.com ([IPv6:2607:f8b0:400d:c09::243]:35903
+        "EHLO mail-qk0-x243.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993949AbdGGTV3ZUVjc (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 7 Jul 2017 21:21:29 +0200
+Received: by mail-qk0-x243.google.com with SMTP id v143so5498384qkb.3
+        for <linux-mips@linux-mips.org>; Fri, 07 Jul 2017 12:21:29 -0700 (PDT)
+From: Doug Berger <opendmb@gmail.com>
+Subject: [PATCH 4/6] irqchip: brcmstb-l2: Remove some processing from the handler
+Date: Fri,  7 Jul 2017 12:20:14 -0700
+Message-ID: <20170707192016.13001-5-opendmb@gmail.com>
+In-Reply-To: <20170707192016.13001-1-opendmb@gmail.com>
+References: <20170707192016.13001-1-opendmb@gmail.com>
+Return-Path: <opendmb@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,96 +20,174 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org
-Cc: Harvey Hunt <harvey.hunt@imgtec.com>, Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Paul Cercueil <paul@crapouillou.net>, Linus Walleij <linus.walleij@linaro.org>, devicetree@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20170707161208.l8g9UQDKt_XtiqVE4vL4zdtjjjnFXjDxWlGEp77wm64@z>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Doug Berger <opendmb@gmail.com>, Kevin Cernekee <cernekee@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, Brian Norris <computersforpeace@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, "maintainer:BROADCOM BCM7XXX ARM
+        ARCHITECTURE" <bcm-kernel-feedback-list@broadcom.com>, "open list:BROADCOM BMIPS MIPS ARCHITECTURE" <linux-mips@linux-mips.org>, "open list:IRQCHIP DRIVERS" <linux-kernel@vger.kernel.org>, "moderated list:BROADCOM BCM7XXX
+        ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20170707192014.zjqXFRqZtO3YueCiWZH9RHN2_UA5I_3qjTtQ8CC5lhs@z>
 
-Add devicetree nodes for the DM9000 and the ethernet power regulator.
-Additionally, add a new pinctrl node for the ethernet chip's pins.
+Saving the generic chip pointer in the brcmstb_l2_intc_data prevents
+the need to call irq_get_domain_generic_chip().  Also don't need to
+save parent_irq and base there since local variables in the
+brcmstb_l2_intc_of_init() function are just as good.
 
-Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-Cc: Paul Burton <paul.burton@imgtec.com>
-Cc: Rob Herring <robh+dt@kernel.org> 
-Cc: Mark Rutland <mark.rutland@arm.com> 
-Cc: Paul Cercueil <paul@crapouillou.net> 
-Cc: Linus Walleij <linus.walleij@linaro.org> 
-Cc: devicetree@vger.kernel.org 
-Cc: linux-mips@linux-mips.org 
-Cc: linux-kernel@vger.kernel.org 
+The handle_edge_irq flow or chained_irq_enter takes care of the
+acknowledgement of the interrupt so it is redundant to clear it in
+brcmstb_l2_intc_irq_handle().
+
+irq_linear_revmap() is a fast path equivalent of irq_find_mapping()
+that is appropriate to use for domain controllers of this type.
+
+Defining irq_mask_ack is slightly more efficient than just
+implementing irq_mask and irq_ack seperately.
+
+Signed-off-by: Doug Berger <opendmb@gmail.com>
 ---
-Ralf, both of these patches rely on Paul Cercueil's pinctrl
-and gpio patches from Linus Walleij's 4.13 pinctrl pull request.
+ drivers/irqchip/irq-brcmstb-l2.c | 46 +++++++++++++++++++---------------------
+ 1 file changed, 22 insertions(+), 24 deletions(-)
 
- arch/mips/boot/dts/ingenic/ci20.dts | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
-
-diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
-index fd138d99..6c38184 100644
---- a/arch/mips/boot/dts/ingenic/ci20.dts
-+++ b/arch/mips/boot/dts/ingenic/ci20.dts
-@@ -1,6 +1,7 @@
- /dts-v1/;
+diff --git a/drivers/irqchip/irq-brcmstb-l2.c b/drivers/irqchip/irq-brcmstb-l2.c
+index bddf169c4b37..977ae55d47d4 100644
+--- a/drivers/irqchip/irq-brcmstb-l2.c
++++ b/drivers/irqchip/irq-brcmstb-l2.c
+@@ -1,7 +1,7 @@
+ /*
+  * Generic Broadcom Set Top Box Level 2 Interrupt controller driver
+  *
+- * Copyright (C) 2014 Broadcom Corporation
++ * Copyright (C) 2014-2017 Broadcom
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+@@ -41,9 +41,8 @@
  
- #include "jz4780.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
- 
- / {
- 	compatible = "img,ci20", "ingenic,jz4780";
-@@ -21,6 +22,13 @@
- 		reg = <0x0 0x10000000
- 		       0x30000000 0x30000000>;
- 	};
-+
-+	eth0_power: fixedregulator@0 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "eth0_power";
-+		gpio = <&gpb 25 GPIO_ACTIVE_LOW>;
-+		enable-active-high;
-+	};
+ /* L2 intc private data structure */
+ struct brcmstb_l2_intc_data {
+-	int parent_irq;
+-	void __iomem *base;
+ 	struct irq_domain *domain;
++	struct irq_chip_generic *gc;
+ 	bool can_wake;
+ 	u32 saved_mask; /* for suspend/resume */
  };
+@@ -51,15 +50,14 @@ struct brcmstb_l2_intc_data {
+ static void brcmstb_l2_intc_irq_handle(struct irq_desc *desc)
+ {
+ 	struct brcmstb_l2_intc_data *b = irq_desc_get_handler_data(desc);
+-	struct irq_chip_generic *gc = irq_get_domain_generic_chip(b->domain, 0);
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+ 	unsigned int irq;
+ 	u32 status;
  
- &ext {
-@@ -123,6 +131,29 @@
- 			};
- 		};
- 	};
-+
-+	dm9000@6 {
-+		compatible = "davicom,dm9000";
-+		davicom,no-eeprom;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pins_nemc_cs6>;
-+
-+		reg = <6 0 1   /* addr */
-+		       6 2 1>; /* data */
-+
-+		ingenic,nemc-tAS = <15>;
-+		ingenic,nemc-tAH = <10>;
-+		ingenic,nemc-tBP = <20>;
-+		ingenic,nemc-tAW = <50>;
-+		ingenic,nemc-tSTRV = <100>;
-+
-+		reset-gpios = <&gpf 12 GPIO_ACTIVE_HIGH>;
-+		vcc-supply = <&eth0_power>;
-+
-+		interrupt-parent = <&gpe>;
-+		interrupts = <19 4>;
-+	};
- };
+ 	chained_irq_enter(chip, desc);
  
- &bch {
-@@ -165,4 +196,10 @@
- 		groups = "nemc-cs1";
- 		bias-disable;
- 	};
-+
-+	pins_nemc_cs6: nemc-cs6 {
-+		function = "nemc-cs6";
-+		groups = "nemc-cs6";
-+		bias-disable;
-+	};
- };
+-	status = irq_reg_readl(gc, CPU_STATUS) &
+-		~(irq_reg_readl(gc, CPU_MASK_STATUS));
++	status = irq_reg_readl(b->gc, CPU_STATUS) &
++		~(irq_reg_readl(b->gc, CPU_MASK_STATUS));
+ 
+ 	if (status == 0) {
+ 		raw_spin_lock(&desc->lock);
+@@ -70,10 +68,8 @@ static void brcmstb_l2_intc_irq_handle(struct irq_desc *desc)
+ 
+ 	do {
+ 		irq = ffs(status) - 1;
+-		/* ack at our level */
+-		irq_reg_writel(gc, 1 << irq, CPU_CLEAR);
+ 		status &= ~(1 << irq);
+-		generic_handle_irq(irq_find_mapping(b->domain, irq));
++		generic_handle_irq(irq_linear_revmap(b->domain, irq));
+ 	} while (status);
+ out:
+ 	chained_irq_exit(chip, desc);
+@@ -116,32 +112,33 @@ static int __init brcmstb_l2_intc_of_init(struct device_node *np,
+ {
+ 	unsigned int clr = IRQ_NOREQUEST | IRQ_NOPROBE | IRQ_NOAUTOEN;
+ 	struct brcmstb_l2_intc_data *data;
+-	struct irq_chip_generic *gc;
+ 	struct irq_chip_type *ct;
+ 	int ret;
+ 	unsigned int flags;
++	int parent_irq;
++	void __iomem *base;
+ 
+ 	data = kzalloc(sizeof(*data), GFP_KERNEL);
+ 	if (!data)
+ 		return -ENOMEM;
+ 
+-	data->base = of_iomap(np, 0);
+-	if (!data->base) {
++	base = of_iomap(np, 0);
++	if (!base) {
+ 		pr_err("failed to remap intc L2 registers\n");
+ 		ret = -ENOMEM;
+ 		goto out_free;
+ 	}
+ 
+ 	/* Disable all interrupts by default */
+-	writel(0xffffffff, data->base + CPU_MASK_SET);
++	writel(0xffffffff, base + CPU_MASK_SET);
+ 
+ 	/* Wakeup interrupts may be retained from S5 (cold boot) */
+ 	data->can_wake = of_property_read_bool(np, "brcm,irq-can-wake");
+ 	if (!data->can_wake)
+-		writel(0xffffffff, data->base + CPU_CLEAR);
++		writel(0xffffffff, base + CPU_CLEAR);
+ 
+-	data->parent_irq = irq_of_parse_and_map(np, 0);
+-	if (!data->parent_irq) {
++	parent_irq = irq_of_parse_and_map(np, 0);
++	if (!parent_irq) {
+ 		pr_err("failed to find parent interrupt\n");
+ 		ret = -EINVAL;
+ 		goto out_unmap;
+@@ -170,18 +167,19 @@ static int __init brcmstb_l2_intc_of_init(struct device_node *np,
+ 	}
+ 
+ 	/* Set the IRQ chaining logic */
+-	irq_set_chained_handler_and_data(data->parent_irq,
++	irq_set_chained_handler_and_data(parent_irq,
+ 					 brcmstb_l2_intc_irq_handle, data);
+ 
+-	gc = irq_get_domain_generic_chip(data->domain, 0);
+-	gc->reg_base = data->base;
+-	gc->private = data;
+-	ct = gc->chip_types;
++	data->gc = irq_get_domain_generic_chip(data->domain, 0);
++	data->gc->reg_base = base;
++	data->gc->private = data;
++	ct = data->gc->chip_types;
+ 
+ 	ct->chip.irq_ack = irq_gc_ack_set_bit;
+ 	ct->regs.ack = CPU_CLEAR;
+ 
+ 	ct->chip.irq_mask = irq_gc_mask_disable_reg;
++	ct->chip.irq_mask_ack = irq_gc_mask_disable_and_ack_set;
+ 	ct->regs.disable = CPU_MASK_SET;
+ 
+ 	ct->chip.irq_unmask = irq_gc_unmask_enable_reg;
+@@ -194,19 +192,19 @@ static int __init brcmstb_l2_intc_of_init(struct device_node *np,
+ 		/* This IRQ chip can wake the system, set all child interrupts
+ 		 * in wake_enabled mask
+ 		 */
+-		gc->wake_enabled = 0xffffffff;
++		data->gc->wake_enabled = 0xffffffff;
+ 		ct->chip.irq_set_wake = irq_gc_set_wake;
+ 	}
+ 
+ 	pr_info("registered L2 intc (mem: 0x%p, parent irq: %d)\n",
+-			data->base, data->parent_irq);
++			base, parent_irq);
+ 
+ 	return 0;
+ 
+ out_free_domain:
+ 	irq_domain_remove(data->domain);
+ out_unmap:
+-	iounmap(data->base);
++	iounmap(base);
+ out_free:
+ 	kfree(data);
+ 	return ret;
 -- 
-2.7.4
+2.13.0

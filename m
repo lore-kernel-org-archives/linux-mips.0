@@ -1,14 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:40799 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991172AbdGJInlDL0rM (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 10 Jul 2017 10:43:41 +0200
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [PATCH v2] MIPS: Fix minimum alignment requirement of IRQ stack
-Date: Mon, 10 Jul 2017 09:43:31 +0100
-Message-ID: <1499676211-20141-1-git-send-email-matt.redfearn@imgtec.com>
+Received: from mail-yw0-f194.google.com ([209.85.161.194]:36313 "EHLO
+        mail-yw0-f194.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993423AbdGJPxWHV2kg (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 10 Jul 2017 17:53:22 +0200
+Received: by mail-yw0-f194.google.com with SMTP id l21so5561997ywb.3
+        for <linux-mips@linux-mips.org>; Mon, 10 Jul 2017 08:53:22 -0700 (PDT)
+Date: Mon, 10 Jul 2017 10:53:15 -0500
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 6/6] irqchip: brcmstb-l2: Add support for the BCM7271 L2
+ controller
+Message-ID: <20170710155315.2sa6k3auolxpo2ns@rob-hp-laptop>
+References: <20170707192016.13001-1-opendmb@gmail.com>
+ <20170707192016.13001-7-opendmb@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@imgtec.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170707192016.13001-7-opendmb@gmail.com>
+Return-Path: <robherring2@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,42 +25,21 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, Chris Metcalf <cmetcalf@mellanox.com>, Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org, Aaron Tomlin <atomlin@redhat.com>, "Jason A. Donenfeld" <jason@zx2c4.com>
-Message-ID: <20170710084331.blGbdZpsBK81ikW4JEyBYRReatJYW0jVSWQLpHoDXcs@z>
+To: Doug Berger <opendmb@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, Mark Rutland <mark.rutland@arm.com>, Kevin Cernekee <cernekee@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, Brian Norris <computersforpeace@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" <bcm-kernel-feedback-list@broadcom.com>, "open list:IRQCHIP DRIVERS" <linux-kernel@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, "open list:BROADCOM BMIPS MIPS ARCHITECTURE" <linux-mips@linux-mips.org>, "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20170710155315.8Ntmi6zZh6c4NslNTARVqau2tYIvQ5Ja0VFNQHU1yO8@z>
 
-Commit db8466c581cc ("MIPS: IRQ Stack: Unwind IRQ stack onto task
-stack") erroneously set the initial stack pointer of the IRQ stack to a
-value with a 4 byte alignment. The MIPS32 ABI requires that the minimum
-stack alignment is 8 byte, and the MIPS64 ABIs(n32/n64) require 16 byte
-minimum alignment. Fix IRQ_STACK_START such that it leaves space for the
-dummy stack frame (containing interrupted task kernel stack pointer)
-while also meeting minimum alignment requirements.
+On Fri, Jul 07, 2017 at 12:20:16PM -0700, Doug Berger wrote:
+> Add the initialization of the generic irq chip for the BCM7271 L2
+> interrupt controller.  This controller only supports level
+> interrupts and uses the "brcm,bcm7271-l2-intc" compatibility
+> string.
+> 
+> Signed-off-by: Doug Berger <opendmb@gmail.com>
+> ---
+>  .../bindings/interrupt-controller/brcm,l2-intc.txt |  3 +-
 
-Fixes: db8466c581cc ("MIPS: IRQ Stack: Unwind IRQ stack onto task stack")
-Reported-by: Darius Ivanauskas <dasilt@yahoo.com>
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
----
+Acked-by: Rob Herring <robh@kernel.org>
 
-Changes in v2:
-Don't include asm/asm.h since the definitions in it lead to breakage
-when it pollutes the C namespace (thanks kbuild test robot!)
-
- arch/mips/include/asm/irq.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/mips/include/asm/irq.h b/arch/mips/include/asm/irq.h
-index ddd1c918103b..c5d351786416 100644
---- a/arch/mips/include/asm/irq.h
-+++ b/arch/mips/include/asm/irq.h
-@@ -18,7 +18,7 @@
- #include <irq.h>
- 
- #define IRQ_STACK_SIZE			THREAD_SIZE
--#define IRQ_STACK_START			(IRQ_STACK_SIZE - sizeof(unsigned long))
-+#define IRQ_STACK_START			(IRQ_STACK_SIZE - 16)
- 
- extern void *irq_stack[NR_CPUS];
- 
--- 
-2.7.4
+>  drivers/irqchip/irq-brcmstb-l2.c                   | 86 ++++++++++++++++------
+>  2 files changed, 66 insertions(+), 23 deletions(-)

@@ -1,17 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:24397 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:7320 "EHLO
         imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992213AbdGKKRwpKON0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 11 Jul 2017 12:17:52 +0200
-Date: Tue, 11 Jul 2017 11:17:46 +0100
+        by eddie.linux-mips.org with ESMTP id S23993179AbdGKLG6op2Gp (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 11 Jul 2017 13:06:58 +0200
+Date: Tue, 11 Jul 2017 12:06:52 +0100
 From: James Hogan <james.hogan@imgtec.com>
 Subject: Re: [PATCH] MIPS: Fix MIPS I ISA /proc/cpuinfo reporting
-Message-ID: <20170711101746.GQ31455@jhogan-linux.le.imgtec.org>
+Message-ID: <20170711110652.GO6973@jhogan-linux.le.imgtec.org>
 References: <alpine.LFD.2.20.1707082259380.5208@eddie.linux-mips.org>
+ <20170711101746.GQ31455@jhogan-linux.le.imgtec.org>
+ <alpine.LFD.2.20.1707111149220.2054@eddie.linux-mips.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="0pkK7MCEo5hACTvx"
+        protocol="application/pgp-signature"; boundary="6PUEI5/nYziPl3wQ"
 Content-Disposition: inline
-In-Reply-To: <alpine.LFD.2.20.1707082259380.5208@eddie.linux-mips.org>
+In-Reply-To: <alpine.LFD.2.20.1707111149220.2054@eddie.linux-mips.org>
 Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -24,51 +26,111 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: "Maciej W. Rozycki" <macro@linux-mips.org>
 Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, stable@vger.kernel.org
-Message-ID: <20170711101746.cTqx60oI3vq0URr6SIuxNskbTnCOmbylLG0gCSBTGFY@z>
+Message-ID: <20170711110652.5trF5ak93cGviUmaESEUiv1yeUYwXf4efJCXVNeyq5g@z>
 
---0pkK7MCEo5hACTvx
+--6PUEI5/nYziPl3wQ
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jul 08, 2017 at 11:24:44PM +0100, Maciej W. Rozycki wrote:
-> Cc: stable@vger.kernel.org # 3.19+
-> Fixes: 515a6393dbac ("MIPS: kernel: proc: Add MIPS R6 support to /proc/cpuinfo")
+On Tue, Jul 11, 2017 at 11:56:08AM +0100, Maciej W. Rozycki wrote:
+> On Tue, 11 Jul 2017, James Hogan wrote:
+>=20
+> > On Sat, Jul 08, 2017 at 11:24:44PM +0100, Maciej W. Rozycki wrote:
+> > > Cc: stable@vger.kernel.org # 3.19+
+> > > Fixes: 515a6393dbac ("MIPS: kernel: proc: Add MIPS R6 support to /pro=
+c/cpuinfo")
+> >=20
+> > That commit landed in v4.0-rc1, not 3.19.
+>=20
+>  Hmm:
+>=20
+> $ git show 515a6393dbac:Makefile | head -5
+> VERSION =3D 3
+> PATCHLEVEL =3D 19
+> SUBLEVEL =3D 0
+> EXTRAVERSION =3D -rc4
+> NAME =3D Diseased Newt
+> $=20
+>=20
+> I just trusted that.
 
-That commit landed in v4.0-rc1, not 3.19.
+Yeh, thats the release its based on, not the release it was first merged
+into, usually the subsystem branch for the next release is based on one
+of the rc's of the previous release.
 
-Most stable tags with comments also have square brackets around the
-email too, i.e.:
-Cc: <stable@vger.kernel.org> # 4.0+
+I have this slow hack in my ~/.gitconfig:
+[alias]
+	tc =3D tag --contains
+	vc =3D "!vc() { for i in `git tc \"$@\" | grep '^v'`; do echo \"$(git log =
+-1 --pretty=3D'%ct' $i) $i\"; done | sort -n | head -n1 | sed 's/^[0-9]* //=
+g'; }; vc"
 
-(though maybe thats just not to confuse git-send-email).
+Then:
+$ git vc 515a6393dbac4f4492237c7b305bbf9c4c558a1c                          =
+                                                                    =20
+v4.0-rc1
 
-Otherwise:
-Reviewed-by: James Hogan <james.hogan@imgtec.com>
+You can do something sort of similar with git describe --contains:
 
-Nice catch!
+$ git describe --contains 515a6393dbac4f4492237c7b305bbf9c4c558a1c
+v4.0-rc1~4^2~26^2~34
+
+But if you have other tags in your tree between the commit and an
+upstream release it'll sometimes show that instead which isn't very
+helpful.
+
+>=20
+> > Most stable tags with comments also have square brackets around the
+> > email too, i.e.:
+> > Cc: <stable@vger.kernel.org> # 4.0+
+> >=20
+> > (though maybe thats just not to confuse git-send-email).
+>=20
+>  It doesn't seem so obvious, it looks fairly random to me.  If you say=20
+> it helps, then I can adjust -- any pointers to a previous discussion?
+
+No idea, just a random observation.
+Documentation/process/stable-kernel-rules.rst uses <>, but also has a
+weird version comment format more like below which I'm not too keen on:
+
+Cc: <stable@vger.kernel.org> # 4.0.y-
 
 Cheers
 James
 
---0pkK7MCEo5hACTvx
+>=20
+> > Otherwise:
+> > Reviewed-by: James Hogan <james.hogan@imgtec.com>
+> >=20
+> > Nice catch!
+>=20
+>  Thanks for your review.  I actually spotted it visually in the course=20
+> of the recent Octeon ISA level discussion, before verifying the fix with=
+=20
+> actual hardware.
+>=20
+>   Maciej
+
+--6PUEI5/nYziPl3wQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAllkpckACgkQbAtpk944
-dnr/zxAAhQSNctVCPgsANR7EOXAhBvqoutCCkfROChat4SaCy7Gye8gazkC/t5Uo
-Md1JK8YcGtYBlDMOW+kfk5vKICenE7lvuazQngJkOQsezDSsDhwp8HU3DR+Odk7j
-pV9ktZvGgGGBzLl6bflxHaLnW/UhoJdr7QNufRygiU5l8eBRlRVHsFenDMpy3E93
-8AmVXc/jMfIMz/yzrZqszQ1nSMAd6mROFppmn+hVHxIUKkhWyHm+lar1KF/aosTs
-gXdbcRRpka14GBRHNaF2gH/KMoLL5SbCsJN70scKvVHiuEqsTwIi9Ju+6F27/Jm8
-ndMYReCpX94a3sBrtfcAiZH2TPbYCBSDLHR6nYodTHAgz8t2XQyhEbih1R1yP7nN
-ExJUga3WE5ve7LuYKq/M+qR+BK+GoZfeS8JWM3djkKLJ/JI5Y/i7uIhvdrmUZH0L
-doy3Y34NNFJYbI9fokxndAnjrxSl4QsIr/1DzoT4gcjKB21mx294aMahbK6rXGNV
-K1//s215m0jGy6DLYYdJ7nzaydh8eLh/ohiOBedprXsVT0Kcv69lyZUi74W3ZzFd
-PyNaoSTPsYdeAV51zSpjdDHyk1f4Qfy56YoFoRu6Z0hkYiiuXFYqDnfoDeqMUEA9
-aORuhHVOT5iSejeAxrE4ePDDYUynQNwfkOxiryHvGAVcuc6E7vg=
-=6BsU
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAllksUsACgkQbAtpk944
+dnp89RAArx9XdNyTDbQXI5XOgNevfs6cu+/iA5GvhDMJJ0QSodQ2PwCvMuNSUS1a
+6IKZWu/EWFSfASrv5S1XZdRu8qL8bmWTKdNSW8gl4JSCSUkEPDg1Qe4yiVkcxjx7
+C/2T3lKzcVSTOCVjVFQXmLqmr92xLKH6pp3PPC2fssl2usjlzp3ncm/4MhSRbStL
+LOE1XvAAJF0SPA0brXNQETBZybO964PNOI5fg3YSbIdK48Hh+NA7CCDpQdFhyc4X
+EeWKyvJhYXqmhpAIsAuerq3HF/YRbz4MLcAjdazlK/FdYizsv46hwgvaAVC+tNAe
+LtSSzan3+dCPiL2DWmPd+o4hgT93I0Hy5bzQJUI9gcEbtNWN1pJbUiIQe15Jv7jl
+zBHSLWPd0T5wszeBkJYTZ67rM4yz/8d7FwbhjOw/4WKLoH0UQHKmHABx/9Dj6D9k
+XhDsol2APJ5iMjbiHhNRdvAvR6zBlb6zbkSI5PH5PRunoN/OoyUQYDfF+I6khgG5
+yfYwKB8VNN67QPRFjutmLtslJqUrUeHPScmN6IZMe94TW02d1JXH/+d37dSuMdnG
+uyYY2BYeIvRJPo9lKgOyluQsbAeOJ96mpVtLzVLuPfvZfmlzNiivQzexII5uSIGp
+qjqc4LzmYkGWEiHrE0sivytYcL19UDHwMY5xDcOGMx6pVnd2Vx8=
+=oufJ
 -----END PGP SIGNATURE-----
 
---0pkK7MCEo5hACTvx--
+--6PUEI5/nYziPl3wQ--

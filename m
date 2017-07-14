@@ -1,13 +1,11 @@
-Received: from mx0a-00010702.pphosted.com ([148.163.156.75]:48053 "EHLO
+Received: from mx0a-00010702.pphosted.com ([148.163.156.75]:51313 "EHLO
         mx0b-00010702.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23994792AbdGNRSa1sJoS (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 14 Jul 2017 19:18:30 +0200
+        by eddie.linux-mips.org with ESMTP id S23992121AbdGNRdeWUX22 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 14 Jul 2017 19:33:34 +0200
 From: Nathan Sullivan <nathan.sullivan@ni.com>
-Subject: [PATCH] MIPS: NI 169445 board support
-Date: Fri, 14 Jul 2017 12:16:51 -0500
-Message-ID: <1500052611-32445-2-git-send-email-nathan.sullivan@ni.com>
-In-Reply-To: <1500052611-32445-1-git-send-email-nathan.sullivan@ni.com>
-References: <1500052611-32445-1-git-send-email-nathan.sullivan@ni.com>
+Subject: [RESEND][PATCH v5] MIPS: NI 169445 board support
+Date: Fri, 14 Jul 2017 12:33:27 -0500
+Message-ID: <1500053607-32645-1-git-send-email-nathan.sullivan@ni.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <nathan.sullivan@ni.com>
@@ -22,12 +20,17 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: ralf@linux-mips.org, robh+dt@kernel.org
 Cc: devicetree@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Nathan Sullivan <nathan.sullivan@ni.com>
-Message-ID: <20170714171651.QPr99rgjMUQCBqUpMbnLBkfS-ENf_Kf3t1RqaIc04_Q@z>
+Message-ID: <20170714173327.feUkg5KoNDEjHeH0177xPzJ8T4i6BgjkWcI4sxFrExw@z>
 
 Support the National Instruments 169445 board.
 
 Signed-off-by: Nathan Sullivan <nathan.sullivan@ni.com>
 ---
+
+Changes from v4:
+ 
+- Address Rob Herring's device tree feedback
+
  Documentation/devicetree/bindings/mips/ni.txt   |   7 ++
  MAINTAINERS                                     |   8 ++
  arch/mips/boot/dts/Makefile                     |   1 +

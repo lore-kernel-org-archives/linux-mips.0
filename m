@@ -1,14 +1,14 @@
-Received: from mx0a-00010702.pphosted.com ([148.163.156.75]:51192 "EHLO
-        mx0b-00010702.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23994845AbdGRSeLnZydy (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 18 Jul 2017 20:34:11 +0200
-From: Nathan Sullivan <nathan.sullivan@ni.com>
-Subject: [PATCH v6] MIPS: NI 169445 board support
-Date: Tue, 18 Jul 2017 13:29:09 -0500
-Message-ID: <1500402549-12090-1-git-send-email-nathan.sullivan@ni.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:1682 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23990845AbdGSIVQWq6-B (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 19 Jul 2017 10:21:16 +0200
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Subject: [PATCH v2] MIPS: SMP: Constify smp ops
+Date: Wed, 19 Jul 2017 09:21:03 +0100
+Message-ID: <1500452463-5609-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <nathan.sullivan@ni.com>
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,276 +18,447 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org, robh+dt@kernel.org
-Cc: devicetree@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Nathan Sullivan <nathan.sullivan@ni.com>
-Message-ID: <20170718182909.nfweDESG7Pzd75cxr7X50byxHAOAHPjGJ1E8U09a7iI@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, Bart Van Assche <bart.vanassche@sandisk.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Huacai Chen <chenhc@lemote.com>, Paul Gortmaker <paul.gortmaker@windriver.com>, Kevin Cernekee <cernekee@gmail.com>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Doug Ledford <dledford@redhat.com>, James Hogan <james.hogan@imgtec.com>, Joe Perches <joe@perches.com>, Florian Fainelli <f.fainelli@gmail.com>, Ingo Molnar <mingo@kernel.org>, Paul Burton <paul.burton@imgtec.com>, Andrew Morton <akpm@linux-foundation.org>, "Steven J. Hill" <steven.hill@cavium.com>
+Message-ID: <20170719082103.VBKXqiy2boQIWZLXqJ48kPTesA5duzg_Et791V_VptE@z>
 
-Support the National Instruments 169445 board.
+smp_ops providers do not modify their ops structures, so they should be
+made const for robustness. Since currently the MIPS kernel is not mapped
+with memory protection, this does not in itself provide any security
+benefit, but it still makes sense to make this change.
 
-Signed-off-by: Nathan Sullivan <nathan.sullivan@ni.com>
+There are also slight code size efficincies from the structure being
+made read-only, saving 128 bytes of kernel text on a
+pistachio_defconfig.
+Before:
+   text	   data	    bss	    dec	    hex	filename
+7187239	1772752	 470224	9430215	 8fe4c7	vmlinux
+After:
+   text	   data	    bss	    dec	    hex	filename
+7187111	1772752	 470224	9430087	 8fe447	vmlinux
+
+Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+
 ---
-Changes since v5:
 
-- make device tree addresses on the internal bus relative, and compile with
-  W=2 to be sure they are in the right format.
+Changes in v2:
+Constify plat_smp_ops structs in providers missed by v1. All upstream
+defconfigs now build.
 
- Documentation/devicetree/bindings/mips/ni.txt   |   7 ++
- MAINTAINERS                                     |   8 ++
- arch/mips/boot/dts/Makefile                     |   1 +
- arch/mips/boot/dts/ni/169445.dts                | 100 ++++++++++++++++++++++++
- arch/mips/boot/dts/ni/Makefile                  |   7 ++
- arch/mips/configs/generic/board-ni169445.config |  27 +++++++
- arch/mips/generic/Kconfig                       |   6 ++
- arch/mips/generic/vmlinux.its.S                 |  25 ++++++
- 8 files changed, 181 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mips/ni.txt
- create mode 100644 arch/mips/boot/dts/ni/169445.dts
- create mode 100644 arch/mips/boot/dts/ni/Makefile
- create mode 100644 arch/mips/configs/generic/board-ni169445.config
+ arch/mips/cavium-octeon/smp.c                    |  6 +++---
+ arch/mips/fw/arc/init.c                          |  2 +-
+ arch/mips/include/asm/bmips.h                    |  4 ++--
+ arch/mips/include/asm/mach-loongson64/loongson.h |  2 +-
+ arch/mips/include/asm/netlogic/common.h          |  2 +-
+ arch/mips/include/asm/smp-ops.h                  | 12 ++++++------
+ arch/mips/include/asm/smp.h                      | 10 +++++-----
+ arch/mips/kernel/smp-bmips.c                     |  4 ++--
+ arch/mips/kernel/smp-cmp.c                       |  2 +-
+ arch/mips/kernel/smp-cps.c                       |  4 ++--
+ arch/mips/kernel/smp-mt.c                        |  2 +-
+ arch/mips/kernel/smp-up.c                        |  2 +-
+ arch/mips/kernel/smp.c                           |  4 ++--
+ arch/mips/loongson64/loongson-3/smp.c            |  2 +-
+ arch/mips/netlogic/common/smp.c                  |  2 +-
+ arch/mips/paravirt/paravirt-smp.c                |  2 +-
+ arch/mips/paravirt/setup.c                       |  2 +-
+ arch/mips/sgi-ip27/ip27-smp.c                    |  2 +-
+ arch/mips/sibyte/bcm1480/smp.c                   |  2 +-
+ arch/mips/sibyte/common/cfe.c                    |  4 ++--
+ arch/mips/sibyte/sb1250/smp.c                    |  2 +-
+ 21 files changed, 37 insertions(+), 37 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mips/ni.txt b/Documentation/devicetree/bindings/mips/ni.txt
-new file mode 100644
-index 0000000..722bf2d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mips/ni.txt
-@@ -0,0 +1,7 @@
-+National Instruments MIPS platforms
-+
-+required root node properties:
-+	- compatible: must be "ni,169445"
-+
-+CPU Nodes
-+	- compatible: must be "mti,mips14KEc"
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7d9bd4a..73fa2e0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9294,6 +9294,14 @@ F:	include/linux/sunrpc/
- F:	include/uapi/linux/nfs*
- F:	include/uapi/linux/sunrpc/
+diff --git a/arch/mips/cavium-octeon/smp.c b/arch/mips/cavium-octeon/smp.c
+index 3de786545ded..163663a5363d 100644
+--- a/arch/mips/cavium-octeon/smp.c
++++ b/arch/mips/cavium-octeon/smp.c
+@@ -408,7 +408,7 @@ late_initcall(register_cavium_notifier);
  
-+NI169445 MIPS ARCHITECTURE
-+M:	Nathan Sullivan <nathan.sullivan@ni.com>
-+L:	linux-mips@linux-mips.org
-+S:	Maintained
-+F:	arch/mips/boot/dts/ni/
-+F:	arch/mips/configs/generic/board-ni169445.config
-+F:	Documentation/devicetree/bindings/mips/ni.txt
-+
- NILFS2 FILESYSTEM
- M:	Ryusuke Konishi <konishi.ryusuke@lab.ntt.co.jp>
- L:	linux-nilfs@vger.kernel.org
-diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
-index b9db492..27b0f37 100644
---- a/arch/mips/boot/dts/Makefile
-+++ b/arch/mips/boot/dts/Makefile
-@@ -4,6 +4,7 @@ dts-dirs	+= img
- dts-dirs	+= ingenic
- dts-dirs	+= lantiq
- dts-dirs	+= mti
-+dts-dirs	+= ni
- dts-dirs	+= netlogic
- dts-dirs	+= pic32
- dts-dirs	+= qca
-diff --git a/arch/mips/boot/dts/ni/169445.dts b/arch/mips/boot/dts/ni/169445.dts
-new file mode 100644
-index 0000000..5389ef4
---- /dev/null
-+++ b/arch/mips/boot/dts/ni/169445.dts
-@@ -0,0 +1,100 @@
-+/dts-v1/;
-+
-+/ {
-+	#address-cells = <1>;
-+	#size-cells = <1>;
-+	compatible = "ni,169445";
-+
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		cpu@0 {
-+			device_type = "cpu";
-+			compatible = "mti,mips14KEc";
-+			clocks = <&baseclk>;
-+			reg = <0>;
-+		};
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x10000000>;
-+	};
-+
-+	baseclk: baseclock {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <50000000>;
-+	};
-+
-+	cpu_intc: interrupt-controller {
-+		#address-cells = <0>;
-+		compatible = "mti,cpu-interrupt-controller";
-+		interrupt-controller;
-+		#interrupt-cells = <1>;
-+	};
-+
-+	ahb@1f300000 {
-+		compatible = "simple-bus";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges = <0x0 0x1f300000 0x80FFF>;
-+
-+		gpio1: gpio@10 {
-+			compatible = "ni,169445-nand-gpio";
-+			reg = <0x10 0x4>;
-+			reg-names = "dat";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+		};
-+
-+		gpio2: gpio@14 {
-+			compatible = "ni,169445-nand-gpio";
-+			reg = <0x14 0x4>;
-+			reg-names = "dat";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			no-output;
-+		};
-+
-+		nand@0 {
-+			compatible = "gpio-control-nand";
-+			nand-on-flash-bbt;
-+			nand-ecc-mode = "soft_bch";
-+			nand-ecc-step-size = <512>;
-+			nand-ecc-strength = <4>;
-+			reg = <0x0 4>;
-+			gpios = <&gpio2 0 0>, /* rdy */
-+				<&gpio1 1 0>, /* nce */
-+				<&gpio1 2 0>, /* ale */
-+				<&gpio1 3 0>, /* cle */
-+				<&gpio1 4 0>; /* nwp */
-+		};
-+
-+		serial@80000 {
-+			compatible = "ns16550a";
-+			reg = <0x80000 0x1000>;
-+			interrupt-parent = <&cpu_intc>;
-+			interrupts = <6>;
-+			clocks = <&baseclk>;
-+			reg-shift = <0>;
-+		};
-+
-+		ethernet@40000 {
-+			compatible = "snps,dwmac-4.10a";
-+			interrupt-parent = <&cpu_intc>;
-+			interrupts = <5>;
-+			interrupt-names = "macirq";
-+			reg = <0x40000 0x2000>;
-+			clock-names = "stmmaceth", "pclk";
-+			clocks = <&baseclk>, <&baseclk>;
-+
-+			phy-mode = "rgmii";
-+
-+			fixed-link {
-+				speed = <1000>;
-+				full-duplex;
-+			};
-+		};
-+	};
-+};
-diff --git a/arch/mips/boot/dts/ni/Makefile b/arch/mips/boot/dts/ni/Makefile
-new file mode 100644
-index 0000000..66cfdff
---- /dev/null
-+++ b/arch/mips/boot/dts/ni/Makefile
-@@ -0,0 +1,7 @@
-+dtb-$(CONFIG_FIT_IMAGE_FDT_NI169445)	+= 169445.dtb
-+
-+# Force kbuild to make empty built-in.o if necessary
-+obj-					+= dummy.o
-+
-+always					:= $(dtb-y)
-+clean-files				:= *.dtb *.dtb.S
-diff --git a/arch/mips/configs/generic/board-ni169445.config b/arch/mips/configs/generic/board-ni169445.config
-new file mode 100644
-index 0000000..0bae1f8
---- /dev/null
-+++ b/arch/mips/configs/generic/board-ni169445.config
-@@ -0,0 +1,27 @@
-+CONFIG_FIT_IMAGE_FDT_NI169445=y
-+
-+CONFIG_SERIAL_8250=y
-+CONFIG_SERIAL_8250_CONSOLE=y
-+CONFIG_SERIAL_OF_PLATFORM=y
-+
-+CONFIG_GPIOLIB=y
-+CONFIG_GPIO_SYSFS=y
-+CONFIG_GPIO_GENERIC_PLATFORM=y
-+
-+CONFIG_MTD=y
-+CONFIG_MTD_BLOCK=y
-+CONFIG_MTD_CMDLINE_PARTS=y
-+
-+CONFIG_MTD_NAND_ECC=y
-+CONFIG_MTD_NAND_ECC_BCH=y
-+CONFIG_MTD_NAND=y
-+CONFIG_MTD_NAND_GPIO=y
-+CONFIG_MTD_NAND_IDS=y
-+
-+CONFIG_MTD_UBI=y
-+CONFIG_MTD_UBI_BLOCK=y
-+
-+CONFIG_NETDEVICES=y
-+CONFIG_STMMAC_ETH=y
-+CONFIG_STMMAC_PLATFORM=y
-+CONFIG_DWMAC_GENERIC=y
-diff --git a/arch/mips/generic/Kconfig b/arch/mips/generic/Kconfig
-index a606b3f..fbf0813 100644
---- a/arch/mips/generic/Kconfig
-+++ b/arch/mips/generic/Kconfig
-@@ -16,4 +16,10 @@ config LEGACY_BOARD_SEAD3
- 	  Enable this to include support for booting on MIPS SEAD-3 FPGA-based
- 	  development boards, which boot using a legacy boot protocol.
+ #endif	/* CONFIG_HOTPLUG_CPU */
  
-+config FIT_IMAGE_FDT_NI169445
-+	bool "Include FDT for NI 169445"
-+	help
-+	  Enable this to include the FDT for the 169445 platform from
-+	  National Instruments in the FIT kernel image.
-+
- endif
-diff --git a/arch/mips/generic/vmlinux.its.S b/arch/mips/generic/vmlinux.its.S
-index f67fbf1..de851f7 100644
---- a/arch/mips/generic/vmlinux.its.S
-+++ b/arch/mips/generic/vmlinux.its.S
-@@ -29,3 +29,28 @@
- 		};
- 	};
+-struct plat_smp_ops octeon_smp_ops = {
++const struct plat_smp_ops octeon_smp_ops = {
+ 	.send_ipi_single	= octeon_send_ipi_single,
+ 	.send_ipi_mask		= octeon_send_ipi_mask,
+ 	.init_secondary		= octeon_init_secondary,
+@@ -485,7 +485,7 @@ static void octeon_78xx_send_ipi_mask(const struct cpumask *mask,
+ 		octeon_78xx_send_ipi_single(cpu, action);
+ }
+ 
+-static struct plat_smp_ops octeon_78xx_smp_ops = {
++static const struct plat_smp_ops octeon_78xx_smp_ops = {
+ 	.send_ipi_single	= octeon_78xx_send_ipi_single,
+ 	.send_ipi_mask		= octeon_78xx_send_ipi_mask,
+ 	.init_secondary		= octeon_init_secondary,
+@@ -501,7 +501,7 @@ static struct plat_smp_ops octeon_78xx_smp_ops = {
+ 
+ void __init octeon_setup_smp(void)
+ {
+-	struct plat_smp_ops *ops;
++	const struct plat_smp_ops *ops;
+ 
+ 	if (octeon_has_feature(OCTEON_FEATURE_CIU3))
+ 		ops = &octeon_78xx_smp_ops;
+diff --git a/arch/mips/fw/arc/init.c b/arch/mips/fw/arc/init.c
+index 629b24db0d3a..008555969534 100644
+--- a/arch/mips/fw/arc/init.c
++++ b/arch/mips/fw/arc/init.c
+@@ -51,7 +51,7 @@ void __init prom_init(void)
+ #endif
+ #ifdef CONFIG_SGI_IP27
+ 	{
+-		extern struct plat_smp_ops ip27_smp_ops;
++		extern const struct plat_smp_ops ip27_smp_ops;
+ 
+ 		register_smp_ops(&ip27_smp_ops);
+ 	}
+diff --git a/arch/mips/include/asm/bmips.h b/arch/mips/include/asm/bmips.h
+index a92aee7b977a..b3e2975f83d3 100644
+--- a/arch/mips/include/asm/bmips.h
++++ b/arch/mips/include/asm/bmips.h
+@@ -48,8 +48,8 @@
+ #include <asm/r4kcache.h>
+ #include <asm/smp-ops.h>
+ 
+-extern struct plat_smp_ops bmips43xx_smp_ops;
+-extern struct plat_smp_ops bmips5000_smp_ops;
++extern const struct plat_smp_ops bmips43xx_smp_ops;
++extern const struct plat_smp_ops bmips5000_smp_ops;
+ 
+ static inline int register_bmips_smp_ops(void)
+ {
+diff --git a/arch/mips/include/asm/mach-loongson64/loongson.h b/arch/mips/include/asm/mach-loongson64/loongson.h
+index c68c0cc879c6..d0ae5d55413b 100644
+--- a/arch/mips/include/asm/mach-loongson64/loongson.h
++++ b/arch/mips/include/asm/mach-loongson64/loongson.h
+@@ -26,7 +26,7 @@ extern void mach_prepare_shutdown(void);
+ /* environment arguments from bootloader */
+ extern u32 cpu_clock_freq;
+ extern u32 memsize, highmemsize;
+-extern struct plat_smp_ops loongson3_smp_ops;
++extern const struct plat_smp_ops loongson3_smp_ops;
+ 
+ /* loongson-specific command line, env and memory initialization */
+ extern void __init prom_init_memory(void);
+diff --git a/arch/mips/include/asm/netlogic/common.h b/arch/mips/include/asm/netlogic/common.h
+index e0717d10e650..a6e6cbebe046 100644
+--- a/arch/mips/include/asm/netlogic/common.h
++++ b/arch/mips/include/asm/netlogic/common.h
+@@ -84,7 +84,7 @@ nlm_set_nmi_handler(void *handler)
+  */
+ void nlm_init_boot_cpu(void);
+ unsigned int nlm_get_cpu_frequency(void);
+-extern struct plat_smp_ops nlm_smp_ops;
++extern const struct plat_smp_ops nlm_smp_ops;
+ extern char nlm_reset_entry[], nlm_reset_entry_end[];
+ 
+ /* SWIOTLB */
+diff --git a/arch/mips/include/asm/smp-ops.h b/arch/mips/include/asm/smp-ops.h
+index db7c322f057f..38859e7b1f1f 100644
+--- a/arch/mips/include/asm/smp-ops.h
++++ b/arch/mips/include/asm/smp-ops.h
+@@ -35,11 +35,11 @@ struct plat_smp_ops {
+ #endif
  };
-+
-+#ifdef CONFIG_FIT_IMAGE_FDT_NI169445
-+/ {
-+	images {
-+		fdt@ni169445 {
-+			description = "NI 169445 device tree";
-+			data = /incbin/("boot/dts/ni/169445.dtb");
-+			type = "flat_dt";
-+			arch = "mips";
-+			compression = "none";
-+			hash@0 {
-+				algo = "sha1";
-+			};
-+		};
-+	};
-+
-+	configurations {
-+		conf@ni169445 {
-+			description = "NI 169445 Linux Kernel";
-+			kernel = "kernel@0";
-+			fdt = "fdt@ni169445";
-+		};
-+	};
-+};
-+#endif
+ 
+-extern void register_smp_ops(struct plat_smp_ops *ops);
++extern void register_smp_ops(const struct plat_smp_ops *ops);
+ 
+ static inline void plat_smp_setup(void)
+ {
+-	extern struct plat_smp_ops *mp_ops;	/* private */
++	extern const struct plat_smp_ops *mp_ops;	/* private */
+ 
+ 	mp_ops->smp_setup();
+ }
+@@ -57,7 +57,7 @@ static inline void plat_smp_setup(void)
+ 	/* UP, nothing to do ...  */
+ }
+ 
+-static inline void register_smp_ops(struct plat_smp_ops *ops)
++static inline void register_smp_ops(const struct plat_smp_ops *ops)
+ {
+ }
+ 
+@@ -66,7 +66,7 @@ static inline void register_smp_ops(struct plat_smp_ops *ops)
+ static inline int register_up_smp_ops(void)
+ {
+ #ifdef CONFIG_SMP_UP
+-	extern struct plat_smp_ops up_smp_ops;
++	extern const struct plat_smp_ops up_smp_ops;
+ 
+ 	register_smp_ops(&up_smp_ops);
+ 
+@@ -79,7 +79,7 @@ static inline int register_up_smp_ops(void)
+ static inline int register_cmp_smp_ops(void)
+ {
+ #ifdef CONFIG_MIPS_CMP
+-	extern struct plat_smp_ops cmp_smp_ops;
++	extern const struct plat_smp_ops cmp_smp_ops;
+ 
+ 	if (!mips_cm_present())
+ 		return -ENODEV;
+@@ -95,7 +95,7 @@ static inline int register_cmp_smp_ops(void)
+ static inline int register_vsmp_smp_ops(void)
+ {
+ #ifdef CONFIG_MIPS_MT_SMP
+-	extern struct plat_smp_ops vsmp_smp_ops;
++	extern const struct plat_smp_ops vsmp_smp_ops;
+ 
+ 	register_smp_ops(&vsmp_smp_ops);
+ 
+diff --git a/arch/mips/include/asm/smp.h b/arch/mips/include/asm/smp.h
+index bab3d41e5987..9e494f8d9c03 100644
+--- a/arch/mips/include/asm/smp.h
++++ b/arch/mips/include/asm/smp.h
+@@ -58,7 +58,7 @@ extern void calculate_cpu_foreign_map(void);
+  */
+ static inline void smp_send_reschedule(int cpu)
+ {
+-	extern struct plat_smp_ops *mp_ops;	/* private */
++	extern const struct plat_smp_ops *mp_ops;	/* private */
+ 
+ 	mp_ops->send_ipi_single(cpu, SMP_RESCHEDULE_YOURSELF);
+ }
+@@ -66,14 +66,14 @@ static inline void smp_send_reschedule(int cpu)
+ #ifdef CONFIG_HOTPLUG_CPU
+ static inline int __cpu_disable(void)
+ {
+-	extern struct plat_smp_ops *mp_ops;	/* private */
++	extern const struct plat_smp_ops *mp_ops;	/* private */
+ 
+ 	return mp_ops->cpu_disable();
+ }
+ 
+ static inline void __cpu_die(unsigned int cpu)
+ {
+-	extern struct plat_smp_ops *mp_ops;	/* private */
++	extern const struct plat_smp_ops *mp_ops;	/* private */
+ 
+ 	mp_ops->cpu_die(cpu);
+ }
+@@ -97,14 +97,14 @@ int mips_smp_ipi_free(const struct cpumask *mask);
+ 
+ static inline void arch_send_call_function_single_ipi(int cpu)
+ {
+-	extern struct plat_smp_ops *mp_ops;	/* private */
++	extern const struct plat_smp_ops *mp_ops;	/* private */
+ 
+ 	mp_ops->send_ipi_mask(cpumask_of(cpu), SMP_CALL_FUNCTION);
+ }
+ 
+ static inline void arch_send_call_function_ipi_mask(const struct cpumask *mask)
+ {
+-	extern struct plat_smp_ops *mp_ops;	/* private */
++	extern const struct plat_smp_ops *mp_ops;	/* private */
+ 
+ 	mp_ops->send_ipi_mask(mask, SMP_CALL_FUNCTION);
+ }
+diff --git a/arch/mips/kernel/smp-bmips.c b/arch/mips/kernel/smp-bmips.c
+index 1b070a76fcdd..f86d755e3d75 100644
+--- a/arch/mips/kernel/smp-bmips.c
++++ b/arch/mips/kernel/smp-bmips.c
+@@ -409,7 +409,7 @@ void __ref play_dead(void)
+ 
+ #endif /* CONFIG_HOTPLUG_CPU */
+ 
+-struct plat_smp_ops bmips43xx_smp_ops = {
++const struct plat_smp_ops bmips43xx_smp_ops = {
+ 	.smp_setup		= bmips_smp_setup,
+ 	.prepare_cpus		= bmips_prepare_cpus,
+ 	.boot_secondary		= bmips_boot_secondary,
+@@ -423,7 +423,7 @@ struct plat_smp_ops bmips43xx_smp_ops = {
+ #endif
+ };
+ 
+-struct plat_smp_ops bmips5000_smp_ops = {
++const struct plat_smp_ops bmips5000_smp_ops = {
+ 	.smp_setup		= bmips_smp_setup,
+ 	.prepare_cpus		= bmips_prepare_cpus,
+ 	.boot_secondary		= bmips_boot_secondary,
+diff --git a/arch/mips/kernel/smp-cmp.c b/arch/mips/kernel/smp-cmp.c
+index 76923349b4fe..1acffdee88f4 100644
+--- a/arch/mips/kernel/smp-cmp.c
++++ b/arch/mips/kernel/smp-cmp.c
+@@ -148,7 +148,7 @@ void __init cmp_prepare_cpus(unsigned int max_cpus)
+ 
+ }
+ 
+-struct plat_smp_ops cmp_smp_ops = {
++const struct plat_smp_ops cmp_smp_ops = {
+ 	.send_ipi_single	= mips_smp_send_ipi_single,
+ 	.send_ipi_mask		= mips_smp_send_ipi_mask,
+ 	.init_secondary		= cmp_init_secondary,
+diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
+index f832e99ad4c3..a6b8700563c7 100644
+--- a/arch/mips/kernel/smp-cps.c
++++ b/arch/mips/kernel/smp-cps.c
+@@ -571,7 +571,7 @@ static void cps_cpu_die(unsigned int cpu)
+ 
+ #endif /* CONFIG_HOTPLUG_CPU */
+ 
+-static struct plat_smp_ops cps_smp_ops = {
++static const struct plat_smp_ops cps_smp_ops = {
+ 	.smp_setup		= cps_smp_setup,
+ 	.prepare_cpus		= cps_prepare_cpus,
+ 	.boot_secondary		= cps_boot_secondary,
+@@ -587,7 +587,7 @@ static struct plat_smp_ops cps_smp_ops = {
+ 
+ bool mips_cps_smp_in_use(void)
+ {
+-	extern struct plat_smp_ops *mp_ops;
++	extern const struct plat_smp_ops *mp_ops;
+ 	return mp_ops == &cps_smp_ops;
+ }
+ 
+diff --git a/arch/mips/kernel/smp-mt.c b/arch/mips/kernel/smp-mt.c
+index ed6b4df583ea..004ff5e8a820 100644
+--- a/arch/mips/kernel/smp-mt.c
++++ b/arch/mips/kernel/smp-mt.c
+@@ -239,7 +239,7 @@ static void __init vsmp_prepare_cpus(unsigned int max_cpus)
+ 	mips_mt_set_cpuoptions();
+ }
+ 
+-struct plat_smp_ops vsmp_smp_ops = {
++const struct plat_smp_ops vsmp_smp_ops = {
+ 	.send_ipi_single	= mips_smp_send_ipi_single,
+ 	.send_ipi_mask		= mips_smp_send_ipi_mask,
+ 	.init_secondary		= vsmp_init_secondary,
+diff --git a/arch/mips/kernel/smp-up.c b/arch/mips/kernel/smp-up.c
+index 17878d71ef2b..4cf015a624d1 100644
+--- a/arch/mips/kernel/smp-up.c
++++ b/arch/mips/kernel/smp-up.c
+@@ -63,7 +63,7 @@ static void up_cpu_die(unsigned int cpu)
+ }
+ #endif
+ 
+-struct plat_smp_ops up_smp_ops = {
++const struct plat_smp_ops up_smp_ops = {
+ 	.send_ipi_single	= up_send_ipi_single,
+ 	.send_ipi_mask		= up_send_ipi_mask,
+ 	.init_secondary		= up_init_secondary,
+diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
+index 770d4d1516cb..4652a07ecb9c 100644
+--- a/arch/mips/kernel/smp.c
++++ b/arch/mips/kernel/smp.c
+@@ -146,10 +146,10 @@ void calculate_cpu_foreign_map(void)
+ 			       &temp_foreign_map, &cpu_sibling_map[i]);
+ }
+ 
+-struct plat_smp_ops *mp_ops;
++const struct plat_smp_ops *mp_ops;
+ EXPORT_SYMBOL(mp_ops);
+ 
+-void register_smp_ops(struct plat_smp_ops *ops)
++void register_smp_ops(const struct plat_smp_ops *ops)
+ {
+ 	if (mp_ops)
+ 		printk(KERN_WARNING "Overriding previously set SMP ops\n");
+diff --git a/arch/mips/loongson64/loongson-3/smp.c b/arch/mips/loongson64/loongson-3/smp.c
+index b7a355c3c408..5b5a44f50b0b 100644
+--- a/arch/mips/loongson64/loongson-3/smp.c
++++ b/arch/mips/loongson64/loongson-3/smp.c
+@@ -734,7 +734,7 @@ early_initcall(register_loongson3_notifier);
+ 
+ #endif
+ 
+-struct plat_smp_ops loongson3_smp_ops = {
++const struct plat_smp_ops loongson3_smp_ops = {
+ 	.send_ipi_single = loongson3_send_ipi_single,
+ 	.send_ipi_mask = loongson3_send_ipi_mask,
+ 	.init_secondary = loongson3_init_secondary,
+diff --git a/arch/mips/netlogic/common/smp.c b/arch/mips/netlogic/common/smp.c
+index bddf1ef553a4..eac3f2950b14 100644
+--- a/arch/mips/netlogic/common/smp.c
++++ b/arch/mips/netlogic/common/smp.c
+@@ -272,7 +272,7 @@ int nlm_wakeup_secondary_cpus(void)
+ 	return 0;
+ }
+ 
+-struct plat_smp_ops nlm_smp_ops = {
++const struct plat_smp_ops nlm_smp_ops = {
+ 	.send_ipi_single	= nlm_send_ipi_single,
+ 	.send_ipi_mask		= nlm_send_ipi_mask,
+ 	.init_secondary		= nlm_init_secondary,
+diff --git a/arch/mips/paravirt/paravirt-smp.c b/arch/mips/paravirt/paravirt-smp.c
+index 72eb1a56c645..b61b26ccf601 100644
+--- a/arch/mips/paravirt/paravirt-smp.c
++++ b/arch/mips/paravirt/paravirt-smp.c
+@@ -133,7 +133,7 @@ static void paravirt_prepare_cpus(unsigned int max_cpus)
+ 	}
+ }
+ 
+-struct plat_smp_ops paravirt_smp_ops = {
++const struct plat_smp_ops paravirt_smp_ops = {
+ 	.send_ipi_single	= paravirt_send_ipi_single,
+ 	.send_ipi_mask		= paravirt_send_ipi_mask,
+ 	.init_secondary		= paravirt_init_secondary,
+diff --git a/arch/mips/paravirt/setup.c b/arch/mips/paravirt/setup.c
+index cb8448b373a7..d2ffec1409a7 100644
+--- a/arch/mips/paravirt/setup.c
++++ b/arch/mips/paravirt/setup.c
+@@ -14,7 +14,7 @@
+ #include <asm/smp-ops.h>
+ #include <asm/time.h>
+ 
+-extern struct plat_smp_ops paravirt_smp_ops;
++extern const struct plat_smp_ops paravirt_smp_ops;
+ 
+ const char *get_system_type(void)
+ {
+diff --git a/arch/mips/sgi-ip27/ip27-smp.c b/arch/mips/sgi-ip27/ip27-smp.c
+index 4cd47d23d81a..85ee974a1582 100644
+--- a/arch/mips/sgi-ip27/ip27-smp.c
++++ b/arch/mips/sgi-ip27/ip27-smp.c
+@@ -231,7 +231,7 @@ static void __init ip27_prepare_cpus(unsigned int max_cpus)
+ 	/* We already did everything necessary earlier */
+ }
+ 
+-struct plat_smp_ops ip27_smp_ops = {
++const struct plat_smp_ops ip27_smp_ops = {
+ 	.send_ipi_single	= ip27_send_ipi_single,
+ 	.send_ipi_mask		= ip27_send_ipi_mask,
+ 	.init_secondary		= ip27_init_secondary,
+diff --git a/arch/mips/sibyte/bcm1480/smp.c b/arch/mips/sibyte/bcm1480/smp.c
+index d0e94ffcc1b8..20091d5fe5a1 100644
+--- a/arch/mips/sibyte/bcm1480/smp.c
++++ b/arch/mips/sibyte/bcm1480/smp.c
+@@ -157,7 +157,7 @@ static void __init bcm1480_prepare_cpus(unsigned int max_cpus)
+ {
+ }
+ 
+-struct plat_smp_ops bcm1480_smp_ops = {
++const struct plat_smp_ops bcm1480_smp_ops = {
+ 	.send_ipi_single	= bcm1480_send_ipi_single,
+ 	.send_ipi_mask		= bcm1480_send_ipi_mask,
+ 	.init_secondary		= bcm1480_init_secondary,
+diff --git a/arch/mips/sibyte/common/cfe.c b/arch/mips/sibyte/common/cfe.c
+index c1a11a11db7f..115399202eab 100644
+--- a/arch/mips/sibyte/common/cfe.c
++++ b/arch/mips/sibyte/common/cfe.c
+@@ -229,8 +229,8 @@ static int __init initrd_setup(char *str)
+ 
+ #endif
+ 
+-extern struct plat_smp_ops sb_smp_ops;
+-extern struct plat_smp_ops bcm1480_smp_ops;
++extern const struct plat_smp_ops sb_smp_ops;
++extern const struct plat_smp_ops bcm1480_smp_ops;
+ 
+ /*
+  * prom_init is called just after the cpu type is determined, from setup_arch()
+diff --git a/arch/mips/sibyte/sb1250/smp.c b/arch/mips/sibyte/sb1250/smp.c
+index 0a4a2c3982d8..46ce1298c27d 100644
+--- a/arch/mips/sibyte/sb1250/smp.c
++++ b/arch/mips/sibyte/sb1250/smp.c
+@@ -146,7 +146,7 @@ static void __init sb1250_prepare_cpus(unsigned int max_cpus)
+ {
+ }
+ 
+-struct plat_smp_ops sb_smp_ops = {
++const struct plat_smp_ops sb_smp_ops = {
+ 	.send_ipi_single	= sb1250_send_ipi_single,
+ 	.send_ipi_mask		= sb1250_send_ipi_mask,
+ 	.init_secondary		= sb1250_init_secondary,
 -- 
-2.1.4
+2.7.4

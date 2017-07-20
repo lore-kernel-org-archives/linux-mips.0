@@ -1,18 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:13559 "EHLO
-        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992196AbdGTIOXEZ2DI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Jul 2017 10:14:23 +0200
-Date: Thu, 20 Jul 2017 09:14:16 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH v2] MIPS: Octeon: Fix broken EDAC driver.
-Message-ID: <20170720081416.GU31455@jhogan-linux.le.imgtec.org>
-References: <1500491201-32520-1-git-send-email-steven.hill@cavium.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:20343 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993359AbdGTPFJAh9Gv (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Jul 2017 17:05:09 +0200
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Subject: [PATCH] MIPS: PCI: Fix smp_processor_id() in preemptible
+Date: Thu, 20 Jul 2017 16:04:43 +0100
+Message-ID: <1500563083-13420-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="i483Pv/KqyjCUwB1"
-Content-Disposition: inline
-In-Reply-To: <1500491201-32520-1-git-send-email-steven.hill@cavium.com>
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,202 +18,66 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Steven J. Hill" <steven.hill@cavium.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, stable@vger.kernel.org
-Message-ID: <20170720081416.OtbFw0_U0HsVex4wmKcWwnhYbj7k7Xzx2YwzKLeI3pM@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, David Woodhouse <dwmw@amazon.co.uk>, Bjorn Helgaas <bhelgaas@google.com>, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20170720150443.pQxKg2ia2BZerLC8FiCOsfgbPPNoKIXStu616UqTMIk@z>
 
---i483Pv/KqyjCUwB1
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit 1c3c5eab1715 ("sched/core: Enable might_sleep() and
+smp_processor_id() checks early") enables checks for might_sleep() and
+smp_processor_id() being used in preemptible code earlier in the boot
+than before. This results in a new BUG from
+pcibios_set_cache_line_size().
 
-On Wed, Jul 19, 2017 at 02:06:41PM -0500, Steven J. Hill wrote:
-> From: "Steven J. Hill" <Steven.Hill@cavium.com>
+BUG: using smp_processor_id() in preemptible [00000000] code:
+swapper/0/1
+caller is pcibios_set_cache_line_size+0x10/0x70
+CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.13.0-rc1-00007-g3ce3e4ba4275 #615
+Stack : 0000000000000000 ffffffff81189694 0000000000000000 ffffffff81822318
+        000000000000004e 0000000000000001 800000000e20bd08 20c49ba5e3540000
+        0000000000000000 0000000000000000 ffffffff818d0000 0000000000000000
+        0000000000000000 ffffffff81189328 ffffffff818ce692 0000000000000000
+        0000000000000000 ffffffff81189bc8 ffffffff818d0000 0000000000000000
+        ffffffff81828907 ffffffff81769970 800000020ec78d80 ffffffff818c7b48
+        0000000000000001 0000000000000001 ffffffff818652b0 ffffffff81896268
+        ffffffff818c0000 800000020ec7fb40 800000020ec7fc58 ffffffff81684cac
+        0000000000000000 ffffffff8118ab50 0000000000000030 ffffffff81769970
+        0000000000000001 ffffffff81122a58 0000000000000000 0000000000000000
+        ...
+Call Trace:
+[<ffffffff81122a58>] show_stack+0x90/0xb0
+[<ffffffff81684cac>] dump_stack+0xac/0xf0
+[<ffffffff813f7050>] check_preemption_disabled+0x120/0x128
+[<ffffffff818855e8>] pcibios_set_cache_line_size+0x10/0x70
+[<ffffffff81100578>] do_one_initcall+0x48/0x140
+[<ffffffff81865dc4>] kernel_init_freeable+0x194/0x24c
+[<ffffffff8169c534>] kernel_init+0x14/0x118
+[<ffffffff8111ca84>] ret_from_kernel_thread+0x14/0x1c
 
-The body of your commit message seems to have gone.
+Fix this by using raw_current_cpu_data instead.
 
-Cheers
-James
+Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+---
 
->=20
-> Fixes: 15f6847923a8 ("MIPS: Octeon: Remove unused L2C types and
-> macros.")
->=20
-> Signed-off-by: Steven J. Hill <steven.hill@cavium.com>
-> Reviewed-by: James Hogan <james.hogan@imgtec.com>
-> ---
->  arch/mips/include/asm/octeon/cvmx-l2c-defs.h | 37 ++++++++++++++++-
->  arch/mips/include/asm/octeon/cvmx-l2d-defs.h | 60 ++++++++++++++++++++++=
-++++++
->  arch/mips/include/asm/octeon/cvmx.h          |  1 +
->  3 files changed, 97 insertions(+), 1 deletion(-)
->  create mode 100644 arch/mips/include/asm/octeon/cvmx-l2d-defs.h
->=20
-> diff --git a/arch/mips/include/asm/octeon/cvmx-l2c-defs.h b/arch/mips/inc=
-lude/asm/octeon/cvmx-l2c-defs.h
-> index d045973..3ea84ac 100644
-> --- a/arch/mips/include/asm/octeon/cvmx-l2c-defs.h
-> +++ b/arch/mips/include/asm/octeon/cvmx-l2c-defs.h
-> @@ -33,6 +33,10 @@
->  #define CVMX_L2C_DBG (CVMX_ADD_IO_SEG(0x0001180080000030ull))
->  #define CVMX_L2C_CFG (CVMX_ADD_IO_SEG(0x0001180080000000ull))
->  #define CVMX_L2C_CTL (CVMX_ADD_IO_SEG(0x0001180080800000ull))
-> +#define CVMX_L2C_ERR_TDTX(block_id)					       \
-> +	(CVMX_ADD_IO_SEG(0x0001180080A007E0ull) + ((block_id) & 3) * 0x40000ull)
-> +#define CVMX_L2C_ERR_TTGX(block_id)					       \
-> +	(CVMX_ADD_IO_SEG(0x0001180080A007E8ull) + ((block_id) & 3) * 0x40000ull)
->  #define CVMX_L2C_LCKBASE (CVMX_ADD_IO_SEG(0x0001180080000058ull))
->  #define CVMX_L2C_LCKOFF (CVMX_ADD_IO_SEG(0x0001180080000060ull))
->  #define CVMX_L2C_PFCTL (CVMX_ADD_IO_SEG(0x0001180080000090ull))
-> @@ -66,9 +70,40 @@
->  		((offset) & 1) * 8)
->  #define CVMX_L2C_WPAR_PPX(offset) (CVMX_ADD_IO_SEG(0x0001180080840000ull=
-)    + \
->  		((offset) & 31) * 8)
-> -#define CVMX_L2D_FUS3 (CVMX_ADD_IO_SEG(0x00011800800007B8ull))
-> =20
-> =20
-> +union cvmx_l2c_err_tdtx {
-> +	uint64_t u64;
-> +	struct cvmx_l2c_err_tdtx_s {
-> +		__BITFIELD_FIELD(uint64_t dbe:1,
-> +		__BITFIELD_FIELD(uint64_t sbe:1,
-> +		__BITFIELD_FIELD(uint64_t vdbe:1,
-> +		__BITFIELD_FIELD(uint64_t vsbe:1,
-> +		__BITFIELD_FIELD(uint64_t syn:10,
-> +		__BITFIELD_FIELD(uint64_t reserved_22_49:28,
-> +		__BITFIELD_FIELD(uint64_t wayidx:18,
-> +		__BITFIELD_FIELD(uint64_t reserved_2_3:2,
-> +		__BITFIELD_FIELD(uint64_t type:2,
-> +		;)))))))))
-> +	} s;
-> +};
-> +
-> +union cvmx_l2c_err_ttgx {
-> +	uint64_t u64;
-> +	struct cvmx_l2c_err_ttgx_s {
-> +		__BITFIELD_FIELD(uint64_t dbe:1,
-> +		__BITFIELD_FIELD(uint64_t sbe:1,
-> +		__BITFIELD_FIELD(uint64_t noway:1,
-> +		__BITFIELD_FIELD(uint64_t reserved_56_60:5,
-> +		__BITFIELD_FIELD(uint64_t syn:6,
-> +		__BITFIELD_FIELD(uint64_t reserved_22_49:28,
-> +		__BITFIELD_FIELD(uint64_t wayidx:15,
-> +		__BITFIELD_FIELD(uint64_t reserved_2_6:5,
-> +		__BITFIELD_FIELD(uint64_t type:2,
-> +		;)))))))))
-> +	} s;
-> +};
-> +
->  union cvmx_l2c_cfg {
->  	uint64_t u64;
->  	struct cvmx_l2c_cfg_s {
-> diff --git a/arch/mips/include/asm/octeon/cvmx-l2d-defs.h b/arch/mips/inc=
-lude/asm/octeon/cvmx-l2d-defs.h
-> new file mode 100644
-> index 0000000..a951ad5
-> --- /dev/null
-> +++ b/arch/mips/include/asm/octeon/cvmx-l2d-defs.h
-> @@ -0,0 +1,60 @@
-> +/***********************license start***************
-> + * Author: Cavium Networks
-> + *
-> + * Contact: support@caviumnetworks.com
-> + * This file is part of the OCTEON SDK
-> + *
-> + * Copyright (c) 2003-2017 Cavium, Inc.
-> + *
-> + * This file is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License, Version 2, as
-> + * published by the Free Software Foundation.
-> + *
-> + * This file is distributed in the hope that it will be useful, but
-> + * AS-IS and WITHOUT ANY WARRANTY; without even the implied warranty
-> + * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE, TITLE, or
-> + * NONINFRINGEMENT.  See the GNU General Public License for more
-> + * details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this file; if not, write to the Free Software
-> + * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 =
-USA
-> + * or visit http://www.gnu.org/licenses/.
-> + *
-> + * This file may also be available under a different license from Cavium.
-> + * Contact Cavium Networks for more information
-> + ***********************license end*************************************=
-*/
-> +
-> +#ifndef __CVMX_L2D_DEFS_H__
-> +#define __CVMX_L2D_DEFS_H__
-> +
-> +#define CVMX_L2D_ERR	(CVMX_ADD_IO_SEG(0x0001180080000010ull))
-> +#define CVMX_L2D_FUS3	(CVMX_ADD_IO_SEG(0x00011800800007B8ull))
-> +
-> +
-> +union cvmx_l2d_err {
-> +	uint64_t u64;
-> +	struct cvmx_l2d_err_s {
-> +		__BITFIELD_FIELD(uint64_t reserved_6_63:58,
-> +		__BITFIELD_FIELD(uint64_t bmhclsel:1,
-> +		__BITFIELD_FIELD(uint64_t ded_err:1,
-> +		__BITFIELD_FIELD(uint64_t sec_err:1,
-> +		__BITFIELD_FIELD(uint64_t ded_intena:1,
-> +		__BITFIELD_FIELD(uint64_t sec_intena:1,
-> +		__BITFIELD_FIELD(uint64_t ecc_ena:1,
-> +		;)))))))
-> +	} s;
-> +};
-> +
-> +union cvmx_l2d_fus3 {
-> +	uint64_t u64;
-> +	struct cvmx_l2d_fus3_s {
-> +		__BITFIELD_FIELD(uint64_t reserved_40_63:24,
-> +		__BITFIELD_FIELD(uint64_t ema_ctl:3,
-> +		__BITFIELD_FIELD(uint64_t reserved_34_36:3,
-> +		__BITFIELD_FIELD(uint64_t q3fus:34,
-> +		;))))
-> +	} s;
-> +};
-> +
-> +#endif
-> diff --git a/arch/mips/include/asm/octeon/cvmx.h b/arch/mips/include/asm/=
-octeon/cvmx.h
-> index 9742202..e638735 100644
-> --- a/arch/mips/include/asm/octeon/cvmx.h
-> +++ b/arch/mips/include/asm/octeon/cvmx.h
-> @@ -62,6 +62,7 @@ enum cvmx_mips_space {
->  #include <asm/octeon/cvmx-iob-defs.h>
->  #include <asm/octeon/cvmx-ipd-defs.h>
->  #include <asm/octeon/cvmx-l2c-defs.h>
-> +#include <asm/octeon/cvmx-l2d-defs.h>
->  #include <asm/octeon/cvmx-l2t-defs.h>
->  #include <asm/octeon/cvmx-led-defs.h>
->  #include <asm/octeon/cvmx-mio-defs.h>
-> --=20
-> 2.1.4
->=20
->=20
+In heteregenerous systems the more correct fix for this would be to
+iterate over CPUs checking each ones cache hierarchy. However, as no
+such systems currently exist that seems wasteful.
 
---i483Pv/KqyjCUwB1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+---
+ arch/mips/pci/pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAllwZlAACgkQbAtpk944
-dnpQtg//W4iYfWZqnv+/w+pDoLriKw/5+xcqn3t7DJ3dGTkGgTWrPhdSMjvCifMr
-dzhJ+5p9YUYVDL5havx38J+Rk1apl793oQoGhy85tNd8BCTxWZ+m5hxNSRg5Tlcp
-SVc4vtkvhdf4sD2N1XIV9WhBhh20RQpNMAZ+qQsFLFdDpVM76QH2NXvWPxQVaoI3
-UVrMUluHSDU7kRwBkMjGljZZtjZ7M1PaNKg5L1kpQYp9zYLP0IAE1Qo2FndXXLNn
-69UWXCAX7Lr6bLzFp6KGYrKQb4MuaUqY9fuGsQD+Sb8QCg1dScFi7Z/2NcIUzT98
-+QeyfHEbCLWa04ENxo4vahoEnH7PiYj1qz7hgE0jSMXwWn/YlijTyuy3aNvZTDjb
-I2G1oaEII/UDglA73gJtfkYswLGAu3DzttVO531x3tV4ed4wUYHjQIU5a3uWqL13
-N0/2K8us+pcTFhVBDEdNuBskdorhvaVq5h8wFkpR6J8TsdC3AaVExCgEyKYI/W8O
-qEdrltRxf7qhY4ScMC7Hllto1PH5b1e4jTxHwaauhMFA3ZOAzonFszJ3Uer2gxq4
-ABCXtYuR4GwqlUItHRaUQJnkPoTiB/drHN0tHti7VWLohiFVuBqGHynFRDID5vNJ
-TCum3HOl07BZhDj/DPHp3wZkSWcYWLK3fD8cAqRouOL60qfNmJE=
-=atZe
------END PGP SIGNATURE-----
-
---i483Pv/KqyjCUwB1--
+diff --git a/arch/mips/pci/pci.c b/arch/mips/pci/pci.c
+index bd67ac74fe2d..7ef8d97fa324 100644
+--- a/arch/mips/pci/pci.c
++++ b/arch/mips/pci/pci.c
+@@ -28,7 +28,7 @@ EXPORT_SYMBOL(PCIBIOS_MIN_MEM);
+ 
+ static int __init pcibios_set_cache_line_size(void)
+ {
+-	struct cpuinfo_mips *c = &current_cpu_data;
++	struct cpuinfo_mips *c = &raw_current_cpu_data;
+ 	unsigned int lsize;
+ 
+ 	/*
+-- 
+2.7.4

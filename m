@@ -1,14 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:49998 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992466AbdGUOFbyyRXG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 21 Jul 2017 16:05:31 +0200
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Subject: [RFC PATCH] exec: Avoid recursive modprobe for binary format handlers
-Date: Fri, 21 Jul 2017 15:05:20 +0100
-Message-ID: <1500645920-28490-1-git-send-email-matt.redfearn@imgtec.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:25270 "EHLO
+        imgpgp01.kl.imgtec.org" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23993958AbdGUOZepThPm (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 21 Jul 2017 16:25:34 +0200
+Date: Fri, 21 Jul 2017 15:25:28 +0100
+From: James Hogan <james.hogan@imgtec.com>
+Subject: Re: [PATCH v3 04/16] MIPS: VDSO: Fix clobber lists in fallback code
+ paths
+Message-ID: <20170721142528.GI6973@jhogan-linux.le.imgtec.org>
+References: <1500646206-2436-1-git-send-email-aleksandar.markovic@rt-rk.com>
+ <1500646206-2436-5-git-send-email-aleksandar.markovic@rt-rk.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="npqkS5PSNd2BVonv"
+Content-Disposition: inline
+In-Reply-To: <1500646206-2436-5-git-send-email-aleksandar.markovic@rt-rk.com>
+Return-Path: <James.Hogan@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,68 +24,87 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: "Luis R . Rodriguez" <mcgrof@kernel.org>, linux-mips@linux-mips.org, Petr Mladek <pmladek@suse.com>, Matt Redfearn <matt.redfearn@imgtec.com>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Aleksandar Markovic <aleksandar.markovic@rt-rk.com>
+Cc: linux-mips@linux-mips.org, Goran Ferenc <goran.ferenc@imgtec.com>, Miodrag Dinic <miodrag.dinic@imgtec.com>, Aleksandar Markovic <aleksandar.markovic@imgtec.com>, Douglas Leung <douglas.leung@imgtec.com>, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@imgtec.com>, Petar Jovanovic <petar.jovanovic@imgtec.com>, Raghu Gandham <raghu.gandham@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20170721142528.-_0_RJPGHHRBhfjQ_HWfqSIQJQOpeH8EjXY9X7Whpiw@z>
 
-When the kernel does not have a binary format handler for an executable
-it is attempting to load, when CONFIG_MODULES is enabled it will attempt
-to load a module for that format. If the kernel does not have a binary
-format handler for the modprobe executable, this will trigger another
-module load. Previously this recursive module loading was caught and an
-error message printed informing the user that the executable could not
-be executed:
+--npqkS5PSNd2BVonv
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-request_module: runaway loop modprobe binfmt-464c
-Starting init:/sbin/init exists but couldn't execute it (error -8)
+On Fri, Jul 21, 2017 at 04:09:02PM +0200, Aleksandar Markovic wrote:
+> From: Goran Ferenc <goran.ferenc@imgtec.com>
+>=20
+> Extend clobber lists to include all GP registers.
+>=20
 
-Commit 6d7964a722af ("kmod: throttle kmod thread limit") which was
-merged in v4.13-rc1 broke this behaviour since the recursive modprobe is
-no longer caught, it just ends up waiting indefinitely for the kmod_wq
-wait queue. Hence the kernel appears to hang silently when starting
-userspace.
+Consider adding:
+Fixes: 0b523a85e134 ("MIPS: VDSO: Add implementation of gettimeofday() fall=
+back")
 
-This problem was observed when the binfmt handler for MIPS o32 binaries
-is not built in to a 64bit kernel and the root filesystem is o32 ABI.
+> Signed-off-by: Miodrag Dinic <miodrag.dinic@imgtec.com>
+> Signed-off-by: Goran Ferenc <goran.ferenc@imgtec.com>
+> Signed-off-by: Aleksandar Markovic <aleksandar.markovic@imgtec.com>
 
-Catch this by adding a guard to search_binary_handler(). If there is no
-binary format handler available to load an exectuable, and the
-executable matches modprobe_path, i.e. the userspace helper that would
-be executed to load a module, then do not attempt to load the module
-since it will just end up here again when it fails to execute. This
-actually improves the original behaviour since the "runaway loop"
-warning is no longer printed, and we simply get:
+Reviewed-by: James Hogan <james.hogan@imgtec.com>
 
-Starting init:/sbin/init exists but couldn't execute it (error -8)
+Cheers
+James
 
-Fixes: 6d7964a722af ("kmod: throttle kmod thread limit")
-Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
----
+> ---
+>  arch/mips/vdso/gettimeofday.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/arch/mips/vdso/gettimeofday.c b/arch/mips/vdso/gettimeofday.c
+> index 974276e..e2690d7 100644
+> --- a/arch/mips/vdso/gettimeofday.c
+> +++ b/arch/mips/vdso/gettimeofday.c
+> @@ -35,7 +35,8 @@ static __always_inline long gettimeofday_fallback(struc=
+t timeval *_tv,
+>  	"       syscall\n"
+>  	: "=3Dr" (ret), "=3Dr" (error)
+>  	: "r" (tv), "r" (tz), "r" (nr)
+> -	: "memory");
+> +	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
+> +	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
+> =20
+>  	return error ? -ret : ret;
+>  }
+> @@ -55,7 +56,8 @@ static __always_inline long clock_gettime_fallback(cloc=
+kid_t _clkid,
+>  	"       syscall\n"
+>  	: "=3Dr" (ret), "=3Dr" (error)
+>  	: "r" (clkid), "r" (ts), "r" (nr)
+> -	: "memory");
+> +	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
+> +	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
+> =20
+>  	return error ? -ret : ret;
+>  }
+> --=20
+> 2.7.4
+>=20
 
-What we really need to detect is that exec'ing modprobe failed, but
-currently it does not get as far as an actual error since it just ends
-up stuck waiting for the modprobes to complete, which they never will.
-Open to suggestions of a different / better way to fix this.
+--npqkS5PSNd2BVonv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Thanks,
-Matt
+-----BEGIN PGP SIGNATURE-----
 
----
- fs/exec.c | 3 +++
- 1 file changed, 3 insertions(+)
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAllyDtcACgkQbAtpk944
+dnoQqA//bTTtqNCB9Yj6iq6FSFKbqHeKMheT2Whd5Kl8TC12CO/5oqDyf2ocRjPj
+MuHR8pBoxkw6BCnReDzQYilR/fOJGzyeKJt+V6O+T8WFLjv7eMbkgVfsrR1vaQ1z
+8m1hcpxyB4urmItr1YjYhxvyWv4SGw6KqL9L1tzbJ+IZ98mKgnj5gxziHudboAx6
+2NYqv1YI+Icl6Ufl25Eb9psnT89BL4JqWSB/Ina7iPT38sXXnq5lr2KCkCkggLVR
+w0/62yulIPet65OPX8+5KBw+Q5OZ56w5nzO/my+Qxcst37QnWW4/CW0D/+2d22wf
+pGMAzibGWNOAZGUNjMzbIu4X4Biq6E68vA/p90kGTEHiv5zn1PYppJNFMHeEvmIl
+rZi0TbW/BXAKnTiY9Ek+Q7djl2VYA6VY4A06bpEOq0Mflxpd5LC40K3fmIBWwN/D
+RogbJAFtj/ooz4TTdv5qgDiDq3pnzSabJr2gSNWcJ/ZtiVY8ctfuAXZYeYV4NYjz
+rVi9aJxrIKTcUCbbUVDUYRpHsv4CBjaUxRxxfkGWci9X3BPTfxCOFx1vYHSuHPNm
+WQB7oerYkmbtsnUh10zwl+VqtuUqMEqpyZ/ThEe4QmW+UTmhafqjo7jrs0ruXIKi
+WZWevcYUI/kVM/IwbEZ9LIye40D5B8KzYiBgkqsv19Cp9C1XVYU=
+=NZL4
+-----END PGP SIGNATURE-----
 
-diff --git a/fs/exec.c b/fs/exec.c
-index 62175cbcc801..004bb50a01fe 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1644,6 +1644,9 @@ int search_binary_handler(struct linux_binprm *bprm)
- 		if (printable(bprm->buf[0]) && printable(bprm->buf[1]) &&
- 		    printable(bprm->buf[2]) && printable(bprm->buf[3]))
- 			return retval;
-+		/* Game over if we need to load a module to execute modprobe */
-+		if (strcmp(bprm->filename, modprobe_path) == 0)
-+			return retval;
- 		if (request_module("binfmt-%04x", *(ushort *)(bprm->buf + 2)) < 0)
- 			return retval;
- 		need_retry = false;
--- 
-2.7.4
+--npqkS5PSNd2BVonv--

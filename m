@@ -1,16 +1,14 @@
-Received: from cn.fujitsu.com ([59.151.112.132]:35759 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-FAIL-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992036AbdGZNfKGCg90 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 26 Jul 2017 15:35:10 +0200
-From: Dou Liyang <douly.fnst@cn.fujitsu.com>
-Subject: [PATCH 04/11] MIPS: numa: Remove the unused parent_node() macro
-Date: Wed, 26 Jul 2017 21:34:29 +0800
-Message-ID: <1501076076-1974-5-git-send-email-douly.fnst@cn.fujitsu.com>
-In-Reply-To: <1501076076-1974-1-git-send-email-douly.fnst@cn.fujitsu.com>
-References: <1501076076-1974-1-git-send-email-douly.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <douly.fnst@cn.fujitsu.com>
+Received: from mail-qk0-x243.google.com ([IPv6:2607:f8b0:400d:c09::243]:35303
+        "EHLO mail-qk0-x243.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993961AbdG0WifsYC5D (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 28 Jul 2017 00:38:35 +0200
+Received: by mail-qk0-x243.google.com with SMTP id a77so2298268qkb.2
+        for <linux-mips@linux-mips.org>; Thu, 27 Jul 2017 15:38:35 -0700 (PDT)
+From: Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH] irqchip: brcmstb-l2: Define an irq_pm_shutdown function
+Date: Thu, 27 Jul 2017 15:38:17 -0700
+Message-ID: <20170727223817.7494-1-f.fainelli@gmail.com>
+Return-Path: <f.fainelli@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,50 +18,34 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: mpe@ellerman.id.au, Dou Liyang <douly.fnst@cn.fujitsu.com>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20170726133429.JvV02pY5a-hB1GcayT-V7CCTCQ1XbGIYkz8vLiKRe2M@z>
+To: linux-arm-kernel@lists.infradead.org
+Cc: opendmb@gmail.com, Florian Fainelli <f.fainelli@gmail.com>, Kevin Cernekee <cernekee@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, Brian Norris <computersforpeace@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, "maintainer:BROADCOM BCM7XXX ARM
+        ARCHITECTURE" <bcm-kernel-feedback-list@broadcom.com>, "open list:BROADCOM BMIPS MIPS ARCHITECTURE" <linux-mips@linux-mips.org>, "open list:IRQCHIP DRIVERS" <linux-kernel@vger.kernel.org>
+Message-ID: <20170727223817.YJvGvfb7AXoSGHG4HwP0fPaisnIij3V5ofmZLy7L7GQ@z>
 
-Commit a7be6e5a7f8d ("mm: drop useless local parameters of
-__register_one_node()") removes the last user of parent_node().
+The Broadcom STB platforms support S5 and we allow specific hardware
+wake-up events to take us out of this state. Because we were not
+defining an irq_pm_shutdown() function pointer, we would not be
+correctly masking non-wakeup events, which would result in spurious
+wake-ups from sources that were not explicitly configured for wake-up.
 
-The parent_node() macros in both IP27 and Loongson64 are unnecessary.
-
-Remove it for cleanup.
-
-Reported-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Dou Liyang <douly.fnst@cn.fujitsu.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <james.hogan@imgtec.com>
-Cc: linux-mips@linux-mips.org
+Fixes: 7f646e92766e ("irqchip: brcmstb-l2: Add Broadcom Set Top Box Level-2 interrupt controller")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- arch/mips/include/asm/mach-ip27/topology.h       | 1 -
- arch/mips/include/asm/mach-loongson64/topology.h | 1 -
- 2 files changed, 2 deletions(-)
+ drivers/irqchip/irq-brcmstb-l2.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/include/asm/mach-ip27/topology.h b/arch/mips/include/asm/mach-ip27/topology.h
-index defd135..3fb7a0e 100644
---- a/arch/mips/include/asm/mach-ip27/topology.h
-+++ b/arch/mips/include/asm/mach-ip27/topology.h
-@@ -23,7 +23,6 @@ struct cpuinfo_ip27 {
- extern struct cpuinfo_ip27 sn_cpu_info[NR_CPUS];
+diff --git a/drivers/irqchip/irq-brcmstb-l2.c b/drivers/irqchip/irq-brcmstb-l2.c
+index bddf169c4b37..b009b916a292 100644
+--- a/drivers/irqchip/irq-brcmstb-l2.c
++++ b/drivers/irqchip/irq-brcmstb-l2.c
+@@ -189,6 +189,7 @@ static int __init brcmstb_l2_intc_of_init(struct device_node *np,
  
- #define cpu_to_node(cpu)	(sn_cpu_info[(cpu)].p_nodeid)
--#define parent_node(node)	(node)
- #define cpumask_of_node(node)	((node) == -1 ?				\
- 				 cpu_all_mask :				\
- 				 &hub_data(node)->h_cpus)
-diff --git a/arch/mips/include/asm/mach-loongson64/topology.h b/arch/mips/include/asm/mach-loongson64/topology.h
-index 0d8f3b5..bcb8856 100644
---- a/arch/mips/include/asm/mach-loongson64/topology.h
-+++ b/arch/mips/include/asm/mach-loongson64/topology.h
-@@ -4,7 +4,6 @@
- #ifdef CONFIG_NUMA
+ 	ct->chip.irq_suspend = brcmstb_l2_intc_suspend;
+ 	ct->chip.irq_resume = brcmstb_l2_intc_resume;
++	ct->chip.irq_pm_shutdown = brcmstb_l2_intc_suspend;
  
- #define cpu_to_node(cpu)	(cpu_logical_map(cpu) >> 2)
--#define parent_node(node)	(node)
- #define cpumask_of_node(node)	(&__node_data[(node)]->cpumask)
- 
- struct pci_bus;
+ 	if (data->can_wake) {
+ 		/* This IRQ chip can wake the system, set all child interrupts
 -- 
-2.5.5
+2.9.3

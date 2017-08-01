@@ -1,22 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:28491 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:2243 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993302AbdHAHDfqCVzZ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 1 Aug 2017 09:03:35 +0200
-Subject: =?UTF-8?Q?Re:_rying_to_build_for_my_actiontec_wcb3000n_/_mips-linux?=
- =?UTF-8?Q?-gcc:_error:_unrecognized_argument_in_option_=e2=80=98-march=3d52?=
- =?UTF-8?B?ODHigJk=?=
-References: <CAPXXXSAmkdF3XnZGCvkH3AEnp4h4KC3u4ooyhX9GXZXh8zoQNQ@mail.gmail.com>
- <d90545e9-1dd1-b75d-cd33-0fa64314d397@imgtec.com>
- <CAPXXXSDNbJ2M2NWjkLghWsr05m94bJPXUVndxiAWFU5Nxp3uPg@mail.gmail.com>
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Message-ID: <4ba6a9ee-90aa-8c5e-7b32-b9462f5d9415@imgtec.com>
-Date: Tue, 1 Aug 2017 09:03:28 +0200
+        with ESMTP id S23994826AbdHAUdXZ-qgJ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 1 Aug 2017 22:33:23 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] Revert "MIPS: Don't unnecessarily include kmalloc.h into <asm/cache.h>."
+Date: Tue, 1 Aug 2017 13:32:57 -0700
+Message-ID: <20170801203257.31897-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPXXXSDNbJ2M2NWjkLghWsr05m94bJPXUVndxiAWFU5Nxp3uPg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <Marcin.Nowakowski@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,57 +18,57 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Colin Williams <colin.williams.seattle@gmail.com>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, stable <stable@vger.kernel.org>
+Message-ID: <20170801203257.DCDNjqYu2nn9BNklExO7KIdZl6EuOwHKUmV75tywxyc@z>
+
+Commit 296e46db0073 ("MIPS: Don't unnecessarily include kmalloc.h into
+<asm/cache.h>.") claimed that the inclusion of the machine's kmalloc.h
+from asm/cache.h is unnecessary, but this is not true.
+
+Without including kmalloc.h we don't get a definition for
+ARCH_DMA_MINALIGN, which means we no longer suitably align DMA. Further
+to this the definition of ARCH_KMALLOC_MINALIGN provided by linux/slab.h
+ends up being set to the alignment of an unsigned long long value rather
+than to ARCH_DMA_MINALIGN, which means that buffers allocated using
+kmalloc may no longer be safely aligned for use with DMA.
+
+Fix this by re-adding the include of kmalloc.h in asm/cache.h. This
+reverts commit 296e46db0073 ("MIPS: Don't unnecessarily include
+kmalloc.h into <asm/cache.h>.")
+
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Fixes: 296e46db0073 ("MIPS: Don't unnecessarily include kmalloc.h into <asm/cache.h>.")
+Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20170801070328.KKfMsPBHSGZJ3pFnIAKTZGecl0AtubP2ccjd7-QdxrM@z>
+Cc: stable <stable@vger.kernel.org> # v4.12+
+---
 
-Hi Colin,
+Hi Ralf,
 
-On 31.07.2017 17:00, Colin Williams wrote:
-> Hi, thanks for the response. I first tried using docker to build, but it 
-> appears to use the same kernel version that the host uses. Then the 
-> instructions suggest getting the kernel headers using uname -r.  I'm 
-> going to assume it's using the Ubuntu kernel for the build?
+This causes issues with DMA on various systems - please could you merge
+it ASAP? It would be great if you submitted your patches to the list for
+review in future, since nobody had any opportunity to spot that this
+change was broken before you merged it...
 
-(please note that my comments are based on my experience with various 
-cross-compilation systems, not based on using this one)
-That shouldn't be the case. Some libraries/utilities even when 
-cross-compiled, require that you first build host variants of those 
-utilities. Hence I presume the requirement of having eg libssl-dev on 
-your host, or the host's kernel headers. They wouldn't be directly used 
-for the target builds, but they might be required to build some tools 
-used for building the target filesystem.
+Thanks,
+    Paul
+---
+ arch/mips/include/asm/cache.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> At the moment I've been trying to build on Debian, since Docker didn't 
-> work out. But maybe an Ubuntu VM would work best, because it wouldn't 
-> share kernels. However I think there should be a way to cross compile. 
-> Also it doesn't seem to mention the kernel version, instead Ubuntu LTS. 
-
-The kernel version is most likely irrelevant here. The fact they mention 
-Ubuntu 12.04 LTS is simply because that's where it's been tested. I 
-don't expect anything special about it, but various linux distribution 
-may ship different versions/variants of standard gnu utils and as a 
-result even a trivial app like 'diff' in one linux variant may accept 
-some non-standard commandline arguments that a 'diff' in a different 
-linux release wouldn't and could make the build fail.
-In fact that's probably what may be happening here - just for a test I 
-started a build following the readme instructions on my machine (ubuntu 
-16.04) and it failed with an error in wget, which looks like caused by 
-some wrong arguments.
-
-> A little concerned regarding the kernel version. Am I right they are 
-> installing the Ubuntu kernel headers to use for the firmware target? If 
-> so isn't that strange because an LTS release has many kernel versions, 
-> and the instructions use uname?
-
-No, the kernel for the target is in the release package: 
-WECB-NCS-GPL/rtl819x/linux-2.6.30.
-
-
-I think the main source of your problem (although potentially not the 
-only one) is that you have mips-linux-gcc in your $PATH and this is 
-something that this build system doesn't expect - and as a result it 
-uses your Debian's mips-linux-gcc rather than the one from 
-WECB-NCS-GPL/rtl819x/toolchain/
-
-Marcin
+diff --git a/arch/mips/include/asm/cache.h b/arch/mips/include/asm/cache.h
+index fc67947ed658..8b14c2706aa5 100644
+--- a/arch/mips/include/asm/cache.h
++++ b/arch/mips/include/asm/cache.h
+@@ -9,6 +9,8 @@
+ #ifndef _ASM_CACHE_H
+ #define _ASM_CACHE_H
+ 
++#include <kmalloc.h>
++
+ #define L1_CACHE_SHIFT		CONFIG_MIPS_L1_CACHE_SHIFT
+ #define L1_CACHE_BYTES		(1 << L1_CACHE_SHIFT)
+ 
+-- 
+2.13.3

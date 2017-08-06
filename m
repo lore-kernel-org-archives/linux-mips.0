@@ -1,20 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:8997 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:59975 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23995090AbdHDPWKyNKrX (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 4 Aug 2017 17:22:10 +0200
-Date: Fri, 4 Aug 2017 16:22:04 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH] uapi: fix another asm/shmbuf.h userspace compilation
- error
-Message-ID: <20170804152203.GA31455@jhogan-linux.le.imgtec.org>
-References: <20170302004607.GE27132@altlinux.org>
- <CAK8P3a1=-Q=gVRyk+PwqxTeTPXa4yrmqWKG7SyZng2d7bcbG=g@mail.gmail.com>
+        with ESMTP id S23993965AbdHFAESpSzT0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 6 Aug 2017 02:04:18 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH v6 0/6] PCI: xilinx: Fixes, optimisation & MIPS support
+Date: Sat, 5 Aug 2017 17:03:45 -0700
+Message-ID: <20170806000351.17952-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ofekNuVaYCKmvJ0U"
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a1=-Q=gVRyk+PwqxTeTPXa4yrmqWKG7SyZng2d7bcbG=g@mail.gmail.com>
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,59 +18,32 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: "Dmitry V. Levin" <ldv@altlinux.org>, linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-xtensa@linux-xtensa.org, Heiko Carstens <heiko.carstens@de.ibm.com>, David Howells <dhowells@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org, Hans-Christian Egtvedt <egtvedt@samfundet.no>, linux-arch <linux-arch@vger.kernel.org>, linux-s390@vger.kernel.org, linux-am33-list@redhat.com, x86@kernel.org, Ingo Molnar <mingo@redhat.com>, Haavard Skinnemoen <hskinnemoen@gmail.com>, Fenghua Yu <fenghua.yu@intel.com>, Thomas Gleixner <tglx@linutronix.de>, Chris Zankel <chris@zankel.net>, Tony Luck <tony.luck@intel.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-alpha@vger.kernel.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
-Message-ID: <20170804152204.EQ93b3qLNR_snpAKoFPAfka6-vU-0nm2-j0bdijTAgE@z>
+To: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
+Cc: Bharat Kumar Gogada <bharatku@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, Ravikiran Gummaluri <rgummal@xilinx.com>, linux-mips@linux-mips.org, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20170806000345.zbYrBhU_u62LbKSQgcTfyjA4xulQR5JNYRlH9Wv9-U0@z>
 
---ofekNuVaYCKmvJ0U
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series fixes an issue found using INTx interrupts with the Xilinx
+AXI PCIe Host Bridge IP on the Imagination Technologies MIPS Boston
+development board, performs a couple of optimisations to interrupt
+handling & allows the driver to be used on MIPS systems.
 
-On Thu, Mar 02, 2017 at 02:07:20PM +0100, Arnd Bergmann wrote:
-> On Thu, Mar 2, 2017 at 1:46 AM, Dmitry V. Levin <ldv@altlinux.org> wrote:
-> > Replace size_t with __kernel_size_t to fix asm/shmbuf.h userspace
-> > compilation errors like this:
-> >
-> > /usr/include/asm-generic/shmbuf.h:28:2: error: unknown type name 'size_=
-t'
-> >   size_t   shm_segsz; /* size of segment (bytes) */
-> >
-> > x32 is the only architecture where sizeof(size_t) is less than
-> > sizeof(__kernel_size_t), but as the kernel treats shm_segsz field as
-> > __kernel_size_t anyway, UAPI should follow.  Thanks to little-endiannes
-> > of x32 and 64-bit alignment of the field following shm_segsz, this
-> > change doesn't break ABI, and the difference doesn't manifest itself
-> > easily.
-> >
-> > Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
->=20
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
+Applies atop v4.13-rc3.
 
-Out of interest, is there a plan for merging these patches from Dmitry?
+Paul Burton (6):
+  PCI: Move enum pci_interrupt_pin to a new common header
+  PCI: Introduce pci_irqd_intx_xlate()
+  PCI: xilinx: Translate INTx range to hwirqs 0-3
+  PCI: xilinx: Unify INTx & MSI interrupt decode
+  PCI: xilinx: Don't enable config completion interrupts
+  PCI: xilinx: Allow build on MIPS platforms
 
-Cheers
-James
+ drivers/pci/host/Kconfig       |  2 +-
+ drivers/pci/host/pcie-xilinx.c | 58 +++++++++++++++---------------------------
+ include/linux/pci-common.h     | 31 ++++++++++++++++++++++
+ include/linux/pci-epf.h        |  9 +------
+ include/linux/pci.h            | 33 ++++++++++++++++++++++++
+ 5 files changed, 87 insertions(+), 46 deletions(-)
+ create mode 100644 include/linux/pci-common.h
 
---ofekNuVaYCKmvJ0U
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlmEkRMACgkQbAtpk944
-dnrAMg/+K3doXr6onSUJPfVtAuAORRxr6EypmBdFZs5/qV4cwNTkljJ0c/yGAKaM
-fUM6pJ9n56h7YGG0/y2m+YCI56TPWyh8HnoKTNyhgDtg+Sn1e2Ub4dXyEjYdQhXN
-TMTzPsP/COyFkrStEulbLuGoaU4t7UMFk5nU7FTQ1BpCeyuEO5opnUpA3JMZwehK
-KK7orqZYUE+iZ8QfbEXiuHr68EsvpMeHj0z6WNkXD/8gRzSFTMqf5wHFpm3cNTJ7
-3BRJx3LOkkE3amkPOm1kIOPWkMAEIFF11hRc79e4Wpkak6tnoCowkLvVNadB+UH2
-bb5BTgwifuU83lrWsqC6gzs6e4PR0DEAgQofoLy5uGQjVgYqJ970Q8/Cl4xsfvcL
-qVVFp8oGN5oZoXFiMWhYVQydG4m9TaruA2vOZK3F9fdrNBmd4t+fNxF+l3CTfa79
-dAGLliqjUunWrW8WBrFmIySw9Sxl8DbJKyl0jxaJUbfGCnmsmkCZO4fP8h3BK37Y
-mjMPsH3AjUnkBSLRBK+d261LMYCBgMY/SpUWwR7RqRbtxrqO7voVeNcyXQ1c4tVE
-cYJhQpy57wjDKE0luxGSU0o1ATJst6xcL+URKTvRoxIWrkZXUBPnwfusoedLqTxd
-f5AIFSEhwz7t8hBSEweo8qITuBmr86QmyKPwYN4R9xkonfb2Kis=
-=9M2T
------END PGP SIGNATURE-----
-
---ofekNuVaYCKmvJ0U--
+-- 
+2.13.4

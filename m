@@ -1,19 +1,22 @@
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:40751 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23995116AbdHGA4FIiS2h (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 7 Aug 2017 02:56:05 +0200
-Subject: Re: [PATCH] mtd: nand: Rename nand.h into rawnand.h
-References: <1501860550-16506-1-git-send-email-boris.brezillon@free-electrons.com>
- <1501860550-16506-2-git-send-email-boris.brezillon@free-electrons.com>
-From: "Yang, Wenyou" <Wenyou.Yang@Microchip.com>
-Message-ID: <fc6e4906-5d76-ab7f-f177-95d77492ba79@Microchip.com>
-Date: Mon, 7 Aug 2017 08:55:15 +0800
+Received: from mailapp01.imgtec.com ([195.59.15.196]:64774 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23992366AbdHGK0UMFksx (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 7 Aug 2017 12:26:20 +0200
+Subject: Re: [RFC PATCH] exec: Avoid recursive modprobe for binary format
+ handlers
+References: <1500645920-28490-1-git-send-email-matt.redfearn@imgtec.com>
+ <20170802001200.GD18884@wotan.suse.de>
+ <CAGXu5jJw74M0hTL8JGUtshgZpGjzWia2d=oK3t8oJF6qo9Xp_A@mail.gmail.com>
+ <20170802232331.GO18884@wotan.suse.de>
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Message-ID: <757118c9-45e2-9680-dca2-079d928d9b1c@imgtec.com>
+Date: Mon, 7 Aug 2017 11:26:09 +0100
 MIME-Version: 1.0
-In-Reply-To: <1501860550-16506-2-git-send-email-boris.brezillon@free-electrons.com>
+In-Reply-To: <20170802232331.GO18884@wotan.suse.de>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Return-Path: <Wenyou.Yang@microchip.com>
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,105 +26,175 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Peter Pan <peterpandong@micron.com>, Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>, Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Gregory Clement <gregory.clement@free-electrons.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Alexander Sverdlin <alexander.sverdlin@gmail.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Fabio Estevam <fabio.estevam@nxp.com>, Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>, Eric Miao <eric.y.miao@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>, Alexander Clouter <alex@digriz.org.uk>, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Simtec Linux Team <linux@simtec.co.uk>, Steven Miao <realmz6@gmail.com>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Ralf Baechle <ralf@linux-mips.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Kamal Dasu <kdasu.kdev@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Han Xu <han.xu@nxp.com>, Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>, Wan ZongShun <mcuos.com@gmail.com>, Neil Armstrong <narmstrong@baylibre.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Maxim Levitsky <maximlevitsky@gmail.com>, Marc Gonzalez <marc_gonzalez@sigmadesigns.com>, Stefan Agner <stefan@agner.ch>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-samsung-soc@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-cris-kernel@axis.com, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, linux-mediatek@lists.infradead.org, linux-oxnas@lists.tuxfamily.org, linuxppc-dev@lists.ozlabs.org, devel@driverdev.osuosl.org
-Message-ID: <20170807005515.8LGhJHGvhkhsfYw_xGKfiz0e7MSLB0radzfoyYI1bQ4@z>
+To: "Luis R. Rodriguez" <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, David Howells <dhowells@redhat.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Dan Carpenter <dan.carpenter@oracle.com>, Jessica Yu <jeyu@redhat.com>, Michal Marek <mmarek@suse.com>, Linus Torvalds <torvalds@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, ebiederm@xmission.com, mingo@redhat.com, peterz@infradead.org, Petr Mladek <pmladek@suse.com>, "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Message-ID: <20170807102609.ADYHLdkf1ZWp6cNhVNAYVz61avpQW5LoDkBTcG6uArg@z>
+
+Hi Luis,
 
 
+On 03/08/17 00:23, Luis R. Rodriguez wrote:
+> On Tue, Aug 01, 2017 at 07:28:20PM -0700, Kees Cook wrote:
+>> On Tue, Aug 1, 2017 at 5:12 PM, Luis R. Rodriguez <mcgrof@kernel.org> wrote:
+>>> On Fri, Jul 21, 2017 at 03:05:20PM +0100, Matt Redfearn wrote:
+>>>> Commit 6d7964a722af ("kmod: throttle kmod thread limit") which was
+>>>> merged in v4.13-rc1 broke this behaviour since the recursive modprobe is
+>>>> no longer caught, it just ends up waiting indefinitely for the kmod_wq
+>>>> wait queue. Hence the kernel appears to hang silently when starting
+>>>> userspace.
+>>> Indeed, the recursive issue were no longer expected to exist.
+>> Errr, yeah, recursive binfmt loads can still happen.
+>>
+>>> The *old* implementation would also prevent a set of binaries to daisy chain
+>>> a set of 50 different binaries which require different binfmt loaders. The
+>>> current implementation enables this and we'd just wait. There's a bound to
+>>> the number of binfmd loaders though, so this would be bounded. If however
+>>> a 2nd loader loaded the first binary we'd run into the same issue I think.
+>>>
+>>> If we can't think of a good way to resolve this we'll just have to revert
+>>> 6d7964a722af for now.
+>> The weird but "normal" recursive case is usually a script calling a
+>> script calling a misc format. Getting a chain of modprobes running,
+>> though, seems unlikely. I *think* Matt's patch is okay, but I agree,
+>> it'd be better for the request_module() to fail.
+> In that case how about we just have each waiter only wait max X seconds,
+> if the number of concurrent ongoing modprobe calls hasn't reduced by
+> a single digit in X seconds we give up on request_module() for the
+> module and clearly indicate what happened.
+>
+> Matt, can you test?
 
-On 2017/8/4 23:29, Boris Brezillon wrote:
-> We are planning to share more code between different NAND based
-> devices (SPI NAND, OneNAND and raw NANDs), but before doing that
-> we need to move the existing include/linux/mtd/nand.h file into
-> include/linux/mtd/rawnand.h so we can later create a nand.h header
-> containing all common structure and function prototypes.
->
-> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Signed-off-by: Peter Pan <peterpandong@micron.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Sekhar Nori <nsekhar@ti.com>
-> Cc: Kevin Hilman <khilman@kernel.org>
-> Cc: Jason Cooper <jason@lakedaemon.net>
-> Cc: Andrew Lunn <andrew@lunn.ch>
-> Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-> Cc: Gregory Clement <gregory.clement@free-electrons.com>
-> Cc: Hartley Sweeten <hsweeten@visionengravers.com>
-> Cc: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Cc: Sascha Hauer <kernel@pengutronix.de>
-> Cc: Fabio Estevam <fabio.estevam@nxp.com>
-> Cc: Imre Kaloz <kaloz@openwrt.org>
-> Cc: Krzysztof Halasa <khalasa@piap.pl>
-> Cc: Eric Miao <eric.y.miao@gmail.com>
-> Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
-> Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
-> Cc: Tony Lindgren <tony@atomide.com>
-> Cc: Alexander Clouter <alex@digriz.org.uk>
-> Cc: Daniel Mack <daniel@zonque.org>
-> Cc: Robert Jarzmik <robert.jarzmik@free.fr>
-> Cc: Marek Vasut <marek.vasut@gmail.com>
-> Cc: Kukjin Kim <kgene@kernel.org>
-> Cc: Krzysztof Kozlowski <krzk@kernel.org>
-> Cc: Simtec Linux Team <linux@simtec.co.uk>
-> Cc: Steven Miao <realmz6@gmail.com>
-> Cc: Mikael Starvik <starvik@axis.com>
-> Cc: Jesper Nilsson <jesper.nilsson@axis.com>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: Wenyou Yang <wenyou.yang@atmel.com>
-> Cc: Josh Wu <rainyfeeling@outlook.com>
-> Cc: Kamal Dasu <kdasu.kdev@gmail.com>
-> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Cc: Han Xu <han.xu@nxp.com>
-> Cc: Harvey Hunt <harveyhuntnexus@gmail.com>
-> Cc: Vladimir Zapolskiy <vz@mleia.com>
-> Cc: Sylvain Lemieux <slemieux.tyco@gmail.com>
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> Cc: Wan ZongShun <mcuos.com@gmail.com>
-> Cc: Neil Armstrong <narmstrong@baylibre.com>
-> Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> Cc: Maxim Levitsky <maximlevitsky@gmail.com>
-> Cc: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
-> Cc: Stefan Agner <stefan@agner.ch>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-omap@vger.kernel.org
-> Cc: linux-samsung-soc@vger.kernel.org
-> Cc: adi-buildroot-devel@lists.sourceforge.net
-> Cc: linux-cris-kernel@axis.com
-> Cc: linux-mips@linux-mips.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: bcm-kernel-feedback-list@broadcom.com
-> Cc: linux-mediatek@lists.infradead.org
-> Cc: linux-oxnas@lists.tuxfamily.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: devel@driverdev.osuosl.org
-> ---
-> Hi All,
->
-> Sorry for the huge Cc list, but I'd like to collect as much acks as
-> possible for this patch which is actually part of a bigger series [1].
->
-> Note that there's nothing complicated here, it's just a mechanical
-> s/nand\.h/rawnand\.h/ replacement, but it impacts several architectures,
-> the doc and staging directories.
->
-> Regards,
->
-> Boris
->
-> [1]https://lwn.net/Articles/723694/
-> ---
-> [...]
->   drivers/mtd/nand/atmel/nand-controller.c        | 2 +-
->   drivers/mtd/nand/atmel/pmecc.c                  | 2 +-
-For the Atmel drivers,
+Sure - I've tested patch this on Cavium Octeon under the same conditions 
+as before (64 bit kernel with 32bit userspace & no binfmt handler builtin).
 
-Acked-by: Wenyou Yang <wenyou.yang@microchip.com>
+The failing modprobe is now caught and rather than silence we get the 
+expected kernel panic, albeit all the warnings look quite noisy.
+
+VFS: Mounted root (ext3 filesystem) readonly on device 8:5.
+devtmpfs: mounted
+Freeing unused kernel memory: 372K
+This architecture does not have kernel memory protection.
+request_module: kmod_concurrent_max (0) close to 0 (max_modprobes: 50), 
+for module binfmt-4c46, throttling...
+request_module: modprobe binfmt-4c46 cannot be processed, kmod busy with 
+0 threads for more than 5 seconds now
+request_module: recursive modprobe call very likely!
+Starting init: /sbin/init exists but couldn't execute it (error -8)
+request_module: kmod_concurrent_max (0) close to 0 (max_modprobes: 50), 
+for module binfmt-4c46, throttling...
+request_module: modprobe binfmt-4c46 cannot be processed, kmod busy with 
+0 threads for more than 5 seconds now
+request_module: recursive modprobe call very likely!
+Starting init: /bin/sh exists but couldn't execute it (error -8)
+Kernel panic - not syncing: No working init found.  Try passing init= 
+option to kernel. See Linux Documentation/admin-guide/init.rst for guidance.
+---[ end Kernel panic - not syncing: No working init found.  Try passing 
+init= option to kernel. See Linux Documentation/admin-guide/init.rst for 
+guidance.
 
 
-Best Regards,
-Wenyou Yang
+In any case, this is better than the 4.13-rc1 behavior, so
+
+Tested-by: Matt Redfearn <matt.redfearn@imgetc.com>
+
+Thanks,
+Matt
+
+>
+> Note I've used wait_event_killable_timeout() to only accept SIGKILL
+> for now. I've seen issues wit SIGCHILD and at modprobe this could
+> even be a bigger issue, so this would restrict the signals received
+> *only* to SIGKILL.
+>
+> It would be good to come up with a simple test case for this in
+> tools/testing/selftests/kmod/kmod.sh
+>
+>    Luis
+>
+> diff --git a/include/linux/wait.h b/include/linux/wait.h
+> index 5b74e36c0ca8..dc19880c02f5 100644
+> --- a/include/linux/wait.h
+> +++ b/include/linux/wait.h
+> @@ -757,6 +757,43 @@ extern int do_wait_intr_irq(wait_queue_head_t *, wait_queue_entry_t *);
+>   	__ret;									\
+>   })
+>   
+> +#define __wait_event_killable_timeout(wq_head, condition, timeout)		\
+> +	___wait_event(wq_head, ___wait_cond_timeout(condition),			\
+> +		      TASK_KILLABLE, 0, timeout,				\
+> +		      __ret = schedule_timeout(__ret))
+> +
+> +/**
+> + * wait_event_killable_timeout - sleep until a condition gets true or a timeout elapses
+> + * @wq_head: the waitqueue to wait on
+> + * @condition: a C expression for the event to wait for
+> + * @timeout: timeout, in jiffies
+> + *
+> + * The process is put to sleep (TASK_KILLABLE) until the
+> + * @condition evaluates to true or a kill signal is received.
+> + * The @condition is checked each time the waitqueue @wq_head is woken up.
+> + *
+> + * wake_up() has to be called after changing any variable that could
+> + * change the result of the wait condition.
+> + *
+> + * Returns:
+> + * 0 if the @condition evaluated to %false after the @timeout elapsed,
+> + * 1 if the @condition evaluated to %true after the @timeout elapsed,
+> + * the remaining jiffies (at least 1) if the @condition evaluated
+> + * to %true before the @timeout elapsed, or -%ERESTARTSYS if it was
+> + * interrupted by a kill signal.
+> + *
+> + * Only kill signals interrupt this process.
+> + */
+> +#define wait_event_killable_timeout(wq_head, condition, timeout)		\
+> +({										\
+> +	long __ret = timeout;							\
+> +	might_sleep();								\
+> +	if (!___wait_cond_timeout(condition))					\
+> +		__ret = __wait_event_killable_timeout(wq_head,			\
+> +						condition, timeout);		\
+> +	__ret;									\
+> +})
+> +
+>   
+>   #define __wait_event_lock_irq(wq_head, condition, lock, cmd)			\
+>   	(void)___wait_event(wq_head, condition, TASK_UNINTERRUPTIBLE, 0, 0,	\
+> diff --git a/kernel/kmod.c b/kernel/kmod.c
+> index 6d016c5d97c8..1b5f7bada8d2 100644
+> --- a/kernel/kmod.c
+> +++ b/kernel/kmod.c
+> @@ -71,6 +71,13 @@ static atomic_t kmod_concurrent_max = ATOMIC_INIT(MAX_KMOD_CONCURRENT);
+>   static DECLARE_WAIT_QUEUE_HEAD(kmod_wq);
+>   
+>   /*
+> + * If modprobe can't be called after this time we assume its very likely
+> + * your userspace has created a recursive dependency, and we'll have no
+> + * option but to fail.
+> + */
+> +#define MAX_KMOD_TIMEOUT 5
+> +
+> +/*
+>   	modprobe_path is set via /proc/sys.
+>   */
+>   char modprobe_path[KMOD_PATH_LEN] = "/sbin/modprobe";
+> @@ -167,8 +174,18 @@ int __request_module(bool wait, const char *fmt, ...)
+>   		pr_warn_ratelimited("request_module: kmod_concurrent_max (%u) close to 0 (max_modprobes: %u), for module %s, throttling...",
+>   				    atomic_read(&kmod_concurrent_max),
+>   				    MAX_KMOD_CONCURRENT, module_name);
+> -		wait_event_interruptible(kmod_wq,
+> -					 atomic_dec_if_positive(&kmod_concurrent_max) >= 0);
+> +		ret = wait_event_killable_timeout(kmod_wq,
+> +						  atomic_dec_if_positive(&kmod_concurrent_max) >= 0,
+> +						  MAX_KMOD_TIMEOUT * HZ);
+> +		if (!ret) {
+> +			pr_warn_ratelimited("request_module: modprobe %s cannot be processed, kmod busy with %d threads for more than %d seconds now",
+> +					    module_name, atomic_read(&kmod_concurrent_max), MAX_KMOD_TIMEOUT);
+> +			pr_warn_ratelimited("request_module: recursive modprobe call very likely!");
+> +			return -ETIME;
+> +		} else if (ret == -ERESTARTSYS) {
+> +			pr_warn_ratelimited("request_module: sigkill sent for modprobe %s, giving up", module_name);
+> +			return ret;
+> +		}
+>   	}
+>   
+>   	trace_module_request(module_name, wait, _RET_IP_);

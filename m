@@ -1,13 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:10584 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:21861 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23995123AbdHGWjAdhreI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Aug 2017 00:39:00 +0200
+        with ESMTP id S23994850AbdHGXBlzdfSI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Aug 2017 01:01:41 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 4/4] MIPS: NI 169445: Fix lack of ITS root node
-Date: Mon, 7 Aug 2017 15:37:24 -0700
-Message-ID: <20170807223724.19408-5-paul.burton@imgtec.com>
-In-Reply-To: <20170807223724.19408-1-paul.burton@imgtec.com>
-References: <20170807223724.19408-1-paul.burton@imgtec.com>
+Subject: [PATCH 0/7] MIPS: generic kernel config improvements
+Date: Mon, 7 Aug 2017 16:01:11 -0700
+Message-ID: <20170807230119.10629-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -21,42 +19,44 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>, Nathan Sullivan <nathan.sullivan@ni.com>
-Message-ID: <20170807223724.8i33uKnEg99Wd6aiQSbGtmhdDhM0YTUCk1A3aG2eK0o@z>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20170807230111.u2KgICPnW6sG1FwOvUoAAtIA7UmvGkg_1L-EM3wnFiE@z>
 
-For some reason the root node was missing in the NI 169445 flattened
-image tree source, leading to the following build error when attempting
-to generate the flattened image tree binary:
+This series introduces support for filtering which board support is
+enabled based upon the ISA, endianness or other configuration. This
+allows us to only include board support in kernels that it makes sense
+for - eg. there's no point including support for systems that have 32
+bit CPUs in 64 bit kernels.
 
-  ITB     arch/mips/boot/vmlinux.gz.itb
-Error: arch/mips/boot/vmlinux.gz.its:90.1-2 syntax error
-FATAL ERROR: Unable to parse input tree
-/usr/bin/mkimage: Can't read arch/mips/boot/vmlinux.gz.itb.tmp: Invalid argument
-make[1]: *** [arch/mips/boot/Makefile:165: arch/mips/boot/vmlinux.gz.itb] Error 255
-make: *** [arch/mips/Makefile:371: vmlinux.gz.itb] Error 2
+It then makes a few tweaks to generic_defconfig & prevents direct use of
+generic_defconfig, which is almost certainly not what a user wants.
 
-Fix this by adding in the root node.
+Applies atop mips-for-linux-next at 246edadb70f7.
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Fixes: 65dca6aed98d ("MIPS: NI 169445 board support")
-Cc: Nathan Sullivan <nathan.sullivan@ni.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
 
----
+Paul Burton (7):
+  MIPS: generic: Allow filtering enabled boards by requirements
+  MIPS: SEAD-3: Only include in 32 bit kernels by default
+  MIPS: NI 169445: Only include in 32r2el kernels
+  MIPS: Prevent direct use of generic_defconfig
+  MIPS: Make CONFIG_MIPS_MT_SMP default y
+  MIPS: generic: Don't explicitly disable CONFIG_USB_SUPPORT
+  MIPS: generic: Bump default NR_CPUS to 16
 
- arch/mips/generic/board-ni169445.its.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ MAINTAINERS                                     |  1 +
+ arch/mips/Kconfig                               |  1 +
+ arch/mips/Makefile                              | 23 ++++++-
+ arch/mips/configs/generic/board-ni169445.config |  3 +
+ arch/mips/configs/generic/board-sead-3.config   |  2 +
+ arch/mips/configs/generic_defconfig             |  3 +-
+ arch/mips/configs/malta_defconfig               |  1 -
+ arch/mips/configs/malta_kvm_defconfig           |  1 -
+ arch/mips/configs/malta_kvm_guest_defconfig     |  1 +
+ arch/mips/configs/maltasmvp_defconfig           |  1 -
+ arch/mips/configs/maltasmvp_eva_defconfig       |  1 -
+ arch/mips/tools/generic-board-config.sh         | 90 +++++++++++++++++++++++++
+ 12 files changed, 120 insertions(+), 8 deletions(-)
+ create mode 100755 arch/mips/tools/generic-board-config.sh
 
-diff --git a/arch/mips/generic/board-ni169445.its.S b/arch/mips/generic/board-ni169445.its.S
-index d12e12fe90be..e4cb4f95a8cc 100644
---- a/arch/mips/generic/board-ni169445.its.S
-+++ b/arch/mips/generic/board-ni169445.its.S
-@@ -1,4 +1,4 @@
--{
-+/ {
- 	images {
- 		fdt@ni169445 {
- 			description = "NI 169445 device tree";
 -- 
 2.14.0

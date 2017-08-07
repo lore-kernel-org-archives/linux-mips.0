@@ -1,16 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:59484 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23995109AbdHFAGGjzqc0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 6 Aug 2017 02:06:06 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v6 6/6] PCI: xilinx: Allow build on MIPS platforms
-Date: Sat, 5 Aug 2017 17:03:51 -0700
-Message-ID: <20170806000351.17952-7-paul.burton@imgtec.com>
-In-Reply-To: <20170806000351.17952-1-paul.burton@imgtec.com>
-References: <20170806000351.17952-1-paul.burton@imgtec.com>
+Received: from esa4.microchip.iphmx.com ([68.232.154.123]:40751 "EHLO
+        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23995116AbdHGA4FIiS2h (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 7 Aug 2017 02:56:05 +0200
+Subject: Re: [PATCH] mtd: nand: Rename nand.h into rawnand.h
+References: <1501860550-16506-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1501860550-16506-2-git-send-email-boris.brezillon@free-electrons.com>
+From: "Yang, Wenyou" <Wenyou.Yang@Microchip.com>
+Message-ID: <fc6e4906-5d76-ab7f-f177-95d77492ba79@Microchip.com>
+Date: Mon, 7 Aug 2017 08:55:15 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+In-Reply-To: <1501860550-16506-2-git-send-email-boris.brezillon@free-electrons.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Return-Path: <Wenyou.Yang@microchip.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,49 +23,105 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
-Cc: Bharat Kumar Gogada <bharatku@xilinx.com>, Michal Simek <michal.simek@xilinx.com>, Ravikiran Gummaluri <rgummal@xilinx.com>, linux-mips@linux-mips.org, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20170806000351.R6FtpURcnB_xWeTDXpSY-wWFErM5GH0yhtR3KkX4Ufk@z>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Peter Pan <peterpandong@micron.com>, Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>, Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Gregory Clement <gregory.clement@free-electrons.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Alexander Sverdlin <alexander.sverdlin@gmail.com>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Fabio Estevam <fabio.estevam@nxp.com>, Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>, Eric Miao <eric.y.miao@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>, Alexander Clouter <alex@digriz.org.uk>, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Simtec Linux Team <linux@simtec.co.uk>, Steven Miao <realmz6@gmail.com>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Ralf Baechle <ralf@linux-mips.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, Wenyou Yang <wenyou.yang@atmel.com>, Josh Wu <rainyfeeling@outlook.com>, Kamal Dasu <kdasu.kdev@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Han Xu <han.xu@nxp.com>, Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>, Wan ZongShun <mcuos.com@gmail.com>, Neil Armstrong <narmstrong@baylibre.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Maxim Levitsky <maximlevitsky@gmail.com>, Marc Gonzalez <marc_gonzalez@sigmadesigns.com>, Stefan Agner <stefan@agner.ch>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-samsung-soc@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-cris-kernel@axis.com, linux-mips@linux-mips.org, linux-sh@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, linux-mediatek@lists.infradead.org, linux-oxnas@lists.tuxfamily.org, linuxppc-dev@lists.ozlabs.org, devel@driverdev.osuosl.org
+Message-ID: <20170807005515.8LGhJHGvhkhsfYw_xGKfiz0e7MSLB0radzfoyYI1bQ4@z>
 
-Allow the xilinx-pcie driver to be built on MIPS platforms which make
-use of generic PCI drivers rather than legacy MIPS-specific interfaces.
-This is used on the MIPS Boston development board.
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: Bharat Kumar Gogada <bharatku@xilinx.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Michal Simek <michal.simek@xilinx.com>
-Cc: Ravikiran Gummaluri <rgummal@xilinx.com>
-Cc: linux-pci@vger.kernel.org
 
----
+On 2017/8/4 23:29, Boris Brezillon wrote:
+> We are planning to share more code between different NAND based
+> devices (SPI NAND, OneNAND and raw NANDs), but before doing that
+> we need to move the existing include/linux/mtd/nand.h file into
+> include/linux/mtd/rawnand.h so we can later create a nand.h header
+> containing all common structure and function prototypes.
+>
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Signed-off-by: Peter Pan <peterpandong@micron.com>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Sekhar Nori <nsekhar@ti.com>
+> Cc: Kevin Hilman <khilman@kernel.org>
+> Cc: Jason Cooper <jason@lakedaemon.net>
+> Cc: Andrew Lunn <andrew@lunn.ch>
+> Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+> Cc: Gregory Clement <gregory.clement@free-electrons.com>
+> Cc: Hartley Sweeten <hsweeten@visionengravers.com>
+> Cc: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Cc: Sascha Hauer <kernel@pengutronix.de>
+> Cc: Fabio Estevam <fabio.estevam@nxp.com>
+> Cc: Imre Kaloz <kaloz@openwrt.org>
+> Cc: Krzysztof Halasa <khalasa@piap.pl>
+> Cc: Eric Miao <eric.y.miao@gmail.com>
+> Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
+> Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
+> Cc: Tony Lindgren <tony@atomide.com>
+> Cc: Alexander Clouter <alex@digriz.org.uk>
+> Cc: Daniel Mack <daniel@zonque.org>
+> Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+> Cc: Marek Vasut <marek.vasut@gmail.com>
+> Cc: Kukjin Kim <kgene@kernel.org>
+> Cc: Krzysztof Kozlowski <krzk@kernel.org>
+> Cc: Simtec Linux Team <linux@simtec.co.uk>
+> Cc: Steven Miao <realmz6@gmail.com>
+> Cc: Mikael Starvik <starvik@axis.com>
+> Cc: Jesper Nilsson <jesper.nilsson@axis.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: Wenyou Yang <wenyou.yang@atmel.com>
+> Cc: Josh Wu <rainyfeeling@outlook.com>
+> Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Cc: Han Xu <han.xu@nxp.com>
+> Cc: Harvey Hunt <harveyhuntnexus@gmail.com>
+> Cc: Vladimir Zapolskiy <vz@mleia.com>
+> Cc: Sylvain Lemieux <slemieux.tyco@gmail.com>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Wan ZongShun <mcuos.com@gmail.com>
+> Cc: Neil Armstrong <narmstrong@baylibre.com>
+> Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> Cc: Maxim Levitsky <maximlevitsky@gmail.com>
+> Cc: Marc Gonzalez <marc_gonzalez@sigmadesigns.com>
+> Cc: Stefan Agner <stefan@agner.ch>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: linux-doc@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-omap@vger.kernel.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: adi-buildroot-devel@lists.sourceforge.net
+> Cc: linux-cris-kernel@axis.com
+> Cc: linux-mips@linux-mips.org
+> Cc: linux-sh@vger.kernel.org
+> Cc: bcm-kernel-feedback-list@broadcom.com
+> Cc: linux-mediatek@lists.infradead.org
+> Cc: linux-oxnas@lists.tuxfamily.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: devel@driverdev.osuosl.org
+> ---
+> Hi All,
+>
+> Sorry for the huge Cc list, but I'd like to collect as much acks as
+> possible for this patch which is actually part of a bigger series [1].
+>
+> Note that there's nothing complicated here, it's just a mechanical
+> s/nand\.h/rawnand\.h/ replacement, but it impacts several architectures,
+> the doc and staging directories.
+>
+> Regards,
+>
+> Boris
+>
+> [1]https://lwn.net/Articles/723694/
+> ---
+> [...]
+>   drivers/mtd/nand/atmel/nand-controller.c        | 2 +-
+>   drivers/mtd/nand/atmel/pmecc.c                  | 2 +-
+For the Atmel drivers,
 
-Changes in v6: None
-Changes in v5: None
+Acked-by: Wenyou Yang <wenyou.yang@microchip.com>
 
-Changes in v4:
-- Depend on PCI_DRIVERS_GENERIC, which the driver won't work on MIPS without.
 
-Changes in v3:
-- Split out from Boston patchset.
-
-Changes in v2: None
-
- drivers/pci/host/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pci/host/Kconfig b/drivers/pci/host/Kconfig
-index 89d61c2cbfaa..eb8c30828011 100644
---- a/drivers/pci/host/Kconfig
-+++ b/drivers/pci/host/Kconfig
-@@ -71,7 +71,7 @@ config PCI_HOST_GENERIC
- 
- config PCIE_XILINX
- 	bool "Xilinx AXI PCIe host bridge support"
--	depends on ARCH_ZYNQ || MICROBLAZE
-+	depends on ARCH_ZYNQ || MICROBLAZE || (MIPS && PCI_DRIVERS_GENERIC)
- 	help
- 	  Say 'Y' here if you want kernel to support the Xilinx AXI PCIe
- 	  Host Bridge driver.
--- 
-2.13.4
+Best Regards,
+Wenyou Yang

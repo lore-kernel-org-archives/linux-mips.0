@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:64808 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:50752 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23994850AbdHGXChYHNLI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Aug 2017 01:02:37 +0200
+        with ESMTP id S23995126AbdHGXC4aMTdI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 8 Aug 2017 01:02:56 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 3/7] MIPS: NI 169445: Only include in 32r2el kernels
-Date: Mon, 7 Aug 2017 16:01:14 -0700
-Message-ID: <20170807230119.10629-4-paul.burton@imgtec.com>
+Subject: [PATCH 4/7] MIPS: Prevent direct use of generic_defconfig
+Date: Mon, 7 Aug 2017 16:01:15 -0700
+Message-ID: <20170807230119.10629-5-paul.burton@imgtec.com>
 In-Reply-To: <20170807230119.10629-1-paul.burton@imgtec.com>
 References: <20170807230119.10629-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -21,45 +21,48 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>, Nathan Sullivan <nathan.sullivan@ni.com>
-Message-ID: <20170807230114.5oSyP6c-PYtzkEzdPO5E06gVSVNDOJPy7XKcHjr3zh8@z>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20170807230115.bj0E7K08CMYTLqRl-uKwWpK9F05Ii1_yvqAS2QrGl1c@z>
 
-The NI 169445 board uses a little endian MIPS32r2 CPU, and therefore
-including board support in kernels that are unable to run on such a CPU
-is pointless.
+Using generic_defconfig directly is unlikely to be what a user actually
+wants to do - it doesn't specify any particular ISA revision & it
+doesn't enable any board or driver support, resulting in a largely
+useless kernel.
 
-Specify requirements in the board config fragment that cause the NI
-169445 board support to only be included in generic kernels that target
-little endian MIPS32r2 CPUs.
-
-For example, NI 169445 support will be included when configuring using
-32r2el_defconfig but not when using 64r6_defconfig.
+Prevent users from using it directly, printing a helpful message to
+point them in the right direction if they attempt to.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: Nathan Sullivan <nathan.sullivan@ni.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
-
 ---
-I'm basing this upon the Kconfig entries that were present in the
-initial upstream submission of NI 169445 board support[1]. If this is
-wrong at all please let me know :)
 
-[1] https://www.linux-mips.org/archives/linux-mips/2016-12/msg00016.html
+ arch/mips/Makefile | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
- arch/mips/configs/generic/board-ni169445.config | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/mips/configs/generic/board-ni169445.config b/arch/mips/configs/generic/board-ni169445.config
-index 0bae1f861a5b..f72223b366ca 100644
---- a/arch/mips/configs/generic/board-ni169445.config
-+++ b/arch/mips/configs/generic/board-ni169445.config
-@@ -1,3 +1,6 @@
-+# require CONFIG_CPU_MIPS32_R2=y
-+# require CONFIG_CPU_LITTLE_ENDIAN=y
-+
- CONFIG_FIT_IMAGE_FDT_NI169445=y
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index a715888179b3..b6f56e251f3b 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -501,6 +501,19 @@ $(generic_defconfigs):
+ #
+ $(generic_config_dir)/%.config: ;
  
- CONFIG_SERIAL_8250=y
++#
++# Prevent direct use of generic_defconfig, which is intended to be used as the
++# basis of the various ISA-specific targets generated above.
++#
++.PHONY: generic_defconfig
++generic_defconfig:
++	$(Q)echo "generic_defconfig is not intended for direct use, but should instead be"
++	$(Q)echo "used via an ISA-specific target from the following list:"
++	$(Q)echo
++	$(Q)for cfg in $(generic_defconfigs); do echo "  $${cfg}"; done
++	$(Q)echo
++	$(Q)false
++
+ #
+ # Legacy defconfig compatibility - these targets used to be real defconfigs but
+ # now that the boards have been converted to use the generic kernel they are
 -- 
 2.14.0

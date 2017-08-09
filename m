@@ -1,19 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:33462 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23995198AbdHIIOat4p5f (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 9 Aug 2017 10:14:30 +0200
-Date: Wed, 9 Aug 2017 09:14:24 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: [PATCH 3/7] MIPS: NI 169445: Only include in 32r2el kernels
-Message-ID: <20170809081424.GB31455@jhogan-linux.le.imgtec.org>
-References: <20170807230119.10629-1-paul.burton@imgtec.com>
- <20170807230119.10629-4-paul.burton@imgtec.com>
+Received: from mga11.intel.com ([192.55.52.93]:23364 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23995078AbdHIOCZjLpC6 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 9 Aug 2017 16:02:25 +0200
+From: "Langer, Thomas" <thomas.langer@intel.com>
+Subject: RE: [PATCH v9 03/16] mtd: spi-falcon: drop check of boot select
+Date: Wed, 9 Aug 2017 14:02:16 +0000
+Message-ID: <0DAF21CFE1B20740AE23D6AF6E54843F1EA0A385@IRSMSX101.ger.corp.intel.com>
+References: <20170808225247.32266-1-hauke@hauke-m.de>
+ <20170808225247.32266-4-hauke@hauke-m.de>
+ <20170809114421.oo2bunardgw3p4tk@sirena.org.uk>
+In-Reply-To: <20170809114421.oo2bunardgw3p4tk@sirena.org.uk>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="t8N2qprAjL+0GVly"
-Content-Disposition: inline
-In-Reply-To: <20170807230119.10629-4-paul.burton@imgtec.com>
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <thomas.langer@intel.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,92 +24,33 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Nathan Sullivan <nathan.sullivan@ni.com>
-Message-ID: <20170809081424.X9rzu3wFsMuFVSUnqGzyDJ1-DFpsldcIIVcymNsPLtI@z>
+To: Mark Brown <broonie@kernel.org>, Hauke Mehrtens <hauke@hauke-m.de>
+Cc: "ralf@linux-mips.org" <ralf@linux-mips.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "martin.blumenstingl@googlemail.com" <martin.blumenstingl@googlemail.com>, "john@phrozen.org" <john@phrozen.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "Mehrtens, Hauke" <hauke.mehrtens@intel.com>, "robh@kernel.org" <robh@kernel.org>, "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "kishon@ti.com" <kishon@ti.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>
+Message-ID: <20170809140216.pxcpM--s5Yg-ssiU1s2sL_qG5IEOGoLdVtKMDkykfM4@z>
 
---t8N2qprAjL+0GVly
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 07, 2017 at 04:01:14PM -0700, Paul Burton wrote:
-> The NI 169445 board uses a little endian MIPS32r2 CPU, and therefore
-> including board support in kernels that are unable to run on such a CPU
-> is pointless.
->=20
-> Specify requirements in the board config fragment that cause the NI
-> 169445 board support to only be included in generic kernels that target
-> little endian MIPS32r2 CPUs.
->=20
-> For example, NI 169445 support will be included when configuring using
-> 32r2el_defconfig but not when using 64r6_defconfig.
->=20
-> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-> Cc: Nathan Sullivan <nathan.sullivan@ni.com>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: linux-mips@linux-mips.org
->=20
-> ---
-> I'm basing this upon the Kconfig entries that were present in the
-> initial upstream submission of NI 169445 board support[1]. If this is
-> wrong at all please let me know :)
->=20
-> [1] https://www.linux-mips.org/archives/linux-mips/2016-12/msg00016.html
->=20
->  arch/mips/configs/generic/board-ni169445.config | 3 +++
->  1 file changed, 3 insertions(+)
->=20
-> diff --git a/arch/mips/configs/generic/board-ni169445.config b/arch/mips/=
-configs/generic/board-ni169445.config
-> index 0bae1f861a5b..f72223b366ca 100644
-> --- a/arch/mips/configs/generic/board-ni169445.config
-> +++ b/arch/mips/configs/generic/board-ni169445.config
-> @@ -1,3 +1,6 @@
-> +# require CONFIG_CPU_MIPS32_R2=3Dy
 
-Technically, won't this unnecessarily prevent it being included in r1
-configs?
+> -----Original Message-----
+> From: linux-spi-owner@vger.kernel.org [mailto:linux-spi-
+> owner@vger.kernel.org] On Behalf Of Mark Brown
+> Sent: Wednesday, August 9, 2017 1:44 PM
+> To: Hauke Mehrtens <hauke@hauke-m.de>
+> Cc: ralf@linux-mips.org; linux-mips@linux-mips.org; linux-
+> mtd@lists.infradead.org; linux-watchdog@vger.kernel.org;
+> devicetree@vger.kernel.org; martin.blumenstingl@googlemail.com;
+> john@phrozen.org; linux-spi@vger.kernel.org; Mehrtens, Hauke
+> <hauke.mehrtens@intel.com>; robh@kernel.org; andy.shevchenko@gmail.com;
+> p.zabel@pengutronix.de; kishon@ti.com; mark.rutland@arm.com
+> Subject: Re: [PATCH v9 03/16] mtd: spi-falcon: drop check of boot select
+> 
+> On Wed, Aug 09, 2017 at 12:52:34AM +0200, Hauke Mehrtens wrote:
+> 
+> > Do not check which flash type the SoC was booted from before
+> > using this driver. Assume that the device tree is correct and use this
+> > driver when it was added to device tree. This also removes a build
+> > dependency to the SoC code.
+> 
+> Why?  Is this assumption reliably true?
 
-I suppose the only better suggestion I have at the moment is
-# require CONFIG_32BIT=3Dy
-# require CONFIG_CPU_MIPS32_R6=3Dn
-
-I suppose being specific about exclusions is probably inevitable (e.g.
-for boards which can't support micromips).
-
-Cheers
-James
-
-> +# require CONFIG_CPU_LITTLE_ENDIAN=3Dy
-> +
->  CONFIG_FIT_IMAGE_FDT_NI169445=3Dy
-> =20
->  CONFIG_SERIAL_8250=3Dy
-> --=20
-> 2.14.0
->=20
->=20
-
---t8N2qprAjL+0GVly
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlmKxF4ACgkQbAtpk944
-dnr8FRAAh3B2TgbiziDycrv52lQKpBLGMk/UGKA7AHZVaugjn4VU0BAnJoRIQTSk
-w256f1/IKA8CIWjvuAg3zcskkETMEJDBMk0vdfqorIBfw0zqnsQ4FvRVX2Uy3Gqc
-f/x3zM16CkSi+wg1EAnUKI2kb9zlumrkP/GE16RTFocvQqO1j3/JKOP378FWZVCa
-C+EIcyiK5mJfo3ty9qni0KcykmbKOCxKSlnHbc5jTzCMoPJJwVgdlzDtOGjTipYB
-3m4/S89xOG+o00gkUSaRMCmDj1Xy34HanzAy3rweFbxVCtxCqB4IFJAcSZGJFX4d
-EgH9SFQAQyocZR3GnQwjX8m1Nu3dVnYlARhqkVW3NpY03L/hTUD2X2oh3p2jFQqX
-9KZHeeMDe090EIxIaOOl7xBWJHzRbqohmYLbUXNzBshvqgXpZ6MCIbDEPQgtFpSf
-DwUXerEesXPQM6SEjoPz5uo9jLPDNqRiqTDCIV3UKHIQDfQ/BoUO1qVncYyo8Dug
-tMflZM7QCTojhMuL7P9lgdu7x2XCmW+6WglYWndxr87aXMNvZDBp5w5PQ5iMiLnR
-cRV4CrDlIOLsZ8+korSY7GrrT/xMFZ6apJb8Uv3ON8q/D/pBecE7NBP42ZcxKeXP
-CtTmWoJ77dC2j56bDYDkTpEZEhc/F+aKTYTKS2TJ4JfwPeRTHWc=
-=FRWi
------END PGP SIGNATURE-----
-
---t8N2qprAjL+0GVly--
+Yes. We only have one type of flash interface in the device tree, as they 
+are connected to the shared EBU (External Bus Unit).

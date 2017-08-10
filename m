@@ -1,17 +1,21 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:34276 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992400AbdHJIrBlaiGA (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 10 Aug 2017 10:47:01 +0200
-Date: Thu, 10 Aug 2017 09:46:44 +0100
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH v2 5/5] MIPS: Allow floating point support to be
- disabled
-In-Reply-To: <20170807094132.GA23183@linux-mips.org>
-Message-ID: <alpine.DEB.2.00.1708100146580.17596@tp.orcam.me.uk>
-References: <alpine.DEB.2.00.1706162029030.23046@tp.orcam.me.uk> <20170616202120.18435-1-paul.burton@imgtec.com> <20170807094132.GA23183@linux-mips.org>
+Received: from mezzanine.sirena.org.uk ([IPv6:2400:8900::f03c:91ff:fedb:4f4]:54924
+        "EHLO mezzanine.sirena.org.uk" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992568AbdHJPFlW7g0H (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 10 Aug 2017 17:05:41 +0200
+Date: Thu, 10 Aug 2017 16:05:15 +0100
+From: Mark Brown <broonie@kernel.org>
+Message-ID: <20170810150515.w66ksbfexbcegy6z@sirena.org.uk>
+References: <20170808225247.32266-1-hauke@hauke-m.de>
+ <20170808225247.32266-4-hauke@hauke-m.de>
+ <20170809114421.oo2bunardgw3p4tk@sirena.org.uk>
+ <0DAF21CFE1B20740AE23D6AF6E54843F1EA0A385@IRSMSX101.ger.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="s6uae5i4hoypg7dc"
+Content-Disposition: inline
+In-Reply-To: <0DAF21CFE1B20740AE23D6AF6E54843F1EA0A385@IRSMSX101.ger.corp.intel.com>
+Subject: Re: [PATCH v9 03/16] mtd: spi-falcon: drop check of boot select
+Return-Path: <broonie@sirena.org.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,20 +25,46 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
-Message-ID: <20170810084644.kp_kjIaCMG56UNb1XqxMgo-NFd9M9dHpfn7OSxDH3X0@z>
+To: "Langer, Thomas" <thomas.langer@intel.com>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "martin.blumenstingl@googlemail.com" <martin.blumenstingl@googlemail.com>, "john@phrozen.org" <john@phrozen.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "Mehrtens, Hauke" <hauke.mehrtens@intel.com>, "robh@kernel.org" <robh@kernel.org>, "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "kishon@ti.com" <kishon@ti.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>
+Message-ID: <20170810150515.shCQ7sbu6tFDtmj9lqqJzybJ9M5Y6ugX6MfVffizuWw@z>
 
-On Mon, 7 Aug 2017, Ralf Baechle wrote:
 
-> Or we simply make the kernel panic when it detects an FPU but has no
-> FPU support?
+--s6uae5i4hoypg7dc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- Why would we want to make the kernel panic in the presence of an optional 
-unused hardware component?
+On Wed, Aug 09, 2017 at 02:02:16PM +0000, Langer, Thomas wrote:
+> > On Wed, Aug 09, 2017 at 12:52:34AM +0200, Hauke Mehrtens wrote:
 
- Paul's proposal looks reasonable to me.  If people want to throw away FPU 
-support to save on memory, then let them do that.  Just make that depend 
-on EMBEDDED or suchlike, so that it's not a decision taken lightly.
+> > > Do not check which flash type the SoC was booted from before
+> > > using this driver. Assume that the device tree is correct and use this
+> > > driver when it was added to device tree. This also removes a build
+> > > dependency to the SoC code.
 
-  Maciej
+> > Why?  Is this assumption reliably true?
+
+> Yes. We only have one type of flash interface in the device tree, as they=
+=20
+> are connected to the shared EBU (External Bus Unit).
+
+That sounds board specific but this is a driver for a SoC?  In any case
+this needs to end up in the commit log.
+
+--s6uae5i4hoypg7dc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmMdioACgkQJNaLcl1U
+h9BYlAgAgCDu3huZzBs6oYvZZ+POaY/GV5Cs55enzpxuT8F87rnOrYbTGQw66HzP
++4Foc1xogiJOKDNSs+BpPiuFTo/zvwu+ApKkEE8OeaDOQh4gVhCag/OUKz9z5hAZ
+ZvSHQud2xiO1FjFZeLFB1KGEA9jb9ltOjWdJxqdiv1S9mV4ITiVho//mhTNf6HcL
+RMiKTeDmSz37Q3X1vgrnQehpTYgqUHYCzr/NjUjsJ3nATLZpr8bLbLhh4YKalxqj
+Elnt3lXSauR4/LfcfwpSqRYfeMP/LhWAHMRRJpSMLqFVAyWgndZP9IXm9mP4fXia
+R3yhSmQxzNY7qhWMoY1vQAfNsr4hwA==
+=HdUK
+-----END PGP SIGNATURE-----
+
+--s6uae5i4hoypg7dc--

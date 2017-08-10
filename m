@@ -1,21 +1,19 @@
-Received: from mezzanine.sirena.org.uk ([IPv6:2400:8900::f03c:91ff:fedb:4f4]:54924
-        "EHLO mezzanine.sirena.org.uk" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992568AbdHJPFlW7g0H (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 10 Aug 2017 17:05:41 +0200
-Date: Thu, 10 Aug 2017 16:05:15 +0100
-From: Mark Brown <broonie@kernel.org>
-Message-ID: <20170810150515.w66ksbfexbcegy6z@sirena.org.uk>
-References: <20170808225247.32266-1-hauke@hauke-m.de>
- <20170808225247.32266-4-hauke@hauke-m.de>
- <20170809114421.oo2bunardgw3p4tk@sirena.org.uk>
- <0DAF21CFE1B20740AE23D6AF6E54843F1EA0A385@IRSMSX101.ger.corp.intel.com>
+Received: from mail-io0-x22c.google.com ([IPv6:2607:f8b0:4001:c06::22c]:34066
+        "EHLO mail-io0-x22c.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993256AbdHJRc3TihYw (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 10 Aug 2017 19:32:29 +0200
+Received: by mail-io0-x22c.google.com with SMTP id o9so12232142iod.1
+        for <linux-mips@linux-mips.org>; Thu, 10 Aug 2017 10:32:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="s6uae5i4hoypg7dc"
-Content-Disposition: inline
-In-Reply-To: <0DAF21CFE1B20740AE23D6AF6E54843F1EA0A385@IRSMSX101.ger.corp.intel.com>
-Subject: Re: [PATCH v9 03/16] mtd: spi-falcon: drop check of boot select
-Return-Path: <broonie@sirena.org.uk>
+In-Reply-To: <28ab1c38-f8a7-3fca-7a5a-e44248bec69f@imgtec.com>
+References: <1502195022-18161-1-git-send-email-matt.redfearn@imgtec.com>
+ <CAGXu5j+nF5sAO=NMLq2Oh2aHJRxGVED93oCH0GK28yU0SXQ=MA@mail.gmail.com> <28ab1c38-f8a7-3fca-7a5a-e44248bec69f@imgtec.com>
+From: Kees Cook <keescook@chromium.org>
+Date: Thu, 10 Aug 2017 10:32:22 -0700
+Message-ID: <CAGXu5jL_b2-2OFBSKhumag_vViqMFutaZfvpBRWB5L-Gng1zuA@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: usercopy: Implement stack frame object validation
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <keescook@google.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,46 +23,55 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Langer, Thomas" <thomas.langer@intel.com>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "martin.blumenstingl@googlemail.com" <martin.blumenstingl@googlemail.com>, "john@phrozen.org" <john@phrozen.org>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, "Mehrtens, Hauke" <hauke.mehrtens@intel.com>, "robh@kernel.org" <robh@kernel.org>, "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>, "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "kishon@ti.com" <kishon@ti.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>
-Message-ID: <20170810150515.shCQ7sbu6tFDtmj9lqqJzybJ9M5Y6ugX6MfVffizuWw@z>
+To: Matt Redfearn <matt.redfearn@imgtec.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "kernel-hardening@lists.openwall.com" <kernel-hardening@lists.openwall.com>, LKML <linux-kernel@vger.kernel.org>, James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Josh Poimboeuf <jpoimboe@redhat.com>
+Message-ID: <20170810173222.bpLnr_fS5GmY-vq7UFYX-SHVTbF2AHWTTbF00z3_C7s@z>
+
+On Thu, Aug 10, 2017 at 1:24 AM, Matt Redfearn <matt.redfearn@imgtec.com> wrote:
+> Hi Kees,
+>
+>
+> On 08/08/17 20:11, Kees Cook wrote:
+>>
+>> On Tue, Aug 8, 2017 at 5:23 AM, Matt Redfearn <matt.redfearn@imgtec.com>
+>> wrote:
+>>>
+>>> This implements arch_within_stack_frames() for MIPS that validates if an
+>>> object is wholly contained by a kernel stack frame.
+>>>
+>>> With CONFIG_HARDENED_USERCOPY enabled, MIPS now passes the LKDTM tests
+>>> USERCOPY_STACK_FRAME_TO, USERCOPY_STACK_FRAME_FROM and
+>>> USERCOPY_STACK_BEYOND on a Creator Ci40.
+>>>
+>>> Since the MIPS kernel does not use frame pointers, we re-use the MIPS
+>>> kernels stack frame unwinder which uses instruction inspection to deduce
+>>> the stack frame size. As such it introduces a larger performance penalty
+>>> than on arches which use the frame pointer.
+>>
+>> Hmm, given x86's plans to drop the frame pointer, I wonder if the
+>> inter-frame checking code should be gated by a CONFIG. This (3%) is a
+>> rather high performance hit to take for a relatively small protection
+>> (it's mainly about catching too-large-reads, since most
+>> too-large-writes will be caught by the stack canary).
+>>
+>> What do you think?
+>
+>
+> If x86 is going to move to a more expensive stack unwinding method than the
+> frame pointer then I guess it may end up seeing a similar performance hit to
+> what we see on MIPS. In that case it might make sense to add a CONFIG for
+> this such that only those who wish to make the trade off of performance for
+> the added protection need enable it.
+
+Sounds good. Can you send a v2 that adds a CONFIG, maybe something
+like CONFIG_HARDENED_USERCOPY_UNWINDER with a description of the
+trade-offs? Then x86 can do this too when it drops frame pointers.
+
+Thanks!
+
+-Kees
 
 
---s6uae5i4hoypg7dc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Aug 09, 2017 at 02:02:16PM +0000, Langer, Thomas wrote:
-> > On Wed, Aug 09, 2017 at 12:52:34AM +0200, Hauke Mehrtens wrote:
-
-> > > Do not check which flash type the SoC was booted from before
-> > > using this driver. Assume that the device tree is correct and use this
-> > > driver when it was added to device tree. This also removes a build
-> > > dependency to the SoC code.
-
-> > Why?  Is this assumption reliably true?
-
-> Yes. We only have one type of flash interface in the device tree, as they=
-=20
-> are connected to the shared EBU (External Bus Unit).
-
-That sounds board specific but this is a driver for a SoC?  In any case
-this needs to end up in the commit log.
-
---s6uae5i4hoypg7dc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlmMdioACgkQJNaLcl1U
-h9BYlAgAgCDu3huZzBs6oYvZZ+POaY/GV5Cs55enzpxuT8F87rnOrYbTGQw66HzP
-+4Foc1xogiJOKDNSs+BpPiuFTo/zvwu+ApKkEE8OeaDOQh4gVhCag/OUKz9z5hAZ
-ZvSHQud2xiO1FjFZeLFB1KGEA9jb9ltOjWdJxqdiv1S9mV4ITiVho//mhTNf6HcL
-RMiKTeDmSz37Q3X1vgrnQehpTYgqUHYCzr/NjUjsJ3nATLZpr8bLbLhh4YKalxqj
-Elnt3lXSauR4/LfcfwpSqRYfeMP/LhWAHMRRJpSMLqFVAyWgndZP9IXm9mP4fXia
-R3yhSmQxzNY7qhWMoY1vQAfNsr4hwA==
-=HdUK
------END PGP SIGNATURE-----
-
---s6uae5i4hoypg7dc--
+-- 
+Kees Cook
+Pixel Security

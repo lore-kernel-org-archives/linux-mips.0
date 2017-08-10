@@ -1,17 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:56194 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:19047 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23995091AbdHIRACISLnH (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 9 Aug 2017 19:00:02 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH 3/7] MIPS: NI 169445: Only include in 32r2el kernels
-Date: Wed, 9 Aug 2017 09:59:46 -0700
-Message-ID: <5563565.3xWpng3KyW@np-p-burton>
-In-Reply-To: <20170809081424.GB31455@jhogan-linux.le.imgtec.org>
-References: <20170807230119.10629-1-paul.burton@imgtec.com> <20170807230119.10629-4-paul.burton@imgtec.com> <20170809081424.GB31455@jhogan-linux.le.imgtec.org>
+        with ESMTP id S23992262AbdHJH5uCfEhl (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 10 Aug 2017 09:57:50 +0200
+Subject: Re: [PATCH] mips: Fix using smp_processor_id() when preemptible
+References: <1502313950-725-1-git-send-email-minyard@acm.org>
+From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Message-ID: <d5605c8a-6c98-af7c-1878-3a8d85b25f71@imgtec.com>
+Date: Thu, 10 Aug 2017 09:57:40 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart13930196.6hhny5v6M4";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
-Return-Path: <Paul.Burton@imgtec.com>
+In-Reply-To: <1502313950-725-1-git-send-email-minyard@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Return-Path: <Marcin.Nowakowski@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,116 +22,58 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@imgtec.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Nathan Sullivan <nathan.sullivan@ni.com>
-Message-ID: <20170809165946.OZNP9WrGtEBLo99-bmOakOIacOD65UixQZ04uKGIlg0@z>
+To: minyard@acm.org, linux-mips@linux-mips.org, ralf@linux-mips.org, linux-kernel@vger.kernel.org
+Cc: Corey Minyard <cminyard@mvista.com>
+Message-ID: <20170810075740.Wg3CFQPr-X-g4s7Gv8_HhtMbiAjWc-Jf6S2kPtvXl4k@z>
 
---nextPart13930196.6hhny5v6M4
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Hi Corey,
 
-Hi James,
+This has already been fixed here:
+https://git.linux-mips.org/cgit/ralf/upstream-sfr.git/commit/?id=21da5332327b6d183bd93336ecf29c70bc609b7b
 
-On Wednesday, 9 August 2017 01:14:24 PDT James Hogan wrote:
-> On Mon, Aug 07, 2017 at 04:01:14PM -0700, Paul Burton wrote:
-> > The NI 169445 board uses a little endian MIPS32r2 CPU, and therefore
-> > including board support in kernels that are unable to run on such a CPU
-> > is pointless.
-> > 
-> > Specify requirements in the board config fragment that cause the NI
-> > 169445 board support to only be included in generic kernels that target
-> > little endian MIPS32r2 CPUs.
-> > 
-> > For example, NI 169445 support will be included when configuring using
-> > 32r2el_defconfig but not when using 64r6_defconfig.
-> > 
-> > Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-> > Cc: Nathan Sullivan <nathan.sullivan@ni.com>
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > Cc: linux-mips@linux-mips.org
-> > 
-> > ---
-> > I'm basing this upon the Kconfig entries that were present in the
-> > initial upstream submission of NI 169445 board support[1]. If this is
-> > wrong at all please let me know :)
-> > 
-> > [1] https://www.linux-mips.org/archives/linux-mips/2016-12/msg00016.html
-> > 
-> >  arch/mips/configs/generic/board-ni169445.config | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/arch/mips/configs/generic/board-ni169445.config
-> > b/arch/mips/configs/generic/board-ni169445.config index
-> > 0bae1f861a5b..f72223b366ca 100644
-> > --- a/arch/mips/configs/generic/board-ni169445.config
-> > +++ b/arch/mips/configs/generic/board-ni169445.config
-> > @@ -1,3 +1,6 @@
-> > +# require CONFIG_CPU_MIPS32_R2=y
+https://git.linux-mips.org/cgit/ralf/upstream-sfr.git/commit/?id=735302665c353d6756e7fa2a2cf41b039299f732
+
+Marcin
+
+On 09.08.2017 23:25, minyard@acm.org wrote:
+> From: Corey Minyard <cminyard@mvista.com>
 > 
-> Technically, won't this unnecessarily prevent it being included in r1
-> configs?
-
-Yes, I suppose it does...
-
-> I suppose the only better suggestion I have at the moment is
-> # require CONFIG_32BIT=y
-> # require CONFIG_CPU_MIPS32_R6=n
+> I was getting the following:
 > 
-> I suppose being specific about exclusions is probably inevitable (e.g.
-> for boards which can't support micromips).
-
-It would just seem a shame to eventually end up with:
-
-  # require CONFIG_CPU_MIPS32_R6=n
-  # require CONFIG_CPU_MIPS32_R7=n
-  # require CONFIG_CPU_MIPS32_R8=n
-  # require CONFIG_CPU_MIPS32_R9=n
-  # require CONFIG_CPU_MIPS32_RX=n
-  # require CONFIG_CPU_MIPS32_RXI=n
-  # require CONFIG_CPU_MIPS32_RXII=n
-  # require CONFIG_CPU_MIPS32_RXIII=n
-  # require CONFIG_CPU_MIPS32_RXIV=n
-
-Or whatever. I guess one option would be to add Kconfig entries that indicate 
-the ISA being less-than or greater-than-equal some version. Then we could have 
-for example:
-
-  # require CONFIG_ISA_GE_R6=n
-
-...and that would allow the board support to be included in any kernel 
-targeting a pre-r6 ISA.
-
-That might be handy for selecting support for arch features in Kconfig too 
-actually, where we currently have things like:
-
-  default y if CPU_MIPSR1 || CPU_MIPSR2 || CPU_MIPSR6
-
-and could instead have:
-
-  default y if ISA_GE_R1
-
-Thanks,
-    Paul
---nextPart13930196.6hhny5v6M4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAlmLP4IACgkQgiDZ+mk8
-HGXsjA/+Lf37shfVVRyx+rTg2KJ73gDzRWGR5rQR6SRl+omSoB0RFOmOG+tw4vuq
-ylTbghtU9d1KAtH6YzuJAC/G4UKYUHa1FKA8vsEa/rDwwJYq6cpN+eSIp227gNsI
-X2DJdFHkenRYIJXx5CgeFNNWO9bkmH9RFUiJM7VvfNZvbpq+53Jv7CVAbg75H99k
-9/l9Xpes+7acDQh8wfMHYJ+EEQBXhH6TJKjaATSX013sqD+D2v2shQ77sFvsJcAi
-8RjeUuq0SzZZwwSYiWfiyQdpUX3Foyfn8YWPyIE/3l/98YYveSzALP2A0kO/Z8VN
-i1BGFNOX8PrITBa1pypzQsryY1AKSFe+JKi/BOXG6oGZJzin633kQbhUv3ftoIPN
-ZwFBwSazNvVO6deUKgVCwb4akejXZkpJwxFsCRyoYsduOmo7353/PXMLv7T4315B
-UVEJ9kzRI5tN0Jr3OdDQ6FreuHM9ZG3pw/oZkJMZ5NPhgd4k1vhQvLMDUb5gUXqt
-hW9SHgdX+H2pSnznIIT0QRyeHVo5o/hliuIylYAZinibCInAYgfdgkfWCA46UKt3
-hPpiVk1qdocLnqYPGbBcoV7WytDSVFrg9nYk6HbnQGiZY53C4V35drvfziI3yJLT
-iCDeC8pfg0iEj4zN5lepUz1j5Qdxy6JYf28k3MVrXYAqUcXz0fg=
-=GUoU
------END PGP SIGNATURE-----
-
---nextPart13930196.6hhny5v6M4--
+> BUG: using smp_processor_id() in preemptible [00000000] code: swapper/0/1
+> caller is pcibios_set_cache_line_size+0x10/0x58
+> 
+> pcibios_set_cache_line_size() used current_cpu_data outside of
+> an unpreemptible context.
+> 
+> Signed-off-by: Corey Minyard <cminyard@mvista.com>
+> ---
+>   arch/mips/pci/pci.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/pci/pci.c b/arch/mips/pci/pci.c
+> index bd67ac7..afd2f8a 100644
+> --- a/arch/mips/pci/pci.c
+> +++ b/arch/mips/pci/pci.c
+> @@ -28,9 +28,11 @@ EXPORT_SYMBOL(PCIBIOS_MIN_MEM);
+>   
+>   static int __init pcibios_set_cache_line_size(void)
+>   {
+> -	struct cpuinfo_mips *c = &current_cpu_data;
+> +	struct cpuinfo_mips *c;
+>   	unsigned int lsize;
+>   
+> +	preempt_disable();
+> +	c = &current_cpu_data;
+>   	/*
+>   	 * Set PCI cacheline size to that of the highest level in the
+>   	 * cache hierarchy.
+> @@ -38,6 +40,7 @@ static int __init pcibios_set_cache_line_size(void)
+>   	lsize = c->dcache.linesz;
+>   	lsize = c->scache.linesz ? : lsize;
+>   	lsize = c->tcache.linesz ? : lsize;
+> +	preempt_enable();
+>   
+>   	BUG_ON(!lsize);
+>   
+> 

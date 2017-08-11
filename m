@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:14644 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:30441 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23994817AbdHKU5hVPnpw (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 11 Aug 2017 22:57:37 +0200
+        with ESMTP id S23994820AbdHKU5jRbWyw (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 11 Aug 2017 22:57:39 +0200
 From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 2/4] MIPS/ptrace: Pick up ptrace/seccomp changed syscalls
-Date: Fri, 11 Aug 2017 21:56:51 +0100
-Message-ID: <20170811205653.21873-3-james.hogan@imgtec.com>
+Subject: [PATCH 4/4] MIPS/ptrace: Add PTRACE_SET_SYSCALL operation
+Date: Fri, 11 Aug 2017 21:56:53 +0100
+Message-ID: <20170811205653.21873-5-james.hogan@imgtec.com>
 In-Reply-To: <20170811205653.21873-1-james.hogan@imgtec.com>
 References: <20170811205653.21873-1-james.hogan@imgtec.com>
 MIME-Version: 1.0
@@ -21,63 +21,102 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Lars Persson <lars.persson@axis.com>, Oleg Nesterov <oleg@redhat.com>, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>
-Message-ID: <20170811205651.jDi8d8pa026Y0detQHD9X0sCyrK2pN0nISug_9Fky5Q@z>
+Cc: linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Oleg Nesterov <oleg@redhat.com>, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>
+Message-ID: <20170811205653.kMz7QFuShWL7hSjHhM7frTEv-DjbsiIQiL_dUlS1Y0k@z>
 
-The MIPS syscall_trace_enter() allows the system call number to be
-altered or cancelled by a ptrace tracer, via the normal ptrace hook
-(PTRACE_SYSCALL) and changing the system call number register on entry,
-and similarly via seccomp (PTRACE_EVENT_SECCOMP when a seccomp filter
-returns SECCOMP_RET_TRACE).
+Add a PTRACE_SET_SYSCALL ptrace operation to allow the system call to be
+cancelled independently to the value of the v0 system call number
+register.
 
-Be sure to update the syscall local variable if this happens, so that
-seccomp will filter the correct system call number if the normal ptrace
-hook changes it first, and so that if either the normal ptrace hook or
-seccomp change it the correct system call number is passed to the trace
-event.
+This is needed for SECCOMP_RET_TRACE when the tracer wants to cancel the
+system call, since it has to set both the system call number to -1 and
+the chosen return value, both of which reside in the same register (v0).
+The tracer should set the return value first, followed by
+PTRACE_SET_SYSCALL to set the system call number to -1.
 
-This won't have any effect until the next commit, which fixes ptrace to
-update thread_info::syscall.
+That is in contrast to the normal ptrace syscall hook which triggers the
+tracer on both entry and exit, allowing the system call to be cancelled
+during the entry hook (setting system call number register to -1, or
+optionally using PTRACE_SET_SYSCALL), separately to setting the return
+value during the exit hook.
 
-Fixes: c2d9f1775731 ("MIPS: Fix syscall_get_nr for the syscall exit tracing.")
+Positive values (to change the syscall that should be executed instead
+of cancelling it entirely) are explicitly disallowed at the moment. The
+same thing can be done safely already by writing the v0 system call
+number register and the argument registers, and allowing
+thread_info::syscall to be changed to a different value independently of
+the v0 register would potentially allow seccomp or the syscall trace
+events to be fooled into thinking a different system call was being
+executed.
+
 Signed-off-by: James Hogan <james.hogan@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Lars Persson <lars.persson@axis.com>
 Cc: Oleg Nesterov <oleg@redhat.com>
 Cc: Kees Cook <keescook@chromium.org>
 Cc: Andy Lutomirski <luto@amacapital.net>
 Cc: Will Drewry <wad@chromium.org>
 Cc: linux-mips@linux-mips.org
 ---
- arch/mips/kernel/ptrace.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ arch/mips/include/uapi/asm/ptrace.h |  1 +
+ arch/mips/kernel/ptrace.c           | 11 +++++++++++
+ arch/mips/kernel/ptrace32.c         | 11 +++++++++++
+ 3 files changed, 23 insertions(+)
 
+diff --git a/arch/mips/include/uapi/asm/ptrace.h b/arch/mips/include/uapi/asm/ptrace.h
+index 91a3d197ede3..23af103c4e8d 100644
+--- a/arch/mips/include/uapi/asm/ptrace.h
++++ b/arch/mips/include/uapi/asm/ptrace.h
+@@ -58,6 +58,7 @@ struct pt_regs {
+ 
+ #define PTRACE_GET_THREAD_AREA	25
+ #define PTRACE_SET_THREAD_AREA	26
++#define PTRACE_SET_SYSCALL	27
+ 
+ /* Calls to trace a 64bit program from a 32bit program.	 */
+ #define PTRACE_PEEKTEXT_3264	0xc0
 diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
-index 1395654cfc8d..be5d5fefcc7c 100644
+index 465fc5633e61..9bf31a990c6e 100644
 --- a/arch/mips/kernel/ptrace.c
 +++ b/arch/mips/kernel/ptrace.c
-@@ -864,9 +864,11 @@ asmlinkage long syscall_trace_enter(struct pt_regs *regs, long syscall)
+@@ -853,6 +853,17 @@ long arch_ptrace(struct task_struct *child, long request,
+ 		ret = put_user(task_thread_info(child)->tp_value, datalp);
+ 		break;
  
- 	current_thread_info()->syscall = syscall;
++	case PTRACE_SET_SYSCALL:
++		/*
++		 * This is currently only useful to cancel the syscall from a
++		 * seccomp RET_TRACE tracer.
++		 */
++		if ((long)data >= 0)
++			return -EINVAL;
++		task_thread_info(child)->syscall = -1;
++		ret = 0;
++		break;
++
+ 	case PTRACE_GET_WATCH_REGS:
+ 		ret = ptrace_get_watch_regs(child, addrp);
+ 		break;
+diff --git a/arch/mips/kernel/ptrace32.c b/arch/mips/kernel/ptrace32.c
+index 2b9260f92ccd..cca76aec9c10 100644
+--- a/arch/mips/kernel/ptrace32.c
++++ b/arch/mips/kernel/ptrace32.c
+@@ -287,6 +287,17 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
+ 				(unsigned int __user *) (unsigned long) data);
+ 		break;
  
--	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
--	    tracehook_report_syscall_entry(regs))
--		return -1;
-+	if (test_thread_flag(TIF_SYSCALL_TRACE)) {
-+		if (tracehook_report_syscall_entry(regs))
-+			return -1;
-+		syscall = current_thread_info()->syscall;
-+	}
- 
- #ifdef CONFIG_SECCOMP
- 	if (unlikely(test_thread_flag(TIF_SECCOMP))) {
-@@ -884,6 +886,7 @@ asmlinkage long syscall_trace_enter(struct pt_regs *regs, long syscall)
- 		ret = __secure_computing(&sd);
- 		if (ret == -1)
- 			return ret;
-+		syscall = current_thread_info()->syscall;
- 	}
- #endif
- 
++	case PTRACE_SET_SYSCALL:
++		/*
++		 * This is currently only useful to cancel the syscall from a
++		 * seccomp RET_TRACE tracer.
++		 */
++		if ((long)data >= 0)
++			return -EINVAL;
++		task_thread_info(child)->syscall = -1;
++		ret = 0;
++		break;
++
+ 	case PTRACE_GET_THREAD_AREA_3264:
+ 		ret = put_user(task_thread_info(child)->tp_value,
+ 				(unsigned long __user *) (unsigned long) data);
 -- 
 2.13.2

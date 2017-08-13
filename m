@@ -1,16 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:30441 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:8289 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23994820AbdHKU5jRbWyw (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 11 Aug 2017 22:57:39 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH 4/4] MIPS/ptrace: Add PTRACE_SET_SYSCALL operation
-Date: Fri, 11 Aug 2017 21:56:53 +0100
-Message-ID: <20170811205653.21873-5-james.hogan@imgtec.com>
-In-Reply-To: <20170811205653.21873-1-james.hogan@imgtec.com>
-References: <20170811205653.21873-1-james.hogan@imgtec.com>
+        with ESMTP id S23990552AbdHMCuJm8lB6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 13 Aug 2017 04:50:09 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH 00/19] MIPS: Initial multi-cluster support
+Date: Sat, 12 Aug 2017 19:49:24 -0700
+Message-ID: <20170813024943.14989-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,102 +19,84 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: linux-kernel@vger.kernel.org, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, Oleg Nesterov <oleg@redhat.com>, Kees Cook <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>
-Message-ID: <20170811205653.kMz7QFuShWL7hSjHhM7frTEv-DjbsiIQiL_dUlS1Y0k@z>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20170813024924.NduGnSLX1MH24mvVtb4504blBdvBCAFH_NAriI80D4k@z>
 
-Add a PTRACE_SET_SYSCALL ptrace operation to allow the system call to be
-cancelled independently to the value of the v0 system call number
-register.
+This series cleans up some MIPS Coherent Processing System (CPS) code,
+and then introduces the first portions of support for multi-cluster
+systems, which are introduced with CM 3.5 & the MIPS I6500 core. My hope
+is that this initial groundwork can go in first, then patches adding
+support to the necessary drivers, power management & SMP code can follow
+culminating in a later patchset to enable actually booting CPUs in
+secondary clusters.
 
-This is needed for SECCOMP_RET_TRACE when the tracer wants to cancel the
-system call, since it has to set both the system call number to -1 and
-the chosen return value, both of which reside in the same register (v0).
-The tracer should set the return value first, followed by
-PTRACE_SET_SYSCALL to set the system call number to -1.
+Applies to mips-for-linux-next as of aa9a357f236f.
 
-That is in contrast to the normal ptrace syscall hook which triggers the
-tracer on both entry and exit, allowing the system call to be cancelled
-during the entry hook (setting system call number register to -1, or
-optionally using PTRACE_SET_SYSCALL), separately to setting the return
-value during the exit hook.
 
-Positive values (to change the syscall that should be executed instead
-of cancelling it entirely) are explicitly disallowed at the moment. The
-same thing can be done safely already by writing the v0 system call
-number register and the argument registers, and allowing
-thread_info::syscall to be changed to a different value independently of
-the v0 register would potentially allow seccomp or the syscall trace
-events to be fooled into thinking a different system call was being
-executed.
+Paul Burton (19):
+  MIPS: CM: Rename mips_cm_base to mips_gcr_base
+  MIPS: CM: Specify register size when generating accessors
+  MIPS: CM: Use BIT/GENMASK for register fields, order & drop shifts
+  MIPS: CPC: Use common CPS accessor generation macros
+  MIPS: CPC: Use BIT/GENMASK for register fields, order & drop shifts
+  MIPS: CPS: Introduce register modify (set/clear/change) accessors
+  MIPS: CPS: Use change_*, set_* & clear_* where appropriate
+  MIPS: CPS: Add CM/CPC 3.5 register definitions
+  MIPS: Add accessor & bit definitions for GlobalNumber
+  MIPS: CPS: Use GlobalNumber macros rather than magic numbers
+  MIPS: Abstract CPU core & VP(E) ID access through accessor functions
+  MIPS: Store core & VP IDs in GlobalNumber-style variable
+  MIPS: Unify checks for sibling CPUs
+  MIPS: Add CPU cluster number accessors
+  MIPS: CM: Add cluster & block args to mips_cm_lock_other()
+  MIPS: SMP: Allow boot_secondary SMP op to return errors
+  MIPS: CPS: Have asm/mips-cps.h include CM & CPC headers
+  MIPS: CPS: Cluster support for topology functions
+  MIPS: CPS: Detect CPUs in secondary clusters
 
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Will Drewry <wad@chromium.org>
-Cc: linux-mips@linux-mips.org
----
- arch/mips/include/uapi/asm/ptrace.h |  1 +
- arch/mips/kernel/ptrace.c           | 11 +++++++++++
- arch/mips/kernel/ptrace32.c         | 11 +++++++++++
- 3 files changed, 23 insertions(+)
+ arch/mips/cavium-octeon/smp.c         |   8 +-
+ arch/mips/include/asm/cpu-info.h      |  62 +++-
+ arch/mips/include/asm/mips-cm.h       | 567 +++++++++++++++-------------------
+ arch/mips/include/asm/mips-cpc.h      | 177 ++++++-----
+ arch/mips/include/asm/mips-cps.h      | 239 ++++++++++++++
+ arch/mips/include/asm/mipsregs.h      |  13 +
+ arch/mips/include/asm/smp-ops.h       |   4 +-
+ arch/mips/include/asm/topology.h      |   2 +-
+ arch/mips/kernel/cps-vec.S            |   4 +-
+ arch/mips/kernel/cpu-probe.c          |  39 ++-
+ arch/mips/kernel/mips-cm.c            |  94 +++---
+ arch/mips/kernel/mips-cpc.c           |  17 +-
+ arch/mips/kernel/pm-cps.c             |  15 +-
+ arch/mips/kernel/proc.c               |   6 +-
+ arch/mips/kernel/smp-bmips.c          |   6 +-
+ arch/mips/kernel/smp-cmp.c            |   3 +-
+ arch/mips/kernel/smp-cps.c            | 145 +++++----
+ arch/mips/kernel/smp-mt.c             |   6 +-
+ arch/mips/kernel/smp-up.c             |   3 +-
+ arch/mips/kernel/smp.c                |  20 +-
+ arch/mips/kernel/traps.c              |  11 +-
+ arch/mips/loongson64/loongson-3/smp.c |  14 +-
+ arch/mips/mm/c-r4k.c                  |   2 +-
+ arch/mips/mm/sc-mips.c                |  47 ++-
+ arch/mips/mti-malta/malta-dtshim.c    |   4 +-
+ arch/mips/mti-malta/malta-init.c      |   3 +-
+ arch/mips/mti-malta/malta-int.c       |   1 -
+ arch/mips/mti-malta/malta-setup.c     |   4 +-
+ arch/mips/netlogic/common/smp.c       |   6 +-
+ arch/mips/oprofile/op_model_mipsxx.c  |   4 +-
+ arch/mips/paravirt/paravirt-smp.c     |   3 +-
+ arch/mips/pci/pci-malta.c             |   6 +-
+ arch/mips/pistachio/init.c            |   3 +-
+ arch/mips/ralink/mt7621.c             |   5 +-
+ arch/mips/sgi-ip27/ip27-smp.c         |   3 +-
+ arch/mips/sibyte/bcm1480/smp.c        |   3 +-
+ arch/mips/sibyte/sb1250/smp.c         |   3 +-
+ arch/mips/vdso/gettimeofday.c         |   1 -
+ drivers/cpuidle/cpuidle-cps.c         |   2 +-
+ drivers/irqchip/irq-mips-cpu.c        |   2 +-
+ drivers/irqchip/irq-mips-gic.c        |   6 +-
+ 41 files changed, 922 insertions(+), 641 deletions(-)
+ create mode 100644 arch/mips/include/asm/mips-cps.h
 
-diff --git a/arch/mips/include/uapi/asm/ptrace.h b/arch/mips/include/uapi/asm/ptrace.h
-index 91a3d197ede3..23af103c4e8d 100644
---- a/arch/mips/include/uapi/asm/ptrace.h
-+++ b/arch/mips/include/uapi/asm/ptrace.h
-@@ -58,6 +58,7 @@ struct pt_regs {
- 
- #define PTRACE_GET_THREAD_AREA	25
- #define PTRACE_SET_THREAD_AREA	26
-+#define PTRACE_SET_SYSCALL	27
- 
- /* Calls to trace a 64bit program from a 32bit program.	 */
- #define PTRACE_PEEKTEXT_3264	0xc0
-diff --git a/arch/mips/kernel/ptrace.c b/arch/mips/kernel/ptrace.c
-index 465fc5633e61..9bf31a990c6e 100644
---- a/arch/mips/kernel/ptrace.c
-+++ b/arch/mips/kernel/ptrace.c
-@@ -853,6 +853,17 @@ long arch_ptrace(struct task_struct *child, long request,
- 		ret = put_user(task_thread_info(child)->tp_value, datalp);
- 		break;
- 
-+	case PTRACE_SET_SYSCALL:
-+		/*
-+		 * This is currently only useful to cancel the syscall from a
-+		 * seccomp RET_TRACE tracer.
-+		 */
-+		if ((long)data >= 0)
-+			return -EINVAL;
-+		task_thread_info(child)->syscall = -1;
-+		ret = 0;
-+		break;
-+
- 	case PTRACE_GET_WATCH_REGS:
- 		ret = ptrace_get_watch_regs(child, addrp);
- 		break;
-diff --git a/arch/mips/kernel/ptrace32.c b/arch/mips/kernel/ptrace32.c
-index 2b9260f92ccd..cca76aec9c10 100644
---- a/arch/mips/kernel/ptrace32.c
-+++ b/arch/mips/kernel/ptrace32.c
-@@ -287,6 +287,17 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
- 				(unsigned int __user *) (unsigned long) data);
- 		break;
- 
-+	case PTRACE_SET_SYSCALL:
-+		/*
-+		 * This is currently only useful to cancel the syscall from a
-+		 * seccomp RET_TRACE tracer.
-+		 */
-+		if ((long)data >= 0)
-+			return -EINVAL;
-+		task_thread_info(child)->syscall = -1;
-+		ret = 0;
-+		break;
-+
- 	case PTRACE_GET_THREAD_AREA_3264:
- 		ret = put_user(task_thread_info(child)->tp_value,
- 				(unsigned long __user *) (unsigned long) data);
 -- 
-2.13.2
+2.14.0

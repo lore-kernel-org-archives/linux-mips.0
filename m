@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:22906 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:26551 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992036AbdHMCv5OCcw6 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 13 Aug 2017 04:51:57 +0200
+        with ESMTP id S23993894AbdHMCwPTlGC6 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 13 Aug 2017 04:52:15 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 06/19] MIPS: CPS: Introduce register modify (set/clear/change) accessors
-Date: Sat, 12 Aug 2017 19:49:30 -0700
-Message-ID: <20170813024943.14989-7-paul.burton@imgtec.com>
+Subject: [PATCH 07/19] MIPS: CPS: Use change_*, set_* & clear_* where appropriate
+Date: Sat, 12 Aug 2017 19:49:31 -0700
+Message-ID: <20170813024943.14989-8-paul.burton@imgtec.com>
 In-Reply-To: <20170813024943.14989-1-paul.burton@imgtec.com>
 References: <20170813024943.14989-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,60 +22,98 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20170813024930.2chdZDiCV4bS_mMZiKJcoO3j56RSBTnayP8BoTaQ7IE@z>
+Message-ID: <20170813024931.9at413ovLCoGRbQngFJ8RsIsh9A07NOQODmbhmbmgNQ@z>
 
-For read-write registers introduce accessor functions that simplify the
-task of modifying a subset of bits within the register. set_* functions
-set bits to 1, clear_* functions clear bits to 0 & change_* functions
-set bits specified in a mask to an arbitrary value.
+Make use of the new change_*, set_* & clear_* accessor functions for CPS
+(CM, CPC & GIC) registers where doing so makes the code easier to read
+or shortens it without adversely affecting readability.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 ---
 
- arch/mips/include/asm/mips-cps.h | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ arch/mips/kernel/mips-cm.c |  4 +---
+ arch/mips/kernel/smp-cps.c |  6 ++----
+ arch/mips/mm/sc-mips.c     | 19 +++++--------------
+ 3 files changed, 8 insertions(+), 21 deletions(-)
 
-diff --git a/arch/mips/include/asm/mips-cps.h b/arch/mips/include/asm/mips-cps.h
-index 6ced7ba102b6..7ae32ad15599 100644
---- a/arch/mips/include/asm/mips-cps.h
-+++ b/arch/mips/include/asm/mips-cps.h
-@@ -71,6 +71,26 @@ static inline void write_##unit##_##name(uint##sz##_t val)		\
- 	}								\
+diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
+index 7bbe0308617f..aa62a9e5254c 100644
+--- a/arch/mips/kernel/mips-cm.c
++++ b/arch/mips/kernel/mips-cm.c
+@@ -233,9 +233,7 @@ int mips_cm_probe(void)
+ 	}
+ 
+ 	/* set default target to memory */
+-	base_reg &= ~CM_GCR_BASE_CMDEFTGT;
+-	base_reg |= CM_GCR_BASE_CMDEFTGT_MEM;
+-	write_gcr_base(base_reg);
++	change_gcr_base(CM_GCR_BASE_CMDEFTGT, CM_GCR_BASE_CMDEFTGT_MEM);
+ 
+ 	/* disable CM regions */
+ 	write_gcr_reg0_base(CM_GCR_REGn_BASE_BASEADDR);
+diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
+index 777e0193e8ed..5729d2c77461 100644
+--- a/arch/mips/kernel/smp-cps.c
++++ b/arch/mips/kernel/smp-cps.c
+@@ -212,7 +212,7 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
+ 
+ static void boot_core(unsigned int core, unsigned int vpe_id)
+ {
+-	u32 access, stat, seq_state;
++	u32 stat, seq_state;
+ 	unsigned timeout;
+ 
+ 	/* Select the appropriate core */
+@@ -228,9 +228,7 @@ static void boot_core(unsigned int core, unsigned int vpe_id)
+ 	write_gcr_co_reset_ext_base(CM_GCR_Cx_RESET_EXT_BASE_UEB);
+ 
+ 	/* Ensure the core can access the GCRs */
+-	access = read_gcr_access();
+-	access |= 1 << core;
+-	write_gcr_access(access);
++	set_gcr_access(1 << core);
+ 
+ 	if (mips_cpc_present()) {
+ 		/* Reset the core */
+diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
+index 7f30397cb10d..cda878c0010b 100644
+--- a/arch/mips/mm/sc-mips.c
++++ b/arch/mips/mm/sc-mips.c
+@@ -69,28 +69,19 @@ static void mips_sc_prefetch_enable(void)
+ 		pftctl |= CM_GCR_L2_PFT_CONTROL_PFTEN;
+ 		write_gcr_l2_pft_control(pftctl);
+ 
+-		pftctl = read_gcr_l2_pft_control_b();
+-		pftctl |= CM_GCR_L2_PFT_CONTROL_B_PORTID;
+-		pftctl |= CM_GCR_L2_PFT_CONTROL_B_CEN;
+-		write_gcr_l2_pft_control_b(pftctl);
++		set_gcr_l2_pft_control_b(CM_GCR_L2_PFT_CONTROL_B_PORTID |
++					 CM_GCR_L2_PFT_CONTROL_B_CEN);
+ 	}
  }
  
-+#define CPS_ACCESSOR_M(unit, sz, name)					\
-+static inline void change_##unit##_##name(uint##sz##_t mask,		\
-+					  uint##sz##_t val)		\
-+{									\
-+	uint##sz##_t reg_val = read_##unit##_##name();			\
-+	reg_val &= ~mask;						\
-+	reg_val |= val;							\
-+	write_##unit##_##name(reg_val);					\
-+}									\
-+									\
-+static inline void set_##unit##_##name(uint##sz##_t val)		\
-+{									\
-+	change_##unit##_##name(val, val);				\
-+}									\
-+									\
-+static inline void clear_##unit##_##name(uint##sz##_t val)		\
-+{									\
-+	change_##unit##_##name(val, 0);					\
-+}
-+
- #define CPS_ACCESSOR_RO(unit, sz, off, name)				\
- 	CPS_ACCESSOR_A(unit, off, name)					\
- 	CPS_ACCESSOR_R(unit, sz, name)
-@@ -82,6 +102,7 @@ static inline void write_##unit##_##name(uint##sz##_t val)		\
- #define CPS_ACCESSOR_RW(unit, sz, off, name)				\
- 	CPS_ACCESSOR_A(unit, off, name)					\
- 	CPS_ACCESSOR_R(unit, sz, name)					\
--	CPS_ACCESSOR_W(unit, sz, name)
-+	CPS_ACCESSOR_W(unit, sz, name)					\
-+	CPS_ACCESSOR_M(unit, sz, name)
+ static void mips_sc_prefetch_disable(void)
+ {
+-	unsigned long pftctl;
+-
+ 	if (mips_cm_revision() < CM_REV_CM2_5)
+ 		return;
  
- #endif /* __MIPS_ASM_MIPS_CPS_H__ */
+-	pftctl = read_gcr_l2_pft_control();
+-	pftctl &= ~CM_GCR_L2_PFT_CONTROL_PFTEN;
+-	write_gcr_l2_pft_control(pftctl);
+-
+-	pftctl = read_gcr_l2_pft_control_b();
+-	pftctl &= ~CM_GCR_L2_PFT_CONTROL_B_PORTID;
+-	pftctl &= ~CM_GCR_L2_PFT_CONTROL_B_CEN;
+-	write_gcr_l2_pft_control_b(pftctl);
++	clear_gcr_l2_pft_control(CM_GCR_L2_PFT_CONTROL_PFTEN);
++	clear_gcr_l2_pft_control_b(CM_GCR_L2_PFT_CONTROL_B_PORTID |
++				   CM_GCR_L2_PFT_CONTROL_B_CEN);
+ }
+ 
+ static bool mips_sc_prefetch_is_enabled(void)
 -- 
 2.14.0

@@ -1,15 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:54348 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:58689 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993932AbdHMEs6Rss5d (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 13 Aug 2017 06:48:58 +0200
+        with ESMTP id S23993931AbdHNQS2BGz0D (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 14 Aug 2017 18:18:28 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 38/38] irqchip: mips-gic: Let the core set struct irq_common_data affinity
-Date: Sat, 12 Aug 2017 21:36:46 -0700
-Message-ID: <20170813043646.25821-39-paul.burton@imgtec.com>
-In-Reply-To: <20170813043646.25821-1-paul.burton@imgtec.com>
-References: <20170813043646.25821-1-paul.burton@imgtec.com>
+Subject: Re: [PATCH 37/38] irqchip: mips-gic: Use cpumask_first_and() in gic_set_affinity()
+Date: Mon, 14 Aug 2017 09:18:18 -0700
+Message-ID: <2303810.q0vlmmS52X@np-p-burton>
+In-Reply-To: <8af291b4-2cdc-d9aa-88a3-a6c3af856bb4@cogentembedded.com>
+References: <20170813043646.25821-1-paul.burton@imgtec.com> <20170813043646.25821-38-paul.burton@imgtec.com> <8af291b4-2cdc-d9aa-88a3-a6c3af856bb4@cogentembedded.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="nextPart300565529.n1cbobXRVD";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -20,45 +21,71 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, Thomas Gleixner <tglx@linutronix.de>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20170813043646.RyXFWNaju92G_e9VPKarJ6Fkr0yJPwfMRbSqM2q32Rs@z>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: linux-mips@linux-mips.org, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, Thomas Gleixner <tglx@linutronix.de>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20170814161818.p9w4xAAPkbNPcdIT4Ce2RtGhposx9GpGnxd_rtLS2dI@z>
 
-gic_set_affinity() manually copies the provided cpumask to the struct
-irq_common_data affinity field, returning IRQ_SET_MASK_OK_NOCOPY in
-order to prevent the core code from doing that.
+--nextPart300565529.n1cbobXRVD
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-We can instead simply let the core code do it for us, by returning
-IRQ_SET_MASK_OK instead of IRQ_SET_MASK_OK_NOCOPY & doing the copy
-ourselves.
+Hi Sergei,
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: Marc Zyngier <marc.zyngier@arm.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-mips@linux-mips.org
+On Sunday, 13 August 2017 02:08:50 PDT Sergei Shtylyov wrote:
+> Hello!
+> 
+> On 8/13/2017 7:36 AM, Paul Burton wrote:
+> > Currently in gic_set_affinity() we calculate a temporary cpumask holding
+> > the intersection of the provided cpumask & the CPUs that are online,
+> > then we call cpumask_first twice on it to find the first such CPU. Since
+> > we don't need to temporary cpumask for anything else & we only care
+> 
+>     s/to/the/?
 
----
+Indeed - nice to know someone is reading a 38 patch series :)
 
- drivers/irqchip/irq-mips-gic.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+I'll fix up but leave submitting a v2 until someone asks me to.
 
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index cd9cbda1f263..11bab55e18bd 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -266,10 +266,9 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *cpumask,
- 	/* Update the pcpu_masks */
- 	gic_setup_pcpu_mask(irq, read_gic_mask(irq) ? cpu : NR_CPUS);
- 
--	cpumask_copy(irq_data_get_affinity_mask(d), cpumask);
- 	spin_unlock_irqrestore(&gic_lock, flags);
- 
--	return IRQ_SET_MASK_OK_NOCOPY;
-+	return IRQ_SET_MASK_OK;
- }
- #endif
- 
--- 
-2.14.0
+Thanks,
+    Paul
+
+> 
+> > about the first CPU that's both online & in the provided cpumask, we can
+> > instead use cpumask_first_and to find that CPU & drop the temporary
+> > mask.
+> > 
+> > Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> > Cc: Jason Cooper <jason@lakedaemon.net>
+> > Cc: Marc Zyngier <marc.zyngier@arm.com>
+> > Cc: Ralf Baechle <ralf@linux-mips.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: linux-mips@linux-mips.org
+> 
+> [...]
+> 
+> MBR, Serge
+
+
+--nextPart300565529.n1cbobXRVD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAlmRzUoACgkQgiDZ+mk8
+HGVcHg//aq1vE3Meiak/gB1X1jxgOfHA/j0b33c1QUOzqOJmNlBvbgVxTWMSxOmL
+kTwoU2OK1fAgcB1ykLJe2A3y6s+KyI4ShXgwr5FT3qjZjwyd2sjJs8ULyC/E1CeU
+/qhkKmKPiitKTrwnKzroArxUpAQ0n/2hqDKsrx+7cAy5AiLJADjp41gRJ5+GicHV
+XhH9Qzi9YZEtoY1yOpXvWz8hGzWW0qpq6/+EUSHlkvddskYwW8XMF0asF6MSO7bx
+1lvbAH2ebMQEANjHiAVA7tO2rcx8ig6N3sXh7xb2+OxWz9ClQ+F5hImipoCTP7yf
+o80+kKnvClwDC+rOaKZf4VqCZKHaJdmRK/GmLURqT04iSHn0JSRt3+mI+4O5FKyA
++IpbJYvoYIh9QHZ68KH7l3MmX/KrCeuFP7RkaGcOol+EreuMz1r5tchJ8535ooz/
+rhdHdInvqKXLMB1jBl4Be1wSpzuH9Y2+1j2JF5LDV8UXTyV/0gHVPo0cpjNM4zZY
+yQwNBI4FSK3hR/axWw8Y+xQa8w11ahQmllY76pCR45zdY32Lo7QYkWcZA1Evpjek
+hMwqkdDayRLKit8/5sMTZjzO/eVrCX0hiRTNrdtRJmyWZvKke8UhoJ7N+Y0hNGxl
+jM1FZjJ5pMFhE/LsrtVtrc60gnXVPS2jTmqLWk2yGifrrSkW/WM=
+=k4Ds
+-----END PGP SIGNATURE-----
+
+--nextPart300565529.n1cbobXRVD--

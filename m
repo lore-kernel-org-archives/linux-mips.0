@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:34806 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:55548 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993947AbdHNSUyOYPXp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 14 Aug 2017 20:20:54 +0200
+        with ESMTP id S23993953AbdHNSVNVaMGp (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 14 Aug 2017 20:21:13 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH v2 7/8] MIPS: generic: Don't explicitly disable CONFIG_USB_SUPPORT
-Date: Mon, 14 Aug 2017 11:18:18 -0700
-Message-ID: <20170814181819.7376-8-paul.burton@imgtec.com>
+Subject: [PATCH v2 8/8] MIPS: generic: Bump default NR_CPUS to 16
+Date: Mon, 14 Aug 2017 11:18:19 -0700
+Message-ID: <20170814181819.7376-9-paul.burton@imgtec.com>
 In-Reply-To: <20170814181819.7376-1-paul.burton@imgtec.com>
 References: <20170814181819.7376-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,33 +22,34 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20170814181818.jEeujWEpLtBNijT_rFfa6p3rz_AD3YBXipwZ-4wYehQ@z>
+Message-ID: <20170814181819.C9ao-hPIQdMy3CXmE1dcJHcuDCIYv9qvQK0zTwLRFO4@z>
 
-Leave CONFIG_USB_SUPPORT at its default, allowing board config fragments
-to make use of USB drivers without needing to override it & trigger
-warnings from merge_config.sh.
+In generic_defconfig set CONFIG_NR_CPUS to 16 rather than 2, which is a
+rather too low limit for many modern day MIPS systems.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
+
 ---
 
 Changes in v2: None
 
- arch/mips/configs/generic_defconfig | 1 -
- 1 file changed, 1 deletion(-)
+ arch/mips/configs/generic_defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/mips/configs/generic_defconfig b/arch/mips/configs/generic_defconfig
-index 91aacf2ef26d..a638028b1425 100644
+index a638028b1425..26b1cd5ffbf5 100644
 --- a/arch/mips/configs/generic_defconfig
 +++ b/arch/mips/configs/generic_defconfig
-@@ -61,7 +61,6 @@ CONFIG_HID_KENSINGTON=y
- CONFIG_HID_LOGITECH=y
- CONFIG_HID_MICROSOFT=y
- CONFIG_HID_MONTEREY=y
--# CONFIG_USB_SUPPORT is not set
- # CONFIG_MIPS_PLATFORM_DEVICES is not set
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_EXT4_FS=y
+@@ -3,7 +3,7 @@ CONFIG_CPU_LITTLE_ENDIAN=y
+ CONFIG_MIPS_CPS=y
+ CONFIG_CPU_HAS_MSA=y
+ CONFIG_HIGHMEM=y
+-CONFIG_NR_CPUS=2
++CONFIG_NR_CPUS=16
+ CONFIG_MIPS_O32_FP64_SUPPORT=y
+ CONFIG_SYSVIPC=y
+ CONFIG_NO_HZ_IDLE=y
 -- 
 2.14.0

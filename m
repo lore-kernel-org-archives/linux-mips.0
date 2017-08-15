@@ -1,15 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:48226 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:60465 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23994820AbdHNTCLcnqYQ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 14 Aug 2017 21:02:11 +0200
+        with ESMTP id S23992186AbdHOQQiOkhZO (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 15 Aug 2017 18:16:38 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH v2 1/8] MIPS: Introduce CPU_ISA_GE_* Kconfig entries
-Date: Mon, 14 Aug 2017 12:01:57 -0700
-Message-ID: <2061792.OTvtPzySQH@np-p-burton>
-In-Reply-To: <86ddc490-dabd-66b5-ebd7-aed6535d3966@cavium.com>
-References: <20170814181819.7376-1-paul.burton@imgtec.com> <20170814181819.7376-2-paul.burton@imgtec.com> <86ddc490-dabd-66b5-ebd7-aed6535d3966@cavium.com>
+Subject: Re: [PATCH 00/38] irqchip: mips-gic: Cleanup & optimisation
+Date: Tue, 15 Aug 2017 09:16:21 -0700
+Message-ID: <1561377.UX34hIl2NL@np-p-burton>
+In-Reply-To: <deae1e69-010e-474d-9bb6-a4d92c955356@arm.com>
+References: <20170813043646.25821-1-paul.burton@imgtec.com> <deae1e69-010e-474d-9bb6-a4d92c955356@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2252923.pX9aZH3JNT";
+Content-Type: multipart/signed; boundary="nextPart9653451.lu2m504oov";
         micalg=pgp-sha256; protocol="application/pgp-signature"
 Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
@@ -21,62 +21,130 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Steven J. Hill" <Steven.Hill@cavium.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>
-Message-ID: <20170814190157.CNO1fOvU0y8Sv6dX-M2AK5zgivNUVCCd1SNisYEPxxM@z>
+To: Marc Zyngier <marc.zyngier@arm.com>
+Cc: linux-mips@linux-mips.org, Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20170815161621.Rgrp0-Gvw7gA6c85mxpEJL5qG2XSUsm4b4pO9NDIEX0@z>
 
---nextPart2252923.pX9aZH3JNT
+--nextPart9653451.lu2m504oov
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
 
-Hi Steven,
+Hi Marc,
 
-On Monday, 14 August 2017 11:56:46 PDT Steven J. Hill wrote:
-> On 08/14/2017 01:18 PM, Paul Burton wrote:
+On Tuesday, 15 August 2017 03:13:03 PDT Marc Zyngier wrote:
+> Hi Paul,
 > 
-> [...]
-> 
-> > With the new Kconfig entries introduced by this patch this can be
+> On 13/08/17 05:36, Paul Burton wrote:
+> > This series cleans up the MIPS Global Interrupt Controller (GIC) driver
+> > somewhat. It moves us towards using a header in a similar vein to the
+> > ones we have for the MIPS Coherence Manager (CM) & Cluster Power
+> > Controller (CPC) which allows us to access the GIC outside of the
+> > irqchip driver - something beneficial already for the clocksource &
+> > clock event driver, and which will be beneficial for further drivers
+> > (eg. one for the GIC watchdog timer) and for multi-cluster work. Using
+> > this header is also beneficial for consistency & code-sharing.
 > > 
-> > simplified to:
-> >   default y if CPU_ISA_GE_R1
+> > In addition to cleanups the series also optimises the driver in various
+> > ways, including by using a per-CPU variable for pcpu_masks & removing
+> > the need to read the GIC_SH_MASK_* registers when decoding interrupts in
+> > gic_handle_shared_int().
+> > 
+> > This series requires my "[PATCH 00/19] MIPS: Initial multi-cluster
+> > support" series to be applied first.
 > 
-> The idea for the patch is solid.
+> I'm not on Cc on this one, so it is a bit hard to see what's going on.
 
-Thanks.
+That other series is only really related insomuch as it adds asm/mips-cps.h 
+which this series makes use of, and changes a couple of lines in irq-mips-
+gic.c which would cause conflicts if this series is applied without the other 
+first.
 
-> Can we not just use CPU_ISA_R1,
-> and so on? GE immediately makes me think "Graphics Engine" and
-> there are the GE7 ASICs from old SGI hardware. Maybe it's just
-> me and it doesn't confuse anyone else.
+> But overall, it is incredibly difficult to follow what is going on here.
+> Everything seems to move around, and while I'm sure that you have
+> something in mind, the mix of fixes+optimizations+new features is a bit
+> hard to swallow (not to mention the VDSO stuff in the middle of what is
+> supposed to be an irqchip series).
 
-I went with "GE" because that matches what the MIPS instruction set uses in 
-branch-compare instructions. I think leaving it out would make it unclear what 
-the difference from the existing CPU_MIPSR1 etc entries is, but if something 
-else would be clearer to people I'm open to suggestions.
+In general the non-irqchip patches preceed the irqchip patch that they enable. 
+For example, the VDSO patch you mention (presumably patch 22 "MIPS: VDSO: Drop 
+git_get_usm_range() usage") is followed immediately by the removal of that 
+function in patch 23 "irqchip: mips-gic: Remove gic_get_usm_range()".
+
+The issue is that the MIPS GIC irqchip driver currently provides a bunch of 
+functions which have nothing to do with interrupts, and so probably ought to 
+be elsewhere. Moving that code elsewhere involves both adjusting the callers 
+of those functions & then removing them from the irqchip driver, hence the 
+non-irqchip patches followed by the related irqchip patches.
+
+In general the only things that move are:
+
+ - The GIC register definitions, to asm/mips-gic.h for reasons described in 
+patch 2.
+
+ - Functions as I mentioned in the previous paragraph which have nothing to do 
+with the irqchip driver & don't need to be there once we have access to GIC 
+registers elsewhere through asm/mips-gic.h.
+
+ - A few other bits from linux/irqchip/mips-gic.h just so we can drop that 
+header.
+
+> Is there any chance you could rework this to have a more logical
+> ordering? Something like fixes first, new features next, and
+> optimizations in the end, organized by domains (arch stuff first, then
+> irqchip, then timer, then userspace)?
+
+It's already almost grouped like that. We have:
+
+- Patch 1 is a fix.
+
+- Patches 2 through 34 are cleanup, though a couple could probably be 
+secondarily considered optimisations too.
+
+- Patch 35 is an optimisation.
+
+- Patches 36 through 38 could be considered optimisation or cleanup depending 
+upon the tint of your glasses.
+
+So I'm not sure what you're asking me to do here - to group them better I 
+could perhaps move patch 35 to the end, but I'm not sure I see how that would 
+make review any easier.
+
+I didn't group by domain like you suggest for the reason I mention before - 
+the non-irqchip patches are purely there to enable the following irqchip patch 
+so it made sense to me to group those together. If you really want I could 
+move all the non-irqchip patches to the start & all the irqchip patches to the 
+end, but again I'm not sure I see how that helps - it would just mean that 
+tightly related patches no longer follow one another.
+
+> Because at the moment, this is a bit overwhelming...
+
+My intent in splitting this into so many patches, and in grouping together the 
+related non-irqchip & irqchip patches, was to reduce that overwhelming-ness by 
+making each patch pretty readable by itself & perhaps taking into account only 
+a patch or two before it. I guess that didn't work though.. :)
 
 Thanks,
     Paul
---nextPart2252923.pX9aZH3JNT
+--nextPart9653451.lu2m504oov
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part.
 Content-Transfer-Encoding: 7Bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAlmR86UACgkQgiDZ+mk8
-HGVIpw//apA1gNBz6veOYdGqYfpmmL9OKPhBQ2uPb2l2fszfPK/UVnHMLMrkseuT
-wjdf2rONLGxjzE6tAlCAJM6MPeDZk94wdtRSOvI6eKo7Y6BP22soF918HlmHcw7S
-i00O9BcaRZcOQALnpkyR+y20KS9alUY72eEMgNPYELSQClYJbONevQ37vc6udlO4
-el7tZ1ez8ivcCBhX7yF4n9/ASrprFWEbg38CR5aUwSOc8tAA/KN+sNSdLIHbH9Sn
-xgw59DJ1r8luH2lxfthEoZFEv4qU4AtCh+WC/9Mqv2i1g9crZ7Q0v0LR0NXJDg+8
-lWUIbDeLn7Os5K5dh9TMs75rmYnML/IxsT4AtAPjz9VzckjN1w++1YpvnZvR2hXl
-vxkiOQ5raOuM6xQJ4qKs0n9FfgPrbuyengV8EW1/+VAgUn5PQO4t47X0wC9HQoP7
-YMmPLD13clal3MkRSNJ//NvN6aOcGr7N/gNJn0QuMWd+byObPOxT+z6lfgWcvoaP
-pouKuYdeoTP7dXw+82+qZd6QWHaW+xCCzezgreSWUG0L6QMuj1pYkV6l6/GA3ga2
-VFsuxcXe3mLsqfVK4Y2e8BGeJXXa+xDXOAgOH5M2VGdKfqthShO05ilAwkfRnCh3
-jY22eF5qUoKSmUxRNpvWFLjCQqKHbbksCJxa2SazfxiHZ2iZwic=
-=01i1
+iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAlmTHlUACgkQgiDZ+mk8
+HGVmEQ//bpx4t1JYQwwbJSsbGKgvJ2jynxrTVxHolGqEa3nKg3Pw4jKineslrazE
+V6PT/EuVVZ9l2fBnBj1NJ3Wbhnu3LoN/PYk043d1IOdBflQBsdDofV5LIkr82vGF
++sMFBCy9gbQFD76KzB6VJ8ItP0nJRQgjSl1P9VCYwfMm4dr+809YHvBKocBFvxlE
+d3ePOXNYqyRzW3LEEiv7gJX4a+OJXpevU6dkZjrcHXF9qK7wBCt9fQN5YBfTPLez
+tU3j8mz/SUv7uKLLq8rFlAFyAgfbeCeSSFn7ZdH0EehxBKCywZnmA4Xl74UHR6fT
+UcBGQGhp3jM6mFjtC8HAa1dJhnxWDLMHLIcGZ2+a0asB3QhDK2R0JFtvITQtFVrJ
+IGj395Wn8BSWOFQM/n5BBOTGlPxVw5v8kdQa8bjtW169nztBnxU94x+DHCXQUC6T
+v6ZcFatxQM+C0Y6EFBUBUz7e/6n0k8VlL3xI+/s1c2b9SNjAFJrz6sEl4rC+Yjhf
+IxI57v/BDv+vDtnEVql/paacOxBMt0tn2+llTNkevP2siV3QPKGaYRh4q61wqa9j
+jpzkQ6EOceJZxBTau4Kypl1TInui5fFqNAPk2+qNKPa6q1hsI6VlqzxPt2U4SHQL
+6lD66PATqd2vbmg6F0qzl/lomywIrRPG83ioJaPxkq28H3MvEwA=
+=Euta
 -----END PGP SIGNATURE-----
 
---nextPart2252923.pX9aZH3JNT--
+--nextPart9653451.lu2m504oov--

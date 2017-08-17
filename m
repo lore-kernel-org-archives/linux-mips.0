@@ -1,16 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:50116 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:6040 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993103AbdHOQf4p05Xa (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 15 Aug 2017 18:35:56 +0200
-From: Harvey Hunt <harvey.hunt@imgtec.com>
-Subject: [PATCH 2/2] MIPS: configs: Add Onion Omega2+ defconfig
-Date: Tue, 15 Aug 2017 17:35:45 +0100
-Message-ID: <1502814945-41052-2-git-send-email-harvey.hunt@imgtec.com>
-In-Reply-To: <1502814945-41052-1-git-send-email-harvey.hunt@imgtec.com>
-References: <1502814945-41052-1-git-send-email-harvey.hunt@imgtec.com>
+        with ESMTP id S23994851AbdHQBB0O9duI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 17 Aug 2017 03:01:26 +0200
+Date: Thu, 17 Aug 2017 02:01:08 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: undefined reference to `__multi3' when building with gcc 7.x
+In-Reply-To: <20170804222500.GA11675@linux-mips.org>
+Message-ID: <alpine.DEB.2.00.1708170155210.17596@tp.orcam.me.uk>
+References: <20170803225547.6caa602b@windsurf.lan> <20170804000556.GC30597@linux-mips.org> <20170804151920.GA11317@linux-mips.org> <20170804174151.2eea9af3@windsurf.lan> <20170804222500.GA11675@linux-mips.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Harvey.Hunt@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,156 +20,50 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: robh+dt@kernel.org, mark.rutland@arm.com, ralf@linux-mips.org, john@phrozen.org
-Cc: Harvey Hunt <harvey.hunt@imgtec.com>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20170815163545.vtXjHUFTroZi1XO0aGU-6Z5orkO1woQq8HIEmVXsNKQ@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, linux-mips@linux-mips.org, Waldemar Brodkorb <wbx@openadk.org>, Matthew Fortune <Matthew.Fortune@imgtec.com>
+Message-ID: <20170817010108.AkTP9NoAjwbFbTO5oGDUyyM-5k7Yu5eY5kYWcm_AnKw@z>
 
-Create a defconfig for the Omega2+ that reaches userspace and
-allows use of the USB port.
+On Fri, 4 Aug 2017, Ralf Baechle wrote:
 
-Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org
----
- arch/mips/configs/omega2p_defconfig | 130 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 130 insertions(+)
- create mode 100644 arch/mips/configs/omega2p_defconfig
+> Chances are it's something specific to MIPS64 R6.  Before trying your
+> config file I also tried a number of other defconfigs and all built
+> well.
+> 
+> Here's a test case which generates a reference to __multi3:
+> 
+> unsigned long func(unsigned long a, unsigned long b)
+> {
+>         return a > (~0UL) / b;
+> }
+> 
+> GCC rearanges above statement to:
+> 
+> 	return (unsigned __int128)a * (unsigned __int128) b > 0xffffffff;
+> 
+> computing which requires 128 bit intermediate results.  This is the
+> code generated for MIPS64 R2:
+> 
+> 	dmultu	$4,$5
+> 	mfhi	$2
+> 	sltu	$2,$0,$2
+> 
+> And this is for R6:
+> 
+> 	move	$2,$4
+> 	move	$7,$5			# $6/$7 contain the second op
+> 	move	$6,$0
+> 	move	$4,$0
+> 	move	$5,$2			# $4/$5 contain the first op
+> 	sd	$31,8($sp)
+> 	balc	__multi3
+> 	sltu	$2,$0,$2
 
-diff --git a/arch/mips/configs/omega2p_defconfig b/arch/mips/configs/omega2p_defconfig
-new file mode 100644
-index 0000000..1199daf
---- /dev/null
-+++ b/arch/mips/configs/omega2p_defconfig
-@@ -0,0 +1,130 @@
-+CONFIG_RALINK=y
-+CONFIG_SOC_MT7620=y
-+CONFIG_DTB_OMEGA2P=y
-+CONFIG_CPU_MIPS32_R2=y
-+# CONFIG_COMPACTION is not set
-+CONFIG_HZ_100=y
-+CONFIG_PREEMPT=y
-+# CONFIG_SECCOMP is not set
-+CONFIG_MIPS_CMDLINE_FROM_BOOTLOADER=y
-+# CONFIG_LOCALVERSION_AUTO is not set
-+CONFIG_SYSVIPC=y
-+CONFIG_POSIX_MQUEUE=y
-+CONFIG_NO_HZ_IDLE=y
-+CONFIG_HIGH_RES_TIMERS=y
-+CONFIG_IKCONFIG=y
-+CONFIG_IKCONFIG_PROC=y
-+CONFIG_LOG_BUF_SHIFT=14
-+CONFIG_CGROUPS=y
-+CONFIG_MEMCG=y
-+CONFIG_CGROUP_SCHED=y
-+CONFIG_CGROUP_FREEZER=y
-+CONFIG_CGROUP_DEVICE=y
-+CONFIG_CGROUP_CPUACCT=y
-+CONFIG_NAMESPACES=y
-+CONFIG_USER_NS=y
-+CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-+CONFIG_SYSCTL_SYSCALL=y
-+CONFIG_KALLSYMS_ALL=y
-+CONFIG_EMBEDDED=y
-+# CONFIG_VM_EVENT_COUNTERS is not set
-+# CONFIG_SLUB_DEBUG is not set
-+# CONFIG_COMPAT_BRK is not set
-+# CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
-+# CONFIG_SUSPEND is not set
-+CONFIG_NET=y
-+CONFIG_PACKET=y
-+CONFIG_UNIX=y
-+CONFIG_INET=y
-+# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
-+# CONFIG_INET_XFRM_MODE_TUNNEL is not set
-+# CONFIG_INET_XFRM_MODE_BEET is not set
-+# CONFIG_INET_DIAG is not set
-+# CONFIG_IPV6 is not set
-+# CONFIG_WIRELESS is not set
-+CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
-+CONFIG_DEVTMPFS=y
-+# CONFIG_FW_LOADER is not set
-+# CONFIG_ALLOW_DEV_COREDUMP is not set
-+CONFIG_NETDEVICES=y
-+# CONFIG_ETHERNET is not set
-+# CONFIG_WLAN is not set
-+# CONFIG_INPUT_KEYBOARD is not set
-+# CONFIG_INPUT_MOUSE is not set
-+# CONFIG_SERIO is not set
-+CONFIG_VT_HW_CONSOLE_BINDING=y
-+CONFIG_LEGACY_PTY_COUNT=2
-+CONFIG_SERIAL_8250=y
-+CONFIG_SERIAL_8250_CONSOLE=y
-+CONFIG_SERIAL_8250_NR_UARTS=3
-+CONFIG_SERIAL_8250_RUNTIME_UARTS=3
-+CONFIG_SERIAL_OF_PLATFORM=y
-+# CONFIG_HW_RANDOM is not set
-+# CONFIG_HWMON is not set
-+# CONFIG_VGA_CONSOLE is not set
-+CONFIG_USB=y
-+CONFIG_USB_EHCI_HCD=y
-+CONFIG_USB_EHCI_HCD_PLATFORM=y
-+CONFIG_MMC=y
-+# CONFIG_IOMMU_SUPPORT is not set
-+CONFIG_MEMORY=y
-+CONFIG_PHY_RALINK_USB=y
-+# CONFIG_DNOTIFY is not set
-+CONFIG_PROC_KCORE=y
-+# CONFIG_PROC_PAGE_MONITOR is not set
-+CONFIG_TMPFS=y
-+CONFIG_CONFIGFS_FS=y
-+# CONFIG_NETWORK_FILESYSTEMS is not set
-+CONFIG_NLS_CODEPAGE_437=y
-+CONFIG_NLS_CODEPAGE_737=y
-+CONFIG_NLS_CODEPAGE_775=y
-+CONFIG_NLS_CODEPAGE_850=y
-+CONFIG_NLS_CODEPAGE_852=y
-+CONFIG_NLS_CODEPAGE_855=y
-+CONFIG_NLS_CODEPAGE_857=y
-+CONFIG_NLS_CODEPAGE_860=y
-+CONFIG_NLS_CODEPAGE_861=y
-+CONFIG_NLS_CODEPAGE_862=y
-+CONFIG_NLS_CODEPAGE_863=y
-+CONFIG_NLS_CODEPAGE_864=y
-+CONFIG_NLS_CODEPAGE_865=y
-+CONFIG_NLS_CODEPAGE_866=y
-+CONFIG_NLS_CODEPAGE_869=y
-+CONFIG_NLS_CODEPAGE_936=y
-+CONFIG_NLS_CODEPAGE_950=y
-+CONFIG_NLS_CODEPAGE_932=y
-+CONFIG_NLS_CODEPAGE_949=y
-+CONFIG_NLS_CODEPAGE_874=y
-+CONFIG_NLS_ISO8859_8=y
-+CONFIG_NLS_CODEPAGE_1250=y
-+CONFIG_NLS_CODEPAGE_1251=y
-+CONFIG_NLS_ASCII=y
-+CONFIG_NLS_ISO8859_1=y
-+CONFIG_NLS_ISO8859_2=y
-+CONFIG_NLS_ISO8859_3=y
-+CONFIG_NLS_ISO8859_4=y
-+CONFIG_NLS_ISO8859_5=y
-+CONFIG_NLS_ISO8859_6=y
-+CONFIG_NLS_ISO8859_7=y
-+CONFIG_NLS_ISO8859_9=y
-+CONFIG_NLS_ISO8859_13=y
-+CONFIG_NLS_ISO8859_14=y
-+CONFIG_NLS_ISO8859_15=y
-+CONFIG_NLS_KOI8_R=y
-+CONFIG_NLS_KOI8_U=y
-+CONFIG_NLS_UTF8=y
-+CONFIG_PRINTK_TIME=y
-+CONFIG_DEBUG_INFO=y
-+CONFIG_STRIP_ASM_SYMS=y
-+CONFIG_DEBUG_FS=y
-+CONFIG_MAGIC_SYSRQ=y
-+CONFIG_PANIC_ON_OOPS=y
-+CONFIG_PANIC_TIMEOUT=10
-+# CONFIG_SCHED_DEBUG is not set
-+# CONFIG_DEBUG_PREEMPT is not set
-+CONFIG_STACKTRACE=y
-+# CONFIG_FTRACE is not set
-+CONFIG_CRYPTO_DEFLATE=y
-+CONFIG_CRYPTO_LZO=y
-+CONFIG_CRC16=y
-+CONFIG_XZ_DEC=y
--- 
-2.7.4
+ This looks silly.  Why doesn't GCC simply emit:
+
+	dmuhu	$2,$4,$5
+	sltu	$2,$0,$2
+
+instead?  It's even shorter than the R2 equivalent.
+
+  Maciej

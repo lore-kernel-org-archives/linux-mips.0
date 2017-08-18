@@ -1,19 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:40639 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:36395 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991058AbdHRJm71cmdG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 18 Aug 2017 11:42:59 +0200
-Subject: Re: [PATCH] MIPS: dts: ralink: Add Mediatek MT7628A SoC
-References: <1502814530-40604-1-git-send-email-harvey.hunt@imgtec.com>
- <20170817213426.34shgxwnjowcg4sk@rob-hp-laptop>
-From: Harvey Hunt <Harvey.Hunt@imgtec.com>
-Message-ID: <97c83648-3710-cb9a-a065-9fbe8dd1b734@imgtec.com>
-Date: Fri, 18 Aug 2017 10:42:52 +0100
+        with ESMTP id S23991978AbdHRM3xArEM9 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 18 Aug 2017 14:29:53 +0200
+Date: Fri, 18 Aug 2017 13:29:37 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH] MIPS: Set ISA bit in entry-y for microMIPS kernels
+In-Reply-To: <20170807231647.19551-1-paul.burton@imgtec.com>
+Message-ID: <alpine.DEB.2.00.1708181302480.17596@tp.orcam.me.uk>
+References: <20170807231647.19551-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20170817213426.34shgxwnjowcg4sk@rob-hp-laptop>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <Harvey.Hunt@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,233 +20,27 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rob Herring <robh@kernel.org>
-Cc: mark.rutland@arm.com, matthias.bgg@gmail.com, ralf@linux-mips.org, John Crispin <john@phrozen.org>, linux-mips@linux-mips.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
-Message-ID: <20170818094252.4ZvP-1wSo9kbK2Enxl0tR2nflxDzn0mcSYinOhFVSpg@z>
+To: Paul Burton <paul.burton@imgtec.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20170818122937.ZUyeL7zjeYrTPD8T-k-LXbeF-RVPCJu61TmUE7-_kCI@z>
 
-Hi Rob,
+On Tue, 8 Aug 2017, Paul Burton wrote:
 
-Thanks for the review.
+> When building a kernel for the microMIPS ISA, ensure that the ISA bit
+> (ie. bit 0) in the entry address is set. Otherwise we may include an
+> entry address in images which bootloaders will jump to as MIPS32 code.
 
-On 17/08/17 22:34, Rob Herring wrote:
-> On Tue, Aug 15, 2017 at 05:28:50PM +0100, Harvey Hunt wrote:
->> The MT7628A is the successor to the MT7620 and pin compatible with the
->> MT7688A, although the latter supports only a 1T1R antenna rather than
->> a 2T2R antenna.
->>
->> This commit adds support for the following features:
->>
->> - UART
->> - USB PHY
->> - EHCI
->> - Interrupt controller
->> - System controller
->> - Memory controller
->> - Reset controller
->>
->> Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
->> Cc: John Crispin <john@phrozen.org>
->> Cc: linux-mips@linux-mips.org
->> Cc: devicetree@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> Cc: linux-mediatek@lists.infradead.org
->> ---
->>   Documentation/devicetree/bindings/mips/ralink.txt |   1 +
->>   arch/mips/boot/dts/ralink/mt7628a.dtsi            | 125 ++++++++++++++++++++++
->>   2 files changed, 126 insertions(+)
->>   create mode 100644 arch/mips/boot/dts/ralink/mt7628a.dtsi
->>
->> diff --git a/Documentation/devicetree/bindings/mips/ralink.txt b/Documentation/devicetree/bindings/mips/ralink.txt
->> index b35a8d0..a16e8d7 100644
->> --- a/Documentation/devicetree/bindings/mips/ralink.txt
->> +++ b/Documentation/devicetree/bindings/mips/ralink.txt
->> @@ -15,3 +15,4 @@ value must be one of the following values:
->>     ralink,rt5350-soc
->>     ralink,mt7620a-soc
->>     ralink,mt7620n-soc
->> +  ralink,mt7628a-soc
->> diff --git a/arch/mips/boot/dts/ralink/mt7628a.dtsi b/arch/mips/boot/dts/ralink/mt7628a.dtsi
->> new file mode 100644
->> index 0000000..8461fe9
->> --- /dev/null
->> +++ b/arch/mips/boot/dts/ralink/mt7628a.dtsi
->> @@ -0,0 +1,125 @@
->> +/ {
->> +	#address-cells = <1>;
->> +	#size-cells = <1>;
->> +	compatible = "ralink,mt7628a-soc";
->> +
->> +	cpus {
->> +		#address-cells = <1>;
->> +		#size-cells = <0>;
->> +
->> +		cpu@0 {
->> +			compatible = "mti,mips24KEc";
->> +			device_type = "cpu";
->> +			reg = <0>;
->> +		};
->> +	};
->> +
->> +	resetctrl: resetctrl {
-> 
-> reset-controller {
+ Hmm, what's going on here?  The ISA bit is set by the linker according to 
+the mode the code at the entry symbol has been assembled for, e.g.:
 
-Done
+$ readelf -h vmlinux | grep Entry
+  Entry point address:               0x804355e1
+$ readelf -s vmlinux | grep kernel_entry
+156535: 80100400     0 FUNC    GLOBAL DEFAULT [MICROMIPS]     1 __kernel_entry
+156742: 804355e0   146 FUNC    GLOBAL DEFAULT [MICROMIPS]     1 kernel_entry
+$ 
 
-> 
->> +		compatible = "ralink,rt2880-reset";
->> +		#reset-cells = <1>;
->> +	};
->> +
->> +	cpuintc: cpuintc {
-> 
-> interrupt-controller {
+or no microMIPS (or MIPS16) executable could work.  Is your build process 
+or toolchain used broken by any chance?
 
-Done
-
-> 
->> +		#address-cells = <0>;
->> +		#interrupt-cells = <1>;
->> +		interrupt-controller;
->> +		compatible = "mti,cpu-interrupt-controller";
->> +	};
->> +
->> +	palmbus@10000000 {
->> +		compatible = "palmbus";
->> +		reg = <0x10000000 0x200000>;
->> +		ranges = <0x0 0x10000000 0x1FFFFF>;
->> +
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +
->> +		sysc@0 {
-> 
-> system-controller@0
-
-Done
-
-> 
->> +			compatible = "ralink,mt7620a-sysc";
->> +			reg = <0x0 0x100>;
->> +		};
->> +
->> +		intc: intc@200 {
-> 
-> interrupt-controller@200
-
-Done
-
-> 
->> +			compatible = "ralink,rt2880-intc";
->> +			reg = <0x200 0x100>;
->> +
->> +			interrupt-controller;
->> +			#interrupt-cells = <1>;
->> +
->> +			resets = <&resetctrl 9>;
->> +			reset-names = "intc";
->> +
->> +			interrupt-parent = <&cpuintc>;
->> +			interrupts = <2>;
->> +
->> +			ralink,intc-registers = <0x9c 0xa0
->> +						 0x6c 0xa4
->> +						 0x80 0x78>;
->> +		};
->> +
->> +		memc@300 {
-> 
-> memory-controller@300
-
-Done
-
-> 
->> +			compatible = "ralink,mt7620a-memc";
->> +			reg = <0x300 0x100>;
->> +		};
->> +
->> +		uartlite@c00 {
-> 
-> serial@c00
-> 
-> And so on. IOW, use standard, generic node names as defined in the DT
-> spec.
-
-
-The clocks for the UARTs are using the device names "uartlite", "uart1" 
-and "uart2" (as defined in arch/mips/ralink/mt7620.c).
-
-Changing the name of the DT nodes causes the serial driver to bail as it 
-can't find the clock for the device.
-
-arch/mips/boot/dts/ralink/mt7620a.dtsi is already using the uartlite 
-name, although it hasn't been documented...
-
-Thanks,
-
-Harvey
-
-> 
->> +			compatible = "ns16550a";
->> +			reg = <0xc00 0x100>;
->> +
->> +			resets = <&resetctrl 12>;
->> +			reset-names = "uart0";
->> +
->> +			interrupt-parent = <&intc>;
->> +			interrupts = <20>;
->> +
->> +			reg-shift = <2>;
->> +		};
->> +
->> +		uart1@d00 {
->> +			compatible = "ns16550a";
->> +			reg = <0xd00 0x100>;
->> +
->> +			resets = <&resetctrl 19>;
->> +			reset-names = "uart1";
->> +
->> +			interrupt-parent = <&intc>;
->> +			interrupts = <21>;
->> +
->> +			reg-shift = <2>;
->> +		};
->> +
->> +		uart2@e00 {
->> +			compatible = "ns16550a";
->> +			reg = <0xe00 0x100>;
->> +
->> +			resets = <&resetctrl 20>;
->> +			reset-names = "uart2";
->> +
->> +			interrupt-parent = <&intc>;
->> +			interrupts = <22>;
->> +
->> +			reg-shift = <2>;
->> +		};
->> +	};
->> +
->> +	usbphy: uphy@10120000 {
->> +		compatible = "mediatek,mt7628-usbphy";
->> +		reg = <0x10120000 0x1000>;
->> +
->> +		#phy-cells = <0>;
->> +
->> +		resets = <&resetctrl 22 &resetctrl 25>;
->> +		reset-names = "host", "device";
->> +	};
->> +
->> +	ehci@101c0000 {
->> +		compatible = "generic-ehci";
->> +		reg = <0x101c0000 0x1000>;
->> +
->> +		phys = <&usbphy>;
->> +		phy-names = "usb";
->> +
->> +		interrupt-parent = <&intc>;
->> +		interrupts = <18>;
->> +	};
->> +};
->> -- 
->> 2.7.4
->>
+  Maciej

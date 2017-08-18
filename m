@@ -1,15 +1,15 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:51091 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:63148 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23994922AbdHRRLNfUD-q (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 18 Aug 2017 19:11:13 +0200
+        with ESMTP id S23994928AbdHRRS6kB1Gq (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 18 Aug 2017 19:18:58 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH 35/38] irqchip: mips-gic: Use pcpu_masks to avoid reading GIC_SH_MASK*
-Date: Fri, 18 Aug 2017 10:11:03 -0700
-Message-ID: <34162033.30QQ0eu7r0@np-p-burton>
-In-Reply-To: <405f8fc2-2947-cc68-e40a-b7e26a03e713@arm.com>
-References: <20170813043646.25821-1-paul.burton@imgtec.com> <20170813043646.25821-36-paul.burton@imgtec.com> <405f8fc2-2947-cc68-e40a-b7e26a03e713@arm.com>
+Subject: Re: [PATCH] MIPS: Set ISA bit in entry-y for microMIPS kernels
+Date: Fri, 18 Aug 2017 10:18:49 -0700
+Message-ID: <8259872.Nrvp2QXiRE@np-p-burton>
+In-Reply-To: <alpine.DEB.2.00.1708181731080.17596@tp.orcam.me.uk>
+References: <20170807231647.19551-1-paul.burton@imgtec.com> <alpine.DEB.2.00.1708181302480.17596@tp.orcam.me.uk> <alpine.DEB.2.00.1708181731080.17596@tp.orcam.me.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1643915.GF9IbKTtk9";
+Content-Type: multipart/signed; boundary="nextPart5028221.36bJTdk8DF";
         micalg=pgp-sha256; protocol="application/pgp-signature"
 Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
@@ -21,243 +21,121 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Marc Zyngier <marc.zyngier@arm.com>
-Cc: linux-mips@linux-mips.org, Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20170818171103.2Q1RZeHfmVr3EAWMcuLJsT5nKQxkNO30Sf2OJt60tvY@z>
+To: "Maciej W. Rozycki" <macro@imgtec.com>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20170818171849.RArKxdUg1iL6MT3BbXReDGNSog35vRR0NXJ-NcVaFDU@z>
 
---nextPart1643915.GF9IbKTtk9
+--nextPart5028221.36bJTdk8DF
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
 
-Hi Marc,
+Hi Maciej,
 
-On Friday, 18 August 2017 08:44:15 PDT Marc Zyngier wrote:
-> On 13/08/17 05:36, Paul Burton wrote:
-> > This patch avoids the need to read the GIC_SH_MASK* registers when
-> > decoding shared interrupts by setting & clearing the interrupt's bit in
-> > the appropriate CPU's pcpu_masks entry when masking or unmasking the
-> > interrupt.
+On Friday, 18 August 2017 09:46:30 PDT Maciej W. Rozycki wrote:
+> On Fri, 18 Aug 2017, Maciej W. Rozycki wrote:
+> > > When building a kernel for the microMIPS ISA, ensure that the ISA bit
+> > > (ie. bit 0) in the entry address is set. Otherwise we may include an
+> > > entry address in images which bootloaders will jump to as MIPS32 code.
+> >  
+> >  Hmm, what's going on here?  The ISA bit is set by the linker according to
 > > 
-> > This effectively means that whilst an interrupt is masked we clear its
-> > bit in all pcpu_masks, which causes gic_handle_shared_int() to ignore it
-> > on all CPUs without needing to check GIC_SH_MASK*.
+> > the mode the code at the entry symbol has been assembled for, e.g.:
 > > 
-> > In essence, we add a little overhead to masking or unmasking interrupts
-> > but in return reduce the overhead of the far more common task of
-> > decoding interrupts.
+> > $ readelf -h vmlinux | grep Entry
 > > 
-> > Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-> > Cc: Jason Cooper <jason@lakedaemon.net>
-> > Cc: Marc Zyngier <marc.zyngier@arm.com>
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: linux-mips@linux-mips.org
-> > ---
+> >   Entry point address:               0x804355e1
 > > 
-> >  drivers/irqchip/irq-mips-gic.c | 49
-> >  ++++++++++++++++++++++++------------------ 1 file changed, 28
-> >  insertions(+), 21 deletions(-)
+> > $ readelf -s vmlinux | grep kernel_entry
+> > 156535: 80100400     0 FUNC    GLOBAL DEFAULT [MICROMIPS]     1
+> > __kernel_entry 156742: 804355e0   146 FUNC    GLOBAL DEFAULT [MICROMIPS] 
+> >    1 kernel_entry $
 > > 
-> > diff --git a/drivers/irqchip/irq-mips-gic.c
-> > b/drivers/irqchip/irq-mips-gic.c index 00153231376a..7a42f0b3822f 100644
-> > --- a/drivers/irqchip/irq-mips-gic.c
-> > +++ b/drivers/irqchip/irq-mips-gic.c
-> > @@ -55,6 +55,19 @@ static struct irq_chip gic_level_irq_controller,
-> > gic_edge_irq_controller;> 
-> >  DECLARE_BITMAP(ipi_resrv, GIC_MAX_INTRS);
-> >  DECLARE_BITMAP(ipi_available, GIC_MAX_INTRS);
-> > 
-> > +static void gic_setup_pcpu_mask(unsigned int intr, unsigned int cpu)
-> > +{
-> > +	unsigned int i;
-> > +
-> > +	/* Clear the interrupt's bit in all pcpu_masks */
-> > +	for_each_possible_cpu(i)
-> > +		clear_bit(intr, per_cpu_ptr(pcpu_masks, i));
+> > or no microMIPS (or MIPS16) executable could work.  Is your build process
+> > or toolchain used broken by any chance?
 > 
-> This iterates from 0 to nr_cpu_ids-1...
+>  It is indeed the build process.  You've come up with a valid, however a
+> complicated solution.  How about the change below, on top of yours -- does
+> it work for you?  If so, then I'll wrap it up and submit as an update.
 > 
-> > +
-> > +	/* Set the interrupt's bit in the appropriate CPU's mask */
-> > +	if (cpu < NR_CPUS)
+>   Maciej
 > 
-> and here you're using NR_CPUS. I'm a bit worried that you're not quite
-> using the same thing (nr_cpu_ids <= NR_CPUS).
+> ---
+>  arch/mips/Makefile |   17 ++---------------
+>  1 file changed, 2 insertions(+), 15 deletions(-)
+> 
+> linux-mips-start-address.diff
+> Index: linux-sfr-usead/arch/mips/Makefile
+> ===================================================================
+> --- linux-sfr-usead.orig/arch/mips/Makefile	2017-08-18 15:25:58.196676000
+> +0100 +++ linux-sfr-usead/arch/mips/Makefile	2017-08-18 15:27:55.309653000
+> +0100 @@ -242,21 +242,8 @@ include arch/mips/Kbuild.platforms
+>  ifdef CONFIG_PHYSICAL_START
+>  load-y					= $(CONFIG_PHYSICAL_START)
+>  endif
+> -
+> -entry-noisa-y				= 0x$(shell $(NM) vmlinux 2>/dev/null \
+> -					| grep "\bkernel_entry\b" | cut -f1 -d \ )
+> -ifdef CONFIG_CPU_MICROMIPS
+> -  #
+> -  # Set the ISA bit, since the kernel_entry symbol in the ELF will have it
+> -  # clear which would lead to images containing addresses which bootloaders
+> may -  # jump to as MIPS32 code.
+> -  #
+> -  entry-y = $(patsubst %0,%1,$(patsubst %2,%3,$(patsubst %4,%5, \
+> -              $(patsubst %6,%7,$(patsubst %8,%9,$(patsubst %a,%b, \
+> -              $(patsubst %c,%d,$(patsubst %e,%f,$(entry-noisa-y)))))))))
+> -else
+> -  entry-y = $(entry-noisa-y)
+> -endif
+> +entry-y				= $(shell $(OBJDUMP) -f vmlinux 2>/dev/null \
+> +					| sed -n 's/start address //p')
+> 
+>  cflags-y			+= -I$(srctree)/arch/mips/include/asm/mach-generic
+>  drivers-$(CONFIG_PCI)		+= arch/mips/pci/
 
-I think that would be fine - if nr_cpu_ids is less than NR_CPUS then all we 
-risk is leaving bits set in the mask for CPUs that aren't in cpu_possible_mask 
-(which is where nr_cpu_ids comes from). Since those CPUs don't exist & thus 
-can't take interrupts they'll never check the bits in their mask.
+I originally did this [1], and wrote about it in the post-three-dashes notes 
+for this patch. To quote myself:
 
-The NR_CPUS check here is basically just to allow the interrupt to be set in 
-none of the masks when called by gic_mask_irq() - NR_CPUS is just some 
-constant value that we know will never be the ID of a CPU that an interrupt's 
-affinity is set to.
+> I originally tried using "objdump -f" to obtain the entry address, which
+> works for microMIPS but it always outputs a 32 bit address for a 32 bit
+> ELF whilst nm will sign extend to 64 bit. That matters for systems where
+> we might want to run a MIPS32 kernel on a MIPS64 CPU & load it with a
+> MIPS64 bootloader, which would then jump to a non-canonical
+> (non-sign-extended) address.
+> 
+> This works in all cases as it only changes the behaviour for microMIPS
+> kernels, but isn't the prettiest solution. A possible alternative would
+> be to write a custom tool to just extract, sign extend & print the entry
+> point of an ELF executable. I'm open to feedback if that would be
+> preferred.
 
-Perhaps it'd be clearer to instead split gic_setup_pcpu_mask() into 2 
-functions - one to just clear all the masks, and one to set the interrupt's 
-bit in the appropriate one? Possibly just inline that second one. That way we 
-wouldn't be using NR_CPUS at all here which might be clearer. How does that 
-sound?
+So if we were to use objdump we'd need to handle sign extending 32 bit 
+addresses to form a canonical address. Perhaps that'd be cleaner though.
 
 Thanks,
     Paul
 
-> 
-> > +		set_bit(intr, per_cpu_ptr(pcpu_masks, cpu));
-> > +}
-> > +
-> > 
-> >  static bool gic_local_irq_is_routable(int intr)
-> >  {
-> >  
-> >  	u32 vpe_ctl;
-> > 
-> > @@ -133,24 +146,17 @@ static void gic_handle_shared_int(bool chained)
-> > 
-> >  	unsigned int intr, virq;
-> >  	unsigned long *pcpu_mask;
-> >  	DECLARE_BITMAP(pending, GIC_MAX_INTRS);
-> > 
-> > -	DECLARE_BITMAP(intrmask, GIC_MAX_INTRS);
-> > 
-> >  	/* Get per-cpu bitmaps */
-> >  	pcpu_mask = this_cpu_ptr(pcpu_masks);
-> > 
-> > -	if (mips_cm_is64) {
-> > +	if (mips_cm_is64)
-> > 
-> >  		__ioread64_copy(pending, addr_gic_pend(),
-> >  		
-> >  				DIV_ROUND_UP(gic_shared_intrs, 64));
-> > 
-> > -		__ioread64_copy(intrmask, addr_gic_mask(),
-> > -				DIV_ROUND_UP(gic_shared_intrs, 64));
-> > -	} else {
-> > +	else
-> > 
-> >  		__ioread32_copy(pending, addr_gic_pend(),
-> >  		
-> >  				DIV_ROUND_UP(gic_shared_intrs, 32));
-> > 
-> > -		__ioread32_copy(intrmask, addr_gic_mask(),
-> > -				DIV_ROUND_UP(gic_shared_intrs, 32));
-> > -	}
-> > 
-> > -	bitmap_and(pending, pending, intrmask, gic_shared_intrs);
-> > 
-> >  	bitmap_and(pending, pending, pcpu_mask, gic_shared_intrs);
-> >  	
-> >  	for_each_set_bit(intr, pending, gic_shared_intrs) {
-> > 
-> > @@ -165,12 +171,19 @@ static void gic_handle_shared_int(bool chained)
-> > 
-> >  static void gic_mask_irq(struct irq_data *d)
-> >  {
-> > 
-> > -	write_gic_rmask(BIT(GIC_HWIRQ_TO_SHARED(d->hwirq)));
-> > +	unsigned int intr = GIC_HWIRQ_TO_SHARED(d->hwirq);
-> > +
-> > +	write_gic_rmask(BIT(intr));
-> > +	gic_setup_pcpu_mask(intr, NR_CPUS);
-> > 
-> >  }
-> >  
-> >  static void gic_unmask_irq(struct irq_data *d)
-> >  {
-> > 
-> > -	write_gic_smask(BIT(GIC_HWIRQ_TO_SHARED(d->hwirq)));
-> > +	struct cpumask *affinity = irq_data_get_affinity_mask(d);
-> > +	unsigned int intr = GIC_HWIRQ_TO_SHARED(d->hwirq);
-> > +
-> > +	write_gic_smask(BIT(intr));
-> > +	gic_setup_pcpu_mask(intr, cpumask_first_and(affinity, 
-cpu_online_mask));
-> > 
-> >  }
-> >  
-> >  static void gic_ack_irq(struct irq_data *d)
-> > 
-> > @@ -239,7 +252,6 @@ static int gic_set_affinity(struct irq_data *d, const
-> > struct cpumask *cpumask,> 
-> >  	unsigned int irq = GIC_HWIRQ_TO_SHARED(d->hwirq);
-> >  	cpumask_t	tmp = CPU_MASK_NONE;
-> >  	unsigned long	flags;
-> > 
-> > -	int		i;
-> > 
-> >  	cpumask_and(&tmp, cpumask, cpu_online_mask);
-> >  	if (cpumask_empty(&tmp))
-> > 
-> > @@ -252,9 +264,7 @@ static int gic_set_affinity(struct irq_data *d, const
-> > struct cpumask *cpumask,> 
-> >  	write_gic_map_vp(irq, BIT(mips_cm_vp_id(cpumask_first(&tmp))));
-> >  	
-> >  	/* Update the pcpu_masks */
-> > 
-> > -	for (i = 0; i < min(gic_vpes, NR_CPUS); i++)
-> > -		clear_bit(irq, per_cpu_ptr(pcpu_masks, i));
-> > -	set_bit(irq, per_cpu_ptr(pcpu_masks, cpumask_first(&tmp)));
-> > +	gic_setup_pcpu_mask(irq, read_gic_mask(irq) ? cpumask_first(&tmp) :
-> > NR_CPUS);> 
-> >  	cpumask_copy(irq_data_get_affinity_mask(d), cpumask);
-> >  	spin_unlock_irqrestore(&gic_lock, flags);
-> > 
-> > @@ -405,18 +415,15 @@ static int gic_local_irq_domain_map(struct
-> > irq_domain *d, unsigned int virq,> 
-> >  }
-> >  
-> >  static int gic_shared_irq_domain_map(struct irq_domain *d, unsigned int
-> >  virq,> 
-> > -				     irq_hw_number_t hw, unsigned int vpe)
-> > +				     irq_hw_number_t hw, unsigned int cpu)
-> > 
-> >  {
-> >  
-> >  	int intr = GIC_HWIRQ_TO_SHARED(hw);
-> >  	unsigned long flags;
-> > 
-> > -	int i;
-> > 
-> >  	spin_lock_irqsave(&gic_lock, flags);
-> >  	write_gic_map_pin(intr, GIC_MAP_PIN_MAP_TO_PIN | gic_cpu_pin);
-> > 
-> > -	write_gic_map_vp(intr, BIT(mips_cm_vp_id(vpe)));
-> > -	for (i = 0; i < min(gic_vpes, NR_CPUS); i++)
-> > -		clear_bit(intr, per_cpu_ptr(pcpu_masks, i));
-> > -	set_bit(intr, per_cpu_ptr(pcpu_masks, vpe));
-> > +	write_gic_map_vp(intr, BIT(mips_cm_vp_id(cpu)));
-> > +	gic_setup_pcpu_mask(intr, cpu);
-> > 
-> >  	spin_unlock_irqrestore(&gic_lock, flags);
-> >  	
-> >  	return 0;
-> 
-> Thanks,
-> 
-> 	M.
-
-
---nextPart1643915.GF9IbKTtk9
+[1] https://patchwork.linux-mips.org/patch/14020/
+--nextPart5028221.36bJTdk8DF
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part.
 Content-Transfer-Encoding: 7Bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAlmXH6cACgkQgiDZ+mk8
-HGXXLw/+PVkqOWaC+YLK7ciPwb8VUZZO+2cY/YSbEif6FEab0QNVLsESkXsbmdSx
-z0Y3s4l80+4IIE98UbJEneCKv4XqwIZmAdirDYfnSpYo8O1eR9QU6oCywmiV6Qxq
-h4nzKHzq7ePl8XjX/EX1cbRGeavEWnwH0pIJmnxzOvBdG9KDhj38DvpdUvoHJ47X
-asRb70i44S4Ekc7YBf3LmgoHed57FNFZDT35IWUocnG+LGG4DVsdXh3sJBzBIgpn
-56O6RlqbmJDHme6cegq3DmSAHO0Po+nxCnDB50h6yNkbHGiCsJ/5a+G/MJmJEVU/
-/bOAaHBdUIEXJE0lwsEeGLeyKAigIlz5PvrjtbGiKQ5MLpVgeU7TCYnSI5zDmEUr
-dhcB67a+vI52P7VwR2ZPBIs4CGBxldSmIG0Ucgny7Cfu6AatcRFeL0OoUGZ4u21k
-siqXvfGWA+jhVcq3NJAinIU2mnOP0/eix3eY3e6UH0P4luOMdy0AgQB0Tnhg7oBz
-4vO7GeBxaIax6hldIXIpEc6XhidFUlLFVpToY9S7/Roi4OhIDE9/M4nv56LuhG0A
-h4bTKkcjxeuPfaJx1l+UCftKsYG3moXjN1MSDdKjBI4GKZVOFoUurZdaQKPs1Ph2
-YKU2MxOCaYsjGAAitl+qXkAYQpp4fB+o9hRsFLnVhwtq0eCLm9Q=
-=1LZG
+iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAlmXIXkACgkQgiDZ+mk8
+HGX5WBAAlAqrRzF0glt7f1xh734kOJvqloE2pUVXjf7Zh6ffbujXmZmr8uXu7mca
+VWZ4noW3FaxqoR0ZS/AWWc0Fuv77DIJkKa2hlUwkolfdEeoJnFvqc7HsHhnutvfh
+INrs9p8fXJJSiHjtTrivxbPGTHNTXMVoo9C0pVTQr2LM3FFJ/QNqHJW+Q2GQyDzD
+qvMRvNASVFreWEtPbCO0arf5uWwrthn7MTbjIftfe29HAFvyQ/JthspbEmoasTaF
+yGiCnwN6GPVCMZCYcH973rtwH3H7Bf37mMUbv/NKcKS6VZctobOXoE4qwxn780Uo
+RgSWDBfGE9GBCEBh1e2N8fpfgPEKZatCCwXzm09ldJSHay1SGV+stgz+2lEMKcUk
+qDK5WRT/zYRIgPNVsr/HOpG8XsuH116nS0zj5q3Pv1QBzbRzMmJb6vCvHkEYB3LK
+ZaP1b1MIjzmix5jt0k5CHUj+TMTBxbfrEW7U4w/tK9//V/cr5Y687sWkcRhNEbux
+PrMSjoZpHnPQQEr4Hp057zq/BvssK7lapr4imVIcko9+iTxBp0Jscf6jbuxh0/Oc
+lAiN03wzCcdAeIiJyZQaCQcGYJZgS3IBtVdjs2h0UlonSMUuNd0Z4Iso3rP/oahY
+EJNhkMcX4B2AjQMQs0RKFOdaaBkvzL2wZM7OsB4IPptgg+Rkj88=
+=VM4i
 -----END PGP SIGNATURE-----
 
---nextPart1643915.GF9IbKTtk9--
+--nextPart5028221.36bJTdk8DF--

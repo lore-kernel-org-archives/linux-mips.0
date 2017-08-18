@@ -1,16 +1,20 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:36395 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:56166 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991978AbdHRM3xArEM9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 18 Aug 2017 14:29:53 +0200
-Date: Fri, 18 Aug 2017 13:29:37 +0100
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH] MIPS: Set ISA bit in entry-y for microMIPS kernels
-In-Reply-To: <20170807231647.19551-1-paul.burton@imgtec.com>
-Message-ID: <alpine.DEB.2.00.1708181302480.17596@tp.orcam.me.uk>
-References: <20170807231647.19551-1-paul.burton@imgtec.com>
+        with ESMTP id S23994912AbdHRNWIGg509 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 18 Aug 2017 15:22:08 +0200
+Subject: Re: [PATCH 2/3] MIPS: dts: Add VoCore2 board
+References: <1502814773-40842-1-git-send-email-harvey.hunt@imgtec.com>
+ <1502814773-40842-2-git-send-email-harvey.hunt@imgtec.com>
+ <20170817213628.nrkeuek7vu6oebfx@rob-hp-laptop>
+From: Harvey Hunt <Harvey.Hunt@imgtec.com>
+Message-ID: <5b00f77c-12be-76d2-e9eb-03f8a4b6375e@imgtec.com>
+Date: Fri, 18 Aug 2017 14:21:59 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+In-Reply-To: <20170817213628.nrkeuek7vu6oebfx@rob-hp-laptop>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Return-Path: <Harvey.Hunt@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,27 +24,117 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@imgtec.com>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20170818122937.ZUyeL7zjeYrTPD8T-k-LXbeF-RVPCJu61TmUE7-_kCI@z>
+To: Rob Herring <robh@kernel.org>
+Cc: mark.rutland@arm.com, ralf@linux-mips.org, john@phrozen.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20170818132159.1aOVY21eBtGVKYqX0OkZQaOuOwd3brJpVINqYcp8lkE@z>
 
-On Tue, 8 Aug 2017, Paul Burton wrote:
+Hi Rob,
 
-> When building a kernel for the microMIPS ISA, ensure that the ISA bit
-> (ie. bit 0) in the entry address is set. Otherwise we may include an
-> entry address in images which bootloaders will jump to as MIPS32 code.
+Thanks for the review.
 
- Hmm, what's going on here?  The ISA bit is set by the linker according to 
-the mode the code at the entry symbol has been assembled for, e.g.:
+On 17/08/17 22:36, Rob Herring wrote:
+> On Tue, Aug 15, 2017 at 05:32:52PM +0100, Harvey Hunt wrote:
+>> The VoCore2 board is a low cost MT7628A based board with 128MB RAM, 16MB
+>> flash and multiple external peripherals.
+>>
+>> This initial DTS provides enough support to get to userland and use the USB
+>> port.
+>>
+>> Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: devicetree@vger.kernel.org
+>> Cc: linux-mips@linux-mips.org
+>> ---
+>>   MAINTAINERS                           |  6 ++++++
+>>   arch/mips/boot/dts/ralink/Makefile    |  1 +
+>>   arch/mips/boot/dts/ralink/vocore2.dts | 18 ++++++++++++++++++
+>>   arch/mips/ralink/Kconfig              |  5 +++++
+>>   4 files changed, 30 insertions(+)
+>>   create mode 100644 arch/mips/boot/dts/ralink/vocore2.dts
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 6f7721d..82dcc6f 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -14127,6 +14127,12 @@ L:	netdev@vger.kernel.org
+>>   S:	Maintained
+>>   F:	drivers/net/vmxnet3/
+>>   
+>> +VOCORE VOCORE2 BOARD
+>> +M:	Harvey Hunt <harveyhuntnexus@gmail.com>
+>> +L:	linux-mips@linux-mips.org
+>> +S:	Maintained
+>> +F:	arch/mips/boot/dts/ralink/vocore2.dts
+>> +
+>>   VOLTAGE AND CURRENT REGULATOR FRAMEWORK
+>>   M:	Liam Girdwood <lgirdwood@gmail.com>
+>>   M:	Mark Brown <broonie@kernel.org>
+>> diff --git a/arch/mips/boot/dts/ralink/Makefile b/arch/mips/boot/dts/ralink/Makefile
+>> index 2a72259..a191788 100644
+>> --- a/arch/mips/boot/dts/ralink/Makefile
+>> +++ b/arch/mips/boot/dts/ralink/Makefile
+>> @@ -2,6 +2,7 @@ dtb-$(CONFIG_DTB_RT2880_EVAL)	+= rt2880_eval.dtb
+>>   dtb-$(CONFIG_DTB_RT305X_EVAL)	+= rt3052_eval.dtb
+>>   dtb-$(CONFIG_DTB_RT3883_EVAL)	+= rt3883_eval.dtb
+>>   dtb-$(CONFIG_DTB_MT7620A_EVAL)	+= mt7620a_eval.dtb
+>> +dtb-$(CONFIG_DTB_VOCORE2)		+= vocore2.dtb
+>>   
+>>   obj-y				+= $(patsubst %.dtb, %.dtb.o, $(dtb-y))
+>>   
+>> diff --git a/arch/mips/boot/dts/ralink/vocore2.dts b/arch/mips/boot/dts/ralink/vocore2.dts
+>> new file mode 100644
+>> index 0000000..7591340
+>> --- /dev/null
+>> +++ b/arch/mips/boot/dts/ralink/vocore2.dts
+>> @@ -0,0 +1,18 @@
+>> +/dts-v1/;
+>> +
+>> +#include "mt7628a.dtsi"
+>> +
+>> +/ {
+>> +	compatible = "vocore,vocore2", "ralink,mt7628a-soc";
+> 
+> Is vocore,vocore2 documented?
 
-$ readelf -h vmlinux | grep Entry
-  Entry point address:               0x804355e1
-$ readelf -s vmlinux | grep kernel_entry
-156535: 80100400     0 FUNC    GLOBAL DEFAULT [MICROMIPS]     1 __kernel_entry
-156742: 804355e0   146 FUNC    GLOBAL DEFAULT [MICROMIPS]     1 kernel_entry
-$ 
+It's not, do you want me to add a file in 
+Documentation/devicetree/bindings/mips?
 
-or no microMIPS (or MIPS16) executable could work.  Is your build process 
-or toolchain used broken by any chance?
+If so, shall I just create a vocore.txt file or create a "vocore" 
+directory with vocore2.txt in it?
 
-  Maciej
+Thanks,
+
+Harvey
+
+> 
+>> +	model = "VoCore2";
+>> +
+>> +	memory@0 {
+>> +		device_type = "memory";
+>> +		reg = <0x0 0x8000000>;
+>> +	};
+>> +
+>> +	chosen {
+>> +		bootargs = "console=ttyS2,115200";
+>> +		stdout-path = "serial2:115200";
+>> +	};
+>> +};
+>> diff --git a/arch/mips/ralink/Kconfig b/arch/mips/ralink/Kconfig
+>> index 710b04c..c2b2c2d 100644
+>> --- a/arch/mips/ralink/Kconfig
+>> +++ b/arch/mips/ralink/Kconfig
+>> @@ -82,6 +82,11 @@ choice
+>>   		depends on SOC_MT7620
+>>   		select BUILTIN_DTB
+>>   
+>> +	config DTB_VOCORE2
+>> +		bool "VoCore2"
+>> +		depends on SOC_MT7620
+>> +		select BUILTIN_DTB
+>> +
+>>   endchoice
+>>   
+>>   endif
+>> -- 
+>> 2.7.4
+>>

@@ -1,16 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:39192 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:35186 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993879AbdHUKznQ9FlD (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 21 Aug 2017 12:55:43 +0200
-From: Harvey Hunt <harvey.hunt@imgtec.com>
-Subject: [V2 3/3] MIPS: configs: Add Onion Omega2+ defconfig
-Date: Mon, 21 Aug 2017 11:55:31 +0100
-Message-ID: <1503312931-34416-3-git-send-email-harvey.hunt@imgtec.com>
-In-Reply-To: <1503312931-34416-1-git-send-email-harvey.hunt@imgtec.com>
-References: <1503312931-34416-1-git-send-email-harvey.hunt@imgtec.com>
+        with ESMTP id S23994781AbdHUQEaybhH3 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 21 Aug 2017 18:04:30 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH 2/6] crypto: jz4780-rng: Make ingenic CGU driver use syscon
+Date: Mon, 21 Aug 2017 09:04:16 -0700
+Message-ID: <45556677.8n3yGzOkJs@np-p-burton>
+In-Reply-To: <CANc+2y6tRe_kkWyGX+-BT-ugb5JiZhKpPoHWkAn=2ZC6cb6uKA@mail.gmail.com>
+References: <20170817182520.20102-1-prasannatsmkumar@gmail.com> <3563032.h0vdzx9HfC@np-p-burton> <CANc+2y6tRe_kkWyGX+-BT-ugb5JiZhKpPoHWkAn=2ZC6cb6uKA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Harvey.Hunt@imgtec.com>
+Content-Type: multipart/signed; boundary="nextPart8306877.L2Sq6hHNpB";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,158 +21,66 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: robh+dt@kernel.org, mark.rutland@arm.com, ralf@linux-mips.org, john@phrozen.org
-Cc: Harvey Hunt <harvey.hunt@imgtec.com>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20170821105531.wCYvZYBWGmTE-TjHnNcG2CLJ-mwoJJJAg8iveiNO1AU@z>
+To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+Cc: linux-mips@linux-mips.org, Herbert Xu <herbert@gondor.apana.org.au>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Michael Turquette <mturquette@baylibre.com>, sboyd@codeaurora.org, "David S . Miller" <davem@davemloft.net>, Paul Cercueil <paul@crapouillou.net>, linux-crypto@vger.kernel.org
+Message-ID: <20170821160416.Hwi82nrSSsBH-Ymetwep97SN_2qGPm_EcwgmFgT95N8@z>
 
-Create a defconfig for the Omega2+ that reaches userspace and
-allows use of the USB port.
+--nextPart8306877.L2Sq6hHNpB
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-mips@linux-mips.org
----
-Changes in V2:
-- Remove CONFIG_PANIC_ON_OOPS
+Hi PrasannaKumar,
 
- arch/mips/configs/omega2p_defconfig | 129 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 129 insertions(+)
- create mode 100644 arch/mips/configs/omega2p_defconfig
+On Sunday, 20 August 2017 09:12:12 PDT PrasannaKumar Muralidharan wrote:
+> > Could you instead perhaps:
+> >  - Just add "syscon" as a second compatible string to the CGU node in the
+> >  
+> >    device tree, but otherwise leave it as-is without the extra
+> >    cgu_registers
+> >    node.
+> >  
+> >  - Have your RNG device node as a child of the CGU node, which should let
+> >  it
+> >  
+> >    pick up the regmap via syscon_node_to_regmap() as it already does.
+> >  
+> >  - Leave the CGU driver as-is, so it can continue accessing memory
+> >  directly
+> >  
+> >    rather than via regmap.
+> 
+> As per my understanding, CGU driver and syscon will map the same
+> register set. Is that fine?
 
-diff --git a/arch/mips/configs/omega2p_defconfig b/arch/mips/configs/omega2p_defconfig
-new file mode 100644
-index 0000000..e2731c3
---- /dev/null
-+++ b/arch/mips/configs/omega2p_defconfig
-@@ -0,0 +1,129 @@
-+CONFIG_RALINK=y
-+CONFIG_SOC_MT7620=y
-+CONFIG_DTB_OMEGA2P=y
-+CONFIG_CPU_MIPS32_R2=y
-+# CONFIG_COMPACTION is not set
-+CONFIG_HZ_100=y
-+CONFIG_PREEMPT=y
-+# CONFIG_SECCOMP is not set
-+CONFIG_MIPS_CMDLINE_FROM_BOOTLOADER=y
-+# CONFIG_LOCALVERSION_AUTO is not set
-+CONFIG_SYSVIPC=y
-+CONFIG_POSIX_MQUEUE=y
-+CONFIG_NO_HZ_IDLE=y
-+CONFIG_HIGH_RES_TIMERS=y
-+CONFIG_IKCONFIG=y
-+CONFIG_IKCONFIG_PROC=y
-+CONFIG_LOG_BUF_SHIFT=14
-+CONFIG_CGROUPS=y
-+CONFIG_MEMCG=y
-+CONFIG_CGROUP_SCHED=y
-+CONFIG_CGROUP_FREEZER=y
-+CONFIG_CGROUP_DEVICE=y
-+CONFIG_CGROUP_CPUACCT=y
-+CONFIG_NAMESPACES=y
-+CONFIG_USER_NS=y
-+CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-+CONFIG_SYSCTL_SYSCALL=y
-+CONFIG_KALLSYMS_ALL=y
-+CONFIG_EMBEDDED=y
-+# CONFIG_VM_EVENT_COUNTERS is not set
-+# CONFIG_SLUB_DEBUG is not set
-+# CONFIG_COMPAT_BRK is not set
-+# CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
-+# CONFIG_SUSPEND is not set
-+CONFIG_NET=y
-+CONFIG_PACKET=y
-+CONFIG_UNIX=y
-+CONFIG_INET=y
-+# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
-+# CONFIG_INET_XFRM_MODE_TUNNEL is not set
-+# CONFIG_INET_XFRM_MODE_BEET is not set
-+# CONFIG_INET_DIAG is not set
-+# CONFIG_IPV6 is not set
-+# CONFIG_WIRELESS is not set
-+CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
-+CONFIG_DEVTMPFS=y
-+# CONFIG_FW_LOADER is not set
-+# CONFIG_ALLOW_DEV_COREDUMP is not set
-+CONFIG_NETDEVICES=y
-+# CONFIG_ETHERNET is not set
-+# CONFIG_WLAN is not set
-+# CONFIG_INPUT_KEYBOARD is not set
-+# CONFIG_INPUT_MOUSE is not set
-+# CONFIG_SERIO is not set
-+CONFIG_VT_HW_CONSOLE_BINDING=y
-+CONFIG_LEGACY_PTY_COUNT=2
-+CONFIG_SERIAL_8250=y
-+CONFIG_SERIAL_8250_CONSOLE=y
-+CONFIG_SERIAL_8250_NR_UARTS=3
-+CONFIG_SERIAL_8250_RUNTIME_UARTS=3
-+CONFIG_SERIAL_OF_PLATFORM=y
-+# CONFIG_HW_RANDOM is not set
-+# CONFIG_HWMON is not set
-+# CONFIG_VGA_CONSOLE is not set
-+CONFIG_USB=y
-+CONFIG_USB_EHCI_HCD=y
-+CONFIG_USB_EHCI_HCD_PLATFORM=y
-+CONFIG_MMC=y
-+# CONFIG_IOMMU_SUPPORT is not set
-+CONFIG_MEMORY=y
-+CONFIG_PHY_RALINK_USB=y
-+# CONFIG_DNOTIFY is not set
-+CONFIG_PROC_KCORE=y
-+# CONFIG_PROC_PAGE_MONITOR is not set
-+CONFIG_TMPFS=y
-+CONFIG_CONFIGFS_FS=y
-+# CONFIG_NETWORK_FILESYSTEMS is not set
-+CONFIG_NLS_CODEPAGE_437=y
-+CONFIG_NLS_CODEPAGE_737=y
-+CONFIG_NLS_CODEPAGE_775=y
-+CONFIG_NLS_CODEPAGE_850=y
-+CONFIG_NLS_CODEPAGE_852=y
-+CONFIG_NLS_CODEPAGE_855=y
-+CONFIG_NLS_CODEPAGE_857=y
-+CONFIG_NLS_CODEPAGE_860=y
-+CONFIG_NLS_CODEPAGE_861=y
-+CONFIG_NLS_CODEPAGE_862=y
-+CONFIG_NLS_CODEPAGE_863=y
-+CONFIG_NLS_CODEPAGE_864=y
-+CONFIG_NLS_CODEPAGE_865=y
-+CONFIG_NLS_CODEPAGE_866=y
-+CONFIG_NLS_CODEPAGE_869=y
-+CONFIG_NLS_CODEPAGE_936=y
-+CONFIG_NLS_CODEPAGE_950=y
-+CONFIG_NLS_CODEPAGE_932=y
-+CONFIG_NLS_CODEPAGE_949=y
-+CONFIG_NLS_CODEPAGE_874=y
-+CONFIG_NLS_ISO8859_8=y
-+CONFIG_NLS_CODEPAGE_1250=y
-+CONFIG_NLS_CODEPAGE_1251=y
-+CONFIG_NLS_ASCII=y
-+CONFIG_NLS_ISO8859_1=y
-+CONFIG_NLS_ISO8859_2=y
-+CONFIG_NLS_ISO8859_3=y
-+CONFIG_NLS_ISO8859_4=y
-+CONFIG_NLS_ISO8859_5=y
-+CONFIG_NLS_ISO8859_6=y
-+CONFIG_NLS_ISO8859_7=y
-+CONFIG_NLS_ISO8859_9=y
-+CONFIG_NLS_ISO8859_13=y
-+CONFIG_NLS_ISO8859_14=y
-+CONFIG_NLS_ISO8859_15=y
-+CONFIG_NLS_KOI8_R=y
-+CONFIG_NLS_KOI8_U=y
-+CONFIG_NLS_UTF8=y
-+CONFIG_PRINTK_TIME=y
-+CONFIG_DEBUG_INFO=y
-+CONFIG_STRIP_ASM_SYMS=y
-+CONFIG_DEBUG_FS=y
-+CONFIG_MAGIC_SYSRQ=y
-+CONFIG_PANIC_TIMEOUT=10
-+# CONFIG_SCHED_DEBUG is not set
-+# CONFIG_DEBUG_PREEMPT is not set
-+CONFIG_STACKTRACE=y
-+# CONFIG_FTRACE is not set
-+CONFIG_CRYPTO_DEFLATE=y
-+CONFIG_CRYPTO_LZO=y
-+CONFIG_CRC16=y
-+CONFIG_XZ_DEC=y
--- 
-2.7.4
+That should work fine.
+
+It's only risky if you have 2 drivers using the same registers in ways that 
+might race with one another or clobber one another's data. In this case each 
+of the 2 drivers is using a different subset of registers that just happen to 
+be in the same address range, so there shouldn't be an issue.
+
+Thanks,
+    Paul
+--nextPart8306877.L2Sq6hHNpB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAlmbBIAACgkQgiDZ+mk8
+HGVe1Q/6Au2TClXs/W79i3QnmUiwaV9otdtoqCPYhvX6pFQ3vlrPt+Dn1FsvoRwL
+dccm/fueHvkdYvueUbkqmjUDuiWrt3tv4YoVnih81gtmBWVeF9hQ9hLqd3nlZhbS
+9aFryozQ8mO6AHP4N58Iv8aPubtoYunDasCdMZ72cq9T3SxIaAl9B2AEQEls5JO8
+mgESbB7kGrv5d484ktOGGRr4KjNlCxFxOVWxZq7zPQxuCMRbsIAZEnpW9ei1OXuV
+b2VGa/o8oz3WnPiCrxwgNHH7ckp6LBjdtv4Rq+oxiOs9ONWRZoXXC0ygvdc1Pv6a
+9Y1DCZWzQrzali8g1YAytuEQgql+i/xId9uoNxQy3Fw0SGIRsNkEXjqASFzUF/wb
+Z/8jvxuia4EQEUsgb5UWlDP2zy2q7zCCj/IB3pvAn9u4vD8WtQRrZIhR7W0qOd3f
+P8Q1Eq/u4rnyPdNV9x7TrFSRlIJ90FTytYCfKDu0qeGcsfYi39vrVPEEESgzSPmM
+UVD4/biG80szEmkCNeGFsaViNoUCE1/5sw4nvCmStsH0IIYaXHV3hLDi4J0L90JY
+PsDssx1NUF+ySLeaNYLfIfg5ySRJlnFRN7kdC2fcp85D1bx4xBc5qqDuo2MIXR5K
+G9jZOj2H2DzoVI22SW2mbRJYSwTWIApkMzyfBXPcGUByUm1QCQM=
+=fpS/
+-----END PGP SIGNATURE-----
+
+--nextPart8306877.L2Sq6hHNpB--

@@ -1,22 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:24482 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:62981 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993892AbdHWOvxkJUil (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 23 Aug 2017 16:51:53 +0200
-Subject: Re: [PATCH v2 4/4] crypto: jz4780-rng: Enable PRNG support in CI20
- defconfig
-References: <20170823025707.27888-1-prasannatsmkumar@gmail.com>
- <20170823025707.27888-5-prasannatsmkumar@gmail.com>
- <9da7ab8b-aa81-e012-596c-54355758da83@imgtec.com>
- <CANc+2y6LPFf6a-oJJ8=Sf59mCOH0q2s6Na5zCAMhnBAiOMjDcQ@mail.gmail.com>
-From: Harvey Hunt <Harvey.Hunt@imgtec.com>
-Message-ID: <02fb41c2-c740-ec2c-d82f-aabecfa798ea@imgtec.com>
-Date: Wed, 23 Aug 2017 15:51:45 +0100
+        with ESMTP id S23992864AbdHWSSX3VeDI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 23 Aug 2017 20:18:23 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH 00/11] MIPS: Fix various sparse warnings
+Date: Wed, 23 Aug 2017 11:17:43 -0700
+Message-ID: <20170823181754.24044-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <CANc+2y6LPFf6a-oJJ8=Sf59mCOH0q2s6Na5zCAMhnBAiOMjDcQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <Harvey.Hunt@imgtec.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,69 +18,57 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>, "David S . Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Paul Cercueil <paul@crapouillou.net>, linux-crypto@vger.kernel.org, devicetree@vger.kernel.org, linux-mips@linux-mips.org, Mathieu Malaterre <malat@debian.org>, noloader@gmail.com
-Message-ID: <20170823145145.s_1WRj2QXD0XNcY1JKmxmLD2-gFFQBW-EBaxmeK8dVE@z>
+To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, trivial@kernel.org
+Cc: Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20170823181743._KO-Q5-KonaRdmBzU21ZQIZbGg0kMnOSfGwVhwdo9BA@z>
 
-Hi PrasannaKumar,
+This series fixes various sparse warnings, mostly low hanging fruit.
 
-On 23/08/17 15:50, PrasannaKumar Muralidharan wrote:
-> Hi Harvey,
-> 
-> On 23 August 2017 at 14:39, Harvey Hunt <Harvey.Hunt@imgtec.com> wrote:
->> Hi PrasannaKumar,
->>
->> On 23/08/17 03:57, PrasannaKumar Muralidharan wrote:
->>>
->>> Enable PRNG driver support in MIPS Creator CI20 default config.
->>>
->>> Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
->>> ---
->>> No changes in v2
->>>
->>>    arch/mips/configs/ci20_defconfig | 5 +++++
->>>    1 file changed, 5 insertions(+)
->>>
->>> diff --git a/arch/mips/configs/ci20_defconfig
->>> b/arch/mips/configs/ci20_defconfig
->>> index b42cfa7..9f48f2c 100644
->>> --- a/arch/mips/configs/ci20_defconfig
->>> +++ b/arch/mips/configs/ci20_defconfig
->>> @@ -88,6 +88,11 @@ CONFIG_SERIAL_8250_RUNTIME_UARTS=5
->>>    CONFIG_SERIAL_8250_INGENIC=y
->>>    CONFIG_SERIAL_OF_PLATFORM=y
->>>    # CONFIG_HW_RANDOM is not set
->>> +CONFIG_CRYPTO_USER=y
->>> +CONFIG_CRYPTO_USER_API=y
->>> +CONFIG_CRYPTO_USER_API_RNG=y
->>> +CONFIG_CRYPTO_HW=y
->>> +CONFIG_CRYPTO_DEV_JZ4780_RNG=y
->>>    CONFIG_I2C=y
->>>    CONFIG_I2C_JZ4780=y
->>>    CONFIG_GPIO_SYSFS=y
->>>
->>
->> You need to regenerate your defconfig as it is missing CONFIG_MFD_SYSCON.
->>
->> Thanks,
->>
->> Harvey
-> 
-> CONFIG_MFD_SYSCON gets selected when CONFIG_CRYPTO_DEV_JZ4780_RNG is
-> selected. Please see the Kconfig changes. Given that should I add it
-> in ci20_defconfig? If it is required I will add and send a new
-> version.
+Patches 1-7 include headers providing declarations of functions or
+variables in files which provide their definitions. This clears up
+sparse warnings & ensures that the prototypes of declarations &
+definitions match.
 
-Oops, I hadn't noticed that - just skimmed the patches before my morning 
-coffee. :-)
+Patch 8 fixes the type of a fault_addr argument used in the FPU
+emulation code to be correct & avoid a lot of sparse warnings.
 
-It's fine as is, excuse the noise.
+Patches 9 & 10 remove some dead code.
 
-> 
-> Thanks,
-> PrasannaKumar
-> 
+Patch 11 declares a bunch of things which we don't use outside of the
+translation unit that defines them static.
 
-Thanks,
+Applies atop v4.13-rc6.
 
-Harvey
+Paul Burton (11):
+  MIPS: generic: Include asm/bootinfo.h for plat_fdt_relocated()
+  MIPS: generic: Include asm/time.h for get_c0_*_int()
+  MIPS: Include asm/setup.h for cpu_cache_init()
+  MIPS: Include linux/cpu.h for arch_cpu_idle()
+  MIPS: Include asm/delay.h for __{,n,u}delay()
+  MIPS: Include elf-randomize.h for arch_mmap_rnd() &
+    arch_randomize_brk()
+  MIPS: Include linux/initrd.h for free_initrd_mem()
+  MIPS: math-emu: Correct user fault_addr type
+  MIPS: Remove __invalidate_kernel_vmap_range
+  MIPS: Remove plat_timer_setup()
+  MIPS: Declare various variables & functions static
+
+ arch/mips/generic/init.c              |  5 +++++
+ arch/mips/generic/irq.c               |  1 +
+ arch/mips/include/asm/fpu_emulator.h  |  2 +-
+ arch/mips/kernel/cpu-probe.c          |  2 +-
+ arch/mips/kernel/idle.c               |  1 +
+ arch/mips/kernel/mips-r2-to-r6-emul.c |  6 +++---
+ arch/mips/kernel/pm-cps.c             |  2 +-
+ arch/mips/kernel/time.c               | 14 --------------
+ arch/mips/kernel/unaligned.c          |  2 +-
+ arch/mips/lib/delay.c                 |  1 +
+ arch/mips/math-emu/cp1emu.c           |  8 ++++----
+ arch/mips/mm/cache.c                  |  2 +-
+ arch/mips/mm/dma-default.c            |  4 ++--
+ arch/mips/mm/init.c                   |  1 +
+ arch/mips/mm/mmap.c                   |  1 +
+ 15 files changed, 24 insertions(+), 28 deletions(-)
+
+-- 
+2.14.1

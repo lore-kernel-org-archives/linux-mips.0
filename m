@@ -1,11 +1,11 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:47439 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:9818 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993969AbdHWSVPAMJSI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 23 Aug 2017 20:21:15 +0200
+        with ESMTP id S23993954AbdHWSVhzYfcI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 23 Aug 2017 20:21:37 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH 09/11] MIPS: Remove __invalidate_kernel_vmap_range
-Date: Wed, 23 Aug 2017 11:17:52 -0700
-Message-ID: <20170823181754.24044-10-paul.burton@imgtec.com>
+Subject: [PATCH 10/11] MIPS: Remove plat_timer_setup()
+Date: Wed, 23 Aug 2017 11:17:53 -0700
+Message-ID: <20170823181754.24044-11-paul.burton@imgtec.com>
 In-Reply-To: <20170823181754.24044-1-paul.burton@imgtec.com>
 References: <20170823181754.24044-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
@@ -22,30 +22,45 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, trivial@kernel.org
 Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20170823181752.5kujsyOCPb4ui0CLIfi3CHsyoYcmKB3ot2ariesciM4@z>
+Message-ID: <20170823181753.GeqVkgzlbBp_fwlWrnT4e1cnKJ3zNo2-wmWLIKbqH88@z>
 
-The __invalidate_kernel_vmap_range function pointer global variable
-isn't used anywhere. Remove it.
+The plat_timer_setup() function is entirely unused - nothing calls it,
+and no platforms provide it. Perhaps our dummy implementation was once
+useful as an aid in forward porting platforms, but its time has long
+since passed so let's remove the dead code.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
 ---
 
- arch/mips/mm/cache.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/mips/kernel/time.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
-index 0324e1085b16..44ac64d51827 100644
---- a/arch/mips/mm/cache.c
-+++ b/arch/mips/mm/cache.c
-@@ -45,7 +45,6 @@ void (*__flush_cache_vunmap)(void);
+diff --git a/arch/mips/kernel/time.c b/arch/mips/kernel/time.c
+index c036157fb891..a6ebc8135112 100644
+--- a/arch/mips/kernel/time.c
++++ b/arch/mips/kernel/time.c
+@@ -72,20 +72,6 @@ EXPORT_SYMBOL(perf_irq);
+ unsigned int mips_hpt_frequency;
+ EXPORT_SYMBOL_GPL(mips_hpt_frequency);
  
- void (*__flush_kernel_vmap_range)(unsigned long vaddr, int size);
- EXPORT_SYMBOL_GPL(__flush_kernel_vmap_range);
--void (*__invalidate_kernel_vmap_range)(unsigned long vaddr, int size);
- 
- /* MIPS specific cache operations */
- void (*flush_cache_sigtramp)(unsigned long addr);
+-/*
+- * This function exists in order to cause an error due to a duplicate
+- * definition if platform code should have its own implementation.  The hook
+- * to use instead is plat_time_init.  plat_time_init does not receive the
+- * irqaction pointer argument anymore.	This is because any function which
+- * initializes an interrupt timer now takes care of its own request_irq rsp.
+- * setup_irq calls and each clock_event_device should use its own
+- * struct irqrequest.
+- */
+-void __init plat_timer_setup(void)
+-{
+-	BUG();
+-}
+-
+ static __init int cpu_has_mfc0_count_bug(void)
+ {
+ 	switch (current_cpu_type()) {
 -- 
 2.14.1

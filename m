@@ -1,17 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:55507 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993179AbdHYXHrczeMx (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 26 Aug 2017 01:07:47 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: Maintenance of Linux/MIPS?
-Date: Fri, 25 Aug 2017 16:07:31 -0700
-Message-ID: <1539189.Q9sWsqvfCA@np-p-burton>
-In-Reply-To: <c96eaa42-ab7f-d902-746c-c6cff242c596@gmail.com>
-References: <c96eaa42-ab7f-d902-746c-c6cff242c596@gmail.com>
+Received: from mail-lf0-x22c.google.com ([IPv6:2a00:1450:4010:c07::22c]:32929
+        "EHLO mail-lf0-x22c.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23995079AbdH0T40LT3XV (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 27 Aug 2017 21:56:26 +0200
+Received: by mail-lf0-x22c.google.com with SMTP id y15so15286683lfd.0
+        for <linux-mips@linux-mips.org>; Sun, 27 Aug 2017 12:56:24 -0700 (PDT)
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-ID: <20170827195613.904715064@cogentembedded.com>
+Date: Sun, 27 Aug 2017 22:55:09 +0300
+Subject: [PATCH] pata_octeon_cf: use of_property_read_{bool|u32}()
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1641345.frPGPuF62o";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Disposition: inline; filename=pata_octeon_cf-use-of_property_read_-bool-u32.patch
+Return-Path: <sergei.shtylyov@cogentembedded.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,66 +21,53 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org, Florian Fainelli <f.fainelli@gmail.com>, ralf@linux-mips.org
-Cc: john@phrozen.org, david.daney@cavium.com, James Hogan <james.hogan@imgtec.com>
-Message-ID: <20170825230731.i04Kg1fyaBZfNllZenELqbVnOI3dcynUP7xGv5XCVIQ@z>
+To: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Tejun Heo <tj@kernel.org>, "\"open list:LIBATA PATA DRIVERS\"" <linux-ide@vger.kernel.org>
+Cc: linux-mips@linux-mips.org, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-ID: <20170827195509.Gd5H5NCXwgyicxlMBF4eZAAC2YhfdPZb596XkXAhFa0@z>
 
---nextPart1641345.frPGPuF62o
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+The Octeon CF driver basically  open-codes of_property_read_{bool|u32}()
+using  of_{find|get}_property() calls in its  probe() method.  Using the
+modern DT APIs saves 2 LoCs and 16 bytes of object code (MIPS gcc 3.4.3).
 
-Hello,
+Signed-off-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 
-On Friday, 25 August 2017 14:21:33 PDT Florian Fainelli wrote:
-> Hi,
-> 
-> There are a lot of patches at
-> https://patchwork.linux-mips.org/project/linux-mips/list/ that appear to
-> be under the "New" state and have not had a chance to be reviewed yet.
-> 
-> What can we do to help speed up the review process, do we need more
-> reviewers? It seems like most patches affecting Linux/MIPS are still
-> core MIPS kernel changes, but would it help if say, people were queuing
-> SoC/board specific patches in trees and submit pull requests? Would that
-> help lower the amount of patches to review?
-> 
-> Any other suggestion?
-> 
-> Thanks!
+---
+ drivers/ata/pata_octeon_cf.c |   10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-Personally I think it'd probably be good if Ralf were willing to formally 
-share maintainership duties with someone else or a group of people. I think 
-James for example would be a great choice, and already dons a maintainer hat.
-
-As-is Ralf ends up being a bottleneck a lot of the time, and the backlog in 
-patchwork is pretty good evidence of that. There are a whole lot of patches 
-that ought to be going into v4.14, and that ought to be sat in linux-next 
-right now in preparation for that. Sadly not many of them are, and usually 
-that remains the case until very close to the merge window. Sharing the load 
-could only help with this.
-
-Thanks,
-    Paul
---nextPart1641345.frPGPuF62o
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAlmgrbMACgkQgiDZ+mk8
-HGUz7xAApj3d17u5thHq5IUgCsa1au4fAN70befvN3iD4p8aA0WWQewIQa5U9pCt
-vlP8GfVEfjpbDI9r31sEMJwb9QYaSUISetw7sUNxoi2awSveRaLm/GYyQswWslOI
-IfPo/Da7ohDMrSLX5t7W9OEt/zjTUGRApfsw6NV1A7pogYykxAcTkmei/YN6BvLp
-z9u3KPH17cJzwo39P0gC4RX8d9y1skjajSgL/o4AEzOq21XieHTRuKJyeze1x/zK
-OcIC3mUZkOLFFziIln7dyh2dOWTHKLEsL9jUpqa7rIEY/mlgXOcJ3OlITbTBxkSK
-YLH9/ZQ8BhngdZEd/eolJmUlpImqA7wIt+ISOii+0qdbonzv0aduvZC69Ur54ic3
-6UZfhw96I0M0kVIn7XS5L/k0RclxAQs6O4bh1kFesvIpeWwcDoC74X35VoPdX2fS
-KgqMEHJA/ZTCbhA3aGCyI845DBFPxlJSq/ZRL1Spdc2j6GNwg9FGVNdvir2gVJ9S
-eJ2hgNZahMR1U39uGjovKIGU0lyGcNxawlSC1uS2jfv2Rl4Ny0U3NQekFfkVCwxW
-PwqQTume9oVJugL380I4Y/ThawJ+B/AHaWz4JkAf7GFpUJ7TL7FImJqe8hkymGrE
-BIGiW/y4IayNn1Bth7Q9KdguFKb81sMqzncmeWhg7xmWhgzXv8Q=
-=cnlm
------END PGP SIGNATURE-----
-
---nextPart1641345.frPGPuF62o--
+Index: libata/drivers/ata/pata_octeon_cf.c
+===================================================================
+--- libata.orig/drivers/ata/pata_octeon_cf.c
++++ libata/drivers/ata/pata_octeon_cf.c
+@@ -840,7 +840,6 @@ static int octeon_cf_probe(struct platfo
+ 	struct property *reg_prop;
+ 	int n_addr, n_size, reg_len;
+ 	struct device_node *node;
+-	const void *prop;
+ 	void __iomem *cs0;
+ 	void __iomem *cs1 = NULL;
+ 	struct ata_host *host;
+@@ -850,7 +849,7 @@ static int octeon_cf_probe(struct platfo
+ 	void __iomem *base;
+ 	struct octeon_cf_port *cf_port;
+ 	int rv = -ENOMEM;
+-
++	u32 bus_width;
+ 
+ 	node = pdev->dev.of_node;
+ 	if (node == NULL)
+@@ -860,11 +859,10 @@ static int octeon_cf_probe(struct platfo
+ 	if (!cf_port)
+ 		return -ENOMEM;
+ 
+-	cf_port->is_true_ide = (of_find_property(node, "cavium,true-ide", NULL) != NULL);
++	cf_port->is_true_ide = of_property_read_bool(node, "cavium,true-ide");
+ 
+-	prop = of_get_property(node, "cavium,bus-width", NULL);
+-	if (prop)
+-		is_16bit = (be32_to_cpup(prop) == 16);
++	if (of_property_read_u32(node, "cavium,bus-width", &bus_width) == 0)
++		is_16bit = (bus_width == 16);
+ 	else
+ 		is_16bit = false;
+ 

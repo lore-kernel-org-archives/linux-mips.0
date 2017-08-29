@@ -1,13 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:35019 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:37651 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23995073AbdH2UHeRvHg0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Aug 2017 22:07:34 +0200
+        with ESMTP id S23995081AbdH2UI0FwXT0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Aug 2017 22:08:26 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH] fixup: MIPS: CPS: Have asm/mips-cps.h include CM & CPC headers
-Date: Tue, 29 Aug 2017 13:07:11 -0700
-Message-ID: <20170829200711.598-1-paul.burton@imgtec.com>
-In-Reply-To: <20170813024943.14989-18-paul.burton@imgtec.com>
-References: <20170813024943.14989-18-paul.burton@imgtec.com>
+Subject: [PATCH] fixup: MIPS: CPS: Cluster support for topology functions
+Date: Tue, 29 Aug 2017 13:08:03 -0700
+Message-ID: <20170829200803.856-1-paul.burton@imgtec.com>
+In-Reply-To: <20170813024943.14989-19-paul.burton@imgtec.com>
+References: <20170813024943.14989-19-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -22,32 +22,4 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Paul Burton <paul.burton@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20170829200711.vueKZOzZ_7M4pSYr_TkmcpORrE4lxCeex9m_r-xv3sE@z>
-
-Fix a missed inclusion of asm/mips-cpc.h to include asm/mips-cps.h
-instead.
-
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Fixes: bd819d76de64 ("MIPS: CPS: Have asm/mips-cps.h include CM & CPC headers")
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
----
-
- arch/mips/mti-malta/malta-dtshim.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/mips/mti-malta/malta-dtshim.c b/arch/mips/mti-malta/malta-dtshim.c
-index 361f7c146b75..a6699c15277d 100644
---- a/arch/mips/mti-malta/malta-dtshim.c
-+++ b/arch/mips/mti-malta/malta-dtshim.c
-@@ -18,7 +18,7 @@
- #include <asm/fw/fw.h>
- #include <asm/mips-boards/generic.h>
- #include <asm/mips-boards/malta.h>
--#include <asm/mips-cpc.h>
-+#include <asm/mips-cps.h>
- #include <asm/page.h>
- 
- #define ROCIT_REG_BASE			0x1f403000
--- 
-2.14.1
+Message-ID: <20170829200803.pECoznjGgZ7y1c7j-1XyIXBLFy90XsfL5bEbi2uYdHU@z>

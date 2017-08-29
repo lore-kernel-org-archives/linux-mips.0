@@ -1,16 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:30324 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23995045AbdH2RY6lp01U (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Aug 2017 19:24:58 +0200
-Date: Tue, 29 Aug 2017 18:24:41 +0100
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH] MIPS: Add basic R5900 support
-In-Reply-To: <20170827132309.GA32166@localhost.localdomain>
-Message-ID: <alpine.DEB.2.00.1708271511430.17596@tp.orcam.me.uk>
-References: <20170827132309.GA32166@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Received: from mail-wr0-x244.google.com ([IPv6:2a00:1450:400c:c0c::244]:35315
+        "EHLO mail-wr0-x244.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23995072AbdH2StloXU7H (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Aug 2017 20:49:41 +0200
+Received: by mail-wr0-x244.google.com with SMTP id a47so2848124wra.2
+        for <linux-mips@linux-mips.org>; Tue, 29 Aug 2017 11:49:41 -0700 (PDT)
+From: Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH] irqchip: irq-bcm7120-l2: Use correct I/O accessors for irq_fwd_mask
+Date: Tue, 29 Aug 2017 11:43:06 -0700
+Message-ID: <1504032187-53035-1-git-send-email-f.fainelli@gmail.com>
+Return-Path: <f.fainelli@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,82 +18,48 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Fredrik Noring <noring@nocrew.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20170829172441.77T_sWiRJNH4Ra78adcBVsxza0VQmCOYNVt9fR8CY1k@z>
+To: linux-kernel@vger.kernel.org
+Cc: opendmb@gmail.com, bcm-kernel-feedback-list@broadcom.com, Florian Fainelli <f.fainelli@gmail.com>, Kevin Cernekee <cernekee@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, "open list:BROADCOM BMIPS MIPS ARCHITECTURE" <linux-mips@linux-mips.org>
+Message-ID: <20170829184306.Vjb2T4m5uWjI1YdE44nqZBVVAxtM9fhrOAgspR5Ct4w@z>
 
-Hi Fredrik,
+Initialization of irq_fwd_mask was done using __raw_readl() which
+happens to work for all cases except when using ARM BE8 which requires
+readl() (with the proper swapping). Move the initialization of the
+irq_fwd_mask till later when we have correctly defined our I/O
+accessors.
 
- Thank you for your contribution.  As Ralf has noted your change looks 
-good overall.  I just have a couple of nits to address.  Please take them 
-into account with the next version of your change.
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/irqchip/irq-bcm7120-l2.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index 2828ecde133d..2a3592032861 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -1708,6 +1708,16 @@ config CPU_BMIPS
->  	help
->  	  Support for BMIPS32/3300/4350/4380 and BMIPS5000 processors.
->  
-> +config CPU_R5900
-> +	bool "R5900"
-> +	depends on SYS_HAS_CPU_R5900
-> +	select CPU_SUPPORTS_32BIT_KERNEL
-> +	select CPU_SUPPORTS_64BIT_KERNEL
-> +	select IRQ_MIPS_CPU
-> +	select CPU_HAS_WB
-
- Is there an external explicitly-driven write-back buffer there with the 
-R5900?  That would be odd with a MIPS III ISA processor, however if there 
-indeed is, then I think the CPU_HAS_WB setting needs to go along with the 
-code that implements `__wbflush' for this platform.
-
-> diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-> index 98f59307e6a3..f332aaa9e69b 100644
-> --- a/arch/mips/include/asm/cpu.h
-> +++ b/arch/mips/include/asm/cpu.h
-> @@ -326,6 +327,11 @@ enum cpu_type_enum {
->  
->  	CPU_QEMU_GENERIC,
->  
-> +	/*
-> +	 * Playstation 2 processors
-> +	 */
-> +	CPU_R5900,
-
- Shouldn't it go along with `R4000 class processors' earlier above?
-
-> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-> index 1aba27786bd5..b8bed9f26f8d 100644
-> --- a/arch/mips/kernel/cpu-probe.c
-> +++ b/arch/mips/kernel/cpu-probe.c
-> @@ -1518,6 +1518,16 @@ static inline void cpu_probe_legacy(struct cpuinfo_mips *c, unsigned int cpu)
->  		}
->  
->  		break;
-> +	case PRID_IMP_R5900:
-> +		c->cputype = CPU_R5900;
-> +		__cpu_name[cpu] = "R5900";
-> +		c->isa_level = MIPS_CPU_ISA_III;
-> +		c->tlbsize = 48;
-> +		c->options = MIPS_CPU_TLB | MIPS_CPU_4K_CACHE |
-> +			     MIPS_CPU_4KEX | MIPS_CPU_DIVEC |
-> +			     MIPS_CPU_FPU | MIPS_CPU_32FPR |
-> +			     MIPS_CPU_COUNTER;
-> +		break;
-
- If this is a MIPS III base ISA implementation, then presumably you need 
-to set `c->fpu_msk31' as well, to exclude FPU_CSR_CONDX bits introduced 
-with the MIPS IV ISA only.  Double-check with hardware documentation for 
-the details.
-
- If you don't have documentation, but you have the hardware at hand, then 
-you'll best check it yourself by writing a small user program that writes 
-to CP1.FCSR and checks which bits stick (of course you need to leave the 
-exception cause/mask bits alone for this check or you'll get SIGFPE sent 
-instead).
-
- Please let me know if you have any questions.
-
-  Maciej
+diff --git a/drivers/irqchip/irq-bcm7120-l2.c b/drivers/irqchip/irq-bcm7120-l2.c
+index 64c2692070ef..983640eba418 100644
+--- a/drivers/irqchip/irq-bcm7120-l2.c
++++ b/drivers/irqchip/irq-bcm7120-l2.c
+@@ -250,12 +250,6 @@ static int __init bcm7120_l2_intc_probe(struct device_node *dn,
+ 	if (ret < 0)
+ 		goto out_free_l1_data;
+ 
+-	for (idx = 0; idx < data->n_words; idx++) {
+-		__raw_writel(data->irq_fwd_mask[idx],
+-			     data->pair_base[idx] +
+-			     data->en_offset[idx]);
+-	}
+-
+ 	for (irq = 0; irq < data->num_parent_irqs; irq++) {
+ 		ret = bcm7120_l2_intc_init_one(dn, data, irq, valid_mask);
+ 		if (ret)
+@@ -297,6 +291,10 @@ static int __init bcm7120_l2_intc_probe(struct device_node *dn,
+ 		gc->reg_base = data->pair_base[idx];
+ 		ct->regs.mask = data->en_offset[idx];
+ 
++		/* gc->reg_base is defined and so is gc->writel */
++		irq_reg_writel(gc, data->irq_fwd_mask[idx],
++			       data->en_offset[idx]);
++
+ 		ct->chip.irq_mask = irq_gc_mask_clr_bit;
+ 		ct->chip.irq_unmask = irq_gc_mask_set_bit;
+ 		ct->chip.irq_ack = irq_gc_noop;
+-- 
+1.9.1

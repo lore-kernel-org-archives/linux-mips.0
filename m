@@ -1,14 +1,16 @@
-Received: from mail-wr0-x244.google.com ([IPv6:2a00:1450:400c:c0c::244]:35315
-        "EHLO mail-wr0-x244.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23995072AbdH2StloXU7H (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Aug 2017 20:49:41 +0200
-Received: by mail-wr0-x244.google.com with SMTP id a47so2848124wra.2
-        for <linux-mips@linux-mips.org>; Tue, 29 Aug 2017 11:49:41 -0700 (PDT)
-From: Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH] irqchip: irq-bcm7120-l2: Use correct I/O accessors for irq_fwd_mask
-Date: Tue, 29 Aug 2017 11:43:06 -0700
-Message-ID: <1504032187-53035-1-git-send-email-f.fainelli@gmail.com>
-Return-Path: <f.fainelli@gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:47040 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23995072AbdH2UGLG8x00 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Aug 2017 22:06:11 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] fixup: MIPS: CM: Use BIT/GENMASK for register fields, order & drop shifts
+Date: Tue, 29 Aug 2017 13:05:37 -0700
+Message-ID: <20170829200537.353-1-paul.burton@imgtec.com>
+In-Reply-To: <20170813024943.14989-4-paul.burton@imgtec.com>
+References: <20170813024943.14989-4-paul.burton@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,48 +20,48 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: opendmb@gmail.com, bcm-kernel-feedback-list@broadcom.com, Florian Fainelli <f.fainelli@gmail.com>, Kevin Cernekee <cernekee@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, "open list:BROADCOM BMIPS MIPS ARCHITECTURE" <linux-mips@linux-mips.org>
-Message-ID: <20170829184306.Vjb2T4m5uWjI1YdE44nqZBVVAxtM9fhrOAgspR5Ct4w@z>
+To: linux-mips@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20170829200537.KyfWq89WtCaIncA_UpJT6CSDdpiyIwevplTH0Iofjhs@z>
 
-Initialization of irq_fwd_mask was done using __raw_readl() which
-happens to work for all cases except when using ARM BE8 which requires
-readl() (with the proper swapping). Move the initialization of the
-irq_fwd_mask till later when we have correctly defined our I/O
-accessors.
+This patch fixes an incorrectly fixed up use of __ffs() on a 64 bit
+integer, and a missed usage of CM_GCR_GIC_STATUS_GICEX.
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Fixes: 4f1f490f010b ("MIPS: CM: Use BIT/GENMASK for register fields, order & drop shifts")
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
 ---
- drivers/irqchip/irq-bcm7120-l2.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/irqchip/irq-bcm7120-l2.c b/drivers/irqchip/irq-bcm7120-l2.c
-index 64c2692070ef..983640eba418 100644
---- a/drivers/irqchip/irq-bcm7120-l2.c
-+++ b/drivers/irqchip/irq-bcm7120-l2.c
-@@ -250,12 +250,6 @@ static int __init bcm7120_l2_intc_probe(struct device_node *dn,
- 	if (ret < 0)
- 		goto out_free_l1_data;
+ arch/mips/kernel/mips-cm.c         | 2 +-
+ arch/mips/mti-malta/malta-dtshim.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
+index b0d670af5cb1..e91c8c4e2eb5 100644
+--- a/arch/mips/kernel/mips-cm.c
++++ b/arch/mips/kernel/mips-cm.c
+@@ -391,7 +391,7 @@ void mips_cm_error_report(void)
+ 		ulong core_id_bits, vp_id_bits, cmd_bits, cmd_group_bits;
+ 		ulong cm3_cca_bits, mcp_bits, cm3_tr_bits, sched_bit;
  
--	for (idx = 0; idx < data->n_words; idx++) {
--		__raw_writel(data->irq_fwd_mask[idx],
--			     data->pair_base[idx] +
--			     data->en_offset[idx]);
--	}
--
- 	for (irq = 0; irq < data->num_parent_irqs; irq++) {
- 		ret = bcm7120_l2_intc_init_one(dn, data, irq, valid_mask);
- 		if (ret)
-@@ -297,6 +291,10 @@ static int __init bcm7120_l2_intc_probe(struct device_node *dn,
- 		gc->reg_base = data->pair_base[idx];
- 		ct->regs.mask = data->en_offset[idx];
+-		cause = cm_error >> __ffs(CM3_GCR_ERROR_CAUSE_ERRTYPE);
++		cause = cm_error >> __ffs64(CM3_GCR_ERROR_CAUSE_ERRTYPE);
+ 		ocause = cm_other >> __ffs(CM_GCR_ERROR_MULT_ERR2ND);
  
-+		/* gc->reg_base is defined and so is gc->writel */
-+		irq_reg_writel(gc, data->irq_fwd_mask[idx],
-+			       data->en_offset[idx]);
-+
- 		ct->chip.irq_mask = irq_gc_mask_clr_bit;
- 		ct->chip.irq_unmask = irq_gc_mask_set_bit;
- 		ct->chip.irq_ack = irq_gc_noop;
+ 		if (!cause)
+diff --git a/arch/mips/mti-malta/malta-dtshim.c b/arch/mips/mti-malta/malta-dtshim.c
+index 59a723d9a95a..361f7c146b75 100644
+--- a/arch/mips/mti-malta/malta-dtshim.c
++++ b/arch/mips/mti-malta/malta-dtshim.c
+@@ -236,7 +236,7 @@ static void __init remove_gic(void *fdt)
+ 
+ 	/* if we have a CM which reports a GIC is present, leave the DT alone */
+ 	err = mips_cm_probe();
+-	if (!err && (read_gcr_gic_status() & CM_GCR_GIC_STATUS_GICEX))
++	if (!err && (read_gcr_gic_status() & CM_GCR_GIC_STATUS_EX))
+ 		return;
+ 
+ 	if (malta_scon() == MIPS_REVISION_SCON_ROCIT) {
 -- 
-1.9.1
+2.14.1

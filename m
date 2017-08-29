@@ -1,17 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:16163 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:30324 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23995045AbdH2Qoev5wZr (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Aug 2017 18:44:34 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH 11/11] MIPS: Declare various variables & functions static
-Date: Tue, 29 Aug 2017 09:44:16 -0700
-Message-ID: <5605804.ME68hyheDo@np-p-burton>
-In-Reply-To: <787b1a5b-2e77-41cc-235f-6dfd882b225a@imgtec.com>
-References: <20170823181754.24044-1-paul.burton@imgtec.com> <20170823181754.24044-12-paul.burton@imgtec.com> <787b1a5b-2e77-41cc-235f-6dfd882b225a@imgtec.com>
+        with ESMTP id S23995045AbdH2RY6lp01U (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 29 Aug 2017 19:24:58 +0200
+Date: Tue, 29 Aug 2017 18:24:41 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH] MIPS: Add basic R5900 support
+In-Reply-To: <20170827132309.GA32166@localhost.localdomain>
+Message-ID: <alpine.DEB.2.00.1708271511430.17596@tp.orcam.me.uk>
+References: <20170827132309.GA32166@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart6469676.7gjBOIDVV2";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,159 +20,82 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Marcin Nowakowski <marcin.nowakowski@imgtec.com>, ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org, trivial@kernel.org
-Message-ID: <20170829164416.vTG4GU7b66PFI535KzV9u3GagZXOODrd5OsWahesB1o@z>
+To: Fredrik Noring <noring@nocrew.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20170829172441.77T_sWiRJNH4Ra78adcBVsxza0VQmCOYNVt9fR8CY1k@z>
 
---nextPart6469676.7gjBOIDVV2
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Hi Fredrik,
 
-Hi Marcin,
+ Thank you for your contribution.  As Ralf has noted your change looks 
+good overall.  I just have a couple of nits to address.  Please take them 
+into account with the next version of your change.
 
-On Tuesday, 29 August 2017 03:05:55 PDT Marcin Nowakowski wrote:
-> On 23.08.2017 20:17, Paul Burton wrote:
-> > We currently have various variables & functions which are only used
-> > within a single translation unit, but which we don't declare static.
-> >=20
-> > This causes various sparse warnings of the form:
-> >    arch/mips/kernel/mips-r2-to-r6-emul.c:49:1: warning: symbol
-> >   =20
-> >      'mipsr2emustats' was not declared. Should it be static?
-> >   =20
-> >    arch/mips/kernel/unaligned.c:1381:11: warning: symbol 'reg16to32st'
-> >   =20
-> >      was not declared. Should it be static?
-> >   =20
-> >    arch/mips/mm/mmap.c:146:15: warning: symbol 'arch_mmap_rnd' was not
-> >   =20
-> >      declared. Should it be static?
-> >=20
-> > Fix these & others by declaring various affected variables & functions
-> > static, avoiding the sparse warnings & redundant symbols.
-> >=20
-> > Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > Cc: linux-mips@linux-mips.org
-> >=20
-> > ---
-> >=20
-> >   arch/mips/kernel/cpu-probe.c          | 2 +-
-> >   arch/mips/kernel/mips-r2-to-r6-emul.c | 6 +++---
-> >   arch/mips/kernel/pm-cps.c             | 2 +-
-> >   arch/mips/kernel/unaligned.c          | 2 +-
-> >   arch/mips/mm/dma-default.c            | 4 ++--
-> >   5 files changed, 8 insertions(+), 8 deletions(-)
-> >=20
-> > diff --git a/arch/mips/kernel/mips-r2-to-r6-emul.c
-> > b/arch/mips/kernel/mips-r2-to-r6-emul.c index ae64c8f56a8c..ac23b4f09f02
-> > 100644
-> > --- a/arch/mips/kernel/mips-r2-to-r6-emul.c
-> > +++ b/arch/mips/kernel/mips-r2-to-r6-emul.c
-> > @@ -46,9 +46,9 @@
-> >=20
-> >   #define LL	"ll "
-> >   #define SC	"sc "
-> >=20
-> > -DEFINE_PER_CPU(struct mips_r2_emulator_stats, mipsr2emustats);
-> > -DEFINE_PER_CPU(struct mips_r2_emulator_stats, mipsr2bdemustats);
-> > -DEFINE_PER_CPU(struct mips_r2br_emulator_stats, mipsr2bremustats);
-> > +static DEFINE_PER_CPU(struct mips_r2_emulator_stats, mipsr2emustats);
-> > +static DEFINE_PER_CPU(struct mips_r2_emulator_stats, mipsr2bdemustats);
-> > +static DEFINE_PER_CPU(struct mips_r2br_emulator_stats, mipsr2bremustat=
-s);
->=20
-> This leads to the following:
-> ../arch/mips/kernel/mips-r2-to-r6-emul.c:51:56: error:
-> =E2=80=98mipsr2bremustats=E2=80=99 defined but not used [-Werror=3Dunused=
-=2Dvariable]
->   static DEFINE_PER_CPU(struct mips_r2br_emulator_stats, mipsr2bremustats=
-);
->                                                          ^
-> ../include/linux/percpu-defs.h:105:19: note: in definition of macro
-> =E2=80=98DEFINE_PER_CPU_SECTION=E2=80=99
->    __typeof__(type) name
->                     ^~~~
-> ../arch/mips/kernel/mips-r2-to-r6-emul.c:51:8: note: in expansion of
-> macro =E2=80=98DEFINE_PER_CPU=E2=80=99
->   static DEFINE_PER_CPU(struct mips_r2br_emulator_stats, mipsr2bremustats=
-);
->          ^~~~~~~~~~~~~~
-> ../arch/mips/kernel/mips-r2-to-r6-emul.c:50:54: error:
-> =E2=80=98mipsr2bdemustats=E2=80=99 defined but not used [-Werror=3Dunused=
-=2Dvariable]
->   static DEFINE_PER_CPU(struct mips_r2_emulator_stats, mipsr2bdemustats);
->                                                        ^
-> ../include/linux/percpu-defs.h:105:19: note: in definition of macro
-> =E2=80=98DEFINE_PER_CPU_SECTION=E2=80=99
->    __typeof__(type) name
->                     ^~~~
-> ../arch/mips/kernel/mips-r2-to-r6-emul.c:50:8: note: in expansion of
-> macro =E2=80=98DEFINE_PER_CPU=E2=80=99
->   static DEFINE_PER_CPU(struct mips_r2_emulator_stats, mipsr2bdemustats);
->          ^~~~~~~~~~~~~~
-> ../arch/mips/kernel/mips-r2-to-r6-emul.c:49:54: error: =E2=80=98mipsr2emu=
-stats=E2=80=99
-> defined but not used [-Werror=3Dunused-variable]
->   static DEFINE_PER_CPU(struct mips_r2_emulator_stats, mipsr2emustats);
->                                                        ^
-> ../include/linux/percpu-defs.h:105:19: note: in definition of macro
-> =E2=80=98DEFINE_PER_CPU_SECTION=E2=80=99
->    __typeof__(type) name
->                     ^~~~
-> ../arch/mips/kernel/mips-r2-to-r6-emul.c:49:8: note: in expansion of
-> macro =E2=80=98DEFINE_PER_CPU=E2=80=99
->   static DEFINE_PER_CPU(struct mips_r2_emulator_stats, mipsr2emustats);
->=20
->=20
-> when CONFIG_DEBUG_FS=3Dn (eg. malta_qemu_32r6_defconfig)
->=20
-> Since these are not used without DEBUG_FS then I guess the following
-> patch should be ok:
->=20
-> diff --git a/arch/mips/kernel/mips-r2-to-r6-emul.c
-> b/arch/mips/kernel/mips-r2-to-r6-emul.c
-> index 3bd721c..eb18b18 100644
-> --- a/arch/mips/kernel/mips-r2-to-r6-emul.c
-> +++ b/arch/mips/kernel/mips-r2-to-r6-emul.c
-> @@ -46,9 +46,11 @@
->   #define LL     "ll "
->   #define SC     "sc "
->=20
-> +#ifdef CONFIG_DEBUG_FS
->   static DEFINE_PER_CPU(struct mips_r2_emulator_stats, mipsr2emustats);
->   static DEFINE_PER_CPU(struct mips_r2_emulator_stats, mipsr2bdemustats);
->   static DEFINE_PER_CPU(struct mips_r2br_emulator_stats, mipsr2bremustats=
-);
-> +#endif
->=20
-> if you're OK with it then I guess it may be best for Ralf to fold this
-> change into your patch?
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 2828ecde133d..2a3592032861 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -1708,6 +1708,16 @@ config CPU_BMIPS
+>  	help
+>  	  Support for BMIPS32/3300/4350/4380 and BMIPS5000 processors.
+>  
+> +config CPU_R5900
+> +	bool "R5900"
+> +	depends on SYS_HAS_CPU_R5900
+> +	select CPU_SUPPORTS_32BIT_KERNEL
+> +	select CPU_SUPPORTS_64BIT_KERNEL
+> +	select IRQ_MIPS_CPU
+> +	select CPU_HAS_WB
 
-D'oh! That looks like a reasonable fix to me - could you fold it in Ralf?
+ Is there an external explicitly-driven write-back buffer there with the 
+R5900?  That would be odd with a MIPS III ISA processor, however if there 
+indeed is, then I think the CPU_HAS_WB setting needs to go along with the 
+code that implements `__wbflush' for this platform.
 
-Thanks,
-    Paul
---nextPart6469676.7gjBOIDVV2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+> diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+> index 98f59307e6a3..f332aaa9e69b 100644
+> --- a/arch/mips/include/asm/cpu.h
+> +++ b/arch/mips/include/asm/cpu.h
+> @@ -326,6 +327,11 @@ enum cpu_type_enum {
+>  
+>  	CPU_QEMU_GENERIC,
+>  
+> +	/*
+> +	 * Playstation 2 processors
+> +	 */
+> +	CPU_R5900,
 
------BEGIN PGP SIGNATURE-----
+ Shouldn't it go along with `R4000 class processors' earlier above?
 
-iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAlmlmeAACgkQgiDZ+mk8
-HGWiGRAAoSy3SHIVEPBVr1M7ema/j75zOxxo0BWIOt3vUSESKs5zTrrMfrs07cYJ
-N4xdZBcEsAAu03d1f219asw9D9LuSR9nt2oVULynDOow3kUVc1PnavE3KGRKjBhO
-xCzZw8alZsDn44OgedyxeVKNRm59U/BVzhHrsZd/fJxlXiegkM56bDRW5QG+6acF
-8RkWhEuuMPj+I8O8X3AduJeQqn+jRk5wVGzWNZaXpcF7YmCBu8raOP0jxc20J43P
-n5SqoJDgJkxMS68L6bR4QgdqOhofhbke6zHf4qnNN75af8kRNcRf2CBRctM1XIbw
-8Pe0Ab2LpniVD81l+CJXEdHbsawmzKX51ZKLpmJ0a6F/Ikje6MxPNPvLJfrPmY5N
-wXT4afwZUDj9pM1e2SKo6esvGl89on8SGKPrrEnwmVOop34bhWtHMPgpxVtR+cCj
-xKAqSsPmqdODIQDAaCkXuIVn5KmGIbOl8sY+Av5Qx831FCmyPd3gn9yBIpPtX+bN
-FmNi8ybNVuCZYSnP6ce2Ffhtoz/TgGXgldFYB1f33eYZI4r1jakz0dyn+gMFLKul
-p5AMBahMTd7IQh8MTGv1p+ZGEa8RYITQb9jbFjgyPKqo6TWGEVGjQfYYvUkYdoxC
-Z0jrCNcSJ6lPSFA902whDL8lXwFLP8IcUdZ/k29zQ7mU7OBJGLQ=
-=X/Jl
------END PGP SIGNATURE-----
+> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+> index 1aba27786bd5..b8bed9f26f8d 100644
+> --- a/arch/mips/kernel/cpu-probe.c
+> +++ b/arch/mips/kernel/cpu-probe.c
+> @@ -1518,6 +1518,16 @@ static inline void cpu_probe_legacy(struct cpuinfo_mips *c, unsigned int cpu)
+>  		}
+>  
+>  		break;
+> +	case PRID_IMP_R5900:
+> +		c->cputype = CPU_R5900;
+> +		__cpu_name[cpu] = "R5900";
+> +		c->isa_level = MIPS_CPU_ISA_III;
+> +		c->tlbsize = 48;
+> +		c->options = MIPS_CPU_TLB | MIPS_CPU_4K_CACHE |
+> +			     MIPS_CPU_4KEX | MIPS_CPU_DIVEC |
+> +			     MIPS_CPU_FPU | MIPS_CPU_32FPR |
+> +			     MIPS_CPU_COUNTER;
+> +		break;
 
---nextPart6469676.7gjBOIDVV2--
+ If this is a MIPS III base ISA implementation, then presumably you need 
+to set `c->fpu_msk31' as well, to exclude FPU_CSR_CONDX bits introduced 
+with the MIPS IV ISA only.  Double-check with hardware documentation for 
+the details.
+
+ If you don't have documentation, but you have the hardware at hand, then 
+you'll best check it yourself by writing a small user program that writes 
+to CP1.FCSR and checks which bits stick (of course you need to leave the 
+exception cause/mask bits alone for this check or you'll get SIGFPE sent 
+instead).
+
+ Please let me know if you have any questions.
+
+  Maciej

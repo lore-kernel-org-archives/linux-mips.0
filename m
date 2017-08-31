@@ -1,22 +1,16 @@
-Received: from mail-wm0-x243.google.com ([IPv6:2a00:1450:400c:c09::243]:37686
-        "EHLO mail-wm0-x243.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994821AbdHaAgtCAhbj (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 31 Aug 2017 02:36:49 +0200
-Received: by mail-wm0-x243.google.com with SMTP id x189so3358889wmg.4
-        for <linux-mips@linux-mips.org>; Wed, 30 Aug 2017 17:36:49 -0700 (PDT)
-Subject: Re: [PATCH] irqchip: irq-bcm7120-l2: Use correct I/O accessors for
- irq_fwd_mask
-References: <1504032187-53035-1-git-send-email-f.fainelli@gmail.com>
- <2c52e192-9cb2-0e53-ddc2-23e25d1ae5bc@arm.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <6344fffc-4125-a3b9-ce96-741f4d8becfb@gmail.com>
-Date: Wed, 30 Aug 2017 17:36:29 -0700
+Received: from mailapp01.imgtec.com ([195.59.15.196]:49639 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993898AbdHaPMIngVm1 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 31 Aug 2017 17:12:08 +0200
+Date: Thu, 31 Aug 2017 16:11:53 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH] MIPS: Add basic R5900 support
+In-Reply-To: <20170830132350.GA2110@localhost.localdomain>
+Message-ID: <alpine.DEB.2.00.1708311259220.17596@tp.orcam.me.uk>
+References: <20170827132309.GA32166@localhost.localdomain> <alpine.DEB.2.00.1708271511430.17596@tp.orcam.me.uk> <20170830132350.GA2110@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <2c52e192-9cb2-0e53-ddc2-23e25d1ae5bc@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <f.fainelli@gmail.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,18 +20,79 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Marc Zyngier <marc.zyngier@arm.com>, linux-kernel@vger.kernel.org
-Cc: opendmb@gmail.com, bcm-kernel-feedback-list@broadcom.com, Kevin Cernekee <cernekee@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, "open list:BROADCOM BMIPS MIPS ARCHITECTURE" <linux-mips@linux-mips.org>
-Message-ID: <20170831003629._TusuYJ1puoTY1UPbpAhb3kXbm-vPbmRR_PX-4Ll8No@z>
+To: Fredrik Noring <noring@nocrew.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20170831151153.W-IAZDhOt6Zv_bSxr_rEcC0mf_9QkyPvrl74Y5CUXpQ@z>
 
-On 08/30/2017 03:48 AM, Marc Zyngier wrote:
-> On 29/08/17 19:43, Florian Fainelli wrote:
->> Initialization of irq_fwd_mask was done using __raw_readl() which
->> happens to work for all cases except when using ARM BE8 which requires
->> readl() (with the proper swapping). Move the initialization of the
+Hi Fredrik,
+
+> >  Is there an external explicitly-driven write-back buffer there with the 
+> > R5900?  That would be odd with a MIPS III ISA processor, however if there 
+> > indeed is, then I think the CPU_HAS_WB setting needs to go along with the 
+> > code that implements `__wbflush' for this platform.
 > 
-> s/readl/writel/, I presume?
+> The C790 block diagram contains a WBB connected to the BIU bus (p. 2-2) in the
+> "TX System RISC TX79 Core Architecture" manual:
+> 
+>     The Writeback Buffer (WBB) is an 8 entry by 16 byte (one quadword) FIFO
+>     queuing up stores prior to accessing the CPU bus. It increases C790
+>     performance by decoupling the processor from the latencies of the CPU bus.
+>     It is also used during the gathering operation of uncached accelerated
+>     stores; sequential stores less than a quadword in length are gathered in
+>     the WBB, thereby reducing bus bandwidth usage. (p. 2-4)
 
-Correct, just submitted a v2 with that fixed, thanks.
--- 
-Florian
+ That's no different though from the write-back buffer the R4400 CPU has, 
+as do many more modern MIPS architecture implementations, with strong bus 
+(and hence memory) ordering enforced by the SYNC instruction.  In that 
+case a lone SYNC instruction is sufficient as the implementation of the 
+`wmb', `rmb' and `mb' memory ordering barrier operations.
+
+> __wbflush is implemented in arch/mips/ps2/setup.c:193 in the remaining patch
+> (link below):
+> 
+> static void ps2_wbflush(void)
+> {
+> 	__asm__ __volatile__("sync.l":::"memory");
+> 
+> 	/* flush write buffer to bus */
+> 	inl(ps2sif_bustophys(0));
+> }
+> 
+> https://github.com/frno7/linux/blob/ps2-v4.12-squashed/arch/mips/ps2/setup.c#L193
+> 
+> Then ps2sif_bustophys is implemented in arch/mips/ps2/iopheap.c:
+> 
+> phys_addr_t ps2sif_bustophys(dma_addr_t a)
+> {
+> 	return(a + PS2_IOP_HEAP_BASE);
+> }
+> 
+> which in turn uses
+> 
+> #define PS2_IOP_HEAP_BASE 0x1c000000
+> 
+> from arch/mips/include/asm/mach-ps2/ps2.h. Would you like to move this code
+> somewhere else to go along with the declaration of CPU_HAS_WB?
+
+ This looks to me like a completion barrier, rather than a bus ordering 
+barrier that would require a special `__wbflush' implementation.  Here 
+SYNC.L (which is BTW an assembly idiom for plain SYNC) enforces strong 
+ordering, acting as `mb' as per the architecture requirement, and the 
+following read back causes all the outstanding bus accesses to retire 
+beforehand, acting as a completion barrier.
+
+ So I think this `ps2_wbflush' completion barrier should be used as the 
+implementation of `mmiowb', or (suspecting that with SYNC already in the 
+picture it would be too strong for this platform, unless the chipset can 
+do further write merging or reordering) perhaps just `iob', or a more 
+general `iobarrier_sync' operation I have outlined here:
+
+<https://marc.info/?l=linux-kernel&m=139868504324701&w=2>
+
+(but never got to implementing).  In that case you don't need to select 
+CPU_HAS_WB, as the platform does not have a write-back buffer that would 
+require special handling for bus ordering purposes.
+
+ Let me know if you have any questions or comments.
+
+  Maciej

@@ -1,20 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:42464 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993877AbdH3Kt0sL5KP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 30 Aug 2017 12:49:26 +0200
-Subject: Re: Maintenance of Linux/MIPS?
-References: <c96eaa42-ab7f-d902-746c-c6cff242c596@gmail.com>
- <1539189.Q9sWsqvfCA@np-p-burton>
- <5e78f983-04fd-0357-c580-1438cdf1bc27@caviumnetworks.com>
-From: Matt Redfearn <matt.redfearn@imgtec.com>
-Message-ID: <33db77a2-32e4-6b2c-d463-9d116ba55623@imgtec.com>
-Date: Wed, 30 Aug 2017 11:49:18 +0100
-MIME-Version: 1.0
-In-Reply-To: <5e78f983-04fd-0357-c580-1438cdf1bc27@caviumnetworks.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-Return-Path: <Matt.Redfearn@imgtec.com>
+Received: from mail-qk0-x244.google.com ([IPv6:2607:f8b0:400d:c09::244]:34832
+        "EHLO mail-qk0-x244.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23994822AbdHaAfXajk-j (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 31 Aug 2017 02:35:23 +0200
+Received: by mail-qk0-x244.google.com with SMTP id p67so6486380qkd.2
+        for <linux-mips@linux-mips.org>; Wed, 30 Aug 2017 17:35:23 -0700 (PDT)
+From: Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH v2] irqchip: irq-bcm7120-l2: Use correct I/O accessors for irq_fwd_mask
+Date: Wed, 30 Aug 2017 17:29:16 -0700
+Message-ID: <1504139356-1052-1-git-send-email-f.fainelli@gmail.com>
+Return-Path: <f.fainelli@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,76 +18,52 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney@caviumnetworks.com>, Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org, Florian Fainelli <f.fainelli@gmail.com>, ralf@linux-mips.org
-Cc: john@phrozen.org, david.daney@cavium.com, James Hogan <james.hogan@imgtec.com>
-Message-ID: <20170830104918.ojfFgTD-9J2F4eMcgqmMQW1ebaGOlM8c8VFyappmGrs@z>
+To: linux-kernel@vger.kernel.org
+Cc: Florian Fainelli <f.fainelli@gmail.com>, Kevin Cernekee <cernekee@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, "open list:BROADCOM BMIPS MIPS ARCHITECTURE" <linux-mips@linux-mips.org>
+Message-ID: <20170831002916.Zz4RgotPzlxoBULop3eMwHon49UEr62TLJgUT_DgPlo@z>
 
+Initialization of irq_fwd_mask was done using __raw_writel() which
+happens to work for all cases except when using ARM BE8 which requires
+writel() (with the proper swapping). Move the initialization of the
+irq_fwd_mask till later when we have correctly defined our I/O
+accessors.
 
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+Changes in v2:
 
-On 26/08/17 00:14, David Daney wrote:
-> On 08/25/2017 04:07 PM, Paul Burton wrote:
->> Hello,
->>
->> On Friday, 25 August 2017 14:21:33 PDT Florian Fainelli wrote:
->>> Hi,
->>>
->>> There are a lot of patches at
->>> https://patchwork.linux-mips.org/project/linux-mips/list/ that 
->>> appear to
->>> be under the "New" state and have not had a chance to be reviewed yet.
->>>
->>> What can we do to help speed up the review process, do we need more
->>> reviewers? It seems like most patches affecting Linux/MIPS are still
->>> core MIPS kernel changes, but would it help if say, people were queuing
->>> SoC/board specific patches in trees and submit pull requests? Would 
->>> that
->>> help lower the amount of patches to review?
->>>
->>> Any other suggestion?
->>>
->>> Thanks!
->>
->> Personally I think it'd probably be good if Ralf were willing to 
->> formally
->> share maintainership duties with someone else or a group of people. I 
->> think
->> James for example would be a great choice, and already dons a 
->> maintainer hat.
->
-> FWIW, I agree.  James has a lot of experience here and has served as 
-> maintainer when Ralf was away in the past.  Making him a permanent 
-> co-maintainer, or similar, with the explicit mandate of getting 
-> patches upstream to Linus, would be beneficial to all who rely on the 
-> MIPS Linux kernel.
->
-> David.
+- corrected readl vs. writel in commit subject, spotted by Marc
 
-I'd add my vote to having James as a co-maintainer, which should help 
-lower the burden on Ralf and hopefully lead to a faster 
-time-to-upstream, as currently quite a few series have required 
-respinning simply because the kernel has moved on while they wait and 
-the patches have bitrotted.
+ drivers/irqchip/irq-bcm7120-l2.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-Matt
-
->
->
->
->>
->> As-is Ralf ends up being a bottleneck a lot of the time, and the 
->> backlog in
->> patchwork is pretty good evidence of that. There are a whole lot of 
->> patches
->> that ought to be going into v4.14, and that ought to be sat in 
->> linux-next
->> right now in preparation for that. Sadly not many of them are, and 
->> usually
->> that remains the case until very close to the merge window. Sharing 
->> the load
->> could only help with this.
->>
->> Thanks,
->>      Paul
->>
->
->
+diff --git a/drivers/irqchip/irq-bcm7120-l2.c b/drivers/irqchip/irq-bcm7120-l2.c
+index 64c2692070ef..983640eba418 100644
+--- a/drivers/irqchip/irq-bcm7120-l2.c
++++ b/drivers/irqchip/irq-bcm7120-l2.c
+@@ -250,12 +250,6 @@ static int __init bcm7120_l2_intc_probe(struct device_node *dn,
+ 	if (ret < 0)
+ 		goto out_free_l1_data;
+ 
+-	for (idx = 0; idx < data->n_words; idx++) {
+-		__raw_writel(data->irq_fwd_mask[idx],
+-			     data->pair_base[idx] +
+-			     data->en_offset[idx]);
+-	}
+-
+ 	for (irq = 0; irq < data->num_parent_irqs; irq++) {
+ 		ret = bcm7120_l2_intc_init_one(dn, data, irq, valid_mask);
+ 		if (ret)
+@@ -297,6 +291,10 @@ static int __init bcm7120_l2_intc_probe(struct device_node *dn,
+ 		gc->reg_base = data->pair_base[idx];
+ 		ct->regs.mask = data->en_offset[idx];
+ 
++		/* gc->reg_base is defined and so is gc->writel */
++		irq_reg_writel(gc, data->irq_fwd_mask[idx],
++			       data->en_offset[idx]);
++
+ 		ct->chip.irq_mask = irq_gc_mask_clr_bit;
+ 		ct->chip.irq_unmask = irq_gc_mask_set_bit;
+ 		ct->chip.irq_ack = irq_gc_noop;
+-- 
+1.9.1

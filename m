@@ -1,13 +1,14 @@
-Received: from heliosphere.sirena.org.uk ([IPv6:2a01:7e01::f03c:91ff:fed4:a3b6]:40656
-        "EHLO heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991615AbdIAKrixWw0Q (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 1 Sep 2017 12:47:38 +0200
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "spi: spi-falcon: drop check of boot select" to the spi tree
-In-Reply-To: <20170417192942.32219-4-hauke@hauke-m.de>
-Message-ID: <E1dnjTy-0006AD-Ox@debutante>
-Date: Fri, 01 Sep 2017 11:47:26 +0100
-Return-Path: <broonie@sirena.org.uk>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:62089 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993907AbdIAOxQYI1aD (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 1 Sep 2017 16:53:16 +0200
+From: Harvey Hunt <harvey.hunt@imgtec.com>
+Subject: [PATCH] MIPS: mt7620: Rename uartlite to serial
+Date: Fri, 1 Sep 2017 15:53:04 +0100
+Message-ID: <1504277584-37794-1-git-send-email-harvey.hunt@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <Harvey.Hunt@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -17,33 +18,113 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.orgMark Brown <broonie@kernel.org>, ralf@linux-mips.org, linux-mips@linux-mips.org, linux-mtd@lists.infradead.org, linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, martin.blumenstingl@googlemail.com, john@phrozen.orglinux-spi@vger.kernel.org, hauke.mehrtens@intel.comlinux-spi@vger.kernel.org
-Message-ID: <20170901104726.70r-adHc6ppmwA-oRqY_cl5yg6qFk6rZdyxR6LOWZiM@z>
+To: harvey.hunt@imgtec.com, robh+dt@kernel.org, mark.rutland@arm.com, ralf@linux-mips.org, john@phrozen.org
+Cc: matt.redfearn@imgtec.com, devicetree@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20170901145304.PeYqtgGNpkva8f-OjdvfpAiHPxjCKUSMhw64ZgbNcow@z>
 
-The patch
+Previously, mt7620.c defined the clocks for uarts with the names
+uartlite, uart1 and uart2. Rename them to serial{0,1,2} and update
+the devicetree node names.
 
-   spi: spi-falcon: drop check of boot select
+Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
+Cc: devicetree@vger.kernel.org
+Cc: linux-mips@linux-mips.org
+Cc: linux-kernel@vger.kernel.org
+---
+ arch/mips/boot/dts/ralink/mt7620a.dtsi |  2 +-
+ arch/mips/boot/dts/ralink/mt7628a.dtsi |  6 +++---
+ arch/mips/ralink/mt7620.c              | 14 +++++++-------
+ 3 files changed, 11 insertions(+), 11 deletions(-)
 
-has been applied to the spi tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/arch/mips/boot/dts/ralink/mt7620a.dtsi b/arch/mips/boot/dts/ralink/mt7620a.dtsi
+index 793c0c7..58bd002 100644
+--- a/arch/mips/boot/dts/ralink/mt7620a.dtsi
++++ b/arch/mips/boot/dts/ralink/mt7620a.dtsi
+@@ -45,7 +45,7 @@
+ 			reg = <0x300 0x100>;
+ 		};
+ 
+-		uartlite@c00 {
++		serial0@c00 {
+ 			compatible = "ralink,mt7620a-uart", "ralink,rt2880-uart", "ns16550a";
+ 			reg = <0xc00 0x100>;
+ 
+diff --git a/arch/mips/boot/dts/ralink/mt7628a.dtsi b/arch/mips/boot/dts/ralink/mt7628a.dtsi
+index 9ff7e8f..fe3fe9a 100644
+--- a/arch/mips/boot/dts/ralink/mt7628a.dtsi
++++ b/arch/mips/boot/dts/ralink/mt7628a.dtsi
+@@ -62,7 +62,7 @@
+ 			reg = <0x300 0x100>;
+ 		};
+ 
+-		uart0: uartlite@c00 {
++		uart0: serial0@c00 {
+ 			compatible = "ns16550a";
+ 			reg = <0xc00 0x100>;
+ 
+@@ -75,7 +75,7 @@
+ 			reg-shift = <2>;
+ 		};
+ 
+-		uart1: uart1@d00 {
++		uart1: serial1@d00 {
+ 			compatible = "ns16550a";
+ 			reg = <0xd00 0x100>;
+ 
+@@ -88,7 +88,7 @@
+ 			reg-shift = <2>;
+ 		};
+ 
+-		uart2: uart2@e00 {
++		uart2: serial2@e00 {
+ 			compatible = "ns16550a";
+ 			reg = <0xe00 0x100>;
+ 
+diff --git a/arch/mips/ralink/mt7620.c b/arch/mips/ralink/mt7620.c
+index 9be8b08..f623ceb 100644
+--- a/arch/mips/ralink/mt7620.c
++++ b/arch/mips/ralink/mt7620.c
+@@ -54,7 +54,7 @@ static int dram_type;
+ 
+ static struct rt2880_pmx_func i2c_grp[] =  { FUNC("i2c", 0, 1, 2) };
+ static struct rt2880_pmx_func spi_grp[] = { FUNC("spi", 0, 3, 4) };
+-static struct rt2880_pmx_func uartlite_grp[] = { FUNC("uartlite", 0, 15, 2) };
++static struct rt2880_pmx_func serial_grp[] = { FUNC("serial", 0, 15, 2) };
+ static struct rt2880_pmx_func mdio_grp[] = {
+ 	FUNC("mdio", MT7620_GPIO_MODE_MDIO, 22, 2),
+ 	FUNC("refclk", MT7620_GPIO_MODE_MDIO_REFCLK, 22, 2),
+@@ -92,7 +92,7 @@ static struct rt2880_pmx_group mt7620a_pinmux_data[] = {
+ 	GRP("uartf", uartf_grp, MT7620_GPIO_MODE_UART0_MASK,
+ 		MT7620_GPIO_MODE_UART0_SHIFT),
+ 	GRP("spi", spi_grp, 1, MT7620_GPIO_MODE_SPI),
+-	GRP("uartlite", uartlite_grp, 1, MT7620_GPIO_MODE_UART1),
++	GRP("serial", serial_grp, 1, MT7620_GPIO_MODE_UART1),
+ 	GRP_G("wdt", wdt_grp, MT7620_GPIO_MODE_WDT_MASK,
+ 		MT7620_GPIO_MODE_WDT_GPIO, MT7620_GPIO_MODE_WDT_SHIFT),
+ 	GRP_G("mdio", mdio_grp, MT7620_GPIO_MODE_MDIO_MASK,
+@@ -530,8 +530,8 @@ void __init ralink_clk_init(void)
+ 		periph_rate = MHZ(40);
+ 		pcmi2s_rate = MHZ(480);
+ 
+-		ralink_clk_add("10000d00.uartlite", periph_rate);
+-		ralink_clk_add("10000e00.uartlite", periph_rate);
++		ralink_clk_add("10000d00.serial0", periph_rate);
++		ralink_clk_add("10000e00.serial0", periph_rate);
+ 	} else {
+ 		cpu_pll_rate = mt7620_get_cpu_pll_rate(xtal_rate);
+ 		pll_rate = mt7620_get_pll_rate(xtal_rate, cpu_pll_rate);
+@@ -566,9 +566,9 @@ void __init ralink_clk_init(void)
+ 	ralink_clk_add("10000a00.i2s", pcmi2s_rate);
+ 	ralink_clk_add("10000b00.spi", sys_rate);
+ 	ralink_clk_add("10000b40.spi", sys_rate);
+-	ralink_clk_add("10000c00.uartlite", periph_rate);
+-	ralink_clk_add("10000d00.uart1", periph_rate);
+-	ralink_clk_add("10000e00.uart2", periph_rate);
++	ralink_clk_add("10000c00.serial0", periph_rate);
++	ralink_clk_add("10000d00.serial1", periph_rate);
++	ralink_clk_add("10000e00.serial2", periph_rate);
+ 	ralink_clk_add("10180000.wmac", xtal_rate);
+ 
+ 	if (IS_ENABLED(CONFIG_USB) && !is_mt76x8()) {
+-- 
+2.7.4

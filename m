@@ -1,11 +1,13 @@
 Received: from mail.cn.fujitsu.com ([183.91.158.132]:18543 "EHLO
         heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23992079AbdIAC44doAFU (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 1 Sep 2017 04:56:56 +0200
+        by eddie.linux-mips.org with ESMTP id S23992111AbdIAC45eV9kU (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 1 Sep 2017 04:56:57 +0200
 From: Dou Liyang <douly.fnst@cn.fujitsu.com>
-Subject: [PATCH v2 0/7] Remove the parent_node() for each arch
-Date: Fri, 1 Sep 2017 10:56:32 +0800
-Message-ID: <1504234599-29533-1-git-send-email-douly.fnst@cn.fujitsu.com>
+Subject: [PATCH v2 2/7] MIPS: numa: Remove the unused parent_node() macro
+Date: Fri, 1 Sep 2017 10:56:34 +0800
+Message-ID: <1504234599-29533-3-git-send-email-douly.fnst@cn.fujitsu.com>
+In-Reply-To: <1504234599-29533-1-git-send-email-douly.fnst@cn.fujitsu.com>
+References: <1504234599-29533-1-git-send-email-douly.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <douly.fnst@cn.fujitsu.com>
@@ -19,64 +21,49 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org
-Cc: Dou Liyang <douly.fnst@cn.fujitsu.com>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Michael Holzheu <holzheu@linux.vnet.ibm.com>, linux-s390@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@mellanox.com>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org
-Message-ID: <20170901025632.t_rP_25zYuCLEI8oxyBSNQGfdiBJu4_atIAEUqfbVG0@z>
+Cc: Dou Liyang <douly.fnst@cn.fujitsu.com>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org
+Message-ID: <20170901025634.Z7JEAYWdGJlJTsiXWf3o1HQqiAEvgA4S9EXOdIp3SSk@z>
 
-Changelog:
-
-v1 --> v2:
-   --Remove the patches which have been add to each arch tree individually.
-      [01/11] arm64   ...Has been added to arm64 tree, Queued for 4.14
-      [03/11] metag   ...Has been added to the -mm tree
-      [05/11] powerpc ...Has been added to the powerpc tree
-      [10/11] x86     ...Has been added to the tip sched/core
-
-   --Rebase the remaining patches and repost.
-
-Michael reports the parent_node() will never be invoked since the
 Commit a7be6e5a7f8d ("mm: drop useless local parameters of
-__register_one_node()") removes the last user of it. 
+__register_one_node()") removes the last user of parent_node().
 
-So we start removing it from the topology.h headers for each arch.
+The parent_node() macros in both IP27 and Loongson64 are unnecessary.
 
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>
-Cc: linux-ia64@vger.kernel.org
+Remove it for cleanup.
+
+Reported-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Dou Liyang <douly.fnst@cn.fujitsu.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: James Hogan <james.hogan@imgtec.com>
 Cc: linux-mips@linux-mips.org
-Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Michael Holzheu <holzheu@linux.vnet.ibm.com>
-Cc: linux-s390@vger.kernel.org
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: linux-sh@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: sparclinux@vger.kernel.org
-Cc: Chris Metcalf <cmetcalf@mellanox.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arch@vger.kernel.org
-Cc: akpm@linux-foundation.org
-
-Dou Liyang (7):
-  ia64: topology: Remove the unused parent_node() macro
-  MIPS: numa: Remove the unused parent_node() macro
-  s390/topology: Remove the unused parent_node() macro
-  sh/numa: Remove the unused parent_node() macro
-  sparc64/topology: Remove the unused parent_node() macro
-  tile/topology: Remove the unused parent_node() macro
-  asm-generic: numa: Remove the unused parent_node() macro
-
- arch/ia64/include/asm/topology.h                 | 7 -------
+---
  arch/mips/include/asm/mach-ip27/topology.h       | 1 -
  arch/mips/include/asm/mach-loongson64/topology.h | 1 -
- arch/s390/include/asm/topology.h                 | 6 ------
- arch/sh/include/asm/topology.h                   | 1 -
- arch/sparc/include/asm/topology_64.h             | 2 --
- arch/tile/include/asm/topology.h                 | 6 ------
- include/asm-generic/topology.h                   | 3 ---
- 8 files changed, 27 deletions(-)
+ 2 files changed, 2 deletions(-)
 
+diff --git a/arch/mips/include/asm/mach-ip27/topology.h b/arch/mips/include/asm/mach-ip27/topology.h
+index defd135..3fb7a0e 100644
+--- a/arch/mips/include/asm/mach-ip27/topology.h
++++ b/arch/mips/include/asm/mach-ip27/topology.h
+@@ -23,7 +23,6 @@ struct cpuinfo_ip27 {
+ extern struct cpuinfo_ip27 sn_cpu_info[NR_CPUS];
+ 
+ #define cpu_to_node(cpu)	(sn_cpu_info[(cpu)].p_nodeid)
+-#define parent_node(node)	(node)
+ #define cpumask_of_node(node)	((node) == -1 ?				\
+ 				 cpu_all_mask :				\
+ 				 &hub_data(node)->h_cpus)
+diff --git a/arch/mips/include/asm/mach-loongson64/topology.h b/arch/mips/include/asm/mach-loongson64/topology.h
+index 0d8f3b5..bcb8856 100644
+--- a/arch/mips/include/asm/mach-loongson64/topology.h
++++ b/arch/mips/include/asm/mach-loongson64/topology.h
+@@ -4,7 +4,6 @@
+ #ifdef CONFIG_NUMA
+ 
+ #define cpu_to_node(cpu)	(cpu_logical_map(cpu) >> 2)
+-#define parent_node(node)	(node)
+ #define cpumask_of_node(node)	(&__node_data[(node)]->cpumask)
+ 
+ struct pci_bus;
 -- 
 2.5.5

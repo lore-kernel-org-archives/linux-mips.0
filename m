@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:62089 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:57170 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993907AbdIAOxQYI1aD (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 1 Sep 2017 16:53:16 +0200
-From: Harvey Hunt <harvey.hunt@imgtec.com>
-Subject: [PATCH] MIPS: mt7620: Rename uartlite to serial
-Date: Fri, 1 Sep 2017 15:53:04 +0100
-Message-ID: <1504277584-37794-1-git-send-email-harvey.hunt@imgtec.com>
+        with ESMTP id S23994863AbdIAVrqoCL2o (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 1 Sep 2017 23:47:46 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: Fix cmpxchg on 32b signed ints for 64b kernel with !kernel_uses_llsc
+Date: Fri, 1 Sep 2017 14:46:50 -0700
+Message-ID: <20170901214650.15389-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Harvey.Hunt@imgtec.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,113 +18,96 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: harvey.hunt@imgtec.com, robh+dt@kernel.org, mark.rutland@arm.com, ralf@linux-mips.org, john@phrozen.org
-Cc: matt.redfearn@imgtec.com, devicetree@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20170901145304.PeYqtgGNpkva8f-OjdvfpAiHPxjCKUSMhw64ZgbNcow@z>
+To: linux-mips@linux-mips.org, ralf@linux-mips.org
+Cc: Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20170901214650.amo_5_Hj8sDYSBl3bOds2g1nkkv5Qfra9Crq-xokRkc@z>
 
-Previously, mt7620.c defined the clocks for uarts with the names
-uartlite, uart1 and uart2. Rename them to serial{0,1,2} and update
-the devicetree node names.
+Commit 8263db4d7768 ("MIPS: cmpxchg: Implement __cmpxchg() as a
+function") refactored our implementation of __cmpxchg() to be a function
+rather than a macro, with the aim of making it easier to read & modify.
+Unfortunately the commit breaks use of cmpxchg() for signed 32 bit
+values when we have a 64 bit kernel with kernel_uses_llsc == false,
+because:
 
-Signed-off-by: Harvey Hunt <harvey.hunt@imgtec.com>
-Cc: devicetree@vger.kernel.org
+ - In cmpxchg_local() we cast the old value to the type the pointer
+   points to, and then to an unsigned long. If the pointer points to a
+   signed type smaller than 64 bits then the old value will be sign
+   extended to 64 bits. That is, bits beyond the size of the pointed to
+   type will be set to 1 if the old value is negative. In the case of a
+   signed 32 bit integer with a negative value, bits 63:32 will all be
+   set.
+
+ - In __cmpxchg_asm() we load the value from memory, ie. dereference the
+   pointer, and store the value as an unsigned integer (__ret) whose
+   size matches the pointer. For a 32 bit cmpxchg() this means we store
+   the value in a u32, because the pointer provided to __cmpxchg_asm()
+   by __cmpxchg() is of type volatile u32 *.
+
+ - __cmpxchg_asm() then checks whether the value in memory (__ret)
+   matches the provided old value, by comparing the two values. This
+   results in the u32 being promoted to a 64 bit unsigned long to match
+   the old argument - however because both types are unsigned the value
+   is zero extended, which does not match the sign extension performed
+   on the old value in cmpxchg_local() earlier.
+
+This mismatch means that unfortunate cmpxchg() calls can incorrectly
+fail for 64 bit kernels with kernel_uses_llsc == false. This is the case
+on at least non-SMP Cavium Octeon kernels, which hardcode
+kernel_uses_llsc in their cpu-feature-overrides.h header. Using a
+v4.13-rc7 kernel configured using cavium_octeon_defconfig with SMP
+manually disabled, this presents itself as oddity when we reach
+userland - for example:
+
+  can't run '/bin/mount': Text file busy
+  can't run '/bin/mkdir': Text file busy
+  can't run '/bin/mkdir': Text file busy
+  can't run '/bin/mount': Text file busy
+  can't run '/bin/hostname': Text file busy
+  can't run '/etc/init.d/rcS': Text file busy
+  can't run '/sbin/getty': Text file busy
+  can't run '/sbin/getty': Text file busy
+
+It appears that some part of the init process, which is in this case
+buildroot's busybox init, is running successfully. It never manages to
+reach the login prompt though, and complains about /sbin/getty being
+busy repeatedly and indefinitely.
+
+Fix this by casting the old value provided to __cmpxchg_asm() to an
+appropriately sized unsigned integer, such that we consistently
+zero-extend avoiding the mismatch. The __cmpxchg_small() case for 8 & 16
+bit values is unaffected because __cmpxchg_small() already masks
+provided values appropriately.
+
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Fixes: 8263db4d7768 ("MIPS: cmpxchg: Implement __cmpxchg() as a function")
+Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
-Cc: linux-kernel@vger.kernel.org
 ---
- arch/mips/boot/dts/ralink/mt7620a.dtsi |  2 +-
- arch/mips/boot/dts/ralink/mt7628a.dtsi |  6 +++---
- arch/mips/ralink/mt7620.c              | 14 +++++++-------
- 3 files changed, 11 insertions(+), 11 deletions(-)
+ arch/mips/include/asm/cmpxchg.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/boot/dts/ralink/mt7620a.dtsi b/arch/mips/boot/dts/ralink/mt7620a.dtsi
-index 793c0c7..58bd002 100644
---- a/arch/mips/boot/dts/ralink/mt7620a.dtsi
-+++ b/arch/mips/boot/dts/ralink/mt7620a.dtsi
-@@ -45,7 +45,7 @@
- 			reg = <0x300 0x100>;
- 		};
+diff --git a/arch/mips/include/asm/cmpxchg.h b/arch/mips/include/asm/cmpxchg.h
+index 903f3bf48419..7e25c5cc353a 100644
+--- a/arch/mips/include/asm/cmpxchg.h
++++ b/arch/mips/include/asm/cmpxchg.h
+@@ -155,14 +155,16 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
+ 		return __cmpxchg_small(ptr, old, new, size);
  
--		uartlite@c00 {
-+		serial0@c00 {
- 			compatible = "ralink,mt7620a-uart", "ralink,rt2880-uart", "ns16550a";
- 			reg = <0xc00 0x100>;
+ 	case 4:
+-		return __cmpxchg_asm("ll", "sc", (volatile u32 *)ptr, old, new);
++		return __cmpxchg_asm("ll", "sc", (volatile u32 *)ptr,
++				     (u32)old, new);
  
-diff --git a/arch/mips/boot/dts/ralink/mt7628a.dtsi b/arch/mips/boot/dts/ralink/mt7628a.dtsi
-index 9ff7e8f..fe3fe9a 100644
---- a/arch/mips/boot/dts/ralink/mt7628a.dtsi
-+++ b/arch/mips/boot/dts/ralink/mt7628a.dtsi
-@@ -62,7 +62,7 @@
- 			reg = <0x300 0x100>;
- 		};
+ 	case 8:
+ 		/* lld/scd are only available for MIPS64 */
+ 		if (!IS_ENABLED(CONFIG_64BIT))
+ 			return __cmpxchg_called_with_bad_pointer();
  
--		uart0: uartlite@c00 {
-+		uart0: serial0@c00 {
- 			compatible = "ns16550a";
- 			reg = <0xc00 0x100>;
+-		return __cmpxchg_asm("lld", "scd", (volatile u64 *)ptr, old, new);
++		return __cmpxchg_asm("lld", "scd", (volatile u64 *)ptr,
++				     (u64)old, new);
  
-@@ -75,7 +75,7 @@
- 			reg-shift = <2>;
- 		};
- 
--		uart1: uart1@d00 {
-+		uart1: serial1@d00 {
- 			compatible = "ns16550a";
- 			reg = <0xd00 0x100>;
- 
-@@ -88,7 +88,7 @@
- 			reg-shift = <2>;
- 		};
- 
--		uart2: uart2@e00 {
-+		uart2: serial2@e00 {
- 			compatible = "ns16550a";
- 			reg = <0xe00 0x100>;
- 
-diff --git a/arch/mips/ralink/mt7620.c b/arch/mips/ralink/mt7620.c
-index 9be8b08..f623ceb 100644
---- a/arch/mips/ralink/mt7620.c
-+++ b/arch/mips/ralink/mt7620.c
-@@ -54,7 +54,7 @@ static int dram_type;
- 
- static struct rt2880_pmx_func i2c_grp[] =  { FUNC("i2c", 0, 1, 2) };
- static struct rt2880_pmx_func spi_grp[] = { FUNC("spi", 0, 3, 4) };
--static struct rt2880_pmx_func uartlite_grp[] = { FUNC("uartlite", 0, 15, 2) };
-+static struct rt2880_pmx_func serial_grp[] = { FUNC("serial", 0, 15, 2) };
- static struct rt2880_pmx_func mdio_grp[] = {
- 	FUNC("mdio", MT7620_GPIO_MODE_MDIO, 22, 2),
- 	FUNC("refclk", MT7620_GPIO_MODE_MDIO_REFCLK, 22, 2),
-@@ -92,7 +92,7 @@ static struct rt2880_pmx_group mt7620a_pinmux_data[] = {
- 	GRP("uartf", uartf_grp, MT7620_GPIO_MODE_UART0_MASK,
- 		MT7620_GPIO_MODE_UART0_SHIFT),
- 	GRP("spi", spi_grp, 1, MT7620_GPIO_MODE_SPI),
--	GRP("uartlite", uartlite_grp, 1, MT7620_GPIO_MODE_UART1),
-+	GRP("serial", serial_grp, 1, MT7620_GPIO_MODE_UART1),
- 	GRP_G("wdt", wdt_grp, MT7620_GPIO_MODE_WDT_MASK,
- 		MT7620_GPIO_MODE_WDT_GPIO, MT7620_GPIO_MODE_WDT_SHIFT),
- 	GRP_G("mdio", mdio_grp, MT7620_GPIO_MODE_MDIO_MASK,
-@@ -530,8 +530,8 @@ void __init ralink_clk_init(void)
- 		periph_rate = MHZ(40);
- 		pcmi2s_rate = MHZ(480);
- 
--		ralink_clk_add("10000d00.uartlite", periph_rate);
--		ralink_clk_add("10000e00.uartlite", periph_rate);
-+		ralink_clk_add("10000d00.serial0", periph_rate);
-+		ralink_clk_add("10000e00.serial0", periph_rate);
- 	} else {
- 		cpu_pll_rate = mt7620_get_cpu_pll_rate(xtal_rate);
- 		pll_rate = mt7620_get_pll_rate(xtal_rate, cpu_pll_rate);
-@@ -566,9 +566,9 @@ void __init ralink_clk_init(void)
- 	ralink_clk_add("10000a00.i2s", pcmi2s_rate);
- 	ralink_clk_add("10000b00.spi", sys_rate);
- 	ralink_clk_add("10000b40.spi", sys_rate);
--	ralink_clk_add("10000c00.uartlite", periph_rate);
--	ralink_clk_add("10000d00.uart1", periph_rate);
--	ralink_clk_add("10000e00.uart2", periph_rate);
-+	ralink_clk_add("10000c00.serial0", periph_rate);
-+	ralink_clk_add("10000d00.serial1", periph_rate);
-+	ralink_clk_add("10000e00.serial2", periph_rate);
- 	ralink_clk_add("10180000.wmac", xtal_rate);
- 
- 	if (IS_ENABLED(CONFIG_USB) && !is_mt76x8()) {
+ 	default:
+ 		return __cmpxchg_called_with_bad_pointer();
 -- 
-2.7.4
+2.14.1

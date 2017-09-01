@@ -1,16 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:49639 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993898AbdHaPMIngVm1 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 31 Aug 2017 17:12:08 +0200
-Date: Thu, 31 Aug 2017 16:11:53 +0100
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH] MIPS: Add basic R5900 support
-In-Reply-To: <20170830132350.GA2110@localhost.localdomain>
-Message-ID: <alpine.DEB.2.00.1708311259220.17596@tp.orcam.me.uk>
-References: <20170827132309.GA32166@localhost.localdomain> <alpine.DEB.2.00.1708271511430.17596@tp.orcam.me.uk> <20170830132350.GA2110@localhost.localdomain>
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:18543 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992079AbdIAC44doAFU (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 1 Sep 2017 04:56:56 +0200
+From: Dou Liyang <douly.fnst@cn.fujitsu.com>
+Subject: [PATCH v2 0/7] Remove the parent_node() for each arch
+Date: Fri, 1 Sep 2017 10:56:32 +0800
+Message-ID: <1504234599-29533-1-git-send-email-douly.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Content-Type: text/plain
+Return-Path: <douly.fnst@cn.fujitsu.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,79 +18,65 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Fredrik Noring <noring@nocrew.org>
+To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org
+Cc: Dou Liyang <douly.fnst@cn.fujitsu.com>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@imgtec.com>, linux-mips@linux-mips.org, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Michael Holzheu <holzheu@linux.vnet.ibm.com>, linux-s390@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org, Chris Metcalf <cmetcalf@mellanox.com>, Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org
+Message-ID: <20170901025632.t_rP_25zYuCLEI8oxyBSNQGfdiBJu4_atIAEUqfbVG0@z>
+
+Changelog:
+
+v1 --> v2:
+   --Remove the patches which have been add to each arch tree individually.
+      [01/11] arm64   ...Has been added to arm64 tree, Queued for 4.14
+      [03/11] metag   ...Has been added to the -mm tree
+      [05/11] powerpc ...Has been added to the powerpc tree
+      [10/11] x86     ...Has been added to the tip sched/core
+
+   --Rebase the remaining patches and repost.
+
+Michael reports the parent_node() will never be invoked since the
+Commit a7be6e5a7f8d ("mm: drop useless local parameters of
+__register_one_node()") removes the last user of it. 
+
+So we start removing it from the topology.h headers for each arch.
+
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
+Cc: linux-ia64@vger.kernel.org
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@imgtec.com>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20170831151153.W-IAZDhOt6Zv_bSxr_rEcC0mf_9QkyPvrl74Y5CUXpQ@z>
+Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: Michael Holzheu <holzheu@linux.vnet.ibm.com>
+Cc: linux-s390@vger.kernel.org
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>
+Cc: linux-sh@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: sparclinux@vger.kernel.org
+Cc: Chris Metcalf <cmetcalf@mellanox.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arch@vger.kernel.org
+Cc: akpm@linux-foundation.org
 
-Hi Fredrik,
+Dou Liyang (7):
+  ia64: topology: Remove the unused parent_node() macro
+  MIPS: numa: Remove the unused parent_node() macro
+  s390/topology: Remove the unused parent_node() macro
+  sh/numa: Remove the unused parent_node() macro
+  sparc64/topology: Remove the unused parent_node() macro
+  tile/topology: Remove the unused parent_node() macro
+  asm-generic: numa: Remove the unused parent_node() macro
 
-> >  Is there an external explicitly-driven write-back buffer there with the 
-> > R5900?  That would be odd with a MIPS III ISA processor, however if there 
-> > indeed is, then I think the CPU_HAS_WB setting needs to go along with the 
-> > code that implements `__wbflush' for this platform.
-> 
-> The C790 block diagram contains a WBB connected to the BIU bus (p. 2-2) in the
-> "TX System RISC TX79 Core Architecture" manual:
-> 
->     The Writeback Buffer (WBB) is an 8 entry by 16 byte (one quadword) FIFO
->     queuing up stores prior to accessing the CPU bus. It increases C790
->     performance by decoupling the processor from the latencies of the CPU bus.
->     It is also used during the gathering operation of uncached accelerated
->     stores; sequential stores less than a quadword in length are gathered in
->     the WBB, thereby reducing bus bandwidth usage. (p. 2-4)
+ arch/ia64/include/asm/topology.h                 | 7 -------
+ arch/mips/include/asm/mach-ip27/topology.h       | 1 -
+ arch/mips/include/asm/mach-loongson64/topology.h | 1 -
+ arch/s390/include/asm/topology.h                 | 6 ------
+ arch/sh/include/asm/topology.h                   | 1 -
+ arch/sparc/include/asm/topology_64.h             | 2 --
+ arch/tile/include/asm/topology.h                 | 6 ------
+ include/asm-generic/topology.h                   | 3 ---
+ 8 files changed, 27 deletions(-)
 
- That's no different though from the write-back buffer the R4400 CPU has, 
-as do many more modern MIPS architecture implementations, with strong bus 
-(and hence memory) ordering enforced by the SYNC instruction.  In that 
-case a lone SYNC instruction is sufficient as the implementation of the 
-`wmb', `rmb' and `mb' memory ordering barrier operations.
-
-> __wbflush is implemented in arch/mips/ps2/setup.c:193 in the remaining patch
-> (link below):
-> 
-> static void ps2_wbflush(void)
-> {
-> 	__asm__ __volatile__("sync.l":::"memory");
-> 
-> 	/* flush write buffer to bus */
-> 	inl(ps2sif_bustophys(0));
-> }
-> 
-> https://github.com/frno7/linux/blob/ps2-v4.12-squashed/arch/mips/ps2/setup.c#L193
-> 
-> Then ps2sif_bustophys is implemented in arch/mips/ps2/iopheap.c:
-> 
-> phys_addr_t ps2sif_bustophys(dma_addr_t a)
-> {
-> 	return(a + PS2_IOP_HEAP_BASE);
-> }
-> 
-> which in turn uses
-> 
-> #define PS2_IOP_HEAP_BASE 0x1c000000
-> 
-> from arch/mips/include/asm/mach-ps2/ps2.h. Would you like to move this code
-> somewhere else to go along with the declaration of CPU_HAS_WB?
-
- This looks to me like a completion barrier, rather than a bus ordering 
-barrier that would require a special `__wbflush' implementation.  Here 
-SYNC.L (which is BTW an assembly idiom for plain SYNC) enforces strong 
-ordering, acting as `mb' as per the architecture requirement, and the 
-following read back causes all the outstanding bus accesses to retire 
-beforehand, acting as a completion barrier.
-
- So I think this `ps2_wbflush' completion barrier should be used as the 
-implementation of `mmiowb', or (suspecting that with SYNC already in the 
-picture it would be too strong for this platform, unless the chipset can 
-do further write merging or reordering) perhaps just `iob', or a more 
-general `iobarrier_sync' operation I have outlined here:
-
-<https://marc.info/?l=linux-kernel&m=139868504324701&w=2>
-
-(but never got to implementing).  In that case you don't need to select 
-CPU_HAS_WB, as the platform does not have a write-back buffer that would 
-require special handling for bus ordering purposes.
-
- Let me know if you have any questions or comments.
-
-  Maciej
+-- 
+2.5.5

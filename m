@@ -1,11 +1,13 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:57170 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:54322 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23994863AbdIAVrqoCL2o (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 1 Sep 2017 23:47:46 +0200
+        with ESMTP id S23993423AbdICRZkTeXWk (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 3 Sep 2017 19:25:40 +0200
 From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH] MIPS: Fix cmpxchg on 32b signed ints for 64b kernel with !kernel_uses_llsc
-Date: Fri, 1 Sep 2017 14:46:50 -0700
-Message-ID: <20170901214650.15389-1-paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: Fix generic-board-config.sh for builds using O=
+Date: Sun, 3 Sep 2017 10:24:58 -0700
+Message-ID: <20170903172458.32576-1-paul.burton@imgtec.com>
+In-Reply-To: <201709032319.ZeWJCqZ0%fengguang.wu@intel.com>
+References: <201709032319.ZeWJCqZ0%fengguang.wu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@imgtec.com>
@@ -19,95 +21,84 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org, ralf@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20170901214650.amo_5_Hj8sDYSBl3bOds2g1nkkv5Qfra9Crq-xokRkc@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, kbuild test robot <fengguang.wu@intel.com>, kbuild-all@01.org
+Message-ID: <20170903172458.EhriYMKjQ7dMExGqzWY2PlBT6Tgk-KKu78OskHHLoGw@z>
 
-Commit 8263db4d7768 ("MIPS: cmpxchg: Implement __cmpxchg() as a
-function") refactored our implementation of __cmpxchg() to be a function
-rather than a macro, with the aim of making it easier to read & modify.
-Unfortunately the commit breaks use of cmpxchg() for signed 32 bit
-values when we have a 64 bit kernel with kernel_uses_llsc == false,
-because:
+When configuring the kernel using one of the generic MIPS defconfig
+targets, the generic-board-config.sh script is used to check
+requirements listed in board config fragments against a reference config
+in order to determine which board config fragments to merge into the
+final config.
 
- - In cmpxchg_local() we cast the old value to the type the pointer
-   points to, and then to an unsigned long. If the pointer points to a
-   signed type smaller than 64 bits then the old value will be sign
-   extended to 64 bits. That is, bits beyond the size of the pointed to
-   type will be set to 1 if the old value is negative. In the case of a
-   signed 32 bit integer with a negative value, bits 63:32 will all be
-   set.
+When specifying O= to configure in a directory other than the kernel
+source directory, this generic-board-config.sh script is invoked in the
+directory that we are configuring in (ie. the directory that O equals),
+and the path to the reference config is relative to the current
+directory. The script then changes the current directory to the source
+tree, which unfortunately breaks later access to the reference file
+since its path is relative to a directory that is no longer the current
+working directory. This results in configuration failing with errors
+such as:
 
- - In __cmpxchg_asm() we load the value from memory, ie. dereference the
-   pointer, and store the value as an unsigned integer (__ret) whose
-   size matches the pointer. For a 32 bit cmpxchg() this means we store
-   the value in a u32, because the pointer provided to __cmpxchg_asm()
-   by __cmpxchg() is of type volatile u32 *.
+  $ make ARCH=mips O=tmp 32r2_defconfig
+  make[1]: Entering directory '/home/pburton/src/linux/tmp'
+  Using ../arch/mips/configs/generic_defconfig as base
+  Merging ../arch/mips/configs/generic/32r2.config
+  Merging ../arch/mips/configs/generic/eb.config
+  grep: ./.config.32r2_defconfig: No such file or directory
+  grep: ./.config.32r2_defconfig: No such file or directory
+  The base file '.config' does not exist.  Exit.
+  make[1]: *** [arch/mips/Makefile:505: 32r2_defconfig] Error 1
+  make[1]: Leaving directory '/home/pburton/src/linux-ingenic/tmp'
+  make: *** [Makefile:145: sub-make] Error 2
 
- - __cmpxchg_asm() then checks whether the value in memory (__ret)
-   matches the provided old value, by comparing the two values. This
-   results in the u32 being promoted to a 64 bit unsigned long to match
-   the old argument - however because both types are unsigned the value
-   is zero extended, which does not match the sign extension performed
-   on the old value in cmpxchg_local() earlier.
-
-This mismatch means that unfortunate cmpxchg() calls can incorrectly
-fail for 64 bit kernels with kernel_uses_llsc == false. This is the case
-on at least non-SMP Cavium Octeon kernels, which hardcode
-kernel_uses_llsc in their cpu-feature-overrides.h header. Using a
-v4.13-rc7 kernel configured using cavium_octeon_defconfig with SMP
-manually disabled, this presents itself as oddity when we reach
-userland - for example:
-
-  can't run '/bin/mount': Text file busy
-  can't run '/bin/mkdir': Text file busy
-  can't run '/bin/mkdir': Text file busy
-  can't run '/bin/mount': Text file busy
-  can't run '/bin/hostname': Text file busy
-  can't run '/etc/init.d/rcS': Text file busy
-  can't run '/sbin/getty': Text file busy
-  can't run '/sbin/getty': Text file busy
-
-It appears that some part of the init process, which is in this case
-buildroot's busybox init, is running successfully. It never manages to
-reach the login prompt though, and complains about /sbin/getty being
-busy repeatedly and indefinitely.
-
-Fix this by casting the old value provided to __cmpxchg_asm() to an
-appropriately sized unsigned integer, such that we consistently
-zero-extend avoiding the mismatch. The __cmpxchg_small() case for 8 & 16
-bit values is unaffected because __cmpxchg_small() already masks
-provided values appropriately.
+Fix this by avoiding changing the working directory in
+generic-board-config.sh, instead using full paths to files under
+$(srctree)/ where necessary.
 
 Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Fixes: 8263db4d7768 ("MIPS: cmpxchg: Implement __cmpxchg() as a function")
+Fixes: 27e0d4b05107 ("MIPS: generic: Allow filtering enabled boards by requirements")
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
+Cc: kbuild test robot <fengguang.wu@intel.com>
+Cc: kbuild-all@01.org
+--
+Ralf, feel free to squash this into 27e0d4b05107 ("MIPS: generic: Allow
+filtering enabled boards by requirements") as a fixup.
 ---
- arch/mips/include/asm/cmpxchg.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/mips/tools/generic-board-config.sh | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/include/asm/cmpxchg.h b/arch/mips/include/asm/cmpxchg.h
-index 903f3bf48419..7e25c5cc353a 100644
---- a/arch/mips/include/asm/cmpxchg.h
-+++ b/arch/mips/include/asm/cmpxchg.h
-@@ -155,14 +155,16 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
- 		return __cmpxchg_small(ptr, old, new, size);
+diff --git a/arch/mips/tools/generic-board-config.sh b/arch/mips/tools/generic-board-config.sh
+index 5c4f93687039..654d652d7fa1 100755
+--- a/arch/mips/tools/generic-board-config.sh
++++ b/arch/mips/tools/generic-board-config.sh
+@@ -30,8 +30,6 @@ cfg="$4"
+ boards_origin="$5"
+ shift 5
  
- 	case 4:
--		return __cmpxchg_asm("ll", "sc", (volatile u32 *)ptr, old, new);
-+		return __cmpxchg_asm("ll", "sc", (volatile u32 *)ptr,
-+				     (u32)old, new);
+-cd "${srctree}"
+-
+ # Only print Skipping... lines if the user explicitly specified BOARDS=. In the
+ # general case it only serves to obscure the useful output about what actually
+ # was included.
+@@ -48,7 +46,7 @@ environment*)
+ esac
  
- 	case 8:
- 		/* lld/scd are only available for MIPS64 */
- 		if (!IS_ENABLED(CONFIG_64BIT))
- 			return __cmpxchg_called_with_bad_pointer();
+ for board in $@; do
+-	board_cfg="arch/mips/configs/generic/board-${board}.config"
++	board_cfg="${srctree}/arch/mips/configs/generic/board-${board}.config"
+ 	if [ ! -f "${board_cfg}" ]; then
+ 		echo "WARNING: Board config '${board_cfg}' not found"
+ 		continue
+@@ -84,7 +82,7 @@ for board in $@; do
+ 	done || continue
  
--		return __cmpxchg_asm("lld", "scd", (volatile u64 *)ptr, old, new);
-+		return __cmpxchg_asm("lld", "scd", (volatile u64 *)ptr,
-+				     (u64)old, new);
- 
- 	default:
- 		return __cmpxchg_called_with_bad_pointer();
+ 	# Merge this board config fragment into our final config file
+-	./scripts/kconfig/merge_config.sh \
++	${srctree}/scripts/kconfig/merge_config.sh \
+ 		-m -O ${objtree} ${cfg} ${board_cfg} \
+ 		| grep -Ev '^(#|Using)'
+ done
 -- 
 2.14.1

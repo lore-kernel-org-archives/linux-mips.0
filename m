@@ -1,14 +1,14 @@
-Received: from smtp3-g21.free.fr ([IPv6:2a01:e0c:1:1599::12]:25471 "EHLO
-        smtp3-g21.free.fr" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23994929AbdIEQjOJ7622 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Sep 2017 18:39:14 +0200
-From: Mathieu Malaterre <malat@debian.org>
-Subject: [PATCH 2/2] MIPS: jz4780: DTS: Probe the jz4740-rtc driver from devicetree
-Date: Tue,  5 Sep 2017 18:38:59 +0200
-Message-ID: <20170905163901.10542-2-malat@debian.org>
-In-Reply-To: <20170905163901.10542-1-malat@debian.org>
-References: <20170905163901.10542-1-malat@debian.org>
-Return-Path: <mathieu@macbookpro.malat.net>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:27255 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23991067AbdIES3WScFVI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Sep 2017 20:29:22 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] irqchip: mips-gic: Fix shared interrupt mask writes
+Date: Tue, 5 Sep 2017 11:28:46 -0700
+Message-ID: <20170905182846.27994-1-paul.burton@imgtec.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,38 +18,68 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Cc: Mathieu Malaterre <malat@debian.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Linus Walleij <linus.walleij@linaro.org>, Paul Cercueil <paul@crapouillou.net>, Krzysztof Kozlowski <krzk@kernel.org>, devicetree@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20170905163859.E4nw1BXZP9sst_x_HZgEZRsOLjDvU-mChsXT6iqNEWk@z>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, Thomas Gleixner <tglx@linutronix.de>
+Cc: Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20170905182846.68EMQnfiU2BJG-gL--SljnMJrrd_v9wemqmS-YUHeN8@z>
 
-The jz4740-rtc driver supports both jz4740 & jz4780, setup the compatible
-string to jz4780.
+The write_gic_smask() & write_gic_rmask() functions take a shared
+interrupt number as a parameter, but we're incorrectly providing them a
+bitmask with the shared interrupt's bit set. This effectively means that
+we mask or unmask the shared interrupt 1<<n rather than shared interrupt
+n, and as a result likely drop interrupts.
 
-Signed-off-by: Mathieu Malaterre <malat@debian.org>
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Fixes: 68898c8765f4 ("irqchip: mips-gic: Drop gic_(re)set_mask() functions")
+Cc: Jason Cooper <jason@lakedaemon.net>
+Cc: Marc Zyngier <marc.zyngier@arm.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mips@linux-mips.org
 ---
- arch/mips/boot/dts/ingenic/jz4780.dtsi | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+With Boston PCIe support & the GIC cleanup series now coming together in
+-next, this bug was uncovered by running next-20170905 on a Boston
+board, which failed to find any rootfs media due to a lack of PCIe
+interrupts. With this fix we're now able to use the Boston's SATA or MMC
+controllers :)
 
-diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-index 02a752eb6a8e..c338c7d1cbca 100644
---- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-@@ -48,6 +48,17 @@
- 		};
- 	};
+Ideally this would be applied as a fixup to 68898c8765f4 ("irqchip:
+mips-gic: Drop gic_(re)set_mask() functions"), but even if not it'd be
+great to get into the v4.14 MIPS pull where the breakage is introduced,
+or otherwise just ASAP - my apologies!
+---
+ drivers/irqchip/irq-mips-gic.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+index 6e52a88bbd9e..40159ac12ac8 100644
+--- a/drivers/irqchip/irq-mips-gic.c
++++ b/drivers/irqchip/irq-mips-gic.c
+@@ -169,7 +169,7 @@ static void gic_mask_irq(struct irq_data *d)
+ {
+ 	unsigned int intr = GIC_HWIRQ_TO_SHARED(d->hwirq);
  
-+	rtc_dev: rtc@10003000 {
-+		compatible = "ingenic,jz4780-rtc";
-+		reg = <0x10003000 0x4c>;
-+
-+		interrupt-parent = <&intc>;
-+		interrupts = <32>;
-+
-+		clocks = <&cgu JZ4780_CLK_RTCLK>;
-+		clock-names = "rtc";
-+	};
-+
- 	pinctrl: pin-controller@10010000 {
- 		compatible = "ingenic,jz4780-pinctrl";
- 		reg = <0x10010000 0x600>;
+-	write_gic_rmask(BIT(intr));
++	write_gic_rmask(intr);
+ 	gic_clear_pcpu_masks(intr);
+ }
+ 
+@@ -179,7 +179,7 @@ static void gic_unmask_irq(struct irq_data *d)
+ 	unsigned int intr = GIC_HWIRQ_TO_SHARED(d->hwirq);
+ 	unsigned int cpu;
+ 
+-	write_gic_smask(BIT(intr));
++	write_gic_smask(intr);
+ 
+ 	gic_clear_pcpu_masks(intr);
+ 	cpu = cpumask_first_and(affinity, cpu_online_mask);
+@@ -767,7 +767,7 @@ static int __init gic_of_init(struct device_node *node,
+ 	for (i = 0; i < gic_shared_intrs; i++) {
+ 		change_gic_pol(i, GIC_POL_ACTIVE_HIGH);
+ 		change_gic_trig(i, GIC_TRIG_LEVEL);
+-		write_gic_rmask(BIT(i));
++		write_gic_rmask(i);
+ 	}
+ 
+ 	for (i = 0; i < gic_vpes; i++) {
 -- 
-2.11.0
+2.14.1

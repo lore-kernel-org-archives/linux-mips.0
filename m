@@ -1,14 +1,16 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:27255 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991067AbdIES3WScFVI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Sep 2017 20:29:22 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: [PATCH] irqchip: mips-gic: Fix shared interrupt mask writes
-Date: Tue, 5 Sep 2017 11:28:46 -0700
-Message-ID: <20170905182846.27994-1-paul.burton@imgtec.com>
+Received: from mail-vk0-x242.google.com ([IPv6:2607:f8b0:400c:c05::242]:36237
+        "EHLO mail-vk0-x242.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992121AbdIFLAxQ-pXq (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 6 Sep 2017 13:00:53 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@imgtec.com>
+In-Reply-To: <20170802093429.12572-7-jonas.gorski@gmail.com>
+References: <20170802093429.12572-1-jonas.gorski@gmail.com> <20170802093429.12572-7-jonas.gorski@gmail.com>
+From: Jonas Gorski <jonas.gorski@gmail.com>
+Date: Wed, 6 Sep 2017 13:00:26 +0200
+Message-ID: <CAOiHx=nvzGybbsTy+y54TetDAQ5zZBLZ3pJh7EVAZM_VbzVS9A@mail.gmail.com>
+Subject: Re: [PATCH 6/8] bcm63xx_enet: just use "enet" as the clock name
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <jonas.gorski@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,68 +20,56 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, Thomas Gleixner <tglx@linutronix.de>
-Cc: Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20170905182846.68EMQnfiU2BJG-gL--SljnMJrrd_v9wemqmS-YUHeN8@z>
+To: MIPS Mailing List <linux-mips@linux-mips.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Network Development <netdev@vger.kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, Kevin Cernekee <cernekee@gmail.com>, Jiri Slaby <jslaby@suse.com>, "David S. Miller" <davem@davemloft.net>, Russell King <linux@armlinux.org.uk>
+Message-ID: <20170906110026.KDvlDiXRrLQMlH95GB37eQ4kaqMHnuj3-Mbtsie3fNs@z>
 
-The write_gic_smask() & write_gic_rmask() functions take a shared
-interrupt number as a parameter, but we're incorrectly providing them a
-bitmask with the shared interrupt's bit set. This effectively means that
-we mask or unmask the shared interrupt 1<<n rather than shared interrupt
-n, and as a result likely drop interrupts.
+Hi David,
 
-Signed-off-by: Paul Burton <paul.burton@imgtec.com>
-Fixes: 68898c8765f4 ("irqchip: mips-gic: Drop gic_(re)set_mask() functions")
-Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: Marc Zyngier <marc.zyngier@arm.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-mips@linux-mips.org
----
-With Boston PCIe support & the GIC cleanup series now coming together in
--next, this bug was uncovered by running next-20170905 on a Boston
-board, which failed to find any rootfs media due to a lack of PCIe
-interrupts. With this fix we're now able to use the Boston's SATA or MMC
-controllers :)
+On 2 August 2017 at 11:34, Jonas Gorski <jonas.gorski@gmail.com> wrote:
+> Now that we have the individual clocks available as "enet" we
+> don't need to rely on the device id for them anymore.
+>
+> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
 
-Ideally this would be applied as a fixup to 68898c8765f4 ("irqchip:
-mips-gic: Drop gic_(re)set_mask() functions"), but even if not it'd be
-great to get into the v4.14 MIPS pull where the breakage is introduced,
-or otherwise just ASAP - my apologies!
----
- drivers/irqchip/irq-mips-gic.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Could I please get a (N)Ack so Ralf can add this patch to his tree?
 
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index 6e52a88bbd9e..40159ac12ac8 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -169,7 +169,7 @@ static void gic_mask_irq(struct irq_data *d)
- {
- 	unsigned int intr = GIC_HWIRQ_TO_SHARED(d->hwirq);
- 
--	write_gic_rmask(BIT(intr));
-+	write_gic_rmask(intr);
- 	gic_clear_pcpu_masks(intr);
- }
- 
-@@ -179,7 +179,7 @@ static void gic_unmask_irq(struct irq_data *d)
- 	unsigned int intr = GIC_HWIRQ_TO_SHARED(d->hwirq);
- 	unsigned int cpu;
- 
--	write_gic_smask(BIT(intr));
-+	write_gic_smask(intr);
- 
- 	gic_clear_pcpu_masks(intr);
- 	cpu = cpumask_first_and(affinity, cpu_online_mask);
-@@ -767,7 +767,7 @@ static int __init gic_of_init(struct device_node *node,
- 	for (i = 0; i < gic_shared_intrs; i++) {
- 		change_gic_pol(i, GIC_POL_ACTIVE_HIGH);
- 		change_gic_trig(i, GIC_TRIG_LEVEL);
--		write_gic_rmask(BIT(i));
-+		write_gic_rmask(i);
- 	}
- 
- 	for (i = 0; i < gic_vpes; i++) {
--- 
-2.14.1
+
+Regards
+Jonas
+
+> ---
+>  drivers/net/ethernet/broadcom/bcm63xx_enet.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/broadcom/bcm63xx_enet.c b/drivers/net/ethernet/broadcom/bcm63xx_enet.c
+> index 61a88b64bd39..d6844923a1c0 100644
+> --- a/drivers/net/ethernet/broadcom/bcm63xx_enet.c
+> +++ b/drivers/net/ethernet/broadcom/bcm63xx_enet.c
+> @@ -1718,7 +1718,6 @@ static int bcm_enet_probe(struct platform_device *pdev)
+>         struct bcm63xx_enet_platform_data *pd;
+>         struct resource *res_mem, *res_irq, *res_irq_rx, *res_irq_tx;
+>         struct mii_bus *bus;
+> -       const char *clk_name;
+>         int i, ret;
+>
+>         /* stop if shared driver failed, assume driver->probe will be
+> @@ -1761,14 +1760,12 @@ static int bcm_enet_probe(struct platform_device *pdev)
+>         if (priv->mac_id == 0) {
+>                 priv->rx_chan = 0;
+>                 priv->tx_chan = 1;
+> -               clk_name = "enet0";
+>         } else {
+>                 priv->rx_chan = 2;
+>                 priv->tx_chan = 3;
+> -               clk_name = "enet1";
+>         }
+>
+> -       priv->mac_clk = clk_get(&pdev->dev, clk_name);
+> +       priv->mac_clk = clk_get(&pdev->dev, "enet");
+>         if (IS_ERR(priv->mac_clk)) {
+>                 ret = PTR_ERR(priv->mac_clk);
+>                 goto out;
+> --
+> 2.13.2
+>

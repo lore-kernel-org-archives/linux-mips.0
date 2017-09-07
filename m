@@ -1,18 +1,14 @@
-Received: from mail-ua0-x242.google.com ([IPv6:2607:f8b0:400c:c08::242]:34982
-        "EHLO mail-ua0-x242.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992974AbdIFMhxpJVXU (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 6 Sep 2017 14:37:53 +0200
+Received: from mailapp01.imgtec.com ([195.59.15.196]:29000 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23992054AbdIGKNYB0BxL (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 7 Sep 2017 12:13:24 +0200
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Subject: [PATCH] MIPS: SMP: Fix deadlock & online race
+Date: Thu, 7 Sep 2017 10:57:34 +0100
+Message-ID: <1504778254-24380-1-git-send-email-matt.redfearn@imgtec.com>
 MIME-Version: 1.0
-In-Reply-To: <20170906121715.GA27869@kroah.com>
-References: <20170802093429.12572-1-jonas.gorski@gmail.com>
- <20170802093429.12572-5-jonas.gorski@gmail.com> <CAOiHx=mC=GfX0VvuRWR-AmXYfVOEkuruwGHooS08WrL_z-60UA@mail.gmail.com>
- <20170906121715.GA27869@kroah.com>
-From: Jonas Gorski <jonas.gorski@gmail.com>
-Date: Wed, 6 Sep 2017 14:37:27 +0200
-Message-ID: <CAOiHx==oPYiALNL-cHNWCH+YMFswJt4uz-ob++5z+hMauWuRqQ@mail.gmail.com>
-Subject: Re: [PATCH 4/8] tty/bcm63xx_uart: allow naming clock in device tree
-Content-Type: text/plain; charset="UTF-8"
-Return-Path: <jonas.gorski@gmail.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,86 +18,112 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: MIPS Mailing List <linux-mips@linux-mips.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, Kevin Cernekee <cernekee@gmail.com>, Jiri Slaby <jslaby@suse.com>, "David S. Miller" <davem@davemloft.net>, Russell King <linux@armlinux.org.uk>
-Message-ID: <20170906123727.MJIIOVLqEVaZUEvYbi6aPWAtIJe3hKR5jBBE2EAQqzc@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Matt Redfearn <matt.redfearn@imgtec.com>, Matija Glavinic Pecotic <matija.glavinic-pecotic.ext@nokia.com>, "# v4 . 1+" <stable@vger.kernel.org>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, linux-mips@linux-mips.org, Paul Gortmaker <paul.gortmaker@windriver.com>, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20170907095734.3SrLtjfdbpNRPBE8bXrxXTSbxGNIoog16gvJVBLinWY@z>
 
-On 6 September 2017 at 14:17, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> On Wed, Sep 06, 2017 at 01:01:32PM +0200, Jonas Gorski wrote:
->> Hi Greg,
->>
->> On 2 August 2017 at 11:34, Jonas Gorski <jonas.gorski@gmail.com> wrote:
->> > Codify using a named clock for the refclk of the uart. This makes it
->> > easier if we might need to add a gating clock (like present on the
->> > BCM6345).
->> >
->> > Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
->>
->> Could I please get a (N)Ack so Ralf can add this patch to his tree?
->>
->>
->> Regards
->> Jonas
->>
->>
->> > ---
->> >  Documentation/devicetree/bindings/serial/brcm,bcm6345-uart.txt | 6 ++++++
->> >  drivers/tty/serial/bcm63xx_uart.c                              | 6 ++++--
->> >  2 files changed, 10 insertions(+), 2 deletions(-)
->> >
->> > diff --git a/Documentation/devicetree/bindings/serial/brcm,bcm6345-uart.txt b/Documentation/devicetree/bindings/serial/brcm,bcm6345-uart.txt
->> > index 5c52e5eef16d..8b2b0460259a 100644
->> > --- a/Documentation/devicetree/bindings/serial/brcm,bcm6345-uart.txt
->> > +++ b/Documentation/devicetree/bindings/serial/brcm,bcm6345-uart.txt
->> > @@ -11,6 +11,11 @@ Required properties:
->> >  - clocks: Clock driving the hardware; used to figure out the baud rate
->> >    divisor.
->> >
->> > +
->> > +Optional properties:
->> > +
->> > +- clock-names: Should be "refclk".
->> > +
->> >  Example:
->> >
->> >         uart0: serial@14e00520 {
->> > @@ -19,6 +24,7 @@ Example:
->> >                 interrupt-parent = <&periph_intc>;
->> >                 interrupts = <2>;
->> >                 clocks = <&periph_clk>;
->> > +               clock-names = "refclk";
->> >         };
->> >
->> >         clocks {
->
-> I don't ack devtree changes :)
->
->> > diff --git a/drivers/tty/serial/bcm63xx_uart.c b/drivers/tty/serial/bcm63xx_uart.c
->> > index a2b9376ec861..f227eff28d3a 100644
->> > --- a/drivers/tty/serial/bcm63xx_uart.c
->> > +++ b/drivers/tty/serial/bcm63xx_uart.c
->> > @@ -841,8 +841,10 @@ static int bcm_uart_probe(struct platform_device *pdev)
->> >         if (!res_irq)
->> >                 return -ENODEV;
->> >
->> > -       clk = pdev->dev.of_node ? of_clk_get(pdev->dev.of_node, 0) :
->> > -                                 clk_get(&pdev->dev, "refclk");
->> > +       clk = clk_get(&pdev->dev, "refclk");
->> > +       if (IS_ERR(clk) && pdev->dev.of_node)
->> > +               clk = of_clk_get(pdev->dev.of_node, 0);
->> > +
->> >         if (IS_ERR(clk))
->> >                 return -ENODEV;
->> >
->
-> This part is fine with me:
+Commit 6f542ebeaee0 ("MIPS: Fix race on setting and getting
+cpu_online_mask") effectively reverted commit 8f46cca1e6c06 ("MIPS: SMP:
+Fix possibility of deadlock when bringing CPUs online") and thus has
+reinstated the possibility of deadlock.
 
-That's all I wanted :)
->
-> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The commit was based on testing of kernel v4.4, where the CPU hotplug
+core code issued a BUG() if the starting CPU is not marked online when
+the boot CPU returns from __cpu_up. The commit fixes this race (in
+v4.4), but re-introduces the deadlock situation.
 
-Thank you!
+As noted in the commit message, upstream differs in this area. Commit
+8df3e07e7f21f ("cpu/hotplug: Let upcoming cpu bring itself fully up")
+adds a completion event in the CPU hotplug core code, making this race
+impossible. However, people were unhappy with relying on the core code
+to do the right thing.
 
+To address the issues both commits were trying to fix, add a second
+completion event in the MIPS smp hotplug path. It removes the
+possibility of a race, since the MIPS smp hotplug code now synchronises
+both the boot and secondary CPUs before they return to the hotplug core
+code. It also addresses the deadlock by ensuring that the secondary CPU
+is not marked online before it's counters are synchronised.
 
-Jonas
+This fix should also be backported to fix the race condition introduced
+by the backport of commit 8f46cca1e6c06 ("MIPS: SMP: Fix possibility of
+deadlock when bringing CPUs online"), through really that race only
+existed before commit 8df3e07e7f21f ("cpu/hotplug: Let upcoming cpu
+bring itself fully up").
+To apply cleanly it requires both commit a00eeede507c10 ("MIPS: SMP: Use
+a completion event to signal CPU up") and commit 6f542ebeaee0 ("MIPS:
+Fix race on setting and getting cpu_online_mask") to be applied.
+
+Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+CC: Matija Glavinic Pecotic <matija.glavinic-pecotic.ext@nokia.com>
+Fixes: 6f542ebeaee0 ("MIPS: Fix race on setting and getting cpu_online_mask")
+Cc: <stable@vger.kernel.org> # v4.1+
+Seires-cc: linux-mips@linux-mips.org
+---
+
+ arch/mips/kernel/smp.c | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
+
+diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
+index 6bace7695788..20d7bc5f0eb5 100644
+--- a/arch/mips/kernel/smp.c
++++ b/arch/mips/kernel/smp.c
+@@ -66,6 +66,7 @@ EXPORT_SYMBOL(cpu_sibling_map);
+ cpumask_t cpu_core_map[NR_CPUS] __read_mostly;
+ EXPORT_SYMBOL(cpu_core_map);
+ 
++static DECLARE_COMPLETION(cpu_starting);
+ static DECLARE_COMPLETION(cpu_running);
+ 
+ /*
+@@ -376,6 +377,12 @@ asmlinkage void start_secondary(void)
+ 	cpumask_set_cpu(cpu, &cpu_coherent_mask);
+ 	notify_cpu_starting(cpu);
+ 
++	/* Notify boot CPU that we're starting & ready to sync counters */
++	complete(&cpu_starting);
++
++	synchronise_count_slave(cpu);
++
++	/* The CPU is running and counters synchronised, now mark it online */
+ 	set_cpu_online(cpu, true);
+ 
+ 	set_cpu_sibling_map(cpu);
+@@ -383,8 +390,11 @@ asmlinkage void start_secondary(void)
+ 
+ 	calculate_cpu_foreign_map();
+ 
++	/*
++	 * Notify boot CPU that we're up & online and it can safely return
++	 * from __cpu_up
++	 */
+ 	complete(&cpu_running);
+-	synchronise_count_slave(cpu);
+ 
+ 	/*
+ 	 * irq will be enabled in ->smp_finish(), enabling it too early
+@@ -443,17 +453,17 @@ int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+ {
+ 	mp_ops->boot_secondary(cpu, tidle);
+ 
+-	/*
+-	 * We must check for timeout here, as the CPU will not be marked
+-	 * online until the counters are synchronised.
+-	 */
+-	if (!wait_for_completion_timeout(&cpu_running,
++	/* Wait for CPU to start and be ready to sync counters */
++	if (!wait_for_completion_timeout(&cpu_starting,
+ 					 msecs_to_jiffies(1000))) {
+ 		pr_crit("CPU%u: failed to start\n", cpu);
+ 		return -EIO;
+ 	}
+ 
+ 	synchronise_count_master(cpu);
++
++	/* Wait for CPU to finish startup & mark itself online before return */
++	wait_for_completion(&cpu_running);
+ 	return 0;
+ }
+ 
+-- 
+2.7.4

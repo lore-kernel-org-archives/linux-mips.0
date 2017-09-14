@@ -1,19 +1,22 @@
-Received: from mx2.rt-rk.com ([89.216.37.149]:52608 "EHLO mail.rt-rk.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992982AbdINQlkTrfvJ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 14 Sep 2017 18:41:40 +0200
-From: "Petar Jovanovic" <petar.jovanovic@rt-rk.com>
-References: <1489600751-82884-1-git-send-email-petar.jovanovic@rt-rk.com> <001b01d2ae25$d7554b80$85ffe280$@rt-rk.com> <56EA75BA695AE044ACFB41322F6D2BF4013D036343@BADAG02.ba.imgtec.org> <002c01d2c80f$52e66060$f8b32120$@rt-rk.com> <56EA75BA695AE044ACFB41322F6D2BF4013D048E49@BADAG02.ba.imgtec.org> <alpine.DEB.2.00.1705210223180.2590@tp.orcam.me.uk> <22c5e59d-fb87-9dbf-1285-2a5ff3b62497@caviumnetworks.com> <alpine.DEB.2.00.1705221846340.2590@tp.orcam.me.uk> <000a01d2e6a4$38a8fe70$a9fafb50$@rt-rk.com> <56EA75BA695AE044ACFB41322F6D2BF4013D065C1B@BADAG02.ba.imgtec.org> <alpine.DEB.2.00.1707062139020.3339@tp.orcam.me.uk> <000b01d2f715$6bb602f0$432208d0$@rt-rk.com> <alpine.DEB.2.00.1707071538030.3339@tp.orcam.me.uk>,<4e2cf7f4-a44c-3beb-290f-ecd483368d67@caviumnetworks.com> <56EA75BA695AE044ACFB41322F6D2BF4013D06C0AF@BADAG02.ba.imgtec.org>
-In-Reply-To: <56EA75BA695AE044ACFB41322F6D2BF4013D06C0AF@BADAG02.ba.imgtec.org>
-Subject: RE: [PATCH] MIPS: Octeon: Expose support for mips32r1, mips32r2 and mips64r1
-Date: Thu, 14 Sep 2017 18:41:34 +0200
-Message-ID: <000001d32d78$539cb260$fad61720$@rt-rk.com>
+Received: from omzsmtpe03.verizonbusiness.com ([199.249.25.208]:51083 "EHLO
+        omzsmtpe03.verizonbusiness.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990598AbdINTN5I8OZ9 convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 14 Sep 2017 21:13:57 +0200
+From: "Levin, Alexander (Sasha Levin)" <alexander.levin@verizon.com>
+Subject: Re: [PATCH for 4.9 11/59] MIPS: fix mem=X@Y commandline processing
+Date: Thu, 14 Sep 2017 19:11:21 +0000
+Message-ID: <20170914191119.y554znlpcnsershp@sasha-lappy>
+References: <20170914155051.8289-1-alexander.levin@verizon.com>
+ <20170914155051.8289-11-alexander.levin@verizon.com>
+ <CA+7wUszvyofkuLPb6K+E5ngJ7=e0CiCh1s+WQUBX0cG_MfnU7w@mail.gmail.com>
+In-Reply-To: <CA+7wUszvyofkuLPb6K+E5ngJ7=e0CiCh1s+WQUBX0cG_MfnU7w@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <A46EE134750CB948A818C653F8448450@vzwcorp.com>
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-us
-Return-Path: <petar.jovanovic@rt-rk.com>
+Return-Path: <alexander.levin@verizon.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,62 +26,53 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: 'Petar Jovanovic' <Petar.Jovanovic@imgtec.com>, 'David Daney' <ddaney@caviumnetworks.com>, 'Maciej Rozycki' <Maciej.Rozycki@imgtec.com>, ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org, david.daney@cavium.com
-Message-ID: <20170914164134.qKvX1c3MubYTDDo8zItFqXwt90w96Nj8dcwUMfS6Kgc@z>
+To: Mathieu Malaterre <malat@debian.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20170914191121.2TL78RDHLPNOikKZNyN5I9vSpJtVuhXsZqVjF2v7TMI@z>
 
-ping
-
------Original Message-----
-From: Petar Jovanovic [mailto:Petar.Jovanovic@imgtec.com] 
-Sent: Monday, August 7, 2017 7:00 PM
-To: David Daney <ddaney@caviumnetworks.com>; Maciej Rozycki
-<Maciej.Rozycki@imgtec.com>; Petar Jovanovic <petar.jovanovic@rt-rk.com>;
-ralf@linux-mips.org
-Cc: linux-mips@linux-mips.org; david.daney@cavium.com
-Subject: RE: [PATCH] MIPS: Octeon: Expose support for mips32r1, mips32r2 and
-mips64r1
-
-
-________________________________________
-From: David Daney [ddaney@caviumnetworks.com]
-Sent: Friday, July 07, 2017 6:19 PM
-To: Maciej Rozycki; Petar Jovanovic; ralf@linux-mips.org
-Cc: Petar Jovanovic; linux-mips@linux-mips.org; david.daney@cavium.com
-Subject: Re: [PATCH] MIPS: Octeon: Expose support for mips32r1, mips32r2 and
-mips64r1
-
-On 07/07/2017 08:04 AM, Maciej W. Rozycki wrote:
-> On Fri, 7 Jul 2017, Petar Jovanovic wrote:
+On Thu, Sep 14, 2017 at 08:59:05PM +0200, Mathieu Malaterre wrote:
+>On Thu, Sep 14, 2017 at 5:51 PM, Levin, Alexander (Sasha Levin)
+><alexander.levin@verizon.com> wrote:
+>> From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+>>
+>> [ Upstream commit 73fbc1eba7ffa3bf0ad12486232a8a1edb4e4411 ]
+>>
+>> When a memory offset is specified through the commandline, add the
+>> memory in range PHYS_OFFSET:Y as reserved memory area.
+>> Otherwise the bootmem allocator is initialised with low page equal to
+>> min_low_pfn = PHYS_OFFSET, and in free_all_bootmem will process pages
+>> starting from min_low_pfn instead of PFN(Y).
+>>
+>> Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+>> Cc: linux-mips@linux-mips.org
+>> Patchwork: https://urldefense.proofpoint.com/v2/url?u=https-3A__patchwork.linux-2Dmips.org_patch_14613_&d=DwIBaQ&c=udBTRvFvXC5Dhqg7UHpJlPps3mZ3LRxpb6__0PomBTQ&r=bUtaaC9mlBij4OjEG_D-KPul_335azYzfC4Rjgomobo&m=6siOw0e29CYMhuJcboVwEeX-LcC1yJjtnGPVl_1tClQ&s=rP-QGn8HHjuow4b4qd6sfl_EEPoAKkxAffkh1zEq-kc&e=
+>> Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
+>> Signed-off-by: Sasha Levin <alexander.levin@verizon.com>
+>> ---
+>>  arch/mips/kernel/setup.c | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>>
+>> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+>> index f66e5ce505b2..38697f25d168 100644
+>> --- a/arch/mips/kernel/setup.c
+>> +++ b/arch/mips/kernel/setup.c
+>> @@ -589,6 +589,10 @@ static int __init early_parse_mem(char *p)
+>>                 start = memparse(p + 1, &p);
+>>
+>>         add_memory_region(start, size, BOOT_MEM_RAM);
+>> +
+>> +       if (start && start > PHYS_OFFSET)
+>> +               add_memory_region(PHYS_OFFSET, start - PHYS_OFFSET,
+>> +                               BOOT_MEM_RESERVED);
+>>         return 0;
+>>  }
+>>  early_param("mem", early_parse_mem);
 >
->> As I said earlier in the thread, "in the current ToT, I have not seen 
->> where this change would affect apart from show_cpuinfo()"[1]. So, if 
->> someone implements Octeon-specific controls, where this should be used?
->
->   Right, `egrep -r 'cpu_has_(mips_r1|mips32r1|mips64r1|mips32r2)'
-arch/mips'
-> does not show anything else indeed.  Please make it unambiguous in the 
-> patch description then, i.e. that there is no functional change beyond 
-> reporting in `show_cpuinfo'.
->
->> I am not aware of the places where Octeon (ab)uses it in the current 
->> kernel code. David says he "cannot recall exactly what the issues 
->> were" [2].
->
+>Does not work on MIPS Creator CI20. See:
 
-> In my recent review of the code while working the the eBPF JIT, I 
-> tried to audit the use of cpu_has_* as it relates to OCTEON.  My 
-> current thoughts are that there is no reason not to merge Petar's patch.
+Hm, so upstream is actually broken right now?
 
-> Ralf, please add ...
+-- 
 
-> Acked-by: David Daney <david.daney@cavium.com>
-
-> Sorry for the pain here.
-
-
-Ralf?
-
-Regards,
-Petar
-=
+Thanks,
+Sasha

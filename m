@@ -1,16 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:18667 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993963AbdINNuZWGk5x (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 14 Sep 2017 15:50:25 +0200
-Date: Thu, 14 Sep 2017 14:50:07 +0100
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH v2] MIPS: Add basic R5900 support
-In-Reply-To: <20170911151737.GA2265@localhost.localdomain>
-Message-ID: <alpine.DEB.2.00.1709141423180.16752@tp.orcam.me.uk>
-References: <20170911151737.GA2265@localhost.localdomain>
+Received: from mx2.rt-rk.com ([89.216.37.149]:52608 "EHLO mail.rt-rk.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23992982AbdINQlkTrfvJ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 14 Sep 2017 18:41:40 +0200
+From: "Petar Jovanovic" <petar.jovanovic@rt-rk.com>
+References: <1489600751-82884-1-git-send-email-petar.jovanovic@rt-rk.com> <001b01d2ae25$d7554b80$85ffe280$@rt-rk.com> <56EA75BA695AE044ACFB41322F6D2BF4013D036343@BADAG02.ba.imgtec.org> <002c01d2c80f$52e66060$f8b32120$@rt-rk.com> <56EA75BA695AE044ACFB41322F6D2BF4013D048E49@BADAG02.ba.imgtec.org> <alpine.DEB.2.00.1705210223180.2590@tp.orcam.me.uk> <22c5e59d-fb87-9dbf-1285-2a5ff3b62497@caviumnetworks.com> <alpine.DEB.2.00.1705221846340.2590@tp.orcam.me.uk> <000a01d2e6a4$38a8fe70$a9fafb50$@rt-rk.com> <56EA75BA695AE044ACFB41322F6D2BF4013D065C1B@BADAG02.ba.imgtec.org> <alpine.DEB.2.00.1707062139020.3339@tp.orcam.me.uk> <000b01d2f715$6bb602f0$432208d0$@rt-rk.com> <alpine.DEB.2.00.1707071538030.3339@tp.orcam.me.uk>,<4e2cf7f4-a44c-3beb-290f-ecd483368d67@caviumnetworks.com> <56EA75BA695AE044ACFB41322F6D2BF4013D06C0AF@BADAG02.ba.imgtec.org>
+In-Reply-To: <56EA75BA695AE044ACFB41322F6D2BF4013D06C0AF@BADAG02.ba.imgtec.org>
+Subject: RE: [PATCH] MIPS: Octeon: Expose support for mips32r1, mips32r2 and mips64r1
+Date: Thu, 14 Sep 2017 18:41:34 +0200
+Message-ID: <000001d32d78$539cb260$fad61720$@rt-rk.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-us
+Return-Path: <petar.jovanovic@rt-rk.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,76 +23,62 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Fredrik Noring <noring@nocrew.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20170914135007.vMO4vF3sxDDX09ZlJgJeWgrmcNVPy0iTMvTQ9mcZcjM@z>
+To: 'Petar Jovanovic' <Petar.Jovanovic@imgtec.com>, 'David Daney' <ddaney@caviumnetworks.com>, 'Maciej Rozycki' <Maciej.Rozycki@imgtec.com>, ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org, david.daney@cavium.com
+Message-ID: <20170914164134.qKvX1c3MubYTDDo8zItFqXwt90w96Nj8dcwUMfS6Kgc@z>
 
-Hi Fredrik,
+ping
 
-> This sounds like a good plan. I did have a few comments and questions on the
-> rest of the code in
-> 
-> https://www.linux-mips.org/archives/linux-mips/2017-08/msg00570.html
+-----Original Message-----
+From: Petar Jovanovic [mailto:Petar.Jovanovic@imgtec.com] 
+Sent: Monday, August 7, 2017 7:00 PM
+To: David Daney <ddaney@caviumnetworks.com>; Maciej Rozycki
+<Maciej.Rozycki@imgtec.com>; Petar Jovanovic <petar.jovanovic@rt-rk.com>;
+ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org; david.daney@cavium.com
+Subject: RE: [PATCH] MIPS: Octeon: Expose support for mips32r1, mips32r2 and
+mips64r1
 
- I'll go through and try to address those questions one by one separately.
 
-> Can this be improved? CONFIG_R5900_128BIT_SUPPORT is configurable but the 32
-> bit programs I've tested become unstable unless it's set, so something isn't
-> quite working without it (which may or may not be related to the registers,
-> since CONFIG_R5900_128BIT_SUPPORT activates some other changes as well).
+________________________________________
+From: David Daney [ddaney@caviumnetworks.com]
+Sent: Friday, July 07, 2017 6:19 PM
+To: Maciej Rozycki; Petar Jovanovic; ralf@linux-mips.org
+Cc: Petar Jovanovic; linux-mips@linux-mips.org; david.daney@cavium.com
+Subject: Re: [PATCH] MIPS: Octeon: Expose support for mips32r1, mips32r2 and
+mips64r1
 
- For the initial R5900 support I think there are two options here, 
-depending on what hardware supports:
+On 07/07/2017 08:04 AM, Maciej W. Rozycki wrote:
+> On Fri, 7 Jul 2017, Petar Jovanovic wrote:
+>
+>> As I said earlier in the thread, "in the current ToT, I have not seen 
+>> where this change would affect apart from show_cpuinfo()"[1]. So, if 
+>> someone implements Octeon-specific controls, where this should be used?
+>
+>   Right, `egrep -r 'cpu_has_(mips_r1|mips32r1|mips64r1|mips32r2)'
+arch/mips'
+> does not show anything else indeed.  Please make it unambiguous in the 
+> patch description then, i.e. that there is no functional change beyond 
+> reporting in `show_cpuinfo'.
+>
+>> I am not aware of the places where Octeon (ab)uses it in the current 
+>> kernel code. David says he "cannot recall exactly what the issues 
+>> were" [2].
+>
 
-1. If (for binary compatibility reasons) 128-bit GPR support can somehow 
-   be disabled in hardware, by flipping a CP0 register bit or suchlike, 
-   then I suggest doing that in the first stage.
+> In my recent review of the code while working the the eBPF JIT, I 
+> tried to audit the use of cpu_has_* as it relates to OCTEON.  My 
+> current thoughts are that there is no reason not to merge Petar's patch.
 
-2. Otherwise I think that the context initialisation/switch code has to be 
-   adjusted such that the upper GPR halves are set to a known state, 
-   either zeroed or sign-extended from bit #63 (or #31 really, given the 
-   initial 32-bit port only) according to hardware requirements, so as to
-   make execution stable and prevent data from leaking between contexts.
+> Ralf, please add ...
 
-Later on proper 128-bit support can be added, though for that to make 
-sense you need to have compiler support too, which AFAICT is currently 
-missing.  Myself I'd rather defer commenting on that further support until 
-we get to it, although of course someone else might be willing to sketch 
-an idea.
+> Acked-by: David Daney <david.daney@cavium.com>
 
-> At what stage in the patch series would it be appropriate to introduce
-> support for quadword registers, and in what form?
+> Sorry for the pain here.
 
- Well, I think we need to stabilise base 32-bit and then 64-bit support 
-first.  So that'll be a separate patch or patch set to consider at that 
-point.
 
-> The rest of the notes comment on the new SYNC.P instruction, MFC0/MTC0,
-> short loop crashes in the memcpy/strlen family of functions, etc. Several of
-> these changes and workarounds are required for a stable system and would
-> need to be introduced in some form.
+Ralf?
 
- The exception handler workarounds should be easy to implement as we 
-generate machine code for them at run-time, so inserting a pair of NOPs 
-should be straightforward while not affecting any other target.  As a 
-solution addressing a grave hardware erratum this obviously has to be 
-included with your initial patch set, as a separate change because it's 
-self-contained.
-
- Any other workarounds are handled via <asm/war.h>.  Those which are 
-needed for correct initial 32-bit operation need to go with the initial 
-patch set as well, one change per issue.
-
- If SYNC acts as a hazard barrier for MFC0/MTC0, etc., then it can be 
-substituted for EHB/JR.HB where applicable.  We have infrastructure for 
-that in <asm/hazards.h> already, so you just need to hook in.  You may 
-have to expand that header of course if in the R5900 there are hazards not 
-already covered by EHB/JR.HB for other processors.  These will need to go 
-with the initial patch set too.
-
- And last but not least I suggest to structure your initial patch set such 
-that the commit containing Kconfig changes to enable R5900/PS2 comes last, 
-so that once that last patch goes in you can build a kernel that boots and 
-correctly works on actual hardware.
-
-  Maciej
+Regards,
+Petar
+=

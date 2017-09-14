@@ -1,21 +1,16 @@
-Received: from sauhun.de ([88.99.104.3]:53005 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23991412AbdIMUzu5RD1i (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 13 Sep 2017 22:55:50 +0200
-Date: Wed, 13 Sep 2017 22:55:44 +0200
-From: Wolfram Sang <wsa@the-dreams.de>
-Subject: Re: [PATCH 1/5] i2c: gpio: Convert to use descriptors
-Message-ID: <20170913205544.iatsjsb3ffohruwi@ninjato>
-References: <20170910214424.14945-1-linus.walleij@linaro.org>
- <20170910214424.14945-2-linus.walleij@linaro.org>
- <CAMuHMdXabvax2Wru8j+MC4X5F+z5hoUo1tEbX+zn2AUW6QENVA@mail.gmail.com>
- <CACRpkdb4LQAqyWpRAWGRxUOcTbWVksNc3FTWdPnYNE-AUHtfgg@mail.gmail.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:18667 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23993963AbdINNuZWGk5x (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 14 Sep 2017 15:50:25 +0200
+Date: Thu, 14 Sep 2017 14:50:07 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH v2] MIPS: Add basic R5900 support
+In-Reply-To: <20170911151737.GA2265@localhost.localdomain>
+Message-ID: <alpine.DEB.2.00.1709141423180.16752@tp.orcam.me.uk>
+References: <20170911151737.GA2265@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rpjnafryku246gtn"
-Content-Disposition: inline
-In-Reply-To: <CACRpkdb4LQAqyWpRAWGRxUOcTbWVksNc3FTWdPnYNE-AUHtfgg@mail.gmail.com>
-Return-Path: <wsa@the-dreams.de>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,43 +20,76 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Linux I2C <linux-i2c@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Steven Miao <realmz6@gmail.com>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Ralf Baechle <ralf@linux-mips.org>, "arm@kernel.org" <arm@kernel.org>, Lee Jones <lee.jones@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Message-ID: <20170913205544.jzRpFGi-TLD8Q9cn5INiyy1NeYmsD40rMudiwuhuwmM@z>
+To: Fredrik Noring <noring@nocrew.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20170914135007.vMO4vF3sxDDX09ZlJgJeWgrmcNVPy0iTMvTQ9mcZcjM@z>
 
+Hi Fredrik,
 
---rpjnafryku246gtn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> This sounds like a good plan. I did have a few comments and questions on the
+> rest of the code in
+> 
+> https://www.linux-mips.org/archives/linux-mips/2017-08/msg00570.html
 
+ I'll go through and try to address those questions one by one separately.
 
-> If Wolfram likes this series, I volunteer to rebase your patch
-> (oh well rewrite patch 2 from scratch, haha) on top of it as well
-> so he can apply the whole thing.
+> Can this be improved? CONFIG_R5900_128BIT_SUPPORT is configurable but the 32
+> bit programs I've tested become unstable unless it's set, so something isn't
+> quite working without it (which may or may not be related to the registers,
+> since CONFIG_R5900_128BIT_SUPPORT activates some other changes as well).
 
-Yes, I like Geert's series. Merging the two series sounds great to me
-and is probably easiest, but I'll leave it to you guys how to upstream
-it.
+ For the initial R5900 support I think there are two options here, 
+depending on what hardware supports:
 
+1. If (for binary compatibility reasons) 128-bit GPR support can somehow 
+   be disabled in hardware, by flipping a CP0 register bit or suchlike, 
+   then I suggest doing that in the first stage.
 
---rpjnafryku246gtn
-Content-Type: application/pgp-signature; name="signature.asc"
+2. Otherwise I think that the context initialisation/switch code has to be 
+   adjusted such that the upper GPR halves are set to a known state, 
+   either zeroed or sign-extended from bit #63 (or #31 really, given the 
+   initial 32-bit port only) according to hardware requirements, so as to
+   make execution stable and prevent data from leaking between contexts.
 
------BEGIN PGP SIGNATURE-----
+Later on proper 128-bit support can be added, though for that to make 
+sense you need to have compiler support too, which AFAICT is currently 
+missing.  Myself I'd rather defer commenting on that further support until 
+we get to it, although of course someone else might be willing to sketch 
+an idea.
 
-iQIzBAABCAAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAlm5m1AACgkQFA3kzBSg
-Kba9IBAAn7uOLxskwT8kgRTLzPXBB74aK9mmLaD1FQwvVLF0EcVoFYod987Zg3WA
-1QecZTUcKAqDFjc4HHUbHrzX8C/QrsKl2Bj+u8lt+iFkn5hlwpmE+mwjtcyT8OZF
-Lb8tMzKH3fLxBN9aSjMzt7klbhl9y1CFxOlKVueNEuY0ienwMG4NZAsBhWEoJwe+
-BCoeWK75P9Us1WFH4SbWqcxa5CMPfSfTTu0Rc8p1DFFrbo+ibjOAIcNNv/ac1RTT
-b1fdMo+8NEJjW1rnyB8l50IbevhgtWpPRrYsCl0dRWUZeKdbu5crT006V/28CCpV
-cc25Q+VGyBtGmTdtMtFIJBeRLrl6p3P1QS6d+/KBgZdYkbp5FKsjoXxGa1pQh7Lw
-ssPm9LLwPJ8uGvP1gjZnOWgOEjdpWO53QqrUKS2fXuJEsQQDwdMmK4V4MHY95wk9
-DDOnJ1YgeX6MbcfjS6j6lu6pwdji0g6IRIOYL1gCirTkDX/OpCAftRnbTVYwpuqR
-FwU3xhNXz1p4eDy43DlTNmiCmugkkkYWx3DQLymCIoHjWbXP3/mVNzenF65eKUBr
-wOgco1nJwC/1ktq7JEbZJ6jFce/TP5zGk/q69SCFZ3+mKhd/b07i/QIcr2yA0Vya
-4jjqwNmJxWTYRyf3Dcsjb9ybA95VgL5SNkW3e7w88kA25QdmwdU=
-=v60d
------END PGP SIGNATURE-----
+> At what stage in the patch series would it be appropriate to introduce
+> support for quadword registers, and in what form?
 
---rpjnafryku246gtn--
+ Well, I think we need to stabilise base 32-bit and then 64-bit support 
+first.  So that'll be a separate patch or patch set to consider at that 
+point.
+
+> The rest of the notes comment on the new SYNC.P instruction, MFC0/MTC0,
+> short loop crashes in the memcpy/strlen family of functions, etc. Several of
+> these changes and workarounds are required for a stable system and would
+> need to be introduced in some form.
+
+ The exception handler workarounds should be easy to implement as we 
+generate machine code for them at run-time, so inserting a pair of NOPs 
+should be straightforward while not affecting any other target.  As a 
+solution addressing a grave hardware erratum this obviously has to be 
+included with your initial patch set, as a separate change because it's 
+self-contained.
+
+ Any other workarounds are handled via <asm/war.h>.  Those which are 
+needed for correct initial 32-bit operation need to go with the initial 
+patch set as well, one change per issue.
+
+ If SYNC acts as a hazard barrier for MFC0/MTC0, etc., then it can be 
+substituted for EHB/JR.HB where applicable.  We have infrastructure for 
+that in <asm/hazards.h> already, so you just need to hook in.  You may 
+have to expand that header of course if in the R5900 there are hazards not 
+already covered by EHB/JR.HB for other processors.  These will need to go 
+with the initial patch set too.
+
+ And last but not least I suggest to structure your initial patch set such 
+that the commit containing Kconfig changes to enable R5900/PS2 comes last, 
+so that once that last patch goes in you can build a kernel that boots and 
+correctly works on actual hardware.
+
+  Maciej

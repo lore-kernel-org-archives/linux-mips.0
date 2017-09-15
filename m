@@ -1,17 +1,18 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:58843 "EHLO
-        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991500AbdIORDcaRfAH (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 15 Sep 2017 19:03:32 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH for 4.9 11/59] MIPS: fix mem=X@Y commandline processing
-Date: Fri, 15 Sep 2017 10:03:18 -0700
-Message-ID: <3096328.Gt2m8chjZN@np-p-burton>
-In-Reply-To: <7c4d02d8-3d96-3471-89b2-dba606367218@imgtec.com>
-References: <20170914155051.8289-1-alexander.levin@verizon.com> <CA+7wUsy7X_3ST0hgnyxWMiC45ZeM8A_oafzn9PuufETkcKN+Xw@mail.gmail.com> <7c4d02d8-3d96-3471-89b2-dba606367218@imgtec.com>
+Received: from mail-lf0-x243.google.com ([IPv6:2a00:1450:4010:c07::243]:38661
+        "EHLO mail-lf0-x243.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23991438AbdIORvfciBKM (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 15 Sep 2017 19:51:35 +0200
+Received: by mail-lf0-x243.google.com with SMTP id m199so1539681lfe.5
+        for <linux-mips@linux-mips.org>; Fri, 15 Sep 2017 10:51:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1947975.X4ZMmuJ0sv";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
-Return-Path: <Paul.Burton@imgtec.com>
+In-Reply-To: <20170910214424.14945-2-linus.walleij@linaro.org>
+References: <20170910214424.14945-1-linus.walleij@linaro.org> <20170910214424.14945-2-linus.walleij@linaro.org>
+From: Olof Johansson <olof@lixom.net>
+Date: Fri, 15 Sep 2017 10:51:28 -0700
+Message-ID: <CAOesGMitNqwjEHugsiwsmRAVSinUEv=eprJXHRRhSHUypm=b1A@mail.gmail.com>
+Subject: Re: [PATCH 1/5] i2c: gpio: Convert to use descriptors
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <olof@lixom.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,58 +22,27 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Cc: linux-mips@linux-mips.org, Mathieu Malaterre <malat@debian.org>, "Levin, Alexander (Sasha Levin)" <alexander.levin@verizon.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20170915170318.q-JzBbmpkZdqXmkD-scfjqAv8TpACD-PE2aEbIErdYU@z>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Wolfram Sang <wsa@the-dreams.de>, "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux-MIPS <linux-mips@linux-mips.org>, adi-buildroot-devel@lists.sourceforge.net, "arm@kernel.org" <arm@kernel.org>, Steven Miao <realmz6@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, Lee Jones <lee.jones@linaro.org>
+Message-ID: <20170915175128.f4yFs7QPcSU_abhtNN7n4nx2gD_Ys_K_EdWi6awo6Ig@z>
 
---nextPart1947975.X4ZMmuJ0sv
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+On Sun, Sep 10, 2017 at 2:44 PM, Linus Walleij <linus.walleij@linaro.org> wrote:
+[...]
+> Cc: arm@kernel.org
+> Cc: Steven Miao <realmz6@gmail.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> ARM SoC folks: requesting ACK for Wolfram to take this patch.
+> Steven (Blackfin): requesting ACK for Wolfram to take this patch.
+> Ralf (MIPS): requesting ACK for Wolfram to take this patch.
+> Lee: requesting ACK for Wolfram to take this patch.
 
-Hi Marcin,
+Acked-by: Olof Johansson <olof@lixom.net>
 
-On Thursday, 14 September 2017 22:44:18 PDT Marcin Nowakowski wrote:
-> >>> Does not work on MIPS Creator CI20. See:
-> >> Hm, so upstream is actually broken right now?
-> > 
-> > Yes, at least on Creator CI20. You need to clear out all your mem=X@Y
-> > from your boot command line, or apply the new patch I mentionned
-> > above, or revert 73fbc1eba7ffa3bf0ad12486232a8a1edb4e4411.
-> 
-> Yes, there is this issue that Mathieu discovered that upstream suffers
-> from. My patch that fixes it has not yet been merged - but hopefully
-> will be included in the next release.
-> Luckily the issue is only seen with a specific set of commandline
-> arguments which are not even required - but are set as defaults by the
-> CI20 bootloader.
+Wolfram: Same thing here, maybe this and the other patch can go on one
+branch for merge in case of conflicts.
 
-FYI the mem= arguments were required for the older v3.0 kernels which derived 
-from Ingenic's android kernels, and up until now have been harmless for newer 
-kernels so they generally make sense for the bootloader to provide in case 
-people want to run anything using the older kernels.
 
-Thanks,
-    Paul
---nextPart1947975.X4ZMmuJ0sv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAlm8B9YACgkQgiDZ+mk8
-HGXisw/+MgTFrvC0WKI9aLC7lpLfA8ejfsuwpoUSvt4h3cofrPmYdhK6WA5iqSWm
-HhPdjCZE94X8a4RfZINdDk+WfP8JbYwRSbrKx+mJQGQwUf9HtfLYJOmADoaUoXon
-WtYNjk6JzuSlMzPtcTWpbHKOb3dS9c33fsOCjrmSlmtXzLkw9bVQFXrl0dVL7pAq
-GW37wVKHUq7HIqKo29s0MgE5oKS02YJnztOFhap2SOu9ab+LrUw4jsVSOuDsGrkm
-yAEPRQU3W+XrofvevKnj0PjNzkx310ikXQz18BiKxTcUVi5xe4UnBP80zfME8jDw
-lwVnjPj2JECTJcX/IyjV7nRHf0FLH3LeltC9kzn52SOHBka3fe51b18AcnASDtft
-UbKs1zDasUABhcESIib7dGsDy8inYRii1hg/n1HAvj1uQUq/u3iJtbUvMILqj9fX
-mrvMkd/hseYypygU6e+WoiVd8qR57h2BpuRiIzlQ6EMtI38DERnGJytjG76I2D4M
-LXm5wdOaX5wfzHBmZPaksyjHWc4C98VfDNFbyM14ndhXzsZYQJgJ+h5PAf1ZGSui
-xZsViUk3bGiwodr3pXakUFdNKsYDALfIbNudFmDhhMNNarJxxx1MyfLlpfQPDdpt
-ozeqzBzmeWemIni4LTfRciC24YFwxdqdECUzyuiWfhKp9FxEXtA=
-=SFw6
------END PGP SIGNATURE-----
-
---nextPart1947975.X4ZMmuJ0sv--
+-Olof

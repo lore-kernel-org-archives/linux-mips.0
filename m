@@ -1,17 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:14801 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:58843 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23991445AbdIOLMx7OTKu (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 15 Sep 2017 13:12:53 +0200
-Date: Fri, 15 Sep 2017 12:12:37 +0100
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH] MIPS: Add basic R5900 support
-In-Reply-To: <20170912175826.GA2526@localhost.localdomain>
-Message-ID: <alpine.DEB.2.00.1709151136220.16752@tp.orcam.me.uk>
-References: <20170827132309.GA32166@localhost.localdomain> <alpine.DEB.2.00.1708271511430.17596@tp.orcam.me.uk> <20170902102830.GA2602@localhost.localdomain> <alpine.DEB.2.00.1709091022180.4331@tp.orcam.me.uk> <alpine.DEB.2.00.1709110610290.5244@tp.orcam.me.uk>
- <20170912175826.GA2526@localhost.localdomain>
+        with ESMTP id S23991500AbdIORDcaRfAH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 15 Sep 2017 19:03:32 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH for 4.9 11/59] MIPS: fix mem=X@Y commandline processing
+Date: Fri, 15 Sep 2017 10:03:18 -0700
+Message-ID: <3096328.Gt2m8chjZN@np-p-burton>
+In-Reply-To: <7c4d02d8-3d96-3471-89b2-dba606367218@imgtec.com>
+References: <20170914155051.8289-1-alexander.levin@verizon.com> <CA+7wUsy7X_3ST0hgnyxWMiC45ZeM8A_oafzn9PuufETkcKN+Xw@mail.gmail.com> <7c4d02d8-3d96-3471-89b2-dba606367218@imgtec.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+Content-Type: multipart/signed; boundary="nextPart1947975.X4ZMmuJ0sv";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,51 +21,58 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Fredrik Noring <noring@nocrew.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20170915111237.idmUaTJF0DLIW2Xe1uSgXcld4fpdrfgwmuDKa0atHVw@z>
+To: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
+Cc: linux-mips@linux-mips.org, Mathieu Malaterre <malat@debian.org>, "Levin, Alexander (Sasha Levin)" <alexander.levin@verizon.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20170915170318.q-JzBbmpkZdqXmkD-scfjqAv8TpACD-PE2aEbIErdYU@z>
 
-Hi Fredrik,
+--nextPart1947975.X4ZMmuJ0sv
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-> > >  Can you please try flipping the bits instead then, e.g.:
-> > > 
-> > > 	uint32_t fcsr0, fcsr1;
-> > > 	asm volatile (" cfc1 %0,$31\n"
-> > > 		      " lui  %1,0xfffc\n"
+Hi Marcin,
+
+On Thursday, 14 September 2017 22:44:18 PDT Marcin Nowakowski wrote:
+> >>> Does not work on MIPS Creator CI20. See:
+> >> Hm, so upstream is actually broken right now?
 > > 
-> >  Actually can you please substitute:
-> > 
-> > 		      " li   %1,0xfffc0003\n"
-> > 
-> > here, so that we know how RM behaves?
+> > Yes, at least on Creator CI20. You need to clear out all your mem=X@Y
+> > from your boot command line, or apply the new patch I mentionned
+> > above, or revert 73fbc1eba7ffa3bf0ad12486232a8a1edb4e4411.
 > 
-> Sure. I get "FCSR old: 01000001, new: 01800001" with the R5900.
+> Yes, there is this issue that Mathieu discovered that upstream suffers
+> from. My patch that fixes it has not yet been merged - but hopefully
+> will be included in the next release.
+> Luckily the issue is only seen with a specific set of commandline
+> arguments which are not even required - but are set as defaults by the
+> CI20 bootloader.
 
- Thanks, that is as I suspected then.
+FYI the mem= arguments were required for the older v3.0 kernels which derived 
+from Ingenic's android kernels, and up until now have been harmless for newer 
+kernels so they generally make sense for the bootloader to provide in case 
+people want to run anything using the older kernels.
 
- I wonder if FS=1 hardwired also means the Underflow exception cannot 
-happen.  As the corresponding Cause and Enable bits cannot be set together 
-or an FPE exception will happen right away, and the Unimplemented 
-Operation exception is uncoditional so we need to leave it out, can you 
-please also try these masks in turns:
+Thanks,
+    Paul
+--nextPart1947975.X4ZMmuJ0sv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-	      " li   %1,0x0001f07c\n"
+-----BEGIN PGP SIGNATURE-----
 
-and:
+iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAlm8B9YACgkQgiDZ+mk8
+HGXisw/+MgTFrvC0WKI9aLC7lpLfA8ejfsuwpoUSvt4h3cofrPmYdhK6WA5iqSWm
+HhPdjCZE94X8a4RfZINdDk+WfP8JbYwRSbrKx+mJQGQwUf9HtfLYJOmADoaUoXon
+WtYNjk6JzuSlMzPtcTWpbHKOb3dS9c33fsOCjrmSlmtXzLkw9bVQFXrl0dVL7pAq
+GW37wVKHUq7HIqKo29s0MgE5oKS02YJnztOFhap2SOu9ab+LrUw4jsVSOuDsGrkm
+yAEPRQU3W+XrofvevKnj0PjNzkx310ikXQz18BiKxTcUVi5xe4UnBP80zfME8jDw
+lwVnjPj2JECTJcX/IyjV7nRHf0FLH3LeltC9kzn52SOHBka3fe51b18AcnASDtft
+UbKs1zDasUABhcESIib7dGsDy8inYRii1hg/n1HAvj1uQUq/u3iJtbUvMILqj9fX
+mrvMkd/hseYypygU6e+WoiVd8qR57h2BpuRiIzlQ6EMtI38DERnGJytjG76I2D4M
+LXm5wdOaX5wfzHBmZPaksyjHWc4C98VfDNFbyM14ndhXzsZYQJgJ+h5PAf1ZGSui
+xZsViUk3bGiwodr3pXakUFdNKsYDALfIbNudFmDhhMNNarJxxx1MyfLlpfQPDdpt
+ozeqzBzmeWemIni4LTfRciC24YFwxdqdECUzyuiWfhKp9FxEXtA=
+=SFw6
+-----END PGP SIGNATURE-----
 
-	      " li   %1,0x00000f80\n"
-
-This will reveal if any of the Cause, Enable or Flag bits are hardwired.
-
-> >  Again, it is odd to see it set to 1 (towards zero) by default and if it 
-> > is hardwired, then `->fpu_csr31' and `->fpu_msk31' will have to be 
-> > updated, AT_FPUCW exported and glibc adjusted.
-> 
-> Right. Quite a few details to resolve for the FPU then. Here is the
-> disassembly to double-check the compiled code:
-
- Nothing unusual here.  As you can see GCC has been smart enough to 
-schedule temporaries right in argument registers passed to the `printf' 
-call. :)
-
-  Maciej
+--nextPart1947975.X4ZMmuJ0sv--

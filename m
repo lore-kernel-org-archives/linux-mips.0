@@ -1,16 +1,16 @@
-Received: from mail-pg0-x244.google.com ([IPv6:2607:f8b0:400e:c05::244]:34879
-        "EHLO mail-pg0-x244.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993122AbdIRJLiqLl8Q (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 18 Sep 2017 11:11:38 +0200
-Received: by mail-pg0-x244.google.com with SMTP id j16so4942476pga.2
-        for <linux-mips@linux-mips.org>; Mon, 18 Sep 2017 02:11:38 -0700 (PDT)
+Received: from mail-pg0-x242.google.com ([IPv6:2607:f8b0:400e:c05::242]:37379
+        "EHLO mail-pg0-x242.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992517AbdIRJ0LUEC0M (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 18 Sep 2017 11:26:11 +0200
+Received: by mail-pg0-x242.google.com with SMTP id v5so4954286pgn.4
+        for <linux-mips@linux-mips.org>; Mon, 18 Sep 2017 02:26:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170917093906.16325-6-linus.walleij@linaro.org>
-References: <20170917093906.16325-1-linus.walleij@linaro.org> <20170917093906.16325-6-linus.walleij@linaro.org>
+In-Reply-To: <20170917093906.16325-8-linus.walleij@linaro.org>
+References: <20170917093906.16325-1-linus.walleij@linaro.org> <20170917093906.16325-8-linus.walleij@linaro.org>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 18 Sep 2017 11:11:31 +0200
-Message-ID: <CAMuHMdX=AyJ2JVSBO8YwcfCMxEFAwEHe7Wxd_d4OreZaWFoF=A@mail.gmail.com>
-Subject: Re: [PATCH 5/7] i2c: gpio: Local vars in probe
+Date: Mon, 18 Sep 2017 11:26:04 +0200
+Message-ID: <CAMuHMdX4+e6D_AEdvVF2Ubyxs0L6-53fqwot=wDXfPatvnMGTg@mail.gmail.com>
+Subject: Re: [PATCH 7/7] i2c: gpio: Add support for named gpios in DT
 Content-Type: text/plain; charset="UTF-8"
 Return-Path: <geert.uytterhoeven@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
@@ -24,49 +24,24 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Linus Walleij <linus.walleij@linaro.org>
 Cc: Wolfram Sang <wsa@the-dreams.de>, Linux I2C <linux-i2c@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>
-Message-ID: <20170918091131.HUSaPXEMLfzZnL56DeVJ3nEGaZFn7jPwiliKU62T1Ro@z>
-
-Hi Linus,
+Message-ID: <20170918092604.Wlr6YtGKh366Q4bpa3_83cqtOV1NRCN0xdqsDOzRhh8@z>
 
 On Sun, Sep 17, 2017 at 11:39 AM, Linus Walleij
 <linus.walleij@linaro.org> wrote:
-> By creating local variables for *dev and *np, the code become
-> much easier to read, in my opinion.
+> This adds support for using the "sda" and "scl" GPIOs in
+> device tree instead of anonymously using index 0 and 1 of
+> the "gpios" property.
 >
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> I put this at the end of the series because compared to the
-> rest of the patches it is completely unimportant.
-> ---
->  drivers/i2c/busses/i2c-gpio.c | 26 ++++++++++++++------------
->  1 file changed, 14 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/i2c/busses/i2c-gpio.c b/drivers/i2c/busses/i2c-gpio.c
-> index 97b9c29e9429..beb5ce523684 100644
-> --- a/drivers/i2c/busses/i2c-gpio.c
-> +++ b/drivers/i2c/busses/i2c-gpio.c
+> We add a helper function to retrieve the GPIO descriptors
+> and some explicit error handling since the probe may have
+> to be deferred. At least this happened to me when moving
+> to using named "sda" and "scl" lines (all of a sudden this
+> started to probe before the GPIO driver) so we need to
+> gracefully defer probe when we ge -ENOENT in the error
 
-> @@ -99,15 +101,15 @@ static int i2c_gpio_probe(struct platform_device *pdev)
->         bit_data = &priv->bit_data;
->         pdata = &priv->pdata;
->
-> -       if (pdev->dev.of_node) {
-> -               of_i2c_gpio_get_props(pdev->dev.of_node, pdata);
-> +       if (np) {
-> +               of_i2c_gpio_get_props(np, pdata);
->         } else {
->                 /*
->                  * If all platform data settings are zero it is OK
->                  * to not provide any platform data from the board.
->                  */
-> -               if (dev_get_platdata(&pdev->dev))
-> -                       memcpy(pdata, dev_get_platdata(&pdev->dev),
-> +               if (dev_get_platdata(dev))
-> +                       memcpy(pdata, dev_get_platdata(dev),
->                                sizeof(*pdata));
+get
 
-This fits on one line again (you have to do something to offset the LoC
-increase 14 insertions(+), 12 deletions(-) ;-)
+> pointer.
 
 Gr{oetje,eeting}s,
 

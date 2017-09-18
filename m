@@ -1,21 +1,18 @@
-Received: from mail-out.m-online.net ([212.18.0.9]:51414 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990451AbdIRFHThuWzi (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 18 Sep 2017 07:07:19 +0200
-Subject: Re: [PATCH 1/5] i2c: gpio: Convert to use descriptors
-References: <20170910214424.14945-1-linus.walleij@linaro.org>
- <20170910214424.14945-2-linus.walleij@linaro.org>
- <20170914093509.uwk47vt3wnm3rtqb@dell>
- <CACRpkdZYDALXSoEE9jdo7A5P4XZczVbh_uiLkE54=sRtA3rNDQ@mail.gmail.com>
-Reply-To: hs@denx.de
-From: Heiko Schocher <hs@denx.de>
-Message-ID: <59BF5483.9020403@denx.de>
-Date: Mon, 18 Sep 2017 07:07:15 +0200
+Received: from mail-pg0-x244.google.com ([IPv6:2607:f8b0:400e:c05::244]:34879
+        "EHLO mail-pg0-x244.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993122AbdIRJLiqLl8Q (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 18 Sep 2017 11:11:38 +0200
+Received: by mail-pg0-x244.google.com with SMTP id j16so4942476pga.2
+        for <linux-mips@linux-mips.org>; Mon, 18 Sep 2017 02:11:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdZYDALXSoEE9jdo7A5P4XZczVbh_uiLkE54=sRtA3rNDQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <hs@denx.de>
+In-Reply-To: <20170917093906.16325-6-linus.walleij@linaro.org>
+References: <20170917093906.16325-1-linus.walleij@linaro.org> <20170917093906.16325-6-linus.walleij@linaro.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 18 Sep 2017 11:11:31 +0200
+Message-ID: <CAMuHMdX=AyJ2JVSBO8YwcfCMxEFAwEHe7Wxd_d4OreZaWFoF=A@mail.gmail.com>
+Subject: Re: [PATCH 5/7] i2c: gpio: Local vars in probe
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <geert.uytterhoeven@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,33 +23,58 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Lee Jones <lee.jones@linaro.org>, Ben Dooks <ben@fluff.org.uk>, Ville Syrjala <syrjala@sci.fi>, Magnus Damm <magnus.damm@gmail.com>, Guenter Roeck <linux@roeck-us.net>, Wolfram Sang <wsa@the-dreams.de>, "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS <linux-mips@linux-mips.org>, adi-buildroot-devel@lists.sourceforge.net, "arm@kernel.org" <arm@kernel.org>, Steven Miao <realmz6@gmail.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20170918050715.qdBfp4ERzyRa7V79FZ0wj_70t3mgPCxRbsCnRMhtvfU@z>
+Cc: Wolfram Sang <wsa@the-dreams.de>, Linux I2C <linux-i2c@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>
+Message-ID: <20170918091131.HUSaPXEMLfzZnL56DeVJ3nEGaZFn7jPwiliKU62T1Ro@z>
 
-Hello Linux,
+Hi Linus,
 
-Am 17.09.2017 um 00:25 schrieb Linus Walleij:
-> On Thu, Sep 14, 2017 at 11:35 AM, Lee Jones <lee.jones@linaro.org> wrote:
+On Sun, Sep 17, 2017 at 11:39 AM, Linus Walleij
+<linus.walleij@linaro.org> wrote:
+> By creating local variables for *dev and *np, the code become
+> much easier to read, in my opinion.
 >
->>>   drivers/mfd/sm501.c                          |  49 +++++-----
->>
->> I'd prefer for this to be applied with a Tested-by.  I appreciate that
->> this is an old driver, but can you attempt to contact one of the
->> authors or someone else who might have hardware please?
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> I put this at the end of the series because compared to the
+> rest of the patches it is completely unimportant.
+> ---
+>  drivers/i2c/busses/i2c-gpio.c | 26 ++++++++++++++------------
+>  1 file changed, 14 insertions(+), 12 deletions(-)
 >
-> For SM501 specifically I guess.
->
-> OK makes sense as it is the most invasive one, paging around...
->
-> Ben, Ville, Magnus, Heiko, Guenther: is one of you still using this
-> hardware so you can test the patch set?
+> diff --git a/drivers/i2c/busses/i2c-gpio.c b/drivers/i2c/busses/i2c-gpio.c
+> index 97b9c29e9429..beb5ce523684 100644
+> --- a/drivers/i2c/busses/i2c-gpio.c
+> +++ b/drivers/i2c/busses/i2c-gpio.c
 
-I am Sorry, I do not have the hardware anymore so no chance to test
-it :-(
+> @@ -99,15 +101,15 @@ static int i2c_gpio_probe(struct platform_device *pdev)
+>         bit_data = &priv->bit_data;
+>         pdata = &priv->pdata;
+>
+> -       if (pdev->dev.of_node) {
+> -               of_i2c_gpio_get_props(pdev->dev.of_node, pdata);
+> +       if (np) {
+> +               of_i2c_gpio_get_props(np, pdata);
+>         } else {
+>                 /*
+>                  * If all platform data settings are zero it is OK
+>                  * to not provide any platform data from the board.
+>                  */
+> -               if (dev_get_platdata(&pdev->dev))
+> -                       memcpy(pdata, dev_get_platdata(&pdev->dev),
+> +               if (dev_get_platdata(dev))
+> +                       memcpy(pdata, dev_get_platdata(dev),
+>                                sizeof(*pdata));
 
-bye,
-Heiko
--- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-52   Fax: +49-8142-66989-80   Email: hs@denx.de
+This fits on one line again (you have to do something to offset the LoC
+increase 14 insertions(+), 12 deletions(-) ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

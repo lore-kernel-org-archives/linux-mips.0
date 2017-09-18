@@ -1,16 +1,16 @@
-Received: from mail-pg0-x243.google.com ([IPv6:2607:f8b0:400e:c05::243]:35823
-        "EHLO mail-pg0-x243.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990505AbdIRJ6ruhK0M (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 18 Sep 2017 11:58:47 +0200
-Received: by mail-pg0-x243.google.com with SMTP id j16so4989291pga.2
-        for <linux-mips@linux-mips.org>; Mon, 18 Sep 2017 02:58:47 -0700 (PDT)
+Received: from mail-pg0-x244.google.com ([IPv6:2607:f8b0:400e:c05::244]:33748
+        "EHLO mail-pg0-x244.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992126AbdIRLQCrt6tR (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 18 Sep 2017 13:16:02 +0200
+Received: by mail-pg0-x244.google.com with SMTP id i130so82214pgc.0
+        for <linux-mips@linux-mips.org>; Mon, 18 Sep 2017 04:16:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20170917093906.16325-8-linus.walleij@linaro.org>
-References: <20170917093906.16325-1-linus.walleij@linaro.org> <20170917093906.16325-8-linus.walleij@linaro.org>
+In-Reply-To: <20170917093906.16325-1-linus.walleij@linaro.org>
+References: <20170917093906.16325-1-linus.walleij@linaro.org>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 18 Sep 2017 11:58:40 +0200
-Message-ID: <CAMuHMdX+bx9pNEAFoBzfM7JhhH800u-HumpQYRsG3d5BNuduvg@mail.gmail.com>
-Subject: Re: [PATCH 7/7] i2c: gpio: Add support for named gpios in DT
+Date: Mon, 18 Sep 2017 13:15:55 +0200
+Message-ID: <CAMuHMdWOt3e7eT4_wF8QJVM=aZNNcou+tGmjZOyvOziutedv_w@mail.gmail.com>
+Subject: Re: [PATCH 0/7] I2C GPIO to use gpiolibs open drain
 Content-Type: text/plain; charset="UTF-8"
 Return-Path: <geert.uytterhoeven@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
@@ -24,62 +24,55 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Linus Walleij <linus.walleij@linaro.org>
 Cc: Wolfram Sang <wsa@the-dreams.de>, Linux I2C <linux-i2c@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>
-Message-ID: <20170918095840.nfqy5Xmeq31M84N1AXDP3shOd8SU5INilAMEEI582-g@z>
+Message-ID: <20170918111555.D54ncKLu6JheKoyLDj52mmJASO660OOKI9kPzGDxumc@z>
 
 Hi Linus,
 
-On Sun, Sep 17, 2017 at 11:39 AM, Linus Walleij
+On Sun, Sep 17, 2017 at 11:38 AM, Linus Walleij
 <linus.walleij@linaro.org> wrote:
-> This adds support for using the "sda" and "scl" GPIOs in
-> device tree instead of anonymously using index 0 and 1 of
-> the "gpios" property.
+> This augments the I2C GPIO driver to use open drain emulation
+> or hardware support for open drain from the GPIO driver.
 >
-> We add a helper function to retrieve the GPIO descriptors
-> and some explicit error handling since the probe may have
-> to be deferred. At least this happened to me when moving
-> to using named "sda" and "scl" lines (all of a sudden this
-> started to probe before the GPIO driver) so we need to
-> gracefully defer probe when we ge -ENOENT in the error
-> pointer.
+> This version layers Geert Uytterhoeven's idea to use explicit
+> sda-gpios and scl-gpios for the GPIO lines, and strongly
+> encourage the (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN) flags to be
+> used in all device trees.
 >
-> Suggested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> This is pretty much a rewrite of Geerts patch on top of
-> my own changes to support descriptors.
-> ---
->  drivers/i2c/busses/i2c-gpio.c | 59 +++++++++++++++++++++++++++++++------------
->  1 file changed, 43 insertions(+), 16 deletions(-)
+> We have collected ACKs from the ARM SoC maintainers and the
+> MFD maintainer and are looking for testers to try this out.
 >
-> diff --git a/drivers/i2c/busses/i2c-gpio.c b/drivers/i2c/busses/i2c-gpio.c
-> index beb5ce523684..2738b851f470 100644
-> --- a/drivers/i2c/busses/i2c-gpio.c
-> +++ b/drivers/i2c/busses/i2c-gpio.c
-> @@ -82,6 +82,42 @@ static void of_i2c_gpio_get_props(struct device_node *np,
->                 of_property_read_bool(np, "i2c-gpio,scl-output-only");
->  }
+> Geert Uytterhoeven (1):
+>   dt-bindings: i2c: i2c-gpio: Add support for named gpios
 >
-> +static struct gpio_desc *i2c_gpio_get_desc(struct device *dev,
-> +                                          const char *con_id,
-> +                                          unsigned int index,
-> +                                          enum gpiod_flags gflags)
-> +{
-> +       struct gpio_desc *retdesc;
-> +       int ret;
+> Linus Walleij (6):
+>   i2c: gpio: Convert to use descriptors
+>   gpio: Make it possible for consumers to enforce open drain
+>   i2c: gpio: Enforce open drain through gpiolib
+>   i2c: gpio: Augment all boardfiles to use open drain
+>   i2c: gpio: Local vars in probe
+>   i2c: gpio: Add support for named gpios in DT
 
-[...]
+Thanks for doing this, and picking up my patch.
 
-> +       if (ret != -EPROBE_DEFER)
-> +               dev_err(dev, "error trying to get descriptor: %ld\n", ret);
+I gave this a try on r8a7740/armadillo800eva.
+Without DT changes, the GPIO i2c bus still works fine, but a warning is
+printed, as expected:
 
-warning: format '%ld' expects argument of type 'long int', but
-argument 3 has type 'int' [-Wformat=]
+    gpio-208 (sda): enforced open drain please flag it properly in
+DT/ACPI DSDT/board file
+    gpio-91 (scl): enforced open drain please flag it properly in
+DT/ACPI DSDT/board file
 
-%d (0day busy?)
+After
 
-> +
-> +       return retdesc;
-> +}
+    -  sda-gpios = <&pfc 208 GPIO_ACTIVE_HIGH>;
+    -  scl-gpios = <&pfc 91 GPIO_ACTIVE_HIGH>;
+    + sda-gpios = <&pfc 208 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+    + scl-gpios = <&pfc 91 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+
+the warning is gone, and the GPIO i2c bus still works.
+
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
 Gr{oetje,eeting}s,
 

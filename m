@@ -1,14 +1,14 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:55450 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:20238 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993914AbdISNLm1sXaD (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 19 Sep 2017 15:11:42 +0200
-From: James Hogan <james.hogan@imgtec.com>
-Subject: [PATCH] MIPS: Fix input modify in __write_64bit_c0_split()
-Date: Tue, 19 Sep 2017 14:11:22 +0100
-Message-ID: <20170919131122.23926-1-james.hogan@imgtec.com>
+        with ESMTP id S23990825AbdITFHtIc-09 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 20 Sep 2017 07:07:49 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: [PATCH] MIPS: Fix perf event init
+Date: Tue, 19 Sep 2017 22:07:18 -0700
+Message-ID: <20170920050718.22756-1-paul.burton@imgtec.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <James.Hogan@imgtec.com>
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,89 +19,54 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20170919131122.WqFtS2B7YDFrCwHw_QQy0CjDOAEARKR_UH0jDRDF9Nc@z>
+Cc: Paul Burton <paul.burton@imgtec.com>, Alexey Dobriyan <adobriyan@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Ralf Baechle <ralf@linux-mips.org>, stable <stable@vger.kernel.org>
+Message-ID: <20170920050718.q_ev_36HdAvePc20DNoan7rF_Y6QKwj2gZ9JNxq9H2g@z>
 
-The inline asm in __write_64bit_c0_split() modifies the 64-bit input
-operand by shifting the high register left by 32, and constructing the
-full 64-bit value in the low register (even on a 32-bit kernel), so if
-that value is used again it could cause breakage as GCC would assume the
-registers haven't changed when they have.
+Commit c311c797998c ("cpumask: make "nr_cpumask_bits" unsigned")
+modified mipspmu_event_init() to cast the struct perf_event cpu field to
+an unsigned integer before it is compared with nr_cpumask_bits (and
+*ahem* did so without copying the linux-mips mailing list or any MIPS
+developers...). This is broken because the cpu field may be -1 for
+events which follow a process rather than being affine to a particular
+CPU. When this is the case the cast to an unsigned int results in a
+value equal to ULONG_MAX, which is always greater than nr_cpumask_bits
+so we always fail mipspmu_event_init() and return -ENODEV.
 
-To quote the GCC extended asm documentation:
-> Warning: Do not modify the contents of input-only operands (except for
-> inputs tied to outputs). The compiler assumes that on exit from the
-> asm statement these operands contain the same values as they had
-> before executing the statement.
+The check against nr_cpumask_bits seems nonsensical anyway, so this
+patch simply removes it. The cpu field is going to either be -1 or a
+valid CPU number. Comparing it with nr_cpumask_bits is effectively
+checking that it's a valid cpu number, but it seems safe to rely on the
+core perf events code to ensure that's the case.
 
-Avoid modifying the input by using a temporary variable as an output
-which is modified instead of the input and not otherwise used. The asm
-is always __volatile__ so GCC shouldn't optimise it out. The low
-register of the temporary output is written before the high register of
-the input is read, so we have two constraint alternatives, one where
-both use the same registers (for when the input value isn't subsequently
-used), and one with an early clobber on the output in case the low
-output uses the same register as the high input. This allows the
-resulting assembly to remain mostly unchanged.
+The end result is that this fixes use of perf on MIPS when not
+constraining events to a particular CPU, and fixes the "perf list hw"
+command which fails to list any events without this.
 
-A diff of a MIPS32r6 kernel reveals only three differences, two in
-relation to write_c0_r10k_diag() in cpu_probe() (register allocation
-rearranged slightly but otherwise identical), and one in relation to
-write_c0_cvmmemctl2() in kvm_vz_local_flush_guesttlb_all(), but the
-octeon CPU is only supported on 64-bit kernels where
-__write_64bit_c0_split() isn't used so that shouldn't matter in
-practice. So there currently doesn't appear to be anything broken by
-this bug.
-
-Signed-off-by: James Hogan <james.hogan@imgtec.com>
+Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+Fixes: c311c797998c ("cpumask: make "nr_cpumask_bits" unsigned")
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org
+Cc: stable <stable@vger.kernel.org> # v4.12+
 ---
- arch/mips/include/asm/mipsregs.h | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index e4ed1bc9a734..a6810923b3f0 100644
---- a/arch/mips/include/asm/mipsregs.h
-+++ b/arch/mips/include/asm/mipsregs.h
-@@ -1377,29 +1377,32 @@ do {									\
+ arch/mips/kernel/perf_event_mipsxx.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
+index ea994cd80009..15ce0004a2f4 100644
+--- a/arch/mips/kernel/perf_event_mipsxx.c
++++ b/arch/mips/kernel/perf_event_mipsxx.c
+@@ -618,8 +618,7 @@ static int mipspmu_event_init(struct perf_event *event)
+ 		return -ENOENT;
+ 	}
  
- #define __write_64bit_c0_split(source, sel, val)			\
- do {									\
-+	unsigned long long __tmp;					\
- 	unsigned long __flags;						\
- 									\
- 	local_irq_save(__flags);					\
- 	if (sel == 0)							\
- 		__asm__ __volatile__(					\
- 			".set\tmips64\n\t"				\
--			"dsll\t%L0, %L0, 32\n\t"			\
-+			"dsll\t%L0, %L1, 32\n\t"			\
- 			"dsrl\t%L0, %L0, 32\n\t"			\
--			"dsll\t%M0, %M0, 32\n\t"			\
-+			"dsll\t%M0, %M1, 32\n\t"			\
- 			"or\t%L0, %L0, %M0\n\t"				\
- 			"dmtc0\t%L0, " #source "\n\t"			\
- 			".set\tmips0"					\
--			: : "r" (val));					\
-+			: "=&r,r" (__tmp)				\
-+			: "r,0" (val));					\
- 	else								\
- 		__asm__ __volatile__(					\
- 			".set\tmips64\n\t"				\
--			"dsll\t%L0, %L0, 32\n\t"			\
-+			"dsll\t%L0, %L1, 32\n\t"			\
- 			"dsrl\t%L0, %L0, 32\n\t"			\
--			"dsll\t%M0, %M0, 32\n\t"			\
-+			"dsll\t%M0, %M1, 32\n\t"			\
- 			"or\t%L0, %L0, %M0\n\t"				\
- 			"dmtc0\t%L0, " #source ", " #sel "\n\t"		\
- 			".set\tmips0"					\
--			: : "r" (val));					\
-+			: "=&r,r" (__tmp)				\
-+			: "r,0" (val));					\
- 	local_irq_restore(__flags);					\
- } while (0)
+-	if ((unsigned int)event->cpu >= nr_cpumask_bits ||
+-	    (event->cpu >= 0 && !cpu_online(event->cpu)))
++	if (event->cpu >= 0 && !cpu_online(event->cpu))
+ 		return -ENODEV;
  
+ 	if (!atomic_inc_not_zero(&active_events)) {
 -- 
 2.14.1

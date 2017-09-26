@@ -1,17 +1,19 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:61630 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:6793 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23990505AbdIZLvAwveQm (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 26 Sep 2017 13:51:00 +0200
-Date: Tue, 26 Sep 2017 12:50:40 +0100
-From: "Maciej W. Rozycki" <macro@imgtec.com>
-Subject: Re: [PATCH v2] MIPS: Add basic R5900 support
-In-Reply-To: <20170920145440.GB9255@localhost.localdomain>
-Message-ID: <alpine.DEB.2.00.1709201705070.16752@tp.orcam.me.uk>
-References: <20170911151737.GA2265@localhost.localdomain> <alpine.DEB.2.00.1709141423180.16752@tp.orcam.me.uk> <20170916133423.GB32582@localhost.localdomain> <alpine.DEB.2.00.1709171001160.16752@tp.orcam.me.uk> <20170918192428.GA391@localhost.localdomain>
- <alpine.DEB.2.00.1709182055090.16752@tp.orcam.me.uk> <20170920145440.GB9255@localhost.localdomain>
+        with ESMTP id S23992036AbdIZN5r5oF7a (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 26 Sep 2017 15:57:47 +0200
+Subject: Re: [PATCH] net: stmmac: Meet alignment requirements for DMA
+References: <1506078833-14002-1-git-send-email-matt.redfearn@imgtec.com>
+ <20170922.182639.272534775457081015.davem@davemloft.net>
+From: Matt Redfearn <matt.redfearn@imgtec.com>
+Message-ID: <587dc9a8-b974-e222-95b4-93c2a8f2aba2@imgtec.com>
+Date: Tue, 26 Sep 2017 14:57:39 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@imgtec.com>
+In-Reply-To: <20170922.182639.272534775457081015.davem@davemloft.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Return-Path: <Matt.Redfearn@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,97 +23,101 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Fredrik Noring <noring@nocrew.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20170926115040.vcMUovwcBlKOGw0I5P6mysMyajcG2wbO0Jgc3vcx7lI@z>
+To: David Miller <davem@davemloft.net>
+Cc: netdev@vger.kernel.org, alexandre.torgue@st.com, peppe.cavallaro@st.com, linux-kernel@vger.kernel.org, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>, James Hogan <james.hogan@imgtec.com>
+Message-ID: <20170926135739.NpgqXCSDwEqOFt2vnJCQRyZUkTeUO3auEuZ0TMRhTRU@z>
 
-Hi Fredrik,
+Hi David,
 
-> > > The transition from 128-bit registers to 64-bit registers was easy (in a
-> > > 32-bit kernel) by changing the LONGD_{L,S} macros in asm.h from quadword
-> > > {L,S}Q to doubleword {L,S}D instructions, and changing pt_regs::regs[32]
-> > > from r5900_reg_t to unsigned long long.
-> > 
-> >  But why did you have to change anything there in the first place?  All 
-> > that's there is generic stuff.
-> 
-> The 128-bit register save/restore infrastructure is part of the original
-> 2.6.35 patch for R5900 support, that I ported to 4.12 and we're about to
-> disentangle. The original patch crashes similarly unless full 128-bit GPRs
-> are handled in 32-bit or 64-bit kernels, so this particular issue appears
-> to remain intact. Hopefully we will be able to figure out cause and fix.
+Thanks for your feedback.
 
- Ack.
 
- BTW I think that when we get to supporting 128-bit registers we want to 
-avoid changing the definition of LONG_{L,S} macros, because these are used 
-for purposes beyond context access.
+On 23/09/17 02:26, David Miller wrote:
+> From: Matt Redfearn <matt.redfearn@imgtec.com>
+> Date: Fri, 22 Sep 2017 12:13:53 +0100
+>
+>> According to Documentation/DMA-API.txt:
+>>   Warnings:  Memory coherency operates at a granularity called the cache
+>>   line width.  In order for memory mapped by this API to operate
+>>   correctly, the mapped region must begin exactly on a cache line
+>>   boundary and end exactly on one (to prevent two separately mapped
+>>   regions from sharing a single cache line).  Since the cache line size
+>>   may not be known at compile time, the API will not enforce this
+>>   requirement.  Therefore, it is recommended that driver writers who
+>>   don't take special care to determine the cache line size at run time
+>>   only map virtual regions that begin and end on page boundaries (which
+>>   are guaranteed also to be cache line boundaries).
+> This is rediculious.  You're misreading what this document is trying
+> to explain.
 
- Instead I think these macros as well all the ones in <asm/stackframe.h> 
-should remain unchanged and the save and restoration of the 64-bit upper 
-halves done separately, most likely in `switch_to', which is where all the 
-user context registers which like these upper halves are not touched by 
-the kernel (and which are not handled lazily by other means) are switched.
+To be clear, is your interpretation of the documentation that drivers do 
+not have to ensure cacheline alignment?
 
- Having come to this conclusion I think the clearing of upper halves I 
-have previously suggested for the initial stage will best be done in 
-`switch_to' as well.
+As I read that documentation of the DMA API, it puts the onus on device 
+drivers to ensure that they operate on cacheline aligned & sized blocks 
+of memory. It states "the mapped region must begin exactly on a cache 
+line boundary". We know that skb->data is not cacheline aligned, since 
+it is skb_headroom() bytes into the skb buffer, and the value of 
+skb_headroom is not a multiple of cachelines. To give an example, on the 
+Creator Ci40 platform (a 32bit MIPS platform), I have the following values:
+skb_headroom(skb) = 130 bytes
+sbb->head = 0x8ed9b800 (32byte cacheline aligned)
+skb->data = 0x8ed9b882 (not cacheline aligned)
 
-> >  But all that is something for a later stage; right now I suggest that you 
-> > figure out what's causing registers to become clobbered and fix it there.
-> 
-> My thinking was simply that we could try to use the (already patched up)
-> 128-bit infrastructure, that seems to work quite well, as a debug tool in
-> this particular case. I understand that merging it is another matter.
+Since the MIPS architecture requires software cache management, 
+performing a dma_map_single(TO_DEVICE) will writeback and invalidate the 
+cachelines for the required region. To comply with (our interpretation 
+of) the DMA API documentation, the MIPS implementation expects a 
+cacheline aligned & sized buffer, so that it can writeback a set of 
+complete cachelines. Indeed a recent patch 
+(https://patchwork.linux-mips.org/patch/14624/) causes the MIPS dma 
+mapping code to emit warnings if the buffer it is requested to sync is 
+not cachline aligned. This driver, as is, fails this test and causes 
+thousands of warnings to be emitted.
 
- Sure, use whatever tools you have available at hand to debug.
+The situation for dma_map_single(FROM_DEVICE) is potentially worse, 
+since it will perform a cache invalidate of all lines for the buffer. If 
+the buffer is not cacheline aligned, this will throw away any adjacent 
+data in the same cacheline. The dma_map implementation has no way to 
+know if data adjacent to the buffer it is requested to sync is valuable 
+or not, and it will simply be thrown away by the cache invalidate.
 
-> >  Use `file' or `readelf -h' on the BusyBox binary to double-check the ABI 
-> > it has been built for.  Although I doubt there will be issues with the 
-> > executable, as it would crash on any of the other MIPS processors which 
-> > implement the 32-bit mode correctly.
-> 
-> As previously mentioned all binaries I've tested so far declare "ELF 32-bit
-> LSB, MIPS, MIPS-III version 1" with file. mipsel-linux-readelf says
-> 
-> ELF Header:
->   Magic:   7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00
->   Class:                             ELF32
->   Data:                              2's complement, little endian
->   Version:                           1 (current)
->   OS/ABI:                            UNIX - System V
->   ABI Version:                       0
->   Type:                              EXEC (Executable file)
->   Machine:                           MIPS R3000
->   Version:                           0x1
->   Entry point address:               0x402d90
->   Start of program headers:          52 (bytes into file)
->   Start of section headers:          276156 (bytes into file)
->   Flags:                             0x20920003, noreorder, pic, unknown CPU, mips3
->   Size of this header:               52 (bytes)
->   Size of program headers:           32 (bytes)
->   Number of program headers:         7
->   Size of section headers:           40 (bytes)
->   Number of section headers:         25
->   Section header string table index: 24
-> 
-> but it's unclear to me whether it's generic or somehow tailored for R5900.
+If I am somehow misinterpreting the DMA API documentation, and drivers 
+are NOT required to ensure that buffers to be synced are cacheline 
+aligned, then there is only one way that the MIPS implementation can 
+ensure that it writeback / invalidates cachelines containing only the 
+requested data buffer, and that would be to use bounce buffers. Clearly 
+that will be devastating for performance as every outgoing packet will 
+need to be copied from it's unaligned location to a guaranteed aligned 
+location, and written back from there. Similarly incoming packets would 
+have to somehow be initially located in a cacheline aligned location 
+before being copied into the non-cacheline aligned location supplied by 
+the driver.
 
- Thanks for this dump.  The binary is indeed for the R5900, according to 
-`Flags' having 0x92 in bits 23:16:
+> As long as you use the dma_{map,unamp}_single() and sync to/from
+> deivce interfaces properly, the cacheline issues will be handled properly
+> and the cpu and the device will see proper uptodate memory contents.
 
-#define E_MIPS_MACH_5900	0x00920000
+I interpret the DMA API document (and the MIPS arch dma code operates 
+this way) as stating that the driver must ensure that buffers passed to 
+it are cacheline aligned, and cacheline sized, to prevent cache 
+management throwing away adjacent data in the same cacheline.
 
-[which shows up as `unknown CPU' because the port submitter forgot to add 
-decoding of this value to `readelf'; I've now fixed that upstream].  So it 
-could be doing something odd if there was a bug somewhere in the toolchain 
-used.
+That is what this patch is for, to change the buffer address passed to 
+the DMA API to skb->head, which is (as far as I know) guaranteed to be 
+cacheline aligned.
 
- Can you try a regular 32-bit MIPS Debian distribution instead?
+>
+> It is completely rediculious to require every driver to stash away two
+> sets of pointer for every packet, and to DMA map the headroom of the SKB
+> which is wasteful.
+>
+> I'm not applying this, fix this problem properly, thanks.
 
- BTW, I have just noticed that DMULT, DMULTU, DDIV and DDIVU instructions 
-are not implemented.  Which means that a 64-bit kernel will only work if 
-compiled with `-march=r5900' and emulation is required for 64-bit user 
-programs.
+An alternative, slightly less invasive change, may be to subtract 
+NET_IP_ALIGN from the dma buffer address, so that the buffer for which a 
+sync is requested is cacheline aligned (is that guaranteed?). Would that 
+change be more acceptable?
 
-  Maciej
+Thanks,
+Matt

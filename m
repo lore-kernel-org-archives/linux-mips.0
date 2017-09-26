@@ -1,18 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:4487 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:23284 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992078AbdIZN7VdfI0a (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 26 Sep 2017 15:59:21 +0200
-Date: Tue, 26 Sep 2017 14:59:14 +0100
-From: James Hogan <james.hogan@imgtec.com>
-Subject: Re: potential deadlock in r4k_flush_cache_sigtramp()
-Message-ID: <20170926135914.GW17077@jhogan-linux.le.imgtec.org>
-References: <20170923134021.GN32076@ZenIV.linux.org.uk>
+        with ESMTP id S23992111AbdIZSsfTxFES (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 26 Sep 2017 20:48:35 +0200
+From: Paul Burton <paul.burton@imgtec.com>
+Subject: Re: [PATCH] net: stmmac: Meet alignment requirements for DMA
+Date: Tue, 26 Sep 2017 11:48:19 -0700
+Message-ID: <71740323.RRBhnhefTi@np-p-burton>
+In-Reply-To: <20170926.103400.1009342814128022820.davem@davemloft.net>
+References: <1506078833-14002-1-git-send-email-matt.redfearn@imgtec.com> <587dc9a8-b974-e222-95b4-93c2a8f2aba2@imgtec.com> <20170926.103400.1009342814128022820.davem@davemloft.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="lrvsYIebpInmECXG"
-Content-Disposition: inline
-In-Reply-To: <20170923134021.GN32076@ZenIV.linux.org.uk>
-Return-Path: <James.Hogan@imgtec.com>
+Content-Type: multipart/signed; boundary="nextPart1593612.t0nK0YYSNi";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
+Return-Path: <Paul.Burton@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,116 +21,79 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Al Viro <viro@ZenIV.linux.org.uk>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20170926135914.hda_gwVinS3seL8wvnnEYHqTRafT7zs670qc59mvvHQ@z>
+To: David Miller <davem@davemloft.net>
+Cc: matt.redfearn@imgtec.com, netdev@vger.kernel.org, alexandre.torgue@st.com, peppe.cavallaro@st.com, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, james.hogan@imgtec.com
+Message-ID: <20170926184819.9Zy8Z1NTfVXsrVvLFyZHlzsgyx-JgvqHRajE4xvzf3I@z>
 
---lrvsYIebpInmECXG
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+--nextPart1593612.t0nK0YYSNi
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Hi Al,
+Hi David,
 
-On Sat, Sep 23, 2017 at 02:40:21PM +0100, Al Viro wrote:
-> 	Calling get_user_pages_fast() while holding ->mmap_sem is
-> asking for trouble:
->=20
-> CPU1: r4k_flush_cache_sigtramp()
-> 	down_read(&current->mm->mmap_sem);
->=20
-> CPU2: (running thread with the same ->mm): sys_pkey_alloc()
-> 	down_write(&current->mm->mmap_sem);
->=20
-> CPU1:
-> 	pages =3D get_user_pages_fast(addr, 1, 0, &args.page);
-> which hits an absent page and goto slow.  Then it goes on to
->         ret =3D get_user_pages_unlocked(start, (end - start) >> PAGE_SHIF=
-T,
->                                       pages, write ? FOLL_WRITE : 0);
-> which does
->         return __get_user_pages_unlocked(current, current->mm, start, nr_=
-pages,
->                                          pages, gup_flags | FOLL_TOUCH);
-> which does
->         down_read(&mm->mmap_sem);
->         ret =3D __get_user_pages_locked(tsk, mm, start, nr_pages, pages, =
-NULL,=20
->                                       &locked, false, gup_flags);
->=20
-> and we have a classical deadlock on recursive down_read() (thread 1: down=
-_read()
-> gets the rwsem; thread 2: down_write() blocks waiting for thread 1 to rel=
-ease
-> it; thread 1: down_read() blocks waiting for thread 2 to get through down=
-_write()
-> and eventual up_write(), which completes the deadlock).
+On Tuesday, 26 September 2017 10:34:00 PDT David Miller wrote:
+> From: Matt Redfearn <matt.redfearn@imgtec.com>
+> Date: Tue, 26 Sep 2017 14:57:39 +0100
+> 
+> > Since the MIPS architecture requires software cache management,
+> > performing a dma_map_single(TO_DEVICE) will writeback and invalidate
+> > the cachelines for the required region. To comply with (our
+> > interpretation of) the DMA API documentation, the MIPS implementation
+> > expects a cacheline aligned & sized buffer, so that it can writeback a
+> > set of complete cachelines. Indeed a recent patch
+> > (https://patchwork.linux-mips.org/patch/14624/) causes the MIPS dma
+> > mapping code to emit warnings if the buffer it is requested to sync is
+> > not cachline aligned. This driver, as is, fails this test and causes
+> > thousands of warnings to be emitted.
+> 
+> For a device write, if the device does what it is told and does not
+> access bytes outside of the periphery of the DMA mapping, nothing bad
+> can happen.
+> 
+> When the DMA buffer is mapped, the cpu side cachelines are flushed (even
+> ones which are partially part of the requsted mapping, this is _fine_).
 
-Hmm, indeed. Thanks for spotting that one.
+This is not fine. Let's presume we writeback+invalidate the cache lines that 
+are only partially covered by the DMA mapping at its beginning or end, and 
+just invalidate all the lines that are wholly covered by the mapping. So far 
+so good.
 
-> Replacing pkey_alloc(2) with e.g. mmap(2) turns that from hard deadlock i=
-nto
-> something killable, but while "with bad timing you might get process stuck
-> hard" is worse than "with bad timing you might get process stuck until you
-> kill -9 it", neither is a good thing.
->=20
-> I'm not familiar enough with arch/mips guts to suggest any variant of sol=
-ution;
-> replacing get_user_pages_fast() with get_user_pages_locked() would solve =
-the
-> deadlock, but that loses the fast path; not taking ->mmap_sem there have
-> local_r4k_flush_cache_sigtramp() run without fcs_args->mm being locked, w=
-hich
-> might or might not be a problem.  Suggestions?
+> The device writes into only the bytes it was given access to, which
+> starts at the DMA address.
 
-I suspect my concern was the theoretical situation where:
+OK - still fine but *only* if we don't write to anything that happens to be 
+part of the cache lines that are only partially covered by the DMA mapping & 
+make them dirty. If we do then any writeback of those lines will clobber data 
+the device wrote, and any invalidation of them will discard data the CPU 
+wrote.
 
-task1 hits an FPU branch instruction that needs emulating
-	this creates a trampoline above the stack in user memory to
-	execute the delay slot instruction, and calls
-	r4k_flush_cache_sigtramp()
+How would you have us ensure that such writes don't occur?
 
-task2 in same process changes the memory mapping somehow.
+This really does not feel to me like something to leave up to drivers without 
+any means of checking or enforcing correctness. The requirement to align DMA 
+mappings at cache-line boundaries, as outlined in Documentation/DMA-API.txt, 
+allows this to be enforced. If you want to ignore this requirement then there 
+is no clear way to verify that we aren't writing to cache lines involved in a 
+DMA transfer whilst the transfer is occurring, and no sane way to handle those 
+cache lines if we do.
 
-SMP call to local_r4k_flush_cache_sigtramp()
-	it may do cache op using the user virtual address when same mm
-	active, or using kmap otherwise.
+> The unmap and/or sync operation after the DMA transfer needs to do
+> nothing on the cpu side since the map operation flushed the cpu side
+> caches already.
+> 
+> When the cpu reads, it will pull the cacheline from main memory and
+> see what the device wrote.
 
-For the kmap case (SMP call to CPU with different process executing) its
-holding a reference to the page so it should be fine. If the page was
-swapped out or otherwise copied and it icache flushed the old page, then
-I think the new page would get flushed when swapped back in so thats
-fine.
+This is not true, because:
 
-Otherwise I can't imagine a situation where it'd misbehave unless
-userland explicitly remapped the memory and it accessed using the
-virtual address, in which case its asking for trouble.
+1) CPUs may speculatively read data. In between the invalidations that we did
+   earlier & the point at which the transfer completes, the CPU may have
+   speculatively read any arbitrary part of the memory mapped for DMA.
 
-Therefore I suspect it should be safe to drop the mmap_sem, but thats
-OTOH. Have I missed anything important?
+2) If we wrote to any lines that are only partially covered by the DMA mapping
+   then of course they're valid & dirty, and an access won't fetch from main
+   memory.
 
-Thanks
-James
-
---lrvsYIebpInmECXG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlnKXSQACgkQbAtpk944
-dnrRPQ//ZmQFwDu7CejwqzHyi/u3CCecII8btEZe2rNTCS61zTl3tl9EQXcJPFbF
-r81OfroJz81yt2xl1tINAXh12W5DxMYF+sraJRaLf7XH9537sZdB2COxtdSKiEkt
-zKjvpeEZRC8tz/P+E7ejUyJGt7sjxvedVk/zB/r3yz/TDzwvmeGv6cZexAmCB4HI
-PFpq7DVuIZWGB+xo0Moq9J+rAalevp9SJVbnyD0uFDFdRI/+EMZ2RMtH7SoHmOhO
-fp1iuxTdaH1UXQDanIlJOyc5eKpOw7Vz44qtlK14ahK13TiwTT3lZM0OO+XsLeT3
-HH3vgCI8qEBP8dOaK2KQcp9aYQ+w3CBXWd5qaipl7jgzLNYKCU7lL33zKm/GLHn1
-sZe9OJOS0Tb0Z9FeTJ+Jq9w1OnELR2ViQRDzU8dMM0voL8BUugB5c6lUUyqkPp1O
-JsQnlaC1r8VZ1gNuWNREjla5HY1mkKgl5NLiLLI/sy/VCHz/mI6i1UiKSJBBJ5SL
-UJiAF96MeJYkH1O5VRX3qFOC4zY/QmQkPhwRi8T6yREIbtX9uUJu4Au/YyjSRlrn
-cxYburPxOq1ATqRaUAdgq5XINl4JFX1nOecMLpUS9sfkPUK7r3ktVYppGPMnwV4Z
-bAD4P+BZ4uZxO2+PGYR4abVXLCXkIw1Nhu4FEGkZ6Fu2JCtdfSc=
-=A3Pd
------END PGP SIGNATURE-----
-
---lrvsYIebpInmECXG--
+We therefore need to perform cache invalidation again at the end of the 
+transfer - on MIPS you can grep for cpu_needs_post_dma_flush to find this. 
+--nextPart1593612.t0nK0YYSNi--

@@ -1,17 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:57115 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:61630 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23990411AbdIVTC6xNdIg (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Sep 2017 21:02:58 +0200
-From: Paul Burton <paul.burton@imgtec.com>
-Subject: Re: [PATCH 1/4] MIPS: Search main exception table for data bus errors
-Date: Fri, 22 Sep 2017 12:02:43 -0700
-Message-ID: <2306573.vrYFQDzPkg@np-p-burton>
-In-Reply-To: <20170922094727.GI4851@linux-mips.org>
-References: <20170922064447.28728-1-paul.burton@imgtec.com> <20170922064447.28728-2-paul.burton@imgtec.com> <20170922094727.GI4851@linux-mips.org>
+        with ESMTP id S23990505AbdIZLvAwveQm (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 26 Sep 2017 13:51:00 +0200
+Date: Tue, 26 Sep 2017 12:50:40 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH v2] MIPS: Add basic R5900 support
+In-Reply-To: <20170920145440.GB9255@localhost.localdomain>
+Message-ID: <alpine.DEB.2.00.1709201705070.16752@tp.orcam.me.uk>
+References: <20170911151737.GA2265@localhost.localdomain> <alpine.DEB.2.00.1709141423180.16752@tp.orcam.me.uk> <20170916133423.GB32582@localhost.localdomain> <alpine.DEB.2.00.1709171001160.16752@tp.orcam.me.uk> <20170918192428.GA391@localhost.localdomain>
+ <alpine.DEB.2.00.1709182055090.16752@tp.orcam.me.uk> <20170920145440.GB9255@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart3484465.qZ9cYAPr62";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
-Return-Path: <Paul.Burton@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,128 +21,97 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, stable <stable@vger.kernel.org>
-Message-ID: <20170922190243.VyRAw63jse_2pl-TAadfqQFMhkTE2ZkeGPtDLOsyVg8@z>
+To: Fredrik Noring <noring@nocrew.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20170926115040.vcMUovwcBlKOGw0I5P6mysMyajcG2wbO0Jgc3vcx7lI@z>
 
---nextPart3484465.qZ9cYAPr62
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Hi Fredrik,
 
-Hi Ralf,
-
-On Friday, 22 September 2017 02:47:27 PDT Ralf Baechle wrote:
-> On Thu, Sep 21, 2017 at 11:44:44PM -0700, Paul Burton wrote:
-> > We have 2 exception tables in MIPS kernels:
-> >   - __ex_table which is the main exception table used in places where
-> >   
-> >     the kernel might fault accessing a user address.
-> >   
-> >   - __dbe_table which is used in various platform & driver code that
-> >   
-> >     expects that it might trigger a bus error exception.
+> > > The transition from 128-bit registers to 64-bit registers was easy (in a
+> > > 32-bit kernel) by changing the LONGD_{L,S} macros in asm.h from quadword
+> > > {L,S}Q to doubleword {L,S}D instructions, and changing pt_regs::regs[32]
+> > > from r5900_reg_t to unsigned long long.
 > > 
-> > When a data bus error exception occurs we only search __dbe_table, and
-> > thus we have the expectation that access to user addresses will not
-> > trigger bus errors.
-> > 
-> > Sadly, this expectation is not true - at least not since we began
-> > mapping the GIC user page for use with the VDSO in commit a7f4df4e21dd
-> > ("MIPS: VDSO: Add implementations of gettimeofday() and
-> > clock_gettime()"). The GIC user page provides user code with direct
-> > access to a hardware-provided memory mapped register interface, albeit a
-> > very simple one containing a single register. Like many register
-> > interfaces however it has limitations - notably like the rest of the GIC
-> > register interface it requires that accesses to it are either 32 bit or
-> > 64 bit. Any smaller accesses generate a data bus error exception. Herein
-> > our bug lies - we have no such restrictions upon kernel access to user
-> > memory, and users can freely cause the kernel to attempt smaller than 32
-> > 
-> > bit accesses in various ways:
-> >   - Perform an unaligned memory access. In cases where this isn't
-> >   
-> >     handled by the CPU, such as when accessing uncached memory like the
-> >     GIC register interface, we'll proceed to attempt to emulate the
-> >     unaligned access via do_ade() using byte-sized loads or stores on
-> >     MIPSr6 systems.
-> >   
-> >   - Cause the kernel to invoke __copy_from_user(), __copy_to_user() or
-> >   
-> >     one of their variants acting upon uncached memory with either a
-> >     non-32bit-aligned address or size. Similarly this will cause the
-> >     kernel to perform smaller than 32 bit memory accesses. Many syscalls
-> >     will allow this to be triggered.
-> > 
-> > When the kernel attempts smaller than 32 bit access to the GIC user page
-> > via any of these means, it generates a bus error exception. We then
-> > check __dbe_table for a fixup, find none & call die_if_kernel() from
-> > do_be(). Essentially we allow user code to kill the kernel, or rather to
-> > cause the kernel to kill itself.
-> > 
-> > This patch fixes this problem rather simply by searching __ex_table for
-> > fixups if we take a data bus error exception which has no fixup in
-> > __dbe_table. All of the vulnerable user memory accesses should already
-> > have entries in __ex_table, and making use of them seems reasonable.
-> > 
-> > I have marked this for stable backport as far as v4.4 which introduced
-> > the VDSO, and provided users with access to the GIC user page in commit
-> > a7f4df4e21dd ("MIPS: VDSO: Add implementations of gettimeofday() and
-> > clock_gettime()"). Searching __ex_table may have made sense prior to
-> > that, but I'm currently unaware of any other cases in which it could
-> > cause problems.
+> >  But why did you have to change anything there in the first place?  All 
+> > that's there is generic stuff.
 > 
-> Unfortunately the DBE exception is imprecise.  The EPC might actually point
-> to the far end of the kernel and have no useful relation at all to the
-> instruction triggering it.
+> The 128-bit register save/restore infrastructure is part of the original
+> 2.6.35 patch for R5900 support, that I ported to 4.12 and we're about to
+> disentangle. The original patch crashes similarly unless full 128-bit GPRs
+> are handled in 32-bit or 64-bit kernels, so this particular issue appears
+> to remain intact. Hopefully we will be able to figure out cause and fix.
+
+ Ack.
+
+ BTW I think that when we get to supporting 128-bit registers we want to 
+avoid changing the definition of LONG_{L,S} macros, because these are used 
+for purposes beyond context access.
+
+ Instead I think these macros as well all the ones in <asm/stackframe.h> 
+should remain unchanged and the save and restoration of the 64-bit upper 
+halves done separately, most likely in `switch_to', which is where all the 
+user context registers which like these upper halves are not touched by 
+the kernel (and which are not handled lazily by other means) are switched.
+
+ Having come to this conclusion I think the clearing of upper halves I 
+have previously suggested for the initial stage will best be done in 
+`switch_to' as well.
+
+> >  But all that is something for a later stage; right now I suggest that you 
+> > figure out what's causing registers to become clobbered and fix it there.
 > 
-> As a consequence a false fixup might be used resulting in very silly and
-> probably bad things happening.
+> My thinking was simply that we could try to use the (already patched up)
+> 128-bit infrastructure, that seems to work quite well, as a debug tool in
+> this particular case. I understand that merging it is another matter.
+
+ Sure, use whatever tools you have available at hand to debug.
+
+> >  Use `file' or `readelf -h' on the BusyBox binary to double-check the ABI 
+> > it has been built for.  Although I doubt there will be issues with the 
+> > executable, as it would crash on any of the other MIPS processors which 
+> > implement the 32-bit mode correctly.
 > 
-> So this needs a different solution.
+> As previously mentioned all binaries I've tested so far declare "ELF 32-bit
+> LSB, MIPS, MIPS-III version 1" with file. mipsel-linux-readelf says
 > 
->   Ralf
+> ELF Header:
+>   Magic:   7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00
+>   Class:                             ELF32
+>   Data:                              2's complement, little endian
+>   Version:                           1 (current)
+>   OS/ABI:                            UNIX - System V
+>   ABI Version:                       0
+>   Type:                              EXEC (Executable file)
+>   Machine:                           MIPS R3000
+>   Version:                           0x1
+>   Entry point address:               0x402d90
+>   Start of program headers:          52 (bytes into file)
+>   Start of section headers:          276156 (bytes into file)
+>   Flags:                             0x20920003, noreorder, pic, unknown CPU, mips3
+>   Size of this header:               52 (bytes)
+>   Size of program headers:           32 (bytes)
+>   Number of program headers:         7
+>   Size of section headers:           40 (bytes)
+>   Number of section headers:         25
+>   Section header string table index: 24
+> 
+> but it's unclear to me whether it's generic or somehow tailored for R5900.
 
-Fair point, depending upon the CPU. That makes things difficult though...
+ Thanks for this dump.  The binary is indeed for the R5900, according to 
+`Flags' having 0x92 in bits 23:16:
 
-Handling the unaligned emulation case is "easy" if we simply refuse to emulate 
-unaligned access to uncached memory. Generally uncached mappings are going to 
-be device I/O which the kernel probably ought not to go attempting to emulate 
-without knowing the semantics required for access. Emulating unaligned 
-accesses is already a slow path so adding in the check for cacheability seems 
-reasonable. I've written a patch which does this & seems to work fine.
+#define E_MIPS_MACH_5900	0x00920000
 
-Handling copy_from_user()/copy_to_user() & company though is harder. 
-Theoretically we could do the same cacheability check in __access_ok() but 
-that would add a fair chunk of overhead to regular user memory access. There 
-are also the user string functions (strncpy_from_user, strnlen_user) which 
-don't appear to check access_ok() at all and presumably just rely on 
-recovering from any exceptions via __ex_table.
+[which shows up as `unknown CPU' because the port submitter forgot to add 
+decoding of this value to `readelf'; I've now fixed that upstream].  So it 
+could be doing something odd if there was a bug somewhere in the toolchain 
+used.
 
-I'm not sure there's a clean and efficient way to do this without letting the 
-bus error happen & recovering afterwards. Any ideas?
+ Can you try a regular 32-bit MIPS Debian distribution instead?
 
-Thanks,
-    Paul
---nextPart3484465.qZ9cYAPr62
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+ BTW, I have just noticed that DMULT, DMULTU, DDIV and DDIVU instructions 
+are not implemented.  Which means that a 64-bit kernel will only work if 
+compiled with `-march=r5900' and emulation is required for 64-bit user 
+programs.
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEELIGR03D5+Fg+69wPgiDZ+mk8HGUFAlnFXlMACgkQgiDZ+mk8
-HGXoag//V1FklUTTrjDtB3V4x8PjIDKxhRZ4YFGm8HTtCuOY6YSfLacbgl/1W7Gt
-PgBOf7scz25GgGHBQ/ggrIWAjpeqHUkvE1+wDWZA2mcy5T6AMEbMp2iKpKNd/492
-60AY7oDv8MyziBcsbbbSDu603W08cWids0D4B2kLe/RuGwsr6cOoGNqKjNnOt29g
-vPFWCyj2GJUfWhbWkkgD3HEyufnOOIwrDQIIKZvGps8WF6FZsrXIirP+wXy0TiGC
-oANhQj/8k1faT7FadzQDX39gOnWhGKs2WaCuEA2W1NTg9wN3G9lFI0BR17LqxeuM
-vM2ejINZrKklIRMie6kVpced/C7gKUAJGCRS/P/1fn5j4Ozq6i83eVGp7q8N/I/W
-ukNFa1K7aRRs5WPH3PWlZr0/aZ70gc+8Hu1kLtrICR5xEH1UaRnnHusrmGG6JrPT
-QgMVg1gI5bW5T2kDqDuoWGUzUG4pcT/+n2eCGs3CtB4FRlpzAVMFGIWOHnlksaxX
-adKYCE0PC448KYhf6VgUi58+NEtATv/uhFoH78A1Zk/Rxvqa6IBdBL2hNmQa1cuV
-H0/gjY8PcSDg/TwjMEs+DrztN/KiZ7mV0uwMCaY6orZVxFOqnQd8OCIelCYLzh+g
-ylPzyG7SdZvAVEHFAVaSIp308Swt7rXE2f51iCmZ95JHJeFb0Xk=
-=F5rI
------END PGP SIGNATURE-----
-
---nextPart3484465.qZ9cYAPr62--
+  Maciej

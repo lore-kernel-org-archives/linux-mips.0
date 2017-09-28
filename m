@@ -1,16 +1,17 @@
-Received: from mailapp01.imgtec.com ([195.59.15.196]:43088 "EHLO
+Received: from mailapp01.imgtec.com ([195.59.15.196]:33408 "EHLO
         mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992181AbdI0MStQ4iOJ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 27 Sep 2017 14:18:49 +0200
-From: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Subject: [PATCH 2/2] MIPS: crypto: Add crc32 and crc32c hw accelerated module
-Date: Wed, 27 Sep 2017 14:18:36 +0200
-Message-ID: <1506514716-29470-3-git-send-email-marcin.nowakowski@imgtec.com>
-In-Reply-To: <1506514716-29470-1-git-send-email-marcin.nowakowski@imgtec.com>
-References: <1506514716-29470-1-git-send-email-marcin.nowakowski@imgtec.com>
+        with ESMTP id S23992312AbdI1MOGjMySa (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 28 Sep 2017 14:14:06 +0200
+Date: Thu, 28 Sep 2017 13:13:45 +0100
+From: "Maciej W. Rozycki" <macro@imgtec.com>
+Subject: Re: [PATCH v2] MIPS: Add basic R5900 support
+In-Reply-To: <20170927172107.GB2631@localhost.localdomain>
+Message-ID: <alpine.DEB.2.00.1709272208300.16752@tp.orcam.me.uk>
+References: <20170911151737.GA2265@localhost.localdomain> <alpine.DEB.2.00.1709141423180.16752@tp.orcam.me.uk> <20170916133423.GB32582@localhost.localdomain> <alpine.DEB.2.00.1709171001160.16752@tp.orcam.me.uk> <20170918192428.GA391@localhost.localdomain>
+ <alpine.DEB.2.00.1709182055090.16752@tp.orcam.me.uk> <20170920145440.GB9255@localhost.localdomain> <alpine.DEB.2.00.1709201705070.16752@tp.orcam.me.uk> <20170927172107.GB2631@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Marcin.Nowakowski@imgtec.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,468 +21,60 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Linux MIPS Mailing List <linux-mips@linux-mips.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, linux-crypto@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>
-Message-ID: <20170927121836.ROmh1qkLjTwsKDHy65SzluG9hvxd3iPyjG-Rb39RLrw@z>
+To: Fredrik Noring <noring@nocrew.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20170928121345.CNQgQZJFe4OfaDp8yc9NWIJek9XynqzZ9iXr86lMmDI@z>
 
-This module registers crc32 and crc32c algorithms that use the
-optional CRC32[bhwd] and CRC32C[bhwd] instructions in MIPSr6 cores.
+Hi Fredrik,
 
-Signed-off-by: Marcin Nowakowski <marcin.nowakowski@imgtec.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
+> >  Instead I think these macros as well all the ones in <asm/stackframe.h> 
+> > should remain unchanged and the save and restoration of the 64-bit upper 
+> > halves done separately, most likely in `switch_to', which is where all the 
+> > user context registers which like these upper halves are not touched by 
+> > the kernel (and which are not handled lazily by other means) are switched.
+> 
+> Hmm... What about a 32-bit kernel and bits 63:32 sign-extended by kernel
+> instructions? LONG_{L,S} saves/restores 31:0 using LW/SW thus 63:32 will
+> be lost in exceptions?
 
----
- arch/mips/Kconfig             |   4 +
- arch/mips/Makefile            |   3 +
- arch/mips/crypto/Makefile     |   5 +
- arch/mips/crypto/crc32-mips.c | 361 ++++++++++++++++++++++++++++++++++++++++++
- crypto/Kconfig                |   9 ++
- 5 files changed, 382 insertions(+)
- create mode 100644 arch/mips/crypto/Makefile
- create mode 100644 arch/mips/crypto/crc32-mips.c
+ You mean for use with MMI instructions?  Offhand I think we have two 
+options:
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index cb7fcc4..0f96812 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -2036,6 +2036,7 @@ config CPU_MIPSR6
- 	select CPU_HAS_RIXI
- 	select HAVE_ARCH_BITREVERSE
- 	select MIPS_ASID_BITS_VARIABLE
-+	select MIPS_CRC_SUPPORT
- 	select MIPS_SPRAM
- 
- config EVA
-@@ -2503,6 +2504,9 @@ config MIPS_ASID_BITS
- config MIPS_ASID_BITS_VARIABLE
- 	bool
- 
-+config MIPS_CRC_SUPPORT
-+	bool
-+
- #
- # - Highmem only makes sense for the 32-bit kernel.
- # - The current highmem code will only work properly on physically indexed
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index a96d97a..aa77536 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -216,6 +216,8 @@ cflags-$(toolchain-msa)			+= -DTOOLCHAIN_SUPPORTS_MSA
- endif
- toolchain-virt				:= $(call cc-option-yn,$(mips-cflags) -mvirt)
- cflags-$(toolchain-virt)		+= -DTOOLCHAIN_SUPPORTS_VIRT
-+toolchain-crc				:= $(call cc-option-yn,$(mips-cflags) -Wa$(comma)-mcrc)
-+cflags-$(toolchain-crc)			+= -DTOOLCHAIN_SUPPORTS_CRC
- 
- #
- # Firmware support
-@@ -324,6 +326,7 @@ libs-y			+= arch/mips/math-emu/
- # See arch/mips/Kbuild for content of core part of the kernel
- core-y += arch/mips/
- 
-+drivers-$(CONFIG_MIPS_CRC_SUPPORT) += arch/mips/crypto/
- drivers-$(CONFIG_OPROFILE)	+= arch/mips/oprofile/
- 
- # suspend and hibernation support
-diff --git a/arch/mips/crypto/Makefile b/arch/mips/crypto/Makefile
-new file mode 100644
-index 0000000..665c725
---- /dev/null
-+++ b/arch/mips/crypto/Makefile
-@@ -0,0 +1,5 @@
-+#
-+# Makefile for MIPS crypto files..
-+#
-+
-+obj-$(CONFIG_CRYPTO_CRC32_MIPS) += crc32-mips.o
-diff --git a/arch/mips/crypto/crc32-mips.c b/arch/mips/crypto/crc32-mips.c
-new file mode 100644
-index 0000000..dfa8bb1
---- /dev/null
-+++ b/arch/mips/crypto/crc32-mips.c
-@@ -0,0 +1,361 @@
-+/*
-+ * crc32-mips.c - CRC32 and CRC32C using optional MIPSr6 instructions
-+ *
-+ * Module based on arm64/crypto/crc32-arm.c
-+ *
-+ * Copyright (C) 2014 Linaro Ltd <yazen.ghannam@linaro.org>
-+ * Copyright (C) 2017 Imagination Technologies, Ltd.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/unaligned/access_ok.h>
-+#include <linux/cpufeature.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/string.h>
-+
-+#include <crypto/internal/hash.h>
-+
-+enum crc_op_size {
-+	b, h, w, d,
-+};
-+
-+enum crc_type {
-+	crc32,
-+	crc32c,
-+};
-+
-+#ifdef TOOLCHAIN_SUPPORTS_CRC
-+
-+#define _CRC32(crc, value, size, type)		\
-+do {						\
-+	__asm__ __volatile__(			\
-+	".set	push\n\t"			\
-+	".set	crc\n\t"			\
-+	#type #size "	%0, %1, %0\n\t"		\
-+	".set	pop\n\t"			\
-+	: "+r" (crc)				\
-+	: "r" (value)				\
-+);						\
-+} while(0)
-+
-+#define CRC_REGISTER
-+
-+#else	/* TOOLCHAIN_SUPPORTS_CRC */
-+/*
-+ * Crc argument is currently ignored and the assembly below assumes
-+ * the crc is stored in $2. As the register number is encoded in the
-+ * instruction we can't let the compiler chose the register it wants.
-+ * An alternative is to change the code to do
-+ * move $2, %0
-+ * crc32
-+ * move %0, $2
-+ * but that adds unnecessary operations that the crc32 operation is
-+ * designed to avoid. This issue can go away once the assembler
-+ * is extended to support this operation and the compiler can make
-+ * the right register choice automatically
-+ */
-+
-+#define _CRC32(crc, value, size, type)						\
-+do {										\
-+	__asm__ __volatile__(							\
-+	".set	push\n\t"							\
-+	".set	noat\n\t"							\
-+	"move	$at, %1\n\t"							\
-+	"# " #type #size "	%0, $at, %0\n\t"				\
-+	_ASM_INSN_IF_MIPS(0x7c00000f | (2 << 16) | (1 << 21) | (%2 << 6) | (%3 << 8))	\
-+	_ASM_INSN32_IF_MM(0x00000030 | (1 << 16) | (2 << 21) | (%2 << 14) | (%3 << 3))	\
-+	".set	pop\n\t"							\
-+	: "+r" (crc)								\
-+	: "r" (value), "i" (size), "i" (type)					\
-+);										\
-+} while(0)
-+
-+#define CRC_REGISTER __asm__("$2")
-+#endif	/* !TOOLCHAIN_SUPPORTS_CRC */
-+
-+#define CRC32(crc, value, size) \
-+	_CRC32(crc, value, size, crc32)
-+
-+#define CRC32C(crc, value, size) \
-+	_CRC32(crc, value, size, crc32c)
-+
-+static u32 crc32_mips_le_hw(u32 crc_, const u8 *p, unsigned int len)
-+{
-+	s64 length = len;
-+	register u32 crc CRC_REGISTER = crc_;
-+
-+#ifdef CONFIG_64BIT
-+	while ((length -= sizeof(u64)) >= 0) {
-+		register u64 value = get_unaligned_le64(p);
-+
-+		CRC32(crc, value, d);
-+		p += sizeof(u64);
-+	}
-+
-+	if (length & sizeof(u32)) {
-+#else /* !CONFIG_64BIT */
-+	while ((length -= sizeof(u32)) >= 0) {
-+#endif
-+		register u32 value = get_unaligned_le32(p);
-+
-+		CRC32(crc, value, w);
-+		p += sizeof(u32);
-+	}
-+
-+	if (length & sizeof(u16)) {
-+		register u16 value = get_unaligned_le16(p);
-+
-+		CRC32(crc, value, h);
-+		p += sizeof(u16);
-+	}
-+
-+	if (length & sizeof(u8)) {
-+		register u8 value = *p++;
-+
-+		CRC32(crc, value, b);
-+	}
-+
-+	return crc;
-+}
-+
-+static u32 crc32c_mips_le_hw(u32 crc_, const u8 *p, unsigned int len)
-+{
-+	s64 length = len;
-+	register u32 crc __asm__("$2") = crc_;
-+
-+#ifdef CONFIG_64BIT
-+	while ((length -= sizeof(u64)) >= 0) {
-+		register u64 value = get_unaligned_le64(p);
-+
-+		CRC32C(crc, value, d);
-+		p += sizeof(u64);
-+	}
-+
-+	if (length & sizeof(u32)) {
-+#else /* !CONFIG_64BIT */
-+	while ((length -= sizeof(u32)) >= 0) {
-+#endif
-+		register u32 value = get_unaligned_le32(p);
-+
-+		CRC32C(crc, value, w);
-+		p += sizeof(u32);
-+	}
-+
-+	if (length & sizeof(u16)) {
-+		register u16 value = get_unaligned_le16(p);
-+
-+		CRC32C(crc, value, h);
-+		p += sizeof(u16);
-+	}
-+
-+	if (length & sizeof(u8)) {
-+		register u8 value = *p++;
-+
-+		CRC32C(crc, value, b);
-+	}
-+	return crc;
-+}
-+
-+#define CHKSUM_BLOCK_SIZE	1
-+#define CHKSUM_DIGEST_SIZE	4
-+
-+struct chksum_ctx {
-+	u32 key;
-+};
-+
-+struct chksum_desc_ctx {
-+	u32 crc;
-+};
-+
-+static int chksum_init(struct shash_desc *desc)
-+{
-+	struct chksum_ctx *mctx = crypto_shash_ctx(desc->tfm);
-+	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
-+
-+	ctx->crc = mctx->key;
-+
-+	return 0;
-+}
-+
-+/*
-+ * Setting the seed allows arbitrary accumulators and flexible XOR policy
-+ * If your algorithm starts with ~0, then XOR with ~0 before you set
-+ * the seed.
-+ */
-+static int chksum_setkey(struct crypto_shash *tfm, const u8 *key,
-+			 unsigned int keylen)
-+{
-+	struct chksum_ctx *mctx = crypto_shash_ctx(tfm);
-+
-+	if (keylen != sizeof(mctx->key)) {
-+		crypto_shash_set_flags(tfm, CRYPTO_TFM_RES_BAD_KEY_LEN);
-+		return -EINVAL;
-+	}
-+	mctx->key = get_unaligned_le32(key);
-+	return 0;
-+}
-+
-+static int chksum_update(struct shash_desc *desc, const u8 *data,
-+			 unsigned int length)
-+{
-+	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
-+
-+	ctx->crc = crc32_mips_le_hw(ctx->crc, data, length);
-+	return 0;
-+}
-+
-+static int chksumc_update(struct shash_desc *desc, const u8 *data,
-+			 unsigned int length)
-+{
-+	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
-+
-+	ctx->crc = crc32c_mips_le_hw(ctx->crc, data, length);
-+	return 0;
-+}
-+
-+static int chksum_final(struct shash_desc *desc, u8 *out)
-+{
-+	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
-+
-+	put_unaligned_le32(ctx->crc, out);
-+	return 0;
-+}
-+
-+static int chksumc_final(struct shash_desc *desc, u8 *out)
-+{
-+	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
-+
-+	put_unaligned_le32(~ctx->crc, out);
-+	return 0;
-+}
-+
-+static int __chksum_finup(u32 crc, const u8 *data, unsigned int len, u8 *out)
-+{
-+	put_unaligned_le32(crc32_mips_le_hw(crc, data, len), out);
-+	return 0;
-+}
-+
-+static int __chksumc_finup(u32 crc, const u8 *data, unsigned int len, u8 *out)
-+{
-+	put_unaligned_le32(~crc32c_mips_le_hw(crc, data, len), out);
-+	return 0;
-+}
-+
-+static int chksum_finup(struct shash_desc *desc, const u8 *data,
-+			unsigned int len, u8 *out)
-+{
-+	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
-+
-+	return __chksum_finup(ctx->crc, data, len, out);
-+}
-+
-+static int chksumc_finup(struct shash_desc *desc, const u8 *data,
-+			unsigned int len, u8 *out)
-+{
-+	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
-+
-+	return __chksumc_finup(ctx->crc, data, len, out);
-+}
-+
-+static int chksum_digest(struct shash_desc *desc, const u8 *data,
-+			 unsigned int length, u8 *out)
-+{
-+	struct chksum_ctx *mctx = crypto_shash_ctx(desc->tfm);
-+
-+	return __chksum_finup(mctx->key, data, length, out);
-+}
-+
-+static int chksumc_digest(struct shash_desc *desc, const u8 *data,
-+			 unsigned int length, u8 *out)
-+{
-+	struct chksum_ctx *mctx = crypto_shash_ctx(desc->tfm);
-+
-+	return __chksumc_finup(mctx->key, data, length, out);
-+}
-+
-+static int chksum_cra_init(struct crypto_tfm *tfm)
-+{
-+	struct chksum_ctx *mctx = crypto_tfm_ctx(tfm);
-+
-+	mctx->key = ~0;
-+	return 0;
-+}
-+
-+static struct shash_alg crc32_alg = {
-+	.digestsize		=	CHKSUM_DIGEST_SIZE,
-+	.setkey			=	chksum_setkey,
-+	.init			=	chksum_init,
-+	.update			=	chksum_update,
-+	.final			=	chksum_final,
-+	.finup			=	chksum_finup,
-+	.digest			=	chksum_digest,
-+	.descsize		=	sizeof(struct chksum_desc_ctx),
-+	.base			=	{
-+		.cra_name		=	"crc32",
-+		.cra_driver_name	=	"crc32-mips-hw",
-+		.cra_priority		=	300,
-+		.cra_blocksize		=	CHKSUM_BLOCK_SIZE,
-+		.cra_alignmask		=	0,
-+		.cra_ctxsize		=	sizeof(struct chksum_ctx),
-+		.cra_module		=	THIS_MODULE,
-+		.cra_init		=	chksum_cra_init,
-+	}
-+};
-+
-+static struct shash_alg crc32c_alg = {
-+	.digestsize		=	CHKSUM_DIGEST_SIZE,
-+	.setkey			=	chksum_setkey,
-+	.init			=	chksum_init,
-+	.update			=	chksumc_update,
-+	.final			=	chksumc_final,
-+	.finup			=	chksumc_finup,
-+	.digest			=	chksumc_digest,
-+	.descsize		=	sizeof(struct chksum_desc_ctx),
-+	.base			=	{
-+		.cra_name		=	"crc32c",
-+		.cra_driver_name	=	"crc32c-mips-hw",
-+		.cra_priority		=	300,
-+		.cra_blocksize		=	CHKSUM_BLOCK_SIZE,
-+		.cra_alignmask		=	0,
-+		.cra_ctxsize		=	sizeof(struct chksum_ctx),
-+		.cra_module		=	THIS_MODULE,
-+		.cra_init		=	chksum_cra_init,
-+	}
-+};
-+
-+static int __init crc32_mod_init(void)
-+{
-+	int err;
-+
-+	err = crypto_register_shash(&crc32_alg);
-+
-+	if (err)
-+		return err;
-+
-+	err = crypto_register_shash(&crc32c_alg);
-+
-+	if (err) {
-+		crypto_unregister_shash(&crc32_alg);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static void __exit crc32_mod_exit(void)
-+{
-+	crypto_unregister_shash(&crc32_alg);
-+	crypto_unregister_shash(&crc32c_alg);
-+}
-+
-+MODULE_AUTHOR("Marcin Nowakowski <marcin.nowakowski@imgtec.com");
-+MODULE_DESCRIPTION("CRC32 and CRC32C using optional MIPS instructions");
-+MODULE_LICENSE("GPL v2");
-+
-+module_cpu_feature_match(MIPS_CRC32, crc32_mod_init);
-+module_exit(crc32_mod_exit);
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 28b1a0d..661971a 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -494,6 +494,15 @@ config CRYPTO_CRC32_PCLMUL
- 	  which will enable any routine to use the CRC-32-IEEE 802.3 checksum
- 	  and gain better performance as compared with the table implementation.
- 
-+config CRYPTO_CRC32_MIPS
-+	tristate "CRC32c and CRC32 CRC algorithm (MIPS)"
-+	depends on MIPS_CRC_SUPPORT
-+	select CRYPTO_HASH
-+	help
-+	  CRC32c and CRC32 CRC algorithms implemented using mips crypto
-+	  instructions, when available.
-+
-+
- config CRYPTO_CRCT10DIF
- 	tristate "CRCT10DIF algorithm"
- 	select CRYPTO_HASH
--- 
-2.7.4
+1. Declaring the lack of support for MMI instructions in o32 software.
+
+2. Switching to using LD/SD in <asm/stackframe.h> and preserving statics 
+   across syscalls with SAVE_STATIC/RESTORE_STATIC at the cost of
+   performance loss.
+
+I'm open for a better suggestion though.  I propose that we start with #1, 
+as the zero performance cost and zero effort solution.
+
+> >  Can you try a regular 32-bit MIPS Debian distribution instead?
+> 
+> BusyBox at
+> 
+> https://packages.debian.org/stretch/mipsel/busybox-static/download
+> 
+> seemed appropriate but yields "illegal instruction" which I suppose is
+> interesting in itself. My MIPS toolchain is somewhat limited at the moment
+> so I will need to get back on this.
+
+ Getting a core dump and using it to figure out which specific instruction 
+caused the exception would be interesting.  Also make sure you have RDHWR 
+instruction emulation in place for CP0 UserLocal register access.
+
+> >  BTW, I have just noticed that DMULT, DMULTU, DDIV and DDIVU instructions 
+> > are not implemented.  Which means that a 64-bit kernel will only work if 
+> > compiled with `-march=r5900' and emulation is required for 64-bit user 
+> > programs.
+> 
+> Indeed. In the R5900 patch these instructions are emulated (or simulated as
+> it is called in the source) in
+> 
+> https://github.com/frno7/linux/blob/1c8247e352d1eb7ae9022a76ecf19f74264534f7/arch/mips/kernel/traps.c
+> 
+> along with LLD, SCD, etc.
+
+ Ah, OK then.
+
+  Maciej

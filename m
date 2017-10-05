@@ -1,18 +1,16 @@
-Received: from smtp.codeaurora.org ([198.145.29.96]:55024 "EHLO
-        smtp.codeaurora.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23990511AbdJEGyuJLjaa (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 5 Oct 2017 08:54:50 +0200
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 10/13] timer: Remove expires and data arguments from DEFINE_TIMER
-References: <1507159627-127660-1-git-send-email-keescook@chromium.org>
-        <1507159627-127660-11-git-send-email-keescook@chromium.org>
-Date: Thu, 05 Oct 2017 09:54:33 +0300
-In-Reply-To: <1507159627-127660-11-git-send-email-keescook@chromium.org> (Kees
-        Cook's message of "Wed, 4 Oct 2017 16:27:04 -0700")
-Message-ID: <87d1625bkm.fsf@qca.qualcomm.com>
+Received: from mail-oi0-x244.google.com ([IPv6:2607:f8b0:4003:c06::244]:38005
+        "EHLO mail-oi0-x244.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992160AbdJENSkEjuhT (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 5 Oct 2017 15:18:40 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <kvalo@codeaurora.org>
+In-Reply-To: <1507159627-127660-4-git-send-email-keescook@chromium.org>
+References: <1507159627-127660-1-git-send-email-keescook@chromium.org> <1507159627-127660-4-git-send-email-keescook@chromium.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 5 Oct 2017 15:18:32 +0200
+Message-ID: <CAJZ5v0iMxSDj0gR0n3YF+zRvR3e2XHpiMR9hKjjon_EXSbB89w@mail.gmail.com>
+Subject: Re: [PATCH 03/13] timer: Remove init_timer_on_stack() in favor of timer_setup_on_stack()
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <rjwysocki@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,27 +21,78 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Kees Cook <keescook@chromium.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Chris Metcalf <cmetcalf@mellanox.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Guenter Roeck <linux@roeck-us.net>, Harish Patil <harish.patil@cavium.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>, John Stultz <john.stultz@linaro.org>, Julian Wiedmann <jwi@linux.vnet.ibm.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Len Brown <len.brown@intel.com>, Manish Chopra <manish.chopra@cavium.com>, Mark Gross <mark.gross@intel.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Michael Reed <mdr@sgi.com>, netdev@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>, Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@u>, cw.cz, Petr Mladek <pmladek@suse.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Ralf Baechle <ralf@linux-mips.org>, Sebastian Reichel <sre@kernel.org>, Stefan Richter <stefanr@s5r6.in-berlin.de>, Stephen Boyd <sboyd@codeaurora.org>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Tejun Heo <tj@kernel.org>, Ursula Braun <ubraun@linux.vnet.ibm.com>, Viresh Kumar <viresh.kumar@linaro.org>, Wim Van Sebroeck <wim@iguana.be>, linux1394-devel@lists.sourceforge.net, linux-mips@linux-mips.org, linux-pm@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, linux-watchdog@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <20171005065433.A6ue5Oyp_Ad4Es5FcP8bFWduNGxvVzfZ0Wyelytd_os@z>
+Cc: Thomas Gleixner <tglx@linutronix.de>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Stefan Richter <stefanr@s5r6.in-berlin.de>, Sudip Mukherjee <sudipm.mukherjee@gmail.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Julian Wiedmann <jwi@linux.vnet.ibm.com>, Ursula Braun <ubraun@linux.vnet.ibm.com>, Michael Reed <mdr@sgi.com>, "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Linux PM <linux-pm@vger.kernel.org>, linux1394-devel@lists.sourceforge.net, linux-s390@vger.kernel.org, "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Chris Metcalf <cmetcalf@mellanox.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Guenter Roeck <linux@roeck-us.net>, Harish Patil <harish.patil@cavium.com>, John Stultz <john.stultz@linaro.org>, Kalle Valo <kvalo@qca.qualcomm.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Manish Chopra <manish.chopra@cavium.com>, Mark Gross <mark.gross@intel.com>, Michael Ellerman <mpe@ellerman.id.au>, netdev@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>, Paul Mackerras <paulus@samba.org>, Petr Mladek <pmladek@suse.com>, Ralf Baechle <ralf@linux-mips.org>, Sebastian Reichel <sre@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, Tejun Heo <tj@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>, Wim Van Sebroeck <wim@iguana.be>, MIPS Linux Kernel List <linux-mips@linux-mips.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>, "open list:NETWORKING DRIVERS (WIRELESS)" <linux-wireless@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Message-ID: <20171005131832.c6WP9BKk4zuM_dW9igKCFurJtgUT7qGV9RY_-MURCi8@z>
 
-Kees Cook <keescook@chromium.org> writes:
-
-> Drop the arguments from the macro and adjust all callers with the
-> following script:
+On Thu, Oct 5, 2017 at 1:26 AM, Kees Cook <keescook@chromium.org> wrote:
+> Remove uses of init_timer_on_stack() with open-coded function and data
+> assignments that could be expressed using timer_setup_on_stack(). Several
+> were removed from the stack entirely since there was a one-to-one mapping
+> of parent structure to timer, those are switched to using timer_setup()
+> instead. All related callbacks were adjusted to use from_timer().
 >
->   perl -pi -e 's/DEFINE_TIMER\((.*), 0, 0\);/DEFINE_TIMER($1);/g;' \
->     $(git grep DEFINE_TIMER | cut -d: -f1 | sort -u | grep -v timer.h)
->
+> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: Len Brown <len.brown@intel.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Stefan Richter <stefanr@s5r6.in-berlin.de>
+> Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+> Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
+> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+> Cc: Julian Wiedmann <jwi@linux.vnet.ibm.com>
+> Cc: Ursula Braun <ubraun@linux.vnet.ibm.com>
+> Cc: Michael Reed <mdr@sgi.com>
+> Cc: "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>
+> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: linux-pm@vger.kernel.org
+> Cc: linux1394-devel@lists.sourceforge.net
+> Cc: linux-s390@vger.kernel.org
+> Cc: linux-scsi@vger.kernel.org
 > Signed-off-by: Kees Cook <keescook@chromium.org>
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # for m68k parts
+> ---
+>  drivers/base/power/main.c           |  8 +++-----
+>  drivers/firewire/core-transaction.c | 10 +++++-----
+>  drivers/parport/ieee1284.c          | 21 +++++++--------------
+>  drivers/s390/char/tape.h            |  1 +
+>  drivers/s390/char/tape_std.c        | 18 ++++++------------
+>  drivers/s390/net/lcs.c              | 16 ++++++----------
+>  drivers/s390/net/lcs.h              |  1 +
+>  drivers/scsi/qla1280.c              | 14 +++++---------
+>  drivers/scsi/qla1280.h              |  1 +
+>  include/linux/parport.h             |  1 +
+>  include/linux/timer.h               |  2 --
+>  11 files changed, 36 insertions(+), 57 deletions(-)
+>
+> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+> index 770b1539a083..ae47b2ec84b4 100644
+> --- a/drivers/base/power/main.c
+> +++ b/drivers/base/power/main.c
+> @@ -478,9 +478,9 @@ struct dpm_watchdog {
+>   * There's not much we can do here to recover so panic() to
+>   * capture a crash-dump in pstore.
+>   */
+> -static void dpm_watchdog_handler(unsigned long data)
+> +static void dpm_watchdog_handler(struct timer_list *t)
+>  {
+> -       struct dpm_watchdog *wd = (void *)data;
+> +       struct dpm_watchdog *wd = from_timer(wd, t, timer);
+>
+>         dev_emerg(wd->dev, "**** DPM device timeout ****\n");
+>         show_stack(wd->tsk, NULL);
+> @@ -500,11 +500,9 @@ static void dpm_watchdog_set(struct dpm_watchdog *wd, struct device *dev)
+>         wd->dev = dev;
+>         wd->tsk = current;
+>
+> -       init_timer_on_stack(timer);
+> +       timer_setup_on_stack(timer, dpm_watchdog_handler, 0);
+>         /* use same timeout value for both suspend and resume */
+>         timer->expires = jiffies + HZ * CONFIG_DPM_WATCHDOG_TIMEOUT;
+> -       timer->function = dpm_watchdog_handler;
+> -       timer->data = (unsigned long)wd;
+>         add_timer(timer);
+>  }
 
-[...]
+For the above:
 
->  drivers/net/wireless/atmel/at76c50x-usb.c | 2 +-
-
-For wireless:
-
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
-
--- 
-Kalle Valo
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>

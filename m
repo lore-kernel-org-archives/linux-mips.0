@@ -1,16 +1,20 @@
-Received: from 20pmail.ess.barracuda.com ([64.235.150.246]:42194 "EHLO
-        20pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992181AbdJKOFOuGx9r (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Oct 2017 16:05:14 +0200
-From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH 3/3] clocksource: mips-gic-timer: Add fastpath for local timer updates
-Date: Wed, 11 Oct 2017 15:01:14 +0100
-Message-ID: <1507730474-8577-3-git-send-email-matt.redfearn@mips.com>
-In-Reply-To: <1507730474-8577-1-git-send-email-matt.redfearn@mips.com>
-References: <1507730474-8577-1-git-send-email-matt.redfearn@mips.com>
+Received: from mailapp01.imgtec.com ([195.59.15.196]:7361 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23990399AbdJKQTIqc8E0 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Oct 2017 18:19:08 +0200
+From: Aleksandar Markovic <Aleksandar.Markovic@imgtec.com>
+Subject: RE: [PATCH 1/2] MIPS: math-emu: Update debugfs FP exception stats
+ for certain instructions
+Date: Wed, 11 Oct 2017 16:18:49 +0000
+Message-ID: <EF5FA6C3467F85449672C3E735957B85015DA0AF13@badag02.ba.imgtec.org>
+References: <1507310955-3525-1-git-send-email-aleksandar.markovic@rt-rk.com>
+ <1507310955-3525-2-git-send-email-aleksandar.markovic@rt-rk.com>,<20171009210923.GA20378@jhogan-linux>
+In-Reply-To: <20171009210923.GA20378@jhogan-linux>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@mips.com>
+Return-Path: <Aleksandar.Markovic@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,46 +24,107 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Thomas Gleixner <tglx@linutronix.de>, Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, linux-kernel@vger.kernel.org
-Message-ID: <20171011140114.llIpDjjk6jlEToDElvZzFTLOtyTM41LAwRzLj6AgKu0@z>
+To: James Hogan <james.hogan@mips.com>, Aleksandar Markovic <aleksandar.markovic@rt-rk.com>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Douglas Leung <Douglas.Leung@imgtec.com>, Goran Ferenc <Goran.Ferenc@imgtec.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Maciej Rozycki <Maciej.Rozycki@imgtec.com>, Manuel Lauss <manuel.lauss@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Miodrag Dinic <Miodrag.Dinic@imgtec.com>, Paul Burton <Paul.Burton@imgtec.com>, Petar Jovanovic <Petar.Jovanovic@imgtec.com>, Raghu Gandham <Raghu.Gandham@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20171011161849.25IZn28AUdw_XW_HECf79doI9vlObsNoAR2oSBrRLUE@z>
 
-Always accessing the compare register via the CM redirect region is
-(relatively) slow. If the timer being updated is the current CPUs
-then this can be shortcutted by writing to the CM VP local region.
+Thanks, James, for the review.
 
-Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
----
+I've got a couple of points bellow that will, I hope, clarify several issues.
 
- drivers/clocksource/mips-gic-timer.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+> ________________________________________
+> From: James Hogan [james.hogan@mips.com]
+> Sent: Monday, October 09, 2017 2:09 PM
+> To: Aleksandar Markovic
+> Cc: linux-mips@linux-mips.org; Aleksandar Markovic; Douglas Leung;
+> Goran Ferenc; linux-kernel@vger.kernel.org; Maciej Rozycki;
+> Manuel Lauss; Masahiro Yamada; Miodrag Dinic; Paul Burton;
+> Petar Jovanovic; Raghu Gandham; Ralf Baechle
+> Subject: Re: [PATCH 1/2] MIPS: math-emu: Update debugfs FP
+> exception stats for certain instructions
+> 
+> On Fri, Oct 06, 2017 at 07:29:00PM +0200, Aleksandar Markovic wrote:
+> > From: Aleksandar Markovic <aleksandar.markovic@imgtec.com>
+> >
+> > Fix omission of updating of debugfs FP exception stats for
+> > instructions <CLASS|MADDF|MSUBF|MAX|MIN|MAXA|MINA>.<D|S>.
+> >
+> > CLASS.<D|S> can generate Unimplemented Operation FP exception.
+> > <MADDF|MSUBF|MAX|MIN|MAXA|MINA>>.<D|S> can generate Inexact,
+> 
+> nit: s/>>/>/
 
-diff --git a/drivers/clocksource/mips-gic-timer.c b/drivers/clocksource/mips-gic-timer.c
-index dadac9f3e9c4..ca334431b0bc 100644
---- a/drivers/clocksource/mips-gic-timer.c
-+++ b/drivers/clocksource/mips-gic-timer.c
-@@ -39,6 +39,7 @@ static u64 notrace gic_read_count(void)
- 
- static int gic_next_event(unsigned long delta, struct clock_event_device *evt)
- {
-+	int cpu = cpumask_first(evt->cpumask);
- 	unsigned long flags;
- 	u64 cnt;
- 	int res;
-@@ -46,8 +47,12 @@ static int gic_next_event(unsigned long delta, struct clock_event_device *evt)
- 	local_irq_save(flags);
- 	cnt = gic_read_count();
- 	cnt += (u64)delta;
--	write_gic_vl_other(mips_cm_vp_id(cpumask_first(evt->cpumask)));
--	write_gic_vo_compare(cnt);
-+	if (cpu == raw_smp_processor_id()) {
-+		write_gic_vl_compare(cnt);
-+	} else {
-+		write_gic_vl_other(mips_cm_vp_id(cpu));
-+		write_gic_vo_compare(cnt);
-+	}
- 	local_irq_restore(flags);
- 	res = ((int)(gic_read_count() - cnt) >= 0) ? -ETIME : 0;
- 	return res;
--- 
-2.7.4
+Will be fixed in v2.
+
+> 
+> > Unimplemented Operation, Invalid Operation, Overflow, and
+> > Underflow FP exceptions. In such cases, and prior to this
+> 
+> Well, according to the manual I'm looking at MAX|MIN|MAXA|MINA can't
+> generate inexact, overflow, or underflow FP exceptions
+>
+
+The "MIPS64® Instruction Set Reference Manual" v6.00 mentions that all
+five FP exception are possible for MAX|MIN|MAXA|MINA, but in v6.05, the
+list was reduced to only two, as you hinted. I am going to sync the commit
+message with v6.05 of the document.
+
+> ... and in practice
+> the only FPE generated by emulating these instructions is invalid
+> operation for MADDF/MSUBF. So presumably that's the only case we really
+> care about.
+> 
+> I.e. the MADDF/MSUBF invalid operation should be counted, but crucially
+> the setting of rcsr bits allows it to generate a SIGFPE which from a
+> glance it doesn't appear to do until this patch. The other changes are
+> redundant and harmless.
+> 
+> Does that sound correct? (appologies if I'm missing something, I'm just
+> reading the code, and reading FPU emulation code late at night is
+> probably asking for trouble).
+>
+
+You are close, but not quite, I'll explain that in a moment.
+
+First, just to note that SIGFPE will be generated if the condition
+
+((ctx->fcr31 >> 5) & ctx->fcr31 & FPU_CSR_ALL_E)
+
+is met (the code is almost at the end of fpu_emu(), cp1emu.c, line 1557).
+ctx is one of the arguments of fpu_emu(), but, in the current state of the
+code, by analyzing several levels of invocations, it can be concluded
+that ctx will always be equal to &current->thread.fpu. So, the register
+current->thread.fpu->fcr31 is actually important here.
+
+Now, let's consider, for simplicity, the case of MADDF operation resulting
+in an overflow caused by addition of two large FP numbers. The "special"
+treatment of such case will be done within invocation of ieee754dp_format(),
+which will in turn (in this particular example) execute
+ieee754_setcx(IEEE754_OVERFLOW), which will further execute
+
+	ieee754_csr.cx |= flags;
+	ieee754_csr.sx |= flags;
+
+and, since ieee754_csr is macro for &current->thread.fpu.fcr31, this will result
+in setting tworelevant and correct bits in current->thread.fpu->fcr31.
+
+This means that condition from few paragraphs above will be met, and SIGFPE
+will be generated.
+
+Whole above scenario happens regardless of inclusion of this patch.
+
+Actually, setting exception bits within "copcsr label code" seems redundant.
+It though does no harm. I have some theory why is this code here, and why
+we even may want to keep it as is, but this would be too much for this mail.
+
+> 
+> Given the potential fixing of SIGFPE in that case should this be tagged
+> for stable?
+> 
+
+As I explained above, SIGFPE behavior is already correct, without this patch.
+This patch fixes only debugfs stats. So, it is not that critical.
+
+Looking forward to your response.
+
+Aleksandar

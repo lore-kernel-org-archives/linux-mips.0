@@ -1,11 +1,11 @@
-Received: from 20pmail.ess.barracuda.com ([64.235.154.233]:53767 "EHLO
+Received: from 20pmail.ess.barracuda.com ([64.235.150.246]:42194 "EHLO
         20pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992197AbdJKOEvzWeVr (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Oct 2017 16:04:51 +0200
+        by eddie.linux-mips.org with ESMTP id S23992181AbdJKOFOuGx9r (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Oct 2017 16:05:14 +0200
 From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH 2/3] clocksource/mips-gic-timer: Ensure IRQs disabled for read-update-write
-Date: Wed, 11 Oct 2017 15:01:13 +0100
-Message-ID: <1507730474-8577-2-git-send-email-matt.redfearn@mips.com>
+Subject: [PATCH 3/3] clocksource: mips-gic-timer: Add fastpath for local timer updates
+Date: Wed, 11 Oct 2017 15:01:14 +0100
+Message-ID: <1507730474-8577-3-git-send-email-matt.redfearn@mips.com>
 In-Reply-To: <1507730474-8577-1-git-send-email-matt.redfearn@mips.com>
 References: <1507730474-8577-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
@@ -22,37 +22,44 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Thomas Gleixner <tglx@linutronix.de>, Daniel Lezcano <daniel.lezcano@linaro.org>
 Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, linux-kernel@vger.kernel.org
-Message-ID: <20171011140113.SxQYQGqWX0vEpEJOIGrf72YwlCmdgGmEDv1LeMflccI@z>
+Message-ID: <20171011140114.llIpDjjk6jlEToDElvZzFTLOtyTM41LAwRzLj6AgKu0@z>
 
-The sequence of reading the current count, adding an offset and writing
-back to the compare register is timing critical.
-Commit e07127a077c7 ("clocksource: mips-gic-timer: Use new GIC accessor
-functions") added a local_irq_save / local_irq_restore to protect the
-mapping of another VPs registers through the VP redirect region, but
-given the timing critical nature of this code it just feels right to
-protect the whole read-update-write section, so move the local_irq_save
-before the current count is read.
+Always accessing the compare register via the CM redirect region is
+(relatively) slow. If the timer being updated is the current CPUs
+then this can be shortcutted by writing to the CM VP local region.
 
 Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
 ---
 
- drivers/clocksource/mips-gic-timer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clocksource/mips-gic-timer.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clocksource/mips-gic-timer.c b/drivers/clocksource/mips-gic-timer.c
-index 6c94a74682a2..dadac9f3e9c4 100644
+index dadac9f3e9c4..ca334431b0bc 100644
 --- a/drivers/clocksource/mips-gic-timer.c
 +++ b/drivers/clocksource/mips-gic-timer.c
-@@ -43,9 +43,9 @@ static int gic_next_event(unsigned long delta, struct clock_event_device *evt)
+@@ -39,6 +39,7 @@ static u64 notrace gic_read_count(void)
+ 
+ static int gic_next_event(unsigned long delta, struct clock_event_device *evt)
+ {
++	int cpu = cpumask_first(evt->cpumask);
+ 	unsigned long flags;
  	u64 cnt;
  	int res;
- 
-+	local_irq_save(flags);
+@@ -46,8 +47,12 @@ static int gic_next_event(unsigned long delta, struct clock_event_device *evt)
+ 	local_irq_save(flags);
  	cnt = gic_read_count();
  	cnt += (u64)delta;
--	local_irq_save(flags);
- 	write_gic_vl_other(mips_cm_vp_id(cpumask_first(evt->cpumask)));
- 	write_gic_vo_compare(cnt);
+-	write_gic_vl_other(mips_cm_vp_id(cpumask_first(evt->cpumask)));
+-	write_gic_vo_compare(cnt);
++	if (cpu == raw_smp_processor_id()) {
++		write_gic_vl_compare(cnt);
++	} else {
++		write_gic_vl_other(mips_cm_vp_id(cpu));
++		write_gic_vo_compare(cnt);
++	}
  	local_irq_restore(flags);
+ 	res = ((int)(gic_read_count() - cnt) >= 0) ? -ETIME : 0;
+ 	return res;
 -- 
 2.7.4

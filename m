@@ -1,20 +1,14 @@
-Received: from 20pmail.ess.barracuda.com ([64.235.150.247]:47585 "EHLO
+Received: from 20pmail.ess.barracuda.com ([64.235.150.247]:46234 "EHLO
         20pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993921AbdJIVL6a59LG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 9 Oct 2017 23:11:58 +0200
-Date: Mon, 9 Oct 2017 22:09:24 +0100
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH 1/2] MIPS: math-emu: Update debugfs FP exception stats
- for certain instructions
-Message-ID: <20171009210923.GA20378@jhogan-linux>
-References: <1507310955-3525-1-git-send-email-aleksandar.markovic@rt-rk.com>
- <1507310955-3525-2-git-send-email-aleksandar.markovic@rt-rk.com>
+        by eddie.linux-mips.org with ESMTP id S23990432AbdJKJCApS09I (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Oct 2017 11:02:00 +0200
+From: Matt Redfearn <matt.redfearn@mips.com>
+Subject: [PATCH] MIPS: Fix exception entry when CONFIG_EVA enabled
+Date: Wed, 11 Oct 2017 09:59:20 +0100
+Message-ID: <1507712360-20657-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="YiEDa0DAkWCtVeE4"
-Content-Disposition: inline
-In-Reply-To: <1507310955-3525-2-git-send-email-aleksandar.markovic@rt-rk.com>
-Return-Path: <James.Hogan@mips.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,245 +18,83 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Aleksandar Markovic <aleksandar.markovic@rt-rk.com>
-Cc: linux-mips@linux-mips.org, Aleksandar Markovic <aleksandar.markovic@imgtec.com>, Douglas Leung <douglas.leung@imgtec.com>, Goran Ferenc <goran.ferenc@imgtec.com>, linux-kernel@vger.kernel.org, "Maciej W. Rozycki" <macro@imgtec.com>, Manuel Lauss <manuel.lauss@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Miodrag Dinic <miodrag.dinic@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Petar Jovanovic <petar.jovanovic@imgtec.com>, Raghu Gandham <raghu.gandham@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20171009210924.nfFHXbWGIgcW3rbFnwClDZ6dEAhbEkGqMSWqYk7mFDk@z>
+To: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@mips.com>
+Cc: Matthew Fortune <matthew.fortune@mips.com>, linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, Corey Minyard <cminyard@mvista.com>, linux-kernel@vger.kernel.org, "Jason A. Donenfeld" <jason@zx2c4.com>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20171011085920.cXd9deQ9H65LCagw_epqy2wu4WnVnDOlf8S3gWoKGtI@z>
 
---YiEDa0DAkWCtVeE4
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit 9fef68686317b ("MIPS: Make SAVE_SOME more standard") made several
+changes to the order in which registers are saved in the SAVE_SOME
+macro, used by exception handlers to save the processor state. In
+particular, it removed the
+move   k1, sp
+in the delay slot of the branch testing if the processor is already in
+kernel mode. This is replaced later in the macro by a
+move   k0, sp
+When CONFIG_EVA is disabled, this instruction actually appears in the
+delay slot of the branch. However, when CONFIG_EVA is enabled, instead
+the RPS workaround of
+MFC0	k0, CP0_ENTRYHI
+appears in the delay slot. This results in k0 not containing the stack
+pointer, but some unrelated value, which is then saved to the kernel
+stack. On exit from the exception, this bogus value is restored to the
+stack pointer, resulting in an OOPS.
 
-On Fri, Oct 06, 2017 at 07:29:00PM +0200, Aleksandar Markovic wrote:
-> From: Aleksandar Markovic <aleksandar.markovic@imgtec.com>
->=20
-> Fix omission of updating of debugfs FP exception stats for
-> instructions <CLASS|MADDF|MSUBF|MAX|MIN|MAXA|MINA>.<D|S>.
->=20
-> CLASS.<D|S> can generate Unimplemented Operation FP exception.
-> <MADDF|MSUBF|MAX|MIN|MAXA|MINA>>.<D|S> can generate Inexact,
+Fix this by moving the save of SP in k0 explicitly in the delay slot of
+the branch, outside of the CONFIG_EVA section, restoring the expected
+instruction ordering when CONFIG_EVA is active.
 
-nit: s/>>/>/
+Fixes: 9fef68686317b ("MIPS: Make SAVE_SOME more standard")
+Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+Reported-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
 
-> Unimplemented Operation, Invalid Operation, Overflow, and
-> Underflow FP exceptions. In such cases, and prior to this
+---
 
-Well, according to the manual I'm looking at MAX|MIN|MAXA|MINA can't
-generate inexact, overflow, or underflow FP exceptions, and in practice
-the only FPE generated by emulating these instructions is invalid
-operation for MADDF/MSUBF. So presumably that's the only case we really
-care about.
+Note that some of our compiler people are dubious about putting frame
+related instructions in conditionally executed blocks of code. In this
+case, presuming that we only care about unwinding the kernel stack, then
+we only care about the case in which the branch is taken, and k0 always
+contains the SP to be saved. There is also a question about putting
+frame related instructions in branch delay slots. Again, in this case,
+we think it's OK to use them since the only path that ought to be
+unwound will be the "branch taken" route where we are already on the
+kernel stack.
+Not having access to a CFI based kernel stack unwinder makes this change
+difficult to verify, but since the same construct already existed when
+CONFIG_EVA is disabled, I don't think this change is likely to break the
+unwinder, and fixes exception entry when CONFIG_EVA is enabled.
 
-I.e. the MADDF/MSUBF invalid operation should be counted, but crucially
-the setting of rcsr bits allows it to generate a SIGFPE which from a
-glance it doesn't appear to do until this patch. The other changes are
-redundant and harmless.
+Thanks,
+Matt
 
-Does that sound correct? (appologies if I'm missing something, I'm just
-reading the code, and reading FPU emulation code late at night is
-probably asking for trouble).
+---
+ arch/mips/include/asm/stackframe.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Given the potential fixing of SIGFPE in that case should this be tagged
-for stable?
-
-Thanks
-James
-
-
-> patch, debugfs FP exception stats were not updated, and
-> therefore contained overall wrong values.
->=20
-> This brings the emulation of mentioned instructions consistent
-> with the previously implemented emulation of other related
-> FPU instructions.
->=20
-> There is still some room for refactoring and improving the
-> code segment under label "copcsr", but this is beyond the
-> scope of this patch.
->=20
-> Fixes: 38db37ba069f ("MIPS: math-emu: Add support for the MIPS R6 CLASS F=
-PU instruction")
-> Fixes: e24c3bec3e8e ("MIPS: math-emu: Add support for the MIPS R6 MADDF F=
-PU instruction")
-> Fixes: 83d43305a1df ("MIPS: math-emu: Add support for the MIPS R6 MSUBF F=
-PU instruction")
-> Fixes: a79f5f9ba508 ("MIPS: math-emu: Add support for the MIPS R6 MAX{, A=
-} FPU instruction")
-> Fixes: 4e9561b20e2f ("MIPS: math-emu: Add support for the MIPS R6 MIN{, A=
-} FPU instruction")
->=20
-> Signed-off-by: Aleksandar Markovic <aleksandar.markovic@imgtec.com>
-> ---
->  arch/mips/math-emu/cp1emu.c | 28 ++++++++++++++--------------
->  1 file changed, 14 insertions(+), 14 deletions(-)
->=20
-> diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
-> index 192542d..d2fcb30 100644
-> --- a/arch/mips/math-emu/cp1emu.c
-> +++ b/arch/mips/math-emu/cp1emu.c
-> @@ -1795,7 +1795,7 @@ static int fpu_emu(struct pt_regs *xcp, struct mips=
-_fpu_struct *ctx,
->  			SPFROMREG(fs, MIPSInst_FS(ir));
->  			SPFROMREG(fd, MIPSInst_FD(ir));
->  			rv.s =3D ieee754sp_maddf(fd, fs, ft);
-> -			break;
-> +			goto copcsr;
->  		}
-> =20
->  		case fmsubf_op: {
-> @@ -1809,7 +1809,7 @@ static int fpu_emu(struct pt_regs *xcp, struct mips=
-_fpu_struct *ctx,
->  			SPFROMREG(fs, MIPSInst_FS(ir));
->  			SPFROMREG(fd, MIPSInst_FD(ir));
->  			rv.s =3D ieee754sp_msubf(fd, fs, ft);
-> -			break;
-> +			goto copcsr;
->  		}
-> =20
->  		case frint_op: {
-> @@ -1834,7 +1834,7 @@ static int fpu_emu(struct pt_regs *xcp, struct mips=
-_fpu_struct *ctx,
->  			SPFROMREG(fs, MIPSInst_FS(ir));
->  			rv.w =3D ieee754sp_2008class(fs);
->  			rfmt =3D w_fmt;
-> -			break;
-> +			goto copcsr;
->  		}
-> =20
->  		case fmin_op: {
-> @@ -1847,7 +1847,7 @@ static int fpu_emu(struct pt_regs *xcp, struct mips=
-_fpu_struct *ctx,
->  			SPFROMREG(ft, MIPSInst_FT(ir));
->  			SPFROMREG(fs, MIPSInst_FS(ir));
->  			rv.s =3D ieee754sp_fmin(fs, ft);
-> -			break;
-> +			goto copcsr;
->  		}
-> =20
->  		case fmina_op: {
-> @@ -1860,7 +1860,7 @@ static int fpu_emu(struct pt_regs *xcp, struct mips=
-_fpu_struct *ctx,
->  			SPFROMREG(ft, MIPSInst_FT(ir));
->  			SPFROMREG(fs, MIPSInst_FS(ir));
->  			rv.s =3D ieee754sp_fmina(fs, ft);
-> -			break;
-> +			goto copcsr;
->  		}
-> =20
->  		case fmax_op: {
-> @@ -1873,7 +1873,7 @@ static int fpu_emu(struct pt_regs *xcp, struct mips=
-_fpu_struct *ctx,
->  			SPFROMREG(ft, MIPSInst_FT(ir));
->  			SPFROMREG(fs, MIPSInst_FS(ir));
->  			rv.s =3D ieee754sp_fmax(fs, ft);
-> -			break;
-> +			goto copcsr;
->  		}
-> =20
->  		case fmaxa_op: {
-> @@ -1886,7 +1886,7 @@ static int fpu_emu(struct pt_regs *xcp, struct mips=
-_fpu_struct *ctx,
->  			SPFROMREG(ft, MIPSInst_FT(ir));
->  			SPFROMREG(fs, MIPSInst_FS(ir));
->  			rv.s =3D ieee754sp_fmaxa(fs, ft);
-> -			break;
-> +			goto copcsr;
->  		}
-> =20
->  		case fabs_op:
-> @@ -2165,7 +2165,7 @@ static int fpu_emu(struct pt_regs *xcp, struct mips=
-_fpu_struct *ctx,
->  			DPFROMREG(fs, MIPSInst_FS(ir));
->  			DPFROMREG(fd, MIPSInst_FD(ir));
->  			rv.d =3D ieee754dp_maddf(fd, fs, ft);
-> -			break;
-> +			goto copcsr;
->  		}
-> =20
->  		case fmsubf_op: {
-> @@ -2179,7 +2179,7 @@ static int fpu_emu(struct pt_regs *xcp, struct mips=
-_fpu_struct *ctx,
->  			DPFROMREG(fs, MIPSInst_FS(ir));
->  			DPFROMREG(fd, MIPSInst_FD(ir));
->  			rv.d =3D ieee754dp_msubf(fd, fs, ft);
-> -			break;
-> +			goto copcsr;
->  		}
-> =20
->  		case frint_op: {
-> @@ -2204,7 +2204,7 @@ static int fpu_emu(struct pt_regs *xcp, struct mips=
-_fpu_struct *ctx,
->  			DPFROMREG(fs, MIPSInst_FS(ir));
->  			rv.l =3D ieee754dp_2008class(fs);
->  			rfmt =3D l_fmt;
-> -			break;
-> +			goto copcsr;
->  		}
-> =20
->  		case fmin_op: {
-> @@ -2217,7 +2217,7 @@ static int fpu_emu(struct pt_regs *xcp, struct mips=
-_fpu_struct *ctx,
->  			DPFROMREG(ft, MIPSInst_FT(ir));
->  			DPFROMREG(fs, MIPSInst_FS(ir));
->  			rv.d =3D ieee754dp_fmin(fs, ft);
-> -			break;
-> +			goto copcsr;
->  		}
-> =20
->  		case fmina_op: {
-> @@ -2230,7 +2230,7 @@ static int fpu_emu(struct pt_regs *xcp, struct mips=
-_fpu_struct *ctx,
->  			DPFROMREG(ft, MIPSInst_FT(ir));
->  			DPFROMREG(fs, MIPSInst_FS(ir));
->  			rv.d =3D ieee754dp_fmina(fs, ft);
-> -			break;
-> +			goto copcsr;
->  		}
-> =20
->  		case fmax_op: {
-> @@ -2243,7 +2243,7 @@ static int fpu_emu(struct pt_regs *xcp, struct mips=
-_fpu_struct *ctx,
->  			DPFROMREG(ft, MIPSInst_FT(ir));
->  			DPFROMREG(fs, MIPSInst_FS(ir));
->  			rv.d =3D ieee754dp_fmax(fs, ft);
-> -			break;
-> +			goto copcsr;
->  		}
-> =20
->  		case fmaxa_op: {
-> @@ -2256,7 +2256,7 @@ static int fpu_emu(struct pt_regs *xcp, struct mips=
-_fpu_struct *ctx,
->  			DPFROMREG(ft, MIPSInst_FT(ir));
->  			DPFROMREG(fs, MIPSInst_FS(ir));
->  			rv.d =3D ieee754dp_fmaxa(fs, ft);
-> -			break;
-> +			goto copcsr;
->  		}
-> =20
->  		case fabs_op:
-> --=20
-> 2.7.4
->=20
-
---YiEDa0DAkWCtVeE4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlnb5XsACgkQbAtpk944
-dnoqrA//f4Qffia5TjQuX0B62cn9q45AD2dU17iqxOyTO8ghkyKl00SFCcAZ3DAV
-1X9YpBIGaVFMKOAOj+j8HxMKQMgrwygJeEwpSz7L8fC+6guyXNSlhQ5NyEswZs3u
-t2rPpn0xYDFA3m0bpacqvBrdtXU6jlSoTC5aE9GX+rxNiQpCQrQwWj+bTBGNNn3O
-FdgQsxVfqve3kdqyWlaAQ6cnm3NLLhnf6GPBBi5W76DRB7ZDTp3YGJ7YyZodEsBu
-Rql+nTg8NzRXM0yieA3qvCWpDozrq18MzZyPP1Eoj8ou/SNGZz9cvtUEgbXtKqZE
-9aSHJVHNqiUD5eK7E2TLF6SrFYDDbnXAvt/A9+o2K+GhDxhW1mP/xdKPwQzbMfik
-D0kkrgFbDirok5KgYUpbwvDieuadO1yPmgQ0Em/NEorGDX8O53quENqXusU3Plcs
-+qModYcmiDYexG9/bPmGWd+l5ko7/jP6GZhabItXQKtjBc1uQyi6WRnS53Ltxkiw
-PwaaMupwKMUm1/xjt8ur6zf44M59GkGKtpJHRFtZq+iv0az8LldNrA5mzOI0ZuFY
-iDJJOA4ZxM3IdtT7zT9GOVwHma4iXqa5Lxj4OdDxCNvNOT6RKYIhn7bI7vS35dK4
-YK7WRldcpIJD1oT6dslTP1UCSIYWEdoeeJt+H4ZKAcRA7f26MTk=
-=hg/p
------END PGP SIGNATURE-----
-
---YiEDa0DAkWCtVeE4--
+diff --git a/arch/mips/include/asm/stackframe.h b/arch/mips/include/asm/stackframe.h
+index 5d3563c55e0c..2161357cc68f 100644
+--- a/arch/mips/include/asm/stackframe.h
++++ b/arch/mips/include/asm/stackframe.h
+@@ -199,6 +199,10 @@
+ 		sll	k0, 3		/* extract cu0 bit */
+ 		.set	noreorder
+ 		bltz	k0, 8f
++		 move	k0, sp
++		.if \docfi
++		.cfi_register sp, k0
++		.endif
+ #ifdef CONFIG_EVA
+ 		/*
+ 		 * Flush interAptiv's Return Prediction Stack (RPS) by writing
+@@ -225,10 +229,6 @@
+ 		MTC0	k0, CP0_ENTRYHI
+ #endif
+ 		.set	reorder
+-		 move	k0, sp
+-		.if \docfi
+-		.cfi_register sp, k0
+-		.endif
+ 		/* Called from user mode, new stack. */
+ 		get_saved_sp docfi=\docfi tosp=1
+ 8:
+-- 
+2.7.4

@@ -1,15 +1,23 @@
-Received: from mail-db5eur01on0041.outbound.protection.outlook.com ([104.47.2.41]:43296
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23990557AbdJKSMIYhtkD (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 11 Oct 2017 20:12:08 +0200
-From: James Hartley <james.hartley@sondrel.com>
-Subject: [PATCH] MAINTAINERS: Update Pistachio platform maintainers
-Date: Wed, 11 Oct 2017 19:11:32 +0100
-Message-ID: <1507745492-13349-1-git-send-email-james.hartley@sondrel.com>
+Received: from mailapp02.imgtec.com ([217.156.133.132]:59775 "EHLO
+        mailapp01.imgtec.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992544AbdJLOcwA8SRk convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 12 Oct 2017 16:32:52 +0200
+From: Aleksandar Markovic <Aleksandar.Markovic@imgtec.com>
+Subject: RE: [PATCH 1/2] MIPS: math-emu: Update debugfs FP exception stats
+ for certain instructions
+Date: Thu, 12 Oct 2017 14:32:38 +0000
+Message-ID: <EF5FA6C3467F85449672C3E735957B85015DA0B50E@badag02.ba.imgtec.org>
+References: <1507310955-3525-1-git-send-email-aleksandar.markovic@rt-rk.com>
+ <1507310955-3525-2-git-send-email-aleksandar.markovic@rt-rk.com>
+ <20171009210923.GA20378@jhogan-linux>
+ <EF5FA6C3467F85449672C3E735957B85015DA0AF13@badag02.ba.imgtec.org>,<20171012101753.GB15235@jhogan-linux>
+In-Reply-To: <20171012101753.GB15235@jhogan-linux>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <james.hartley@sondrel.com>
+Return-Path: <Aleksandar.Markovic@imgtec.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,38 +27,72 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: davem@davemloft.net
-Cc: linux-mips@linux-mips.org, james.hartley@sondrel.com, James Hartley <james.hartley@imgtec.com>
+To: James Hogan <james.hogan@mips.com>
+Cc: Aleksandar Markovic <aleksandar.markovic@rt-rk.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Douglas Leung <Douglas.Leung@imgtec.com>, Goran Ferenc <Goran.Ferenc@imgtec.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Maciej Rozycki <Maciej.Rozycki@imgtec.com>, Manuel Lauss <manuel.lauss@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Miodrag Dinic <Miodrag.Dinic@imgtec.com>, Paul Burton <Paul.Burton@imgtec.com>, Petar Jovanovic <Petar.Jovanovic@imgtec.com>, Raghu Gandham <Raghu.Gandham@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20171012143238.Liu6wmHvv9UvBBD3eKT-Mz2OKevBpIjL95lTMxVvm-c@z>
 
-From: James Hartley <james.hartley@imgtec.com>
 
-Neither of the current maintainers works for Imagination any more.
+(resending since the previous mail was rejected by the mailing list because of html format)
 
-Removed both imgtec email addresses and added back mine for
-occasional reviews, also changed from Maintained to Odd Fixes to
-reflect the time that I will be able to spend on it.
+> Subject: Re: [PATCH 1/2] MIPS: math-emu: Update debugfs FP exception stats for certain instructions
+> Date: Thursday, October 12, 2017 12:17 CEST
+> From: James Hogan <james.hogan@mips.com>>
+> > ...
+> > if ((ctx->fcr31 >> 5) & ctx->fcr31 & FPU_CSR_ALL_E)
+> > ...
+>
+> But just before that condition it does:
+>
+> ctx->fcr31 = (ctx->fcr31 & ~FPU_CSR_ALL_X) | rcsr;
+> I.e. it clears the X bits used in the condition, and overrides them,
+> based on rcsr, which is initialised to 0 and is only set after the
+> copcsr label and in a couple of other cases I don't think we'd be
+> hitting for MADDF.
+>
 
-Signed-off-by: James Hartley <james.hartley@sondrel.com>
----
- MAINTAINERS | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ccc5181..5ccf3b5 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10731,10 +10731,9 @@ S:	Maintained
- F:	drivers/pinctrl/spear/
+The code is odd and deceiving here. Let's see the whole "copcsr label"
+code segment:
  
- PISTACHIO SOC SUPPORT
--M:	James Hartley <james.hartley@imgtec.com>
--M:	Ionela Voinescu <ionela.voinescu@imgtec.com>
-+M:	James Hartley <james.hartley@sondrel.com>
- L:	linux-mips@linux-mips.org
--S:	Maintained
-+S:	Odd Fixes
- F:	arch/mips/pistachio/
- F:	arch/mips/include/asm/mach-pistachio/
- F:	arch/mips/boot/dts/img/pistachio*
--- 
-2.7.4
+copcsr:
+if (ieee754_cxtest(IEEE754_INEXACT)) {
+    MIPS_FPU_EMU_INC_STATS(ieee754_inexact);
+    rcsr |= FPU_CSR_INE_X | FPU_CSR_INE_S;
+}
+if (ieee754_cxtest(IEEE754_UNDERFLOW)) {
+    MIPS_FPU_EMU_INC_STATS(ieee754_underflow);
+    rcsr |= FPU_CSR_UDF_X | FPU_CSR_UDF_S;
+}
+if (ieee754_cxtest(IEEE754_OVERFLOW)) {
+    MIPS_FPU_EMU_INC_STATS(ieee754_overflow);
+    rcsr |= FPU_CSR_OVF_X | FPU_CSR_OVF_S;
+}
+if (ieee754_cxtest(IEEE754_INVALID_OPERATION)) {
+    MIPS_FPU_EMU_INC_STATS(ieee754_invalidop);
+    rcsr |= FPU_CSR_INV_X | FPU_CSR_INV_S;
+}
+ 
+ctx->fcr31 = (ctx->fcr31 & ~FPU_CSR_ALL_X) | rcsr;
+if ((ctx->fcr31 >> 5) & ctx->fcr31 & FPU_CSR_ALL_E) {
+    /*printk ("SIGFPE: FPU csr = %08x\n",
+    ctx->fcr31); */
+    return SIGFPE;
+}
+
+
+Value of rcsr will be dictated by series of invocations to ieee754_cxtest(),
+which, in fact, means that exception bits will be copied from fcr31 to rcsr.
+
+Then, fcr31 exception bits are cleared and set to the values they had just
+before clearing.
+
+Obviously, this will not do anything in our scenarios.
+
+However, the patch is about correct setting of debugfs stats, and this code
+segment correctly does this.
+
+May I suggest that we accept my patch as is, and if anybody for any reason
+wants to deal further with related code, this should be done in a separate
+fix/patch?
+
+Regards,
+Aleksandar

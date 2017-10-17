@@ -1,22 +1,17 @@
-Received: from 20pmail.ess.barracuda.com ([64.235.154.233]:38644 "EHLO
-        20pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990429AbdJQHTbddWpW convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 17 Oct 2017 09:19:31 +0200
-Subject: Re: [PATCH 4.4 36/50] MIPS: IRQ Stack: Unwind IRQ stack onto task
- stack
-References: <20171006083705.157012217@linuxfoundation.org>
- <20171006083711.033827562@linuxfoundation.org>
- <1508189305.22379.54.camel@codethink.co.uk>
-From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <599a61c7-b25c-47a7-7664-443666d2d8bd@mips.com>
-Date: Tue, 17 Oct 2017 08:18:23 +0100
+Received: from mail-oi0-x243.google.com ([IPv6:2607:f8b0:4003:c06::243]:54749
+        "EHLO mail-oi0-x243.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990430AbdJQJALWSzsM (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Oct 2017 11:00:11 +0200
 MIME-Version: 1.0
-In-Reply-To: <1508189305.22379.54.camel@codethink.co.uk>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-US
-Return-Path: <Matt.Redfearn@mips.com>
+In-Reply-To: <59e53a9c.0a98df0a.acf5c.fc96@mx.google.com>
+References: <59e53a9c.0a98df0a.acf5c.fc96@mx.google.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 17 Oct 2017 11:00:04 +0200
+Message-ID: <CAK8P3a1Qk+H3zp23zR=3Wsh-Yp3YOZ0bF6BNcFHjnEHd9XnCjA@mail.gmail.com>
+Subject: Re: next/master build: 214 builds: 29 failed, 185 passed, 29 errors,
+ 68 warnings (next-20171016)
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <arndbergmann@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,33 +21,104 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ben Hutchings <ben.hutchings@codethink.co.uk>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org, Matt Redfearn <matt.redfearn@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, Masanari Iida <standby24x7@gmail.com>, Chris Metcalf <cmetcalf@mellanox.com>, James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Ingo Molnar <mingo@kernel.org>, "Jason A. Donenfeld" <jason@zx2c4.com>, Andrew Morton <akpm@linux-foundation.org>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Sasha Levin <alexander.levin@verizon.com>
-Message-ID: <20171017071823.f-KJZONZA7Cj8FKNEN4jnDBjuddrkovVdFNR7OxDQfg@z>
+To: "kernelci.org bot" <bot@kernelci.org>
+Cc: Kernel Build Reports Mailman List <kernel-build-reports@lists.linaro.org>, "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>, Ralf Baechle <ralf@linux-mips.org>, David Daney <david.daney@cavium.com>, Carlos Munoz <cmunoz@caviumnetworks.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Mark Brown <broonie@linaro.org>, Josh Poimboeuf <jpoimboe@redhat.com>, David Sterba <dsterba@suse.cz>, linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <20171017090004.7Zm11aAczzWVrwuFrbPrNu46h5gUsxzj2pF7vrVAGdc@z>
 
-
-
-On 16/10/17 22:28, Ben Hutchings wrote:
-> On Fri, 2017-10-06 at 10:53 +0200, Greg Kroah-Hartman wrote:
->> 4.4-stable review patch.  If anyone has any objections, please let me know.
->>
->> ------------------
->>
->> From: Matt Redfearn <matt.redfearn@imgtec.com>
->>
->>
->> [ Upstream commit db8466c581cca1a08b505f1319c3ecd246f16fa8 ]
-> [...]
+On Tue, Oct 17, 2017 at 1:02 AM, kernelci.org bot <bot@kernelci.org> wrote:
 >
-> There was a follow-up to this which I suspect is also needed on the 4.4
-> and 4.9 branches: commit 5fdc66e04620 ("MIPS: Fix minimum alignment
-> requirement of IRQ stack").
+> next/master build: 214 builds: 29 failed, 185 passed, 29 errors, 68 warnings (next-20171016)
+> Full Build Summary: https://kernelci.org/build/next/branch/master/kernel/next-20171016/
+> Tree: next
+> Branch: master
+> Git Describe: next-20171016
+> Git Commit: babb43f85f5fc03482aafa461bdc2d38b9345361
+> Git URL: http://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> Built: 4 unique architectures
 >
-> Ben.
+> Build Failures Detected:
 >
-Hi Ben,
+> arm: gcc version 5.3.1 20160412 (Linaro GCC 5.3-2016.05)
+> allmodconfig FAIL
+> mips: gcc version 6.3.0 (GCC)
+> bigsur_defconfig FAIL
+> bmips_be_defconfig FAIL
+> bmips_stb_defconfig FAIL
+> cavium_octeon_defconfig FAIL
+> ip27_defconfig FAIL
+> loongson3_defconfig FAIL
+> malta_defconfig FAIL
+> malta_kvm_defconfig FAIL
+> maltaaprp_defconfig FAIL
+> maltasmvp_defconfig FAIL
+> maltasmvp_eva_defconfig FAIL
+> maltaup_defconfig FAIL
+> maltaup_xpa_defconfig FAIL
+> mips_paravirt_defconfig FAIL
+> msp71xx_defconfig FAIL
+> nlm_xlp_defconfig FAIL
+> nlm_xlr_defconfig FAIL
+> pistachio_defconfig FAIL
+> sb1250_swarm_defconfig FAIL
+> xway_defconfig FAIL
+> x86: gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.4)
+> allmodconfig FAIL
+> allmodconfig+CONFIG_OF=n FAIL
+> defconfig+CONFIG_KASAN=y FAIL
+> defconfig+CONFIG_LKDTM=y FAIL
+> defconfig+CONFIG_OF_UNITTEST=y FAIL
+> defconfig+kselftest FAIL
+> i386_defconfig FAIL
+> x86_64_defconfig FAIL
+>
+> Errors summary:
+> 20 arch/mips/include/asm/smp.h:32:29: error: 'CONFIG_MIPS_NR_CPU_NR_MAP' undeclared here (not in a function)
 
-Yes you are correct, I missed tagging that one for stable. Please apply it.
+These are all caused by commit e79824d71155 ("MIPS: Allow
+__cpu_number_map to be larger than NR_CPUS"), which was
+apparently incomplete. I'm not sending a patch since I don't
+know what the intention was here. Reverting that commit
+avoids the problem.
 
-Thanks,
-Matt
+> 7 drivers/gpu/drm/i915/i915_gem.c:3092:54: error: 'flags' undeclared (first use in this function)
+
+A mismerge in today's linux-next, I assume it will be resolved in the
+following linux-next
+
+> 1 ERROR: "__aeabi_uldivmod" [drivers/net/ethernet/intel/i40e/i40e.ko] undefined!
+
+I haven't reproduced this one yet, will have a look.
+
+> 1 /bin/sh: 1: /home/buildslave/workspace/kernel-single-defconfig-builder/defconfig/defconfig+CONFIG_LKDTM=y/label/builder/build-x86/tools/objtool//fixdep: Permission denied
+
+This is an old build problem with objtool. It only shows up sometimes
+when we hit a certain race. Josh Poimboef suggested a workaround but
+can't reproduce the problem here locally, so I haven't some a patch.
+
+> Warnings summary:
+> 16 fs/xfs/xfs_fsmap.c:480:1: warning: '__xfs_getfsmap_rtdev' defined but not used [-Wunused-function]
+> 16 fs/xfs/xfs_fsmap.c:372:1: warning: 'xfs_getfsmap_rtdev_rtbitmap_helper' defined but not used [-Wunused-function]
+
+I sent a patch a few days ago, should get merged soon. This also happens
+in mainline.
+
+> 7 include/linux/typecheck.h:11:18: warning: comparison of distinct pointer types lacks a cast
+> 5 fs/f2fs/node.c:1654:5: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
+> 5 fs/f2fs/node.c:1556:5: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
+> 5 fs/f2fs/node.c:1443:5: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
+> 5 fs/f2fs/node.c:1289:5: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
+> 5 fs/f2fs/checkpoint.c:322:5: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
+
+This came up today, I just sent a patch.
+
+> 2 fs/btrfs/tree-checker.c:186:4: warning: format '%lu' expects argument of type 'long unsigned int', but argument 6 has type 'unsigned int' [-Wformat=]
+> 1 fs/btrfs/tree-checker.c:186:70: warning: format '%lu' expects argument of type 'long unsigned int', but argument 6 has type 'unsigned int' [-Wformat=]
+
+I sent a patch a few days ago, Dave Sterba reviewed it, but it hasn't
+gone in yet.
+
+> 1 fs/binfmt_elf_fdpic.c:1501:17: warning: unused variable 'addr' [-Wunused-variable]
+
+Al Viro applied my patch, but it hasn't made it into linux-next yet.
+
+         Arnd

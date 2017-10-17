@@ -1,13 +1,21 @@
-Received: from 20pmail.ess.barracuda.com ([64.235.154.233]:42937 "EHLO
+Received: from 20pmail.ess.barracuda.com ([64.235.154.233]:38644 "EHLO
         20pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990430AbdJPKIw2FGNl (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 16 Oct 2017 12:08:52 +0200
+        by eddie.linux-mips.org with ESMTP id S23990429AbdJQHTbddWpW convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 17 Oct 2017 09:19:31 +0200
+Subject: Re: [PATCH 4.4 36/50] MIPS: IRQ Stack: Unwind IRQ stack onto task
+ stack
+References: <20171006083705.157012217@linuxfoundation.org>
+ <20171006083711.033827562@linuxfoundation.org>
+ <1508189305.22379.54.camel@codethink.co.uk>
 From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH] MIPS: generic: Fix compilation error from include asm/mips-cpc.h
-Date: Mon, 16 Oct 2017 11:06:49 +0100
-Message-ID: <1508148409-15864-1-git-send-email-matt.redfearn@mips.com>
+Message-ID: <599a61c7-b25c-47a7-7664-443666d2d8bd@mips.com>
+Date: Tue, 17 Oct 2017 08:18:23 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1508189305.22379.54.camel@codethink.co.uk>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
 Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -18,63 +26,33 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Paul Burton <paul.burton@mips.com>, Matt Redfearn <matt.redfearn@mips.com>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, linux-kernel@vger.kernel.org, Ying Huang <ying.huang@intel.com>, Matija Glavinic Pecotic <matija.glavinic-pecotic.ext@nokia.com>, Ingo Molnar <mingo@kernel.org>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20171016100649.nVZ8VHpqwrwo8OAzdV3bdao-pEw3HdwAJVFn-vuOVi0@z>
+To: Ben Hutchings <ben.hutchings@codethink.co.uk>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org, Matt Redfearn <matt.redfearn@imgtec.com>, Paolo Bonzini <pbonzini@redhat.com>, Marcin Nowakowski <marcin.nowakowski@imgtec.com>, Masanari Iida <standby24x7@gmail.com>, Chris Metcalf <cmetcalf@mellanox.com>, James Hogan <james.hogan@imgtec.com>, Paul Burton <paul.burton@imgtec.com>, Ingo Molnar <mingo@kernel.org>, "Jason A. Donenfeld" <jason@zx2c4.com>, Andrew Morton <akpm@linux-foundation.org>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Sasha Levin <alexander.levin@verizon.com>
+Message-ID: <20171017071823.f-KJZONZA7Cj8FKNEN4jnDBjuddrkovVdFNR7OxDQfg@z>
 
-Commit e83f7e02af50c ("MIPS: CPS: Have asm/mips-cps.h include CM & CPC
-headers") adds a #error to arch/mips/include/asm/mips-cpc.h if it is
-included directly. While this commit replaced almost all direct includes
-of mips-cm.h and mips-cpc.h, 2 remain.
 
-With some defconfigs, mips-cps.h is indirectly included before
-mips-cpc.h, but in others this results in compilation errors:
 
-In file included from arch/mips/generic/init.c:23:0:
-./arch/mips/include/asm/mips-cpc.h:12:3: error: #error Please include
-asm/mips-cps.h rather than asm/mips-cpc.h
- # error Please include asm/mips-cps.h rather than asm/mips-cpc.h
+On 16/10/17 22:28, Ben Hutchings wrote:
+> On Fri, 2017-10-06 at 10:53 +0200, Greg Kroah-Hartman wrote:
+>> 4.4-stable review patch.  If anyone has any objections, please let me know.
+>>
+>> ------------------
+>>
+>> From: Matt Redfearn <matt.redfearn@imgtec.com>
+>>
+>>
+>> [ Upstream commit db8466c581cca1a08b505f1319c3ecd246f16fa8 ]
+> [...]
+>
+> There was a follow-up to this which I suspect is also needed on the 4.4
+> and 4.9 branches: commit 5fdc66e04620 ("MIPS: Fix minimum alignment
+> requirement of IRQ stack").
+>
+> Ben.
+>
+Hi Ben,
 
-In file included from arch/mips/kernel/smp.c:23:0:
-./arch/mips/include/asm/mips-cpc.h:12:3: error: #error Please include
-asm/mips-cps.h rather than asm/mips-cpc.h
- # error Please include asm/mips-cps.h rather than asm/mips-cpc.h
+Yes you are correct, I missed tagging that one for stable. Please apply it.
 
-In both cases, fix this by including mips-cps.h instead.
-
-Fixes: e83f7e02af50c ("MIPS: CPS: Have asm/mips-cps.h include CM & CPC headers")
-Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
----
-
- arch/mips/generic/init.c | 2 +-
- arch/mips/kernel/smp.c   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/generic/init.c b/arch/mips/generic/init.c
-index 15a7fb8e2a2e..813c60c73a4c 100644
---- a/arch/mips/generic/init.c
-+++ b/arch/mips/generic/init.c
-@@ -20,7 +20,7 @@
- #include <asm/fw/fw.h>
- #include <asm/irq_cpu.h>
- #include <asm/machine.h>
--#include <asm/mips-cpc.h>
-+#include <asm/mips-cps.h>
- #include <asm/prom.h>
- #include <asm/smp-ops.h>
- #include <asm/time.h>
-diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-index bbe19b64def5..3cd2f70d1c18 100644
---- a/arch/mips/kernel/smp.c
-+++ b/arch/mips/kernel/smp.c
-@@ -42,7 +42,7 @@
- #include <asm/processor.h>
- #include <asm/idle.h>
- #include <asm/r4k-timer.h>
--#include <asm/mips-cpc.h>
-+#include <asm/mips-cps.h>
- #include <asm/mmu_context.h>
- #include <asm/time.h>
- #include <asm/setup.h>
--- 
-2.7.4
+Thanks,
+Matt

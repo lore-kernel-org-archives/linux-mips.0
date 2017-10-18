@@ -1,14 +1,16 @@
-Received: from 20pmail.ess.barracuda.com ([64.235.150.246]:59413 "EHLO
+Received: from 20pmail.ess.barracuda.com ([64.235.154.232]:38541 "EHLO
         20pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990858AbdJQN2rTq1b3 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Oct 2017 15:28:47 +0200
-From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH] MIPS: Boston: Fix earlycon baud rate selection
-Date: Tue, 17 Oct 2017 14:27:59 +0100
-Message-ID: <1508246879-20580-1-git-send-email-matt.redfearn@mips.com>
+        by eddie.linux-mips.org with ESMTP id S23992378AbdJRRg2aEQwI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Oct 2017 19:36:28 +0200
+Date: Wed, 18 Oct 2017 18:34:49 +0100
+From: "Maciej W. Rozycki" <macro@mips.com>
+Subject: Re: [PATCH] MIPS: Fix exception entry when CONFIG_EVA enabled
+In-Reply-To: <1507712360-20657-1-git-send-email-matt.redfearn@mips.com>
+Message-ID: <alpine.DEB.2.00.1710181817140.3886@tp.orcam.me.uk>
+References: <1507712360-20657-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@mips.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,49 +20,36 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Paul Burton <paul.burton@imgtec.com>
-Message-ID: <20171017132759.bWSMqPHmHJagvZZbSExYX4q2tJXWFhl25If0RICPB8U@z>
+To: Matt Redfearn <matt.redfearn@mips.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@mips.com>, Matthew Fortune <matthew.fortune@mips.com>, linux-mips@linux-mips.org, Corey Minyard <cminyard@mvista.com>, linux-kernel@vger.kernel.org, "Jason A. Donenfeld" <jason@zx2c4.com>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20171018173449.fMht30BSgXdHMNk83v4sjmm7XVBO5RXZbOjlMVDuI_o@z>
 
-During set up of the early console, the earlycon driver will attempt to
-configure a baud rate, if one is set in the earlycon structure.
-Previously, of_setup_earlycon left this field as 0, ignoring any baud
-rate selected by the DT. Commit 31cb9a8575ca ("earlycon: initialise baud
-field of earlycon device structure") changed this behaviour such that
-any selected baud rate is now set. The earlycon driver must deduce the
-divisor from the configured uartclk, which of_setup_earlycon sets to
-BASE_BAUD. MIPS generic kernels do not set BASE_BAUD (there is no
-practical way to set this generically for all supported platforms), so
-when the early console is configured an incorrect divisor is calculated
-for the selected baud rate, and garbage is printed to the console during
-boot.
+On Wed, 11 Oct 2017, Matt Redfearn wrote:
 
-Fix this by removing the configured baud rate from the device tree.
-This causes the early console to inherit the baud rate settings from the
-bootloader. By the time the real console is probed, the clock drivers
-necessary to calculate the divisor are enabled and the kernel can
-correctly configure the baud rate.
+> diff --git a/arch/mips/include/asm/stackframe.h b/arch/mips/include/asm/stackframe.h
+> index 5d3563c55e0c..2161357cc68f 100644
+> --- a/arch/mips/include/asm/stackframe.h
+> +++ b/arch/mips/include/asm/stackframe.h
+> @@ -199,6 +199,10 @@
+>  		sll	k0, 3		/* extract cu0 bit */
+>  		.set	noreorder
+>  		bltz	k0, 8f
+> +		 move	k0, sp
+> +		.if \docfi
+> +		.cfi_register sp, k0
+> +		.endif
 
-Fixes: 31cb9a8575ca ("earlycon: initialise baud field of earlycon device structure")
-Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+ Using $k1 for the Status.CU0 check would let us get rid of the 
+`noreorder' block, making this code less fragile at no run-time cost, 
+i.e.:
 
----
+		mfc0	k1, CP0_STATUS
+		sll	k1, 3
+		move	k0, sp
+		bltz	k1, 8f
 
- arch/mips/boot/dts/img/boston.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+(unfortunately I can't see a way to usefully fill the coprocessor move 
+delay slot automatically scheduled by GAS here between MFC0 and SLL for 
+processors that require it).
 
-diff --git a/arch/mips/boot/dts/img/boston.dts b/arch/mips/boot/dts/img/boston.dts
-index 53bfa29a7093..179691aae7d7 100644
---- a/arch/mips/boot/dts/img/boston.dts
-+++ b/arch/mips/boot/dts/img/boston.dts
-@@ -11,7 +11,7 @@
- 	compatible = "img,boston";
- 
- 	chosen {
--		stdout-path = "uart0:115200";
-+		stdout-path = "uart0";
- 	};
- 
- 	aliases {
--- 
-2.7.4
+  Maciej

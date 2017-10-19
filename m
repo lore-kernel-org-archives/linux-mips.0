@@ -1,23 +1,18 @@
-Received: from mail-qt0-x242.google.com ([IPv6:2607:f8b0:400d:c0d::242]:50019
-        "EHLO mail-qt0-x242.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992724AbdJSV7GQkXnL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 19 Oct 2017 23:59:06 +0200
-Subject: Re: [PATCH 2/9] PCI: host: brcmstb: add DT docs for Brcmstb PCIe
- device
-References: <1507761269-7017-1-git-send-email-jim2101024@gmail.com>
- <1507761269-7017-3-git-send-email-jim2101024@gmail.com>
- <20171017202418.ykve2o4zvuwxjdgj@rob-hp-laptop>
- <CANCKTBt_gUF8qAEuhS1336Uce+WdP_98ApZhv1sxZgJsWGoiGQ@mail.gmail.com>
- <CAL_JsqLoqB0GF201ofJrjdYH8B-Ca=hGBtE4=VcrBxS7M52mVQ@mail.gmail.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <9fae640f-a9da-90bf-01d2-c62131611ef9@gmail.com>
-Date: Thu, 19 Oct 2017 14:58:55 -0700
+Received: from mail-it0-x233.google.com ([IPv6:2607:f8b0:4001:c0b::233]:50037
+        "EHLO mail-it0-x233.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992780AbdJSXFDQa0Gy (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 20 Oct 2017 01:05:03 +0200
 MIME-Version: 1.0
 In-Reply-To: <CAL_JsqLoqB0GF201ofJrjdYH8B-Ca=hGBtE4=VcrBxS7M52mVQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <f.fainelli@gmail.com>
+References: <1507761269-7017-1-git-send-email-jim2101024@gmail.com>
+ <1507761269-7017-3-git-send-email-jim2101024@gmail.com> <20171017202418.ykve2o4zvuwxjdgj@rob-hp-laptop>
+ <CANCKTBt_gUF8qAEuhS1336Uce+WdP_98ApZhv1sxZgJsWGoiGQ@mail.gmail.com> <CAL_JsqLoqB0GF201ofJrjdYH8B-Ca=hGBtE4=VcrBxS7M52mVQ@mail.gmail.com>
+From: Jim Quinlan <jim2101024@gmail.com>
+Date: Thu, 19 Oct 2017 19:04:56 -0400
+Message-ID: <CANCKTBvPo6wMQAtt77QTx5dnDc-8V7MYnL-RuzUkC6FbVAWRDQ@mail.gmail.com>
+Subject: Re: [PATCH 2/9] PCI: host: brcmstb: add DT docs for Brcmstb PCIe device
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <jim2101024@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,11 +22,11 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rob Herring <robh@kernel.org>, Jim Quinlan <jim2101024@gmail.com>
+To: Rob Herring <robh@kernel.org>
 Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, Linux-MIPS <linux-mips@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, linux-pci <linux-pci@vger.kernel.org>, Kevin Cernekee <cernekee@gmail.com>, Will Deacon <will.deacon@arm.com>, Ralf Baechle <ralf@linux-mips.org>, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, Gregory Fong <gregory.0xf0@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Bjorn Helgaas <bhelgaas@google.com>, Brian Norris <computersforpeace@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Message-ID: <20171019215855.FTRClrJ9sEXNHLBrPIiFJtJGKj18vSYxOoQkcXN586s@z>
+Message-ID: <20171019230456.-4p3k4iCL1JovyLqPeiiiyTtBHXHfGb31sCDuJUMVMY@z>
 
-On 10/19/2017 02:49 PM, Rob Herring wrote:
+On Thu, Oct 19, 2017 at 5:49 PM, Rob Herring <robh@kernel.org> wrote:
 > On Tue, Oct 17, 2017 at 5:42 PM, Jim Quinlan <jim2101024@gmail.com> wrote:
 >> On Tue, Oct 17, 2017 at 4:24 PM, Rob Herring <robh@kernel.org> wrote:
 >>> On Wed, Oct 11, 2017 at 06:34:22PM -0400, Jim Quinlan wrote:
@@ -102,10 +97,20 @@ On 10/19/2017 02:49 PM, Rob Herring wrote:
 >>> How many cells?
 >>>
 >> This line will be removed.
-> 
+>
 > Humm, why? You need it to have interrupt-map. You just need to say
 > what the value is, not what the property is.
-> 
+
+Okay, I got this from
+https://elinux.org/Device_Tree_Usage#Advanced_Interrupt_Mapping  which
+says that
+"First you'll notice that PCI interrupt numbers use only one cell,
+unlike the system interrupt controller which uses 2 cells; one for the
+irq number, and one for flags. PCI only needs one cell for interrupts
+because PCI interrupts are specified to always be level-low
+sensitive."  Is that not the convention for legacy PCI interrupts?
+
+>
 >>>> +  interrupt-map-mask -- see [1]; four cells, the first three are zero
 >>>> +      for our uses and the fourth cell is the mask (val = 0x7) for
 >>>> +      the legacy interrupt number [1..4].
@@ -180,42 +185,11 @@ On 10/19/2017 02:49 PM, Rob Herring wrote:
 >> and then have this driver search all of the properties in the PCIe
 >> node for names matching /-supply$/, and then create a list of phandles
 >> from that.  Is that what you would like?
-> 
+>
 > Really, you should have child nodes of the PCIe devices and have the
 > supplies in there.
-
-While that would be technically more correct this poses a number of issues:
-
-- there is precedence in that area, and you already Acked binding
-documents proposing the same thing:
-	* Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt (commit
-c26ebe98a103479dae9284fe0a86a95af4a5cd46)
-	* Documentation/devicetree/bindings/pci/rockchip-pcie.txt (commit
-828bdcfbdb98eeb97facb05fe6c96ba0aed65c4a and before)
-
-(which may indicate those should also be corrected, at the possible
-expense of creating incompatibilities)
-
-- there is a chicken and egg problem, you can't detect the EP without
-turning its regulator on, and if you can't create a pci_device, you
-certainly won't be able to associate it with an device_node counterpart
-
-- PCIe being dynamic by nature, can you have "wildcard" PCIE EP DT node
-that would be guaranteed to match any physically attached PCIE EP which
-is discovered by the PCI bus layer (and then back to issue #2)
-
-If we can solve #2 and #3, it would be reasonable to move the regulator
-to a PCIE EP node. Ideally, we may want the generic PCI layer to be
-responsible for managing regulators within pci_enable_device() and
-pci_disable_device() for instance?
-
-> 
+>
 > The driver could do what you describe, but you've still got to define
 > the names here.
-> 
+>
 > Rob
-> 
-
-
--- 
-Florian

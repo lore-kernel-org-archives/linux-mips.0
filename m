@@ -1,11 +1,11 @@
-Received: from 20pmail.ess.barracuda.com ([64.235.154.233]:45512 "EHLO
+Received: from 20pmail.ess.barracuda.com ([64.235.154.232]:50861 "EHLO
         20pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990414AbdJSMChvrdfI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 19 Oct 2017 14:02:37 +0200
+        by eddie.linux-mips.org with ESMTP id S23992604AbdJSMCkOu0XI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 19 Oct 2017 14:02:40 +0200
 From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH V2 3/3] clocksource: mips-gic-timer: Add fastpath for local timer updates
-Date: Thu, 19 Oct 2017 12:55:35 +0100
-Message-ID: <1508414135-29123-3-git-send-email-matt.redfearn@mips.com>
+Subject: [PATCH 2/3] clocksource/mips-gic-timer: Remove pointless irq_save,restore
+Date: Thu, 19 Oct 2017 12:55:34 +0100
+Message-ID: <1508414135-29123-2-git-send-email-matt.redfearn@mips.com>
 In-Reply-To: <1508414135-29123-1-git-send-email-matt.redfearn@mips.com>
 References: <1508414135-29123-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
@@ -22,41 +22,30 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Thomas Gleixner <tglx@linutronix.de>, Daniel Lezcano <daniel.lezcano@linaro.org>
 Cc: James Hogan <james.hogan@mips.com>, linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, linux-kernel@vger.kernel.org
-Message-ID: <20171019115535.1bTX_Wg131UhVERnLlFqWLkDqJVo4maQEhhn8-UKt6w@z>
+Message-ID: <20171019115534.l6BNkap3zbFuXEJVzuAqkOMp0-GmBfWqAskErIbPjdc@z>
 
-Always accessing the compare register via the CM redirect region is
-(relatively) slow. If the timer being updated is the current CPUs
-then this can be shortcutted by writing to the CM VP local region.
+gic_next_event is always called with interrupts disabled, so the save /
+restore is pointless - remove it.
 
 Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
 ---
 
- drivers/clocksource/mips-gic-timer.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/clocksource/mips-gic-timer.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/drivers/clocksource/mips-gic-timer.c b/drivers/clocksource/mips-gic-timer.c
-index 8e8e3aa25b3f..e8dee5491227 100644
+index ae3167c28b12..8e8e3aa25b3f 100644
 --- a/drivers/clocksource/mips-gic-timer.c
 +++ b/drivers/clocksource/mips-gic-timer.c
-@@ -39,14 +39,19 @@ static u64 notrace gic_read_count(void)
- 
- static int gic_next_event(unsigned long delta, struct clock_event_device *evt)
- {
-+	int cpu = cpumask_first(evt->cpumask);
- 	unsigned long flags;
- 	u64 cnt;
- 	int res;
+@@ -45,10 +45,8 @@ static int gic_next_event(unsigned long delta, struct clock_event_device *evt)
  
  	cnt = gic_read_count();
  	cnt += (u64)delta;
--	write_gic_vl_other(mips_cm_vp_id(cpumask_first(evt->cpumask)));
--	write_gic_vo_compare(cnt);
-+	if (cpu == raw_smp_processor_id()) {
-+		write_gic_vl_compare(cnt);
-+	} else {
-+		write_gic_vl_other(mips_cm_vp_id(cpu));
-+		write_gic_vo_compare(cnt);
-+	}
+-	local_irq_save(flags);
+ 	write_gic_vl_other(mips_cm_vp_id(cpumask_first(evt->cpumask)));
+ 	write_gic_vo_compare(cnt);
+-	local_irq_restore(flags);
  	res = ((int)(gic_read_count() - cnt) >= 0) ? -ETIME : 0;
  	return res;
  }

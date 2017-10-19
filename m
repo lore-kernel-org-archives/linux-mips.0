@@ -1,16 +1,16 @@
-Received: from 20pmail.ess.barracuda.com ([64.235.150.246]:47138 "EHLO
+Received: from 20pmail.ess.barracuda.com ([64.235.150.247]:50278 "EHLO
         20pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991163AbdJSIOnSA7yD (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 19 Oct 2017 10:14:43 +0200
+        by eddie.linux-mips.org with ESMTP id S23992348AbdJSJXNF6W5Z (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 19 Oct 2017 11:23:13 +0200
 Subject: Re: [PATCH 1/3] clocksource/mips-gic-timer: Fix rcu_sched timeouts
  from multithreading
 References: <1507730474-8577-1-git-send-email-matt.redfearn@mips.com>
- <alpine.DEB.2.20.1710182226080.2477@nanos>
+ <935fff7a-674a-a9c5-904f-6ed4ec6366e2@linaro.org>
 From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <dd1dcbdf-93bc-7807-df5c-2ec36550bd5a@mips.com>
-Date: Thu, 19 Oct 2017 09:08:21 +0100
+Message-ID: <c6496d5d-5581-c9fd-7b4f-755d2d456b2c@mips.com>
+Date: Thu, 19 Oct 2017 10:21:50 +0100
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.20.1710182226080.2477@nanos>
+In-Reply-To: <935fff7a-674a-a9c5-904f-6ed4ec6366e2@linaro.org>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -24,14 +24,14 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Thomas Gleixner <tglx@linutronix.de>, James Hogan <james.hogan@mips.com>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, "# v3 . 19 +" <stable@vger.kernel.org>, linux-kernel@vger.kernel.org
-Message-ID: <20171019080821.EWuBlWsei31lMiDVOfwPDZdQxGdupjL4TTkYi4km3ho@z>
+To: Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@imgtec.com>, "# v3 . 19 +" <stable@vger.kernel.org>, linux-kernel@vger.kernel.org
+Message-ID: <20171019092150.cnqh1hPuYRUxG6BLI8CNeeb47xMLumHk5_mz4Kfyy7U@z>
 
 
-On 18/10/17 21:34, Thomas Gleixner wrote:
-> On Wed, 11 Oct 2017, Matt Redfearn wrote:
->
+
+On 19/10/17 10:09, Daniel Lezcano wrote:
+> On 11/10/2017 16:01, Matt Redfearn wrote:
 >> When the MIPS GIC clockevent code was written, it appears to have
 >> inherited the 0x300 cycle min delta from the MIPS CPU timer driver. This
 >> is suboptimal for two reasons.
@@ -55,29 +55,35 @@ On 18/10/17 21:34, Thomas Gleixner wrote:
 >> delta for the timer based on the number of threads in the core
 >> (smp_num_siblings). This accounts for the greater average runtime of
 >> CPUs within a multithreading core.
-> I don't understand why this is not catched by the check at the end of the
-> next_event() function:
+>>
+>> Signed-off-by: Matt Redfearn <matt.redfearn@imgtec.com>
+>> Fixes: b695d8e6ad6f ("clocksource: mips-gic: Use clockevents_config_and_register")
+>> Cc: <stable@vger.kernel.org> # v3.19 +
+>>
+>> Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+>> ---
+> Matt,
 >
->          res = ((int)(gic_read_count() - cnt) >= 0) ? -ETIME : 0;
+> I'm dropping your series.
 >
-> Btw, the local_irq_save() in this function is pointless as this function is
-> always called with interrupts disabled from the core code.
+> The first patch fails to compile because of the smp_num_siblings
+> variable undefined when compile testing on another arch (probably a
+> header is missing).
 >
-> Thanks,
+> The issue the patch address could be fixed in the time framework as
+> stated by Thomas.
 >
-> 	tglx
+> As spotted by Thomas also, the local_irq_save() is not needed in the
+> set_next_event() function, so the second patch is pointless and a patch
+> removing those local_irq_save()/restore() would make more sense.
 >
+> The third patch does not longer apply after removing the two above.
+>
+>   -- Daniel
 >
 
-Hi tglx,
+Hi Daniel,
 
-This is an issue because in some cases (hrtimer_reprogram -> 
-clockevents_program_event -> clockevents_program_min_delta, when 
-CONFIG_GENERIC_CLOCKEVENTS_MIN_ADJUST=n) there is no retry performed in 
-the case of -ETIME. There has been a patch pending for some time 
-https://patchwork.kernel.org/patch/8909491/ which ought to address this 
-and retry in the case of an event in the past on this call path. But in 
-the meantime this patch vastly improves the situation.
+Yep, makes sense that's fine - thanks!
 
-Thanks,
 Matt

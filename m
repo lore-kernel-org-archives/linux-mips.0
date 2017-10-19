@@ -1,19 +1,15 @@
-Received: from 20pmail.ess.barracuda.com ([64.235.150.246]:34803 "EHLO
+Received: from 20pmail.ess.barracuda.com ([64.235.154.232]:60638 "EHLO
         20pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992540AbdJSNXDEzo7f (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 19 Oct 2017 15:23:03 +0200
-Subject: Re: [PATCH 1/3] clockevents: Retry programming min delta up to 10
- times
-References: <1508414135-29123-1-git-send-email-matt.redfearn@mips.com>
- <alpine.DEB.2.20.1710191435280.1971@nanos>
+        by eddie.linux-mips.org with ESMTP id S23992540AbdJSOWfjKanJ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 19 Oct 2017 16:22:35 +0200
 From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <5b782526-b130-77f2-6d9a-15839e12e065@mips.com>
-Date: Thu, 19 Oct 2017 14:21:23 +0100
+Subject: [PATCH v2] clockevents: Retry programming min delta up to 10 times
+Date: Thu, 19 Oct 2017 15:17:23 +0100
+Message-ID: <1508422643-6075-1-git-send-email-matt.redfearn@mips.com>
+In-Reply-To: <alpine.DEB.2.20.1710191527570.1971@nanos>
+References: <alpine.DEB.2.20.1710191527570.1971@nanos>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.20.1710191435280.1971@nanos>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
 Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -24,67 +20,91 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, James Hogan <james.hogan@mips.com>, linux-mips@linux-mips.org, James Hogan <jhogan@kernel.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, linux-kernel@vger.kernel.org
-Message-ID: <20171019132123.t3QlKQg_EOqm0EL2o6x0cA0t39wb3Y_F9UYLi1Q7qIc@z>
+To: Thomas Gleixner <tglx@linutronix.de>, Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: James Hogan <james.hogan@mips.com>, linux-mips@linux-mips.org, James Hogan <jhogan@kernel.org>, Matt Redfearn <matt.redfearn@mips.com>, Martin Schwidefsky <schwidefsky@de.ibm.com>, linux-kernel@vger.kernel.org
+Message-ID: <20171019141723.kPZ5x7MWQwGUjEyTc0-VwIvftErEI0Ij6YAZDvMHEIY@z>
 
+From: James Hogan <jhogan@kernel.org>
 
+When CONFIG_GENERIC_CLOCKEVENTS_MIN_ADJUST=n, the call path
+hrtimer_reprogram -> clockevents_program_event ->
+clockevents_program_min_delta will not retry if the clock event driver
+returns -ETIME.
 
-On 19/10/17 13:43, Thomas Gleixner wrote:
-> On Thu, 19 Oct 2017, Matt Redfearn wrote:
->>   	unsigned long long clc;
->>   	int64_t delta;
->> +	int i;
->>   
->> -	delta = dev->min_delta_ns;
->> -	dev->next_event = ktime_add_ns(ktime_get(), delta);
->> +	for (i = 0;;) {
-> Bah. What's wrong with
->
-> 	for (i = 0; i < 10; i++) {
->
-> 	    	....
-> 		if (!(dev->set_next_event((unsigned long) clc, dev))
-> 			return 0;
-> 	}
-> 	return -ETIME;
->
-> Hmm?
+If the driver could not satisfy the program_min_delta for any reason,
+the lack of a retry means the CPU may not receive a tick interrupt,
+potentially until the counter does a full period. This leads to
+rcu_sched timeout messages as the stalled CPU is detected by other CPUs,
+and other issues if the CPU is holding locks or other resources at the
+point at which it stalls.
 
-Sure, can make it like that.
+There have been a couple of observed mechanisms through which a clock
+event driver could not satisfy the requested min_delta and return
+-ETIME.
 
->> +		delta = dev->min_delta_ns;
->> +		dev->next_event = ktime_add_ns(ktime_get(), delta);
->>   
->> -	if (clockevent_state_shutdown(dev))
->> -		return 0;
->> +		if (clockevent_state_shutdown(dev))
->> +			return 0;
->>   
->> -	dev->retries++;
->> -	clc = ((unsigned long long) delta * dev->mult) >> dev->shift;
->> -	return dev->set_next_event((unsigned long) clc, dev);
->> +		dev->retries++;
->> +		clc = ((unsigned long long) delta * dev->mult) >> dev->shift;
-> I'd rather make that:
->
-> 	delta = 0;
-> 	for (i = 0; i < 10; i++) {
-> 		delta += dev->min_delta_ns;
-> 		dev->next_event = ktime_add_ns(ktime_get(), delta);
-> 		clc = .....
-> 	   	.....
->
-> That makes it more likely to succeed fast. Hmm?
+With the MIPS GIC driver, the shared execution resource within MT cores
+means inconventient latency due to execution of instructions from other
+hardware threads in the core, within gic_next_event, can result in an
+event being set in the past.
 
-That will set the target time to increasing multiples of min_delta_ns in 
-the future, right? Sure, it should make it succeed faster - I'll make it 
-like that. Are you OK with the arbitrarily chosen 10 retries?
+Additionally under virtualisation it is possible to get unexpected
+latency during a clockevent device's set_next_event() callback which can
+make it return -ETIME even for a delta based on min_delta_ns.
 
-Thanks,
-Matt
+It isn't appropriate to use MIN_ADJUST in the virtualisation case as
+occasional hypervisor induced high latency will cause min_delta_ns to
+quickly increase to the maximum.
 
->
-> Thanks,
->
-> 	tglx
+Instead, borrow the retry pattern from the MIN_ADJUST case, but without
+making adjustments. We retry up to 10 times, each time increasing the
+attempted delta by min_delta, before giving up.
+
+Signed-off-by: James Hogan <jhogan@kernel.org>
+Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
+
+---
+
+Changes in v2:
+Restructure for loop and retry with increasing multiples of min_delta.
+
+ kernel/time/clockevents.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/kernel/time/clockevents.c b/kernel/time/clockevents.c
+index 4237e0744e26..84c2e3b57428 100644
+--- a/kernel/time/clockevents.c
++++ b/kernel/time/clockevents.c
+@@ -281,16 +281,22 @@ static int clockevents_program_min_delta(struct clock_event_device *dev)
+ {
+ 	unsigned long long clc;
+ 	int64_t delta;
++	int i;
+ 
+-	delta = dev->min_delta_ns;
+-	dev->next_event = ktime_add_ns(ktime_get(), delta);
++	delta = 0;
++	for (i = 0; i < 10; i++) {
++		delta += dev->min_delta_ns;
++		dev->next_event = ktime_add_ns(ktime_get(), delta);
+ 
+-	if (clockevent_state_shutdown(dev))
+-		return 0;
++		if (clockevent_state_shutdown(dev))
++			return 0;
+ 
+-	dev->retries++;
+-	clc = ((unsigned long long) delta * dev->mult) >> dev->shift;
+-	return dev->set_next_event((unsigned long) clc, dev);
++		dev->retries++;
++		clc = ((unsigned long long) delta * dev->mult) >> dev->shift;
++		if (dev->set_next_event((unsigned long) clc, dev) == 0)
++			return 0;
++	}
++	return -ETIME;
+ }
+ 
+ #endif /* CONFIG_GENERIC_CLOCKEVENTS_MIN_ADJUST */
+-- 
+2.7.4

@@ -1,17 +1,18 @@
-Received: from 20pmail.ess.barracuda.com ([64.235.154.232]:40090 "EHLO
-        20pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990406AbdJTWIPjEuCX (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 21 Oct 2017 00:08:15 +0200
-Date: Fri, 20 Oct 2017 22:46:44 +0100
-From: "Maciej W. Rozycki" <macro@mips.com>
-Subject: Re: [PATCH] MIPS: kernel: proc: Remove spurious white space in
- cpuinfo
-In-Reply-To: <1508533736.30181.7.camel@perches.com>
-Message-ID: <alpine.DEB.2.00.1710202245400.3886@tp.orcam.me.uk>
-References: <1508509203-30661-1-git-send-email-aleksandar.markovic@rt-rk.com>  <1508512648.30181.1.camel@perches.com>  <alpine.DEB.2.00.1710202148280.3886@tp.orcam.me.uk> <1508533736.30181.7.camel@perches.com>
+Received: from mail-pf0-x244.google.com ([IPv6:2607:f8b0:400e:c00::244]:48572
+        "EHLO mail-pf0-x244.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990484AbdJVP1CMdbE0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 22 Oct 2017 17:27:02 +0200
+Date: Sun, 22 Oct 2017 08:26:53 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [3/3] MIPS: jz4780: DTS: Probe the jz4740-watchdog driver from
+ devicetree
+Message-ID: <20171022152653.GA11714@roeck-us.net>
+References: <20170908183558.1537-3-malat@debian.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@mips.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20170908183558.1537-3-malat@debian.org>
+Return-Path: <groeck7@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,22 +22,34 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Joe Perches <joe@perches.com>
-Cc: Aleksandar Markovic <aleksandar.markovic@rt-rk.com>, linux-mips@linux-mips.org, Dragan Cecavac <dragan.cecavac@mips.com>, Aleksandar Markovic <aleksandar.markovic@mips.com>, Douglas Leung <douglas.leung@mips.com>, Goran Ferenc <goran.ferenc@mips.com>, James Hogan <james.hogan@mips.com>, James Hogan <jhogan@kernel.org>, linux-kernel@vger.kernel.org, "Maciej W. Rozycki" <macro@linux-mips.org>, Miodrag Dinic <miodrag.dinic@mips.com>, Paul Burton <paul.burton@imgtec.com>, Paul Burton <paul.burton@mips.com>, Petar Jovanovic <petar.jovanovic@mips.com>, Raghu Gandham <raghu.gandham@mips.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20171020214644.gMLzszGSP09nMKIaZW4MZPyGyyYMUjTRCSpN0vEr1Bg@z>
+To: Mathieu Malaterre <malat@debian.org>
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Wim Van Sebroeck <wim@iguana.be>, Linus Walleij <linus.walleij@linaro.org>, Paul Cercueil <paul@crapouillou.net>, Krzysztof Kozlowski <krzk@kernel.org>, devicetree@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
+Message-ID: <20171022152653.kPVAwdzZ5OGelxFEE-wTv6jfoprP70l6aCap9SMJMAI@z>
 
-On Fri, 20 Oct 2017, Joe Perches wrote:
-
-> > > That's somewhat unpleasant code as it formats a fmt string
-> > > and the compiler can not verify fmt and args.
-> > > 
-> > > Perhaps something like the below is preferable:
-> > 
-> >  Hmm, what problem exactly are you trying to solve with code that has 
-> > worked just fine for 16 years now?
+On Fri, Sep 08, 2017 at 08:35:55PM +0200, Mathieu Malaterre wrote:
+> The jz4740-watchdog driver supports both jz4740 & jz4780.
 > 
-> The compiler cannot verify fmt and args.
+> Signed-off-by: Mathieu Malaterre <malat@debian.org>
 
- You have stated that already.  Why is that a problem?
+Acked-by: Guenter Roeck <linux@roeck-us.net>
 
-  Maciej
+> ---
+>  arch/mips/boot/dts/ingenic/jz4780.dtsi | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
+> index 4853ef67b3ab..33d7f49186d6 100644
+> --- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
+> +++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
+> @@ -207,6 +207,11 @@
+>  		status = "disabled";
+>  	};
+>  
+> +	watchdog: jz4780-watchdog@10002000 {
+> +		compatible = "ingenic,jz4740-watchdog";
+> +		reg = <0x10002000 0x100>;
+> +	};
+> +
+>  	nemc: nemc@13410000 {
+>  		compatible = "ingenic,jz4780-nemc";
+>  		reg = <0x13410000 0x10000>;

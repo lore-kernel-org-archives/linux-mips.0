@@ -1,18 +1,18 @@
-Received: from mail-pf0-x244.google.com ([IPv6:2607:f8b0:400e:c00::244]:48572
-        "EHLO mail-pf0-x244.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990484AbdJVP1CMdbE0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 22 Oct 2017 17:27:02 +0200
-Date: Sun, 22 Oct 2017 08:26:53 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [3/3] MIPS: jz4780: DTS: Probe the jz4740-watchdog driver from
- devicetree
-Message-ID: <20171022152653.GA11714@roeck-us.net>
-References: <20170908183558.1537-3-malat@debian.org>
+Received: from usa-sjc-mx-foss1.foss.arm.com ([217.140.101.70]:40048 "EHLO
+        foss.arm.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23990500AbdJWIUOTsqs5 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Oct 2017 10:20:14 +0200
+From: Marc Zyngier <marc.zyngier@arm.com>
+Subject: Re: [PATCH v5 2/5] irqchip/irq-goldfish-pic: Add Goldfish PIC driver
+In-Reply-To: <1508510055-6167-3-git-send-email-aleksandar.markovic@rt-rk.com>
+        (Aleksandar Markovic's message of "Fri, 20 Oct 2017 16:33:35 +0200")
+References: <1508510055-6167-1-git-send-email-aleksandar.markovic@rt-rk.com>
+        <1508510055-6167-3-git-send-email-aleksandar.markovic@rt-rk.com>
+Date: Mon, 23 Oct 2017 09:20:01 +0100
+Message-ID: <864lqqgtse.fsf@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20170908183558.1537-3-malat@debian.org>
-Return-Path: <groeck7@gmail.com>
+Content-Type: text/plain
+Return-Path: <marc.zyngier@arm.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,34 +22,214 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Mathieu Malaterre <malat@debian.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Wim Van Sebroeck <wim@iguana.be>, Linus Walleij <linus.walleij@linaro.org>, Paul Cercueil <paul@crapouillou.net>, Krzysztof Kozlowski <krzk@kernel.org>, devicetree@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
-Message-ID: <20171022152653.kPVAwdzZ5OGelxFEE-wTv6jfoprP70l6aCap9SMJMAI@z>
+To: Aleksandar Markovic <aleksandar.markovic@rt-rk.com>
+Cc: linux-mips@linux-mips.org, Miodrag Dinic <miodrag.dinic@mips.com>, Goran Ferenc <goran.ferenc@mips.com>, Aleksandar Markovic <aleksandar.markovic@mips.com>, "David S. Miller" <davem@davemloft.net>, Douglas Leung <douglas.leung@mips.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, James Hogan <james.hogan@mips.com>, Jason Cooper <jason@lakedaemon.net>, linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab@kernel.org>, Paul Burton <paul.burton@mips.com>, Petar Jovanovic <petar.jovanovic@mips.com>, Raghu Gandham <raghu.gandham@mips.com>, Randy Dunlap <rdunlap@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
+Message-ID: <20171023082001.rzoSRNU2So_UmNtVf9W7tIzmg16WY5s-CthT_l0aWB4@z>
 
-On Fri, Sep 08, 2017 at 08:35:55PM +0200, Mathieu Malaterre wrote:
-> The jz4740-watchdog driver supports both jz4740 & jz4780.
-> 
-> Signed-off-by: Mathieu Malaterre <malat@debian.org>
-
-Acked-by: Guenter Roeck <linux@roeck-us.net>
-
+On Fri, Oct 20 2017 at  4:33:35 pm BST, Aleksandar Markovic <aleksandar.markovic@rt-rk.com> wrote:
+> From: Miodrag Dinic <miodrag.dinic@mips.com>
+>
+> Add device driver for a virtual programmable interrupt controller
+>
+> The virtual PIC is designed as a device tree-based interrupt controller.
+>
+> The compatible string used by OS for binding the driver is
+> "google,goldfish-pic".
+>
+> Signed-off-by: Miodrag Dinic <miodrag.dinic@mips.com>
+> Signed-off-by: Goran Ferenc <goran.ferenc@mips.com>
+> Signed-off-by: Aleksandar Markovic <aleksandar.markovic@mips.com>
 > ---
->  arch/mips/boot/dts/ingenic/jz4780.dtsi | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> index 4853ef67b3ab..33d7f49186d6 100644
-> --- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> @@ -207,6 +207,11 @@
->  		status = "disabled";
->  	};
+>  MAINTAINERS                        |   1 +
+>  drivers/irqchip/Kconfig            |   8 +++
+>  drivers/irqchip/Makefile           |   1 +
+>  drivers/irqchip/irq-goldfish-pic.c | 131 +++++++++++++++++++++++++++++++++++++
+>  4 files changed, 141 insertions(+)
+>  create mode 100644 drivers/irqchip/irq-goldfish-pic.c
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 4d5108f..f1be016 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -876,6 +876,7 @@ ANDROID GOLDFISH PIC DRIVER
+>  M:	Miodrag Dinic <miodrag.dinic@mips.com>
+>  S:	Supported
+>  F:	Documentation/devicetree/bindings/interrupt-controller/google,goldfish-pic.txt
+> +F:	drivers/irqchip/irq-goldfish-pic.c
 >  
-> +	watchdog: jz4780-watchdog@10002000 {
-> +		compatible = "ingenic,jz4740-watchdog";
-> +		reg = <0x10002000 0x100>;
-> +	};
+>  ANDROID GOLDFISH RTC DRIVER
+>  M:	Miodrag Dinic <miodrag.dinic@mips.com>
+> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> index 9d8a1dd..712b561 100644
+> --- a/drivers/irqchip/Kconfig
+> +++ b/drivers/irqchip/Kconfig
+> @@ -321,3 +321,11 @@ config IRQ_UNIPHIER_AIDET
+>  	select IRQ_DOMAIN_HIERARCHY
+>  	help
+>  	  Support for the UniPhier AIDET (ARM Interrupt Detector).
 > +
->  	nemc: nemc@13410000 {
->  		compatible = "ingenic,jz4780-nemc";
->  		reg = <0x13410000 0x10000>;
+> +config GOLDFISH_PIC
+> +	bool "Goldfish programmable interrupt controller"
+> +	depends on MIPS && (GOLDFISH || COMPILE_TEST)
+> +	select IRQ_DOMAIN
+> +	help
+> +	  Say yes here to enable Goldfish interrupt controller driver used
+> +	  for Goldfish based virtual platforms.
+> diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+> index 845abc1..0e7a224 100644
+> --- a/drivers/irqchip/Makefile
+> +++ b/drivers/irqchip/Makefile
+> @@ -79,3 +79,4 @@ obj-$(CONFIG_ARCH_ASPEED)		+= irq-aspeed-vic.o irq-aspeed-i2c-ic.o
+>  obj-$(CONFIG_STM32_EXTI) 		+= irq-stm32-exti.o
+>  obj-$(CONFIG_QCOM_IRQ_COMBINER)		+= qcom-irq-combiner.o
+>  obj-$(CONFIG_IRQ_UNIPHIER_AIDET)	+= irq-uniphier-aidet.o
+> +obj-$(CONFIG_GOLDFISH_PIC) 		+= irq-goldfish-pic.o
+> diff --git a/drivers/irqchip/irq-goldfish-pic.c b/drivers/irqchip/irq-goldfish-pic.c
+> new file mode 100644
+> index 0000000..d8b5277
+> --- /dev/null
+> +++ b/drivers/irqchip/irq-goldfish-pic.c
+> @@ -0,0 +1,131 @@
+> +/*
+> + * Copyright (C) 2017 Imagination Technologies Ltd.	All rights reserved
+> + *	Author: Miodrag Dinic <miodrag.dinic@imgtec.com>
+> + *
+> + * This file implements interrupt controller driver for MIPS Goldfish PIC.
+> + *
+> + * This program is free software; you can redistribute	it and/or modify it
+> + * under  the terms of	the GNU General	 Public License as published by the
+> + * Free Software Foundation;  either version 2 of the  License, or (at your
+> + * option) any later version.
+> + */
+> +
+> +#include <linux/interrupt.h>
+> +#include <linux/irq.h>
+> +#include <linux/irqchip.h>
+> +#include <linux/irqdomain.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_irq.h>
+> +
+> +#define GFPIC_NR_IRQS			32
+> +
+> +/* 8..39 Cascaded Goldfish PIC interrupts */
+> +#define GFPIC_IRQ_BASE			8
+> +
+> +#define GFPIC_REG_IRQ_PENDING		0x04
+> +#define GFPIC_REG_IRQ_DISABLE_ALL	0x08
+> +#define GFPIC_REG_IRQ_DISABLE		0x0c
+> +#define GFPIC_REG_IRQ_ENABLE		0x10
+> +
+> +struct goldfish_pic_data {
+> +	void __iomem *base;
+> +	struct irq_domain *irq_domain;
+> +};
+> +
+> +static irqreturn_t goldfish_pic_cascade(int irq, void *data)
+> +{
+> +	struct goldfish_pic_data *gfpic = irq_get_handler_data(irq);
+> +	u32 hwirq;
+> +	u32 virq;
+> +
+> +	hwirq = readl(gfpic->base + GFPIC_REG_IRQ_PENDING);
+> +
+> +	virq = irq_linear_revmap(gfpic->irq_domain, hwirq);
+> +	generic_handle_irq(virq);
+> +
+> +	return IRQ_HANDLED;
+> +}
+
+This is not how we implement cascaded (chained) interrupt
+controllers. See existing examples everywhere in the irqchip directory.
+
+> +
+> +static const struct irq_domain_ops goldfish_irq_domain_ops = {
+> +	.xlate = irq_domain_xlate_onecell,
+> +};
+> +
+> +static struct irqaction cascade = {
+> +	.handler	= goldfish_pic_cascade,
+> +	.name		= "Goldfish PIC cascade",
+> +};
+> +
+> +static int __init goldfish_pic_of_init(struct device_node *of_node,
+> +				       struct device_node *parent)
+> +{
+> +	struct goldfish_pic_data *gfpic;
+> +	struct irq_chip_generic *gc;
+> +	struct irq_chip_type *ct;
+> +	unsigned int parent_irq;
+> +	int ret = 0;
+> +
+> +	gfpic = kzalloc(sizeof(*gfpic), GFP_KERNEL);
+> +	if (!gfpic) {
+> +		ret = -ENOMEM;
+> +		goto out_err;
+> +	}
+> +
+> +	parent_irq = irq_of_parse_and_map(of_node, 0);
+> +	if (!parent_irq) {
+> +		pr_err("Failed to map Goldfish PIC parent IRQ\n");
+> +		ret = -EINVAL;
+> +		goto out_free;
+> +	}
+> +
+> +	ret = irq_set_handler_data(parent_irq, gfpic);
+> +	if (ret)
+> +		goto out_unmap_irq;
+> +
+> +	gfpic->base = of_iomap(of_node, 0);
+> +	if (!gfpic->base) {
+> +		pr_err("Failed to map Goldfish PIC base\n");
+> +		ret = -ENOMEM;
+> +		goto out_unmap_irq;
+> +	}
+> +
+> +	/* Mask interrupts. */
+> +	writel(1, gfpic->base + GFPIC_REG_IRQ_DISABLE_ALL);
+> +
+> +	gc = irq_alloc_generic_chip("GFPIC", 1, GFPIC_IRQ_BASE, gfpic->base,
+> +				    handle_level_irq);
+> +
+> +	ct = gc->chip_types;
+> +	ct->regs.enable = GFPIC_REG_IRQ_ENABLE;
+> +	ct->regs.disable = GFPIC_REG_IRQ_DISABLE;
+> +	ct->chip.irq_unmask = irq_gc_unmask_enable_reg;
+> +	ct->chip.irq_mask = irq_gc_mask_disable_reg;
+> +
+> +	irq_setup_generic_chip(gc, IRQ_MSK(GFPIC_NR_IRQS), 0, 0,
+> +			       IRQ_NOPROBE | IRQ_LEVEL);
+> +
+> +	gfpic->irq_domain = irq_domain_add_legacy(of_node, GFPIC_NR_IRQS,
+> +						  GFPIC_IRQ_BASE, 0,
+> +						  &goldfish_irq_domain_ops,
+> +						  NULL);
+> +	if (!gfpic->irq_domain) {
+> +		pr_err("Failed to add irqdomain for Goldfish PIC\n");
+> +		ret = -EINVAL;
+> +		goto out_iounmap;
+> +	}
+> +
+> +	setup_irq(parent_irq, &cascade);
+> +
+> +	pr_info("Successfully registered Goldfish PIC\n");
+> +	return 0;
+> +
+> +out_iounmap:
+> +	iounmap(gfpic->base);
+> +out_unmap_irq:
+> +	irq_dispose_mapping(parent_irq);
+> +out_free:
+> +	kfree(gfpic);
+> +out_err:
+> +	return ret;
+> +}
+> +
+> +IRQCHIP_DECLARE(google_gf_pic, "google,goldfish-pic", goldfish_pic_of_init);
+
+It otherwise looks much better than the previous versions.
+
+Thanks,
+
+	M.
+-- 
+Jazz is not dead. It just smells funny.

@@ -1,30 +1,18 @@
-Received: from smtp-out6.electric.net ([192.162.217.183]:59922 "EHLO
-        smtp-out6.electric.net" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990494AbdJWJFtOJAC5 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Oct 2017 11:05:49 +0200
-From: David Laight <David.Laight@ACULAB.COM>
-Subject: RE: [PATCH 5/9] PCI: host: brcmstb: add dma-ranges for inbound
- traffic
-Date: Mon, 23 Oct 2017 09:06:03 +0000
-Message-ID: <063D6719AE5E284EB5DD2968C1650D6DD009F05A@AcuExch.aculab.com>
-References: <1507761269-7017-6-git-send-email-jim2101024@gmail.com>
- <589c04cb-061b-a453-3188-79324a02388e@arm.com>
- <20171017081422.GA19475@lst.de>
- <CANCKTBsCB+x2XgrND9AhRtxPkCXfps1nA+YymkZjKHOUZfjSHQ@mail.gmail.com>
- <20171018065316.GA11183@lst.de>
- <CANCKTBv+yiCNsrnx3m+W9wPqC4NdKPZ2p=zLtSa8fX6v1rPcYQ@mail.gmail.com>
- <20171019091644.GA14983@lst.de>
- <CANCKTBuaTD29My77QfOeUmtZfLAmmJXUYe6QvBW+uoH2Kb+tAQ@mail.gmail.com>
- <20171020073730.GA12937@lst.de>
- <CANCKTBsRRkwNMrxWjtgxbyZqT6NOxPX0NHDbnEO2BMjj8oVtpg@mail.gmail.com>
- <20171020145752.GA4694@lst.de>
- <CANCKTBtxp9gSdndKAZ7xGA+VozQsn2PX_-9P8A22_5Matbb7-w@mail.gmail.com>
-In-Reply-To: <CANCKTBtxp9gSdndKAZ7xGA+VozQsn2PX_-9P8A22_5Matbb7-w@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from 20pmail.ess.barracuda.com ([64.235.150.246]:55804 "EHLO
+        20pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990591AbdJWQMCjQ2rl (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Oct 2017 18:12:02 +0200
+Date: Mon, 23 Oct 2017 17:10:27 +0100
+From: "Maciej W. Rozycki" <macro@mips.com>
+Subject: Re: [PATCH v2] MIPS: Add basic R5900 support
+In-Reply-To: <20171021180040.GC10522@localhost.localdomain>
+Message-ID: <alpine.DEB.2.00.1710231659060.3886@tp.orcam.me.uk>
+References: <alpine.DEB.2.00.1709171001160.16752@tp.orcam.me.uk> <20170920140715.GA9255@localhost.localdomain> <alpine.DEB.2.00.1709201604400.16752@tp.orcam.me.uk> <20170922163753.GA2415@localhost.localdomain> <alpine.DEB.2.00.1709300024350.12020@tp.orcam.me.uk>
+ <20170930182608.GB7714@localhost.localdomain> <alpine.DEB.2.00.1709301929060.12020@tp.orcam.me.uk> <20171006202838.GA26707@localhost.localdomain> <20171015163937.GA2239@localhost.localdomain> <alpine.DEB.2.00.1710171301160.3886@tp.orcam.me.uk>
+ <20171021180040.GC10522@localhost.localdomain>
 MIME-Version: 1.0
-Return-Path: <David.Laight@ACULAB.COM>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -34,43 +22,54 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: 'Jim Quinlan' <jim2101024@gmail.com>, Christoph Hellwig <hch@lst.de>
-Cc: Robin Murphy <robin.murphy@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, Linux-MIPS <linux-mips@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, linux-pci <linux-pci@vger.kernel.org>, Kevin Cernekee <cernekee@gmail.com>, Will Deacon <will.deacon@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, Gregory Fong <gregory.0xf0@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Bjorn Helgaas <bhelgaas@google.com>, Brian Norris <computersforpeace@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Marek Szyprowski <m.szyprowski@samsung.com>, "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
-Message-ID: <20171023090603.PlT2_e7jFb7wgg1rDSk1wTFD-U0LjFvBOiDuK1BiM3A@z>
+To: Fredrik Noring <noring@nocrew.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20171023161027.tVxdK-Ml1HZ4GZq-QusgXa9tt-J1ne5fYUrRankyDYM@z>
 
-RnJvbTogSmltIFF1aW5sYW4NCj4gU2VudDogMjAgT2N0b2JlciAyMDE3IDE2OjI4DQo+IE9uIEZy
-aSwgT2N0IDIwLCAyMDE3IGF0IDEwOjU3IEFNLCBDaHJpc3RvcGggSGVsbHdpZyA8aGNoQGxzdC5k
-ZT4gd3JvdGU6DQo+ID4gT24gRnJpLCBPY3QgMjAsIDIwMTcgYXQgMTA6NDE6NTZBTSAtMDQwMCwg
-SmltIFF1aW5sYW4gd3JvdGU6DQo+ID4+IEkgYW0gbm90IHN1cmUgSSB1bmRlcnN0YW5kIHlvdXIg
-Y29tbWVudCAtLSB0aGUgc2l6ZSBvZiB0aGUgcmVxdWVzdA0KPiA+PiBzaG91bGRuJ3QgYmUgYSBm
-YWN0b3IuICBMZXQncyBsb29rIGF0IHlvdXIgZXhhbXBsZSBvZiB0aGUgRE1BIHJlcXVlc3QNCj4g
-Pj4gb2YgM2ZmZmZmMDAgdG8gNDAwMDAwMGYgKHBoeXNpY2FsIG1lbW9yeSkuICBMZXRzIHNheSBp
-dCBpcyBmb3IgMTUNCj4gPj4gcGFnZXMuICBJZiB3ZSBibG9jayBvdXQgIHRoZSBsYXN0IHBhZ2Ug
-WzB4M2ZmZmYwMDAuLjB4M2ZmZmZmZmZdIGZyb20NCj4gPj4gd2hhdCBpcyBhdmFpbGFibGUsIHRo
-ZXJlIGlzIG5vIDE1IHBhZ2Ugc3BhbiB0aGF0IGNhbiBoYXBwZW4gYWNyb3NzIHRoZQ0KPiA+PiAw
-eDQwMDAwMDAwIGJvdW5kYXJ5LiAgRm9yIFNHLCB0aGVyZSBjYW4gYmUgbm8gbWVyZ2UgdGhhdCBj
-b25uZWN0cyBhDQo+ID4+IHBhZ2UgZnJvbSBvbmUgcmVnaW9uIHRvIGFub3RoZXIgcmVnaW9uLiAg
-Q2FuIHlvdSBnaXZlIGFuIGV4YW1wbGUgb2YNCj4gPj4gdGhlIHNjZW5hcmlvIHlvdSBhcmUgdGhp
-bmtpbmcgb2Y/DQo+ID4NCj4gPiBXaGF0IHByZXZlbnRzIGEgbWVyZ2UgZnJvbSBzYXkgdGhlIHJl
-Z2lvbnMgb2YNCj4gPiAwLi4uLjNmZmZmZmZmIGFuZCA0MDAwMDAwMC4uLi43ZmZmZmZmZj8NCj4g
-DQo+IEh1aD8gWzB4M2ZmZmYwMDAuLi54M2ZmZmZmZl0gaXMgbm90IGF2YWlsYWJsZSB0byBiZSB1
-c2VkLiBEcmF3aW5nIGZyb20NCj4gdGhlIG9yaWdpbmFsIGV4YW1wbGUsIHdlIG5vdyBoYXZlIHRv
-IHRlbGwgTGludXggdGhhdCB0aGVzZSBhcmUgbm93IG91cg0KPiBlZmZlY3RpdmUgbWVtb3J5IHJl
-Z2lvbnM6DQo+IA0KPiAgICAgICBtZW1jMC1hQFsgICAgICAgIDAuLi4uM2ZmZmVmZmZdIDw9PiBw
-Y2lAWyAgICAgICAgMC4uLi4zZmZmZWZmZl0NCj4gICAgICAgbWVtYzAtYkBbMTAwMDAwMDAwLi4u
-MTNmZmZlZmZmXSA8PT4gcGNpQFsgNDAwMDAwMDAuLi4uN2ZmZmVmZmZdDQo+ICAgICAgIG1lbWMx
-LWFAWyA0MDAwMDAwMC4uLi43ZmZmZWZmZl0gPD0+IHBjaUBbIDgwMDAwMDAwLi4uLmJmZmZlZmZm
-XQ0KPiAgICAgICBtZW1jMS1iQFszMDAwMDAwMDAuLi4zM2ZmZmVmZmZdIDw9PiBwY2lAWyBjMDAw
-MDAwMC4uLi5mZmZmZWZmZl0NCj4gICAgICAgbWVtYzItYUBbIDgwMDAwMDAwLi4uLmJmZmZlZmZm
-XSA8PT4gcGNpQFsxMDAwMDAwMDAuLi4xM2ZmZmVmZmZdDQo+ICAgICAgIG1lbWMyLWJAW2MwMDAw
-MDAwMC4uLmMzZmZmZmZmZl0gPD0+IHBjaUBbMTQwMDAwMDAwLi4uMTdmZmZmZmZmXQ0KPiANCj4g
-VGhpcyBsZWF2ZXMgYSBvbmUtcGFnZSBnYXAgYmV0d2VlbiBwaHN5aWNhbCBtZW1vcnkgcmVnaW9u
-cyB3aGljaCB3b3VsZA0KPiBub3JtYWxseSBiZSBjb250aWd1b3VzLiBPbmUgY2Fubm90IGhhdmUg
-YSBkbWEgYWxsb2MgdGhhdCBzcGFucyBhbnkgdHdvDQo+IHJlZ2lvbnMuICBUaGlzIGlzIGEgZHJh
-c3RpYyBzdGVwLCBidXQgSSBkb24ndCBzZWUgYW4gYWx0ZXJuYXRpdmUuDQo+IFBlcmhhcHMgIEkg
-bWF5IGJlIG1pc3Npbmcgd2hhdCB5b3UgYXJlIHNheWluZy4uLg0KDQpJc24ndCB0aGlzIGFsbCB1
-bm5lY2Vzc2FyeT8NCkJvdGgga21hbGxvYygpIGFuZCBkbWFfYWxsb2MoKSBhcmUgY29uc3RyYWlu
-ZWQgdG8gYWxsb2NhdGUgbWVtb3J5DQp0aGF0IGRvZXNuJ3QgY3Jvc3MgYW4gYWRkcmVzcyBib3Vu
-ZGFyeSB0aGF0IGlzIGxhcmdlciB0aGFuIHRoZSBzaXplLg0KU28gaWYgeW91IGFsbG9jYXRlIDE2
-ayBpdCB3b24ndCBjcm9zcyBhIDE2ayBwaHlzaWNhbCBhZGRyZXNzIGJvdW5kYXJ5Lg0KDQoJRGF2
-aWQNCg0K
+On Sat, 21 Oct 2017, Fredrik Noring wrote:
+
+> > > Still left to explain is why the kernel stumbles on registers during
+> > > initialisation, before user applications are invoked.
+> > 
+> >  Good luck!
+> 
+> The problem was with the inq and outq macros in the Graphics Synthesizer
+> driver. A 32-bit kernel now works with 32-bit register save/restore and o32
+> applications, as intended. Many thanks for all your help in finding this!
+
+ Great, and you are welcome!
+
+> I've found an unrelated curiosity. With CONFIG_CPU_HAS_MSA undefined,
+> handle_msa_fpe_int, do_msa_fpe, etc. are still generated with nonsensical
+> instructions:
+> 
+> 	80025128 <handle_msa_fpe_int>:
+> 	80025128:       787e0859        lq      s8,2137(v1) <<<-----
+> 	8002512c:       00202821        move    a1,at
+> 	80025130:       0000040f        sync.p
+> 	80025134:       40086000        mfc0    t0,c0_sr
+> 	...
+> 
+> 	80030f08 <do_msa_fpe>:
+> 	80030f08:       27bdffd8        addiu   sp,sp,-40
+> 	80030f0c:       afb0001c        sw      s0,28(sp)
+> 	80030f10:       00808021        move    s0,a0
+> 	...
+> 	80030f70:       02228824        and     s1,s1,v0
+> 	80030f74:       02200821        move    at,s1
+> 	80030f78:       783e0859        lq      s8,2137(at) <<<-----
+> 	80030f7c:       0000040f        sync.p
+> 	80030f80:       40016000        mfc0    at,c0_sr
+> 	...
+> 
+> I disabled both with the patch below (there seems to be more opportunities
+> for size reductions overall).
+
+ Perhaps the MSA and the MSAFPE exception handlers could be improved 
+somehow for configurations known not to support the MSA ASE, however your 
+change as it stands will make the MSA exception handler default to 
+`do_reserved', which in turn will cause MSA software to cause a kernel 
+panic rather than sending SIGILL if run with CPU_HAS_MSA disabled on MSA 
+hardware.  This would be rather nasty IMO.
+
+  Maciej

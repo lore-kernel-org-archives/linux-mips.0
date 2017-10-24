@@ -1,18 +1,23 @@
-Received: from 20pmail.ess.barracuda.com ([64.235.150.246]:55804 "EHLO
-        20pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990591AbdJWQMCjQ2rl (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Oct 2017 18:12:02 +0200
-Date: Mon, 23 Oct 2017 17:10:27 +0100
-From: "Maciej W. Rozycki" <macro@mips.com>
-Subject: Re: [PATCH v2] MIPS: Add basic R5900 support
-In-Reply-To: <20171021180040.GC10522@localhost.localdomain>
-Message-ID: <alpine.DEB.2.00.1710231659060.3886@tp.orcam.me.uk>
-References: <alpine.DEB.2.00.1709171001160.16752@tp.orcam.me.uk> <20170920140715.GA9255@localhost.localdomain> <alpine.DEB.2.00.1709201604400.16752@tp.orcam.me.uk> <20170922163753.GA2415@localhost.localdomain> <alpine.DEB.2.00.1709300024350.12020@tp.orcam.me.uk>
- <20170930182608.GB7714@localhost.localdomain> <alpine.DEB.2.00.1709301929060.12020@tp.orcam.me.uk> <20171006202838.GA26707@localhost.localdomain> <20171015163937.GA2239@localhost.localdomain> <alpine.DEB.2.00.1710171301160.3886@tp.orcam.me.uk>
- <20171021180040.GC10522@localhost.localdomain>
+Received: from mail-it0-x242.google.com ([IPv6:2607:f8b0:4001:c0b::242]:45845
+        "EHLO mail-it0-x242.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23991025AbdJXSITU-YwV (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 24 Oct 2017 20:08:19 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@mips.com>
+In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6DD009F05A@AcuExch.aculab.com>
+References: <1507761269-7017-6-git-send-email-jim2101024@gmail.com>
+ <589c04cb-061b-a453-3188-79324a02388e@arm.com> <20171017081422.GA19475@lst.de>
+ <CANCKTBsCB+x2XgrND9AhRtxPkCXfps1nA+YymkZjKHOUZfjSHQ@mail.gmail.com>
+ <20171018065316.GA11183@lst.de> <CANCKTBv+yiCNsrnx3m+W9wPqC4NdKPZ2p=zLtSa8fX6v1rPcYQ@mail.gmail.com>
+ <20171019091644.GA14983@lst.de> <CANCKTBuaTD29My77QfOeUmtZfLAmmJXUYe6QvBW+uoH2Kb+tAQ@mail.gmail.com>
+ <20171020073730.GA12937@lst.de> <CANCKTBsRRkwNMrxWjtgxbyZqT6NOxPX0NHDbnEO2BMjj8oVtpg@mail.gmail.com>
+ <20171020145752.GA4694@lst.de> <CANCKTBtxp9gSdndKAZ7xGA+VozQsn2PX_-9P8A22_5Matbb7-w@mail.gmail.com>
+ <063D6719AE5E284EB5DD2968C1650D6DD009F05A@AcuExch.aculab.com>
+From: Jim Quinlan <jim2101024@gmail.com>
+Date: Tue, 24 Oct 2017 14:08:12 -0400
+Message-ID: <CANCKTBu6H6thuK9F_6HBGhStaXSto7fwWv4V5oH8EdWQD0-1kQ@mail.gmail.com>
+Subject: Re: [PATCH 5/9] PCI: host: brcmstb: add dma-ranges for inbound traffic
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <jim2101024@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,54 +27,56 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Fredrik Noring <noring@nocrew.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20171023161027.tVxdK-Ml1HZ4GZq-QusgXa9tt-J1ne5fYUrRankyDYM@z>
+To: David Laight <David.Laight@aculab.com>
+Cc: Christoph Hellwig <hch@lst.de>, Robin Murphy <robin.murphy@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, Linux-MIPS <linux-mips@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, linux-pci <linux-pci@vger.kernel.org>, Kevin Cernekee <cernekee@gmail.com>, Will Deacon <will.deacon@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, Gregory Fong <gregory.0xf0@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Bjorn Helgaas <bhelgaas@google.com>, Brian Norris <computersforpeace@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Marek Szyprowski <m.szyprowski@samsung.com>, "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
+Message-ID: <20171024180812.6sj2RFlP6q70oP3e5w9TgxTrFAi07SfTRkpLfALz4_A@z>
 
-On Sat, 21 Oct 2017, Fredrik Noring wrote:
+On Mon, Oct 23, 2017 at 5:06 AM, David Laight <David.Laight@aculab.com> wrote:
+> From: Jim Quinlan
+>> Sent: 20 October 2017 16:28
+>> On Fri, Oct 20, 2017 at 10:57 AM, Christoph Hellwig <hch@lst.de> wrote:
+>> > On Fri, Oct 20, 2017 at 10:41:56AM -0400, Jim Quinlan wrote:
+>> >> I am not sure I understand your comment -- the size of the request
+>> >> shouldn't be a factor.  Let's look at your example of the DMA request
+>> >> of 3fffff00 to 4000000f (physical memory).  Lets say it is for 15
+>> >> pages.  If we block out  the last page [0x3ffff000..0x3fffffff] from
+>> >> what is available, there is no 15 page span that can happen across the
+>> >> 0x40000000 boundary.  For SG, there can be no merge that connects a
+>> >> page from one region to another region.  Can you give an example of
+>> >> the scenario you are thinking of?
+>> >
+>> > What prevents a merge from say the regions of
+>> > 0....3fffffff and 40000000....7fffffff?
+>>
+>> Huh? [0x3ffff000...x3ffffff] is not available to be used. Drawing from
+>> the original example, we now have to tell Linux that these are now our
+>> effective memory regions:
+>>
+>>       memc0-a@[        0....3fffefff] <=> pci@[        0....3fffefff]
+>>       memc0-b@[100000000...13fffefff] <=> pci@[ 40000000....7fffefff]
+>>       memc1-a@[ 40000000....7fffefff] <=> pci@[ 80000000....bfffefff]
+>>       memc1-b@[300000000...33fffefff] <=> pci@[ c0000000....ffffefff]
+>>       memc2-a@[ 80000000....bfffefff] <=> pci@[100000000...13fffefff]
+>>       memc2-b@[c00000000...c3fffffff] <=> pci@[140000000...17fffffff]
+>>
+>> This leaves a one-page gap between phsyical memory regions which would
+>> normally be contiguous. One cannot have a dma alloc that spans any two
+>> regions.  This is a drastic step, but I don't see an alternative.
+>> Perhaps  I may be missing what you are saying...
+>
+> Isn't this all unnecessary?
+> Both kmalloc() and dma_alloc() are constrained to allocate memory
+> that doesn't cross an address boundary that is larger than the size.
+> So if you allocate 16k it won't cross a 16k physical address boundary.
+>
+>         David
+>
+Hi David,  Christoph was also concerned about this:
 
-> > > Still left to explain is why the kernel stumbles on registers during
-> > > initialisation, before user applications are invoked.
-> > 
-> >  Good luck!
-> 
-> The problem was with the inq and outq macros in the Graphics Synthesizer
-> driver. A 32-bit kernel now works with 32-bit register save/restore and o32
-> applications, as intended. Many thanks for all your help in finding this!
+"For the block world take a look at __blk_segment_map_sg which does the merging
+of contiguous pages into a single SG segment.  You'd have to override
+BIOVEC_PHYS_MERGEABLE to prevent this from happening in your supported
+architectures for the block layer."
 
- Great, and you are welcome!
-
-> I've found an unrelated curiosity. With CONFIG_CPU_HAS_MSA undefined,
-> handle_msa_fpe_int, do_msa_fpe, etc. are still generated with nonsensical
-> instructions:
-> 
-> 	80025128 <handle_msa_fpe_int>:
-> 	80025128:       787e0859        lq      s8,2137(v1) <<<-----
-> 	8002512c:       00202821        move    a1,at
-> 	80025130:       0000040f        sync.p
-> 	80025134:       40086000        mfc0    t0,c0_sr
-> 	...
-> 
-> 	80030f08 <do_msa_fpe>:
-> 	80030f08:       27bdffd8        addiu   sp,sp,-40
-> 	80030f0c:       afb0001c        sw      s0,28(sp)
-> 	80030f10:       00808021        move    s0,a0
-> 	...
-> 	80030f70:       02228824        and     s1,s1,v0
-> 	80030f74:       02200821        move    at,s1
-> 	80030f78:       783e0859        lq      s8,2137(at) <<<-----
-> 	80030f7c:       0000040f        sync.p
-> 	80030f80:       40016000        mfc0    at,c0_sr
-> 	...
-> 
-> I disabled both with the patch below (there seems to be more opportunities
-> for size reductions overall).
-
- Perhaps the MSA and the MSAFPE exception handlers could be improved 
-somehow for configurations known not to support the MSA ASE, however your 
-change as it stands will make the MSA exception handler default to 
-`do_reserved', which in turn will cause MSA software to cause a kernel 
-panic rather than sending SIGILL if run with CPU_HAS_MSA disabled on MSA 
-hardware.  This would be rather nasty IMO.
-
-  Maciej
+Do you consider this a non-issue as well or can this happen and span
+memory regions?

@@ -1,21 +1,32 @@
-Received: from 5pmail.ess.barracuda.com ([64.235.150.217]:46519 "EHLO
-        5pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990408AbdJYIBmCX0WH (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Oct 2017 10:01:42 +0200
-Date: Wed, 25 Oct 2017 08:59:04 +0100
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: Question regarding atomic ops
-Message-ID: <20171025075903.GA15260@jhogan-linux>
-References: <eb17f62d-c347-e470-f9cf-06b18a55481e@gentoo.org>
- <4f77107c-18ba-d549-c5f2-d52d0460377b@gentoo.org>
- <20171010142306.GA24194@linux-mips.org>
- <f25e53f7-d25d-e9d8-f592-d94e988da28e@gentoo.org>
+Received: from smtp-out6.electric.net ([192.162.217.184]:62027 "EHLO
+        smtp-out6.electric.net" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990417AbdJYJg0LNQox (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Oct 2017 11:36:26 +0200
+From: David Laight <David.Laight@ACULAB.COM>
+Subject: RE: [PATCH 5/9] PCI: host: brcmstb: add dma-ranges for inbound
+ traffic
+Date: Wed, 25 Oct 2017 09:36:37 +0000
+Message-ID: <063D6719AE5E284EB5DD2968C1650D6DD00A24FC@AcuExch.aculab.com>
+References: <1507761269-7017-6-git-send-email-jim2101024@gmail.com>
+ <589c04cb-061b-a453-3188-79324a02388e@arm.com>
+ <20171017081422.GA19475@lst.de>
+ <CANCKTBsCB+x2XgrND9AhRtxPkCXfps1nA+YymkZjKHOUZfjSHQ@mail.gmail.com>
+ <20171018065316.GA11183@lst.de>
+ <CANCKTBv+yiCNsrnx3m+W9wPqC4NdKPZ2p=zLtSa8fX6v1rPcYQ@mail.gmail.com>
+ <20171019091644.GA14983@lst.de>
+ <CANCKTBuaTD29My77QfOeUmtZfLAmmJXUYe6QvBW+uoH2Kb+tAQ@mail.gmail.com>
+ <20171020073730.GA12937@lst.de>
+ <CANCKTBsRRkwNMrxWjtgxbyZqT6NOxPX0NHDbnEO2BMjj8oVtpg@mail.gmail.com>
+ <20171020145752.GA4694@lst.de>
+ <CANCKTBtxp9gSdndKAZ7xGA+VozQsn2PX_-9P8A22_5Matbb7-w@mail.gmail.com>
+ <063D6719AE5E284EB5DD2968C1650D6DD009F05A@AcuExch.aculab.com>
+ <CANCKTBu6H6thuK9F_6HBGhStaXSto7fwWv4V5oH8EdWQD0-1kQ@mail.gmail.com>
+In-Reply-To: <CANCKTBu6H6thuK9F_6HBGhStaXSto7fwWv4V5oH8EdWQD0-1kQ@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
-Content-Disposition: inline
-In-Reply-To: <f25e53f7-d25d-e9d8-f592-d94e988da28e@gentoo.org>
-Return-Path: <James.Hogan@mips.com>
+Return-Path: <David.Laight@ACULAB.COM>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,67 +36,25 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Joshua Kinard <kumba@gentoo.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20171025075904.hWv9cciPLOuGpJv6rAe2tZ17izsDY-SyeUWTgM8D5l0@z>
+To: 'Jim Quinlan' <jim2101024@gmail.com>
+Cc: Christoph Hellwig <hch@lst.de>, Robin Murphy <robin.murphy@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, Linux-MIPS <linux-mips@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, linux-pci <linux-pci@vger.kernel.org>, Kevin Cernekee <cernekee@gmail.com>, Will Deacon <will.deacon@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, Gregory Fong <gregory.0xf0@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Bjorn Helgaas <bhelgaas@google.com>, Brian Norris <computersforpeace@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Marek Szyprowski <m.szyprowski@samsung.com>, "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
+Message-ID: <20171025093637.azHM8PAfbVTsyvuhcUTxbHkOjs7JoADZ2O_LVTKI6qg@z>
 
---zhXaljGHf11kAtnf
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Oct 16, 2017 at 01:51:01AM -0400, Joshua Kinard wrote:
-> The only uncertainty I have is the bottom of atomic_sub_if_positive and
-> atomic64_sub_if_positive.  In R10000_LLSC_WAR case, the end of the assemb=
-ler is:
->=20
-> 	  "+" GCC_OFF_SMALL_ASM() (v->counter)
-> 	: "Ir" (i), GCC_OFF_SMALL_ASM() (v->counter)
-
-The GCC_OFF_SMALL_ASM() (v->counter) input here looks redundant because
-1) the output one has +, which means input and output
-2) %4 is never referenced.
-
-> 	: "memory");
-
-To me this appears to be redundant since the only side effects are
-writing to v->counter which is already an output, and in any case the
-smp_mb__before_llsc() and smp_llsc_mb() imply memory clobber anyway.
-
->=20
-> While the standard case is:
->=20
-> 	: "=3D&r" (result), "=3D&r" (temp),
-> 	  "+" GCC_OFF_SMALL_ASM() (v->counter)
-> 	: "Ir" (i));
-
-So yeh, I'd go for this unless anybody can think of a reason it wouldn't
-work in the R10000_LLSC_WAR case.
-
-Hope that helps.
-
-Cheers
-James
-
---zhXaljGHf11kAtnf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlnwREEACgkQbAtpk944
-dnpc3g//cfe+cgGh8+sBPvRDKpeAT5eOFKODLucpXuoHrMl7dIyHFvDYPPUU9UJw
-fbWTdXhEBPIwC2iiPtBDag5C3AIf+3WakoWeBRTLUmm14CA+CYbjoh11gmFhLrLq
-GLH0STcatpudsUTQW6ixBT62N1pMUyKKimHIvAc+17c/Wa3qo0h0/Ze54Oc2in3s
-5pcSRG1hhFzdBuY+g6DUwZV7qIj5iDAwLtOSK3cOKNzA37rALrBs9+44YeT4Twep
-4D9mJk1AKItHUK9jt2wjrHH8RlIFoBWYqTQKZQGAy68L8zejCAulDQapTfQg1qIu
-awDh1oQsbHp7aO+hTpm+fy+S32eut/WpZQ2adI/4qqFb375a9tIHsSaIf0I0GfaH
-QeHetxB7UKm79smhjQf6j0/EJRr/+2yfckL/MqcfLF7vnOMSFsKKwuLAy9c4equU
-booimj1zbV9K7L0Bi05Tso8NdROODqeT4nP1g7jze+8+xPpwM3K0MWzgD1HOiWNm
-i7xGy0NOi9GcBX+AbPDvQ2aQ3r6S4G/ImZhby83KdpTcXtS4ZixKPhDZppBjsQqp
-kbdc040V2qv91I6Lx/uhmAk8l4X4lHGlhBL0xroemB4XJTkAY4/SVbE+ctp2chaQ
-3+9qNCgQJqI/15L3fsedvwUTcaMOPsJ42882xK9Lihx5mUx8NjM=
-=+3IR
------END PGP SIGNATURE-----
-
---zhXaljGHf11kAtnf--
+RnJvbTogSmltIFF1aW5sYQ0KPiBTZW50OiAyNCBPY3RvYmVyIDIwMTcgMTk6MDgNCi4uLg0KPiBI
+aSBEYXZpZCwgIENocmlzdG9waCB3YXMgYWxzbyBjb25jZXJuZWQgYWJvdXQgdGhpczoNCj4gDQo+
+ICJGb3IgdGhlIGJsb2NrIHdvcmxkIHRha2UgYSBsb29rIGF0IF9fYmxrX3NlZ21lbnRfbWFwX3Nn
+IHdoaWNoIGRvZXMgdGhlIG1lcmdpbmcNCj4gb2YgY29udGlndW91cyBwYWdlcyBpbnRvIGEgc2lu
+Z2xlIFNHIHNlZ21lbnQuICBZb3UnZCBoYXZlIHRvIG92ZXJyaWRlDQo+IEJJT1ZFQ19QSFlTX01F
+UkdFQUJMRSB0byBwcmV2ZW50IHRoaXMgZnJvbSBoYXBwZW5pbmcgaW4geW91ciBzdXBwb3J0ZWQN
+Cj4gYXJjaGl0ZWN0dXJlcyBmb3IgdGhlIGJsb2NrIGxheWVyLiINCj4gDQo+IERvIHlvdSBjb25z
+aWRlciB0aGlzIGEgbm9uLWlzc3VlIGFzIHdlbGwgb3IgY2FuIHRoaXMgaGFwcGVuIGFuZCBzcGFu
+DQo+IG1lbW9yeSByZWdpb25zPw0KDQpQcm9iYWJseSBlYXNpZXN0IHRvIGhhdmUgYW4gYXJjaGl0
+ZWN0dXJlIGxpbWl0IG9uIHRoZSBhZGRyZXNzZXMgdGhhdA0KY2FuIGJlIG1lcmdlZC4NCg0KTXkg
+Z3Vlc3MgaXMgdGhhdCB0aGlzIGNvZGUgb25seSByZWFsbHkgZXZlciBtZXJnZXMgcGFnZXMgdGhh
+dCB3ZXJlDQphbGxvY2F0ZWQgY29udGlndW91c2x5LCBidXQgaGF2ZSBnb3QgY29udmVydGVkIHRv
+IGEgbGlzdCBvZiBWQS4NClNvIHN0b3BwaW5nIG1lcmdpbmcgb3ZlciBldmVuIDFNQiBib3VuZGFy
+aWVzIHdvdWxkIGhhdmUgbWluaW1hbCBlZmZlY3QNCihldmVuIGlmIGRvbmUgdW5jb25kaXRpb25h
+bGx5KS4NCg0KSSBldmVuIHdvbmRlciBpZiB0aGUgbWVyZ2luZyBpcyBhY3R1YWxseSB3b3J0aHdo
+aWxlIGF0IGFsbD8NCk1heWJlIGlmIGFueSBjb2RlIGhhcyBsaW1pdHMgb24gdGhlIFNHIGxpc3Qg
+bGVuZ3RoLg0KKG9yIHJlZHVjaW5nIHRoZSBudW1iZXIgb2YgY2FjaGUgbGluZXMgdGhlIGdldCBk
+aXJ0aWVkLi4uKQ0KDQoJRGF2aWQNCg0KDQoNCg==

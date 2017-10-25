@@ -1,23 +1,21 @@
-Received: from mail-it0-x242.google.com ([IPv6:2607:f8b0:4001:c0b::242]:45845
-        "EHLO mail-it0-x242.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991025AbdJXSITU-YwV (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 24 Oct 2017 20:08:19 +0200
+Received: from 5pmail.ess.barracuda.com ([64.235.150.217]:46519 "EHLO
+        5pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990408AbdJYIBmCX0WH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 25 Oct 2017 10:01:42 +0200
+Date: Wed, 25 Oct 2017 08:59:04 +0100
+From: James Hogan <james.hogan@mips.com>
+Subject: Re: Question regarding atomic ops
+Message-ID: <20171025075903.GA15260@jhogan-linux>
+References: <eb17f62d-c347-e470-f9cf-06b18a55481e@gentoo.org>
+ <4f77107c-18ba-d549-c5f2-d52d0460377b@gentoo.org>
+ <20171010142306.GA24194@linux-mips.org>
+ <f25e53f7-d25d-e9d8-f592-d94e988da28e@gentoo.org>
 MIME-Version: 1.0
-In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6DD009F05A@AcuExch.aculab.com>
-References: <1507761269-7017-6-git-send-email-jim2101024@gmail.com>
- <589c04cb-061b-a453-3188-79324a02388e@arm.com> <20171017081422.GA19475@lst.de>
- <CANCKTBsCB+x2XgrND9AhRtxPkCXfps1nA+YymkZjKHOUZfjSHQ@mail.gmail.com>
- <20171018065316.GA11183@lst.de> <CANCKTBv+yiCNsrnx3m+W9wPqC4NdKPZ2p=zLtSa8fX6v1rPcYQ@mail.gmail.com>
- <20171019091644.GA14983@lst.de> <CANCKTBuaTD29My77QfOeUmtZfLAmmJXUYe6QvBW+uoH2Kb+tAQ@mail.gmail.com>
- <20171020073730.GA12937@lst.de> <CANCKTBsRRkwNMrxWjtgxbyZqT6NOxPX0NHDbnEO2BMjj8oVtpg@mail.gmail.com>
- <20171020145752.GA4694@lst.de> <CANCKTBtxp9gSdndKAZ7xGA+VozQsn2PX_-9P8A22_5Matbb7-w@mail.gmail.com>
- <063D6719AE5E284EB5DD2968C1650D6DD009F05A@AcuExch.aculab.com>
-From: Jim Quinlan <jim2101024@gmail.com>
-Date: Tue, 24 Oct 2017 14:08:12 -0400
-Message-ID: <CANCKTBu6H6thuK9F_6HBGhStaXSto7fwWv4V5oH8EdWQD0-1kQ@mail.gmail.com>
-Subject: Re: [PATCH 5/9] PCI: host: brcmstb: add dma-ranges for inbound traffic
-Content-Type: text/plain; charset="UTF-8"
-Return-Path: <jim2101024@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
+Content-Disposition: inline
+In-Reply-To: <f25e53f7-d25d-e9d8-f592-d94e988da28e@gentoo.org>
+Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,56 +25,67 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Laight <David.Laight@aculab.com>
-Cc: Christoph Hellwig <hch@lst.de>, Robin Murphy <robin.murphy@arm.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, Linux-MIPS <linux-mips@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, linux-pci <linux-pci@vger.kernel.org>, Kevin Cernekee <cernekee@gmail.com>, Will Deacon <will.deacon@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, Gregory Fong <gregory.0xf0@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Bjorn Helgaas <bhelgaas@google.com>, Brian Norris <computersforpeace@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Marek Szyprowski <m.szyprowski@samsung.com>, "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
-Message-ID: <20171024180812.6sj2RFlP6q70oP3e5w9TgxTrFAi07SfTRkpLfALz4_A@z>
+To: Joshua Kinard <kumba@gentoo.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20171025075904.hWv9cciPLOuGpJv6rAe2tZ17izsDY-SyeUWTgM8D5l0@z>
 
-On Mon, Oct 23, 2017 at 5:06 AM, David Laight <David.Laight@aculab.com> wrote:
-> From: Jim Quinlan
->> Sent: 20 October 2017 16:28
->> On Fri, Oct 20, 2017 at 10:57 AM, Christoph Hellwig <hch@lst.de> wrote:
->> > On Fri, Oct 20, 2017 at 10:41:56AM -0400, Jim Quinlan wrote:
->> >> I am not sure I understand your comment -- the size of the request
->> >> shouldn't be a factor.  Let's look at your example of the DMA request
->> >> of 3fffff00 to 4000000f (physical memory).  Lets say it is for 15
->> >> pages.  If we block out  the last page [0x3ffff000..0x3fffffff] from
->> >> what is available, there is no 15 page span that can happen across the
->> >> 0x40000000 boundary.  For SG, there can be no merge that connects a
->> >> page from one region to another region.  Can you give an example of
->> >> the scenario you are thinking of?
->> >
->> > What prevents a merge from say the regions of
->> > 0....3fffffff and 40000000....7fffffff?
->>
->> Huh? [0x3ffff000...x3ffffff] is not available to be used. Drawing from
->> the original example, we now have to tell Linux that these are now our
->> effective memory regions:
->>
->>       memc0-a@[        0....3fffefff] <=> pci@[        0....3fffefff]
->>       memc0-b@[100000000...13fffefff] <=> pci@[ 40000000....7fffefff]
->>       memc1-a@[ 40000000....7fffefff] <=> pci@[ 80000000....bfffefff]
->>       memc1-b@[300000000...33fffefff] <=> pci@[ c0000000....ffffefff]
->>       memc2-a@[ 80000000....bfffefff] <=> pci@[100000000...13fffefff]
->>       memc2-b@[c00000000...c3fffffff] <=> pci@[140000000...17fffffff]
->>
->> This leaves a one-page gap between phsyical memory regions which would
->> normally be contiguous. One cannot have a dma alloc that spans any two
->> regions.  This is a drastic step, but I don't see an alternative.
->> Perhaps  I may be missing what you are saying...
->
-> Isn't this all unnecessary?
-> Both kmalloc() and dma_alloc() are constrained to allocate memory
-> that doesn't cross an address boundary that is larger than the size.
-> So if you allocate 16k it won't cross a 16k physical address boundary.
->
->         David
->
-Hi David,  Christoph was also concerned about this:
+--zhXaljGHf11kAtnf
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-"For the block world take a look at __blk_segment_map_sg which does the merging
-of contiguous pages into a single SG segment.  You'd have to override
-BIOVEC_PHYS_MERGEABLE to prevent this from happening in your supported
-architectures for the block layer."
+On Mon, Oct 16, 2017 at 01:51:01AM -0400, Joshua Kinard wrote:
+> The only uncertainty I have is the bottom of atomic_sub_if_positive and
+> atomic64_sub_if_positive.  In R10000_LLSC_WAR case, the end of the assemb=
+ler is:
+>=20
+> 	  "+" GCC_OFF_SMALL_ASM() (v->counter)
+> 	: "Ir" (i), GCC_OFF_SMALL_ASM() (v->counter)
 
-Do you consider this a non-issue as well or can this happen and span
-memory regions?
+The GCC_OFF_SMALL_ASM() (v->counter) input here looks redundant because
+1) the output one has +, which means input and output
+2) %4 is never referenced.
+
+> 	: "memory");
+
+To me this appears to be redundant since the only side effects are
+writing to v->counter which is already an output, and in any case the
+smp_mb__before_llsc() and smp_llsc_mb() imply memory clobber anyway.
+
+>=20
+> While the standard case is:
+>=20
+> 	: "=3D&r" (result), "=3D&r" (temp),
+> 	  "+" GCC_OFF_SMALL_ASM() (v->counter)
+> 	: "Ir" (i));
+
+So yeh, I'd go for this unless anybody can think of a reason it wouldn't
+work in the R10000_LLSC_WAR case.
+
+Hope that helps.
+
+Cheers
+James
+
+--zhXaljGHf11kAtnf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlnwREEACgkQbAtpk944
+dnpc3g//cfe+cgGh8+sBPvRDKpeAT5eOFKODLucpXuoHrMl7dIyHFvDYPPUU9UJw
+fbWTdXhEBPIwC2iiPtBDag5C3AIf+3WakoWeBRTLUmm14CA+CYbjoh11gmFhLrLq
+GLH0STcatpudsUTQW6ixBT62N1pMUyKKimHIvAc+17c/Wa3qo0h0/Ze54Oc2in3s
+5pcSRG1hhFzdBuY+g6DUwZV7qIj5iDAwLtOSK3cOKNzA37rALrBs9+44YeT4Twep
+4D9mJk1AKItHUK9jt2wjrHH8RlIFoBWYqTQKZQGAy68L8zejCAulDQapTfQg1qIu
+awDh1oQsbHp7aO+hTpm+fy+S32eut/WpZQ2adI/4qqFb375a9tIHsSaIf0I0GfaH
+QeHetxB7UKm79smhjQf6j0/EJRr/+2yfckL/MqcfLF7vnOMSFsKKwuLAy9c4equU
+booimj1zbV9K7L0Bi05Tso8NdROODqeT4nP1g7jze+8+xPpwM3K0MWzgD1HOiWNm
+i7xGy0NOi9GcBX+AbPDvQ2aQ3r6S4G/ImZhby83KdpTcXtS4ZixKPhDZppBjsQqp
+kbdc040V2qv91I6Lx/uhmAk8l4X4lHGlhBL0xroemB4XJTkAY4/SVbE+ctp2chaQ
+3+9qNCgQJqI/15L3fsedvwUTcaMOPsJ42882xK9Lihx5mUx8NjM=
+=+3IR
+-----END PGP SIGNATURE-----
+
+--zhXaljGHf11kAtnf--

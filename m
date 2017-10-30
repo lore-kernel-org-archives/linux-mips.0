@@ -1,18 +1,16 @@
-Received: from usa-sjc-mx-foss1.foss.arm.com ([217.140.101.70]:53346 "EHLO
-        foss.arm.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23990391AbdJ3IAVMdMyL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 30 Oct 2017 09:00:21 +0100
-From: Marc Zyngier <marc.zyngier@arm.com>
-Subject: Re: [PATCH 2/8] irqchip: mips-gic: Use irq_cpu_online to (un)mask all-VP(E) IRQs
-In-Reply-To: <20171025233730.22225-3-paul.burton@mips.com> (Paul Burton's
-        message of "Wed, 25 Oct 2017 16:37:24 -0700")
-References: <20171025233730.22225-1-paul.burton@mips.com>
-        <20171025233730.22225-3-paul.burton@mips.com>
-Date: Mon, 30 Oct 2017 08:00:08 +0000
-Message-ID: <86mv495alz.fsf@arm.com>
+Received: from mail-vk0-x241.google.com ([IPv6:2607:f8b0:400c:c05::241]:49855
+        "EHLO mail-vk0-x241.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992215AbdJ3OIZd1ya5 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 30 Oct 2017 15:08:25 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <marc.zyngier@arm.com>
+In-Reply-To: <1508868949-16652-3-git-send-email-jim2101024@gmail.com>
+References: <1508868949-16652-1-git-send-email-jim2101024@gmail.com> <1508868949-16652-3-git-send-email-jim2101024@gmail.com>
+From: Jonas Gorski <jonas.gorski@gmail.com>
+Date: Mon, 30 Oct 2017 15:07:58 +0100
+Message-ID: <CAOiHx=kYf0pOrSvRHuj6+cy6qzSuz23RfNbB8ADLy_dRwZhiAg@mail.gmail.com>
+Subject: Re: [PATCH 2/8] PCI: host: brcmstb: add DT docs for Brcmstb PCIe device
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <jonas.gorski@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,95 +20,52 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@mips.com>
-Cc: Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20171030080008.q8hEAWcfThTn-ExdtX174trxw522R5tJbn_TdWCACKY@z>
+To: Jim Quinlan <jim2101024@gmail.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Rob Herring <robh+dt@kernel.org>, Brian Norris <computersforpeace@gmail.com>, Russell King <rmk+kernel@armlinux.org.uk>, Robin Murphy <robin.murphy@arm.com>, Christoph Hellwig <hch@lst.de>, Florian Fainelli <f.fainelli@gmail.com>, linux-pci@vger.kernel.org, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, Gregory Fong <gregory.0xf0@gmail.com>, Kevin Cernekee <cernekee@gmail.com>, Bjorn Helgaas <bhelgaas@google.com>, Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, MIPS Mailing List <linux-mips@linux-mips.org>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20171030140758.JpKWs_9gm7K-DiNPth35lmyigLvZJk2IYd23BTm6Is4@z>
 
-On Wed, Oct 25 2017 at  5:37:24 pm BST, Paul Burton <paul.burton@mips.com> wrote:
-> The gic_all_vpes_local_irq_controller chip currently attempts to operate
-> on all CPUs/VPs in the system when masking or unmasking an interrupt.
-> This has a few drawbacks:
+Hi,
+
+On 24 October 2017 at 20:15, Jim Quinlan <jim2101024@gmail.com> wrote:
+> The DT bindings description of the Brcmstb PCIe device is described.  This
+> node can be used by almost all Broadcom settop box chips, using
+> ARM, ARM64, or MIPS CPU architectures.
 >
->  - In multi-cluster systems we may not always have access to all CPUs in
->    the system. When all CPUs in a cluster are powered down that
->    cluster's GIC may also power down, in which case we cannot configure
->    its state.
->
->  - Relatedly, if we power down a cluster after having configured
->    interrupts for CPUs within it then the cluster's GIC may lose state &
->    we need to reconfigure it. The current approach doesn't take this
->    into account.
->
->  - It's wasteful if we run Linux on fewer VPs than are present in the
->    system. For example if we run a uniprocessor kernel on CPU0 of a
->    system with 16 CPUs then there's no point in us configuring CPUs
->    1-15.
->
->  - The implementation is also lacking in that it expects the range
->    0..gic_vpes-1 to represent valid Linux CPU numbers which may not
->    always be the case - for example if we run on a system with more VPs
->    than the kernel is configured to support.
->
-> Fix all of these issues by only configuring the affected interrupts for
-> CPUs which are online at the time, and recording the configuration in a
-> new struct gic_all_vpes_chip_data for later use by CPUs being brought
-> online. We register a CPU hotplug state (reusing
-> CPUHP_AP_IRQ_GIC_STARTING which the ARM GIC driver uses, and which seems
-> suitably generic for reuse with the MIPS GIC) and execute
-> irq_cpu_online() in order to configure the interrupts on the newly
-> onlined CPU.
->
-> Signed-off-by: Paul Burton <paul.burton@mips.com>
-> Cc: Jason Cooper <jason@lakedaemon.net>
-> Cc: Marc Zyngier <marc.zyngier@arm.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: linux-mips@linux-mips.org
+> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
 > ---
+>  .../devicetree/bindings/pci/brcmstb-pci.txt        | 63 ++++++++++++++++++++++
+>  1 file changed, 63 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pci/brcmstb-pci.txt
 >
->  drivers/irqchip/irq-mips-gic.c | 72 ++++++++++++++++++++++++++++++++----------
->  1 file changed, 56 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-> index 6fdcc1552fab..dd9da773db90 100644
-> --- a/drivers/irqchip/irq-mips-gic.c
-> +++ b/drivers/irqchip/irq-mips-gic.c
-
-[...]
-
-> @@ -622,6 +653,13 @@ static const struct irq_domain_ops gic_ipi_domain_ops = {
->  	.match = gic_ipi_domain_match,
->  };
->  
-> +static int gic_cpu_startup(unsigned int cpu)
-> +{
-> +	/* Invoke irq_cpu_online callbacks to enable desired interrupts */
-> +	irq_cpu_online();
+> diff --git a/Documentation/devicetree/bindings/pci/brcmstb-pci.txt b/Documentation/devicetree/bindings/pci/brcmstb-pci.txt
+> new file mode 100644
+> index 0000000..49f9852
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/brcmstb-pci.txt
+> @@ -0,0 +1,63 @@
+> +Brcmstb PCIe Host Controller Device Tree Bindings
 > +
-> +	return 0;
-> +}
->  
->  static int __init gic_of_init(struct device_node *node,
->  			      struct device_node *parent)
-> @@ -768,6 +806,8 @@ static int __init gic_of_init(struct device_node *node,
->  		}
->  	}
->  
-> -	return 0;
-> +	return cpuhp_setup_state(CPUHP_AP_IRQ_GIC_STARTING,
-> +				 "irqchip/mips/gic:starting",
-> +				 gic_cpu_startup, NULL);
+> +Required Properties:
+> +- compatible
+> +  "brcm,bcm7425-pcie" -- for 7425 family MIPS-based SOCs.
+> +  "brcm,bcm7435-pcie" -- for 7435 family MIPS-based SOCs.
+> +  "brcm,bcm7445-pcie" -- for 7445 and later ARM based SOCs (not including
+> +      the 7278).
+> +  "brcm,bcm7278-pcie"  -- for 7278 family ARM-based SOCs.
+> +
 
-I'm wondering about this. CPUHP_AP_IRQ_GIC_STARTING is a symbol that is
-used on ARM platforms. You're very welcome to use it (as long as nobody
-builds a system with both an ARM GIC and a MIPS GIC...), but I'm a bit
-worried that we could end-up breaking things if one of us decides to
-reorder it in enum cpuhp_state.
+(snip)
 
-The safest option would be for you to add your own state value, which
-would allow the two architecture to evolve independently.
+> +
+> +Example Node:
+> +
+> +pcie0: pcie@f0460000 {
+> +               reg = <0x0 0xf0460000 0x0 0x9310>;
+> +               interrupts = <0x0 0x0 0x4>;
+> +               compatible = "brcm,pci-plat-dev";
 
-Thoughts?
+This is not one of the valid compatibles mentioned above.
 
-	M.
--- 
-Jazz is not dead. It just smells funny.
+
+Regards
+Jonas

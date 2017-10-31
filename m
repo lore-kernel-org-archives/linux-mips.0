@@ -1,18 +1,18 @@
-Received: from usa-sjc-mx-foss1.foss.arm.com ([217.140.101.70]:35008 "EHLO
-        foss.arm.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992215AbdJaC0yZwKe- (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 31 Oct 2017 03:26:54 +0100
-From: Marc Zyngier <marc.zyngier@arm.com>
-Subject: Re: [PATCH v6 2/5] irqchip/irq-goldfish-pic: Add Goldfish PIC driver
-In-Reply-To: <1509364642-21771-3-git-send-email-aleksandar.markovic@rt-rk.com>
-        (Aleksandar Markovic's message of "Mon, 30 Oct 2017 12:56:33 +0100")
-References: <1509364642-21771-1-git-send-email-aleksandar.markovic@rt-rk.com>
-        <1509364642-21771-3-git-send-email-aleksandar.markovic@rt-rk.com>
-Date: Tue, 31 Oct 2017 02:26:40 +0000
-Message-ID: <86y3ns3vdr.fsf@arm.com>
+Received: from 19pmail.ess.barracuda.com ([64.235.154.230]:35474 "EHLO
+        19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990482AbdJaHKZNuim0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 31 Oct 2017 08:10:25 +0100
+Date: Tue, 31 Oct 2017 07:08:05 +0000
+From: James Hogan <james.hogan@mips.com>
+Subject: Re: [PATCH] MIPS: microMIPS: Fix incorrect mask in insn_table_MM
+Message-ID: <20171031070804.GB15260@jhogan-linux>
+References: <20171031053503.GA5164@embeddedor.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <marc.zyngier@arm.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="IiVenqGWf+H9Y6IX"
+Content-Disposition: inline
+In-Reply-To: <20171031053503.GA5164@embeddedor.com>
+Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,111 +22,81 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Aleksandar Markovic <aleksandar.markovic@rt-rk.com>
-Cc: linux-mips@linux-mips.org, Miodrag Dinic <miodrag.dinic@mips.com>, Goran Ferenc <goran.ferenc@mips.com>, Aleksandar Markovic <aleksandar.markovic@mips.com>, "David S. Miller" <davem@davemloft.net>, Douglas Leung <douglas.leung@mips.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, James Hogan <james.hogan@mips.com>, Jason Cooper <jason@lakedaemon.net>, linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab@kernel.org>, Miodrag Dinic <miodrag.dinic@imgtec.com>, Paul Burton <paul.burton@mips.com>, Petar Jovanovic <petar.jovanovic@mips.com>, Raghu Gandham <raghu.gandham@mips.com>, Randy Dunlap <rdunlap@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
-Message-ID: <20171031022640.QjKdELKc0tJF7Ty4CVdlsbQNclxpY7PSh4nbpQVj0Ek@z>
+To: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Julia Lawal <julia.lawall@lip6.fr>
+Message-ID: <20171031070805.LK3lXCSwomeZUgJ2uO6WigRv9ajYjRY_DADUWXELCy4@z>
 
-On Mon, Oct 30 2017 at 12:56:33 pm GMT, Aleksandar Markovic <aleksandar.markovic@rt-rk.com> wrote:
-> From: Miodrag Dinic <miodrag.dinic@mips.com>
->
-> Add device driver for a virtual programmable interrupt controller
->
-> The virtual PIC is designed as a device tree-based interrupt controller.
->
-> The compatible string used by OS for binding the driver is
-> "google,goldfish-pic".
->
-> Signed-off-by: Miodrag Dinic <miodrag.dinic@mips.com>
-> Signed-off-by: Goran Ferenc <goran.ferenc@mips.com>
-> Signed-off-by: Aleksandar Markovic <aleksandar.markovic@mips.com>
+--IiVenqGWf+H9Y6IX
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[...]
+On Tue, Oct 31, 2017 at 12:35:03AM -0500, Gustavo A. R. Silva wrote:
+> It seems that this is a typo error and the proper bit masking is
+> "RT | RS" instead of "RS | RS".
+>=20
+> This issue was detected with the help of Coccinelle.
+>=20
+> Reported-by: Julia Lawall <julia.lawall@lip6.fr>
 
-> diff --git a/drivers/irqchip/irq-goldfish-pic.c b/drivers/irqchip/irq-goldfish-pic.c
-> new file mode 100644
-> index 0000000..48fb773
-> --- /dev/null
-> +++ b/drivers/irqchip/irq-goldfish-pic.c
+May I suggest adding:
+Fixes: d6b3314b49e1 ("MIPS: uasm: Add lh uam instruction")
 
-[...]
+> Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
 
-> +static int __init goldfish_pic_of_init(struct device_node *of_node,
-> +				       struct device_node *parent)
-> +{
-> +	struct goldfish_pic_data *gfpic;
-> +	struct irq_chip_generic *gc;
-> +	struct irq_chip_type *ct;
-> +	unsigned int parent_irq;
-> +	int ret = 0;
-> +
-> +	gfpic = kzalloc(sizeof(*gfpic), GFP_KERNEL);
-> +	if (!gfpic) {
-> +		ret = -ENOMEM;
-> +		goto out_err;
-> +	}
-> +
-> +	parent_irq = irq_of_parse_and_map(of_node, 0);
-> +	if (!parent_irq) {
-> +		pr_err("Failed to map Goldfish PIC parent IRQ\n");
-> +		ret = -EINVAL;
-> +		goto out_free;
-> +	}
-> +
-> +	gfpic->base = of_iomap(of_node, 0);
-> +	if (!gfpic->base) {
-> +		pr_err("Failed to map Goldfish PIC base\n");
-> +		ret = -ENOMEM;
-> +		goto out_unmap_irq;
-> +	}
-> +
-> +	/* Mask interrupts. */
-> +	writel(1, gfpic->base + GFPIC_REG_IRQ_DISABLE_ALL);
-> +
-> +	gc = irq_alloc_generic_chip("GFPIC", 1, GFPIC_IRQ_BASE, gfpic->base,
-> +				    handle_level_irq);
-> +
-> +	ct = gc->chip_types;
+Reviewed-by: James Hogan <jhogan@@kernel.org>
 
-And what if the allocation fails?
+Probably worthy of a stable tag too (though there will be conflicts with
+ce807d5f67ed309a6f357b88cc93185d89e921d3 before 4.13):
+Cc: <stable@vger.kernel.org> # 3.16+
 
-> +	ct->regs.enable = GFPIC_REG_IRQ_ENABLE;
-> +	ct->regs.disable = GFPIC_REG_IRQ_DISABLE;
-> +	ct->chip.irq_unmask = irq_gc_unmask_enable_reg;
-> +	ct->chip.irq_mask = irq_gc_mask_disable_reg;
-> +
-> +	irq_setup_generic_chip(gc, IRQ_MSK(GFPIC_NR_IRQS), 0, 0,
-> +			       IRQ_NOPROBE | IRQ_LEVEL);
-> +
-> +	gfpic->irq_domain = irq_domain_add_legacy(of_node, GFPIC_NR_IRQS,
-> +						  GFPIC_IRQ_BASE, 0,
-> +						  &goldfish_irq_domain_ops,
-> +						  NULL);
-> +	if (!gfpic->irq_domain) {
-> +		pr_err("Failed to add irqdomain for Goldfish PIC\n");
-> +		ret = -EINVAL;
-> +		goto out_iounmap;
-> +	}
-> +
-> +	irq_set_chained_handler_and_data(parent_irq,
-> +					 goldfish_pic_cascade, gfpic);
-> +
-> +	pr_info("Successfully registered Goldfish PIC\n");
-> +	return 0;
-> +
-> +out_iounmap:
-> +	iounmap(gfpic->base);
-> +out_unmap_irq:
-> +	irq_dispose_mapping(parent_irq); 
-> +out_free:
-> +	kfree(gfpic);
-> +out_err:
-> +	return ret;
-> +}
-> +
-> +IRQCHIP_DECLARE(google_gf_pic, "google,goldfish-pic", goldfish_pic_of_init);
+Thanks
+James
 
-Thanks,
+> ---
+>  arch/mips/mm/uasm-micromips.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/arch/mips/mm/uasm-micromips.c b/arch/mips/mm/uasm-micromips.c
+> index c28ff53..cdb5a19 100644
+> --- a/arch/mips/mm/uasm-micromips.c
+> +++ b/arch/mips/mm/uasm-micromips.c
+> @@ -80,7 +80,7 @@ static const struct insn const insn_table_MM[insn_inval=
+id] =3D {
+>  	[insn_jr]	=3D {M(mm_pool32a_op, 0, 0, 0, mm_jalr_op, mm_pool32axf_op), =
+RS},
+>  	[insn_lb]	=3D {M(mm_lb32_op, 0, 0, 0, 0, 0), RT | RS | SIMM},
+>  	[insn_ld]	=3D {0, 0},
+> -	[insn_lh]	=3D {M(mm_lh32_op, 0, 0, 0, 0, 0), RS | RS | SIMM},
+> +	[insn_lh]	=3D {M(mm_lh32_op, 0, 0, 0, 0, 0), RT | RS | SIMM},
+>  	[insn_ll]	=3D {M(mm_pool32c_op, 0, 0, (mm_ll_func << 1), 0, 0), RS | RT=
+ | SIMM},
+>  	[insn_lld]	=3D {0, 0},
+>  	[insn_lui]	=3D {M(mm_pool32i_op, mm_lui_op, 0, 0, 0, 0), RS | SIMM},
+> --=20
+> 2.7.4
+>=20
+>=20
 
-	M.
--- 
-Jazz is not dead. It just smells funny.
+--IiVenqGWf+H9Y6IX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAln4IU0ACgkQbAtpk944
+dnqTzBAAhAKEuVDCWRh9L+8IvqRPSj/4u1dq3YbKefUuimTUIBdo4POJdzUOe2n6
+s32/Uoa/B1tg5adtKw78ULB5ZPSJOGGEBfm5O5ffvGOeuh7lYuO/2j3HsJzI9VUi
+EaoFpkfo4SaRmKxjvpy7IE5MqWOIydnb7YQ3w+bSQavC+7GVF9Jb0DQAmaAJgbtQ
+g623epwwmTBu+SlcyGKLEnmsT0tEi/LbsWX2TXJ5B/Nq+/9NzH2QFnzFZPNrK/Vj
+3b2D0d1dym5eqDElPuWAK+kQykhqwNUXy2Dh5PeJXKFnjgj6DiE9CTGi/JFpGAhC
+Ma+YESoBUM2JyWnSh0O8qENAqdwnphOzojnoivkAwH18FlSSOhis+DCBMRHnfj11
+tGFqYsKWDstqYj6CU+w7jwyGPieZ6tjTTFLQQNqZGv18QYX/n63eJHv3mroVebzx
+B61pK0MtR/+d4k6VAx0BfNFGWkumowxA9Ueyd/q3mdpE0x9SoInoA8VMSrJGequI
+J/t/zFkaehsfn5Adk01u9HAT4H4pXn4gdAWSqLBg+hQqi1i/Ko0JF1rTDrBTlTJb
+ExTadU974g3/kFEgQR+UedZHoKT/gosolrVSSWWMML0mYvQqptLV1lzte808OHzV
+8QCmqJHsT7KgUlSOetMSlSR0u9X1Pib+UJorVAP4RLRDfgVsO8I=
+=EYvz
+-----END PGP SIGNATURE-----
+
+--IiVenqGWf+H9Y6IX--

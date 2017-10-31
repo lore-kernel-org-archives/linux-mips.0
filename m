@@ -1,18 +1,16 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.154.230]:35474 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.154.231]:44518 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990482AbdJaHKZNuim0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 31 Oct 2017 08:10:25 +0100
-Date: Tue, 31 Oct 2017 07:08:05 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH] MIPS: microMIPS: Fix incorrect mask in insn_table_MM
-Message-ID: <20171031070804.GB15260@jhogan-linux>
-References: <20171031053503.GA5164@embeddedor.com>
+        by eddie.linux-mips.org with ESMTP id S23992325AbdJaQmScvvTA (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 31 Oct 2017 17:42:18 +0100
+From: Paul Burton <paul.burton@mips.com>
+Subject: [PATCH v2 0/8] irqchip: mips-gic: Cleanups, fixes, prep for multi-cluster
+Date: Tue, 31 Oct 2017 09:41:43 -0700
+Message-ID: <20171031164151.6357-1-paul.burton@mips.com>
+In-Reply-To: <867evc5cc9.fsf@arm.com>
+References: <867evc5cc9.fsf@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="IiVenqGWf+H9Y6IX"
-Content-Disposition: inline
-In-Reply-To: <20171031053503.GA5164@embeddedor.com>
-Return-Path: <James.Hogan@mips.com>
+Content-Type: text/plain
+Return-Path: <Paul.Burton@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,81 +20,66 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Gustavo A. R. Silva" <garsilva@embeddedor.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Julia Lawal <julia.lawall@lip6.fr>
-Message-ID: <20171031070805.LK3lXCSwomeZUgJ2uO6WigRv9ajYjRY_DADUWXELCy4@z>
+To: Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@mips.com>
+Message-ID: <20171031164143.ozDCTSBwZ7vo9h0JNupFXxRpRh0iFwxm0KjIrYbzXEw@z>
 
---IiVenqGWf+H9Y6IX
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series continues cleaning & fixing up the MIPS GIC irqchip driver
+whilst laying groundwork to support multi-cluster systems.
 
-On Tue, Oct 31, 2017 at 12:35:03AM -0500, Gustavo A. R. Silva wrote:
-> It seems that this is a typo error and the proper bit masking is
-> "RT | RS" instead of "RS | RS".
->=20
-> This issue was detected with the help of Coccinelle.
->=20
-> Reported-by: Julia Lawall <julia.lawall@lip6.fr>
+Patch 1 refactors in order to reduce some duplication and prepare us for
+the following patches.
 
-May I suggest adding:
-Fixes: d6b3314b49e1 ("MIPS: uasm: Add lh uam instruction")
+Patches 2-4 move per-CPU GIC configuration away from being performed all
+at once when the driver is probed or when interrupts are masked &
+unmasked, instead performing configuration as CPUs are brought online.
+This allows us to support reconfiguring after clusters are powered down
+& back up, generally cleans up and fixes bugs in the process.
 
-> Signed-off-by: Gustavo A. R. Silva <garsilva@embeddedor.com>
+Patch 5 makes use of num_possible_cpus() to reserve IPIs, rather than
+the gic_vpes variable. This prepares us for multi-cluster in which
+gic_vpes is mostly meaningless since it only reflects the local cluster,
+and it generally makes more sense to use the more standard
+num_possible_cpus().
 
-Reviewed-by: James Hogan <jhogan@@kernel.org>
+Patch 6 removes the now unused gic_vpes variable.
 
-Probably worthy of a stable tag too (though there will be conflicts with
-ce807d5f67ed309a6f357b88cc93185d89e921d3 before 4.13):
-Cc: <stable@vger.kernel.org> # 3.16+
+Patch 7 is a general clean up but also prepares us for later patches as
+described in its commit message.
 
-Thanks
-James
+Patch 8 is a general clean up marking some variables static.
 
-> ---
->  arch/mips/mm/uasm-micromips.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/mips/mm/uasm-micromips.c b/arch/mips/mm/uasm-micromips.c
-> index c28ff53..cdb5a19 100644
-> --- a/arch/mips/mm/uasm-micromips.c
-> +++ b/arch/mips/mm/uasm-micromips.c
-> @@ -80,7 +80,7 @@ static const struct insn const insn_table_MM[insn_inval=
-id] =3D {
->  	[insn_jr]	=3D {M(mm_pool32a_op, 0, 0, 0, mm_jalr_op, mm_pool32axf_op), =
-RS},
->  	[insn_lb]	=3D {M(mm_lb32_op, 0, 0, 0, 0, 0), RT | RS | SIMM},
->  	[insn_ld]	=3D {0, 0},
-> -	[insn_lh]	=3D {M(mm_lh32_op, 0, 0, 0, 0, 0), RS | RS | SIMM},
-> +	[insn_lh]	=3D {M(mm_lh32_op, 0, 0, 0, 0, 0), RT | RS | SIMM},
->  	[insn_ll]	=3D {M(mm_pool32c_op, 0, 0, (mm_ll_func << 1), 0, 0), RS | RT=
- | SIMM},
->  	[insn_lld]	=3D {0, 0},
->  	[insn_lui]	=3D {M(mm_pool32i_op, mm_lui_op, 0, 0, 0, 0), RS | SIMM},
-> --=20
-> 2.7.4
->=20
->=20
+This series by itself continues along the path towards supporting
+multi-cluster systems such as the MIPS I6500, but does not yet get us
+the whole way there. If you wish to see my current work in progress
+which builds out multi-cluster support atop these patches then that can
+be found in the multicluster branch of:
 
---IiVenqGWf+H9Y6IX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+  git://git.linux-mips.org/pub/scm/paul/linux.git
 
------BEGIN PGP SIGNATURE-----
+Or browsed at:
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAln4IU0ACgkQbAtpk944
-dnqTzBAAhAKEuVDCWRh9L+8IvqRPSj/4u1dq3YbKefUuimTUIBdo4POJdzUOe2n6
-s32/Uoa/B1tg5adtKw78ULB5ZPSJOGGEBfm5O5ffvGOeuh7lYuO/2j3HsJzI9VUi
-EaoFpkfo4SaRmKxjvpy7IE5MqWOIydnb7YQ3w+bSQavC+7GVF9Jb0DQAmaAJgbtQ
-g623epwwmTBu+SlcyGKLEnmsT0tEi/LbsWX2TXJ5B/Nq+/9NzH2QFnzFZPNrK/Vj
-3b2D0d1dym5eqDElPuWAK+kQykhqwNUXy2Dh5PeJXKFnjgj6DiE9CTGi/JFpGAhC
-Ma+YESoBUM2JyWnSh0O8qENAqdwnphOzojnoivkAwH18FlSSOhis+DCBMRHnfj11
-tGFqYsKWDstqYj6CU+w7jwyGPieZ6tjTTFLQQNqZGv18QYX/n63eJHv3mroVebzx
-B61pK0MtR/+d4k6VAx0BfNFGWkumowxA9Ueyd/q3mdpE0x9SoInoA8VMSrJGequI
-J/t/zFkaehsfn5Adk01u9HAT4H4pXn4gdAWSqLBg+hQqi1i/Ko0JF1rTDrBTlTJb
-ExTadU974g3/kFEgQR+UedZHoKT/gosolrVSSWWMML0mYvQqptLV1lzte808OHzV
-8QCmqJHsT7KgUlSOetMSlSR0u9X1Pib+UJorVAP4RLRDfgVsO8I=
-=EYvz
------END PGP SIGNATURE-----
+  https://git.linux-mips.org/cgit/paul/linux.git/log/?h=multicluster
 
---IiVenqGWf+H9Y6IX--
+This series applies cleanly atop v4.14-rc7.
+
+Changes in v2:
+- Add & use CPUHP_AP_IRQ_MIPS_GIC_STARTING state rather than reusing
+  the generically-named CPUHP_AP_IRQ_GIC_STARTING used for the ARM GIC.
+
+Paul Burton (8):
+  irqchip: mips-gic: Inline gic_local_irq_domain_map()
+  irqchip: mips-gic: Use irq_cpu_online to (un)mask all-VP(E) IRQs
+  irqchip: mips-gic: Mask local interrupts when CPUs come online
+  irqchip: mips-gic: Configure EIC when CPUs come online
+  irqchip: mips-gic: Use num_possible_cpus() to reserve IPIs
+  irqchip: mips-gic: Remove gic_vpes variable
+  irqchip: mips-gic: Share register writes in gic_set_type()
+  irqchip: mips-gic: Make IPI bitmaps static
+
+ drivers/irqchip/irq-mips-gic.c | 213 ++++++++++++++++++++++-------------------
+ include/linux/cpuhotplug.h     |   1 +
+ 2 files changed, 115 insertions(+), 99 deletions(-)
+
+-- 
+2.14.3

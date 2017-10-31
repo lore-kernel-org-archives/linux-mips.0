@@ -1,17 +1,14 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.154.231]:42116 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.154.231]:33300 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992388AbdJaQoJtfqwA (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 31 Oct 2017 17:44:09 +0100
-From: Paul Burton <paul.burton@mips.com>
-Subject: [PATCH v2 7/8] irqchip: mips-gic: Share register writes in gic_set_type()
-Date: Tue, 31 Oct 2017 09:41:50 -0700
-Message-ID: <20171031164151.6357-8-paul.burton@mips.com>
-In-Reply-To: <20171031164151.6357-1-paul.burton@mips.com>
-References: <867evc5cc9.fsf@arm.com>
- <20171031164151.6357-1-paul.burton@mips.com>
+        by eddie.linux-mips.org with ESMTP id S23991940AbdJaVlVy01Gl (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 31 Oct 2017 22:41:21 +0100
+From: James Hogan <james.hogan@mips.com>
+Subject: [PATCH for-4.14] MIPS: generic: Fix NI 169445 its build
+Date: Tue, 31 Oct 2017 21:41:07 +0000
+Message-ID: <20171031214107.15596-1-james.hogan@mips.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <Paul.Burton@mips.com>
+Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,108 +18,44 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@mips.com>
-Message-ID: <20171031164150.ej5iOBWj3o2QbeLlNMvQ0_m8SGrudDh_7ZnDKwU4uw0@z>
+To: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>
+Cc: James Hogan <james.hogan@mips.com>, James Hogan <jhogan@kernel.org>, Nathan Sullivan <nathan.sullivan@ni.com>, linux-mips@linux-mips.org
+Message-ID: <20171031214107.nLewYwv_Hf-tEngP41sZlPxATleh-IhXgLJBSVuKM6Q@z>
 
-The gic_set_type() function included writes to the MIPS GIC polarity,
-trigger & dual-trigger registers in each case of a switch statement
-determining the IRQs type. This is all well & good when we only have a
-single cluster & thus a single GIC whose register we want to update. It
-will lead to significant duplication once we have multi-cluster support
-& multiple GICs to update.
+From: James Hogan <jhogan@kernel.org>
 
-Refactor this such that we determine values for the polarity, trigger &
-dual-trigger registers and then have a single set of register writes
-following the switch statement. This will allow us to write the same
-values to each GIC in a multi-cluster system in a later patch, rather
-than needing to duplicate more register writes in each case.
+Since commit 04a85e087ad6 ("MIPS: generic: Move NI 169445 FIT image
+source to its own file"), a generic 32r2el_defconfig kernel fails to
+build with the following build error:
 
-Signed-off-by: Paul Burton <paul.burton@mips.com>
-Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: Marc Zyngier <marc.zyngier@arm.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
+  ITB     arch/mips/boot/vmlinux.gz.itb
+Error: arch/mips/boot/vmlinux.gz.its:111.1-2 syntax error
+FATAL ERROR: Unable to parse input tree
+mkimage Can't read arch/mips/boot/vmlinux.gz.itb.tmp: Invalid argument
+
+This is because arch/mips/generic/board-ni169445.its.S doesn't include
+the necessary "/" node path before the first open brace, which did
+previously exist when it was in arch/mips/generic/vmlinux.its.S.
+
+Fixes: 04a85e087ad6 ("MIPS: generic: Move NI 169445 FIT image source to its own file")
+Signed-off-by: James Hogan <jhogan@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@mips.com>
+Cc: Nathan Sullivan <nathan.sullivan@ni.com>
 Cc: linux-mips@linux-mips.org
 ---
+ arch/mips/generic/board-ni169445.its.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes in v2: None
-
- drivers/irqchip/irq-mips-gic.c | 46 +++++++++++++++++++++---------------------
- 1 file changed, 23 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index 48f0f43cd05d..b2e83461e2a8 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -199,46 +199,46 @@ static void gic_ack_irq(struct irq_data *d)
- 
- static int gic_set_type(struct irq_data *d, unsigned int type)
- {
--	unsigned int irq = GIC_HWIRQ_TO_SHARED(d->hwirq);
-+	unsigned int irq, pol, trig, dual;
- 	unsigned long flags;
--	bool is_edge;
-+
-+	irq = GIC_HWIRQ_TO_SHARED(d->hwirq);
- 
- 	spin_lock_irqsave(&gic_lock, flags);
- 	switch (type & IRQ_TYPE_SENSE_MASK) {
- 	case IRQ_TYPE_EDGE_FALLING:
--		change_gic_pol(irq, GIC_POL_FALLING_EDGE);
--		change_gic_trig(irq, GIC_TRIG_EDGE);
--		change_gic_dual(irq, GIC_DUAL_SINGLE);
--		is_edge = true;
-+		pol = GIC_POL_FALLING_EDGE;
-+		trig = GIC_TRIG_EDGE;
-+		dual = GIC_DUAL_SINGLE;
- 		break;
- 	case IRQ_TYPE_EDGE_RISING:
--		change_gic_pol(irq, GIC_POL_RISING_EDGE);
--		change_gic_trig(irq, GIC_TRIG_EDGE);
--		change_gic_dual(irq, GIC_DUAL_SINGLE);
--		is_edge = true;
-+		pol = GIC_POL_RISING_EDGE;
-+		trig = GIC_TRIG_EDGE;
-+		dual = GIC_DUAL_SINGLE;
- 		break;
- 	case IRQ_TYPE_EDGE_BOTH:
--		/* polarity is irrelevant in this case */
--		change_gic_trig(irq, GIC_TRIG_EDGE);
--		change_gic_dual(irq, GIC_DUAL_DUAL);
--		is_edge = true;
-+		pol = 0; /* Doesn't matter */
-+		trig = GIC_TRIG_EDGE;
-+		dual = GIC_DUAL_DUAL;
- 		break;
- 	case IRQ_TYPE_LEVEL_LOW:
--		change_gic_pol(irq, GIC_POL_ACTIVE_LOW);
--		change_gic_trig(irq, GIC_TRIG_LEVEL);
--		change_gic_dual(irq, GIC_DUAL_SINGLE);
--		is_edge = false;
-+		pol = GIC_POL_ACTIVE_LOW;
-+		trig = GIC_TRIG_LEVEL;
-+		dual = GIC_DUAL_SINGLE;
- 		break;
- 	case IRQ_TYPE_LEVEL_HIGH:
- 	default:
--		change_gic_pol(irq, GIC_POL_ACTIVE_HIGH);
--		change_gic_trig(irq, GIC_TRIG_LEVEL);
--		change_gic_dual(irq, GIC_DUAL_SINGLE);
--		is_edge = false;
-+		pol = GIC_POL_ACTIVE_HIGH;
-+		trig = GIC_TRIG_LEVEL;
-+		dual = GIC_DUAL_SINGLE;
- 		break;
- 	}
- 
--	if (is_edge)
-+	change_gic_pol(irq, pol);
-+	change_gic_trig(irq, trig);
-+	change_gic_dual(irq, dual);
-+
-+	if (trig == GIC_TRIG_EDGE)
- 		irq_set_chip_handler_name_locked(d, &gic_edge_irq_controller,
- 						 handle_edge_irq, NULL);
- 	else
+diff --git a/arch/mips/generic/board-ni169445.its.S b/arch/mips/generic/board-ni169445.its.S
+index d12e12fe90be..e4cb4f95a8cc 100644
+--- a/arch/mips/generic/board-ni169445.its.S
++++ b/arch/mips/generic/board-ni169445.its.S
+@@ -1,4 +1,4 @@
+-{
++/ {
+ 	images {
+ 		fdt@ni169445 {
+ 			description = "NI 169445 device tree";
 -- 
-2.14.3
+2.14.1

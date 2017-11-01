@@ -1,20 +1,14 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.150.245]:47532 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.154.231]:57931 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992974AbdKAQnI1pMcn (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 1 Nov 2017 17:43:08 +0100
-Date: Wed, 1 Nov 2017 09:40:47 -0700
-From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH v2 0/8] irqchip: mips-gic: Cleanups, fixes, prep for
- multi-cluster
-Message-ID: <20171101164047.4ascutd7tkoaxtjp@pburton-laptop>
-References: <867evc5cc9.fsf@arm.com>
- <20171031164151.6357-1-paul.burton@mips.com>
- <86efpi3lgj.fsf@arm.com>
+        by eddie.linux-mips.org with ESMTP id S23993005AbdKAQrUglZin (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 1 Nov 2017 17:47:20 +0100
+From: Matt Redfearn <matt.redfearn@mips.com>
+Subject: [PATCH] MIPS: CPS: Fix use of current_cpu_data in preemptible code
+Date: Wed, 1 Nov 2017 16:45:56 +0000
+Message-ID: <1509554756-16784-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <86efpi3lgj.fsf@arm.com>
-Return-Path: <Paul.Burton@mips.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,31 +18,64 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Marc Zyngier <marc.zyngier@arm.com>
-Cc: Jason Cooper <jason@lakedaemon.net>, Thomas Gleixner <tglx@linutronix.de>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20171101164047.oBnDknEKuWv8KhST5KL-fuDaEJ1_AwOmOsWrBD2lsP4@z>
+To: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>
+Cc: Matt Redfearn <matt.redfearn@mips.com>, linux-mips@linux-mips.org, Paul Burton <paul.burton@mips.com>, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20171101164556.WgMRoj77lsHE6hv47KUAhkQcYRKwDBXY635cPriHzTM@z>
 
-Hi Marc,
+Commit 1ec9dd80bedc2 ("MIPS: CPS: Detect CPUs in secondary clusters")
+added a check in cps_boot_secondary() that the secondary being booted is
+in the same cluster as the CPU running this code. This check is
+performed using current_cpu_data without disabling preemption. As such
+when CONFIG_PREEMPT=y, a BUG is triggered:
 
-On Wed, Nov 01, 2017 at 12:13:16AM +0000, Marc Zyngier wrote:
-> On Tue, Oct 31 2017 at  9:41:43 am GMT, Paul Burton <paul.burton@mips.com> wrote:
-> > This series continues cleaning & fixing up the MIPS GIC irqchip driver
-> > whilst laying groundwork to support multi-cluster systems.
+[   57.991693] BUG: using smp_processor_id() in preemptible [00000000] code: hotplug/1749
+<snip>
+[   58.063077] Call Trace:
+[   58.065842] [<8040cdb4>] show_stack+0x84/0x114
+[   58.070830] [<80b11b38>] dump_stack+0xf8/0x140
+[   58.075796] [<8079b12c>] check_preemption_disabled+0xec/0x118
+[   58.082204] [<80415110>] cps_boot_secondary+0x84/0x44c
+[   58.087935] [<80413a14>] __cpu_up+0x34/0x98
+[   58.092624] [<80434240>] bringup_cpu+0x38/0x114
+[   58.097680] [<80434af0>] cpuhp_invoke_callback+0x168/0x8f0
+[   58.103801] [<804362d0>] _cpu_up+0x154/0x1c8
+[   58.108565] [<804363dc>] do_cpu_up+0x98/0xa8
+[   58.113333] [<808261f8>] device_online+0x84/0xc0
+[   58.118481] [<80826294>] online_store+0x60/0x98
+[   58.123562] [<8062261c>] kernfs_fop_write+0x158/0x1d4
+[   58.129196] [<805a2ae4>] __vfs_write+0x4c/0x168
+[   58.134247] [<805a2dc8>] vfs_write+0xe0/0x190
+[   58.139095] [<805a2fe0>] SyS_write+0x68/0xc4
+[   58.143854] [<80415d58>] syscall_common+0x34/0x58
 
-<SNIP>
+In reality we don't currently support running the kernel on CPUs not in
+cluster 0, so the answer to cpu_cluster(&current_cpu_data) will always
+be 0, even if this task being preempted and continues running on a
+different CPU. Regardless, the BUG should not be triggered, so fix this
+by switching to raw_current_cpu_data. When multicluster support lands
+upstream this check will need removing or changing anyway.
 
-> Are those targeting 4.14 or 4.15? It is getting quite late for the
-> former, and it doesn't seem to cleanly apply on tip/irq/core (or my
-> irqchip-4.15 branch) if that's for the latter (patch 6 shouts at me).
+Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+Reviewed-by: Paul Burton <paul.burton@mips.com>
+CC: linux-mips@linux-mips.org
+CC: Paul Burton <paul.burton@mips.com>
+---
 
-Whichever you're happiest with. If you'd like me to rebase them & resubmit
-that's fine.
+ arch/mips/kernel/smp-cps.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I see the conflict with patch 6 atop tip/irq/core - it's because tip/irq/core
-is based upon v4.14-rc2 which doesn't have commit a08588ea486a
-("irqchip/mips-gic: Fix shifts to extract register fields") that went into
-v4.14-rc3. The correct resolution is to keep the patches version of things (ie.
-delete the block of code).
-
-Thanks,
-    Paul
+diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
+index 0063122c85da..8e7a40bcd9d3 100644
+--- a/arch/mips/kernel/smp-cps.c
++++ b/arch/mips/kernel/smp-cps.c
+@@ -306,7 +306,7 @@ static int cps_boot_secondary(int cpu, struct task_struct *idle)
+ 	int err;
+ 
+ 	/* We don't yet support booting CPUs in other clusters */
+-	if (cpu_cluster(&cpu_data[cpu]) != cpu_cluster(&current_cpu_data))
++	if (cpu_cluster(&cpu_data[cpu]) != cpu_cluster(&raw_current_cpu_data))
+ 		return -ENOSYS;
+ 
+ 	vpe_cfg->pc = (unsigned long)&smp_bootstrap;
+-- 
+2.7.4

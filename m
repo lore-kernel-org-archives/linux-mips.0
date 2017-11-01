@@ -1,19 +1,17 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.150.245]:59969 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.150.245]:43080 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993023AbdKAVlz2RRrL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 1 Nov 2017 22:41:55 +0100
-Date: Wed, 1 Nov 2017 21:40:24 +0000
+        by eddie.linux-mips.org with ESMTP id S23993016AbdKAWZe3r-ye (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 1 Nov 2017 23:25:34 +0100
+Date: Wed, 1 Nov 2017 22:25:26 +0000
 From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH 2/2] MIPS: Update Goldfish RTC driver maintainer email
- address
-Message-ID: <20171101214024.GM15235@jhogan-linux>
-References: <1508509687-3074-1-git-send-email-aleksandar.markovic@rt-rk.com>
- <1508509687-3074-3-git-send-email-aleksandar.markovic@rt-rk.com>
+Subject: Re: [PATCH] MAINTAINERS: Update Pistachio platform maintainers
+Message-ID: <20171101222526.GF15260@jhogan-linux>
+References: <1507745492-13349-1-git-send-email-james.hartley@sondrel.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="j6zkAHxOZJkiczrA"
+        protocol="application/pgp-signature"; boundary="PPYy/fEw/8QCHSq3"
 Content-Disposition: inline
-In-Reply-To: <1508509687-3074-3-git-send-email-aleksandar.markovic@rt-rk.com>
+In-Reply-To: <1507745492-13349-1-git-send-email-james.hartley@sondrel.com>
 Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -24,88 +22,80 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Aleksandar Markovic <aleksandar.markovic@rt-rk.com>
-Cc: linux-mips@linux-mips.org, Aleksandar Markovic <aleksandar.markovic@mips.com>, Miodrag Dinic <miodrag.dinic@mips.com>, Andrew Morton <akpm@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, Douglas Leung <douglas.leung@mips.com>, Goran Ferenc <goran.ferenc@mips.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Martin Kepplinger <martink@posteo.de>, Matt Ranostay <matt.ranostay@konsulko.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Miodrag Dinic <miodrag.dinic@imgtec.com>, Paul Burton <paul.burton@mips.com>, Petar Jovanovic <petar.jovanovic@mips.com>, Raghu Gandham <raghu.gandham@mips.com>, Randy Dunlap <rdunlap@infradead.org>, Sebastian Reichel <sre@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>
-Message-ID: <20171101214024.wCt_0g001i8E9JEANFNNodbv4GzTVq5KONwl04M_d6c@z>
+To: James Hartley <james.hartley@sondrel.com>
+Cc: davem@davemloft.net, linux-mips@linux-mips.org, James Hartley <james.hartley@imgtec.com>
+Message-ID: <20171101222526.aU1m04XzpQDg2YyHFdSHU581ruvC1-PbJt2l5zfCllw@z>
 
---j6zkAHxOZJkiczrA
+--PPYy/fEw/8QCHSq3
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Aleksandar,
+Hi James,
 
-On Fri, Oct 20, 2017 at 04:27:45PM +0200, Aleksandar Markovic wrote:
-> From: Aleksandar Markovic <aleksandar.markovic@mips.com>
+On Wed, Oct 11, 2017 at 07:11:32PM +0100, James Hartley wrote:
+> From: James Hartley <james.hartley@imgtec.com>
 >=20
-> Change all relevant instances of miodrag.dinic@imgtec.com
-> email address to miodrag.dinic@mips.com.
+> Neither of the current maintainers works for Imagination any more.
 >=20
-> Signed-off-by: Miodrag Dinic <miodrag.dinic@mips.com>
-> Signed-off-by: Aleksandar Markovic <aleksandar.markovic@mips.com>
-> ---
->  .mailmap    | 1 +
->  MAINTAINERS | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
+> Removed both imgtec email addresses and added back mine for
+> occasional reviews, also changed from Maintained to Odd Fixes to
+> reflect the time that I will be able to spend on it.
 >=20
-> diff --git a/.mailmap b/.mailmap
-> index bd14d63..2494b4b 100644
-> --- a/.mailmap
-> +++ b/.mailmap
-> @@ -118,6 +118,7 @@ Matt Ranostay <matt.ranostay@konsulko.com> <matt@rano=
-stay.consulting>
->  Mayuresh Janorkar <mayur@ti.com>
->  Michael Buesch <m@bues.ch>
->  Michel D=C3=A4nzer <michel@tungstengraphics.com>
-> +Miodrag Dinic <miodrag.dinic@imgtec.com> <miodrag.dinic@mips.com>
+> Signed-off-by: James Hartley <james.hartley@sondrel.com>
 
-Thats the wrong way around (mips -> imgtec).
-
-I'll take both of these via my mips-fixes branch for v4.14, so I'll fix
-this up when applying.
+The author (@imgtec.com) doesn't match the sign off (@sondrel.com). If
+you don't mind I'll change the authorship to your sondrel.com address
+when applying this.
 
 Thanks
 James
 
->  Mitesh shah <mshah@teja.com>
->  Mohit Kumar <mohit.kumar@st.com> <mohit.kumar.dhaka@gmail.com>
->  Morten Welinder <terra@gnome.org>
+> ---
+>  MAINTAINERS | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>=20
 > diff --git a/MAINTAINERS b/MAINTAINERS
-> index 6e753610..4a3de82 100644
+> index ccc5181..5ccf3b5 100644
 > --- a/MAINTAINERS
 > +++ b/MAINTAINERS
-> @@ -873,7 +873,7 @@ F:	drivers/android/
->  F:	drivers/staging/android/
+> @@ -10731,10 +10731,9 @@ S:	Maintained
+>  F:	drivers/pinctrl/spear/
 > =20
->  ANDROID GOLDFISH RTC DRIVER
-> -M:	Miodrag Dinic <miodrag.dinic@imgtec.com>
-> +M:	Miodrag Dinic <miodrag.dinic@mips.com>
->  S:	Supported
->  F:	Documentation/devicetree/bindings/rtc/google,goldfish-rtc.txt
->  F:	drivers/rtc/rtc-goldfish.c
+>  PISTACHIO SOC SUPPORT
+> -M:	James Hartley <james.hartley@imgtec.com>
+> -M:	Ionela Voinescu <ionela.voinescu@imgtec.com>
+> +M:	James Hartley <james.hartley@sondrel.com>
+>  L:	linux-mips@linux-mips.org
+> -S:	Maintained
+> +S:	Odd Fixes
+>  F:	arch/mips/pistachio/
+>  F:	arch/mips/include/asm/mach-pistachio/
+>  F:	arch/mips/boot/dts/img/pistachio*
 > --=20
 > 2.7.4
 >=20
+>=20
 
---j6zkAHxOZJkiczrA
+--PPYy/fEw/8QCHSq3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAln6P0AACgkQbAtpk944
-dnoC4g//ZJczmCxWtS5PkkmbVK03Mbn9qoO5xnAW6Zy7wIQEjIFPSzxC1I3dfjt+
-2d+xWkglhFKZcsYTh1ZVbd44X38KqdgZ430iHgTxs0jx7ykdbGiseuyMLr0h2qdQ
-btEzxwIBjc8SUcUN3pvrlVmp+ef2pkiYiqIMnZdiMwTVhovsn7sepBl/JV+iwJhF
-v5IlJCWxn+ev/ZImUv7YGnjGKbinrurLk2GF1fBw5xcWq5Z9UYJI7A/47fmoUZf7
-XHMepW1KA4c7EoHo+b3tgXzyWfcHKilTraXqDwaVwfv2BmVa85yBx0g5b9kYAUex
-l4osd6+OB0sx6ViG7/YC3QHhw1h+hGk5qPxnTQmn8GVHaqGT1+FvOAs3kO6bGM1J
-+EZtQNTNnF2hmsW8pmPKQIzNd/T5p+rtSr2E5BR05mz1CNYXDH9FI0Ckm85SIkzW
-T49sunRINXWce/FzwqpmChm3bVaxExI22LHUZPki5Z3+0XxQ4vqKWb/zqcKTbs4M
-Lhw9hAeDx3qQwYu2kU3cDrvCVF+HXZ7FWORa7HcnWJ1M8fd3VqzntkK4QhZMTqO2
-rouYhfXVNX4QvIBR8wnqceJD163/1yn0OsSvvef2t4xMQSlwOJRKBfS898tY89m7
-ps4h3NQXJcuRSpM95NrUq0hD3C25G1kaeTic244nqmAiYkxqAyc=
-=Jm0u
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAln6SdUACgkQbAtpk944
+dnogYxAAtSdKIS+0esiLhveptTZTpC6PM23S7dSirsxKnXzT1yKu2u9qdWc22dGm
+ubaHMU0hDUyYOz/RNJ7urPVBnw7DA3zFjmQOdwqxJ60NwS8+TJxdQk+YXVVPWQ/d
+YBpTQXSifxqhcDfazYli+IqYkyLz7eMnul4yInShRw7elkTiN/h0U+i/hARj4Gr6
+fMJy+NGA67+fFPBttG6moufquWR1OVq6ureSaOqhUKcIWkQ5WntXFHLgKJqNbyrN
+14Nm3M4jVyS78LEAwKwS4mFBnZKTRrdRzA+huYGTiBBZNdi+1y9CevMXy36Rvweb
+OYFSeWLBjLLvutdJmQKOhJaoxwtoGMCI7kQXp5GMQ/GCFJk//Kun6E0gzKzKcgwG
+88nAm+OxC5FGtmsnVsP3j7Wb9vq3aKSFVjPLXvjwdogOerhjwkI20SgZcaVLa8Jm
+d7WhCTEH/8Ig6e6GGDUSX8M3TwXkvzTmHd2QB1+ptcYbA64gCAxFEPY7EBaN7/jL
+wIbhKaCf8Ru6T7lDkEFSAwI1Hh2aHNC+VtyzdCLR4s1mBpT25yn/sSVX9ld9lcaR
+VRIksZbeS0m6rZgAdRDpL+KBteNgvVNUgjAYAoH8bh3eYNR5CRlfODcj39CVXNb4
+/aBxiod8AkEe2HWKDHCf4bH2vRkY1H6n4qXCWl2gtyR7YuKKf6Q=
+=1+xI
 -----END PGP SIGNATURE-----
 
---j6zkAHxOZJkiczrA--
+--PPYy/fEw/8QCHSq3--

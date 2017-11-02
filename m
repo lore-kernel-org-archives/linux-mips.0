@@ -1,20 +1,20 @@
-Received: from mx.socionext.com ([202.248.49.38]:53046 "EHLO mx.socionext.com"
+Received: from foss.arm.com ([217.140.101.70]:33792 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23993306AbdKBIs4ThAuA (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 2 Nov 2017 09:48:56 +0100
-From: <yamada.masahiro@socionext.com>
-Subject: RE: [PATCH v2] kbuild: clean up *.dtb and *.dtb.S patterns from
- top-level Makefile
-Date: Thu, 2 Nov 2017 08:48:46 +0000
-Message-ID: <bb7c1a637afa47e8943ce494798f957c@SOC-EX01V.e01.socionext.com>
-References: <1509591085-23940-1-git-send-email-yamada.masahiro@socionext.com>
- <CAK8P3a3FoRJeO=TQGMRf6t4-bP8nP6KUEhkCrHP6L8XaF1Ee7g@mail.gmail.com>
-In-Reply-To: <CAK8P3a3FoRJeO=TQGMRf6t4-bP8nP6KUEhkCrHP6L8XaF1Ee7g@mail.gmail.com>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S23993359AbdKBKo6ePz-I (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 2 Nov 2017 11:44:58 +0100
+From: Marc Zyngier <marc.zyngier@arm.com>
+Subject: Re: [PATCH v2 0/8] irqchip: mips-gic: Cleanups, fixes, prep for multi-cluster
+In-Reply-To: <alpine.DEB.2.20.1711011758170.1942@nanos> (Thomas Gleixner's
+        message of "Wed, 1 Nov 2017 17:59:23 +0100")
+References: <867evc5cc9.fsf@arm.com>
+        <20171031164151.6357-1-paul.burton@mips.com> <86efpi3lgj.fsf@arm.com>
+        <20171101164047.4ascutd7tkoaxtjp@pburton-laptop>
+        <alpine.DEB.2.20.1711011758170.1942@nanos>
+Date: Thu, 02 Nov 2017 10:44:47 +0000
+Message-ID: <87h8udufhc.fsf@on-the-bus.cambridge.arm.com>
 MIME-Version: 1.0
-Return-Path: <yamada.masahiro@socionext.com>
+Content-Type: text/plain
+Return-Path: <marc.zyngier@arm.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,47 +24,46 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: arnd@arndb.de
-Cc: devicetree@vger.kernel.org, robh@kernel.org, linux-arch@vger.kernel.org, linux-mips@linux-mips.org, linux-kbuild@vger.kernel.org, linux@armlinux.org.uk, ralf@linux-mips.org, pantelis.antoniou@gmail.com, mark.rutland@arm.com, frowand.list@gmail.com, linux-arm-kernel@lists.infradead.org
-Message-ID: <20171102084846.-IKxktkn0UxS-XQNrYwmTFcq_wbKC2q1xIg2CzPqGc0@z>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Paul Burton <paul.burton@mips.com>, Jason Cooper <jason@lakedaemon.net>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20171102104447.56QUkj0HQwPtsgCqh8Kb2qk4lUm3ipR2C7F6ggn5RYU@z>
 
-SGkgQXJuZCwNCg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IGFybmRi
-ZXJnbWFubkBnbWFpbC5jb20gW21haWx0bzphcm5kYmVyZ21hbm5AZ21haWwuY29tXSBPbiBCZWhh
-bGYgT2YNCj4gQXJuZCBCZXJnbWFubg0KPiBTZW50OiBUaHVyc2RheSwgTm92ZW1iZXIgMDIsIDIw
-MTcgNTozOCBQTQ0KPiBUbzogWWFtYWRhLCBNYXNhaGlyby/lsbHnlLAg55yf5byYIDx5YW1hZGEu
-bWFzYWhpcm9Ac29jaW9uZXh0LmNvbT4NCj4gQ2M6IERUTUwgPGRldmljZXRyZWVAdmdlci5rZXJu
-ZWwub3JnPjsgUm9iIEhlcnJpbmcgPHJvYmhAa2VybmVsLm9yZz47DQo+IGxpbnV4LWFyY2ggPGxp
-bnV4LWFyY2hAdmdlci5rZXJuZWwub3JnPjsgb3BlbiBsaXN0OlJBTElOSyBNSVBTDQo+IEFSQ0hJ
-VEVDVFVSRSA8bGludXgtbWlwc0BsaW51eC1taXBzLm9yZz47IExpbnV4IEtidWlsZCBtYWlsaW5n
-IGxpc3QNCj4gPGxpbnV4LWtidWlsZEB2Z2VyLmtlcm5lbC5vcmc+OyBSdXNzZWxsIEtpbmcgPGxp
-bnV4QGFybWxpbnV4Lm9yZy51az47DQo+IFJhbGYgQmFlY2hsZSA8cmFsZkBsaW51eC1taXBzLm9y
-Zz47IFBhbnRlbGlzIEFudG9uaW91DQo+IDxwYW50ZWxpcy5hbnRvbmlvdUBnbWFpbC5jb20+OyBN
-YXJrIFJ1dGxhbmQgPG1hcmsucnV0bGFuZEBhcm0uY29tPjsNCj4gRnJhbmsgUm93YW5kIDxmcm93
-YW5kLmxpc3RAZ21haWwuY29tPjsgTGludXggQVJNDQo+IDxsaW51eC1hcm0ta2VybmVsQGxpc3Rz
-LmluZnJhZGVhZC5vcmc+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjJdIGtidWlsZDogY2xlYW4g
-dXAgKi5kdGIgYW5kICouZHRiLlMgcGF0dGVybnMgZnJvbQ0KPiB0b3AtbGV2ZWwgTWFrZWZpbGUN
-Cj4gDQo+IE9uIFRodSwgTm92IDIsIDIwMTcgYXQgMzo1MSBBTSwgTWFzYWhpcm8gWWFtYWRhDQo+
-IDx5YW1hZGEubWFzYWhpcm9Ac29jaW9uZXh0LmNvbT4gd3JvdGU6DQo+ID4gV2UgbmVlZCB0byBh
-ZGQgImNsZWFuLWZpbGVzIiBpbiBNYWtmaWxlcyB0byBjbGVhbiB1cCBEVCBibG9icywgYnV0IHdl
-DQo+ID4gb2Z0ZW4gbWlzcyB0byBkbyBzby4NCj4gPg0KPiA+IFNpbmNlIHRoZXJlIGFyZSBubyBz
-b3VyY2UgZmlsZXMgdGhhdCBlbmQgd2l0aCAuZHRiIG9yIC5kdGIuUywgc28gd2UNCj4gPiBjYW4g
-Y2xlYW4tdXAgdGhvc2UgZmlsZXMgZnJvbSB0aGUgdG9wLWxldmVsIE1ha2VmaWxlLg0KPiA+DQo+
-ID4gU2lnbmVkLW9mZi1ieTogTWFzYWhpcm8gWWFtYWRhIDx5YW1hZGEubWFzYWhpcm9Ac29jaW9u
-ZXh0LmNvbT4NCj4gDQo+IEFja2VkLWJ5OiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPg0K
-PiANCj4gDQo+IE9uIGEgKGJhcmVseSkgcmVsYXRlZCBub3RlLCBJJ20gc3RydWdnbGluZyB3aXRo
-IGFub3RoZXIgcHJvYmxlbSBpbiB0aGUNCj4gd2F5IHdlIGhhbmRsZQ0KPiB0aGUgLmR0YiBmaWxl
-cyBpbiBhcm02NCB3aGVuIENPTkZJR19PRl9BTExfRFRCUyBpcyBlbmFibGVkOiB3aGVuIGJ1aWxk
-aW5nDQo+IG9uIGEgbG90IG9mIENQVXMsIHdlIHRyeSB0byBidWlsZCB0aGUgc2FtZSBmaWxlcyBm
-cm9tIGJvdGgNCj4gYXJjaC9hcm02NC9ib290L2R0cy9NYWtlZmlsZQ0KPiBhbmQgYXJjaC9hcm02
-NC9ib290L2R0cy8qL01ha2VmaWxlLCB3aGljaCB0aGVuIHJlc3VsdHMgaW4gYSBmYWlsZWQNCj4g
-YnVpbGQgd2hlbiB3cml0aW5nDQo+IHRoZSB0ZW1wb3JhcnkgZmlsZXMuDQo+IA0KPiBJIGhhdmUg
-Y29tZSB1cCB3aXRoIGEgd29ya2Fyb3VuZCB0aGF0IEkgdXNlIGxvY2FsbHksIGJ1dCBpdCBzZWVt
-ZWQgdG9vIHVnbHkNCj4gdG8NCj4gc3VibWl0IHRoYXQgZm9yIGluY2x1c2lvbi4gTWF5YmUgeW91
-IGNhbiBjb21lIHVwIHdpdGggYSBuaWNlciBhIHNvbHV0aW9uDQo+IGZvcg0KPiB0aGlzIGFzIHdl
-bGw/DQo+IA0KPiAgICAgICBBcm5kDQoNClllYWgsIEkgaGFkIGFsc28gbm90aWNlZCB0aGlzIHJh
-Y2UgcHJvYmxlbSBvbiBwYXJhbGxlbCBidWlsZGluZw0Kd2l0aCBDT05GSUdfT0ZfQUxMX0RUQlMu
-DQoNCkkgd2FzIHBsYW5uaW5nIHRvIGRvIGl0DQp3aGVuIEkgY29tZSB1cCB3aXRoIGEgY2xlYW4g
-aW1wbGVtZW50YXRpb24uDQoNCk9uZSBpZGVhIGlzIHRvIGhhbmRsZSBkdGIteSBhbmQgQ09ORklH
-X09GX0FMTF9EVEJTDQpuYXRpdmVseSBpbiBzY3JpcHRzL01ha2VmaWxlLmJ1aWxkIG9yIHNvbWV3
-aGVyZQ0KYXMgc2NyaXB0cy9NYWtlZmlsZS5kdGJpbnN0IGFscmVhZHkgcmVjb2duaXplcyBkdGIt
-eSBhcyBhIHNwZWNpYWwgdmFyaWFibGUuDQoNCg==
+On Wed, Nov 01 2017 at  5:59:23 pm GMT, Thomas Gleixner <tglx@linutronix.de> wrote:
+> On Wed, 1 Nov 2017, Paul Burton wrote:
+>
+>> Hi Marc,
+>> 
+>> On Wed, Nov 01, 2017 at 12:13:16AM +0000, Marc Zyngier wrote:
+>> > On Tue, Oct 31 2017 at 9:41:43 am GMT, Paul Burton
+>> > <paul.burton@mips.com> wrote:
+>> > > This series continues cleaning & fixing up the MIPS GIC irqchip driver
+>> > > whilst laying groundwork to support multi-cluster systems.
+>> 
+>> <SNIP>
+>> 
+>> > Are those targeting 4.14 or 4.15? It is getting quite late for the
+>> > former, and it doesn't seem to cleanly apply on tip/irq/core (or my
+>> > irqchip-4.15 branch) if that's for the latter (patch 6 shouts at me).
+>> 
+>> Whichever you're happiest with. If you'd like me to rebase them & resubmit
+>> that's fine.
+>> 
+>> I see the conflict with patch 6 atop tip/irq/core - it's because tip/irq/core
+>> is based upon v4.14-rc2 which doesn't have commit a08588ea486a
+>> ("irqchip/mips-gic: Fix shifts to extract register fields") that went into
+>> v4.14-rc3. The correct resolution is to keep the patches version of
+>> things (ie.
+>> delete the block of code).
+>
+> Marc, simply merge current linus into your branch with the reason:
+>
+>       Pick up upstream fixes so dependent patches apply
+
+Fair enough. I've now merged -rc3 in my branch, and applied those
+without a hitch.
+
+Thanks,
+
+	M.
+-- 
+Jazz is not dead, it just smell funny.

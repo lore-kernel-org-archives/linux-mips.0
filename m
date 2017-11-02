@@ -1,16 +1,17 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.154.230]:34218 "EHLO
-        19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993070AbdKAXUcUVRke convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 2 Nov 2017 00:20:32 +0100
-From: James Hogan <james.hogan@mips.com>
-Subject: [PATCH] MIPS: smp-cmp: Fix vpe_id build error
-Date: Wed, 1 Nov 2017 23:20:23 +0000
-Message-ID: <20171101232023.19287-1-james.hogan@mips.com>
+Received: from mail-sn1nam02on0076.outbound.protection.outlook.com ([104.47.36.76]:2752
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23993103AbdKBAgyRPffm (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 2 Nov 2017 01:36:54 +0100
+From: David Daney <david.daney@cavium.com>
+Subject: [PATCH 4/7] MIPS: Octeon: Add Free Pointer Unit (FPA) support.
+Date: Wed,  1 Nov 2017 17:36:03 -0700
+Message-ID: <20171102003606.19913-5-david.daney@cavium.com>
+In-Reply-To: <20171102003606.19913-1-david.daney@cavium.com>
+References: <20171102003606.19913-1-david.daney@cavium.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-Return-Path: <James.Hogan@mips.com>
+Content-Type: text/plain
+Return-Path: <David.Daney@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,46 +21,8 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>
-Message-ID: <20171101232023.Mp5L9C4z33GXVematFgkavJIB4cyzuzEraynwD9sxlk@z>
+To: linux-mips@linux-mips.org, ralf@linux-mips.org, James Hogan <james.hogan@mips.com>, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Cc: linux-kernel@vger.kernel.org, "Steven J. Hill" <steven.hill@cavium.com>, devicetree@vger.kernel.org, Carlos Munoz <cmunoz@cavium.com>, "Steven J . Hill" <Steven.Hill@cavium.com>, David Daney <david.daney@cavium.com>
+Message-ID: <20171102003603.iGjSb-q8ARxZ9qGVTEhaj97MPxrJPPciJvW1vtLhwjo@z>
 
-From: James Hogan <jhogan@kernel.org>
-
-The smp-cmp build has been (further) broken since commit 856fbcee6099
-("MIPS: Store core & VP IDs in GlobalNumber-style variable") in
-v4.14-rc1 like so:
-
-arch/mips/kernel/smp-cmp.c: In function ‘cmp_init_secondary’:
-arch/mips/kernel/smp-cmp.c:53:4: error: ‘struct cpuinfo_mips’ has no member named ‘vpe_id’
-   c->vpe_id = (read_c0_tcbind() >> TCBIND_CURVPE_SHIFT) &
-    ^
-
-Fix by replacing vpe_id with cpu_set_vpe_id().
-
-Fixes: 856fbcee6099 ("MIPS: Store core & VP IDs in GlobalNumber-style variable")
-Signed-off-by: James Hogan <jhogan@kernel.org>
-Reviewed-by: Paul Burton <paul.burton@imgtec.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
----
- arch/mips/kernel/smp-cmp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/kernel/smp-cmp.c b/arch/mips/kernel/smp-cmp.c
-index 415e4d19f897..a2322009cac3 100644
---- a/arch/mips/kernel/smp-cmp.c
-+++ b/arch/mips/kernel/smp-cmp.c
-@@ -50,8 +50,8 @@ static void cmp_init_secondary(void)
- 
- #ifdef CONFIG_MIPS_MT_SMP
- 	if (cpu_has_mipsmt)
--		c->vpe_id = (read_c0_tcbind() >> TCBIND_CURVPE_SHIFT) &
--			TCBIND_CURVPE;
-+		cpu_set_vpe_id(c, (read_c0_tcbind() >> TCBIND_CURVPE_SHIFT) &
-+				  TCBIND_CURVPE);
- #endif
- }
- 
--- 
-2.14.1
+From: Carlos Munoz <cmunoz@cavium.com>

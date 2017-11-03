@@ -1,21 +1,16 @@
-Received: from vps0.lunn.ch ([185.16.172.187]:49238 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23990588AbdKCPsOZwPKt (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 3 Nov 2017 16:48:14 +0100
-Date: Fri, 3 Nov 2017 16:48:11 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH 6/7] netdev: octeon-ethernet: Add Cavium Octeon III
- support.
-Message-ID: <20171103154811.GS24320@lunn.ch>
-References: <20171102003606.19913-1-david.daney@cavium.com>
- <20171102003606.19913-7-david.daney@cavium.com>
- <55d6cf88-7444-42ea-02f1-27efdee2be4b@gmail.com>
- <ee206580-e419-903f-de36-72d5803b1b7b@caviumnetworks.com>
+Received: from 19pmail.ess.barracuda.com ([64.235.150.244]:51843 "EHLO
+        19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23991359AbdKCTEGHQDB8 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 3 Nov 2017 20:04:06 +0100
+Date: Fri, 3 Nov 2017 18:56:20 +0000
+From: James Hogan <james.hogan@mips.com>
+Subject: [GIT PULL] MIPS fixes for 4.14
+Message-ID: <20171103185620.GW15235@jhogan-linux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="0VNbQffo0Gc48lc+"
 Content-Disposition: inline
-In-Reply-To: <ee206580-e419-903f-de36-72d5803b1b7b@caviumnetworks.com>
-Return-Path: <andrew@lunn.ch>
+Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,100 +20,169 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney@caviumnetworks.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>, David Daney <david.daney@cavium.com>, linux-mips@linux-mips.org, ralf@linux-mips.org, James Hogan <james.hogan@mips.com>, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org, "Steven J. Hill" <steven.hill@cavium.com>, devicetree@vger.kernel.org, Carlos Munoz <cmunoz@cavium.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20171103185620.I5DNB3dIQCcUV936IDi4VsAoqxEdFsNfZiSNacge2ok@z>
 
-> >>+static char *mix_port;
-> >>+module_param(mix_port, charp, 0444);
-> >>+MODULE_PARM_DESC(mix_port, "Specifies which ports connect to MIX interfaces.");
-> >
-> >Can you derive this from Device Tree /platform data configuration?
-> >
-> >>+
-> >>+static char *pki_port;
-> >>+module_param(pki_port, charp, 0444);
-> >>+MODULE_PARM_DESC(pki_port, "Specifies which ports connect to the PKI.");
-> >
-> >Likewise
-> 
-> The SoC is flexible in how it is configured.  Technically the device tree
-> should only be used to specify information about the physical configuration
-> of the system that cannot be probed for, and this is about policy rather
-> that physical wiring.  That said, we do take the default configuration from
-> the device tree, but give the option here to override via the module command
-> line.
+--0VNbQffo0Gc48lc+
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-Module parameters are pretty much frowned upon. 
+Hi Linus,
 
-You should really try to remove them all, if possible.
+In Ralf's apparent absence I've collected together some important MIPS
+fixes that haven't made it into 4.14 yet, along with various imgtec.com
+-> mips.com email address changes (imgtec email addresses for those in
+MIPS will stop working very soon).
 
-> >>+/* Registers are accessed via xkphys */
-> >>+#define SSO_BASE			0x1670000000000ull
-> >>+#define SSO_ADDR(node)			(SET_XKPHYS + NODE_OFFSET(node) +      \
-> >>+					 SSO_BASE)
-> >>+#define GRP_OFFSET(grp)			((grp) << 16)
-> >>+#define GRP_ADDR(n, g)			(SSO_ADDR(n) + GRP_OFFSET(g))
-> >>+#define SSO_GRP_AQ_CNT(n, g)		(GRP_ADDR(n, g)		   + 0x20000700)
-> >>+
-> >>+#define MIO_PTP_BASE			0x1070000000000ull
-> >>+#define MIO_PTP_ADDR(node)		(SET_XKPHYS + NODE_OFFSET(node) +      \
-> >>+					 MIO_PTP_BASE)
-> >>+#define MIO_PTP_CLOCK_CFG(node)		(MIO_PTP_ADDR(node)		+ 0xf00)
-> >>+#define MIO_PTP_CLOCK_HI(node)		(MIO_PTP_ADDR(node)		+ 0xf10)
-> >>+#define MIO_PTP_CLOCK_COMP(node)	(MIO_PTP_ADDR(node)		+ 0xf18)
-> >
-> >I am sure this will work great on anything but MIPS64 ;)
-> 
-> Sarcasm duly noted.
-> 
-> That said, by definition it is exactly an OCTEON-III/MIPS64, and can never
-> be anything else.  It is known a priori that the hardware and this driver
-> will never be used anywhere else.
+They've been in linux-next for 1-2 days and undergone the usual MIPS
+automated build, boot & runtime testing over the last day or so without
+any new failures.
 
-Please make sure your Kconfig really enforces this. Generally, we
-suggest allowing the driver to be compiled when COMPILE_TEST is set.
-That gives you better compiler test coverage. But it seems like this
-driver won't compile under such conditions.
+Please do consider pulling.
 
-> >>+static int num_packet_buffers = 768;
-> >>+module_param(num_packet_buffers, int, 0444);
-> >>+MODULE_PARM_DESC(num_packet_buffers,
-> >>+		 "Number of packet buffers to allocate per port.");
-> >
-> >Consider implementing ethtool -g/G for this.
-> 
-> That may be work for a follow-on patch.
+Thanks
+James
 
-Then please remove the module parameter now.
+The following changes since commit 0b07194bb55ed836c2cc7c22e866b87a14681984:
 
-> >>+static int rx_queues = 1;
-> >>+module_param(rx_queues, int, 0444);
-> >>+MODULE_PARM_DESC(rx_queues, "Number of RX threads per port.");
-> >
-> >Same thing, can you consider using an ethtool knob for that?
-> 
-> Also may be work for a follow-on patch.
+  Linux 4.14-rc7 (2017-10-29 13:58:38 -0700)
 
-Ditto
+are available in the git repository at:
 
-> >>+/**
-> >>+ * Reads a 64 bit value from the processor local scratchpad memory.
-> >>+ *
-> >>+ * @param offset byte offset into scratch pad to read
-> >>+ *
-> >>+ * @return value read
-> >>+ */
-> >>+static inline u64 scratch_read64(u64 offset)
-> >>+{
-> >>+	return *(u64 *)((long)SCRATCH_BASE + offset);
-> >>+}
-> >
-> >No barriers needed whatsoever?
-> 
-> Nope.
+  git://git.kernel.org/pub/scm/linux/kernel/git/jhogan/mips.git tags/mips_fixes_4.14
 
-Then it would be good to add a comment about why no barrier is
-needed. Otherwise people are going to ask why there is no barrier,
-submit patches adding barriers, etc.
+for you to fetch changes up to ca208b5f19cb2a298804d0c17ac5a9bf194f0b28:
 
-       Andrew
+  MIPS: Update email address for Marcin Nowakowski (2017-11-02 10:58:43 +0000)
+
+----------------------------------------------------------------
+MIPS fixes for 4.14
+
+A selection of important MIPS fixes for 4.14, and some MAINTAINERS /
+email address updates:
+
+- Update imgtec.com -> mips.com email addresses (this trivially updates
+  comments in quite a few files, as well as MAINTAINERS)
+- Update Pistachio SoC maintainership
+- Fix NI 169445 build (new platform in 4.14)
+- Fix EVA regression (4.14)
+- Fix SMP-CPS build & preemption regressions (4.14)
+- Fix SMP/hotplug deadlock & race (deadlock reintroduced 4.13)
+- Fix ebpf_jit error return (4.13)
+- Fix SMP-CMP build regressions (4.11 and 4.14)
+- Fix bad UASM microMIPS encoding (3.16)
+- Fix CM definitions (3.15)
+
+----------------------------------------------------------------
+Aleksandar Markovic (2):
+      MIPS: Update RINT emulation maintainer email address
+      MIPS: Update Goldfish RTC driver maintainer email address
+
+Gustavo A. R. Silva (1):
+      MIPS: microMIPS: Fix incorrect mask in insn_table_MM
+
+James Hartley (1):
+      MAINTAINERS: Update Pistachio platform maintainers
+
+James Hogan (2):
+      MIPS: generic: Fix NI 169445 its build
+      MIPS: smp-cmp: Fix vpe_id build error
+
+Jason A. Donenfeld (1):
+      MIPS: smp-cmp: Use right include for task_struct
+
+Marcin Nowakowski (1):
+      MIPS: Update email address for Marcin Nowakowski
+
+Matt Redfearn (4):
+      MIPS: Fix exception entry when CONFIG_EVA enabled
+      MIPS: generic: Fix compilation error from include asm/mips-cpc.h
+      MIPS: SMP: Fix deadlock & online race
+      MIPS: CPS: Fix use of current_cpu_data in preemptible code
+
+Paul Burton (2):
+      Update MIPS email addresses
+      MIPS: Fix CM region target definitions
+
+Wei Yongjun (1):
+      MIPS: bpf: Fix a typo in build_one_insn()
+
+ .mailmap                                         |  6 ++++++
+ Documentation/ABI/testing/sysfs-class-remoteproc |  4 ++--
+ MAINTAINERS                                      | 15 +++++++--------
+ arch/mips/generic/Makefile                       |  2 +-
+ arch/mips/generic/Platform                       |  2 +-
+ arch/mips/generic/board-ni169445.its.S           |  2 +-
+ arch/mips/generic/board-sead3.c                  |  2 +-
+ arch/mips/generic/init.c                         |  4 ++--
+ arch/mips/generic/irq.c                          |  2 +-
+ arch/mips/generic/kexec.c                        |  2 +-
+ arch/mips/generic/proc.c                         |  2 +-
+ arch/mips/generic/yamon-dt.c                     |  2 +-
+ arch/mips/include/asm/dsemul.h                   |  2 +-
+ arch/mips/include/asm/maar.h                     |  2 +-
+ arch/mips/include/asm/mach-malta/malta-dtshim.h  |  2 +-
+ arch/mips/include/asm/mach-malta/malta-pm.h      |  2 +-
+ arch/mips/include/asm/machine.h                  |  2 +-
+ arch/mips/include/asm/mips-cm.h                  |  6 +++---
+ arch/mips/include/asm/mips-cpc.h                 |  2 +-
+ arch/mips/include/asm/mips-cps.h                 |  2 +-
+ arch/mips/include/asm/mips-gic.h                 |  2 +-
+ arch/mips/include/asm/msa.h                      |  2 +-
+ arch/mips/include/asm/pm-cps.h                   |  2 +-
+ arch/mips/include/asm/smp-cps.h                  |  2 +-
+ arch/mips/include/asm/stackframe.h               |  8 ++++----
+ arch/mips/include/asm/yamon-dt.h                 |  2 +-
+ arch/mips/kernel/cmpxchg.c                       |  2 +-
+ arch/mips/kernel/cps-vec-ns16550.S               |  2 +-
+ arch/mips/kernel/cps-vec.S                       |  2 +-
+ arch/mips/kernel/elf.c                           |  2 +-
+ arch/mips/kernel/mips-cm.c                       |  2 +-
+ arch/mips/kernel/mips-cpc.c                      |  2 +-
+ arch/mips/kernel/pm-cps.c                        |  2 +-
+ arch/mips/kernel/probes-common.h                 |  2 +-
+ arch/mips/kernel/relocate.c                      |  2 +-
+ arch/mips/kernel/smp-cmp.c                       |  6 +++---
+ arch/mips/kernel/smp-cps.c                       |  4 ++--
+ arch/mips/kernel/smp.c                           | 24 +++++++++++++++++-------
+ arch/mips/mm/sc-debugfs.c                        |  2 +-
+ arch/mips/mm/uasm-micromips.c                    |  2 +-
+ arch/mips/mti-malta/malta-dt.c                   |  2 +-
+ arch/mips/mti-malta/malta-dtshim.c               |  2 +-
+ arch/mips/mti-malta/malta-pm.c                   |  2 +-
+ arch/mips/net/ebpf_jit.c                         |  2 +-
+ arch/mips/pci/pci-generic.c                      |  2 +-
+ arch/mips/tools/generic-board-config.sh          |  2 +-
+ drivers/auxdisplay/img-ascii-lcd.c               |  2 +-
+ drivers/clk/imgtec/clk-boston.c                  |  2 +-
+ drivers/clk/ingenic/cgu.c                        |  2 +-
+ drivers/clk/ingenic/cgu.h                        |  2 +-
+ drivers/clk/ingenic/jz4740-cgu.c                 |  2 +-
+ drivers/clk/ingenic/jz4780-cgu.c                 |  2 +-
+ drivers/cpuidle/cpuidle-cps.c                    |  2 +-
+ drivers/power/reset/piix4-poweroff.c             |  4 ++--
+ 54 files changed, 92 insertions(+), 77 deletions(-)
+
+--0VNbQffo0Gc48lc+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAln8u80ACgkQbAtpk944
+dnqR+A/9HmM/HUfpKppQJC/zka9L5TkOev5je6K5FqFLqCxEXdp06Z1K3twbOAzq
+l0LQOaJVSSsorsh+OLgaCW+itsm01FLFIGUJRe5RztbwBRVa/ne8MMZ1B+qrL3YU
+AolAOlcbuHcu3jUJ5zv9Fs5Ee/dZslXKZcVkcHW8HYz4SDn56s+TBcKJySb29S6g
+sYc7I6FQvJx+3aQ54Zz8Ph8M6wFbL2pBKErBu+m7ndox+pwMTpsg9af3Skb4nrr0
+s90Pf+fwcj4+PIRvC3CIC1n5K/SxKGSGimSHxpWvwiCykJWYxvn7kmS/cxeV09jx
+zPWlUIZ9RiWKAndHNgJ8gJ+26i8YvzqUQgQ/EaK7xrvau9XhEpcjmYOfZl5wfT3B
+fmHfTXEMlxqEFLkPqvrzN/MmcLS5IOOULY/xvEt2GGWW+hdImF6WbTFy5YylvoHv
+uLIBd9V3G2DKa2ZK2behfb0/uT3FHEtyXFUvX2eJru816XAmQyZkoNX1PbcWZSqm
+cwxah3rAGsjeLI9PPSdkSFq6I9CN4/x9wLccXta4+V/rsFN11tPXDZrvNskID7kP
+/xSYUvNgLVF2kHVQD+cgiHuB7FMm0ivYPx2gW1ZZ82FqYV6L4VW0sVVn+vCLfU1N
+R7Wa077ApRNWXgovI/KPl+BuXLqISQ+iDOLkAZZ+psw5vBso4Vc=
+=L0Y6
+-----END PGP SIGNATURE-----
+
+--0VNbQffo0Gc48lc+--

@@ -1,18 +1,20 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.150.244]:54234 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.150.245]:53913 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993379AbdKBNO2LwWwN (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 2 Nov 2017 14:14:28 +0100
-Date: Thu, 2 Nov 2017 13:14:25 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH 4/7] MIPS: Octeon: Add Free Pointer Unit (FPA) support.
-Message-ID: <20171102131425.GO15235@jhogan-linux>
-References: <20171102003606.19913-1-david.daney@cavium.com>
- <20171102003606.19913-5-david.daney@cavium.com>
+        by eddie.linux-mips.org with ESMTP id S23990740AbdKCOPliL2jV convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 3 Nov 2017 15:15:41 +0100
+From: Aleksandar Markovic <Aleksandar.Markovic@mips.com>
+Subject: RE: [PATCH v7 2/5] irqchip/irq-goldfish-pic: Add Goldfish PIC driver
+Date: Fri, 3 Nov 2017 14:10:13 +0000
+Message-ID: <BD3A5F1946F2E540A31AF2CE969BAEEEC19BF3@MIPSMAIL01.mipstec.com>
+References: <1509639716-4787-1-git-send-email-aleksandar.markovic@rt-rk.com>
+         <1509639716-4787-3-git-send-email-aleksandar.markovic@rt-rk.com>,<1509640479.31043.80.camel@perches.com>
+In-Reply-To: <1509640479.31043.80.camel@perches.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20171102003606.19913-5-david.daney@cavium.com>
-Return-Path: <James.Hogan@mips.com>
+Return-Path: <Aleksandar.Markovic@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,33 +24,46 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <david.daney@cavium.com>
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org, "Steven J. Hill" <steven.hill@cavium.com>, devicetree@vger.kernel.org, Carlos Munoz <cmunoz@cavium.com>
-Message-ID: <20171102131425.wW4aNJuOqdQ3G7PKnYLpxkWzSyDKEreLmc2UAG92ZZM@z>
+To: Joe Perches <joe@perches.com>, Aleksandar Markovic <aleksandar.markovic@rt-rk.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
+Cc: Miodrag Dinic <Miodrag.Dinic@mips.com>, Goran Ferenc <Goran.Ferenc@mips.com>, "David S. Miller" <davem@davemloft.net>, Douglas Leung <Douglas.Leung@mips.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, James Hogan <James.Hogan@mips.com>, Jason Cooper <jason@lakedaemon.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Marc Zyngier <marc.zyngier@arm.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Miodrag Dinic <miodrag.dinic@imgtec.com>, Paul Burton <Paul.Burton@mips.com>, Petar Jovanovic <Petar.Jovanovic@mips.com>, Raghu Gandham <Raghu.Gandham@mips.com>, Randy Dunlap <rdunlap@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
+Message-ID: <20171103141013.61cSHN1aL_udCLY1enAJB1VGUS52KyIZw40bjc-6QZI@z>
 
-On Wed, Nov 01, 2017 at 05:36:03PM -0700, David Daney wrote:
-> diff --git a/arch/mips/cavium-octeon/Kconfig b/arch/mips/cavium-octeon/Kconfig
-> index 5c0b56203bae..211ef5b57214 100644
-> --- a/arch/mips/cavium-octeon/Kconfig
-> +++ b/arch/mips/cavium-octeon/Kconfig
-> @@ -86,4 +86,14 @@ config OCTEON_ILM
->  	  To compile this driver as a module, choose M here.  The module
->  	  will be called octeon-ilm
->  
-> +config OCTEON_FPA3
-> +	tristate "Octeon III fpa driver"
-> +	default "n"
+> From: Joe Perches [joe@perches.com]
+> ...
+>On Thu, 2017-11-02 at 17:21 +0100, Aleksandar Markovic wrote:
+> ...
+>
+> > Signed-off-by: Miodrag Dinic <miodrag.dinic@mips.com>
+> > Signed-off-by: Goran Ferenc <goran.ferenc@mips.com>
+> > Signed-off-by: Aleksandar Markovic <aleksandar.markovic@mips.com>
+> > wq
+> 
+> vi much?
+> 
 
-n is the default default so I think this line is redundant.
+:)
 
-> +	depends on CPU_CAVIUM_OCTEON
-> +	help
-> +	  This option enables a Octeon III driver for the Free Pool Unit (FPA).
-> +	  The FPA is a hardware unit that manages pools of pointers to free
-> +	  L2/DRAM memory. This driver provides an interface to reserve,
-> +	  initialize, and fill fpa pools.
-> +
->  endif # CAVIUM_OCTEON_SOC
+> > +/*
+> > + * Driver for MIPS Goldfish Programmable Interrupt Controller.
+> > + *
+> > + * Author: Miodrag Dinic <miodrag.dinic@mips.com>
+> > + *
+> > + * This program is free software; you can redistribute       it and/or modify it
+> > + * under  the terms of       the GNU General  Public License as published by the
+> > + * Free Software Foundation;  either version 2 of the  License, or (at your
+> > + * option) any later version.
+> > + */
+> 
+> Odd mix of spaces and tabs
+> 
 
-Cheers
-James
+Will be fixed in v8.
+
+> It'd be good to add a #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> before any #include so the pr_<level> output is prefixed appropriately.
+
+Error and info messages will be completely revised in v8.
+
+Thanks for the review!
+
+Aleksandar

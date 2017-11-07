@@ -1,17 +1,19 @@
-Received: from mail.kernel.org ([198.145.29.99]:56786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23990593AbdKGODMx1si2 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 7 Nov 2017 15:03:12 +0100
+Received: from mail-io0-x233.google.com ([IPv6:2607:f8b0:4001:c06::233]:49199
+        "EHLO mail-io0-x233.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992188AbdKGPV1XIiKo (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 7 Nov 2017 16:21:27 +0100
+Received: by mail-io0-x233.google.com with SMTP id n137so2483078iod.6
+        for <linux-mips@linux-mips.org>; Tue, 07 Nov 2017 07:21:27 -0800 (PST)
 MIME-Version: 1.0
 In-Reply-To: <CAK8P3a3QKkGv6eSjX7wH6LpOY0-1XUPFoX0ntog5-ZSHPab6iA@mail.gmail.com>
 References: <5a0159b6.08bc500a.ebe4b.25c6@mx.google.com> <CAK8P3a3QKkGv6eSjX7wH6LpOY0-1XUPFoX0ntog5-ZSHPab6iA@mail.gmail.com>
-From: Rob Herring <robh@kernel.org>
-Date: Tue, 7 Nov 2017 08:02:47 -0600
-Message-ID: <CAL_JsqJsXzgUvQrBXGQxuOrb-QUjOOiSyqhpF-V9NeaKG4TyrA@mail.gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 7 Nov 2017 16:21:19 +0100
+Message-ID: <CACRpkdZLggJA_qcRSJv4tndHDU4SG6HhP1U8uJpiKn=gBpAneA@mail.gmail.com>
 Subject: Re: next/master build: 214 builds: 26 failed, 188 passed, 28 errors,
  6333 warnings (next-20171107)
 Content-Type: text/plain; charset="UTF-8"
-Return-Path: <robh@kernel.org>
+Return-Path: <linus.walleij@linaro.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,26 +24,24 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: "kernelci.org bot" <bot@kernelci.org>, Kernel Build Reports Mailman List <kernel-build-reports@lists.linaro.org>, "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>, Ralf Baechle <ralf@linux-mips.org>, David Daney <david.daney@cavium.com>, Linus Walleij <linus.walleij@linaro.org>, Masami Hiramatsu <mhiramat@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, DTML <devicetree@vger.kernel.org>
-Message-ID: <20171107140247.TR8LhlF0A_CTCI911TjfkrIajOef51Q9xPLvRHhTgbc@z>
+Cc: "kernelci.org bot" <bot@kernelci.org>, Kernel Build Reports Mailman List <kernel-build-reports@lists.linaro.org>, "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>, Ralf Baechle <ralf@linux-mips.org>, David Daney <david.daney@cavium.com>, Masami Hiramatsu <mhiramat@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, DTML <devicetree@vger.kernel.org>
+Message-ID: <20171107152119.Fjh8hZO_lvV5vOBpp1laOWnGtSf8eeoRjpFCy-3k-o4@z>
 
-On Tue, Nov 7, 2017 at 6:15 AM, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Tue, Nov 7, 2017 at 7:59 AM, kernelci.org bot <bot@kernelci.org> wrote:
+On Tue, Nov 7, 2017 at 1:15 PM, Arnd Bergmann <arnd@arndb.de> wrote:
 
->> 12 arch/arm/boot/dts/spear1340-evb.dtb: Warning (dmas_property): Property 'dmas', cell 4 is not a phandle reference in /ahb/apb/serial@b4100000
->> 12 arch/arm/boot/dts/spear1340-evb.dtb: Warning (dmas_property): Missing property '#dma-cells' in node /interrupt-controller@ec801000 or bad phandle (referred from /ahb/apb/serial@b4100000:dmas[4])
->> 12 arch/arm/boot/dts/spear1310-evb.dtb: Warning (gpios_property): Property 'cs-gpios', cell 6 is not a phandle reference in /ahb/apb/spi@e0100000
->> 12 arch/arm/boot/dts/spear1310-evb.dtb: Warning (gpios_property): Missing property '#gpio-cells' in node /interrupt-controller@ec801000 or bad phandle (referred from /ahb/apb/spi@e0100000:cs-gpios[6])
-> ...
+>> 2 arch/arm/mach-footbridge/dc21285.c:145:2: error: expected ';' before 'else'
 >
-> endless stream of new dtc warnings, mostly valid. I have started
-> fixing them but at some point
-> gave up. Looking for help here.
+> A harmless rework that Linus Walleij did apparently uncovered an
+> ancient bug. I'm
+> waiting for Linus to suggest a fix.
 
-Sorry, I intended to have these show up early in the cycle to give
-time to fix, but between -next being sporadic and kernelci needing a
-change to report dtc warnings it all landed late. It's really only
-50-100 unique errors. Things just explode since everything is an
-include file.
+In footbridge? Oh my. I just sent a fix for an ancient bug in the
+mach-sa1100 simpad.c
+boardfile. Isn't that what you're referring to?
 
-Rob
+(I intended to CC you but git send-email doesn't pick up Reported-by..
+I'll forward.)
+
+
+Yours,
+Linus Walleij

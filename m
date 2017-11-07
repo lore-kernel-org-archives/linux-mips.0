@@ -1,20 +1,15 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.154.230]:40096 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.154.231]:59336 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992309AbdKGSaKgA3lM (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 7 Nov 2017 19:30:10 +0100
-Date: Tue, 7 Nov 2017 18:29:49 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH v2 03/12] MIPS: Allow __cpu_number_map to be larger than
- NR_CPUS
-Message-ID: <20171107182948.GJ15260@jhogan-linux>
-References: <1506620053-2557-1-git-send-email-steven.hill@cavium.com>
- <1506620053-2557-4-git-send-email-steven.hill@cavium.com>
+        by eddie.linux-mips.org with ESMTP id S23992312AbdKGTLBI4tmM (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 7 Nov 2017 20:11:01 +0100
+Date: Tue, 7 Nov 2017 19:09:20 +0000
+From: "Maciej W. Rozycki" <macro@mips.com>
+Subject: [PATCH] MIPS: Fix an n32 core file generation regset support
+ regression
+Message-ID: <alpine.DEB.2.00.1710272036270.3886@tp.orcam.me.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="/GPgYEyhnw15BExa"
-Content-Disposition: inline
-In-Reply-To: <1506620053-2557-4-git-send-email-steven.hill@cavium.com>
-Return-Path: <James.Hogan@mips.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,68 +19,80 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Steven J. Hill" <steven.hill@cavium.com>
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org
-Message-ID: <20171107182949.aRQcGburrHYCXKUSVK7pRsogcDeVllnm8TdRaY7T2cg@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Djordje Todorovic <djordje.todorovic@rt-rk.com>, James Hogan <james.hogan@mips.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Message-ID: <20171107190920.gx6Ezjvr216mktb0oYm5kSUpBfabSvv_Su6esY_Fllc@z>
 
---/GPgYEyhnw15BExa
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fix a commit 7aeb753b5353 ("MIPS: Implement task_user_regset_view.") 
+regression, then activated by commit 6a9c001b7ec3 ("MIPS: Switch ELF 
+core dumper to use regsets.)", that caused n32 processes to dump o32 
+core files by failing to set the EF_MIPS_ABI2 flag in the ELF core file 
+header's `e_flags' member:
 
-Hi,
+$ file tls-core
+tls-core: ELF 32-bit MSB executable, MIPS, N32 MIPS64 rel2 version 1 (SYSV), [...]
+$ ./tls-core
+Aborted (core dumped)
+$ file core
+core: ELF 32-bit MSB core file MIPS, MIPS-I version 1 (SYSV), SVR4-style
+$ 
 
-On Thu, Sep 28, 2017 at 12:34:04PM -0500, Steven J. Hill wrote:
-> @@ -2725,6 +2726,14 @@ config NR_CPUS
->  config MIPS_PERF_SHARED_TC_COUNTERS
->  	bool
-> =20
-> +config MIPS_NR_CPU_NR_MAP_1024
-> +	bool
-> +
-> +config MIPS_NR_CPU_NR_MAP
-> +	int
+Previously the flag was set as the result of a:
 
-I think this needs:
-	depends on SMP
+#define ELF_CORE_EFLAGS EF_MIPS_ABI2
 
-Otherwise you get errors like this on UP defconfigs:
-=2Econfig:144:warning: symbol value '' invalid for MIPS_NR_CPU_NR_MAP
+statement placed in arch/mips/kernel/binfmt_elfn32.c, however in the 
+regset case, i.e. when CORE_DUMP_USE_REGSET is set, ELF_CORE_EFLAGS is 
+no longer used by `fill_note_info' in fs/binfmt_elf.c, and instead the 
+`->e_flags' member of the regset view chosen is.  We have the views 
+defined in arch/mips/kernel/ptrace.c, however only an o32 and an n64 
+one, and the latter is used for n32 as well.  Consequently an o32 core 
+file is incorrectly dumped from n32 processes (the ELF32 vs ELF64 class 
+is chosen elsewhere, and the 32-bit one is correctly selected for n32).
 
-The use in smp.h looks safe since asm/smp.h is only included if
-CONFIG_SMP.
+Correct the issue then by defining an n32 regset view and using it as 
+appropriate.  Issue discovered in GDB testing.
 
-I'll squash the fix in.
+Cc: stable@vger.kernel.org # 3.13+
+Fixes: 7aeb753b5353 ("MIPS: Implement task_user_regset_view.")
+Signed-off-by: Maciej W. Rozycki <macro@mips.com>
+---
+ arch/mips/kernel/ptrace.c |   17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-Cheers
-James
-
-> +	default 1024 if MIPS_NR_CPU_NR_MAP_1024
-> +	default NR_CPUS if !MIPS_NR_CPU_NR_MAP_1024
-> +
->  #
->  # Timer Interrupt Frequency Configuration
->  #
-
---/GPgYEyhnw15BExa
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAloB+5wACgkQbAtpk944
-dnrwOA//d84zIjkQJDdB/bcosVsZSjYPSDK5oqqlkmux6aAq/G8VcjBR6ripNIrQ
-3qwtYjSb3GJ9cKHCiEBBl7Lnw4OyH3n8MnI5HQ2LBw0BljN5DYI8zRDGhx28lvdM
-WwqV1p3uKkGuMwEqOsa1GcAOIu91BSctkiR8djWkis/QUgJosL4qdw9a6ffqT4hk
-Rzm9gV14HrYjQGcOB0Z80+F0HXDp1/nXVDf4m99WnAgXb4+/Gd6wbbZ4kkeDAuJA
-oQn/fWH3V5XqyF7thTdCi0vi4UU0ODcBqjzJ1AQq0jVEt7wPgNkAWj3wZJiASEjq
-T8vEa08nmNZ9wuwmPJs92nw9UKCDaLXfLMNAuihw9ZnuzwqgpmWW13GAOrBAuNbm
-kV1pIXujlphja6z8XUDR3A8Z9i1MwpGy72NGW4LC+6CEO3XepyQG93i3qPt15nBC
-Er3pq53CDA7EtzDk1nTplwsQONUmD3eCR6w3fK0sJA8lkKP6BEheZsosALevvtz5
-FuV1uT9hI4YxXzyJ/6XW/dG2vt4zWsI6BZ/rFWt79+87hBv9kG/giBrdI2xUAufY
-Kv8LfrDNzCzckMh3RL5vtJv/FF0B4GniLOZWJQJQn7ddCZvsh7T3fJjxswMDMmtH
-6AWYao9QwWeRzffWqlFd/GWC6anq06eM17wnG+48jdWSedJelkQ=
-=5JcV
------END PGP SIGNATURE-----
-
---/GPgYEyhnw15BExa--
+linux-mips-regset-view-n32-e-flags-abi2-init.diff
+Index: linux-sfr/arch/mips/kernel/ptrace.c
+===================================================================
+--- linux-sfr.orig/arch/mips/kernel/ptrace.c	2017-10-27 04:55:34.000000000 +0100
++++ linux-sfr/arch/mips/kernel/ptrace.c	2017-10-27 20:07:14.933716000 +0100
+@@ -618,6 +618,19 @@ static const struct user_regset_view use
+ 	.n		= ARRAY_SIZE(mips64_regsets),
+ };
+ 
++#ifdef CONFIG_MIPS32_N32
++
++static const struct user_regset_view user_mipsn32_view = {
++	.name		= "mipsn32",
++	.e_flags	= EF_MIPS_ABI2,
++	.e_machine	= ELF_ARCH,
++	.ei_osabi	= ELF_OSABI,
++	.regsets	= mips64_regsets,
++	.n		= ARRAY_SIZE(mips64_regsets),
++};
++
++#endif /* CONFIG_MIPS32_N32 */
++
+ #endif /* CONFIG_64BIT */
+ 
+ const struct user_regset_view *task_user_regset_view(struct task_struct *task)
+@@ -629,6 +642,10 @@ const struct user_regset_view *task_user
+ 	if (test_tsk_thread_flag(task, TIF_32BIT_REGS))
+ 		return &user_mips_view;
+ #endif
++#ifdef CONFIG_MIPS32_N32
++	if (test_tsk_thread_flag(task, TIF_32BIT_ADDR))
++		return &user_mipsn32_view;
++#endif
+ 	return &user_mips64_view;
+ #endif
+ }

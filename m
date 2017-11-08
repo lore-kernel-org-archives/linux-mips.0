@@ -1,17 +1,18 @@
-Received: from mail.kernel.org ([198.145.29.99]:43188 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992312AbdKHQqevuPnc (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 8 Nov 2017 17:46:34 +0100
+Received: from 19pmail.ess.barracuda.com ([64.235.150.244]:33625 "EHLO
+        19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993910AbdKHWIin3LIr (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 8 Nov 2017 23:08:38 +0100
+Date: Wed, 8 Nov 2017 22:03:22 +0000
+From: James Hogan <james.hogan@mips.com>
+Subject: Re: [PATCH 0/3] MIPS: AR7: assorted fixes
+Message-ID: <20171108220322.GO15260@jhogan-linux>
+References: <20171029152721.6770-1-jonas.gorski@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1509591085-23940-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1509591085-23940-1-git-send-email-yamada.masahiro@socionext.com>
-From: Rob Herring <robh@kernel.org>
-Date: Wed, 8 Nov 2017 10:46:10 -0600
-Message-ID: <CAL_JsqKLbDWcwcgotnQAO2FeFp55SZRd0z9r2Dr0ZsK0LKZMLw@mail.gmail.com>
-Subject: Re: [PATCH v2] kbuild: clean up *.dtb and *.dtb.S patterns from
- top-level Makefile
-Content-Type: text/plain; charset="UTF-8"
-Return-Path: <robh@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="8CNmCRe8Sh4keFKJ"
+Content-Disposition: inline
+In-Reply-To: <20171029152721.6770-1-jonas.gorski@gmail.com>
+Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,79 +22,51 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, Arnd Bergmann <arnd@arndb.de>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, Russell King <linux@armlinux.org.uk>, Ralf Baechle <ralf@linux-mips.org>, Pantelis Antoniou <pantelis.antoniou@gmail.com>, Mark Rutland <mark.rutland@arm.com>, Frank Rowand <frowand.list@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Message-ID: <20171108164610.AFKyrvhHObGql0fF2f0zw6INgVbBmdhMgYQJHgk6DRg@z>
+To: Jonas Gorski <jonas.gorski@gmail.com>
+Cc: linux-mips@linux-mips.org, linux-serial@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Yoshihiro YUNOMAE <yoshihiro.yunomae.ez@hitachi.com>, Florian Fainelli <f.fainelli@gmail.com>, Nicolas Schichan <nschichan@freebox.fr>
+Message-ID: <20171108220322.qb35bTJvqBeCHa8GqCZKZA0RKnUKOPJYm6cvGsWzJwk@z>
 
-On Wed, Nov 1, 2017 at 9:51 PM, Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
-> We need to add "clean-files" in Makfiles to clean up DT blobs, but we
-> often miss to do so.
->
-> Since there are no source files that end with .dtb or .dtb.S, so we
-> can clean-up those files from the top-level Makefile.
->
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
->
-> Changes in v2:
->   - Remove clean-files
+--8CNmCRe8Sh4keFKJ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Applied this and the 2 prerequisite patches.
+On Sun, Oct 29, 2017 at 04:27:18PM +0100, Jonas Gorski wrote:
+> This patchset fixes a few issues found in AR7 that accumulated in the
+> past few years. One was fixed for ages in OpenWrt/LEDE and never made
+> it upstream, the others weren't noticed until now.
+>=20
+> Jonas Gorski (2):
+>   MIPS: AR7: defer registration of GPIO
+>   MIPS: AR7: ensure the port type's FCR value is used
+>=20
+> Oswald Buddenhagen (1):
+>   MIPS: AR7: ensure that serial ports are properly set up
 
->
->  Documentation/kbuild/makefiles.txt               | 1 -
->  Makefile                                         | 2 +-
->  arch/arc/boot/dts/Makefile                       | 1 -
->  arch/arm/boot/dts/Makefile                       | 1 -
->  arch/arm64/boot/dts/actions/Makefile             | 1 -
->  arch/arm64/boot/dts/al/Makefile                  | 1 -
->  arch/arm64/boot/dts/allwinner/Makefile           | 1 -
->  arch/arm64/boot/dts/altera/Makefile              | 1 -
->  arch/arm64/boot/dts/amd/Makefile                 | 1 -
->  arch/arm64/boot/dts/amlogic/Makefile             | 1 -
->  arch/arm64/boot/dts/apm/Makefile                 | 1 -
->  arch/arm64/boot/dts/arm/Makefile                 | 1 -
->  arch/arm64/boot/dts/broadcom/Makefile            | 1 -
->  arch/arm64/boot/dts/broadcom/northstar2/Makefile | 1 -
->  arch/arm64/boot/dts/broadcom/stingray/Makefile   | 1 -
->  arch/arm64/boot/dts/cavium/Makefile              | 1 -
->  arch/arm64/boot/dts/exynos/Makefile              | 1 -
->  arch/arm64/boot/dts/freescale/Makefile           | 1 -
->  arch/arm64/boot/dts/hisilicon/Makefile           | 1 -
->  arch/arm64/boot/dts/lg/Makefile                  | 1 -
->  arch/arm64/boot/dts/marvell/Makefile             | 1 -
->  arch/arm64/boot/dts/mediatek/Makefile            | 1 -
->  arch/arm64/boot/dts/nvidia/Makefile              | 1 -
->  arch/arm64/boot/dts/qcom/Makefile                | 1 -
->  arch/arm64/boot/dts/realtek/Makefile             | 1 -
->  arch/arm64/boot/dts/renesas/Makefile             | 1 -
->  arch/arm64/boot/dts/rockchip/Makefile            | 1 -
->  arch/arm64/boot/dts/socionext/Makefile           | 1 -
->  arch/arm64/boot/dts/sprd/Makefile                | 1 -
->  arch/arm64/boot/dts/xilinx/Makefile              | 1 -
->  arch/arm64/boot/dts/zte/Makefile                 | 1 -
->  arch/c6x/boot/dts/Makefile                       | 2 --
->  arch/cris/boot/dts/Makefile                      | 2 --
->  arch/h8300/boot/dts/Makefile                     | 1 -
->  arch/metag/boot/dts/Makefile                     | 1 -
->  arch/microblaze/boot/Makefile                    | 2 +-
->  arch/mips/boot/dts/Makefile                      | 1 -
->  arch/mips/boot/dts/brcm/Makefile                 | 1 -
->  arch/mips/boot/dts/cavium-octeon/Makefile        | 1 -
->  arch/mips/boot/dts/img/Makefile                  | 1 -
->  arch/mips/boot/dts/ingenic/Makefile              | 1 -
->  arch/mips/boot/dts/lantiq/Makefile               | 1 -
->  arch/mips/boot/dts/mti/Makefile                  | 1 -
->  arch/mips/boot/dts/netlogic/Makefile             | 1 -
->  arch/mips/boot/dts/ni/Makefile                   | 1 -
->  arch/mips/boot/dts/pic32/Makefile                | 1 -
->  arch/mips/boot/dts/qca/Makefile                  | 1 -
->  arch/mips/boot/dts/ralink/Makefile               | 1 -
->  arch/mips/boot/dts/xilfpga/Makefile              | 1 -
->  arch/nios2/boot/Makefile                         | 2 --
->  arch/openrisc/boot/dts/Makefile                  | 2 --
->  arch/powerpc/boot/Makefile                       | 2 +-
->  arch/sh/boot/dts/Makefile                        | 2 --
->  arch/xtensa/boot/dts/Makefile                    | 2 --
->  54 files changed, 3 insertions(+), 60 deletions(-)
+Thanks. Patches 1 + 2 applied for 4.14.
+
+Cheers
+James
+
+--8CNmCRe8Sh4keFKJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAloDfyIACgkQbAtpk944
+dnpRvg/8DkL56Q6m1iZzJwFPkCJlh0eWskY1Mi6b3msAGViiB8YrP+wSxoscSv91
+MDD0LNPEuu3azN5UCR1FAfSALPml3Mc7mU0+l4mBtpQcIonrQLIHb7p06qMWPLul
+BU6/Lii9B+TBvTv+45W4IrwtRPX8Jik+FI1kjbO9HtugNgfTrIBNHZNiC9pM2MhM
+E6ZGRd+RsD3/O+hTMrtu9PbD8j8LT0wZJseT8ythEup53sFG/XTEts+DfxEHnvoM
+ueqPYG05R36ufDsotqOOGZI1EAREsc/33+qR8H6YOmPx4zAj1wIl+ILtM9Nm9WbJ
+CeIaA9OwTUej8hayMhmfH5i7bRFgZt2Nx5RYjvL14sn9KGLAEZJDh3v+IXi7zSpe
+hqOnlL69u7bpoFnET5LYm3sRUDGofL/5lg4hRVtcou8tOhdQgxsRhC9FHDC5aKwd
+1xS9fI5orU5dEvmKbcjeyZtn0u+TfY5oZdqRUI2qtHMqMf6SanipO+zcZvNwDmcS
+KTxrGKf2VIzvm9rLFH/VY/4vIgKhSMFF1JGljbIW/sPJ6Qr4PHdAxStfJY8KiIOa
+P2gGxHRawOrLhAmfpXoWxqZ+eFhmn19KH6Cl9154zQORsc9DxYw75Pvh+kpnOGzB
+c8NPvJp/0g4ZJvdKfMGGz8j+5LG5tv/QBotyw0lk+3Aj8mDCO6M=
+=p972
+-----END PGP SIGNATURE-----
+
+--8CNmCRe8Sh4keFKJ--

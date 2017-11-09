@@ -1,18 +1,17 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.154.230]:49379 "EHLO
-        19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990399AbdKHXPtPduHY (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Nov 2017 00:15:49 +0100
-Date: Wed, 8 Nov 2017 23:15:27 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH] MIPS: page.h: define virt_to_pfn()
-Message-ID: <20171108231527.GQ15260@jhogan-linux>
-References: <20170309211149.8339-1-f.fainelli@gmail.com>
+Received: from mail-by2nam01on0089.outbound.protection.outlook.com ([104.47.34.89]:17152
+        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23990411AbdKIAwRHeWjQ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 9 Nov 2017 01:52:17 +0100
+From: David Daney <david.daney@cavium.com>
+Subject: [PATCH v2 4/8] MIPS: Octeon: Add Free Pointer Unit (FPA) support.
+Date: Wed,  8 Nov 2017 16:51:22 -0800
+Message-ID: <20171109005126.21341-5-david.daney@cavium.com>
+In-Reply-To: <20171109005126.21341-1-david.daney@cavium.com>
+References: <20171109005126.21341-1-david.daney@cavium.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="DBUa/BSa4z6QPQv1"
-Content-Disposition: inline
-In-Reply-To: <20170309211149.8339-1-f.fainelli@gmail.com>
-Return-Path: <James.Hogan@mips.com>
+Content-Type: text/plain
+Return-Path: <David.Daney@cavium.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,72 +21,8 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, paul.burton@mips.com, macro@linux-mips.org
-Message-ID: <20171108231527.hiyIidbV1Unl0AGUNcXcTfDencMH4JPfk4KX-ShPkqE@z>
+To: linux-mips@linux-mips.org, ralf@linux-mips.org, James Hogan <james.hogan@mips.com>, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, devel@driverdev.osuosl.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org, "Steven J. Hill" <steven.hill@cavium.com>, devicetree@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, Carlos Munoz <cmunoz@cavium.com>, "Steven J . Hill" <Steven.Hill@cavium.com>, David Daney <david.daney@cavium.com>
+Message-ID: <20171109005122.kDO--AnmM9P23obhNDWAsQlylY7tIP7z0ltbFUulBLE@z>
 
---DBUa/BSa4z6QPQv1
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Florian,
-
-On Thu, Mar 09, 2017 at 01:11:49PM -0800, Florian Fainelli wrote:
-> Based on the existing definition of virt_to_page() which already does a
-> PFN_DOWN(vir_to_phys(kaddr)).
-
-I was just wondering if there was a particular motivation for this
-change?
-
-Cheers
-James
-
->=20
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  arch/mips/include/asm/page.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
-> index 5f987598054f..ad461216b5a1 100644
-> --- a/arch/mips/include/asm/page.h
-> +++ b/arch/mips/include/asm/page.h
-> @@ -240,8 +240,8 @@ static inline int pfn_valid(unsigned long pfn)
-> =20
->  #endif
-> =20
-> -#define virt_to_page(kaddr)	pfn_to_page(PFN_DOWN(virt_to_phys((void *)  =
-   \
-> -								  (kaddr))))
-> +#define virt_to_pfn(kaddr)   	PFN_DOWN(virt_to_phys((void *)(kaddr)))
-> +#define virt_to_page(kaddr)	pfn_to_page(virt_to_pfn(kaddr))
-> =20
->  extern int __virt_addr_valid(const volatile void *kaddr);
->  #define virt_addr_valid(kaddr)						\
-> --=20
-> 2.9.3
->=20
-
---DBUa/BSa4z6QPQv1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAloDkAgACgkQbAtpk944
-dnoFwxAAu8k0IGNqPcaZOA5QKetgbTRwiGeL66VGU0KlG7gcU5KFFvslqQYFog52
-WR/wptXdR2Pc5AVfCvBbGUiOe+8KMFvpCY6ezHIAzMNeOCbB7OSKiZ6xILuZMJiS
-8x2sActrUi1TkhXrdMfGG2yMEv3hZcGrY2KgdyQxsH5Khg/sMs3ru11YHBghuG6Y
-mOyaEj+yzGKlanQ1jDd1z1L6AETutrjE0/Qdsrf5T9BR2yc8lxQiAf66PXKXmT0N
-qJTSSQme8Q1c8pd3gZNjFYZkWoLG64jcAfXQiZNqm1hg0BWxOyRlrAq/EiZ0qHU3
-HSUkpAEiyE7kdDCeJtnZWkD9kMpy6D/1zbfjvtvQFX6lk8y47NsmB3K1HeKZIi0J
-AkopbYtW+XmW0A6kkaitB0tmJZLq/62qUv2n10CctznU7wCUATfCRqalS8ErSFO3
-6z25z8wtZJBCmutQjgZy6+vYeWdp60SKZFWHXF/wDhUec0h8n6zG4gc4+mYgwSDG
-MaEkDesVOJMgdLzJDyV4ytJQzxu3JF2maDhXsE3yUtdl2lgNPRz7yn/F0LiRwpn/
-LI3B+2jdUP8yJU2DYwqJQYEmUlXZ5Gmvx1ZBqLZh+W6n/VTNR57OAycO3mY+vWzB
-YP4s7j/ETqK5rN06lVWcLU84Bz7qFO8DQXUSPr2J6wTQKbp1wz4=
-=SfUn
------END PGP SIGNATURE-----
-
---DBUa/BSa4z6QPQv1--
+From: Carlos Munoz <cmunoz@cavium.com>

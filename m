@@ -1,16 +1,18 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.150.244]:36420 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.154.231]:39419 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990593AbdKILD3os8sx (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Nov 2017 12:03:29 +0100
-From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH 2/2] irqchip: mips-gic: Print warning if inherited GIC base is used
-Date: Thu, 9 Nov 2017 11:02:45 +0000
-Message-ID: <1510225365-2584-2-git-send-email-matt.redfearn@mips.com>
-In-Reply-To: <1510225365-2584-1-git-send-email-matt.redfearn@mips.com>
-References: <1510225365-2584-1-git-send-email-matt.redfearn@mips.com>
+        by eddie.linux-mips.org with ESMTP id S23990757AbdKIMyvdsdBH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Nov 2017 13:54:51 +0100
+Date: Thu, 9 Nov 2017 12:54:32 +0000
+From: James Hogan <james.hogan@mips.com>
+Subject: Re: mips: use setup_timer() helper.
+Message-ID: <20171109125432.GT15260@jhogan-linux>
+References: <1506080615-6137-1-git-send-email-allen.lkml@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@mips.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="kLVKJMuKEUFaIs8+"
+Content-Disposition: inline
+In-Reply-To: <1506080615-6137-1-git-send-email-allen.lkml@gmail.com>
+Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,46 +22,64 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Marc Zyngier <marc.zyngier@arm.com>, Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, Jason Cooper <jason@lakedaemon.net>, linux-kernel@vger.kernel.org
-Message-ID: <20171109110245.4HK5f2ecszTXqUMJa2vIMt2qz-f_Bk__T7IdtzhZ298@z>
+To: Allen Pais <allen.lkml@gmail.com>
+Cc: ralf@linux-mips.org, linux-mips@linux-mips.org
+Message-ID: <20171109125432.T9E9rxqaesdSdub7RqrVeDD-IhqV8ujad9ZdWJ9e78I@z>
 
-If the physical address of the GIC resource cannot be read from device
-tree, then the code falls back to reading it from the gcr_gic_base
-register. Hopefully this has been set to a sane value by the bootloader
-or some platform code, but is defined by the hardware manual to have
-"undefined" reset state. Using it as the address at which the GIC will
-be mapped into physical memory space can therefore be risky if it has
-not been initialised, since it may result in the GIC being mapped to an
-effectively random address anywhere in physical memory, where it might
-conflict with peripherals or RAM and lead to weird crashes.
+--kLVKJMuKEUFaIs8+
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Since a "sane value" is very platform specific because it is particular
-to the platform's memory map, it is difficult to test for. At the very
-least, a warning message should be printed in the case that we trust the
-inherited value.
+On Fri, Sep 22, 2017 at 05:13:35PM +0530, Allen Pais wrote:
+> Use setup_timer function instead of initializing timer with the
+>    function and data fields.
+>=20
+> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 
-Reported-by: Amit Kama <amit.kama@satixfy.com>
-Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
-Reviewed-by: Paul Burton <paul.burton@mips.com>
+Thanks, applied for 4.15.
 
----
+Cheers
+James
 
- drivers/irqchip/irq-mips-gic.c | 2 ++
- 1 file changed, 2 insertions(+)
+> ---
+>  arch/mips/lasat/picvue_proc.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>=20
+> diff --git a/arch/mips/lasat/picvue_proc.c b/arch/mips/lasat/picvue_proc.c
+> index dd292dc..a8103f6 100644
+> --- a/arch/mips/lasat/picvue_proc.c
+> +++ b/arch/mips/lasat/picvue_proc.c
+> @@ -197,8 +197,7 @@ static int __init pvc_proc_init(void)
+>  	if (proc_entry =3D=3D NULL)
+>  		goto error;
+> =20
+> -	init_timer(&timer);
+> -	timer.function =3D pvc_proc_timerfunc;
+> +	setup_timer(&timer, pvc_proc_timerfunc, 0UL);
+> =20
+>  	return 0;
+>  error:
 
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index 9b768899f07b..ef92a4d2038e 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -701,6 +701,8 @@ static int __init gic_of_init(struct device_node *node,
- 			gic_base = read_gcr_gic_base() &
- 				~CM_GCR_GIC_BASE_GICEN;
- 			gic_len = 0x20000;
-+			pr_warn("Using inherited base address %pa\n",
-+				&gic_base);
- 		} else {
- 			pr_err("Failed to get memory range\n");
- 			return -ENODEV;
--- 
-2.7.4
+--kLVKJMuKEUFaIs8+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAloEUAEACgkQbAtpk944
+dnqhzBAAgrgHZe0Kdhinq8tOHGeUut9cQrPJVm9Mb5qFtz9coJxlL2CzW/o7JSWI
+bQO+hyvJ2xGPWrnhrimh1J3VPQmaTVObQnB3+q/p0FNnD1to0HvhHCQEIMi30ehJ
+x27C1o7G3Qc9bGZacjjXvl6ot7TkC4x+PYymiAeSZmylDWL5GMz0Yy/APRgemus0
+0Nx86H4uJMeyJ7aVBJLj8ruPhxRdpwS+f8vvMJSC4CEZ8M2Sdtyrdu5HOLx2+VMj
+Sc8MEsJmcR9nlv6UyODf8r19K/Ts56qtbSihE5tos+5n7KQo3pKs4Sn8g1QWGfUi
+0zPRUBJVAj347K8jjkd0nlg3T1B7be386DFRQvvEpxDTLkzOymyHLu/fStfXORFN
+hGPvuf7mgviTO1DsEfKf5d5gCGkxEvrSln76kUvn2QjIq4mOU/azBO6HgYM0zi5J
+uUAf80u3eNsMbZaoVGICZiOgAx1XOhPltf+6lee436lOc0nZeArh9qCfwI13ryAz
+UDjbOVIjKdzqvWRJuEgNkks0ciisMq+oVb4kjOeMSSe1MgFTy8HdbweXwplSAmn7
+VrDupp01H6BG3T39g5moPOb8pBp8jpMbKuO8Z58yfhfwW9B5d+AyTp2t979bcQ4c
+FYyF95OT44nbMMDZK2/06xKhCxBoa5/VBFyJXklLuHi7noToSG8=
+=rlzs
+-----END PGP SIGNATURE-----
+
+--kLVKJMuKEUFaIs8+--

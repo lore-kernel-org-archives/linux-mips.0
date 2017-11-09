@@ -1,23 +1,14 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.150.245]:55057 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.154.230]:42211 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990485AbdKIIHDDXJA5 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Nov 2017 09:07:03 +0100
-Date: Thu, 9 Nov 2017 08:06:02 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH 1/2] MIPS: dts: remove bogus bcm96358nb4ser.dtb from
- dtb-y entry
-Message-ID: <20171109080601.GS15260@jhogan-linux>
-References: <1509859853-27473-1-git-send-email-yamada.masahiro@socionext.com>
- <1509859853-27473-2-git-send-email-yamada.masahiro@socionext.com>
- <CAK7LNAQfK_BWQcVW-ScrpAwNAHav3MrrzV-tjn_YUjsuvd7U5A@mail.gmail.com>
- <20171106095139.GG15260@jhogan-linux>
- <CAK7LNAQ_bugEP8hHKmCif5QCz2=Pw_GpXzYz4zJeXO0HXaT_ag@mail.gmail.com>
+        by eddie.linux-mips.org with ESMTP id S23990483AbdKILDH3zRix (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 9 Nov 2017 12:03:07 +0100
+From: Matt Redfearn <matt.redfearn@mips.com>
+Subject: [PATCH 1/2] irqchip/mips-gic: Add pr_fmt and reword pr_* messages
+Date: Thu, 9 Nov 2017 11:02:44 +0000
+Message-ID: <1510225365-2584-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cYG5ZC/RuVsIq1ir"
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAQ_bugEP8hHKmCif5QCz2=Pw_GpXzYz4zJeXO0HXaT_ag@mail.gmail.com>
-Return-Path: <James.Hogan@mips.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,63 +18,70 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, Pantelis Antoniou <pantelis.antoniou@konsulko.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Arnd Bergmann <arnd@arndb.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Michal Marek <michal.lkml@markovi.net>, Sam Ravnborg <sam@ravnborg.org>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Kevin Cernekee <cernekee@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <20171109080602.nMzGvGTLztyBgwWZ6xYb1CKVgkvZTf_aoLK8y1roe-o@z>
+To: Marc Zyngier <marc.zyngier@arm.com>, Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, Jason Cooper <jason@lakedaemon.net>, linux-kernel@vger.kernel.org
+Message-ID: <20171109110244.05oeJplpBMqtrrgW9VtMhAtDmclZImRKpklyNCnDwAg@z>
 
---cYG5ZC/RuVsIq1ir
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Several messages from the MIPS GIC driver include the text "GIC", but
+the format is not standard. Add a pr_fmt of "irq-mips-gic: " and reword
+the messages now that they will be prefixed with the driver name.
 
-On Mon, Nov 06, 2017 at 08:00:49PM +0900, Masahiro Yamada wrote:
-> 2017-11-06 19:41 GMT+09:00 James Hogan <jhogan@kernel.org>:
-> > Hi,
-> >
-> > On Sun, Nov 05, 2017 at 11:11:38PM +0900, Masahiro Yamada wrote:
-> >> +CC Ralf Baechle <ralf@linux-mips.org>
-> >> +CC linux-mips@linux-mips.org
-> >> +CC Kevin Cernekee <cernekee@gmail.com>
-> >> +CC Florian Fainelli <f.fainelli@gmail.com>
-> >>
-> >>
-> >> I missed to CC MIPS maintainers.
-> >
-> > Yes, please resend the patch so it lands in patchwork.linux-mips.org.
->=20
->=20
-> This is a part of clean-up series of DT building.
->=20
-> I want Acked-by from MIPS maintainers
-> so that the whole series can go to a different tree.
-> (DT or Kbuild).
+Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+Reviewed-by: Paul Burton <paul.burton@mips.com>
+---
 
-Well FWIW, as acting MIPS maintainer right now:
+ drivers/irqchip/irq-mips-gic.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-Acked-by: James Hogan <jhogan@kernel.org>
-
-Cheers
-James
-
---cYG5ZC/RuVsIq1ir
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAloEDGkACgkQbAtpk944
-dnqtMQ/9EkU6LBbjrqwXDF9JqmxGykox4YXqoZwkvmKBG2aDeaqvh9MhpDEZSQmC
-EIBwQH5Yej7SRh4XxSgTOwfKdKHKOqPj4ExPK+X5pO5hlg5A2cZAzAjsSrsTRAgM
-B4J4yX3jPCS1LHbkXaEvzXZOJWMbCcpTmbkavHTGDfxDAnLh1ZecC8Otn75be3cF
-rz8Nji/xXzlKws2GvQm/4UGAsqKTrcMFTRWqaQW3eDw3w09T10HyxFejx9X9dA/Z
-YRXSTPNCSJ5Vt/UzJ8Chqp6/898VyUKj1mjmttudNiHSSnyrBQM4fu72NqVEbYnS
-2GzG5VIr+uXkmpgfsZpjsxYTupNI9vmoEjF+wOnzuVkip9NIHirYQkr5snImjrx1
-0zWn3dskm3Jh33tYDEVY2RYyt4jVvOxgHc+p/MY4TIB1wVVvZ9JCE8XskhF42g7X
-1eXn92wVj+Yzcx/mp2haFiQ54LNP6ADbXbtgHvkYMiMpkfoAk7Um1Pg1TAdHC7pZ
-ii1rg67UqB18YIiojXYn27HUuFpaoBhyfraGYuW++yt2rFWRzVsm7//dZclO+Vrr
-emwzWSAogXkFrVuD1tlfAHRrpice0QSh+VJoqAp+N/gTTgQONU5LZ/B+cTEsSP8i
-janm5/1JBMVbHlbd0WNwvrfwfGuzVJvMzrW1r3lECGSDPlkPrzU=
-=wanZ
------END PGP SIGNATURE-----
-
---cYG5ZC/RuVsIq1ir--
+diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+index 3ccebb020f40..9b768899f07b 100644
+--- a/drivers/irqchip/irq-mips-gic.c
++++ b/drivers/irqchip/irq-mips-gic.c
+@@ -6,6 +6,9 @@
+  * Copyright (C) 2008 Ralf Baechle (ralf@linux-mips.org)
+  * Copyright (C) 2012 MIPS Technologies, Inc.  All rights reserved.
+  */
++
++#define pr_fmt(fmt) "irq-mips-gic: " fmt
++
+ #include <linux/bitmap.h>
+ #include <linux/clocksource.h>
+ #include <linux/cpuhotplug.h>
+@@ -685,7 +688,7 @@ static int __init gic_of_init(struct device_node *node,
+ 
+ 	cpu_vec = find_first_zero_bit(&reserved, hweight_long(ST0_IM));
+ 	if (cpu_vec == hweight_long(ST0_IM)) {
+-		pr_err("No CPU vectors available for GIC\n");
++		pr_err("No CPU vectors available\n");
+ 		return -ENODEV;
+ 	}
+ 
+@@ -699,7 +702,7 @@ static int __init gic_of_init(struct device_node *node,
+ 				~CM_GCR_GIC_BASE_GICEN;
+ 			gic_len = 0x20000;
+ 		} else {
+-			pr_err("Failed to get GIC memory range\n");
++			pr_err("Failed to get memory range\n");
+ 			return -ENODEV;
+ 		}
+ 	} else {
+@@ -757,7 +760,7 @@ static int __init gic_of_init(struct device_node *node,
+ 					       gic_shared_intrs, 0,
+ 					       &gic_irq_domain_ops, NULL);
+ 	if (!gic_irq_domain) {
+-		pr_err("Failed to add GIC IRQ domain");
++		pr_err("Failed to add IRQ domain");
+ 		return -ENXIO;
+ 	}
+ 
+@@ -766,7 +769,7 @@ static int __init gic_of_init(struct device_node *node,
+ 						  GIC_NUM_LOCAL_INTRS + gic_shared_intrs,
+ 						  node, &gic_ipi_domain_ops, NULL);
+ 	if (!gic_ipi_domain) {
+-		pr_err("Failed to add GIC IPI domain");
++		pr_err("Failed to add IPI domain");
+ 		return -ENXIO;
+ 	}
+ 
+-- 
+2.7.4

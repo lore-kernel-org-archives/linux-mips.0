@@ -1,16 +1,14 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.150.245]:50272 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.154.230]:56192 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992309AbdKJXenV03oS convert rfc822-to-8bit
+        by eddie.linux-mips.org with ESMTP id S23990404AbdKMKr6oDoca convert rfc822-to-8bit
         (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 11 Nov 2017 00:34:43 +0100
-Date: Fri, 10 Nov 2017 23:34:26 +0000
+        Mon, 13 Nov 2017 11:47:58 +0100
+Date: Mon, 13 Nov 2017 10:47:28 +0000
 From: "Maciej W. Rozycki" <macro@mips.com>
-Subject: Re: [PATCH v2] MIPS: Add basic R5900 support
-In-Reply-To: <20171029172016.GA2600@localhost.localdomain>
-Message-ID: <alpine.DEB.2.00.1711102209440.10088@tp.orcam.me.uk>
-References: <20170916133423.GB32582@localhost.localdomain> <alpine.DEB.2.00.1709171001160.16752@tp.orcam.me.uk> <20170918192428.GA391@localhost.localdomain> <alpine.DEB.2.00.1709182055090.16752@tp.orcam.me.uk> <20170920145440.GB9255@localhost.localdomain>
- <alpine.DEB.2.00.1709201705070.16752@tp.orcam.me.uk> <20170927172107.GB2631@localhost.localdomain> <alpine.DEB.2.00.1709272208300.16752@tp.orcam.me.uk> <20170930065654.GA7714@localhost.localdomain> <alpine.DEB.2.00.1709301305400.12020@tp.orcam.me.uk>
- <20171029172016.GA2600@localhost.localdomain>
+Subject: Re: [PATCH] MIPS: Fix exception entry when CONFIG_EVA enabled
+In-Reply-To: <20171031234853.GD15260@jhogan-linux>
+Message-ID: <alpine.DEB.2.00.1711131045460.3893@tp.orcam.me.uk>
+References: <1507712360-20657-1-git-send-email-matt.redfearn@mips.com> <605f6a96-a843-085c-efc6-a2c0f2afd84a@mvista.com> <20171031234853.GD15260@jhogan-linux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
@@ -24,169 +22,24 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Fredrik Noring <noring@nocrew.org>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20171110233426.ka8rS1MKeWdoH6LXpZ19zRBLMbpkLEW93dfMCEP6oMY@z>
+To: James Hogan <james.hogan@mips.com>
+Cc: Corey Minyard <cminyard@mvista.com>, Matt Redfearn <matt.redfearn@mips.com>, Ralf Baechle <ralf@linux-mips.org>, Matthew Fortune <matthew.fortune@mips.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, "Jason A. Donenfeld" <jason@zx2c4.com>, Paul Burton <paul.burton@imgtec.com>
+Message-ID: <20171113104728.ZdfHjJnYy-FNfZyHGOfkbutmr0jh3NrMGotFNOQ_uwQ@z>
 
-Hi Fredrik,
+On Tue, 31 Oct 2017, James Hogan wrote:
 
-> However, it turns out that the R5900 has a grave hardware error that
-> appears to rule out most if not all generic MIPS distributions:
-> 
-> The short loop bug under certain conditions causes loops to execute only
-> once or twice. GCC 2.95 that shipped with Sony PS2 Linux had a patch with
-> the following note:
-> 
->     On the R5900, we must ensure that the compiler never generates
->     loops that satisfy all of the following conditions:
-> 
->     - a loop consists of less than equal to six instructions
->       (including the branch delay slot).
->     - a loop contains only one conditional branch instruction at
->       the end of the loop.
->     - a loop does not contain any other branch or jump instructions.
->     - a branch delay slot of the loop is not NOP (EE 2.9 or later).
-> 
->     We need to do this because of a bug in the chip.
-
- You'll need a `-mfix-r5900' workaround in the compiler then.  One for GAS 
-for handcoded assembly might be doable as well, fixing the `reorder' mode 
-only and possibly bailing out if the conditions are met in the `noreorder' 
-mode.
-
-> > originating from the IDT R4650 and the NEC Vr5500 processors.  It has 
-> > nothing to do with the DSP ASE (though it may have been claimed originally 
-> > to be a DSP enhancement).
-> 
-> The R5900 has three-operand multiply and multiply-accumulate instructions
-> as part of its multimedia set. Sadly, the MULT instruction format
-> 
->       SPECIAL                          MULT
->     +--------+----+----+----+-------+--------+
->     | 000000 | rs | rt | rd | 00000 | 011000 |
->     +--------+----+----+----+-------+--------+
->          6      5    5    5     5        6
-> 
-> is incompatible with the corresponding MIPS32 MUL format
-> 
->      SPECIAL2                           MUL
->     +--------+----+----+----+-------+--------+
->     | 011100 | rs | rt | rd | 00000 | 000010 |
->     +--------+----+----+----+-------+--------+.
->          6      5    5    5     5        6
-
- Still R5900-specific code may use it.
-
-> > > > Also make sure you have RDHWR instruction emulation in place for CP0
-> > > > UserLocal register access.
-> > > 
-> > > Right. Debian's BusyBox has 857 of those. Jürgen Urban observed in the
-> > > conversation with you in
-> > > 
-> > > https://gcc.gnu.org/ml/gcc-patches/2013-01/msg00658.html
-> > > 
-> > > that RDHWR has the same encoding as "sq v1,-6085(zero)" for the R5900,
-> > > which luckily always gives an alignment exception so that the kernel is
-> > > able to emulate RDHWR properly. I haven't verified this though.
+> > I looked this over pretty carefully and it looks correct to me.  It 
+> > makes no difference
+> > in the instructions generated by the non-EVA case.  I shouldn't have 
+> > missed this :(.
 > > 
-> >  That instruction encoding (actually implemented by some MIPS32r2/MIPS64r2 
-> > and newer hardware) is used under Linux for Thread Local Storage (TLS) 
-> > access.  For hardware that does not have it the instruction is emulated in 
-> > the Reserved Instruction (RI) exception handler, but obviously not the 
-> > Address Error Store (AdES) exception.  So code to handle it as a special 
-> > case with the R5900 has to be provided among the patches (and included 
-> > with the initial series).
-> > 
-> >  Note that `rdhwr $3,$29' is the usual encoding, handled by a fastpath in 
-> > arch/mips/kernel/genex.S (see `handle_ri_rdhwr'), however all `rt' 
-> > encodings (covered in `simulate_rdhwr' in arch/mips/kernel/traps.c) have 
-> > to be handled for completeness.  Fortunately RDHWR and SQ both use the 
-> > same bits for `rt', and the `-6085(zero)' encoding of the memory reference 
-> > makes no sense, so we can safely rely on the AdES exception.
+> > Reviewed-by: Corey Minyard <cminyard@mvista.com>
 > 
-> This patch traps the RDHWR instruction as an unaligned SQ:
+> Yeh, having stared at it for a little while it looks correct to me too.
 > 
-> diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
-> index f41cf3ee82a7..d4987e2d9695 100644
-> --- a/arch/mips/include/asm/traps.h
-> +++ b/arch/mips/include/asm/traps.h
-> @@ -39,4 +39,6 @@ extern int register_nmi_notifier(struct notifier_block *nb);
->  	register_nmi_notifier(&fn##_nb);				\
->  })
->  
-> +asmlinkage void do_ri(struct pt_regs *regs);
-> +
->  #endif /* _ASM_TRAPS_H */
-> diff --git a/arch/mips/kernel/unaligned.c b/arch/mips/kernel/unaligned.c
-> index f806ee56e639..7303d5d5cac8 100644
-> --- a/arch/mips/kernel/unaligned.c
-> +++ b/arch/mips/kernel/unaligned.c
-> @@ -89,6 +89,7 @@
->  #include <asm/fpu.h>
->  #include <asm/fpu_emulator.h>
->  #include <asm/inst.h>
-> +#include <asm/traps.h>
->  #include <linux/uaccess.h>
->  
->  #define STR(x)	__STR(x)
-> @@ -1309,6 +1310,35 @@ static void emulate_load_store_insn(struct pt_regs *regs,
->  		cu2_notifier_call_chain(CU2_SDC2_OP, regs);
->  		break;
->  #endif
-> +
-> +#ifdef CONFIG_CPU_R5900
+> Reviewed-by: James Hogan <jhogan@kernel.org>
 
- It might be preferable to use:
-
-	if (IS_ENABLED(CONFIG_CPU_R5900))
-
-instead.
-
-> +	case spec3_op:
-
- There is already a `spec3_op' case in this `switch' statement, so you 
-need to fold your code into it (have you actually successfully built this 
-piece before posting?).
-
-> +		/*
-> +		 * On the R5900 the RDHWR instruction
-> +		 *
-> +		 *     +--------+-------+----+----+-------+--------+
-> +		 *     | 011111 | 00000 | rt | rd | 00000 | 111011 |
-> +		 *     +--------+-------+----+----+-------+--------+
-> +		 *          6       5      5    5     5        6
-> +		 *
-> +		 * is interpreted as the R5900 specific SQ instruction
-> +		 *
-> +		 *     +--------+-------+----+---------------------+
-> +		 *     | 011111 |  base | rt |        offset       |
-> +		 *     +--------+-------+----+---------------------+
-> +		 *          6       5      5            16
-> +		 *
-> +		 * with an odd offset based on $0 that always yields an
-> +		 * address error exception. Hence RDHWR can be trapped
-> +		 * and emulated here.
-> +		 */
-> +		if (insn.spec3_format.func == rdhwr_op) {
-
- I think `r_format' is more appropriate for RDHWR (`spec3_format' really 
-matches EVA instructions only; we might invent a distinct new format for 
-the BSHFL, DBSHFL and RDHWR minor opcodes, but I think this would be an 
-overkill) and you need to qualify the other instruction fields, i.e. `rs' 
-and `re', because of the overlap with SQ.  We only want to give the 
-special exception for what looks like a real RDHWR instruction and not 
-just any faulting SQ whose least significant bits of the offset happen to 
-match the RDHWR minor opcode.
-
-> +			do_ri(regs);
-
- Or rather `simulate_rdhwr(regs, insn.r_format.rd, insn.r_format.rt)' as 
-we've already qualified it.
-
-> +			return;
-> +		}
-> +		goto sigill;
-
- This I think should be `sigbus' as the SQ opcode is valid on the R5900.
+ How about getting rid of the `noreorder' mode and the manually scheduled 
+delay slot here altogether though, as I outlined?
 
   Maciej

@@ -1,17 +1,16 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.154.231]:41919 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.150.244]:33573 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990427AbdKMSUPeUWtR (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 13 Nov 2017 19:20:15 +0100
-Date: Mon, 13 Nov 2017 18:19:46 +0000
+        by eddie.linux-mips.org with ESMTP id S23990427AbdKMSWRKxXXR (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 13 Nov 2017 19:22:17 +0100
+Date: Mon, 13 Nov 2017 18:21:34 +0000
 From: James Hogan <james.hogan@mips.com>
-Subject: Re: [RFC PATCH] MIPS: cmpxchg64() and HAVE_VIRT_CPU_ACCOUNTING_GEN
- don't work for 32-bit SMP
-Message-ID: <20171113181945.GC31917@jhogan-linux.mipstec.com>
-References: <20171004024614.GC2971@decadent.org.uk>
+Subject: Re: [PATCH] MIPS: Add iomem resource for kernel bss section.
+Message-ID: <20171113182134.GD31917@jhogan-linux.mipstec.com>
+References: <20171012195034.5758-1-david.daney@cavium.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <20171004024614.GC2971@decadent.org.uk>
+In-Reply-To: <20171012195034.5758-1-david.daney@cavium.com>
 Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -22,61 +21,59 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ben Hutchings <ben@decadent.org.uk>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Deng-Cheng Zhu <dengcheng.zhu@imgtec.com>
-Message-ID: <20171113181946.sKIhIGh0CC9u0ZE0DWUFq33dB7sg8U-6WWyqHmNLYFI@z>
+To: David Daney <david.daney@cavium.com>
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, linux-kernel@vger.kernel.org, "Steven J. Hill" <steven.hill@cavium.com>
+Message-ID: <20171113182134.X9nl2slGl_eTPGrBjljlayBdywkZu8nHiu_uDtYvl0s@z>
 
-On Wed, Oct 04, 2017 at 03:46:14AM +0100, Ben Hutchings wrote:
-> __cmpxchg64_local_generic() is atomic only w.r.t tasks and interrupts
-> on the same CPU (that's what the 'local' means).  We can't use it to
-> implement cmpxchg64() in SMP configurations.
+On Thu, Oct 12, 2017 at 12:50:34PM -0700, David Daney wrote:
+> The kexec/kdump tools need to know where the .bss is so it can be
+> included in the core dump.  This allows vmcore-dmesg to have access to
+> the dmesg buffers of the crashed kernel as well as allowing the
+> debugger to examine variables in the bss section.
 > 
-> So, for 32-bit SMP configurations:
+> Add a request for the bss resource in addition to the already
+> requested code and data sections.
 > 
-> - Don't define cmpxchg64()
-> - Don't enable HAVE_VIRT_CPU_ACCOUNTING_GEN, which requires it
-> 
-> Fixes: e2093c7b03c1 ("MIPS: Fall back to generic implementation of ...")
-> Fixes: bb877e96bea1 ("MIPS: Add support for full dynticks CPU time accounting")
-> Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+> Signed-off-by: David Daney <david.daney@cavium.com>
 
-Thanks, looks reasonable to me
-
-Applied
+Thanks, applied.
 
 Cheers
 James
 
 > ---
->  arch/mips/Kconfig               | 2 +-
->  arch/mips/include/asm/cmpxchg.h | 2 ++
->  2 files changed, 3 insertions(+), 1 deletion(-)
+>  arch/mips/kernel/setup.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index cb7fcc4216fd..1e23f8455b7d 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -64,7 +64,7 @@ config MIPS
->  	select HAVE_PERF_EVENTS
->  	select HAVE_REGS_AND_STACK_ACCESS_API
->  	select HAVE_SYSCALL_TRACEPOINTS
-> -	select HAVE_VIRT_CPU_ACCOUNTING_GEN
-> +	select HAVE_VIRT_CPU_ACCOUNTING_GEN if 64BIT || !SMP
->  	select IRQ_FORCED_THREADING
->  	select MODULES_USE_ELF_RELA if MODULES && 64BIT
->  	select MODULES_USE_ELF_REL if MODULES
-> diff --git a/arch/mips/include/asm/cmpxchg.h b/arch/mips/include/asm/cmpxchg.h
-> index 903f3bf48419..ae2b4583b486 100644
-> --- a/arch/mips/include/asm/cmpxchg.h
-> +++ b/arch/mips/include/asm/cmpxchg.h
-> @@ -202,8 +202,10 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
->  #else
->  #include <asm-generic/cmpxchg-local.h>
->  #define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
-> +#ifndef CONFIG_SMP
->  #define cmpxchg64(ptr, o, n) cmpxchg64_local((ptr), (o), (n))
->  #endif
-> +#endif
+> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+> index fe39397..702c678 100644
+> --- a/arch/mips/kernel/setup.c
+> +++ b/arch/mips/kernel/setup.c
+> @@ -80,6 +80,7 @@ EXPORT_SYMBOL(mips_io_port_base);
 >  
->  #undef __scbeqz
+>  static struct resource code_resource = { .name = "Kernel code", };
+>  static struct resource data_resource = { .name = "Kernel data", };
+> +static struct resource bss_resource = { .name = "Kernel bss", };
 >  
+>  static void *detect_magic __initdata = detect_memory_region;
+>  
+> @@ -927,6 +928,8 @@ static void __init resource_init(void)
+>  	code_resource.end = __pa_symbol(&_etext) - 1;
+>  	data_resource.start = __pa_symbol(&_etext);
+>  	data_resource.end = __pa_symbol(&_edata) - 1;
+> +	bss_resource.start = __pa_symbol(&__bss_start);
+> +	bss_resource.end = __pa_symbol(&__bss_stop) - 1;
+>  
+>  	for (i = 0; i < boot_mem_map.nr_map; i++) {
+>  		struct resource *res;
+> @@ -966,6 +969,7 @@ static void __init resource_init(void)
+>  		 */
+>  		request_resource(res, &code_resource);
+>  		request_resource(res, &data_resource);
+> +		request_resource(res, &bss_resource);
+>  		request_crashkernel(res);
+>  	}
+>  }
+> -- 
+> 2.9.5
+> 

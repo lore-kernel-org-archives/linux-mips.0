@@ -1,20 +1,16 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.154.231]:60033 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.150.244]:49549 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990901AbdKNUb0pcktl (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Nov 2017 21:31:26 +0100
-Date: Tue, 14 Nov 2017 20:30:47 +0000
+        by eddie.linux-mips.org with ESMTP id S23990901AbdKNVN0XKICl (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Nov 2017 22:13:26 +0100
+Date: Tue, 14 Nov 2017 21:11:13 +0000
 From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH v3 04/11] MIPS: Octeon: Remove usage of cvmx_wait()
- everywhere.
-Message-ID: <20171114203046.GC5823@jhogan-linux.mipstec.com>
-References: <1510633827-23548-1-git-send-email-steven.hill@cavium.com>
- <1510633827-23548-5-git-send-email-steven.hill@cavium.com>
- <20171114190828.GD16044@linux-mips.org>
+Subject: Re: [net-next,1/3] netem: convert to qdisc_watchdog_schedule_ns
+Message-ID: <20171114211112.GA28794@jhogan-linux.mipstec.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="TiqCXmo5T1hvSQQg"
+        protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
 Content-Disposition: inline
-In-Reply-To: <20171114190828.GD16044@linux-mips.org>
+In-Reply-To: <1510088376-5527-2-git-send-email-dave.taht@gmail.com>
 Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -25,53 +21,62 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: "Steven J. Hill" <steven.hill@cavium.com>, linux-mips@linux-mips.org
-Message-ID: <20171114203047.gnZKGxcfWyRhKNx4P7XUEVHDU88Za4Mw0YPm-HXjBvw@z>
+To: Dave Taht <dave.taht@gmail.com>
+Cc: netdev@vger.kernel.org, linux-next@vger.kernel.org, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20171114211113.WQRAA33Iisy5639kq6usDjaeX3EFtuwJKgXFUwviuok@z>
 
---TiqCXmo5T1hvSQQg
+--/04w6evG8XlLl3ft
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 14, 2017 at 08:08:28PM +0100, Ralf Baechle wrote:
-> On Mon, Nov 13, 2017 at 10:30:20PM -0600, Steven J. Hill wrote:
-> > From: "Steven J. Hill" <Steven.Hill@cavium.com>
->=20
-> At this place and many others cvmx_wait() was used to wait for a number
-> of miliseconds, so I think it should better be replaced with something
-> like mdelay(10).
+On Tue, Nov 07, 2017 at 12:59:34PM -0800, Dave Taht wrote:
+> diff --git a/net/sched/sch_netem.c b/net/sched/sch_netem.c
+> index db0228a..443a75d 100644
+> --- a/net/sched/sch_netem.c
+> +++ b/net/sched/sch_netem.c
 
-Note that this patch, along with the nudges one and the lastpfn one, is
-already queued for 4.15:
+...
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jhogan/mips.git
-branch: mips-next
+> @@ -305,11 +305,11 @@ static bool loss_event(struct netem_sched_data *q)
+>   * std deviation sigma.  Uses table lookup to approximate the desired
+>   * distribution, and a uniformly-distributed pseudo-random source.
+>   */
+> -static psched_tdiff_t tabledist(psched_tdiff_t mu, psched_tdiff_t sigma,
+> -				struct crndstate *state,
+> -				const struct disttable *dist)
+> +static s64 tabledist(s64 mu, s64 sigma,
 
-so any fixes to it will have to be made on top.
+sigma is used in a modulo operation in this function, which results in
+this error on a bunch of MIPS configs once it is made 64-bits wide:
 
-Cheers
+net/sched/sch_netem.o In function `tabledist':
+net/sched/sch_netem.c:330: undefined reference to `__moddi3'
+
+Should that code not be using <linux/math64.h>, i.e. div_s64_rem() now
+that it is 64bit?
+
+Thanks
 James
 
---TiqCXmo5T1hvSQQg
+--/04w6evG8XlLl3ft
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAloLUm0ACgkQbAtpk944
-dnrKIg//Ro41TrHMcJP+MTkUf4cB8aBl9NWNBAD4Fr1vCxgCy3Z6z+CbgzsAdyTk
-pvulNHzcv40vEJTU/KXd1CePn+4JBNGgZ87KI1E1KLlmOuUDBPePiF7gouHU0f5j
-YJD4IIFvJWeF8Sr1sj5MXFVPF83da2LplgqVcseeXCQIdrESrh4txzJvDTXbOrPx
-LD+hV0fATpvC6ynWeabIVGHxwcJsw+nM2PUpbbQPc6gSHuUqRm16jMrRa8N65XgY
-s44MXBVV/Q/oa4AgxuFfqaAB+S6AgUbD4SQg8xPmvBOcKHeu784x46Nd3yrLrMrZ
-YehboQObF565/YYffEp9NAsbIEe2uyxzTvnau+Ix7o2GjAraVZJBnlMgCEafQt7q
-d5aDIq58aAGiwplgTw437+aMMTtDuGms7SsSZeuFJN3n2ZTKSC2f2db37DqTvYYk
-x5MyGgIVzaVSqBLYCtTs+mZV1WNdS3N8qjEFC+e7xGCwyivz8RSC5M1tvfRFasIh
-zHarjVDrO4vVm7JBJwkq1YoDrVLBco6UOp2qpEnrIOuf+W4Pjri3ssIx4KWHtm7B
-Tt5LBubS5aKFW/5uwtmitg7r9DcT+SNB1qFFi/LFlTWN4xChLQPWMDnj8MN2HSU7
-4Yx+FgYZm5+pJyn+ByKhIbCU+1iflDqkIwD1eZschiIkjfqvwpc=
-=MJyA
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAloLW/AACgkQbAtpk944
+dnpWmA//aZDkO1jeDKifUd/Xv5uxz34KRv/ZiFZu+Ac65gDU1pKDwepoMniKXXxE
+CCnrrkP0q/iH8VrXy3dAld+rlqm/2byhvhhaBknKz/XN0lgnqK1VSPJANafIhNMf
+vEgudbuel/Lw7MNV4gCHEhTlab/9GiE/2s/LKxkUSYXwbHue6y3tB/eHF+lRtQjg
+05D4Gstbe/BPqVthe0ZpxVIJpeck2YAAQ6bXUHa6pJ9YAAATJJ7/XXBki07/CzAF
+WXxft8TFaHNaT94YYh6iU90AddJtWCEAthCQr9BzghtOZjgfr/ErxS5PxT53I8qE
+IMwkAU3dvMiRQv5Ceaq9vkyrWFhmoqNOhEeq4sRU6kniZXG4t7l/0AWq67szbxNy
+XR1j/VPfq2+hTFMddV3t6fkHLVBFRZVQJ7ZUM89mjxwDTTtbi7lCaBnnf73SPOmd
+uHwFd+HbwjcR3A7pBlSdygbLlxLdWhqp+JqGgc5bzDxtO4cgTGJ3RGrZbkd5DWHO
+Y/6WT7vocGf91wOh6gakSjVj+66+L9WGwY2PqAnMjtX4BOv6QQciLhLTdWFdlkVz
+D/nflDE06jAt1Nbc+n+uRm+l5aON1K31Su74UG9UiQHK4WrwHj7KXF629+eqfaa8
+HI52QjZ97Pd2eFEoE2Ad1LUf4+bq6g4CECAe2bWj7fz+KtQG2JM=
+=4891
 -----END PGP SIGNATURE-----
 
---TiqCXmo5T1hvSQQg--
+--/04w6evG8XlLl3ft--

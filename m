@@ -1,17 +1,14 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.150.244]:33573 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.150.245]:46879 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990427AbdKMSWRKxXXR (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 13 Nov 2017 19:22:17 +0100
-Date: Mon, 13 Nov 2017 18:21:34 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH] MIPS: Add iomem resource for kernel bss section.
-Message-ID: <20171113182134.GD31917@jhogan-linux.mipstec.com>
-References: <20171012195034.5758-1-david.daney@cavium.com>
+        by eddie.linux-mips.org with ESMTP id S23990475AbdKNKyOjnIQo (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Nov 2017 11:54:14 +0100
+From: Matt Redfearn <matt.redfearn@mips.com>
+Subject: [PATCH] watchdog: indydog: Add dependency on SGI_HAS_INDYDOG
+Date: Tue, 14 Nov 2017 10:52:54 +0000
+Message-ID: <1510656774-31464-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20171012195034.5758-1-david.daney@cavium.com>
-Return-Path: <James.Hogan@mips.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,59 +18,52 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <david.daney@cavium.com>
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, linux-kernel@vger.kernel.org, "Steven J. Hill" <steven.hill@cavium.com>
-Message-ID: <20171113182134.X9nl2slGl_eTPGrBjljlayBdywkZu8nHiu_uDtYvl0s@z>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, "# 4 . 11 +" <stable@vger.kernel.org>, linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org, Wim Van Sebroeck <wim@iguana.be>
+Message-ID: <20171114105254.Wc8K0Lu5yu3hsYOdZS7TnzKva0DJ_aVUFc4gvJ4oR3w@z>
 
-On Thu, Oct 12, 2017 at 12:50:34PM -0700, David Daney wrote:
-> The kexec/kdump tools need to know where the .bss is so it can be
-> included in the core dump.  This allows vmcore-dmesg to have access to
-> the dmesg buffers of the crashed kernel as well as allowing the
-> debugger to examine variables in the bss section.
-> 
-> Add a request for the bss resource in addition to the already
-> requested code and data sections.
-> 
-> Signed-off-by: David Daney <david.daney@cavium.com>
+Commit da2a68b3eb47 ("watchdog: Enable COMPILE_TEST where possible")
+enabled building the Indy watchdog driver when COMPILE_TEST is enabled.
+However, the driver makes reference to symbols that are only defined for
+certain platforms are selected in the config. These platforms select
+SGI_HAS_INDYDOG. Without this, link time errors result, for example
+when building a MIPS allyesconfig.
 
-Thanks, applied.
+drivers/watchdog/indydog.o: In function `indydog_write':
+indydog.c:(.text+0x18): undefined reference to `sgimc'
+indydog.c:(.text+0x1c): undefined reference to `sgimc'
+drivers/watchdog/indydog.o: In function `indydog_start':
+indydog.c:(.text+0x54): undefined reference to `sgimc'
+indydog.c:(.text+0x58): undefined reference to `sgimc'
+drivers/watchdog/indydog.o: In function `indydog_stop':
+indydog.c:(.text+0xa4): undefined reference to `sgimc'
+drivers/watchdog/indydog.o:indydog.c:(.text+0xa8): more undefined
+references to `sgimc' follow
+make: *** [Makefile:1005: vmlinux] Error 1
 
-Cheers
-James
+Fix this by ensuring that CONFIG_INDIDOG can only be selected when the
+necessary dependent platform symbols are built in.
 
-> ---
->  arch/mips/kernel/setup.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-> index fe39397..702c678 100644
-> --- a/arch/mips/kernel/setup.c
-> +++ b/arch/mips/kernel/setup.c
-> @@ -80,6 +80,7 @@ EXPORT_SYMBOL(mips_io_port_base);
->  
->  static struct resource code_resource = { .name = "Kernel code", };
->  static struct resource data_resource = { .name = "Kernel data", };
-> +static struct resource bss_resource = { .name = "Kernel bss", };
->  
->  static void *detect_magic __initdata = detect_memory_region;
->  
-> @@ -927,6 +928,8 @@ static void __init resource_init(void)
->  	code_resource.end = __pa_symbol(&_etext) - 1;
->  	data_resource.start = __pa_symbol(&_etext);
->  	data_resource.end = __pa_symbol(&_edata) - 1;
-> +	bss_resource.start = __pa_symbol(&__bss_start);
-> +	bss_resource.end = __pa_symbol(&__bss_stop) - 1;
->  
->  	for (i = 0; i < boot_mem_map.nr_map; i++) {
->  		struct resource *res;
-> @@ -966,6 +969,7 @@ static void __init resource_init(void)
->  		 */
->  		request_resource(res, &code_resource);
->  		request_resource(res, &data_resource);
-> +		request_resource(res, &bss_resource);
->  		request_crashkernel(res);
->  	}
->  }
-> -- 
-> 2.9.5
-> 
+Fixes: da2a68b3eb47 ("watchdog: Enable COMPILE_TEST where possible")
+Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+Cc: <stable@vger.kernel.org> # 4.11 +
+---
+
+ drivers/watchdog/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index ca200d1f310a..d96e2e7544fc 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -1451,7 +1451,7 @@ config RC32434_WDT
+ 
+ config INDYDOG
+ 	tristate "Indy/I2 Hardware Watchdog"
+-	depends on SGI_HAS_INDYDOG || (MIPS && COMPILE_TEST)
++	depends on SGI_HAS_INDYDOG || (MIPS && COMPILE_TEST && SGI_HAS_INDYDOG)
+ 	help
+ 	  Hardware driver for the Indy's/I2's watchdog. This is a
+ 	  watchdog timer that will reboot the machine after a 60 second
+-- 
+2.7.4

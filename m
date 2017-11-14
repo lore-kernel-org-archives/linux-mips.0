@@ -1,14 +1,14 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.150.245]:48767 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.154.231]:48659 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991978AbdKNMC3B9FkY (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Nov 2017 13:02:29 +0100
-From: James Hogan <james.hogan@mips.com>
-Subject: [PATCH] MIPS: CPS: Fix r1 .set mt assembler warning
-Date: Tue, 14 Nov 2017 12:01:20 +0000
-Message-ID: <20171114120120.7020-1-james.hogan@mips.com>
+        by eddie.linux-mips.org with ESMTP id S23992314AbdKNNbUr8Me0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Nov 2017 14:31:20 +0100
+From: Matt Redfearn <matt.redfearn@mips.com>
+Subject: [PATCH] MIPS: ath25: Avoid undefined early_serial_setup() without SERIAL_8250_CONSOLE
+Date: Tue, 14 Nov 2017 13:29:17 +0000
+Message-ID: <1510666157-27252-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <James.Hogan@mips.com>
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,48 +18,47 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: James Hogan <james.hogan@mips.com>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>
-Message-ID: <20171114120120.xSm4F3lgrxmTLGDpGe8WsRqfkhbZxGn0V95KQ6Mpsp8@z>
+To: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@mips.com>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Philippe Ombredanne <pombredanne@nexb.com>, Kate Stewart <kstewart@linuxfoundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Message-ID: <20171114132917.CTNizAVY6dEgK1O6LTDSdeX4vnE-lstZyYIXxZQ9zb8@z>
 
-From: James Hogan <jhogan@kernel.org>
+Currently MIPS allnoconfig with CONFIG_ATH25=y fails to link due to
+missing support for early_serial_setup():
 
-MIPS CPS has a build warning on kernels configured for MIPS32R1 or
-MIPS64R1, due to the use of .set mt without a prior .set mips{32,64}r2:
+  LD      vmlinux
+arch/mips/ath25/devices.o: In function ath25_serial_setup':
+devices.c:(.init.text+0x68): undefined reference to 'early_serial_setup'
 
-arch/mips/kernel/cps-vec.S Assembler messages:
-arch/mips/kernel/cps-vec.S:238: Warning: the `mt' extension requires MIPS32 revision 2 or greater
+Rather than adding dependencies to the platform to force inclusion of
+SERIAL_8250_CONSOLE together with it's dependencies like TTY, HAS_IOMEM,
+etc, just make ath25_serial_setup() a no-op when the dependency is not
+selected in the kernel config.
 
-Add .set MIPS_ISA_LEVEL_RAW before .set mt to silence the warning.
-
-Fixes: 245a7868d2f2 ("MIPS: smp-cps: rework core/VPE initialisation")
-Signed-off-by: James Hogan <jhogan@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Paul Burton <paul.burton@mips.com>
-Cc: linux-mips@linux-mips.org
+Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
 ---
- arch/mips/kernel/cps-vec.S | 2 ++
+
+ arch/mips/ath25/devices.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
-index c7ed26029cbb..e68e6e04063a 100644
---- a/arch/mips/kernel/cps-vec.S
-+++ b/arch/mips/kernel/cps-vec.S
-@@ -235,6 +235,7 @@ LEAF(mips_cps_core_init)
- 	has_mt	t0, 3f
+diff --git a/arch/mips/ath25/devices.c b/arch/mips/ath25/devices.c
+index e1156347da53..301a9028273c 100644
+--- a/arch/mips/ath25/devices.c
++++ b/arch/mips/ath25/devices.c
+@@ -73,6 +73,7 @@ const char *get_system_type(void)
  
- 	.set	push
-+	.set	MIPS_ISA_LEVEL_RAW
- 	.set	mt
+ void __init ath25_serial_setup(u32 mapbase, int irq, unsigned int uartclk)
+ {
++#ifdef CONFIG_SERIAL_8250_CONSOLE
+ 	struct uart_port s;
  
- 	/* Only allow 1 TC per VPE to execute... */
-@@ -388,6 +389,7 @@ LEAF(mips_cps_boot_vpes)
- #elif defined(CONFIG_MIPS_MT)
+ 	memset(&s, 0, sizeof(s));
+@@ -85,6 +86,7 @@ void __init ath25_serial_setup(u32 mapbase, int irq, unsigned int uartclk)
+ 	s.uartclk = uartclk;
  
- 	.set	push
-+	.set	MIPS_ISA_LEVEL_RAW
- 	.set	mt
+ 	early_serial_setup(&s);
++#endif /* CONFIG_SERIAL_8250_CONSOLE */
+ }
  
- 	/* If the core doesn't support MT then return */
+ int __init ath25_add_wmac(int nr, u32 base, int irq)
 -- 
-2.14.1
+2.7.4

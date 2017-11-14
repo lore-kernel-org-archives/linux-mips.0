@@ -1,13 +1,11 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.154.231]:45611 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.154.231]:34527 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992998AbdKNPquqhjl0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Nov 2017 16:46:50 +0100
+        by eddie.linux-mips.org with ESMTP id S23990439AbdKNRQpCy5Lh (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 14 Nov 2017 18:16:45 +0100
 From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH 2/2] MIPS: RB532: Avoid undefined mac_pton without GENERIC_NET_UTILS
-Date: Tue, 14 Nov 2017 15:44:23 +0000
-Message-ID: <1510674263-14065-2-git-send-email-matt.redfearn@mips.com>
-In-Reply-To: <1510674263-14065-1-git-send-email-matt.redfearn@mips.com>
-References: <1510674263-14065-1-git-send-email-matt.redfearn@mips.com>
+Subject: [PATCH] MIPS: BCM47XX Avoid compile error with MIPS allnoconfig
+Date: Tue, 14 Nov 2017 17:16:27 +0000
+Message-ID: <1510679787-7944-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Matt.Redfearn@mips.com>
@@ -21,46 +19,41 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@mips.com>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, linux-kernel@vger.kernel.org, Boris Brezillon <boris.brezillon@free-electrons.com>, Neil Armstrong <narmstrong@baylibre.com>, Krzysztof Kozlowski <krzk@kernel.org>, Tony Lindgren <tony@atomide.com>, Vladimir Zapolskiy <vz@mleia.com>, Shawn Guo <shawnguo@kernel.org>
-Message-ID: <20171114154423.nVj5TPDJZ96TYlP6Bgyn95XtWHVcDuEq3dTynv1ZFVE@z>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, linux-kernel@vger.kernel.org
+Message-ID: <20171114171627.CWpS-DqsVFEOygXEdwj2vEiXleA1mj7HjfbPLk7hzkE@z>
 
-Currently MIPS allnoconfig with CONFIG_MIKROTIK_RB532=y fails to link
-due to missing support for mac_pton():
+Currently MIPS allnoconfig with CONFIG_BCM47XX=y fails to compile due to
+neither BCM47XX_BCMA nor BCM47XX_SSB being selected. This leads the
+enumeration in arch/mips/include/asm/mach-bcm47xx/bcm47xx.h to be empty,
+and compilation fails:
 
-  LD      vmlinux
-arch/mips/rb532/devices.o: In function `setup_kmac':
-devices.c:(.init.text+0xc): undefined reference to `mac_pton'
+In file included from arch/mips/bcm47xx/irq.c:32:0:
+./arch/mips/include/asm/mach-bcm47xx/bcm47xx.h:34:1: error: expected
+identifier before '}' token
+ };
+ ^
+make[2]: *** [scripts/Makefile.build:314: arch/mips/bcm47xx/irq.o] Error 1
 
-Rather than adding dependencies to the platform to force inclusion of
-GENERIC_NET_UTILS which is selected by CONFIG_NET, just exclude the
-setup of the MAC address if CONFIG_NET is not selected in the kernel
-config.
+Fix this by ensuring that BCM47XX_SSB is selected if BCM47XX_BCMA is
+not. This allows us to select either system or both, but not neither.
 
 Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
 ---
 
- arch/mips/rb532/devices.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
-index 32ea3e6731d6..354d258396ff 100644
---- a/arch/mips/rb532/devices.c
-+++ b/arch/mips/rb532/devices.c
-@@ -310,6 +310,8 @@ static int __init plat_setup_devices(void)
- 	return platform_add_devices(rb532_devs, ARRAY_SIZE(rb532_devs));
- }
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 350a990fc719..659e0079487f 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -259,6 +259,7 @@ config BCM47XX
+ 	select LEDS_GPIO_REGISTER
+ 	select BCM47XX_NVRAM
+ 	select BCM47XX_SPROM
++	select BCM47XX_SSB if !BCM47XX_BCMA
+ 	help
+ 	 Support for BCM47XX based boards
  
-+#ifdef CONFIG_NET
-+
- static int __init setup_kmac(char *s)
- {
- 	printk(KERN_INFO "korina mac = %s\n", s);
-@@ -322,4 +324,6 @@ static int __init setup_kmac(char *s)
- 
- __setup("kmac=", setup_kmac);
- 
-+#endif /* CONFIG_NET */
-+
- arch_initcall(plat_setup_devices);
 -- 
 2.7.4

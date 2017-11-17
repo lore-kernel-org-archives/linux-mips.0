@@ -1,19 +1,18 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.154.231]:50412 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.150.245]:60616 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992316AbdKOWBJyI2M4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 15 Nov 2017 23:01:09 +0100
-Date: Wed, 15 Nov 2017 21:59:11 +0000
+        by eddie.linux-mips.org with ESMTP id S23990435AbdKQJhgHk2Rw (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 17 Nov 2017 10:37:36 +0100
+Date: Fri, 17 Nov 2017 09:37:10 +0000
 From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH v9 3/3] MIPS: ranchu: Add Ranchu as a new generic-based
- board
-Message-ID: <20171115215910.GB27409@jhogan-linux.mipstec.com>
-References: <1510753368-16453-1-git-send-email-aleksandar.markovic@rt-rk.com>
- <1510753368-16453-4-git-send-email-aleksandar.markovic@rt-rk.com>
+Subject: Re: [PATCH] cpufreq: Add Loongson machine dependencies
+Message-ID: <20171117093710.GB27368@jhogan-linux.mipstec.com>
+References: <20171115211755.25102-1-james.hogan@mips.com>
+ <CAAhV-H5Bhwxtec7cZKuov2i1F1mHaPHPOV0cD4ZZzWMJVkD1Zw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="neYutvxvOLaeuPCA"
+        protocol="application/pgp-signature"; boundary="9amGYk9869ThD9tj"
 Content-Disposition: inline
-In-Reply-To: <1510753368-16453-4-git-send-email-aleksandar.markovic@rt-rk.com>
+In-Reply-To: <CAAhV-H5Bhwxtec7cZKuov2i1F1mHaPHPOV0cD4ZZzWMJVkD1Zw@mail.gmail.com>
 Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -24,75 +23,58 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Aleksandar Markovic <aleksandar.markovic@rt-rk.com>
-Cc: linux-mips@linux-mips.org, Miodrag Dinic <miodrag.dinic@mips.com>, Goran Ferenc <goran.ferenc@mips.com>, Aleksandar Markovic <aleksandar.markovic@mips.com>, "David S. Miller" <davem@davemloft.net>, Douglas Leung <douglas.leung@mips.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab@kernel.org>, Paul Burton <paul.burton@mips.com>, Petar Jovanovic <petar.jovanovic@mips.com>, Raghu Gandham <raghu.gandham@mips.com>, Ralf Baechle <ralf@linux-mips.org>, Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <20171115215911.xABDy5vT_HY2GOFmbm5hIEeiwNG47igY1hc--ce9rlw@z>
+To: Huacai Chen <chenhuacai@gmail.com>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org, Keguang Zhang <keguang.zhang@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>
+Message-ID: <20171117093710.oWqoFlFSUXcjr8JvKi_c6tUFiUKnr_r2dmMbTzJNNMU@z>
 
---neYutvxvOLaeuPCA
+--9amGYk9869ThD9tj
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 
-Hi Aleksandar,
+Hi Huacai
 
-On Wed, Nov 15, 2017 at 02:42:20PM +0100, Aleksandar Markovic wrote:
-> diff --git a/arch/mips/configs/generic/board-ranchu.config b/arch/mips/configs/generic/board-ranchu.config
-> new file mode 100644
-> index 0000000..fee9ad4
-> --- /dev/null
-> +++ b/arch/mips/configs/generic/board-ranchu.config
-> @@ -0,0 +1,30 @@
-> +CONFIG_VIRT_BOARD_RANCHU=y
+On Fri, Nov 17, 2017 at 12:37:30PM +0800, Huacai Chen wrote:
+> I think it is better to make LOONGSON1_CPUFREQ depends on
+> CPU_LOONGSON1, and LOONGSON2_CPUFREQ depends on CPU_LOONGSON2
 
-I presume its valid for Ranchu support to be enabled in MIPS32 / MIPS64,
-and R1 / R2 / R6 kernels? (that's fine if so, just making sure there's
-no need for a require comment).
+Yes, that may well be preferable, however as stated below both drivers
+have stricter dependencies than that which break the build for certain
+configurations:
 
-> diff --git a/arch/mips/generic/board-ranchu.c b/arch/mips/generic/board-ranchu.c
-> new file mode 100644
-> index 0000000..0efc555
-> --- /dev/null
-> +++ b/arch/mips/generic/board-ranchu.c
-> @@ -0,0 +1,85 @@
+> On Thu, Nov 16, 2017 at 5:17 AM, James Hogan <james.hogan@mips.com> wrote:
+> > More specifically loongson1-cpufreq.c uses RST_CPU_EN and RST_CPU,
+> > neither of which is defined in asm/mach-loongson32/regs-clk.h unless
+> > CONFIG_LOONGSON1_LS1B=y, and loongson2_cpufreq.c references
+> > loongson2_clockmod_table[], which is only defined in
+> > arch/mips/loongson64/lemote-2f/clock.c, i.e. when
+> > CONFIG_LEMOTE_MACH2F=y.
 
-...
+If those issues are fixed such that the drivers build on any respective
+loongson1 / loongson2 configuration then the dependencies can always be
+updated again to reflect that.
 
-> +static __init unsigned int ranchu_measure_hpt_freq(void)
-> +{
-
-...
-
-> +	count += 5000;	/* round */
-> +	count -= count % 10000;
-
-A comment to explain the purpose of the rounding would be helpful. I
-presume its there just to get a more accurate value since the frequency
-will always be a round value in practice.
-
-Either way this patch looks good to me:
-Reviewed-by: James Hogan <jhogan@kernel.org>
-
-Thanks!
+Cheers
 James
 
---neYutvxvOLaeuPCA
+--9amGYk9869ThD9tj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAloMuKgACgkQbAtpk944
-dnpeFw/8DExi8wFBAdaH20u+iGqOc0Kpxl2KyV+on+yt9EDVHizax+NfYj50Upqc
-h8B1TVGUTGFFwv0PzaddABszwepRM+uhRvnLn+WLgENt+UUFPehF8UTE1h5tFgqO
-VUJqxYbvLmicsF0W3HpMlyWbr4CZibyhftPb/mZonwifaJbHKgslXYttGG4D903j
-prhUTN7o8Hnkt2q+sV3fyGgO2nC3Ex5oSVeDDNTxQNxqK8oNSrslq2lTOhXuMO++
-b/sbT6EZSnQ/GPnSUJrHuHgcVsAGRQwhQCZwC1uMm7sjkMxpcffKpUWE/NJLQuk8
-GuBlRw6y68KbvrNDZ2iQWZB09VQfe8DxoC5Axw2/6F+PwGuCDWOI0mcAf18p0mGC
-a8zA5yZ1VpbRhwZnR2YrQIA+Ozlv7U79EA0iiCFfSEF9uoKLre7J4FpeN+RdsG9y
-N7w2X6TZOVrBHbHWUMe1hZTdUd29Vy24OLflhcHRkdovz4aG1NYabU5RfMSZnU47
-QP4h7OOYkzWVuY6F5k3BhvJaEiV9ML2HeDwg92/GqI6soqU601B2r+EKK5eGcF3z
-Dcw/fuVyKtgzCWMj4K2jneugKZuStUcbskoBsz8Qtqu2FJ/ZhYnHopzLVFYQAWL/
-TYIK7m9hOVLEaeY+xytdBXyJEHOP1VbE+h3Ufu2fMfZJ9YYCbbQ=
-=vr0Q
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAloOrb0ACgkQbAtpk944
+dnrjVA//fKmSzwAE6mZE712mk2kRI/9EXptpipRyZhheDfd551tgxf78zP2c/U0c
+GBfoW9giX9wYfpnr5ku9jmE4sXmkUANlwSRJbOXHWwNKSQK1uhPV3uqeB8Z6fBl8
+q3zMW37QlSQJU/ISG4pYyud/0PSgE6NS1mqfa9o4FmkFlgtrYJn6ouEKRHBIRWAx
+65FaQtWUPq0y/tBR6K61dj6pLvoI1koZyZftJ4AIY7ptRZkve0niId6vIopw5Mk1
+Z7tWt21VTrNH56F+jk9UKYnlAIPKX2PdmWAKNVwDNlVliKqD5fciiJKtF0L0CaBk
+pG8cEdjtOY1//ObJd2zFy5l1zJ9mfWg1sIkHpzJdhB9UqvKSV8MET5nfeqjKbCsS
+1mcvjckVPLbbgfRrVwLidRF3Ik7NtJHBDa8w597y7D577hIY+RIcK5RPSa1zKqxW
+lta3InF84KVe1rnipdALe7Z8WZiuE5ZtCZmXbN0hrCEBDIqSDG+tYshGJshAXS95
+QndCXnGp6MKx5o09JCu9VBpCT9cQqQlswrJHqC92Gmh16wJFisMDtTUkwN3WVGTh
+0IC8TADj5Kk2O3o89nDVYXaCB1/I874gl5ZE0ZRY+phhAe+GcfL4K+l7dX1H/NfM
+iFz/+qWeWE46MSk/a79w1SqRYxfHRJyEClVE5hdUk7oKbi4lSAA=
+=IqZA
 -----END PGP SIGNATURE-----
 
---neYutvxvOLaeuPCA--
+--9amGYk9869ThD9tj--

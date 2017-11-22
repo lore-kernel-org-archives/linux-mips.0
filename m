@@ -1,16 +1,14 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.150.245]:37823 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.150.245]:49106 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992280AbdKUAEPECysn (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 21 Nov 2017 01:04:15 +0100
-From: James Hogan <james.hogan@mips.com>
-Subject: [PATCH] MIPS: Fix CPS SMP NS16550 UART defaults
-Date: Tue, 21 Nov 2017 00:02:40 +0000
-Message-ID: <20171121000240.4058-1-james.hogan@mips.com>
-In-Reply-To: <5e88e3d4-3c4b-b5eb-0b32-d0c0902e14c2@roeck-us.net>
-References: <5e88e3d4-3c4b-b5eb-0b32-d0c0902e14c2@roeck-us.net>
+        by eddie.linux-mips.org with ESMTP id S23990409AbdKVJ61z84zn (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 22 Nov 2017 10:58:27 +0100
+From: Matt Redfearn <matt.redfearn@mips.com>
+Subject: [PATCH 1/2] serial: 8250_early: Only set divisor if valid clk & baud
+Date: Wed, 22 Nov 2017 09:57:28 +0000
+Message-ID: <1511344649-27612-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Return-Path: <James.Hogan@mips.com>
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,81 +18,57 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, Guenter Roeck <linux@roeck-us.net>
-Cc: Paul Burton <paul.burton@imgtec.com>, linux-kernel@vger.kernel.org, James Hogan <jhogan@kernel.org>, linux-mips@linux-mips.org
-Message-ID: <20171121000240.ov8VTN5GKxDOLYEYc5kq_ezAt59-Y_eFfN2YReEc5Ko@z>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>
+Cc: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>, linux-serial@vger.kernel.org, linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, "stable # 4 . 14" <stable@vger.kernel.org>, Marc Gonzalez <marc_gonzalez@sigmadesigns.com>, Jiri Slaby <jslaby@suse.com>, linux-kernel@vger.kernel.org, Douglas Anderson <dianders@chromium.org>, Jeffy Chen <jeffy.chen@rock-chips.com>
+Message-ID: <20171122095728.oqkCLFdiw2EUye6NAUnDTt8bjjwhdtXaSjono_7sWXk@z>
 
-From: James Hogan <jhogan@kernel.org>
+If either uartclk or baud are 0, avoid calculating and setting a divisor
+based on them since the output will almost certainly be garbage.
 
-The MIPS_CPS_NS16550_BASE and MIPS_CPS_NS16550_SHIFT options have no
-defaults for non-Malta platforms which select SYS_SUPPORTS_MIPS_CPS
-(i.e. the pistachio and generic platforms). This is problematic for
-automated allyesconfig and allmodconfig builds based on these platforms,
-since make silentoldconfig tries to ask the user for values, and
-especially since v4.15 where the default platform was switched to
-generic.
+This also allows platforms such as the MIPS generic kernel, which has no
+way to know a valid BASE_BASE for the board it is actually booted on at
+compile time, to set BASE_BAUD to 0 and avoid early_8250 setting a bad
+divisor.
 
-Default these options to 0 and arrange for MIPS_CPS_NS16550 to be no
-when using that default base address, so that the option only has an
-effect when the default is provided (i.e. Malta) or when a value is
-provided by the user.
+This fixes a regression caused by commit 31cb9a8575ca ("earlycon:
+initialise baud field of earlycon device structure"), which changed the
+behavior of of_setup_earlycon such that it sets a baud rate in the
+earlycon structure where previously it was left as 0. All boards
+supported by the MIPS generic kernel started outputting garbage from the
+boot console due to an incorrect divisor being set.
 
-Fixes: 609cf6f2291a ("MIPS: CPS: Early debug using an ns16550-compatible UART")
-Signed-off-by: James Hogan <jhogan@kernel.org>
-Reviewed-by: Paul Burton <paul.burton@mips.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-mips@linux-mips.org
+Fixes: 31cb9a8575ca ("earlycon: initialise baud field of earlycon device structure")
+Cc: stable <stable@vger.kernel.org> # 4.14
+Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
 ---
-Guenter: I'm guessing this is the problem you're referring to.
----
- arch/mips/Kconfig.debug | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/Kconfig.debug b/arch/mips/Kconfig.debug
-index 464af5e025d6..0749c3724543 100644
---- a/arch/mips/Kconfig.debug
-+++ b/arch/mips/Kconfig.debug
-@@ -124,30 +124,36 @@ config SCACHE_DEBUGFS
+ drivers/tty/serial/8250/8250_early.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/tty/serial/8250/8250_early.c b/drivers/tty/serial/8250/8250_early.c
+index af72ec32e404..f135c1846477 100644
+--- a/drivers/tty/serial/8250/8250_early.c
++++ b/drivers/tty/serial/8250/8250_early.c
+@@ -125,12 +125,14 @@ static void __init init_port(struct earlycon_device *device)
+ 	serial8250_early_out(port, UART_FCR, 0);	/* no fifo */
+ 	serial8250_early_out(port, UART_MCR, 0x3);	/* DTR + RTS */
  
- 	  If unsure, say N.
+-	divisor = DIV_ROUND_CLOSEST(port->uartclk, 16 * device->baud);
+-	c = serial8250_early_in(port, UART_LCR);
+-	serial8250_early_out(port, UART_LCR, c | UART_LCR_DLAB);
+-	serial8250_early_out(port, UART_DLL, divisor & 0xff);
+-	serial8250_early_out(port, UART_DLM, (divisor >> 8) & 0xff);
+-	serial8250_early_out(port, UART_LCR, c & ~UART_LCR_DLAB);
++	if (port->uartclk && device->baud) {
++		divisor = DIV_ROUND_CLOSEST(port->uartclk, 16 * device->baud);
++		c = serial8250_early_in(port, UART_LCR);
++		serial8250_early_out(port, UART_LCR, c | UART_LCR_DLAB);
++		serial8250_early_out(port, UART_DLL, divisor & 0xff);
++		serial8250_early_out(port, UART_DLM, (divisor >> 8) & 0xff);
++		serial8250_early_out(port, UART_LCR, c & ~UART_LCR_DLAB);
++	}
+ }
  
--menuconfig MIPS_CPS_NS16550
-+menuconfig MIPS_CPS_NS16550_BOOL
- 	bool "CPS SMP NS16550 UART output"
- 	depends on MIPS_CPS
- 	help
- 	  Output debug information via an ns16550 compatible UART if exceptions
- 	  occur early in the boot process of a secondary core.
- 
--if MIPS_CPS_NS16550
-+if MIPS_CPS_NS16550_BOOL
-+
-+config MIPS_CPS_NS16550
-+	def_bool MIPS_CPS_NS16550_BASE != 0
- 
- config MIPS_CPS_NS16550_BASE
- 	hex "UART Base Address"
- 	default 0x1b0003f8 if MIPS_MALTA
-+	default 0
- 	help
- 	  The base address of the ns16550 compatible UART on which to output
- 	  debug information from the early stages of core startup.
- 
-+	  This is only used if non-zero.
-+
- config MIPS_CPS_NS16550_SHIFT
- 	int "UART Register Shift"
--	default 0 if MIPS_MALTA
-+	default 0
- 	help
- 	  The number of bits to shift ns16550 register indices by in order to
- 	  form their addresses. That is, log base 2 of the span between
- 	  adjacent ns16550 registers in the system.
- 
--endif # MIPS_CPS_NS16550
-+endif # MIPS_CPS_NS16550_BOOL
- 
- endmenu
+ int __init early_serial8250_setup(struct earlycon_device *device,
 -- 
-2.14.1
+2.7.4

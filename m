@@ -1,13 +1,15 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.154.231]:57884 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.154.231]:50466 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990483AbdKWOnVvzaFT (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 23 Nov 2017 15:43:21 +0100
-Date: Thu, 23 Nov 2017 14:42:35 +0000
+        by eddie.linux-mips.org with ESMTP id S23990720AbdKXK0oxWV7G (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 24 Nov 2017 11:26:44 +0100
+Date: Fri, 24 Nov 2017 10:26:14 +0000
 From: "Maciej W. Rozycki" <macro@mips.com>
-Subject: Re: [PATCH] MIPS: Fix odd fp register warnings with MIPS64r2
-In-Reply-To: <20171110205519.25884-1-james.hogan@mips.com>
-Message-ID: <alpine.DEB.2.00.1711231420400.4290@tp.orcam.me.uk>
-References: <20171110205519.25884-1-james.hogan@mips.com>
+Subject: Re: [PATCH v2] MIPS: Add basic R5900 support
+In-Reply-To: <20171030175516.GA18586@localhost.localdomain>
+Message-ID: <alpine.DEB.2.00.1711240958370.3865@tp.orcam.me.uk>
+References: <20170916133423.GB32582@localhost.localdomain> <alpine.DEB.2.00.1709171001160.16752@tp.orcam.me.uk> <20170918192428.GA391@localhost.localdomain> <alpine.DEB.2.00.1709182055090.16752@tp.orcam.me.uk> <20170920145440.GB9255@localhost.localdomain>
+ <alpine.DEB.2.00.1709201705070.16752@tp.orcam.me.uk> <20170927172107.GB2631@localhost.localdomain> <alpine.DEB.2.00.1709272208300.16752@tp.orcam.me.uk> <20170930065654.GA7714@localhost.localdomain> <alpine.DEB.2.00.1709301305400.12020@tp.orcam.me.uk>
+ <20171030175516.GA18586@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <Maciej.Rozycki@mips.com>
@@ -20,58 +22,55 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@mips.com>
-Cc: linux-mips@linux-mips.org, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@imgtec.com>, stable@vger.kernel.org
-Message-ID: <20171123144235.NarRPzEhrsHYKNFJo5QsZzY7prg0nxh9wxDMT4j9gDo@z>
+To: Fredrik Noring <noring@nocrew.org>, John Crispin <blogic@openwrt.org>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20171124102614.Xut-Q5TpwrvJhXvV_Ub0bZ5E5HKtlrZsnOwoffRPO9U@z>
 
-On Fri, 10 Nov 2017, James Hogan wrote:
+Fredrik, John --
 
-> Building 32-bit MIPS64r2 kernels produces warnings like the following
-> on certain toolchains (such as GNU assembler 2.24.90, but not GNU
-> assembler 2.28.51) since commit 22b8ba765a72 ("MIPS: Fix MIPS64 FP
-> save/restore on 32-bit kernels"), due to the exposure of fpu_save_16odd
-> from fpu_save_double and fpu_restore_16odd from fpu_restore_double:
+ John: can you please see the question below on the machine type you 
+previously fiddled with?
+
+> >  Given that the R5900 does not expand DSP support anyhow that sounds 
+> > suspicious to me.
 > 
-> arch/mips/kernel/r4k_fpu.S:47: Warning: float register should be even, was 1
-> ...
-> arch/mips/kernel/r4k_fpu.S:59: Warning: float register should be even, was 1
-> ...
+> I've taken a closer look at the R5900 changes to the DSP kernel code now:
+> 
+> The R5900 has four three-operand instructions: MADD, MADDU, MULT and MULTU.
+> In addition, it has ten instructions for pipeline 1: MULT1, MULTU1, DIV1,
+> DIVU1, MADD1, MADDU1, MFHI1, MFLO1, MTHI1 and MTLO1. Those are the reason
+> (parts of) the cpu_has_dsp infrastructure is used, as shown in the patch
+> below. What are your thoughts on this?
+> 
+> The instructions are specific to the R5900, and notably incompatible with
+> similar ones in the base MIPS32 architecture. They are also distinct from
+> the (also R5900 specific) 128-bit multimedia instructions.
 
- Hmm, versions 2.24.90 and 2.28.51 are otherwise unindentified development 
-snapshots; I think it would be slightly more appropriate if you referred 
-to actual release versions, such as 2.25 and 2.29 respectively (if they 
-indeed expose the same symptoms), especially as people other than 
-toolchain developers and testers are generally expected not to use 
-development snapshots.
+ They're still upper halves of the architectural HI/LO accumulator and 
+also used by the 128-bit multiply and divide instructions.  I think they 
+should be handled analogously to the 128-bit GPRs, rather than pretending 
+they're a crippled version of the DSP ASE.
 
- Also I find it suspicious that you say that the message has since 
-vanished, as I can clearly reproduce it with current head (2.29.51):
+> By the way, "machine" is set to "Unknown" and "ASEs implemented" is empty
+> in /proc/cpuinfo. What would be the proper values for the R5900?
 
-$ cat oddfpr.s
-	.module mips64r2
-foo:
-	ldc1	$f1, 0($2)
-$ as -o oddfpr.o oddfpr.s
-oddfpr.s: Assembler messages:
-oddfpr.s:3: Warning: float register should be even, was 1
-$ 
+ I have no idea what the machine type is supposed to be set to and why it 
+is not omitted by default, given this piece:
 
-Can you send me a .s file produced from r4k_fpu.S along with compiler 
-flags used?
+		if (mips_get_machine_name())
+			seq_printf(m, "machine\t\t\t: %s\n",
+				mips_get_machine_name());
 
-> This appears to be because .set mips64r2 does not change the FPU ABI to
-> 64-bit when -march=mips64r2 (or e.g. -march=xlp) is provided on the
-> command line on that toolchain, from the default FPU ABI of 32-bit due
-> to the -mabi=32. This makes access to the odd FPU registers invalid.
+I think commit 9169a5d01114 ("MIPS: move mips_{set,get}_machine_name() to 
+a more generic place") broke things.  Cc-ing the author for possible 
+input.
 
- Correct, the purpose of `.set arch=mips64r2', which is the canonical form 
-`.set mips64r2' is equivalent to, and indeed any `.set arch=...' 
-pseudo-op, is only to change the set of instructions accepted within the 
-limits determined by the ABI chosen with `-mabi=...' (or its equivalent 
-short forms) and not the ABI itself.
-
- The patch itself LGTM.
-
-Reviewed-by: Maciej W. Rozycki <macro@mips.com>
+ ASEs OTOH are specific to MIPS32 and MIPS64 architectures, as per 
+respective architecture specification volumes (the MIPS16 ASE might be a 
+prominent exception, having been defined as the first ASE ever mid way 
+through between the MIPS IV and MIPS32/MIPS64 ISAs).  As the R5900 is not 
+a MIPS32 or MIPS64 processor (and has no MIPS16 support) it does not have 
+any ASEs implemented.  Vendor-specific architecture extensions do not 
+count as ASEs.
 
   Maciej

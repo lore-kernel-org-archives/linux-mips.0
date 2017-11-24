@@ -1,15 +1,15 @@
-Received: from 19pmail.ess.barracuda.com ([64.235.154.231]:50466 "EHLO
+Received: from 19pmail.ess.barracuda.com ([64.235.154.231]:56423 "EHLO
         19pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990720AbdKXK0oxWV7G (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 24 Nov 2017 11:26:44 +0100
-Date: Fri, 24 Nov 2017 10:26:14 +0000
+        by eddie.linux-mips.org with ESMTP id S23990504AbdKXKkkBfXqG (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 24 Nov 2017 11:40:40 +0100
+Date: Fri, 24 Nov 2017 10:39:29 +0000
 From: "Maciej W. Rozycki" <macro@mips.com>
 Subject: Re: [PATCH v2] MIPS: Add basic R5900 support
-In-Reply-To: <20171030175516.GA18586@localhost.localdomain>
-Message-ID: <alpine.DEB.2.00.1711240958370.3865@tp.orcam.me.uk>
+In-Reply-To: <alpine.DEB.2.00.1711240958370.3865@tp.orcam.me.uk>
+Message-ID: <alpine.DEB.2.00.1711241038320.3865@tp.orcam.me.uk>
 References: <20170916133423.GB32582@localhost.localdomain> <alpine.DEB.2.00.1709171001160.16752@tp.orcam.me.uk> <20170918192428.GA391@localhost.localdomain> <alpine.DEB.2.00.1709182055090.16752@tp.orcam.me.uk> <20170920145440.GB9255@localhost.localdomain>
  <alpine.DEB.2.00.1709201705070.16752@tp.orcam.me.uk> <20170927172107.GB2631@localhost.localdomain> <alpine.DEB.2.00.1709272208300.16752@tp.orcam.me.uk> <20170930065654.GA7714@localhost.localdomain> <alpine.DEB.2.00.1709301305400.12020@tp.orcam.me.uk>
- <20171030175516.GA18586@localhost.localdomain>
+ <20171030175516.GA18586@localhost.localdomain> <alpine.DEB.2.00.1711240958370.3865@tp.orcam.me.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <Maciej.Rozycki@mips.com>
@@ -22,11 +22,13 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Fredrik Noring <noring@nocrew.org>, John Crispin <blogic@openwrt.org>
+To: Fredrik Noring <noring@nocrew.org>, John Crispin <john@phrozen.org>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20171124102614.Xut-Q5TpwrvJhXvV_Ub0bZ5E5HKtlrZsnOwoffRPO9U@z>
+Message-ID: <20171124103929.JkF86u-WER5Ieu0bSVP0QBw0j9KLPhu2pTTRPvt-lGY@z>
 
 Fredrik, John --
+
+[Sending again, with John's address corrected.]
 
  John: can you please see the question below on the machine type you 
 previously fiddled with?

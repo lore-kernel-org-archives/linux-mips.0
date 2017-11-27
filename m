@@ -1,17 +1,15 @@
-Received: from mail-io0-x22d.google.com ([IPv6:2607:f8b0:4001:c06::22d]:39785
-        "EHLO mail-io0-x22d.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990487AbdKYOqKCD000 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 25 Nov 2017 15:46:10 +0100
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:48524 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990391AbdK0JjCyjjTz (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Nov 2017 10:39:02 +0100
+Date: Mon, 27 Nov 2017 09:33:03 +0000
+From: "Maciej W. Rozycki" <macro@mips.com>
+Subject: [PATCH] MIPS: Validate PR_SET_FP_MODE prctl(2) requests against the
+ ABI of the task
+Message-ID: <alpine.DEB.2.00.1711251259130.3865@tp.orcam.me.uk>
 MIME-Version: 1.0
-In-Reply-To: <CANc+2y5VzWx+kLBO+=aWHLE5OGAGvuB_eVAzJ52ZVy79ad9Nxg@mail.gmail.com>
-References: <20170918140241.24003-1-prasannatsmkumar@gmail.com>
- <20171012143011.GA30173@gondor.apana.org.au> <CANc+2y5VzWx+kLBO+=aWHLE5OGAGvuB_eVAzJ52ZVy79ad9Nxg@mail.gmail.com>
-From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Date: Sat, 25 Nov 2017 20:16:03 +0530
-Message-ID: <CANc+2y6DSjrsQj9kSz1go4-v+WVG2YcxeDc6Ehgm-bbf4qG+=A@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] crypto: Add driver for JZ4780 PRNG
-Content-Type: text/plain; charset="UTF-8"
-Return-Path: <prasannatsmkumar@gmail.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,47 +19,54 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Rob Herring <robh+dt@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, "David S . Miller" <davem@davemloft.net>, Paul Cercueil <paul@crapouillou.net>, "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" <linux-crypto@vger.kernel.org>, linux-mips@linux-mips.org, Mathieu Malaterre <malat@debian.org>, noloader@gmail.com
-Message-ID: <20171125144603.0Rv3PSYT04qtcnVbRZO9yJ2Sep002wdjCruFZFs6klI@z>
+To: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@mips.com>
+Cc: Paul Burton <Paul.Burton@mips.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Message-ID: <20171127093303.XtUk_J92LWHYjkzGQMo0AP8jJm2389Itky7KXNoHwvI@z>
 
-Hi Ralf,
+Fix an API loophole introduced with commit 9791554b45a2 ("MIPS,prctl: 
+add PR_[GS]ET_FP_MODE prctl options for MIPS"), where the caller of 
+prctl(2) is incorrectly allowed to make a change to CP0.Status.FR or 
+CP0.Config5.FRE register bits even if CONFIG_MIPS_O32_FP64_SUPPORT has 
+not been enabled, despite that an executable requesting the mode 
+requested via ELF file annotation would not be allowed to run in the 
+first place, or for n64 and n64 ABI tasks which do not have non-default 
+modes defined at all.  Add suitable checks to `mips_set_process_fp_mode' 
+and bail out if an invalid mode change has been requested for the ABI in 
+effect, even if the FPU hardware or emulation would otherwise allow it.
 
-On 12 October 2017 at 22:59, PrasannaKumar Muralidharan
-<prasannatsmkumar@gmail.com> wrote:
-> Hi Herbert,
->
-> On 12 October 2017 at 20:00, Herbert Xu <herbert@gondor.apana.org.au> wrote:
->> On Mon, Sep 18, 2017 at 07:32:37PM +0530, PrasannaKumar Muralidharan wrote:
->>> This patch series adds support of pseudo random number generator found
->>> in Ingenic's JZ4780 and X1000 SoC.
->>>
->>> Create cgublock node which has CGU and RNG node as its children. The
->>> cgublock node uses "simple-bus" compatible which helps in exposing CGU
->>> and RNG nodes without changing CGU driver. Add 'syscon' compatible in
->>> CGU node in jz4780.dtsi. The jz4780-rng driver uses regmap exposed via
->>> syscon interface to access the RNG registers. CGU driver is not
->>> modified in this patch set as registers used by CGU driver and this
->>> driver are different.
->>>
->>> PrasannaKumar Muralidharan (4):
->>>   crypto: jz4780-rng: Add JZ4780 PRNG devicetree binding documentation
->>>   crypto: jz4780-rng: Add Ingenic JZ4780 hardware PRNG driver
->>>   crypto: jz4780-rng: Add RNG node to jz4780.dtsi
->>>   crypto: jz4780-rng: Enable PRNG support in CI20 defconfig
->>
->> Please indicate which patches are intended to go through the crypto
->> trees.
->
-> From https://patchwork.linux-mips.org/patch/17162/ I expect the same.
-> Either all patches go via crypto tree or via mips tree.
-> The dtsi changes is not yet acked by MIPS / JZ4780 maintainer. Let's
-> wait for it.
->
-> Thanks,
-> PrasannaKumar
+Always succeed however without taking any further action if the mode 
+requested is the same as one already in effect, regardless of whether 
+any mode change, should it be requested, would actually be allowed for 
+the task concerned.
 
-Should I do anything more for this series?
+Cc: stable@vger.kernel.org # 4.0+
+Fixes: 9791554b45a2 ("MIPS,prctl: add PR_[GS]ET_FP_MODE prctl options for MIPS")
+Signed-off-by: Maciej W. Rozycki <macro@mips.com>
+---
+ arch/mips/kernel/process.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Thanks,
-PrasannaKumar
+linux-mips-prctl-fp-mode-o32-fp64.diff
+Index: linux-sfr-test/arch/mips/kernel/process.c
+===================================================================
+--- linux-sfr-test.orig/arch/mips/kernel/process.c	2017-11-25 12:40:55.868109000 +0000
++++ linux-sfr-test/arch/mips/kernel/process.c	2017-11-25 12:41:56.411578000 +0000
+@@ -705,6 +705,18 @@ int mips_set_process_fp_mode(struct task
+ 	struct task_struct *t;
+ 	int max_users;
+ 
++	/* If nothing to change, return right away, successfully.  */
++	if (value == mips_get_process_fp_mode(task))
++		return 0;
++
++	/* Only accept a mode change if 64-bit FP enabled for o32.  */
++	if (!IS_ENABLED(CONFIG_MIPS_O32_FP64_SUPPORT))
++		return -EOPNOTSUPP;
++
++	/* And only for o32 tasks.  */
++	if (IS_ENABLED(CONFIG_64BIT) && !test_thread_flag(TIF_32BIT_REGS))
++		return -EOPNOTSUPP;
++
+ 	/* Check the value is valid */
+ 	if (value & ~known_bits)
+ 		return -EOPNOTSUPP;

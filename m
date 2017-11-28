@@ -1,19 +1,21 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:34115 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:41773 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990493AbdK1QOay1q7Y (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Nov 2017 17:14:30 +0100
-Date: Tue, 28 Nov 2017 16:10:14 +0000
+        by eddie.linux-mips.org with ESMTP id S23991743AbdK1RgAGH6YU (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Nov 2017 18:36:00 +0100
+Date: Tue, 28 Nov 2017 17:31:51 +0000
 From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH 01/13] dt-bindings: Add vendor prefix for Microsemi
- Corporation
-Message-ID: <20171128161014.GG27409@jhogan-linux.mipstec.com>
+Subject: Re: [PATCH 09/13] MIPS: mscc: Add initial support for Microsemi MIPS
+ SoCs
+Message-ID: <20171128173151.GD5027@jhogan-linux.mipstec.com>
 References: <20171128152643.20463-1-alexandre.belloni@free-electrons.com>
- <20171128152643.20463-2-alexandre.belloni@free-electrons.com>
+ <20171128152643.20463-10-alexandre.belloni@free-electrons.com>
+ <20171128160137.GF27409@jhogan-linux.mipstec.com>
+ <20171128165359.GJ21126@piout.net>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xkXJwpr35CY/Lc3I"
+        protocol="application/pgp-signature"; boundary="FoLtEtfbNGMjfgrs"
 Content-Disposition: inline
-In-Reply-To: <20171128152643.20463-2-alexandre.belloni@free-electrons.com>
+In-Reply-To: <20171128165359.GJ21126@piout.net>
 Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -25,71 +27,60 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Message-ID: <20171128161014.o628agbYhVJuj58vrZ3SgB_WQdTumrOXYkxuInXQ-SU@z>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@mips.com>
+Message-ID: <20171128173151.EqTk6xIbSeRzgtViQpMhiWRnpal87q_aSlQMoKEiQlU@z>
 
---xkXJwpr35CY/Lc3I
+--FoLtEtfbNGMjfgrs
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 28, 2017 at 04:26:31PM +0100, Alexandre Belloni wrote:
-> Microsemi Corporation provides semiconductor and system solutions for
-> aerospace & defense, communications, data center and industrial markets.
+On Tue, Nov 28, 2017 at 05:53:59PM +0100, Alexandre Belloni wrote:
+> On 28/11/2017 at 16:01:38 +0000, James Hogan wrote:
+> > On Tue, Nov 28, 2017 at 04:26:39PM +0100, Alexandre Belloni wrote:
+> > > Introduce support for the MIPS based Microsemi Ocelot SoCs.
+> > > As the plan is to have all SoCs supported only using device tree, the
+> > > mach directory is simply called mscc.
+> >=20
+> > Nice. Have you considered adding this to the existing multiplatform
+> > "generic" platform? See for example commit b35565bb16a5 ("MIPS: generic:
+> > Add support for MIPSfpga") for the latest platform to be converted.
+> >=20
 >=20
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-> ---
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: devicetree@vger.kernel.org
+> I didn't because we are currently booting using an old redboot with its
+> own boot protocol and at boot, the register read by the sead3 code is
+> completely random (it actually matched once).
+>=20
+> Do you consider that mandatory to get the platform upstream?
 
-Nit: Usually the Cc list goes before the --- line so that it is included
-in the git history (i.e. these people had the opportunity to comment).
+No, however if it is practical to do so I think it might be the best way
+forward (even if generic+YAMON support is mutually exclusive of
+generic+redboot, though hopefully there is some way to avoid that).
+
+Paul on Cc, he may have thoughts on this one.
 
 Cheers
 James
 
->=20
->=20
->  Documentation/devicetree/bindings/vendor-prefixes.txt | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.txt b/Docu=
-mentation/devicetree/bindings/vendor-prefixes.txt
-> index 0994bdd82cd3..7b880084fd37 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.txt
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.txt
-> @@ -219,6 +219,7 @@ motorola	Motorola, Inc.
->  moxa	Moxa Inc.
->  mpl	MPL AG
->  mqmaker	mqmaker Inc.
-> +mscc	Microsemi Corporation
->  msi	Micro-Star International Co. Ltd.
->  mti	Imagination Technologies Ltd. (formerly MIPS Technologies Inc.)
->  multi-inno	Multi-Inno Technology Co.,Ltd
-> --=20
-> 2.15.0
->=20
->=20
-
---xkXJwpr35CY/Lc3I
+--FoLtEtfbNGMjfgrs
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlodimYACgkQbAtpk944
-dnr87A//ZRd9S96D6M6KvgykqRA/eGrYQHsgg3SVKLEHOs8dXOuULXBFKfH3q6TC
-0ojY+7kA0Ch34UbOIcM9QArzbZil77Y/dpgm/Glsk1yh7GuGn6EjcWBBi4YkebGX
-oTEuwI9jVvvGAyeDIOcXlwXW9+zohN2ufNXUNz+12ae50WqRFDtN0wrerSD2si+F
-Cf7imr1V56TdAFIzPKEj3oCyI62t7AAE3H7JWMAfyj/3swJCSWF7rLjwSnQGGNjz
-hV3IFslOqLQTzSzfkkxbWcVBpoYSLgkiDAjtNLoDGOWO1YDNlDF0DnBJimOjwjp6
-D2dVNF8VSig2FT9JuRYqnm+Nh9nd24sZu4OoELWif/PXgXDo+o45NfY38YHNji4n
-PpBxYEYrv1cYxRJDIcbhj3OFHOFoeKdv0a/I3PCbSCGy+a5wqh4TveD9O4HjRcKB
-MfVW0jWSzwJob4Ld4MNnD+lV7P1C3xjrbqvYJhmugprAoMasj/gJdPU6lrMS49mK
-gdylYdsF6KHh0WUofg2pEt8o65vwE+EbY7BnU3PzRFYNIhzff0Pf38fcV27fIynt
-aFxcKzTGJp7u9H35gev8G71kjiD8uEz1hSsx+ZeD436mn5wTk74APTk4n7w4/Alv
-QWwSgnbu5E94G7pTf2Y83tFVeK7qINhPR+7XACS6UCgM/DPFP7s=
-=/5tY
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlodnX8ACgkQbAtpk944
+dnoWmxAAnEN0uM8/MqFCpBISyDS3W66qpYwgwXKTBRITY2GZYpC8naHYit3BXUR8
+6SCdIKbxtouYNqXxry/IMtWX2csUBERzjinp+7o8xEpSlG0YB6rZAD+Bp5b8m5Dn
+uqtJCXANEJEH9qrbryawJcsOl7K6FPapFP2Iw3sWfiKb+2p0JVxbWq15/ezv66xN
+Goyd3fURLGjKFVC30601Ok+bDtmOvk8J0JyXMRfzcHiWhLGNvbvHfQ4hQJ3FYQ/k
+5bfIVG9ifEqK65xt5kgjtnAuoFAqktrruELluKt9DiER2l/5DcMCK0cMH2++8VMG
+f5wS9OzJW86WfAA5VdSpGLEiY/+Oz/dNDhsFur8TqCiZ5mvWhEcIuphT3vQd0Cdq
+6B7bERc6bnnS51aOlF9pnoK8Lz5X8fvoLUx4vcjb3uBBjiX/NOiaqC8SS5jmgwK0
+urGPQJanf8LHjrqs0dcbb2uBRCqfVKeYxH31SJxC2ZDUw+Tq+EHCgjJfYiS8x2fj
+dJlTroSU+j2MpIxqKJy8yIhc0U9mQarwRcy9nYkQt/jFGnrBD5mR+FSchHpqZAQy
+a4kXbKGyByb3x4JxC6Rr+JlYbw3EP9lUCKqnHWCPCu/nmDDhptPnOdXqU0f/ew+9
+MykgXFNgR7EmseCnUXyVAiZYwKwvdelf3Qgx5oiQQtupZmnO6Ao=
+=yb/l
 -----END PGP SIGNATURE-----
 
---xkXJwpr35CY/Lc3I--
+--FoLtEtfbNGMjfgrs--

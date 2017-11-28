@@ -1,22 +1,20 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:41773 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:58094 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991743AbdK1RgAGH6YU (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Nov 2017 18:36:00 +0100
-Date: Tue, 28 Nov 2017 17:31:51 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH 09/13] MIPS: mscc: Add initial support for Microsemi MIPS
- SoCs
-Message-ID: <20171128173151.GD5027@jhogan-linux.mipstec.com>
-References: <20171128152643.20463-1-alexandre.belloni@free-electrons.com>
- <20171128152643.20463-10-alexandre.belloni@free-electrons.com>
- <20171128160137.GF27409@jhogan-linux.mipstec.com>
- <20171128165359.GJ21126@piout.net>
+        by eddie.linux-mips.org with ESMTP id S23990482AbdK1TnaTXPgS (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Nov 2017 20:43:30 +0100
+Date: Tue, 28 Nov 2017 11:31:33 -0800
+From: Paul Burton <paul.burton@mips.com>
+Subject: Re: [PATCH] MIPS: Validate PR_SET_FP_MODE prctl(2) requests against
+ the ABI of the task
+Message-ID: <20171128193133.ip6weo4tgstqun44@pburton-laptop>
+References: <alpine.DEB.2.00.1711251259130.3865@tp.orcam.me.uk>
+ <20171127184642.ny2lad4y6zz6am2b@pburton-laptop>
+ <alpine.DEB.2.00.1711272105460.31156@tp.orcam.me.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FoLtEtfbNGMjfgrs"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20171128165359.GJ21126@piout.net>
-Return-Path: <James.Hogan@mips.com>
+In-Reply-To: <alpine.DEB.2.00.1711272105460.31156@tp.orcam.me.uk>
+Return-Path: <Paul.Burton@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,61 +24,60 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@mips.com>
-Message-ID: <20171128173151.EqTk6xIbSeRzgtViQpMhiWRnpal87q_aSlQMoKEiQlU@z>
+To: "Maciej W. Rozycki" <macro@mips.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@mips.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Message-ID: <20171128193133.czlOVws3qnGO4y9LppU5tEoGQNR4hKwjgs4uVhuLQvQ@z>
 
---FoLtEtfbNGMjfgrs
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Maciej,
 
-On Tue, Nov 28, 2017 at 05:53:59PM +0100, Alexandre Belloni wrote:
-> On 28/11/2017 at 16:01:38 +0000, James Hogan wrote:
-> > On Tue, Nov 28, 2017 at 04:26:39PM +0100, Alexandre Belloni wrote:
-> > > Introduce support for the MIPS based Microsemi Ocelot SoCs.
-> > > As the plan is to have all SoCs supported only using device tree, the
-> > > mach directory is simply called mscc.
-> >=20
-> > Nice. Have you considered adding this to the existing multiplatform
-> > "generic" platform? See for example commit b35565bb16a5 ("MIPS: generic:
-> > Add support for MIPSfpga") for the latest platform to be converted.
-> >=20
->=20
-> I didn't because we are currently booting using an old redboot with its
-> own boot protocol and at boot, the register read by the sead3 code is
-> completely random (it actually matched once).
->=20
-> Do you consider that mandatory to get the platform upstream?
+On Mon, Nov 27, 2017 at 09:39:10PM +0000, Maciej W. Rozycki wrote:
+> > > Always succeed however without taking any further action if the mode 
+> > > requested is the same as one already in effect, regardless of whether 
+> > > any mode change, should it be requested, would actually be allowed for 
+> > > the task concerned.
+> > 
+> > This seems like a distinct change that I think would be worth splitting
+> > out to a separate patch.
+> 
+>  I've been thinking about it before posting and decided it's inherent.  
+> 
+>  Indeed in developing this fix this part was the last one I realised that 
+> had to be done for the change to be overall self-consistent, following a 
+> principle typically applied to hardware registers where the programmer is 
+> architecturally allowed to write individual bits with the values 
+> previously read from them even if these bits are undefined in the 
+> specification of hardware concerned.
+> 
+>  So here you'll be able to issue a PR_SET_FP_MODE request with a value 
+> previously obtained with PR_GET_FP_MODE and it will succeed, even if all 
+> the bits are actually read-only for the ABI in effect.  This is important 
+> as GDB will soon be using these calls and expect PR_SET_FP_MODE not to 
+> fail if an attempt is made to write back a value previously obtained with 
+> PR_GET_FP_MODE.
+> 
+>  I could have buried this check in the two conditions that follow, making 
+> execution fall through if the mode remains unchanged, however I have 
+> realised that making the check upfront makes the resulting code cleaner.
+> 
+>  That written, I could make it 1/2 with the ABI checks becoming 2/2, but 
+> then 1/2 wouldn't make sense on its own (except perhaps as a 
+> microoptimisation, but that would be an entirely different purpose) and 
+> would have to be considered in conjunction with 2/2 anyway.
 
-No, however if it is practical to do so I think it might be the best way
-forward (even if generic+YAMON support is mutually exclusive of
-generic+redboot, though hopefully there is some way to avoid that).
+Ah - OK, I see. Prior to this patch the value returned by PR_GET_FP_MODE
+would always be one accepted by PR_SET_FP_MODE anyway, but with the
+patch that will cease to be true for non-o32 ABIs without the special
+case. Gotcha.
 
-Paul on Cc, he may have thoughts on this one.
+> > Both changes look good to me though, so feel free to add:
+> > 
+> >     Reviewed-by: Paul Burton <paul.burton@mips.com>
+> 
+>  Thanks for your review.  Do you feel convinced with the justification I 
+> gave?
 
-Cheers
-James
+Yes - I follow, please consider the Reviewed-by tag valid for the patch
+as-is.
 
---FoLtEtfbNGMjfgrs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlodnX8ACgkQbAtpk944
-dnoWmxAAnEN0uM8/MqFCpBISyDS3W66qpYwgwXKTBRITY2GZYpC8naHYit3BXUR8
-6SCdIKbxtouYNqXxry/IMtWX2csUBERzjinp+7o8xEpSlG0YB6rZAD+Bp5b8m5Dn
-uqtJCXANEJEH9qrbryawJcsOl7K6FPapFP2Iw3sWfiKb+2p0JVxbWq15/ezv66xN
-Goyd3fURLGjKFVC30601Ok+bDtmOvk8J0JyXMRfzcHiWhLGNvbvHfQ4hQJ3FYQ/k
-5bfIVG9ifEqK65xt5kgjtnAuoFAqktrruELluKt9DiER2l/5DcMCK0cMH2++8VMG
-f5wS9OzJW86WfAA5VdSpGLEiY/+Oz/dNDhsFur8TqCiZ5mvWhEcIuphT3vQd0Cdq
-6B7bERc6bnnS51aOlF9pnoK8Lz5X8fvoLUx4vcjb3uBBjiX/NOiaqC8SS5jmgwK0
-urGPQJanf8LHjrqs0dcbb2uBRCqfVKeYxH31SJxC2ZDUw+Tq+EHCgjJfYiS8x2fj
-dJlTroSU+j2MpIxqKJy8yIhc0U9mQarwRcy9nYkQt/jFGnrBD5mR+FSchHpqZAQy
-a4kXbKGyByb3x4JxC6Rr+JlYbw3EP9lUCKqnHWCPCu/nmDDhptPnOdXqU0f/ew+9
-MykgXFNgR7EmseCnUXyVAiZYwKwvdelf3Qgx5oiQQtupZmnO6Ao=
-=yb/l
------END PGP SIGNATURE-----
-
---FoLtEtfbNGMjfgrs--
+Thanks,
+    Paul

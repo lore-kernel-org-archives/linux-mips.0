@@ -1,21 +1,21 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:44200 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:34148 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990436AbdK1LGkF3h5- (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Nov 2017 12:06:40 +0100
-Date: Tue, 28 Nov 2017 11:04:35 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH v3 04/11] MIPS: Octeon: Remove usage of cvmx_wait()
- everywhere.
-Message-ID: <20171128110434.GE27409@jhogan-linux.mipstec.com>
-References: <1510633827-23548-1-git-send-email-steven.hill@cavium.com>
- <1510633827-23548-5-git-send-email-steven.hill@cavium.com>
- <2f2def3f-e047-1a46-1cd7-ebf4744dc2c3@caviumnetworks.com>
+        by eddie.linux-mips.org with ESMTP id S23990490AbdK1PXiaJAMT (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 28 Nov 2017 16:23:38 +0100
+Subject: Re: [PATCH 2/2] MIPS: Add custom serial.h with BASE_BAUD override for
+ generic kernel
+References: <1511344649-27612-1-git-send-email-matt.redfearn@mips.com>
+ <1511344649-27612-2-git-send-email-matt.redfearn@mips.com>
+ <20171128143502.GA17699@kroah.com>
+From: Matt Redfearn <matt.redfearn@mips.com>
+Message-ID: <c33143de-4aa1-828c-a5bf-015545c50a93@mips.com>
+Date: Tue, 28 Nov 2017 15:20:08 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="+B+y8wtTXqdUj1xM"
-Content-Disposition: inline
-In-Reply-To: <2f2def3f-e047-1a46-1cd7-ebf4744dc2c3@caviumnetworks.com>
-Return-Path: <James.Hogan@mips.com>
+In-Reply-To: <20171128143502.GA17699@kroah.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,75 +25,78 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney@caviumnetworks.com>
-Cc: "Steven J. Hill" <steven.hill@cavium.com>, linux-mips@linux-mips.org, ralf@linux-mips.org
-Message-ID: <20171128110435.t9QUl6DOiv2POk9UXHRmeIlYYjbTSSXSB4Wx9Dh3NhE@z>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>, linux-serial@vger.kernel.org, linux-mips@linux-mips.org, "stable # 4 . 14" <stable@vger.kernel.org>, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@mips.com>, Ingo Molnar <mingo@kernel.org>, Frederic Weisbecker <fweisbec@gmail.com>
+Message-ID: <20171128152008.qFJvaEHsOz6zHEwtNUqk4WxIcjp47zrrjUEUV0nA2o8@z>
 
---+B+y8wtTXqdUj1xM
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi David,
 
-On Mon, Nov 27, 2017 at 10:56:33AM -0800, David Daney wrote:
-> On 11/13/2017 08:30 PM, Steven J. Hill wrote:
-> > From: "Steven J. Hill" <Steven.Hill@cavium.com>
-> >=20
-> > Signed-off-by: Steven J. Hill <steven.hill@cavium.com>
-> > Acked-by: David Daney <david.daney@cavium.com>
-> > ---
-> >   arch/mips/cavium-octeon/executive/cvmx-helper.c |  2 +-
-> >   arch/mips/cavium-octeon/executive/cvmx-spi.c    | 10 +++++-----
-> >   arch/mips/include/asm/octeon/cvmx-fpa.h         |  4 +++-
-> >   arch/mips/include/asm/octeon/cvmx.h             | 15 ++-------------
-> >   arch/mips/pci/pcie-octeon.c                     | 12 ++++++------
-> >   5 files changed, 17 insertions(+), 26 deletions(-)
-> >=20
->=20
-> WTF:
->=20
-> drivers/staging/octeon-usb/octeon-hcd.c: In function 'cvmx_fifo_setup':
-> drivers/staging/octeon-usb/octeon-hcd.c:636:2: error: implicit=20
-> declaration of function 'cvmx_wait' [-Werror=3Dimplicit-function-declarat=
-ion]
-> cc1: some warnings being treated as errors
->=20
-> Why was this patch submitted and merged without running git-grep on=20
-> cvmx_wait?
+On 28/11/17 14:35, Greg Kroah-Hartman wrote:
+> On Wed, Nov 22, 2017 at 09:57:29AM +0000, Matt Redfearn wrote:
+>> Add a custom serial.h header for MIPS, allowing platforms to override
+>> the asm-generic version if required.
+>>
+>> The generic platform uses this header to set BASE_BAUD to 0. The
+>> generic platform supports multiple boards, which may have different
+>> UART clocks. Also one of the boards supported is the Boston FPGA board,
+>> where the UART clock depends on the loaded FPGA bitfile. As such there
+>> is no way that the generic kernel can set a compile time default
+>> BASE_BAUD.
+>>
+>> Commit 31cb9a8575ca ("earlycon: initialise baud field of earlycon device
+>> structure") changed the behavior of of_setup_earlycon such that any baud
+>> rate set in the device tree is now set in the earlycon structure. The
+>> UART driver will then calculate a divisor based on BASE_BAUD and set it.
+>> With MIPS generic kernels this resulted in garbage output due to the
+>> incorrect uart clock rate being used to calculate a divisor. This
+>> commit, combined with "serial: 8250_early: Only set divisor if valid clk
+>> & baud" prevents the earlycon code setting a bad divisor and restores
+>> earlycon output.
+>>
+>> Fixes: 31cb9a8575ca ("earlycon: initialise baud field of earlycon device structure")
+>> Cc: stable <stable@vger.kernel.org> # 4.14
+>> Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+>>
+>> ---
+>>
+>>   arch/mips/include/asm/Kbuild   |  1 -
+>>   arch/mips/include/asm/serial.h | 21 +++++++++++++++++++++
+>>   2 files changed, 21 insertions(+), 1 deletion(-)
+>>   create mode 100644 arch/mips/include/asm/serial.h
+>>
+>> diff --git a/arch/mips/include/asm/Kbuild b/arch/mips/include/asm/Kbuild
+>> index 7c8aab23bce8..b1f66699677d 100644
+>> --- a/arch/mips/include/asm/Kbuild
+>> +++ b/arch/mips/include/asm/Kbuild
+>> @@ -16,7 +16,6 @@ generic-y += qrwlock.h
+>>   generic-y += qspinlock.h
+>>   generic-y += sections.h
+>>   generic-y += segment.h
+>> -generic-y += serial.h
+>>   generic-y += trace_clock.h
+>>   generic-y += unaligned.h
+>>   generic-y += user.h
+>> diff --git a/arch/mips/include/asm/serial.h b/arch/mips/include/asm/serial.h
+>> new file mode 100644
+>> index 000000000000..30be5cd8efdb
+>> --- /dev/null
+>> +++ b/arch/mips/include/asm/serial.h
+>> @@ -0,0 +1,21 @@
+>> +/*
+>> + * This file is subject to the terms and conditions of the GNU General Public
+>> + * License.  See the file "COPYING" in the main directory of this archive
+>> + * for more details.
+> 
+> Which version of the GPL?  As it is, this means "GPL v1 and all others".
+> 
+> I doubt you want that :)
 
-I guess I put too much store by your ack ;-)
+Good point - thanks!
 
-Lesson learned, I'll grep next time.
+Matt
 
->=20
-> Steven, send a patch to fix the breakage.
-
-See this patch & thread which you were Cc'd on:
-https://lkml.kernel.org/r/20171117075010.24131-1-aaro.koskinen@iki.fi
-
-Cheers
-James
-
---+B+y8wtTXqdUj1xM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlodQrYACgkQbAtpk944
-dnpVuQ//aPI6eMHm89UPCnApI/jS2kfAuhC5cZVnN2QXrnZGYsxOyBKdSzHPY+7F
-I7ZTjOI9Gz0XZtKtY/3+utY1eiNKQLCJbAeS95tHGNaF72kl+V6e6rxzDiWC/04U
-eVXyxq+Y8fmqAqCV6EP7g2RQHsCsUXjGwBGsJFLFDtIuNg1oyl7Kts6qC490sIak
-gFxqnq9nevrJSspbM3cienaKeRdp774DpWdm9dVu3Nbe/0wG9+dCJlgbzXS4jQLB
-sUY7/DKhbJtyQ28ic+NP2xmCjcDNbrA0MehpRV8ZhfFvsXqD0F3DsUVak3zgO4Ko
-mr+Px33UhqKjvoLXZfrKcawyzBKHG0faEdtYWgKPtBZZBLNkWfKQ8zO0k6Qo3H3d
-LFlU46MjFUz2feyeNlA+NXDAxMgA0r5Akp8TSgHQw0ufDurqv2gdfUKwG4a4D8y6
-A1O9DDwSM6ZTnjzSsQrZWaNAdzxudrbRB6q/sizn54P4jsNiGQMUieGcuPQw6eNH
-UKbx6svGXJ7+kZzyew9YarZtE9RFC2BclNJWCmdAV/zjvjQUZYMAMVSgO0v2kY3W
-tyFlX1zRu9N3wrNgcBs9B7zKNbCLSgGDMrexiT0YfA/7VGXSfEIIInCEKxTFytnx
-d2Xbnnrt5BFWGehce+1eWv1nS5bOde4pPM4qnLYuL1JrrOq1fmY=
-=YckL
------END PGP SIGNATURE-----
-
---+B+y8wtTXqdUj1xM--
+> 
+> thanks,
+> 
+> greg k-h
+> 

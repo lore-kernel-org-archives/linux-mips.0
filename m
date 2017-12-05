@@ -1,23 +1,14 @@
-Received: from mail-wr0-x241.google.com ([IPv6:2a00:1450:400c:c0c::241]:36566
-        "EHLO mail-wr0-x241.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991130AbdLAXeRlaqbp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 2 Dec 2017 00:34:17 +0100
-Received: by mail-wr0-x241.google.com with SMTP id v105so11647659wrc.3
-        for <linux-mips@linux-mips.org>; Fri, 01 Dec 2017 15:34:17 -0800 (PST)
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:33965 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990502AbdLEWjUAbjTU (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 5 Dec 2017 23:39:20 +0100
+From: James Hogan <james.hogan@mips.com>
+Subject: [PATCH] MIPS: CM: Drop WARN_ON(vp != 0)
+Date: Tue, 5 Dec 2017 22:28:22 +0000
+Message-ID: <20171205222822.15034-1-james.hogan@mips.com>
 MIME-Version: 1.0
-In-Reply-To: <1c34c7f5-4237-0fca-e871-ee18c262a3f3@caviumnetworks.com>
-References: <20171129005540.28829-1-david.daney@cavium.com>
- <20171129005540.28829-4-david.daney@cavium.com> <20171130225333.GI27409@jhogan-linux.mipstec.com>
- <CAOFm3uGhRTTrvygBd0dMdzWZQC5kFi8yXuWQsnhDvDLtW2z7aA@mail.gmail.com>
- <99dd185d-6e5d-f474-90aa-ebee63045c42@caviumnetworks.com> <CAOFm3uEy52yog4H_Hco0X+OHF5yiHUZYAHaGz4MefKcYQz3LUg@mail.gmail.com>
- <2ac5ec17-cedb-5dd8-6ea7-f065025639a9@caviumnetworks.com> <CAOFm3uHSp3ziQ-h1-V9uz07+jiixpgoUB9UZV82fOkrMBk8aZQ@mail.gmail.com>
- <1c34c7f5-4237-0fca-e871-ee18c262a3f3@caviumnetworks.com>
-From: Philippe Ombredanne <pombredanne@nexb.com>
-Date: Sat, 2 Dec 2017 00:33:30 +0100
-Message-ID: <CAOFm3uGm3qo5yzb7vhi=5CnLUNw01abMc0uY3WF-Nc6-8=brWg@mail.gmail.com>
-Subject: Re: [PATCH v4 3/8] MIPS: Octeon: Add a global resource manager.
-Content-Type: text/plain; charset="UTF-8"
-Return-Path: <pombredanne@nexb.com>
+Content-Type: text/plain
+Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,107 +18,45 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Daney <ddaney@caviumnetworks.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Carlos Munoz <cmunoz@cavium.com>, David Daney <david.daney@cavium.com>, linux-mips@linux-mips.org, ralf@linux-mips.org, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, devel@driverdev.osuosl.org, LKML <linux-kernel@vger.kernel.org>, "Steven J. Hill" <steven.hill@cavium.com>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, James Hogan <james.hogan@mips.com>
-Message-ID: <20171201233330.UFQdnytSgeWSdEppCuW8f-VEzug7CnxF7frLpZ81Fzg@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20171205222822.2eBl99WyWXMhJDrf6Za7r4zUzHaj9cfNWscJzDPiyPg@z>
 
-On Fri, Dec 1, 2017 at 9:56 PM, David Daney <ddaney@caviumnetworks.com> wrote:
-> On 12/01/2017 12:41 PM, Philippe Ombredanne wrote:
->>
->> David,
->>
->> On Fri, Dec 1, 2017 at 9:01 PM, David Daney <ddaney@caviumnetworks.com>
->> wrote:
->>>
->>> On 12/01/2017 11:49 AM, Philippe Ombredanne wrote:
->>>>
->>>>
->>>> David, Greg,
->>>>
->>>> On Fri, Dec 1, 2017 at 6:42 PM, David Daney <ddaney@caviumnetworks.com>
->>>> wrote:
->>>>>
->>>>>
->>>>> On 11/30/2017 11:53 PM, Philippe Ombredanne wrote:
->>>>
->>>>
->>>> [...]
->>>>>>>>
->>>>>>>>
->>>>>>>> --- /dev/null
->>>>>>>> +++ b/arch/mips/cavium-octeon/resource-mgr.c
->>>>>>>> @@ -0,0 +1,371 @@
->>>>>>>> +// SPDX-License-Identifier: GPL-2.0
->>>>>>>> +/*
->>>>>>>> + * Resource manager for Octeon.
->>>>>>>> + *
->>>>>>>> + * This file is subject to the terms and conditions of the GNU
->>>>>>>> General
->>>>>>>> Public
->>>>>>>> + * License.  See the file "COPYING" in the main directory of this
->>>>>>>> archive
->>>>>>>> + * for more details.
->>>>>>>> + *
->>>>>>>> + * Copyright (C) 2017 Cavium, Inc.
->>>>>>>> + */
->>>>>>
->>>>>>
->>>>>>
->>>>>>
->>>>>> Since you nicely included an SPDX id, you would not need the
->>>>>> boilerplate anymore. e.g. these can go alright?
->>>>>
->>>>>
->>>>>
->>>>>
->>>>> They may not be strictly speaking necessary, but I don't think they
->>>>> hurt
->>>>> anything.  Unless there is a requirement to strip out the license text,
->>>>> we
->>>>> would stick with it as is.
->>>>
->>>>
->>>>
->>>> I think the requirement is there and that would be much better for
->>>> everyone: keeping both is redundant and does not bring any value, does
->>>> it? Instead it kinda removes the benefits of having the SPDX id in the
->>>> first place IMHO.
->>>>
->>>> Furthermore, as there have been already ~12K+ files cleaned up and
->>>> still over 60K files to go, it would really nice if new files could
->>>> adopt the new style: this way we will not have to revisit and repatch
->>>> them in the future.
->>>>
->>>
->>> I am happy to follow any style Greg would suggest.  There doesn't seem to
->>> be
->>> much documentation about how this should be done yet.
->>
->>
->> Thomas (tglx) has already submitted a first series of doc patches a
->> few weeks ago. And AFAIK he might be working on posting the updates
->> soon, whenever his real time clock yields a few cycles away from real
->> time coding work ;)
->>
->> See also these discussions with Linus [1][2][3], Thomas[4] and Greg[5]
->> on this and mostly related topics
->>
->> [1] https://lkml.org/lkml/2017/11/2/715
->> [2] https://lkml.org/lkml/2017/11/25/125
->> [3] https://lkml.org/lkml/2017/11/25/133
->> [4] https://lkml.org/lkml/2017/11/2/805
->> [5] https://lkml.org/lkml/2017/10/19/165
->>
->
-> OK, you convinced me.
->
-> Thanks,
-> David
->
+From: James Hogan <jhogan@kernel.org>
 
-No! Thank you to you: For doing real work on the kernel that makes my
-servers and laptops run, while I am nitpicking you on comments.
+Since commit 68923cdc2eb3 ("MIPS: CM: Add cluster & block args to
+mips_cm_lock_other()"), mips_smp_send_ipi_mask() has used
+mips_cm_lock_other_cpu() with each CPU number, rather than
+mips_cm_lock_other() with the first VPE in each core. Prior to r6,
+multicore multithreaded systems such as dual-core dual-thread
+interAptivs with CPU Idle enabled (e.g. MIPS Creator Ci40) results in
+mips_cm_lock_other() repeatedly hitting WARN_ON(vp != 0).
 
+There doesn't appear to be anything fundamentally wrong about passing a
+non-zero VP/VPE number, even if it is a core's region that is locked
+into the other region before r6, so remove that particular WARN_ON().
+
+Fixes: 68923cdc2eb3 ("MIPS: CM: Add cluster & block args to mips_cm_lock_other()")
+Signed-off-by: James Hogan <jhogan@kernel.org>
+Reviewed-by: Paul Burton <paul.burton@mips.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
+Cc: <stable@vger.kernel.org> # 4.14+
+---
+ arch/mips/kernel/mips-cm.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
+index dd5567b1e305..8f5bd04f320a 100644
+--- a/arch/mips/kernel/mips-cm.c
++++ b/arch/mips/kernel/mips-cm.c
+@@ -292,7 +292,6 @@ void mips_cm_lock_other(unsigned int cluster, unsigned int core,
+ 				  *this_cpu_ptr(&cm_core_lock_flags));
+ 	} else {
+ 		WARN_ON(cluster != 0);
+-		WARN_ON(vp != 0);
+ 		WARN_ON(block != CM_GCR_Cx_OTHER_BLOCK_LOCAL);
+ 
+ 		/*
 -- 
-Cordially
-Philippe Ombredanne
+2.14.1

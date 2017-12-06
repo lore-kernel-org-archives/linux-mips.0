@@ -1,18 +1,18 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:32965 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:60138 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990402AbdLFLqz63qk6 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 6 Dec 2017 12:46:55 +0100
-Date: Wed, 6 Dec 2017 11:46:11 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [P5600 && EVA memory caching question] PCI region
-Message-ID: <20171206114611.GM5027@jhogan-linux.mipstec.com>
-References: <6132c323-32a7-1d38-b77c-a191be22faa4@gmail.com>
+        by eddie.linux-mips.org with ESMTP id S23990408AbdLFRmk2jtN9 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 6 Dec 2017 18:42:40 +0100
+Date: Wed, 6 Dec 2017 09:43:01 -0800
+From: Paul Burton <paul.burton@mips.com>
+Subject: Re: [PATCH] MIPS: CM: Drop WARN_ON(vp != 0)
+Message-ID: <20171206174301.oup2hcxrbm72s34x@pburton-laptop>
+References: <20171205222822.15034-1-james.hogan@mips.com>
+ <20171206135745.GD5238@linux-mips.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="PY8tzLeNxmyMVNR3"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <6132c323-32a7-1d38-b77c-a191be22faa4@gmail.com>
-Return-Path: <James.Hogan@mips.com>
+In-Reply-To: <20171206135745.GD5238@linux-mips.org>
+Return-Path: <Paul.Burton@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,157 +22,104 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Yuri Frolov <crashing.kernel@gmail.com>
-Cc: linux-mips@linux-mips.org, paul.burton@mips.com
-Message-ID: <20171206114611.-fq6wUioMp06rYRxubCIn02zkBvej_06eyIGumVDBWg@z>
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <james.hogan@mips.com>, James Hogan <jhogan@kernel.org>, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20171206174301.LPuwCw0zt_GmUa5YhIfGvqCsXxpB_oxfCDIZZ6-0JpU@z>
 
---PY8tzLeNxmyMVNR3
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Ralf,
 
-Hi Yuri,
+On Wed, Dec 06, 2017 at 02:57:45PM +0100, Ralf Baechle wrote:
+> On Tue, Dec 05, 2017 at 10:28:22PM +0000, James Hogan wrote:
+> 
+> > Since commit 68923cdc2eb3 ("MIPS: CM: Add cluster & block args to
+> > mips_cm_lock_other()"), mips_smp_send_ipi_mask() has used
+> > mips_cm_lock_other_cpu() with each CPU number, rather than
+> > mips_cm_lock_other() with the first VPE in each core. Prior to r6,
+> > multicore multithreaded systems such as dual-core dual-thread
+> > interAptivs with CPU Idle enabled (e.g. MIPS Creator Ci40) results in
+> > mips_cm_lock_other() repeatedly hitting WARN_ON(vp != 0).
+> > 
+> > There doesn't appear to be anything fundamentally wrong about passing a
+> > non-zero VP/VPE number, even if it is a core's region that is locked
+> > into the other region before r6, so remove that particular WARN_ON().
+> > 
+> > Fixes: 68923cdc2eb3 ("MIPS: CM: Add cluster & block args to mips_cm_lock_other()")
+> > Signed-off-by: James Hogan <jhogan@kernel.org>
+> > Reviewed-by: Paul Burton <paul.burton@mips.com>
+> > Cc: Ralf Baechle <ralf@linux-mips.org>
+> > Cc: linux-mips@linux-mips.org
+> > Cc: <stable@vger.kernel.org> # 4.14+
+> > ---
+> >  arch/mips/kernel/mips-cm.c | 1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
+> > index dd5567b1e305..8f5bd04f320a 100644
+> > --- a/arch/mips/kernel/mips-cm.c
+> > +++ b/arch/mips/kernel/mips-cm.c
+> > @@ -292,7 +292,6 @@ void mips_cm_lock_other(unsigned int cluster, unsigned int core,
+> >  				  *this_cpu_ptr(&cm_core_lock_flags));
+> >  	} else {
+> >  		WARN_ON(cluster != 0);
+> > -		WARN_ON(vp != 0);
+> 
+> I think the reason is that for a while the combination of SMP/CMP with
+> MT was at the bottom of priorities and nobody really cared about it so
+> a WARN_ON was thrown in.  Which in this case might well itself be a bug!
+> 
+>   Ralf
 
-On Wed, Dec 06, 2017 at 01:36:48PM +0300, Yuri Frolov wrote:
-> Hi,
->=20
-> I'm trying to expand PCI mapped region using EVA addressing scheme for=20
-> 'Baikal' P5600-based family of boards.
->=20
-> Currently, we've got only one PCIe mapped region, 0x08000000 -=20
-> 0x1BDBFFFF (~330Mb).
->=20
-> This window is unsufficient for some PCIe cards, so I'm trying to expand=
-=20
-> (or add one more) PCIe mapped region by moving 'Hi Memory DRAM block'=20
-> from 0x20000000 to 0x40000000 (dts changed, BAIKAL_HIGHMEM_START and=20
-> HIGHMEM_START are changed in=20
-> arch/mips/include/asm/mach-baikal/hardware.h=20
-> /arch/mips/include/asm/mach-baikal/spaces.h respectively) and and=20
-> allocating this region for PCIe.
->=20
-> So far, PCI subsystem is initialized during the boot successfully (as=20
-> far as I can see):
->=20
-> dw_pcie_init: DEV_ID_VEND_ID=3D0x80601d39 CLASS_CODE_REV_ID=3D0x1
-> dw_pcie_init: PCIe error code =3D 0x0
-> dw_pcie_init: PCIe link speed GEN1
-> device: 'pci0000:01': device_add
-> PM: Adding info for No Bus:pci0000:01
-> device: '0000:01': device_add
-> PM: Adding info for No Bus:0000:01
-> PCI host bridge to bus 0000:01
-> pci_bus 0000:01: root bus resource [mem 0x20000000-0x37ffffff]
-> pci_bus 0000:01: root bus resource [io=C2=A0 0x18020000-0x1bdaffff]
-> pci_bus 0000:01: root bus resource [bus 01-ff]
-> pci_bus 0000:01: scanning bus
-> pci 0000:01:00.0: [8086:10d3] type 00 class 0x020000
-> pci 0000:01:00.0: calling quirk_f0_vpd_link+0x0/0x98
-> pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x0001ffff]
-> pci 0000:01:00.0: reg 0x14: [mem 0x00000000-0x0007ffff]
-> pci 0000:01:00.0: reg 0x18: [io=C2=A0 0x0000-0x001f]
-> pci 0000:01:00.0: reg 0x1c: [mem 0x00000000-0x00003fff]
-> pci 0000:01:00.0: reg 0x30: [mem 0x00000000-0x0003ffff pref]
-> pci 0000:01:00.0: PME# supported from D0 D3hot D3cold
->=20
-> pci 0000:01:00.0: PME# disabled
-> device: '0000:01:00.0': device_add
-> bus: 'pci': add device 0000:01:00.0
-> PM: Adding info for pci:0000:01:00.0
-> pci_bus 0000:01: fixups for bus
-> pci_bus 0000:01: bus scan returning with max=3D01
-> pci 0000:01:00.0: BAR 1: assigned [mem 0x20000000-0x2007ffff]
-> pci 0000:01:00.0: BAR 6: assigned [mem 0x20080000-0x200bffff pref]
-> pci 0000:01:00.0: BAR 0: assigned [mem 0x200c0000-0x200dffff]
-> pci 0000:01:00.0: BAR 3: assigned [mem 0x200e0000-0x200e3fff]
-> pci 0000:01:00.0: BAR 2: assigned [io=C2=A0 0x18020000-0x1802001f]
-> pci 0000:01:00.0: calling quirk_e100_interrupt+0x0/0x20c
-> pci 0000:01:00.0: calling baikal_t1_pcie_link_speed_fixup+0x0/0x228
-> pci 0000:01:00.0: Link Capability is GEN1, x1
->=20
-> but PCIe networking card (e1000e) driver fails to load:
->=20
-> bus: 'pci': driver_probe_device: matched device 0000:01:00.0 with driver=
-=20
-> e1000e
-> bus: 'pci': really_probe: probing driver e1000e with device 0000:01:00.0
-> devices_kset: Moving 0000:01:00.0 to end of list
-> PCI: Enabling device 0000:01:00.0 (0000 -> 0002)
-> e1000e 0000:01:00.0: enabling bus mastering
-> e1000_probe:7054 mmio_start 0x200c0000 mmio_len 0x20000
->=20
-> e1000e 0000:01:00.0: Interrupt Throttling Rate (ints/sec) set to dynamic=
-=20
-> conservative mode
->=20
-> PCI MSI: setup hwirq:0=C2=A0 virq:51
-> PCI MSI: setup hwirq:1=C2=A0 virq:52
-> PCI MSI: setup hwirq:2=C2=A0 virq:53
->=20
-> e1000_get_phy_id_82571:444 ret_val =3D e1e_rphy(hw, MII_PHYSID1, &phy_id)=
-;=20
-> ret_val =3D -2
->=20
-> It turns out, that PHY ID can't be read from the memory, mapped on=20
-> driver initialization function by ioremap.
->=20
->  =C2=A0__ioremap (arch/mips/mm/ioremap.c) considers all the memory above =
-the=20
-> low 512Mb as DRAM and maps the physical addresses 0x20000000 -=20
-> 0x3FFFFFFF to logical addresses starting from c0000000 and higher.
->=20
-> arch/mips/include/asm/mach-baikal/kernel-entry-init.h defines EVA memory=
-=20
-> map with virtual addresses range 0xc0000000 - 0xdfffffff as 'MK (kseg2)'=
-=20
-> i.e. "mapped kernel" with cashing segment attributes defined in SegCtl0,=
-=20
-> Cfg1: "cacheable, coherent, write-back, write-allocate, read misses=20
-> request shared attribute".
->=20
-> I've tried to change the caching attribute (bits 16:18 in SegCtl0) to=20
-> 0x2 ("uncached, not coherent"), but
->=20
-> this hasn't yield any visible effect on PCIe e1000e initialization.
+Well, the WARN_ON came about because:
 
-Mapped kernel segments don't use the CCA in SegCtl. Each page mapping
-has its own CCA specified in the TLB, which would have been loaded from
-page tables set up by e.g. remap_area_pte(), and the ioremap() macro
-does pass _CACHE_UNCACHED as the flags argument. I would recommend
-checking the phys_addr and flags coming in to remap_area_pte().
+ - Originally mips_cm_lock_other() had no VP argument, because the CM
+   "other" register in CM < 3 has no VP field. ie. the CM "other" region
+   always accesses registers associated with a core rather than a VP(E).
 
-If that all looks correct you could also try:
-- Dump the TLB contents straight after accessing that address to check
-  they are loaded correctly, i.e. call dump_tlb_all() from
-  <asm/tlbdebug.h>.
-- If the TLB contents look wrong, try disabling hardware page table
-  walker to determine whether that is misconfigured (add nohtw to kernel
-  command line).
+ - With CM >= 3 the "other" register (renamed "redirect") gained a VP
+   field & the ability to control the CPC & GIC redirect regions, which
+   were formerly controlled by separate "other" registers in the CPC &
+   GIC register interfaces. In the GIC case the other/redirect region
+   actually targets a VP, not a core.
 
-Hope that helps
+ - Since the CM < 3 other register has no VP field the WARN_ON made
+   sense - if code is actually trying to access registers associated
+   with a particular VP then that's a bug because that's simply not
+   possible. The warning called out those cases by requiring CM < 3
+   paths to explicitly pass VP=0.
 
-Cheers
-James
+That was all well & good until I added the mips_cm_lock_other_cpu()
+wrapper for convenience. It passes the CPUs cluster, core & VP(E)
+numbers to mips_cm_lock_other() which is problematic if it's used in
+paths that may run on CM < 3. There is only one such case right now, in
+mips_smp_send_ipi_mask() when powering up a CPU in a non-coherent idle
+state. So effectively you have to have the CPS cpuidle driver enabled to
+hit this.
 
---PY8tzLeNxmyMVNR3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+A potential alternative to this patch would be to have
+mips_cm_lock_other_cpu() check the CM version & use VP=0 for CM < 3, but
+I think the utility of that is questionable so dropping the WARN_ON as
+James has done seems reasonable.
 
------BEGIN PGP SIGNATURE-----
+We actually do test mainline, mips-for-linux-next & our internal kernel
+branches a bunch on affected systems, most notably interAptiv in the
+context of either the Boston or Ci40 platforms. Unfortunately that
+didn't catch the bug here because the cpuidle driver isn't enabled in
+the kernel configs that our CI system builds. That's something we'll
+change. If that weren't the case then we ought to have caught this once
+it hit -next. The patchset for multi-cluster support has also shrunk
+quite a lot with the merging of the initial set, so our internal
+branches are now closer to what will next be submitted which also helps
+since we might spot issues even earlier in tests of those internal
+branches.
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlon2HEACgkQbAtpk944
-dnpZHhAAp9p5Jm4Kep6oqtY6V/8QbNC5TOmG8NgWnOeKX0BS7d/sG4pi3sMaUMVI
-tdXcnt11EvbQFHlTyCUkG6jE1WyLdvQ0kTz2R8uwM/zrRsoJor8MOrZuAud41wCM
-oQX7+vuJothqiUDGn2xsapJ85mFdnA1QBe3DCAkh3lgA1H8N5TPZt/QKXqau5bL3
-/mWml33dgyMJA0Az2uc6ta7q0ZwizCcEVb2VmUFawEwSmxYXKsj7216pNDA3oHXJ
-K9HKe2lCL1kNjXJhW9JAPnU5OODky5q3bwB85QnTSVoZZjjwlMfTr5yxM6YuKwRc
-SDIjUKIE9QIyJa1SN/bvAVBsIudE5ehUYUjy+ZZMlZfHMorTnaE03/QtTzow7LjH
-i/Bnur6W+iWXE7OomQ+vbfqTQPxktg+Y/TPUajpufhRsWNOtMPSVJftMGMA81+yz
-dn5OTWJ2TegI9WIrkWzwm46S37fHWdWvO2H9E2mcxVZzJgk3yNa55DKTrsNC1rPE
-R+QMkYtI130JkAoEsHuDJurIGTis6bjsIkDKDSWcnN6UjknHPGIGV2YqNY0PeXVN
-0IePcEcO0Kwav+nvcpcNJcEgyylabZbS0Tomvl6l9SY9QYVdQ3CJazoxsPuB1py3
-VBUTsGH6GI7Aqhmf5qUlus3Pd4wXNZ51I0NPdiVc1bejF54ZTrk=
-=vm7a
------END PGP SIGNATURE-----
+Having the mips-for-linux-next branch updated regularly throughout the
+cycle would help immensely in giving us the best chance of catching bugs
+like this in a timely fashion, since when it all happens right before
+the merge window we don't get much testing time on the code actually
+hitting mainline until after it has gone in.
 
---PY8tzLeNxmyMVNR3--
+Anyway, hopefully that post-mortem shines some light on what went wrong
+here!
+
+Thanks,
+    Paul

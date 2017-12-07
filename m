@@ -1,18 +1,18 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:41970 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:41417 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990433AbdLGLHEVW5UI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 7 Dec 2017 12:07:04 +0100
-Date: Thu, 7 Dec 2017 11:05:50 +0000
+        by eddie.linux-mips.org with ESMTP id S23990411AbdLGLsF0n0xK (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 7 Dec 2017 12:48:05 +0100
+Date: Thu, 7 Dec 2017 11:47:07 +0000
 From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH 0/1] About MIPS/Loongson maintainance
-Message-ID: <20171207110549.GM27409@jhogan-linux.mipstec.com>
-References: <1512628268-18357-1-git-send-email-chenhc@lemote.com>
- <20171207065759.GC19722@kroah.com>
+Subject: Re: [RFC PATCH] cpuidle/coupled: Handle broadcast enter failures
+Message-ID: <20171207114706.GO5027@jhogan-linux.mipstec.com>
+References: <20171205225536.21516-1-james.hogan@mips.com>
+ <d74c6e8b-3020-6bed-4cf1-132f41a2c5ff@linaro.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="00hq2S6J2Jlg6EbK"
+        protocol="application/pgp-signature"; boundary="vru7fAags9pVPvn5"
 Content-Disposition: inline
-In-Reply-To: <20171207065759.GC19722@kroah.com>
+In-Reply-To: <d74c6e8b-3020-6bed-4cf1-132f41a2c5ff@linaro.org>
 Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,93 +23,126 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Huacai Chen <chenhc@lemote.com>, Linus Torvalds <torvalds@linux-foundation.org>, Stephen Rothwell <sfr@canb.auug.org.au>, Ralf Baechle <ralf@linux-mips.org>, Rui Wang <wangr@lemote.com>, Binbin Zhou <zhoubb@lemote.com>, Ce Sun <sunc@lemote.com>, Yao Wang <wangyao@lemote.com>, Liangliang Huang <huangll@lemote.com>, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, Jiaxun Yang <jiaxun.yang@flygoat.com>, r@hev.cc, zhoubb.aaron@gmail.com, huanglllzu@163.com, 513434146@qq.com, 1393699660@qq.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20171207110550.sLLR7Y5KNDvmkDmx_rfUVcXMsEXxBEe-XbY8M6Z_uQ4@z>
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-pm@vger.kernel.org, Preeti U Murthy <preeti@linux.vnet.ibm.com>, Frederic Weisbecker <fweisbec@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
+Message-ID: <20171207114707.-bw8XCTjidFjWmsWUJNep2rcYK6PJvocnDHNeSb6xgE@z>
 
---00hq2S6J2Jlg6EbK
+--vru7fAags9pVPvn5
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 07, 2017 at 07:57:59AM +0100, Greg Kroah-Hartman wrote:
-> On Thu, Dec 07, 2017 at 02:31:07PM +0800, Huacai Chen wrote:
-> > Hi, Linus, Stephen, Greg, Ralf and James,
+On Thu, Dec 07, 2017 at 12:17:25PM +0100, Daniel Lezcano wrote:
+> On 05/12/2017 23:55, James Hogan wrote:
+> > From: James Hogan <jhogan@kernel.org>
 > >=20
-> > We are kernel developers from Lemote Inc. and Loongson community. We
-> > have already made some contributions in Linux kernel, but we hope we
-> > can do more works.
+> > If the hrtimer based broadcast tick device is in use, the enabling of
+> > broadcast ticks by cpuidle may fail when the next broadcast event is
+> > brought forward to match the next event due on the local tick device,
+> > This is because setting the next event may migrate the hrtimer based
+> > broadcast tick to the current CPU, which then makes
+> > broadcast_needs_cpu() fail.
 > >=20
-> > Of course Loongson is a sub-arch in MIPS, but linux-mips community is
-> > so inactive (Maybe maintainers are too busy?) that too many patches (
-> > Not only for Loongson, but also for other sub-archs) were delayed for
-> > a long time. So we are seeking a more efficient way to make Loongson
-> > patches be merged in upstream.
+> > This isn't normally a problem as cpuidle handles it by falling back to
+> > the deepest idle state not needing broadcast ticks, however when coupled
+> > cpuidle is used it can happen after the coupled CPUs have all agreed on
+> > a particular idle state, resulting in only one of the CPUs falling back
+> > to a shallower state, and an attempt to couple two completely different
+> > idle states which may not be safe.
 > >=20
-> > Now we have a github organization for collaboration:
-> > https://github.com/linux-loongson/linux-loongson.git
+> > Therefore extend cpuidle_enter_state_coupled() to be able to handle the
+> > enabling of broadcast ticks directly, so that a failure can be detected
+> > at the higher level, and all coupled CPUs can be made to fall back to
+> > the same idle state.
+> >=20
+> > This takes place after the idle state has been initially agreed. Each
+> > CPU will then attempt to enable broadcast ticks (if necessary), and upon
+> > failure it will update the requested_state[] array before a second
+> > coupled parallel barrier so that all coupled CPUs can recognise the
+> > change.
+> >=20
+> > Signed-off-by: James Hogan <jhogan@kernel.org>
+> > Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> > Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> > Cc: Frederic Weisbecker <fweisbec@gmail.com>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Ingo Molnar <mingo@kernel.org>
+> > Cc: Preeti U Murthy <preeti@linux.vnet.ibm.com>
+> > Cc: Ralf Baechle <ralf@linux-mips.org>
+> > Cc: Paul Burton <paul.burton@mips.com>
+> > Cc: linux-pm@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: linux-mips@linux-mips.org
+> > ---
+> > Is this an acceptable approach in principle?
+> >=20
+> > Better/cleaner ideas to handle this are most welcome.
+> >=20
+> > This doesn't directly address the problem that some of the time it won't
+> > be possible to enter deeper idle states because of the hrtimer based
+> > broadcast tick's affinity. The actual case I'm looking at is on MIPS
+> > with cpuidle-cps, where the first core cannot (currently) go into a deep
+> > idle state requiring broadcast ticks, so it'd be nice if the hrtimer
+> > based broadcast tick device could just stay on core 0.
+> > ---
 >=20
-> Ick, why not get a kernel.org account for your git tree?
+> Before commenting this patch, I would like to understand why the couple
+> idle state is needed for the MIPS, what in the architecture forces the
+> usage of the couple idle state?
+
+Hardware multithreading.
+
+Each physical core may have more than one hardware thread (VPE or VP in
+MIPS lingo), each of which appears as a separate CPU to Linux. The lower
+power states are all effective at the core level though:
+- non-coherent wait - the hardware threads share physical caches, so
+  coherency can only be turned off when all hardware threads are in a
+  safe state, else they (1) wouldn't be coherent with the rest of the
+  system and (2) could bring stuff into the cache which isn't kept
+  coherent, requiring I presume a second cache flush.
+- clock gated - must go non-coherent first, and applies to the whole
+  core and all the physical resources shared by the VP(E)s.
+- power gated - again must go non-coherent first, and applies to the
+  whole core and all the physical resources shared by the VP(E)s.
+
 >=20
-> > We don't want to replace linux-mips, we just want to find a way to co-
-> > operate with linux-mips. So we will still use the maillist and patchwork
-> > of linux-mips, but we hope we can send pull requests from our github to
-> > linux-next and linux-mainline by ourselves (if there is no objections
-> > to our patches from linux-mips community).
->=20
-> What does the mips maintainers think about this?
->=20
-> Odds are a linux-next tree is fine, but they probably want to merge the
-> trees into their larger mips one for the pulls to Linus, much like the
-> arm-core tree works, right?
+> The hrtimer broadcast mechanism is only needed if there isn't a backup
+> timer outside of the idle state's power domain. That's the case on this
+> platform?
 
-I'm not officially a MIPS maintainer but I have donned the hat
-unofficially a few times lately, so FWIW I think the Loongson stuff
-should go through the MIPS tree, since it so often touches core
-architecture code.
+I believe there is an external timer, and I believe we recommend
+customers implement one for use as a clocksource anyway (in case of
+frequency scaling), but on this particular platform the driver isn't
+upstream yet.
 
-Clearly there have been some issues getting MIPS stuff applied recently,
-but I think the right approach long-term is to try and improve things
-there rather than bypass the MIPS tree altogether.
-
-I believe assigning a co-maintainer would help spread Ralf's load, even
-if that primarily means helping review patches (something we can all
-help with tbh), and being able to ack patches which touch MIPS but need
-to go through other subsystem trees (e.g. I know David Daney was waiting
-on acks for the MIPS portions of the Octeon III ethernet driver series).
-
-I'm willing to take on that role if Ralf is okay with it. I'm already
-trying to keep track of fixes and spend more time reviewing patches on
-the list, but the more who can help out the better.
-
-The question of who applies patches can't be avoided though. It would
-clearly suck to have all the review in the world but still end up with
-the co-maintainer having to take the reigns at the last minute to get
-those important fixes in, and then have no time to apply anything
-substantial for the merge window.
+If its something that shouldn't be supported in Linux, perhaps a simple
+WARN_ON is the better approach (i.e. if the broadcast tick can't be
+enabled in the current place and its a coupled idle state), though it
+does at least seem to work now with this and a couple of other patches
+(though I haven't been able to take any power measurements yet).
 
 Cheers
 James
 
---00hq2S6J2Jlg6EbK
+--vru7fAags9pVPvn5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlopIIUACgkQbAtpk944
-dno18RAAt6C+pTc9d2Zx5cCHKHZJmVGPuUWRD+SBbBaEylo9NUdI7yLJBsfs8Rm2
-b/ryeHiw9ZOyGuN3n1Ai0f7mGkBVO/QvEBlg53MyeA4m8gx8BPbmO4/sYKq7ljZl
-OzHsucCiyBGNzTNaYlQXRqoWdjlrggKo2RUw7zPYVU/R7oVYQB4Rln+rpcZbU72G
-md2rn4VVUkzQG6QHSqagYf1a4drDm9yMz4veaDWj2p91BFbptJwFMR7r4ndSmGIr
-pClxtFylvIG+W0qFzidxLbDg88J7ZpWsmLFksic/aNnNYEG3gxdla0zo2KA8rNWX
-5dDnMev/xU197qsx59C0zt0VmQdXjJ0DMKjEBKtRa+tvd70D+etNLEyNg1IN+MWp
-5OjEKE+AEw2kngrWzfarDpE/icT3nlZdyS5aISmAQXyryuxW1n5iVvpYpS5b562v
-rGHbQ7zFisfFO74IFyGqi776Sws2P0kvcaXOXZBoVl/kgfchrBP2AIMcG7/oHI1T
-8JjZ0jLqcKJ+7+uGz7gLYvqpU2IkXnrhEZiP2E+RJxrFos5IxwHF05NYNB5gW8R4
-+g07QQRxyFKnB3hfLEKpqXaRiw4uxXQdk2xCSJnZwyfMu0kieB3dvpJtSnPkqd6D
-tQpolZIezD+Dzhg38pfrm3/HsNVWiuP8C39VGlG0h2GVYhGtn7k=
-=9uKS
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlopKjoACgkQbAtpk944
+dnqwRhAAjk16USLKx3/U7l6dZt4h2Y0mp9tW5VLySaKqMrdFlU0sPWG6ufOYh0gW
+xnDj3gkpgVYDG/RZZzmtZR2RALr9RGvV5KhKVys4Mz3nKt6Pol9GqFbVsknX0xFe
+CneWKksNZdkPNMMvj2B1tp8Wzv+D/aYBDscbgawObfpISMFBEn+6JqzJcT9RG87M
+0yx+f5dit2Oyc89uXRyr1dEwQJZ8i00ZiCOdsIPF53ziZkI9YhCjWoV6bfS94P/r
+lMCLXAka2cvFRwMAxAeMPYR7pm0B/6JTJQFsIouqW7867CAy8Yy0O4bdr+66wcQ4
+npxBtNhfVfR49ahutrsIVa8cf6wOaHKt3GFq87KIExcICqk94imbmywlbNsRyXjY
+X7VYdO80oovHxJ78kUUtIKw958L7tplvQ07VBQr6XOSaCx048V7XmJCnZB/p2NT2
+fI2oR/EOcI1WvSaGqkvOC0oE693QXXV+9TdGte8Clsyin6NOoG+mhEu5/1rlNn71
+7y30bKoUBO8DOnMy7w+NSGMSiJ7Ol7tpDnz7/fywrvFUSK1JmiUd1KGgGAkhGC2o
+TYTvYjaLOH5Cd8ha3Imc11TRWdPl4QHMOqP4i4jDQoR0v0U9HEyKKTjzRR4n38ve
+/C0m4ufH2IQnTGignbHOH18t+qGfvDfWANoNUrv/nRwog4WkOps=
+=//1w
 -----END PGP SIGNATURE-----
 
---00hq2S6J2Jlg6EbK--
+--vru7fAags9pVPvn5--

@@ -1,23 +1,18 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:34977 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990431AbdLHHwzxHM4p (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 8 Dec 2017 08:52:55 +0100
-Date: Fri, 8 Dec 2017 07:51:35 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH 0/1] About MIPS/Loongson maintainance
-Message-ID: <20171208075134.GP5027@jhogan-linux.mipstec.com>
-References: <1512628268-18357-1-git-send-email-chenhc@lemote.com>
- <20171207065759.GC19722@kroah.com>
- <20171207110549.GM27409@jhogan-linux.mipstec.com>
- <1512652210.13996.10.camel@flygoat.com>
- <20171207141829.GN27409@jhogan-linux.mipstec.com>
- <1512705706.1756.12.camel@flygoat.com>
+Received: from mail-wm0-x22b.google.com ([IPv6:2a00:1450:400c:c09::22b]:33409
+        "EHLO mail-wm0-x22b.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990436AbdLHIMi4vpip (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 8 Dec 2017 09:12:38 +0100
+Received: by mail-wm0-x22b.google.com with SMTP id g130so3626976wme.0
+        for <linux-mips@linux-mips.org>; Fri, 08 Dec 2017 00:12:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="f6M9UaX53EEZorp0"
-Content-Disposition: inline
-In-Reply-To: <1512705706.1756.12.camel@flygoat.com>
-Return-Path: <James.Hogan@mips.com>
+In-Reply-To: <20171208000934.6554-1-david.daney@cavium.com>
+References: <20171208000934.6554-1-david.daney@cavium.com>
+From: Philippe Ombredanne <pombredanne@nexb.com>
+Date: Fri, 8 Dec 2017 09:11:52 +0100
+Message-ID: <CAOFm3uFscCTLtgLym+STepZc9eWB3=jPjYu8+=1WcA3HoW08-A@mail.gmail.com>
+Subject: Re: [PATCH v6 net-next,mips 0/7] Cavium OCTEON-III network driver.
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <pombredanne@nexb.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,71 +22,22 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Huacai Chen <chenhc@lemote.com>, Linus Torvalds <torvalds@linux-foundation.org>, Stephen Rothwell <sfr@canb.auug.org.au>, Ralf Baechle <ralf@linux-mips.org>, Rui Wang <wangr@lemote.com>, Binbin Zhou <zhoubb@lemote.com>, Ce Sun <sunc@lemote.com>, Yao Wang <wangyao@lemote.com>, Liangliang Huang <huangll@lemote.com>, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, r@hev.cc, zhoubb.aaron@gmail.com, huanglllzu@163.com, 513434146@qq.com, 1393699660@qq.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20171208075135.KPXikGYSSz_dSBOcKMB3xJq-yXCkky0J5AtRB0THntU@z>
+To: David Daney <david.daney@cavium.com>
+Cc: linux-mips@linux-mips.org, ralf@linux-mips.org, James Hogan <james.hogan@mips.com>, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, LKML <linux-kernel@vger.kernel.org>, "Steven J. Hill" <steven.hill@cavium.com>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <20171208081152.bW_fHRpICKw8fUJTRllB20f0WBF7kswoygTazjeSWHU@z>
 
---f6M9UaX53EEZorp0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+David,
 
-On Fri, Dec 08, 2017 at 12:01:46PM +0800, Jiaxun Yang wrote:
-> Also we're going to separate code between
-> Loongson2 and Loongson3 since they are becoming more and more
-> identical.
+On Fri, Dec 8, 2017 at 1:09 AM, David Daney <david.daney@cavium.com> wrote:
+[]
+> Changes in v5:
+[]
+> o Removed redundant licensing text boilerplate.
 
-Do you mean you want to combine them?
+Thank you very much!
 
-> But It will cause a lot of changes under march of loongson64
->  that currently maintaining by linux-mips community. Send plenty of
-> patches to mailing list would not be a wise way to do that. So we can
-> PR these changes to linux-next directly and PR to linux-mips before
-> merge window.
+Acked-by: Philippe Ombredanne <pombredanne@nexb.com>
 
-For the avoidance of doubt, a pull request would not excempt you from
-needing your patches properly reviewed on the mailing lists first.
-
-And quoting Stephen's boilerplate response to linux-next additions:
-> Thanks for adding your subsystem tree as a participant of linux-next.  As
-> you may know, this is not a judgement of your code.  The purpose of
-> linux-next is for integration testing and to lower the impact of
-> conflicts between subsystems in the next merge window.
->=20
-> You will need to ensure that the patches/commits in your tree/series have
-> been:
->      * submitted under GPL v2 (or later) and include the Contributor's
->         Signed-off-by,
->      * posted to the relevant mailing list,
->      * reviewed by you (or another maintainer of your subsystem tree),
->      * successfully unit tested, and
->      * destined for the current or next Linux merge window.
->=20
-> Basically, this should be just what you would send to Linus (or ask him
-> to fetch).  It is allowed to be rebased if you deem it necessary.
-
-Cheers
-James
-
---f6M9UaX53EEZorp0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAloqRHIACgkQbAtpk944
-dnrU8xAAqTDR2+6cqkK6KwIyBfqaqrBm4A7SY5j2UA86HNzVDjEFO3Xs2vrjyinr
-n+xmqGDp8rrL+hEq6u3I3D/VhBwZIoZHnzG8Rn4wrraF8Wpsu50ggiqqLfKve61g
-WmInTkYX/L+duu5BM98Tc9h8HgDMekjonvJSQZlitVQKl4Alw9r9LuL+Hj6Vu5X0
-1iiAroPsQ69qz5ebIEmSRsURRN1ZoxlIWDNEjasNR5on0u5gFZAdYOL5rEAHrwaF
-zInK/S5SVdO2ucBi5HkIfM2qSfxpTY05OxzReZTunqMxeE8hMEnMwSREzfPDHf3+
-WBWLr25ecCGey1oeqDVNj7atZfDSw4JQ9qaqTl7FvZdmYcOH1uOITghvAjiQuBPs
-7hnhXa/yEBFOhqU9WOsH6mgxeaYFlyarKm8x6xP7I9XpvBTh8ZWDImJ6Si1BjAkp
-Bwo1cEPuUhaQKoKIST3HZT4fXYUt57YItFcAGmmBub+KSqaNp/IaaLmW9fcZB8mP
-CuZl9nmdzWQQeVdITw/vqHwRGIgDczzK6YZpX44GLfkKsJfQQrAJ74yXZ4ECrhQS
-gdSah8O0dXLyllRrmb7ukseRZb+Feor1nvELUm/nHwLZGUMhcOT2i7unCMlI0y8U
-vK8HakzU7XWrqYzSzTcXeE7arePtHRcwwytD59k6xQeG7chHfto=
-=8aNB
------END PGP SIGNATURE-----
-
---f6M9UaX53EEZorp0--
+-- 
+Cordially
+Philippe Ombredanne, the licensing scruffy

@@ -1,13 +1,13 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:54076 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:58472 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990793AbdLKW4Aig7Ft (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 11 Dec 2017 23:56:00 +0100
-Date: Mon, 11 Dec 2017 22:55:40 +0000
+        by eddie.linux-mips.org with ESMTP id S23990793AbdLKW5OCoa1t (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 11 Dec 2017 23:57:14 +0100
+Date: Mon, 11 Dec 2017 22:56:54 +0000
 From: "Maciej W. Rozycki" <macro@mips.com>
-Subject: [PATCH v2 5/6] MIPS: Also verify sizeof `elf_fpreg_t' with
- PTRACE_SETREGSET
+Subject: [PATCH v2 6/6] MIPS: Disallow outsized PTRACE_SETREGSET NT_PRFPREG
+ regset accesses
 In-Reply-To: <alpine.DEB.2.00.1712111833360.4584@tp.orcam.me.uk>
-Message-ID: <alpine.DEB.2.00.1712111839220.4584@tp.orcam.me.uk>
+Message-ID: <alpine.DEB.2.00.1712111840170.4584@tp.orcam.me.uk>
 References: <alpine.DEB.2.00.1712111833360.4584@tp.orcam.me.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
@@ -23,34 +23,38 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@mips.com>
 Cc: Paul Burton <Paul.Burton@mips.com>, Alex Smith <alex@alex-smith.me.uk>, Dave Martin <Dave.Martin@arm.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Message-ID: <20171211225540.WrjO_zSNm855AgOnWNp5MWtOieASgiNy6N5AexR88Ow@z>
+Message-ID: <20171211225654.oYc4McKgmRlDxHk9pqxeNitFGtb-3MtNjZAWPcSLnno@z>
 
-Complement commit d614fd58a283 ("mips/ptrace: Preserve previous 
-registers for short regset write") and like with the PTRACE_GETREGSET 
-ptrace(2) request also apply a BUILD_BUG_ON check for the size of the 
-`elf_fpreg_t' type in the PTRACE_SETREGSET request handler.
+Complement commit c23b3d1a5311 ("MIPS: ptrace: Change GP regset to use 
+correct core dump register layout") and also reject outsized 
+PTRACE_SETREGSET requests to the NT_PRFPREG regset, like with the 
+NT_PRSTATUS regset.
 
-Cc: stable@vger.kernel.org # v4.11+
-Fixes: d614fd58a283 ("mips/ptrace: Preserve previous registers for short regset write")
+Cc: stable@vger.kernel.org # v3.17+
+Fixes: c23b3d1a5311 ("MIPS: ptrace: Change GP regset to use correct core dump register layout")
 Signed-off-by: Maciej W. Rozycki <macro@mips.com>
 ---
 
-No changes from v1.
+Changes from v1:
+
+- regenerated.
 
 ---
- arch/mips/kernel/ptrace.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/kernel/ptrace.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-linux-mips-nt-prfpreg-build-bug.diff
+linux-mips-nt-prfpreg-size.diff
 Index: linux-sfr-test/arch/mips/kernel/ptrace.c
 ===================================================================
---- linux-sfr-test.orig/arch/mips/kernel/ptrace.c	2017-11-28 23:33:33.395023000 +0000
-+++ linux-sfr-test/arch/mips/kernel/ptrace.c	2017-11-28 23:52:34.944549000 +0000
-@@ -438,6 +438,7 @@ static int fpr_get_msa(struct task_struc
- 	u64 fpr_val;
- 	int err;
+--- linux-sfr-test.orig/arch/mips/kernel/ptrace.c	2017-12-08 16:22:08.062741000 +0000
++++ linux-sfr-test/arch/mips/kernel/ptrace.c	2017-12-08 16:22:17.727811000 +0000
+@@ -541,6 +541,9 @@ static int fpr_set(struct task_struct *t
  
-+	BUILD_BUG_ON(sizeof(fpr_val) != sizeof(elf_fpreg_t));
- 	for (i = 0; i < NUM_FPU_REGS; i++) {
- 		fpr_val = get_fpr64(&target->thread.fpu.fpr[i], 0);
- 		err = user_regset_copyout(pos, count, kbuf, ubuf,
+ 	BUG_ON(count % sizeof(elf_fpreg_t));
+ 
++	if (pos + count > sizeof(elf_fpregset_t))
++		return -EIO;
++
+ 	init_fp_ctx(target);
+ 
+ 	if (sizeof(target->thread.fpu.fpr[0]) == sizeof(elf_fpreg_t))

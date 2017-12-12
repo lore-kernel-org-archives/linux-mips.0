@@ -1,11 +1,11 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:48105 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:40299 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994628AbdLLKAuxhHZC (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 12 Dec 2017 11:00:50 +0100
+        by eddie.linux-mips.org with ESMTP id S23994630AbdLLKAxJ48UC (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 12 Dec 2017 11:00:53 +0100
 From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [RFC PATCH 08/16] MIPS: compat: Don't use current_thread_info for stack base
-Date: Tue, 12 Dec 2017 09:57:54 +0000
-Message-ID: <1513072682-1371-9-git-send-email-matt.redfearn@mips.com>
+Subject: [RFC PATCH 10/16] MIPS: Move the CONFIG_CPU_JUMP_WORKAROUNDS into setup_kernel_mode
+Date: Tue, 12 Dec 2017 09:57:56 +0000
+Message-ID: <1513072682-1371-11-git-send-email-matt.redfearn@mips.com>
 In-Reply-To: <1513072682-1371-1-git-send-email-matt.redfearn@mips.com>
 References: <1513072682-1371-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
@@ -22,49 +22,84 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20171212095754.lmjbYqBuESwRhEn0y11TJPYfwMRQfVdkTmlXTday2kc@z>
+Message-ID: <20171212095756.ZNnEQ42L1hNfI23YH8FT3lZ1Nn-079uRUmDA36jNKWQ@z>
 
-Once CONFIG_THREAD_INFO_IN_TASK is active, current_thread_info() will no
-longer return the base of the stack. As such
-arch_compat_alloc_user_space, which uses manual arithmetic based on it
-to find the user PT_REGS at the top, will stop working. Replace the open
-coded manipulation of the stack address to find the user stack pointer
-from PT_REGS with user_stack_pointer(task_pt_regs(current)), which is
-tidier anyway.
+This workaround is necessary on certain CPUs when switching from user
+mode to kernel mode. Move it from its slightly odd location in the
+middle of get_saved_sp (which it is unrelated to) into the
+setup_kernel_mode macro.
+
+Since the setup_kernel_mode is a new self contained macro, we can ensure
+that reordering is on and drop the NOP delay slot fillers.
 
 Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
 ---
 
- arch/mips/include/asm/compat.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/mips/include/asm/stackframe.h | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-diff --git a/arch/mips/include/asm/compat.h b/arch/mips/include/asm/compat.h
-index 49691331ada4..17d74ea00455 100644
---- a/arch/mips/include/asm/compat.h
-+++ b/arch/mips/include/asm/compat.h
-@@ -6,6 +6,7 @@
-  */
- #include <linux/thread_info.h>
- #include <linux/types.h>
-+#include <linux/sched/task_stack.h>
- #include <asm/page.h>
- #include <asm/ptrace.h>
+diff --git a/arch/mips/include/asm/stackframe.h b/arch/mips/include/asm/stackframe.h
+index 494fe41f5619..a47a9f5591a3 100644
+--- a/arch/mips/include/asm/stackframe.h
++++ b/arch/mips/include/asm/stackframe.h
+@@ -49,6 +49,24 @@
+ #endif
  
-@@ -219,12 +220,11 @@ static inline compat_uptr_t ptr_to_compat(void __user *uptr)
- 	return (u32)(unsigned long)uptr;
- }
- 
-+#define compat_user_stack_pointer() (user_stack_pointer(task_pt_regs(current)))
+ 		.macro setup_kernel_mode docfi=0
++		.set	push
++		.set	reorder
 +
- static inline void __user *arch_compat_alloc_user_space(long len)
- {
--	struct pt_regs *regs = (struct pt_regs *)
--		((unsigned long) current_thread_info() + THREAD_SIZE - 32) - 1;
--
--	return (void __user *) (regs->regs[29] - len);
-+	return (void __user *)compat_user_stack_pointer() - len;
- }
++#if !defined(CONFIG_SMP) && defined(CONFIG_CPU_JUMP_WORKAROUNDS)
++		/*
++		 * Clear BTB (branch target buffer), forbid RAS (return address
++		 * stack) to workaround the Out-of-order Issue in Loongson2F
++		 * via its diagnostic register.
++		 */
++		move	k0, ra
++		jal	1f
++1:		jal	1f
++1:		jal	1f
++1:		jal	1f
++1:		move	ra, k0
++		li	k0, 3
++		mtc0	k0, $22
++#endif /* !CONFIG_SMP && CONFIG_CPU_JUMP_WORKAROUNDS */
  
- struct compat_ipc64_perm {
+ 		/* Set thread_info if we're coming from user mode */
+ 		ori	$28, sp, _THREAD_MASK
+@@ -59,6 +77,7 @@
+ 		pref	0, 0($28)       /* Prefetch the current pointer */
+ 		.set	pop
+ #endif
++		.set	pop
+ 		.endm
+ 
+ 		.macro	SAVE_AT docfi=0
+@@ -160,25 +179,6 @@
+ #else /* !CONFIG_SMP */
+ 		/* Uniprocessor variation */
+ 		.macro	get_saved_sp docfi=0 tosp=0
+-#ifdef CONFIG_CPU_JUMP_WORKAROUNDS
+-		/*
+-		 * Clear BTB (branch target buffer), forbid RAS (return address
+-		 * stack) to workaround the Out-of-order Issue in Loongson2F
+-		 * via its diagnostic register.
+-		 */
+-		move	k0, ra
+-		jal	1f
+-		 nop
+-1:		jal	1f
+-		 nop
+-1:		jal	1f
+-		 nop
+-1:		jal	1f
+-		 nop
+-1:		move	ra, k0
+-		li	k0, 3
+-		mtc0	k0, $22
+-#endif /* CONFIG_CPU_JUMP_WORKAROUNDS */
+ #if defined(CONFIG_32BIT) || defined(KBUILD_64BIT_SYM32)
+ 		lui	k1, %hi(kernelsp)
+ #else
 -- 
 2.7.4

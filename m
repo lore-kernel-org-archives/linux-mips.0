@@ -1,11 +1,11 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:55027 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:37205 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992396AbdLLJ7AFAIuC (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 12 Dec 2017 10:59:00 +0100
+        by eddie.linux-mips.org with ESMTP id S23992176AbdLLJ7GEdjmC (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 12 Dec 2017 10:59:06 +0100
 From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [RFC PATCH 03/16] MIPS: bpf: Use CP0 register for CPU ID
-Date: Tue, 12 Dec 2017 09:57:49 +0000
-Message-ID: <1513072682-1371-4-git-send-email-matt.redfearn@mips.com>
+Subject: [RFC PATCH 04/16] MIPS: Add constant accessors for CP0.Context / CP0.XContext
+Date: Tue, 12 Dec 2017 09:57:50 +0000
+Message-ID: <1513072682-1371-5-git-send-email-matt.redfearn@mips.com>
 In-Reply-To: <1513072682-1371-1-git-send-email-matt.redfearn@mips.com>
 References: <1513072682-1371-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
@@ -22,57 +22,42 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>
 Cc: linux-mips@linux-mips.org
-Message-ID: <20171212095749.Ckzo5OvO3rwXc6_IVtE4BlFzXuI48kJmNxNB_aGzcHg@z>
+Message-ID: <20171212095750.24ja7KeZilZtWwStU5tBVbvv6jNT3sVMCQEPcMU5sD0@z>
 
-We already keep a copy of the CPU's ID stashed in CP0.Context or
-CP0.XContext (defined by SMP_CPUID_REG) for use in exceptions handlers
-to restore the correct CPUs state.
-
-Currently, bpf uses the thread_info->cpu field, which will vanish when
-CONFIG_THREAD_INFO_IN_TASK is activated.
-
-Switch emit_load_cpu to use the CP0 register. A helper function to emit
-mfc0 instructions is also added.
-
-A future commit will perform this same modification for the generic
-smp_processor_id() function.
+The current accessors are asm volatile meaning that the compiler cannot
+optimise multiple requests for the value of these registers. Once
+smp_processor_id() is switched to using these registers, this is
+suboptimal. The Processor ID component of the register is constant, so
+__read_const_32bit_c0_register / __read_const_64bit_c0_register can be
+used to fetch the constant value and allow the compiler to optimise
+multiple fetches. Barriers enforced by preempt_enable() ensure a re-read
+of the register after preemption, when the running CPU may have changed.
 
 Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
 ---
 
- arch/mips/net/bpf_jit.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ arch/mips/include/asm/mipsregs.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/net/bpf_jit.c b/arch/mips/net/bpf_jit.c
-index ae2ff1f08d5a..ffdc171ce837 100644
---- a/arch/mips/net/bpf_jit.c
-+++ b/arch/mips/net/bpf_jit.c
-@@ -234,6 +234,12 @@ static inline void emit_andi(unsigned int dst, unsigned int src,
- 	}
- }
+diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+index 24d3028ba76d..67682acf8284 100644
+--- a/arch/mips/include/asm/mipsregs.h
++++ b/arch/mips/include/asm/mipsregs.h
+@@ -1478,6 +1478,7 @@ do {									\
+ #define read_c0_globalnumber()	__read_32bit_c0_register($3, 1)
  
-+static inline void emit_mfc0(unsigned int dst, unsigned int reg,
-+			     unsigned int select, struct jit_ctx *ctx)
-+{
-+	emit_instr(ctx, mfc0, dst, reg, select);
-+}
-+
- static inline void emit_xor(unsigned int dst, unsigned int src1,
- 			    unsigned int src2, struct jit_ctx *ctx)
- {
-@@ -520,10 +526,9 @@ static inline void emit_jr(unsigned int reg, struct jit_ctx *ctx)
+ #define read_c0_context()	__read_ulong_c0_register($4, 0)
++#define read_const_c0_context()	__read_const_ulong_c0_register($4, 0)
+ #define write_c0_context(val)	__write_ulong_c0_register($4, 0, val)
  
- static inline void emit_load_cpu(unsigned int reg, struct jit_ctx *ctx)
- {
--	/* A = current_thread_info()->cpu */
--	BUILD_BUG_ON(FIELD_SIZEOF(struct thread_info, cpu) != 4);
--	/* $28/gp points to the thread_info struct */
--	emit_load(reg, 28, offsetof(struct thread_info, cpu), ctx);
-+	/* A = smp_processor_id() */
-+	emit_mfc0(reg, SMP_CPUID_REG, ctx);
-+	emit_srl(reg, reg, SMP_CPUID_REGSHIFT, ctx);
- }
+ #define read_c0_contextconfig()		__read_32bit_c0_register($4, 1)
+@@ -1628,6 +1629,7 @@ do {									\
+ #define write_c0_watchhi7(val)	__write_32bit_c0_register($19, 7, val)
  
- static inline u16 align_sp(unsigned int num)
+ #define read_c0_xcontext()	__read_ulong_c0_register($20, 0)
++#define read_const_c0_xcontext()	__read_const_ulong_c0_register($20, 0)
+ #define write_c0_xcontext(val)	__write_ulong_c0_register($20, 0, val)
+ 
+ #define read_c0_intcontrol()	__read_32bit_c0_ctrl_register($20)
 -- 
 2.7.4

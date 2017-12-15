@@ -1,16 +1,23 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:53114 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:36731 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990633AbdLOJgxI8un1 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 15 Dec 2017 10:36:53 +0100
-From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH 2/2] MIPS: pm-cps: Warn if JTAG presence will block power gating
-Date: Fri, 15 Dec 2017 09:34:54 +0000
-Message-ID: <1513330494-21249-2-git-send-email-matt.redfearn@mips.com>
-In-Reply-To: <1513330494-21249-1-git-send-email-matt.redfearn@mips.com>
-References: <1513330494-21249-1-git-send-email-matt.redfearn@mips.com>
+        by eddie.linux-mips.org with ESMTP id S23990408AbdLOX3RoSSSo convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sat, 16 Dec 2017 00:29:17 +0100
+Date: Fri, 15 Dec 2017 23:28:21 +0000
+From: James Hogan <james.hogan@mips.com>
+Subject: Re: [P5600 && EVA memory caching question] PCI region
+Message-ID: <20171215232821.GA5027@jhogan-linux.mipstec.com>
+References: <6132c323-32a7-1d38-b77c-a191be22faa4@gmail.com>
+ <20171206114611.GM5027@jhogan-linux.mipstec.com>
+ <330a5200-531f-fcfa-674a-c81fb3144e92@gmail.com>
+ <20171214152138.GV5027@jhogan-linux.mipstec.com>
+ <ca9adcbc-9777-46a0-ce0b-15e83e01fc72@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@mips.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <ca9adcbc-9777-46a0-ce0b-15e83e01fc72@gmail.com>
+Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,60 +27,68 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, jhogan@kernel.org
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, Dengcheng Zhu <dengcheng.zhu@mips.com>, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Paul Burton <paul.burton@mips.com>, Mark Rutland <mark.rutland@arm.com>
-Message-ID: <20171215093454.VP1gCDJP878vjTe9_JFWMa3P23G1aD4eGwlPeOaqfb8@z>
+To: Yuri Frolov <crashing.kernel@gmail.com>
+Cc: linux-mips@linux-mips.org, paul.burton@mips.com
+Message-ID: <20171215232821.I5DjAUWTDdQWsO8jOkqJ3zvN2ZGSXx-Uy5ibn8R12y4@z>
 
-If a JTAG probe is connected to a MIPS cluster, then the CPC detects it
-and latches the CPC.STAT_CONF.EJTAG_PROBE bit to 1. While set,
-attempting to send a power-down command to a core will be blocked, and
-the CPC will instead send the core to clock-off state. This can
-interfere with systems fully entering a low power state where all cores,
-CM, GIC, etc are powered down.
+On Fri, Dec 15, 2017 at 05:05:12PM +0300, Yuri Frolov wrote:
+> Hi, James
+> 
+> On 12/14/2017 06:21 PM, James Hogan wrote:
+> > Hi Yuri,
+> >
+> > On Thu, Dec 14, 2017 at 06:03:11PM +0300, Yuri Frolov wrote:
+> >> Hi, James.
+> >>
+> >> Do I understand correctly, that in case of CONFIG_EVA=y, any logical
+> >> address from 0x00000000 - 0xBFFFFFFF (3G) range accessed from the kernel
+> >> space is:
+> >> 1) Unmapped (no TLB translations)
+> >> 2) Is mapped 1:1 to physical addresses? E.g, readl from 0x20000000 is,
+> >> in fact a read from physical address 0x20000000? I mean, in legacy
+> >> memory mapping scheme, logical addresses 0x80000000 - 0xBFFFFFFF in
+> >> kernel space were being translated to the physical addresses from the
+> >> low 512Mb (phys 0x00000000 - 0x20000000), no such bits stripping or
+> >> something for EVA, the mapping is 1:1?
+> > That depends on the EVA configuration. The hardware is fairly flexible
+> > (which is both useful and painful - making supporting EVA from
+> > multiplatform kernels particularly awkward), but that is one possible
+> > configuration.
+> >
+> > E.g. ideally you probably want to keep seg5 (0x00000000..0x3FFFFFFF)
+> > MUSK (TLB mapped for user & kernel) so that null dereferences from
+> > kernel code are safely caught, but that costs you 1GB of directly
+> > accessible physical address space from kernel mode.
+> So, do I understand correctly, that provided we have these TLB entries 
+> in kernel,
+> 
+> Index: 71 pgmask=16kb va=c0038000 asid=00
+>          [ri=0 xi=0 pa=200e0000 c=2 d=1 v=1 g=1] [ri=0 xi=0 pa=00000000 
+> c=0 d=0 v=0 g=1]
+> Index: 72 pgmask=16kb va=c0040000 asid=00
+>          [ri=0 xi=0 pa=200c0000 c=2 d=1 v=1 g=1] [ri=0 xi=0 pa=200c4000 
+> c=2 d=1 v=1 g=1]
+> 
+> u32 l;
+> 
+> l = readl((const volatile void *)(0x200c0000 + 0x20))
 
-Detect that a JTAG probe is / has been connected to the cluster and emit
-a warning that the attempted power down will fail, to aid debugging
-system suspend where it is not currently obvious that a core has not
-really powered down and will block a full power down of the cluster. We
-use a ratelimited pr_warn since this path will also be hit by cpu idle
-if it attempts to put cores into the powered down state.
+assuming you have segment5 (0x00000000..0x3FFFFFFF) set to MUSUK, with
+PA 0 (i.e. direct 1:1 mapping), it'd access PA 0x200c0020, but
+presumably the segment will be configured to be cached (CCA 3) or cached
+coherent (CCA 5).
 
-Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
----
+> and
+> l = *(u32 *)(0xc0040000+ 0x20)
 
- arch/mips/kernel/pm-cps.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+this will access physical addres 0x200c0020 uncached (CCA 2).
 
-diff --git a/arch/mips/kernel/pm-cps.c b/arch/mips/kernel/pm-cps.c
-index 421e06dfee72..45776613a5be 100644
---- a/arch/mips/kernel/pm-cps.c
-+++ b/arch/mips/kernel/pm-cps.c
-@@ -11,6 +11,7 @@
- #include <linux/cpuhotplug.h>
- #include <linux/init.h>
- #include <linux/percpu.h>
-+#include <linux/ratelimit.h>
- #include <linux/slab.h>
- 
- #include <asm/asm-offsets.h>
-@@ -143,6 +144,18 @@ int cps_pm_enter_state(enum cps_pm_state state)
- 
- 	/* Setup the VPE to run mips_cps_pm_restore when started again */
- 	if (IS_ENABLED(CONFIG_CPU_PM) && state == CPS_PM_POWER_GATED) {
-+		unsigned int stat = read_cpc_cl_stat_conf();
-+
-+		if (stat & CPC_Cx_STAT_CONF_EJTAG_PROBE) {
-+			/*
-+			 * If we're attempting to gate power to the core, the
-+			 * JTAG detect bit indicates that the CPC will instead
-+			 * put the core into clock-off state. Emit a warning.
-+			 */
-+			pr_warn_ratelimited("JTAG probe present - core%d will clock off instead of powering down\n",
-+					    core);
-+		}
-+
- 		/* Power gating relies upon CPS SMP */
- 		if (!mips_cps_smp_in_use())
- 			return -EINVAL;
--- 
-2.7.4
+> 
+> should return the same value?
+
+So that would depend I think on whether there is a dirty value in the
+cache. Possibly not. The cached mapping would see the dirty value. The
+uncached mapping may see a stale value straight from RAM.
+
+Cheers
+James

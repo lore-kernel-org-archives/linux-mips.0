@@ -1,23 +1,20 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:36731 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:57057 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990408AbdLOX3RoSSSo convert rfc822-to-8bit
+        by eddie.linux-mips.org with ESMTP id S23993195AbdLRPjXsKXZE convert rfc822-to-8bit
         (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 16 Dec 2017 00:29:17 +0100
-Date: Fri, 15 Dec 2017 23:28:21 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [P5600 && EVA memory caching question] PCI region
-Message-ID: <20171215232821.GA5027@jhogan-linux.mipstec.com>
-References: <6132c323-32a7-1d38-b77c-a191be22faa4@gmail.com>
- <20171206114611.GM5027@jhogan-linux.mipstec.com>
- <330a5200-531f-fcfa-674a-c81fb3144e92@gmail.com>
- <20171214152138.GV5027@jhogan-linux.mipstec.com>
- <ca9adcbc-9777-46a0-ce0b-15e83e01fc72@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
+        Mon, 18 Dec 2017 16:39:23 +0100
+From: Aleksandar Markovic <Aleksandar.Markovic@mips.com>
+Subject: RE: [PATCH 1/2] dt-bindings: Document mti,mips-cpc binding
+Date: Mon, 18 Dec 2017 15:38:16 +0000
+Message-ID: <BD3A5F1946F2E540A31AF2CE969BAEEEC27E53@MIPSMAIL01.mipstec.com>
+References: <1513356723-7393-1-git-send-email-aleksandar.markovic@rt-rk.com>
+ <1513356723-7393-2-git-send-email-aleksandar.markovic@rt-rk.com>,<20171216182638.3vd2rbkyos74e4jo@rob-hp-laptop>
+In-Reply-To: <20171216182638.3vd2rbkyos74e4jo@rob-hp-laptop>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-In-Reply-To: <ca9adcbc-9777-46a0-ce0b-15e83e01fc72@gmail.com>
-Return-Path: <James.Hogan@mips.com>
+MIME-Version: 1.0
+Return-Path: <Aleksandar.Markovic@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,68 +24,52 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Yuri Frolov <crashing.kernel@gmail.com>
-Cc: linux-mips@linux-mips.org, paul.burton@mips.com
-Message-ID: <20171215232821.I5DjAUWTDdQWsO8jOkqJ3zvN2ZGSXx-Uy5ibn8R12y4@z>
+To: Rob Herring <robh@kernel.org>, Aleksandar Markovic <aleksandar.markovic@rt-rk.com>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Paul Burton <Paul.Burton@mips.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Douglas Leung <Douglas.Leung@mips.com>, Goran Ferenc <Goran.Ferenc@mips.com>, James Hogan <James.Hogan@mips.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, Miodrag Dinic <Miodrag.Dinic@mips.com>, Petar Jovanovic <Petar.Jovanovic@mips.com>, Raghu Gandham <Raghu.Gandham@mips.com>
+Message-ID: <20171218153816.81UWQ1UwofYVU1cEutGekHyLU43EKoCGLaGpWw3Q48Y@z>
 
-On Fri, Dec 15, 2017 at 05:05:12PM +0300, Yuri Frolov wrote:
-> Hi, James
-> 
-> On 12/14/2017 06:21 PM, James Hogan wrote:
-> > Hi Yuri,
+> From: Rob Herring [robh@kernel.org]
+> Sent: Saturday, December 16, 2017 7:26 PM
+> To: Aleksandar Markovic
+> Subject: Re: [PATCH 1/2] dt-bindings: Document mti,mips-cpc binding
+>
+> On Fri, Dec 15, 2017 at 05:51:59PM +0100, Aleksandar Markovic wrote:
+> > From: Paul Burton <paul.burton@mips.com>
 > >
-> > On Thu, Dec 14, 2017 at 06:03:11PM +0300, Yuri Frolov wrote:
-> >> Hi, James.
-> >>
-> >> Do I understand correctly, that in case of CONFIG_EVA=y, any logical
-> >> address from 0x00000000 - 0xBFFFFFFF (3G) range accessed from the kernel
-> >> space is:
-> >> 1) Unmapped (no TLB translations)
-> >> 2) Is mapped 1:1 to physical addresses? E.g, readl from 0x20000000 is,
-> >> in fact a read from physical address 0x20000000? I mean, in legacy
-> >> memory mapping scheme, logical addresses 0x80000000 - 0xBFFFFFFF in
-> >> kernel space were being translated to the physical addresses from the
-> >> low 512Mb (phys 0x00000000 - 0x20000000), no such bits stripping or
-> >> something for EVA, the mapping is 1:1?
-> > That depends on the EVA configuration. The hardware is fairly flexible
-> > (which is both useful and painful - making supporting EVA from
-> > multiplatform kernels particularly awkward), but that is one possible
-> > configuration.
+> > Document a binding for the MIPS Cluster Power Controller (CPC) which
+> > simply allows the device tree to specify where the CPC registers should
+> > be mapped.
 > >
-> > E.g. ideally you probably want to keep seg5 (0x00000000..0x3FFFFFFF)
-> > MUSK (TLB mapped for user & kernel) so that null dereferences from
-> > kernel code are safely caught, but that costs you 1GB of directly
-> > accessible physical address space from kernel mode.
-> So, do I understand correctly, that provided we have these TLB entries 
-> in kernel,
+> > Signed-off-by: Paul Burton <paul.burton@mips.com>
+> > Signed-off-by: Aleksandar Markovic <aleksandar.markovic@mips.com>
+> > ---
+> >  Documentation/devicetree/bindings/misc/mti,mips-cpc.txt | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/misc/mti,mips-cpc.txt
+> >
+...
+> > +++ b/Documentation/devicetree/bindings/misc/mti,mips-cpc.txt
+> > @@ -0,0 +1,8 @@
+> > +Binding for MIPS Cluster Power Controller (CPC).
+> > +
+> > +This binding allows a system to specify where the CPC registers should be
+> > +mapped using device tree.
 > 
-> Index: 71 pgmask=16kb va=c0038000 asid=00
->          [ri=0 xi=0 pa=200e0000 c=2 d=1 v=1 g=1] [ri=0 xi=0 pa=00000000 
-> c=0 d=0 v=0 g=1]
-> Index: 72 pgmask=16kb va=c0040000 asid=00
->          [ri=0 xi=0 pa=200c0000 c=2 d=1 v=1 g=1] [ri=0 xi=0 pa=200c4000 
-> c=2 d=1 v=1 g=1]
+> Not really where you map registers, but where they are located.
 > 
-> u32 l;
+
+This will be corrected in the next version.
+
+> > +
+> > +Required properties:
+> > +compatible : Should be "mti,mips-cpc".
 > 
-> l = readl((const volatile void *)(0x200c0000 + 0x20))
-
-assuming you have segment5 (0x00000000..0x3FFFFFFF) set to MUSUK, with
-PA 0 (i.e. direct 1:1 mapping), it'd access PA 0x200c0020, but
-presumably the segment will be configured to be cached (CCA 3) or cached
-coherent (CCA 5).
-
-> and
-> l = *(u32 *)(0xc0040000+ 0x20)
-
-this will access physical addres 0x200c0020 uncached (CCA 2).
-
+> Only one version of the block?
 > 
-> should return the same value?
 
-So that would depend I think on whether there is a dirty value in the
-cache. Possibly not. The cached mapping would see the dirty value. The
-uncached mapping may see a stale value straight from RAM.
+I am not clear what you mean by "version of the block". I you meant
+number of allowed values for *compatible* property, yes, we want and
+need just one such value (string).
 
-Cheers
-James
+> > +regs: Should describe the address & size of the CPC register region.
+> > --

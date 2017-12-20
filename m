@@ -1,19 +1,14 @@
-Received: from mail-eopbgr40111.outbound.protection.outlook.com ([40.107.4.111]:43008
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23990421AbdLTIWS0lv1f (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 20 Dec 2017 09:22:18 +0100
-Subject: Re: [RFC] MIPS memblock: Remove bootmem code and switch to NO_BOOTMEM
-References: <20171219201400.GA10185@mobilestation>
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Message-ID: <e4ef6c82-f3c1-1a07-9f0f-cd442130ef37@nokia.com>
-Date: Wed, 20 Dec 2017 09:20:02 +0100
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:38202 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990424AbdLTOucaicOx (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 20 Dec 2017 15:50:32 +0100
+From: Matt Redfearn <matt.redfearn@mips.com>
+Subject: [PATCH] clocksource/drivers/mips-gic-timer: Add pr_fmt and reword pr_* messages
+Date: Wed, 20 Dec 2017 14:50:06 +0000
+Message-ID: <1513781406-27292-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
-In-Reply-To: <20171219201400.GA10185@mobilestation>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <alexander.sverdlin@nokia.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,25 +18,95 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Serge Semin <fancer.lancer@gmail.com>, ralf@linux-mips.org, paul.burton@imgtec.com, rabinv@axis.com, matt.redfearn@imgtec.com, james.hogan@imgtec.com, marcin.nowakowski@imgtec.com, f.fainelli@gmail.com, kumba@gentoo.org
-Cc: Sergey.Semin@t-platforms.ru, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20171220082002.bWbgJ-YbBuZdu_-XCNrwjRo7C0y-e2Y_KGdrmiQhKSU@z>
+To: Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, linux-kernel@vger.kernel.org
+Message-ID: <20171220145006.sSNMr5AeonAhMTYlrD2fhYLM3cFaeyiwLrhpKGJ6_6g@z>
 
-Hello Serge,
+Several messages from the MIPS GIC driver include the text "GIC", "GIC
+timer", etc, but the format is not standard. Add a pr_fmt of
+"mips-gic-timer: " and reword the messages now that they will be
+prefixed with the driver name.
 
-On 19/12/17 21:14, Serge Semin wrote:
-> Almost a year ago I sent a patchset to the Linux MIPS community. The main target of the patchset
-> was to get rid from the old bootmem allocator usage at the MIPS architecture. Additionally I had
-> a problem with CMA usage on my MIPS machine due to some struct page-related issue. Moving to the
-> memblock allocator fixed the problem and gave us benefits like smaller memory consumption,
-> powerful memblock API to be used within the arch code.
+Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+---
 
-[...]
+ drivers/clocksource/mips-gic-timer.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-> @alexander.sverdlin@nokia.com. Do you still possess the Octeon MIPS64 platform to test the patchset?
-
-yes, I'd like to test such a serious change on Octeon2. Please include me in the distribution list.
-
+diff --git a/drivers/clocksource/mips-gic-timer.c b/drivers/clocksource/mips-gic-timer.c
+index a04808a21d4e..b321699d02a2 100644
+--- a/drivers/clocksource/mips-gic-timer.c
++++ b/drivers/clocksource/mips-gic-timer.c
+@@ -5,6 +5,9 @@
+  *
+  * Copyright (C) 2012 MIPS Technologies, Inc.  All rights reserved.
+  */
++
++#define pr_fmt(fmt) "mips-gic-timer: " fmt
++
+ #include <linux/clk.h>
+ #include <linux/clockchips.h>
+ #include <linux/cpu.h>
+@@ -136,8 +139,7 @@ static int gic_clockevent_init(void)
+ 
+ 	ret = setup_percpu_irq(gic_timer_irq, &gic_compare_irqaction);
+ 	if (ret < 0) {
+-		pr_err("GIC timer IRQ %d setup failed: %d\n",
+-		       gic_timer_irq, ret);
++		pr_err("IRQ %d setup failed (%d)\n", gic_timer_irq, ret);
+ 		return ret;
+ 	}
+ 
+@@ -176,7 +178,7 @@ static int __init __gic_clocksource_init(void)
+ 
+ 	ret = clocksource_register_hz(&gic_clocksource, gic_frequency);
+ 	if (ret < 0)
+-		pr_warn("GIC: Unable to register clocksource\n");
++		pr_warn("Unable to register clocksource\n");
+ 
+ 	return ret;
+ }
+@@ -188,7 +190,7 @@ static int __init gic_clocksource_of_init(struct device_node *node)
+ 
+ 	if (!mips_gic_present() || !node->parent ||
+ 	    !of_device_is_compatible(node->parent, "mti,gic")) {
+-		pr_warn("No DT definition for the mips gic driver\n");
++		pr_warn("No DT definition\n");
+ 		return -ENXIO;
+ 	}
+ 
+@@ -196,7 +198,7 @@ static int __init gic_clocksource_of_init(struct device_node *node)
+ 	if (!IS_ERR(clk)) {
+ 		ret = clk_prepare_enable(clk);
+ 		if (ret < 0) {
+-			pr_err("GIC failed to enable clock\n");
++			pr_err("Failed to enable clock\n");
+ 			clk_put(clk);
+ 			return ret;
+ 		}
+@@ -204,12 +206,12 @@ static int __init gic_clocksource_of_init(struct device_node *node)
+ 		gic_frequency = clk_get_rate(clk);
+ 	} else if (of_property_read_u32(node, "clock-frequency",
+ 					&gic_frequency)) {
+-		pr_err("GIC frequency not specified.\n");
++		pr_err("Frequency not specified\n");
+ 		return -EINVAL;;
+ 	}
+ 	gic_timer_irq = irq_of_parse_and_map(node, 0);
+ 	if (!gic_timer_irq) {
+-		pr_err("GIC timer IRQ not specified.\n");
++		pr_err("IRQ not specified\n");
+ 		return -EINVAL;;
+ 	}
+ 
+@@ -220,7 +222,7 @@ static int __init gic_clocksource_of_init(struct device_node *node)
+ 	ret = gic_clockevent_init();
+ 	if (!ret && !IS_ERR(clk)) {
+ 		if (clk_notifier_register(clk, &gic_clk_nb) < 0)
+-			pr_warn("GIC: Unable to register clock notifier\n");
++			pr_warn("Unable to register clock notifier\n");
+ 	}
+ 
+ 	/* And finally start the counter */
 -- 
-Best regards,
-Alexander Sverdlin.
+2.7.4

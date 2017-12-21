@@ -1,24 +1,17 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:33662 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:46641 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990437AbdLUNllWfvvZ convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 21 Dec 2017 14:41:41 +0100
-Date: Thu, 21 Dec 2017 13:41:20 +0000
+        by eddie.linux-mips.org with ESMTP id S23990491AbdLUO7U4OizN (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 21 Dec 2017 15:59:20 +0100
+Date: Thu, 21 Dec 2017 14:58:02 +0000
 From: James Hogan <james.hogan@mips.com>
-Subject: Re: [P5600 && EVA memory caching question] PCI region
-Message-ID: <20171221134119.GE5027@jhogan-linux.mipstec.com>
-References: <6132c323-32a7-1d38-b77c-a191be22faa4@gmail.com>
- <20171206114611.GM5027@jhogan-linux.mipstec.com>
- <330a5200-531f-fcfa-674a-c81fb3144e92@gmail.com>
- <20171214152138.GV5027@jhogan-linux.mipstec.com>
- <ca9adcbc-9777-46a0-ce0b-15e83e01fc72@gmail.com>
- <20171215232821.GA5027@jhogan-linux.mipstec.com>
- <b8706fae-aea8-99b5-f91d-37690eff6949@gmail.com>
+Subject: Re: [PATCH 2/3] MIPS: Add barrier between dcache & icache flushes
+Message-ID: <20171221145801.GF5027@jhogan-linux.mipstec.com>
+References: <1513854965-3880-1-git-send-email-matt.redfearn@mips.com>
+ <1513854965-3880-2-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <b8706fae-aea8-99b5-f91d-37690eff6949@gmail.com>
+In-Reply-To: <1513854965-3880-2-git-send-email-matt.redfearn@mips.com>
 Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -29,116 +22,63 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Yuri Frolov <crashing.kernel@gmail.com>
-Cc: linux-mips@linux-mips.org, paul.burton@mips.com
-Message-ID: <20171221134120.zmr9KOJoxIc6UQIBYVEQIvVnsFa256CxB_tNMgXJbBc@z>
+To: Matt Redfearn <matt.redfearn@mips.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, "stable # v4 . 9+" <stable@vger.kernel.org>, Huacai Chen <chenhc@lemote.com>, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@mips.com>
+Message-ID: <20171221145802.KuoC_5F4HLcHvoa76KuMBRgvtKb6BHgiHQ28l6BtRGA@z>
 
-On Wed, Dec 20, 2017 at 06:11:04PM +0300, Yuri Frolov wrote:
-> Hi, James
+On Thu, Dec 21, 2017 at 11:16:03AM +0000, Matt Redfearn wrote:
+> Index-based cache operations may be arbitrarily reordered by out of
+> order CPUs. Thus code which writes back the dcache & then invalidates
+> the icache using indexed cache ops must include a barrier between
+> operating on the 2 caches in order to prevent the scenario in which:
 > 
-> On 12/16/2017 02:28 AM, James Hogan wrote:
-> > On Fri, Dec 15, 2017 at 05:05:12PM +0300, Yuri Frolov wrote:
-> >> Hi, James
-> >>
-> >> On 12/14/2017 06:21 PM, James Hogan wrote:
-> >>> Hi Yuri,
-> >>>
-> >>> On Thu, Dec 14, 2017 at 06:03:11PM +0300, Yuri Frolov wrote:
-> >>>> Hi, James.
-> >>>>
-> >>>> Do I understand correctly, that in case of CONFIG_EVA=y, any logical
-> >>>> address from 0x00000000 - 0xBFFFFFFF (3G) range accessed from the kernel
-> >>>> space is:
-> >>>> 1) Unmapped (no TLB translations)
-> >>>> 2) Is mapped 1:1 to physical addresses? E.g, readl from 0x20000000 is,
-> >>>> in fact a read from physical address 0x20000000? I mean, in legacy
-> >>>> memory mapping scheme, logical addresses 0x80000000 - 0xBFFFFFFF in
-> >>>> kernel space were being translated to the physical addresses from the
-> >>>> low 512Mb (phys 0x00000000 - 0x20000000), no such bits stripping or
-> >>>> something for EVA, the mapping is 1:1?
-> >>> That depends on the EVA configuration. The hardware is fairly flexible
-> >>> (which is both useful and painful - making supporting EVA from
-> >>> multiplatform kernels particularly awkward), but that is one possible
-> >>> configuration.
-> >>>
-> >>> E.g. ideally you probably want to keep seg5 (0x00000000..0x3FFFFFFF)
-> >>> MUSK (TLB mapped for user & kernel) so that null dereferences from
-> >>> kernel code are safely caught, but that costs you 1GB of directly
-> >>> accessible physical address space from kernel mode.
-> >> So, do I understand correctly, that provided we have these TLB entries
-> >> in kernel,
-> >>
-> >> Index: 71 pgmask=16kb va=c0038000 asid=00
-> >>           [ri=0 xi=0 pa=200e0000 c=2 d=1 v=1 g=1] [ri=0 xi=0 pa=00000000
-> >> c=0 d=0 v=0 g=1]
-> >> Index: 72 pgmask=16kb va=c0040000 asid=00
-> >>           [ri=0 xi=0 pa=200c0000 c=2 d=1 v=1 g=1] [ri=0 xi=0 pa=200c4000
-> >> c=2 d=1 v=1 g=1]
-> >>
-> >> u32 l;
-> >>
-> >> l = readl((const volatile void *)(0x200c0000 + 0x20))
-> > assuming you have segment5 (0x00000000..0x3FFFFFFF) set to MUSUK, with
-> > PA 0 (i.e. direct 1:1 mapping), it'd access PA 0x200c0020, but
-> > presumably the segment will be configured to be cached (CCA 3) or cached
-> > coherent (CCA 5).
-> >
-> >> and
-> >> l = *(u32 *)(0xc0040000+ 0x20)
-> > this will access physical addres 0x200c0020 uncached (CCA 2).
-> >
-> >> should return the same value?
-> > So that would depend I think on whether there is a dirty value in the
-> > cache. Possibly not. The cached mapping would see the dirty value. The
-> > uncached mapping may see a stale value straight from RAM.
-> >
-> > Cheers
-> > James
-> I'm looking at arch/mips/include/asm//mach-malta/kernel-entry-init.h and 
-> there is a definition for SegCtl2:
+>   - icache invalidation occurs.
+>   - icache fetch occurs, due to speculation.
+>   - dcache writeback occurs.
 > 
->          /* SegCtl2 */
->          li      t0, ((MIPS_SEGCFG_MUSUK << MIPS_SEGCFG_AM_SHIFT) |      \
->                  (6 << MIPS_SEGCFG_PA_SHIFT) |                           \
->                  (1 << MIPS_SEGCFG_EU_SHIFT)) |                          \
->                  (((MIPS_SEGCFG_MUSUK << MIPS_SEGCFG_AM_SHIFT) |         \
->                  (4 << MIPS_SEGCFG_PA_SHIFT) |                           \
->                  (1 << MIPS_SEGCFG_EU_SHIFT)) << 16)
+> If the above were allowed to happen then the icache would contain stale
+> data. Forcing the dcache writeback to complete before the icache
+> invalidation avoids this.
 > 
-> it defines, that kernel logical addresses from the range 0x00000000 - 
-> 0x7fffffff are unmapped (no tlbs) and dictates, that in order to get a 
-> physical address for any logical addresses from 0x00000000 - 0x3fffffff 
-> range in kernel space, bits [31:29] of the logical address must be 
-> changed to 100,
-> and (again in kernel space) for any logical addresses from 0x40000000 - 
-> 0x7fffffff range, bits [31:29] of the logical address must be changed to 
-> 110, right?
-
-yes, the Malta implementation is slightly ugly as it relies on a
-hardware physical memory alias of RAM starting at PA 0x80000000.
-
+> Similarly, the MIPS CM version 2 and above serialises D->I hit-based
+> cache operations to the same address, but older CMs and systems without
+> a MIPS CM do not and require the same barrier to ensure ordering.
 > 
-> What physical addresses will logical addresses 0x00000000 and 0x20000000 
-> be translated in kernel space?.. logical 0x00000000 --> physical 
-> 0x80000000, and logical 0x20000000 --> .... 0x80000000 too?
+> To ensure these conditions, always enforce a barrier between D and I
+> cache operations.
+> 
+> Suggested-by: Leonid Yegoshin <Leonid.Yegoshin@mips.com>
+> Suggested-by: Paul Burton <paul.burton@mips.com>
+> Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+> Cc: James Hogan <james.hogan@mips.com>
+> Cc: stable <stable@vger.kernel.org> # v4.9+
 
-VA 0x20000000 -> PA 0xa0000000, since seg4 and seg5 are 1GB segments, so
-its only bits 30 and up that can be changed. I seem to remember the bit
-corresponding to bit 29 isn't even writable in the SegCtl2 register.
+Looks reasonable to me,
 
-Does that clarify things?
+Reviewed-by: James Hogan <jhogan@kernel.org>
 
 Cheers
 James
 
-> Since we must to change bits [31:29], we have to change bit 29 ('1') in 
-> logical address 0x200000000 to '0' (since PA for this range is 100).
+> ---
 > 
-> So, what physical addresses will all logical addresses which have '1' at 
-> 29 bit be translated, if we define PA as 100 and 110 in SegCtl2? It 
-> looks like there's no flat translation of logical addresses to physical 
-> addresses in kernel space, and this is obviously just not correct, there 
-> is something simple I've been overlooking.
+>  arch/mips/mm/c-r4k.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> Thank you,
-> Yuri
+> diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+> index ce7a54223504..b7186d47184b 100644
+> --- a/arch/mips/mm/c-r4k.c
+> +++ b/arch/mips/mm/c-r4k.c
+> @@ -741,6 +741,9 @@ static inline void __local_r4k_flush_icache_range(unsigned long start,
+>  			else
+>  				blast_dcache_range(start, end);
+>  		}
+> +
+> +		/* Ensure dcache operation has completed */
+> +		mb();
+>  	}
+>  
+>  	if (type == R4K_INDEX ||
+> -- 
+> 2.7.4
+> 

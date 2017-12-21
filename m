@@ -1,16 +1,31 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:41319 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990491AbdLULRq3oiyq (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 21 Dec 2017 12:17:46 +0100
-From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH 3/3] MIPS: Add barrier between icache flush and execution hazard barrier
-Date: Thu, 21 Dec 2017 11:16:04 +0000
-Message-ID: <1513854965-3880-3-git-send-email-matt.redfearn@mips.com>
-In-Reply-To: <1513854965-3880-1-git-send-email-matt.redfearn@mips.com>
-References: <1513854965-3880-1-git-send-email-matt.redfearn@mips.com>
+Received: from mail-lf0-x233.google.com ([IPv6:2a00:1450:4010:c07::233]:43995
+        "EHLO mail-lf0-x233.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990424AbdLUMkoCqxaE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 21 Dec 2017 13:40:44 +0100
+Received: by mail-lf0-x233.google.com with SMTP id o26so13514445lfc.10
+        for <linux-mips@linux-mips.org>; Thu, 21 Dec 2017 04:40:44 -0800 (PST)
+Received: from upc8.baikal.int (mail.baikalelectronics.com. [87.245.175.226])
+        by smtp.gmail.com with ESMTPSA id u19sm4325777lfc.59.2017.12.21.04.40.37
+        for <linux-mips@linux-mips.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 Dec 2017 04:40:37 -0800 (PST)
+Subject: Re: [P5600 && EVA memory caching question] PCI region
+From: Yuri Frolov <crashing.kernel@gmail.com>
+References: <6132c323-32a7-1d38-b77c-a191be22faa4@gmail.com>
+ <20171206114611.GM5027@jhogan-linux.mipstec.com>
+ <330a5200-531f-fcfa-674a-c81fb3144e92@gmail.com>
+ <20171214152138.GV5027@jhogan-linux.mipstec.com>
+ <ca9adcbc-9777-46a0-ce0b-15e83e01fc72@gmail.com>
+ <20171215232821.GA5027@jhogan-linux.mipstec.com>
+ <b8706fae-aea8-99b5-f91d-37690eff6949@gmail.com>
+Message-ID: <0f3d62c8-ab8f-f652-8efc-a98e16dd64ca@gmail.com>
+Date: Thu, 21 Dec 2017 15:40:36 +0300
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@mips.com>
+In-Reply-To: <b8706fae-aea8-99b5-f91d-37690eff6949@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Return-Path: <crashing.kernel@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,50 +35,47 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, Paul Burton <paul.burton@mips.com>, James Hogan <james.hogan@mips.com>, "stable # v4 . 9+" <stable@vger.kernel.org>, Huacai Chen <chenhc@lemote.com>, linux-kernel@vger.kernel.org
-Message-ID: <20171221111604.znZ7LNCccawEVIQXiwQSo1v-0F6Y6D0IzWTBgvvqIjM@z>
+Cc: linux-mips@linux-mips.org
+Message-ID: <20171221124036.XiFjG1AmOv6B5t6OhnyvKQnhl5t_bYL5HJywvfL2IYo@z>
 
-Hit-based icache operations may complete before the CM completes
-intervention with the local L1. Thus code which invalidates the icache
-and then attempts to execute those addresses must include a barrier to
-prevent the scenario which:
+ > I'm looking at arch/mips/include/asm//mach-malta/kernel-entry-init.h 
+and there is a definition for
+ > SegCtl2:
 
-  - icache instruction completes
-  - icache fetch occurs
-  - core executes icache data
-  - CM completes icache invalidate
+>
+>         /* SegCtl2 */
+>         li      t0, ((MIPS_SEGCFG_MUSUK << MIPS_SEGCFG_AM_SHIFT) |      \
+>                 (6 << MIPS_SEGCFG_PA_SHIFT) |                           \
+>                 (1 << MIPS_SEGCFG_EU_SHIFT)) |                          \
+>                 (((MIPS_SEGCFG_MUSUK << MIPS_SEGCFG_AM_SHIFT) |         \
+>                 (4 << MIPS_SEGCFG_PA_SHIFT) |                           \
+>                 (1 << MIPS_SEGCFG_EU_SHIFT)) << 16)
+>
+> it defines, that kernel logical addresses from the range 0x00000000 - 
+> 0x7fffffff are unmapped (no tlbs) and dictates, that in order to get a 
+> physical address for any logical addresses from 0x00000000 - 
+> 0x3fffffff range in kernel space, bits [31:29] of the logical address 
+> must be changed to 100,
+> and (again in kernel space) for any logical addresses from 0x40000000 
+> - 0x7fffffff range, bits [31:29] of the logical address must be 
+> changed to 110, right?
+>
+> What physical addresses will logical addresses 0x00000000 and 
+> 0x20000000 be translated in kernel space?.. logical 0x00000000 --> 
+> physical 0x80000000, and logical 0x20000000 --> .... 0x80000000 too?
+> Since we must to change bits [31:29], we have to change bit 29 ('1') 
+> in logical address 0x200000000 to '0' (since PA for this range is 100).
+>
+> So, what physical addresses will all logical addresses which have '1' 
+> at 29 bit be translated, if we define PA as 100 and 110 in SegCtl2? It 
+> looks like there's no flat translation of logical addresses to 
+> physical addresses in kernel space, and this is obviously just not 
+> correct, there is something simple I've been overlooking.
+>
+> Thank you,
+> Yuri
 
-If the above were allowed to happen then the core would execute stale
-instructions from the icache.
-
-A barrier is required to prevent the core i-fetching before the icache
-operation has completed. This goes together with the instruction_hazard
-to ensure that the pipeline is stalled until the icache operation is
-completed and the core will fetch the new instructions.
-
-Suggested-by: Leonid Yegoshin <Leonid.Yegoshin@mips.com>
-Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
-Cc: Paul Burton <paul.burton@mips.com>
-Cc: James Hogan <james.hogan@mips.com>
-Cc: stable <stable@vger.kernel.org> # v4.9+
----
-
- arch/mips/mm/c-r4k.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-index b7186d47184b..844685e51109 100644
---- a/arch/mips/mm/c-r4k.c
-+++ b/arch/mips/mm/c-r4k.c
-@@ -763,6 +763,8 @@ static inline void __local_r4k_flush_icache_range(unsigned long start,
- 			break;
- 		}
- 	}
-+	/* Ensure icache operation has completed */
-+	mb();
- 	/* Hazard to force new i-fetch */
- 	instruction_hazard();
- }
--- 
-2.7.4
+The only way this scheme can work, is that 'these bits are used' phrase 
+from Table 3.5 CFG (Segment Configuration) Field Description means not 
+'these bits substitute bits [31:29] in virtual address', but 'these bits 
+are 'OR'-ed with bits [31:29] in virtual address.

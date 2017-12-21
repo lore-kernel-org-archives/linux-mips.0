@@ -1,11 +1,11 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:38202 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:42624 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990424AbdLTOucaicOx (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 20 Dec 2017 15:50:32 +0100
+        by eddie.linux-mips.org with ESMTP id S23990424AbdLULQuOjbRq (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 21 Dec 2017 12:16:50 +0100
 From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH] clocksource/drivers/mips-gic-timer: Add pr_fmt and reword pr_* messages
-Date: Wed, 20 Dec 2017 14:50:06 +0000
-Message-ID: <1513781406-27292-1-git-send-email-matt.redfearn@mips.com>
+Subject: [PATCH 1/3] MIPS: c-r4k: instruction_hazard should immediately follow cache op
+Date: Thu, 21 Dec 2017 11:16:02 +0000
+Message-ID: <1513854965-3880-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Matt.Redfearn@mips.com>
@@ -18,95 +18,63 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, linux-kernel@vger.kernel.org
-Message-ID: <20171220145006.sSNMr5AeonAhMTYlrD2fhYLM3cFaeyiwLrhpKGJ6_6g@z>
+To: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, "stable # v4 . 9+" <stable@vger.kernel.org>, Huacai Chen <chenhc@lemote.com>, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@mips.com>
+Message-ID: <20171221111602.4y4mp1nFKkwa3FWeIwnp3uyZDpw_y_OFpW6gvWW_mBk@z>
 
-Several messages from the MIPS GIC driver include the text "GIC", "GIC
-timer", etc, but the format is not standard. Add a pr_fmt of
-"mips-gic-timer: " and reword the messages now that they will be
-prefixed with the driver name.
+During ftrace initialisation, placeholder instructions in the prologue
+of every kernel function not marked "notrace" are replaced with nops.
+After the instructions are written (to the dcache), flush_icache_range()
+is used to ensure that the icache will be updated with these replaced
+instructions. Currently there is an instruction_hazard guard at the end
+of __r4k_flush_icache_range, since a hazard can be created if the CPU
+has already begun fetching the instructions that have have been
+replaced. The placement, however, ignores the calls to preempt_enable(),
+both in __r4k_flush_icache_range and r4k_on_each_cpu. When
+CONFIG_PREEMPT is enabled, these expand out to at least calls to
+preempt_count_sub(). The lack of an instruction hazard between icache
+invalidate and the execution of preempt_count_sub, in rare
+circumstances, was observed to cause weird crashes on Ci40, where the
+CPU would end up taking a kernel unaligned access exception from the
+middle of do_ade(), which it somehow reached from preempt_count_sub
+without executing the start of do_ade.
+
+Since the instruction hazard exists immediately after the dcache is
+written back and icache invalidated, place the instruction_hazard()
+within __local_r4k_flush_icache_range. The one at the end of
+__r4k_flush_icache_range is too late, since all of the functions in the
+call path of preempt_enable have already been executed, so remove it.
+
+This fixes the crashes during ftrace initialisation on Ci40.
 
 Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+Cc: stable <stable@vger.kernel.org> # v4.9+
+
 ---
 
- drivers/clocksource/mips-gic-timer.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ arch/mips/mm/c-r4k.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clocksource/mips-gic-timer.c b/drivers/clocksource/mips-gic-timer.c
-index a04808a21d4e..b321699d02a2 100644
---- a/drivers/clocksource/mips-gic-timer.c
-+++ b/drivers/clocksource/mips-gic-timer.c
-@@ -5,6 +5,9 @@
-  *
-  * Copyright (C) 2012 MIPS Technologies, Inc.  All rights reserved.
-  */
-+
-+#define pr_fmt(fmt) "mips-gic-timer: " fmt
-+
- #include <linux/clk.h>
- #include <linux/clockchips.h>
- #include <linux/cpu.h>
-@@ -136,8 +139,7 @@ static int gic_clockevent_init(void)
- 
- 	ret = setup_percpu_irq(gic_timer_irq, &gic_compare_irqaction);
- 	if (ret < 0) {
--		pr_err("GIC timer IRQ %d setup failed: %d\n",
--		       gic_timer_irq, ret);
-+		pr_err("IRQ %d setup failed (%d)\n", gic_timer_irq, ret);
- 		return ret;
- 	}
- 
-@@ -176,7 +178,7 @@ static int __init __gic_clocksource_init(void)
- 
- 	ret = clocksource_register_hz(&gic_clocksource, gic_frequency);
- 	if (ret < 0)
--		pr_warn("GIC: Unable to register clocksource\n");
-+		pr_warn("Unable to register clocksource\n");
- 
- 	return ret;
- }
-@@ -188,7 +190,7 @@ static int __init gic_clocksource_of_init(struct device_node *node)
- 
- 	if (!mips_gic_present() || !node->parent ||
- 	    !of_device_is_compatible(node->parent, "mti,gic")) {
--		pr_warn("No DT definition for the mips gic driver\n");
-+		pr_warn("No DT definition\n");
- 		return -ENXIO;
- 	}
- 
-@@ -196,7 +198,7 @@ static int __init gic_clocksource_of_init(struct device_node *node)
- 	if (!IS_ERR(clk)) {
- 		ret = clk_prepare_enable(clk);
- 		if (ret < 0) {
--			pr_err("GIC failed to enable clock\n");
-+			pr_err("Failed to enable clock\n");
- 			clk_put(clk);
- 			return ret;
+diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+index 6f534b209971..ce7a54223504 100644
+--- a/arch/mips/mm/c-r4k.c
++++ b/arch/mips/mm/c-r4k.c
+@@ -760,6 +760,8 @@ static inline void __local_r4k_flush_icache_range(unsigned long start,
+ 			break;
  		}
-@@ -204,12 +206,12 @@ static int __init gic_clocksource_of_init(struct device_node *node)
- 		gic_frequency = clk_get_rate(clk);
- 	} else if (of_property_read_u32(node, "clock-frequency",
- 					&gic_frequency)) {
--		pr_err("GIC frequency not specified.\n");
-+		pr_err("Frequency not specified\n");
- 		return -EINVAL;;
  	}
- 	gic_timer_irq = irq_of_parse_and_map(node, 0);
- 	if (!gic_timer_irq) {
--		pr_err("GIC timer IRQ not specified.\n");
-+		pr_err("IRQ not specified\n");
- 		return -EINVAL;;
- 	}
++	/* Hazard to force new i-fetch */
++	instruction_hazard();
+ }
  
-@@ -220,7 +222,7 @@ static int __init gic_clocksource_of_init(struct device_node *node)
- 	ret = gic_clockevent_init();
- 	if (!ret && !IS_ERR(clk)) {
- 		if (clk_notifier_register(clk, &gic_clk_nb) < 0)
--			pr_warn("GIC: Unable to register clock notifier\n");
-+			pr_warn("Unable to register clock notifier\n");
+ static inline void local_r4k_flush_icache_range(unsigned long start,
+@@ -817,7 +819,6 @@ static void __r4k_flush_icache_range(unsigned long start, unsigned long end,
  	}
+ 	r4k_on_each_cpu(args.type, local_r4k_flush_icache_range_ipi, &args);
+ 	preempt_enable();
+-	instruction_hazard();
+ }
  
- 	/* And finally start the counter */
+ static void r4k_flush_icache_range(unsigned long start, unsigned long end)
 -- 
 2.7.4

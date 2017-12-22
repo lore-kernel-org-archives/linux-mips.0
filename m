@@ -1,18 +1,26 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:54978 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:49972 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990407AbdLVHTwLzo6X (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Dec 2017 08:19:52 +0100
-Subject: Re: [RFC] MIPS memblock: Remove bootmem code and switch to NO_BOOTMEM
-References: <20171219201400.GA10185@mobilestation>
-From: Marcin Nowakowski <marcin.nowakowski@mips.com>
-Message-ID: <eace1075-4e3f-1f0c-50ed-73a566ecd39b@mips.com>
-Date: Fri, 22 Dec 2017 08:18:09 +0100
+        by eddie.linux-mips.org with ESMTP id S23990517AbdLVLvEzv2Nm (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Dec 2017 12:51:04 +0100
+Date: Fri, 22 Dec 2017 11:49:39 +0000
+From: James Hogan <james.hogan@mips.com>
+Subject: Re: [P5600 && EVA memory caching question] PCI region
+Message-ID: <20171222114938.GJ5027@jhogan-linux.mipstec.com>
+References: <6132c323-32a7-1d38-b77c-a191be22faa4@gmail.com>
+ <20171206114611.GM5027@jhogan-linux.mipstec.com>
+ <330a5200-531f-fcfa-674a-c81fb3144e92@gmail.com>
+ <20171214152138.GV5027@jhogan-linux.mipstec.com>
+ <ca9adcbc-9777-46a0-ce0b-15e83e01fc72@gmail.com>
+ <20171215232821.GA5027@jhogan-linux.mipstec.com>
+ <b8706fae-aea8-99b5-f91d-37690eff6949@gmail.com>
+ <20171221134119.GE5027@jhogan-linux.mipstec.com>
+ <d4198e82-5658-1bce-8415-cfc9dee56336@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20171219201400.GA10185@mobilestation>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <Marcin.Nowakowski@mips.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="a6YTfLRor63AaheO"
+Content-Disposition: inline
+In-Reply-To: <d4198e82-5658-1bce-8415-cfc9dee56336@gmail.com>
+Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,30 +30,61 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Serge Semin <fancer.lancer@gmail.com>, ralf@linux-mips.org, paul.burton@imgtec.com, rabinv@axis.com, matt.redfearn@imgtec.com, james.hogan@imgtec.com, alexander.sverdlin@nokia.com, marcin.nowakowski@imgtec.com, f.fainelli@gmail.com, kumba@gentoo.org
-Cc: Sergey.Semin@t-platforms.ru, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20171222071809.2SMqiWq-zh03wDRKiw-ziC0_3vCrvpmej1xAAoboIvg@z>
+To: Yuri Frolov <crashing.kernel@gmail.com>
+Cc: linux-mips@linux-mips.org, paul.burton@mips.com
+Message-ID: <20171222114939.p-lIC5s1vqHRisTGJ54m8A66mdKhtSpllXB5F3KACxM@z>
 
-Hi Serge,
+--a6YTfLRor63AaheO
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 19.12.2017 21:14, Serge Semin wrote:
-> Hello folks,
-> 
-> Almost a year ago I sent a patchset to the Linux MIPS community. The main target of the patchset
-> was to get rid from the old bootmem allocator usage at the MIPS architecture. Additionally I had
-> a problem with CMA usage on my MIPS machine due to some struct page-related issue. Moving to the
-> memblock allocator fixed the problem and gave us benefits like smaller memory consumption,
-> powerful memblock API to be used within the arch code.
-> 
-> @marcin.nowakowski@imgtec.com. Could you confirm if you are still interested in the patchset and
-> ready to update the Loongson64 platform code so one would be compatible with it?
+On Fri, Dec 22, 2017 at 02:18:26PM +0300, Yuri Frolov wrote:
+> Sorry, I forgot to ask,
+> > yes, the Malta implementation is slightly ugly as it relies on a
+> > hardware physical memory alias of RAM starting at PA 0x80000000.
+> any good docs about this hardware aliasing? I'm not sure I understand it=
+=20
+> correctly, just want to understand things right.
 
-I am currently working on different projects, but I will try to do my 
-best to help with this (but just might require more time than I would 
-otherwise need).
-Given the scale of the task and the amount of testing required, I expect 
-that it will take a while to get a complete set of patches reviewed and 
-tested which should hopefully be enough to fix support for all platforms 
-affected.
+Basically it keeps kseg0 (seg3) and kseg1 (seg2) pointing at PA 0, which
+it runs kernel code from (i.e. same place it is loaded, without the EVA
+layout enabled yet), but then it does data accesses from seg4 and seg5
+which point at PA 0x80000000. I think the intention is to allow the VA
+to PA offset to be the same for all cached segments.
 
-Marcin
+However because the caches don't know that different physical addresses
+refer to the same underlying RAM they aren't coherent with one another
+and the kernel has to be careful not to use both, and to flush the
+caches during boot.
+
+Its not an approach I would personally recommend, and if we get EVA
+support added to the generic platform I'd hope it would be a lot
+cleaner, perhaps using the since added kernel self-relocation.
+
+Cheers
+James
+
+
+--a6YTfLRor63AaheO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlo88TEACgkQbAtpk944
+dnqPeBAAjFOSVrrP3W/8C/ozlakf03d4e3a850O3hz+DJE7t7qaMCpkxhyQKEX7h
+uWHfdcUAANmjb5VSHUt/Jr8/EDzkGlemiqriOZMMSYAB3IoJcgd2kqNziLR356bo
+WY5Ya8b/SPRNYVuhm4Hhrrs4QxqeK20CNuVRMvYSfjL6hJJ5i6kWmbSILA57B4p1
+UwdTqCPwcgiJ9FzV6/CxslcNEy+3hg6ekeK88KZz4zm36GAMlqdz2zCmaz2SK0GM
+X42gvMSCmrXbmL30X1+mPEHOKT1DKnbhjbQR64L41GEu7Mz3OXzEsMte38Br9G2n
+eZQAhvq9ooNwJHg1XaNemb3GpymAVLb05UZ8wxta6WjfXmpVahzxY+E045RqOp3I
+AumN1m0f3gXc/wTPPoSCl5UmKnJgQqp48P/tlbddjR4mQmJuykG6SlmpAM+bswjf
++bw5ro4OwD2wOXg4L1nobKZxClPG2xEATUczJSYsNWIN03b8ECVuwC1om+p9swQp
+qIKijPIHWZwpFxg6SncXKFOjUGg8JJ1rvh1l+uaZD0ner8OWxdVwr1yKJA0l9J5d
+C9/4Cq6z5niLq4Cwx+wujAmHAEHBWHYouhr1iuP3iaM2RTMBtWk3xT3NSJqA8pcG
+7zOg5JDbmOzmfeTVOO52SVksVv41QEy99es62LsPN/2WW58o1Wc=
+=XyrG
+-----END PGP SIGNATURE-----
+
+--a6YTfLRor63AaheO--

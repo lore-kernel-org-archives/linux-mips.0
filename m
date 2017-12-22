@@ -1,17 +1,18 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:47525 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:54978 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990486AbdLUWPGKsfLy (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 21 Dec 2017 23:15:06 +0100
-Date: Thu, 21 Dec 2017 14:12:43 -0800
-From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH v2 0/2] MIPS: Augment CPC support
-Message-ID: <20171221221242.w2kcgob3e2of75cr@pburton-laptop>
-References: <1513869627-15391-1-git-send-email-aleksandar.markovic@rt-rk.com>
+        by eddie.linux-mips.org with ESMTP id S23990407AbdLVHTwLzo6X (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Dec 2017 08:19:52 +0100
+Subject: Re: [RFC] MIPS memblock: Remove bootmem code and switch to NO_BOOTMEM
+References: <20171219201400.GA10185@mobilestation>
+From: Marcin Nowakowski <marcin.nowakowski@mips.com>
+Message-ID: <eace1075-4e3f-1f0c-50ed-73a566ecd39b@mips.com>
+Date: Fri, 22 Dec 2017 08:18:09 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1513869627-15391-1-git-send-email-aleksandar.markovic@rt-rk.com>
-Return-Path: <Paul.Burton@mips.com>
+In-Reply-To: <20171219201400.GA10185@mobilestation>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Return-Path: <Marcin.Nowakowski@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,51 +22,30 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Aleksandar Markovic <aleksandar.markovic@rt-rk.com>
-Cc: linux-mips@linux-mips.org, Aleksandar Markovic <aleksandar.markovic@mips.com>, Dengcheng Zhu <dengcheng.zhu@mips.com>, Douglas Leung <douglas.leung@mips.com>, Goran Ferenc <goran.ferenc@mips.com>, James Hogan <james.hogan@mips.com>, linux-kernel@vger.kernel.org, Matt Redfearn <matt.redfearn@mips.com>, Miodrag Dinic <miodrag.dinic@mips.com>, Petar Jovanovic <petar.jovanovic@mips.com>, Raghu Gandham <raghu.gandham@mips.com>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20171221221243.08wmKHPBgxbhMN0tNJRv54CFtdjGxtH7OCCA5N-vQl8@z>
+To: Serge Semin <fancer.lancer@gmail.com>, ralf@linux-mips.org, paul.burton@imgtec.com, rabinv@axis.com, matt.redfearn@imgtec.com, james.hogan@imgtec.com, alexander.sverdlin@nokia.com, marcin.nowakowski@imgtec.com, f.fainelli@gmail.com, kumba@gentoo.org
+Cc: Sergey.Semin@t-platforms.ru, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20171222071809.2SMqiWq-zh03wDRKiw-ziC0_3vCrvpmej1xAAoboIvg@z>
 
-Hi Aleksandar,
+Hi Serge,
 
-On Thu, Dec 21, 2017 at 04:20:22PM +0100, Aleksandar Markovic wrote:
-> From: Aleksandar Markovic <aleksandar.markovic@mips.com>
+On 19.12.2017 21:14, Serge Semin wrote:
+> Hello folks,
 > 
-> v1->v2:
+> Almost a year ago I sent a patchset to the Linux MIPS community. The main target of the patchset
+> was to get rid from the old bootmem allocator usage at the MIPS architecture. Additionally I had
+> a problem with CMA usage on my MIPS machine due to some struct page-related issue. Moving to the
+> memblock allocator fixed the problem and gave us benefits like smaller memory consumption,
+> powerful memblock API to be used within the arch code.
 > 
->     - corrected wording in commit messages and documentation text
->     - expanded cover letter to better explain the context of proposed
->         changes
->     - rebased to the latest code
-> 
-> This series is based on two patches from the larger series submitted
-> some time ago (30 Aug 2016):
-> 
-> https://www.linux-mips.org/archives/linux-mips/2016-08/msg00456.html
-> 
-> Both patches deal with MIPS Cluster Power Controller (CPC) support.
-> More specifically, they add device tree related functionalities to
-> that support.
-> 
-> This functionality is needed for further development of kernel support
-> for generic-based MIPS platforms that must be DT-based and will at the
-> same time make more extensive use of CPC.
+> @marcin.nowakowski@imgtec.com. Could you confirm if you are still interested in the patchset and
+> ready to update the Loongson64 platform code so one would be compatible with it?
 
-FWIW:
+I am currently working on different projects, but I will try to do my 
+best to help with this (but just might require more time than I would 
+otherwise need).
+Given the scale of the task and the amount of testing required, I expect 
+that it will take a while to get a complete set of patches reviewed and 
+tested which should hopefully be enough to fix support for all platforms 
+affected.
 
-    Reviewed-by: Paul Burton <paul.burton@mips.com>
-
-Thanks,
-    Paul
-
-> Paul Burton (2):
->   dt-bindings: Document mti,mips-cpc binding
->   MIPS: CPC: Map registers using DT in mips_cpc_default_phys_base()
-> 
->  Documentation/devicetree/bindings/misc/mti,mips-cpc.txt |  8 ++++++++
->  arch/mips/kernel/mips-cpc.c                             | 13 +++++++++++++
->  2 files changed, 21 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/misc/mti,mips-cpc.txt
-> 
-> -- 
-> 2.7.4
-> 
+Marcin

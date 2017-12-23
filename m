@@ -1,26 +1,14 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:49972 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990517AbdLVLvEzv2Nm (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 22 Dec 2017 12:51:04 +0100
-Date: Fri, 22 Dec 2017 11:49:39 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [P5600 && EVA memory caching question] PCI region
-Message-ID: <20171222114938.GJ5027@jhogan-linux.mipstec.com>
-References: <6132c323-32a7-1d38-b77c-a191be22faa4@gmail.com>
- <20171206114611.GM5027@jhogan-linux.mipstec.com>
- <330a5200-531f-fcfa-674a-c81fb3144e92@gmail.com>
- <20171214152138.GV5027@jhogan-linux.mipstec.com>
- <ca9adcbc-9777-46a0-ce0b-15e83e01fc72@gmail.com>
- <20171215232821.GA5027@jhogan-linux.mipstec.com>
- <b8706fae-aea8-99b5-f91d-37690eff6949@gmail.com>
- <20171221134119.GE5027@jhogan-linux.mipstec.com>
- <d4198e82-5658-1bce-8415-cfc9dee56336@gmail.com>
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2172 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23990483AbdLWLEmZFNs0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sat, 23 Dec 2017 12:04:42 +0100
+From: Yisheng Xie <xieyisheng1@huawei.com>
+Subject: [PATCH v3 00/27] kill devm_ioremap_nocache
+Date: Sat, 23 Dec 2017 18:55:25 +0800
+Message-ID: <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="a6YTfLRor63AaheO"
-Content-Disposition: inline
-In-Reply-To: <d4198e82-5658-1bce-8415-cfc9dee56336@gmail.com>
-Return-Path: <James.Hogan@mips.com>
+Content-Type: text/plain
+Return-Path: <xieyisheng1@huawei.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -30,61 +18,122 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Yuri Frolov <crashing.kernel@gmail.com>
-Cc: linux-mips@linux-mips.org, paul.burton@mips.com
-Message-ID: <20171222114939.p-lIC5s1vqHRisTGJ54m8A66mdKhtSpllXB5F3KACxM@z>
+To: linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+Cc: ysxie@foxmail.com, ulf.hansson@linaro.org, linux-mmc@vger.kernel.org, boris.brezillon@free-electrons.com, richard@nod.at, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org, alsa-devel@alsa-project.org, wim@iguana.be, linux@roeck-us.net, linux-watchdog@vger.kernel.org, b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org, linus.walleij@linaro.org, linux-gpio@vger.kernel.org, ralf@linux-mips.org, linux-mips@linux-mips.org, lgirdwood@gmail.com, broonie@kernel.org, tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, arnd@arndb.de, andriy.shevchenko@linux.intel.com, industrypack-devel@lists.sourceforge.net, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, mchehab@kernel.org, linux-media@vger.kernel.org, a.zummo@towertech.it, alexandre.belloni@free-electrons.com, linux-rtc@vger.kernel.org, daniel.vetter@intel.com, jani.nikula@linux.intel.com, seanpaul@chromium.org, airlied@linux.ie, dri-devel@lists.freedesktop.org, kvalo@codeaurora.org, linux-wireless@vger.kernel.org, linux-spi@vger.kernel.org, tj@kernel.org, linux-ide@vger.kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org, devel@driverdev.osuosl.org, dvhart@infradead.org, andy@infradead.org, platform-driver-x86@vger.kernel.org, jakub.kicinski@netronome.com, davem@davemloft.net, nios2-dev@lists.rocketboards.org, netdev@vger.kernel.org, vinod.koul@intel.com, dan.j.williams@intel.com, dmaengine@vger.kernel.org, jslaby@suse.com, Yisheng Xie <xieyisheng1@huawei.com>
+Message-ID: <20171223105525.0wC8srZ0g7SYQ_diYpbL_z9crrnRn-ADzAR0K1HJSB8@z>
 
---a6YTfLRor63AaheO
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi all,
 
-On Fri, Dec 22, 2017 at 02:18:26PM +0300, Yuri Frolov wrote:
-> Sorry, I forgot to ask,
-> > yes, the Malta implementation is slightly ugly as it relies on a
-> > hardware physical memory alias of RAM starting at PA 0x80000000.
-> any good docs about this hardware aliasing? I'm not sure I understand it=
-=20
-> correctly, just want to understand things right.
+When I tried to use devm_ioremap function and review related code, I found
+devm_ioremap and devm_ioremap_nocache is almost the same with each other,
+except one use ioremap while the other use ioremap_nocache. While ioremap's
+default function is ioremap_nocache, so devm_ioremap_nocache also have the
+same function with devm_ioremap, which can just be killed to reduce the size
+of devres.o(from 20304 bytes to 18992 bytes in my compile environment).
 
-Basically it keeps kseg0 (seg3) and kseg1 (seg2) pointing at PA 0, which
-it runs kernel code from (i.e. same place it is loaded, without the EVA
-layout enabled yet), but then it does data accesses from seg4 and seg5
-which point at PA 0x80000000. I think the intention is to allow the VA
-to PA offset to be the same for all cached segments.
+I have posted two versions, which use macro instead of function for
+devm_ioremap_nocache[1] or devm_ioremap[2]. And Greg suggest me to kill
+devm_ioremap_nocache for no need to keep a macro around for the duplicate
+thing. So here comes v3 and please help to review.
 
-However because the caches don't know that different physical addresses
-refer to the same underlying RAM they aren't coherent with one another
-and the kernel has to be careful not to use both, and to flush the
-caches during boot.
+Thanks so much!
+Yisheng Xie
 
-Its not an approach I would personally recommend, and if we get EVA
-support added to the generic platform I'd hope it would be a lot
-cleaner, perhaps using the since added kernel self-relocation.
+[1] https://lkml.org/lkml/2017/11/20/135
+[2] https://lkml.org/lkml/2017/11/25/21
 
-Cheers
-James
+Yisheng Xie (27):
+  ASOC: replace devm_ioremap_nocache with devm_ioremap
+  spi: replace devm_ioremap_nocache with devm_ioremap
+  staging: replace devm_ioremap_nocache with devm_ioremap
+  ipack: replace devm_ioremap_nocache with devm_ioremap
+  media: replace devm_ioremap_nocache with devm_ioremap
+  gpio: replace devm_ioremap_nocache with devm_ioremap
+  mmc: replace devm_ioremap_nocache with devm_ioremap
+  PCI: replace devm_ioremap_nocache with devm_ioremap
+  platform/x86: replace devm_ioremap_nocache with devm_ioremap
+  tty: replace devm_ioremap_nocache with devm_ioremap
+  video: replace devm_ioremap_nocache with devm_ioremap
+  rtc: replace devm_ioremap_nocache with devm_ioremap
+  char: replace devm_ioremap_nocache with devm_ioremap
+  mtd: nand: replace devm_ioremap_nocache with devm_ioremap
+  dmaengine: replace devm_ioremap_nocache with devm_ioremap
+  ata: replace devm_ioremap_nocache with devm_ioremap
+  irqchip: replace devm_ioremap_nocache with devm_ioremap
+  pinctrl: replace devm_ioremap_nocache with devm_ioremap
+  drm: replace devm_ioremap_nocache with devm_ioremap
+  regulator: replace devm_ioremap_nocache with devm_ioremap
+  watchdog: replace devm_ioremap_nocache with devm_ioremap
+  tools/testing/nvdimm: replace devm_ioremap_nocache with devm_ioremap
+  MIPS: pci: replace devm_ioremap_nocache with devm_ioremap
+  can: replace devm_ioremap_nocache with devm_ioremap
+  wireless: replace devm_ioremap_nocache with devm_ioremap
+  ethernet: replace devm_ioremap_nocache with devm_ioremap
+  devres: kill devm_ioremap_nocache
 
+ Documentation/driver-model/devres.txt           |  1 -
+ arch/mips/pci/pci-ar2315.c                      |  3 +--
+ drivers/ata/pata_arasan_cf.c                    |  3 +--
+ drivers/ata/pata_octeon_cf.c                    |  9 ++++----
+ drivers/ata/pata_rb532_cf.c                     |  2 +-
+ drivers/char/hw_random/bcm63xx-rng.c            |  3 +--
+ drivers/char/hw_random/octeon-rng.c             | 10 ++++-----
+ drivers/dma/altera-msgdma.c                     |  3 +--
+ drivers/dma/sprd-dma.c                          |  4 ++--
+ drivers/gpio/gpio-ath79.c                       |  3 +--
+ drivers/gpio/gpio-em.c                          |  6 ++---
+ drivers/gpio/gpio-htc-egpio.c                   |  4 ++--
+ drivers/gpio/gpio-xgene.c                       |  3 +--
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c |  2 +-
+ drivers/gpu/drm/msm/msm_drv.c                   |  2 +-
+ drivers/gpu/drm/sti/sti_dvo.c                   |  3 +--
+ drivers/gpu/drm/sti/sti_hda.c                   |  4 ++--
+ drivers/gpu/drm/sti/sti_hdmi.c                  |  2 +-
+ drivers/gpu/drm/sti/sti_tvout.c                 |  2 +-
+ drivers/gpu/drm/sti/sti_vtg.c                   |  2 +-
+ drivers/ipack/devices/ipoctal.c                 | 13 +++++------
+ drivers/irqchip/irq-renesas-intc-irqpin.c       |  4 ++--
+ drivers/media/platform/tegra-cec/tegra_cec.c    |  4 ++--
+ drivers/mmc/host/sdhci-acpi.c                   |  3 +--
+ drivers/mtd/nand/fsl_upm.c                      |  4 ++--
+ drivers/net/can/sja1000/sja1000_platform.c      |  4 ++--
+ drivers/net/ethernet/altera/altera_tse_main.c   |  3 +--
+ drivers/net/ethernet/ethoc.c                    |  8 +++----
+ drivers/net/ethernet/lantiq_etop.c              |  4 ++--
+ drivers/net/ethernet/ti/netcp_core.c            |  2 +-
+ drivers/net/wireless/ath/ath9k/ahb.c            |  2 +-
+ drivers/pci/dwc/pci-dra7xx.c                    |  2 +-
+ drivers/pinctrl/bcm/pinctrl-ns2-mux.c           |  2 +-
+ drivers/pinctrl/bcm/pinctrl-nsp-mux.c           |  4 ++--
+ drivers/pinctrl/freescale/pinctrl-imx1-core.c   |  2 +-
+ drivers/pinctrl/pinctrl-amd.c                   |  4 ++--
+ drivers/platform/x86/intel_pmc_core.c           |  5 ++---
+ drivers/regulator/ti-abb-regulator.c            |  6 ++---
+ drivers/rtc/rtc-sh.c                            |  4 ++--
+ drivers/spi/spi-jcore.c                         |  3 +--
+ drivers/staging/fsl-mc/bus/mc-io.c              |  8 +++----
+ drivers/tty/mips_ejtag_fdc.c                    |  4 ++--
+ drivers/tty/serial/8250/8250_omap.c             |  3 +--
+ drivers/tty/serial/lantiq.c                     |  3 +--
+ drivers/tty/serial/meson_uart.c                 |  3 +--
+ drivers/tty/serial/owl-uart.c                   |  2 +-
+ drivers/tty/serial/pic32_uart.c                 |  4 ++--
+ drivers/video/fbdev/mbx/mbxfb.c                 |  9 ++++----
+ drivers/video/fbdev/mmp/hw/mmp_ctrl.c           |  2 +-
+ drivers/video/fbdev/pxa168fb.c                  |  4 ++--
+ drivers/watchdog/bcm63xx_wdt.c                  |  4 ++--
+ drivers/watchdog/rc32434_wdt.c                  |  4 ++--
+ include/linux/io.h                              |  2 --
+ lib/devres.c                                    | 29 -------------------------
+ scripts/coccinelle/free/devm_free.cocci         |  2 --
+ sound/soc/au1x/ac97c.c                          |  4 ++--
+ sound/soc/au1x/i2sc.c                           |  4 ++--
+ sound/soc/intel/atom/sst/sst_acpi.c             | 20 ++++++++---------
+ sound/soc/intel/boards/mfld_machine.c           |  4 ++--
+ sound/soc/sh/fsi.c                              |  4 ++--
+ tools/testing/nvdimm/Kbuild                     |  2 +-
+ tools/testing/nvdimm/test/iomap.c               |  2 +-
+ 62 files changed, 109 insertions(+), 168 deletions(-)
 
---a6YTfLRor63AaheO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlo88TEACgkQbAtpk944
-dnqPeBAAjFOSVrrP3W/8C/ozlakf03d4e3a850O3hz+DJE7t7qaMCpkxhyQKEX7h
-uWHfdcUAANmjb5VSHUt/Jr8/EDzkGlemiqriOZMMSYAB3IoJcgd2kqNziLR356bo
-WY5Ya8b/SPRNYVuhm4Hhrrs4QxqeK20CNuVRMvYSfjL6hJJ5i6kWmbSILA57B4p1
-UwdTqCPwcgiJ9FzV6/CxslcNEy+3hg6ekeK88KZz4zm36GAMlqdz2zCmaz2SK0GM
-X42gvMSCmrXbmL30X1+mPEHOKT1DKnbhjbQR64L41GEu7Mz3OXzEsMte38Br9G2n
-eZQAhvq9ooNwJHg1XaNemb3GpymAVLb05UZ8wxta6WjfXmpVahzxY+E045RqOp3I
-AumN1m0f3gXc/wTPPoSCl5UmKnJgQqp48P/tlbddjR4mQmJuykG6SlmpAM+bswjf
-+bw5ro4OwD2wOXg4L1nobKZxClPG2xEATUczJSYsNWIN03b8ECVuwC1om+p9swQp
-qIKijPIHWZwpFxg6SncXKFOjUGg8JJ1rvh1l+uaZD0ner8OWxdVwr1yKJA0l9J5d
-C9/4Cq6z5niLq4Cwx+wujAmHAEHBWHYouhr1iuP3iaM2RTMBtWk3xT3NSJqA8pcG
-7zOg5JDbmOzmfeTVOO52SVksVv41QEy99es62LsPN/2WW58o1Wc=
-=XyrG
------END PGP SIGNATURE-----
-
---a6YTfLRor63AaheO--
+-- 
+1.8.3.1

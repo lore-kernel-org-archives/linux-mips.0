@@ -1,13 +1,19 @@
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2234 "EHLO huawei.com"
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2235 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23990491AbdLWLL5B0t70 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 23 Dec 2017 12:11:57 +0100
+        id S23990408AbdLYBJ4qL9V4 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 25 Dec 2017 02:09:56 +0100
+Subject: Re: [PATCH v3 00/27] kill devm_ioremap_nocache
+References: <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
+ <20171223134831.GB10103@kroah.com>
+ <f7632cf5-2bcc-4d74-b912-3999937a1269@roeck-us.net>
+ <c28ac0bc-8bd2-3dce-3167-8c0f80ec601e@c-s.fr>
 From: Yisheng Xie <xieyisheng1@huawei.com>
-Subject: [PATCH v3 27/27] devres: kill devm_ioremap_nocache
-Date: Sat, 23 Dec 2017 19:02:59 +0800
-Message-ID: <1514026979-33838-1-git-send-email-xieyisheng1@huawei.com>
+Message-ID: <6c0ade63-f4d3-d44d-c622-b091eb2ba902@huawei.com>
+Date: Mon, 25 Dec 2017 09:09:10 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <c28ac0bc-8bd2-3dce-3167-8c0f80ec601e@c-s.fr>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Return-Path: <xieyisheng1@huawei.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -18,100 +24,110 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-Cc: ysxie@foxmail.com, ulf.hansson@linaro.org, linux-mmc@vger.kernel.org, boris.brezillon@free-electrons.com, richard@nod.at, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org, alsa-devel@alsa-project.org, wim@iguana.be, linux@roeck-us.net, linux-watchdog@vger.kernel.org, b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org, linus.walleij@linaro.org, linux-gpio@vger.kernel.org, ralf@linux-mips.org, linux-mips@linux-mips.org, lgirdwood@gmail.com, broonie@kernel.org, tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, arnd@arndb.de, andriy.shevchenko@linux.intel.com, industrypack-devel@lists.sourceforge.net, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, mchehab@kernel.org, linux-media@vger.kernel.org, a.zummo@towertech.it, alexandre.belloni@free-electrons.com, linux-rtc@vger.kernel.org, daniel.vetter@intel.com, jani.nikula@linux.intel.com, seanpaul@chromium.org, airlied@linux.ie, dri-devel@lists.freedesktop.org, kvalo@codeaurora.org, linux-wireless@vger.kernel.org, linux-spi@vger.kernel.org, tj@kernel.org, linux-ide@vger.kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org, devel@driverdev.osuosl.org, dvhart@infradead.org, andy@infradead.org, platform-driver-x86@vger.kernel.org, jakub.kicinski@netronome.com, davem@davemloft.net, nios2-dev@lists.rocketboards.org, netdev@vger.kernel.org, vinod.koul@intel.com, dan.j.williams@intel.com, dmaengine@vger.kernel.org, jslaby@suse.com, Yisheng Xie <xieyisheng1@huawei.com>
-Message-ID: <20171223110259.jme-ODOMS8-JpqeQxuU0Qhfpmp4TMvAMXaXFgyDypkA@z>
+To: christophe leroy <christophe.leroy@c-s.fr>, Guenter Roeck <linux@roeck-us.net>, Greg KH <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org, ysxie@foxmail.com, ulf.hansson@linaro.org, linux-mmc@vger.kernel.org, boris.brezillon@free-electrons.com, richard@nod.at, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org, alsa-devel@alsa-project.org, wim@iguana.be, linux-watchdog@vger.kernel.org, b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org, linus.walleij@linaro.org, linux-gpio@vger.kernel.org, ralf@linux-mips.org, linux-mips@linux-mips.org, lgirdwood@gmail.com, broonie@kernel.org, tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, arnd@arndb.de, andriy.shevchenko@linux.intel.com, industrypack-devel@lists.sourceforge.net, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, mchehab@kernel.org, linux-media@vger.kernel.org, a.zummo@towertech.it, alexandre.belloni@free-electrons.com, linux-rtc@vger.kernel.org, daniel.vetter@intel.com, jani.nikula@linux.intel.com, seanpaul@chromium.org, airlied@linux.ie, dri-devel@lists.freedesktop.org, kvalo@codeaurora.org, linux-wireless@vger.kernel.org, linux-spi@vger.kernel.org, tj@kernel.org, linux-ide@vger.kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org, devel@driverdev.osuosl.org, dvhart@infradead.org, andy@infradead.org, platform-driver-x86@vger.kernel.org, jakub.kicinski@netronome.com, davem@davemloft.net, nios2-dev@lists.rocketboards.org, netdev@vger.kernel.org, vinod.koul@intel.com, dan.j.williams@intel.com, dmaengine@vger.kernel.org, jslaby@suse.com
+Message-ID: <20171225010910.MVej3tQq4Rt2vTcmXX01n18ZSTWYhgNNyr1JF1kastg@z>
 
-Now, nobody use devm_ioremap_nocache anymore, can it can just be
-removed. After this patch the size of devres.o will be reduced from
-20304 bytes to 18992 bytes.
+hi Christophe and Greg,
 
-Suggested-by: Greg KH <gregkh@linuxfoundation.org>
-Signed-off-by: Yisheng Xie <xieyisheng1@huawei.com>
----
- Documentation/driver-model/devres.txt   |  1 -
- include/linux/io.h                      |  2 --
- lib/devres.c                            | 29 -----------------------------
- scripts/coccinelle/free/devm_free.cocci |  2 --
- 4 files changed, 34 deletions(-)
+On 2017/12/24 16:55, christophe leroy wrote:
+> 
+> 
+> Le 23/12/2017 à 16:57, Guenter Roeck a écrit :
+>> On 12/23/2017 05:48 AM, Greg KH wrote:
+>>> On Sat, Dec 23, 2017 at 06:55:25PM +0800, Yisheng Xie wrote:
+>>>> Hi all,
+>>>>
+>>>> When I tried to use devm_ioremap function and review related code, I found
+>>>> devm_ioremap and devm_ioremap_nocache is almost the same with each other,
+>>>> except one use ioremap while the other use ioremap_nocache.
+>>>
+>>> For all arches?  Really?  Look at MIPS, and x86, they have different
+>>> functions.
+>>>
+>>
+>> Both mips and x86 end up mapping the same function, but other arches don't.
+>> mn10300 is one where ioremap and ioremap_nocache are definitely different.
+> 
+> alpha: identical
+> arc: identical
+> arm: identical
+> arm64: identical
+> cris: different        <==
+> frv: identical
+> hexagone: identical
+> ia64: different        <==
+> m32r: identical
+> m68k: identical
+> metag: identical
+> microblaze: identical
+> mips: identical
+> mn10300: different     <==
+> nios: identical
+> openrisc: different    <==
+> parisc: identical
+> riscv: identical
+> s390: identical
+> sh: identical
+> sparc: identical
+> tile: identical
+> um: rely on asm/generic
+> unicore32: identical
+> x86: identical
+> asm/generic (no mmu): identical
 
-diff --git a/Documentation/driver-model/devres.txt b/Documentation/driver-model/devres.txt
-index c180045..c3fddb5 100644
---- a/Documentation/driver-model/devres.txt
-+++ b/Documentation/driver-model/devres.txt
-@@ -292,7 +292,6 @@ IOMAP
-   devm_ioport_map()
-   devm_ioport_unmap()
-   devm_ioremap()
--  devm_ioremap_nocache()
-   devm_ioremap_wc()
-   devm_ioremap_resource() : checks resource, requests memory region, ioremaps
-   devm_iounmap()
-diff --git a/include/linux/io.h b/include/linux/io.h
-index 32e30e8..a9c7270 100644
---- a/include/linux/io.h
-+++ b/include/linux/io.h
-@@ -75,8 +75,6 @@ static inline void devm_ioport_unmap(struct device *dev, void __iomem *addr)
- 
- void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
- 			   resource_size_t size);
--void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
--				   resource_size_t size);
- void __iomem *devm_ioremap_wc(struct device *dev, resource_size_t offset,
- 				   resource_size_t size);
- void devm_iounmap(struct device *dev, void __iomem *addr);
-diff --git a/lib/devres.c b/lib/devres.c
-index 5f2aedd..f818fcf 100644
---- a/lib/devres.c
-+++ b/lib/devres.c
-@@ -44,35 +44,6 @@ void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
- EXPORT_SYMBOL(devm_ioremap);
- 
- /**
-- * devm_ioremap_nocache - Managed ioremap_nocache()
-- * @dev: Generic device to remap IO address for
-- * @offset: Resource address to map
-- * @size: Size of map
-- *
-- * Managed ioremap_nocache().  Map is automatically unmapped on driver
-- * detach.
-- */
--void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
--				   resource_size_t size)
--{
--	void __iomem **ptr, *addr;
--
--	ptr = devres_alloc(devm_ioremap_release, sizeof(*ptr), GFP_KERNEL);
--	if (!ptr)
--		return NULL;
--
--	addr = ioremap_nocache(offset, size);
--	if (addr) {
--		*ptr = addr;
--		devres_add(dev, ptr);
--	} else
--		devres_free(ptr);
--
--	return addr;
--}
--EXPORT_SYMBOL(devm_ioremap_nocache);
--
--/**
-  * devm_ioremap_wc - Managed ioremap_wc()
-  * @dev: Generic device to remap IO address for
-  * @offset: Resource address to map
-diff --git a/scripts/coccinelle/free/devm_free.cocci b/scripts/coccinelle/free/devm_free.cocci
-index c990d2c..36b8752 100644
---- a/scripts/coccinelle/free/devm_free.cocci
-+++ b/scripts/coccinelle/free/devm_free.cocci
-@@ -51,8 +51,6 @@ expression x;
- |
-  x = devm_ioremap(...)
- |
-- x = devm_ioremap_nocache(...)
--|
-  x = devm_ioport_map(...)
- )
- 
--- 
-1.8.3.1
+Wow, that's correct, sorry for I have just checked the main archs, I means
+x86,arm, arm64, mips.
+
+However, I stall have no idea about why these 4 archs want different ioremap
+function with others. Drivers seems cannot aware this? If driver call ioremap
+want he really want for there 4 archs, cache or nocache?
+
+> 
+> So 4 among all arches seems to have ioremap() and ioremap_nocache() being different.
+> 
+> Could we have a define set by the 4 arches on which ioremap() and ioremap_nocache() are different, something like HAVE_DIFFERENT_IOREMAP_NOCACHE ?
+
+Then, what the HAVE_DIFFERENT_IOREMAP_NOCACHE is uesed for ?
+
+Thanks
+Yisheng
+> 
+> Christophe
+> 
+>>
+>> Guenter
+>>
+>>>> While ioremap's
+>>>> default function is ioremap_nocache, so devm_ioremap_nocache also have the
+>>>> same function with devm_ioremap, which can just be killed to reduce the size
+>>>> of devres.o(from 20304 bytes to 18992 bytes in my compile environment).
+>>>>
+>>>> I have posted two versions, which use macro instead of function for
+>>>> devm_ioremap_nocache[1] or devm_ioremap[2]. And Greg suggest me to kill
+>>>> devm_ioremap_nocache for no need to keep a macro around for the duplicate
+>>>> thing. So here comes v3 and please help to review.
+>>>
+>>> I don't think this can be done, what am I missing?  These functions are
+>>> not identical, sorry for missing that before.
+
+Never mind, I should checked all the arches, sorry about that.
+
+>>>
+>>> thanks,
+>>>
+>>> greg k-h
+>>>
+>>
+>> -- 
+>> To unsubscribe from this list: send the line "unsubscribe linux-watchdog" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+> ---
+> L'absence de virus dans ce courrier électronique a été vérifiée par le logiciel antivirus Avast.
+> https://www.avast.com/antivirus
+> 
+> 
+> .
+> 

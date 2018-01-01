@@ -1,18 +1,17 @@
-Received: from mga09.intel.com ([134.134.136.24]:45514 "EHLO mga09.intel.com"
+Received: from mx2.suse.de ([195.135.220.15]:32893 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992126AbeAASB6zyhXY (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 1 Jan 2018 19:01:58 +0100
-Date: Tue, 2 Jan 2018 02:01:18 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH 01/33] clk_ops: change round_rate() to return unsigned
- long
-Message-ID: <201801020112.PEMNifTo%fengguang.wu@intel.com>
-References: <1514596392-22270-2-git-send-email-pure.logic@nexus-software.ie>
+        id S23992105AbeAAXMou0nxt (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 2 Jan 2018 00:12:44 +0100
+From: NeilBrown <neilb@suse.com>
+Date: Tue, 02 Jan 2018 10:12:25 +1100
+Subject: Re: [PATCH] MIPS: Fix early CM probing
+In-Reply-To: <1454953591-19491-1-git-send-email-paul.burton@imgtec.com>
+References: <1454953591-19491-1-git-send-email-paul.burton@imgtec.com>
+Message-ID: <87fu7pfa1y.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1514596392-22270-2-git-send-email-pure.logic@nexus-software.ie>
-Return-Path: <fengguang.wu@intel.com>
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
+Return-Path: <neilb@suse.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,46 +21,147 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Bryan O'Donoghue <pure.logic@nexus-software.ie>
-Cc: kbuild-all@01.org, mturquette@baylibre.com, sboyd@codeaurora.org, linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-mips@linux-mips.org, linux-samsung-soc@vger.kernel.org, patches@opensource.cirrus.com, linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org, linux-rtc@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-rpi-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org, linux-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Message-ID: <20180101180118.sQFm-8NX9f_2IrlqjBjluoXet2JACnkUM8LABQHxFjE@z>
+To: Paul Burton <paul.burton@imgtec.com>, linux-mips@linux-mips.org
+Cc: Andrzej Hajda <a.hajda@samsung.com>, Aaro Koskinen <aaro.koskinen@nokia.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Rob Herring <robh@kernel.org>, Alexander Sverdlin <alexander.sverdlin@gmail.com>, Peter Hurley <peter@hurleysoftware.com>, linux-kernel@vger.kernel.org, Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>, Jaedon Shin <jaedon.shin@gmail.com>, James Hogan <james.hogan@imgtec.com>, Jonas Gorski <jogo@openwrt.org>, Markos Chandras <markos.chandras@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20180101231225.Cy6TH4y7VaDJ3xKrPSU4tp6huOp63HNoC8jYu0mJUgs@z>
 
-Hi Bryan,
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I love your patch! Perhaps something to improve:
+On Mon, Feb 08 2016, Paul Burton wrote:
 
-[auto build test WARNING on tegra/for-next]
-[also build test WARNING on v4.15-rc6]
-[cannot apply to clk/clk-next next-20171222]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+> Commit c014d164f21d ("MIPS: Add platform callback before initializing
+> the L2 cache") added a platform_early_l2_init function in order to allow
+> platforms to probe for the CM before L2 initialisation is performed, so
+> that CM GCRs are available to mips_sc_probe.
+>
+> That commit actually fails to do anything useful, since it checks
+> mips_cm_revision to determine whether it should call mips_cm_probe but
+> the result of mips_cm_revision will always be 0 until mips_cm_probe has
+> been called. Thus the "early" mips_cm_probe call never occurs.
+>
+> Fix this & drop the useless weak platform_early_l2_init function by
+> simply calling mips_cm_probe from setup_arch. For platforms that don't
+> select CONFIG_MIPS_CM this will be a no-op, and for those that do it
+> removes the requirement for them to call mips_cm_probe manually
+> (although doing so isn't harmful for now).
+>
+> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
 
-url:    https://github.com/0day-ci/linux/commits/Bryan-O-Donoghue/change-clk_ops-round_rate-to-scale-past-LONG_MAX/20180101-212907
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git for-next
-reproduce:
-        # apt-get install sparse
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
+Hi,
+ this change breaks the "gnubee" open-hardware NAS board (gnubee.org),
+ which is based on a mediatek mt7621 SOC (which admittedly needs a bunch
+ of other patches to work at all).
+
+ I forward ported the patches from a mostly-working 4.4-based release to
+ upstream and it didn't even print anything to the console.   "git
+ bisect" led me to this patch.
+ Reverting the change to setup_arch() means my mainline-based kernel
+ gets a lot further.
+
+ Based on the description above, I thought that maybe I should just
+ disabled CONFIG_MIPS_CM, but that is selected automatically by
+ CONFIG_MIPS_GIC, and I suspect that I need that.
+
+ Can you suggest anything I might try to isolate why mips_cm_probe()
+ might be causing a problem on this hardware?
+
+Thanks,
+NeilBrown
 
 
-sparse warnings: (new ones prefixed by >>)
+> ---
+>
+>  arch/mips/kernel/setup.c         |  1 +
+>  arch/mips/mm/sc-mips.c           | 10 ----------
+>  arch/mips/mti-malta/malta-init.c |  8 --------
+>  3 files changed, 1 insertion(+), 18 deletions(-)
+>
+> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+> index 569a7d5..5fdaf8b 100644
+> --- a/arch/mips/kernel/setup.c
+> +++ b/arch/mips/kernel/setup.c
+> @@ -782,6 +782,7 @@ static inline void prefill_possible_map(void) {}
+>  void __init setup_arch(char **cmdline_p)
+>  {
+>  	cpu_probe();
+> +	mips_cm_probe();
+>  	prom_init();
+>=20=20
+>  	setup_early_fdc_console();
+> diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
+> index 3bd0597..2496475 100644
+> --- a/arch/mips/mm/sc-mips.c
+> +++ b/arch/mips/mm/sc-mips.c
+> @@ -181,10 +181,6 @@ static int __init mips_sc_probe_cm3(void)
+>  	return 1;
+>  }
+>=20=20
+> -void __weak platform_early_l2_init(void)
+> -{
+> -}
+> -
+>  static inline int __init mips_sc_probe(void)
+>  {
+>  	struct cpuinfo_mips *c =3D &current_cpu_data;
+> @@ -194,12 +190,6 @@ static inline int __init mips_sc_probe(void)
+>  	/* Mark as not present until probe completed */
+>  	c->scache.flags |=3D MIPS_CACHE_NOT_PRESENT;
+>=20=20
+> -	/*
+> -	 * Do we need some platform specific probing before
+> -	 * we configure L2?
+> -	 */
+> -	platform_early_l2_init();
+> -
+>  	if (mips_cm_revision() >=3D CM_REV_CM3)
+>  		return mips_sc_probe_cm3();
+>=20=20
+> diff --git a/arch/mips/mti-malta/malta-init.c b/arch/mips/mti-malta/malta=
+-init.c
+> index 571148c..dc2c521 100644
+> --- a/arch/mips/mti-malta/malta-init.c
+> +++ b/arch/mips/mti-malta/malta-init.c
+> @@ -293,7 +293,6 @@ mips_pci_controller:
+>  	console_config();
+>  #endif
+>  	/* Early detection of CMP support */
+> -	mips_cm_probe();
+>  	mips_cpc_probe();
+>=20=20
+>  	if (!register_cps_smp_ops())
+> @@ -304,10 +303,3 @@ mips_pci_controller:
+>  		return;
+>  	register_up_smp_ops();
+>  }
+> -
+> -void platform_early_l2_init(void)
+> -{
+> -	/* L2 configuration lives in the CM3 */
+> -	if (mips_cm_revision() >=3D CM_REV_CM3)
+> -		mips_cm_probe();
+> -}
+> --=20
+> 2.7.0
 
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-vim +321 drivers/clk/clk-versaclock5.c
+-----BEGIN PGP SIGNATURE-----
 
-8c1ebe97 Marek Vasut 2017-07-09  318  
-8c1ebe97 Marek Vasut 2017-07-09  319  static const struct clk_ops vc5_dbl_ops = {
-8c1ebe97 Marek Vasut 2017-07-09  320  	.recalc_rate	= vc5_dbl_recalc_rate,
-8c1ebe97 Marek Vasut 2017-07-09 @321  	.round_rate	= vc5_dbl_round_rate,
-8c1ebe97 Marek Vasut 2017-07-09  322  	.set_rate	= vc5_dbl_set_rate,
-8c1ebe97 Marek Vasut 2017-07-09  323  };
-8c1ebe97 Marek Vasut 2017-07-09  324  
-
-:::::: The code at line 321 was first introduced by commit
-:::::: 8c1ebe9762670159ca982167131af63c94ff1571 clk: vc5: Add support for the input frequency doubler
-
-:::::: TO: Marek Vasut <marek.vasut@gmail.com>
-:::::: CC: Stephen Boyd <sboyd@codeaurora.org>
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+iQIzBAEBCAAdFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAlpKwFkACgkQOeye3VZi
+gbm6cBAAmtsL4pvZ9MMU3xFoGj7empwNbLTuylauasX60Yabp84r153AY8g5aBRw
+OkAzFL2/jAEcYS7+hOz4AIsdzyH4kuSpQdyRs5somsyw5prvb0K+m/syPI4eg/Au
+v9pK2HJ2QwoE3hnVbxbwfVTW7G5xFavPxRJkke5R65CMiUVnsxXHG9HuGgEFeUgi
+ISL6siOcAVWYpWXSH5AxghUk52YRDvoe7kC+RK9PxfWB90guU7zhoABb6tRdVOpp
+8+NSrnQ8BacLt+LMHWsxBCntVNPpi7UxxBWEUrEWhJaiBQfxz57MrPVO/PG5UFMm
+87P/nKC7xhCENkc//vQyZXYR/HnGIVjXwm0qc3KzZ/3tiq5aSSaE+ENPNcCpMuCS
+87q7CG2qw7iPznVwP6wnyx+ST4E8Qx+3XUoQUJH1VQtzQLBzsDTGxPG67pQrkZnU
+RzqS9uOO++1j+ghNJsLxKoX/BKYZyfpITdAQuNVxFJljwD6x15P/a5SbwriAeD2y
+1FCQQFZlbAoZKXbNcMvz7UeLHmJ77TChb5lQlUE1z4/67wHjkUrASkviq30DThQv
+kK7DqU7IgMDW2w7JqCYOFIOn3uxqrnWrrlLz2Vl9gsdod7adGjMcO6xRamzRKR+4
+J7G/do6235G7Pc+nj/0ggrjqKZHNLLx53MCHKj7iTJT0XHi4+38=
+=HLWU
+-----END PGP SIGNATURE-----
+--=-=-=--

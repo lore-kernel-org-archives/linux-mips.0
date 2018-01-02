@@ -1,18 +1,18 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:46811 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:45653 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990475AbeABJbwvKYVu (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Jan 2018 10:31:52 +0100
-Date: Tue, 2 Jan 2018 09:31:28 +0000
+        by eddie.linux-mips.org with ESMTP id S23992105AbeABJwbx5yvu (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Jan 2018 10:52:31 +0100
+Date: Tue, 2 Jan 2018 09:51:26 +0000
 From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH 2/2] MIPS: Remove a warning when PHYS_OFFSET is 0x0
-Message-ID: <20180102093127.GM5027@jhogan-linux.mipstec.com>
+Subject: Re: [PATCH 1/2] MIPS: add declaration for function
+ `memory_region_available`
+Message-ID: <20180102095125.GO27409@jhogan-linux.mipstec.com>
 References: <20171226113717.15074-1-malat@debian.org>
- <20171226113717.15074-2-malat@debian.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mXWEJCq0x1D2MX0F"
+        protocol="application/pgp-signature"; boundary="b/Q3JWIUAuLE0ZFy"
 Content-Disposition: inline
-In-Reply-To: <20171226113717.15074-2-malat@debian.org>
+In-Reply-To: <20171226113717.15074-1-malat@debian.org>
 Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -24,79 +24,74 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Mathieu Malaterre <malat@debian.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Marcin Nowakowski <marcin.nowakowski@mips.com>, Miodrag Dinic <miodrag.dinic@mips.com>, Aleksandar Markovic <aleksandar.markovic@mips.com>, David Daney <david.daney@cavium.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20180102093128.vsX4SP9M2RcJBjK_D7jTr8OqTGV_CaNexXOx_ejGgk4@z>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Marcin Nowakowski <marcin.nowakowski@mips.com>, David Daney <david.daney@cavium.com>, Goran Ferenc <goran.ferenc@imgtec.com>, Miodrag Dinic <miodrag.dinic@mips.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20180102095126.F5YwMl4OWKPsPhODpyRAuuScZAFWq01xJyIMekUv2zg@z>
 
---mXWEJCq0x1D2MX0F
+--b/Q3JWIUAuLE0ZFy
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 26, 2017 at 12:37:14PM +0100, Mathieu Malaterre wrote:
-> Rewrite the comparison in `else if` statement, case where `min_low_pfn >
-> ARCH_PFN_OFFSET` has already been checked in the first `if` statement:
->=20
->   if (min_low_pfn > ARCH_PFN_OFFSET) {
->=20
+On Tue, Dec 26, 2017 at 12:37:13PM +0100, Mathieu Malaterre wrote:
 > Fix non-fatal warning:
 >=20
-> arch/mips/kernel/setup.c: In function =E2=80=98bootmem_init=E2=80=99:
-> arch/mips/kernel/setup.c:461:25: warning: comparison of unsigned expressi=
-on < 0 is always false [-Wtype-limits]
->   } else if (min_low_pfn < ARCH_PFN_OFFSET) {
->                          ^
+> arch/mips/kernel/setup.c:158:13: warning: no previous prototype for =E2=
+=80=98memory_region_available=E2=80=99 [-Wmissing-prototypes]
+>  bool __init memory_region_available(phys_addr_t start, phys_addr_t size)
+>              ^~~~~~~~~~~~~~~~~~~~~~~
 
-What compiler version is that with out of interest? It isn't exactly new
-code.
+It only seems to be referenced from that one file, so making it static
+and __maybe_unused to handle the configs it isn't used would probably be
+better.
+
+Thanks
+James
 
 >=20
 > Signed-off-by: Mathieu Malaterre <malat@debian.org>
-
-Reviewed-by: James Hogan <jhogan@kernel.org>
-
-Cheers
-James
-
 > ---
->  arch/mips/kernel/setup.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/mips/include/asm/bootinfo.h | 1 +
+>  1 file changed, 1 insertion(+)
 >=20
-> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-> index f19d61224c71..073695ccc1aa 100644
-> --- a/arch/mips/kernel/setup.c
-> +++ b/arch/mips/kernel/setup.c
-> @@ -458,7 +458,7 @@ static void __init bootmem_init(void)
->  		pr_info("Wasting %lu bytes for tracking %lu unused pages\n",
->  			(min_low_pfn - ARCH_PFN_OFFSET) * sizeof(struct page),
->  			min_low_pfn - ARCH_PFN_OFFSET);
-> -	} else if (min_low_pfn < ARCH_PFN_OFFSET) {
-> +	} else if (ARCH_PFN_OFFSET - min_low_pfn > 0UL) {
->  		pr_info("%lu free pages won't be used\n",
->  			ARCH_PFN_OFFSET - min_low_pfn);
->  	}
+> diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/boo=
+tinfo.h
+> index e26a093bb17a..32e3c9a2c5a0 100644
+> --- a/arch/mips/include/asm/bootinfo.h
+> +++ b/arch/mips/include/asm/bootinfo.h
+> @@ -108,6 +108,7 @@ extern struct boot_mem_map boot_mem_map;
+> =20
+>  extern void add_memory_region(phys_addr_t start, phys_addr_t size, long =
+type);
+>  extern void detect_memory_region(phys_addr_t start, phys_addr_t sz_min, =
+ phys_addr_t sz_max);
+> +extern bool memory_region_available(phys_addr_t start, phys_addr_t size);
+> =20
+>  extern void prom_init(void);
+>  extern void prom_free_prom_memory(void);
 > --=20
 > 2.11.0
 >=20
+>=20
 
---mXWEJCq0x1D2MX0F
+--b/Q3JWIUAuLE0ZFy
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlpLUW8ACgkQbAtpk944
-dnpS+w/+Npv5F1DWk80n5rtVhl0L6MODD2KN6Q/Ezdxxwjpqz9evVPaGmgPzUpCG
-mgSdLjQyq3cQbwseKODap2QQqMSqXIXs9IOBt22l1kBk/upnIdgCVvtAJTTmXGCt
-KwFt3OW1Cje6XfAdMF0TFkAxTMLdsKgb2gGYIoVJUowHC4w/xYfsF35txeYYN9dj
-xV78bCd6sZeQws7c3kn5UixviCCoNW/IgyB+egHSuLTFOp7Jf9yIJdbdXCXt/SMg
-jbFOEmeHsX7SzaE989qRc99oqKmkfVqqX/OLADPaDFSOAK3oSc2/j6HPrT5rh73N
-T+deZjr8TNTb5NcMquU8lupeRjC+w6PV91rzY8drzpP5VY90jRsb3Qd9WHJTITUm
-KW91k34zXPTOVD/e+H8BBnC0PRwjPO6XFJVUrUd3kdAhQ+4LuY0uglZFKXRal+Xu
-6Dgsf4qGFqFB42MoMfyDiHMqQVhI6RWrW/fL+yR7iD5ehK/y0y3uC/myOfJJS2nj
-TGGIASSUTS4cIcPHybFs4e36XSJ3fvrBgPhRz6xLng2tD4Pd1wH6mgeXmcodNgZ2
-JG137E+ZB3k/8YzprmnCz6/uWObbZ9N1m7zGkZSWk/kqYkQ/CyTYpQRuEDW1cRot
-bKpEfPM6xOfs+J0LL09tqQVDc5iwYhPuSSzSEOrjRhagJCas8ug=
-=ch3w
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlpLVh0ACgkQbAtpk944
+dnrWyg/9F0b1Yp4MQ5jkWeYgbvTy9qKLOyGwUnN7GyKT7eabDd1KOhNYfgwJupbk
+t8wO0Q/u3iuuSzaBh2oyMcoKMaucmmpN80iTx9OflmQNrfF+ho2ds8gOJUu71RFL
+IwNzwNszA7TS0fk1ua5GHvAfgDEVyPTQ6oQnYU9AdhLGP7J5cm0eEs5ghfiaKxKN
+9RWMXmY6rJ2QMCeDszESJtlv5kIWUyR0GQsrbJbAppG9Y5ScUi06fqy+43GSEJ96
+ucGRazzcgVyKwNlMqpG/kv0bUTe1rpMrW51AyrC6D9o6vcMntziT1GQ3sdN9ztEo
+FjUS1FFQ/X2//Q/XAZ+aZrgfE0ocxAdckANnXQpRMK2c60bb3+daQj1uzYCcFSF4
+ASf2BC8H9XDgI/fHchpNI7RkzDgm3Flrv9XVlU/51xkzk82GQeGxdx50I9yoChAB
+ZJG/NMNt37l+nuOqHiFkh6rXnONEKhTWvaMmGy4g+gwN3FqbXOaZJhLSnsamW1PY
++R3rMDbp1OHQL3Qzn3tV+ZF8iU8Mi9ilkpe1OIZbrMVaty2smR5gUKq8iFvJI0MG
+CZucwH/+npI7OZhaYJSsOEP//ZfRglGlD39oadO5nyPrpT6l1XYOoMgws28/YTIt
+00JKu+JgDU1xSCpmincgCH2qnOnkrw7FnEavwittGRDUphzz790=
+=gcKV
 -----END PGP SIGNATURE-----
 
---mXWEJCq0x1D2MX0F--
+--b/Q3JWIUAuLE0ZFy--

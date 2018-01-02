@@ -1,19 +1,14 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:45653 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:42343 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992105AbeABJwbx5yvu (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Jan 2018 10:52:31 +0100
-Date: Tue, 2 Jan 2018 09:51:26 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH 1/2] MIPS: add declaration for function
- `memory_region_available`
-Message-ID: <20180102095125.GO27409@jhogan-linux.mipstec.com>
-References: <20171226113717.15074-1-malat@debian.org>
+        by eddie.linux-mips.org with ESMTP id S23992105AbeABLcEsPJ3a (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Jan 2018 12:32:04 +0100
+From: Matt Redfearn <matt.redfearn@mips.com>
+Subject: [PATCH 1/2] MIPS: Watch: Avoid duplication of bits in mips_install_watch_registers.
+Date: Tue, 2 Jan 2018 11:31:21 +0000
+Message-ID: <1514892682-30328-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="b/Q3JWIUAuLE0ZFy"
-Content-Disposition: inline
-In-Reply-To: <20171226113717.15074-1-malat@debian.org>
-Return-Path: <James.Hogan@mips.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,75 +18,58 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Mathieu Malaterre <malat@debian.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Marcin Nowakowski <marcin.nowakowski@mips.com>, David Daney <david.daney@cavium.com>, Goran Ferenc <goran.ferenc@imgtec.com>, Miodrag Dinic <miodrag.dinic@mips.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20180102095126.F5YwMl4OWKPsPhODpyRAuuScZAFWq01xJyIMekUv2zg@z>
+To: ralf@linux-mips.org
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Matt Redfearn <matt.redfearn@mips.com>
+Message-ID: <20180102113121.RnyNanqOjKc8QPiDZ2dZRW43Cmnu0M0-BEcLJMSNUrU@z>
 
---b/Q3JWIUAuLE0ZFy
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Currently the bits to be set in the watchhi register in addition to that
+requested by the user is defined inline for each register. To avoid
+this, define the bits once and or that in for each register.
 
-On Tue, Dec 26, 2017 at 12:37:13PM +0100, Mathieu Malaterre wrote:
-> Fix non-fatal warning:
->=20
-> arch/mips/kernel/setup.c:158:13: warning: no previous prototype for =E2=
-=80=98memory_region_available=E2=80=99 [-Wmissing-prototypes]
->  bool __init memory_region_available(phys_addr_t start, phys_addr_t size)
->              ^~~~~~~~~~~~~~~~~~~~~~~
+Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+---
 
-It only seems to be referenced from that one file, so making it static
-and __maybe_unused to handle the configs it isn't used would probably be
-better.
+ arch/mips/kernel/watch.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-Thanks
-James
-
->=20
-> Signed-off-by: Mathieu Malaterre <malat@debian.org>
-> ---
->  arch/mips/include/asm/bootinfo.h | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/boo=
-tinfo.h
-> index e26a093bb17a..32e3c9a2c5a0 100644
-> --- a/arch/mips/include/asm/bootinfo.h
-> +++ b/arch/mips/include/asm/bootinfo.h
-> @@ -108,6 +108,7 @@ extern struct boot_mem_map boot_mem_map;
-> =20
->  extern void add_memory_region(phys_addr_t start, phys_addr_t size, long =
-type);
->  extern void detect_memory_region(phys_addr_t start, phys_addr_t sz_min, =
- phys_addr_t sz_max);
-> +extern bool memory_region_available(phys_addr_t start, phys_addr_t size);
-> =20
->  extern void prom_init(void);
->  extern void prom_free_prom_memory(void);
-> --=20
-> 2.11.0
->=20
->=20
-
---b/Q3JWIUAuLE0ZFy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlpLVh0ACgkQbAtpk944
-dnrWyg/9F0b1Yp4MQ5jkWeYgbvTy9qKLOyGwUnN7GyKT7eabDd1KOhNYfgwJupbk
-t8wO0Q/u3iuuSzaBh2oyMcoKMaucmmpN80iTx9OflmQNrfF+ho2ds8gOJUu71RFL
-IwNzwNszA7TS0fk1ua5GHvAfgDEVyPTQ6oQnYU9AdhLGP7J5cm0eEs5ghfiaKxKN
-9RWMXmY6rJ2QMCeDszESJtlv5kIWUyR0GQsrbJbAppG9Y5ScUi06fqy+43GSEJ96
-ucGRazzcgVyKwNlMqpG/kv0bUTe1rpMrW51AyrC6D9o6vcMntziT1GQ3sdN9ztEo
-FjUS1FFQ/X2//Q/XAZ+aZrgfE0ocxAdckANnXQpRMK2c60bb3+daQj1uzYCcFSF4
-ASf2BC8H9XDgI/fHchpNI7RkzDgm3Flrv9XVlU/51xkzk82GQeGxdx50I9yoChAB
-ZJG/NMNt37l+nuOqHiFkh6rXnONEKhTWvaMmGy4g+gwN3FqbXOaZJhLSnsamW1PY
-+R3rMDbp1OHQL3Qzn3tV+ZF8iU8Mi9ilkpe1OIZbrMVaty2smR5gUKq8iFvJI0MG
-CZucwH/+npI7OZhaYJSsOEP//ZfRglGlD39oadO5nyPrpT6l1XYOoMgws28/YTIt
-00JKu+JgDU1xSCpmincgCH2qnOnkrw7FnEavwittGRDUphzz790=
-=gcKV
------END PGP SIGNATURE-----
-
---b/Q3JWIUAuLE0ZFy--
+diff --git a/arch/mips/kernel/watch.c b/arch/mips/kernel/watch.c
+index 19fcab7348b1..329d2209521d 100644
+--- a/arch/mips/kernel/watch.c
++++ b/arch/mips/kernel/watch.c
+@@ -18,27 +18,24 @@
+ void mips_install_watch_registers(struct task_struct *t)
+ {
+ 	struct mips3264_watch_reg_state *watches = &t->thread.watch.mips3264;
++	unsigned int watchhi = MIPS_WATCHHI_G |		/* Trap all ASIDs */
++			       MIPS_WATCHHI_IRW;	/* Clear result bits */
++
+ 	switch (current_cpu_data.watch_reg_use_cnt) {
+ 	default:
+ 		BUG();
+ 	case 4:
+ 		write_c0_watchlo3(watches->watchlo[3]);
+-		/* Write 1 to the I, R, and W bits to clear them, and
+-		   1 to G so all ASIDs are trapped. */
+-		write_c0_watchhi3(MIPS_WATCHHI_G | MIPS_WATCHHI_IRW |
+-				  watches->watchhi[3]);
++		write_c0_watchhi3(watchhi | watches->watchhi[3]);
+ 	case 3:
+ 		write_c0_watchlo2(watches->watchlo[2]);
+-		write_c0_watchhi2(MIPS_WATCHHI_G | MIPS_WATCHHI_IRW |
+-				  watches->watchhi[2]);
++		write_c0_watchhi2(watchhi | watches->watchhi[2]);
+ 	case 2:
+ 		write_c0_watchlo1(watches->watchlo[1]);
+-		write_c0_watchhi1(MIPS_WATCHHI_G | MIPS_WATCHHI_IRW |
+-				  watches->watchhi[1]);
++		write_c0_watchhi1(watchhi | watches->watchhi[1]);
+ 	case 1:
+ 		write_c0_watchlo0(watches->watchlo[0]);
+-		write_c0_watchhi0(MIPS_WATCHHI_G | MIPS_WATCHHI_IRW |
+-				  watches->watchhi[0]);
++		write_c0_watchhi0(watchhi | watches->watchhi[0]);
+ 	}
+ }
+ 
+-- 
+2.7.4

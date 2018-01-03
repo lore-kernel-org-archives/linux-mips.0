@@ -1,19 +1,16 @@
-Received: from usa-sjc-mx-foss1.foss.arm.com ([217.140.101.70]:46074 "EHLO
-        foss.arm.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23994626AbeABQ0irOfMp (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 2 Jan 2018 17:26:38 +0100
-Subject: Re: [PATCH 26/67] dma-direct: use phys_to_dma
-References: <20171229081911.2802-1-hch@lst.de>
- <20171229081911.2802-27-hch@lst.de>
-From: Vladimir Murzin <vladimir.murzin@arm.com>
-Message-ID: <76092d0d-3e74-9433-5fae-afc512e34b20@arm.com>
-Date: Tue, 2 Jan 2018 16:26:27 +0000
+Received: from ozlabs.org ([IPv6:2401:3900:2:1::2]:49019 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23990754AbeACGYKHeIcC (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 3 Jan 2018 07:24:10 +0100
+From: Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 16/67] powerpc: rename dma_direct_ to dma_nommu_
+In-Reply-To: <CAMuHMdWWus2kNSOzS94k-3678826W1YjKwCWTquu3hBLZ80cvw@mail.gmail.com>
+References: <20171229081911.2802-1-hch@lst.de> <20171229081911.2802-17-hch@lst.de> <878tdgtwzp.fsf@concordia.ellerman.id.au> <CAMuHMdWWus2kNSOzS94k-3678826W1YjKwCWTquu3hBLZ80cvw@mail.gmail.com>
+Date: Wed, 03 Jan 2018 17:24:02 +1100
+Message-ID: <87h8s3cvel.fsf@concordia.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <20171229081911.2802-27-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-Return-Path: <vladimir.murzin@arm.com>
+Content-Type: text/plain
+Return-Path: <mpe@ellerman.id.au>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,70 +20,36 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org
-Cc: linux-mips@linux-mips.org, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Guan Xuetao <gxt@mprc.pku.edu.cn>, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, x86@kernel.org, linux-snps-arc@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-m68k@lists.linux-m68k.org, patches@groups.riscv.org, linux-metag@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org, linux-cris-kernel@axis.com, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Message-ID: <20180102162627.rS9XdXgmEjUjhMXjTQc8yktmEAAYblnKgTY66pPpV30@z>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-ia64@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, Guan Xuetao <gxt@mprc.pku.edu.cn>, Linux-Arch <linux-arch@vger.kernel.org>, linux-s390 <linux-s390@vger.kernel.org>, linux-c6x-dev@linux-c6x.org, "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>, the arch/x86 maintainers <x86@kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, adi-buildroot-devel@lists.sourceforge.net, linux-m68k <linux-m68k@lists.linux-m68k.org>, patches@groups.riscv.org, "open list:METAG ARCHITECTURE" <linux-metag@vger.kernel.org>, linux-arm-kernel@lists.infradead.org, Michal Simek <monstr@monstr.eu>, Parisc List <linux-parisc@vger.kernel.org>, Cris <linux-cris-kernel@axis.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alpha <linux-alpha@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org
+Message-ID: <20180103062402.FYtd3Hf9gq7rKkMCHmtdI4V9p4suWnyDnpNPyTBQW44@z>
 
-On 29/12/17 08:18, Christoph Hellwig wrote:
-> This means it uses whatever linear remapping scheme that the architecture
-> provides is used in the generic dma_direct ops.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  lib/dma-direct.c | 18 +++++++-----------
->  1 file changed, 7 insertions(+), 11 deletions(-)
-> 
-> diff --git a/lib/dma-direct.c b/lib/dma-direct.c
-> index 439db40854b7..0e087650e86b 100644
-> --- a/lib/dma-direct.c
-> +++ b/lib/dma-direct.c
-> @@ -1,12 +1,11 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> - *	lib/dma-noop.c
-> - *
-> - * DMA operations that map to physical addresses without flushing memory.
-> + * DMA operations that map physical memory directly without using an IOMMU or
-> + * flushing caches.
->   */
->  #include <linux/export.h>
->  #include <linux/mm.h>
-> -#include <linux/dma-mapping.h>
-> +#include <linux/dma-direct.h>
->  #include <linux/scatterlist.h>
->  #include <linux/pfn.h>
->  
-> @@ -17,7 +16,7 @@ static void *dma_direct_alloc(struct device *dev, size_t size,
->  
->  	ret = (void *)__get_free_pages(gfp, get_order(size));
->  	if (ret)
-> -		*dma_handle = virt_to_phys(ret) - PFN_PHYS(dev->dma_pfn_offset);
-> +		*dma_handle = phys_to_dma(dev, virt_to_phys(ret));
->  
->  	return ret;
->  }
-> @@ -32,7 +31,7 @@ static dma_addr_t dma_direct_map_page(struct device *dev, struct page *page,
->  		unsigned long offset, size_t size, enum dma_data_direction dir,
->  		unsigned long attrs)
->  {
-> -	return page_to_phys(page) + offset - PFN_PHYS(dev->dma_pfn_offset);
-> +	return phys_to_dma(dev, page_to_phys(page)) + offset;
->  }
->  
->  static int dma_direct_map_sg(struct device *dev, struct scatterlist *sgl,
-> @@ -42,12 +41,9 @@ static int dma_direct_map_sg(struct device *dev, struct scatterlist *sgl,
->  	struct scatterlist *sg;
->  
->  	for_each_sg(sgl, sg, nents, i) {
-> -		dma_addr_t offset = PFN_PHYS(dev->dma_pfn_offset);
-> -		void *va;
-> -
->  		BUG_ON(!sg_page(sg));
-> -		va = sg_virt(sg);
-> -		sg_dma_address(sg) = (dma_addr_t)virt_to_phys(va) - offset;
-> +
-> +		sg_dma_address(sg) = phys_to_dma(dev, sg_phys(sg));
->  		sg_dma_len(sg) = sg->length;
->  	}
->  
-> 
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
+
+> On Tue, Jan 2, 2018 at 10:45 AM, Michael Ellerman <mpe@ellerman.id.au> wrote:
+>> Christoph Hellwig <hch@lst.de> writes:
+>>
+>>> We want to use the dma_direct_ namespace for a generic implementation,
+>>> so rename powerpc to the second best choice: dma_nommu_.
+>>
+>> I'm not a fan of "nommu". Some of the users of direct ops *are* using an
+>> IOMMU, they're just setting up a 1:1 mapping once at init time, rather
+>> than mapping dynamically.
+>>
+>> Though I don't have a good idea for a better name, maybe "1to1",
+>> "linear", "premapped" ?
+>
+> "identity"?
+
+I think that would be wrong, but thanks for trying to help :)
+
+The address on the device side is sometimes (often?) offset from the CPU
+address. So eg. the device can DMA to RAM address 0x0 using address
+0x800000000000000.
+
+Identity would imply 0 == 0 etc.
+
+I think "bijective" is the correct term, but that's probably a bit
+esoteric.
+
+cheers

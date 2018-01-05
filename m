@@ -1,16 +1,19 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:40157 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992917AbeAEKeGBA5Ru (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 5 Jan 2018 11:34:06 +0100
-From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH 6/6] irqchip/mips-gic: Separate local interrupt handling.
-Date: Fri, 5 Jan 2018 10:31:10 +0000
-Message-ID: <1515148270-9391-7-git-send-email-matt.redfearn@mips.com>
-In-Reply-To: <1515148270-9391-1-git-send-email-matt.redfearn@mips.com>
-References: <1515148270-9391-1-git-send-email-matt.redfearn@mips.com>
+Received: from smtprelay.synopsys.com ([198.182.60.111]:53485 "EHLO
+        smtprelay.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992828AbeAETplwhXYu (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 5 Jan 2018 20:45:41 +0100
+Subject: Re: [PATCH 09/67] arc: remove CONFIG_ARC_PLAT_NEEDS_PHYS_TO_DMA
+References: <20171229081911.2802-1-hch@lst.de>
+ <20171229081911.2802-10-hch@lst.de>
+From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Message-ID: <2c24bfd1-5f54-4b82-444e-833dc53b6efd@synopsys.com>
+Date: Fri, 5 Jan 2018 11:45:16 -0800
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@mips.com>
+In-Reply-To: <20171229081911.2802-10-hch@lst.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Return-Path: <Vineet.Gupta1@synopsys.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,91 +23,123 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, Marc Zyngier <marc.zyngier@arm.com>, Jason Cooper <jason@lakedaemon.net>, linux-kernel@vger.kernel.org
-Message-ID: <20180105103110.MJv2bFeyPW-ZuMplfghSx2ser4nW6TBUyEH6CQ2cBvE@z>
+To: Christoph Hellwig <hch@lst.de>, "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, Guan Xuetao <gxt@mprc.pku.edu.cn>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "patches@groups.riscv.org" <patches@groups.riscv.org>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Michal Simek <monstr@monstr.eu>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-cris-kernel@axis.com" <linux-cris-kernel@axis.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Message-ID: <20180105194516.3ju3GkVyqt15yMoxF-R6JtSsYa8fD43vdknWX7SjEhw@z>
 
-The GIC driver now has the concept of multiple vectors for the shared
-and local interrupts. The vector number for shared interrupt sources is
-now in shared_cpu_pin and this effectively leaves gic_cpu_pin
-containing the vector number for local interrupts. Rename it, and
-additionally __gic_irq_dispatch to __gic_irq_dispatch_local, which is
-only called for local interrupt sources now so no longer needs to handle
-shared interrupts.
+On 12/29/2017 12:25 AM, Christoph Hellwig wrote:
+> We always use the stub definitions, so remove the unused other code.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+Acked-by: Vineet Gupta <vgupta@synopsys.com>
 
----
+FWIW, it was removed and reintroduced as one of the customers wanted it, which is 
+not relevant now !
 
- drivers/irqchip/irq-mips-gic.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+Thx,
+-Vineet
 
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index 541eae9a491d..b2cfc6d66d74 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -53,7 +53,7 @@ static struct irq_domain *gic_irq_domain;
- static struct irq_domain *gic_ipi_domain;
- static int gic_shared_intrs;
- static unsigned int shared_cpu_pin;
--static unsigned int gic_cpu_pin;
-+static unsigned int local_cpu_pin;
- static unsigned int timer_cpu_pin;
- static struct irq_chip gic_level_irq_controller, gic_edge_irq_controller;
- static DECLARE_BITMAP(ipi_resrv, GIC_MAX_INTRS);
-@@ -401,10 +401,9 @@ static struct irq_chip gic_all_vpes_local_irq_controller = {
- 	.irq_cpu_online		= gic_all_vpes_irq_cpu_online,
- };
- 
--static void __gic_irq_dispatch(void)
-+static void __gic_irq_dispatch_local(void)
- {
- 	gic_handle_local_int(false);
--	gic_handle_shared_int(false);
- }
- 
- static void __gic_irq_dispatch_shared(void)
-@@ -482,7 +481,7 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int virq,
- 	}
- 
- 	intr = GIC_HWIRQ_TO_LOCAL(hwirq);
--	map = GIC_MAP_PIN_MAP_TO_PIN | gic_cpu_pin;
-+	map = GIC_MAP_PIN_MAP_TO_PIN | local_cpu_pin;
- 
- 	switch (intr) {
- 	case GIC_LOCAL_INT_TIMER:
-@@ -735,18 +734,17 @@ static int __init gic_of_init(struct device_node *node,
- 	mips_gic_enable_eic();
- 
- 	if (cpu_has_veic) {
--		/* Always use vector 1 in EIC mode */
--		gic_cpu_pin = 0;
--		timer_cpu_pin = gic_cpu_pin;
--		set_vi_handler(gic_cpu_pin + GIC_PIN_TO_VEC_OFFSET,
--			       __gic_irq_dispatch);
-+		/* Route all local interrupts to pin 0, vector 1 */
-+		timer_cpu_pin = local_cpu_pin = 0;
-+		set_vi_handler(local_cpu_pin + GIC_PIN_TO_VEC_OFFSET,
-+			       __gic_irq_dispatch_local);
- 
- 		/* Route all shared interrupts to pin 1, vector 2 */
- 		shared_cpu_pin = 1;
- 		set_vi_handler(shared_cpu_pin + GIC_PIN_TO_VEC_OFFSET,
- 			       __gic_irq_dispatch_shared);
- 	} else {
--		shared_cpu_pin = gic_cpu_pin = cpu_vec - GIC_CPU_PIN_OFFSET;
-+		shared_cpu_pin = local_cpu_pin = cpu_vec - GIC_CPU_PIN_OFFSET;
- 		irq_set_chained_handler(MIPS_CPU_IRQ_BASE + cpu_vec,
- 					gic_irq_dispatch);
- 		/*
-@@ -768,7 +766,7 @@ static int __init gic_of_init(struct device_node *node,
- 						timer_cpu_pin,
- 						gic_irq_dispatch);
- 		} else {
--			timer_cpu_pin = gic_cpu_pin;
-+			timer_cpu_pin = local_cpu_pin;
- 		}
- 	}
- 
--- 
-2.7.4
+> ---
+>   arch/arc/Kconfig                   |  3 ---
+>   arch/arc/include/asm/dma-mapping.h |  7 -------
+>   arch/arc/mm/dma.c                  | 14 +++++++-------
+>   3 files changed, 7 insertions(+), 17 deletions(-)
+>
+> diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
+> index 9d5fd00d9e91..f3a80cf164cc 100644
+> --- a/arch/arc/Kconfig
+> +++ b/arch/arc/Kconfig
+> @@ -463,9 +463,6 @@ config ARCH_PHYS_ADDR_T_64BIT
+>   config ARCH_DMA_ADDR_T_64BIT
+>   	bool
+>   
+> -config ARC_PLAT_NEEDS_PHYS_TO_DMA
+> -	bool
+> -
+>   config ARC_KVADDR_SIZE
+>   	int "Kernel Virtual Address Space size (MB)"
+>   	range 0 512
+> diff --git a/arch/arc/include/asm/dma-mapping.h b/arch/arc/include/asm/dma-mapping.h
+> index 94285031c4fb..7a16824bfe98 100644
+> --- a/arch/arc/include/asm/dma-mapping.h
+> +++ b/arch/arc/include/asm/dma-mapping.h
+> @@ -11,13 +11,6 @@
+>   #ifndef ASM_ARC_DMA_MAPPING_H
+>   #define ASM_ARC_DMA_MAPPING_H
+>   
+> -#ifndef CONFIG_ARC_PLAT_NEEDS_PHYS_TO_DMA
+> -#define plat_dma_to_phys(dev, dma_handle) ((phys_addr_t)(dma_handle))
+> -#define plat_phys_to_dma(dev, paddr) ((dma_addr_t)(paddr))
+> -#else
+> -#include <plat/dma.h>
+> -#endif
+> -
+>   extern const struct dma_map_ops arc_dma_ops;
+>   
+>   static inline const struct dma_map_ops *get_arch_dma_ops(struct bus_type *bus)
+> diff --git a/arch/arc/mm/dma.c b/arch/arc/mm/dma.c
+> index fad18261ef6a..1d405b86250c 100644
+> --- a/arch/arc/mm/dma.c
+> +++ b/arch/arc/mm/dma.c
+> @@ -60,7 +60,7 @@ static void *arc_dma_alloc(struct device *dev, size_t size,
+>   	/* This is linear addr (0x8000_0000 based) */
+>   	paddr = page_to_phys(page);
+>   
+> -	*dma_handle = plat_phys_to_dma(dev, paddr);
+> +	*dma_handle = paddr;
+>   
+>   	/* This is kernel Virtual address (0x7000_0000 based) */
+>   	if (need_kvaddr) {
+> @@ -92,7 +92,7 @@ static void *arc_dma_alloc(struct device *dev, size_t size,
+>   static void arc_dma_free(struct device *dev, size_t size, void *vaddr,
+>   		dma_addr_t dma_handle, unsigned long attrs)
+>   {
+> -	phys_addr_t paddr = plat_dma_to_phys(dev, dma_handle);
+> +	phys_addr_t paddr = dma_handle;
+>   	struct page *page = virt_to_page(paddr);
+>   	int is_non_coh = 1;
+>   
+> @@ -111,7 +111,7 @@ static int arc_dma_mmap(struct device *dev, struct vm_area_struct *vma,
+>   {
+>   	unsigned long user_count = vma_pages(vma);
+>   	unsigned long count = PAGE_ALIGN(size) >> PAGE_SHIFT;
+> -	unsigned long pfn = __phys_to_pfn(plat_dma_to_phys(dev, dma_addr));
+> +	unsigned long pfn = __phys_to_pfn(dma_addr);
+>   	unsigned long off = vma->vm_pgoff;
+>   	int ret = -ENXIO;
+>   
+> @@ -175,7 +175,7 @@ static dma_addr_t arc_dma_map_page(struct device *dev, struct page *page,
+>   	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+>   		_dma_cache_sync(paddr, size, dir);
+>   
+> -	return plat_phys_to_dma(dev, paddr);
+> +	return paddr;
+>   }
+>   
+>   /*
+> @@ -190,7 +190,7 @@ static void arc_dma_unmap_page(struct device *dev, dma_addr_t handle,
+>   			       size_t size, enum dma_data_direction dir,
+>   			       unsigned long attrs)
+>   {
+> -	phys_addr_t paddr = plat_dma_to_phys(dev, handle);
+> +	phys_addr_t paddr = handle;
+>   
+>   	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+>   		_dma_cache_sync(paddr, size, dir);
+> @@ -224,13 +224,13 @@ static void arc_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
+>   static void arc_dma_sync_single_for_cpu(struct device *dev,
+>   		dma_addr_t dma_handle, size_t size, enum dma_data_direction dir)
+>   {
+> -	_dma_cache_sync(plat_dma_to_phys(dev, dma_handle), size, DMA_FROM_DEVICE);
+> +	_dma_cache_sync(dma_handle, size, DMA_FROM_DEVICE);
+>   }
+>   
+>   static void arc_dma_sync_single_for_device(struct device *dev,
+>   		dma_addr_t dma_handle, size_t size, enum dma_data_direction dir)
+>   {
+> -	_dma_cache_sync(plat_dma_to_phys(dev, dma_handle), size, DMA_TO_DEVICE);
+> +	_dma_cache_sync(dma_handle, size, DMA_TO_DEVICE);
+>   }
+>   
+>   static void arc_dma_sync_sg_for_cpu(struct device *dev,

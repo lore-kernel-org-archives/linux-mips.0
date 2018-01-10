@@ -1,20 +1,20 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:39027 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:34551 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990435AbeAJWx7dGJSI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 10 Jan 2018 23:53:59 +0100
-Date: Wed, 10 Jan 2018 22:52:16 +0000
+        by eddie.linux-mips.org with ESMTP id S23990435AbeAJXV33dQyI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 11 Jan 2018 00:21:29 +0100
+Date: Wed, 10 Jan 2018 23:20:45 +0000
 From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH v6 12/15] MIPS: JZ4770: Work around config2 misreporting
- associativity
-Message-ID: <20180110225216.GW27409@jhogan-linux.mipstec.com>
+Subject: Re: [PATCH v6 13/15] MIPS: JZ4770: Workaround for corrupted DMA
+ transfers
+Message-ID: <20180110232045.GX27409@jhogan-linux.mipstec.com>
 References: <20180102150848.11314-1-paul@crapouillou.net>
  <20180105182513.16248-1-paul@crapouillou.net>
- <20180105182513.16248-13-paul@crapouillou.net>
+ <20180105182513.16248-14-paul@crapouillou.net>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="L2YZAWjVjAQ1Un1Q"
+        protocol="application/pgp-signature"; boundary="3a/Z8KDuKqDOIvAo"
 Content-Disposition: inline
-In-Reply-To: <20180105182513.16248-13-paul@crapouillou.net>
+In-Reply-To: <20180105182513.16248-14-paul@crapouillou.net>
 Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -27,90 +27,127 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Paul Cercueil <paul@crapouillou.net>
 Cc: Ralf Baechle <ralf@linux-mips.org>, Maarten ter Huurne <maarten@treewalker.org>, Paul Burton <paul.burton@mips.com>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20180110225216.ksRt1z1PcO-4-TXYZ5t4p9SJByheSKnwzsuP3lQa220@z>
+Message-ID: <20180110232045.ShvcCRT6erJRVjlFCsQ5a-p27Eb2ZXP18AhsMMK_Iq4@z>
 
---L2YZAWjVjAQ1Un1Q
+--3a/Z8KDuKqDOIvAo
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 05, 2018 at 07:25:10PM +0100, Paul Cercueil wrote:
+On Fri, Jan 05, 2018 at 07:25:11PM +0100, Paul Cercueil wrote:
 > From: Maarten ter Huurne <maarten@treewalker.org>
 >=20
-> According to config2, the associativity would be 5-ways, but the
-> documentation states 4-ways, which also matches the documented
-> L2 cache size of 256 kB.
+> We have seen MMC DMA transfers read corrupted data from SDRAM when
+> a burst interval ends at physical address 0x10000000. To avoid this
+> problem, we remove the final page of low memory from the memory map.
 >=20
 > Signed-off-by: Maarten ter Huurne <maarten@treewalker.org>
+> ---
+>  arch/mips/jz4740/setup.c | 24 ++++++++++++++++++++++++
+>  arch/mips/kernel/setup.c |  8 ++++++++
+>  2 files changed, 32 insertions(+)
+>=20
+>  v2: No change
+>  v3: No change
+>  v4: No change
+>  v5: No change
+>  v6: No change
+>=20
+> diff --git a/arch/mips/jz4740/setup.c b/arch/mips/jz4740/setup.c
+> index cd89536fbba1..18c57c4bf47e 100644
+> --- a/arch/mips/jz4740/setup.c
+> +++ b/arch/mips/jz4740/setup.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/of_fdt.h>
+> =20
+>  #include <asm/bootinfo.h>
+> +#include <asm/page.h>
+>  #include <asm/prom.h>
+> =20
+>  #include <asm/mach-jz4740/base.h>
+> @@ -103,3 +104,26 @@ void __init arch_init_irq(void)
+>  {
+>  	irqchip_init();
+>  }
+> +
+> +/*
+> + * We have seen MMC DMA transfers read corrupted data from SDRAM when a =
+burst
+> + * interval ends at physical address 0x10000000. To avoid this problem, =
+we
+> + * remove the final page of low memory from the memory map.
+> + */
+> +void __init jz4770_reserve_unsafe_for_dma(void)
+> +{
+> +	int i;
+> +
+> +	for (i =3D 0; i < boot_mem_map.nr_map; i++) {
+> +		struct boot_mem_map_entry *entry =3D boot_mem_map.map + i;
+> +
+> +		if (entry->type !=3D BOOT_MEM_RAM)
+> +			continue;
+> +
+> +		if (entry->addr + entry->size !=3D 0x10000000)
+> +			continue;
+> +
+> +		entry->size -=3D PAGE_SIZE;
+> +		break;
+> +	}
+> +}
+> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+> index 85bc601e9a0d..5a2c20145aee 100644
+> --- a/arch/mips/kernel/setup.c
+> +++ b/arch/mips/kernel/setup.c
+> @@ -879,6 +879,14 @@ static void __init arch_mem_init(char **cmdline_p)
+> =20
+>  	parse_early_param();
+> =20
+> +#ifdef CONFIG_MACH_JZ4770
+> +	if (current_cpu_type() =3D=3D CPU_JZRISC &&
+> +				mips_machtype =3D=3D MACH_INGENIC_JZ4770) {
+> +		extern void __init jz4770_reserve_unsafe_for_dma(void);
+> +		jz4770_reserve_unsafe_for_dma();
+> +	}
+> +#endif
 
-Hehe, nice
+Hmm, a little bit ugly. I'm guessing the plat_mem_setup() callback is
+too early since mem=3D parameters won't have been taken into account yet
+=66rom parse_early_param().
 
-Reviewed-by: James Hogan <jhogan@kernel.org>
+Is /memreserve/ in FDT of any value here or is it all too late due to
+old DTs?
 
 Cheers
 James
 
-> ---
->  arch/mips/mm/sc-mips.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->=20
->  v2: No change
->  v3: No change
->  v4: Rebased on top of Linux 4.15-rc5
->  v5: No change
->  v6: No change
->=20
-> diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
-> index 548acb7f8557..394673991bab 100644
-> --- a/arch/mips/mm/sc-mips.c
-> +++ b/arch/mips/mm/sc-mips.c
-> @@ -16,6 +16,7 @@
->  #include <asm/mmu_context.h>
->  #include <asm/r4kcache.h>
->  #include <asm/mips-cps.h>
-> +#include <asm/bootinfo.h>
-> =20
->  /*
->   * MIPS32/MIPS64 L2 cache handling
-> @@ -220,6 +221,14 @@ static inline int __init mips_sc_probe(void)
->  	else
->  		return 0;
-> =20
-> +	/*
-> +	 * According to config2 it would be 5-ways, but that is contradicted
-> +	 * by all documentation.
-> +	 */
-> +	if (current_cpu_type() =3D=3D CPU_JZRISC &&
-> +				mips_machtype =3D=3D MACH_INGENIC_JZ4770)
-> +		c->scache.ways =3D 4;
 > +
->  	c->scache.waysize =3D c->scache.sets * c->scache.linesz;
->  	c->scache.waybit =3D __ffs(c->scache.waysize);
-> =20
+>  	if (usermem) {
+>  		pr_info("User-defined physical RAM map:\n");
+>  		print_memory_map();
 > --=20
 > 2.11.0
 >=20
 >=20
 
---L2YZAWjVjAQ1Un1Q
+--3a/Z8KDuKqDOIvAo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlpWmR8ACgkQbAtpk944
-dnrQvBAAkiKXnbeOftpLJH50gKZ5TlPHF62MecUHzmckJaMKkDnjI2tU3ZaggLFF
-dFu+JXvxauIcYULDBRFmB+jyOiNF9uYY7p/H8hironJcZvWLeFKDiUcqdZe0KQxq
-8U14dRsLeJZqAkBwR8shLHEtEImPkqiiA4TSA4k2kTdn/zsxShHTUhzlTKLg7ikJ
-xDVKZyZZQNORAao7Hhl2UJmpFDEQuavVyVo6q/N5bwolK58/QQQMLqtEm7YAHfmU
-OxIzmLCT4VsW48KzoDR4iANw9I0OMd5xWC3zh+9ltMhF2afVfEFAPe+AW0Ji3X2+
-r8CWfZCGIw7unWFd2xpbSj4BeVQ1fy35ufAKr1NreEBUCqU2/VpF/aPUnMdhakMx
-vm29eVHXMwuUjl2uUos6+0Z5H3ihYoADIaJKIab4MhXN3pmHoWhrM7VlVXF1AZtE
-SxSsha6Jrjpgd0uu4wV638ESdUc5ri18KoZxvQ+A7pp/Dl+rfWQQwtyKGs7LCUjc
-+VzhBB5smbg8kFqTpNmKLYvRdKvKeG1rEapJC/NRKmCFsoPRXvJLOsE5xvVouQXa
-8ysiRcxmON+deLU+9b7/anqCTatvfmClU2Uca8VywUUcAVctqYoyrg13wp9+Gea0
-vCFVgVEH8dFYcCGx/Hl/H+vCEqcj9bOUqhsEaperTq1PUqEyWSU=
-=zhzb
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlpWn80ACgkQbAtpk944
+dnq+xRAAr/Cp+9CEwAzShn3Rp1AIyPrzeort8Me/PN20nImRnv1zdmrJniNs92RH
++x/U+w+4dj6lr30HY71aOJPywEU4YuWpQMph+9M4pGfJesPxavcZyttQFbG2C74j
+pFUbxHjAYqyEkg19+pKmLiKz/tY6ZQYR6iGIj4vm/p09jQC+oQ7UyiLuDsonk6NB
+f20OUd2WGxGAy1bTGOZlfGeXvEETa6Jz67WurQB7coH64QtiwL71RJLs1NikpyP/
+FtrkEh9ODxgxjXxx1w+rhy1A9mmfvMlUhavOm5b2Um26skWCVWX6MZiB/gMA9ZG1
+NVQwpI8AHpJsZPvvW/+KRPCVATFjQj1Ftzh2+WsnA7ywUHVOYh4ref099z3fKcq+
+DxwDSMadzUHxpYGkJAzeQlfSVkdKQWHYs8ilKbIY7hzAENXPGe3aAs7yWzijJhXG
+VOLBRfuU0K867S/dghmgVLTqc+jlj9PcOMPSmcZfTWZzE9bNvAPZBFERRTex+ACV
+KXLvP4T+FnTAd415QTYQWVdmGcz2TeS/Di8i8P4uDbqLr+YcJikXuxsT/LSqyNXS
+AbbPxaSKxkjgO1E4tNb6JnN+MNIwRKqLAIZYxft78Ry5Vid5htDs2UgsZMU9Yzlr
+NF78hRSWyxCVeN9VJ8Kc9JS5PfU7BtwiB7GHIgE7CELu0JRaphE=
+=+zQE
 -----END PGP SIGNATURE-----
 
---L2YZAWjVjAQ1Un1Q--
+--3a/Z8KDuKqDOIvAo--

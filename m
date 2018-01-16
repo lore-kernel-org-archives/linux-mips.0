@@ -1,7 +1,7 @@
-Received: from smtp.codeaurora.org ([198.145.29.96]:38788 "EHLO
+Received: from smtp.codeaurora.org ([198.145.29.96]:60212 "EHLO
         smtp.codeaurora.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23994630AbeAPPWlOamEf (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Jan 2018 16:22:41 +0100
+        with ESMTP id S23994634AbeAPTQiWmYqL (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Jan 2018 20:16:38 +0100
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -9,8 +9,8 @@ Subject: Re: [for-4.15] ssb: Disable PCI host for PCI_DRIVERS_GENERIC
 From: Kalle Valo <kvalo@codeaurora.org>
 In-Reply-To: <20180115211714.24009-1-jhogan@kernel.org>
 References: <20180115211714.24009-1-jhogan@kernel.org>
-Message-ID: <20180116152238.837E46083C@smtp.codeaurora.org>
-Date: Tue, 16 Jan 2018 15:22:38 +0000 (UTC)
+Message-ID: <20180116191636.6B3E5605A4@smtp.codeaurora.org>
+Date: Tue, 16 Jan 2018 19:16:36 +0000 (UTC)
 Return-Path: <kvalo@codeaurora.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,7 +23,7 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: James Hogan <jhogan@kernel.org>
 Cc: Michael Buesch <m@bues.ch>, linux-wireless@vger.kernel.org, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, Matt Redfearn <matt.redfearn@imgtec.com>, Guenter Roeck <linux@roeck-us.net>
-Message-ID: <20180116152238.tjOEDDgisN8R4_XLMhoQIV5Py1cmEf0HDXTXY4Etb74@z>
+Message-ID: <20180116191636.0YIuqpd56M35ZIl2rrurtiTediJTygcoRcK3w5UbNTg@z>
 
 James Hogan <jhogan@kernel.org> wrote:
 
@@ -49,7 +49,9 @@ James Hogan <jhogan@kernel.org> wrote:
 > Cc: linux-mips@linux-mips.org
 > Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-I'm planning to push this to 4.15 but not sure if there's enough time.
+Patch applied to wireless-drivers.git, thanks.
+
+58eae1416b80 ssb: Disable PCI host for PCI_DRIVERS_GENERIC
 
 -- 
 https://patchwork.kernel.org/patch/10165371/

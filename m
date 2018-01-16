@@ -1,21 +1,17 @@
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2237 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23994652AbeALJMko5QXJ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 12 Jan 2018 10:12:40 +0100
-Subject: Re: [PATCH v3 00/27] kill devm_ioremap_nocache
-References: <1514026525-32538-1-git-send-email-xieyisheng1@huawei.com>
- <20171223134831.GB10103@kroah.com>
- <b8ff7f17-7f2c-f220-9833-7ae5bd7343d5@c-s.fr>
- <8dd19411-5b06-0aa4-fd0e-e5b112c25dcb@huawei.com>
- <1eb206ed-95e9-5839-485d-0e549ff3f505@c-s.fr>
-From: Yisheng Xie <xieyisheng1@huawei.com>
-Message-ID: <ff498c83-d1ee-7553-e20c-a07369f8dad6@huawei.com>
-Date: Fri, 12 Jan 2018 17:12:12 +0800
-MIME-Version: 1.0
-In-Reply-To: <1eb206ed-95e9-5839-485d-0e549ff3f505@c-s.fr>
+Received: from smtp.codeaurora.org ([198.145.29.96]:38788 "EHLO
+        smtp.codeaurora.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23994630AbeAPPWlOamEf (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Jan 2018 16:22:41 +0100
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-Path: <xieyisheng1@huawei.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: [for-4.15] ssb: Disable PCI host for PCI_DRIVERS_GENERIC
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20180115211714.24009-1-jhogan@kernel.org>
+References: <20180115211714.24009-1-jhogan@kernel.org>
+Message-ID: <20180116152238.837E46083C@smtp.codeaurora.org>
+Date: Tue, 16 Jan 2018 15:22:38 +0000 (UTC)
+Return-Path: <kvalo@codeaurora.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,116 +21,37 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Christophe LEROY <christophe.leroy@c-s.fr>, Greg KH <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org, ysxie@foxmail.com, ulf.hansson@linaro.org, linux-mmc@vger.kernel.org, boris.brezillon@free-electrons.com, richard@nod.at, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org, alsa-devel@alsa-project.org, wim@iguana.be, linux@roeck-us.net, linux-watchdog@vger.kernel.org, b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org, linus.walleij@linaro.org, linux-gpio@vger.kernel.org, ralf@linux-mips.org, linux-mips@linux-mips.org, lgirdwood@gmail.com, broonie@kernel.org, tglx@linutronix.de, jason@lakedaemon.net, marc.zyngier@arm.com, arnd@arndb.de, andriy.shevchenko@linux.intel.com, industrypack-devel@lists.sourceforge.net, wg@grandegger.com, mkl@pengutronix.de, linux-can@vger.kernel.org, mchehab@kernel.org, linux-media@vger.kernel.org, a.zummo@towertech.it, alexandre.belloni@free-electrons.com, linux-rtc@vger.kernel.org, daniel.vetter@intel.com, jani.nikula@linux.intel.com, seanpaul@chromium.org, airlied@linux.ie, dri-devel@lists.freedesktop.org, kvalo@codeaurora.org, linux-wireless@vger.kernel.org, linux-spi@vger.kernel.org, tj@kernel.org, linux-ide@vger.kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org, devel@driverdev.osuosl.org, dvhart@infradead.org, andy@infradead.org, platform-driver-x86@vger.kernel.org, jakub.kicinski@netronome.com, davem@davemloft.net, nios2-dev@lists.rocketboards.org, netdev@vger.kernel.org, vinod.koul@intel.com, dan.j.williams@intel.com, dmaengine@vger.kernel.org, jslaby@suse.com
-Message-ID: <20180112091212.2pMpqOu3Wcq3ysHkP9_VPXF4ad89AimbHjJs66V98oQ@z>
+To: James Hogan <jhogan@kernel.org>
+Cc: Michael Buesch <m@bues.ch>, linux-wireless@vger.kernel.org, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, Matt Redfearn <matt.redfearn@imgtec.com>, Guenter Roeck <linux@roeck-us.net>
+Message-ID: <20180116152238.tjOEDDgisN8R4_XLMhoQIV5Py1cmEf0HDXTXY4Etb74@z>
 
-Hi Christophe ，
+James Hogan <jhogan@kernel.org> wrote:
 
-On 2018/1/4 16:05, Christophe LEROY wrote:
+> Since commit d41e6858ba58 ("MIPS: Kconfig: Set default MIPS system type
+> as generic") changed the default MIPS platform to the "generic"
+> platform, which uses PCI_DRIVERS_GENERIC instead of PCI_DRIVERS_LEGACY,
+> various files in drivers/ssb/ have failed to build.
 > 
+> This is particularly due to the existence of struct pci_controller being
+> dependent on PCI_DRIVERS_LEGACY since commit c5611df96804 ("MIPS: PCI:
+> Introduce CONFIG_PCI_DRIVERS_LEGACY"), so add that dependency to Kconfig
+> to prevent these files being built for the "generic" platform including
+> all{yes,mod}config builds.
 > 
-> Le 25/12/2017 à 02:34, Yisheng Xie a écrit :
->>
->>
->> On 2017/12/24 17:05, christophe leroy wrote:
->>>
->>>
->>> Le 23/12/2017 à 14:48, Greg KH a écrit :
->>>> On Sat, Dec 23, 2017 at 06:55:25PM +0800, Yisheng Xie wrote:
->>>>> Hi all,
->>>>>
->>>>> When I tried to use devm_ioremap function and review related code, I found
->>>>> devm_ioremap and devm_ioremap_nocache is almost the same with each other,
->>>>> except one use ioremap while the other use ioremap_nocache.
->>>>
->>>> For all arches?  Really?  Look at MIPS, and x86, they have different
->>>> functions.
->>>>
->>>>> While ioremap's
->>>>> default function is ioremap_nocache, so devm_ioremap_nocache also have the
->>>>> same function with devm_ioremap, which can just be killed to reduce the size
->>>>> of devres.o(from 20304 bytes to 18992 bytes in my compile environment).
->>>>>
->>>>> I have posted two versions, which use macro instead of function for
->>>>> devm_ioremap_nocache[1] or devm_ioremap[2]. And Greg suggest me to kill
->>>>> devm_ioremap_nocache for no need to keep a macro around for the duplicate
->>>>> thing. So here comes v3 and please help to review.
->>>>
->>>> I don't think this can be done, what am I missing?  These functions are
->>>> not identical, sorry for missing that before.
->>>
->>> devm_ioremap() and devm_ioremap_nocache() are quite similar, both use devm_ioremap_release() for the release, why not just defining:
->>>
->>> static void __iomem *__devm_ioremap(struct device *dev, resource_size_t offset,
->>>                 resource_size_t size, bool nocache)
->>> {
->>> [...]
->>>      if (nocache)
->>>          addr = ioremap_nocache(offset, size);
->>>      else
->>>          addr = ioremap(offset, size);
->>> [...]
->>> }
->>>
->>> then in include/linux/io.h
->>>
->>> static inline void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
->>>                 resource_size_t size)
->>> {return __devm_ioremap(dev, offset, size, false);}
->>>
->>> static inline void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
->>>                     resource_size_t size);
->>> {return __devm_ioremap(dev, offset, size, true);}
->>
->> Yeah, this seems good to me, right now we have devm_ioremap, devm_ioremap_wc, devm_ioremap_nocache
->> May be we can use an enum like:
->> typedef enum {
->>     DEVM_IOREMAP = 0,
->>     DEVM_IOREMAP_NOCACHE,
->>     DEVM_IOREMAP_WC,
->> } devm_ioremap_type;
->>
->> static inline void __iomem *devm_ioremap(struct device *dev, resource_size_t offset,
->>                  resource_size_t size)
->>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP);}
->>
->>   static inline void __iomem *devm_ioremap_nocache(struct device *dev, resource_size_t offset,
->>                      resource_size_t size);
->>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP_NOCACHE);}
->>
->>   static inline void __iomem *devm_ioremap_wc(struct device *dev, resource_size_t offset,
->>                      resource_size_t size);
->>   {return __devm_ioremap(dev, offset, size, DEVM_IOREMAP_WC);}
->>
->>   static void __iomem *__devm_ioremap(struct device *dev, resource_size_t offset,
->>                  resource_size_t size, devm_ioremap_type type)
->>   {
->>       void __iomem **ptr, *addr = NULL;
->>   [...]
->>       switch (type){
->>       case DEVM_IOREMAP:
->>           addr = ioremap(offset, size);
->>           break;
->>       case DEVM_IOREMAP_NOCACHE:
->>           addr = ioremap_nocache(offset, size);
->>           break;
->>       case DEVM_IOREMAP_WC:
->>           addr = ioremap_wc(offset, size);
->>           break;
->>       }
->>   [...]
->>   }
-> 
-> 
-> That looks good to me, will you submit a v4 ?
+> Fixes: c5611df96804 ("MIPS: PCI: Introduce CONFIG_PCI_DRIVERS_LEGACY")
+> Signed-off-by: James Hogan <jhogan@kernel.org>
+> Cc: Michael Buesch <m@bues.ch>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Paul Burton <paul.burton@mips.com>
+> Cc: Matt Redfearn <matt.redfearn@imgtec.com>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Cc: linux-wireless@vger.kernel.org
+> Cc: linux-mips@linux-mips.org
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Sorry for late response. And I will submit the v4 as your suggestion.
+I'm planning to push this to 4.15 but not sure if there's enough time.
 
-Thanks
-Yisheng
+-- 
+https://patchwork.kernel.org/patch/10165371/
 
-> 
-> Christophe
-> 
->>
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches

@@ -1,18 +1,17 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:41434 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:44563 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994634AbeAPVn0Kd5Tg (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 16 Jan 2018 22:43:26 +0100
-Date: Tue, 16 Jan 2018 21:42:16 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH] MIPS: Fix vmlinuz build when ZBOOT is selected
-Message-ID: <20180116214215.GY27409@jhogan-linux.mipstec.com>
-References: <20180116032954.13722-1-dsabogalcc@gmail.com>
+        by eddie.linux-mips.org with ESMTP id S23992391AbeAQJERQ7pti (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 17 Jan 2018 10:04:17 +0100
+Date: Wed, 17 Jan 2018 09:03:48 +0000
+From: Matt Redfearn <matt.redfearn@mips.com>
+Subject: Re: [PATCH] MIPS: use generic GCC library routines from lib/
+Message-ID: <20180117090348.GA20406@mredfearn-linux>
+References: <20180117065121.30437-1-antonynpavlov@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="I33OQG5IFrqF2BWt"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20180116032954.13722-1-dsabogalcc@gmail.com>
-Return-Path: <James.Hogan@mips.com>
+In-Reply-To: <20180117065121.30437-1-antonynpavlov@gmail.com>
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,68 +21,255 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Daniel Sabogal <dsabogalcc@gmail.com>
-Cc: linux-mips@linux-mips.org, ralf@linux-mips.org
-Message-ID: <20180116214216._BJ4ylqVwWVUYJnuybBg81ytPH57GuQoCZGrNim8PNk@z>
+To: Antony Pavlov <antonynpavlov@gmail.com>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@sifive.com>, Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20180117090348.Hkcte0uLMmmiqbEKRZFnQ90e3VbRnYrsTdaAotYPlYg@z>
 
---I33OQG5IFrqF2BWt
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On Mon, Jan 15, 2018 at 10:29:54PM -0500, Daniel Sabogal wrote:
-> vmlinuz is not built by default for platforms using
-> COMPRESSION_FNAME (e.g. Malta) due to an erroneous
-> check on ZBOOT
->=20
-> Signed-off-by: Daniel Sabogal <dsabogalcc@gmail.com>
-
-Reviewed-by: James Hogan <jhogan@kernel.org>
-
-Cheers
-James
-
+On Wed, Jan 17, 2018 at 09:51:21AM +0300, Antony Pavlov wrote:
+> The commit b35cd9884fa5 ("lib: Add shared copies of
+> some GCC library routines") makes it possible
+> to share generic GCC library routines by several
+> architectures.
+> 
+> This commit removes several generic GCC library
+> routines from arch/mips/lib/ in favour of similar
+> routines from lib/.
+> 
+> Signed-off-by: Antony Pavlov <antonynpavlov@gmail.com>
+> Cc: Palmer Dabbelt <palmer@sifive.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: linux-mips@linux-mips.org
+> Cc: linux-kernel@vger.kernel.org
 > ---
->  arch/mips/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-> index 9f6a26d72f9f..0f20f84de53b 100644
-> --- a/arch/mips/Makefile
-> +++ b/arch/mips/Makefile
-> @@ -228,7 +228,7 @@ libs-y				+=3D arch/mips/fw/lib/
->  #
->  # Kernel compression
->  #
-> -ifdef SYS_SUPPORTS_ZBOOT
-> +ifdef CONFIG_SYS_SUPPORTS_ZBOOT
->  COMPRESSION_FNAME		=3D vmlinuz
->  else
->  COMPRESSION_FNAME		=3D vmlinux
-> --=20
-> 2.15.0
->=20
->=20
+>  arch/mips/Kconfig       |  5 +++++
+>  arch/mips/lib/Makefile  |  2 +-
+>  arch/mips/lib/ashldi3.c | 30 ------------------------------
+>  arch/mips/lib/ashrdi3.c | 32 --------------------------------
+>  arch/mips/lib/cmpdi2.c  | 28 ----------------------------
+>  arch/mips/lib/lshrdi3.c | 30 ------------------------------
+>  arch/mips/lib/ucmpdi2.c | 22 ----------------------
+>  7 files changed, 6 insertions(+), 143 deletions(-)
+>  delete mode 100644 arch/mips/lib/ashldi3.c
+>  delete mode 100644 arch/mips/lib/ashrdi3.c
+>  delete mode 100644 arch/mips/lib/cmpdi2.c
+>  delete mode 100644 arch/mips/lib/lshrdi3.c
+>  delete mode 100644 arch/mips/lib/ucmpdi2.c
+> 
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 350a990fc719..9cd49ee848c6 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -73,6 +73,11 @@ config MIPS
+>  	select RTC_LIB if !MACH_LOONGSON64
+>  	select SYSCTL_EXCEPTION_TRACE
+>  	select VIRT_TO_BUS
+> +	select GENERIC_ASHLDI3
+> +	select GENERIC_ASHRDI3
+> +	select GENERIC_LSHRDI3
+> +	select GENERIC_CMPDI2
+> +	select GENERIC_UCMPDI2
 
---I33OQG5IFrqF2BWt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Please preserve alphabetical order
 
------BEGIN PGP SIGNATURE-----
+>  
+>  menu "Machine selection"
+>  
+> diff --git a/arch/mips/lib/Makefile b/arch/mips/lib/Makefile
+> index 78c2affeabf8..195ab4cb0840 100644
+> --- a/arch/mips/lib/Makefile
+> +++ b/arch/mips/lib/Makefile
+> @@ -16,4 +16,4 @@ obj-$(CONFIG_CPU_R3000)		+= r3k_dump_tlb.o
+>  obj-$(CONFIG_CPU_TX39XX)	+= r3k_dump_tlb.o
+>  
+>  # libgcc-style stuff needed in the kernel
+> -obj-y += ashldi3.o ashrdi3.o bswapsi.o bswapdi.o cmpdi2.o lshrdi3.o ucmpdi2.o
+> +obj-y += bswapsi.o bswapdi.o
+> diff --git a/arch/mips/lib/ashldi3.c b/arch/mips/lib/ashldi3.c
+> deleted file mode 100644
+> index 24cd6903e797..000000000000
+> --- a/arch/mips/lib/ashldi3.c
+> +++ /dev/null
+> @@ -1,30 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -#include <linux/export.h>
+> -
+> -#include "libgcc.h"
+> -
+> -long long notrace __ashldi3(long long u, word_type b)
+> -{
+> -	DWunion uu, w;
+> -	word_type bm;
+> -
+> -	if (b == 0)
+> -		return u;
+> -
+> -	uu.ll = u;
+> -	bm = 32 - b;
+> -
+> -	if (bm <= 0) {
+> -		w.s.low = 0;
+> -		w.s.high = (unsigned int) uu.s.low << -bm;
+> -	} else {
+> -		const unsigned int carries = (unsigned int) uu.s.low >> bm;
+> -
+> -		w.s.low = (unsigned int) uu.s.low << b;
+> -		w.s.high = ((unsigned int) uu.s.high << b) | carries;
+> -	}
+> -
+> -	return w.ll;
+> -}
+> -
+> -EXPORT_SYMBOL(__ashldi3);
+> diff --git a/arch/mips/lib/ashrdi3.c b/arch/mips/lib/ashrdi3.c
+> deleted file mode 100644
+> index 23f5295af51e..000000000000
+> --- a/arch/mips/lib/ashrdi3.c
+> +++ /dev/null
+> @@ -1,32 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -#include <linux/export.h>
+> -
+> -#include "libgcc.h"
+> -
+> -long long notrace __ashrdi3(long long u, word_type b)
+> -{
+> -	DWunion uu, w;
+> -	word_type bm;
+> -
+> -	if (b == 0)
+> -		return u;
+> -
+> -	uu.ll = u;
+> -	bm = 32 - b;
+> -
+> -	if (bm <= 0) {
+> -		/* w.s.high = 1..1 or 0..0 */
+> -		w.s.high =
+> -		    uu.s.high >> 31;
+> -		w.s.low = uu.s.high >> -bm;
+> -	} else {
+> -		const unsigned int carries = (unsigned int) uu.s.high << bm;
+> -
+> -		w.s.high = uu.s.high >> b;
+> -		w.s.low = ((unsigned int) uu.s.low >> b) | carries;
+> -	}
+> -
+> -	return w.ll;
+> -}
+> -
+> -EXPORT_SYMBOL(__ashrdi3);
+> diff --git a/arch/mips/lib/cmpdi2.c b/arch/mips/lib/cmpdi2.c
+> deleted file mode 100644
+> index 93cfc785927d..000000000000
+> --- a/arch/mips/lib/cmpdi2.c
+> +++ /dev/null
+> @@ -1,28 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -#include <linux/export.h>
+> -
+> -#include "libgcc.h"
+> -
+> -word_type notrace __cmpdi2(long long a, long long b)
+> -{
+> -	const DWunion au = {
+> -		.ll = a
+> -	};
+> -	const DWunion bu = {
+> -		.ll = b
+> -	};
+> -
+> -	if (au.s.high < bu.s.high)
+> -		return 0;
+> -	else if (au.s.high > bu.s.high)
+> -		return 2;
+> -
+> -	if ((unsigned int) au.s.low < (unsigned int) bu.s.low)
+> -		return 0;
+> -	else if ((unsigned int) au.s.low > (unsigned int) bu.s.low)
+> -		return 2;
+> -
+> -	return 1;
+> -}
+> -
+> -EXPORT_SYMBOL(__cmpdi2);
+> diff --git a/arch/mips/lib/lshrdi3.c b/arch/mips/lib/lshrdi3.c
+> deleted file mode 100644
+> index 914b971aca3b..000000000000
+> --- a/arch/mips/lib/lshrdi3.c
+> +++ /dev/null
+> @@ -1,30 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -#include <linux/export.h>
+> -
+> -#include "libgcc.h"
+> -
+> -long long notrace __lshrdi3(long long u, word_type b)
+> -{
+> -	DWunion uu, w;
+> -	word_type bm;
+> -
+> -	if (b == 0)
+> -		return u;
+> -
+> -	uu.ll = u;
+> -	bm = 32 - b;
+> -
+> -	if (bm <= 0) {
+> -		w.s.high = 0;
+> -		w.s.low = (unsigned int) uu.s.high >> -bm;
+> -	} else {
+> -		const unsigned int carries = (unsigned int) uu.s.high << bm;
+> -
+> -		w.s.high = (unsigned int) uu.s.high >> b;
+> -		w.s.low = ((unsigned int) uu.s.low >> b) | carries;
+> -	}
+> -
+> -	return w.ll;
+> -}
+> -
+> -EXPORT_SYMBOL(__lshrdi3);
+> diff --git a/arch/mips/lib/ucmpdi2.c b/arch/mips/lib/ucmpdi2.c
+> deleted file mode 100644
+> index c31c78ca4175..000000000000
+> --- a/arch/mips/lib/ucmpdi2.c
+> +++ /dev/null
+> @@ -1,22 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -#include <linux/export.h>
+> -
+> -#include "libgcc.h"
+> -
+> -word_type notrace __ucmpdi2(unsigned long long a, unsigned long long b)
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlpecbcACgkQbAtpk944
-dnrkPw//al49jHwchaInwl2UuqX+7GQ7VtrMi2jEH0Z7wbmpLgCNGPfI3al9mTtJ
-3xZznjKoFYOCi/k3ye91oXAp3Jzh+OvX2N26CT8UoKxB8vsF7BGTp4MzZenIj4JI
-d4Nx94RfjnrhgZQMvb4eHLw6Bi283+VfkzgJDi8G5Ms7ozwJb1qj/zcbiHrsZUt5
-5fp0cfolPrptzt6I07JDlgpTD0D/rH/O+J0vp0p3Ml5L2an5ksvWJJyXZWtS/Ltm
-BJ6SEIGMb8qFNRgPqnettCVSLbtUQnHz1/uXZytXZ1N5EQGseNKN5r9/3XSvGnnZ
-TIp4wP6p00GvKReJCjys4LsFWV6CnvAqxzZJgP0XSc0ULca0XPAFo27/bIa8hnqg
-4pBpHwqH3qUzmoCPhvXT2NRPrXQs495Krvkl7h9wIgL6PiPbE3IxfJt91VNsNjK7
-jHLvhpFxKQg4ycmfnJ9Ey1PGKVOlhk/YuO7TUTm/ZfZvo2KJK7GmsFavlq27mcBn
-JzclmVTgMWaaP5rWhP0uVUC/ACxT/9gNEEA2sPYKv4YQVp+Pg5C+kB2t15iy5mGA
-K9O8Wl+Bs2N/ube2vEAAOIAl2oBwdrEezW1VpQUpTk17RDw6dV9UbSnnD07ozl3I
-YlW0mfFyO+PfCRzfW7CQghPTJqKApb3Dx2ri2HbywV0zD9a1D/w=
-=IDTh
------END PGP SIGNATURE-----
+The version of __ucmpdi2 in /lib/ is not marked notrace. We have seen
+issues before with compiler intrinsics not being marked notrace - see
+aedcfbe06558 ("MIPS: lib: Mark intrinsics notrace")
 
---I33OQG5IFrqF2BWt--
+Please ensure that the /lib/ version is equivalent before switching to
+that version.
+
+Thanks,
+Matt
+
+> -{
+> -	const DWunion au = {.ll = a};
+> -	const DWunion bu = {.ll = b};
+> -
+> -	if ((unsigned int) au.s.high < (unsigned int) bu.s.high)
+> -		return 0;
+> -	else if ((unsigned int) au.s.high > (unsigned int) bu.s.high)
+> -		return 2;
+> -	if ((unsigned int) au.s.low < (unsigned int) bu.s.low)
+> -		return 0;
+> -	else if ((unsigned int) au.s.low > (unsigned int) bu.s.low)
+> -		return 2;
+> -	return 1;
+> -}
+> -
+> -EXPORT_SYMBOL(__ucmpdi2);
+> -- 
+> 2.15.1
+> 
+> 

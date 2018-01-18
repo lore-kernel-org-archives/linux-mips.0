@@ -1,20 +1,18 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:47619 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990409AbeAQV3skabVq (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 17 Jan 2018 22:29:48 +0100
-Date: Wed, 17 Jan 2018 21:28:54 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH v7 11/14] MIPS: ingenic: Initial JZ4770 support
-Message-ID: <20180117212853.GC27409@jhogan-linux.mipstec.com>
-References: <20180105182513.16248-2-paul@crapouillou.net>
- <20180116154804.21150-1-paul@crapouillou.net>
- <20180116154804.21150-12-paul@crapouillou.net>
+Received: from mail.kernel.org ([198.145.29.99]:47486 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23994711AbeARB7hIE37X (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 18 Jan 2018 02:59:37 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Re7H+V5lQR2Zv/pu"
-Content-Disposition: inline
-In-Reply-To: <20180116154804.21150-12-paul@crapouillou.net>
-Return-Path: <James.Hogan@mips.com>
+In-Reply-To: <CANc+2y4nBcVPUjTiXXDDUD_qph0zHAmr-SDCt74C8gCZdNQ4Fw@mail.gmail.com>
+References: <20171228212954.2922-1-malat@debian.org> <20171228212954.2922-2-malat@debian.org>
+ <20180103200211.u56tqesyumsofoff@rob-hp-laptop> <CANc+2y5Y9fYh5V5OG_o+-92-uLYew7yNObLGTYPhGyx2eExywA@mail.gmail.com>
+ <CAL_JsqJHHPJY0Yg+kmMbjZVsq=VVC0dPgtvXoN+sxL9gjBtMLA@mail.gmail.com> <CANc+2y4nBcVPUjTiXXDDUD_qph0zHAmr-SDCt74C8gCZdNQ4Fw@mail.gmail.com>
+From: Rob Herring <robh@kernel.org>
+Date: Wed, 17 Jan 2018 19:59:08 -0600
+Message-ID: <CAL_JsqJ9FQyOO_yaHjjMvwvL_CrWrZz7r4hom6n5hgdx0Z=RNw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] nvmem: add driver for JZ4780 efuse
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <robh@kernel.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,72 +22,99 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Maarten ter Huurne <maarten@treewalker.org>, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20180117212854.E5U50nCDqOq7yipNm7A2GslHoOuDJn1RBQnJWzxKJP4@z>
+To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+Cc: Mathieu Malaterre <malat@debian.org>, Marcin Nowakowski <marcin.nowakowski@mips.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Zubair.Kakakhel@mips.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, open list <linux-kernel@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>
+Message-ID: <20180118015908.tvMJl0aVoAdyaIErOQf4jlbNo_1bM6inMKUJhvx_lU8@z>
 
---Re7H+V5lQR2Zv/pu
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jan 17, 2018 at 11:31 AM, PrasannaKumar Muralidharan
+<prasannatsmkumar@gmail.com> wrote:
+> Hi Rob,
+>
+> On 11 January 2018 at 20:38, Rob Herring <robh@kernel.org> wrote:
+>> On Sat, Jan 6, 2018 at 6:43 AM, PrasannaKumar Muralidharan
+>> <prasannatsmkumar@gmail.com> wrote:
+>>> Hi Rob,
+>>>
+>>> On 4 January 2018 at 01:32, Rob Herring <robh@kernel.org> wrote:
+>>>> On Thu, Dec 28, 2017 at 10:29:52PM +0100, Mathieu Malaterre wrote:
+>>>>> From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
 
-On Tue, Jan 16, 2018 at 04:48:01PM +0100, Paul Cercueil wrote:
-> Provide just enough bits (clocks, clocksource, uart) to allow a kernel
-> to boot on the JZ4770 SoC to a initramfs userspace.
->=20
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> Reviewed-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+[...]
 
+>>>>> +             nemc: nemc@13410000 {
+>>>>> +                     compatible = "ingenic,jz4780-nemc";
+>>>>> +                     reg = <0x13410000 0x10000>;
+>>>>> +                     #address-cells = <2>;
+>>>>> +                     #size-cells = <1>;
+>>>>> +                     ranges = <1 0 0x1b000000 0x1000000
+>>>>> +                               2 0 0x1a000000 0x1000000
+>>>>> +                               3 0 0x19000000 0x1000000
+>>>>> +                               4 0 0x18000000 0x1000000
+>>>>> +                               5 0 0x17000000 0x1000000
+>>>>> +                               6 0 0x16000000 0x1000000>;
+>>>>> +
+>>>>> +                     clocks = <&cgu JZ4780_CLK_NEMC>;
+>>>>> +
+>>>>> +                     status = "disabled";
+>>>>> +             };
+>>>>>
+>>>>> -             clocks = <&cgu JZ4780_CLK_NEMC>;
+>>>>> +             efuse: efuse@134100d0 {
+>>>>> +                     compatible = "ingenic,jz4780-efuse";
+>>>>> +                     reg = <0x134100d0 0xff>;
+>>>>
+>>>> You are creating an overlapping region here with nemc above. Don't do
+>>>> that.
+>>>
+>>> Should "reg = <0x13410000 0x10000>;" be used instead?
+>>
+>> No, that still overlaps with nemc. What's in registers 0x00-0xcf and
+>> 0x1d0-0xffff? Either get rid of this node altogether and make the
+>> driver for nemc also instantiate the efuse driver (DT is not the only
+>> way to instantiate drivers), or create sub-nodes under nemc for each
+>> distinct h/w block in the 13410000-13420000 address space.
+>
+> My idea was not to change nemc driver.
+>
+> By "create sub-nodes under nemc" do you mean something like below?
 
-> diff --git a/arch/mips/jz4740/time.c b/arch/mips/jz4740/time.c
-> index bb1ad5119da4..2ca9160f642a 100644
-> --- a/arch/mips/jz4740/time.c
-> +++ b/arch/mips/jz4740/time.c
-> @@ -113,7 +113,7 @@ static struct clock_event_device jz4740_clockevent =
-=3D {
->  #ifdef CONFIG_MACH_JZ4740
->  	.irq =3D JZ4740_IRQ_TCU0,
->  #endif
-> -#ifdef CONFIG_MACH_JZ4780
-> +#if defined(CONFIG_MACH_JZ4770) || defined(CONFIG_MACH_JZ4780)
->  	.irq =3D JZ4780_IRQ_TCU2,
->  #endif
->  };
-> --=20
-> 2.11.0
->=20
+Yes.
 
-MACH_INGENIC selects SYS_SUPPORTS_ZBOOT_UART16550, so I wonder whether
-arch/mips/boot/compressed/uart-16550.c needs updating for JZ4770 like
-commit ba9e72c2290f ("MIPS: Fix build with DEBUG_ZBOOT and MACH_JZ4780")
-does for JZ4780.
+> nemc: nemc@13410000 {
+>                      compatible = "ingenic,jz4780-nemc";
+>                      reg = <0x13410000 0x10000>;
+>                      <...>
+>                      status = "disabled";
 
-Otherwise the non-DT bits look reasonable (I've not really looked
-properly at the DT):
-Reviewed-by: James Hogan <jhogan@kernel.org>
+Though having disabled here is strange. We'd normally ignore all the
+child nodes.
 
-Cheers
-James
+>
+>                      efuse: efuse@134101d0 {
+>                                           compatible = "ingenic,jz4780-efuse";
+>                                           reg = <0x134100d0 0xff>;
+>                      }
+> }
+>
+> Will this instantiate efuse driver? I do not know how to do that with
+> sub-node. I will explore more on this.
 
---Re7H+V5lQR2Zv/pu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+The nemc driver just needs to call of_platform_default_populate.
 
------BEGIN PGP SIGNATURE-----
+>> Or a third option is make nemc reg:
+>>
+>> reg = <0x13410000 0xd0>, <0x134101d0 0xfe30>;
+>>
+>> But I suspect that is wrong and you probably have some other function in there.
+>>
+>> Rob
+>
+> If the efuse block were to use a different base register address (that
+> does not overlap with nemc register range) in future SoC how the node
+> should be? Using nemc to instantiate efuse won't be the best choice if
+> that happens.
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlpfwBUACgkQbAtpk944
-dnrtoBAAg2K7uXd4aklg9Vo7PmWMQjAyhi92pU1aAQv3a8ld7l2HCKorKi0+YoxA
-Ads5snHaNf4jl07yVhyWzM1AzLu2crOS1nat3FNSypX8wUtL2Y/4FNsYJq3rE3lX
-0FW8boVkzKWUcyq3i/VMEkxyzs4azMhqzUgfAc4Fk1tQoa4uUsGL+QCwXE+sMQ87
-E3Mv7Xf7u+L/sg5AGs/Eu/ITDboBlBlik70qUWMF/HsFYK0ZIDZyCCfwotn8i2K1
-8dS1wGp05fpjlsti3zGPqfacrLkA6Bx0yekH/JiOCpuwz5VBoQSFiUZV6kWdwM74
-q1RJ0AjyXg39krrYhSf5OOWT07hBGdfpaJOEjc1Uwi13jnjNHDP2o5EsLto7tHJu
-zTecpIUg/LCF7xGHxJEck0nliP0GA7STYZep0IPrt0D9o1V3691G0gL2RZ8rxYEn
-lzv/824u89iidziOK5CV5lOP5LtzRB9GjJmKx85qa/r4M4Gx9w5srOEFGtQ1dSF+
-ZtBaawJ0tOKC1Ngl+eAdXjGcegjYieyO8LXpgi1NT+lvvpqRLf+vY1XK9b9LBXhG
-/JoBIYCb9mnSLACRtFoGi37qIu8+I0rkCRdmXeavZ2bW1Zu3tvFgz9Cc45talnj5
-EqKE7beELzz0yiVrQbzz2ttobKUJDvmZ2PT3h74rjtd7Puu4W18=
-=A6KW
------END PGP SIGNATURE-----
+Then you will have a different compatible for nemc (because it is
+different) and then the driver should skip the above step.
 
---Re7H+V5lQR2Zv/pu--
+Rob

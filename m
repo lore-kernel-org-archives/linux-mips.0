@@ -1,18 +1,21 @@
-Received: from verein.lst.de ([213.95.11.211]:52600 "EHLO newverein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992956AbeARPXeJdvm0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 18 Jan 2018 16:23:34 +0100
-Date: Thu, 18 Jan 2018 16:23:31 +0100
-From: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v4 4/8] PCI: brcmstb: Add dma-range mapping for inbound
-        traffic
-Message-ID: <20180118152331.GA24461@lst.de>
-References: <1516058925-46522-1-git-send-email-jim2101024@gmail.com> <1516058925-46522-5-git-send-email-jim2101024@gmail.com> <CAL_JsqKpWNJXNpKS5qC99N0+H_P37DcRE-rN9HFwT5tVmRFCNw@mail.gmail.com> <20180118073123.GA15766@lst.de> <EDAEFB0F-BB7C-444A-B282-F178F5ADFCBF@gmail.com>
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:54006 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990425AbeARUZ6IwwHN (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 18 Jan 2018 21:25:58 +0100
+Date: Thu, 18 Jan 2018 20:24:17 +0000
+From: James Hogan <james.hogan@mips.com>
+Subject: Re: [PATCH] MIPS: use generic GCC library routines from lib/
+Message-ID: <20180118202416.GD27409@jhogan-linux.mipstec.com>
+References: <20180117065121.30437-1-antonynpavlov@gmail.com>
+ <mhng-796aa108-a59e-433a-a037-925fbfaf905e@palmer-si-x1c4>
+ <20180118230505.31af9784f543a2e067af5a39@gmail.com>
+ <57124790-F7C9-4180-AE89-A7FAA3DBDC9A@albanarts.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2bJ57vwr75KGnr5s"
 Content-Disposition: inline
-In-Reply-To: <EDAEFB0F-BB7C-444A-B282-F178F5ADFCBF@gmail.com>
-Return-Path: <hch@lst.de>
+In-Reply-To: <57124790-F7C9-4180-AE89-A7FAA3DBDC9A@albanarts.com>
+Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,20 +25,57 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Christoph Hellwig <hch@lst.de>, Rob Herring <robh+dt@kernel.org>, Jim Quinlan <jim2101024@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Brian Norris <computersforpeace@gmail.com>, Russell King <rmk+kernel@armlinux.org.uk>, Robin Murphy <robin.murphy@arm.com>, Jonas Gorski <jonas.gorski@gmail.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Mark Rutland <mark.rutland@arm.com>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, linux-pci@vger.kernel.org, Kevin Cernekee <cernekee@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, bcm-kernel-feedback-list@broadcom.com, Gregory Fong <gregory.0xf0@gmail.com>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
-Message-ID: <20180118152331.mW0bk3bG4xJ0SMbm97HPydXt3rqKXap8HaWdasKX2is@z>
+To: Antony Pavlov <antonynpavlov@gmail.com>, Palmer Dabbelt <palmer@sifive.com>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, ralf@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>
+Message-ID: <20180118202417.itkB5BtxKXlwZfyAr_pOhTIZybfhApEsoA-T3anDaG0@z>
 
-On Thu, Jan 18, 2018 at 07:09:23AM -0800, Florian Fainelli wrote:
-> >But in this case it actually is the example to follow as told
-> >previously.
+--2bJ57vwr75KGnr5s
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Jan 18, 2018 at 07:54:49PM +0000, James Hogan wrote:
+> On 18 January 2018 20:05:05 GMT+00:00, Antony Pavlov <antonynpavlov@gmail=
+=2Ecom> wrote:
+> >On Wed, 17 Jan 2018 17:34:59 -0800 (PST)
+> >Palmer Dabbelt <palmer@sifive.com> wrote:
+> >> Given that, I think you can also drop arch/mips/lib/libgcc.h -- if
+> >it's used=20
+> >> from anywhere else, it should be possible to use
+> >include/linux/libgcc.h=20
+> >> instead.
 > >
-> >NAK again for these chained dma ops that only create problems.
-> 
-> Care to explain what should be done instead?
+> >I agree with you.
+>=20
+> actually theres a patch in mips-next which implements __multi3 for mips64=
+r6, which uses that file, and in fact extends it for 128bit types.
 
-Override phys_to_dma and dma_to_phys as mips and x86 do for similar
-situations.
+More specifically, commit ebabcf17bcd7 ("MIPS: Implement __multi3 for
+GCC7 MIPS64r6 builds"), which will find its way into v4.15. See also
+https://patchwork.linux-mips.org/patch/17890/
 
-Bonous points of finding some generic way of doing it instead of
-hiding it in arch code.
+Cheers
+James
+
+--2bJ57vwr75KGnr5s
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlphAkUACgkQbAtpk944
+dnoEeA/5Abgw8aSGX+oNvikiL+21wIjgMGSY81y16r2qVRPCobGKkHL/avWWBddM
+M33DygdSI67wZgcG7qq/SYASWrzuRd/co+AqhrCEvGXw40GO5RTmOaoIvBIbp72m
+k7khiuS4Xy8iR8RpGR1P1QUx3PPlAUYY93GKU2TVHYLZdyXW4+z2/A6wpMc9TBPy
+S6tpky+13v1uEvSqo2d9GkUJpUg6VqveA66HKpWphKLIQ7Ab1Dyy6YeyRIDs3aZi
+AdYNqFJ1GUaUUFdDsuY1F6bvXCRxsALYI5TF8aLp4H+UlbNF9LrRNp9GDtLQnCfa
+PS6UEKE9R3NUoZGXnvPwRmhgNAqIW0MoPfJS08LXAnu8j04Jgs1P+gJ3nPsZ/wGG
+LMBvDuBzHXQ+UyzB2NSmWle17m05sKpYYJ3lXDE9gw03nBZXzGB55+tWpdCdJdzi
+hYctMFuj0GvRbgF/erj4SHcPmC1pSTajzsB1fu4nIWwCxZT3sNtJ8WQM8uCMBZIe
+eiKDc0CNud30AaAWprXHDYq2ByBxY1utktvU7/z54isg1UbI06aDRs+wyGvVixcP
+PTgESnCmcK/MVG4wQpAm9+G/CpEUI9RQLF8czVZ2gwVLGFExxEGn5gkOrY2uKjP4
+j0m0g1tcrFsMuaxTJYys/uqolZ9PVVTZfhegx11g/lNzxIR2Yc0=
+=7k/N
+-----END PGP SIGNATURE-----
+
+--2bJ57vwr75KGnr5s--

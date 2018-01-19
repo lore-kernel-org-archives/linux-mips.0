@@ -1,12 +1,26 @@
-Received: from mx2.rt-rk.com ([89.216.37.149]:36203 "EHLO mail.rt-rk.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23990604AbeASPmBh0zqt (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 19 Jan 2018 16:42:01 +0100
-From: Aleksandar Markovic <aleksandar.markovic@rt-rk.com>
-Subject: [PATCH v4 0/2] MIPS: Augment CPC support
-Date: Fri, 19 Jan 2018 16:40:47 +0100
-Message-Id: <1516376459-25672-1-git-send-email-aleksandar.markovic@rt-rk.com>
-Return-Path: <aleksandar.markovic@rt-rk.com>
+Received: from mail-wr0-x243.google.com ([IPv6:2a00:1450:400c:c0c::243]:44932
+        "EHLO mail-wr0-x243.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992079AbeASTsL4GUW7 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 19 Jan 2018 20:48:11 +0100
+Received: by mail-wr0-x243.google.com with SMTP id w50so2541103wrc.11
+        for <linux-mips@linux-mips.org>; Fri, 19 Jan 2018 11:48:11 -0800 (PST)
+Subject: Re: [PATCH v4 4/8] PCI: brcmstb: Add dma-range mapping for inbound
+ traffic
+References: <1516058925-46522-1-git-send-email-jim2101024@gmail.com>
+ <1516058925-46522-5-git-send-email-jim2101024@gmail.com>
+ <CAL_JsqKpWNJXNpKS5qC99N0+H_P37DcRE-rN9HFwT5tVmRFCNw@mail.gmail.com>
+ <20180118073123.GA15766@lst.de>
+ <EDAEFB0F-BB7C-444A-B282-F178F5ADFCBF@gmail.com>
+ <20180118152331.GA24461@lst.de>
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+Message-ID: <d62226a2-a92c-cdcb-4a9b-e69ab677bc60@broadcom.com>
+Date: Fri, 19 Jan 2018 11:47:54 -0800
+MIME-Version: 1.0
+In-Reply-To: <20180118152331.GA24461@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Return-Path: <florian.fainelli@broadcom.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -16,57 +30,53 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Aleksandar Markovic <aleksandar.markovic@mips.com>, Dengcheng Zhu <dengcheng.zhu@mips.com>, Douglas Leung <douglas.leung@mips.com>, Goran Ferenc <goran.ferenc@mips.com>, James Hogan <james.hogan@mips.com>, linux-kernel@vger.kernel.org, Matt Redfearn <matt.redfearn@mips.com>, Miodrag Dinic <miodrag.dinic@mips.com>, Paul Burton <paul.burton@mips.com>, Petar Jovanovic <petar.jovanovic@mips.com>, Raghu Gandham <raghu.gandham@mips.com>, Ralf Baechle <ralf@linux-mips.org>, Thomas Gleixner <tglx@linutronix.de>
+To: Christoph Hellwig <hch@lst.de>, Florian Fainelli <f.fainelli@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Jim Quinlan <jim2101024@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Brian Norris <computersforpeace@gmail.com>, Russell King <rmk+kernel@armlinux.org.uk>, Robin Murphy <robin.murphy@arm.com>, Jonas Gorski <jonas.gorski@gmail.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Mark Rutland <mark.rutland@arm.com>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, linux-pci@vger.kernel.org, Kevin Cernekee <cernekee@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, bcm-kernel-feedback-list@broadcom.com, Gregory Fong <gregory.0xf0@gmail.com>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20180119194754.Pn0uxmSZJCoq40MmOvyjY9fNiQUbbFD5AmrvnPBkqdU@z>
 
-From: Aleksandar Markovic <aleksandar.markovic@mips.com>
+On 01/18/2018 07:23 AM, Christoph Hellwig wrote:
+> On Thu, Jan 18, 2018 at 07:09:23AM -0800, Florian Fainelli wrote:
+>>> But in this case it actually is the example to follow as told
+>>> previously.
+>>>
+>>> NAK again for these chained dma ops that only create problems.
+>>
+>> Care to explain what should be done instead?
+> 
+> Override phys_to_dma and dma_to_phys as mips and x86 do for similar
+> situations.
 
-v3->v4:
+How can this work well in the context of a loadable module for instance?
+For MIPS, this would mean that we have to override phys_to_dma() and
+dma_to_phys() in the platform that is *susceptible* to use this PCIe
+controller (arch/mips/bmips) which is fine, but there, we essentially
+need to find a way to make this dynamic based on whether the PCIe
+controller is loaded or not.
 
-    - documentation patch now contains updating of MAINTAINERS file
-    - rebased to the latest code
+As you might have seen from this patch, what needs to be done is highly
+dependent on the processor architecture and its memory controller
+physical memory map, so I don't see how we are in any better situation
+if we need to replicate 3 times across MIPS, ARM and ARM64 how the
+addresses need to be mangled.
 
-v2->v3:
+Are you suggesting we somehow decouple the memory mangling part into a
+portion that can be built into the kernel image (so phys_to_dma() and
+dma_to_phys() is resolved at vmlinux link time) and can be selected by
+different architectures that need it? If so, yikes.
 
-    - changed documentation file location from
-        devicetree/bindings/misc to devicetree/bindings/power
-    - minor commit message improvements
-    - rebased to the latest code
+> 
+> Bonous points of finding some generic way of doing it instead of
+> hiding it in arch code.
+> 
 
-v1->v2:
+I can see value in having a generic mechanism, ala X86_DMA_REMAP
+allowing architectures to have the ability to override phys_to_dma() and
+dma_to_phys() but right now, especially if we look at
+arch/x86/pci/sta2x11-fixup.c this really appears to be quite messy and
+equally ugly than stacking operations...
 
-    - corrected wording in commit messages and documentation text
-    - expanded cover letter to better explain the context of proposed
-        changes
-    - rebased to the latest code
-
-This series is based on two patches from the larger series submitted
-some time ago (30 Aug 2016):
-
-https://www.linux-mips.org/archives/linux-mips/2016-08/msg00456.html
-
-Both patches deal with MIPS Cluster Power Controller (CPC) support.
-More specifically, they add device tree related functionalities to
-that support.
-
-This functionality is needed for further development of kernel support
-for generic-based MIPS platforms that must be DT-based and will at the
-same time make more extensive use of CPC.
-
-This series is reviewed by the original author of the above-mentioned
-larger series:
-
-Reviewed-by: Paul Burton <paul.burton@mips.com>
-
-Paul Burton (2):
-  dt-bindings: Document mti,mips-cpc binding
-  MIPS: CPC: Map registers using DT in mips_cpc_default_phys_base()
-
- Documentation/devicetree/bindings/power/mti,mips-cpc.txt |  8 ++++++++
- MAINTAINERS                                              |  1 +
- arch/mips/kernel/mips-cpc.c                              | 13 +++++++++++++
- 3 files changed, 22 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.txt
-
+What is the actual problem you want to avoid with the stacking of DMA
+operations, is it because it becomes harder to audit, or are there are
+other reasons?
 -- 
-2.7.4
+Florian

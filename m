@@ -1,20 +1,12 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:34264 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990604AbeASPJZfkRTZ convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 19 Jan 2018 16:09:25 +0100
-From: Aleksandar Markovic <Aleksandar.Markovic@mips.com>
-Subject: RE: [PATCH v3 1/2] dt-bindings: Document mti,mips-cpc binding
-Date: Fri, 19 Jan 2018 15:07:48 +0000
-Message-ID: <BD3A5F1946F2E540A31AF2CE969BAEEE12393C77@MIPSMAIL01.mipstec.com>
-References: <1514385475-23921-1-git-send-email-aleksandar.markovic@rt-rk.com>
- <1514385475-23921-2-git-send-email-aleksandar.markovic@rt-rk.com>,<20180118222603.GG27409@jhogan-linux.mipstec.com>
-In-Reply-To: <20180118222603.GG27409@jhogan-linux.mipstec.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-Return-Path: <Aleksandar.Markovic@mips.com>
+Received: from mx2.rt-rk.com ([89.216.37.149]:36203 "EHLO mail.rt-rk.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23990604AbeASPmBh0zqt (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 19 Jan 2018 16:42:01 +0100
+From: Aleksandar Markovic <aleksandar.markovic@rt-rk.com>
+Subject: [PATCH v4 0/2] MIPS: Augment CPC support
+Date: Fri, 19 Jan 2018 16:40:47 +0100
+Message-Id: <1516376459-25672-1-git-send-email-aleksandar.markovic@rt-rk.com>
+Return-Path: <aleksandar.markovic@rt-rk.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,46 +16,57 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <James.Hogan@mips.com>, Aleksandar Markovic <aleksandar.markovic@rt-rk.com>
-Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Paul Burton <Paul.Burton@mips.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Douglas Leung <Douglas.Leung@mips.com>, Goran Ferenc <Goran.Ferenc@mips.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>, Miodrag Dinic <Miodrag.Dinic@mips.com>, Petar Jovanovic <Petar.Jovanovic@mips.com>, Raghu Gandham <Raghu.Gandham@mips.com>, Rob Herring <robh+dt@kernel.org>
-Message-ID: <20180119150748.0Xfj3qPRsRa795eN5xqfGbvy_J9K3PiAUn3DZCAboik@z>
+To: linux-mips@linux-mips.org
+Cc: Aleksandar Markovic <aleksandar.markovic@mips.com>, Dengcheng Zhu <dengcheng.zhu@mips.com>, Douglas Leung <douglas.leung@mips.com>, Goran Ferenc <goran.ferenc@mips.com>, James Hogan <james.hogan@mips.com>, linux-kernel@vger.kernel.org, Matt Redfearn <matt.redfearn@mips.com>, Miodrag Dinic <miodrag.dinic@mips.com>, Paul Burton <paul.burton@mips.com>, Petar Jovanovic <petar.jovanovic@mips.com>, Raghu Gandham <raghu.gandham@mips.com>, Ralf Baechle <ralf@linux-mips.org>, Thomas Gleixner <tglx@linutronix.de>
 
-> On Wed, Dec 27, 2017 at 03:37:51PM +0100, Aleksandar Markovic wrote:
-> > From: Paul Burton <paul.burton@mips.com>
-> >
-> > Document a binding for the MIPS Cluster Power Controller (CPC) that
-> > allows the device tree to specify where the CPC registers are located.
-> >
-> > Signed-off-by: Paul Burton <paul.burton@mips.com>
-> > Signed-off-by: Aleksandar Markovic <aleksandar.markovic@mips.com>
-> > ---
-> >  Documentation/devicetree/bindings/power/mti,mips-cpc.txt | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.txt
-> >
-> > diff --git a/Documentation/devicetree/bindings/power/mti,mips-cpc.txt b/Documentation/devicetree/bindings/power/mti,mips-cpc.txt
-> > new file mode 100644
-> 
-> Is it worth adding to the MIPS GENERIC PLATFORM entry of MAINTAINERS,
-> given that it directly benefits it?
-> 
-> Cheers
-> James
+From: Aleksandar Markovic <aleksandar.markovic@mips.com>
 
-If nobody objects, in the v4 of this series, as a part of this particular patch, I am going to add the line:
+v3->v4:
 
-F:       Documentation/devicetree/bindings/power/mti,mips-cpc.txt
+    - documentation patch now contains updating of MAINTAINERS file
+    - rebased to the latest code
 
-to the following segment in MAINTAINERS file:
+v2->v3:
 
-MIPS GENERIC PLATFORM
-M:      Paul Burton <paul.burton@mips.com>
-L:      linux-mips@linux-mips.org
-S:      Supported
-F:      arch/mips/generic/
-F:      arch/mips/tools/generic-board-config.sh
+    - changed documentation file location from
+        devicetree/bindings/misc to devicetree/bindings/power
+    - minor commit message improvements
+    - rebased to the latest code
 
-v4 is planned to be sent by the end of the day.
+v1->v2:
 
-Thanks,
-Aleksandar
+    - corrected wording in commit messages and documentation text
+    - expanded cover letter to better explain the context of proposed
+        changes
+    - rebased to the latest code
+
+This series is based on two patches from the larger series submitted
+some time ago (30 Aug 2016):
+
+https://www.linux-mips.org/archives/linux-mips/2016-08/msg00456.html
+
+Both patches deal with MIPS Cluster Power Controller (CPC) support.
+More specifically, they add device tree related functionalities to
+that support.
+
+This functionality is needed for further development of kernel support
+for generic-based MIPS platforms that must be DT-based and will at the
+same time make more extensive use of CPC.
+
+This series is reviewed by the original author of the above-mentioned
+larger series:
+
+Reviewed-by: Paul Burton <paul.burton@mips.com>
+
+Paul Burton (2):
+  dt-bindings: Document mti,mips-cpc binding
+  MIPS: CPC: Map registers using DT in mips_cpc_default_phys_base()
+
+ Documentation/devicetree/bindings/power/mti,mips-cpc.txt |  8 ++++++++
+ MAINTAINERS                                              |  1 +
+ arch/mips/kernel/mips-cpc.c                              | 13 +++++++++++++
+ 3 files changed, 22 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.txt
+
+-- 
+2.7.4

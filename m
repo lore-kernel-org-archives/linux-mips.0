@@ -1,26 +1,17 @@
-Received: from mail-wr0-x243.google.com ([IPv6:2a00:1450:400c:c0c::243]:44932
-        "EHLO mail-wr0-x243.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992079AbeASTsL4GUW7 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 19 Jan 2018 20:48:11 +0100
-Received: by mail-wr0-x243.google.com with SMTP id w50so2541103wrc.11
-        for <linux-mips@linux-mips.org>; Fri, 19 Jan 2018 11:48:11 -0800 (PST)
-Subject: Re: [PATCH v4 4/8] PCI: brcmstb: Add dma-range mapping for inbound
- traffic
-References: <1516058925-46522-1-git-send-email-jim2101024@gmail.com>
- <1516058925-46522-5-git-send-email-jim2101024@gmail.com>
- <CAL_JsqKpWNJXNpKS5qC99N0+H_P37DcRE-rN9HFwT5tVmRFCNw@mail.gmail.com>
- <20180118073123.GA15766@lst.de>
- <EDAEFB0F-BB7C-444A-B282-F178F5ADFCBF@gmail.com>
- <20180118152331.GA24461@lst.de>
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Message-ID: <d62226a2-a92c-cdcb-4a9b-e69ab677bc60@broadcom.com>
-Date: Fri, 19 Jan 2018 11:47:54 -0800
+Received: from mail-io0-x241.google.com ([IPv6:2607:f8b0:4001:c06::241]:36609
+        "EHLO mail-io0-x241.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990397AbeATHbZKv7mt (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 20 Jan 2018 08:31:25 +0100
 MIME-Version: 1.0
-In-Reply-To: <20180118152331.GA24461@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <florian.fainelli@broadcom.com>
+In-Reply-To: <20171230135108.6834-3-paul@crapouillou.net>
+References: <20171228162939.3928-2-paul@crapouillou.net> <20171230135108.6834-1-paul@crapouillou.net>
+ <20171230135108.6834-3-paul@crapouillou.net>
+From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+Date: Sat, 20 Jan 2018 13:01:17 +0530
+Message-ID: <CANc+2y7CT150cO61RfRgc6hCLEasx+NmqCacZtaFPKLgTPyt4w@mail.gmail.com>
+Subject: Re: [PATCH v2 3/8] watchdog: JZ4740: Register a restart handler
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <prasannatsmkumar@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -30,53 +21,59 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Christoph Hellwig <hch@lst.de>, Florian Fainelli <f.fainelli@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Jim Quinlan <jim2101024@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Brian Norris <computersforpeace@gmail.com>, Russell King <rmk+kernel@armlinux.org.uk>, Robin Murphy <robin.murphy@arm.com>, Jonas Gorski <jonas.gorski@gmail.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Mark Rutland <mark.rutland@arm.com>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, linux-pci@vger.kernel.org, Kevin Cernekee <cernekee@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, bcm-kernel-feedback-list@broadcom.com, Gregory Fong <gregory.0xf0@gmail.com>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
-Message-ID: <20180119194754.Pn0uxmSZJCoq40MmOvyjY9fNiQUbbFD5AmrvnPBkqdU@z>
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wim Van Sebroeck <wim@iguana.be>, Guenter Roeck <linux@roeck-us.net>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, open list <linux-kernel@vger.kernel.org>, linux-watchdog@vger.kernel.org
+Message-ID: <20180120073117.JhwQM4s4roRjx7Bf7B5-G9_oRFbUyl296uUZ68sVs44@z>
 
-On 01/18/2018 07:23 AM, Christoph Hellwig wrote:
-> On Thu, Jan 18, 2018 at 07:09:23AM -0800, Florian Fainelli wrote:
->>> But in this case it actually is the example to follow as told
->>> previously.
->>>
->>> NAK again for these chained dma ops that only create problems.
->>
->> Care to explain what should be done instead?
-> 
-> Override phys_to_dma and dma_to_phys as mips and x86 do for similar
-> situations.
+Hi Paul,
 
-How can this work well in the context of a loadable module for instance?
-For MIPS, this would mean that we have to override phys_to_dma() and
-dma_to_phys() in the platform that is *susceptible* to use this PCIe
-controller (arch/mips/bmips) which is fine, but there, we essentially
-need to find a way to make this dynamic based on whether the PCIe
-controller is loaded or not.
+On 30 December 2017 at 19:21, Paul Cercueil <paul@crapouillou.net> wrote:
+> The watchdog driver can restart the system by simply configuring the
+> hardware for a timeout of 0 seconds.
+>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  drivers/watchdog/jz4740_wdt.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+>  v2: No change
+>
+> diff --git a/drivers/watchdog/jz4740_wdt.c b/drivers/watchdog/jz4740_wdt.c
+> index 92d6ca8ceb49..fa7f49a3212c 100644
+> --- a/drivers/watchdog/jz4740_wdt.c
+> +++ b/drivers/watchdog/jz4740_wdt.c
+> @@ -130,6 +130,14 @@ static int jz4740_wdt_stop(struct watchdog_device *wdt_dev)
+>         return 0;
+>  }
+>
+> +static int jz4740_wdt_restart(struct watchdog_device *wdt_dev,
+> +                             unsigned long action, void *data)
+> +{
+> +       wdt_dev->timeout = 0;
+> +       jz4740_wdt_start(wdt_dev);
+> +       return 0;
+> +}
+> +
+>  static const struct watchdog_info jz4740_wdt_info = {
+>         .options = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING | WDIOF_MAGICCLOSE,
+>         .identity = "jz4740 Watchdog",
+> @@ -141,6 +149,7 @@ static const struct watchdog_ops jz4740_wdt_ops = {
+>         .stop = jz4740_wdt_stop,
+>         .ping = jz4740_wdt_ping,
+>         .set_timeout = jz4740_wdt_set_timeout,
+> +       .restart = jz4740_wdt_restart,
+>  };
+>
+>  #ifdef CONFIG_OF
+> --
+> 2.11.0
+>
+>
 
-As you might have seen from this patch, what needs to be done is highly
-dependent on the processor architecture and its memory controller
-physical memory map, so I don't see how we are in any better situation
-if we need to replicate 3 times across MIPS, ARM and ARM64 how the
-addresses need to be mangled.
+Noticed that min_timeout of the watchdog device is set to 1 but this
+function calls start with timeout set to 0. Even though this works I
+feel it is better to set min_timeout to 0.
 
-Are you suggesting we somehow decouple the memory mangling part into a
-portion that can be built into the kernel image (so phys_to_dma() and
-dma_to_phys() is resolved at vmlinux link time) and can be selected by
-different architectures that need it? If so, yikes.
-
-> 
-> Bonous points of finding some generic way of doing it instead of
-> hiding it in arch code.
-> 
-
-I can see value in having a generic mechanism, ala X86_DMA_REMAP
-allowing architectures to have the ability to override phys_to_dma() and
-dma_to_phys() but right now, especially if we look at
-arch/x86/pci/sta2x11-fixup.c this really appears to be quite messy and
-equally ugly than stacking operations...
-
-What is the actual problem you want to avoid with the stacking of DMA
-operations, is it because it becomes harder to audit, or are there are
-other reasons?
--- 
-Florian
+Regards,
+PrasannaKumar

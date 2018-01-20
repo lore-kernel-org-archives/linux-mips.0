@@ -1,18 +1,21 @@
-Received: from mail-it0-x244.google.com ([IPv6:2607:f8b0:4001:c0b::244]:35640
-        "EHLO mail-it0-x244.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990391AbeATILYFc1Jt (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 20 Jan 2018 09:11:24 +0100
+Received: from mail-pf0-x244.google.com ([IPv6:2607:f8b0:400e:c00::244]:38193
+        "EHLO mail-pf0-x244.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990397AbeATPp43lNs0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 20 Jan 2018 16:45:56 +0100
+Subject: Re: [PATCH v2 3/8] watchdog: JZ4740: Register a restart handler
+References: <20171228162939.3928-2-paul@crapouillou.net>
+ <20171230135108.6834-1-paul@crapouillou.net>
+ <20171230135108.6834-3-paul@crapouillou.net>
+ <CANc+2y7CT150cO61RfRgc6hCLEasx+NmqCacZtaFPKLgTPyt4w@mail.gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Message-ID: <20061de8-fa1f-93eb-eb9b-089c699018aa@roeck-us.net>
+Date: Sat, 20 Jan 2018 07:45:46 -0800
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqJHHPJY0Yg+kmMbjZVsq=VVC0dPgtvXoN+sxL9gjBtMLA@mail.gmail.com>
-References: <20171228212954.2922-1-malat@debian.org> <20171228212954.2922-2-malat@debian.org>
- <20180103200211.u56tqesyumsofoff@rob-hp-laptop> <CANc+2y5Y9fYh5V5OG_o+-92-uLYew7yNObLGTYPhGyx2eExywA@mail.gmail.com>
- <CAL_JsqJHHPJY0Yg+kmMbjZVsq=VVC0dPgtvXoN+sxL9gjBtMLA@mail.gmail.com>
-From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Date: Sat, 20 Jan 2018 13:41:17 +0530
-Message-ID: <CANc+2y4xTo7GyPw0bP=qJ6UqG4Z9u2xYbN2-jSB+z1XQs52w8w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] nvmem: add driver for JZ4780 efuse
-Content-Type: text/plain; charset="UTF-8"
-Return-Path: <prasannatsmkumar@gmail.com>
+In-Reply-To: <CANc+2y7CT150cO61RfRgc6hCLEasx+NmqCacZtaFPKLgTPyt4w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Return-Path: <groeck7@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,89 +25,64 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rob Herring <robh@kernel.org>
-Cc: Mathieu Malaterre <malat@debian.org>, Marcin Nowakowski <marcin.nowakowski@mips.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Zubair.Kakakhel@mips.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, open list <linux-kernel@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>
-Message-ID: <20180120081117.Eg6yxXKyXxqlvadB6bY8aIO_cJmd6TkYRpHtw-3aIaE@z>
+To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>, Paul Cercueil <paul@crapouillou.net>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wim Van Sebroeck <wim@iguana.be>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, open list <linux-kernel@vger.kernel.org>, linux-watchdog@vger.kernel.org
+Message-ID: <20180120154546.Ds0xdd5EcE8fR_oXSSTLlUMvYzK6XFmnS4M50ELyh2s@z>
 
-On 11 January 2018 at 20:38, Rob Herring <robh@kernel.org> wrote:
-> On Sat, Jan 6, 2018 at 6:43 AM, PrasannaKumar Muralidharan
-> <prasannatsmkumar@gmail.com> wrote:
->> Hi Rob,
+On 01/19/2018 11:31 PM, PrasannaKumar Muralidharan wrote:
+> Hi Paul,
+> 
+> On 30 December 2017 at 19:21, Paul Cercueil <paul@crapouillou.net> wrote:
+>> The watchdog driver can restart the system by simply configuring the
+>> hardware for a timeout of 0 seconds.
 >>
->> On 4 January 2018 at 01:32, Rob Herring <robh@kernel.org> wrote:
->>> On Thu, Dec 28, 2017 at 10:29:52PM +0100, Mathieu Malaterre wrote:
->>>> From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
->>>>
->>>> This patch brings support for the JZ4780 efuse. Currently it only expose
->>>> a read only access to the entire 8K bits efuse memory.
->>>>
->>>> Tested-by: Mathieu Malaterre <malat@debian.org>
->>>> Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
->>>> Signed-off-by: Mathieu Malaterre <malat@debian.org>
->>>> ---
->>>>  .../ABI/testing/sysfs-driver-jz4780-efuse          |  16 ++
->>>>  .../bindings/nvmem/ingenic,jz4780-efuse.txt        |  17 ++
->>>
->>> Please split bindings to separate patch.
->>>
->>>>  MAINTAINERS                                        |   5 +
->>>>  arch/mips/boot/dts/ingenic/jz4780.dtsi             |  40 ++-
->>>
->>> dts files should also be separate.
->>>
->>>>  drivers/nvmem/Kconfig                              |  10 +
->>>>  drivers/nvmem/Makefile                             |   2 +
->>>>  drivers/nvmem/jz4780-efuse.c                       | 305 +++++++++++++++++++++
->>>>  7 files changed, 383 insertions(+), 12 deletions(-)
->>>>  create mode 100644 Documentation/ABI/testing/sysfs-driver-jz4780-efuse
->>>>  create mode 100644 Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.txt
->>>>  create mode 100644 drivers/nvmem/jz4780-efuse.c
->>>>
->>>> diff --git a/Documentation/ABI/testing/sysfs-driver-jz4780-efuse b/Documentation/ABI/testing/sysfs-driver-jz4780-efuse
->>>> new file mode 100644
->>>> index 000000000000..bb6f5d6ceea0
->>>> --- /dev/null
->>>> +++ b/Documentation/ABI/testing/sysfs-driver-jz4780-efuse
->>>> @@ -0,0 +1,16 @@
->>>> +What:                /sys/devices/*/<our-device>/nvmem
->>>> +Date:                December 2017
->>>> +Contact:     PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
->>>> +Description: read-only access to the efuse on the Ingenic JZ4780 SoC
->>>> +             The SoC has a one time programmable 8K efuse that is
->>>> +             split into segments. The driver supports read only.
->>>> +             The segments are
->>>> +             0x000   64 bit Random Number
->>>> +             0x008  128 bit Ingenic Chip ID
->>>> +             0x018  128 bit Customer ID
->>>> +             0x028 3520 bit Reserved
->>>> +             0x1E0    8 bit Protect Segment
->>>> +             0x1E1 2296 bit HDMI Key
->>>> +             0x300 2048 bit Security boot key
->>>
->>> Why do these need to be exposed to userspace?
->>>
->>> sysfs is 1 value per file and this is lots of different things.
->>>
->>> We already have ways to feed random data (entropy) to the system. And we
->>> have a way to expose SoC ID info to userspace (socdev).
+>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+>> ---
+>>   drivers/watchdog/jz4740_wdt.c | 9 +++++++++
+>>   1 file changed, 9 insertions(+)
 >>
->> Currently ingenic chip id is not used anywhere. The vendor BSP exposed
->> only chip id and customer id. Should we do the same? Please provide
->> your suggestion.
->
-> No. Don't create an ABI if you don't really need it.
+>>   v2: No change
+>>
+>> diff --git a/drivers/watchdog/jz4740_wdt.c b/drivers/watchdog/jz4740_wdt.c
+>> index 92d6ca8ceb49..fa7f49a3212c 100644
+>> --- a/drivers/watchdog/jz4740_wdt.c
+>> +++ b/drivers/watchdog/jz4740_wdt.c
+>> @@ -130,6 +130,14 @@ static int jz4740_wdt_stop(struct watchdog_device *wdt_dev)
+>>          return 0;
+>>   }
+>>
+>> +static int jz4740_wdt_restart(struct watchdog_device *wdt_dev,
+>> +                             unsigned long action, void *data)
+>> +{
+>> +       wdt_dev->timeout = 0;
+>> +       jz4740_wdt_start(wdt_dev);
+>> +       return 0;
+>> +}
+>> +
+>>   static const struct watchdog_info jz4740_wdt_info = {
+>>          .options = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING | WDIOF_MAGICCLOSE,
+>>          .identity = "jz4740 Watchdog",
+>> @@ -141,6 +149,7 @@ static const struct watchdog_ops jz4740_wdt_ops = {
+>>          .stop = jz4740_wdt_stop,
+>>          .ping = jz4740_wdt_ping,
+>>          .set_timeout = jz4740_wdt_set_timeout,
+>> +       .restart = jz4740_wdt_restart,
+>>   };
+>>
+>>   #ifdef CONFIG_OF
+>> --
+>> 2.11.0
+>>
+>>
+> 
+> Noticed that min_timeout of the watchdog device is set to 1 but this
+> function calls start with timeout set to 0. Even though this works I
+> feel it is better to set min_timeout to 0.
+> 
 
-Rob,
-MAC address of the ethernet device is stored in customer id segment of
-efuse. So only customer id is needed. Do you think exposing customer
-id would suffice?
+No. That would be wrong. If you want to be pedantic, write a new function
+__jz4740_wdt_set_timeout(u16 clock_div, u16 timeout_value) and call it
+instead, but don't mess with min_timeout.
 
-Srini,
-Only user would be dm900 ethernet driver (need to make changes to it
-once the efuse driver goes in). There is no need to expose it to user
-space. I am planning to modify nvmem core to not expose efuse if the
-efuse driver chooses so. Do you think it makes sense? The need to
-maintain ABI for user space disappears if such a change is introduced.
-
-Thanks,
-PrasannaKumar
+Guenter

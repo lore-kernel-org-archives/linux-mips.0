@@ -1,23 +1,16 @@
-Received: from mail-pg0-x242.google.com ([IPv6:2607:f8b0:400e:c05::242]:38156
-        "EHLO mail-pg0-x242.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990439AbeATR46yS8xD (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 20 Jan 2018 18:56:58 +0100
-Subject: Re: [PATCH v2 3/8] watchdog: JZ4740: Register a restart handler
-References: <20171228162939.3928-2-paul@crapouillou.net>
- <20171230135108.6834-1-paul@crapouillou.net>
- <20171230135108.6834-3-paul@crapouillou.net>
- <CANc+2y7CT150cO61RfRgc6hCLEasx+NmqCacZtaFPKLgTPyt4w@mail.gmail.com>
- <20061de8-fa1f-93eb-eb9b-089c699018aa@roeck-us.net>
- <CANc+2y52ObW773=20=-gbztvoH0DSRSO1N5Srf3WYcKLZbPNBg@mail.gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Message-ID: <fa472dc7-7e5a-aaba-2953-27f68a01d872@roeck-us.net>
-Date: Sat, 20 Jan 2018 09:56:48 -0800
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:54496 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23991068AbeAVQfiHYwaH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 22 Jan 2018 17:35:38 +0100
+From: Matt Redfearn <matt.redfearn@mips.com>
+Subject: [PATCH] MIPS: KASLR: Drop relocatable fixup from reservation_init
+Date: Mon, 22 Jan 2018 16:33:31 +0000
+Message-ID: <1516638811-24880-1-git-send-email-matt.redfearn@mips.com>
+In-Reply-To: <20180117222312.14763-1-fancer.lancer@gmail.com>
+References: <20180117222312.14763-1-fancer.lancer@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CANc+2y52ObW773=20=-gbztvoH0DSRSO1N5Srf3WYcKLZbPNBg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <groeck7@gmail.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,81 +20,68 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Cc: Paul Cercueil <paul@crapouillou.net>, Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Wim Van Sebroeck <wim@iguana.be>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, open list <linux-kernel@vger.kernel.org>, linux-watchdog@vger.kernel.org
-Message-ID: <20180120175648.ieWl_VaAcvXvwY1qgT3vKGfVHoWyozlynIx0OkuvViE@z>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>
+Message-ID: <20180122163331.ljDOSX8BysLqcGFjWXrzigCcC7MtagLlfgBSCVInxkU@z>
 
-On 01/20/2018 08:04 AM, PrasannaKumar Muralidharan wrote:
-> Hi Guenter,
-> 
-> On 20 January 2018 at 21:15, Guenter Roeck <linux@roeck-us.net> wrote:
->> On 01/19/2018 11:31 PM, PrasannaKumar Muralidharan wrote:
->>>
->>> Hi Paul,
->>>
->>> On 30 December 2017 at 19:21, Paul Cercueil <paul@crapouillou.net> wrote:
->>>>
->>>> The watchdog driver can restart the system by simply configuring the
->>>> hardware for a timeout of 0 seconds.
->>>>
->>>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
->>>> ---
->>>>    drivers/watchdog/jz4740_wdt.c | 9 +++++++++
->>>>    1 file changed, 9 insertions(+)
->>>>
->>>>    v2: No change
->>>>
->>>> diff --git a/drivers/watchdog/jz4740_wdt.c
->>>> b/drivers/watchdog/jz4740_wdt.c
->>>> index 92d6ca8ceb49..fa7f49a3212c 100644
->>>> --- a/drivers/watchdog/jz4740_wdt.c
->>>> +++ b/drivers/watchdog/jz4740_wdt.c
->>>> @@ -130,6 +130,14 @@ static int jz4740_wdt_stop(struct watchdog_device
->>>> *wdt_dev)
->>>>           return 0;
->>>>    }
->>>>
->>>> +static int jz4740_wdt_restart(struct watchdog_device *wdt_dev,
->>>> +                             unsigned long action, void *data)
->>>> +{
->>>> +       wdt_dev->timeout = 0;
->>>> +       jz4740_wdt_start(wdt_dev);
->>>> +       return 0;
->>>> +}
->>>> +
->>>>    static const struct watchdog_info jz4740_wdt_info = {
->>>>           .options = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING |
->>>> WDIOF_MAGICCLOSE,
->>>>           .identity = "jz4740 Watchdog",
->>>> @@ -141,6 +149,7 @@ static const struct watchdog_ops jz4740_wdt_ops = {
->>>>           .stop = jz4740_wdt_stop,
->>>>           .ping = jz4740_wdt_ping,
->>>>           .set_timeout = jz4740_wdt_set_timeout,
->>>> +       .restart = jz4740_wdt_restart,
->>>>    };
->>>>
->>>>    #ifdef CONFIG_OF
->>>> --
->>>> 2.11.0
->>>>
->>>>
->>>
->>> Noticed that min_timeout of the watchdog device is set to 1 but this
->>> function calls start with timeout set to 0. Even though this works I
->>> feel it is better to set min_timeout to 0.
->>>
->>
->> No. That would be wrong. If you want to be pedantic, write a new function
->> __jz4740_wdt_set_timeout(u16 clock_div, u16 timeout_value) and call it
->> instead, but don't mess with min_timeout.
->>
->> Guenter
-> 
-> What is the effect of changing min_timeout? I could see only
-> validation checks with it.
-> 
-Let me ask you - you want to let userspace set a timeout of 0, which would
-effectively reboot the system through the backdoor. Why ?
+A recent change ("MIPS: memblock: Discard bootmem initialization")
+removed the reservation of all memory below the kernel's _end symbol in
+bootmem. This makes the call to free_bootmem unnecessary, since the
+memory region is no longer marked reserved.
 
-Guenter
+Additionally, ("MIPS: memblock: Print out kernel virtual mem
+layout") added a display of the kernel's virtual memory layout, so
+printing the relocation information at this point is redundant.
+
+Remove this section of code.
+
+Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+
+---
+
+This patch (or a derivative of it) tidies up some of the bootmem init code
+when CONFIG_RELOCATABLE is active during the switch to memblock - please
+can you include in the series?
+
+Thanks,
+Matt
+---
+ arch/mips/kernel/setup.c | 23 -----------------------
+ 1 file changed, 23 deletions(-)
+
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 99bfaa6b9279..a0eac8160750 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -536,29 +536,6 @@ static void __init reservation_init(void)
+ 		}
+ 	}
+ 
+-#ifdef CONFIG_RELOCATABLE
+-	/*
+-	 * The kernel reserves all memory below its _end symbol as bootmem,
+-	 * but the kernel may now be at a much higher address. The memory
+-	 * between the original and new locations may be returned to the system.
+-	 */
+-	if (__pa_symbol(_text) > __pa_symbol(VMLINUX_LOAD_ADDRESS)) {
+-		unsigned long offset;
+-		extern void show_kernel_relocation(const char *level);
+-
+-		offset = __pa_symbol(_text) - __pa_symbol(VMLINUX_LOAD_ADDRESS);
+-		free_bootmem(__pa_symbol(VMLINUX_LOAD_ADDRESS), offset);
+-
+-#if defined(CONFIG_DEBUG_KERNEL) && defined(CONFIG_DEBUG_INFO)
+-		/*
+-		 * This information is necessary when debugging the kernel
+-		 * But is a security vulnerability otherwise!
+-		 */
+-		show_kernel_relocation(KERN_INFO);
+-#endif
+-	}
+-#endif
+-
+ 	/*
+ 	 * Reserve initrd memory if needed.
+ 	 */
+-- 
+2.7.4

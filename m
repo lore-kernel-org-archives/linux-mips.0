@@ -1,16 +1,19 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:39708 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:60952 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991534AbeAWODzBuZ9j (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 23 Jan 2018 15:03:55 +0100
-Subject: Re: [PATCH 00/14] MIPS: memblock: Switch arch code to NO_BOOTMEM
+        by eddie.linux-mips.org with ESMTP id S23992781AbeAWPhLbDeMg (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 23 Jan 2018 16:37:11 +0100
+Subject: Re: [PATCH 11/14] MIPS: memblock: Print out kernel virtual mem layout
 References: <20180117222312.14763-1-fancer.lancer@gmail.com>
- <2fd1f530-e6c6-a528-5827-c3ecc8b4a81c@mips.com>
- <CA+7wUszvJfqCfii59zppSbkGsVNyLDM2Jk8F3zrzr_NJxvFsWw@mail.gmail.com>
+ <20180117222312.14763-12-fancer.lancer@gmail.com>
+ <cce36f73-4381-f830-3422-1cef8ad9e622@gmail.com>
+ <20180118201856.GA996@mobilestation>
+ <b2797958-d217-9c8d-10ca-b9bc43ae585b@mips.com>
+ <20180119142712.GA3101@mobilestation>
 From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <c6e7bedc-bbe3-0166-3ed8-8f8012fad132@mips.com>
-Date: Tue, 23 Jan 2018 14:01:50 +0000
+Message-ID: <eef02082-c3b1-e42b-d5ff-1c0d5cb8d708@mips.com>
+Date: Tue, 23 Jan 2018 15:35:14 +0000
 MIME-Version: 1.0
-In-Reply-To: <CA+7wUszvJfqCfii59zppSbkGsVNyLDM2Jk8F3zrzr_NJxvFsWw@mail.gmail.com>
+In-Reply-To: <20180119142712.GA3101@mobilestation>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -24,123 +27,92 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Mathieu Malaterre <malat@debian.org>
-Cc: Serge Semin <fancer.lancer@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, Miodrag Dinic <miodrag.dinic@mips.com>, James Hogan <jhogan@kernel.org>, goran.ferenc@mips.com, David Daney <david.daney@cavium.com>, paul.gortmaker@windriver.com, Paul Burton <paul.burton@mips.com>, alex.belits@cavium.com, Steven.Hill@cavium.com, alexander.sverdlin@nokia.com, kumba@gentoo.org, Marcin Nowakowski <marcin.nowakowski@mips.com>, James Hogan <James.hogan@mips.com>, Peter Wotton <Peter.Wotton@mips.com>, Sergey.Semin@t-platforms.ru, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20180123140150.5fNqThC-qK1oCPtE3whdiRvNMihsU1vBGsvVsXUPUw8@z>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>, ralf@linux-mips.org, miodrag.dinic@mips.com, jhogan@kernel.org, goran.ferenc@mips.com, david.daney@cavium.com, paul.gortmaker@windriver.com, paul.burton@mips.com, alex.belits@cavium.com, Steven.Hill@cavium.com, alexander.sverdlin@nokia.com, kumba@gentoo.org, marcin.nowakowski@mips.com, James.hogan@mips.com, Peter.Wotton@mips.com, Sergey.Semin@t-platforms.ru, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20180123153514.Al5CueM_G0kyKBHLJwjRfi3ehXsW5NpNQk88N49JY94@z>
 
-Hi Mathieu,
+Hi Serge,
 
-On 23/01/18 11:29, Mathieu Malaterre wrote:
-> Hi Matt,
+On 19/01/18 14:27, Serge Semin wrote:
+> On Fri, Jan 19, 2018 at 07:59:43AM +0000, Matt Redfearn <matt.redfearn@mips.com> wrote:
 > 
-> On Mon, Jan 22, 2018 at 5:36 PM, Matt Redfearn <matt.redfearn@mips.com> wrote:
->>
+> Hello Matt,
+> 
 >> Hi Serge,
 >>
 >>
->> On 17/01/18 22:22, Serge Semin wrote:
+>>
+>> On 18/01/18 20:18, Serge Semin wrote:
+>>> On Thu, Jan 18, 2018 at 12:03:03PM -0800, Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>>> On 01/17/2018 02:23 PM, Serge Semin wrote:
+>>>>> It is useful to have the kernel virtual memory layout printed
+>>>>> at boot time so to have the full information about the booted
+>>>>> kernel. In some cases it might be unsafe to have virtual
+>>>>> addresses freely visible in logs, so the %pK format is used if
+>>>>> one want to hide them.
+>>>>>
+>>>>> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+>>>>
+>>>> I personally like having that information because that helps debug and
+>>>> have a quick reference, but there appears to be a trend to remove this
+>>>> in the name of security:
+>>>>
+>>>> https://patchwork.kernel.org/patch/10124007/
+>>>>
+>>>> maybe hide this behind a configuration option?
 >>>
->>> Even though it's common to see the architecture code using both
->>> bootmem and memblock early memory allocators, it's not good for
->>> multiple reasons. First of all, it's redundant to have two
->>> early memory allocator while one would be more than enough from
->>> functionality and stability points of view. Secondly, some new
->>> features introduced in the kernel utilize the methods of the most
->>> modern allocator ignoring the older one. It means the architecture
->>> code must keep the both subsystems up synchronized with information
->>> about memory regions and reservations, which leads to the code
->>> complexity increase, that obviously increases bugs probability.
->>> Finally it's better to keep all the architectures code unified for
->>> better readability and code simplification. All these reasons lead
->>> to one conclusion - arch code should use just one memory allocator,
->>> which is supposed to be memblock as the most modern and already
->>> utilized by the most of the kernel platforms. This patchset is
->>> mostly about it.
->>>
->>> One more reason why the MIPS arch code should finally move to
->>> memblock is a BUG somewhere in the initialization process, when
->>> CMA is activated:
->>>
->>> [    0.248762] BUG: Bad page state in process swapper/0  pfn:01f93
->>> [    0.255415] page:8205b0ac count:0 mapcount:-127 mapping:  (null) index:0x1
->>> [    0.263172] flags: 0x40000000()
->>> [    0.266723] page dumped because: nonzero mapcount
->>> [    0.272049] Modules linked in:
->>> [    0.275511] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.4.88-module #5
->>> [    0.282900] Stack : 00000000 00000000 80b6dd6a 0000003a 00000000 00000000 80930000 8092bff4
->>>             86073a14 80ac88c7 809f21ac 00000000 00000001 80b6998c 00000400 00000000
->>>             80a00000 801822e8 80b6dd68 00000000 00000002 00000000 809f8024 86077ccc
->>>             80b80000 801e9328 809fcbc0 00000000 00000400 00010000 86077ccc 86073a14
->>>             00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
->>>             ...
->>> [    0.323148] Call Trace:
->>> [    0.325935] [<8010e7c4>] show_stack+0x8c/0xa8
->>> [    0.330859] [<80404814>] dump_stack+0xd4/0x110
->>> [    0.335879] [<801f0bc0>] bad_page+0xfc/0x14c
->>> [    0.340710] [<801f0e04>] free_pages_prepare+0x1f4/0x330
->>> [    0.346632] [<801f36c4>] __free_pages_ok+0x2c/0x104
->>> [    0.352154] [<80b23a40>] init_cma_reserved_pageblock+0x5c/0x74
->>> [    0.358761] [<80b29390>] cma_init_reserved_areas+0x1b4/0x240
->>> [    0.365170] [<8010058c>] do_one_initcall+0xe8/0x27c
->>> [    0.370697] [<80b14e60>] kernel_init_freeable+0x200/0x2c4
->>> [    0.376828] [<808faca4>] kernel_init+0x14/0x104
->>> [    0.381939] [<80107598>] ret_from_kernel_thread+0x14/0x1c
->>>
->>> The bugus pfn seems to be the one allocated for bootmem allocator
->>> pages and hasn't been freed before letting the CMA working with its
->>> areas. Anyway the bug is solved by this patchset.
->>>
->>> Another reason why this patchset is useful is that it fixes the fdt
->>> reserved-memory nodes functionality for MIPS. Really it's bug to have
->>> the fdt reserved nodes scanning before the memblock is
->>> fully initialized (calling early_init_fdt_scan_reserved_mem before
->>> bootmem_init is called). Additionally no-map flag of the
->>> reserved-memory node hasn't been taking into account. This patchset
->>> fixes all of these.
->>>
->>> As you probably remember I already did another attempt to merge a
->>> similar functionality into the kernel. This time the patchset got
->>> to be less complex (14 patches vs 21 last time) and fixes the
->>> platform code like SGI IP27 and Loongson3, which due to being
->>> NUMA introduce its own memory initialization process. Although
->>> I have much doubt in SGI IP27 code operability in the first place,
->>> since it got prom_meminit() method of early memory initialization,
->>> which hasn't been called at any other place in the kernel. It must
->>> have been left there unrenamed after arch/mips/mips-boards/generic
->>> code had been discarded.
->>>
->>> Here are the list of folks, who agreed to perform some tests of
->>> the patchset:
->>> Alexander Sverdlin <alexander.sverdlin@nokia.com> - Octeon2
->>> Matt Redfearn <matt.redfearn@mips.com> - Loongson3, etc
+>>> Yeah, arm code was the place I picked the function up.) But in my case
+>>> I've used %pK so the pointers would disappear from logging when
+>>> kptr_restrict sysctl is 1 or 2.
+>>> I agree, that we might need to make the printouts optional. If there is
+>>> any kernel config, which for instance increases the kernel security we
+>>> could also use it or anything else to discard the printouts at compile
+>>> time.
 >>
 >>
+>> Certainly, when KASLR is active it would be preferable to hide this
+>> information, so you could use CONFIG_RELOCATABLE. The existing KASLR stuff
+>> additionally hides this kind of information behind CONFIG_DEBUG_KERNEL, so
+>> that only people actively debugging the kernel see it:
 >>
->> I have applied and tested these patches on various platforms that we have available here, and the kernel appears to boot and get to userspace as normal on the following platforms:
->>
->> UTM8 (Cavium Octeon III)
->> Creator CI20
+>> http://elixir.free-electrons.com/linux/v4.15-rc8/source/arch/mips/kernel/setup.c#L604
 > 
-> A bit off-topic, but could you please Acked one of Marcin's patch that
-> I re-submitted:
-> 
-> https://patchwork.linux-mips.org/patch/17986/
-> 
-> I believe CI20 wont boot from upstream kernel, since you are testing
-> patch I am guessing you have a running system (unless of course you
-> tweaked your u-boot env vars or use another different patch).
-> 
+> Ok. I'll hide the printouts behind both of that config macros in the next patchset
+> version.
 
-Indeed, with the factory default arguments the kernel does not boot 
-since 73fbc1eba7ff. Those arguments are redundant though since the 
-memory is discovered via device tree. Testing locally we do not use 
-those arguments. Anyway, the patch mentioned does not seem to break 
-anything and does fix this issue so I've replied with my Tested-by.
+
+Another thing to note - since ad67b74d2469d ("printk: hash addresses 
+printed with %p") %pK at this time in the boot process is useless since 
+the RNG is not sufficiently initialised and all prints end up being 
+"(ptrval)". Hence after v4.15-rc2 we end up with output like:
+
+[    0.000000] Kernel virtual memory layout:
+[    0.000000]     lowmem  : 0x(ptrval) - 0x(ptrval)  ( 256 MB)
+[    0.000000]       .text : 0x(ptrval) - 0x(ptrval)  (7374 kB)
+[    0.000000]       .data : 0x(ptrval) - 0x(ptrval)  (1901 kB)
+[    0.000000]       .init : 0x(ptrval) - 0x(ptrval)  (1600 kB)
+[    0.000000]       .bss  : 0x(ptrval) - 0x(ptrval)  ( 415 kB)
+[    0.000000]     vmalloc : 0x(ptrval) - 0x(ptrval)  (1023 MB)
+[    0.000000]     fixmap  : 0x(ptrval) - 0x(ptrval)  (  68 kB)
+
+
+The %px format specifier was added for cases such as this, where we 
+really want to print the unmodified address. And as long as this 
+function is suitably guarded to only do this when KASLR is deactivated / 
+CONFIG_DEBUG_KERNEL is activated, etc, then we are not unwittingly 
+leaking information - we are deliberately making it available.
 
 Thanks,
 Matt
 
-
-
-> Thanks for your help
 > 
+> Regards,
+> -Sergey
+> 
+>>
+>> Thanks,
+>> Matt
+>>
+>>>
+>>>> -- 
+>>>> Florian

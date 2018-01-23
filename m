@@ -1,15 +1,16 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:53846 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:39708 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991534AbeAWN6XLcM4j (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 23 Jan 2018 14:58:23 +0100
-Subject: Re: [PATCH v2] MIPS: fix incorrect mem=X@Y handling
-References: <1504609608-7694-1-git-send-email-marcin.nowakowski@imgtec.com>
- <20171221210100.12002-1-malat@debian.org>
+        by eddie.linux-mips.org with ESMTP id S23991534AbeAWODzBuZ9j (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 23 Jan 2018 15:03:55 +0100
+Subject: Re: [PATCH 00/14] MIPS: memblock: Switch arch code to NO_BOOTMEM
+References: <20180117222312.14763-1-fancer.lancer@gmail.com>
+ <2fd1f530-e6c6-a528-5827-c3ecc8b4a81c@mips.com>
+ <CA+7wUszvJfqCfii59zppSbkGsVNyLDM2Jk8F3zrzr_NJxvFsWw@mail.gmail.com>
 From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <9e00cd68-ff9a-37e1-3e38-f0e58ae4a400@mips.com>
-Date: Tue, 23 Jan 2018 13:58:06 +0000
+Message-ID: <c6e7bedc-bbe3-0166-3ed8-8f8012fad132@mips.com>
+Date: Tue, 23 Jan 2018 14:01:50 +0000
 MIME-Version: 1.0
-In-Reply-To: <20171221210100.12002-1-malat@debian.org>
+In-Reply-To: <CA+7wUszvJfqCfii59zppSbkGsVNyLDM2Jk8F3zrzr_NJxvFsWw@mail.gmail.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -23,98 +24,123 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Mathieu Malaterre <malat@debian.org>, James Hogan <jhogan@kernel.org>
-Cc: Marcin Nowakowski <marcin.nowakowski@mips.com>, "# v4 . 11" <stable@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20180123135806.G2TX2_h2_Ik21XmdRDAgexxOvQeweetz8Q4B1scWsnM@z>
+To: Mathieu Malaterre <malat@debian.org>
+Cc: Serge Semin <fancer.lancer@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, Miodrag Dinic <miodrag.dinic@mips.com>, James Hogan <jhogan@kernel.org>, goran.ferenc@mips.com, David Daney <david.daney@cavium.com>, paul.gortmaker@windriver.com, Paul Burton <paul.burton@mips.com>, alex.belits@cavium.com, Steven.Hill@cavium.com, alexander.sverdlin@nokia.com, kumba@gentoo.org, Marcin Nowakowski <marcin.nowakowski@mips.com>, James Hogan <James.hogan@mips.com>, Peter Wotton <Peter.Wotton@mips.com>, Sergey.Semin@t-platforms.ru, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20180123140150.5fNqThC-qK1oCPtE3whdiRvNMihsU1vBGsvVsXUPUw8@z>
 
-Hi
+Hi Mathieu,
 
-On 21/12/17 21:00, Mathieu Malaterre wrote:
-> From: Marcin Nowakowski <marcin.nowakowski@mips.com>
+On 23/01/18 11:29, Mathieu Malaterre wrote:
+> Hi Matt,
 > 
-> Change 73fbc1eba7ff added a fix to ensure that the memory range between
-> PHYS_OFFSET and low memory address specified by mem= cmdline argument is
-> not later processed by free_all_bootmem.
-> This change was incorrect for systems where the commandline specifies
-> more than 1 mem argument, as it will cause all memory between
-> PHYS_OFFSET and each of the memory offsets to be marked as reserved,
-> which results in parts of the RAM marked as reserved (Creator CI20's
-> u-boot has a default commandline argument 'mem=256M@0x0
-> mem=768M@0x30000000').
+> On Mon, Jan 22, 2018 at 5:36 PM, Matt Redfearn <matt.redfearn@mips.com> wrote:
+>>
+>> Hi Serge,
+>>
+>>
+>> On 17/01/18 22:22, Serge Semin wrote:
+>>>
+>>> Even though it's common to see the architecture code using both
+>>> bootmem and memblock early memory allocators, it's not good for
+>>> multiple reasons. First of all, it's redundant to have two
+>>> early memory allocator while one would be more than enough from
+>>> functionality and stability points of view. Secondly, some new
+>>> features introduced in the kernel utilize the methods of the most
+>>> modern allocator ignoring the older one. It means the architecture
+>>> code must keep the both subsystems up synchronized with information
+>>> about memory regions and reservations, which leads to the code
+>>> complexity increase, that obviously increases bugs probability.
+>>> Finally it's better to keep all the architectures code unified for
+>>> better readability and code simplification. All these reasons lead
+>>> to one conclusion - arch code should use just one memory allocator,
+>>> which is supposed to be memblock as the most modern and already
+>>> utilized by the most of the kernel platforms. This patchset is
+>>> mostly about it.
+>>>
+>>> One more reason why the MIPS arch code should finally move to
+>>> memblock is a BUG somewhere in the initialization process, when
+>>> CMA is activated:
+>>>
+>>> [    0.248762] BUG: Bad page state in process swapper/0  pfn:01f93
+>>> [    0.255415] page:8205b0ac count:0 mapcount:-127 mapping:  (null) index:0x1
+>>> [    0.263172] flags: 0x40000000()
+>>> [    0.266723] page dumped because: nonzero mapcount
+>>> [    0.272049] Modules linked in:
+>>> [    0.275511] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.4.88-module #5
+>>> [    0.282900] Stack : 00000000 00000000 80b6dd6a 0000003a 00000000 00000000 80930000 8092bff4
+>>>             86073a14 80ac88c7 809f21ac 00000000 00000001 80b6998c 00000400 00000000
+>>>             80a00000 801822e8 80b6dd68 00000000 00000002 00000000 809f8024 86077ccc
+>>>             80b80000 801e9328 809fcbc0 00000000 00000400 00010000 86077ccc 86073a14
+>>>             00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+>>>             ...
+>>> [    0.323148] Call Trace:
+>>> [    0.325935] [<8010e7c4>] show_stack+0x8c/0xa8
+>>> [    0.330859] [<80404814>] dump_stack+0xd4/0x110
+>>> [    0.335879] [<801f0bc0>] bad_page+0xfc/0x14c
+>>> [    0.340710] [<801f0e04>] free_pages_prepare+0x1f4/0x330
+>>> [    0.346632] [<801f36c4>] __free_pages_ok+0x2c/0x104
+>>> [    0.352154] [<80b23a40>] init_cma_reserved_pageblock+0x5c/0x74
+>>> [    0.358761] [<80b29390>] cma_init_reserved_areas+0x1b4/0x240
+>>> [    0.365170] [<8010058c>] do_one_initcall+0xe8/0x27c
+>>> [    0.370697] [<80b14e60>] kernel_init_freeable+0x200/0x2c4
+>>> [    0.376828] [<808faca4>] kernel_init+0x14/0x104
+>>> [    0.381939] [<80107598>] ret_from_kernel_thread+0x14/0x1c
+>>>
+>>> The bugus pfn seems to be the one allocated for bootmem allocator
+>>> pages and hasn't been freed before letting the CMA working with its
+>>> areas. Anyway the bug is solved by this patchset.
+>>>
+>>> Another reason why this patchset is useful is that it fixes the fdt
+>>> reserved-memory nodes functionality for MIPS. Really it's bug to have
+>>> the fdt reserved nodes scanning before the memblock is
+>>> fully initialized (calling early_init_fdt_scan_reserved_mem before
+>>> bootmem_init is called). Additionally no-map flag of the
+>>> reserved-memory node hasn't been taking into account. This patchset
+>>> fixes all of these.
+>>>
+>>> As you probably remember I already did another attempt to merge a
+>>> similar functionality into the kernel. This time the patchset got
+>>> to be less complex (14 patches vs 21 last time) and fixes the
+>>> platform code like SGI IP27 and Loongson3, which due to being
+>>> NUMA introduce its own memory initialization process. Although
+>>> I have much doubt in SGI IP27 code operability in the first place,
+>>> since it got prom_meminit() method of early memory initialization,
+>>> which hasn't been called at any other place in the kernel. It must
+>>> have been left there unrenamed after arch/mips/mips-boards/generic
+>>> code had been discarded.
+>>>
+>>> Here are the list of folks, who agreed to perform some tests of
+>>> the patchset:
+>>> Alexander Sverdlin <alexander.sverdlin@nokia.com> - Octeon2
+>>> Matt Redfearn <matt.redfearn@mips.com> - Loongson3, etc
+>>
+>>
+>>
+>> I have applied and tested these patches on various platforms that we have available here, and the kernel appears to boot and get to userspace as normal on the following platforms:
+>>
+>> UTM8 (Cavium Octeon III)
+>> Creator CI20
 > 
-> Change the behaviour to ensure that only the range between PHYS_OFFSET
-> and the lowest start address of the memories is marked as protected.
+> A bit off-topic, but could you please Acked one of Marcin's patch that
+> I re-submitted:
 > 
-> This change also ensures that the range is marked protected even if it's
-> only defined through the devicetree and not only via commandline
-> arguments.
+> https://patchwork.linux-mips.org/patch/17986/
 > 
-> Reported-by: Mathieu Malaterre <mathieu.malaterre@gmail.com>
-> Signed-off-by: Marcin Nowakowski <marcin.nowakowski@mips.com>
-> Fixes: 73fbc1eba7ff ("MIPS: fix mem=X@Y commandline processing")
-> Cc: <stable@vger.kernel.org> # v4.11
-
-Tested on:
-Creator Ci20
-Creator Ci40
-MIPS Boston
-UTM8 (Cavium Octeon III)
-
-It certainly fixes the ci20 when it's factory default command line args 
-of "mem=256M@0x0 mem=768M@0x30000000" are passed. Though those arguments 
-appear redundant since without them both memory regions are detected 
-through device tree instead, and there is no problem.
-
-Tested-by: Matt Redfearn <matt.redfearn@mips.com>
-
-
-> ---
-> v2: Use updated email adress, add tag for stable.
->   arch/mips/kernel/setup.c | 19 ++++++++++++++++---
->   1 file changed, 16 insertions(+), 3 deletions(-)
+> I believe CI20 wont boot from upstream kernel, since you are testing
+> patch I am guessing you have a running system (unless of course you
+> tweaked your u-boot env vars or use another different patch).
 > 
-> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-> index 702c678de116..f19d61224c71 100644
-> --- a/arch/mips/kernel/setup.c
-> +++ b/arch/mips/kernel/setup.c
-> @@ -375,6 +375,7 @@ static void __init bootmem_init(void)
->   	unsigned long reserved_end;
->   	unsigned long mapstart = ~0UL;
->   	unsigned long bootmap_size;
-> +	phys_addr_t ramstart = ~0UL;
->   	bool bootmap_valid = false;
->   	int i;
->   
-> @@ -395,6 +396,21 @@ static void __init bootmem_init(void)
->   	max_low_pfn = 0;
->   
->   	/*
-> +	 * Reserve any memory between the start of RAM and PHYS_OFFSET
-> +	 */
-> +	for (i = 0; i < boot_mem_map.nr_map; i++) {
-> +		if (boot_mem_map.map[i].type != BOOT_MEM_RAM)
-> +			continue;
-> +
-> +		ramstart = min(ramstart, boot_mem_map.map[i].addr);
-> +	}
-> +
-> +	if (ramstart > PHYS_OFFSET)
-> +		add_memory_region(PHYS_OFFSET, ramstart - PHYS_OFFSET,
-> +				  BOOT_MEM_RESERVED);
-> +
-> +
-> +	/*
->   	 * Find the highest page frame number we have available.
->   	 */
->   	for (i = 0; i < boot_mem_map.nr_map; i++) {
-> @@ -664,9 +680,6 @@ static int __init early_parse_mem(char *p)
->   
->   	add_memory_region(start, size, BOOT_MEM_RAM);
->   
-> -	if (start && start > PHYS_OFFSET)
-> -		add_memory_region(PHYS_OFFSET, start - PHYS_OFFSET,
-> -				BOOT_MEM_RESERVED);
->   	return 0;
->   }
->   early_param("mem", early_parse_mem);
+
+Indeed, with the factory default arguments the kernel does not boot 
+since 73fbc1eba7ff. Those arguments are redundant though since the 
+memory is discovered via device tree. Testing locally we do not use 
+those arguments. Anyway, the patch mentioned does not seem to break 
+anything and does fix this issue so I've replied with my Tested-by.
+
+Thanks,
+Matt
+
+
+
+> Thanks for your help
 > 

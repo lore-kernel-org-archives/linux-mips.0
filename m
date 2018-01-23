@@ -1,18 +1,19 @@
-Received: from verein.lst.de ([213.95.11.211]:47194 "EHLO newverein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992781AbeAWNUeeRMYJ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 23 Jan 2018 14:20:34 +0100
-Date: Tue, 23 Jan 2018 14:20:33 +0100
-From: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v4 4/8] PCI: brcmstb: Add dma-range mapping for inbound
-        traffic
-Message-ID: <20180123132033.GA21438@lst.de>
-References: <1516058925-46522-1-git-send-email-jim2101024@gmail.com> <1516058925-46522-5-git-send-email-jim2101024@gmail.com> <CAL_JsqKpWNJXNpKS5qC99N0+H_P37DcRE-rN9HFwT5tVmRFCNw@mail.gmail.com> <20180118073123.GA15766@lst.de> <EDAEFB0F-BB7C-444A-B282-F178F5ADFCBF@gmail.com> <20180118152331.GA24461@lst.de> <d62226a2-a92c-cdcb-4a9b-e69ab677bc60@broadcom.com>
+Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:53846 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23991534AbeAWN6XLcM4j (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 23 Jan 2018 14:58:23 +0100
+Subject: Re: [PATCH v2] MIPS: fix incorrect mem=X@Y handling
+References: <1504609608-7694-1-git-send-email-marcin.nowakowski@imgtec.com>
+ <20171221210100.12002-1-malat@debian.org>
+From: Matt Redfearn <matt.redfearn@mips.com>
+Message-ID: <9e00cd68-ff9a-37e1-3e38-f0e58ae4a400@mips.com>
+Date: Tue, 23 Jan 2018 13:58:06 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d62226a2-a92c-cdcb-4a9b-e69ab677bc60@broadcom.com>
-Return-Path: <hch@lst.de>
+In-Reply-To: <20171221210100.12002-1-malat@debian.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,54 +23,98 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: Christoph Hellwig <hch@lst.de>, Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh+dt@kernel.org>, Jim Quinlan <jim2101024@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Brian Norris <computersforpeace@gmail.com>, Russell King <rmk+kernel@armlinux.org.uk>, Robin Murphy <robin.murphy@arm.com>, Jonas Gorski <jonas.gorski@gmail.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Mark Rutland <mark.rutland@arm.com>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, linux-pci@vger.kernel.org, Kevin Cernekee <cernekee@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, bcm-kernel-feedback-list@broadcom.com, Gregory Fong <gregory.0xf0@gmail.com>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
-Message-ID: <20180123132033.sPjRp2z-8o8FaQyW3ACI9gujJ5oBeaIxh1ak3U_URsc@z>
+To: Mathieu Malaterre <malat@debian.org>, James Hogan <jhogan@kernel.org>
+Cc: Marcin Nowakowski <marcin.nowakowski@mips.com>, "# v4 . 11" <stable@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20180123135806.G2TX2_h2_Ik21XmdRDAgexxOvQeweetz8Q4B1scWsnM@z>
 
-On Fri, Jan 19, 2018 at 11:47:54AM -0800, Florian Fainelli wrote:
-> How can this work well in the context of a loadable module for instance?
-> For MIPS, this would mean that we have to override phys_to_dma() and
-> dma_to_phys() in the platform that is *susceptible* to use this PCIe
-> controller (arch/mips/bmips) which is fine, but there, we essentially
-> need to find a way to make this dynamic based on whether the PCIe
-> controller is loaded or not.
+Hi
+
+On 21/12/17 21:00, Mathieu Malaterre wrote:
+> From: Marcin Nowakowski <marcin.nowakowski@mips.com>
 > 
-> As you might have seen from this patch, what needs to be done is highly
-> dependent on the processor architecture and its memory controller
-> physical memory map, so I don't see how we are in any better situation
-> if we need to replicate 3 times across MIPS, ARM and ARM64 how the
-> addresses need to be mangled.
+> Change 73fbc1eba7ff added a fix to ensure that the memory range between
+> PHYS_OFFSET and low memory address specified by mem= cmdline argument is
+> not later processed by free_all_bootmem.
+> This change was incorrect for systems where the commandline specifies
+> more than 1 mem argument, as it will cause all memory between
+> PHYS_OFFSET and each of the memory offsets to be marked as reserved,
+> which results in parts of the RAM marked as reserved (Creator CI20's
+> u-boot has a default commandline argument 'mem=256M@0x0
+> mem=768M@0x30000000').
 > 
-> Are you suggesting we somehow decouple the memory mangling part into a
-> portion that can be built into the kernel image (so phys_to_dma() and
-> dma_to_phys() is resolved at vmlinux link time) and can be selected by
-> different architectures that need it? If so, yikes.
-
-On architectures with crazy PCIe controllers (this seems to include
-mips, arm, arm64 and x86 thanks to the weird SOCs) we will need a
-a few different memory maps, yes.  Take a look at
-arch/x86/pci/sta2x11-fixup.c, preferably from a tree where the worst
-issues are fixed:
-
-http://git.infradead.org/users/hch/misc.git/blob/refs/heads/dma-direct-all:/arch/x86/pci/sta2x11-fixup.c
-
-Overriding phys_to_dma and dma_to_phys is required if you need to
-support swiotlb, and chances are with a broken PCIe controller on
-arm64 or mips64 you eventuall will.
-
-This sta2x11 code should probably be lifted to common code in
-one form or another eventually, althought it will need another
-fair round of cleanups for now.
-
-> I can see value in having a generic mechanism, ala X86_DMA_REMAP
-> allowing architectures to have the ability to override phys_to_dma() and
-> dma_to_phys() but right now, especially if we look at
-> arch/x86/pci/sta2x11-fixup.c this really appears to be quite messy and
-> equally ugly than stacking operations...
+> Change the behaviour to ensure that only the range between PHYS_OFFSET
+> and the lowest start address of the memories is marked as protected.
 > 
-> What is the actual problem you want to avoid with the stacking of DMA
-> operations, is it because it becomes harder to audit, or are there are
-> other reasons?
+> This change also ensures that the range is marked protected even if it's
+> only defined through the devicetree and not only via commandline
+> arguments.
+> 
+> Reported-by: Mathieu Malaterre <mathieu.malaterre@gmail.com>
+> Signed-off-by: Marcin Nowakowski <marcin.nowakowski@mips.com>
+> Fixes: 73fbc1eba7ff ("MIPS: fix mem=X@Y commandline processing")
+> Cc: <stable@vger.kernel.org> # v4.11
 
-Audit, consolidate into a single dma-direct implementation and properly
-support swiotlb out of the box.
+Tested on:
+Creator Ci20
+Creator Ci40
+MIPS Boston
+UTM8 (Cavium Octeon III)
+
+It certainly fixes the ci20 when it's factory default command line args 
+of "mem=256M@0x0 mem=768M@0x30000000" are passed. Though those arguments 
+appear redundant since without them both memory regions are detected 
+through device tree instead, and there is no problem.
+
+Tested-by: Matt Redfearn <matt.redfearn@mips.com>
+
+
+> ---
+> v2: Use updated email adress, add tag for stable.
+>   arch/mips/kernel/setup.c | 19 ++++++++++++++++---
+>   1 file changed, 16 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+> index 702c678de116..f19d61224c71 100644
+> --- a/arch/mips/kernel/setup.c
+> +++ b/arch/mips/kernel/setup.c
+> @@ -375,6 +375,7 @@ static void __init bootmem_init(void)
+>   	unsigned long reserved_end;
+>   	unsigned long mapstart = ~0UL;
+>   	unsigned long bootmap_size;
+> +	phys_addr_t ramstart = ~0UL;
+>   	bool bootmap_valid = false;
+>   	int i;
+>   
+> @@ -395,6 +396,21 @@ static void __init bootmem_init(void)
+>   	max_low_pfn = 0;
+>   
+>   	/*
+> +	 * Reserve any memory between the start of RAM and PHYS_OFFSET
+> +	 */
+> +	for (i = 0; i < boot_mem_map.nr_map; i++) {
+> +		if (boot_mem_map.map[i].type != BOOT_MEM_RAM)
+> +			continue;
+> +
+> +		ramstart = min(ramstart, boot_mem_map.map[i].addr);
+> +	}
+> +
+> +	if (ramstart > PHYS_OFFSET)
+> +		add_memory_region(PHYS_OFFSET, ramstart - PHYS_OFFSET,
+> +				  BOOT_MEM_RESERVED);
+> +
+> +
+> +	/*
+>   	 * Find the highest page frame number we have available.
+>   	 */
+>   	for (i = 0; i < boot_mem_map.nr_map; i++) {
+> @@ -664,9 +680,6 @@ static int __init early_parse_mem(char *p)
+>   
+>   	add_memory_region(start, size, BOOT_MEM_RAM);
+>   
+> -	if (start && start > PHYS_OFFSET)
+> -		add_memory_region(PHYS_OFFSET, start - PHYS_OFFSET,
+> -				BOOT_MEM_RESERVED);
+>   	return 0;
+>   }
+>   early_param("mem", early_parse_mem);
+> 

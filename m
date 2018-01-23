@@ -1,22 +1,18 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:36942 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991534AbeAWLF1NAY2I (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 23 Jan 2018 12:05:27 +0100
-Subject: Re: [PATCH 02/14] MIPS: memblock: Surely map BSS kernel memory
- section
-References: <20180117222312.14763-1-fancer.lancer@gmail.com>
- <20180117222312.14763-3-fancer.lancer@gmail.com>
- <3fbb8850-bf34-d698-299a-f1cd62d063ae@mips.com>
- <20180122214746.GC32024@mobilestation>
-From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <8a26c7cd-966f-90d4-96c9-2f974808c2f4@mips.com>
-Date: Tue, 23 Jan 2018 11:03:27 +0000
+Received: from verein.lst.de ([213.95.11.211]:47194 "EHLO newverein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23992781AbeAWNUeeRMYJ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 23 Jan 2018 14:20:34 +0100
+Date: Tue, 23 Jan 2018 14:20:33 +0100
+From: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v4 4/8] PCI: brcmstb: Add dma-range mapping for inbound
+        traffic
+Message-ID: <20180123132033.GA21438@lst.de>
+References: <1516058925-46522-1-git-send-email-jim2101024@gmail.com> <1516058925-46522-5-git-send-email-jim2101024@gmail.com> <CAL_JsqKpWNJXNpKS5qC99N0+H_P37DcRE-rN9HFwT5tVmRFCNw@mail.gmail.com> <20180118073123.GA15766@lst.de> <EDAEFB0F-BB7C-444A-B282-F178F5ADFCBF@gmail.com> <20180118152331.GA24461@lst.de> <d62226a2-a92c-cdcb-4a9b-e69ab677bc60@broadcom.com>
 MIME-Version: 1.0
-In-Reply-To: <20180122214746.GC32024@mobilestation>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@mips.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d62226a2-a92c-cdcb-4a9b-e69ab677bc60@broadcom.com>
+Return-Path: <hch@lst.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,102 +22,54 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: ralf@linux-mips.org, miodrag.dinic@mips.com, jhogan@kernel.org, goran.ferenc@mips.com, david.daney@cavium.com, paul.gortmaker@windriver.com, paul.burton@mips.com, alex.belits@cavium.com, Steven.Hill@cavium.com, alexander.sverdlin@nokia.com, kumba@gentoo.org, marcin.nowakowski@mips.com, James.hogan@mips.com, Peter.Wotton@mips.com, Sergey.Semin@t-platforms.ru, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20180123110327.RKaR8k1tIEbV8FG8GvrU0G2J_3uiQiboR78JExXug7g@z>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: Christoph Hellwig <hch@lst.de>, Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh+dt@kernel.org>, Jim Quinlan <jim2101024@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Brian Norris <computersforpeace@gmail.com>, Russell King <rmk+kernel@armlinux.org.uk>, Robin Murphy <robin.murphy@arm.com>, Jonas Gorski <jonas.gorski@gmail.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Mark Rutland <mark.rutland@arm.com>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, linux-pci@vger.kernel.org, Kevin Cernekee <cernekee@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, bcm-kernel-feedback-list@broadcom.com, Gregory Fong <gregory.0xf0@gmail.com>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20180123132033.sPjRp2z-8o8FaQyW3ACI9gujJ5oBeaIxh1ak3U_URsc@z>
 
-Hi Serge,
-
-On 22/01/18 21:47, Serge Semin wrote:
-> Hello Matt,
+On Fri, Jan 19, 2018 at 11:47:54AM -0800, Florian Fainelli wrote:
+> How can this work well in the context of a loadable module for instance?
+> For MIPS, this would mean that we have to override phys_to_dma() and
+> dma_to_phys() in the platform that is *susceptible* to use this PCIe
+> controller (arch/mips/bmips) which is fine, but there, we essentially
+> need to find a way to make this dynamic based on whether the PCIe
+> controller is loaded or not.
 > 
-> On Mon, Jan 22, 2018 at 04:35:26PM +0000, Matt Redfearn <matt.redfearn@mips.com> wrote:
->> Hi Serge,
->>
->> On 17/01/18 22:23, Serge Semin wrote:
->>> The current MIPS code makes sure the kernel code/data/init
->>> sections are in the maps, but BSS should also be there.
->>
->> Quite right - it should. But this was protected against by reserving all
->> bootmem up to the _end symbol here:
->> http://elixir.free-electrons.com/linux/v4.15-rc8/source/arch/mips/kernel/setup.c#L388
->> Which you remove in the next patch in this series. I'm not sure it is worth
+> As you might have seen from this patch, what needs to be done is highly
+> dependent on the processor architecture and its memory controller
+> physical memory map, so I don't see how we are in any better situation
+> if we need to replicate 3 times across MIPS, ARM and ARM64 how the
+> addresses need to be mangled.
 > 
-> Right. Missed that part. The old code just doesn't set the kernel memory free
-> calling the free_bootmem() method for non-reserved parts below reserved_end.
+> Are you suggesting we somehow decouple the memory mangling part into a
+> portion that can be built into the kernel image (so phys_to_dma() and
+> dma_to_phys() is resolved at vmlinux link time) and can be selected by
+> different architectures that need it? If so, yikes.
+
+On architectures with crazy PCIe controllers (this seems to include
+mips, arm, arm64 and x86 thanks to the weird SOCs) we will need a
+a few different memory maps, yes.  Take a look at
+arch/x86/pci/sta2x11-fixup.c, preferably from a tree where the worst
+issues are fixed:
+
+http://git.infradead.org/users/hch/misc.git/blob/refs/heads/dma-direct-all:/arch/x86/pci/sta2x11-fixup.c
+
+Overriding phys_to_dma and dma_to_phys is required if you need to
+support swiotlb, and chances are with a broken PCIe controller on
+arm64 or mips64 you eventuall will.
+
+This sta2x11 code should probably be lifted to common code in
+one form or another eventually, althought it will need another
+fair round of cleanups for now.
+
+> I can see value in having a generic mechanism, ala X86_DMA_REMAP
+> allowing architectures to have the ability to override phys_to_dma() and
+> dma_to_phys() but right now, especially if we look at
+> arch/x86/pci/sta2x11-fixup.c this really appears to be quite messy and
+> equally ugly than stacking operations...
 > 
->> disentangling the reserved_end stuff from the next patch to make this into a
->> single logical change of reserving just .bss rather than everything below
->> _end.
-> 
-> Good point. I'll move this change into the "[PATCH 05/14] MIPS: memblock:
-> Add reserved memory regions to memblock". It logically belongs to that place.
-> Since basically by the arch_mem_addpart() calls we reserve all the kernel
+> What is the actual problem you want to avoid with the stacking of DMA
+> operations, is it because it becomes harder to audit, or are there are
+> other reasons?
 
-
-Actually I was wrong - it's not this sequence of arch_mem_addpart's that 
-reserves the kernels memory. At least on DT based systems, it's pretty 
-likely that these regions will overlap with the system memory already added.
-of_scan_flat_dt will look for the memory node and add it via 
-early_init_dt_add_memory_arch.
-These calls to add the kernel text, init and bss detect that they 
-overlap with the already present system memory, so don't get added, here:
-http://elixir.free-electrons.com/linux/v4.15-rc9/source/arch/mips/kernel/setup.c#L759
-
-As such, when we print out the content of boot_mem_map, we only have a 
-single entry:
-
-[    0.000000] Determined physical RAM map:
-[    0.000000]  memory: 10000000 @ 00000000 (usable)
-
-
-> memory now I'd also merged them into a single call for the range [_text, _end].
-> What do you think?
-
-
-I think that this patch makes sense in case the .bss is for some reason 
-not covered by an existing entry, but I would leave it as a separate patch.
-
-Your [PATCH 05/14] MIPS: memblock: Add reserved memory regions to 
-memblock is actually self-contained since it replaces reserving all 
-memory up to _end with the single reservation of the kernel's whole size
-
-+	size = __pa_symbol(&_end) - __pa_symbol(&_text);
-+	memblock_reserve(__pa_symbol(&_text), size);
-
-
-Which I think is definitely an improvement since it is much clearer.
-
-Thanks,
-Matt
-
-> 
-> Regards,
-> -Sergey
-> 
->>
->> Reviewed-by: Matt Redfearn <matt.redfearn@mips.com>
->>
->> Thanks,
->> Matt
->>
->>>
->>> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
->>> ---
->>>   arch/mips/kernel/setup.c | 3 +++
->>>   1 file changed, 3 insertions(+)
->>>
->>> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
->>> index 76e9e2075..0d21c9e04 100644
->>> --- a/arch/mips/kernel/setup.c
->>> +++ b/arch/mips/kernel/setup.c
->>> @@ -845,6 +845,9 @@ static void __init arch_mem_init(char **cmdline_p)
->>>   	arch_mem_addpart(PFN_UP(__pa_symbol(&__init_begin)) << PAGE_SHIFT,
->>>   			 PFN_DOWN(__pa_symbol(&__init_end)) << PAGE_SHIFT,
->>>   			 BOOT_MEM_INIT_RAM);
->>> +	arch_mem_addpart(PFN_DOWN(__pa_symbol(&__bss_start)) << PAGE_SHIFT,
->>> +			 PFN_UP(__pa_symbol(&__bss_stop)) << PAGE_SHIFT,
->>> +			 BOOT_MEM_RAM);
->>>   	pr_info("Determined physical RAM map:\n");
->>>   	print_memory_map();
->>>
+Audit, consolidate into a single dma-direct implementation and properly
+support swiotlb out of the box.

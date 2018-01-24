@@ -1,11 +1,11 @@
-Received: from mail-qt0-x241.google.com ([IPv6:2607:f8b0:400d:c0d::241]:34842
-        "EHLO mail-qt0-x241.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992916AbeAXBrpLI9oZ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 24 Jan 2018 02:47:45 +0100
+Received: from mail-qt0-x243.google.com ([IPv6:2607:f8b0:400d:c0d::243]:36294
+        "EHLO mail-qt0-x243.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992923AbeAXBrtAxBXZ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 24 Jan 2018 02:47:49 +0100
 From: Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH RFC 3/6] MIPS: BMIPS: Avoid referencing CKSEG1
-Date: Tue, 23 Jan 2018 17:47:03 -0800
-Message-ID: <1516758426-8127-4-git-send-email-f.fainelli@gmail.com>
+Subject: [PATCH RFC 4/6] MIPS: Prepare for supporting eXtended KSEG0/1
+Date: Tue, 23 Jan 2018 17:47:04 -0800
+Message-ID: <1516758426-8127-5-git-send-email-f.fainelli@gmail.com>
 In-Reply-To: <1516758426-8127-1-git-send-email-f.fainelli@gmail.com>
 References: <1516758426-8127-1-git-send-email-f.fainelli@gmail.com>
 Return-Path: <f.fainelli@gmail.com>
@@ -20,52 +20,148 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Florian Fainelli <f.fainelli@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, Kevin Cernekee <cernekee@gmail.com>, James Hogan <jhogan@kernel.org>, Paul Burton <paul.burton@mips.com>, Matt Redfearn <matt.redfearn@mips.com>, "Maciej W. Rozycki" <macro@mips.com>, Huacai Chen <chenhc@lemote.com>, Kate Stewart <kstewart@linuxfoundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Marcin Nowakowski <marcin.nowakowski@mips.com>, Andrew Morton <akpm@linux-foundation.org>, "Eric W. Biederman" <ebiederm@xmission.com>, Ingo Molnar <mingo@kernel.org>, David Howells <dhowells@redhat.com>, Kees Cook <keescook@chromium.org>, Thomas Meyer <thomas@m3y3r.de>, Bryan O'Donoghue <pure.logic@nexus-software.ie>, Robin Murphy <robin.murphy@arm.com>, Michal Hocko <mhocko@suse.com>, Lucas Stach <l.stach@pengutronix.de>, Vladimir Murzin <vladimir.murzin@arm.com>, Bart Van Assche <bart.vanassche@sandisk.com>, open list <linux-kernel@vger.kernel.org>
-Message-ID: <20180124014703.b3JRob_5fmICUZBl3yjJ3g37WSXGQiAcXWCiJ6PjHII@z>
+Message-ID: <20180124014704.u83PpV5T5SS9iqOOBbayrS8lFMWUfwCRJKIc4JxkV4I@z>
 
 From: Florian Fainelli <florian.fainelli@broadcom.com>
 
-bmips_smp_movevec() references the CKSEG1 constant, which is about to be
-updated in order to support processors that might enable eXtended
-KSEG0/1. In doing so, we will generate a reference to a function, which
-is obviously not permissible within assembly. Fortunately,
-bmips_smp_movevec() is only used on BMIPS4350 which does not support
-eXtended KSEG0/1.
+Prepare the core MIPS files to support Broadcom's eXtended KSEG0/1:
+
+- add MIPS_CPU_XKS01 feature flag
+- flag BMIPS4380/5000/5200 with MIPS_CPU_XKS01
+- update ioremap and CAC_ADDR() checks
 
 Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- arch/mips/kernel/bmips_vec.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/mips/include/asm/cpu-features.h |  8 ++++++++
+ arch/mips/include/asm/cpu.h          |  1 +
+ arch/mips/include/asm/io.h           | 18 ++++++++++--------
+ arch/mips/include/asm/page.h         |  4 ++++
+ arch/mips/kernel/cpu-probe.c         |  3 ++-
+ arch/mips/mm/ioremap.c               | 16 +++++++++-------
+ 6 files changed, 34 insertions(+), 16 deletions(-)
 
-diff --git a/arch/mips/kernel/bmips_vec.S b/arch/mips/kernel/bmips_vec.S
-index 921a5fa55da6..10ea69f3859f 100644
---- a/arch/mips/kernel/bmips_vec.S
-+++ b/arch/mips/kernel/bmips_vec.S
-@@ -39,7 +39,7 @@
+diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
+index 721b698bfe3c..43e1163921a9 100644
+--- a/arch/mips/include/asm/cpu-features.h
++++ b/arch/mips/include/asm/cpu-features.h
+@@ -623,4 +623,12 @@
+ #define cpu_guest_has_dyn_maar	(cpu_data[0].guest.options_dyn & MIPS_CPU_MAAR)
+ #endif
  
- LEAF(bmips_smp_movevec)
- 	la	k0, 1f
--	li	k1, CKSEG1
-+	li	k1, 0xa0000000
- 	or	k0, k1
- 	jr	k0
++#if defined(CONFIG_XKS01)
++#ifndef cpu_has_xks01
++# define cpu_has_xks01		(cpu_data[0].options & MIPS_CPU_XKS01)
++#endif
++#else
++# define cpu_has_xks01		0
++#endif /* CONFIG_XKS01 */
++
+ #endif /* __ASM_CPU_FEATURES_H */
+diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+index d39324c4adf1..298356b9f7e6 100644
+--- a/arch/mips/include/asm/cpu.h
++++ b/arch/mips/include/asm/cpu.h
+@@ -418,6 +418,7 @@ enum cpu_type_enum {
+ 				MBIT_ULL(54)	/* CPU shares FTLB RAM with another */
+ #define MIPS_CPU_SHARED_FTLB_ENTRIES \
+ 				MBIT_ULL(55)	/* CPU shares FTLB entries with another */
++#define MIPS_CPU_XKS01		MBIT_ULL(56)	/* CPU has eXtended KSEG0/1 */
  
-@@ -58,7 +58,7 @@ LEAF(bmips_smp_movevec)
- 	mfc0	k1, $22, 3
- 	srl	k1, 16
- 	andi	k1, 0x8000
--	or	k1, CKSEG1 | BMIPS_RELO_VECTOR_CONTROL_0
-+	or	k1, 0xa0000000 | BMIPS_RELO_VECTOR_CONTROL_0
- 	or	k0, k1
- 	li	k1, 0xa0080000
- 	sw	k1, 0(k0)
-@@ -67,7 +67,7 @@ LEAF(bmips_smp_movevec)
- 	wait
+ /*
+  * CPU ASE encodings
+diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
+index 0cbf3af37eca..9f4ac0c394be 100644
+--- a/arch/mips/include/asm/io.h
++++ b/arch/mips/include/asm/io.h
+@@ -206,14 +206,16 @@ static inline void __iomem * __ioremap_mode(phys_addr_t offset, unsigned long si
+ 		if (!size || last_addr < phys_addr)
+ 			return NULL;
  
- 	la	k0, bmips_reset_nmi_vec
--	li	k1, CKSEG1
-+	li	k1, 0xa0000000
- 	or	k0, k1
- 	jr	k0
- END(bmips_smp_movevec)
+-		/*
+-		 * Map uncached objects in the low 512MB of address
+-		 * space using KSEG1.
+-		 */
+-		if (__IS_LOW512(phys_addr) && __IS_LOW512(last_addr) &&
+-		    flags == _CACHE_UNCACHED)
+-			return (void __iomem *)
+-				(unsigned long)CKSEG1ADDR(phys_addr);
++		if (likely(!cpu_has_xks01)) {
++			/*
++			 * Map uncached objects in the low 512MB of address
++			 * space using KSEG1.
++			 */
++			if (__IS_LOW512(phys_addr) && __IS_LOW512(last_addr) &&
++			    flags == _CACHE_UNCACHED)
++				return (void __iomem *)
++					(unsigned long)CKSEG1ADDR(phys_addr);
++		}
+ 	}
+ 
+ 	return __ioremap(offset, size, flags);
+diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
+index ad461216b5a1..7b8eea14b80e 100644
+--- a/arch/mips/include/asm/page.h
++++ b/arch/mips/include/asm/page.h
+@@ -252,8 +252,12 @@ extern int __virt_addr_valid(const volatile void *kaddr);
+ 	 ((current->personality & READ_IMPLIES_EXEC) ? VM_EXEC : 0) | \
+ 	 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
+ 
++#ifdef CONFIG_XKS01
++#define CAC_ADDR(addr)		({ BUG(); NULL; })
++#else
+ #define UNCAC_ADDR(addr)	((addr) - PAGE_OFFSET + UNCAC_BASE)
+ #define CAC_ADDR(addr)		((addr) - UNCAC_BASE + PAGE_OFFSET)
++#endif
+ 
+ #include <asm-generic/memory_model.h>
+ #include <asm-generic/getorder.h>
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index cf3fd549e16d..200087ce9963 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -1760,6 +1760,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+ 			__cpu_name[cpu] = "Broadcom BMIPS4380";
+ 			set_elf_platform(cpu, "bmips4380");
+ 			c->options |= MIPS_CPU_RIXI;
++			c->options |= MIPS_CPU_XKS01;
+ 		} else {
+ 			c->cputype = CPU_BMIPS4350;
+ 			__cpu_name[cpu] = "Broadcom BMIPS4350";
+@@ -1775,7 +1776,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+ 		else
+ 			__cpu_name[cpu] = "Broadcom BMIPS5000";
+ 		set_elf_platform(cpu, "bmips5000");
+-		c->options |= MIPS_CPU_ULRI | MIPS_CPU_RIXI;
++		c->options |= MIPS_CPU_ULRI | MIPS_CPU_RIXI | MIPS_CPU_XKS01;
+ 		break;
+ 	}
+ }
+diff --git a/arch/mips/mm/ioremap.c b/arch/mips/mm/ioremap.c
+index 1986e09fb457..f8fd14188909 100644
+--- a/arch/mips/mm/ioremap.c
++++ b/arch/mips/mm/ioremap.c
+@@ -128,13 +128,15 @@ void __iomem * __ioremap(phys_addr_t phys_addr, phys_addr_t size, unsigned long
+ 	if (!size || last_addr < phys_addr)
+ 		return NULL;
+ 
+-	/*
+-	 * Map uncached objects in the low 512mb of address space using KSEG1,
+-	 * otherwise map using page tables.
+-	 */
+-	if (IS_LOW512(phys_addr) && IS_LOW512(last_addr) &&
+-	    flags == _CACHE_UNCACHED)
+-		return (void __iomem *) CKSEG1ADDR(phys_addr);
++	if (likely(!cpu_has_xks01)) {
++		/*
++		 * Map uncached objects in the low 512mb of address space using
++		 * KSEG1, otherwise map using page tables.
++		 */
++		if (IS_LOW512(phys_addr) && IS_LOW512(last_addr) &&
++		    flags == _CACHE_UNCACHED)
++			return (void __iomem *) CKSEG1ADDR(phys_addr);
++	}
+ 
+ 	/*
+ 	 * Don't allow anybody to remap normal RAM that we're using..
 -- 
 2.7.4

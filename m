@@ -1,26 +1,19 @@
-Received: from mail-qt0-x244.google.com ([IPv6:2607:f8b0:400d:c0d::244]:45575
-        "EHLO mail-qt0-x244.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990477AbeAXUFLHGdtL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 24 Jan 2018 21:05:11 +0100
-Subject: Re: [PATCH v4 4/8] PCI: brcmstb: Add dma-range mapping for inbound
- traffic
-References: <1516058925-46522-1-git-send-email-jim2101024@gmail.com>
- <1516058925-46522-5-git-send-email-jim2101024@gmail.com>
- <CAL_JsqKpWNJXNpKS5qC99N0+H_P37DcRE-rN9HFwT5tVmRFCNw@mail.gmail.com>
- <20180118073123.GA15766@lst.de>
- <EDAEFB0F-BB7C-444A-B282-F178F5ADFCBF@gmail.com>
- <20180118152331.GA24461@lst.de>
- <d62226a2-a92c-cdcb-4a9b-e69ab677bc60@broadcom.com>
- <20180123132033.GA21438@lst.de>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <f746f9d5-b12d-9ffc-83e3-3851b4de6e52@gmail.com>
-Date: Wed, 24 Jan 2018 12:04:58 -0800
+Received: from mail-ve1eur01on0116.outbound.protection.outlook.com ([104.47.1.116]:30160
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23992896AbeAYR6pmJdLo (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 25 Jan 2018 18:58:45 +0100
+Subject: Re: [PATCH 00/14] MIPS: memblock: Switch arch code to NO_BOOTMEM
+References: <20180117222312.14763-1-fancer.lancer@gmail.com>
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Message-ID: <f8626b9b-56b7-f1b0-6771-9cf573050bb4@nokia.com>
+Date: Thu, 25 Jan 2018 18:58:07 +0100
 MIME-Version: 1.0
-In-Reply-To: <20180123132033.GA21438@lst.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20180117222312.14763-1-fancer.lancer@gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Return-Path: <f.fainelli@gmail.com>
+Return-Path: <alexander.sverdlin@nokia.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -30,67 +23,81 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Rob Herring <robh+dt@kernel.org>, Jim Quinlan <jim2101024@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Brian Norris <computersforpeace@gmail.com>, Russell King <rmk+kernel@armlinux.org.uk>, Robin Murphy <robin.murphy@arm.com>, Jonas Gorski <jonas.gorski@gmail.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Mark Rutland <mark.rutland@arm.com>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, linux-pci@vger.kernel.org, Kevin Cernekee <cernekee@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, bcm-kernel-feedback-list@broadcom.com, Gregory Fong <gregory.0xf0@gmail.com>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
-Message-ID: <20180124200458.zAhlXaIoUJkoKwTQiRFo3AB_yJK4qyztzgl-OnLTl4A@z>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: ralf@linux-mips.org, miodrag.dinic@mips.com, jhogan@kernel.org, goran.ferenc@mips.com, david.daney@cavium.com, paul.gortmaker@windriver.com, paul.burton@mips.com, alex.belits@cavium.com, Steven.Hill@cavium.com, matt.redfearn@mips.com, kumba@gentoo.org, marcin.nowakowski@mips.com, James.hogan@mips.com, Peter.Wotton@mips.com, Sergey.Semin@t-platforms.ru, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20180125175807.-KIU04Cj7scT7bp_3JkI-NSQqGbYIDbt8FmuftPMAh0@z>
 
-On 01/23/2018 05:20 AM, Christoph Hellwig wrote:
-> On Fri, Jan 19, 2018 at 11:47:54AM -0800, Florian Fainelli wrote:
->> How can this work well in the context of a loadable module for instance?
->> For MIPS, this would mean that we have to override phys_to_dma() and
->> dma_to_phys() in the platform that is *susceptible* to use this PCIe
->> controller (arch/mips/bmips) which is fine, but there, we essentially
->> need to find a way to make this dynamic based on whether the PCIe
->> controller is loaded or not.
->>
->> As you might have seen from this patch, what needs to be done is highly
->> dependent on the processor architecture and its memory controller
->> physical memory map, so I don't see how we are in any better situation
->> if we need to replicate 3 times across MIPS, ARM and ARM64 how the
->> addresses need to be mangled.
->>
->> Are you suggesting we somehow decouple the memory mangling part into a
->> portion that can be built into the kernel image (so phys_to_dma() and
->> dma_to_phys() is resolved at vmlinux link time) and can be selected by
->> different architectures that need it? If so, yikes.
-> 
-> On architectures with crazy PCIe controllers (this seems to include
-> mips, arm, arm64 and x86 thanks to the weird SOCs) we will need a
-> a few different memory maps, yes.  Take a look at
-> arch/x86/pci/sta2x11-fixup.c, preferably from a tree where the worst
-> issues are fixed:
-> 
-> http://git.infradead.org/users/hch/misc.git/blob/refs/heads/dma-direct-all:/arch/x86/pci/sta2x11-fixup.c
-> 
-> Overriding phys_to_dma and dma_to_phys is required if you need to
-> support swiotlb, and chances are with a broken PCIe controller on
-> arm64 or mips64 you eventuall will.
-> 
-> This sta2x11 code should probably be lifted to common code in
-> one form or another eventually, althought it will need another
-> fair round of cleanups for now.
+Hello Serge,
 
-This looks nicer than the current shape, but this still requires to
-register a PCI fixup to override phys_to_dma() and dma_to_phys(), and it
-would appear that you have dodged my question about how this is supposed
-to fit with an entirely modular PCIe root complex driver? Are you
-suggesting that we split the module into a built-in part and a modular part?
+On 17/01/18 23:22, Serge Semin wrote:
+> The patchset is applied on top of kernel 4.15-rc8 and can be found
+> submitted at my repo:
+> https://github.com/fancer/Linux-kernel-MIPS-memblock-project
 
-> 
->> I can see value in having a generic mechanism, ala X86_DMA_REMAP
->> allowing architectures to have the ability to override phys_to_dma() and
->> dma_to_phys() but right now, especially if we look at
->> arch/x86/pci/sta2x11-fixup.c this really appears to be quite messy and
->> equally ugly than stacking operations...
->>
->> What is the actual problem you want to avoid with the stacking of DMA
->> operations, is it because it becomes harder to audit, or are there are
->> other reasons?
-> 
-> Audit, consolidate into a single dma-direct implementation and properly
-> support swiotlb out of the box.
-> 
+I've tested the Linux from your repo on Octeon2 and it looks good to me.
+I've only tested startup though. Therefore,
 
-OK.
+Tested-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+
+I've noticed one positive effect I cannot explain -- with almost the same
+physical memory map I observe almost 2 megabytes more available memory
+after startup:
+
+without patches:
+
+root@(none):~ >free
+              total        used        free      shared  buff/cache   available
+Mem:         955040       16264      839948       80068       98828      810068
+Swap:             0           0           0
+
+memory map:
+
+memory: 0000000001090dc0 @ 0000000009000000 (usable after init)
+memory: 0000000005400000 @ 0000000002b00000 (usable)
+memory: 0000000000c00000 @ 0000000008200000 (usable)
+memory: 0000000004800000 @ 000000000a100000 (usable)
+memory: 000000001fc00000 @ 0000000020000000 (usable)
+memory: 0000000010000000 @ 0000000040000000 (usable)
+memory: 000000000190a9d0 @ 0000000001100000 (usable)
+
+----------------------------------------
+
+with patches:
+
+root@(none):~ >free
+              total        used        free      shared  buff/cache   available
+Mem:         955028       14292      841884       80068       98852      811996
+Swap:             0           0           0
+
+memory map:
+
+memory: 0000000001090e00 @ 0000000009000000 (usable after init)
+memory: 0000000005400000 @ 0000000002b00000 (usable)
+memory: 0000000000c00000 @ 0000000008200000 (usable)
+memory: 0000000004800000 @ 000000000a100000 (usable)
+memory: 000000001fc00000 @ 0000000020000000 (usable)
+memory: 0000000010000000 @ 0000000040000000 (usable)
+memory: 000000000190c9d0 @ 0000000001100000 (usable)
+
+
+> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+> 
+> Serge Semin (14):
+>   MIPS: memblock: Add RESERVED_NOMAP memory flag
+>   MIPS: memblock: Surely map BSS kernel memory section
+>   MIPS: memblock: Reserve initrd memory in memblock
+>   MIPS: memblock: Discard bootmem initialization
+>   MIPS: memblock: Add reserved memory regions to memblock
+>   MIPS: memblock: Reserve kdump/crash regions in memblock
+>   MIPS: memblock: Mark present sparsemem sections
+>   MIPS: memblock: Simplify DMA contiguous reservation
+>   MIPS: memblock: Allow memblock regions resize
+>   MIPS: memblock: Perform early low memory test
+>   MIPS: memblock: Print out kernel virtual mem layout
+>   MIPS: memblock: Discard bootmem from Loongson3 code
+>   MIPS: memblock: Discard bootmem from SGI IP27 code
+>   MIPS: memblock: Deactivate bootmem allocator
+
 -- 
-Florian
+Best regards,
+Alexander Sverdlin.

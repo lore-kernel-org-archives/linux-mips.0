@@ -1,19 +1,14 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:36431 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:45752 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990400AbeA0JS2ZSV55 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 27 Jan 2018 10:18:28 +0100
-Date: Sat, 27 Jan 2018 09:15:40 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [for-4.15] ssb: Disable PCI host for PCI_DRIVERS_GENERIC
-Message-ID: <20180127091540.GB21356@jhogan-linux.mipstec.com>
-References: <20180115211714.24009-1-jhogan@kernel.org>
- <20180116191636.6B3E5605A4@smtp.codeaurora.org>
- <m2bmhfsm6v.fsf@linux-m68k.org>
+        by eddie.linux-mips.org with ESMTP id S23994584AbeA2L1nz8nqI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 29 Jan 2018 12:27:43 +0100
+From: Matt Redfearn <matt.redfearn@mips.com>
+Subject: [PATCH] MIPS: TXx9: use IS_BUILTIN() for CONFIG_LEDS_CLASS
+Date: Mon, 29 Jan 2018 11:26:45 +0000
+Message-ID: <1517225205-10374-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <m2bmhfsm6v.fsf@linux-m68k.org>
-Return-Path: <James.Hogan@mips.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,20 +18,58 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andreas Schwab <schwab@linux-m68k.org>
-Cc: Kalle Valo <kvalo@codeaurora.org>, Michael Buesch <m@bues.ch>, linux-wireless@vger.kernel.org, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, Matt Redfearn <matt.redfearn@imgtec.com>, Guenter Roeck <linux@roeck-us.net>
-Message-ID: <20180127091540.31_Oks25zXcyOyA07lCH90uef2VS8-A1bXBBmNRKjss@z>
+To: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, linux-kernel@vger.kernel.org
+Message-ID: <20180129112645.FHHWSrYAPK7GQRmE7CLfiNQuj644FMxByeSHEy7xecA@z>
 
-On Sat, Jan 27, 2018 at 10:08:56AM +0100, Andreas Schwab wrote:
-> On Jan 16 2018, Kalle Valo <kvalo@codeaurora.org> wrote:
-> 
-> > 58eae1416b80 ssb: Disable PCI host for PCI_DRIVERS_GENERIC
-> 
-> That breaks wireless on PowerMac!  There is nothing MIPS-specific about
-> SSB.
+When commit b27311e1cace ("MIPS: TXx9: Add RBTX4939 board support")
+added board support for the RBTX4939, it added a call to
+led_classdev_register even if the LED class is built as a module.
+Built-in arch code cannot call module code directly like this. Commit
+b33b44073734 ("MIPS: TXX9: use IS_ENABLED() macro") subsequently
+changed the inclusion of this code to a single check that
+CONFIG_LEDS_CLASS is either builtin or a module, but the same issue
+remains.
+This leads to MIPS allmodconfig builds failing when CONFIG_MACH_TX49XX=y
+is set:
 
-Yes, really sorry about that. There is a patch here:
-https://patchwork.kernel.org/patch/10185397/
+arch/mips/txx9/rbtx4939/setup.o: In function `rbtx4939_led_probe':
+setup.c:(.init.text+0xc0): undefined reference to `of_led_classdev_register'
+make: *** [Makefile:999: vmlinux] Error 1
 
-Cheers
-James
+Fix this by using the IS_BUILTIN() macro instead.
+
+Fixes: b27311e1cace ("MIPS: TXx9: Add RBTX4939 board support")
+Fixes: b33b44073734 ("MIPS: TXX9: use IS_ENABLED() macro")
+
+Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+
+---
+
+ arch/mips/txx9/rbtx4939/setup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/txx9/rbtx4939/setup.c b/arch/mips/txx9/rbtx4939/setup.c
+index 8b937300fb7f..fd26fadc8617 100644
+--- a/arch/mips/txx9/rbtx4939/setup.c
++++ b/arch/mips/txx9/rbtx4939/setup.c
+@@ -186,7 +186,7 @@ static void __init rbtx4939_update_ioc_pen(void)
+ 
+ #define RBTX4939_MAX_7SEGLEDS	8
+ 
+-#if IS_ENABLED(CONFIG_LEDS_CLASS)
++#if IS_BUILTIN(CONFIG_LEDS_CLASS)
+ static u8 led_val[RBTX4939_MAX_7SEGLEDS];
+ struct rbtx4939_led_data {
+ 	struct led_classdev cdev;
+@@ -261,7 +261,7 @@ static inline void rbtx4939_led_setup(void)
+ 
+ static void __rbtx4939_7segled_putc(unsigned int pos, unsigned char val)
+ {
+-#if IS_ENABLED(CONFIG_LEDS_CLASS)
++#if IS_BUILTIN(CONFIG_LEDS_CLASS)
+ 	unsigned long flags;
+ 	local_irq_save(flags);
+ 	/* bit7: reserved for LED class */
+-- 
+2.7.4

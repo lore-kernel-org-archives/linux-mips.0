@@ -1,13 +1,18 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:45752 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:43750 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994584AbeA2L1nz8nqI (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 29 Jan 2018 12:27:43 +0100
+        by eddie.linux-mips.org with ESMTP id S23994750AbeAaL7mg6XXW (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 31 Jan 2018 12:59:42 +0100
+Subject: Re: [PATCH v2 1/2] Add notrace to lib/ucmpdi2.c
+References: <20180130224202.7682-1-antonynpavlov@gmail.com>
+ <20180130224202.7682-2-antonynpavlov@gmail.com>
 From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH] MIPS: TXx9: use IS_BUILTIN() for CONFIG_LEDS_CLASS
-Date: Mon, 29 Jan 2018 11:26:45 +0000
-Message-ID: <1517225205-10374-1-git-send-email-matt.redfearn@mips.com>
+Message-ID: <aeb636ad-571e-104d-e180-8f60877de571@mips.com>
+Date: Wed, 31 Jan 2018 11:54:48 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20180130224202.7682-2-antonynpavlov@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -18,58 +23,42 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, linux-kernel@vger.kernel.org
-Message-ID: <20180129112645.FHHWSrYAPK7GQRmE7CLfiNQuj644FMxByeSHEy7xecA@z>
+To: Antony Pavlov <antonynpavlov@gmail.com>, linux-mips@linux-mips.org
+Cc: James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@sifive.com>
+Message-ID: <20180131115448.H_EpKmr4yDm34zdUdKI3qgP2VJZXXolP5i4WAcW46So@z>
 
-When commit b27311e1cace ("MIPS: TXx9: Add RBTX4939 board support")
-added board support for the RBTX4939, it added a call to
-led_classdev_register even if the LED class is built as a module.
-Built-in arch code cannot call module code directly like this. Commit
-b33b44073734 ("MIPS: TXX9: use IS_ENABLED() macro") subsequently
-changed the inclusion of this code to a single check that
-CONFIG_LEDS_CLASS is either builtin or a module, but the same issue
-remains.
-This leads to MIPS allmodconfig builds failing when CONFIG_MACH_TX49XX=y
-is set:
+Hi
 
-arch/mips/txx9/rbtx4939/setup.o: In function `rbtx4939_led_probe':
-setup.c:(.init.text+0xc0): undefined reference to `of_led_classdev_register'
-make: *** [Makefile:999: vmlinux] Error 1
+On 30/01/18 22:42, Antony Pavlov wrote:
+> From: Palmer Dabbelt <palmer@sifive.com>
+> 
+> As part of the MIPS conversion to use the generic GCC library routines,
+> Matt Redfearn discovered that I'd missed a notrace on __ucmpdi2().  This
+> patch rectifies the problem.
+> 
+> CC: Matt Redfearn <matt.redfearn@mips.com>
+> CC: Antony Pavlov <antonynpavlov@gmail.com>
+> Signed-off-by: Palmer Dabbelt <palmer@sifive.com>
 
-Fix this by using the IS_BUILTIN() macro instead.
 
-Fixes: b27311e1cace ("MIPS: TXx9: Add RBTX4939 board support")
-Fixes: b33b44073734 ("MIPS: TXX9: use IS_ENABLED() macro")
+Looks good to me :-)
+Reviewed-by: Matt Redfearn <amtt.redfearn@mips.com>
 
-Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
-
----
-
- arch/mips/txx9/rbtx4939/setup.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/txx9/rbtx4939/setup.c b/arch/mips/txx9/rbtx4939/setup.c
-index 8b937300fb7f..fd26fadc8617 100644
---- a/arch/mips/txx9/rbtx4939/setup.c
-+++ b/arch/mips/txx9/rbtx4939/setup.c
-@@ -186,7 +186,7 @@ static void __init rbtx4939_update_ioc_pen(void)
- 
- #define RBTX4939_MAX_7SEGLEDS	8
- 
--#if IS_ENABLED(CONFIG_LEDS_CLASS)
-+#if IS_BUILTIN(CONFIG_LEDS_CLASS)
- static u8 led_val[RBTX4939_MAX_7SEGLEDS];
- struct rbtx4939_led_data {
- 	struct led_classdev cdev;
-@@ -261,7 +261,7 @@ static inline void rbtx4939_led_setup(void)
- 
- static void __rbtx4939_7segled_putc(unsigned int pos, unsigned char val)
- {
--#if IS_ENABLED(CONFIG_LEDS_CLASS)
-+#if IS_BUILTIN(CONFIG_LEDS_CLASS)
- 	unsigned long flags;
- 	local_irq_save(flags);
- 	/* bit7: reserved for LED class */
--- 
-2.7.4
+> ---
+>   lib/ucmpdi2.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/ucmpdi2.c b/lib/ucmpdi2.c
+> index 25ca2d4c1e19..597998169a96 100644
+> --- a/lib/ucmpdi2.c
+> +++ b/lib/ucmpdi2.c
+> @@ -17,7 +17,7 @@
+>   #include <linux/module.h>
+>   #include <linux/libgcc.h>
+>   
+> -word_type __ucmpdi2(unsigned long long a, unsigned long long b)
+> +word_type notrace __ucmpdi2(unsigned long long a, unsigned long long b)
+>   {
+>   	const DWunion au = {.ll = a};
+>   	const DWunion bu = {.ll = b};
+> 

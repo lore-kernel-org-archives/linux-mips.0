@@ -1,19 +1,14 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:38352 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:41894 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994791AbeAaQLj3KMQN (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 31 Jan 2018 17:11:39 +0100
-Subject: Re: [PATCH v3 2/2] MIPS: use generic GCC library routines from lib/
-References: <20180131153337.29021-1-antonynpavlov@gmail.com>
- <20180131153337.29021-3-antonynpavlov@gmail.com>
-From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <bfe8f5e7-3372-1bfb-e5f8-f752e2b12126@mips.com>
-Date: Wed, 31 Jan 2018 16:07:51 +0000
+        by eddie.linux-mips.org with ESMTP id S23994828AbeBALjuB6OFN (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 1 Feb 2018 12:39:50 +0100
+From: Marcin Nowakowski <marcin.nowakowski@mips.com>
+Subject: [PATCH v3] MIPS: fix incorrect mem=X@Y handling
+Date: Thu, 1 Feb 2018 12:37:21 +0100
+Message-ID: <20180201113721.24776-1-marcin.nowakowski@mips.com>
 MIME-Version: 1.0
-In-Reply-To: <20180131153337.29021-3-antonynpavlov@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@mips.com>
+Content-Type: text/plain
+Return-Path: <Marcin.Nowakowski@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,257 +18,92 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Antony Pavlov <antonynpavlov@gmail.com>, linux-mips@linux-mips.org
-Cc: James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@sifive.com>
-Message-ID: <20180131160751.aWbM_ZslZsecTrIX4yvLSrj993asVoS-vHETGzfvYOQ@z>
+To: Mathieu Malaterre <malat@debian.org>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Cc: Marcin Nowakowski <marcin.nowakowski@mips.com>, stable@vger.kernel.org
+Message-ID: <20180201113721.Qt8GaK63Qb7ymmECCPZett77zQLpozX-Pt2uLjjL7xI@z>
 
-Hi,
+Commit 73fbc1eba7ff ("MIPS: fix mem=X@Y commandline processing") added a
+fix to ensure that the memory range between PHYS_OFFSET and low memory
+address specified by mem= cmdline argument is not later processed by
+free_all_bootmem.  This change was incorrect for systems where the
+commandline specifies more than 1 mem argument, as it will cause all
+memory between PHYS_OFFSET and each of the memory offsets to be marked
+as reserved, which results in parts of the RAM marked as reserved
+(Creator CI20's u-boot has a default commandline argument 'mem=256M@0x0
+mem=768M@0x30000000').
 
-On 31/01/18 15:33, Antony Pavlov wrote:
-> The commit b35cd9884fa5 ("lib: Add shared copies of
-> some GCC library routines") makes it possible
-> to share generic GCC library routines by several
-> architectures.
-> 
-> This commit removes several generic GCC library
-> routines from arch/mips/lib/ in favour of similar
-> routines from lib/.
-> 
-> Signed-off-by: Antony Pavlov <antonynpavlov@gmail.com>
-> Cc: Palmer Dabbelt <palmer@sifive.com>
-> Cc: Matt Redfearn <matt.redfearn@mips.com>
-> Cc: James Hogan <jhogan@kernel.org>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: linux-mips@linux-mips.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->   arch/mips/Kconfig       |  5 +++++
->   arch/mips/lib/Makefile  |  2 +-
->   arch/mips/lib/ashldi3.c | 30 ------------------------------
->   arch/mips/lib/ashrdi3.c | 32 --------------------------------
->   arch/mips/lib/cmpdi2.c  | 28 ----------------------------
->   arch/mips/lib/lshrdi3.c | 30 ------------------------------
->   arch/mips/lib/ucmpdi2.c | 22 ----------------------
->   7 files changed, 6 insertions(+), 143 deletions(-)
-> 
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index 350a990fc719..b63a5422d485 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -18,16 +18,21 @@ config MIPS
->   	select BUILDTIME_EXTABLE_SORT
->   	select CLONE_BACKWARDS
->   	select CPU_PM if CPU_IDLE
-> +	select GENERIC_ASHLDI3
-> +	select GENERIC_ASHRDI3
->   	select GENERIC_ATOMIC64 if !64BIT
->   	select GENERIC_CLOCKEVENTS
->   	select GENERIC_CMOS_UPDATE
-> +	select GENERIC_CMPDI2
->   	select GENERIC_CPU_AUTOPROBE
->   	select GENERIC_IRQ_PROBE
->   	select GENERIC_IRQ_SHOW
-> +	select GENERIC_LSHRDI3
->   	select GENERIC_PCI_IOMAP
->   	select GENERIC_SCHED_CLOCK if !CAVIUM_OCTEON_SOC
->   	select GENERIC_SMP_IDLE_THREAD
->   	select GENERIC_TIME_VSYSCALL
-> +	select GENERIC_UCMPDI2
->   	select HANDLE_DOMAIN_IRQ
->   	select HAVE_ARCH_JUMP_LABEL
->   	select HAVE_ARCH_KGDB
+Change the behaviour to ensure that only the range between PHYS_OFFSET
+and the lowest start address of the memories is marked as protected.
 
-OK, thanks for changing this. But to be honest, it does look pretty 
-messy like this. I feel like the CONFIG names should be something a 
-little more descriptive, such as CONFIG_GENERIC_LIB_*, putting them in a 
-namespace that would at least group them all together. Right now, AFAIK 
-there's only RISC-V using these so it shouldn't be too painful to change 
-them. What do you think Antony / Palmer?
+This change also ensures that the range is marked protected even if it's
+only defined through the devicetree and not only via commandline
+arguments.
 
-Thanks,
-Matt
+Reported-by: Mathieu Malaterre <mathieu.malaterre@gmail.com>
+Signed-off-by: Marcin Nowakowski <marcin.nowakowski@mips.com>
+Fixes: 73fbc1eba7ff ("MIPS: fix mem=X@Y commandline processing")
+Cc: <stable@vger.kernel.org> # v4.11+
+---
+v3: Update stable version, code cleanup as suggested by James Hogan
+v2: Use updated email adress, add tag for stable.
+---
+ arch/mips/kernel/setup.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-
-> diff --git a/arch/mips/lib/Makefile b/arch/mips/lib/Makefile
-> index 78c2affeabf8..195ab4cb0840 100644
-> --- a/arch/mips/lib/Makefile
-> +++ b/arch/mips/lib/Makefile
-> @@ -16,4 +16,4 @@ obj-$(CONFIG_CPU_R3000)		+= r3k_dump_tlb.o
->   obj-$(CONFIG_CPU_TX39XX)	+= r3k_dump_tlb.o
->   
->   # libgcc-style stuff needed in the kernel
-> -obj-y += ashldi3.o ashrdi3.o bswapsi.o bswapdi.o cmpdi2.o lshrdi3.o ucmpdi2.o
-> +obj-y += bswapsi.o bswapdi.o
-> diff --git a/arch/mips/lib/ashldi3.c b/arch/mips/lib/ashldi3.c
-> deleted file mode 100644
-> index 24cd6903e797..000000000000
-> --- a/arch/mips/lib/ashldi3.c
-> +++ /dev/null
-> @@ -1,30 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -#include <linux/export.h>
-> -
-> -#include "libgcc.h"
-> -
-> -long long notrace __ashldi3(long long u, word_type b)
-> -{
-> -	DWunion uu, w;
-> -	word_type bm;
-> -
-> -	if (b == 0)
-> -		return u;
-> -
-> -	uu.ll = u;
-> -	bm = 32 - b;
-> -
-> -	if (bm <= 0) {
-> -		w.s.low = 0;
-> -		w.s.high = (unsigned int) uu.s.low << -bm;
-> -	} else {
-> -		const unsigned int carries = (unsigned int) uu.s.low >> bm;
-> -
-> -		w.s.low = (unsigned int) uu.s.low << b;
-> -		w.s.high = ((unsigned int) uu.s.high << b) | carries;
-> -	}
-> -
-> -	return w.ll;
-> -}
-> -
-> -EXPORT_SYMBOL(__ashldi3);
-> diff --git a/arch/mips/lib/ashrdi3.c b/arch/mips/lib/ashrdi3.c
-> deleted file mode 100644
-> index 23f5295af51e..000000000000
-> --- a/arch/mips/lib/ashrdi3.c
-> +++ /dev/null
-> @@ -1,32 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -#include <linux/export.h>
-> -
-> -#include "libgcc.h"
-> -
-> -long long notrace __ashrdi3(long long u, word_type b)
-> -{
-> -	DWunion uu, w;
-> -	word_type bm;
-> -
-> -	if (b == 0)
-> -		return u;
-> -
-> -	uu.ll = u;
-> -	bm = 32 - b;
-> -
-> -	if (bm <= 0) {
-> -		/* w.s.high = 1..1 or 0..0 */
-> -		w.s.high =
-> -		    uu.s.high >> 31;
-> -		w.s.low = uu.s.high >> -bm;
-> -	} else {
-> -		const unsigned int carries = (unsigned int) uu.s.high << bm;
-> -
-> -		w.s.high = uu.s.high >> b;
-> -		w.s.low = ((unsigned int) uu.s.low >> b) | carries;
-> -	}
-> -
-> -	return w.ll;
-> -}
-> -
-> -EXPORT_SYMBOL(__ashrdi3);
-> diff --git a/arch/mips/lib/cmpdi2.c b/arch/mips/lib/cmpdi2.c
-> deleted file mode 100644
-> index 93cfc785927d..000000000000
-> --- a/arch/mips/lib/cmpdi2.c
-> +++ /dev/null
-> @@ -1,28 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -#include <linux/export.h>
-> -
-> -#include "libgcc.h"
-> -
-> -word_type notrace __cmpdi2(long long a, long long b)
-> -{
-> -	const DWunion au = {
-> -		.ll = a
-> -	};
-> -	const DWunion bu = {
-> -		.ll = b
-> -	};
-> -
-> -	if (au.s.high < bu.s.high)
-> -		return 0;
-> -	else if (au.s.high > bu.s.high)
-> -		return 2;
-> -
-> -	if ((unsigned int) au.s.low < (unsigned int) bu.s.low)
-> -		return 0;
-> -	else if ((unsigned int) au.s.low > (unsigned int) bu.s.low)
-> -		return 2;
-> -
-> -	return 1;
-> -}
-> -
-> -EXPORT_SYMBOL(__cmpdi2);
-> diff --git a/arch/mips/lib/lshrdi3.c b/arch/mips/lib/lshrdi3.c
-> deleted file mode 100644
-> index 914b971aca3b..000000000000
-> --- a/arch/mips/lib/lshrdi3.c
-> +++ /dev/null
-> @@ -1,30 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -#include <linux/export.h>
-> -
-> -#include "libgcc.h"
-> -
-> -long long notrace __lshrdi3(long long u, word_type b)
-> -{
-> -	DWunion uu, w;
-> -	word_type bm;
-> -
-> -	if (b == 0)
-> -		return u;
-> -
-> -	uu.ll = u;
-> -	bm = 32 - b;
-> -
-> -	if (bm <= 0) {
-> -		w.s.high = 0;
-> -		w.s.low = (unsigned int) uu.s.high >> -bm;
-> -	} else {
-> -		const unsigned int carries = (unsigned int) uu.s.high << bm;
-> -
-> -		w.s.high = (unsigned int) uu.s.high >> b;
-> -		w.s.low = ((unsigned int) uu.s.low >> b) | carries;
-> -	}
-> -
-> -	return w.ll;
-> -}
-> -
-> -EXPORT_SYMBOL(__lshrdi3);
-> diff --git a/arch/mips/lib/ucmpdi2.c b/arch/mips/lib/ucmpdi2.c
-> deleted file mode 100644
-> index c31c78ca4175..000000000000
-> --- a/arch/mips/lib/ucmpdi2.c
-> +++ /dev/null
-> @@ -1,22 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -#include <linux/export.h>
-> -
-> -#include "libgcc.h"
-> -
-> -word_type notrace __ucmpdi2(unsigned long long a, unsigned long long b)
-> -{
-> -	const DWunion au = {.ll = a};
-> -	const DWunion bu = {.ll = b};
-> -
-> -	if ((unsigned int) au.s.high < (unsigned int) bu.s.high)
-> -		return 0;
-> -	else if ((unsigned int) au.s.high > (unsigned int) bu.s.high)
-> -		return 2;
-> -	if ((unsigned int) au.s.low < (unsigned int) bu.s.low)
-> -		return 0;
-> -	else if ((unsigned int) au.s.low > (unsigned int) bu.s.low)
-> -		return 2;
-> -	return 1;
-> -}
-> -
-> -EXPORT_SYMBOL(__ucmpdi2);
-> 
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 702c678de116..e4a1581ce822 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -375,6 +375,7 @@ static void __init bootmem_init(void)
+ 	unsigned long reserved_end;
+ 	unsigned long mapstart = ~0UL;
+ 	unsigned long bootmap_size;
++	phys_addr_t ramstart = (phys_addr_t)ULLONG_MAX;
+ 	bool bootmap_valid = false;
+ 	int i;
+ 
+@@ -395,7 +396,8 @@ static void __init bootmem_init(void)
+ 	max_low_pfn = 0;
+ 
+ 	/*
+-	 * Find the highest page frame number we have available.
++	 * Find the highest page frame number we have available
++	 * and the lowest used RAM address
+ 	 */
+ 	for (i = 0; i < boot_mem_map.nr_map; i++) {
+ 		unsigned long start, end;
+@@ -407,6 +409,8 @@ static void __init bootmem_init(void)
+ 		end = PFN_DOWN(boot_mem_map.map[i].addr
+ 				+ boot_mem_map.map[i].size);
+ 
++		ramstart = min(ramstart, boot_mem_map.map[i].addr);
++
+ #ifndef CONFIG_HIGHMEM
+ 		/*
+ 		 * Skip highmem here so we get an accurate max_low_pfn if low
+@@ -436,6 +440,13 @@ static void __init bootmem_init(void)
+ 		mapstart = max(reserved_end, start);
+ 	}
+ 
++	/*
++	 * Reserve any memory between the start of RAM and PHYS_OFFSET
++	 */
++	if (ramstart > PHYS_OFFSET)
++		add_memory_region(PHYS_OFFSET, ramstart - PHYS_OFFSET,
++				  BOOT_MEM_RESERVED);
++
+ 	if (min_low_pfn >= max_low_pfn)
+ 		panic("Incorrect memory mapping !!!");
+ 	if (min_low_pfn > ARCH_PFN_OFFSET) {
+@@ -664,9 +675,6 @@ static int __init early_parse_mem(char *p)
+ 
+ 	add_memory_region(start, size, BOOT_MEM_RAM);
+ 
+-	if (start && start > PHYS_OFFSET)
+-		add_memory_region(PHYS_OFFSET, start - PHYS_OFFSET,
+-				BOOT_MEM_RESERVED);
+ 	return 0;
+ }
+ early_param("mem", early_parse_mem);
+-- 
+2.14.1

@@ -1,14 +1,16 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:41894 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:58482 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994828AbeBALjuB6OFN (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 1 Feb 2018 12:39:50 +0100
-From: Marcin Nowakowski <marcin.nowakowski@mips.com>
-Subject: [PATCH v3] MIPS: fix incorrect mem=X@Y handling
-Date: Thu, 1 Feb 2018 12:37:21 +0100
-Message-ID: <20180201113721.24776-1-marcin.nowakowski@mips.com>
+        by eddie.linux-mips.org with ESMTP id S23990477AbeBBRmDf7DK7 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 2 Feb 2018 18:42:03 +0100
+Date: Fri, 2 Feb 2018 17:38:00 +0000
+From: "Maciej W. Rozycki" <macro@mips.com>
+Subject: Re: [PATCH RFC 3/6] MIPS: BMIPS: Avoid referencing CKSEG1
+In-Reply-To: <1516758426-8127-4-git-send-email-f.fainelli@gmail.com>
+Message-ID: <alpine.DEB.2.00.1802012034400.4191@tp.orcam.me.uk>
+References: <1516758426-8127-1-git-send-email-f.fainelli@gmail.com> <1516758426-8127-4-git-send-email-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Marcin.Nowakowski@mips.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,92 +20,24 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Mathieu Malaterre <malat@debian.org>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Cc: Marcin Nowakowski <marcin.nowakowski@mips.com>, stable@vger.kernel.org
-Message-ID: <20180201113721.Qt8GaK63Qb7ymmECCPZett77zQLpozX-Pt2uLjjL7xI@z>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-mips@linux-mips.org, Florian Fainelli <florian.fainelli@broadcom.com>, Ralf Baechle <ralf@linux-mips.org>, Kevin Cernekee <cernekee@gmail.com>, James Hogan <jhogan@kernel.org>, Paul Burton <paul.burton@mips.com>, Matt Redfearn <matt.redfearn@mips.com>, Huacai Chen <chenhc@lemote.com>, Kate Stewart <kstewart@linuxfoundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Marcin Nowakowski <marcin.nowakowski@mips.com>, Andrew Morton <akpm@linux-foundation.org>, "Eric W. Biederman" <ebiederm@xmission.com>, Ingo Molnar <mingo@kernel.org>, David Howells <dhowells@redhat.com>, Kees Cook <keescook@chromium.org>, Thomas Meyer <thomas@m3y3r.de>, Bryan O'Donoghue <pure.logic@nexus-software.ie>, Robin Murphy <robin.murphy@arm.com>, Michal Hocko <mhocko@suse.com>, Lucas Stach <l.stach@pengutronix.de>, Vladimir Murzin <vladimir.murzin@arm.com>, Bart Van Assche <bart.vanassche@sandisk.com>, open list <linux-kernel@vger.kernel.org>
+Message-ID: <20180202173800.f7wVFFiHwdX3F-uM_xPawthApRvy7-g94i9mCt91VeQ@z>
 
-Commit 73fbc1eba7ff ("MIPS: fix mem=X@Y commandline processing") added a
-fix to ensure that the memory range between PHYS_OFFSET and low memory
-address specified by mem= cmdline argument is not later processed by
-free_all_bootmem.  This change was incorrect for systems where the
-commandline specifies more than 1 mem argument, as it will cause all
-memory between PHYS_OFFSET and each of the memory offsets to be marked
-as reserved, which results in parts of the RAM marked as reserved
-(Creator CI20's u-boot has a default commandline argument 'mem=256M@0x0
-mem=768M@0x30000000').
+On Tue, 23 Jan 2018, Florian Fainelli wrote:
 
-Change the behaviour to ensure that only the range between PHYS_OFFSET
-and the lowest start address of the memories is marked as protected.
+> bmips_smp_movevec() references the CKSEG1 constant, which is about to be
+> updated in order to support processors that might enable eXtended
+> KSEG0/1. In doing so, we will generate a reference to a function, which
+> is obviously not permissible within assembly. Fortunately,
+> bmips_smp_movevec() is only used on BMIPS4350 which does not support
+> eXtended KSEG0/1.
 
-This change also ensures that the range is marked protected even if it's
-only defined through the devicetree and not only via commandline
-arguments.
+ Can you please avoid replacing the macro with a hardcoded magic number 
+though, so that it retains the high-level meaning?
 
-Reported-by: Mathieu Malaterre <mathieu.malaterre@gmail.com>
-Signed-off-by: Marcin Nowakowski <marcin.nowakowski@mips.com>
-Fixes: 73fbc1eba7ff ("MIPS: fix mem=X@Y commandline processing")
-Cc: <stable@vger.kernel.org> # v4.11+
----
-v3: Update stable version, code cleanup as suggested by James Hogan
-v2: Use updated email adress, add tag for stable.
----
- arch/mips/kernel/setup.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ Define another macro, say MIPS_ARCH_CKSEG1, and use it here instead, and 
+possibly elsewhere too.  You could complement it with BMIPS_XKS01_CKSEG1 
+if necessary too (I haven't thoroughly looked through your patches).
 
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 702c678de116..e4a1581ce822 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -375,6 +375,7 @@ static void __init bootmem_init(void)
- 	unsigned long reserved_end;
- 	unsigned long mapstart = ~0UL;
- 	unsigned long bootmap_size;
-+	phys_addr_t ramstart = (phys_addr_t)ULLONG_MAX;
- 	bool bootmap_valid = false;
- 	int i;
- 
-@@ -395,7 +396,8 @@ static void __init bootmem_init(void)
- 	max_low_pfn = 0;
- 
- 	/*
--	 * Find the highest page frame number we have available.
-+	 * Find the highest page frame number we have available
-+	 * and the lowest used RAM address
- 	 */
- 	for (i = 0; i < boot_mem_map.nr_map; i++) {
- 		unsigned long start, end;
-@@ -407,6 +409,8 @@ static void __init bootmem_init(void)
- 		end = PFN_DOWN(boot_mem_map.map[i].addr
- 				+ boot_mem_map.map[i].size);
- 
-+		ramstart = min(ramstart, boot_mem_map.map[i].addr);
-+
- #ifndef CONFIG_HIGHMEM
- 		/*
- 		 * Skip highmem here so we get an accurate max_low_pfn if low
-@@ -436,6 +440,13 @@ static void __init bootmem_init(void)
- 		mapstart = max(reserved_end, start);
- 	}
- 
-+	/*
-+	 * Reserve any memory between the start of RAM and PHYS_OFFSET
-+	 */
-+	if (ramstart > PHYS_OFFSET)
-+		add_memory_region(PHYS_OFFSET, ramstart - PHYS_OFFSET,
-+				  BOOT_MEM_RESERVED);
-+
- 	if (min_low_pfn >= max_low_pfn)
- 		panic("Incorrect memory mapping !!!");
- 	if (min_low_pfn > ARCH_PFN_OFFSET) {
-@@ -664,9 +675,6 @@ static int __init early_parse_mem(char *p)
- 
- 	add_memory_region(start, size, BOOT_MEM_RAM);
- 
--	if (start && start > PHYS_OFFSET)
--		add_memory_region(PHYS_OFFSET, start - PHYS_OFFSET,
--				BOOT_MEM_RESERVED);
- 	return 0;
- }
- early_param("mem", early_parse_mem);
--- 
-2.14.1
+  Maciej

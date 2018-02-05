@@ -1,13 +1,13 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:58482 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:49193 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990477AbeBBRmDf7DK7 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 2 Feb 2018 18:42:03 +0100
-Date: Fri, 2 Feb 2018 17:38:00 +0000
+        by eddie.linux-mips.org with ESMTP id S23990864AbeBEAORirAJt (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 5 Feb 2018 01:14:17 +0100
+Date: Mon, 5 Feb 2018 00:13:02 +0000
 From: "Maciej W. Rozycki" <macro@mips.com>
-Subject: Re: [PATCH RFC 3/6] MIPS: BMIPS: Avoid referencing CKSEG1
-In-Reply-To: <1516758426-8127-4-git-send-email-f.fainelli@gmail.com>
-Message-ID: <alpine.DEB.2.00.1802012034400.4191@tp.orcam.me.uk>
-References: <1516758426-8127-1-git-send-email-f.fainelli@gmail.com> <1516758426-8127-4-git-send-email-f.fainelli@gmail.com>
+Subject: Re: [PATCH] MIPS: CPS: Fix r1 .set mt assembler warning
+In-Reply-To: <8e34deb4-33c3-9bdb-8ffb-b93516f16a84@linux-m68k.org>
+Message-ID: <alpine.DEB.2.00.1802050003250.3553@tp.orcam.me.uk>
+References: <079ec8f9-d2c2-9e29-278e-48e76bbb8de7@linux-m68k.org> <20180202120658.GA8479@saruman> <8e34deb4-33c3-9bdb-8ffb-b93516f16a84@linux-m68k.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <Maciej.Rozycki@mips.com>
@@ -20,24 +20,41 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: linux-mips@linux-mips.org, Florian Fainelli <florian.fainelli@broadcom.com>, Ralf Baechle <ralf@linux-mips.org>, Kevin Cernekee <cernekee@gmail.com>, James Hogan <jhogan@kernel.org>, Paul Burton <paul.burton@mips.com>, Matt Redfearn <matt.redfearn@mips.com>, Huacai Chen <chenhc@lemote.com>, Kate Stewart <kstewart@linuxfoundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Marcin Nowakowski <marcin.nowakowski@mips.com>, Andrew Morton <akpm@linux-foundation.org>, "Eric W. Biederman" <ebiederm@xmission.com>, Ingo Molnar <mingo@kernel.org>, David Howells <dhowells@redhat.com>, Kees Cook <keescook@chromium.org>, Thomas Meyer <thomas@m3y3r.de>, Bryan O'Donoghue <pure.logic@nexus-software.ie>, Robin Murphy <robin.murphy@arm.com>, Michal Hocko <mhocko@suse.com>, Lucas Stach <l.stach@pengutronix.de>, Vladimir Murzin <vladimir.murzin@arm.com>, Bart Van Assche <bart.vanassche@sandisk.com>, open list <linux-kernel@vger.kernel.org>
-Message-ID: <20180202173800.f7wVFFiHwdX3F-uM_xPawthApRvy7-g94i9mCt91VeQ@z>
+To: Greg Ungerer <gerg@linux-m68k.org>
+Cc: James Hogan <jhogan@kernel.org>, Paul Burton <paul.burton@mips.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+Message-ID: <20180205001302.3abk2p0jqus7Vaq15br0fVmK3cUjZoL3Mrat7RAOXmI@z>
 
-On Tue, 23 Jan 2018, Florian Fainelli wrote:
+On Sun, 4 Feb 2018, Greg Ungerer wrote:
 
-> bmips_smp_movevec() references the CKSEG1 constant, which is about to be
-> updated in order to support processors that might enable eXtended
-> KSEG0/1. In doing so, we will generate a reference to a function, which
-> is obviously not permissible within assembly. Fortunately,
-> bmips_smp_movevec() is only used on BMIPS4350 which does not support
-> eXtended KSEG0/1.
+> A "mips-linux-objdump -d" around that PC gives:
+> 
+> 80656610:       40090001        mfc0    t1,c0_mvpcontrol
+> 80656614:       35290002        ori     t1,t1,0x2
+> 80656618:       40890001        mtc0    t1,c0_mvpcontrol
+> 8065661c:       000000c0        ehb
+> 80656620:       01c0c02d        0x1c0c02d
+> 80656624:       240d0000        li      t5,0
+> 80656628:       31c80001        andi    t0,t6,0x1
+> 8065662c:       1100002b        beqz    t0,806566dc <mips_cps_boot_vpes+0x108>
+> 80656630:       00000000        nop
+> 
+> So it can't decode that "01c0c02d"...
 
- Can you please avoid replacing the macro with a hardcoded magic number 
-though, so that it retains the high-level meaning?
+ Well, `objdump -mmips:isa64r2 -d' reveals this:
 
- Define another macro, say MIPS_ARCH_CKSEG1, and use it here instead, and 
-possibly elsewhere too.  You could complement it with BMIPS_XKS01_CKSEG1 
-if necessary too (I haven't thoroughly looked through your patches).
+80000000:	01c0c02d 	move	t8,t6
+
+and then `objdump -mmips:isa64r2 -M no-aliases -d' further shows this:
+
+80000000:	01c0c02d 	daddu	t8,t6,zero
+
+which is a 64-bit instruction, so clearly the temporary `.set' override 
+spans too much (we have updated GAS recently to emit machine code for OR 
+rather than ADDU/DADDU as the expansion for the MOVE assembly idiom to 
+minimise impact from such issues though; ADDU/DADDU would schedule better 
+with old superscalar MIPS processors, but that is not an issue with the 
+modern ones, I'm told).
+
+ HTH,
 
   Maciej

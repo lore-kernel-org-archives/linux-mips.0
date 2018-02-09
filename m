@@ -1,19 +1,16 @@
-Received: from userp2120.oracle.com ([156.151.31.85]:52984 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23990434AbeBGRCg6aE-V (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 7 Feb 2018 18:02:36 +0100
-Subject: Re: [net-next,06/15] i40e: change flags to use 64 bits
-References: <20180126212459.4246-7-jeffrey.t.kirsher@intel.com>
- <20180207150907.GB5092@saruman>
-From: Shannon Nelson <shannon.nelson@oracle.com>
-Message-ID: <e7c934d7-e5f4-ee1b-0647-c31a98d9e944@oracle.com>
-Date: Wed, 7 Feb 2018 09:02:17 -0800
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:50209 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992973AbeBIN3GaOuJx (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 9 Feb 2018 14:29:06 +0100
+From: Matt Redfearn <matt.redfearn@mips.com>
+Subject: [PATCH] lib: Rename compiler intrinsic selects to GENERIC_LIB_*
+Date: Fri, 9 Feb 2018 13:22:52 +0000
+Message-ID: <1518182572-23376-1-git-send-email-matt.redfearn@mips.com>
+In-Reply-To: <mhng-f000d448-7ead-4cee-9e2f-5d58692c0922@palmer-si-x1c4>
+References: <mhng-f000d448-7ead-4cee-9e2f-5d58692c0922@palmer-si-x1c4>
 MIME-Version: 1.0
-In-Reply-To: <20180207150907.GB5092@saruman>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Return-Path: <shannon.nelson@oracle.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,58 +20,89 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <jhogan@kernel.org>, Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc: davem@davemloft.net, Alice Michael <alice.michael@intel.com>, netdev@vger.kernel.org, nhorman@redhat.com, sassmann@redhat.com, jogreene@redhat.com, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
+To: Palmer Dabbelt <palmer@sifive.com>, antonynpavlov@gmail.com
+Cc: linux-mips@linux-mips.org, jhogan@kernel.org, ralf@linux-mips.org, linux-kernel@vger.kernel.org, Matt Redfearn <matt.redfearn@mips.com>
+Message-ID: <20180209132252.fjvWFwzr5FhBNOp_3P0qfj_2QmEKjTwZ0vSa7qWo6FE@z>
 
-On 2/7/2018 7:09 AM, James Hogan wrote:
-> On Fri, Jan 26, 2018 at 01:24:50PM -0800, Jeff Kirsher wrote:
->> From: Alice Michael <alice.michael@intel.com>
->>
->> As we have added more flags, we need to now use more
->> bits and have over flooded the 32 bit size.  So
->> make it 64.
->>
->> Also change all the existing bits to unsigned long long
->> bits.
->>
->> Signed-off-by: Alice Michael <alice.michael@intel.com>
->> Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
->> Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
->> ---
->>   drivers/net/ethernet/intel/i40e/i40e.h         | 67 +++++++++++++-------------
->>   drivers/net/ethernet/intel/i40e/i40e_ethtool.c |  4 +-
->>   2 files changed, 36 insertions(+), 35 deletions(-)
-> 
-> ...
-> 
->> @@ -4323,7 +4323,7 @@ static int i40e_set_priv_flags(struct net_device *dev, u32 flags)
->>   	 * originally. We'll just punt with an error and log something in the
->>   	 * message buffer.
->>   	 */
->> -	if (cmpxchg(&pf->flags, orig_flags, new_flags) != orig_flags) {
->> +	if (cmpxchg64(&pf->flags, orig_flags, new_flags) != orig_flags) {
-> 
-> This breaks allyesconfig builds on certain architectures, for example
-> MIPS 32-bit with SMP enabled, which doesn't support cmpxchg64:
-> 
->    CC      drivers/net/ethernet/intel/i40e/i40e_ethtool.o
-> drivers/net/ethernet/intel/i40e/i40e_ethtool.c: In function ‘i40e_set_priv_flags’:
-> drivers/net/ethernet/intel/i40e/i40e_ethtool.c:4326:6: error: implicit declaration of function ‘cmpxchg64’; did you mean ‘__cmpxchg’? [-Werror=implicit-function-declaration]
->    if (cmpxchg64(&pf->flags, orig_flags, new_flags) != orig_flags) {
->        ^~~~~~~~~
->        __cmpxchg
-> 
-> Should the driver now depend on 64BIT or something?
+When these are included into arch Kconfig files, maintaining
+alphabetical ordering of the selects means these get split up. To allow
+for keeping things tidier and alphabetical, rename the selects to
+GENERIC_LIB_*
 
-A long time ago this was the original expectation for this driver, but 
-it was strongly suggested that in order to play well in the kernel it 
-needed to be usable in 32-bit builds as well.  I suspect this sentiment 
-remains, and besides we don't want to break existing support, so this 
-probably needs to be addressed for 32-bit.
+Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+---
+ arch/riscv/Kconfig |  6 +++---
+ lib/Kconfig        | 12 ++++++------
+ lib/Makefile       | 12 ++++++------
+ 3 files changed, 15 insertions(+), 15 deletions(-)
 
-sln
-
-> 
-> Cheers
-> James
-> 
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 2c6adf12713a..5f1e2188d029 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -99,9 +99,9 @@ config ARCH_RV32I
+ 	bool "RV32I"
+ 	select CPU_SUPPORTS_32BIT_KERNEL
+ 	select 32BIT
+-	select GENERIC_ASHLDI3
+-	select GENERIC_ASHRDI3
+-	select GENERIC_LSHRDI3
++	select GENERIC_LIB_ASHLDI3
++	select GENERIC_LIB_ASHRDI3
++	select GENERIC_LIB_LSHRDI3
+ 
+ config ARCH_RV64I
+ 	bool "RV64I"
+diff --git a/lib/Kconfig b/lib/Kconfig
+index c5e84fbcb30b..946d0890aad6 100644
+--- a/lib/Kconfig
++++ b/lib/Kconfig
+@@ -584,20 +584,20 @@ config STRING_SELFTEST
+ 
+ endmenu
+ 
+-config GENERIC_ASHLDI3
++config GENERIC_LIB_ASHLDI3
+ 	bool
+ 
+-config GENERIC_ASHRDI3
++config GENERIC_LIB_ASHRDI3
+ 	bool
+ 
+-config GENERIC_LSHRDI3
++config GENERIC_LIB_LSHRDI3
+ 	bool
+ 
+-config GENERIC_MULDI3
++config GENERIC_LIB_MULDI3
+ 	bool
+ 
+-config GENERIC_CMPDI2
++config GENERIC_LIB_CMPDI2
+ 	bool
+ 
+-config GENERIC_UCMPDI2
++config GENERIC_LIB_UCMPDI2
+ 	bool
+diff --git a/lib/Makefile b/lib/Makefile
+index d11c48ec8ffd..7e1ef77e86a3 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -252,9 +252,9 @@ obj-$(CONFIG_SBITMAP) += sbitmap.o
+ obj-$(CONFIG_PARMAN) += parman.o
+ 
+ # GCC library routines
+-obj-$(CONFIG_GENERIC_ASHLDI3) += ashldi3.o
+-obj-$(CONFIG_GENERIC_ASHRDI3) += ashrdi3.o
+-obj-$(CONFIG_GENERIC_LSHRDI3) += lshrdi3.o
+-obj-$(CONFIG_GENERIC_MULDI3) += muldi3.o
+-obj-$(CONFIG_GENERIC_CMPDI2) += cmpdi2.o
+-obj-$(CONFIG_GENERIC_UCMPDI2) += ucmpdi2.o
++obj-$(CONFIG_GENERIC_LIB_ASHLDI3) += ashldi3.o
++obj-$(CONFIG_GENERIC_LIB_ASHRDI3) += ashrdi3.o
++obj-$(CONFIG_GENERIC_LIB_LSHRDI3) += lshrdi3.o
++obj-$(CONFIG_GENERIC_LIB_MULDI3) += muldi3.o
++obj-$(CONFIG_GENERIC_LIB_CMPDI2) += cmpdi2.o
++obj-$(CONFIG_GENERIC_LIB_UCMPDI2) += ucmpdi2.o
+-- 
+2.7.4

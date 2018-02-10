@@ -1,20 +1,24 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:32920 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992866AbeBIOxJGp6KP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 9 Feb 2018 15:53:09 +0100
-Subject: Re: [PATCH] lib: Rename compiler intrinsic selects to GENERIC_LIB_*
-References: <mhng-f000d448-7ead-4cee-9e2f-5d58692c0922@palmer-si-x1c4>
- <1518182572-23376-1-git-send-email-matt.redfearn@mips.com>
- <CAHp75VeiAUg1NCK59wZjZNnLZqEXDF5dpi8pmtTcP1WhX2wvVA@mail.gmail.com>
-From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <30b2cff6-ad18-617e-cc11-ad2188193c3a@mips.com>
-Date: Fri, 9 Feb 2018 14:52:50 +0000
-MIME-Version: 1.0
-In-Reply-To: <CAHp75VeiAUg1NCK59wZjZNnLZqEXDF5dpi8pmtTcP1WhX2wvVA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@mips.com>
+Received: from mail-pg0-x242.google.com ([IPv6:2607:f8b0:400e:c05::242]:44512
+        "EHLO mail-pg0-x242.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992917AbeBJCQhORUE3 convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sat, 10 Feb 2018 03:16:37 +0100
+Received: by mail-pg0-x242.google.com with SMTP id j9so4263654pgp.11
+        for <linux-mips@linux-mips.org>; Fri, 09 Feb 2018 18:16:37 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.2 \(3445.5.20\))
+Subject: Re: [PATCH] irqchip: Use %px to print pointer value
+From: Jaedon Shin <jaedon.shin@gmail.com>
+In-Reply-To: <6bf05e81-2334-f3ac-08a7-e53ee59bb4c0@arm.com>
+Date: Sat, 10 Feb 2018 11:16:22 +0900
+Content-Transfer-Encoding: 8BIT
+Message-ID: <CAD3828B-6D72-42C6-8D54-78EC35BAF65B@gmail.com>
+References: <20180209021031.20631-1-jaedon.shin@gmail.com>
+ <ba5fb474-4e45-8d8d-ee5d-9f1a211090e3@arm.com>
+ <45424653-235D-4C4B-8908-417943F5283C@gmail.com>
+ <6bf05e81-2334-f3ac-08a7-e53ee59bb4c0@arm.com>
+Return-Path: <jaedon.shin@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,109 +28,99 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Palmer Dabbelt <palmer@sifive.com>, antonynpavlov@gmail.com, Linux MIPS Mailing List <linux-mips@linux-mips.org>, jhogan@kernel.org, Ralf Baechle <ralf@linux-mips.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Message-ID: <20180209145250.IPO2roPls1bT0Y1Ymt_vRVv21tR3DNd5-O0O8sr8euU@z>
+To: Marc Zyngier <marc.zyngier@arm.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Kevin Cernekee <cernekee@gmail.com>, Brian Norris <computersforpeace@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, bcm-kernel-feedback-list@broadcom.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Message-ID: <20180210021622.DJhBtvYlbBKZvu6ltzNJkcyu4bXGFI8-IgVcfAE9gCI@z>
 
-Hi Andy,
 
-On 09/02/18 13:45, Andy Shevchenko wrote:
-> On Fri, Feb 9, 2018 at 3:22 PM, Matt Redfearn <matt.redfearn@mips.com> wrote:
->> When these are included into arch Kconfig files, maintaining
->> alphabetical ordering of the selects means these get split up. To allow
->> for keeping things tidier and alphabetical, rename the selects to
->> GENERIC_LIB_*
->>
+
+> On 10 Feb 2018, at 1:04 AM, Marc Zyngier <marc.zyngier@arm.com> wrote:
 > 
-> I don't remember who suggested that, if it wasn't you, please add
-> Suggested-by tag with appropriate name.
+> On 09/02/18 15:54, Florian Fainelli wrote:
+>> On February 9, 2018 12:51:33 AM PST, Marc Zyngier <marc.zyngier@arm.com> wrote:
+>>> On 09/02/18 02:10, Jaedon Shin wrote:
+>>>> Since commit ad67b74d2469 ("printk: hash addresses printed with %p")
+>>>> pointers printed with %p are hashed. Use %px instead of %p to print
+>>>> pointer value.
+>>>> 
+>>>> Signed-off-by: Jaedon Shin <jaedon.shin@gmail.com>
+>>>> ---
+>>>> drivers/irqchip/irq-bcm7038-l1.c | 2 +-
+>>>> drivers/irqchip/irq-bcm7120-l2.c | 2 +-
+>>>> drivers/irqchip/irq-brcmstb-l2.c | 2 +-
+>>>> 3 files changed, 3 insertions(+), 3 deletions(-)
+>>>> 
+>>>> diff --git a/drivers/irqchip/irq-bcm7038-l1.c
+>>> b/drivers/irqchip/irq-bcm7038-l1.c
+>>>> index 55cfb986225b..f604c1d89b3b 100644
+>>>> --- a/drivers/irqchip/irq-bcm7038-l1.c
+>>>> +++ b/drivers/irqchip/irq-bcm7038-l1.c
+>>>> @@ -339,7 +339,7 @@ int __init bcm7038_l1_of_init(struct device_node
+>>> *dn,
+>>>> 		goto out_unmap;
+>>>> 	}
+>>>> 
+>>>> -	pr_info("registered BCM7038 L1 intc (mem: 0x%p, IRQs: %d)\n",
+>>>> +	pr_info("registered BCM7038 L1 intc (mem: 0x%px, IRQs: %d)\n",
+>>>> 		intc->cpus[0]->map_base, IRQS_PER_WORD * intc->n_words);
+>>>> 
+>>>> 	return 0;
+>>>> diff --git a/drivers/irqchip/irq-bcm7120-l2.c
+>>> b/drivers/irqchip/irq-bcm7120-l2.c
+>>>> index 983640eba418..1cc4dd1d584a 100644
+>>>> --- a/drivers/irqchip/irq-bcm7120-l2.c
+>>>> +++ b/drivers/irqchip/irq-bcm7120-l2.c
+>>>> @@ -318,7 +318,7 @@ static int __init bcm7120_l2_intc_probe(struct
+>>> device_node *dn,
+>>>> 		}
+>>>> 	}
+>>>> 
+>>>> -	pr_info("registered %s intc (mem: 0x%p, parent IRQ(s): %d)\n",
+>>>> +	pr_info("registered %s intc (mem: 0x%px, parent IRQ(s): %d)\n",
+>>>> 			intc_name, data->map_base[0], data->num_parent_irqs);
+>>>> 
+>>>> 	return 0;
+>>>> diff --git a/drivers/irqchip/irq-brcmstb-l2.c
+>>> b/drivers/irqchip/irq-brcmstb-l2.c
+>>>> index 691d20eb0bec..6760edeeb666 100644
+>>>> --- a/drivers/irqchip/irq-brcmstb-l2.c
+>>>> +++ b/drivers/irqchip/irq-brcmstb-l2.c
+>>>> @@ -262,7 +262,7 @@ static int __init brcmstb_l2_intc_of_init(struct
+>>> device_node *np,
+>>>> 		ct->chip.irq_set_wake = irq_gc_set_wake;
+>>>> 	}
+>>>> 
+>>>> -	pr_info("registered L2 intc (mem: 0x%p, parent irq: %d)\n",
+>>>> +	pr_info("registered L2 intc (mem: 0x%px, parent irq: %d)\n",
+>>>> 			base, parent_irq);
+>>>> 
+>>>> 	return 0;
+>>>> 
+>>> 
+>>> Why is that something useful to do? This just tells you where the
+>>> device
+>>> is mapped in the VA space, and I doubt that's a useful information,
+>>> hashed pointers or not. Am I missing something obvious?
+>> 
+>> No you are right there is not much value in printing the register
+>> virtual address (sometimes there is e.g: on MIPS) either we fix the
+>> prints to show the physical address of the base register or we could
+>> possibly drop the prints entirely.
+> 
+> Displaying the PA can be useful if you have several identical blocks in
+> your system and you want to be able to identify them. Given that there
+> is probably only one of these controllers per system, the address is
+> pretty pointless.
+> 
+> If you send me a patch removing the prints, I'll queue it.
+> 
+> Thanks,
+> 
+> 	M.
+> -- 
+> Jazz is not dead. It just smells funny...
 
-It was me that suggested the rename, before we ack replacing MIPS' 
-compiler intrinsics with these generic ones.
+I'll submit a new one to drop the entire print.
 
 Thanks,
-Matt
-
-
-> 
->> Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
->> ---
->>   arch/riscv/Kconfig |  6 +++---
->>   lib/Kconfig        | 12 ++++++------
->>   lib/Makefile       | 12 ++++++------
->>   3 files changed, 15 insertions(+), 15 deletions(-)
->>
->> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->> index 2c6adf12713a..5f1e2188d029 100644
->> --- a/arch/riscv/Kconfig
->> +++ b/arch/riscv/Kconfig
->> @@ -99,9 +99,9 @@ config ARCH_RV32I
->>          bool "RV32I"
->>          select CPU_SUPPORTS_32BIT_KERNEL
->>          select 32BIT
->> -       select GENERIC_ASHLDI3
->> -       select GENERIC_ASHRDI3
->> -       select GENERIC_LSHRDI3
->> +       select GENERIC_LIB_ASHLDI3
->> +       select GENERIC_LIB_ASHRDI3
->> +       select GENERIC_LIB_LSHRDI3
->>
->>   config ARCH_RV64I
->>          bool "RV64I"
->> diff --git a/lib/Kconfig b/lib/Kconfig
->> index c5e84fbcb30b..946d0890aad6 100644
->> --- a/lib/Kconfig
->> +++ b/lib/Kconfig
->> @@ -584,20 +584,20 @@ config STRING_SELFTEST
->>
->>   endmenu
->>
->> -config GENERIC_ASHLDI3
->> +config GENERIC_LIB_ASHLDI3
->>          bool
->>
->> -config GENERIC_ASHRDI3
->> +config GENERIC_LIB_ASHRDI3
->>          bool
->>
->> -config GENERIC_LSHRDI3
->> +config GENERIC_LIB_LSHRDI3
->>          bool
->>
->> -config GENERIC_MULDI3
->> +config GENERIC_LIB_MULDI3
->>          bool
->>
->> -config GENERIC_CMPDI2
->> +config GENERIC_LIB_CMPDI2
->>          bool
->>
->> -config GENERIC_UCMPDI2
->> +config GENERIC_LIB_UCMPDI2
->>          bool
->> diff --git a/lib/Makefile b/lib/Makefile
->> index d11c48ec8ffd..7e1ef77e86a3 100644
->> --- a/lib/Makefile
->> +++ b/lib/Makefile
->> @@ -252,9 +252,9 @@ obj-$(CONFIG_SBITMAP) += sbitmap.o
->>   obj-$(CONFIG_PARMAN) += parman.o
->>
->>   # GCC library routines
->> -obj-$(CONFIG_GENERIC_ASHLDI3) += ashldi3.o
->> -obj-$(CONFIG_GENERIC_ASHRDI3) += ashrdi3.o
->> -obj-$(CONFIG_GENERIC_LSHRDI3) += lshrdi3.o
->> -obj-$(CONFIG_GENERIC_MULDI3) += muldi3.o
->> -obj-$(CONFIG_GENERIC_CMPDI2) += cmpdi2.o
->> -obj-$(CONFIG_GENERIC_UCMPDI2) += ucmpdi2.o
->> +obj-$(CONFIG_GENERIC_LIB_ASHLDI3) += ashldi3.o
->> +obj-$(CONFIG_GENERIC_LIB_ASHRDI3) += ashrdi3.o
->> +obj-$(CONFIG_GENERIC_LIB_LSHRDI3) += lshrdi3.o
->> +obj-$(CONFIG_GENERIC_LIB_MULDI3) += muldi3.o
->> +obj-$(CONFIG_GENERIC_LIB_CMPDI2) += cmpdi2.o
->> +obj-$(CONFIG_GENERIC_LIB_UCMPDI2) += ucmpdi2.o
->> --
->> 2.7.4
->>
-> 
-> 
-> 
+Jaedon

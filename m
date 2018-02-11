@@ -1,24 +1,18 @@
-Received: from mail-pg0-x242.google.com ([IPv6:2607:f8b0:400e:c05::242]:44512
-        "EHLO mail-pg0-x242.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992917AbeBJCQhORUE3 convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 10 Feb 2018 03:16:37 +0100
-Received: by mail-pg0-x242.google.com with SMTP id j9so4263654pgp.11
-        for <linux-mips@linux-mips.org>; Fri, 09 Feb 2018 18:16:37 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.2 \(3445.5.20\))
-Subject: Re: [PATCH] irqchip: Use %px to print pointer value
-From: Jaedon Shin <jaedon.shin@gmail.com>
-In-Reply-To: <6bf05e81-2334-f3ac-08a7-e53ee59bb4c0@arm.com>
-Date: Sat, 10 Feb 2018 11:16:22 +0900
-Content-Transfer-Encoding: 8BIT
-Message-ID: <CAD3828B-6D72-42C6-8D54-78EC35BAF65B@gmail.com>
-References: <20180209021031.20631-1-jaedon.shin@gmail.com>
- <ba5fb474-4e45-8d8d-ee5d-9f1a211090e3@arm.com>
- <45424653-235D-4C4B-8908-417943F5283C@gmail.com>
- <6bf05e81-2334-f3ac-08a7-e53ee59bb4c0@arm.com>
-Return-Path: <jaedon.shin@gmail.com>
+Received: from shadbolt.e.decadent.org.uk ([88.96.1.126]:60810 "EHLO
+        shadbolt.e.decadent.org.uk" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990398AbeBKEeKs8uej (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 11 Feb 2018 05:34:10 +0100
+Content-Type: text/plain; charset="UTF-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+From: Ben Hutchings <ben@decadent.org.uk>
+Date: Sun, 11 Feb 2018 04:31:11 +0000
+Message-ID: <lsq.1518323471.320638011@decadent.org.uk>
+Subject: [PATCH 3.16 070/136] MIPS: Fix an n32 core file generation regset
+ support regression
+In-Reply-To: <lsq.1518323469.348919605@decadent.org.uk>
+Return-Path: <ben@decadent.org.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -28,99 +22,87 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Marc Zyngier <marc.zyngier@arm.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Kevin Cernekee <cernekee@gmail.com>, Brian Norris <computersforpeace@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, bcm-kernel-feedback-list@broadcom.com, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Message-ID: <20180210021622.DJhBtvYlbBKZvu6ltzNJkcyu4bXGFI8-IgVcfAE9gCI@z>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: akpm@linux-foundation.org, Djordje Todorovic <djordje.todorovic@rt-rk.com>, "Maciej W. Rozycki" <macro@mips.com>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, linux-mips@linux-mips.org
 
+3.16.54-rc1 review patch.  If anyone has any objections, please let me know.
 
+------------------
 
-> On 10 Feb 2018, at 1:04 AM, Marc Zyngier <marc.zyngier@arm.com> wrote:
-> 
-> On 09/02/18 15:54, Florian Fainelli wrote:
->> On February 9, 2018 12:51:33 AM PST, Marc Zyngier <marc.zyngier@arm.com> wrote:
->>> On 09/02/18 02:10, Jaedon Shin wrote:
->>>> Since commit ad67b74d2469 ("printk: hash addresses printed with %p")
->>>> pointers printed with %p are hashed. Use %px instead of %p to print
->>>> pointer value.
->>>> 
->>>> Signed-off-by: Jaedon Shin <jaedon.shin@gmail.com>
->>>> ---
->>>> drivers/irqchip/irq-bcm7038-l1.c | 2 +-
->>>> drivers/irqchip/irq-bcm7120-l2.c | 2 +-
->>>> drivers/irqchip/irq-brcmstb-l2.c | 2 +-
->>>> 3 files changed, 3 insertions(+), 3 deletions(-)
->>>> 
->>>> diff --git a/drivers/irqchip/irq-bcm7038-l1.c
->>> b/drivers/irqchip/irq-bcm7038-l1.c
->>>> index 55cfb986225b..f604c1d89b3b 100644
->>>> --- a/drivers/irqchip/irq-bcm7038-l1.c
->>>> +++ b/drivers/irqchip/irq-bcm7038-l1.c
->>>> @@ -339,7 +339,7 @@ int __init bcm7038_l1_of_init(struct device_node
->>> *dn,
->>>> 		goto out_unmap;
->>>> 	}
->>>> 
->>>> -	pr_info("registered BCM7038 L1 intc (mem: 0x%p, IRQs: %d)\n",
->>>> +	pr_info("registered BCM7038 L1 intc (mem: 0x%px, IRQs: %d)\n",
->>>> 		intc->cpus[0]->map_base, IRQS_PER_WORD * intc->n_words);
->>>> 
->>>> 	return 0;
->>>> diff --git a/drivers/irqchip/irq-bcm7120-l2.c
->>> b/drivers/irqchip/irq-bcm7120-l2.c
->>>> index 983640eba418..1cc4dd1d584a 100644
->>>> --- a/drivers/irqchip/irq-bcm7120-l2.c
->>>> +++ b/drivers/irqchip/irq-bcm7120-l2.c
->>>> @@ -318,7 +318,7 @@ static int __init bcm7120_l2_intc_probe(struct
->>> device_node *dn,
->>>> 		}
->>>> 	}
->>>> 
->>>> -	pr_info("registered %s intc (mem: 0x%p, parent IRQ(s): %d)\n",
->>>> +	pr_info("registered %s intc (mem: 0x%px, parent IRQ(s): %d)\n",
->>>> 			intc_name, data->map_base[0], data->num_parent_irqs);
->>>> 
->>>> 	return 0;
->>>> diff --git a/drivers/irqchip/irq-brcmstb-l2.c
->>> b/drivers/irqchip/irq-brcmstb-l2.c
->>>> index 691d20eb0bec..6760edeeb666 100644
->>>> --- a/drivers/irqchip/irq-brcmstb-l2.c
->>>> +++ b/drivers/irqchip/irq-brcmstb-l2.c
->>>> @@ -262,7 +262,7 @@ static int __init brcmstb_l2_intc_of_init(struct
->>> device_node *np,
->>>> 		ct->chip.irq_set_wake = irq_gc_set_wake;
->>>> 	}
->>>> 
->>>> -	pr_info("registered L2 intc (mem: 0x%p, parent irq: %d)\n",
->>>> +	pr_info("registered L2 intc (mem: 0x%px, parent irq: %d)\n",
->>>> 			base, parent_irq);
->>>> 
->>>> 	return 0;
->>>> 
->>> 
->>> Why is that something useful to do? This just tells you where the
->>> device
->>> is mapped in the VA space, and I doubt that's a useful information,
->>> hashed pointers or not. Am I missing something obvious?
->> 
->> No you are right there is not much value in printing the register
->> virtual address (sometimes there is e.g: on MIPS) either we fix the
->> prints to show the physical address of the base register or we could
->> possibly drop the prints entirely.
-> 
-> Displaying the PA can be useful if you have several identical blocks in
-> your system and you want to be able to identify them. Given that there
-> is probably only one of these controllers per system, the address is
-> pretty pointless.
-> 
-> If you send me a patch removing the prints, I'll queue it.
-> 
-> Thanks,
-> 
-> 	M.
-> -- 
-> Jazz is not dead. It just smells funny...
+From: "Maciej W. Rozycki" <macro@mips.com>
 
-I'll submit a new one to drop the entire print.
+commit 547da673173de51f73887377eb275304775064ad upstream.
 
-Thanks,
-Jaedon
+Fix a commit 7aeb753b5353 ("MIPS: Implement task_user_regset_view.")
+regression, then activated by commit 6a9c001b7ec3 ("MIPS: Switch ELF
+core dumper to use regsets.)", that caused n32 processes to dump o32
+core files by failing to set the EF_MIPS_ABI2 flag in the ELF core file
+header's `e_flags' member:
+
+$ file tls-core
+tls-core: ELF 32-bit MSB executable, MIPS, N32 MIPS64 rel2 version 1 (SYSV), [...]
+$ ./tls-core
+Aborted (core dumped)
+$ file core
+core: ELF 32-bit MSB core file MIPS, MIPS-I version 1 (SYSV), SVR4-style
+$
+
+Previously the flag was set as the result of a:
+
+statement placed in arch/mips/kernel/binfmt_elfn32.c, however in the
+regset case, i.e. when CORE_DUMP_USE_REGSET is set, ELF_CORE_EFLAGS is
+no longer used by `fill_note_info' in fs/binfmt_elf.c, and instead the
+`->e_flags' member of the regset view chosen is.  We have the views
+defined in arch/mips/kernel/ptrace.c, however only an o32 and an n64
+one, and the latter is used for n32 as well.  Consequently an o32 core
+file is incorrectly dumped from n32 processes (the ELF32 vs ELF64 class
+is chosen elsewhere, and the 32-bit one is correctly selected for n32).
+
+Correct the issue then by defining an n32 regset view and using it as
+appropriate.  Issue discovered in GDB testing.
+
+Fixes: 7aeb753b5353 ("MIPS: Implement task_user_regset_view.")
+Signed-off-by: Maciej W. Rozycki <macro@mips.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Djordje Todorovic <djordje.todorovic@rt-rk.com>
+Cc: linux-mips@linux-mips.org
+Patchwork: https://patchwork.linux-mips.org/patch/17617/
+Signed-off-by: James Hogan <jhogan@kernel.org>
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+---
+ arch/mips/kernel/ptrace.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+--- a/arch/mips/kernel/ptrace.c
++++ b/arch/mips/kernel/ptrace.c
+@@ -522,6 +522,19 @@ static const struct user_regset_view use
+ 	.n		= ARRAY_SIZE(mips64_regsets),
+ };
+ 
++#ifdef CONFIG_MIPS32_N32
++
++static const struct user_regset_view user_mipsn32_view = {
++	.name		= "mipsn32",
++	.e_flags	= EF_MIPS_ABI2,
++	.e_machine	= ELF_ARCH,
++	.ei_osabi	= ELF_OSABI,
++	.regsets	= mips64_regsets,
++	.n		= ARRAY_SIZE(mips64_regsets),
++};
++
++#endif /* CONFIG_MIPS32_N32 */
++
+ #endif /* CONFIG_64BIT */
+ 
+ const struct user_regset_view *task_user_regset_view(struct task_struct *task)
+@@ -533,6 +546,10 @@ const struct user_regset_view *task_user
+ 	if (test_tsk_thread_flag(task, TIF_32BIT_REGS))
+ 		return &user_mips_view;
+ #endif
++#ifdef CONFIG_MIPS32_N32
++	if (test_tsk_thread_flag(task, TIF_32BIT_ADDR))
++		return &user_mipsn32_view;
++#endif
+ 	return &user_mips64_view;
+ #endif
+ }

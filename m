@@ -1,18 +1,22 @@
-Received: from mail-pl0-x244.google.com ([IPv6:2607:f8b0:400e:c01::244]:34784
-        "EHLO mail-pl0-x244.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994629AbeBMVs06VxUt (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Feb 2018 22:48:26 +0100
-Received: by mail-pl0-x244.google.com with SMTP id bd10so2455908plb.1
-        for <linux-mips@linux-mips.org>; Tue, 13 Feb 2018 13:48:26 -0800 (PST)
-Date: Tue, 13 Feb 2018 13:48:18 -0800 (PST)
-Subject: Re: [PATCH] lib: Rename compiler intrinsic selects to GENERIC_LIB_*
-In-Reply-To: <1518182572-23376-1-git-send-email-matt.redfearn@mips.com>
-From: Palmer Dabbelt <palmer@sifive.com>
-Message-ID: <mhng-a034032e-b23a-4c52-8965-1e9d6e133f43@palmer-si-x1c4>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-Path: <palmer@sifive.com>
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:40644 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990412AbeBNL3wR08FY (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 14 Feb 2018 12:29:52 +0100
+Subject: Re: [PATCH] irqchip: mips-gic: Avoid spuriously handling masked
+ interrupts
+References: <1517849136-29508-1-git-send-email-matt.redfearn@mips.com>
+ <bb76fb4e-5e6c-92eb-d79a-96045f74e91b@arm.com>
+ <e7ec98be-5a4b-ef54-797d-7e11cf2b14e5@mips.com>
+ <5d6348d6-a87f-d3b7-b758-9a2003d9c50e@arm.com>
+From: Matt Redfearn <matt.redfearn@mips.com>
+Message-ID: <ad04b18e-c05f-0f07-a9ed-a69e20ad4b58@mips.com>
+Date: Wed, 14 Feb 2018 11:22:51 +0000
+MIME-Version: 1.0
+In-Reply-To: <5d6348d6-a87f-d3b7-b758-9a2003d9c50e@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,92 +26,86 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Cc: antonynpavlov@gmail.com, linux-mips@linux-mips.org, jhogan@kernel.org, ralf@linux-mips.org, linux-kernel@vger.kernel.org, matt.redfearn@mips.com
-Message-ID: <20180213214818.UdYh9Am73jicFMHZr7Q8Pt5M2BjB8gu9Y_8SjbJ_Lss@z>
+To: Marc Zyngier <marc.zyngier@arm.com>, Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Jason Cooper <jason@lakedaemon.net>, linux-kernel@vger.kernel.org
+Message-ID: <20180214112251.HEYOvmxp1o3S4zv90E0UtcAhoj5Sdbw1aJ5k_m1-L6g@z>
 
-On Fri, 09 Feb 2018 05:22:52 PST (-0800), matt.redfearn@mips.com wrote:
-> When these are included into arch Kconfig files, maintaining
-> alphabetical ordering of the selects means these get split up. To allow
-> for keeping things tidier and alphabetical, rename the selects to
-> GENERIC_LIB_*
->
-> Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
 
-Thanks!  Do you want me to take this in my tree?
 
-Reviewed-by: Palmer Dabbelt <palmer@sifive.com>
+On 07/02/18 10:41, Marc Zyngier wrote:
+> On 07/02/18 09:44, Matt Redfearn wrote:
+>> Hi Marc,
+>>
+>> On 07/02/18 09:41, Marc Zyngier wrote:
+>>> On 05/02/18 16:45, Matt Redfearn wrote:
+>>>> Commit 7778c4b27cbe ("irqchip: mips-gic: Use pcpu_masks to avoid reading
+>>>> GIC_SH_MASK*") removed the read of the hardware mask register when
+>>>> handling shared interrupts, instead using the driver's shadow pcpu_masks
+>>>> entry as the effective mask. Unfortunately this did not take account of
+>>>> the write to pcpu_masks during gic_shared_irq_domain_map, which
+>>>> effectively unmasks the interrupt early. If an interrupt is asserted,
+>>>> gic_handle_shared_int decodes and processes the interrupt even though it
+>>>> has not yet been unmasked via gic_unmask_irq, which also sets the
+>>>> appropriate bit in pcpu_masks.
+>>>>
+>>>> On the MIPS Boston board, when a console command line of
+>>>> "console=ttyS0,115200n8r" is passed, the modem status IRQ is enabled in
+>>>> the UART, which is immediately raised to the GIC. The interrupt has been
+>>>> mapped, but no handler has yet been registered, nor is it expected to be
+>>>> unmasked. However, the write to pcpu_masks in gic_shared_irq_domain_map
+>>>> has effectively unmasked it, resulting in endless reports of:
+>>>>
+>>>> [    5.058454] irq 13, desc: ffffffff80a7ad80, depth: 1, count: 0, unhandled: 0
+>>>> [    5.062057] ->handle_irq():  ffffffff801b1838,
+>>>> [    5.062175] handle_bad_irq+0x0/0x2c0
+>>>>
+>>>> Where IRQ 13 is the UART interrupt.
+>>>>
+>>>> To fix this, just remove the write to pcpu_masks in
+>>>> gic_shared_irq_domain_map. The existing write in gic_unmask_irq is the
+>>>> correct place for what is now the effective unmasking.
+>>>>
+>>>> Fixes: 7778c4b27cbe ("irqchip: mips-gic: Use pcpu_masks to avoid reading GIC_SH_MASK*")
+>>>> Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+>>>> Reviewed-by: Paul Burton <paul.burton@mips.com>
+>>>>
+>>>> ---
+>>>>
+>>>>    drivers/irqchip/irq-mips-gic.c | 2 --
+>>>>    1 file changed, 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+>>>> index b2cfc6d66d74..2c3684ba46e5 100644
+>>>> --- a/drivers/irqchip/irq-mips-gic.c
+>>>> +++ b/drivers/irqchip/irq-mips-gic.c
+>>>> @@ -429,8 +429,6 @@ static int gic_shared_irq_domain_map(struct irq_domain *d, unsigned int virq,
+>>>>    	spin_lock_irqsave(&gic_lock, flags);
+>>>>    	write_gic_map_pin(intr, GIC_MAP_PIN_MAP_TO_PIN | shared_cpu_pin);
+>>>>    	write_gic_map_vp(intr, BIT(mips_cm_vp_id(cpu)));
+>>>> -	gic_clear_pcpu_masks(intr);
+>>>> -	set_bit(intr, per_cpu_ptr(pcpu_masks, cpu));
+>>>>    	irq_data_update_effective_affinity(data, cpumask_of(cpu));
+>>>>    	spin_unlock_irqrestore(&gic_lock, flags);
+>>>>    
+>>>>
+>>>
+>>> Does this need to be Cc to stable (since it fixes something that was
+>>> merged in 4.14)?
+>>
+>> Sorry, missed stable off the CC list. Yes, it does indeed need to be
+>> backported. Should I resubmit?
+> No need, I'll add that to the patch.
 
-> ---
->  arch/riscv/Kconfig |  6 +++---
->  lib/Kconfig        | 12 ++++++------
->  lib/Makefile       | 12 ++++++------
->  3 files changed, 15 insertions(+), 15 deletions(-)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 2c6adf12713a..5f1e2188d029 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -99,9 +99,9 @@ config ARCH_RV32I
->  	bool "RV32I"
->  	select CPU_SUPPORTS_32BIT_KERNEL
->  	select 32BIT
-> -	select GENERIC_ASHLDI3
-> -	select GENERIC_ASHRDI3
-> -	select GENERIC_LSHRDI3
-> +	select GENERIC_LIB_ASHLDI3
-> +	select GENERIC_LIB_ASHRDI3
-> +	select GENERIC_LIB_LSHRDI3
->
->  config ARCH_RV64I
->  	bool "RV64I"
-> diff --git a/lib/Kconfig b/lib/Kconfig
-> index c5e84fbcb30b..946d0890aad6 100644
-> --- a/lib/Kconfig
-> +++ b/lib/Kconfig
-> @@ -584,20 +584,20 @@ config STRING_SELFTEST
->
->  endmenu
->
-> -config GENERIC_ASHLDI3
-> +config GENERIC_LIB_ASHLDI3
->  	bool
->
-> -config GENERIC_ASHRDI3
-> +config GENERIC_LIB_ASHRDI3
->  	bool
->
-> -config GENERIC_LSHRDI3
-> +config GENERIC_LIB_LSHRDI3
->  	bool
->
-> -config GENERIC_MULDI3
-> +config GENERIC_LIB_MULDI3
->  	bool
->
-> -config GENERIC_CMPDI2
-> +config GENERIC_LIB_CMPDI2
->  	bool
->
-> -config GENERIC_UCMPDI2
-> +config GENERIC_LIB_UCMPDI2
->  	bool
-> diff --git a/lib/Makefile b/lib/Makefile
-> index d11c48ec8ffd..7e1ef77e86a3 100644
-> --- a/lib/Makefile
-> +++ b/lib/Makefile
-> @@ -252,9 +252,9 @@ obj-$(CONFIG_SBITMAP) += sbitmap.o
->  obj-$(CONFIG_PARMAN) += parman.o
->
->  # GCC library routines
-> -obj-$(CONFIG_GENERIC_ASHLDI3) += ashldi3.o
-> -obj-$(CONFIG_GENERIC_ASHRDI3) += ashrdi3.o
-> -obj-$(CONFIG_GENERIC_LSHRDI3) += lshrdi3.o
-> -obj-$(CONFIG_GENERIC_MULDI3) += muldi3.o
-> -obj-$(CONFIG_GENERIC_CMPDI2) += cmpdi2.o
-> -obj-$(CONFIG_GENERIC_UCMPDI2) += ucmpdi2.o
-> +obj-$(CONFIG_GENERIC_LIB_ASHLDI3) += ashldi3.o
-> +obj-$(CONFIG_GENERIC_LIB_ASHRDI3) += ashrdi3.o
-> +obj-$(CONFIG_GENERIC_LIB_LSHRDI3) += lshrdi3.o
-> +obj-$(CONFIG_GENERIC_LIB_MULDI3) += muldi3.o
-> +obj-$(CONFIG_GENERIC_LIB_CMPDI2) += cmpdi2.o
-> +obj-$(CONFIG_GENERIC_LIB_UCMPDI2) += ucmpdi2.o
+Hi Marc,
+Not seen this turn up in tip, just wanted to check you're going to pick 
+it up?
+
+Thanks,
+Matt
+
+
+> 
+> Thanks,
+> 
+> 	M.
+> 

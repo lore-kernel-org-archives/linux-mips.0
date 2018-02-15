@@ -1,21 +1,13 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:40644 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:49549 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990412AbeBNL3wR08FY (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 14 Feb 2018 12:29:52 +0100
-Subject: Re: [PATCH] irqchip: mips-gic: Avoid spuriously handling masked
- interrupts
-References: <1517849136-29508-1-git-send-email-matt.redfearn@mips.com>
- <bb76fb4e-5e6c-92eb-d79a-96045f74e91b@arm.com>
- <e7ec98be-5a4b-ef54-797d-7e11cf2b14e5@mips.com>
- <5d6348d6-a87f-d3b7-b758-9a2003d9c50e@arm.com>
+        by eddie.linux-mips.org with ESMTP id S23991172AbeBOPMf1YlCY (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 15 Feb 2018 16:12:35 +0100
 From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <ad04b18e-c05f-0f07-a9ed-a69e20ad4b58@mips.com>
-Date: Wed, 14 Feb 2018 11:22:51 +0000
+Subject: [PATCH] MIPS: pm-cps: Block system suspend when a JTAG probe is present
+Date: Thu, 15 Feb 2018 14:59:19 +0000
+Message-ID: <1518706759-9890-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
-In-Reply-To: <5d6348d6-a87f-d3b7-b758-9a2003d9c50e@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -26,86 +18,96 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Marc Zyngier <marc.zyngier@arm.com>, Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Jason Cooper <jason@lakedaemon.net>, linux-kernel@vger.kernel.org
-Message-ID: <20180214112251.HEYOvmxp1o3S4zv90E0UtcAhoj5Sdbw1aJ5k_m1-L6g@z>
+To: James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Paul Burton <paul.burton@mips.com>, Ed Blake <ed.blake@sondrel.com>, Matt Redfearn <matt.redfearn@mips.com>, Dengcheng Zhu <dengcheng.zhu@mips.com>, linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>
+Message-ID: <20180215145919.EnGvk65Ix-i84qdjPqemw_YJfaismyP_y0K5zE-vbGs@z>
 
+If a JTAG probe is connected to a MIPS cluster, then the CPC detects it
+and latches the CPC.STAT_CONF.EJTAG_PROBE bit to 1. While set,
+attempting to send a power-down command to a core will be blocked, and
+the CPC will instead send the core to clock-off state. This can
+interfere with systems fully entering a low power state where all
+cores, CM, GIC, etc are powered down.
 
+Detect that a JTAG probe is / has been connected to the cluster and
+block the suspend attempt.
 
-On 07/02/18 10:41, Marc Zyngier wrote:
-> On 07/02/18 09:44, Matt Redfearn wrote:
->> Hi Marc,
->>
->> On 07/02/18 09:41, Marc Zyngier wrote:
->>> On 05/02/18 16:45, Matt Redfearn wrote:
->>>> Commit 7778c4b27cbe ("irqchip: mips-gic: Use pcpu_masks to avoid reading
->>>> GIC_SH_MASK*") removed the read of the hardware mask register when
->>>> handling shared interrupts, instead using the driver's shadow pcpu_masks
->>>> entry as the effective mask. Unfortunately this did not take account of
->>>> the write to pcpu_masks during gic_shared_irq_domain_map, which
->>>> effectively unmasks the interrupt early. If an interrupt is asserted,
->>>> gic_handle_shared_int decodes and processes the interrupt even though it
->>>> has not yet been unmasked via gic_unmask_irq, which also sets the
->>>> appropriate bit in pcpu_masks.
->>>>
->>>> On the MIPS Boston board, when a console command line of
->>>> "console=ttyS0,115200n8r" is passed, the modem status IRQ is enabled in
->>>> the UART, which is immediately raised to the GIC. The interrupt has been
->>>> mapped, but no handler has yet been registered, nor is it expected to be
->>>> unmasked. However, the write to pcpu_masks in gic_shared_irq_domain_map
->>>> has effectively unmasked it, resulting in endless reports of:
->>>>
->>>> [    5.058454] irq 13, desc: ffffffff80a7ad80, depth: 1, count: 0, unhandled: 0
->>>> [    5.062057] ->handle_irq():  ffffffff801b1838,
->>>> [    5.062175] handle_bad_irq+0x0/0x2c0
->>>>
->>>> Where IRQ 13 is the UART interrupt.
->>>>
->>>> To fix this, just remove the write to pcpu_masks in
->>>> gic_shared_irq_domain_map. The existing write in gic_unmask_irq is the
->>>> correct place for what is now the effective unmasking.
->>>>
->>>> Fixes: 7778c4b27cbe ("irqchip: mips-gic: Use pcpu_masks to avoid reading GIC_SH_MASK*")
->>>> Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
->>>> Reviewed-by: Paul Burton <paul.burton@mips.com>
->>>>
->>>> ---
->>>>
->>>>    drivers/irqchip/irq-mips-gic.c | 2 --
->>>>    1 file changed, 2 deletions(-)
->>>>
->>>> diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
->>>> index b2cfc6d66d74..2c3684ba46e5 100644
->>>> --- a/drivers/irqchip/irq-mips-gic.c
->>>> +++ b/drivers/irqchip/irq-mips-gic.c
->>>> @@ -429,8 +429,6 @@ static int gic_shared_irq_domain_map(struct irq_domain *d, unsigned int virq,
->>>>    	spin_lock_irqsave(&gic_lock, flags);
->>>>    	write_gic_map_pin(intr, GIC_MAP_PIN_MAP_TO_PIN | shared_cpu_pin);
->>>>    	write_gic_map_vp(intr, BIT(mips_cm_vp_id(cpu)));
->>>> -	gic_clear_pcpu_masks(intr);
->>>> -	set_bit(intr, per_cpu_ptr(pcpu_masks, cpu));
->>>>    	irq_data_update_effective_affinity(data, cpumask_of(cpu));
->>>>    	spin_unlock_irqrestore(&gic_lock, flags);
->>>>    
->>>>
->>>
->>> Does this need to be Cc to stable (since it fixes something that was
->>> merged in 4.14)?
->>
->> Sorry, missed stable off the CC list. Yes, it does indeed need to be
->> backported. Should I resubmit?
-> No need, I'll add that to the patch.
+Attempting to suspend the system while a JTAG probe is connected now
+yields:
+ # echo mem > /sys/power/state
+ [   11.654000] PM: Syncing filesystems ... done.
+ [   11.658000] JTAG probe is connected - abort suspend
+ -sh: echo: write error: Operation not permitted
+ #
 
-Hi Marc,
-Not seen this turn up in tip, just wanted to check you're going to pick 
-it up?
+To restore suspend, the JTAG probe should be disconnected or put into
+quiescent state. Platform code can then clear the
+CPC.STAT_CONF.EJTAG_PROBE bit.
 
-Thanks,
-Matt
+Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
 
+---
 
-> 
-> Thanks,
-> 
-> 	M.
-> 
+ arch/mips/kernel/pm-cps.c | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+diff --git a/arch/mips/kernel/pm-cps.c b/arch/mips/kernel/pm-cps.c
+index 421e06dfee72..2e0f4bad72b9 100644
+--- a/arch/mips/kernel/pm-cps.c
++++ b/arch/mips/kernel/pm-cps.c
+@@ -12,6 +12,7 @@
+ #include <linux/init.h>
+ #include <linux/percpu.h>
+ #include <linux/slab.h>
++#include <linux/suspend.h>
+ 
+ #include <asm/asm-offsets.h>
+ #include <asm/cacheflush.h>
+@@ -670,6 +671,36 @@ static int cps_pm_online_cpu(unsigned int cpu)
+ 	return 0;
+ }
+ 
++#if defined(CONFIG_PM_SLEEP)
++static int cps_pm_power_notifier(struct notifier_block *this,
++				 unsigned long event, void *ptr)
++{
++	unsigned int stat;
++
++	switch (event) {
++	case PM_SUSPEND_PREPARE:
++		stat = read_cpc_cl_stat_conf();
++		/*
++		 * If we're attempting to suspend the system and power down all
++		 * of the cores, the JTAG detect bit indicates that the CPC will
++		 * instead put the cores into clock-off state. In this state
++		 * a connected debugger can cause the CPU to attempt
++		 * interactions with the powered down system. At best this will
++		 * fail. At worst, it can hang the NoC, requiring a hard reset.
++		 * To avoid this, just block system suspend if a JTAG probe
++		 * is detected.
++		 */
++		if (stat & CPC_Cx_STAT_CONF_EJTAG_PROBE_MSK) {
++			pr_warn("JTAG probe is connected - abort suspend\n");
++			return NOTIFY_BAD;
++		}
++		return NOTIFY_DONE;
++	default:
++		return NOTIFY_DONE;
++	}
++}
++#endif /* CONFIG_PM_SLEEP */
++
+ static int __init cps_pm_init(void)
+ {
+ 	/* A CM is required for all non-coherent states */
+@@ -705,6 +736,8 @@ static int __init cps_pm_init(void)
+ 		pr_warn("pm-cps: no CPC, clock & power gating unavailable\n");
+ 	}
+ 
++	pm_notifier(cps_pm_power_notifier, 0);
++
+ 	return cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "mips/cps_pm:online",
+ 				 cps_pm_online_cpu, NULL);
+ }
+-- 
+2.7.4

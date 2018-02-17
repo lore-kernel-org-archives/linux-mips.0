@@ -1,11 +1,11 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:35540 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:43455 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994662AbeBQUOcSuq9G (ORCPT
+        by eddie.linux-mips.org with ESMTP id S23994661AbeBQUOcgYE2G (ORCPT
         <rfc822;linux-mips@linux-mips.org>); Sat, 17 Feb 2018 21:14:32 +0100
 From: Paul Burton <paul.burton@mips.com>
-Subject: [PATCH v5 11/14] net: pch_gbe: Ensure DMA is ordered with descriptor writes
-Date: Sat, 17 Feb 2018 12:10:34 -0800
-Message-ID: <20180217201037.3006-12-paul.burton@mips.com>
+Subject: [PATCH v5 09/14] net: pch_gbe: Use pch_gbe_disable_dma_rx() in pch_gbe_configure_rx()
+Date: Sat, 17 Feb 2018 12:10:32 -0800
+Message-ID: <20180217201037.3006-10-paul.burton@mips.com>
 In-Reply-To: <20180217201037.3006-1-paul.burton@mips.com>
 References: <20180217201037.3006-1-paul.burton@mips.com>
 MIME-Version: 1.0
@@ -22,13 +22,14 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: netdev@vger.kernel.org
 Cc: Hassan Naveed <hassan.naveed@mips.com>, Matt Redfearn <matt.redfearn@mips.com>, "David S . Miller" <davem@davemloft.net>, linux-mips@linux-mips.org, Paul Burton <paul.burton@mips.com>
-Message-ID: <20180217201034.m2ePsTP3xdzPlbnr9whqkaitUXA9-ZG2AwHlWbDz5Js@z>
+Message-ID: <20180217201032.wHl6hXBCtmb0eRiext1sROdxLVmsUyK0f3Q7OT67CR0@z>
 
-On weakly ordered systems writes to the RX or TX descriptors may be
-reordered with the write to the DMA control register that enables DMA.
-If this happens then the device may see descriptors in an intermediate
-& invalid state, leading to incorrect behaviour. Add barriers to ensure
-that DMA is enabled only after all writes to the descriptors.
+The pch_gbe_configure_rx() function open-codes the equivalent of
+pch_gbe_disable_dma_rx(). Remove the duplication by moving
+pch_gbe_disable_dma_rx(), and pch_gbe_enable_dma_rx() for consistency,
+to be defined earlier than pch_gbe_configure_rx() and have
+pch_gbe_configure_rx() call pch_gbe_disable_dma_rx() rather than
+duplicate its functionality.
 
 Signed-off-by: Paul Burton <paul.burton@mips.com>
 Cc: David S. Miller <davem@davemloft.net>
@@ -44,32 +45,88 @@ Changes in v4: None
 Changes in v3: None
 Changes in v2: None
 
- drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ .../net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c   | 48 ++++++++++------------
+ 1 file changed, 22 insertions(+), 26 deletions(-)
 
 diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-index 4354842b9b7e..8e3ad7dcef0b 100644
+index 2d6980603ee4..b6cc4a34ed89 100644
 --- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
 +++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
-@@ -1260,6 +1260,9 @@ static void pch_gbe_tx_queue(struct pch_gbe_adapter *adapter,
- 	tx_desc->tx_frame_ctrl = (frame_ctrl);
- 	tx_desc->gbec_status = (DSC_INIT16);
+@@ -831,6 +831,26 @@ static void pch_gbe_irq_enable(struct pch_gbe_adapter *adapter)
+ 		   ioread32(&hw->reg->INT_EN));
+ }
  
-+	/* Ensure writes to descriptors complete before DMA begins */
-+	mmiowb();
++static void pch_gbe_disable_dma_rx(struct pch_gbe_hw *hw)
++{
++	u32 rxdma;
 +
- 	if (unlikely(++ring_num == tx_ring->count))
- 		ring_num = 0;
- 
-@@ -1961,6 +1964,9 @@ int pch_gbe_up(struct pch_gbe_adapter *adapter)
- 	pch_gbe_alloc_rx_buffers(adapter, rx_ring, rx_ring->count);
- 	adapter->tx_queue_len = netdev->tx_queue_len;
- 
-+	/* Ensure writes to descriptors complete before DMA begins */
-+	mmiowb();
++	/* Disable Receive DMA */
++	rxdma = ioread32(&hw->reg->DMA_CTRL);
++	rxdma &= ~PCH_GBE_RX_DMA_EN;
++	iowrite32(rxdma, &hw->reg->DMA_CTRL);
++}
 +
- 	pch_gbe_enable_dma_tx(&adapter->hw);
- 	pch_gbe_enable_dma_rx(&adapter->hw);
- 	pch_gbe_enable_mac_rx(&adapter->hw);
++static void pch_gbe_enable_dma_rx(struct pch_gbe_hw *hw)
++{
++	u32 rxdma;
++
++	/* Enables Receive DMA */
++	rxdma = ioread32(&hw->reg->DMA_CTRL);
++	rxdma |= PCH_GBE_RX_DMA_EN;
++	iowrite32(rxdma, &hw->reg->DMA_CTRL);
++}
++
+ /**
+  * pch_gbe_configure_tx - Configure Transmit Unit after Reset
+  * @adapter:  Board private structure
+@@ -876,7 +896,7 @@ static void pch_gbe_configure_tx(struct pch_gbe_adapter *adapter)
+ static void pch_gbe_configure_rx(struct pch_gbe_adapter *adapter)
+ {
+ 	struct pch_gbe_hw *hw = &adapter->hw;
+-	u32 rdba, rdlen, rxdma, rx_mode, tcpip;
++	u32 rdba, rdlen, rx_mode, tcpip;
+ 
+ 	rx_mode = PCH_GBE_ADD_FIL_EN |
+ 		  PCH_GBE_MLT_FIL_EN |
+@@ -897,11 +917,7 @@ static void pch_gbe_configure_rx(struct pch_gbe_adapter *adapter)
+ 	pch_gbe_mac_force_mac_fc(hw);
+ 
+ 	pch_gbe_disable_mac_rx(hw);
+-
+-	/* Disables Receive DMA */
+-	rxdma = ioread32(&hw->reg->DMA_CTRL);
+-	rxdma &= ~PCH_GBE_RX_DMA_EN;
+-	iowrite32(rxdma, &hw->reg->DMA_CTRL);
++	pch_gbe_disable_dma_rx(hw);
+ 
+ 	netdev_dbg(adapter->netdev,
+ 		   "MAC_RX_EN reg = 0x%08x  DMA_CTRL reg = 0x%08x\n",
+@@ -1290,26 +1306,6 @@ void pch_gbe_update_stats(struct pch_gbe_adapter *adapter)
+ 	spin_unlock_irqrestore(&adapter->stats_lock, flags);
+ }
+ 
+-static void pch_gbe_disable_dma_rx(struct pch_gbe_hw *hw)
+-{
+-	u32 rxdma;
+-
+-	/* Disable Receive DMA */
+-	rxdma = ioread32(&hw->reg->DMA_CTRL);
+-	rxdma &= ~PCH_GBE_RX_DMA_EN;
+-	iowrite32(rxdma, &hw->reg->DMA_CTRL);
+-}
+-
+-static void pch_gbe_enable_dma_rx(struct pch_gbe_hw *hw)
+-{
+-	u32 rxdma;
+-
+-	/* Enables Receive DMA */
+-	rxdma = ioread32(&hw->reg->DMA_CTRL);
+-	rxdma |= PCH_GBE_RX_DMA_EN;
+-	iowrite32(rxdma, &hw->reg->DMA_CTRL);
+-}
+-
+ /**
+  * pch_gbe_intr - Interrupt Handler
+  * @irq:   Interrupt number
 -- 
 2.16.1

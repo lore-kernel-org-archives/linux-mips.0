@@ -1,11 +1,11 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:44451 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:49480 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994650AbeBQUORFJKsG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 17 Feb 2018 21:14:17 +0100
+        by eddie.linux-mips.org with ESMTP id S23994653AbeBQUOSVLUhG (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 17 Feb 2018 21:14:18 +0100
 From: Paul Burton <paul.burton@mips.com>
-Subject: [PATCH v5 03/14] dt-bindings: net: Document Intel pch_gbe binding
-Date: Sat, 17 Feb 2018 12:10:26 -0800
-Message-ID: <20180217201037.3006-4-paul.burton@mips.com>
+Subject: [PATCH v5 04/14] net: pch_gbe: Add device tree support
+Date: Sat, 17 Feb 2018 12:10:27 -0800
+Message-ID: <20180217201037.3006-5-paul.burton@mips.com>
 In-Reply-To: <20180217201037.3006-1-paul.burton@mips.com>
 References: <20180217201037.3006-1-paul.burton@mips.com>
 MIME-Version: 1.0
@@ -21,68 +21,94 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: netdev@vger.kernel.org
-Cc: Hassan Naveed <hassan.naveed@mips.com>, Matt Redfearn <matt.redfearn@mips.com>, "David S . Miller" <davem@davemloft.net>, linux-mips@linux-mips.org, Paul Burton <paul.burton@mips.com>, Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Message-ID: <20180217201026.8Q0GcbazIu1L_iFWAZP02h-7hPXlPLhxumGVEn_0Jig@z>
+Cc: Hassan Naveed <hassan.naveed@mips.com>, Matt Redfearn <matt.redfearn@mips.com>, "David S . Miller" <davem@davemloft.net>, linux-mips@linux-mips.org, Paul Burton <paul.burton@mips.com>
+Message-ID: <20180217201027.MU0n1lSt6WAPVBpQfKDX_pUnz2EPMs-SJptSr6wFEto@z>
 
-Introduce documentation for a device tree binding for the Intel Platform
-Controller Hub (PCH) GigaBit Ethernet (GBE) device. Although this is a
-PCIe device & thus largely auto-detectable, this binding will be used to
-provide the driver with the PHY reset GPIO.
+Introduce support for retrieving the PHY reset GPIO from device tree,
+which will be used on the MIPS Boston development board. This requires
+support for probe deferral in order to work correctly, since the order
+of device probe is not guaranteed & typically the EG20T GPIO controller
+device will be probed after the ethernet MAC.
 
 Signed-off-by: Paul Burton <paul.burton@mips.com>
 Cc: David S. Miller <davem@davemloft.net>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: devicetree@vger.kernel.org
 Cc: linux-mips@linux-mips.org
 Cc: netdev@vger.kernel.org
-
 ---
 
-Changes in v5:
-- Use standard gpio & ethernet node names in example.
-- Remove bus number from example unit addresses.
+Changes in v5: None
+Changes in v4:
+- Use ERR_CAST(), thanks kbuild test robot/Fengguang!
 
-Changes in v4: None
-Changes in v3:
-- New patch.
+Changes in v3: None
+Changes in v2:
+- Tidy up handling of parsing private data, drop err_out.
 
-Changes in v2: None
+ .../net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c   | 31 +++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
- Documentation/devicetree/bindings/net/pch_gbe.txt | 25 +++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/pch_gbe.txt
-
-diff --git a/Documentation/devicetree/bindings/net/pch_gbe.txt b/Documentation/devicetree/bindings/net/pch_gbe.txt
-new file mode 100644
-index 000000000000..cff2687e6e75
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/pch_gbe.txt
-@@ -0,0 +1,25 @@
-+Intel Platform Controller Hub (PCH) GigaBit Ethernet (GBE)
+diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
+index 712ac2f7bb2c..11e8ced4a0f4 100644
+--- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
++++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
+@@ -23,6 +23,8 @@
+ #include <linux/net_tstamp.h>
+ #include <linux/ptp_classify.h>
+ #include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
++#include <linux/of_gpio.h>
+ 
+ #define DRV_VERSION     "1.01"
+ const char pch_driver_version[] = DRV_VERSION;
+@@ -2556,13 +2558,40 @@ static void pch_gbe_remove(struct pci_dev *pdev)
+ 	free_netdev(netdev);
+ }
+ 
++static struct pch_gbe_privdata *
++pch_gbe_get_priv(struct pci_dev *pdev, const struct pci_device_id *pci_id)
++{
++	struct pch_gbe_privdata *pdata;
++	struct gpio_desc *gpio;
 +
-+Required properties:
-+- compatible:		Should be the PCI vendor & device ID, eg. "pci8086,8802".
-+- reg:			Should be a PCI device number as specified by the PCI bus
-+			binding to IEEE Std 1275-1994.
-+- phy-reset-gpios:	Should be a GPIO list containing a single GPIO that
-+			resets the attached PHY when active.
++	if (!IS_ENABLED(CONFIG_OF))
++		return (struct pch_gbe_privdata *)pci_id->driver_data;
 +
-+Example:
++	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
++	if (!pdata)
++		return ERR_PTR(-ENOMEM);
 +
-+	ethernet@0,1 {
-+		compatible = "pci8086,8802";
-+		reg = <0x00020100 0 0 0 0>;
-+		phy-reset-gpios = <&eg20t_gpio 6
-+				   GPIO_ACTIVE_LOW>;
-+	};
++	gpio = devm_gpiod_get(&pdev->dev, "phy-reset", GPIOD_ASIS);
++	if (!IS_ERR(gpio))
++		pdata->phy_reset_gpio = gpio;
++	else if (PTR_ERR(gpio) != -ENOENT)
++		return ERR_CAST(gpio);
 +
-+	eg20t_gpio: gpio@0,2 {
-+		compatible = "pci8086,8803";
-+		reg = <0x00020200 0 0 0 0>;
++	return pdata;
++}
 +
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
+ static int pch_gbe_probe(struct pci_dev *pdev,
+ 			  const struct pci_device_id *pci_id)
+ {
+ 	struct net_device *netdev;
+ 	struct pch_gbe_adapter *adapter;
++	struct pch_gbe_privdata *pdata;
+ 	int ret;
+ 
++	pdata = pch_gbe_get_priv(pdev, pci_id);
++	if (IS_ERR(pdata))
++		return PTR_ERR(pdata);
++
+ 	ret = pcim_enable_device(pdev);
+ 	if (ret)
+ 		return ret;
+@@ -2600,7 +2629,7 @@ static int pch_gbe_probe(struct pci_dev *pdev,
+ 	adapter->pdev = pdev;
+ 	adapter->hw.back = adapter;
+ 	adapter->hw.reg = pcim_iomap_table(pdev)[PCH_GBE_PCI_BAR];
+-	adapter->pdata = (struct pch_gbe_privdata *)pci_id->driver_data;
++	adapter->pdata = pdata;
+ 	if (adapter->pdata && adapter->pdata->platform_init)
+ 		adapter->pdata->platform_init(pdev, adapter->pdata);
+ 
 -- 
 2.16.1

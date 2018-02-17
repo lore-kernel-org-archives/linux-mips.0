@@ -1,15 +1,19 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:55642 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:32988 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994655AbeBQUOj09WOG (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 17 Feb 2018 21:14:39 +0100
+        by eddie.linux-mips.org with ESMTP id S23992923AbeBQWxs25fRS (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 17 Feb 2018 23:53:48 +0100
+Date: Sat, 17 Feb 2018 14:50:22 -0800
 From: Paul Burton <paul.burton@mips.com>
-Subject: [PATCH v5 14/14] net: pch_gbe: Allow build on MIPS platforms
-Date: Sat, 17 Feb 2018 12:10:37 -0800
-Message-ID: <20180217201037.3006-15-paul.burton@mips.com>
-In-Reply-To: <20180217201037.3006-1-paul.burton@mips.com>
+Subject: Re: [PATCH v5 02/14] net: pch_gbe: Pull PHY GPIO handling out of
+ Minnow code
+Message-ID: <20180217225022.x45ozstehuuunpp3@pburton-laptop>
 References: <20180217201037.3006-1-paul.burton@mips.com>
+ <20180217201037.3006-3-paul.burton@mips.com>
+ <20180217222933.GB21315@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20180217222933.GB21315@lunn.ch>
 Return-Path: <Paul.Burton@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -20,40 +24,55 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: netdev@vger.kernel.org
-Cc: Hassan Naveed <hassan.naveed@mips.com>, Matt Redfearn <matt.redfearn@mips.com>, "David S . Miller" <davem@davemloft.net>, linux-mips@linux-mips.org, Paul Burton <paul.burton@mips.com>
-Message-ID: <20180217201037.dK-f3uSBHLs1ow1HA81QjB3yTW5Qmm3EMMzxAKQHD4Y@z>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: netdev@vger.kernel.org, Hassan Naveed <hassan.naveed@mips.com>, Matt Redfearn <matt.redfearn@mips.com>, "David S . Miller" <davem@davemloft.net>, linux-mips@linux-mips.org
+Message-ID: <20180217225022.fq0H6RI1kMGkJ5MbBOK-rTQDA1vh8FZVpK59kb1KyZA@z>
 
-Allow the pch_gbe driver to be built on MIPS platforms, allowing its use
-on the MIPS Boston development board.
+Hi Andrew,
 
-Signed-off-by: Paul Burton <paul.burton@mips.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: linux-mips@linux-mips.org
-Cc: netdev@vger.kernel.org
+On Sat, Feb 17, 2018 at 11:29:33PM +0100, Andrew Lunn wrote:
+> On Sat, Feb 17, 2018 at 12:10:25PM -0800, Paul Burton wrote:
+> > The MIPS Boston development board uses the Intel EG20T Platform
+> > Controller Hub, including its gigabit ethernet controller, and requires
+> > that its RTL8211E PHY be reset much like the Minnow platform. Pull the
+> > PHY reset GPIO handling out of Minnow-specific code such that it can be
+> > shared by later patches.
+> 
+> Hi Paul
+> 
+> I'm i right in saying the driver currently supports the Atheros AT8031
+> PHY? The same phy which is supported in drivers/net/phy/at803x.c?
 
----
+It looks like the driver does contain some code relating to that PHY,
+but it's not the one I'm using with the MIPS Boston board - there we
+have a Realtek RTL8211E (as mentioned in the commit message) which is
+working fine alongside this pch_gbe driver too.
 
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
-Changes in v2: None
+> If so, i think you are doing this all wrong.
 
- drivers/net/ethernet/oki-semi/pch_gbe/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Note that this is a driver which is already in mainline, and I didn't
+write it. Claiming that *I* am doing this all wrong is a bit of a
+stretch - all this patch does is make small changes to some existing
+code, which only tangentially relates to a PHY driver, such that it
+ceases to be specific to a single platform.
 
-diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/Kconfig b/drivers/net/ethernet/oki-semi/pch_gbe/Kconfig
-index 5f7a35212796..4d3809ae75e1 100644
---- a/drivers/net/ethernet/oki-semi/pch_gbe/Kconfig
-+++ b/drivers/net/ethernet/oki-semi/pch_gbe/Kconfig
-@@ -4,7 +4,7 @@
- 
- config PCH_GBE
- 	tristate "OKI SEMICONDUCTOR IOH(ML7223/ML7831) GbE"
--	depends on PCI && (X86_32 || COMPILE_TEST)
-+	depends on PCI && (X86_32 || MIPS || COMPILE_TEST)
- 	select MII
- 	select PTP_1588_CLOCK_PCH
- 	select NET_PTP_CLASSIFY
--- 
-2.16.1
+> You would be much better off throwing away pch_gbe_phy.c and write a
+> proper MDIO driver. You then get the PHY driver for free, and the MDIO
+> code could will handle your GPIO for you, in the standardised way.
+
+Even if that is true, rewriting the driver's PHY handling would be a
+very separate change to the changes this series make which allow this
+driver to work on a platform besides the Minnowboard. The *only* thing
+this series does relating to the PHY is allow the reset GPIO to be
+handled properly - rewriting the existing PHY handling is beyond it's
+scope.
+
+Note that I do have various cleanups to the driver beyond this series
+which I intend to submit after it is functional for my system[1], so I
+am not saying that I don't care about improving the driver. But please,
+let's do one thing at a time.
+
+Thanks,
+    Paul
+
+[1] https://git.linux-mips.org/cgit/paul/linux.git/log/?h=up417-boston-eth-cleanup

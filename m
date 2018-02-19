@@ -1,13 +1,13 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:58994 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:53353 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992105AbeBSKNL5Yj0k (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Feb 2018 11:13:11 +0100
+        by eddie.linux-mips.org with ESMTP id S23994655AbeBSQ4qgTMon (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Feb 2018 17:56:46 +0100
 From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH v2] MIPS: pm-cps: Block system suspend when a JTAG probe is present
-Date: Mon, 19 Feb 2018 10:11:09 +0000
-Message-ID: <1519035069-31012-1-git-send-email-matt.redfearn@mips.com>
-In-Reply-To: <1518706759-9890-1-git-send-email-matt.redfearn@mips.com>
-References: <1518706759-9890-1-git-send-email-matt.redfearn@mips.com>
+Subject: [PATCH] signals: Move put_compat_sigset to compat.h to silence hardened usercopy
+Date: Mon, 19 Feb 2018 16:55:06 +0000
+Message-ID: <1519059306-30135-1-git-send-email-matt.redfearn@mips.com>
+In-Reply-To: <1515636190-24061-1-git-send-email-keescook@chromium.org>
+References: <1515636190-24061-1-git-send-email-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Matt.Redfearn@mips.com>
@@ -20,100 +20,147 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Paul Burton <paul.burton@mips.com>, Ed Blake <ed.blake@sondrel.com>, Matt Redfearn <matt.redfearn@mips.com>, Bryan O'Donoghue <bryan.odonoghue@imgtec.com>, Dengcheng Zhu <dengcheng.zhu@mips.com>, linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>
-Message-ID: <20180219101109.zBQzJp9xNrTU9Z-rYH75q6jPKtAWcUQDoefW7PnBv3M@z>
+To: Kees Cook <keescook@chromium.org>, "Dmitry V . Levin" <ldv@altlinux.org>, Al Viro <viro@zeniv.linux.org.uk>
+Cc: kernel-hardening@lists.openwall.com, linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>
+Message-ID: <20180219165506.1SmlCiQctjG_naWaOFYiRdu2ZvisnCJNnAeYCjqJa50@z>
 
-If a JTAG probe is connected to a MIPS cluster, then the CPC detects it
-and latches the CPC.STAT_CONF.EJTAG_PROBE bit to 1. While set,
-attempting to send a power-down command to a core will be blocked, and
-the CPC will instead send the core to clock-off state. This can
-interfere with systems fully entering a low power state where all
-cores, CM, GIC, etc are powered down.
+Since commit afcc90f8621e ("usercopy: WARN() on slab cache usercopy
+region violations"), MIPS systems booting with a compat root filesystem
+emit a warning when copying compat siginfo to userspace:
 
-Detect that a JTAG probe is / has been connected to the cluster and
-block the suspend attempt.
+WARNING: CPU: 0 PID: 953 at mm/usercopy.c:81 usercopy_warn+0x98/0xe8
+Bad or missing usercopy whitelist? Kernel memory exposure attempt
+detected from SLAB object 'task_struct' (offset 1432, size 16)!
+Modules linked in:
+CPU: 0 PID: 953 Comm: S01logging Not tainted 4.16.0-rc2 #10
+Stack : ffffffff808c0000 0000000000000000 0000000000000001 65ac85163f3bdc4a
+	65ac85163f3bdc4a 0000000000000000 90000000ff667ab8 ffffffff808c0000
+	00000000000003f8 ffffffff808d0000 00000000000000d1 0000000000000000
+	000000000000003c 0000000000000000 ffffffff808c8ca8 ffffffff808d0000
+	ffffffff808d0000 ffffffff80810000 fffffc0000000000 ffffffff80785c30
+	0000000000000009 0000000000000051 90000000ff667eb0 90000000ff667db0
+	000000007fe0d938 0000000000000018 ffffffff80449958 0000000020052798
+	ffffffff808c0000 90000000ff664000 90000000ff667ab0 00000000100c0000
+	ffffffff80698810 0000000000000000 0000000000000000 0000000000000000
+	0000000000000000 0000000000000000 ffffffff8010d02c 65ac85163f3bdc4a
+	...
+Call Trace:
+[<ffffffff8010d02c>] show_stack+0x9c/0x130
+[<ffffffff80698810>] dump_stack+0x90/0xd0
+[<ffffffff80137b78>] __warn+0x100/0x118
+[<ffffffff80137bdc>] warn_slowpath_fmt+0x4c/0x70
+[<ffffffff8021e4a8>] usercopy_warn+0x98/0xe8
+[<ffffffff8021e68c>] __check_object_size+0xfc/0x250
+[<ffffffff801bbfb8>] put_compat_sigset+0x30/0x88
+[<ffffffff8011af24>] setup_rt_frame_n32+0xc4/0x160
+[<ffffffff8010b8b4>] do_signal+0x19c/0x230
+[<ffffffff8010c408>] do_notify_resume+0x60/0x78
+[<ffffffff80106f50>] work_notifysig+0x10/0x18
+---[ end trace 88fffbf69147f48a ]---
 
-Attempting to suspend the system while a JTAG probe is connected now
-yields:
- # echo mem > /sys/power/state
- [   11.654000] PM: Syncing filesystems ... done.
- [   11.658000] JTAG probe is connected - abort suspend
- -sh: echo: write error: Operation not permitted
- #
+Commit 5905429ad856 ("fork: Provide usercopy whitelisting for
+task_struct") noted that:
 
-To restore suspend, the JTAG probe should be disconnected or put into
-quiescent state. Platform code can then clear the
-CPC.STAT_CONF.EJTAG_PROBE bit.
+"While the blocked and saved_sigmask fields of task_struct are copied to
+userspace (via sigmask_to_save() and setup_rt_frame()), it is always
+copied with a static length (i.e. sizeof(sigset_t))."
 
+However, this is not true in the case of compat signals, whose sigset
+is copied by put_compat_sigset and receives size as an argument.
+
+At most call sites, put_compat_sigset is copying a sigset from the
+current task_struct. This triggers a warning when
+CONFIG_HARDENED_USERCOPY is active. However, by marking this function as
+static inline, the warning can be avoided because in all of these cases
+the size is constant at compile time, which is allowed. The only site
+where this is not the case is handling the rt_sigpending syscall, but
+there the copy is being made from a stack local variable so does not
+trigger the warning.
+
+Move put_compat_sigset to compat.h, and mark it static inline. This
+fixes the WARN on MIPS.
+
+Fixes: afcc90f8621e ("usercopy: WARN() on slab cache usercopy region violations")
 Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
-
 ---
 
-Changes in v2:
-Fixed CPC_Cx_STAT_CONF_EJTAG_PROBE_MSK -> CPC_Cx_STAT_CONF_EJTAG_PROBE -
-thanks kbuild test robot!
+ include/linux/compat.h | 26 ++++++++++++++++++++++++--
+ kernel/compat.c        | 19 -------------------
+ 2 files changed, 24 insertions(+), 21 deletions(-)
 
- arch/mips/kernel/pm-cps.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/arch/mips/kernel/pm-cps.c b/arch/mips/kernel/pm-cps.c
-index 421e06dfee72..a17d85d51576 100644
---- a/arch/mips/kernel/pm-cps.c
-+++ b/arch/mips/kernel/pm-cps.c
-@@ -12,6 +12,7 @@
- #include <linux/init.h>
- #include <linux/percpu.h>
- #include <linux/slab.h>
-+#include <linux/suspend.h>
+diff --git a/include/linux/compat.h b/include/linux/compat.h
+index 8a9643857c4a..c4139c7a0de0 100644
+--- a/include/linux/compat.h
++++ b/include/linux/compat.h
+@@ -17,6 +17,7 @@
+ #include <linux/if.h>
+ #include <linux/fs.h>
+ #include <linux/aio_abi.h>	/* for aio_context_t */
++#include <linux/uaccess.h>
+ #include <linux/unistd.h>
  
- #include <asm/asm-offsets.h>
- #include <asm/cacheflush.h>
-@@ -670,6 +671,36 @@ static int cps_pm_online_cpu(unsigned int cpu)
- 	return 0;
- }
+ #include <asm/compat.h>
+@@ -550,8 +551,29 @@ asmlinkage long compat_sys_settimeofday(struct compat_timeval __user *tv,
+ asmlinkage long compat_sys_adjtimex(struct compat_timex __user *utp);
  
-+#if defined(CONFIG_PM_SLEEP)
-+static int cps_pm_power_notifier(struct notifier_block *this,
-+				 unsigned long event, void *ptr)
+ extern int get_compat_sigset(sigset_t *set, const compat_sigset_t __user *compat);
+-extern int put_compat_sigset(compat_sigset_t __user *compat,
+-			     const sigset_t *set, unsigned int size);
++
++/*
++ * Defined inline such that size can be compile time constant, which avoids
++ * CONFIG_HARDENED_USERCOPY complaining about copies from task_struct
++ */
++static inline int
++put_compat_sigset(compat_sigset_t __user *compat, const sigset_t *set,
++		  unsigned int size)
 +{
-+	unsigned int stat;
-+
-+	switch (event) {
-+	case PM_SUSPEND_PREPARE:
-+		stat = read_cpc_cl_stat_conf();
-+		/*
-+		 * If we're attempting to suspend the system and power down all
-+		 * of the cores, the JTAG detect bit indicates that the CPC will
-+		 * instead put the cores into clock-off state. In this state
-+		 * a connected debugger can cause the CPU to attempt
-+		 * interactions with the powered down system. At best this will
-+		 * fail. At worst, it can hang the NoC, requiring a hard reset.
-+		 * To avoid this, just block system suspend if a JTAG probe
-+		 * is detected.
-+		 */
-+		if (stat & CPC_Cx_STAT_CONF_EJTAG_PROBE) {
-+			pr_warn("JTAG probe is connected - abort suspend\n");
-+			return NOTIFY_BAD;
-+		}
-+		return NOTIFY_DONE;
-+	default:
-+		return NOTIFY_DONE;
++	/* size <= sizeof(compat_sigset_t) <= sizeof(sigset_t) */
++#ifdef __BIG_ENDIAN
++	compat_sigset_t v;
++	switch (_NSIG_WORDS) {
++	case 4: v.sig[7] = (set->sig[3] >> 32); v.sig[6] = set->sig[3];
++	case 3: v.sig[5] = (set->sig[2] >> 32); v.sig[4] = set->sig[2];
++	case 2: v.sig[3] = (set->sig[1] >> 32); v.sig[2] = set->sig[1];
++	case 1: v.sig[1] = (set->sig[0] >> 32); v.sig[0] = set->sig[0];
 +	}
++	return copy_to_user(compat, &v, size) ? -EFAULT : 0;
++#else
++	return copy_to_user(compat, set, size) ? -EFAULT : 0;
++#endif
 +}
-+#endif /* CONFIG_PM_SLEEP */
-+
- static int __init cps_pm_init(void)
- {
- 	/* A CM is required for all non-coherent states */
-@@ -705,6 +736,8 @@ static int __init cps_pm_init(void)
- 		pr_warn("pm-cps: no CPC, clock & power gating unavailable\n");
- 	}
  
-+	pm_notifier(cps_pm_power_notifier, 0);
-+
- 	return cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "mips/cps_pm:online",
- 				 cps_pm_online_cpu, NULL);
+ asmlinkage long compat_sys_migrate_pages(compat_pid_t pid,
+ 		compat_ulong_t maxnode, const compat_ulong_t __user *old_nodes,
+diff --git a/kernel/compat.c b/kernel/compat.c
+index 3247fe761f60..3f5fa8902e7d 100644
+--- a/kernel/compat.c
++++ b/kernel/compat.c
+@@ -488,25 +488,6 @@ get_compat_sigset(sigset_t *set, const compat_sigset_t __user *compat)
  }
+ EXPORT_SYMBOL_GPL(get_compat_sigset);
+ 
+-int
+-put_compat_sigset(compat_sigset_t __user *compat, const sigset_t *set,
+-		  unsigned int size)
+-{
+-	/* size <= sizeof(compat_sigset_t) <= sizeof(sigset_t) */
+-#ifdef __BIG_ENDIAN
+-	compat_sigset_t v;
+-	switch (_NSIG_WORDS) {
+-	case 4: v.sig[7] = (set->sig[3] >> 32); v.sig[6] = set->sig[3];
+-	case 3: v.sig[5] = (set->sig[2] >> 32); v.sig[4] = set->sig[2];
+-	case 2: v.sig[3] = (set->sig[1] >> 32); v.sig[2] = set->sig[1];
+-	case 1: v.sig[1] = (set->sig[0] >> 32); v.sig[0] = set->sig[0];
+-	}
+-	return copy_to_user(compat, &v, size) ? -EFAULT : 0;
+-#else
+-	return copy_to_user(compat, set, size) ? -EFAULT : 0;
+-#endif
+-}
+-
+ #ifdef CONFIG_NUMA
+ COMPAT_SYSCALL_DEFINE6(move_pages, pid_t, pid, compat_ulong_t, nr_pages,
+ 		       compat_uptr_t __user *, pages32,
 -- 
 2.7.4

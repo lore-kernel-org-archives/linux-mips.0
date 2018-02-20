@@ -1,17 +1,24 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:35949 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:40860 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994692AbeBTWx5VSCt5 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Feb 2018 23:53:57 +0100
-Date: Tue, 20 Feb 2018 22:53:19 +0000
-From: "Maciej W. Rozycki" <macro@mips.com>
+        by eddie.linux-mips.org with ESMTP id S23994692AbeBTW7QVk7j5 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Feb 2018 23:59:16 +0100
+Date: Tue, 20 Feb 2018 22:58:46 +0000
+From: James Hogan <james.hogan@mips.com>
 Subject: Re: [PATCH V2 08/12] MIPS: Align kernel load address to 64KB
-In-Reply-To: <20180220222542.GF29460@jhogan-linux.mipstec.com>
-Message-ID: <alpine.DEB.2.00.1802202249410.3553@tp.orcam.me.uk>
-References: <1517022752-3053-1-git-send-email-chenhc@lemote.com> <1517023336-17575-1-git-send-email-chenhc@lemote.com> <1517023336-17575-2-git-send-email-chenhc@lemote.com> <20180219230719.GC6245@saruman> <alpine.DEB.2.00.1802202206490.3553@tp.orcam.me.uk>
+Message-ID: <20180220225845.GG29460@jhogan-linux.mipstec.com>
+References: <1517022752-3053-1-git-send-email-chenhc@lemote.com>
+ <1517023336-17575-1-git-send-email-chenhc@lemote.com>
+ <1517023336-17575-2-git-send-email-chenhc@lemote.com>
+ <20180219230719.GC6245@saruman>
+ <alpine.DEB.2.00.1802202206490.3553@tp.orcam.me.uk>
  <20180220222542.GF29460@jhogan-linux.mipstec.com>
+ <alpine.DEB.2.00.1802202249410.3553@tp.orcam.me.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@mips.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="PpAOPzA3dXsRhoo+"
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.00.1802202249410.3553@tp.orcam.me.uk>
+Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,29 +28,75 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@mips.com>
+To: "Maciej W. Rozycki" <macro@mips.com>
 Cc: Huacai Chen <chenhc@lemote.com>, Ralf Baechle <ralf@linux-mips.org>, "Steven J . Hill" <Steven.Hill@cavium.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>
-Message-ID: <20180220225319.vfiNR1kmFTM3kUoGUb77OSdKAIEIPqJgbOIW-rUwZFo@z>
+Message-ID: <20180220225846.NOZMGe6fJ329e6pN_gElvGMAPoBp2zuU0sndQjXw25I@z>
 
-On Tue, 20 Feb 2018, James Hogan wrote:
+--PpAOPzA3dXsRhoo+
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > >  Since the largest PAGE_SIZE supported by MIPS kernels is 64KB, increase
-> > >  the alignment calculated by calc_vmlinuz_load_addr to 64KB.
-> > 
-> >  But why does it have to be hardcoded?  Shouldn't it be inherited from 
-> > the image being loaded?  I'm missing bits of context here, but that 
-> > would be either CONFIG_PAGE_SIZE_* settings or the ELF program header's 
-> > `p_align' value, depending on how this code operates.  Wasting say 60kB 
-> > of memory on smaller systems due to excessive alignment might not be a 
-> > good idea.
-> 
-> I presume there's nothing to stop a kernel with 64KB pages (and hence
-> requiring 64KB alignment of load sections) loading a new kernel with 4KB
-> pages (which is the one we're looking at).
+On Tue, Feb 20, 2018 at 10:53:19PM +0000, Maciej W. Rozycki wrote:
+> On Tue, 20 Feb 2018, James Hogan wrote:
+>=20
+> > > >  Since the largest PAGE_SIZE supported by MIPS kernels is 64KB, inc=
+rease
+> > > >  the alignment calculated by calc_vmlinuz_load_addr to 64KB.
+> > >=20
+> > >  But why does it have to be hardcoded?  Shouldn't it be inherited fro=
+m=20
+> > > the image being loaded?  I'm missing bits of context here, but that=
+=20
+> > > would be either CONFIG_PAGE_SIZE_* settings or the ELF program header=
+'s=20
+> > > `p_align' value, depending on how this code operates.  Wasting say 60=
+kB=20
+> > > of memory on smaller systems due to excessive alignment might not be =
+a=20
+> > > good idea.
+> >=20
+> > I presume there's nothing to stop a kernel with 64KB pages (and hence
+> > requiring 64KB alignment of load sections) loading a new kernel with 4KB
+> > pages (which is the one we're looking at).
+>=20
+>  As I say, I'm missing bits of context.  If you say that a 64kiB-page=20
+> kernel loads a 4kiB-page kernel, then the alignment for the latter is=20
+> obviously 4kiB.  So I repeat my question: why hardcode the alignment to=
+=20
+> 64kiB while we only need 4kiB in this case?
 
- As I say, I'm missing bits of context.  If you say that a 64kiB-page 
-kernel loads a 4kiB-page kernel, then the alignment for the latter is 
-obviously 4kiB.  So I repeat my question: why hardcode the alignment to 
-64kiB while we only need 4kiB in this case?
+Because its the 1st kernel which is doing the kexec'ing of the 2nd
+kernel. The 2nd kernel might not even have kexec enabled, but you still
+might want to boot it using kexec.
 
-  Maciej
+The only alternative is for the kexec userland tools to be able to
+automatically adjust the load segments to load a bit more before the
+start of the kernel image so that its aligned, and i'm not sure how
+universally safe that would be.
+
+Cheers
+James
+
+--PpAOPzA3dXsRhoo+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlqMqCUACgkQbAtpk944
+dnoReQ//bBnMVurSWEYMcJ0owqonmERnm+5CGtmIUFTAZLzeeMAnu38gxUZEmGDk
+pjM20k9/9JaJY41WhC6D7ciI/HrAeowCw9c0Vj4/o2SlTYcj5VqV0IO/HdMZ1yZR
+xE7zpsH+/uv064SjVSeJnqUqwEoQUkr9QyKuYJ2AWLDpLoQriDb2otJZ/KtHnDGr
+bFqz+HJUekbotbUPjcRj1HYO+aQPXGXSW81X7HzMEQY+LCji6zrTpF5kRb2pOU4k
+rG1apTiG5Be06qQ0o8O8JrIvIVWKAP/sfw/BgxbHLe1KII4TOG4n5hcxdDnAxRze
+rKlUatz4ZJPGlC/BUqbPOUBi3TsbkcPdCJQ6lcfRiFfDaKT2mZ4gucGMta9HmhAo
+e57siAmJhEeykiAD/k9NoJFmWhWHETzBaTsCWMMloM97jlwamq4RStwkskFP6HMf
+tGqPfiYoOxOtueAiTQ07aidBqrwqb8nl56PQ702v0MyVs/v/QxCBt+YlxWqPgKto
+08au/TJBICbXgyXlOyC7Rj5gxnKWcMG9oxx7utiHHF5pyNSJniZmp1AZgb8kjJOH
+XC3EGa2XvYHovCb1aoPs/VB5ZtANmm6wMJby/9WPM+Tkk7ksPMvwWT+S1GPaoQ2Q
+cYLR5Mox0IUwYk13LeTxQdSaT+De+r6wvpi0pjZs/yD5/kIOqoQ=
+=Yk6l
+-----END PGP SIGNATURE-----
+
+--PpAOPzA3dXsRhoo+--

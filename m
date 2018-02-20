@@ -1,14 +1,19 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:47672 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993497AbeBTJ6rj00Z1 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Feb 2018 10:58:47 +0100
-From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH v3] MIPS: pm-cps: Block system suspend when a JTAG probe is present
-Date: Tue, 20 Feb 2018 09:58:16 +0000
-Message-ID: <1519120696-30658-1-git-send-email-matt.redfearn@mips.com>
+Received: from mail-co1nam03on0066.outbound.protection.outlook.com ([104.47.40.66]:10022
+        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23990421AbeBTKPhfzMo1 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 20 Feb 2018 11:15:37 +0100
+Subject: Re: [PATCH] watchdog: add SPDX identifiers for watchdog subsystem
+References: <20180220093119.23720-1-marcus.folkesson@gmail.com>
+From: Michal Simek <michal.simek@xilinx.com>
+Message-ID: <c7eae315-c8b8-3a4c-af1d-f7d713beb7c8@xilinx.com>
+Date: Tue, 20 Feb 2018 11:14:46 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@mips.com>
+In-Reply-To: <20180220093119.23720-1-marcus.folkesson@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Return-Path: <michal.simek@xilinx.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,107 +23,28 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Paul Burton <paul.burton@mips.com>, Matt Redfearn <matt.redfearn@mips.com>, Dengcheng Zhu <dengcheng.zhu@mips.com>, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Message-ID: <20180220095816.WjJrYy5GYrlMAvNx0h0c1_reps6lhmJMkHkT6hgxeiU@z>
+To: Marcus Folkesson <marcus.folkesson@gmail.com>, Wim Van Sebroeck <wim@linux-watchdog.org>, Guenter Roeck <linux@roeck-us.net>, Joel Stanley <joel@jms.id.au>, Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, bcm-kernel-feedback-list@broadcom.com, Eric Anholt <eric@anholt.net>, Stefan Wahren <stefan.wahren@i2se.com>, Linus Walleij <linus.walleij@linaro.org>, Support Opensource <support.opensource@diasemi.com>, Baruch Siach <baruch@tkos.co.il>, William Breathitt Gray <vilhelm.gray@gmail.com>, Jimmy Vance <jimmy.vance@hpe.com>, Keguang Zhang <keguang.zhang@gmail.com>, Joachim Eastwood <manabian@gmail.com>, Tomas Winkler <tomas.winkler@intel.com>, Johannes Thumshirn <morbidrsa@gmail.com>, Andreas Werner <andreas.werner@men.de>, Carlo Caione <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Matthias Brugger <matthias.bgg@gmail.com>, Wan ZongShun <mcuos.com@gmail.com>, Michal Simek <michal.simek@xilinx.com>, Vladimir Zapolskiy <vz@mleia.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>, Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Zwane Mwaikambo <zwanem@gmail.com>, Jim Cromie <jim.cromie@gmail.com>, Barry Song <baohua@kernel.org>, Patrice Chotard <patrice.chotard@st.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Marc Gonzalez <marc.w.gonzalez@free.fr>, Mans Rullgard <mans@mansr.com>, Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Jun Nie <jun.nie@linaro.org>, Baoyou Xie <baoyou.xie@linaro.org>, Shawn Guo <shawnguo@kernel.org>
+Cc: linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rpi-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-mips@linux-mips.org, linux-amlogic@lists.infradead.org, linux-mediatek@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, patches@opensource.cirrus.com
+Message-ID: <20180220101446.nFf3RAaBkyo1wT2ThMdXzQKN-TzaGs5utn0yFNoqERY@z>
 
-If a JTAG probe is connected to a MIPS cluster, then the CPC detects it
-and latches the CPC.STAT_CONF.EJTAG_PROBE bit to 1. While set,
-attempting to send a power-down command to a core will be blocked, and
-the CPC will instead send the core to clock-off state. This can
-interfere with systems fully entering a low power state where all
-cores, CM, GIC, etc are powered down.
+On 20.2.2018 10:31, Marcus Folkesson wrote:
+> - Add SPDX identifier
+> - Remove boiler plate license text
+> - If MODULE_LICENSE and boiler plate does not match, go for boiler plate
+>   license
+> 
+> Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+> ---
+> 
+> Notes:
+>     v1: Please have an extra look at meson_gxbb_wdt.c
+> 
+>  drivers/watchdog/cadence_wdt.c         |  5 +---
+>  drivers/watchdog/of_xilinx_wdt.c       |  8 ++---
 
-Detect that a JTAG probe is / has been connected to the cluster and
-block the suspend attempt.
 
-Attempting to suspend the system while a JTAG probe is connected now
-yields:
- # echo mem > /sys/power/state
- [   11.654000] PM: Syncing filesystems ... done.
- [   11.658000] JTAG probe is connected - abort suspend
- -sh: echo: write error: Operation not permitted
- #
+Acked-by: Michal Simek <michal.simek@xilinx.com> (For cadence_wdt and
+of_xilinx_wdt)
 
-To restore suspend, the JTAG probe should be disconnected or put into
-quiescent state. Platform code can then clear the
-CPC.STAT_CONF.EJTAG_PROBE bit.
-
-Reported-by: Ed Blake <ed.blake@sondrel.com>
-Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
-
-series-cc: Ed Blake <ed.blake@sondrel.com>
----
-
-Changes in v3:
-Remove #if defined(CONFIG_PM_SLEEP) around cps_pm_power_notifier which
-results in build error if CONFIG_PM_SLEEP is not defined. I believed
-that the pm_notifier() registration would harmlessly compile out if
-!defined(CONFIG_PM_SLEEP). However, it actually casts the fn to void in
-that case, resulting in a build error from the missing definition.
-
-Changes in v2:
-Fixed CPC_Cx_STAT_CONF_EJTAG_PROBE_MSK -> CPC_Cx_STAT_CONF_EJTAG_PROBE -
-thanks kbuild test robot!
-
- arch/mips/kernel/pm-cps.c | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
-
-diff --git a/arch/mips/kernel/pm-cps.c b/arch/mips/kernel/pm-cps.c
-index 421e06dfee72..55c3fbeb2df6 100644
---- a/arch/mips/kernel/pm-cps.c
-+++ b/arch/mips/kernel/pm-cps.c
-@@ -12,6 +12,7 @@
- #include <linux/init.h>
- #include <linux/percpu.h>
- #include <linux/slab.h>
-+#include <linux/suspend.h>
- 
- #include <asm/asm-offsets.h>
- #include <asm/cacheflush.h>
-@@ -670,6 +671,34 @@ static int cps_pm_online_cpu(unsigned int cpu)
- 	return 0;
- }
- 
-+static int cps_pm_power_notifier(struct notifier_block *this,
-+				 unsigned long event, void *ptr)
-+{
-+	unsigned int stat;
-+
-+	switch (event) {
-+	case PM_SUSPEND_PREPARE:
-+		stat = read_cpc_cl_stat_conf();
-+		/*
-+		 * If we're attempting to suspend the system and power down all
-+		 * of the cores, the JTAG detect bit indicates that the CPC will
-+		 * instead put the cores into clock-off state. In this state
-+		 * a connected debugger can cause the CPU to attempt
-+		 * interactions with the powered down system. At best this will
-+		 * fail. At worst, it can hang the NoC, requiring a hard reset.
-+		 * To avoid this, just block system suspend if a JTAG probe
-+		 * is detected.
-+		 */
-+		if (stat & CPC_Cx_STAT_CONF_EJTAG_PROBE) {
-+			pr_warn("JTAG probe is connected - abort suspend\n");
-+			return NOTIFY_BAD;
-+		}
-+		return NOTIFY_DONE;
-+	default:
-+		return NOTIFY_DONE;
-+	}
-+}
-+
- static int __init cps_pm_init(void)
- {
- 	/* A CM is required for all non-coherent states */
-@@ -705,6 +734,8 @@ static int __init cps_pm_init(void)
- 		pr_warn("pm-cps: no CPC, clock & power gating unavailable\n");
- 	}
- 
-+	pm_notifier(cps_pm_power_notifier, 0);
-+
- 	return cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "mips/cps_pm:online",
- 				 cps_pm_online_cpu, NULL);
- }
--- 
-2.7.4
+Thanks,
+Michal

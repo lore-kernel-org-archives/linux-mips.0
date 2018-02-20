@@ -1,16 +1,22 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:57775 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:33486 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994696AbeBTWPEYsA1S (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Feb 2018 23:15:04 +0100
-Date: Tue, 20 Feb 2018 22:14:39 +0000
-From: "Maciej W. Rozycki" <macro@mips.com>
+        by eddie.linux-mips.org with ESMTP id S23994692AbeBTW0YDwVg5 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Feb 2018 23:26:24 +0100
+Date: Tue, 20 Feb 2018 22:25:42 +0000
+From: James Hogan <james.hogan@mips.com>
 Subject: Re: [PATCH V2 08/12] MIPS: Align kernel load address to 64KB
-In-Reply-To: <20180219230719.GC6245@saruman>
-Message-ID: <alpine.DEB.2.00.1802202206490.3553@tp.orcam.me.uk>
-References: <1517022752-3053-1-git-send-email-chenhc@lemote.com> <1517023336-17575-1-git-send-email-chenhc@lemote.com> <1517023336-17575-2-git-send-email-chenhc@lemote.com> <20180219230719.GC6245@saruman>
+Message-ID: <20180220222542.GF29460@jhogan-linux.mipstec.com>
+References: <1517022752-3053-1-git-send-email-chenhc@lemote.com>
+ <1517023336-17575-1-git-send-email-chenhc@lemote.com>
+ <1517023336-17575-2-git-send-email-chenhc@lemote.com>
+ <20180219230719.GC6245@saruman>
+ <alpine.DEB.2.00.1802202206490.3553@tp.orcam.me.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@mips.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Pgaa2uWPnPrfixyx"
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.00.1802202206490.3553@tp.orcam.me.uk>
+Return-Path: <James.Hogan@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,30 +26,66 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <jhogan@kernel.org>
+To: "Maciej W. Rozycki" <macro@mips.com>
 Cc: Huacai Chen <chenhc@lemote.com>, Ralf Baechle <ralf@linux-mips.org>, "Steven J . Hill" <Steven.Hill@cavium.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>
-Message-ID: <20180220221439.l1C6Cp-9D_M6r7XYdnCd8QU-7ZIlT0q7dCX71p7q-is@z>
+Message-ID: <20180220222542.r_QqKXE4Epya6MFW36MZLS9741raR18ZWWVYWCAxGQc@z>
 
-On Mon, 19 Feb 2018, James Hogan wrote:
+--Pgaa2uWPnPrfixyx
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > KEXEC assume kernel align to PAGE_SIZE, and 64KB is the largest
-> > PAGE_SIZE.
-> 
-> Please expand, maybe referring to sanity_check_segment_list() which does
-> the actual check. Maybe something like this:
-> 
->  Kexec needs the new kernel's load address to be aligned on a page
->  boundary (see sanity_check_segment_list()), but on MIPS the default
->  vmlinuz load address is only explicitly aligned to 16 bytes.
-> 
->  Since the largest PAGE_SIZE supported by MIPS kernels is 64KB, increase
->  the alignment calculated by calc_vmlinuz_load_addr to 64KB.
+On Tue, Feb 20, 2018 at 10:14:39PM +0000, Maciej W. Rozycki wrote:
+> On Mon, 19 Feb 2018, James Hogan wrote:
+>=20
+> > > KEXEC assume kernel align to PAGE_SIZE, and 64KB is the largest
+> > > PAGE_SIZE.
+> >=20
+> > Please expand, maybe referring to sanity_check_segment_list() which does
+> > the actual check. Maybe something like this:
+> >=20
+> >  Kexec needs the new kernel's load address to be aligned on a page
+> >  boundary (see sanity_check_segment_list()), but on MIPS the default
+> >  vmlinuz load address is only explicitly aligned to 16 bytes.
+> >=20
+> >  Since the largest PAGE_SIZE supported by MIPS kernels is 64KB, increase
+> >  the alignment calculated by calc_vmlinuz_load_addr to 64KB.
+>=20
+>  But why does it have to be hardcoded?  Shouldn't it be inherited from=20
+> the image being loaded?  I'm missing bits of context here, but that=20
+> would be either CONFIG_PAGE_SIZE_* settings or the ELF program header's=
+=20
+> `p_align' value, depending on how this code operates.  Wasting say 60kB=
+=20
+> of memory on smaller systems due to excessive alignment might not be a=20
+> good idea.
 
- But why does it have to be hardcoded?  Shouldn't it be inherited from 
-the image being loaded?  I'm missing bits of context here, but that 
-would be either CONFIG_PAGE_SIZE_* settings or the ELF program header's 
-`p_align' value, depending on how this code operates.  Wasting say 60kB 
-of memory on smaller systems due to excessive alignment might not be a 
-good idea.
+I presume there's nothing to stop a kernel with 64KB pages (and hence
+requiring 64KB alignment of load sections) loading a new kernel with 4KB
+pages (which is the one we're looking at).
 
-  Maciej
+Cheers
+James
+
+--Pgaa2uWPnPrfixyx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlqMoGYACgkQbAtpk944
+dno25A//XtsxH5AbHEFymyrh43gEVCe/2gtNsVDTPH0eg9zrSo538G57eFCFjsCI
+uABuJLoFUsf4cFz2OthP1JHMcRpns/meJIbEKBNpTuTBr56ofhPyCc6jSgSEoTYW
+4/fhF4hoZXLw4MHeC3sBkmZBKzeLkDIyJULBdq4Gud1BA/QIDMNqUadhJZeBncja
+vpu6v4vLVnC0BNiFxNVcA5Kj9joHv+PwV0wUhU98vYj+f1ux4HrUs9sJ7TDMoQrG
+qm/xO8vyaQfFES2r4YTLXHUmQmOMHSP5NNudebU9fBSvlR52QzC8+8j/qYhlxOs3
+oGCHVkafbD5bIXPQAx1woAFDef+7x8D/GT9NGNurLLyDzJGuk30CsGoX1lKfWJrx
+LKPs67FR76Ak17wiPFBHPyb9VjV+sz1o41LaaMoKIJ10KZQNXSh7biGdM1DF0bgA
+ic+ztcHelXAJCw4oE0/QIBBZav3ATk/GhiCsEHc2njaYWjsA6BwuYA+iXuA3PC2o
+mWoCadJWEWWGN9WATTqUWw065s1WvDd3XItJow5lFVSeH3CFyx/1bMi1iVnrDc3m
+yWYDxmnR7/qgKwANSc5Pf+SW/WuBfsi5QKL+i8TLJa9s3i2Aks1jkmMbyVWa9fPd
+Q8lPyIBWwp4+gRuMdlwY0GNHQ9oy0oiQoQJWsHleLCfrlaJz0Fs=
+=G/mW
+-----END PGP SIGNATURE-----
+
+--Pgaa2uWPnPrfixyx--

@@ -1,26 +1,19 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:37195 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990405AbeBULOTZShVK (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 21 Feb 2018 12:14:19 +0100
-Date: Wed, 21 Feb 2018 11:13:45 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH V2 08/12] MIPS: Align kernel load address to 64KB
-Message-ID: <20180221111344.GH29460@jhogan-linux.mipstec.com>
-References: <1517022752-3053-1-git-send-email-chenhc@lemote.com>
- <1517023336-17575-1-git-send-email-chenhc@lemote.com>
- <1517023336-17575-2-git-send-email-chenhc@lemote.com>
- <20180219230719.GC6245@saruman>
- <alpine.DEB.2.00.1802202206490.3553@tp.orcam.me.uk>
- <20180220222542.GF29460@jhogan-linux.mipstec.com>
- <alpine.DEB.2.00.1802202249410.3553@tp.orcam.me.uk>
- <20180220225845.GG29460@jhogan-linux.mipstec.com>
- <alpine.DEB.2.00.1802202313480.3553@tp.orcam.me.uk>
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:4182 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23991416AbeBUMfqBTieT (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 21 Feb 2018 13:35:46 +0100
+From: Patrice CHOTARD <patrice.chotard@st.com>
+Subject: Re: [PATCH] watchdog: add SPDX identifiers for watchdog subsystem
+Date: Wed, 21 Feb 2018 12:34:44 +0000
+Message-ID: <9cf6fba8-7708-bbb3-1586-e195a2b440c6@st.com>
+References: <20180220093119.23720-1-marcus.folkesson@gmail.com>
+In-Reply-To: <20180220093119.23720-1-marcus.folkesson@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <48F34DB30D29F349BAC1998601DA2043@st.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Rn7IEEq3VEzCw+ji"
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.00.1802202313480.3553@tp.orcam.me.uk>
-Return-Path: <James.Hogan@mips.com>
+Return-Path: <patrice.chotard@st.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -30,109 +23,29 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Maciej W. Rozycki" <macro@mips.com>
-Cc: Huacai Chen <chenhc@lemote.com>, Ralf Baechle <ralf@linux-mips.org>, "Steven J . Hill" <Steven.Hill@cavium.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>
-Message-ID: <20180221111345.fXqG0guzrQTIJvFwiqu27s8NYI79E5pYqO3TQ-Ko6wo@z>
+To: Marcus Folkesson <marcus.folkesson@gmail.com>, Wim Van Sebroeck <wim@linux-watchdog.org>, Guenter Roeck <linux@roeck-us.net>, Joel Stanley <joel@jms.id.au>, Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Florian Fainelli <f.fainelli@gmail.com>, Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, "bcm-kernel-feedback-list@broadcom.com" <bcm-kernel-feedback-list@broadcom.com>, Eric Anholt <eric@anholt.net>, Stefan Wahren <stefan.wahren@i2se.com>, Linus Walleij <linus.walleij@linaro.org>, Support Opensource <support.opensource@diasemi.com>, Baruch Siach <baruch@tkos.co.il>, William Breathitt Gray <vilhelm.gray@gmail.com>, Jimmy Vance <jimmy.vance@hpe.com>, Keguang Zhang <keguang.zhang@gmail.com>, Joachim Eastwood <manabian@gmail.com>, Tomas Winkler <tomas.winkler@intel.com>, Johannes Thumshirn <morbidrsa@gmail.com>, Andreas Werner <andreas.werner@men.de>, Carlo Caione <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Matthias Brugger <matthias.bgg@gmail.com>, Wan ZongShun <mcuos.com@gmail.com>, Michal Simek <michal.simek@xilinx.com>, Vladimir Zapolskiy <vz@mleia.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>, Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Zwane Mwaikambo <zwanem@gmail.com>, Jim Cromie <jim.cromie@gmail.com>, Barry Song <baohua@kernel.org>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Marc Gonzalez <marc.w.gonzalez@free.fr>, Mans Rullgard <mans@mansr.com>, Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Jun Nie <jun.nie@linaro.org>, Baoyou Xie <baoyou.xie@linaro.org>, Shawn Guo <shawnguo@kernel.org>
+Cc: "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-rpi-kernel@lists.infradead.org" <linux-rpi-kernel@lists.infradead.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-amlogic@lists.infradead.org" <linux-amlogic@lists.infradead.org>, "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>
+Message-ID: <20180221123444.BYcGkotz82at-gbTGr2BSp1fNNik2i9iXiKL6TbxvAc@z>
 
---Rn7IEEq3VEzCw+ji
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Feb 20, 2018 at 11:38:26PM +0000, Maciej W. Rozycki wrote:
-> On Tue, 20 Feb 2018, James Hogan wrote:
->=20
-> > >  As I say, I'm missing bits of context.  If you say that a 64kiB-page=
-=20
-> > > kernel loads a 4kiB-page kernel, then the alignment for the latter is=
-=20
-> > > obviously 4kiB.  So I repeat my question: why hardcode the alignment =
-to=20
-> > > 64kiB while we only need 4kiB in this case?
-> >=20
-> > Because its the 1st kernel which is doing the kexec'ing of the 2nd
-> > kernel. The 2nd kernel might not even have kexec enabled, but you still
-> > might want to boot it using kexec.
->=20
->  Forgive my dumbness, but I don't understand what's preventing the 1st=20
-> kernel from getting the alignment of the 2nd kernel (regardless of=20
-> whether the 2nd kernel has kexec enabled).  What prevents the 1st kernel=
-=20
-> from interpreting the `p_align' value from the relevant program header=20
-> of the 2nd kernel before loading the segment the header describes?  It=20
-> has to load the header anyway or it wouldn't know how much data to load=
-=20
-> and where from into the file, and how much BSS space to initialise.
-
-The kernel doesn't always get an elf through kexec_load(2), but rather a
-list of load segments. In any case though its not about knowing the
-page size of 2nd kernel, its about kexec working with page size chunks.
-See the comment in sanity_check_segment_list().
-
->=20
->  Here's an example program header dump from `vmlinux':
->=20
-> $ readelf -l vmlinux
-
-Yeh but its not a vmlinux, its a vmlinuz. Thats the whole point. Though
-it sounds like you'd have the same problem with vmlinux too if you tried
-reducing the page size, so perhaps its fine for compressed kernels to
-just align to the page size of the 2nd kernel, so they're no worse than
-vmlinux.
-
->=20
-> Elf file type is EXEC (Executable file)
-> Entry point 0x80506e70
-> There are 3 program headers, starting at offset 52
->=20
-> Program Headers:
->   Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
->   ABIFLAGS       0x4b02e8 0x805ac2e8 0x805ac2e8 0x00018 0x00018 R   0x8
->   LOAD           0x004000 0x80100000 0x80100000 0x534650 0x569710 RWE 0x4=
-000
->   NOTE           0x4145a8 0x805105a8 0x805105a8 0x00024 0x00024 R   0x4
->=20
->  Section to Segment mapping:
->   Segment Sections...
->    00     .MIPS.abiflags
->    01     .text __ex_table .notes .rodata .MIPS.abiflags .pci_fixup __ksy=
-mtab __ksymtab_gpl __kcrctab __kcrctab_gpl __ksymtab_strings __param __modv=
-er .data .init.text .init.data .exit.text .bss
->    02     .notes
-> $=20
->=20
-> As you can see there's only one loadable segment (the usual case) and=20
-> its alignment is 0x4000, that is 16kiB.  So this kernel uses a page size=
-=20
-> of 16kiB.
-
-For malta_defconfig *vmlinuz* however (CONFIG_PAGE_SIZE_16KB=3Dy), I get
-this:
-  LOAD           0x008320 0x80828320 0x80828320 0x35e580 0x8605a0 RWE 0x100=
-00
-
-Cheers
-James
-
---Rn7IEEq3VEzCw+ji
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlqNVGIACgkQbAtpk944
-dnoCDRAAsZr3xNGuCnT4jKMlg2pHDB9ZuemRY+6PRkCLqaPBXKJPHgYW7nOU2+0r
-RSjHTPZ/FqMiVHUz0XElgn6nouBpNpmrZSZ8zMrL0M4ar97Ixeg7DQJFRJ6CLlcr
-uQsb09hVe61YKrSBUeB5TO7mAXBxZtZpfxn+sL2/h3+AsEzSMk8ooTu7v6pHTi4I
-ZA8QAhh7wiwXfnDruw4iKCggDGiq7YzYNwc4aGnEaVGlZIsngWDDSv2qUYZVuOlW
-/U3XwNA8aI0oSvdrqcbDpoHFG3yWXSqmezst+oCZ4xWa46iuJoWYeiGshJN6z5az
-GJPXuE/gT1Phh6D0m29dwFGhoHTsiOn7bvyFrm2f8yWZB/p8d33pcqJwa58xsw2+
-mR6/PqWe4ZpmlB+w43Xcq6qWdC7WmqUcB6w+Zsxlqn9Xt66tGDtRCQm9DKmSa3jO
-u4CfAjIGzfr4LZaYfBHdzi5XoRLnXcBIoX3VAB6fTNYgDGJI9DH6v+7nc5mVlbgV
-+z1/79vJGwAXcIHm7yuD2/tqW1GJ9CSKa9IWXiSVsdDPVLEQww7w/5XLgZaWuFD5
-+6MzkmWehPL2e2Smh15JX79PkRN3HdAP5etPVYi50xEt+chn40dWsbjqa5X8HBu2
-X7h/Q92jJzMSpK33V5iHcWMPOFUrN+88sfswY9r8gv5c2AJYY4U=
-=VtFU
------END PGP SIGNATURE-----
-
---Rn7IEEq3VEzCw+ji--
+SGkgTWFyY3VzDQoNCk9uIDAyLzIwLzIwMTggMTA6MzEgQU0sIE1hcmN1cyBGb2xrZXNzb24gd3Jv
+dGU6DQo+IC0gQWRkIFNQRFggaWRlbnRpZmllcg0KPiAtIFJlbW92ZSBib2lsZXIgcGxhdGUgbGlj
+ZW5zZSB0ZXh0DQo+IC0gSWYgTU9EVUxFX0xJQ0VOU0UgYW5kIGJvaWxlciBwbGF0ZSBkb2VzIG5v
+dCBtYXRjaCwgZ28gZm9yIGJvaWxlciBwbGF0ZQ0KPiAgICBsaWNlbnNlDQo+IA0KPiBTaWduZWQt
+b2ZmLWJ5OiBNYXJjdXMgRm9sa2Vzc29uIDxtYXJjdXMuZm9sa2Vzc29uQGdtYWlsLmNvbT4NCj4g
+LS0tDQo+IA0KPiBOb3RlczoNCj4gICAgICB2MTogUGxlYXNlIGhhdmUgYW4gZXh0cmEgbG9vayBh
+dCBtZXNvbl9neGJiX3dkdC5jDQo+IA0KDQpbLi4uXQ0KDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
+L3dhdGNoZG9nL3N0X2xwY193ZHQuYyBiL2RyaXZlcnMvd2F0Y2hkb2cvc3RfbHBjX3dkdC5jDQo+
+IGluZGV4IGU2MTAwZTQ0N2RkOC4uMTc3ODI5YjM3OWRhIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJz
+L3dhdGNoZG9nL3N0X2xwY193ZHQuYw0KPiArKysgYi9kcml2ZXJzL3dhdGNoZG9nL3N0X2xwY193
+ZHQuYw0KPiBAQCAtMSwzICsxLDQgQEANCj4gKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBH
+UEwtMi4wKw0KPiAgIC8qDQo+ICAgICogU1QncyBMUEMgV2F0Y2hkb2cNCj4gICAgKg0KPiBAQCAt
+NSwxMSArNiw2IEBADQo+ICAgICoNCj4gICAgKiBBdXRob3I6IERhdmlkIFBhcmlzIDxkYXZpZC5w
+YXJpc0BzdC5jb20+IGZvciBTVE1pY3JvZWxlY3Ryb25pY3MNCj4gICAgKiAgICAgICAgIExlZSBK
+b25lcyA8bGVlLmpvbmVzQGxpbmFyby5vcmc+IGZvciBTVE1pY3JvZWxlY3Ryb25pY3MNCj4gLSAq
+DQo+IC0gKiBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1
+dGUgaXQgYW5kL29yDQo+IC0gKiBtb2RpZnkgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUg
+R2VuZXJhbCBQdWJsaWMgTGljZW5jZQ0KPiAtICogYXMgcHVibGlzaGVkIGJ5IHRoZSBGcmVlIFNv
+ZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uDQo+IC0gKiAyIG9mIHRoZSBMaWNlbmNl
+LCBvciAoYXQgeW91ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLg0KPiAgICAqLw0KPiAgIA0K
+DQpGb3Igc3RfbHBjX3dkdC5jDQoNCkFja2VkLWJ5OiBQYXRyaWNlIENob3RhcmQgPHBhdHJpY2Uu
+Y2hvdGFyZEBzdC5jb20+DQoNClRoYW5rcw0KDQo=

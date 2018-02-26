@@ -1,17 +1,14 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:38370 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:41190 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990439AbeBZMmzIuH0H (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 26 Feb 2018 13:42:55 +0100
-Date: Mon, 26 Feb 2018 12:41:28 +0000
-From: "Maciej W. Rozycki" <macro@mips.com>
-Subject: Re: [PATCH V2 08/12] MIPS: Align kernel load address to 64KB
-In-Reply-To: <20180221111344.GH29460@jhogan-linux.mipstec.com>
-Message-ID: <alpine.DEB.2.00.1802261233560.3553@tp.orcam.me.uk>
-References: <1517022752-3053-1-git-send-email-chenhc@lemote.com> <1517023336-17575-1-git-send-email-chenhc@lemote.com> <1517023336-17575-2-git-send-email-chenhc@lemote.com> <20180219230719.GC6245@saruman> <alpine.DEB.2.00.1802202206490.3553@tp.orcam.me.uk>
- <20180220222542.GF29460@jhogan-linux.mipstec.com> <alpine.DEB.2.00.1802202249410.3553@tp.orcam.me.uk> <20180220225845.GG29460@jhogan-linux.mipstec.com> <alpine.DEB.2.00.1802202313480.3553@tp.orcam.me.uk> <20180221111344.GH29460@jhogan-linux.mipstec.com>
+        by eddie.linux-mips.org with ESMTP id S23991025AbeBZRGUms4qO (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 26 Feb 2018 18:06:20 +0100
+From: Matt Redfearn <matt.redfearn@mips.com>
+Subject: [PATCH 0/4] MIPS: Introduce isa-rev.h to define MIPS_ISA_REV
+Date: Mon, 26 Feb 2018 17:02:41 +0000
+Message-ID: <1519664565-10955-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@mips.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,50 +18,36 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@mips.com>
-Cc: Huacai Chen <chenhc@lemote.com>, Ralf Baechle <ralf@linux-mips.org>, "Steven J . Hill" <Steven.Hill@cavium.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>
-Message-ID: <20180226124128.ZkTc9Fh6SxlIf8Tceu9JPktIblhfEfaFqnpKDA-H_Uw@z>
+To: James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Paul Burton <paul.burton@mips.com>, Matt Redfearn <matt.redfearn@mips.com>, linux-kernel@vger.kernel.org, "Maciej W. Rozycki" <macro@mips.com>, David Daney <david.daney@cavium.com>
+Message-ID: <20180226170241.-MMpclpsEkIMd4VGbhpxoq2QTtCR3jqC3JJD7Ns2amw@z>
 
-On Wed, 21 Feb 2018, James Hogan wrote:
+There are multiple instances in the kernel where we need to include or
+exclude particular instructions based on the ISA revision of the target
+processor. For MIPS32 / MIPS64, the compiler exports a __mips_isa_rev
+define. However, when targeting MIPS I - V, this define is absent. This
+leads to each use of __mips_isa_rev having to check that it is defined
+first. To simplify this, this series introduces the isa-rev.h header
+which always exports MIPS_ISA_REV (the name is changed so as to avoid
+confusion with the compiler builtin and to avoid accidentally using the
+builtin). All uses of __mips_isa_rev are then replaced with the new
+define, removing the check that it is defined.
 
-> >  Forgive my dumbness, but I don't understand what's preventing the 1st 
-> > kernel from getting the alignment of the 2nd kernel (regardless of 
-> > whether the 2nd kernel has kexec enabled).  What prevents the 1st kernel 
-> > from interpreting the `p_align' value from the relevant program header 
-> > of the 2nd kernel before loading the segment the header describes?  It 
-> > has to load the header anyway or it wouldn't know how much data to load 
-> > and where from into the file, and how much BSS space to initialise.
-> 
-> The kernel doesn't always get an elf through kexec_load(2), but rather a
-> list of load segments. In any case though its not about knowing the
-> page size of 2nd kernel, its about kexec working with page size chunks.
-> See the comment in sanity_check_segment_list().
+Applies on v4.16-rc1
 
- So this is 1st kernel's page size AFAICT.  And I can see `struct 
-kexec_segment' drops ELF program header information, sigh.
 
-> >  Here's an example program header dump from `vmlinux':
-> > 
-> > $ readelf -l vmlinux
-> 
-> Yeh but its not a vmlinux, its a vmlinuz. Thats the whole point. Though
-> it sounds like you'd have the same problem with vmlinux too if you tried
-> reducing the page size, so perhaps its fine for compressed kernels to
-> just align to the page size of the 2nd kernel, so they're no worse than
-> vmlinux.
+Matt Redfearn (4):
+  MIPS: Introduce isa-rev.h to define MIPS_ISA_REV
+  MIPS: cpu-features.h: Replace __mips_isa_rev with MIPS_ISA_REV
+  MIPS: BPF: Replace __mips_isa_rev with MIPS_ISA_REV
+  MIPS: VDSO: Replace __mips_isa_rev with MIPS_ISA_REV
 
- Well, even if compressed you need to preserve the original structures 
-somehow so that once uncompressed the memory image is the same as if 
-`vmlinux' was loaded directly.
+ arch/mips/include/asm/cpu-features.h |  5 +++--
+ arch/mips/include/asm/isa-rev.h      | 24 ++++++++++++++++++++++++
+ arch/mips/net/bpf_jit_asm.S          |  9 +++++----
+ arch/mips/vdso/elf.S                 | 10 ++++------
+ 4 files changed, 36 insertions(+), 12 deletions(-)
+ create mode 100644 arch/mips/include/asm/isa-rev.h
 
-> > As you can see there's only one loadable segment (the usual case) and 
-> > its alignment is 0x4000, that is 16kiB.  So this kernel uses a page size 
-> > of 16kiB.
-> 
-> For malta_defconfig *vmlinuz* however (CONFIG_PAGE_SIZE_16KB=y), I get
-> this:
->   LOAD           0x008320 0x80828320 0x80828320 0x35e580 0x8605a0 RWE 0x10000
-
- Hmm, now you've left me stumped, so I'll shut up.
-
-  Maciej
+-- 
+2.7.4

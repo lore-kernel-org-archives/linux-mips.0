@@ -1,16 +1,16 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:41265 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:59144 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991025AbeBZRMG0m6sO (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 26 Feb 2018 18:12:06 +0100
-From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH 4/4] MIPS: VDSO: Replace __mips_isa_rev with MIPS_ISA_REV
-Date: Mon, 26 Feb 2018 17:02:45 +0000
-Message-ID: <1519664565-10955-5-git-send-email-matt.redfearn@mips.com>
-In-Reply-To: <1519664565-10955-1-git-send-email-matt.redfearn@mips.com>
-References: <1519664565-10955-1-git-send-email-matt.redfearn@mips.com>
+        by eddie.linux-mips.org with ESMTP id S23990723AbeBZUInt90Ys (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 26 Feb 2018 21:08:43 +0100
+Date: Mon, 26 Feb 2018 20:05:20 +0000
+From: "Maciej W. Rozycki" <macro@mips.com>
+Subject: Re: [PATCH 1/4] MIPS: Introduce isa-rev.h to define MIPS_ISA_REV
+In-Reply-To: <1519664565-10955-2-git-send-email-matt.redfearn@mips.com>
+Message-ID: <alpine.DEB.2.00.1802261957350.3553@tp.orcam.me.uk>
+References: <1519664565-10955-1-git-send-email-matt.redfearn@mips.com> <1519664565-10955-2-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@mips.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,53 +20,42 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Paul Burton <paul.burton@mips.com>, Matt Redfearn <matt.redfearn@mips.com>, linux-kernel@vger.kernel.org
-Message-ID: <20180226170245.S_A2HX1IMnr-lyQgCiexINxK9K77d-HjX21fvKLHsIo@z>
+To: Matt Redfearn <matt.redfearn@mips.com>
+Cc: James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Paul Burton <paul.burton@mips.com>, linux-kernel@vger.kernel.org
+Message-ID: <20180226200520.23FvYyiwRIPt-2vADuLQBJY0u58mIQO4TvAOALUsLaM@z>
 
-Remove the need to check that __mips_isa_rev is defined by using the
-newly added MIPS_ISA_REV.
+On Mon, 26 Feb 2018, Matt Redfearn wrote:
 
-Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
----
+> +/* If the compiler has defined __mips_isa_rev, believe it. */
+> +#ifdef __mips_isa_rev
+> +#define MIPS_ISA_REV __mips_isa_rev
+> +#else
+> +/* The compiler hasn't defined the isa rev so assume it's MIPS I - V (0) */
+> +#define MIPS_ISA_REV 0
+> +#endif
 
- arch/mips/vdso/elf.S | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ FYI, GCC has this:
 
-diff --git a/arch/mips/vdso/elf.S b/arch/mips/vdso/elf.S
-index be37bbb1f061..428a1917afc6 100644
---- a/arch/mips/vdso/elf.S
-+++ b/arch/mips/vdso/elf.S
-@@ -10,6 +10,8 @@
- 
- #include "vdso.h"
- 
-+#include <asm/isa-rev.h>
-+
- #include <linux/elfnote.h>
- #include <linux/version.h>
- 
-@@ -40,11 +42,7 @@ __mips_abiflags:
- 	.byte	__mips		/* isa_level */
- 
- 	/* isa_rev */
--#ifdef __mips_isa_rev
--	.byte	__mips_isa_rev
--#else
--	.byte	0
--#endif
-+	.byte	MIPS_ISA_REV
- 
- 	/* gpr_size */
- #ifdef __mips64
-@@ -54,7 +52,7 @@ __mips_abiflags:
- #endif
- 
- 	/* cpr1_size */
--#if (defined(__mips_isa_rev) && __mips_isa_rev >= 6) || defined(__mips64)
-+#if (MIPS_ISA_REV >= 6) || defined(__mips64)
- 	.byte	2		/* AFL_REG_64 */
- #else
- 	.byte	1		/* AFL_REG_32 */
--- 
-2.7.4
+/* The ISA revision level.  This is 0 for MIPS I to V and N for
+   MIPS{32,64}rN.  */
+int mips_isa_rev;
+
+and this:
+
+      if (mips_isa < 32)
+	mips_isa_rev = 0;
+      else
+	mips_isa_rev = (mips_isa & 31) + 1;
+
+and then:
+
+      if (mips_isa_rev > 0)						\
+	builtin_define_with_int_value ("__mips_isa_rev",		\
+				       mips_isa_rev);			\
+
+so your proposal looks like the right approach to me.  I think we should 
+have the various target macros documented in the GCC manual.
+
+Reviewed-by: Maciej W. Rozycki <macro@mips.com>
+
+  Maciej

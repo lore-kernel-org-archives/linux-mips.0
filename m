@@ -1,21 +1,14 @@
-Received: from [64.235.154.210] ([64.235.154.210]:48100 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23990845AbeB0QhMxGFkN (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 27 Feb 2018 17:37:12 +0100
-Date: Tue, 27 Feb 2018 15:57:48 +0000
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH v3 6/8] MIPS: mscc: add ocelot PCB123 device tree
-Message-ID: <20180227155747.GQ29460@jhogan-linux.mipstec.com>
-References: <20180116101240.5393-1-alexandre.belloni@free-electrons.com>
- <20180116101240.5393-7-alexandre.belloni@free-electrons.com>
- <20180214170042.GE3986@saruman>
- <20180227155444.GB15333@piout.net>
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:44196 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992615AbeCAKNMX1unn (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 1 Mar 2018 11:13:12 +0100
+From: Matt Redfearn <matt.redfearn@mips.com>
+Subject: [PATCH v2] bcma: Prevent build of PCI host features in module
+Date: Thu, 1 Mar 2018 09:58:12 +0000
+Message-ID: <1519898292-12155-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="w2Q1kmhlT73y7Um/"
-Content-Disposition: inline
-In-Reply-To: <20180227155444.GB15333@piout.net>
-Return-Path: <James.Hogan@mips.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,83 +18,42 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20180227155748.cxvSdGEoitreacC4ngcTZU5bHkWfc9b4YrhZwicyuAI@z>
+To: kvalo@codeaurora.org
+Cc: zajec5@gmail.com, linux-wireless@vger.kernel.org, linux-mips@linux-mips.org, jhogan@kernel.org, Matt Redfearn <matt.redfearn@mips.com>
+Message-ID: <20180301095812.oDexUAtVByQNggvgkGOnBWxOlZmqbK3aSVgLbhWhyvk@z>
 
---w2Q1kmhlT73y7Um/
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Attempting to build bcma.ko with BCMA_DRIVER_PCI_HOSTMODE=y results in
+a build error due to use of symbols not exported from vmlinux:
 
-On Tue, Feb 27, 2018 at 04:54:44PM +0100, Alexandre Belloni wrote:
-> On 14/02/2018 at 17:00:42 +0000, James Hogan wrote:
-> > On Tue, Jan 16, 2018 at 11:12:38AM +0100, Alexandre Belloni wrote:
-> > > Add a device tree for the Microsemi Ocelot PCB123 evaluation board.
-> > >=20
-> > > Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.co=
-m>
-> >=20
-> > Please Cc DT folk.
-> >=20
->=20
-> I can do but again, I don't think they care.
->=20
-> > > diff --git a/arch/mips/boot/dts/mscc/ocelot_pcb123.dts b/arch/mips/bo=
-ot/dts/mscc/ocelot_pcb123.dts
-> > > new file mode 100644
-> > > index 000000000000..42bd404471f6
-> > > --- /dev/null
-> > > +++ b/arch/mips/boot/dts/mscc/ocelot_pcb123.dts
-> > > @@ -0,0 +1,27 @@
-> > > +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
-> > > +/* Copyright (c) 2017 Microsemi Corporation */
-> > > +
-> > > +/dts-v1/;
-> > > +
-> > > +#include "ocelot.dtsi"
-> > > +
-> > > +/ {
-> > > +	compatible =3D "mscc,ocelot-pcb123", "mscc,ocelot";
-> >=20
-> > Should mscc,ocelot-pcb123 be added to the mscc DT binding documentation
-> > in the other patch?
-> >=20
->=20
-> On ARM at least, we don't document the board compatibles because this
-> will be a huge list without much benefit as they are mostly unused.
-> Still, it is nice to have in case something specific needs to be done
-> for a particular board (and hopefully this never happens).
->=20
-> also, I don't think any other MIPS boards are documented bu if you
-> insist, I can either add it in
-> Documentation/devicetree/bindings/mips/mscc.txt or create a new file to
-> list all the mips board compatibles.
+ERROR: "pcibios_enable_device" [drivers/bcma/bcma.ko] undefined!
+ERROR: "register_pci_controller" [drivers/bcma/bcma.ko] undefined!
+make[1]: *** [scripts/Makefile.modpost:92: __modpost] Error 1
 
-I don't insist. It was a genuine question :-)
+To prevent this, don't allow the host mode feature to be built if
+CONFIG_BCMA=m
 
-Thanks
-James
+Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
 
---w2Q1kmhlT73y7Um/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+---
 
------BEGIN PGP SIGNATURE-----
+Changes in v2:
+Rebase on v4.16-rc1
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlqVf/sACgkQbAtpk944
-dnodeQ//Qtfu98Urha66CiGpP9aq1udAStF8Uzts59ARWqOn3NX1gIclwYkd5TCa
-cTlkJMZWDO59Wix488va2l+B5WgBrcPtVn65K58a+z8xu71G8OZE2a08v0ATp+Ac
-KQg4lvNs4Xn43dh6Wzggv7/VAwHPxobWm7AOpL96AAyO/A384y4SD6bSzZgxO+35
-wtSius6KzMCmw8WiWvaQ4bRBw2vuKpVsuTcy+6NuTKG8ekaoA35zappQfbkLFQf7
-FE0YRQmKHdajo/a5R4LSbJ28wE8EW9J+drO0iuP8o5biqLxlwy/kpMxkpJJGc6PF
-G8Gy29AxwjdjekIhSpINtYk2vi6S4xwhL47HMn8OzOy20Y8MiNDDN50hgsCEB4NN
-ufZcFAoPJ4qWJmW1J7Y7LnerU9Ksw5SKa+8zy9CnF03ZK4ve2zqh/SslsHkhurfK
-Py37vRaFJHC6MCm7hun0JqVweQIDRud5DtQEe/+FOkLSWvm8JKORChWD8h8Xy9FT
-p1L1J2f93HVT79Td8teoBL+MnwExp5lK3QjZnRoUMOlmFLqVBE73lZJ5p/yFbK5F
-6M+1GlHG0B2h2rL1JdiEp2MNo01+Q6aFkmNR25wpnD/DiQ1nuUuUbl2+q7APflE+
-3OnD0ip7hf5LzxCdc83zg2qGSk/loz8n6DJ3WAz6dYg3USeygk8=
-=kaZY
------END PGP SIGNATURE-----
+ drivers/bcma/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---w2Q1kmhlT73y7Um/--
+diff --git a/drivers/bcma/Kconfig b/drivers/bcma/Kconfig
+index ba8acca036df..cb0f1aad20b7 100644
+--- a/drivers/bcma/Kconfig
++++ b/drivers/bcma/Kconfig
+@@ -55,7 +55,7 @@ config BCMA_DRIVER_PCI
+ 
+ config BCMA_DRIVER_PCI_HOSTMODE
+ 	bool "Driver for PCI core working in hostmode"
+-	depends on MIPS && BCMA_DRIVER_PCI && PCI_DRIVERS_LEGACY
++	depends on MIPS && BCMA_DRIVER_PCI && PCI_DRIVERS_LEGACY && BCMA = y
+ 	help
+ 	  PCI core hostmode operation (external PCI bus).
+ 
+-- 
+2.7.4

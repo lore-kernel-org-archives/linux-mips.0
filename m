@@ -1,17 +1,17 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:36450 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992368AbeCCKUKw6DRm (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 3 Mar 2018 11:20:10 +0100
-Date: Sat, 3 Mar 2018 09:38:18 +0000
-From: "Maciej W. Rozycki" <macro@mips.com>
-Subject: Re: [PATCH V2 1/2] MIPS: Loongson64: Select
- ARCH_MIGHT_HAVE_PC_PARPORT
-In-Reply-To: <1520060919.13983.3.camel@flygoat.com>
-Message-ID: <alpine.DEB.2.00.1803030935510.10166@tp.orcam.me.uk>
-References: <1519871862-14624-1-git-send-email-chenhc@lemote.com>  <alpine.DEB.2.00.1803021204250.10166@tp.orcam.me.uk> <1520060919.13983.3.camel@flygoat.com>
+Received: from mail.kernel.org ([198.145.29.99]:56972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23994690AbeCFN4CxSbH- (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 6 Mar 2018 14:56:02 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@mips.com>
+In-Reply-To: <20180306091932.GM4197@saruman>
+References: <20170918140241.24003-1-prasannatsmkumar@gmail.com>
+ <20170918140241.24003-4-prasannatsmkumar@gmail.com> <20180306091932.GM4197@saruman>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Tue, 6 Mar 2018 07:55:32 -0600
+Message-ID: <CAL_JsqJiNpnVC7X=viKZRjEJBe8ZEp0mJLDKhPYKugoxpiQJNQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] crypto: jz4780-rng: Add RNG node to jz4780.dtsi
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <robh+dt@kernel.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,25 +21,33 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: Huacai Chen <chenhc@lemote.com>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@mips.com>, "Steven J . Hill" <Steven.Hill@cavium.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>
-Message-ID: <20180303093818.6Fv45NdV1dkMMZ3wtWjfyBYkqmbKUBCyl_tRnUQe2a4@z>
+To: James Hogan <jhogan@kernel.org>
+Cc: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>, Herbert Xu <herbert@gondor.apana.org.au>, Ralf Baechle <ralf@linux-mips.org>, David Miller <davem@davemloft.net>, Paul Cercueil <paul@crapouillou.net>, "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" <linux-crypto@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, Mathieu Malaterre <malat@debian.org>, noloader@gmail.com
+Message-ID: <20180306135532.LjHCIhdpr8w3C9JZX40BT5KvR7P3PTlDPKWuSQxx-Dk@z>
 
-On Fri, 2 Mar 2018, Jiaxun Yang wrote:
+On Tue, Mar 6, 2018 at 3:32 AM, James Hogan <jhogan@kernel.org> wrote:
+> On Mon, Sep 18, 2017 at 07:32:40PM +0530, PrasannaKumar Muralidharan wrote:
+>> Add RNG node to jz4780 dtsi. This driver uses registers that are part of
+>> the register set used by Ingenic CGU driver. Use regmap in RNG driver to
+>> access its register. Create 'simple-bus' node, make CGU and RNG node as
+>> child of it so that both the nodes are visible without changing CGU
+>> driver code.
 
-> >  Hmm, I don't think the Fuloong(2e) machine has a parallel port
-> > connector.  
-> > The chipset may support the port, but with no external connection I
-> > think 
-> > there's no point in enabling it.  Or am I missing something?
-> Thanks for your advice.
-> Some other Loongson-2E devices share the same kernel entry with
-> Fuloong-2E.
-> And the 2E desktop PC has a parallel port. So we enable it for these
-> devices.
+The goal should be to avoid changing the DT (because the h/w hasn't
+changed), not avoid changing a driver.
 
- Ah, OK then, thanks for the clarification.  Would you mind updating the 
-Kconfig description for LEMOTE_FULOONG2E to actually list the systems it 
-covers then?
+>>
+>> Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+>
+> Better late than never:
+> Acked-by: James Hogan <jhogan@kernel.org>
+>
+> (I presume its okay for the reg ranges to overlap, ISTR that being an
+> issue a few years ago, but maybe thats fixed now).
 
-  Maciej
+No, that should be avoided. It does work because we have existing
+cases that have to be supported.
+
+>
+> Cheers
+> James

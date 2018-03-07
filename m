@@ -1,22 +1,23 @@
-Received: from forward101j.mail.yandex.net ([5.45.198.241]:57911 "EHLO
-        forward101j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994724AbeCGPxU511Wy (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 7 Mar 2018 16:53:20 +0100
-Message-ID: <1520437971.3731.22.camel@flygoat.com>
-Subject: Re: [RFC 3/4] MIPS: Ingenic: Initial X1000 SoC support
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Date: Wed, 07 Mar 2018 23:52:51 +0800
-In-Reply-To: <CANc+2y5wsvGWszu3pePYhs2wb1_AgPdjG+ugfOCzbZVfVHDMvw@mail.gmail.com>
-References: <20170927151527.25570-1-prasannatsmkumar@gmail.com>
-         <20170927151527.25570-4-prasannatsmkumar@gmail.com>
-         <20180306000832.GL4197@saruman>
-         <CANc+2y5_R5xYQuLbW7NAjO4mcW5RNn3Da77tAhYU5zj=0rkBDQ@mail.gmail.com>
-         <20180307143541.GN4197@saruman>
-         <CANc+2y5wsvGWszu3pePYhs2wb1_AgPdjG+ugfOCzbZVfVHDMvw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Received: from outils.crapouillou.net ([89.234.176.41]:33830 "EHLO
+        crapouillou.net" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23994728AbeCGUXKCe1Sq (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 7 Mar 2018 21:23:10 +0100
+Subject: Re: [PATCH v3 3/4] crypto: jz4780-rng: Add RNG node to jz4780.dtsi
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-Return-Path: <jiaxun.yang@flygoat.com>
+Date: Wed, 07 Mar 2018 21:23:08 +0100
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: 
+In-Reply-To: <CANc+2y7m0Z0Nnwv31gGd_PFAyKpSxfi2YY7Ngk_K86Qnr_tvyQ@mail.gmail.com>
+References: <20170918140241.24003-1-prasannatsmkumar@gmail.com>
+ <20170918140241.24003-4-prasannatsmkumar@gmail.com>
+ <20180306091932.GM4197@saruman>
+ <788bf0bf0d0aaa97f59bc908ebf34ebf@crapouillou.net>
+ <CANc+2y7m0Z0Nnwv31gGd_PFAyKpSxfi2YY7Ngk_K86Qnr_tvyQ@mail.gmail.com>
+Message-ID: <7a99f4da84eba2f980be2ee0889810f4@crapouillou.net>
+Return-Path: <paul@crapouillou.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,31 +27,88 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>, James Hogan <jhogan@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Michael Turquette <mturquette@baylibre.com>, sboyd@codeaurora.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, linux-clk@vger.kernel.org, open list <linux-kernel@vger.kernel.org>, Paul Cercueil <paul@crapouillou.net>, Mathieu Malaterre <malat@debian.org>, Dominik Peklo <dom.peklo@gmail.com>
-Message-ID: <20180307155251.mqG_tqXotfwgtN-QXsD_Z_A3Zj4zc8pnFomwluibp50@z>
+To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+Cc: James Hogan <jhogan@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, Rob Herring <robh+dt@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, "David S . Miller" <davem@davemloft.net>, "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" <linux-crypto@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, Mathieu Malaterre <malat@debian.org>, noloader@gmail.com
+Message-ID: <20180307202308.oAEy2D29Cm8ehTkApd4VYtmYVh03mOuvt6mMWKyTQG4@z>
 
-在 2018-03-07三的 20:35 +0530，PrasannaKumar Muralidharan写道：
-> Hi James,
-> 
-> Seems Jiaxun is interested in the board and is willing to help.
-> 
-> I have been told that Ingenic is focusing on IoT market and X1000 is
-> intended for IoT segment. I think that they would be selling several
-> 100Ks of chip over the coming years. But I feel Ingenic spends time
-> only on maintaining their Linux port which is usually based on very
-> old kernel version.
+Hi PrasannaKumar,
 
-Ingenic is going to release their XBrust2 core with it's products such
-as X2000 a few days later. Witch is a pure MIPS64r5 with MXU2(A
-superset of MIPS's MSA SIMD instruction set). The newest kernel port of
-X1000 maintain by Ingenic is based on Linux-4.4 [1]. After communicated
-with Ingenic, they said they are forcusing on China domestic market.
-But they're looking for partners to enter foriegn market. 
-
-[1] https://pan.baidu.com/s/1o8MeYts (Well you can download from this
-Chinese website, ingenic have a gerrit but I don't have access to it.
-As my experience, it's hard to develop on Chinese-made chips wihout
-reading Chinese documents.)  
+Le 2018-03-07 15:51, PrasannaKumar Muralidharan a écrit :
+> Hi Paul,
 > 
-> > 
+> On 7 March 2018 at 04:31, Paul Cercueil <paul@crapouillou.net> wrote:
+>> Le 2018-03-06 10:32, James Hogan a écrit :
+>>> 
+>>> On Mon, Sep 18, 2017 at 07:32:40PM +0530, PrasannaKumar Muralidharan
+>>> wrote:
+>>>> 
+>>>> Add RNG node to jz4780 dtsi. This driver uses registers that are 
+>>>> part of
+>>>> the register set used by Ingenic CGU driver. Use regmap in RNG 
+>>>> driver to
+>>>> access its register. Create 'simple-bus' node, make CGU and RNG node 
+>>>> as
+>>>> child of it so that both the nodes are visible without changing CGU
+>>>> driver code.
+>>>> 
+>>>> Signed-off-by: PrasannaKumar Muralidharan 
+>>>> <prasannatsmkumar@gmail.com>
+>>> 
+>>> 
+>>> Better late than never:
+>>> Acked-by: James Hogan <jhogan@kernel.org>
+>>> 
+>>> (I presume its okay for the reg ranges to overlap, ISTR that being an
+>>> issue a few years ago, but maybe thats fixed now).
+>>> 
+>>> Cheers
+>>> James
+>> 
+>> 
+>> What bothers me is that the CGU code has not been modified to use 
+>> regmap, so
+>> the
+>> registers area is actually mapped twice (once in the CGU driver, once 
+>> with
+>> regmap).
+> 
+> One of my previous versions changed CGU code to use regmap. I got a
+> review comment saying that is not required
+> (https://patchwork.kernel.org/patch/9906889/). The points in the
+> comment were valid so I reverted the change. Please have a look at the
+> discussion.
+
+I don't know, the point of regmap is for when a register area is shared. 
+It
+does not make sense to me to have one driver use regmap and not the 
+other one.
+
+>> Besides, regmap would be useful if the RNG registers were actually 
+>> located
+>> in the
+>> middle of the register area used by the CGU driver, which is not the 
+>> case
+>> here.
+>> The CGU block does have some registers after the RNG ones on the X1000 
+>> SoC,
+>> but
+>> I don't think they will ever be used (and if they are it won't be by 
+>> the CGU
+>> driver).
+>> 
+>> Regards,
+>> -Paul
+> 
+> Ingenic M200 SoC's CGU has clock and power related registers after the
+> RNG registers. Paul Burton suggested using regmap to expose registers
+> to CGU and RNG drivers
+> (https://patchwork.linux-mips.org/patch/14094/).
+
+Where can I find the M200 programming manual? The M200's CGU might have 
+some
+registers located after the RNG ones, but that does not mean that they 
+will
+be used by the clocks driver.
+
+Thanks,
+-Paul

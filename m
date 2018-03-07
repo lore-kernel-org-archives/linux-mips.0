@@ -1,17 +1,17 @@
-Received: from mail.kernel.org ([198.145.29.99]:56972 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23994690AbeCFN4CxSbH- (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 6 Mar 2018 14:56:02 +0100
+Received: from mail-io0-x242.google.com ([IPv6:2607:f8b0:4001:c06::242]:44101
+        "EHLO mail-io0-x242.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23994720AbeCGNo4k1v1g (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 7 Mar 2018 14:44:56 +0100
 MIME-Version: 1.0
-In-Reply-To: <20180306091932.GM4197@saruman>
-References: <20170918140241.24003-1-prasannatsmkumar@gmail.com>
- <20170918140241.24003-4-prasannatsmkumar@gmail.com> <20180306091932.GM4197@saruman>
-From: Rob Herring <robh+dt@kernel.org>
-Date: Tue, 6 Mar 2018 07:55:32 -0600
-Message-ID: <CAL_JsqJiNpnVC7X=viKZRjEJBe8ZEp0mJLDKhPYKugoxpiQJNQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] crypto: jz4780-rng: Add RNG node to jz4780.dtsi
+In-Reply-To: <20180306000832.GL4197@saruman>
+References: <20170927151527.25570-1-prasannatsmkumar@gmail.com>
+ <20170927151527.25570-4-prasannatsmkumar@gmail.com> <20180306000832.GL4197@saruman>
+From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+Date: Wed, 7 Mar 2018 19:14:49 +0530
+Message-ID: <CANc+2y5_R5xYQuLbW7NAjO4mcW5RNn3Da77tAhYU5zj=0rkBDQ@mail.gmail.com>
+Subject: Re: [RFC 3/4] MIPS: Ingenic: Initial X1000 SoC support
 Content-Type: text/plain; charset="UTF-8"
-Return-Path: <robh+dt@kernel.org>
+Return-Path: <prasannatsmkumar@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,32 +22,76 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: James Hogan <jhogan@kernel.org>
-Cc: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>, Herbert Xu <herbert@gondor.apana.org.au>, Ralf Baechle <ralf@linux-mips.org>, David Miller <davem@davemloft.net>, Paul Cercueil <paul@crapouillou.net>, "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" <linux-crypto@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, Mathieu Malaterre <malat@debian.org>, noloader@gmail.com
-Message-ID: <20180306135532.LjHCIhdpr8w3C9JZX40BT5KvR7P3PTlDPKWuSQxx-Dk@z>
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Michael Turquette <mturquette@baylibre.com>, sboyd@codeaurora.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, linux-clk@vger.kernel.org, open list <linux-kernel@vger.kernel.org>, Paul Cercueil <paul@crapouillou.net>, Mathieu Malaterre <malat@debian.org>, Dominik Peklo <dom.peklo@gmail.com>
+Message-ID: <20180307134449.IGYr07Bb_A0hrmzRSbREzBW-GoNWTfktrtGzjJyz7LM@z>
 
-On Tue, Mar 6, 2018 at 3:32 AM, James Hogan <jhogan@kernel.org> wrote:
-> On Mon, Sep 18, 2017 at 07:32:40PM +0530, PrasannaKumar Muralidharan wrote:
->> Add RNG node to jz4780 dtsi. This driver uses registers that are part of
->> the register set used by Ingenic CGU driver. Use regmap in RNG driver to
->> access its register. Create 'simple-bus' node, make CGU and RNG node as
->> child of it so that both the nodes are visible without changing CGU
->> driver code.
+Hi James,
 
-The goal should be to avoid changing the DT (because the h/w hasn't
-changed), not avoid changing a driver.
+Thanks for reviewing this.
 
+On 6 March 2018 at 05:38, James Hogan <jhogan@kernel.org> wrote:
+> On Wed, Sep 27, 2017 at 08:45:26PM +0530, PrasannaKumar Muralidharan wrote:
+>> Add initial Ingenic X1000 SoC support. Provide minimum necessary
+>> information to boot kernel to an initramfs userspace.
 >>
 >> Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+>> ---
+>>  arch/mips/boot/dts/ingenic/x1000.dtsi | 93 +++++++++++++++++++++++++++++++++++
+>>  arch/mips/jz4740/Kconfig              |  6 +++
+>>  arch/mips/jz4740/time.c               |  2 +-
+>>  3 files changed, 100 insertions(+), 1 deletion(-)
+>>  create mode 100644 arch/mips/boot/dts/ingenic/x1000.dtsi
 >
-> Better late than never:
-> Acked-by: James Hogan <jhogan@kernel.org>
+> arch/mips/jz4780/setup.c, specifically get_board_mach_type() and
+> get_system_type() will need updating too.
+
+Missed it. Will make necessary changes.
+
+> Does X1000 use a different PRID, or is it basically just a JZ4780 core
+> with different SoC peripherals?
+
+Yes X1000 does have a different PRID (PRID = 0x2ed1024f). X1000 has
+single CPU core so it is definitely not JZ4780.
+
+>> diff --git a/arch/mips/boot/dts/ingenic/x1000.dtsi b/arch/mips/boot/dts/ingenic/x1000.dtsi
+>> new file mode 100644
+>> index 0000000..abbb9ec
+>> --- /dev/null
+>> +++ b/arch/mips/boot/dts/ingenic/x1000.dtsi
+>> @@ -0,0 +1,93 @@
+>> +/*
+>> + * Copyright (C) 2016 PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+>> + *
+>> + * This file is licensed under the terms of the GNU General Public
+>> + * License version 2. This program is licensed "as is" without any
+>> + * warranty of any kind, whether express or implied.
 >
-> (I presume its okay for the reg ranges to overlap, ISTR that being an
-> issue a few years ago, but maybe thats fixed now).
+> (these will need updating to use SPDX identifiers if you respin)
 
-No, that should be avoided. It does work because we have existing
-cases that have to be supported.
+Sure. Will take care while submitting next version.
 
+>> +     cgu: jz4780-cgu@10000000 {
+>
+> not sure jz4780 is appropriate here.
+
+No, it is not. Copy pasted from jz4780.dtsi but missed updating this.
+
+>> +             compatible = "ingenic,x1000-cgu";
+>> +             reg = <0x10000000 0x100>;
+>> +
+>> +             clocks = <&ext>, <&rtc>;
+>> +             clock-names = "ext", "rtc";
+>> +
+>> +             #clock-cells = <1>;
+>> +     };
 >
 > Cheers
 > James
+
+I used to get my code tested from Domink but I could not reach him for
+quite some time. Before buying the development board myself I would
+like to see if anyone can help me in testing. Do you have any contact
+with Ingenic who can help in testing this?
+
+Thanks,
+PrasannaKumar

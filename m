@@ -1,20 +1,22 @@
-Received: from mail-io0-x242.google.com ([IPv6:2607:f8b0:4001:c06::242]:44088
-        "EHLO mail-io0-x242.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994721AbeCGPWeMpmGt (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 7 Mar 2018 16:22:34 +0100
-MIME-Version: 1.0
-In-Reply-To: <20180307151025.GP4197@saruman>
-References: <20170927151527.25570-1-prasannatsmkumar@gmail.com>
- <20170927151527.25570-4-prasannatsmkumar@gmail.com> <20180306000832.GL4197@saruman>
- <CANc+2y5_R5xYQuLbW7NAjO4mcW5RNn3Da77tAhYU5zj=0rkBDQ@mail.gmail.com>
- <20180307143541.GN4197@saruman> <CANc+2y5wsvGWszu3pePYhs2wb1_AgPdjG+ugfOCzbZVfVHDMvw@mail.gmail.com>
- <20180307151025.GP4197@saruman>
-From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Date: Wed, 7 Mar 2018 20:52:27 +0530
-Message-ID: <CANc+2y6yNkgrJnM64D-JyL3jyWwk_Tes4MZfMw0NRmsf5v7=4w@mail.gmail.com>
+Received: from forward101j.mail.yandex.net ([5.45.198.241]:57911 "EHLO
+        forward101j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23994724AbeCGPxU511Wy (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 7 Mar 2018 16:53:20 +0100
+Message-ID: <1520437971.3731.22.camel@flygoat.com>
 Subject: Re: [RFC 3/4] MIPS: Ingenic: Initial X1000 SoC support
+From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Date: Wed, 07 Mar 2018 23:52:51 +0800
+In-Reply-To: <CANc+2y5wsvGWszu3pePYhs2wb1_AgPdjG+ugfOCzbZVfVHDMvw@mail.gmail.com>
+References: <20170927151527.25570-1-prasannatsmkumar@gmail.com>
+         <20170927151527.25570-4-prasannatsmkumar@gmail.com>
+         <20180306000832.GL4197@saruman>
+         <CANc+2y5_R5xYQuLbW7NAjO4mcW5RNn3Da77tAhYU5zj=0rkBDQ@mail.gmail.com>
+         <20180307143541.GN4197@saruman>
+         <CANc+2y5wsvGWszu3pePYhs2wb1_AgPdjG+ugfOCzbZVfVHDMvw@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Return-Path: <prasannatsmkumar@gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Return-Path: <jiaxun.yang@flygoat.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,44 +26,31 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <jhogan@kernel.org>
+To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>, James Hogan <jhogan@kernel.org>
 Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Michael Turquette <mturquette@baylibre.com>, sboyd@codeaurora.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, linux-clk@vger.kernel.org, open list <linux-kernel@vger.kernel.org>, Paul Cercueil <paul@crapouillou.net>, Mathieu Malaterre <malat@debian.org>, Dominik Peklo <dom.peklo@gmail.com>
-Message-ID: <20180307152227.gwbh-ZxZ3euSpF8hbZeL7OFSSERpD2AiEXq9gYPHNF0@z>
+Message-ID: <20180307155251.mqG_tqXotfwgtN-QXsD_Z_A3Zj4zc8pnFomwluibp50@z>
 
-On 7 March 2018 at 20:40, James Hogan <jhogan@kernel.org> wrote:
-> On Wed, Mar 07, 2018 at 08:35:00PM +0530, PrasannaKumar Muralidharan wrote:
->> On 7 March 2018 at 20:05, James Hogan <jhogan@kernel.org> wrote:
->> > On Wed, Mar 07, 2018 at 07:14:49PM +0530, PrasannaKumar Muralidharan wrote:
->> >> > Does X1000 use a different PRID, or is it basically just a JZ4780 core
->> >> > with different SoC peripherals?
->> >>
->> >> Yes X1000 does have a different PRID (PRID = 0x2ed1024f). X1000 has
->> >
->> > Right, so thats 0x2e000000 | PRID_COMP_INGENIC_D1 | PRID_IMP_JZRISC |
->> > 0x4f, which cpu-probe.c already handles (apparently the D1 company code
->> > is used for JZ4770 & JZ4775 too).
->>
->> Okay. Does this mean I need not modify get_board_mach_type() and
->> get_system_type()?
->
-> You still need to modify them, otherwise it won't understand
-> "ingenic,x1000" compatible string, and will call it a JZ4740 in
-> /proc/cpuinfo.
+在 2018-03-07三的 20:35 +0530，PrasannaKumar Muralidharan写道：
+> Hi James,
+> 
+> Seems Jiaxun is interested in the board and is willing to help.
+> 
+> I have been told that Ingenic is focusing on IoT market and X1000 is
+> intended for IoT segment. I think that they would be selling several
+> 100Ks of chip over the coming years. But I feel Ingenic spends time
+> only on maintaining their Linux port which is usually based on very
+> old kernel version.
 
-Oh okay. Will make the changes.
+Ingenic is going to release their XBrust2 core with it's products such
+as X2000 a few days later. Witch is a pure MIPS64r5 with MXU2(A
+superset of MIPS's MSA SIMD instruction set). The newest kernel port of
+X1000 maintain by Ingenic is based on Linux-4.4 [1]. After communicated
+with Ingenic, they said they are forcusing on China domestic market.
+But they're looking for partners to enter foriegn market. 
 
->> >> I used to get my code tested from Domink but I could not reach him for
->> >> quite some time. Before buying the development board myself I would
->> >> like to see if anyone can help me in testing. Do you have any contact
->> >> with Ingenic who can help in testing this?
->> >
->> > Not personally, but I'll ask around. Of course if nobody much cares
->> > about it in practice and nobody has the hardware, there may be little
->> > value in supporting it upstream.
->>
->> Seems Jiaxun is interested in the board and is willing to help.
->
-> Okay, cool.
->
-> Cheers
-> James
+[1] https://pan.baidu.com/s/1o8MeYts (Well you can download from this
+Chinese website, ingenic have a gerrit but I don't have access to it.
+As my experience, it's hard to develop on Chinese-made chips wihout
+reading Chinese documents.)  
+> 
+> > 

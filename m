@@ -1,18 +1,21 @@
-Received: from mail.kernel.org ([198.145.29.99]:52380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23994730AbeCGUZjKB0n- (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 7 Mar 2018 21:25:39 +0100
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:50948 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23994738AbeCHMEeK7-F1 convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 8 Mar 2018 13:04:34 +0100
+Subject: Re: [PATCH v2] bcma: Prevent build of PCI host features in module
+References: <1519898292-12155-1-git-send-email-matt.redfearn@mips.com>
+ <87lgfcnkey.fsf@kamboji.qca.qualcomm.com>
+ <c5929bb5-c50f-e73e-3117-fb0a862bb0fc@lwfinger.net>
+From: Matt Redfearn <matt.redfearn@mips.com>
+Message-ID: <7a1695c0-45cf-e3d6-8524-8d2aeccc6490@mips.com>
+Date: Thu, 8 Mar 2018 12:00:27 +0000
 MIME-Version: 1.0
-In-Reply-To: <CANc+2y63OnEkgXC43zDq3Fw34QxxTY3yz3Dag8fAE3muX7cpEw@mail.gmail.com>
-References: <20170918140241.24003-1-prasannatsmkumar@gmail.com>
- <20170918140241.24003-4-prasannatsmkumar@gmail.com> <20180306091932.GM4197@saruman>
- <CAL_JsqJiNpnVC7X=viKZRjEJBe8ZEp0mJLDKhPYKugoxpiQJNQ@mail.gmail.com> <CANc+2y63OnEkgXC43zDq3Fw34QxxTY3yz3Dag8fAE3muX7cpEw@mail.gmail.com>
-From: Rob Herring <robh+dt@kernel.org>
-Date: Wed, 7 Mar 2018 14:25:11 -0600
-Message-ID: <CAL_Jsq+8t2w-Vv47q-He_y=H5Sp0-SUASHQhv+wgYtBrOKeYfg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] crypto: jz4780-rng: Add RNG node to jz4780.dtsi
-Content-Type: text/plain; charset="UTF-8"
-Return-Path: <robh+dt@kernel.org>
+In-Reply-To: <c5929bb5-c50f-e73e-3117-fb0a862bb0fc@lwfinger.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8BIT
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,35 +25,75 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Cc: James Hogan <jhogan@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, Ralf Baechle <ralf@linux-mips.org>, David Miller <davem@davemloft.net>, Paul Cercueil <paul@crapouillou.net>, "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" <linux-crypto@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, Mathieu Malaterre <malat@debian.org>, noloader@gmail.com
-Message-ID: <20180307202511.ihAbx6aW-SinlUT3xmvjQxlk5Oa_8KQywfbuUjBdGHA@z>
+To: Larry Finger <Larry.Finger@lwfinger.net>, Kalle Valo <kvalo@codeaurora.org>
+Cc: zajec5@gmail.com, linux-wireless@vger.kernel.org, linux-mips@linux-mips.org, jhogan@kernel.org
+Message-ID: <20180308120027.8w_dSf7OQRGOg4wlcXssuyMBZmm1ULkkLv5WWwNNK2Y@z>
 
-On Wed, Mar 7, 2018 at 8:54 AM, PrasannaKumar Muralidharan
-<prasannatsmkumar@gmail.com> wrote:
-> Hi Rob,
->
-> On 6 March 2018 at 19:25, Rob Herring <robh+dt@kernel.org> wrote:
->> On Tue, Mar 6, 2018 at 3:32 AM, James Hogan <jhogan@kernel.org> wrote:
->>> On Mon, Sep 18, 2017 at 07:32:40PM +0530, PrasannaKumar Muralidharan wrote:
->>>> Add RNG node to jz4780 dtsi. This driver uses registers that are part of
->>>> the register set used by Ingenic CGU driver. Use regmap in RNG driver to
->>>> access its register. Create 'simple-bus' node, make CGU and RNG node as
->>>> child of it so that both the nodes are visible without changing CGU
->>>> driver code.
+Hi,
+
+On 02/03/18 17:56, Larry Finger wrote:
+> On 03/01/2018 04:45 AM, Kalle Valo wrote:
+>> Matt Redfearn <matt.redfearn@mips.com> writes:
 >>
->> The goal should be to avoid changing the DT (because the h/w hasn't
->> changed), not avoid changing a driver.
->
-> Please have a look at the discussion happened at
-> https://patchwork.linux-mips.org/patch/14094/. Looks like there is a
-> difference in though process between you and mips folks. I am not an
-> expert in DT so please suggest me the correct way to go about this.
+>>> Attempting to build bcma.ko with BCMA_DRIVER_PCI_HOSTMODE=y results in
+>>> a build error due to use of symbols not exported from vmlinux:
+>>>
+>>> ERROR: "pcibios_enable_device" [drivers/bcma/bcma.ko] undefined!
+>>> ERROR: "register_pci_controller" [drivers/bcma/bcma.ko] undefined!
+>>> make[1]: *** [scripts/Makefile.modpost:92: __modpost] Error 1
+>>>
+>>> To prevent this, don't allow the host mode feature to be built if
+>>> CONFIG_BCMA=m
+>>>
+>>> Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+>>>
+>>> ---
+>>>
+>>> Changes in v2:
+>>> Rebase on v4.16-rc1
+>>>
+>>>   drivers/bcma/Kconfig | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/bcma/Kconfig b/drivers/bcma/Kconfig
+>>> index ba8acca036df..cb0f1aad20b7 100644
+>>> --- a/drivers/bcma/Kconfig
+>>> +++ b/drivers/bcma/Kconfig
+>>> @@ -55,7 +55,7 @@ config BCMA_DRIVER_PCI
+>>>   config BCMA_DRIVER_PCI_HOSTMODE
+>>>       bool "Driver for PCI core working in hostmode"
+>>> -    depends on MIPS && BCMA_DRIVER_PCI && PCI_DRIVERS_LEGACY
+>>> +    depends on MIPS && BCMA_DRIVER_PCI && PCI_DRIVERS_LEGACY && BCMA 
+>>> = y
+>>
+>> Due to the recent regression in bcma I would prefer extra careful review
+>> before I apply this. So does this look ok to everyone?
+> 
+> I have a preference for wireless device drivers to be modules. For that 
+> reason, I would have submitted a patch exporting those two missing 
+> globals rather than forcing bcma to be built in. That said, it seems 
+> that the patch will do no further harm.
 
-Those comments are correct too.
 
-Simply, there is no reason you have to add a rng node to add an RNG
-driver. The driver that probes the existing node can register both
-clocks and as an RNG provider.
+This patch was purely intended to fix the build breakage caused by 
+attempting to build host-mode PCI into a module, which fails due to 
+necessary symbols not being exported by the kernel for use by modules.
 
-Rob
+Making it possible to build the driver including host mode may not be as 
+trivial as "lets just export the symbols", and testing that it works 
+correctly once it can be built as a module will require hardware with 
+this device present (which I don't have).
+
+So I would propose that this patch be merged as is, since as you say, it 
+does no further harm - it should just fix build breakage - and if the 
+driver, including this host mode feature, is really required as a 
+module, perhaps someone with access to the hardware could spin a patch 
+to implement that.
+
+Thanks,
+Matt
+
+> 
+> Larry
+> 
+> 

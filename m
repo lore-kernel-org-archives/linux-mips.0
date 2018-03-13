@@ -1,19 +1,17 @@
-Received: from smtp1-g21.free.fr ([212.27.42.1]:42063 "EHLO smtp1-g21.free.fr"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23994627AbeCLSCkN6oXH (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 12 Mar 2018 19:02:40 +0100
-Date: Mon, 12 Mar 2018 19:02:23 +0100
-From: Alban <albeu@free.fr>
-Subject: Re: [PATCH v2] MIPS: Allow compressed images to be loaded at any
- address
-Message-ID: <20180312190223.1cf292dd@avionic-0020>
-In-Reply-To: <20170213221945.GM24226@jhogan-linux.le.imgtec.org>
-References: <1487018290-10451-1-git-send-email-albeu@free.fr>
-        <20170213221945.GM24226@jhogan-linux.le.imgtec.org>
+Received: from smtp.codeaurora.org ([198.145.29.96]:44446 "EHLO
+        smtp.codeaurora.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23990405AbeCMQsOB1tDg (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Mar 2018 17:48:14 +0100
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/rRur1r7a.OjfrDLM_HnxiJ4"; protocol="application/pgp-signature"
-Return-Path: <albeu@free.fr>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [v2] bcma: Prevent build of PCI host features in module
+From: Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1519898292-12155-1-git-send-email-matt.redfearn@mips.com>
+References: <1519898292-12155-1-git-send-email-matt.redfearn@mips.com>
+Message-ID: <20180313164807.428F860390@smtp.codeaurora.org>
+Date: Tue, 13 Mar 2018 16:48:07 +0000 (UTC)
+Return-Path: <kvalo@codeaurora.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,125 +21,29 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@imgtec.com>
-Cc: Alban <albeu@free.fr>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>, Jonas Gorski <jogo@openwrt.org>, linux-kernel@vger.kernel.org, Matt Redfearn <Matt.Redfearn@imgtec.com>
-Message-ID: <20180312180223.rIQuHegkHiYM6SWpS6td6D23ZFhu_E8jAf3LxdxiYv8@z>
+To: Matt Redfearn <matt.redfearn@mips.com>
+Cc: zajec5@gmail.com, linux-wireless@vger.kernel.org, linux-mips@linux-mips.org, jhogan@kernel.org
+Message-ID: <20180313164807.y0nqQoBHZZoUNbXa1rv77maT7u5GQHowQ6AS5cRBSfU@z>
 
---Sig_/rRur1r7a.OjfrDLM_HnxiJ4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Matt Redfearn <matt.redfearn@mips.com> wrote:
 
-On Mon, 13 Feb 2017 22:19:45 +0000
-James Hogan <james.hogan@imgtec.com> wrote:
+> Attempting to build bcma.ko with BCMA_DRIVER_PCI_HOSTMODE=y results in
+> a build error due to use of symbols not exported from vmlinux:
+> 
+> ERROR: "pcibios_enable_device" [drivers/bcma/bcma.ko] undefined!
+> ERROR: "register_pci_controller" [drivers/bcma/bcma.ko] undefined!
+> make[1]: *** [scripts/Makefile.modpost:92: __modpost] Error 1
+> 
+> To prevent this, don't allow the host mode feature to be built if
+> CONFIG_BCMA=m
+> 
+> Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
 
-> Hi Alban,
->=20
-> On Mon, Feb 13, 2017 at 09:38:08PM +0100, Alban wrote:
-> > From: Alban Bedel <albeu@free.fr>
-> >=20
-> > Compressed images (vmlinuz.bin) have to be loaded at a specific
-> > address that differ from the address normaly used for vmlinux.bin.
-> > This is because the decompressor just write its output at the address
-> > vmlinux.bin should be loaded at, and it shouldn't overwrite itself.
-> > This limitation mean that the bootloader must be configured differently
-> > when loading a vmlinux.bin or a vmlinuz.bin image, this is annoying
-> > and a source of error.
-> >=20
-> > To workaround this we extend the compressed loader to cope with being
-> > loaded at (nearly) any address. During the early init a jump is used
-> > to compute the offset between the current address and the linked
-> > address, if they differ the whole image is first copied to the linked
-> > address before proceeding.
-> >=20
-> > Some load address won't work, for example if there is an overlap with
-> > the range where vmlinuz.bin should be loaded. However for the typical
-> > case of using the vmlinux.bin address that won't be the case.
-> >=20
-> > Signed-off-by: Alban Bedel <albeu@free.fr>
-> > Suggested-by: Jonas Gorski <jonas.gorski@gmail.com>
-> > ---
-> > Changelog:
-> > v2: * Rework the code as suggested by Jonas Gorski to autodetect the
-> >       load address and remove the need for a Kconfig option.
-> > ---
-> >  arch/mips/boot/compressed/head.S | 23 +++++++++++++++++++++++
-> >  1 file changed, 23 insertions(+)
-> >=20
-> > diff --git a/arch/mips/boot/compressed/head.S b/arch/mips/boot/compress=
-ed/head.S
-> > index 409cb48..3c25a96 100644
-> > --- a/arch/mips/boot/compressed/head.S
-> > +++ b/arch/mips/boot/compressed/head.S
-> > @@ -25,6 +25,29 @@ start:
-> >  	move	s2, a2
-> >  	move	s3, a3
-> > =20
-> > +	/* Get the offset between the current address and linked address */
-> > +	PTR_LA	t0, reloc_label
-> > +	bal	reloc_label
-> > +	 nop
-> > +reloc_label:
-> > +	subu	t0, ra, t0
-> > +
-> > +	/* If there is no offset no reloc is needed */
-> > +	beqz	t0, clear_bss
-> > +	 nop
-> > +
-> > +	/* Move the text, data section and DTB to the correct address */
-> > +	PTR_LA	a0, .text
-> > +	addu	a1, t0, a0
-> > +	PTR_LA	a2, _edata
-> > +copy_vmlinuz:
-> > +	lw	a3, 0(a1)
-> > +	sw	a3, 0(a0)
-> > +	addiu	a0, a0, 4
-> > +	bne	a2, a0, copy_vmlinuz
-> > +	 addiu	a1, a1, 4 =20
->=20
-> Does this need to sync the icache and resolve the instruction hazard
-> before jumping into the newly written code?
->
-> E.g. on mips32/64 r2 and later you could I think "synci" at SYNCI_Step
-> intervals (as determined by RDHWR instruction), followed by a "sync" and
-> then using "jr.hb" instead of "jr" to clear the instruction hazard while
-> jumping to the newly written code.
->=20
-> That is roughly what arch/mips/kernel/relocate.c and
-> arch/mips/kernel/head.S do, but as mentioned that assumes MIPS32/64 r2+,
-> and at least 2 platforms selecting SYS_SUPPORTS_ZBOOT* also select
-> CPU_HAS_CPU_MIPS32_R1.
+Patch applied to wireless-drivers-next.git, thanks.
 
-This was a long time ago but I still like to finish this. However I'm
-not very really versed into this kind of very low level subjects, so
-I would appreciate if somebody could tell me if the cache sync is needed
-here or not. All I can says is that it currently work on ATH79 which is
-a mips32 r2, but that doesn't mean it is correct.
+79ca239a68f8 bcma: Prevent build of PCI host features in module
 
-Also note that no such cache sync is done on the decompressed kernel,
-wouldn't that also be needed?
+-- 
+https://patchwork.kernel.org/patch/10250739/
 
-Alban
-
---Sig_/rRur1r7a.OjfrDLM_HnxiJ4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJapsCwAAoJEHSUmkuduC28+SkP/itrqe29bBYrz3LlWTvwKXwv
-awy/uskMz9tEY4YyOUxYWVmN2dfXLNaCLy4zKLHNscn5Sptp6KXm42kcz0yjJ0Qf
-EVh7K/HpIWZwKq5d/aX/xGgfmXpmgLbqFMIv52T4SokFdiVx7oy1QJe5Y0hR21nv
-TTZi2vpkVZRuGi/wM+88wTIZB9caxfQMJ7a2nRMpuxBS1nAbtqWeRDv9kFnSJryu
-htdwQFptL+079Q3FVzEMNTDCGD/sWXa8vEt+lZmje9H3c/lnALISZi71RJ2+irlL
-OM/ppM3o7aLAsbY1+8XpqUnQ+vYbJ5zY8GMyOZHEpRP/t+T5WzhZ/hP2tkPaR99U
-YUL0Vx5Jl8n6C5nQH/Nua/jP2yf4qy1HmG0KEVoSNhjYMmMgzbKnZOYGNXcAA9P6
-Hy3bYbVaRd6U7Cc2haO6m+9MuufLwIr9O/48AMS6vTGMiz6ABSVA0MuN6f9A3EgV
-0VDRKcZE2mAykBBbeHNOWcc7weufjoQenyr0FLwiVn2VOffii/LUQknQOx+9l3BT
-ZAYRuX90JmNAxN/zc/H8MxcsE0BiDTU5LaFPY2ryEQEDfpbEIhJ0S7yuQ5H5Y69v
-fpks1SW2ZNKZcRnddbgiIfMoYeeljd/WL58T1/OxKAaDNAX5n2Nrqxcc5kWq49Z3
-mnD00q9K+VgNh7Of1St5
-=nQly
------END PGP SIGNATURE-----
-
---Sig_/rRur1r7a.OjfrDLM_HnxiJ4--
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches

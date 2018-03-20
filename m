@@ -1,16 +1,17 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:40238 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992479AbeCSWy7F7VwL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Mar 2018 23:54:59 +0100
-Date: Mon, 19 Mar 2018 22:52:24 +0000
-From: "Maciej W. Rozycki" <macro@mips.com>
-Subject: Re: 3.16.55-stable breaks yeeloong
-In-Reply-To: <alpine.DEB.2.00.1803190706520.2163@tp.orcam.me.uk>
-Message-ID: <alpine.DEB.2.00.1803192231480.2163@tp.orcam.me.uk>
-References: <ortvtd4gxf.fsf@lxoliva.fsfla.org> <1521416975.2495.186.camel@decadent.org.uk> <alpine.DEB.2.00.1803190706520.2163@tp.orcam.me.uk>
+Received: from mail-oi0-x242.google.com ([IPv6:2607:f8b0:4003:c06::242]:43661
+        "EHLO mail-oi0-x242.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992896AbeCTHPo6E-ge (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Mar 2018 08:15:44 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@mips.com>
+In-Reply-To: <20180317232901.14129-3-paul@crapouillou.net>
+References: <20180110224838.16711-2-paul@crapouillou.net> <20180317232901.14129-1-paul@crapouillou.net>
+ <20180317232901.14129-3-paul@crapouillou.net>
+From: Mathieu Malaterre <malat@debian.org>
+Date: Tue, 20 Mar 2018 08:15:17 +0100
+Message-ID: <CA+7wUsyAkW+Bgmp6MuWTce1jMG-ug1b-UqFVen_vVeKFiW5Fww@mail.gmail.com>
+Subject: Re: [PATCH v4 2/8] dt-bindings: ingenic: Add DT bindings for TCU clocks
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <mathieu.malaterre@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,39 +21,81 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Ben Hutchings <ben@decadent.org.uk>
-Cc: Alexandre Oliva <lxoliva@fsfla.org>, "Maciej W. Rozycki" <macro@linux-mips.org>, linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20180319225224.jldQ258-_crzTuebuXUVeUNgS-pYRH3xxXfeQ3Dc-tI@z>
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, Lee Jones <lee.jones@linaro.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Mark Rutland <mark.rutland@arm.com>, James Hogan <jhogan@kernel.org>, Maarten ter Huurne <maarten@treewalker.org>, linux-clk@vger.kernel.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, linux-doc@vger.kernel.org
+Message-ID: <20180320071517.IJ9ag3ClhITByhwlx5Y4Y2R0zXJx8iOWmsH8Uvm1224@z>
 
-On Mon, 19 Mar 2018, Maciej W. Rozycki wrote:
+Hi Paul,
 
-> > > Commit 304acb717e5b67cf56f05bc5b21123758e1f7ea0 AKA
-> > > https://patchwork.linux-mips.org/patch/9705/ was backported to 3.16.55
-> > > stable as 8605aa2fea28c0485aeb60c114a9d52df1455915 and I'm afraid it
-> > > causes yeeloongs to fail to boot up.  3.16.54 was fine; bisection took
-> > > me to this patch.
-[...]
-> > Guenter Roeck reported the same problem on QEMU Malta emulation.
-> > I haven't yet ivnestigated why this causes breakage.  I will aim to fix
-> > this in the next update (will be 3.16.57 now), if necessary by
-> > reverting that and whatever depends on it.
-> 
->  I'll see if I can trigger it with my development setup and investigate.
+Two things:
 
- OK, I have been able to reproduce the crash and I can see what is going 
-on here: the backport didn't take into account a change from `break' to 
-`goto out' required for code in `do_cpu' in that old version and 
-consequently `force_sig(SIGILL, current)' is reached whenever the first 
-FPU instruction is executed on hard-float hardware, with obvious 
-consequences.
+On Sun, Mar 18, 2018 at 12:28 AM, Paul Cercueil <paul@crapouillou.net> wrote:
+> This header provides clock numbers for the ingenic,tcu
+> DT binding.
 
- Rather than messing with commit 304acb717e5b ("MIPS: Set `si_code' for 
-SIGFPE signals sent from emulation too") though, I suggest cherry-picking 
-commit 27e28e8ec47a ("MIPS: Normalise code flow in the CpU exception 
-handler"), which was in the original series and which I have verified to 
-remove the crash.  I believe it is obvious enough to be considered safe to 
-backport.
+I have tested the whole series on my Creator CI20 with success, using:
 
- Please let me know if you need anything else from me.
++ tcu@10002000 {
++ compatible = "ingenic,jz4780-tcu";
++ reg = <0x10002000 0x140>;
++
++ interrupt-parent = <&intc>;
++ interrupts = <27 26 25>;
++ };
 
-  Maciej
+
+So:
+
+Tested-by: Mathieu Malaterre <malat@debian.org>
+
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
+>  include/dt-bindings/clock/ingenic,tcu.h | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+>  create mode 100644 include/dt-bindings/clock/ingenic,tcu.h
+>
+>  v2: Use SPDX identifier for the license
+>  v3: No change
+>  v4: No change
+>
+> diff --git a/include/dt-bindings/clock/ingenic,tcu.h b/include/dt-bindings/clock/ingenic,tcu.h
+> new file mode 100644
+> index 000000000000..179815d7b3bb
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/ingenic,tcu.h
+> @@ -0,0 +1,23 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * This header provides clock numbers for the ingenic,tcu DT binding.
+> + */
+> +
+> +#ifndef __DT_BINDINGS_CLOCK_INGENIC_TCU_H__
+> +#define __DT_BINDINGS_CLOCK_INGENIC_TCU_H__
+> +
+> +#define JZ4740_CLK_TIMER0      0
+> +#define JZ4740_CLK_TIMER1      1
+> +#define JZ4740_CLK_TIMER2      2
+> +#define JZ4740_CLK_TIMER3      3
+> +#define JZ4740_CLK_TIMER4      4
+> +#define JZ4740_CLK_TIMER5      5
+> +#define JZ4740_CLK_TIMER6      6
+> +#define JZ4740_CLK_TIMER7      7
+> +#define JZ4740_CLK_WDT         8
+> +#define JZ4740_CLK_LAST                JZ4740_CLK_WDT
+> +
+> +#define JZ4770_CLK_OST         9
+> +#define JZ4770_CLK_LAST                JZ4770_CLK_OST
+> +
+
+When working on JZ4780 support, I always struggle to read those kind
+of #define. Since this is a new patch would you mind changing
+s/JZ4740/JZ47XX/ in your header ?
+
+Thanks for your work on JZ !
+
+> +#endif /* __DT_BINDINGS_CLOCK_INGENIC_TCU_H__ */
+> --
+> 2.11.0
+>
+>

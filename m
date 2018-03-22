@@ -1,20 +1,14 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:49677 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:52461 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990439AbeCUIw6ErPLX (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 21 Mar 2018 09:52:58 +0100
-Subject: Re: [PATCH v3] MIPS: ralink: fix booting on mt7621
-References: <87efkf9z0o.fsf@notabene.neil.brown.name>
- <87605r9mwf.fsf@notabene.neil.brown.name>
- <871sge872l.fsf@notabene.neil.brown.name>
-From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <364419e1-947b-2a87-526d-ccf3e77beb16@mips.com>
-Date: Wed, 21 Mar 2018 08:52:54 +0000
+        by eddie.linux-mips.org with ESMTP id S23990406AbeCVQcRbY9Q7 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 22 Mar 2018 17:32:17 +0100
+Date: Thu, 22 Mar 2018 16:30:41 +0000
+From: "Maciej W. Rozycki" <macro@mips.com>
+Subject: [PATCH v3] MIPS: Use the entry point from the ELF file header
+Message-ID: <alpine.DEB.2.00.1803221611430.2163@tp.orcam.me.uk>
 MIME-Version: 1.0
-In-Reply-To: <871sge872l.fsf@notabene.neil.brown.name>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@mips.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,104 +18,78 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: NeilBrown <neil@brown.name>, John Crispin <john@phrozen.org>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20180321085254.ZZ_Sn9XtBohUNdB5l_f4_e_Vo13CJkRXclVODp7oq4E@z>
+To: James Hogan <james.hogan@mips.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, linux-mips@linux-mips.org
+Message-ID: <20180322163041.91jVX9SbryiVMUMfRBpI3Q2ChhU_Quh975uGBygdyVM@z>
 
+In order to fetch the correct entry point with the ISA bit included, for 
+use by non-ELF boot loaders, parse the output of `objdump -f' for the 
+start address recorded in the kernel executable itself, rather than 
+using `nm' to get the value of the `kernel_entry' symbol.
 
+Sign-extend the address retrieved if 32-bit, so that execution is 
+correctly started on 64-bit processors as well.  The tool always prints 
+the entry point using either 8 or 16 hexadecimal digits, matching the 
+address width (aka class) of the ELF file, even in the presence of 
+leading zeros.
 
-On 21/03/18 03:02, NeilBrown wrote:
-> 
-> Since commit 3af5a67c86a3 ("MIPS: Fix early CM probing") the MT7621
-> has not been able to boot.
-> 
-> This patched caused mips_cm_probe() to be called before
-> mt7621.c::proc_soc_init().
-> 
-> prom_soc_init() has a comment explaining that mips_cm_probe()
-> "wipes out the bootloader config" and means that configuration
-> registers are no longer available.  It has some code to re-enable
-> this config.
-> 
-> Before this re-enable code is run, the sysc register cannot be
-> read, so when SYSC_REG_CHIP_NAME0 is read, a garbage value
-> is returned and panic() is called.
-> 
-> If we move the config-repair code to the top of prom_soc_init(),
-> the registers can be read and boot can proceed.
-> 
-> Very occasionally, the first register read after the reconfiguration
-> returns garbage.  So I added a call to __sync().
-> 
-> Fixes: 3af5a67c86a3 ("MIPS: Fix early CM probing")
-> Signed-off-by: NeilBrown <neil@brown.name>
+Signed-off-by: Maciej W. Rozycki <macro@mips.com>
+---
+Changes in v3:
 
-Looks good to me
+- renamed from "MIPS: Set ISA bit in entry-y for microMIPS kernels", to 
+  avoid confusion with commit 5fc9484f5e41,
 
-Reviewed-by: Matt Redfearn <matt.redfearn@mips.com>
+- fixed the `sed' program to correctly pass through 64-bit values.
 
-> ---
->   arch/mips/ralink/mt7621.c | 42 ++++++++++++++++++++++--------------------
->   1 file changed, 22 insertions(+), 20 deletions(-)
-> 
-> diff --git a/arch/mips/ralink/mt7621.c b/arch/mips/ralink/mt7621.c
-> index 1b274742077d..d2718de60b9b 100644
-> --- a/arch/mips/ralink/mt7621.c
-> +++ b/arch/mips/ralink/mt7621.c
-> @@ -170,6 +170,28 @@ void prom_soc_init(struct ralink_soc_info *soc_info)
->   	u32 n1;
->   	u32 rev;
->   
-> +	/* Early detection of CMP support */
-> +	mips_cm_probe();
-> +	mips_cpc_probe();
-> +
-> +	if (mips_cps_numiocu(0)) {
-> +		/*
-> +		 * mips_cm_probe() wipes out bootloader
-> +		 * config for CM regions and we have to configure them
-> +		 * again. This SoC cannot talk to pamlbus devices
-> +		 * witout proper iocu region set up.
-> +		 *
-> +		 * FIXME: it would be better to do this with values
-> +		 * from DT, but we need this very early because
-> +		 * without this we cannot talk to pretty much anything
-> +		 * including serial.
-> +		 */
-> +		write_gcr_reg0_base(MT7621_PALMBUS_BASE);
-> +		write_gcr_reg0_mask(~MT7621_PALMBUS_SIZE |
-> +				    CM_GCR_REGn_MASK_CMTGT_IOCU0);
-> +		__sync();
-> +	}
-> +
->   	n0 = __raw_readl(sysc + SYSC_REG_CHIP_NAME0);
->   	n1 = __raw_readl(sysc + SYSC_REG_CHIP_NAME1);
->   
-> @@ -194,26 +216,6 @@ void prom_soc_init(struct ralink_soc_info *soc_info)
->   
->   	rt2880_pinmux_data = mt7621_pinmux_data;
->   
-> -	/* Early detection of CMP support */
-> -	mips_cm_probe();
-> -	mips_cpc_probe();
-> -
-> -	if (mips_cps_numiocu(0)) {
-> -		/*
-> -		 * mips_cm_probe() wipes out bootloader
-> -		 * config for CM regions and we have to configure them
-> -		 * again. This SoC cannot talk to pamlbus devices
-> -		 * witout proper iocu region set up.
-> -		 *
-> -		 * FIXME: it would be better to do this with values
-> -		 * from DT, but we need this very early because
-> -		 * without this we cannot talk to pretty much anything
-> -		 * including serial.
-> -		 */
-> -		write_gcr_reg0_base(MT7621_PALMBUS_BASE);
-> -		write_gcr_reg0_mask(~MT7621_PALMBUS_SIZE |
-> -				    CM_GCR_REGn_MASK_CMTGT_IOCU0);
-> -	}
->   
->   	if (!register_cps_smp_ops())
->   		return;
-> 
+Changes in v2:
+
+- rebased.
+
+ We still handle the load address wrong in the presence of the 
+CONFIG_PHYSICAL_START option, e.g.:
+
+make -f ./scripts/Makefile.build obj=arch/mips/boot VMLINUX=vmlinux \
+		VMLINUX_LOAD_ADDRESS=0x84000000 VMLINUX_ENTRY_ADDRESS=0xffffffff8463c870 PLATFORM="mti-malta/" ITS_INPUTS="vmlinux.its.S" ADDR_BITS=32 arch/mips/boot/vmlinux.srec
+
+which again will be an issue with a 32-bit image and a 64-bit processor.  
+But that's a matter for a separate fix.
+
+  Maciej
+
+---
+ arch/mips/Makefile |   20 ++++++--------------
+ 1 file changed, 6 insertions(+), 14 deletions(-)
+
+linux-mips-start-address.diff
+Index: linux-jhogan-test/arch/mips/Makefile
+===================================================================
+--- linux-jhogan-test.orig/arch/mips/Makefile	2018-03-21 17:22:12.000000000 +0000
++++ linux-jhogan-test/arch/mips/Makefile	2018-03-21 17:29:53.524879000 +0000
+@@ -249,20 +249,12 @@ ifdef CONFIG_PHYSICAL_START
+ load-y					= $(CONFIG_PHYSICAL_START)
+ endif
+ 
+-entry-noisa-y				= 0x$(shell $(NM) vmlinux 2>/dev/null \
+-					| grep "\bkernel_entry\b" | cut -f1 -d \ )
+-ifdef CONFIG_CPU_MICROMIPS
+-  #
+-  # Set the ISA bit, since the kernel_entry symbol in the ELF will have it
+-  # clear which would lead to images containing addresses which bootloaders may
+-  # jump to as MIPS32 code.
+-  #
+-  entry-y = $(patsubst %0,%1,$(patsubst %2,%3,$(patsubst %4,%5, \
+-              $(patsubst %6,%7,$(patsubst %8,%9,$(patsubst %a,%b, \
+-              $(patsubst %c,%d,$(patsubst %e,%f,$(entry-noisa-y)))))))))
+-else
+-  entry-y = $(entry-noisa-y)
+-endif
++# Sign-extend the entry point to 64 bits if retrieved as a 32-bit number.
++entry-y		= $(shell $(OBJDUMP) -f vmlinux 2>/dev/null \
++			| sed -n '/^start address / { \
++				s/^.* //; \
++				s/0x\([0-7].......\)$$/0x00000000\1/; \
++				s/0x\(........\)$$/0xffffffff\1/; p }')
+ 
+ cflags-y			+= -I$(srctree)/arch/mips/include/asm/mach-generic
+ drivers-$(CONFIG_PCI)		+= arch/mips/pci/

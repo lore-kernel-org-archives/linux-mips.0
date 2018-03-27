@@ -1,17 +1,17 @@
-Received: from mga17.intel.com ([192.55.52.151]:7642 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992096AbeCZTOCP1HT7 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 26 Mar 2018 21:14:02 +0200
-Date: Tue, 27 Mar 2018 03:13:28 +0800
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH net-next 5/8] net: mscc: Add initial Ocelot switch support
-Message-ID: <201803270232.QvYkUzOs%fengguang.wu@intel.com>
-References: <20180323201117.8416-6-alexandre.belloni@bootlin.com>
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:38818 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992916AbeC0LIDfbIbW (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 27 Mar 2018 13:08:03 +0200
+Date: Tue, 27 Mar 2018 12:07:44 +0100
+From: "Maciej W. Rozycki" <macro@mips.com>
+Subject: Re: [PATCH] MIPS: Make the default for PHYSICAL_START always
+ 64-bit
+In-Reply-To: <20180327092438.GA17660@saruman>
+Message-ID: <alpine.DEB.2.00.1803271146110.2163@tp.orcam.me.uk>
+References: <alpine.DEB.2.00.1803240129140.2163@tp.orcam.me.uk> <20180327092438.GA17660@saruman>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180323201117.8416-6-alexandre.belloni@bootlin.com>
-Return-Path: <fengguang.wu@intel.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,102 +21,37 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: kbuild-all@01.org, "David S . Miller" <davem@davemloft.net>, Allan Nielsen <Allan.Nielsen@microsemi.com>, razvan.stefanescu@nxp.com, po.liu@nxp.com, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org
-Message-ID: <20180326191328.dvTxTez28p4hpxwRIPHR7YCEyAf_hQ38CNmjVufQtbM@z>
+To: James Hogan <jhogan@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Maxim Uvarov <muvarov@gmail.com>, linux-mips@linux-mips.org, stable@vger.kernel.org
+Message-ID: <20180327110744.omUSIRGNhZakCC8vRLq3JObaml5H5_5i-6NX2nSJS7k@z>
 
-Hi Alexandre,
+On Tue, 27 Mar 2018, James Hogan wrote:
 
-I love your patch! Perhaps something to improve:
+> > Make the default for PHYSICAL_START always 64-bit, ensuring that a 
+> > correct sign-extended value is used if a 32-bit image is loaded by a 
+> > 64-bit system, and matching how the load address is set in platform 
+> > Makefile fragments (arch/mips/*/Platform) in the absence of the 
+> > PHYSICAL_START configuration option.
+> 
+> This looks correct given the defaults in the Makefile fragments. However
+> I presume a 32BIT kernel will produce a 32-bit ELF, in which case the
+> result will be indistinguishable? For other kernel image formats which
+> always use 64-bit pointers perhaps it matters more (if they can be
+> loaded by kexec-tools). uImage is 32-bit ISTR, and our ITB stuff seems
+> to only use 32bit addresses for CONFIG_32BIT. I don't now about other
+> formats.
 
-[auto build test WARNING on next-20180323]
-[also build test WARNING on v4.16-rc7]
-[cannot apply to net-next/master net/master robh/for-next v4.16-rc6 v4.16-rc5 v4.16-rc4]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+ For ELF it does not matter, but as you say $VMLINUX_LOAD_ADDRESS and 
+$VMLINUX_ENTRY_ADDRESS is needed for software which does not interpret ELF 
+files.  However my interpretation is based solely on source examination 
+and the commit description and not actual use of these features.  I assume 
+platform Makefile fragments do use 64-bit representation for a reason 
+though.
 
-url:    https://github.com/0day-ci/linux/commits/Alexandre-Belloni/Microsemi-Ocelot-switch-support/20180325-234932
-reproduce:
-        # apt-get install sparse
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
+> So unless I hear otherwise I'll probably drop the stable tag and apply
+> for 4.17.
 
+ I won't insist on backporting.  After all it's the default only and the 
+value can be entered manually if the default does not work.
 
-sparse warnings: (new ones prefixed by >>)
-
->> drivers/net/ethernet/mscc/ocelot.c:395:17: sparse: incorrect type in argument 2 (different base types) @@    expected unsigned int [unsigned] [usertype] val @@    got ed int [unsigned] [usertype] val @@
-   drivers/net/ethernet/mscc/ocelot.c:395:17:    expected unsigned int [unsigned] [usertype] val
-   drivers/net/ethernet/mscc/ocelot.c:395:17:    got restricted __le32 [usertype] <noident>
---
->> drivers/net/ethernet/mscc/ocelot_io.c:110:24: sparse: incorrect type in return expression (different address spaces) @@    expected struct regmap * @@    got void [noderef] <asnstruct regmap * @@
-   drivers/net/ethernet/mscc/ocelot_io.c:110:24:    expected struct regmap *
-   drivers/net/ethernet/mscc/ocelot_io.c:110:24:    got void [noderef] <asn:2>*[assigned] regs
---
->> drivers/net/ethernet/mscc/ocelot_board.c:41:26: sparse: cast to restricted __be32
->> drivers/net/ethernet/mscc/ocelot_board.c:41:26: sparse: cast to restricted __be32
->> drivers/net/ethernet/mscc/ocelot_board.c:41:26: sparse: cast to restricted __be32
->> drivers/net/ethernet/mscc/ocelot_board.c:41:26: sparse: cast to restricted __be32
->> drivers/net/ethernet/mscc/ocelot_board.c:41:26: sparse: cast to restricted __be32
->> drivers/net/ethernet/mscc/ocelot_board.c:41:26: sparse: cast to restricted __be32
->> drivers/net/ethernet/mscc/ocelot_board.c:142:34: sparse: cast to restricted __le32
-
-vim +395 drivers/net/ethernet/mscc/ocelot.c
-
-   367	
-   368	static int ocelot_port_xmit(struct sk_buff *skb, struct net_device *dev)
-   369	{
-   370		struct ocelot_port *port = netdev_priv(dev);
-   371		struct ocelot *ocelot = port->ocelot;
-   372		u32 val, ifh[IFH_LEN];
-   373		struct frame_info info = {};
-   374		u8 grp = 0; /* Send everything on CPU group 0 */
-   375		int i, count, last;
-   376	
-   377		val = ocelot_read(ocelot, QS_INJ_STATUS);
-   378		if (!(val & QS_INJ_STATUS_FIFO_RDY(BIT(grp))) ||
-   379		    (val & QS_INJ_STATUS_WMARK_REACHED(BIT(grp))))
-   380			return NETDEV_TX_BUSY;
-   381	
-   382		ocelot_write_rix(ocelot, QS_INJ_CTRL_GAP_SIZE(1) |
-   383				 QS_INJ_CTRL_SOF, QS_INJ_CTRL, grp);
-   384	
-   385		info.port = BIT(port->chip_port);
-   386		info.cpuq = 0xff;
-   387		ocelot_gen_ifh(ifh, &info);
-   388	
-   389		for (i = 0; i < IFH_LEN; i++)
-   390			ocelot_write_rix(ocelot, ifh[i], QS_INJ_WR, grp);
-   391	
-   392		count = (skb->len + 3) / 4;
-   393		last = skb->len % 4;
-   394		for (i = 0; i < count; i++) {
- > 395			ocelot_write_rix(ocelot, cpu_to_le32(((u32 *)skb->data)[i]),
-   396					 QS_INJ_WR, grp);
-   397		}
-   398	
-   399		/* Add padding */
-   400		while (i < (OCELOT_BUFFER_CELL_SZ / 4)) {
-   401			ocelot_write_rix(ocelot, 0, QS_INJ_WR, grp);
-   402			i++;
-   403		}
-   404	
-   405		/* Indicate EOF and valid bytes in last word */
-   406		ocelot_write_rix(ocelot, QS_INJ_CTRL_GAP_SIZE(1) |
-   407				 QS_INJ_CTRL_VLD_BYTES(skb->len < OCELOT_BUFFER_CELL_SZ ? 0 : last) |
-   408				 QS_INJ_CTRL_EOF,
-   409				 QS_INJ_CTRL, grp);
-   410	
-   411		/* Add dummy CRC */
-   412		ocelot_write_rix(ocelot, 0, QS_INJ_WR, grp);
-   413		skb_tx_timestamp(skb);
-   414	
-   415		dev->stats.tx_packets++;
-   416		dev->stats.tx_bytes += skb->len;
-   417		dev_kfree_skb_any(skb);
-   418	
-   419		return NETDEV_TX_OK;
-   420	}
-   421	
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+  Maciej

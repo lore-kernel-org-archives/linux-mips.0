@@ -1,18 +1,22 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:58968 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992916AbeC0N3jBG2lm (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 27 Mar 2018 15:29:39 +0200
-Subject: Re: [PATCH] mips: ftrace: fix static function graph tracing
-References: <7dc2bb7f712c1e3cfeaafaefe3a3f97668dee549.1521909650.git.mschiffer@universe-factory.net>
-From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <f2dd3d8c-201d-b90d-859e-82f7ab6d2c9d@mips.com>
-Date: Tue, 27 Mar 2018 14:29:24 +0100
+Received: from outils.crapouillou.net ([89.234.176.41]:36606 "EHLO
+        crapouillou.net" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23992336AbeC1PEyKrzCx (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 28 Mar 2018 17:04:54 +0200
+Subject: Re: [PATCH v4 2/8] dt-bindings: ingenic: Add DT bindings for TCU  clocks
 MIME-Version: 1.0
-In-Reply-To: <7dc2bb7f712c1e3cfeaafaefe3a3f97668dee549.1521909650.git.mschiffer@universe-factory.net>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@mips.com>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date: Wed, 28 Mar 2018 17:04:51 +0200
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: 
+In-Reply-To: <CA+7wUsyAkW+Bgmp6MuWTce1jMG-ug1b-UqFVen_vVeKFiW5Fww@mail.gmail.com>
+References: <20180110224838.16711-2-paul@crapouillou.net>
+ <20180317232901.14129-1-paul@crapouillou.net>
+ <20180317232901.14129-3-paul@crapouillou.net>
+ <CA+7wUsyAkW+Bgmp6MuWTce1jMG-ug1b-UqFVen_vVeKFiW5Fww@mail.gmail.com>
+Message-ID: <c02d2ae665890e7214bcfa6c42a49c69@crapouillou.net>
+Return-Path: <paul@crapouillou.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,116 +26,91 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Matthias Schiffer <mschiffer@universe-factory.net>, ralf@linux-mips.org, rostedt@goodmis.org, mingo@redhat.com
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20180327132924.aKtWNZeH0Cp-FJtPIYnZW8oJ122f1oMuXEams52KgjQ@z>
+To: Mathieu Malaterre <malat@debian.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, Lee Jones <lee.jones@linaro.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Mark Rutland <mark.rutland@arm.com>, James Hogan <jhogan@kernel.org>, Maarten ter Huurne <maarten@treewalker.org>, linux-clk@vger.kernel.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, linux-doc@vger.kernel.org, mathieu.malaterre@gmail.com
+Message-ID: <20180328150451.-uxh6b2_YLXJ-uhWnoW0zGe1WI_ddp0sTIpax-e1se0@z>
 
-Hi Matthias,
-
-On 24/03/18 16:57, Matthias Schiffer wrote:
-> ftrace_graph_caller was never run after calling ftrace_trace_function,
-> breaking the function graph tracer. Fix this, bringing it in line with the
-> x86 implementation.
+Le 2018-03-20 08:15, Mathieu Malaterre a écrit :
+> Hi Paul,
 > 
-> While we're at it, also streamline the control flow of _mcount a bit to
-> reduce the number of branches.
+> Two things:
 > 
-> This issue was reported before:
-> https://www.linux-mips.org/archives/linux-mips/2014-11/msg00295.html
+> On Sun, Mar 18, 2018 at 12:28 AM, Paul Cercueil <paul@crapouillou.net> 
+> wrote:
+>> This header provides clock numbers for the ingenic,tcu
+>> DT binding.
 > 
-> Signed-off-by: Matthias Schiffer <mschiffer@universe-factory.net>
-> ---
+> I have tested the whole series on my Creator CI20 with success, using:
 > 
-> Caveats: I've only tested this on 32bit; it would be great if someone with
-> MIPS64 hardware or a working emulator setup could give it a spin. My test
-
-I've tested this patch fixes static function graph tracing on the 
-following platforms:
-QEMU (MIPS32r2 P5600)
-Creator Ci40 (MIPS32r2 InterAptiv)
-Cavium Octeon II (MIPS64r2)
-MIPS Boston FPGA with I6400 (MIPS64r6)
-
-So
-Tested-by: Matt Redfearn <matt.redfearn@mips.com>
-
-> device runs on kernel 4.9.y, but I don't expect any problems applying the
-> fix to newer kernels, given that this code is basically unchanged since
-> 2014.
-
-Indeed, applies fine to v4.16-rc7 (which I mainly tested with)
-
-> 
-> I'm not sure what the correct Fixes: line would be. I did not bother to
-> bisect the issue and could not find the commit introducing it by inspecting
-> the log (assuming the tracer worked at some point).
-
-I verified that the patch applies to and fixes the issue as far back as 
-3.19 on the malta platform using qemu. Going further back I ran into 
-toolchain issues that prevented builds. The earliest version the patch 
-applies cleanly to is v3.17.
-Like you, I don't see where this got broken from just looking at 
-mcount.S, and not being able to bisect with build / test makes it rather 
-difficult to find out.
-
-Thanks,
-Matt
-
-> 
-> 
->   arch/mips/kernel/mcount.S | 27 ++++++++++++---------------
->   1 file changed, 12 insertions(+), 15 deletions(-)
-> 
-> diff --git a/arch/mips/kernel/mcount.S b/arch/mips/kernel/mcount.S
-> index f2ee7e1e3342..cff52b283e03 100644
-> --- a/arch/mips/kernel/mcount.S
-> +++ b/arch/mips/kernel/mcount.S
-> @@ -119,10 +119,20 @@ NESTED(_mcount, PT_SIZE, ra)
->   EXPORT_SYMBOL(_mcount)
->   	PTR_LA	t1, ftrace_stub
->   	PTR_L	t2, ftrace_trace_function /* Prepare t2 for (1) */
-> -	bne	t1, t2, static_trace
-> +	beq	t1, t2, fgraph_trace
->   	 nop
->   
-> +	MCOUNT_SAVE_REGS
+> + tcu@10002000 {
+> + compatible = "ingenic,jz4780-tcu";
+> + reg = <0x10002000 0x140>;
 > +
-> +	move	a0, ra		/* arg1: self return address */
-> +	jalr	t2		/* (1) call *ftrace_trace_function */
-> +	 move	a1, AT		/* arg2: parent's return address */
-> +
-> +	MCOUNT_RESTORE_REGS
-> +
-> +fgraph_trace:
->   #ifdef	CONFIG_FUNCTION_GRAPH_TRACER
-> +	PTR_LA	t1, ftrace_stub
->   	PTR_L	t3, ftrace_graph_return
->   	bne	t1, t3, ftrace_graph_caller
->   	 nop
-> @@ -131,24 +141,11 @@ EXPORT_SYMBOL(_mcount)
->   	bne	t1, t3, ftrace_graph_caller
->   	 nop
->   #endif
-> -	b	ftrace_stub
-> -#ifdef CONFIG_32BIT
-> -	 addiu sp, sp, 8
-> -#else
-> -	 nop
-> -#endif
->   
-> -static_trace:
-> -	MCOUNT_SAVE_REGS
-> -
-> -	move	a0, ra		/* arg1: self return address */
-> -	jalr	t2		/* (1) call *ftrace_trace_function */
-> -	 move	a1, AT		/* arg2: parent's return address */
-> -
-> -	MCOUNT_RESTORE_REGS
->   #ifdef CONFIG_32BIT
->   	addiu sp, sp, 8
->   #endif
-> +
->   	.globl ftrace_stub
->   ftrace_stub:
->   	RETURN_BACK
+> + interrupt-parent = <&intc>;
+> + interrupts = <27 26 25>;
+> + };
 > 
+> 
+> So:
+> 
+> Tested-by: Mathieu Malaterre <malat@debian.org>
+
+Great! Is that for the whole patchset or just this one patch?
+
+>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>> Reviewed-by: Rob Herring <robh@kernel.org>
+>> ---
+>>  include/dt-bindings/clock/ingenic,tcu.h | 23 +++++++++++++++++++++++
+>>  1 file changed, 23 insertions(+)
+>>  create mode 100644 include/dt-bindings/clock/ingenic,tcu.h
+>> 
+>>  v2: Use SPDX identifier for the license
+>>  v3: No change
+>>  v4: No change
+>> 
+>> diff --git a/include/dt-bindings/clock/ingenic,tcu.h 
+>> b/include/dt-bindings/clock/ingenic,tcu.h
+>> new file mode 100644
+>> index 000000000000..179815d7b3bb
+>> --- /dev/null
+>> +++ b/include/dt-bindings/clock/ingenic,tcu.h
+>> @@ -0,0 +1,23 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/*
+>> + * This header provides clock numbers for the ingenic,tcu DT binding.
+>> + */
+>> +
+>> +#ifndef __DT_BINDINGS_CLOCK_INGENIC_TCU_H__
+>> +#define __DT_BINDINGS_CLOCK_INGENIC_TCU_H__
+>> +
+>> +#define JZ4740_CLK_TIMER0      0
+>> +#define JZ4740_CLK_TIMER1      1
+>> +#define JZ4740_CLK_TIMER2      2
+>> +#define JZ4740_CLK_TIMER3      3
+>> +#define JZ4740_CLK_TIMER4      4
+>> +#define JZ4740_CLK_TIMER5      5
+>> +#define JZ4740_CLK_TIMER6      6
+>> +#define JZ4740_CLK_TIMER7      7
+>> +#define JZ4740_CLK_WDT         8
+>> +#define JZ4740_CLK_LAST                JZ4740_CLK_WDT
+>> +
+>> +#define JZ4770_CLK_OST         9
+>> +#define JZ4770_CLK_LAST                JZ4770_CLK_OST
+>> +
+> 
+> When working on JZ4780 support, I always struggle to read those kind
+> of #define. Since this is a new patch would you mind changing
+> s/JZ4740/JZ47XX/ in your header ?
+
+Well the idea was that these defines are for JZ4740 and newer.
+But that means all Ingenic SoCs, so I guess I can change it.
+
+> Thanks for your work on JZ !
+
+Sure, thank you for testing!
+
+>> +#endif /* __DT_BINDINGS_CLOCK_INGENIC_TCU_H__ */
+>> --
+>> 2.11.0
+>> 
+>> 

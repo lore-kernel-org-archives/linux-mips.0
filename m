@@ -1,20 +1,27 @@
-Received: from mail-ot0-x244.google.com ([IPv6:2607:f8b0:4003:c0f::244]:45213
-        "EHLO mail-ot0-x244.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993928AbeC1SgRSGwMz convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 28 Mar 2018 20:36:17 +0200
-MIME-Version: 1.0
-In-Reply-To: <c02d2ae665890e7214bcfa6c42a49c69@crapouillou.net>
-References: <20180110224838.16711-2-paul@crapouillou.net> <20180317232901.14129-1-paul@crapouillou.net>
- <20180317232901.14129-3-paul@crapouillou.net> <CA+7wUsyAkW+Bgmp6MuWTce1jMG-ug1b-UqFVen_vVeKFiW5Fww@mail.gmail.com>
- <c02d2ae665890e7214bcfa6c42a49c69@crapouillou.net>
-From: Mathieu Malaterre <malat@debian.org>
-Date: Wed, 28 Mar 2018 20:35:50 +0200
-Message-ID: <CA+7wUswkTy=1BJwk0Ys=HFZ4Sk9pFr4jsE0LvDM1x41YRBCg4g@mail.gmail.com>
-Subject: Re: [PATCH v4 2/8] dt-bindings: ingenic: Add DT bindings for TCU clocks
-Content-Type: text/plain; charset="UTF-8"
+Received: from mga11.intel.com ([192.55.52.93]:64295 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23994621AbeC1VHeXzydC convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 28 Mar 2018 23:07:34 +0200
+From: "Luck, Tony" <tony.luck@intel.com>
+Subject: RE: [RFC PATCH v2 0/2] Randomization of address chosen by mmap.
+Date: Wed, 28 Mar 2018 21:07:30 +0000
+Message-ID: <3908561D78D1C84285E8C5FCA982C28F7B3B8BC5@ORSMSX110.amr.corp.intel.com>
+References: <1521736598-12812-1-git-send-email-blackzert@gmail.com>
+ <20180323124806.GA5624@bombadil.infradead.org>
+ <651E0DB6-4507-4DA1-AD46-9C26ED9792A8@gmail.com>
+ <20180326084650.GC5652@dhcp22.suse.cz>
+ <01A133F4-27DF-4AE2-80D6-B0368BF758CD@gmail.com>
+ <20180327072432.GY5652@dhcp22.suse.cz>
+ <0549F29C-12FC-4401-9E85-A430BC11DA78@gmail.com>
+ <CAGXu5j+XXufprMaJ9GbHxD3mZ7iqUuu60-tTMC6wo2x1puYzMQ@mail.gmail.com>
+ <20180327234904.GA27734@bombadil.infradead.org>
+ <20180328000025.GM1436@brightrain.aerifal.cx>
+In-Reply-To: <20180328000025.GM1436@brightrain.aerifal.cx>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
-Return-Path: <mathieu.malaterre@gmail.com>
+MIME-Version: 1.0
+Return-Path: <tony.luck@intel.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,108 +31,21 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Cercueil <paul@crapouillou.net>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, Lee Jones <lee.jones@linaro.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Ralf Baechle <ralf@linux-mips.org>, Rob Herring <robh+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Mark Rutland <mark.rutland@arm.com>, James Hogan <jhogan@kernel.org>, Maarten ter Huurne <maarten@treewalker.org>, linux-clk@vger.kernel.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, linux-doc@vger.kernel.org
-Message-ID: <20180328183550.jMPNvSzYkzlPf_u3ZKlCI21-7uRel1sd6vQWBYENYb8@z>
+To: Rich Felker <dalias@libc.org>, Matthew Wilcox <willy@infradead.org>
+Cc: Kees Cook <keescook@chromium.org>, Ilya Smith <blackzert@gmail.com>, Michal Hocko <mhocko@kernel.org>, Richard Henderson <rth@twiddle.net>, "ink@jurassic.park.msu.ru" <ink@jurassic.park.msu.ru>, "mattst88@gmail.com" <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, "Yu, Fenghua" <fenghua.yu@intel.com>, Ralf Baechle <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, "David S. Miller" <davem@davemloft.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>, "nyc@holomorphy.com" <nyc@holomorphy.com>, Al Viro <viro@zeniv.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@linuxfoundation.org>, Deepa Dinamani <deepa.kernel@gmail.com>, Hugh Dickins <hughd@google.com>, Kate Stewart <kstewart@linuxfoundation.org>, Philippe Ombredanne <pombredanne@nexb.com>, Andrew Morton <akpm@linux-foundation.org>, Steve Capper <steve.capper@arm.com>, Punit Agrawal <punit.agrawal@arm.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, Nick Piggin <npiggin@gmail.com>, Bhupesh Sharma <bhsharma@redhat.com>, Rik van Riel <riel@redhat.com>, "nitin.m.gupta@oracle.com" <nitin.m.gupta@oracle.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, "Williams, Dan J" <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>, Ross Zwisler <ross.zwisler@linux.intel.com>, Jerome Glisse <jglisse@redhat.com>, Andrea Arcangeli <aarcange@redhat.com>, Oleg Nesterov <oleg@redhat.com>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-parisc <linux-parisc@vger.kernel.org>, PowerPC <linuxppc-dev@lists.ozlabs.org>, linux-s390 <linux-s390@vger.kernel.org>, linux-sh <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+Message-ID: <20180328210730.tn9h5402Ier56B4fE7XSRdjum7UFSvLNJHX_QZewvqM@z>
 
-On Wed, Mar 28, 2018 at 5:04 PM, Paul Cercueil <paul@crapouillou.net> wrote:
-> Le 2018-03-20 08:15, Mathieu Malaterre a écrit :
->>
->> Hi Paul,
->>
->> Two things:
->>
->> On Sun, Mar 18, 2018 at 12:28 AM, Paul Cercueil <paul@crapouillou.net>
->> wrote:
->>>
->>> This header provides clock numbers for the ingenic,tcu
->>> DT binding.
->>
->>
->> I have tested the whole series on my Creator CI20 with success, using:
->>
->> + tcu@10002000 {
->> + compatible = "ingenic,jz4780-tcu";
->> + reg = <0x10002000 0x140>;
->> +
->> + interrupt-parent = <&intc>;
->> + interrupts = <27 26 25>;
->> + };
->>
->>
->> So:
->>
->> Tested-by: Mathieu Malaterre <malat@debian.org>
->
->
-> Great! Is that for the whole patchset or just this one patch?
+> The default limit of only 65536 VMAs will also quickly come into play
+> if consecutive anon mmaps don't get merged. Of course this can be
+> raised, but it has significant resource and performance (fork) costs.
 
-The sentence just above was "whole series"  :) so yes that was for the
-whole series. Technically I only tested it on JZ4780, I hope this is
-acceptable for the tag.
+Could the random mmap address chooser look for how many existing
+VMAs have space before/after and the right attributes to merge with the
+new one you want to create? If this is above some threshold (100?) then
+pick one of them randomly and allocate the new address so that it will
+merge from below/above with an existing one.
 
+That should still give you a very high degree of randomness, but prevent
+out of control numbers of VMAs from being created.
 
-
->
->>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>> Reviewed-by: Rob Herring <robh@kernel.org>
->>> ---
->>>  include/dt-bindings/clock/ingenic,tcu.h | 23 +++++++++++++++++++++++
->>>  1 file changed, 23 insertions(+)
->>>  create mode 100644 include/dt-bindings/clock/ingenic,tcu.h
->>>
->>>  v2: Use SPDX identifier for the license
->>>  v3: No change
->>>  v4: No change
->>>
->>> diff --git a/include/dt-bindings/clock/ingenic,tcu.h
->>> b/include/dt-bindings/clock/ingenic,tcu.h
->>> new file mode 100644
->>> index 000000000000..179815d7b3bb
->>> --- /dev/null
->>> +++ b/include/dt-bindings/clock/ingenic,tcu.h
->>> @@ -0,0 +1,23 @@
->>> +/* SPDX-License-Identifier: GPL-2.0 */
->>> +/*
->>> + * This header provides clock numbers for the ingenic,tcu DT binding.
->>> + */
->>> +
->>> +#ifndef __DT_BINDINGS_CLOCK_INGENIC_TCU_H__
->>> +#define __DT_BINDINGS_CLOCK_INGENIC_TCU_H__
->>> +
->>> +#define JZ4740_CLK_TIMER0      0
->>> +#define JZ4740_CLK_TIMER1      1
->>> +#define JZ4740_CLK_TIMER2      2
->>> +#define JZ4740_CLK_TIMER3      3
->>> +#define JZ4740_CLK_TIMER4      4
->>> +#define JZ4740_CLK_TIMER5      5
->>> +#define JZ4740_CLK_TIMER6      6
->>> +#define JZ4740_CLK_TIMER7      7
->>> +#define JZ4740_CLK_WDT         8
->>> +#define JZ4740_CLK_LAST                JZ4740_CLK_WDT
->>> +
->>> +#define JZ4770_CLK_OST         9
->>> +#define JZ4770_CLK_LAST                JZ4770_CLK_OST
->>> +
->>
->>
->> When working on JZ4780 support, I always struggle to read those kind
->> of #define. Since this is a new patch would you mind changing
->> s/JZ4740/JZ47XX/ in your header ?
->
->
-> Well the idea was that these defines are for JZ4740 and newer.
-> But that means all Ingenic SoCs, so I guess I can change it.
->
->> Thanks for your work on JZ !
->
->
-> Sure, thank you for testing!
->
->
->>> +#endif /* __DT_BINDINGS_CLOCK_INGENIC_TCU_H__ */
->>> --
->>> 2.11.0
->>>
->>>
->
+-Tony

@@ -1,13 +1,11 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:59988 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:52152 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990405AbeC2MdHxDB03 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 29 Mar 2018 14:33:07 +0200
+        by eddie.linux-mips.org with ESMTP id S23990405AbeC2NZcfvTsM (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 29 Mar 2018 15:25:32 +0200
 From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH v2] clocksource/drivers/mips-gic-timer: Add pr_fmt and reword pr_* messages
-Date: Thu, 29 Mar 2018 10:49:03 +0100
-Message-ID: <1522316943-2542-1-git-send-email-matt.redfearn@mips.com>
-In-Reply-To: <1513781406-27292-1-git-send-email-matt.redfearn@mips.com>
-References: <1513781406-27292-1-git-send-email-matt.redfearn@mips.com>
+Subject: [PATCH v4 1/3] Add notrace to lib/ucmpdi2.c
+Date: Thu, 29 Mar 2018 11:41:21 +0100
+Message-ID: <1522320083-27818-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Matt.Redfearn@mips.com>
@@ -20,98 +18,43 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, linux-kernel@vger.kernel.org
-Message-ID: <20180329094903.vf_k90rmAwZFyBwor4pPdNCIjE3z_FZoeyF2TPBb8tM@z>
+To: Palmer Dabbelt <palmer@sifive.com>, Antony Pavlov <antonynpavlov@gmail.com>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org
+Message-ID: <20180329104121.L-MBHF7RVGpTUUignNowokZAmbL2QxHNJb9-a6A-9jo@z>
 
-Several messages from the MIPS GIC driver include the text "GIC", "GIC
-timer", etc, but the format is not standard. Add a pr_fmt of
-"mips-gic-timer: " and reword the messages now that they will be
-prefixed with the driver name.
+From: Palmer Dabbelt <palmer@sifive.com>
 
+As part of the MIPS conversion to use the generic GCC library routines,
+Matt Redfearn discovered that I'd missed a notrace on __ucmpdi2().  This
+patch rectifies the problem.
+
+CC: Matt Redfearn <matt.redfearn@mips.com>
+CC: Antony Pavlov <antonynpavlov@gmail.com>
+Signed-off-by: Palmer Dabbelt <palmer@sifive.com>
+Reviewed-by: Matt Redfearn <matt.redfearn@mips.com>
 Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
 ---
 
+Changes in v4: None
+Changes in v3: None
 Changes in v2:
-Rebase on v4.16-rc7
+  add notrace to lib/ucmpdi2.c
 
- drivers/clocksource/mips-gic-timer.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ lib/ucmpdi2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clocksource/mips-gic-timer.c b/drivers/clocksource/mips-gic-timer.c
-index 986b6796b631..54f8a331b53a 100644
---- a/drivers/clocksource/mips-gic-timer.c
-+++ b/drivers/clocksource/mips-gic-timer.c
-@@ -5,6 +5,9 @@
-  *
-  * Copyright (C) 2012 MIPS Technologies, Inc.  All rights reserved.
-  */
-+
-+#define pr_fmt(fmt) "mips-gic-timer: " fmt
-+
- #include <linux/clk.h>
- #include <linux/clockchips.h>
- #include <linux/cpu.h>
-@@ -136,8 +139,7 @@ static int gic_clockevent_init(void)
+diff --git a/lib/ucmpdi2.c b/lib/ucmpdi2.c
+index 25ca2d4c1e19..597998169a96 100644
+--- a/lib/ucmpdi2.c
++++ b/lib/ucmpdi2.c
+@@ -17,7 +17,7 @@
+ #include <linux/module.h>
+ #include <linux/libgcc.h>
  
- 	ret = setup_percpu_irq(gic_timer_irq, &gic_compare_irqaction);
- 	if (ret < 0) {
--		pr_err("GIC timer IRQ %d setup failed: %d\n",
--		       gic_timer_irq, ret);
-+		pr_err("IRQ %d setup failed (%d)\n", gic_timer_irq, ret);
- 		return ret;
- 	}
- 
-@@ -176,7 +178,7 @@ static int __init __gic_clocksource_init(void)
- 
- 	ret = clocksource_register_hz(&gic_clocksource, gic_frequency);
- 	if (ret < 0)
--		pr_warn("GIC: Unable to register clocksource\n");
-+		pr_warn("Unable to register clocksource\n");
- 
- 	return ret;
- }
-@@ -188,7 +190,7 @@ static int __init gic_clocksource_of_init(struct device_node *node)
- 
- 	if (!mips_gic_present() || !node->parent ||
- 	    !of_device_is_compatible(node->parent, "mti,gic")) {
--		pr_warn("No DT definition for the mips gic driver\n");
-+		pr_warn("No DT definition\n");
- 		return -ENXIO;
- 	}
- 
-@@ -196,7 +198,7 @@ static int __init gic_clocksource_of_init(struct device_node *node)
- 	if (!IS_ERR(clk)) {
- 		ret = clk_prepare_enable(clk);
- 		if (ret < 0) {
--			pr_err("GIC failed to enable clock\n");
-+			pr_err("Failed to enable clock\n");
- 			clk_put(clk);
- 			return ret;
- 		}
-@@ -204,12 +206,12 @@ static int __init gic_clocksource_of_init(struct device_node *node)
- 		gic_frequency = clk_get_rate(clk);
- 	} else if (of_property_read_u32(node, "clock-frequency",
- 					&gic_frequency)) {
--		pr_err("GIC frequency not specified.\n");
-+		pr_err("Frequency not specified\n");
- 		return -EINVAL;
- 	}
- 	gic_timer_irq = irq_of_parse_and_map(node, 0);
- 	if (!gic_timer_irq) {
--		pr_err("GIC timer IRQ not specified.\n");
-+		pr_err("IRQ not specified\n");
- 		return -EINVAL;
- 	}
- 
-@@ -220,7 +222,7 @@ static int __init gic_clocksource_of_init(struct device_node *node)
- 	ret = gic_clockevent_init();
- 	if (!ret && !IS_ERR(clk)) {
- 		if (clk_notifier_register(clk, &gic_clk_nb) < 0)
--			pr_warn("GIC: Unable to register clock notifier\n");
-+			pr_warn("Unable to register clock notifier\n");
- 	}
- 
- 	/* And finally start the counter */
+-word_type __ucmpdi2(unsigned long long a, unsigned long long b)
++word_type notrace __ucmpdi2(unsigned long long a, unsigned long long b)
+ {
+ 	const DWunion au = {.ll = a};
+ 	const DWunion bu = {.ll = b};
 -- 
 2.7.4

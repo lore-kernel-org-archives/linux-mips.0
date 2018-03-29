@@ -1,27 +1,14 @@
-Received: from mga11.intel.com ([192.55.52.93]:64295 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23994621AbeC1VHeXzydC convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 28 Mar 2018 23:07:34 +0200
-From: "Luck, Tony" <tony.luck@intel.com>
-Subject: RE: [RFC PATCH v2 0/2] Randomization of address chosen by mmap.
-Date: Wed, 28 Mar 2018 21:07:30 +0000
-Message-ID: <3908561D78D1C84285E8C5FCA982C28F7B3B8BC5@ORSMSX110.amr.corp.intel.com>
-References: <1521736598-12812-1-git-send-email-blackzert@gmail.com>
- <20180323124806.GA5624@bombadil.infradead.org>
- <651E0DB6-4507-4DA1-AD46-9C26ED9792A8@gmail.com>
- <20180326084650.GC5652@dhcp22.suse.cz>
- <01A133F4-27DF-4AE2-80D6-B0368BF758CD@gmail.com>
- <20180327072432.GY5652@dhcp22.suse.cz>
- <0549F29C-12FC-4401-9E85-A430BC11DA78@gmail.com>
- <CAGXu5j+XXufprMaJ9GbHxD3mZ7iqUuu60-tTMC6wo2x1puYzMQ@mail.gmail.com>
- <20180327234904.GA27734@bombadil.infradead.org>
- <20180328000025.GM1436@brightrain.aerifal.cx>
-In-Reply-To: <20180328000025.GM1436@brightrain.aerifal.cx>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:39487 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990405AbeC2MX4yeaXZ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 29 Mar 2018 14:23:56 +0200
+From: Matt Redfearn <matt.redfearn@mips.com>
+Subject: [PATCH 0/2] MIPS: memset.S: Fix 2 issues with __clear_user
+Date: Thu, 29 Mar 2018 10:28:22 +0100
+Message-ID: <1522315704-31641-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
-Return-Path: <tony.luck@intel.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -31,21 +18,54 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rich Felker <dalias@libc.org>, Matthew Wilcox <willy@infradead.org>
-Cc: Kees Cook <keescook@chromium.org>, Ilya Smith <blackzert@gmail.com>, Michal Hocko <mhocko@kernel.org>, Richard Henderson <rth@twiddle.net>, "ink@jurassic.park.msu.ru" <ink@jurassic.park.msu.ru>, "mattst88@gmail.com" <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, "Yu, Fenghua" <fenghua.yu@intel.com>, Ralf Baechle <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, "David S. Miller" <davem@davemloft.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>, "nyc@holomorphy.com" <nyc@holomorphy.com>, Al Viro <viro@zeniv.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@linuxfoundation.org>, Deepa Dinamani <deepa.kernel@gmail.com>, Hugh Dickins <hughd@google.com>, Kate Stewart <kstewart@linuxfoundation.org>, Philippe Ombredanne <pombredanne@nexb.com>, Andrew Morton <akpm@linux-foundation.org>, Steve Capper <steve.capper@arm.com>, Punit Agrawal <punit.agrawal@arm.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, Nick Piggin <npiggin@gmail.com>, Bhupesh Sharma <bhsharma@redhat.com>, Rik van Riel <riel@redhat.com>, "nitin.m.gupta@oracle.com" <nitin.m.gupta@oracle.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, "Williams, Dan J" <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>, Ross Zwisler <ross.zwisler@linux.intel.com>, Jerome Glisse <jglisse@redhat.com>, Andrea Arcangeli <aarcange@redhat.com>, Oleg Nesterov <oleg@redhat.com>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-parisc <linux-parisc@vger.kernel.org>, PowerPC <linuxppc-dev@lists.ozlabs.org>, linux-s390 <linux-s390@vger.kernel.org>, linux-sh <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
-Message-ID: <20180328210730.tn9h5402Ier56B4fE7XSRdjum7UFSvLNJHX_QZewvqM@z>
+To: James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, linux-kernel@vger.kernel.org
+Message-ID: <20180329092822.KgJoS_hMlkyJU53Hn_ECKm2tAD4doS_VoMSLPPPWDiM@z>
 
-> The default limit of only 65536 VMAs will also quickly come into play
-> if consecutive anon mmaps don't get merged. Of course this can be
-> raised, but it has significant resource and performance (fork) costs.
+This series addresses 2 issues that have been present in memset.S since
+the initial git import(!).
+The first patch addresses an issue when memset is called with a size
+less than the size of a long (4 bytes on 32bit, 8 bytes on 64bit). There
+is no fixup handler provided for the byte store loop, meaning that if
+the access triggers a page fault, rather than being fixup up, the kernel
+OOPS'. A secondary issue is also addressed here, that when EVA support
+was added by commit fd9720e96e85 ("MIPS: lib: memset: Add EVA support
+for the __bzero function."), this small memset was not changed. Hence
+kernel mode addressing is always used and if the userspace address being
+stored to overlaps kernel, then some potentially critical kernel data is
+overwritten.
 
-Could the random mmap address chooser look for how many existing
-VMAs have space before/after and the right attributes to merge with the
-new one you want to create? If this is above some threshold (100?) then
-pick one of them randomly and allocate the new address so that it will
-merge from below/above with an existing one.
+The second patch addresses an issue found while debugging the first.
+clear_user() is specified to return the number of bytes that could not be
+cleared. After the first patch, this is now done for sizes 0-3, but
+sizes 4-63 would return garbage. This was tracked down to an error in
+reusing the t1 register meaning it no longer contained the expected
+value in the fault handler, and the fault handler erroneously masking
+off the lower bits of the result.
 
-That should still give you a very high degree of randomness, but prevent
-out of control numbers of VMAs from being created.
+The following test code was used to verify the behavior.
 
--Tony
+  int j, k;
+  for (j = 0; j < 512; j++) {
+    if ((k = clear_user(NULL, j)) != j) {
+       pr_err("clear_user (NULL %d) returned %d\n", j, k);
+    }
+  }
+
+Without patch 1, an OOPS is triggered by the first iteration. Without
+the second patch, j = 4..63 returns garbage.
+
+Applies on v4.16-rc7
+Tested on MIPS creator ci40 (MIPS32) and Cavium Octeon II (MIPS64).
+
+
+
+Matt Redfearn (2):
+  MIPS: memset.S: EVA & fault support for small_memset
+  MIPS: memset.S: Fix return of __clear_user from Lpartial_fixup
+
+ arch/mips/lib/memset.S | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
+
+-- 
+2.7.4

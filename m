@@ -1,16 +1,17 @@
-Received: from mga05.intel.com ([192.55.52.43]:63958 "EHLO mga05.intel.com"
+Received: from mga03.intel.com ([134.134.136.65]:31885 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23993603AbeDCUeqmCG60 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 3 Apr 2018 22:34:46 +0200
-Date: Wed, 4 Apr 2018 04:34:38 +0800
+        id S23990413AbeDCU6AZV-e0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 3 Apr 2018 22:58:00 +0200
+Date: Wed, 4 Apr 2018 04:57:34 +0800
 From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH 4/5] MIPS: perf: Allocate per-core counters on demand
-Message-ID: <201804040450.9hvGboKw%fengguang.wu@intel.com>
-References: <1522758691-17003-5-git-send-email-matt.redfearn@mips.com>
+Subject: Re: [PATCH 5/5] MIPS: perf: Fold vpe_id() macro into it's one last
+ usage
+Message-ID: <201804040426.r7NS8aS0%fengguang.wu@intel.com>
+References: <1522758691-17003-6-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="xHFwDpU9dbj6ez1V"
+Content-Type: multipart/mixed; boundary="h31gzZEtNLTqOjlF"
 Content-Disposition: inline
-In-Reply-To: <1522758691-17003-5-git-send-email-matt.redfearn@mips.com>
+In-Reply-To: <1522758691-17003-6-git-send-email-matt.redfearn@mips.com>
 Return-Path: <fengguang.wu@intel.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -23,10 +24,10 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Matt Redfearn <matt.redfearn@mips.com>
 Cc: kbuild-all@01.org, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Namhyung Kim <namhyung@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Arnaldo Carvalho de Melo <acme@kernel.org>
-Message-ID: <20180403203438.5GcTBvrPWREe3vylcieE3fmxLUlAm4E_AWHA6Eor-nE@z>
+Message-ID: <20180403205734.Wc-h5WKwQ1epInzlElOmFZ-iA6eH0D2RTCopFGZDPQ4@z>
 
 
---xHFwDpU9dbj6ez1V
+--h31gzZEtNLTqOjlF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -47,82 +48,129 @@ reproduce:
         # save the attached .config to linux build tree
         make.cross ARCH=mips 
 
-All error/warnings (new ones prefixed by >>):
+All errors (new ones prefixed by >>):
 
    In file included from include/linux/kernel.h:14:0,
                     from include/linux/cpumask.h:10,
                     from arch/mips/kernel/perf_event_mipsxx.c:18:
    arch/mips/kernel/perf_event_mipsxx.c: In function 'mipsxx_pmu_free_counter':
->> arch/mips/kernel/perf_event_mipsxx.c:365:42: error: 'cpu' undeclared (first use in this function)
+   arch/mips/kernel/perf_event_mipsxx.c:353:42: error: 'cpu' undeclared (first use in this function)
      pr_debug("CPU%d released counter %d\n", cpu, hwc->idx);
                                              ^
    include/linux/printk.h:136:17: note: in definition of macro 'no_printk'
       printk(fmt, ##__VA_ARGS__);  \
                     ^~~~~~~~~~~
->> arch/mips/kernel/perf_event_mipsxx.c:365:2: note: in expansion of macro 'pr_debug'
+   arch/mips/kernel/perf_event_mipsxx.c:353:2: note: in expansion of macro 'pr_debug'
      pr_debug("CPU%d released counter %d\n", cpu, hwc->idx);
      ^~~~~~~~
-   arch/mips/kernel/perf_event_mipsxx.c:365:42: note: each undeclared identifier is reported only once for each function it appears in
+   arch/mips/kernel/perf_event_mipsxx.c:353:42: note: each undeclared identifier is reported only once for each function it appears in
      pr_debug("CPU%d released counter %d\n", cpu, hwc->idx);
                                              ^
    include/linux/printk.h:136:17: note: in definition of macro 'no_printk'
       printk(fmt, ##__VA_ARGS__);  \
                     ^~~~~~~~~~~
->> arch/mips/kernel/perf_event_mipsxx.c:365:2: note: in expansion of macro 'pr_debug'
+   arch/mips/kernel/perf_event_mipsxx.c:353:2: note: in expansion of macro 'pr_debug'
      pr_debug("CPU%d released counter %d\n", cpu, hwc->idx);
      ^~~~~~~~
    arch/mips/kernel/perf_event_mipsxx.c: In function 'mipsxx_pmu_enable_event':
-   arch/mips/kernel/perf_event_mipsxx.c:386:22: error: expected expression before ')' token
+>> arch/mips/kernel/perf_event_mipsxx.c:372:25: error: 'cpu_has_mipsmt_pertccounters' undeclared (first use in this function); did you mean 'can_use_mips_counter'?
+      unsigned int vpe_id = cpu_has_mipsmt_pertccounters ? 0 :
+                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                            can_use_mips_counter
+   arch/mips/kernel/perf_event_mipsxx.c:376:22: error: expected expression before ')' token
      } else if (range > V) {
                          ^
    arch/mips/kernel/perf_event_mipsxx.c: In function 'mipspmu_perf_event_encode':
-   arch/mips/kernel/perf_event_mipsxx.c:718:28: error: 'const struct mips_perf_event' has no member named 'range'
+   arch/mips/kernel/perf_event_mipsxx.c:708:28: error: 'const struct mips_perf_event' has no member named 'range'
       return ((unsigned int)pev->range << 24) |
                                ^~
 
-vim +/cpu +365 arch/mips/kernel/perf_event_mipsxx.c
+vim +372 arch/mips/kernel/perf_event_mipsxx.c
 
-   339	
-   340	static void mipsxx_pmu_free_counter(struct cpu_hw_events *cpuc,
-   341					    struct hw_perf_event *hwc)
-   342	{
-   343	#ifdef CONFIG_MIPS_PERF_SHARED_TC_COUNTERS
-   344		int sibling_cpu, cpu = smp_processor_id();
-   345	
-   346		/* When counters are per-core, free them in all sibling CPUs */
-   347		if (!cpu_has_mipsmt_pertccounters) {
-   348			struct cpu_hw_events *sibling_cpuc;
-   349			unsigned long flags;
-   350	
-   351			spin_lock_irqsave(&core_counters_lock, flags);
-   352	
-   353			for_each_cpu(sibling_cpu, &cpu_sibling_map[cpu]) {
-   354				sibling_cpuc = per_cpu_ptr(&cpu_hw_events, sibling_cpu);
-   355	
-   356				clear_bit(hwc->idx, sibling_cpuc->used_mask);
-   357				pr_debug("CPU%d released core counter %d\n",
-   358					 sibling_cpu, hwc->idx);
-   359			}
-   360	
-   361			spin_unlock_irqrestore(&core_counters_lock, flags);
-   362			return;
-   363		}
-   364	#endif
- > 365		pr_debug("CPU%d released counter %d\n", cpu, hwc->idx);
-   366		clear_bit(hwc->idx, cpuc->used_mask);
-   367	}
-   368	
+   327	
+   328	static void mipsxx_pmu_free_counter(struct cpu_hw_events *cpuc,
+   329					    struct hw_perf_event *hwc)
+   330	{
+   331	#ifdef CONFIG_MIPS_PERF_SHARED_TC_COUNTERS
+   332		int sibling_cpu, cpu = smp_processor_id();
+   333	
+   334		/* When counters are per-core, free them in all sibling CPUs */
+   335		if (!cpu_has_mipsmt_pertccounters) {
+   336			struct cpu_hw_events *sibling_cpuc;
+   337			unsigned long flags;
+   338	
+   339			spin_lock_irqsave(&core_counters_lock, flags);
+   340	
+   341			for_each_cpu(sibling_cpu, &cpu_sibling_map[cpu]) {
+   342				sibling_cpuc = per_cpu_ptr(&cpu_hw_events, sibling_cpu);
+   343	
+   344				clear_bit(hwc->idx, sibling_cpuc->used_mask);
+   345				pr_debug("CPU%d released core counter %d\n",
+   346					 sibling_cpu, hwc->idx);
+   347			}
+   348	
+   349			spin_unlock_irqrestore(&core_counters_lock, flags);
+   350			return;
+   351		}
+   352	#endif
+ > 353		pr_debug("CPU%d released counter %d\n", cpu, hwc->idx);
+   354		clear_bit(hwc->idx, cpuc->used_mask);
+   355	}
+   356	
+   357	static void mipsxx_pmu_enable_event(struct hw_perf_event *evt, int idx)
+   358	{
+   359		struct perf_event *event = container_of(evt, struct perf_event, hw);
+   360		struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+   361		unsigned int range = evt->event_base >> 24;
+   362	
+   363		WARN_ON(idx < 0 || idx >= mipspmu.num_counters);
+   364	
+   365		cpuc->saved_ctrl[idx] = M_PERFCTL_EVENT(evt->event_base & 0xff) |
+   366			(evt->config_base & M_PERFCTL_CONFIG_MASK) |
+   367			/* Make sure interrupt enabled. */
+   368			MIPS_PERFCTRL_IE;
+   369	
+   370		if (IS_ENABLED(CONFIG_CPU_BMIPS5000)) {
+   371			/* enable the counter for the calling thread */
+ > 372			unsigned int vpe_id = cpu_has_mipsmt_pertccounters ? 0 :
+   373				(smp_processor_id() & MIPS_CPUID_TO_COUNTER_MASK);
+   374	
+   375			cpuc->saved_ctrl[idx] |= BIT(12 + vpe_id) | BRCM_PERFCTRL_TC;
+   376		} else if (range > V) {
+   377			/* The counter is processor wide. Set it up to count all TCs. */
+   378			pr_debug("Enabling perf counter for all TCs\n");
+   379			cpuc->saved_ctrl[idx] |= M_TC_EN_ALL;
+   380		} else {
+   381			unsigned int cpu, ctrl;
+   382	
+   383			/*
+   384			 * Set up the counter for a particular CPU when event->cpu is
+   385			 * a valid CPU number. Otherwise set up the counter for the CPU
+   386			 * scheduling this thread.
+   387			 */
+   388			cpu = (event->cpu >= 0) ? event->cpu : smp_processor_id();
+   389	
+   390			ctrl = M_PERFCTL_VPEID(cpu_vpe_id(&cpu_data[cpu]));
+   391			ctrl |= M_TC_EN_VPE;
+   392			cpuc->saved_ctrl[idx] |= ctrl;
+   393			pr_debug("Enabling perf counter for CPU%d\n", cpu);
+   394		}
+   395		/*
+   396		 * We do not actually let the counter run. Leave it until start().
+   397		 */
+   398	}
+   399	
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---xHFwDpU9dbj6ez1V
+--h31gzZEtNLTqOjlF
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICB/hw1oAAy5jb25maWcAjDzbcuM2su/5CtXkZbcqm9gejzM5p+YBBEEJEUnQACjLfmE5
+H4sICD3ow1oAAy5jb25maWcAjDzbcuM2su/5CtXkZbcqm9gejzM5p+YBBEEJEUnQACjLfmE5
 Hk3iii9zbE2y+fvTDZIiQDYoV21tRt2NRgPoO0B//933C/Zt//x4u7+/u314+Gfx++5p93K7
 331efLl/2P3vIlWLUtmFSKX9EYjz+6dv//3p8f7r6+L8x9OLH0/+83L382K9e3naPSz489OX
 +9+/wfD756fvvv+OqzKTy6aQlfn0z3cA+H5R3N79cf+0W7zuHnZ3Hdn3C4+wWYpSaMkX96+L
@@ -486,4 +534,4 @@ LyfWbvh/afIXOUSKhaKtv/lxJFu+a2syqRzusSMLL01xLQbuh/VxFIvPERW3QWfd/9K8DJTp
 bURO1CsFNuscdUFTkFugnGTkHt4W0ThjDcGK2SujSSP2turivRd8k4bkfBds6v8BuU05Hu9D
 AQA=
 
---xHFwDpU9dbj6ez1V--
+--h31gzZEtNLTqOjlF--

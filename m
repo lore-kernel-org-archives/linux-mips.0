@@ -1,29 +1,20 @@
-Received: from mail-wm0-x230.google.com ([IPv6:2a00:1450:400c:c09::230]:52191
-        "EHLO mail-wm0-x230.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992827AbeDCAMzugDpF convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 3 Apr 2018 02:12:55 +0200
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 11.2 \(3445.5.20\))
-Subject: Re: [RFC PATCH v2 0/2] Randomization of address chosen by mmap.
-From: Ilya Smith <blackzert@gmail.com>
-In-Reply-To: <3908561D78D1C84285E8C5FCA982C28F7B3B8BC5@ORSMSX110.amr.corp.intel.com>
-Date: Tue, 3 Apr 2018 03:11:50 +0300
-Content-Transfer-Encoding: 8BIT
-Message-ID: <D9173B50-39D6-4EE5-AF8B-3EB50D0C9A3B@gmail.com>
-References: <1521736598-12812-1-git-send-email-blackzert@gmail.com>
- <20180323124806.GA5624@bombadil.infradead.org>
- <651E0DB6-4507-4DA1-AD46-9C26ED9792A8@gmail.com>
- <20180326084650.GC5652@dhcp22.suse.cz>
- <01A133F4-27DF-4AE2-80D6-B0368BF758CD@gmail.com>
- <20180327072432.GY5652@dhcp22.suse.cz>
- <0549F29C-12FC-4401-9E85-A430BC11DA78@gmail.com>
- <CAGXu5j+XXufprMaJ9GbHxD3mZ7iqUuu60-tTMC6wo2x1puYzMQ@mail.gmail.com>
- <20180327234904.GA27734@bombadil.infradead.org>
- <20180328000025.GM1436@brightrain.aerifal.cx>
- <3908561D78D1C84285E8C5FCA982C28F7B3B8BC5@ORSMSX110.amr.corp.intel.com>
-Return-Path: <blackzert@gmail.com>
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:47063 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993124AbeDCJXitnyBD (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 3 Apr 2018 11:23:38 +0200
+Subject: Re: [PATCH v4 3/3] MIPS: use generic GCC library routines from lib/
+References: <1522320083-27818-1-git-send-email-matt.redfearn@mips.com>
+ <1522320083-27818-3-git-send-email-matt.redfearn@mips.com>
+ <20180403085354.GC31222@saruman>
+From: Matt Redfearn <matt.redfearn@mips.com>
+Message-ID: <b0eaccce-a316-0515-cab7-a026be1720b1@mips.com>
+Date: Tue, 3 Apr 2018 10:23:10 +0100
+MIME-Version: 1.0
+In-Reply-To: <20180403085354.GC31222@saruman>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -33,32 +24,37 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Luck, Tony" <tony.luck@intel.com>
-Cc: Rich Felker <dalias@libc.org>, Matthew Wilcox <willy@infradead.org>, Kees Cook <keescook@chromium.org>, Michal Hocko <mhocko@kernel.org>, Richard Henderson <rth@twiddle.net>, "ink@jurassic.park.msu.ru" <ink@jurassic.park.msu.ru>, "mattst88@gmail.com" <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, "Yu, Fenghua" <fenghua.yu@intel.com>, Ralf Baechle <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, "David S. Miller" <davem@davemloft.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>, "nyc@holomorphy.com" <nyc@holomorphy.com>, Al Viro <viro@zeniv.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@linuxfoundation.org>, Deepa Dinamani <deepa.kernel@gmail.com>, Hugh Dickins <hughd@google.com>, Kate Stewart <kstewart@linuxfoundation.org>, Philippe Ombredanne <pombredanne@nexb.com>, Andrew Morton <akpm@linux-foundation.org>, Steve Capper <steve.capper@arm.com>, Punit Agrawal <punit.agrawal@arm.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, Nick Piggin <npiggin@gmail.com>, Bhupesh Sharma <bhsharma@redhat.com>, Rik van Riel <riel@redhat.com>, "nitin.m.gupta@oracle.com" <nitin.m.gupta@oracle.com>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, "Williams, Dan J" <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>, Ross Zwisler <ross.zwisler@linux.intel.com>, Jerome Glisse <jglisse@redhat.com>, Andrea Arcangeli <aarcange@redhat.com>, Oleg Nesterov <oleg@redhat.com>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-parisc <linux-parisc@vger.kernel.org>, PowerPC <linuxppc-dev@lists.ozlabs.org>, linux-s390 <linux-s390@vger.kernel.org>, linux-sh <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
-Message-ID: <20180403001150.R_JDhtRgcW1grdgXtS478qn16YNxkuW6AbydfylnG2E@z>
+To: James Hogan <jhogan@kernel.org>
+Cc: Palmer Dabbelt <palmer@sifive.com>, Antony Pavlov <antonynpavlov@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Philippe Ombredanne <pombredanne@nexb.com>, Paul Burton <paul.burton@mips.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Al Viro <viro@zeniv.linux.org.uk>
+Message-ID: <20180403092310.gp8_eFTfz6N-qy1zj07lsBsqRFnayzH3NZ_yE-6NqKk@z>
 
-> On 29 Mar 2018, at 00:07, Luck, Tony <tony.luck@intel.com> wrote:
-> 
->> The default limit of only 65536 VMAs will also quickly come into play
->> if consecutive anon mmaps don't get merged. Of course this can be
->> raised, but it has significant resource and performance (fork) costs.
-> 
-> Could the random mmap address chooser look for how many existing
-> VMAs have space before/after and the right attributes to merge with the
-> new one you want to create? If this is above some threshold (100?) then
-> pick one of them randomly and allocate the new address so that it will
-> merge from below/above with an existing one.
-> 
-> That should still give you a very high degree of randomness, but prevent
-> out of control numbers of VMAs from being created.
 
-I think this wouldn’t work. For example these 100 allocation may happened on 
-process initialization. But when attacker come to the server all his 
-allocations would be made on the predictable offsets from each other. So in 
-result we did nothing just decrease performance of first 100 allocations. I 
-think I can make ioctl to turn off this randomization per process and it could 
-be used if needed. For example if application going to allocate big chunk or 
-make big memory pressure, etc.
 
-Best regards,
-Ilya
+On 03/04/18 09:53, James Hogan wrote:
+> On Thu, Mar 29, 2018 at 11:41:23AM +0100, Matt Redfearn wrote:
+>> This commit removes several generic GCC library routines from
+>> arch/mips/lib/ in favour of similar routines from lib/.
+> 
+>> diff --git a/arch/mips/lib/Makefile b/arch/mips/lib/Makefile
+>> index e84e12655fa8..6537e022ef62 100644
+>> --- a/arch/mips/lib/Makefile
+>> +++ b/arch/mips/lib/Makefile
+>> @@ -16,5 +16,4 @@ obj-$(CONFIG_CPU_R3000)		+= r3k_dump_tlb.o
+>>   obj-$(CONFIG_CPU_TX39XX)	+= r3k_dump_tlb.o
+>>   
+>>   # libgcc-style stuff needed in the kernel
+>> -obj-y += ashldi3.o ashrdi3.o bswapsi.o bswapdi.o cmpdi2.o lshrdi3.o multi3.o \
+>> -	 ucmpdi2.o
+>> +obj-y += bswapsi.o bswapdi.o multi3.o
+> 
+> Have you missed deleting the files?
+
+Oops, got lost during the rebase :-/
+
+Thanks,
+Matt
+
+> 
+> Cheers
+> James
+> 

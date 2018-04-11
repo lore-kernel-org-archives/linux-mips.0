@@ -1,20 +1,18 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:42374 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990431AbeDEKNN2sbk0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 5 Apr 2018 12:13:13 +0200
-Subject: Re: [PATCH] MIPS: vmlinuz: Fix compiler intrinsics location and build
- directly
-References: <20180403160728.GB3275@saruman>
- <1522833502-28007-1-git-send-email-matt.redfearn@mips.com>
-From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <b05a0ec9-d052-49c7-3e8f-2ba233d84f03@mips.com>
-Date: Thu, 5 Apr 2018 11:13:14 +0100
+Received: from mail-qk0-x241.google.com ([IPv6:2607:f8b0:400d:c09::241]:44053
+        "EHLO mail-qk0-x241.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990434AbeDKHbDPza9I (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Apr 2018 09:31:03 +0200
+Received: by mail-qk0-x241.google.com with SMTP id n139so846667qke.11
+        for <linux-mips@linux-mips.org>; Wed, 11 Apr 2018 00:31:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1522833502-28007-1-git-send-email-matt.redfearn@mips.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@mips.com>
+In-Reply-To: <20180410224805.GA21429@saruman>
+References: <20171219114112.939391-1-arnd@arndb.de> <20180410224805.GA21429@saruman>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 11 Apr 2018 09:30:56 +0200
+Message-ID: <CAK8P3a0-_u7_FCj-nH0izBv4ub6krm1uA32bwi2jtBzXJePcnQ@mail.gmail.com>
+Subject: Re: [PATCH] bug.h: Work around GCC PR82365 in BUG()
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <arndbergmann@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,94 +22,76 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Alban Bedel <albeu@free.fr>, Antony Pavlov <antonynpavlov@gmail.com>, Palmer Dabbelt <palmer@sifive.com>, Bartosz Golaszewski <brgl@bgdev.pl>, linux-kernel@vger.kernel.org
-Message-ID: <20180405101314.9k2ks_Gu8fHVjn42OnXkspDEwMa2ytrWQ67Wz0R39lY@z>
+To: James Hogan <jhogan@kernel.org>
+Cc: "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>, Paul Burton <paul.burton@mips.com>, Maciej Rozycki <macro@mips.com>, linux-arch <linux-arch@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, Vineet Gupta <vgupta@synopsys.com>, Mikael Starvik <starvik@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, "David S. Miller" <davem@davemloft.net>, Christopher Li <sparse@chrisli.org>, Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>, Will Deacon <will.deacon@arm.com>, "Steven Rostedt (VMware)" <rostedt@goodmis.org>, Mark Rutland <mark.rutland@arm.com>, "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-cris-kernel@axis.com, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, sparclinux <sparclinux@vger.kernel.org>, linux-sparse@vger.kernel.org
+Message-ID: <20180411073056.-zZr82-iHoyRWw75E8S_7idxFn7mlGPRXbIpdcK2YFA@z>
 
-Hi James,
+On Wed, Apr 11, 2018 at 12:48 AM, James Hogan <jhogan@kernel.org> wrote:
+> Hi Arnd,
+>
+> On Tue, Dec 19, 2017 at 12:39:33PM +0100, Arnd Bergmann wrote:
+>> diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+>> index 5d595cfdb2c4..66cfdad68f7e 100644
+>> --- a/include/linux/compiler-gcc.h
+>> +++ b/include/linux/compiler-gcc.h
+>> @@ -205,6 +205,15 @@
+>>  #endif
+>>
+>>  /*
+>> + * calling noreturn functions, __builtin_unreachable() and __builtin_trap()
+>> + * confuse the stack allocation in gcc, leading to overly large stack
+>> + * frames, see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82365
+>> + *
+>> + * Adding an empty inline assembly before it works around the problem
+>> + */
+>> +#define barrier_before_unreachable() asm volatile("")
+>> +
+>> +/*
+>>   * Mark a position in code as unreachable.  This can be used to
+>>   * suppress control flow warnings after asm blocks that transfer
+>>   * control elsewhere.
+>> @@ -214,7 +223,11 @@
+>>   * unreleased.  Really, we need to have autoconf for the kernel.
+>>   */
+>>  #define unreachable() \
+>> -     do { annotate_unreachable(); __builtin_unreachable(); } while (0)
+>> +     do {                                    \
+>> +             annotate_unreachable();         \
+>> +             barrier_before_unreachable();   \
+>> +             __builtin_unreachable();        \
+>> +     } while (0)
+>
+> Unfortunately this breaks microMIPS builds (e.g. MIPS
+> micro32r2_defconfig and micro32r2el_defconfig) on gcc 7.2, due to the
+> lack of .insn in the asm volatile. Because of the
+> __builtin_unreachable() there is no code following it. Without the empty
+> asm the compiler will apparently put the .insn there automatically, but
+> with the empty asm it doesn't. Therefore the assembler won't treat an
+> immediately preceeding label as pointing at 16-bit microMIPS
+> instructions which need the ISA bit set, i.e. bit 0 of the address.
+> This causes assembler errors since the branch target is treated as a
+> different ISA mode:
+>
+> arch/mips/mm/dma-default.s:3265: Error: branch to a symbol in another ISA mode
+> arch/mips/mm/dma-default.s:5027: Error: branch to a symbol in another ISA mode
 
-Actually, this patch would be better inserted as patch 3 in the series 
-since it can pull in the generic ashldi3 before the MIPS one is removed 
-in the final patch. Here's an updated commit message:
+Ok, I see.
 
-MIPS: vmlinuz: Use generic ashldi3 and build directly 
+> Due to a compiler bug on gcc 4.9.2 -> somewhere before 7.2, Paul
+> submitted these patches a while back:
+> https://patchwork.linux-mips.org/patch/13360/
+> https://patchwork.linux-mips.org/patch/13361/
+>
+> Your patch (suitably fixed for microMIPS) would I imagine fix that issue
+> too (it certainly fixes the resulting link error on microMIPS builds
+> with an old toolchain).
+>
+> Before I forward port those patches to add .insn for MIPS, is that sort
+> of approach (an arch specific asm/compiler-gcc.h to allow MIPS to
+> override barrier_before_unreachable()) an acceptable fix?
 
- 
+That sounds fine to me. However, I would suggest making that
+asm/compiler.h instead of asm/compiler-gcc.h, so we can also
+use the same file to include workarounds for clang if needed.
 
-In preparation for removing some of the MIPS compiler intrinsics from 
-
-arch/mips/lib, first update the build of vmlinuz to use the generic 
-
-ashldi3 from lib. 
-
- 
-
-Both ashldi3 and bswapsi objects need to be built with different CFLAGS 
-
-for inclusion to vmlinuz rather than simply including the object built 
-
-for the main kernel image. But the current copy of the source C file to 
-
-arch/mips/boot/compressed can be avoided by simply calling cmd,cc_o_c to 
-
-build the object from the source directly. This also removes the need 
-
-for the .gitignore file to ignore the copied files, and the extra-y rule 
-
-to clean them.
-
-Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
-
-Thanks,
-Matt
-
-
-
-On 04/04/18 10:18, Matt Redfearn wrote:
-> Since commit "MIPS: use generic GCC library routines from lib/", MIPS
-> now uses the generic lib/ashldi3.c, but bswapsi.c still comes from
-> arch/mips/lib. The rules for including these into vmlinuz need updating
-> to reflect these locations.
-> Both objects need to be built with different CFLAGS for inclusion to
-> vmlinuz rather than simply including the object built for the main
-> kernel image. But the copy of the source C file can be avoided by simply
-> calling cmd,cc_o_c to build the object from the source directly. This
-> also removes the need for the .gitignore file to ignore the copied
-> files, and the extra-y rule to clean them.
-> 
-> Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
-> ---
-> 
->   arch/mips/boot/compressed/.gitignore | 2 --
->   arch/mips/boot/compressed/Makefile   | 8 ++++----
->   2 files changed, 4 insertions(+), 6 deletions(-)
->   delete mode 100644 arch/mips/boot/compressed/.gitignore
-> 
-> diff --git a/arch/mips/boot/compressed/.gitignore b/arch/mips/boot/compressed/.gitignore
-> deleted file mode 100644
-> index ebae133f1d00..000000000000
-> --- a/arch/mips/boot/compressed/.gitignore
-> +++ /dev/null
-> @@ -1,2 +0,0 @@
-> -ashldi3.c
-> -bswapsi.c
-> diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-> index adce180f3ee4..8f04d659a915 100644
-> --- a/arch/mips/boot/compressed/Makefile
-> +++ b/arch/mips/boot/compressed/Makefile
-> @@ -46,10 +46,10 @@ $(obj)/uart-ath79.c: $(srctree)/arch/mips/ath79/early_printk.c
->   
->   vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o $(obj)/bswapsi.o
->   
-> -extra-y += ashldi3.c bswapsi.c
-> -$(obj)/ashldi3.o $(obj)/bswapsi.o: KBUILD_CFLAGS += -I$(srctree)/arch/mips/lib
-> -$(obj)/ashldi3.c $(obj)/bswapsi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c
-> -	$(call cmd,shipped)
-> +$(obj)/ashldi3.o: $(srctree)/lib/ashldi3.c
-> +	$(call cmd,cc_o_c)
-> +$(obj)/bswapsi.o: $(srctree)/arch/mips/lib/bswapsi.c
-> +	$(call cmd,cc_o_c)
->   
->   targets := $(notdir $(vmlinuzobjs-y))
->   
-> 
+       Arnd

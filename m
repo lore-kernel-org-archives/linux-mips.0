@@ -1,25 +1,14 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:52684 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:40103 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990723AbeDKU0xzCJ0H (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Apr 2018 22:26:53 +0200
-Date: Wed, 11 Apr 2018 21:26:17 +0100
-From: James Hogan <james.hogan@mips.com>
-Subject: Re: [PATCH v3 2/2] MIPS: io: add a barrier after register read in
- readX()
-Message-ID: <20180411202616.GA14760@jhogan-linux.mipstec.com>
-References: <1522760109-16497-1-git-send-email-okaya@codeaurora.org>
- <1522760109-16497-2-git-send-email-okaya@codeaurora.org>
- <41e184ae-689e-93c9-7b15-0c68bd624130@codeaurora.org>
- <b748fdcb-e09f-9fe3-dc74-30b6a7d40cbe@codeaurora.org>
- <20180406212601.GA1730@saruman>
- <0f1a4719-9a6f-0df0-7fd9-a25c10e824f5@codeaurora.org>
- <14a663f6-2ea5-230b-2cd0-e42d05d0d7ea@codeaurora.org>
+        by eddie.linux-mips.org with ESMTP id S23993256AbeDLJgvvb2kO (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 12 Apr 2018 11:36:51 +0200
+From: Matt Redfearn <matt.redfearn@mips.com>
+Subject: [PATCH v2 0/6] MIPS: perf: MT fixes and improvements
+Date: Thu, 12 Apr 2018 10:36:20 +0100
+Message-ID: <1523525786-29153-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="+QahgC5+KEYLbs62"
-Content-Disposition: inline
-In-Reply-To: <14a663f6-2ea5-230b-2cd0-e42d05d0d7ea@codeaurora.org>
-Return-Path: <James.Hogan@mips.com>
+Content-Type: text/plain
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -29,41 +18,59 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Sinan Kaya <okaya@codeaurora.org>
-Cc: linux-mips@linux-mips.org, arnd@arndb.de, timur@codeaurora.org, sulrich@codeaurora.org, linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, linux-kernel@vger.kernel.org
-Message-ID: <20180411202617.pK_teeheh5VxcaTKNAPBQxUFSKM5p7dF7iPlXT_b2js@z>
+To: James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, Namhyung Kim <namhyung@kernel.org>, "Maciej W. Rozycki" <macro@mips.com>, Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@mips.com>, Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Arnaldo Carvalho de Melo <acme@kernel.org>
+Message-ID: <20180412093620.Mh81vo3LR30Y_CrMBaJRAxRohyFIxhw5JE5bX7M3ttg@z>
 
---+QahgC5+KEYLbs62
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+This series addresses a few issues with how the MIPS performance
+counters code supports the hardware multithreading MT ASE.
 
-On Wed, Apr 11, 2018 at 01:10:41PM -0400, Sinan Kaya wrote:
-> How is the likelihood of getting this fixed on 4.17 kernel?
+Firstly, implementations of the MT ASE may implement performance counters
+per core or per thread(TC). MIPS Techologies implementations signal this
+via a bit in the implmentation specific CONFIG7 register. Since this
+register is implementation specific, checking it should be guarded by a
+PRID check. This also replaces a bit defined by a magic number.
 
-High.
+Secondly, the code currently uses vpe_id(), defined as
+smp_processor_id(), divided by 2, to share core performance counters
+between VPEs. This relies on a couple of assumptions of the hardware
+implementation to function correctly (always 2 VPEs per core, and the
+hardware reading only the least significant bit).
 
-Thanks
-James
+Finally, the method of sharing core performance counters between VPEs is
+suboptimal since it does not allow one process running on a VPE to use
+all of the performance counters available to it, because the kernel will
+reserve half of the coutners for the other VPE even if it may never use
+them. This reservation at counter probe is replaced with an allocation
+on use strategy.
 
---+QahgC5+KEYLbs62
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Tested on a MIPS Creator CI40 (2C2T MIPS InterAptiv with per-TC
+counters, though for the purposes of testing the per-TC availability was
+hardcoded to allow testing both paths).
 
------BEGIN PGP SIGNATURE-----
+Series applies to v4.16-rc7
 
-iQIzBAEBCAAdFiEEd80NauSabkiESfLYbAtpk944dnoFAlrOb2IACgkQbAtpk944
-dnpn5w/+NdCeCbGpfWtq/05XIQr+5dP9M4Ehvlt/vrkLEpfPvsEQZJUgGcq1Pxta
-k6Tx18KiNbH+CE1bo4za6it0bgPtVrMgMLICCNxtXQWoI73SpzMSoG6PVR7iaWmw
-vlN9WA8uI4isfvVxXNdm/vayR1XpRLcRtrJ/jiNIcDxi9q5nwUTtXHXB1nnP8rFq
-m67popm0z1mTcSPxRdGLyWv+bpbeJdap2Sl7cdt+vtY66h0gG3Fgli5Ux7Mjc56t
-+EFbUZWSgCmxD+0dZIzXErxAc7mduOH8YU6N87QJz9YPGRebvYYcLkgTGE3Lk4t7
-G2D+63vWYRlB168NdaIt0PTO6bWoSkRsC2Wmo7JobhD4tWzJKFFUgX21dwL0CcWx
-Xb1EQgOa6n/eBh5SQikV0SsVjELNvcIXIf+pKNgH++fN9zZ/JMSW7wAm9FEv/0kh
-wImtrz7Gh5Cx7GD9HVBTEa55T32DNOWliGUQW/E4pSJVexIUuV+VzZFovQq92qrZ
-PYfmw2VmEznT8qHQEr1BMCSGqQp6sDYBzCgpym9UxYLW5qw9mhY4MwMr8wckl5Lz
-eMR7cMdE+1luEpJgx/F/mVjbXBQv2sy7/Bgsb+c/01O07/9R1vTbDPpUczL2E3Zs
-jSkZns8v0IzTzJtp5tyJRTWUdsqb2UzC2vWbNvrDg5us3chy2+8=
-=TNbG
------END PGP SIGNATURE-----
 
---+QahgC5+KEYLbs62--
+Changes in v2:
+Fix mipsxx_pmu_enable_event for !#ifdef CONFIG_MIPS_MT_SMP
+- Fix !#ifdef CONFIG_MIPS_PERF_SHARED_TC_COUNTERS build
+- re-use cpuc variable in mipsxx_pmu_alloc_counter,
+  mipsxx_pmu_free_counter rather than having sibling_ version.
+Since BMIPS5000 does not implement per TC counters, we can remove the
+check on cpu_has_mipsmt_pertccounters.
+New patch to fix BMIPS5000 system mode perf.
+
+Matt Redfearn (6):
+  MIPS: perf: More robustly probe for the presence of per-tc counters
+  MIPS: perf: Use correct VPE ID when setting up VPE tracing
+  MIPS: perf: Fix perf with MT counting other threads
+  MIPS: perf: Allocate per-core counters on demand
+  MIPS: perf: Fold vpe_id() macro into it's one last usage
+  MIPS: perf: Fix BMIPS5000 system mode counting
+
+ arch/mips/include/asm/mipsregs.h     |   6 +
+ arch/mips/kernel/perf_event_mipsxx.c | 257 +++++++++++++++++++++--------------
+ 2 files changed, 158 insertions(+), 105 deletions(-)
+
+-- 
+2.7.4

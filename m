@@ -1,14 +1,21 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:49207 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991534AbeDMIu6VJT5S (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 13 Apr 2018 10:50:58 +0200
-From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH] MIPS: dts: Boston: Fix PCI bus dtc warnings:
-Date: Fri, 13 Apr 2018 09:50:44 +0100
-Message-ID: <1523609444-2496-1-git-send-email-matt.redfearn@mips.com>
+Received: from smtp-out4.electric.net ([192.162.216.184]:52007 "EHLO
+        smtp-out4.electric.net" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992105AbeDMPkRdP8c2 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 13 Apr 2018 17:40:17 +0200
+From: David Laight <David.Laight@ACULAB.COM>
+Subject: RE: [PATCH v3 2/2] MIPS: io: add a barrier after register read in
+ readX()
+Date: Fri, 13 Apr 2018 15:41:00 +0000
+Message-ID: <e38a329dfb9c461ab3e91de7b96db3dc@AcuMS.aculab.com>
+References: <1522760109-16497-1-git-send-email-okaya@codeaurora.org>
+ <1522760109-16497-2-git-send-email-okaya@codeaurora.org>
+ <20180412215149.GA27802@saruman>
+In-Reply-To: <20180412215149.GA27802@saruman>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Matt.Redfearn@mips.com>
+Return-Path: <David.Laight@ACULAB.COM>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,56 +25,22 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Paul Burton <paul.burton@mips.com>, Rob Herring <robh@kernel.org>, Matt Redfearn <matt.redfearn@mips.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Message-ID: <20180413085044.JqhllajBNoGu2VUj-i9TdE46aVy0i8shVpJr3V51u-Y@z>
+To: 'James Hogan' <jhogan@kernel.org>, Sinan Kaya <okaya@codeaurora.org>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "arnd@arndb.de" <arnd@arndb.de>, "timur@codeaurora.org" <timur@codeaurora.org>, "sulrich@codeaurora.org" <sulrich@codeaurora.org>, "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <20180413154100.o2dnPJNJuKhiYdwP4w9AnY4Xab3YtiVK6ntiytjxlak@z>
 
-dtc recently (v1.4.4-8-g756ffc4f52f6) added PCI bus checks. Fix the
-warnings now emitted:
-
-arch/mips/boot/dts/img/boston.dtb: Warning (pci_bridge): /pci@10000000:
-missing bus-range for PCI bridge
-arch/mips/boot/dts/img/boston.dtb: Warning (pci_bridge): /pci@12000000:
-missing bus-range for PCI bridge
-arch/mips/boot/dts/img/boston.dtb: Warning (pci_bridge): /pci@14000000:
-missing bus-range for PCI bridge
-
-Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
----
-
- arch/mips/boot/dts/img/boston.dts | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/arch/mips/boot/dts/img/boston.dts b/arch/mips/boot/dts/img/boston.dts
-index 2cd49b60e030..f7aad80c69ab 100644
---- a/arch/mips/boot/dts/img/boston.dts
-+++ b/arch/mips/boot/dts/img/boston.dts
-@@ -51,6 +51,8 @@
- 		ranges = <0x02000000 0 0x40000000
- 			  0x40000000 0 0x40000000>;
- 
-+		bus-range = <0x00 0xff>;
-+
- 		interrupt-map-mask = <0 0 0 7>;
- 		interrupt-map = <0 0 0 1 &pci0_intc 1>,
- 				<0 0 0 2 &pci0_intc 2>,
-@@ -79,6 +81,8 @@
- 		ranges = <0x02000000 0 0x20000000
- 			  0x20000000 0 0x20000000>;
- 
-+		bus-range = <0x00 0xff>;
-+
- 		interrupt-map-mask = <0 0 0 7>;
- 		interrupt-map = <0 0 0 1 &pci1_intc 1>,
- 				<0 0 0 2 &pci1_intc 2>,
-@@ -107,6 +111,8 @@
- 		ranges = <0x02000000 0 0x16000000
- 			  0x16000000 0 0x100000>;
- 
-+		bus-range = <0x00 0xff>;
-+
- 		interrupt-map-mask = <0 0 0 7>;
- 		interrupt-map = <0 0 0 1 &pci2_intc 1>,
- 				<0 0 0 2 &pci2_intc 2>,
--- 
-2.7.4
+RnJvbTogSmFtZXMgSG9nYW4NCj4gU2VudDogMTIgQXByaWwgMjAxOCAyMjo1Mg0KPiBPbiBUdWUs
+IEFwciAwMywgMjAxOCBhdCAwODo1NTowNEFNIC0wNDAwLCBTaW5hbiBLYXlhIHdyb3RlOg0KPiA+
+IFdoaWxlIGEgYmFycmllciBpcyBwcmVzZW50IGluIHdyaXRlWCgpIGZ1bmN0aW9uIGJlZm9yZSB0
+aGUgcmVnaXN0ZXIgd3JpdGUsDQo+ID4gYSBzaW1pbGFyIGJhcnJpZXIgaXMgbWlzc2luZyBpbiB0
+aGUgcmVhZFgoKSBmdW5jdGlvbiBhZnRlciB0aGUgcmVnaXN0ZXINCj4gPiByZWFkLiBUaGlzIGNv
+dWxkIGFsbG93IG1lbW9yeSBhY2Nlc3NlcyBmb2xsb3dpbmcgcmVhZFgoKSB0byBvYnNlcnZlDQo+
+ID4gc3RhbGUgZGF0YS4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFNpbmFuIEtheWEgPG9rYXlh
+QGNvZGVhdXJvcmEub3JnPg0KPiA+IFJlcG9ydGVkLWJ5OiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFy
+bmRiLmRlPg0KPiANCj4gQm90aCBwYXRjaGVzIGxvb2sgbGlrZSBvYnZpb3VzIGltcHJvdmVtZW50
+cyB0byBtZSwgc28gSSdtIGhhcHB5IHRvIGFwcGx5DQo+IHRvIG15IGZpeGVzIGJyYW5jaC4NCg0K
+RG9uJ3QgeW91IGFsc28gbmVlZCBhdCBsZWFzdCBiYXJyaWVyKCkgYmV0d2VlbiB0aGUgcmVnaXN0
+ZXIgd3JpdGUgaW4gd3JpdGVYKCkNCmFuZCB0aGUgcmVnaXN0ZXIgcmVhZCBpbiByZWFkWCgpPw0K
+T24gcHBjIHlvdSBwcm9iYWJseSBuZWVkIGVpZWlvLg0KT3IgYXJlIGRyaXZlcnMgZXhwZWN0ZWQg
+dG8gaW5zZXJ0IHRoYXQgb25lPw0KSWYgdGhleSBuZWVkIHRvIGluc2VydCB0aGF0IG9uZSB0aGVu
+IHdoeSBub3QgYWxsIHRoZSBvdGhlcnM/Pw0KDQoJRGF2aWQNCg0K

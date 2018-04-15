@@ -1,22 +1,23 @@
-Received: from smtp.codeaurora.org ([198.145.29.96]:52562 "EHLO
-        smtp.codeaurora.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993612AbeDMQgnxFISD (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 13 Apr 2018 18:36:43 +0200
-Subject: Re: [PATCH v3 2/2] MIPS: io: add a barrier after register read in
- readX()
-References: <1522760109-16497-1-git-send-email-okaya@codeaurora.org>
- <1522760109-16497-2-git-send-email-okaya@codeaurora.org>
- <20180412215149.GA27802@saruman>
- <e38a329dfb9c461ab3e91de7b96db3dc@AcuMS.aculab.com>
-From: Sinan Kaya <okaya@codeaurora.org>
-Message-ID: <3688d54c-85f3-6eba-7f13-1cef0a0b5d85@codeaurora.org>
-Date: Fri, 13 Apr 2018 12:36:33 -0400
-MIME-Version: 1.0
-In-Reply-To: <e38a329dfb9c461ab3e91de7b96db3dc@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8
+Received: from mail-co1nam03on0108.outbound.protection.outlook.com ([104.47.40.108]:62048
+        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23993885AbeDOOj6wMDHu convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 15 Apr 2018 16:39:58 +0200
+From: Sasha Levin <Alexander.Levin@microsoft.com>
+Subject: Re: [PATCH AUTOSEL for 4.15 048/189] clk: ingenic: Fix recalc_rate
+ for clocks with fixed divider
+Date: Sun, 15 Apr 2018 14:39:48 +0000
+Message-ID: <20180415143946.GO2341@sasha-vm>
+References: <20180409001637.162453-1-alexander.levin@microsoft.com>
+ <20180409001637.162453-48-alexander.levin@microsoft.com>
+ <20180409201242.GC17347@saruman>
+In-Reply-To: <20180409201242.GC17347@saruman>
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <okaya@codeaurora.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <D3BC5A9F59EBA94BAA52163265182304@namprd21.prod.outlook.com>
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+Return-Path: <Alexander.Levin@microsoft.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,48 +27,27 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: David Laight <David.Laight@ACULAB.COM>, 'James Hogan' <jhogan@kernel.org>
-Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "arnd@arndb.de" <arnd@arndb.de>, "timur@codeaurora.org" <timur@codeaurora.org>, "sulrich@codeaurora.org" <sulrich@codeaurora.org>, "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <20180413163633.dGsCQBf5NDCrTe3Ht8bLAwsj9mHFfShfOhBHrS6j-V0@z>
+To: James Hogan <jhogan@kernel.org>
+Cc: "stable@vger.kernel.org" <stable@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Paul Cercueil <paul@crapouillou.net>, Ralf Baechle <ralf@linux-mips.org>, Maarten ter Huurne <maarten@treewalker.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
+Message-ID: <20180415143948.PRC5neVagwrig2AXFMRhRbyDSC_LpQetGb3m3xq6sDk@z>
 
-On 4/13/2018 11:41 AM, David Laight wrote:
-> From: James Hogan
->> Sent: 12 April 2018 22:52
->> On Tue, Apr 03, 2018 at 08:55:04AM -0400, Sinan Kaya wrote:
->>> While a barrier is present in writeX() function before the register write,
->>> a similar barrier is missing in the readX() function after the register
->>> read. This could allow memory accesses following readX() to observe
->>> stale data.
->>>
->>> Signed-off-by: Sinan Kaya <okaya@codeaurora.org>
->>> Reported-by: Arnd Bergmann <arnd@arndb.de>
+On Mon, Apr 09, 2018 at 09:12:42PM +0100, James Hogan wrote:
+>On Mon, Apr 09, 2018 at 12:17:24AM +0000, Sasha Levin wrote:
+>> From: Paul Cercueil <paul@crapouillou.net>
 >>
->> Both patches look like obvious improvements to me, so I'm happy to apply
->> to my fixes branch.
-> 
-> Don't you also need at least barrier() between the register write in writeX()
-> and the register read in readX()?
-> On ppc you probably need eieio.
-> Or are drivers expected to insert that one?
-> If they need to insert that one then why not all the others??
-> 
+>> [ Upstream commit e6cfa64375d34a6c8c1861868a381013b2d3b921 ]
+>>
+>> Previously, the clocks with a fixed divider would report their rate
+>> as being the same as the one of their parent, independently of the
+>> divider in use. This commit fixes this behaviour.
+>>
+>> This went unnoticed as neither the jz4740 nor the jz4780 CGU code
+>> have clocks with fixed dividers yet.
+>
+>FYI this one isn't strictly necessary for backport since JZ4770 support
+>is new in 4.16, but its probably harmless too.
+>
+>Cheers
+>James
 
-Good question. The volatile in here should prevent compiler from reordering the
-register read or write instructions. 
-
-static inline type pfx##read##bwlq(const volatile void __iomem *mem)
-
-This is the solution all other architectures rely on especially via
-__raw_readX() and __raw_writeX() API.
-
-Now, things can get reordered when it leaves the CPU. This is guaranteed by
-embedding wmb() and rmb() into the writeX() and readX() functions in other
-architectures.
-
-This ordering guarantee has been agreed to be the responsibility of the
-architecture not drivers.
-
--- 
-Sinan Kaya
-Qualcomm Datacenter Technologies, Inc. as an affiliate of Qualcomm Technologies, Inc.
-Qualcomm Technologies, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project.
+I'll drop it, thanks James!

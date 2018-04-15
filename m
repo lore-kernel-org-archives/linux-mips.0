@@ -1,20 +1,20 @@
-Received: from mail-co1nam03on0108.outbound.protection.outlook.com ([104.47.40.108]:62048
-        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+Received: from mail-bn3nam01on0123.outbound.protection.outlook.com ([104.47.33.123]:61628
+        "EHLO NAM01-BN3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993885AbeDOOj6wMDHu convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 15 Apr 2018 16:39:58 +0200
+        id S23993928AbeDOOoympcsu convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 15 Apr 2018 16:44:54 +0200
 From: Sasha Levin <Alexander.Levin@microsoft.com>
-Subject: Re: [PATCH AUTOSEL for 4.15 048/189] clk: ingenic: Fix recalc_rate
- for clocks with fixed divider
-Date: Sun, 15 Apr 2018 14:39:48 +0000
-Message-ID: <20180415143946.GO2341@sasha-vm>
-References: <20180409001637.162453-1-alexander.levin@microsoft.com>
- <20180409001637.162453-48-alexander.levin@microsoft.com>
- <20180409201242.GC17347@saruman>
-In-Reply-To: <20180409201242.GC17347@saruman>
+Subject: Re: [PATCH AUTOSEL for 4.14 043/161] MIPS: JZ4770: Work around
+ config2 misreporting associativity
+Date: Sun, 15 Apr 2018 14:44:45 +0000
+Message-ID: <20180415144443.GR2341@sasha-vm>
+References: <20180409001936.162706-1-alexander.levin@microsoft.com>
+ <20180409001936.162706-43-alexander.levin@microsoft.com>
+ <20180409200838.GB17347@saruman>
+In-Reply-To: <20180409200838.GB17347@saruman>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <D3BC5A9F59EBA94BAA52163265182304@namprd21.prod.outlook.com>
+Content-ID: <A4189D4C1E5693469236E6E4724659E0@namprd21.prod.outlook.com>
 Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
 Return-Path: <Alexander.Levin@microsoft.com>
@@ -28,26 +28,23 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: James Hogan <jhogan@kernel.org>
-Cc: "stable@vger.kernel.org" <stable@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Paul Cercueil <paul@crapouillou.net>, Ralf Baechle <ralf@linux-mips.org>, Maarten ter Huurne <maarten@treewalker.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Message-ID: <20180415143948.PRC5neVagwrig2AXFMRhRbyDSC_LpQetGb3m3xq6sDk@z>
+Cc: "stable@vger.kernel.org" <stable@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Maarten ter Huurne <maarten@treewalker.org>, Ralf Baechle <ralf@linux-mips.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
 
-On Mon, Apr 09, 2018 at 09:12:42PM +0100, James Hogan wrote:
->On Mon, Apr 09, 2018 at 12:17:24AM +0000, Sasha Levin wrote:
->> From: Paul Cercueil <paul@crapouillou.net>
+On Mon, Apr 09, 2018 at 09:08:38PM +0100, James Hogan wrote:
+>On Mon, Apr 09, 2018 at 12:20:20AM +0000, Sasha Levin wrote:
+>> From: Maarten ter Huurne <maarten@treewalker.org>
 >>
->> [ Upstream commit e6cfa64375d34a6c8c1861868a381013b2d3b921 ]
+>> [ Upstream commit 1f7412e0e2f327fe7dc5a0c2fc36d7b319d05d47 ]
 >>
->> Previously, the clocks with a fixed divider would report their rate
->> as being the same as the one of their parent, independently of the
->> divider in use. This commit fixes this behaviour.
->>
->> This went unnoticed as neither the jz4740 nor the jz4780 CGU code
->> have clocks with fixed dividers yet.
+>> According to config2, the associativity would be 5-ways, but the
+>> documentation states 4-ways, which also matches the documented
+>> L2 cache size of 256 kB.
 >
->FYI this one isn't strictly necessary for backport since JZ4770 support
->is new in 4.16, but its probably harmless too.
+>JZ4770 support is new in 4.16, so no need for this to be backported.
+>More likely it'll just break the build due to references to
+>MACH_INGENIC_JZ4770.
 >
 >Cheers
 >James
 
-I'll drop it, thanks James!
+Now removed, thanks James!

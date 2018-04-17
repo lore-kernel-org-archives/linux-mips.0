@@ -1,13 +1,11 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:36031 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:55935 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990723AbeDQN7vPonEo (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Apr 2018 15:59:51 +0200
+        by eddie.linux-mips.org with ESMTP id S23990498AbeDQOGYIuKso (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 17 Apr 2018 16:06:24 +0200
 From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH v2] MIPS: memset.S: Fix return of __clear_user from Lpartial_fixup
-Date: Tue, 17 Apr 2018 14:59:50 +0100
-Message-ID: <1523973590-23356-1-git-send-email-matt.redfearn@mips.com>
-In-Reply-To: <20180416221340.GB23881@saruman>
-References: <20180416221340.GB23881@saruman>
+Subject: [PATCH 1/3] MIPS: memset.S: Fix clobber of v1 in last_fixup
+Date: Tue, 17 Apr 2018 15:06:10 +0100
+Message-ID: <1523973972-25633-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Matt.Redfearn@mips.com>
@@ -22,70 +20,73 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <20180417135950.5Ke0PjI5fhKEtG0qfAC7VjoEsVVWHyX50ngQ4gr25nk@z>
+Message-ID: <20180417140610.QNtULFRlpjMFusFtCvIfGpsWsRSEMcNOCsztnmqVFP0@z>
 
-The __clear_user function is defined to return the number of bytes that
-could not be cleared. From the underlying memset / bzero implementation
-this means setting register a2 to that number on return. Currently if a
-page fault is triggered within the memset_partial block, the value
-loaded into a2 on return is meaningless.
+The label .Llast_fixup\@ is jumped to on page fault within the final
+byte set loop of memset (on < MIPSR6 architectures). For some reason, in
+this fault handler, the v1 register is randomly set to a2 & STORMASK.
+This clobbers v1 for the calling function. This can be observed with the
+following test code:
 
-The label .Lpartial_fixup\@ is jumped to on page fault. In order to work
-out how many bytes failed to copy, the exception handler should find how
-many bytes left in the partial block (andi a2, STORMASK), add that to
-the partial block end address (a2), and subtract the faulting address to
-get the remainder. Currently it incorrectly subtracts the partial block
-start address (t1), which has additionally has been clobbered to
-generate a jump target in memset_partial. Fix this by adding the block
-end address instead.
+static int __init __attribute__((optimize("O0"))) test_clear_user(void)
+{
+  register int t asm("v1");
+  char *test;
+  int j, k;
 
-Since this code is non-trivial to read, add comments to describe the
-fault handling.
+  pr_info("\n\n\nTesting clear_user\n");
+  test = vmalloc(PAGE_SIZE);
 
-This issue was found with the following test code:
-      int j, k;
-      for (j = 0; j < 512; j++) {
-        if ((k = clear_user(NULL, j)) != j) {
-           pr_err("clear_user (NULL %d) returned %d\n", j, k);
-        }
-      }
-Which now passes on Creator Ci40 (MIPS32) and Cavium Octeon II (MIPS64).
+  for (j = 256; j < 512; j++) {
+    t = 0xa5a5a5a5;
+    if ((k = clear_user(test + PAGE_SIZE - 256, j)) != j - 256) {
+        pr_err("clear_user (%px %d) returned %d\n", test + PAGE_SIZE - 256, j, k);
+    }
+    if (t != 0xa5a5a5a5) {
+       pr_err("v1 was clobbered to 0x%x!\n", t);
+    }
+  }
+
+  return 0;
+}
+late_initcall(test_clear_user);
+
+Which demonstrates that v1 is indeed clobbered (MIPS64):
+
+Testing clear_user
+v1 was clobbered to 0x1!
+v1 was clobbered to 0x2!
+v1 was clobbered to 0x3!
+v1 was clobbered to 0x4!
+v1 was clobbered to 0x5!
+v1 was clobbered to 0x6!
+v1 was clobbered to 0x7!
+
+Since the number of bytes that could not be set is already contained in
+a2, the andi placing a value in v1 is not necessary and actively
+harmful in clobbering v1.
 
 Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Cc: stable@vger.kernel.org
-Suggested-by: James Hogan <jhogan@kernel.org>
+Reported-by: James Hogan <jhogan@kernel.org>
 Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
-
 ---
 
-Changes in v2:
-- Use James Hogan's suggestion of replacing t1 with a0 to get the
-  correct remainder count.
-- Add comments to .Lpartial_fixup to aid those who next try to deciper
-  this code.
-
- arch/mips/lib/memset.S | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/mips/lib/memset.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/mips/lib/memset.S b/arch/mips/lib/memset.S
-index 90bcdf1224ee..fa3bec269331 100644
+index fa3bec269331..84e91f4fdf53 100644
 --- a/arch/mips/lib/memset.S
 +++ b/arch/mips/lib/memset.S
-@@ -250,11 +250,11 @@
- 
- .Lpartial_fixup\@:
- 	PTR_L		t0, TI_TASK($28)
--	andi		a2, STORMASK
--	LONG_L		t0, THREAD_BUADDR(t0)
--	LONG_ADDU	a2, t1
-+	andi		a2, STORMASK	/* #Bytes beyond partial block */
-+	LONG_L		t0, THREAD_BUADDR(t0)	/* Get faulting address */
-+	LONG_ADDU	a2, a0		/* Add end address of partial block */
- 	jr		ra
--	LONG_SUBU	a2, t0
-+	 LONG_SUBU	a2, t0		/* a2 = partial_end + #bytes - fault */
+@@ -258,7 +258,7 @@
  
  .Llast_fixup\@:
  	jr		ra
+-	andi		v1, a2, STORMASK
++	 nop
+ 
+ .Lsmall_fixup\@:
+ 	PTR_SUBU	a2, t1, a0
 -- 
 2.7.4

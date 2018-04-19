@@ -1,20 +1,20 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:53172 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990406AbeDRIjeFKttP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Apr 2018 10:39:34 +0200
-Subject: Re: [PATCH v6 3/4] MIPS: vmlinuz: Use generic ashldi3
-References: <1523433019-17419-1-git-send-email-matt.redfearn@mips.com>
- <1523433019-17419-3-git-send-email-matt.redfearn@mips.com>
- <20180417230921.GA29046@saruman>
-From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <500897d9-f800-e953-fc36-fba7b32eb028@mips.com>
-Date: Wed, 18 Apr 2018 09:39:17 +0100
+Received: from out03.mta.xmission.com ([166.70.13.233]:39413 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23994591AbeDSWOSiuySH (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 20 Apr 2018 00:14:18 +0200
+From: ebiederm@xmission.com (Eric W. Biederman)
+References: <20180419143737.606138-1-arnd@arndb.de>
+        <20180419143737.606138-2-arnd@arndb.de> <87efjbnswr.fsf@xmission.com>
+        <CAK8P3a196QYoM1egagMuZw4WhiwRiO83Qpj0CxoCeVQBEaj-gw@mail.gmail.com>
+        <CAK8P3a2KR+0ZE5jHSmO6pSuiRPH83p75KetuQuHL1atChcTJGA@mail.gmail.com>
+Date: Thu, 19 Apr 2018 17:12:46 -0500
+In-Reply-To: <CAK8P3a2KR+0ZE5jHSmO6pSuiRPH83p75KetuQuHL1atChcTJGA@mail.gmail.com>
+        (Arnd Bergmann's message of "Thu, 19 Apr 2018 23:24:36 +0200")
+Message-ID: <87k1t2n8v5.fsf@xmission.com>
 MIME-Version: 1.0
-In-Reply-To: <20180417230921.GA29046@saruman>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@mips.com>
+Content-Type: text/plain
+Subject: Re: [PATCH v3 01/17] y2038: asm-generic: Extend sysvipc data structures
+Return-Path: <ebiederm@xmission.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,93 +24,73 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <jhogan@kernel.org>
-Cc: Palmer Dabbelt <palmer@sifive.com>, Antony Pavlov <antonynpavlov@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Masahiro Yamada <yamada.masahiro@socionext.com>, Michal Marek <michal.lkml@markovi.net>, linux-kbuild@vger.kernel.org
-Message-ID: <20180418083917.SJuzQNFmN3UX4vSShKDTL5_9Yr23n1o53DJbRk_vJbE@z>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: y2038 Mailman List <y2038@lists.linaro.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, GNU C Library <libc-alpha@sourceware.org>, Thomas Gleixner <tglx@linutronix.de>, Deepa Dinamani <deepa.kernel@gmail.com>, Al Viro <viro@zeniv.linux.org.uk>, Albert ARIBAUD <albert.aribaud@3adev.fr>, linux-s390 <linux-s390@vger.kernel.org>, Martin Schwidefsky <schwidefsky@de.ibm.com>, the arch/x86 maintainers <x86@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, sparclinux <sparclinux@vger.kernel.org>
+Message-ID: <20180419221246.2MrC0bsTUSE65AnndiUI_y6zDFgLkim2CS0Dvgk8mM4@z>
 
-Hi James,
+Arnd Bergmann <arnd@arndb.de> writes:
 
-On 18/04/18 00:09, James Hogan wrote:
-> On Wed, Apr 11, 2018 at 08:50:18AM +0100, Matt Redfearn wrote:
->> diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
->> index adce180f3ee4..e03f522c33ac 100644
->> --- a/arch/mips/boot/compressed/Makefile
->> +++ b/arch/mips/boot/compressed/Makefile
->> @@ -46,9 +46,12 @@ $(obj)/uart-ath79.c: $(srctree)/arch/mips/ath79/early_printk.c
->>   
->>   vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o $(obj)/bswapsi.o
->>   
->> -extra-y += ashldi3.c bswapsi.c
->> -$(obj)/ashldi3.o $(obj)/bswapsi.o: KBUILD_CFLAGS += -I$(srctree)/arch/mips/lib
->> -$(obj)/ashldi3.c $(obj)/bswapsi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c
->> +extra-y += ashldi3.c
->> +$(obj)/ashldi3.c: $(obj)/%.c: $(srctree)/lib/%.c
->> +	$(call cmd,shipped)
->> +
->> +extra-y += bswapsi.c
->> +$(obj)/bswapsi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c
->>   	$(call cmd,shipped)
-> 
-> ci20_defconfig:
-> 
-> arch/mips/boot/compressed/ashldi3.c:4:10: fatal error: libgcc.h: No such file or directory
->   #include "libgcc.h"
->             ^~~~~~~~~~
-> 
-> It looks like it had already copied ashldi3.c from arch/mips/lib/ when
-> building an older commit, and it hasn't been regenerated from lib/ since
-> the Makefile changed, so its still using the old version.
-> 
-> I think it should be using FORCE and if_changed like this:
-> 
-> diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-> index e03f522c33ac..abe77add8789 100644
-> --- a/arch/mips/boot/compressed/Makefile
-> +++ b/arch/mips/boot/compressed/Makefile
-> @@ -47,12 +47,12 @@ $(obj)/uart-ath79.c: $(srctree)/arch/mips/ath79/early_printk.c
->   vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o $(obj)/bswapsi.o
->   
->   extra-y += ashldi3.c
-> -$(obj)/ashldi3.c: $(obj)/%.c: $(srctree)/lib/%.c
-> -	$(call cmd,shipped)
-> +$(obj)/ashldi3.c: $(obj)/%.c: $(srctree)/lib/%.c FORCE
-> +	$(call if_changed,shipped)
->   
->   extra-y += bswapsi.c
-> -$(obj)/bswapsi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c
-> -	$(call cmd,shipped)
-> +$(obj)/bswapsi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c FORCE
-> +	$(call if_changed,shipped)
->   
->   targets := $(notdir $(vmlinuzobjs-y))
->   
-> That resolves the build failures when checking out old -> new without
-> cleaning, since the .ashldi3.c.cmd is missing so it gets rebuilt.
-> 
-> It should also resolve issues if the path it copies from is updated in
-> future since the .ashldi3.c.cmd will get updated.
-> 
-> If you checkout new -> old without cleaning, the now removed
-> arch/mips/lib/ashldi3.c will get added which will trigger regeneration,
-> so it won't error.
-> 
-> However if you do new -> old -> new then the .ashldi3.cmd file isn't
-> updated while at old, so you get the same error as above. I'm not sure
-> there's much we can practically do about that, aside perhaps avoiding
-> the issue in future by somehow auto-deleting stale .*.cmd files.
-> 
-> Cc'ing kbuild folk in case they have any bright ideas.
-> 
-> At least the straightforward old->new upgrade will work with the above
-> fixup though. If you're okay with it I'm happy to apply as a fixup.
+> On Thu, Apr 19, 2018 at 5:20 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+>> On Thu, Apr 19, 2018 at 4:59 PM, Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>> I suspect you want to use __kernel_ulong_t here instead of a raw
+>>> unsigned long.  If nothing else it seems inconsistent to use typedefs
+>>> in one half of the structure and no typedefs in the other half.
+>>
+>> Good catch, there is definitely something wrong here, but I think using
+>> __kernel_ulong_t for all members would also be wrong, as that
+>> still changes the layout on x32, which effectively is
+>>
+>> struct msqid64_ds {
+>>      ipc64_perm msg_perm;
+>>      u64 msg_stime;
+>>      u32 __unused1;
+>>      /* 32 bit implict padding */
+>>      u64 msg_rtime;
+>>      u32 __unused2;
+>>      /* 32 bit implict padding */
+>>      u64 msg_ctime;
+>>      u32 __unused3;
+>>      /* 32 bit implict padding */
+>>      __kernel_pid_t          shm_cpid;       /* pid of creator */
+>>      __kernel_pid_t          shm_lpid;       /* pid of last operator */
+>>      ....
+>> };
+>>
+>> The choices here would be to either use a mix of
+>> __kernel_ulong_t and unsigned long, or taking the x32
+>> version back into arch/x86/include/uapi/asm/ so the
+>> generic version at least makes some sense.
+>>
+>> I can't use __kernel_time_t for the lower half on 32-bit
+>> since it really should be unsigned.
+>
+> After thinking about it some more, I conclude that the structure is simply
+> incorrect on x32: The __kernel_ulong_t usage was introduced in 2013
+> in commit b9cd5ca22d67 ("uapi: Use __kernel_ulong_t in struct
+> msqid64_ds") and apparently was correct initially as __BITS_PER_LONG
+> evaluated to 64, but it broke with commit f4b4aae18288 ("x86/headers/uapi:
+> Fix __BITS_PER_LONG value for x32 builds") that changed the value
+> of __BITS_PER_LONG and introduced the extra padding in 2015.
+>
+> The same change apparently also broke a lot of other definitions, e.g.
+>
+> $ echo "#include <linux/types.h>" | gcc -mx32 -E -xc - | grep -A3
+> __kernel_size_t
+> typedef unsigned int __kernel_size_t;
+> typedef int __kernel_ssize_t;
+> typedef int __kernel_ptrdiff_t;
+>
+> Those used to be defined as 'unsigned long long' and 'long long'
+> respectively, so now all kernel interfaces using those on x32
+> became incompatible!
 
-Unbelievable how fragile this change is proving to be :-/
-Yeah fixup looks good to me.
+That seems like a real mess.
 
-Thanks,
-Matt
+Is this just for the uapi header as seen by userspace?  I expect we are
+using the a normal kernel interface with 64bit longs and 64bit pointers
+when we build the kernel.
 
-> 
-> Cheers
-> James
-> 
+If this is just a header as seen from userspace mess it seems
+unfortunate but fixable.
+
+Eric

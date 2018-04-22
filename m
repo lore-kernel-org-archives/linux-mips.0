@@ -1,11 +1,11 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:43950 "EHLO
+Received: from mail.linuxfoundation.org ([140.211.169.12]:43964 "EHLO
         mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991359AbeDVJSBcxF39 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 22 Apr 2018 11:18:01 +0200
-Subject: Patch "MIPS: memset.S: EVA & fault support for small_memset" has been added to the 4.16-stable tree
+        by eddie.linux-mips.org with ESMTP id S23993145AbeDVJSGdTih9 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 22 Apr 2018 11:18:06 +0200
+Subject: Patch "MIPS: memset.S: Fix clobber of v1 in last_fixup" has been added to the 4.16-stable tree
 From: <gregkh@linuxfoundation.org>
 Date: Sun, 22 Apr 2018 11:16:38 +0200
-Message-ID: <1524388598115129@kroah.com>
+Message-ID: <152438859836185@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -19,20 +19,20 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: chuanhua.lei@intel.com, gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, matt.redfearn@mips.com, ralf@linux-mips.org
+To: gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, matt.redfearn@mips.com, ralf@linux-mips.org
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180422091638.FJSvwM9r8Cxm9zD-ARLQURwdFx0CeeuHPPVFEeIF3RI@z>
+Message-ID: <20180422091638.gNUKkhfCkdG4t_zg4UPBMyzWpMuPf6GULCpk3Be6gsI@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
-    MIPS: memset.S: EVA & fault support for small_memset
+    MIPS: memset.S: Fix clobber of v1 in last_fixup
 
 to the 4.16-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mips-memset.s-eva-fault-support-for-small_memset.patch
+     mips-memset.s-fix-clobber-of-v1-in-last_fixup.patch
 and it can be found in the queue-4.16 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,

@@ -1,11 +1,11 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:44920 "EHLO
+Received: from mail.linuxfoundation.org ([140.211.169.12]:45006 "EHLO
         mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992781AbeDVJTTu8sN9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 22 Apr 2018 11:19:19 +0200
-Subject: Patch "MIPS: memset.S: EVA & fault support for small_memset" has been added to the 4.9-stable tree
+        by eddie.linux-mips.org with ESMTP id S23993864AbeDVJT1ziTL9 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 22 Apr 2018 11:19:27 +0200
+Subject: Patch "MIPS: uaccess: Add micromips clobbers to bzero invocation" has been added to the 4.9-stable tree
 From: <gregkh@linuxfoundation.org>
 Date: Sun, 22 Apr 2018 11:17:17 +0200
-Message-ID: <1524388637113206@kroah.com>
+Message-ID: <1524388637243236@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -19,20 +19,20 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: chuanhua.lei@intel.com, gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, matt.redfearn@mips.com, ralf@linux-mips.org
+To: gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, matt.redfearn@mips.com, ralf@linux-mips.org
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180422091717.uIXkqMiTPhj0gAKyKMo5jLo6jzdS-x2W5xxiQpKA9es@z>
+Message-ID: <20180422091717.dX5Rb4uAQEuB8lVmcQtIiLfro4iXpbQWGaW_pmLK2vo@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
-    MIPS: memset.S: EVA & fault support for small_memset
+    MIPS: uaccess: Add micromips clobbers to bzero invocation
 
 to the 4.9-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mips-memset.s-eva-fault-support-for-small_memset.patch
+     mips-uaccess-add-micromips-clobbers-to-bzero-invocation.patch
 and it can be found in the queue-4.9 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,

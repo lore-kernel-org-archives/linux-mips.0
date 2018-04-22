@@ -1,11 +1,11 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:43502 "EHLO
+Received: from mail.linuxfoundation.org ([140.211.169.12]:43520 "EHLO
         mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992105AbeDVJRBeBYR9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 22 Apr 2018 11:17:01 +0200
-Subject: Patch "MIPS: memset.S: Fix return of __clear_user from Lpartial_fixup" has been added to the 4.14-stable tree
+        by eddie.linux-mips.org with ESMTP id S23992781AbeDVJRELMW09 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 22 Apr 2018 11:17:04 +0200
+Subject: Patch "MIPS: uaccess: Add micromips clobbers to bzero invocation" has been added to the 4.14-stable tree
 From: <gregkh@linuxfoundation.org>
 Date: Sun, 22 Apr 2018 11:16:17 +0200
-Message-ID: <1524388577163147@kroah.com>
+Message-ID: <152438857725112@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -21,18 +21,18 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, matt.redfearn@mips.com, ralf@linux-mips.org
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180422091617.AemMPe2zkmhXBAie2rnUcL33noe0WZa_srWy9rY079c@z>
+Message-ID: <20180422091617.s6B7NTfnJFAKmSR4XRYy72LCNPni0qx_QrZ0sSeDtPo@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
-    MIPS: memset.S: Fix return of __clear_user from Lpartial_fixup
+    MIPS: uaccess: Add micromips clobbers to bzero invocation
 
 to the 4.14-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mips-memset.s-fix-return-of-__clear_user-from-lpartial_fixup.patch
+     mips-uaccess-add-micromips-clobbers-to-bzero-invocation.patch
 and it can be found in the queue-4.14 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,

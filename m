@@ -1,11 +1,11 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:44450 "EHLO
+Received: from mail.linuxfoundation.org ([140.211.169.12]:44496 "EHLO
         mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993603AbeDVJSzRR2s9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 22 Apr 2018 11:18:55 +0200
-Subject: Patch "MIPS: memset.S: Fix clobber of v1 in last_fixup" has been added to the 4.4-stable tree
+        by eddie.linux-mips.org with ESMTP id S23991359AbeDVJTAiqrY9 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 22 Apr 2018 11:19:00 +0200
+Subject: Patch "MIPS: uaccess: Add micromips clobbers to bzero invocation" has been added to the 4.4-stable tree
 From: <gregkh@linuxfoundation.org>
-Date: Sun, 22 Apr 2018 11:16:58 +0200
-Message-ID: <152438861822250@kroah.com>
+Date: Sun, 22 Apr 2018 11:16:59 +0200
+Message-ID: <152438861910352@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -21,18 +21,18 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, matt.redfearn@mips.com, ralf@linux-mips.org
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180422091658.FfrxrJ3N5J_A9oXXeBUiVzspmPyTOZKUr_GkHs4zcAM@z>
+Message-ID: <20180422091659.KJQH_0LoPWpE4s0cZxI7lTC8vy23c-z_TCuiywx-HbE@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
-    MIPS: memset.S: Fix clobber of v1 in last_fixup
+    MIPS: uaccess: Add micromips clobbers to bzero invocation
 
 to the 4.4-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mips-memset.s-fix-clobber-of-v1-in-last_fixup.patch
+     mips-uaccess-add-micromips-clobbers-to-bzero-invocation.patch
 and it can be found in the queue-4.4 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,

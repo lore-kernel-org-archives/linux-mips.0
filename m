@@ -1,11 +1,11 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:45006 "EHLO
+Received: from mail.linuxfoundation.org ([140.211.169.12]:44950 "EHLO
         mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993864AbeDVJT1ziTL9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 22 Apr 2018 11:19:27 +0200
-Subject: Patch "MIPS: uaccess: Add micromips clobbers to bzero invocation" has been added to the 4.9-stable tree
+        by eddie.linux-mips.org with ESMTP id S23993488AbeDVJT0QBVv9 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 22 Apr 2018 11:19:26 +0200
+Subject: Patch "MIPS: memset.S: Fix clobber of v1 in last_fixup" has been added to the 4.9-stable tree
 From: <gregkh@linuxfoundation.org>
 Date: Sun, 22 Apr 2018 11:17:17 +0200
-Message-ID: <1524388637243236@kroah.com>
+Message-ID: <152438863714420@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -21,18 +21,18 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, matt.redfearn@mips.com, ralf@linux-mips.org
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180422091717.dX5Rb4uAQEuB8lVmcQtIiLfro4iXpbQWGaW_pmLK2vo@z>
+Message-ID: <20180422091717.MvMe74zOJmoqO_fOry0WEtqMj5D0qKFigSvL3Ge5uwM@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
-    MIPS: uaccess: Add micromips clobbers to bzero invocation
+    MIPS: memset.S: Fix clobber of v1 in last_fixup
 
 to the 4.9-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mips-uaccess-add-micromips-clobbers-to-bzero-invocation.patch
+     mips-memset.s-fix-clobber-of-v1-in-last_fixup.patch
 and it can be found in the queue-4.9 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,

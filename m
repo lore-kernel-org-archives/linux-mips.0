@@ -1,17 +1,15 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:54800 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:53656 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992917AbeDWJgWs4JbM (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Apr 2018 11:36:22 +0200
-Subject: Re: [PATCH 3.18 45/52] MIPS: memset.S: Fix clobber of v1 in
- last_fixup
-References: <20180422135315.254787616@linuxfoundation.org>
- <20180422135317.436671003@linuxfoundation.org>
- <CAHirt9jOibozCFgm8-5bXukSvRBwvxz7ctZYvugQuxnfLFCeLQ@mail.gmail.com>
+        by eddie.linux-mips.org with ESMTP id S23993124AbeDWNlMXeVhq (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 23 Apr 2018 15:41:12 +0200
+Subject: Re: [PATCH v3 0/7] MIPS: perf: MT fixes and improvements
+References: <1524219789-31241-1-git-send-email-matt.redfearn@mips.com>
+ <c3ee1ba4-3458-33a7-4c1f-700936a57bfa@gmail.com>
 From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <8293aba6-81fa-6552-529e-030cc41c705f@mips.com>
-Date: Mon, 23 Apr 2018 10:36:25 +0100
+Message-ID: <619f68fd-84f8-58c2-d474-1dda8b371c2a@mips.com>
+Date: Mon, 23 Apr 2018 14:40:47 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAHirt9jOibozCFgm8-5bXukSvRBwvxz7ctZYvugQuxnfLFCeLQ@mail.gmail.com>
+In-Reply-To: <c3ee1ba4-3458-33a7-4c1f-700936a57bfa@gmail.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -25,114 +23,191 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Heiher <r@hev.cc>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org
-Message-ID: <20180423093625.uWW3MycLRAfsFUsmBBonOQvOS7oxsKEjnsVq5i6_Gww@z>
+To: Florian Fainelli <f.fainelli@gmail.com>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, Peter Zijlstra <peterz@infradead.org>, oprofile-list@lists.sf.net, Huacai Chen <chenhc@lemote.com>, linux-kernel@vger.kernel.org, Paul Burton <paul.burton@mips.com>, Robert Richter <rric@kernel.org>, Jiri Olsa <jolsa@redhat.com>, Kate Stewart <kstewart@linuxfoundation.org>, Ingo Molnar <mingo@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Maciej W. Rozycki" <macro@mips.com>, Namhyung Kim <namhyung@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Arnaldo Carvalho de Melo <acme@kernel.org>
+Message-ID: <20180423134047.jU8nWOqTxSVb-rFoUOmm-d6Ww1UaSzwPxDv26E8xq5A@z>
 
 
 
-On 23/04/18 08:16, Heiher wrote:
-> Hi,
+On 20/04/18 23:51, Florian Fainelli wrote:
+> On 04/20/2018 03:23 AM, Matt Redfearn wrote:
+>> This series addresses a few issues with how the MIPS performance
+>> counters code supports the hardware multithreading MT ASE.
+>>
+>> Firstly, implementations of the MT ASE may implement performance
+>> counters
+>> per core or per thread(TC). MIPS Techologies implementations signal this
+>> via a bit in the implmentation specific CONFIG7 register. Since this
+>> register is implementation specific, checking it should be guarded by a
+>> PRID check. This also replaces a bit defined by a magic number.
+>>
+>> Secondly, the code currently uses vpe_id(), defined as
+>> smp_processor_id(), divided by 2, to share core performance counters
+>> between VPEs. This relies on a couple of assumptions of the hardware
+>> implementation to function correctly (always 2 VPEs per core, and the
+>> hardware reading only the least significant bit).
+>>
+>> Finally, the method of sharing core performance counters between VPEs is
+>> suboptimal since it does not allow one process running on a VPE to use
+>> all of the performance counters available to it, because the kernel will
+>> reserve half of the coutners for the other VPE even if it may never use
+>> them. This reservation at counter probe is replaced with an allocation
+>> on use strategy.
+>>
+>> Tested on a MIPS Creator CI40 (2C2T MIPS InterAptiv with per-TC
+>> counters, though for the purposes of testing the per-TC availability was
+>> hardcoded to allow testing both paths).
+>>
+>> Series applies to v4.16
 > 
-> IIRC, The v1 is a temporary register, value is not preserved across
-> function calls.
+> Sorry it took so long to get that tested.
 
-v1 is conventionally used for a function return value and as such can be 
-changed by called functions. However, bzero is called from inline 
-assembly and v1 is not in the clobbers list
-https://elixir.bootlin.com/linux/v4.17-rc1/source/arch/mips/include/asm/uaccess.h#L652
-So the calling function does not expect that register to have been used 
-and can legitimately expect its value to remain after the function call, 
-which without this patch, it does not - as demonstrated by the test code.
+Hi Florian,
+
+Thanks for testing!
+
+> 
+> Sounds like you need to build test this on a BMIPS5000 configuration
+> (bmips_stb_defconfig should provide that):
+> 
+> In file included from ./arch/mips/include/asm/mach-generic/spaces.h:15:0,
+>                   from ./arch/mips/include/asm/mach-bmips/spaces.h:16,
+>                   from ./arch/mips/include/asm/addrspace.h:13,
+>                   from ./arch/mips/include/asm/barrier.h:11,
+>                   from ./include/linux/compiler.h:245,
+>                   from ./include/linux/kernel.h:10,
+>                   from ./include/linux/cpumask.h:10,
+>                   from arch/mips/kernel/perf_event_mipsxx.c:18:
+> arch/mips/kernel/perf_event_mipsxx.c: In function 'mipsxx_pmu_enable_event':
+> ./arch/mips/include/asm/mipsregs.h:738:52: error: suggest parentheses
+> around '+' in operand of '&' [-Werror=parentheses]
+>   #define BRCM_PERFCTRL_VPEID(v) (_ULCAST_(1) << (12 + v))
+> 
+> arch/mips/kernel/perf_event_mipsxx.c:385:10: note: in expansion of macro
+> 'BRCM_PERFCTRL_VPEID'
+>     ctrl = BRCM_PERFCTRL_VPEID(cpu & MIPS_CPUID_TO_COUNTER_MASK);
+>            ^~~~~~~~~~~~~~~~~~~
+>    CC      drivers/of/fdt_addres
+
+Good spot - I've updated the patch to
+
++#define BRCM_PERFCTRL_VPEID(v) (_ULCAST_(1) << (12 + (v)))
+
+to fix that.
+
+> 
+> after fixing that, I tried the following to see whether this would be a
+> good test case to exercise against:
+> 
+> perf record -a -C 0 taskset -c 1 /bin/true
+> perf record -a -C 1 taskset -c 0 /bin/true
+> 
+> and would not see anything related to /bin/true running in either case,
+> which seems like it does the right thing?
+
+I've generally been testing using this code:
+
+perf_test.S:
+
+#include <asm/unistd.h>
+
+#define ITERATIONS 10000
+
+
+.text
+.global __start
+.type	__start, @function;
+__start:
+	.set	noreorder
+	li      $2, ITERATIONS
+
+1:
+	addiu   $2,$2,-1
+	bnez    $2, 1b
+	 nop
+
+	li	$2, __NR_exit
+	syscall
+
+
+Makefile:
+$(CC) $(ISA_FLAG) $(ABI_FLAG) $(ENDIAN_FLAG) -static -nostartfiles -O2 
+-o perf_test perf_test.S
+
+Then running perf which should report the right counts:
+
+taskset 1 perf stat -e instructions:u,branches:u ./perf_test
+  Performance counter stats for './perf_test':
+
+              30002      instructions:u
+              10000      branches:u
+
+        0.005179467 seconds time elapsed
+
+
+System mode should also work:
+
+# perf stat -e instructions:u,branches:u -a -C 2
+^C
+
+  Performance counter stats for 'system wide':
+
+               1416      instructions:u 
+
+                198      branches:u 
+
+
+        4.454874812 seconds time elapsed
+
+> 
+> Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+
+Thanks!
+
+> 
+> BTW, for some reason not specifying -a -C <cpu> does lead to lockups,
+> consistently and for pretty much any perf command, this could be BMIPS
+> specific, did not get a chance to cross test on a different machine.
+
+Interesting.... FWIW I don't get lockups on ci40 (MIPS InterAptiv). Is 
+this a regression with this series applied or an existing problem?
 
 Thanks,
 Matt
 
 > 
-> I don't see any functions that generated by compiler to restore values
-> of v1 after clobbered it.
-> 
-> On Sun, Apr 22, 2018 at 9:54 PM, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
->> 3.18-stable review patch.  If anyone has any objections, please let me know.
->>
->> ------------------
->>
->> From: Matt Redfearn <matt.redfearn@mips.com>
->>
->> commit c96eebf07692e53bf4dd5987510d8b550e793598 upstream.
->>
->> The label .Llast_fixup\@ is jumped to on page fault within the final
->> byte set loop of memset (on < MIPSR6 architectures). For some reason, in
->> this fault handler, the v1 register is randomly set to a2 & STORMASK.
->> This clobbers v1 for the calling function. This can be observed with the
->> following test code:
->>
->> static int __init __attribute__((optimize("O0"))) test_clear_user(void)
->> {
->>    register int t asm("v1");
->>    char *test;
->>    int j, k;
->>
->>    pr_info("\n\n\nTesting clear_user\n");
->>    test = vmalloc(PAGE_SIZE);
->>
->>    for (j = 256; j < 512; j++) {
->>      t = 0xa5a5a5a5;
->>      if ((k = clear_user(test + PAGE_SIZE - 256, j)) != j - 256) {
->>          pr_err("clear_user (%px %d) returned %d\n", test + PAGE_SIZE - 256, j, k);
->>      }
->>      if (t != 0xa5a5a5a5) {
->>         pr_err("v1 was clobbered to 0x%x!\n", t);
->>      }
->>    }
->>
->>    return 0;
->> }
->> late_initcall(test_clear_user);
->>
->> Which demonstrates that v1 is indeed clobbered (MIPS64):
->>
->> Testing clear_user
->> v1 was clobbered to 0x1!
->> v1 was clobbered to 0x2!
->> v1 was clobbered to 0x3!
->> v1 was clobbered to 0x4!
->> v1 was clobbered to 0x5!
->> v1 was clobbered to 0x6!
->> v1 was clobbered to 0x7!
->>
->> Since the number of bytes that could not be set is already contained in
->> a2, the andi placing a value in v1 is not necessary and actively
->> harmful in clobbering v1.
->>
->> Reported-by: James Hogan <jhogan@kernel.org>
->> Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
->> Cc: Ralf Baechle <ralf@linux-mips.org>
->> Cc: linux-mips@linux-mips.org
->> Cc: stable@vger.kernel.org
->> Patchwork: https://patchwork.linux-mips.org/patch/19109/
->> Signed-off-by: James Hogan <jhogan@kernel.org>
->> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>
->> ---
->>   arch/mips/lib/memset.S |    2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> --- a/arch/mips/lib/memset.S
->> +++ b/arch/mips/lib/memset.S
->> @@ -210,7 +210,7 @@
->>
->>   .Llast_fixup\@:
->>          jr              ra
->> -       andi            v1, a2, STORMASK
->> +        nop
->>
->>   .Lsmall_fixup\@:
->>          PTR_SUBU        a2, t1, a0
 >>
 >>
+>> Changes in v3:
+>> New patch to detect feature presence in cpu-probe.c
+>> Use flag in cpu_data set by cpu_probe.c to indicate feature presence.
+>> - rebase on new feature detection
 >>
-> 
+>> Changes in v2:
+>> Fix mipsxx_pmu_enable_event for !#ifdef CONFIG_MIPS_MT_SMP
+>> - Fix !#ifdef CONFIG_MIPS_PERF_SHARED_TC_COUNTERS build
+>> - re-use cpuc variable in mipsxx_pmu_alloc_counter,
+>>    mipsxx_pmu_free_counter rather than having sibling_ version.
+>> Since BMIPS5000 does not implement per TC counters, we can remove the
+>> check on cpu_has_mipsmt_pertccounters.
+>> New patch to fix BMIPS5000 system mode perf.
+>>
+>> Matt Redfearn (7):
+>>    MIPS: Probe for MIPS MT perf counters per TC
+>>    MIPS: perf: More robustly probe for the presence of per-tc counters
+>>    MIPS: perf: Use correct VPE ID when setting up VPE tracing
+>>    MIPS: perf: Fix perf with MT counting other threads
+>>    MIPS: perf: Allocate per-core counters on demand
+>>    MIPS: perf: Fold vpe_id() macro into it's one last usage
+>>    MIPS: perf: Fix BMIPS5000 system mode counting
+>>
+>>   arch/mips/include/asm/cpu-features.h |   7 ++
+>>   arch/mips/include/asm/cpu.h          |   2 +
+>>   arch/mips/include/asm/mipsregs.h     |   6 +
+>>   arch/mips/kernel/cpu-probe.c         |  12 ++
+>>   arch/mips/kernel/perf_event_mipsxx.c | 232 +++++++++++++++++++----------------
+>>   arch/mips/oprofile/op_model_mipsxx.c |   2 -
+>>   6 files changed, 150 insertions(+), 111 deletions(-)
+>>
 > 
 > 

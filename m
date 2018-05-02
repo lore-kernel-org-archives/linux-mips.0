@@ -1,11 +1,11 @@
-Received: from mail.kernel.org ([198.145.29.99]:60914 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:60142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992966AbeEBTGKS0yxo (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 2 May 2018 21:06:10 +0200
-Subject: Patch "MIPS: ath79: Fix AR724X_PLL_REG_PCIE_CONFIG offset" has been added to the 4.4-stable tree
+        id S23992917AbeEBUpzs-N6J (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 2 May 2018 22:45:55 +0200
+Subject: Patch "MIPS: ath79: Fix AR724X_PLL_REG_PCIE_CONFIG offset" has been added to the 3.18-stable tree
 From: <gregkh@linuxfoundation.org>
-Date: Wed, 02 May 2018 12:04:08 -0700
-Message-ID: <1525287848168136@kroah.com>
+Date: Wed, 02 May 2018 13:43:37 -0700
+Message-ID: <152529381743170@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -21,19 +21,19 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: alexander.levin@microsoft.com, dev@kresin.me, gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, ralf@linux-mips.org
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180502190408.mGnm9QF8n5VWT2yDtMXt4NYnSFKs4-5bWXZuQN5k6BY@z>
+Message-ID: <20180502204337.ywiWIwsBVqxGJvSWwaDrYVWhYOmNPMJqoeHBwj2WS14@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
     MIPS: ath79: Fix AR724X_PLL_REG_PCIE_CONFIG offset
 
-to the 4.4-stable tree which can be found at:
+to the 3.18-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      mips-ath79-fix-ar724x_pll_reg_pcie_config-offset.patch
-and it can be found in the queue-4.4 subdirectory.
+and it can be found in the queue-3.18 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.

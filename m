@@ -1,25 +1,21 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:42470 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991819AbeEDM7gAZ3v9 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 4 May 2018 14:59:36 +0200
-Subject: Re: [RFC PATCH] MIPS: Oprofile: Drop support
-References: <1524574554-7451-1-git-send-email-matt.redfearn@mips.com>
- <20180424130511.GB28813@saruman>
- <5e464a40-4e4d-dde4-b5b5-ceb637dc5f38@mips.com>
- <20180504093002.GC4493@rric.localdomain>
- <dd951d1e-206d-78dd-49ae-3a16cad9ebcc@mips.com>
- <20180504102600.GD4493@rric.localdomain>
- <294858af-9164-f0c3-62d3-d6b643e89e09@mips.com>
- <20180504122750.GE4493@rric.localdomain>
-From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <4b4943e5-bc87-3981-1d6c-28171e56c907@mips.com>
-Date: Fri, 4 May 2018 13:59:32 +0100
+Received: from out03.mta.xmission.com ([166.70.13.233]:41515 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990398AbeENIpnJfHvt (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 14 May 2018 10:45:43 +0200
+From: ebiederm@xmission.com (Eric W. Biederman)
+References: <87604mhrnb.fsf@xmission.com>
+        <20180420143811.9994-8-ebiederm@xmission.com>
+        <e0a5bde2-7817-3e05-1c8d-c8fa8f6aa5f2@mips.com>
+        <8736z0s087.fsf@xmission.com>
+        <6811e06d-ac0d-35a6-7d86-57838d5d7f8e@mips.com>
+Date: Thu, 10 May 2018 21:31:06 -0500
+In-Reply-To: <6811e06d-ac0d-35a6-7d86-57838d5d7f8e@mips.com> (Matt Redfearn's
+        message of "Thu, 10 May 2018 08:59:26 +0100")
+Message-ID: <87603uordh.fsf@xmission.com>
 MIME-Version: 1.0
-In-Reply-To: <20180504122750.GE4493@rric.localdomain>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@mips.com>
+Content-Type: text/plain
+Subject: Re: [REVIEW][PATCH 08/22] signal/mips: Use force_sig_fault where appropriate
+Return-Path: <ebiederm@xmission.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -29,74 +25,107 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Robert Richter <rric@kernel.org>
-Cc: James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Huacai Chen <chenhc@lemote.com>, linux-kernel@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>, Krzysztof Kozlowski <krzk@kernel.org>, oprofile-list@lists.sf.net
-Message-ID: <20180504125932.SpBFCoMQRmnP1cIIUMJ8L6qG_mhf6LBKqjQqimEP3eY@z>
+To: Matt Redfearn <matt.redfearn@mips.com>
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, linux-mips@linux-mips.org
+Message-ID: <20180511023106.VRcJfYQakdcqNPybEkwea5Qz6AF3iXeprPA1P8QrNos@z>
 
-Hi Robert,
+Matt Redfearn <matt.redfearn@mips.com> writes:
 
-On 04/05/18 13:27, Robert Richter wrote:
-> On 04.05.18 12:03:12, Matt Redfearn wrote:
->>> As said, oprofile version 0.9.x is still available for cpus that do
->>> not support perf. What is the breakage?
+> Hi Eric,
+>
+> On 10/05/18 03:39, Eric W. Biederman wrote:
+>> Matt Redfearn <matt.redfearn@mips.com> writes:
 >>
->> The breakage I originally set out to fix was the MT support in perf.
->> https://www.linux-mips.org/archives/linux-mips/2018-04/msg00259.html
+>>> Hi Eric,
+>>>
+>>> On 20/04/18 15:37, Eric W. Biederman wrote:
+>>>> Filling in struct siginfo before calling force_sig_info a tedious and
+>>>> error prone process, where once in a great while the wrong fields
+>>>> are filled out, and siginfo has been inconsistently cleared.
+>>>>
+>>>> Simplify this process by using the helper force_sig_fault.  Which
+>>>> takes as a parameters all of the information it needs, ensures
+>>>> all of the fiddly bits of filling in struct siginfo are done properly
+>>>> and then calls force_sig_info.
+>>>>
+>>>> In short about a 5 line reduction in code for every time force_sig_info
+>>>> is called, which makes the calling function clearer.
+>>>>
+>>>> Cc: Ralf Baechle <ralf@linux-mips.org>
+>>>> Cc: James Hogan <jhogan@kernel.org>
+>>>> Cc: linux-mips@linux-mips.org
+>>>> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+>>>> ---
+>>>>    arch/mips/kernel/traps.c | 65 ++++++++++++++----------------------------------
+>>>>    arch/mips/mm/fault.c     | 19 ++++----------
+>>>>    2 files changed, 23 insertions(+), 61 deletions(-)
+>>>>
+>>>> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+>>>> index 967e9e4e795e..66ec4b0b484d 100644
+>>>> --- a/arch/mips/kernel/traps.c
+>>>> +++ b/arch/mips/kernel/traps.c
+>>>> @@ -699,17 +699,11 @@ static int simulate_sync(struct pt_regs *regs, unsigned int opcode)
+>>>>    asmlinkage void do_ov(struct pt_regs *regs)
+>>>>    {
+>>>>    	enum ctx_state prev_state;
+>>>> -	siginfo_t info;
+>>>> -
+>>>> -	clear_siginfo(&info);
+>>>> -	info.si_signo = SIGFPE;
+>>>> -	info.si_code = FPE_INTOVF;
+>>>> -	info.si_addr = (void __user *)regs->cp0_epc;
+>>>>      	prev_state = exception_enter();
+>>>>    	die_if_kernel("Integer overflow", regs);
+>>>>    -	force_sig_info(SIGFPE, &info, current);
+>>>> +	force_sig_fault(SIGFPE, FPE_INTOVF, (void __user *)regs->cp0_epc, current);
+>>>>    	exception_exit(prev_state);
+>>>>    }
+>>>>    @@ -722,32 +716,27 @@ asmlinkage void do_ov(struct pt_regs *regs)
+>>>>    void force_fcr31_sig(unsigned long fcr31, void __user *fault_addr,
+>>>>    		     struct task_struct *tsk)
+>>>>    {
+>>>> -	struct siginfo si;
+>>>> -
+>>>> -	clear_siginfo(&si);
+>>>> -	si.si_addr = fault_addr;
+>>>> -	si.si_signo = SIGFPE;
+>>>> +	int si_code;
+>>>
+>>> This is giving build errors in Linux next
+>>> (https://storage.kernelci.org/next/master/next-20180509/mips/defconfig+kselftest/build.log)
+>>>
+>>> si_code would have ended up as 0 before from the clear_siginfo(), but perhaps
 >>
->> Since the perf code shares so much copied code from oprofile, those same
->> issues exist in oprofile and ought to be addressed. But as newer oprofile
->> userspace does not use the (MIPS) kernel oprofile code, then we could,
->> perhaps, just remove it (as per the RFC). That would break legacy tools
->> (0.9.x) though...
-> 
-> Those support perf:
-> 
->   (CPU_MIPS32 || CPU_MIPS64 || CPU_R10000 || CPU_SB1 || CPU_CAVIUM_OCTEON || CPU_XLP || CPU_LOONGSON3)
-> 
-> Here is the total list of CPU_*:
-> 
->   $ git grep -h config.CPU_ arch/mips/ | sort -u | wc -l
->   79
+>> And si_code 0 is not a valid si_code to use with a floating point
+>> siginfo layout.
+>>
+>>> int si_code = FPE_FLTUNK;
+>>>
+>>> Would make a more sensible default?
+>>
+>> FPE_FLTUNK would make a more sensible default.
+>>
+>> I seem to remember someone telling me that case can never happen in
+>> practice so I have simply not worried about it.  Perhaps I am
+>> misremembering this.
+>
+> It probably can't happen in practise - but the issue is that the
+> kernel doesn't even compile because -Werror=maybe-uninitialized
+> results in a build error since the compiler can't know that one of the
+> branches will definitely be taken to set si_code.
 
-To be fair, that list for oprofile is not much different:
+My cross compile work.  So I don't know where that
+-Werror=maybe-unitialized comes from.
 
-arch/mips/oprofile/Makefile:
+I agree it is an issue.   I agree that FPE_FLTUNK is one of the good
+solutions.  Another is to add a final else where you return without
+doing anything.
 
-oprofile-$(CONFIG_CPU_MIPS32)		+= op_model_mipsxx.o
-oprofile-$(CONFIG_CPU_MIPS64)		+= op_model_mipsxx.o
-oprofile-$(CONFIG_CPU_R10000)		+= op_model_mipsxx.o
-oprofile-$(CONFIG_CPU_SB1)		+= op_model_mipsxx.o
-oprofile-$(CONFIG_CPU_XLR)		+= op_model_mipsxx.o
-oprofile-$(CONFIG_CPU_LOONGSON2)	+= op_model_loongson2.o
-oprofile-$(CONFIG_CPU_LOONGSON3)	+= op_model_loongson3.o
+Right now this looks like mips people issue that I have unearthed.
+I could appreciate some guidance on which way mips folks would like to
+handle this.
 
-However, since those are generally CPU families rather than individual 
-CPUs, the number of models supported by each framework tells a different 
-story:
+If you can point me to where the fatal error is coming from I will
+definitely do something in my tree so that this is not a harmful issue.
 
-git grep -h ops.cpu_type arch/mips/oprofile | wc -l
-20
-
-git grep -h pmu.name arch/mips/kernel/perf_event* | wc -l
-17
-
-The difference is mainly older CPUs - M14Kc, 20K, loongson1, etc. But 
-yes you are right dropping it would kill profiling for them - that being 
-the case I guess oprofile should remain and instead just remove support 
-for the MT capable CPUs (34K, interAptiv) which are all supported by perf.
-
-Thanks,
-Matt
-
-
-> 
-> The comparisation might not be accurate, but at least gives a hint
-> that there are many cpus not supporting perf. You would drop profiling
-> support at al to them.
-> 
-> If it is too hard to also fix the oprofile code (code duplication
-> seems the main issue here), then it would be also ok to blacklist
-> newer cpus to enable oprofile kernel code (where it is broken).
-> 
-> -Robert
-> 
+Eric

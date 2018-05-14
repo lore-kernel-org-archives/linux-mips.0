@@ -1,20 +1,15 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:46842 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:34716 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992479AbeENJpehyYPC (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 14 May 2018 11:45:34 +0200
-Subject: Re: [PATCH v2] clocksource/drivers/mips-gic-timer: Add pr_fmt and
- reword pr_* messages
-References: <1513781406-27292-1-git-send-email-matt.redfearn@mips.com>
- <1522316943-2542-1-git-send-email-matt.redfearn@mips.com>
-From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <e66c4c98-dc62-7d47-68dd-51cdd47bcf76@mips.com>
-Date: Mon, 14 May 2018 10:45:49 +0100
+        by eddie.linux-mips.org with ESMTP id S23992521AbeENPt4nrwro (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 14 May 2018 17:49:56 +0200
+Date: Mon, 14 May 2018 16:49:43 +0100
+From: "Maciej W. Rozycki" <macro@mips.com>
+Subject: [PATCH] MIPS: Fix ptrace(2) PTRACE_PEEKUSR and PTRACE_POKEUSR accesses
+ to o32 FGRs
+Message-ID: <alpine.DEB.2.00.1805141537210.10896@tp.orcam.me.uk>
 MIME-Version: 1.0
-In-Reply-To: <1522316943-2542-1-git-send-email-matt.redfearn@mips.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <Matt.Redfearn@mips.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <Maciej.Rozycki@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,107 +19,83 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20180514094549.ixw0esHoWBR7upUolqdq4BMCFtyRaMgKbCpusqJUDy4@z>
+To: James Hogan <james.hogan@mips.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Message-ID: <20180514154943.EpmzCxhj97hl1YLQWIHWyICNEqjxj8155z2vRE4qUrc@z>
 
+Check the TIF_32BIT_FPREGS task setting of the tracee rather than the 
+tracer in determining the layout of floating-point general registers in 
+the floating-point context, correcting access to odd-numbered registers 
+for o32 tracees where the setting disagrees between the two processes.
 
+Cc: stable@vger.kernel.org # 3.14+
+Fixes: 597ce1723e0f ("MIPS: Support for 64-bit FP with O32 binaries")
+Signed-off-by: Maciej W. Rozycki <macro@mips.com>
+---
+Hi,
 
-On 29/03/18 10:49, Matt Redfearn wrote:
-> Several messages from the MIPS GIC driver include the text "GIC", "GIC
-> timer", etc, but the format is not standard. Add a pr_fmt of
-> "mips-gic-timer: " and reword the messages now that they will be
-> prefixed with the driver name.
-> 
-> Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+ These are not the usual requests used by GDB to access the floating-point 
+context, which is likely why it went unnoticed so long.  They are only 
+used as a fallback in the case where PTRACE_GETFPREGS and PTRACE_SETFPREGS 
+requests are not supported, i.e. with ancient kernels.
 
+ However to verify an unrelated GDB bug fix I have tweaked GDB to always 
+use PTRACE_PEEKUSR and PTRACE_POKEUSR, and then discovered this issue in 
+native GDB regression testing, as it showed regressions from corrupt FGR 
+contents across numerous tests compared to the usual results.  This fix 
+removed those regressions then.
 
-ping?
+ Not being typically used does not mean we ought to keep the interface 
+broken.  Therefore please apply.
 
-Thanks,
-Matt
+  Maciej
+---
+ arch/mips/kernel/ptrace.c   |    4 ++--
+ arch/mips/kernel/ptrace32.c |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-> ---
-> 
-> Changes in v2:
-> Rebase on v4.16-rc7
-> 
->   drivers/clocksource/mips-gic-timer.c | 18 ++++++++++--------
->   1 file changed, 10 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/clocksource/mips-gic-timer.c b/drivers/clocksource/mips-gic-timer.c
-> index 986b6796b631..54f8a331b53a 100644
-> --- a/drivers/clocksource/mips-gic-timer.c
-> +++ b/drivers/clocksource/mips-gic-timer.c
-> @@ -5,6 +5,9 @@
->    *
->    * Copyright (C) 2012 MIPS Technologies, Inc.  All rights reserved.
->    */
-> +
-> +#define pr_fmt(fmt) "mips-gic-timer: " fmt
-> +
->   #include <linux/clk.h>
->   #include <linux/clockchips.h>
->   #include <linux/cpu.h>
-> @@ -136,8 +139,7 @@ static int gic_clockevent_init(void)
->   
->   	ret = setup_percpu_irq(gic_timer_irq, &gic_compare_irqaction);
->   	if (ret < 0) {
-> -		pr_err("GIC timer IRQ %d setup failed: %d\n",
-> -		       gic_timer_irq, ret);
-> +		pr_err("IRQ %d setup failed (%d)\n", gic_timer_irq, ret);
->   		return ret;
->   	}
->   
-> @@ -176,7 +178,7 @@ static int __init __gic_clocksource_init(void)
->   
->   	ret = clocksource_register_hz(&gic_clocksource, gic_frequency);
->   	if (ret < 0)
-> -		pr_warn("GIC: Unable to register clocksource\n");
-> +		pr_warn("Unable to register clocksource\n");
->   
->   	return ret;
->   }
-> @@ -188,7 +190,7 @@ static int __init gic_clocksource_of_init(struct device_node *node)
->   
->   	if (!mips_gic_present() || !node->parent ||
->   	    !of_device_is_compatible(node->parent, "mti,gic")) {
-> -		pr_warn("No DT definition for the mips gic driver\n");
-> +		pr_warn("No DT definition\n");
->   		return -ENXIO;
->   	}
->   
-> @@ -196,7 +198,7 @@ static int __init gic_clocksource_of_init(struct device_node *node)
->   	if (!IS_ERR(clk)) {
->   		ret = clk_prepare_enable(clk);
->   		if (ret < 0) {
-> -			pr_err("GIC failed to enable clock\n");
-> +			pr_err("Failed to enable clock\n");
->   			clk_put(clk);
->   			return ret;
->   		}
-> @@ -204,12 +206,12 @@ static int __init gic_clocksource_of_init(struct device_node *node)
->   		gic_frequency = clk_get_rate(clk);
->   	} else if (of_property_read_u32(node, "clock-frequency",
->   					&gic_frequency)) {
-> -		pr_err("GIC frequency not specified.\n");
-> +		pr_err("Frequency not specified\n");
->   		return -EINVAL;
->   	}
->   	gic_timer_irq = irq_of_parse_and_map(node, 0);
->   	if (!gic_timer_irq) {
-> -		pr_err("GIC timer IRQ not specified.\n");
-> +		pr_err("IRQ not specified\n");
->   		return -EINVAL;
->   	}
->   
-> @@ -220,7 +222,7 @@ static int __init gic_clocksource_of_init(struct device_node *node)
->   	ret = gic_clockevent_init();
->   	if (!ret && !IS_ERR(clk)) {
->   		if (clk_notifier_register(clk, &gic_clk_nb) < 0)
-> -			pr_warn("GIC: Unable to register clock notifier\n");
-> +			pr_warn("Unable to register clock notifier\n");
->   	}
->   
->   	/* And finally start the counter */
-> 
+linux-mips-ptrace-test-thread-flag.diff
+Index: linux/arch/mips/kernel/ptrace.c
+===================================================================
+--- linux.orig/arch/mips/kernel/ptrace.c	2018-05-12 22:52:19.000000000 +0100
++++ linux/arch/mips/kernel/ptrace.c	2018-05-12 22:56:07.893993000 +0100
+@@ -1059,7 +1059,7 @@ long arch_ptrace(struct task_struct *chi
+ 			fregs = get_fpu_regs(child);
+ 
+ #ifdef CONFIG_32BIT
+-			if (test_thread_flag(TIF_32BIT_FPREGS)) {
++			if (test_tsk_thread_flag(child, TIF_32BIT_FPREGS)) {
+ 				/*
+ 				 * The odd registers are actually the high
+ 				 * order bits of the values stored in the even
+@@ -1154,7 +1154,7 @@ long arch_ptrace(struct task_struct *chi
+ 
+ 			init_fp_ctx(child);
+ #ifdef CONFIG_32BIT
+-			if (test_thread_flag(TIF_32BIT_FPREGS)) {
++			if (test_tsk_thread_flag(child, TIF_32BIT_FPREGS)) {
+ 				/*
+ 				 * The odd registers are actually the high
+ 				 * order bits of the values stored in the even
+Index: linux-mipsswbrd038/arch/mips/kernel/ptrace32.c
+===================================================================
+--- linux-mipsswbrd038.orig/arch/mips/kernel/ptrace32.c	2018-05-12 22:52:19.000000000 +0100
++++ linux-mipsswbrd038/arch/mips/kernel/ptrace32.c	2018-05-12 22:55:20.906637000 +0100
+@@ -99,7 +99,7 @@ long compat_arch_ptrace(struct task_stru
+ 				break;
+ 			}
+ 			fregs = get_fpu_regs(child);
+-			if (test_thread_flag(TIF_32BIT_FPREGS)) {
++			if (test_tsk_thread_flag(child, TIF_32BIT_FPREGS)) {
+ 				/*
+ 				 * The odd registers are actually the high
+ 				 * order bits of the values stored in the even
+@@ -212,7 +212,7 @@ long compat_arch_ptrace(struct task_stru
+ 				       sizeof(child->thread.fpu));
+ 				child->thread.fpu.fcr31 = 0;
+ 			}
+-			if (test_thread_flag(TIF_32BIT_FPREGS)) {
++			if (test_tsk_thread_flag(child, TIF_32BIT_FPREGS)) {
+ 				/*
+ 				 * The odd registers are actually the high
+ 				 * order bits of the values stored in the even

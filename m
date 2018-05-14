@@ -1,12 +1,14 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:34716 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:52089 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992521AbeENPt4nrwro (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 14 May 2018 17:49:56 +0200
-Date: Mon, 14 May 2018 16:49:43 +0100
+        by eddie.linux-mips.org with ESMTP id S23992684AbeENW4R4ohOU (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 15 May 2018 00:56:17 +0200
+Date: Mon, 14 May 2018 23:56:01 +0100
 From: "Maciej W. Rozycki" <macro@mips.com>
-Subject: [PATCH] MIPS: Fix ptrace(2) PTRACE_PEEKUSR and PTRACE_POKEUSR accesses
- to o32 FGRs
-Message-ID: <alpine.DEB.2.00.1805141537210.10896@tp.orcam.me.uk>
+Subject: Re: [PATCH 1/2] MIPS: memset.S: EVA & fault support for
+ small_memset
+In-Reply-To: <20180416202234.GA23881@saruman>
+Message-ID: <alpine.DEB.2.00.1805142329120.10896@tp.orcam.me.uk>
+References: <1522315704-31641-1-git-send-email-matt.redfearn@mips.com> <1522315704-31641-2-git-send-email-matt.redfearn@mips.com> <20180416202234.GA23881@saruman>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <Maciej.Rozycki@mips.com>
@@ -19,83 +21,29 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <james.hogan@mips.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Message-ID: <20180514154943.EpmzCxhj97hl1YLQWIHWyICNEqjxj8155z2vRE4qUrc@z>
+To: James Hogan <jhogan@kernel.org>
+Cc: Matt Redfearn <matt.redfearn@mips.com>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <20180514225601.66wArDnDKRzBM4cN2jfLWLKlloBZom8QtIZqu7Iu6g8@z>
 
-Check the TIF_32BIT_FPREGS task setting of the tracee rather than the 
-tracer in determining the layout of floating-point general registers in 
-the floating-point context, correcting access to odd-numbered registers 
-for o32 tracees where the setting disagrees between the two processes.
+On Mon, 16 Apr 2018, James Hogan wrote:
 
-Cc: stable@vger.kernel.org # 3.14+
-Fixes: 597ce1723e0f ("MIPS: Support for 64-bit FP with O32 binaries")
-Signed-off-by: Maciej W. Rozycki <macro@mips.com>
----
-Hi,
+> > @@ -260,6 +260,11 @@
+> >  	jr		ra
+> >  	andi		v1, a2, STORMASK
+> 
+> This patch looks good, well spotted!
+> 
+> But whats that v1 write about? Any ideas? Seems to go back to the git
+> epoch, and $3 isn't in the clobber lists when __bzero* is called.
 
- These are not the usual requests used by GDB to access the floating-point 
-context, which is likely why it went unnoticed so long.  They are only 
-used as a fallback in the case where PTRACE_GETFPREGS and PTRACE_SETFPREGS 
-requests are not supported, i.e. with ancient kernels.
+ You need to dive deeper, that is beyond the secret commit 66f0a432564b 
+("Add resource managment."), to find what's happened before the epoch. ;)
 
- However to verify an unrelated GDB bug fix I have tweaked GDB to always 
-use PTRACE_PEEKUSR and PTRACE_POKEUSR, and then discovered this issue in 
-native GDB regression testing, as it showed regressions from corrupt FGR 
-contents across numerous tests compared to the usual results.  This fix 
-removed those regressions then.
+ Anyway, there isn't anything special here, the thing has been here since 
+the inception of memset.S with commit 2e0f55e79c49 (no shortlog available 
+for that one).  And it is clearly a bug, possibly just a leftover from a 
+WIP implementation or whatever.
 
- Not being typically used does not mean we ought to keep the interface 
-broken.  Therefore please apply.
+ And I can see Matt has already fixed that, thanks!
 
   Maciej
----
- arch/mips/kernel/ptrace.c   |    4 ++--
- arch/mips/kernel/ptrace32.c |    4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-linux-mips-ptrace-test-thread-flag.diff
-Index: linux/arch/mips/kernel/ptrace.c
-===================================================================
---- linux.orig/arch/mips/kernel/ptrace.c	2018-05-12 22:52:19.000000000 +0100
-+++ linux/arch/mips/kernel/ptrace.c	2018-05-12 22:56:07.893993000 +0100
-@@ -1059,7 +1059,7 @@ long arch_ptrace(struct task_struct *chi
- 			fregs = get_fpu_regs(child);
- 
- #ifdef CONFIG_32BIT
--			if (test_thread_flag(TIF_32BIT_FPREGS)) {
-+			if (test_tsk_thread_flag(child, TIF_32BIT_FPREGS)) {
- 				/*
- 				 * The odd registers are actually the high
- 				 * order bits of the values stored in the even
-@@ -1154,7 +1154,7 @@ long arch_ptrace(struct task_struct *chi
- 
- 			init_fp_ctx(child);
- #ifdef CONFIG_32BIT
--			if (test_thread_flag(TIF_32BIT_FPREGS)) {
-+			if (test_tsk_thread_flag(child, TIF_32BIT_FPREGS)) {
- 				/*
- 				 * The odd registers are actually the high
- 				 * order bits of the values stored in the even
-Index: linux-mipsswbrd038/arch/mips/kernel/ptrace32.c
-===================================================================
---- linux-mipsswbrd038.orig/arch/mips/kernel/ptrace32.c	2018-05-12 22:52:19.000000000 +0100
-+++ linux-mipsswbrd038/arch/mips/kernel/ptrace32.c	2018-05-12 22:55:20.906637000 +0100
-@@ -99,7 +99,7 @@ long compat_arch_ptrace(struct task_stru
- 				break;
- 			}
- 			fregs = get_fpu_regs(child);
--			if (test_thread_flag(TIF_32BIT_FPREGS)) {
-+			if (test_tsk_thread_flag(child, TIF_32BIT_FPREGS)) {
- 				/*
- 				 * The odd registers are actually the high
- 				 * order bits of the values stored in the even
-@@ -212,7 +212,7 @@ long compat_arch_ptrace(struct task_stru
- 				       sizeof(child->thread.fpu));
- 				child->thread.fpu.fcr31 = 0;
- 			}
--			if (test_thread_flag(TIF_32BIT_FPREGS)) {
-+			if (test_tsk_thread_flag(child, TIF_32BIT_FPREGS)) {
- 				/*
- 				 * The odd registers are actually the high
- 				 * order bits of the values stored in the even

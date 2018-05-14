@@ -1,19 +1,20 @@
-Received: from out03.mta.xmission.com ([166.70.13.233]:41515 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990402AbeENIpn7Ms8t (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 14 May 2018 10:45:43 +0200
-From: ebiederm@xmission.com (Eric W. Biederman)
-References: <87604mhrnb.fsf@xmission.com>
-        <20180420143811.9994-8-ebiederm@xmission.com>
-        <e0a5bde2-7817-3e05-1c8d-c8fa8f6aa5f2@mips.com>
-Date: Wed, 09 May 2018 21:39:20 -0500
-In-Reply-To: <e0a5bde2-7817-3e05-1c8d-c8fa8f6aa5f2@mips.com> (Matt Redfearn's
-        message of "Wed, 9 May 2018 16:14:40 +0100")
-Message-ID: <8736z0s087.fsf@xmission.com>
+Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:46842 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992479AbeENJpehyYPC (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 14 May 2018 11:45:34 +0200
+Subject: Re: [PATCH v2] clocksource/drivers/mips-gic-timer: Add pr_fmt and
+ reword pr_* messages
+References: <1513781406-27292-1-git-send-email-matt.redfearn@mips.com>
+ <1522316943-2542-1-git-send-email-matt.redfearn@mips.com>
+From: Matt Redfearn <matt.redfearn@mips.com>
+Message-ID: <e66c4c98-dc62-7d47-68dd-51cdd47bcf76@mips.com>
+Date: Mon, 14 May 2018 10:45:49 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-Subject: Re: [REVIEW][PATCH 08/22] signal/mips: Use force_sig_fault where appropriate
-Return-Path: <ebiederm@xmission.com>
+In-Reply-To: <1522316943-2542-1-git-send-email-matt.redfearn@mips.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Return-Path: <Matt.Redfearn@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,83 +24,107 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Matt Redfearn <matt.redfearn@mips.com>
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, linux-mips@linux-mips.org
-Message-ID: <20180510023920.sEZfJwBy17kH0Gwlh8cQKeraRX8OVDwy3EHL-yA1lcg@z>
+To: Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20180514094549.ixw0esHoWBR7upUolqdq4BMCFtyRaMgKbCpusqJUDy4@z>
 
-Matt Redfearn <matt.redfearn@mips.com> writes:
 
-> Hi Eric,
->
-> On 20/04/18 15:37, Eric W. Biederman wrote:
->> Filling in struct siginfo before calling force_sig_info a tedious and
->> error prone process, where once in a great while the wrong fields
->> are filled out, and siginfo has been inconsistently cleared.
->>
->> Simplify this process by using the helper force_sig_fault.  Which
->> takes as a parameters all of the information it needs, ensures
->> all of the fiddly bits of filling in struct siginfo are done properly
->> and then calls force_sig_info.
->>
->> In short about a 5 line reduction in code for every time force_sig_info
->> is called, which makes the calling function clearer.
->>
->> Cc: Ralf Baechle <ralf@linux-mips.org>
->> Cc: James Hogan <jhogan@kernel.org>
->> Cc: linux-mips@linux-mips.org
->> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
->> ---
->>   arch/mips/kernel/traps.c | 65 ++++++++++++++----------------------------------
->>   arch/mips/mm/fault.c     | 19 ++++----------
->>   2 files changed, 23 insertions(+), 61 deletions(-)
->>
->> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
->> index 967e9e4e795e..66ec4b0b484d 100644
->> --- a/arch/mips/kernel/traps.c
->> +++ b/arch/mips/kernel/traps.c
->> @@ -699,17 +699,11 @@ static int simulate_sync(struct pt_regs *regs, unsigned int opcode)
->>   asmlinkage void do_ov(struct pt_regs *regs)
->>   {
->>   	enum ctx_state prev_state;
->> -	siginfo_t info;
->> -
->> -	clear_siginfo(&info);
->> -	info.si_signo = SIGFPE;
->> -	info.si_code = FPE_INTOVF;
->> -	info.si_addr = (void __user *)regs->cp0_epc;
->>     	prev_state = exception_enter();
->>   	die_if_kernel("Integer overflow", regs);
->>   -	force_sig_info(SIGFPE, &info, current);
->> +	force_sig_fault(SIGFPE, FPE_INTOVF, (void __user *)regs->cp0_epc, current);
->>   	exception_exit(prev_state);
->>   }
->>   @@ -722,32 +716,27 @@ asmlinkage void do_ov(struct pt_regs *regs)
->>   void force_fcr31_sig(unsigned long fcr31, void __user *fault_addr,
->>   		     struct task_struct *tsk)
->>   {
->> -	struct siginfo si;
->> -
->> -	clear_siginfo(&si);
->> -	si.si_addr = fault_addr;
->> -	si.si_signo = SIGFPE;
->> +	int si_code;
->
-> This is giving build errors in Linux next
-> (https://storage.kernelci.org/next/master/next-20180509/mips/defconfig+kselftest/build.log)
->
-> si_code would have ended up as 0 before from the clear_siginfo(), but perhaps
 
-And si_code 0 is not a valid si_code to use with a floating point
-siginfo layout.
+On 29/03/18 10:49, Matt Redfearn wrote:
+> Several messages from the MIPS GIC driver include the text "GIC", "GIC
+> timer", etc, but the format is not standard. Add a pr_fmt of
+> "mips-gic-timer: " and reword the messages now that they will be
+> prefixed with the driver name.
+> 
+> Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
 
-> int si_code = FPE_FLTUNK;
->
-> Would make a more sensible default?
 
-FPE_FLTUNK would make a more sensible default.
+ping?
 
-I seem to remember someone telling me that case can never happen in
-practice so I have simply not worried about it.  Perhaps I am
-misremembering this.
+Thanks,
+Matt
 
-Eric
+> ---
+> 
+> Changes in v2:
+> Rebase on v4.16-rc7
+> 
+>   drivers/clocksource/mips-gic-timer.c | 18 ++++++++++--------
+>   1 file changed, 10 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/clocksource/mips-gic-timer.c b/drivers/clocksource/mips-gic-timer.c
+> index 986b6796b631..54f8a331b53a 100644
+> --- a/drivers/clocksource/mips-gic-timer.c
+> +++ b/drivers/clocksource/mips-gic-timer.c
+> @@ -5,6 +5,9 @@
+>    *
+>    * Copyright (C) 2012 MIPS Technologies, Inc.  All rights reserved.
+>    */
+> +
+> +#define pr_fmt(fmt) "mips-gic-timer: " fmt
+> +
+>   #include <linux/clk.h>
+>   #include <linux/clockchips.h>
+>   #include <linux/cpu.h>
+> @@ -136,8 +139,7 @@ static int gic_clockevent_init(void)
+>   
+>   	ret = setup_percpu_irq(gic_timer_irq, &gic_compare_irqaction);
+>   	if (ret < 0) {
+> -		pr_err("GIC timer IRQ %d setup failed: %d\n",
+> -		       gic_timer_irq, ret);
+> +		pr_err("IRQ %d setup failed (%d)\n", gic_timer_irq, ret);
+>   		return ret;
+>   	}
+>   
+> @@ -176,7 +178,7 @@ static int __init __gic_clocksource_init(void)
+>   
+>   	ret = clocksource_register_hz(&gic_clocksource, gic_frequency);
+>   	if (ret < 0)
+> -		pr_warn("GIC: Unable to register clocksource\n");
+> +		pr_warn("Unable to register clocksource\n");
+>   
+>   	return ret;
+>   }
+> @@ -188,7 +190,7 @@ static int __init gic_clocksource_of_init(struct device_node *node)
+>   
+>   	if (!mips_gic_present() || !node->parent ||
+>   	    !of_device_is_compatible(node->parent, "mti,gic")) {
+> -		pr_warn("No DT definition for the mips gic driver\n");
+> +		pr_warn("No DT definition\n");
+>   		return -ENXIO;
+>   	}
+>   
+> @@ -196,7 +198,7 @@ static int __init gic_clocksource_of_init(struct device_node *node)
+>   	if (!IS_ERR(clk)) {
+>   		ret = clk_prepare_enable(clk);
+>   		if (ret < 0) {
+> -			pr_err("GIC failed to enable clock\n");
+> +			pr_err("Failed to enable clock\n");
+>   			clk_put(clk);
+>   			return ret;
+>   		}
+> @@ -204,12 +206,12 @@ static int __init gic_clocksource_of_init(struct device_node *node)
+>   		gic_frequency = clk_get_rate(clk);
+>   	} else if (of_property_read_u32(node, "clock-frequency",
+>   					&gic_frequency)) {
+> -		pr_err("GIC frequency not specified.\n");
+> +		pr_err("Frequency not specified\n");
+>   		return -EINVAL;
+>   	}
+>   	gic_timer_irq = irq_of_parse_and_map(node, 0);
+>   	if (!gic_timer_irq) {
+> -		pr_err("GIC timer IRQ not specified.\n");
+> +		pr_err("IRQ not specified\n");
+>   		return -EINVAL;
+>   	}
+>   
+> @@ -220,7 +222,7 @@ static int __init gic_clocksource_of_init(struct device_node *node)
+>   	ret = gic_clockevent_init();
+>   	if (!ret && !IS_ERR(clk)) {
+>   		if (clk_notifier_register(clk, &gic_clk_nb) < 0)
+> -			pr_warn("GIC: Unable to register clock notifier\n");
+> +			pr_warn("Unable to register clock notifier\n");
+>   	}
+>   
+>   	/* And finally start the counter */
+> 

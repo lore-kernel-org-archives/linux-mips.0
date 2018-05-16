@@ -1,13 +1,11 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:53635 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:54697 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992841AbeEOWoWMYqbS (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 16 May 2018 00:44:22 +0200
-Date: Tue, 15 May 2018 23:32:45 +0100
+        by eddie.linux-mips.org with ESMTP id S23992916AbeEPPkmAOqlk (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 16 May 2018 17:40:42 +0200
+Date: Wed, 16 May 2018 16:39:58 +0100
 From: "Maciej W. Rozycki" <macro@mips.com>
-Subject: [PATCH 1/3] binfmt_elf: Respect error return from `regset->active'
-In-Reply-To: <alpine.DEB.2.00.1804301557320.11756@tp.orcam.me.uk>
-Message-ID: <alpine.DEB.2.00.1805102009380.10896@tp.orcam.me.uk>
-References: <alpine.DEB.2.00.1804301557320.11756@tp.orcam.me.uk>
+Subject: [PATCH] MIPS: ptrace: Fix PTRACE_PEEKUSR requests for 64-bit FGRs
+Message-ID: <alpine.DEB.2.00.1805161306260.10896@tp.orcam.me.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Return-Path: <Maciej.Rozycki@mips.com>
@@ -20,62 +18,57 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alexander Viro <viro@zeniv.linux.org.uk>, James Hogan <jhogan@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-fsdevel@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Message-ID: <20180515223245.NlMMY-mQIDfiEW5NyynsLTwAPSg_kcTy2z2C5c5ysAc@z>
+To: James Hogan <jhogan@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Message-ID: <20180516153958.-QZs3Jsmgp1XMmpL-RCMTKeCVMxdnQfYml61r8S9Ml8@z>
 
-The regset API documented in <linux/regset.h> defines -ENODEV as the 
-result of the `->active' handler to be used where the feature requested 
-is not available on the hardware found.  However code handling core file 
-note generation in `fill_thread_core_info' interpretes any non-zero 
-result from the `->active' handler as the regset requested being active. 
-Consequently processing continues (and hopefully gracefully fails later 
-on) rather than being abandoned right away for the regset requested.
+Use 64-bit accesses for 64-bit floating-point general registers with 
+PTRACE_PEEKUSR, removing the truncation of their upper halves in the 
+FR=1 mode, caused by commit bbd426f542cb ("MIPS: Simplify FP context 
+access"), which inadvertently switched them to using 32-bit accesses.
 
-Fix the problem then by making the code proceed only if a positive 
-result is returned from the `->active' handler.
+The PTRACE_POKEUSR side is fine as it's never been broken and continues 
+using 64-bit accesses.
 
-Cc: stable@vger.kernel.org # 2.6.25+
-Fixes: 4206d3aa1978 ("elf core dump: notes user_regset")
+Cc: <stable@vger.kernel.org> # 3.19+
+Fixes: bbd426f542cb ("MIPS: Simplify FP context access")
 Signed-off-by: Maciej W. Rozycki <macro@mips.com>
 ---
 Hi,
 
- Overall we could also use the count returned by ->active to limit the 
-size of data requested, i.e. something along the lines of:
-
-	ssize_t size;
-
-	if (regset->active)
-		size = regset->active(t->task, regset);
-	else
-		size = regset_size(t->task, regset);
-	if (size > 0) {
-		...	
-
-however that would be an optimisation that belongs to a separate change, 
-which (due to the need to unload stuff I have in progress already) I am 
-not going to make at this point.  Perhaps someone else would be willing 
-to pick up the idea.
-
- Anyway, please apply.
+ Here's another one, spotted in the course of GDB PR gdb/22286 regression 
+testing with the n64 ABI.  Please apply.
 
   Maciej
 ---
- fs/binfmt_elf.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/kernel/ptrace.c   |    2 +-
+ arch/mips/kernel/ptrace32.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-linux-elf-core-regset-active.diff
-Index: linux-jhogan-test/fs/binfmt_elf.c
+linux-mips-ptrace-peekusr-fp64.diff
+Index: linux/arch/mips/kernel/ptrace.c
 ===================================================================
---- linux-jhogan-test.orig/fs/binfmt_elf.c	2018-03-21 17:14:55.000000000 +0000
-+++ linux-jhogan-test/fs/binfmt_elf.c	2018-05-09 23:25:50.742255000 +0100
-@@ -1739,7 +1739,7 @@ static int fill_thread_core_info(struct 
- 		const struct user_regset *regset = &view->regsets[i];
- 		do_thread_regset_writeback(t->task, regset);
- 		if (regset->core_note_type && regset->get &&
--		    (!regset->active || regset->active(t->task, regset))) {
-+		    (!regset->active || regset->active(t->task, regset) > 0)) {
- 			int ret;
- 			size_t size = regset_size(t->task, regset);
- 			void *data = kmalloc(size, GFP_KERNEL);
+--- linux.orig/arch/mips/kernel/ptrace.c	2018-05-15 17:44:25.000000000 +0100
++++ linux/arch/mips/kernel/ptrace.c	2018-05-16 11:22:00.714605000 +0100
+@@ -1070,7 +1070,7 @@ long arch_ptrace(struct task_struct *chi
+ 				break;
+ 			}
+ #endif
+-			tmp = get_fpr32(&fregs[addr - FPR_BASE], 0);
++			tmp = get_fpr64(&fregs[addr - FPR_BASE], 0);
+ 			break;
+ 		case PC:
+ 			tmp = regs->cp0_epc;
+Index: linux/arch/mips/kernel/ptrace32.c
+===================================================================
+--- linux.orig/arch/mips/kernel/ptrace32.c	2018-05-15 17:45:16.000000000 +0100
++++ linux/arch/mips/kernel/ptrace32.c	2018-05-16 11:22:16.313698000 +0100
+@@ -109,7 +109,7 @@ long compat_arch_ptrace(struct task_stru
+ 						addr & 1);
+ 				break;
+ 			}
+-			tmp = get_fpr32(&fregs[addr - FPR_BASE], 0);
++			tmp = get_fpr64(&fregs[addr - FPR_BASE], 0);
+ 			break;
+ 		case PC:
+ 			tmp = regs->cp0_epc;

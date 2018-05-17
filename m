@@ -1,17 +1,16 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:45498 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:58587 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993514AbeEQKgKJi7Z4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 17 May 2018 12:36:10 +0200
-Subject: Re: [PATCH v3 4/7] MIPS: perf: Fix perf with MT counting other
- threads
+        by eddie.linux-mips.org with ESMTP id S23993497AbeEQKktzrcP4 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 17 May 2018 12:40:49 +0200
+Subject: Re: [PATCH v3 5/7] MIPS: perf: Allocate per-core counters on demand
 References: <1524219789-31241-1-git-send-email-matt.redfearn@mips.com>
- <1524219789-31241-5-git-send-email-matt.redfearn@mips.com>
- <20180516175916.GA12837@jamesdev>
+ <1524219789-31241-6-git-send-email-matt.redfearn@mips.com>
+ <20180516180518.GB12837@jamesdev>
 From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <63a1ca19-6ded-149a-5a61-7464609c691b@mips.com>
-Date: Thu, 17 May 2018 11:35:17 +0100
+Message-ID: <ea713dfc-a4ef-a2ea-de9f-bd40ef28b128@mips.com>
+Date: Thu, 17 May 2018 11:40:45 +0100
 MIME-Version: 1.0
-In-Reply-To: <20180516175916.GA12837@jamesdev>
+In-Reply-To: <20180516180518.GB12837@jamesdev>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -27,78 +26,117 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: James Hogan <jhogan@kernel.org>
 Cc: Ralf Baechle <ralf@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>, linux-mips@linux-mips.org, Namhyung Kim <namhyung@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Arnaldo Carvalho de Melo <acme@kernel.org>
-Message-ID: <20180517103517.t3mEAhkpO1VozJICMPb_pI--qIckeZqU-WRdQ6_EKa0@z>
+Message-ID: <20180517104045.Cwxy7Qd50bkjRiCSt62byR5N25zkAJAdiCRTayLJxU8@z>
 
 Hi James,
 
-On 16/05/18 18:59, James Hogan wrote:
-> On Fri, Apr 20, 2018 at 11:23:06AM +0100, Matt Redfearn wrote:
->> diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
->> index 7e2b7d38a774..fe50986e83c6 100644
->> --- a/arch/mips/kernel/perf_event_mipsxx.c
->> +++ b/arch/mips/kernel/perf_event_mipsxx.c
->> @@ -323,7 +323,11 @@ static int mipsxx_pmu_alloc_counter(struct cpu_hw_events *cpuc,
->>   
->>   static void mipsxx_pmu_enable_event(struct hw_perf_event *evt, int idx)
->>   {
->> +	struct perf_event *event = container_of(evt, struct perf_event, hw);
->>   	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
->> +#ifdef CONFIG_MIPS_MT_SMP
->> +	unsigned int range = evt->event_base >> 24;
->> +#endif /* CONFIG_MIPS_MT_SMP */
->>   
->>   	WARN_ON(idx < 0 || idx >= mipspmu.num_counters);
->>   
->> @@ -331,11 +335,37 @@ static void mipsxx_pmu_enable_event(struct hw_perf_event *evt, int idx)
->>   		(evt->config_base & M_PERFCTL_CONFIG_MASK) |
->>   		/* Make sure interrupt enabled. */
->>   		MIPS_PERFCTRL_IE;
->> -	if (IS_ENABLED(CONFIG_CPU_BMIPS5000))
->> +
->> +#ifdef CONFIG_CPU_BMIPS5000
->> +	{
->>   		/* enable the counter for the calling thread */
->>   		cpuc->saved_ctrl[idx] |=
->>   			(1 << (12 + vpe_id())) | BRCM_PERFCTRL_TC;
->> +	}
->> +#else
->> +#ifdef CONFIG_MIPS_MT_SMP
->> +	if (range > V) {
->> +		/* The counter is processor wide. Set it up to count all TCs. */
->> +		pr_debug("Enabling perf counter for all TCs\n");
->> +		cpuc->saved_ctrl[idx] |= M_TC_EN_ALL;
->> +	} else
->> +#endif /* CONFIG_MIPS_MT_SMP */
->> +	{
->> +		unsigned int cpu, ctrl;
->>   
->> +		/*
->> +		 * Set up the counter for a particular CPU when event->cpu is
->> +		 * a valid CPU number. Otherwise set up the counter for the CPU
->> +		 * scheduling this thread.
->> +		 */
->> +		cpu = (event->cpu >= 0) ? event->cpu : smp_processor_id();
->> +
->> +		ctrl = M_PERFCTL_VPEID(cpu_vpe_id(&cpu_data[cpu]));
->> +		ctrl |= M_TC_EN_VPE;
->> +		cpuc->saved_ctrl[idx] |= ctrl;
->> +		pr_debug("Enabling perf counter for CPU%d\n", cpu);
->> +	}
->> +#endif /* CONFIG_CPU_BMIPS5000 */
+On 16/05/18 19:05, James Hogan wrote:
+> On Fri, Apr 20, 2018 at 11:23:07AM +0100, Matt Redfearn wrote:
+>> Previously when performance counters are per-core, rather than
+>> per-thread, the number available were divided by 2 on detection, and the
+>> counters used by each thread in a core were "swizzled" to ensure
+>> separation. However, this solution is suboptimal since it relies on a
+>> couple of assumptions:
+>> a) Always having 2 VPEs / core (number of counters was divided by 2)
+>> b) Always having a number of counters implemented in the core that is
+>>     divisible by 2. For instance if an SoC implementation had a single
+>>     counter and 2 VPEs per core, then this logic would fail and no
+>>     performance counters would be available.
+>> The mechanism also does not allow for one VPE in a core using more than
+>> it's allocation of the per-core counters to count multiple events even
+>> though other VPEs may not be using them.
+>>
+>> Fix this situation by instead allocating (and releasing) per-core
+>> performance counters when they are requested. This approach removes the
+>> above assumptions and fixes the shortcomings.
+>>
+>> In order to do this:
+>> Add additional logic to mipsxx_pmu_alloc_counter() to detect if a
+>> sibling is using a per-core counter, and to allocate a per-core counter
+>> in all sibling CPUs.
+>> Similarly, add a mipsxx_pmu_free_counter() function to release a
+>> per-core counter in all sibling CPUs when it is finished with.
+>> A new spinlock, core_counters_lock, is introduced to ensure exclusivity
+>> when allocating and releasing per-core counters.
+>> Since counters are now allocated per-core on demand, rather than being
+>> reserved per-thread at boot, all of the "swizzling" of counters is
+>> removed.
+>>
+>> The upshot is that in an SoC with 2 counters / thread, counters are
+>> reported as:
+>> Performance counters: mips/interAptiv PMU enabled, 2 32-bit counters
+>> available to each CPU, irq 18
+>>
+>> Running an instance of a test program on each of 2 threads in a
+>> core, both threads can use their 2 counters to count 2 events:
+>>
+>> taskset 4 perf stat -e instructions:u,branches:u ./test_prog & taskset 8
+>> perf stat -e instructions:u,branches:u ./test_prog
+>>
+>>   Performance counter stats for './test_prog':
+>>
+>>               30002      instructions:u
+>>               10000      branches:u
+>>
+>>         0.005164264 seconds time elapsed
+>>   Performance counter stats for './test_prog':
+>>
+>>               30002      instructions:u
+>>               10000      branches:u
+>>
+>>         0.006139975 seconds time elapsed
+>>
+>> In an SoC with 2 counters / core (which can be forced by setting
+>> cpu_has_mipsmt_pertccounters = 0), counters are reported as:
+>> Performance counters: mips/interAptiv PMU enabled, 2 32-bit counters
+>> available to each core, irq 18
+>>
+>> Running an instance of a test program on each of 2 threads in a/soak/bin/bashsoak -E cpuhotplugHi
+>> core, now only one thread manages to secure the performance counters to
+>> count 2 events. The other thread does not get any counters.
+>>
+>> taskset 4 perf stat -e instructions:u,branches:u ./test_prog & taskset 8
+>> perf stat -e instructions:u,branches:u ./test_prog
+>>
+>>   Performance counter stats for './test_prog':
+>>
+>>       <not counted>       instructions:u
+>>       <not counted>       branches:u
+>>
+>>         0.005179533 seconds time elapsed
+>>
+>>   Performance counter stats for './test_prog':
+>>
+>>               30002      instructions:u
+>>               10000      branches:u
+>>
+>>         0.005179467 seconds time elapsed
+>>
+>> Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
 > 
-> I'm not a huge fan of the ifdefery tbh, I don't think it makes it very
-> easy to read having a combination of ifs and #ifdefs. I reckon
-> IF_ENABLED would be better, perhaps with having the BMIPS5000 case
-> return to avoid too much nesting.
+> While this sounds like an improvement in practice, being able to use
+> more counters on single threaded stuff than otherwise, I'm a little
+> concerned what would happen if a task was migrated to a different CPU
+> and the perf counters couldn't be obtained on the new CPU due to
+> counters already being in use. Would the values be incorrectly small?
 
-OK, I'll try and tidy it up.
+This change was really forced by the new I7200 development. Current 
+configurations have 2 counters per core, but each core has 3 VPEs - 
+which means the current logic cannot correctly assign counters. IoW the 
+2 assumptions stated in the commit log are no longer true.
+
+Though you are right that if a task migrated to a core on which another 
+VPE is already using the counters, this change would mean counters 
+cannot be assigned. In that case we return EAGAIN. I'm not sure if that 
+error would be handled gracefully by the scheduler and the task 
+scheduled away again... The code events logic that backs this is tricky 
+to follow.
 
 Thanks,
 Matt
 
+
 > 
-> Otherwise the patch looks okay to me.
-> 
-> Thanks
+> Cheers
 > James
 > 

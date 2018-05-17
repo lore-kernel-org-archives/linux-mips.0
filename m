@@ -1,14 +1,15 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:54697 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992916AbeEPPkmAOqlk (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 16 May 2018 17:40:42 +0200
-Date: Wed, 16 May 2018 16:39:58 +0100
-From: "Maciej W. Rozycki" <macro@mips.com>
-Subject: [PATCH] MIPS: ptrace: Fix PTRACE_PEEKUSR requests for 64-bit FGRs
-Message-ID: <alpine.DEB.2.00.1805161306260.10896@tp.orcam.me.uk>
+Received: from mail.kernel.org ([198.145.29.99]:55240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23993514AbeEQJjhYBm-k (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 17 May 2018 11:39:37 +0200
+Subject: Patch "futex: Remove duplicated code and fix undefined behaviour" has been added to the 4.4-stable tree
+From: <gregkh@linuxfoundation.org>
+Date: Thu, 17 May 2018 11:38:53 +0200
+Message-ID: <15265499332582@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Return-Path: <Maciej.Rozycki@mips.com>
+Content-Type: text/plain; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 8bit
+Return-Path: <SRS0=CLTL=IE=linuxfoundation.org=gregkh@kernel.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,57 +19,21 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: James Hogan <jhogan@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Message-ID: <20180516153958.-QZs3Jsmgp1XMmpL-RCMTKeCVMxdnQfYml61r8S9Ml8@z>
+To: 20170824073105.3901-1-jslaby@suse.cz, arnd@arndb.de, ben.hutchings@codethink.co.uk, benh@kernel.crashing.org, catalin.marinas@arm.com, chris@zankel.net, cmetcalf@mellanox.com, dalias@libc.org, davem@davemloft.net, deller@gmx.de, dvhart@infradead.org, fenghua.yu@intel.com, gregkh@linuxfoundation.org, heiko.carstens@de.ibm.com, ink@jurassic.park.msu.ru, jcmvbkbc@gmail.com, jejb@parisc-linux.org, jonas@southpole.sejslaby@suse.cz, linux-arm-kernel@lists.infradead.org, linux-mips@linux-mips.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org, mattst88@gmail.com, monstr@monstr.eu, mpe@ellerman.id.au, openrisc@lists.librecores.org, paulus@samba.org, peterz@infradead.org, ralf@linux-mips.org, rkuo@codeaurora.org, rmk+kernel@armlinux.org.uk, rth@twiddle.net, schwidefsky@de.ibm.com, shorne@gmail.com, stefan.kristiansson@saunalahti.fi, tglx@linutronix.de, tony.luck@intel.com, vgupta@synopsys.com, will.deacon@arm.com, ysato@users.sourceforge.jp
+Cc: stable-commits@vger.kernel.org
+Message-ID: <20180517093853.iRQxat0iFSemPnv_TcwvaRgEq6sRoNYy6aBPCroIU7M@z>
 
-Use 64-bit accesses for 64-bit floating-point general registers with 
-PTRACE_PEEKUSR, removing the truncation of their upper halves in the 
-FR=1 mode, caused by commit bbd426f542cb ("MIPS: Simplify FP context 
-access"), which inadvertently switched them to using 32-bit accesses.
 
-The PTRACE_POKEUSR side is fine as it's never been broken and continues 
-using 64-bit accesses.
+This is a note to let you know that I've just added the patch titled
 
-Cc: <stable@vger.kernel.org> # 3.19+
-Fixes: bbd426f542cb ("MIPS: Simplify FP context access")
-Signed-off-by: Maciej W. Rozycki <macro@mips.com>
----
-Hi,
+    futex: Remove duplicated code and fix undefined behaviour
 
- Here's another one, spotted in the course of GDB PR gdb/22286 regression 
-testing with the n64 ABI.  Please apply.
+to the 4.4-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
-  Maciej
----
- arch/mips/kernel/ptrace.c   |    2 +-
- arch/mips/kernel/ptrace32.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+The filename of the patch is:
+     futex-remove-duplicated-code-and-fix-undefined-behaviour.patch
+and it can be found in the queue-4.4 subdirectory.
 
-linux-mips-ptrace-peekusr-fp64.diff
-Index: linux/arch/mips/kernel/ptrace.c
-===================================================================
---- linux.orig/arch/mips/kernel/ptrace.c	2018-05-15 17:44:25.000000000 +0100
-+++ linux/arch/mips/kernel/ptrace.c	2018-05-16 11:22:00.714605000 +0100
-@@ -1070,7 +1070,7 @@ long arch_ptrace(struct task_struct *chi
- 				break;
- 			}
- #endif
--			tmp = get_fpr32(&fregs[addr - FPR_BASE], 0);
-+			tmp = get_fpr64(&fregs[addr - FPR_BASE], 0);
- 			break;
- 		case PC:
- 			tmp = regs->cp0_epc;
-Index: linux/arch/mips/kernel/ptrace32.c
-===================================================================
---- linux.orig/arch/mips/kernel/ptrace32.c	2018-05-15 17:45:16.000000000 +0100
-+++ linux/arch/mips/kernel/ptrace32.c	2018-05-16 11:22:16.313698000 +0100
-@@ -109,7 +109,7 @@ long compat_arch_ptrace(struct task_stru
- 						addr & 1);
- 				break;
- 			}
--			tmp = get_fpr32(&fregs[addr - FPR_BASE], 0);
-+			tmp = get_fpr64(&fregs[addr - FPR_BASE], 0);
- 			break;
- 		case PC:
- 			tmp = regs->cp0_epc;
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.

@@ -1,16 +1,17 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:58587 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:58142 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993497AbeEQKktzrcP4 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 17 May 2018 12:40:49 +0200
-Subject: Re: [PATCH v3 5/7] MIPS: perf: Allocate per-core counters on demand
-References: <1524219789-31241-1-git-send-email-matt.redfearn@mips.com>
- <1524219789-31241-6-git-send-email-matt.redfearn@mips.com>
- <20180516180518.GB12837@jamesdev>
+        by eddie.linux-mips.org with ESMTP id S23994737AbeEVMVZs3Rcp (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 22 May 2018 14:21:25 +0200
+Subject: Re: [PATCH v2 4/4] MIPS: memset.S: Add comments to fault fixup
+ handlers
+References: <1523979603-492-1-git-send-email-matt.redfearn@mips.com>
+ <1523979603-492-4-git-send-email-matt.redfearn@mips.com>
+ <20180521161443.GA9998@jamesdev>
 From: Matt Redfearn <matt.redfearn@mips.com>
-Message-ID: <ea713dfc-a4ef-a2ea-de9f-bd40ef28b128@mips.com>
-Date: Thu, 17 May 2018 11:40:45 +0100
+Message-ID: <d9c292de-8d21-78e9-6094-5acef2c6fccb@mips.com>
+Date: Tue, 22 May 2018 13:20:58 +0100
 MIME-Version: 1.0
-In-Reply-To: <20180516180518.GB12837@jamesdev>
+In-Reply-To: <20180521161443.GA9998@jamesdev>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -25,117 +26,84 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: James Hogan <jhogan@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Florian Fainelli <f.fainelli@gmail.com>, linux-mips@linux-mips.org, Namhyung Kim <namhyung@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Arnaldo Carvalho de Melo <acme@kernel.org>
-Message-ID: <20180517104045.Cwxy7Qd50bkjRiCSt62byR5N25zkAJAdiCRTayLJxU8@z>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20180522122058.ffKleIafnjJ-loJCbQNR7Rlwik6NR4fQ_CBzlWmEshc@z>
 
 Hi James,
 
-On 16/05/18 19:05, James Hogan wrote:
-> On Fri, Apr 20, 2018 at 11:23:07AM +0100, Matt Redfearn wrote:
->> Previously when performance counters are per-core, rather than
->> per-thread, the number available were divided by 2 on detection, and the
->> counters used by each thread in a core were "swizzled" to ensure
->> separation. However, this solution is suboptimal since it relies on a
->> couple of assumptions:
->> a) Always having 2 VPEs / core (number of counters was divided by 2)
->> b) Always having a number of counters implemented in the core that is
->>     divisible by 2. For instance if an SoC implementation had a single
->>     counter and 2 VPEs per core, then this logic would fail and no
->>     performance counters would be available.
->> The mechanism also does not allow for one VPE in a core using more than
->> it's allocation of the per-core counters to count multiple events even
->> though other VPEs may not be using them.
->>
->> Fix this situation by instead allocating (and releasing) per-core
->> performance counters when they are requested. This approach removes the
->> above assumptions and fixes the shortcomings.
->>
->> In order to do this:
->> Add additional logic to mipsxx_pmu_alloc_counter() to detect if a
->> sibling is using a per-core counter, and to allocate a per-core counter
->> in all sibling CPUs.
->> Similarly, add a mipsxx_pmu_free_counter() function to release a
->> per-core counter in all sibling CPUs when it is finished with.
->> A new spinlock, core_counters_lock, is introduced to ensure exclusivity
->> when allocating and releasing per-core counters.
->> Since counters are now allocated per-core on demand, rather than being
->> reserved per-thread at boot, all of the "swizzling" of counters is
->> removed.
->>
->> The upshot is that in an SoC with 2 counters / thread, counters are
->> reported as:
->> Performance counters: mips/interAptiv PMU enabled, 2 32-bit counters
->> available to each CPU, irq 18
->>
->> Running an instance of a test program on each of 2 threads in a
->> core, both threads can use their 2 counters to count 2 events:
->>
->> taskset 4 perf stat -e instructions:u,branches:u ./test_prog & taskset 8
->> perf stat -e instructions:u,branches:u ./test_prog
->>
->>   Performance counter stats for './test_prog':
->>
->>               30002      instructions:u
->>               10000      branches:u
->>
->>         0.005164264 seconds time elapsed
->>   Performance counter stats for './test_prog':
->>
->>               30002      instructions:u
->>               10000      branches:u
->>
->>         0.006139975 seconds time elapsed
->>
->> In an SoC with 2 counters / core (which can be forced by setting
->> cpu_has_mipsmt_pertccounters = 0), counters are reported as:
->> Performance counters: mips/interAptiv PMU enabled, 2 32-bit counters
->> available to each core, irq 18
->>
->> Running an instance of a test program on each of 2 threads in a/soak/bin/bashsoak -E cpuhotplugHi
->> core, now only one thread manages to secure the performance counters to
->> count 2 events. The other thread does not get any counters.
->>
->> taskset 4 perf stat -e instructions:u,branches:u ./test_prog & taskset 8
->> perf stat -e instructions:u,branches:u ./test_prog
->>
->>   Performance counter stats for './test_prog':
->>
->>       <not counted>       instructions:u
->>       <not counted>       branches:u
->>
->>         0.005179533 seconds time elapsed
->>
->>   Performance counter stats for './test_prog':
->>
->>               30002      instructions:u
->>               10000      branches:u
->>
->>         0.005179467 seconds time elapsed
->>
->> Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
+On 21/05/18 17:14, James Hogan wrote:
+> On Tue, Apr 17, 2018 at 04:40:03PM +0100, Matt Redfearn wrote:
+>> diff --git a/arch/mips/lib/memset.S b/arch/mips/lib/memset.S
+>> index 1cc306520a55..a06dabe99d4b 100644
+>> --- a/arch/mips/lib/memset.S
+>> +++ b/arch/mips/lib/memset.S
+>> @@ -231,16 +231,25 @@
+>>   
+>>   #ifdef CONFIG_CPU_MIPSR6
+>>   .Lbyte_fixup\@:
+>> +	/*
+>> +	 * unset_bytes = current_addr + 1
+>> +	 *      a2     =      t0      + 1
 > 
-> While this sounds like an improvement in practice, being able to use
-> more counters on single threaded stuff than otherwise, I'm a little
-> concerned what would happen if a task was migrated to a different CPU
-> and the perf counters couldn't be obtained on the new CPU due to
-> counters already being in use. Would the values be incorrectly small?
+> The code looks more like a2 = 1 - t0 to me:
+> 
+>> +	 */
+>>   	PTR_SUBU	a2, $0, t0
+>>   	jr		ra
+>>   	 PTR_ADDIU	a2, 1
+> 
+> I.e. t0 counts up to 1 and then stops.
 
-This change was really forced by the new I7200 development. Current 
-configurations have 2 counters per core, but each core has 3 VPEs - 
-which means the current logic cannot correctly assign counters. IoW the 
-2 assumptions stated in the commit log are no longer true.
+Well spotted. Which means this code is also wrong.... :-/
 
-Though you are right that if a task migrated to a core on which another 
-VPE is already using the counters, this change would mean counters 
-cannot be assigned. In that case we return EAGAIN. I'm not sure if that 
-error would be handled gracefully by the scheduler and the task 
-scheduled away again... The code events logic that backs this is tricky 
-to follow.
+We have the count of bytes to zero in a2, but that gets clobbered in the 
+exception handler and we always return a number of bytes uncopied within 
+STORSIZE.
+
+This test code:
+
+static int __init __attribute__((optimize("O0"))) test_clear_user(void)
+{
+	int j, k;
+
+	pr_info("\n\n\nTesting clear_user\n");
+
+	for (j = 0; j < 512; j++) {
+		if ((k = clear_user(NULL+3, j)) != j) {
+			pr_err("clear_user (NULL %d) returned %d\n", j, k);
+		}
+	}
+
+	return 0;
+}
+late_initcall(test_clear_user);
+
+on a 64r6el kernel results in:
+
+[    3.965439] Testing clear_user
+[    3.973169] clear_user (NULL 8) returned 6
+[    3.976782] clear_user (NULL 9) returned 6
+[    3.980390] clear_user (NULL 10) returned 6
+[    3.984052] clear_user (NULL 11) returned 6
+[    3.987524] clear_user (NULL 12) returned 6
+[    3.991179] clear_user (NULL 13) returned 6
+[    3.994841] clear_user (NULL 14) returned 6
+[    3.998500] clear_user (NULL 15) returned 6
+[    4.002160] clear_user (NULL 16) returned 6
+[    4.005820] clear_user (NULL 17) returned 6
+[    4.009480] clear_user (NULL 18) returned 6
+[    4.013140] clear_user (NULL 19) returned 6
+[    4.016797] clear_user (NULL 20) returned 6
+[    4.020456] clear_user (NULL 21) returned 6
+
+I'll post another fix soon, and update this comment to reflect the 
+corrected behavior.
 
 Thanks,
 Matt
 
-
+> 
+> Anyway I've applied patch 3 for 4.18.
 > 
 > Cheers
 > James

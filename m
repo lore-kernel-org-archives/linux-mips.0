@@ -1,11 +1,13 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:35724 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:53488 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992521AbeEWNkNw4DTL (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 23 May 2018 15:40:13 +0200
+        by eddie.linux-mips.org with ESMTP id S23992521AbeEWNuYGgCCL (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 23 May 2018 15:50:24 +0200
 From: Matt Redfearn <matt.redfearn@mips.com>
-Subject: [PATCH v3 1/2] MIPS: memset.S: Fix byte_fixup for MIPSr6
-Date: Wed, 23 May 2018 14:39:58 +0100
-Message-ID: <1527082799-14704-1-git-send-email-matt.redfearn@mips.com>
+Subject: [PATCH v3 2/2] MIPS: memset.S: Add comments to fault fixup handlers
+Date: Wed, 23 May 2018 14:39:59 +0100
+Message-ID: <1527082799-14704-2-git-send-email-matt.redfearn@mips.com>
+In-Reply-To: <1527082799-14704-1-git-send-email-matt.redfearn@mips.com>
+References: <1527082799-14704-1-git-send-email-matt.redfearn@mips.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Matt.Redfearn@mips.com>
@@ -19,126 +21,82 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <20180523133958.6rM_WrJXLO7_QgWX-LvIgp2DnaZ5nQ3nE_zSW4gTgcY@z>
+Cc: linux-mips@linux-mips.org, Matt Redfearn <matt.redfearn@mips.com>, linux-kernel@vger.kernel.org
+Message-ID: <20180523133959.HYtUoeqtfGfFWc43hffQP1bn7tfd7qaiVBOO5MZXnqA@z>
 
-The __clear_user function is defined to return the number of bytes that
-could not be cleared. From the underlying memset / bzero implementation
-this means setting register a2 to that number on return. Currently if a
-page fault is triggered within the MIPSr6 version of setting of initial
-unaligned bytes, the value loaded into a2 on return is meaningless.
+It is not immediately obvious what the expected inputs to these fault
+handlers is and how they calculate the number of unset bytes. Having
+stared deeply at this in order to fix some corner cases, add some
+comments to assist those who follow.
 
-During the MIPSr6 version of the initial unaligned bytes block, register
-a2 contains the number of bytes to be set beyond the initial unaligned
-bytes. The t0 register is initally set to the number of unaligned bytes
-- STORSIZE, effectively a negative version of the number of unaligned
-bytes. This is then incremented before each byte is saved.
-
-The label .Lbyte_fixup\@ is jumped to on page fault. Currently the value
-in a2 is incorrectly replaced by 0 - t0 + 1, effectively the number of
-unaligned bytes remaining. This leads to the failures being reported by
-the following test code:
-
-static int __init test_clear_user(void)
-{
-	int j, k;
-
-	pr_info("\n\n\nTesting clear_user\n");
-	for (j = 0; j < 512; j++) {
-		if ((k = clear_user(NULL+3, j)) != j) {
-			pr_err("clear_user (NULL %d) returned %d\n", j, k);
-		}
-	}
-	return 0;
-}
-late_initcall(test_clear_user);
-
-Which reports:
-[    3.965439] Testing clear_user
-[    3.973169] clear_user (NULL 8) returned 6
-[    3.976782] clear_user (NULL 9) returned 6
-[    3.980390] clear_user (NULL 10) returned 6
-[    3.984052] clear_user (NULL 11) returned 6
-[    3.987524] clear_user (NULL 12) returned 6
-
-Fix this by subtracting t0 from a2 (rather than $0), effectivey giving:
-unset_bytes = (#bytes - (#unaligned bytes)) - (-#unaligned bytes remaining + 1) + 1
-     a2     =             a2                -              t0                   + 1
-
-This fixes the value returned from __clear user when the number of bytes
-to set is > LONGSIZE and the address is invalid and unaligned.
-
-Unfortunately, this breaks the fixup handling for unaligned bytes after
-the final long, where register a2 still contains the number of bytes
-remaining to be set and the t0 register is to 0 - the number of
-unaligned bytes remaining.
-
-Because t0 is now is now subtracted from a2 rather than 0, the number of
-bytes unset is reported incorrectly:
-
-static int __init test_clear_user(void)
-{
-	char *test;
-	int j, k;
-
-	pr_info("\n\n\nTesting clear_user\n");
-	test = vmalloc(PAGE_SIZE);
-
-	for (j = 256; j < 512; j++) {
-		if ((k = clear_user(test + PAGE_SIZE - 254, j)) != j - 254) {
-			pr_err("clear_user (%px %d) returned %d\n",
-				test + PAGE_SIZE - 254, j, k);
-		}
-	}
-	return 0;
-}
-late_initcall(test_clear_user);
-
-[    3.976775] clear_user (c00000000000df02 256) returned 4
-[    3.981957] clear_user (c00000000000df02 257) returned 6
-[    3.986425] clear_user (c00000000000df02 258) returned 8
-[    3.990850] clear_user (c00000000000df02 259) returned 10
-[    3.995332] clear_user (c00000000000df02 260) returned 12
-[    3.999815] clear_user (c00000000000df02 261) returned 14
-
-Fix this by ensuring that a2 is set to 0 during the set of final
-unaligned bytes.
-
-Fixes: 8c56208aff77 ("MIPS: lib: memset: Add MIPS R6 support")
-Cc: stable@vger.kernel.org
 Signed-off-by: Matt Redfearn <matt.redfearn@mips.com>
-
 ---
 
 Changes in v3:
-New patch to fix fault handling during MIPSr6 version of setting
-unaligned bytes.
+- Update comment on .Lbyte_fixup to reflect corrected behavior
 
-Changes in v2: None
+Changes in v2:
+- Add comments to fault handlers in new, separate, patch.
 
- arch/mips/lib/memset.S | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/mips/lib/memset.S | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/arch/mips/lib/memset.S b/arch/mips/lib/memset.S
-index 1cc306520a5..fac26ce64b2 100644
+index fac26ce64b2..3a6f34ef5ff 100644
 --- a/arch/mips/lib/memset.S
 +++ b/arch/mips/lib/memset.S
-@@ -195,6 +195,7 @@
- #endif
- #else
- 	 PTR_SUBU	t0, $0, a2
-+	move		a2, zero		/* No remaining longs */
- 	PTR_ADDIU	t0, 1
- 	STORE_BYTE(0)
- 	STORE_BYTE(1)
-@@ -231,7 +232,7 @@
+@@ -232,16 +232,25 @@
  
  #ifdef CONFIG_CPU_MIPSR6
  .Lbyte_fixup\@:
--	PTR_SUBU	a2, $0, t0
-+	PTR_SUBU	a2, t0
++	/*
++	 * unset_bytes = (#bytes - (#unaligned bytes)) - (-#unaligned bytes remaining + 1) + 1
++	 *      a2     =             a2                -              t0                   + 1
++	 */
+ 	PTR_SUBU	a2, t0
  	jr		ra
  	 PTR_ADDIU	a2, 1
  #endif /* CONFIG_CPU_MIPSR6 */
+ 
+ .Lfirst_fixup\@:
++	/* unset_bytes already in a2 */
+ 	jr	ra
+ 	 nop
+ 
+ .Lfwd_fixup\@:
++	/*
++	 * unset_bytes = partial_start_addr +  #bytes   -     fault_addr
++	 *      a2     =         t1         + (a2 & 3f) - $28->task->BUADDR
++	 */
+ 	PTR_L		t0, TI_TASK($28)
+ 	andi		a2, 0x3f
+ 	LONG_L		t0, THREAD_BUADDR(t0)
+@@ -250,6 +259,10 @@
+ 	 LONG_SUBU	a2, t0
+ 
+ .Lpartial_fixup\@:
++	/*
++	 * unset_bytes = partial_end_addr +      #bytes     -     fault_addr
++	 *      a2     =       a0         + (a2 & STORMASK) - $28->task->BUADDR
++	 */
+ 	PTR_L		t0, TI_TASK($28)
+ 	andi		a2, STORMASK
+ 	LONG_L		t0, THREAD_BUADDR(t0)
+@@ -258,10 +271,15 @@
+ 	 LONG_SUBU	a2, t0
+ 
+ .Llast_fixup\@:
++	/* unset_bytes already in a2 */
+ 	jr		ra
+ 	 nop
+ 
+ .Lsmall_fixup\@:
++	/*
++	 * unset_bytes = end_addr - current_addr + 1
++	 *      a2     =    t1    -      a0      + 1
++	 */
+ 	PTR_SUBU	a2, t1, a0
+ 	jr		ra
+ 	 PTR_ADDIU	a2, 1
 -- 
 2.7.4

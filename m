@@ -1,11 +1,11 @@
-Received: from mail.kernel.org ([198.145.29.99]:52682 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:52718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23994541AbeEZKY4Cijut (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 26 May 2018 12:24:56 +0200
-Subject: Patch "KVM: Fix spelling mistake: "cop_unsuable" -> "cop_unusable"" has been added to the 4.16-stable tree
+        id S23993973AbeEZKY6fMNwe (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sat, 26 May 2018 12:24:58 +0200
+Subject: Patch "MIPS: xilfpga: Actually include FDT in fitImage" has been added to the 4.16-stable tree
 From: <gregkh@linuxfoundation.org>
-Date: Sat, 26 May 2018 12:23:50 +0200
-Message-ID: <1527330230191216@kroah.com>
+Date: Sat, 26 May 2018 12:23:51 +0200
+Message-ID: <1527330231176225@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -19,20 +19,20 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: colin.king@canonical.com, gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, ralf@linux-mips.org
+To: alexandre.belloni@bootlin.com, gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, ralf@linux-mips.org
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180526102350.06b2hHPuxZ58AaPuAenBd48UQAaUMTBOLTFLchN1gW0@z>
+Message-ID: <20180526102351.mJzOzz2NNO4pNZScLe7ig_UMKNqq_HjZH7umvJS5c1k@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
-    KVM: Fix spelling mistake: "cop_unsuable" -> "cop_unusable"
+    MIPS: xilfpga: Actually include FDT in fitImage
 
 to the 4.16-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     kvm-fix-spelling-mistake-cop_unsuable-cop_unusable.patch
+     mips-xilfpga-actually-include-fdt-in-fitimage.patch
 and it can be found in the queue-4.16 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,

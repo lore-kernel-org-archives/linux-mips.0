@@ -1,11 +1,11 @@
-Received: from mail.kernel.org ([198.145.29.99]:52718 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:52758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23993973AbeEZKY6fMNwe (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 26 May 2018 12:24:58 +0200
-Subject: Patch "MIPS: xilfpga: Actually include FDT in fitImage" has been added to the 4.16-stable tree
+        id S23994767AbeEZKZBOqdQ6 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sat, 26 May 2018 12:25:01 +0200
+Subject: Patch "MIPS: xilfpga: Stop generating useless dtb.o" has been added to the 4.16-stable tree
 From: <gregkh@linuxfoundation.org>
 Date: Sat, 26 May 2018 12:23:51 +0200
-Message-ID: <1527330231176225@kroah.com>
+Message-ID: <152733023164255@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -21,18 +21,18 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: alexandre.belloni@bootlin.com, gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, ralf@linux-mips.org
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180526102351.mJzOzz2NNO4pNZScLe7ig_UMKNqq_HjZH7umvJS5c1k@z>
+Message-ID: <20180526102351.nUsPajIyiWsn0d6ySBkM_YPBAPpfG9XlAxR4_F_K4tk@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
-    MIPS: xilfpga: Actually include FDT in fitImage
+    MIPS: xilfpga: Stop generating useless dtb.o
 
 to the 4.16-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mips-xilfpga-actually-include-fdt-in-fitimage.patch
+     mips-xilfpga-stop-generating-useless-dtb.o.patch
 and it can be found in the queue-4.16 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,

@@ -1,20 +1,18 @@
-Received: from merlin.infradead.org ([IPv6:2001:8b0:10b:1231::1]:54514 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23994676AbeEaAGqmYIzc (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 31 May 2018 02:06:46 +0200
-Subject: Re: [PATCH] kbuild: add machine size to CHEKCFLAGS
-References: <20180530204838.22079-1-luc.vanoostenryck@gmail.com>
- <d47b72cc-9209-a190-38b3-969870e1bf26@suse.de>
- <CAMHZB6GXVPvr1uwbemuxqPPtNzYT7jeVokR6q9tz2mS_=TG6vA@mail.gmail.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <01db7e93-89f3-361a-29c6-5146cda1d745@infradead.org>
-Date: Wed, 30 May 2018 17:06:24 -0700
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:32958 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23994689AbeEaXNPi7HMJ (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 1 Jun 2018 01:13:15 +0200
+Date: Thu, 31 May 2018 16:12:59 -0700
+From: Paul Burton <paul.burton@mips.com>
+Subject: Re: [PATCH 06/25] MIPS: loongson: remove loongson_dma_supported
+Message-ID: <20180531231259.s2zfywv3ei23rkoe@pburton-laptop>
+References: <20180525092111.18516-1-hch@lst.de>
+ <20180525092111.18516-7-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <CAMHZB6GXVPvr1uwbemuxqPPtNzYT7jeVokR6q9tz2mS_=TG6vA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Return-Path: <rdunlap@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20180525092111.18516-7-hch@lst.de>
+Return-Path: <Paul.Burton@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,76 +22,70 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>, Michal Marek <michal.lkml@markovi.net>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, "James E . J . Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, "David S . Miller" <davem@davemloft.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, the arch/x86 maintainers <x86@kernel.org>, Brendan Higgins <brendanhiggins@google.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Cao jin <caoj.fnst@cn.fujitsu.com>, Nicolas Pitre <nicolas.pitre@linaro.org>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, linux-alpha@vger.kernel.org, "moderated list:ARM/Allwinner sunXi SoC support" <linux-arm-kernel@lists.infradead.org>, linux-ia64@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org, Christoph Hellwig <hch@infradead.org>, Rob Landley <rob@landley.net>
-Message-ID: <20180531000624._tW1hwuFwXmpeTspXdSc9aFTyBAg2pN_65rlIfz67c8@z>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, Kevin Cernekee <cernekee@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, Huacai Chen <chenhc@lemote.com>, Jiaxun Yang <jiaxun.yang@flygoat.com>, David Daney <david.daney@cavium.com>, Tom Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@linux-mips.org, iommu@lists.linux-foundation.org
+Message-ID: <20180531231259.uGUQ8bJAx0Yu5aa7AgVr-VQD9R23egwGmK2Y-ty774A@z>
 
-On 05/30/2018 04:06 PM, Luc Van Oostenryck wrote:
-> On Thu, May 31, 2018 at 12:00 AM, Andreas Färber <afaerber@suse.de> wrote:
->> Hi Luc,
->>
->> The typo in the subject made me curious...
->>
->> Am 30.05.2018 um 22:48 schrieb Luc Van Oostenryck:
->>> By default, sparse assumes a 64bit machine when compiled on x86-64
->>> and 32bit when compiled on anything else.
->>>
->>> This can of course create all sort of problems for the other archs, like
->>> issuing false warnings ('shift too big (32) for type unsigned long'), or
->>> worse, failing to emit legitimate warnings.
->>>
->>> Fix this by adding the -m32/-m64 flag, depending on CONFIG_64BIT,
->>> to CHECKFLAGS in the main Makefile (and so for all archs).
->>> Also, remove the now unneeded -m32/-m64 in arch specific Makefiles.
->>>
->>> Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
->>> ---
->>>  Makefile             | 3 +++
->>>  arch/alpha/Makefile  | 2 +-
->>>  arch/arm/Makefile    | 2 +-
->>>  arch/arm64/Makefile  | 2 +-
->>>  arch/ia64/Makefile   | 2 +-
->>>  arch/mips/Makefile   | 3 ---
->>>  arch/parisc/Makefile | 2 +-
->>>  arch/sparc/Makefile  | 2 +-
->>>  arch/x86/Makefile    | 2 +-
->>>  9 files changed, 10 insertions(+), 10 deletions(-)
->>
->> What about the architectures not touched by your patch that previously
->> had no -m32/-m64? (arc, c6x, h8300, hexagon, m68k, microblaze, nds32,
->> nios2, openrisc, powerpc, riscv, s390, sh, unicore32, xtensa)
-> 
-> As explained in the patch, by default sparse uses -m64 if compiled on x86-64
-> and 32bit on everything else (well, more recent versions use -m64 if
-> compiled on any 64 bit machine). I think that most ppc devs use a ppc
-> machine and so ppc was most probably fine (at least ppc64) but I suspect
-> that most of these others archs either had never sparse used on them
-> or had a lot of wrong warnings. IOW, it was maybe OK but most probably
-> incorrect for them and now it is OK.
-> 
->> You forgot to CC them on this patch.
-> 
-> I didn't thought/knew  it was needed and the CC list is already
-> quite long but, if needed, no problem for me.
+Hi Christoph,
 
-Ideally, adding linux-arch@vger.kernel.org would be sufficient, but
-sadly I have doubts about that.
+On Fri, May 25, 2018 at 11:20:52AM +0200, Christoph Hellwig wrote:
+> swiotlb_dma_supported will always return true for the a mask
+> large enough to be covered by wired up physical address, so this
+> function is pointless.
 
->> Have you really checked that all their toolchains support the -m32/-m64
->> flags you newly introduce for them? Apart from non-biarch architectures,
->> I'm thinking of 31-bit s390 as a corner case where !64 != 32.
+Shouldn't this be "large enough to cover all wired up physical
+addresses"? Or maybe even more correctly "large enough to cover all DMA
+addresses that might be used"?
+
+Also, there's a spurious "the" on the first line.
+
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  arch/mips/loongson64/common/dma-swiotlb.c | 9 +--------
+>  1 file changed, 1 insertion(+), 8 deletions(-)
 > 
-> Hmm, there is no change to anything I call 'toolchain related', like
-> compiler and linker. The only change is sparse (or any other checker)
-> receiving now a correct and explicit -m32 or -m64.
+> diff --git a/arch/mips/loongson64/common/dma-swiotlb.c b/arch/mips/loongson64/common/dma-swiotlb.c
+> index 6a739f8ae110..a5e50f2ec301 100644
+> --- a/arch/mips/loongson64/common/dma-swiotlb.c
+> +++ b/arch/mips/loongson64/common/dma-swiotlb.c
+> @@ -56,13 +56,6 @@ static void loongson_dma_sync_sg_for_device(struct device *dev,
+>  	mb();
+>  }
+>  
+> -static int loongson_dma_supported(struct device *dev, u64 mask)
+> -{
+> -	if (mask > DMA_BIT_MASK(loongson_sysconf.dma_mask_bits))
+> -		return 0;
+
+The comparison here will only evaluate true (indicating that DMA is not
+supported) if the mask is larger than that supported by the system,
+right? Therefore is this not essentially a check that the mask is
+appropriately small, whilst swiotlb_dma_supported() checks that the mask
+is appropriately large?
+
+I'm struggling to understand how it follows that this function is
+pointless given the behaviour of swiotlb_dma_supported(), which is what
+the commit message suggests.
+
+Thanks,
+    Paul
+
+> -	return swiotlb_dma_supported(dev, mask);
+> -}
+> -
+>  dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t paddr)
+>  {
+>  	long nid;
+> @@ -99,7 +92,7 @@ static const struct dma_map_ops loongson_dma_map_ops = {
+>  	.sync_sg_for_cpu = swiotlb_sync_sg_for_cpu,
+>  	.sync_sg_for_device = loongson_dma_sync_sg_for_device,
+>  	.mapping_error = swiotlb_dma_mapping_error,
+> -	.dma_supported = loongson_dma_supported,
+> +	.dma_supported = swiotlb_dma_supported,
+>  };
+>  
+>  void __init plat_swiotlb_setup(void)
+> -- 
+> 2.17.0
 > 
-> For s390, as far as I know:
-> 1) it has CONFIG_64BIT unconditionally definee (because the old 31bit
->    is no more supported, now everything is s390x only).
-> 2) even if the *address space* was only 31 bit, I'm very sure
->    that sizeof(long) and sizeof(void*) was 4 on these machine
->    hence -m32 would have been correct.
-
-
--- 
-~Randy
+> 

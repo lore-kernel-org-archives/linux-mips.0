@@ -1,16 +1,16 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:49473 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:36390 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994689AbeFAADWPypoB (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 1 Jun 2018 02:03:22 +0200
-Date: Thu, 31 May 2018 17:03:11 -0700
+        by eddie.linux-mips.org with ESMTP id S23992567AbeFAXH5XPBIE (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 2 Jun 2018 01:07:57 +0200
+Date: Fri, 1 Jun 2018 16:07:48 -0700
 From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH] Make elf2ecoff work on 64bit host machines
-Message-ID: <20180601000311.lgwempsux7hnz7pn@pburton-laptop>
-References: <20180528112625.25509-1-tbogendoerfer@suse.de>
+Subject: Re: [PATCH v2] MIPS: Fix ejtag handler on SMP
+Message-ID: <20180601230748.3jn73ao6pnyivric@pburton-laptop>
+References: <20180403114102.10700-1-r@hev.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20180528112625.25509-1-tbogendoerfer@suse.de>
+In-Reply-To: <20180403114102.10700-1-r@hev.cc>
 Return-Path: <Paul.Burton@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -21,195 +21,128 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Thomas Bogendoerfer <tbogendoerfer@suse.de>
-Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20180601000311.qgbnTv5GvenjBdAgxBWkQYF6YW5a2Sg3uOMIs5f84bA@z>
+To: r@hev.cc
+Cc: linux-mips@linux-mips.org, jhogan@kernel.org, ralf@linux-mips.org
+Message-ID: <20180601230748.NVtuc14G0o5ztYBegY6vcp-HQnROvlozaPI814Q-zis@z>
 
-Hi Thomas,
+Hi Heiher,
 
-On Mon, May 28, 2018 at 01:26:24PM +0200, Thomas Bogendoerfer wrote:
-> Use fixed width integer types for ecoff structs to make elf2ecoff work
-> on 64bit host machines
+On Tue, Apr 03, 2018 at 07:41:02PM +0800, r@hev.cc wrote:
+> From: Heiher <r@hev.cc>
 > 
-> Signed-off-by: Thomas Bogendoerfer <tbogendoerfer@suse.de>
+> On SMP systems, the shared ejtag debug buffer may be overwritten by
+> other cores, because every cores can generate ejtag exception at
+> same time.
+> 
+> Unfortunately, in that context, it's difficult to relax more registers
+> to access per cpu buffers. so use ll/sc to serialize the access.
+> 
+> Signed-off-by: Heiher <r@hev.cc>
 > ---
->  arch/mips/boot/ecoff.h     | 58 +++++++++++++++++++++++-----------------------
->  arch/mips/boot/elf2ecoff.c | 29 +++++++++++------------
->  2 files changed, 43 insertions(+), 44 deletions(-)
+>  arch/mips/kernel/genex.S | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
 > 
-> diff --git a/arch/mips/boot/ecoff.h b/arch/mips/boot/ecoff.h
-> index b3e73c22c345..9eb4167ef979 100644
-> --- a/arch/mips/boot/ecoff.h
-> +++ b/arch/mips/boot/ecoff.h
-> @@ -3,13 +3,13 @@
->   * Some ECOFF definitions.
->   */
+> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+> index 37b9383eacd3..1af8c83835ef 100644
+> --- a/arch/mips/kernel/genex.S
+> +++ b/arch/mips/kernel/genex.S
+> @@ -354,6 +354,16 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
+>  	sll	k0, k0, 30	# Check for SDBBP.
+>  	bgez	k0, ejtag_return
+>  
+> +#ifdef CONFIG_SMP
+> +	PTR_LA	k0, ejtag_debug_buffer
+> +1:	ll	k0, LONGSIZE(k0)
+> +	bnez	k0, 1b
+> +	PTR_LA	k0, ejtag_debug_buffer
+> +	sc	k0, LONGSIZE(k0)
+> +	beqz	k0, 1b
 
-Perhaps we should #include <stdint.h> before making use of the types it
-provides?
+If this branch is taken then we're in trouble k0 is now 0x0 so the ll
+will try to load from address 0+LONGSIZE. So we'll take a TLBL exception
+& panic.
 
-I guess if this builds then in practice some other header included by
-elf2ecoff.c already pulls it in, but it'd be nice to be explicit about
-what ecoff.h needs.
+The easiest solution would be to move the 1 label a line earlier to the
+PTR_LA, so that we repeat the PTR_LA. I like the clever trick that the
+data returned from the ll should either be 0 or the address of
+ejtag_debug_buffer, which meant the bnez a little earlier wouldn't have
+this problem, and I see that trivially moving the 1 label would make
+that case redundantly repeat the PTR_LA too but in practice this should
+be rarely executed so the extra couple of instructions ought not to
+matter.
 
->  typedef struct filehdr {
-> -	unsigned short	f_magic;	/* magic number */
-> -	unsigned short	f_nscns;	/* number of sections */
-> -	long		f_timdat;	/* time & date stamp */
-> -	long		f_symptr;	/* file pointer to symbolic header */
-> -	long		f_nsyms;	/* sizeof(symbolic hdr) */
-> -	unsigned short	f_opthdr;	/* sizeof(optional hdr) */
-> -	unsigned short	f_flags;	/* flags */
-> +	uint16_t	f_magic;	/* magic number */
-> +	uint16_t	f_nscns;	/* number of sections */
-> +	int32_t		f_timdat;	/* time & date stamp */
-> +	int32_t		f_symptr;	/* file pointer to symbolic header */
-> +	int32_t		f_nsyms;	/* sizeof(symbolic hdr) */
-> +	uint16_t	f_opthdr;	/* sizeof(optional hdr) */
-> +	uint16_t	f_flags;	/* flags */
->  } FILHDR;
->  #define FILHSZ	sizeof(FILHDR)
->  
-> @@ -18,32 +18,32 @@ typedef struct filehdr {
->  
->  typedef struct scnhdr {
->  	char		s_name[8];	/* section name */
-> -	long		s_paddr;	/* physical address, aliased s_nlib */
-> -	long		s_vaddr;	/* virtual address */
-> -	long		s_size;		/* section size */
-> -	long		s_scnptr;	/* file ptr to raw data for section */
-> -	long		s_relptr;	/* file ptr to relocation */
-> -	long		s_lnnoptr;	/* file ptr to gp histogram */
-> -	unsigned short	s_nreloc;	/* number of relocation entries */
-> -	unsigned short	s_nlnno;	/* number of gp histogram entries */
-> -	long		s_flags;	/* flags */
-> +	int32_t		s_paddr;	/* physical address, aliased s_nlib */
-> +	int32_t		s_vaddr;	/* virtual address */
-> +	int32_t		s_size;		/* section size */
-> +	int32_t		s_scnptr;	/* file ptr to raw data for section */
-> +	int32_t		s_relptr;	/* file ptr to relocation */
-> +	int32_t		s_lnnoptr;	/* file ptr to gp histogram */
-> +	uint16_t	s_nreloc;	/* number of relocation entries */
-> +	uint16_t	s_nlnno;	/* number of gp histogram entries */
-> +	int32_t		s_flags;	/* flags */
->  } SCNHDR;
->  #define SCNHSZ		sizeof(SCNHDR)
-> -#define SCNROUND	((long)16)
-> +#define SCNROUND	((int32_t)16)
->  
->  typedef struct aouthdr {
-> -	short	magic;		/* see above				*/
-> -	short	vstamp;		/* version stamp			*/
-> -	long	tsize;		/* text size in bytes, padded to DW bdry*/
-> -	long	dsize;		/* initialized data "  "		*/
-> -	long	bsize;		/* uninitialized data "	  "		*/
-> -	long	entry;		/* entry pt.				*/
-> -	long	text_start;	/* base of text used for this file	*/
-> -	long	data_start;	/* base of data used for this file	*/
-> -	long	bss_start;	/* base of bss used for this file	*/
-> -	long	gprmask;	/* general purpose register mask	*/
-> -	long	cprmask[4];	/* co-processor register masks		*/
-> -	long	gp_value;	/* the gp value used for this object	*/
-> +	int16_t	magic;		/* see above				*/
-> +	int16_t	vstamp;		/* version stamp			*/
-> +	int32_t	tsize;		/* text size in bytes, padded to DW bdry*/
-> +	int32_t	dsize;		/* initialized data "  "		*/
-> +	int32_t	bsize;		/* uninitialized data "	  "		*/
-> +	int32_t	entry;		/* entry pt.				*/
-> +	int32_t	text_start;	/* base of text used for this file	*/
-> +	int32_t	data_start;	/* base of data used for this file	*/
-> +	int32_t	bss_start;	/* base of bss used for this file	*/
-> +	int32_t	gprmask;	/* general purpose register mask	*/
-> +	int32_t	cprmask[4];	/* co-processor register masks		*/
-> +	int32_t	gp_value;	/* the gp value used for this object	*/
->  } AOUTHDR;
->  #define AOUTHSZ sizeof(AOUTHDR)
->  
-> diff --git a/arch/mips/boot/elf2ecoff.c b/arch/mips/boot/elf2ecoff.c
-> index 266c8137e859..8322282f93b0 100644
-> --- a/arch/mips/boot/elf2ecoff.c
-> +++ b/arch/mips/boot/elf2ecoff.c
-> @@ -55,8 +55,8 @@
->  /* -------------------------------------------------------------------- */
->  
->  struct sect {
-> -	unsigned long vaddr;
-> -	unsigned long len;
-> +	uint32_t vaddr;
-> +	uint32_t len;
->  };
->  
->  int *symTypeTable;
-> @@ -153,16 +153,16 @@ static char *saveRead(int file, off_t offset, off_t len, char *name)
->  }
->  
->  #define swab16(x) \
-> -	((unsigned short)( \
-> -		(((unsigned short)(x) & (unsigned short)0x00ffU) << 8) | \
-> -		(((unsigned short)(x) & (unsigned short)0xff00U) >> 8) ))
-> +	((uint16_t)( \
-> +		(((uint16_t)(x) & (uint16_t)0x00ffU) << 8) | \
-> +		(((uint16_t)(x) & (uint16_t)0xff00U) >> 8) ))
->  
->  #define swab32(x) \
->  	((unsigned int)( \
-> -		(((unsigned int)(x) & (unsigned int)0x000000ffUL) << 24) | \
-> -		(((unsigned int)(x) & (unsigned int)0x0000ff00UL) <<  8) | \
-> -		(((unsigned int)(x) & (unsigned int)0x00ff0000UL) >>  8) | \
-> -		(((unsigned int)(x) & (unsigned int)0xff000000UL) >> 24) ))
-> +		(((uint32_t)(x) & (uint32_t)0x000000ffUL) << 24) | \
-> +		(((uint32_t)(x) & (uint32_t)0x0000ff00UL) <<  8) | \
-> +		(((uint32_t)(x) & (uint32_t)0x00ff0000UL) >>  8) | \
-> +		(((uint32_t)(x) & (uint32_t)0xff000000UL) >> 24) ))
->  
->  static void convert_elf_hdr(Elf32_Ehdr * e)
->  {
-> @@ -274,7 +274,7 @@ int main(int argc, char *argv[])
->  	struct aouthdr eah;
->  	struct scnhdr esecs[6];
->  	int infile, outfile;
-> -	unsigned long cur_vma = ULONG_MAX;
-> +	uint32_t cur_vma = UINT32_MAX;
->  	int addflag = 0;
->  	int nosecs;
->  
-> @@ -518,7 +518,7 @@ int main(int argc, char *argv[])
->  
->  		for (i = 0; i < nosecs; i++) {
->  			printf
-> -			    ("Section %d: %s phys %lx  size %lx	 file offset %lx\n",
-> +			    ("Section %d: %s phys %x  size %x	 file offset %x\n",
+I think if we're being really correct this should take into account
+R10000_LLSC_WAR too, and use beqzl when that's set (see asm/cmpxchg.h).
 
-Maybe #include <inttypes.h>, then use PRIx32 & co here & below?
+> +	sync
+
+This is being used as the equivalent of an smp_llsc_mb(), so it would be
+good to comment to that effect & clarify that we need an ordering
+barrier to ensure that writes to ejtag_debug_buffer can't overtake the
+acquisition of this lock.
+
+The sync could also be omitted if either of
+CONFIG_WEAK_REORDERING_BEYOND_LLSC or CONFIG_SMP aren't enabled, but
+that might just clutter up the rarely executed code for little gain so I
+won't insist.
+
+> +#endif
+> +
+>  	PTR_LA	k0, ejtag_debug_buffer
+>  	LONG_S	k1, 0(k0)
+>  	SAVE_ALL
+> @@ -363,7 +373,12 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
+>  	PTR_LA	k0, ejtag_debug_buffer
+>  	LONG_L	k1, 0(k0)
+>  
+> +#ifdef CONFIG_SMP
+> +	sw	zero, LONGSIZE(k0)
+> +#endif
+> +
+>  ejtag_return:
+> +	back_to_back_c0_hazard
+>  	MFC0	k0, CP0_DESAVE
+>  	.set	mips32
+>  	deret
+> @@ -377,6 +392,9 @@ ejtag_return:
+>  	.data
+>  EXPORT(ejtag_debug_buffer)
+>  	.fill	LONGSIZE
+> +#ifdef CONFIG_SMP
+
+I think it would make sense to EXPORT(ejtag_debug_buffer_spinlock) or
+something to that effect here, and use that symbol when accessing the
+lock above. That would make it easier to see at a glance that this is an
+open-coded spinlock.
+
+Having said all of that, I'm a little concerned about the approach in
+general because it relies on CPUs always returning from
+ejtag_exception_handler() to release the lock. If a CPU doesn't return
+from ejtag_exception_handler() then any other CPUs that take an EJTAG
+exception will hang silently. In practice ejtag_exception_handler() is
+currently quite simple so we probably will always return, so I'd
+consider this patch an improvement on what we have now once the comments
+above are addressed.
+
+One obvious alternative would be to make ejtag_debug_buffer per-CPU, or
+probably more easily making it an array of NR_CPUS length. It would be
+tricky to access though until MIPSr6, where AUI would help, or nanoMIPS
+where an ADDIU[48] could encode the whole address of ejtag_debug_buffer
+to add to the CPU offset.
+
+Another option would be to use a KScratch register where they're
+present, but pre-r6 we usually can't guarantee they exist so that would
+complicate things again.
 
 Thanks,
     Paul
 
->  			     i, esecs[i].s_name, esecs[i].s_paddr,
->  			     esecs[i].s_size, esecs[i].s_scnptr);
->  		}
-> @@ -564,17 +564,16 @@ int main(int argc, char *argv[])
->  		   the section can be loaded before copying. */
->  		if (ph[i].p_type == PT_LOAD && ph[i].p_filesz) {
->  			if (cur_vma != ph[i].p_vaddr) {
-> -				unsigned long gap =
-> -				    ph[i].p_vaddr - cur_vma;
-> +				uint32_t gap = ph[i].p_vaddr - cur_vma;
->  				char obuf[1024];
->  				if (gap > 65536) {
->  					fprintf(stderr,
-> -						"Intersegment gap (%ld bytes) too large.\n",
-> +						"Intersegment gap (%d bytes) too large.\n",
->  						gap);
->  					exit(1);
->  				}
->  				fprintf(stderr,
-> -					"Warning: %ld byte intersegment gap.\n",
-> +					"Warning: %d byte intersegment gap.\n",
->  					gap);
->  				memset(obuf, 0, sizeof obuf);
->  				while (gap) {
+> +	.fill	LONGSIZE
+> +#endif
+>  	.previous
+>  
+>  	__INIT
 > -- 
-> 2.13.6
+> 2.16.3
 > 
 > 

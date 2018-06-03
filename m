@@ -1,11 +1,11 @@
-Received: from mail.kernel.org ([198.145.29.99]:52464 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:52492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992692AbeFCIy4P7IAa (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 3 Jun 2018 10:54:56 +0200
-Subject: Patch "MIPS: prctl: Disallow FRE without FR with PR_SET_FP_MODE requests" has been added to the 4.14-stable tree
+        id S23992697AbeFCIy6l0J3a (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sun, 3 Jun 2018 10:54:58 +0200
+Subject: Patch "MIPS: ptrace: Fix PTRACE_PEEKUSR requests for 64-bit FGRs" has been added to the 4.14-stable tree
 From: <gregkh@linuxfoundation.org>
 Date: Sun, 03 Jun 2018 10:53:56 +0200
-Message-ID: <152801603622949@kroah.com>
+Message-ID: <152801603615246@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -21,18 +21,18 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, macro@mips.com, ralf@linux-mips.org
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180603085356.sivwPsHL7XdkW5WOVFW6pg2LTH9HlJExN0hJ90ugpBw@z>
+Message-ID: <20180603085356.24VFxQsQcYxLxJIcexJCsMZMF1VE10C1lzrs8RwRdmg@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
-    MIPS: prctl: Disallow FRE without FR with PR_SET_FP_MODE requests
+    MIPS: ptrace: Fix PTRACE_PEEKUSR requests for 64-bit FGRs
 
 to the 4.14-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mips-prctl-disallow-fre-without-fr-with-pr_set_fp_mode-requests.patch
+     mips-ptrace-fix-ptrace_peekusr-requests-for-64-bit-fgrs.patch
 and it can be found in the queue-4.14 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,

@@ -1,11 +1,11 @@
-Received: from mail.kernel.org ([198.145.29.99]:51686 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:51998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992692AbeFCIurhQuWa (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 3 Jun 2018 10:50:47 +0200
-Subject: Patch "MIPS: ptrace: Fix PTRACE_PEEKUSR requests for 64-bit FGRs" has been added to the 4.4-stable tree
+        id S23992634AbeFCIws2jl9a (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sun, 3 Jun 2018 10:52:48 +0200
+Subject: Patch "MIPS: prctl: Disallow FRE without FR with PR_SET_FP_MODE requests" has been added to the 4.9-stable tree
 From: <gregkh@linuxfoundation.org>
-Date: Sun, 03 Jun 2018 10:50:03 +0200
-Message-ID: <152801580362207@kroah.com>
+Date: Sun, 03 Jun 2018 10:52:03 +0200
+Message-ID: <1528015923211112@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -21,19 +21,19 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, macro@mips.com, ralf@linux-mips.org
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180603085003.qMwM41xBokAIP2nvcZXIgeIj-Xc4AMuZDqNmt51YjVY@z>
+Message-ID: <20180603085203.KtW_TU7_mNDsicp80siRL4Gp7T4H81QHXes2Jp2faFM@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
-    MIPS: ptrace: Fix PTRACE_PEEKUSR requests for 64-bit FGRs
+    MIPS: prctl: Disallow FRE without FR with PR_SET_FP_MODE requests
 
-to the 4.4-stable tree which can be found at:
+to the 4.9-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mips-ptrace-fix-ptrace_peekusr-requests-for-64-bit-fgrs.patch
-and it can be found in the queue-4.4 subdirectory.
+     mips-prctl-disallow-fre-without-fr-with-pr_set_fp_mode-requests.patch
+and it can be found in the queue-4.9 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.

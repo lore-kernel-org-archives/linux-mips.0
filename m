@@ -1,18 +1,15 @@
-Received: from mx2.suse.de ([195.135.220.15]:42878 "EHLO mx2.suse.de"
+Received: from mail.kernel.org ([198.145.29.99]:50134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992615AbeFBNnDp6md3 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 2 Jun 2018 15:43:03 +0200
-Date: Sat, 2 Jun 2018 15:42:53 +0200
-From: Thomas Bogendoerfer <tbogendoerfer@suse.de>
-Subject: Re: [PATCH] Make elf2ecoff work on 64bit host machines
-Message-ID: <20180602154253.5a65264ec4d11a8c8a16ef1a@suse.de>
-In-Reply-To: <20180601000311.lgwempsux7hnz7pn@pburton-laptop>
-References: <20180528112625.25509-1-tbogendoerfer@suse.de>
-        <20180601000311.lgwempsux7hnz7pn@pburton-laptop>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-Path: <tbogendoerfer@suse.de>
+        id S23992634AbeFCIisZhGua (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sun, 3 Jun 2018 10:38:48 +0200
+Subject: Patch "MIPS: lantiq: gphy: Drop reboot/remove reset asserts" has been added to the 4.16-stable tree
+From: <gregkh@linuxfoundation.org>
+Date: Sun, 03 Jun 2018 10:37:43 +0200
+Message-ID: <15280150631442@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 8bit
+Return-Path: <SRS0=GHQf=IV=linuxfoundation.org=gregkh@kernel.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,28 +19,21 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <paul.burton@mips.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20180602134253.atgR2rcXNHVUfP4rY3H4I2YGuYSDDV-pku6G5AXpY0Y@z>
-
-On Thu, 31 May 2018 17:03:11 -0700
-Paul Burton <paul.burton@mips.com> wrote:
+To: dev@kresin.me, gregkh@linuxfoundation.org, hauke@hauke-m.de, jhogan@kernel.org, john@phrozen.org, linux-mips@linux-mips.org, martin.blumenstingl@googlemail.com
+Cc: stable-commits@vger.kernel.org
+Message-ID: <20180603083743.yMMxfwdXTjUP-L5HQKLcS45rsOrePYSbnPGsUbvwTeM@z>
 
 
-> Perhaps we should #include <stdint.h> before making use of the types it
-> provides?
+This is a note to let you know that I've just added the patch titled
 
-good point, will send a new version.
+    MIPS: lantiq: gphy: Drop reboot/remove reset asserts
 
-> > @@ -518,7 +518,7 @@ int main(int argc, char *argv[])
-> >  
-> >  		for (i = 0; i < nosecs; i++) {
-> >  			printf
-> > -			    ("Section %d: %s phys %lx  size %lx	 file offset %lx\n",
-> > +			    ("Section %d: %s phys %x  size %x	 file offset %x\n",
-> 
-> Maybe #include <inttypes.h>, then use PRIx32 & co here & below?
+to the 4.16-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
-I'll have look.
+The filename of the patch is:
+     mips-lantiq-gphy-drop-reboot-remove-reset-asserts.patch
+and it can be found in the queue-4.16 subdirectory.
 
-Thomas.
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.

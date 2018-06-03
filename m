@@ -1,11 +1,11 @@
-Received: from mail.kernel.org ([198.145.29.99]:52492 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:52680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992697AbeFCIy6l0J3a (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 3 Jun 2018 10:54:58 +0200
-Subject: Patch "MIPS: ptrace: Fix PTRACE_PEEKUSR requests for 64-bit FGRs" has been added to the 4.14-stable tree
+        id S23993104AbeFCIzTfh00a (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sun, 3 Jun 2018 10:55:19 +0200
+Subject: Patch "MIPS: ptrace: Fix PTRACE_PEEKUSR requests for 64-bit FGRs" has been added to the 3.18-stable tree
 From: <gregkh@linuxfoundation.org>
-Date: Sun, 03 Jun 2018 10:53:56 +0200
-Message-ID: <152801603615246@kroah.com>
+Date: Sun, 03 Jun 2018 10:54:35 +0200
+Message-ID: <1528016075154114@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -21,19 +21,19 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, macro@mips.com, ralf@linux-mips.org
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180603085356.24VFxQsQcYxLxJIcexJCsMZMF1VE10C1lzrs8RwRdmg@z>
+Message-ID: <20180603085435.y36hz1yq2BgzJlw_aZjf2-_J8n43TG4aVqXbA-eU_0E@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
     MIPS: ptrace: Fix PTRACE_PEEKUSR requests for 64-bit FGRs
 
-to the 4.14-stable tree which can be found at:
+to the 3.18-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      mips-ptrace-fix-ptrace_peekusr-requests-for-64-bit-fgrs.patch
-and it can be found in the queue-4.14 subdirectory.
+and it can be found in the queue-3.18 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.

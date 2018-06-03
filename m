@@ -1,11 +1,11 @@
-Received: from mail.kernel.org ([198.145.29.99]:52430 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:52464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992634AbeFCIyxyApza (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 3 Jun 2018 10:54:53 +0200
-Subject: Patch "MIPS: lantiq: gphy: Drop reboot/remove reset asserts" has been added to the 4.14-stable tree
+        id S23992692AbeFCIy4P7IAa (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Sun, 3 Jun 2018 10:54:56 +0200
+Subject: Patch "MIPS: prctl: Disallow FRE without FR with PR_SET_FP_MODE requests" has been added to the 4.14-stable tree
 From: <gregkh@linuxfoundation.org>
 Date: Sun, 03 Jun 2018 10:53:56 +0200
-Message-ID: <152801603657103@kroah.com>
+Message-ID: <152801603622949@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -19,20 +19,20 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: dev@kresin.me, gregkh@linuxfoundation.org, hauke@hauke-m.de, jhogan@kernel.org, john@phrozen.org, linux-mips@linux-mips.org, martin.blumenstingl@googlemail.com
+To: gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, macro@mips.com, ralf@linux-mips.org
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180603085356._Oj-b6LFUVxBzat7rpvMcZFvxsYXuuGiGeNOJUKABUQ@z>
+Message-ID: <20180603085356.sivwPsHL7XdkW5WOVFW6pg2LTH9HlJExN0hJ90ugpBw@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
-    MIPS: lantiq: gphy: Drop reboot/remove reset asserts
+    MIPS: prctl: Disallow FRE without FR with PR_SET_FP_MODE requests
 
 to the 4.14-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mips-lantiq-gphy-drop-reboot-remove-reset-asserts.patch
+     mips-prctl-disallow-fre-without-fr-with-pr_set_fp_mode-requests.patch
 and it can be found in the queue-4.14 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,

@@ -1,17 +1,16 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:56810 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.210]:47147 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994719AbeFGAStkV1qU (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 7 Jun 2018 02:18:49 +0200
-Date: Wed, 6 Jun 2018 17:18:39 -0700
+        by eddie.linux-mips.org with ESMTP id S23994619AbeFHWhNsgbuL (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 9 Jun 2018 00:37:13 +0200
+Date: Fri, 8 Jun 2018 15:37:05 -0700
 From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH v7 3/8] MIPS: Octeon: Properly use sysinfo header file.
-Message-ID: <20180607001839.fzfwnzi2qbvlpydm@pburton-laptop>
-References: <1528176297-21697-1-git-send-email-steven.hill@cavium.com>
- <1528176297-21697-4-git-send-email-steven.hill@cavium.com>
+Subject: Re: [PATCH] MIPS: Fix ejtag handler on SMP
+Message-ID: <20180608223705.uaac4xsi2z5b7mnl@pburton-laptop>
+References: <20180608055109.828-1-r@hev.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1528176297-21697-4-git-send-email-steven.hill@cavium.com>
+In-Reply-To: <20180608055109.828-1-r@hev.cc>
 Return-Path: <Paul.Burton@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -22,71 +21,85 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Steven J. Hill" <steven.hill@cavium.com>
-Cc: linux-mips@linux-mips.org
-Message-ID: <20180607001839.23F2w9Al2TgqEqJocsmsgX34V06RAx7P6d5uYtp_3t8@z>
+To: r@hev.cc
+Cc: linux-mips@linux-mips.org, jhogan@kernel.org, ralf@linux-mips.org
+Message-ID: <20180608223705.xszltEDY8t9fOeFtXDruGoxvXmCLA_343zYX1O2GTis@z>
 
-Hi Steven,
+Hi Heiher,
 
-On Tue, Jun 05, 2018 at 12:24:52AM -0500, Steven J. Hill wrote:
-> Clean up usage of 'cvmx-sysinfo.h' header file. Also sort the
-> inclusing of header files and update copyrights.
-
-Inclusion? Including?
-
-What was wrong with the existing usage of cvmx-sysinfo.h?
-
-Why are these 3 changes being made as one patch?
-
-This commit message doesn't really say anything useful, and other
-patches in the series have the same problem.
-
-> diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper-board.c b/arch/mips/cavium-octeon/executive/cvmx-helper-board.c
-> index ab8362e..971c03e 100644
-> --- a/arch/mips/cavium-octeon/executive/cvmx-helper-board.c
-> +++ b/arch/mips/cavium-octeon/executive/cvmx-helper-board.c
-> @@ -4,7 +4,7 @@
->   * Contact: support@caviumnetworks.com
->   * This file is part of the OCTEON SDK
->   *
-> - * Copyright (c) 2003-2008 Cavium Networks
-> + * Copyright (C) 2003-2018 Cavium, Inc.
-
-All these copyright changes:
-
-  1) Make it more difficult to read the patch & see what the actual code
-     changes are, and;
-
-  2) Seem pretty unnecessary especially for something as trivial as
-     moving around a bunch of header inclusions.
-
-> diff --git a/arch/mips/include/asm/octeon/cvmx-sysinfo.h b/arch/mips/include/asm/octeon/cvmx-sysinfo.h
-> index c6c3ee3..f1a11a9 100644
-> --- a/arch/mips/include/asm/octeon/cvmx-sysinfo.h
-> +++ b/arch/mips/include/asm/octeon/cvmx-sysinfo.h
-> @@ -4,7 +4,7 @@
->   * Contact: support@caviumnetworks.com
->   * This file is part of the OCTEON SDK
->   *
-> - * Copyright (c) 2003-2016 Cavium, Inc.
-> + * Copyright (C) 2003-2018 Cavium, Inc.
->   *
->   * This file is free software; you can redistribute it and/or modify
->   * it under the terms of the GNU General Public License, Version 2, as
-> @@ -32,7 +32,7 @@
->  #ifndef __CVMX_SYSINFO_H__
->  #define __CVMX_SYSINFO_H__
+On Fri, Jun 08, 2018 at 01:51:09PM +0800, r@hev.cc wrote:
+> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+> index 37b9383eacd3..3804afd878f8 100644
+> --- a/arch/mips/kernel/genex.S
+> +++ b/arch/mips/kernel/genex.S
+> @@ -354,16 +354,56 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
+>  	sll	k0, k0, 30	# Check for SDBBP.
+>  	bgez	k0, ejtag_return
 >  
-> -#include "cvmx-coremask.h"
-> +#include<asm/octeon/cvmx-bootinfo.h>
+> +#ifdef CONFIG_SMP
+> +1:	PTR_LA	k0, ejtag_debug_buffer_spinlock
+> +	ll	k0, 0(k0)
+> +	bnez	k0, 1b
+> +	PTR_LA	k0, ejtag_debug_buffer_spinlock
+> +	sc	k0, 0(k0)
+> +	beqz	k0, 1b
+> +# ifdef CONFIG_WEAK_REORDERING_BEYOND_LLSC
+> +	sync
+> +# endif
+> +
+> +	PTR_LA	k0, ejtag_debug_buffer
+> +	LONG_S	k1, 0(k0)
+> +
+> +	mfc0	k1, CP0_EBASE
+> +	andi	k1, MIPS_EBASE_CPUNUM
+> +	PTR_SLL	k1, LONGLOG
+> +	PTR_LA	k0, ejtag_debug_buffer_per_cpu
+> +	PTR_ADDU k0, k1
 
-Space between #include & the '<' please.
+Neat - I like the concept of using the spinlock for just a short window
+to free up k1, then using a per-CPU buffer.
 
-Also why is this change being made at all? Both before and after this
-series cvmx-sysinfo.h doesn't use anything from cvmx-bootinfo.h, but it
-does use struct cvmx_coremask from cvmx-coremask.h. Therefore including
-cvmx-coremask.h seems like the right thing to do, although it would look
-better to do so using <asm/octeon/cvmx-coremask.h>.
+Unfortunately it's not going to be as simple as using EBase.CPUNum, for
+at least 2 reasons:
+
+  - EBase.CPUNum doesn't always equal the Linux CPU number. For example
+    in many systems which implement multi-threading ASE CPUNum is
+    actually just a concatenation of some fixed number of bits
+    specifying the core number and some fixed number of bits specifying
+    the VP(E) number. So for example we might have a system with 2 cores
+    each of which have 2 threads, but whose numbering looks like this:
+
+      Linux CPU Number | Core Number | VP(E) Number | EBase.CPUNum
+      -----------------|-------------|--------------|-------------
+                     0 |  0b00 / 0x0 |   0b00 / 0x0 | 0b0000 / 0x0
+		     1 |  0b00 / 0x0 |   0b01 / 0x1 | 0b0001 / 0x1
+		     2 |  0b01 / 0x1 |   0b00 / 0x0 | 0b0100 / 0x4
+		     3 |  0b01 / 0x1 |   0b01 / 0x1 | 0b0101 / 0x5
+
+    This means that it might be the case that EBase.CPUNum >= NR_CPUS,
+    which would result in a buffer overflow here.
+
+    There are other ways this could happen too, for example if the
+    kernel is configured with CONFIG_NR_CPUS=2 and run on a system which
+    actually has more than 2 CPUs we'd have problems if the kernel was
+    actually running on CPUs besides the ones CPUNum refers to as 0 & 1.
+
+  - Some newer MIPS CPUs such as the I6500 introduce the concept of
+    clusters, which are a layer of CPU topology beyond cores. In these
+    systems EBase.CPUNum may not be aware of clusters at all, so for
+    example the first CPU in each cluster may both have EBase.CPUNum
+    equal to zero. MIPSr6 introduced the GlobalNumber register to
+    resolve this problem.
+
+One option would be to load the CPU number the same way
+smp_processor_id() does with:
+
+    lw	k1, TI_CPU(gp)
+
+This has the disadvantage that things may go wrong if we take an EJTAG
+exception before the gp register has been setup when a CPU is onlined,
+but that should hopefully be a very small window of time. I think that
+may be our best option.
 
 Thanks,
     Paul

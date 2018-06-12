@@ -1,19 +1,19 @@
-Received: from smtprelay.synopsys.com ([198.182.47.9]:48889 "EHLO
-        smtprelay.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992618AbeFLOvcOrz2e (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 12 Jun 2018 16:51:32 +0200
-Subject: Re: [PATCH 3/3 RFC] Revert "net: stmmac: fix build failure due to
- missing COMMON_CLK dependency"
-References: <1528706663-20670-1-git-send-email-geert@linux-m68k.org>
- <1528706663-20670-4-git-send-email-geert@linux-m68k.org>
-From: Jose Abreu <Jose.Abreu@synopsys.com>
-Message-ID: <1a1f3bea-1680-ce1c-09cb-0d5e2b4531d1@synopsys.com>
-Date: Tue, 12 Jun 2018 15:51:15 +0100
+Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:48265 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992684AbeFLSlEEuACv (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 12 Jun 2018 20:41:04 +0200
+Date: Tue, 12 Jun 2018 11:40:53 -0700
+From: Paul Burton <paul.burton@mips.com>
+Subject: Re: [PATCH Resend 2/2] MIPS: mcs lock: implement
+ arch_mcs_spin_lock_contended() for Loongson-3
+Message-ID: <20180612184053.odi5gvvwbqovgvc6@pburton-laptop>
+References: <1528797283-16577-1-git-send-email-chenhc@lemote.com>
+ <1528797283-16577-2-git-send-email-chenhc@lemote.com>
 MIME-Version: 1.0
-In-Reply-To: <1528706663-20670-4-git-send-email-geert@linux-m68k.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-Path: <Jose.Abreu@synopsys.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1528797283-16577-2-git-send-email-chenhc@lemote.com>
+Return-Path: <Paul.Burton@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,25 +23,82 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, Giuseppe Cavallaro <peppe.cavallaro@st.com>, Alexandre Torgue <alexandre.torgue@st.com>, Jose Abreu <Jose.Abreu@synopsys.com>, Corentin Labbe <clabbe@baylibre.com>, "David S . Miller" <davem@davemloft.net>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <20180612145115.uS_lrGpqIpkc9qYJ8YAcoilmOMaTMJvnr6bffRD14xA@z>
+To: Huacai Chen <chenhc@lemote.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@mips.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, Huacai Chen <chenhuacai@gmail.com>
+Message-ID: <20180612184053.8qimsl9uQ3jOJdRX_pd8CENy6SvgM1H62ffA36N74ts@z>
 
-Hi,
+Hi Huacai,
 
-On 11-06-2018 09:44, Geert Uytterhoeven wrote:
-> This reverts commit bde4975310eb1982bd0bbff673989052d92fd481.
->
-> All legacy clock implementations now implement clk_set_rate() (Some
-> implementations may be dummies, though).
->
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
+On Tue, Jun 12, 2018 at 05:54:43PM +0800, Huacai Chen wrote:
+> After commit 7f56b58a92aaf2c ("locking/mcs: Use smp_cond_load_acquire()
+> in MCS spin loop") Loongson-3 fails to boot. This is because Loongson-3
+> has SFB (Store Fill Buffer) and need a mb() after every READ_ONCE().
 
-This seems okay by me. You can send a non-rfc patch with my ack
-once other 2 patches get accepted:
+Why do you need that mb()?
 
-Acked-by: Jose Abreu <joabreu@synopsys.com>
+Could you describe what is actually happening with the current code, in
+order to explain what requires the mb() you mention here? What's being
+held in the SFB & why is that problematic?
 
-Thanks and Best Regards,
-Jose Miguel Abreu
+Most importantly if smp_cond_load_acquire() isn't working as expected on
+Loongson CPUs then fixing that would be a much better path forwards than
+trying to avoid using it.
+
+Could it be that Loongson requires an implementation of
+(smp_)read_barrier_depends()?
+
+Additionally you have "Resend" in the subject of this email, but I don't
+see any previous submissions of this patch - given that commit
+7f56b58a92aaf2c ("locking/mcs: Use smp_cond_load_acquire() in MCS spin
+loop") is very recent I doubt there were any. Please try to be factual,
+and if you have 2 patches that are unrelated please send them separately
+rather than as a series.
+
+Thanks,
+    Paul
+
+> This patch introduce a MIPS-specific mcs_spinlock.h and revert to the
+> old implementation of arch_mcs_spin_lock_contended() for Loongson-3.
+> 
+> Signed-off-by: Huacai Chen <chenhc@lemote.com>
+> ---
+>  arch/mips/include/asm/Kbuild         |  1 -
+>  arch/mips/include/asm/mcs_spinlock.h | 14 ++++++++++++++
+>  2 files changed, 14 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/mips/include/asm/mcs_spinlock.h
+> 
+> diff --git a/arch/mips/include/asm/Kbuild b/arch/mips/include/asm/Kbuild
+> index 45d541b..7076627 100644
+> --- a/arch/mips/include/asm/Kbuild
+> +++ b/arch/mips/include/asm/Kbuild
+> @@ -6,7 +6,6 @@ generic-y += emergency-restart.h
+>  generic-y += export.h
+>  generic-y += irq_work.h
+>  generic-y += local64.h
+> -generic-y += mcs_spinlock.h
+>  generic-y += mm-arch-hooks.h
+>  generic-y += parport.h
+>  generic-y += percpu.h
+> diff --git a/arch/mips/include/asm/mcs_spinlock.h b/arch/mips/include/asm/mcs_spinlock.h
+> new file mode 100644
+> index 0000000..063df4e
+> --- /dev/null
+> +++ b/arch/mips/include/asm/mcs_spinlock.h
+> @@ -0,0 +1,14 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __ASM_MCS_LOCK_H
+> +#define __ASM_MCS_LOCK_H
+> +
+> +/* Loongson-3 need a mb() after every READ_ONCE() */
+> +#if defined(CONFIG_CPU_LOONGSON3) && defined(CONFIG_SMP)
+> +#define arch_mcs_spin_lock_contended(l)					\
+> +do {									\
+> +	while (!(smp_load_acquire(l)))					\
+> +		cpu_relax();						\
+> +} while (0)
+> +#endif	/* CONFIG_CPU_LOONGSON3 && CONFIG_SMP */
+> +
+> +#endif	/* __ASM_MCS_LOCK_H */
+> -- 
+> 2.7.0
+> 

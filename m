@@ -1,18 +1,16 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:48265 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:58142 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992684AbeFLSlEEuACv (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 12 Jun 2018 20:41:04 +0200
-Date: Tue, 12 Jun 2018 11:40:53 -0700
+        by eddie.linux-mips.org with ESMTP id S23993497AbeFMVVnhmCLn (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 13 Jun 2018 23:21:43 +0200
+Date: Wed, 13 Jun 2018 14:21:25 -0700
 From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH Resend 2/2] MIPS: mcs lock: implement
- arch_mcs_spin_lock_contended() for Loongson-3
-Message-ID: <20180612184053.odi5gvvwbqovgvc6@pburton-laptop>
-References: <1528797283-16577-1-git-send-email-chenhc@lemote.com>
- <1528797283-16577-2-git-send-email-chenhc@lemote.com>
+Subject: Re: [PATCH] MIPS: Fix arch_trigger_cpumask_backtrace()
+Message-ID: <20180613212125.gxbqusrjgzb257sj@pburton-laptop>
+References: <1517802167-20340-1-git-send-email-chenhc@lemote.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1528797283-16577-2-git-send-email-chenhc@lemote.com>
+In-Reply-To: <1517802167-20340-1-git-send-email-chenhc@lemote.com>
 Return-Path: <Paul.Burton@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -24,81 +22,44 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Huacai Chen <chenhc@lemote.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@mips.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, Huacai Chen <chenhuacai@gmail.com>
-Message-ID: <20180612184053.8qimsl9uQ3jOJdRX_pd8CENy6SvgM1H62ffA36N74ts@z>
+Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@mips.com>, "Steven J . Hill" <Steven.Hill@cavium.com>, linux-mips@linux-mips.org, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>, stable@vger.kernel.org
+Message-ID: <20180613212125.829Jod6Erx8ZpQxabO6XzKv251VzTEfVppZpUvBMMxg@z>
 
 Hi Huacai,
 
-On Tue, Jun 12, 2018 at 05:54:43PM +0800, Huacai Chen wrote:
-> After commit 7f56b58a92aaf2c ("locking/mcs: Use smp_cond_load_acquire()
-> in MCS spin loop") Loongson-3 fails to boot. This is because Loongson-3
-> has SFB (Store Fill Buffer) and need a mb() after every READ_ONCE().
+On Mon, Feb 05, 2018 at 11:42:47AM +0800, Huacai Chen wrote:
+> SysRq-L and RCU stall detector call arch_trigger_cpumask_backtrace() to
+> trigger other CPU's backtrace, but its behavior is totally broken. The
+> root cause is arch_trigger_cpumask_backtrace() use call-function IPI in
+> irq context, which trigger deadlocks in smp_call_function_single() and
+> smp_call_function_many().
+> 
+> This patch fix arch_trigger_cpumask_backtrace() by:
+> 1, Use a dedecated IPI (SMP_CPU_BACKTRACE) to trigger backtraces;
+> 2, If myself is in target cpumask, do backtrace and clear myself;
+> 3, Use a spinlock to avoid parallel backtrace output;
+> 4, Handle SMP_CPU_BACKTRACE IPI for Loongson-3.
+> 
+> I have attempted to implement SMP_CPU_BACKTRACE for all MIPS CPUs, but I
+> failed because some of their IPIs are not extensible. :(
 
-Why do you need that mb()?
+Interesting - I've been using a similar patch internally for a little
+while which can be seen here:
 
-Could you describe what is actually happening with the current code, in
-order to explain what requires the mb() you mention here? What's being
-held in the SFB & why is that problematic?
+  https://git.linux-mips.org/cgit/linux-mti.git/commit/?h=eng-v4.15&id=f46720d62919a0e99d2505f022efdae9a9518191
 
-Most importantly if smp_cond_load_acquire() isn't working as expected on
-Loongson CPUs then fixing that would be a much better path forwards than
-trying to avoid using it.
+Mine uses the generic nmi_trigger_cpumask_backtrace() infrastructure to
+handle most of the work, and just has to deal with sending the IPIs. It
+relies upon some changes from Matt to do that for the generic platform.
 
-Could it be that Loongson requires an implementation of
-(smp_)read_barrier_depends()?
+If you have a chance could you test the branch below & let me know
+whether it works for you?
 
-Additionally you have "Resend" in the subject of this email, but I don't
-see any previous submissions of this patch - given that commit
-7f56b58a92aaf2c ("locking/mcs: Use smp_cond_load_acquire() in MCS spin
-loop") is very recent I doubt there were any. Please try to be factual,
-and if you have 2 patches that are unrelated please send them separately
-rather than as a series.
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulburton/linux.git
+
+  Branch "wip-cpumask-backtrace".
+
+Hopefully with a little more work we can fix this up generically.
 
 Thanks,
     Paul
-
-> This patch introduce a MIPS-specific mcs_spinlock.h and revert to the
-> old implementation of arch_mcs_spin_lock_contended() for Loongson-3.
-> 
-> Signed-off-by: Huacai Chen <chenhc@lemote.com>
-> ---
->  arch/mips/include/asm/Kbuild         |  1 -
->  arch/mips/include/asm/mcs_spinlock.h | 14 ++++++++++++++
->  2 files changed, 14 insertions(+), 1 deletion(-)
->  create mode 100644 arch/mips/include/asm/mcs_spinlock.h
-> 
-> diff --git a/arch/mips/include/asm/Kbuild b/arch/mips/include/asm/Kbuild
-> index 45d541b..7076627 100644
-> --- a/arch/mips/include/asm/Kbuild
-> +++ b/arch/mips/include/asm/Kbuild
-> @@ -6,7 +6,6 @@ generic-y += emergency-restart.h
->  generic-y += export.h
->  generic-y += irq_work.h
->  generic-y += local64.h
-> -generic-y += mcs_spinlock.h
->  generic-y += mm-arch-hooks.h
->  generic-y += parport.h
->  generic-y += percpu.h
-> diff --git a/arch/mips/include/asm/mcs_spinlock.h b/arch/mips/include/asm/mcs_spinlock.h
-> new file mode 100644
-> index 0000000..063df4e
-> --- /dev/null
-> +++ b/arch/mips/include/asm/mcs_spinlock.h
-> @@ -0,0 +1,14 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __ASM_MCS_LOCK_H
-> +#define __ASM_MCS_LOCK_H
-> +
-> +/* Loongson-3 need a mb() after every READ_ONCE() */
-> +#if defined(CONFIG_CPU_LOONGSON3) && defined(CONFIG_SMP)
-> +#define arch_mcs_spin_lock_contended(l)					\
-> +do {									\
-> +	while (!(smp_load_acquire(l)))					\
-> +		cpu_relax();						\
-> +} while (0)
-> +#endif	/* CONFIG_CPU_LOONGSON3 && CONFIG_SMP */
-> +
-> +#endif	/* __ASM_MCS_LOCK_H */
-> -- 
-> 2.7.0
-> 

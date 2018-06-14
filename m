@@ -1,11 +1,13 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:35868 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:46227 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994672AbeFNXx0kjgNb (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 15 Jun 2018 01:53:26 +0200
+        by eddie.linux-mips.org with ESMTP id S23994672AbeFNXxsRb3lb (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 15 Jun 2018 01:53:48 +0200
 From: Paul Burton <paul.burton@mips.com>
-Subject: [PATCH 0/4] MIPS: Restartable sequences (rseq) support
-Date: Thu, 14 Jun 2018 16:52:06 -0700
-Message-ID: <20180614235211.31357-1-paul.burton@mips.com>
+Subject: [PATCH 2/4] MIPS: Add syscall detection for restartable sequences
+Date: Thu, 14 Jun 2018 16:52:08 -0700
+Message-ID: <20180614235211.31357-3-paul.burton@mips.com>
+In-Reply-To: <20180614235211.31357-1-paul.burton@mips.com>
+References: <20180614235211.31357-1-paul.burton@mips.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <Paul.Burton@mips.com>
@@ -20,36 +22,52 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-mips@linux-mips.org
 Cc: Peter Zijlstra <peterz@infradead.org>, James Hogan <jhogan@kernel.org>, linux-kernel@vger.kernel.org, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Boqun Feng <boqun.feng@gmail.com>, "Paul E . McKenney" <paulmck@linux.vnet.ibm.com>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>
-Message-ID: <20180614235206.2XEa8gcUuvFi8oVypneyxD0FAJYEtsTQ2yEaZFHwYYE@z>
+Message-ID: <20180614235208.Np0BwHfn_AoDfP39MnBsj_IPb68v7khP9Km9IEe2nQE@z>
 
-This series implements MIPS support for restartable sequences, hooks up
-the rseq syscall & implements MIPS support in the rseq selftests.
+Syscalls are not allowed inside restartable sequences, so add a call to
+rseq_syscall() at the very beginning of the system call exit path when
+CONFIG_DEBUG_RSEQ=y. This will help us to detect whether there is a
+syscall issued erroneously inside a restartable sequence.
 
-Applies atop Linus' master as of 2837461dbe6f ("Merge tag 'scsi-fixes'
-of git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi").
+Signed-off-by: Paul Burton <paul.burton@mips.com>
+Cc: James Hogan <jhogan@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: linux-mips@linux-mips.org
+Cc: linux-kernel@vger.kernel.org
+---
 
-Thanks,
-    Paul
+ arch/mips/kernel/entry.S | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Paul Burton (4):
-  MIPS: Add support for restartable sequences
-  MIPS: Add syscall detection for restartable sequences
-  MIPS: Wire up the restartable sequences (rseq) syscall
-  rseq/selftests: Implement MIPS support
-
- arch/mips/Kconfig                         |   1 +
- arch/mips/include/uapi/asm/unistd.h       |  15 +-
- arch/mips/kernel/entry.S                  |   8 +
- arch/mips/kernel/scall32-o32.S            |   1 +
- arch/mips/kernel/scall64-64.S             |   1 +
- arch/mips/kernel/scall64-n32.S            |   1 +
- arch/mips/kernel/scall64-o32.S            |   1 +
- arch/mips/kernel/signal.c                 |   3 +
- tools/testing/selftests/rseq/param_test.c |  24 +
- tools/testing/selftests/rseq/rseq-mips.h  | 725 ++++++++++++++++++++++
- tools/testing/selftests/rseq/rseq.h       |   2 +
- 11 files changed, 776 insertions(+), 6 deletions(-)
- create mode 100644 tools/testing/selftests/rseq/rseq-mips.h
-
+diff --git a/arch/mips/kernel/entry.S b/arch/mips/kernel/entry.S
+index 38a302919e6b..d7de8adcfcc8 100644
+--- a/arch/mips/kernel/entry.S
++++ b/arch/mips/kernel/entry.S
+@@ -79,6 +79,10 @@ FEXPORT(ret_from_fork)
+ 	jal	schedule_tail		# a0 = struct task_struct *prev
+ 
+ FEXPORT(syscall_exit)
++#ifdef CONFIG_DEBUG_RSEQ
++	move	a0, sp
++	jal	rseq_syscall
++#endif
+ 	local_irq_disable		# make sure need_resched and
+ 					# signals dont change between
+ 					# sampling and return
+@@ -141,6 +145,10 @@ work_notifysig:				# deal with pending signals and
+ 	j	resume_userspace_check
+ 
+ FEXPORT(syscall_exit_partial)
++#ifdef CONFIG_DEBUG_RSEQ
++	move	a0, sp
++	jal	rseq_syscall
++#endif
+ 	local_irq_disable		# make sure need_resched doesn't
+ 					# change between and return
+ 	LONG_L	a2, TI_FLAGS($28)	# current->work
 -- 
 2.17.1

@@ -1,16 +1,16 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:35442 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:34909 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993097AbeFSXYsGUEqV (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 20 Jun 2018 01:24:48 +0200
-Date: Tue, 19 Jun 2018 16:24:38 -0700
+        by eddie.linux-mips.org with ESMTP id S23993097AbeFSX2rhD08G (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 20 Jun 2018 01:28:47 +0200
+Date: Tue, 19 Jun 2018 16:28:28 -0700
 From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH v3] Make elf2ecoff work on 64bit host machines
-Message-ID: <20180619232438.t3xbd4dkqr6t5oo5@pburton-laptop>
-References: <20180605100021.14673-1-tbogendoerfer@suse.de>
+Subject: Re: [PATCH] MIPS: Octeon: assign bool true/false not 1/0
+Message-ID: <20180619232828.icebwaaeb5zudnr2@pburton-laptop>
+References: <1529133992-15360-1-git-send-email-hofrat@osadl.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20180605100021.14673-1-tbogendoerfer@suse.de>
+In-Reply-To: <1529133992-15360-1-git-send-email-hofrat@osadl.org>
 Return-Path: <Paul.Burton@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -21,29 +21,30 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Thomas Bogendoerfer <tbogendoerfer@suse.de>
-Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20180619232438.WSMPng2eg0j_wBAwNmH620cViGp7JQxXbe6cMkzXNIY@z>
+To: Nicholas Mc Guire <hofrat@osadl.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, David Daney <david.daney@cavium.com>, "Steven J. Hill" <Steven.Hill@cavium.com>, Joe Perches <joe@perches.com>, Colin Ian King <colin.king@canonical.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20180619232828.arOARnEAWjhspvwmMfnE_S0tpkQvmGcezp8sqC-EU8s@z>
 
-Hi Thomas,
+Hi Nicholas,
 
-On Tue, Jun 05, 2018 at 12:00:20PM +0200, Thomas Bogendoerfer wrote:
-> Use fixed width integer types for ecoff structs to make elf2ecoff work
-> on 64bit host machines
+On Sat, Jun 16, 2018 at 09:26:32AM +0200, Nicholas Mc Guire wrote:
+> Booleans should be assigned true/false not 1/0 as comparison is not needed
 > 
-> Signed-off-by: Thomas Bogendoerfer <tbogendoerfer@suse.de>
-> Reviewed-by: Paul Burton <paul.burton@mips.com>
+> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 > ---
 > 
-> v3: include stdint.h in ecoff.h
->     missed one printf format
+> Problem located by scripts/coccinelle/misc/boolinit.cocci
+>   ./arch/mips/cavium-octeon/octeon-irq.c:817:3-13:
+>   WARNING: Assignment of bool to 0/1
 > 
-> v2: include stdint.h and use inttypes.h for printf formats
+> Patch was compile tested with: cavium_octeon_defconfig
+> (with a number of sparse warnings - not related to the proposed change)
 > 
->  arch/mips/boot/ecoff.h     | 61 ++++++++++++++++++++++++----------------------
->  arch/mips/boot/elf2ecoff.c | 31 +++++++++++------------
->  2 files changed, 48 insertions(+), 44 deletions(-)
+> Patch is against 4.17.0 (localversion-next is next-20180614)
+> 
+>  arch/mips/cavium-octeon/octeon-irq.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks - applied to mips-next for 4.19.
+Thanks, applied to mips-next for 4.19.
 
 Paul

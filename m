@@ -1,16 +1,17 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.224]:39756 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990401AbeFTDqW30FwM (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 20 Jun 2018 05:46:22 +0200
-From: Paul Burton <paul.burton@mips.com>
-Subject: [PATCH v2] MIPS: Wire up io_pgetevents syscall
-Date: Tue, 19 Jun 2018 20:46:15 -0700
-Message-ID: <20180620034615.17579-1-paul.burton@mips.com>
-In-Reply-To: <20180615083543.GA7603@jamesdev>
-References: <20180615083543.GA7603@jamesdev>
+Received: from verein.lst.de ([213.95.11.211]:35707 "EHLO newverein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23990475AbeFTHOU6FqH8 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 20 Jun 2018 09:14:20 +0200
+Date: Wed, 20 Jun 2018 09:23:28 +0200
+From: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 18/25] MIPS: loongson64: use generic dma noncoherent ops
+Message-ID: <20180620072328.GA1675@lst.de>
+References: <20180615110854.19253-1-hch@lst.de> <20180615110854.19253-19-hch@lst.de> <20180619231925.mgbgc7lfvjqumr7a@pburton-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <Paul.Burton@mips.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180619231925.mgbgc7lfvjqumr7a@pburton-laptop>
+Return-Path: <hch@lst.de>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,133 +21,52 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20180620034615.0gqFYuJTGeS6ZIXaPaWX9SfMB6LBdpCriROi0ps71zg@z>
+To: Paul Burton <paul.burton@mips.com>
+Cc: Christoph Hellwig <hch@lst.de>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>, David Daney <david.daney@cavium.com>, Kevin Cernekee <cernekee@gmail.com>, Jiaxun Yang <jiaxun.yang@flygoat.com>, Tom Bogendoerfer <tsbogend@alpha.franken.de>, Huacai Chen <chenhc@lemote.com>, iommu@lists.linux-foundation.org, linux-mips@linux-mips.org
+Message-ID: <20180620072328.r0XAAG3hnOyTUjCJPo9jW94LtF5DwV1uGOWS5lVBUWI@z>
 
-Wire up the io_pgetevents syscall that was introduced by commit
-7a074e96dee6 ("aio: implement io_pgetevents").
+On Tue, Jun 19, 2018 at 04:19:25PM -0700, Paul Burton wrote:
+> Hi Christoph,
+> 
+> On Fri, Jun 15, 2018 at 01:08:47PM +0200, Christoph Hellwig wrote:
+> > -static inline unsigned long plat_dma_addr_to_phys(struct device *dev,
+> > -	dma_addr_t dma_addr)
+> > -{
+> > -#if defined(CONFIG_CPU_LOONGSON2F) && defined(CONFIG_64BIT)
+> > -	return (dma_addr > 0x8fffffff) ? dma_addr : (dma_addr & 0x0fffffff);
+> > -#else
+> > -	return dma_addr & 0x7fffffff;
+> > -#endif
+> > -}
+> 
+> ...
+> 
+> > +phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t dma_addr)
+> > +{
+> > +#if defined(CONFIG_CPU_LOONGSON2F) && defined(CONFIG_64BIT)
+> > +	if (dma_addr > 0x8fffffff)
+> > +		return dma_addr;
+> > +#endif
+> > +	return dma_addr & 0x0fffffff;
+> > +}
+> 
+> Thanks for putting in the work here - I've applied patches 1-17 to
+> mips-next so far, but I'm struggling to convince myself that the above
+> is correct.
+> 
+> In the original code we have 3 distinct cases:
+> 
+>   64b Loongson2F, dma_addr > 0x8fffffff  -> dma_addr
+>   64b Loongson2F, dma_addr <= 0x8fffffff -> dma_addr & 0x0fffffff
+>   Everything else                        -> dma_addr & 0x7fffffff
+> 
+> In the new __dma_to_phys() though only the first case remains the same.
+> 
+> Is this intentional or a mixup?
 
-Signed-off-by: Paul Burton <paul.burton@mips.com>
-Cc: James Hogan <jhogan@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org
+No, this is a mixup.  I hadn't noticed one case was 0x0fffffff and
+the other 0x7fffffff.
+
+Below is the minimal fixup that keeps things as much as it was before.
 
 ---
-This will conflict with the rseq patches, but is trivial to fixup.
-
-Changes in v2:
-- Use compat_sys_io_pgetevents for o32 & n32 on MIPS64 kernels.
-
- arch/mips/include/uapi/asm/unistd.h | 15 +++++++++------
- arch/mips/kernel/scall32-o32.S      |  1 +
- arch/mips/kernel/scall64-64.S       |  1 +
- arch/mips/kernel/scall64-n32.S      |  1 +
- arch/mips/kernel/scall64-o32.S      |  1 +
- 5 files changed, 13 insertions(+), 6 deletions(-)
-
-diff --git a/arch/mips/include/uapi/asm/unistd.h b/arch/mips/include/uapi/asm/unistd.h
-index bb05e9916a5f..41a01e29c4ff 100644
---- a/arch/mips/include/uapi/asm/unistd.h
-+++ b/arch/mips/include/uapi/asm/unistd.h
-@@ -388,17 +388,18 @@
- #define __NR_pkey_alloc			(__NR_Linux + 364)
- #define __NR_pkey_free			(__NR_Linux + 365)
- #define __NR_statx			(__NR_Linux + 366)
-+#define __NR_io_pgetevents		(__NR_Linux + 367)
- 
- 
- /*
-  * Offset of the last Linux o32 flavoured syscall
-  */
--#define __NR_Linux_syscalls		366
-+#define __NR_Linux_syscalls		367
- 
- #endif /* _MIPS_SIM == _MIPS_SIM_ABI32 */
- 
- #define __NR_O32_Linux			4000
--#define __NR_O32_Linux_syscalls		366
-+#define __NR_O32_Linux_syscalls		367
- 
- #if _MIPS_SIM == _MIPS_SIM_ABI64
- 
-@@ -733,16 +734,17 @@
- #define __NR_pkey_alloc			(__NR_Linux + 324)
- #define __NR_pkey_free			(__NR_Linux + 325)
- #define __NR_statx			(__NR_Linux + 326)
-+#define __NR_io_pgetevents		(__NR_Linux + 327)
- 
- /*
-  * Offset of the last Linux 64-bit flavoured syscall
-  */
--#define __NR_Linux_syscalls		326
-+#define __NR_Linux_syscalls		327
- 
- #endif /* _MIPS_SIM == _MIPS_SIM_ABI64 */
- 
- #define __NR_64_Linux			5000
--#define __NR_64_Linux_syscalls		326
-+#define __NR_64_Linux_syscalls		327
- 
- #if _MIPS_SIM == _MIPS_SIM_NABI32
- 
-@@ -1081,15 +1083,16 @@
- #define __NR_pkey_alloc			(__NR_Linux + 328)
- #define __NR_pkey_free			(__NR_Linux + 329)
- #define __NR_statx			(__NR_Linux + 330)
-+#define __NR_io_pgetevents		(__NR_Linux + 331)
- 
- /*
-  * Offset of the last N32 flavoured syscall
-  */
--#define __NR_Linux_syscalls		330
-+#define __NR_Linux_syscalls		331
- 
- #endif /* _MIPS_SIM == _MIPS_SIM_NABI32 */
- 
- #define __NR_N32_Linux			6000
--#define __NR_N32_Linux_syscalls		330
-+#define __NR_N32_Linux_syscalls		331
- 
- #endif /* _UAPI_ASM_UNISTD_H */
-diff --git a/arch/mips/kernel/scall32-o32.S b/arch/mips/kernel/scall32-o32.S
-index a9a7d78803cd..7010fedee283 100644
---- a/arch/mips/kernel/scall32-o32.S
-+++ b/arch/mips/kernel/scall32-o32.S
-@@ -590,3 +590,4 @@ EXPORT(sys_call_table)
- 	PTR	sys_pkey_alloc
- 	PTR	sys_pkey_free			/* 4365 */
- 	PTR	sys_statx
-+	PTR	sys_io_pgetevents
-diff --git a/arch/mips/kernel/scall64-64.S b/arch/mips/kernel/scall64-64.S
-index 65d5aeeb9bdb..c6602079c46f 100644
---- a/arch/mips/kernel/scall64-64.S
-+++ b/arch/mips/kernel/scall64-64.S
-@@ -439,4 +439,5 @@ EXPORT(sys_call_table)
- 	PTR	sys_pkey_alloc
- 	PTR	sys_pkey_free			/* 5325 */
- 	PTR	sys_statx
-+	PTR	sys_io_pgetevents
- 	.size	sys_call_table,.-sys_call_table
-diff --git a/arch/mips/kernel/scall64-n32.S b/arch/mips/kernel/scall64-n32.S
-index cbf190ef9e8a..4959b103f7a9 100644
---- a/arch/mips/kernel/scall64-n32.S
-+++ b/arch/mips/kernel/scall64-n32.S
-@@ -434,4 +434,5 @@ EXPORT(sysn32_call_table)
- 	PTR	sys_pkey_alloc
- 	PTR	sys_pkey_free
- 	PTR	sys_statx			/* 6330 */
-+	PTR	compat_sys_io_pgetevents
- 	.size	sysn32_call_table,.-sysn32_call_table
-diff --git a/arch/mips/kernel/scall64-o32.S b/arch/mips/kernel/scall64-o32.S
-index 9ebe3e2403b1..433c7da31dbf 100644
---- a/arch/mips/kernel/scall64-o32.S
-+++ b/arch/mips/kernel/scall64-o32.S
-@@ -583,4 +583,5 @@ EXPORT(sys32_call_table)
- 	PTR	sys_pkey_alloc
- 	PTR	sys_pkey_free			/* 4365 */
- 	PTR	sys_statx
-+	PTR	compat_sys_io_pgetevents
- 	.size	sys32_call_table,.-sys32_call_table
--- 
-2.17.1

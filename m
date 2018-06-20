@@ -1,16 +1,18 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.154.211]:34909 "EHLO
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:57855 "EHLO
         9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993097AbeFSX2rhD08G (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 20 Jun 2018 01:28:47 +0200
-Date: Tue, 19 Jun 2018 16:28:28 -0700
+        by eddie.linux-mips.org with ESMTP id S23990395AbeFTCfOaNhHB (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 20 Jun 2018 04:35:14 +0200
+Date: Tue, 19 Jun 2018 19:35:02 -0700
 From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH] MIPS: Octeon: assign bool true/false not 1/0
-Message-ID: <20180619232828.icebwaaeb5zudnr2@pburton-laptop>
-References: <1529133992-15360-1-git-send-email-hofrat@osadl.org>
+Subject: Re: [PATCH 2/2] mips: generic: allow not building DTB in
+Message-ID: <20180620023502.r5e6j222qml2bb47@pburton-laptop>
+References: <20180425211607.2645-1-alexandre.belloni@bootlin.com>
+ <20180425211607.2645-2-alexandre.belloni@bootlin.com>
+ <20180425220149.GI4813@piout.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1529133992-15360-1-git-send-email-hofrat@osadl.org>
+In-Reply-To: <20180425220149.GI4813@piout.net>
 Return-Path: <Paul.Burton@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -21,30 +23,41 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Nicholas Mc Guire <hofrat@osadl.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, David Daney <david.daney@cavium.com>, "Steven J. Hill" <Steven.Hill@cavium.com>, Joe Perches <joe@perches.com>, Colin Ian King <colin.king@canonical.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
-Message-ID: <20180619232828.arOARnEAWjhspvwmMfnE_S0tpkQvmGcezp8sqC-EU8s@z>
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Allan Nielsen <Allan.Nielsen@microsemi.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Message-ID: <20180620023502.auRWcIDvpiaPFbT1assd5tjgXsuctOWRVGDbalb56N8@z>
 
-Hi Nicholas,
+Hi Alexandre,
 
-On Sat, Jun 16, 2018 at 09:26:32AM +0200, Nicholas Mc Guire wrote:
-> Booleans should be assigned true/false not 1/0 as comparison is not needed
+On Thu, Apr 26, 2018 at 12:01:49AM +0200, Alexandre Belloni wrote:
+> > diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+> > index 5e9fce076ab6..3d3554c13710 100644
+> > --- a/arch/mips/Makefile
+> > +++ b/arch/mips/Makefile
+> > @@ -404,7 +404,7 @@ endif
+> >  CLEAN_FILES += vmlinux.32 vmlinux.64
+> >  
+> >  # device-trees
+> > -core-$(CONFIG_BUILTIN_DTB) += arch/mips/boot/dts/
+> > +core-y += arch/mips/boot/dts/
+> >  
+> >  %.dtb %.dtb.S %.dtb.o: | scripts
+> >  	$(Q)$(MAKE) $(build)=arch/mips/boot/dts arch/mips/boot/dts/$@
+> > diff --git a/arch/mips/boot/dts/mscc/Makefile b/arch/mips/boot/dts/mscc/Makefile
+> > index 8982b19504a3..437ec65ec14a 100644
+> > --- a/arch/mips/boot/dts/mscc/Makefile
+> > +++ b/arch/mips/boot/dts/mscc/Makefile
+> > @@ -1,3 +1,3 @@
+> >  dtb-$(CONFIG_MSCC_OCELOT)	+= ocelot_pcb123.dtb
+> >  
+> > -obj-y				+= $(patsubst %.dtb, %.dtb.o, $(dtb-y))
+> > +obj-($CONFIG_BUILTIN_DTB)	+= $(patsubst %.dtb, %.dtb.o, $(dtb-y))
 > 
-> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-> ---
-> 
-> Problem located by scripts/coccinelle/misc/boolinit.cocci
->   ./arch/mips/cavium-octeon/octeon-irq.c:817:3-13:
->   WARNING: Assignment of bool to 0/1
-> 
-> Patch was compile tested with: cavium_octeon_defconfig
-> (with a number of sparse warnings - not related to the proposed change)
-> 
-> Patch is against 4.17.0 (localversion-next is next-20180614)
-> 
->  arch/mips/cavium-octeon/octeon-irq.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I made a typo here, I'll resend after waiting for a few comments.
 
-Thanks, applied to mips-next for 4.19.
+Are you happy with this series apart from fixing up the above?
 
-Paul
+If so I'm happy to s/(\$/$(/ whilst applying this.
+
+Thanks,
+    Paul

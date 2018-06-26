@@ -1,21 +1,13 @@
-Received: from mail-wm0-x244.google.com ([IPv6:2a00:1450:400c:c09::244]:51917
-        "EHLO mail-wm0-x244.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992553AbeFYSHC3-Ane (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 25 Jun 2018 20:07:02 +0200
-Received: by mail-wm0-x244.google.com with SMTP id w137-v6so4972684wmw.1
-        for <linux-mips@linux-mips.org>; Mon, 25 Jun 2018 11:07:02 -0700 (PDT)
-Subject: Re: [PATCH 10/25] dt-bindings: PCI: qcom,ar7100: adds binding doc
-References: <20180625171549.4618-1-john@phrozen.org>
- <20180625171549.4618-11-john@phrozen.org>
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <5926a597-b2fd-47f8-3a58-bf05d0b7da97@cogentembedded.com>
-Date: Mon, 25 Jun 2018 21:06:54 +0300
-MIME-Version: 1.0
-In-Reply-To: <20180625171549.4618-11-john@phrozen.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-MW
-Content-Transfer-Encoding: 7bit
-Return-Path: <sergei.shtylyov@cogentembedded.com>
+Received: from heliosphere.sirena.org.uk ([IPv6:2a01:7e01::f03c:91ff:fed4:a3b6]:40684
+        "EHLO heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993029AbeFZPABc46su (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 26 Jun 2018 17:00:01 +0200
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "spi: ath79: drop pdata support" to the spi tree
+In-Reply-To: <20180625171823.4782-1-john@phrozen.org>
+Message-ID: <20180626145959.C26D7440070@finisterre.ee.mobilebroadband>
+Date: Tue, 26 Jun 2018 15:59:59 +0100 (BST)
+Return-Path: <broonie@sirena.org.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,53 +17,33 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: John Crispin <john@phrozen.org>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+To: John Crispin <john@phrozen.org>
+Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.orgMark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.orglinux-spi@vger.kernel.orglinux-spi@vger.kernel.org
+Message-ID: <20180626145959.jce9OeDWOKt_CluBxjeE7Tj7bKvRMyaq6Ws7lMfhqi4@z>
 
-On 06/25/2018 08:15 PM, John Crispin wrote:
+The patch
 
-> With the driver being converted from platform_data to pure OF, we need to
-> also add some docs.
-> 
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: devicetree@vger.kernel.org
-> Signed-off-by: John Crispin <john@phrozen.org>
-> ---
->  .../devicetree/bindings/pci/qcom,ar7100-pci.txt    | 36 ++++++++++++++++++++++
->  1 file changed, 36 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/qcom,ar7100-pci.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/qcom,ar7100-pci.txt b/Documentation/devicetree/bindings/pci/qcom,ar7100-pci.txt
-> new file mode 100644
-> index 000000000000..97be7b0c4cf9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/qcom,ar7100-pci.txt
-> @@ -0,0 +1,36 @@
-> +* Qualcomm Atheros AR7100 PCI express root complex
-> +
-> +Required properties:
-> +- compatible: should contain "qcom,ar7100-pci" to identify the core.
-> +- reg: Should contain the register ranges as listed in the reg-names property.
-> +- reg-names: Definition: Must include the following entries
-> +	- "cfg_base"	IO Memory
-> +- #address-cells: set to <3>
-> +- #size-cells: set to <2>
-> +- ranges: ranges for the PCI memory and I/O regions
-> +- interrupt-map-mask and interrupt-map: standard PCI
-> +	properties to define the mapping of the PCIe interface to interrupt
-> +	numbers.
-> +- #interrupt-cells: set to <1>
-> +- interrupt-parent: phandle to the MIPS IRQ controller
+   spi: ath79: drop pdata support
 
-   Never a required prop, can be "inherited" from the parent node.
+has been applied to the spi tree at
 
-> +- interrupt-controller: define to enable the builtin IRQ cascade.
-> +
-> +* Example for ar7100
-> +	pcie0: pcie-controller@180c0000 {
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
 
-   Name it just "pcie@180c0000", please.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-[...]
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-MBR, Sergei
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark

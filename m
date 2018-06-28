@@ -1,13 +1,17 @@
-Received: from heliosphere.sirena.org.uk ([IPv6:2a01:7e01::f03c:91ff:fed4:a3b6]:40684
-        "EHLO heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993029AbeFZPABc46su (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 26 Jun 2018 17:00:01 +0200
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "spi: ath79: drop pdata support" to the spi tree
-In-Reply-To: <20180625171823.4782-1-john@phrozen.org>
-Message-ID: <20180626145959.C26D7440070@finisterre.ee.mobilebroadband>
-Date: Tue, 26 Jun 2018 15:59:59 +0100 (BST)
-Return-Path: <broonie@sirena.org.uk>
+Received: from mail-by2nam03on0101.outbound.protection.outlook.com ([104.47.42.101]:35297
+        "EHLO NAM03-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23992408AbeF1KxcqukH1 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 28 Jun 2018 12:53:32 +0200
+From: <catalin.vasile@keysight.com>
+Subject: Mark kernel page as read-only
+Date: Thu, 28 Jun 2018 10:53:22 +0000
+Message-ID: <BN7PR17MB22440CB0C1698E7641812FBFF54F0@BN7PR17MB2244.namprd17.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+Return-Path: <catalin.vasile@keysight.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -17,33 +21,12 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: John Crispin <john@phrozen.org>
-Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.orgMark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, James Hogan <jhogan@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.orglinux-spi@vger.kernel.orglinux-spi@vger.kernel.org
-Message-ID: <20180626145959.jce9OeDWOKt_CluBxjeE7Tj7bKvRMyaq6Ws7lMfhqi4@z>
+To: linux-mips@linux-mips.org
+Message-ID: <20180628105322.zLc1-fMUvpzz6NMidXiY2kH649C1SMzwEPzp1q_UiPk@z>
 
-The patch
+Hi,
 
-   spi: ath79: drop pdata support
+I have some pages allocated through __get_free_pages(). Is there a way to set such a page's protection to be read-only? I am working with an octeon2 mips platform.
 
-has been applied to the spi tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Best regards,
+Catalin Vasile

@@ -1,18 +1,15 @@
-Received: from mail-dm3nam03on0133.outbound.protection.outlook.com ([104.47.41.133]:6608
-        "EHLO NAM03-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993514AbeF1RowrGn6X (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 28 Jun 2018 19:44:52 +0200
-Date: Thu, 28 Jun 2018 10:44:39 -0700
-From: Paul Burton <paul.burton@mips.com>
-Subject: Re: Mark kernel page as read-only
-Message-ID: <20180628174439.kij5iagryisovb5q@pburton-laptop>
-References: <BN7PR17MB22440CB0C1698E7641812FBFF54F0@BN7PR17MB2244.namprd17.prod.outlook.com>
+Received: from mail.linuxfoundation.org ([140.211.169.12]:58838 "EHLO
+        mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990473AbeGAKBUr9ric (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 1 Jul 2018 12:01:20 +0200
+Subject: Patch "MIPS: BCM47XX: Enable 74K Core ExternalSync for PCIe erratum" has been added to the 3.18-stable tree
+From: <gregkh@linuxfoundation.org>
+Date: Sun, 01 Jul 2018 12:01:10 +0200
+Message-ID: <1530439270207211@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN7PR17MB22440CB0C1698E7641812FBFF54F0@BN7PR17MB2244.namprd17.prod.outlook.com>
-Return-Path: <pburton@wavecomp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-Path: <gregkh@linuxfoundation.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,21 +19,21 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: catalin.vasile@keysight.com
-Cc: linux-mips@linux-mips.org
+To: chris.packham@alliedtelesis.co.nz, gregkh@linuxfoundation.org, hauke@hauke-m.de, ikegami@allied-telesis.co.jp, jhogan@kernel.org, linux-mips@linux-mips.org, paul.burton@mips.com, zajec5@gmail.com
+Cc: stable-commits@vger.kernel.org
+Message-ID: <20180701100110.nu8kT1CqOF7HiHYTMpjaPGdxUpM_pcSIXwlioNzKs8Q@z>
 
-Hi Catalin,
 
-On Thu, Jun 28, 2018 at 10:53:22AM +0000, catalin.vasile@keysight.com wrote:
-> I have some pages allocated through __get_free_pages(). Is there a way
-> to set such a page's protection to be read-only? I am working with an
-> octeon2 mips platform.
+This is a note to let you know that I've just added the patch titled
 
-__get_free_pages() is going to give you a virtual address in the
-unmapped (c)kseg0 segment, which you cannot modify the protection of.
+    MIPS: BCM47XX: Enable 74K Core ExternalSync for PCIe erratum
 
-One option might be to switch away from __get_free_pages() towards using
-alloc_pages(), followed by vmap() with a read-only prot argument.
+to the 3.18-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
-Thanks,
-    Paul
+The filename of the patch is:
+     mips-bcm47xx-enable-74k-core-externalsync-for-pcie-erratum.patch
+and it can be found in the queue-3.18 subdirectory.
+
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.

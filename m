@@ -1,11 +1,11 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:38432 "EHLO
+Received: from mail.linuxfoundation.org ([140.211.169.12]:38504 "EHLO
         mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990474AbeGALkDTEo21 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 1 Jul 2018 13:40:03 +0200
-Subject: Patch "time: Make sure jiffies_to_msecs() preserves non-zero time periods" has been added to the 4.4-stable tree
+        by eddie.linux-mips.org with ESMTP id S23992328AbeGALkUXm1R1 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 1 Jul 2018 13:40:20 +0200
+Subject: Patch "time: Make sure jiffies_to_msecs() preserves non-zero time periods" has been added to the 4.9-stable tree
 From: <gregkh@linuxfoundation.org>
-Date: Sun, 01 Jul 2018 13:39:03 +0200
-Message-ID: <1530445143159107@kroah.com>
+Date: Sun, 01 Jul 2018 13:39:20 +0200
+Message-ID: <1530445160193158@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -21,19 +21,19 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: 20180622143357.7495-1-geert@linux-m68k.org, arnd@arndb.degeert@linux-m68k.org, gregkh@linuxfoundation.org, john.stultz@linaro.org, linux-mips@linux-mips.org, sboyd@kernel.org, tglx@linutronix.de
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180701113903.fUeePb5pZ3HMF5xfov0XE1eJ1IvCIkBW0DZVGPXoAlU@z>
+Message-ID: <20180701113920.Zd0cIxfa-TsFznT6alQpq-IbCeaoAkaKJHBkZwVhfSo@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
     time: Make sure jiffies_to_msecs() preserves non-zero time periods
 
-to the 4.4-stable tree which can be found at:
+to the 4.9-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      time-make-sure-jiffies_to_msecs-preserves-non-zero-time-periods.patch
-and it can be found in the queue-4.4 subdirectory.
+and it can be found in the queue-4.9 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.

@@ -1,15 +1,16 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:38526 "EHLO
-        mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992066AbeGALk1AeUp1 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 1 Jul 2018 13:40:27 +0200
-Subject: Patch "MIPS: io: Add barrier after register read in inX()" has been added to the 4.9-stable tree
-From: <gregkh@linuxfoundation.org>
-Date: Sun, 01 Jul 2018 13:39:20 +0200
-Message-ID: <153044516015440@kroah.com>
+Received: from mail-oi0-f66.google.com ([209.85.218.66]:36060 "EHLO
+        mail-oi0-f66.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23994585AbeGCTcbv6QQt (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 3 Jul 2018 21:32:31 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 8bit
-Return-Path: <gregkh@linuxfoundation.org>
+References: <20180703123214.23090-1-paul@crapouillou.net>
+In-Reply-To: <20180703123214.23090-1-paul@crapouillou.net>
+From: Mathieu Malaterre <malat@debian.org>
+Date: Tue, 3 Jul 2018 21:32:13 +0200
+Message-ID: <CA+7wUsykjQkSHshNNVJaZJ4d_U9Q4fhaoRaNOTHhjoj43xRPLg@mail.gmail.com>
+Subject: Re: [PATCH 00/14] dma-jz4780 improvements
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <mathieu.malaterre@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,21 +20,31 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: chenhc@lemote.com, chenhuacai@gmail.com, gregkh@linuxfoundation.org, james.hogan@mips.com, linux-mips@linux-mips.org, paul.burton@mips.com, wuzhangjin@gmail.com, zhangfx@lemote.com
-Cc: stable-commits@vger.kernel.org
-Message-ID: <20180701113920._oG3MGmSYKIVHIEx2i-3PE1THEyV6Tvt_PaARrAnVU8@z>
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: vkoul@kernel.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, dansilsby@gmail.com, dmaengine@vger.kernel.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>
+Message-ID: <20180703193213.vhp26fjWAmc2SrYkAIip8s58OmFQqemB_LADYmQQU7g@z>
 
+On Tue, Jul 3, 2018 at 2:32 PM Paul Cercueil <paul@crapouillou.net> wrote:
+>
+> Hi,
+>
+> This set of patches by myself and Daniel extends the dma-jz4780 driver
+> to support other SoCs (JZ4770, JZ4740, JZ4725B).
+>
+> Some fixes are also included, for proper residue reporting, which fixes
+> errors with ALSA.
+>
+> Finally, the last two patches update the devicetree bindings for the
+> JZ4780 SoC and add a binding for the JZ4770 SoC.
+>
+> This patchset was tested on JZ4780, JZ4770 and JZ4725B, but was not tested
+> on the JZ4740, so it would be fantastic if somebody could test it there.
 
-This is a note to let you know that I've just added the patch titled
+For the entire series, everything works as expected on JZ4780 (Creator
+CI20), including reading from sdcard.
 
-    MIPS: io: Add barrier after register read in inX()
+Tested-by: Mathieu Malaterre <malat@debian.org>
 
-to the 4.9-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-
-The filename of the patch is:
-     mips-io-add-barrier-after-register-read-in-inx.patch
-and it can be found in the queue-4.9 subdirectory.
-
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
+> Regards,
+> -Paul
+>

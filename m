@@ -1,16 +1,16 @@
-Received: from mail-oi0-f66.google.com ([209.85.218.66]:36060 "EHLO
-        mail-oi0-f66.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994585AbeGCTcbv6QQt (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 3 Jul 2018 21:32:31 +0200
+Received: from mail-pf0-x241.google.com ([IPv6:2607:f8b0:400e:c00::241]:36529
+        "EHLO mail-pf0-x241.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23994653AbeGDQ2W5PQ-t (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 4 Jul 2018 18:28:22 +0200
 MIME-Version: 1.0
-References: <20180703123214.23090-1-paul@crapouillou.net>
-In-Reply-To: <20180703123214.23090-1-paul@crapouillou.net>
-From: Mathieu Malaterre <malat@debian.org>
-Date: Tue, 3 Jul 2018 21:32:13 +0200
-Message-ID: <CA+7wUsykjQkSHshNNVJaZJ4d_U9Q4fhaoRaNOTHhjoj43xRPLg@mail.gmail.com>
-Subject: Re: [PATCH 00/14] dma-jz4780 improvements
+In-Reply-To: <20180703123214.23090-2-paul@crapouillou.net>
+References: <20180703123214.23090-1-paul@crapouillou.net> <20180703123214.23090-2-paul@crapouillou.net>
+From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+Date: Wed, 4 Jul 2018 21:58:15 +0530
+Message-ID: <CANc+2y4ZJDKou4x570zNv82fSAxiOpbZfd3rFNB2M5Ft1C3eiQ@mail.gmail.com>
+Subject: Re: [PATCH 01/14] dmaengine: dma-jz4780: Avoid hardcoding number of channels
 Content-Type: text/plain; charset="UTF-8"
-Return-Path: <mathieu.malaterre@gmail.com>
+Return-Path: <prasannatsmkumar@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,30 +21,166 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Paul Cercueil <paul@crapouillou.net>
-Cc: vkoul@kernel.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, dansilsby@gmail.com, dmaengine@vger.kernel.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>
-Message-ID: <20180703193213.vhp26fjWAmc2SrYkAIip8s58OmFQqemB_LADYmQQU7g@z>
+Cc: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, Mathieu Malaterre <malat@debian.org>, Daniel Silsby <dansilsby@gmail.com>, dmaengine@vger.kernel.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>
+Message-ID: <20180704162815.K9KbbgSPpxv-xnCLfk4Wf2hAIVOT0wACdv5IlYZKwHg@z>
 
-On Tue, Jul 3, 2018 at 2:32 PM Paul Cercueil <paul@crapouillou.net> wrote:
->
-> Hi,
->
-> This set of patches by myself and Daniel extends the dma-jz4780 driver
-> to support other SoCs (JZ4770, JZ4740, JZ4725B).
->
-> Some fixes are also included, for proper residue reporting, which fixes
-> errors with ALSA.
->
-> Finally, the last two patches update the devicetree bindings for the
-> JZ4780 SoC and add a binding for the JZ4770 SoC.
->
-> This patchset was tested on JZ4780, JZ4770 and JZ4725B, but was not tested
-> on the JZ4740, so it would be fantastic if somebody could test it there.
+Hi Paul,
 
-For the entire series, everything works as expected on JZ4780 (Creator
-CI20), including reading from sdcard.
+On 3 July 2018 at 18:02, Paul Cercueil <paul@crapouillou.net> wrote:
+> As part of the work to support various other Ingenic JZ47xx SoC versions,
+> which don't feature the same number of DMA channels per core, we now
+> deduce the number of DMA channels available from the devicetree
+> compatible string.
+>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/dma/dma-jz4780.c | 53 +++++++++++++++++++++++++++++-----------
+>  1 file changed, 39 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
+> index 85820a2d69d4..b40f491f0367 100644
+> --- a/drivers/dma/dma-jz4780.c
+> +++ b/drivers/dma/dma-jz4780.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+> +#include <linux/of_device.h>
+>  #include <linux/of_dma.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/slab.h>
+> @@ -23,8 +24,6 @@
+>  #include "dmaengine.h"
+>  #include "virt-dma.h"
+>
+> -#define JZ_DMA_NR_CHANNELS     32
+> -
+>  /* Global registers. */
+>  #define JZ_DMA_REG_DMAC                0x1000
+>  #define JZ_DMA_REG_DIRQP       0x1004
+> @@ -135,14 +134,20 @@ struct jz4780_dma_chan {
+>         unsigned int curr_hwdesc;
+>  };
+>
+> +enum jz_version {
+> +       ID_JZ4780,
+> +};
+> +
+>  struct jz4780_dma_dev {
+>         struct dma_device dma_device;
+>         void __iomem *base;
+>         struct clk *clk;
+>         unsigned int irq;
+> +       unsigned int nb_channels;
+> +       enum jz_version version;
+>
+>         uint32_t chan_reserved;
+> -       struct jz4780_dma_chan chan[JZ_DMA_NR_CHANNELS];
+> +       struct jz4780_dma_chan chan[];
 
-Tested-by: Mathieu Malaterre <malat@debian.org>
+Looks like a variable length array in struct. I think there is some
+effort to remove the usage of VLA. Can you revisit this? I may be
+wrong, please feel free to correct.
 
-> Regards,
-> -Paul
+>  };
+>
+>  struct jz4780_dma_filter_data {
+> @@ -648,7 +653,7 @@ static irqreturn_t jz4780_dma_irq_handler(int irq, void *data)
+>
+>         pending = jz4780_dma_readl(jzdma, JZ_DMA_REG_DIRQP);
+>
+> -       for (i = 0; i < JZ_DMA_NR_CHANNELS; i++) {
+> +       for (i = 0; i < jzdma->nb_channels; i++) {
+>                 if (!(pending & (1<<i)))
+>                         continue;
+>
+> @@ -728,7 +733,7 @@ static struct dma_chan *jz4780_of_dma_xlate(struct of_phandle_args *dma_spec,
+>         data.channel = dma_spec->args[1];
+>
+>         if (data.channel > -1) {
+> -               if (data.channel >= JZ_DMA_NR_CHANNELS) {
+> +               if (data.channel >= jzdma->nb_channels) {
+>                         dev_err(jzdma->dma_device.dev,
+>                                 "device requested non-existent channel %u\n",
+>                                 data.channel);
+> @@ -752,19 +757,45 @@ static struct dma_chan *jz4780_of_dma_xlate(struct of_phandle_args *dma_spec,
+>         }
+>  }
+>
+> +static const unsigned int jz4780_dma_nb_channels[] = {
+> +       [ID_JZ4780] = 32,
+> +};
+> +
+> +static const struct of_device_id jz4780_dma_dt_match[] = {
+> +       { .compatible = "ingenic,jz4780-dma", .data = (void *)ID_JZ4780 },
+> +       {},
+> +};
+> +MODULE_DEVICE_TABLE(of, jz4780_dma_dt_match);
+> +
+>  static int jz4780_dma_probe(struct platform_device *pdev)
+>  {
+>         struct device *dev = &pdev->dev;
+> +       const struct of_device_id *of_id = of_match_device(
+> +                       jz4780_dma_dt_match, dev);
+>         struct jz4780_dma_dev *jzdma;
+>         struct jz4780_dma_chan *jzchan;
+>         struct dma_device *dd;
+>         struct resource *res;
+> +       enum jz_version version;
+> +       unsigned int nb_channels;
+>         int i, ret;
+>
+> -       jzdma = devm_kzalloc(dev, sizeof(*jzdma), GFP_KERNEL);
+> +       if (of_id)
+> +               version = (enum jz_version)of_id->data;
+> +       else
+> +               version = ID_JZ4780; /* Default when not probed from DT */
+> +
+> +       nb_channels = jz4780_dma_nb_channels[version];
+> +
+> +       jzdma = devm_kzalloc(dev, sizeof(*jzdma)
+> +                               + sizeof(*jzdma->chan) * nb_channels,
+> +                               GFP_KERNEL);
+>         if (!jzdma)
+>                 return -ENOMEM;
+>
+> +       jzdma->nb_channels = nb_channels;
+> +       jzdma->version = version;
+> +
+>         platform_set_drvdata(pdev, jzdma);
+>
+>         res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> @@ -839,7 +870,7 @@ static int jz4780_dma_probe(struct platform_device *pdev)
+>
+>         INIT_LIST_HEAD(&dd->channels);
+>
+> -       for (i = 0; i < JZ_DMA_NR_CHANNELS; i++) {
+> +       for (i = 0; i < jzdma->nb_channels; i++) {
+>                 jzchan = &jzdma->chan[i];
+>                 jzchan->id = i;
+>
+> @@ -884,19 +915,13 @@ static int jz4780_dma_remove(struct platform_device *pdev)
+>
+>         free_irq(jzdma->irq, jzdma);
+>
+> -       for (i = 0; i < JZ_DMA_NR_CHANNELS; i++)
+> +       for (i = 0; i < jzdma->nb_channels; i++)
+>                 tasklet_kill(&jzdma->chan[i].vchan.task);
+>
+>         dma_async_device_unregister(&jzdma->dma_device);
+>         return 0;
+>  }
+>
+> -static const struct of_device_id jz4780_dma_dt_match[] = {
+> -       { .compatible = "ingenic,jz4780-dma", .data = NULL },
+> -       {},
+> -};
+> -MODULE_DEVICE_TABLE(of, jz4780_dma_dt_match);
+> -
+>  static struct platform_driver jz4780_dma_driver = {
+>         .probe          = jz4780_dma_probe,
+>         .remove         = jz4780_dma_remove,
+> --
+> 2.18.0
+>
 >

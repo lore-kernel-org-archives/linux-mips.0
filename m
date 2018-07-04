@@ -1,14 +1,14 @@
-Received: from mail-pf0-x243.google.com ([IPv6:2607:f8b0:400e:c00::243]:40417
-        "EHLO mail-pf0-x243.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994656AbeGDQzHcju6t (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 4 Jul 2018 18:55:07 +0200
+Received: from mail-pl0-x242.google.com ([IPv6:2607:f8b0:400e:c01::242]:42898
+        "EHLO mail-pl0-x242.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23994657AbeGDRAuoxvrt (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 4 Jul 2018 19:00:50 +0200
 MIME-Version: 1.0
-In-Reply-To: <20180703123214.23090-7-paul@crapouillou.net>
-References: <20180703123214.23090-1-paul@crapouillou.net> <20180703123214.23090-7-paul@crapouillou.net>
+In-Reply-To: <20180703123214.23090-8-paul@crapouillou.net>
+References: <20180703123214.23090-1-paul@crapouillou.net> <20180703123214.23090-8-paul@crapouillou.net>
 From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Date: Wed, 4 Jul 2018 22:25:01 +0530
-Message-ID: <CANc+2y6HFNfbCtzfmfARJ4J6cnvGGZY0KGoeB_R=w-yj5MQYsw@mail.gmail.com>
-Subject: Re: [PATCH 06/14] dmaengine: dma-jz4780: Add support for the JZ4725B SoC
+Date: Wed, 4 Jul 2018 22:30:43 +0530
+Message-ID: <CANc+2y7BU5SmgP8yv46PQx2E1Bz1gb0dOQaM0wG=-iReCd8YyQ@mail.gmail.com>
+Subject: Re: [PATCH 07/14] dmaengine: dma-jz4780: Enable Fast DMA to the AIC
 Content-Type: text/plain; charset="UTF-8"
 Return-Path: <prasannatsmkumar@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
@@ -22,79 +22,43 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Paul Cercueil <paul@crapouillou.net>
 Cc: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, Mathieu Malaterre <malat@debian.org>, Daniel Silsby <dansilsby@gmail.com>, dmaengine@vger.kernel.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>
-Message-ID: <20180704165501.vSi-CC6r2N2Vd0CG_uG96_LJ0LdjzR0jHeq4xMhHoUI@z>
+Message-ID: <20180704170043.7BaZC2EImqMEvzbQUJIl8JKvZnH8mxsHuYJfUgjqbW8@z>
 
 On 3 July 2018 at 18:02, Paul Cercueil <paul@crapouillou.net> wrote:
-> The JZ4725B has one DMA core starring six DMA channels.
-> As for the JZ4770, each DMA channel's clock can be enabled with
-> a register write, the difference here being that once started, it
-> is not possible to turn it off.
+> With the fast DMA bit set, the DMA will transfer twice as much data
+> per clock period to the AIC, so there is little point not to set it.
 >
 > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 > ---
->  Documentation/devicetree/bindings/dma/jz4780-dma.txt | 1 +
->  drivers/dma/dma-jz4780.c                             | 6 ++++++
->  2 files changed, 7 insertions(+)
+>  drivers/dma/dma-jz4780.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 >
-> diff --git a/Documentation/devicetree/bindings/dma/jz4780-dma.txt b/Documentation/devicetree/bindings/dma/jz4780-dma.txt
-> index d7ca3f925fdf..5d302b488e88 100644
-> --- a/Documentation/devicetree/bindings/dma/jz4780-dma.txt
-> +++ b/Documentation/devicetree/bindings/dma/jz4780-dma.txt
-> @@ -5,6 +5,7 @@ Required properties:
->  - compatible: Should be one of:
->    * ingenic,jz4780-dma
->    * ingenic,jz4770-dma
-> +  * ingenic,jz4725b-dma
->    * ingenic,jz4740-dma
->  - reg: Should contain the DMA channel registers location and length, followed
->    by the DMA controller registers location and length.
 > diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
-> index ccadbe61dde7..922e4031e70e 100644
+> index 922e4031e70e..7ee2c121948f 100644
 > --- a/drivers/dma/dma-jz4780.c
 > +++ b/drivers/dma/dma-jz4780.c
-> @@ -134,6 +134,7 @@ struct jz4780_dma_chan {
+> @@ -52,6 +52,7 @@
+>  #define JZ_DMA_DMAC_DMAE       BIT(0)
+>  #define JZ_DMA_DMAC_AR         BIT(2)
+>  #define JZ_DMA_DMAC_HLT                BIT(3)
+> +#define JZ_DMA_DMAC_FAIC       BIT(27)
+>  #define JZ_DMA_DMAC_FMSC       BIT(31)
 >
->  enum jz_version {
->         ID_JZ4740,
-> +       ID_JZ4725B,
->         ID_JZ4770,
->         ID_JZ4780,
->  };
-> @@ -204,6 +205,8 @@ static inline void jz4780_dma_chan_enable(struct jz4780_dma_dev *jzdma,
->  {
->         if (jzdma->version == ID_JZ4770)
->                 jz4780_dma_ctrl_writel(jzdma, JZ_DMA_REG_DCKES, BIT(chn));
-> +       else if (jzdma->version == ID_JZ4725B)
-> +               jz4780_dma_ctrl_writel(jzdma, JZ_DMA_REG_DCKE, BIT(chn));
->  }
+>  #define JZ_DMA_DRT_AUTO                0x8
+> @@ -929,8 +930,8 @@ static int jz4780_dma_probe(struct platform_device *pdev)
+>          * Also set the FMSC bit - it increases MSC performance, so it makes
+>          * little sense not to enable it.
+>          */
+> -       jz4780_dma_ctrl_writel(jzdma, JZ_DMA_REG_DMAC,
+> -                         JZ_DMA_DMAC_DMAE | JZ_DMA_DMAC_FMSC);
+> +       jz4780_dma_ctrl_writel(jzdma, JZ_DMA_REG_DMAC, JZ_DMA_DMAC_DMAE |
+> +                              JZ_DMA_DMAC_FAIC | JZ_DMA_DMAC_FMSC);
 >
->  static inline void jz4780_dma_chan_disable(struct jz4780_dma_dev *jzdma,
-> @@ -249,6 +252,7 @@ static void jz4780_dma_desc_free(struct virt_dma_desc *vdesc)
->
->  static const unsigned int jz4780_dma_ord_max[] = {
->         [ID_JZ4740] = 5,
-> +       [ID_JZ4725B] = 5,
->         [ID_JZ4770] = 6,
->         [ID_JZ4780] = 7,
->  };
-> @@ -804,12 +808,14 @@ static struct dma_chan *jz4780_of_dma_xlate(struct of_phandle_args *dma_spec,
->
->  static const unsigned int jz4780_dma_nb_channels[] = {
->         [ID_JZ4740] = 6,
-> +       [ID_JZ4725B] = 6,
->         [ID_JZ4770] = 6,
->         [ID_JZ4780] = 32,
->  };
->
->  static const struct of_device_id jz4780_dma_dt_match[] = {
->         { .compatible = "ingenic,jz4740-dma", .data = (void *)ID_JZ4740 },
-> +       { .compatible = "ingenic,jz4725b-dma", .data = (void *)ID_JZ4725B },
->         { .compatible = "ingenic,jz4770-dma", .data = (void *)ID_JZ4770 },
->         { .compatible = "ingenic,jz4780-dma", .data = (void *)ID_JZ4780 },
->         {},
+>         if (jzdma->version == ID_JZ4780)
+>                 jz4780_dma_ctrl_writel(jzdma, JZ_DMA_REG_DMACP, 0);
 > --
 > 2.18.0
 >
 >
 
-Reviewed-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+Reviewed-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>.

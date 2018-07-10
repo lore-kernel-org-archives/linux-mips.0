@@ -1,22 +1,24 @@
-Received: from outils.crapouillou.net ([89.234.176.41]:52480 "EHLO
-        crapouillou.net" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992571AbeGGLBdANBzE convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 7 Jul 2018 13:01:33 +0200
-Date: Sat, 07 Jul 2018 13:01:21 +0200
-From: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 01/14] dmaengine: dma-jz4780: Avoid hardcoding number of
- channels
-Message-ID: <1530961282.2380.0@smtp.crapouillou.net>
-In-Reply-To: <CANc+2y5wkp2mHb+Z=Rh332uY+ixhUxbM3EM3HEs-fq5efa+msQ@mail.gmail.com>
-References: <20180703123214.23090-1-paul@crapouillou.net>
-        <20180703123214.23090-2-paul@crapouillou.net>
-        <CANc+2y4ZJDKou4x570zNv82fSAxiOpbZfd3rFNB2M5Ft1C3eiQ@mail.gmail.com>
-        <1530815198.6642.1@smtp.crapouillou.net>
-        <CANc+2y5wkp2mHb+Z=Rh332uY+ixhUxbM3EM3HEs-fq5efa+msQ@mail.gmail.com>
+Received: from mail-by2nam05on0709.outbound.protection.outlook.com ([IPv6:2a01:111:f400:fe52::709]:35278
+        "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23993997AbeGJRL1RhAU3 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 10 Jul 2018 19:11:27 +0200
+Date: Tue, 10 Jul 2018 10:10:40 -0700
+From: Paul Burton <paul.burton@mips.com>
+Subject: Re: [PATCH V2] MIPS: implement smp_cond_load_acquire() for Loongson-3
+Message-ID: <20180710171040.f3gyyh524xlsqv4j@pburton-laptop>
+References: <1531103198-16764-1-git-send-email-chenhc@lemote.com>
+ <20180709164939.uhqsvcv4a7jlbhvp@pburton-laptop>
+ <CAAhV-H7bqhz+dzgPk0_tTAN6y_k_8Ds9heF0p5uPHsHNg0v4Rg@mail.gmail.com>
+ <20180710093637.GF2476@hirez.programming.kicks-ass.net>
+ <20180710105437.GT2512@hirez.programming.kicks-ass.net>
+ <tencent_26F8B9E004D4512B2225FCE1@qq.com>
+ <20180710121727.GK2476@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
-Return-Path: <paul@crapouillou.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180710121727.GK2476@hirez.programming.kicks-ass.net>
+Return-Path: <pburton@wavecomp.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,103 +28,33 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>, Mathieu Malaterre <malat@debian.org>, Daniel Silsby <dansilsby@gmail.com>, dmaengine@vger.kernel.org, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>
-Message-ID: <20180707110121.jUMlz8QaA0XbsMoaQHlyu_zxQWnes4eNz8JO-HDocDg@z>
+To: Peter Zijlstra <peterz@infradead.org>, =?utf-8?B?6ZmI5Y2O5omN?= <chenhc@lemote.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, linux-mips <linux-mips@linux-mips.org>, Fuxin Zhang <zhangfx@lemote.com>, wuzhangjin <wuzhangjin@gmail.com>, stable <stable@vger.kernel.org>, Alan Stern <stern@rowland.harvard.edu>, Andrea Parri <andrea.parri@amarulasolutions.com>, Will Deacon <will.deacon@arm.com>, Boqun Feng <boqun.feng@gmail.com>, Nicholas Piggin <npiggin@gmail.com>, David Howells <dhowells@redhat.com>, Jade Alglave <j.alglave@ucl.ac.uk>, Luc Maranget <luc.maranget@inria.fr>, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, Akira Yokosawa <akiyks@gmail.com>, LKML <linux-kernel@vger.kernel.org>
+Message-ID: <20180710171040.ETykqrIbrSLkWat6m-JhA4EzDSkahKnSURV2ckJ44Rg@z>
 
+Hello,
 
-
-Le sam. 7 juil. 2018 à 9:34, PrasannaKumar Muralidharan 
-<prasannatsmkumar@gmail.com> a écrit :
-> On 5 July 2018 at 23:56, Paul Cercueil <paul@crapouillou.net> wrote:
->>  Hi PrasannaKumar,
->> 
->> 
->>>  Hi Paul,
->>> 
->>>  On 3 July 2018 at 18:02, Paul Cercueil <paul@crapouillou.net> 
->>> wrote:
->>>> 
->>>>   As part of the work to support various other Ingenic JZ47xx SoC
->>>>  versions,
->>>>   which don't feature the same number of DMA channels per core, we 
->>>> now
->>>>   deduce the number of DMA channels available from the devicetree
->>>>   compatible string.
->>>> 
->>>>   Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>>>   ---
->>>>    drivers/dma/dma-jz4780.c | 53 
->>>> +++++++++++++++++++++++++++++-----------
->>>>    1 file changed, 39 insertions(+), 14 deletions(-)
->>>> 
->>>>   diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
->>>>   index 85820a2d69d4..b40f491f0367 100644
->>>>   --- a/drivers/dma/dma-jz4780.c
->>>>   +++ b/drivers/dma/dma-jz4780.c
->>>>   @@ -16,6 +16,7 @@
->>>>    #include <linux/interrupt.h>
->>>>    #include <linux/module.h>
->>>>    #include <linux/of.h>
->>>>   +#include <linux/of_device.h>
->>>>    #include <linux/of_dma.h>
->>>>    #include <linux/platform_device.h>
->>>>    #include <linux/slab.h>
->>>>   @@ -23,8 +24,6 @@
->>>>    #include "dmaengine.h"
->>>>    #include "virt-dma.h"
->>>> 
->>>>   -#define JZ_DMA_NR_CHANNELS     32
->>>>   -
->>>>    /* Global registers. */
->>>>    #define JZ_DMA_REG_DMAC                0x1000
->>>>    #define JZ_DMA_REG_DIRQP       0x1004
->>>>   @@ -135,14 +134,20 @@ struct jz4780_dma_chan {
->>>>           unsigned int curr_hwdesc;
->>>>    };
->>>> 
->>>>   +enum jz_version {
->>>>   +       ID_JZ4780,
->>>>   +};
->>>>   +
->>>>    struct jz4780_dma_dev {
->>>>           struct dma_device dma_device;
->>>>           void __iomem *base;
->>>>           struct clk *clk;
->>>>           unsigned int irq;
->>>>   +       unsigned int nb_channels;
->>>>   +       enum jz_version version;
->>>> 
->>>>           uint32_t chan_reserved;
->>>>   -       struct jz4780_dma_chan chan[JZ_DMA_NR_CHANNELS];
->>>>   +       struct jz4780_dma_chan chan[];
->>> 
->>> 
->>>  Looks like a variable length array in struct. I think there is some
->>>  effort to remove the usage of VLA. Can you revisit this? I may be
->>>  wrong, please feel free to correct.
->> 
->> 
->>  Are you sure? It's the first time I hear about it.
->>  Could anybody confirm?
+On Tue, Jul 10, 2018 at 02:17:27PM +0200, Peter Zijlstra wrote:
+> >  1, CPU0 set the lock to 0, then do something;
+> >  2, While CPU0 is doing something, CPU1 set the flag to 1 with
+> >     WRITE_ONCE(), and then wait the lock become to 1 with a READ_ONCE()
+> >     loop;
+> >  3, After CPU0 complete its work, it wait the flag become to 1, and if
+> >     so then set the lock to 1;
+> >  4, If the lock becomes to 1, CPU1 will leave the READ_ONCE() loop.
 > 
-> Please see [1] for info.
+> > If without SFB, everything is OK. But with SFB in step 2, a
+> > READ_ONCE() loop is right after WRITE_ONCE(), which makes the flag
+> > cached in SFB (so be invisible by other CPUs) for ever, then both CPU0
+> > and CPU1 wait for ever.
 > 
-> Variable Length Arrays in struct is expressly forbidden in C99, C11.
-> Clang does not support it. To make kernel compile with Clang few
-> people are trying to remove/reduce VLAIS usage.
+> Sure.. we all got that far. And no, this isn't the _real_ problem. This
+> is a manifestation of the problem.
 > 
-> 1. 
-> https://blog.linuxplumbersconf.org/2013/ocw/system/presentations/1221/original/VLAIS.pdf
+> The problem is that your SFB is broken (per the Linux requirements). We
+> require that stores will become visible. That is, they must not
+> indefinitely (for whatever reason) stay in the store buffer.
 
-I read it, and my structure is not a VLAIS; my "chan" array is a 
-flexible
-array, its sizeof() is 0, so the sizeof() of the structure is constant.
-
-See page 6 of the PDF, about alternatives to VLAIS:
-"If possible use a flexible array member and move the array to the end 
-of
-the struct"
-Which is what I am doing here.
-
--Paul
+For the record, my understanding is that this doesn't really comply with
+the MIPS architecture either. It doesn't cover store buffers explicitly
+but does cover the more general notion of caches.

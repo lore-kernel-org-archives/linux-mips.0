@@ -1,16 +1,16 @@
-Received: from mail1.windriver.com ([147.11.146.13]:48043 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992362AbeGKDZTPrCB0 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Jul 2018 05:25:19 +0200
-From: Rui Wang <rui.wang@windriver.com>
-Subject: pci_resource_to_user exports wrong region size on mips
-Message-ID: <4bcefc31-a62e-17ba-eb10-a3cd4e8bd06c@windriver.com>
-Date: Wed, 11 Jul 2018 11:25:06 +0800
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:54785 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993514AbeGKMq4PtFyi (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Jul 2018 14:46:56 +0200
+Date: Wed, 11 Jul 2018 13:46:31 +0100
+From: "Maciej W. Rozycki" <macro@mips.com>
+Subject: Re: [PATCH 12/25] MIPS: loongson: untangle dma implementations
+In-Reply-To: <20180525092111.18516-13-hch@lst.de>
+Message-ID: <alpine.DEB.2.00.1807110407510.30992@tp.orcam.me.uk>
+References: <20180525092111.18516-1-hch@lst.de> <20180525092111.18516-13-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-Return-Path: <Rui.Wang@windriver.com>
+Content-Type: text/plain; charset="US-ASCII"
+Return-Path: <maciej.rozycki@uk.mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,118 +20,29 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: ralf@linux-mips.org, paul.burton@mips.com, jhogan@kernel.org
-Cc: linux-mips@linux-mips.org
-Message-ID: <20180711032506.epHHdD6USkvsBO8_pCSQaUBOES-7a_4qdS5Z9h1mxRg@z>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, Kevin Cernekee <cernekee@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, Huacai Chen <chenhc@lemote.com>, Jiaxun Yang <jiaxun.yang@flygoat.com>, David Daney <david.daney@cavium.com>, Tom Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@linux-mips.org, iommu@lists.linux-foundation.org
+Message-ID: <20180711124631.JmaopBLzN4fIEF7q0-0C3aKeTw_W_TNxJFM8OaEVQwU@z>
 
-Hi all,
+On Fri, 25 May 2018, Christoph Hellwig wrote:
 
-I use a mips board cav-octeon3 with 4.1.21 kernel. And there is a pci 
-ethernet card plugged in the board. When I run command "lspci -vv", the 
-following information listed:
+> Only loongson-3 is DMA coherent and uses swiotlb.  So move the dma
+> address translations stubs directly to the loongson-3 code, and remove
+> a few Kconfig indirections.
 
-----------------------------------------------------------------------------------
+ SiByte should too though, at least for those boards, such as the SWARM 
+and the BigSur, that can have DRAM over 4GiB (and 32-bit PCI devices 
+plugged).
 
-01:00.0 Ethernet controller: Intel Corporation 82571EB Gigabit Ethernet 
-Controller (rev 06)
-     Subsystem: Intel Corporation PRO/1000 PT Dual Port Server Adapter
-     Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- 
-Stepping- SERR- FastB2B- DisINTx-
-     Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- 
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-     Interrupt: pin A routed to IRQ 369
-     Region 0: Memory at 11b00f0000000 (32-bit, non-prefetchable) 
-[disabled] [size=128K]
-     Region 1: Memory at 11b00f0020000 (32-bit, non-prefetchable) 
-[disabled] [size=128K]
-     Region 2: I/O ports at 1000 [disabled] [size=33]
-     Region 3: Memory at <unassigned> (32-bit, non-prefetchable) 
-[disabled] [size=2]
-     Region 4: Memory at <unassigned> (32-bit, non-prefetchable) 
-[disabled] [size=2]
-     Region 5: Memory at <unassigned> (32-bit, non-prefetchable) 
-[disabled] [size=2]
-     Expansion ROM at <unassigned> [disabled] [size=2]
-     Capabilities: [c8] Power Management version 2
-         Flags: PMEClk- DSI+ D1- D2- AuxCurrent=0mA 
-PME(D0+,D1-,D2-,D3hot+,D3cold-)
-         Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=1 PME-
-     Capabilities: [d0] MSI: Enable- Count=1/1 Maskable- 64bit+
-         Address: 0000000000000000  Data: 0000
-     Capabilities: [e0] Express (v1) Endpoint, MSI 00
-         DevCap:    MaxPayload 256 bytes, PhantFunc 0, Latency L0s 
-<512ns, L1 <64us
-             ExtTag- AttnBtn- AttnInd- PwrInd- RBE- FLReset-
-         DevCtl:    Report errors: Correctable- Non-Fatal- Fatal- 
-Unsupported-
-             RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop+
-             MaxPayload 128 bytes, MaxReadReq 512 bytes
-         DevSta:    CorrErr- UncorrErr+ FatalErr- UnsuppReq+ AuxPwr- 
-TransPend-
-         LnkCap:    Port #4, Speed 2.5GT/s, Width x4, ASPM L0s, Exit 
-Latency L0s <4us, L1 <64us
-             ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp-
-         LnkCtl:    ASPM Disabled; RCB 64 bytes Disabled- CommClk-
-             ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-         LnkSta:    Speed 2.5GT/s, Width x4, TrErr- Train- SlotClk+ 
-DLActive- BWMgmt- ABWMgmt-
-     Capabilities: [100 v1] Advanced Error Reporting
-         UESta:    DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- 
-RxOF- MalfTLP- ECRC- UnsupReq+ ACSViol-
-         UEMsk:    DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- 
-RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
-         UESvrt:    DLP+ SDES- TLP- FCP+ CmpltTO- CmpltAbrt- UnxCmplt- 
-RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
-         CESta:    RxErr- BadTLP- BadDLLP- Rollover- Timeout- NonFatalErr-
-         CEMsk:    RxErr- BadTLP- BadDLLP- Rollover- Timeout- NonFatalErr-
-         AERCap:    First Error Pointer: 14, GenCap- CGenEn- ChkCap- ChkEn-
-     Capabilities: [140 v1] Device Serial Number 00-15-17-ff-ff-de-15-e8
+ I never got to have the wiring of swiotlb completed for these boards as 
+I got distracted with getting set up to debug a DRAM controller issue 
+observed in the form of memory data corruption with the banks fully 
+populated (which might have to do something with the parameters of bank 
+interleaving enabled in such a configuration, as replacing a single 
+module with a smaller-sized one and therefore disabling interleaving, 
+which can only work with all modules being the same size, makes the 
+problem go away).
 
-----------------------------------------------------------------------------------
+ FWIW,
 
-As we can see, Region 2 has a size of 33, which is obviously wrong, 
-because the size should be the power of 2. And Region3 to Region5 should 
-not have existed.
-
-I do some research myself and finally I find that the lspci use the 
-information from sysfs, which is exported by the function 
-"resource_show", and the region size is calculated by 
-"pci_resource_to_user". On mips platform, the micro 
-HAVE_ARCH_PCI_RESOURCE_TO_USER is defined, so the function 
-"pci_resource_to_user" in "arch/mips/include/asm/pci.h" is called.
-
-----------------------------------------------------------------------------------
-
-static inline resource_size_t resource_size(const struct resource *res)
-{
-     return res->end - res->start + 1;
-}
-
-static inline void pci_resource_to_user(const struct pci_dev *dev, int bar,
-         const struct resource *rsrc, resource_size_t *start,
-         resource_size_t *end)
-{
-     phys_addr_t size = resource_size(rsrc);
-
-     *start = fixup_bigphys_addr(rsrc->start, size);
-     *end = rsrc->start + size;
-}
-
-----------------------------------------------------------------------------------
-
-In that function, the "size" is set to "end - start + 1", this is all 
-right. And "start" is actually set to "rsrc->start".
-
-What confused me is that the "end" is set to "start + size".
-
-If we replace the "size" to "end - start + 1", then the "end" is 
-actually set to "start + end - start + 1", which is "end + 1".
-
-I think this is the reason why the region size is 33 rather then 32.
-
-I have checked the latest kernel, but the code is still like that. Is 
-this a feature I don not understand or just a bug.
-
-Thanks,
-
-Rui Wang
+  Maciej

@@ -1,24 +1,16 @@
-Received: from mail-by2nam05on0709.outbound.protection.outlook.com ([IPv6:2a01:111:f400:fe52::709]:35278
-        "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993997AbeGJRL1RhAU3 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 10 Jul 2018 19:11:27 +0200
-Date: Tue, 10 Jul 2018 10:10:40 -0700
-From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH V2] MIPS: implement smp_cond_load_acquire() for Loongson-3
-Message-ID: <20180710171040.f3gyyh524xlsqv4j@pburton-laptop>
-References: <1531103198-16764-1-git-send-email-chenhc@lemote.com>
- <20180709164939.uhqsvcv4a7jlbhvp@pburton-laptop>
- <CAAhV-H7bqhz+dzgPk0_tTAN6y_k_8Ds9heF0p5uPHsHNg0v4Rg@mail.gmail.com>
- <20180710093637.GF2476@hirez.programming.kicks-ass.net>
- <20180710105437.GT2512@hirez.programming.kicks-ass.net>
- <tencent_26F8B9E004D4512B2225FCE1@qq.com>
- <20180710121727.GK2476@hirez.programming.kicks-ass.net>
+Received: from mail1.windriver.com ([147.11.146.13]:48043 "EHLO
+        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
+        with ESMTP id S23992362AbeGKDZTPrCB0 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 11 Jul 2018 05:25:19 +0200
+From: Rui Wang <rui.wang@windriver.com>
+Subject: pci_resource_to_user exports wrong region size on mips
+Message-ID: <4bcefc31-a62e-17ba-eb10-a3cd4e8bd06c@windriver.com>
+Date: Wed, 11 Jul 2018 11:25:06 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180710121727.GK2476@hirez.programming.kicks-ass.net>
-Return-Path: <pburton@wavecomp.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Return-Path: <Rui.Wang@windriver.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -28,33 +20,118 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Peter Zijlstra <peterz@infradead.org>, =?utf-8?B?6ZmI5Y2O5omN?= <chenhc@lemote.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, linux-mips <linux-mips@linux-mips.org>, Fuxin Zhang <zhangfx@lemote.com>, wuzhangjin <wuzhangjin@gmail.com>, stable <stable@vger.kernel.org>, Alan Stern <stern@rowland.harvard.edu>, Andrea Parri <andrea.parri@amarulasolutions.com>, Will Deacon <will.deacon@arm.com>, Boqun Feng <boqun.feng@gmail.com>, Nicholas Piggin <npiggin@gmail.com>, David Howells <dhowells@redhat.com>, Jade Alglave <j.alglave@ucl.ac.uk>, Luc Maranget <luc.maranget@inria.fr>, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, Akira Yokosawa <akiyks@gmail.com>, LKML <linux-kernel@vger.kernel.org>
-Message-ID: <20180710171040.ETykqrIbrSLkWat6m-JhA4EzDSkahKnSURV2ckJ44Rg@z>
+To: ralf@linux-mips.org, paul.burton@mips.com, jhogan@kernel.org
+Cc: linux-mips@linux-mips.org
+Message-ID: <20180711032506.epHHdD6USkvsBO8_pCSQaUBOES-7a_4qdS5Z9h1mxRg@z>
 
-Hello,
+Hi all,
 
-On Tue, Jul 10, 2018 at 02:17:27PM +0200, Peter Zijlstra wrote:
-> >  1, CPU0 set the lock to 0, then do something;
-> >  2, While CPU0 is doing something, CPU1 set the flag to 1 with
-> >     WRITE_ONCE(), and then wait the lock become to 1 with a READ_ONCE()
-> >     loop;
-> >  3, After CPU0 complete its work, it wait the flag become to 1, and if
-> >     so then set the lock to 1;
-> >  4, If the lock becomes to 1, CPU1 will leave the READ_ONCE() loop.
-> 
-> > If without SFB, everything is OK. But with SFB in step 2, a
-> > READ_ONCE() loop is right after WRITE_ONCE(), which makes the flag
-> > cached in SFB (so be invisible by other CPUs) for ever, then both CPU0
-> > and CPU1 wait for ever.
-> 
-> Sure.. we all got that far. And no, this isn't the _real_ problem. This
-> is a manifestation of the problem.
-> 
-> The problem is that your SFB is broken (per the Linux requirements). We
-> require that stores will become visible. That is, they must not
-> indefinitely (for whatever reason) stay in the store buffer.
+I use a mips board cav-octeon3 with 4.1.21 kernel. And there is a pci 
+ethernet card plugged in the board. When I run command "lspci -vv", the 
+following information listed:
 
-For the record, my understanding is that this doesn't really comply with
-the MIPS architecture either. It doesn't cover store buffers explicitly
-but does cover the more general notion of caches.
+----------------------------------------------------------------------------------
+
+01:00.0 Ethernet controller: Intel Corporation 82571EB Gigabit Ethernet 
+Controller (rev 06)
+     Subsystem: Intel Corporation PRO/1000 PT Dual Port Server Adapter
+     Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- 
+Stepping- SERR- FastB2B- DisINTx-
+     Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- 
+<TAbort- <MAbort- >SERR- <PERR- INTx-
+     Interrupt: pin A routed to IRQ 369
+     Region 0: Memory at 11b00f0000000 (32-bit, non-prefetchable) 
+[disabled] [size=128K]
+     Region 1: Memory at 11b00f0020000 (32-bit, non-prefetchable) 
+[disabled] [size=128K]
+     Region 2: I/O ports at 1000 [disabled] [size=33]
+     Region 3: Memory at <unassigned> (32-bit, non-prefetchable) 
+[disabled] [size=2]
+     Region 4: Memory at <unassigned> (32-bit, non-prefetchable) 
+[disabled] [size=2]
+     Region 5: Memory at <unassigned> (32-bit, non-prefetchable) 
+[disabled] [size=2]
+     Expansion ROM at <unassigned> [disabled] [size=2]
+     Capabilities: [c8] Power Management version 2
+         Flags: PMEClk- DSI+ D1- D2- AuxCurrent=0mA 
+PME(D0+,D1-,D2-,D3hot+,D3cold-)
+         Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=1 PME-
+     Capabilities: [d0] MSI: Enable- Count=1/1 Maskable- 64bit+
+         Address: 0000000000000000  Data: 0000
+     Capabilities: [e0] Express (v1) Endpoint, MSI 00
+         DevCap:    MaxPayload 256 bytes, PhantFunc 0, Latency L0s 
+<512ns, L1 <64us
+             ExtTag- AttnBtn- AttnInd- PwrInd- RBE- FLReset-
+         DevCtl:    Report errors: Correctable- Non-Fatal- Fatal- 
+Unsupported-
+             RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop+
+             MaxPayload 128 bytes, MaxReadReq 512 bytes
+         DevSta:    CorrErr- UncorrErr+ FatalErr- UnsuppReq+ AuxPwr- 
+TransPend-
+         LnkCap:    Port #4, Speed 2.5GT/s, Width x4, ASPM L0s, Exit 
+Latency L0s <4us, L1 <64us
+             ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp-
+         LnkCtl:    ASPM Disabled; RCB 64 bytes Disabled- CommClk-
+             ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+         LnkSta:    Speed 2.5GT/s, Width x4, TrErr- Train- SlotClk+ 
+DLActive- BWMgmt- ABWMgmt-
+     Capabilities: [100 v1] Advanced Error Reporting
+         UESta:    DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- 
+RxOF- MalfTLP- ECRC- UnsupReq+ ACSViol-
+         UEMsk:    DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- 
+RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
+         UESvrt:    DLP+ SDES- TLP- FCP+ CmpltTO- CmpltAbrt- UnxCmplt- 
+RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
+         CESta:    RxErr- BadTLP- BadDLLP- Rollover- Timeout- NonFatalErr-
+         CEMsk:    RxErr- BadTLP- BadDLLP- Rollover- Timeout- NonFatalErr-
+         AERCap:    First Error Pointer: 14, GenCap- CGenEn- ChkCap- ChkEn-
+     Capabilities: [140 v1] Device Serial Number 00-15-17-ff-ff-de-15-e8
+
+----------------------------------------------------------------------------------
+
+As we can see, Region 2 has a size of 33, which is obviously wrong, 
+because the size should be the power of 2. And Region3 to Region5 should 
+not have existed.
+
+I do some research myself and finally I find that the lspci use the 
+information from sysfs, which is exported by the function 
+"resource_show", and the region size is calculated by 
+"pci_resource_to_user". On mips platform, the micro 
+HAVE_ARCH_PCI_RESOURCE_TO_USER is defined, so the function 
+"pci_resource_to_user" in "arch/mips/include/asm/pci.h" is called.
+
+----------------------------------------------------------------------------------
+
+static inline resource_size_t resource_size(const struct resource *res)
+{
+     return res->end - res->start + 1;
+}
+
+static inline void pci_resource_to_user(const struct pci_dev *dev, int bar,
+         const struct resource *rsrc, resource_size_t *start,
+         resource_size_t *end)
+{
+     phys_addr_t size = resource_size(rsrc);
+
+     *start = fixup_bigphys_addr(rsrc->start, size);
+     *end = rsrc->start + size;
+}
+
+----------------------------------------------------------------------------------
+
+In that function, the "size" is set to "end - start + 1", this is all 
+right. And "start" is actually set to "rsrc->start".
+
+What confused me is that the "end" is set to "start + size".
+
+If we replace the "size" to "end - start + 1", then the "end" is 
+actually set to "start + end - start + 1", which is "end + 1".
+
+I think this is the reason why the region size is 33 rather then 32.
+
+I have checked the latest kernel, but the code is still like that. Is 
+this a feature I don not understand or just a bug.
+
+Thanks,
+
+Rui Wang

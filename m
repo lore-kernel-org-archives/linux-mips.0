@@ -1,13 +1,15 @@
-Received: from heliosphere.sirena.org.uk ([IPv6:2a01:7e01::f03c:91ff:fed4:a3b6]:50902
-        "EHLO heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992153AbeGRM3y3th1y (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 18 Jul 2018 14:29:54 +0200
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "spi: dw: allow providing own set_cs callback" to the spi tree
-In-Reply-To: <20180717142314.32337-3-alexandre.belloni@bootlin.com>
-Message-ID: <E1fflaY-0007Wj-SM@debutante>
-Date: Wed, 18 Jul 2018 13:29:50 +0100
-Return-Path: <broonie@sirena.org.uk>
+Received: from mail.linuxfoundation.org ([140.211.169.12]:48610 "EHLO
+        mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993060AbeGSQl2iuc00 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 19 Jul 2018 18:41:28 +0200
+Subject: Patch "MIPS: Use async IPIs for arch_trigger_cpumask_backtrace()" has been added to the 4.4-stable tree
+From: <gregkh@linuxfoundation.org>
+Date: Thu, 19 Jul 2018 18:41:08 +0200
+Message-ID: <153201846878149@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 8bit
+Return-Path: <gregkh@linuxfoundation.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -17,33 +19,21 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, James Hogan <jhogan@kernel.org>, Paul Burton <paul.burton@mips.com>, linux-spi@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Allan Nielsen <allan.nielsen@microsemi.com>linux-spi@vger.kernel.org
-Message-ID: <20180718122950.ILwYTiUiCthIcbEG9naHju8tYUzKVyVa2p2RuoJdgJ4@z>
+To: chenhc@lemote.com, gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, paul.burton@mips.com, ralf@linux-mips.org
+Cc: stable-commits@vger.kernel.org
+Message-ID: <20180719164108.JCe-TNep-lFYfzVa9VJh85rcHr1VQytD7WpMySQVGsQ@z>
 
-The patch
 
-   spi: dw: allow providing own set_cs callback
+This is a note to let you know that I've just added the patch titled
 
-has been applied to the spi tree at
+    MIPS: Use async IPIs for arch_trigger_cpumask_backtrace()
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
+to the 4.4-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+The filename of the patch is:
+     mips-use-async-ipis-for-arch_trigger_cpumask_backtrace.patch
+and it can be found in the queue-4.4 subdirectory.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.

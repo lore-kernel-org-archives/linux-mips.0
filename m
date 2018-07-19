@@ -1,11 +1,11 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:48610 "EHLO
+Received: from mail.linuxfoundation.org ([140.211.169.12]:48624 "EHLO
         mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993060AbeGSQl2iuc00 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 19 Jul 2018 18:41:28 +0200
-Subject: Patch "MIPS: Use async IPIs for arch_trigger_cpumask_backtrace()" has been added to the 4.4-stable tree
+        by eddie.linux-mips.org with ESMTP id S23993070AbeGSQlaSO150 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 19 Jul 2018 18:41:30 +0200
+Subject: Patch "MIPS: Call dump_stack() from show_regs()" has been added to the 4.4-stable tree
 From: <gregkh@linuxfoundation.org>
 Date: Thu, 19 Jul 2018 18:41:08 +0200
-Message-ID: <153201846878149@kroah.com>
+Message-ID: <153201846818997@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -21,18 +21,18 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: chenhc@lemote.com, gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, paul.burton@mips.com, ralf@linux-mips.org
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180719164108.JCe-TNep-lFYfzVa9VJh85rcHr1VQytD7WpMySQVGsQ@z>
+Message-ID: <20180719164108.fOtxtM2iOp7H6HLVB0YWjhY861H2hHLdFyEKNAGo7HQ@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
-    MIPS: Use async IPIs for arch_trigger_cpumask_backtrace()
+    MIPS: Call dump_stack() from show_regs()
 
 to the 4.4-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mips-use-async-ipis-for-arch_trigger_cpumask_backtrace.patch
+     mips-call-dump_stack-from-show_regs.patch
 and it can be found in the queue-4.4 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,

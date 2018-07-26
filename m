@@ -1,11 +1,11 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:43698 "EHLO
+Received: from mail.linuxfoundation.org ([140.211.169.12]:43774 "EHLO
         mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992960AbeGZOvFWC4hQ (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 26 Jul 2018 16:51:05 +0200
-Subject: Patch "MIPS: ath79: fix register address in ath79_ddr_wb_flush()" has been added to the 4.4-stable tree
+        by eddie.linux-mips.org with ESMTP id S23990395AbeGZOwSsCF5Q (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 26 Jul 2018 16:52:18 +0200
+Subject: Patch "MIPS: ath79: fix register address in ath79_ddr_wb_flush()" has been added to the 4.9-stable tree
 From: <gregkh@linuxfoundation.org>
-Date: Thu, 26 Jul 2018 16:50:38 +0200
-Message-ID: <153261663876231@kroah.com>
+Date: Thu, 26 Jul 2018 16:52:06 +0200
+Message-ID: <1532616726183224@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -21,19 +21,19 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: albeu@free.fr, gregkh@linuxfoundation.org, jhogan@kernel.org, john@phrozen.org, linux-mips@linux-mips.org, nbd@nbd.name, paul.burton@mips.com, ralf@linux-mips.org
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180726145038.85ZEmMha1jkTkXzf1nQCOPwCNKrDwaXl9rgYses9Zy8@z>
+Message-ID: <20180726145206.kNcd0vSItZc_ONSd0xFcd3LnCxPMOy0bNOFqjljs1io@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
     MIPS: ath79: fix register address in ath79_ddr_wb_flush()
 
-to the 4.4-stable tree which can be found at:
+to the 4.9-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      mips-ath79-fix-register-address-in-ath79_ddr_wb_flush.patch
-and it can be found in the queue-4.4 subdirectory.
+and it can be found in the queue-4.9 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.

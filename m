@@ -1,19 +1,13 @@
-Received: from mail-io0-x242.google.com ([IPv6:2607:f8b0:4001:c06::242]:39618
-        "EHLO mail-io0-x242.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993032AbeG2VZyZS510 (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sun, 29 Jul 2018 23:25:54 +0200
-Received: by mail-io0-x242.google.com with SMTP id o22-v6so8274193ioh.6
-        for <linux-mips@linux-mips.org>; Sun, 29 Jul 2018 14:25:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20180725122621.31713-1-quentin.schulz@bootlin.com>
-In-Reply-To: <20180725122621.31713-1-quentin.schulz@bootlin.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Sun, 29 Jul 2018 23:25:20 +0200
-Message-ID: <CACRpkdbNAvoEagYwW0K7rQtnq6tsWnheiLuHQMhcUUBEs4FMrA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] MIPS: mscc: ocelot: add interrupt controller
- properties to GPIO controller
-Content-Type: text/plain; charset="UTF-8"
-Return-Path: <linus.walleij@linaro.org>
+Received: from heliosphere.sirena.org.uk ([IPv6:2a01:7e01::f03c:91ff:fed4:a3b6]:53628
+        "EHLO heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992735AbeG3LFDaLmkL (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 30 Jul 2018 13:05:03 +0200
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "spi: dw-mmio: add MSCC Ocelot support" to the spi tree
+In-Reply-To: <20180727195358.23336-4-alexandre.belloni@bootlin.com>
+Message-ID: <20180730110501.AD0D91124216@debutante.sirena.org.uk>
+Date: Mon, 30 Jul 2018 12:05:01 +0100 (BST)
+Return-Path: <broonie@sirena.org.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,21 +17,33 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: quentin.schulz@bootlin.com
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, paul.burton@mips.com, James Hogan <jhogan@kernel.org>, "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, Linux MIPS <linux-mips@linux-mips.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Message-ID: <20180729212520.2OdNMdfKtFEuglDG8ESoSo47W0EsvcLu0eDmG79-FrE@z>
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, James Hogan <jhogan@kernel.org>, Paul Burton <paul.burton@mips.com>, Andy Shevchenko <andy.shevchenko@gmail.com>, linux-spi@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Allan Nielsen <allan.nielsen@microsemi.com>linux-spi@vger.kernel.org
+Message-ID: <20180730110501.8GWQ0o_QlIhtrHH-Wo6sn4cRVmtZOlAAy-LVlplhv3g@z>
 
-On Wed, Jul 25, 2018 at 2:27 PM Quentin Schulz
-<quentin.schulz@bootlin.com> wrote:
+The patch
 
-> The GPIO controller also serves as an interrupt controller for events
-> on the GPIO it handles.
->
-> An interrupt occurs whenever a GPIO line has changed.
->
-> Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
+   spi: dw-mmio: add MSCC Ocelot support
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+has been applied to the spi tree at
 
-Yours,
-Linus Walleij
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark

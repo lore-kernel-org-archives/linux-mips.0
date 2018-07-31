@@ -1,13 +1,21 @@
-Received: from heliosphere.sirena.org.uk ([IPv6:2a01:7e01::f03c:91ff:fed4:a3b6]:38112
-        "EHLO heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993094AbeGaOlpIU4kh (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 31 Jul 2018 16:41:45 +0200
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "spi: dw: document Microsemi integration" to the spi tree
-In-Reply-To: <20180731143855.7131-2-alexandre.belloni@bootlin.com>
-Message-ID: <20180731144142.D81C811242BD@debutante.sirena.org.uk>
-Date: Tue, 31 Jul 2018 15:41:42 +0100 (BST)
-Return-Path: <broonie@sirena.org.uk>
+Received: from mail-ve1eur01on0120.outbound.protection.outlook.com ([104.47.1.120]:48599
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23993104AbeGaPK2gZizh (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 31 Jul 2018 17:10:28 +0200
+Subject: Re: [RESEND PATCH 1/6] rapidio: define top Kconfig menu in driver
+ subtree
+References: <20180731142954.30345-1-acolin@isi.edu>
+ <20180731142954.30345-2-acolin@isi.edu>
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Message-ID: <053432eb-1f24-a763-0bfe-e67373e7ea82@nokia.com>
+Date: Tue, 31 Jul 2018 17:09:10 +0200
+MIME-Version: 1.0
+In-Reply-To: <20180731142954.30345-2-acolin@isi.edu>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Return-Path: <alexander.sverdlin@nokia.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -17,33 +25,72 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, linux-spi@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Allan Nielsen <allan.nielsen@microsemi.com>Rob Herring <robh+dt@kernel.org>linux-spi@vger.kernel.org
-Message-ID: <20180731144142.iy_xaj3rifXkvZxVyPI-pdj2JHtFdoMN7ZFJ7yhtoek@z>
+To: Alexei Colin <acolin@isi.edu>, Alexandre Bounine <alex.bou9@gmail.com>, Matt Porter <mporter@kernel.crashing.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, John Paul Walters <jwalters@isi.edu>, Catalin Marinas <catalin.marinas@arm.com>, Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>, Will Deacon <will.deacon@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Thomas Gleixner <tglx@linutronix.de>, Peter Anvin <hpa@zytor.com>, x86@kernel.org, linuxppc-dev@lists.ozlabs.org, linux-mips@linux-mips.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Message-ID: <20180731150910.HOSvppPFSgmbRpvBt1uhqYyXizLTI4ZDh7kxJGbqE34@z>
 
-The patch
+Hi!
 
-   spi: dw: document Microsemi integration
+On 31/07/18 16:29, Alexei Colin wrote:
+> The top-level Kconfig entry for RapidIO subsystem is currently
+> duplicated in several architecture-specific Kconfigs. This
+> commit re-defines it in the driver subtree, and subsequent
+> commits, one per architecture, will remove the duplicated
+> definitions from respective per-architecture Kconfigs.
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Paul Walters <jwalters@isi.edu>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Will Deacon <will.deacon@arm.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Paul Burton <paul.burton@mips.com>
+> Cc: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Peter Anvin <hpa@zytor.com>
+> Cc: x86@kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-mips@linux-mips.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Alexei Colin <acolin@isi.edu>
 
-has been applied to the spi tree at
+Reviewed-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
+> ---
+>  drivers/rapidio/Kconfig | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/drivers/rapidio/Kconfig b/drivers/rapidio/Kconfig
+> index d6d2f20c4597..98e301847584 100644
+> --- a/drivers/rapidio/Kconfig
+> +++ b/drivers/rapidio/Kconfig
+> @@ -1,6 +1,21 @@
+>  #
+>  # RapidIO configuration
+>  #
+> +
+> +config HAS_RAPIDIO
+> +	bool
+> +	default n
+> +
+> +config RAPIDIO
+> +	tristate "RapidIO support"
+> +	depends on HAS_RAPIDIO || PCI
+> +	help
+> +	  This feature enables support for RapidIO high-performance
+> +	  packet-switched interconnect.
+> +
+> +	  If you say Y here, the kernel will include drivers and
+> +	  infrastructure code to support RapidIO interconnect devices.
+> +
+>  source "drivers/rapidio/devices/Kconfig"
+>  
+>  config RAPIDIO_DISC_TIMEOUT
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+Best regards,
+Alexander Sverdlin.

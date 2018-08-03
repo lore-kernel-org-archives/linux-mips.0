@@ -1,17 +1,16 @@
-Received: from sonic313-11.consmr.mail.ne1.yahoo.com ([66.163.185.34]:43510
-        "EHLO sonic313-11.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994061AbeHBVwjTOPrq (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 2 Aug 2018 23:52:39 +0200
-Date: Thu, 2 Aug 2018 21:52:31 +0000 (UTC)
-From: "A.W.C." <bluestream@ymail.com>
-Reply-To: "A.W.C." <bluestream@ymail.com>
-Message-ID: <628114933.1303330.1533246751884@mail.yahoo.com>
-Subject: disassembling raw MIPS binary
+Received: from ozlabs.org ([203.11.71.1]:58453 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23992241AbeHCIvQfKobT (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 3 Aug 2018 10:51:16 +0200
+From: Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH v5 09/11] hugetlb: Introduce generic version of huge_ptep_set_wrprotect
+In-Reply-To: <90bf556f-144d-24b8-d2f6-70fee4a30559@ghiti.fr>
+References: <20180731060155.16915-1-alex@ghiti.fr> <20180731060155.16915-10-alex@ghiti.fr> <87h8kfhg7o.fsf@concordia.ellerman.id.au> <6acb1389-6998-bafb-cf69-174fd522c04c@ghiti.fr> <90bf556f-144d-24b8-d2f6-70fee4a30559@ghiti.fr>
+Date: Fri, 03 Aug 2018 18:51:03 +1000
+Message-ID: <87muu3hlzc.fsf@concordia.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <628114933.1303330.1533246751884.ref@mail.yahoo.com>
-Return-Path: <bluestream@ymail.com>
+Content-Type: text/plain
+Return-Path: <mpe@ellerman.id.au>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,16 +20,55 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Message-ID: <20180802215231.G9PqxRbdkCnGeFYAxqn2rESd3tjCsMjcyRH-CJsey6Y@z>
+To: Alex Ghiti <alex@ghiti.fr>, linux-mm@kvack.org, mike.kravetz@oracle.com, linux@armlinux.org.uk, catalin.marinas@arm.com, will.deacon@arm.com, tony.luck@intel.com, fenghua.yu@intel.com, ralf@linux-mips.org, paul.burton@mips.com, jhogan@kernel.org, jejb@parisc-linux.org, deller@gmx.de, benh@kernel.crashing.org, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, x86@kernel.org, arnd@arndb.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>
+Message-ID: <20180803085103.G7s4dUelQG65e9xfL1pdF8y5ctM8n-D9sPGyNRx3zxw@z>
 
-Hello,
+Hi Alex,
 
-I tried disassemble raw MIPS binary with opcodes on Linux machine. I run command
+Sorry missed your previous mail.
 
-$ mips-linux-gnu-objdump -D -b bootloader.bin
-mips-linux-gnu-objdump: 'a.out': No such file
+Alex Ghiti <alex@ghiti.fr> writes:
+> Ok, I tried every defconfig available:
+>
+> - for the nohash/32, I found that I could use mpc885_ads_defconfig and I 
+> activated HUGETLBFS.
+> I removed the definition of huge_ptep_set_wrprotect from 
+> nohash/32/pgtable.h, add an #error in
+> include/asm-generic/hugetlb.h right before the generic definition of 
+> huge_ptep_set_wrprotect,
+> and fell onto it at compile-time:
+> => I'm pretty confident then that removing the definition of 
+> huge_ptep_set_wrprotect does not
+> break anythingin this case.
 
-how to solve this?
+Thanks, that sounds good.
 
-Regards,
+> - regardind book3s/32, I did not find any defconfig with 
+> CONFIG_PPC_BOOK3S_32, CONFIG_PPC32
+> allowing to enable huge page support (ie CONFIG_SYS_SUPPORTS_HUGETLBFS)
+> => Do you have a defconfig that would allow me to try the same as above ?
+
+I think you're right, it's dead code AFAICS.
+
+We have:
+
+config PPC_BOOK3S_64
+        ...
+	select SYS_SUPPORTS_HUGETLBFS
+
+config PPC_FSL_BOOK3E
+        ...
+	select SYS_SUPPORTS_HUGETLBFS if PHYS_64BIT || PPC64
+
+config PPC_8xx
+	...
+	select SYS_SUPPORTS_HUGETLBFS
+
+
+So we can't ever enable HUGETLBFS for Book3S 32.
+
+Presumably the code got copied when we split the headers apart.
+
+So I think you can just ignore that one, and we'll delete it.
+
+cheers

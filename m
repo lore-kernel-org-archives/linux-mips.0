@@ -1,16 +1,21 @@
-Received: from ozlabs.org ([203.11.71.1]:58453 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992241AbeHCIvQfKobT (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 3 Aug 2018 10:51:16 +0200
-From: Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH v5 09/11] hugetlb: Introduce generic version of huge_ptep_set_wrprotect
-In-Reply-To: <90bf556f-144d-24b8-d2f6-70fee4a30559@ghiti.fr>
-References: <20180731060155.16915-1-alex@ghiti.fr> <20180731060155.16915-10-alex@ghiti.fr> <87h8kfhg7o.fsf@concordia.ellerman.id.au> <6acb1389-6998-bafb-cf69-174fd522c04c@ghiti.fr> <90bf556f-144d-24b8-d2f6-70fee4a30559@ghiti.fr>
-Date: Fri, 03 Aug 2018 18:51:03 +1000
-Message-ID: <87muu3hlzc.fsf@concordia.ellerman.id.au>
+Received: from mail-qt0-x243.google.com ([IPv6:2607:f8b0:400d:c0d::243]:41048
+        "EHLO mail-qt0-x243.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23994551AbeHDVDTNcmTO (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 4 Aug 2018 23:03:19 +0200
+Received: by mail-qt0-x243.google.com with SMTP id e19-v6so9871414qtp.8
+        for <linux-mips@linux-mips.org>; Sat, 04 Aug 2018 14:03:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Return-Path: <mpe@ellerman.id.au>
+In-Reply-To: <20180804124309.GB4920@kroah.com>
+References: <20180803030237.3366-1-songjun.wu@linux.intel.com>
+ <20180803030237.3366-15-songjun.wu@linux.intel.com> <20180803055640.GA32226@kroah.com>
+ <763bba56-3701-7fe9-9b31-4710594b40d5@linux.intel.com> <20180803103023.GA6557@kroah.com>
+ <3360edd2-f3d8-b860-13fa-ce680edbfd0a@hauke-m.de> <20180804124309.GB4920@kroah.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Sat, 4 Aug 2018 23:03:11 +0200
+Message-ID: <CAK8P3a3qs34LuhPeaef2wPHYEWbYO5N-4n7763BcaDyppiJ6DA@mail.gmail.com>
+Subject: Re: [PATCH v2 14/18] serial: intel: Add CCF support
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <arndbergmann@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,55 +25,42 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alex Ghiti <alex@ghiti.fr>, linux-mm@kvack.org, mike.kravetz@oracle.com, linux@armlinux.org.uk, catalin.marinas@arm.com, will.deacon@arm.com, tony.luck@intel.com, fenghua.yu@intel.com, ralf@linux-mips.org, paul.burton@mips.com, jhogan@kernel.org, jejb@parisc-linux.org, deller@gmx.de, benh@kernel.crashing.org, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, x86@kernel.org, arnd@arndb.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>
-Message-ID: <20180803085103.G7s4dUelQG65e9xfL1pdF8y5ctM8n-D9sPGyNRx3zxw@z>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>, "Wu, Songjun" <songjun.wu@linux.intel.com>, hua.ma@linux.intel.com, yixin.zhu@linux.intel.com, chuanhua.lei@linux.intel.com, qi-ming.wu@intel.com, "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>, linux-clk <linux-clk@vger.kernel.org>, linux-serial@vger.kernel.org, DTML <devicetree@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Jiri Slaby <jslaby@suse.com>
+Message-ID: <20180804210311.F3CddLd8zRyoE-gQ-Aditwu_OK1fwhtz_e4p1um7qjA@z>
 
-Hi Alex,
+On Sat, Aug 4, 2018 at 2:43 PM, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Sat, Aug 04, 2018 at 12:54:22PM +0200, Hauke Mehrtens wrote:
+>> On 08/03/2018 12:30 PM, Greg Kroah-Hartman wrote:
+>> > On Fri, Aug 03, 2018 at 03:33:38PM +0800, Wu, Songjun wrote:
 
-Sorry missed your previous mail.
-
-Alex Ghiti <alex@ghiti.fr> writes:
-> Ok, I tried every defconfig available:
+>> This patch makes it possible to use it with the legacy lantiq code and
+>> also with the common clock framework. I see multiple options to fix this
+>> problem.
+>>
+>> 1. The current approach to have it as a compile variant for a) legacy
+>> lantiq arch code without common clock framework and b) support for SoCs
+>> using the common clock framework.
+>> 2. Convert the lantiq arch code to the common clock framework. This
+>> would be a good approach, but it need some efforts.
+>> 3. Remove the arch/mips/lantiq code. There are still users of this code.
+>> 4. Use the old APIs also for the new xRX500 SoC, I do not like this
+>> approach.
+>> 5. Move lantiq_soc.h to somewhere in include/linux/ so it is globally
+>> available and provide some better wrapper code.
 >
-> - for the nohash/32, I found that I could use mpc885_ads_defconfig and I 
-> activated HUGETLBFS.
-> I removed the definition of huge_ptep_set_wrprotect from 
-> nohash/32/pgtable.h, add an #error in
-> include/asm-generic/hugetlb.h right before the generic definition of 
-> huge_ptep_set_wrprotect,
-> and fell onto it at compile-time:
-> => I'm pretty confident then that removing the definition of 
-> huge_ptep_set_wrprotect does not
-> break anythingin this case.
+> I don't really care what you do at this point in time, but you all
+> should know better than the crazy #ifdef is not allowed to try to
+> prevent/allow the inclusion of a .h file.  Checkpatch might have even
+> warned you about it, right?
+>
+> So do it correctly, odds are #5 is correct, as that makes it work like
+> any other device in the kernel.  You are not unique here.
 
-Thanks, that sounds good.
+The best approach here would clearly be 2. We don't want platform
+specific header files for doing things that should be completely generic.
 
-> - regardind book3s/32, I did not find any defconfig with 
-> CONFIG_PPC_BOOK3S_32, CONFIG_PPC32
-> allowing to enable huge page support (ie CONFIG_SYS_SUPPORTS_HUGETLBFS)
-> => Do you have a defconfig that would allow me to try the same as above ?
-
-I think you're right, it's dead code AFAICS.
-
-We have:
-
-config PPC_BOOK3S_64
-        ...
-	select SYS_SUPPORTS_HUGETLBFS
-
-config PPC_FSL_BOOK3E
-        ...
-	select SYS_SUPPORTS_HUGETLBFS if PHYS_64BIT || PPC64
-
-config PPC_8xx
-	...
-	select SYS_SUPPORTS_HUGETLBFS
-
-
-So we can't ever enable HUGETLBFS for Book3S 32.
-
-Presumably the code got copied when we split the headers apart.
-
-So I think you can just ignore that one, and we'll delete it.
-
-cheers
+Converting lantiq to the common-clk framework obviously requires
+some work, but then again the whole arch/mips/lantiq/clk.c file
+is fairly short and maybe not that hard to convert.

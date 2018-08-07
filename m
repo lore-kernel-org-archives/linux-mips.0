@@ -1,20 +1,29 @@
-Received: from mail.bootlin.com ([62.4.15.54]:60277 "EHLO mail.bootlin.com"
+Received: from mga07.intel.com ([134.134.136.100]:57621 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23994615AbeHFMLFcrBXP (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 6 Aug 2018 14:11:05 +0200
-Date: Mon, 6 Aug 2018 14:10:57 +0200
-From: Quentin Schulz <quentin.schulz@bootlin.com>
-Subject: Re: [PATCH 2/2] pinctrl: ocelot: add support for interrupt controller
-Message-ID: <20180806121057.nvlckdxrdxpopwaw@qschulz>
-References: <20180725122621.31713-1-quentin.schulz@bootlin.com>
- <20180725122621.31713-2-quentin.schulz@bootlin.com>
- <CACRpkdbq2Q-J8scsuaUS0hP1x12xh0zd+RMrCp0TYB773bOAdg@mail.gmail.com>
+        id S23993024AbeHGHSwuU8-g (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 7 Aug 2018 09:18:52 +0200
+Subject: Re: [PATCH v2 14/18] serial: intel: Add CCF support
+References: <20180803030237.3366-1-songjun.wu@linux.intel.com>
+ <20180803030237.3366-15-songjun.wu@linux.intel.com>
+ <20180803055640.GA32226@kroah.com>
+ <763bba56-3701-7fe9-9b31-4710594b40d5@linux.intel.com>
+ <20180803103023.GA6557@kroah.com>
+ <3360edd2-f3d8-b860-13fa-ce680edbfd0a@hauke-m.de>
+ <20180804124309.GB4920@kroah.com>
+ <CAK8P3a3qs34LuhPeaef2wPHYEWbYO5N-4n7763BcaDyppiJ6DA@mail.gmail.com>
+ <acd28f40-4342-7f67-8468-7d4578f614a1@linux.intel.com>
+ <CAMuHMdWY9NuYOXq8sD9wmH48=vhMcSBomRY9ZbC+tGE3PGiTGg@mail.gmail.com>
+ <0ab8e6e7-3cc2-8e50-b1f3-99616437f527@linux.intel.com>
+ <CAMuHMdUJ8-bveoHWOetjrHtq2HNPnf00PidQwJ-kZD2o86KLMw@mail.gmail.com>
+From: "Wu, Songjun" <songjun.wu@linux.intel.com>
+Message-ID: <d6d0be20-aea9-cecf-1e39-3d65c0dbad5f@linux.intel.com>
+Date: Tue, 7 Aug 2018 15:18:45 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="spxixv56wptgjyni"
-Content-Disposition: inline
-In-Reply-To: <CACRpkdbq2Q-J8scsuaUS0hP1x12xh0zd+RMrCp0TYB773bOAdg@mail.gmail.com>
-Return-Path: <quentin.schulz@bootlin.com>
+In-Reply-To: <CAMuHMdUJ8-bveoHWOetjrHtq2HNPnf00PidQwJ-kZD2o86KLMw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Return-Path: <songjun.wu@linux.intel.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,147 +33,104 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, paul.burton@mips.com, James Hogan <jhogan@kernel.org>, "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, Linux MIPS <linux-mips@linux-mips.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Message-ID: <20180806121057.jVlo8V3RGGynmZc4EeJ9B6pe1dX-CYdVg-xYeWV16sE@z>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@linuxfoundation.org>, Hauke Mehrtens <hauke@hauke-m.de>, hua.ma@linux.intel.com, yixin.zhu@linux.intel.com, chuanhua.lei@linux.intel.com, qi-ming.wu@intel.com, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-clk <linux-clk@vger.kernel.org>, "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Jiri Slaby <jslaby@suse.com>
+Message-ID: <20180807071845.OQkj9y1bjVhR8yHyQTytIfqZWIKV8IEMy8RLUcdlWmU@z>
 
 
---spxixv56wptgjyni
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On 8/6/2018 5:29 PM, Geert Uytterhoeven wrote:
+> Hi Songjun,
+>
+> On Mon, Aug 6, 2018 at 10:58 AM Wu, Songjun <songjun.wu@linux.intel.com> wrote:
+>> On 8/6/2018 3:20 PM, Geert Uytterhoeven wrote:
+>>> On Mon, Aug 6, 2018 at 9:15 AM Wu, Songjun <songjun.wu@linux.intel.com> wrote:
+>>>> On 8/5/2018 5:03 AM, Arnd Bergmann wrote:
+>>>>> On Sat, Aug 4, 2018 at 2:43 PM, Greg Kroah-Hartman
+>>>>> <gregkh@linuxfoundation.org> wrote:
+>>>>>> On Sat, Aug 04, 2018 at 12:54:22PM +0200, Hauke Mehrtens wrote:
+>>>>>>> On 08/03/2018 12:30 PM, Greg Kroah-Hartman wrote:
+>>>>>>>> On Fri, Aug 03, 2018 at 03:33:38PM +0800, Wu, Songjun wrote:
+>>>>>>> This patch makes it possible to use it with the legacy lantiq code and
+>>>>>>> also with the common clock framework. I see multiple options to fix this
+>>>>>>> problem.
+>>>>>>>
+>>>>>>> 1. The current approach to have it as a compile variant for a) legacy
+>>>>>>> lantiq arch code without common clock framework and b) support for SoCs
+>>>>>>> using the common clock framework.
+>>>>>>> 2. Convert the lantiq arch code to the common clock framework. This
+>>>>>>> would be a good approach, but it need some efforts.
+>>>>>>> 3. Remove the arch/mips/lantiq code. There are still users of this code.
+>>>>>>> 4. Use the old APIs also for the new xRX500 SoC, I do not like this
+>>>>>>> approach.
+>>>>>>> 5. Move lantiq_soc.h to somewhere in include/linux/ so it is globally
+>>>>>>> available and provide some better wrapper code.
+>>>>>> I don't really care what you do at this point in time, but you all
+>>>>>> should know better than the crazy #ifdef is not allowed to try to
+>>>>>> prevent/allow the inclusion of a .h file.  Checkpatch might have even
+>>>>>> warned you about it, right?
+>>>>>>
+>>>>>> So do it correctly, odds are #5 is correct, as that makes it work like
+>>>>>> any other device in the kernel.  You are not unique here.
+>>>>> The best approach here would clearly be 2. We don't want platform
+>>>>> specific header files for doing things that should be completely generic.
+>>>>>
+>>>>> Converting lantiq to the common-clk framework obviously requires
+>>>>> some work, but then again the whole arch/mips/lantiq/clk.c file
+>>>>> is fairly short and maybe not that hard to convert.
+>>>>>
+>>>>> >From looking at arch/mips/lantiq/xway/sysctrl.c, it appears that you
+>>>>> already use the clkdev lookup mechanism for some devices without
+>>>>> using COMMON_CLK, so I would assume that you can also use those
+>>>>> for the remaining clks, which would be much simpler. It registers
+>>>>> one anonymous clk there as
+>>>>>
+>>>>>            clkdev_add_pmu("1e100c00.serial", NULL, 0, 0, PMU_ASC1);
+>>>>>
+>>>>> so why not add replace that with two named clocks and just use
+>>>>> the same names in the DT for the newer chip?
+>>>>>
+>>>>>          Arnd
+>>>> We discussed internally and have another solution for this issue.
+>>>> Add one lantiq.h in the serial folder, and use "#ifdef preprocessor" in
+>>>> lantiq.h,
+>>>> also providing no-op stub functions in the #else case, then call those
+>>>> functions
+>>>> unconditionally from lantiq.c to avoid #ifdef in C file.
+>>>>
+>>>> To support CCF in legacy product is another topic, is not included in
+>>>> this patch.
+>>>>
+>>>> The implementation is as following：
+>>>> #ifdef CONFIG_LANTIQ
+>>>> #include <lantiq_soc.h>
+>>>> #else
+>>>> #define LTQ_EARLY_ASC 0
+>>>> #define CPHYSADDR(_val) 0
+>>>>
+>>>> static inline struct clk *clk_get_fpi(void)
+>>>> {
+>>>>        return NULL;
+>>>> }
+>>>> #endif
+>>> Why not use clkdev_add(), as Arnd suggested?
+>>> That would be a 3-line patch without introducing a new header file and an ugly
+>>> #ifdef, which complicates compile coverage testing?
+>>>
+>> The reason we add a new head file is also for two macros(LTQ_EARLY_ASC
+>> and CPHYSADDR)
+>> used by legacy product. We need to provide the no-op stub for these two
+>> macro for new product.
+> No you don't. The line number should not be obtained by comparing the
+> resource address with a hardcoded base address.
+This is the previous code. Now the line number is obtained from dts.
+We keep this code for the compatibility.
 
-On Mon, Aug 06, 2018 at 01:06:23PM +0200, Linus Walleij wrote:
-> Hi Quentin, sorry for delays!
->=20
-
-No worries :)
-
-> On Wed, Jul 25, 2018 at 2:27 PM Quentin Schulz
-> <quentin.schulz@bootlin.com> wrote:
->=20
-> > This GPIO controller can serve as an interrupt controller as well on the
-> > GPIOs it handles.
-> >
-> > An interrupt is generated whenever a GPIO line changes and the
-> > interrupt for this GPIO line is enabled. This means that both the
-> > changes from low to high and high to low generate an interrupt.
-> >
-> > For some use cases, it makes sense to ignore the high to low change and
-> > not generate an interrupt. Such a use case is a line that is hold in a
-> > level high/low manner until the event holding the line gets acked.
-> > This can be achieved by making sure the interrupt on the GPIO controller
-> > side gets acked and masked only after the line gets hold in its default
-> > state, this is what's done with the fasteoi functions.
-> >
-> > Only IRQ_TYPE_EDGE_BOTH and IRQ_TYPE_LEVEL_HIGH are supported for now.
-> >
-> > Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
->=20
-> Patch applied, it's such a pretty and straight-forward patch.
-> Also IRQ is probably very nice to have, so let's get this in and
-> supported.
->=20
-> Please consider addressing the following in follow-up patch(es):
->=20
-> > +static int ocelot_irq_set_type(struct irq_data *data, unsigned int typ=
-e);
->=20
-> Can't you just move the function above so you don't have to forward-decla=
-re
-> this?
->=20
-
-No I can't, not in the current implementation at least.
-
-In this function, I set the irq chip handler which needs one of the
-below irq_chip. As you can see, the set_type function is also defined in
-those two structures.
-
-> > +static struct irq_chip ocelot_eoi_irqchip =3D {
-> > +       .name           =3D "gpio",
-> > +       .irq_mask       =3D ocelot_irq_mask,
-> > +       .irq_eoi        =3D ocelot_irq_ack,
-> > +       .irq_unmask     =3D ocelot_irq_unmask,
-> > +       .flags          =3D IRQCHIP_EOI_THREADED | IRQCHIP_EOI_IF_HANDL=
-ED,
->=20
-> As you see the latter part of the define is "IF_HANDLED".
->=20
-> > +       .irq_set_type   =3D ocelot_irq_set_type,
-> > +};
-> > +
-> > +static struct irq_chip ocelot_irqchip =3D {
-> > +       .name           =3D "gpio",
-> > +       .irq_mask       =3D ocelot_irq_mask,
-> > +       .irq_ack        =3D ocelot_irq_ack,
-> > +       .irq_unmask     =3D ocelot_irq_unmask,
-> > +       .irq_set_type   =3D ocelot_irq_set_type,
-> > +};
->=20
-> Is it really neccessary to have two irqchips?
->=20
-> Is this to separate ACK and EOI because the EOI version
-> doesn't survive an ACK?
->=20
-
-Let me give you a real world use case, the reason why I used EOI.
-
-I've a PHY interrupt line that connects to a GPIO of this controller.
-The PHY holds the line until the PHY acknowledges the reason for
-generating an interrupt. So we can say that it's a LEVEL_HIGH
-"interrupt".
-
-The GPIO interrupt controller generates an interruption whenever the
-GPIO line has changed (0->1 or 1->0).
-
-In a "normal" use case, I'd have the PHY holding high the line, the GPIO
-controller generating an interrupt because the line has changed. We
-acknowledge the interrupt in the GPIO controller. Later, we acknowledge
-in the PHY the reason why we had to generate an "interrupt" on the PHY
-side, resulting in the line being now held low. This generates another
-interrupt on the GPIO controller side. However, only one actual
-interrupt should have been generated by the GPIO controller as there's
-only one event that resulted in an "interrupt" generation from the PHY.
-
-So, we need EOI so that the GPIO controller interrupt gets acked only
-when the PHY event is acked so that we don't receive an unexpected
-interrupt.
-
-However, we also need the common irq handler behaviour as we might want
-to have the interrupt generated for 0->1 AND 1->0 transition depending
-on the IP connected to the GPIO.
-
-I could make my use case work with EOI but I find it very specific to my
-use case and thus added the support for a more commonly found (IMHO) use
-case.
-
-I'd say that, yes, the two irqchips are needed but I may be missing
-another way to handle all that.
-
-Thanks,
-Quentin
-
---spxixv56wptgjyni
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEXeEYjDsJh38OoyMzhLiadT7g8aMFAltoOtEACgkQhLiadT7g
-8aNVmBAAr/UkRmpUGrarrLTJAEtdTXIWznWVXojklYEiUkpGRqt1oc2ZHwDAbFS/
-bunyihtVD9p4pM3gE5g4Hdccfq6deJrCmauhBzRXz2ULjlh0iwN9652acDhU3hsf
-nACOeo0fE40TZAx6lMw2FndeJRAop6J6wrabzLrBIKxL/DUboUfsGSLSyEN22uSi
-AAlOd4K6LPBmDVP0tLzWT/juiB6Q6vCyvyrjwNpGKT/dqCpsh0CKdtcIJk8a7DZq
-TCKZDGs4ZcJxAMyp9K+Nwi+bJqjY1MuZg9z5QYv2DUUMj7wJHbqI4iQV66xLq35P
-JtiyawfqTs2ixpvPsOtU08nPRXZbZbSxfD/inpypJJWR5IG5kE/CuBnfDNGItKKU
-B3/o1ZcHf60hc2TsWhRUoEvB0rK1LwbP3CD7MDA2Kr/GgyWBRGbJ0o96X3oP9iYn
-Ar4i6FTtMC4yQ7XlHwteCX68CgFRvCywqNSbc5q7g0Y/zU7mtnBQnggqt5cl9SSx
-7xh2+GwsEfuFPJxX0aAXq/0mBPru26nxLtU6b1yAg0SRZw3ieHiTLClS/ZEoBzHX
-THDXJVw4uzdlQSV5J7Ecaj0goeUJuWZRqgrHgd346VPD/N32HMwXGin4CUL6hveY
-uG0RC5MeBsPqrDhoVZcBd1gWjkYovT8NnLv1pHCJqP5/QNon948=
-=qNHL
------END PGP SIGNATURE-----
-
---spxixv56wptgjyni--
+Referring to the conditional-compilation part in coding-style,
+We add a header file to avoid using “#ifdef” in C file.
+> Perhaps the override of port->line should just be removed, as IIRC, the serial
+> core has already filled in that field with the (next available) line number?
+>
+> Gr{oetje,eeting}s,
+>
+>                          Geert

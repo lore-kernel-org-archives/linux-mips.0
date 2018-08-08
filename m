@@ -1,27 +1,20 @@
-Received: from mail-ua0-f195.google.com ([209.85.217.195]:45992 "EHLO
-        mail-ua0-f195.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994677AbeHGHd7D8G8o convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 7 Aug 2018 09:33:59 +0200
-Received: by mail-ua0-f195.google.com with SMTP id k8-v6so15029667uaq.12
-        for <linux-mips@linux-mips.org>; Tue, 07 Aug 2018 00:33:59 -0700 (PDT)
-MIME-Version: 1.0
+Received: from mga07.intel.com ([134.134.136.100]:60239 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23992907AbeHHEFOLJixR (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 8 Aug 2018 06:05:14 +0200
+Subject: Re: [PATCH v2 08/18] serial: intel: Get serial id from dts
 References: <20180803030237.3366-1-songjun.wu@linux.intel.com>
- <20180803030237.3366-15-songjun.wu@linux.intel.com> <20180803055640.GA32226@kroah.com>
- <763bba56-3701-7fe9-9b31-4710594b40d5@linux.intel.com> <20180803103023.GA6557@kroah.com>
- <3360edd2-f3d8-b860-13fa-ce680edbfd0a@hauke-m.de> <20180804124309.GB4920@kroah.com>
- <CAK8P3a3qs34LuhPeaef2wPHYEWbYO5N-4n7763BcaDyppiJ6DA@mail.gmail.com>
- <acd28f40-4342-7f67-8468-7d4578f614a1@linux.intel.com> <CAMuHMdWY9NuYOXq8sD9wmH48=vhMcSBomRY9ZbC+tGE3PGiTGg@mail.gmail.com>
- <0ab8e6e7-3cc2-8e50-b1f3-99616437f527@linux.intel.com> <CAMuHMdUJ8-bveoHWOetjrHtq2HNPnf00PidQwJ-kZD2o86KLMw@mail.gmail.com>
- <d6d0be20-aea9-cecf-1e39-3d65c0dbad5f@linux.intel.com>
-In-Reply-To: <d6d0be20-aea9-cecf-1e39-3d65c0dbad5f@linux.intel.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 7 Aug 2018 09:33:39 +0200
-Message-ID: <CAMuHMdXADda8fuc9_oTGQFPUnYs8gX-Bp6md5fJgu=wHvM-duw@mail.gmail.com>
-Subject: Re: [PATCH v2 14/18] serial: intel: Add CCF support
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-Return-Path: <geert.uytterhoeven@gmail.com>
+ <20180803030237.3366-9-songjun.wu@linux.intel.com>
+ <CAMuHMdXkGchPN337dXbBVOFsb1o-Tkh8S_z=uCm3Z0sDjPVMKA@mail.gmail.com>
+From: "Wu, Songjun" <songjun.wu@linux.intel.com>
+Message-ID: <734bddbc-a5aa-d50d-0e7b-d8adc4d1afb2@linux.intel.com>
+Date: Wed, 8 Aug 2018 12:05:07 +0800
+MIME-Version: 1.0
+In-Reply-To: <CAMuHMdXkGchPN337dXbBVOFsb1o-Tkh8S_z=uCm3Z0sDjPVMKA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Return-Path: <songjun.wu@linux.intel.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -31,39 +24,55 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: songjun.wu@linux.intel.com
-Cc: Arnd Bergmann <arnd@arndb.de>, Greg KH <gregkh@linuxfoundation.org>, Hauke Mehrtens <hauke@hauke-m.de>, hua.ma@linux.intel.com, yixin.zhu@linux.intel.com, chuanhua.lei@linux.intel.com, qi-ming.wu@intel.com, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-clk <linux-clk@vger.kernel.org>, "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Jiri Slaby <jslaby@suse.com>
-Message-ID: <20180807073339.rDsADMjULwFXwsXijrTAticsU4M2uuhBWVlKCJTFitY@z>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: hua.ma@linux.intel.com, yixin.zhu@linux.intel.com, chuanhua.lei@linux.intel.com, qi-ming.wu@intel.com, Linux MIPS Mailing List <linux-mips@linux-mips.org>, linux-clk <linux-clk@vger.kernel.org>, "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Jiri Slaby <jslaby@suse.com>
+Message-ID: <20180808040507.-O4L0-Z-gD_Sagwb43HHNT9YffC4hARt7JODvbCq-7U@z>
 
-Hi Songjun,
 
-On Tue, Aug 7, 2018 at 9:18 AM Wu, Songjun <songjun.wu@linux.intel.com> wrote:
-> On 8/6/2018 5:29 PM, Geert Uytterhoeven wrote:
-> > On Mon, Aug 6, 2018 at 10:58 AM Wu, Songjun <songjun.wu@linux.intel.com> wrote:
-> >> The reason we add a new head file is also for two macros(LTQ_EARLY_ASC
-> >> and CPHYSADDR)
-> >> used by legacy product. We need to provide the no-op stub for these two
-> >> macro for new product.
-> > No you don't. The line number should not be obtained by comparing the
-> > resource address with a hardcoded base address.
-> This is the previous code. Now the line number is obtained from dts.
 
-Note that obtaining line numbers from DTS has its own share of problems, when
-considering DT overlays. I've replied to the patch adding the call to
-of_alias_get_id().
-
-> We keep this code for the compatibility.
+On 8/7/2018 3:33 PM, Geert Uytterhoeven wrote:
+> Hi Songjun,
 >
-> Referring to the conditional-compilation part in coding-style,
-> We add a header file to avoid using “#ifdef” in C file.
-> > Perhaps the override of port->line should just be removed, as IIRC, the serial
-> > core has already filled in that field with the (next available) line number?
-
-Gr{oetje,eeting}s,
-
-                        Geert--
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> On Fri, Aug 3, 2018 at 5:04 AM Songjun Wu <songjun.wu@linux.intel.com> wrote:
+>> Get serial id from dts.
+>>
+>> "#ifdef CONFIG_LANTIQ" preprocessor is used because LTQ_EARLY_ASC
+>> macro is defined in lantiq_soc.h.
+>> lantiq_soc.h is in arch path for legacy product support.
+>>
+>> arch/mips/include/asm/mach-lantiq/xway/lantiq_soc.h
+>>
+>> If "#ifdef preprocessor" is changed to
+>> "if (IS_ENABLED(CONFIG_LANTIQ))", when CONFIG_LANTIQ is not enabled,
+>> code using LTQ_EARLY_ASC is compiled.
+>> Compilation will fail for no LTQ_EARLY_ASC defined.
+>>
+>> Signed-off-by: Songjun Wu <songjun.wu@linux.intel.com>
+> Thanks for your patch!
+>
+>> @@ -699,9 +700,19 @@ lqasc_probe(struct platform_device *pdev)
+>>                  return -ENODEV;
+>>          }
+>>
+>> -       /* check if this is the console port */
+>> -       if (mmres->start != CPHYSADDR(LTQ_EARLY_ASC))
+>> -               line = 1;
+>> +       /* get serial id */
+>> +       line = of_alias_get_id(node, "serial");
+>> +       if (line < 0) {
+>> +#ifdef CONFIG_LANTIQ
+>> +               if (mmres->start == CPHYSADDR(LTQ_EARLY_ASC))
+>> +                       line = 0;
+>> +               else
+>> +                       line = 1;
+>> +#else
+>> +               dev_err(&pdev->dev, "failed to get alias id, errno %d\n", line);
+>> +               return line;
+> Please note that not providing a fallback here makes life harder when using
+> DT overlays.
+> See the description of commit 7678f4c20fa7670f ("serial: sh-sci: Add support
+> for dynamic instances") for background info.
+Thanks for your comment.
+The logic in commit 7678f4c20fa7670f is not suitable here.
+We need to know which serial instance is used for console.
+We cannot use dynamic serial instance here.

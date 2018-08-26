@@ -1,24 +1,17 @@
-Received: from terminus.zytor.com ([198.137.202.136]:60499 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23993941AbeHZXV6kH3Sw (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Aug 2018 01:21:58 +0200
-Subject: Re: [PATCH] treewide: remove current_text_addr
-From: "H. Peter Anvin" <hpa@zytor.com>
-References: <CAKwvOdkWL_2yTnJqM6n6R9UCPwY4iz-9BQYGN2MDAk9EzumUvA@mail.gmail.com>
- <20180821202900.208417-1-ndesaulniers@google.com>
- <207784db-4fcc-85e7-a0b2-fec26b7dab81@gmx.de>
- <c62e4e00-fb8f-19a6-f3eb-bde60118cb1a@zytor.com>
- <81141365-8168-799b-f34f-da5f92efaaf9@zytor.com>
- <7f49eeab-a5cc-867f-58fb-abd266f9c2c9@zytor.com>
- <6ca8a1d3-ff95-e9f4-f003-0a5af85bcb6f@zytor.com>
-Message-ID: <e425d208-214b-06a2-a032-7442a10388fc@zytor.com>
-Date: Sun, 26 Aug 2018 16:20:19 -0700
+Received: from mail.kernel.org ([198.145.29.99]:46046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23994565AbeHZX4ewYNmQ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 27 Aug 2018 01:56:34 +0200
 MIME-Version: 1.0
-In-Reply-To: <6ca8a1d3-ff95-e9f4-f003-0a5af85bcb6f@zytor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <hpa@zytor.com>
+References: <20180821215524.23040-1-robh@kernel.org> <20180821215524.23040-7-robh@kernel.org>
+ <CAK7LNATcYSvwh0BEEdyUuDa_Y9X-AqQAzA5MrbNhOSMmSzqhTg@mail.gmail.com>
+In-Reply-To: <CAK7LNATcYSvwh0BEEdyUuDa_Y9X-AqQAzA5MrbNhOSMmSzqhTg@mail.gmail.com>
+From: Rob Herring <robh@kernel.org>
+Date: Sun, 26 Aug 2018 18:56:14 -0500
+Message-ID: <CAL_JsqJJ6DCT8AjVYqkbFuJ+fO0VmVch24B=XRp4pJPkUQYAww@mail.gmail.com>
+Subject: Re: [PATCH 6/8] kbuild: consolidate Devicetree dtb build rules
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <robh@kernel.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -28,37 +21,153 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Helge Deller <deller@gmx.de>, Nick Desaulniers <ndesaulniers@google.com>, torvalds@linux-foundation.org, akpm@linux-foundation.org
-Cc: ebiederm@xmission.com, tglx@linutronix.de, mingo@redhat.com, horms@verge.net.au, natechancellor@gmail.com, pombredanne@nexb.com, kstewart@linuxfoundation.org, gregkh@linuxfoundation.org, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Mark Salter <msalter@redhat.com>, Aurelien Jacquiot <jacquiot.aurelien@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Greentime Hu <green.hu@gmail.com>, Vincent Chen <deanbo422@gmail.com>, Ley Foon Tan <lftan@altera.com>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Palmer Dabbelt <palmer@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Guan Xuetao <gxt@pku.edu.cn>, x86@kernel.org, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Tobias Klauser <tklauser@distanz.ch>, Noam Camus <noamc@ezchip.com>, Mickael GUENE <mickael.guene@st.com>, Nicolas Pitre <nicolas.pitre@linaro.org>, Kees Cook <keescook@chromium.org>, Dave Martin <Dave.Martin@arm.com>, Marc Zyngier <marc.zyngier@arm.com>, =?UTF-8?Q?Alex_Benn=c3=a9e?= <alex.bennee@linaro.org>, Laura Abbott <labbott@redhat.com>, Yury Norov <ynorov@caviumnetworks.com>, Mark Rutland <mark.rutland@arm.com>, Huacai Chen <chenhc@lemote.com>, "Maciej W. Rozycki" <macro@mips.com>, Arnd Bergmann <arnd@arndb.de>, David Howells <dhowells@redhat.com>, Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>, Nicholas Piggin <npiggin@gmail.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, Philippe Bergheaud <felix@linux.vnet.ibm.com>, Ram Pai <linuxram@us.ibm.com>, Christophe Leroy <christophe.leroy@c-s.fr>, Cornelia Huck <cohuck@redhat.com>, Vasily Gorbik <gor@linux.vnet.ibm.com>, Nick Alcock <nick.alcock@oracle.com>, Shannon Nelson <shannon.nelson@oracle.com>, Nagarathnam Muthusamy <nagarathnam.muthusamy@oracle.com>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>, Dave Hansen <dave.hansen@linux.intel.com>, Vitaly Kuznetsov <vkuznets@redhat.com>, Jiri Kosina <jkosina@suse.cz>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@vger.kernel.org, linux-mips@linux-mips.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org
-Message-ID: <20180826232019.Eg5srG4hSLtFUO-0xfVxapl5Q0-dFk4wSmc1TogD7tw@z>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Frank Rowand <frowand.list@gmail.com>, Michal Marek <michal.lkml@markovi.net>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Ley Foon Tan <lftan@altera.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, Linux-MIPS <linux-mips@linux-mips.org>, nios2-dev@lists.rocketboards.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-xtensa@linux-xtensa.org
+Message-ID: <20180826235614.J6Lv1pvPHmuGIQ1uqoM5oiJ7I692ogQpcgwF9LDS-nw@z>
 
-On 08/26/18 12:30, H. Peter Anvin wrote:
-> Here is a full-blown (user space) test program demonstrating the whole
-> technique and how to use it.
-> 
-> 	-hpa
+On Sat, Aug 25, 2018 at 9:06 PM Masahiro Yamada
+<yamada.masahiro@socionext.com> wrote:
+>
+> Hi Rob,
+>
+>
+> 2018-08-22 6:55 GMT+09:00 Rob Herring <robh@kernel.org>:
+> > There is nothing arch specific about building dtb files other than their
+> > location under /arch/*/boot/dts/. Keeping each arch aligned is a pain.
+> > The dependencies and supported targets are all slightly different.
+> > Also, a cross-compiler for each arch is needed, but really the host
+> > compiler preprocessor is perfectly fine for building dtbs. Move the
+> > build rules to a common location and remove the arch specific ones. This
+> > is done in a single step to avoid warnings about overriding rules.
+> >
+> > The build dependencies had been a mixture of 'scripts' and/or 'prepare'.
+> > These pull in several dependencies some of which need a target compiler
+> > (specifically devicetable-offsets.h) and aren't needed to build dtbs.
+> > All that is really needed is dtc, so adjust the dependencies to only be
+> > dtc.
+> >
+> > This change enables support 'dtbs_install' on some arches which were
+> > missing the target.
+> >
+> > Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+> > Cc: Michal Marek <michal.lkml@markovi.net>
+> > Cc: Vineet Gupta <vgupta@synopsys.com>
+> > Cc: Russell King <linux@armlinux.org.uk>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Will Deacon <will.deacon@arm.com>
+> > Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> > Cc: Michal Simek <monstr@monstr.eu>
+> > Cc: Ralf Baechle <ralf@linux-mips.org>
+> > Cc: Paul Burton <paul.burton@mips.com>
+> > Cc: James Hogan <jhogan@kernel.org>
+> > Cc: Ley Foon Tan <lftan@altera.com>
+> > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> > Cc: Paul Mackerras <paulus@samba.org>
+> > Cc: Michael Ellerman <mpe@ellerman.id.au>
+> > Cc: Chris Zankel <chris@zankel.net>
+> > Cc: Max Filippov <jcmvbkbc@gmail.com>
+> > Cc: linux-kbuild@vger.kernel.org
+> > Cc: linux-snps-arc@lists.infradead.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: uclinux-h8-devel@lists.sourceforge.jp
+> > Cc: linux-mips@linux-mips.org
+> > Cc: nios2-dev@lists.rocketboards.org
+> > Cc: linuxppc-dev@lists.ozlabs.org
+> > Cc: linux-xtensa@linux-xtensa.org
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  Makefile                 | 30 ++++++++++++++++++++++++++++++
+> >  arch/arc/Makefile        |  6 ------
+> >  arch/arm/Makefile        | 20 +-------------------
+> >  arch/arm64/Makefile      | 17 +----------------
+> >  arch/c6x/Makefile        |  2 --
+> >  arch/h8300/Makefile      | 11 +----------
+> >  arch/microblaze/Makefile |  4 +---
+> >  arch/mips/Makefile       | 15 +--------------
+> >  arch/nds32/Makefile      |  2 +-
+> >  arch/nios2/Makefile      |  7 -------
+> >  arch/nios2/boot/Makefile |  4 ----
+> >  arch/powerpc/Makefile    |  3 ---
+> >  arch/xtensa/Makefile     | 12 +-----------
+> >  scripts/Makefile         |  1 -
+> >  scripts/Makefile.lib     |  2 +-
+> >  15 files changed, 38 insertions(+), 98 deletions(-)
+> >
+> > diff --git a/Makefile b/Makefile
+> > index c13f8b85ba60..6d89e673f192 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -1212,6 +1212,30 @@ kselftest-merge:
+> >                 $(srctree)/tools/testing/selftests/*/config
+> >         +$(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
+> >
+> > +# ---------------------------------------------------------------------------
+> > +# Devicetree files
+> > +
+> > +dtstree := $(wildcard arch/$(SRCARCH)/boot/dts)
 
-Incidentally, it looks like _RET_IP_ really should be defined as:
+BTW, there's an error here too. It doesn't work right with
+KBUILD_OUTPUT set and should be:
 
+ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/boot/dts/),)
+dtstree := arch/$(SRCARCH)/boot/dts
+endif
 
-/*
- * Is there any reason whatsoever to have _RET_IP_ an unsigned int
- * rather than a pointer throughout?
- */
+> > +
+> > +ifdef CONFIG_OF_EARLY_FLATTREE
+> > +
+> > +%.dtb %.dtb.S %.dtb.o: | dtc
+>
+> I think the pipe operator is unnecessary
+> because Kbuild will descend to $(dtstree) anyway.
 
-#define _RET_IP_PTR_ \
-	__builtin_extract_return_addr(__builtin_return_addr(0))
-#define _RET_IP_ ((unsigned long)_RET_IP_PTR_)
+The pipe means 'order-only', right? So it is just a weaker dependency
+for things which are not input files as dtc is not. The 'dtc' here is
+just the dtc rule below, not the actual executable. Or am I missing
+something?
 
-On some architectures __builtin_extract_return_addr() is apparently
-necessary; its a nop on x86.  Why that isn't part of
-__builtin_return_addr() one can really wonder.
+> > +       $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
+> > +
+> > +PHONY += dtbs
+> > +dtbs: | dtc
+>
+> Ditto.
+>
+>
+> > +       $(Q)$(MAKE) $(build)=$(dtstree)
+> > +
+> > +dtbs_install: dtbs
+> > +       $(Q)$(MAKE) $(dtbinst)=$(dtstree)
+> > +
+> > +all: dtbs
+> > +
+> > +dtc:
+> > +       $(Q)$(MAKE) $(build)=scripts/dtc
+> > +
+> > +endif
+> > +
+>
+>
+> arch/*/boot/dts/ are not only directories that
+> require dtc.
 
-So, checking into all of this, the generic _THIS_IP_ DOES NOT WORK on
-x86.  I have tried a tons of variants, including adding various asm
-volatile(...) instructions, and no matter what I do, it will always
-return the address of the surrounding function rather than any kind of
-local IP.  The only way to get a localized address seems to be in
-assembly, but even so, there is absolutely no guarantee that the value
-of _THIS_IP_ has anything to do with where the code is otherwise
-localized in the function.
+Ah yes, of course...
+
+> > diff --git a/scripts/Makefile b/scripts/Makefile
+> > index 61affa300d25..a716a6b10954 100644
+> > --- a/scripts/Makefile
+> > +++ b/scripts/Makefile
+> > @@ -39,7 +39,6 @@ build_unifdef: $(obj)/unifdef
+> >  subdir-$(CONFIG_MODVERSIONS) += genksyms
+> >  subdir-y                     += mod
+> >  subdir-$(CONFIG_SECURITY_SELINUX) += selinux
+> > -subdir-$(CONFIG_DTC)         += dtc
+> >  subdir-$(CONFIG_GDB_SCRIPTS) += gdb
+> >
+> >  # Let clean descend into subdirs
+
+Looks like I need to leave this line to fix the above and cleaning.
+
+Thanks for the review.
+
+Rob

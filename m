@@ -1,17 +1,26 @@
-Received: from mail.kernel.org ([198.145.29.99]:46046 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23994565AbeHZX4ewYNmQ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 27 Aug 2018 01:56:34 +0200
+Received: from mail-pg1-x543.google.com ([IPv6:2607:f8b0:4864:20::543]:41390
+        "EHLO mail-pg1-x543.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992479AbeH0HoC1mGDq (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 27 Aug 2018 09:44:02 +0200
+Received: by mail-pg1-x543.google.com with SMTP id s15-v6so7033443pgv.8
+        for <linux-mips@linux-mips.org>; Mon, 27 Aug 2018 00:44:02 -0700 (PDT)
+Date: Mon, 27 Aug 2018 17:43:43 +1000
+From: Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH] treewide: remove current_text_addr
+Message-ID: <20180827161121.07aa9da6@roar.ozlabs.ibm.com>
+In-Reply-To: <CA+55aFzuSCKfmgT9efHuwtan+m3+bPh4BpwbZwn5gGX_H=Thuw@mail.gmail.com>
+References: <CAKwvOdkWL_2yTnJqM6n6R9UCPwY4iz-9BQYGN2MDAk9EzumUvA@mail.gmail.com>
+        <20180821202900.208417-1-ndesaulniers@google.com>
+        <207784db-4fcc-85e7-a0b2-fec26b7dab81@gmx.de>
+        <c62e4e00-fb8f-19a6-f3eb-bde60118cb1a@zytor.com>
+        <81141365-8168-799b-f34f-da5f92efaaf9@zytor.com>
+        <7f49eeab-a5cc-867f-58fb-abd266f9c2c9@zytor.com>
+        <6ca8a1d3-ff95-e9f4-f003-0a5af85bcb6f@zytor.com>
+        <CA+55aFzuSCKfmgT9efHuwtan+m3+bPh4BpwbZwn5gGX_H=Thuw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20180821215524.23040-1-robh@kernel.org> <20180821215524.23040-7-robh@kernel.org>
- <CAK7LNATcYSvwh0BEEdyUuDa_Y9X-AqQAzA5MrbNhOSMmSzqhTg@mail.gmail.com>
-In-Reply-To: <CAK7LNATcYSvwh0BEEdyUuDa_Y9X-AqQAzA5MrbNhOSMmSzqhTg@mail.gmail.com>
-From: Rob Herring <robh@kernel.org>
-Date: Sun, 26 Aug 2018 18:56:14 -0500
-Message-ID: <CAL_JsqJJ6DCT8AjVYqkbFuJ+fO0VmVch24B=XRp4pJPkUQYAww@mail.gmail.com>
-Subject: Re: [PATCH 6/8] kbuild: consolidate Devicetree dtb build rules
-Content-Type: text/plain; charset="UTF-8"
-Return-Path: <robh@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-Path: <npiggin@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,153 +30,69 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Frank Rowand <frowand.list@gmail.com>, Michal Marek <michal.lkml@markovi.net>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Ley Foon Tan <lftan@altera.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, Linux-MIPS <linux-mips@linux-mips.org>, nios2-dev@lists.rocketboards.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-xtensa@linux-xtensa.org
-Message-ID: <20180826235614.J6Lv1pvPHmuGIQ1uqoM5oiJ7I692ogQpcgwF9LDS-nw@z>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Anvin <hpa@zytor.com>, Helge Deller <deller@gmx.de>, Nick Desaulniers <ndesaulniers@google.com>, linux-alpha@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-c6x-dev@linux-c6x.org, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, linux-hexagon@vger.kernel.org, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, Linux/m68k <linux-m68k@vger.kernel.org>, linux-mips <linux-mips@linux-mips.org>, "moderated list:NIOS2 ARCHITECTURE" <nios2-dev@lists.rocketboards.org>, openrisc@lists.librecores.org, Parisc List <linux-parisc@vger.kernel.org>, ppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-riscv@lists.infradead.org, linux-s390 <linux-s390@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux <sparclinux@vger.kernel.org>, linux-um@lists.infradead.org
+Message-ID: <20180827074343.xtESXaGM0H4TWJSL9smbmGr0Q771aep2gYSFBuw03Ug@z>
 
-On Sat, Aug 25, 2018 at 9:06 PM Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
->
-> Hi Rob,
->
->
-> 2018-08-22 6:55 GMT+09:00 Rob Herring <robh@kernel.org>:
-> > There is nothing arch specific about building dtb files other than their
-> > location under /arch/*/boot/dts/. Keeping each arch aligned is a pain.
-> > The dependencies and supported targets are all slightly different.
-> > Also, a cross-compiler for each arch is needed, but really the host
-> > compiler preprocessor is perfectly fine for building dtbs. Move the
-> > build rules to a common location and remove the arch specific ones. This
-> > is done in a single step to avoid warnings about overriding rules.
+[ Trimmed the cc list because my SMTP didn't accept that many
+addresses. ]
+
+On Sun, 26 Aug 2018 13:25:14 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
+
+> On Sun, Aug 26, 2018 at 12:32 PM H. Peter Anvin <hpa@zytor.com> wrote:
 > >
-> > The build dependencies had been a mixture of 'scripts' and/or 'prepare'.
-> > These pull in several dependencies some of which need a target compiler
-> > (specifically devicetable-offsets.h) and aren't needed to build dtbs.
-> > All that is really needed is dtc, so adjust the dependencies to only be
-> > dtc.
-> >
-> > This change enables support 'dtbs_install' on some arches which were
-> > missing the target.
-> >
-> > Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-> > Cc: Michal Marek <michal.lkml@markovi.net>
-> > Cc: Vineet Gupta <vgupta@synopsys.com>
-> > Cc: Russell King <linux@armlinux.org.uk>
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Will Deacon <will.deacon@arm.com>
-> > Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> > Cc: Michal Simek <monstr@monstr.eu>
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > Cc: Paul Burton <paul.burton@mips.com>
-> > Cc: James Hogan <jhogan@kernel.org>
-> > Cc: Ley Foon Tan <lftan@altera.com>
-> > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> > Cc: Paul Mackerras <paulus@samba.org>
-> > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > Cc: Chris Zankel <chris@zankel.net>
-> > Cc: Max Filippov <jcmvbkbc@gmail.com>
-> > Cc: linux-kbuild@vger.kernel.org
-> > Cc: linux-snps-arc@lists.infradead.org
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Cc: uclinux-h8-devel@lists.sourceforge.jp
-> > Cc: linux-mips@linux-mips.org
-> > Cc: nios2-dev@lists.rocketboards.org
-> > Cc: linuxppc-dev@lists.ozlabs.org
-> > Cc: linux-xtensa@linux-xtensa.org
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  Makefile                 | 30 ++++++++++++++++++++++++++++++
-> >  arch/arc/Makefile        |  6 ------
-> >  arch/arm/Makefile        | 20 +-------------------
-> >  arch/arm64/Makefile      | 17 +----------------
-> >  arch/c6x/Makefile        |  2 --
-> >  arch/h8300/Makefile      | 11 +----------
-> >  arch/microblaze/Makefile |  4 +---
-> >  arch/mips/Makefile       | 15 +--------------
-> >  arch/nds32/Makefile      |  2 +-
-> >  arch/nios2/Makefile      |  7 -------
-> >  arch/nios2/boot/Makefile |  4 ----
-> >  arch/powerpc/Makefile    |  3 ---
-> >  arch/xtensa/Makefile     | 12 +-----------
-> >  scripts/Makefile         |  1 -
-> >  scripts/Makefile.lib     |  2 +-
-> >  15 files changed, 38 insertions(+), 98 deletions(-)
-> >
-> > diff --git a/Makefile b/Makefile
-> > index c13f8b85ba60..6d89e673f192 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -1212,6 +1212,30 @@ kselftest-merge:
-> >                 $(srctree)/tools/testing/selftests/*/config
-> >         +$(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
-> >
-> > +# ---------------------------------------------------------------------------
-> > +# Devicetree files
-> > +
-> > +dtstree := $(wildcard arch/$(SRCARCH)/boot/dts)
+> > Here is a full-blown (user space) test program demonstrating the whole
+> > technique and how to use it.  
+> 
+> So while I agree that some _THIS_IP_ users might be better off being
+> converted to __builtin_return_address(0) at the caller, I also think
+> that the whole "notailcall" thing shows why that can easily be more
+> problematic than just our currnet _THIS_IP_ solution.
+> 
+> Honestly, I'd suggest:
+> 
+>  - just do the current_text_addr() to _THIS_IP_ conversion
+> 
+>  - keep _THIS_IP_ and make it be the generic one, and screw the whole
+> "some architectures might implement is better" issue. Nobody cares.
+> 
+>  - try to convince people to move away from the "we want the kernel
+> instruction pointer for the call" model entirely, and consider this a
+> "legacy" issue.
+> 
+> The whole instruction pointer is a nasty thing. We should discourage
+> it and not make complex infrastructure for it.
+> 
+> Instead, maybe we could encourage something like
+> 
+>   struct kernel_loc { const char *file; const char *fn; int line; };
+> 
+>   #define __GEN_LOC__(n) \
+>         ({ static const struct kernel_loc n = { \
+>                 __FILE__, __FUNCTION__, __LINE__  \
+>            }; &n; })
+> 
+>   #define _THIS_LOC_ __GEN_LOC__(__UNIQUE_ID(loc))
+> 
+> which is a hell of a lot nicer to use, and actually allows gcc to
+> optimize things (try it: if you pass a _THIS_LOC_ off to an inline
+> function, and that inline function uses the name and line number, gcc
+> will pick them up directly, without the extra structure dereference.
+> 
+> Wouldn't it be much nicer to pass these kinds of "location pointer"
+> around, rather than the nasty _THIS_IP_ thing?
 
-BTW, there's an error here too. It doesn't work right with
-KBUILD_OUTPUT set and should be:
+Seems nice. Do you even need this unique ID thing? AFAIKS the name
+would never really be useful.
 
-ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/boot/dts/),)
-dtstree := arch/$(SRCARCH)/boot/dts
-endif
+It could perhaps go into a cold data section too, I assume the common
+case is that you do not access it. Although gcc will end up putting
+the file and function names into regular rodata.
 
-> > +
-> > +ifdef CONFIG_OF_EARLY_FLATTREE
-> > +
-> > +%.dtb %.dtb.S %.dtb.o: | dtc
->
-> I think the pipe operator is unnecessary
-> because Kbuild will descend to $(dtstree) anyway.
+Possibly we could add a printk specifier for it, pass it through to
+existing BUG, etc macros that want exactly this, etc. Makes a lot of
+sense.
 
-The pipe means 'order-only', right? So it is just a weaker dependency
-for things which are not input files as dtc is not. The 'dtc' here is
-just the dtc rule below, not the actual executable. Or am I missing
-something?
-
-> > +       $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
-> > +
-> > +PHONY += dtbs
-> > +dtbs: | dtc
->
-> Ditto.
->
->
-> > +       $(Q)$(MAKE) $(build)=$(dtstree)
-> > +
-> > +dtbs_install: dtbs
-> > +       $(Q)$(MAKE) $(dtbinst)=$(dtstree)
-> > +
-> > +all: dtbs
-> > +
-> > +dtc:
-> > +       $(Q)$(MAKE) $(build)=scripts/dtc
-> > +
-> > +endif
-> > +
->
->
-> arch/*/boot/dts/ are not only directories that
-> require dtc.
-
-Ah yes, of course...
-
-> > diff --git a/scripts/Makefile b/scripts/Makefile
-> > index 61affa300d25..a716a6b10954 100644
-> > --- a/scripts/Makefile
-> > +++ b/scripts/Makefile
-> > @@ -39,7 +39,6 @@ build_unifdef: $(obj)/unifdef
-> >  subdir-$(CONFIG_MODVERSIONS) += genksyms
-> >  subdir-y                     += mod
-> >  subdir-$(CONFIG_SECURITY_SELINUX) += selinux
-> > -subdir-$(CONFIG_DTC)         += dtc
-> >  subdir-$(CONFIG_GDB_SCRIPTS) += gdb
-> >
-> >  # Let clean descend into subdirs
-
-Looks like I need to leave this line to fix the above and cleaning.
-
-Thanks for the review.
-
-Rob
+Thanks,
+Nick

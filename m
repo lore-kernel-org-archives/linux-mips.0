@@ -1,11 +1,11 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:50296 "EHLO
+Received: from mail.linuxfoundation.org ([140.211.169.12]:50512 "EHLO
         mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993024AbeICNeFLvCTP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 3 Sep 2018 15:34:05 +0200
-Subject: Patch "MIPS: Always use -march=<arch>, not -<arch> shortcuts" has been added to the 4.18-stable tree
+        by eddie.linux-mips.org with ESMTP id S23993889AbeICNfRYjMeP (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 3 Sep 2018 15:35:17 +0200
+Subject: Patch "MIPS: Correct the 64-bit DSP accumulator register size" has been added to the 4.4-stable tree
 From: <gregkh@linuxfoundation.org>
-Date: Mon, 03 Sep 2018 15:32:12 +0200
-Message-ID: <153598153225058@kroah.com>
+Date: Mon, 03 Sep 2018 15:32:34 +0200
+Message-ID: <15359815544652@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -19,21 +19,21 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, paul.burton@mips.com, ralf@linux-mips.org
+To: gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, macro@mips.com, paul.burton@mips.com, ralf@linux-mips.org, viro@zeniv.linux.org.uk
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180903133212.4WnfNQdyQwU-4BR9CCQtoEvUR3F7DKMtoNj0n8ZAF1E@z>
+Message-ID: <20180903133234.rIk4AQ972njav4DZnIA7L4YxFhcSltj1XEZtZmCs1dU@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
-    MIPS: Always use -march=<arch>, not -<arch> shortcuts
+    MIPS: Correct the 64-bit DSP accumulator register size
 
-to the 4.18-stable tree which can be found at:
+to the 4.4-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mips-always-use-march-arch-not-arch-shortcuts.patch
-and it can be found in the queue-4.18 subdirectory.
+     mips-correct-the-64-bit-dsp-accumulator-register-size.patch
+and it can be found in the queue-4.4 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.

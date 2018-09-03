@@ -1,21 +1,15 @@
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:12915 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991063AbeICHaQoC75e (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 3 Sep 2018 09:30:16 +0200
-From: <Rene.Nielsen@microchip.com>
-Subject: RE: [PATCH] MIPS: VDSO: Match data page cache colouring when D$
- aliases
-Date: Mon, 3 Sep 2018 07:29:45 +0000
-Message-ID: <CY4PR11MB00699EEA41CC36E15B051613990C0@CY4PR11MB0069.namprd11.prod.outlook.com>
-References: <20180828160254.GC16561@piout.net>
- <20180830180121.25363-1-paul.burton@mips.com>
- <7f92c83f-3f23-8dd2-31ca-aaf268d52bed@hauke-m.de>
-In-Reply-To: <7f92c83f-3f23-8dd2-31ca-aaf268d52bed@hauke-m.de>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail.linuxfoundation.org ([140.211.169.12]:48580 "EHLO
+        mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993008AbeICNbvtwwBP (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 3 Sep 2018 15:31:51 +0200
+Subject: Patch "MIPS: Correct the 64-bit DSP accumulator register size" has been added to the 3.18-stable tree
+From: <gregkh@linuxfoundation.org>
+Date: Mon, 03 Sep 2018 15:31:30 +0200
+Message-ID: <1535981490101255@kroah.com>
 MIME-Version: 1.0
-Return-Path: <Rene.Nielsen@microchip.com>
+Content-Type: text/plain; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 8bit
+Return-Path: <gregkh@linuxfoundation.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,91 +19,21 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: hauke@hauke-m.de, paul.burton@mips.com, alexandre.belloni@bootlin.com
-Cc: linux-mips@linux-mips.org, jhogan@kernel.org, stable@vger.kernel.org, rene.nielsen@microsemi.com
-Message-ID: <20180903072945.Oqdax5xuS7vSdXgzDrHEjX-TXSaPXXubqHGtBTkAPz4@z>
+To: gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, macro@mips.com, paul.burton@mips.com, ralf@linux-mips.org, viro@zeniv.linux.org.uk
+Cc: stable-commits@vger.kernel.org
+Message-ID: <20180903133130.0LJ1hehTMYbpszaSUGJAgLFOIV81mwJU7ehkE3xTdqE@z>
 
-T24gMDgvMzEvMjAxOCAwNToxMiBQTSwgSGF1a2UgTWVydGVucyB3cm90ZToNCj4gT24gMDgvMzAv
-MjAxOCAwODowMSBQTSwgUGF1bCBCdXJ0b24gd3JvdGU6DQo+PiBXaGVuIGEgc3lzdGVtIHN1ZmZl
-cnMgZnJvbSBkY2FjaGUgYWxpYXNpbmcgYSB1c2VyIHByb2dyYW0gbWF5IG9ic2VydmUgDQo+PiBz
-dGFsZSBWRFNPIGRhdGEgZnJvbSBhbiBhbGlhc2VkIGNhY2hlIGxpbmUuIE5vdGFibHkgdGhpcyBj
-YW4gYnJlYWsgdGhlIA0KPj4gZXhwZWN0YXRpb24gdGhhdCBjbG9ja19nZXR0aW1lKENMT0NLX01P
-Tk9UT05JQywgLi4uKSBpcywgYXMgaXRzIG5hbWUgDQo+PiBzdWdnZXN0cywgbW9ub3RvbmljLg0K
-Pj4gDQo+PiBJbiBvcmRlciB0byBlbnN1cmUgdGhhdCB1c2VycyBvYnNlcnZlIHVwZGF0ZXMgdG8g
-dGhlIFZEU08gZGF0YSBwYWdlIGFzIA0KPj4gaW50ZW5kZWQsIGFsaWduIHRoZSB1c2VyIG1hcHBp
-bmdzIG9mIHRoZSBWRFNPIGRhdGEgcGFnZSBzdWNoIHRoYXQgDQo+PiB0aGVpciBjYWNoZSBjb2xv
-dXJpbmcgbWF0Y2hlcyB0aGF0IG9mIHRoZSB2aXJ0dWFsIGFkZHJlc3MgcmFuZ2Ugd2hpY2ggDQo+
-PiB0aGUga2VybmVsIHdpbGwgdXNlIHRvIHVwZGF0ZSB0aGUgZGF0YSBwYWdlIC0gdHlwaWNhbGx5
-IGl0cyB1bm1hcHBlZCANCj4+IGFkZHJlc3Mgd2l0aGluIGtzZWcwLg0KPj4gDQo+PiBUaGlzIGVu
-c3VyZXMgdGhhdCB3ZSBkb24ndCBpbnRyb2R1Y2UgYWxpYXNpbmcgY2FjaGUgbGluZXMgZm9yIHRo
-ZSBWRFNPIA0KPj4gZGF0YSBwYWdlLCBhbmQgdGhlcmVmb3JlIHRoYXQgdXNlcmxhbmQgd2lsbCBv
-YnNlcnZlIHVwZGF0ZXMgd2l0aG91dCANCj4+IHJlcXVpcmluZyBjYWNoZSBpbnZhbGlkYXRpb24u
-DQo+PiANCj4+IFNpZ25lZC1vZmYtYnk6IFBhdWwgQnVydG9uIDxwYXVsLmJ1cnRvbkBtaXBzLmNv
-bT4NCj4+IFJlcG9ydGVkLWJ5OiBIYXVrZSBNZWhydGVucyA8aGF1a2VAaGF1a2UtbS5kZT4NCj4+
-IFJlcG9ydGVkLWJ5OiBSZW5lIE5pZWxzZW4gPHJlbmUubmllbHNlbkBtaWNyb3NlbWkuY29tPg0K
-Pj4gUmVwb3J0ZWQtYnk6IEFsZXhhbmRyZSBCZWxsb25pIDxhbGV4YW5kcmUuYmVsbG9uaUBib290
-bGluLmNvbT4NCj4+IEZpeGVzOiBlYmI1ZTc4Y2M2MzQgKCJNSVBTOiBJbml0aWFsIGltcGxlbWVu
-dGF0aW9uIG9mIGEgVkRTTyIpDQo+PiBDYzogSmFtZXMgSG9nYW4gPGpob2dhbkBrZXJuZWwub3Jn
-Pg0KPj4gQ2M6IGxpbnV4LW1pcHNAbGludXgtbWlwcy5vcmcNCj4+IENjOiBzdGFibGVAdmdlci5r
-ZXJuZWwub3JnICMgdjQuNCsNCg0KPiBUZXN0ZWQtYnk6IEhhdWtlIE1laHJ0ZW5zIDxoYXVrZUBo
-YXVrZS1tLmRlPg0KDQpUZXN0ZWQtYnk6IFJlbmUgTmllbHNlbiA8cmVuZS5uaWVsc2VuQG1pY3Jv
-Y2hpcC5jb20+DQoNCj4gV2l0aG91dCB0aGlzIHBhdGNoIHBpbmcgc2hvd3MgdGhlc2UgcmVzdWx0
-cyBvbiBrZXJuZWwgNC4xOS1yYzEgb24gdGhlIExhbnRpcSBWUjkgU29DIHRvIGEgUEMgZGlyZWN0
-bHkgY29ubmVjdGVkIHRvIHRoZSBMQU4gcG9ydDoNCg0KPiByb290QE9wZW5XcnQ6fiMgcGluZyAx
-OTIuMTY4LjEuMTk1DQo+IFBJTkcgMTkyLjE2OC4xLjE5NSAoMTkyLjE2OC4xLjE5NSk6IDU2IGRh
-dGEgYnl0ZXMNCj4gNjQgYnl0ZXMgZnJvbSAxOTIuMTY4LjEuMTk1OiBzZXE9MCB0dGw9NjQgdGlt
-ZT0wLjY4OSBtcw0KPiA2NCBieXRlcyBmcm9tIDE5Mi4xNjguMS4xOTU6IHNlcT0xIHR0bD02NCB0
-aW1lPTIzNi41MjcgbXMNCj4gNjQgYnl0ZXMgZnJvbSAxOTIuMTY4LjEuMTk1OiBzZXE9MiB0dGw9
-NjQgdGltZT00Mjk0OTYzLjgyOSBtcw0KPiA2NCBieXRlcyBmcm9tIDE5Mi4xNjguMS4xOTU6IHNl
-cT0zIHR0bD02NCB0aW1lPTQyOTQ0MjMuODI0IG1zDQo+IDY0IGJ5dGVzIGZyb20gMTkyLjE2OC4x
-LjE5NTogc2VxPTQgdHRsPTY0IHRpbWU9OTYwLjUyNyBtcw0KPiA2NCBieXRlcyBmcm9tIDE5Mi4x
-NjguMS4xOTU6IHNlcT01IHR0bD02NCB0aW1lPTQ3Mi41MzAgbXMNCj4gNjQgYnl0ZXMgZnJvbSAx
-OTIuMTY4LjEuMTk1OiBzZXE9NiB0dGw9NjQgdGltZT00NjQuNTMwIG1zDQo+IDY0IGJ5dGVzIGZy
-b20gMTkyLjE2OC4xLjE5NTogc2VxPTcgdHRsPTY0IHRpbWU9NDUyLjUzMCBtcw0KPg0KPiBXaXRo
-IHRoaXMgcGF0Y2ggaXQgbG9va3MgbGlrZSB0aGlzOg0KPg0KPnJvb3RAT3BlbldydDp+IyBwaW5n
-IDE5Mi4xNjguMS4xOTUNCj4gUElORyAxOTIuMTY4LjEuMTk1ICgxOTIuMTY4LjEuMTk1KTogNTYg
-ZGF0YSBieXRlcw0KPiA2NCBieXRlcyBmcm9tIDE5Mi4xNjguMS4xOTU6IHNlcT0wIHR0bD02NCB0
-aW1lPTAuNjM4IG1zDQo+IDY0IGJ5dGVzIGZyb20gMTkyLjE2OC4xLjE5NTogc2VxPTEgdHRsPTY0
-IHRpbWU9MC41NzMgbXMNCj4gNjQgYnl0ZXMgZnJvbSAxOTIuMTY4LjEuMTk1OiBzZXE9MiB0dGw9
-NjQgdGltZT0wLjYwNSBtcw0KPiA2NCBieXRlcyBmcm9tIDE5Mi4xNjguMS4xOTU6IHNlcT0zIHR0
-bD02NCB0aW1lPTAuNTI0IG1zDQo+IDY0IGJ5dGVzIGZyb20gMTkyLjE2OC4xLjE5NTogc2VxPTQg
-dHRsPTY0IHRpbWU9MC41MzQgbXMNCj4gNjQgYnl0ZXMgZnJvbSAxOTIuMTY4LjEuMTk1OiBzZXE9
-NSB0dGw9NjQgdGltZT0wLjUxOCBtcw0KPiA2NCBieXRlcyBmcm9tIDE5Mi4xNjguMS4xOTU6IHNl
-cT02IHR0bD02NCB0aW1lPTAuNDg1IG1zDQo+IDY0IGJ5dGVzIGZyb20gMTkyLjE2OC4xLjE5NTog
-c2VxPTcgdHRsPTY0IHRpbWU9MC41MDEgbXMNCj4NCj4NCj4+IC0tLQ0KPj4gSGkgQWxleGFuZHJl
-LA0KPj4gDQo+PiBDb3VsZCB5b3UgdHJ5IHRoaXMgb3V0IG9uIHlvdXIgT2NlbG90IHN5c3RlbT8g
-SG9wZWZ1bGx5IGl0J2xsIHNvbHZlIA0KPj4gdGhlIHByb2JsZW0ganVzdCBhcyB3ZWxsIGFzIEph
-bWVzJyBwYXRjaCBidXQgZG9lc24ndCBuZWVkIHRoZSANCj4+IHF1ZXN0aW9uYWJsZSBjaGFuZ2Ug
-dG8gYXJjaF9nZXRfdW5tYXBwZWRfYXJlYV9jb21tb24oKS4NCj4+IA0KPj4gVGhhbmtzLA0KPj4g
-ICAgIFBhdWwNCj4+IC0tLQ0KPj4gIGFyY2gvbWlwcy9rZXJuZWwvdmRzby5jIHwgMjAgKysrKysr
-KysrKysrKysrKysrKysNCj4+ICAxIGZpbGUgY2hhbmdlZCwgMjAgaW5zZXJ0aW9ucygrKQ0KPj4g
-DQo+PiBkaWZmIC0tZ2l0IGEvYXJjaC9taXBzL2tlcm5lbC92ZHNvLmMgYi9hcmNoL21pcHMva2Vy
-bmVsL3Zkc28uYyBpbmRleCANCj4+IDAxOTAzNWQ3MjI1Yy4uNWZiNjE3YTQyMzM1IDEwMDY0NA0K
-Pj4gLS0tIGEvYXJjaC9taXBzL2tlcm5lbC92ZHNvLmMNCj4+ICsrKyBiL2FyY2gvbWlwcy9rZXJu
-ZWwvdmRzby5jDQo+PiBAQCAtMTMsNiArMTMsNyBAQA0KPj4gICNpbmNsdWRlIDxsaW51eC9lcnIu
-aD4NCj4+ICAjaW5jbHVkZSA8bGludXgvaW5pdC5oPg0KPj4gICNpbmNsdWRlIDxsaW51eC9pb3Bv
-cnQuaD4NCj4+ICsjaW5jbHVkZSA8bGludXgva2VybmVsLmg+DQo+PiAgI2luY2x1ZGUgPGxpbnV4
-L21tLmg+DQo+PiAgI2luY2x1ZGUgPGxpbnV4L3NjaGVkLmg+DQo+PiAgI2luY2x1ZGUgPGxpbnV4
-L3NsYWIuaD4NCj4+IEBAIC0yMCw2ICsyMSw3IEBADQo+PiAgDQo+PiAgI2luY2x1ZGUgPGFzbS9h
-YmkuaD4NCj4+ICAjaW5jbHVkZSA8YXNtL21pcHMtY3BzLmg+DQo+PiArI2luY2x1ZGUgPGFzbS9w
-YWdlLmg+DQo+PiAgI2luY2x1ZGUgPGFzbS92ZHNvLmg+DQo+PiAgDQo+PiAgLyogS2VybmVsLXBy
-b3ZpZGVkIGRhdGEgdXNlZCBieSB0aGUgVkRTTy4gKi8gQEAgLTEyOCwxMiArMTMwLDMwIEBAIA0K
-Pj4gaW50IGFyY2hfc2V0dXBfYWRkaXRpb25hbF9wYWdlcyhzdHJ1Y3QgbGludXhfYmlucHJtICpi
-cHJtLCBpbnQgdXNlc19pbnRlcnApDQo+PiAgCXZ2YXJfc2l6ZSA9IGdpY19zaXplICsgUEFHRV9T
-SVpFOw0KPj4gIAlzaXplID0gdnZhcl9zaXplICsgaW1hZ2UtPnNpemU7DQo+PiAgDQo+PiArCS8q
-DQo+PiArCSAqIEZpbmQgYSByZWdpb24gdGhhdCdzIGxhcmdlIGVub3VnaCBmb3IgdXMgdG8gcGVy
-Zm9ybSB0aGUNCj4+ICsJICogY29sb3VyLW1hdGNoaW5nIGFsaWdubWVudCBiZWxvdy4NCj4+ICsJ
-ICovDQo+PiArCWlmIChjcHVfaGFzX2RjX2FsaWFzZXMpDQo+PiArCQlzaXplICs9IHNobV9hbGln
-bl9tYXNrICsgMTsNCj4+ICsNCj4+ICAJYmFzZSA9IGdldF91bm1hcHBlZF9hcmVhKE5VTEwsIDAs
-IHNpemUsIDAsIDApOw0KPj4gIAlpZiAoSVNfRVJSX1ZBTFVFKGJhc2UpKSB7DQo+PiAgCQlyZXQg
-PSBiYXNlOw0KPj4gIAkJZ290byBvdXQ7DQo+PiAgCX0NCj4+ICANCj4+ICsJLyoNCj4+ICsJICog
-SWYgd2Ugc3VmZmVyIGZyb20gZGNhY2hlIGFsaWFzaW5nLCBlbnN1cmUgdGhhdCB0aGUgVkRTTyBk
-YXRhIHBhZ2UgaXMNCj4+ICsJICogY29sb3VyZWQgdGhlIHNhbWUgYXMgdGhlIGtlcm5lbCdzIG1h
-cHBpbmcgb2YgdGhhdCBtZW1vcnkuIFRoaXMNCj4+ICsJICogZW5zdXJlcyB0aGF0IHdoZW4gdGhl
-IGtlcm5lbCB1cGRhdGVzIHRoZSBWRFNPIGRhdGEgdXNlcmxhbmQgd2lsbCBzZWUNCj4+ICsJICog
-aXQgd2l0aG91dCByZXF1aXJpbmcgY2FjaGUgaW52YWxpZGF0aW9ucy4NCj4+ICsJICovDQo+PiAr
-CWlmIChjcHVfaGFzX2RjX2FsaWFzZXMpIHsNCj4+ICsJCWJhc2UgPSBfX0FMSUdOX01BU0soYmFz
-ZSwgc2htX2FsaWduX21hc2spOw0KPj4gKwkJYmFzZSArPSAoKHVuc2lnbmVkIGxvbmcpJnZkc29f
-ZGF0YSAtIGdpY19zaXplKSAmIHNobV9hbGlnbl9tYXNrOw0KPj4gKwl9DQo+PiArDQo+PiAgCWRh
-dGFfYWRkciA9IGJhc2UgKyBnaWNfc2l6ZTsNCj4+ICAJdmRzb19hZGRyID0gZGF0YV9hZGRyICsg
-UEFHRV9TSVpFOw0KPj4gIA0KPj4gDQoNCg0K
+
+This is a note to let you know that I've just added the patch titled
+
+    MIPS: Correct the 64-bit DSP accumulator register size
+
+to the 3.18-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+
+The filename of the patch is:
+     mips-correct-the-64-bit-dsp-accumulator-register-size.patch
+and it can be found in the queue-3.18 subdirectory.
+
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.

@@ -1,12 +1,12 @@
-Received: from mail-by2nam05on0718.outbound.protection.outlook.com ([IPv6:2a01:111:f400:fe52::718]:6445
-        "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr700099.outbound.protection.outlook.com ([40.107.70.99]:26160
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23994663AbeIGXMhoRaf9 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sat, 8 Sep 2018 01:12:37 +0200
-Date: Fri, 7 Sep 2018 16:11:54 -0700
-From: Paul Burton <paul.burton@mips.com>
+        id S23990411AbeIGXbQKQT26 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 8 Sep 2018 01:31:16 +0200
+From: Dengcheng Zhu <dzhu@wavecomp.com>
 Subject: Re: [PATCH v4 0/6] MIPS: kexec/kdump: Fix smp reboot and other issues
-Message-ID: <20180907231154.hnnhi2kns77hdnr2@pburton-laptop>
+Date: Fri, 7 Sep 2018 23:31:03 +0000
+Message-ID: <CO2PR0801MB21518DC2B1D4993DFCCF21E6A2000@CO2PR0801MB2151.namprd08.prod.outlook.com>
 References: <20180905155909.30454-1-dzhu@wavecomp.com>
  <20180905225455.luh32536uei5je6m@pburton-laptop>
  <5B917DD5.6020009@wavecomp.com>
@@ -15,12 +15,13 @@ References: <20180905155909.30454-1-dzhu@wavecomp.com>
  <20180906232122.wp72jwfnsbb2ps7b@pburton-laptop>
  <CO2PR0801MB21512A2FA3A3A718725DC035A2000@CO2PR0801MB2151.namprd08.prod.outlook.com>
  <20180907214232.du2fh422uwzhdusm@pburton-laptop>
- <CO2PR0801MB2151111E37EDDB45D93F0F64A2000@CO2PR0801MB2151.namprd08.prod.outlook.com>
+ <CO2PR0801MB2151111E37EDDB45D93F0F64A2000@CO2PR0801MB2151.namprd08.prod.outlook.com>,<20180907231154.hnnhi2kns77hdnr2@pburton-laptop>
+In-Reply-To: <20180907231154.hnnhi2kns77hdnr2@pburton-laptop>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CO2PR0801MB2151111E37EDDB45D93F0F64A2000@CO2PR0801MB2151.namprd08.prod.outlook.com>
-Return-Path: <pburton@wavecomp.com>
+Return-Path: <dzhu@wavecomp.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -30,8 +31,30 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Dengcheng Zhu <dzhu@wavecomp.com>
-Cc: Paul Burton <pburton@wavecomp.com>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "rachel.mozes@intel.com" <rachel.mozes@intel.com>
+To: Paul Burton <pburton@wavecomp.com>
+Cc: "ralf@linux-mips.org" <ralf@linux-mips.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "rachel.mozes@intel.com" <rachel.mozes@intel.com>
+Message-ID: <20180907233103.DLxdPhtaTxPb-6Wucenr4IpzUrXIbXEt4QT28rmkn48@z>
+
+> Well, if CPU 0 isn't running machine_kexec() then some other CPU is
+doing the write to reboot_code_buffer and therefore CPU 0 isn't the only
+one accessing/using it.
+
+[Dengcheng]: I meant only CPU0 will jump to reboot_code_buffer. This buffer is
+surely possibly written by another CPU. Any issue with the machine_kexec() CPU
+flush "local" dache, and CPU0 invalidate "local" icache and scahe before jumping?
+
+
+Thanks,
+
+Dengcheng
+
+
+From: Paul Burton
+Sent: Friday, September 7, 2018 4:11 PM
+To: Dengcheng Zhu
+Cc: Paul Burton; ralf@linux-mips.org; linux-mips@linux-mips.org; rachel.mozes@intel.com
+Subject: Re: [PATCH v4 0/6] MIPS: kexec/kdump: Fix smp reboot and other issues
+  
 
 On Fri, Sep 07, 2018 at 03:21:10PM -0700, Dengcheng Zhu wrote:
 > Hi Paul,
@@ -76,4 +99,5 @@ implements the new callback.
 [1] https://patchwork.linux-mips.org/patch/20432/
 
 Thanks,
-    Paul
+    Paul
+    

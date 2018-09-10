@@ -1,17 +1,17 @@
-Received: from mail.kernel.org ([198.145.29.99]:60094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992759AbeIJOfuEQdhl (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 10 Sep 2018 16:35:50 +0200
+Received: from mail-lj1-x241.google.com ([IPv6:2a00:1450:4864:20::241]:45469
+        "EHLO mail-lj1-x241.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993030AbeIJOhgVTdvl (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 10 Sep 2018 16:37:36 +0200
 MIME-Version: 1.0
-References: <20180905235327.5996-1-robh@kernel.org> <20180905235327.5996-7-robh@kernel.org>
- <CAK7LNAS5uEUMDpL8oCJmFWKu1YF8tof5d=2h8jzt-MLHGAEAhg@mail.gmail.com>
-In-Reply-To: <CAK7LNAS5uEUMDpL8oCJmFWKu1YF8tof5d=2h8jzt-MLHGAEAhg@mail.gmail.com>
-From: Rob Herring <robh@kernel.org>
-Date: Mon, 10 Sep 2018 09:35:29 -0500
-Message-ID: <CAL_JsqKS+h0B5AuUh=vk0m1_7KSj4h2zZUo22rdt1w7oee=QwA@mail.gmail.com>
-Subject: Re: [PATCH v2 6/9] kbuild: consolidate Devicetree dtb build rules
+References: <1536266581-7308-1-git-send-email-jim2101024@gmail.com>
+ <1536266581-7308-9-git-send-email-jim2101024@gmail.com> <20180906214955.2yzyj6tkmflnnvdx@pburton-laptop>
+In-Reply-To: <20180906214955.2yzyj6tkmflnnvdx@pburton-laptop>
+From: Jim Quinlan <jim2101024@gmail.com>
+Date: Mon, 10 Sep 2018 10:37:19 -0400
+Message-ID: <CANCKTBumoy6mw2n+V7hN_T1SYxhq3JQMxgQUUSmOLuMX-Kv=zw@mail.gmail.com>
+Subject: Re: [PATCH v5 08/12] MIPS: BMIPS: add PCI bindings for 7425, 7435
 Content-Type: text/plain; charset="UTF-8"
-Return-Path: <robh@kernel.org>
+Return-Path: <jim2101024@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,125 +21,40 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Michal Marek <michal.lkml@markovi.net>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Ley Foon Tan <lftan@altera.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, Linux-MIPS <linux-mips@linux-mips.org>, nios2-dev@lists.rocketboards.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-xtensa@linux-xtensa.org
-Message-ID: <20180910143529._2ecHC80FPH_9Tgfa12SNPlHlkwuqUMBo88_ifrJ-jk@z>
+To: paul.burton@mips.com
+Cc: linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Brian Norris <computersforpeace@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, linux@armlinux.org.uk, Ray Jui <ray.jui@broadcom.com>, Scott Branden <scott.branden@broadcom.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ralf Baechle <ralf@linux-mips.org>, jhogan@kernel.org, Kevin Cernekee <cernekee@gmail.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, yamada.masahiro@socionext.com, Arnd Bergmann <arnd@arndb.de>, nicolas.pitre@linaro.org, keescook@chromium.org, jinb.park7@gmail.com, vladimir.murzin@arm.com, alexandre.belloni@bootlin.com, palmer@sifive.com, stefan@agner.ch, eric@anholt.net, horms+renesas@verge.net.au, tony@atomide.com, stefan.wahren@i2se.com, Marek Szyprowski <m.szyprowski@samsung.com>, martin.blumenstingl@googlemail.com, olof@lixom.net, thellstrom@vmware.com, alexander.deucher@amd.com, dirk@hohndel.org, tglx@linutronix.de, pombredanne@nexb.com, kstewart@linuxfoundation.org, gregkh@linuxfoundation.org, Robin Murphy <robin.murphy@arm.com>, justinpopo6@gmail.com, markus.mayer@broadcom.com, gpowell@broadcom.com, opendmb@gmail.com, linux-pci <linux-pci@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, Linux-MIPS <linux-mips@linux-mips.org>, Christoph Hellwig <hch@lst.de>
+Message-ID: <20180910143719.-d_vXPjBLWpYcX2lEpfHn9DgNMuN4bXvIz19k19wzlw@z>
 
-On Sun, Sep 9, 2018 at 6:28 PM Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
+On Thu, Sep 6, 2018 at 5:50 PM Paul Burton <paul.burton@mips.com> wrote:
 >
-> 2018-09-06 8:53 GMT+09:00 Rob Herring <robh@kernel.org>:
-> > There is nothing arch specific about building dtb files other than their
-> > location under /arch/*/boot/dts/. Keeping each arch aligned is a pain.
-> > The dependencies and supported targets are all slightly different.
-> > Also, a cross-compiler for each arch is needed, but really the host
-> > compiler preprocessor is perfectly fine for building dtbs. Move the
-> > build rules to a common location and remove the arch specific ones. This
-> > is done in a single step to avoid warnings about overriding rules.
+> Hi Jim,
+>
+> On Thu, Sep 06, 2018 at 04:42:57PM -0400, Jim Quinlan wrote:
+> > Adds the PCIe nodes for the Broadcom STB PCIe root complex.
 > >
-> > The build dependencies had been a mixture of 'scripts' and/or 'prepare'.
-> > These pull in several dependencies some of which need a target compiler
-> > (specifically devicetable-offsets.h) and aren't needed to build dtbs.
-> > All that is really needed is dtc, so adjust the dependencies to only be
-> > dtc.
-> >
-> > This change enables support 'dtbs_install' on some arches which were
-> > missing the target.
-> >
-> > Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-> > Cc: Michal Marek <michal.lkml@markovi.net>
-> > Cc: Vineet Gupta <vgupta@synopsys.com>
-> > Cc: Russell King <linux@armlinux.org.uk>
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Will Deacon <will.deacon@arm.com>
-> > Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> > Cc: Michal Simek <monstr@monstr.eu>
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > Cc: Paul Burton <paul.burton@mips.com>
-> > Cc: James Hogan <jhogan@kernel.org>
-> > Cc: Ley Foon Tan <lftan@altera.com>
-> > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> > Cc: Paul Mackerras <paulus@samba.org>
-> > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > Cc: Chris Zankel <chris@zankel.net>
-> > Cc: Max Filippov <jcmvbkbc@gmail.com>
-> > Cc: linux-kbuild@vger.kernel.org
-> > Cc: linux-snps-arc@lists.infradead.org
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Cc: uclinux-h8-devel@lists.sourceforge.jp
-> > Cc: linux-mips@linux-mips.org
-> > Cc: nios2-dev@lists.rocketboards.org
-> > Cc: linuxppc-dev@lists.ozlabs.org
-> > Cc: linux-xtensa@linux-xtensa.org
-> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
 > > ---
-> > Please ack so I can take the whole series via the DT tree.
-> >
-> > v2:
-> >  - Fix $arch/boot/dts path check for out of tree builds
-> >  - Fix dtc dependency for building built-in dtbs
-> >  - Fix microblaze built-in dtb building
-> >
-> >  Makefile                          | 32 +++++++++++++++++++++++++++++++
-> >  arch/arc/Makefile                 |  6 ------
-> >  arch/arm/Makefile                 | 20 +------------------
-> >  arch/arm64/Makefile               | 17 +---------------
-> >  arch/c6x/Makefile                 |  2 --
-> >  arch/h8300/Makefile               | 11 +----------
-> >  arch/microblaze/Makefile          |  4 +---
-> >  arch/microblaze/boot/dts/Makefile |  2 ++
-> >  arch/mips/Makefile                | 15 +--------------
-> >  arch/nds32/Makefile               |  2 +-
-> >  arch/nios2/Makefile               |  7 -------
-> >  arch/nios2/boot/Makefile          |  4 ----
-> >  arch/powerpc/Makefile             |  3 ---
-> >  arch/xtensa/Makefile              | 12 +-----------
-> >  scripts/Makefile.lib              |  2 +-
-> >  15 files changed, 42 insertions(+), 97 deletions(-)
-> >
-> > diff --git a/Makefile b/Makefile
-> > index 2b458801ba74..bc18dbbc16c5 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -1212,6 +1212,32 @@ kselftest-merge:
-> >                 $(srctree)/tools/testing/selftests/*/config
-> >         +$(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
-> >
-> > +# ---------------------------------------------------------------------------
-> > +# Devicetree files
-> > +
-> > +ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/boot/dts/),)
-> > +dtstree := arch/$(SRCARCH)/boot/dts
-> > +endif
-> > +
-> > +ifdef CONFIG_OF_EARLY_FLATTREE
-> > +
-> > +%.dtb %.dtb.S %.dtb.o: | dtc
-> > +       $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
+> >  arch/mips/boot/dts/brcm/bcm7425.dtsi     | 28 ++++++++++++++++++++++++++++
+> >  arch/mips/boot/dts/brcm/bcm7435.dtsi     | 28 ++++++++++++++++++++++++++++
+> >  arch/mips/boot/dts/brcm/bcm97425svmb.dts |  4 ++++
+> >  arch/mips/boot/dts/brcm/bcm97435svmb.dts |  4 ++++
+> >  4 files changed, 64 insertions(+)
 >
+> Do you have a preference for how this gets merged? If it goes via the
+> PCI tree then for patches 8 & 9:
 >
-> Hmm, I was worried about '%.dtb.o: | dtc'
-> but seems working.
+>     Acked-by: Paul Burton <paul.burton@mips.com>
 >
-> Compiling %.S -> %.o requires objtool for x86,
-> but x86 does not support DT.
+Hi Paul,
 
-Well, x86 does support DT to some extent. There's 2 platforms and the
-DT unittests build and run on x86.
+I hope that the 12 commits  go together and will go through the PCI
+tree.  I'm inclined to think I will have to do a V6, and in the cover
+leter I will mention this request.
 
-Actually, we can remove "%.dtb.S %.dtb.o" because we don't need those
-as top-level build targets. Must have been a copy-n-paste relic from
-before having common rules.
+Thanks!
+Jim
 
+> Still looking at patch 6.
 >
-> If CONFIG_MODVERSIONS=y, scripts/genksyms/genksyms is required,
-> %.dtb.S does not contain EXPORT_SYMBOL.
-
-Okay, but that shouldn't affect any of this. We only build *.dtb.S
-when doing built-in dtbs.
-
-> BTW, 'dtc' should be a PHONY target.
-
-Right, I found that too.
-
-Rob
+> Thanks,
+>     Paul

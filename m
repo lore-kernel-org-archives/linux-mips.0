@@ -1,17 +1,16 @@
-Received: from mail-lj1-x244.google.com ([IPv6:2a00:1450:4864:20::244]:43885
-        "EHLO mail-lj1-x244.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992869AbeIJOnDaL6sl (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 10 Sep 2018 16:43:03 +0200
+Received: from mail.kernel.org ([198.145.29.99]:52454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23992479AbeIKPk2Hn-A3 (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 11 Sep 2018 17:40:28 +0200
 MIME-Version: 1.0
-References: <1536266581-7308-1-git-send-email-jim2101024@gmail.com>
- <1536266581-7308-8-git-send-email-jim2101024@gmail.com> <20180906214549.y4xpleiukzw5rmqs@pburton-laptop>
-In-Reply-To: <20180906214549.y4xpleiukzw5rmqs@pburton-laptop>
-From: Jim Quinlan <jim2101024@gmail.com>
-Date: Mon, 10 Sep 2018 10:42:43 -0400
-Message-ID: <CANCKTBsuEaeW=95tpjOPF2RecfTbdUP+C7a1QwFdvOBFG6o8Vg@mail.gmail.com>
-Subject: Re: [PATCH v5 07/12] PCI/MSI: enable PCI_MSI_IRQ_DOMAIN support for MIPS
+References: <20180910150403.19476-1-robh@kernel.org> <20180910150403.19476-7-robh@kernel.org>
+In-Reply-To: <20180910150403.19476-7-robh@kernel.org>
+From: Rob Herring <robh@kernel.org>
+Date: Tue, 11 Sep 2018 10:40:07 -0500
+Message-ID: <CAL_Jsq+=VbdcVLiwXbOA5d+R2YY6=2Pw2bQpci-jj-JvereD1A@mail.gmail.com>
+Subject: Re: [PATCH v3 6/9] kbuild: consolidate Devicetree dtb build rules
 Content-Type: text/plain; charset="UTF-8"
-Return-Path: <jim2101024@gmail.com>
+Return-Path: <robh@kernel.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,37 +20,60 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: paul.burton@mips.com
-Cc: linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Brian Norris <computersforpeace@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, linux@armlinux.org.uk, Ray Jui <ray.jui@broadcom.com>, Scott Branden <scott.branden@broadcom.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ralf Baechle <ralf@linux-mips.org>, jhogan@kernel.org, Kevin Cernekee <cernekee@gmail.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, yamada.masahiro@socionext.com, Arnd Bergmann <arnd@arndb.de>, nicolas.pitre@linaro.org, keescook@chromium.org, jinb.park7@gmail.com, vladimir.murzin@arm.com, alexandre.belloni@bootlin.com, palmer@sifive.com, stefan@agner.ch, eric@anholt.net, horms+renesas@verge.net.au, tony@atomide.com, stefan.wahren@i2se.com, Marek Szyprowski <m.szyprowski@samsung.com>, martin.blumenstingl@googlemail.com, olof@lixom.net, thellstrom@vmware.com, alexander.deucher@amd.com, dirk@hohndel.org, tglx@linutronix.de, pombredanne@nexb.com, kstewart@linuxfoundation.org, gregkh@linuxfoundation.org, Robin Murphy <robin.murphy@arm.com>, justinpopo6@gmail.com, markus.mayer@broadcom.com, gpowell@broadcom.com, opendmb@gmail.com, linux-pci <linux-pci@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, Linux-MIPS <linux-mips@linux-mips.org>, Christoph Hellwig <hch@lst.de>
-Message-ID: <20180910144243.d41V3ZOcw8Tp_y0ddsT0XnoW0HG7dZaKj6adVKO5iBU@z>
+To: devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Frank Rowand <frowand.list@gmail.com>, Michal Marek <michal.lkml@markovi.net>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, Linux-MIPS <linux-mips@linux-mips.org>, nios2-dev@lists.rocketboards.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-xtensa@linux-xtensa.org, Will Deacon <will.deacon@arm.com>, Paul Burton <paul.burton@mips.com>, Ley Foon Tan <ley.foon.tan@intel.com>
+Message-ID: <20180911154007.XpTuVv00EA5WR-AYWKoAeD7iivdruHUyBN1FyjsBK2g@z>
 
-On Thu, Sep 6, 2018 at 5:46 PM Paul Burton <paul.burton@mips.com> wrote:
+On Mon, Sep 10, 2018 at 10:04 AM Rob Herring <robh@kernel.org> wrote:
 >
-> Hi Jim,
+> There is nothing arch specific about building dtb files other than their
+> location under /arch/*/boot/dts/. Keeping each arch aligned is a pain.
+> The dependencies and supported targets are all slightly different.
+> Also, a cross-compiler for each arch is needed, but really the host
+> compiler preprocessor is perfectly fine for building dtbs. Move the
+> build rules to a common location and remove the arch specific ones. This
+> is done in a single step to avoid warnings about overriding rules.
 >
-> On Thu, Sep 06, 2018 at 04:42:56PM -0400, Jim Quinlan wrote:
-> > Add MIPS as an arch that supports PCI_MSI_IRQ_DOMAIN and add
-> > generation of msi.h in the MIPS arch.
+> The build dependencies had been a mixture of 'scripts' and/or 'prepare'.
+> These pull in several dependencies some of which need a target compiler
+> (specifically devicetable-offsets.h) and aren't needed to build dtbs.
+> All that is really needed is dtc, so adjust the dependencies to only be
+> dtc.
 >
-> I guess the second part of this probably became untrue after rebasing
-> atop something including commit 34a4399f196c ("mips: use asm-generic
-> version of msi.h"), and ought to be removed.
-Hi Paul,
+> This change enables support 'dtbs_install' on some arches which were
+> missing the target.
 
-Yes, the second clause of this commit message will be removed.
+[...]
 
-Thanks,
-Jim
+> @@ -1215,6 +1215,33 @@ kselftest-merge:
+>                 $(srctree)/tools/testing/selftests/*/config
+>         +$(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
+>
+> +# ---------------------------------------------------------------------------
+> +# Devicetree files
+> +
+> +ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/boot/dts/),)
+> +dtstree := arch/$(SRCARCH)/boot/dts
+> +endif
+> +
+> +ifdef CONFIG_OF_EARLY_FLATTREE
 
->
-> > Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> > ---
-> >  drivers/pci/Kconfig | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> Otherwise this looks fine:
->
->     Acked-by: Paul Burton <paul.burton@mips.com>
->
-> Thanks,
->     Paul
+This can be true when dtstree is unset. So this line should be this
+instead to fix the 0-day reported error:
+
+ifneq ($(dtstree),)
+
+> +
+> +%.dtb : scripts_dtc
+> +       $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
+> +
+> +PHONY += dtbs dtbs_install
+> +dtbs: scripts_dtc
+> +       $(Q)$(MAKE) $(build)=$(dtstree)
+> +
+> +dtbs_install: dtbs
+> +       $(Q)$(MAKE) $(dtbinst)=$(dtstree)
+> +
+> +all: dtbs
+> +
+> +endif

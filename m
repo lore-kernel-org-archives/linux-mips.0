@@ -1,22 +1,17 @@
-Received: from mail-pf1-x444.google.com ([IPv6:2607:f8b0:4864:20::444]:39721
-        "EHLO mail-pf1-x444.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992925AbeILRUlclzYH (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 12 Sep 2018 19:20:41 +0200
-Subject: Re: [PATCH v5 08/12] MIPS: BMIPS: add PCI bindings for 7425, 7435
-References: <1536266581-7308-1-git-send-email-jim2101024@gmail.com>
- <1536266581-7308-9-git-send-email-jim2101024@gmail.com>
- <20180906214955.2yzyj6tkmflnnvdx@pburton-laptop>
- <CANCKTBumoy6mw2n+V7hN_T1SYxhq3JQMxgQUUSmOLuMX-Kv=zw@mail.gmail.com>
- <CAOiHx=khXs6x-EByPXRF=xEpL4eSiBfwxgJFV=3X8J5rXWNEMw@mail.gmail.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <28c70637-c727-db23-d1ef-6f86c8b8dc45@gmail.com>
-Date: Wed, 12 Sep 2018 10:20:23 -0700
+Received: from mail-ua1-f65.google.com ([209.85.222.65]:44314 "EHLO
+        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23994074AbeIMPwPM7U4R (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 13 Sep 2018 17:52:15 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAOiHx=khXs6x-EByPXRF=xEpL4eSiBfwxgJFV=3X8J5rXWNEMw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <f.fainelli@gmail.com>
+References: <20180910150403.19476-1-robh@kernel.org> <20180910150403.19476-7-robh@kernel.org>
+ <CAL_Jsq+=VbdcVLiwXbOA5d+R2YY6=2Pw2bQpci-jj-JvereD1A@mail.gmail.com> <CAK7LNAQFqhWw+LwDoypGG=OP6tH4qf2tT=LvtchK2GoiNyzDXg@mail.gmail.com>
+In-Reply-To: <CAK7LNAQFqhWw+LwDoypGG=OP6tH4qf2tT=LvtchK2GoiNyzDXg@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 13 Sep 2018 17:51:55 +0200
+Message-ID: <CAMuHMdWEnoh97_jiDWMq=ke4PrhSFbToYnx91CPLBuq3mOGzoQ@mail.gmail.com>
+Subject: Re: [PATCH v3 6/9] kbuild: consolidate Devicetree dtb build rules
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <geert.uytterhoeven@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,45 +21,98 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Jonas Gorski <jonas.gorski@gmail.com>, Jim Quinlan <jim2101024@gmail.com>
-Cc: paul.burton@mips.com, linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Brian Norris <computersforpeace@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, Russell King <linux@armlinux.org.uk>, Ray Jui <ray.jui@broadcom.com>, Scott Branden <scott.branden@broadcom.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, Kevin Cernekee <cernekee@gmail.com>, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Arnd Bergmann <arnd@arndb.de>, nicolas.pitre@linaro.org, keescook@chromium.org, jinb.park7@gmail.com, vladimir.murzin@arm.com, alexandre.belloni@bootlin.com, palmer@sifive.com, stefan@agner.ch, eric@anholt.net, Simon Horman <horms+renesas@verge.net.au>, tony@atomide.com, stefan.wahren@i2se.com, Marek Szyprowski <m.szyprowski@samsung.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Olof Johansson <olof@lixom.net>, thellstrom@vmware.com, alexander.deucher@amd.com, dirk@hohndel.org, Thomas Gleixner <tglx@linutronix.de>, pombredanne@nexb.com, kstewart@linuxfoundation.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Robin Murphy <robin.murphy@arm.com>, justinpopo6@gmail.com, markus.mayer@broadcom.com, gpowell@broadcom.com, opendmb@gmail.com, linux-pci <linux-pci@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, Linux-MIPS <linux-mips@linux-mips.org>, Christoph Hellwig <hch@lst.de>
-Message-ID: <20180912172023.VxtHdcD18OlTN3VUJuv9-J3mO2kY9BFkKmOeLPu8pP4@z>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Rob Herring <robh@kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Frank Rowand <frowand.list@gmail.com>, Michal Marek <michal.lkml@markovi.net>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-kbuild <linux-kbuild@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, nios2-dev@lists.rocketboards.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-xtensa@linux-xtensa.org, Will Deacon <will.deacon@arm.com>, Paul Burton <paul.burton@mips.com>, ley.foon.tan@intel.com
+Message-ID: <20180913155155.IRBK8IP7DoqKVvHP8h0_GTC2CNxWe_3yjnc6XgxC76Q@z>
 
+Hi Yamada-san,
 
+On Wed, Sep 12, 2018 at 3:02 AM Masahiro Yamada
+<yamada.masahiro@socionext.com> wrote:
+> 2018-09-12 0:40 GMT+09:00 Rob Herring <robh@kernel.org>:
+> > On Mon, Sep 10, 2018 at 10:04 AM Rob Herring <robh@kernel.org> wrote:
+> >> There is nothing arch specific about building dtb files other than their
+> >> location under /arch/*/boot/dts/. Keeping each arch aligned is a pain.
+> >> The dependencies and supported targets are all slightly different.
+> >> Also, a cross-compiler for each arch is needed, but really the host
+> >> compiler preprocessor is perfectly fine for building dtbs. Move the
+> >> build rules to a common location and remove the arch specific ones. This
+> >> is done in a single step to avoid warnings about overriding rules.
+> >>
+> >> The build dependencies had been a mixture of 'scripts' and/or 'prepare'.
+> >> These pull in several dependencies some of which need a target compiler
+> >> (specifically devicetable-offsets.h) and aren't needed to build dtbs.
+> >> All that is really needed is dtc, so adjust the dependencies to only be
+> >> dtc.
+> >>
+> >> This change enables support 'dtbs_install' on some arches which were
+> >> missing the target.
+> >
+> > [...]
+> >
+> >> @@ -1215,6 +1215,33 @@ kselftest-merge:
+> >>                 $(srctree)/tools/testing/selftests/*/config
+> >>         +$(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
+> >>
+> >> +# ---------------------------------------------------------------------------
+> >> +# Devicetree files
+> >> +
+> >> +ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/boot/dts/),)
+> >> +dtstree := arch/$(SRCARCH)/boot/dts
+> >> +endif
+> >> +
+> >> +ifdef CONFIG_OF_EARLY_FLATTREE
+> >
+> > This can be true when dtstree is unset. So this line should be this
+> > instead to fix the 0-day reported error:
+> >
+> > ifneq ($(dtstree),)
+> >
+> >> +
+> >> +%.dtb : scripts_dtc
+> >> +       $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
+> >> +
+> >> +PHONY += dtbs dtbs_install
+> >> +dtbs: scripts_dtc
+> >> +       $(Q)$(MAKE) $(build)=$(dtstree)
+> >> +
+> >> +dtbs_install: dtbs
+> >> +       $(Q)$(MAKE) $(dtbinst)=$(dtstree)
+> >> +
+> >> +all: dtbs
+> >> +
+> >> +endif
+>
+>
+> Ah, right.
+> Even x86 can enable OF and OF_UNITTEST.
+>
+>
+>
+> Another solution might be,
+> guard it by 'depends on ARCH_SUPPORTS_OF'.
+>
+>
+>
+> This is actually what ACPI does.
+>
+> menuconfig ACPI
+>         bool "ACPI (Advanced Configuration and Power Interface) Support"
+>         depends on ARCH_SUPPORTS_ACPI
+>          ...
 
-On 9/12/2018 7:36 AM, Jonas Gorski wrote:
-> On 10 September 2018 at 16:37, Jim Quinlan <jim2101024@gmail.com> wrote:
->> On Thu, Sep 6, 2018 at 5:50 PM Paul Burton <paul.burton@mips.com> wrote:
->>>
->>> Hi Jim,
->>>
->>> On Thu, Sep 06, 2018 at 04:42:57PM -0400, Jim Quinlan wrote:
->>>> Adds the PCIe nodes for the Broadcom STB PCIe root complex.
->>>>
->>>> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
->>>> ---
->>>>   arch/mips/boot/dts/brcm/bcm7425.dtsi     | 28 ++++++++++++++++++++++++++++
->>>>   arch/mips/boot/dts/brcm/bcm7435.dtsi     | 28 ++++++++++++++++++++++++++++
->>>>   arch/mips/boot/dts/brcm/bcm97425svmb.dts |  4 ++++
->>>>   arch/mips/boot/dts/brcm/bcm97435svmb.dts |  4 ++++
->>>>   4 files changed, 64 insertions(+)
->>>
->>> Do you have a preference for how this gets merged? If it goes via the
->>> PCI tree then for patches 8 & 9:
->>>
->>>      Acked-by: Paul Burton <paul.burton@mips.com>
->>>
->> Hi Paul,
->>
->> I hope that the 12 commits  go together and will go through the PCI
->> tree.  I'm inclined to think I will have to do a V6, and in the cover
->> leter I will mention this request.
-> 
-> Somehow nothing of the v5 patch series seem to have made it to any
-> mailing lists, at least I can't find them in my inbox (or spam) in any
-> of the mailing lists, nor through the public archives of e.g. LKML.
-> Patchwork (ozlabs and kernel) doesn't know of them either.
+ACPI is a real platform feature, as it depends on firmware.
 
-Indeed, that would explain why there has been little discussion on this....
+CONFIG_OF can be enabled, and DT overlays can be loaded, on any platform,
+even if it has ACPI ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-Florian
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

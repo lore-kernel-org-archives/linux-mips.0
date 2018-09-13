@@ -1,17 +1,16 @@
-Received: from mail-ua1-f65.google.com ([209.85.222.65]:44314 "EHLO
-        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994074AbeIMPwPM7U4R (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 13 Sep 2018 17:52:15 +0200
+Received: from mail-lf1-x142.google.com ([IPv6:2a00:1450:4864:20::142]:40066
+        "EHLO mail-lf1-x142.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993964AbeIMSZB1Squg (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 13 Sep 2018 20:25:01 +0200
 MIME-Version: 1.0
-References: <20180910150403.19476-1-robh@kernel.org> <20180910150403.19476-7-robh@kernel.org>
- <CAL_Jsq+=VbdcVLiwXbOA5d+R2YY6=2Pw2bQpci-jj-JvereD1A@mail.gmail.com> <CAK7LNAQFqhWw+LwDoypGG=OP6tH4qf2tT=LvtchK2GoiNyzDXg@mail.gmail.com>
-In-Reply-To: <CAK7LNAQFqhWw+LwDoypGG=OP6tH4qf2tT=LvtchK2GoiNyzDXg@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 13 Sep 2018 17:51:55 +0200
-Message-ID: <CAMuHMdWEnoh97_jiDWMq=ke4PrhSFbToYnx91CPLBuq3mOGzoQ@mail.gmail.com>
-Subject: Re: [PATCH v3 6/9] kbuild: consolidate Devicetree dtb build rules
+References: <1536266581-7308-1-git-send-email-jim2101024@gmail.com> <20180913110737.GB2051@e107981-ln.cambridge.arm.com>
+In-Reply-To: <20180913110737.GB2051@e107981-ln.cambridge.arm.com>
+From: Jim Quinlan <jim2101024@gmail.com>
+Date: Thu, 13 Sep 2018 14:24:44 -0400
+Message-ID: <CANCKTBvCRoOvB_h6-4EdxqH0MGt1vx-FcyQq1N0uhe9fDi+Hcg@mail.gmail.com>
+Subject: Re: [PATCH v5 00/12] PCI: brcmstb: Add Broadcom Settopbox PCIe support
 Content-Type: text/plain; charset="UTF-8"
-Return-Path: <geert.uytterhoeven@gmail.com>
+Return-Path: <jim2101024@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,98 +20,155 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Rob Herring <robh@kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Frank Rowand <frowand.list@gmail.com>, Michal Marek <michal.lkml@markovi.net>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-kbuild <linux-kbuild@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, nios2-dev@lists.rocketboards.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-xtensa@linux-xtensa.org, Will Deacon <will.deacon@arm.com>, Paul Burton <paul.burton@mips.com>, ley.foon.tan@intel.com
-Message-ID: <20180913155155.IRBK8IP7DoqKVvHP8h0_GTC2CNxWe_3yjnc6XgxC76Q@z>
+To: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Brian Norris <computersforpeace@gmail.com>, Gregory Fong <gregory.0xf0@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>, linux@armlinux.org.uk, Ray Jui <ray.jui@broadcom.com>, Scott Branden <scott.branden@broadcom.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Ralf Baechle <ralf@linux-mips.org>, paul.burton@mips.com, jhogan@kernel.org, Kevin Cernekee <cernekee@gmail.com>, yamada.masahiro@socionext.com, Arnd Bergmann <arnd@arndb.de>, Nicolas Pitre <nicolas.pitre@linaro.org>, Kees Cook <keescook@chromium.org>, Jinbum Park <jinb.park7@gmail.com>, vladimir.murzin@arm.com, alexandre.belloni@bootlin.com, palmer@sifive.com, stefan@agner.ch, Eric Anholt <eric@anholt.net>, horms+renesas@verge.net.au, Tony Lindgren <tony@atomide.com>, stefan.wahren@i2se.com, Marek Szyprowski <m.szyprowski@samsung.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, olof@lixom.net, thellstrom@vmware.com, alexander.deucher@amd.com, dirk@hohndel.org, tglx@linutronix.de, Philippe Ombredanne <pombredanne@nexb.com>, Kate Stewart <kstewart@linuxfoundation.org>, gregkh@linuxfoundation.org, Robin Murphy <robin.murphy@arm.com>, Justin Chen <justinpopo6@gmail.com>, markus.mayer@broadcom.com, gpowell@broadcom.com, opendmb@gmail.com, linux-pci <linux-pci@vger.kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, Linux-MIPS <linux-mips@linux-mips.org>, Christoph Hellwig <hch@lst.de>
+Message-ID: <20180913182444.MUpzsXfQn1PvzRyPY_E17Ck67CKsbkimt6wB5BgquS0@z>
 
-Hi Yamada-san,
+On Thu, Sep 13, 2018 at 7:07 AM Lorenzo Pieralisi
+<lorenzo.pieralisi@arm.com> wrote:
+>
+> FYI,
+>
+> AFAICS this thread did not make it to any vger list you addressed, I
+> can't apply/review patches that do not appear on
+> linux-pci@vger.kernel.org at least so we need to figure out what went
+> wrong.
+>
+> I would consider trimming the CC list to start with, which is huge.
+>
+> Lorenzo
 
-On Wed, Sep 12, 2018 at 3:02 AM Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
-> 2018-09-12 0:40 GMT+09:00 Rob Herring <robh@kernel.org>:
-> > On Mon, Sep 10, 2018 at 10:04 AM Rob Herring <robh@kernel.org> wrote:
-> >> There is nothing arch specific about building dtb files other than their
-> >> location under /arch/*/boot/dts/. Keeping each arch aligned is a pain.
-> >> The dependencies and supported targets are all slightly different.
-> >> Also, a cross-compiler for each arch is needed, but really the host
-> >> compiler preprocessor is perfectly fine for building dtbs. Move the
-> >> build rules to a common location and remove the arch specific ones. This
-> >> is done in a single step to avoid warnings about overriding rules.
-> >>
-> >> The build dependencies had been a mixture of 'scripts' and/or 'prepare'.
-> >> These pull in several dependencies some of which need a target compiler
-> >> (specifically devicetable-offsets.h) and aren't needed to build dtbs.
-> >> All that is really needed is dtc, so adjust the dependencies to only be
-> >> dtc.
-> >>
-> >> This change enables support 'dtbs_install' on some arches which were
-> >> missing the target.
+Hi Lorenzo, this may have had something to do with an email issue on
+my end.  I will resend again soon.
+Thanks, Jim
+
+>
+> On Thu, Sep 06, 2018 at 04:42:49PM -0400, Jim Quinlan wrote:
+> > This patch series adds support for the Broadcom Settopbox PCIe host
+> > controller.  It is targeted to Broadcom Settopbox chips running on
+> > ARM, ARM64, and MIPS platforms.
 > >
-> > [...]
+> > V5 Changes:
+> >   - V4 had its own DMA ops structure in the PCIe driver which would
+> >     override/coexist with the default arch DMA ops.  This approach was
+> >     scrapped, and this version instead essentially implements custom
+> >     definitions of the __phys_to_dma and __dma_to_phys operations for the
+> >     three target arches: MIPs, ARM64, ARM.  This was the course suggested
+> >     by one of the V4 reviewers (ChristophH).
 > >
-> >> @@ -1215,6 +1215,33 @@ kselftest-merge:
-> >>                 $(srctree)/tools/testing/selftests/*/config
-> >>         +$(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
-> >>
-> >> +# ---------------------------------------------------------------------------
-> >> +# Devicetree files
-> >> +
-> >> +ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/boot/dts/),)
-> >> +dtstree := arch/$(SRCARCH)/boot/dts
-> >> +endif
-> >> +
-> >> +ifdef CONFIG_OF_EARLY_FLATTREE
+> >     For MIPs and ARM64, the DMA remapping is easily accomplished by having
+> >     custom definitions of __phys_to_dma and __dma_to_phys.  For
+> >     MIPs/BMIPs, ARCH_HAS_PHYS_TO_DMA is already selected and the two
+> >     functions are just modified.  For ARM64, this driver selects
+> >     ARCH_HAS_PHYS_TO_DMA and declares and defines __phys_to_dma() and
+> >     __dma_to_phys().  For ARM, things were not so simple.  The default
+> >     functions like __arch_pfn_to_dma() had to be overridden by custom ones
+> >     defined in arch/arm/mach-bcm/include/mach/memory.h.  For these
+> >     functions to be "seen", we had to declare our own brcmstb_defconfig
+> >     and no longer use multi_v7_defconfig.  This is unfortunate.
 > >
-> > This can be true when dtstree is unset. So this line should be this
-> > instead to fix the 0-day reported error:
+> >   - Commits have been better organized to first implement the main driver,
+> >     then add features (MSI, DMA remap infrastructure), and then add
+> >     the DMA remapping modifications for MIPs, ARM64, and ARM.
 > >
-> > ifneq ($(dtstree),)
+> > V4 Changes:
+> >   - Merged all BrcmSTB PCIe controller files into a single file.
+> >   - All new files now have the SPDX identifier.
+> >   - Removed the list of PCIe controllers.
+> >   - Removed "link-up" race.
+> >   - Removed probe of msi psuedo-device.
+> >   - Multiple comment text changes, as requested.
+> >   - "SSC" => "Spread Spectrum Clocking".
+> >   - Set 'memc' variable.
+> >   - Unnecessary variable initializations removed (eg rc_bar2_size).
+> >   - Added comment on "L23" link state.
+> >   - Removed use of "__refdata".
+> >   - Formatting of structure elements.
 > >
-> >> +
-> >> +%.dtb : scripts_dtc
-> >> +       $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
-> >> +
-> >> +PHONY += dtbs dtbs_install
-> >> +dtbs: scripts_dtc
-> >> +       $(Q)$(MAKE) $(build)=$(dtstree)
-> >> +
-> >> +dtbs_install: dtbs
-> >> +       $(Q)$(MAKE) $(dtbinst)=$(dtstree)
-> >> +
-> >> +all: dtbs
-> >> +
-> >> +endif
->
->
-> Ah, right.
-> Even x86 can enable OF and OF_UNITTEST.
->
->
->
-> Another solution might be,
-> guard it by 'depends on ARCH_SUPPORTS_OF'.
->
->
->
-> This is actually what ACPI does.
->
-> menuconfig ACPI
->         bool "ACPI (Advanced Configuration and Power Interface) Support"
->         depends on ARCH_SUPPORTS_ACPI
->          ...
-
-ACPI is a real platform feature, as it depends on firmware.
-
-CONFIG_OF can be enabled, and DT overlays can be loaded, on any platform,
-even if it has ACPI ;-)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> > V3 Changes:
+> >   - Fold pcie-brcmstb-msi.c into pcie-brcmstb.c
+> >   - Use PCI_XXX constants for PCIe capability registers
+> >   - Removal of any unused constants
+> >   - Change s/pci/pcie/ for filenames, comment text
+> >   - Config space access now uses 8/16/32 read/writes
+> >   - Use proper multi-line comment style
+> >   - Use function names, structure that are common in other host drivers
+> >   - DT binding 'brcm,ssc' is now 'brcm,enable-ssc'
+> >   - Dropped DT binding 'xyz-supply'
+> >   - Not setting CRS support as Linux does it if it is advertised.
+> >   - Removed code that was considered "debug code".
+> >   - Use of_get_pcie_domain_nr()
+> >   - Variable 'bridge_setup_done' removed.
+> >
+> > V2 Changes:
+> > * Patch brcmstb-add-memory-API:
+> >   - fix DT_PROP_DATA_TO_U32 macro.
+> >   - dropped one EXPORT_SYMBOL, changed the other to GPL.
+> > * Patch DT-docs-for-Brcmstb-PCIe:
+> >   - change 'brcm,gen' prop to standard 'max-link-speed'.
+> >   - rewrite bindings commit to omit standard prop defs.
+> >   - change props "supplies", "supply-names" to "xyz-supply"
+> > * Patch removed: export-symbol-arch_setup_dma_ops [4/9]
+> > * Patch brcmstb-add-dma-ranges:
+> >   - use get_dma_ops(); also use a const dma_map_ops structure.
+> >   - rewrite map_sg(), unmap_sg(), other calls like syng_sg_*()
+> >   - omit brcm_mapping_error(), but added code in brcm_dma_supported()
+> >   - put all of the notifier code in one compilation unit.
+> >
+> >
+> >
+> > Florian Fainelli (1):
+> >   soc: bcm: brcmstb: add memory API
+> >
+> > Jim Quinlan (11):
+> >   dt-bindings: pci: add DT docs for Brcmstb PCIe device
+> >   PCI: brcmstb: add Broadcom STB PCIe host controller driver
+> >   PCI: brcmstb: add dma-range mapping for inbound traffic
+> >   PCI: brcmstb: add MSI capability
+> >   MIPS: BMIPS: add dma remap for BrcmSTB PCIe
+> >   PCI/MSI: enable PCI_MSI_IRQ_DOMAIN support for MIPS
+> >   MIPS: BMIPS: add PCI bindings for 7425, 7435
+> >   MIPS: BMIPS: enable PCI
+> >   ARM64: declare __phys_to_dma on ARCH_HAS_PHYS_TO_DMA
+> >   ARM64: add dma remap for BrcmSTB PCIe
+> >   ARM: add dma remap for BrcmSTB PCIe
+> >
+> >  .../devicetree/bindings/pci/brcmstb-pcie.txt       |   59 +
+> >  arch/arm/Kconfig                                   |   33 +
+> >  arch/arm/configs/brcmstb_defconfig                 |  204 +++
+> >  arch/arm/configs/multi_v7_defconfig                |    3 -
+> >  arch/arm/mach-bcm/Kconfig                          |   21 +-
+> >  arch/arm/mach-bcm/Makefile.boot                    |    0
+> >  arch/arm/mach-bcm/include/mach/irqs.h              |    3 +
+> >  arch/arm/mach-bcm/include/mach/memory.h            |   47 +
+> >  arch/arm/mach-bcm/include/mach/uncompress.h        |    8 +
+> >  arch/arm64/include/asm/dma-direct.h                |   16 +
+> >  arch/mips/Kconfig                                  |    3 +
+> >  arch/mips/bmips/dma.c                              |    9 +
+> >  arch/mips/boot/dts/brcm/bcm7425.dtsi               |   28 +
+> >  arch/mips/boot/dts/brcm/bcm7435.dtsi               |   28 +
+> >  arch/mips/boot/dts/brcm/bcm97425svmb.dts           |    4 +
+> >  arch/mips/boot/dts/brcm/bcm97435svmb.dts           |    4 +
+> >  drivers/pci/Kconfig                                |    2 +-
+> >  drivers/pci/controller/Kconfig                     |   13 +
+> >  drivers/pci/controller/Makefile                    |    1 +
+> >  drivers/pci/controller/pcie-brcmstb.c              | 1554 ++++++++++++++++++++
+> >  drivers/soc/bcm/brcmstb/Makefile                   |    2 +-
+> >  drivers/soc/bcm/brcmstb/memory.c                   |  158 ++
+> >  include/soc/brcmstb/common.h                       |   16 +
+> >  include/soc/brcmstb/memory_api.h                   |   26 +
+> >  24 files changed, 2217 insertions(+), 25 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/pci/brcmstb-pcie.txt
+> >  create mode 100644 arch/arm/configs/brcmstb_defconfig
+> >  create mode 100644 arch/arm/mach-bcm/Makefile.boot
+> >  create mode 100644 arch/arm/mach-bcm/include/mach/irqs.h
+> >  create mode 100644 arch/arm/mach-bcm/include/mach/memory.h
+> >  create mode 100644 arch/arm/mach-bcm/include/mach/uncompress.h
+> >  create mode 100644 arch/arm64/include/asm/dma-direct.h
+> >  create mode 100644 drivers/pci/controller/pcie-brcmstb.c
+> >  create mode 100644 drivers/soc/bcm/brcmstb/memory.c
+> >  create mode 100644 include/soc/brcmstb/memory_api.h
+> >
+> > --
+> > 1.9.0.138.g2de3478
+> >

@@ -1,11 +1,11 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:35860 "EHLO
+Received: from mail.linuxfoundation.org ([140.211.169.12]:35876 "EHLO
         mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991947AbeIQJryhcjjk (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Sep 2018 11:47:54 +0200
-Subject: Patch "MIPS: Fix ISA virt/bus conversion for non-zero PHYS_OFFSET" has been added to the 3.18-stable tree
+        by eddie.linux-mips.org with ESMTP id S23993016AbeIQJr5A14Jk (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Sep 2018 11:47:57 +0200
+Subject: Patch "MIPS: WARN_ON invalid DMA cache maintenance, not BUG_ON" has been added to the 3.18-stable tree
 From: <gregkh@linuxfoundation.org>
 Date: Mon, 17 Sep 2018 11:46:56 +0200
-Message-ID: <1537177616112137@kroah.com>
+Message-ID: <1537177616175144@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -19,20 +19,20 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: alexander.levin@microsoft.com, gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, paul.burton@mips.com, ralf@linux-mips.org, vladimir.kondratiev@intel.com
+To: alexander.levin@microsoft.com, f.fainelli@gmail.com, gregkh@linuxfoundation.org, linux-mips@linux-mips.org, paul.burton@imgtec.com, paul.burton@mips.com, ralf@linux-mips.org
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180917094656.2b89lc9L_2YtjxCWohID6Dm1Vw6WjJhI-l08aR_Ry3A@z>
+Message-ID: <20180917094656.kbSIl7KKDdVry7_cO0DidqyV-Fl_-uSr3XOgFWMDoks@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
-    MIPS: Fix ISA virt/bus conversion for non-zero PHYS_OFFSET
+    MIPS: WARN_ON invalid DMA cache maintenance, not BUG_ON
 
 to the 3.18-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mips-fix-isa-virt-bus-conversion-for-non-zero-phys_offset.patch
+     mips-warn_on-invalid-dma-cache-maintenance-not-bug_on.patch
 and it can be found in the queue-3.18 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,

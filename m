@@ -1,14 +1,15 @@
-Received: from mail-it0-f65.google.com ([209.85.214.65]:37285 "EHLO
-        mail-it0-f65.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991947AbeIQFqBJJLSf (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Sep 2018 07:46:01 +0200
-Message-ID: <5b9f3f92.1c69fb81.9131a.468f@mx.google.com>
-Date: Mon, 17 Sep 2018 01:45:52 -0400
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH net-next 1/7] dt-bindings: net: vsc8531: add two additional LED modes for VSC8584
-References: <cover.b921b010b6d6bde1c11e69551ae38f3b2818645b.1536916714.git-series.quentin.schulz@bootlin.com> <f54f6cda7f505d99531e33626f8d4e6f1dc084ec.1536916714.git-series.quentin.schulz@bootlin.com>
-In-Reply-To: <f54f6cda7f505d99531e33626f8d4e6f1dc084ec.1536916714.git-series.quentin.schulz@bootlin.com>
-Return-Path: <robherring2@gmail.com>
+Received: from mail.linuxfoundation.org ([140.211.169.12]:35860 "EHLO
+        mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23991947AbeIQJryhcjjk (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 17 Sep 2018 11:47:54 +0200
+Subject: Patch "MIPS: Fix ISA virt/bus conversion for non-zero PHYS_OFFSET" has been added to the 3.18-stable tree
+From: <gregkh@linuxfoundation.org>
+Date: Mon, 17 Sep 2018 11:46:56 +0200
+Message-ID: <1537177616112137@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 8bit
+Return-Path: <gregkh@linuxfoundation.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,17 +19,21 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Cc: alexandre.belloni@bootlin.com, ralf@linux-mips.org, paul.burton@mips.com, jhogan@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, davem@davemloft.net, andrew@lunn.ch, f.fainelli@gmail.com, allan.nielsen@microchip.com, linux-mips@linux-mips.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, thomas.petazzoni@bootlin.com, antoine.tenart@bootlin.com, Quentin Schulz <quentin.schulz@bootlin.com>
-Message-ID: <20180917054552.vwW0CaADmfHNEzcW1T6qEPPjFlpc3MpWJ8qBEuIP6_o@z>
+To: alexander.levin@microsoft.com, gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, paul.burton@mips.com, ralf@linux-mips.org, vladimir.kondratiev@intel.com
+Cc: stable-commits@vger.kernel.org
+Message-ID: <20180917094656.2b89lc9L_2YtjxCWohID6Dm1Vw6WjJhI-l08aR_Ry3A@z>
 
-On Fri, 14 Sep 2018 11:44:22 +0200, Quentin Schulz wrote:
-> The VSC8584 (and most likely other PHYs in the same generation) has two
-> additional LED modes that can be picked, so let's add them.
-> 
-> Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
-> ---
->  include/dt-bindings/net/mscc-phy-vsc8531.h | 2 ++
->  1 file changed, 2 insertions(+)
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+This is a note to let you know that I've just added the patch titled
+
+    MIPS: Fix ISA virt/bus conversion for non-zero PHYS_OFFSET
+
+to the 3.18-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+
+The filename of the patch is:
+     mips-fix-isa-virt-bus-conversion-for-non-zero-phys_offset.patch
+and it can be found in the queue-3.18 subdirectory.
+
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.

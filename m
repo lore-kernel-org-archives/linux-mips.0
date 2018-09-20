@@ -1,19 +1,19 @@
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:37962 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org
-        with ESMTP id S23992408AbeITRFdkVEPe (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Sep 2018 19:05:33 +0200
-Subject: Re: [PATCH net-next 00/22] net: fix return type of ndo_start_xmit
- function
-References: <20180920123306.14772-1-yuehaibing@huawei.com>
-From: Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <46f95cf9-8f8f-e3ab-3142-947faeee9fa9@ti.com>
-Date: Thu, 20 Sep 2018 12:04:58 -0500
+Received: from mail-io1-xd43.google.com ([IPv6:2607:f8b0:4864:20::d43]:38029
+        "EHLO mail-io1-xd43.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23994648AbeITVjEeAuMu (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 20 Sep 2018 23:39:04 +0200
+Received: by mail-io1-xd43.google.com with SMTP id y3-v6so9918009ioc.5
+        for <linux-mips@linux-mips.org>; Thu, 20 Sep 2018 14:39:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20180920123306.14772-1-yuehaibing@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Return-Path: <grygorii.strashko@ti.com>
+References: <cover.b921b010b6d6bde1c11e69551ae38f3b2818645b.1536916714.git-series.quentin.schulz@bootlin.com>
+In-Reply-To: <cover.b921b010b6d6bde1c11e69551ae38f3b2818645b.1536916714.git-series.quentin.schulz@bootlin.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 20 Sep 2018 14:38:44 -0700
+Message-ID: <CACRpkdZYpDJGzexRr7y4LO+hyJ92aEu_eRquK50iBWaaox5H5Q@mail.gmail.com>
+Subject: Re: [PATCH net-next 0/7] add support for VSC8584 and VSC8574
+ Microsemi quad-port PHYs
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <linus.walleij@linaro.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -23,22 +23,37 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: YueHaibing <yuehaibing@huawei.com>, davem@davemloft.net, dmitry.tarnyagin@lockless.no, wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, hsweeten@visionengravers.com, madalin.bucur@nxp.com, pantelis.antoniou@gmail.com, claudiu.manoil@nxp.com, leoyang.li@nxp.com, linux@armlinux.org.uk, sammy@sammy.net, ralf@linux-mips.org, nico@fluxnic.net, steve.glendinning@shawell.net, f.fainelli@gmail.com, w-kwok2@ti.com, m-karicheri2@ti.com, t.sailer@alumni.ethz.ch, jreuter@yaina.de, kys@microsoft.com, haiyangz@microsoft.com, wei.liu2@citrix.com, paul.durrant@citrix.com, arvid.brodin@alten.se, pshelar@ovn.org
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-mips@linux-mips.org, linux-omap@vger.kernel.org, linux-hams@vger.kernel.org, devel@linuxdriverproject.org, linux-usb@vger.kernel.org, xen-devel@lists.xenproject.org, dev@openvswitch.org
-Message-ID: <20180920170458.8STgh0XZRXWyr6tW1baRN_uLyf86wvJ-j7YHC-Myml0@z>
+To: quentin.schulz@bootlin.com
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Ralf Baechle <ralf@linux-mips.org>, paul.burton@mips.com, James Hogan <jhogan@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, "David S. Miller" <davem@davemloft.net>, Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, allan.nielsen@microchip.com, Linux MIPS <linux-mips@linux-mips.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, netdev <netdev@vger.kernel.org>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Antoine Tenart <antoine.tenart@bootlin.com>
+Message-ID: <20180920213844.7YpgEUX4pVRVWSEuTYqvF_i0HKysz37VgfnxtKfP6Us@z>
 
+Just as a drive-by comment this seems vaguely related to the Vitesse
+DSA switch I merged in drivers/net/dsa/vitesse-vsc73xx.c
+The VSC* product name handily gives away the origin in Vitesse's
+product line.
 
+The VSC73xx also have the 8051 CPU and internal RAM, but are
+accessed (typically) over SPI, and AFAICT this thing is talking over
+MDIO.
 
-On 09/20/2018 07:32 AM, YueHaibing wrote:
-> The method ndo_start_xmit() is defined as returning an 'netdev_tx_t',
-> which is a typedef for an enum type, so make sure the implementation in
-> this driver has returns 'netdev_tx_t' value, and change the function
-> return type to netdev_tx_t.
-> 
+The Vitesse 73xx however also supports a WAN port and VLANs
+which makes it significantly different, falling into switch class I
+guess.
 
-May be I missed smth, but it's acceptable to report standard error codes from
-.xmit() callback as per dev_xmit_complete().
+These VSC85*4's does have an SPI interface as well, according
+to the data sheet but I assume your target boards don't even
+connect it?
 
--- 
-regards,
--grygorii
+When it comes to 8051 code we have quite a lot of this in the kernel
+these days, I suspect the 8051 snippets in this code could be
+disassembled and put into linux-firmware in source form, but
+that is maybe a bit overly ambitious. We have done that for a few
+USB to serial controllers using the EzUSB 8051 though:
+https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/keyspan_pda
+https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/usbdux
+
+These can rebuild their firmware using the as31 assembler.
+https://github.com/nitsky/as31
+
+Yours,
+Linus Walleij

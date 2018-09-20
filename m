@@ -1,11 +1,13 @@
-Received: from szxga06-in.huawei.com ([45.249.212.32]:32800 "EHLO huawei.com"
+Received: from szxga06-in.huawei.com ([45.249.212.32]:33078 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23992759AbeITMrVZZRIp (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 20 Sep 2018 14:47:21 +0200
+        id S23992492AbeITMsK1eiMp (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 20 Sep 2018 14:48:10 +0200
 From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH net-next 00/22] net: fix return type of ndo_start_xmit function
-Date: Thu, 20 Sep 2018 20:32:44 +0800
-Message-ID: <20180920123306.14772-1-yuehaibing@huawei.com>
+Subject: [PATCH net-next 01/22] net: micrel: fix return type of ndo_start_xmit function
+Date: Thu, 20 Sep 2018 20:32:45 +0800
+Message-ID: <20180920123306.14772-2-yuehaibing@huawei.com>
+In-Reply-To: <20180920123306.14772-1-yuehaibing@huawei.com>
+References: <20180920123306.14772-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Return-Path: <yuehaibing@huawei.com>
@@ -20,83 +22,49 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: davem@davemloft.net, dmitry.tarnyagin@lockless.no, wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, hsweeten@visionengravers.com, madalin.bucur@nxp.com, pantelis.antoniou@gmail.com, claudiu.manoil@nxp.com, leoyang.li@nxp.com, linux@armlinux.org.uk, sammy@sammy.net, ralf@linux-mips.org, nico@fluxnic.net, steve.glendinning@shawell.net, f.fainelli@gmail.com, grygorii.strashko@ti.com, w-kwok2@ti.com, m-karicheri2@ti.com, t.sailer@alumni.ethz.ch, jreuter@yaina.de, kys@microsoft.com, haiyangz@microsoft.com, wei.liu2@citrix.com, paul.durrant@citrix.com, arvid.brodin@alten.se, pshelar@ovn.org
 Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-mips@linux-mips.org, linux-omap@vger.kernel.org, linux-hams@vger.kernel.org, devel@linuxdriverproject.org, linux-usb@vger.kernel.org, xen-devel@lists.xenproject.org, dev@openvswitch.org, YueHaibing <yuehaibing@huawei.com>
-Message-ID: <20180920123244.Rj_1v1VL25ZWu8NpCclMtKXGfru2lqqmZRSmnJJx8Ws@z>
+Message-ID: <20180920123245.UESfxsHClXkO9Qq84teKqL23wb6dyrOxCKwUNO583dI@z>
 
 The method ndo_start_xmit() is defined as returning an 'netdev_tx_t',
 which is a typedef for an enum type, so make sure the implementation in
 this driver has returns 'netdev_tx_t' value, and change the function
 return type to netdev_tx_t.
 
-YueHaibing (22):
-  net: micrel: fix return type of ndo_start_xmit function
-  net: freescale: fix return type of ndo_start_xmit function
-  net: seeq: fix return type of ndo_start_xmit function
-  net: cirrus: fix return type of ndo_start_xmit function
-  net: sgi: fix return type of ndo_start_xmit function
-  net: wiznet: fix return type of ndo_start_xmit function
-  net: i825xx: fix return type of ndo_start_xmit function
-  net: apple: fix return type of ndo_start_xmit function
-  net: smsc: fix return type of ndo_start_xmit function
-  net: ti: fix return type of ndo_start_xmit function
-  net: faraday: fix return type of ndo_start_xmit function
-  net: ovs: fix return type of ndo_start_xmit function
-  net: xen-netback: fix return type of ndo_start_xmit function
-  net: caif: fix return type of ndo_start_xmit function
-  net: hamradio: fix return type of ndo_start_xmit function
-  usbnet: ipheth: fix return type of ndo_start_xmit function
-  hv_netvsc: fix return type of ndo_start_xmit function
-  can: xilinx: fix return type of ndo_start_xmit function
-  net: plip: fix return type of ndo_start_xmit function
-  rionet: fix return type of ndo_start_xmit function
-  l2tp: fix return type of ndo_start_xmit function
-  net: hsr: fix return type of ndo_start_xmit function
+Found by coccinelle.
 
- drivers/net/caif/caif_hsi.c                           | 10 +++++-----
- drivers/net/caif/caif_serial.c                        |  7 +++++--
- drivers/net/caif/caif_spi.c                           |  6 +++---
- drivers/net/caif/caif_virtio.c                        |  2 +-
- drivers/net/can/xilinx_can.c                          |  2 +-
- drivers/net/ethernet/apple/bmac.c                     |  4 ++--
- drivers/net/ethernet/apple/mace.c                     |  4 ++--
- drivers/net/ethernet/apple/macmace.c                  |  4 ++--
- drivers/net/ethernet/cirrus/ep93xx_eth.c              |  2 +-
- drivers/net/ethernet/cirrus/mac89x0.c                 |  4 ++--
- drivers/net/ethernet/faraday/ftgmac100.c              |  4 ++--
- drivers/net/ethernet/faraday/ftmac100.c               |  7 ++++---
- drivers/net/ethernet/freescale/dpaa/dpaa_eth.c        |  3 ++-
- drivers/net/ethernet/freescale/fec_mpc52xx.c          |  3 ++-
- drivers/net/ethernet/freescale/fs_enet/fs_enet-main.c |  3 ++-
- drivers/net/ethernet/freescale/gianfar.c              |  4 ++--
- drivers/net/ethernet/freescale/ucc_geth.c             |  3 ++-
- drivers/net/ethernet/i825xx/ether1.c                  |  5 +++--
- drivers/net/ethernet/i825xx/lib82596.c                |  4 ++--
- drivers/net/ethernet/i825xx/sun3_82586.c              |  6 ++++--
- drivers/net/ethernet/micrel/ks8695net.c               |  2 +-
- drivers/net/ethernet/micrel/ks8851_mll.c              |  4 ++--
- drivers/net/ethernet/seeq/ether3.c                    |  5 +++--
- drivers/net/ethernet/seeq/sgiseeq.c                   |  3 ++-
- drivers/net/ethernet/sgi/ioc3-eth.c                   |  4 ++--
- drivers/net/ethernet/sgi/meth.c                       |  2 +-
- drivers/net/ethernet/smsc/smc911x.c                   |  3 ++-
- drivers/net/ethernet/smsc/smc91x.c                    |  3 ++-
- drivers/net/ethernet/smsc/smsc911x.c                  |  3 ++-
- drivers/net/ethernet/ti/cpmac.c                       |  2 +-
- drivers/net/ethernet/ti/davinci_emac.c                |  2 +-
- drivers/net/ethernet/ti/netcp_core.c                  |  8 ++++----
- drivers/net/ethernet/wiznet/w5100.c                   |  2 +-
- drivers/net/ethernet/wiznet/w5300.c                   |  2 +-
- drivers/net/hamradio/baycom_epp.c                     |  3 ++-
- drivers/net/hamradio/dmascc.c                         |  4 ++--
- drivers/net/hyperv/netvsc_drv.c                       | 10 +++++++---
- drivers/net/plip/plip.c                               |  4 ++--
- drivers/net/rionet.c                                  |  3 ++-
- drivers/net/usb/ipheth.c                              |  2 +-
- drivers/net/xen-netback/interface.c                   |  3 ++-
- net/caif/chnl_net.c                                   |  3 ++-
- net/hsr/hsr_device.c                                  |  2 +-
- net/l2tp/l2tp_eth.c                                   |  3 ++-
- net/openvswitch/vport-internal_dev.c                  |  5 +++--
- 45 files changed, 100 insertions(+), 74 deletions(-)
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/net/ethernet/micrel/ks8695net.c  | 2 +-
+ drivers/net/ethernet/micrel/ks8851_mll.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/net/ethernet/micrel/ks8695net.c b/drivers/net/ethernet/micrel/ks8695net.c
+index bd51e05..b881f5d 100644
+--- a/drivers/net/ethernet/micrel/ks8695net.c
++++ b/drivers/net/ethernet/micrel/ks8695net.c
+@@ -1164,7 +1164,7 @@ static int ks8695_poll(struct napi_struct *napi, int budget)
+  *	sk_buff and adds it to the TX ring. It then kicks the TX DMA
+  *	engine to ensure transmission begins.
+  */
+-static int
++static netdev_tx_t
+ ks8695_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+ {
+ 	struct ks8695_priv *ksp = netdev_priv(ndev);
+diff --git a/drivers/net/ethernet/micrel/ks8851_mll.c b/drivers/net/ethernet/micrel/ks8851_mll.c
+index 0e9719f..35f8c9e 100644
+--- a/drivers/net/ethernet/micrel/ks8851_mll.c
++++ b/drivers/net/ethernet/micrel/ks8851_mll.c
+@@ -1021,9 +1021,9 @@ static void ks_write_qmu(struct ks_net *ks, u8 *pdata, u16 len)
+  * spin_lock_irqsave is required because tx and rx should be mutual exclusive.
+  * So while tx is in-progress, prevent IRQ interrupt from happenning.
+  */
+-static int ks_start_xmit(struct sk_buff *skb, struct net_device *netdev)
++static netdev_tx_t ks_start_xmit(struct sk_buff *skb, struct net_device *netdev)
+ {
+-	int retv = NETDEV_TX_OK;
++	netdev_tx_t retv = NETDEV_TX_OK;
+ 	struct ks_net *ks = netdev_priv(netdev);
+ 
+ 	disable_irq(netdev->irq);
 -- 
 1.8.3.1

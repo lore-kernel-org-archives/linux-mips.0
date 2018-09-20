@@ -1,11 +1,11 @@
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2243 "EHLO huawei.com"
+Received: from szxga07-in.huawei.com ([45.249.212.35]:41184 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23994673AbeITMtCp9Vlp (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 20 Sep 2018 14:49:02 +0200
+        id S23994675AbeITMtE2ydSp (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Thu, 20 Sep 2018 14:49:04 +0200
 From: YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH net-next 17/22] hv_netvsc: fix return type of ndo_start_xmit function
-Date: Thu, 20 Sep 2018 20:33:01 +0800
-Message-ID: <20180920123306.14772-18-yuehaibing@huawei.com>
+Subject: [PATCH net-next 19/22] net: plip: fix return type of ndo_start_xmit function
+Date: Thu, 20 Sep 2018 20:33:03 +0800
+Message-ID: <20180920123306.14772-20-yuehaibing@huawei.com>
 In-Reply-To: <20180920123306.14772-1-yuehaibing@huawei.com>
 References: <20180920123306.14772-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
@@ -22,7 +22,7 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: davem@davemloft.net, dmitry.tarnyagin@lockless.no, wg@grandegger.com, mkl@pengutronix.de, michal.simek@xilinx.com, hsweeten@visionengravers.com, madalin.bucur@nxp.com, pantelis.antoniou@gmail.com, claudiu.manoil@nxp.com, leoyang.li@nxp.com, linux@armlinux.org.uk, sammy@sammy.net, ralf@linux-mips.org, nico@fluxnic.net, steve.glendinning@shawell.net, f.fainelli@gmail.com, grygorii.strashko@ti.com, w-kwok2@ti.com, m-karicheri2@ti.com, t.sailer@alumni.ethz.ch, jreuter@yaina.de, kys@microsoft.com, haiyangz@microsoft.com, wei.liu2@citrix.com, paul.durrant@citrix.com, arvid.brodin@alten.se, pshelar@ovn.org
 Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-mips@linux-mips.org, linux-omap@vger.kernel.org, linux-hams@vger.kernel.org, devel@linuxdriverproject.org, linux-usb@vger.kernel.org, xen-devel@lists.xenproject.org, dev@openvswitch.org, YueHaibing <yuehaibing@huawei.com>
-Message-ID: <20180920123301.rEIyleFV99H6MdKgJhkzlxXT4srD_4ndR7PB1b-giGc@z>
+Message-ID: <20180920123303.8XBEZQyojVbBh2hhP2mrk1juUHeQNMPUrUFt_2SQdE0@z>
 
 The method ndo_start_xmit() is defined as returning an 'netdev_tx_t',
 which is a typedef for an enum type, so make sure the implementation in
@@ -33,36 +33,30 @@ Found by coccinelle.
 
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- drivers/net/hyperv/netvsc_drv.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/net/plip/plip.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index 3af6d8d..056c472 100644
---- a/drivers/net/hyperv/netvsc_drv.c
-+++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -511,7 +511,8 @@ static int netvsc_vf_xmit(struct net_device *net, struct net_device *vf_netdev,
- 	return rc;
+diff --git a/drivers/net/plip/plip.c b/drivers/net/plip/plip.c
+index feb92ec..0b354e6 100644
+--- a/drivers/net/plip/plip.c
++++ b/drivers/net/plip/plip.c
+@@ -146,7 +146,7 @@
+ static void plip_interrupt(void *dev_id);
+ 
+ /* Functions for DEV methods */
+-static int plip_tx_packet(struct sk_buff *skb, struct net_device *dev);
++static netdev_tx_t plip_tx_packet(struct sk_buff *skb, struct net_device *dev);
+ static int plip_hard_header(struct sk_buff *skb, struct net_device *dev,
+                             unsigned short type, const void *daddr,
+ 			    const void *saddr, unsigned len);
+@@ -962,7 +962,7 @@ static __be16 plip_type_trans(struct sk_buff *skb, struct net_device *dev)
+ 	spin_unlock_irqrestore(&nl->lock, flags);
  }
  
--static int netvsc_start_xmit(struct sk_buff *skb, struct net_device *net)
+-static int
 +static netdev_tx_t
-+netvsc_start_xmit(struct sk_buff *skb, struct net_device *net)
+ plip_tx_packet(struct sk_buff *skb, struct net_device *dev)
  {
- 	struct net_device_context *net_device_ctx = netdev_priv(net);
- 	struct hv_netvsc_packet *packet = NULL;
-@@ -528,8 +529,11 @@ static int netvsc_start_xmit(struct sk_buff *skb, struct net_device *net)
- 	 */
- 	vf_netdev = rcu_dereference_bh(net_device_ctx->vf_netdev);
- 	if (vf_netdev && netif_running(vf_netdev) &&
--	    !netpoll_tx_running(net))
--		return netvsc_vf_xmit(net, vf_netdev, skb);
-+	    !netpoll_tx_running(net)) {
-+		ret = netvsc_vf_xmit(net, vf_netdev, skb);
-+		if (ret)
-+			return NETDEV_TX_BUSY;
-+	}
- 
- 	/* We will atmost need two pages to describe the rndis
- 	 * header. We can only transmit MAX_PAGE_BUFFER_COUNT number
+ 	struct net_local *nl = netdev_priv(dev);
 -- 
 1.8.3.1

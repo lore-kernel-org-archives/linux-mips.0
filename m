@@ -1,11 +1,11 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:37520 "EHLO
+Received: from mail.linuxfoundation.org ([140.211.169.12]:38006 "EHLO
         mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23991532AbeIUH0QR0X-C (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 21 Sep 2018 09:26:16 +0200
-Subject: Patch "MIPS: ath79: fix system restart" has been added to the 3.18-stable tree
+        by eddie.linux-mips.org with ESMTP id S23991532AbeIUHbmWj69C (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 21 Sep 2018 09:31:42 +0200
+Subject: Patch "MIPS: ath79: fix system restart" has been added to the 4.4-stable tree
 From: <gregkh@linuxfoundation.org>
-Date: Fri, 21 Sep 2018 09:25:16 +0200
-Message-ID: <153751471610610@kroah.com>
+Date: Fri, 21 Sep 2018 09:29:04 +0200
+Message-ID: <153751494415729@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -21,19 +21,19 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: alexander.levin@microsoft.com, gregkh@linuxfoundation.org, jhogan@kernel.org, john@phrozen.org, linux-mips@linux-mips.org, nbd@nbd.name, paul.burton@mips.com, ralf@linux-mips.org
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180921072516.hRTpkLxzUOsEi-9f7mBxRbRcHKNjXk3ANTQ9yoDAouI@z>
+Message-ID: <20180921072904.gwNe1iZMLOQkGn3F96ewMmRPbHSdgksatOWEONpG2HU@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
     MIPS: ath79: fix system restart
 
-to the 3.18-stable tree which can be found at:
+to the 4.4-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      mips-ath79-fix-system-restart.patch
-and it can be found in the queue-3.18 subdirectory.
+and it can be found in the queue-4.4 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.

@@ -1,11 +1,11 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:49534 "EHLO
+Received: from mail.linuxfoundation.org ([140.211.169.12]:49720 "EHLO
         mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992087AbeIXH21XjNCb (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 24 Sep 2018 09:28:27 +0200
-Subject: Patch "MIPS: loongson64: cs5536: Fix PCI_OHCI_INT_REG reads" has been added to the 4.4-stable tree
+        by eddie.linux-mips.org with ESMTP id S23992087AbeIXHjy2cAgb (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 24 Sep 2018 09:39:54 +0200
+Subject: Patch "binfmt_elf: Respect error return from `regset->active'" has been added to the 4.9-stable tree
 From: <gregkh@linuxfoundation.org>
-Date: Mon, 24 Sep 2018 09:27:26 +0200
-Message-ID: <1537774046149184@kroah.com>
+Date: Mon, 24 Sep 2018 09:39:33 +0200
+Message-ID: <1537774773107152@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -19,21 +19,21 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: alexander.levin@microsoft.com, chenhc@lemote.com, gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, paul.burton@mips.com, ralf@linux-mips.org
+To: alexander.levin@microsoft.com, gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, macro@mips.com, paul.burton@mips.com, ralf@linux-mips.org, viro@zeniv.linux.org.uk
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180924072726.ePZ5oA0YCI0iLHA8tsDM0VR19vC6_cpntdOe7CL-bnY@z>
+Message-ID: <20180924073933.qoHEJSitV-itOU8n230VXONaWD5hhcq7BBPAB4_fts8@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
-    MIPS: loongson64: cs5536: Fix PCI_OHCI_INT_REG reads
+    binfmt_elf: Respect error return from `regset->active'
 
-to the 4.4-stable tree which can be found at:
+to the 4.9-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mips-loongson64-cs5536-fix-pci_ohci_int_reg-reads.patch
-and it can be found in the queue-4.4 subdirectory.
+     binfmt_elf-respect-error-return-from-regset-active.patch
+and it can be found in the queue-4.9 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.

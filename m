@@ -1,13 +1,13 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12]:39842 "EHLO
+Received: from mail.linuxfoundation.org ([140.211.169.12]:39860 "EHLO
         mail.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992375AbeIXLNIOGhcU (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 24 Sep 2018 13:13:08 +0200
-Subject: Patch "MIPS: VDSO: Drop gic_get_usm_range() usage" has been added to the 4.9-stable tree
+        by eddie.linux-mips.org with ESMTP id S23992482AbeIXLNLX8ApU (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 24 Sep 2018 13:13:11 +0200
+Subject: Patch "MIPS: VDSO: Match data page cache colouring when D$ aliases" has been added to the 4.9-stable tree
 From: <gregkh@linuxfoundation.org>
 Date: Mon, 24 Sep 2018 13:12:21 +0200
-Message-ID: <1537787541667@kroah.com>
+Message-ID: <15377875418012@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
 Return-Path: <gregkh@linuxfoundation.org>
 Sender: linux-mips-bounce@linux-mips.org
@@ -19,20 +19,20 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: gregkh@linuxfoundation.org, jason@lakedaemon.net, linux-mips@linux-mips.org, marc.zyngier@arm.com, paul.burton@imgtec.com, ralf@linux-mips.org, sz.lin@moxa.com, tglx@linutronix.de
+To: alexandre.belloni@bootlin.com, gregkh@linuxfoundation.org, hauke@hauke-m.de, jhogan@kernel.org, linux-mips@linux-mips.org, paul.burton@mips.com, rene.nielsen@microsemi.com
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20180924111221.2l8V-8kYfD0adqHjKY16xdwhFKf05oDzPu_8Tv1YjuA@z>
+Message-ID: <20180924111221.5l2yJb8f3EB-4ttmvCQ7zuOpkm9bURI_WmBBfXI6T5E@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
-    MIPS: VDSO: Drop gic_get_usm_range() usage
+    MIPS: VDSO: Match data page cache colouring when D$ aliases
 
 to the 4.9-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     mips-vdso-drop-gic_get_usm_range-usage.patch
+     mips-vdso-match-data-page-cache-colouring-when-d-aliases.patch
 and it can be found in the queue-4.9 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,

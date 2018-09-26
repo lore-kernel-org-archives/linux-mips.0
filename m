@@ -1,30 +1,19 @@
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46978 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992891AbeIZScX2aT4i (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 26 Sep 2018 20:32:23 +0200
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id w8QIT8Xo025093
-        for <linux-mips@linux-mips.org>; Wed, 26 Sep 2018 14:32:19 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2mrf8r0kgv-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-mips@linux-mips.org>; Wed, 26 Sep 2018 14:32:19 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-mips@linux-mips.org> from <rppt@linux.vnet.ibm.com>;
-        Wed, 26 Sep 2018 19:32:12 +0100
-Date: Wed, 26 Sep 2018 21:31:53 +0300
-From: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: Re: [PATCH 03/30] mm: remove CONFIG_HAVE_MEMBLOCK
-References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
- <1536927045-23536-4-git-send-email-rppt@linux.vnet.ibm.com>
- <CAKgT0UdP=78RsWHMxFu4PD8a3AhA3eNcG68Z_9aGY0vhOKf7xA@mail.gmail.com>
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:41113 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992328AbeIZVgcPYKX8 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 26 Sep 2018 23:36:32 +0200
+Date: Wed, 26 Sep 2018 16:36:24 -0500
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH net-next v3 09/11] dt-bindings: add constants for
+ Microsemi Ocelot SerDes driver
+Message-ID: <20180926213624.GA13387@bogus>
+References: <cover.ff40d591b548a6da31716e6e600f11a303e0e643.1536912834.git-series.quentin.schulz@bootlin.com>
+ <73113ea4b3d8d34c05d88413b3d15cc1733cf25e.1536912834.git-series.quentin.schulz@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKgT0UdP=78RsWHMxFu4PD8a3AhA3eNcG68Z_9aGY0vhOKf7xA@mail.gmail.com>
-Message-ID: <20180926183152.GA4597@rapoport-lnx>
-Return-Path: <rppt@linux.vnet.ibm.com>
+In-Reply-To: <73113ea4b3d8d34c05d88413b3d15cc1733cf25e.1536912834.git-series.quentin.schulz@bootlin.com>
+Return-Path: <robherring2@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -34,47 +23,21 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Alexander Duyck <alexander.duyck@gmail.com>
-Cc: linux-mm <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, chris@zankel.net, David Miller <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, green.hu@gmail.com, Greg KH <gregkh@linuxfoundation.org>, gxt@pku.edu.cn, Ingo Molnar <mingo@redhat.com>, jejb@parisc-linux.org, jonas@southpole.se, Jonathan Corbet <corbet@lwn.net>, lftan@altera.com, msalter@redhat.com, Martin Schwidefsky <schwidefsky@de.ibm.com>, mattst88@gmail.com, mpe@ellerman.id.au, Michal Hocko <mhocko@suse.com>, monstr@monstr.eu, palmer@sifive.com, paul.burton@mips.com, rkuo@codeaurora.org, richard@nod.at, dalias@libc.org, Russell King - ARM Linux <linux@armlinux.org.uk>, fancer.lancer@gmail.com, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, vgupta@synopsys.com, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" <linuxppc-dev@lists.ozlabs.org>, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp
-Message-ID: <20180926183153.QvQa4dWnpVFRwm2mdxJQGCoDDIw9BAprj7eNgBvJdOY@z>
+To: Quentin Schulz <quentin.schulz@bootlin.com>
+Cc: alexandre.belloni@bootlin.com, ralf@linux-mips.org, paul.burton@mips.com, jhogan@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, davem@davemloft.net, kishon@ti.com, andrew@lunn.ch, f.fainelli@gmail.com, allan.nielsen@microchip.com, linux-mips@linux-mips.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, thomas.petazzoni@bootlin.com
+Message-ID: <20180926213624.RAXscPq-uOfJNvSGCp86rg18-goHKhvKIUPFzv842Z8@z>
 
-On Wed, Sep 26, 2018 at 09:58:41AM -0700, Alexander Duyck wrote:
-> On Fri, Sep 14, 2018 at 5:11 AM Mike Rapoport <rppt@linux.vnet.ibm.com> wrote:
-> >
-> > All architecures use memblock for early memory management. There is no need
-> > for the CONFIG_HAVE_MEMBLOCK configuration option.
-> >
-> > Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
+On Fri, 14 Sep 2018 10:16:07 +0200, Quentin Schulz wrote:
+> The Microsemi Ocelot has multiple SerDes and requires that the SerDes be
+> muxed accordingly to the hardware representation.
 > 
-> <snip>
+> Let's add a constant for each SerDes available in the Microsemi Ocelot.
 > 
-> > diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> > index 5169205..4ae91fc 100644
-> > --- a/include/linux/memblock.h
-> > +++ b/include/linux/memblock.h
-> > @@ -2,7 +2,6 @@
-> >  #define _LINUX_MEMBLOCK_H
-> >  #ifdef __KERNEL__
-> >
-> > -#ifdef CONFIG_HAVE_MEMBLOCK
-> >  /*
-> >   * Logical memory blocks.
-> >   *
-> > @@ -460,7 +459,6 @@ static inline phys_addr_t memblock_alloc(phys_addr_t size, phys_addr_t align)
-> >  {
-> >         return 0;
-> >  }
-> > -#endif /* CONFIG_HAVE_MEMBLOCK */
-> >
-> >  #endif /* __KERNEL__ */
+> Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
+> ---
+>  include/dt-bindings/phy/phy-ocelot-serdes.h | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+>  create mode 100644 include/dt-bindings/phy/phy-ocelot-serdes.h
 > 
-> There was an #else above this section and I believe it and the code
-> after it needs to be stripped as well.
 
-Right, I've already sent the fix [1] and it's in mmots.
-
-[1] https://lkml.org/lkml/2018/9/19/416
-
--- 
-Sincerely yours,
-Mike.
+Reviewed-by: Rob Herring <robh@kernel.org>

@@ -1,21 +1,20 @@
-Received: from mail-by2nam03on0098.outbound.protection.outlook.com ([104.47.42.98]:7728
-        "EHLO NAM03-BY2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23992328AbeIZWHQfdd58 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 27 Sep 2018 00:07:16 +0200
-From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH v5 06/12] MIPS: BMIPS: add dma remap for BrcmSTB PCIe
-Date: Wed, 26 Sep 2018 22:07:04 +0000
-Message-ID: <20180926220703.4ocppooccuot55i5@pburton-laptop>
-References: <1537367527-20773-1-git-send-email-jim2101024@gmail.com>
- <1537367527-20773-7-git-send-email-jim2101024@gmail.com>
-In-Reply-To: <1537367527-20773-7-git-send-email-jim2101024@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B19213CF76E74F4882C8D4312B6B4C6C@namprd08.prod.outlook.com>
-Content-Transfer-Encoding: 8BIT
+Received: from mail-it1-x142.google.com ([IPv6:2607:f8b0:4864:20::142]:55869
+        "EHLO mail-it1-x142.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23993016AbeI0AeujhIKN (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 27 Sep 2018 02:34:50 +0200
+Received: by mail-it1-x142.google.com with SMTP id c23-v6so5597092itd.5
+        for <linux-mips@linux-mips.org>; Wed, 26 Sep 2018 17:34:50 -0700 (PDT)
 MIME-Version: 1.0
-Return-Path: <pburton@wavecomp.com>
+References: <1536927045-23536-1-git-send-email-rppt@linux.vnet.ibm.com>
+ <1536927045-23536-4-git-send-email-rppt@linux.vnet.ibm.com>
+ <CAKgT0UdP=78RsWHMxFu4PD8a3AhA3eNcG68Z_9aGY0vhOKf7xA@mail.gmail.com> <20180926183152.GA4597@rapoport-lnx>
+In-Reply-To: <20180926183152.GA4597@rapoport-lnx>
+From: Alexander Duyck <alexander.duyck@gmail.com>
+Date: Wed, 26 Sep 2018 17:34:32 -0700
+Message-ID: <CAKgT0UcC-GTtyPK9ynvj6r3YFqy8kE40iMJxzPowbNoXGf9iWg@mail.gmail.com>
+Subject: Re: [PATCH 03/30] mm: remove CONFIG_HAVE_MEMBLOCK
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <alexander.duyck@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,81 +24,52 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Jim Quinlan <jim2101024@gmail.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Kevin Cernekee <cernekee@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "bcm-kernel-feedback-list@broadcom.com" <bcm-kernel-feedback-list@broadcom.com>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Christoph Hellwig <hch@lst.de>
-Message-ID: <20180926220704.9oXoiqoUslv7WBXF7BsFR5QTPFIBMWHpOCua0P_I24E@z>
+To: rppt@linux.vnet.ibm.com
+Cc: linux-mm <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, chris@zankel.net, David Miller <davem@davemloft.net>, Geert Uytterhoeven <geert@linux-m68k.org>, green.hu@gmail.com, Greg KH <gregkh@linuxfoundation.org>, gxt@pku.edu.cn, Ingo Molnar <mingo@redhat.com>, jejb@parisc-linux.org, jonas@southpole.se, Jonathan Corbet <corbet@lwn.net>, lftan@altera.com, msalter@redhat.com, Martin Schwidefsky <schwidefsky@de.ibm.com>, mattst88@gmail.com, mpe@ellerman.id.au, Michal Hocko <mhocko@suse.com>, monstr@monstr.eu, palmer@sifive.com, paul.burton@mips.com, rkuo@codeaurora.org, richard@nod.at, dalias@libc.org, Russell King - ARM Linux <linux@armlinux.org.uk>, fancer.lancer@gmail.com, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, vgupta@synopsys.com, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" <linuxppc-dev@lists.ozlabs.org>, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp
+Message-ID: <20180927003432._A58QfpZhE0qoWz_dvhkfEx2h5fXAfQ5-hdpPuNHUz4@z>
 
-Hi Jim,
+On Wed, Sep 26, 2018 at 11:32 AM Mike Rapoport <rppt@linux.vnet.ibm.com> wrote:
+>
+> On Wed, Sep 26, 2018 at 09:58:41AM -0700, Alexander Duyck wrote:
+> > On Fri, Sep 14, 2018 at 5:11 AM Mike Rapoport <rppt@linux.vnet.ibm.com> wrote:
+> > >
+> > > All architecures use memblock for early memory management. There is no need
+> > > for the CONFIG_HAVE_MEMBLOCK configuration option.
+> > >
+> > > Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
+> >
+> > <snip>
+> >
+> > > diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> > > index 5169205..4ae91fc 100644
+> > > --- a/include/linux/memblock.h
+> > > +++ b/include/linux/memblock.h
+> > > @@ -2,7 +2,6 @@
+> > >  #define _LINUX_MEMBLOCK_H
+> > >  #ifdef __KERNEL__
+> > >
+> > > -#ifdef CONFIG_HAVE_MEMBLOCK
+> > >  /*
+> > >   * Logical memory blocks.
+> > >   *
+> > > @@ -460,7 +459,6 @@ static inline phys_addr_t memblock_alloc(phys_addr_t size, phys_addr_t align)
+> > >  {
+> > >         return 0;
+> > >  }
+> > > -#endif /* CONFIG_HAVE_MEMBLOCK */
+> > >
+> > >  #endif /* __KERNEL__ */
+> >
+> > There was an #else above this section and I believe it and the code
+> > after it needs to be stripped as well.
+>
+> Right, I've already sent the fix [1] and it's in mmots.
+>
+> [1] https://lkml.org/lkml/2018/9/19/416
+>
 
-On Wed, Sep 19, 2018 at 10:32:01AM -0400, Jim Quinlan wrote:
-> The design of the Broadcom PCIe RC controller requires us to remap its
-> DMA addresses for inbound traffic.  We do this by modifying the
-> definitions of __phys_to_dma() and __dma_to_phys().
-> 
-> In arch/mips/bmips/dma.c, these functions are already in use to remap
-> DMA addresses for the 338x SOC chips.  We leave this code alone -- and
-> give its mapping priority -- but if it is not in use, the PCIe DMA
-> mapping is in effect.
-> 
-> One might think that the two DMA remapping systems of dma.c could be
-> combined, but they cannot: one governs only DMA addresses for the PCIe
-> controller of BrcmSTB ARM/ARM64/MIPs chips, while the other governs
-> the PCIe controller *and* other peripherals for only MIPs 338x
-> chips.
-> 
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> ---
->  arch/mips/bmips/dma.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+Are you sure? The patch you reference appears to be for
+drivers/of/fdt.c, and the bit I pointed out here is in
+include/linux/memblock.h.
 
-Please copy me/linux-mips on the whole series next time - I seem to have
-only received patches 6, 8 & 9 which means I have no idea whether they
-have dependencies & if so whether those dependencies have been accepted
-or rejected. I also have no clue whether these patches make sense to
-take through the MIPS tree or if it would make more sense for someone
-else to take them with acks.
-
-> diff --git a/arch/mips/bmips/dma.c b/arch/mips/bmips/dma.c
-> index 3d13c77..292994f 100644
-> --- a/arch/mips/bmips/dma.c
-> +++ b/arch/mips/bmips/dma.c
-> @@ -18,6 +18,7 @@
->  #include <linux/slab.h>
->  #include <linux/types.h>
->  #include <asm/bmips.h>
-> +#include <soc/brcmstb/common.h>
->  
->  /*
->   * BCM338x has configurable address translation windows which allow the
-> @@ -44,6 +45,10 @@ dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t pa)
->  {
->  	struct bmips_dma_range *r;
->  
-> +#ifdef CONFIG_PCIE_BRCMSTB
-> +	if (!bmips_dma_ranges)
-> +		return brcm_phys_to_dma(dev, pa);
-> +#endif
->  	for (r = bmips_dma_ranges; r && r->size; r++) {
->  		if (pa >= r->child_addr &&
->  		    pa < (r->child_addr + r->size))
-
-I can't tell because I presume brcm_phys_to_dma() is added in one of
-those patches I wasn't copied on, but perhaps you could avoid the #ifdef
-by just returning brcm_phys_to_dma(dev, pa) after the loop?
-
-> @@ -56,6 +61,10 @@ phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t dma_addr)
->  {
->  	struct bmips_dma_range *r;
->  
-> +#ifdef CONFIG_PCIE_BRCMSTB
-> +	if (!bmips_dma_ranges)
-> +		return (unsigned long)brcm_dma_to_phys(dev, dma_addr);
-> +#endif
->  	for (r = bmips_dma_ranges; r && r->size; r++) {
->  		if (dma_addr >= r->parent_addr &&
->  		    dma_addr < (r->parent_addr + r->size))
-
-And similar here.
-
-Thanks,
-    Paul
+- Alex

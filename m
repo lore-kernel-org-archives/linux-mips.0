@@ -1,22 +1,20 @@
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:40218 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992267AbeI1Pl6VLdFl (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 28 Sep 2018 17:41:58 +0200
-Date: Fri, 28 Sep 2018 10:41:50 -0500
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 6/9] kbuild: consolidate Devicetree dtb build rules
-Message-ID: <20180928154150.GA25013@bogus>
-References: <20180910150403.19476-1-robh@kernel.org>
- <20180910150403.19476-7-robh@kernel.org>
+Received: from mail.kernel.org ([198.145.29.99]:40760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23993964AbeI1SmLI2ppr convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 28 Sep 2018 20:42:11 +0200
+MIME-Version: 1.0
+References: <20180910150403.19476-1-robh@kernel.org> <20180910150403.19476-7-robh@kernel.org>
  <CAL_Jsq+=VbdcVLiwXbOA5d+R2YY6=2Pw2bQpci-jj-JvereD1A@mail.gmail.com>
  <CAK7LNAQFqhWw+LwDoypGG=OP6tH4qf2tT=LvtchK2GoiNyzDXg@mail.gmail.com>
- <CAMuHMdWEnoh97_jiDWMq=ke4PrhSFbToYnx91CPLBuq3mOGzoQ@mail.gmail.com>
- <CAK7LNATkkOiYPj2RLubcgZ_z59Bhz4GkgWqPMbnaHBk7EisXLg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNATkkOiYPj2RLubcgZ_z59Bhz4GkgWqPMbnaHBk7EisXLg@mail.gmail.com>
-Return-Path: <robherring2@gmail.com>
+ <CAMuHMdWEnoh97_jiDWMq=ke4PrhSFbToYnx91CPLBuq3mOGzoQ@mail.gmail.com> <75740733-d0d4-4c0c-838c-f01a5e7291d3@suse.de>
+In-Reply-To: <75740733-d0d4-4c0c-838c-f01a5e7291d3@suse.de>
+From: Rob Herring <robh@kernel.org>
+Date: Fri, 28 Sep 2018 13:41:51 -0500
+Message-ID: <CAL_JsqKLOohxGx0Je9niMQ5H3o0Y=EcMQTB6YkbV0sfUOZHu8g@mail.gmail.com>
+Subject: Re: [PATCH v3 6/9] kbuild: consolidate Devicetree dtb build rules
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+Return-Path: <robh@kernel.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,80 +24,21 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Frank Rowand <frowand.list@gmail.com>, Michal Marek <michal.lkml@markovi.net>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-kbuild <linux-kbuild@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, nios2-dev@lists.rocketboards.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-xtensa@linux-xtensa.org, Will Deacon <will.deacon@arm.com>, Paul Burton <paul.burton@mips.com>, Ley Foon Tan <ley.foon.tan@intel.com>
-Message-ID: <20180928154150.SIqX38HJz-7mO3ByKzBk5L9Y0GKuVTVAbEv3y6eV1yk@z>
+To: =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Masahiro Yamada <yamada.masahiro@socionext.com>, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Frank Rowand <frowand.list@gmail.com>, Michal Marek <michal.lkml@markovi.net>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, James Hogan <jhogan@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, arcml <linux-snps-arc@lists.infradead.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, Linux-MIPS <linux-mips@linux-mips.org>, nios2-dev@lists.rocketboards.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-xtensa@linux-xtensa.org, Will Deacon <will.deacon@arm.com>, Paul Burton <paul.burton@mips.com>, Ley Foon Tan <ley.foon.tan@intel.com>
+Message-ID: <20180928184151.ZfnsVUGOIHNIDbonER3ramwCAV6Xg5eD-M3n_1JGcOA@z>
 
-On Sun, Sep 23, 2018 at 06:31:14AM -0400, Masahiro Yamada wrote:
-> 2018-09-13 11:51 GMT-04:00 Geert Uytterhoeven <geert@linux-m68k.org>:
-> > Hi Yamada-san,
-> >
+On Fri, Sep 28, 2018 at 12:21 PM Andreas Färber <afaerber@suse.de> wrote:
+>
+> Hi Geert,
+>
+> Am 13.09.18 um 17:51 schrieb Geert Uytterhoeven:
 > > On Wed, Sep 12, 2018 at 3:02 AM Masahiro Yamada
 > > <yamada.masahiro@socionext.com> wrote:
-> >> 2018-09-12 0:40 GMT+09:00 Rob Herring <robh@kernel.org>:
-> >> > On Mon, Sep 10, 2018 at 10:04 AM Rob Herring <robh@kernel.org> wrote:
-> >> >> There is nothing arch specific about building dtb files other than their
-> >> >> location under /arch/*/boot/dts/. Keeping each arch aligned is a pain.
-> >> >> The dependencies and supported targets are all slightly different.
-> >> >> Also, a cross-compiler for each arch is needed, but really the host
-> >> >> compiler preprocessor is perfectly fine for building dtbs. Move the
-> >> >> build rules to a common location and remove the arch specific ones. This
-> >> >> is done in a single step to avoid warnings about overriding rules.
-> >> >>
-> >> >> The build dependencies had been a mixture of 'scripts' and/or 'prepare'.
-> >> >> These pull in several dependencies some of which need a target compiler
-> >> >> (specifically devicetable-offsets.h) and aren't needed to build dtbs.
-> >> >> All that is really needed is dtc, so adjust the dependencies to only be
-> >> >> dtc.
-> >> >>
-> >> >> This change enables support 'dtbs_install' on some arches which were
-> >> >> missing the target.
-> >> >
-> >> > [...]
-> >> >
-> >> >> @@ -1215,6 +1215,33 @@ kselftest-merge:
-> >> >>                 $(srctree)/tools/testing/selftests/*/config
-> >> >>         +$(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
-> >> >>
-> >> >> +# ---------------------------------------------------------------------------
-> >> >> +# Devicetree files
-> >> >> +
-> >> >> +ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/boot/dts/),)
-> >> >> +dtstree := arch/$(SRCARCH)/boot/dts
-> >> >> +endif
-> >> >> +
-> >> >> +ifdef CONFIG_OF_EARLY_FLATTREE
-> >> >
-> >> > This can be true when dtstree is unset. So this line should be this
-> >> > instead to fix the 0-day reported error:
-> >> >
-> >> > ifneq ($(dtstree),)
-> >> >
-> >> >> +
-> >> >> +%.dtb : scripts_dtc
-> >> >> +       $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
-> >> >> +
-> >> >> +PHONY += dtbs dtbs_install
-> >> >> +dtbs: scripts_dtc
-> >> >> +       $(Q)$(MAKE) $(build)=$(dtstree)
-> >> >> +
-> >> >> +dtbs_install: dtbs
-> >> >> +       $(Q)$(MAKE) $(dtbinst)=$(dtstree)
-> >> >> +
-> >> >> +all: dtbs
-> >> >> +
-> >> >> +endif
-> >>
-> >>
-> >> Ah, right.
 > >> Even x86 can enable OF and OF_UNITTEST.
-> >>
-> >>
 > >>
 > >> Another solution might be,
 > >> guard it by 'depends on ARCH_SUPPORTS_OF'.
-> >>
-> >>
 > >>
 > >> This is actually what ACPI does.
 > >>
@@ -112,58 +51,18 @@ On Sun, Sep 23, 2018 at 06:31:14AM -0400, Masahiro Yamada wrote:
 > >
 > > CONFIG_OF can be enabled, and DT overlays can be loaded, on any platform,
 > > even if it has ACPI ;-)
-> >
-> 
-> OK, understood.
+>
+> How would loading a DT overlay work on an ACPI platform? I.e., what
+> would it overlay against and how to practically load such a file?
 
-Any other comments on this? I'd like to get the series into linux-next 
-soon.
+The DT unittests do just that. I run them on x86 and UM builds. In
+this case, the loading source is built-in.
 
-There was one other problem 0-day reported when building with 
-CONFIG_OF=n while setting CONFIG_OF_ALL_DTBS=y on the kernel command 
-line. The problem is dtc is not built as setting options on the command 
-line doesn't invoke kconfig select(s). This can be fixed by also 
-adding CONFIG_DTC=y to the command line, always building dtc regardless 
-of Kconfig, or making 'all' conditionally dependent on 'dtbs'. I've gone 
-with the last option as that is how this problem was avoided before. 
+> I wonder whether that could be helpful for USB devices and serdev...
 
-So the hunk in question with the 2 fixes now looks like this:
+How to load the overlays is pretty orthogonal to the issues to be
+solved here. It would certainly be possible to move forward with
+prototyping this and just have the overlay built-in. It may not even
+need to be an overlay if we can support multiple root nodes.
 
-@@ -1215,6 +1215,35 @@ kselftest-merge:
-                $(srctree)/tools/testing/selftests/*/config
-        +$(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
- 
-+# 
----------------------------------------------------------------------------
-+# Devicetree files
-+
-+ifneq ($(wildcard $(srctree)/arch/$(SRCARCH)/boot/dts/),)
-+dtstree := arch/$(SRCARCH)/boot/dts
-+endif
-+
-+ifneq ($(dtstree),)
-+
-+%.dtb : scripts_dtc
-+       $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
-+
-+PHONY += dtbs dtbs_install
-+dtbs: scripts_dtc
-+       $(Q)$(MAKE) $(build)=$(dtstree)
-+
-+dtbs_install: dtbs
-+       $(Q)$(MAKE) $(dtbinst)=$(dtstree)
-+
-+ifdef CONFIG_OF_EARLY_FLATTREE
-+all: dtbs
-+endif
-+
-+endif
-+
-+PHONY += scripts_dtc
-+scripts_dtc: scripts_basic
-+       $(Q)$(MAKE) $(build)=scripts/dtc
-+
- # 
----------------------------------------------------------------------------
- # Modules
- 
+Rob

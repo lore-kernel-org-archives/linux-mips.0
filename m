@@ -1,21 +1,16 @@
-Received: from mail-sn1nam02on0097.outbound.protection.outlook.com ([104.47.36.97]:44688
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23994585AbeJIXByf1vG2 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 10 Oct 2018 01:01:54 +0200
-From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH] memblock: stop using implicit alignement to
- SMP_CACHE_BYTES
-Date: Tue, 9 Oct 2018 23:01:40 +0000
-Message-ID: <20181009230137.rju3lm2saou5xsa4@pburton-laptop>
-References: <1538687224-17535-1-git-send-email-rppt@linux.vnet.ibm.com>
+Received: from ozlabs.org ([IPv6:2401:3900:2:1::2]:36697 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23994585AbeJJME3bwgLE (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 10 Oct 2018 14:04:29 +0200
+From: Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH] memblock: stop using implicit alignement to SMP_CACHE_BYTES
 In-Reply-To: <1538687224-17535-1-git-send-email-rppt@linux.vnet.ibm.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <E3554E11A6C0914FA9C02D46ED897C1C@namprd22.prod.outlook.com>
-Content-Transfer-Encoding: 8BIT
+References: <1538687224-17535-1-git-send-email-rppt@linux.vnet.ibm.com>
+Date: Wed, 10 Oct 2018 23:04:12 +1100
+Message-ID: <87o9c22ekj.fsf@concordia.ellerman.id.au>
 MIME-Version: 1.0
-Return-Path: <pburton@wavecomp.com>
+Content-Type: text/plain
+Return-Path: <mpe@ellerman.id.au>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,26 +20,86 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Cc: "linux-mm@kvack.org" <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Ingo Molnar <mingo@redhat.com>, Matt Turner <mattst88@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
-Message-ID: <20181009230140.OHDlSPK6ZZKQvnPk8fSs9jSddq2KOfRtOVBevlK23A8@z>
+To: Mike Rapoport <rppt@linux.vnet.ibm.com>, linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Ingo Molnar <mingo@redhat.com>, Matt Turner <mattst88@gmail.com>, Michal Hocko <mhocko@suse.com>, Michal Simek <monstr@monstr.eu>, Paul Burton <paul.burton@mips.com>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org
+Message-ID: <20181010120412.i11KEgVybz9gRSLOwsWbMNjRB_Ii-gq7paphbI5zp_k@z>
 
-Hi Mike,
+Mike Rapoport <rppt@linux.vnet.ibm.com> writes:
 
-On Fri, Oct 05, 2018 at 12:07:04AM +0300, Mike Rapoport wrote:
 > When a memblock allocation APIs are called with align = 0, the alignment is
 > implicitly set to SMP_CACHE_BYTES.
-> 
+>
 > Replace all such uses of memblock APIs with the 'align' parameter explicitly
 > set to SMP_CACHE_BYTES and stop implicit alignment assignment in the
 > memblock internal allocation functions.
-> 
->%
-> 
+>
+> For the case when memblock APIs are used via helper functions, e.g. like
+> iommu_arena_new_node() in Alpha, the helper functions were detected with
+> Coccinelle's help and then manually examined and updated where appropriate.
+>
+> The direct memblock APIs users were updated using the semantic patch below:
+>
+> @@
+> expression size, min_addr, max_addr, nid;
+> @@
+> (
+> |
+> - memblock_alloc_try_nid_raw(size, 0, min_addr, max_addr, nid)
+> + memblock_alloc_try_nid_raw(size, SMP_CACHE_BYTES, min_addr, max_addr,
+> nid)
+> |
+> - memblock_alloc_try_nid_nopanic(size, 0, min_addr, max_addr, nid)
+> + memblock_alloc_try_nid_nopanic(size, SMP_CACHE_BYTES, min_addr, max_addr,
+> nid)
+> |
+> - memblock_alloc_try_nid(size, 0, min_addr, max_addr, nid)
+> + memblock_alloc_try_nid(size, SMP_CACHE_BYTES, min_addr, max_addr, nid)
+> |
+> - memblock_alloc(size, 0)
+> + memblock_alloc(size, SMP_CACHE_BYTES)
+> |
+> - memblock_alloc_raw(size, 0)
+> + memblock_alloc_raw(size, SMP_CACHE_BYTES)
+> |
+> - memblock_alloc_from(size, 0, min_addr)
+> + memblock_alloc_from(size, SMP_CACHE_BYTES, min_addr)
+> |
+> - memblock_alloc_nopanic(size, 0)
+> + memblock_alloc_nopanic(size, SMP_CACHE_BYTES)
+> |
+> - memblock_alloc_low(size, 0)
+> + memblock_alloc_low(size, SMP_CACHE_BYTES)
+> |
+> - memblock_alloc_low_nopanic(size, 0)
+> + memblock_alloc_low_nopanic(size, SMP_CACHE_BYTES)
+> |
+> - memblock_alloc_from_nopanic(size, 0, min_addr)
+> + memblock_alloc_from_nopanic(size, SMP_CACHE_BYTES, min_addr)
+> |
+> - memblock_alloc_node(size, 0, nid)
+> + memblock_alloc_node(size, SMP_CACHE_BYTES, nid)
+> )
+>
 > Suggested-by: Michal Hocko <mhocko@suse.com>
 > Signed-off-by: Mike Rapoport <rppt@linux.vnet.ibm.com>
+> ---
+...
+>  arch/powerpc/kernel/pci_32.c              |  3 ++-
+>  arch/powerpc/lib/alloc.c                  |  2 +-
+>  arch/powerpc/mm/mmu_context_nohash.c      |  7 +++---
+>  arch/powerpc/platforms/powermac/nvram.c   |  2 +-
+>  arch/powerpc/platforms/powernv/pci-ioda.c |  6 ++---
+>  arch/powerpc/sysdev/msi_bitmap.c          |  2 +-
 
-  Acked-by: Paul Burton <paul.burton@mips.com> # MIPS part
+The powerpc changes all look fine.
 
-Thanks,
-    Paul
+I'm not quite clear on how SMP_CACHE_BYTES is getting included.
+
+I think it's: memblock.h -> mm.h -> mmzone.h -> cache.h
+
+So that's probably fine.
+
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+
+
+cheers

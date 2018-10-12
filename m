@@ -1,18 +1,21 @@
-Received: from mail-pg1-x541.google.com ([IPv6:2607:f8b0:4864:20::541]:37109
-        "EHLO mail-pg1-x541.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994650AbeJLBifzVgoe (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 12 Oct 2018 03:38:35 +0200
-Received: by mail-pg1-x541.google.com with SMTP id c10-v6so5031854pgq.4
-        for <linux-mips@linux-mips.org>; Thu, 11 Oct 2018 18:38:35 -0700 (PDT)
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH v2 2/2] mm: speed up mremap by 500x on large regions
-Date: Thu, 11 Oct 2018 18:37:56 -0700
-Message-ID: <20181012013756.11285-2-joel@joelfernandes.org>
-In-Reply-To: <20181012013756.11285-1-joel@joelfernandes.org>
-References: <20181012013756.11285-1-joel@joelfernandes.org>
+Received: from mga04.intel.com ([192.55.52.120]:45010 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23993946AbeJLREvDRgJf (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 12 Oct 2018 19:04:51 +0200
+From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Subject: Re: [PATCH v2 1/7] modules: Create rlimit for module space
+Date: Fri, 12 Oct 2018 17:04:46 +0000
+Message-ID: <7b0714e26c7c2216721641d7df16a49687927e37.camel@intel.com>
+References: <20181011233117.7883-1-rick.p.edgecombe@intel.com>
+         <20181011233117.7883-2-rick.p.edgecombe@intel.com>
+         <CAG48ez2fWg64nGxDXUQS3695KpVNrakAbarXJnYPd6xv5wOD+A@mail.gmail.com>
+In-Reply-To: <CAG48ez2fWg64nGxDXUQS3695KpVNrakAbarXJnYPd6xv5wOD+A@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D4DFCCCDEC8AE842B5E2158F760E7365@intel.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-Path: <joel@joelfernandes.org>
+Return-Path: <rick.p.edgecombe@intel.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,128 +25,80 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: kernel-team@android.com, "Joel Fernandes (Google)" <joel@joelfernandes.org>, minchan@kernel.org, pantin@google.com, hughd@google.com, lokeshgidra@google.com, dancol@google.com, mhocko@kernel.org, kirill@shutemov.name, akpm@linux-foundation.org, Andrey Ryabinin <aryabinin@virtuozzo.com>, Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, Dave Hansen <dave.hansen@linux.intel.com>, "David S. Miller" <davem@davemloft.net>, elfring@users.sourceforge.net, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jeff Dike <jdike@addtoit.com>, Jonas Bonn <jonas@southpole.se>, Julia Lawall <Julia.Lawall@lip6.fr>, kasan-dev@googlegroups.com, kvmarm@lists.cs.columbia.edu, Ley Foon Tan <lftan@altera.com>, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, Max Filippov <jcmvbkbc@gmail.com>, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Sam Creasey <sammy@sammy.net>, sparclinux@vger.kernel.org, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Will Deacon <will.deacon@arm.com>, "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>
-Message-ID: <20181012013756.UF0RIBCz2Tshg6CvyFNsNuwgXAF48vN7l6u7mH2sE8s@z>
+To: "jannh@google.com" <jannh@google.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, "keescook@chromium.org" <keescook@chromium.org>, "jeyu@kernel.org" <jeyu@kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "arjan@linux.intel.com" <arjan@linux.intel.com>, "tglx@linutronix.de" <tglx@linutronix.de>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "kristen@linux.intel.com" <kristen@linux.intel.com>, "Dock, Deneen T" <deneen.t.dock@intel.com>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>, "mingo@redhat.com" <mingo@redhat.com>, "will.deacon@arm.com" <will.deacon@arm.com>, "kernel-hardening@lists.openwall.com" <kernel-hardening@lists.openwall.com>, "bp@alien8.de" <bp@alien8.de>, "Hansen, Dave" <dave.hansen@intel.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "davem@davemloft.net" <davem@davemloft.net>, "arnd@arndb.de" <arnd@arndb.de>, "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>
+Message-ID: <20181012170446.9rmG8Pl2EKFDRKgLfIAIpOHP-9cZwKEZQtdBpCOJXl8@z>
 
-Android needs to mremap large regions of memory during memory management
-related operations. The mremap system call can be really slow if THP is
-not enabled. The bottleneck is move_page_tables, which is copying each
-pte at a time, and can be really slow across a large map. Turning on THP
-may not be a viable option, and is not for us. This patch speeds up the
-performance for non-THP system by copying at the PMD level when possible.
-
-The speed up is three orders of magnitude. On a 1GB mremap, the mremap
-completion times drops from 160-250 millesconds to 380-400 microseconds.
-
-Before:
-Total mremap time for 1GB data: 242321014 nanoseconds.
-Total mremap time for 1GB data: 196842467 nanoseconds.
-Total mremap time for 1GB data: 167051162 nanoseconds.
-
-After:
-Total mremap time for 1GB data: 385781 nanoseconds.
-Total mremap time for 1GB data: 388959 nanoseconds.
-Total mremap time for 1GB data: 402813 nanoseconds.
-
-Incase THP is enabled, the optimization is skipped. I also flush the
-tlb every time we do this optimization since I couldn't find a way to
-determine if the low-level PTEs are dirty. It is seen that the cost of
-doing so is not much compared the improvement, on both x86-64 and arm64.
-
-Cc: minchan@kernel.org
-Cc: pantin@google.com
-Cc: hughd@google.com
-Cc: lokeshgidra@google.com
-Cc: dancol@google.com
-Cc: mhocko@kernel.org
-Cc: kirill@shutemov.name
-Cc: akpm@linux-foundation.org
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- mm/mremap.c | 62 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
-
-diff --git a/mm/mremap.c b/mm/mremap.c
-index 9e68a02a52b1..d82c485822ef 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -191,6 +191,54 @@ static void move_ptes(struct vm_area_struct *vma, pmd_t *old_pmd,
- 		drop_rmap_locks(vma);
- }
- 
-+static bool move_normal_pmd(struct vm_area_struct *vma, unsigned long old_addr,
-+		  unsigned long new_addr, unsigned long old_end,
-+		  pmd_t *old_pmd, pmd_t *new_pmd, bool *need_flush)
-+{
-+	spinlock_t *old_ptl, *new_ptl;
-+	struct mm_struct *mm = vma->vm_mm;
-+
-+	if ((old_addr & ~PMD_MASK) || (new_addr & ~PMD_MASK)
-+	    || old_end - old_addr < PMD_SIZE)
-+		return false;
-+
-+	/*
-+	 * The destination pmd shouldn't be established, free_pgtables()
-+	 * should have release it.
-+	 */
-+	if (WARN_ON(!pmd_none(*new_pmd)))
-+		return false;
-+
-+	/*
-+	 * We don't have to worry about the ordering of src and dst
-+	 * ptlocks because exclusive mmap_sem prevents deadlock.
-+	 */
-+	old_ptl = pmd_lock(vma->vm_mm, old_pmd);
-+	if (old_ptl) {
-+		pmd_t pmd;
-+
-+		new_ptl = pmd_lockptr(mm, new_pmd);
-+		if (new_ptl != old_ptl)
-+			spin_lock_nested(new_ptl, SINGLE_DEPTH_NESTING);
-+
-+		/* Clear the pmd */
-+		pmd = *old_pmd;
-+		pmd_clear(old_pmd);
-+
-+		VM_BUG_ON(!pmd_none(*new_pmd));
-+
-+		/* Set the new pmd */
-+		set_pmd_at(mm, new_addr, new_pmd, pmd);
-+		if (new_ptl != old_ptl)
-+			spin_unlock(new_ptl);
-+		spin_unlock(old_ptl);
-+
-+		*need_flush = true;
-+		return true;
-+	}
-+	return false;
-+}
-+
- unsigned long move_page_tables(struct vm_area_struct *vma,
- 		unsigned long old_addr, struct vm_area_struct *new_vma,
- 		unsigned long new_addr, unsigned long len,
-@@ -239,7 +287,21 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
- 			split_huge_pmd(vma, old_pmd, old_addr);
- 			if (pmd_trans_unstable(old_pmd))
- 				continue;
-+		} else if (extent == PMD_SIZE) {
-+			bool moved;
-+
-+			/* See comment in move_ptes() */
-+			if (need_rmap_locks)
-+				take_rmap_locks(vma);
-+			moved = move_normal_pmd(vma, old_addr, new_addr,
-+					old_end, old_pmd, new_pmd,
-+					&need_flush);
-+			if (need_rmap_locks)
-+				drop_rmap_locks(vma);
-+			if (moved)
-+				continue;
- 		}
-+
- 		if (pte_alloc(new_vma->vm_mm, new_pmd))
- 			break;
- 		next = (new_addr + PMD_SIZE) & PMD_MASK;
--- 
-2.19.0.605.g01d371f741-goog
+T24gRnJpLCAyMDE4LTEwLTEyIGF0IDAyOjM1ICswMjAwLCBKYW5uIEhvcm4gd3JvdGU6DQo+IE9u
+IEZyaSwgT2N0IDEyLCAyMDE4IGF0IDE6NDAgQU0gUmljayBFZGdlY29tYmUNCj4gPHJpY2sucC5l
+ZGdlY29tYmVAaW50ZWwuY29tPiB3cm90ZToNCj4gPiBUaGlzIGludHJvZHVjZXMgYSBuZXcgcmxp
+bWl0LCBSTElNSVRfTU9EU1BBQ0UsIHdoaWNoIGxpbWl0cyB0aGUgYW1vdW50IG9mDQo+ID4gbW9k
+dWxlIHNwYWNlIGEgdXNlciBjYW4gdXNlLiBUaGUgaW50ZW50aW9uIGlzIHRvIGJlIGFibGUgdG8g
+bGltaXQgbW9kdWxlDQo+ID4gc3BhY2UNCj4gPiBhbGxvY2F0aW9ucyB0aGF0IG1heSBjb21lIGZy
+b20gdW4tcHJpdmxpZGdlZCB1c2VycyBpbnNlcnRpbmcgZS9CUEYgZmlsdGVycy4NCj4gDQo+IE5v
+dGUgdGhhdCBpbiBzb21lIGNvbmZpZ3VyYXRpb25zIChpaXJjIGUuZy4gdGhlIGRlZmF1bHQgVWJ1
+bnR1DQo+IGNvbmZpZyksIG5vcm1hbCB1c2VycyBjYW4gdXNlIHRoZSBzdWJ1aWQgbWVjaGFuaXNt
+ICh0aGUgL2V0Yy9zdWJ1aWQNCj4gY29uZmlnIGZpbGUgYW5kIHRoZSAvdXNyL2Jpbi9uZXd1aWRt
+YXAgc2V0dWlkIGhlbHBlcikgdG8gZ2FpbiBhY2Nlc3MNCj4gdG8gNjU1MzYgVUlEcywgd2hpY2gg
+bWVhbnMgdGhhdCBpbiBzdWNoIGEgY29uZmlndXJhdGlvbiwNCj4gUkxJTUlUX01PRFNQQUNFKjY1
+NTM3IGlzIHRoZSBhY3R1YWwgbGltaXQgZm9yIG9uZSB1c2VyLiAoU2FtZSB0aGluZw0KPiBhcHBs
+aWVzIHRvIFJMSU1JVF9NRU1MT0NLLikNCkFoLCB0aGF0IGlzIGEgcHJvYmxlbS4gVGhlcmUgaXMg
+b25seSByb29tIGZvciBhYm91dCAxMzAsMDAwIGZpbHRlcnMgb24geDg2IHdpdGgNCktBU0xSLCBz
+byBpdCBjb3VsZG4ndCByZWFsbHkgYmUgc2V0IHNtYWxsIGVub3VnaC4NCg0KSSdsbCBoYXZlIHRv
+IGxvb2sgaW50byB3aGF0IHRoaXMgaXMuIFRoYW5rcyBmb3IgcG9pbnRpbmcgaXQgb3V0Lg0KDQo+
+IEFsc28sIGl0IGlzIHByb2JhYmx5IHBvc3NpYmxlIHRvIHdhc3RlIGEgZmV3IHRpbWVzIGFzIG11
+Y2ggdmlydHVhbA0KPiBtZW1vcnkgYXMgcGVybWl0dGVkIGJ5IHRoZSBsaW1pdCBieSBkZWxpYmVy
+YXRlbHkgZnJhZ21lbnRpbmcgdmlydHVhbA0KPiBtZW1vcnk/DQpHb29kIHBvaW50LiBJIGd1ZXNz
+IGlmIHRoZSBmaXJzdCBwb2ludCBjYW4gYmUgYWRkcmVzc2VkIHNvbWVob3csIHRoaXMgb25lIGNv
+dWxkDQptYXliZSBiZSBzb2x2ZWQgYnkganVzdCBwaWNraW5nIGEgbG93ZXIgbGltaXQuDQoNCkFu
+eSB0aG91Z2h0cyBvbiBpZiBpbnN0ZWFkIG9mIGFsbCB0aGlzIHRoZXJlIHdhcyBqdXN0IGEgc3lz
+dGVtIHdpZGUgbGltaXQgb24gQlBGDQpKSVQgbW9kdWxlIHNwYWNlIHVzYWdlPw0KDQo+ID4gVGhl
+cmUgaXMgdW5mb3J0dW5hdGVseSBubyBjcm9zcyBwbGF0Zm9ybSBwbGFjZSB0byBwZXJmb3JtIHRo
+aXMgYWNjb3VudGluZw0KPiA+IGR1cmluZyBhbGxvY2F0aW9uIGluIHRoZSBtb2R1bGUgc3BhY2Us
+IHNvIGluc3RlYWQgdHdvIGhlbHBlcnMgYXJlIGNyZWF0ZWQgdG8NCj4gPiBiZQ0KPiA+IGluc2Vy
+dGVkIGludG8gdGhlIHZhcmlvdXMgYXJjaOKAmXMgdGhhdCBpbXBsZW1lbnQgbW9kdWxlX2FsbG9j
+LiBUaGVzZQ0KPiA+IGhlbHBlcnMgcGVyZm9ybSB0aGUgY2hlY2tzIGFuZCBoZWxwIHdpdGggdHJh
+Y2tpbmcuIFRoZSBpbnRlbnRpb24gaXMgdGhhdA0KPiA+IHRoZXkNCj4gPiBhbiBiZSBhZGRlZCB0
+byB0aGUgdmFyaW91cyBhcmNo4oCZcyBhcyBlYXNpbHkgYXMgcG9zc2libGUuDQo+IA0KPiBuaXQ6
+IHMvYW4vY2FuLw0KPiANCj4gWy4uLl0NCj4gPiBkaWZmIC0tZ2l0IGEva2VybmVsL21vZHVsZS5j
+IGIva2VybmVsL21vZHVsZS5jDQo+ID4gaW5kZXggNjc0NmM4NTUxMWZlLi4yZWY5ZWQ5NWJmNjAg
+MTAwNjQ0DQo+ID4gLS0tIGEva2VybmVsL21vZHVsZS5jDQo+ID4gKysrIGIva2VybmVsL21vZHVs
+ZS5jDQo+ID4gQEAgLTIxMTAsOSArMjExMCwxMzkgQEAgc3RhdGljIHZvaWQgZnJlZV9tb2R1bGVf
+ZWxmKHN0cnVjdCBtb2R1bGUgKm1vZCkNCj4gPiAgfQ0KPiA+ICAjZW5kaWYgLyogQ09ORklHX0xJ
+VkVQQVRDSCAqL2l0IA0KPiA+IA0KPiA+ICtzdHJ1Y3QgbW9kX2FsbG9jX3VzZXIgew0KPiA+ICsg
+ICAgICAgc3RydWN0IHJiX25vZGUgbm9kZTsNCj4gPiArICAgICAgIHVuc2lnbmVkIGxvbmcgYWRk
+cjsNCj4gPiArICAgICAgIHVuc2lnbmVkIGxvbmcgcGFnZXM7DQo+ID4gKyAgICAgICBrdWlkX3Qg
+dWlkOw0KPiA+ICt9Ow0KPiA+ICsNCj4gPiArc3RhdGljIHN0cnVjdCByYl9yb290IGFsbG9jX3Vz
+ZXJzID0gUkJfUk9PVDsNCj4gPiArc3RhdGljIERFRklORV9TUElOTE9DSyhhbGxvY191c2Vyc19s
+b2NrKTsNCj4gDQo+IFdoeSBhbGwgdGhlIHJidHJlZSBzdHVmZiBpbnN0ZWFkIG9mIHN0YXNoaW5n
+IGEgcG9pbnRlciBpbiBzdHJ1Y3QNCj4gdm1hcF9hcmVhLCBvciBzb21ldGhpbmcgbGlrZSB0aGF0
+Pw0KDQpTaW5jZSB0aGUgdHJhY2tpbmcgd2FzIG5vdCBmb3IgYWxsIHZtYWxsb2MgdXNhZ2UsIHRo
+ZSBpbnRlbnRpb24gd2FzIHRvIG5vdCBibG9hdA0KdGhlIHN0cnVjdHVyZSBmb3Igb3RoZXIgdXNh
+Z2VzIGxpa2VzIHN0YWNrcy4gSSB0aG91Z2h0IHVzdWFsbHkgdGhlcmUgd291bGRuJ3QgYmUNCm5l
+YXJseSBhcyBtdWNoIG1vZHVsZSBzcGFjZSBhbGxvY2F0aW9ucyBhcyB0aGVyZSB3b3VsZCBiZSBr
+ZXJuZWwgc3RhY2tzLCBidXQgSQ0KZGlkbid0IGRvIGFueSBhY3R1YWwgbWVhc3VyZW1lbnRzIG9u
+IHRoZSB0cmFkZW9mZnMuDQoNCj4gWy4uLl0NCj4gPiAraW50IGNoZWNrX2luY19tb2RfcmxpbWl0
+KHVuc2lnbmVkIGxvbmcgc2l6ZSkNCj4gPiArew0KPiA+ICsgICAgICAgc3RydWN0IHVzZXJfc3Ry
+dWN0ICp1c2VyID0gZ2V0X2N1cnJlbnRfdXNlcigpOw0KPiA+ICsgICAgICAgdW5zaWduZWQgbG9u
+ZyBtb2RzcGFjZV9wYWdlcyA9IHJsaW1pdChSTElNSVRfTU9EU1BBQ0UpID4+DQo+ID4gUEFHRV9T
+SElGVDsNCj4gPiArICAgICAgIHVuc2lnbmVkIGxvbmcgY3VyX3BhZ2VzID0gYXRvbWljX2xvbmdf
+cmVhZCgmdXNlci0+bW9kdWxlX3ZtKTsNCj4gPiArICAgICAgIHVuc2lnbmVkIGxvbmcgbmV3X3Bh
+Z2VzID0gZ2V0X21vZF9wYWdlX2NudChzaXplKTsNCj4gPiArDQo+ID4gKyAgICAgICBpZiAocmxp
+bWl0KFJMSU1JVF9NT0RTUEFDRSkgIT0gUkxJTV9JTkZJTklUWQ0KPiA+ICsgICAgICAgICAgICAg
+ICAgICAgICAgICYmIGN1cl9wYWdlcyArIG5ld19wYWdlcyA+IG1vZHNwYWNlX3BhZ2VzKSB7DQo+
+ID4gKyAgICAgICAgICAgICAgIGZyZWVfdWlkKHVzZXIpOw0KPiA+ICsgICAgICAgICAgICAgICBy
+ZXR1cm4gMTsNCj4gPiArICAgICAgIH0NCj4gPiArDQo+ID4gKyAgICAgICBhdG9taWNfbG9uZ19h
+ZGQobmV3X3BhZ2VzLCAmdXNlci0+bW9kdWxlX3ZtKTsNCj4gPiArDQo+ID4gKyAgICAgICBpZiAo
+YXRvbWljX2xvbmdfcmVhZCgmdXNlci0+bW9kdWxlX3ZtKSA+IG1vZHNwYWNlX3BhZ2VzKSB7DQo+
+ID4gKyAgICAgICAgICAgICAgIGF0b21pY19sb25nX3N1YihuZXdfcGFnZXMsICZ1c2VyLT5tb2R1
+bGVfdm0pOw0KPiA+ICsgICAgICAgICAgICAgICBmcmVlX3VpZCh1c2VyKTsNCj4gPiArICAgICAg
+ICAgICAgICAgcmV0dXJuIDE7DQo+ID4gKyAgICAgICB9DQo+ID4gKw0KPiA+ICsgICAgICAgZnJl
+ZV91aWQodXNlcik7DQo+IA0KPiBJZiB5b3UgZHJvcCB0aGUgcmVmZXJlbmNlIG9uIHRoZSB1c2Vy
+X3N0cnVjdCwgYW4gYXR0YWNrZXIgd2l0aCB0d28NCj4gVUlEcyBjYW4gY2hhcmdlIG1vZHVsZSBh
+bGxvY2F0aW9ucyB0byBVSUQgQSwga2VlcCB0aGUgYXNzb2NpYXRlZA0KPiBzb2NrZXRzIGFsaXZl
+IGFzIFVJRCBCLCBhbmQgdGhlbiBsb2cgb3V0IGFuZCBiYWNrIGluIGFnYWluIGFzIFVJRCBBLg0K
+PiBBdCB0aGF0IHBvaW50LCBub2JvZHkgaXMgY2hhcmdlZCBmb3IgdGhlIG1vZHVsZSBzcGFjZSBh
+bnltb3JlLiBJZiB5b3UNCj4gbG9vayBhdCB0aGUgZUJQRiBpbXBsZW1lbnRhdGlvbiwgeW91J2xs
+IHNlZSB0aGF0DQo+IGJwZl9wcm9nX2NoYXJnZV9tZW1sb2NrKCkgYWN0dWFsbHkgc3RvcmVzIGEg
+cmVmY291bnRlZCBwb2ludGVyIHRvIHRoZQ0KPiB1c2VyX3N0cnVjdC4NCk9rLCBJJ2xsIHRha2Ug
+YSBsb29rLiBUaGFua3MgSmFubi4NCj4gPiArICAgICAgIHJldHVybiAwOw0KPiA+ICt9DQo=

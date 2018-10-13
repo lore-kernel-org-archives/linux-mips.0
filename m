@@ -1,18 +1,12 @@
-Received: from mail-pl1-x644.google.com ([IPv6:2607:f8b0:4864:20::644]:39103
-        "EHLO mail-pl1-x644.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993973AbeJMBcfKNkuy (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 13 Oct 2018 03:32:35 +0200
-Received: by mail-pl1-x644.google.com with SMTP id w14-v6so6676397plp.6
-        for <linux-mips@linux-mips.org>; Fri, 12 Oct 2018 18:32:35 -0700 (PDT)
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH 4/4] x86: select HAVE_MOVE_PMD for faster mremap (v1)
-Date: Fri, 12 Oct 2018 18:32:00 -0700
-Message-ID: <20181013013200.206928-5-joel@joelfernandes.org>
-In-Reply-To: <20181013013200.206928-1-joel@joelfernandes.org>
-References: <20181013013200.206928-1-joel@joelfernandes.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-Path: <joel@joelfernandes.org>
+Received: from mail-pg1-x543.google.com ([IPv6:2607:f8b0:4864:20::543]:36530
+        "EHLO mail-pg1-x543.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990406AbeJMOy3Hq0Zw (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sat, 13 Oct 2018 16:54:29 +0200
+From: lantianyu1986@gmail.com
+Subject: [PATCH V4 00/15] x86/KVM/Hyper-v: Add HV ept tlb range flush hypercall support in KVM
+Date: Sat, 13 Oct 2018 22:53:51 +0800
+Message-ID: <20181013145406.4911-1-Tianyu.Lan@microsoft.com>
+Return-Path: <lantianyu1986@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,29 +16,86 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: kernel-team@android.com, "Joel Fernandes (Google)" <joel@joelfernandes.org>, akpm@linux-foundation.org, Andrey Ryabinin <aryabinin@virtuozzo.com>, Andy Lutomirski <luto@kernel.org>, anton.ivanov@kot-begemot.co.uk, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, dancol@google.com, Dave Hansen <dave.hansen@linux.intel.com>, "David S. Miller" <davem@davemloft.net>, elfring@users.sourceforge.net, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Helge Deller <deller@gmx.de>, hughd@google.com, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jeff Dike <jdike@addtoit.com>, Jonas Bonn <jonas@southpole.se>, Julia Lawall <Julia.Lawall@lip6.fr>, kasan-dev@googlegroups.com, "Kirill A. Shutemov" <kirill@shutemov.name>, kvmarm@lists.cs.columbia.edu, Ley Foon Tan <lftan@altera.com>, linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, lokeshgidra@google.com, Max Filippov <jcmvbkbc@gmail.com>, mhocko@kernel.org, minchan@kernel.org, nios2-dev@lists.rocketboards.org, pantin@google.com, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Sam Creasey <sammy@sammy.net>, sparclinux@vger.kernel.org, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Will Deacon <will.deacon@arm.com>, "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>
-Message-ID: <20181013013200.cKFEhKvpVicVDT8L0_Fy0lORjxntXephHEosgIoPa1Y@z>
+Cc: Lan Tianyu <Tianyu.Lan@microsoft.com>, benh@kernel.crashing.org, catalin.marinas@arm.com, christoffer.dall@arm.com, devel@linuxdriverproject.org, haiyangz@microsoft.com, hpa@zytor.com, jhogan@kernel.org, kvmarm@lists.cs.columbia.edu, kvm-ppc@vger.kernel.org, kvm@vger.kernel.org, kys@microsoft.com, linux-arm-kernel@lists.infradead.org, linux@armlinux.org, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, linuxppc-dev@lists.ozlabs.org, marc.zyngier@arm.com, mingo@redhat.com, mpe@ellerman.id.au, paul.burton@mips.com, paulus@ozlabs.org, pbonzini@redhat.com, ralf@linux-mips.org, rkrcmar@redhat.com, sthemmin@microsoft.com, tglx@linutronix.de, will.deacon@arm.com, x86@kernel.org, michael.h.kelley@microsoft.com, vkuznets@redhat.com
+Message-ID: <20181013145351.B9hhydxgJGgsFGdaqfqeN3JFkSfXRgHBxqy0_IdlvKk@z>
 
-Moving page-tables at the PMD-level on x86 is known to be safe. Enable
-this option so that we can do fast mremap when possible.
+From: Lan Tianyu <Tianyu.Lan@microsoft.com>
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- arch/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+For nested memory virtualization, Hyper-v doesn't set write-protect
+L1 hypervisor EPT page directory and page table node to track changes 
+while it relies on guest to tell it changes via HvFlushGuestAddressLlist
+hypercall. HvFlushGuestAddressLlist hypercall provides a way to flush
+EPT page table with ranges which are specified by L1 hypervisor.
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 1a0be022f91d..01c02a9d7825 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -171,6 +171,7 @@ config X86
- 	select HAVE_MEMBLOCK_NODE_MAP
- 	select HAVE_MIXED_BREAKPOINTS_REGS
- 	select HAVE_MOD_ARCH_SPECIFIC
-+	select HAVE_MOVE_PMD
- 	select HAVE_NMI
- 	select HAVE_OPROFILE
- 	select HAVE_OPTPROBES
+If L1 hypervisor uses INVEPT or HvFlushGuestAddressSpace hypercall to
+flush EPT tlb, Hyper-V will invalidate associated EPT shadow page table
+and sync L1's EPT table when next EPT page fault is triggered.
+HvFlushGuestAddressLlist hypercall helps to avoid such redundant EPT
+page fault and synchronization of shadow page table.
+
+
+Change since v3:
+	1) Remove code of updating "tlbs_dirty" in kvm_flush_remote_tlbs_with_range()
+	2) Remove directly tlb flush in the kvm_handle_hva_range()
+	3) Move tlb flush in kvm_set_pte_rmapp() to kvm_mmu_notifier_change_pte()
+	4) Combine Vitaly's "don't pass EPT configuration info to
+vmx_hv_remote_flush_tlb()" fix
+
+Change since v2:
+       1) Fix comment in the kvm_flush_remote_tlbs_with_range()
+       2) Move HV_MAX_FLUSH_PAGES and HV_MAX_FLUSH_REP_COUNT to
+	hyperv-tlfs.h.
+       3) Calculate HV_MAX_FLUSH_REP_COUNT in the macro definition
+       4) Use HV_MAX_FLUSH_REP_COUNT to define length of gpa_list in
+	struct hv_guest_mapping_flush_list.
+
+Change since v1:
+       1) Convert "end_gfn" of struct kvm_tlb_range to "pages" in order
+          to avoid confusion as to whether "end_gfn" is inclusive or exlusive.
+       2) Add hyperv tlb range struct and replace kvm tlb range struct
+          with new struct in order to avoid using kvm struct in the hyperv
+	  code directly.
+
+
+
+Lan Tianyu (15):
+  KVM: Add tlb_remote_flush_with_range callback in kvm_x86_ops
+  KVM/MMU: Add tlb flush with range helper function
+  KVM: Replace old tlb flush function with new one to flush a specified
+    range.
+  KVM: Make kvm_set_spte_hva() return int
+  KVM/MMU: Move tlb flush in kvm_set_pte_rmapp() to
+    kvm_mmu_notifier_change_pte()
+  KVM/MMU: Flush tlb directly in the kvm_set_pte_rmapp()
+  KVM/MMU: Flush tlb directly in the kvm_zap_gfn_range()
+  KVM/MMU: Flush tlb directly in kvm_mmu_zap_collapsible_spte()
+  KVM: Add flush_link and parent_pte in the struct kvm_mmu_page
+  KVM: Add spte's point in the struct kvm_mmu_page
+  KVM/MMU: Replace tlb flush function with range list flush function
+  x86/hyper-v: Add HvFlushGuestAddressList hypercall support
+  x86/Hyper-v: Add trace in the
+    hyperv_nested_flush_guest_mapping_range()
+  KVM/VMX: Change hv flush logic when ept tables are mismatched.
+  KVM/VMX: Add hv tlb range flush support
+
+ arch/arm/include/asm/kvm_host.h     |   2 +-
+ arch/arm64/include/asm/kvm_host.h   |   2 +-
+ arch/mips/include/asm/kvm_host.h    |   2 +-
+ arch/mips/kvm/mmu.c                 |   3 +-
+ arch/powerpc/include/asm/kvm_host.h |   2 +-
+ arch/powerpc/kvm/book3s.c           |   3 +-
+ arch/powerpc/kvm/e500_mmu_host.c    |   3 +-
+ arch/x86/hyperv/nested.c            |  85 ++++++++++++++++++++++
+ arch/x86/include/asm/hyperv-tlfs.h  |  32 +++++++++
+ arch/x86/include/asm/kvm_host.h     |  12 +++-
+ arch/x86/include/asm/mshyperv.h     |  16 +++++
+ arch/x86/include/asm/trace/hyperv.h |  14 ++++
+ arch/x86/kvm/mmu.c                  | 138 ++++++++++++++++++++++++++++++------
+ arch/x86/kvm/paging_tmpl.h          |  10 ++-
+ arch/x86/kvm/vmx.c                  |  70 +++++++++++++++---
+ virt/kvm/arm/mmu.c                  |   6 +-
+ virt/kvm/kvm_main.c                 |   5 +-
+ 17 files changed, 360 insertions(+), 45 deletions(-)
+
 -- 
-2.19.0.605.g01d371f741-goog
+2.14.4

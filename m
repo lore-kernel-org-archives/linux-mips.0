@@ -1,21 +1,16 @@
-Received: from mail-pl1-x642.google.com ([IPv6:2607:f8b0:4864:20::642]:38240
-        "EHLO mail-pl1-x642.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990490AbeJNNVlqK85g convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 14 Oct 2018 15:21:41 +0200
+Received: (from localhost user: 'macro', uid#1010) by eddie.linux-mips.org
+        with ESMTP id S23990509AbeJNXv1a00sR (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 15 Oct 2018 01:51:27 +0200
+Date: Mon, 15 Oct 2018 00:51:27 +0100 (BST)
+From: "Maciej W. Rozycki" <macro@linux-mips.org>
+Subject: Re: [PATCH] TC: Set DMA masks for devices
+In-Reply-To: <20181006092156.GA6783@sx-9>
+Message-ID: <alpine.LFD.2.21.1810061515200.7757@eddie.linux-mips.org>
+References: <alpine.LFD.2.21.1810030109210.5483@eddie.linux-mips.org> <20181004165720.GA2361@sx-9> <alpine.LFD.2.21.1810041916420.12089@eddie.linux-mips.org> <20181005145612.GA2341@sx-9> <alpine.LFD.2.21.1810051602280.22125@eddie.linux-mips.org>
+ <20181006092156.GA6783@sx-9>
 MIME-Version: 1.0
-References: <20181013145406.4911-1-Tianyu.Lan@microsoft.com>
- <20181013145406.4911-3-Tianyu.Lan@microsoft.com> <4D709C3A-A91C-4CA7-922A-E77618EF21B4@oracle.com>
- <alpine.DEB.2.21.1810141014350.1438@nanos.tec.linutronix.de>
- <20181014092734.GV30658@n2100.armlinux.org.uk> <20181014093541.GW30658@n2100.armlinux.org.uk>
-In-Reply-To: <20181014093541.GW30658@n2100.armlinux.org.uk>
-From: Tianyu Lan <lantianyu1986@gmail.com>
-Date: Sun, 14 Oct 2018 21:21:23 +0800
-Message-ID: <CAOLK0pzHAc1ipDbd3Trg2W_Gb_DxdEKM2ML5Fk09u0-O8y6UAg@mail.gmail.com>
-Subject: Re: [PATCH V4 2/15] KVM/MMU: Add tlb flush with range helper function
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-Return-Path: <lantianyu1986@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Return-Path: <macro@linux-mips.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -25,72 +20,56 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux@armlinux.org.uk
-Cc: Thomas Gleixner <tglx@linutronix.de>, linux-mips@linux-mips.org, kvm <kvm@vger.kernel.org>, Radim Krcmar <rkrcmar@redhat.com>, benh@kernel.crashing.org, will.deacon@arm.com, christoffer.dall@arm.com, paulus@ozlabs.org, "H. Peter Anvin" <hpa@zytor.com>, kys@microsoft.com, kvmarm@lists.cs.columbia.edu, sthemmin@microsoft.com, mpe@ellerman.id.au, the arch/x86 maintainers <x86@kernel.org>, michael.h.kelley@microsoft.com, Ingo Molnar <mingo@redhat.com>, catalin.marinas@arm.com, jhogan@kernel.org, Tianyu Lan <Tianyu.Lan@microsoft.com>, marc.zyngier@arm.com, haiyangz@microsoft.com, kvm-ppc@vger.kernel.org, liran.alon@oracle.com, Paolo Bonzini <pbonzini@redhat.com>, linux-arm-kernel@lists.infradead.org, "linux-kernel@vger kernel org" <linux-kernel@vger.kernel.org>, ralf@linux-mips.org, paul.burton@mips.com, devel@linuxdriverproject.org, vkuznets@redhat.com, linuxppc-dev@lists.ozlabs.org
-Message-ID: <20181014132123.nBhJAgzJJbwudgKFdXZjou8BhOxZM5Bb2QOg-35daUU@z>
+To: Fredrik Noring <noring@nocrew.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, =?UTF-8?Q?J=C3=BCrgen_Urban?= <JuergenUrban@gmx.de>
+Message-ID: <20181014235127.rLJ6j9QHpQ-5ra3sZht6uXthV5lUmv3AsNWZTRkK6to@z>
 
-Hi Russell:
-              Thanks for your review.
+Hi Fredrik,
 
-On Sun, Oct 14, 2018 at 5:36 PM Russell King - ARM Linux
-<linux@armlinux.org.uk> wrote:
->
-> On Sun, Oct 14, 2018 at 10:27:34AM +0100, Russell King - ARM Linux wrote:
-> > On Sun, Oct 14, 2018 at 10:16:56AM +0200, Thomas Gleixner wrote:
-> > > On Sun, 14 Oct 2018, Liran Alon wrote:
-> > > > > On 13 Oct 2018, at 17:53, lantianyu1986@gmail.com wrote:
-> > > > >
-> > > > > From: Lan Tianyu <Tianyu.Lan@microsoft.com>
-> > > > >
-> > > > > This patch is to add wrapper functions for tlb_remote_flush_with_range
-> > > > > callback.
-> > > > >
-> > > > > Signed-off-by: Lan Tianyu <Tianyu.Lan@microsoft.com>
-> > > > > ---
-> > > > > Change sicne V3:
-> > > > >       Remove code of updating "tlbs_dirty"
-> > > > > Change since V2:
-> > > > >       Fix comment in the kvm_flush_remote_tlbs_with_range()
-> > > > > ---
-> > > > > arch/x86/kvm/mmu.c | 40 ++++++++++++++++++++++++++++++++++++++++
-> > > > > 1 file changed, 40 insertions(+)
-> > > > >
-> > > > > diff --git a/arch/x86/kvm/mmu.c b/arch/x86/kvm/mmu.c
-> > > > > index c73d9f650de7..ff656d85903a 100644
-> > > > > --- a/arch/x86/kvm/mmu.c
-> > > > > +++ b/arch/x86/kvm/mmu.c
-> > > > > @@ -264,6 +264,46 @@ static void mmu_spte_set(u64 *sptep, u64 spte);
-> > > > > static union kvm_mmu_page_role
-> > > > > kvm_mmu_calc_root_page_role(struct kvm_vcpu *vcpu);
-> > > > >
-> > > > > +
-> > > > > +static inline bool kvm_available_flush_tlb_with_range(void)
-> > > > > +{
-> > > > > +       return kvm_x86_ops->tlb_remote_flush_with_range;
-> > > > > +}
-> > > >
-> > > > Seems that kvm_available_flush_tlb_with_range() is not used in this patch…
-> > >
-> > > What's wrong with that?
-> > >
-> > > It provides the implementation and later patches make use of it. It's a
-> > > sensible way to split patches into small, self contained entities.
-> >
-> > From what I can see of the patches that follow _this_ patch in the
-> > series, this function remains unused.  So, not only is it not used
-> > in this patch, it's not used in this series.
->
-> Note - I seem to have only received patches 1 through 4, so this is
-> based on the patches I've received.
->
+> >  From the description I take it it is some MMIO memory rather than host 
+> > memory.  I fail to see how it is supposed to work with these calls for 
+> > non-system memory, which certainly any MMIO memory is, which surely is not 
+> > under the supervision of the kernel memory allocator.
+> 
+> I agree, this is obscure to me too.
 
-Sorry to confuse your. I get from CCers from get_maintainer.pl script.
-The next patch "[PATCH V4 3/15]KVM: Replace old tlb flush function with
-new one to flush a specified range" calls new function.
-https://lkml.org/lkml/2018/10/13/254
+ I can't be bothered (sorry!) to study this code or the datasheet for the 
+IC to figure out what the arrangement is, but I do encourage you to do so 
+if you want to make any changes here.
 
-The patch "[PATCH V4 4/15] KVM: Make kvm_set_spte_hva() return int"
-changes under ARM directory. Please have a look. Thanks.
--- 
-Best regards
-Tianyu Lan
+> >  Mind that the DEFZA runs its own RTOS for initialization and management 
+> > support, including in particular SMT (Station Management).  This is run on 
+> > an MC68000 processor.  That processor is interfaced to a bus where board 
+> > memory is attached as well as the RMC (Ring Memory Controller) chip, which 
+> > acts as a DMA master on that bus, like does the host bus interface.  Also 
+> > certain control register writes from the host raise interrupts to the 
+> > MC68000 for special situations to handle.
+> > 
+> >  All the PDQ-based FDDI adapters also have an M68000 which runs an RTOS, 
+> > however the presence of the PDQ ASIC makes their architecture slightly 
+> > different as the FDDI chipset does host DMA via the PDQ ASIC, which acts 
+> > as a master on the host bus (possibly through a bridge chip like the PFI, 
+> > though TURBOchannel for example is interfaced directly).
+> 
+> How is its firmware handled? The Linux MIPS wiki entry for the DECstation
+> firmware
+> 
+> https://www.linux-mips.org/wiki/DECstation#Firmware
+> 
+> is a TODO. :)
+
+ I'm not sure who actually created that entry and what they had in mind.  
+Likely the console firmware and any of its peculiarities related to Linux.
+
+> The main reason I'm asking is that the IOP is a MIPS R3000
+> (apparently in later product models replaced with a PowerPC 405GP and its
+> DECKARD software emulator) that also needs firmware. The IOP most likely
+> ought to handle multiple firmware files, in the IRX format, depending on
+> its set of services.
+
+ The firmware of these FDDI boards is stored in flash memory onboard, so 
+you don't need to do anything to load it as it boots by itself.
+
+ There is a documented way to flash a firmware image by fiddling with the 
+control registers appropriately, downloading the new image to board RAM 
+and then requesting the board to transfer the image to onboard flash.  

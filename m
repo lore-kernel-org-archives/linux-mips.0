@@ -1,14 +1,21 @@
-Received: from mail-pf1-x441.google.com ([IPv6:2607:f8b0:4864:20::441]:33289
-        "EHLO mail-pf1-x441.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23990474AbeJMOzAiEl0w (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Sat, 13 Oct 2018 16:55:00 +0200
-From: lantianyu1986@gmail.com
-Subject: [PATCH V4 4/15] KVM: Make kvm_set_spte_hva() return int
-Date: Sat, 13 Oct 2018 22:53:55 +0800
-Message-ID: <20181013145406.4911-5-Tianyu.Lan@microsoft.com>
-In-Reply-To: <20181013145406.4911-1-Tianyu.Lan@microsoft.com>
+Received: from pandora.armlinux.org.uk ([IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6]:59186
+        "EHLO pandora.armlinux.org.uk" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990471AbeJNJ1yU7odX (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Sun, 14 Oct 2018 11:27:54 +0200
+Date: Sun, 14 Oct 2018 10:27:34 +0100
+From: Russell King - ARM Linux <linux@armlinux.org.uk>
+Subject: Re: [PATCH V4 2/15] KVM/MMU: Add tlb flush with range helper function
+Message-ID: <20181014092734.GV30658@n2100.armlinux.org.uk>
 References: <20181013145406.4911-1-Tianyu.Lan@microsoft.com>
-Return-Path: <lantianyu1986@gmail.com>
+ <20181013145406.4911-3-Tianyu.Lan@microsoft.com>
+ <4D709C3A-A91C-4CA7-922A-E77618EF21B4@oracle.com>
+ <alpine.DEB.2.21.1810141014350.1438@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <alpine.DEB.2.21.1810141014350.1438@nanos.tec.linutronix.de>
+Return-Path: <linux+linux-mips=linux-mips.org@armlinux.org.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,192 +25,46 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Cc: Lan Tianyu <Tianyu.Lan@microsoft.com>, christoffer.dall@arm.com, marc.zyngier@arm.com, linux@armlinux.org, catalin.marinas@arm.com, will.deacon@arm.com, jhogan@kernel.org, ralf@linux-mips.org, paul.burton@mips.com, paulus@ozlabs.org, benh@kernel.crashing.org, mpe@ellerman.id.au, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com, rkrcmar@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, devel@linuxdriverproject.org, kvm@vger.kernel.org, michael.h.kelley@microsoft.com, vkuznets@redhat.com
-Message-ID: <20181013145355.nA2pCCAwYCmVjVgzNlYWxoUWX5RYVlqkgEaGqYWe7eg@z>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Liran Alon <liran.alon@oracle.com>, linux-mips@linux-mips.org, linux@armlinux.org, kvm@vger.kernel.org, rkrcmar@redhat.com, catalin.marinas@arm.com, will.deacon@arm.com, linux-kernel@vger.kernel.org, paulus@ozlabs.org, hpa@zytor.com, kys@microsoft.com, kvmarm@lists.cs.columbia.edu, lantianyu1986@gmail.com, sthemmin@microsoft.com, mpe@ellerman.id.au, x86@kernel.org, michael.h.kelley@microsoft.com, mingo@redhat.com, benh@kernel.crashing.org, jhogan@kernel.org, Lan Tianyu <Tianyu.Lan@microsoft.com>, marc.zyngier@arm.com, haiyangz@microsoft.com, kvm-ppc@vger.kernel.org, devel@linuxdriverproject.org, linux-arm-kernel@lists.infradead.org, christoffer.dall@arm.com, ralf@linux-mips.org, paul.burton@mips.com, pbonzini@redhat.com, vkuznets@redhat.com, linuxppc-dev@lists.ozlabs.org
+Message-ID: <20181014092734.djzEbvMhly5QJ0YXoACDQDT6kfAOjds5I5kKcmbC-Pg@z>
 
-From: Lan Tianyu <Tianyu.Lan@microsoft.com>
-
-The patch is to make kvm_set_spte_hva() return int and caller can
-check return value to determine flush tlb or not.
-
-Signed-off-by: Lan Tianyu <Tianyu.Lan@microsoft.com>
----
- arch/arm/include/asm/kvm_host.h     | 2 +-
- arch/arm64/include/asm/kvm_host.h   | 2 +-
- arch/mips/include/asm/kvm_host.h    | 2 +-
- arch/mips/kvm/mmu.c                 | 3 ++-
- arch/powerpc/include/asm/kvm_host.h | 2 +-
- arch/powerpc/kvm/book3s.c           | 3 ++-
- arch/powerpc/kvm/e500_mmu_host.c    | 3 ++-
- arch/x86/include/asm/kvm_host.h     | 2 +-
- arch/x86/kvm/mmu.c                  | 3 ++-
- virt/kvm/arm/mmu.c                  | 6 ++++--
- 10 files changed, 17 insertions(+), 11 deletions(-)
-
-diff --git a/arch/arm/include/asm/kvm_host.h b/arch/arm/include/asm/kvm_host.h
-index 3ad482d2f1eb..efb820bdad2c 100644
---- a/arch/arm/include/asm/kvm_host.h
-+++ b/arch/arm/include/asm/kvm_host.h
-@@ -225,7 +225,7 @@ int __kvm_arm_vcpu_set_events(struct kvm_vcpu *vcpu,
- #define KVM_ARCH_WANT_MMU_NOTIFIER
- int kvm_unmap_hva_range(struct kvm *kvm,
- 			unsigned long start, unsigned long end);
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
- 
- unsigned long kvm_arm_num_regs(struct kvm_vcpu *vcpu);
- int kvm_arm_copy_reg_indices(struct kvm_vcpu *vcpu, u64 __user *indices);
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 3d6d7336f871..2e506c0b3eb7 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -358,7 +358,7 @@ int __kvm_arm_vcpu_set_events(struct kvm_vcpu *vcpu,
- #define KVM_ARCH_WANT_MMU_NOTIFIER
- int kvm_unmap_hva_range(struct kvm *kvm,
- 			unsigned long start, unsigned long end);
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
- int kvm_age_hva(struct kvm *kvm, unsigned long start, unsigned long end);
- int kvm_test_age_hva(struct kvm *kvm, unsigned long hva);
- 
-diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
-index 2c1c53d12179..71c3f21d80d5 100644
---- a/arch/mips/include/asm/kvm_host.h
-+++ b/arch/mips/include/asm/kvm_host.h
-@@ -933,7 +933,7 @@ enum kvm_mips_fault_result kvm_trap_emul_gva_fault(struct kvm_vcpu *vcpu,
- #define KVM_ARCH_WANT_MMU_NOTIFIER
- int kvm_unmap_hva_range(struct kvm *kvm,
- 			unsigned long start, unsigned long end);
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
- int kvm_age_hva(struct kvm *kvm, unsigned long start, unsigned long end);
- int kvm_test_age_hva(struct kvm *kvm, unsigned long hva);
- 
-diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
-index d8dcdb350405..97e538a8c1be 100644
---- a/arch/mips/kvm/mmu.c
-+++ b/arch/mips/kvm/mmu.c
-@@ -551,7 +551,7 @@ static int kvm_set_spte_handler(struct kvm *kvm, gfn_t gfn, gfn_t gfn_end,
- 	       (pte_dirty(old_pte) && !pte_dirty(hva_pte));
- }
- 
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
- {
- 	unsigned long end = hva + PAGE_SIZE;
- 	int ret;
-@@ -559,6 +559,7 @@ void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
- 	ret = handle_hva_to_gpa(kvm, hva, end, &kvm_set_spte_handler, &pte);
- 	if (ret)
- 		kvm_mips_callbacks->flush_shadow_all(kvm);
-+	return 0;
- }
- 
- static int kvm_age_hva_handler(struct kvm *kvm, gfn_t gfn, gfn_t gfn_end,
-diff --git a/arch/powerpc/include/asm/kvm_host.h b/arch/powerpc/include/asm/kvm_host.h
-index fac6f631ed29..ab23379c53a9 100644
---- a/arch/powerpc/include/asm/kvm_host.h
-+++ b/arch/powerpc/include/asm/kvm_host.h
-@@ -72,7 +72,7 @@ extern int kvm_unmap_hva_range(struct kvm *kvm,
- 			       unsigned long start, unsigned long end);
- extern int kvm_age_hva(struct kvm *kvm, unsigned long start, unsigned long end);
- extern int kvm_test_age_hva(struct kvm *kvm, unsigned long hva);
--extern void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
-+extern int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
- 
- #define HPTEG_CACHE_NUM			(1 << 15)
- #define HPTEG_HASH_BITS_PTE		13
-diff --git a/arch/powerpc/kvm/book3s.c b/arch/powerpc/kvm/book3s.c
-index fd9893bc7aa1..437613bb609a 100644
---- a/arch/powerpc/kvm/book3s.c
-+++ b/arch/powerpc/kvm/book3s.c
-@@ -850,9 +850,10 @@ int kvm_test_age_hva(struct kvm *kvm, unsigned long hva)
- 	return kvm->arch.kvm_ops->test_age_hva(kvm, hva);
- }
- 
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
- {
- 	kvm->arch.kvm_ops->set_spte_hva(kvm, hva, pte);
-+	return 0;
- }
- 
- void kvmppc_mmu_destroy(struct kvm_vcpu *vcpu)
-diff --git a/arch/powerpc/kvm/e500_mmu_host.c b/arch/powerpc/kvm/e500_mmu_host.c
-index 8f2985e46f6f..c3f312b2bcb3 100644
---- a/arch/powerpc/kvm/e500_mmu_host.c
-+++ b/arch/powerpc/kvm/e500_mmu_host.c
-@@ -757,10 +757,11 @@ int kvm_test_age_hva(struct kvm *kvm, unsigned long hva)
- 	return 0;
- }
- 
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
- {
- 	/* The page will get remapped properly on its next fault */
- 	kvm_unmap_hva(kvm, hva);
-+	return 0;
- }
- 
- /*****************************************/
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index fea95aa77319..19985c602ed6 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1504,7 +1504,7 @@ asmlinkage void kvm_spurious_fault(void);
- int kvm_unmap_hva_range(struct kvm *kvm, unsigned long start, unsigned long end);
- int kvm_age_hva(struct kvm *kvm, unsigned long start, unsigned long end);
- int kvm_test_age_hva(struct kvm *kvm, unsigned long hva);
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
- int kvm_cpu_has_injectable_intr(struct kvm_vcpu *v);
- int kvm_cpu_has_interrupt(struct kvm_vcpu *vcpu);
- int kvm_arch_interrupt_allowed(struct kvm_vcpu *vcpu);
-diff --git a/arch/x86/kvm/mmu.c b/arch/x86/kvm/mmu.c
-index 9b9db36df103..fd24a4dc45e9 100644
---- a/arch/x86/kvm/mmu.c
-+++ b/arch/x86/kvm/mmu.c
-@@ -1918,9 +1918,10 @@ int kvm_unmap_hva_range(struct kvm *kvm, unsigned long start, unsigned long end)
- 	return kvm_handle_hva_range(kvm, start, end, 0, kvm_unmap_rmapp);
- }
- 
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
- {
- 	kvm_handle_hva(kvm, hva, (unsigned long)&pte, kvm_set_pte_rmapp);
-+	return 0;
- }
- 
- static int kvm_age_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
-index ed162a6c57c5..89a9c5fa9fd7 100644
---- a/virt/kvm/arm/mmu.c
-+++ b/virt/kvm/arm/mmu.c
-@@ -1845,14 +1845,14 @@ static int kvm_set_spte_handler(struct kvm *kvm, gpa_t gpa, u64 size, void *data
- }
- 
- 
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
- {
- 	unsigned long end = hva + PAGE_SIZE;
- 	kvm_pfn_t pfn = pte_pfn(pte);
- 	pte_t stage2_pte;
- 
- 	if (!kvm->arch.pgd)
--		return;
-+		return 0;
- 
- 	trace_kvm_set_spte_hva(hva);
- 
-@@ -1863,6 +1863,8 @@ void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
- 	clean_dcache_guest_page(pfn, PAGE_SIZE);
- 	stage2_pte = pfn_pte(pfn, PAGE_S2);
- 	handle_hva_to_gpa(kvm, hva, end, &kvm_set_spte_handler, &stage2_pte);
-+
-+	return 0;
- }
- 
- static int kvm_age_hva_handler(struct kvm *kvm, gpa_t gpa, u64 size, void *data)
--- 
-2.14.4
+On Sun, Oct 14, 2018 at 10:16:56AM +0200, Thomas Gleixner wrote:
+> On Sun, 14 Oct 2018, Liran Alon wrote:
+> > > On 13 Oct 2018, at 17:53, lantianyu1986@gmail.com wrote:
+> > > 
+> > > From: Lan Tianyu <Tianyu.Lan@microsoft.com>
+> > > 
+> > > This patch is to add wrapper functions for tlb_remote_flush_with_range
+> > > callback.
+> > > 
+> > > Signed-off-by: Lan Tianyu <Tianyu.Lan@microsoft.com>
+> > > ---
+> > > Change sicne V3:
+> > >       Remove code of updating "tlbs_dirty"
+> > > Change since V2:
+> > >       Fix comment in the kvm_flush_remote_tlbs_with_range()
+> > > ---
+> > > arch/x86/kvm/mmu.c | 40 ++++++++++++++++++++++++++++++++++++++++
+> > > 1 file changed, 40 insertions(+)
+> > > 
+> > > diff --git a/arch/x86/kvm/mmu.c b/arch/x86/kvm/mmu.c
+> > > index c73d9f650de7..ff656d85903a 100644
+> > > --- a/arch/x86/kvm/mmu.c
+> > > +++ b/arch/x86/kvm/mmu.c
+> > > @@ -264,6 +264,46 @@ static void mmu_spte_set(u64 *sptep, u64 spte);
+> > > static union kvm_mmu_page_role
+> > > kvm_mmu_calc_root_page_role(struct kvm_vcpu *vcpu);
+> > > 
+> > > +
+> > > +static inline bool kvm_available_flush_tlb_with_range(void)
+> > > +{
+> > > +	return kvm_x86_ops->tlb_remote_flush_with_range;
+> > > +}
+> > 
+> > Seems that kvm_available_flush_tlb_with_range() is not used in this patch…
+> 
+> What's wrong with that? 
+> 
+> It provides the implementation and later patches make use of it. It's a
+> sensible way to split patches into small, self contained entities.

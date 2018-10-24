@@ -1,16 +1,23 @@
-Received: from mail-pf1-x443.google.com ([IPv6:2607:f8b0:4864:20::443]:44099
-        "EHLO mail-pf1-x443.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994647AbeJXTd2IsX8L (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 24 Oct 2018 21:33:28 +0200
-Received: by mail-pf1-x443.google.com with SMTP id r9-v6so2911218pff.11
-        for <linux-mips@linux-mips.org>; Wed, 24 Oct 2018 12:33:28 -0700 (PDT)
-From: Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH v2 2/2] arm64: Create asm/initrd.h
-Date: Wed, 24 Oct 2018 12:32:56 -0700
-Message-ID: <20181024193256.23734-3-f.fainelli@gmail.com>
-In-Reply-To: <20181024193256.23734-1-f.fainelli@gmail.com>
+Received: from mail.kernel.org ([198.145.29.99]:44540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23994645AbeJXTzhOxaSL (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 24 Oct 2018 21:55:37 +0200
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 416B620832
+        for <linux-mips@linux-mips.org>; Wed, 24 Oct 2018 19:55:30 +0000 (UTC)
+Received: by mail-qt1-f174.google.com with SMTP id g10-v6so7082167qtq.6
+        for <linux-mips@linux-mips.org>; Wed, 24 Oct 2018 12:55:30 -0700 (PDT)
+MIME-Version: 1.0
 References: <20181024193256.23734-1-f.fainelli@gmail.com>
-Return-Path: <f.fainelli@gmail.com>
+In-Reply-To: <20181024193256.23734-1-f.fainelli@gmail.com>
+From: Rob Herring <robh@kernel.org>
+Date: Wed, 24 Oct 2018 14:55:17 -0500
+Message-ID: <CAL_Jsq+KCOv6pXXHhHDZ+7-QUrmtMDvSjEVhK15yZ3qbnn61Ag@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] arm64: Cut rebuild time when changing CONFIG_BLK_DEV_INITRD
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <robh@kernel.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,81 +27,53 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Marc Zyngier <marc.zyngier@arm.com>, Olof Johansson <olof@lixom.net>, "open list:ALPHA PORT" <linux-alpha@vger.kernel.org>, "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>, "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>, "open list:C6X ARCHITECTURE" <linux-c6x-dev@linux-c6x.org>, "moderated list:H8/300
-        ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, "open list:QUALCOMM HEXAGON ARCHITECTURE" <linux-hexagon@vger.kernel.org>, "open list:IA64 Itanium PLATFORM" <linux-ia64@vger.kernel.org>, "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>, "open list:MIPS" <linux-mips@linux-mips.org>, "moderated list:NIOS2 ARCHITECTURE" <nios2-dev@lists.rocketboards.org>, "open list:OPENRISC ARCHITECTURE" <openrisc@lists.librecores.org>, "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>, "open list:LINUX FOR POWERPC 32-BIT AND
-        64-BIT" <linuxppc-dev@lists.ozlabs.org>, "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>, "open list:S390" <linux-s390@vger.kernel.org>, "open list:SUPERH" <linux-sh@vger.kernel.org>, "open list:SPARC + UltraSPARC
-        sparc/sparc64" <sparclinux@vger.kernel.org>, "open list:USER-MODE LINUX UML" <linux-um@lists.infradead.org>, "open list:TENSILICA XTENSA PORT xtensa" <linux-xtensa@linux-xtensa.org>, "open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE" <devicetree@vger.kernel.org>, "open list:GENERIC INCLUDE/ASM HEADER FILES" <linux-arch@vger.kernel.org>
-Message-ID: <20181024193256.HrWiMVyP_vIUpLSJxapOYa7cOSJbE5U551Lx5y7qYyA@z>
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Marc Zyngier <marc.zyngier@arm.com>, Olof Johansson <olof@lixom.net>, linux-alpha@vger.kernel.org, arcml <linux-snps-arc@lists.infradead.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, linux-c6x-dev@linux-c6x.org, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Linux-MIPS <linux-mips@linux-mips.org>, nios2-dev@lists.rocketboards.org, Openrisc <openrisc@lists.librecores.org>, linux-parisc@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, SH-Linux <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, devicetree@vger.kernel.org, "open list:GENERIC INCLUDE/ASM HEADER FILES" <linux-arch@vger.kernel.org>
+Message-ID: <20181024195517.cqz7A-TjLSWgv7fQoqvJ4iPFcYleN5Znl0IS50nEKhQ@z>
 
-ARM64 is the only architecture that requires a re-definition of
-__early_init_dt_declare_initrd(). Now that we added the infrastructure
-in asm-generic to provide an asm/initrd.h file, properly break up that
-definition from asm/memory.h and make use of that header in
-drivers/of/fdt.c where this is used.
+On Wed, Oct 24, 2018 at 2:33 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+> Hi all,
+>
+> While investigating why ARM64 required a ton of objects to be rebuilt
+> when toggling CONFIG_DEV_BLK_INITRD, it became clear that this was
+> because we define __early_init_dt_declare_initrd() differently and we do
+> that in arch/arm64/include/asm/memory.h which gets included by a fair
+> amount of other header files, and translation units as well.
 
-This significantly cuts the number of objects that need to be rebuilt on
-ARM64 due to the repercusions of including asm/memory.h in several
-places.
+I scratch my head sometimes as to why some config options rebuild so
+much stuff. One down, ? to go. :)
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/arm64/include/asm/initrd.h | 13 +++++++++++++
- arch/arm64/include/asm/memory.h |  8 --------
- drivers/of/fdt.c                |  1 +
- 3 files changed, 14 insertions(+), 8 deletions(-)
- create mode 100644 arch/arm64/include/asm/initrd.h
+> Changing the value of CONFIG_DEV_BLK_INITRD is a common thing with build
+> systems that generate two kernels: one with the initramfs and one
+> without. buildroot is one of these build systems, OpenWrt is also
+> another one that does this.
+>
+> This patch series proposes adding an empty initrd.h to satisfy the need
+> for drivers/of/fdt.c to unconditionally include that file, and moves the
+> custom __early_init_dt_declare_initrd() definition away from
+> asm/memory.h
+>
+> This cuts the number of objects rebuilds from 1920 down to 26, so a
+> factor 73 approximately.
+>
+> Apologies for the long CC list, please let me know how you would go
+> about merging that and if another approach would be preferable, e.g:
+> introducing a CONFIG_ARCH_INITRD_BELOW_START_OK Kconfig option or
+> something like that.
 
-diff --git a/arch/arm64/include/asm/initrd.h b/arch/arm64/include/asm/initrd.h
-new file mode 100644
-index 000000000000..0c9572485810
---- /dev/null
-+++ b/arch/arm64/include/asm/initrd.h
-@@ -0,0 +1,13 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_INITRD_H
-+#define __ASM_INITRD_H
-+
-+#ifdef CONFIG_BLK_DEV_INITRD
-+#define __early_init_dt_declare_initrd(__start, __end)			\
-+	do {								\
-+		initrd_start = (__start);				\
-+		initrd_end = (__end);					\
-+	} while (0)
-+#endif
-+
-+#endif /* __ASM_INITRD_H */
-diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-index b96442960aea..dc3ca21ba240 100644
---- a/arch/arm64/include/asm/memory.h
-+++ b/arch/arm64/include/asm/memory.h
-@@ -168,14 +168,6 @@
- #define IOREMAP_MAX_ORDER	(PMD_SHIFT)
- #endif
- 
--#ifdef CONFIG_BLK_DEV_INITRD
--#define __early_init_dt_declare_initrd(__start, __end)			\
--	do {								\
--		initrd_start = (__start);				\
--		initrd_end = (__end);					\
--	} while (0)
--#endif
--
- #ifndef __ASSEMBLY__
- 
- #include <linux/bitops.h>
-diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-index 800ad252cf9c..4e4711af907b 100644
---- a/drivers/of/fdt.c
-+++ b/drivers/of/fdt.c
-@@ -28,6 +28,7 @@
- 
- #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
- #include <asm/page.h>
-+#include <asm/initrd.h>
- 
- #include "of_private.h"
- 
--- 
-2.17.1
+There may be a better way as of 4.20 because bootmem is now gone and
+only memblock is used. This should unify what each arch needs to do
+with initrd early. We need the physical address early for memblock
+reserving. Then later on we need the virtual address to access the
+initrd. Perhaps we should just change initrd_start and initrd_end to
+physical addresses (or add 2 new variables would be less invasive and
+allow for different translation than __va()). The sanity checks and
+memblock reserve could also perhaps be moved to a common location.
+
+Alternatively, given arm64 is the only oddball, I'd be fine with an
+"if (IS_ENABLED(CONFIG_ARM64))" condition in the default
+__early_init_dt_declare_initrd as long as we have a path to removing
+it like the above option.
+
+Rob

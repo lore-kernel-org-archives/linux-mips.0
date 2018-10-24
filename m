@@ -1,14 +1,20 @@
-Received: from mail-pl1-x642.google.com ([IPv6:2607:f8b0:4864:20::642]:44662
-        "EHLO mail-pl1-x642.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994629AbeJWXlVg1Knx (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 24 Oct 2018 01:41:21 +0200
-From: Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH 2/2] arm64: Create asm/initrd.h
-Date: Tue, 23 Oct 2018 16:40:43 -0700
-Message-ID: <20181023234044.1138-3-f.fainelli@gmail.com>
-In-Reply-To: <20181023234044.1138-1-f.fainelli@gmail.com>
-References: <20181023234044.1138-1-f.fainelli@gmail.com>
-Return-Path: <f.fainelli@gmail.com>
+Received: from mail.kernel.org ([198.145.29.99]:49244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23994640AbeJXPHUBa2HU (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 24 Oct 2018 17:07:20 +0200
+Date: Wed, 24 Oct 2018 17:07:06 +0200
+From: Jessica Yu <jeyu@kernel.org>
+Subject: Re: [PATCH RFC v3 0/3] Rlimit for module space
+Message-ID: <20181024150706.jewcclhhh756tupn@linux-8ccs>
+References: <20181019204723.3903-1-rick.p.edgecombe@intel.com>
+ <CAKv+Gu_AgPv2o4=U0-7pnpgtSufEobnta8oKhhGfCdCxM82B5Q@mail.gmail.com>
+ <6b1017c450d163539d2b974657baaaf697f0a138.camel@intel.com>
+ <CAKv+Gu-Rk-SQVOQ63L3DkF3=EVik3pHXzpNp5r5TrgDajTM_iQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAKv+Gu-Rk-SQVOQ63L3DkF3=EVik3pHXzpNp5r5TrgDajTM_iQ@mail.gmail.com>
+Return-Path: <jeyu@kernel.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,81 +24,107 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-kernel@vger.kernel.org
-Cc: arnd@arndb.de, linux-arm-kernel@lists.infradead.org, Florian Fainelli <f.fainelli@gmail.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Mark Salter <msalter@redhat.com>, Aurelien Jacquiot <jacquiot.aurelien@gmail.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Greentime Hu <green.hu@gmail.com>, Vincent Chen <deanbo422@gmail.com>, Ley Foon Tan <lftan@altera.com>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Palmer Dabbelt <palmer@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@davemloft.net>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Guan Xuetao <gxt@pku.edu.cn>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>, "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Stephen Boyd <sboyd@codeaurora.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Kate Stewart <kstewart@linuxfoundation.org>, Philippe Ombredanne <pombredanne@nexb.com>, Andrew Morton <akpm@linux-foundation.org>, Andrey Ryabinin <aryabinin@virtuozzo.com>, Christoffer Dall <christoffer.dall@arm.com>, Andrey Konovalov <andreyknvl@google.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Marc Zyngier <marc.zyngier@arm.com>, Greg Ungerer <gerg@linux-m68k.org>, Matt Redfearn <matt.redfearn@mips.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Jan Henrik Weinstock <jan.weinstock@ice.rwth-aachen.de>, Alan Kao <alankao@andestech.com>, Deepa Dinamani <deepa.kernel@gmail.com>, Olof Johansson <olof@lixom.net>, Hendrik Brueckner <brueckner@linux.vnet.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jessica Yu <jeyu@kernel.org>, Ard Biesheuvel <ard.biesheuvel@linaro.org>, "open list:ALPHA PORT" <linux-alpha@vger.kernel.org>, "open list:SYNOPSYS ARC ARCHITECTURE" <linux-snps-arc@lists.infradead.org>, "open list:C6X ARCHITECTURE" <linux-c6x-dev@linux-c6x.org>, "moderated list:H8/300
-        ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, "open list:QUALCOMM HEXAGON ARCHITECTURE" <linux-hexagon@vger.kernel.org>, "open list:IA64 Itanium PLATFORM" <linux-ia64@vger.kernel.org>, "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>, "open list:MIPS" <linux-mips@linux-mips.org>, "moderated list:NIOS2 ARCHITECTURE" <nios2-dev@lists.rocketboards.org>, "open list:OPENRISC ARCHITECTURE" <openrisc@lists.librecores.org>, "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>, "open list:LINUX FOR POWERPC 32-BIT AND
-        64-BIT" <linuxppc-dev@lists.ozlabs.org>, "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>, "open list:S390" <linux-s390@vger.kernel.org>, "open list:SUPERH" <linux-sh@vger.kernel.org>, "open list:SPARC + UltraSPARC
-        sparc/sparc64" <sparclinux@vger.kernel.org>, "open list:USER-MODE LINUX UML" <linux-um@lists.infradead.org>, "open list:TENSILICA XTENSA PORT xtensa" <linux-xtensa@linux-xtensa.org>, "open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE" <devicetree@vger.kernel.org>, "open list:GENERIC INCLUDE/ASM HEADER FILES" <linux-arch@vger.kernel.org>
-Message-ID: <20181023234043.BR6LO0hJ5cKoZD6OP_FQ_9toga6Izo-Z3VYR-4xGSZY@z>
+To: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Cc: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>, "keescook@chromium.org" <keescook@chromium.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "arjan@linux.intel.com" <arjan@linux.intel.com>, "tglx@linutronix.de" <tglx@linutronix.de>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "jannh@google.com" <jannh@google.com>, "x86@kernel.org" <x86@kernel.org>, "kristen@linux.intel.com" <kristen@linux.intel.com>, "Dock, Deneen T" <deneen.t.dock@intel.com>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>, "mingo@redhat.com" <mingo@redhat.com>, "will.deacon@arm.com" <will.deacon@arm.com>, "kernel-hardening@lists.openwall.com" <kernel-hardening@lists.openwall.com>, "bp@alien8.de" <bp@alien8.de>, "Hansen, Dave" <dave.hansen@intel.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "davem@davemloft.net" <davem@davemloft.net>, "arnd@arndb.de" <arnd@arndb.de>, "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>
+Message-ID: <20181024150706.DqhMQJX7k7iEiPj4lKh3JSPK0VPJzesbqD6xI1n3AbE@z>
 
-ARM64 is the only architecture that requires a re-definition of
-__early_init_dt_declare_initrd(). Now that we added the infrastructure
-in asm-generic to provide an asm/initrd.h file, properly break up that
-definition from asm/memory.h and make use of that header in
-drivers/of/fdt.c where this is used.
++++ Ard Biesheuvel [23/10/18 08:54 -0300]:
+>On 22 October 2018 at 20:06, Edgecombe, Rick P
+><rick.p.edgecombe@intel.com> wrote:
+>> On Sat, 2018-10-20 at 19:20 +0200, Ard Biesheuvel wrote:
+>>> Hi Rick,
+>>>
+>>> On 19 October 2018 at 22:47, Rick Edgecombe <rick.p.edgecombe@intel.com>
+>>> wrote:
+>>> > If BPF JIT is on, there is no effective limit to prevent filling the entire
+>>> > module space with JITed e/BPF filters.
+>>>
+>>> Why do BPF filters use the module space, and does this reason apply to
+>>> all architectures?
+>>>
+>>> On arm64, we already support loading plain modules far away from the
+>>> core kernel (i.e. out of range for ordinary relative jump/calll
+>>> instructions), and so I'd expect BPF to be able to deal with this
+>>> already as well. So for arm64, I wonder why an ordinary vmalloc_exec()
+>>> wouldn't be more appropriate.
+>> AFAIK, it's like you said about relative instruction limits, but also because
+>> some predictors don't predict past a certain distance. So performance as well.
+>> Not sure the reasons for each arch, or if they all apply for BPF JIT. There seem
+>> to be 8 by my count, that have a dedicated module space for some reason.
+>>
+>>> So before refactoring the module alloc/free routines to accommodate
+>>> BPF, I'd like to take one step back and assess whether it wouldn't be
+>>> more appropriate to have a separate bpf_alloc/free API, which could be
+>>> totally separate from module alloc/free if the arch permits it.
+>>>
+>> I am not a BPF JIT expert unfortunately, hopefully someone more authoritative
+>> will chime in. I only ran into this because I was trying to increase
+>> randomization for the module space and wanted to find out how many allocations
+>> needed to be supported.
+>>
+>> I'd guess though, that BPF JIT is just assuming that there will be some arch
+>> specific constraints about where text can be placed optimally and they would
+>> already be taken into account in the module space allocator.
+>>
+>> If there are no constraints for some arch, I'd wonder why not just update its
+>> module_alloc to use the whole space available. What exactly are the constraints
+>> for arm64 for normal modules?
+>>
+>
+>Relative branches and the interactions with KAsan.
+>
+>We just fixed something similar in the kprobes code: it was using
+>RWX-mapped module memory to store kprobed instructions, and we
+>replaced that with a simple vmalloc_exec() [and code to remap it
+>read-only], which was possible given that relative branches are always
+>emulated by arm64 kprobes.
+>
+>So it depends on whether BPF code needs to be in relative branching
+>range from the calling code, and whether the BPF code itself is
+>emitted using relative branches into other parts of the code.
+>
+>> It seems fine to me for architectures to have the option of solving this a
+>> different way. If potentially the rlimit ends up being the best solution for
+>> some architectures though, do you think this refactor (pretty close to just a
+>> name change) is that intrusive?
+>>
+>> I guess it could be just a BPF JIT per user limit and not touch module space,
+>> but I thought the module space limit was a more general solution as that is the
+>> actual limited resource.
+>>
+>
+>I think it is wrong to conflate the two things. Limiting the number of
+>BPF allocations and the limiting number of module allocations are two
+>separate things, and the fact that BPF reuses module_alloc() out of
+>convenience does not mean a single rlimit for both is appropriate.
 
-This significantly cuts the number of objects that need to be rebuilt on
-ARM64 due to the repercusions of including asm/memory.h in several
-places.
+Hm, I think Ard has a good point. AFAIK, and correct me if I'm wrong,
+users of module_alloc() i.e. kprobes, ftrace, bpf, seem to use it
+because it is an easy way to obtain executable kernel memory (and
+depending on the needs of the architecture, being additionally
+reachable via relative branches) during runtime. The side effect is
+that all these users share the "module" memory space, even though this
+memory region is not exclusively used by modules (well, personally I
+think it technically should be, because seeing module_alloc() usage
+outside of the module loader is kind of a misuse of the module API and
+it's confusing for people who don't know the reason behind its usage
+outside of the module loader).
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/arm64/include/asm/initrd.h | 13 +++++++++++++
- arch/arm64/include/asm/memory.h |  8 --------
- drivers/of/fdt.c                |  1 +
- 3 files changed, 14 insertions(+), 8 deletions(-)
- create mode 100644 arch/arm64/include/asm/initrd.h
+Right now I'm not sure if it makes sense to impose a blanket limit on
+all module_alloc() allocations when the real motivation behind the
+rlimit is related to BPF, i.e., to stop unprivileged users from
+hogging up all the vmalloc space for modules with JITed BPF filters.
+So the rlimit has more to do with limiting the memory usage of BPF
+filters than it has to do with modules themselves.
 
-diff --git a/arch/arm64/include/asm/initrd.h b/arch/arm64/include/asm/initrd.h
-new file mode 100644
-index 000000000000..0c9572485810
---- /dev/null
-+++ b/arch/arm64/include/asm/initrd.h
-@@ -0,0 +1,13 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_INITRD_H
-+#define __ASM_INITRD_H
-+
-+#ifdef CONFIG_BLK_DEV_INITRD
-+#define __early_init_dt_declare_initrd(__start, __end)			\
-+	do {								\
-+		initrd_start = (__start);				\
-+		initrd_end = (__end);					\
-+	} while (0)
-+#endif
-+
-+#endif /* __ASM_INITRD_H */
-diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-index b96442960aea..dc3ca21ba240 100644
---- a/arch/arm64/include/asm/memory.h
-+++ b/arch/arm64/include/asm/memory.h
-@@ -168,14 +168,6 @@
- #define IOREMAP_MAX_ORDER	(PMD_SHIFT)
- #endif
- 
--#ifdef CONFIG_BLK_DEV_INITRD
--#define __early_init_dt_declare_initrd(__start, __end)			\
--	do {								\
--		initrd_start = (__start);				\
--		initrd_end = (__end);					\
--	} while (0)
--#endif
--
- #ifndef __ASSEMBLY__
- 
- #include <linux/bitops.h>
-diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-index 800ad252cf9c..4e4711af907b 100644
---- a/drivers/of/fdt.c
-+++ b/drivers/of/fdt.c
-@@ -28,6 +28,7 @@
- 
- #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
- #include <asm/page.h>
-+#include <asm/initrd.h>
- 
- #include "of_private.h"
- 
--- 
-2.17.1
+I think Ard's suggestion of having a separate bpf_alloc/free API makes
+a lot of sense if we want to keep track of bpf-related allocations
+(and then the rlimit would be enforced for those). Maybe part of the
+module mapping space could be carved out for bpf filters (e.g. have
+BPF_VADDR, BPF_VSIZE, etc like how we have it for modules), or
+continue sharing the region but explicitly define a separate bpf_alloc
+API, depending on an architecture's needs. What do people think?
+
+Thanks,
+
+Jessica

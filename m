@@ -1,23 +1,32 @@
-Received: from mx2.suse.de ([195.135.220.15]:57738 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23994805AbeJYOSnJXX9D (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Thu, 25 Oct 2018 16:18:43 +0200
-Date: Thu, 25 Oct 2018 16:18:35 +0200
-From: Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH RFC v3 0/3] Rlimit for module space
-Message-ID: <20181025141835.GS18839@dhcp22.suse.cz>
-References: <20181019204723.3903-1-rick.p.edgecombe@intel.com>
- <CAKv+Gu_AgPv2o4=U0-7pnpgtSufEobnta8oKhhGfCdCxM82B5Q@mail.gmail.com>
- <6b1017c450d163539d2b974657baaaf697f0a138.camel@intel.com>
- <CAKv+Gu-Rk-SQVOQ63L3DkF3=EVik3pHXzpNp5r5TrgDajTM_iQ@mail.gmail.com>
- <20181024150706.jewcclhhh756tupn@linux-8ccs>
- <d7cb6a8c-b7d6-5c82-6721-2b5387da673f@iogearbox.net>
- <d1fec827d028168047eafbac56e8e47d37cf7fb5.camel@intel.com>
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46898 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992735AbeJYRaBKbirI (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 25 Oct 2018 19:30:01 +0200
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id w9PHOAue124965
+        for <linux-mips@linux-mips.org>; Thu, 25 Oct 2018 13:29:58 -0400
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2nbg0mpwnp-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-mips@linux-mips.org>; Thu, 25 Oct 2018 13:29:58 -0400
+Received: from localhost
+        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-mips@linux-mips.org> from <rppt@linux.ibm.com>;
+        Thu, 25 Oct 2018 18:29:55 +0100
+Date: Thu, 25 Oct 2018 18:29:36 +0100
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH v2 0/2] arm64: Cut rebuild time when changing
+ CONFIG_BLK_DEV_INITRD
+References: <20181024193256.23734-1-f.fainelli@gmail.com>
+ <CAL_Jsq+KCOv6pXXHhHDZ+7-QUrmtMDvSjEVhK15yZ3qbnn61Ag@mail.gmail.com>
+ <20181025093833.GA23607@rapoport-lnx>
+ <CAL_JsqL62ttsGSbE1BS5v-mX3pKE-p_HyvuZD6nB+GUbQyetzg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d1fec827d028168047eafbac56e8e47d37cf7fb5.camel@intel.com>
-Return-Path: <mhocko@kernel.org>
+In-Reply-To: <CAL_JsqL62ttsGSbE1BS5v-mX3pKE-p_HyvuZD6nB+GUbQyetzg@mail.gmail.com>
+Message-ID: <20181025172935.GA27364@rapoport-lnx>
+Return-Path: <rppt@linux.ibm.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -27,29 +36,159 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "daniel@iogearbox.net" <daniel@iogearbox.net>, "jeyu@kernel.org" <jeyu@kernel.org>, "ard.biesheuvel@linaro.org" <ard.biesheuvel@linaro.org>, "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "jannh@google.com" <jannh@google.com>, "keescook@chromium.org" <keescook@chromium.org>, "arjan@linux.intel.com" <arjan@linux.intel.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "tglx@linutronix.de" <tglx@linutronix.de>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "kristen@linux.intel.com" <kristen@linux.intel.com>, "Dock, Deneen T" <deneen.t.dock@intel.com>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>, "mingo@redhat.com" <mingo@redhat.com>, "will.deacon@arm.com" <will.deacon@arm.com>, "kernel-hardening@lists.openwall.com" <kernel-hardening@lists.openwall.com>, "bp@alien8.de" <bp@alien8.de>, "Hansen, Dave" <dave.hansen@intel.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "davem@davemloft.net" <davem@davemloft.net>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "arnd@arndb.de" <arnd@arndb.de>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>
-Message-ID: <20181025141835.FolgQL-Fp61S0bNtM5LKtJ_wGTJS6RcvQraXeVj3-aY@z>
+To: Rob Herring <robh@kernel.org>
+Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>, Florian Fainelli <f.fainelli@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Marc Zyngier <marc.zyngier@arm.com>, Olof Johansson <olof@lixom.net>, linux-alpha@vger.kernel.org, arcml <linux-snps-arc@lists.infradead.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, linux-c6x-dev@linux-c6x.org, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Linux-MIPS <linux-mips@linux-mips.org>, nios2-dev@lists.rocketboards.org, Openrisc <openrisc@lists.librecores.org>, linux-parisc@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, SH-Linux <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, devicetree@vger.kernel.org, "open list:GENERIC INCLUDE/ASM HEADER FILES" <linux-arch@vger.kernel.org>
+Message-ID: <20181025172936.VUMaFyyxnVHvbx1Z_ardQW39s7LjcD01ttHsFH3joFM@z>
 
-On Thu 25-10-18 01:01:44, Edgecombe, Rick P wrote:
-[...]
-> FWIW, cgroups seems like a better solution than rlimit to me too. Maybe you all
-> already know, but it looks like the cgroups vmalloc charge is done in the main
-> page allocator and counts against the whole kernel memory limit.
+On Thu, Oct 25, 2018 at 08:15:15AM -0500, Rob Herring wrote:
+> +Ard
+> 
+> On Thu, Oct 25, 2018 at 4:38 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
+> >
+> > On Wed, Oct 24, 2018 at 02:55:17PM -0500, Rob Herring wrote:
+> > > On Wed, Oct 24, 2018 at 2:33 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+> > > >
+> > > > Hi all,
+> > > >
+> > > > While investigating why ARM64 required a ton of objects to be rebuilt
+> > > > when toggling CONFIG_DEV_BLK_INITRD, it became clear that this was
+> > > > because we define __early_init_dt_declare_initrd() differently and we do
+> > > > that in arch/arm64/include/asm/memory.h which gets included by a fair
+> > > > amount of other header files, and translation units as well.
+> > >
+> > > I scratch my head sometimes as to why some config options rebuild so
+> > > much stuff. One down, ? to go. :)
+> > >
+> > > > Changing the value of CONFIG_DEV_BLK_INITRD is a common thing with build
+> > > > systems that generate two kernels: one with the initramfs and one
+> > > > without. buildroot is one of these build systems, OpenWrt is also
+> > > > another one that does this.
+> > > >
+> > > > This patch series proposes adding an empty initrd.h to satisfy the need
+> > > > for drivers/of/fdt.c to unconditionally include that file, and moves the
+> > > > custom __early_init_dt_declare_initrd() definition away from
+> > > > asm/memory.h
+> > > >
+> > > > This cuts the number of objects rebuilds from 1920 down to 26, so a
+> > > > factor 73 approximately.
+> > > >
+> > > > Apologies for the long CC list, please let me know how you would go
+> > > > about merging that and if another approach would be preferable, e.g:
+> > > > introducing a CONFIG_ARCH_INITRD_BELOW_START_OK Kconfig option or
+> > > > something like that.
+> > >
+> > > There may be a better way as of 4.20 because bootmem is now gone and
+> > > only memblock is used. This should unify what each arch needs to do
+> > > with initrd early. We need the physical address early for memblock
+> > > reserving. Then later on we need the virtual address to access the
+> > > initrd. Perhaps we should just change initrd_start and initrd_end to
+> > > physical addresses (or add 2 new variables would be less invasive and
+> > > allow for different translation than __va()). The sanity checks and
+> > > memblock reserve could also perhaps be moved to a common location.
+> > >
+> > > Alternatively, given arm64 is the only oddball, I'd be fine with an
+> > > "if (IS_ENABLED(CONFIG_ARM64))" condition in the default
+> > > __early_init_dt_declare_initrd as long as we have a path to removing
+> > > it like the above option.
+> >
+> > I think arm64 does not have to redefine __early_init_dt_declare_initrd().
+> > Something like this might be just all we need (completely untested,
+> > probably it won't even compile):
+> >
+> > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> > index 9d9582c..e9ca238 100644
+> > --- a/arch/arm64/mm/init.c
+> > +++ b/arch/arm64/mm/init.c
+> > @@ -62,6 +62,9 @@ s64 memstart_addr __ro_after_init = -1;
+> >  phys_addr_t arm64_dma_phys_limit __ro_after_init;
+> >
+> >  #ifdef CONFIG_BLK_DEV_INITRD
+> > +
+> > +static phys_addr_t initrd_start_phys, initrd_end_phys;
+> > +
+> >  static int __init early_initrd(char *p)
+> >  {
+> >         unsigned long start, size;
+> > @@ -71,8 +74,8 @@ static int __init early_initrd(char *p)
+> >         if (*endp == ',') {
+> >                 size = memparse(endp + 1, NULL);
+> >
+> > -               initrd_start = start;
+> > -               initrd_end = start + size;
+> > +               initrd_start_phys = start;
+> > +               initrd_end_phys = end;
+> >         }
+> >         return 0;
+> >  }
+> > @@ -407,14 +410,27 @@ void __init arm64_memblock_init(void)
+> >                 memblock_add(__pa_symbol(_text), (u64)(_end - _text));
+> >         }
+> >
+> > -       if (IS_ENABLED(CONFIG_BLK_DEV_INITRD) && initrd_start) {
+> > +       if (IS_ENABLED(CONFIG_BLK_DEV_INITRD) &&
+> > +           (initrd_start || initrd_start_phys)) {
+> > +               /*
+> > +                * FIXME: ensure proper precendence between
+> > +                * early_initrd and DT when both are present
+> 
+> Command line takes precedence, so just reverse the order.
+> 
+> > +                */
+> > +               if (initrd_start) {
+> > +                       initrd_start_phys = __phys_to_virt(initrd_start);
+> > +                       initrd_end_phys = __phys_to_virt(initrd_end);
+> 
+> AIUI, the original issue was doing the P2V translation was happening
+> too early and the VA could be wrong if the linear range is adjusted.
+> So I don't think this would work.
 
-I am not sure I understand what you are saying but let me clarify that
-vmalloc memory is accounted against memory cgroup associated with the
-user context calling vmalloc. All you need to do is to add __GFP_ACCOUNT
-to the gfp mask. The only challenge here is the charged memory life
-cycle. When does it get deallocated? In the worst case the memory is not
-tight to any user context and as such it doesn't get deallocated by
-killing all processes which could lead to memcg limit exhaustion.
+Probably things have changed since then, but in the current code there is
 
-> A user may want
-> to have a higher kernel limit than the module space size, so it seems it isn't
-> enough by itself and some new limit would need to be added.
+		initrd_start = __phys_to_virt(initrd_start);
 
-If there is another restriction on this memory then you are right.
+and in between only the code related to CONFIG_RANDOMIZE_BASE, so I believe
+it's safe to use __phys_to_virt() here as well.
+ 
+> I suppose you could convert the VA back to a PA before any adjustments
+> and then back to a VA again after. But that's kind of hacky. 2 wrongs
+> making a right.
+> 
+> > +               } else if (initrd_start_phys) {
+> > +                       initrd_start = __va(initrd_start_phys);
+> > +                       initrd_end = __va(initrd_start_phys);
+> > +               }
+> > +
+> >                 /*
+> >                  * Add back the memory we just removed if it results in the
+> >                  * initrd to become inaccessible via the linear mapping.
+> >                  * Otherwise, this is a no-op
+> >                  */
+> > -               u64 base = initrd_start & PAGE_MASK;
+> > -               u64 size = PAGE_ALIGN(initrd_end) - base;
+> > +               u64 base = initrd_start_phys & PAGE_MASK;
+> > +               u64 size = PAGE_ALIGN(initrd_end_phys) - base;
+> >
+> >                 /*
+> >                  * We can only add back the initrd memory if we don't end up
+> > @@ -458,7 +474,7 @@ void __init arm64_memblock_init(void)
+> >          * pagetables with memblock.
+> >          */
+> >         memblock_reserve(__pa_symbol(_text), _end - _text);
+> > -#ifdef CONFIG_BLK_DEV_INITRD
+> > +#if 0
+> >         if (initrd_start) {
+> >                 memblock_reserve(initrd_start, initrd_end - initrd_start);
+> >
+> >
+> > > Rob
+> > >
+> >
+> > --
+> > Sincerely yours,
+> > Mike.
+> >
+> 
+
 -- 
-Michal Hocko
-SUSE Labs
+Sincerely yours,
+Mike.

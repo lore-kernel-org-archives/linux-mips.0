@@ -1,9 +1,20 @@
-Received: from mail-wr1-x444.google.com ([IPv6:2a00:1450:4864:20::444]:37610
-        "EHLO mail-wr1-x444.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992871AbeJYXHfmUhrP (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 26 Oct 2018 01:07:35 +0200
-Received: by mail-wr1-x444.google.com with SMTP id g9-v6so10950363wrq.4
-        for <linux-mips@linux-mips.org>; Thu, 25 Oct 2018 16:07:35 -0700 (PDT)
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50764 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by eddie.linux-mips.org with ESMTP id S23992836AbeJZIMwhyKuu (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 26 Oct 2018 10:12:52 +0200
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id w9Q89EdE087711
+        for <linux-mips@linux-mips.org>; Fri, 26 Oct 2018 04:12:48 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2nbvvmdts3-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-mips@linux-mips.org>; Fri, 26 Oct 2018 04:12:47 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-mips@linux-mips.org> from <rppt@linux.ibm.com>;
+        Fri, 26 Oct 2018 09:12:45 +0100
+Date: Fri, 26 Oct 2018 09:12:25 +0100
+From: Mike Rapoport <rppt@linux.ibm.com>
 Subject: Re: [PATCH v2 0/2] arm64: Cut rebuild time when changing
  CONFIG_BLK_DEV_INITRD
 References: <20181024193256.23734-1-f.fainelli@gmail.com>
@@ -12,15 +23,12 @@ References: <20181024193256.23734-1-f.fainelli@gmail.com>
  <CAL_JsqL62ttsGSbE1BS5v-mX3pKE-p_HyvuZD6nB+GUbQyetzg@mail.gmail.com>
  <20181025172935.GA27364@rapoport-lnx>
  <CAL_JsqJrMq+QHvuOsqEdCFchmXsd4s2XKUD_TboKzeEQprJvjg@mail.gmail.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <1bb3bd63-a88e-b668-ea36-f0f985c0e2b1@gmail.com>
-Date: Thu, 25 Oct 2018 16:07:13 -0700
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <CAL_JsqJrMq+QHvuOsqEdCFchmXsd4s2XKUD_TboKzeEQprJvjg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Return-Path: <f.fainelli@gmail.com>
+Message-ID: <20181026081224.GB27364@rapoport-lnx>
+Return-Path: <rppt@linux.ibm.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -30,132 +38,133 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rob Herring <robh@kernel.org>, rppt@linux.ibm.com
-Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Marc Zyngier <marc.zyngier@arm.com>, Olof Johansson <olof@lixom.net>, linux-alpha@vger.kernel.org, arcml <linux-snps-arc@lists.infradead.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, linux-c6x-dev@linux-c6x.org, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Linux-MIPS <linux-mips@linux-mips.org>, nios2-dev@lists.rocketboards.org, Openrisc <openrisc@lists.librecores.org>, linux-parisc@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, SH-Linux <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, devicetree@vger.kernel.org, "open list:GENERIC INCLUDE/ASM HEADER FILES" <linux-arch@vger.kernel.org>
-Message-ID: <20181025230713.Q4TWpd7NBEVeerV8OmwMiWrBdQnXy5V4JAieWuGtsVI@z>
+To: Rob Herring <robh@kernel.org>
+Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>, Florian Fainelli <f.fainelli@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Marc Zyngier <marc.zyngier@arm.com>, Olof Johansson <olof@lixom.net>, linux-alpha@vger.kernel.org, arcml <linux-snps-arc@lists.infradead.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, linux-c6x-dev@linux-c6x.org, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Linux-MIPS <linux-mips@linux-mips.org>, nios2-dev@lists.rocketboards.org, Openrisc <openrisc@lists.librecores.org>, linux-parisc@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, SH-Linux <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, devicetree@vger.kernel.org, "open list:GENERIC INCLUDE/ASM HEADER FILES" <linux-arch@vger.kernel.org>
+Message-ID: <20181026081225.OFEWNa2PsbOnaa2mYcBu998A8aDnJhhJgwIwAXoSkVI@z>
 
-On 10/25/18 2:13 PM, Rob Herring wrote:
+On Thu, Oct 25, 2018 at 04:13:10PM -0500, Rob Herring wrote:
 > On Thu, Oct 25, 2018 at 12:30 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
->>
->> On Thu, Oct 25, 2018 at 08:15:15AM -0500, Rob Herring wrote:
->>> +Ard
->>>
->>> On Thu, Oct 25, 2018 at 4:38 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
->>>>
->>>> On Wed, Oct 24, 2018 at 02:55:17PM -0500, Rob Herring wrote:
->>>>> On Wed, Oct 24, 2018 at 2:33 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->>>>>>
->>>>>> Hi all,
->>>>>>
->>>>>> While investigating why ARM64 required a ton of objects to be rebuilt
->>>>>> when toggling CONFIG_DEV_BLK_INITRD, it became clear that this was
->>>>>> because we define __early_init_dt_declare_initrd() differently and we do
->>>>>> that in arch/arm64/include/asm/memory.h which gets included by a fair
->>>>>> amount of other header files, and translation units as well.
->>>>>
->>>>> I scratch my head sometimes as to why some config options rebuild so
->>>>> much stuff. One down, ? to go. :)
->>>>>
->>>>>> Changing the value of CONFIG_DEV_BLK_INITRD is a common thing with build
->>>>>> systems that generate two kernels: one with the initramfs and one
->>>>>> without. buildroot is one of these build systems, OpenWrt is also
->>>>>> another one that does this.
->>>>>>
->>>>>> This patch series proposes adding an empty initrd.h to satisfy the need
->>>>>> for drivers/of/fdt.c to unconditionally include that file, and moves the
->>>>>> custom __early_init_dt_declare_initrd() definition away from
->>>>>> asm/memory.h
->>>>>>
->>>>>> This cuts the number of objects rebuilds from 1920 down to 26, so a
->>>>>> factor 73 approximately.
->>>>>>
->>>>>> Apologies for the long CC list, please let me know how you would go
->>>>>> about merging that and if another approach would be preferable, e.g:
->>>>>> introducing a CONFIG_ARCH_INITRD_BELOW_START_OK Kconfig option or
->>>>>> something like that.
->>>>>
->>>>> There may be a better way as of 4.20 because bootmem is now gone and
->>>>> only memblock is used. This should unify what each arch needs to do
->>>>> with initrd early. We need the physical address early for memblock
->>>>> reserving. Then later on we need the virtual address to access the
->>>>> initrd. Perhaps we should just change initrd_start and initrd_end to
->>>>> physical addresses (or add 2 new variables would be less invasive and
->>>>> allow for different translation than __va()). The sanity checks and
->>>>> memblock reserve could also perhaps be moved to a common location.
->>>>>
->>>>> Alternatively, given arm64 is the only oddball, I'd be fine with an
->>>>> "if (IS_ENABLED(CONFIG_ARM64))" condition in the default
->>>>> __early_init_dt_declare_initrd as long as we have a path to removing
->>>>> it like the above option.
->>>>
->>>> I think arm64 does not have to redefine __early_init_dt_declare_initrd().
->>>> Something like this might be just all we need (completely untested,
->>>> probably it won't even compile):
->>>>
->>>> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
->>>> index 9d9582c..e9ca238 100644
->>>> --- a/arch/arm64/mm/init.c
->>>> +++ b/arch/arm64/mm/init.c
->>>> @@ -62,6 +62,9 @@ s64 memstart_addr __ro_after_init = -1;
->>>>  phys_addr_t arm64_dma_phys_limit __ro_after_init;
->>>>
->>>>  #ifdef CONFIG_BLK_DEV_INITRD
->>>> +
->>>> +static phys_addr_t initrd_start_phys, initrd_end_phys;
->>>> +
->>>>  static int __init early_initrd(char *p)
->>>>  {
->>>>         unsigned long start, size;
->>>> @@ -71,8 +74,8 @@ static int __init early_initrd(char *p)
->>>>         if (*endp == ',') {
->>>>                 size = memparse(endp + 1, NULL);
->>>>
->>>> -               initrd_start = start;
->>>> -               initrd_end = start + size;
->>>> +               initrd_start_phys = start;
->>>> +               initrd_end_phys = end;
->>>>         }
->>>>         return 0;
->>>>  }
->>>> @@ -407,14 +410,27 @@ void __init arm64_memblock_init(void)
->>>>                 memblock_add(__pa_symbol(_text), (u64)(_end - _text));
->>>>         }
->>>>
->>>> -       if (IS_ENABLED(CONFIG_BLK_DEV_INITRD) && initrd_start) {
->>>> +       if (IS_ENABLED(CONFIG_BLK_DEV_INITRD) &&
->>>> +           (initrd_start || initrd_start_phys)) {
->>>> +               /*
->>>> +                * FIXME: ensure proper precendence between
->>>> +                * early_initrd and DT when both are present
->>>
->>> Command line takes precedence, so just reverse the order.
->>>
->>>> +                */
->>>> +               if (initrd_start) {
->>>> +                       initrd_start_phys = __phys_to_virt(initrd_start);
->>>> +                       initrd_end_phys = __phys_to_virt(initrd_end);
+> >
+> > On Thu, Oct 25, 2018 at 08:15:15AM -0500, Rob Herring wrote:
+> > > +Ard
+> > >
+> > > On Thu, Oct 25, 2018 at 4:38 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
+> > > >
+> > > > On Wed, Oct 24, 2018 at 02:55:17PM -0500, Rob Herring wrote:
+> > > > > On Wed, Oct 24, 2018 at 2:33 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+> > > > > >
+> > > > > > Hi all,
+> > > > > >
+> > > > > > While investigating why ARM64 required a ton of objects to be rebuilt
+> > > > > > when toggling CONFIG_DEV_BLK_INITRD, it became clear that this was
+> > > > > > because we define __early_init_dt_declare_initrd() differently and we do
+> > > > > > that in arch/arm64/include/asm/memory.h which gets included by a fair
+> > > > > > amount of other header files, and translation units as well.
+> > > > >
+> > > > > I scratch my head sometimes as to why some config options rebuild so
+> > > > > much stuff. One down, ? to go. :)
+> > > > >
+> > > > > > Changing the value of CONFIG_DEV_BLK_INITRD is a common thing with build
+> > > > > > systems that generate two kernels: one with the initramfs and one
+> > > > > > without. buildroot is one of these build systems, OpenWrt is also
+> > > > > > another one that does this.
+> > > > > >
+> > > > > > This patch series proposes adding an empty initrd.h to satisfy the need
+> > > > > > for drivers/of/fdt.c to unconditionally include that file, and moves the
+> > > > > > custom __early_init_dt_declare_initrd() definition away from
+> > > > > > asm/memory.h
+> > > > > >
+> > > > > > This cuts the number of objects rebuilds from 1920 down to 26, so a
+> > > > > > factor 73 approximately.
+> > > > > >
+> > > > > > Apologies for the long CC list, please let me know how you would go
+> > > > > > about merging that and if another approach would be preferable, e.g:
+> > > > > > introducing a CONFIG_ARCH_INITRD_BELOW_START_OK Kconfig option or
+> > > > > > something like that.
+> > > > >
+> > > > > There may be a better way as of 4.20 because bootmem is now gone and
+> > > > > only memblock is used. This should unify what each arch needs to do
+> > > > > with initrd early. We need the physical address early for memblock
+> > > > > reserving. Then later on we need the virtual address to access the
+> > > > > initrd. Perhaps we should just change initrd_start and initrd_end to
+> > > > > physical addresses (or add 2 new variables would be less invasive and
+> > > > > allow for different translation than __va()). The sanity checks and
+> > > > > memblock reserve could also perhaps be moved to a common location.
+> > > > >
+> > > > > Alternatively, given arm64 is the only oddball, I'd be fine with an
+> > > > > "if (IS_ENABLED(CONFIG_ARM64))" condition in the default
+> > > > > __early_init_dt_declare_initrd as long as we have a path to removing
+> > > > > it like the above option.
+> > > >
+> > > > I think arm64 does not have to redefine __early_init_dt_declare_initrd().
+> > > > Something like this might be just all we need (completely untested,
+> > > > probably it won't even compile):
+> > > >
+> > > > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> > > > index 9d9582c..e9ca238 100644
+> > > > --- a/arch/arm64/mm/init.c
+> > > > +++ b/arch/arm64/mm/init.c
+> > > > @@ -62,6 +62,9 @@ s64 memstart_addr __ro_after_init = -1;
+> > > >  phys_addr_t arm64_dma_phys_limit __ro_after_init;
+> > > >
+> > > >  #ifdef CONFIG_BLK_DEV_INITRD
+> > > > +
+> > > > +static phys_addr_t initrd_start_phys, initrd_end_phys;
+> > > > +
+> > > >  static int __init early_initrd(char *p)
+> > > >  {
+> > > >         unsigned long start, size;
+> > > > @@ -71,8 +74,8 @@ static int __init early_initrd(char *p)
+> > > >         if (*endp == ',') {
+> > > >                 size = memparse(endp + 1, NULL);
+> > > >
+> > > > -               initrd_start = start;
+> > > > -               initrd_end = start + size;
+> > > > +               initrd_start_phys = start;
+> > > > +               initrd_end_phys = end;
+> > > >         }
+> > > >         return 0;
+> > > >  }
+> > > > @@ -407,14 +410,27 @@ void __init arm64_memblock_init(void)
+> > > >                 memblock_add(__pa_symbol(_text), (u64)(_end - _text));
+> > > >         }
+> > > >
+> > > > -       if (IS_ENABLED(CONFIG_BLK_DEV_INITRD) && initrd_start) {
+> > > > +       if (IS_ENABLED(CONFIG_BLK_DEV_INITRD) &&
+> > > > +           (initrd_start || initrd_start_phys)) {
+> > > > +               /*
+> > > > +                * FIXME: ensure proper precendence between
+> > > > +                * early_initrd and DT when both are present
+> > >
+> > > Command line takes precedence, so just reverse the order.
+> > >
+> > > > +                */
+> > > > +               if (initrd_start) {
+> > > > +                       initrd_start_phys = __phys_to_virt(initrd_start);
+> > > > +                       initrd_end_phys = __phys_to_virt(initrd_end);
 > 
 > BTW, I think you meant virt_to_phys() here?
-> 
->>>
->>> AIUI, the original issue was doing the P2V translation was happening
->>> too early and the VA could be wrong if the linear range is adjusted.
->>> So I don't think this would work.
->>
->> Probably things have changed since then, but in the current code there is
->>
->>                 initrd_start = __phys_to_virt(initrd_start);
->>
->> and in between only the code related to CONFIG_RANDOMIZE_BASE, so I believe
->> it's safe to use __phys_to_virt() here as well.
+
+Right, and then there is no problem at all do the conversion here :)
+ 
+> > >
+> > > AIUI, the original issue was doing the P2V translation was happening
+> > > too early and the VA could be wrong if the linear range is adjusted.
+> > > So I don't think this would work.
+> >
+> > Probably things have changed since then, but in the current code there is
+> >
+> >                 initrd_start = __phys_to_virt(initrd_start);
+> >
+> > and in between only the code related to CONFIG_RANDOMIZE_BASE, so I believe
+> > it's safe to use __phys_to_virt() here as well.
 > 
 > Here is fine yes, but I believe it was the the phys to virt in the DT
 > code before adjusting the linear range that was the problem.
+> 
+> Rob
+> 
 
-FWIW, I am extracting the ARM implementation that parses the initrd
-early command line parameter and the "setup" code doing the page
-boundary alignment and memblock checking into a helper into lib/ that
-other architectures can re-use. So far, this removes the need for
-unicore32, arc and arm to duplicate essentially the same logic.
 -- 
-Florian
+Sincerely yours,
+Mike.

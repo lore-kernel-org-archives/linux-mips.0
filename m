@@ -1,17 +1,17 @@
-Received: from mxhk.zte.com.cn ([63.217.80.70]:64180 "EHLO mxhk.zte.com.cn"
+Received: from mail.kernel.org ([198.145.29.99]:43844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23990397AbeJ2IYrgwJb- (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Mon, 29 Oct 2018 09:24:47 +0100
-Date: Mon, 29 Oct 2018 16:24:31 +0800 (CST)
-Message-ID: <201810291624314997508@zte.com.cn>
-In-Reply-To: <5484fe07-5909-dc67-5de6-72e878060a54@cogentembedded.com>
-References: 1540800277-24524-1-git-send-email-wang.yi59@zte.com.cn,5484fe07-5909-dc67-5de6-72e878060a54@cogentembedded.com
-Mime-Version: 1.0
-From: <wang.yi59@zte.com.cn>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSF0gY2xrOiBib3N0b246IGZpeCBwb3NzaWJsZSBtZW1vcnkgbGVhayBpbmNsa19ib3N0b25fc2V0dXAoKQ==?=
-Content-Type: multipart/mixed;
-        boundary="=====_001_next====="
-Return-Path: <wang.yi59@zte.com.cn>
+        id S23992446AbeJ2RXyvDszP convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 29 Oct 2018 18:23:54 +0100
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+From: Stephen Boyd <sboyd@kernel.org>
+In-Reply-To: <1540801907-31544-1-git-send-email-wang.yi59@zte.com.cn>
+References: <1540801907-31544-1-git-send-email-wang.yi59@zte.com.cn>
+Message-ID: <154083382731.98144.10932242759017894372@swboyd.mtv.corp.google.com>
+Subject: Re: [PATCH v2] clk: boston: fix possible memory leak in clk_boston_setup()
+Date: Mon, 29 Oct 2018 10:23:47 -0700
+Return-Path: <sboyd@kernel.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,31 +21,60 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: sergei.shtylyov@cogentembedded.com
-Cc: paul.burton@mips.com, mturquette@baylibre.com, sboyd@kernel.org, linux-mips@linux-mips.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, zhong.weidong@zte.com.cn
-Message-ID: <20181029082431.PmeWZEgCqpa2Wpq_rOGUWmpaGhsKC6SOqRZ_AFusXBI@z>
+To: Yi Wang <wang.yi59@zte.com.cn>, paul.burton@mips.com
+Cc: mturquette@baylibre.com, linux-mips@linux-mips.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, zhong.weidong@zte.com.cn
+Message-ID: <20181029172347.dq6ab53hi0ZYtgRVZcawYivapWyAjF_YBG50qH6hKBI@z>
 
+Quoting Yi Wang (2018-10-29 01:31:47)
+> 'onecell' is malloced in clk_boston_setup(), but is not freed
+> before leaving from the error handling cases.
 
+How did you find this? Visual inspection? Some coccinelle script?
 
---=====_001_next=====
-Content-Type: multipart/alternative;
-	boundary="=====_003_next====="
+> 
+> Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
+> ---
+> v2: fix syntax issue in comment, thanks to  Sergei.
+> 
+>  drivers/clk/imgtec/clk-boston.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/clk/imgtec/clk-boston.c b/drivers/clk/imgtec/clk-boston.c
+> index 15af423..f5d54a6 100644
+> --- a/drivers/clk/imgtec/clk-boston.c
+> +++ b/drivers/clk/imgtec/clk-boston.c
+> @@ -73,27 +73,32 @@ static void __init clk_boston_setup(struct device_node *np)
+>         hw = clk_hw_register_fixed_rate(NULL, "input", NULL, 0, in_freq);
+>         if (IS_ERR(hw)) {
+>                 pr_err("failed to register input clock: %ld\n", PTR_ERR(hw));
+> -               return;
+> +               goto error;
+>         }
+>         onecell->hws[BOSTON_CLK_INPUT] = hw;
+>  
+>         hw = clk_hw_register_fixed_rate(NULL, "sys", "input", 0, sys_freq);
+>         if (IS_ERR(hw)) {
+>                 pr_err("failed to register sys clock: %ld\n", PTR_ERR(hw));
+> -               return;
+> +               goto error;
+>         }
+>         onecell->hws[BOSTON_CLK_SYS] = hw;
+>  
+>         hw = clk_hw_register_fixed_rate(NULL, "cpu", "input", 0, cpu_freq);
+>         if (IS_ERR(hw)) {
+>                 pr_err("failed to register cpu clock: %ld\n", PTR_ERR(hw));
+> -               return;
+> +               goto error;
+>         }
+>         onecell->hws[BOSTON_CLK_CPU] = hw;
+>  
+>         err = of_clk_add_hw_provider(np, of_clk_hw_onecell_get, onecell);
+>         if (err)
+>                 pr_err("failed to add DT provider: %d\n", err);
+> +
+> +       return;
+> +
+> +error:
+> +       kfree(onecell);
 
-
---=====_003_next=====
-Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: base64
-
-SGkgU2VyZ2VpLAoKPiBIZWxsbyEKPgo+IE9uIDEwLzI5LzIwMTggMTE6MDQgQU0sIFlpIFdhbmcg
-d3JvdGU6Cj4KPiA+ICdvbmVjZWxsJyBpcyBtYWxsb2NlZCBpbiBjbGtfYm9zdG9uX3NldHVwKCks
-IGJ1dCBub3QgYmUgZnJlZWQKPgo+ICAgICBJcyBub3QgZnJlZWQuCgpUaGFua3MgYSBsb3QsIEkg
-d2lsbCBzZW5kIGEgdjIgcGF0Y2guCgo+Cj4gPiBiZWZvcmUgbGVhdmluZyBmcm9tIHRoZSBlcnJv
-ciBoYW5kbGluZyBjYXNlcy4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBZaSBXYW5nIDx3YW5nLnlp
-NTlAenRlLmNvbS5jbj4KPiBbLi4uXQo+Cj4gTUJSLCBTZXJnZWkKCgotLS0KQmVzdCB3aXNoZXMK
-WWkgV2FuZw==
-
-
---=====_003_next=====--
-
---=====_001_next=====--
+Ok, sure. But then clks are still left registered on failure?

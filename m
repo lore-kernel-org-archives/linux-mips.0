@@ -1,28 +1,17 @@
-Received: from mail-yb1-xb44.google.com ([IPv6:2607:f8b0:4864:20::b44]:33327
-        "EHLO mail-yb1-xb44.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993920AbeJZTFnGXATc (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 26 Oct 2018 21:05:43 +0200
-Received: by mail-yb1-xb44.google.com with SMTP id i78-v6so913583ybg.0
-        for <linux-mips@linux-mips.org>; Fri, 26 Oct 2018 12:05:43 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] arm64: Cut rebuild time when changing
- CONFIG_BLK_DEV_INITRD
-References: <20181024193256.23734-1-f.fainelli@gmail.com>
- <CAL_Jsq+KCOv6pXXHhHDZ+7-QUrmtMDvSjEVhK15yZ3qbnn61Ag@mail.gmail.com>
- <20181025093833.GA23607@rapoport-lnx>
- <CAL_JsqL62ttsGSbE1BS5v-mX3pKE-p_HyvuZD6nB+GUbQyetzg@mail.gmail.com>
- <20181025172935.GA27364@rapoport-lnx>
- <CAL_JsqJrMq+QHvuOsqEdCFchmXsd4s2XKUD_TboKzeEQprJvjg@mail.gmail.com>
- <1bb3bd63-a88e-b668-ea36-f0f985c0e2b1@gmail.com>
- <20181026110708.GA3814@rapoport-lnx>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <53ec9df5-ef2a-edc5-be1c-bca32959c0bc@gmail.com>
-Date: Fri, 26 Oct 2018 12:05:25 -0700
-MIME-Version: 1.0
-In-Reply-To: <20181026110708.GA3814@rapoport-lnx>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Return-Path: <f.fainelli@gmail.com>
+Received: from mxhk.zte.com.cn ([63.217.80.70]:64180 "EHLO mxhk.zte.com.cn"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23990397AbeJ2IYrgwJb- (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Mon, 29 Oct 2018 09:24:47 +0100
+Date: Mon, 29 Oct 2018 16:24:31 +0800 (CST)
+Message-ID: <201810291624314997508@zte.com.cn>
+In-Reply-To: <5484fe07-5909-dc67-5de6-72e878060a54@cogentembedded.com>
+References: 1540800277-24524-1-git-send-email-wang.yi59@zte.com.cn,5484fe07-5909-dc67-5de6-72e878060a54@cogentembedded.com
+Mime-Version: 1.0
+From: <wang.yi59@zte.com.cn>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSF0gY2xrOiBib3N0b246IGZpeCBwb3NzaWJsZSBtZW1vcnkgbGVhayBpbmNsa19ib3N0b25fc2V0dXAoKQ==?=
+Content-Type: multipart/mixed;
+        boundary="=====_001_next====="
+Return-Path: <wang.yi59@zte.com.cn>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -32,59 +21,31 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Rob Herring <robh@kernel.org>, Ard Biesheuvel <ard.biesheuvel@linaro.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Marc Zyngier <marc.zyngier@arm.com>, Olof Johansson <olof@lixom.net>, linux-alpha@vger.kernel.org, arcml <linux-snps-arc@lists.infradead.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, linux-c6x-dev@linux-c6x.org, "moderated list:H8/300 ARCHITECTURE" <uclinux-h8-devel@lists.sourceforge.jp>, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Linux-MIPS <linux-mips@linux-mips.org>, nios2-dev@lists.rocketboards.org, Openrisc <openrisc@lists.librecores.org>, linux-parisc@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, SH-Linux <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, devicetree@vger.kernel.org, "open list:GENERIC INCLUDE/ASM HEADER FILES" <linux-arch@vger.kernel.org>
-Message-ID: <20181026190525.eOCruZP0n-jZoIPeqyhPHRiV1xRbZvnDDE-6u0a_zcI@z>
+To: sergei.shtylyov@cogentembedded.com
+Cc: paul.burton@mips.com, mturquette@baylibre.com, sboyd@kernel.org, linux-mips@linux-mips.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, zhong.weidong@zte.com.cn
+Message-ID: <20181029082431.PmeWZEgCqpa2Wpq_rOGUWmpaGhsKC6SOqRZ_AFusXBI@z>
 
-On 10/26/18 4:07 AM, Mike Rapoport wrote:
-> On Thu, Oct 25, 2018 at 04:07:13PM -0700, Florian Fainelli wrote:
->> On 10/25/18 2:13 PM, Rob Herring wrote:
->>> On Thu, Oct 25, 2018 at 12:30 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
->>>>
->>>> On Thu, Oct 25, 2018 at 08:15:15AM -0500, Rob Herring wrote:
->>>>> +Ard
->>>>>
->>>>> On Thu, Oct 25, 2018 at 4:38 AM Mike Rapoport <rppt@linux.ibm.com> wrote:
->>>>>>
->>>>>> On Wed, Oct 24, 2018 at 02:55:17PM -0500, Rob Herring wrote:
->>>>>>> On Wed, Oct 24, 2018 at 2:33 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->>>>>>>>
->>>>>>>> Hi all,
->>>>>>>>
->>>>>>>> While investigating why ARM64 required a ton of objects to be rebuilt
->>>>>>>> when toggling CONFIG_DEV_BLK_INITRD, it became clear that this was
->>>>>>>> because we define __early_init_dt_declare_initrd() differently and we do
->>>>>>>> that in arch/arm64/include/asm/memory.h which gets included by a fair
->>>>>>>> amount of other header files, and translation units as well.
->>>>>>>
->>>>>> I think arm64 does not have to redefine __early_init_dt_declare_initrd().
->>>>>> Something like this might be just all we need (completely untested,
->>>>>> probably it won't even compile):
-> 
-> [ ... ]
->  
->> FWIW, I am extracting the ARM implementation that parses the initrd
->> early command line parameter and the "setup" code doing the page
->> boundary alignment and memblock checking into a helper into lib/ that
->> other architectures can re-use. So far, this removes the need for
->> unicore32, arc and arm to duplicate essentially the same logic.
-> 
-> Presuming you are going to need asm-generic/initrd.h for that as well,
-> using override for __early_init_dt_declare_initrd in arm64 version of
-> initrd.h might be the simplest option.
 
-What I am contemplating doing is promote
-phys_initrd_start/phys_initrd_size to be global variables (similar to
-initrd_start, initrd_end) and have a generic helper function for parsing
-the initrd= command line parameter and finally removing
-__early_init_dt_declare_initrd() because we could have
-early_init_dt_check_for_initrd() just populate
-phys_initrd_start/phys_initrd_size directly as well as
-initrd_start/initrd_end using __va() to preserve compatibility with
-architectures that rely on this. Then I would convert ARM64 to check for
-phys_initrd_start which is really what it is is trying to do in
-arch/arm64/mm/init.c::arm64_memblock_init().
 
-Does that sound like a reasonable approach?
--- 
-Florian
+--=====_001_next=====
+Content-Type: multipart/alternative;
+	boundary="=====_003_next====="
+
+
+--=====_003_next=====
+Content-Type: text/plain;
+	charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+SGkgU2VyZ2VpLAoKPiBIZWxsbyEKPgo+IE9uIDEwLzI5LzIwMTggMTE6MDQgQU0sIFlpIFdhbmcg
+d3JvdGU6Cj4KPiA+ICdvbmVjZWxsJyBpcyBtYWxsb2NlZCBpbiBjbGtfYm9zdG9uX3NldHVwKCks
+IGJ1dCBub3QgYmUgZnJlZWQKPgo+ICAgICBJcyBub3QgZnJlZWQuCgpUaGFua3MgYSBsb3QsIEkg
+d2lsbCBzZW5kIGEgdjIgcGF0Y2guCgo+Cj4gPiBiZWZvcmUgbGVhdmluZyBmcm9tIHRoZSBlcnJv
+ciBoYW5kbGluZyBjYXNlcy4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBZaSBXYW5nIDx3YW5nLnlp
+NTlAenRlLmNvbS5jbj4KPiBbLi4uXQo+Cj4gTUJSLCBTZXJnZWkKCgotLS0KQmVzdCB3aXNoZXMK
+WWkgV2FuZw==
+
+
+--=====_003_next=====--
+
+--=====_001_next=====--

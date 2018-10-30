@@ -1,17 +1,16 @@
-Received: from mail.kernel.org ([198.145.29.99]:43844 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992446AbeJ2RXyvDszP convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 29 Oct 2018 18:23:54 +0100
-Content-Type: text/plain; charset="utf-8"
+Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:42879 "EHLO
+        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23994243AbeJ3B2Bqmgpb convert rfc822-to-8bit
+        (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 30 Oct 2018 02:28:01 +0100
+From: Hassan Naveed <hassan.naveed@mips.com>
+Subject: [PATCH] MIPS: Enable IOREMAP_PROT config option for MIPS cpus
+Date: Mon, 29 Oct 2018 18:27:41 -0700
+Message-ID: <20181030012741.31391-1-hassan.naveed@mips.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
-From: Stephen Boyd <sboyd@kernel.org>
-In-Reply-To: <1540801907-31544-1-git-send-email-wang.yi59@zte.com.cn>
-References: <1540801907-31544-1-git-send-email-wang.yi59@zte.com.cn>
-Message-ID: <154083382731.98144.10932242759017894372@swboyd.mtv.corp.google.com>
-Subject: Re: [PATCH v2] clk: boston: fix possible memory leak in clk_boston_setup()
-Date: Mon, 29 Oct 2018 10:23:47 -0700
-Return-Path: <sboyd@kernel.org>
+Content-Type: text/plain
+Return-Path: <Hassan.Naveed@mips.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,60 +20,84 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Yi Wang <wang.yi59@zte.com.cn>, paul.burton@mips.com
-Cc: mturquette@baylibre.com, linux-mips@linux-mips.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, zhong.weidong@zte.com.cn
-Message-ID: <20181029172347.dq6ab53hi0ZYtgRVZcawYivapWyAjF_YBG50qH6hKBI@z>
+To: linux-mips@linux-mips.org
+Cc: Hassan Naveed <hnaveed@wavecomp.com>
+Message-ID: <20181030012741.hMyEKnid4CT3Y5_i5P3UnlhBUGI3QI7l_BmQznuh0eo@z>
 
-Quoting Yi Wang (2018-10-29 01:31:47)
-> 'onecell' is malloced in clk_boston_setup(), but is not freed
-> before leaving from the error handling cases.
+From: Hassan Naveed <hnaveed@wavecomp.com>
 
-How did you find this? Visual inspection? Some coccinelle script?
+Allows the users of ptrace to access memory mapped by the ptraced process
+using the same cache coherency attributes as the original process.
+For example while using gdb with ioremap_prot() incorporated, both gdb and
+the process being traced will have same cache coherency attributes.
 
-> 
-> Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
-> ---
-> v2: fix syntax issue in comment, thanks to  Sergei.
-> 
->  drivers/clk/imgtec/clk-boston.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/clk/imgtec/clk-boston.c b/drivers/clk/imgtec/clk-boston.c
-> index 15af423..f5d54a6 100644
-> --- a/drivers/clk/imgtec/clk-boston.c
-> +++ b/drivers/clk/imgtec/clk-boston.c
-> @@ -73,27 +73,32 @@ static void __init clk_boston_setup(struct device_node *np)
->         hw = clk_hw_register_fixed_rate(NULL, "input", NULL, 0, in_freq);
->         if (IS_ERR(hw)) {
->                 pr_err("failed to register input clock: %ld\n", PTR_ERR(hw));
-> -               return;
-> +               goto error;
->         }
->         onecell->hws[BOSTON_CLK_INPUT] = hw;
->  
->         hw = clk_hw_register_fixed_rate(NULL, "sys", "input", 0, sys_freq);
->         if (IS_ERR(hw)) {
->                 pr_err("failed to register sys clock: %ld\n", PTR_ERR(hw));
-> -               return;
-> +               goto error;
->         }
->         onecell->hws[BOSTON_CLK_SYS] = hw;
->  
->         hw = clk_hw_register_fixed_rate(NULL, "cpu", "input", 0, cpu_freq);
->         if (IS_ERR(hw)) {
->                 pr_err("failed to register cpu clock: %ld\n", PTR_ERR(hw));
-> -               return;
-> +               goto error;
->         }
->         onecell->hws[BOSTON_CLK_CPU] = hw;
->  
->         err = of_clk_add_hw_provider(np, of_clk_hw_onecell_get, onecell);
->         if (err)
->                 pr_err("failed to add DT provider: %d\n", err);
-> +
-> +       return;
-> +
-> +error:
-> +       kfree(onecell);
+Signed-off-by: Hassan Naveed <hnaveed@wavecomp.com>
+---
+ .../features/vm/ioremap_prot/arch-support.txt        |  2 +-
+ arch/mips/Kconfig                                    |  1 +
+ arch/mips/include/asm/io.h                           | 12 ++++++++++++
+ arch/mips/include/asm/page.h                         |  1 +
+ 4 files changed, 15 insertions(+), 1 deletion(-)
 
-Ok, sure. But then clks are still left registered on failure?
+diff --git a/Documentation/features/vm/ioremap_prot/arch-support.txt b/Documentation/features/vm/ioremap_prot/arch-support.txt
+index 8527601a3739..326e4797bc65 100644
+--- a/Documentation/features/vm/ioremap_prot/arch-support.txt
++++ b/Documentation/features/vm/ioremap_prot/arch-support.txt
+@@ -16,7 +16,7 @@
+     |        ia64: | TODO |
+     |        m68k: | TODO |
+     |  microblaze: | TODO |
+-    |        mips: | TODO |
++    |        mips: |  ok  |
+     |       nds32: | TODO |
+     |       nios2: | TODO |
+     |    openrisc: | TODO |
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 35511999156a..630a4d694b02 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -56,6 +56,7 @@ config MIPS
+ 	select HAVE_FUNCTION_TRACER
+ 	select HAVE_GENERIC_DMA_COHERENT
+ 	select HAVE_IDE
++	select HAVE_IOREMAP_PROT
+ 	select HAVE_IRQ_EXIT_ON_IRQ_STACK
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+ 	select HAVE_KPROBES
+diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
+index 54c730aed327..61eca84d8b82 100644
+--- a/arch/mips/include/asm/io.h
++++ b/arch/mips/include/asm/io.h
+@@ -223,6 +223,18 @@ static inline void __iomem * __ioremap_mode(phys_addr_t offset, unsigned long si
+ #undef __IS_LOW512
+ }
+ 
++/*
++ * ioremap_prot     -   map bus memory into CPU space
++ * @offset:    bus address of the memory
++ * @size:      size of the resource to map
++
++ * ioremap_prot gives the caller control over cache coherency attributes (CCA)
++ */
++static inline void __iomem *ioremap_prot(phys_addr_t offset,
++		unsigned long size, unsigned long prot_val) {
++	return __ioremap_mode(offset, size, prot_val & _CACHE_MASK);
++}
++
+ /*
+  * ioremap     -   map bus memory into CPU space
+  * @offset:    bus address of the memory
+diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
+index e8cc328fce2d..6b31c93b5eaa 100644
+--- a/arch/mips/include/asm/page.h
++++ b/arch/mips/include/asm/page.h
+@@ -154,6 +154,7 @@ typedef struct { unsigned long pgd; } pgd_t;
+ typedef struct { unsigned long pgprot; } pgprot_t;
+ #define pgprot_val(x)	((x).pgprot)
+ #define __pgprot(x)	((pgprot_t) { (x) } )
++#define pte_pgprot(x)	__pgprot(pte_val(x) & ~_PFN_MASK)
+ 
+ /*
+  * On R4000-style MMUs where a TLB entry is mapping a adjacent even / odd
+-- 
+2.19.0

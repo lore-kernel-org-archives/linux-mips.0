@@ -1,16 +1,17 @@
-Received: from 9pmail.ess.barracuda.com ([64.235.150.225]:42879 "EHLO
-        9pmail.ess.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23994243AbeJ3B2Bqmgpb convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 30 Oct 2018 02:28:01 +0100
-From: Hassan Naveed <hassan.naveed@mips.com>
-Subject: [PATCH] MIPS: Enable IOREMAP_PROT config option for MIPS cpus
-Date: Mon, 29 Oct 2018 18:27:41 -0700
-Message-ID: <20181030012741.31391-1-hassan.naveed@mips.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain
-Return-Path: <Hassan.Naveed@mips.com>
+Received: from mx7.zte.com.cn ([202.103.147.169]:40678 "EHLO mxct.zte.com.cn"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23990422AbeJ3GNgZd3Gt (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 30 Oct 2018 07:13:36 +0100
+Date: Tue, 30 Oct 2018 14:13:24 +0800 (CST)
+Message-ID: <201810301413240217200@zte.com.cn>
+In-Reply-To: <154083382731.98144.10932242759017894372@swboyd.mtv.corp.google.com>
+References: 1540801907-31544-1-git-send-email-wang.yi59@zte.com.cn,154083382731.98144.10932242759017894372@swboyd.mtv.corp.google.com
+Mime-Version: 1.0
+From: <wang.yi59@zte.com.cn>
+Subject: =?UTF-8?B?UmU6wqBSZTogW1BBVENIIHYyXSBjbGs6IGJvc3RvbjogZml4IHBvc3NpYmxlIG1lbW9yeSBsZWFrIGluIGNsa19ib3N0b25fc2V0dXAoKQ==?=
+Content-Type: multipart/mixed;
+        boundary="=====_001_next====="
+Return-Path: <wang.yi59@zte.com.cn>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -20,84 +21,69 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: linux-mips@linux-mips.org
-Cc: Hassan Naveed <hnaveed@wavecomp.com>
-Message-ID: <20181030012741.hMyEKnid4CT3Y5_i5P3UnlhBUGI3QI7l_BmQznuh0eo@z>
+To: sboyd@kernel.org
+Cc: paul.burton@mips.com, mturquette@baylibre.com, linux-mips@linux-mips.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, zhong.weidong@zte.com.cn, up2wing@163.com
+Message-ID: <20181030061324.rE9TIlmIQpjSD5S2bmLo1L8P1nlTcI4AqnBLaaY-ly8@z>
 
-From: Hassan Naveed <hnaveed@wavecomp.com>
 
-Allows the users of ptrace to access memory mapped by the ptraced process
-using the same cache coherency attributes as the original process.
-For example while using gdb with ioremap_prot() incorporated, both gdb and
-the process being traced will have same cache coherency attributes.
 
-Signed-off-by: Hassan Naveed <hnaveed@wavecomp.com>
----
- .../features/vm/ioremap_prot/arch-support.txt        |  2 +-
- arch/mips/Kconfig                                    |  1 +
- arch/mips/include/asm/io.h                           | 12 ++++++++++++
- arch/mips/include/asm/page.h                         |  1 +
- 4 files changed, 15 insertions(+), 1 deletion(-)
+--=====_001_next=====
+Content-Type: multipart/alternative;
+	boundary="=====_003_next====="
 
-diff --git a/Documentation/features/vm/ioremap_prot/arch-support.txt b/Documentation/features/vm/ioremap_prot/arch-support.txt
-index 8527601a3739..326e4797bc65 100644
---- a/Documentation/features/vm/ioremap_prot/arch-support.txt
-+++ b/Documentation/features/vm/ioremap_prot/arch-support.txt
-@@ -16,7 +16,7 @@
-     |        ia64: | TODO |
-     |        m68k: | TODO |
-     |  microblaze: | TODO |
--    |        mips: | TODO |
-+    |        mips: |  ok  |
-     |       nds32: | TODO |
-     |       nios2: | TODO |
-     |    openrisc: | TODO |
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 35511999156a..630a4d694b02 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -56,6 +56,7 @@ config MIPS
- 	select HAVE_FUNCTION_TRACER
- 	select HAVE_GENERIC_DMA_COHERENT
- 	select HAVE_IDE
-+	select HAVE_IOREMAP_PROT
- 	select HAVE_IRQ_EXIT_ON_IRQ_STACK
- 	select HAVE_IRQ_TIME_ACCOUNTING
- 	select HAVE_KPROBES
-diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-index 54c730aed327..61eca84d8b82 100644
---- a/arch/mips/include/asm/io.h
-+++ b/arch/mips/include/asm/io.h
-@@ -223,6 +223,18 @@ static inline void __iomem * __ioremap_mode(phys_addr_t offset, unsigned long si
- #undef __IS_LOW512
- }
- 
-+/*
-+ * ioremap_prot     -   map bus memory into CPU space
-+ * @offset:    bus address of the memory
-+ * @size:      size of the resource to map
-+
-+ * ioremap_prot gives the caller control over cache coherency attributes (CCA)
-+ */
-+static inline void __iomem *ioremap_prot(phys_addr_t offset,
-+		unsigned long size, unsigned long prot_val) {
-+	return __ioremap_mode(offset, size, prot_val & _CACHE_MASK);
-+}
-+
- /*
-  * ioremap     -   map bus memory into CPU space
-  * @offset:    bus address of the memory
-diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
-index e8cc328fce2d..6b31c93b5eaa 100644
---- a/arch/mips/include/asm/page.h
-+++ b/arch/mips/include/asm/page.h
-@@ -154,6 +154,7 @@ typedef struct { unsigned long pgd; } pgd_t;
- typedef struct { unsigned long pgprot; } pgprot_t;
- #define pgprot_val(x)	((x).pgprot)
- #define __pgprot(x)	((pgprot_t) { (x) } )
-+#define pte_pgprot(x)	__pgprot(pte_val(x) & ~_PFN_MASK)
- 
- /*
-  * On R4000-style MMUs where a TLB entry is mapping a adjacent even / odd
--- 
-2.19.0
+
+--=====_003_next=====
+Content-Type: text/plain;
+	charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+PiBRdW90aW5nIFlpIFdhbmcgKDIwMTgtMTAtMjkgMDE6MzE6NDcpCj4gPiAnb25lY2VsbCcgaXMg
+bWFsbG9jZWQgaW4gY2xrX2Jvc3Rvbl9zZXR1cCgpLCBidXQgaXMgbm90IGZyZWVkCj4gPiBiZWZv
+cmUgbGVhdmluZyBmcm9tIHRoZSBlcnJvciBoYW5kbGluZyBjYXNlcy4KPgo+IEhvdyBkaWQgeW91
+IGZpbmQgdGhpcz8gVmlzdWFsIGluc3BlY3Rpb24/IFNvbWUgY29jY2luZWxsZSBzY3JpcHQ/CgpT
+bWF0Y2ggcmVwb3J0IHRoaXM6CmRyaXZlcnMvY2xrL2ltZ3RlYy9jbGstYm9zdG9uLmM6NzYgY2xr
+X2Jvc3Rvbl9zZXR1cCgpIHdhcm46IHBvc3NpYmxlIG1lbW9yeSBsZWFrIG9mICdvbmVjZWxsJwpk
+cml2ZXJzL2Nsay9pbWd0ZWMvY2xrLWJvc3Rvbi5jOjgzIGNsa19ib3N0b25fc2V0dXAoKSB3YXJu
+OiBwb3NzaWJsZSBtZW1vcnkgbGVhayBvZiAnb25lY2VsbCcKZHJpdmVycy9jbGsvaW1ndGVjL2Ns
+ay1ib3N0b24uYzo5MCBjbGtfYm9zdG9uX3NldHVwKCkgd2FybjogcG9zc2libGUgbWVtb3J5IGxl
+YWsgb2YgJ29uZWNlbGwnCgo+Cj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogWWkgV2FuZyA8d2FuZy55
+aTU5QHp0ZS5jb20uY24+Cj4gPiAtLS0KPiA+IHYyOiBmaXggc3ludGF4IGlzc3VlIGluIGNvbW1l
+bnQsIHRoYW5rcyB0byAgU2VyZ2VpLgo+ID4KPiA+ICBkcml2ZXJzL2Nsay9pbWd0ZWMvY2xrLWJv
+c3Rvbi5jIHwgMTEgKysrKysrKystLS0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25z
+KCspLCAzIGRlbGV0aW9ucygtKQo+ID4KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2Nsay9pbWd0
+ZWMvY2xrLWJvc3Rvbi5jIGIvZHJpdmVycy9jbGsvaW1ndGVjL2Nsay1ib3N0b24uYwo+ID4gaW5k
+ZXggMTVhZjQyMy4uZjVkNTRhNiAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvY2xrL2ltZ3RlYy9j
+bGstYm9zdG9uLmMKPiA+ICsrKyBiL2RyaXZlcnMvY2xrL2ltZ3RlYy9jbGstYm9zdG9uLmMKPiA+
+IEBAIC03MywyNyArNzMsMzIgQEAgc3RhdGljIHZvaWQgX19pbml0IGNsa19ib3N0b25fc2V0dXAo
+c3RydWN0IGRldmljZV9ub2RlICpucCkKPiA+ICAgICAgICAgaHcgPSBjbGtfaHdfcmVnaXN0ZXJf
+Zml4ZWRfcmF0ZShOVUxMLCAiaW5wdXQiLCBOVUxMLCAwLCBpbl9mcmVxKTsKPiA+ICAgICAgICAg
+aWYgKElTX0VSUihodykpIHsKPiA+ICAgICAgICAgICAgICAgICBwcl9lcnIoImZhaWxlZCB0byBy
+ZWdpc3RlciBpbnB1dCBjbG9jazogJWxkXG4iLCBQVFJfRVJSKGh3KSk7Cj4gPiAtICAgICAgICAg
+ICAgICAgcmV0dXJuOwo+ID4gKyAgICAgICAgICAgICAgIGdvdG8gZXJyb3I7Cj4gPiAgICAgICAg
+IH0KPiA+ICAgICAgICAgb25lY2VsbC0+aHdzW0JPU1RPTl9DTEtfSU5QVVRdID0gaHc7Cj4gPgo+
+ID4gICAgICAgICBodyA9IGNsa19od19yZWdpc3Rlcl9maXhlZF9yYXRlKE5VTEwsICJzeXMiLCAi
+aW5wdXQiLCAwLCBzeXNfZnJlcSk7Cj4gPiAgICAgICAgIGlmIChJU19FUlIoaHcpKSB7Cj4gPiAg
+ICAgICAgICAgICAgICAgcHJfZXJyKCJmYWlsZWQgdG8gcmVnaXN0ZXIgc3lzIGNsb2NrOiAlbGRc
+biIsIFBUUl9FUlIoaHcpKTsKPiA+IC0gICAgICAgICAgICAgICByZXR1cm47Cj4gPiArICAgICAg
+ICAgICAgICAgZ290byBlcnJvcjsKPiA+ICAgICAgICAgfQo+ID4gICAgICAgICBvbmVjZWxsLT5o
+d3NbQk9TVE9OX0NMS19TWVNdID0gaHc7Cj4gPgo+ID4gICAgICAgICBodyA9IGNsa19od19yZWdp
+c3Rlcl9maXhlZF9yYXRlKE5VTEwsICJjcHUiLCAiaW5wdXQiLCAwLCBjcHVfZnJlcSk7Cj4gPiAg
+ICAgICAgIGlmIChJU19FUlIoaHcpKSB7Cj4gPiAgICAgICAgICAgICAgICAgcHJfZXJyKCJmYWls
+ZWQgdG8gcmVnaXN0ZXIgY3B1IGNsb2NrOiAlbGRcbiIsIFBUUl9FUlIoaHcpKTsKPiA+IC0gICAg
+ICAgICAgICAgICByZXR1cm47Cj4gPiArICAgICAgICAgICAgICAgZ290byBlcnJvcjsKPiA+ICAg
+ICAgICAgfQo+ID4gICAgICAgICBvbmVjZWxsLT5od3NbQk9TVE9OX0NMS19DUFVdID0gaHc7Cj4g
+Pgo+ID4gICAgICAgICBlcnIgPSBvZl9jbGtfYWRkX2h3X3Byb3ZpZGVyKG5wLCBvZl9jbGtfaHdf
+b25lY2VsbF9nZXQsIG9uZWNlbGwpOwo+ID4gICAgICAgICBpZiAoZXJyKQo+ID4gICAgICAgICAg
+ICAgICAgIHByX2VycigiZmFpbGVkIHRvIGFkZCBEVCBwcm92aWRlcjogJWRcbiIsIGVycik7Cj4g
+PiArCj4gPiArICAgICAgIHJldHVybjsKPiA+ICsKPiA+ICtlcnJvcjoKPiA+ICsgICAgICAga2Zy
+ZWUob25lY2VsbCk7Cj4KPiBPaywgc3VyZS4gQnV0IHRoZW4gY2xrcyBhcmUgc3RpbGwgbGVmdCBy
+ZWdpc3RlcmVkIG9uIGZhaWx1cmU/CgpZZWFoLCBidXQgdGhpcyBwYXRjaCBkb2VzIG5vdCBjaGFu
+Z2UgdGhlIG9yaWdpbmFsIGZsb3cgb2YgdGhlIGZ1bmN0aW9uLCBzbyBJIHN1cHBvc2UKaWYgeW91
+IGRlZW0gdGhpcyBpcyBub3QgcHJvcGVyLCBpdCdzIGJldHRlciB0byBpbXByb3ZlIHRoYXQgaW4g
+YW5vdGhlciBwYXRjaCwgd2hhdCBkbwp5b3UgdGhpbms/CgoKLS0tCkJlc3Qgd2lzaGVzCllpIFdh
+bmc=
+
+
+--=====_003_next=====--
+
+--=====_001_next=====--

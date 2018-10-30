@@ -1,17 +1,16 @@
-Received: from mx7.zte.com.cn ([202.103.147.169]:40678 "EHLO mxct.zte.com.cn"
+Received: from ozlabs.org ([203.11.71.1]:49121 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23990422AbeJ3GNgZd3Gt (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Tue, 30 Oct 2018 07:13:36 +0100
-Date: Tue, 30 Oct 2018 14:13:24 +0800 (CST)
-Message-ID: <201810301413240217200@zte.com.cn>
-In-Reply-To: <154083382731.98144.10932242759017894372@swboyd.mtv.corp.google.com>
-References: 1540801907-31544-1-git-send-email-wang.yi59@zte.com.cn,154083382731.98144.10932242759017894372@swboyd.mtv.corp.google.com
-Mime-Version: 1.0
-From: <wang.yi59@zte.com.cn>
-Subject: =?UTF-8?B?UmU6wqBSZTogW1BBVENIIHYyXSBjbGs6IGJvc3RvbjogZml4IHBvc3NpYmxlIG1lbW9yeSBsZWFrIGluIGNsa19ib3N0b25fc2V0dXAoKQ==?=
-Content-Type: multipart/mixed;
-        boundary="=====_001_next====="
-Return-Path: <wang.yi59@zte.com.cn>
+        id S23990439AbeJ3Mg0eTGwN (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Tue, 30 Oct 2018 13:36:26 +0100
+From: Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 1/2] kbuild: replace cc-name test with CONFIG_CC_IS_CLANG
+In-Reply-To: <1540873293-29817-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1540873293-29817-1-git-send-email-yamada.masahiro@socionext.com>
+Date: Tue, 30 Oct 2018 23:36:17 +1100
+Message-ID: <877ehzk3we.fsf@concordia.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
+Return-Path: <mpe@ellerman.id.au>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,69 +20,46 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: sboyd@kernel.org
-Cc: paul.burton@mips.com, mturquette@baylibre.com, linux-mips@linux-mips.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, zhong.weidong@zte.com.cn, up2wing@163.com
-Message-ID: <20181030061324.rE9TIlmIQpjSD5S2bmLo1L8P1nlTcI4AqnBLaaY-ly8@z>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>, linux-kbuild@vger.kernel.org
+Cc: linux-mips@linux-mips.org, James Hogan <jhogan@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, linux-kernel@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>, Paul Mackerras <paulus@samba.org>, Paul Burton <paul.burton@mips.com>, Ralf Baechle <ralf@linux-mips.org>, linuxppc-dev@lists.ozlabs.org
+Message-ID: <20181030123617.kof4uP-PHE810XiJEPdJ_4tBZ8H0wLCvCNBttrf0neU@z>
 
+Masahiro Yamada <yamada.masahiro@socionext.com> writes:
+> diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
+> index 17be664..338e827 100644
+> --- a/arch/powerpc/Makefile
+> +++ b/arch/powerpc/Makefile
+> @@ -96,7 +96,7 @@ aflags-$(CONFIG_CPU_BIG_ENDIAN)		+= $(call cc-option,-mabi=elfv1)
+>  aflags-$(CONFIG_CPU_LITTLE_ENDIAN)	+= -mabi=elfv2
+>  endif
+>  
+> -ifneq ($(cc-name),clang)
+> +ifneq ($(CONFIG_CC_IS_CLANG),y)
+>    cflags-$(CONFIG_CPU_LITTLE_ENDIAN)	+= -mno-strict-align
+>  endif
+>  
+> @@ -175,7 +175,7 @@ endif
+>  # Work around gcc code-gen bugs with -pg / -fno-omit-frame-pointer in gcc <= 4.8
+>  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=44199
+>  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52828
+> -ifneq ($(cc-name),clang)
+> +ifneq ($(CONFIG_CC_IS_CLANG),y)
+>  CC_FLAGS_FTRACE	+= $(call cc-ifversion, -lt, 0409, -mno-sched-epilog)
+>  endif
+>  endif
 
+Does this behave like other CONFIG variables, ie. it will not be defined
+when it's false?
 
---=====_001_next=====
-Content-Type: multipart/alternative;
-	boundary="=====_003_next====="
+And if so can't we use ifdef/ifndef? eg:
 
+ifndef CONFIG_CC_IS_CLANG
+  CC_FLAGS_FTRACE	+= $(call cc-ifversion, -lt, 0409, -mno-sched-epilog)
 
---=====_003_next=====
-Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: base64
+That reads cleaner to me.
 
-PiBRdW90aW5nIFlpIFdhbmcgKDIwMTgtMTAtMjkgMDE6MzE6NDcpCj4gPiAnb25lY2VsbCcgaXMg
-bWFsbG9jZWQgaW4gY2xrX2Jvc3Rvbl9zZXR1cCgpLCBidXQgaXMgbm90IGZyZWVkCj4gPiBiZWZv
-cmUgbGVhdmluZyBmcm9tIHRoZSBlcnJvciBoYW5kbGluZyBjYXNlcy4KPgo+IEhvdyBkaWQgeW91
-IGZpbmQgdGhpcz8gVmlzdWFsIGluc3BlY3Rpb24/IFNvbWUgY29jY2luZWxsZSBzY3JpcHQ/CgpT
-bWF0Y2ggcmVwb3J0IHRoaXM6CmRyaXZlcnMvY2xrL2ltZ3RlYy9jbGstYm9zdG9uLmM6NzYgY2xr
-X2Jvc3Rvbl9zZXR1cCgpIHdhcm46IHBvc3NpYmxlIG1lbW9yeSBsZWFrIG9mICdvbmVjZWxsJwpk
-cml2ZXJzL2Nsay9pbWd0ZWMvY2xrLWJvc3Rvbi5jOjgzIGNsa19ib3N0b25fc2V0dXAoKSB3YXJu
-OiBwb3NzaWJsZSBtZW1vcnkgbGVhayBvZiAnb25lY2VsbCcKZHJpdmVycy9jbGsvaW1ndGVjL2Ns
-ay1ib3N0b24uYzo5MCBjbGtfYm9zdG9uX3NldHVwKCkgd2FybjogcG9zc2libGUgbWVtb3J5IGxl
-YWsgb2YgJ29uZWNlbGwnCgo+Cj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogWWkgV2FuZyA8d2FuZy55
-aTU5QHp0ZS5jb20uY24+Cj4gPiAtLS0KPiA+IHYyOiBmaXggc3ludGF4IGlzc3VlIGluIGNvbW1l
-bnQsIHRoYW5rcyB0byAgU2VyZ2VpLgo+ID4KPiA+ICBkcml2ZXJzL2Nsay9pbWd0ZWMvY2xrLWJv
-c3Rvbi5jIHwgMTEgKysrKysrKystLS0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25z
-KCspLCAzIGRlbGV0aW9ucygtKQo+ID4KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2Nsay9pbWd0
-ZWMvY2xrLWJvc3Rvbi5jIGIvZHJpdmVycy9jbGsvaW1ndGVjL2Nsay1ib3N0b24uYwo+ID4gaW5k
-ZXggMTVhZjQyMy4uZjVkNTRhNiAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvY2xrL2ltZ3RlYy9j
-bGstYm9zdG9uLmMKPiA+ICsrKyBiL2RyaXZlcnMvY2xrL2ltZ3RlYy9jbGstYm9zdG9uLmMKPiA+
-IEBAIC03MywyNyArNzMsMzIgQEAgc3RhdGljIHZvaWQgX19pbml0IGNsa19ib3N0b25fc2V0dXAo
-c3RydWN0IGRldmljZV9ub2RlICpucCkKPiA+ICAgICAgICAgaHcgPSBjbGtfaHdfcmVnaXN0ZXJf
-Zml4ZWRfcmF0ZShOVUxMLCAiaW5wdXQiLCBOVUxMLCAwLCBpbl9mcmVxKTsKPiA+ICAgICAgICAg
-aWYgKElTX0VSUihodykpIHsKPiA+ICAgICAgICAgICAgICAgICBwcl9lcnIoImZhaWxlZCB0byBy
-ZWdpc3RlciBpbnB1dCBjbG9jazogJWxkXG4iLCBQVFJfRVJSKGh3KSk7Cj4gPiAtICAgICAgICAg
-ICAgICAgcmV0dXJuOwo+ID4gKyAgICAgICAgICAgICAgIGdvdG8gZXJyb3I7Cj4gPiAgICAgICAg
-IH0KPiA+ICAgICAgICAgb25lY2VsbC0+aHdzW0JPU1RPTl9DTEtfSU5QVVRdID0gaHc7Cj4gPgo+
-ID4gICAgICAgICBodyA9IGNsa19od19yZWdpc3Rlcl9maXhlZF9yYXRlKE5VTEwsICJzeXMiLCAi
-aW5wdXQiLCAwLCBzeXNfZnJlcSk7Cj4gPiAgICAgICAgIGlmIChJU19FUlIoaHcpKSB7Cj4gPiAg
-ICAgICAgICAgICAgICAgcHJfZXJyKCJmYWlsZWQgdG8gcmVnaXN0ZXIgc3lzIGNsb2NrOiAlbGRc
-biIsIFBUUl9FUlIoaHcpKTsKPiA+IC0gICAgICAgICAgICAgICByZXR1cm47Cj4gPiArICAgICAg
-ICAgICAgICAgZ290byBlcnJvcjsKPiA+ICAgICAgICAgfQo+ID4gICAgICAgICBvbmVjZWxsLT5o
-d3NbQk9TVE9OX0NMS19TWVNdID0gaHc7Cj4gPgo+ID4gICAgICAgICBodyA9IGNsa19od19yZWdp
-c3Rlcl9maXhlZF9yYXRlKE5VTEwsICJjcHUiLCAiaW5wdXQiLCAwLCBjcHVfZnJlcSk7Cj4gPiAg
-ICAgICAgIGlmIChJU19FUlIoaHcpKSB7Cj4gPiAgICAgICAgICAgICAgICAgcHJfZXJyKCJmYWls
-ZWQgdG8gcmVnaXN0ZXIgY3B1IGNsb2NrOiAlbGRcbiIsIFBUUl9FUlIoaHcpKTsKPiA+IC0gICAg
-ICAgICAgICAgICByZXR1cm47Cj4gPiArICAgICAgICAgICAgICAgZ290byBlcnJvcjsKPiA+ICAg
-ICAgICAgfQo+ID4gICAgICAgICBvbmVjZWxsLT5od3NbQk9TVE9OX0NMS19DUFVdID0gaHc7Cj4g
-Pgo+ID4gICAgICAgICBlcnIgPSBvZl9jbGtfYWRkX2h3X3Byb3ZpZGVyKG5wLCBvZl9jbGtfaHdf
-b25lY2VsbF9nZXQsIG9uZWNlbGwpOwo+ID4gICAgICAgICBpZiAoZXJyKQo+ID4gICAgICAgICAg
-ICAgICAgIHByX2VycigiZmFpbGVkIHRvIGFkZCBEVCBwcm92aWRlcjogJWRcbiIsIGVycik7Cj4g
-PiArCj4gPiArICAgICAgIHJldHVybjsKPiA+ICsKPiA+ICtlcnJvcjoKPiA+ICsgICAgICAga2Zy
-ZWUob25lY2VsbCk7Cj4KPiBPaywgc3VyZS4gQnV0IHRoZW4gY2xrcyBhcmUgc3RpbGwgbGVmdCBy
-ZWdpc3RlcmVkIG9uIGZhaWx1cmU/CgpZZWFoLCBidXQgdGhpcyBwYXRjaCBkb2VzIG5vdCBjaGFu
-Z2UgdGhlIG9yaWdpbmFsIGZsb3cgb2YgdGhlIGZ1bmN0aW9uLCBzbyBJIHN1cHBvc2UKaWYgeW91
-IGRlZW0gdGhpcyBpcyBub3QgcHJvcGVyLCBpdCdzIGJldHRlciB0byBpbXByb3ZlIHRoYXQgaW4g
-YW5vdGhlciBwYXRjaCwgd2hhdCBkbwp5b3UgdGhpbms/CgoKLS0tCkJlc3Qgd2lzaGVzCllpIFdh
-bmc=
+Still this patch is fine as is:
 
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
 
---=====_003_next=====--
-
---=====_001_next=====--
+cheers

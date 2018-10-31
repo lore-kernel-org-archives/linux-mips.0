@@ -1,14 +1,14 @@
-Received: from mxhk.zte.com.cn ([63.217.80.70]:35914 "EHLO mxhk.zte.com.cn"
+Received: from mxhk.zte.com.cn ([63.217.80.70]:30362 "EHLO mxhk.zte.com.cn"
 	rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-	id S23990406AbeJaDova7mD0 (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 31 Oct 2018 04:44:51 +0100
-Date: Wed, 31 Oct 2018 11:44:19 +0800 (CST)
-Message-ID: <201810311144196940860@zte.com.cn>
+	id S23990418AbeJaHABZrSyM (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 31 Oct 2018 08:00:01 +0100
+Date: Wed, 31 Oct 2018 14:59:49 +0800 (CST)
+Message-ID: <201810311459497333246@zte.com.cn>
 In-Reply-To: <154091673873.98144.2128870769302542417@swboyd.mtv.corp.google.com>
 References: 201810301413240217200@zte.com.cn,154091673873.98144.2128870769302542417@swboyd.mtv.corp.google.com
 Mime-Version: 1.0
 From: <wang.yi59@zte.com.cn>
-Subject: =?UTF-8?B?UmU6IFJlOsKgUmU6IFtQQVRDSCB2Ml0gY2xrOiBib3N0b246IGZpeCBwb3NzaWJsZSBtZW1vcnkgbGVhayBpbiBjbGtfYm9zdG9uX3NldHVwKCk=?=
+Subject: =?UTF-8?B?UmU6IFJlOiBbUEFUQ0ggdjJdIGNsazogYm9zdG9uOiBmaXggcG9zc2libGUgbWVtb3J5IGxlYWsgaW4gY2xrX2Jvc3Rvbl9zZXR1cCgp?=
 Content-Type: multipart/mixed;
 	boundary="=====_001_next====="
 Return-Path: <wang.yi59@zte.com.cn>
@@ -22,8 +22,8 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: sboyd@kernel.org
-Cc: paul.burton@mips.com, mturquette@baylibre.com, linux-mips@linux-mips.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, zhong.weidong@zte.com.cn, up2wing@163.com
-Message-ID: <20181031034419.BoJ-n8BYZef19MnwfLzz7tCX0VL3qmBovQfLFjfRA7k@z>
+Cc: paul.burton@mips.com, mturquette@baylibre.com, linux-mips@linux-mips.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, zhong.weidong@zte.com.cn, up2wing@163.com, wang.yi59@zte.com.cn
+Message-ID: <20181031065949.tIuH-tKBXMvW0s8qHJE5OkDWf5hl2mBPDYK64y22gGQ@z>
 
 
 

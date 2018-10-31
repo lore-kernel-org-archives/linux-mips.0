@@ -1,9 +1,9 @@
-Received: from mxhk.zte.com.cn ([63.217.80.70]:65526 "EHLO mxhk.zte.com.cn"
+Received: from mx7.zte.com.cn ([202.103.147.169]:34168 "EHLO mxct.zte.com.cn"
 	rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-	id S23990717AbeJaCm43LbxB (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 31 Oct 2018 03:42:56 +0100
-Date: Wed, 31 Oct 2018 10:42:45 +0800 (CST)
-Message-ID: <201810311042457057050@zte.com.cn>
+	id S23990717AbeJaDFqxMwcB (ORCPT <rfc822;linux-mips@linux-mips.org>);
+	Wed, 31 Oct 2018 04:05:46 +0100
+Date: Wed, 31 Oct 2018 11:05:04 +0800 (CST)
+Message-ID: <201810311105046708554@zte.com.cn>
 In-Reply-To: <154091673873.98144.2128870769302542417@swboyd.mtv.corp.google.com>
 References: 201810301413240217200@zte.com.cn,154091673873.98144.2128870769302542417@swboyd.mtv.corp.google.com
 Mime-Version: 1.0
@@ -21,9 +21,9 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: sboyd@kernel.org, linux-kernel@vger.kernel.org
-Cc: paul.burton@mips.com, mturquette@baylibre.com, linux-mips@linux-mips.org, linux-clk@vger.kernel.org, zhong.weidong@zte.com.cn, up2wing@163.com
-Message-ID: <20181031024245.HxykzU3Oz0iI3RER9BEn8cqm0gFtu5ojGDmceLl5aPc@z>
+To: sboyd@kernel.org
+Cc: paul.burton@mips.com, mturquette@baylibre.com, linux-mips@linux-mips.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, zhong.weidong@zte.com.cn, up2wing@163.com
+Message-ID: <20181031030504.KDuxZDFtVt5MJ6is4NHbHWwAWaX0VBZrWn2GtRKu90U@z>
 
 
 

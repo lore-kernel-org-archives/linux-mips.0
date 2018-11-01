@@ -1,17 +1,25 @@
-Received: from mxhk.zte.com.cn ([63.217.80.70]:30362 "EHLO mxhk.zte.com.cn"
-	rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-	id S23990418AbeJaHABZrSyM (ORCPT <rfc822;linux-mips@linux-mips.org>);
-	Wed, 31 Oct 2018 08:00:01 +0100
-Date: Wed, 31 Oct 2018 14:59:49 +0800 (CST)
-Message-ID: <201810311459497333246@zte.com.cn>
-In-Reply-To: <154091673873.98144.2128870769302542417@swboyd.mtv.corp.google.com>
-References: 201810301413240217200@zte.com.cn,154091673873.98144.2128870769302542417@swboyd.mtv.corp.google.com
-Mime-Version: 1.0
-From: <wang.yi59@zte.com.cn>
-Subject: =?UTF-8?B?UmU6IFJlOiBbUEFUQ0ggdjJdIGNsazogYm9zdG9uOiBmaXggcG9zc2libGUgbWVtb3J5IGxlYWsgaW4gY2xrX2Jvc3Rvbl9zZXR1cCgp?=
-Content-Type: multipart/mixed;
-	boundary="=====_001_next====="
-Return-Path: <wang.yi59@zte.com.cn>
+Received: from mail-eopbgr810137.outbound.protection.outlook.com ([40.107.81.137]:11712
+        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23991066AbeKARywOIdfQ convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 1 Nov 2018 18:54:52 +0100
+From: Paul Burton <paul.burton@mips.com>
+Subject: Re: [RFC PATCH] lib: Introduce generic __cmpxchg_u64() and use it
+ where needed
+Date: Thu, 1 Nov 2018 17:54:50 +0000
+Message-ID: <20181101175448.sld6krwbs5n7ovak@pburton-laptop>
+References: <1541015538-11382-1-git-send-email-linux@roeck-us.net>
+ <20181031213240.zhh7dfcm47ucuyfl@pburton-laptop>
+ <20181031220253.GA15505@roeck-us.net>
+ <20181031233235.qbedw3pinxcuk7me@pburton-laptop>
+ <4e2438a23d2edf03368950a72ec058d1d299c32e.camel@hammerspace.com>
+In-Reply-To: <4e2438a23d2edf03368950a72ec058d1d299c32e.camel@hammerspace.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <CF3B98CF3394B54E933F2B98E3776DB7@namprd22.prod.outlook.com>
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+Return-Path: <pburton@wavecomp.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -21,82 +29,36 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: sboyd@kernel.org
-Cc: paul.burton@mips.com, mturquette@baylibre.com, linux-mips@linux-mips.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, zhong.weidong@zte.com.cn, up2wing@163.com, wang.yi59@zte.com.cn
-Message-ID: <20181031065949.tIuH-tKBXMvW0s8qHJE5OkDWf5hl2mBPDYK64y22gGQ@z>
+To: Trond Myklebust <trondmy@hammerspace.com>
+Cc: "linux@roeck-us.net" <linux@roeck-us.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ralf@linux-mips.org" <ralf@linux-mips.org>, "jlayton@kernel.org" <jlayton@kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "bfields@fieldses.org" <bfields@fieldses.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>, "jhogan@kernel.org" <jhogan@kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "davem@davemloft.net" <davem@davemloft.net>, "arnd@arndb.de" <arnd@arndb.de>, "paulus@samba.org" <paulus@samba.org>, "mpe@ellerman.id.au" <mpe@ellerman.id.au>, "benh@kernel.crashing.org" <benh@kernel.crashing.org>
+Message-ID: <20181101175450.DGsouHan7EDDBVlAifXZ3TpT5VS0azcvmxohCYf76TA@z>
 
+Hi Trond,
 
+On Thu, Nov 01, 2018 at 12:17:31AM +0000, Trond Myklebust wrote:
+> On Wed, 2018-10-31 at 23:32 +0000, Paul Burton wrote:
+> > In this particular case I have no idea why
+> > net/sunrpc/auth_gss/gss_krb5_seal.c is using cmpxchg64() at all. It's
+> > essentially reinventing atomic64_fetch_inc() which is already
+> > provided
+> > everywhere via CONFIG_GENERIC_ATOMIC64 & the spinlock approach. At
+> > least
+> > for atomic64_* functions the assumption that all access will be
+> > performed using those same functions seems somewhat reasonable.
+> > 
+> > So how does the below look? Trond?
+> 
+> My one question (and the reason why I went with cmpxchg() in the first
+> place) would be about the overflow behaviour for atomic_fetch_inc() and
+> friends. I believe those functions should be OK on x86, so that when we
+> overflow the counter, it behaves like an unsigned value and wraps back
+> around.  Is that the case for all architectures?
+> 
+> i.e. are atomic_t/atomic64_t always guaranteed to behave like u32/u64
+> on increment?
+> 
+> I could not find any documentation that explicitly stated that they
+> should.
 
---=====_001_next=====
-Content-Type: multipart/alternative;
-	boundary="=====_003_next====="
-
-
---=====_003_next=====
-Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: base64
-
-PiBRdW90aW5nIHdhbmcueWk1OUB6dGUuY29tLmNuICgyMDE4LTEwLTI5IDIzOjEzOjI0KQo+ID4g
-PiBRdW90aW5nIFlpIFdhbmcgKDIwMTgtMTAtMjkgMDE6MzE6NDcpCj4gPiA+ID4gJ29uZWNlbGwn
-IGlzIG1hbGxvY2VkIGluIGNsa19ib3N0b25fc2V0dXAoKSwgYnV0IGlzIG5vdCBmcmVlZAo+ID4g
-PiA+IGJlZm9yZSBsZWF2aW5nIGZyb20gdGhlIGVycm9yIGhhbmRsaW5nIGNhc2VzLgo+ID4gPgo+
-ID4gPiBIb3cgZGlkIHlvdSBmaW5kIHRoaXM/IFZpc3VhbCBpbnNwZWN0aW9uPyBTb21lIGNvY2Np
-bmVsbGUgc2NyaXB0Pwo+ID4KPiA+IFNtYXRjaCByZXBvcnQgdGhpczoKPiA+IGRyaXZlcnMvY2xr
-L2ltZ3RlYy9jbGstYm9zdG9uLmM6NzYgY2xrX2Jvc3Rvbl9zZXR1cCgpIHdhcm46IHBvc3NpYmxl
-IG1lbW9yeSBsZWFrIG9mICdvbmVjZWxsJwo+ID4gZHJpdmVycy9jbGsvaW1ndGVjL2Nsay1ib3N0
-b24uYzo4MyBjbGtfYm9zdG9uX3NldHVwKCkgd2FybjogcG9zc2libGUgbWVtb3J5IGxlYWsgb2Yg
-J29uZWNlbGwnCj4gPiBkcml2ZXJzL2Nsay9pbWd0ZWMvY2xrLWJvc3Rvbi5jOjkwIGNsa19ib3N0
-b25fc2V0dXAoKSB3YXJuOiBwb3NzaWJsZSBtZW1vcnkgbGVhayBvZiAnb25lY2VsbCcKPgo+IE9r
-LiBQbGVhc2UgaW5jbHVkZSB0aG9zZSBkZXRhaWxzIGluIHRoZSBjb21taXQgdGV4dC4KCk9rIDop
-Cgo+Cj4gPgo+ID4gPgo+ID4gPiA+Cj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogWWkgV2FuZyA8d2Fu
-Zy55aTU5QHp0ZS5jb20uY24+Cj4gPiA+ID4gLS0tCj4gPiA+ID4gdjI6IGZpeCBzeW50YXggaXNz
-dWUgaW4gY29tbWVudCwgdGhhbmtzIHRvICBTZXJnZWkuCj4gPiA+ID4KPiA+ID4gPiAgZHJpdmVy
-cy9jbGsvaW1ndGVjL2Nsay1ib3N0b24uYyB8IDExICsrKysrKysrLS0tCj4gPiA+ID4gIDEgZmls
-ZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCj4gPiA+ID4KPiA+ID4g
-PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jbGsvaW1ndGVjL2Nsay1ib3N0b24uYyBiL2RyaXZlcnMv
-Y2xrL2ltZ3RlYy9jbGstYm9zdG9uLmMKPiA+ID4gPiBpbmRleCAxNWFmNDIzLi5mNWQ1NGE2IDEw
-MDY0NAo+ID4gPiA+IC0tLSBhL2RyaXZlcnMvY2xrL2ltZ3RlYy9jbGstYm9zdG9uLmMKPiA+ID4g
-PiArKysgYi9kcml2ZXJzL2Nsay9pbWd0ZWMvY2xrLWJvc3Rvbi5jCj4gPiA+ID4gQEAgLTczLDI3
-ICs3MywzMiBAQCBzdGF0aWMgdm9pZCBfX2luaXQgY2xrX2Jvc3Rvbl9zZXR1cChzdHJ1Y3QgZGV2
-aWNlX25vZGUgKm5wKQo+ID4gPiA+ICAgICAgICAgaHcgPSBjbGtfaHdfcmVnaXN0ZXJfZml4ZWRf
-cmF0ZShOVUxMLCAiaW5wdXQiLCBOVUxMLCAwLCBpbl9mcmVxKTsKPiA+ID4gPiAgICAgICAgIGlm
-IChJU19FUlIoaHcpKSB7Cj4gPiA+ID4gICAgICAgICAgICAgICAgIHByX2VycigiZmFpbGVkIHRv
-IHJlZ2lzdGVyIGlucHV0IGNsb2NrOiAlbGRcbiIsIFBUUl9FUlIoaHcpKTsKPiA+ID4gPiAtICAg
-ICAgICAgICAgICAgcmV0dXJuOwo+ID4gPiA+ICsgICAgICAgICAgICAgICBnb3RvIGVycm9yOwo+
-ID4gPiA+ICAgICAgICAgfQo+ID4gPiA+ICAgICAgICAgb25lY2VsbC0+aHdzW0JPU1RPTl9DTEtf
-SU5QVVRdID0gaHc7Cj4gPiA+ID4KPiA+ID4gPiAgICAgICAgIGh3ID0gY2xrX2h3X3JlZ2lzdGVy
-X2ZpeGVkX3JhdGUoTlVMTCwgInN5cyIsICJpbnB1dCIsIDAsIHN5c19mcmVxKTsKPiA+ID4gPiAg
-ICAgICAgIGlmIChJU19FUlIoaHcpKSB7Cj4gPiA+ID4gICAgICAgICAgICAgICAgIHByX2Vycigi
-ZmFpbGVkIHRvIHJlZ2lzdGVyIHN5cyBjbG9jazogJWxkXG4iLCBQVFJfRVJSKGh3KSk7Cj4gPiA+
-ID4gLSAgICAgICAgICAgICAgIHJldHVybjsKPiA+ID4gPiArICAgICAgICAgICAgICAgZ290byBl
-cnJvcjsKPiA+ID4gPiAgICAgICAgIH0KPiA+ID4gPiAgICAgICAgIG9uZWNlbGwtPmh3c1tCT1NU
-T05fQ0xLX1NZU10gPSBodzsKPiA+ID4gPgo+ID4gPiA+ICAgICAgICAgaHcgPSBjbGtfaHdfcmVn
-aXN0ZXJfZml4ZWRfcmF0ZShOVUxMLCAiY3B1IiwgImlucHV0IiwgMCwgY3B1X2ZyZXEpOwo+ID4g
-PiA+ICAgICAgICAgaWYgKElTX0VSUihodykpIHsKPiA+ID4gPiAgICAgICAgICAgICAgICAgcHJf
-ZXJyKCJmYWlsZWQgdG8gcmVnaXN0ZXIgY3B1IGNsb2NrOiAlbGRcbiIsIFBUUl9FUlIoaHcpKTsK
-PiA+ID4gPiAtICAgICAgICAgICAgICAgcmV0dXJuOwo+ID4gPiA+ICsgICAgICAgICAgICAgICBn
-b3RvIGVycm9yOwo+ID4gPiA+ICAgICAgICAgfQo+ID4gPiA+ICAgICAgICAgb25lY2VsbC0+aHdz
-W0JPU1RPTl9DTEtfQ1BVXSA9IGh3Owo+ID4gPiA+Cj4gPiA+ID4gICAgICAgICBlcnIgPSBvZl9j
-bGtfYWRkX2h3X3Byb3ZpZGVyKG5wLCBvZl9jbGtfaHdfb25lY2VsbF9nZXQsIG9uZWNlbGwpOwo+
-ID4gPiA+ICAgICAgICAgaWYgKGVycikKPiA+ID4gPiAgICAgICAgICAgICAgICAgcHJfZXJyKCJm
-YWlsZWQgdG8gYWRkIERUIHByb3ZpZGVyOiAlZFxuIiwgZXJyKTsKPiA+ID4gPiArCj4gPiA+ID4g
-KyAgICAgICByZXR1cm47Cj4gPiA+ID4gKwo+ID4gPiA+ICtlcnJvcjoKPiA+ID4gPiArICAgICAg
-IGtmcmVlKG9uZWNlbGwpOwo+ID4gPgo+ID4gPiBPaywgc3VyZS4gQnV0IHRoZW4gY2xrcyBhcmUg
-c3RpbGwgbGVmdCByZWdpc3RlcmVkIG9uIGZhaWx1cmU/Cj4gPgo+ID4gWWVhaCwgYnV0IHRoaXMg
-cGF0Y2ggZG9lcyBub3QgY2hhbmdlIHRoZSBvcmlnaW5hbCBmbG93IG9mIHRoZSBmdW5jdGlvbiwg
-c28gSSBzdXBwb3NlCj4gPiBpZiB5b3UgZGVlbSB0aGlzIGlzIG5vdCBwcm9wZXIsIGl0J3MgYmV0
-dGVyIHRvIGltcHJvdmUgdGhhdCBpbiBhbm90aGVyIHBhdGNoLCB3aGF0IGRvCj4gPiB5b3UgdGhp
-bms/Cj4gPgo+Cj4gSSB0aGluayB3ZSBzaG91bGQgYXR0ZW1wdCB0byBmaXggYWxsIHRoZSB0aGVv
-cmV0aWNhbCBwcm9ibGVtcyB3aXRoIHRoZQo+IGRyaXZlciBpbnN0ZWFkIG9mIGp1c3QgZml4aW5n
-IHNvbWUgdGhpbmdzIHRvIG1ha2Ugc3RhdGljIGNoZWNrZXJzIGhhcHB5Lgo+IEl0IGxvb2tzIGxp
-a2UgdGhpcyBkcml2ZXIgd2FzIHdyaXR0ZW4gd2l0aCB0aGUgYXNzdW1wdGlvbiB0aGF0IGlmIHRo
-aW5ncwo+IGdvIGJhZCB3ZSBnaXZlIHVwIGFsbCBob3BlLiBJdCB3b3VsZCBiZSBiZXR0ZXIgdG8g
-Y2xlYW4gZXZlcnl0aGluZyB1cAo+IHByb3Blcmx5IGlmIHRoaW5ncyBnbyBiYWQgYW5kIGhhdmUg
-YmV0dGVyIGNvZGUuCgpBZ3JlZWQuIEkgd2lsbCBzZW5kIGFub3RoZXIgcGF0Y2ggdG8gZml4IHRo
-aXMuIFRoYW5rcyBmb3IgeW91ciBhZHZpY2UuCgotLS0KQmVzdCB3aXNoZXMKWWkgV2FuZw==
-
-
---=====_003_next=====--
-
---=====_001_next=====--
+Based on other replies it seems like it's at least implicitly assumed by
+other code, even if not explicitly stated.

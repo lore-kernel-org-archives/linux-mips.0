@@ -1,11 +1,11 @@
-Received: from mail-pl1-x641.google.com ([IPv6:2607:f8b0:4864:20::641]:35958
-        "EHLO mail-pl1-x641.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993090AbeKHOrizLhuv (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 8 Nov 2018 15:47:38 +0100
+Received: from mail-pg1-x543.google.com ([IPv6:2607:f8b0:4864:20::543]:38284
+        "EHLO mail-pg1-x543.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992953AbeKHOrAZrIUv (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 8 Nov 2018 15:47:00 +0100
 From: lantianyu1986@gmail.com
-Subject: [Resend PATCH V5 7/10] KVM: Make kvm_set_spte_hva() return int
-Date: Thu,  8 Nov 2018 22:46:36 +0800
-Message-ID: <20181108144639.11206-7-Tianyu.Lan@microsoft.com>
+Subject: [Resend PATCH V5 2/10] x86/hyper-v: Add HvFlushGuestAddressList hypercall support
+Date: Thu,  8 Nov 2018 22:46:31 +0800
+Message-ID: <20181108144639.11206-2-Tianyu.Lan@microsoft.com>
 In-Reply-To: <20181108144639.11206-1-Tianyu.Lan@microsoft.com>
 References: <20181108144639.11206-1-Tianyu.Lan@microsoft.com>
 Return-Path: <lantianyu1986@gmail.com>
@@ -18,192 +18,229 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Cc: Lan Tianyu <Tianyu.Lan@microsoft.com>, christoffer.dall@arm.com, marc.zyngier@arm.com, linux@armlinux.org.uk, catalin.marinas@arm.com, will.deacon@arm.com, jhogan@kernel.org, ralf@linux-mips.org, paul.burton@mips.com, paulus@ozlabs.org, benh@kernel.crashing.org, mpe@ellerman.id.au, pbonzini@redhat.com, rkrcmar@redhat.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, michael.h.kelley@microsoft.com, kys@microsoft.com, vkuznets@redhat.com
-Message-ID: <20181108144636.0klr5qwIUB1bEoxDnTXD2nzXMJD_zBPSaShoC2DDmtY@z>
+Cc: Lan Tianyu <Tianyu.Lan@microsoft.com>, christoffer.dall@arm.com, marc.zyngier@arm.com, linux@armlinux.org.uk, catalin.marinas@arm.com, will.deacon@arm.com, jhogan@kernel.org, ralf@linux-mips.org, paul.burton@mips.com, paulus@ozlabs.org, benh@kernel.crashing.org, mpe@ellerman.id.au, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com, rkrcmar@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, devel@linuxdriverproject.org, kvm@vger.kernel.org, michael.h.kelley@microsoft.com, vkuznets@redhat.com
+Message-ID: <20181108144631.TdrLtXI0VsojsfSmSQpsU_-ysBI9CJ-p169Bq3j3qqQ@z>
 
 From: Lan Tianyu <Tianyu.Lan@microsoft.com>
 
-The patch is to make kvm_set_spte_hva() return int and caller can
-check return value to determine flush tlb or not.
+Hyper-V provides HvFlushGuestAddressList() hypercall to flush EPT tlb
+with specified ranges. This patch is to add the hypercall support.
 
+Reviewed-by:  Michael Kelley <mikelley@microsoft.com>
 Signed-off-by: Lan Tianyu <Tianyu.Lan@microsoft.com>
 ---
- arch/arm/include/asm/kvm_host.h     | 2 +-
- arch/arm64/include/asm/kvm_host.h   | 2 +-
- arch/mips/include/asm/kvm_host.h    | 2 +-
- arch/mips/kvm/mmu.c                 | 3 ++-
- arch/powerpc/include/asm/kvm_host.h | 2 +-
- arch/powerpc/kvm/book3s.c           | 3 ++-
- arch/powerpc/kvm/e500_mmu_host.c    | 3 ++-
- arch/x86/include/asm/kvm_host.h     | 2 +-
- arch/x86/kvm/mmu.c                  | 3 ++-
- virt/kvm/arm/mmu.c                  | 6 ++++--
- 10 files changed, 17 insertions(+), 11 deletions(-)
+Change sincd v4:
+       - Expose function hyperv_fill_flush_guest_mapping_list()
+       out of hyperv file
+       - Adjust parameter of hyperv_flush_guest_mapping_range()
 
-diff --git a/arch/arm/include/asm/kvm_host.h b/arch/arm/include/asm/kvm_host.h
-index 5ca5d9af0c26..fb62b500e590 100644
---- a/arch/arm/include/asm/kvm_host.h
-+++ b/arch/arm/include/asm/kvm_host.h
-@@ -225,7 +225,7 @@ int __kvm_arm_vcpu_set_events(struct kvm_vcpu *vcpu,
- #define KVM_ARCH_WANT_MMU_NOTIFIER
- int kvm_unmap_hva_range(struct kvm *kvm,
- 			unsigned long start, unsigned long end);
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
+Change since v2:
+      Fix some coding style issues
+        - Move HV_MAX_FLUSH_PAGES and HV_MAX_FLUSH_REP_COUNT to
+	hyperv-tlfs.h.
+	- Calculate HV_MAX_FLUSH_REP_COUNT in the macro definition
+	- Use HV_MAX_FLUSH_REP_COUNT to define length of gpa_list in
+	struct hv_guest_mapping_flush_list.
+
+Change since v1:
+       Add hyperv tlb flush struct to avoid use kvm tlb flush struct
+in the hyperv file.
+---
+ arch/x86/hyperv/nested.c           | 79 ++++++++++++++++++++++++++++++++++++++
+ arch/x86/include/asm/hyperv-tlfs.h | 32 +++++++++++++++
+ arch/x86/include/asm/mshyperv.h    | 15 ++++++++
+ 3 files changed, 126 insertions(+)
+
+diff --git a/arch/x86/hyperv/nested.c b/arch/x86/hyperv/nested.c
+index b8e60cc50461..3d0f31e46954 100644
+--- a/arch/x86/hyperv/nested.c
++++ b/arch/x86/hyperv/nested.c
+@@ -7,6 +7,7 @@
+  *
+  * Author : Lan Tianyu <Tianyu.Lan@microsoft.com>
+  */
++#define pr_fmt(fmt)  "Hyper-V: " fmt
  
- unsigned long kvm_arm_num_regs(struct kvm_vcpu *vcpu);
- int kvm_arm_copy_reg_indices(struct kvm_vcpu *vcpu, u64 __user *indices);
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 52fbc823ff8c..b3df7b38ba7d 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -360,7 +360,7 @@ int __kvm_arm_vcpu_set_events(struct kvm_vcpu *vcpu,
- #define KVM_ARCH_WANT_MMU_NOTIFIER
- int kvm_unmap_hva_range(struct kvm *kvm,
- 			unsigned long start, unsigned long end);
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
- int kvm_age_hva(struct kvm *kvm, unsigned long start, unsigned long end);
- int kvm_test_age_hva(struct kvm *kvm, unsigned long hva);
  
-diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
-index 2c1c53d12179..71c3f21d80d5 100644
---- a/arch/mips/include/asm/kvm_host.h
-+++ b/arch/mips/include/asm/kvm_host.h
-@@ -933,7 +933,7 @@ enum kvm_mips_fault_result kvm_trap_emul_gva_fault(struct kvm_vcpu *vcpu,
- #define KVM_ARCH_WANT_MMU_NOTIFIER
- int kvm_unmap_hva_range(struct kvm *kvm,
- 			unsigned long start, unsigned long end);
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
- int kvm_age_hva(struct kvm *kvm, unsigned long start, unsigned long end);
- int kvm_test_age_hva(struct kvm *kvm, unsigned long hva);
- 
-diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
-index d8dcdb350405..97e538a8c1be 100644
---- a/arch/mips/kvm/mmu.c
-+++ b/arch/mips/kvm/mmu.c
-@@ -551,7 +551,7 @@ static int kvm_set_spte_handler(struct kvm *kvm, gfn_t gfn, gfn_t gfn_end,
- 	       (pte_dirty(old_pte) && !pte_dirty(hva_pte));
+ #include <linux/types.h>
+@@ -54,3 +55,81 @@ int hyperv_flush_guest_mapping(u64 as)
+ 	return ret;
  }
- 
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
- {
- 	unsigned long end = hva + PAGE_SIZE;
- 	int ret;
-@@ -559,6 +559,7 @@ void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
- 	ret = handle_hva_to_gpa(kvm, hva, end, &kvm_set_spte_handler, &pte);
- 	if (ret)
- 		kvm_mips_callbacks->flush_shadow_all(kvm);
-+	return 0;
- }
- 
- static int kvm_age_hva_handler(struct kvm *kvm, gfn_t gfn, gfn_t gfn_end,
-diff --git a/arch/powerpc/include/asm/kvm_host.h b/arch/powerpc/include/asm/kvm_host.h
-index fac6f631ed29..ab23379c53a9 100644
---- a/arch/powerpc/include/asm/kvm_host.h
-+++ b/arch/powerpc/include/asm/kvm_host.h
-@@ -72,7 +72,7 @@ extern int kvm_unmap_hva_range(struct kvm *kvm,
- 			       unsigned long start, unsigned long end);
- extern int kvm_age_hva(struct kvm *kvm, unsigned long start, unsigned long end);
- extern int kvm_test_age_hva(struct kvm *kvm, unsigned long hva);
--extern void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
-+extern int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
- 
- #define HPTEG_CACHE_NUM			(1 << 15)
- #define HPTEG_HASH_BITS_PTE		13
-diff --git a/arch/powerpc/kvm/book3s.c b/arch/powerpc/kvm/book3s.c
-index fd9893bc7aa1..437613bb609a 100644
---- a/arch/powerpc/kvm/book3s.c
-+++ b/arch/powerpc/kvm/book3s.c
-@@ -850,9 +850,10 @@ int kvm_test_age_hva(struct kvm *kvm, unsigned long hva)
- 	return kvm->arch.kvm_ops->test_age_hva(kvm, hva);
- }
- 
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
- {
- 	kvm->arch.kvm_ops->set_spte_hva(kvm, hva, pte);
-+	return 0;
- }
- 
- void kvmppc_mmu_destroy(struct kvm_vcpu *vcpu)
-diff --git a/arch/powerpc/kvm/e500_mmu_host.c b/arch/powerpc/kvm/e500_mmu_host.c
-index 8f2985e46f6f..c3f312b2bcb3 100644
---- a/arch/powerpc/kvm/e500_mmu_host.c
-+++ b/arch/powerpc/kvm/e500_mmu_host.c
-@@ -757,10 +757,11 @@ int kvm_test_age_hva(struct kvm *kvm, unsigned long hva)
- 	return 0;
- }
- 
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
- {
- 	/* The page will get remapped properly on its next fault */
- 	kvm_unmap_hva(kvm, hva);
-+	return 0;
- }
- 
- /*****************************************/
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index c8a65f0a7107..1cab3c15944f 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1509,7 +1509,7 @@ asmlinkage void kvm_spurious_fault(void);
- int kvm_unmap_hva_range(struct kvm *kvm, unsigned long start, unsigned long end);
- int kvm_age_hva(struct kvm *kvm, unsigned long start, unsigned long end);
- int kvm_test_age_hva(struct kvm *kvm, unsigned long hva);
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
- int kvm_cpu_has_injectable_intr(struct kvm_vcpu *v);
- int kvm_cpu_has_interrupt(struct kvm_vcpu *vcpu);
- int kvm_arch_interrupt_allowed(struct kvm_vcpu *vcpu);
-diff --git a/arch/x86/kvm/mmu.c b/arch/x86/kvm/mmu.c
-index af3e9e466014..06bfcd327ef6 100644
---- a/arch/x86/kvm/mmu.c
-+++ b/arch/x86/kvm/mmu.c
-@@ -1913,9 +1913,10 @@ int kvm_unmap_hva_range(struct kvm *kvm, unsigned long start, unsigned long end)
- 	return kvm_handle_hva_range(kvm, start, end, 0, kvm_unmap_rmapp);
- }
- 
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
- {
- 	kvm_handle_hva(kvm, hva, (unsigned long)&pte, kvm_set_pte_rmapp);
-+	return 0;
- }
- 
- static int kvm_age_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
-index 5eca48bdb1a6..b8b20c033fcf 100644
---- a/virt/kvm/arm/mmu.c
-+++ b/virt/kvm/arm/mmu.c
-@@ -1849,14 +1849,14 @@ static int kvm_set_spte_handler(struct kvm *kvm, gpa_t gpa, u64 size, void *data
- }
- 
- 
--void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
-+int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
- {
- 	unsigned long end = hva + PAGE_SIZE;
- 	kvm_pfn_t pfn = pte_pfn(pte);
- 	pte_t stage2_pte;
- 
- 	if (!kvm->arch.pgd)
--		return;
-+		return 0;
- 
- 	trace_kvm_set_spte_hva(hva);
- 
-@@ -1867,6 +1867,8 @@ void kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
- 	clean_dcache_guest_page(pfn, PAGE_SIZE);
- 	stage2_pte = pfn_pte(pfn, PAGE_S2);
- 	handle_hva_to_gpa(kvm, hva, end, &kvm_set_spte_handler, &stage2_pte);
+ EXPORT_SYMBOL_GPL(hyperv_flush_guest_mapping);
 +
-+	return 0;
- }
++int hyperv_fill_flush_guest_mapping_list(
++		struct hv_guest_mapping_flush_list *flush,
++		u64 start_gfn, u64 pages)
++{
++	u64 cur = start_gfn;
++	u64 additional_pages;
++	int gpa_n = 0;
++
++	do {
++		/*
++		 * If flush requests exceed max flush count, go back to
++		 * flush tlbs without range.
++		 */
++		if (gpa_n >= HV_MAX_FLUSH_REP_COUNT)
++			return -ENOSPC;
++
++		additional_pages = min_t(u64, pages, HV_MAX_FLUSH_PAGES) - 1;
++
++		flush->gpa_list[gpa_n].page.additional_pages = additional_pages;
++		flush->gpa_list[gpa_n].page.largepage = false;
++		flush->gpa_list[gpa_n].page.basepfn = cur;
++
++		pages -= additional_pages + 1;
++		cur += additional_pages + 1;
++		gpa_n++;
++	} while (pages > 0);
++
++	return gpa_n;
++}
++EXPORT_SYMBOL_GPL(hyperv_fill_flush_guest_mapping_list);
++
++int hyperv_flush_guest_mapping_range(u64 as,
++		hyperv_fill_flush_list_func fill_flush_list_func, void *data)
++{
++	struct hv_guest_mapping_flush_list **flush_pcpu;
++	struct hv_guest_mapping_flush_list *flush;
++	u64 status = 0;
++	unsigned long flags;
++	int ret = -ENOTSUPP;
++	int gpa_n = 0;
++
++	if (!hv_hypercall_pg || !fill_flush_list_func)
++		goto fault;
++
++	local_irq_save(flags);
++
++	flush_pcpu = (struct hv_guest_mapping_flush_list **)
++		this_cpu_ptr(hyperv_pcpu_input_arg);
++
++	flush = *flush_pcpu;
++	if (unlikely(!flush)) {
++		local_irq_restore(flags);
++		goto fault;
++	}
++
++	flush->address_space = as;
++	flush->flags = 0;
++
++	gpa_n = fill_flush_list_func(flush, data);
++	if (gpa_n < 0) {
++		local_irq_restore(flags);
++		goto fault;
++	}
++
++	status = hv_do_rep_hypercall(HVCALL_FLUSH_GUEST_PHYSICAL_ADDRESS_LIST,
++				     gpa_n, 0, flush, NULL);
++
++	local_irq_restore(flags);
++
++	if (!(status & HV_HYPERCALL_RESULT_MASK))
++		ret = 0;
++	else
++		ret = status;
++fault:
++	return ret;
++}
++EXPORT_SYMBOL_GPL(hyperv_flush_guest_mapping_range);
+diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
+index 4139f7650fe5..405a378e1c62 100644
+--- a/arch/x86/include/asm/hyperv-tlfs.h
++++ b/arch/x86/include/asm/hyperv-tlfs.h
+@@ -10,6 +10,7 @@
+ #define _ASM_X86_HYPERV_TLFS_H
  
- static int kvm_age_hva_handler(struct kvm *kvm, gpa_t gpa, u64 size, void *data)
+ #include <linux/types.h>
++#include <asm/page.h>
+ 
+ /*
+  * The below CPUID leaves are present if VersionAndFeatures.HypervisorPresent
+@@ -358,6 +359,7 @@ struct hv_tsc_emulation_status {
+ #define HVCALL_POST_MESSAGE			0x005c
+ #define HVCALL_SIGNAL_EVENT			0x005d
+ #define HVCALL_FLUSH_GUEST_PHYSICAL_ADDRESS_SPACE 0x00af
++#define HVCALL_FLUSH_GUEST_PHYSICAL_ADDRESS_LIST 0x00b0
+ 
+ #define HV_X64_MSR_VP_ASSIST_PAGE_ENABLE	0x00000001
+ #define HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT	12
+@@ -757,6 +759,36 @@ struct hv_guest_mapping_flush {
+ 	u64 flags;
+ };
+ 
++/*
++ *  HV_MAX_FLUSH_PAGES = "additional_pages" + 1. It's limited
++ *  by the bitwidth of "additional_pages" in union hv_gpa_page_range.
++ */
++#define HV_MAX_FLUSH_PAGES (2048)
++
++/* HvFlushGuestPhysicalAddressList hypercall */
++union hv_gpa_page_range {
++	u64 address_space;
++	struct {
++		u64 additional_pages:11;
++		u64 largepage:1;
++		u64 basepfn:52;
++	} page;
++};
++
++/*
++ * All input flush parameters should be in single page. The max flush
++ * count is equal with how many entries of union hv_gpa_page_range can
++ * be populated into the input parameter page.
++ */
++#define HV_MAX_FLUSH_REP_COUNT (PAGE_SIZE - 2 * sizeof(u64) /	\
++				sizeof(union hv_gpa_page_range))
++
++struct hv_guest_mapping_flush_list {
++	u64 address_space;
++	u64 flags;
++	union hv_gpa_page_range gpa_list[HV_MAX_FLUSH_REP_COUNT];
++};
++
+ /* HvFlushVirtualAddressSpace, HvFlushVirtualAddressList hypercalls */
+ struct hv_tlb_flush {
+ 	u64 address_space;
+diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+index 0d6271cce198..fde76f66f354 100644
+--- a/arch/x86/include/asm/mshyperv.h
++++ b/arch/x86/include/asm/mshyperv.h
+@@ -22,6 +22,11 @@ struct ms_hyperv_info {
+ 
+ extern struct ms_hyperv_info ms_hyperv;
+ 
++
++typedef int (*hyperv_fill_flush_list_func)(
++		struct hv_guest_mapping_flush_list *flush,
++		void *data);
++
+ /*
+  * Generate the guest ID.
+  */
+@@ -348,6 +353,11 @@ void set_hv_tscchange_cb(void (*cb)(void));
+ void clear_hv_tscchange_cb(void);
+ void hyperv_stop_tsc_emulation(void);
+ int hyperv_flush_guest_mapping(u64 as);
++int hyperv_flush_guest_mapping_range(u64 as,
++		hyperv_fill_flush_list_func fill_func, void *data);
++int hyperv_fill_flush_guest_mapping_list(
++		struct hv_guest_mapping_flush_list *flush,
++		u64 start_gfn, u64 end_gfn);
+ 
+ #ifdef CONFIG_X86_64
+ void hv_apic_init(void);
+@@ -370,6 +380,11 @@ static inline struct hv_vp_assist_page *hv_get_vp_assist_page(unsigned int cpu)
+ 	return NULL;
+ }
+ static inline int hyperv_flush_guest_mapping(u64 as) { return -1; }
++static inline int hyperv_flush_guest_mapping_range(u64 as,
++		hyperv_fill_flush_list_func fill_func, void *data);
++{
++	return -1;
++}
+ #endif /* CONFIG_HYPERV */
+ 
+ #ifdef CONFIG_HYPERV_TSCPAGE
 -- 
 2.14.4

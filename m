@@ -1,11 +1,13 @@
-Received: from mail-pf1-x443.google.com ([IPv6:2607:f8b0:4864:20::443]:39535
+Received: from mail-pf1-x443.google.com ([IPv6:2607:f8b0:4864:20::443]:39537
         "EHLO mail-pf1-x443.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992922AbeKHOqv6OI9v (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 8 Nov 2018 15:46:51 +0100
+        by eddie.linux-mips.org with ESMTP id S23992969AbeKHOrIW3Uhv (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 8 Nov 2018 15:47:08 +0100
 From: lantianyu1986@gmail.com
-Subject: [Resend PATCH V5 1/10] KVM: Add tlb_remote_flush_with_range callback in kvm_x86_ops
-Date: Thu,  8 Nov 2018 22:46:30 +0800
-Message-ID: <20181108144639.11206-1-Tianyu.Lan@microsoft.com>
+Subject: [Resend PATCH V5 3/10] x86/Hyper-v: Add trace in the hyperv_nested_flush_guest_mapping_range()
+Date: Thu,  8 Nov 2018 22:46:32 +0800
+Message-ID: <20181108144639.11206-3-Tianyu.Lan@microsoft.com>
+In-Reply-To: <20181108144639.11206-1-Tianyu.Lan@microsoft.com>
+References: <20181108144639.11206-1-Tianyu.Lan@microsoft.com>
 Return-Path: <lantianyu1986@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
@@ -17,47 +19,55 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 Cc: Lan Tianyu <Tianyu.Lan@microsoft.com>, christoffer.dall@arm.com, marc.zyngier@arm.com, linux@armlinux.org.uk, catalin.marinas@arm.com, will.deacon@arm.com, jhogan@kernel.org, ralf@linux-mips.org, paul.burton@mips.com, paulus@ozlabs.org, benh@kernel.crashing.org, mpe@ellerman.id.au, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com, rkrcmar@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, devel@linuxdriverproject.org, kvm@vger.kernel.org, michael.h.kelley@microsoft.com, vkuznets@redhat.com
-Message-ID: <20181108144630.ECSn3U7Oa7WplvvMI3sjBjd-IkkLSXsTqIoA3Vv47AM@z>
+Message-ID: <20181108144632.fbJkPzi0bQCeYGOCO7l13jjEDe45-Y0TsnVOjww2qZc@z>
 
 From: Lan Tianyu <Tianyu.Lan@microsoft.com>
 
-Add flush range call back in the kvm_x86_ops and platform can use it
-to register its associated function. The parameter "kvm_tlb_range"
-accepts a single range and flush list which contains a list of ranges.
+This patch is to trace log in the hyperv_nested_flush_
+guest_mapping_range().
 
 Signed-off-by: Lan Tianyu <Tianyu.Lan@microsoft.com>
 ---
-Change since v1:
-       Change "end_gfn" to "pages" to aviod confusion as to whether
-"end_gfn" is inclusive or exlusive.
----
- arch/x86/include/asm/kvm_host.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/x86/hyperv/nested.c            |  1 +
+ arch/x86/include/asm/trace/hyperv.h | 14 ++++++++++++++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 55e51ff7e421..c8a65f0a7107 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -439,6 +439,11 @@ struct kvm_mmu {
- 	u64 pdptrs[4]; /* pae */
- };
+diff --git a/arch/x86/hyperv/nested.c b/arch/x86/hyperv/nested.c
+index 3d0f31e46954..dd0a843f766d 100644
+--- a/arch/x86/hyperv/nested.c
++++ b/arch/x86/hyperv/nested.c
+@@ -130,6 +130,7 @@ int hyperv_flush_guest_mapping_range(u64 as,
+ 	else
+ 		ret = status;
+ fault:
++	trace_hyperv_nested_flush_guest_mapping_range(as, ret);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(hyperv_flush_guest_mapping_range);
+diff --git a/arch/x86/include/asm/trace/hyperv.h b/arch/x86/include/asm/trace/hyperv.h
+index 2e6245a023ef..ace464f09681 100644
+--- a/arch/x86/include/asm/trace/hyperv.h
++++ b/arch/x86/include/asm/trace/hyperv.h
+@@ -42,6 +42,20 @@ TRACE_EVENT(hyperv_nested_flush_guest_mapping,
+ 	    TP_printk("address space %llx ret %d", __entry->as, __entry->ret)
+ 	);
  
-+struct kvm_tlb_range {
-+	u64 start_gfn;
-+	u64 pages;
-+};
++TRACE_EVENT(hyperv_nested_flush_guest_mapping_range,
++	    TP_PROTO(u64 as, int ret),
++	    TP_ARGS(as, ret),
 +
- enum pmc_type {
- 	KVM_PMC_GP = 0,
- 	KVM_PMC_FIXED,
-@@ -1042,6 +1047,8 @@ struct kvm_x86_ops {
- 
- 	void (*tlb_flush)(struct kvm_vcpu *vcpu, bool invalidate_gpa);
- 	int  (*tlb_remote_flush)(struct kvm *kvm);
-+	int  (*tlb_remote_flush_with_range)(struct kvm *kvm,
-+			struct kvm_tlb_range *range);
- 
- 	/*
- 	 * Flush any TLB entries associated with the given GVA.
++	    TP_STRUCT__entry(
++		    __field(u64, as)
++		    __field(int, ret)
++		    ),
++	    TP_fast_assign(__entry->as = as;
++			   __entry->ret = ret;
++		    ),
++	    TP_printk("address space %llx ret %d", __entry->as, __entry->ret)
++	);
++
+ TRACE_EVENT(hyperv_send_ipi_mask,
+ 	    TP_PROTO(const struct cpumask *cpus,
+ 		     int vector),
 -- 
 2.14.4

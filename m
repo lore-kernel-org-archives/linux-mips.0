@@ -1,14 +1,16 @@
-Received: from mail-pg1-x543.google.com ([IPv6:2607:f8b0:4864:20::543]:38284
-        "EHLO mail-pg1-x543.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992953AbeKHOrAZrIUv (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Thu, 8 Nov 2018 15:47:00 +0100
-From: lantianyu1986@gmail.com
-Subject: [Resend PATCH V5 2/10] x86/hyper-v: Add HvFlushGuestAddressList hypercall support
-Date: Thu,  8 Nov 2018 22:46:31 +0800
-Message-ID: <20181108144639.11206-2-Tianyu.Lan@microsoft.com>
-In-Reply-To: <20181108144639.11206-1-Tianyu.Lan@microsoft.com>
-References: <20181108144639.11206-1-Tianyu.Lan@microsoft.com>
-Return-Path: <lantianyu1986@gmail.com>
+Received: from mail-pl1-x642.google.com ([IPv6:2607:f8b0:4864:20::642]:38611
+        "EHLO mail-pl1-x642.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23990429AbeKHSMMY19I8 (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 8 Nov 2018 19:12:12 +0100
+Received: by mail-pl1-x642.google.com with SMTP id p4-v6so7519178plo.5
+        for <linux-mips@linux-mips.org>; Thu, 08 Nov 2018 10:12:12 -0800 (PST)
+From: Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH -next-akpm 0/3] Add support for fast mremap
+Date: Thu,  8 Nov 2018 10:11:58 -0800
+Message-ID: <20181108181201.88826-1-joelaf@google.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Return-Path: <joel@joelfernandes.org>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -18,229 +20,94 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-Cc: Lan Tianyu <Tianyu.Lan@microsoft.com>, christoffer.dall@arm.com, marc.zyngier@arm.com, linux@armlinux.org.uk, catalin.marinas@arm.com, will.deacon@arm.com, jhogan@kernel.org, ralf@linux-mips.org, paul.burton@mips.com, paulus@ozlabs.org, benh@kernel.crashing.org, mpe@ellerman.id.au, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org, pbonzini@redhat.com, rkrcmar@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, linux-mips@linux-mips.org, kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, devel@linuxdriverproject.org, kvm@vger.kernel.org, michael.h.kelley@microsoft.com, vkuznets@redhat.com
-Message-ID: <20181108144631.TdrLtXI0VsojsfSmSQpsU_-ysBI9CJ-p169Bq3j3qqQ@z>
+To: linux-kernel@vger.kernel.org
+Cc: kernel-team@android.com, Joel Fernandes <joelaf@google.com>, akpm@linux-foundation.org, Andrey Ryabinin <aryabinin@virtuozzo.com>, Andy Lutomirski <luto@kernel.org>, anton.ivanov@kot-begemot.co.uk, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, Chris Zankel <chris@zankel.net>, dancol@google.com, Dave Hansen <dave.hansen@linux.intel.com>, "David S. Miller" <davem@davemloft.net>, Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Guan Xuetao <gxt@pku.edu.cn>, Helge Deller <deller@gmx.de>, hughd@google.com, Ingo Molnar <mingo@redhat.com>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Jeff Dike <jdike@addtoit.com>, Jonas Bonn <jonas@southpole.se>, Julia Lawall <Julia.Lawall@lip6.fr>, kasan-dev@googlegroups.com, "Kirill A. Shutemov" <kirill@shutemov.name>, kvmarm@lists.cs.columbia.edu, Ley Foon Tan <lftan@altera.com>, linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@linux-mips.org, linux-mm@kvack.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, lokeshgidra@google.com, Max Filippov <jcmvbkbc@gmail.com>, Michal Hocko <mhocko@kernel.org>, minchan@kernel.org, nios2-dev@lists.rocketboards.org, pantin@google.com, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Rich Felker <dalias@libc.org>, Sam Creasey <sammy@sammy.net>, sparclinux@vger.kernel.org, Stafford Horne <shorne@gmail.com>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>, Will Deacon <will.deacon@arm.com>, "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>
+Message-ID: <20181108181158.4jja01i5bh_Te7N-1v2XN7xubolWP804w2FRjP8VFL4@z>
 
-From: Lan Tianyu <Tianyu.Lan@microsoft.com>
+Hi,
+Here is the "fast mremap" series. This just a repost with Kirill's Acked-bys
+added and William's Reviewed-by added. Also fixed a UML build error reported
+last week. I would like this to be considered for linux -next. The performance
+numbers in the series are for testing on x86. The config enablement patch for
+arm64 will be posted in the future after testing (see notes below).
 
-Hyper-V provides HvFlushGuestAddressList() hypercall to flush EPT tlb
-with specified ranges. This patch is to add the hypercall support.
+List of patches in series:
 
-Reviewed-by:  Michael Kelley <mikelley@microsoft.com>
-Signed-off-by: Lan Tianyu <Tianyu.Lan@microsoft.com>
----
-Change sincd v4:
-       - Expose function hyperv_fill_flush_guest_mapping_list()
-       out of hyperv file
-       - Adjust parameter of hyperv_flush_guest_mapping_range()
+(1) mm: select HAVE_MOVE_PMD in x86 for faster mremap
 
-Change since v2:
-      Fix some coding style issues
-        - Move HV_MAX_FLUSH_PAGES and HV_MAX_FLUSH_REP_COUNT to
-	hyperv-tlfs.h.
-	- Calculate HV_MAX_FLUSH_REP_COUNT in the macro definition
-	- Use HV_MAX_FLUSH_REP_COUNT to define length of gpa_list in
-	struct hv_guest_mapping_flush_list.
+(2) mm: speed up mremap by 20x on large regions (v5)
+v1->v2: Added support for per-arch enablement (Kirill Shutemov)
+v2->v3: Updated commit message to state the optimization may also
+	run for non-thp type of systems (Daniel Col).
+v3->v4: Remove useless pmd_lock check (Kirill Shutemov)
+	Rebased ontop of Linus's master, updated perf results based
+        on x86 testing. Added Kirill's Acks.
+v4->v5: Added William's Reviewed-by. Fixed arch/um build error
+	due to set_pmd_at not defined. Rebased on linux-next/akpm.
 
-Change since v1:
-       Add hyperv tlb flush struct to avoid use kvm tlb flush struct
-in the hyperv file.
----
- arch/x86/hyperv/nested.c           | 79 ++++++++++++++++++++++++++++++++++++++
- arch/x86/include/asm/hyperv-tlfs.h | 32 +++++++++++++++
- arch/x86/include/asm/mshyperv.h    | 15 ++++++++
- 3 files changed, 126 insertions(+)
+(3) mm: treewide: remove unused address argument from pte_alloc functions (v2)
+v1->v2: fix arch/um/ prototype which was missed in v1 (Anton Ivanov)
+        update changelog with manual fixups for m68k and microblaze.
 
-diff --git a/arch/x86/hyperv/nested.c b/arch/x86/hyperv/nested.c
-index b8e60cc50461..3d0f31e46954 100644
---- a/arch/x86/hyperv/nested.c
-+++ b/arch/x86/hyperv/nested.c
-@@ -7,6 +7,7 @@
-  *
-  * Author : Lan Tianyu <Tianyu.Lan@microsoft.com>
-  */
-+#define pr_fmt(fmt)  "Hyper-V: " fmt
- 
- 
- #include <linux/types.h>
-@@ -54,3 +55,81 @@ int hyperv_flush_guest_mapping(u64 as)
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(hyperv_flush_guest_mapping);
-+
-+int hyperv_fill_flush_guest_mapping_list(
-+		struct hv_guest_mapping_flush_list *flush,
-+		u64 start_gfn, u64 pages)
-+{
-+	u64 cur = start_gfn;
-+	u64 additional_pages;
-+	int gpa_n = 0;
-+
-+	do {
-+		/*
-+		 * If flush requests exceed max flush count, go back to
-+		 * flush tlbs without range.
-+		 */
-+		if (gpa_n >= HV_MAX_FLUSH_REP_COUNT)
-+			return -ENOSPC;
-+
-+		additional_pages = min_t(u64, pages, HV_MAX_FLUSH_PAGES) - 1;
-+
-+		flush->gpa_list[gpa_n].page.additional_pages = additional_pages;
-+		flush->gpa_list[gpa_n].page.largepage = false;
-+		flush->gpa_list[gpa_n].page.basepfn = cur;
-+
-+		pages -= additional_pages + 1;
-+		cur += additional_pages + 1;
-+		gpa_n++;
-+	} while (pages > 0);
-+
-+	return gpa_n;
-+}
-+EXPORT_SYMBOL_GPL(hyperv_fill_flush_guest_mapping_list);
-+
-+int hyperv_flush_guest_mapping_range(u64 as,
-+		hyperv_fill_flush_list_func fill_flush_list_func, void *data)
-+{
-+	struct hv_guest_mapping_flush_list **flush_pcpu;
-+	struct hv_guest_mapping_flush_list *flush;
-+	u64 status = 0;
-+	unsigned long flags;
-+	int ret = -ENOTSUPP;
-+	int gpa_n = 0;
-+
-+	if (!hv_hypercall_pg || !fill_flush_list_func)
-+		goto fault;
-+
-+	local_irq_save(flags);
-+
-+	flush_pcpu = (struct hv_guest_mapping_flush_list **)
-+		this_cpu_ptr(hyperv_pcpu_input_arg);
-+
-+	flush = *flush_pcpu;
-+	if (unlikely(!flush)) {
-+		local_irq_restore(flags);
-+		goto fault;
-+	}
-+
-+	flush->address_space = as;
-+	flush->flags = 0;
-+
-+	gpa_n = fill_flush_list_func(flush, data);
-+	if (gpa_n < 0) {
-+		local_irq_restore(flags);
-+		goto fault;
-+	}
-+
-+	status = hv_do_rep_hypercall(HVCALL_FLUSH_GUEST_PHYSICAL_ADDRESS_LIST,
-+				     gpa_n, 0, flush, NULL);
-+
-+	local_irq_restore(flags);
-+
-+	if (!(status & HV_HYPERCALL_RESULT_MASK))
-+		ret = 0;
-+	else
-+		ret = status;
-+fault:
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(hyperv_flush_guest_mapping_range);
-diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
-index 4139f7650fe5..405a378e1c62 100644
---- a/arch/x86/include/asm/hyperv-tlfs.h
-+++ b/arch/x86/include/asm/hyperv-tlfs.h
-@@ -10,6 +10,7 @@
- #define _ASM_X86_HYPERV_TLFS_H
- 
- #include <linux/types.h>
-+#include <asm/page.h>
- 
- /*
-  * The below CPUID leaves are present if VersionAndFeatures.HypervisorPresent
-@@ -358,6 +359,7 @@ struct hv_tsc_emulation_status {
- #define HVCALL_POST_MESSAGE			0x005c
- #define HVCALL_SIGNAL_EVENT			0x005d
- #define HVCALL_FLUSH_GUEST_PHYSICAL_ADDRESS_SPACE 0x00af
-+#define HVCALL_FLUSH_GUEST_PHYSICAL_ADDRESS_LIST 0x00b0
- 
- #define HV_X64_MSR_VP_ASSIST_PAGE_ENABLE	0x00000001
- #define HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT	12
-@@ -757,6 +759,36 @@ struct hv_guest_mapping_flush {
- 	u64 flags;
- };
- 
-+/*
-+ *  HV_MAX_FLUSH_PAGES = "additional_pages" + 1. It's limited
-+ *  by the bitwidth of "additional_pages" in union hv_gpa_page_range.
-+ */
-+#define HV_MAX_FLUSH_PAGES (2048)
-+
-+/* HvFlushGuestPhysicalAddressList hypercall */
-+union hv_gpa_page_range {
-+	u64 address_space;
-+	struct {
-+		u64 additional_pages:11;
-+		u64 largepage:1;
-+		u64 basepfn:52;
-+	} page;
-+};
-+
-+/*
-+ * All input flush parameters should be in single page. The max flush
-+ * count is equal with how many entries of union hv_gpa_page_range can
-+ * be populated into the input parameter page.
-+ */
-+#define HV_MAX_FLUSH_REP_COUNT (PAGE_SIZE - 2 * sizeof(u64) /	\
-+				sizeof(union hv_gpa_page_range))
-+
-+struct hv_guest_mapping_flush_list {
-+	u64 address_space;
-+	u64 flags;
-+	union hv_gpa_page_range gpa_list[HV_MAX_FLUSH_REP_COUNT];
-+};
-+
- /* HvFlushVirtualAddressSpace, HvFlushVirtualAddressList hypercalls */
- struct hv_tlb_flush {
- 	u64 address_space;
-diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-index 0d6271cce198..fde76f66f354 100644
---- a/arch/x86/include/asm/mshyperv.h
-+++ b/arch/x86/include/asm/mshyperv.h
-@@ -22,6 +22,11 @@ struct ms_hyperv_info {
- 
- extern struct ms_hyperv_info ms_hyperv;
- 
-+
-+typedef int (*hyperv_fill_flush_list_func)(
-+		struct hv_guest_mapping_flush_list *flush,
-+		void *data);
-+
- /*
-  * Generate the guest ID.
-  */
-@@ -348,6 +353,11 @@ void set_hv_tscchange_cb(void (*cb)(void));
- void clear_hv_tscchange_cb(void);
- void hyperv_stop_tsc_emulation(void);
- int hyperv_flush_guest_mapping(u64 as);
-+int hyperv_flush_guest_mapping_range(u64 as,
-+		hyperv_fill_flush_list_func fill_func, void *data);
-+int hyperv_fill_flush_guest_mapping_list(
-+		struct hv_guest_mapping_flush_list *flush,
-+		u64 start_gfn, u64 end_gfn);
- 
- #ifdef CONFIG_X86_64
- void hv_apic_init(void);
-@@ -370,6 +380,11 @@ static inline struct hv_vp_assist_page *hv_get_vp_assist_page(unsigned int cpu)
- 	return NULL;
- }
- static inline int hyperv_flush_guest_mapping(u64 as) { return -1; }
-+static inline int hyperv_flush_guest_mapping_range(u64 as,
-+		hyperv_fill_flush_list_func fill_func, void *data);
-+{
-+	return -1;
-+}
- #endif /* CONFIG_HYPERV */
- 
- #ifdef CONFIG_HYPERV_TSCPAGE
--- 
-2.14.4
+not included - (4) mm: select HAVE_MOVE_PMD in arm64 for faster mremap
+    This patch is dropped since last posting pending further performance
+    testing on arm64 with new TLB gather updates. See notes in patch
+    titled "mm: speed up mremap by 500x on large regions" for more
+    details.
+
+Joel Fernandes (Google) (3):
+mm: treewide: remove unused address argument from pte_alloc functions
+(v2)
+mm: speed up mremap by 20x on large regions (v5)
+mm: select HAVE_MOVE_PMD in x86 for faster mremap
+
+arch/Kconfig                                 |  5 ++
+arch/alpha/include/asm/pgalloc.h             |  6 +-
+arch/arc/include/asm/pgalloc.h               |  5 +-
+arch/arm/include/asm/pgalloc.h               |  4 +-
+arch/arm64/include/asm/pgalloc.h             |  4 +-
+arch/hexagon/include/asm/pgalloc.h           |  6 +-
+arch/ia64/include/asm/pgalloc.h              |  5 +-
+arch/m68k/include/asm/mcf_pgalloc.h          |  8 +--
+arch/m68k/include/asm/motorola_pgalloc.h     |  4 +-
+arch/m68k/include/asm/sun3_pgalloc.h         |  6 +-
+arch/microblaze/include/asm/pgalloc.h        | 19 +-----
+arch/microblaze/mm/pgtable.c                 |  3 +-
+arch/mips/include/asm/pgalloc.h              |  6 +-
+arch/nds32/include/asm/pgalloc.h             |  5 +-
+arch/nios2/include/asm/pgalloc.h             |  6 +-
+arch/openrisc/include/asm/pgalloc.h          |  5 +-
+arch/openrisc/mm/ioremap.c                   |  3 +-
+arch/parisc/include/asm/pgalloc.h            |  4 +-
+arch/powerpc/include/asm/book3s/32/pgalloc.h |  4 +-
+arch/powerpc/include/asm/book3s/64/pgalloc.h | 12 ++--
+arch/powerpc/include/asm/nohash/32/pgalloc.h |  4 +-
+arch/powerpc/include/asm/nohash/64/pgalloc.h |  6 +-
+arch/powerpc/mm/pgtable-book3s64.c           |  2 +-
+arch/powerpc/mm/pgtable_32.c                 |  4 +-
+arch/riscv/include/asm/pgalloc.h             |  6 +-
+arch/s390/include/asm/pgalloc.h              |  4 +-
+arch/sh/include/asm/pgalloc.h                |  6 +-
+arch/sparc/include/asm/pgalloc_32.h          |  5 +-
+arch/sparc/include/asm/pgalloc_64.h          |  6 +-
+arch/sparc/mm/init_64.c                      |  6 +-
+arch/sparc/mm/srmmu.c                        |  4 +-
+arch/um/include/asm/pgalloc.h                |  4 +-
+arch/um/kernel/mem.c                         |  4 +-
+arch/unicore32/include/asm/pgalloc.h         |  4 +-
+arch/x86/Kconfig                             |  1 +
+arch/x86/include/asm/pgalloc.h               |  4 +-
+arch/x86/mm/pgtable.c                        |  4 +-
+arch/xtensa/include/asm/pgalloc.h            |  8 +--
+include/linux/mm.h                           | 13 ++--
+mm/huge_memory.c                             |  8 +--
+mm/kasan/kasan_init.c                        |  2 +-
+mm/memory.c                                  | 17 +++---
+mm/migrate.c                                 |  2 +-
+mm/mremap.c                                  | 64 +++++++++++++++++++-
+mm/userfaultfd.c                             |  2 +-
+virt/kvm/arm/mmu.c                           |  2 +-
+46 files changed, 165 insertions(+), 147 deletions(-)
+
+--
+2.19.1.930.g4563a0d9d0-goog

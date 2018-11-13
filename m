@@ -1,14 +1,14 @@
-Received: from mail-eopbgr770104.outbound.protection.outlook.com ([40.107.77.104]:6416
+Received: from mail-eopbgr770108.outbound.protection.outlook.com ([40.107.77.108]:6166
         "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993112AbeKMWWZlXUqu convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Nov 2018 23:22:25 +0100
+        id S23993135AbeKMWW0wNiUu convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Nov 2018 23:22:26 +0100
 From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH] MIPS: Fix do_ade() closing brace indentation
-Date: Tue, 13 Nov 2018 22:22:24 +0000
-Message-ID: <CY4PR2201MB12726DDD6A39A54907B11199C1C20@CY4PR2201MB1272.namprd22.prod.outlook.com>
-References: <20181109200744.23399-1-paul.burton@mips.com>
-In-Reply-To: <20181109200744.23399-1-paul.burton@mips.com>
+Subject: Re: [PATCH] MIPS: Don't dump Hi & Lo regs on >= MIPSr6
+Date: Tue, 13 Nov 2018 22:22:25 +0000
+Message-ID: <CY4PR2201MB1272806FC2CF07E48CB01210C1C20@CY4PR2201MB1272.namprd22.prod.outlook.com>
+References: <20181109200817.23597-1-paul.burton@mips.com>
+In-Reply-To: <20181109200817.23597-1-paul.burton@mips.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 8BIT
@@ -25,12 +25,13 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Paul Burton <pburton@wavecomp.com>
 Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Message-ID: <20181113222224.6I2dNuL3mQ7G6aAIydMcsw1WRZ1i3qBEVPtqSuR7RU4@z>
+Message-ID: <20181113222225.t8pdnCLb0eS9L9L2n1MXILocRU-OHa85wcN8NxZ4mG0@z>
 
 Hello,
 
 Paul Burton wrote:
-> A closing brace in do_ade() has misleading indentation; fix it.
+> MIPSr6 removed the Hi & Lo registers, so displaying their values on
+> MIPSr6 systems is pointless. Avoid doing so.
 > 
 > Signed-off-by: Paul Burton <paul.burton@mips.com>
 

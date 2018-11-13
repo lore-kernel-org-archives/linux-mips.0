@@ -1,15 +1,20 @@
-Received: from mail.kernel.org ([198.145.29.99]:44272 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992960AbeKKD2JGeM7Q (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Sun, 11 Nov 2018 04:28:09 +0100
-Subject: Patch "MIPS: OCTEON: fix out of bounds array access on CN68XX" has been added to the 4.9-stable tree
-From: <gregkh@linuxfoundation.org>
-Date: Sat, 10 Nov 2018 18:08:33 -0800
-Message-ID: <1541902113891@kroah.com>
+Received: from mail-eopbgr680093.outbound.protection.outlook.com ([40.107.68.93]:6162
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
+        id S23993030AbeKMWUHIKeZu convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 13 Nov 2018 23:20:07 +0100
+From: Paul Burton <paul.burton@mips.com>
+Subject: Re: [PATCH] MIPS: OCTEON: cavium_octeon_defconfig: re-enable OCTEON
+ USB  driver
+Date: Tue, 13 Nov 2018 22:20:03 +0000
+Message-ID: <CY4PR2201MB127275FE7D86A50AFFB1F082C1C20@CY4PR2201MB1272.namprd22.prod.outlook.com>
+References: <20181110220612.21653-1-aaro.koskinen@iki.fi>
+In-Reply-To: <20181110220612.21653-1-aaro.koskinen@iki.fi>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 8bit
-Return-Path: <SRS0=XqPF=NW=linuxfoundation.org=gregkh@kernel.org>
+Return-Path: <pburton@wavecomp.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,21 +24,24 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: aaro.koskinen@iki.fi, gregkh@linuxfoundation.org, linux-mips@linux-mips.org, paul.burton@mips.com, ralf@linux-mips.org
-Cc: stable-commits@vger.kernel.org
-Message-ID: <20181111020833.9-8I-i5679udu3q38HzoFeKf9wb7Vy5WVQzEL0N97c4@z>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <pburton@wavecomp.com>, James Hogan <jhogan@kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
+Message-ID: <20181113222003.oG96orqUOpTN5KANzPXyaKG2oUuQ3B2rqE7rV_tEh8Q@z>
 
+Hello,
 
-This is a note to let you know that I've just added the patch titled
+Aaro Koskinen wrote:
+> Re-enable OCTEON USB driver which is needed on older hardware
+> (e.g. EdgeRouter Lite) for mass storage etc. This got accidentally
+> deleted when config options were changed for OCTEON2/3 USB.
+> 
+> Fixes: f922bc0ad08b ("MIPS: Octeon: cavium_octeon_defconfig: Enable more drivers")
+> Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
 
-    MIPS: OCTEON: fix out of bounds array access on CN68XX
+Applied to mips-fixes.
 
-to the 4.9-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+Thanks,
+    Paul
 
-The filename of the patch is:
-     mips-octeon-fix-out-of-bounds-array-access-on-cn68xx.patch
-and it can be found in the queue-4.9 subdirectory.
-
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
+[ This message was auto-generated; if you believe anything is incorrect
+  then please email paul.burton@mips.com to report it. ]

@@ -1,11 +1,11 @@
-Received: from mail.kernel.org ([198.145.29.99]:56458 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:57016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23993070AbeKNBVkGIVGZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 14 Nov 2018 02:21:40 +0100
-Subject: Patch "MIPS/PCI: Call pcie_bus_configure_settings() to set MPS/MRRS" has been added to the 4.18-stable tree
+        id S23993094AbeKNBVy1hjqZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Wed, 14 Nov 2018 02:21:54 +0100
+Subject: Patch "MIPS/PCI: Call pcie_bus_configure_settings() to set MPS/MRRS" has been added to the 4.9-stable tree
 From: <gregkh@linuxfoundation.org>
-Date: Tue, 13 Nov 2018 17:21:32 -0800
-Message-ID: <154215849222735@kroah.com>
+Date: Tue, 13 Nov 2018 17:21:51 -0800
+Message-ID: <154215851119276@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -21,19 +21,19 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: chenhc@lemote.com, chenhuacai@gmail.com, gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, paul.burton@mips.com, ralf@linux-mips.org, sashal@kernel.org, wuzhangjin@gmail.com, zhangfx@lemote.com
 Cc: stable-commits@vger.kernel.org
-Message-ID: <20181114012132.pTXsXNqIuTTi7mjuz_KmgiPcETP8NnRmGFogtJzi66c@z>
+Message-ID: <20181114012151.DR8ufOnD2DvD3YyZx3W7JHQ2Cy4DTOoyuYCvT9RTVW4@z>
 
 
 This is a note to let you know that I've just added the patch titled
 
     MIPS/PCI: Call pcie_bus_configure_settings() to set MPS/MRRS
 
-to the 4.18-stable tree which can be found at:
+to the 4.9-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      mips-pci-call-pcie_bus_configure_settings-to-set-mps-mrrs.patch
-and it can be found in the queue-4.18 subdirectory.
+and it can be found in the queue-4.9 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.

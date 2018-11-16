@@ -1,15 +1,18 @@
-Received: from mail.kernel.org ([198.145.29.99]:57524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23993087AbeKNBWgQNAzZ (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Wed, 14 Nov 2018 02:22:36 +0100
-Subject: Patch "MIPS/PCI: Call pcie_bus_configure_settings() to set MPS/MRRS" has been added to the 4.14-stable tree
-From: <gregkh@linuxfoundation.org>
-Date: Tue, 13 Nov 2018 17:22:32 -0800
-Message-ID: <154215855223562@kroah.com>
+Received: from mail-pf1-x442.google.com ([IPv6:2607:f8b0:4864:20::442]:45970
+        "EHLO mail-pf1-x442.google.com" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992446AbeKPNtqeNz8D (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 16 Nov 2018 14:49:46 +0100
+Received: by mail-pf1-x442.google.com with SMTP id g62so8184491pfd.12
+        for <linux-mips@linux-mips.org>; Fri, 16 Nov 2018 05:49:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 8bit
-Return-Path: <SRS0=PMNE=NZ=linuxfoundation.org=gregkh@kernel.org>
+Reply-To: lawfem15@gmail.com
+From: moses morrow <cooperation612@gmail.com>
+Date: Fri, 16 Nov 2018 13:49:44 +0000
+Message-ID: <CADmnDDcTxT257L4ks9CN=Xu6Ti9iDT76N4rsa2_Dwem__h15jw@mail.gmail.com>
+Subject: Re: Hello i sent you a message containing the details of the
+ transaction Did you see it?
+Content-Type: text/plain; charset="UTF-8"
+Return-Path: <cooperation612@gmail.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -19,21 +22,4 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: chenhc@lemote.com, chenhuacai@gmail.com, gregkh@linuxfoundation.org, jhogan@kernel.org, linux-mips@linux-mips.org, paul.burton@mips.com, ralf@linux-mips.org, sashal@kernel.org, wuzhangjin@gmail.com, zhangfx@lemote.com
-Cc: stable-commits@vger.kernel.org
-Message-ID: <20181114012232.tjgEctNHQdlhEQyxSJJEWSoxYyfN8FZwndn8HX2DRLM@z>
-
-
-This is a note to let you know that I've just added the patch titled
-
-    MIPS/PCI: Call pcie_bus_configure_settings() to set MPS/MRRS
-
-to the 4.14-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-
-The filename of the patch is:
-     mips-pci-call-pcie_bus_configure_settings-to-set-mps-mrrs.patch
-and it can be found in the queue-4.14 subdirectory.
-
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
+Message-ID: <20181116134944.o3MLe01DMd7-mfSIa39FZanNTw7crzt1SN6_sc6VI6M@z>

@@ -1,14 +1,14 @@
-Received: from mail-eopbgr770128.outbound.protection.outlook.com ([40.107.77.128]:22496
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr710132.outbound.protection.outlook.com ([40.107.71.132]:14144
+        "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23992716AbeKSVRv2FeVg convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Nov 2018 22:17:51 +0100
+        id S23991965AbeKSXVDJ0m27 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Tue, 20 Nov 2018 00:21:03 +0100
 From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH] MIPS: Remove superfluous check for __linux__
-Date: Mon, 19 Nov 2018 21:17:48 +0000
-Message-ID: <MWHPR2201MB1277E62483AFF08E7EFFAF92C1D80@MWHPR2201MB1277.namprd22.prod.outlook.com>
-References: <20181116160939.22085-1-sean@mess.org>
-In-Reply-To: <20181116160939.22085-1-sean@mess.org>
+Subject: Re: [PATCH V5 1/8] MIPS: Loongson: Add Loongson-3A R2.1 basic support
+Date: Mon, 19 Nov 2018 23:20:54 +0000
+Message-ID: <MWHPR2201MB1277D0155E0BB3E9ABAAFF38C1D80@MWHPR2201MB1277.namprd22.prod.outlook.com>
+References: <1542268439-4146-2-git-send-email-chenhc@lemote.com>
+In-Reply-To: <1542268439-4146-2-git-send-email-chenhc@lemote.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 8BIT
@@ -23,26 +23,27 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Sean Young <sean@mess.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <pburton@wavecomp.com>, James Hogan <jhogan@kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Message-ID: <20181119211748.sme7pebaJTPWnwzxY2NrKdsFL2N9lHouP8OtoSi-dB0@z>
+To: Huacai Chen <chenhc@lemote.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, James Hogan <james.hogan@mips.com>, "Steven J . Hill" <Steven.Hill@cavium.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Fuxin Zhang <zhangfx@lemote.com>, Zhangjin Wu <wuzhangjin@gmail.com>"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
+Message-ID: <20181119232054.YqB_PdWdiockY0XpuarEuz8LcH7EW0aB9e--47i7aOc@z>
 
 Hello,
 
-Sean Young wrote:
-> When building BPF code using "clang -target bpf -c", clang does not
-> define __linux__.
+Huacai Chen wrote:
+> Loongson-3A R2.1 is the bugfix revision of Loongson-3A R2.
 > 
-> To build BPF IR decoders the include linux/lirc.h is needed which
-> includes linux/types.h. Currently this workaround is needed:
+> All Loongson-3 CPU family:
 > 
-> https://git.linuxtv.org/v4l-utils.git/commit/?id=dd3ff81f58c4e1e6f33765dc61ad33c48ae6bb07
+> Code-name         Brand-name       PRId
+> Loongson-3A R1    Loongson-3A1000  0x6305
+> Loongson-3A R2    Loongson-3A2000  0x6308
+> Loongson-3A R2.1  Loongson-3A2000  0x630c
+> Loongson-3A R3    Loongson-3A3000  0x6309
+> Loongson-3A R3.1  Loongson-3A3000  0x630d
+> Loongson-3B R1    Loongson-3B1000  0x6306
+> Loongson-3B R2    Loongson-3B1500  0x6307
 > 
-> This check might otherwise be useful to stop users from using a non-linux
-> compiler, but if you're doing that you are going to have a lot more
-> trouble anyway.
-> 
-> Signed-off-by: Sean Young <sean@mess.org>
+> Signed-off-by: Huacai Chen <chenhc@lemote.com>
 
 Applied to mips-next.
 

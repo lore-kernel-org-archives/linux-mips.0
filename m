@@ -1,16 +1,18 @@
-Received: from mail-eopbgr810119.outbound.protection.outlook.com ([40.107.81.119]:7088
-        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr760099.outbound.protection.outlook.com ([40.107.76.99]:56480
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23992716AbeKSTGtwt6Nv convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Nov 2018 20:06:49 +0100
+        id S23993663AbeKSVBpeZ5Pg convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Nov 2018 22:01:45 +0100
 From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH] MIPS: Use device_type helpers to access the node type
-Date: Mon, 19 Nov 2018 19:06:43 +0000
-Message-ID: <MWHPR2201MB1277675B043F1E9F2F78479DC1D80@MWHPR2201MB1277.namprd22.prod.outlook.com>
-References: <20181116221104.23024-2-robh@kernel.org>
-In-Reply-To: <20181116221104.23024-2-robh@kernel.org>
+Subject: Re: [PATCH 3/9] MIPS: remove the HT_PCI config option
+Date: Mon, 19 Nov 2018 21:01:42 +0000
+Message-ID: <20181119210141.nissqr6zaldt23xg@pburton-laptop>
+References: <20181115190538.17016-1-hch@lst.de>
+ <20181115190538.17016-4-hch@lst.de>
+In-Reply-To: <20181115190538.17016-4-hch@lst.de>
 Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <40C8AC8315647748863615FE4C97EE3C@namprd22.prod.outlook.com>
 Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
 Return-Path: <pburton@wavecomp.com>
@@ -23,26 +25,63 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Rob Herring <robh@kernel.org>
-Cc: James Hogan <jhogan@kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <pburton@wavecomp.com>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>Ralf Baechle <ralf@linux-mips.org>Paul Burton <pburton@wavecomp.com>James Hogan <jhogan@kernel.org>"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Message-ID: <20181119190643.BViBd8k8PYKMBsg7zphdR30v8KmCAttMyHcf_pFmVTc@z>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>, Matt Porter <mporter@kernel.crashing.org>, Alexandre Bounine <alex.bou9@gmail.com>, Dominik Brodowski <linux@dominikbrodowski.net>, "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
+Message-ID: <20181119210142.YrFz4qLPYPWKYxkBLLRs4n7pu2kvKB9lMQwwbxZ60R0@z>
 
-Hello,
+Hi Christoph,
 
-Rob Herring wrote:
-> Remove directly accessing device_node.type pointer and use the accessors
-> instead. This will eventually allow removing the type pointer.
+On Thu, Nov 15, 2018 at 08:05:31PM +0100, Christoph Hellwig wrote:
+> This option is always selected from LOONGSON_MACH3X.  Switch to just
+> seleting PCI from that option and definining LOONGSON_PCIIO_BASE based
+> on CONFIG_LOONGSON_MACH3X.
 > 
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Paul Burton <paul.burton@mips.com>
-> Cc: James Hogan <jhogan@kernel.org>
-> Cc: linux-mips@linux-mips.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  arch/mips/Kconfig                                | 11 -----------
+>  arch/mips/include/asm/mach-loongson64/loongson.h |  2 +-
+>  arch/mips/loongson64/Kconfig                     |  2 +-
+>  3 files changed, 2 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 8272ea4c7264..7d28c9dd75d0 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -3040,17 +3040,6 @@ config PCI
+>  	  your box. Other bus systems are ISA, EISA, or VESA. If you have PCI,
+>  	  say Y, otherwise N.
+>  
+> -config HT_PCI
+> -	bool "Support for HT-linked PCI"
+> -	default y
+> -	depends on CPU_LOONGSON3
+> -	select PCI
+> -	select PCI_DOMAINS
+> -	help
+> -	  Loongson family machines use Hyper-Transport bus for inter-core
+> -	  connection and device connection. The PCI bus is a subordinate
+> -	  linked at HT. Choose Y for Loongson-3 based machines.
+> -
+>  config PCI_DOMAINS
+>  	bool
+>  
+> diff --git a/arch/mips/loongson64/Kconfig b/arch/mips/loongson64/Kconfig
+> index c865b4b9b775..781a5156ab21 100644
+> --- a/arch/mips/loongson64/Kconfig
+> +++ b/arch/mips/loongson64/Kconfig
+> @@ -76,7 +76,7 @@ config LOONGSON_MACH3X
+>  	select CPU_HAS_WB
+>  	select HW_HAS_PCI
+>  	select ISA
+> -	select HT_PCI
+> +	select PCI
+>  	select I8259
+>  	select IRQ_MIPS_CPU
+>  	select NR_CPUS_DEFAULT_4
 
-Applied to mips-next.
+Should this also select PCI_DOMAINS to preserve the existing behavior?
+
+If not, could you explain why in the commit message?
 
 Thanks,
     Paul
-
-[ This message was auto-generated; if you believe anything is incorrect
-  then please email paul.burton@mips.com to report it. ]

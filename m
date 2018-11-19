@@ -1,15 +1,15 @@
-Received: from mail-eopbgr790137.outbound.protection.outlook.com ([40.107.79.137]:54432
+Received: from mail-eopbgr790100.outbound.protection.outlook.com ([40.107.79.100]:26415
         "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23991346AbeKSTGay2qJv convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Nov 2018 20:06:30 +0100
+        id S23991965AbeKSTGjnqExv convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Mon, 19 Nov 2018 20:06:39 +0100
 From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH] MIPS: Loongson3,SGI-IP27: Simplify max_low_pfn
- calculation
-Date: Mon, 19 Nov 2018 19:06:27 +0000
-Message-ID: <MWHPR2201MB12771953A7F479D5670BD8E6C1D80@MWHPR2201MB1277.namprd22.prod.outlook.com>
-References: <20181112221742.4900-1-paul.burton@mips.com>
-In-Reply-To: <20181112221742.4900-1-paul.burton@mips.com>
+Subject: Re: [PATCH v3 0/3] MIPS: SiByte: Handle PCI DMA with 64-bit memory
+  addressing
+Date: Mon, 19 Nov 2018 19:06:37 +0000
+Message-ID: <MWHPR2201MB1277739AE902E888DF5E1F7BC1D80@MWHPR2201MB1277.namprd22.prod.outlook.com>
+References: <alpine.LFD.2.21.1811131653160.9637@eddie.linux-mips.org>
+In-Reply-To: <alpine.LFD.2.21.1811131653160.9637@eddie.linux-mips.org>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 8BIT
@@ -24,28 +24,46 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Paul Burton <pburton@wavecomp.com>
-Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, Huacai Chen <chenhc@lemote.com>, Mike Rapoport <rppt@linux.ibm.com>, Thomas Bogendoerfer <tbogendoerfer@suse.de>Huacai Chen <chenhc@lemote.com>Mike Rapoport <rppt@linux.ibm.com>Thomas Bogendoerfer <tbogendoerfer@suse.de>"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Message-ID: <20181119190627.1M0_BdKEU6jEHaxuZlpADZ9IgB2DXuV5K0eKovqGPxc@z>
+To: "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <pburton@wavecomp.com>, Christoph Hellwig <hch@lst.de>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
+Message-ID: <20181119190637.RIbqkCoEZ_5EvhIOGIA2uJSqqM1P0xgkMzYKFMrRU_c@z>
 
 Hello,
 
-Paul Burton wrote:
-> Both the Loongson3 & SGI-IP27 platforms set max_low_pfn to the last
-> available PFN describing memory. They both do it in paging_init() which
-> is later than ideal since max_low_pfn is used before that function is
-> called. Simplify both platforms to trivially initialize max_low_pfn
-> using the end address of DRAM, and do it earlier in prom_meminit().
+Maciej W. Rozycki wrote:
+> Hi,
 > 
-> Signed-off-by: Paul Burton <paul.burton@mips.com>
-> Suggested-by: Mike Rapoport <rppt@linux.ibm.com>
-> References: https://patchwork.linux-mips.org/patch/21031/
-> Cc: Huacai Chen <chenhc@lemote.com>
-> Cc: Mike Rapoport <rppt@linux.ibm.com>
-> Cc: Thomas Bogendoerfer <tbogendoerfer@suse.de>
-> Tested-by: Thomas Bogendoerfer <tbogendoerfer@suse.de>
+> This mini patch series enables correct support for DMA in the presence of
+> memory outside the 32-bit address range with the Broadcom SiByte SOCs and
+> the relevant development boards.
+> 
+> There is a quirk in the BCM1250, BCM1125 and BCM1125H SOCs in that their
+> onchip 32-bit PCI host bridge does not support DAC, however the HT link
+> (where available) does support 40-bit addressing as per the HT spec.
+> Therefore the first patch sets the bus mask accordingly, and then the
+> second patch enables swiotlb.  See individual change descriptions for
+> additional details; there's also a further discussion alongside.
+> 
+> This has been verified with a Broadcom SWARM board equipped with 3200MiB
+> of RAM (2176MiB of which the address decoder in the SOC maps above 4GiB),
+> a pair of DEFPA FDDI adapters and an XHCI USB adapter.  There were also
+> some other PCI and PCIe devices present in the system, though not actively
+> used beyond being probed at boot, and none has shown any symptoms of
+> breakage.
+> 
+> I have come across commit 9d7a224b463e ("dma-direct: always allow dma
+> mask <= physiscal memory size") and realised we do need ZONE_DMA32 for
+> LittleSur.  Hence this v3, adding a third (second in the series) change
+> for LittleSur.
+> 
+> Also hopefully I'll have sorted out issues with threading in my MUA with
+> this series update.
+> 
+> Please apply.
+> 
+> Maciej
 
-Applied to mips-fixes.
+Series applied to mips-next.
 
 Thanks,
     Paul

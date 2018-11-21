@@ -1,14 +1,14 @@
-Received: from mail-eopbgr760102.outbound.protection.outlook.com ([40.107.76.102]:63940
+Received: from mail-eopbgr760093.outbound.protection.outlook.com ([40.107.76.93]:61168
         "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993843AbeKUSVaunvA0 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 21 Nov 2018 19:21:30 +0100
+        id S23993845AbeKUSVcfTiq0 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Wed, 21 Nov 2018 19:21:32 +0100
 From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH] MIPS: ptrace: introduce NT_MIPS_MSA regset
-Date: Wed, 21 Nov 2018 18:21:27 +0000
-Message-ID: <MWHPR2201MB1277D840F8AA64489C302390C1DA0@MWHPR2201MB1277.namprd22.prod.outlook.com>
-References: <20181120204049.19153-1-paul.burton@mips.com>
-In-Reply-To: <20181120204049.19153-1-paul.burton@mips.com>
+Subject: Re: [PATCH] MIPS: malta: Use img-ascii-lcd driver for LCD display
+Date: Wed, 21 Nov 2018 18:21:30 +0000
+Message-ID: <MWHPR2201MB12776EB2EEF77CCFB0AE99C9C1DA0@MWHPR2201MB1277.namprd22.prod.outlook.com>
+References: <20181120235937.32049-1-paul.burton@mips.com>
+In-Reply-To: <20181120235937.32049-1-paul.burton@mips.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 8BIT
@@ -25,35 +25,17 @@ List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: Paul Burton <pburton@wavecomp.com>
 Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
-Message-ID: <20181121182127.dTahinGHqojfWx4u6Ax-LKjcTGq02iNn5Oadzrh3RW0@z>
+Message-ID: <20181121182130.zwDTGS4iaFoe6XcD4Zw8HYhYxGBLxojURzHFlUUuDXw@z>
 
 Hello,
 
 Paul Burton wrote:
-> The current methods for obtaining FP context via ptrace only provide
-> either 32 or 64 bits per data register. With MSA, where vector registers
-> are aliased with scalar FP data registers, those registers are 128 bits
-> wide. Thus a new mechanism is required for userland to access those
-> registers via ptrace. This patch introduces an NT_MIPS_MSA regset which
-> provides, in this order:
-> 
-> - The full 128 bits value of each vector register, in native
-> endianness saved as though elements are doubles. That is, the format
-> of each vector register is as would be obtained by saving it to
-> memory using an st.d instruction.
-> 
-> - The 32 bit scalar FP implementation register (FIR).
-> 
-> - The 32 bit scalar FP control & status register (FCSR).
-> 
-> - The 32 bit MSA implementation register (MSAIR).
-> 
-> - The 32 bit MSA control & status register (MSACSR).
-> 
-> The provision of the FIR & FCSR registers in addition to the MSA
-> equivalents allows scalar FP context to be retrieved as a subset of
-> the context available via this regset. Along with the MSA equivalents
-> they also nicely form the final 128 bit "register" of the regset.
+> Remove the Malta display platform code in favour of probing the
+> img-ascii-lcd driver via device tree. This reduces the amount of
+> platform code & the img-ascii-lcd driver offers us advantages in terms
+> of code sharing with other boards & functionality such as changing the
+> displayed message via sysfs. Defconfigs are untouched because the driver
+> already defaults y on when CONFIG_MIPS_MALTA=y.
 > 
 > Signed-off-by: Paul Burton <paul.burton@mips.com>
 

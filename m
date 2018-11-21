@@ -1,22 +1,16 @@
-Received: from mail-eopbgr780120.outbound.protection.outlook.com ([40.107.78.120]:15450
-        "EHLO NAM03-BY2-obe.outbound.protection.outlook.com"
+Received: from mail-eopbgr760101.outbound.protection.outlook.com ([40.107.76.101]:43904
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993840AbeKUTp6TFN2e convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Wed, 21 Nov 2018 20:45:58 +0100
+        id S23993840AbeKUXnFDPd6q convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Thu, 22 Nov 2018 00:43:05 +0100
 From: Paul Burton <paul.burton@mips.com>
-Subject: Re: [PATCH v2 16/15 v2] syscall_get_arch: add "struct task_struct *"
- argument
-Date: Wed, 21 Nov 2018 19:45:51 +0000
-Message-ID: <20181121194549.4glznckje73z2uxk@pburton-laptop>
-References: <20181107042751.3b519062@akathisia>
- <CALCETrV1v-DPRfDRwiH=xn29bxWxiHdZtAH1nw=dsmDtnT0YGQ@mail.gmail.com>
- <20181120001128.GA11300@altlinux.org> <20181121004422.GA29053@altlinux.org>
- <20181121184004.jro532jopnbmru2m@pburton-laptop>
- <20181121190009.GA10301@altlinux.org> <20181121193512.GA11297@altlinux.org>
-In-Reply-To: <20181121193512.GA11297@altlinux.org>
+Subject: Re: [PATCH 00/24] MIPS: OCTEON: cleanups
+Date: Wed, 21 Nov 2018 23:43:01 +0000
+Message-ID: <MWHPR2201MB1277E4440F24D85DDA79E497C1DA0@MWHPR2201MB1277.namprd22.prod.outlook.com>
+References: <20181121223745.22792-1-aaro.koskinen@iki.fi>
+In-Reply-To: <20181121223745.22792-1-aaro.koskinen@iki.fi>
 Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <708ADDE084183B41A3B884270BF84771@namprd22.prod.outlook.com>
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
 Return-Path: <pburton@wavecomp.com>
@@ -29,55 +23,83 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: "Dmitry V. Levin" <ldv@altlinux.org>
-Cc: Andy Lutomirski <luto@kernel.org>, Eric Paris <eparis@redhat.com>, Paul Moore <paul@paul-moore.com>, Elvira Khabirova <lineprinter@altlinux.org>, Eugene Syromyatnikov <esyr@redhat.com>, Oleg Nesterov <oleg@redhat.com>, "linux-audit@redhat.com" <linux-audit@redhat.com>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-c6x-dev@linux-c6x.org" <linux-c6x-dev@linux-c6x.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "nios2-dev@lists.rocketboards.org" <nios2-dev@lists.rocketboards.org>, "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "uclinux-h8-devel@lists.sourceforge.jp" <uclinux-h8-devel@lists.sourceforge.jp>, "x86@kernel.org" <x86@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <20181121194551.a5mN5oF3ebTobFHR5saK8YDObhaV0H3ZuCacNxGNdTI@z>
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <pburton@wavecomp.com>, James Hogan <jhogan@kernel.org>, "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>"linux-mips@linux-mips.org" <linux-mips@linux-mips.org>
+Message-ID: <20181121234301.K2zmpJgAHJynaCd4RVLG8Rzwt_FLW--3OxR0XF9KBNk@z>
 
-Hi Dmitry,
+Hello,
 
-On Wed, Nov 21, 2018 at 10:35:12PM +0300, Dmitry V. Levin wrote:
-> This argument is required to extend the generic ptrace API with
-> PTRACE_GET_SYSCALL_INFO request: syscall_get_arch() is going to be
-> called from ptrace_request() along with other syscall_get_* functions
-> with a tracee as their argument.
+Aaro Koskinen wrote:
+> Hi,
 > 
-> This change partially reverts commit 5e937a9ae913 ("syscall_get_arch:
-> remove useless function arguments").
+> I noticed some noise from "sparse" when compiling OCTEON platform code,
+> and started to fix some of the most obvious issues (e.g. adding includes
+> for missing function declarations, using static where appropriate
+> etc.). Then I also got around to deleting some of the dead code.
+> We have some insanely large include files, and two of the biggest ones
+> should be now closer to normal..
 > 
-> Reviewed-by: Andy Lutomirski <luto@kernel.org> # for x86
-> Reviewed-by: Palmer Dabbelt <palmer@sifive.com>
-> Cc: linux-audit@redhat.com
-> Cc: linux-alpha@vger.kernel.org
-> Cc: linux-arch@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-c6x-dev@linux-c6x.org
-> Cc: linux-hexagon@vger.kernel.org
-> Cc: linux-ia64@vger.kernel.org
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: linux-mips@linux-mips.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linux-riscv@lists.infradead.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: linux-snps-arc@lists.infradead.org
-> Cc: linux-um@lists.infradead.org
-> Cc: linux-xtensa@linux-xtensa.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: nios2-dev@lists.rocketboards.org
-> Cc: openrisc@lists.librecores.org
-> Cc: sparclinux@vger.kernel.org
-> Cc: uclinux-h8-devel@lists.sourceforge.jp
-> Cc: x86@kernel.org
-> Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
-> ---
+> Boot tested on OCTEON+ (EdgeRouter Lite) and OCTEON 2 (EdgeRouter Pro).
 > 
-> v2: cleaned up mips part, added Reviewed-by
+> Build tested with cavium_octeon_defconfig.
+> 
+> A.
+> 
+> Aaro Koskinen (24):
+> MIPS: OCTEON: cvmx-l2c: make cvmx_l2c_spinlock static
+> MIPS: OCTEON: setup: make internal functions and data static
+> MIPS: OCTEON: setup: include asm/fw/fw.h
+> MIPS: OCTEON: setup: include asm/prom.h
+> MIPS: OCTEON: cvmx-helper: make
+> __cvmx_helper_errata_fix_ipd_ptr_alignment static
+> MIPS: OCTEON: delete unused loopback configuration functions
+> MIPS: OCTEON: octeon-platform: make octeon_ids static
+> MIPS: OCTEON: octeon-platform: fix typing
+> MIPS: OCTEON: octeon-irq: make octeon_irq_ciu3_set_affinity() static
+> MIPS: OCTEON: csrc-octeon: include linux/sched/clock.h
+> MIPS: OCTEON: smp: make internal symbols static
+> MIPS: OCTEON: cvmx-helper-util: delete cvmx_helper_dump_packet
+> MIPS: OCTEON: cvmx-helper-util: make cvmx_helper_setup_red_queue
+> static
+> MIPS: OCTEON: make cvmx_bootmem_alloc_range static
+> MIPS: OCTEON: cvmx-bootmem: delete unused functions
+> MIPS: OCTEON: cvmx-bootmem: move code to avoid forward declarations
+> MIPS: OCTEON: cvmx-bootmem: make more functions static
+> MIPS: OCTEON: delete cvmx override functions
+> MIPS: OCTEON: gmxx-defs.h: delete unused functions and macros
+> MIPS: OCTEON: cvmx-gmxx-defs.h: delete unused unions
+> MIPS: OCTEON: cvmx-gmxx-defs.h: delete unused union fields
+> MIPS: OCTEON: cvmx-gmxx-defs.h: use default register value return when
+> possible
+> MIPS: OCTEON: cvmx-ciu2-defs.h: delete unused macros
+> MIPS: OCTEON: cvmx-ciu2-defs.h: delete unused unions
+> 
+> arch/mips/cavium-octeon/csrc-octeon.c         |    1 +
+> .../cavium-octeon/executive/cvmx-bootmem.c    |  149 +-
+> .../executive/cvmx-helper-rgmii.c             |   68 -
+> .../executive/cvmx-helper-sgmii.c             |   38 -
+> .../executive/cvmx-helper-util.c              |   90 +-
+> .../executive/cvmx-helper-xaui.c              |   39 -
+> .../cavium-octeon/executive/cvmx-helper.c     |   87 +-
+> arch/mips/cavium-octeon/executive/cvmx-l2c.c  |    2 +-
+> arch/mips/cavium-octeon/octeon-irq.c          |    4 +-
+> arch/mips/cavium-octeon/octeon-platform.c     |    4 +-
+> arch/mips/cavium-octeon/setup.c               |    8 +-
+> arch/mips/cavium-octeon/smp.c                 |    4 +-
+> arch/mips/include/asm/octeon/cvmx-bootmem.h   |   76 -
+> arch/mips/include/asm/octeon/cvmx-ciu2-defs.h | 7060 -----------------
+> arch/mips/include/asm/octeon/cvmx-gmxx-defs.h | 4940 +-----------
+> .../include/asm/octeon/cvmx-helper-rgmii.h    |   17 -
+> .../include/asm/octeon/cvmx-helper-sgmii.h    |   17 -
+> .../include/asm/octeon/cvmx-helper-util.h     |   23 -
+> .../include/asm/octeon/cvmx-helper-xaui.h     |   16 -
+> arch/mips/include/asm/octeon/cvmx-helper.h    |   36 -
+> 20 files changed, 295 insertions(+), 12384 deletions(-)
 
-I thought the last one was v2? :)
-
-Anyway, this looks fine to me now:
-
-    Acked-by: Paul Burton <paul.burton@mips.com> # MIPS parts
+Series applied to mips-next.
 
 Thanks,
     Paul
+
+[ This message was auto-generated; if you believe anything is incorrect
+  then please email paul.burton@mips.com to report it. ]

@@ -1,20 +1,17 @@
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:37822 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by eddie.linux-mips.org with ESMTP id S23994220AbeK3UmzNbZzk convert rfc822-to-8bit
-        (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 30 Nov 2018 21:42:55 +0100
-From: Chris Mason <clm@fb.com>
+Received: from mailgate.bgcomp.co.uk ([81.187.35.205]:33767 "EHLO
+        mailgate.bgcomp.co.uk" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23994220AbeK3Up6WEqHk (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 30 Nov 2018 21:45:58 +0100
+From: Abuse <abuse@2.abuse.bgcomp.co.uk>
 Subject: Re: [PATCH RFC 00/15] Zero ****s, hugload of hugs <3
-Date: Fri, 30 Nov 2018 20:42:23 +0000
-Message-ID: <AEA525BC-406E-4C8C-BD7A-90FB65571255@fb.com>
-References: <20181130192737.15053-1-jarkko.sakkinen@linux.intel.com>
- <CAGXu5j+jBNBsD3pvUSfEh6Lc5T1YMpbM0HeG1c6BHiJe+cKVOQ@mail.gmail.com>
-In-Reply-To: <CAGXu5j+jBNBsD3pvUSfEh6Lc5T1YMpbM0HeG1c6BHiJe+cKVOQ@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+Date: Fri, 30 Nov 2018 20:45:57 +0000
+Message-ID: <2269948.6tYQeUj9R1@eth7>
+In-Reply-To: <20181130.124228.979846577878820546.davem@davemloft.net>
+References: <d7c34289-f03a-b641-cc9c-00395306511d@kernel.dk> <2007856.n5V9iKLVsV@eth7> <20181130.124228.979846577878820546.davem@davemloft.net>
 MIME-Version: 1.0
-Return-Path: <prvs=58725a35c8=clm@fb.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Return-Path: <abuse@2.abuse.bgcomp.co.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,41 +21,26 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Kees Cook <keescook@chromium.org>
-Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, LKML <linux-kernel@vger.kernel.org>, Amir Goldstein <amir73il@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Axtens <dja@axtens.net>, "David S. Miller" <davem@davemloft.net>, Dominik Brodowski <linux@dominikbrodowski.net>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Eric Dumazet <edumazet@google.com>, "federico.vaga@vaga.pv.it" <federico.vaga@vaga.pv.it>, Geert Uytterhoeven <geert+renesas@glider.be>, Helge Deller <deller@gmx.de>, Jonathan Corbet <corbet@lwn.net>, Joshua Kinard <kumba@gentoo.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, Linux Media Mailing List <linux-media@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Linux mtd <linux-mtd@lists.infradead.org>, linux-parisc <linux-parisc@vger.kernel.org>, Linux PM list <linux-pm@vger.kernel.org>, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, Network Development <netdev@vger.kernel.org>, nouveau <nouveau@lists.freedesktop.org>, Paolo Abeni <pabeni@redhat.com>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rob Herring <robh@kernel.org>, "sean.wang@mediatek.com" <sean.wang@mediatek.com>, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, "shannon.nelson@oracle.com" <shannon.nelson@oracle.com>, Stefano Brivio <sbrivio@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, "Tobin C. Harding" <me@tobin.cc>, "makita.toshiaki@lab.ntt.co.jp" <makita.toshiaki@lab.ntt.co.jp>, Willem de Bruijn <willemb@google.com>, Yonghong Song <yhs@fb.com>, "yanjun.zhu@oracle.com" <yanjun.zhu@oracle.com>
+To: David Miller <davem@davemloft.net>
+Cc: axboe@kernel.dk, dave@stgolabs.net, keescook@chromium.org, jarkko.sakkinen@linux.intel.com, linux-kernel@vger.kernel.org, amir73il@gmail.com, akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com, dja@axtens.net, linux@dominikbrodowski.net, dri-devel@lists.freedesktop.org, edumazet@google.com, federico.vaga@vaga.pv.it, geert+renesas@glider.be, deller@gmx.de, corbet@lwn.net, kumba@gentoo.org, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org, linux-mips@linux-mips.org, linux-mtd@lists.infradead.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-scsi@vger.kernel.org, matthias.bgg@gmail.com, netdev@vger.kernel.org, nouveau@lists.freedesktop.org, pabeni@redhat.com, paul.burton@mips.com, pmladek@suse.com, robh@kernel.org, sean.wang@mediatek.com, sergey.senozhatsky@gmail.com, shannon.nelson@oracle.com, sbrivio@redhat.com, rostedt@goodmis.org, me@tobin.cc, makita.toshia ki@lab.ntt.co.jp, willemb@google.com, yhs@fb.com, yanjun.zhu@oracle.com
 
-On 30 Nov 2018, at 14:40, Kees Cook wrote:
+On Friday, 30 November 2018 20:42:28 GMT David Miller wrote:
+> From: Abuse <abuse@2.abuse.bgcomp.co.uk>
+> Date: Fri, 30 Nov 2018 20:39:01 +0000
+> 
+> > I assume I will now be barred.
+> 
+> Perhaps, but not because you said fuck.  It would be because you're
+> intentionally creating a disturbance on the list and making it more
+> difficult for developers to get their work done and intentionally
+> creating a distraction and a hostile environment for the discussion at
+> hand.
+> 
+> That would not be censorship.
+> 
+> There is a big difference.
+> 
 
-> On Fri, Nov 30, 2018 at 11:27 AM Jarkko Sakkinen
-> <jarkko.sakkinen@linux.intel.com> wrote:
->>
->> In order to comply with the CoC, replace **** with a hug.
->
-> Heh. I support the replacement of the stronger language, but I find
-> "hug", "hugged", and "hugging" to be very weird replacements. Can we
-> bikeshed this to "heck", "hecked", and "hecking" (or "heckin" to
-> follow true Doggo meme style).
->
-> "This API is hugged" doesn't make any sense to me. "This API is
-> hecked" is better, or at least funnier (to me). "Hug this interface"
-> similarly makes no sense, but "Heck this interface" seems better.
-> "Don't touch my hecking code", "What the heck were they thinking?"
-> etc... "hug" is odd.
->
-> Better yet, since it's only 17 files, how about doing context-specific
-> changes? "This API is terrible", "Hateful interface", "Don't touch my
-> freakin' code", "What in the world were they thinking?" etc?
+I would beg to differ, as would calling the removal of the word 'Fuck' censorship.
 
-I think the bar for changing the documentation/comments should be 
-improvement in the clarity or approachability of whatever is being 
-changed.
-
-This patch set is kind of like Linus sitting at kernel summit with a 
-sign that says "Free Hugs".  Kind of confusing, and really unlikely to 
-make anyone involved happier about working on the kernel.
-
-Jarkko, making things clearer and more approachable is absolutely worth 
-the time if you're interested, but I think it'll mean larger and more 
-individualized changes to these files.
-
--chris
+It's a word I find is totally unnecessary in normal public usage.

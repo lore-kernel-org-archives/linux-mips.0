@@ -1,11 +1,13 @@
-Received: from mga04.intel.com ([192.55.52.120]:43555 "EHLO mga04.intel.com"
+Received: from mga17.intel.com ([192.55.52.151]:10480 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23992066AbeK3T1lr0EiU (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 30 Nov 2018 20:27:41 +0100
+        id S23992081AbeK3T1m4dqHU (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 30 Nov 2018 20:27:42 +0100
 From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Subject: [PATCH RFC 00/15] Zero ****s, hugload of hugs <3
-Date: Fri, 30 Nov 2018 11:27:09 -0800
-Message-Id: <20181130192737.15053-1-jarkko.sakkinen@linux.intel.com>
+Subject: [PATCH RFC 01/15] MIPS: replace **** with a hug
+Date: Fri, 30 Nov 2018 11:27:10 -0800
+Message-Id: <20181130192737.15053-2-jarkko.sakkinen@linux.intel.com>
+In-Reply-To: <20181130192737.15053-1-jarkko.sakkinen@linux.intel.com>
+References: <20181130192737.15053-1-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-Path: <jarkko.sakkinen@intel.com>
@@ -19,49 +21,138 @@ List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
 To: linux-kernel@vger.kernel.org
-Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, Amir Goldstein <amir73il@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Axtens <dja@axtens.net>, David Miller <davem@davemloft.net>, Dominik Brodowski <linux@dominikbrodowski.net>, "open list:DRM DRIVER FOR NVIDIA
-        GEFORCE/QUADRO GPUS" <dri-devel@lists.freedesktop.org>, Eric Dumazet <edumazet@google.com>, Federico Vaga <federico.vaga@vaga.pv.it>, Geert Uytterhoeven <geert+renesas@glider.be>, Helge Deller <deller@gmx.de>, Jonathan Corbet <corbet@lwn.net>, Joshua Kinard <kumba@gentoo.org>, Kees Cook <keescook@chromium.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, "open list:INOTIFY" <linux-fsdevel@vger.kernel.org>, "open list:IDE SUBSYSTEM" <linux-ide@vger.kernel.org>, "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>, "open list:MEDIA INPUT INFRASTRUCTURE
-        V4L/DVB" <linux-media@vger.kernel.org>, "open list:MIPS" <linux-mips@linux-mips.org>, "open list:MEMORY TECHNOLOGY DEVICES
-        MTD" <linux-mtd@lists.infradead.org>, "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>, "open list:CPU FREQUENCY DRIVERS" <linux-pm@vger.kernel.org>, "open list:SCSI SUBSYSTEM" <linux-scsi@vger.kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, "open list:DRM DRIVER FOR NVIDIA
-        GEFORCE/QUADRO GPUS" <nouveau@lists.freedesktop.org>, Paolo Abeni <pabeni@redhat.com>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rob Herring <robh@kernel.org>, Sean Wang <sean.wang@mediatek.com>, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, Shannon Nelson <shannon.nelson@oracle.com>, Stefano Brivio <sbrivio@redhat.com>, "Steven Rostedt (VMware)" <rostedt@goodmis.org>, "Tobin C. Harding" <me@tobin.cc>, Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>, Willem de Bruijn <willemb@google.com>, Yonghong Song <yhs@fb.com>, Zhu Yanjun <yanjun.zhu@oracle.com>
+Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Joshua Kinard <kumba@gentoo.org>, "open list:MIPS" <linux-mips@linux-mips.org>
 
 In order to comply with the CoC, replace **** with a hug.
 
-Jarkko Sakkinen (15):
-  MIPS: replace **** with a hug
-  Documentation: replace **** with a hug
-  drm/nouveau: replace **** with a hug
-  m68k: replace **** with a hug
-  parisc: replace **** with a hug
-  cpufreq: replace **** with a hug
-  ide: replace **** with a hug
-  media: replace **** with a hug
-  mtd: replace **** with a hug
-  net/sunhme: replace **** with a hug
-  scsi: replace **** with a hug
-  inotify: replace **** with a hug
-  irq: replace **** with a hug
-  lib: replace **** with a hug
-  net: replace **** with a hug
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+---
+ arch/mips/pci/ops-bridge.c      | 24 ++++++++++++------------
+ arch/mips/sgi-ip22/ip22-setup.c |  2 +-
+ 2 files changed, 13 insertions(+), 13 deletions(-)
 
- Documentation/kernel-hacking/locking.rst      |  2 +-
- arch/m68k/include/asm/sun3ints.h              |  2 +-
- arch/mips/pci/ops-bridge.c                    | 24 +++++++++----------
- arch/mips/sgi-ip22/ip22-setup.c               |  2 +-
- arch/parisc/kernel/sys_parisc.c               |  2 +-
- drivers/cpufreq/powernow-k7.c                 |  2 +-
- .../gpu/drm/nouveau/nvkm/subdev/bios/init.c   |  2 +-
- .../nouveau/nvkm/subdev/pmu/fuc/macros.fuc    |  2 +-
- drivers/ide/cmd640.c                          |  2 +-
- drivers/media/i2c/bt819.c                     |  8 ++++---
- drivers/mtd/mtd_blkdevs.c                     |  2 +-
- drivers/net/ethernet/sun/sunhme.c             |  4 ++--
- drivers/scsi/qlogicpti.h                      |  2 +-
- fs/notify/inotify/inotify_user.c              |  2 +-
- kernel/irq/timings.c                          |  2 +-
- lib/vsprintf.c                                |  2 +-
- net/core/skbuff.c                             |  2 +-
- 17 files changed, 33 insertions(+), 31 deletions(-)
-
+diff --git a/arch/mips/pci/ops-bridge.c b/arch/mips/pci/ops-bridge.c
+index a1d2c4ae0d1b..c755c4c92fa9 100644
+--- a/arch/mips/pci/ops-bridge.c
++++ b/arch/mips/pci/ops-bridge.c
+@@ -56,7 +56,7 @@ static int pci_conf0_read_config(struct pci_bus *bus, unsigned int devfn,
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 
+ 	/*
+-	 * IOC3 is fucking fucked beyond belief ...  Don't even give the
++	 * IOC3 is hugging hugged beyond belief ...  Don't even give the
+ 	 * generic PCI code a chance to look at it for real ...
+ 	 */
+ 	if (cf == (PCI_VENDOR_ID_SGI | (PCI_DEVICE_ID_SGI_IOC3 << 16)))
+@@ -76,7 +76,7 @@ static int pci_conf0_read_config(struct pci_bus *bus, unsigned int devfn,
+ oh_my_gawd:
+ 
+ 	/*
+-	 * IOC3 is fucking fucked beyond belief ...  Don't even give the
++	 * IOC3 is hugging hugged beyond belief ...  Don't even give the
+ 	 * generic PCI code a chance to look at the wrong register.
+ 	 */
+ 	if ((where >= 0x14 && where < 0x40) || (where >= 0x48)) {
+@@ -85,7 +85,7 @@ static int pci_conf0_read_config(struct pci_bus *bus, unsigned int devfn,
+ 	}
+ 
+ 	/*
+-	 * IOC3 is fucking fucked beyond belief ...  Don't try to access
++	 * IOC3 is hugging hugged beyond belief ...  Don't try to access
+ 	 * anything but 32-bit words ...
+ 	 */
+ 	addr = &bridge->b_type0_cfg_dev[slot].f[fn].l[where >> 2];
+@@ -118,7 +118,7 @@ static int pci_conf1_read_config(struct pci_bus *bus, unsigned int devfn,
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 
+ 	/*
+-	 * IOC3 is fucking fucked beyond belief ...  Don't even give the
++	 * IOC3 is hugging hugged beyond belief ...  Don't even give the
+ 	 * generic PCI code a chance to look at it for real ...
+ 	 */
+ 	if (cf == (PCI_VENDOR_ID_SGI | (PCI_DEVICE_ID_SGI_IOC3 << 16)))
+@@ -139,7 +139,7 @@ static int pci_conf1_read_config(struct pci_bus *bus, unsigned int devfn,
+ oh_my_gawd:
+ 
+ 	/*
+-	 * IOC3 is fucking fucked beyond belief ...  Don't even give the
++	 * IOC3 is hugging hugged beyond belief ...  Don't even give the
+ 	 * generic PCI code a chance to look at the wrong register.
+ 	 */
+ 	if ((where >= 0x14 && where < 0x40) || (where >= 0x48)) {
+@@ -148,7 +148,7 @@ static int pci_conf1_read_config(struct pci_bus *bus, unsigned int devfn,
+ 	}
+ 
+ 	/*
+-	 * IOC3 is fucking fucked beyond belief ...  Don't try to access
++	 * IOC3 is hugging hugged beyond belief ...  Don't try to access
+ 	 * anything but 32-bit words ...
+ 	 */
+ 	bridge->b_pci_cfg = (busno << 16) | (slot << 11);
+@@ -189,7 +189,7 @@ static int pci_conf0_write_config(struct pci_bus *bus, unsigned int devfn,
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 
+ 	/*
+-	 * IOC3 is fucking fucked beyond belief ...  Don't even give the
++	 * IOC3 is hugging hugged beyond belief ...  Don't even give the
+ 	 * generic PCI code a chance to look at it for real ...
+ 	 */
+ 	if (cf == (PCI_VENDOR_ID_SGI | (PCI_DEVICE_ID_SGI_IOC3 << 16)))
+@@ -213,14 +213,14 @@ static int pci_conf0_write_config(struct pci_bus *bus, unsigned int devfn,
+ oh_my_gawd:
+ 
+ 	/*
+-	 * IOC3 is fucking fucked beyond belief ...  Don't even give the
++	 * IOC3 is hugging hugged beyond belief ...  Don't even give the
+ 	 * generic PCI code a chance to touch the wrong register.
+ 	 */
+ 	if ((where >= 0x14 && where < 0x40) || (where >= 0x48))
+ 		return PCIBIOS_SUCCESSFUL;
+ 
+ 	/*
+-	 * IOC3 is fucking fucked beyond belief ...  Don't try to access
++	 * IOC3 is hugging hugged beyond belief ...  Don't try to access
+ 	 * anything but 32-bit words ...
+ 	 */
+ 	addr = &bridge->b_type0_cfg_dev[slot].f[fn].l[where >> 2];
+@@ -257,7 +257,7 @@ static int pci_conf1_write_config(struct pci_bus *bus, unsigned int devfn,
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 
+ 	/*
+-	 * IOC3 is fucking fucked beyond belief ...  Don't even give the
++	 * IOC3 is hugging hugged beyond belief ...  Don't even give the
+ 	 * generic PCI code a chance to look at it for real ...
+ 	 */
+ 	if (cf == (PCI_VENDOR_ID_SGI | (PCI_DEVICE_ID_SGI_IOC3 << 16)))
+@@ -281,14 +281,14 @@ static int pci_conf1_write_config(struct pci_bus *bus, unsigned int devfn,
+ oh_my_gawd:
+ 
+ 	/*
+-	 * IOC3 is fucking fucked beyond belief ...  Don't even give the
++	 * IOC3 is hugging hugged beyond belief ...  Don't even give the
+ 	 * generic PCI code a chance to touch the wrong register.
+ 	 */
+ 	if ((where >= 0x14 && where < 0x40) || (where >= 0x48))
+ 		return PCIBIOS_SUCCESSFUL;
+ 
+ 	/*
+-	 * IOC3 is fucking fucked beyond belief ...  Don't try to access
++	 * IOC3 is hugging hugged beyond belief ...  Don't try to access
+ 	 * anything but 32-bit words ...
+ 	 */
+ 	addr = &bridge->b_type0_cfg_dev[slot].f[fn].l[where >> 2];
+diff --git a/arch/mips/sgi-ip22/ip22-setup.c b/arch/mips/sgi-ip22/ip22-setup.c
+index b69daa02401b..50f04fe491ca 100644
+--- a/arch/mips/sgi-ip22/ip22-setup.c
++++ b/arch/mips/sgi-ip22/ip22-setup.c
+@@ -36,7 +36,7 @@ void __init plat_mem_setup(void)
+ 	board_be_init = ip22_be_init;
+ 
+ 	/* Init the INDY HPC I/O controller.  Need to call this before
+-	 * fucking with the memory controller because it needs to know the
++	 * hugging with the memory controller because it needs to know the
+ 	 * boardID and whether this is a Guiness or a FullHouse machine.
+ 	 */
+ 	sgihpc_init();
 -- 
 2.19.1

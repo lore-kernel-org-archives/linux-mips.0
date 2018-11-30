@@ -1,18 +1,18 @@
-Received: from mx2.suse.de ([195.135.220.15]:42238 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by eddie.linux-mips.org with ESMTP
-        id S23993839AbeK3T5N4DM-U (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 30 Nov 2018 20:57:13 +0100
-Date: Fri, 30 Nov 2018 11:56:52 -0800
-From: Davidlohr Bueso <dave@stgolabs.net>
-Subject: Re: [PATCH RFC 00/15] Zero ****s, hugload of hugs <3
-Message-ID: <20181130195652.7syqys76646kpaph@linux-r8p5>
+Received: from mga18.intel.com ([134.134.136.126]:9789 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
+        id S23994220AbeK3T6AePBdU (ORCPT <rfc822;linux-mips@linux-mips.org>);
+        Fri, 30 Nov 2018 20:58:00 +0100
+Date: Fri, 30 Nov 2018 11:57:58 -0800
+From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Subject: Re: [PATCH RFC 01/15] MIPS: replace **** with a hug
+Message-ID: <20181130195758.GA20328@linux.intel.com>
 References: <20181130192737.15053-1-jarkko.sakkinen@linux.intel.com>
- <CAGXu5j+jBNBsD3pvUSfEh6Lc5T1YMpbM0HeG1c6BHiJe+cKVOQ@mail.gmail.com>
+ <20181130192737.15053-2-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGXu5j+jBNBsD3pvUSfEh6Lc5T1YMpbM0HeG1c6BHiJe+cKVOQ@mail.gmail.com>
-Return-Path: <dave@stgolabs.net>
+In-Reply-To: <20181130192737.15053-2-jarkko.sakkinen@linux.intel.com>
+Return-Path: <jarkko.sakkinen@linux.intel.com>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -22,18 +22,16 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Kees Cook <keescook@chromium.org>
-Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, LKML <linux-kernel@vger.kernel.org>, Amir Goldstein <amir73il@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Axtens <dja@axtens.net>, "David S. Miller" <davem@davemloft.net>, Dominik Brodowski <linux@dominikbrodowski.net>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Eric Dumazet <edumazet@google.com>, federico.vaga@vaga.pv.it, Geert Uytterhoeven <geert+renesas@glider.be>, Helge Deller <deller@gmx.de>, Jonathan Corbet <corbet@lwn.net>, Joshua Kinard <kumba@gentoo.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Linux Media Mailing List <linux-media@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Linux mtd <linux-mtd@lists.infradead.org>, linux-parisc <linux-parisc@vger.kernel.org>, Linux PM list <linux-pm@vger.kernel.org>, linux-scsi@vger.kernel.org, matthias.bgg@gmail.com, Network Development <netdev@vger.kernel.org>, nouveau <nouveau@lists.freedesktop.org>, Paolo Abeni <pabeni@redhat.com>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rob Herring <robh@kernel.org>, sean.wang@mediatek.com, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, shannon.nelson@oracle.com, Stefano Brivio <sbrivio@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, "Tobin C. Harding" <me@tobin.cc>, makita.toshiaki@lab.ntt.co.jp, Willem de Bruijn <willemb@google.com>, Yonghong Song <yhs@fb.com>, yanjun.zhu@oracle.com
+To: linux-kernel@vger.kernel.org
+Cc: Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Joshua Kinard <kumba@gentoo.org>, "open list:MIPS" <linux-mips@linux-mips.org>
 
-On Fri, 30 Nov 2018, Kees Cook wrote:
+On Fri, Nov 30, 2018 at 11:27:10AM -0800, Jarkko Sakkinen wrote:
+> In order to comply with the CoC, replace **** with a hug.
+> 
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 
->On Fri, Nov 30, 2018 at 11:27 AM Jarkko Sakkinen
-><jarkko.sakkinen@linux.intel.com> wrote:
->>
->> In order to comply with the CoC, replace **** with a hug.
+Since v17 of the SGX patch set, my cover letters get cut for some
+reason. I receive them myself but they don't appear on kernel
+lists. I don't what the hug is going on :-/
 
-I hope this is some kind of joke. How would anyone get offended by reading
-technical comments? This is all beyond me...
-
-Thanks,
-Davidlohr
+Here's the cover letter for this patch set:

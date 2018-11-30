@@ -1,22 +1,17 @@
-Received: from mail-pl1-x641.google.com ([IPv6:2607:f8b0:4864:20::641]:43899
-        "EHLO mail-pl1-x641.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23993889AbeK3UepC3nyk (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 30 Nov 2018 21:34:45 +0100
-Received: by mail-pl1-x641.google.com with SMTP id gn14so3333707plb.10
-        for <linux-mips@linux-mips.org>; Fri, 30 Nov 2018 12:34:44 -0800 (PST)
+Received: from eth7.bgcomp.co.uk ([IPv6:2001:8b0:ca:2::fd]:42799 "EHLO
+        mailgate.bgcomp.co.uk" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992926AbeK3UjFM5Q3k (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 30 Nov 2018 21:39:05 +0100
+From: Abuse <abuse@2.abuse.bgcomp.co.uk>
 Subject: Re: [PATCH RFC 00/15] Zero ****s, hugload of hugs <3
-References: <20181130192737.15053-1-jarkko.sakkinen@linux.intel.com>
- <CAGXu5j+jBNBsD3pvUSfEh6Lc5T1YMpbM0HeG1c6BHiJe+cKVOQ@mail.gmail.com>
- <20181130195652.7syqys76646kpaph@linux-r8p5>
- <d7c34289-f03a-b641-cc9c-00395306511d@kernel.dk>
-From: Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <f5d88887-6c72-2e95-bd93-b49d8a04e2b0@gmail.com>
-Date: Sat, 1 Dec 2018 09:34:18 +1300
+Date: Fri, 30 Nov 2018 20:39:01 +0000
+Message-ID: <2007856.n5V9iKLVsV@eth7>
+In-Reply-To: <20181130.123507.1940310466680455876.davem@davemloft.net>
+References: <CAGXu5j+jBNBsD3pvUSfEh6Lc5T1YMpbM0HeG1c6BHiJe+cKVOQ@mail.gmail.com> <d7c34289-f03a-b641-cc9c-00395306511d@kernel.dk> <20181130.123507.1940310466680455876.davem@davemloft.net>
 MIME-Version: 1.0
-In-Reply-To: <d7c34289-f03a-b641-cc9c-00395306511d@kernel.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-Path: <schmitzmic@gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Return-Path: <abuse@2.abuse.bgcomp.co.uk>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -26,32 +21,131 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Jens Axboe <axboe@kernel.dk>, Davidlohr Bueso <dave@stgolabs.net>, Kees Cook <keescook@chromium.org>
-Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, LKML <linux-kernel@vger.kernel.org>, Amir Goldstein <amir73il@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Axtens <dja@axtens.net>, "David S. Miller" <davem@davemloft.net>, Dominik Brodowski <linux@dominikbrodowski.net>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Eric Dumazet <edumazet@google.com>, federico.vaga@vaga.pv.it, Geert Uytterhoeven <geert+renesas@glider.be>, Helge Deller <deller@gmx.de>, Jonathan Corbet <corbet@lwn.net>, Joshua Kinard <kumba@gentoo.org>, "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org, Linux Media Mailing List <linux-media@vger.kernel.org>, Linux MIPS Mailing List <linux-mips@linux-mips.org>, Linux mtd <linux-mtd@lists.infradead.org>, linux-parisc <linux-parisc@vger.kernel.org>, Linux PM list <linux-pm@vger.kernel.org>, linux-scsi@vger.kernel.org, matthias.bgg@gmail.com, Network Development <netdev@vger.kernel.org>, nouveau <nouveau@lists.freedesktop.org>, Paolo Abeni <pabeni@redhat.com>, Paul Burton <paul.burton@mips.com>, Petr Mladek <pmladek@suse.com>, Rob Herring <robh@kernel.org>, sean.wang@mediatek.com, Sergey Senozhatsky <sergey.senozhatsky@gmail.com>, shannon.nelson@oracle.com, Stefano Brivio <sbrivio@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, "Tobin C. Harding" <me@tobin.cc>, makita.toshiaki@lab.ntt.co.jp, Willem de Bruijn <willemb@google.com>, Yonghong Song <yhs@fb.com>, yanjun.zhu@oracle.com
+To: David Miller <davem@davemloft.net>
+Cc: axboe@kernel.dk, dave@stgolabs.net, keescook@chromium.org, jarkko.sakkinen@linux.intel.com, linux-kernel@vger.kernel.org, amir73il@gmail.com, akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com, dja@axtens.net, linux@dominikbrodowski.net, dri-devel@lists.freedesktop.org, edumazet@google.com, federico.vaga@vaga.pv.it, geert+renesas@glider.be, deller@gmx.de, corbet@lwn.net, kumba@gentoo.org, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org, linux-mips@linux-mips.org, linux-mtd@lists.infradead.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-scsi@vger.kernel.org, matthias.bgg@gmail.com, netdev@vger.kernel.org, nouveau@lists.freedesktop.org, pabeni@redhat.com, paul.burton@mips.com, pmladek@suse.com, robh@kernel.org, sean.wang@mediatek.com, sergey.senozhatsky@gmail.com, shannon.nelson@oracle.com, sbrivio@redhat.com, rostedt@goodmis.org, me@tobin.cc, makita.toshia ki@lab.ntt.co.jp, willemb@google.com, yhs@fb.com, yanjun.zhu@oracle.com
 
-Am 01.12.2018 um 09:12 schrieb Jens Axboe:
-> On 11/30/18 12:56 PM, Davidlohr Bueso wrote:
->> On Fri, 30 Nov 2018, Kees Cook wrote:
->>
->>> On Fri, Nov 30, 2018 at 11:27 AM Jarkko Sakkinen
->>> <jarkko.sakkinen@linux.intel.com> wrote:
->>>>
->>>> In order to comply with the CoC, replace **** with a hug.
->>
->> I hope this is some kind of joke. How would anyone get offended by reading
->> technical comments? This is all beyond me...
->
-> Agree, this is insanity.
+On Friday, 30 November 2018 20:35:07 GMT David Miller wrote:
+> From: Jens Axboe <axboe@kernel.dk>
+> Date: Fri, 30 Nov 2018 13:12:26 -0700
+> 
+> > On 11/30/18 12:56 PM, Davidlohr Bueso wrote:
+> >> On Fri, 30 Nov 2018, Kees Cook wrote:
+> >> 
+> >>> On Fri, Nov 30, 2018 at 11:27 AM Jarkko Sakkinen
+> >>> <jarkko.sakkinen@linux.intel.com> wrote:
+> >>>>
+> >>>> In order to comply with the CoC, replace **** with a hug.
+> >> 
+> >> I hope this is some kind of joke. How would anyone get offended by reading
+> >> technical comments? This is all beyond me...
+> > 
+> > Agree, this is insanity.
+> 
+> And even worse it is censorship.
+> 
 
-Irony? Parody?
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
+Fuck
 
-That's what crossed my mind, to be brutally honest. Group hug, anyone?
-
-For the VME vectors case: no need to hug, just don't mess with them.
-
-Cheers,
-
-	Michael
-
-(Waiting for Adrian's ticket machines to swoop down and take me out now 
-... in 24 hours ...)
+I assume I will now be barred.

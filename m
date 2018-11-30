@@ -1,20 +1,19 @@
-Received: from mga07.intel.com ([134.134.136.100]:48202 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by eddie.linux-mips.org with ESMTP
-        id S23994550AbeK3VuFkJC5P (ORCPT <rfc822;linux-mips@linux-mips.org>);
-        Fri, 30 Nov 2018 22:50:05 +0100
-Date: Fri, 30 Nov 2018 13:50:03 -0800
-From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Subject: Re: [PATCH RFC 01/15] MIPS: replace **** with a hug
-Message-ID: <20181130215003.GH23772@linux.intel.com>
-References: <20181130192737.15053-1-jarkko.sakkinen@linux.intel.com>
- <20181130192737.15053-2-jarkko.sakkinen@linux.intel.com>
- <20181130195758.GA20328@linux.intel.com>
- <9ba4d08d-10d1-c233-476a-c73051b8c9f5@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ba4d08d-10d1-c233-476a-c73051b8c9f5@suse.com>
-Return-Path: <jarkko.sakkinen@linux.intel.com>
+Received: from shards.monkeyblade.net ([IPv6:2620:137:e000::1:9]:49690 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK)
+        by eddie.linux-mips.org with ESMTP id S23992919AbeK3VsMbQl8P (ORCPT
+        <rfc822;linux-mips@linux-mips.org>); Fri, 30 Nov 2018 22:48:12 +0100
+Date: Fri, 30 Nov 2018 13:48:08 -0800 (PST)
+Message-Id: <20181130.134808.1785785556132211918.davem@davemloft.net>
+Subject: Re: [PATCH RFC 00/15] Zero ****s, hugload of hugs <3
+From: David Miller <davem@davemloft.net>
+In-Reply-To: <20181130214405.GG23772@linux.intel.com>
+References: <20181130205521.GA21006@linux.intel.com>
+        <1543611662.3031.20.camel@HansenPartnership.com>
+        <20181130214405.GG23772@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-Path: <davem@davemloft.net>
 Sender: linux-mips-bounce@linux-mips.org
 Errors-to: linux-mips-bounce@linux-mips.org
 List-help: <mailto:ecartis@linux-mips.org?Subject=help>
@@ -24,26 +23,23 @@ List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
 List-owner: <mailto:ralf@linux-mips.org>
 List-post: <mailto:linux-mips@linux-mips.org>
 List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Nikolay Borisov <nborisov@suse.com>
-Cc: linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Joshua Kinard <kumba@gentoo.org>, "open list:MIPS" <linux-mips@linux-mips.org>
+To: jarkko.sakkinen@linux.intel.com
+Cc: James.Bottomley@HansenPartnership.com, dave@stgolabs.net, keescook@chromium.org, linux-kernel@vger.kernel.org, amir73il@gmail.com, akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com, dja@axtens.net, linux@dominikbrodowski.net, dri-devel@lists.freedesktop.org, edumazet@google.com, federico.vaga@vaga.pv.it, geert+renesas@glider.be, deller@gmx.de, corbet@lwn.net, kumba@gentoo.org, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org, linux-mips@linux-mips.org, linux-mtd@lists.infradead.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-scsi@vger.kernel.org, matthias.bgg@gmail.com, netdev@vger.kernel.org, nouveau@lists.freedesktop.org, pabeni@redhat.com, paul.burton@mips.com, pmladek@suse.com, robh@kernel.org, sean.wang@mediatek.com, sergey.senozhatsky@gmail.com, shannon.nelson@oracle.com, sbrivio@redhat.com, rostedt@goodmis.org, me@tobin.cc, makita.toshiaki@lab.ntt.co.jp, willemb@google.com, yhs@fb.com, yanjun.zhu@oracle.com
 
-On Fri, Nov 30, 2018 at 11:06:30PM +0200, Nikolay Borisov wrote:
-> I find it quite ridiculous that grown up people are engaging at yet
-> another coc-related conversation and are on the way to blowing it out of
-> proportions. Let's focus on improving the ACTUAL code what's the point
-> to bikeshed on the word?
+From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Date: Fri, 30 Nov 2018 13:44:05 -0800
+
+> On Fri, Nov 30, 2018 at 01:01:02PM -0800, James Bottomley wrote:
+>> No because use of what some people consider to be bad language isn't
+>> necessarily abusive, offensive or degrading.  Our most heavily censored
+>> medium is TV and "fuck" is now considered acceptable in certain
+>> contexts on most channels in the UK and EU.
 > 
-> I've seen people before me comment that some comments are plainly out of
-> date and that warrants their removal but otherwise nitpicking things
-> like that. It seems common sense is very scant these days...
+> This makes following the CoC extremely hard to a non-native speaker as
+> it is not too explicit on what is OK and what is not. I did through the
+> whole thing with an eye glass and this what I deduced from it.
 
-I have absolutely nothing against CoC.
+It would be helpful if you could explain what part of the language
+is unclear wrt. explaining how CoC does not apply to existing code.
 
-If you look up from LKML, there total zero posts from criticizing of
-having such. OK, maybe I find it bit too high-level, and yeah, this
-patch set has been useful to know where the line is. I can go through
-the commits and think more appropriate alternatives (thus the RFC-tag).
-
-Thanks.
-
-/Jarkko
+That part seems very explicit to me.

@@ -2,103 +2,198 @@ Return-Path: <SRS0=z0av=ZV=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56F5CC432C0
-	for <linux-mips@archiver.kernel.org>; Fri, 29 Nov 2019 08:55:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73FFCC432C0
+	for <linux-mips@archiver.kernel.org>; Fri, 29 Nov 2019 10:50:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2750020833
-	for <linux-mips@archiver.kernel.org>; Fri, 29 Nov 2019 08:55:19 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=zoho.com header.i=zhouyanjie@zoho.com header.b="cBGFQ57s"
+	by mail.kernel.org (Postfix) with ESMTP id 4253C2084D
+	for <linux-mips@archiver.kernel.org>; Fri, 29 Nov 2019 10:50:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbfK2IzS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 29 Nov 2019 03:55:18 -0500
-Received: from sender4-pp-o98.zoho.com ([136.143.188.98]:25857 "EHLO
-        sender4-pp-o98.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726143AbfK2IzS (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 29 Nov 2019 03:55:18 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1575017651; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=aHQGL27AFyIrx+4oOxuaIqQQQ05SYfgXcvBgDPo74I4GtjesLSMcmmSf98E4hz0E8fSu2z7kqUVejs8NL3zHAW0a7gU3S7shqull0lJlOaFeg4QiWfxs32e1UkqeGrt+LdQbQ/V2I+V9B0dlztkZBEwBt2rZK8fdvE1Zk5LRiXQ=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1575017651; h=Cc:Date:From:In-Reply-To:Message-ID:References:Subject:To; 
-        bh=1hGPrm+p5zUCh8vVbV4PGe97UQ4RnYIUCs3Zs7VaTEA=; 
-        b=eyAQlfXg11rewE0YRYgPP0SRA+Znw3khgFYEWhREQsg5kW4qcEF/162fNN0dDCCPZCkjAOkvrZEtSdcg3AsqsPwLIuF+6vCzs9hisj4To48ancE5xeOzyM6UWX11FjkoYLSCRONdT2tIqRqebKuTv7gEZuY1fYYcMYWQ1TDZGLo=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=zoho.com;
-        spf=pass  smtp.mailfrom=zhouyanjie@zoho.com;
-        dmarc=pass header.from=<zhouyanjie@zoho.com> header.from=<zhouyanjie@zoho.com>
-DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws; 
-  s=zapps768; d=zoho.com; 
-  h=from:to:cc:subject:date:message-id:in-reply-to:references; 
-  b=JOkHCOHculHLpgRfs0cQ+GrhUZ6ZNVMhPKMrEMY9S1OFzi8T3JaB/la396AWgcR0vSPX1hg2A4/t
-    vkKWJUOv9ljPKin4glgH++3MSNLieW1c0/8zvcGfgfnDd/nQgO0O  
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1575017651;
-        s=zm2019; d=zoho.com; i=zhouyanjie@zoho.com;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References;
-        bh=1hGPrm+p5zUCh8vVbV4PGe97UQ4RnYIUCs3Zs7VaTEA=;
-        b=cBGFQ57soBFWmCZPK1RiYIEn9CJ3aKspL4ueR2PYYkql0kl14d65Wx3TO0UVdLxZ
-        m1L3qLC4VZ0QSJSDB0mfZjMiebvEz7UQTiQwkNscUfGtPJfR/U7lHSrujMT2Vv7ah31
-        1kwSKTulP8+JC1zARaOS+kcRvNY11cSbbg4ExmGw=
-Received: from zhouyanjie-virtual-machine.localdomain (139.207.146.46 [139.207.146.46]) by mx.zohomail.com
-        with SMTPS id 1575017648817736.2370865952828; Fri, 29 Nov 2019 00:54:08 -0800 (PST)
-From:   Zhou Yanjie <zhouyanjie@zoho.com>
-To:     linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, paul.burton@mips.com, paulburton@kernel.org,
-        jhogan@kernel.org, mripard@kernel.org, shawnguo@kernel.org,
-        mark.rutland@arm.com, syq@debian.org, ralf@linux-mips.org,
-        heiko@sntech.de, icenowy@aosc.io,
-        laurent.pinchart@ideasonboard.com, krzk@kernel.org,
-        geert+renesas@glider.be, paul@crapouillou.net,
-        prasannatsmkumar@gmail.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com, 772753199@qq.com
-Subject: [PATCH v6 10/12] MIPS: CU1000: Update defconfig for rtc.
-Date:   Fri, 29 Nov 2019 16:48:51 +0800
-Message-Id: <1575017333-29020-11-git-send-email-zhouyanjie@zoho.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1575017333-29020-1-git-send-email-zhouyanjie@zoho.com>
-References: <1575017333-29020-1-git-send-email-zhouyanjie@zoho.com>
-X-ZohoMailClient: External
+        id S1726215AbfK2Ku6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 29 Nov 2019 05:50:58 -0500
+Received: from foss.arm.com ([217.140.110.172]:46030 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725892AbfK2Ku6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 29 Nov 2019 05:50:58 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A2051FB;
+        Fri, 29 Nov 2019 02:50:58 -0800 (PST)
+Received: from [10.37.10.52] (unknown [10.37.10.52])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 315A23F52E;
+        Fri, 29 Nov 2019 02:50:56 -0800 (PST)
+Subject: Re: MIPS: bug: gettimeofday syscall broken on CI20 board
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Maarten ter Huurne <maarten@treewalker.org>,
+        mips-creator-ci20-dev@googlegroups.com,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paul.burton@mips.com>, linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>
+References: <18788C50-F29B-4BD7-89F6-B056FF490214@goldelico.com>
+ <7b6275c7-ab2b-a647-6bf7-d5e1c4523c98@arm.com>
+ <D1CE4D1E-9A42-4FAE-90A9-615C38B979C0@goldelico.com>
+ <4807842.gtHLO0kk0V@hyperion>
+ <01D75E67-EC2E-4C74-B9BB-752773C481A9@goldelico.com>
+ <20191128150721.GA20142@alpha.franken.de>
+ <4F75970F-81DA-4727-8ADC-17CF6D77829B@goldelico.com>
+ <04b509b4-b1ef-3bcb-433e-8eed5772288f@arm.com>
+ <BF04DB35-9DBA-4297-8FCA-BB422A56DFEC@goldelico.com>
+ <9ee8cbab-0655-f4d5-6699-fbe34fbe4d60@arm.com>
+Message-ID: <183faf2b-247b-7a1f-a45c-4ae6bbff4320@arm.com>
+Date:   Fri, 29 Nov 2019 10:53:24 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <9ee8cbab-0655-f4d5-6699-fbe34fbe4d60@arm.com>
+Content-Type: multipart/mixed;
+ boundary="------------B6767A12C8E3216B1F5C5EE3"
+Content-Language: en-US
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Selected rtc support by default.
+This is a multi-part message in MIME format.
+--------------B6767A12C8E3216B1F5C5EE3
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Zhou Yanjie <zhouyanjie@zoho.com>
----
+Hi Nikolaus,
 
-Notes:
-    v5:
-    New patch.
-    
-    v5->v6:
-    No change.
+On 11/29/19 8:57 AM, Vincenzo Frascino wrote:
+> On 11/28/19 4:47 PM, H. Nikolaus Schaller wrote:
+>> Well, it does not immediately compile because CONFIG_MIPS_CLOCK_VSYSCALL is not
+>> set and can not be configured by normal means:
+>>
+>> Error:
+>>
+>> /Volumes/CaseSensitive/master/lib/vdso/gettimeofday.c: In function '__cvdso_gettimeofday':
+>> /Volumes/CaseSensitive/master/lib/vdso/gettimeofday.c:152:4: error: implicit declaration of function 'gettimeofday_fallback' [-Werror=implicit-function-declaration]
+>>     return gettimeofday_fallback(tv, tz);
+> 
+> Oops, I just realized that I had other changes not committed that's why it does
+> not build for you directly. Sometimes I get so excited for fixing a problem that
+> I forget bits and peaces :) Sorry about that.
+> 
+> I am happy to hear that this sorts out the issue though. I will send out a new
+> series to test.
+> 
 
- arch/mips/configs/cu1000-neo_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+Could you please try the patch in attachment? It should be all this time.
 
-diff --git a/arch/mips/configs/cu1000-neo_defconfig b/arch/mips/configs/cu1000-neo_defconfig
-index eef0c5a..b2c090a 100644
---- a/arch/mips/configs/cu1000-neo_defconfig
-+++ b/arch/mips/configs/cu1000-neo_defconfig
-@@ -63,6 +63,8 @@ CONFIG_GPIO_SYSFS=y
- # CONFIG_USB_SUPPORT is not set
- CONFIG_MMC=y
- CONFIG_MMC_JZ4740=y
-+CONFIG_RTC_CLASS=y
-+CONFIG_RTC_DRV_JZ4740=y
- CONFIG_DMADEVICES=y
- CONFIG_DMA_JZ4780=y
- # CONFIG_IOMMU_SUPPORT is not set
+Thanks!
+
 -- 
-2.7.4
+Regards,
+Vincenzo
+
+--------------B6767A12C8E3216B1F5C5EE3
+Content-Type: text/x-patch;
+ name="0001-mips32-gettimeofday-fix.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-mips32-gettimeofday-fix.patch"
+
+From 6ee7d583444f7edb1b5b8e834253b34efe4ff257 Mon Sep 17 00:00:00 2001
+From: Vincenzo Frascino <vinfra01@e120585-lin.cambridge.arm.com>
+Date: Fri, 29 Nov 2019 10:01:18 +0000
+Subject: [PATCH] mips32 gettimeofday fix
+
+Signed-off-by: Vincenzo Frascino <vinfra01@e120585-lin.cambridge.arm.com>
+---
+ arch/mips/include/asm/vdso/gettimeofday.h | 13 -------------
+ arch/mips/vdso/vgettimeofday.c            | 20 ++++++++++++++++++++
+ 2 files changed, 20 insertions(+), 13 deletions(-)
+
+diff --git a/arch/mips/include/asm/vdso/gettimeofday.h b/arch/mips/include/asm/vdso/gettimeofday.h
+index b08825531e9f..0ae9b4cbc153 100644
+--- a/arch/mips/include/asm/vdso/gettimeofday.h
++++ b/arch/mips/include/asm/vdso/gettimeofday.h
+@@ -26,8 +26,6 @@
+ 
+ #define __VDSO_USE_SYSCALL		ULLONG_MAX
+ 
+-#ifdef CONFIG_MIPS_CLOCK_VSYSCALL
+-
+ static __always_inline long gettimeofday_fallback(
+ 				struct __kernel_old_timeval *_tv,
+ 				struct timezone *_tz)
+@@ -48,17 +46,6 @@ static __always_inline long gettimeofday_fallback(
+ 	return error ? -ret : ret;
+ }
+ 
+-#else
+-
+-static __always_inline long gettimeofday_fallback(
+-				struct __kernel_old_timeval *_tv,
+-				struct timezone *_tz)
+-{
+-	return -1;
+-}
+-
+-#endif
+-
+ static __always_inline long clock_gettime_fallback(
+ 					clockid_t _clkid,
+ 					struct __kernel_timespec *_ts)
+diff --git a/arch/mips/vdso/vgettimeofday.c b/arch/mips/vdso/vgettimeofday.c
+index 6ebdc37c89fc..6b83b6376a4b 100644
+--- a/arch/mips/vdso/vgettimeofday.c
++++ b/arch/mips/vdso/vgettimeofday.c
+@@ -17,12 +17,22 @@ int __vdso_clock_gettime(clockid_t clock,
+ 	return __cvdso_clock_gettime32(clock, ts);
+ }
+ 
++#ifdef CONFIG_MIPS_CLOCK_VSYSCALL
++
++/*
++ * This is behind the ifdef so that we don't provide the symbol when there's no
++ * possibility of there being a usable clocksource, because there's nothing we
++ * can do without it. When libc fails the symbol lookup it should fall back on
++ * the standard syscall path.
++ */
+ int __vdso_gettimeofday(struct __kernel_old_timeval *tv,
+ 			struct timezone *tz)
+ {
+ 	return __cvdso_gettimeofday(tv, tz);
+ }
+ 
++#endif /* CONFIG_MIPS_CLOCK_VSYSCALL */
++
+ int __vdso_clock_getres(clockid_t clock_id,
+ 			struct old_timespec32 *res)
+ {
+@@ -43,12 +53,22 @@ int __vdso_clock_gettime(clockid_t clock,
+ 	return __cvdso_clock_gettime(clock, ts);
+ }
+ 
++#ifdef CONFIG_MIPS_CLOCK_VSYSCALL
++
++/*
++ * This is behind the ifdef so that we don't provide the symbol when there's no
++ * possibility of there being a usable clocksource, because there's nothing we
++ * can do without it. When libc fails the symbol lookup it should fall back on
++ * the standard syscall path.
++ */
+ int __vdso_gettimeofday(struct __kernel_old_timeval *tv,
+ 			struct timezone *tz)
+ {
+ 	return __cvdso_gettimeofday(tv, tz);
+ }
+ 
++#endif /* CONFIG_MIPS_CLOCK_VSYSCALL */
++
+ int __vdso_clock_getres(clockid_t clock_id,
+ 			struct __kernel_timespec *res)
+ {
+-- 
+2.24.0
 
 
+--------------B6767A12C8E3216B1F5C5EE3--

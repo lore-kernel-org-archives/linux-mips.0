@@ -2,220 +2,102 @@ Return-Path: <SRS0=gtjD=Z4=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02077C2D0C8
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Dec 2019 14:20:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DF66C2BBE2
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Dec 2019 19:18:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CD17220707
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Dec 2019 14:20:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0DF4B2464E
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Dec 2019 19:18:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1575659936;
+	bh=V9k3lSD1X6ZX6cOPceOkb8X+gIpEWGSYP1yvGhhvUwU=;
+	h=Date:From:To:CC:CC:CC:Subject:References:In-Reply-To:List-ID:
+	 From;
+	b=vcXbhDmfioGCQVDkIw25l5PlvTbWxYZ7JTOM8g5JkqApZJGtAcZRqQB8KeB1Auut8
+	 zOyi+7dZBFXYXsFCxt/VSGhUIZ4HbNJOuKurP1tklJk728Fn4sKBDWve7iIusbNasJ
+	 Gk5cyPQ9MUkvIWQ4uJqZt9XG9I9TpWL+Hd5yTiFE=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbfLFOUI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 6 Dec 2019 09:20:08 -0500
-Received: from mout-p-202.mailbox.org ([80.241.56.172]:29124 "EHLO
-        mout-p-202.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726268AbfLFOUH (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 6 Dec 2019 09:20:07 -0500
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 47Tvql22RHzQkK1;
-        Fri,  6 Dec 2019 15:20:03 +0100 (CET)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter04.heinlein-hosting.de (spamfilter04.heinlein-hosting.de [80.241.56.122]) (amavisd-new, port 10030)
-        with ESMTP id 8G5RMpKVsMbp; Fri,  6 Dec 2019 15:19:58 +0100 (CET)
-From:   Aleksa Sarai <cyphar@cyphar.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Jeff Layton <jlayton@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S1726460AbfLFTSu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 6 Dec 2019 14:18:50 -0500
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:44119 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726298AbfLFTSt (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 6 Dec 2019 14:18:49 -0500
+Received: by mail-pf1-f193.google.com with SMTP id d199so3804720pfd.11;
+        Fri, 06 Dec 2019 11:18:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:to:cc:cc:cc:subject
+         :references:in-reply-to;
+        bh=gv9fsA6Ao/pebDnTI1hmSbmmPR6XS0w88Vxh8VJ2D7U=;
+        b=RpTaUzRZvghYPxU0ZAERA+PqOQ5ObyBJk5E4gvl76rNbfS4L7RyCU/9y/5G7NxsXxh
+         w0YNElLtCdza4X+tgG0RbVJMHAQHlZERO1P0mDvVWrgJF9Yy2uI+ULqmvmiXqYNgqraV
+         i1E/VbUeyydz5WEUNrapWI/NxrqxyvgA/lc6GsqOhdh/VakTN2v4BnuxYXzNOI2vMFN+
+         /BFyu7OTZIxFMffR3f5x09QGtIEuES1n2QjlSvL9QpW9KyV6mwGFlLBMOargsNTIskkE
+         JoX8eYU1Xb9txqRdsXuWkpAwGXUFyIPmhIF6bL/Fbu61GIvIDYVUadJnIIl6v+twzkVO
+         ziiA==
+X-Gm-Message-State: APjAAAXVZqxZPfn671wg30zsC3OnWQk0g/9PyYJagqykgMB63+V5wPAR
+        1OIlzzRotTdkW7WWo4Bmqqk=
+X-Google-Smtp-Source: APXvYqyvoLWWIxFLFCrxMQlx3rIouun1f9/M6m8GVOeFSgwMyLKkc5DixpR+L8+xuyX/dZYgb0ZBHg==
+X-Received: by 2002:a63:4b52:: with SMTP id k18mr5207178pgl.371.1575659928396;
+        Fri, 06 Dec 2019 11:18:48 -0800 (PST)
+Received: from localhost (MIPS-TECHNO.ear1.SanJose1.Level3.net. [4.15.122.74])
+        by smtp.gmail.com with ESMTPSA id z26sm15634408pgu.80.2019.12.06.11.18.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Dec 2019 11:18:47 -0800 (PST)
+Message-ID: <5deaa997.1c69fb81.4d5ed.a377@mx.google.com>
+Date:   Fri, 06 Dec 2019 11:18:47 -0800
+From:   Paul Burton <paulburton@kernel.org>
+To:     Alexander Lobakin <alobakin@dlink.ru>
+CC:     Paul Burton <paulburton@kernel.org>
+CC:     Ralf Baechle <ralf@linux-mips.org>,
+        James Hogan <jhogan@kernel.org>,
+        Hassan Naveed <hnaveed@wavecomp.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Aleksa Sarai <cyphar@cyphar.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>, Tycho Andersen <tycho@tycho.ws>,
-        David Drysdale <drysdale@google.com>,
-        Chanho Min <chanho.min@lge.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Aleksa Sarai <asarai@suse.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        dev@opencontainers.org, containers@lists.linux-foundation.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-api@vger.kernel.org,
-        libc-alpha@sourceware.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, sparclinux@vger.kernel.org
-Subject: [PATCH v18 13/13] Documentation: path-lookup: include new LOOKUP flags
-Date:   Sat,  7 Dec 2019 01:13:38 +1100
-Message-Id: <20191206141338.23338-14-cyphar@cyphar.com>
-In-Reply-To: <20191206141338.23338-1-cyphar@cyphar.com>
-References: <20191206141338.23338-1-cyphar@cyphar.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Alexander Lobakin <alobakin@dlink.ru>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, stable@vger.kernel.org
+CC:     linux-mips@vger.kernel.org
+Subject: Re: [PATCH mips-fixes] MIPS: BPF: eBPF JIT: check for MIPS ISA compliance  in Kconfig
+References:  <20191206080741.12306-1-alobakin@dlink.ru>
+In-Reply-To:  <20191206080741.12306-1-alobakin@dlink.ru>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Now that we have new LOOKUP flags, we should document them in the
-relevant path-walking documentation. And now that we've settled on a
-common name for nd_jump_link() style symlinks ("magic links"), use that
-term where magic-link semantics are described.
+Hello,
 
-Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
----
- Documentation/filesystems/path-lookup.rst | 68 +++++++++++++++++++++--
- 1 file changed, 62 insertions(+), 6 deletions(-)
+Alexander Lobakin wrote:
+> It is completely wrong to check for compile-time MIPS ISA revision in
+> the body of bpf_int_jit_compile() as it may lead to get MIPS JIT fully
+> omitted by the CC while the rest system will think that the JIT is
+> actually present and works [1].
+> We can check if the selected CPU really supports MIPS eBPF JIT at
+> configure time and avoid such situations when kernel can be built
+> without both JIT and interpreter, but with CONFIG_BPF_SYSCALL=y.
+> 
+> [1] https://lore.kernel.org/linux-mips/09d713a59665d745e21d021deeaebe0a@dlink.ru/
 
-diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/filesystems/path-lookup.rst
-index 434a07b0002b..a3216979298b 100644
---- a/Documentation/filesystems/path-lookup.rst
-+++ b/Documentation/filesystems/path-lookup.rst
-@@ -13,6 +13,7 @@ It has subsequently been updated to reflect changes in the kernel
- including:
- 
- - per-directory parallel name lookup.
-+- ``openat2()`` resolution restriction flags.
- 
- Introduction to pathname lookup
- ===============================
-@@ -235,6 +236,13 @@ renamed.  If ``d_lookup`` finds that a rename happened while it
- unsuccessfully scanned a chain in the hash table, it simply tries
- again.
- 
-+``rename_lock`` is also used to detect and defend against potential attacks
-+against ``LOOKUP_BENEATH`` and ``LOOKUP_IN_ROOT`` when resolving ".." (where
-+the parent directory is moved outside the root, bypassing the ``path_equal()``
-+check). If ``rename_lock`` is updated during the lookup and the path encounters
-+a "..", a potential attack occurred and ``handle_dots()`` will bail out with
-+``-EAGAIN``.
-+
- inode->i_rwsem
- ~~~~~~~~~~~~~~
- 
-@@ -348,6 +356,13 @@ any changes to any mount points while stepping up.  This locking is
- needed to stabilize the link to the mounted-on dentry, which the
- refcount on the mount itself doesn't ensure.
- 
-+``mount_lock`` is also used to detect and defend against potential attacks
-+against ``LOOKUP_BENEATH`` and ``LOOKUP_IN_ROOT`` when resolving ".." (where
-+the parent directory is moved outside the root, bypassing the ``path_equal()``
-+check). If ``mount_lock`` is updated during the lookup and the path encounters
-+a "..", a potential attack occurred and ``handle_dots()`` will bail out with
-+``-EAGAIN``.
-+
- RCU
- ~~~
- 
-@@ -405,6 +420,10 @@ is requested.  Keeping a reference in the ``nameidata`` ensures that
- only one root is in effect for the entire path walk, even if it races
- with a ``chroot()`` system call.
- 
-+It should be noted that in the case of ``LOOKUP_IN_ROOT`` or
-+``LOOKUP_BENEATH``, the effective root becomes the directory file descriptor
-+passed to ``openat2()`` (which exposes these ``LOOKUP_`` flags).
-+
- The root is needed when either of two conditions holds: (1) either the
- pathname or a symbolic link starts with a "'/'", or (2) a "``..``"
- component is being handled, since "``..``" from the root must always stay
-@@ -1149,7 +1168,7 @@ so ``NULL`` is returned to indicate that the symlink can be released and
- the stack frame discarded.
- 
- The other case involves things in ``/proc`` that look like symlinks but
--aren't really::
-+aren't really (and are therefore commonly referred to as "magic-links")::
- 
-      $ ls -l /proc/self/fd/1
-      lrwx------ 1 neilb neilb 64 Jun 13 10:19 /proc/self/fd/1 -> /dev/pts/4
-@@ -1286,7 +1305,9 @@ A few flags
- A suitable way to wrap up this tour of pathname walking is to list
- the various flags that can be stored in the ``nameidata`` to guide the
- lookup process.  Many of these are only meaningful on the final
--component, others reflect the current state of the pathname lookup.
-+component, others reflect the current state of the pathname lookup, and some
-+apply restrictions to all path components encountered in the path lookup.
-+
- And then there is ``LOOKUP_EMPTY``, which doesn't fit conceptually with
- the others.  If this is not set, an empty pathname causes an error
- very early on.  If it is set, empty pathnames are not considered to be
-@@ -1310,13 +1331,48 @@ longer needed.
- ``LOOKUP_JUMPED`` means that the current dentry was chosen not because
- it had the right name but for some other reason.  This happens when
- following "``..``", following a symlink to ``/``, crossing a mount point
--or accessing a "``/proc/$PID/fd/$FD``" symlink.  In this case the
--filesystem has not been asked to revalidate the name (with
--``d_revalidate()``).  In such cases the inode may still need to be
--revalidated, so ``d_op->d_weak_revalidate()`` is called if
-+or accessing a "``/proc/$PID/fd/$FD``" symlink (also known as a "magic
-+link"). In this case the filesystem has not been asked to revalidate the
-+name (with ``d_revalidate()``).  In such cases the inode may still need
-+to be revalidated, so ``d_op->d_weak_revalidate()`` is called if
- ``LOOKUP_JUMPED`` is set when the look completes - which may be at the
- final component or, when creating, unlinking, or renaming, at the penultimate component.
- 
-+Resolution-restriction flags
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+In order to allow userspace to protect itself against certain race conditions
-+and attack scenarios involving changing path components, a series of flags are
-+available which apply restrictions to all path components encountered during
-+path lookup. These flags are exposed through ``openat2()``'s ``resolve`` field.
-+
-+``LOOKUP_NO_SYMLINKS`` blocks all symlink traversals (including magic-links).
-+This is distinctly different from ``LOOKUP_FOLLOW``, because the latter only
-+relates to restricting the following of trailing symlinks.
-+
-+``LOOKUP_NO_MAGICLINKS`` blocks all magic-link traversals. Filesystems must
-+ensure that they return errors from ``nd_jump_link()``, because that is how
-+``LOOKUP_NO_MAGICLINKS`` and other magic-link restrictions are implemented.
-+
-+``LOOKUP_NO_XDEV`` blocks all ``vfsmount`` traversals (this includes both
-+bind-mounts and ordinary mounts). Note that the ``vfsmount`` which contains the
-+lookup is determined by the first mountpoint the path lookup reaches --
-+absolute paths start with the ``vfsmount`` of ``/``, and relative paths start
-+with the ``dfd``'s ``vfsmount``. Magic-links are only permitted if the
-+``vfsmount`` of the path is unchanged.
-+
-+``LOOKUP_BENEATH`` blocks any path components which resolve outside the
-+starting point of the resolution. This is done by blocking ``nd_jump_root()``
-+as well as blocking ".." if it would jump outside the starting point.
-+``rename_lock`` and ``mount_lock`` are used to detect attacks against the
-+resolution of "..". Magic-links are also blocked.
-+
-+``LOOKUP_IN_ROOT`` resolves all path components as though the starting point
-+were the filesystem root. ``nd_jump_root()`` brings the resolution back to to
-+the starting point, and ".." at the starting point will act as a no-op. As with
-+``LOOKUP_BENEATH``, ``rename_lock`` and ``mount_lock`` are used to detect
-+attacks against ".." resolution. Magic-links are also blocked.
-+
- Final-component flags
- ~~~~~~~~~~~~~~~~~~~~~
- 
--- 
-2.24.0
+Applied to mips-fixes.
 
+> commit 3721376d7d02
+> https://git.kernel.org/mips/c/3721376d7d02
+> 
+> Fixes: 716850ab104d ("MIPS: eBPF: Initial eBPF support for MIPS32 architecture.")
+> Signed-off-by: Alexander Lobakin <alobakin@dlink.ru>
+> Signed-off-by: Paul Burton <paulburton@kernel.org>
+
+Thanks,
+    Paul
+
+[ This message was auto-generated; if you believe anything is incorrect
+  then please email paulburton@kernel.org to report it. ]

@@ -2,68 +2,215 @@ Return-Path: <SRS0=cKT5=Z7=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC15EC43603
-	for <linux-mips@archiver.kernel.org>; Mon,  9 Dec 2019 13:58:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8A97C43603
+	for <linux-mips@archiver.kernel.org>; Mon,  9 Dec 2019 15:07:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 792162080D
-	for <linux-mips@archiver.kernel.org>; Mon,  9 Dec 2019 13:58:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8C9FC20836
+	for <linux-mips@archiver.kernel.org>; Mon,  9 Dec 2019 15:07:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="du0d4ED4"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="YCqcLXE2"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727705AbfLIN6a (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 9 Dec 2019 08:58:30 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:51348 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727669AbfLIN63 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 9 Dec 2019 08:58:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=p3AHg01GzBfCAwXTHfYhqubAMqRq0EW1LlGivKYK9aQ=; b=du0d4ED4pEft4i4vPCtqfLCOp
-        esqaMKpCD8hPWIQ2zbctS9HG0DPGFiqt521Yb1eHEYFVPkTDXzIa6vmlKc9LsggxVBECPjHTHBPpo
-        tEzQu3x4r2id8j5DwWvcRE5V9u5FpImc6+HXCaiPvh8UEK9O6CBAs78ueFhdRo/jmEQXVI8BIvLeS
-        X9swmJQ3duj43u4g7x0XVF8IpIyskbQkrpMXVbAADZ5nI2K2p2t4ti29ckzcRd6KKIjEvCyIUZRNG
-        v9IkiU/28Q8moHjDunbEXcW95RGyC0P9aZF+mGKUafr7AQYSQGpECkRgz5v0rWRgrs7wvZI2Hio5Y
-        zM6/TnQ1Q==;
-Received: from clnet-p19-102.ikbnet.co.at ([83.175.77.102] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ieJYP-0001aO-8x; Mon, 09 Dec 2019 13:58:25 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Paul Burton <paulburton@kernel.org>,
-        James Hogan <jhogan@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-mips@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: RFC: kill off ioremap_nocache
-Date:   Mon,  9 Dec 2019 14:58:20 +0100
-Message-Id: <20191209135823.28465-1-hch@lst.de>
-X-Mailer: git-send-email 2.20.1
+        id S1726293AbfLIPHm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 9 Dec 2019 10:07:42 -0500
+Received: from outils.crapouillou.net ([89.234.176.41]:47868 "EHLO
+        crapouillou.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725956AbfLIPHm (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 9 Dec 2019 10:07:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1575904058; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xwHOmmEeu2eYACHyX+W/1JmkDRO9vyXjLPc/BjErkck=;
+        b=YCqcLXE2zvQ3KaiUaxSq7tlr7q3DETPMjvUQ72aQfBuZhq56kpwgGbViI4A0q6x33sZUun
+        kjc6+vQCJEGccXOSBqOgzLggfl3CEAQGyy27kxDP5P5YY3l3xbbl5/bjgtkEP+mK1sSkaV
+        /fpHPvT7mJDAkIDWGiwLayoa9j1Lqb4=
+Date:   Mon, 09 Dec 2019 16:07:28 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v7 6/6] MIPS: CU1000: Add devicetree & config with
+ PDMA/MSC/RTC/WDT/NET enabled.
+To:     =?UTF-8?b?5ZGo55Cw5p2w?= "(Zhou Yanjie)" 
+        <zhouyanjie@wanyeetech.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        paul.burton@mips.com, paulburton@kernel.org, jhogan@kernel.org,
+        mripard@kernel.org, shawnguo@kernel.org, mark.rutland@arm.com,
+        ebiederm@xmission.com, ralf@linux-mips.org, heiko@sntech.de,
+        icenowy@aosc.io, laurent.pinchart@ideasonboard.com,
+        krzk@kernel.org, geert+renesas@glider.be,
+        prasannatsmkumar@gmail.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com, 772753199@qq.com
+Message-Id: <1575904048.3.2@crapouillou.net>
+In-Reply-To: <1575896438-9562-7-git-send-email-zhouyanjie@wanyeetech.com>
+References: <1575896438-9562-1-git-send-email-zhouyanjie@wanyeetech.com>
+        <1575896438-9562-7-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi all,
+Hi Zhou,
 
-with the ioremap changes that did land in 5.5-rc1 ioremap_nocache is
-now equal to ioremap for all architectures.  For most architectures
-including the common one this has been the case for about 20 years,
-but we had a few holdouts.
+You modify here in patch [06/06] two files that were introduced in=20
+[04/06]. Just merge the two patches into one then, and make it last in=20
+the patchset.
 
-That means ioremap_nocache is entirely superflous now and can be
-killed off.  This series has one big scripted patch to do just that
-after a little prep patch to fix up the not entirely obvious mips
-definition.
+-Paul
 
-Let me know what you think and if this is something acceptable for
-just after -rc1.
+
+Le lun., d=C3=A9c. 9, 2019 at 21:00, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanj=
+ie)=20
+<zhouyanjie@wanyeetech.com> a =C3=A9crit :
+> Add the CU1000 Neo devicetree and defconfig with PDMA, MMC, RTC, WDT
+> and NET enabled.
+>=20
+> Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wany=
+eetech.com>
+> ---
+>=20
+> Notes:
+>     v7:
+>     New patch, merge[06/12],[08/12],[10/12],[12/12] in v6.
+>=20
+>  arch/mips/boot/dts/ingenic/cu1000-neo.dts | 47=20
+> +++++++++++++++++++++++++++++++
+>  arch/mips/configs/cu1000-neo_defconfig    | 17 +++++++++--
+>  2 files changed, 62 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/arch/mips/boot/dts/ingenic/cu1000-neo.dts=20
+> b/arch/mips/boot/dts/ingenic/cu1000-neo.dts
+> index 6f1a7e9..b0733da 100644
+> --- a/arch/mips/boot/dts/ingenic/cu1000-neo.dts
+> +++ b/arch/mips/boot/dts/ingenic/cu1000-neo.dts
+> @@ -43,10 +43,57 @@
+>  	status =3D "okay";
+>  };
+>=20
+> +&mac {
+> +	phy-mode =3D "rmii";
+> +	phy-handle =3D <&lan8720a>;
+> +
+> +	pinctrl-names =3D "default";
+> +	pinctrl-0 =3D <&pins_mac>;
+> +
+> +	snps,reset-gpio =3D <&gpc 23 GPIO_ACTIVE_LOW>; /* PC23 */
+> +	snps,reset-active-low;
+> +	snps,reset-delays-us =3D <0 10000 30000>;
+> +
+> +	status =3D "okay";
+> +};
+> +
+> +&mdio {
+> +	status =3D "okay";
+> +
+> +	lan8720a: ethernet-phy@0 {
+> +		compatible =3D "ethernet-phy-id0007.c0f0",=20
+> "ethernet-phy-ieee802.3-c22";
+> +		reg =3D <0>;
+> +	};
+> +};
+> +
+> +&msc0 {
+> +	bus-width =3D <8>;
+> +	max-frequency =3D <50000000>;
+> +
+> +	pinctrl-names =3D "default";
+> +	pinctrl-0 =3D <&pins_msc0>;
+> +
+> +	non-removable;
+> +
+> +	status =3D "okay";
+> +};
+> +
+>  &pinctrl {
+>  	pins_uart2: uart2 {
+>  		function =3D "uart2";
+>  		groups =3D "uart2-data-d";
+>  		bias-disable;
+>  	};
+> +
+> +	pins_mac: mac {
+> +		function =3D "mac";
+> +		groups =3D "mac";
+> +		bias-disable;
+> +	};
+> +
+> +	pins_msc0: msc0 {
+> +		function =3D "mmc0";
+> +		groups =3D "mmc0-1bit", "mmc0-4bit", "mmc0-8bit";
+> +		bias-disable;
+> +	};
+>  };
+> diff --git a/arch/mips/configs/cu1000-neo_defconfig=20
+> b/arch/mips/configs/cu1000-neo_defconfig
+> index 4fafe92..9f988ed 100644
+> --- a/arch/mips/configs/cu1000-neo_defconfig
+> +++ b/arch/mips/configs/cu1000-neo_defconfig
+> @@ -16,8 +16,6 @@ CONFIG_CGROUP_DEVICE=3Dy
+>  CONFIG_CGROUP_CPUACCT=3Dy
+>  CONFIG_NAMESPACES=3Dy
+>  CONFIG_USER_NS=3Dy
+> -CONFIG_BLK_DEV_INITRD=3Dy
+> -CONFIG_INITRAMFS_SOURCE=3D"arch/mips/boot/ramdisk.cpio.gz"
+>  CONFIG_CC_OPTIMIZE_FOR_SIZE=3Dy
+>  CONFIG_SYSCTL_SYSCALL=3Dy
+>  CONFIG_KALLSYMS_ALL=3Dy
+> @@ -35,11 +33,17 @@ CONFIG_HZ_100=3Dy
+>  # CONFIG_COMPACTION is not set
+>  CONFIG_CMA=3Dy
+>  CONFIG_CMA_AREAS=3D7
+> +CONFIG_NET=3Dy
+> +CONFIG_UNIX=3Dy
+> +CONFIG_INET=3Dy
+>  CONFIG_UEVENT_HELPER=3Dy
+>  CONFIG_UEVENT_HELPER_PATH=3D"/sbin/hotplug"
+>  CONFIG_DEVTMPFS=3Dy
+>  # CONFIG_FW_LOADER is not set
+>  # CONFIG_ALLOW_DEV_COREDUMP is not set
+> +CONFIG_NETDEVICES=3Dy
+> +CONFIG_STMMAC_ETH=3Dy
+> +CONFIG_SMSC_PHY=3Dy
+>  # CONFIG_INPUT_MOUSEDEV is not set
+>  # CONFIG_INPUT_KEYBOARD is not set
+>  # CONFIG_INPUT_MOUSE is not set
+> @@ -55,17 +59,26 @@ CONFIG_SERIAL_8250_INGENIC=3Dy
+>  CONFIG_SERIAL_OF_PLATFORM=3Dy
+>  # CONFIG_HW_RANDOM is not set
+>  CONFIG_GPIO_SYSFS=3Dy
+> +CONFIG_WATCHDOG=3Dy
+> +CONFIG_JZ4740_WDT=3Dy
+>  # CONFIG_HWMON is not set
+>  # CONFIG_LCD_CLASS_DEVICE is not set
+>  # CONFIG_BACKLIGHT_CLASS_DEVICE is not set
+>  # CONFIG_VGA_CONSOLE is not set
+>  # CONFIG_HID is not set
+>  # CONFIG_USB_SUPPORT is not set
+> +CONFIG_MMC=3Dy
+> +CONFIG_MMC_JZ4740=3Dy
+> +CONFIG_RTC_CLASS=3Dy
+> +CONFIG_RTC_DRV_JZ4740=3Dy
+> +CONFIG_DMADEVICES=3Dy
+> +CONFIG_DMA_JZ4780=3Dy
+>  # CONFIG_IOMMU_SUPPORT is not set
+>  CONFIG_NVMEM=3Dy
+>  CONFIG_NVMEM_SYSFS=3Dy
+>  CONFIG_EXT4_FS=3Dy
+>  # CONFIG_DNOTIFY is not set
+> +CONFIG_AUTOFS_FS=3Dy
+>  CONFIG_PROC_KCORE=3Dy
+>  # CONFIG_PROC_PAGE_MONITOR is not set
+>  CONFIG_TMPFS=3Dy
+> --
+> 2.7.4
+>=20
+
+=
+

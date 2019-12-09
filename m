@@ -2,26 +2,27 @@ Return-Path: <SRS0=cKT5=Z7=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCA65C00454
-	for <linux-mips@archiver.kernel.org>; Mon,  9 Dec 2019 13:01:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BF8BC43603
+	for <linux-mips@archiver.kernel.org>; Mon,  9 Dec 2019 13:01:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AE0B32077B
-	for <linux-mips@archiver.kernel.org>; Mon,  9 Dec 2019 13:01:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5D3D32077B
+	for <linux-mips@archiver.kernel.org>; Mon,  9 Dec 2019 13:01:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727437AbfLINB0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 9 Dec 2019 08:01:26 -0500
-Received: from out28-2.mail.aliyun.com ([115.124.28.2]:40089 "EHLO
-        out28-2.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727038AbfLINB0 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 9 Dec 2019 08:01:26 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2142296|-1;CH=green;DM=CONTINUE|CONTINUE|true|0.0130188-0.000389158-0.986592;DS=CONTINUE|ham_news_journal|0.0957778-0.00053746-0.903685;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03307;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=22;RT=22;SR=0;TI=SMTPD_---.GDcmOki_1575896441;
+        id S1727567AbfLINBL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 9 Dec 2019 08:01:11 -0500
+Received: from out28-3.mail.aliyun.com ([115.124.28.3]:38550 "EHLO
+        out28-3.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727696AbfLINBJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 9 Dec 2019 08:01:09 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436563|-1;CH=green;DM=CONTINUE|CONTINUE|true|0.144979-0.00669693-0.848324;DS=CONTINUE|ham_regular_dialog|0.00790892-0.00329162-0.988799;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03302;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=22;RT=22;SR=0;TI=SMTPD_---.GDcmOki_1575896441;
 Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.GDcmOki_1575896441)
           by smtp.aliyun-inc.com(10.147.41.138);
-          Mon, 09 Dec 2019 21:00:53 +0800
+          Mon, 09 Dec 2019 21:00:55 +0800
 From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
         <zhouyanjie@wanyeetech.com>
 To:     linux-mips@vger.kernel.org
@@ -34,10 +35,12 @@ Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         geert+renesas@glider.be, paul@crapouillou.net,
         prasannatsmkumar@gmail.com, sernia.zhou@foxmail.com,
         zhenwenjin@gmail.com, 772753199@qq.com
-Subject: Add initial support for Ingenic X1000 SoC and Y&A CU Neo board v7.
-Date:   Mon,  9 Dec 2019 21:00:32 +0800
-Message-Id: <1575896438-9562-1-git-send-email-zhouyanjie@wanyeetech.com>
+Subject: [PATCH v7 1/6] MIPS: Ingenic: Initial X1000 support.
+Date:   Mon,  9 Dec 2019 21:00:33 +0800
+Message-Id: <1575896438-9562-2-git-send-email-zhouyanjie@wanyeetech.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1575896438-9562-1-git-send-email-zhouyanjie@wanyeetech.com>
+References: <1575896438-9562-1-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -46,10 +49,237 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-v6->v7:
-1.Merge [05/12],[07/12],[09/12],[11/12] in v6 to [5/6] in v7.
-2.Merge [06/12],[08/12],[10/12],[12/12] in v6 to [5/6] in v7.
-3.Change my Signed-off-by from "Zhou Yanjie <zhouyanjie@zoho.com>"
-  to "周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>" because
-  the old mailbox is in an unstable state.
+Support the Ingenic X1000 SoC using the code under arch/mips/jz4740.
+This is left unselectable in Kconfig until a X1000 based board is
+added in a later commit.
+
+Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+---
+
+Notes:
+    v1->v2:
+    Rebase on top of mips-next, use ingenic-timer driver
+    for system timer and clocksource.
+    
+    v2->v3:
+    Drop the 'apb' node.
+    
+    v3->v4:
+    Adjust the node order to make it consistent with
+    other Ingenic boards.
+    
+    v4->v5:
+    No change.
+    
+    v5->v6:
+    No change.
+    
+    v6->v7:
+    Change my Signed-off-by from "Zhou Yanjie <zhouyanjie@zoho.com>"
+    to "周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>" because
+    the old mailbox is in an unstable state.
+
+ arch/mips/boot/dts/ingenic/x1000.dtsi | 176 ++++++++++++++++++++++++++++++++++
+ arch/mips/jz4740/Kconfig              |   6 ++
+ 2 files changed, 182 insertions(+)
+ create mode 100644 arch/mips/boot/dts/ingenic/x1000.dtsi
+
+diff --git a/arch/mips/boot/dts/ingenic/x1000.dtsi b/arch/mips/boot/dts/ingenic/x1000.dtsi
+new file mode 100644
+index 00000000..13a6c9ff
+--- /dev/null
++++ b/arch/mips/boot/dts/ingenic/x1000.dtsi
+@@ -0,0 +1,176 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <dt-bindings/clock/x1000-cgu.h>
++
++/ {
++	#address-cells = <1>;
++	#size-cells = <1>;
++	compatible = "ingenic,x1000", "ingenic,x1000e";
++
++	cpuintc: interrupt-controller {
++		#address-cells = <0>;
++		#interrupt-cells = <1>;
++		interrupt-controller;
++		compatible = "mti,cpu-interrupt-controller";
++	};
++
++	intc: interrupt-controller@10001000 {
++		compatible = "ingenic,x1000-intc", "ingenic,jz4780-intc";
++		reg = <0x10001000 0x50>;
++
++		interrupt-controller;
++		#interrupt-cells = <1>;
++
++		interrupt-parent = <&cpuintc>;
++		interrupts = <2>;
++	};
++
++	exclk: ext {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++	};
++
++	rtclk: rtc {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <32768>;
++	};
++
++	cgu: x1000-cgu@10000000 {
++		compatible = "ingenic,x1000-cgu";
++		reg = <0x10000000 0x100>;
++
++		#clock-cells = <1>;
++
++		clocks = <&exclk>, <&rtclk>;
++		clock-names = "ext", "rtc";
++	};
++
++	tcu: timer@10002000 {
++		compatible = "ingenic,x1000-tcu",
++				 "ingenic,jz4770-tcu",
++				 "simple-mfd";
++		reg = <0x10002000 0x1000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0x0 0x10002000 0x1000>;
++
++		#clock-cells = <1>;
++
++		clocks = <&cgu X1000_CLK_RTCLK
++			  &cgu X1000_CLK_EXCLK
++			  &cgu X1000_CLK_PCLK>;
++		clock-names = "rtc", "ext", "pclk";
++
++		interrupt-controller;
++		#interrupt-cells = <1>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <27 26 25>;
++	};
++
++	pinctrl: pin-controller@10010000 {
++		compatible = "ingenic,x1000-pinctrl";
++		reg = <0x10010000 0x800>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		gpa: gpio@0 {
++			compatible = "ingenic,x1000-gpio";
++			reg = <0>;
++
++			gpio-controller;
++			gpio-ranges = <&pinctrl 0 0 32>;
++			#gpio-cells = <2>;
++
++			interrupt-controller;
++			#interrupt-cells = <2>;
++
++			interrupt-parent = <&intc>;
++			interrupts = <17>;
++		};
++
++		gpb: gpio@1 {
++			compatible = "ingenic,x1000-gpio";
++			reg = <1>;
++
++			gpio-controller;
++			gpio-ranges = <&pinctrl 0 32 32>;
++			#gpio-cells = <2>;
++
++			interrupt-controller;
++			#interrupt-cells = <2>;
++
++			interrupt-parent = <&intc>;
++			interrupts = <16>;
++		};
++
++		gpc: gpio@2 {
++			compatible = "ingenic,x1000-gpio";
++			reg = <2>;
++
++			gpio-controller;
++			gpio-ranges = <&pinctrl 0 64 32>;
++			#gpio-cells = <2>;
++
++			interrupt-controller;
++			#interrupt-cells = <2>;
++
++			interrupt-parent = <&intc>;
++			interrupts = <15>;
++		};
++
++		gpd: gpio@3 {
++			compatible = "ingenic,x1000-gpio";
++			reg = <3>;
++
++			gpio-controller;
++			gpio-ranges = <&pinctrl 0 96 32>;
++			#gpio-cells = <2>;
++
++			interrupt-controller;
++			#interrupt-cells = <2>;
++
++			interrupt-parent = <&intc>;
++			interrupts = <14>;
++		};
++	};
++
++	uart0: serial@10030000 {
++		compatible = "ingenic,x1000-uart";
++		reg = <0x10030000 0x100>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <51>;
++
++		clocks = <&exclk>, <&cgu X1000_CLK_UART0>;
++		clock-names = "baud", "module";
++
++		status = "disabled";
++	};
++
++	uart1: serial@10031000 {
++		compatible = "ingenic,x1000-uart";
++		reg = <0x10031000 0x100>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <50>;
++
++		clocks = <&exclk>, <&cgu X1000_CLK_UART1>;
++		clock-names = "baud", "module";
++
++		status = "disabled";
++	};
++
++	uart2: serial@10032000 {
++		compatible = "ingenic,x1000-uart";
++		reg = <0x10032000 0x100>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <49>;
++
++		clocks = <&exclk>, <&cgu X1000_CLK_UART2>;
++		clock-names = "baud", "module";
++
++		status = "disabled";
++	};
++};
+diff --git a/arch/mips/jz4740/Kconfig b/arch/mips/jz4740/Kconfig
+index 4dd0c44..6b96844 100644
+--- a/arch/mips/jz4740/Kconfig
++++ b/arch/mips/jz4740/Kconfig
+@@ -33,3 +33,9 @@ config MACH_JZ4780
+ 	select MIPS_CPU_SCACHE
+ 	select SYS_HAS_CPU_MIPS32_R2
+ 	select SYS_SUPPORTS_HIGHMEM
++
++config MACH_X1000
++	bool
++	select MIPS_CPU_SCACHE
++	select SYS_HAS_CPU_MIPS32_R2
++	select SYS_SUPPORTS_HIGHMEM
+-- 
+2.7.4
 

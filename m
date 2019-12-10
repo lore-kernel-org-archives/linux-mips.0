@@ -4,52 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 995A4C43603
-	for <linux-mips@archiver.kernel.org>; Tue, 10 Dec 2019 21:50:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 838A9C2D0BF
+	for <linux-mips@archiver.kernel.org>; Tue, 10 Dec 2019 22:05:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6E8E22073B
-	for <linux-mips@archiver.kernel.org>; Tue, 10 Dec 2019 21:50:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 574D821556
+	for <linux-mips@archiver.kernel.org>; Tue, 10 Dec 2019 22:05:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1576014657;
-	bh=a4ZjSUbhdkUB9ysnpymNNPpDNmR+PGfGrZG2TExZ1qk=;
+	s=default; t=1576015537;
+	bh=cOxQAlQhrI1Z5KvQ3Obr1WPfdYwz9OIUp2DHImVYAJ4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=ossk52VhYoaeP15OtVSlFj6KN9E9mgB3G1Rwxzq49X10oQm6zNhWAAXF3B9ge4K1Z
-	 fyyQgFuiCBROPSMyvzlU4h1oAxSYRVi+lMNNKtlNz4MG8zOMXuYQXydXMAsbJ658rm
-	 5a3SMs1DgCgYZZgUqWcePhJIhmGWPSX73SLX/XtY=
+	b=qYnRSNpufSNfKhMV4yUeFp3glSwR8qjzT3rDM7zXRkdf9E0OJRMDED2xN4M37yd1P
+	 EutXKH946TiN7QvFyRNyCb3M0x3YbQPL8t9LWHXUHa7nqi5tdLjiuH/YwYSieea2Zy
+	 /tTRpT/TI6/ROGNHMQ2Q2Oy5yfI+tapinjhs/+BU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726568AbfLJVus (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 10 Dec 2019 16:50:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55548 "EHLO mail.kernel.org"
+        id S1729963AbfLJWFg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 10 Dec 2019 17:05:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727827AbfLJVIQ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 10 Dec 2019 16:08:16 -0500
+        id S1729930AbfLJWFf (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 10 Dec 2019 17:05:35 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 556F72469A;
-        Tue, 10 Dec 2019 21:08:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D93AE2053B;
+        Tue, 10 Dec 2019 22:05:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576012096;
-        bh=a4ZjSUbhdkUB9ysnpymNNPpDNmR+PGfGrZG2TExZ1qk=;
+        s=default; t=1576015534;
+        bh=cOxQAlQhrI1Z5KvQ3Obr1WPfdYwz9OIUp2DHImVYAJ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VAhLs+IGevoH2pHKCa1vH29t/zzvUySlh2gaKad49eQVpE1LfQ+nsR0qrJI1NAknR
-         v1ES/HZv2GRsOLQ5ypP/xvAYQvf5r+agfBK5KP3WmVsoCcZC1N0MpZRN6zyZztvpf5
-         UIY0qHekoGJrGGxV2It2oWxCaWy+/s7mDBJVVqME=
+        b=kgLyXl/+cRPTM0m3SpxGktw4ea4PVCQLVsu91BY1wKgUVlZwC8oIaOqlCXEeJLycN
+         BtH8FbOXNsrn8j1iq6vVycb1lwC3pwxdIhVBHJVEsntp8uQwG5/UL9irwxpYfYGxDB
+         3vzkPrHos+HrJkghe+eG3tBOP/zlsWbGdOVKIt78=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Paul Burton <paul.burton@mips.com>, linux-mips@vger.kernel.org,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, Mike Rapoport <rppt@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 072/350] MIPS: syscall: Emit Loongson3 sync workarounds within asm
-Date:   Tue, 10 Dec 2019 16:02:57 -0500
-Message-Id: <20191210210735.9077-33-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 128/130] mips: fix build when "48 bits virtual memory" is enabled
+Date:   Tue, 10 Dec 2019 17:02:59 -0500
+Message-Id: <20191210220301.13262-128-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191210210735.9077-1-sashal@kernel.org>
-References: <20191210210735.9077-1-sashal@kernel.org>
+In-Reply-To: <20191210220301.13262-1-sashal@kernel.org>
+References: <20191210220301.13262-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -59,52 +61,79 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Paul Burton <paul.burton@mips.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-[ Upstream commit e84957e6ae043bb83ad6ae7e949a1ce97b6bbfef ]
+[ Upstream commit 3ed6751bb8fa89c3014399bb0414348499ee202a ]
 
-Generate the sync instructions required to workaround Loongson3 LL/SC
-errata within inline asm blocks, which feels a little safer than doing
-it from C where strictly speaking the compiler would be well within its
-rights to insert a memory access between the separate asm statements we
-previously had, containing sync & ll instructions respectively.
+With CONFIG_MIPS_VA_BITS_48=y the build fails miserably:
 
-Signed-off-by: Paul Burton <paul.burton@mips.com>
+  CC      arch/mips/kernel/asm-offsets.s
+In file included from arch/mips/include/asm/pgtable.h:644,
+                 from include/linux/mm.h:99,
+                 from arch/mips/kernel/asm-offsets.c:15:
+include/asm-generic/pgtable.h:16:2: error: #error CONFIG_PGTABLE_LEVELS is not consistent with __PAGETABLE_{P4D,PUD,PMD}_FOLDED
+ #error CONFIG_PGTABLE_LEVELS is not consistent with __PAGETABLE_{P4D,PUD,PMD}_FOLDED
+  ^~~~~
+include/asm-generic/pgtable.h:390:28: error: unknown type name 'p4d_t'; did you mean 'pmd_t'?
+ static inline int p4d_same(p4d_t p4d_a, p4d_t p4d_b)
+                            ^~~~~
+                            pmd_t
+
+[ ... more such errors ... ]
+
+scripts/Makefile.build:99: recipe for target 'arch/mips/kernel/asm-offsets.s' failed
+make[2]: *** [arch/mips/kernel/asm-offsets.s] Error 1
+
+This happens because when CONFIG_MIPS_VA_BITS_48 enables 4th level of the
+page tables, but neither pgtable-nop4d.h nor 5level-fixup.h are included to
+cope with the 5th level.
+
+Replace #ifdef conditions around includes of the pgtable-nop{m,u}d.h with
+explicit CONFIG_PGTABLE_LEVELS and add include of 5level-fixup.h for the
+case when CONFIG_PGTABLE_LEVELS==4
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Paul Burton <paulburton@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <jhogan@kernel.org>
 Cc: linux-mips@vger.kernel.org
-Cc: Huacai Chen <chenhc@lemote.com>
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Cc: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: Mike Rapoport <rppt@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kernel/syscall.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/mips/include/asm/pgtable-64.h | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/kernel/syscall.c b/arch/mips/kernel/syscall.c
-index 3f16f38230310..c333e57886642 100644
---- a/arch/mips/kernel/syscall.c
-+++ b/arch/mips/kernel/syscall.c
-@@ -37,6 +37,7 @@
- #include <asm/signal.h>
- #include <asm/sim.h>
- #include <asm/shmparam.h>
-+#include <asm/sync.h>
- #include <asm/sysmips.h>
- #include <asm/switch_to.h>
+diff --git a/arch/mips/include/asm/pgtable-64.h b/arch/mips/include/asm/pgtable-64.h
+index a2252c2a9dede..d0b9912fb63fb 100644
+--- a/arch/mips/include/asm/pgtable-64.h
++++ b/arch/mips/include/asm/pgtable-64.h
+@@ -18,10 +18,12 @@
+ #include <asm/fixmap.h>
  
-@@ -133,12 +134,12 @@ static inline int mips_atomic_set(unsigned long addr, unsigned long new)
- 		  [efault] "i" (-EFAULT)
- 		: "memory");
- 	} else if (cpu_has_llsc) {
--		loongson_llsc_mb();
- 		__asm__ __volatile__ (
- 		"	.set	push					\n"
- 		"	.set	"MIPS_ISA_ARCH_LEVEL"			\n"
- 		"	li	%[err], 0				\n"
- 		"1:							\n"
-+		"	" __SYNC(full, loongson3_war) "			\n"
- 		user_ll("%[old]", "(%[addr])")
- 		"	move	%[tmp], %[new]				\n"
- 		"2:							\n"
+ #define __ARCH_USE_5LEVEL_HACK
+-#if defined(CONFIG_PAGE_SIZE_64KB) && !defined(CONFIG_MIPS_VA_BITS_48)
++#if CONFIG_PGTABLE_LEVELS == 2
+ #include <asm-generic/pgtable-nopmd.h>
+-#elif !(defined(CONFIG_PAGE_SIZE_4KB) && defined(CONFIG_MIPS_VA_BITS_48))
++#elif CONFIG_PGTABLE_LEVELS == 3
+ #include <asm-generic/pgtable-nopud.h>
++#else
++#include <asm-generic/5level-fixup.h>
+ #endif
+ 
+ /*
+@@ -222,6 +224,9 @@ static inline unsigned long pgd_page_vaddr(pgd_t pgd)
+ 	return pgd_val(pgd);
+ }
+ 
++#define pgd_phys(pgd)		virt_to_phys((void *)pgd_val(pgd))
++#define pgd_page(pgd)		(pfn_to_page(pgd_phys(pgd) >> PAGE_SHIFT))
++
+ static inline pud_t *pud_offset(pgd_t *pgd, unsigned long address)
+ {
+ 	return (pud_t *)pgd_page_vaddr(*pgd) + pud_index(address);
 -- 
 2.20.1
 

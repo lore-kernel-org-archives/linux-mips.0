@@ -7,48 +7,50 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EC6CC3F68F
-	for <linux-mips@archiver.kernel.org>; Tue, 10 Dec 2019 21:15:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96E81C43603
+	for <linux-mips@archiver.kernel.org>; Tue, 10 Dec 2019 21:18:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 031D5206EC
-	for <linux-mips@archiver.kernel.org>; Tue, 10 Dec 2019 21:15:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6C3C920836
+	for <linux-mips@archiver.kernel.org>; Tue, 10 Dec 2019 21:18:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1576012507;
-	bh=Sjk26Xenb9gbjd6XEYt8Eux0fap3BLo0eMdUgQ6sgSQ=;
+	s=default; t=1576012716;
+	bh=nrKFeK8ZfpA0LOttrffsxHf9XaNKRKS8gtS1ILBWzz4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=Kd1GphN7M6Ikau0hyIrlE7sY5afkluJKCsjG11XRZz4N1CTCGkHmoNyCauoXfVDUZ
-	 TZMG2iGT1HA3I9bMhPu4mFpmSyNSjMWXZ4asw1tA7lO/rZ/htDmvRvIcP3IaFl7THc
-	 REE5bj92PdyAnWsTljXvUbyrw6NBfBIU+EUG99WM=
+	b=2Ybub3ss4B6Jc7Pg7o2gtNMyQWeZmU/xoI8Mek9M/CTfzs62PRUuoSIjF3jnewBkF
+	 jyT7vDA4qDFStq/9r8jXAVPN8FOcGQjF60RB5PVfX4Are7PSlX/7il0yFovxdyVtQS
+	 hpruuorGD1Lqc60BYHD2uN9peNhv2jPNhTE+tS30=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729415AbfLJVNo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 10 Dec 2019 16:13:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40322 "EHLO mail.kernel.org"
+        id S1728898AbfLJVSc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 10 Dec 2019 16:18:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729039AbfLJVNn (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 10 Dec 2019 16:13:43 -0500
+        id S1729059AbfLJVMl (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 10 Dec 2019 16:12:41 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 92C0E20828;
-        Tue, 10 Dec 2019 21:13:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D94682464B;
+        Tue, 10 Dec 2019 21:12:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576012421;
-        bh=Sjk26Xenb9gbjd6XEYt8Eux0fap3BLo0eMdUgQ6sgSQ=;
+        s=default; t=1576012361;
+        bh=nrKFeK8ZfpA0LOttrffsxHf9XaNKRKS8gtS1ILBWzz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RlSB+Iav79jcb2mRKhWWJeHfO64A4fduM8LZN/PQjC0el4ePC1rRyNa+YvnHD8Jzh
-         yVii0D3IuJcVrtAjRLnaT1EL9W4adDpIbM5S/0w+pp/PPCWJeEQbX5zt902nsaAidu
-         zHFi+hkPKueEaTofAVZFZenQrCJaCpNLUYdwM2gs=
+        b=E4O4kVDTPfBp933OWfwDW+Rj692YBkJeJvKNQfrc5jZ5VY+Qgbs7Aeuz35vkpYkkG
+         RYEz+jcPbNEc6+3k4fBoBbSb7gKKILzGlDH3K0mqfTL19pNRALNLD9aVk7oms3/hcx
+         XmG+zw6AFWqTAQputvb0IdAfvBPkt2ovO7nNZP4I=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mike Rapoport <rppt@linux.ibm.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, Mike Rapoport <rppt@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 336/350] mips: fix build when "48 bits virtual memory" is enabled
-Date:   Tue, 10 Dec 2019 16:07:21 -0500
-Message-Id: <20191210210735.9077-297-sashal@kernel.org>
+Cc:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>, ralf@linux-mips.org,
+        jhogan@kernel.org, john@phrozen.org, NeilBrown <neil@brown.name>,
+        linux-mips@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, devel@driverdev.osuosl.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 288/350] MIPS: ralink: enable PCI support only if driver for mt7621 SoC is selected
+Date:   Tue, 10 Dec 2019 16:06:33 -0500
+Message-Id: <20191210210735.9077-249-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210210735.9077-1-sashal@kernel.org>
 References: <20191210210735.9077-1-sashal@kernel.org>
@@ -61,79 +63,57 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
-[ Upstream commit 3ed6751bb8fa89c3014399bb0414348499ee202a ]
+[ Upstream commit 3b2fa0c92686562ac0b8cf00c0326a45814f8e18 ]
 
-With CONFIG_MIPS_VA_BITS_48=y the build fails miserably:
+Some versions of SoC MT7621 have three PCI express hosts. Some boards
+make use of those PCI through the staging driver mt7621-pci. Recently
+PCI support has been removed from MT7621 Soc kernel configuration due
+to a build error. This makes imposible to compile staging driver and
+produces a regression for gnubee based boards. Enable support for PCI
+again but enable it only if staging mt7621-pci driver is selected.
 
-  CC      arch/mips/kernel/asm-offsets.s
-In file included from arch/mips/include/asm/pgtable.h:644,
-                 from include/linux/mm.h:99,
-                 from arch/mips/kernel/asm-offsets.c:15:
-include/asm-generic/pgtable.h:16:2: error: #error CONFIG_PGTABLE_LEVELS is not consistent with __PAGETABLE_{P4D,PUD,PMD}_FOLDED
- #error CONFIG_PGTABLE_LEVELS is not consistent with __PAGETABLE_{P4D,PUD,PMD}_FOLDED
-  ^~~~~
-include/asm-generic/pgtable.h:390:28: error: unknown type name 'p4d_t'; did you mean 'pmd_t'?
- static inline int p4d_same(p4d_t p4d_a, p4d_t p4d_b)
-                            ^~~~~
-                            pmd_t
-
-[ ... more such errors ... ]
-
-scripts/Makefile.build:99: recipe for target 'arch/mips/kernel/asm-offsets.s' failed
-make[2]: *** [arch/mips/kernel/asm-offsets.s] Error 1
-
-This happens because when CONFIG_MIPS_VA_BITS_48 enables 4th level of the
-page tables, but neither pgtable-nop4d.h nor 5level-fixup.h are included to
-cope with the 5th level.
-
-Replace #ifdef conditions around includes of the pgtable-nop{m,u}d.h with
-explicit CONFIG_PGTABLE_LEVELS and add include of 5level-fixup.h for the
-case when CONFIG_PGTABLE_LEVELS==4
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Signed-off-by: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <jhogan@kernel.org>
+Fixes: c4d48cf5e2f0 ("MIPS: ralink: deactivate PCI support for SOC_MT7621")
+Cc: Hauke Mehrtens <hauke@hauke-m.de>
+Cc: ralf@linux-mips.org
+Cc: jhogan@kernel.org
+Cc: john@phrozen.org
+Cc: NeilBrown <neil@brown.name>
 Cc: linux-mips@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: Mike Rapoport <rppt@kernel.org>
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Link: https://lore.kernel.org/r/20191019081233.7337-1-sergio.paracuellos@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/pgtable-64.h | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ arch/mips/ralink/Kconfig           | 1 +
+ drivers/staging/mt7621-pci/Kconfig | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/pgtable-64.h b/arch/mips/include/asm/pgtable-64.h
-index 93a9dce31f255..813dfe5f45a59 100644
---- a/arch/mips/include/asm/pgtable-64.h
-+++ b/arch/mips/include/asm/pgtable-64.h
-@@ -18,10 +18,12 @@
- #include <asm/fixmap.h>
+diff --git a/arch/mips/ralink/Kconfig b/arch/mips/ralink/Kconfig
+index 1434fa60f3db1..94e9ce9944944 100644
+--- a/arch/mips/ralink/Kconfig
++++ b/arch/mips/ralink/Kconfig
+@@ -51,6 +51,7 @@ choice
+ 		select MIPS_GIC
+ 		select COMMON_CLK
+ 		select CLKSRC_MIPS_GIC
++		select HAVE_PCI if PCI_MT7621
+ endchoice
  
- #define __ARCH_USE_5LEVEL_HACK
--#if defined(CONFIG_PAGE_SIZE_64KB) && !defined(CONFIG_MIPS_VA_BITS_48)
-+#if CONFIG_PGTABLE_LEVELS == 2
- #include <asm-generic/pgtable-nopmd.h>
--#elif !(defined(CONFIG_PAGE_SIZE_4KB) && defined(CONFIG_MIPS_VA_BITS_48))
-+#elif CONFIG_PGTABLE_LEVELS == 3
- #include <asm-generic/pgtable-nopud.h>
-+#else
-+#include <asm-generic/5level-fixup.h>
- #endif
- 
- /*
-@@ -216,6 +218,9 @@ static inline unsigned long pgd_page_vaddr(pgd_t pgd)
- 	return pgd_val(pgd);
- }
- 
-+#define pgd_phys(pgd)		virt_to_phys((void *)pgd_val(pgd))
-+#define pgd_page(pgd)		(pfn_to_page(pgd_phys(pgd) >> PAGE_SHIFT))
-+
- static inline pud_t *pud_offset(pgd_t *pgd, unsigned long address)
- {
- 	return (pud_t *)pgd_page_vaddr(*pgd) + pud_index(address);
+ choice
+diff --git a/drivers/staging/mt7621-pci/Kconfig b/drivers/staging/mt7621-pci/Kconfig
+index af928b75a9403..ce58042f2f211 100644
+--- a/drivers/staging/mt7621-pci/Kconfig
++++ b/drivers/staging/mt7621-pci/Kconfig
+@@ -2,7 +2,6 @@
+ config PCI_MT7621
+ 	tristate "MediaTek MT7621 PCI Controller"
+ 	depends on RALINK
+-	depends on PCI
+ 	select PCI_DRIVERS_GENERIC
+ 	help
+ 	  This selects a driver for the MediaTek MT7621 PCI Controller.
 -- 
 2.20.1
 

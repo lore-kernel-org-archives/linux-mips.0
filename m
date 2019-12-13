@@ -2,43 +2,37 @@ Return-Path: <SRS0=vM5M=2D=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA7B9C7DBD2
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Dec 2019 20:40:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8698C3437C
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Dec 2019 20:40:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 29309247E3
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Dec 2019 20:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1576269624;
-	bh=6dvjtHi2y01wFE5sRxcphtKCC9JrCAlvp9j31wPAeSU=;
-	h=From:Cc:Subject:Date:To:List-ID:From;
-	b=D8L0ThjpAPjmpU5mYSXel6n0HfFWo6uyy+uEAnllei0gmhvrhLJm/1BpoC+E1MSNN
-	 IBYXiJ1yMG9JzWbX6KZHgWY49omhUmpRgzHEt8p6DBuPL+JbiZ4dawfuXGpwb2V0gE
-	 NaXKSplY3cGq4Fi2rsqO6L1fK9mNDh9blGLADMS4=
+	by mail.kernel.org (Postfix) with ESMTP id 01BE724722
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Dec 2019 20:40:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728746AbfLMS1w (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 13 Dec 2019 13:27:52 -0500
-Received: from inca-roads.misterjones.org ([213.251.177.50]:34659 "EHLO
-        inca-roads.misterjones.org" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726404AbfLMS1w (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 13 Dec 2019 13:27:52 -0500
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by cheepnis.misterjones.org with esmtpsa (TLSv1.2:DHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.80)
-        (envelope-from <maz@kernel.org>)
-        id 1ifpdD-0001O7-Ur; Fri, 13 Dec 2019 19:25:40 +0100
-From:   Marc Zyngier <maz@kernel.org>
+        id S1728852AbfLMS7g (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 13 Dec 2019 13:59:36 -0500
+Received: from foss.arm.com ([217.140.110.172]:42230 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728591AbfLMS7g (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 13 Dec 2019 13:59:36 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C33DE106F;
+        Fri, 13 Dec 2019 10:59:35 -0800 (PST)
+Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AD07C3F718;
+        Fri, 13 Dec 2019 10:59:33 -0800 (PST)
+Subject: Re: [PATCH 1/7] KVM: Pass mmu_notifier_range down to
+ kvm_unmap_hva_range()
+To:     Marc Zyngier <maz@kernel.org>
 Cc:     James Morse <james.morse@arm.com>,
         Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
         James Hogan <jhogan@kernel.org>,
         Paul Mackerras <paulus@ozlabs.org>,
         Paolo Bonzini <pbonzini@redhat.com>,
-        =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>,
+        =?UTF-8?B?UmFkaW0gS3LEjW3DocWZ?= <rkrcmar@redhat.com>,
         Sean Christopherson <sean.j.christopherson@intel.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         Wanpeng Li <wanpengli@tencent.com>,
@@ -47,79 +41,75 @@ Cc:     James Morse <james.morse@arm.com>,
         linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
         kvm@vger.kernel.org
-Subject: [PATCH 0/7] KVM: arm/arm64: Help VMs dying quicker
-Date:   Fri, 13 Dec 2019 18:24:56 +0000
-Message-Id: <20191213182503.14460-1-maz@kernel.org>
-X-Mailer: git-send-email 2.20.1
+References: <20191213182503.14460-1-maz@kernel.org>
+ <20191213182503.14460-2-maz@kernel.org>
+From:   Suzuki Kuruppassery Poulose <suzuki.poulose@arm.com>
+Message-ID: <c347df67-6cc3-9d5c-0dd9-72ebb8fa9712@arm.com>
+Date:   Fri, 13 Dec 2019 18:59:32 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, jhogan@kernel.org, paulus@ozlabs.org, pbonzini@redhat.com, rkrcmar@redhat.com, sean.j.christopherson@intel.com, vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org, kvm@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on cheepnis.misterjones.org); SAEximRunCond expanded to false
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20191213182503.14460-2-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-[Yes, the subject is deliberately provocative!]
+Hi Marc,
 
-Having recently played with large, memory intensive, and very short lived
-VMs, I have realised that we spend a substantial amount of time cleaning up
-when a VM has terminated.
 
-It turns out that 99% of the overhead is due to the unnecessary cache
-cleaning that we perform when pages get unmapped from Stage-2, which
-only serves a single purpose: to make the page visible to a non-coherent
-IO subsystem when the page is being swapped out.
+On 13/12/2019 18:24, Marc Zyngier wrote:
+> kvm_unmap_hva_range() is currently passed both start and end
+> fields from the mmu_notifier_range structure. As this struct
+> now contains important information about the reason of the
+> unmap (the event field), replace the start/end parameters
+> with the range struct, and update all architectures.
+> 
+> No functionnal change.
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-It would make sense to drop these cache maintenance operations when
-userspace is either unmapping a VMA or simply exiting. Detecting the
-latter is easy, as KVM calls kvm_arch_flush_shadow_all(). The unmap
-case is harder, or at least it was until 5.2 gained the MMU notifier
-event, which allows subsystems to find out about the reason of an
-change in the page tables.
 
-And it turns out we can do even better: We can also avoid invalidating
-individual page mappings if we're tearing down the VM altogether, and
-replace it with a single TLBI VMALL, which will be much lighter on the
-whole system (specially if your interconnect is a bit flimsy).
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 00268290dcbd..7c3665ad1035 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -158,7 +158,7 @@ static unsigned long long kvm_createvm_count;
+>   static unsigned long long kvm_active_vms;
+>   
+>   __weak int kvm_arch_mmu_notifier_invalidate_range(struct kvm *kvm,
+> -		unsigned long start, unsigned long end, bool blockable)
+> +		const struct mmu_notifier_range *range, bool blockable)
+>   {
+>   	return 0;
+>   }
+> @@ -415,7 +415,7 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+>   	 * count is also read inside the mmu_lock critical section.
+>   	 */
+>   	kvm->mmu_notifier_count++;
+> -	need_tlb_flush = kvm_unmap_hva_range(kvm, range->start, range->end);
+> +	need_tlb_flush = kvm_unmap_hva_range(kvm, range);
+>   	need_tlb_flush |= kvm->tlbs_dirty;
+>   	/* we've to flush the tlb before the pages can be freed */
+>   	if (need_tlb_flush)
+> @@ -423,8 +423,7 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+>   
+>   	spin_unlock(&kvm->mmu_lock);
+>   
+> -	ret = kvm_arch_mmu_notifier_invalidate_range(kvm, range->start,
+> -					range->end,
+> +	ret = kvm_arch_mmu_notifier_invalidate_range(kvm, range,
+>   					mmu_notifier_range_blockable(range));
 
-With the above, terminating a 64GB VM that has most of its memory
-mapped at S2 goes from several seconds (I've seen up to 12s) to less
-than a second on my D05. In general, multi-socket systems seem to
-benefit from this more than single socket machines (based on a
-non-representative sample of 4 random machines I have access to).
+minor nit:
 
-The first patch affects most architectures, as it changes one of the
-core architecture hooks (in a fairly mechanical way). The rest is
-definitely ARM-specific.
+Since we now have the range passed on to the arch hooks, we could get
+rid of the "blockable" too, as it is something you can deduce from the
+range.
 
-Marc Zyngier (7):
-  KVM: Pass mmu_notifier_range down to kvm_unmap_hva_range()
-  KVM: arm/arm64: Pass flags along Stage-2 unmapping functions
-  KVM: arm/arm64: Condition cache maintenance on unmap with a flag
-  KVM: arm/arm64: Condition TLB maintenance on unmap with a flag
-  KVM: arm/arm64: Elide both CMOs and TBLIs on freeing the whole Stage-2
-  KVM: arm/arm64: Elide CMOs when retrying a block mapping
-  KVM: arm/arm64: Elide CMOs when unmapping a range
+Otherwise looks good to me.
 
- arch/arm/include/asm/kvm_host.h     |  2 +-
- arch/arm64/include/asm/kvm_host.h   |  2 +-
- arch/mips/include/asm/kvm_host.h    |  2 +-
- arch/mips/kvm/mmu.c                 |  6 +-
- arch/powerpc/include/asm/kvm_host.h |  2 +-
- arch/powerpc/kvm/book3s.c           |  5 +-
- arch/powerpc/kvm/e500_mmu_host.c    |  4 +-
- arch/x86/include/asm/kvm_host.h     |  3 +-
- arch/x86/kvm/mmu/mmu.c              |  5 +-
- arch/x86/kvm/x86.c                  |  4 +-
- include/linux/kvm_host.h            |  2 +-
- virt/kvm/arm/mmu.c                  | 97 +++++++++++++++++++----------
- virt/kvm/kvm_main.c                 |  7 +--
- 13 files changed, 88 insertions(+), 53 deletions(-)
-
--- 
-2.20.1
-
+Suzuki

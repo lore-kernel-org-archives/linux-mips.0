@@ -2,447 +2,257 @@ Return-Path: <SRS0=vM5M=2D=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80585C3B1B8
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Dec 2019 20:38:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4458C7DBD1
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Dec 2019 20:40:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BF99B246D0
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Dec 2019 20:38:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E5F8824741
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Dec 2019 20:40:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1576269624;
+	bh=GnZOK/AdG+X6T3Z+1ILLNRKHRrhm7c0LfV1y/Zg6oOg=;
+	h=From:Cc:Subject:Date:In-Reply-To:References:To:List-ID:From;
+	b=FTMPWfRs5xl1w5Ac4U2C9W7ULbaCfDezVjU69A/CixT9+bpqFaqAO7sr7vwoR4Ll+
+	 Fzzvfn2w6Rg2SywBxzH1tb4hooR/zxiiaWB+l8Kb0RCaI+9QGcUTVqJ8UeIK1eAW1x
+	 Jo4SJKCinieF+dXGqGLpmcu5od1XLUqBbDj6P5Hw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727734AbfLMPWP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 13 Dec 2019 10:22:15 -0500
-Received: from out28-221.mail.aliyun.com ([115.124.28.221]:60723 "EHLO
-        out28-221.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727840AbfLMPWP (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 13 Dec 2019 10:22:15 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07473893|-1;CH=green;DM=CONTINUE|CONTINUE|true|0.514699-0.0199671-0.465334;DS=CONTINUE|ham_alarm|0.0300551-0.000725998-0.969219;FP=12572764264680971494|1|1|1|0|-1|-1|-1;HT=e02c03312;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.GGSxanS_1576250475;
-Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.GGSxanS_1576250475)
-          by smtp.aliyun-inc.com(10.147.40.233);
-          Fri, 13 Dec 2019 23:21:27 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        paul.burton@mips.com, paulburton@kernel.org, paul@crapouillou.net,
-        mturquette@baylibre.com, sboyd@kernel.org, mark.rutland@arm.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: [PATCH v2 4/5] clk: Ingenic: Add CGU driver for X1830.
-Date:   Fri, 13 Dec 2019 23:21:11 +0800
-Message-Id: <1576250472-124315-6-git-send-email-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1576250472-124315-1-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1576250472-124315-1-git-send-email-zhouyanjie@wanyeetech.com>
+        id S1726404AbfLMS1w (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 13 Dec 2019 13:27:52 -0500
+Received: from inca-roads.misterjones.org ([213.251.177.50]:56745 "EHLO
+        inca-roads.misterjones.org" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728660AbfLMS1w (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 13 Dec 2019 13:27:52 -0500
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by cheepnis.misterjones.org with esmtpsa (TLSv1.2:DHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.80)
+        (envelope-from <maz@kernel.org>)
+        id 1ifpdF-0001O7-KH; Fri, 13 Dec 2019 19:25:41 +0100
+From:   Marc Zyngier <maz@kernel.org>
+Cc:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        James Hogan <jhogan@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: [PATCH 2/7] KVM: arm/arm64: Pass flags along Stage-2 unmapping functions
+Date:   Fri, 13 Dec 2019 18:24:58 +0000
+Message-Id: <20191213182503.14460-3-maz@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191213182503.14460-1-maz@kernel.org>
+References: <20191213182503.14460-1-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, jhogan@kernel.org, paulus@ozlabs.org, pbonzini@redhat.com, rkrcmar@redhat.com, sean.j.christopherson@intel.com, vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org, kvm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on cheepnis.misterjones.org); SAEximRunCond expanded to false
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add support for the clocks provided by the CGU in the Ingenic X1830
-SoC, making use of the cgu code to do the heavy lifting.
+Pass a set of flags to all Stage-2 unmapping functions.
+The only value passed for now is zero, and it is not evaluated yet.
 
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
+ virt/kvm/arm/mmu.c | 47 ++++++++++++++++++++++++++--------------------
+ 1 file changed, 27 insertions(+), 20 deletions(-)
 
-Notes:
-    v1->v2:
-    1.Use two fields (pll_reg & bypass_reg) instead of the 2-values
-      array (reg[2]).
-    2.Remove the "pll_info->version" and add a "pll_info->rate_multiplier".
-    3.Change my Signed-off-by from "Zhou Yanjie <zhouyanjie@zoho.com>"
-      to "周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>" because
-      the old mailbox is in an unstable state.
-
- drivers/clk/ingenic/Kconfig     |  10 ++
- drivers/clk/ingenic/Makefile    |   1 +
- drivers/clk/ingenic/x1830-cgu.c | 340 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 351 insertions(+)
- create mode 100644 drivers/clk/ingenic/x1830-cgu.c
-
-diff --git a/drivers/clk/ingenic/Kconfig b/drivers/clk/ingenic/Kconfig
-index b4555b4..580b0cf 100644
---- a/drivers/clk/ingenic/Kconfig
-+++ b/drivers/clk/ingenic/Kconfig
-@@ -55,6 +55,16 @@ config INGENIC_CGU_X1000
+diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
+index 078e10c5650e..0fed7c19c6d5 100644
+--- a/virt/kvm/arm/mmu.c
++++ b/virt/kvm/arm/mmu.c
+@@ -152,7 +152,8 @@ static void *mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc)
+ 	return p;
+ }
  
- 	  If building for a X1000 SoC, you want to say Y here.
+-static void clear_stage2_pgd_entry(struct kvm *kvm, pgd_t *pgd, phys_addr_t addr)
++static void clear_stage2_pgd_entry(struct kvm *kvm, pgd_t *pgd, phys_addr_t addr,
++				   unsigned long flags)
+ {
+ 	pud_t *pud_table __maybe_unused = stage2_pud_offset(kvm, pgd, 0UL);
+ 	stage2_pgd_clear(kvm, pgd);
+@@ -161,7 +162,8 @@ static void clear_stage2_pgd_entry(struct kvm *kvm, pgd_t *pgd, phys_addr_t addr
+ 	put_page(virt_to_page(pgd));
+ }
  
-+config INGENIC_CGU_X1830
-+	bool "Ingenic X1830 CGU driver"
-+	default MACH_X1830
-+	select INGENIC_CGU_COMMON
-+	help
-+	  Support the clocks provided by the CGU hardware on Ingenic X1830
-+	  and compatible SoCs.
-+
-+	  If building for a X1830 SoC, you want to say Y here.
-+
- config INGENIC_TCU_CLK
- 	bool "Ingenic JZ47xx TCU clocks driver"
- 	default MACH_INGENIC
-diff --git a/drivers/clk/ingenic/Makefile b/drivers/clk/ingenic/Makefile
-index 8b1dad9..aaa4bff 100644
---- a/drivers/clk/ingenic/Makefile
-+++ b/drivers/clk/ingenic/Makefile
-@@ -5,4 +5,5 @@ obj-$(CONFIG_INGENIC_CGU_JZ4725B)	+= jz4725b-cgu.o
- obj-$(CONFIG_INGENIC_CGU_JZ4770)	+= jz4770-cgu.o
- obj-$(CONFIG_INGENIC_CGU_JZ4780)	+= jz4780-cgu.o
- obj-$(CONFIG_INGENIC_CGU_X1000)		+= x1000-cgu.o
-+obj-$(CONFIG_INGENIC_CGU_X1830)		+= x1830-cgu.o
- obj-$(CONFIG_INGENIC_TCU_CLK)		+= tcu.o
-diff --git a/drivers/clk/ingenic/x1830-cgu.c b/drivers/clk/ingenic/x1830-cgu.c
-new file mode 100644
-index 00000000..35ea05f
---- /dev/null
-+++ b/drivers/clk/ingenic/x1830-cgu.c
-@@ -0,0 +1,340 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * X1830 SoC CGU driver
-+ * Copyright (c) 2019 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-+ */
-+
-+#include <linux/clk-provider.h>
-+#include <linux/delay.h>
-+#include <linux/of.h>
-+#include <dt-bindings/clock/x1830-cgu.h>
-+#include "cgu.h"
-+#include "pm.h"
-+
-+/* CGU register offsets */
-+#define CGU_REG_CPCCR		0x00
-+#define CGU_REG_CPPCR		0x0c
-+#define CGU_REG_APLL		0x10
-+#define CGU_REG_MPLL		0x14
-+#define CGU_REG_CLKGR0		0x20
-+#define CGU_REG_OPCR		0x24
-+#define CGU_REG_CLKGR1		0x28
-+#define CGU_REG_DDRCDR		0x2c
-+#define CGU_REG_USBPCR		0x3c
-+#define CGU_REG_USBRDT		0x40
-+#define CGU_REG_USBVBFIL	0x44
-+#define CGU_REG_USBPCR1		0x48
-+#define CGU_REG_MACCDR		0x54
-+#define CGU_REG_EPLL		0x58
-+#define CGU_REG_I2SCDR		0x60
-+#define CGU_REG_LPCDR		0x64
-+#define CGU_REG_MSC0CDR		0x68
-+#define CGU_REG_I2SCDR1		0x70
-+#define CGU_REG_SSICDR		0x74
-+#define CGU_REG_CIMCDR		0x7c
-+#define CGU_REG_MSC1CDR		0xa4
-+#define CGU_REG_CMP_INTR	0xb0
-+#define CGU_REG_CMP_INTRE	0xb4
-+#define CGU_REG_DRCG		0xd0
-+#define CGU_REG_CPCSR		0xd4
-+#define CGU_REG_VPLL		0xe0
-+#define CGU_REG_MACPHYC		0xe8
-+
-+/* bits within the OPCR register */
-+#define OPCR_SPENDN0		BIT(7)
-+#define OPCR_SPENDN1		BIT(6)
-+
-+static struct ingenic_cgu *cgu;
-+
-+static const s8 pll_od_encoding[64] = {
-+	0x0, 0x1,  -1, 0x2,  -1,  -1,  -1, 0x3,
-+	 -1,  -1,  -1,  -1,  -1,  -1,  -1, 0x4,
-+	 -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-+	 -1,  -1,  -1,  -1,  -1,  -1,  -1, 0x5,
-+	 -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-+	 -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-+	 -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-+	 -1,  -1,  -1,  -1,  -1,  -1,  -1, 0x6,
-+};
-+
-+static const struct ingenic_cgu_clk_info x1830_cgu_clocks[] = {
-+
-+	/* External clocks */
-+
-+	[X1830_CLK_EXCLK] = { "ext", CGU_CLK_EXT },
-+	[X1830_CLK_RTCLK] = { "rtc", CGU_CLK_EXT },
-+
-+	/* PLLs */
-+
-+	[X1830_CLK_APLL] = {
-+		"apll", CGU_CLK_PLL,
-+		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.pll = {
-+			.pll_reg = CGU_REG_APLL,
-+			.bypass_reg = CGU_REG_CPPCR,
-+			.rate_multiplier = 2,
-+			.m_shift = 20,
-+			.m_bits = 9,
-+			.m_offset = 1,
-+			.n_shift = 14,
-+			.n_bits = 6,
-+			.n_offset = 1,
-+			.od_shift = 11,
-+			.od_bits = 3,
-+			.od_max = 64,
-+			.od_encoding = pll_od_encoding,
-+			.bypass_bit = 30,
-+			.enable_bit = 0,
-+			.stable_bit = 3,
-+		},
-+	},
-+
-+	[X1830_CLK_MPLL] = {
-+		"mpll", CGU_CLK_PLL,
-+		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.pll = {
-+			.pll_reg = CGU_REG_MPLL,
-+			.bypass_reg = CGU_REG_CPPCR,
-+			.rate_multiplier = 2,
-+			.m_shift = 20,
-+			.m_bits = 9,
-+			.m_offset = 1,
-+			.n_shift = 14,
-+			.n_bits = 6,
-+			.n_offset = 1,
-+			.od_shift = 11,
-+			.od_bits = 3,
-+			.od_max = 64,
-+			.od_encoding = pll_od_encoding,
-+			.bypass_bit = 28,
-+			.enable_bit = 0,
-+			.stable_bit = 3,
-+		},
-+	},
-+
-+	[X1830_CLK_EPLL] = {
-+		"epll", CGU_CLK_PLL,
-+		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.pll = {
-+			.pll_reg = CGU_REG_EPLL,
-+			.bypass_reg = CGU_REG_CPPCR,
-+			.rate_multiplier = 2,
-+			.m_shift = 20,
-+			.m_bits = 9,
-+			.m_offset = 1,
-+			.n_shift = 14,
-+			.n_bits = 6,
-+			.n_offset = 1,
-+			.od_shift = 11,
-+			.od_bits = 3,
-+			.od_max = 64,
-+			.od_encoding = pll_od_encoding,
-+			.bypass_bit = 24,
-+			.enable_bit = 0,
-+			.stable_bit = 3,
-+		},
-+	},
-+
-+	[X1830_CLK_VPLL] = {
-+		"vpll", CGU_CLK_PLL,
-+		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.pll = {
-+			.pll_reg = CGU_REG_VPLL,
-+			.bypass_reg = CGU_REG_CPPCR,
-+			.rate_multiplier = 2,
-+			.m_shift = 20,
-+			.m_bits = 9,
-+			.m_offset = 1,
-+			.n_shift = 14,
-+			.n_bits = 6,
-+			.n_offset = 1,
-+			.od_shift = 11,
-+			.od_bits = 3,
-+			.od_max = 64,
-+			.od_encoding = pll_od_encoding,
-+			.bypass_bit = 26,
-+			.enable_bit = 0,
-+			.stable_bit = 3,
-+		},
-+	},
-+
-+	/* Muxes & dividers */
-+
-+	[X1830_CLK_SCLKA] = {
-+		"sclk_a", CGU_CLK_MUX,
-+		.parents = { -1, X1830_CLK_EXCLK, X1830_CLK_APLL, -1 },
-+		.mux = { CGU_REG_CPCCR, 30, 2 },
-+	},
-+
-+	[X1830_CLK_CPUMUX] = {
-+		"cpu_mux", CGU_CLK_MUX,
-+		.parents = { -1, X1830_CLK_SCLKA, X1830_CLK_MPLL, -1 },
-+		.mux = { CGU_REG_CPCCR, 28, 2 },
-+	},
-+
-+	[X1830_CLK_CPU] = {
-+		"cpu", CGU_CLK_DIV,
-+		.parents = { X1830_CLK_CPUMUX, -1, -1, -1 },
-+		.div = { CGU_REG_CPCCR, 0, 1, 4, 22, -1, -1 },
-+	},
-+
-+	[X1830_CLK_L2CACHE] = {
-+		"l2cache", CGU_CLK_DIV,
-+		.parents = { X1830_CLK_CPUMUX, -1, -1, -1 },
-+		.div = { CGU_REG_CPCCR, 4, 1, 4, 22, -1, -1 },
-+	},
-+
-+	[X1830_CLK_AHB0] = {
-+		"ahb0", CGU_CLK_MUX | CGU_CLK_DIV,
-+		.parents = { -1, X1830_CLK_SCLKA, X1830_CLK_MPLL, -1 },
-+		.mux = { CGU_REG_CPCCR, 26, 2 },
-+		.div = { CGU_REG_CPCCR, 8, 1, 4, 21, -1, -1 },
-+	},
-+
-+	[X1830_CLK_AHB2PMUX] = {
-+		"ahb2_apb_mux", CGU_CLK_MUX,
-+		.parents = { -1, X1830_CLK_SCLKA, X1830_CLK_MPLL, -1 },
-+		.mux = { CGU_REG_CPCCR, 24, 2 },
-+	},
-+
-+	[X1830_CLK_AHB2] = {
-+		"ahb2", CGU_CLK_DIV,
-+		.parents = { X1830_CLK_AHB2PMUX, -1, -1, -1 },
-+		.div = { CGU_REG_CPCCR, 12, 1, 4, 20, -1, -1 },
-+	},
-+
-+	[X1830_CLK_PCLK] = {
-+		"pclk", CGU_CLK_DIV,
-+		.parents = { X1830_CLK_AHB2PMUX, -1, -1, -1 },
-+		.div = { CGU_REG_CPCCR, 16, 1, 4, 20, -1, -1 },
-+	},
-+
-+	[X1830_CLK_DDR] = {
-+		"ddr", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
-+		.parents = { -1, X1830_CLK_SCLKA, X1830_CLK_MPLL, -1 },
-+		.mux = { CGU_REG_DDRCDR, 30, 2 },
-+		.div = { CGU_REG_DDRCDR, 0, 1, 4, 29, 28, 27 },
-+		.gate = { CGU_REG_CLKGR0, 31 },
-+	},
-+
-+	[X1830_CLK_MAC] = {
-+		"mac", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
-+		.parents = { X1830_CLK_SCLKA, X1830_CLK_MPLL,
-+					 X1830_CLK_VPLL, X1830_CLK_EPLL },
-+		.mux = { CGU_REG_MACCDR, 30, 2 },
-+		.div = { CGU_REG_MACCDR, 0, 1, 8, 29, 28, 27 },
-+		.gate = { CGU_REG_CLKGR1, 4 },
-+	},
-+
-+	[X1830_CLK_MSCMUX] = {
-+		"msc_mux", CGU_CLK_MUX,
-+		.parents = { X1830_CLK_SCLKA, X1830_CLK_MPLL,
-+					 X1830_CLK_VPLL, X1830_CLK_EPLL },
-+		.mux = { CGU_REG_MSC0CDR, 30, 2 },
-+	},
-+
-+	[X1830_CLK_MSC0] = {
-+		"msc0", CGU_CLK_DIV | CGU_CLK_GATE,
-+		.parents = { X1830_CLK_MSCMUX, -1, -1, -1 },
-+		.div = { CGU_REG_MSC0CDR, 0, 2, 8, 29, 28, 27 },
-+		.gate = { CGU_REG_CLKGR0, 4 },
-+	},
-+
-+	[X1830_CLK_MSC1] = {
-+		"msc1", CGU_CLK_DIV | CGU_CLK_GATE,
-+		.parents = { X1830_CLK_MSCMUX, -1, -1, -1 },
-+		.div = { CGU_REG_MSC1CDR, 0, 2, 8, 29, 28, 27 },
-+		.gate = { CGU_REG_CLKGR0, 5 },
-+	},
-+
-+	[X1830_CLK_SSIPLL] = {
-+		"ssi_pll", CGU_CLK_MUX | CGU_CLK_DIV,
-+		.parents = { X1830_CLK_SCLKA, X1830_CLK_MPLL,
-+					 X1830_CLK_VPLL, X1830_CLK_EPLL },
-+		.mux = { CGU_REG_SSICDR, 30, 2 },
-+		.div = { CGU_REG_SSICDR, 0, 1, 8, 28, 27, 26 },
-+	},
-+
-+	[X1830_CLK_SSIMUX] = {
-+		"ssi_mux", CGU_CLK_MUX,
-+		.parents = { X1830_CLK_EXCLK, X1830_CLK_SSIPLL, -1, -1 },
-+		.mux = { CGU_REG_SSICDR, 29, 1 },
-+	},
-+
-+	/* Gate-only clocks */
-+
-+	[X1830_CLK_SSI0] = {
-+		"ssi0", CGU_CLK_GATE,
-+		.parents = { X1830_CLK_SSIMUX, -1, -1, -1 },
-+		.gate = { CGU_REG_CLKGR0, 6 },
-+	},
-+
-+	[X1830_CLK_SMB0] = {
-+		"smb0", CGU_CLK_GATE,
-+		.parents = { X1830_CLK_PCLK, -1, -1, -1 },
-+		.gate = { CGU_REG_CLKGR0, 7 },
-+	},
-+
-+	[X1830_CLK_SMB1] = {
-+		"smb1", CGU_CLK_GATE,
-+		.parents = { X1830_CLK_PCLK, -1, -1, -1 },
-+		.gate = { CGU_REG_CLKGR0, 8 },
-+	},
-+
-+	[X1830_CLK_SMB2] = {
-+		"smb2", CGU_CLK_GATE,
-+		.parents = { X1830_CLK_PCLK, -1, -1, -1 },
-+		.gate = { CGU_REG_CLKGR0, 9 },
-+	},
-+
-+	[X1830_CLK_UART0] = {
-+		"uart0", CGU_CLK_GATE,
-+		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.gate = { CGU_REG_CLKGR0, 14 },
-+	},
-+
-+	[X1830_CLK_UART1] = {
-+		"uart1", CGU_CLK_GATE,
-+		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.gate = { CGU_REG_CLKGR0, 15 },
-+	},
-+
-+	[X1830_CLK_SSI1] = {
-+		"ssi1", CGU_CLK_GATE,
-+		.parents = { X1830_CLK_SSIMUX, -1, -1, -1 },
-+		.gate = { CGU_REG_CLKGR0, 19 },
-+	},
-+
-+	[X1830_CLK_SFC] = {
-+		"sfc", CGU_CLK_GATE,
-+		.parents = { X1830_CLK_SSIPLL, -1, -1, -1 },
-+		.gate = { CGU_REG_CLKGR0, 20 },
-+	},
-+
-+	[X1830_CLK_PDMA] = {
-+		"pdma", CGU_CLK_GATE,
-+		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-+		.gate = { CGU_REG_CLKGR0, 21 },
-+	},
-+};
-+
-+static void __init x1830_cgu_init(struct device_node *np)
-+{
-+	int retval;
-+
-+	cgu = ingenic_cgu_new(x1830_cgu_clocks,
-+			      ARRAY_SIZE(x1830_cgu_clocks), np);
-+	if (!cgu) {
-+		pr_err("%s: failed to initialise CGU\n", __func__);
-+		return;
-+	}
-+
-+	retval = ingenic_cgu_register_clocks(cgu);
-+	if (retval) {
-+		pr_err("%s: failed to register CGU Clocks\n", __func__);
-+		return;
-+	}
-+
-+	ingenic_cgu_register_syscore_ops(cgu);
-+}
-+CLK_OF_DECLARE_DRIVER(x1830_cgu, "ingenic,x1830-cgu", x1830_cgu_init);
+-static void clear_stage2_pud_entry(struct kvm *kvm, pud_t *pud, phys_addr_t addr)
++static void clear_stage2_pud_entry(struct kvm *kvm, pud_t *pud, phys_addr_t addr,
++				   unsigned long flags)
+ {
+ 	pmd_t *pmd_table __maybe_unused = stage2_pmd_offset(kvm, pud, 0);
+ 	VM_BUG_ON(stage2_pud_huge(kvm, *pud));
+@@ -171,7 +173,8 @@ static void clear_stage2_pud_entry(struct kvm *kvm, pud_t *pud, phys_addr_t addr
+ 	put_page(virt_to_page(pud));
+ }
+ 
+-static void clear_stage2_pmd_entry(struct kvm *kvm, pmd_t *pmd, phys_addr_t addr)
++static void clear_stage2_pmd_entry(struct kvm *kvm, pmd_t *pmd, phys_addr_t addr,
++				   unsigned long flags)
+ {
+ 	pte_t *pte_table = pte_offset_kernel(pmd, 0);
+ 	VM_BUG_ON(pmd_thp_or_huge(*pmd));
+@@ -235,7 +238,8 @@ static inline void kvm_pgd_populate(pgd_t *pgdp, pud_t *pudp)
+  * does.
+  */
+ static void unmap_stage2_ptes(struct kvm *kvm, pmd_t *pmd,
+-		       phys_addr_t addr, phys_addr_t end)
++			      phys_addr_t addr, phys_addr_t end,
++			      unsigned long flags)
+ {
+ 	phys_addr_t start_addr = addr;
+ 	pte_t *pte, *start_pte;
+@@ -257,11 +261,12 @@ static void unmap_stage2_ptes(struct kvm *kvm, pmd_t *pmd,
+ 	} while (pte++, addr += PAGE_SIZE, addr != end);
+ 
+ 	if (stage2_pte_table_empty(kvm, start_pte))
+-		clear_stage2_pmd_entry(kvm, pmd, start_addr);
++		clear_stage2_pmd_entry(kvm, pmd, start_addr, flags);
+ }
+ 
+ static void unmap_stage2_pmds(struct kvm *kvm, pud_t *pud,
+-		       phys_addr_t addr, phys_addr_t end)
++			      phys_addr_t addr, phys_addr_t end,
++			      unsigned long flags)
+ {
+ 	phys_addr_t next, start_addr = addr;
+ 	pmd_t *pmd, *start_pmd;
+@@ -280,17 +285,18 @@ static void unmap_stage2_pmds(struct kvm *kvm, pud_t *pud,
+ 
+ 				put_page(virt_to_page(pmd));
+ 			} else {
+-				unmap_stage2_ptes(kvm, pmd, addr, next);
++				unmap_stage2_ptes(kvm, pmd, addr, next, flags);
+ 			}
+ 		}
+ 	} while (pmd++, addr = next, addr != end);
+ 
+ 	if (stage2_pmd_table_empty(kvm, start_pmd))
+-		clear_stage2_pud_entry(kvm, pud, start_addr);
++		clear_stage2_pud_entry(kvm, pud, start_addr, flags);
+ }
+ 
+ static void unmap_stage2_puds(struct kvm *kvm, pgd_t *pgd,
+-		       phys_addr_t addr, phys_addr_t end)
++			      phys_addr_t addr, phys_addr_t end,
++			      unsigned long flags)
+ {
+ 	phys_addr_t next, start_addr = addr;
+ 	pud_t *pud, *start_pud;
+@@ -307,13 +313,13 @@ static void unmap_stage2_puds(struct kvm *kvm, pgd_t *pgd,
+ 				kvm_flush_dcache_pud(old_pud);
+ 				put_page(virt_to_page(pud));
+ 			} else {
+-				unmap_stage2_pmds(kvm, pud, addr, next);
++				unmap_stage2_pmds(kvm, pud, addr, next, flags);
+ 			}
+ 		}
+ 	} while (pud++, addr = next, addr != end);
+ 
+ 	if (stage2_pud_table_empty(kvm, start_pud))
+-		clear_stage2_pgd_entry(kvm, pgd, start_addr);
++		clear_stage2_pgd_entry(kvm, pgd, start_addr, flags);
+ }
+ 
+ /**
+@@ -327,7 +333,8 @@ static void unmap_stage2_puds(struct kvm *kvm, pgd_t *pgd,
+  * destroying the VM), otherwise another faulting VCPU may come in and mess
+  * with things behind our backs.
+  */
+-static void unmap_stage2_range(struct kvm *kvm, phys_addr_t start, u64 size)
++static void unmap_stage2_range(struct kvm *kvm, phys_addr_t start, u64 size,
++			       unsigned long flags)
+ {
+ 	pgd_t *pgd;
+ 	phys_addr_t addr = start, end = start + size;
+@@ -347,7 +354,7 @@ static void unmap_stage2_range(struct kvm *kvm, phys_addr_t start, u64 size)
+ 			break;
+ 		next = stage2_pgd_addr_end(kvm, addr, end);
+ 		if (!stage2_pgd_none(kvm, *pgd))
+-			unmap_stage2_puds(kvm, pgd, addr, next);
++			unmap_stage2_puds(kvm, pgd, addr, next, flags);
+ 		/*
+ 		 * If the range is too large, release the kvm->mmu_lock
+ 		 * to prevent starvation and lockup detector warnings.
+@@ -950,7 +957,7 @@ static void stage2_unmap_memslot(struct kvm *kvm,
+ 
+ 		if (!(vma->vm_flags & VM_PFNMAP)) {
+ 			gpa_t gpa = addr + (vm_start - memslot->userspace_addr);
+-			unmap_stage2_range(kvm, gpa, vm_end - vm_start);
++			unmap_stage2_range(kvm, gpa, vm_end - vm_start, 0);
+ 		}
+ 		hva = vm_end;
+ 	} while (hva < reg_end);
+@@ -996,7 +1003,7 @@ void kvm_free_stage2_pgd(struct kvm *kvm)
+ 
+ 	spin_lock(&kvm->mmu_lock);
+ 	if (kvm->arch.pgd) {
+-		unmap_stage2_range(kvm, 0, kvm_phys_size(kvm));
++		unmap_stage2_range(kvm, 0, kvm_phys_size(kvm), 0);
+ 		pgd = READ_ONCE(kvm->arch.pgd);
+ 		kvm->arch.pgd = NULL;
+ 		kvm->arch.pgd_phys = 0;
+@@ -1086,7 +1093,7 @@ static int stage2_set_pmd_huge(struct kvm *kvm, struct kvm_mmu_memory_cache
+ 		 * get handled accordingly.
+ 		 */
+ 		if (!pmd_thp_or_huge(old_pmd)) {
+-			unmap_stage2_range(kvm, addr & S2_PMD_MASK, S2_PMD_SIZE);
++			unmap_stage2_range(kvm, addr & S2_PMD_MASK, S2_PMD_SIZE, 0);
+ 			goto retry;
+ 		}
+ 		/*
+@@ -1136,7 +1143,7 @@ static int stage2_set_pud_huge(struct kvm *kvm, struct kvm_mmu_memory_cache *cac
+ 		 * the range for this block and retry.
+ 		 */
+ 		if (!stage2_pud_huge(kvm, old_pud)) {
+-			unmap_stage2_range(kvm, addr & S2_PUD_MASK, S2_PUD_SIZE);
++			unmap_stage2_range(kvm, addr & S2_PUD_MASK, S2_PUD_SIZE, 0);
+ 			goto retry;
+ 		}
+ 
+@@ -2031,7 +2038,7 @@ static int handle_hva_to_gpa(struct kvm *kvm,
+ 
+ static int kvm_unmap_hva_handler(struct kvm *kvm, gpa_t gpa, u64 size, void *data)
+ {
+-	unmap_stage2_range(kvm, gpa, size);
++	unmap_stage2_range(kvm, gpa, size, 0);
+ 	return 0;
+ }
+ 
+@@ -2344,7 +2351,7 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+ 
+ 	spin_lock(&kvm->mmu_lock);
+ 	if (ret)
+-		unmap_stage2_range(kvm, mem->guest_phys_addr, mem->memory_size);
++		unmap_stage2_range(kvm, mem->guest_phys_addr, mem->memory_size, 0);
+ 	else
+ 		stage2_flush_memslot(kvm, memslot);
+ 	spin_unlock(&kvm->mmu_lock);
+@@ -2380,7 +2387,7 @@ void kvm_arch_flush_shadow_memslot(struct kvm *kvm,
+ 	phys_addr_t size = slot->npages << PAGE_SHIFT;
+ 
+ 	spin_lock(&kvm->mmu_lock);
+-	unmap_stage2_range(kvm, gpa, size);
++	unmap_stage2_range(kvm, gpa, size, 0);
+ 	spin_unlock(&kvm->mmu_lock);
+ }
+ 
 -- 
-2.7.4
+2.20.1
 

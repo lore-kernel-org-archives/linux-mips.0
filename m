@@ -4,25 +4,25 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41D72C34034
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Dec 2019 20:38:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03B20C34038
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Dec 2019 20:38:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 724AA246C0
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Dec 2019 20:38:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3D90424740
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Dec 2019 20:38:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727845AbfLMPVf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 13 Dec 2019 10:21:35 -0500
-Received: from out28-172.mail.aliyun.com ([115.124.28.172]:39288 "EHLO
-        out28-172.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726528AbfLMPVf (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 13 Dec 2019 10:21:35 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.4287215|-1;CH=green;DM=CONTINUE|CONTINUE|true|0.0376297-0.00652272-0.955848;DS=CONTINUE|ham_regular_dialog|0.00548571-0.000451498-0.994063;FP=17206493567010594298|1|1|1|0|-1|-1|-1;HT=e02c03311;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.GGSxanS_1576250475;
+        id S1727894AbfLMPVj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 13 Dec 2019 10:21:39 -0500
+Received: from out28-52.mail.aliyun.com ([115.124.28.52]:42509 "EHLO
+        out28-52.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727872AbfLMPVi (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 13 Dec 2019 10:21:38 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07670759|-1;CH=green;DM=CONTINUE|CONTINUE|true|0.826969-0.0200583-0.152973;DS=CONTINUE|ham_system_inform|0.423128-0.00153908-0.575333;FP=12401601434723292222|1|1|1|0|-1|-1|-1;HT=e02c03306;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.GGSxanS_1576250475;
 Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.GGSxanS_1576250475)
           by smtp.aliyun-inc.com(10.147.40.233);
-          Fri, 13 Dec 2019 23:21:26 +0800
+          Fri, 13 Dec 2019 23:21:29 +0800
 From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
         <zhouyanjie@wanyeetech.com>
 To:     linux-mips@vger.kernel.org
@@ -31,9 +31,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
         paul.burton@mips.com, paulburton@kernel.org, paul@crapouillou.net,
         mturquette@baylibre.com, sboyd@kernel.org, mark.rutland@arm.com,
         sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: [PATCH v2 3/5] dt-bindings: clock: Add X1830 bindings.
-Date:   Fri, 13 Dec 2019 23:21:10 +0800
-Message-Id: <1576250472-124315-5-git-send-email-zhouyanjie@wanyeetech.com>
+Subject: [PATCH v2 5/5] clk: Ingenic: Remove unnecessary spinlock when reading registers.
+Date:   Fri, 13 Dec 2019 23:21:12 +0800
+Message-Id: <1576250472-124315-7-git-send-email-zhouyanjie@wanyeetech.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1576250472-124315-1-git-send-email-zhouyanjie@wanyeetech.com>
 References: <1576250472-124315-1-git-send-email-zhouyanjie@wanyeetech.com>
@@ -45,87 +45,65 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add the clock bindings for the X1830 Soc from Ingenic.
+It is not necessary to use spinlock when reading registers,
+so remove it from cgu.c.
 
+Suggested-by: Paul Cercueil <paul@crapouillou.net>
+Suggested-by: Paul Burton <paulburton@kernel.org>
 Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
 ---
 
 Notes:
-    v1->v2:
-    Change my Signed-off-by from "Zhou Yanjie <zhouyanjie@zoho.com>"
-    to "周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>" because
-    the old mailbox is in an unstable state.
+    v2:
+    New Patch.
 
- .../devicetree/bindings/clock/ingenic,cgu.txt      |  1 +
- include/dt-bindings/clock/x1830-cgu.h              | 46 ++++++++++++++++++++++
- 2 files changed, 47 insertions(+)
- create mode 100644 include/dt-bindings/clock/x1830-cgu.h
+ drivers/clk/ingenic/cgu.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/ingenic,cgu.txt b/Documentation/devicetree/bindings/clock/ingenic,cgu.txt
-index 75598e6..74bfc57 100644
---- a/Documentation/devicetree/bindings/clock/ingenic,cgu.txt
-+++ b/Documentation/devicetree/bindings/clock/ingenic,cgu.txt
-@@ -12,6 +12,7 @@ Required properties:
-   * ingenic,jz4770-cgu
-   * ingenic,jz4780-cgu
-   * ingenic,x1000-cgu
-+  * ingenic,x1830-cgu
- - reg : The address & length of the CGU registers.
- - clocks : List of phandle & clock specifiers for clocks external to the CGU.
-   Two such external clocks should be specified - first the external crystal
-diff --git a/include/dt-bindings/clock/x1830-cgu.h b/include/dt-bindings/clock/x1830-cgu.h
-new file mode 100644
-index 00000000..6499170
---- /dev/null
-+++ b/include/dt-bindings/clock/x1830-cgu.h
-@@ -0,0 +1,46 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * This header provides clock numbers for the ingenic,x1830-cgu DT binding.
-+ *
-+ * They are roughly ordered as:
-+ *   - external clocks
-+ *   - PLLs
-+ *   - muxes/dividers in the order they appear in the x1830 programmers manual
-+ *   - gates in order of their bit in the CLKGR* registers
-+ */
-+
-+#ifndef __DT_BINDINGS_CLOCK_X1830_CGU_H__
-+#define __DT_BINDINGS_CLOCK_X1830_CGU_H__
-+
-+#define X1830_CLK_EXCLK		0
-+#define X1830_CLK_RTCLK		1
-+#define X1830_CLK_APLL		2
-+#define X1830_CLK_MPLL		3
-+#define X1830_CLK_EPLL		4
-+#define X1830_CLK_VPLL		5
-+#define X1830_CLK_SCLKA		6
-+#define X1830_CLK_CPUMUX	7
-+#define X1830_CLK_CPU		8
-+#define X1830_CLK_L2CACHE	9
-+#define X1830_CLK_AHB0		10
-+#define X1830_CLK_AHB2PMUX	11
-+#define X1830_CLK_AHB2		12
-+#define X1830_CLK_PCLK		13
-+#define X1830_CLK_DDR		14
-+#define X1830_CLK_MAC		15
-+#define X1830_CLK_MSCMUX	16
-+#define X1830_CLK_MSC0		17
-+#define X1830_CLK_MSC1		18
-+#define X1830_CLK_SSIPLL	19
-+#define X1830_CLK_SSIMUX	20
-+#define X1830_CLK_SSI0		21
-+#define X1830_CLK_SMB0		22
-+#define X1830_CLK_SMB1		23
-+#define X1830_CLK_SMB2		24
-+#define X1830_CLK_UART0		25
-+#define X1830_CLK_UART1		26
-+#define X1830_CLK_SSI1		27
-+#define X1830_CLK_SFC		28
-+#define X1830_CLK_PDMA		29
-+
-+#endif /* __DT_BINDINGS_CLOCK_X1830_CGU_H__ */
+diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
+index ae1ddcb..3c95451 100644
+--- a/drivers/clk/ingenic/cgu.c
++++ b/drivers/clk/ingenic/cgu.c
+@@ -76,16 +76,13 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+ 	const struct ingenic_cgu_pll_info *pll_info;
+ 	unsigned m, n, od_enc, od;
+ 	bool bypass;
+-	unsigned long flags;
+ 	u32 ctl;
+ 
+ 	clk_info = &cgu->clock_info[ingenic_clk->idx];
+ 	BUG_ON(clk_info->type != CGU_CLK_PLL);
+ 	pll_info = &clk_info->pll;
+ 
+-	spin_lock_irqsave(&cgu->lock, flags);
+ 	ctl = readl(cgu->base + pll_info->pll_reg);
+-	spin_unlock_irqrestore(&cgu->lock, flags);
+ 
+ 	m = (ctl >> pll_info->m_shift) & GENMASK(pll_info->m_bits - 1, 0);
+ 	m += pll_info->m_offset;
+@@ -94,9 +91,7 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+ 	od_enc = ctl >> pll_info->od_shift;
+ 	od_enc &= GENMASK(pll_info->od_bits - 1, 0);
+ 
+-	spin_lock_irqsave(&cgu->lock, flags);
+ 	ctl = readl(cgu->base + pll_info->bypass_reg);
+-	spin_unlock_irqrestore(&cgu->lock, flags);
+ 
+ 	bypass = !pll_info->no_bypass_bit &&
+ 		 !!(ctl & BIT(pll_info->bypass_bit));
+@@ -269,12 +264,9 @@ static int ingenic_pll_is_enabled(struct clk_hw *hw)
+ 	struct ingenic_cgu *cgu = ingenic_clk->cgu;
+ 	const struct ingenic_cgu_clk_info *clk_info = to_clk_info(ingenic_clk);
+ 	const struct ingenic_cgu_pll_info *pll_info = &clk_info->pll;
+-	unsigned long flags;
+ 	u32 ctl;
+ 
+-	spin_lock_irqsave(&cgu->lock, flags);
+ 	ctl = readl(cgu->base + pll_info->pll_reg);
+-	spin_unlock_irqrestore(&cgu->lock, flags);
+ 
+ 	return !!(ctl & BIT(pll_info->enable_bit));
+ }
 -- 
 2.7.4
 

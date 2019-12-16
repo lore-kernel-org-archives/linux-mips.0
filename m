@@ -2,113 +2,353 @@ Return-Path: <SRS0=4yYG=2G=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAE02C2D0BF
-	for <linux-mips@archiver.kernel.org>; Mon, 16 Dec 2019 04:56:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61969C2D0CF
+	for <linux-mips@archiver.kernel.org>; Mon, 16 Dec 2019 07:44:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9BB82206EC
-	for <linux-mips@archiver.kernel.org>; Mon, 16 Dec 2019 04:56:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 360A920828
+	for <linux-mips@archiver.kernel.org>; Mon, 16 Dec 2019 07:44:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbfLPE4x (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 15 Dec 2019 23:56:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:39820 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726437AbfLPE4w (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 15 Dec 2019 23:56:52 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 67E561007;
-        Sun, 15 Dec 2019 20:56:51 -0800 (PST)
-Received: from [10.163.1.75] (unknown [10.163.1.75])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 158D03F718;
-        Sun, 15 Dec 2019 20:56:09 -0800 (PST)
-Subject: Re: [PATCH V11] mm/debug: Add tests validating architecture page
- table helpers
-To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Steven Price <Steven.Price@arm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Kees Cook <keescook@chromium.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Matthew Wilcox <willy@infradead.org>,
-        Sri Krishna chowdary <schowdary@nvidia.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Vineet Gupta <vgupta@synopsys.com>,
+        id S1726948AbfLPHoV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 16 Dec 2019 02:44:21 -0500
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:56121 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726916AbfLPHoU (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 16 Dec 2019 02:44:20 -0500
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1igl32-0003MB-3O; Mon, 16 Dec 2019 08:44:08 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1igl2z-00006j-PS; Mon, 16 Dec 2019 08:44:05 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>, Chris Snook <chris.snook@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         James Hogan <jhogan@kernel.org>,
+        Jay Cliburn <jcliburn@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
         Paul Burton <paul.burton@mips.com>,
         Ralf Baechle <ralf@linux-mips.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <1575364731-18131-1-git-send-email-anshuman.khandual@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <d433f5a8-20a5-2862-8228-9ca72633b530@arm.com>
-Date:   Mon, 16 Dec 2019 10:27:10 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Rob Herring <robh+dt@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, Russell King <linux@armlinux.org.uk>
+Subject: [PATCH v5 1/5] net: ag71xx: port to phylink
+Date:   Mon, 16 Dec 2019 08:43:59 +0100
+Message-Id: <20191216074403.313-2-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20191216074403.313-1-o.rempel@pengutronix.de>
+References: <20191216074403.313-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <1575364731-18131-1-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+The port to phylink was done as close as possible to initial
+functionality.
+Theoretically this HW can support flow control, practically seems to be not
+enough to just enable it. So, more work should be done.
 
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ drivers/net/ethernet/atheros/Kconfig  |   2 +-
+ drivers/net/ethernet/atheros/ag71xx.c | 147 ++++++++++++++++----------
+ 2 files changed, 90 insertions(+), 59 deletions(-)
 
-On 12/03/2019 02:48 PM, Anshuman Khandual wrote:
-> This adds tests which will validate architecture page table helpers and
-> other accessors in their compliance with expected generic MM semantics.
-> This will help various architectures in validating changes to existing
-> page table helpers or addition of new ones.
-> 
-> This test covers basic page table entry transformations including but not
-> limited to old, young, dirty, clean, write, write protect etc at various
-> level along with populating intermediate entries with next page table page
-> and validating them.
-> 
-> Test page table pages are allocated from system memory with required size
-> and alignments. The mapped pfns at page table levels are derived from a
-> real pfn representing a valid kernel text symbol. This test gets called
-> right after page_alloc_init_late().
-> 
-> This gets build and run when CONFIG_DEBUG_VM_PGTABLE is selected along with
-> CONFIG_VM_DEBUG. Architectures willing to subscribe this test also need to
-> select CONFIG_ARCH_HAS_DEBUG_VM_PGTABLE which for now is limited to x86 and
-> arm64. Going forward, other architectures too can enable this after fixing
-> build or runtime problems (if any) with their page table helpers.
-> 
-> Folks interested in making sure that a given platform's page table helpers
-> conform to expected generic MM semantics should enable the above config
-> which will just trigger this test during boot. Any non conformity here will
-> be reported as an warning which would need to be fixed. This test will help
-> catch any changes to the agreed upon semantics expected from generic MM and
-> enable platforms to accommodate it thereafter.
+diff --git a/drivers/net/ethernet/atheros/Kconfig b/drivers/net/ethernet/atheros/Kconfig
+index 0058051ba925..2720bde5034e 100644
+--- a/drivers/net/ethernet/atheros/Kconfig
++++ b/drivers/net/ethernet/atheros/Kconfig
+@@ -20,7 +20,7 @@ if NET_VENDOR_ATHEROS
+ config AG71XX
+ 	tristate "Atheros AR7XXX/AR9XXX built-in ethernet mac support"
+ 	depends on ATH79
+-	select PHYLIB
++	select PHYLINK
+ 	help
+ 	  If you wish to compile a kernel for AR7XXX/91XXX and enable
+ 	  ethernet support, then you should always answer Y to this.
+diff --git a/drivers/net/ethernet/atheros/ag71xx.c b/drivers/net/ethernet/atheros/ag71xx.c
+index 61a334d1b5e6..6e427e408321 100644
+--- a/drivers/net/ethernet/atheros/ag71xx.c
++++ b/drivers/net/ethernet/atheros/ag71xx.c
+@@ -32,6 +32,7 @@
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+ #include <linux/of_platform.h>
++#include <linux/phylink.h>
+ #include <linux/regmap.h>
+ #include <linux/reset.h>
+ #include <linux/clk.h>
+@@ -315,6 +316,9 @@ struct ag71xx {
+ 
+ 	phy_interface_t phy_if_mode;
+ 
++	struct phylink *phylink;
++	struct phylink_config phylink_config;
++
+ 	struct delayed_work restart_work;
+ 	struct timer_list oom_timer;
+ 
+@@ -845,24 +849,23 @@ static void ag71xx_hw_start(struct ag71xx *ag)
+ 	netif_wake_queue(ag->ndev);
+ }
+ 
+-static void ag71xx_link_adjust(struct ag71xx *ag, bool update)
++static void ag71xx_mac_config(struct phylink_config *config, unsigned int mode,
++			      const struct phylink_link_state *state)
+ {
+-	struct phy_device *phydev = ag->ndev->phydev;
++	struct ag71xx *ag = netdev_priv(to_net_dev(config->dev));
+ 	u32 cfg2;
+ 	u32 ifctl;
+ 	u32 fifo5;
+ 
+-	if (!phydev->link && update) {
+-		ag71xx_hw_stop(ag);
++	if (phylink_autoneg_inband(mode))
+ 		return;
+-	}
+ 
+ 	if (!ag71xx_is(ag, AR7100) && !ag71xx_is(ag, AR9130))
+ 		ag71xx_fast_reset(ag);
+ 
+ 	cfg2 = ag71xx_rr(ag, AG71XX_REG_MAC_CFG2);
+ 	cfg2 &= ~(MAC_CFG2_IF_1000 | MAC_CFG2_IF_10_100 | MAC_CFG2_FDX);
+-	cfg2 |= (phydev->duplex) ? MAC_CFG2_FDX : 0;
++	cfg2 |= (state->duplex) ? MAC_CFG2_FDX : 0;
+ 
+ 	ifctl = ag71xx_rr(ag, AG71XX_REG_MAC_IFCTL);
+ 	ifctl &= ~(MAC_IFCTL_SPEED);
+@@ -870,7 +873,7 @@ static void ag71xx_link_adjust(struct ag71xx *ag, bool update)
+ 	fifo5 = ag71xx_rr(ag, AG71XX_REG_FIFO_CFG5);
+ 	fifo5 &= ~FIFO_CFG5_BM;
+ 
+-	switch (phydev->speed) {
++	switch (state->speed) {
+ 	case SPEED_1000:
+ 		cfg2 |= MAC_CFG2_IF_1000;
+ 		fifo5 |= FIFO_CFG5_BM;
+@@ -883,7 +886,6 @@ static void ag71xx_link_adjust(struct ag71xx *ag, bool update)
+ 		cfg2 |= MAC_CFG2_IF_10_100;
+ 		break;
+ 	default:
+-		WARN(1, "not supported speed %i\n", phydev->speed);
+ 		return;
+ 	}
+ 
+@@ -897,58 +899,79 @@ static void ag71xx_link_adjust(struct ag71xx *ag, bool update)
+ 	ag71xx_wr(ag, AG71XX_REG_MAC_CFG2, cfg2);
+ 	ag71xx_wr(ag, AG71XX_REG_FIFO_CFG5, fifo5);
+ 	ag71xx_wr(ag, AG71XX_REG_MAC_IFCTL, ifctl);
+-
+-	ag71xx_hw_start(ag);
+-
+-	if (update)
+-		phy_print_status(phydev);
+ }
+ 
+-static void ag71xx_phy_link_adjust(struct net_device *ndev)
++static void ag71xx_mac_validate(struct phylink_config *config,
++			    unsigned long *supported,
++			    struct phylink_link_state *state)
+ {
+-	struct ag71xx *ag = netdev_priv(ndev);
++	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) = { 0, };
++
++	if (state->interface != PHY_INTERFACE_MODE_NA &&
++	    state->interface != PHY_INTERFACE_MODE_GMII &&
++	    state->interface != PHY_INTERFACE_MODE_MII) {
++		bitmap_zero(supported, __ETHTOOL_LINK_MODE_MASK_NBITS);
++		return;
++	}
++
++	phylink_set(mask, MII);
++
++	/* flow control is not supported */
++
++	phylink_set(mask, 10baseT_Half);
++	phylink_set(mask, 10baseT_Full);
++	phylink_set(mask, 100baseT_Half);
++	phylink_set(mask, 100baseT_Full);
+ 
+-	ag71xx_link_adjust(ag, true);
++	if (state->interface == PHY_INTERFACE_MODE_NA ||
++	    state->interface == PHY_INTERFACE_MODE_GMII) {
++		phylink_set(mask, 1000baseT_Full);
++		phylink_set(mask, 1000baseX_Full);
++	}
++
++	bitmap_and(supported, supported, mask,
++		   __ETHTOOL_LINK_MODE_MASK_NBITS);
++	bitmap_and(state->advertising, state->advertising, mask,
++		   __ETHTOOL_LINK_MODE_MASK_NBITS);
+ }
+ 
+-static int ag71xx_phy_connect(struct ag71xx *ag)
++static void ag71xx_mac_link_down(struct phylink_config *config,
++				 unsigned int mode, phy_interface_t interface)
+ {
+-	struct device_node *np = ag->pdev->dev.of_node;
+-	struct net_device *ndev = ag->ndev;
+-	struct device_node *phy_node;
+-	struct phy_device *phydev;
+-	int ret;
++	struct ag71xx *ag = netdev_priv(to_net_dev(config->dev));
+ 
+-	if (of_phy_is_fixed_link(np)) {
+-		ret = of_phy_register_fixed_link(np);
+-		if (ret < 0) {
+-			netif_err(ag, probe, ndev, "Failed to register fixed PHY link: %d\n",
+-				  ret);
+-			return ret;
+-		}
++	ag71xx_hw_stop(ag);
++}
+ 
+-		phy_node = of_node_get(np);
+-	} else {
+-		phy_node = of_parse_phandle(np, "phy-handle", 0);
+-	}
++static void ag71xx_mac_link_up(struct phylink_config *config, unsigned int mode,
++			       phy_interface_t interface,
++			       struct phy_device *phy)
++{
++	struct ag71xx *ag = netdev_priv(to_net_dev(config->dev));
+ 
+-	if (!phy_node) {
+-		netif_err(ag, probe, ndev, "Could not find valid phy node\n");
+-		return -ENODEV;
+-	}
++	ag71xx_hw_start(ag);
++}
+ 
+-	phydev = of_phy_connect(ag->ndev, phy_node, ag71xx_phy_link_adjust,
+-				0, ag->phy_if_mode);
++static const struct phylink_mac_ops ag71xx_phylink_mac_ops = {
++	.validate = ag71xx_mac_validate,
++	.mac_config = ag71xx_mac_config,
++	.mac_link_down = ag71xx_mac_link_down,
++	.mac_link_up = ag71xx_mac_link_up,
++};
+ 
+-	of_node_put(phy_node);
++static int ag71xx_phy_setup(struct ag71xx *ag)
++{
++	struct phylink *phylink;
+ 
+-	if (!phydev) {
+-		netif_err(ag, probe, ndev, "Could not connect to PHY device\n");
+-		return -ENODEV;
+-	}
++	ag->phylink_config.dev = &ag->ndev->dev;
++	ag->phylink_config.type = PHYLINK_NETDEV;
+ 
+-	phy_attached_info(phydev);
++	phylink = phylink_create(&ag->phylink_config, ag->pdev->dev.fwnode,
++				 ag->phy_if_mode, &ag71xx_phylink_mac_ops);
++	if (IS_ERR(phylink))
++		return PTR_ERR(phylink);
+ 
++	ag->phylink = phylink;
+ 	return 0;
+ }
+ 
+@@ -1239,6 +1262,13 @@ static int ag71xx_open(struct net_device *ndev)
+ 	unsigned int max_frame_len;
+ 	int ret;
+ 
++	ret = phylink_of_phy_connect(ag->phylink, ag->pdev->dev.of_node, 0);
++	if (ret) {
++		netif_err(ag, link, ndev, "phylink_of_phy_connect filed with err: %i\n",
++			  ret);
++		goto err;
++	}
++
+ 	max_frame_len = ag71xx_max_frame_len(ndev->mtu);
+ 	ag->rx_buf_size =
+ 		SKB_DATA_ALIGN(max_frame_len + NET_SKB_PAD + NET_IP_ALIGN);
+@@ -1251,11 +1281,7 @@ static int ag71xx_open(struct net_device *ndev)
+ 	if (ret)
+ 		goto err;
+ 
+-	ret = ag71xx_phy_connect(ag);
+-	if (ret)
+-		goto err;
+-
+-	phy_start(ndev->phydev);
++	phylink_start(ag->phylink);
+ 
+ 	return 0;
+ 
+@@ -1268,8 +1294,7 @@ static int ag71xx_stop(struct net_device *ndev)
+ {
+ 	struct ag71xx *ag = netdev_priv(ndev);
+ 
+-	phy_stop(ndev->phydev);
+-	phy_disconnect(ndev->phydev);
++	phylink_stop(ag->phylink);
+ 	ag71xx_hw_disable(ag);
+ 
+ 	return 0;
+@@ -1396,10 +1421,9 @@ static netdev_tx_t ag71xx_hard_start_xmit(struct sk_buff *skb,
+ 
+ static int ag71xx_do_ioctl(struct net_device *ndev, struct ifreq *ifr, int cmd)
+ {
+-	if (!ndev->phydev)
+-		return -EINVAL;
++	struct ag71xx *ag = netdev_priv(ndev);
+ 
+-	return phy_mii_ioctl(ndev->phydev, ifr, cmd);
++	return phylink_mii_ioctl(ag->phylink, ifr, cmd);
+ }
+ 
+ static void ag71xx_oom_timer_handler(struct timer_list *t)
+@@ -1422,13 +1446,14 @@ static void ag71xx_restart_work_func(struct work_struct *work)
+ {
+ 	struct ag71xx *ag = container_of(work, struct ag71xx,
+ 					 restart_work.work);
+-	struct net_device *ndev = ag->ndev;
+ 
+ 	rtnl_lock();
+ 	ag71xx_hw_disable(ag);
+ 	ag71xx_hw_enable(ag);
+-	if (ndev->phydev->link)
+-		ag71xx_link_adjust(ag, false);
++
++	phylink_stop(ag->phylink);
++	phylink_start(ag->phylink);
++
+ 	rtnl_unlock();
+ }
+ 
+@@ -1768,6 +1793,12 @@ static int ag71xx_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, ndev);
+ 
++	err = ag71xx_phy_setup(ag);
++	if (err) {
++		netif_err(ag, probe, ndev, "failed to setup phy (%d)\n", err);
++		goto err_mdio_remove;
++	}
++
+ 	err = register_netdev(ndev);
+ 	if (err) {
+ 		netif_err(ag, probe, ndev, "unable to register net device\n");
+-- 
+2.24.0
 
-Any updates on this ?

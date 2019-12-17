@@ -6,17 +6,17 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9AEDC43603
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Dec 2019 20:41:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 916E2C43603
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Dec 2019 20:42:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BCDC02053B
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Dec 2019 20:41:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6A4802146E
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Dec 2019 20:42:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbfLQUlp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 17 Dec 2019 15:41:45 -0500
+        id S1728817AbfLQUmD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 17 Dec 2019 15:42:03 -0500
 Received: from mga07.intel.com ([134.134.136.100]:63047 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728496AbfLQUkp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1728474AbfLQUkp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Tue, 17 Dec 2019 15:40:45 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
@@ -24,9 +24,9 @@ Received: from orsmga005.jf.intel.com ([10.7.209.41])
   by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Dec 2019 12:40:43 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,326,1571727600"; 
-   d="scan'208";a="389952606"
+   d="scan'208";a="389952593"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
-  by orsmga005.jf.intel.com with ESMTP; 17 Dec 2019 12:40:43 -0800
+  by orsmga005.jf.intel.com with ESMTP; 17 Dec 2019 12:40:42 -0800
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
 To:     James Hogan <jhogan@kernel.org>,
         Paul Mackerras <paulus@ozlabs.org>,
@@ -49,9 +49,9 @@ Cc:     David Hildenbrand <david@redhat.com>,
         kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org,
         Christoffer Dall <christoffer.dall@arm.com>,
         =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>
-Subject: [PATCH v4 11/19] KVM: x86: Free arrays for old memslot when moving memslot's base gfn
-Date:   Tue, 17 Dec 2019 12:40:33 -0800
-Message-Id: <20191217204041.10815-12-sean.j.christopherson@intel.com>
+Subject: [PATCH v4 07/19] KVM: Explicitly free allocated-but-unused dirty bitmap
+Date:   Tue, 17 Dec 2019 12:40:29 -0800
+Message-Id: <20191217204041.10815-8-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191217204041.10815-1-sean.j.christopherson@intel.com>
 References: <20191217204041.10815-1-sean.j.christopherson@intel.com>
@@ -62,33 +62,46 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Explicitly free the metadata arrays (stored in slot->arch) in the old
-memslot structure when moving the memslot's base gfn is committed.  This
-eliminates x86's dependency on kvm_free_memslot() being called when a
-memlsot move is committed, and paves the way for removing the funky code
-in kvm_free_memslot() that conditionally frees structures based on its
-@dont param.
+Explicitly free an allocated-but-unused dirty bitmap instead of relying
+on kvm_free_memslot() if an error occurs in __kvm_set_memory_region().
+There is no longer a need to abuse kvm_free_memslot() to free arch
+specific resources as arch specific code is now called only after the
+common flow is guaranteed to succeed.  Arch code can still fail, but
+it's responsible for its own cleanup in that case.
+
+Eliminating the error path's abuse of kvm_free_memslot() paves the way
+for simplifying kvm_free_memslot(), i.e. dropping its @dont param.
 
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- arch/x86/kvm/x86.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ virt/kvm/kvm_main.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 0911b2f634c5..5f890812fac3 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9884,6 +9884,10 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
- 	 */
- 	if (change != KVM_MR_DELETE)
- 		kvm_mmu_slot_apply_flags(kvm, (struct kvm_memory_slot *) new);
-+
-+	/* Free the arrays associated with the old memslot. */
-+	if (change == KVM_MR_MOVE)
-+		kvm_arch_free_memslot(kvm, old, NULL);
- }
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index d403e93e3028..6b2261a9e139 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1096,7 +1096,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
  
- void kvm_arch_flush_shadow_all(struct kvm *kvm)
+ 	slots = kvzalloc(sizeof(struct kvm_memslots), GFP_KERNEL_ACCOUNT);
+ 	if (!slots)
+-		goto out_free;
++		goto out_bitmap;
+ 	memcpy(slots, __kvm_memslots(kvm, as_id), sizeof(struct kvm_memslots));
+ 
+ 	if ((change == KVM_MR_DELETE) || (change == KVM_MR_MOVE)) {
+@@ -1144,8 +1144,9 @@ int __kvm_set_memory_region(struct kvm *kvm,
+ 	if (change == KVM_MR_DELETE || change == KVM_MR_MOVE)
+ 		slots = install_new_memslots(kvm, as_id, slots);
+ 	kvfree(slots);
+-out_free:
+-	kvm_free_memslot(kvm, &new, &old);
++out_bitmap:
++	if (new.dirty_bitmap && !old.dirty_bitmap)
++		kvm_destroy_dirty_bitmap(&new);
+ out:
+ 	return r;
+ }
 -- 
 2.24.1
 

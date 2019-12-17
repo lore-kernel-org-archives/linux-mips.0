@@ -2,31 +2,31 @@ Return-Path: <SRS0=abDu=2H=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA41BC43603
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Dec 2019 20:40:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 149CEC2D0D2
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Dec 2019 20:40:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8E0F72176D
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Dec 2019 20:40:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D919924650
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Dec 2019 20:40:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728399AbfLQUkn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 17 Dec 2019 15:40:43 -0500
-Received: from mga12.intel.com ([192.55.52.136]:4185 "EHLO mga12.intel.com"
+        id S1727460AbfLQUkx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 17 Dec 2019 15:40:53 -0500
+Received: from mga07.intel.com ([134.134.136.100]:63051 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727070AbfLQUkn (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 17 Dec 2019 15:40:43 -0500
+        id S1728531AbfLQUkq (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 17 Dec 2019 15:40:46 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Dec 2019 12:40:42 -0800
+  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Dec 2019 12:40:43 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,326,1571727600"; 
-   d="scan'208";a="389952569"
+   d="scan'208";a="389952622"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
-  by orsmga005.jf.intel.com with ESMTP; 17 Dec 2019 12:40:42 -0800
+  by orsmga005.jf.intel.com with ESMTP; 17 Dec 2019 12:40:43 -0800
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
 To:     James Hogan <jhogan@kernel.org>,
         Paul Mackerras <paulus@ozlabs.org>,
@@ -49,114 +49,162 @@ Cc:     David Hildenbrand <david@redhat.com>,
         kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org,
         Christoffer Dall <christoffer.dall@arm.com>,
         =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>
-Subject: [PATCH v4 00/19] KVM: Dynamically size memslot arrays
-Date:   Tue, 17 Dec 2019 12:40:22 -0800
-Message-Id: <20191217204041.10815-1-sean.j.christopherson@intel.com>
+Subject: [PATCH v4 16/19] KVM: Ensure validity of memslot with respect to kvm_get_dirty_log()
+Date:   Tue, 17 Dec 2019 12:40:38 -0800
+Message-Id: <20191217204041.10815-17-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20191217204041.10815-1-sean.j.christopherson@intel.com>
+References: <20191217204041.10815-1-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The end goal of this series is to dynamically size the memslot array so
-that KVM allocates memory based on the number of memslots in use, as
-opposed to unconditionally allocating memory for the maximum number of
-memslots.  On x86, each memslot consumes 88 bytes, and so with 2 address
-spaces of 512 memslots, each VM consumes ~90k bytes for the memslots.
-E.g. given a VM that uses a total of 30 memslots, dynamic sizing reduces
-the memory footprint from 90k to ~2.6k bytes.
+Rework kvm_get_dirty_log() so that it "returns" the associated memslot
+on success.  A future patch will rework memslot handling such that
+id_to_memslot() can return NULL, returning the memslot makes it more
+obvious that the validity of the memslot has been verified, i.e.
+precludes the need to add validity checks in the arch code that are
+technically unnecessary.
 
-The changes required to support dynamic sizing are relatively small,
-e.g. are essentially contained in patches 17/19 and 18/19.
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+---
+ arch/powerpc/kvm/book3s_pr.c |  6 +-----
+ arch/s390/kvm/kvm-s390.c     | 12 ++----------
+ include/linux/kvm_host.h     |  2 +-
+ virt/kvm/kvm_main.c          | 27 +++++++++++++++++++--------
+ 4 files changed, 23 insertions(+), 24 deletions(-)
 
-Patches 2-16 clean up the memslot code, which has gotten quite crusty,
-especially __kvm_set_memory_region().  The clean up is likely not strictly
-necessary to switch to dynamic sizing, but I didn't have a remotely
-reasonable level of confidence in the correctness of the dynamic sizing
-without first doing the clean up.
-
-The only functional change in v4 is the addition of an x86-specific bug
-fix in x86's handling of KVM_MR_MOVE.  The bug fix is not directly related
-to dynamically allocating memslots, but it has subtle and hidden conflicts
-with the cleanup patches, and the fix is higher priority than anything
-else in the series, i.e. should be merged first.
-
-On non-x86 architectures, v3 and v4 should be functionally equivalent,
-the only non-x86 change in v4 is the dropping of a "const" in
-kvm_arch_commit_memory_region().
-
-v4:
-  - Add patch 01 to fix an x86 rmap/lpage bug, and patches 10 and 11 to
-    resolve hidden conflicts with the bug fix.
-  - Collect tags [Christian, Marc, Philippe].
-  - Rebase to kvm/queue, commit e41a90be9659 ("KVM: x86/mmu: WARN if
-    root_hpa is invalid when handling a page fault").
-v3:
-  - Fix build errors on PPC and MIPS due to missed params during
-    refactoring [kbuild test robot].
-  - Rename the helpers for update_memslots() and add comments describing
-    the new algorithm and how it interacts with searching [Paolo].
-  - Remove the unnecessary and obnoxious warning regarding memslots being
-    a flexible array [Paolo].
-  - Fix typos in the changelog of patch 09/15 [Christoffer].
-  - Collect tags [Christoffer].
-
-v2:
-  - Split "Drop kvm_arch_create_memslot()" into three patches to move
-    minor functional changes to standalone patches [Janosch].
-  - Rebase to latest kvm/queue (f0574a1cea5b, "KVM: x86: fix ...")
-  - Collect an Acked-by and a Reviewed-by
-
-Sean Christopherson (19):
-  KVM: x86: Allocate new rmap and large page tracking when moving
-    memslot
-  KVM: Reinstall old memslots if arch preparation fails
-  KVM: Don't free new memslot if allocation of said memslot fails
-  KVM: PPC: Move memslot memory allocation into prepare_memory_region()
-  KVM: x86: Allocate memslot resources during prepare_memory_region()
-  KVM: Drop kvm_arch_create_memslot()
-  KVM: Explicitly free allocated-but-unused dirty bitmap
-  KVM: Refactor error handling for setting memory region
-  KVM: Move setting of memslot into helper routine
-  KVM: Drop "const" attribute from old memslot in commit_memory_region()
-  KVM: x86: Free arrays for old memslot when moving memslot's base gfn
-  KVM: Move memslot deletion to helper function
-  KVM: Simplify kvm_free_memslot() and all its descendents
-  KVM: Clean up local variable usage in __kvm_set_memory_region()
-  KVM: Provide common implementation for generic dirty log functions
-  KVM: Ensure validity of memslot with respect to kvm_get_dirty_log()
-  KVM: Terminate memslot walks via used_slots
-  KVM: Dynamically size memslot array based on number of used slots
-  KVM: selftests: Add test for KVM_SET_USER_MEMORY_REGION
-
- arch/mips/include/asm/kvm_host.h              |   2 +-
- arch/mips/kvm/mips.c                          |  71 +-
- arch/powerpc/include/asm/kvm_ppc.h            |  17 +-
- arch/powerpc/kvm/book3s.c                     |  22 +-
- arch/powerpc/kvm/book3s_hv.c                  |  36 +-
- arch/powerpc/kvm/book3s_pr.c                  |  20 +-
- arch/powerpc/kvm/booke.c                      |  17 +-
- arch/powerpc/kvm/powerpc.c                    |  15 +-
- arch/s390/include/asm/kvm_host.h              |   2 +-
- arch/s390/kvm/kvm-s390.c                      |  23 +-
- arch/x86/include/asm/kvm_page_track.h         |   3 +-
- arch/x86/kvm/mmu/page_track.c                 |  15 +-
- arch/x86/kvm/x86.c                            | 114 +---
- include/linux/kvm_host.h                      |  48 +-
- tools/testing/selftests/kvm/.gitignore        |   1 +
- tools/testing/selftests/kvm/Makefile          |   3 +
- .../testing/selftests/kvm/include/kvm_util.h  |   1 +
- tools/testing/selftests/kvm/lib/kvm_util.c    |  30 +
- .../selftests/kvm/set_memory_region_test.c    | 142 ++++
- virt/kvm/arm/arm.c                            |  48 +-
- virt/kvm/arm/mmu.c                            |  20 +-
- virt/kvm/kvm_main.c                           | 621 ++++++++++++------
- 22 files changed, 736 insertions(+), 535 deletions(-)
- create mode 100644 tools/testing/selftests/kvm/set_memory_region_test.c
-
+diff --git a/arch/powerpc/kvm/book3s_pr.c b/arch/powerpc/kvm/book3s_pr.c
+index d2ee00bc7077..485ca134a949 100644
+--- a/arch/powerpc/kvm/book3s_pr.c
++++ b/arch/powerpc/kvm/book3s_pr.c
+@@ -1897,7 +1897,6 @@ static int kvmppc_vcpu_run_pr(struct kvm_run *kvm_run, struct kvm_vcpu *vcpu)
+ static int kvm_vm_ioctl_get_dirty_log_pr(struct kvm *kvm,
+ 					 struct kvm_dirty_log *log)
+ {
+-	struct kvm_memslots *slots;
+ 	struct kvm_memory_slot *memslot;
+ 	struct kvm_vcpu *vcpu;
+ 	ulong ga, ga_end;
+@@ -1907,15 +1906,12 @@ static int kvm_vm_ioctl_get_dirty_log_pr(struct kvm *kvm,
+ 
+ 	mutex_lock(&kvm->slots_lock);
+ 
+-	r = kvm_get_dirty_log(kvm, log, &is_dirty);
++	r = kvm_get_dirty_log(kvm, log, &is_dirty, &memslot);
+ 	if (r)
+ 		goto out;
+ 
+ 	/* If nothing is dirty, don't bother messing with page tables. */
+ 	if (is_dirty) {
+-		slots = kvm_memslots(kvm);
+-		memslot = id_to_memslot(slots, log->slot);
+-
+ 		ga = memslot->base_gfn << PAGE_SHIFT;
+ 		ga_end = ga + (memslot->npages << PAGE_SHIFT);
+ 
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index 9e38973fd2cc..b0f5a3b7cb01 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -610,9 +610,8 @@ int kvm_vm_ioctl_get_dirty_log(struct kvm *kvm,
+ {
+ 	int r;
+ 	unsigned long n;
+-	struct kvm_memslots *slots;
+ 	struct kvm_memory_slot *memslot;
+-	int is_dirty = 0;
++	int is_dirty;
+ 
+ 	if (kvm_is_ucontrol(kvm))
+ 		return -EINVAL;
+@@ -623,14 +622,7 @@ int kvm_vm_ioctl_get_dirty_log(struct kvm *kvm,
+ 	if (log->slot >= KVM_USER_MEM_SLOTS)
+ 		goto out;
+ 
+-	slots = kvm_memslots(kvm);
+-	memslot = id_to_memslot(slots, log->slot);
+-	r = -ENOENT;
+-	if (!memslot->dirty_bitmap)
+-		goto out;
+-
+-	kvm_arch_sync_dirty_log(kvm, memslot);
+-	r = kvm_get_dirty_log(kvm, log, &is_dirty);
++	r = kvm_get_dirty_log(kvm, log, &is_dirty, &memslot);
+ 	if (r)
+ 		goto out;
+ 
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index eb54d196c0cb..7d666eedd203 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -828,7 +828,7 @@ void kvm_arch_dirty_log_tlb_flush(struct kvm *kvm,
+ #else /* !CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT */
+ int kvm_vm_ioctl_get_dirty_log(struct kvm *kvm, struct kvm_dirty_log *log);
+ int kvm_get_dirty_log(struct kvm *kvm, struct kvm_dirty_log *log,
+-		      int *is_dirty);
++		      int *is_dirty, struct kvm_memory_slot **memslot);
+ #endif
+ 
+ int kvm_vm_ioctl_irq_line(struct kvm *kvm, struct kvm_irq_level *irq_level,
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 4a4b5339f229..999a2a0c83f5 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1202,31 +1202,42 @@ static int kvm_vm_ioctl_set_memory_region(struct kvm *kvm,
+ }
+ 
+ #ifndef CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT
+-int kvm_get_dirty_log(struct kvm *kvm,
+-			struct kvm_dirty_log *log, int *is_dirty)
++/**
++ * kvm_get_dirty_log - get a snapshot of dirty pages
++ * @kvm:	pointer to kvm instance
++ * @log:	slot id and address to which we copy the log
++ * @is_dirty:	set to '1' if any dirty pages were found
++ * @memslot:	set to the associated memslot, always valid on success
++ */
++int kvm_get_dirty_log(struct kvm *kvm, struct kvm_dirty_log *log,
++		      int *is_dirty, struct kvm_memory_slot **memslot)
+ {
+ 	struct kvm_memslots *slots;
+-	struct kvm_memory_slot *memslot;
+ 	int i, as_id, id;
+ 	unsigned long n;
+ 	unsigned long any = 0;
+ 
++	*memslot = NULL;
++	*is_dirty = 0;
++
+ 	as_id = log->slot >> 16;
+ 	id = (u16)log->slot;
+ 	if (as_id >= KVM_ADDRESS_SPACE_NUM || id >= KVM_USER_MEM_SLOTS)
+ 		return -EINVAL;
+ 
+ 	slots = __kvm_memslots(kvm, as_id);
+-	memslot = id_to_memslot(slots, id);
+-	if (!memslot->dirty_bitmap)
++	*memslot = id_to_memslot(slots, id);
++	if (!(*memslot)->dirty_bitmap)
+ 		return -ENOENT;
+ 
+-	n = kvm_dirty_bitmap_bytes(memslot);
++	kvm_arch_sync_dirty_log(kvm, *memslot);
++
++	n = kvm_dirty_bitmap_bytes(*memslot);
+ 
+ 	for (i = 0; !any && i < n/sizeof(long); ++i)
+-		any = memslot->dirty_bitmap[i];
++		any = (*memslot)->dirty_bitmap[i];
+ 
+-	if (copy_to_user(log->dirty_bitmap, memslot->dirty_bitmap, n))
++	if (copy_to_user(log->dirty_bitmap, (*memslot)->dirty_bitmap, n))
+ 		return -EFAULT;
+ 
+ 	if (any)
 -- 
 2.24.1
 

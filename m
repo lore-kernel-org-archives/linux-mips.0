@@ -6,27 +6,27 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00A22C2D0D1
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Dec 2019 20:42:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5387AC2D0BF
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Dec 2019 20:42:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C42DD2146E
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Dec 2019 20:42:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 275FB2146E
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Dec 2019 20:42:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728265AbfLQUmC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 17 Dec 2019 15:42:02 -0500
-Received: from mga18.intel.com ([134.134.136.126]:16524 "EHLO mga18.intel.com"
+        id S1728883AbfLQUmO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 17 Dec 2019 15:42:14 -0500
+Received: from mga07.intel.com ([134.134.136.100]:63047 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728480AbfLQUkp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 17 Dec 2019 15:40:45 -0500
+        id S1728444AbfLQUko (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 17 Dec 2019 15:40:44 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Dec 2019 12:40:44 -0800
+  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Dec 2019 12:40:43 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,326,1571727600"; 
-   d="scan'208";a="389952632"
+   d="scan'208";a="389952591"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
-  by orsmga005.jf.intel.com with ESMTP; 17 Dec 2019 12:40:43 -0800
+  by orsmga005.jf.intel.com with ESMTP; 17 Dec 2019 12:40:42 -0800
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
 To:     James Hogan <jhogan@kernel.org>,
         Paul Mackerras <paulus@ozlabs.org>,
@@ -49,9 +49,9 @@ Cc:     David Hildenbrand <david@redhat.com>,
         kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org,
         Christoffer Dall <christoffer.dall@arm.com>,
         =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>
-Subject: [PATCH v4 19/19] KVM: selftests: Add test for KVM_SET_USER_MEMORY_REGION
-Date:   Tue, 17 Dec 2019 12:40:41 -0800
-Message-Id: <20191217204041.10815-20-sean.j.christopherson@intel.com>
+Subject: [PATCH v4 06/19] KVM: Drop kvm_arch_create_memslot()
+Date:   Tue, 17 Dec 2019 12:40:28 -0800
+Message-Id: <20191217204041.10815-7-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191217204041.10815-1-sean.j.christopherson@intel.com>
 References: <20191217204041.10815-1-sean.j.christopherson@intel.com>
@@ -62,254 +62,169 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add a KVM selftest to test moving the base gfn of a userspace memory
-region.  The test is primarily targeted at x86 to verify its memslot
-metadata is correctly updated, but also provides basic functionality
-coverage on other architectures.
+Remove kvm_arch_create_memslot() now that all arch implementations are
+effectively nops.  Removing kvm_arch_create_memslot() eliminates the
+possibility for arch specific code to allocate memory prior to setting
+a memslot, which sets the stage for simplifying kvm_free_memslot().
 
+Cc: Janosch Frank <frankja@linux.ibm.com>
+Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- tools/testing/selftests/kvm/.gitignore        |   1 +
- tools/testing/selftests/kvm/Makefile          |   3 +
- .../testing/selftests/kvm/include/kvm_util.h  |   1 +
- tools/testing/selftests/kvm/lib/kvm_util.c    |  30 ++++
- .../selftests/kvm/set_memory_region_test.c    | 142 ++++++++++++++++++
- 5 files changed, 177 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/set_memory_region_test.c
+ arch/mips/kvm/mips.c       |  6 ------
+ arch/powerpc/kvm/powerpc.c |  6 ------
+ arch/s390/kvm/kvm-s390.c   |  6 ------
+ arch/x86/kvm/x86.c         |  6 ------
+ include/linux/kvm_host.h   |  2 --
+ virt/kvm/arm/mmu.c         |  6 ------
+ virt/kvm/kvm_main.c        | 21 +++++++--------------
+ 7 files changed, 7 insertions(+), 46 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
-index 30072c3f52fb..6f60ceb81440 100644
---- a/tools/testing/selftests/kvm/.gitignore
-+++ b/tools/testing/selftests/kvm/.gitignore
-@@ -17,3 +17,4 @@
- /clear_dirty_log_test
- /dirty_log_test
- /kvm_create_max_vcpus
-+/set_memory_region_test
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index 3138a916574a..01c79e02c5b7 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -29,15 +29,18 @@ TEST_GEN_PROGS_x86_64 += x86_64/xss_msr_test
- TEST_GEN_PROGS_x86_64 += clear_dirty_log_test
- TEST_GEN_PROGS_x86_64 += dirty_log_test
- TEST_GEN_PROGS_x86_64 += kvm_create_max_vcpus
-+TEST_GEN_PROGS_x86_64 += set_memory_region_test
- 
- TEST_GEN_PROGS_aarch64 += clear_dirty_log_test
- TEST_GEN_PROGS_aarch64 += dirty_log_test
- TEST_GEN_PROGS_aarch64 += kvm_create_max_vcpus
-+TEST_GEN_PROGS_aarch64 += set_memory_region_test
- 
- TEST_GEN_PROGS_s390x = s390x/memop
- TEST_GEN_PROGS_s390x += s390x/sync_regs_test
- TEST_GEN_PROGS_s390x += dirty_log_test
- TEST_GEN_PROGS_s390x += kvm_create_max_vcpus
-+TEST_GEN_PROGS_s390x += set_memory_region_test
- 
- TEST_GEN_PROGS += $(TEST_GEN_PROGS_$(UNAME_M))
- LIBKVM += $(LIBKVM_$(UNAME_M))
-diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
-index 29cccaf96baf..15d3b8690ffb 100644
---- a/tools/testing/selftests/kvm/include/kvm_util.h
-+++ b/tools/testing/selftests/kvm/include/kvm_util.h
-@@ -100,6 +100,7 @@ int _vcpu_ioctl(struct kvm_vm *vm, uint32_t vcpuid, unsigned long ioctl,
- 		void *arg);
- void vm_ioctl(struct kvm_vm *vm, unsigned long ioctl, void *arg);
- void vm_mem_region_set_flags(struct kvm_vm *vm, uint32_t slot, uint32_t flags);
-+void vm_mem_region_move(struct kvm_vm *vm, uint32_t slot, uint64_t new_gpa);
- void vm_vcpu_add(struct kvm_vm *vm, uint32_t vcpuid);
- vm_vaddr_t vm_vaddr_alloc(struct kvm_vm *vm, size_t sz, vm_vaddr_t vaddr_min,
- 			  uint32_t data_memslot, uint32_t pgd_memslot);
-diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-index 41cf45416060..464a75ce9843 100644
---- a/tools/testing/selftests/kvm/lib/kvm_util.c
-+++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-@@ -756,6 +756,36 @@ void vm_mem_region_set_flags(struct kvm_vm *vm, uint32_t slot, uint32_t flags)
- 		ret, errno, slot, flags);
+diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+index 1109924560d8..713e5465edb0 100644
+--- a/arch/mips/kvm/mips.c
++++ b/arch/mips/kvm/mips.c
+@@ -188,12 +188,6 @@ long kvm_arch_dev_ioctl(struct file *filp, unsigned int ioctl,
+ 	return -ENOIOCTLCMD;
  }
  
-+/*
-+ * VM Memory Region Move
-+ *
-+ * Input Args:
-+ *   vm - Virtual Machine
-+ *   slot - Slot of the memory region to move
-+ *   flags - Starting guest physical address
-+ *
-+ * Output Args: None
-+ *
-+ * Return: None
-+ *
-+ * Change the gpa of a memory region.
-+ */
-+void vm_mem_region_move(struct kvm_vm *vm, uint32_t slot, uint64_t new_gpa)
-+{
-+	struct userspace_mem_region *region;
-+	int ret;
-+
-+	region = memslot2region(vm, slot);
-+
-+	region->region.guest_phys_addr = new_gpa;
-+
-+	ret = ioctl(vm->fd, KVM_SET_USER_MEMORY_REGION, &region->region);
-+
-+	TEST_ASSERT(!ret, "KVM_SET_USER_MEMORY_REGION failed\n"
-+		    "ret: %i errno: %i slot: %u flags: 0x%x",
-+		    ret, errno, slot, new_gpa);
-+}
-+
- /*
-  * VCPU mmap Size
-  *
-diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
-new file mode 100644
-index 000000000000..c9603b95ccf7
---- /dev/null
-+++ b/tools/testing/selftests/kvm/set_memory_region_test.c
-@@ -0,0 +1,142 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE /* for program_invocation_short_name */
-+#include <fcntl.h>
-+#include <pthread.h>
-+#include <sched.h>
-+#include <signal.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/ioctl.h>
-+
-+#include <linux/compiler.h>
-+
-+#include <test_util.h>
-+#include <kvm_util.h>
-+#include <processor.h>
-+
-+#define VCPU_ID 0
-+
-+/*
-+ * Somewhat arbitrary location and slot, intended to not overlap anything.  The
-+ * location and size are specifically 2mb sized/aligned so that the initial
-+ * region corresponds to exactly one large page (on x86 and arm64).
-+ */
-+#define MEM_REGION_GPA		0xc0000000
-+#define MEM_REGION_SIZE		0x200000
-+#define MEM_REGION_SLOT		10
-+
-+static void guest_code(void)
-+{
-+	uint64_t val;
-+
-+	do {
-+		val = READ_ONCE(*((uint64_t *)MEM_REGION_GPA));
-+	} while (!val);
-+
-+	if (val != 1)
-+		ucall(UCALL_ABORT, 1, val);
-+
-+	GUEST_DONE();
-+}
-+
-+static void *vcpu_worker(void *data)
-+{
-+	struct kvm_vm *vm = data;
-+	struct kvm_run *run;
-+	struct ucall uc;
-+	uint64_t cmd;
-+
-+	/*
-+	 * Loop until the guest is done.  Re-enter the guest on all MMIO exits,
-+	 * which will occur if the guest attempts to access a memslot while it
-+	 * is being moved.
-+	 */
-+	run = vcpu_state(vm, VCPU_ID);
-+	do {
-+		vcpu_run(vm, VCPU_ID);
-+	} while (run->exit_reason == KVM_EXIT_MMIO);
-+
-+	TEST_ASSERT(run->exit_reason == KVM_EXIT_IO,
-+		    "Unexpected exit reason = %d", run->exit_reason);
-+
-+	cmd = get_ucall(vm, VCPU_ID, &uc);
-+	TEST_ASSERT(cmd == UCALL_DONE, "Unexpected val in guest = %llu",
-+		    uc.args[0]);
-+	return NULL;
-+}
-+
-+static void test_move_memory_region(void)
-+{
-+	pthread_t vcpu_thread;
-+	struct kvm_vm *vm;
-+	uint64_t *hva;
-+	uint64_t gpa;
-+
-+	vm = vm_create_default(VCPU_ID, 0, guest_code);
-+
-+	vcpu_set_cpuid(vm, VCPU_ID, kvm_get_supported_cpuid());
-+
-+	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS_THP,
-+				    MEM_REGION_GPA, MEM_REGION_SLOT,
-+				    MEM_REGION_SIZE / getpagesize(), 0);
-+
-+	/*
-+	 * Allocate and map two pages so that the GPA accessed by guest_code()
-+	 * stays valid across the memslot move.
-+	 */
-+	gpa = vm_phy_pages_alloc(vm, 2, MEM_REGION_GPA, MEM_REGION_SLOT);
-+	TEST_ASSERT(gpa == MEM_REGION_GPA, "Failed vm_phy_pages_alloc\n");
-+
-+	virt_map(vm, MEM_REGION_GPA, MEM_REGION_GPA, 2 * 4096, 0);
-+
-+	/* Ditto for the host mapping so that both pages can be zeroed. */
-+	hva = addr_gpa2hva(vm, MEM_REGION_GPA);
-+	memset(hva, 0, 2 * 4096);
-+
-+	pthread_create(&vcpu_thread, NULL, vcpu_worker, vm);
-+
-+	/* Ensure the guest thread is spun up. */
-+	usleep(100000);
-+
-+	/*
-+	 * Shift the region's base GPA.  The guest should not see "2" as the
-+	 * hva->gpa translation is misaligned, i.e. the guest is accessing a
-+	 * different host pfn.
-+	 */
-+	vm_mem_region_move(vm, MEM_REGION_SLOT, MEM_REGION_GPA - 4096);
-+	WRITE_ONCE(*hva, 2);
-+
-+	usleep(100000);
-+
-+	/*
-+	 * Note, value in memory needs to be changed *before* restoring the
-+	 * memslot, else the guest could race the update and see "2".
-+	 */
-+	WRITE_ONCE(*hva, 1);
-+
-+	/* Restore the original base, the guest should see "1". */
-+	vm_mem_region_move(vm, MEM_REGION_SLOT, MEM_REGION_GPA);
-+
-+	pthread_join(vcpu_thread, NULL);
-+
-+	kvm_vm_free(vm);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int i, loops;
-+
-+	/* Tell stdout not to buffer its content */
-+	setbuf(stdout, NULL);
-+
-+	if (argc > 1)
-+		loops = atoi(argv[1]);
-+	else
-+		loops = 10;
-+
-+	for (i = 0; i < loops; i++)
-+		test_move_memory_region();
-+
-+	return 0;
-+}
+-int kvm_arch_create_memslot(struct kvm *kvm, struct kvm_memory_slot *slot,
+-			    unsigned long npages)
+-{
+-	return 0;
+-}
+-
+ void kvm_arch_flush_shadow_all(struct kvm *kvm)
+ {
+ 	/* Flush whole GPA */
+diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+index b0e6b33b476d..c922711a6dd8 100644
+--- a/arch/powerpc/kvm/powerpc.c
++++ b/arch/powerpc/kvm/powerpc.c
+@@ -691,12 +691,6 @@ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *free,
+ 	kvmppc_core_free_memslot(kvm, free, dont);
+ }
+ 
+-int kvm_arch_create_memslot(struct kvm *kvm, struct kvm_memory_slot *slot,
+-			    unsigned long npages)
+-{
+-	return 0;
+-}
+-
+ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+ 				   struct kvm_memory_slot *memslot,
+ 				   const struct kvm_userspace_memory_region *mem,
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index d9e6bf3d54f0..1be45bad7849 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -4491,12 +4491,6 @@ vm_fault_t kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
+ 	return VM_FAULT_SIGBUS;
+ }
+ 
+-int kvm_arch_create_memslot(struct kvm *kvm, struct kvm_memory_slot *slot,
+-			    unsigned long npages)
+-{
+-	return 0;
+-}
+-
+ /* Section: memory related */
+ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+ 				   struct kvm_memory_slot *memslot,
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 8c815b3587b4..4892ded361b3 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9698,12 +9698,6 @@ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *free,
+ 	kvm_page_track_free_memslot(free, dont);
+ }
+ 
+-int kvm_arch_create_memslot(struct kvm *kvm, struct kvm_memory_slot *slot,
+-			    unsigned long npages)
+-{
+-	return 0;
+-}
+-
+ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+ 				      unsigned long npages)
+ {
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 339de08e5fa2..46dd713da634 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -674,8 +674,6 @@ int __kvm_set_memory_region(struct kvm *kvm,
+ 			    const struct kvm_userspace_memory_region *mem);
+ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *free,
+ 			   struct kvm_memory_slot *dont);
+-int kvm_arch_create_memslot(struct kvm *kvm, struct kvm_memory_slot *slot,
+-			    unsigned long npages);
+ void kvm_arch_memslots_updated(struct kvm *kvm, u64 gen);
+ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+ 				struct kvm_memory_slot *memslot,
+diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
+index 38b4c910b6c3..f264de85f648 100644
+--- a/virt/kvm/arm/mmu.c
++++ b/virt/kvm/arm/mmu.c
+@@ -2358,12 +2358,6 @@ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *free,
+ {
+ }
+ 
+-int kvm_arch_create_memslot(struct kvm *kvm, struct kvm_memory_slot *slot,
+-			    unsigned long npages)
+-{
+-	return 0;
+-}
+-
+ void kvm_arch_memslots_updated(struct kvm *kvm, u64 gen)
+ {
+ }
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 7239e3b9dda0..d403e93e3028 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1043,12 +1043,13 @@ int __kvm_set_memory_region(struct kvm *kvm,
+ 	new.base_gfn = base_gfn;
+ 	new.npages = npages;
+ 	new.flags = mem->flags;
++	new.userspace_addr = mem->userspace_addr;
+ 
+ 	if (npages) {
+ 		if (!old.npages)
+ 			change = KVM_MR_CREATE;
+ 		else { /* Modify an existing slot. */
+-			if ((mem->userspace_addr != old.userspace_addr) ||
++			if ((new.userspace_addr != old.userspace_addr) ||
+ 			    (npages != old.npages) ||
+ 			    ((new.flags ^ old.flags) & KVM_MEM_READONLY))
+ 				goto out;
+@@ -1083,22 +1084,14 @@ int __kvm_set_memory_region(struct kvm *kvm,
+ 		}
+ 	}
+ 
+-	/* Free page dirty bitmap if unneeded */
+-	if (!(new.flags & KVM_MEM_LOG_DIRTY_PAGES))
+-		new.dirty_bitmap = NULL;
+-
+ 	r = -ENOMEM;
+-	if (change == KVM_MR_CREATE) {
+-		new.userspace_addr = mem->userspace_addr;
+ 
+-		if (kvm_arch_create_memslot(kvm, &new, npages))
+-			goto out;
+-	}
+-
+-	/* Allocate page dirty bitmap if needed */
+-	if ((new.flags & KVM_MEM_LOG_DIRTY_PAGES) && !new.dirty_bitmap) {
++	/* Allocate/free page dirty bitmap as needed */
++	if (!(new.flags & KVM_MEM_LOG_DIRTY_PAGES))
++		new.dirty_bitmap = NULL;
++	else if (!new.dirty_bitmap) {
+ 		if (kvm_create_dirty_bitmap(&new) < 0)
+-			goto out_free;
++			goto out;
+ 	}
+ 
+ 	slots = kvzalloc(sizeof(struct kvm_memslots), GFP_KERNEL_ACCOUNT);
 -- 
 2.24.1
 

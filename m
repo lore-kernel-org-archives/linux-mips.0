@@ -2,128 +2,406 @@ Return-Path: <SRS0=/1XN=2I=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FDCDC3F68F
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 08:02:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B814FC2D0CD
+	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 11:30:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5C92F2072B
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 08:02:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8464521582
+	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 11:30:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbfLRICt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 18 Dec 2019 03:02:49 -0500
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:45353 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726794AbfLRICa (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 18 Dec 2019 03:02:30 -0500
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1ihUHj-0004ei-JI; Wed, 18 Dec 2019 09:02:19 +0100
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1ihUHg-0000Ze-C8; Wed, 18 Dec 2019 09:02:16 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>, Chris Snook <chris.snook@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        id S1725785AbfLRLaO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 18 Dec 2019 06:30:14 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14146 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726545AbfLRLaM (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 18 Dec 2019 06:30:12 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBIBMCXI053529
+        for <linux-mips@vger.kernel.org>; Wed, 18 Dec 2019 06:30:09 -0500
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2wyj6payub-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-mips@vger.kernel.org>; Wed, 18 Dec 2019 06:30:09 -0500
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-mips@vger.kernel.org> from <borntraeger@de.ibm.com>;
+        Wed, 18 Dec 2019 11:30:07 -0000
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 18 Dec 2019 11:29:59 -0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xBIBTxSR53608522
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Dec 2019 11:29:59 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0564D4C046;
+        Wed, 18 Dec 2019 11:29:59 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4FE024C044;
+        Wed, 18 Dec 2019 11:29:58 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.152.224.119])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 18 Dec 2019 11:29:58 +0000 (GMT)
+Subject: Re: [PATCH v4 19/19] KVM: selftests: Add test for
+ KVM_SET_USER_MEMORY_REGION
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
         James Hogan <jhogan@kernel.org>,
-        Jay Cliburn <jcliburn@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Paul Burton <paul.burton@mips.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, Russell King <linux@armlinux.org.uk>
-Subject: [PATCH v7 0/4] add dsa switch support for ar9331
-Date:   Wed, 18 Dec 2019 09:02:11 +0100
-Message-Id: <20191218080215.2151-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.24.0
+        Paul Mackerras <paulus@ozlabs.org>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>
+References: <20191217204041.10815-1-sean.j.christopherson@intel.com>
+ <20191217204041.10815-20-sean.j.christopherson@intel.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Autocrypt: addr=borntraeger@de.ibm.com; prefer-encrypt=mutual; keydata=
+ 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
+ nS4h0HDFPrrp1C2EMVYIQrMokWvlFZbCpsdYbBI=
+Date:   Wed, 18 Dec 2019 12:29:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
+In-Reply-To: <20191217204041.10815-20-sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mips@vger.kernel.org
+X-TM-AS-GCONF: 00
+x-cbid: 19121811-0028-0000-0000-000003C9DCC7
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19121811-0029-0000-0000-0000248D28FA
+Message-Id: <028948db-b59c-08bf-b2ce-29d8745ab9c7@de.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-18_03:2019-12-17,2019-12-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ mlxscore=0 malwarescore=0 suspectscore=2 phishscore=0 mlxlogscore=999
+ priorityscore=1501 lowpriorityscore=0 impostorscore=0 clxscore=1011
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912180095
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-changes v6:
-- remove ag71xx changes from this patch set. It needs more work.
-- ar9331: fix register definition and add ASCII art switch documentation.
 
-changes v6:
-- rebase against net-next
 
-changes v5:
-- remote support for port5. The effort of using this port is
-  questionable. Currently, it is better to not use it at all, then
-  adding buggy support.
-- remove port enable call back. There is nothing what we actually need
-  to enable.
-- rebase it against v5.5-rc1 
+On 17.12.19 21:40, Sean Christopherson wrote:
+> Add a KVM selftest to test moving the base gfn of a userspace memory
+> region.  The test is primarily targeted at x86 to verify its memslot
+> metadata is correctly updated, but also provides basic functionality
+> coverage on other architectures.
 
-changes v4:
-- ag71xx: ag71xx_mac_validate fix always false comparison (&& -> ||)
-- tag_ar9331: use skb_pull_rcsum() instead of skb_pull().
-- tag_ar9331: drop skb_set_mac_header()
+This fails to build on s390 (and probably others)
 
-changes v3:
-- ag71xx: ag71xx_mac_config: ignore MLO_AN_INBAND mode. It is not
-  supported by HW and SW.
-- ag71xx: ag71xx_mac_validate: return all supported bits on
-  PHY_INTERFACE_MODE_NA
+set_memory_region_test.c: In function ‘test_move_memory_region’:
+set_memory_region_test.c:78:2: warning: implicit declaration of function ‘vcpu_set_cpuid’ [-Wimplicit-function-declaration]
+   78 |  vcpu_set_cpuid(vm, VCPU_ID, kvm_get_supported_cpuid());
+      |  ^~~~~~~~~~~~~~
+set_memory_region_test.c:78:30: warning: implicit declaration of function ‘kvm_get_supported_cpuid’ [-Wimplicit-function-declaration]
+   78 |  vcpu_set_cpuid(vm, VCPU_ID, kvm_get_supported_cpuid());
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~
 
-changes v2:
-- move Atheros AR9331 TAG format to separate patch
-- use netdev_warn_once in the tag driver to reduce potential message spam
-- typo fixes
-- reorder tag driver alphabetically 
-- configure switch to maximal frame size
-- use mdiobus_read/write
-- fail if mdio sub node is not found
-- add comment for post reset state
-- remove deprecated comment about device id
-- remove phy-handle option for node with fixed-link
-- ag71xx: set 1G support only for GMII mode
 
-This patch series provides dsa switch support for Atheros ar9331 WiSoC.
-As side effect ag71xx needed to be ported to phylink to make the switch
-driver (as well phylink based) work properly.
-
-Oleksij Rempel (4):
-  dt-bindings: net: dsa: qca,ar9331 switch documentation
-  MIPS: ath79: ar9331: add ar9331-switch node
-  net: dsa: add support for Atheros AR9331 TAG format
-  net: dsa: add support for Atheros AR9331 built-in switch
-
- .../devicetree/bindings/net/dsa/ar9331.txt    | 148 +++
- arch/mips/boot/dts/qca/ar9331.dtsi            | 119 ++-
- arch/mips/boot/dts/qca/ar9331_dpt_module.dts  |  13 +
- drivers/net/dsa/Kconfig                       |   2 +
- drivers/net/dsa/Makefile                      |   1 +
- drivers/net/dsa/qca/Kconfig                   |  11 +
- drivers/net/dsa/qca/Makefile                  |   2 +
- drivers/net/dsa/qca/ar9331.c                  | 855 ++++++++++++++++++
- include/net/dsa.h                             |   2 +
- net/dsa/Kconfig                               |   6 +
- net/dsa/Makefile                              |   1 +
- net/dsa/tag_ar9331.c                          |  96 ++
- 12 files changed, 1255 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/net/dsa/ar9331.txt
- create mode 100644 drivers/net/dsa/qca/Kconfig
- create mode 100644 drivers/net/dsa/qca/Makefile
- create mode 100644 drivers/net/dsa/qca/ar9331.c
- create mode 100644 net/dsa/tag_ar9331.c
-
--- 
-2.24.0
+> 
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  tools/testing/selftests/kvm/.gitignore        |   1 +
+>  tools/testing/selftests/kvm/Makefile          |   3 +
+>  .../testing/selftests/kvm/include/kvm_util.h  |   1 +
+>  tools/testing/selftests/kvm/lib/kvm_util.c    |  30 ++++
+>  .../selftests/kvm/set_memory_region_test.c    | 142 ++++++++++++++++++
+>  5 files changed, 177 insertions(+)
+>  create mode 100644 tools/testing/selftests/kvm/set_memory_region_test.c
+> 
+> diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
+> index 30072c3f52fb..6f60ceb81440 100644
+> --- a/tools/testing/selftests/kvm/.gitignore
+> +++ b/tools/testing/selftests/kvm/.gitignore
+> @@ -17,3 +17,4 @@
+>  /clear_dirty_log_test
+>  /dirty_log_test
+>  /kvm_create_max_vcpus
+> +/set_memory_region_test
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index 3138a916574a..01c79e02c5b7 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -29,15 +29,18 @@ TEST_GEN_PROGS_x86_64 += x86_64/xss_msr_test
+>  TEST_GEN_PROGS_x86_64 += clear_dirty_log_test
+>  TEST_GEN_PROGS_x86_64 += dirty_log_test
+>  TEST_GEN_PROGS_x86_64 += kvm_create_max_vcpus
+> +TEST_GEN_PROGS_x86_64 += set_memory_region_test
+>  
+>  TEST_GEN_PROGS_aarch64 += clear_dirty_log_test
+>  TEST_GEN_PROGS_aarch64 += dirty_log_test
+>  TEST_GEN_PROGS_aarch64 += kvm_create_max_vcpus
+> +TEST_GEN_PROGS_aarch64 += set_memory_region_test
+>  
+>  TEST_GEN_PROGS_s390x = s390x/memop
+>  TEST_GEN_PROGS_s390x += s390x/sync_regs_test
+>  TEST_GEN_PROGS_s390x += dirty_log_test
+>  TEST_GEN_PROGS_s390x += kvm_create_max_vcpus
+> +TEST_GEN_PROGS_s390x += set_memory_region_test
+>  
+>  TEST_GEN_PROGS += $(TEST_GEN_PROGS_$(UNAME_M))
+>  LIBKVM += $(LIBKVM_$(UNAME_M))
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+> index 29cccaf96baf..15d3b8690ffb 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
+> @@ -100,6 +100,7 @@ int _vcpu_ioctl(struct kvm_vm *vm, uint32_t vcpuid, unsigned long ioctl,
+>  		void *arg);
+>  void vm_ioctl(struct kvm_vm *vm, unsigned long ioctl, void *arg);
+>  void vm_mem_region_set_flags(struct kvm_vm *vm, uint32_t slot, uint32_t flags);
+> +void vm_mem_region_move(struct kvm_vm *vm, uint32_t slot, uint64_t new_gpa);
+>  void vm_vcpu_add(struct kvm_vm *vm, uint32_t vcpuid);
+>  vm_vaddr_t vm_vaddr_alloc(struct kvm_vm *vm, size_t sz, vm_vaddr_t vaddr_min,
+>  			  uint32_t data_memslot, uint32_t pgd_memslot);
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index 41cf45416060..464a75ce9843 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -756,6 +756,36 @@ void vm_mem_region_set_flags(struct kvm_vm *vm, uint32_t slot, uint32_t flags)
+>  		ret, errno, slot, flags);
+>  }
+>  
+> +/*
+> + * VM Memory Region Move
+> + *
+> + * Input Args:
+> + *   vm - Virtual Machine
+> + *   slot - Slot of the memory region to move
+> + *   flags - Starting guest physical address
+> + *
+> + * Output Args: None
+> + *
+> + * Return: None
+> + *
+> + * Change the gpa of a memory region.
+> + */
+> +void vm_mem_region_move(struct kvm_vm *vm, uint32_t slot, uint64_t new_gpa)
+> +{
+> +	struct userspace_mem_region *region;
+> +	int ret;
+> +
+> +	region = memslot2region(vm, slot);
+> +
+> +	region->region.guest_phys_addr = new_gpa;
+> +
+> +	ret = ioctl(vm->fd, KVM_SET_USER_MEMORY_REGION, &region->region);
+> +
+> +	TEST_ASSERT(!ret, "KVM_SET_USER_MEMORY_REGION failed\n"
+> +		    "ret: %i errno: %i slot: %u flags: 0x%x",
+> +		    ret, errno, slot, new_gpa);
+> +}
+> +
+>  /*
+>   * VCPU mmap Size
+>   *
+> diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
+> new file mode 100644
+> index 000000000000..c9603b95ccf7
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/set_memory_region_test.c
+> @@ -0,0 +1,142 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#define _GNU_SOURCE /* for program_invocation_short_name */
+> +#include <fcntl.h>
+> +#include <pthread.h>
+> +#include <sched.h>
+> +#include <signal.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <sys/ioctl.h>
+> +
+> +#include <linux/compiler.h>
+> +
+> +#include <test_util.h>
+> +#include <kvm_util.h>
+> +#include <processor.h>
+> +
+> +#define VCPU_ID 0
+> +
+> +/*
+> + * Somewhat arbitrary location and slot, intended to not overlap anything.  The
+> + * location and size are specifically 2mb sized/aligned so that the initial
+> + * region corresponds to exactly one large page (on x86 and arm64).
+> + */
+> +#define MEM_REGION_GPA		0xc0000000
+> +#define MEM_REGION_SIZE		0x200000
+> +#define MEM_REGION_SLOT		10
+> +
+> +static void guest_code(void)
+> +{
+> +	uint64_t val;
+> +
+> +	do {
+> +		val = READ_ONCE(*((uint64_t *)MEM_REGION_GPA));
+> +	} while (!val);
+> +
+> +	if (val != 1)
+> +		ucall(UCALL_ABORT, 1, val);
+> +
+> +	GUEST_DONE();
+> +}
+> +
+> +static void *vcpu_worker(void *data)
+> +{
+> +	struct kvm_vm *vm = data;
+> +	struct kvm_run *run;
+> +	struct ucall uc;
+> +	uint64_t cmd;
+> +
+> +	/*
+> +	 * Loop until the guest is done.  Re-enter the guest on all MMIO exits,
+> +	 * which will occur if the guest attempts to access a memslot while it
+> +	 * is being moved.
+> +	 */
+> +	run = vcpu_state(vm, VCPU_ID);
+> +	do {
+> +		vcpu_run(vm, VCPU_ID);
+> +	} while (run->exit_reason == KVM_EXIT_MMIO);
+> +
+> +	TEST_ASSERT(run->exit_reason == KVM_EXIT_IO,
+> +		    "Unexpected exit reason = %d", run->exit_reason);
+> +
+> +	cmd = get_ucall(vm, VCPU_ID, &uc);
+> +	TEST_ASSERT(cmd == UCALL_DONE, "Unexpected val in guest = %llu",
+> +		    uc.args[0]);
+> +	return NULL;
+> +}
+> +
+> +static void test_move_memory_region(void)
+> +{
+> +	pthread_t vcpu_thread;
+> +	struct kvm_vm *vm;
+> +	uint64_t *hva;
+> +	uint64_t gpa;
+> +
+> +	vm = vm_create_default(VCPU_ID, 0, guest_code);
+> +
+> +	vcpu_set_cpuid(vm, VCPU_ID, kvm_get_supported_cpuid());
+> +
+> +	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS_THP,
+> +				    MEM_REGION_GPA, MEM_REGION_SLOT,
+> +				    MEM_REGION_SIZE / getpagesize(), 0);
+> +
+> +	/*
+> +	 * Allocate and map two pages so that the GPA accessed by guest_code()
+> +	 * stays valid across the memslot move.
+> +	 */
+> +	gpa = vm_phy_pages_alloc(vm, 2, MEM_REGION_GPA, MEM_REGION_SLOT);
+> +	TEST_ASSERT(gpa == MEM_REGION_GPA, "Failed vm_phy_pages_alloc\n");
+> +
+> +	virt_map(vm, MEM_REGION_GPA, MEM_REGION_GPA, 2 * 4096, 0);
+> +
+> +	/* Ditto for the host mapping so that both pages can be zeroed. */
+> +	hva = addr_gpa2hva(vm, MEM_REGION_GPA);
+> +	memset(hva, 0, 2 * 4096);
+> +
+> +	pthread_create(&vcpu_thread, NULL, vcpu_worker, vm);
+> +
+> +	/* Ensure the guest thread is spun up. */
+> +	usleep(100000);
+> +
+> +	/*
+> +	 * Shift the region's base GPA.  The guest should not see "2" as the
+> +	 * hva->gpa translation is misaligned, i.e. the guest is accessing a
+> +	 * different host pfn.
+> +	 */
+> +	vm_mem_region_move(vm, MEM_REGION_SLOT, MEM_REGION_GPA - 4096);
+> +	WRITE_ONCE(*hva, 2);
+> +
+> +	usleep(100000);
+> +
+> +	/*
+> +	 * Note, value in memory needs to be changed *before* restoring the
+> +	 * memslot, else the guest could race the update and see "2".
+> +	 */
+> +	WRITE_ONCE(*hva, 1);
+> +
+> +	/* Restore the original base, the guest should see "1". */
+> +	vm_mem_region_move(vm, MEM_REGION_SLOT, MEM_REGION_GPA);
+> +
+> +	pthread_join(vcpu_thread, NULL);
+> +
+> +	kvm_vm_free(vm);
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int i, loops;
+> +
+> +	/* Tell stdout not to buffer its content */
+> +	setbuf(stdout, NULL);
+> +
+> +	if (argc > 1)
+> +		loops = atoi(argv[1]);
+> +	else
+> +		loops = 10;
+> +
+> +	for (i = 0; i < loops; i++)
+> +		test_move_memory_region();
+> +
+> +	return 0;
+> +}
+> 
 

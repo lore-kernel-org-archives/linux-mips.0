@@ -6,27 +6,27 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7C23C2D0BF
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:56:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A073C43603
+	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:56:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A342324650
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:56:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 323C72146E
+	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:56:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbfLRV4v (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 18 Dec 2019 16:56:51 -0500
-Received: from mga17.intel.com ([192.55.52.151]:6978 "EHLO mga17.intel.com"
+        id S1727078AbfLRVzt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 18 Dec 2019 16:55:49 -0500
+Received: from mga01.intel.com ([192.55.52.88]:56974 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727119AbfLRVzv (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 18 Dec 2019 16:55:51 -0500
+        id S1727039AbfLRVzt (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 18 Dec 2019 16:55:49 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Dec 2019 13:55:50 -0800
+  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Dec 2019 13:55:48 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,330,1571727600"; 
-   d="scan'208";a="222108172"
+   d="scan'208";a="222108155"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
-  by fmsmga001.fm.intel.com with ESMTP; 18 Dec 2019 13:55:50 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 18 Dec 2019 13:55:48 -0800
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
 To:     Marc Zyngier <maz@kernel.org>, James Hogan <jhogan@kernel.org>,
         Paul Mackerras <paulus@ozlabs.org>,
@@ -47,9 +47,9 @@ Cc:     James Morse <james.morse@arm.com>,
         linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
         kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Greg Kurz <groug@kaod.org>
-Subject: [PATCH v2 39/45] KVM: MIPS: Move all vcpu init code into kvm_arch_vcpu_create()
-Date:   Wed, 18 Dec 2019 13:55:24 -0800
-Message-Id: <20191218215530.2280-40-sean.j.christopherson@intel.com>
+Subject: [PATCH v2 35/45] KVM: s390: Manually invoke vcpu setup during kvm_arch_vcpu_create()
+Date:   Wed, 18 Dec 2019 13:55:20 -0800
+Message-Id: <20191218215530.2280-36-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191218215530.2280-1-sean.j.christopherson@intel.com>
 References: <20191218215530.2280-1-sean.j.christopherson@intel.com>
@@ -60,90 +60,55 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Fold init() into create() now that the two are called back-to-back by
-common KVM code (kvm_vcpu_init() calls kvm_arch_vcpu_init() as its last
-action, and kvm_vm_ioctl_create_vcpu() calls kvm_arch_vcpu_create()
-immediately thereafter).  Rinse and repeat for kvm_arch_vcpu_uninit()
-and kvm_arch_vcpu_destroy().  This paves the way for removing
-kvm_arch_vcpu_{un}init() entirely.
+Rename kvm_arch_vcpu_setup() to kvm_s390_vcpu_setup() and manually call
+the new function during kvm_arch_vcpu_create().  Define an empty
+kvm_arch_vcpu_setup() as it's still required for compilation.  This
+is effectively a nop as kvm_arch_vcpu_create() and kvm_arch_vcpu_setup()
+are called back-to-back by common KVM code.  Obsoleting
+kvm_arch_vcpu_setup() paves the way for its removal.
+
+Note, gmap_remove() is now called if setup fails, as s390 was previously
+freeing it via kvm_arch_vcpu_destroy(), which is called by common KVM
+code if kvm_arch_vcpu_setup() fails.
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- arch/mips/kvm/mips.c | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+ arch/s390/kvm/kvm-s390.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-index 06366e2415a6..879a7cbd5b54 100644
---- a/arch/mips/kvm/mips.c
-+++ b/arch/mips/kvm/mips.c
-@@ -294,6 +294,14 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 	kvm_debug("kvm @ %p: create cpu %d at %p\n",
- 		  vcpu->kvm, vcpu->vcpu_id, vcpu);
- 
-+	err = kvm_mips_callbacks->vcpu_init(vcpu);
-+	if (err)
-+		return err;
-+
-+	hrtimer_init(&vcpu->arch.comparecount_timer, CLOCK_MONOTONIC,
-+		     HRTIMER_MODE_REL);
-+	vcpu->arch.comparecount_timer.function = kvm_mips_comparecount_wakeup;
-+
- 	/*
- 	 * Allocate space for host mode exception handlers that handle
- 	 * guest mode exits
-@@ -307,7 +315,7 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 
- 	if (!gebase) {
- 		err = -ENOMEM;
--		goto out;
-+		goto out_uninit_vcpu;
- 	}
- 	kvm_debug("Allocated %d bytes for KVM Exception Handlers @ %p\n",
- 		  ALIGN(size, PAGE_SIZE), gebase);
-@@ -397,7 +405,8 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 	kfree(vcpu->arch.kseg0_commpage);
- out_free_gebase:
- 	kfree(gebase);
--out:
-+out_uninit_vcpu:
-+	kvm_mips_callbacks->vcpu_uninit(vcpu);
- 	return err;
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index 2ed76584ebd9..5cd92c9fc050 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -2932,6 +2932,11 @@ static void kvm_s390_vcpu_setup_model(struct kvm_vcpu *vcpu)
  }
  
-@@ -410,6 +419,8 @@ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
- 	kvm_mmu_free_memory_caches(vcpu);
- 	kfree(vcpu->arch.guest_ebase);
- 	kfree(vcpu->arch.kseg0_commpage);
+ int kvm_arch_vcpu_setup(struct kvm_vcpu *vcpu)
++{
++	return 0;
++}
 +
-+	kvm_mips_callbacks->vcpu_uninit(vcpu);
- }
- 
- int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
-@@ -1221,21 +1232,12 @@ static enum hrtimer_restart kvm_mips_comparecount_wakeup(struct hrtimer *timer)
- 
- int kvm_arch_vcpu_init(struct kvm_vcpu *vcpu)
++static int kvm_s390_vcpu_setup(struct kvm_vcpu *vcpu)
  {
--	int err;
--
--	err = kvm_mips_callbacks->vcpu_init(vcpu);
--	if (err)
--		return err;
--
--	hrtimer_init(&vcpu->arch.comparecount_timer, CLOCK_MONOTONIC,
--		     HRTIMER_MODE_REL);
--	vcpu->arch.comparecount_timer.function = kvm_mips_comparecount_wakeup;
+ 	int rc = 0;
+ 
+@@ -3070,8 +3075,14 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+ 		 vcpu->arch.sie_block);
+ 	trace_kvm_s390_create_vcpu(id, vcpu, vcpu->arch.sie_block);
+ 
++	rc = kvm_s390_vcpu_setup(vcpu);
++	if (rc)
++		goto out_ucontrol_uninit;
  	return 0;
- }
  
- void kvm_arch_vcpu_uninit(struct kvm_vcpu *vcpu)
- {
--	kvm_mips_callbacks->vcpu_uninit(vcpu);
-+
- }
- 
- int kvm_arch_vcpu_ioctl_translate(struct kvm_vcpu *vcpu,
++out_ucontrol_uninit:
++	if (kvm_is_ucontrol(vcpu->kvm))
++		gmap_remove(vcpu->arch.gmap);
+ out_free_sie_block:
+ 	free_page((unsigned long)(vcpu->arch.sie_block));
+ 	return rc;
 -- 
 2.24.1
 

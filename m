@@ -4,29 +4,29 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11BFFC43603
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:55:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5157C2D0CD
+	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:56:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E04EE24688
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:55:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A0FB4227BF
+	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:56:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbfLRVzj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 18 Dec 2019 16:55:39 -0500
-Received: from mga02.intel.com ([134.134.136.20]:54826 "EHLO mga02.intel.com"
+        id S1727354AbfLRV4F (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 18 Dec 2019 16:56:05 -0500
+Received: from mga04.intel.com ([192.55.52.120]:16973 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726754AbfLRVzj (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 18 Dec 2019 16:55:39 -0500
+        id S1726928AbfLRV4E (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 18 Dec 2019 16:56:04 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Dec 2019 13:55:38 -0800
+  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Dec 2019 13:55:51 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,330,1571727600"; 
-   d="scan'208";a="222108060"
+   d="scan'208";a="222108183"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
-  by fmsmga001.fm.intel.com with ESMTP; 18 Dec 2019 13:55:37 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 18 Dec 2019 13:55:51 -0800
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
 To:     Marc Zyngier <maz@kernel.org>, James Hogan <jhogan@kernel.org>,
         Paul Mackerras <paulus@ozlabs.org>,
@@ -47,9 +47,9 @@ Cc:     James Morse <james.morse@arm.com>,
         linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
         kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Greg Kurz <groug@kaod.org>
-Subject: [PATCH v2 13/45] KVM: PPC: Book3S PR: Allocate book3s and shadow vcpu after common init
-Date:   Wed, 18 Dec 2019 13:54:58 -0800
-Message-Id: <20191218215530.2280-14-sean.j.christopherson@intel.com>
+Subject: [PATCH v2 41/45] KVM: PPC: Move all vcpu init code into kvm_arch_vcpu_create()
+Date:   Wed, 18 Dec 2019 13:55:26 -0800
+Message-Id: <20191218215530.2280-42-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191218215530.2280-1-sean.j.christopherson@intel.com>
 References: <20191218215530.2280-1-sean.j.christopherson@intel.com>
@@ -60,76 +60,96 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Call kvm_vcpu_init() in kvmppc_core_vcpu_create_pr() prior to allocating
-the book3s and shadow_vcpu objects in preparation of moving said call to
-common PPC code.  Although kvm_vcpu_init() has an arch callback, the
-callback is empty for Book3S PR, i.e. barring unseen black magic, moving
-the allocation has no real functional impact.
+Fold init() into create() now that the two are called back-to-back by
+common KVM code (kvm_vcpu_init() calls kvm_arch_vcpu_init() as its last
+action, and kvm_vm_ioctl_create_vcpu() calls kvm_arch_vcpu_create()
+immediately thereafter).  Rinse and repeat for kvm_arch_vcpu_uninit()
+and kvm_arch_vcpu_destroy().  This paves the way for removing
+kvm_arch_vcpu_{un}init() entirely.
+
+Note, calling kvmppc_mmu_destroy() if kvmppc_core_vcpu_create() fails
+may or may not be necessary.  Move it along with the more obvious call
+to kvmppc_subarch_vcpu_uninit() so as not to inadvertantly introduce a
+functional change and/or bug.
+
+No functional change intended.
 
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- arch/powerpc/kvm/book3s_pr.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ arch/powerpc/kvm/powerpc.c | 36 ++++++++++++++++++++++--------------
+ 1 file changed, 22 insertions(+), 14 deletions(-)
 
-diff --git a/arch/powerpc/kvm/book3s_pr.c b/arch/powerpc/kvm/book3s_pr.c
-index 0d7c8a7bcb7b..10c65d412e81 100644
---- a/arch/powerpc/kvm/book3s_pr.c
-+++ b/arch/powerpc/kvm/book3s_pr.c
-@@ -1748,12 +1748,18 @@ static int kvmppc_core_vcpu_create_pr(struct kvm *kvm, struct kvm_vcpu *vcpu,
- 				      unsigned int id)
+diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+index fce1b4776e55..91cf94d4191e 100644
+--- a/arch/powerpc/kvm/powerpc.c
++++ b/arch/powerpc/kvm/powerpc.c
+@@ -729,13 +729,29 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
  {
- 	struct kvmppc_vcpu_book3s *vcpu_book3s;
--	int err = -ENOMEM;
- 	unsigned long p;
-+	int err;
+ 	int err;
+ 
+-	err = kvmppc_core_vcpu_create(vcpu);
++	hrtimer_init(&vcpu->arch.dec_timer, CLOCK_REALTIME, HRTIMER_MODE_ABS);
++	vcpu->arch.dec_timer.function = kvmppc_decrementer_wakeup;
++	vcpu->arch.dec_expires = get_tb();
 +
-+	err = kvm_vcpu_init(vcpu, kvm, id);
++#ifdef CONFIG_KVM_EXIT_TIMING
++	mutex_init(&vcpu->arch.exit_timing_lock);
++#endif
++	err = kvmppc_subarch_vcpu_init(vcpu);
+ 	if (err)
+ 		return err;
+ 
++	err = kvmppc_core_vcpu_create(vcpu);
 +	if (err)
-+		return err;
++		goto out_vcpu_uninit;
 +
-+	err = -ENOMEM;
- 
- 	vcpu_book3s = vzalloc(sizeof(struct kvmppc_vcpu_book3s));
- 	if (!vcpu_book3s)
--		goto out;
-+		goto uninit_vcpu;
- 	vcpu->arch.book3s = vcpu_book3s;
- 
- #ifdef CONFIG_KVM_BOOK3S_32_HANDLER
-@@ -1763,14 +1769,9 @@ static int kvmppc_core_vcpu_create_pr(struct kvm *kvm, struct kvm_vcpu *vcpu,
- 		goto free_vcpu3s;
- #endif
- 
--	err = kvm_vcpu_init(vcpu, kvm, id);
--	if (err)
--		goto free_shadow_vcpu;
--
--	err = -ENOMEM;
- 	p = __get_free_page(GFP_KERNEL|__GFP_ZERO);
- 	if (!p)
--		goto uninit_vcpu;
-+		goto free_shadow_vcpu;
- 	vcpu->arch.shared = (void *)p;
- #ifdef CONFIG_PPC_BOOK3S_64
- 	/* Always start the shared struct in native endian mode */
-@@ -1807,15 +1808,14 @@ static int kvmppc_core_vcpu_create_pr(struct kvm *kvm, struct kvm_vcpu *vcpu,
- 
- free_shared_page:
- 	free_page((unsigned long)vcpu->arch.shared);
--uninit_vcpu:
--	kvm_vcpu_uninit(vcpu);
- free_shadow_vcpu:
- #ifdef CONFIG_KVM_BOOK3S_32_HANDLER
- 	kfree(vcpu->arch.shadow_vcpu);
- free_vcpu3s:
- #endif
- 	vfree(vcpu_book3s);
--out:
-+uninit_vcpu:
-+	kvm_vcpu_uninit(vcpu);
- 	return err;
+ 	vcpu->arch.wqp = &vcpu->wq;
+ 	kvmppc_create_vcpu_debugfs(vcpu, vcpu->vcpu_id);
+ 	return 0;
++
++out_vcpu_uninit:
++	kvmppc_mmu_destroy(vcpu);
++	kvmppc_subarch_vcpu_uninit(vcpu);
++	return err;
  }
  
+ void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
+@@ -765,6 +781,9 @@ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
+ 	}
+ 
+ 	kvmppc_core_vcpu_free(vcpu);
++
++	kvmppc_mmu_destroy(vcpu);
++	kvmppc_subarch_vcpu_uninit(vcpu);
+ }
+ 
+ int kvm_cpu_has_pending_timer(struct kvm_vcpu *vcpu)
+@@ -784,23 +803,12 @@ static enum hrtimer_restart kvmppc_decrementer_wakeup(struct hrtimer *timer)
+ 
+ int kvm_arch_vcpu_init(struct kvm_vcpu *vcpu)
+ {
+-	int ret;
+-
+-	hrtimer_init(&vcpu->arch.dec_timer, CLOCK_REALTIME, HRTIMER_MODE_ABS);
+-	vcpu->arch.dec_timer.function = kvmppc_decrementer_wakeup;
+-	vcpu->arch.dec_expires = get_tb();
+-
+-#ifdef CONFIG_KVM_EXIT_TIMING
+-	mutex_init(&vcpu->arch.exit_timing_lock);
+-#endif
+-	ret = kvmppc_subarch_vcpu_init(vcpu);
+-	return ret;
++	return 0;
+ }
+ 
+ void kvm_arch_vcpu_uninit(struct kvm_vcpu *vcpu)
+ {
+-	kvmppc_mmu_destroy(vcpu);
+-	kvmppc_subarch_vcpu_uninit(vcpu);
++
+ }
+ 
+ void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
 -- 
 2.24.1
 

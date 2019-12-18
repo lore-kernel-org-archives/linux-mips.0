@@ -6,27 +6,27 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B613C43603
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB031C2D0D1
 	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:58:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 54E952146E
+	by mail.kernel.org (Postfix) with ESMTP id BCF9521D7D
 	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:58:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727137AbfLRV6A (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 18 Dec 2019 16:58:00 -0500
-Received: from mga01.intel.com ([192.55.52.88]:56969 "EHLO mga01.intel.com"
+        id S1726925AbfLRVzq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 18 Dec 2019 16:55:46 -0500
+Received: from mga02.intel.com ([134.134.136.20]:54847 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726540AbfLRVzq (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1726905AbfLRVzq (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Wed, 18 Dec 2019 16:55:46 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Dec 2019 13:55:45 -0800
+  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Dec 2019 13:55:42 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,330,1571727600"; 
-   d="scan'208";a="222108135"
+   d="scan'208";a="222108099"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
-  by fmsmga001.fm.intel.com with ESMTP; 18 Dec 2019 13:55:45 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 18 Dec 2019 13:55:41 -0800
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
 To:     Marc Zyngier <maz@kernel.org>, James Hogan <jhogan@kernel.org>,
         Paul Mackerras <paulus@ozlabs.org>,
@@ -47,9 +47,9 @@ Cc:     James Morse <james.morse@arm.com>,
         linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
         kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Greg Kurz <groug@kaod.org>
-Subject: [PATCH v2 29/45] KVM: Introduce kvm_vcpu_destroy()
-Date:   Wed, 18 Dec 2019 13:55:14 -0800
-Message-Id: <20191218215530.2280-30-sean.j.christopherson@intel.com>
+Subject: [PATCH v2 21/45] KVM: x86: Remove spurious clearing of async #PF MSR
+Date:   Wed, 18 Dec 2019 13:55:06 -0800
+Message-Id: <20191218215530.2280-22-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191218215530.2280-1-sean.j.christopherson@intel.com>
 References: <20191218215530.2280-1-sean.j.christopherson@intel.com>
@@ -60,120 +60,37 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add kvm_vcpu_destroy() and wire up all architectures to call the common
-function instead of their arch specific implementation.  The common
-destruction function will be used by future patches to move allocation
-and initialization of vCPUs to common KVM code, i.e. to free resources
-that are allocated by arch agnostic code.
+Remove a bogus clearing of apf.msr_val from kvm_arch_vcpu_destroy().
 
-No functional change intended.
+apf.msr_val is only set to a non-zero value by kvm_pv_enable_async_pf(),
+which is only reachable by kvm_set_msr_common(), i.e. by writing
+MSR_KVM_ASYNC_PF_EN.  KVM does not autonomously write said MSR, i.e.
+can only be written via KVM_SET_MSRS or KVM_RUN.  Since KVM_SET_MSRS and
+KVM_RUN are vcpu ioctls, they require a valid vcpu file descriptor.
+kvm_arch_vcpu_destroy() is only called if KVM_CREATE_VCPU fails, and KVM
+declares KVM_CREATE_VCPU successful once the vcpu fd is installed and
+thus visible to userspace.  Ergo, apf.msr_val cannot be non-zero when
+kvm_arch_vcpu_destroy() is called.
 
-Acked-by: Christoffer Dall <christoffer.dall@arm.com>
+Fixes: 344d9588a9df0 ("KVM: Add PV MSR to enable asynchronous page faults delivery.")
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- arch/mips/kvm/mips.c       | 2 +-
- arch/powerpc/kvm/powerpc.c | 2 +-
- arch/s390/kvm/kvm-s390.c   | 2 +-
- arch/x86/kvm/x86.c         | 2 +-
- include/linux/kvm_host.h   | 1 +
- virt/kvm/arm/arm.c         | 2 +-
- virt/kvm/kvm_main.c        | 6 ++++++
- 7 files changed, 12 insertions(+), 5 deletions(-)
+ arch/x86/kvm/x86.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-index 73360e021259..8546bc6e09e7 100644
---- a/arch/mips/kvm/mips.c
-+++ b/arch/mips/kvm/mips.c
-@@ -156,7 +156,7 @@ void kvm_mips_free_vcpus(struct kvm *kvm)
- 	struct kvm_vcpu *vcpu;
- 
- 	kvm_for_each_vcpu(i, vcpu, kvm) {
--		kvm_arch_vcpu_destroy(vcpu);
-+		kvm_vcpu_destroy(vcpu);
- 	}
- 
- 	mutex_lock(&kvm->lock);
-diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
-index 998ef60ac463..e3e2b88d3d8b 100644
---- a/arch/powerpc/kvm/powerpc.c
-+++ b/arch/powerpc/kvm/powerpc.c
-@@ -475,7 +475,7 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
- #endif
- 
- 	kvm_for_each_vcpu(i, vcpu, kvm)
--		kvm_arch_vcpu_destroy(vcpu);
-+		kvm_vcpu_destroy(vcpu);
- 
- 	mutex_lock(&kvm->lock);
- 	for (i = 0; i < atomic_read(&kvm->online_vcpus); i++)
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 1f8ba074cbd6..8543d338a06a 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -2541,7 +2541,7 @@ static void kvm_free_vcpus(struct kvm *kvm)
- 	struct kvm_vcpu *vcpu;
- 
- 	kvm_for_each_vcpu(i, vcpu, kvm)
--		kvm_arch_vcpu_destroy(vcpu);
-+		kvm_vcpu_destroy(vcpu);
- 
- 	mutex_lock(&kvm->lock);
- 	for (i = 0; i < atomic_read(&kvm->online_vcpus); i++)
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index f21169515910..c808329290e1 100644
+index 19c14b786255..46626b52a4da 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -9590,7 +9590,7 @@ static void kvm_free_vcpus(struct kvm *kvm)
- 		kvm_unload_vcpu_mmu(vcpu);
- 	}
- 	kvm_for_each_vcpu(i, vcpu, kvm)
--		kvm_arch_vcpu_destroy(vcpu);
-+		kvm_vcpu_destroy(vcpu);
+@@ -9176,8 +9176,6 @@ void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
  
- 	mutex_lock(&kvm->lock);
- 	for (i = 0; i < atomic_read(&kvm->online_vcpus); i++)
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 7c57f1a5d7b3..9e3371f9a4cd 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -581,6 +581,7 @@ static inline int kvm_vcpu_get_idx(struct kvm_vcpu *vcpu)
- 
- int kvm_vcpu_init(struct kvm_vcpu *vcpu, struct kvm *kvm, unsigned id);
- void kvm_vcpu_uninit(struct kvm_vcpu *vcpu);
-+void kvm_vcpu_destroy(struct kvm_vcpu *vcpu);
- 
- void vcpu_load(struct kvm_vcpu *vcpu);
- void vcpu_put(struct kvm_vcpu *vcpu);
-diff --git a/virt/kvm/arm/arm.c b/virt/kvm/arm/arm.c
-index 3cdd1c3be2c7..f569cbb2f123 100644
---- a/virt/kvm/arm/arm.c
-+++ b/virt/kvm/arm/arm.c
-@@ -194,7 +194,7 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
- 
- 	for (i = 0; i < KVM_MAX_VCPUS; ++i) {
- 		if (kvm->vcpus[i]) {
--			kvm_arch_vcpu_destroy(kvm->vcpus[i]);
-+			kvm_vcpu_destroy(kvm->vcpus[i]);
- 			kvm->vcpus[i] = NULL;
- 		}
- 	}
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 281da692c774..c2766a1108b9 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -375,6 +375,12 @@ void kvm_vcpu_uninit(struct kvm_vcpu *vcpu)
- }
- EXPORT_SYMBOL_GPL(kvm_vcpu_uninit);
- 
-+void kvm_vcpu_destroy(struct kvm_vcpu *vcpu)
-+{
-+	kvm_arch_vcpu_destroy(vcpu);
-+}
-+EXPORT_SYMBOL_GPL(kvm_vcpu_destroy);
-+
- #if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
- static inline struct kvm *mmu_notifier_to_kvm(struct mmu_notifier *mn)
+ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
  {
+-	vcpu->arch.apf.msr_val = 0;
+-
+ 	kvm_arch_vcpu_free(vcpu);
+ }
+ 
 -- 
 2.24.1
 

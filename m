@@ -6,27 +6,27 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD554C43603
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:57:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53B3DC2D0CD
+	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:57:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A0D712465E
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:57:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 26A7021D7D
+	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:57:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726947AbfLRV5m (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 18 Dec 2019 16:57:42 -0500
-Received: from mga02.intel.com ([134.134.136.20]:54850 "EHLO mga02.intel.com"
+        id S1726940AbfLRVzq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 18 Dec 2019 16:55:46 -0500
+Received: from mga12.intel.com ([192.55.52.136]:45875 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726909AbfLRVzq (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1726908AbfLRVzq (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Wed, 18 Dec 2019 16:55:46 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Dec 2019 13:55:43 -0800
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Dec 2019 13:55:45 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,330,1571727600"; 
-   d="scan'208";a="222108106"
+   d="scan'208";a="222108131"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
-  by fmsmga001.fm.intel.com with ESMTP; 18 Dec 2019 13:55:42 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 18 Dec 2019 13:55:45 -0800
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
 To:     Marc Zyngier <maz@kernel.org>, James Hogan <jhogan@kernel.org>,
         Paul Mackerras <paulus@ozlabs.org>,
@@ -47,9 +47,9 @@ Cc:     James Morse <james.morse@arm.com>,
         linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
         kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Greg Kurz <groug@kaod.org>
-Subject: [PATCH v2 23/45] KVM: Remove kvm_arch_vcpu_free() declaration
-Date:   Wed, 18 Dec 2019 13:55:08 -0800
-Message-Id: <20191218215530.2280-24-sean.j.christopherson@intel.com>
+Subject: [PATCH v2 28/45] KVM: x86: Invoke kvm_vcpu_uninit() immediately prior to freeing vcpu
+Date:   Wed, 18 Dec 2019 13:55:13 -0800
+Message-Id: <20191218215530.2280-29-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191218215530.2280-1-sean.j.christopherson@intel.com>
 References: <20191218215530.2280-1-sean.j.christopherson@intel.com>
@@ -60,28 +60,34 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Remove KVM's declaration of kvm_arch_vcpu_free() now that the function
-is gone from all architectures (several architectures were relying on
-the forward declaration).
+Move the call to kvm_vcpu_uninit() in kvm_arch_vcpu_destroy() down a few
+lines so that it is invoked immediately prior to freeing the vCPU.  This
+paves the way for moving the uninit and free sequence to common KVM code
+without an associated functional change.
 
-Acked-by: Christoffer Dall <christoffer.dall@arm.com>
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- include/linux/kvm_host.h | 1 -
- 1 file changed, 1 deletion(-)
+ arch/x86/kvm/x86.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 339de08e5fa2..a3f7ab881846 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -872,7 +872,6 @@ void kvm_arch_vcpu_uninit(struct kvm_vcpu *vcpu);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index c8b875aefeee..f21169515910 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9170,11 +9170,11 @@ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
  
- void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu);
+ 	kvm_x86_ops->vcpu_free(vcpu);
  
--void kvm_arch_vcpu_free(struct kvm_vcpu *vcpu);
- void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu);
- void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu);
- struct kvm_vcpu *kvm_arch_vcpu_create(struct kvm *kvm, unsigned int id);
+-	kvm_vcpu_uninit(vcpu);
+-
+ 	free_cpumask_var(vcpu->arch.wbinvd_dirty_mask);
+ 	kmem_cache_free(x86_fpu_cache, vcpu->arch.user_fpu);
+ 	kmem_cache_free(x86_fpu_cache, vcpu->arch.guest_fpu);
++
++	kvm_vcpu_uninit(vcpu);
+ 	kmem_cache_free(kvm_vcpu_cache, vcpu);
+ }
+ 
 -- 
 2.24.1
 

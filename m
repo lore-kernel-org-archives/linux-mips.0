@@ -6,27 +6,27 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81D95C2D0BF
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:57:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD3A3C43603
+	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:57:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 557DB21D7D
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:57:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B7BB824650
+	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:57:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727281AbfLRV5L (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 18 Dec 2019 16:57:11 -0500
-Received: from mga01.intel.com ([192.55.52.88]:56971 "EHLO mga01.intel.com"
+        id S1726963AbfLRVzr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 18 Dec 2019 16:55:47 -0500
+Received: from mga02.intel.com ([134.134.136.20]:54840 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726992AbfLRVzs (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 18 Dec 2019 16:55:48 -0500
+        id S1726936AbfLRVzq (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 18 Dec 2019 16:55:46 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Dec 2019 13:55:47 -0800
+  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Dec 2019 13:55:44 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,330,1571727600"; 
-   d="scan'208";a="222108147"
+   d="scan'208";a="222108112"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
-  by fmsmga001.fm.intel.com with ESMTP; 18 Dec 2019 13:55:47 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 18 Dec 2019 13:55:43 -0800
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
 To:     Marc Zyngier <maz@kernel.org>, James Hogan <jhogan@kernel.org>,
         Paul Mackerras <paulus@ozlabs.org>,
@@ -47,9 +47,9 @@ Cc:     James Morse <james.morse@arm.com>,
         linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
         kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Greg Kurz <groug@kaod.org>
-Subject: [PATCH v2 33/45] KVM: x86: Move guts of kvm_arch_vcpu_setup() into kvm_arch_vcpu_create()
-Date:   Wed, 18 Dec 2019 13:55:18 -0800
-Message-Id: <20191218215530.2280-34-sean.j.christopherson@intel.com>
+Subject: [PATCH v2 25/45] KVM: s390: Move guts of kvm_arch_vcpu_init() into kvm_arch_vcpu_create()
+Date:   Wed, 18 Dec 2019 13:55:10 -0800
+Message-Id: <20191218215530.2280-26-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191218215530.2280-1-sean.j.christopherson@intel.com>
 References: <20191218215530.2280-1-sean.j.christopherson@intel.com>
@@ -60,47 +60,104 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Fold setup() into create() now that the two are called back-to-back by
-common KVM code.  This paves the way for removing kvm_arch_vcpu_setup().
+Move all of kvm_arch_vcpu_init(), which is invoked at the very end of
+kvm_vcpu_init(), into kvm_arch_vcpu_create() in preparation of moving
+the call to kvm_vcpu_init().  Moving kvm_vcpu_init() is itself a
+preparatory step for moving allocation and initialization to common KVM
+code.
+
+No functional change inteded.
 
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- arch/x86/kvm/x86.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ arch/s390/kvm/kvm-s390.c | 62 ++++++++++++++++++++++------------------
+ 1 file changed, 34 insertions(+), 28 deletions(-)
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index c04b24719b28..0ab96dc3dd08 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9100,11 +9100,12 @@ int kvm_arch_vcpu_precreate(struct kvm *kvm, unsigned int id)
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index 57c6838dff37..0049b621e56a 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -2705,34 +2705,6 @@ static int sca_can_add_vcpu(struct kvm *kvm, unsigned int id)
  
- int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+ int kvm_arch_vcpu_init(struct kvm_vcpu *vcpu)
  {
--	return kvm_x86_ops->vcpu_create(vcpu);
--}
-+	int ret;
-+
-+	ret = kvm_x86_ops->vcpu_create(vcpu);
-+	if (ret)
-+		return ret;
- 
--int kvm_arch_vcpu_setup(struct kvm_vcpu *vcpu)
--{
- 	vcpu->arch.arch_capabilities = kvm_get_arch_capabilities();
- 	vcpu->arch.msr_platform_info = MSR_PLATFORM_INFO_CPUID_FAULT;
- 	kvm_vcpu_mtrr_init(vcpu);
-@@ -9115,6 +9116,11 @@ int kvm_arch_vcpu_setup(struct kvm_vcpu *vcpu)
+-	vcpu->arch.pfault_token = KVM_S390_PFAULT_TOKEN_INVALID;
+-	kvm_clear_async_pf_completion_queue(vcpu);
+-	vcpu->run->kvm_valid_regs = KVM_SYNC_PREFIX |
+-				    KVM_SYNC_GPRS |
+-				    KVM_SYNC_ACRS |
+-				    KVM_SYNC_CRS |
+-				    KVM_SYNC_ARCH0 |
+-				    KVM_SYNC_PFAULT;
+-	kvm_s390_set_prefix(vcpu, 0);
+-	if (test_kvm_facility(vcpu->kvm, 64))
+-		vcpu->run->kvm_valid_regs |= KVM_SYNC_RICCB;
+-	if (test_kvm_facility(vcpu->kvm, 82))
+-		vcpu->run->kvm_valid_regs |= KVM_SYNC_BPBC;
+-	if (test_kvm_facility(vcpu->kvm, 133))
+-		vcpu->run->kvm_valid_regs |= KVM_SYNC_GSCB;
+-	if (test_kvm_facility(vcpu->kvm, 156))
+-		vcpu->run->kvm_valid_regs |= KVM_SYNC_ETOKEN;
+-	/* fprs can be synchronized via vrs, even if the guest has no vx. With
+-	 * MACHINE_HAS_VX, (load|store)_fpu_regs() will work with vrs format.
+-	 */
+-	if (MACHINE_HAS_VX)
+-		vcpu->run->kvm_valid_regs |= KVM_SYNC_VRS;
+-	else
+-		vcpu->run->kvm_valid_regs |= KVM_SYNC_FPRS;
+-
+-	if (kvm_is_ucontrol(vcpu->kvm))
+-		return __kvm_ucontrol_vcpu_init(vcpu);
+-
  	return 0;
  }
  
-+int kvm_arch_vcpu_setup(struct kvm_vcpu *vcpu)
-+{
-+	return 0;
-+}
+@@ -3077,11 +3049,45 @@ struct kvm_vcpu *kvm_arch_vcpu_create(struct kvm *kvm,
+ 	rc = kvm_vcpu_init(vcpu, kvm, id);
+ 	if (rc)
+ 		goto out_free_sie_block;
 +
- void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
- {
- 	struct msr_data msr;
++	vcpu->arch.pfault_token = KVM_S390_PFAULT_TOKEN_INVALID;
++	kvm_clear_async_pf_completion_queue(vcpu);
++	vcpu->run->kvm_valid_regs = KVM_SYNC_PREFIX |
++				    KVM_SYNC_GPRS |
++				    KVM_SYNC_ACRS |
++				    KVM_SYNC_CRS |
++				    KVM_SYNC_ARCH0 |
++				    KVM_SYNC_PFAULT;
++	kvm_s390_set_prefix(vcpu, 0);
++	if (test_kvm_facility(vcpu->kvm, 64))
++		vcpu->run->kvm_valid_regs |= KVM_SYNC_RICCB;
++	if (test_kvm_facility(vcpu->kvm, 82))
++		vcpu->run->kvm_valid_regs |= KVM_SYNC_BPBC;
++	if (test_kvm_facility(vcpu->kvm, 133))
++		vcpu->run->kvm_valid_regs |= KVM_SYNC_GSCB;
++	if (test_kvm_facility(vcpu->kvm, 156))
++		vcpu->run->kvm_valid_regs |= KVM_SYNC_ETOKEN;
++	/* fprs can be synchronized via vrs, even if the guest has no vx. With
++	 * MACHINE_HAS_VX, (load|store)_fpu_regs() will work with vrs format.
++	 */
++	if (MACHINE_HAS_VX)
++		vcpu->run->kvm_valid_regs |= KVM_SYNC_VRS;
++	else
++		vcpu->run->kvm_valid_regs |= KVM_SYNC_FPRS;
++
++	if (kvm_is_ucontrol(vcpu->kvm)) {
++		rc = __kvm_ucontrol_vcpu_init(vcpu);
++		if (rc)
++			goto out_uninit_vcpu;
++	}
++
+ 	VM_EVENT(kvm, 3, "create cpu %d at 0x%pK, sie block at 0x%pK", id, vcpu,
+ 		 vcpu->arch.sie_block);
+ 	trace_kvm_s390_create_vcpu(id, vcpu, vcpu->arch.sie_block);
+ 
+ 	return vcpu;
++out_uninit_vcpu:
++	kvm_vcpu_uninit(vcpu);
+ out_free_sie_block:
+ 	free_page((unsigned long)(vcpu->arch.sie_block));
+ out_free_cpu:
 -- 
 2.24.1
 

@@ -6,27 +6,27 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E537C43603
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:58:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 614F6C2D0CD
+	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:58:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2A566227BF
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:58:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 305912146E
+	for <linux-mips@archiver.kernel.org>; Wed, 18 Dec 2019 21:58:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727151AbfLRV6V (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 18 Dec 2019 16:58:21 -0500
-Received: from mga02.intel.com ([134.134.136.20]:54847 "EHLO mga02.intel.com"
+        id S1726818AbfLRVzl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 18 Dec 2019 16:55:41 -0500
+Received: from mga02.intel.com ([134.134.136.20]:54840 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726882AbfLRVzp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 18 Dec 2019 16:55:45 -0500
+        id S1726795AbfLRVzk (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 18 Dec 2019 16:55:40 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Dec 2019 13:55:41 -0800
+  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Dec 2019 13:55:39 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,330,1571727600"; 
-   d="scan'208";a="222108093"
+   d="scan'208";a="222108072"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
-  by fmsmga001.fm.intel.com with ESMTP; 18 Dec 2019 13:55:40 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 18 Dec 2019 13:55:39 -0800
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
 To:     Marc Zyngier <maz@kernel.org>, James Hogan <jhogan@kernel.org>,
         Paul Mackerras <paulus@ozlabs.org>,
@@ -47,9 +47,9 @@ Cc:     James Morse <james.morse@arm.com>,
         linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
         kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Greg Kurz <groug@kaod.org>
-Subject: [PATCH v2 19/45] KVM: arm: Drop kvm_arch_vcpu_free()
-Date:   Wed, 18 Dec 2019 13:55:04 -0800
-Message-Id: <20191218215530.2280-20-sean.j.christopherson@intel.com>
+Subject: [PATCH v2 16/45] KVM: MIPS: Use kvm_vcpu_cache to allocate vCPUs
+Date:   Wed, 18 Dec 2019 13:55:01 -0800
+Message-Id: <20191218215530.2280-17-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20191218215530.2280-1-sean.j.christopherson@intel.com>
 References: <20191218215530.2280-1-sean.j.christopherson@intel.com>
@@ -60,51 +60,46 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Remove the superfluous kvm_arch_vcpu_free() as it is no longer called
-from commmon KVM code.  Note, kvm_arch_vcpu_destroy() *is* called from
-common code, i.e. choosing which function to whack is not completely
-arbitrary.
+For reasons unknown, MIPS configures the vCPU allocation cache but
+allocates vCPUs via kzalloc().  Allocate from the vCPU cache in
+preparation for moving vCPU allocation to common KVM code.
 
-Acked-by: Christoffer Dall <christoffer.dall@arm.com>
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- virt/kvm/arm/arm.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ arch/mips/kvm/mips.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/virt/kvm/arm/arm.c b/virt/kvm/arm/arm.c
-index 12e0280291ce..25b5e4c9b8db 100644
---- a/virt/kvm/arm/arm.c
-+++ b/virt/kvm/arm/arm.c
-@@ -194,7 +194,7 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
+diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+index 1109924560d8..5f985773417c 100644
+--- a/arch/mips/kvm/mips.c
++++ b/arch/mips/kvm/mips.c
+@@ -286,7 +286,7 @@ struct kvm_vcpu *kvm_arch_vcpu_create(struct kvm *kvm, unsigned int id)
+ 	void *gebase, *p, *handler, *refill_start, *refill_end;
+ 	int i;
  
- 	for (i = 0; i < KVM_MAX_VCPUS; ++i) {
- 		if (kvm->vcpus[i]) {
--			kvm_arch_vcpu_free(kvm->vcpus[i]);
-+			kvm_arch_vcpu_destroy(kvm->vcpus[i]);
- 			kvm->vcpus[i] = NULL;
- 		}
- 	}
-@@ -321,7 +321,7 @@ void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
- {
+-	struct kvm_vcpu *vcpu = kzalloc(sizeof(struct kvm_vcpu), GFP_KERNEL);
++	struct kvm_vcpu *vcpu = kmem_cache_zalloc(kvm_vcpu_cache, GFP_KERNEL);
+ 
+ 	if (!vcpu) {
+ 		err = -ENOMEM;
+@@ -401,7 +401,7 @@ struct kvm_vcpu *kvm_arch_vcpu_create(struct kvm *kvm, unsigned int id)
+ 	kvm_vcpu_uninit(vcpu);
+ 
+ out_free_cpu:
+-	kfree(vcpu);
++	kmem_cache_free(kvm_vcpu_cache, vcpu);
+ 
+ out:
+ 	return ERR_PTR(err);
+@@ -418,7 +418,7 @@ void kvm_arch_vcpu_free(struct kvm_vcpu *vcpu)
+ 	kvm_mmu_free_memory_caches(vcpu);
+ 	kfree(vcpu->arch.guest_ebase);
+ 	kfree(vcpu->arch.kseg0_commpage);
+-	kfree(vcpu);
++	kmem_cache_free(kvm_vcpu_cache, vcpu);
  }
  
--void kvm_arch_vcpu_free(struct kvm_vcpu *vcpu)
-+void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
- {
- 	if (vcpu->arch.has_run_once && unlikely(!irqchip_in_kernel(vcpu->kvm)))
- 		static_branch_dec(&userspace_irqchip_in_use);
-@@ -333,11 +333,6 @@ void kvm_arch_vcpu_free(struct kvm_vcpu *vcpu)
- 	kmem_cache_free(kvm_vcpu_cache, vcpu);
- }
- 
--void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
--{
--	kvm_arch_vcpu_free(vcpu);
--}
--
- int kvm_cpu_has_pending_timer(struct kvm_vcpu *vcpu)
- {
- 	return kvm_timer_is_pending(vcpu);
+ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
 -- 
 2.24.1
 

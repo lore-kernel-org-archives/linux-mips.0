@@ -2,107 +2,111 @@ Return-Path: <SRS0=/kMu=2N=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32FF2C2D0C0
-	for <linux-mips@archiver.kernel.org>; Mon, 23 Dec 2019 13:08:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8853CC2D0D0
+	for <linux-mips@archiver.kernel.org>; Mon, 23 Dec 2019 14:31:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F043A2073A
-	for <linux-mips@archiver.kernel.org>; Mon, 23 Dec 2019 13:08:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5DB9121569
+	for <linux-mips@archiver.kernel.org>; Mon, 23 Dec 2019 14:31:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Rt2oBm5E"
+	dkim=pass (1024-bit key) header.d=c-s.fr header.i=@c-s.fr header.b="WqRlriy0"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbfLWNIt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 23 Dec 2019 08:08:49 -0500
-Received: from frisell.zx2c4.com ([192.95.5.64]:54811 "EHLO frisell.zx2c4.com"
+        id S1727083AbfLWObK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 23 Dec 2019 09:31:10 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:14019 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726680AbfLWNIt (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 23 Dec 2019 08:08:49 -0500
-Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTP id aa521add;
-        Mon, 23 Dec 2019 12:11:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=date:from:to
-        :subject:message-id:mime-version:content-type
-        :content-transfer-encoding; s=mail; bh=wTgMZEUZRBvg+FUoKnmV0TjLF
-        8I=; b=Rt2oBm5E2RxTXUBuozP/1P1v98X3S9goVj0mzdIcdw4ytPXNbMEI0baOY
-        yct2I4vk2Q73mG49juZG8pVeRTX+TTovyfItnVqEmsYD/fttWcBWVlOiAF/M1Wnk
-        mEpwyggN4aHlDwVcilPwEwtdQIh2U16L/S474tLtAMFPZekPMrHxuabD4eeZrd91
-        25joYEuzf044lXgEiW5l3nDXtXaOvVquiwWhryjhBecegGWfnEJUmrsYkFFlMoco
-        HbHLW6rZEKijZBug3Sr5aOV48F+fvemwmyrzHDZESNbA/cgCqdd/tR1MaPWJ9Q9o
-        GzPAOpOkH1K7oYRlGBEs+ppCMl4wA==
-Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 3fc974c8 (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256:NO);
-        Mon, 23 Dec 2019 12:11:34 +0000 (UTC)
-Date:   Mon, 23 Dec 2019 14:08:34 +0100
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        arnd@arndb.de, paulburton@kernel.org
-Subject: vdso-related userspace crashes on 5.5 mips64
-Message-ID: <20191223130834.GA102399@zx2c4.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+        id S1726884AbfLWObI (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 23 Dec 2019 09:31:08 -0500
+Received: from localhost (mailhub1-ext [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 47hMGY4PS8z9txhl;
+        Mon, 23 Dec 2019 15:31:01 +0100 (CET)
+Authentication-Results: localhost; dkim=pass
+        reason="1024-bit key; insecure key"
+        header.d=c-s.fr header.i=@c-s.fr header.b=WqRlriy0; dkim-adsp=pass;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id lyyav2mt8lCR; Mon, 23 Dec 2019 15:31:01 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 47hMGY3DMLz9txhg;
+        Mon, 23 Dec 2019 15:31:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+        t=1577111461; bh=4HlVdfb/m2bnebYsqTVj7kFlC+Ng414ig/AZSZp6k7s=;
+        h=In-Reply-To:References:From:Subject:To:Cc:Date:From;
+        b=WqRlriy0DqcZh60SDjoGMQijbqFO68IO3uompTe3PTUn5JPopZMKehw9+2nPSPIZP
+         hwfYncZjR/MLSaTvHfyl3A0w9elV2k2/xL/eg8+TK6KKCyFx1bzcUuK7n2o2YsIyfr
+         HAsfky9f/aUORYv0A9P41kc9Lg3ATeICFVaYId54=
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8959D8B7AB;
+        Mon, 23 Dec 2019 15:31:06 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id pPU4VC3HWwT0; Mon, 23 Dec 2019 15:31:06 +0100 (CET)
+Received: from po16098vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.100])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5CBAE8B7A1;
+        Mon, 23 Dec 2019 15:31:06 +0100 (CET)
+Received: by po16098vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 66892637D4; Mon, 23 Dec 2019 14:31:06 +0000 (UTC)
+Message-Id: <d0f8dfb26c025d3e3eee1b5f610161ca19b942df.1577111367.git.christophe.leroy@c-s.fr>
+In-Reply-To: <cover.1577111363.git.christophe.leroy@c-s.fr>
+References: <cover.1577111363.git.christophe.leroy@c-s.fr>
+From:   Christophe Leroy <christophe.leroy@c-s.fr>
+Subject: [RFC PATCH v2 05/10] lib: vdso: inline do_hres()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, arnd@arndb.de,
+        tglx@linutronix.de, vincenzo.frascino@arm.com, luto@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        x86@kernel.org
+Date:   Mon, 23 Dec 2019 14:31:06 +0000 (UTC)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi,
+do_hres() is called from several places, so GCC doesn't inline
+it at first.
 
-I'm experiencing VDSO-related crashes on 5.5 with MIPS64. The MIPS64
-builders on build.wireguard.com are all red at the moment.
+do_hres() takes a struct __kernel_timespec * parameter for
+passing the result. In the 32 bits case, this parameter corresponds
+to a local var in the caller. In order to provide a pointer
+to this structure, the caller has to put it in its stack and
+do_hres() has to write the result in the stack. This is suboptimal,
+especially on RISC processor like powerpc.
 
-It looks like libc is crashing with a null pointer dereference when
-doing any work after returning from clock_gettime. This manifests
-itself, for me, with calls to clock_gettime(CLOCK_PROCESS_CPUTIME_ID),
-because CLOCK_PROCESS_CPUTIME_ID is not in the VDSO. It looks in the
-VDSO, doesn't find it, and then proceeds to make the real syscall, when
-it crashes. I can simulate the same crash by simply adding a printf
-after a successful call to the vdso before returning. For example:
+By making GCC inline the function, the struct __kernel_timespec
+remains a local var using registers, avoiding the need to write and
+read stack.
 
-int __clock_gettime(clockid_t clk, struct timespec *ts)
-{
-  int r;
+The improvement is significant on powerpc.
 
-#ifdef VDSO_CGT_SYM
-  int (*f)(clockid_t, struct timespec *) =
-    (int (*)(clockid_t, struct timespec *))vdso_func;
-  printf("vdso %p\n", f); // <-- this line does NOT crash.
-  if (f) {
-    r = f(clk, ts);
-    if (!r) {
-      printf("ret %d\n", r); // <-- this line DOES crash.
-      return r;
-    }
-    if (r == -EINVAL)
-      return __syscall_ret(r);
-  }
-#endif
-  printf("falling through\n"); // <--- this line DOES crash.
-  r = __syscall(SYS_clock_gettime, clk, ts); // <-- also, this line will crash too
-  if (r == -ENOSYS) {
-    if (clk == CLOCK_REALTIME) {
-      __syscall(SYS_gettimeofday, ts, 0);
-      ts->tv_nsec = (int)ts->tv_nsec * 1000;
-      return 0;
-    }
-    r = -EINVAL;
-  }
-  return __syscall_ret(r);
-}
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+---
+ lib/vdso/gettimeofday.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-It seems like somehow the stack frame is corrupted/unusable after a call
-to the vdso. But, returning immediately from clock_gettime after a call
-to the vdso allows the program to continue. Thus, this problem only
-manifests itself when using clocks that aren't handled by the vdso.
+diff --git a/lib/vdso/gettimeofday.c b/lib/vdso/gettimeofday.c
+index 24e1ba838260..86d5b1c8796b 100644
+--- a/lib/vdso/gettimeofday.c
++++ b/lib/vdso/gettimeofday.c
+@@ -34,8 +34,8 @@ u64 vdso_calc_delta(u64 cycles, u64 last, u64 mask, u32 mult)
+ }
+ #endif
+ 
+-static int do_hres(const struct vdso_data *vd, clockid_t clk,
+-		   struct __kernel_timespec *ts)
++static inline int do_hres(const struct vdso_data *vd, clockid_t clk,
++			  struct __kernel_timespec *ts)
+ {
+ 	const struct vdso_timestamp *vdso_ts = &vd->basetime[clk];
+ 	u64 cycles, last, sec, ns;
+-- 
+2.13.3
 
-It's possible this is due to some compiler ABI mismatch situation
-between userspace and kernelspace. However, I've only started seeing
-this happen with 5.5 and not on 5.4.
-
-Does the above description immediately point to some recognizable
-change? If not, I'll keep debugging.
-
-Thanks,
-Jason

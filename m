@@ -2,112 +2,119 @@ Return-Path: <SRS0=SQrZ=2T=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLACK,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5056EC2D0DC
-	for <linux-mips@archiver.kernel.org>; Sun, 29 Dec 2019 18:09:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E1B0C2D0D1
+	for <linux-mips@archiver.kernel.org>; Sun, 29 Dec 2019 18:59:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 206B9206A4
-	for <linux-mips@archiver.kernel.org>; Sun, 29 Dec 2019 18:09:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 58C1C21744
+	for <linux-mips@archiver.kernel.org>; Sun, 29 Dec 2019 18:59:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1577642976;
-	bh=NNF78YitIhww+624FtHYFBETyGKdGJ4DoOC56pLn3/w=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=d48RikVI2gbu8m5aDjQVfUTIt70Qi/a/RJBSeC95P3Qp1g6wb5LYZ14VOMit0eGh6
-	 nDLkUqNf4eW1VbIxIx5aIgpaQWI7AXCQhfThDidgvYK71zKz7HEEQUwUaM2YSxOlFv
-	 Z2OPM3v2ncz3I7QHHjgESz9q5+RH6OtPCMdBSsVs=
+	s=default; t=1577645958;
+	bh=jbPC7qSdz/G1kH6htra/EGcuWudSA6hHVinNpUhZEo4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=trPJBpwl2H8qHYxTZ8/Y2PGMLM1vll/7NPUqrgwqDA25rwcWHiJXklOey7spMVuR7
+	 Vgz23Y9WMbFob/0qaMD3gFTaZrYZl25NZ5NSSEjO/opJaYL1VV6RXXv3MPcj1bwlan
+	 mCN+WKj1UqIohkvAqgwhebNCJFcw2SvPzL/hshvk=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730966AbfL2Rpt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 29 Dec 2019 12:45:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730680AbfL2Rps (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 29 Dec 2019 12:45:48 -0500
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C1F52465A;
-        Sun, 29 Dec 2019 17:45:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577641547;
-        bh=NNF78YitIhww+624FtHYFBETyGKdGJ4DoOC56pLn3/w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ti8bMO/20pIh8m4cIcln+MwRSXem8QLZ3T8me4V1nmcO1duqE57c74acFHepRI5dP
-         IQ3B06vrPvre1bSpjYCh2tdQOgd33LM4/GPvaX2dIESzgfXfcybQoz9CLWR17mcKen
-         A2gsSaFuOcpYL7x4oB6A3n4HS3CmcDRPoCZHXR9U=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Burton <paul.burton@mips.com>,
-        linux-mips@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 112/434] MIPS: syscall: Emit Loongson3 sync workarounds within asm
-Date:   Sun, 29 Dec 2019 18:22:45 +0100
-Message-Id: <20191229172709.098659255@linuxfoundation.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20191229172702.393141737@linuxfoundation.org>
-References: <20191229172702.393141737@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1727180AbfL2S7Q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 29 Dec 2019 13:59:16 -0500
+Received: from mail-pj1-f44.google.com ([209.85.216.44]:37871 "EHLO
+        mail-pj1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726455AbfL2S7Q (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 29 Dec 2019 13:59:16 -0500
+Received: by mail-pj1-f44.google.com with SMTP id m13so7228435pjb.2;
+        Sun, 29 Dec 2019 10:59:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tAjd1uiPZsuPFI/UJM6eJ4os9/hBTboJTt1j2UJRT1M=;
+        b=CZARm84kbG98zgPD5UEbtdUgulL4TlM3icq008J2nAAx+xWwAu+V2hFdpFhNXfRidJ
+         rkVYLty8+lKTh6WWWjKpTE0wHpdl2Cq0gZdYryQFVmlVKTqviKTVl93wzhZxEZhg2Vu3
+         GfQzxGDwgoazbEkXTYmlDmccSvWGP8ataVVjw9xiQ1ApTKVOvbxTed2MrHojaaxH+qIA
+         DP4s1B05quEMoVNMVhjOF83ExM3F/7N1OuOyxBSQSmBrrQr/43PXrteGwPULwXmRc7mM
+         jQD2QroDMdMEDGNMt52dIEzShskUrMgQX3NQIvAjraxfIWOFBjQtPXGh5L1rtZNL4Nd0
+         82Gw==
+X-Gm-Message-State: APjAAAWvphhCHwDDYC/yex8bMfGNHoyLznxTp0/QuXRGNEKdfYkMLPO3
+        EsgrKaKNqANMvj35WvWeT6c=
+X-Google-Smtp-Source: APXvYqwNnq8UfTWxUB2h/uWEnMcyWZc+0Mp6MkMobyfFljo3YKHA1N3Eon4lNDmSua+qHM/hvsx2bw==
+X-Received: by 2002:a17:902:8f96:: with SMTP id z22mr62219611plo.11.1577645954756;
+        Sun, 29 Dec 2019 10:59:14 -0800 (PST)
+Received: from localhost ([2601:646:8a00:9810:5af3:56d9:f882:39d4])
+        by smtp.gmail.com with ESMTPSA id v13sm48565741pgc.54.2019.12.29.10.59.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Dec 2019 10:59:13 -0800 (PST)
+Date:   Sun, 29 Dec 2019 11:01:23 -0800
+From:   Paul Burton <paulburton@kernel.org>
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] MIPS: Use __copy_{to,from}_user() for emulated FP
+ loads/stores
+Message-ID: <20191229190123.ju24cz7thuvybejs@lantea.localdomain>
+References: <20191203204933.1642259-1-paulburton@kernel.org>
+ <f5e09155580d417e9dcd07b1c20786ed@AcuMS.aculab.com>
+ <20191204154048.eotzglp4rdlx4yzl@lantea.localdomain>
+ <e220ba9a19da41abba599b5873afa494@AcuMS.aculab.com>
+ <alpine.LFD.2.21.1912260251520.3762799@eddie.linux-mips.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.2.21.1912260251520.3762799@eddie.linux-mips.org>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Paul Burton <paul.burton@mips.com>
+Hi Maciej,
 
-[ Upstream commit e84957e6ae043bb83ad6ae7e949a1ce97b6bbfef ]
+On Thu, Dec 26, 2019 at 03:01:06AM +0000, Maciej W. Rozycki wrote:
+> On Wed, 4 Dec 2019, David Laight wrote:
+> > > We used to have separate get_user_unaligned() & put_user_unaligned()
+> > > which would suggest that it's expected that get_user() & put_user()
+> > > require their accesses be aligned, but they were removed by commit
+> > > 3170d8d226c2 ("kill {__,}{get,put}_user_unaligned()") in v4.13.
+> > > 
+> > > But perhaps we should just take the second AdEL exception & recover via
+> > > the fixups table. We definitely don't right now... Needs further
+> > > investigation...
+> > 
+> > get/put_user can fault because the user page is absent (etc).
+> > So there must be code to 'expect' a fault on those instructions.
+> 
+>  As I recall we only emulate unaligned accesses with a subset of integer 
+> load/store instructions (and then only if TIF_FIXADE is set, which is the 
+> default), and never with FP load/store instructions.  Consequently I see 
+> no point in doing this in the FP emulator either and I think these ought 
+> to just send SIGBUS instead.  Otherwise you'll end up with user code that 
+> works differently depending on whether the FP hardware is real or 
+> emulated, which is really bad.
 
-Generate the sync instructions required to workaround Loongson3 LL/SC
-errata within inline asm blocks, which feels a little safer than doing
-it from C where strictly speaking the compiler would be well within its
-rights to insert a memory access between the separate asm statements we
-previously had, containing sync & ll instructions respectively.
+That might simplify things here, but it's incorrect. I'm fairly certain
+the intent is that emulate_load_store_insn() handles all non-FP loads &
+stores (though looking at it we're missing some instructions added in
+r6). More importantly though we've been emulating FP loads & stores
+since v3.10 which introduced the change alongside microMIPS support in
+commit 102cedc32a6e ("MIPS: microMIPS: Floating point support."). The
+commit contains no description of why, and I'm not aware of any reason
+microMIPS specifically would need this so I suspect that commit bundled
+this change for no good reason...
 
-Signed-off-by: Paul Burton <paul.burton@mips.com>
-Cc: linux-mips@vger.kernel.org
-Cc: Huacai Chen <chenhc@lemote.com>
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/mips/kernel/syscall.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+It's also worth noting that some hardware will handle unaligned FP
+loads/stores, which means having the emulator reject them will result in
+more of a visible difference to userland. ie. on some hardware they'll
+work just fine, but on some you'd get SIGBUS. So I do think emulating
+them makes some sense - just as for non-FP loads & stores it lets
+userland not care whether the hardware will handle them, so long as it's
+not performance critical code. If we knew that had never been used then
+perhaps we could enforce the alignment requirement (and maybe that's
+what you recall doing), but since we've been emulating them for the past
+6 years it's too late for that now.
 
-diff --git a/arch/mips/kernel/syscall.c b/arch/mips/kernel/syscall.c
-index 3f16f3823031..c333e5788664 100644
---- a/arch/mips/kernel/syscall.c
-+++ b/arch/mips/kernel/syscall.c
-@@ -37,6 +37,7 @@
- #include <asm/signal.h>
- #include <asm/sim.h>
- #include <asm/shmparam.h>
-+#include <asm/sync.h>
- #include <asm/sysmips.h>
- #include <asm/switch_to.h>
- 
-@@ -133,12 +134,12 @@ static inline int mips_atomic_set(unsigned long addr, unsigned long new)
- 		  [efault] "i" (-EFAULT)
- 		: "memory");
- 	} else if (cpu_has_llsc) {
--		loongson_llsc_mb();
- 		__asm__ __volatile__ (
- 		"	.set	push					\n"
- 		"	.set	"MIPS_ISA_ARCH_LEVEL"			\n"
- 		"	li	%[err], 0				\n"
- 		"1:							\n"
-+		"	" __SYNC(full, loongson3_war) "			\n"
- 		user_ll("%[old]", "(%[addr])")
- 		"	move	%[tmp], %[new]				\n"
- 		"2:							\n"
--- 
-2.20.1
-
-
-
+Thanks,
+    Paul

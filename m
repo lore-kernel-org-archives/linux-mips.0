@@ -3,90 +3,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2000C2D0DC
-	for <linux-mips@archiver.kernel.org>; Wed,  1 Jan 2020 18:27:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E057C2D0DE
+	for <linux-mips@archiver.kernel.org>; Wed,  1 Jan 2020 20:51:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9F6EC207E0
-	for <linux-mips@archiver.kernel.org>; Wed,  1 Jan 2020 18:27:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0C99921734
+	for <linux-mips@archiver.kernel.org>; Wed,  1 Jan 2020 20:51:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727496AbgAAS06 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 1 Jan 2020 13:26:58 -0500
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:13083
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727313AbgAAS02 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 1 Jan 2020 13:26:28 -0500
-X-IronPort-AV: E=Sophos;i="5.69,382,1571695200"; 
-   d="scan'208";a="334542271"
-Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/AES128-SHA256; 01 Jan 2020 19:26:23 +0100
-From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     kernel-janitors@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, netdev@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org
-Subject: [PATCH 00/10] use resource_size
-Date:   Wed,  1 Jan 2020 18:49:40 +0100
-Message-Id: <1577900990-8588-1-git-send-email-Julia.Lawall@inria.fr>
-X-Mailer: git-send-email 1.9.1
+        id S1727232AbgAAUvV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 1 Jan 2020 15:51:21 -0500
+Received: from mout.kundenserver.de ([217.72.192.73]:56947 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727215AbgAAUvV (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 1 Jan 2020 15:51:21 -0500
+Received: from mail-qk1-f178.google.com ([209.85.222.178]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MWBGG-1jG20514Qc-00Xf5u; Wed, 01 Jan 2020 21:51:19 +0100
+Received: by mail-qk1-f178.google.com with SMTP id x129so30166581qke.8;
+        Wed, 01 Jan 2020 12:51:18 -0800 (PST)
+X-Gm-Message-State: APjAAAWSqrOU/sHxPHKlWeKo828rBE0U0DVU7TqNMtKhhvffNl5rYXmO
+        YAkB2W+/gVgELNz/hVD9tcVp3lLPgTX+09e4J2g=
+X-Google-Smtp-Source: APXvYqwPUffdxOwkYrrGlQKEUjh0DqO0/sbzUbDfmtql+dmrfAoS6A5yQuvY8II40XAftlk8yxtyRvUCyFvgSLjFMYA=
+X-Received: by 2002:a37:2f02:: with SMTP id v2mr61985919qkh.3.1577911877938;
+ Wed, 01 Jan 2020 12:51:17 -0800 (PST)
+MIME-Version: 1.0
+References: <20200101175916.558284-1-paulburton@kernel.org>
+In-Reply-To: <20200101175916.558284-1-paulburton@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 1 Jan 2020 21:51:02 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2a1aY9G+Nh9fy+NU=YA_m1dxm-4SCHgydVO5kcydh77g@mail.gmail.com>
+Message-ID: <CAK8P3a2a1aY9G+Nh9fy+NU=YA_m1dxm-4SCHgydVO5kcydh77g@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: Don't declare __current_thread_info globally
+To:     Paul Burton <paulburton@kernel.org>
+Cc:     "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        "# 3.4.x" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:2rtdkpAtrO0rIVNjV1PXPRT+x8s3zFerjLVvDm+ppkfNc7XJJEK
+ AiDvikYtt3241DVPkLSLr+K2fHRZuP4gxEPIdDvDbezRbFeJy3JkevOYVRGXRMuDFMCvCFO
+ Lnm9lg8vSVpYV57tQa7eTEcfA8H5FjNMIQkcAR9hjp1W4Bo16HE+aCdQURqu4AYV369SPZg
+ JKyA1VT3AeZGpVZBE1yyw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:AqZ9YiHFvQI=:jC67QZvuDmpFXxawCRXEsa
+ RrW2E3H5LRNThKJnVq2V6Tz2EuehJm5Ve9ex4cVLCvN2ayOlhTf/nDxaSh3a2GwY52ssH8yO4
+ zn4oMlz+xNSqzkcwBsPU10rjsx5BweuGdgudFdSoQnKBQgqHUq3hAF6BYVDtJaGkOKMGokZla
+ epXCh6sEHPoIbuBPuZ95GK/qSnulXbr2NHuy8zTp7HxL37N503i0Eg8FskyzYuhzUqHZg4fBP
+ JgMVSg6mJf5o5iPjHEoMwqOlwprhvb3mVDWlKGMRsApdi8Sbcbrp7fBxn4yeFUZbM0ti+VGa7
+ tt7fcVxICve2K53j+s+IIUcjofffK66rOx7NDiHoTxV2irVnCBiR29aUO8nF2MczpQmiWcq1Q
+ /q/kj6LKAaBhCklOt1riFBhKWS1VAR3BmkMH0aegN7rIYNQfKD5NM+1mUjkw3Vngvpr/F33sn
+ Rhe+7m0fHO6tIYTVrxsp6CDOzxeQ+dK4PUpacTpQ0TvFWXDx0eABuEhip2DwtKVGu08SdDKVI
+ 8regV24yt/5+HXdLNXq3u6rd01a4WGWtPE9YYAUskv4ZXQ3kT7OlZaOOzKAHW53Iv1e4+NefT
+ D67Vs+DaDtqnf9Qqbi1CaoLAK9kwPtFGI2G250FH7hZ2dJHou23+RF04WvUrImUAoEkHrIbVS
+ Jn+TY8XJIY9OmeDmObBsm7Vc/XtS2cppyGAjuUQZcS6inEAd/rGt1Ewka27JWuUOPAuh+Gr+c
+ 5vhg3wCoXv4ij6BFvxB68FgFLK2W4WKrQSEOK7I7Bx9iUjn6SBAPzqa/IYuSAEf+sbqFuCxgP
+ almClZtq4DrEQAvqURUKGNu//z1TGTj204w6VeqSD4XX35MvfreohfinUWDmGqrJkC5/VmJAM
+ 5GOnnA/zdVa+e9DtdH7g==
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Use resource_size rather than a verbose computation on
-the end and start fields.
+On Wed, Jan 1, 2020 at 6:57 PM Paul Burton <paulburton@kernel.org> wrote:
+> diff --git a/arch/mips/include/asm/thread_info.h b/arch/mips/include/asm/thread_info.h
+> index 4993db40482c..aceefc3f9a1a 100644
+> --- a/arch/mips/include/asm/thread_info.h
+> +++ b/arch/mips/include/asm/thread_info.h
+> @@ -50,10 +50,10 @@ struct thread_info {
+>  }
+>
+>  /* How to get the thread information struct from C.  */
+> -register struct thread_info *__current_thread_info __asm__("$28");
+> -
+>  static inline struct thread_info *current_thread_info(void)
+>  {
+> +       register struct thread_info *__current_thread_info __asm__("$28");
+> +
+>         return __current_thread_info;
+>  }
 
-The semantic patch that makes these changes is as follows:
-(http://coccinelle.lip6.fr/)
+This looks like a nice fix, but are you sure it doesn't allow the compiler to
+reuse $28 for another purpose in the kernel under register pressure,
+which would break current_thread_info()?
 
-<smpl>
-@@
-struct resource ptr;
-@@
+I see in the MIPS ABI document that $28 is preserved across function
+calls, but I don't see any indication that a function is not allowed
+to modify it and later restore the original content.
 
-- ((ptr.end) - (ptr.start) + 1)
-+ resource_size(&ptr)
-
-@@
-struct resource *ptr;
-@@
-
-- ((ptr->end) - (ptr->start) + 1)
-+ resource_size(ptr)
-
-@@
-struct resource ptr;
-@@
-
-- ((ptr.end) + 1 - (ptr.start))
-+ resource_size(&ptr)
-
-@@
-struct resource *ptr;
-@@
-
-- ((ptr->end) + 1 - (ptr->start))
-+ resource_size(ptr)
-</smpl>
-
----
-
- arch/mips/kernel/setup.c                  |    6 ++----
- arch/powerpc/platforms/83xx/km83xx.c      |    2 +-
- arch/powerpc/platforms/powernv/pci-ioda.c |    4 ++--
- arch/x86/kernel/crash.c                   |    2 +-
- drivers/net/ethernet/freescale/fman/mac.c |    4 ++--
- drivers/usb/gadget/udc/omap_udc.c         |    6 +++---
- drivers/video/fbdev/cg14.c                |    3 +--
- drivers/video/fbdev/s1d13xxxfb.c          |   16 ++++++++--------
- sound/drivers/ml403-ac97cr.c              |    4 +---
- sound/soc/sof/imx/imx8.c                  |    3 +--
- 10 files changed, 22 insertions(+), 28 deletions(-)
+        Arnd

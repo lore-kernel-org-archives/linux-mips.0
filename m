@@ -1,77 +1,122 @@
-Return-Path: <SRS0=bGyA=2V=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=4zPi=2W=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BBABC2D0DD
-	for <linux-mips@archiver.kernel.org>; Tue, 31 Dec 2019 16:15:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 145D7C2D0C0
+	for <linux-mips@archiver.kernel.org>; Wed,  1 Jan 2020 04:08:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 680AF206E6
-	for <linux-mips@archiver.kernel.org>; Tue, 31 Dec 2019 16:15:18 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="ggmSDcZg"
+	by mail.kernel.org (Postfix) with ESMTP id CCDC82072A
+	for <linux-mips@archiver.kernel.org>; Wed,  1 Jan 2020 04:08:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1577851725;
+	bh=tFjeAp0tw1X1D7GPjkfFXuLTtBu02Ocug7gTzSXrDdg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=XBlCLcI4Ik7jc4bWl+JSsgRWEWJQaJwNBlsOs1wx8DyvSUKvnjRAMUyd8lwxHD+Tr
+	 sRf/VpUOrmFKmHPT8A49GL2howB98ura8NjaNzhTylnnxQNS6wOB9nlNNoCfKY5fqK
+	 fXO6tqjartk9jWnOZ5086Xdh8xVNU9lHpsixrJVs=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbfLaQPS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 31 Dec 2019 11:15:18 -0500
-Received: from frisell.zx2c4.com ([192.95.5.64]:50099 "EHLO frisell.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727150AbfLaQPR (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 31 Dec 2019 11:15:17 -0500
-Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTP id f1f61f70;
-        Tue, 31 Dec 2019 15:17:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=qZ75m75jiMdCxmO5RuvyLHTUs4s=; b=ggmSDc
-        ZghhAKD5MPcComWrYuXxe/ImGeldlsadQRCPM+XdxjbrdJowbwEyR7NvwEXdVSho
-        1i5cbh4IP3GY80m5L6LxAnkyTI+SWrp3NNFUdxQSEbePZT3+YYEe8RVPc6+6v5qU
-        N4Lkv0juaP6VNyHwN+FHHP1WVGyySQRW9982uGF7EC/x2CyvyVgObxH6GEUZciG4
-        mtnONj39tbB4TeLkx/52/4o4pbNWyQHPEtq0Om2cpYjt/j3uXSYCLKDlKfxeU4VM
-        xYDmCQdhTw+KqoDHfzg1kKwvywziQ6qBLW0BlKJBdXeN4+k/s+KdyL2bFwaHdQPB
-        zzc9MOYx8ThWyegg==
-Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id b8998574 (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256:NO);
-        Tue, 31 Dec 2019 15:16:58 +0000 (UTC)
-Received: by mail-oi1-f177.google.com with SMTP id l9so9251609oii.5;
-        Tue, 31 Dec 2019 08:15:14 -0800 (PST)
-X-Gm-Message-State: APjAAAUC0ywHX1n3Ev0fkmgzmkqf6Vn5cjmyc1qiNWqepUhOjJuGvyah
-        euUmnRLQfZ6NjvqkJeN/ljtGQyNK96Fht5pZ8hc=
-X-Google-Smtp-Source: APXvYqxWzzYIOl/3YyB9RhQ/dGKhx+mdJGdFSMbVVNrMBh1WdjNkSxwhFlWZgjv59E8BiNTSX/TzjU/w4ZwSx0Po9Ic=
-X-Received: by 2002:aca:815:: with SMTP id 21mr954698oii.52.1577808913011;
- Tue, 31 Dec 2019 08:15:13 -0800 (PST)
-MIME-Version: 1.0
-References: <20191223130834.GA102399@zx2c4.com> <20191224135404.389039-1-Jason@zx2c4.com>
- <CAK8P3a1fVFDkHe=gLy55rHxwfZ8YKcUSYvnhSoMbcAgWy6Nm9w@mail.gmail.com>
- <CAHmME9o07dQV_MmWmtBFCKp=sdsO-scC6-UbXNi=dpU6umCoPg@mail.gmail.com>
- <CAK8P3a0sWObusG3xO_JE9CXCyNfFN0p6OgPjUyU2CHLBBZNpZw@mail.gmail.com>
+        id S1727132AbgAAEIp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 31 Dec 2019 23:08:45 -0500
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:42236 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727036AbgAAEIp (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 31 Dec 2019 23:08:45 -0500
+Received: by mail-pg1-f194.google.com with SMTP id s64so20207553pgb.9;
+        Tue, 31 Dec 2019 20:08:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZwEkntBzTwwdVS/4EXR74+jTw7hvRbZPVc6hQGwZlbU=;
+        b=KUSTVsOl3zGQf+Y17+zdupfoUukg92vv1tBNZ7S0CdhaQHXZ+xyVzj0PlUqLMubizz
+         sfpZ6na2tpWo/xH1fI/7SDP2LvufjECxOHxyGIZ7x6lW5jnAqcCYbarNtAt3JMejEHxR
+         aa8NUHvu5VmWQTd8JxcZmPNoAbHGNXaPwpwePRqn3KUrENmOVs2E4Iu+cUBQjTTmFKUh
+         zXdpnUfIwG5W83KfnIg3C+40+vvWgeNkXqqcFQHEen5XeKWZ4D5U18Gb3lcT4fN6QBda
+         LnM/wWnbIkpEkLJCoEPyPsT3zi0winZGkjmn57ZsfTBVSBOubGGNZVW2GbsSfZiXAnvA
+         uLqw==
+X-Gm-Message-State: APjAAAWbw8DeSFxSSaJFBRz5QkPJuRoG+Mli4oT0aZZdbcM8alv2B4uP
+        iAtfj1v44j8MJATYU/xKtEoPfjRc
+X-Google-Smtp-Source: APXvYqwqcO600EMHdk5EQe6uNwek78BvgnjnCvcQWSL2aR5jDvRID94jIF7d1tyi7CpAYWlxwKInDg==
+X-Received: by 2002:a65:5bc3:: with SMTP id o3mr80374380pgr.226.1577851724304;
+        Tue, 31 Dec 2019 20:08:44 -0800 (PST)
+Received: from localhost ([2601:646:8a00:9810:5af3:56d9:f882:39d4])
+        by smtp.gmail.com with ESMTPSA id g8sm57261053pfh.43.2019.12.31.20.08.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Dec 2019 20:08:43 -0800 (PST)
+Date:   Tue, 31 Dec 2019 20:10:56 -0800
+From:   Paul Burton <paulburton@kernel.org>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Christian Brauner <christian.brauner@canonical.com>
+Subject: Re: [PATCH] mips: vdso: conditionalize 32-bit time functions on
+ COMPAT_32BIT_TIME
+Message-ID: <20200101041056.xionott76qbrffih@lantea.localdomain>
+References: <CAK8P3a0sWObusG3xO_JE9CXCyNfFN0p6OgPjUyU2CHLBBZNpZw@mail.gmail.com>
  <CAHmME9o==nBONywVgSjsmjs2H_A8itgmwibqzPmvivcSocKWRQ@mail.gmail.com>
  <CAK8P3a11g-UXcYdudDtp0TWCQAfotpc-63BqYwn-a9LDxV-b+Q@mail.gmail.com>
  <CAHmME9pnBtjJ86gsWgK8DCYKo_HFpyViHoGpJPTrYBONT01YVA@mail.gmail.com>
  <CAK8P3a0NBuqDX63+920q7Q+yO2xCoSd0O7xUDJv6BBoco2kVOg@mail.gmail.com>
  <CAHmME9rnnoFwh=EHAgdQFM+c33D9mgCoVML_+d=Js=pXPnsxKQ@mail.gmail.com>
  <CAK8P3a1AYGbgf6mmL-863+PXPBQw3AAtp5wQPL5duLCONGhHuw@mail.gmail.com>
- <CAHmME9r2G4viiF4sYqpuYOnFCtjWpjugqenoEeUrsU6MGBeSuQ@mail.gmail.com> <CAHmME9rCCei_CL1evDYQ44Eu8erbjx_jDzbpKeXD4jTGBu8v8A@mail.gmail.com>
-In-Reply-To: <CAHmME9rCCei_CL1evDYQ44Eu8erbjx_jDzbpKeXD4jTGBu8v8A@mail.gmail.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Tue, 31 Dec 2019 17:14:41 +0100
-X-Gmail-Original-Message-ID: <CAHmME9q0z4RBhy7AETo0sPt+SfV7=zFra0iyZ-Sm54c-WG6CVg@mail.gmail.com>
-Message-ID: <CAHmME9q0z4RBhy7AETo0sPt+SfV7=zFra0iyZ-Sm54c-WG6CVg@mail.gmail.com>
-Subject: Re: [PATCH] mips: vdso: conditionalize 32-bit time functions on COMPAT_32BIT_TIME
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Christian Brauner <christian.brauner@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
+ <CAHmME9r2G4viiF4sYqpuYOnFCtjWpjugqenoEeUrsU6MGBeSuQ@mail.gmail.com>
+ <CAHmME9rCCei_CL1evDYQ44Eu8erbjx_jDzbpKeXD4jTGBu8v8A@mail.gmail.com>
+ <CAHmME9q0z4RBhy7AETo0sPt+SfV7=zFra0iyZ-Sm54c-WG6CVg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHmME9q0z4RBhy7AETo0sPt+SfV7=zFra0iyZ-Sm54c-WG6CVg@mail.gmail.com>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Here's a "one click" reproducer:
-https://data.zx2c4.com/mips-musl-libc-weird-crash-time32-compat.tar.xz
+Hi Jason,
 
-Untar that and hit `make -j$(nproc)`, and you'll get a freshly built
-and crashing kernel+userland.
+On Tue, Dec 31, 2019 at 05:14:41PM +0100, Jason A. Donenfeld wrote:
+> Here's a "one click" reproducer:
+> https://data.zx2c4.com/mips-musl-libc-weird-crash-time32-compat.tar.xz
+> 
+> Untar that and hit `make -j$(nproc)`, and you'll get a freshly built
+> and crashing kernel+userland.
+
+Thanks for the test case. It seems like the VDSO code isn't saving &
+restoring $gp/$28, even though it's meant to be callee-saved in both the
+n32 & n64 ABIs. With some digging I found that the below seems to
+resolve the issue. Could you check whether it works for you?
+
+I'm still not quite sure *why* this happens; perhaps GCC just decides it
+doesn't need to save & restore $gp/$28 when it spots that it's being
+"used" for __current_thread_info (even though that's never actually
+referenced in the VDSO)?
+
+Just moving the declaration of __current_thread_info inside the
+current_thread_info() function seems to do the trick too, and is
+probably a bit neater.
+
+Thanks,
+    Paul
+
+---
+diff --git a/arch/mips/include/asm/thread_info.h b/arch/mips/include/asm/thread_info.h
+index 4993db40482c..ac33959bbb1f 100644
+--- a/arch/mips/include/asm/thread_info.h
++++ b/arch/mips/include/asm/thread_info.h
+@@ -50,7 +50,11 @@ struct thread_info {
+ }
+
+ /* How to get the thread information struct from C.  */
++#ifdef __VDSO__
++register struct thread_info *__current_thread_info __asm__("$0");
++#else
+ register struct thread_info *__current_thread_info __asm__("$28");
++#endif
+
+ static inline struct thread_info *current_thread_info(void)
+ {

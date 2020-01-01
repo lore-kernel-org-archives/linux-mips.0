@@ -2,38 +2,40 @@ Return-Path: <SRS0=4zPi=2W=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88A72C2D0DF
-	for <linux-mips@archiver.kernel.org>; Wed,  1 Jan 2020 18:26:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2000C2D0DC
+	for <linux-mips@archiver.kernel.org>; Wed,  1 Jan 2020 18:27:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 651782080A
-	for <linux-mips@archiver.kernel.org>; Wed,  1 Jan 2020 18:26:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9F6EC207E0
+	for <linux-mips@archiver.kernel.org>; Wed,  1 Jan 2020 18:27:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727393AbgAAS0b (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 1 Jan 2020 13:26:31 -0500
+        id S1727496AbgAAS06 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 1 Jan 2020 13:26:58 -0500
 Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:13083
         "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727348AbgAAS0a (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 1 Jan 2020 13:26:30 -0500
+        by vger.kernel.org with ESMTP id S1727313AbgAAS02 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 1 Jan 2020 13:26:28 -0500
 X-IronPort-AV: E=Sophos;i="5.69,382,1571695200"; 
-   d="scan'208";a="334542279"
+   d="scan'208";a="334542271"
 Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/AES128-SHA256; 01 Jan 2020 19:26:25 +0100
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/AES128-SHA256; 01 Jan 2020 19:26:23 +0100
 From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     Ralf Baechle <ralf@linux-mips.org>
-Cc:     kernel-janitors@vger.kernel.org,
-        Paul Burton <paulburton@kernel.org>,
-        James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 08/10] MIPS: use resource_size
-Date:   Wed,  1 Jan 2020 18:49:48 +0100
-Message-Id: <1577900990-8588-9-git-send-email-Julia.Lawall@inria.fr>
+To:     "H. Peter Anvin" <hpa@zytor.com>
+Cc:     kernel-janitors@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, netdev@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org
+Subject: [PATCH 00/10] use resource_size
+Date:   Wed,  1 Jan 2020 18:49:40 +0100
+Message-Id: <1577900990-8588-1-git-send-email-Julia.Lawall@inria.fr>
 X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1577900990-8588-1-git-send-email-Julia.Lawall@inria.fr>
-References: <1577900990-8588-1-git-send-email-Julia.Lawall@inria.fr>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
@@ -46,39 +48,45 @@ The semantic patch that makes these changes is as follows:
 (http://coccinelle.lip6.fr/)
 
 <smpl>
-@@ struct resource ptr; @@
-- (ptr.end - ptr.start + 1)
+@@
+struct resource ptr;
+@@
+
+- ((ptr.end) - (ptr.start) + 1)
 + resource_size(&ptr)
+
+@@
+struct resource *ptr;
+@@
+
+- ((ptr->end) - (ptr->start) + 1)
++ resource_size(ptr)
+
+@@
+struct resource ptr;
+@@
+
+- ((ptr.end) + 1 - (ptr.start))
++ resource_size(&ptr)
+
+@@
+struct resource *ptr;
+@@
+
+- ((ptr->end) + 1 - (ptr->start))
++ resource_size(ptr)
 </smpl>
 
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-
 ---
- arch/mips/kernel/setup.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index c3d4212b5f1d..701f4bc3046f 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -515,8 +515,7 @@ static void __init request_crashkernel(struct resource *res)
- 	ret = request_resource(res, &crashk_res);
- 	if (!ret)
- 		pr_info("Reserving %ldMB of memory at %ldMB for crashkernel\n",
--			(unsigned long)((crashk_res.end -
--					 crashk_res.start + 1) >> 20),
-+			(unsigned long)(resource_size(&crashk_res) >> 20),
- 			(unsigned long)(crashk_res.start  >> 20));
- }
- #else /* !defined(CONFIG_KEXEC)		*/
-@@ -698,8 +697,7 @@ static void __init arch_mem_init(char **cmdline_p)
- 	mips_parse_crashkernel();
- #ifdef CONFIG_KEXEC
- 	if (crashk_res.start != crashk_res.end)
--		memblock_reserve(crashk_res.start,
--				 crashk_res.end - crashk_res.start + 1);
-+		memblock_reserve(crashk_res.start, resource_size(&crashk_res));
- #endif
- 	device_tree_init();
- 	sparse_init();
-
+ arch/mips/kernel/setup.c                  |    6 ++----
+ arch/powerpc/platforms/83xx/km83xx.c      |    2 +-
+ arch/powerpc/platforms/powernv/pci-ioda.c |    4 ++--
+ arch/x86/kernel/crash.c                   |    2 +-
+ drivers/net/ethernet/freescale/fman/mac.c |    4 ++--
+ drivers/usb/gadget/udc/omap_udc.c         |    6 +++---
+ drivers/video/fbdev/cg14.c                |    3 +--
+ drivers/video/fbdev/s1d13xxxfb.c          |   16 ++++++++--------
+ sound/drivers/ml403-ac97cr.c              |    4 +---
+ sound/soc/sof/imx/imx8.c                  |    3 +--
+ 10 files changed, 22 insertions(+), 28 deletions(-)

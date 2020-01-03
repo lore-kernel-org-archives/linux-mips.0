@@ -2,130 +2,87 @@ Return-Path: <SRS0=beLb=2Y=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33D4DC3276C
-	for <linux-mips@archiver.kernel.org>; Fri,  3 Jan 2020 00:42:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1DD0C00523
+	for <linux-mips@archiver.kernel.org>; Fri,  3 Jan 2020 09:12:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 06D6621D56
-	for <linux-mips@archiver.kernel.org>; Fri,  3 Jan 2020 00:42:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1578012165;
-	bh=MCm4ryg6Vj10wx1GbzuQ+iCW7Z9FvdtsoL7urly7/GM=;
-	h=Date:From:To:CC:CC:CC:Subject:References:In-Reply-To:List-ID:
-	 From;
-	b=h93mB4Y1cv9Z1XLB2abzRTAyEraLCijxD9yTyoEBRRUbN40HILeWOg1CwSuSnAYcy
-	 Q0U4r536jYbnp7WApXykfeDQ64HRLBAb+LuCD7WJlLsbX6Zd4kyJewwLbvIEIkSmtZ
-	 obA/6vUDdmFbT5MKF5PDk9yJCirk9ZjWLCV3Mohk=
+	by mail.kernel.org (Postfix) with ESMTP id 83BD522B48
+	for <linux-mips@archiver.kernel.org>; Fri,  3 Jan 2020 09:12:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726478AbgACAmk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 2 Jan 2020 19:42:40 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:45198 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbgACAmk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 2 Jan 2020 19:42:40 -0500
-Received: by mail-pg1-f194.google.com with SMTP id b9so22658581pgk.12;
-        Thu, 02 Jan 2020 16:42:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:to:cc:cc:cc:subject
-         :references:in-reply-to;
-        bh=HyioXBGMqcLyFY2JDZv6ThS3RXGTigbfy51ANMut3ps=;
-        b=Sc3CyVcU6/AGm54p0XXNxboyeI6gizD/2cRP+H0OctZ/NtP17WDNxbVqFG4tl45MNk
-         C9rPUP81qBw1t3zhuXE9HjE8W9EBZGHvqQJtthdYxoBdUZ91CYE8krJDmXRsbjOy0omK
-         btZq3HLPFK6MLzhvWqOFP8UnjCHCE+8H7y4khnx8Cn+MRdnd2ayfmFAyjPU+tPFChkp6
-         ZgyQIUvevUn9tDMKPtI3KlHsBVl9r8yHXcZ8SwucGD6w9tR6USmGseakzToYwk0e7PDR
-         /h/eiV/ZEPqqVMuDtM8o6eggrVRvz7eqVDUx01Mtvj9v1nGZ1/Tahjr9q404qPVmPIHP
-         BsDQ==
-X-Gm-Message-State: APjAAAU6cN+hhad1hytKACqFsEYEI91/+oe3E8pqbkHND4khySAxwg4p
-        rdfw259IEelYGG86LJnbA6Q=
-X-Google-Smtp-Source: APXvYqyQ01PVHaEoHE1LVHKgmLKjo0PVf9o02f/5W8ZOiX0AXapPjCsNxxSOPSv2GtC8UFVjo0n2zg==
-X-Received: by 2002:a65:56c9:: with SMTP id w9mr89389023pgs.296.1578012159672;
-        Thu, 02 Jan 2020 16:42:39 -0800 (PST)
-Received: from localhost ([73.93.152.206])
-        by smtp.gmail.com with ESMTPSA id o7sm68110625pfg.138.2020.01.02.16.42.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jan 2020 16:42:39 -0800 (PST)
-Message-ID: <5e0e8dff.1c69fb81.86508.5dbe@mx.google.com>
-Date:   Thu, 02 Jan 2020 16:42:38 -0800
-From:   Paul Burton <paulburton@kernel.org>
+        id S1726390AbgACJMU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 3 Jan 2020 04:12:20 -0500
+Received: from foss.arm.com ([217.140.110.172]:54020 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725972AbgACJMU (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 3 Jan 2020 04:12:20 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 264C61FB;
+        Fri,  3 Jan 2020 01:12:19 -0800 (PST)
+Received: from [192.168.1.18] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 918673F703;
+        Fri,  3 Jan 2020 01:12:17 -0800 (PST)
+Subject: Re: [PATCH v2] MIPS: Avoid VDSO ABI breakage due to global register
+ variable
 To:     Paul Burton <paulburton@kernel.org>
-CC:     linux-mips@vger.kernel.org
-CC:     linux-kernel@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jason A. Donenfeld" <Jason@zx2c4.com>,
         Arnd Bergmann <arnd@arndb.de>,
         Christian Brauner <christian.brauner@canonical.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
         stable@vger.kernel.org
-CC:     linux-mips@vger.kernel.org
-Subject: Re: [PATCH v2] MIPS: Avoid VDSO ABI breakage due to global register  variable
-References:  <20200102045038.102772-1-paulburton@kernel.org>
-In-Reply-To:  <20200102045038.102772-1-paulburton@kernel.org>
+References: <20200102005343.GA495913@rani.riverdale.lan>
+ <20200102045038.102772-1-paulburton@kernel.org>
+ <754c5d05-4455-5ce1-475d-55c2191a06cf@arm.com>
+ <20200103004229.lpbhocebuny6vxmf@lantea.localdomain>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <fce2be75-9a68-37eb-723a-99d010e77132@arm.com>
+Date:   Fri, 3 Jan 2020 09:15:10 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200103004229.lpbhocebuny6vxmf@lantea.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello,
+Hi Paul,
 
-Paul Burton wrote:
-> Declaring __current_thread_info as a global register variable has the
-> effect of preventing GCC from saving & restoring its value in cases
-> where the ABI would typically do so.
+On 1/3/20 12:42 AM, Paul Burton wrote:
+> Using -ffixed-gp wouldn't be correct for the VDSO - the VDSO itself is
+> position independent code, and will need to use $gp to access the GOT
+> which is part of how position-independence is achieved (technically you
+> could access the GOT using another register of course but you'd need
+> some way to persuade the compiler to break with convention & you'd gain
+> nothing meaningful since you'd need to use some other register anyway).
+> If we use -ffixed-gp then we're telling GCC not to use $gp, and that
+> doesn't make sense. If we consider -ffixed-gp as telling GCC not to use
+> $gp as a general purpose register then it's meaningless because $gp
+> already has a specific use & isn't used as a general purpose register.
+> If we consider -ffixed-gp as telling GCC not to use $gp at all then it
+> doesn't make sense because it needs to in order to access the GOT.
 > 
-> To quote GCC documentation:
+> In terms of GCC's flags we'd want to use -fcall-saved-gp, but that would
+> just be telling GCC information it already knows about the n32 & n64
+> ABIs & indeed it seems to have no effect at all on the way GCC handles
+> the global register variable - it doesn't cause gcc to save & restore
+> $gp with the global register variable present, so you gain nothing.
 > 
-> > If the register is a call-saved register, call ABI is affected: the
-> > register will not be restored in function epilogue sequences after the
-> > variable has been assigned. Therefore, functions cannot safely return
-> > to callers that assume standard ABI.
+> We could use -ffixed-gp for the kernel proper (& not the VDSO), but:
 > 
-> When our position independent VDSO is built for the n32 or n64 ABIs all
-> functions it exposes should be preserving the value of $gp/$28 for their
-> caller, but in the presence of the __current_thread_info global register
-> variable GCC stops doing so & simply clobbers $gp/$28 when calculating
-> the address of the GOT.
+> 1) The kernel builds as non-PIC code with no $gp-based optimizations
+>    enabled, and since this has been fine forever it seems safe to expect
+>    the compiler not to start using $gp in new ways.
 > 
-> In cases where the VDSO returns success this problem will typically be
-> masked by the caller in libc returning & restoring $gp/$28 itself, but
-> that is by no means guaranteed. In cases where the VDSO returns an error
-> libc will typically contain a fallback path which will now fail
-> (typically with a bad memory access) if it attempts anything which
-> relies upon the value of $gp/$28 - eg. accessing anything via the GOT.
-> 
-> One fix for this would be to move the declaration of
-> __current_thread_info inside the current_thread_info() function,
-> demoting it from global register variable to local register variable &
-> avoiding inadvertently creating a non-standard calling ABI for the VDSO.
-> Unfortunately this causes issues for clang, which doesn't support local
-> register variables as pointed out by commit fe92da0f355e ("MIPS: Changed
-> current_thread_info() to an equivalent supported by both clang and GCC")
-> which introduced the global register variable before we had a VDSO to
-> worry about.
-> 
-> Instead, fix this by continuing to use the global register variable for
-> the kernel proper but declare __current_thread_info as a simple extern
-> variable when building the VDSO. It should never be referenced, and will
-> cause a link error if it is. This resolves the calling convention issue
-> for the VDSO without having any impact upon the build of the kernel
-> itself for either clang or gcc.
+> 2) It would be a separate issue to fixing the VDSO anyway.
 
-Applied to mips-fixes.
+Makes totally sense. Thanks for the explanation.
 
-> commit bbcc5672b006
-> https://git.kernel.org/mips/c/bbcc5672b006
-> 
-> Signed-off-by: Paul Burton <paulburton@kernel.org>
-> Fixes: ebb5e78cc634 ("MIPS: Initial implementation of a VDSO")
-> Reported-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> Reviewed-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> Tested-by: Jason A. Donenfeld <Jason@zx2c4.com>
-
-Thanks,
-    Paul
-
-[ This message was auto-generated; if you believe anything is incorrect
-  then please email paulburton@kernel.org to report it. ]
+-- 
+Regards,
+Vincenzo

@@ -4,32 +4,32 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F756C3F68F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 459D4C33CA2
 	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:34:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 461BC2072A
+	by mail.kernel.org (Postfix) with ESMTP id 1B4192082E
 	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:34:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730981AbgAIMeL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Jan 2020 07:34:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38022 "EHLO mx2.suse.de"
+        id S1730977AbgAIMe2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Jan 2020 07:34:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38036 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730963AbgAIMeL (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 9 Jan 2020 07:34:11 -0500
+        id S1730978AbgAIMeM (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 9 Jan 2020 07:34:12 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 8110DB220B;
-        Thu,  9 Jan 2020 12:34:05 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 859D9B2216;
+        Thu,  9 Jan 2020 12:34:07 +0000 (UTC)
 From:   Thomas Bogendoerfer <tbogendoerfer@suse.de>
 To:     Paul Burton <paulburton@kernel.org>
 Cc:     Ralf Baechle <ralf@linux-mips.org>,
         James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 06/14] MIPS: SGI-IP27: Move get_nasid() to a IP27 specific file
-Date:   Thu,  9 Jan 2020 13:33:43 +0100
-Message-Id: <20200109123353.5656-7-tbogendoerfer@suse.de>
+Subject: [PATCH 14/14] MIPS: SGI-IP27: No need for slice_map
+Date:   Thu,  9 Jan 2020 13:33:51 +0100
+Message-Id: <20200109123353.5656-15-tbogendoerfer@suse.de>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200109123353.5656-1-tbogendoerfer@suse.de>
 References: <20200109123353.5656-1-tbogendoerfer@suse.de>
@@ -40,73 +40,44 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-get_nasid() will be different for SGI-IP35, therefore move IP27
-implementation to IP27 specific file.
+per_cpu_init is called exactly once for every CPU. So there is no
+need for protection via slice_map.
 
 Signed-off-by: Thomas Bogendoerfer <tbogendoerfer@suse.de>
 ---
- arch/mips/include/asm/sn/arch.h    |  6 ------
- arch/mips/include/asm/sn/sn0/hub.h | 10 ++++++++++
- arch/mips/sgi-ip27/ip27-init.c     | 10 ----------
- 3 files changed, 10 insertions(+), 16 deletions(-)
+ arch/mips/include/asm/mach-ip27/mmzone.h | 1 -
+ arch/mips/sgi-ip27/ip27-init.c           | 5 -----
+ 2 files changed, 6 deletions(-)
 
-diff --git a/arch/mips/include/asm/sn/arch.h b/arch/mips/include/asm/sn/arch.h
-index afe9fcf36198..9a9682543e89 100644
---- a/arch/mips/include/asm/sn/arch.h
-+++ b/arch/mips/include/asm/sn/arch.h
-@@ -25,10 +25,4 @@
- #define INVALID_MODULE		(moduleid_t)-1
- #define INVALID_PARTID		(partid_t)-1
+diff --git a/arch/mips/include/asm/mach-ip27/mmzone.h b/arch/mips/include/asm/mach-ip27/mmzone.h
+index 534a50f79147..08c36e50a860 100644
+--- a/arch/mips/include/asm/mach-ip27/mmzone.h
++++ b/arch/mips/include/asm/mach-ip27/mmzone.h
+@@ -13,7 +13,6 @@ struct hub_data {
+ 	kern_vars_t	kern_vars;
+ 	DECLARE_BITMAP(h_bigwin_used, HUB_NUM_BIG_WINDOW);
+ 	cpumask_t	h_cpus;
+-	unsigned long slice_map;
+ };
  
--#ifndef __ASSEMBLY__
--
--extern nasid_t get_nasid(void);
--
--#endif
--
- #endif /* _ASM_SN_ARCH_H */
-diff --git a/arch/mips/include/asm/sn/sn0/hub.h b/arch/mips/include/asm/sn/sn0/hub.h
-index 82cadd785b9c..c84adde36d41 100644
---- a/arch/mips/include/asm/sn/sn0/hub.h
-+++ b/arch/mips/include/asm/sn/sn0/hub.h
-@@ -47,6 +47,16 @@
- 	and	\res, NSRI_NODEID_MASK
- 	dsrl	\res, NSRI_NODEID_SHFT
- 	.endm
-+#else
-+
-+/*
-+ * get_nasid() returns the physical node id number of the caller.
-+ */
-+static inline nasid_t get_nasid(void)
-+{
-+	return (nasid_t)((LOCAL_HUB_L(NI_STATUS_REV_ID) & NSRI_NODEID_MASK)
-+			 >> NSRI_NODEID_SHFT);
-+}
- #endif
- 
- #endif /* _ASM_SN_SN0_HUB_H */
+ struct node_data {
 diff --git a/arch/mips/sgi-ip27/ip27-init.c b/arch/mips/sgi-ip27/ip27-init.c
-index 484db3b73b7d..a2da78bc9f76 100644
+index 84a78bd1386a..32bcb8d1dd88 100644
 --- a/arch/mips/sgi-ip27/ip27-init.c
 +++ b/arch/mips/sgi-ip27/ip27-init.c
-@@ -94,16 +94,6 @@ void per_cpu_init(void)
- 	enable_percpu_irq(IP27_HUB_PEND1_IRQ, IRQ_TYPE_NONE);
- }
- 
--/*
-- * get_nasid() returns the physical node id number of the caller.
-- */
--nasid_t
--get_nasid(void)
--{
--	return (nasid_t)((LOCAL_HUB_L(NI_STATUS_REV_ID) & NSRI_NODEID_MASK)
--			 >> NSRI_NODEID_SHFT);
--}
--
- void __init plat_mem_setup(void)
+@@ -72,12 +72,7 @@ static void per_hub_init(nasid_t nasid)
+ void per_cpu_init(void)
  {
- 	u64 p, e, n_mode;
+ 	int cpu = smp_processor_id();
+-	int slice = LOCAL_HUB_L(PI_CPU_NUM);
+ 	nasid_t nasid = get_nasid();
+-	struct hub_data *hub = hub_data(nasid);
+-
+-	if (test_and_set_bit(slice, &hub->slice_map))
+-		return;
+ 
+ 	clear_c0_status(ST0_IM);
+ 
 -- 
 2.24.1
 

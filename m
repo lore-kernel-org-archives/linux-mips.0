@@ -2,37 +2,35 @@ Return-Path: <SRS0=5+Fi=26=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5B42C32771
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:34:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3B8BC32771
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:35:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B64142077B
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:34:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A170F2072A
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:35:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729143AbgAIMe4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Jan 2020 07:34:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37960 "EHLO mx2.suse.de"
+        id S1730955AbgAIMeJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Jan 2020 07:34:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37970 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730942AbgAIMeJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1730950AbgAIMeJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Thu, 9 Jan 2020 07:34:09 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 17702B2209;
-        Thu,  9 Jan 2020 12:34:05 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 50FEFB2204;
+        Thu,  9 Jan 2020 12:34:03 +0000 (UTC)
 From:   Thomas Bogendoerfer <tbogendoerfer@suse.de>
 To:     Paul Burton <paulburton@kernel.org>
 Cc:     Ralf Baechle <ralf@linux-mips.org>,
         James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 04/14] MIPS: SGI-IP27: get rid of asm/sn/sn0/ip27.h
-Date:   Thu,  9 Jan 2020 13:33:41 +0100
-Message-Id: <20200109123353.5656-5-tbogendoerfer@suse.de>
+Subject: [PATCH 00/14] Cleanup SGI-IP27 and prepare for SGI-IP35 support
+Date:   Thu,  9 Jan 2020 13:33:37 +0100
+Message-Id: <20200109123353.5656-1-tbogendoerfer@suse.de>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200109123353.5656-1-tbogendoerfer@suse.de>
-References: <20200109123353.5656-1-tbogendoerfer@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
@@ -40,160 +38,63 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The only piece needed in ip27.h is SEND_NMI. Move the define to the only
-place where it's used and remove ip27.h
+SGI-IP35 alias SN1 is very similair to SGI-IP27 alias SN0, so most of the
+IP27 code could also be used for IP35. The differences will mostly be in
+header files, which are selected by CONFIG option. This series cleans up
+IP27 code/headers and prepares them for IP35 integration.
 
-Signed-off-by: Thomas Bogendoerfer <tbogendoerfer@suse.de>
----
- arch/mips/include/asm/sn/sn0/ip27.h | 85 -----------------------------
- arch/mips/sgi-ip27/ip27-init.c      |  1 -
- arch/mips/sgi-ip27/ip27-nmi.c       |  3 +
- arch/mips/sgi-ip27/ip27-smp.c       |  1 -
- arch/mips/sgi-ip27/ip27-timer.c     |  1 -
- 5 files changed, 3 insertions(+), 88 deletions(-)
+Thomas Bogendoerfer (14):
+  MIPS: SGI-IP27: use nodemask instead of cpumask
+  MIPS: SGI-IP27: use cpu physid already present while scanning for CPUs
+  MIPS: SGI-IP27: use asm/sn/agent.h for including HUB related stuff
+  MIPS: SGI-IP27: get rid of asm/sn/sn0/ip27.h
+  MIPS: SGI-IP27: move IP27 specific macro to IP27 specific header file
+  MIPS: SGI-IP27: Move get_nasid() to a IP27 specific file
+  MIPS: SGI-IP27: Split kldir.h into generic SN and IP27 parts
+  MIPS: SGI-IP27: Use union instead of typedef
+  MIPS: SGI-IP27: Use structs for decoding error status registers
+  MIPS: SGI-IP27: Use specific get_region_shift
+  MIPS: SGI-IP27: Move all shared IP27 declarations to ip27-common.h
+  MIPS: SGI-IP27: Only reserve interrupts used in Linux
+  MIPS: SGI-IP27: Store cpu speed when scanning for CPUs and use it
+    later
+  MIPS: SGI-IP27: No need for slice_map
+
+ .../include/asm/mach-ip27/kernel-entry-init.h |  12 +-
+ arch/mips/include/asm/mach-ip27/mmzone.h      |   4 +-
+ arch/mips/include/asm/mach-ip27/topology.h    |   2 +-
+ arch/mips/include/asm/sn/arch.h               |   3 -
+ arch/mips/include/asm/sn/hub.h                |  17 --
+ arch/mips/include/asm/sn/intr.h               |  17 --
+ arch/mips/include/asm/sn/klconfig.h           |   4 -
+ arch/mips/include/asm/sn/kldir.h              | 193 +-----------------
+ arch/mips/include/asm/sn/sn0/hub.h            |  22 ++
+ arch/mips/include/asm/sn/sn0/hubni.h          |   8 +
+ arch/mips/include/asm/sn/sn0/ip27.h           |  85 --------
+ arch/mips/include/asm/sn/sn0/kldir.h          | 186 +++++++++++++++++
+ arch/mips/include/asm/sn/sn_private.h         |  19 --
+ arch/mips/include/asm/sn/types.h              |   4 +
+ arch/mips/pci/pci-ip27.c                      |   2 +-
+ arch/mips/sgi-ip27/ip27-berr.c                |  40 ++--
+ arch/mips/sgi-ip27/ip27-common.h              |  12 +-
+ arch/mips/sgi-ip27/ip27-console.c             |   5 +-
+ arch/mips/sgi-ip27/ip27-hubio.c               |   8 +-
+ arch/mips/sgi-ip27/ip27-init.c                |  25 +--
+ arch/mips/sgi-ip27/ip27-irq.c                 |   5 +-
+ arch/mips/sgi-ip27/ip27-klconfig.c            |  51 -----
+ arch/mips/sgi-ip27/ip27-klnuma.c              |  16 +-
+ arch/mips/sgi-ip27/ip27-memory.c              |  39 ++--
+ arch/mips/sgi-ip27/ip27-nmi.c                 |   5 +-
+ arch/mips/sgi-ip27/ip27-reset.c               |   2 +-
+ arch/mips/sgi-ip27/ip27-smp.c                 |  33 +--
+ arch/mips/sgi-ip27/ip27-timer.c               |  28 +--
+ arch/mips/sgi-ip27/ip27-xtalk.c               |   1 -
+ 29 files changed, 315 insertions(+), 533 deletions(-)
+ delete mode 100644 arch/mips/include/asm/sn/hub.h
  delete mode 100644 arch/mips/include/asm/sn/sn0/ip27.h
+ create mode 100644 arch/mips/include/asm/sn/sn0/kldir.h
+ delete mode 100644 arch/mips/include/asm/sn/sn_private.h
 
-diff --git a/arch/mips/include/asm/sn/sn0/ip27.h b/arch/mips/include/asm/sn/sn0/ip27.h
-deleted file mode 100644
-index 3b5efeefcc3f..000000000000
---- a/arch/mips/include/asm/sn/sn0/ip27.h
-+++ /dev/null
-@@ -1,85 +0,0 @@
--/*
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file "COPYING" in the main directory of this archive
-- * for more details.
-- *
-- * Derived from IRIX <sys/SN/SN0/IP27.h>.
-- *
-- * Copyright (C) 1992 - 1997, 1999 Silicon Graphics, Inc.
-- * Copyright (C) 1999, 2006 by Ralf Baechle
-- */
--#ifndef _ASM_SN_SN0_IP27_H
--#define _ASM_SN_SN0_IP27_H
--
--#include <asm/mipsregs.h>
--
--/*
-- * Simple definitions for the masks which remove SW bits from pte.
-- */
--
--#define TLBLO_HWBITSHIFT	0		/* Shift value, for masking */
--
--#ifndef __ASSEMBLY__
--
--#define CAUSE_BERRINTR		IE_IRQ5
--
--#define ECCF_CACHE_ERR	0
--#define ECCF_TAGLO	1
--#define ECCF_ECC	2
--#define ECCF_ERROREPC	3
--#define ECCF_PADDR	4
--#define ECCF_SIZE	(5 * sizeof(long))
--
--#endif /* !__ASSEMBLY__ */
--
--#ifdef __ASSEMBLY__
--
--/*
-- * KL_GET_CPUNUM (similar to EV_GET_SPNUM for EVEREST platform) reads
-- * the processor number of the calling processor.  The proc parameters
-- * must be a register.
-- */
--#define KL_GET_CPUNUM(proc)				\
--	dli	proc, LOCAL_HUB(0);			\
--	ld	proc, PI_CPU_NUM(proc)
--
--#endif /* __ASSEMBLY__ */
--
--/*
-- * R10000 status register interrupt bit mask usage for IP27.
-- */
--#define SRB_SWTIMO	IE_SW0		/* 0x0100 */
--#define SRB_NET		IE_SW1		/* 0x0200 */
--#define SRB_DEV0	IE_IRQ0		/* 0x0400 */
--#define SRB_DEV1	IE_IRQ1		/* 0x0800 */
--#define SRB_TIMOCLK	IE_IRQ2		/* 0x1000 */
--#define SRB_PROFCLK	IE_IRQ3		/* 0x2000 */
--#define SRB_ERR		IE_IRQ4		/* 0x4000 */
--#define SRB_SCHEDCLK	IE_IRQ5		/* 0x8000 */
--
--#define SR_IBIT_HI	SRB_DEV0
--#define SR_IBIT_PROF	SRB_PROFCLK
--
--#define SRB_SWTIMO_IDX		0
--#define SRB_NET_IDX		1
--#define SRB_DEV0_IDX		2
--#define SRB_DEV1_IDX		3
--#define SRB_TIMOCLK_IDX		4
--#define SRB_PROFCLK_IDX		5
--#define SRB_ERR_IDX		6
--#define SRB_SCHEDCLK_IDX	7
--
--#define NUM_CAUSE_INTRS		8
--
--#define SCACHE_LINESIZE 128
--#define SCACHE_LINEMASK (SCACHE_LINESIZE - 1)
--
--#include <asm/sn/addrs.h>
--
--#define LED_CYCLE_MASK	0x0f
--#define LED_CYCLE_SHFT	4
--
--#define SEND_NMI(_nasid, _slice)	\
--	  REMOTE_HUB_S((_nasid),  (PI_NMI_A + ((_slice) * PI_NMI_OFFSET)), 1)
--
--#endif /* _ASM_SN_SN0_IP27_H */
-diff --git a/arch/mips/sgi-ip27/ip27-init.c b/arch/mips/sgi-ip27/ip27-init.c
-index b8758af4c5b7..484db3b73b7d 100644
---- a/arch/mips/sgi-ip27/ip27-init.c
-+++ b/arch/mips/sgi-ip27/ip27-init.c
-@@ -32,7 +32,6 @@
- #include <asm/thread_info.h>
- #include <asm/sn/launch.h>
- #include <asm/sn/sn_private.h>
--#include <asm/sn/sn0/ip27.h>
- #include <asm/sn/mapped_kernel.h>
- 
- #include "ip27-common.h"
-diff --git a/arch/mips/sgi-ip27/ip27-nmi.c b/arch/mips/sgi-ip27/ip27-nmi.c
-index 916e795fdac7..84889b57d5ff 100644
---- a/arch/mips/sgi-ip27/ip27-nmi.c
-+++ b/arch/mips/sgi-ip27/ip27-nmi.c
-@@ -17,6 +17,9 @@
- #define NODE_NUM_CPUS(n)	CPUS_PER_NODE
- #endif
- 
-+#define SEND_NMI(_nasid, _slice)	\
-+	REMOTE_HUB_S((_nasid),  (PI_NMI_A + ((_slice) * PI_NMI_OFFSET)), 1)
-+
- typedef unsigned long machreg_t;
- 
- static arch_spinlock_t nmi_lock = __ARCH_SPIN_LOCK_UNLOCKED;
-diff --git a/arch/mips/sgi-ip27/ip27-smp.c b/arch/mips/sgi-ip27/ip27-smp.c
-index 1ae053ecf75c..0f6df00ca00f 100644
---- a/arch/mips/sgi-ip27/ip27-smp.c
-+++ b/arch/mips/sgi-ip27/ip27-smp.c
-@@ -24,7 +24,6 @@
- #include <asm/sn/mapped_kernel.h>
- #include <asm/sn/sn_private.h>
- #include <asm/sn/types.h>
--#include <asm/sn/sn0/ip27.h>
- 
- #include "ip27-common.h"
- 
-diff --git a/arch/mips/sgi-ip27/ip27-timer.c b/arch/mips/sgi-ip27/ip27-timer.c
-index 1b285c042ca7..62c7da59f55a 100644
---- a/arch/mips/sgi-ip27/ip27-timer.c
-+++ b/arch/mips/sgi-ip27/ip27-timer.c
-@@ -27,7 +27,6 @@
- #include <asm/sn/addrs.h>
- #include <asm/sn/agent.h>
- #include <asm/sn/sn_private.h>
--#include <asm/sn/sn0/ip27.h>
- 
- #define TICK_SIZE (tick_nsec / 1000)
- 
 -- 
 2.24.1
 

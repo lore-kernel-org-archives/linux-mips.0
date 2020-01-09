@@ -2,99 +2,164 @@ Return-Path: <SRS0=5+Fi=26=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3B8BC32771
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:35:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 321A7C282DD
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 15:43:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A170F2072A
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:35:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 02A882067D
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 15:43:51 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=c-s.fr header.i=@c-s.fr header.b="ilmuuzlF"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730955AbgAIMeJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Jan 2020 07:34:09 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37970 "EHLO mx2.suse.de"
+        id S1729991AbgAIPnu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Jan 2020 10:43:50 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:10928 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730950AbgAIMeJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 9 Jan 2020 07:34:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 50FEFB2204;
-        Thu,  9 Jan 2020 12:34:03 +0000 (UTC)
-From:   Thomas Bogendoerfer <tbogendoerfer@suse.de>
-To:     Paul Burton <paulburton@kernel.org>
-Cc:     Ralf Baechle <ralf@linux-mips.org>,
-        James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 00/14] Cleanup SGI-IP27 and prepare for SGI-IP35 support
-Date:   Thu,  9 Jan 2020 13:33:37 +0100
-Message-Id: <20200109123353.5656-1-tbogendoerfer@suse.de>
-X-Mailer: git-send-email 2.24.1
+        id S1728098AbgAIPnu (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 9 Jan 2020 10:43:50 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 47tr4g08pGz9v3p8;
+        Thu,  9 Jan 2020 16:43:47 +0100 (CET)
+Authentication-Results: localhost; dkim=pass
+        reason="1024-bit key; insecure key"
+        header.d=c-s.fr header.i=@c-s.fr header.b=ilmuuzlF; dkim-adsp=pass;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 6FBkiugPM--3; Thu,  9 Jan 2020 16:43:46 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 47tr4f66Yyz9v3p6;
+        Thu,  9 Jan 2020 16:43:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+        t=1578584626; bh=iw8kkZomOhkO3o0LAtBm1SIFpsx8uEZAgoFK9Pp3LQw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ilmuuzlFcmIFuyVy1qltF6zJgIcY/QacfPR0xgx+hahGZEzf7+zkFRtCPK4jF6ltQ
+         nRWBOULOE0hyYF+PcbYtJB7Kir2kWT7xsuCcCiEPJbWT5u/ZFWxD61ZGmkkD+SGawA
+         ICWLD/eJM+3BG7VMgWcfX+y95rICvukbD7i5WdGw=
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 62C3B8B82B;
+        Thu,  9 Jan 2020 16:43:48 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id Dt_XbitFJ43g; Thu,  9 Jan 2020 16:43:48 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 266608B828;
+        Thu,  9 Jan 2020 16:43:47 +0100 (CET)
+Subject: Re: [RFC PATCH v2 01/10] lib: vdso: ensure all arches have 32bit
+ fallback
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+References: <cover.1577111363.git.christophe.leroy@c-s.fr>
+ <47701b5fb73cf536db074031db8e6e3fa3695168.1577111365.git.christophe.leroy@c-s.fr>
+ <CAK8P3a0QGtjygLJUWX_1-s1vfCzE6UoOzrb+OZWwjaBdh=RpVQ@mail.gmail.com>
+ <CAK8P3a1gHvW2XEMDSHCcdOQ8NSs3iHk9GpujwkWZnnZ0dnw96w@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@c-s.fr>
+Message-ID: <0d8ffa6f-00fa-aefe-d255-b635fb90497f@c-s.fr>
+Date:   Thu, 9 Jan 2020 16:43:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
+In-Reply-To: <CAK8P3a1gHvW2XEMDSHCcdOQ8NSs3iHk9GpujwkWZnnZ0dnw96w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-SGI-IP35 alias SN1 is very similair to SGI-IP27 alias SN0, so most of the
-IP27 code could also be used for IP35. The differences will mostly be in
-header files, which are selected by CONFIG option. This series cleans up
-IP27 code/headers and prepares them for IP35 integration.
 
-Thomas Bogendoerfer (14):
-  MIPS: SGI-IP27: use nodemask instead of cpumask
-  MIPS: SGI-IP27: use cpu physid already present while scanning for CPUs
-  MIPS: SGI-IP27: use asm/sn/agent.h for including HUB related stuff
-  MIPS: SGI-IP27: get rid of asm/sn/sn0/ip27.h
-  MIPS: SGI-IP27: move IP27 specific macro to IP27 specific header file
-  MIPS: SGI-IP27: Move get_nasid() to a IP27 specific file
-  MIPS: SGI-IP27: Split kldir.h into generic SN and IP27 parts
-  MIPS: SGI-IP27: Use union instead of typedef
-  MIPS: SGI-IP27: Use structs for decoding error status registers
-  MIPS: SGI-IP27: Use specific get_region_shift
-  MIPS: SGI-IP27: Move all shared IP27 declarations to ip27-common.h
-  MIPS: SGI-IP27: Only reserve interrupts used in Linux
-  MIPS: SGI-IP27: Store cpu speed when scanning for CPUs and use it
-    later
-  MIPS: SGI-IP27: No need for slice_map
 
- .../include/asm/mach-ip27/kernel-entry-init.h |  12 +-
- arch/mips/include/asm/mach-ip27/mmzone.h      |   4 +-
- arch/mips/include/asm/mach-ip27/topology.h    |   2 +-
- arch/mips/include/asm/sn/arch.h               |   3 -
- arch/mips/include/asm/sn/hub.h                |  17 --
- arch/mips/include/asm/sn/intr.h               |  17 --
- arch/mips/include/asm/sn/klconfig.h           |   4 -
- arch/mips/include/asm/sn/kldir.h              | 193 +-----------------
- arch/mips/include/asm/sn/sn0/hub.h            |  22 ++
- arch/mips/include/asm/sn/sn0/hubni.h          |   8 +
- arch/mips/include/asm/sn/sn0/ip27.h           |  85 --------
- arch/mips/include/asm/sn/sn0/kldir.h          | 186 +++++++++++++++++
- arch/mips/include/asm/sn/sn_private.h         |  19 --
- arch/mips/include/asm/sn/types.h              |   4 +
- arch/mips/pci/pci-ip27.c                      |   2 +-
- arch/mips/sgi-ip27/ip27-berr.c                |  40 ++--
- arch/mips/sgi-ip27/ip27-common.h              |  12 +-
- arch/mips/sgi-ip27/ip27-console.c             |   5 +-
- arch/mips/sgi-ip27/ip27-hubio.c               |   8 +-
- arch/mips/sgi-ip27/ip27-init.c                |  25 +--
- arch/mips/sgi-ip27/ip27-irq.c                 |   5 +-
- arch/mips/sgi-ip27/ip27-klconfig.c            |  51 -----
- arch/mips/sgi-ip27/ip27-klnuma.c              |  16 +-
- arch/mips/sgi-ip27/ip27-memory.c              |  39 ++--
- arch/mips/sgi-ip27/ip27-nmi.c                 |   5 +-
- arch/mips/sgi-ip27/ip27-reset.c               |   2 +-
- arch/mips/sgi-ip27/ip27-smp.c                 |  33 +--
- arch/mips/sgi-ip27/ip27-timer.c               |  28 +--
- arch/mips/sgi-ip27/ip27-xtalk.c               |   1 -
- 29 files changed, 315 insertions(+), 533 deletions(-)
- delete mode 100644 arch/mips/include/asm/sn/hub.h
- delete mode 100644 arch/mips/include/asm/sn/sn0/ip27.h
- create mode 100644 arch/mips/include/asm/sn/sn0/kldir.h
- delete mode 100644 arch/mips/include/asm/sn/sn_private.h
+Le 02/01/2020 à 12:29, Arnd Bergmann a écrit :
+> On Mon, Dec 30, 2019 at 1:27 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>> On Mon, Dec 23, 2019 at 3:31 PM Christophe Leroy <christophe.leroy@c-s.fr> wrote:
+>>> +static __always_inline
+>>> +long clock_getres32_fallback(clockid_t _clkid, struct old_timespec32 *_ts)
+>>> +{
+>>> +       struct __kernel_timespec ts;
+>>> +       int ret = clock_getres_fallback(clock, &ts);
+>>> +
+>>> +       if (likely(!ret && _ts)) {
+>>> +               _ts->tv_sec = ts.tv_sec;
+>>> +               _ts->tv_nsec = ts.tv_nsec;
+>>> +       }
+>>> +       return ret;
+>>> +}
+>>
+>> Please change these to call __NR_clock_gettime and __NR_clock_getres_time
+>> instead of __NR_clock_gettime64/__NR_clock_getres_time64 for multiple reasons.
+>>
+>> - When doing migration between containers, the vdso may get copied into
+>>    an application running on a kernel that does not support the time64
+>>    variants, and then the fallback fails.
+>>
+>> - When CONFIG_COMPAT_32BIT_TIME is disabled, the time32 syscalls
+>>    return -ENOSYS, and the vdso version should have the exact same behavior
+>>    to avoid surprises. In particular an application that checks clock_gettime()
+>>    to see if the time32 are in part of the kernel would get an incorrect result
+>>    here.
+>>
+>> arch/arm64/include/asm/vdso/compat_gettimeofday.h already does this,
+>> I think you can just copy the implementation or find a way to share it.
+> 
+> There was a related discussion on this after a vdso regression on mips,
+> and I suggested to drop the time32 functions completely from the
+> vdso when CONFIG_COMPAT_32BIT_TIME is disabled, such as
+> 
+> diff --git a/arch/powerpc/kernel/vdso32/vdso32.lds.S
+> b/arch/powerpc/kernel/vdso32/vdso32.lds.S
+> index 00c025ba4a92..605f259fa24c 100644
+> --- a/arch/powerpc/kernel/vdso32/vdso32.lds.S
+> +++ b/arch/powerpc/kernel/vdso32/vdso32.lds.S
+> @@ -145,10 +145,12 @@ VERSION
+> 
+>                  __kernel_get_syscall_map;
+>   #ifndef CONFIG_PPC_BOOK3S_601
+> +#ifdef CONFIG_COMPAT_32BIT_TIME
+>                  __kernel_gettimeofday;
+>                  __kernel_clock_gettime;
+>                  __kernel_clock_getres;
+>                  __kernel_time;
+> +#endif
+>                  __kernel_get_tbfreq;
+>   #endif
+>                  __kernel_sync_dicache;
+> 
+> Any opinions on this? If everyone agrees with that approach, I can
+> send a cross-architecture patch to do this everywhere. It's probably
+> best though if Christophe adds that to his series as it touches a lot
+> of the same files and I would prefer to avoid conflicting changes.
+> 
 
--- 
-2.24.1
+I guess it would be wise.
 
+I don't think my series to switch powerpc to C VDSO will get ready 
+anytime soon, because (in addition to the performance impact) I'm having 
+hard time with the 32 bits VDSO for PPC64. Many of the powerpc header 
+files used by lib/vdso/gettimeofday.c are not ready for generating 32 
+bits code for PPC64. Main problem is that at many places, #ifdef 
+CONFIG_PPC64 is used instead of #ifdef __powerpc64__. There are also 
+some CONFIG options like CONFIG_GENERIC_ATOMIC64 that are selected only 
+when CONFIG_PPC32 is set, but which are required for building the 32 
+bits VDSO. For that I don't even know how to deal with it.
+
+So, feel free to send your patch, and if my series comes early enough to 
+conflict, I'll manage it.
+
+Christophe

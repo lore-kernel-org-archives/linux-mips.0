@@ -4,32 +4,32 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34775C32771
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E04DC33CA2
 	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:34:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id F3C7A2082E
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:34:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 33F8C20838
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:34:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730979AbgAIMeL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Jan 2020 07:34:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37968 "EHLO mx2.suse.de"
+        id S1730978AbgAIMec (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Jan 2020 07:34:32 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38024 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730368AbgAIMeK (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 9 Jan 2020 07:34:10 -0500
+        id S1730965AbgAIMeL (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 9 Jan 2020 07:34:11 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id AFE54B2207;
-        Thu,  9 Jan 2020 12:34:04 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id CB15EB220D;
+        Thu,  9 Jan 2020 12:34:05 +0000 (UTC)
 From:   Thomas Bogendoerfer <tbogendoerfer@suse.de>
 To:     Paul Burton <paulburton@kernel.org>
 Cc:     Ralf Baechle <ralf@linux-mips.org>,
         James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 03/14] MIPS: SGI-IP27: use asm/sn/agent.h for including HUB related stuff
-Date:   Thu,  9 Jan 2020 13:33:40 +0100
-Message-Id: <20200109123353.5656-4-tbogendoerfer@suse.de>
+Subject: [PATCH 07/14] MIPS: SGI-IP27: Split kldir.h into generic SN and IP27 parts
+Date:   Thu,  9 Jan 2020 13:33:44 +0100
+Message-Id: <20200109123353.5656-8-tbogendoerfer@suse.de>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200109123353.5656-1-tbogendoerfer@suse.de>
 References: <20200109123353.5656-1-tbogendoerfer@suse.de>
@@ -40,326 +40,425 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-By including agent.h where hub related defines/structs are needed, we
-have only one place to select, which agent chip (HUB or BEDROCK) is used.
+SGI-IP35 uses slightly different memory layout, so we move IP27
+defines to IP27 specific files and keep the common stuff in kldir.h
 
 Signed-off-by: Thomas Bogendoerfer <tbogendoerfer@suse.de>
 ---
- .../include/asm/mach-ip27/kernel-entry-init.h   |  2 +-
- arch/mips/include/asm/mach-ip27/mmzone.h        |  3 ++-
- arch/mips/include/asm/mach-ip27/topology.h      |  1 -
- arch/mips/include/asm/sn/arch.h                 |  4 ++++
- arch/mips/include/asm/sn/hub.h                  | 17 -----------------
- arch/mips/include/asm/sn/types.h                |  4 ++++
- arch/mips/pci/pci-ip27.c                        |  2 +-
- arch/mips/sgi-ip27/ip27-berr.c                  |  2 +-
- arch/mips/sgi-ip27/ip27-console.c               |  2 +-
- arch/mips/sgi-ip27/ip27-hubio.c                 |  4 +++-
- arch/mips/sgi-ip27/ip27-init.c                  |  5 +----
- arch/mips/sgi-ip27/ip27-irq.c                   |  1 -
- arch/mips/sgi-ip27/ip27-klnuma.c                |  1 -
- arch/mips/sgi-ip27/ip27-memory.c                |  1 -
- arch/mips/sgi-ip27/ip27-nmi.c                   |  2 +-
- arch/mips/sgi-ip27/ip27-reset.c                 |  2 +-
- arch/mips/sgi-ip27/ip27-smp.c                   |  3 +--
- arch/mips/sgi-ip27/ip27-timer.c                 |  5 +----
- arch/mips/sgi-ip27/ip27-xtalk.c                 |  1 -
- 19 files changed, 22 insertions(+), 40 deletions(-)
- delete mode 100644 arch/mips/include/asm/sn/hub.h
+ arch/mips/include/asm/sn/kldir.h     | 193 +--------------------------
+ arch/mips/include/asm/sn/sn0/kldir.h | 186 ++++++++++++++++++++++++++
+ 2 files changed, 192 insertions(+), 187 deletions(-)
+ create mode 100644 arch/mips/include/asm/sn/sn0/kldir.h
 
-diff --git a/arch/mips/include/asm/mach-ip27/kernel-entry-init.h b/arch/mips/include/asm/mach-ip27/kernel-entry-init.h
-index f992c1db876b..ef31d9fcf806 100644
---- a/arch/mips/include/asm/mach-ip27/kernel-entry-init.h
-+++ b/arch/mips/include/asm/mach-ip27/kernel-entry-init.h
-@@ -10,7 +10,7 @@
- #define __ASM_MACH_IP27_KERNEL_ENTRY_H
- 
- #include <asm/sn/addrs.h>
--#include <asm/sn/sn0/hubni.h>
-+#include <asm/sn/agent.h>
- #include <asm/sn/klkernvars.h>
- 
- /*
-diff --git a/arch/mips/include/asm/mach-ip27/mmzone.h b/arch/mips/include/asm/mach-ip27/mmzone.h
-index f463826515df..534a50f79147 100644
---- a/arch/mips/include/asm/mach-ip27/mmzone.h
-+++ b/arch/mips/include/asm/mach-ip27/mmzone.h
-@@ -4,7 +4,8 @@
- 
- #include <asm/sn/addrs.h>
- #include <asm/sn/arch.h>
--#include <asm/sn/hub.h>
-+#include <asm/sn/agent.h>
-+#include <asm/sn/klkernvars.h>
- 
- #define pa_to_nid(addr)		NASID_GET(addr)
- 
-diff --git a/arch/mips/include/asm/mach-ip27/topology.h b/arch/mips/include/asm/mach-ip27/topology.h
-index be61ddcdacab..3c94ffc06a70 100644
---- a/arch/mips/include/asm/mach-ip27/topology.h
-+++ b/arch/mips/include/asm/mach-ip27/topology.h
-@@ -2,7 +2,6 @@
- #ifndef _ASM_MACH_TOPOLOGY_H
- #define _ASM_MACH_TOPOLOGY_H	1
- 
--#include <asm/sn/hub.h>
- #include <asm/sn/types.h>
- #include <asm/mmzone.h>
- 
-diff --git a/arch/mips/include/asm/sn/arch.h b/arch/mips/include/asm/sn/arch.h
-index f8b34d34d872..afe9fcf36198 100644
---- a/arch/mips/include/asm/sn/arch.h
-+++ b/arch/mips/include/asm/sn/arch.h
-@@ -25,6 +25,10 @@
- #define INVALID_MODULE		(moduleid_t)-1
- #define INVALID_PARTID		(partid_t)-1
- 
-+#ifndef __ASSEMBLY__
+diff --git a/arch/mips/include/asm/sn/kldir.h b/arch/mips/include/asm/sn/kldir.h
+index bfb3aec94539..245f59bf3845 100644
+--- a/arch/mips/include/asm/sn/kldir.h
++++ b/arch/mips/include/asm/sn/kldir.h
+@@ -1,201 +1,16 @@
+-/*
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file "COPYING" in the main directory of this archive
+- * for more details.
+- *
+- * Derived from IRIX <sys/SN/kldir.h>, revision 1.21.
+- *
+- * Copyright (C) 1992 - 1997, 1999, 2000 Silicon Graphics, Inc.
+- * Copyright (C) 1999, 2000 by Ralf Baechle
+- */
++/* SPDX-License-Identifier: GPL-2.0 */
 +
- extern nasid_t get_nasid(void);
+ #ifndef _ASM_SN_KLDIR_H
+ #define _ASM_SN_KLDIR_H
  
+-
+-/*
+- * The kldir memory area resides at a fixed place in each node's memory and
+- * provides pointers to most other IP27 memory areas.  This allows us to
+- * resize and/or relocate memory areas at a later time without breaking all
+- * firmware and kernels that use them.	Indices in the array are
+- * permanently dedicated to areas listed below.	 Some memory areas (marked
+- * below) reside at a permanently fixed location, but are included in the
+- * directory for completeness.
+- */
+-
+ #define KLDIR_MAGIC		0x434d5f53505f5357
+ 
+-/*
+- * The upper portion of the memory map applies during boot
+- * only and is overwritten by IRIX/SYMMON.
+- *
+- *				      MEMORY MAP PER NODE
+- *
+- * 0x2000000 (32M)	   +-----------------------------------------+
+- *			   |	  IO6 BUFFERS FOR FLASH ENET IOC3    |
+- * 0x1F80000 (31.5M)	   +-----------------------------------------+
+- *			   |	  IO6 TEXT/DATA/BSS/stack	     |
+- * 0x1C00000 (30M)	   +-----------------------------------------+
+- *			   |	  IO6 PROM DEBUG TEXT/DATA/BSS/stack |
+- * 0x0800000 (28M)	   +-----------------------------------------+
+- *			   |	  IP27 PROM TEXT/DATA/BSS/stack	     |
+- * 0x1B00000 (27M)	   +-----------------------------------------+
+- *			   |	  IP27 CFG			     |
+- * 0x1A00000 (26M)	   +-----------------------------------------+
+- *			   |	  Graphics PROM			     |
+- * 0x1800000 (24M)	   +-----------------------------------------+
+- *			   |	  3rd Party PROM drivers	     |
+- * 0x1600000 (22M)	   +-----------------------------------------+
+- *			   |					     |
+- *			   |	  Free				     |
+- *			   |					     |
+- *			   +-----------------------------------------+
+- *			   |	  UNIX DEBUG Version		     |
+- * 0x190000 (2M--)	   +-----------------------------------------+
+- *			   |	  SYMMON			     |
+- *			   |	  (For UNIX Debug only)		     |
+- * 0x34000 (208K)	   +-----------------------------------------+
+- *			   |	  SYMMON STACK [NUM_CPU_PER_NODE]    |
+- *			   |	  (For UNIX Debug only)		     |
+- * 0x25000 (148K)	   +-----------------------------------------+
+- *			   |	  KLCONFIG - II (temp)		     |
+- *			   |					     |
+- *			   |	----------------------------	     |
+- *			   |					     |
+- *			   |	  UNIX NON-DEBUG Version	     |
+- * 0x19000 (100K)	   +-----------------------------------------+
+- *
+- *
+- * The lower portion of the memory map contains information that is
+- * permanent and is used by the IP27PROM, IO6PROM and IRIX.
+- *
+- * 0x19000 (100K)	   +-----------------------------------------+
+- *			   |					     |
+- *			   |	  PI Error Spools (32K)		     |
+- *			   |					     |
+- * 0x12000 (72K)	   +-----------------------------------------+
+- *			   |	  Unused			     |
+- * 0x11c00 (71K)	   +-----------------------------------------+
+- *			   |	  CPU 1 NMI Eframe area		     |
+- * 0x11a00 (70.5K)	   +-----------------------------------------+
+- *			   |	  CPU 0 NMI Eframe area		     |
+- * 0x11800 (70K)	   +-----------------------------------------+
+- *			   |	  CPU 1 NMI Register save area	     |
+- * 0x11600 (69.5K)	   +-----------------------------------------+
+- *			   |	  CPU 0 NMI Register save area	     |
+- * 0x11400 (69K)	   +-----------------------------------------+
+- *			   |	  GDA (1k)			     |
+- * 0x11000 (68K)	   +-----------------------------------------+
+- *			   |	  Early cache Exception stack	     |
+- *			   |		 and/or			     |
+- *			   |	  kernel/io6prom nmi registers	     |
+- * 0x10800  (66k)	   +-----------------------------------------+
+- *			   |	  cache error eframe		     |
+- * 0x10400 (65K)	   +-----------------------------------------+
+- *			   |	  Exception Handlers (UALIAS copy)   |
+- * 0x10000 (64K)	   +-----------------------------------------+
+- *			   |					     |
+- *			   |					     |
+- *			   |	  KLCONFIG - I (permanent) (48K)     |
+- *			   |					     |
+- *			   |					     |
+- *			   |					     |
+- * 0x4000 (16K)		   +-----------------------------------------+
+- *			   |	  NMI Handler (Protected Page)	     |
+- * 0x3000 (12K)		   +-----------------------------------------+
+- *			   |	  ARCS PVECTORS (master node only)   |
+- * 0x2c00 (11K)		   +-----------------------------------------+
+- *			   |	  ARCS TVECTORS (master node only)   |
+- * 0x2800 (10K)		   +-----------------------------------------+
+- *			   |	  LAUNCH [NUM_CPU]		     |
+- * 0x2400 (9K)		   +-----------------------------------------+
+- *			   |	  Low memory directory (KLDIR)	     |
+- * 0x2000 (8K)		   +-----------------------------------------+
+- *			   |	  ARCS SPB (1K)			     |
+- * 0x1000 (4K)		   +-----------------------------------------+
+- *			   |	  Early cache Exception stack	     |
+- *			   |		 and/or			     |
+- *			   |	  kernel/io6prom nmi registers	     |
+- * 0x800  (2k)		   +-----------------------------------------+
+- *			   |	  cache error eframe		     |
+- * 0x400 (1K)		   +-----------------------------------------+
+- *			   |	  Exception Handlers		     |
+- * 0x0	 (0K)		   +-----------------------------------------+
+- */
+-
+-#ifdef __ASSEMBLY__
+ #define KLDIR_OFF_MAGIC			0x00
+ #define KLDIR_OFF_OFFSET		0x08
+ #define KLDIR_OFF_POINTER		0x10
+ #define KLDIR_OFF_SIZE			0x18
+ #define KLDIR_OFF_COUNT			0x20
+ #define KLDIR_OFF_STRIDE		0x28
+-#endif /* __ASSEMBLY__ */
+-
+-/*
+- * This is defined here because IP27_SYMMON_STK_SIZE must be at least what
+- * we define here.  Since it's set up in the prom.  We can't redefine it later
+- * and expect more space to be allocated.  The way to find out the true size
+- * of the symmon stacks is to divide SYMMON_STK_SIZE by SYMMON_STK_STRIDE
+- * for a particular node.
+- */
+-#define SYMMON_STACK_SIZE		0x8000
+-
+-#if defined(PROM)
+-
+-/*
+- * These defines are prom version dependent.  No code other than the IP27
+- * prom should attempt to use these values.
+- */
+-#define IP27_LAUNCH_OFFSET		0x2400
+-#define IP27_LAUNCH_SIZE		0x400
+-#define IP27_LAUNCH_COUNT		2
+-#define IP27_LAUNCH_STRIDE		0x200
+-
+-#define IP27_KLCONFIG_OFFSET		0x4000
+-#define IP27_KLCONFIG_SIZE		0xc000
+-#define IP27_KLCONFIG_COUNT		1
+-#define IP27_KLCONFIG_STRIDE		0
+-
+-#define IP27_NMI_OFFSET			0x3000
+-#define IP27_NMI_SIZE			0x40
+-#define IP27_NMI_COUNT			2
+-#define IP27_NMI_STRIDE			0x40
+-
+-#define IP27_PI_ERROR_OFFSET		0x12000
+-#define IP27_PI_ERROR_SIZE		0x4000
+-#define IP27_PI_ERROR_COUNT		1
+-#define IP27_PI_ERROR_STRIDE		0
+-
+-#define IP27_SYMMON_STK_OFFSET		0x25000
+-#define IP27_SYMMON_STK_SIZE		0xe000
+-#define IP27_SYMMON_STK_COUNT		2
+-/* IP27_SYMMON_STK_STRIDE must be >= SYMMON_STACK_SIZE */
+-#define IP27_SYMMON_STK_STRIDE		0x7000
+-
+-#define IP27_FREEMEM_OFFSET		0x19000
+-#define IP27_FREEMEM_SIZE		-1
+-#define IP27_FREEMEM_COUNT		1
+-#define IP27_FREEMEM_STRIDE		0
+-
+-#endif /* PROM */
+-/*
+- * There will be only one of these in a partition so the IO6 must set it up.
+- */
+-#define IO6_GDA_OFFSET			0x11000
+-#define IO6_GDA_SIZE			0x400
+-#define IO6_GDA_COUNT			1
+-#define IO6_GDA_STRIDE			0
+-
+-/*
+- * save area of kernel nmi regs in the prom format
+- */
+-#define IP27_NMI_KREGS_OFFSET		0x11400
+-#define IP27_NMI_KREGS_CPU_SIZE		0x200
+-/*
+- * save area of kernel nmi regs in eframe format
+- */
+-#define IP27_NMI_EFRAME_OFFSET		0x11800
+-#define IP27_NMI_EFRAME_SIZE		0x200
+ 
+ #define KLDIR_ENT_SIZE			0x40
+ #define KLDIR_MAX_ENTRIES		(0x400 / 0x40)
+@@ -214,4 +29,8 @@ typedef struct kldir_ent_s {
+ } kldir_ent_t;
+ #endif /* !__ASSEMBLY__ */
+ 
++#ifdef CONFIG_SGI_IP27
++#include <asm/sn/sn0/kldir.h>
 +#endif
 +
- #endif /* _ASM_SN_ARCH_H */
-diff --git a/arch/mips/include/asm/sn/hub.h b/arch/mips/include/asm/sn/hub.h
-deleted file mode 100644
-index 45878fbefbae..000000000000
---- a/arch/mips/include/asm/sn/hub.h
-+++ /dev/null
-@@ -1,17 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef __ASM_SN_HUB_H
--#define __ASM_SN_HUB_H
--
--#include <linux/types.h>
--#include <linux/cpumask.h>
--#include <asm/sn/types.h>
--#include <asm/sn/io.h>
--#include <asm/sn/klkernvars.h>
--#include <asm/xtalk/xtalk.h>
--
--/* ip27-hubio.c */
--extern unsigned long hub_pio_map(nasid_t nasid, xwidgetnum_t widget,
--			  unsigned long xtalk_addr, size_t size);
--extern void hub_pio_init(nasid_t nasid);
--
--#endif /* __ASM_SN_HUB_H */
-diff --git a/arch/mips/include/asm/sn/types.h b/arch/mips/include/asm/sn/types.h
-index 203c927e84d1..451ba1ee41ad 100644
---- a/arch/mips/include/asm/sn/types.h
-+++ b/arch/mips/include/asm/sn/types.h
-@@ -11,6 +11,8 @@
- 
- #include <linux/types.h>
- 
-+#ifndef __ASSEMBLY__
+ #endif /* _ASM_SN_KLDIR_H */
+diff --git a/arch/mips/include/asm/sn/sn0/kldir.h b/arch/mips/include/asm/sn/sn0/kldir.h
+new file mode 100644
+index 000000000000..1b10af6cbd5e
+--- /dev/null
++++ b/arch/mips/include/asm/sn/sn0/kldir.h
+@@ -0,0 +1,186 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Derived from IRIX <sys/SN/kldir.h>, revision 1.21.
++ *
++ * Copyright (C) 1992 - 1997, 1999, 2000 Silicon Graphics, Inc.
++ * Copyright (C) 1999, 2000 by Ralf Baechle
++ */
++#ifndef _ASM_SN_SN0_KLDIR_H
++#define _ASM_SN_SN0_KLDIR_H
 +
- typedef unsigned long	cpuid_t;
- typedef signed short	nasid_t;	/* node id in numa-as-id space */
- typedef signed char	partid_t;	/* partition ID type */
-@@ -18,4 +20,6 @@ typedef signed short	moduleid_t;	/* user-visible module number type */
- 
- typedef dev_t		vertex_hdl_t;	/* hardware graph vertex handle */
- 
-+#endif
 +
- #endif /* _ASM_SN_TYPES_H */
-diff --git a/arch/mips/pci/pci-ip27.c b/arch/mips/pci/pci-ip27.c
-index 8e26b120f994..d85cbf84e41c 100644
---- a/arch/mips/pci/pci-ip27.c
-+++ b/arch/mips/pci/pci-ip27.c
-@@ -10,7 +10,7 @@
- #include <asm/sn/addrs.h>
- #include <asm/sn/types.h>
- #include <asm/sn/klconfig.h>
--#include <asm/sn/hub.h>
-+#include <asm/sn/agent.h>
- #include <asm/sn/ioc3.h>
- #include <asm/pci/bridge.h>
- 
-diff --git a/arch/mips/sgi-ip27/ip27-berr.c b/arch/mips/sgi-ip27/ip27-berr.c
-index 73ad29b180fb..65635f765645 100644
---- a/arch/mips/sgi-ip27/ip27-berr.c
-+++ b/arch/mips/sgi-ip27/ip27-berr.c
-@@ -16,8 +16,8 @@
- 
- #include <asm/ptrace.h>
- #include <asm/sn/addrs.h>
-+#include <asm/sn/agent.h>
- #include <asm/sn/arch.h>
--#include <asm/sn/sn0/hub.h>
- #include <asm/tlbdebug.h>
- #include <asm/traps.h>
- #include <linux/uaccess.h>
-diff --git a/arch/mips/sgi-ip27/ip27-console.c b/arch/mips/sgi-ip27/ip27-console.c
-index 5886bee89d06..441b14907826 100644
---- a/arch/mips/sgi-ip27/ip27-console.c
-+++ b/arch/mips/sgi-ip27/ip27-console.c
-@@ -9,7 +9,7 @@
- #include <asm/page.h>
- #include <asm/setup.h>
- #include <asm/sn/addrs.h>
--#include <asm/sn/sn0/hub.h>
-+#include <asm/sn/agent.h>
- #include <asm/sn/klconfig.h>
- #include <asm/sn/ioc3.h>
- #include <asm/sn/sn_private.h>
-diff --git a/arch/mips/sgi-ip27/ip27-hubio.c b/arch/mips/sgi-ip27/ip27-hubio.c
-index a538d0ceb61d..298cfdf8b44e 100644
---- a/arch/mips/sgi-ip27/ip27-hubio.c
-+++ b/arch/mips/sgi-ip27/ip27-hubio.c
-@@ -11,7 +11,9 @@
- #include <linux/mmzone.h>
- #include <asm/sn/addrs.h>
- #include <asm/sn/arch.h>
--#include <asm/sn/hub.h>
-+#include <asm/sn/agent.h>
-+#include <asm/sn/io.h>
-+#include <asm/xtalk/xtalk.h>
- 
- 
- static int force_fire_and_forget = 1;
-diff --git a/arch/mips/sgi-ip27/ip27-init.c b/arch/mips/sgi-ip27/ip27-init.c
-index f597e1ee2df7..b8758af4c5b7 100644
---- a/arch/mips/sgi-ip27/ip27-init.c
-+++ b/arch/mips/sgi-ip27/ip27-init.c
-@@ -19,15 +19,12 @@
- #include <asm/pgtable.h>
- #include <asm/sgialib.h>
- #include <asm/time.h>
-+#include <asm/sn/agent.h>
- #include <asm/sn/types.h>
--#include <asm/sn/sn0/addrs.h>
--#include <asm/sn/sn0/hubni.h>
--#include <asm/sn/sn0/hubio.h>
- #include <asm/sn/klconfig.h>
- #include <asm/sn/ioc3.h>
- #include <asm/mipsregs.h>
- #include <asm/sn/gda.h>
--#include <asm/sn/hub.h>
- #include <asm/sn/intr.h>
- #include <asm/current.h>
- #include <asm/processor.h>
-diff --git a/arch/mips/sgi-ip27/ip27-irq.c b/arch/mips/sgi-ip27/ip27-irq.c
-index c72ae330ea93..5a4a782ceae5 100644
---- a/arch/mips/sgi-ip27/ip27-irq.c
-+++ b/arch/mips/sgi-ip27/ip27-irq.c
-@@ -19,7 +19,6 @@
- #include <asm/sn/addrs.h>
- #include <asm/sn/agent.h>
- #include <asm/sn/arch.h>
--#include <asm/sn/hub.h>
- #include <asm/sn/intr.h>
- #include <asm/sn/irq_alloc.h>
- 
-diff --git a/arch/mips/sgi-ip27/ip27-klnuma.c b/arch/mips/sgi-ip27/ip27-klnuma.c
-index af7b98c39dce..9c5e799bcdb9 100644
---- a/arch/mips/sgi-ip27/ip27-klnuma.c
-+++ b/arch/mips/sgi-ip27/ip27-klnuma.c
-@@ -16,7 +16,6 @@
- #include <asm/sn/types.h>
- #include <asm/sn/arch.h>
- #include <asm/sn/gda.h>
--#include <asm/sn/hub.h>
- #include <asm/sn/mapped_kernel.h>
- #include <asm/sn/sn_private.h>
- 
-diff --git a/arch/mips/sgi-ip27/ip27-memory.c b/arch/mips/sgi-ip27/ip27-memory.c
-index a0c717662eb1..0ef2181db8d0 100644
---- a/arch/mips/sgi-ip27/ip27-memory.c
-+++ b/arch/mips/sgi-ip27/ip27-memory.c
-@@ -25,7 +25,6 @@
- #include <asm/sections.h>
- 
- #include <asm/sn/arch.h>
--#include <asm/sn/hub.h>
- #include <asm/sn/klconfig.h>
- #include <asm/sn/sn_private.h>
- 
-diff --git a/arch/mips/sgi-ip27/ip27-nmi.c b/arch/mips/sgi-ip27/ip27-nmi.c
-index daf3670d94e7..916e795fdac7 100644
---- a/arch/mips/sgi-ip27/ip27-nmi.c
-+++ b/arch/mips/sgi-ip27/ip27-nmi.c
-@@ -9,7 +9,7 @@
- #include <asm/sn/addrs.h>
- #include <asm/sn/nmi.h>
- #include <asm/sn/arch.h>
--#include <asm/sn/sn0/hub.h>
-+#include <asm/sn/agent.h>
- 
- #if 0
- #define NODE_NUM_CPUS(n)	CNODE_NUM_CPUS(n)
-diff --git a/arch/mips/sgi-ip27/ip27-reset.c b/arch/mips/sgi-ip27/ip27-reset.c
-index 74d078247e49..5ac5ad638734 100644
---- a/arch/mips/sgi-ip27/ip27-reset.c
-+++ b/arch/mips/sgi-ip27/ip27-reset.c
-@@ -22,9 +22,9 @@
- #include <asm/reboot.h>
- #include <asm/sgialib.h>
- #include <asm/sn/addrs.h>
-+#include <asm/sn/agent.h>
- #include <asm/sn/arch.h>
- #include <asm/sn/gda.h>
--#include <asm/sn/sn0/hub.h>
- 
- #include "ip27-common.h"
- 
-diff --git a/arch/mips/sgi-ip27/ip27-smp.c b/arch/mips/sgi-ip27/ip27-smp.c
-index de3711e9b1ba..1ae053ecf75c 100644
---- a/arch/mips/sgi-ip27/ip27-smp.c
-+++ b/arch/mips/sgi-ip27/ip27-smp.c
-@@ -15,6 +15,7 @@
- #include <asm/page.h>
- #include <asm/processor.h>
- #include <asm/ptrace.h>
-+#include <asm/sn/agent.h>
- #include <asm/sn/arch.h>
- #include <asm/sn/gda.h>
- #include <asm/sn/intr.h>
-@@ -23,8 +24,6 @@
- #include <asm/sn/mapped_kernel.h>
- #include <asm/sn/sn_private.h>
- #include <asm/sn/types.h>
--#include <asm/sn/sn0/hubpi.h>
--#include <asm/sn/sn0/hubio.h>
- #include <asm/sn/sn0/ip27.h>
- 
- #include "ip27-common.h"
-diff --git a/arch/mips/sgi-ip27/ip27-timer.c b/arch/mips/sgi-ip27/ip27-timer.c
-index d53a29070e12..1b285c042ca7 100644
---- a/arch/mips/sgi-ip27/ip27-timer.c
-+++ b/arch/mips/sgi-ip27/ip27-timer.c
-@@ -25,17 +25,14 @@
- #include <asm/sn/klconfig.h>
- #include <asm/sn/arch.h>
- #include <asm/sn/addrs.h>
-+#include <asm/sn/agent.h>
- #include <asm/sn/sn_private.h>
- #include <asm/sn/sn0/ip27.h>
--#include <asm/sn/sn0/hub.h>
- 
- #define TICK_SIZE (tick_nsec / 1000)
- 
- /* Includes for ioc3_init().  */
- #include <asm/sn/types.h>
--#include <asm/sn/sn0/addrs.h>
--#include <asm/sn/sn0/hubni.h>
--#include <asm/sn/sn0/hubio.h>
- #include <asm/pci/bridge.h>
- 
- #include "ip27-common.h"
-diff --git a/arch/mips/sgi-ip27/ip27-xtalk.c b/arch/mips/sgi-ip27/ip27-xtalk.c
-index 5218b900f855..000ede156bdc 100644
---- a/arch/mips/sgi-ip27/ip27-xtalk.c
-+++ b/arch/mips/sgi-ip27/ip27-xtalk.c
-@@ -15,7 +15,6 @@
- #include <asm/sn/addrs.h>
- #include <asm/sn/types.h>
- #include <asm/sn/klconfig.h>
--#include <asm/sn/hub.h>
- #include <asm/pci/bridge.h>
- #include <asm/xtalk/xtalk.h>
- 
++/*
++ * The kldir memory area resides at a fixed place in each node's memory and
++ * provides pointers to most other IP27 memory areas.  This allows us to
++ * resize and/or relocate memory areas at a later time without breaking all
++ * firmware and kernels that use them.	Indices in the array are
++ * permanently dedicated to areas listed below.	 Some memory areas (marked
++ * below) reside at a permanently fixed location, but are included in the
++ * directory for completeness.
++ */
++
++/*
++ * The upper portion of the memory map applies during boot
++ * only and is overwritten by IRIX/SYMMON.
++ *
++ *				      MEMORY MAP PER NODE
++ *
++ * 0x2000000 (32M)	   +-----------------------------------------+
++ *			   |	  IO6 BUFFERS FOR FLASH ENET IOC3    |
++ * 0x1F80000 (31.5M)	   +-----------------------------------------+
++ *			   |	  IO6 TEXT/DATA/BSS/stack	     |
++ * 0x1C00000 (30M)	   +-----------------------------------------+
++ *			   |	  IO6 PROM DEBUG TEXT/DATA/BSS/stack |
++ * 0x0800000 (28M)	   +-----------------------------------------+
++ *			   |	  IP27 PROM TEXT/DATA/BSS/stack	     |
++ * 0x1B00000 (27M)	   +-----------------------------------------+
++ *			   |	  IP27 CFG			     |
++ * 0x1A00000 (26M)	   +-----------------------------------------+
++ *			   |	  Graphics PROM			     |
++ * 0x1800000 (24M)	   +-----------------------------------------+
++ *			   |	  3rd Party PROM drivers	     |
++ * 0x1600000 (22M)	   +-----------------------------------------+
++ *			   |					     |
++ *			   |	  Free				     |
++ *			   |					     |
++ *			   +-----------------------------------------+
++ *			   |	  UNIX DEBUG Version		     |
++ * 0x190000 (2M--)	   +-----------------------------------------+
++ *			   |	  SYMMON			     |
++ *			   |	  (For UNIX Debug only)		     |
++ * 0x34000 (208K)	   +-----------------------------------------+
++ *			   |	  SYMMON STACK [NUM_CPU_PER_NODE]    |
++ *			   |	  (For UNIX Debug only)		     |
++ * 0x25000 (148K)	   +-----------------------------------------+
++ *			   |	  KLCONFIG - II (temp)		     |
++ *			   |					     |
++ *			   |	----------------------------	     |
++ *			   |					     |
++ *			   |	  UNIX NON-DEBUG Version	     |
++ * 0x19000 (100K)	   +-----------------------------------------+
++ *
++ *
++ * The lower portion of the memory map contains information that is
++ * permanent and is used by the IP27PROM, IO6PROM and IRIX.
++ *
++ * 0x19000 (100K)	   +-----------------------------------------+
++ *			   |					     |
++ *			   |	  PI Error Spools (32K)		     |
++ *			   |					     |
++ * 0x12000 (72K)	   +-----------------------------------------+
++ *			   |	  Unused			     |
++ * 0x11c00 (71K)	   +-----------------------------------------+
++ *			   |	  CPU 1 NMI Eframe area		     |
++ * 0x11a00 (70.5K)	   +-----------------------------------------+
++ *			   |	  CPU 0 NMI Eframe area		     |
++ * 0x11800 (70K)	   +-----------------------------------------+
++ *			   |	  CPU 1 NMI Register save area	     |
++ * 0x11600 (69.5K)	   +-----------------------------------------+
++ *			   |	  CPU 0 NMI Register save area	     |
++ * 0x11400 (69K)	   +-----------------------------------------+
++ *			   |	  GDA (1k)			     |
++ * 0x11000 (68K)	   +-----------------------------------------+
++ *			   |	  Early cache Exception stack	     |
++ *			   |		 and/or			     |
++ *			   |	  kernel/io6prom nmi registers	     |
++ * 0x10800  (66k)	   +-----------------------------------------+
++ *			   |	  cache error eframe		     |
++ * 0x10400 (65K)	   +-----------------------------------------+
++ *			   |	  Exception Handlers (UALIAS copy)   |
++ * 0x10000 (64K)	   +-----------------------------------------+
++ *			   |					     |
++ *			   |					     |
++ *			   |	  KLCONFIG - I (permanent) (48K)     |
++ *			   |					     |
++ *			   |					     |
++ *			   |					     |
++ * 0x4000 (16K)		   +-----------------------------------------+
++ *			   |	  NMI Handler (Protected Page)	     |
++ * 0x3000 (12K)		   +-----------------------------------------+
++ *			   |	  ARCS PVECTORS (master node only)   |
++ * 0x2c00 (11K)		   +-----------------------------------------+
++ *			   |	  ARCS TVECTORS (master node only)   |
++ * 0x2800 (10K)		   +-----------------------------------------+
++ *			   |	  LAUNCH [NUM_CPU]		     |
++ * 0x2400 (9K)		   +-----------------------------------------+
++ *			   |	  Low memory directory (KLDIR)	     |
++ * 0x2000 (8K)		   +-----------------------------------------+
++ *			   |	  ARCS SPB (1K)			     |
++ * 0x1000 (4K)		   +-----------------------------------------+
++ *			   |	  Early cache Exception stack	     |
++ *			   |		 and/or			     |
++ *			   |	  kernel/io6prom nmi registers	     |
++ * 0x800  (2k)		   +-----------------------------------------+
++ *			   |	  cache error eframe		     |
++ * 0x400 (1K)		   +-----------------------------------------+
++ *			   |	  Exception Handlers		     |
++ * 0x0	 (0K)		   +-----------------------------------------+
++ */
++
++/*
++ * This is defined here because IP27_SYMMON_STK_SIZE must be at least what
++ * we define here.  Since it's set up in the prom.  We can't redefine it later
++ * and expect more space to be allocated.  The way to find out the true size
++ * of the symmon stacks is to divide SYMMON_STK_SIZE by SYMMON_STK_STRIDE
++ * for a particular node.
++ */
++#define SYMMON_STACK_SIZE		0x8000
++
++#if defined(PROM)
++
++/*
++ * These defines are prom version dependent.  No code other than the IP27
++ * prom should attempt to use these values.
++ */
++#define IP27_LAUNCH_OFFSET		0x2400
++#define IP27_LAUNCH_SIZE		0x400
++#define IP27_LAUNCH_COUNT		2
++#define IP27_LAUNCH_STRIDE		0x200
++
++#define IP27_KLCONFIG_OFFSET		0x4000
++#define IP27_KLCONFIG_SIZE		0xc000
++#define IP27_KLCONFIG_COUNT		1
++#define IP27_KLCONFIG_STRIDE		0
++
++#define IP27_NMI_OFFSET			0x3000
++#define IP27_NMI_SIZE			0x40
++#define IP27_NMI_COUNT			2
++#define IP27_NMI_STRIDE			0x40
++
++#define IP27_PI_ERROR_OFFSET		0x12000
++#define IP27_PI_ERROR_SIZE		0x4000
++#define IP27_PI_ERROR_COUNT		1
++#define IP27_PI_ERROR_STRIDE		0
++
++#define IP27_SYMMON_STK_OFFSET		0x25000
++#define IP27_SYMMON_STK_SIZE		0xe000
++#define IP27_SYMMON_STK_COUNT		2
++/* IP27_SYMMON_STK_STRIDE must be >= SYMMON_STACK_SIZE */
++#define IP27_SYMMON_STK_STRIDE		0x7000
++
++#define IP27_FREEMEM_OFFSET		0x19000
++#define IP27_FREEMEM_SIZE		-1
++#define IP27_FREEMEM_COUNT		1
++#define IP27_FREEMEM_STRIDE		0
++
++#endif /* PROM */
++/*
++ * There will be only one of these in a partition so the IO6 must set it up.
++ */
++#define IO6_GDA_OFFSET			0x11000
++#define IO6_GDA_SIZE			0x400
++#define IO6_GDA_COUNT			1
++#define IO6_GDA_STRIDE			0
++
++/*
++ * save area of kernel nmi regs in the prom format
++ */
++#define IP27_NMI_KREGS_OFFSET		0x11400
++#define IP27_NMI_KREGS_CPU_SIZE		0x200
++/*
++ * save area of kernel nmi regs in eframe format
++ */
++#define IP27_NMI_EFRAME_OFFSET		0x11800
++#define IP27_NMI_EFRAME_SIZE		0x200
++
++#endif /* _ASM_SN_SN0_KLDIR_H */
 -- 
 2.24.1
 

@@ -6,30 +6,30 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07A07C47409
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F756C3F68F
 	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:34:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DA1722084D
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:34:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 461BC2072A
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:34:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730985AbgAIMeM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Jan 2020 07:34:12 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38030 "EHLO mx2.suse.de"
+        id S1730981AbgAIMeL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Jan 2020 07:34:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38022 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730969AbgAIMeL (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1730963AbgAIMeL (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Thu, 9 Jan 2020 07:34:11 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 5152DB2210;
-        Thu,  9 Jan 2020 12:34:06 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 8110DB220B;
+        Thu,  9 Jan 2020 12:34:05 +0000 (UTC)
 From:   Thomas Bogendoerfer <tbogendoerfer@suse.de>
 To:     Paul Burton <paulburton@kernel.org>
 Cc:     Ralf Baechle <ralf@linux-mips.org>,
         James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 10/14] MIPS: SGI-IP27: Use specific get_region_shift
-Date:   Thu,  9 Jan 2020 13:33:47 +0100
-Message-Id: <20200109123353.5656-11-tbogendoerfer@suse.de>
+Subject: [PATCH 06/14] MIPS: SGI-IP27: Move get_nasid() to a IP27 specific file
+Date:   Thu,  9 Jan 2020 13:33:43 +0100
+Message-Id: <20200109123353.5656-7-tbogendoerfer@suse.de>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200109123353.5656-1-tbogendoerfer@suse.de>
 References: <20200109123353.5656-1-tbogendoerfer@suse.de>
@@ -40,108 +40,73 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-IP35 has a different way to find out regions, so we move the IP27
+get_nasid() will be different for SGI-IP35, therefore move IP27
 implementation to IP27 specific file.
 
 Signed-off-by: Thomas Bogendoerfer <tbogendoerfer@suse.de>
 ---
- arch/mips/include/asm/sn/sn0/hubni.h |  8 +++++++
- arch/mips/sgi-ip27/ip27-memory.c     | 36 ++++++++++------------------
- 2 files changed, 20 insertions(+), 24 deletions(-)
+ arch/mips/include/asm/sn/arch.h    |  6 ------
+ arch/mips/include/asm/sn/sn0/hub.h | 10 ++++++++++
+ arch/mips/sgi-ip27/ip27-init.c     | 10 ----------
+ 3 files changed, 10 insertions(+), 16 deletions(-)
 
-diff --git a/arch/mips/include/asm/sn/sn0/hubni.h b/arch/mips/include/asm/sn/sn0/hubni.h
-index b73c4bee65f2..b8253142cb83 100644
---- a/arch/mips/include/asm/sn/sn0/hubni.h
-+++ b/arch/mips/include/asm/sn/sn0/hubni.h
-@@ -250,6 +250,14 @@ typedef union	hubni_port_error_u {
- #define NI_LLP_CB_MAX		0xff
- #define NI_LLP_SN_MAX		0xff
+diff --git a/arch/mips/include/asm/sn/arch.h b/arch/mips/include/asm/sn/arch.h
+index afe9fcf36198..9a9682543e89 100644
+--- a/arch/mips/include/asm/sn/arch.h
++++ b/arch/mips/include/asm/sn/arch.h
+@@ -25,10 +25,4 @@
+ #define INVALID_MODULE		(moduleid_t)-1
+ #define INVALID_PARTID		(partid_t)-1
  
-+static inline int get_region_shift(void)
+-#ifndef __ASSEMBLY__
+-
+-extern nasid_t get_nasid(void);
+-
+-#endif
+-
+ #endif /* _ASM_SN_ARCH_H */
+diff --git a/arch/mips/include/asm/sn/sn0/hub.h b/arch/mips/include/asm/sn/sn0/hub.h
+index 82cadd785b9c..c84adde36d41 100644
+--- a/arch/mips/include/asm/sn/sn0/hub.h
++++ b/arch/mips/include/asm/sn/sn0/hub.h
+@@ -47,6 +47,16 @@
+ 	and	\res, NSRI_NODEID_MASK
+ 	dsrl	\res, NSRI_NODEID_SHFT
+ 	.endm
++#else
++
++/*
++ * get_nasid() returns the physical node id number of the caller.
++ */
++static inline nasid_t get_nasid(void)
 +{
-+	if (LOCAL_HUB_L(NI_STATUS_REV_ID) & NSRI_REGIONSIZE_MASK)
-+		return NASID_TO_FINEREG_SHFT;
-+
-+	return NASID_TO_COARSEREG_SHFT;
++	return (nasid_t)((LOCAL_HUB_L(NI_STATUS_REV_ID) & NSRI_NODEID_MASK)
++			 >> NSRI_NODEID_SHFT);
 +}
-+
- #endif /* !__ASSEMBLY__ */
+ #endif
  
- #endif /* _ASM_SGI_SN0_HUBNI_H */
-diff --git a/arch/mips/sgi-ip27/ip27-memory.c b/arch/mips/sgi-ip27/ip27-memory.c
-index 0ef2181db8d0..db3759e551b3 100644
---- a/arch/mips/sgi-ip27/ip27-memory.c
-+++ b/arch/mips/sgi-ip27/ip27-memory.c
-@@ -25,6 +25,7 @@
- #include <asm/sections.h>
- 
- #include <asm/sn/arch.h>
-+#include <asm/sn/agent.h>
- #include <asm/sn/klconfig.h>
- #include <asm/sn/sn_private.h>
- 
-@@ -36,31 +37,18 @@ struct node_data *__node_data[MAX_NUMNODES];
- 
- EXPORT_SYMBOL(__node_data);
- 
--static int fine_mode;
--
--static int is_fine_dirmode(void)
--{
--	return ((LOCAL_HUB_L(NI_STATUS_REV_ID) & NSRI_REGIONSIZE_MASK) >> NSRI_REGIONSIZE_SHFT) & REGIONSIZE_FINE;
--}
--
--static u64 get_region(nasid_t nasid)
--{
--	if (fine_mode)
--		return nasid >> NASID_TO_FINEREG_SHFT;
--	else
--		return nasid >> NASID_TO_COARSEREG_SHFT;
--}
--
--static u64 region_mask;
--
--static void gen_region_mask(u64 *region_mask)
-+static u64 gen_region_mask(void)
- {
-+	int region_shift;
-+	u64 region_mask;
- 	nasid_t nasid;
- 
--	(*region_mask) = 0;
--	for_each_online_node(nasid) {
--		(*region_mask) |= 1ULL << get_region(nasid);
--	}
-+	region_shift = get_region_shift();
-+	region_mask = 0;
-+	for_each_online_node(nasid)
-+		region_mask |= BIT_ULL(nasid >> region_shift);
-+
-+	return region_mask;
+ #endif /* _ASM_SN_SN0_HUB_H */
+diff --git a/arch/mips/sgi-ip27/ip27-init.c b/arch/mips/sgi-ip27/ip27-init.c
+index 484db3b73b7d..a2da78bc9f76 100644
+--- a/arch/mips/sgi-ip27/ip27-init.c
++++ b/arch/mips/sgi-ip27/ip27-init.c
+@@ -94,16 +94,6 @@ void per_cpu_init(void)
+ 	enable_percpu_irq(IP27_HUB_PEND1_IRQ, IRQ_TYPE_NONE);
  }
  
- #define rou_rflag	rou_flags
-@@ -280,10 +268,10 @@ static unsigned long __init slot_psize_compute(nasid_t nasid, int slot)
- 
- static void __init mlreset(void)
+-/*
+- * get_nasid() returns the physical node id number of the caller.
+- */
+-nasid_t
+-get_nasid(void)
+-{
+-	return (nasid_t)((LOCAL_HUB_L(NI_STATUS_REV_ID) & NSRI_NODEID_MASK)
+-			 >> NSRI_NODEID_SHFT);
+-}
+-
+ void __init plat_mem_setup(void)
  {
-+	u64 region_mask;
- 	nasid_t nasid;
- 
- 	master_nasid = get_nasid();
--	fine_mode = is_fine_dirmode();
- 
- 	/*
- 	 * Probe for all CPUs - this creates the cpumask and sets up the
-@@ -296,7 +284,7 @@ static void __init mlreset(void)
- 	init_topology_matrix();
- 	dump_topology();
- 
--	gen_region_mask(&region_mask);
-+	region_mask = gen_region_mask();
- 
- 	setup_replication_mask();
- 
+ 	u64 p, e, n_mode;
 -- 
 2.24.1
 

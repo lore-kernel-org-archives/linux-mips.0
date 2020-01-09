@@ -6,30 +6,30 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D85EFC32771
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:34:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07A07C47409
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:34:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B8F1B2082E
+	by mail.kernel.org (Postfix) with ESMTP id DA1722084D
 	for <linux-mips@archiver.kernel.org>; Thu,  9 Jan 2020 12:34:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731021AbgAIMeX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Jan 2020 07:34:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38038 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730977AbgAIMeM (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1730985AbgAIMeM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Thu, 9 Jan 2020 07:34:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38030 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730969AbgAIMeL (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 9 Jan 2020 07:34:11 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 57305B2214;
-        Thu,  9 Jan 2020 12:34:07 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 5152DB2210;
+        Thu,  9 Jan 2020 12:34:06 +0000 (UTC)
 From:   Thomas Bogendoerfer <tbogendoerfer@suse.de>
 To:     Paul Burton <paulburton@kernel.org>
 Cc:     Ralf Baechle <ralf@linux-mips.org>,
         James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 13/14] MIPS: SGI-IP27: Store cpu speed when scanning for CPUs and use it later
-Date:   Thu,  9 Jan 2020 13:33:50 +0100
-Message-Id: <20200109123353.5656-14-tbogendoerfer@suse.de>
+Subject: [PATCH 10/14] MIPS: SGI-IP27: Use specific get_region_shift
+Date:   Thu,  9 Jan 2020 13:33:47 +0100
+Message-Id: <20200109123353.5656-11-tbogendoerfer@suse.de>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200109123353.5656-1-tbogendoerfer@suse.de>
 References: <20200109123353.5656-1-tbogendoerfer@suse.de>
@@ -40,98 +40,107 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Remember CPU speed while scanning for available CPUs to avoid
-looking it up a second time when printing CPU speed.
+IP35 has a different way to find out regions, so we move the IP27
+implementation to IP27 specific file.
 
 Signed-off-by: Thomas Bogendoerfer <tbogendoerfer@suse.de>
 ---
- arch/mips/include/asm/mach-ip27/topology.h |  1 +
- arch/mips/sgi-ip27/ip27-common.h           |  1 -
- arch/mips/sgi-ip27/ip27-init.c             |  3 ++-
- arch/mips/sgi-ip27/ip27-smp.c              |  2 ++
- arch/mips/sgi-ip27/ip27-timer.c            | 19 -------------------
- 5 files changed, 5 insertions(+), 21 deletions(-)
+ arch/mips/include/asm/sn/sn0/hubni.h |  8 +++++++
+ arch/mips/sgi-ip27/ip27-memory.c     | 36 ++++++++++------------------
+ 2 files changed, 20 insertions(+), 24 deletions(-)
 
-diff --git a/arch/mips/include/asm/mach-ip27/topology.h b/arch/mips/include/asm/mach-ip27/topology.h
-index 3c94ffc06a70..d66cc53feab8 100644
---- a/arch/mips/include/asm/mach-ip27/topology.h
-+++ b/arch/mips/include/asm/mach-ip27/topology.h
-@@ -7,6 +7,7 @@
+diff --git a/arch/mips/include/asm/sn/sn0/hubni.h b/arch/mips/include/asm/sn/sn0/hubni.h
+index b73c4bee65f2..b8253142cb83 100644
+--- a/arch/mips/include/asm/sn/sn0/hubni.h
++++ b/arch/mips/include/asm/sn/sn0/hubni.h
+@@ -250,6 +250,14 @@ typedef union	hubni_port_error_u {
+ #define NI_LLP_CB_MAX		0xff
+ #define NI_LLP_SN_MAX		0xff
  
- struct cpuinfo_ip27 {
- 	nasid_t		p_nasid;	/* my node ID in numa-as-id-space */
-+	unsigned short	p_speed;	/* cpu speed in MHz */
- 	unsigned char	p_slice;	/* Physical position on node board */
- };
- 
-diff --git a/arch/mips/sgi-ip27/ip27-common.h b/arch/mips/sgi-ip27/ip27-common.h
-index cdebf1726e4a..ed008a08464c 100644
---- a/arch/mips/sgi-ip27/ip27-common.h
-+++ b/arch/mips/sgi-ip27/ip27-common.h
-@@ -6,7 +6,6 @@
- extern nasid_t master_nasid;
- 
- extern void cpu_node_probe(void);
--extern void cpu_time_init(void);
- extern void hub_rt_clock_event_init(void);
- extern void hub_rtc_init(nasid_t nasid);
- extern void install_cpu_nmi_handler(int slice);
-diff --git a/arch/mips/sgi-ip27/ip27-init.c b/arch/mips/sgi-ip27/ip27-init.c
-index 9822f7a8ad62..84a78bd1386a 100644
---- a/arch/mips/sgi-ip27/ip27-init.c
-+++ b/arch/mips/sgi-ip27/ip27-init.c
-@@ -83,7 +83,8 @@ void per_cpu_init(void)
- 
- 	per_hub_init(nasid);
- 
--	cpu_time_init();
-+	pr_info("CPU %d clock is %dMHz.\n", cpu, sn_cpu_info[cpu].p_speed);
++static inline int get_region_shift(void)
++{
++	if (LOCAL_HUB_L(NI_STATUS_REV_ID) & NSRI_REGIONSIZE_MASK)
++		return NASID_TO_FINEREG_SHFT;
 +
- 	install_ipi();
++	return NASID_TO_COARSEREG_SHFT;
++}
++
+ #endif /* !__ASSEMBLY__ */
  
- 	/* Install our NMI handler if symmon hasn't installed one. */
-diff --git a/arch/mips/sgi-ip27/ip27-smp.c b/arch/mips/sgi-ip27/ip27-smp.c
-index 3966716835ea..5d2652a1d35a 100644
---- a/arch/mips/sgi-ip27/ip27-smp.c
-+++ b/arch/mips/sgi-ip27/ip27-smp.c
-@@ -47,6 +47,8 @@ static int node_scan_cpus(nasid_t nasid, int highest)
- 				set_cpu_possible(cpuid, true);
- 				cputonasid(cpus_found) = nasid;
- 				cputoslice(cpus_found) = acpu->cpu_info.physid;
-+				sn_cpu_info[cpus_found].p_speed =
-+							acpu->cpu_speed;
- 				cpus_found++;
- 			}
- 			acpu = (klcpu_t *)find_component(brd, (klinfo_t *)acpu,
-diff --git a/arch/mips/sgi-ip27/ip27-timer.c b/arch/mips/sgi-ip27/ip27-timer.c
-index 9cbbf326fe01..61f3565f3645 100644
---- a/arch/mips/sgi-ip27/ip27-timer.c
-+++ b/arch/mips/sgi-ip27/ip27-timer.c
-@@ -150,25 +150,6 @@ void __init plat_time_init(void)
- 	hub_rt_clock_event_init();
- }
+ #endif /* _ASM_SGI_SN0_HUBNI_H */
+diff --git a/arch/mips/sgi-ip27/ip27-memory.c b/arch/mips/sgi-ip27/ip27-memory.c
+index 0ef2181db8d0..db3759e551b3 100644
+--- a/arch/mips/sgi-ip27/ip27-memory.c
++++ b/arch/mips/sgi-ip27/ip27-memory.c
+@@ -25,6 +25,7 @@
+ #include <asm/sections.h>
  
--void cpu_time_init(void)
+ #include <asm/sn/arch.h>
++#include <asm/sn/agent.h>
+ #include <asm/sn/klconfig.h>
+ #include <asm/sn/sn_private.h>
+ 
+@@ -36,31 +37,18 @@ struct node_data *__node_data[MAX_NUMNODES];
+ 
+ EXPORT_SYMBOL(__node_data);
+ 
+-static int fine_mode;
+-
+-static int is_fine_dirmode(void)
 -{
--	lboard_t *board;
--	klcpu_t *cpu;
--	int cpuid;
--
--	/* Don't use ARCS.  ARCS is fragile.  Klconfig is simple and sane.  */
--	board = find_lboard(KL_CONFIG_INFO(get_nasid()), KLTYPE_IP27);
--	if (!board)
--		panic("Can't find board info for myself.");
--
--	cpuid = LOCAL_HUB_L(PI_CPU_NUM) ? IP27_CPU0_INDEX : IP27_CPU1_INDEX;
--	cpu = (klcpu_t *) KLCF_COMP(board, cpuid);
--	if (!cpu)
--		panic("No information about myself?");
--
--	printk("CPU %d clock is %dMHz.\n", smp_processor_id(), cpu->cpu_speed);
+-	return ((LOCAL_HUB_L(NI_STATUS_REV_ID) & NSRI_REGIONSIZE_MASK) >> NSRI_REGIONSIZE_SHFT) & REGIONSIZE_FINE;
 -}
 -
- void hub_rtc_init(nasid_t nasid)
+-static u64 get_region(nasid_t nasid)
+-{
+-	if (fine_mode)
+-		return nasid >> NASID_TO_FINEREG_SHFT;
+-	else
+-		return nasid >> NASID_TO_COARSEREG_SHFT;
+-}
+-
+-static u64 region_mask;
+-
+-static void gen_region_mask(u64 *region_mask)
++static u64 gen_region_mask(void)
  {
++	int region_shift;
++	u64 region_mask;
+ 	nasid_t nasid;
+ 
+-	(*region_mask) = 0;
+-	for_each_online_node(nasid) {
+-		(*region_mask) |= 1ULL << get_region(nasid);
+-	}
++	region_shift = get_region_shift();
++	region_mask = 0;
++	for_each_online_node(nasid)
++		region_mask |= BIT_ULL(nasid >> region_shift);
++
++	return region_mask;
+ }
+ 
+ #define rou_rflag	rou_flags
+@@ -280,10 +268,10 @@ static unsigned long __init slot_psize_compute(nasid_t nasid, int slot)
+ 
+ static void __init mlreset(void)
+ {
++	u64 region_mask;
+ 	nasid_t nasid;
+ 
+ 	master_nasid = get_nasid();
+-	fine_mode = is_fine_dirmode();
+ 
+ 	/*
+ 	 * Probe for all CPUs - this creates the cpumask and sets up the
+@@ -296,7 +284,7 @@ static void __init mlreset(void)
+ 	init_topology_matrix();
+ 	dump_topology();
+ 
+-	gen_region_mask(&region_mask);
++	region_mask = gen_region_mask();
+ 
+ 	setup_replication_mask();
  
 -- 
 2.24.1

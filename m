@@ -2,123 +2,83 @@ Return-Path: <SRS0=8Ksz=27=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB359C33C99
-	for <linux-mips@archiver.kernel.org>; Fri, 10 Jan 2020 06:45:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0588C33CA2
+	for <linux-mips@archiver.kernel.org>; Fri, 10 Jan 2020 09:08:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B539C20678
-	for <linux-mips@archiver.kernel.org>; Fri, 10 Jan 2020 06:45:50 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=c-s.fr header.i=@c-s.fr header.b="ueN7Vpxn"
+	by mail.kernel.org (Postfix) with ESMTP id BE1002080D
+	for <linux-mips@archiver.kernel.org>; Fri, 10 Jan 2020 09:08:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731533AbgAJGpu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 10 Jan 2020 01:45:50 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:39753 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731530AbgAJGpu (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 10 Jan 2020 01:45:50 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 47vD5S13wRz9v3tv;
-        Fri, 10 Jan 2020 07:45:48 +0100 (CET)
-Authentication-Results: localhost; dkim=pass
-        reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=ueN7Vpxn; dkim-adsp=pass;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id Av3l7EVHXBCa; Fri, 10 Jan 2020 07:45:48 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 47vD5R6Z0Hz9v3tj;
-        Fri, 10 Jan 2020 07:45:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1578638747; bh=5TApiD5N/34vXaM+pQ7UUlq0/+wq9o7jjNc+pK8cRCg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ueN7VpxnzBcnWuZoF/iIk0abFzI/Og6E2TcMJ9xPs+8bq1JLbuwjMI10oN+xH1GW4
-         DzTR5wk+czh2b56nyJo+0UKVXRL7LBJYds2dWPvb77f70oXNepmKK0hmzElSjKYQPC
-         5TkwvFKiglrjZkvvPDDUdnzAbqHeggFMFpJlVGmE=
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C0BAF8B77D;
-        Fri, 10 Jan 2020 07:45:48 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 7nJRtiLkHgXr; Fri, 10 Jan 2020 07:45:48 +0100 (CET)
-Received: from [172.25.230.102] (po15451.idsi0.si.c-s.fr [172.25.230.102])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4C2CD8B755;
-        Fri, 10 Jan 2020 07:45:45 +0100 (CET)
-Subject: Re: Surprising code generated for vdso_read_begin()
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, arnd@arndb.de,
-        tglx@linutronix.de, vincenzo.frascino@arm.com, luto@kernel.org,
-        x86@kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org
-References: <cover.1577111363.git.christophe.leroy@c-s.fr>
- <bd4557a7-9715-59aa-5d8e-488c5e516a98@c-s.fr>
- <20200109200733.GS3191@gate.crashing.org>
-From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Message-ID: <77a8bf25-6615-6c0a-56d4-eae7aa8a8f09@c-s.fr>
-Date:   Fri, 10 Jan 2020 07:45:44 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
-MIME-Version: 1.0
-In-Reply-To: <20200109200733.GS3191@gate.crashing.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+        id S1726694AbgAJJIr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 10 Jan 2020 04:08:47 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:53768 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726734AbgAJJIr (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 10 Jan 2020 04:08:47 -0500
+Received: from localhost.localdomain.localdomain (unknown [182.149.160.139])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxL2oYPxheAPICAA--.2S3;
+        Fri, 10 Jan 2020 17:08:41 +0800 (CST)
+From:   Xing Li <lixing@loongson.cn>
+To:     Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/3] KVM: MIPS: Fixup VPN2_MASK definition over 32bits virtual address
+Date:   Fri, 10 Jan 2020 17:08:39 +0800
+Message-Id: <1578647320-14391-2-git-send-email-lixing@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1578647320-14391-1-git-send-email-lixing@loongson.cn>
+References: <1578647320-14391-1-git-send-email-lixing@loongson.cn>
+X-CM-TRANSID: AQAAf9DxL2oYPxheAPICAA--.2S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrKr47GrWxWw4DXr1xCw1rWFg_yoWftrc_Za
+        4xAws7Zr18KFZFyrZrX395XFyagryjgF9Iqr98Wr98C34xAr45Ga97ury7Jw45u3yqyF1S
+        9a4qy34rZrnFkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbfkYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
+        IE14v26r18M28IrcIa0xkI8VCY1x0267AKxVWUXVWUCwA2ocxC64kIII0Yj41l84x0c7CE
+        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6x
+        kF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIE
+        c7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I
+        8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCF
+        s4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFWl42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
+        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2AhLUUUUU
+X-CM-SenderInfo: pol0x03j6o00pqjv00gofq/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+If the cpu support more than 32bits vmbits, VPN2_MASK set to fixed
+0xffffe000 will lead to wrong entryhi for _kvm_mips_host_tlb_inv
 
+Signed-off-by: Xing Li <lixing@loongson.cn>
+---
+ arch/mips/include/asm/kvm_host.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Le 09/01/2020 à 21:07, Segher Boessenkool a écrit :
-> On Thu, Jan 09, 2020 at 05:52:34PM +0000, Christophe Leroy wrote:
->> Wondering why we get something so complicated/redundant for
->> vdso_read_begin() <include/vdso/helpers.h>
->>
->> static __always_inline u32 vdso_read_begin(const struct vdso_data *vd)
->> {
->> 	u32 seq;
->>
->> 	while ((seq = READ_ONCE(vd->seq)) & 1)
->> 		cpu_relax();
->>
->> 	smp_rmb();
->> 	return seq;
->> }
->>
->>
->>   6e0:   81 05 00 f0     lwz     r8,240(r5)
->>   6e4:   71 09 00 01     andi.   r9,r8,1
->>   6e8:   41 82 00 10     beq     6f8 <__c_kernel_clock_gettime+0x158>
->>   6ec:   81 05 00 f0     lwz     r8,240(r5)
->>   6f0:   71 0a 00 01     andi.   r10,r8,1
->>   6f4:   40 82 ff f8     bne     6ec <__c_kernel_clock_gettime+0x14c>
->>   6f8:
->>
->> r5 being vd pointer
->>
->> Why the first triplet, not only the second triplet ? Something wrong
->> with using READ_ONCE() for that ?
-> 
-> It looks like the compiler did loop peeling.  What GCC version is this?
-> Please try current trunk (to become GCC 10), or at least GCC 9?
-> 
+diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
+index 6be70d5..ce9546c 100644
+--- a/arch/mips/include/asm/kvm_host.h
++++ b/arch/mips/include/asm/kvm_host.h
+@@ -274,7 +274,12 @@ enum emulation_result {
+ #define MIPS3_PG_SHIFT		6
+ #define MIPS3_PG_FRAME		0x3fffffc0
+ 
++#if defined(CONFIG_64BIT)
++#define VPN2_MASK		(((1UL << cpu_vmbits) - 1) &	\
++						   0x3fffffffffffe000UL)
++#else
+ #define VPN2_MASK		0xffffe000
++#endif
+ #define KVM_ENTRYHI_ASID	cpu_asid_mask(&current_cpu_data)
+ #define TLB_IS_GLOBAL(x)	((x).tlb_lo[0] & (x).tlb_lo[1] & ENTRYLO_G)
+ #define TLB_VPN2(x)		((x).tlb_hi & VPN2_MASK)
+-- 
+2.1.0
 
-It is with GCC 5.5
-
-https://mirrors.edge.kernel.org/pub/tools/crosstool/ doesn't have more 
-recent than 8.1
-
-With 8.1, the problem doesn't show up.
-
-Thanks
-Christophe

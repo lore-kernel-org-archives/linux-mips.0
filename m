@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E788C33CA3
-	for <linux-mips@archiver.kernel.org>; Fri, 10 Jan 2020 22:03:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBA70C282DD
+	for <linux-mips@archiver.kernel.org>; Fri, 10 Jan 2020 22:06:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0A1AD2082E
-	for <linux-mips@archiver.kernel.org>; Fri, 10 Jan 2020 22:03:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9ED392082E
+	for <linux-mips@archiver.kernel.org>; Fri, 10 Jan 2020 22:06:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1578693811;
+	s=default; t=1578693960;
 	bh=7SrXtY3zhTAIs5OpgjwMMDDZzdGmV1xifK4ax0OnMDI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=odzj0+iAr519jOzUi08B79mPeFrZYYApOM8NoFkSz304BfS52gu6WYqr05G22s3Bv
-	 VDfXtYWV6BXpUj3jVyaqdnNfyqKl0u9/j5vBZV3IzNqCqTu8qr0bNyWWpkZMxVH0gl
-	 J+qjostCXXhx/sd3XkueA0zvwZhXTCT6IMHY8rHA=
+	b=0rgql0AEL8mqz3Ch5j6ajtnQP7/LiQTYuSYEj0tTULARaJiG4rrbKBOspa4b5PdaC
+	 U0LldmLQDYBSyhsWDlHBwx0RILEUakjGZ3sh61FcMNH+cvcERIpataw2cnDSkpqodS
+	 R7NDxKhTajvc6Pd2fHv18DgSXE7/1tq+FaUS2rz4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727356AbgAJWDP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 10 Jan 2020 17:03:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48810 "EHLO mail.kernel.org"
+        id S1728031AbgAJWF7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 10 Jan 2020 17:05:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727317AbgAJWDO (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 10 Jan 2020 17:03:14 -0500
+        id S1728021AbgAJWF7 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 10 Jan 2020 17:05:59 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 55F082082E;
-        Fri, 10 Jan 2020 22:03:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6918C2082E;
+        Fri, 10 Jan 2020 22:05:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578693794;
+        s=default; t=1578693959;
         bh=7SrXtY3zhTAIs5OpgjwMMDDZzdGmV1xifK4ax0OnMDI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IFuhvM3nsvNvlFkyPMZ+qUldb/kJ6X8nWN5xH+yUASL7cnXpVd8Fn4dCd8zQX35c0
-         /plHbuhsWhm/V5SBGCYMoM+zqN8a0hEzBbN5rge2G+fWs6HAEZfk65wlSWSugMq2et
-         t19sRRuu/zsrcdzzXzYmT7tRJE6S53sq7Jxrb7jA=
+        b=xY6eiimW/HXShC5+Dvt9vU+HHAob7dtpt7ZAN58ItpirRQ28M5rza2m5NfqspMDdV
+         7BNQTStrREWf/B+HUkhD74yd7Z2WtEUsPI94wpd/F4Sg0+eFglaJma03vRlsHTG/EY
+         Ve65kcpN5i/cySZi3LMOULrwCPzwsEbi86uvOLHE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Jouni Hogander <jouni.hogander@unikie.com>,
         Paul Burton <paulburton@kernel.org>,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>,
         linux-mips@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 04/26] MIPS: Prevent link failure with kcov instrumentation
-Date:   Fri, 10 Jan 2020 17:02:46 -0500
-Message-Id: <20200110220308.27784-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 02/11] MIPS: Prevent link failure with kcov instrumentation
+Date:   Fri, 10 Jan 2020 17:05:47 -0500
+Message-Id: <20200110220556.28505-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200110220308.27784-1-sashal@kernel.org>
-References: <20200110220308.27784-1-sashal@kernel.org>
+In-Reply-To: <20200110220556.28505-1-sashal@kernel.org>
+References: <20200110220556.28505-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore

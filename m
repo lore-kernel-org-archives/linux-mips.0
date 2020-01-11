@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 782C7C33C9E
-	for <linux-mips@archiver.kernel.org>; Sat, 11 Jan 2020 09:53:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A164C33C9E
+	for <linux-mips@archiver.kernel.org>; Sat, 11 Jan 2020 09:59:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4F27A214D8
-	for <linux-mips@archiver.kernel.org>; Sat, 11 Jan 2020 09:53:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5E3B82087F
+	for <linux-mips@archiver.kernel.org>; Sat, 11 Jan 2020 09:59:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1578736438;
+	s=default; t=1578736770;
 	bh=Q76nd1rY7PubR1tz37aB6Z90FHySurzEY50SY9L8GaY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=h9YXU5A621yAzh3KXjW4tIBLry8xNQUp4LU3anwjKZuVIxzAHigVJGA4OLAf6Kg9O
-	 McjgeiFhi50X6DcBnm5D5QfjJ2sbWRoYM2+HL/biFh6NkmTEoyN4zCr8tIAwmFpCc9
-	 6zUyzdKEO/GEO5C7DdfD0KNOCdOz/vEJXCkhCftg=
+	b=hdahfOC3MJugY/F9XAUJIUwIgLEkwJYviEGDmTsrwF1cgcvwdqiMv5Ih69BYMwhMc
+	 OAcN4//zwZk3fPSizrnoHknnkkeWUbazu4igWcg/aRmy8IX4pXwux8wIB8rF0MHHyI
+	 eTQzgSbwB+/rX6xsfxkUXmu08zat/cabzV5KwWwA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728977AbgAKJxy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 11 Jan 2020 04:53:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41428 "EHLO mail.kernel.org"
+        id S1729142AbgAKJ7a (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 11 Jan 2020 04:59:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728810AbgAKJxy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 11 Jan 2020 04:53:54 -0500
+        id S1729147AbgAKJ73 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 11 Jan 2020 04:59:29 -0500
 Received: from localhost (unknown [62.119.166.9])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4302C2072E;
-        Sat, 11 Jan 2020 09:53:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4027C2077C;
+        Sat, 11 Jan 2020 09:59:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578736433;
+        s=default; t=1578736768;
         bh=Q76nd1rY7PubR1tz37aB6Z90FHySurzEY50SY9L8GaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mgPz91o0YzFhiW3AIlrqgwyzPRX69va6u2p5NtU5q6TKlcXiDgm859eaDt/C+r3oP
-         uhnpoRDLEmggHYzsFleInpSgpxCxEOuiUpbPj7SCYFy4ZEusJMtKvGV0eCtEsMTJ2L
-         MPMvrMz8OvhVBI1nQ6KaMKjVXRDPZwt4Yy3sgGeY=
+        b=VBZnxWgvKtAMa4Jw088gzdghZNDGNV68v1wclghMmG+tw0eq8u42rG7RnDR0U/bF+
+         3VeGeON18bkwrcEM9wus8UaR9AGPFtGk8TXq7ykzom8k2KOYZf/Tkv2BYOFRY4iMA6
+         ysNVPiqe0iqXgBuLUs6rFUNTKglv+TZVx9pzoS5c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -47,12 +47,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Christian Brauner <christian.brauner@canonical.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
         linux-mips@vger.kernel.org
-Subject: [PATCH 4.4 16/59] MIPS: Avoid VDSO ABI breakage due to global register variable
-Date:   Sat, 11 Jan 2020 10:49:25 +0100
-Message-Id: <20200111094841.833196701@linuxfoundation.org>
+Subject: [PATCH 4.9 20/91] MIPS: Avoid VDSO ABI breakage due to global register variable
+Date:   Sat, 11 Jan 2020 10:49:13 +0100
+Message-Id: <20200111094851.289779602@linuxfoundation.org>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200111094835.417654274@linuxfoundation.org>
-References: <20200111094835.417654274@linuxfoundation.org>
+In-Reply-To: <20200111094844.748507863@linuxfoundation.org>
+References: <20200111094844.748507863@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

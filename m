@@ -1,65 +1,109 @@
-Return-Path: <SRS0=Hotp=3A=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=jM30=3B=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A5E7C282DD
-	for <linux-mips@archiver.kernel.org>; Sat, 11 Jan 2020 20:00:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72330C32771
+	for <linux-mips@archiver.kernel.org>; Sun, 12 Jan 2020 08:15:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7809920866
-	for <linux-mips@archiver.kernel.org>; Sat, 11 Jan 2020 20:00:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2F4D1206D7
+	for <linux-mips@archiver.kernel.org>; Sun, 12 Jan 2020 08:15:53 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="IxgJmRr+"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731018AbgAKUAT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 11 Jan 2020 15:00:19 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:34038 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731016AbgAKUAT (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 11 Jan 2020 15:00:19 -0500
-Received: from p5b06da22.dip0.t-ipconnect.de ([91.6.218.34] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1iqMvZ-0008H2-H7; Sat, 11 Jan 2020 21:00:09 +0100
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 4D705100C52; Sat, 11 Jan 2020 20:59:58 +0100 (CET)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Christophe Leroy <christophe.leroy@c-s.fr>, arnd@arndb.de,
-        vincenzo.frascino@arm.com, luto@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH] lib: vdso: mark __cvdso_clock_getres() as static
-In-Reply-To: <e7becc50bee355e3872b84d91cc68ae8d7776bb9.1578764712.git.christophe.leroy@c-s.fr>
-References: <e7becc50bee355e3872b84d91cc68ae8d7776bb9.1578764712.git.christophe.leroy@c-s.fr>
-Date:   Sat, 11 Jan 2020 20:59:58 +0100
-Message-ID: <875zhhsr0h.fsf@nanos.tec.linutronix.de>
+        id S1732370AbgALIPw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 12 Jan 2020 03:15:52 -0500
+Received: from forward104j.mail.yandex.net ([5.45.198.247]:47744 "EHLO
+        forward104j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732367AbgALIPw (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 12 Jan 2020 03:15:52 -0500
+Received: from forward101q.mail.yandex.net (forward101q.mail.yandex.net [IPv6:2a02:6b8:c0e:4b:0:640:4012:bb98])
+        by forward104j.mail.yandex.net (Yandex) with ESMTP id 6B99E4A0BDD;
+        Sun, 12 Jan 2020 11:15:49 +0300 (MSK)
+Received: from mxback7q.mail.yandex.net (mxback7q.mail.yandex.net [IPv6:2a02:6b8:c0e:41:0:640:cbbf:d618])
+        by forward101q.mail.yandex.net (Yandex) with ESMTP id 63D0FCF40009;
+        Sun, 12 Jan 2020 11:15:49 +0300 (MSK)
+Received: from vla1-ee05250d997a.qloud-c.yandex.net (vla1-ee05250d997a.qloud-c.yandex.net [2a02:6b8:c0d:3495:0:640:ee05:250d])
+        by mxback7q.mail.yandex.net (mxback/Yandex) with ESMTP id l0SQQ7Tt4H-FnSSPSmi;
+        Sun, 12 Jan 2020 11:15:49 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; s=mail; t=1578816949;
+        bh=QIhdMgkkaehQmJ687iqyXti//3kLmXOE11eL6TIK7AQ=;
+        h=In-Reply-To:Subject:To:From:Cc:References:Date:Message-Id;
+        b=IxgJmRr+QopwRG702kawUvX1jf9hWuq4wEEpXZzJ55cq1WaVPwhjv/HKcxriCqJrP
+         YXB5zHGEMhjnFGJ6tyAQldJCdBy7aQGE8PPNJtwM36ep7msn/FBjL21riRig+edWc+
+         IenDLdqlONv0aUqDH64rBTC658julr1zS0xyr6eU=
+Authentication-Results: mxback7q.mail.yandex.net; dkim=pass header.i=@flygoat.com
+Received: by vla1-ee05250d997a.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id 3jM5RHRYtF-FgV4VGmv;
+        Sun, 12 Jan 2020 11:15:47 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     chenhc@lemote.com, paul.burton@mips.com, tglx@linutronix.de,
+        jason@lakedaemon.net, maz@kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, mark.rutland@arm.co,
+        devicetree@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: [PATCH v3 08/10] dt-bindings: mips: Add loongson boards
+Date:   Sun, 12 Jan 2020 16:14:14 +0800
+Message-Id: <20200112081416.722218-9-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200112081416.722218-1-jiaxun.yang@flygoat.com>
+References: <20200112081416.722218-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@c-s.fr> writes:
-> When __cvdso_clock_getres() became __cvdso_clock_getres_common()
-> and a new __cvdso_clock_getres() was added, static qualifier was
-> forgotten.
->
-> Fixes: 502a590a170b ("lib/vdso: Move fallback invocation to the callers")
-> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Prepare for later dts.
 
-I've already queued:
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+ .../bindings/mips/loongson/devices.yaml       | 29 +++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mips/loongson/devices.yaml
 
-     https://lore.kernel.org/r/20191128111719.8282-1-vincenzo.frascino@arm.com
+diff --git a/Documentation/devicetree/bindings/mips/loongson/devices.yaml b/Documentation/devicetree/bindings/mips/loongson/devices.yaml
+new file mode 100644
+index 000000000000..3c7c59a29c1b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mips/loongson/devices.yaml
+@@ -0,0 +1,29 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mips/loongson/devices.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Loongson based Platforms Device Tree Bindings
++
++maintainers:
++  - Jiaxun Yang <jiaxun.yang@flygoat.com>
++description: |
++  Devices with a Loongson CPU shall have the following properties.
++  Note that generic device is used for built-in dtbs and will be
++  patched during boot on firmware without OF support.
++
++properties:
++  $nodename:
++    const: '/'
++  compatible:
++    oneOf:
++
++      - description: Generic Loongson3 4Core + RS780E
++        items:
++          - const: loongson,loongson3-4core-780e
++
++      - description: Generic Loongson3 8Core + RS780E
++        items:
++          - const: loongson,loongson3-8core-780e
++...
+-- 
+2.24.1
 
-but thanks for caring!
-
-Thanks,
-
-        tglx

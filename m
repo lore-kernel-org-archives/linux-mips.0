@@ -2,110 +2,97 @@ Return-Path: <SRS0=HXhp=3C=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E11CEC33CB0
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 17:09:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E4FBC33CA9
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 18:52:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id B18E92187F
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 17:09:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 015FA207E0
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 18:52:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=c-s.fr header.i=@c-s.fr header.b="mBpCKKG/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sAknIcAx"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728795AbgAMRJ1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 13 Jan 2020 12:09:27 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:44559 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728760AbgAMRIo (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 13 Jan 2020 12:08:44 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 47xKmh6GKJz9txyv;
-        Mon, 13 Jan 2020 18:08:36 +0100 (CET)
-Authentication-Results: localhost; dkim=pass
-        reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=mBpCKKG/; dkim-adsp=pass;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 47SfHxDpbXMG; Mon, 13 Jan 2020 18:08:36 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 47xKmh5CtGz9txyq;
-        Mon, 13 Jan 2020 18:08:36 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1578935316; bh=FbDYhvBTgQ/Lrh5RwFYuCQEYwJvHYlZlnPbutz2hvUg=;
-        h=In-Reply-To:References:From:Subject:To:Cc:Date:From;
-        b=mBpCKKG/R/EQyJZFZ9dsTIMC+sg7c/c1wXtd7QEgOWLNi3i2AAC9Vfv/Ud7HFmFuU
-         HmlggOZhmWRHXKl/lKRl+RpCLeyu9Xi5gNGL0xjvd+JpWn5zcRECBbDM9OHFWWIXGo
-         YorKxdnV/93taISEusU2hS50irb55O/OVnGaRC+k=
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0E6EF8B7C9;
-        Mon, 13 Jan 2020 18:08:42 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 6e0G3CbwxoJN; Mon, 13 Jan 2020 18:08:41 +0100 (CET)
-Received: from po14934vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D00BE8B7BE;
-        Mon, 13 Jan 2020 18:08:41 +0100 (CET)
-Received: by localhost.localdomain (Postfix, from userid 0)
-        id A66B564A1D; Mon, 13 Jan 2020 17:08:41 +0000 (UTC)
-Message-Id: <9f0f72424a8f0260470ecd50d5803db685285ba5.1578934751.git.christophe.leroy@c-s.fr>
-In-Reply-To: <cover.1578934751.git.christophe.leroy@c-s.fr>
-References: <cover.1578934751.git.christophe.leroy@c-s.fr>
-From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: [RFC PATCH v3 03/12] lib: vdso: mark __cvdso_clock_getres() as static
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, arnd@arndb.de,
-        tglx@linutronix.de, vincenzo.frascino@arm.com, luto@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        x86@kernel.org
-Date:   Mon, 13 Jan 2020 17:08:41 +0000 (UTC)
+        id S1728714AbgAMSws (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 13 Jan 2020 13:52:48 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:46627 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728633AbgAMSws (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Jan 2020 13:52:48 -0500
+Received: by mail-pg1-f196.google.com with SMTP id z124so5105810pgb.13;
+        Mon, 13 Jan 2020 10:52:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OejaDp/PtovUjNqTYwQR8/+Ob40Nm9cyB96j7j566Wg=;
+        b=sAknIcAxDU9dyT80OVk8uYwaiZhZ/9KtVgbOYf3IsEhdZDLqo0YDUKtws8dZ7PJ6T6
+         K5AOB4iMAlr/BiRctstIZoDZ9QeqyigXu1vvGg5ZetPkejr365QS4reBPu6ezCT2RUlL
+         pZn6gKoOb+Iz0z6NgjImKvYFNUgshRn9JUPqwQ8/3cwdV961kaZ5XKQkcrG/pPdM0Vud
+         hiL/z7INGmlQVMO6Rt6PfEaeSyLBpS3v7Hwx2/tSNG7GCedrX5o7sqoIbwLMpYYtylNQ
+         n3T7+tw61yDkpdzcrg2BKG6zKNvgWaKnTzSqNMrTzEMLfxGmKyXG3QipdU+fkTZ+j8Hh
+         AF0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OejaDp/PtovUjNqTYwQR8/+Ob40Nm9cyB96j7j566Wg=;
+        b=EzoSi4awJYqN95Ocz2DictkR1UMyPnnzria1fPU3+oF/9paxRyI6+hKtFB7BKuxWVM
+         KqLbRB1sp4qxrYjVVF0+w7OsvDeUq2ffnL5uizXCTrQqnknGsaWJv7wEQMj/8swnteen
+         leBjf0UHkxU/75TBXTmobg3WfN+/LOkqVU14yQthcoyg0wLE36sQ4/G/zivbMOCNIFiJ
+         YzAJjZFzjJTF8goSEdM7TG2ri8qmIeEOD6pZiXUX1JTxhGP9T9OcdgAAp2nIjloTSiGe
+         nJ7sPOAGrklcy4W7vzVzkgIlxqEBEMnrGzZU1qu0eDjhVC/nOYEZqBYCHviSRPHms34v
+         romg==
+X-Gm-Message-State: APjAAAU+14wLmhRnBrKrHDj5qTivLbkKUxts9eaQwHNPnqpLCQ5Wpy98
+        SNb/boysZV1fW+FvaP/PgxL0f1Tx3Ec=
+X-Google-Smtp-Source: APXvYqxhcQ/lr6IXonkIYwS46bv4iuXGXhIWft3L6uDy6PooO/C3WYdEXY6wNI/XmbRUJoHA4XZPeg==
+X-Received: by 2002:aa7:93c1:: with SMTP id y1mr20114255pff.200.1578941567724;
+        Mon, 13 Jan 2020 10:52:47 -0800 (PST)
+Received: from localhost (MIPS-TECHNO.ear1.SanJose1.Level3.net. [4.15.122.74])
+        by smtp.gmail.com with ESMTPSA id y203sm15660002pfb.65.2020.01.13.10.52.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jan 2020 10:52:46 -0800 (PST)
+From:   Paul Burton <paulburton89@gmail.com>
+X-Google-Original-From: Paul Burton <paul.burton@mips.com>
+Date:   Mon, 13 Jan 2020 10:52:46 -0800
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, chenhc@lemote.com,
+        linux-kernel@vger.kernel.org, hch@lst.de
+Subject: Re: [PATCH 2/2] MIPS: Loongson64: Add dma iocoherency detection
+ support
+Message-ID: <20200113185246.zvsahaeh36gdfsv2@pburton-laptop>
+References: <20200113140705.74605-1-jiaxun.yang@flygoat.com>
+ <20200113140705.74605-2-jiaxun.yang@flygoat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200113140705.74605-2-jiaxun.yang@flygoat.com>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-When __cvdso_clock_getres() became __cvdso_clock_getres_common()
-and a new __cvdso_clock_getres() was added, static qualifier was
-forgotten.
+Hi Jiaxun,
 
-This change allows the compiler to inline __cvdso_clock_getres_common(),
-and the performance improvement is significant:
+On Mon, Jan 13, 2020 at 10:07:05PM +0800, Jiaxun Yang wrote:
+> diff --git a/arch/mips/include/asm/mach-loongson64/boot_param.h b/arch/mips/include/asm/mach-loongson64/boot_param.h
+> index 8c286bedff3e..2da2be40ad81 100644
+> --- a/arch/mips/include/asm/mach-loongson64/boot_param.h
+> +++ b/arch/mips/include/asm/mach-loongson64/boot_param.h
+> @@ -115,7 +115,8 @@ struct irq_source_routing_table {
+>  	u64 pci_io_start_addr;
+>  	u64 pci_io_end_addr;
+>  	u64 pci_config_addr;
+> -	u32 dma_mask_bits;
+> +	u16 dma_mask_bits;
+> +	u16 dma_noncoherent;
+>  } __packed;
 
-Before:
-clock-getres-realtime-coarse:    vdso: 984 nsec/call
-clock-getres-realtime:    vdso: 922 nsec/call
-clock-getres-monotonic-raw:    vdso: 968 nsec/call
+This struct is generated by the firmware, right? So does this change
+require that firmware be updated along with the kernel? Or was the
+kernel's definition always incorrect/incomplete?
 
-After:
-clock-getres-realtime-coarse:    vdso: 753 nsec/call
-clock-getres-realtime:    vdso: 691 nsec/call
-clock-getres-monotonic-raw:    vdso: 737 nsec/call
-
-Fixes: 502a590a170b ("lib/vdso: Move fallback invocation to the callers")
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
----
- lib/vdso/gettimeofday.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/lib/vdso/gettimeofday.c b/lib/vdso/gettimeofday.c
-index 9ecfd3b547ba..42bd8ab955fa 100644
---- a/lib/vdso/gettimeofday.c
-+++ b/lib/vdso/gettimeofday.c
-@@ -221,6 +221,7 @@ int __cvdso_clock_getres_common(clockid_t clock, struct __kernel_timespec *res)
- 	return 0;
- }
- 
-+static __maybe_unused
- int __cvdso_clock_getres(clockid_t clock, struct __kernel_timespec *res)
- {
- 	int ret = __cvdso_clock_getres_common(clock, res);
--- 
-2.13.3
-
+Thanks,
+    Paul

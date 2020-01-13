@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6E18C33CAE
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 19:11:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E8AFC33CA9
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 19:11:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BBD092469F
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 19:11:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 54FBF21556
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 19:11:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1578942666;
-	bh=H1FaFRDwA/h5JHMlFv+4cmKbwtBsbwdd1YCMAByaZJs=;
+	s=default; t=1578942671;
+	bh=hEzo/l7izo07RBBo1LJlfSNEocdLq/ykhdkNJPTcTyQ=;
 	h=Date:From:To:CC:CC:CC:Subject:References:In-Reply-To:List-ID:
 	 From;
-	b=D0UJ1wIuAGM5mrf6BZA6ldtgvgWdAmjmd8QV0Ve2CIjCqxDQB+DfbyJTDP4NC20SS
-	 KXv8CVcXIHZ23F58h2d8CMlvCSpVGm6NhcmnRUeJeD93Le4x+2tAjWsneXczxscy2v
-	 mkzjp7ria17l/SsbnONH9eg1wLGGFNTYUZTmvUZM=
+	b=ijcAs3fbght6PVPWASKnnA1e/tmmtC41BpQKzGvLSSIk72YCf4LeQFNjEUDpgMLN7
+	 Em54Jerz2mxHhZo8egnPVrIhDMRxF7Bf+xDmrGhYYevIhZOYAWF1Z0fzdW+Xj4fgG9
+	 P2tK/ahzxj5GV444nj4ZGqSQf+mzT1OS2B3ldzrg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729334AbgAMTKz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 13 Jan 2020 14:10:55 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:33334 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729288AbgAMTKy (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Jan 2020 14:10:54 -0500
-Received: by mail-pl1-f193.google.com with SMTP id ay11so4193776plb.0;
-        Mon, 13 Jan 2020 11:10:54 -0800 (PST)
+        id S1728951AbgAMTLI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 13 Jan 2020 14:11:08 -0500
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:43504 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729307AbgAMTKw (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Jan 2020 14:10:52 -0500
+Received: by mail-pg1-f193.google.com with SMTP id k197so5143601pga.10;
+        Mon, 13 Jan 2020 11:10:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:message-id:date:from:to:cc:cc:cc:subject
          :references:in-reply-to;
-        bh=/p04BREkLvITkBNCvAdnBDiDser6FK1YoySTcH9jrZ4=;
-        b=JEny2FFah8QmDWXzS7u7W6J4ffaGLvSfbX7SJ4mPmf2iaiZuGszGFL+ClfzL9AEXeh
-         tyiRJfcRM5srN75pI3Drn07gC7U5+giEDIb16tSjxNKZYnHqdZ4d27mqv8EJSAYznTbD
-         RqQadnGLgvlTu1aTvOJj9f16xlJUHxSeIE44LnbzMIfIKYxDo9oV+557tmQwnyDNB3hE
-         Trw9xRIsseJohAaeIgQ3KfgJbk3hOU/3ihv+vN2+Vt0nFZj1kKmhAPfTurUF4ekVUDNN
-         lJZx+q+3OeQnTkX4iXIE8vKNnVwH6PBez1RxKkWxKfuSmBTqGmP7qrRLShgkN/DvRHgZ
-         cVCA==
-X-Gm-Message-State: APjAAAXy1uzPUSRuG4NWD94Ee7B1HikByCuAcMytrpnihtQiyaFPZnNq
-        lMGKE4Tb85YQpf0xAok9ydQ=
-X-Google-Smtp-Source: APXvYqy5YnODGE7hZtm/lttivtOJvaWOV/c/vfZY3+JllbjlAi1yu2WDBZ40YMIg02twfp787Iksjg==
-X-Received: by 2002:a17:902:8e87:: with SMTP id bg7mr15822195plb.279.1578942653932;
-        Mon, 13 Jan 2020 11:10:53 -0800 (PST)
+        bh=yx6apWvkE7do4qCaKbCQiOQiIYnQT2mV1VkM+epSUiQ=;
+        b=tShKaH5ZEx2zQfNn9EzMVEIhjPg9HM3+1cwbL1O4edUAJAAmXhginLCOX+mOvlzw+L
+         giVKFRy5T2/0hHtiLCVWWdryTD0ciwaDZGtWQE5qpPsz0l1JDljJoP7MECFI9HXSfc/x
+         snZjC3nLgq89Aqlf+H4ojpCbgnmgilxPYcxGbtv6AOcWvD7ZA7onzDguuD83pMjmOH2U
+         AgFtygAgPWWZQnyh0sP47X6lzYl1m0ZF1y4kRxQPwNgt2ZfVtOGfxufp6WimjUBDTV6H
+         pDoIHgqpJls5LF61S9KqRPaWCNA1nKG2AW4Wms/Pv6jtp+WJhP1Cmi48n9XXAO7Vdu10
+         nJXw==
+X-Gm-Message-State: APjAAAV8yAkkt2Pw0xgi3YZcM6QLgjWu9OqsXkz/6xEqJYZU5PtthCe3
+        uaEgvM3+ap2e6rCa1qnDHlunVEqxVnv6/Q==
+X-Google-Smtp-Source: APXvYqxhzgJBFTP7LtKH7tWm2L6UENW9XL2x2W3wBdOUSHpRnD8VSi03LXc+BajdOSay1mwNYNMR7w==
+X-Received: by 2002:a62:1d52:: with SMTP id d79mr20975261pfd.144.1578942651214;
+        Mon, 13 Jan 2020 11:10:51 -0800 (PST)
 Received: from localhost (MIPS-TECHNO.ear1.SanJose1.Level3.net. [4.15.122.74])
-        by smtp.gmail.com with ESMTPSA id b1sm14178611pjw.4.2020.01.13.11.10.53
+        by smtp.gmail.com with ESMTPSA id q11sm15000623pff.111.2020.01.13.11.10.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jan 2020 11:10:53 -0800 (PST)
-Message-ID: <5e1cc0bd.1c69fb81.502fd.1a2b@mx.google.com>
-Date:   Mon, 13 Jan 2020 11:10:52 -0800
+        Mon, 13 Jan 2020 11:10:50 -0800 (PST)
+Message-ID: <5e1cc0ba.1c69fb81.41d49.31bf@mx.google.com>
+Date:   Mon, 13 Jan 2020 11:10:50 -0800
 From:   Paul Burton <paulburton@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-CC:     Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        James Hogan <jhogan@kernel.org>
-CC:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+CC:     Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+CC:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
 CC:     linux-mips@vger.kernel.org
-Subject: Re: [PATCH] MIPS: ip22-gio: Make gio_match_device() static
-References:  <20200112165110.20427-1-geert@linux-m68k.org>
-In-Reply-To:  <20200112165110.20427-1-geert@linux-m68k.org>
+Subject: Re: [PATCH] MIPS: Loongson: Fix potential NULL dereference in  loongson3_platform_init()
+References:  <1578619842-926-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To:  <1578619842-926-1-git-send-email-yangtiezhu@loongson.cn>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
@@ -69,16 +69,17 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 Hello,
 
-Geert Uytterhoeven wrote:
-> Unlike its PCI counterpart, gio_match_device() was never used outside
-> the GIO bus code.
+Tiezhu Yang wrote:
+> If kzalloc fails, it should return -ENOMEM, otherwise may trigger a NULL
+> pointer dereference.
 
 Applied to mips-next.
 
-> commit 70eec920d4f2
-> https://git.kernel.org/mips/c/70eec920d4f2
+> commit 72d052e28d1d
+> https://git.kernel.org/mips/c/72d052e28d1d
 > 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Fixes: 3adeb2566b9b ("MIPS: Loongson: Improve LEFI firmware interface")
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 > Signed-off-by: Paul Burton <paulburton@kernel.org>
 
 Thanks,

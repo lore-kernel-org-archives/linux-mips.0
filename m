@@ -7,58 +7,58 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7842FC33CA9
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0E6AC33CAF
 	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 17:09:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 49E3F222C2
+	by mail.kernel.org (Postfix) with ESMTP id 75E34222C3
 	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 17:09:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=c-s.fr header.i=@c-s.fr header.b="ltBD6+si"
+	dkim=pass (1024-bit key) header.d=c-s.fr header.i=@c-s.fr header.b="UjWNw3Qp"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728778AbgAMRJC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 13 Jan 2020 12:09:02 -0500
+        id S1728851AbgAMRIv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 13 Jan 2020 12:08:51 -0500
 Received: from pegase1.c-s.fr ([93.17.236.30]:40965 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728848AbgAMRIv (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 13 Jan 2020 12:08:51 -0500
+        id S1728829AbgAMRIu (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 13 Jan 2020 12:08:50 -0500
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 47xKms1KbYz9v0Y0;
-        Mon, 13 Jan 2020 18:08:45 +0100 (CET)
+        by localhost (Postfix) with ESMTP id 47xKmq18QMz9v0DP;
+        Mon, 13 Jan 2020 18:08:43 +0100 (CET)
 Authentication-Results: localhost; dkim=pass
         reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=ltBD6+si; dkim-adsp=pass;
+        header.d=c-s.fr header.i=@c-s.fr header.b=UjWNw3Qp; dkim-adsp=pass;
         dkim-atps=neutral
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 2grE1wQ3VL1l; Mon, 13 Jan 2020 18:08:45 +0100 (CET)
+        with ESMTP id B9T6ObAEkSau; Mon, 13 Jan 2020 18:08:43 +0100 (CET)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 47xKms0BhPz9v0Xy;
-        Mon, 13 Jan 2020 18:08:45 +0100 (CET)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 47xKmp6WlNz9tyXf;
+        Mon, 13 Jan 2020 18:08:42 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1578935325; bh=XLnzIcQo2gdn6/h4SDeOO8peJAxsTTmgC8iXnixatHk=;
+        t=1578935322; bh=8NMCNHuubcE6t4e17wk7DBu9YLriy2ZDehAsOAuF4AM=;
         h=In-Reply-To:References:From:Subject:To:Cc:Date:From;
-        b=ltBD6+siFYlWWG5dz6TSocWL3jpuQkzoWPC3xPxE01ZHvMRMiVv8yn+46Fn1vDAQs
-         162dR8qUJMY1/1TefqinYBAAfHQyr5UsbSxiugQLjDb7t5oItKvK/H3exuotlqfipX
-         mp3zxCOe4hj+Y66sTj0SUCkp01MdjmZBIT0gxDk4=
+        b=UjWNw3QpjSpsFOvUaUM8OtpncTUsaDVW9fyOtxPvIgOjuPt21K4VGlFLKAZvHGAtg
+         DX/ABsxBaXP3v+YseN/kLMMmCMS6KlqlBycosWAZM50e9rJLMJtj+tUVoQ8kLmhZf0
+         0+1xi5QWHkWEUZO1UnR9hyZyBn2sJlPTBiymcRl4=
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 563FC8B7C9;
-        Mon, 13 Jan 2020 18:08:50 +0100 (CET)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3CA3A8B7C9;
+        Mon, 13 Jan 2020 18:08:48 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id nXhUeUXxlMgG; Mon, 13 Jan 2020 18:08:50 +0100 (CET)
+        with ESMTP id MOJBmvXIlLvR; Mon, 13 Jan 2020 18:08:48 +0100 (CET)
 Received: from po14934vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 249F18B7BE;
-        Mon, 13 Jan 2020 18:08:50 +0100 (CET)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 05B648B7BE;
+        Mon, 13 Jan 2020 18:08:48 +0100 (CET)
 Received: by localhost.localdomain (Postfix, from userid 0)
-        id E5E5D64A1D; Mon, 13 Jan 2020 17:08:49 +0000 (UTC)
-Message-Id: <bb92e7208d820f74188ab3edc1d56e6733f2df29.1578934751.git.christophe.leroy@c-s.fr>
+        id CF0AD64A1D; Mon, 13 Jan 2020 17:08:47 +0000 (UTC)
+Message-Id: <ecb0105333f0b95f233565e12282c451d99b2915.1578934751.git.christophe.leroy@c-s.fr>
 In-Reply-To: <cover.1578934751.git.christophe.leroy@c-s.fr>
 References: <cover.1578934751.git.christophe.leroy@c-s.fr>
 From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: [RFC PATCH v3 11/12] lib: vdso: split clock verification out of
- __arch_get_hw_counter()
+Subject: [RFC PATCH v3 09/12] powerpc/vdso: provide inline alternative to
+ __get_datapage()
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>, arnd@arndb.de,
@@ -66,49 +66,57 @@ To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
         x86@kernel.org
-Date:   Mon, 13 Jan 2020 17:08:49 +0000 (UTC)
+Date:   Mon, 13 Jan 2020 17:08:47 +0000 (UTC)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-__arch_get_hw_counter() returns the current value of the counter if
-the counter is valid or a negative number if the counter is not valid.
+__get_datapage() is only a few instructions to retrieve the
+address of the page where the kernel stores data to the VDSO.
 
-This is suboptimal because the validity is checked twice: once before
-reading the counter and once after reading the counter.
+By inlining this function into its users, a bl/blr pair and
+a mflr/mtlr pair is avoided, plus a few reg moves.
 
-Optionaly split the verification out of __arch_get_hw_counter()
-by providing an optional __arch_is_hw_counter_valid() function.
+The improvement is noticeable (about 55 nsec/call on an 8xx)
+
+With current __get_datapage() function:
+gettimeofday:    vdso: 731 nsec/call
+clock-gettime-realtime-coarse:    vdso: 668 nsec/call
+clock-gettime-monotonic-coarse:    vdso: 745 nsec/call
+
+Using the __get_datapage macro provided by this patch:
+gettimeofday:    vdso: 677 nsec/call
+clock-gettime-realtime-coarse:    vdso: 613 nsec/call
+clock-gettime-monotonic-coarse:    vdso: 690 nsec/call
 
 Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
 ---
- lib/vdso/gettimeofday.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/powerpc/include/asm/vdso_datapage.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/lib/vdso/gettimeofday.c b/lib/vdso/gettimeofday.c
-index ea1a55507af5..001f6329e846 100644
---- a/lib/vdso/gettimeofday.c
-+++ b/lib/vdso/gettimeofday.c
-@@ -67,11 +67,18 @@ static __always_inline int do_hres(const struct vdso_data *vd, clockid_t clk,
+diff --git a/arch/powerpc/include/asm/vdso_datapage.h b/arch/powerpc/include/asm/vdso_datapage.h
+index 4d7965bf369e..7342cc0c1ae4 100644
+--- a/arch/powerpc/include/asm/vdso_datapage.h
++++ b/arch/powerpc/include/asm/vdso_datapage.h
+@@ -105,6 +105,17 @@ struct vdso_arch_data {
  
- 	do {
- 		seq = vdso_read_begin(vd);
-+#ifdef __arch_is_hw_counter_valid
-+		if (unlikely(!__arch_is_hw_counter_valid(vd->clock_mode)))
-+			return -1;
-+#endif
+ extern struct vdso_arch_data *vdso_data;
+ 
++#else /* __ASSEMBLY__ */
 +
- 		cycles = __arch_get_hw_counter(vd->clock_mode);
- 		ns = vdso_ts->nsec;
- 		last = vd->cycle_last;
-+#ifndef __arch_is_hw_counter_valid
- 		if (unlikely((s64)cycles < 0))
- 			return -1;
++.macro get_datapage ptr, offset=0
++	bcl	20, 31, .+4
++	mflr	\ptr
++#if CONFIG_PPC_PAGE_SHIFT > 14
++	addis	\ptr, \ptr, (_vdso_datapage + \offset - (.-4))@ha
 +#endif
++	addi	\ptr, \ptr, (_vdso_datapage + \offset - (.-4))@l
++.endm
++
+ #endif /* __ASSEMBLY__ */
  
- 		ns += vdso_calc_delta(cycles, last, vd->mask, vd->mult);
- 		nsec = ns >> vd->shift;
+ #endif /* __KERNEL__ */
 -- 
 2.13.3
 

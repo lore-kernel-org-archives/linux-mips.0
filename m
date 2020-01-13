@@ -7,57 +7,58 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86FCCC33CA9
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 17:08:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BB94C33CA9
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 17:08:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5683F2084D
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 17:08:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 334DF222C3
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 17:08:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=c-s.fr header.i=@c-s.fr header.b="RhThshVb"
+	dkim=pass (1024-bit key) header.d=c-s.fr header.i=@c-s.fr header.b="smBvGj76"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728797AbgAMRIp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 13 Jan 2020 12:08:45 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:40965 "EHLO pegase1.c-s.fr"
+        id S1728800AbgAMRIy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 13 Jan 2020 12:08:54 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:1604 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728774AbgAMRIp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 13 Jan 2020 12:08:45 -0500
+        id S1728863AbgAMRIx (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 13 Jan 2020 12:08:53 -0500
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 47xKmk07Phz9txyw;
-        Mon, 13 Jan 2020 18:08:38 +0100 (CET)
+        by localhost (Postfix) with ESMTP id 47xKmt35Q3z9v0Y1;
+        Mon, 13 Jan 2020 18:08:46 +0100 (CET)
 Authentication-Results: localhost; dkim=pass
         reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=RhThshVb; dkim-adsp=pass;
+        header.d=c-s.fr header.i=@c-s.fr header.b=smBvGj76; dkim-adsp=pass;
         dkim-atps=neutral
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id hi6YDy-nSTFK; Mon, 13 Jan 2020 18:08:37 +0100 (CET)
+        with ESMTP id yShFRHkN_wHb; Mon, 13 Jan 2020 18:08:46 +0100 (CET)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 47xKmj68nxz9txyq;
-        Mon, 13 Jan 2020 18:08:37 +0100 (CET)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 47xKmt1vdMz9v0Xy;
+        Mon, 13 Jan 2020 18:08:46 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1578935317; bh=aRVCODNqlpogffdcxAo9rl2jrXtK1fAZ2Yi8uLoDcQI=;
+        t=1578935326; bh=9JszdThPZcrKbLGagNxNFoOFX49AMCE1MJAxuQq15/c=;
         h=In-Reply-To:References:From:Subject:To:Cc:Date:From;
-        b=RhThshVbUL4jv+5S+SxWZzpxtdMaaFBZAob5AEBGqwjBsuHm1Wx+s+wNNOGbyb8Q5
-         4Te2ejtiGvX8509XCo5J8GSBHWfFu6v/aQQFmgOxj5BGbYNc8lQPKjaNoPy8gV3mwo
-         FX0G38hQ5jQO+raWCdy2z6YMeXqRUvBTTTsbbSMk=
+        b=smBvGj76nnUT7O2Nerwb6Dkjq6/LDayrszAQt4gYAGJB+rfKJvztU7Yk9aCxFTZM9
+         YMw56Fdhnx91BJpdaXwcfImT1m2o4G7CLGwE1sCAphGj+SbPcBphYgtegj1EIJY5cm
+         fTnCa3CWZa3EDb6DBUiihGDdLzpRHC+HBoneX+9c=
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 309198B7C9;
-        Mon, 13 Jan 2020 18:08:43 +0100 (CET)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6542F8B7C9;
+        Mon, 13 Jan 2020 18:08:51 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id uDhYnHcG98bc; Mon, 13 Jan 2020 18:08:43 +0100 (CET)
+        with ESMTP id F_EW3T2xMF7m; Mon, 13 Jan 2020 18:08:51 +0100 (CET)
 Received: from po14934vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DDE338B7BE;
-        Mon, 13 Jan 2020 18:08:42 +0100 (CET)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 231D38B7BE;
+        Mon, 13 Jan 2020 18:08:51 +0100 (CET)
 Received: by localhost.localdomain (Postfix, from userid 0)
-        id AD1B964A1D; Mon, 13 Jan 2020 17:08:42 +0000 (UTC)
-Message-Id: <25d3e027aeef5cdbe1b205ecfbf8d80270fc2bd9.1578934751.git.christophe.leroy@c-s.fr>
+        id EBBBC64A1D; Mon, 13 Jan 2020 17:08:50 +0000 (UTC)
+Message-Id: <980b880ed9a86342e05cee18e1b2ce66fbe92d4c.1578934751.git.christophe.leroy@c-s.fr>
 In-Reply-To: <cover.1578934751.git.christophe.leroy@c-s.fr>
 References: <cover.1578934751.git.christophe.leroy@c-s.fr>
 From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: [RFC PATCH v3 04/12] lib: vdso: inline do_hres() and do_coarse()
+Subject: [RFC PATCH v3 12/12] powerpc/vdso: provide
+ __arch_is_hw_counter_valid()
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>, arnd@arndb.de,
@@ -65,109 +66,110 @@ To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
         x86@kernel.org
-Date:   Mon, 13 Jan 2020 17:08:42 +0000 (UTC)
+Date:   Mon, 13 Jan 2020 17:08:50 +0000 (UTC)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-do_hres() is called from several places, so GCC doesn't inline
-it at first.
+To avoid a double verification of the hw_counter validity,
+provide __arch_is_hw_counter_valid()
 
-do_hres() takes a struct __kernel_timespec * parameter for
-passing the result. In the 32 bits case, this parameter corresponds
-to a local var in the caller. In order to provide a pointer
-to this structure, the caller has to put it in its stack and
-do_hres() has to write the result in the stack. This is suboptimal,
-especially on RISC processor like powerpc.
-
-By making GCC inline the function, the struct __kernel_timespec
-remains a local var using registers, avoiding the need to write and
-read stack.
-
-The improvement is significant on powerpc:
 Before:
-gettimeofday:    vdso: 1379 nsec/call
-clock-gettime-realtime-coarse:    vdso: 868 nsec/call
-clock-gettime-realtime:    vdso: 1511 nsec/call
-clock-gettime-monotonic-raw:    vdso: 1576 nsec/call
+clock-gettime-realtime:    vdso: 1078 nsec/call
 
 After:
-gettimeofday:    vdso: 1078 nsec/call
-clock-gettime-realtime-coarse:    vdso: 807 nsec/call
-clock-gettime-realtime:    vdso: 1256 nsec/call
-clock-gettime-monotonic-raw:    vdso: 1316 nsec/call
+clock-gettime-realtime:    vdso: 1064 nsec/call
 
-At the same time, change the return type of do_coarse() to int, this
-increase readability of the if/elseif/elseif/else  section
-in __cvdso_clock_gettime_common()
+The * shows the test of the clock type.
+The > shows the additional test on the counter,
+that goes away with this patch
+
+Before:
+ 5e0:	81 25 00 04 	lwz     r9,4(r5)
+*5e4:	2f 89 00 00 	cmpwi   cr7,r9,0
+*5e8:	40 9e 01 3c 	bne     cr7,724 <__c_kernel_clock_gettime+0x17c>
+ 5ec:	94 21 ff e0 	stwu    r1,-32(r1)
+ 5f0:	93 61 00 0c 	stw     r27,12(r1)
+ 5f4:	93 81 00 10 	stw     r28,16(r1)
+ 5f8:	93 a1 00 14 	stw     r29,20(r1)
+ 5fc:	93 c1 00 18 	stw     r30,24(r1)
+ 600:	93 e1 00 1c 	stw     r31,28(r1)
+ 604:	7d 8d 42 e6 	mftbu   r12
+ 608:	7f ac 42 e6 	mftb    r29
+ 60c:	7c cd 42 e6 	mftbu   r6
+ 610:	7f 8c 30 40 	cmplw   cr7,r12,r6
+ 614:	40 9e ff f0 	bne     cr7,604 <__c_kernel_clock_gettime+0x5c>
+>618:	2f 8c 00 00 	cmpwi   cr7,r12,0
+ 61c:	83 6b 00 28 	lwz     r27,40(r11)
+ 620:	83 8b 00 2c 	lwz     r28,44(r11)
+ 624:	81 45 00 08 	lwz     r10,8(r5)
+ 628:	80 e5 00 0c 	lwz     r7,12(r5)
+>62c:	41 9c 00 b4 	blt     cr7,6e0 <__c_kernel_clock_gettime+0x138>
+ 630:	81 05 00 18 	lwz     r8,24(r5)
+ 634:	83 c5 00 1c 	lwz     r30,28(r5)
+ 638:	80 cb 00 24 	lwz     r6,36(r11)
+ 63c:	83 e5 00 00 	lwz     r31,0(r5)
+ 640:	7f 9f 00 40 	cmplw   cr7,r31,r0
+ 644:	40 9e 00 84 	bne     cr7,6c8 <__c_kernel_clock_gettime+0x120>
+
+After:
+ 5e0:	81 25 00 04 	lwz     r9,4(r5)
+*5e4:	2f 89 00 00 	cmpwi   cr7,r9,0
+*5e8:	40 9e 01 88 	bne     cr7,770 <__c_kernel_clock_gettime+0x1c8>
+ 5ec:	94 21 ff e0 	stwu    r1,-32(r1)
+ 5f0:	93 61 00 0c 	stw     r27,12(r1)
+ 5f4:	93 81 00 10 	stw     r28,16(r1)
+ 5f8:	93 a1 00 14 	stw     r29,20(r1)
+ 5fc:	93 c1 00 18 	stw     r30,24(r1)
+ 600:	93 e1 00 1c 	stw     r31,28(r1)
+ 604:	7f cd 42 e6 	mftbu   r30
+ 608:	7f ac 42 e6 	mftb    r29
+ 60c:	7c cd 42 e6 	mftbu   r6
+ 610:	7f 9e 30 40 	cmplw   cr7,r30,r6
+ 614:	40 9e ff f0 	bne     cr7,604 <__c_kernel_clock_gettime+0x5c>
+ 618:	83 6b 00 28 	lwz     r27,40(r11)
+ 61c:	83 8b 00 2c 	lwz     r28,44(r11)
+ 620:	81 45 00 08 	lwz     r10,8(r5)
+ 624:	80 e5 00 0c 	lwz     r7,12(r5)
+ 628:	81 05 00 18 	lwz     r8,24(r5)
+ 62c:	83 e5 00 1c 	lwz     r31,28(r5)
+ 630:	80 cb 00 24 	lwz     r6,36(r11)
+ 634:	81 85 00 00 	lwz     r12,0(r5)
+ 638:	7f 8c 00 40 	cmplw   cr7,r12,r0
+ 63c:	40 9e 00 84 	bne     cr7,6c0 <__c_kernel_clock_gettime+0x118>
 
 Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
 ---
- lib/vdso/gettimeofday.c | 29 ++++++++++++++++-------------
- 1 file changed, 16 insertions(+), 13 deletions(-)
+ arch/powerpc/include/asm/vdso/gettimeofday.h | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/lib/vdso/gettimeofday.c b/lib/vdso/gettimeofday.c
-index 42bd8ab955fa..d75e44ba716f 100644
---- a/lib/vdso/gettimeofday.c
-+++ b/lib/vdso/gettimeofday.c
-@@ -38,8 +38,8 @@ u64 vdso_calc_delta(u64 cycles, u64 last, u64 mask, u32 mult)
+diff --git a/arch/powerpc/include/asm/vdso/gettimeofday.h b/arch/powerpc/include/asm/vdso/gettimeofday.h
+index d1e702e0ea86..c5a24f31382e 100644
+--- a/arch/powerpc/include/asm/vdso/gettimeofday.h
++++ b/arch/powerpc/include/asm/vdso/gettimeofday.h
+@@ -69,15 +69,18 @@ int clock_getres32_fallback(clockid_t _clkid, struct old_timespec32 *_ts)
  }
  #endif
  
--static int do_hres(const struct vdso_data *vd, clockid_t clk,
--		   struct __kernel_timespec *ts)
-+static __always_inline int do_hres(const struct vdso_data *vd, clockid_t clk,
-+				   struct __kernel_timespec *ts)
+-static __always_inline u64 __arch_get_hw_counter(s32 clock_mode)
++static __always_inline bool __arch_is_hw_counter_valid(s32 clock_mode)
  {
- 	const struct vdso_timestamp *vdso_ts = &vd->basetime[clk];
- 	u64 cycles, last, sec, ns;
-@@ -68,8 +68,8 @@ static int do_hres(const struct vdso_data *vd, clockid_t clk,
- 	return 0;
- }
- 
--static void do_coarse(const struct vdso_data *vd, clockid_t clk,
--		      struct __kernel_timespec *ts)
-+static __always_inline int do_coarse(const struct vdso_data *vd, clockid_t clk,
-+				     struct __kernel_timespec *ts)
- {
- 	const struct vdso_timestamp *vdso_ts = &vd->basetime[clk];
- 	u32 seq;
-@@ -79,6 +79,8 @@ static void do_coarse(const struct vdso_data *vd, clockid_t clk,
- 		ts->tv_sec = vdso_ts->sec;
- 		ts->tv_nsec = vdso_ts->nsec;
- 	} while (unlikely(vdso_read_retry(vd, seq)));
-+
-+	return 0;
- }
- 
- static __maybe_unused int
-@@ -96,15 +98,16 @@ __cvdso_clock_gettime_common(clockid_t clock, struct __kernel_timespec *ts)
- 	 * clocks are handled in the VDSO directly.
+ 	/*
+ 	 * clock_mode == 0 implies that vDSO are enabled otherwise
+ 	 * fallback on syscall.
  	 */
- 	msk = 1U << clock;
--	if (likely(msk & VDSO_HRES)) {
--		return do_hres(&vd[CS_HRES_COARSE], clock, ts);
--	} else if (msk & VDSO_COARSE) {
--		do_coarse(&vd[CS_HRES_COARSE], clock, ts);
--		return 0;
--	} else if (msk & VDSO_RAW) {
--		return do_hres(&vd[CS_RAW], clock, ts);
--	}
--	return -1;
-+	if (likely(msk & VDSO_HRES))
-+		vd += CS_HRES_COARSE;
-+	else if (msk & VDSO_COARSE)
-+		return do_coarse(&vd[CS_HRES_COARSE], clock, ts);
-+	else if (msk & VDSO_RAW)
-+		vd += CS_RAW;
-+	else
-+		return -1;
-+
-+	return do_hres(vd, clock, ts);
+-	if (clock_mode != 0)
+-		return U64_MAX;
++	return clock_mode == 0 ? true : false;
++}
++#define __arch_is_hw_counter_valid __arch_is_hw_counter_valid
+ 
++static __always_inline u64 __arch_get_hw_counter(s32 clock_mode)
++{
+ 	return get_tb();
  }
  
- static __maybe_unused int
 -- 
 2.13.3
 

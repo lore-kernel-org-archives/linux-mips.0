@@ -2,92 +2,90 @@ Return-Path: <SRS0=HXhp=3C=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5413BC33CAF
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 19:11:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14BC2C33CAF
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 22:28:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1A58921556
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 19:11:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1578942672;
-	bh=ydXCvJJqUI2mPGsyzAz39IOL1oZeDpbDw4CepgczzdI=;
-	h=Date:From:To:CC:CC:CC:Subject:References:In-Reply-To:List-ID:
-	 From;
-	b=F7+tIX5ofIe0m+w897WcJ9k4vLa0nsXEs72+Z6yP7oWy4ibTwGbpRcgM0RFPXF3GP
-	 yhLhnGyFSYqK7CIurxwcoFfSyOokTQLnpFxCbSr267rzAxDZlQMJil6zr+HQfSpZ4j
-	 UrTTF36S89wp5EbQqNGo5Rl5ZbY/WJ8dU3VLUNAc=
+	by mail.kernel.org (Postfix) with ESMTP id D73EB2084D
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 22:28:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729293AbgAMTKu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 13 Jan 2020 14:10:50 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:33576 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729288AbgAMTKt (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Jan 2020 14:10:49 -0500
-Received: by mail-pg1-f196.google.com with SMTP id 6so5168586pgk.0;
-        Mon, 13 Jan 2020 11:10:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:to:cc:cc:cc:subject
-         :references:in-reply-to;
-        bh=TKkoejQV2c6zTi0Lk84zRP/sLh+dHPb6nJ3LQs91rO0=;
-        b=XQ5xJi8Gx6ysA2olw0EfSqn/dUSmhoexAm31/j56/8sFKStEsg95i3Q9lgqXqW3CHu
-         Jm5hxz8p/slk5A4JdIIICmFq7chJzuyXXALzxOWyFWwg5YLbE5oZe/b9HtnFz0nCbt9w
-         o46QjuWk/dJXDBtOygWVsNGNsIFsQyK9ZVI//kv3+/SIwK0uP8BUR9UHOfOtZdsA6bf+
-         bC7JRLvroUhQXmGHBkKmzeOJofzXr4k0KjNgoizaKJsaV9SmnVy78OzvTIpZFAWIV6Ob
-         RxHUH1YIZk0nXVgkMT93+Gps8r4HKfQoGrYMWcuu0WXPKJO/WW27L8VDDU1IGxdu0I8R
-         nnRA==
-X-Gm-Message-State: APjAAAV1EviHH5S1UnxywmvanpiAkA02FSNYbsyYn3agCIzd6wh8RzAo
-        6xK/rAxUkaZ4bNG2JZ6LXTo=
-X-Google-Smtp-Source: APXvYqxpcMDnuAK6LNWLusoFsllAJWymSw/KyOmcfqBZ+FKSDh+VYiY8UaD3R5kny7v3CzIXMzUf6w==
-X-Received: by 2002:a63:6b07:: with SMTP id g7mr21929891pgc.243.1578942648698;
-        Mon, 13 Jan 2020 11:10:48 -0800 (PST)
-Received: from localhost (MIPS-TECHNO.ear1.SanJose1.Level3.net. [4.15.122.74])
-        by smtp.gmail.com with ESMTPSA id y6sm14563154pgc.10.2020.01.13.11.10.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jan 2020 11:10:47 -0800 (PST)
-Message-ID: <5e1cc0b7.1c69fb81.c151b.187c@mx.google.com>
-Date:   Mon, 13 Jan 2020 11:10:47 -0800
-From:   Paul Burton <paulburton@kernel.org>
-To:     Yangtao Li <tiny.windzz@gmail.com>
-CC:     khilman@baylibre.com, leoyang.li@nxp.com, khalasa@piap.pl,
-        john@phrozen.org, matthias.bgg@gmail.com, agross@kernel.org,
-        bjorn.andersson@linaro.org, kgene@kernel.org, krzk@kernel.org,
-        mripard@kernel.org, wens@csie.org, ssantosh@kernel.org,
-        jun.nie@linaro.org, shawnguo@kernel.org
-CC:     linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        Yangtao Li <tiny.windzz@gmail.com>
-CC:     linux-mips@vger.kernel.org
-Subject: Re: [PATCH 08/10] soc: lantiq: convert to devm_platform_ioremap_resource
-References:  <20191214175447.25482-8-tiny.windzz@gmail.com>
-In-Reply-To:  <20191214175447.25482-8-tiny.windzz@gmail.com>
+        id S1728872AbgAMW2l convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 13 Jan 2020 17:28:41 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:40483 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728819AbgAMW2l (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Jan 2020 17:28:41 -0500
+Received: from p5b06da22.dip0.t-ipconnect.de ([91.6.218.34] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1ir8CG-0004Yk-9j; Mon, 13 Jan 2020 23:28:32 +0100
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 40F6F105BE6; Mon, 13 Jan 2020 23:28:31 +0100 (CET)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, paul.burton@mips.com,
+        salyzyn@android.com, 0x7f454c46@gmail.com, luto@kernel.org
+Subject: Re: [PATCH v2 2/8] lib: vdso: Build 32 bit specific functions in the right context
+In-Reply-To: <20190830135902.20861-3-vincenzo.frascino@arm.com>
+References: <20190830135902.20861-1-vincenzo.frascino@arm.com> <20190830135902.20861-3-vincenzo.frascino@arm.com>
+Date:   Mon, 13 Jan 2020 23:28:31 +0100
+Message-ID: <87tv4zq9dc.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello,
+Vincenzo Frascino <vincenzo.frascino@arm.com> writes:
 
-Yangtao Li wrote:
-> Use devm_platform_ioremap_resource() to simplify code.
+> clock_gettime32 and clock_getres_time32 should be compiled only with a
+> 32 bit vdso library.
+>
+> Exclude these symbols when BUILD_VDSO32 is not defined.
 
-Applied to mips-next.
+This breaks the ARM build with:
 
-> commit 23c25c732530
-> https://git.kernel.org/mips/c/23c25c732530
-> 
-> Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
-> Signed-off-by: Paul Burton <paulburton@kernel.org>
+arch/arm/vdso/vgettimeofday.c: In function ‘__vdso_clock_gettime’:
+arch/arm/vdso/vgettimeofday.c:15:9: error: implicit declaration of function ‘__cvdso_clock_gettime32’; did you mean ‘__cvdso_clock_gettime’? [-Werror=implicit-function-declaration]
+  return __cvdso_clock_gettime32(clock, ts);
+         ^~~~~~~~~~~~~~~~~~~~~~~
+         __cvdso_clock_gettime
+arch/arm/vdso/vgettimeofday.c: In function ‘__vdso_clock_getres’:
+arch/arm/vdso/vgettimeofday.c:33:9: error: implicit declaration of function ‘__cvdso_clock_getres_time32’; did you mean ‘__cvdso_clock_getres_common’? [-Werror=implicit-function-declaration]
+  return __cvdso_clock_getres_time32(clock_id, res);
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+         __cvdso_clock_getres_common
+cc1: some warnings being treated as errors
+
+The patch below 'fixes' at least the build. Can someone please confirm
+the correctness?
 
 Thanks,
-    Paul
 
-[ This message was auto-generated; if you believe anything is incorrect
-  then please email paulburton@kernel.org to report it. ]
+        tglx
+
+8<----------------
+--- a/arch/arm/vdso/Makefile
++++ b/arch/arm/vdso/Makefile
+@@ -14,7 +14,7 @@ targets := $(obj-vdso) vdso.so vdso.so.d
+ obj-vdso := $(addprefix $(obj)/, $(obj-vdso))
+ 
+ ccflags-y := -fPIC -fno-common -fno-builtin -fno-stack-protector
+-ccflags-y += -DDISABLE_BRANCH_PROFILING
++ccflags-y += -DDISABLE_BRANCH_PROFILING -DBUILD_VDSO32
+ 
+ ldflags-$(CONFIG_CPU_ENDIAN_BE8) := --be8
+ ldflags-y := -Bsymbolic --no-undefined -soname=linux-vdso.so.1 \

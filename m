@@ -2,127 +2,46 @@ Return-Path: <SRS0=HXhp=3C=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC2C7C33CAD
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 14:08:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B1B2C33CAD
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 14:58:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A35A6207E0
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 14:08:06 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="Isuc29Uk"
+	by mail.kernel.org (Postfix) with ESMTP id 2775821569
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 14:58:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbgAMOIG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 13 Jan 2020 09:08:06 -0500
-Received: from forward102o.mail.yandex.net ([37.140.190.182]:44326 "EHLO
-        forward102o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727331AbgAMOIF (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 13 Jan 2020 09:08:05 -0500
-Received: from mxback10j.mail.yandex.net (mxback10j.mail.yandex.net [IPv6:2a02:6b8:0:1619::113])
-        by forward102o.mail.yandex.net (Yandex) with ESMTP id EE0DF66816C5;
-        Mon, 13 Jan 2020 17:08:01 +0300 (MSK)
-Received: from myt2-ea6a2e0cbf34.qloud-c.yandex.net (myt2-ea6a2e0cbf34.qloud-c.yandex.net [2a02:6b8:c00:2e8e:0:640:ea6a:2e0c])
-        by mxback10j.mail.yandex.net (mxback/Yandex) with ESMTP id BrUeFl0CRC-81tWxxKR;
-        Mon, 13 Jan 2020 17:08:01 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; s=mail; t=1578924481;
-        bh=jn8kO6Zo5FK80mQbvcSVlvwdlwIvCB39JSX6YNLW/M8=;
-        h=In-Reply-To:Subject:To:From:Cc:References:Date:Message-Id;
-        b=Isuc29UkGeRRoYHM7UwmOyn9olVu70/NRKpLrAfixWNnLSZs4cPF3qYqfedEhrb1t
-         osHjgu1J6aBq5eXqBAw7EwJZKf4/6LzCL/w5yj+DFx+c4d+ooBc7vEhhDe3ux1o9WN
-         GJfOHtQ0kOJm68HBcAkNq8QaExrZpgL5EdxmGrFA=
-Authentication-Results: mxback10j.mail.yandex.net; dkim=pass header.i=@flygoat.com
-Received: by myt2-ea6a2e0cbf34.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id pGFN2nLtP9-7oV4cj99;
-        Mon, 13 Jan 2020 17:07:59 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     chenhc@lemote.com, paul.burton@mips.com,
-        linux-kernel@vger.kernel.org, hch@lst.de,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 2/2] MIPS: Loongson64: Add dma iocoherency detection support
-Date:   Mon, 13 Jan 2020 22:07:05 +0800
-Message-Id: <20200113140705.74605-2-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200113140705.74605-1-jiaxun.yang@flygoat.com>
+        id S1728933AbgAMO6X (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 13 Jan 2020 09:58:23 -0500
+Received: from verein.lst.de ([213.95.11.211]:41669 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728843AbgAMO6X (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 13 Jan 2020 09:58:23 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id ED5DB68B20; Mon, 13 Jan 2020 15:58:20 +0100 (CET)
+Date:   Mon, 13 Jan 2020 15:58:20 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, chenhc@lemote.com,
+        paul.burton@mips.com, linux-kernel@vger.kernel.org, hch@lst.de
+Subject: Re: [PATCH 1/2] MIPS: Define pgprot_dmacoherent according to
+ coherentio status
+Message-ID: <20200113145820.GA9817@lst.de>
 References: <20200113140705.74605-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200113140705.74605-1-jiaxun.yang@flygoat.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Set hw_iocoherency according to parameter passed from firmware.
+On Mon, Jan 13, 2020 at 10:07:04PM +0800, Jiaxun Yang wrote:
+> For MIPS chips that support coherentio DMA, it's always safe
+> to make DMA requests cached.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- arch/mips/Kconfig                                  | 1 +
- arch/mips/include/asm/mach-loongson64/boot_param.h | 5 +++--
- arch/mips/loongson64/env.c                         | 4 ++++
- 3 files changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index d0b727daddb3..8b0cd692a43f 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -474,6 +474,7 @@ config MACH_LOONGSON64
- 	select CSRC_R4K
- 	select CEVT_R4K
- 	select CPU_HAS_WB
-+	select DMA_MAYBE_COHERENT
- 	select FORCE_PCI
- 	select ISA
- 	select I8259
-diff --git a/arch/mips/include/asm/mach-loongson64/boot_param.h b/arch/mips/include/asm/mach-loongson64/boot_param.h
-index 8c286bedff3e..2da2be40ad81 100644
---- a/arch/mips/include/asm/mach-loongson64/boot_param.h
-+++ b/arch/mips/include/asm/mach-loongson64/boot_param.h
-@@ -115,7 +115,8 @@ struct irq_source_routing_table {
- 	u64 pci_io_start_addr;
- 	u64 pci_io_end_addr;
- 	u64 pci_config_addr;
--	u32 dma_mask_bits;
-+	u16 dma_mask_bits;
-+	u16 dma_noncoherent;
- } __packed;
- 
- struct interface_info {
-@@ -206,7 +207,7 @@ struct loongson_system_configuration {
- 	u64 poweroff_addr;
- 	u64 suspend_addr;
- 	u64 vgabios_addr;
--	u32 dma_mask_bits;
-+	u16 dma_mask_bits;
- 	char ecname[32];
- 	u32 nr_uarts;
- 	struct uart_device uarts[MAX_UARTS];
-diff --git a/arch/mips/loongson64/env.c b/arch/mips/loongson64/env.c
-index 0daeb7bcf023..61e3d4874fe9 100644
---- a/arch/mips/loongson64/env.c
-+++ b/arch/mips/loongson64/env.c
-@@ -15,6 +15,7 @@
-  */
- #include <linux/export.h>
- #include <asm/bootinfo.h>
-+#include <asm/dma-coherence.h>
- #include <loongson.h>
- #include <boot_param.h>
- #include <workarounds.h>
-@@ -128,6 +129,9 @@ void __init prom_init_env(void)
- 		loongson_sysconf.dma_mask_bits > 64)
- 		loongson_sysconf.dma_mask_bits = 32;
- 
-+	hw_coherentio = !eirq_source->dma_noncoherent;
-+	pr_info("Firmware I/O coherency: %s\n", hw_coherentio?"ON":"OFF");
-+
- 	loongson_sysconf.restart_addr = boot_p->reset_system.ResetWarm;
- 	loongson_sysconf.poweroff_addr = boot_p->reset_system.Shutdown;
- 	loongson_sysconf.suspend_addr = boot_p->reset_system.DoSuspend;
--- 
-2.24.1
-
+For DMA coherent devices pgprot_dmacoherent isn't even used, so this
+doesn't make sense.

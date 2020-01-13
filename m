@@ -2,180 +2,148 @@ Return-Path: <SRS0=HXhp=3C=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68D9DC33CA9
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 16:45:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35DD6C33CA9
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 17:08:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4549520678
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 16:45:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0BA1821744
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Jan 2020 17:08:41 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=c-s.fr header.i=@c-s.fr header.b="VCsSI0Ym"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728733AbgAMQpT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 13 Jan 2020 11:45:19 -0500
-Received: from out28-49.mail.aliyun.com ([115.124.28.49]:46544 "EHLO
-        out28-49.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728753AbgAMQpS (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Jan 2020 11:45:18 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07450532|-1;CH=green;DM=CONTINUE|CONTINUE|true|0.19843-0.0103649-0.791205;DS=CONTINUE|ham_system_inform|0.028472-0.000402336-0.971126;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03302;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=25;RT=25;SR=0;TI=SMTPD_---.GbRhA7M_1578933839;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.GbRhA7M_1578933839)
-          by smtp.aliyun-inc.com(10.147.40.233);
-          Tue, 14 Jan 2020 00:44:15 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, paul.burton@mips.com, paulburton@kernel.org,
-        jhogan@kernel.org, miquel.raynal@bootlin.com, mark.rutland@arm.com,
-        syq@debian.org, ralf@linux-mips.org, tglx@linutronix.de,
-        jason@lakedaemon.net, maz@kernel.org, jiaxun.yang@flygoat.com,
-        chenhc@lemote.com, daniel.lezcano@linaro.org,
-        ebiederm@xmission.com, keescook@chromium.org, ak@linux.intel.com,
-        krzk@kernel.org, paul@crapouillou.net, prasannatsmkumar@gmail.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: [PATCH 4/6] MIPS: Ingenic: Add 'cpus' node for Ingenic SoCs.
-Date:   Tue, 14 Jan 2020 00:43:31 +0800
-Message-Id: <1578933813-80122-6-git-send-email-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1578933813-80122-1-git-send-email-zhouyanjie@wanyeetech.com>
-References: <Introduce SMP support for CI20 (based on JZ4780).>
- <1578933813-80122-1-git-send-email-zhouyanjie@wanyeetech.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1728558AbgAMRIl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 13 Jan 2020 12:08:41 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:2142 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727323AbgAMRIl (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 13 Jan 2020 12:08:41 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 47xKmf0c4xz9txyr;
+        Mon, 13 Jan 2020 18:08:34 +0100 (CET)
+Authentication-Results: localhost; dkim=pass
+        reason="1024-bit key; insecure key"
+        header.d=c-s.fr header.i=@c-s.fr header.b=VCsSI0Ym; dkim-adsp=pass;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id YpE9yvHpzNph; Mon, 13 Jan 2020 18:08:34 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 47xKmd6Vt6z9txyq;
+        Mon, 13 Jan 2020 18:08:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+        t=1578935313; bh=HWz0NtVtGF6JzuFvn1IEu26bS25Q46p2uQtnUn88eHs=;
+        h=From:Subject:To:Cc:Date:From;
+        b=VCsSI0YmRfqt3jhfrCAg6RSUj1sPG5J+ypYkfjIgakQ3Ukz7AtoB6jArFcyzqYdsZ
+         GlhNVPJmOaYwxRRlvFQOZdIwpAANt/SritBFT2Q6XoBOZFXYKGIL0rKzuczCydlRP5
+         jjqR1csQiqmNFtLuAyN1E7m3v17abUHCf230875A=
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3C3628B7C9;
+        Mon, 13 Jan 2020 18:08:39 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 8wXE7irLHIRC; Mon, 13 Jan 2020 18:08:39 +0100 (CET)
+Received: from po14934vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id ECB1A8B7BE;
+        Mon, 13 Jan 2020 18:08:38 +0100 (CET)
+Received: by localhost.localdomain (Postfix, from userid 0)
+        id 8DBC464A1D; Mon, 13 Jan 2020 17:08:38 +0000 (UTC)
+Message-Id: <cover.1578934751.git.christophe.leroy@c-s.fr>
+From:   Christophe Leroy <christophe.leroy@c-s.fr>
+Subject: [RFC PATCH v3 00/12] powerpc: switch VDSO to C implementation.
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, arnd@arndb.de,
+        tglx@linutronix.de, vincenzo.frascino@arm.com, luto@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        x86@kernel.org
+Date:   Mon, 13 Jan 2020 17:08:38 +0000 (UTC)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add 'cpus' node to the jz4740.dtsi, jz4770.dtsi, jz4780.dtsi
-and x1000.dtsi files.
+This is a third tentative to switch powerpc VDSO to generic C implementation.
 
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
- arch/mips/boot/dts/ingenic/jz4740.dtsi | 14 ++++++++++++++
- arch/mips/boot/dts/ingenic/jz4770.dtsi | 15 ++++++++++++++-
- arch/mips/boot/dts/ingenic/jz4780.dtsi | 23 +++++++++++++++++++++++
- arch/mips/boot/dts/ingenic/x1000.dtsi  | 14 ++++++++++++++
- 4 files changed, 65 insertions(+), 1 deletion(-)
+This version should work on PPC64 (untested). VDSO32 for PPC64 is
+impossible to build and has been de-activated, because the powerpc
+ASM header files for C are not prepared to build 32 bits code with CONFIG_PPC64.
 
-diff --git a/arch/mips/boot/dts/ingenic/jz4740.dtsi b/arch/mips/boot/dts/ingenic/jz4740.dtsi
-index 5accda2..9627d95 100644
---- a/arch/mips/boot/dts/ingenic/jz4740.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4740.dtsi
-@@ -6,6 +6,20 @@
- 	#size-cells = <1>;
- 	compatible = "ingenic,jz4740";
- 
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "ingenic,xburst";
-+			reg = <0>;
-+
-+			clocks = <&cgu JZ4740_CLK_CCLK>;
-+			clock-names = "cpu";
-+		};
-+	};
-+
- 	cpuintc: interrupt-controller {
- 		#address-cells = <0>;
- 		#interrupt-cells = <1>;
-diff --git a/arch/mips/boot/dts/ingenic/jz4770.dtsi b/arch/mips/boot/dts/ingenic/jz4770.dtsi
-index 0bfb9ed..1b8114d 100644
---- a/arch/mips/boot/dts/ingenic/jz4770.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4770.dtsi
-@@ -1,5 +1,4 @@
- // SPDX-License-Identifier: GPL-2.0
--
- #include <dt-bindings/clock/jz4770-cgu.h>
- 
- / {
-@@ -7,6 +6,20 @@
- 	#size-cells = <1>;
- 	compatible = "ingenic,jz4770";
- 
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "ingenic,xburst";
-+			reg = <0>;
-+
-+			clocks = <&cgu JZ4770_CLK_CCLK>;
-+			clock-names = "cpu";
-+		};
-+	};
-+
- 	cpuintc: interrupt-controller {
- 		#address-cells = <0>;
- 		#interrupt-cells = <1>;
-diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-index f928329..93a0604 100644
---- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-@@ -7,6 +7,29 @@
- 	#size-cells = <1>;
- 	compatible = "ingenic,jz4780";
- 
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "ingenic,xburst";
-+			reg = <0>;
-+
-+			clocks = <&cgu JZ4780_CLK_CPU>;
-+			clock-names = "cpu";
-+		};
-+
-+		cpu1: cpu@1 {
-+			device_type = "cpu";
-+			compatible = "ingenic,xburst";
-+			reg = <1>;
-+
-+			clocks = <&cgu JZ4780_CLK_CORE1>;
-+			clock-names = "cpu";
-+		};
-+	};
-+
- 	cpuintc: interrupt-controller {
- 		#address-cells = <0>;
- 		#interrupt-cells = <1>;
-diff --git a/arch/mips/boot/dts/ingenic/x1000.dtsi b/arch/mips/boot/dts/ingenic/x1000.dtsi
-index 61061a4..ea54263 100644
---- a/arch/mips/boot/dts/ingenic/x1000.dtsi
-+++ b/arch/mips/boot/dts/ingenic/x1000.dtsi
-@@ -7,6 +7,20 @@
- 	#size-cells = <1>;
- 	compatible = "ingenic,x1000", "ingenic,x1000e";
- 
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "ingenic,xburst";
-+			reg = <0>;
-+
-+			clocks = <&cgu X1000_CLK_CPU>;
-+			clock-names = "cpu";
-+		};
-+	};
-+
- 	cpuintc: interrupt-controller {
- 		#address-cells = <0>;
- 		#interrupt-cells = <1>;
+powerpc is a bit special for VDSO as well as system calls in the
+way that it requires setting CR SO bit which cannot be done in C.
+Therefore, entry/exit and fallback need to be performed in ASM.
+
+On a powerpc8xx, with current powerpc/32 ASM VDSO:
+
+gettimeofday:    vdso: 737 nsec/call
+clock-getres-realtime:    vdso: 475 nsec/call
+clock-gettime-realtime:    vdso: 892 nsec/call
+
+The first patch adds VDSO generic C support without any changes to common code.
+Performance is as follows:
+
+gettimeofday:    vdso: 1379 nsec/call
+clock-getres-realtime-coarse:    vdso: 984 nsec/call
+clock-gettime-realtime-coarse:    vdso: 868 nsec/call
+clock-getres-realtime:    vdso: 922 nsec/call
+clock-gettime-realtime:    vdso: 1511 nsec/call
+clock-getres-monotonic-raw:    vdso: 968 nsec/call
+clock-gettime-monotonic-raw:    vdso: 1576 nsec/call
+
+Then a few changes in the common code have allowed performance improvement. At
+the end of the series we have:
+
+gettimeofday:    vdso: 899 nsec/call
+clock-getres-realtime-coarse:    vdso: 546 nsec/call
+clock-gettime-realtime-coarse:    vdso: 615 nsec/call
+clock-getres-realtime:    vdso: 545 nsec/call
+clock-gettime-realtime:    vdso: 1064 nsec/call
+clock-getres-monotonic-raw:    vdso: 546 nsec/call
+clock-gettime-monotonic-raw:    vdso: 1125 nsec/call
+
+Christophe Leroy (12):
+  powerpc/64: Don't provide time functions in compat VDSO32
+  powerpc/vdso: Switch VDSO to generic C implementation.
+  lib: vdso: mark __cvdso_clock_getres() as static
+  lib: vdso: inline do_hres() and do_coarse()
+  lib: vdso: Avoid duplication in __cvdso_clock_getres()
+  lib: vdso: __iter_div_u64_rem() is suboptimal for 32 bit time
+  powerpc/vdso: simplify __get_datapage()
+  lib: vdso: allow arches to provide vdso data pointer
+  powerpc/vdso: provide inline alternative to __get_datapage()
+  powerpc/vdso: provide vdso data pointer from the ASM caller.
+  lib: vdso: split clock verification out of __arch_get_hw_counter()
+  powerpc/vdso: provide __arch_is_hw_counter_valid()
+
+ arch/powerpc/Kconfig                         |   2 +
+ arch/powerpc/include/asm/vdso/gettimeofday.h | 104 +++++++++++
+ arch/powerpc/include/asm/vdso/vsyscall.h     |  25 +++
+ arch/powerpc/include/asm/vdso_datapage.h     |  52 +++---
+ arch/powerpc/kernel/asm-offsets.c            |  46 +----
+ arch/powerpc/kernel/time.c                   |  90 ----------
+ arch/powerpc/kernel/vdso.c                   |  58 ++----
+ arch/powerpc/kernel/vdso32/Makefile          |  30 +++-
+ arch/powerpc/kernel/vdso32/datapage.S        |  10 +-
+ arch/powerpc/kernel/vdso32/gettimeofday.S    | 258 ++++-----------------------
+ arch/powerpc/kernel/vdso32/vdso32.lds.S      |   9 +-
+ arch/powerpc/kernel/vdso32/vgettimeofday.c   |  29 +++
+ arch/powerpc/kernel/vdso64/Makefile          |  23 ++-
+ arch/powerpc/kernel/vdso64/datapage.S        |  13 +-
+ arch/powerpc/kernel/vdso64/gettimeofday.S    | 257 ++++----------------------
+ arch/powerpc/kernel/vdso64/vdso64.lds.S      |   7 +-
+ arch/powerpc/kernel/vdso64/vgettimeofday.c   |  29 +++
+ lib/vdso/gettimeofday.c                      | 130 +++++++++++---
+ 18 files changed, 457 insertions(+), 715 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/vdso/gettimeofday.h
+ create mode 100644 arch/powerpc/include/asm/vdso/vsyscall.h
+ create mode 100644 arch/powerpc/kernel/vdso32/vgettimeofday.c
+ create mode 100644 arch/powerpc/kernel/vdso64/vgettimeofday.c
+
 -- 
-2.7.4
+2.13.3
 

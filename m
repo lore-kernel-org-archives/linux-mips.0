@@ -2,166 +2,79 @@ Return-Path: <SRS0=njVO=3F=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A645EC33CAF
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Jan 2020 18:44:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 282E5C33CAF
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Jan 2020 19:43:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7A1052073A
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Jan 2020 18:44:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1579200263;
-	bh=odziI9yQ1/r+MOSZC+bk4hQhBJnZAFnQo3/fMMks6ZE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=vLoyByx7gdjEa3WScuyY4PwyVIKWRCGnTav3ouYMrmkF4jkwaVjyG7G2JJZrHEVC3
-	 GI5OBO23FAsQlN81qQu1/KP8OPBp0gjZSACviQspk3J9xU2CQqrws6OuMjhvKzT3JF
-	 PIKMafm+9kJ6tBrdrIUvmIJZTm6nlBGZ3rnkVD3k=
+	by mail.kernel.org (Postfix) with ESMTP id 043DD2077B
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Jan 2020 19:43:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390102AbgAPRK5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 16 Jan 2020 12:10:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390090AbgAPRK5 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:10:57 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0E0B2468C;
-        Thu, 16 Jan 2020 17:10:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579194655;
-        bh=odziI9yQ1/r+MOSZC+bk4hQhBJnZAFnQo3/fMMks6ZE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g0fpha4zcqvRi0dy2X33hCffzcMP+S4+bft3lRAoUMV0DWjisllG+rwysjC8ujU1a
-         yALTT+5e4aKWBKkkFac7E+EipjQeqKz9rVnXW/jt79y1jfOYi5gqbKCaJ3cWUVVUvg
-         QGXUPYXwWO3ZFEo3GQH/bZrIvSKXjgh+TM1Co1tQ=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Eli Friedman <efriedma@quicinc.com>,
-        Paul Burton <paul.burton@mips.com>, ralf@linux-mips.org,
-        jhogan@kernel.org, "Maciej W . Rozycki" <macro@linux-mips.org>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Stephen Kitt <steve@sk2.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, linux-mips@vger.kernel.org,
-        clang-built-linux@googlegroups.com, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 508/671] mips: avoid explicit UB in assignment of mips_io_port_base
-Date:   Thu, 16 Jan 2020 12:02:26 -0500
-Message-Id: <20200116170509.12787-245-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
-References: <20200116170509.12787-1-sashal@kernel.org>
+        id S1729232AbgAPTnv convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 16 Jan 2020 14:43:51 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:53142 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727023AbgAPTnv (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 16 Jan 2020 14:43:51 -0500
+Received: from p5b06da22.dip0.t-ipconnect.de ([91.6.218.34] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1isB3O-0008V7-83; Thu, 16 Jan 2020 20:43:42 +0100
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 87FEC101226; Thu, 16 Jan 2020 20:43:41 +0100 (CET)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Cc:     paul.burton@mips.com, luto@kernel.org,
+        kbuild test robot <lkp@intel.com>
+Subject: [PATCH] MIPS: vdso: Define BUILD_VDSO32 when building a 32bit kernel
+In-Reply-To: <20190830135902.20861-3-vincenzo.frascino@arm.com>
+References: <20190830135902.20861-1-vincenzo.frascino@arm.com> <20190830135902.20861-3-vincenzo.frascino@arm.com>
+Date:   Thu, 16 Jan 2020 20:43:41 +0100
+Message-ID: <87d0bjfaqa.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+The confinement of the 32bit specific VDSO functions missed to define
+BUILD_VDSO32 when building a 32bit MIPS kernel:
 
-[ Upstream commit 12051b318bc3ce5b42d6d786191008284b067d83 ]
+arch/mips/vdso/vgettimeofday.c: In function ‘__vdso_clock_gettime’:
+arch/mips/vdso/vgettimeofday.c:17:9: error: implicit declaration of function ‘__cvdso_clock_gettime32’
 
-The code in question is modifying a variable declared const through
-pointer manipulation.  Such code is explicitly undefined behavior, and
-is the lone issue preventing malta_defconfig from booting when built
-with Clang:
+arch/mips/vdso/vgettimeofday.c: In function ‘__vdso_clock_getres’:
+arch/mips/vdso/vgettimeofday.c:39:9: error: implicit declaration of function ‘__cvdso_clock_getres_time32’
 
-If an attempt is made to modify an object defined with a const-qualified
-type through use of an lvalue with non-const-qualified type, the
-behavior is undefined.
+Force the define for 32bit builds in the VDSO Makefile.
 
-LLVM is removing such assignments. A simple fix is to not declare
-variables const that you plan on modifying.  Limiting the scope would be
-a better method of preventing unwanted writes to such a variable.
-
-Further, the code in question mentions "compiler bugs" without any links
-to bug reports, so it is difficult to know if the issue is resolved in
-GCC. The patch was authored in 2006, which would have been GCC 4.0.3 or
-4.1.1. The minimal supported version of GCC in the Linux kernel is
-currently 4.6.
-
-For what its worth, there was UB before the commit in question, it just
-added a barrier and got lucky IRT codegen. I don't think there's any
-actual compiler bugs related, just runtime bugs due to UB.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/610
-Fixes: 966f4406d903 ("[MIPS] Work around bad code generation for <asm/io.h>.")
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Debugged-by: Nathan Chancellor <natechancellor@gmail.com>
-Suggested-by: Eli Friedman <efriedma@quicinc.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Paul Burton <paul.burton@mips.com>
-Cc: ralf@linux-mips.org
-Cc: jhogan@kernel.org
-Cc: Maciej W. Rozycki <macro@linux-mips.org>
-Cc: Hassan Naveed <hnaveed@wavecomp.com>
-Cc: Stephen Kitt <steve@sk2.org>
-Cc: Serge Semin <fancer.lancer@gmail.com>
-Cc: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: clang-built-linux@googlegroups.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: bf279849ad59 ("lib/vdso: Build 32 bit specific functions in the right context")
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/mips/include/asm/io.h | 14 ++------------
- arch/mips/kernel/setup.c   |  2 +-
- 2 files changed, 3 insertions(+), 13 deletions(-)
+ arch/mips/vdso/Makefile |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-index 54c730aed327..df1eaa365279 100644
---- a/arch/mips/include/asm/io.h
-+++ b/arch/mips/include/asm/io.h
-@@ -62,21 +62,11 @@
-  * instruction, so the lower 16 bits must be zero.  Should be true on
-  * on any sane architecture; generic code does not use this assumption.
-  */
--extern const unsigned long mips_io_port_base;
-+extern unsigned long mips_io_port_base;
+--- a/arch/mips/vdso/Makefile
++++ b/arch/mips/vdso/Makefile
+@@ -18,6 +18,10 @@ ccflags-vdso := \
+ 	$(filter -mno-loongson-%,$(KBUILD_CFLAGS)) \
+ 	-D__VDSO__
  
--/*
-- * Gcc will generate code to load the value of mips_io_port_base after each
-- * function call which may be fairly wasteful in some cases.  So we don't
-- * play quite by the book.  We tell gcc mips_io_port_base is a long variable
-- * which solves the code generation issue.  Now we need to violate the
-- * aliasing rules a little to make initialization possible and finally we
-- * will need the barrier() to fight side effects of the aliasing chat.
-- * This trickery will eventually collapse under gcc's optimizer.  Oh well.
-- */
- static inline void set_io_port_base(unsigned long base)
- {
--	* (unsigned long *) &mips_io_port_base = base;
--	barrier();
-+	mips_io_port_base = base;
- }
- 
- /*
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 8aaaa42f91ed..e87c98b8a72c 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -76,7 +76,7 @@ static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
-  * mips_io_port_base is the begin of the address space to which x86 style
-  * I/O ports are mapped.
-  */
--const unsigned long mips_io_port_base = -1;
-+unsigned long mips_io_port_base = -1;
- EXPORT_SYMBOL(mips_io_port_base);
- 
- static struct resource code_resource = { .name = "Kernel code", };
--- 
-2.20.1
-
++ifndef CONFIG_64BIT
++ccflags-vdso += -DBUILD_VDSO32
++endif
++
+ ifdef CONFIG_CC_IS_CLANG
+ ccflags-vdso += $(filter --target=%,$(KBUILD_CFLAGS))
+ endif

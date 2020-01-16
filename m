@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCB51C33CAF
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Jan 2020 23:37:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D7B0C33CAF
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Jan 2020 23:41:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 82C9220661
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Jan 2020 23:37:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 444FA2081E
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Jan 2020 23:41:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1579217871;
+	s=default; t=1579218068;
 	bh=7SrXtY3zhTAIs5OpgjwMMDDZzdGmV1xifK4ax0OnMDI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=tR6qENmQ1CM6X+J2oGDZV2/+OK4iEURka/+Npa4Fn5kXgjYCHgzbCBao+Ucrx+kS4
-	 M4br4PUZUbBoYU+us3kevKIQkW/6nGZRatrnLSrZWfwRyY6Vghu/+6IggD9Zls+lwK
-	 SExGy12unR8iS4zHLKMIaO9a+YOETjfX73+31s/4=
+	b=qBJr3oV3JTop7C8bORBphq3e0uGy9YE2bte5lJmS49C7Pxy+rj56TZDsj88u+9WtL
+	 rN/hdN3rTdfC1FxSdmXzobcA0yjY9GfktnVHvd8t2b3NetTkCTVPx7Xnmw5FocL3Ev
+	 6aHinIggSV1gHpSuV5H6TfTBCyzFA+cFJT/ORNlM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404143AbgAPXak (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 16 Jan 2020 18:30:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37316 "EHLO mail.kernel.org"
+        id S2390502AbgAPXlH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 16 Jan 2020 18:41:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403924AbgAPXa1 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 16 Jan 2020 18:30:27 -0500
+        id S2390151AbgAPX12 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 16 Jan 2020 18:27:28 -0500
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1F372072B;
-        Thu, 16 Jan 2020 23:30:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71A39206D9;
+        Thu, 16 Jan 2020 23:27:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579217427;
+        s=default; t=1579217247;
         bh=7SrXtY3zhTAIs5OpgjwMMDDZzdGmV1xifK4ax0OnMDI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DQoCpW/x9fREcrz7GcKC33WwKl/plsl5S123mapuGSVtJFTe4SalJt9jkFTumy3De
-         29TRAloAvrcW5hMvownm8zaX/q0tAaRBjWrLsh5zKr1SeabZ8mfIB7kXF/7YLMPgLT
-         oyqTTEVAZH1AulSNMzzUGekMYs9zY3jZxdG4Gpe4=
+        b=aK35KKi/8+FU8UlxIBMXGpqCGWZM5eDi9BsSv9OtzJZpHPJvnM+gj6Bdi6MJnDerg
+         CbDFTgQxi6y61p+05+lxph3pOhRQDF/0YePt6/qm5B3uol+FL+DL1ep+kCc9oHr9W9
+         PEBa6SFAxsnDcOBXvayRx3py4WEk6ScGk9PFl7fA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -45,12 +45,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Paul Burton <paulburton@kernel.org>,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>,
         linux-mips@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 78/84] MIPS: Prevent link failure with kcov instrumentation
-Date:   Fri, 17 Jan 2020 00:18:52 +0100
-Message-Id: <20200116231722.693197398@linuxfoundation.org>
+Subject: [PATCH 5.4 190/203] MIPS: Prevent link failure with kcov instrumentation
+Date:   Fri, 17 Jan 2020 00:18:27 +0100
+Message-Id: <20200116231800.868696235@linuxfoundation.org>
 X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200116231713.087649517@linuxfoundation.org>
-References: <20200116231713.087649517@linuxfoundation.org>
+In-Reply-To: <20200116231745.218684830@linuxfoundation.org>
+References: <20200116231745.218684830@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

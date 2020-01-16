@@ -2,54 +2,59 @@ Return-Path: <SRS0=njVO=3F=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C825C33CB8
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Jan 2020 17:48:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32996C33CAF
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Jan 2020 17:51:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E14B22468D
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Jan 2020 17:48:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 09FD8246A8
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Jan 2020 17:51:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1579196899;
-	bh=SbTA/AdcjdIEurBZ3H9u4iaIzuL/XEM7tqhJuRT0Li0=;
+	s=default; t=1579197095;
+	bh=UmBk+mZmpi0cYAh8SHhB6gsxmSvcERTPwFGHLYBE+Ss=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=HiSz1mWLQNryTWh564lJiB2s18Am1dExWDSuiEORpLcO/l8hqyyI981EyFKo742z2
-	 bg9DC5X5UjsOFhAJ8p9KN8KL8aEa/01JPYJf4/g9UM+kIQSMY4TjJZlpuojrOkFTNX
-	 YNoKrEAraxfex6vpVoLutEBxgrfciJkJIhtJsRGI=
+	b=mFTFwDmY/UPYFxYlnkzD4pSQmkBfscmR6mJpVCZYdTblx6nionh07WpsVBr6LuyWX
+	 07z2I6wf/Jq+t6pInq77AujcPuLqc9sV4yr7J5rZKugcvTC7T+2BpXiye20J2HfXAE
+	 GYxf+oGA3D3RO9X3yhQ6VP85N4dcF5om/MgJuL8E=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406761AbgAPRql (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 16 Jan 2020 12:46:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39686 "EHLO mail.kernel.org"
+        id S2394425AbgAPRv3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 16 Jan 2020 12:51:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406750AbgAPRql (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:46:41 -0500
+        id S2406509AbgAPRpu (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:45:50 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C10FD246DC;
-        Thu, 16 Jan 2020 17:46:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4DE5A2081E;
+        Thu, 16 Jan 2020 17:45:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579196800;
-        bh=SbTA/AdcjdIEurBZ3H9u4iaIzuL/XEM7tqhJuRT0Li0=;
+        s=default; t=1579196749;
+        bh=UmBk+mZmpi0cYAh8SHhB6gsxmSvcERTPwFGHLYBE+Ss=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GybXhFpTDpIJyUGdQtqhTd5fUyM40KAEfz9BMe9leUFYG4g18VtyTEuBEQWG4MeEA
-         hYdKnodWSr7TP3t61W8IWk+JOscKR/xnpHM4mXFKAHHCzeRkGQkBprCcqlJuzGz3dk
-         wCZ2iFwXAa4LKVXYl4s9VK4NpOKH1mh5U4KWv+pI=
+        b=zagp9LxltWXhrdzGe3+I8mErXnqBNNmPHFfFr8xg4izvIXj801cdgHV6MlLSLqo75
+         jF+fi6QQra7yK9xM+GoIrpqnd6Lz5kdLQpG7mNyMJ4r4R4semogoH0MNRvvOjXFcru
+         WTsNM2MNlzWjcJVqmNOa7OXUbYhPXMY22UK+19PI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        James Hogan <jhogan@kernel.org>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 160/174] MIPS: Loongson: Fix return value of loongson_hwmon_init
-Date:   Thu, 16 Jan 2020 12:42:37 -0500
-Message-Id: <20200116174251.24326-160-sashal@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>,
+        Paul Burton <paul.burton@mips.com>, ralf@linux-mips.org,
+        jhogan@kernel.org, "Maciej W . Rozycki" <macro@linux-mips.org>,
+        Hassan Naveed <hnaveed@wavecomp.com>,
+        Stephen Kitt <steve@sk2.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, linux-mips@vger.kernel.org,
+        clang-built-linux@googlegroups.com, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 126/174] mips: avoid explicit UB in assignment of mips_io_port_base
+Date:   Thu, 16 Jan 2020 12:42:03 -0500
+Message-Id: <20200116174251.24326-126-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116174251.24326-1-sashal@kernel.org>
 References: <20200116174251.24326-1-sashal@kernel.org>
@@ -62,40 +67,101 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-[ Upstream commit dece3c2a320b0a6d891da6ff774ab763969b6860 ]
+[ Upstream commit 12051b318bc3ce5b42d6d786191008284b067d83 ]
 
-When call function hwmon_device_register failed, use the actual
-return value instead of always -ENOMEM.
+The code in question is modifying a variable declared const through
+pointer manipulation.  Such code is explicitly undefined behavior, and
+is the lone issue preventing malta_defconfig from booting when built
+with Clang:
 
-Fixes: 64f09aa967e1 ("MIPS: Loongson-3: Add CPU Hwmon platform driver")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Signed-off-by: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <jhogan@kernel.org>
-Cc: Huacai Chen <chenhc@lemote.com>
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+If an attempt is made to modify an object defined with a const-qualified
+type through use of an lvalue with non-const-qualified type, the
+behavior is undefined.
+
+LLVM is removing such assignments. A simple fix is to not declare
+variables const that you plan on modifying.  Limiting the scope would be
+a better method of preventing unwanted writes to such a variable.
+
+Further, the code in question mentions "compiler bugs" without any links
+to bug reports, so it is difficult to know if the issue is resolved in
+GCC. The patch was authored in 2006, which would have been GCC 4.0.3 or
+4.1.1. The minimal supported version of GCC in the Linux kernel is
+currently 4.6.
+
+For what its worth, there was UB before the commit in question, it just
+added a barrier and got lucky IRT codegen. I don't think there's any
+actual compiler bugs related, just runtime bugs due to UB.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/610
+Fixes: 966f4406d903 ("[MIPS] Work around bad code generation for <asm/io.h>.")
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Debugged-by: Nathan Chancellor <natechancellor@gmail.com>
+Suggested-by: Eli Friedman <efriedma@quicinc.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Paul Burton <paul.burton@mips.com>
+Cc: ralf@linux-mips.org
+Cc: jhogan@kernel.org
+Cc: Maciej W. Rozycki <macro@linux-mips.org>
+Cc: Hassan Naveed <hnaveed@wavecomp.com>
+Cc: Stephen Kitt <steve@sk2.org>
+Cc: Serge Semin <fancer.lancer@gmail.com>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Michal Hocko <mhocko@suse.com>
 Cc: linux-mips@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
+Cc: clang-built-linux@googlegroups.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/mips/cpu_hwmon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/include/asm/io.h | 14 ++------------
+ arch/mips/kernel/setup.c   |  2 +-
+ 2 files changed, 3 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/platform/mips/cpu_hwmon.c b/drivers/platform/mips/cpu_hwmon.c
-index 0f6c63e17049..9a201c3caaf4 100644
---- a/drivers/platform/mips/cpu_hwmon.c
-+++ b/drivers/platform/mips/cpu_hwmon.c
-@@ -155,7 +155,7 @@ static int __init loongson_hwmon_init(void)
+diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
+index ab1df19b0957..60604b26fa72 100644
+--- a/arch/mips/include/asm/io.h
++++ b/arch/mips/include/asm/io.h
+@@ -60,21 +60,11 @@
+  * instruction, so the lower 16 bits must be zero.  Should be true on
+  * on any sane architecture; generic code does not use this assumption.
+  */
+-extern const unsigned long mips_io_port_base;
++extern unsigned long mips_io_port_base;
  
- 	cpu_hwmon_dev = hwmon_device_register(NULL);
- 	if (IS_ERR(cpu_hwmon_dev)) {
--		ret = -ENOMEM;
-+		ret = PTR_ERR(cpu_hwmon_dev);
- 		pr_err("hwmon_device_register fail!\n");
- 		goto fail_hwmon_device_register;
- 	}
+-/*
+- * Gcc will generate code to load the value of mips_io_port_base after each
+- * function call which may be fairly wasteful in some cases.  So we don't
+- * play quite by the book.  We tell gcc mips_io_port_base is a long variable
+- * which solves the code generation issue.  Now we need to violate the
+- * aliasing rules a little to make initialization possible and finally we
+- * will need the barrier() to fight side effects of the aliasing chat.
+- * This trickery will eventually collapse under gcc's optimizer.  Oh well.
+- */
+ static inline void set_io_port_base(unsigned long base)
+ {
+-	* (unsigned long *) &mips_io_port_base = base;
+-	barrier();
++	mips_io_port_base = base;
+ }
+ 
+ /*
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 4f9f1ae49213..fadc946b306d 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -80,7 +80,7 @@ static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
+  * mips_io_port_base is the begin of the address space to which x86 style
+  * I/O ports are mapped.
+  */
+-const unsigned long mips_io_port_base = -1;
++unsigned long mips_io_port_base = -1;
+ EXPORT_SYMBOL(mips_io_port_base);
+ 
+ static struct resource code_resource = { .name = "Kernel code", };
 -- 
 2.20.1
 

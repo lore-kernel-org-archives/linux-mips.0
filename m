@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34D39C33CB3
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Jan 2020 17:33:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C825C33CB8
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Jan 2020 17:48:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 02F1524683
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Jan 2020 17:33:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E14B22468D
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Jan 2020 17:48:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1579195990;
-	bh=CGNhzIxHlrwThfQLQoWP/c+P3JLbSvMF7EMs29vsMd0=;
+	s=default; t=1579196899;
+	bh=SbTA/AdcjdIEurBZ3H9u4iaIzuL/XEM7tqhJuRT0Li0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=soR955UsF3+O1wrGSnqw8LWWn0ZeTwV1/U9nRk5hM5CP9pJxgleh8nKqFHlxCyvy9
-	 mrQzpA7tm4n/2Ygk39EWu7stvQABqkYinYBg7Xhn+KdXvGQKbf3r7FnepyyLhuwu26
-	 EwB0W33vbzCU6VMoaLSVu+cZ1INie2Eo+R6B3zmk=
+	b=HiSz1mWLQNryTWh564lJiB2s18Am1dExWDSuiEORpLcO/l8hqyyI981EyFKo742z2
+	 bg9DC5X5UjsOFhAJ8p9KN8KL8aEa/01JPYJf4/g9UM+kIQSMY4TjJZlpuojrOkFTNX
+	 YNoKrEAraxfex6vpVoLutEBxgrfciJkJIhtJsRGI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387686AbgAPRdI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 16 Jan 2020 12:33:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43364 "EHLO mail.kernel.org"
+        id S2406761AbgAPRql (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 16 Jan 2020 12:46:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404612AbgAPRal (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:30:41 -0500
+        id S2406750AbgAPRql (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:46:41 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 026C124722;
-        Thu, 16 Jan 2020 17:30:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C10FD246DC;
+        Thu, 16 Jan 2020 17:46:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579195841;
-        bh=CGNhzIxHlrwThfQLQoWP/c+P3JLbSvMF7EMs29vsMd0=;
+        s=default; t=1579196800;
+        bh=SbTA/AdcjdIEurBZ3H9u4iaIzuL/XEM7tqhJuRT0Li0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vby5pZENP5ukvMThb+esIVc3GMDrLNK5041lFXRnvIA7YFB3gDlhnJD9nPsATAUtq
-         aaRhW7qV5cm311PInL78wqsqijwlLAzeC///Fy2+k/YjNV3SuSxas5DHs4RSPy59JV
-         YeGUTtbgbq3XOg8FfqaxMs5EMzARP5eLXcQPNyJE=
+        b=GybXhFpTDpIJyUGdQtqhTd5fUyM40KAEfz9BMe9leUFYG4g18VtyTEuBEQWG4MeEA
+         hYdKnodWSr7TP3t61W8IWk+JOscKR/xnpHM4mXFKAHHCzeRkGQkBprCcqlJuzGz3dk
+         wCZ2iFwXAa4LKVXYl4s9VK4NpOKH1mh5U4KWv+pI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
@@ -47,12 +47,12 @@ Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
         Huacai Chen <chenhc@lemote.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         linux-mips@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 343/371] MIPS: Loongson: Fix return value of loongson_hwmon_init
-Date:   Thu, 16 Jan 2020 12:23:35 -0500
-Message-Id: <20200116172403.18149-286-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 160/174] MIPS: Loongson: Fix return value of loongson_hwmon_init
+Date:   Thu, 16 Jan 2020 12:42:37 -0500
+Message-Id: <20200116174251.24326-160-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200116172403.18149-1-sashal@kernel.org>
-References: <20200116172403.18149-1-sashal@kernel.org>
+In-Reply-To: <20200116174251.24326-1-sashal@kernel.org>
+References: <20200116174251.24326-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -84,10 +84,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/platform/mips/cpu_hwmon.c b/drivers/platform/mips/cpu_hwmon.c
-index 322de58eebaf..02484ae9a116 100644
+index 0f6c63e17049..9a201c3caaf4 100644
 --- a/drivers/platform/mips/cpu_hwmon.c
 +++ b/drivers/platform/mips/cpu_hwmon.c
-@@ -158,7 +158,7 @@ static int __init loongson_hwmon_init(void)
+@@ -155,7 +155,7 @@ static int __init loongson_hwmon_init(void)
  
  	cpu_hwmon_dev = hwmon_device_register(NULL);
  	if (IS_ERR(cpu_hwmon_dev)) {

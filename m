@@ -2,111 +2,111 @@ Return-Path: <SRS0=Az5z=3G=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CEF8BC33CB1
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Jan 2020 11:23:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 730B9C33CB1
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Jan 2020 14:02:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AB18C2176D
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Jan 2020 11:23:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 422662082F
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Jan 2020 14:02:51 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=dlink.ru header.i=@dlink.ru header.b="EWBPsPws"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbgAQLXs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 17 Jan 2020 06:23:48 -0500
-Received: from mout.kundenserver.de ([217.72.192.75]:51133 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726785AbgAQLXr (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Jan 2020 06:23:47 -0500
-Received: from mail-qt1-f172.google.com ([209.85.160.172]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MZCX1-1j5QHY2xEn-00V6oc; Fri, 17 Jan 2020 12:23:45 +0100
-Received: by mail-qt1-f172.google.com with SMTP id w47so21472012qtk.4;
-        Fri, 17 Jan 2020 03:23:45 -0800 (PST)
-X-Gm-Message-State: APjAAAWpDkR505DpUSrB+mwD4UiSMh6wouTVvTnUJKE/MOEe0a91APQm
-        Pb5WQBHH+C/O3a/WBTA+ii9h4GkFiFLkb+GZvWw=
-X-Google-Smtp-Source: APXvYqyvj+qVxj0YCsmU7P1XOliY6rtqSxryof0W+wMqmW4n2F+6uFJgm4139nMmKoUQOXfgYZ5UmpVyaFMrptCFtJ8=
-X-Received: by 2002:ac8:47d3:: with SMTP id d19mr6878361qtr.142.1579260224350;
- Fri, 17 Jan 2020 03:23:44 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1579248206.git.michal.simek@xilinx.com> <0274919c5e3b134df19d943f99cb7e84e5135ccd.1579248206.git.michal.simek@xilinx.com>
-In-Reply-To: <0274919c5e3b134df19d943f99cb7e84e5135ccd.1579248206.git.michal.simek@xilinx.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 17 Jan 2020 12:23:28 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a14ASj7Bq7pntaxPRomGKfAALyD6GGR-APYEdh=ja6UkQ@mail.gmail.com>
-Message-ID: <CAK8P3a14ASj7Bq7pntaxPRomGKfAALyD6GGR-APYEdh=ja6UkQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] asm-generic: Make dma-contiguous.h a mandatory
- include/asm header
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Michal Simek <monstr@monstr.eu>, git@xilinx.com,
-        Christoph Hellwig <hch@lst.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-riscv@lists.infradead.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Guo Ren <guoren@kernel.org>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Wesley Terpstra <wesley@sifive.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        Chris Zankel <chris@zankel.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Vasily Gorbik <gor@linux.ibm.com>,
+        id S1728827AbgAQOCq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 17 Jan 2020 09:02:46 -0500
+Received: from mail.dlink.ru ([178.170.168.18]:55836 "EHLO fd.dlink.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728998AbgAQOCp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 17 Jan 2020 09:02:45 -0500
+Received: by fd.dlink.ru (Postfix, from userid 5000)
+        id 6EE6F1B21576; Fri, 17 Jan 2020 17:02:42 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fd.dlink.ru 6EE6F1B21576
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dlink.ru; s=mail;
+        t=1579269762; bh=5ylIyyrZHlzb5tLPn4yy5E0L0D4VwPrmEFZ7BGuuHO8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=EWBPsPwsX/FBRAeYsYwLjo7CLzvkeykEkH6W4hPSin3x4nVpHbx8dB0zBAd3+ybfw
+         lPzxQX4Y/M5STsdDec+7dQ7JLXXIQuEPYvS6W8a3nFCJoj8oitsGYK/lorWNkw2e4c
+         OB+UNMEDAhllfdOQFY64LqnJ0WuHq5oyN2/1aP4k=
+Received: from mail.rzn.dlink.ru (mail.rzn.dlink.ru [178.170.168.13])
+        by fd.dlink.ru (Postfix) with ESMTP id 0A6A61B214CE;
+        Fri, 17 Jan 2020 17:02:32 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fd.dlink.ru 0A6A61B214CE
+Received: from mail.rzn.dlink.ru (localhost [127.0.0.1])
+        by mail.rzn.dlink.ru (Postfix) with ESMTP id 5DADB1B20AE9;
+        Fri, 17 Jan 2020 17:02:31 +0300 (MSK)
+Received: from localhost.localdomain (unknown [196.196.203.126])
+        by mail.rzn.dlink.ru (Postfix) with ESMTPA;
+        Fri, 17 Jan 2020 17:02:31 +0300 (MSK)
+From:   Alexander Lobakin <alobakin@dlink.ru>
+To:     Paul Burton <paulburton@kernel.org>
+Cc:     Ralf Baechle <ralf@linux-mips.org>,
         James Hogan <jhogan@kernel.org>,
         Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:iqPNv77XDTa0tcdeV36iCL4kfPwGX7DaQUkNLXyOMGI9eqV7hw2
- H7H8wvbSYKPKWAxlikAxs4SyQ4WFfIGfTkBuPuxFJAcjkRVoKvBAGMdd+0AqrQ4kYmZDv56
- NG+o9UWNcnUqnGfCH4/xpJ5H5A1z2RWo9rsTO0Do372LyosgOEHVZX37UPM+oR/3H3ZmjJ8
- Lit61zkwDJd0i4MTP7/4Q==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:cdafQtaYOIk=:zkk7ZvnyKm5EzeZkRU0des
- 8xFhpBTVhX8NAcMqv/hFyL+BrjmrPh0+fIBEHTwIEGkx4HvtTmJmd/nd0m3mdhAyLNJCgGdt3
- zHQq2IfKyssLKH1Yf+aJNRxaL00wTSm18klJP5cO+mMv2n8mbjpgmoKy9atPR6UWlSjH546kr
- NRm/2oTKKd5WLZC7Q1gXGTw+JijjwIJ+r+g8CVz12+KPeFqgvNxPklu40Aai8drjGQwO/WLnJ
- M4xiBOwQACAV78iS0mnZ6IuPR35mSbKJVgDHlxVpSabIwgv4CildM6wTWYcSPhtrrgfsm51zC
- X38DppkbP8Ulu0LpD99CUPLs8ArVPgH6L0D3WsCgUAsDWG1weey2RBOOAulBOdpgwGIJ/aTJG
- pap0Ml9aoFI5gYwz1h7SEBrRqbAwNrK2cSlCIDjMhJh2X1JIHFXFJLXFdtYYb+DAOtlJOEMvG
- f8Pe10L0ZudN1b8VLNG83uuCAJefv391N1G6sjjiOSo0vqZRDi5UaljwHD8w4muPGhTOPMnJt
- z5zGUZhHLl8pKBCuyvSvgjR3YULaDGszzZvoyzLJ1FB1S0pfj+Gk6LlZLTecI+qaq+Sb752Mr
- W56rj7Jlw2mo1n6c8WVbyA+mPO7L4Ls2FEoTR6PoXv/BvSJoUxfp8l9i1pSLWKd6PCx3PUQ+U
- k4tBMNo9uPeYOOzuOYXNyTUv07SX2ChoeSjJYRaD10+QlbfNRNCl80o4OOet7V4sc0eSW2L/2
- y4yzX7iJQm93yFo1nFXHUAqr27x5yIwy789HxeTdtdFbU3hHrXJLXQxU6tIlLjSqrxQSkzwXf
- t3B+lU27NtDFgYsH1mQA8h0IulyXdVJCsHk3z2h0luNa6cBukEVBkGJMIxtwUz+EI7Dc6Vu61
- I0+Q378NUSEsEKgowPXw==
+        Rob Herring <robh@kernel.org>,
+        Alexander Lobakin <alobakin@dlink.ru>,
+        linux-mips@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH mips-fixes 3/3] MIPS: syscalls: fix indentation of the 'SYSNR' message
+Date:   Fri, 17 Jan 2020 17:02:09 +0300
+Message-Id: <20200117140209.17672-4-alobakin@dlink.ru>
+X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200117140209.17672-1-alobakin@dlink.ru>
+References: <20200117140209.17672-1-alobakin@dlink.ru>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Jan 17, 2020 at 9:03 AM Michal Simek <michal.simek@xilinx.com> wrote:
->
-> dma-continuguous.h is generic for all architectures except arm32 which has
-> its own version.
->
-> Similar change was done for msi.h by commit a1b39bae16a6
-> ("asm-generic: Make msi.h a mandatory include/asm header")
->
-> Suggested-by: Christoph Hellwig <hch@infradead.org>
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> ---
+It also lacks a whitespace (copy'n'paste error?) and also messes up the
+output:
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+  SYSHDR  arch/mips/include/generated/uapi/asm/unistd_n32.h
+  SYSHDR  arch/mips/include/generated/uapi/asm/unistd_n64.h
+  SYSHDR  arch/mips/include/generated/uapi/asm/unistd_o32.h
+  SYSNR  arch/mips/include/generated/uapi/asm/unistd_nr_n32.h
+  SYSNR  arch/mips/include/generated/uapi/asm/unistd_nr_n64.h
+  SYSNR  arch/mips/include/generated/uapi/asm/unistd_nr_o32.h
+  WRAP    arch/mips/include/generated/uapi/asm/bpf_perf_event.h
+  WRAP    arch/mips/include/generated/uapi/asm/ipcbuf.h
+
+After:
+
+  SYSHDR  arch/mips/include/generated/uapi/asm/unistd_n32.h
+  SYSHDR  arch/mips/include/generated/uapi/asm/unistd_n64.h
+  SYSHDR  arch/mips/include/generated/uapi/asm/unistd_o32.h
+  SYSNR   arch/mips/include/generated/uapi/asm/unistd_nr_n32.h
+  SYSNR   arch/mips/include/generated/uapi/asm/unistd_nr_n64.h
+  SYSNR   arch/mips/include/generated/uapi/asm/unistd_nr_o32.h
+  WRAP    arch/mips/include/generated/uapi/asm/bpf_perf_event.h
+  WRAP    arch/mips/include/generated/uapi/asm/ipcbuf.h
+
+Present since day 0 of syscall table generation introduction for MIPS.
+
+Fixes: 9bcbf97c6293 ("mips: add system call table generation support")
+Cc: <stable@vger.kernel.org> # v5.0+
+Signed-off-by: Alexander Lobakin <alobakin@dlink.ru>
+---
+ arch/mips/kernel/syscalls/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/kernel/syscalls/Makefile b/arch/mips/kernel/syscalls/Makefile
+index a3d4bec695c6..6efb2f6889a7 100644
+--- a/arch/mips/kernel/syscalls/Makefile
++++ b/arch/mips/kernel/syscalls/Makefile
+@@ -18,7 +18,7 @@ quiet_cmd_syshdr = SYSHDR  $@
+ 		   '$(syshdr_pfx_$(basetarget))'		\
+ 		   '$(syshdr_offset_$(basetarget))'
+ 
+-quiet_cmd_sysnr = SYSNR  $@
++quiet_cmd_sysnr = SYSNR   $@
+       cmd_sysnr = $(CONFIG_SHELL) '$(sysnr)' '$<' '$@'		\
+ 		  '$(sysnr_abis_$(basetarget))'			\
+ 		  '$(sysnr_pfx_$(basetarget))'			\
+-- 
+2.25.0
+

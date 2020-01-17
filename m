@@ -2,84 +2,86 @@ Return-Path: <SRS0=Az5z=3G=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47748C33CB1
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Jan 2020 09:00:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D762C33CB3
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Jan 2020 09:43:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1BEA52082F
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Jan 2020 09:00:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F39E22082F
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Jan 2020 09:43:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbgAQJAA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 17 Jan 2020 04:00:00 -0500
-Received: from gate.crashing.org ([63.228.1.57]:51278 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726908AbgAQJAA (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 17 Jan 2020 04:00:00 -0500
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 00H8ws29002697;
-        Fri, 17 Jan 2020 02:58:54 -0600
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 00H8wpV1002692;
-        Fri, 17 Jan 2020 02:58:51 -0600
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Fri, 17 Jan 2020 02:58:51 -0600
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Christophe Leroy <christophe.leroy@c-s.fr>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, nathanl@linux.ibm.com,
-        arnd@arndb.de, tglx@linutronix.de, vincenzo.frascino@arm.com,
-        luto@kernel.org, x86@kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [RFC PATCH v4 00/11] powerpc: switch VDSO to C implementation.
-Message-ID: <20200117085851.GS3191@gate.crashing.org>
-References: <cover.1579196675.git.christophe.leroy@c-s.fr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1579196675.git.christophe.leroy@c-s.fr>
-User-Agent: Mutt/1.4.2.3i
+        id S1726574AbgAQJnz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 17 Jan 2020 04:43:55 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:55209 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726684AbgAQJny (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Jan 2020 04:43:54 -0500
+Received: from p5b06da22.dip0.t-ipconnect.de ([91.6.218.34] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1isOAB-0004Zi-B1; Fri, 17 Jan 2020 10:43:35 +0100
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id B30BB100C19; Fri, 17 Jan 2020 10:43:34 +0100 (CET)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Michal Simek <michal.simek@xilinx.com>,
+        linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        linux-mips@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-s390@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
+        x86@kernel.org, Guo Ren <guoren@kernel.org>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Wesley Terpstra <wesley@sifive.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        Chris Zankel <chris@zankel.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        James Hogan <jhogan@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>
+Subject: Re: [PATCH v2 1/2] asm-generic: Make dma-contiguous.h a mandatory include/asm header
+In-Reply-To: <0274919c5e3b134df19d943f99cb7e84e5135ccd.1579248206.git.michal.simek@xilinx.com>
+References: <cover.1579248206.git.michal.simek@xilinx.com> <0274919c5e3b134df19d943f99cb7e84e5135ccd.1579248206.git.michal.simek@xilinx.com>
+Date:   Fri, 17 Jan 2020 10:43:34 +0100
+Message-ID: <87y2u6cta1.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi!
+Michal Simek <michal.simek@xilinx.com> writes:
 
-On Thu, Jan 16, 2020 at 05:58:24PM +0000, Christophe Leroy wrote:
-> On a powerpc8xx, with current powerpc/32 ASM VDSO:
-> 
-> gettimeofday:    vdso: 907 nsec/call
-> clock-getres-realtime:    vdso: 484 nsec/call
-> clock-gettime-realtime:    vdso: 899 nsec/call
-> 
-> The first patch adds VDSO generic C support without any changes to common code.
-> Performance is as follows:
-> 
-> gettimeofday:    vdso: 1211 nsec/call
-> clock-getres-realtime:    vdso: 722 nsec/call
-> clock-gettime-realtime:    vdso: 1216 nsec/call
-> 
-> Then a few changes in the common code have allowed performance improvement. At
-> the end of the series we have:
-> 
-> gettimeofday:    vdso: 974 nsec/call
-> clock-getres-realtime:    vdso: 545 nsec/call
-> clock-gettime-realtime:    vdso: 941 nsec/call
-> 
-> The final result is rather close to pure ASM VDSO:
-> * 7% more on gettimeofday (9 cycles)
-> * 5% more on clock-gettime-realtime (6 cycles)
-> * 12% more on clock-getres-realtime (8 cycles)
+> dma-continuguous.h is generic for all architectures except arm32 which has
+> its own version.
+>
+> Similar change was done for msi.h by commit a1b39bae16a6
+> ("asm-generic: Make msi.h a mandatory include/asm header")
+>
+> Suggested-by: Christoph Hellwig <hch@infradead.org>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 
-Nice!  Much better.
-
-It should be tested on more representative hardware, too, but this looks
-promising alright :-)
-
-
-Segher
+Acked-by: Thomas Gleixner <tglx@linutronix.de>

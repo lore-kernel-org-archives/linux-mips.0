@@ -2,78 +2,111 @@ Return-Path: <SRS0=Az5z=3G=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A353DC33CB3
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Jan 2020 14:02:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D38FAC33CB1
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Jan 2020 16:31:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7154920842
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Jan 2020 14:02:54 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=dlink.ru header.i=@dlink.ru header.b="fZrv0Jk0"
+	by mail.kernel.org (Postfix) with ESMTP id A2A782192A
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Jan 2020 16:31:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1579278719;
+	bh=ogEjb6p5bkBX+oGGwniYG3pY9B0OIU1oA1FR3jbA75s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=s83aGXn/ad5ZBzcm5XfFZfC2d7ZDBvyAiXfTpUWjrm4XwfD7ssbub9ts5GkiGW9U4
+	 Ea5cFP6ja6uhxNEA7K5E/qt/f5hfXSCKMbcO3wfwRAczRjFlcaJXrZ5+bRb/VYHhL+
+	 UWRQU772HAp2vwoT/Xx2/latRMM3FlVjBMiJsWf8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726957AbgAQOCk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 17 Jan 2020 09:02:40 -0500
-Received: from fd.dlink.ru ([178.170.168.18]:55756 "EHLO fd.dlink.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728827AbgAQOCk (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 17 Jan 2020 09:02:40 -0500
-Received: by fd.dlink.ru (Postfix, from userid 5000)
-        id 4B7D81B2174D; Fri, 17 Jan 2020 17:02:36 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fd.dlink.ru 4B7D81B2174D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dlink.ru; s=mail;
-        t=1579269757; bh=v/Dy3HkDobXo0LsphaOFqbzTfgXYux03ksrKq4FwcgU=;
-        h=From:To:Cc:Subject:Date;
-        b=fZrv0Jk0A9wmkx6kT8l14THsP38B9s4ps8r4aOlhIomlMU7ztmNi9NMf9xyk83BzD
-         /nYzK8P4lt0+Dsz/vr5tFGHiL23SxI7pJWxhcgapsGmeYO++xPhj4El1m3IX0IqaU3
-         7DQwlYehWidye7n3JDXdRrstZWELoVZsQfSZSSQE=
-Received: from mail.rzn.dlink.ru (mail.rzn.dlink.ru [178.170.168.13])
-        by fd.dlink.ru (Postfix) with ESMTP id AD0F41B2012B;
-        Fri, 17 Jan 2020 17:02:29 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fd.dlink.ru AD0F41B2012B
-Received: from mail.rzn.dlink.ru (localhost [127.0.0.1])
-        by mail.rzn.dlink.ru (Postfix) with ESMTP id E94861B20AE9;
-        Fri, 17 Jan 2020 17:02:28 +0300 (MSK)
-Received: from localhost.localdomain (unknown [196.196.203.126])
-        by mail.rzn.dlink.ru (Postfix) with ESMTPA;
-        Fri, 17 Jan 2020 17:02:28 +0300 (MSK)
-From:   Alexander Lobakin <alobakin@dlink.ru>
-To:     Paul Burton <paulburton@kernel.org>
-Cc:     Ralf Baechle <ralf@linux-mips.org>,
-        James Hogan <jhogan@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Rob Herring <robh@kernel.org>,
-        Alexander Lobakin <alobakin@dlink.ru>,
-        linux-mips@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH mips-fixes 0/3] MIPS: a set of tiny Kbuild fixes
-Date:   Fri, 17 Jan 2020 17:02:06 +0300
-Message-Id: <20200117140209.17672-1-alobakin@dlink.ru>
-X-Mailer: git-send-email 2.25.0
+        id S1726554AbgAQQb7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 17 Jan 2020 11:31:59 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:42165 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726506AbgAQQb7 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Jan 2020 11:31:59 -0500
+Received: by mail-oi1-f194.google.com with SMTP id 18so22695123oin.9;
+        Fri, 17 Jan 2020 08:31:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=5gj1/chJ9sV8kpdyataWFH+xbqAvecJvMET5S/FO4BY=;
+        b=KrQHPGEKwzzDNTU84uZNuV3KRKyhW7T0CMRw3iN7rG1VTQ5qmiAZnMkNLfgcFJz56T
+         8ZwIol13oaHidE4d9eeB9Dh3mzYvkZ06w4oeitVQjKwdPDA3raalGz6wJpV8NoTcN2aF
+         toVNlNjnKJCb/gP0MEmyUgRfr+dNAtlY+AkNGKD7X9nt53iVKTbJxmwgLaHmDhuPqfgw
+         soS91F9P5nba+fb/WYKMzR69T47peb5VtxsC/t4OiNS9nRWJ2TCdFdvC7AO2uWjUQTkJ
+         q12kP1EgQRB1uPsEA4/C6yWdvHjOQ4PuJN4WnB+GBdBDg4VTtfRwrzxxQTrc6ZxvtsfQ
+         VZfw==
+X-Gm-Message-State: APjAAAVhaFjZ3FMr3mU8ZWQSqb8Cnzek4rqy0OW5UVIvcs4byKmVAoea
+        98UOpJilbTJ+PpsNaz1NFw==
+X-Google-Smtp-Source: APXvYqxs5kEVxVAuMPNxBDE0jWIqvD8uzgfpnztY5yy6y+7ElSVcbkmwv+bYZcJhO8bAItMve31emQ==
+X-Received: by 2002:aca:fcd1:: with SMTP id a200mr3911032oii.74.1579278718422;
+        Fri, 17 Jan 2020 08:31:58 -0800 (PST)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a24sm7933178oic.10.2020.01.17.08.31.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jan 2020 08:31:57 -0800 (PST)
+Received: (nullmailer pid 25438 invoked by uid 1000);
+        Fri, 17 Jan 2020 16:31:56 -0000
+Date:   Fri, 17 Jan 2020 10:31:56 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, mips-creator-ci20-dev@googlegroups.com,
+        robh+dt@kernel.org, paul.burton@mips.com, paulburton@kernel.org,
+        jhogan@kernel.org, mark.rutland@arm.com, syq@debian.org,
+        ralf@linux-mips.org, rick.tyliu@ingenic.com, jason@lakedaemon.net,
+        keescook@chromium.org, geert+renesas@glider.be, krzk@kernel.org,
+        paul@crapouillou.net, prasannatsmkumar@gmail.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com,
+        ebiederm@xmission.com, hns@goldelico.com, paul@boddie.org.uk
+Subject: Re: [PATCH v2 3/6] dt-bindings: MIPS: Document Ingenic SoCs binding.
+Message-ID: <20200117163156.GA24497@bogus>
+References: <1579195429-59828-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1579195429-59828-5-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1579195429-59828-5-git-send-email-zhouyanjie@wanyeetech.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-These three fix two command output messages and a typo which leads
-to constant rebuild of vmlinux.lzma.its and all dependants on every
-make invocation.
-Nothing critical, and can be backported without manual intervention.
+On Fri, 17 Jan 2020 01:23:46 +0800, =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= wrote:
+> Document the available properties for the SoC root node and the
+> CPU nodes of the devicetree for the Ingenic XBurst SoCs.
+> 
+> Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> ---
+> 
+> Notes:
+>     v1->v2:
+>     Change the two Document from txt to yaml.
+> 
+>  .../bindings/mips/ingenic/ingenic,cpu.yaml         | 53 ++++++++++++++++++++++
+>  .../bindings/mips/ingenic/ingenic,soc,yaml         | 35 ++++++++++++++
+>  2 files changed, 88 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.yaml
+>  create mode 100644 Documentation/devicetree/bindings/mips/ingenic/ingenic,soc,yaml
+> 
 
-Alexander Lobakin (3):
-  MIPS: fix indentation of the 'RELOCS' message
-  MIPS: boot: fix typo in 'vmlinux.lzma.its' target
-  MIPS: syscalls: fix indentation of the 'SYSNR' message
+My bot found errors running 'make dt_binding_check' on your patch:
 
- arch/mips/Makefile.postlink        | 2 +-
- arch/mips/boot/Makefile            | 2 +-
- arch/mips/kernel/syscalls/Makefile | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.yaml:  while parsing a block collection
+  in "<unicode string>", line 17, column 7
+did not find expected '-' indicator
+  in "<unicode string>", line 17, column 25
+Documentation/devicetree/bindings/Makefile:12: recipe for target 'Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.example.dts' failed
+make[1]: *** [Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.example.dts] Error 1
+Makefile:1263: recipe for target 'dt_binding_check' failed
+make: *** [dt_binding_check] Error 2
 
--- 
-2.25.0
-
+See https://patchwork.ozlabs.org/patch/1224371
+Please check and re-submit.

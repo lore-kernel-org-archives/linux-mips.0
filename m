@@ -2,174 +2,131 @@ Return-Path: <SRS0=FnRn=3K=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E48CFC33CAF
-	for <linux-mips@archiver.kernel.org>; Tue, 21 Jan 2020 22:33:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AE76C3F68F
+	for <linux-mips@archiver.kernel.org>; Tue, 21 Jan 2020 23:18:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C4CD72465B
-	for <linux-mips@archiver.kernel.org>; Tue, 21 Jan 2020 22:33:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2956224656
+	for <linux-mips@archiver.kernel.org>; Tue, 21 Jan 2020 23:18:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgAUWcD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 21 Jan 2020 17:32:03 -0500
-Received: from mga14.intel.com ([192.55.52.115]:1733 "EHLO mga14.intel.com"
+        id S1728750AbgAUXSf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 21 Jan 2020 18:18:35 -0500
+Received: from mga12.intel.com ([192.55.52.136]:57248 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725876AbgAUWcD (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 21 Jan 2020 17:32:03 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
+        id S1728665AbgAUXSf (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 21 Jan 2020 18:18:35 -0500
+X-Amp-Result: UNSCANNABLE
 X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Jan 2020 14:32:02 -0800
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Jan 2020 15:18:34 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.70,347,1574150400"; 
-   d="scan'208";a="244845094"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
-  by orsmga002.jf.intel.com with ESMTP; 21 Jan 2020 14:32:02 -0800
+   d="scan'208";a="227493488"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
+  by orsmga003.jf.intel.com with ESMTP; 21 Jan 2020 15:18:33 -0800
+Date:   Tue, 21 Jan 2020 15:18:33 -0800
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Paul Mackerras <paulus@ozlabs.org>,
+Cc:     Paul Mackerras <paulus@ozlabs.org>, Marc Zyngier <maz@kernel.org>,
+        James Hogan <jhogan@kernel.org>,
         Christian Borntraeger <borntraeger@de.ibm.com>,
         Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Marc Zyngier <maz@kernel.org>,
         James Morse <james.morse@arm.com>,
         Julien Thierry <julien.thierry.kdev@gmail.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Peter Xu <peterx@redhat.com>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>
-Subject: [PATCH v5 00/19] KVM: Dynamically size memslot arrays
-Date:   Tue, 21 Jan 2020 14:31:38 -0800
-Message-Id: <20200121223157.15263-1-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.24.1
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kurz <groug@kaod.org>
+Subject: Re: [PATCH v2 12/45] KVM: PPC: Allocate vcpu struct in common PPC
+ code
+Message-ID: <20200121231833.GB12692@linux.intel.com>
+References: <20191218215530.2280-1-sean.j.christopherson@intel.com>
+ <20191218215530.2280-13-sean.j.christopherson@intel.com>
+ <20200120040412.GF14307@blackberry>
+ <fcd2aaf1-6f6e-303a-d7c6-f6b0c0a4555c@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <fcd2aaf1-6f6e-303a-d7c6-f6b0c0a4555c@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-I'd love to get this into 5.6 if possible.  The rebase to kvm/queue only
-had a single superficial conflict with 668effb63de8 ("KVM: Fix some wrong
-function names in comment"), and s390 (Christian) and arm64 (Marc) both
-got smoke tested in v4.
+On Tue, Jan 21, 2020 at 12:05:00PM +0100, Paolo Bonzini wrote:
+> On 20/01/20 05:04, Paul Mackerras wrote:
+> > On Wed, Dec 18, 2019 at 01:54:57PM -0800, Sean Christopherson wrote:
+> >> Move allocation of all flavors of PPC vCPUs to common PPC code.  All
+> >> variants either allocate 'struct kvm_vcpu' directly, or require that
+> >> the embedded 'struct kvm_vcpu' member be located at offset 0, i.e.
+> >> guarantee that the allocation can be directly interpreted as a 'struct
+> >> kvm_vcpu' object.
+> >>
+> >> Remove the message from the build-time assertion regarding placement of
+> >> the struct, as compatibility with the arch usercopy region is no longer
+> >> the sole dependent on 'struct kvm_vcpu' being at offset zero.
+> >>
+> >> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > 
+> > This fails to compile for Book E configs:
+> > 
+> >   CC      arch/powerpc/kvm/e500.o
+> > /home/paulus/kernel/kvm/arch/powerpc/kvm/e500.c: In function ‘kvmppc_core_vcpu_create_e500’:
+> > /home/paulus/kernel/kvm/arch/powerpc/kvm/e500.c:464:9: error: return makes integer from pointer without a cast [-Werror=int-conversion]
+> >   return vcpu;
+> >          ^
+> > cc1: all warnings being treated as errors
+> > make[3]: *** [/home/paulus/kernel/kvm/scripts/Makefile.build:266: arch/powerpc/kvm/e500.o] Error 1
+> > 
+> > There is a "return vcpu" statement in kvmppc_core_vcpu_create_e500(),
+> > and another in kvmppc_core_vcpu_create_e500mc(), which both need to be
+> > changed to "return 0".
+> > 
+> > (By the way, I do appreciate you fixing the PPC code, even if there
+> > are some errors.)
+> 
+> Squashed:
 
-Thanks!
+Thanks for cleaning up after me, not having to rebase and resend this
+series made my day :-) 
 
-v5:
-  - Make the selftest x86-only. [Christian].
-  - Collect tags. [Peter]
-  - Rebase to kvm/queue, fb0c5f8fb698 ("KVM: x86: inline memslot_...").
-
-v4:
-  - Add patch 01 to fix an x86 rmap/lpage bug, and patches 10 and 11 to
-    resolve hidden conflicts with the bug fix.
-  - Collect tags [Christian, Marc, Philippe].
-  - Rebase to kvm/queue, commit e41a90be9659 ("KVM: x86/mmu: WARN if
-    root_hpa is invalid when handling a page fault").
-v3:
-  - Fix build errors on PPC and MIPS due to missed params during
-    refactoring [kbuild test robot].
-  - Rename the helpers for update_memslots() and add comments describing
-    the new algorithm and how it interacts with searching [Paolo].
-  - Remove the unnecessary and obnoxious warning regarding memslots being
-    a flexible array [Paolo].
-  - Fix typos in the changelog of patch 09/15 [Christoffer].
-  - Collect tags [Christoffer].
-
-v2:
-  - Split "Drop kvm_arch_create_memslot()" into three patches to move
-    minor functional changes to standalone patches [Janosch].
-  - Rebase to latest kvm/queue (f0574a1cea5b, "KVM: x86: fix ...")
-  - Collect an Acked-by and a Reviewed-by
-
-*** v1 cover letter ***
-
-The end goal of this series is to dynamically size the memslot array so
-that KVM allocates memory based on the number of memslots in use, as
-opposed to unconditionally allocating memory for the maximum number of
-memslots.  On x86, each memslot consumes 88 bytes, and so with 2 address
-spaces of 512 memslots, each VM consumes ~90k bytes for the memslots.
-E.g. given a VM that uses a total of 30 memslots, dynamic sizing reduces
-the memory footprint from 90k to ~2.6k bytes.
-
-The changes required to support dynamic sizing are relatively small,
-e.g. are essentially contained in patches 17/19 and 18/19.
-
-Patches 2-16 clean up the memslot code, which has gotten quite crusty,
-especially __kvm_set_memory_region().  The clean up is likely not strictly
-necessary to switch to dynamic sizing, but I didn't have a remotely
-reasonable level of confidence in the correctness of the dynamic sizing
-without first doing the clean up.
-
-The only functional change in v4 is the addition of an x86-specific bug
-fix in x86's handling of KVM_MR_MOVE.  The bug fix is not directly related
-to dynamically allocating memslots, but it has subtle and hidden conflicts
-with the cleanup patches, and the fix is higher priority than anything
-else in the series, i.e. should be merged first.
-
-On non-x86 architectures, v3 and v4 should be functionally equivalent,
-the only non-x86 change in v4 is the dropping of a "const" in
-kvm_arch_commit_memory_region().
-
-Sean Christopherson (19):
-  KVM: x86: Allocate new rmap and large page tracking when moving
-    memslot
-  KVM: Reinstall old memslots if arch preparation fails
-  KVM: Don't free new memslot if allocation of said memslot fails
-  KVM: PPC: Move memslot memory allocation into prepare_memory_region()
-  KVM: x86: Allocate memslot resources during prepare_memory_region()
-  KVM: Drop kvm_arch_create_memslot()
-  KVM: Explicitly free allocated-but-unused dirty bitmap
-  KVM: Refactor error handling for setting memory region
-  KVM: Move setting of memslot into helper routine
-  KVM: Drop "const" attribute from old memslot in commit_memory_region()
-  KVM: x86: Free arrays for old memslot when moving memslot's base gfn
-  KVM: Move memslot deletion to helper function
-  KVM: Simplify kvm_free_memslot() and all its descendents
-  KVM: Clean up local variable usage in __kvm_set_memory_region()
-  KVM: Provide common implementation for generic dirty log functions
-  KVM: Ensure validity of memslot with respect to kvm_get_dirty_log()
-  KVM: Terminate memslot walks via used_slots
-  KVM: Dynamically size memslot array based on number of used slots
-  KVM: selftests: Add test for KVM_SET_USER_MEMORY_REGION
-
- arch/mips/include/asm/kvm_host.h              |   2 +-
- arch/mips/kvm/mips.c                          |  71 +-
- arch/powerpc/include/asm/kvm_ppc.h            |  17 +-
- arch/powerpc/kvm/book3s.c                     |  22 +-
- arch/powerpc/kvm/book3s_hv.c                  |  36 +-
- arch/powerpc/kvm/book3s_pr.c                  |  20 +-
- arch/powerpc/kvm/booke.c                      |  17 +-
- arch/powerpc/kvm/powerpc.c                    |  15 +-
- arch/s390/include/asm/kvm_host.h              |   2 +-
- arch/s390/kvm/kvm-s390.c                      |  23 +-
- arch/x86/include/asm/kvm_page_track.h         |   3 +-
- arch/x86/kvm/mmu/page_track.c                 |  15 +-
- arch/x86/kvm/x86.c                            | 114 +---
- include/linux/kvm_host.h                      |  48 +-
- tools/testing/selftests/kvm/.gitignore        |   1 +
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../testing/selftests/kvm/include/kvm_util.h  |   1 +
- tools/testing/selftests/kvm/lib/kvm_util.c    |  30 +
- .../kvm/x86_64/set_memory_region_test.c       | 142 ++++
- virt/kvm/arm/arm.c                            |  48 +-
- virt/kvm/arm/mmu.c                            |  20 +-
- virt/kvm/kvm_main.c                           | 621 ++++++++++++------
- 22 files changed, 734 insertions(+), 535 deletions(-)
- create mode 100644 tools/testing/selftests/kvm/x86_64/set_memory_region_test.c
-
--- 
-2.24.1
-
+> diff --git a/arch/powerpc/kvm/e500.c b/arch/powerpc/kvm/e500.c
+> index 96d9cde3d2e3..f5dd2c7adcd4 100644
+> --- a/arch/powerpc/kvm/e500.c
+> +++ b/arch/powerpc/kvm/e500.c
+> @@ -461,7 +461,7 @@ static int kvmppc_core_vcpu_create_e500(struct kvm *kvm, struct kvm_vcpu *vcpu,
+>  		goto uninit_tlb;
+>  	}
+>  
+> -	return vcpu;
+> +	return 0;
+>  
+>  uninit_tlb:
+>  	kvmppc_e500_tlb_uninit(vcpu_e500);
+> diff --git a/arch/powerpc/kvm/e500mc.c b/arch/powerpc/kvm/e500mc.c
+> index aea588f73bf7..7c0d392f667a 100644
+> --- a/arch/powerpc/kvm/e500mc.c
+> +++ b/arch/powerpc/kvm/e500mc.c
+> @@ -327,7 +327,7 @@ static int kvmppc_core_vcpu_create_e500mc(struct kvm *kvm, struct kvm_vcpu *vcpu
+>  		goto uninit_tlb;
+>  	}
+>  
+> -	return vcpu;
+> +	return 0;
+>  
+>  uninit_tlb:
+>  	kvmppc_e500_tlb_uninit(vcpu_e500);
+> 
+> 

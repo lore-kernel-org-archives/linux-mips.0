@@ -2,65 +2,47 @@ Return-Path: <SRS0=q6Rq=3N=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3F92C2D0DB
-	for <linux-mips@archiver.kernel.org>; Fri, 24 Jan 2020 11:37:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E6B2C35242
+	for <linux-mips@archiver.kernel.org>; Fri, 24 Jan 2020 12:06:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9A822206D4
-	for <linux-mips@archiver.kernel.org>; Fri, 24 Jan 2020 11:37:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1579865870;
-	bh=IMvMgTvmXA/X0cRlwO7yY8WTvXjfr41rRPJBUM6+wz8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=iRAQuwQxyyc/4lX47BvSO0jidYK8obA2sGLqqTKdRwHSVIl44Muw4tBj4WeWg6Zba
-	 qYXfWXJCcDJ/wpAKn5QILtOEKa2pca1DosfgrXvF8F4LkIKoxkYtH9yJcpj9/sijke
-	 nxxqSasQIuXwMdodlRntzNUXuiDfci4GNNeOfuPU=
+	by mail.kernel.org (Postfix) with ESMTP id 3FE3820708
+	for <linux-mips@archiver.kernel.org>; Fri, 24 Jan 2020 12:06:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404008AbgAXLag (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 24 Jan 2020 06:30:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391679AbgAXLag (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 24 Jan 2020 06:30:36 -0500
-Received: from localhost (ip-213-127-102-57.ip.prioritytelecom.net [213.127.102.57])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2577C24658;
-        Fri, 24 Jan 2020 11:30:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579865434;
-        bh=IMvMgTvmXA/X0cRlwO7yY8WTvXjfr41rRPJBUM6+wz8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u3Q/+hsIzvWbyFP4yFTW6dATfNgOKQvIoGxXca5TdOle40LvJSH5S1MnPWSGcCsqS
-         aJuf1xWG8Rl4yafRRJ/PSV2DDdfmQMP2yhBQsiw0dCt71cDuuFrd2TsZr2KXd1JVn3
-         0ySjcSBOw+oVVbuqzzRPxfVqDdQkMxGhpVjpg/sw=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Eli Friedman <efriedma@quicinc.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Paul Burton <paul.burton@mips.com>, ralf@linux-mips.org,
-        jhogan@kernel.org, "Maciej W. Rozycki" <macro@linux-mips.org>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Stephen Kitt <steve@sk2.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, linux-mips@vger.kernel.org,
-        clang-built-linux@googlegroups.com, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 522/639] mips: avoid explicit UB in assignment of mips_io_port_base
-Date:   Fri, 24 Jan 2020 10:31:32 +0100
-Message-Id: <20200124093154.161499157@linuxfoundation.org>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200124093047.008739095@linuxfoundation.org>
-References: <20200124093047.008739095@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2387470AbgAXMGE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 24 Jan 2020 07:06:04 -0500
+Received: from out28-217.mail.aliyun.com ([115.124.28.217]:50330 "EHLO
+        out28-217.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729567AbgAXMGE (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 24 Jan 2020 07:06:04 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1010919|-1;CH=green;DM=CONTINUE|CONTINUE|true|0.50185-0.101517-0.396633;DS=CONTINUE|ham_system_inform|0.0726819-0.000407953-0.92691;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03312;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=30;RT=30;SR=0;TI=SMTPD_---.Gh-0wLC_1579867533;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Gh-0wLC_1579867533)
+          by smtp.aliyun-inc.com(10.147.40.2);
+          Fri, 24 Jan 2020 20:05:57 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     linux-mips@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, paul.burton@mips.com, paulburton@kernel.org,
+        jhogan@kernel.org, tglx@linutronix.de, daniel.lezcano@linaro.org,
+        shawnguo@kernel.org, mark.rutland@arm.com, syq@debian.org,
+        ralf@linux-mips.org, miquel.raynal@bootlin.com,
+        keescook@chromium.org, ebiederm@xmission.com, krzk@kernel.org,
+        geert+renesas@glider.be, paul@crapouillou.net,
+        prasannatsmkumar@gmail.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com, mturquette@baylibre.com, sboyd@kernel.org,
+        chenhc@lemote.com, jiaxun.yang@flygoat.com, paul@boddie.org.uk,
+        hns@goldelico.com, mips-creator-ci20-dev@googlegroups.com,
+        rick.tyliu@ingenic.com
+Subject: [PATCH v3 0/6] Introduce SMP support for JZ4780.
+Date:   Fri, 24 Jan 2020 20:05:02 +0800
+Message-Id: <1579867508-81499-2-git-send-email-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1579867508-81499-1-git-send-email-zhouyanjie@wanyeetech.com>
+References: <1579867508-81499-1-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -69,103 +51,43 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+Introduce SMP support for MIPS Creator CI20, which is
+based on Ingenic JZ4780 SoC.
 
-[ Upstream commit 12051b318bc3ce5b42d6d786191008284b067d83 ]
+Happy Chinese New Year! 
 
-The code in question is modifying a variable declared const through
-pointer manipulation.  Such code is explicitly undefined behavior, and
-is the lone issue preventing malta_defconfig from booting when built
-with Clang:
+周琰杰 (Zhou Yanjie) (6):
+  MIPS: JZ4780: Introduce SMP support.
+  clocksource: Ingenic: Add high resolution timer support for SMP.
+  dt-bindings: MIPS: Document Ingenic SoCs binding.
+  MIPS: Ingenic: Add 'cpus' node for Ingenic SoCs.
+  MIPS: CI20: Modify DTS to support high resolution timer for SMP.
+  MIPS: CI20: Update defconfig to support SMP.
 
-If an attempt is made to modify an object defined with a const-qualified
-type through use of an lvalue with non-const-qualified type, the
-behavior is undefined.
+ .../bindings/mips/ingenic/ingenic,cpu.yaml         |  53 ++++
+ .../bindings/mips/ingenic/ingenic,soc,yaml         |  35 +++
+ arch/mips/boot/dts/ingenic/ci20.dts                |  11 +-
+ arch/mips/boot/dts/ingenic/jz4740.dtsi             |  14 +
+ arch/mips/boot/dts/ingenic/jz4770.dtsi             |  15 +-
+ arch/mips/boot/dts/ingenic/jz4780.dtsi             |  23 ++
+ arch/mips/boot/dts/ingenic/x1000.dtsi              |  14 +
+ arch/mips/configs/ci20_defconfig                   |   2 +
+ arch/mips/include/asm/mach-jz4740/jz4780-smp.h     |  91 +++++++
+ arch/mips/jz4740/Kconfig                           |   3 +
+ arch/mips/jz4740/Makefile                          |   5 +
+ arch/mips/jz4740/prom.c                            |   4 +
+ arch/mips/jz4740/smp-entry.S                       |  57 ++++
+ arch/mips/jz4740/smp.c                             | 286 +++++++++++++++++++++
+ arch/mips/kernel/idle.c                            |  14 +-
+ drivers/clk/ingenic/jz4780-cgu.c                   |  58 ++++-
+ drivers/clocksource/ingenic-timer.c                | 201 ++++++++++-----
+ 17 files changed, 811 insertions(+), 75 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.yaml
+ create mode 100644 Documentation/devicetree/bindings/mips/ingenic/ingenic,soc,yaml
+ create mode 100644 arch/mips/include/asm/mach-jz4740/jz4780-smp.h
+ create mode 100644 arch/mips/jz4740/smp-entry.S
+ create mode 100644 arch/mips/jz4740/smp.c
 
-LLVM is removing such assignments. A simple fix is to not declare
-variables const that you plan on modifying.  Limiting the scope would be
-a better method of preventing unwanted writes to such a variable.
-
-Further, the code in question mentions "compiler bugs" without any links
-to bug reports, so it is difficult to know if the issue is resolved in
-GCC. The patch was authored in 2006, which would have been GCC 4.0.3 or
-4.1.1. The minimal supported version of GCC in the Linux kernel is
-currently 4.6.
-
-For what its worth, there was UB before the commit in question, it just
-added a barrier and got lucky IRT codegen. I don't think there's any
-actual compiler bugs related, just runtime bugs due to UB.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/610
-Fixes: 966f4406d903 ("[MIPS] Work around bad code generation for <asm/io.h>.")
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Debugged-by: Nathan Chancellor <natechancellor@gmail.com>
-Suggested-by: Eli Friedman <efriedma@quicinc.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Paul Burton <paul.burton@mips.com>
-Cc: ralf@linux-mips.org
-Cc: jhogan@kernel.org
-Cc: Maciej W. Rozycki <macro@linux-mips.org>
-Cc: Hassan Naveed <hnaveed@wavecomp.com>
-Cc: Stephen Kitt <steve@sk2.org>
-Cc: Serge Semin <fancer.lancer@gmail.com>
-Cc: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: clang-built-linux@googlegroups.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/mips/include/asm/io.h | 14 ++------------
- arch/mips/kernel/setup.c   |  2 +-
- 2 files changed, 3 insertions(+), 13 deletions(-)
-
-diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-index 54c730aed3271..df1eaa3652794 100644
---- a/arch/mips/include/asm/io.h
-+++ b/arch/mips/include/asm/io.h
-@@ -62,21 +62,11 @@
-  * instruction, so the lower 16 bits must be zero.  Should be true on
-  * on any sane architecture; generic code does not use this assumption.
-  */
--extern const unsigned long mips_io_port_base;
-+extern unsigned long mips_io_port_base;
- 
--/*
-- * Gcc will generate code to load the value of mips_io_port_base after each
-- * function call which may be fairly wasteful in some cases.  So we don't
-- * play quite by the book.  We tell gcc mips_io_port_base is a long variable
-- * which solves the code generation issue.  Now we need to violate the
-- * aliasing rules a little to make initialization possible and finally we
-- * will need the barrier() to fight side effects of the aliasing chat.
-- * This trickery will eventually collapse under gcc's optimizer.  Oh well.
-- */
- static inline void set_io_port_base(unsigned long base)
- {
--	* (unsigned long *) &mips_io_port_base = base;
--	barrier();
-+	mips_io_port_base = base;
- }
- 
- /*
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 8aaaa42f91ed6..e87c98b8a72c0 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -76,7 +76,7 @@ static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
-  * mips_io_port_base is the begin of the address space to which x86 style
-  * I/O ports are mapped.
-  */
--const unsigned long mips_io_port_base = -1;
-+unsigned long mips_io_port_base = -1;
- EXPORT_SYMBOL(mips_io_port_base);
- 
- static struct resource code_resource = { .name = "Kernel code", };
 -- 
-2.20.1
-
-
+2.7.4
 

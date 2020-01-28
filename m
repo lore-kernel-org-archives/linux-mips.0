@@ -2,66 +2,40 @@ Return-Path: <SRS0=mg9h=3R=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 089ABC3F68F
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Jan 2020 07:13:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 608C0C33CB2
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Jan 2020 11:58:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id CD30724684
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Jan 2020 07:12:59 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lca.pw header.i=@lca.pw header.b="RmoEayVY"
+	by mail.kernel.org (Postfix) with ESMTP id 3699F2468C
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Jan 2020 11:58:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1580212700;
+	bh=8RCnYntLRumJXkxzL083Nr34DOd28mEmVE/NIbRTmqQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=qZok/owlP0caNr34YkMkUoLuu+7qd0H7ZKwG8DgL7UyaegjoT2in5c/wfpb2ofNRG
+	 VRkAgk66UO2D6W3joiYi1rSv5NLv2AwObFZlKj3IBhkJE3yWNI58C4mVuE8hyZVnlD
+	 j/7NsCU5BRsuGf0KBUv7KouZD40z6fJSV3PbSVl8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725852AbgA1HM7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 28 Jan 2020 02:12:59 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:34262 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbgA1HM7 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 28 Jan 2020 02:12:59 -0500
-Received: by mail-qt1-f194.google.com with SMTP id h12so9525989qtu.1
-        for <linux-mips@vger.kernel.org>; Mon, 27 Jan 2020 23:12:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=qKA4UjioXFc27zR8c2yU7DKOhu3nMjpZIq48GcXCB6g=;
-        b=RmoEayVYUYqFJblJjIh2uN7kKQmME+y9qMPPUAS2F75g/qPxCehTcmMRH2ge8tD4CC
-         GQDWfmy38oVlt13IpEPzfTJGsLQXsq1gDyu3NoJNll2CaNkYdTxXz7pUJN2PlgBCQkzr
-         ixOQcgD/jWefyEStVZYEzc+BSTXwnZwklPhwdX/B6Cbrc4l/QVK10xPmQO0Qt6VvxdQT
-         ziJY9PgEd6H2+XCfOzRdETkAmZErEBWCkltXcleoXo/oHCehLwvLLErnxEW4xJx6a/0a
-         igVVZvv1THX9+TtCIsBpUqBjFmoq8tgeHQDzVMftknmCDfuDqnXoun4BF19nE9j/tt4x
-         rjaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=qKA4UjioXFc27zR8c2yU7DKOhu3nMjpZIq48GcXCB6g=;
-        b=l4l8gVrg2QxZpYg78LXSBbc2yZxlGUV2peAA+HSUFIFWJ/wqmYjJCuDklzrhGtx5dl
-         1S6I2LSOeYweIAtI4ctN6yhjBHIvev4+Su1aqhOE/Qef+yhs/TdRSL8Ux3IBubzsNGpf
-         CEFLYllOP19vNaJWhKbRSAM8keuQwHFGJFw6/ap8R3RZKzXZhIFqmpkGFri02EmrK3po
-         EwuTINukX4G9ev5qckc9Lstm6Veac1a8rYwntzFXppR8g3t/xlIrfQD3oCJ5DWxlXh0+
-         GAabamycqM79cZcpTob/r3CyuPWW5YLh+4GItvTwB2+6ULBEI0jbgXrtH0C7vxdRhgej
-         UZQQ==
-X-Gm-Message-State: APjAAAXeDDmAWC9c1v0Wx12wNj43/J5cYKK7wHATVFlHdn0rO5YC5bkr
-        HWtj4dRdvNY1zSKRg0Qy5gsy6A==
-X-Google-Smtp-Source: APXvYqxXDFn+55Cbaf2UqBVqTFuREFEorSGuAtTGsaQy+PPAoTQF0xb8VLQhlT+h7JaiQcuNWDyViw==
-X-Received: by 2002:aed:3109:: with SMTP id 9mr20529841qtg.166.1580195577905;
-        Mon, 27 Jan 2020 23:12:57 -0800 (PST)
-Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id z8sm11967722qth.16.2020.01.27.23.12.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Jan 2020 23:12:57 -0800 (PST)
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-From:   Qian Cai <cai@lca.pw>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH V12] mm/debug: Add tests validating architecture page table helpers
-Date:   Tue, 28 Jan 2020 02:12:56 -0500
-Message-Id: <144F3894-7934-4EC7-A9F9-C6A84CA08C65@lca.pw>
-References: <a7ba6d8a-6443-5994-6a34-2824aa9b054b@c-s.fr>
-Cc:     Anshuman Khandual <Anshuman.Khandual@arm.com>,
+        id S1725959AbgA1L6T (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 28 Jan 2020 06:58:19 -0500
+Received: from foss.arm.com ([217.140.110.172]:55802 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725903AbgA1L6T (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 28 Jan 2020 06:58:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5AC31101E;
+        Tue, 28 Jan 2020 03:58:18 -0800 (PST)
+Received: from localhost (unknown [10.37.6.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D65B03F52E;
+        Tue, 28 Jan 2020 03:58:17 -0800 (PST)
+Date:   Tue, 28 Jan 2020 11:58:16 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
+        Anshuman Khandual <Anshuman.Khandual@arm.com>,
         Linux-MM <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Vlastimil Babka <vbabka@suse.cz>,
@@ -73,7 +47,6 @@ Cc:     Anshuman Khandual <Anshuman.Khandual@arm.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Michal Hocko <mhocko@kernel.org>,
         Mark Rutland <Mark.Rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
         Steven Price <Steven.Price@arm.com>,
         Ard Biesheuvel <ard.biesheuvel@linaro.org>,
         Masahiro Yamada <yamada.masahiro@socionext.com>,
@@ -100,23 +73,62 @@ Cc:     Anshuman Khandual <Anshuman.Khandual@arm.com>,
         linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <a7ba6d8a-6443-5994-6a34-2824aa9b054b@c-s.fr>
-To:     Christophe Leroy <christophe.leroy@c-s.fr>
-X-Mailer: iPhone Mail (17C54)
+Subject: Re: [PATCH V12] mm/debug: Add tests validating architecture page
+ table helpers
+Message-ID: <20200128115816.GA4689@sirena.org.uk>
+References: <a7ba6d8a-6443-5994-6a34-2824aa9b054b@c-s.fr>
+ <144F3894-7934-4EC7-A9F9-C6A84CA08C65@lca.pw>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5mCyUwZo2JvN/JJP"
+Content-Disposition: inline
+In-Reply-To: <144F3894-7934-4EC7-A9F9-C6A84CA08C65@lca.pw>
+X-Cookie: Doing gets it done.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 
+--5mCyUwZo2JvN/JJP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> On Jan 28, 2020, at 1:13 AM, Christophe Leroy <christophe.leroy@c-s.fr> wr=
-ote:
->=20
-> ppc32 an indecent / legacy platform ? Are you kidying ?
->=20
-> Powerquicc II PRO for instance is fully supported by the manufacturer and w=
-idely used in many small networking devices.
+On Tue, Jan 28, 2020 at 02:12:56AM -0500, Qian Cai wrote:
+> > On Jan 28, 2020, at 1:13 AM, Christophe Leroy <christophe.leroy@c-s.fr> wrote:
 
-Of course I forgot about embedded devices. The problem is that how many deve=
-lopers are actually going to run this debug option on embedded devices?=
+> > ppc32 an indecent / legacy platform ? Are you kidying ?
+
+> > Powerquicc II PRO for instance is fully supported by the
+> > manufacturer and widely used in many small networking devices.
+
+> Of course I forgot about embedded devices. The problem is that how
+> many developers are actually going to run this debug option on
+> embedded devices?
+
+Much fewer if the code isn't upstream than if it is.  This isn't
+something that every developer is going to enable all the time but that
+doesn't mean it's not useful, it's more for people doing work on the
+architectures or on memory management (or who suspect they're running
+into a relevant problem), and I'm sure some of the automated testing
+people will enable it.  The more barriers there are in place to getting
+the testsuite up and running the less likely it is that any of these
+groups will run it regularly.
+
+--5mCyUwZo2JvN/JJP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl4wIdcACgkQJNaLcl1U
+h9Dslgf+KrZOvdjyO1AcLfLIlE2wA+hRmygG3Gh1YQ9wI6n+03XnA4v7f+7zZaQd
+9nylNBzkErkupokycsWYhTEFN7o/tfjVGWte16XdQ1QHQE7npjULPGC5NcVVPfyc
+qwaW2i5J5TeAuYArz3YCqLvUY6IAJefbxhZbLXTTBnwINIazuBDiAUzsAd/Uy27Y
+x0YHtX4gXucyNEepoozxS07544hKbMvjTO0tt7P8egTTGwNHz+Uz6sMfUA/Muri7
+hIJbxM03+cRn9ZKlTca/PzsXJN87ZLvWwcB0TGz+xI3Bjx2D2Q7Dn+OROr2O8e0z
+WXNLV2W9WAaBOwArY4IHdeORokpCzg==
+=j0+e
+-----END PGP SIGNATURE-----
+
+--5mCyUwZo2JvN/JJP--

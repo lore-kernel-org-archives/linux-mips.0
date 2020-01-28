@@ -2,122 +2,103 @@ Return-Path: <SRS0=mg9h=3R=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C2D1C2D0DB
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Jan 2020 12:30:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0134BC2D0DB
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Jan 2020 14:34:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4EE1324687
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Jan 2020 12:30:17 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=lca.pw header.i=@lca.pw header.b="Rbz1P8X1"
+	by mail.kernel.org (Postfix) with ESMTP id BE67320716
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Jan 2020 14:34:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1580222082;
+	bh=Ie4jcGFAb0xxjgmm9qal0iuc6BSGnHMiGldwTz30QUM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=vhYfLz5pZ0naoGfgElXFC7xW1UGrCs2Fr4Ssyk1AqcA1JiMvZbsYqN8vvnZzXbhly
+	 lTKY8Rf1xMRgwqbF44dESfw1nOWisSY2URy+acLXHcf0D2Eh2Tx0FMRgPh2dGBYUD+
+	 7+aEA3IKkPDfB5KGpRYjQKKjHIFWlqz5/KrNKFwc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726059AbgA1MaQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 28 Jan 2020 07:30:16 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:34246 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbgA1MaQ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 28 Jan 2020 07:30:16 -0500
-Received: by mail-qk1-f195.google.com with SMTP id d10so13134294qke.1
-        for <linux-mips@vger.kernel.org>; Tue, 28 Jan 2020 04:30:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=content-transfer-encoding:from:mime-version:date:subject:message-id
-         :cc:to;
-        bh=8GwDVchQDE0RRDd6Z1x4gzFv6pXtLF378PeW6dBbf+w=;
-        b=Rbz1P8X1bfckF8p5+fQPfltDNpYpc5sp5fHqq9u1T5/uhK6rRW78SfwJEw2v28znfV
-         wPfmUeOnrz7CBbeIgQixtLq2TPQmdgtO1vVi6z9urV65HN1x4ZK0nWUORD8codoMVkS8
-         rPApC12IYdkgP3grHEjFihd/Jh4OgeLy2QqFihiQOoNERJPGlH4ggjAY8evnQXoqrTaN
-         KqoP6/pkU7BjH0xE18gbhqENWpt3g5gz/4WQxHhB9FaTgVokGRGk0m2PJgFNbLse/V1Q
-         DUm5C86KbFXNmme7COzfebOm4aubFGvujqheNY2AxjxXyz7y4nv8h1Ou8ChS1lBEdbUk
-         SJNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version:date
-         :subject:message-id:cc:to;
-        bh=8GwDVchQDE0RRDd6Z1x4gzFv6pXtLF378PeW6dBbf+w=;
-        b=otlvORtXklCwoCVQAGDM7Xlb91VU+Vg5ErgfQiWYhBXWubtOV/caR1LErPugu2RU3a
-         IfEjVtnyxKv0/MH3u6BBW+pWd7YzY6yNFCYZD/O4PUNQn7Jni8e+9O8caGYp7gp/iDzT
-         hStR813/7KCxiesHhFii+cYJZr8DMSVSJYV5TQXOcNVk8CQ12HrbhMNTMdOlvDA4iR9U
-         sWWMC6VOHLZEw4qJGXH2XK2ZV8roYXjZmG+fWYxAZp4/ITtiDgQKrOOEu3RBOY59iQDV
-         la2Wf9Z3ZJhPXpSojVthUOBJI69FZCCJ+ZZ8D00opJaDB9ley+rdwHPcfPf4P+4eSOzQ
-         paPw==
-X-Gm-Message-State: APjAAAU6qdwraAub4gYD3U57TK8f+5H63RIbzNfJLNMzv8SkT7Rq0cDD
-        ValA4bNfKA3sMKtnslH2vEoV+g==
-X-Google-Smtp-Source: APXvYqw4NHHH616JlS/IrWEyv4wSaDB7EoG4ap5GXk6Z++ZZIlsdVUcHztpJPWJHmyylARL29R+hpQ==
-X-Received: by 2002:a37:9ce:: with SMTP id 197mr22314564qkj.194.1580214614838;
-        Tue, 28 Jan 2020 04:30:14 -0800 (PST)
-Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id 69sm11862264qkk.106.2020.01.28.04.30.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jan 2020 04:30:14 -0800 (PST)
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-From:   Qian Cai <cai@lca.pw>
-Mime-Version: 1.0 (1.0)
-Date:   Tue, 28 Jan 2020 07:30:13 -0500
-Subject: Re: [PATCH V12] mm/debug: Add tests validating architecture page table helpers
-Message-Id: <0C97A195-CBF2-43EF-88A0-7683BB9EF892@lca.pw>
-Cc:     Anshuman Khandual <Anshuman.Khandual@arm.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Steven Price <Steven.Price@arm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Kees Cook <keescook@chromium.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Matthew Wilcox <willy@infradead.org>,
-        Sri Krishna chowdary <schowdary@nvidia.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        James Hogan <jhogan@kernel.org>,
-        Paul Burton <paul.burton@mips.com>,
+        id S1732440AbgA1OYB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 28 Jan 2020 09:24:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731386AbgA1OYB (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 28 Jan 2020 09:24:01 -0500
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D990E24686;
+        Tue, 28 Jan 2020 14:23:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1580221440;
+        bh=Ie4jcGFAb0xxjgmm9qal0iuc6BSGnHMiGldwTz30QUM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JYvEfdUXfcE88uiC8X4L12bIf/frKimzF2WnrpGR5nUEASEW9fmFT08I6i7is3qRe
+         4UlbymjVxJfkwQWspjDVc4waWN7rkbcBfpf1wcn9HRYL1CINVV5CoVX3xlFxcHFea8
+         KPLA6HEk8J9Y8FGt7wEmVZm2mqZY+DQy0itPcL2Y=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Paul Burton <paulburton@kernel.org>,
         Ralf Baechle <ralf@linux-mips.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-To:     Mike Rapoport <rppt@linux.ibm.com>
-X-Mailer: iPhone Mail (17C54)
+        James Hogan <jhogan@kernel.org>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 224/271] MIPS: Loongson: Fix return value of loongson_hwmon_init
+Date:   Tue, 28 Jan 2020 15:06:13 +0100
+Message-Id: <20200128135909.231827436@linuxfoundation.org>
+X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200128135852.449088278@linuxfoundation.org>
+References: <20200128135852.449088278@linuxfoundation.org>
+User-Agent: quilt/0.66
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+
+[ Upstream commit dece3c2a320b0a6d891da6ff774ab763969b6860 ]
+
+When call function hwmon_device_register failed, use the actual
+return value instead of always -ENOMEM.
+
+Fixes: 64f09aa967e1 ("MIPS: Loongson-3: Add CPU Hwmon platform driver")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Paul Burton <paulburton@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <jhogan@kernel.org>
+Cc: Huacai Chen <chenhc@lemote.com>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/platform/mips/cpu_hwmon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/platform/mips/cpu_hwmon.c b/drivers/platform/mips/cpu_hwmon.c
+index 4300a558d0f39..d02214a3f8e3f 100644
+--- a/drivers/platform/mips/cpu_hwmon.c
++++ b/drivers/platform/mips/cpu_hwmon.c
+@@ -155,7 +155,7 @@ static int __init loongson_hwmon_init(void)
+ 
+ 	cpu_hwmon_dev = hwmon_device_register(NULL);
+ 	if (IS_ERR(cpu_hwmon_dev)) {
+-		ret = -ENOMEM;
++		ret = PTR_ERR(cpu_hwmon_dev);
+ 		pr_err("hwmon_device_register fail!\n");
+ 		goto fail_hwmon_device_register;
+ 	}
+-- 
+2.20.1
 
 
-> On Jan 28, 2020, at 7:10 AM, Mike Rapoport <rppt@linux.ibm.com> wrote:
->=20
-> Aren't x86 and arm64 not decent enough?
-> Even if this test could be used to detect regressions only on these two
-> platforms, the test is valuable.
 
-The question is does it detect regressions good enough? Where is the list of=
- past bugs that it had found?
-
-It is an usual deal for unproven debugging features remain out of tree first=
- and keep gathering unique bugs it found and then justify for a mainline inc=
-lusion with enough data.=

@@ -2,170 +2,127 @@ Return-Path: <SRS0=mg9h=3R=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B28CBC33CB2
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Jan 2020 14:43:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3428C2D0DB
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Jan 2020 16:59:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 884A2207FD
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Jan 2020 14:43:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1580222582;
-	bh=bQ7Ch7w2vy4MOIB1WFMg92oKjuy8tP+9iUlBmjabkBE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=wjD2rpcYcdqCmTTqIr1FkLTvqMkpHIkzeZmAS66oynF/4ph1POR983szL+kOzDa79
-	 jmpSrjH8Zjgi+4J7BmnSHz9VEn9yHZ6eWDQNV7Dc8SD4E/9l+WnvuF9m3DWDHzmPJt
-	 kdbh891TXT5YN9/sCNzeeGhEzD7ZgYDtEAE9kThw=
+	by mail.kernel.org (Postfix) with ESMTP id 7733B24687
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Jan 2020 16:59:18 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gMv4HGCW"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729212AbgA1OMS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 28 Jan 2020 09:12:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727397AbgA1OMO (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 28 Jan 2020 09:12:14 -0500
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3305224685;
-        Tue, 28 Jan 2020 14:12:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580220733;
-        bh=bQ7Ch7w2vy4MOIB1WFMg92oKjuy8tP+9iUlBmjabkBE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cB7ACNL6yJeWog2gNufa3+2u0rTWF8vnYdDqj83Jg6sh30t2cEO7aLHKv0xIwu2gp
-         hEksI83hwcjrQPGYgAQlaCJFzpnoF8gA2sWAiiflDoImlNHAsdRecyGPJBob8Lr4Zk
-         0F76pdmQQBxMPbS+vhXK5xxKDFkVOAO2NYWoLF2k=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Eli Friedman <efriedma@quicinc.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Paul Burton <paul.burton@mips.com>, ralf@linux-mips.org,
-        jhogan@kernel.org, "Maciej W. Rozycki" <macro@linux-mips.org>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Stephen Kitt <steve@sk2.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, linux-mips@vger.kernel.org,
-        clang-built-linux@googlegroups.com, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 126/183] mips: avoid explicit UB in assignment of mips_io_port_base
-Date:   Tue, 28 Jan 2020 15:05:45 +0100
-Message-Id: <20200128135842.463604020@linuxfoundation.org>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200128135829.486060649@linuxfoundation.org>
-References: <20200128135829.486060649@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1726613AbgA1Q7S (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 28 Jan 2020 11:59:18 -0500
+Received: from mail-vs1-f68.google.com ([209.85.217.68]:45445 "EHLO
+        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725881AbgA1Q7R (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 28 Jan 2020 11:59:17 -0500
+Received: by mail-vs1-f68.google.com with SMTP id v141so4889801vsv.12
+        for <linux-mips@vger.kernel.org>; Tue, 28 Jan 2020 08:59:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1kp2/4gfvXmBxJbriEuhD88FxIhMu/4bGwo/Zmm5PKU=;
+        b=gMv4HGCWc9VWs5EKeYQSo1N5YZJjHcHm5rePnbNpI2VfXdzTRQeVopa5wPpcg0/et2
+         vJKJjtefINOeaW+sEA+VDaUVkxgPh5nCZs7q/9YWl1jAc7yFKmoqpiqKOvvSK+kpCEU8
+         GAkC4C5WPDb7EmZT5IUhnkUlSj7wT+Jv8ls90=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1kp2/4gfvXmBxJbriEuhD88FxIhMu/4bGwo/Zmm5PKU=;
+        b=Jp1z4DbXNgEOkNAxKgAoqYqtCeHmDr5m1erzh2hdx6+NY84hv6+QPdTE8RQmxMV6jz
+         CDPC+euOLPzPvmfuLC4BXA8yATusIio9cE/V2wmu25uglp30nPi1VTLMPLIQv1YJF6WM
+         /GyEiVWGfUGvT+ioDdIPod8Sjro5IfwImIPCEMs3LwJ6gN4a3uPNdUiJnJro/gkUXgnf
+         OK586l2a8OOVpRyShlXW0nUUuVUYH6Qlo9PVPQVRQi971WkgAKQ3GMZt70bTVySLEvi4
+         ajN1Q3AXFolA7q8GNnLTOtbUDQtXAAoWIjl4/kV0OeflHXyLbWlwLtPjIkU1A75Sdhk4
+         rw2Q==
+X-Gm-Message-State: APjAAAWgEYpOd2oZMliirJXF3UIcDUaidXVrVbj6Jrxhz3yIcl1xhvba
+        H2xivdKWx6o/677O6mEfh5oMK7JdJJI=
+X-Google-Smtp-Source: APXvYqy8IIGNCF7G8VVRHKtw6/yugw+NsexCJxB/5y6YrYfGGzfJayQOmtQ3M4+xauMt0RlezGAO3w==
+X-Received: by 2002:a67:f81a:: with SMTP id l26mr14071263vso.194.1580230756657;
+        Tue, 28 Jan 2020 08:59:16 -0800 (PST)
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com. [209.85.221.178])
+        by smtp.gmail.com with ESMTPSA id v68sm5480755vkf.20.2020.01.28.08.59.15
+        for <linux-mips@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Jan 2020 08:59:15 -0800 (PST)
+Received: by mail-vk1-f178.google.com with SMTP id y184so3827143vkc.11
+        for <linux-mips@vger.kernel.org>; Tue, 28 Jan 2020 08:59:15 -0800 (PST)
+X-Received: by 2002:a1f:c686:: with SMTP id w128mr13530554vkf.34.1580230755259;
+ Tue, 28 Jan 2020 08:59:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20191109191644.191766-1-dianders@chromium.org>
+In-Reply-To: <20191109191644.191766-1-dianders@chromium.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 28 Jan 2020 08:59:01 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WcjHMzRE0yHm4uRFYj=Zoxz_v1FgiZETOwjzMtkjJcfQ@mail.gmail.com>
+Message-ID: <CAD=FV=WcjHMzRE0yHm4uRFYj=Zoxz_v1FgiZETOwjzMtkjJcfQ@mail.gmail.com>
+Subject: Re: [PATCH 0/5] kdb: Don't implicitly change tasks; plus misc fixups
+To:     Paul Burton <paul.burton@mips.com>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     qiaochong <qiaochong@loongson.cn>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        Nicholas Mc Guire <hofrat@osadl.org>,
+        James Hogan <jhogan@kernel.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+Hi
 
-[ Upstream commit 12051b318bc3ce5b42d6d786191008284b067d83 ]
+On Sat, Nov 9, 2019 at 11:17 AM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> This started out as just a follow-up to Daniel's post [1].  I wanted
+> to stop implicitly changing the current task in kdb.  ...but, of
+> course, everywhere you look in kdb there are things to cleanup, so
+> this gets a few misc cleanups I found along the way.  Enjoy.
+>
+> [1] https://lore.kernel.org/r/20191010150735.dhrj3pbjgmjrdpwr@holly.lan
+>
+>
+> Douglas Anderson (5):
+>   MIPS: kdb: Remove old workaround for backtracing on other CPUs
+>   kdb: kdb_current_regs should be private
+>   kdb: kdb_current_task shouldn't be exported
+>   kdb: Gid rid of implicit setting of the current task / regs
+>   kdb: Get rid of confusing diag msg from "rd" if current task has no
+>     regs
+>
+>  arch/mips/kernel/traps.c       |  5 -----
+>  include/linux/kdb.h            |  2 --
+>  kernel/debug/kdb/kdb_bt.c      |  8 +-------
+>  kernel/debug/kdb/kdb_main.c    | 31 ++++++++++++++-----------------
+>  kernel/debug/kdb/kdb_private.h |  2 +-
+>  5 files changed, 16 insertions(+), 32 deletions(-)
 
-The code in question is modifying a variable declared const through
-pointer manipulation.  Such code is explicitly undefined behavior, and
-is the lone issue preventing malta_defconfig from booting when built
-with Clang:
+I noticed that this series doesn't seem to be in linux-next, but I
+think it was supposed to target v5.6?  Do you know if there is
+anything outstanding or if it'll be queued up sometime soon?
 
-If an attempt is made to modify an object defined with a const-qualified
-type through use of an lvalue with non-const-qualified type, the
-behavior is undefined.
-
-LLVM is removing such assignments. A simple fix is to not declare
-variables const that you plan on modifying.  Limiting the scope would be
-a better method of preventing unwanted writes to such a variable.
-
-Further, the code in question mentions "compiler bugs" without any links
-to bug reports, so it is difficult to know if the issue is resolved in
-GCC. The patch was authored in 2006, which would have been GCC 4.0.3 or
-4.1.1. The minimal supported version of GCC in the Linux kernel is
-currently 4.6.
-
-For what its worth, there was UB before the commit in question, it just
-added a barrier and got lucky IRT codegen. I don't think there's any
-actual compiler bugs related, just runtime bugs due to UB.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/610
-Fixes: 966f4406d903 ("[MIPS] Work around bad code generation for <asm/io.h>.")
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Debugged-by: Nathan Chancellor <natechancellor@gmail.com>
-Suggested-by: Eli Friedman <efriedma@quicinc.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Paul Burton <paul.burton@mips.com>
-Cc: ralf@linux-mips.org
-Cc: jhogan@kernel.org
-Cc: Maciej W. Rozycki <macro@linux-mips.org>
-Cc: Hassan Naveed <hnaveed@wavecomp.com>
-Cc: Stephen Kitt <steve@sk2.org>
-Cc: Serge Semin <fancer.lancer@gmail.com>
-Cc: Mike Rapoport <rppt@linux.ibm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: clang-built-linux@googlegroups.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/mips/include/asm/io.h | 14 ++------------
- arch/mips/kernel/setup.c   |  2 +-
- 2 files changed, 3 insertions(+), 13 deletions(-)
-
-diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-index ab1df19b09571..60604b26fa72c 100644
---- a/arch/mips/include/asm/io.h
-+++ b/arch/mips/include/asm/io.h
-@@ -60,21 +60,11 @@
-  * instruction, so the lower 16 bits must be zero.  Should be true on
-  * on any sane architecture; generic code does not use this assumption.
-  */
--extern const unsigned long mips_io_port_base;
-+extern unsigned long mips_io_port_base;
- 
--/*
-- * Gcc will generate code to load the value of mips_io_port_base after each
-- * function call which may be fairly wasteful in some cases.  So we don't
-- * play quite by the book.  We tell gcc mips_io_port_base is a long variable
-- * which solves the code generation issue.  Now we need to violate the
-- * aliasing rules a little to make initialization possible and finally we
-- * will need the barrier() to fight side effects of the aliasing chat.
-- * This trickery will eventually collapse under gcc's optimizer.  Oh well.
-- */
- static inline void set_io_port_base(unsigned long base)
- {
--	* (unsigned long *) &mips_io_port_base = base;
--	barrier();
-+	mips_io_port_base = base;
- }
- 
- /*
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 4f9f1ae492138..fadc946b306d2 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -80,7 +80,7 @@ static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
-  * mips_io_port_base is the begin of the address space to which x86 style
-  * I/O ports are mapped.
-  */
--const unsigned long mips_io_port_base = -1;
-+unsigned long mips_io_port_base = -1;
- EXPORT_SYMBOL(mips_io_port_base);
- 
- static struct resource code_resource = { .name = "Kernel code", };
--- 
-2.20.1
+Thanks!
 
 
-
+-Doug

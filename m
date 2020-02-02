@@ -2,132 +2,296 @@ Return-Path: <SRS0=GT1R=3W=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14232C33C9E
-	for <linux-mips@archiver.kernel.org>; Sun,  2 Feb 2020 02:38:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 310F3C35240
+	for <linux-mips@archiver.kernel.org>; Sun,  2 Feb 2020 07:18:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E99CA206D3
-	for <linux-mips@archiver.kernel.org>; Sun,  2 Feb 2020 02:38:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E63DD2080D
+	for <linux-mips@archiver.kernel.org>; Sun,  2 Feb 2020 07:18:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726971AbgBBCi0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 1 Feb 2020 21:38:26 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:40184 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726773AbgBBCiT (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 1 Feb 2020 21:38:19 -0500
-Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id DBC8229AEF; Sat,  1 Feb 2020 21:38:15 -0500 (EST)
-To:     Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        James Hogan <jhogan@kernel.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Bartlomiej Zolnierkiewicz" <b.zolnierkie@samsung.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Message-Id: <d8f19ebc00a7688da739d41d584d081d1559f0d2.1580610812.git.fthain@telegraphics.com.au>
-In-Reply-To: <cover.1580610812.git.fthain@telegraphics.com.au>
-References: <cover.1580610812.git.fthain@telegraphics.com.au>
-From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH 1/3] fbdev/g364fb: Fix build failure
-Date:   Sun, 02 Feb 2020 13:33:32 +1100
+        id S1726550AbgBBHSy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 2 Feb 2020 02:18:54 -0500
+Received: from foss.arm.com ([217.140.110.172]:44992 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726501AbgBBHSy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 2 Feb 2020 02:18:54 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E295FEC;
+        Sat,  1 Feb 2020 23:18:52 -0800 (PST)
+Received: from [10.163.1.42] (unknown [10.163.1.42])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 901DF3F68E;
+        Sat,  1 Feb 2020 23:22:10 -0800 (PST)
+Subject: Re: [PATCH V12] mm/debug: Add tests validating architecture page
+ table helpers
+To:     Christophe Leroy <christophe.leroy@c-s.fr>, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Steven Price <Steven.Price@arm.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Kees Cook <keescook@chromium.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Matthew Wilcox <willy@infradead.org>,
+        Sri Krishna chowdary <schowdary@nvidia.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        James Hogan <jhogan@kernel.org>,
+        Paul Burton <paul.burton@mips.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <1580174873-18117-1-git-send-email-anshuman.khandual@arm.com>
+ <68ed6488-aa25-ab41-8da6-f0ddeb15d52b@c-s.fr>
+ <49754f74-53a7-0e4a-bb16-53617f8c902c@arm.com>
+ <473d8198-3ac4-af3b-e2ec-c0698a3565d3@c-s.fr>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <ad5ad414-3524-2efa-df16-1ee357e6e2e4@arm.com>
+Date:   Sun, 2 Feb 2020 12:48:29 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <473d8198-3ac4-af3b-e2ec-c0698a3565d3@c-s.fr>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This patch resolves these compiler errors and warnings --
+On 01/30/2020 07:43 PM, Christophe Leroy wrote:
+> 
+> 
+> Le 30/01/2020 à 14:04, Anshuman Khandual a écrit :
+>>
+>> On 01/28/2020 10:35 PM, Christophe Leroy wrote:
+>>>
+>>>
+>>> Le 28/01/2020 à 02:27, Anshuman Khandual a écrit :
+>>>> diff --git a/arch/x86/include/asm/pgtable_64.h b/arch/x86/include/asm/pgtable_64.h
+>>>> index 0b6c4042942a..fb0e76d254b3 100644
+>>>> --- a/arch/x86/include/asm/pgtable_64.h
+>>>> +++ b/arch/x86/include/asm/pgtable_64.h
+>>>> @@ -53,6 +53,12 @@ static inline void sync_initial_page_table(void) { }
+>>>>      struct mm_struct;
+>>>>    +#define mm_p4d_folded mm_p4d_folded
+>>>> +static inline bool mm_p4d_folded(struct mm_struct *mm)
+>>>> +{
+>>>> +    return !pgtable_l5_enabled();
+>>>> +}
+>>>> +
+>>>
+>>> For me this should be part of another patch, it is not directly linked to the tests.
+>>
+>> We did discuss about this earlier and Kirril mentioned its not worth
+>> a separate patch.
+>>
+>> https://lore.kernel.org/linux-arm-kernel/20190913091305.rkds4f3fqv3yjhjy@box/
+> 
+> For me it would make sense to not mix this patch which implement tests, and changes that are needed for the test to work (or even build) on the different architectures.
+> 
+> But that's up to you.
+> 
+>>
+>>>
+>>>>    void set_pte_vaddr_p4d(p4d_t *p4d_page, unsigned long vaddr, pte_t new_pte);
+>>>>    void set_pte_vaddr_pud(pud_t *pud_page, unsigned long vaddr, pte_t new_pte);
+>>>>    diff --git a/include/asm-generic/pgtable.h b/include/asm-generic/pgtable.h
+>>>> index 798ea36a0549..e0b04787e789 100644
+>>>> --- a/include/asm-generic/pgtable.h
+>>>> +++ b/include/asm-generic/pgtable.h
+>>>> @@ -1208,6 +1208,12 @@ static inline bool arch_has_pfn_modify_check(void)
+>>>>    # define PAGE_KERNEL_EXEC PAGE_KERNEL
+>>>>    #endif
+>>>>    +#ifdef CONFIG_DEBUG_VM_PGTABLE
+>>>
+>>> Not sure it is a good idea to put that in include/asm-generic/pgtable.h
+>>
+>> Logically that is the right place, as it is related to page table but
+>> not something platform related.
+> 
+> I can't see any debug related features in that file.
+> 
+>>
+>>>
+>>> By doing this you are forcing a rebuild of almost all files, whereas only init/main.o and mm/debug_vm_pgtable.o should be rebuilt when activating this config option.
+>>
+>> I agreed but whats the alternative ? We could move these into init/main.c
+>> to make things simpler but will that be a right place, given its related
+>> to generic page table.
+> 
+> What about linux/mmdebug.h instead ? (I have not checked if it would reduce the impact, but that's where things related to CONFIG_DEBUG_VM seems to be).
+> 
+> Otherwise, you can just create new file, for instance <linux/mmdebug-pgtable.h> and include that file only in the init/main.c and mm/debug_vm_pgtable.c
 
-  CC      drivers/video/fbdev/g364fb.o
-drivers/video/fbdev/g364fb.c: In function 'g364fb_cursor':
-drivers/video/fbdev/g364fb.c:137:9: error: 'x' undeclared (first use in this function)
-drivers/video/fbdev/g364fb.c:137:9: note: each undeclared identifier is reported only once for each function it appears in
-drivers/video/fbdev/g364fb.c:137:7: error: implicit declaration of function 'fontwidth' [-Werror=implicit-function-declaration]
-drivers/video/fbdev/g364fb.c:137:23: error: 'p' undeclared (first use in this function)
-drivers/video/fbdev/g364fb.c:137:38: error: 'y' undeclared (first use in this function)
-drivers/video/fbdev/g364fb.c:137:7: error: implicit declaration of function 'fontheight' [-Werror=implicit-function-declaration]
-drivers/video/fbdev/g364fb.c: In function 'g364fb_init':
-drivers/video/fbdev/g364fb.c:233:24: error: 'fbvar' undeclared (first use in this function)
-drivers/video/fbdev/g364fb.c:234:24: error: 'xres' undeclared (first use in this function)
-drivers/video/fbdev/g364fb.c:201:14: warning: unused variable 'j' [-Wunused-variable]
-drivers/video/fbdev/g364fb.c:197:25: warning: unused variable 'pal_ptr' [-Wunused-variable]
+IMHO it might not be wise to add yet another header file for this purpose.
+Instead lets use <linux/mmdebug.h> in line with DEBUG_VM, DEBUG_VM_PGFLAGS,
+DEBUG_VIRTUAL (which is also a stand alone test). A simple grep shows that
+the impact of mmdebug.h would be less than generic pgtable.h header.
 
-The MIPS Magnum framebuffer console now works when tested in QEMU.
+> 
+> 
+> 
+>>
+>>>
+>>>> +extern void debug_vm_pgtable(void);
+>>>
+>>> Please don't use the 'extern' keyword, it is useless and not to be used for functions declaration.
+>>
+>> Really ? But, there are tons of examples doing the same thing both in
+>> generic and platform code as well.
+> 
+> Yes, but how can we improve if we blindly copy the errors from the past ? Having tons of 'extern' doesn't mean we must add more.
+> 
+> I think checkpatch.pl usually complains when a patch brings a new unreleval extern symbol.
 
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
----
- drivers/video/fbdev/g364fb.c | 29 +++--------------------------
- 1 file changed, 3 insertions(+), 26 deletions(-)
+Sure np, will drop it. But checkpatch.pl never complained.
 
-diff --git a/drivers/video/fbdev/g364fb.c b/drivers/video/fbdev/g364fb.c
-index 223896cc5f7d..fb26230a3c7b 100644
---- a/drivers/video/fbdev/g364fb.c
-+++ b/drivers/video/fbdev/g364fb.c
-@@ -108,7 +108,6 @@ static int g364fb_pan_display(struct fb_var_screeninfo *var,
- static int g364fb_setcolreg(u_int regno, u_int red, u_int green,
- 			    u_int blue, u_int transp,
- 			    struct fb_info *info);
--static int g364fb_cursor(struct fb_info *info, struct fb_cursor *cursor);
- static int g364fb_blank(int blank, struct fb_info *info);
- 
- static struct fb_ops g364fb_ops = {
-@@ -119,28 +118,8 @@ static struct fb_ops g364fb_ops = {
- 	.fb_fillrect	= cfb_fillrect,
- 	.fb_copyarea	= cfb_copyarea,
- 	.fb_imageblit	= cfb_imageblit,
--	.fb_cursor	= g364fb_cursor,
- };
- 
--int g364fb_cursor(struct fb_info *info, struct fb_cursor *cursor)
--{
--	
--	switch (cursor->enable) {
--	case CM_ERASE:
--		*(unsigned int *) CTLA_REG |= CURS_TOGGLE;
--		break;
--
--	case CM_MOVE:
--	case CM_DRAW:
--		*(unsigned int *) CTLA_REG &= ~CURS_TOGGLE;
--		*(unsigned int *) CURS_POS_REG =
--		    ((x * fontwidth(p)) << 12) | ((y * fontheight(p)) -
--						  info->var.yoffset);
--		break;
--	}
--	return 0;
--}
--
- /*
-  *  Pan or Wrap the Display
-  *
-@@ -194,11 +173,9 @@ static int g364fb_setcolreg(u_int regno, u_int red, u_int green,
-  */
- int __init g364fb_init(void)
- {
--	volatile unsigned int *pal_ptr =
--	    (volatile unsigned int *) CLR_PAL_REG;
- 	volatile unsigned int *curs_pal_ptr =
- 	    (volatile unsigned int *) CURS_PAL_REG;
--	int mem, i, j;
-+	int mem, i;
- 
- 	if (fb_get_options("g364fb", NULL))
- 		return -ENODEV;
-@@ -230,8 +207,8 @@ int __init g364fb_init(void)
- 	 */
- 	*(unsigned short *) (CURS_PAT_REG + 14 * 64) = 0xffff;
- 	*(unsigned short *) (CURS_PAT_REG + 15 * 64) = 0xffff;
--	fb_var.xres_virtual = fbvar.xres;
--	fb_fix.line_length = (xres / 8) * fb_var.bits_per_pixel;
-+	fb_var.xres_virtual = fb_var.xres;
-+	fb_fix.line_length = fb_var.xres_virtual * fb_var.bits_per_pixel / 8;
- 	fb_fix.smem_start = 0x40000000;	/* physical address */
- 	/* get size of video memory; this is special for the JAZZ hardware */
- 	mem = (r4030_read_reg32(JAZZ_R4030_CONFIG) >> 8) & 3;
--- 
-2.24.1
+> 
+>>
+>>>
+>>>> +#else
+>>>> +static inline void debug_vm_pgtable(void) { }
+>>>> +#endif
+>>>> +
+>>>>    #endif /* !__ASSEMBLY__ */
+>>>>      #ifndef io_remap_pfn_range
+>>>> diff --git a/init/main.c b/init/main.c
+>>>> index da1bc0b60a7d..5e59e6ac0780 100644
+>>>> --- a/init/main.c
+>>>> +++ b/init/main.c
+>>>> @@ -1197,6 +1197,7 @@ static noinline void __init kernel_init_freeable(void)
+>>>>        sched_init_smp();
+>>>>          page_alloc_init_late();
+>>>> +    debug_vm_pgtable();
+>>>
+>>> Wouldn't it be better to call debug_vm_pgtable() in kernel_init() between the call to async_synchronise_full() and ftrace_free_init_mem() ?
+>>
+>> IIRC, proposed location is the earliest we could call debug_vm_pgtable().
+>> Is there any particular benefit or reason to move it into kernel_init() ?
+> 
+> It would avoid having it lost in the middle of drivers logs, would be close to the end of init, at a place we can't miss it, close to the result of other tests like CONFIG_DEBUG_RODATA_TEST for instance.
+> 
+> At the moment, you have to look for it to be sure the test is done and what the result is.
 
+Sure, will move it.
+
+> 
+>>
+>>>
+>>>>        /* Initialize page ext after all struct pages are initialized. */
+>>>>        page_ext_init();
+>>>>    diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+>>>> index 5ffe144c9794..7cceae923c05 100644
+>>>> --- a/lib/Kconfig.debug
+>>>> +++ b/lib/Kconfig.debug
+>>>> @@ -653,6 +653,12 @@ config SCHED_STACK_END_CHECK
+>>>>          data corruption or a sporadic crash at a later stage once the region
+>>>>          is examined. The runtime overhead introduced is minimal.
+>>>>    +config ARCH_HAS_DEBUG_VM_PGTABLE
+>>>> +    bool
+>>>> +    help
+>>>> +      An architecture should select this when it can successfully
+>>>> +      build and run DEBUG_VM_PGTABLE.
+>>>> +
+>>>>    config DEBUG_VM
+>>>>        bool "Debug VM"
+>>>>        depends on DEBUG_KERNEL
+>>>> @@ -688,6 +694,22 @@ config DEBUG_VM_PGFLAGS
+>>>>            If unsure, say N.
+>>>>    +config DEBUG_VM_PGTABLE
+>>>> +    bool "Debug arch page table for semantics compliance"
+>>>> +    depends on MMU
+>>>> +    depends on DEBUG_VM
+>>>
+>>> Does it really need to depend on DEBUG_VM ?
+>>
+>> No. It seemed better to package this test along with DEBUG_VM (although I
+>> dont remember the conversation around it) and hence this dependency.
+> 
+> Yes but it perfectly work as standalone. The more easy it is to activate and the more people will use it. DEBUG_VM obliges to rebuild the kernel entirely and could modify the behaviour. Could the helpers we are testing behave differently when DEBUG_VM is not set ? I think it's good the test things as close as possible to final config.
+
+Makes sense. There is no functional dependency for the individual tests
+here on DEBUG_VM.
+
+> 
+>>
+>>> I think we could make it standalone and 'default y if DEBUG_VM' instead.
+>>
+>> Which will yield the same result like before but in a different way. But
+>> yes, this test could go about either way but unless there is a good enough
+>> reason why change the current one.
+> 
+> I think if we want people to really use it on other architectures it must be possible to activate it without having to modify Kconfig. Otherwise people won't even know the test exists and the architecture fails the test.
+> 
+> The purpose of a test suite is to detect bugs. If you can't run the test until you have fixed the bugs, I guess nobody will ever detect the bugs and they will never be fixed.
+> 
+> So I think:
+> - the test should be 'default y' when ARCH_HAS_DEBUG_VM_PGTABLE is selected
+> - the test should be 'default n' when ARCH_HAS_DEBUG_VM_PGTABLE is not selected, and it should be user selectable if EXPERT is selected.
+> 
+> Something like:
+> 
+> config DEBUG_VM_PGTABLE
+>     bool "Debug arch page table for semantics compliance" if ARCH_HAS_DEBUG_VM_PGTABLE || EXPERT
+>     depends on MMU
+
+(ARCH_HAS_DEBUG_VM_PGTABLE || EXPERT) be moved along side MMU on the same line ?
+
+>     default 'n' if !ARCH_HAS_DEBUG_VM_PGTABLE
+>     default 'y' if DEBUG_VM
+
+This looks good, at least until we get all platforms enabled. Will do all these
+changes along with s390 enablement and re-spin.
+
+> 
+> 
+>>
+>>>
+>>>> +    depends on ARCH_HAS_DEBUG_VM_PGTABLE
+>>>> +    default y
+>>>> +    help
+>>>> +      This option provides a debug method which can be used to test
+>>>> +      architecture page table helper functions on various platforms in
+>>>> +      verifying if they comply with expected generic MM semantics. This
+>>>> +      will help architecture code in making sure that any changes or
+>>>> +      new additions of these helpers still conform to expected
+>>>> +      semantics of the generic MM.
+>>>> +
+>>>> +      If unsure, say N.
+>>>> +
+>>>
+>>> Does it make sense to make it 'default y' and say 'If unsure, say N' ?
+>>
+>> No it does. Not when it defaults 'y' unconditionally. Will drop the last
+>> sentence "If unsure, say N". Nice catch, thank you.
+> 
+> Well I was not asking if 'default y' was making sense but only if 'If unsure say N' was making sense due to the 'default y'. You got it.
+> 
+> Christophe
+> 
+> 

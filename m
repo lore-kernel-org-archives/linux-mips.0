@@ -2,319 +2,173 @@ Return-Path: <SRS0=x6Lf=3Z=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DA54C35247
-	for <linux-mips@archiver.kernel.org>; Wed,  5 Feb 2020 00:12:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EABE3C35247
+	for <linux-mips@archiver.kernel.org>; Wed,  5 Feb 2020 02:13:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 10EC9218AC
-	for <linux-mips@archiver.kernel.org>; Wed,  5 Feb 2020 00:12:05 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="kDo9RkTv"
+	by mail.kernel.org (Postfix) with ESMTP id C7E6C214AF
+	for <linux-mips@archiver.kernel.org>; Wed,  5 Feb 2020 02:13:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727706AbgBEAMB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 4 Feb 2020 19:12:01 -0500
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:56263 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727703AbgBEALk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 4 Feb 2020 19:11:40 -0500
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 38B37891AE;
-        Wed,  5 Feb 2020 13:11:38 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1580861498;
-        bh=TlEop1aMKKhr4TLLb8Kw8mnjVcZVWnitXHzhzdW7lr8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=kDo9RkTvcYw1r5kMFHPpurfnwLh5/ma3HIZlClqE56CefIGkJ1c+U4k6m3qQI9q0P
-         nY1M202zKC2RJHwQ2arma6uHy/Q+DgKsQWbjEranhmDlh4xEWSHokueD2PVzethk9G
-         7AX9JzvzHSLsVLLyo74w7SpMwzekLunPrVtrm1MLGZB2POywl1Xu907cTNC3nT1Js/
-         uIYtcvNZ3N6ZVwxWgeSSqClJ2bvm5QpwCQn9u8LGyfp3JmJbyf5j3dGXK1cbH34QUf
-         BnGOWmY4r1hSIs0tMsXXjjxi4ZM8Li7XwaJ7j0ABF3u8MMLM3Crpv32ytrTTdxSJY/
-         b2ROr+pWZOiZA==
-Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5e3a083a0001>; Wed, 05 Feb 2020 13:11:38 +1300
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
-        by smtp (Postfix) with ESMTP id 5D4AC13EEDE;
-        Wed,  5 Feb 2020 13:11:37 +1300 (NZDT)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id CD52C280038; Wed,  5 Feb 2020 13:11:37 +1300 (NZDT)
-From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
-To:     gregkh@linuxfoundation.org, ralf@linux-mips.org,
-        paulburton@kernel.org, linux@roeck-us.net,
-        dan.carpenter@oracle.com, willy@infradead.org
-Cc:     linux-mips@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH 3/6] MIPS: octeon: remove typedef declaration for cvmx_wqe
-Date:   Wed,  5 Feb 2020 13:11:13 +1300
-Message-Id: <20200205001116.14096-4-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200205001116.14096-1-chris.packham@alliedtelesis.co.nz>
-References: <20200205001116.14096-1-chris.packham@alliedtelesis.co.nz>
+        id S1727745AbgBECNr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 4 Feb 2020 21:13:47 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:55170 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727140AbgBECNr (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 4 Feb 2020 21:13:47 -0500
+Received: from [192.168.68.106] (unknown [111.18.44.203])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxX9zKJDpei4cMAA--.47S3;
+        Wed, 05 Feb 2020 10:13:32 +0800 (CST)
+Subject: Re: [PATCH v2,RESEND] MIPS: Scan the DMI system information
+To:     Jonas Gorski <jonas.gorski@gmail.com>
+Cc:     Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yinglu Yang <yangyinglu@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Jean Delvare <jdelvare@suse.de>
+References: <1579181165-2493-1-git-send-email-yangtiezhu@loongson.cn>
+ <CAOiHx==FfiQoFA9cESSni_izS=m+mm7G+gk_tei5XFnKrgurew@mail.gmail.com>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <10732371-fbd1-e9f3-6fed-7821a3ce4847@loongson.cn>
+Date:   Wed, 5 Feb 2020 10:13:44 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-x-atlnz-ls: pat
+In-Reply-To: <CAOiHx==FfiQoFA9cESSni_izS=m+mm7G+gk_tei5XFnKrgurew@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: AQAAf9DxX9zKJDpei4cMAA--.47S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxZFyxWw4fKw43Wr13GF4DJwb_yoWrJr4xpa
+        18JanYkrWkJF1fGw4fZ34xuryYkrZ3Kr98uFy3J3WUu3s8u34jvrs7Ar1I9FyDJr4kGw10
+        vr1a9F4UuayDuFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9214x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
+        n2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+        0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+        zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+        4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j
+        6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
+        BIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Remove typedef declaration from struct cvmx_wqe and replace its previous
-uses with new struct declaration.
+On 2/3/20 10:46 PM, Jonas Gorski wrote:
+> Hi,
+>
+> On Thu, 16 Jan 2020 at 14:28, Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>> Enable DMI scanning on the MIPS architecture, this setups DMI identifiers
+>> (dmi_system_id) for printing it out on task dumps and prepares DIMM entry
+>> information (dmi_memdev_info) from the SMBIOS table. With this patch, the
+>> driver can easily match various of mainboards.
+>>
+>> In the SMBIOS reference specification, the table anchor string "_SM_" is
+>> present in the address range 0xF0000 to 0xFFFFF on a 16-byte boundary,
+>> but there exists a special case for Loongson platform, when call function
+>> dmi_early_remap, it should specify the start address to 0xFFFE000 due to
+>> it is reserved for SMBIOS and can be normally access in the BIOS.
+>>
+>> This patch works fine on the Loongson 3A3000 platform which belongs to
+>> MIPS architecture and has no influence on the other architectures such
+>> as x86 and ARM.
+>>
+>> Co-developed-by: Yinglu Yang <yangyinglu@loongson.cn>
+>> Signed-off-by: Yinglu Yang <yangyinglu@loongson.cn>
+>> [jiaxun.yang@flygoat.com: Refine definitions and Kconfig]
+>> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> Reviewed-by: Huacai Chen <chenhc@lemote.com>
+>> ---
+>>
+>> v2:
+>>    - add SMBIOS_ENTRY_POINT_SCAN_START suggested by Jean
+>>    - refine definitions and Kconfig by Jiaxun
+>>
+>>   arch/mips/Kconfig           | 10 ++++++++++
+>>   arch/mips/include/asm/dmi.h | 20 ++++++++++++++++++++
+>>   arch/mips/kernel/setup.c    |  2 ++
+>>   drivers/firmware/dmi_scan.c |  6 +++++-
+>>   4 files changed, 37 insertions(+), 1 deletion(-)
+>>   create mode 100644 arch/mips/include/asm/dmi.h
+>>
+>> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+>> index 4b83507..c097f78 100644
+>> --- a/arch/mips/Kconfig
+>> +++ b/arch/mips/Kconfig
+>> @@ -2773,6 +2773,16 @@ config HW_PERF_EVENTS
+>>            Enable hardware performance counter support for perf events. If
+>>            disabled, perf events will use software events only.
+>>
+>> +config DMI
+>> +       default y if MACH_LOONGSON64
+>> +       select DMI_SCAN_MACHINE_NON_EFI_FALLBACK
+>> +       bool "Enable DMI scanning"
+> Is this option harmless to enable for other MIPS platforms? What
+> happens if it is enabled on devices where PHYS_OFFSET isn't 0, so
+> 0xF0000 is likely not backed by anything and accessing it might hang
+> the system?
+>
+> This probably should depend on MACH_LOONGSON64.
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
- .../cavium-octeon/executive/cvmx-helper.c     |  2 +-
- .../include/asm/octeon/cvmx-helper-util.h     |  2 +-
- arch/mips/include/asm/octeon/cvmx-pko.h       |  2 +-
- arch/mips/include/asm/octeon/cvmx-pow.h       | 22 +++++++++----------
- arch/mips/include/asm/octeon/cvmx-wqe.h       | 16 +++++++-------
- 5 files changed, 22 insertions(+), 22 deletions(-)
 
-diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper.c b/arch/mips/=
-cavium-octeon/executive/cvmx-helper.c
-index de391541d6f7..bb84ae33399a 100644
---- a/arch/mips/cavium-octeon/executive/cvmx-helper.c
-+++ b/arch/mips/cavium-octeon/executive/cvmx-helper.c
-@@ -784,7 +784,7 @@ static int __cvmx_helper_errata_fix_ipd_ptr_alignment=
-(void)
- 	uint64_t *p64;
- 	cvmx_pko_command_word0_t pko_command;
- 	union cvmx_buf_ptr g_buffer, pkt_buffer;
--	cvmx_wqe_t *work;
-+	struct cvmx_wqe *work;
- 	int size, num_segs =3D 0, wqe_pcnt, pkt_pcnt;
- 	union cvmx_gmxx_prtx_cfg gmx_cfg;
- 	int retry_cnt;
-diff --git a/arch/mips/include/asm/octeon/cvmx-helper-util.h b/arch/mips/=
-include/asm/octeon/cvmx-helper-util.h
-index e9a97e7ee604..97b27a07cfb0 100644
---- a/arch/mips/include/asm/octeon/cvmx-helper-util.h
-+++ b/arch/mips/include/asm/octeon/cvmx-helper-util.h
-@@ -123,7 +123,7 @@ static inline int cvmx_helper_get_last_ipd_port(int i=
-nterface)
-  *
-  * @work:   Work queue entry with packet to free
-  */
--static inline void cvmx_helper_free_packet_data(cvmx_wqe_t *work)
-+static inline void cvmx_helper_free_packet_data(struct cvmx_wqe *work)
- {
- 	uint64_t number_buffers;
- 	union cvmx_buf_ptr buffer_ptr;
-diff --git a/arch/mips/include/asm/octeon/cvmx-pko.h b/arch/mips/include/=
-asm/octeon/cvmx-pko.h
-index 20eb9c46a75a..f033523c19f8 100644
---- a/arch/mips/include/asm/octeon/cvmx-pko.h
-+++ b/arch/mips/include/asm/octeon/cvmx-pko.h
-@@ -394,7 +394,7 @@ static inline void cvmx_pko_send_packet_prepare(uint6=
-4_t port, uint64_t queue,
- 		    CVMX_TAG_SW_BITS_INTERNAL << CVMX_TAG_SW_SHIFT |
- 		    CVMX_TAG_SUBGROUP_PKO << CVMX_TAG_SUBGROUP_SHIFT |
- 		    (CVMX_TAG_SUBGROUP_MASK & queue);
--		cvmx_pow_tag_sw_full((cvmx_wqe_t *) cvmx_phys_to_ptr(0x80), tag,
-+		cvmx_pow_tag_sw_full((struct cvmx_wqe *) cvmx_phys_to_ptr(0x80), tag,
- 				     CVMX_POW_TAG_TYPE_ATOMIC, 0);
- 	}
- }
-diff --git a/arch/mips/include/asm/octeon/cvmx-pow.h b/arch/mips/include/=
-asm/octeon/cvmx-pow.h
-index 410bb70e5aac..ba366f4f3c3d 100644
---- a/arch/mips/include/asm/octeon/cvmx-pow.h
-+++ b/arch/mips/include/asm/octeon/cvmx-pow.h
-@@ -1283,7 +1283,7 @@ static inline cvmx_pow_tag_req_t cvmx_pow_get_curre=
-nt_tag(void)
-  *
-  * Returns WQE pointer
-  */
--static inline cvmx_wqe_t *cvmx_pow_get_current_wqp(void)
-+static inline struct cvmx_wqe *cvmx_pow_get_current_wqp(void)
- {
- 	cvmx_pow_load_addr_t load_addr;
- 	cvmx_pow_tag_load_resp_t load_resp;
-@@ -1296,7 +1296,7 @@ static inline cvmx_wqe_t *cvmx_pow_get_current_wqp(=
-void)
- 	load_addr.sstatus.get_cur =3D 1;
- 	load_addr.sstatus.get_wqp =3D 1;
- 	load_resp.u64 =3D cvmx_read_csr(load_addr.u64);
--	return (cvmx_wqe_t *) cvmx_phys_to_ptr(load_resp.s_sstatus4.wqp);
-+	return (struct cvmx_wqe *) cvmx_phys_to_ptr(load_resp.s_sstatus4.wqp);
- }
-=20
- #ifndef CVMX_MF_CHORD
-@@ -1348,7 +1348,7 @@ static inline void cvmx_pow_tag_sw_wait(void)
-  * Returns Returns the WQE pointer from POW. Returns NULL if no work
-  * was available.
-  */
--static inline cvmx_wqe_t *cvmx_pow_work_request_sync_nocheck(cvmx_pow_wa=
-it_t
-+static inline struct cvmx_wqe *cvmx_pow_work_request_sync_nocheck(cvmx_p=
-ow_wait_t
- 							     wait)
- {
- 	cvmx_pow_load_addr_t ptr;
-@@ -1368,7 +1368,7 @@ static inline cvmx_wqe_t *cvmx_pow_work_request_syn=
-c_nocheck(cvmx_pow_wait_t
- 	if (result.s_work.no_work)
- 		return NULL;
- 	else
--		return (cvmx_wqe_t *) cvmx_phys_to_ptr(result.s_work.addr);
-+		return (struct cvmx_wqe *) cvmx_phys_to_ptr(result.s_work.addr);
- }
-=20
- /**
-@@ -1382,7 +1382,7 @@ static inline cvmx_wqe_t *cvmx_pow_work_request_syn=
-c_nocheck(cvmx_pow_wait_t
-  * Returns Returns the WQE pointer from POW. Returns NULL if no work
-  * was available.
-  */
--static inline cvmx_wqe_t *cvmx_pow_work_request_sync(cvmx_pow_wait_t wai=
-t)
-+static inline struct cvmx_wqe *cvmx_pow_work_request_sync(cvmx_pow_wait_=
-t wait)
- {
- 	if (CVMX_ENABLE_POW_CHECKS)
- 		__cvmx_pow_warn_if_pending_switch(__func__);
-@@ -1485,7 +1485,7 @@ static inline void cvmx_pow_work_request_async(int =
-scr_addr,
-  * Returns Returns the WQE from the scratch register, or NULL if no
-  * work was available.
-  */
--static inline cvmx_wqe_t *cvmx_pow_work_response_async(int scr_addr)
-+static inline struct cvmx_wqe *cvmx_pow_work_response_async(int scr_addr=
-)
- {
- 	cvmx_pow_tag_load_resp_t result;
-=20
-@@ -1495,7 +1495,7 @@ static inline cvmx_wqe_t *cvmx_pow_work_response_as=
-ync(int scr_addr)
- 	if (result.s_work.no_work)
- 		return NULL;
- 	else
--		return (cvmx_wqe_t *) cvmx_phys_to_ptr(result.s_work.addr);
-+		return (struct cvmx_wqe *) cvmx_phys_to_ptr(result.s_work.addr);
- }
-=20
- /**
-@@ -1508,7 +1508,7 @@ static inline cvmx_wqe_t *cvmx_pow_work_response_as=
-ync(int scr_addr)
-  * Returns 0 if pointer is valid
-  *	   1 if invalid (no work was returned)
-  */
--static inline uint64_t cvmx_pow_work_invalid(cvmx_wqe_t *wqe_ptr)
-+static inline uint64_t cvmx_pow_work_invalid(struct cvmx_wqe *wqe_ptr)
- {
- 	return wqe_ptr =3D=3D NULL;
- }
-@@ -1638,7 +1638,7 @@ static inline void cvmx_pow_tag_sw(uint32_t tag,
-  * @tag_type: type of tag
-  * @group:    group value for the work queue entry.
-  */
--static inline void cvmx_pow_tag_sw_full_nocheck(cvmx_wqe_t *wqp, uint32_=
-t tag,
-+static inline void cvmx_pow_tag_sw_full_nocheck(struct cvmx_wqe *wqp, ui=
-nt32_t tag,
- 						enum cvmx_pow_tag_type tag_type,
- 						uint64_t group)
- {
-@@ -1712,7 +1712,7 @@ static inline void cvmx_pow_tag_sw_full_nocheck(cvm=
-x_wqe_t *wqp, uint32_t tag,
-  * @tag_type: type of tag
-  * @group:	group value for the work queue entry.
-  */
--static inline void cvmx_pow_tag_sw_full(cvmx_wqe_t *wqp, uint32_t tag,
-+static inline void cvmx_pow_tag_sw_full(struct cvmx_wqe *wqp, uint32_t t=
-ag,
- 					enum cvmx_pow_tag_type tag_type,
- 					uint64_t group)
- {
-@@ -1803,7 +1803,7 @@ static inline void cvmx_pow_tag_sw_null(void)
-  * @qos:      Input queue to add to.
-  * @grp:      group value for the work queue entry.
-  */
--static inline void cvmx_pow_work_submit(cvmx_wqe_t *wqp, uint32_t tag,
-+static inline void cvmx_pow_work_submit(struct cvmx_wqe *wqp, uint32_t t=
-ag,
- 					enum cvmx_pow_tag_type tag_type,
- 					uint64_t qos, uint64_t grp)
- {
-diff --git a/arch/mips/include/asm/octeon/cvmx-wqe.h b/arch/mips/include/=
-asm/octeon/cvmx-wqe.h
-index 0d697aa786d4..9cec2299b81b 100644
---- a/arch/mips/include/asm/octeon/cvmx-wqe.h
-+++ b/arch/mips/include/asm/octeon/cvmx-wqe.h
-@@ -547,7 +547,7 @@ union cvmx_wqe_word1 {
-  *
-  * must be 8-byte aligned
-  */
--typedef struct {
-+struct cvmx_wqe {
-=20
-     /*****************************************************************
-      * WORD 0
-@@ -593,9 +593,9 @@ typedef struct {
-      *
-      */
-=20
--} CVMX_CACHE_LINE_ALIGNED cvmx_wqe_t;
-+} CVMX_CACHE_LINE_ALIGNED;
-=20
--static inline int cvmx_wqe_get_port(cvmx_wqe_t *work)
-+static inline int cvmx_wqe_get_port(struct cvmx_wqe *work)
- {
- 	int port;
-=20
-@@ -607,7 +607,7 @@ static inline int cvmx_wqe_get_port(cvmx_wqe_t *work)
- 	return port;
- }
-=20
--static inline void cvmx_wqe_set_port(cvmx_wqe_t *work, int port)
-+static inline void cvmx_wqe_set_port(struct cvmx_wqe *work, int port)
- {
- 	if (octeon_has_feature(OCTEON_FEATURE_CN68XX_WQE))
- 		work->word2.s_cn68xx.port =3D port;
-@@ -615,7 +615,7 @@ static inline void cvmx_wqe_set_port(cvmx_wqe_t *work=
-, int port)
- 		work->word1.cn38xx.ipprt =3D port;
- }
-=20
--static inline int cvmx_wqe_get_grp(cvmx_wqe_t *work)
-+static inline int cvmx_wqe_get_grp(struct cvmx_wqe *work)
- {
- 	int grp;
-=20
-@@ -627,7 +627,7 @@ static inline int cvmx_wqe_get_grp(cvmx_wqe_t *work)
- 	return grp;
- }
-=20
--static inline void cvmx_wqe_set_grp(cvmx_wqe_t *work, int grp)
-+static inline void cvmx_wqe_set_grp(struct cvmx_wqe *work, int grp)
- {
- 	if (octeon_has_feature(OCTEON_FEATURE_CN68XX_WQE))
- 		work->word1.cn68xx.grp =3D grp;
-@@ -635,7 +635,7 @@ static inline void cvmx_wqe_set_grp(cvmx_wqe_t *work,=
- int grp)
- 		work->word1.cn38xx.grp =3D grp;
- }
-=20
--static inline int cvmx_wqe_get_qos(cvmx_wqe_t *work)
-+static inline int cvmx_wqe_get_qos(struct cvmx_wqe *work)
- {
- 	int qos;
-=20
-@@ -647,7 +647,7 @@ static inline int cvmx_wqe_get_qos(cvmx_wqe_t *work)
- 	return qos;
- }
-=20
--static inline void cvmx_wqe_set_qos(cvmx_wqe_t *work, int qos)
-+static inline void cvmx_wqe_set_qos(struct cvmx_wqe *work, int qos)
- {
- 	if (octeon_has_feature(OCTEON_FEATURE_CN68XX_WQE))
- 		work->word1.cn68xx.qos =3D qos;
---=20
-2.25.0
+Hi Jonas,
+
+Thanks for your reply and suggestion.
+
+With the current patch, on the MIPS architecture, the DMI option is
+default y only if MACH_LOONGSON64 is set, otherwise it is not set.
+When enable DMI manually on the MIPS platform which is not LOONGSON64,
+the SMBIOS_ENTRY_POINT_SCAN_START is 0xF0000, dmi_early_remap() will
+return NULL and goto err to print "DMI not present or invalid."
+
+static void __init dmi_scan_machine(void)
+{
+...
+         p = dmi_early_remap(SMBIOS_ENTRY_POINT_SCAN_START, 0x10000);
+         if (p == NULL)
+             goto error;
+...
+  error:
+     pr_info("DMI not present or invalid.\n");
+}
+
+It seems harmless and the system can boot successful. However, in order
+to avoid the unknown risks on the mips platform which is not LOONGSON64,
+I think it is better to depend on MACH_LOONGSON64.
+
+config DMI
+     bool "Enable DMI scanning"
+     depends on MACH_LOONGSON64
+     select DMI_SCAN_MACHINE_NON_EFI_FALLBACK
+     default y
+
+If other mips platform also needs this DMI feature in the future,
+the "depends on" conditon can be modified.
+
+I will do it in the v3 patch.
+
+
+Thanks,
+
+
+Tiezhu Yang
+
+
+>
+> Regards
+>
+> Jonas
 

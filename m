@@ -2,73 +2,76 @@ Return-Path: <SRS0=XBoA=33=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32F59C35250
-	for <linux-mips@archiver.kernel.org>; Fri,  7 Feb 2020 22:35:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FD33C2BA83
+	for <linux-mips@archiver.kernel.org>; Fri,  7 Feb 2020 22:35:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 07326222D9
-	for <linux-mips@archiver.kernel.org>; Fri,  7 Feb 2020 22:35:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E8B9F222D9
+	for <linux-mips@archiver.kernel.org>; Fri,  7 Feb 2020 22:35:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AOc/2Uws"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Hbkddzii"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727031AbgBGWf1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 7 Feb 2020 17:35:27 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:36409 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727048AbgBGWf1 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 7 Feb 2020 17:35:27 -0500
+        id S1727496AbgBGWfc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 7 Feb 2020 17:35:32 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:54789 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727484AbgBGWfc (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 7 Feb 2020 17:35:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581114926;
+        s=mimecast20190719; t=1581114931;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ugZBz7enuCINLO2hCs0M9spDUSXUeBZ8X9fYPkjTl9M=;
-        b=AOc/2UwsgyWFumXlcUmRsQ8YnXeZxd8AmFdKV20GYopInCVNjKV1YsFzGsH1Kx/lNK5pSc
-        69wzGCdve9owXwCsTPAjVeWdhLMjpunhhA6XYWQCfP2TnUH5afAWHF1N1uGAuOuctBVKHP
-        ZpOCyyrQ9WJlM8pyFN9HjuqbTTwTSMM=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-50-ve_wM522NSavU2sox1SkMw-1; Fri, 07 Feb 2020 17:35:24 -0500
-X-MC-Unique: ve_wM522NSavU2sox1SkMw-1
-Received: by mail-qk1-f200.google.com with SMTP id r145so485393qke.8
-        for <linux-mips@vger.kernel.org>; Fri, 07 Feb 2020 14:35:24 -0800 (PST)
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nbFuDNqXWxYaO1U3b7e5Dk8u+2RlyLNa/H+l9wnHCjY=;
+        b=HbkddziikS6pRakwr71b/9CxfUmxcnahygKIzkAuCnI6m3oXphQsvc1M2DqXyv0j4GMXrg
+        ZYUm4PYdmQNUflTVQJ2geOGB8B+4Cke9o3wK6F/ohnhlKga1UP80UnPQCVg7H51Io8oA7W
+        EokJKur+jV+P1L3KrY3VIZrN1WVh3k8=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-438-DrKDu6HtOX-XBWJ-WhG91g-1; Fri, 07 Feb 2020 17:35:29 -0500
+X-MC-Unique: DrKDu6HtOX-XBWJ-WhG91g-1
+Received: by mail-qv1-f72.google.com with SMTP id z9so487127qvo.10
+        for <linux-mips@vger.kernel.org>; Fri, 07 Feb 2020 14:35:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ugZBz7enuCINLO2hCs0M9spDUSXUeBZ8X9fYPkjTl9M=;
-        b=IiICPsOxA6EPn+Tv/0p+LJvWPBTLNYFVgNaekgO3sRL1kCgsvO5QQsEDjTE8Yjysts
-         bCB0xjhNHAzBRMdc0X146Fq19xgnLUy4NArnYmmsg3aMEzs9qU8sSLEBOBs9c1j0LP4J
-         P7KNQJZRm3K+odnibHEqKb+ruPL14h2ZTs5olOpzo/lIc57c/CHnPtQqJDsq6172PevE
-         pdVvbPsk5MXcXKdSWNz5oUe7PM+OduRMc2Np53zSfw675EeAJMLjvxTD3qph5hmYGNtP
-         265AbzHV+5dprQlRQmhtjmO98im3Gm4wV1c5sJAgFcBN7WQEsjqobk6+FQRRwovNbAqT
-         LeXw==
-X-Gm-Message-State: APjAAAWeh8WmgPE3DtZM0HqjSv7/i2n2ENkRBMnBChoqNqcnMIH1Zkf5
-        Ihg4I5dAMjJQOgY0kI3z8a6KOwH67zz/ONbTGh9ZaodiwiyQl9MH5sUfpPiiZ/0BAUz9Qr5J6Ub
-        p5+fucuxv9MJU3Zot9QM5Cw==
-X-Received: by 2002:ac8:1205:: with SMTP id x5mr598701qti.238.1581114923526;
-        Fri, 07 Feb 2020 14:35:23 -0800 (PST)
-X-Google-Smtp-Source: APXvYqzFhVS1bhbCdouqP3dIqYiC7xAeG36OuHcbu/fkXUSHwKqa8FFEiGxaaY0/f//YMJs09H18pw==
-X-Received: by 2002:ac8:1205:: with SMTP id x5mr598684qti.238.1581114923289;
-        Fri, 07 Feb 2020 14:35:23 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nbFuDNqXWxYaO1U3b7e5Dk8u+2RlyLNa/H+l9wnHCjY=;
+        b=s1aaoAsLX+x/Z5o9IEtUgXDAeU/T61u5k1yPCz7+JIbU9mgbJlKdb4DzT7nMqv1tut
+         2q5DLMp3kju94z8hJaS9/Ma1Z9vAJzBpcEuTt+BP/oQ2vU38IIgL/ilkZd3uibIq45pI
+         GjJMWKpz0iHHXLN9RzGg7JeKdzvp7KEj+7Jion+CyEUyJwOnOeoWwmnGK1inwPAmsjZA
+         hh+nbobzmNI6YEYSpDUcqojdpnBqgIG5d5jX3j/RfZzBL+Y2etAvjOwsc1DqHiCJ58Pt
+         RONWOL7p7ya9NttpkEo/F+/0S40aOwenO/5UbqFw0yQnSTn5aLuObOd7JYWw7y56JYNJ
+         IdjA==
+X-Gm-Message-State: APjAAAWYhJ5N3q9siH3TTd49IhXPnz8ij3KEKgxEJp72wPesZzQAbqaN
+        Guj8xyiyoLB5rT6/Y91r6/6w6eMjkbQOkkek77w3P07b3+gsIjEPCojK/Tj3WYeeLFhInjT0RNY
+        Eo/TlMVALjO3upAyYGPvrqA==
+X-Received: by 2002:ac8:70d3:: with SMTP id g19mr564427qtp.209.1581114929006;
+        Fri, 07 Feb 2020 14:35:29 -0800 (PST)
+X-Google-Smtp-Source: APXvYqwOrsIOK2qFxwanpIc4DdFHwxuCz+v4A8f7plovFbmLVtbkNX/2LPWpBFah+G+L0x+fURCmIg==
+X-Received: by 2002:ac8:70d3:: with SMTP id g19mr564402qtp.209.1581114928759;
+        Fri, 07 Feb 2020 14:35:28 -0800 (PST)
 Received: from xz-x1.redhat.com ([2607:9880:19c8:32::2])
-        by smtp.gmail.com with ESMTPSA id u12sm2178736qtj.84.2020.02.07.14.35.21
+        by smtp.gmail.com with ESMTPSA id u12sm2178736qtj.84.2020.02.07.14.35.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Feb 2020 14:35:22 -0800 (PST)
+        Fri, 07 Feb 2020 14:35:28 -0800 (PST)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
         linux-mips@vger.kernel.org, peterx@redhat.com,
         Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: [PATCH RFC 0/4] KVM: MIPS: Provide arch-specific kvm_flush_remote_tlbs()
-Date:   Fri,  7 Feb 2020 17:35:16 -0500
-Message-Id: <20200207223520.735523-1-peterx@redhat.com>
+Subject: [PATCH RFC 3/4] KVM: MIPS: Replace all the kvm_flush_remote_tlbs() references
+Date:   Fri,  7 Feb 2020 17:35:19 -0500
+Message-Id: <20200207223520.735523-4-peterx@redhat.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200207223520.735523-1-peterx@redhat.com>
+References: <20200207223520.735523-1-peterx@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
@@ -76,54 +79,75 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-[This series is RFC because I don't have MIPS to compile and test]
+Replace kvm_flush_remote_tlbs() calls in MIPS code into
+kvm_flush_remote_tlbs_common().  This is to prepare that MIPS will
+define its own kvm_flush_remote_tlbs() soon.
 
-kvm_flush_remote_tlbs() can be arch-specific, by either:
+The only three references are all in the flush_shadow_all() hooks.
+One of them can be directly dropped because it's exactly the
+kvm_flush_remote_tlbs_common().  Since at it, refactors the other one
+a bit.
 
-- Completely replace kvm_flush_remote_tlbs(), like ARM, who is the
-  only user of CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL so far
+No functional change expected.
 
-- Doing something extra before kvm_flush_remote_tlbs(), like MIPS VZ
-  support, however still wants to have the common tlb flush to be part
-  of the process.  Could refer to kvm_vz_flush_shadow_all().  Then in
-  MIPS it's awkward to flush remote TLBs: we'll need to call the mips
-  hooks.
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ arch/mips/kvm/trap_emul.c | 8 +-------
+ arch/mips/kvm/vz.c        | 7 ++-----
+ 2 files changed, 3 insertions(+), 12 deletions(-)
 
-It's awkward to have different ways to specialize this procedure,
-especially MIPS cannot use the genenal interface which is quite a
-pity.  It's good to make it a common interface.
-
-This patch series removes the 2nd MIPS usage above, and let it also
-use the common kvm_flush_remote_tlbs() interface.  It should be
-suggested that we always keep kvm_flush_remote_tlbs() be a common
-entrance for tlb flushing on all archs.
-
-This idea comes from the reading of Sean's patchset on dynamic memslot
-allocation, where a new dirty log specific hook is added for flushing
-TLBs only for the MIPS code [1].  With this patchset, logically the
-new hook in that patch can be dropped so we can directly use
-kvm_flush_remote_tlbs().
-
-TODO: We can even extend another common interface for ranged TLB, but
-let's see how we think about this series first.
-
-Any comment is welcomed, thanks.
-
-Peter Xu (4):
-  KVM: Provide kvm_flush_remote_tlbs_common()
-  KVM: MIPS: Drop flush_shadow_memslot() callback
-  KVM: MIPS: Replace all the kvm_flush_remote_tlbs() references
-  KVM: MIPS: Define arch-specific kvm_flush_remote_tlbs()
-
- arch/mips/include/asm/kvm_host.h |  7 -------
- arch/mips/kvm/Kconfig            |  1 +
- arch/mips/kvm/mips.c             | 22 ++++++++++------------
- arch/mips/kvm/trap_emul.c        | 15 +--------------
- arch/mips/kvm/vz.c               | 14 ++------------
- include/linux/kvm_host.h         |  1 +
- virt/kvm/kvm_main.c              | 10 ++++++++--
- 7 files changed, 23 insertions(+), 47 deletions(-)
-
+diff --git a/arch/mips/kvm/trap_emul.c b/arch/mips/kvm/trap_emul.c
+index 2ecb430ea0f1..ced481c963be 100644
+--- a/arch/mips/kvm/trap_emul.c
++++ b/arch/mips/kvm/trap_emul.c
+@@ -697,12 +697,6 @@ static int kvm_trap_emul_vcpu_setup(struct kvm_vcpu *vcpu)
+ 	return 0;
+ }
+ 
+-static void kvm_trap_emul_flush_shadow_all(struct kvm *kvm)
+-{
+-	/* Flush GVA page tables and invalidate GVA ASIDs on all VCPUs */
+-	kvm_flush_remote_tlbs(kvm);
+-}
+-
+ static u64 kvm_trap_emul_get_one_regs[] = {
+ 	KVM_REG_MIPS_CP0_INDEX,
+ 	KVM_REG_MIPS_CP0_ENTRYLO0,
+@@ -1285,7 +1279,7 @@ static struct kvm_mips_callbacks kvm_trap_emul_callbacks = {
+ 	.vcpu_init = kvm_trap_emul_vcpu_init,
+ 	.vcpu_uninit = kvm_trap_emul_vcpu_uninit,
+ 	.vcpu_setup = kvm_trap_emul_vcpu_setup,
+-	.flush_shadow_all = kvm_trap_emul_flush_shadow_all,
++	.flush_shadow_all = kvm_flush_remote_tlbs_common,
+ 	.gva_to_gpa = kvm_trap_emul_gva_to_gpa_cb,
+ 	.queue_timer_int = kvm_mips_queue_timer_int_cb,
+ 	.dequeue_timer_int = kvm_mips_dequeue_timer_int_cb,
+diff --git a/arch/mips/kvm/vz.c b/arch/mips/kvm/vz.c
+index 814bd1564a79..91fbf6710da4 100644
+--- a/arch/mips/kvm/vz.c
++++ b/arch/mips/kvm/vz.c
+@@ -3105,10 +3105,7 @@ static int kvm_vz_vcpu_setup(struct kvm_vcpu *vcpu)
+ 
+ static void kvm_vz_flush_shadow_all(struct kvm *kvm)
+ {
+-	if (cpu_has_guestid) {
+-		/* Flush GuestID for each VCPU individually */
+-		kvm_flush_remote_tlbs(kvm);
+-	} else {
++	if (!cpu_has_guestid) {
+ 		/*
+ 		 * For each CPU there is a single GPA ASID used by all VCPUs in
+ 		 * the VM, so it doesn't make sense for the VCPUs to handle
+@@ -3119,8 +3116,8 @@ static void kvm_vz_flush_shadow_all(struct kvm *kvm)
+ 		 * kick any running VCPUs so they check asid_flush_mask.
+ 		 */
+ 		cpumask_setall(&kvm->arch.asid_flush_mask);
+-		kvm_flush_remote_tlbs(kvm);
+ 	}
++	kvm_flush_remote_tlbs_common(kvm);
+ }
+ 
+ static void kvm_vz_vcpu_reenter(struct kvm_run *run, struct kvm_vcpu *vcpu)
 -- 
 2.24.1
 

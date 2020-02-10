@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83968C352A5
-	for <linux-mips@archiver.kernel.org>; Mon, 10 Feb 2020 13:06:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CA55C352A5
+	for <linux-mips@archiver.kernel.org>; Mon, 10 Feb 2020 13:23:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5DD362070A
-	for <linux-mips@archiver.kernel.org>; Mon, 10 Feb 2020 13:06:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1557C215A4
+	for <linux-mips@archiver.kernel.org>; Mon, 10 Feb 2020 13:23:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581340017;
+	s=default; t=1581341027;
 	bh=NtsZhrgDJIlTF5zSo7Bs2rx2dneDPsrJqbQN4iPbGGg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=aSUr4m0aUYiRikFIQxwieRZ2qc4pOD3S8qsEZgLPCPZfNUp2CzJaWFZ5fX8jSDBj/
-	 LrkJ1GjrkmaCtVXUyltrkyfmMmVFpfLok8r4Ur8ChJr8vK078b73UnjH9ygitwDB69
-	 ppFdciUYynmBdEbz17Bt3SwhDWbCL2hCjnYo4IgE=
+	b=o5TpnGo2iWHrQRuroxFoD2cHZrY0AVk0lMZAVeUL/9oZ4SPNvUWi+vSTWEw5dsiLc
+	 yOjzSOd82ZdknUFJxAjrWszZhgvS1Vj4h/R98IQQcsliP8i4SnOAq49DfzGQ9uxn0c
+	 c3wXyKEl+sSIoxDqONSuK422sxjeVKcj7A94IIWU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728539AbgBJNGx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 10 Feb 2020 08:06:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38512 "EHLO mail.kernel.org"
+        id S1728659AbgBJMhL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 10 Feb 2020 07:37:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728567AbgBJMjv (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 10 Feb 2020 07:39:51 -0500
+        id S1728654AbgBJMhK (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 10 Feb 2020 07:37:10 -0500
 Received: from localhost (unknown [209.37.97.194])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D3222465D;
-        Mon, 10 Feb 2020 12:39:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3786F2467C;
+        Mon, 10 Feb 2020 12:37:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581338389;
+        s=default; t=1581338230;
         bh=NtsZhrgDJIlTF5zSo7Bs2rx2dneDPsrJqbQN4iPbGGg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cAlOWlfoSLestyE+ImEAMZrW24h5MEj4emwFRC5SIoEXxwHKM8uaGZrDEci9M2yw7
-         iQO1gPM1oguvFRJT5KMfpX4cH4EPmGXzLkIuFcT/0YG2k8h7/78yt8kb7b09DMmlPC
-         xt9G81u77rWuTLZEo73Vf8jOm8gklertkzQqhl2w=
+        b=Z5PrMtsyp4+U59ro8f2W8MNfpboQ/UgFnewfhGT9E4Ifcr67/+am2Vp46JgWoTNke
+         YcuQCWQq+AQyCjx3cXs6J3/n4a0bUxq1iO1rcOmEpNrQCJMEwTis9rA1ystP1Gr3Va
+         6QkwgZDqQPFNs8a753XcP59N+YeWX8wwBhspHY7Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -47,12 +47,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         James Hogan <jhogan@kernel.org>,
         Masahiro Yamada <yamada.masahiro@socionext.com>,
         Rob Herring <robh@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH 5.5 079/367] MIPS: boot: fix typo in vmlinux.lzma.its target
-Date:   Mon, 10 Feb 2020 04:29:52 -0800
-Message-Id: <20200210122431.571281490@linuxfoundation.org>
+Subject: [PATCH 5.4 072/309] MIPS: boot: fix typo in vmlinux.lzma.its target
+Date:   Mon, 10 Feb 2020 04:30:28 -0800
+Message-Id: <20200210122412.806640101@linuxfoundation.org>
 X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200210122423.695146547@linuxfoundation.org>
-References: <20200210122423.695146547@linuxfoundation.org>
+In-Reply-To: <20200210122406.106356946@linuxfoundation.org>
+References: <20200210122406.106356946@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

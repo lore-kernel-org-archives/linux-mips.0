@@ -4,52 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83F4DC352A5
-	for <linux-mips@archiver.kernel.org>; Mon, 10 Feb 2020 13:04:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65721C3B186
+	for <linux-mips@archiver.kernel.org>; Mon, 10 Feb 2020 13:06:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5E1FC2070A
-	for <linux-mips@archiver.kernel.org>; Mon, 10 Feb 2020 13:04:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 360BC2070A
+	for <linux-mips@archiver.kernel.org>; Mon, 10 Feb 2020 13:06:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581339893;
-	bh=vvmGs6nVmzOQFlgd10Nl4XppRHWf2yjrDu/yBIVkwIk=;
+	s=default; t=1581340004;
+	bh=c18dsmejcPXvDGKtlQTp7E0bFEvu+bOeNIWByPWdY5o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=zpl+wTupbdDgtiSU3qKxB8Wv/mVoGAftWZDPbMt2eiO6xKyxZrlIOghtaLKmKlxVV
-	 MNxoOElJUwxrK3F6gvfN5QW1a8PQMbfMEGeSYQBkqDZQIPxllJkY3qBqQqU4RkKw+Z
-	 RgwkSRIuj+HydJVkC8Sb0IzR7qsxCnk+TXuOuA6o=
+	b=FYIrfCWhGgeWlnE7zedFiGFF87zqvIMgJdV6zvDHJLitLcPr3olYf3KuEqIDuEZPF
+	 3ph6U2n2KS2L9QnmGL9ZTNPfxsRL0xgjqPhp6oqJ0NIbJktX7h1pVSGN9MNZhPnC3o
+	 osFDYuayQ/paXc2Qtq+GCJZUqohzFxvdPTU3a8qU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729825AbgBJNEw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 10 Feb 2020 08:04:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39482 "EHLO mail.kernel.org"
+        id S1729547AbgBJMjw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 10 Feb 2020 07:39:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728671AbgBJMkL (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 10 Feb 2020 07:40:11 -0500
+        id S1728958AbgBJMjw (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 10 Feb 2020 07:39:52 -0500
 Received: from localhost (unknown [209.37.97.194])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DF6E20842;
-        Mon, 10 Feb 2020 12:40:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 123B62467A;
+        Mon, 10 Feb 2020 12:39:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581338410;
-        bh=vvmGs6nVmzOQFlgd10Nl4XppRHWf2yjrDu/yBIVkwIk=;
+        s=default; t=1581338390;
+        bh=c18dsmejcPXvDGKtlQTp7E0bFEvu+bOeNIWByPWdY5o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZWYkbVImMqDLlv9BGp258IJmBq71sWdafV+56b0WPVNyUJ31owmwbZNs3hCADJOoU
-         Njhr+aidwEymUmJw9eC2QlijZjK/X4LfdFswfvePyqe5kYiH0lzWj+OpbQfy3ebkOk
-         c6+4N2XxODG3fs4zEbV5SLmOFv8kgaKIxyiHHmpE=
+        b=TbaW2vB2lwiMbt4Ce2tQz88zt9fFKHj8ohesrcqYdC1XeftaZDbZ0HpH4/Wsq98hd
+         LWc+tCSks0OU4ecguK0UYEukHdgKelhfqGy8ln30RbmgndEVVWUn9erjqHmMvGExc2
+         VZSYh8KVRO8A3UeyHhREHhntxftgcA4c9H38gX5M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Lobakin <alobakin@dlink.ru>,
+        stable@vger.kernel.org,
+        Thomas Bogendoerfer <tbogendoerfer@suse.de>,
         Paul Burton <paulburton@kernel.org>,
         Ralf Baechle <ralf@linux-mips.org>,
-        James Hogan <jhogan@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Rob Herring <robh@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH 5.5 077/367] MIPS: syscalls: fix indentation of the SYSNR message
-Date:   Mon, 10 Feb 2020 04:29:50 -0800
-Message-Id: <20200210122431.337176361@linuxfoundation.org>
+        James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org
+Subject: [PATCH 5.5 080/367] MIPS: SGI-IP30: Check for valid pointer before using it
+Date:   Mon, 10 Feb 2020 04:29:53 -0800
+Message-Id: <20200210122431.680229459@linuxfoundation.org>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200210122423.695146547@linuxfoundation.org>
 References: <20200210122423.695146547@linuxfoundation.org>
@@ -62,61 +61,43 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Alexander Lobakin <alobakin@dlink.ru>
+From: Thomas Bogendoerfer <tbogendoerfer@suse.de>
 
-commit 4f29ad200f7b40fbcf73cd65f95087535ba78380 upstream.
+commit c0e79fd89749b0cda1c72049e2772dd2eeada86f upstream.
 
-It also lacks a whitespace (copy'n'paste error?) and also messes up the
-output:
+Fix issue detected by Smatch:
 
-  SYSHDR  arch/mips/include/generated/uapi/asm/unistd_n32.h
-  SYSHDR  arch/mips/include/generated/uapi/asm/unistd_n64.h
-  SYSHDR  arch/mips/include/generated/uapi/asm/unistd_o32.h
-  SYSNR  arch/mips/include/generated/uapi/asm/unistd_nr_n32.h
-  SYSNR  arch/mips/include/generated/uapi/asm/unistd_nr_n64.h
-  SYSNR  arch/mips/include/generated/uapi/asm/unistd_nr_o32.h
-  WRAP    arch/mips/include/generated/uapi/asm/bpf_perf_event.h
-  WRAP    arch/mips/include/generated/uapi/asm/ipcbuf.h
+    ./arch/mips/sgi-ip30/ip30-irq.c:236 heart_domain_free()
+     warn: variable dereferenced before check 'irqd' (see line 235)
 
-After:
-
-  SYSHDR  arch/mips/include/generated/uapi/asm/unistd_n32.h
-  SYSHDR  arch/mips/include/generated/uapi/asm/unistd_n64.h
-  SYSHDR  arch/mips/include/generated/uapi/asm/unistd_o32.h
-  SYSNR   arch/mips/include/generated/uapi/asm/unistd_nr_n32.h
-  SYSNR   arch/mips/include/generated/uapi/asm/unistd_nr_n64.h
-  SYSNR   arch/mips/include/generated/uapi/asm/unistd_nr_o32.h
-  WRAP    arch/mips/include/generated/uapi/asm/bpf_perf_event.h
-  WRAP    arch/mips/include/generated/uapi/asm/ipcbuf.h
-
-Present since day 0 of syscall table generation introduction for MIPS.
-
-Fixes: 9bcbf97c6293 ("mips: add system call table generation support")
-Cc: <stable@vger.kernel.org> # v5.0+
-Signed-off-by: Alexander Lobakin <alobakin@dlink.ru>
+Fixes: 7505576d1c1a ("MIPS: add support for SGI Octane (IP30)")
+Signed-off-by: Thomas Bogendoerfer <tbogendoerfer@suse.de>
 Signed-off-by: Paul Burton <paulburton@kernel.org>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: James Hogan <jhogan@kernel.org>
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Rob Herring <robh@kernel.org>
 Cc: linux-mips@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
+Cc: <stable@vger.kernel.org> # v5.5+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/mips/kernel/syscalls/Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/sgi-ip30/ip30-irq.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/arch/mips/kernel/syscalls/Makefile
-+++ b/arch/mips/kernel/syscalls/Makefile
-@@ -18,7 +18,7 @@ quiet_cmd_syshdr = SYSHDR  $@
- 		   '$(syshdr_pfx_$(basetarget))'		\
- 		   '$(syshdr_offset_$(basetarget))'
+--- a/arch/mips/sgi-ip30/ip30-irq.c
++++ b/arch/mips/sgi-ip30/ip30-irq.c
+@@ -232,9 +232,10 @@ static void heart_domain_free(struct irq
+ 		return;
  
--quiet_cmd_sysnr = SYSNR  $@
-+quiet_cmd_sysnr = SYSNR   $@
-       cmd_sysnr = $(CONFIG_SHELL) '$(sysnr)' '$<' '$@'		\
- 		  '$(sysnr_abis_$(basetarget))'			\
- 		  '$(sysnr_pfx_$(basetarget))'			\
+ 	irqd = irq_domain_get_irq_data(domain, virq);
+-	clear_bit(irqd->hwirq, heart_irq_map);
+-	if (irqd && irqd->chip_data)
++	if (irqd) {
++		clear_bit(irqd->hwirq, heart_irq_map);
+ 		kfree(irqd->chip_data);
++	}
+ }
+ 
+ static const struct irq_domain_ops heart_domain_ops = {
 
 

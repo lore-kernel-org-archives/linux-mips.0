@@ -7,39 +7,40 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2710EC35242
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2209C3F68F
 	for <linux-mips@archiver.kernel.org>; Tue, 11 Feb 2020 21:53:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8FC662073C
-	for <linux-mips@archiver.kernel.org>; Tue, 11 Feb 2020 21:53:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7C1F620870
+	for <linux-mips@archiver.kernel.org>; Tue, 11 Feb 2020 21:53:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="Hn42g1Ri"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="s51fYI4E"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727347AbgBKVxh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1727052AbgBKVxh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Tue, 11 Feb 2020 16:53:37 -0500
-Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.120]:13064 "EHLO
+Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.223]:27397 "EHLO
         mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727029AbgBKVxg (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 11 Feb 2020 16:53:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1581458014;
+        with ESMTP id S1727199AbgBKVxh (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 11 Feb 2020 16:53:37 -0500
+X-Greylist: delayed 705 seconds by postgrey-1.27 at vger.kernel.org; Tue, 11 Feb 2020 16:53:36 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1581458015;
         s=strato-dkim-0002; d=goldelico.com;
         h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
         X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=tz5FT9e8j/vOF6dHesX7jElKIt8MXbKvwaqQV2chsVc=;
-        b=Hn42g1Ri6Kv+i6TcCfCCQFFFRRDWRUdkljDeRuGTJA/h0nS6YIDJQPxDwxUG9VSSxq
-        0DsMir+XMZC1E4rdTebI8ZwG2BHR+0ucaOxV5aUFp3a8X6FCyQ25bwWE8K8wnby+NBn+
-        nWQib1cp7iLe7TmoSsQ9YcAn6yIVWl5mBK0sDTvXtcWko7pfzOoAVWJn9naJVrYq4LOJ
-        VBMajR0W9uisXCg6HEEBXCoJS+qpAMwh6/4zEjMIjjKWzct1fiOn4TgPfwW7GZWtTbir
-        BJPUd5apki3iT3eTIaKCq2PR7fKHFfWwUPu8MnsntT7PUaFUQ+G/bkauc3TAf7onRxvi
-        w6EQ==
+        bh=HJKkK+L/+IvQc4t06WFqnt4bWf+FyU8DIYq2eP8LWiA=;
+        b=s51fYI4EvPLeXNxVY0tPMkf89Y7ZX5Mq+04NyMdg2PAUXcJA89U2pb6zpEYf93NMO7
+        BVBeE7nST2oSNPjjoWkj/l2KcNj1ewigi7qeN6XbdnmtfrG2ykhIvOiqQ2aG3mJJCKbz
+        4pJmFb8E5QZnmX/HZbq7f+ZYIwWDEvo34NSdPb7o+qYAVpKG6Yy45P5T9UADZSWj5fhp
+        ZZmP0KU7YU5DMgYag2/iMSAdX6C2TPRTgk+Ks6gwRVt/yA90KmCj43M5bS8/80wSxdgw
+        903Mg1EOxHOqLr4zNEsjuZ9Eilnasgxy2sRj5vxu6aZK1HL8ZBj9dtbX6n5nPM5JjVTh
+        3Naw==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UNf2M0P2mp10IM"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
         by smtp.strato.de (RZmta 46.1.12 DYNA|AUTH)
-        with ESMTPSA id U06217w1BLfe0EQ
+        with ESMTPSA id U06217w1BLfh0EV
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Tue, 11 Feb 2020 22:41:40 +0100 (CET)
+        Tue, 11 Feb 2020 22:41:43 +0100 (CET)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Paul Cercueil <paul@crapouillou.net>,
         Paul Boddie <paul@boddie.org.uk>,
@@ -67,9 +68,9 @@ Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-i2c@vger.kernel.org, netdev@vger.kernel.org,
         linux-gpio@vger.kernel.org, letux-kernel@openphoenux.org,
         kernel@pyra-handheld.com
-Subject: [PATCH 10/14] MIPS: DTS: CI20: add DT node for IR sensor
-Date:   Tue, 11 Feb 2020 22:41:27 +0100
-Message-Id: <5ba2ba43f06955bbfcd8465271bb01cfc1101d13.1581457290.git.hns@goldelico.com>
+Subject: [PATCH 14/14] MIPS: DTS: CI20: fix interrupt for pcf8563 RTC
+Date:   Tue, 11 Feb 2020 22:41:31 +0100
+Message-Id: <9d300f1bac15ef4a91052973f2ed593dd2513656.1581457290.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <cover.1581457290.git.hns@goldelico.com>
 References: <cover.1581457290.git.hns@goldelico.com>
@@ -80,34 +81,29 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Alex Smith <alex.smith@imgtec.com>
+Interrupts should not be specified by interrupt line but by
+gpio parent and reference.
 
-The infrared sensor on the CI20 board is connected to a GPIO and can
-be operated by using the gpio-ir-recv driver. Add a DT node for the
-sensor to allow that driver to be used.
-
-Signed-off-by: Alex Smith <alex.smith@imgtec.com>
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- arch/mips/boot/dts/ingenic/ci20.dts | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/mips/boot/dts/ingenic/ci20.dts | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
-index e1364f941c7d..b4a820313992 100644
+index 8f9d182566db..4bacefa2cfce 100644
 --- a/arch/mips/boot/dts/ingenic/ci20.dts
 +++ b/arch/mips/boot/dts/ingenic/ci20.dts
-@@ -62,6 +62,11 @@
- 		enable-active-high;
- 	};
- 
-+	ir: ir-receiver {
-+		compatible = "gpio-ir-receiver";
-+		gpios = <&gpe 3 GPIO_ACTIVE_LOW>;
-+	};
+@@ -298,7 +298,9 @@ Optional input supply properties:
+ 		rtc@51 {
+ 			compatible = "nxp,pcf8563";
+ 			reg = <0x51>;
+-			interrupts = <110>;
 +
- 	wlan0_power: fixedregulator@1 {
- 		compatible = "regulator-fixed";
- 		regulator-name = "wlan0_power";
++			interrupt-parent = <&gpf>;
++			interrupts = <30 IRQ_TYPE_LEVEL_LOW>;
+ 		};
+ };
+ 
 -- 
 2.23.0
 

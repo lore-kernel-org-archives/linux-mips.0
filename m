@@ -2,214 +2,138 @@ Return-Path: <SRS0=iLA2=4B=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21CEEC2BA83
-	for <linux-mips@archiver.kernel.org>; Thu, 13 Feb 2020 16:18:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2C1DC2BA83
+	for <linux-mips@archiver.kernel.org>; Thu, 13 Feb 2020 18:44:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EDCB8222C2
-	for <linux-mips@archiver.kernel.org>; Thu, 13 Feb 2020 16:17:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8C807218AC
+	for <linux-mips@archiver.kernel.org>; Thu, 13 Feb 2020 18:44:59 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rXsK2+iV"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbgBMQQo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 13 Feb 2020 11:16:44 -0500
-Received: from foss.arm.com ([217.140.110.172]:49662 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725781AbgBMQQo (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 13 Feb 2020 11:16:44 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E37E0328;
-        Thu, 13 Feb 2020 08:16:42 -0800 (PST)
-Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 60CE33F6CF;
-        Thu, 13 Feb 2020 08:16:40 -0800 (PST)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S1727725AbgBMSo7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 13 Feb 2020 13:44:59 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:39409 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbgBMSo6 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 13 Feb 2020 13:44:58 -0500
+Received: by mail-oi1-f193.google.com with SMTP id z2so6828929oih.6;
+        Thu, 13 Feb 2020 10:44:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=VMfn8PswbJmJdlO37QEJbyEduZmdzRHRACLwl4PEk8k=;
+        b=rXsK2+iVg+xAfKgvi8EJ+xRiZDZt0bawe08UY4AzUK/QxcpXAUmYzPuw5Qe7XCMnPS
+         tZmzuVkVUVXxEupPwU/YXXodbsdKtthv4T+BBBq8URGrUJ1o7hAfIh0Sd9dohGvv5EIQ
+         f53iQUD4rXqVzeH6ddG3CL1x4L51BMbJzNbBLADFJYxR4/0bW/ybjDX/REtyW/700YaR
+         5oseD972Bfj3ZCtTInx+MQVCKJbE8Hka8ka9o7uuUqI5tAlVmhZ/zt5x5KcBppLqgUBF
+         U6UrSKM3wIKl8sXU0LUGs+T/ABgd9EWNoteBxkwYi/Wo3FlcS8spkr8gU1uTDGoDHDgc
+         O3jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=VMfn8PswbJmJdlO37QEJbyEduZmdzRHRACLwl4PEk8k=;
+        b=qUumq25N5+qeblBsL+BZkYd+56+/WLJDa1vrHR4ZzTz8ihhD2iQIeB6sJgVWuj8JGH
+         hjswJHeCBU5egAiyZhfcsQi8tC7i+t6Pl0vWldvbvCiEUlc/yIN6qbb4dlLJCs/7uuvS
+         l+63VmGmxX678/+6F+DIyIX0LZYb9uZACodEN0i1Zfjwegj8qhd+/gv4RMM48f98tMTQ
+         8VixzxEUrRr1DapnfW7kmSI4qIrNVHgNzCKXXUozn1dCBaNTrtJnTz3paa9n+DsGjoLC
+         4e8Ybn/HdEmKMWqkkE3FU/cO5X3ba2uCyB6s2MSRNUwLVgGH9QHPASf7xurbkafIs2VO
+         5u0A==
+X-Gm-Message-State: APjAAAXUN6fOtbn3+jghYF8eUo+vA+yk4CDTLuIhf3b11ZnhcKiIZLr5
+        7t/W3pb5o12M9eRxUvasglc=
+X-Google-Smtp-Source: APXvYqynTIfheT81Tmv6YGZbDN/SxN5IZ1aShJnYqGSRbGS5am4J0OAyqhZh6lHjOP9ROpiUTekYoA==
+X-Received: by 2002:a05:6808:218:: with SMTP id l24mr3689993oie.108.1581619496475;
+        Thu, 13 Feb 2020 10:44:56 -0800 (PST)
+Received: from ubuntu-m2-xlarge-x86 ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id q5sm951383oia.21.2020.02.13.10.44.55
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 13 Feb 2020 10:44:56 -0800 (PST)
+Date:   Thu, 13 Feb 2020 11:44:54 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        clang-built-linux@googlegroups.com, x86@kernel.org
-Cc:     catalin.marinas@arm.com, will.deacon@arm.com, arnd@arndb.de,
+        clang-built-linux@googlegroups.com, x86@kernel.org,
+        catalin.marinas@arm.com, will.deacon@arm.com, arnd@arndb.de,
         linux@armlinux.org.uk, paul.burton@mips.com, tglx@linutronix.de,
         luto@kernel.org, mingo@redhat.com, bp@alien8.de, sboyd@kernel.org,
         salyzyn@android.com, pcc@google.com, 0x7f454c46@gmail.com,
         ndesaulniers@google.com, avagin@openvz.org
-Subject: [PATCH 00/19] Introduce common headers
-Date:   Thu, 13 Feb 2020 16:15:55 +0000
-Message-Id: <20200213161614.23246-1-vincenzo.frascino@arm.com>
-X-Mailer: git-send-email 2.25.0
+Subject: Re: [PATCH 19/19] arm64: vdso32: Enable Clang Compilation
+Message-ID: <20200213184454.GA4663@ubuntu-m2-xlarge-x86>
+References: <20200213161614.23246-1-vincenzo.frascino@arm.com>
+ <20200213161614.23246-20-vincenzo.frascino@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200213161614.23246-20-vincenzo.frascino@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Back in July last year we started having a problem in building compat
-vDSOs on arm64 [1] [2] that was not present when the arm64 porting to
-the Unified vDSO was done. In particular when the compat vDSO on such
-architecture is built with gcc it generates the warning below:
+On Thu, Feb 13, 2020 at 04:16:14PM +0000, Vincenzo Frascino wrote:
+> Enable Clang Compilation for the vdso32 library.
+> 
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> ---
+>  arch/arm64/kernel/vdso32/Makefile | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+> index 04df57b43cb1..209639101044 100644
+> --- a/arch/arm64/kernel/vdso32/Makefile
+> +++ b/arch/arm64/kernel/vdso32/Makefile
+> @@ -11,8 +11,10 @@ include $(srctree)/lib/vdso/Makefile
+>  # Same as cc-*option, but using CC_COMPAT instead of CC
+>  ifeq ($(CONFIG_CC_IS_CLANG), y)
+>  CC_COMPAT ?= $(CC)
+> +LD_COMPAT ?= $(CROSS_COMPILE_COMPAT)gcc
 
-In file included from ./arch/arm64/include/asm/thread_info.h:17:0,
-                 from ./include/linux/thread_info.h:38,
-                 from ./arch/arm64/include/asm/preempt.h:5,
-                 from ./include/linux/preempt.h:78,
-                 from ./include/linux/spinlock.h:51,
-                 from ./include/linux/seqlock.h:36,
-                 from ./include/linux/time.h:6,
-                 from ./lib/vdso/gettimeofday.c:7,
-                 from <command-line>:0:
-./arch/arm64/include/asm/memory.h: In function ‘__tag_set’:
-./arch/arm64/include/asm/memory.h:233:15: warning: cast from pointer
-                to integer of different size [-Wpointer-to-int-cast]
-  u64 __addr = (u64)addr & ~__tag_shifted(0xff);
-               ^
-In file included from ./arch/arm64/include/asm/pgtable-hwdef.h:8:0,
-                 from ./arch/arm64/include/asm/processor.h:34,
-                 from ./arch/arm64/include/asm/elf.h:118,
-                 from ./include/linux/elf.h:5,
-                 from ./include/linux/elfnote.h:62,
-                 from arch/arm64/kernel/vdso32/note.c:11:
-./arch/arm64/include/asm/memory.h: In function ‘__tag_set’:
-./arch/arm64/include/asm/memory.h:233:15: warning: cast from pointer
-                to integer of different size [-Wpointer-to-int-cast]
-  u64 __addr = (u64)addr & ~__tag_shifted(0xff);
+Well this is unfortunate :/
 
-The same porting does not build at all when the selected compiler is
-clang.
+It looks like adding the --target flag to VDSO_LDFLAGS allows
+clang to link the vDSO just fine although it does warn that -nostdinc
+is unused:
 
-I started an investigation to try to understand better the problem and
-after various discussions at Plumbers and Recipes last year the
-conclusion was that the vDSO library as it stands it is including more
-headers that it needs. In particular, being a user-space library, it
-should require only the UAPI and a minimal vDSO kernel interface instead
-of all the kernel-related inline functions which are not directly used
-and in some cases can have side effects.
+clang-11: warning: argument unused during compilation: '-nostdinc'
+[-Wunused-command-line-argument]
 
-To solve the problem, I decided to use the approach below:
-  * Extract from include/linux/ the vDSO required kernel interface
-    and place it in include/common/
-  * Make sure that where meaningful the kernel includes "common"
-  * Limit the vDSO library to include headers coming only from UAPI
-    and "common" (with 2 exceptions compiler.h for barriers and
-    param.h for HZ).
-  * Adapt all the architectures that support the unified vDSO library
-    to use "common" headers.
+It would be nice if the logic of commit fe00e50b2db8 ("ARM: 8858/1:
+vdso: use $(LD) instead of $(CC) to link VDSO") could be adopted here
+but I get that this Makefile is its own beast :) at the very least, I
+think that the --target flag should be added to VDSO_LDFLAGS so that gcc
+is not a requirement for this but I am curious if you tried that already
+and noticed any issues with it.
 
-According to me this approach allows up to exercise a better control on
-what the vDSO library can include and to prevent potential issues in
-future.
+Cheers,
+Nathan
 
-This patch series contains the implementation of the described approach.
-
-The "common" headers have been verified on all the architectures that support
-unified vDSO using the vdsotest [3] testsuite for what concerns the vDSO part
-and randconfig to verify that they are included in the correct places.
-
-To simplify the testing, a copy of the patchset on top of a recent linux
-tree can be found at [4].
-
-[1] https://github.com/ClangBuiltLinux/linux/issues/595
-[2] https://lore.kernel.org/lkml/20190926151704.GH9689@arrakis.emea.arm.com
-[3] https://github.com/nathanlynch/vdsotest
-[4] git://linux-arm.org/linux-vf.git common-headers/v1
-
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will.deacon@arm.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Paul Burton <paul.burton@mips.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Mark Salyzyn <salyzyn@android.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Peter Collingbourne <pcc@google.com>
-Cc: Dmitry Safonov <0x7f454c46@gmail.com>
-Cc: Andrei Vagin <avagin@openvz.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-
-Vincenzo Frascino (19):
-  linux/const.h: Extract common header for vDSO
-  linux/bits.h: Extract common header for vDSO
-  linux/limits.h: Extract common header for vDSO
-  linux/math64.h: Extract common header for vDSO
-  linux/time.h: Extract common header for vDSO
-  linux/time32.h: Extract common header for vDSO
-  linux/time64.h: Extract common header for vDSO
-  linux/jiffies.h: Extract common header for vDSO
-  linux/ktime.h: Extract common header for vDSO
-  common: Introduce processor.h
-  linux/elfnote.h: Replace elf.h with UAPI equivalent
-  arm64: Introduce asm/common/processor.h
-  arm64: vdso: Include common headers in the vdso library
-  arm64: vdso32: Include common headers in the vdso library
-  mips: vdso: Enable mips to use common headers
-  x86: vdso: Enable x86 to use common headers
-  arm: vdso: Enable arm to use common headers
-  lib: vdso: Enable common headers
-  arm64: vdso32: Enable Clang Compilation
-
- arch/arm/include/asm/common/cp15.h            | 38 +++++++++++++++++++
- arch/arm/include/asm/common/processor.h       | 22 +++++++++++
- arch/arm/include/asm/cp15.h                   | 20 +---------
- arch/arm/include/asm/processor.h              | 11 +-----
- arch/arm/include/asm/vdso/gettimeofday.h      |  4 +-
- arch/arm64/include/asm/common/processor.h     | 31 +++++++++++++++
- arch/arm64/include/asm/processor.h            | 16 +-------
- .../include/asm/vdso/compat_gettimeofday.h    |  2 +-
- arch/arm64/include/asm/vdso/gettimeofday.h    |  1 -
- arch/arm64/kernel/vdso/vgettimeofday.c        |  2 -
- arch/arm64/kernel/vdso32/Makefile             |  4 +-
- arch/arm64/kernel/vdso32/vgettimeofday.c      |  3 --
- arch/mips/include/asm/common/processor.h      | 27 +++++++++++++
- arch/mips/include/asm/processor.h             | 16 +-------
- arch/mips/include/asm/vdso/gettimeofday.h     |  4 --
- arch/x86/include/asm/common/processor.h       | 23 +++++++++++
- arch/x86/include/asm/processor.h              | 12 +-----
- include/common/bits.h                         |  9 +++++
- include/common/const.h                        | 10 +++++
- include/common/jiffies.h                      | 11 ++++++
- include/common/ktime.h                        | 16 ++++++++
- include/common/limits.h                       | 18 +++++++++
- include/common/math64.h                       | 24 ++++++++++++
- include/common/processor.h                    | 14 +++++++
- include/common/time.h                         | 12 ++++++
- include/common/time32.h                       | 17 +++++++++
- include/common/time64.h                       | 14 +++++++
- include/linux/bits.h                          |  2 +-
- include/linux/const.h                         |  5 +--
- include/linux/elfnote.h                       |  2 +-
- include/linux/jiffies.h                       |  4 +-
- include/linux/ktime.h                         |  9 +----
- include/linux/limits.h                        | 13 +------
- include/linux/math64.h                        | 20 +---------
- include/linux/time.h                          |  5 +--
- include/linux/time32.h                        | 13 +------
- include/linux/time64.h                        | 10 +----
- include/vdso/datapage.h                       | 32 ++++++++++++++--
- lib/vdso/gettimeofday.c                       | 21 ----------
- 39 files changed, 337 insertions(+), 180 deletions(-)
- create mode 100644 arch/arm/include/asm/common/cp15.h
- create mode 100644 arch/arm/include/asm/common/processor.h
- create mode 100644 arch/arm64/include/asm/common/processor.h
- create mode 100644 arch/mips/include/asm/common/processor.h
- create mode 100644 arch/x86/include/asm/common/processor.h
- create mode 100644 include/common/bits.h
- create mode 100644 include/common/const.h
- create mode 100644 include/common/jiffies.h
- create mode 100644 include/common/ktime.h
- create mode 100644 include/common/limits.h
- create mode 100644 include/common/math64.h
- create mode 100644 include/common/processor.h
- create mode 100644 include/common/time.h
- create mode 100644 include/common/time32.h
- create mode 100644 include/common/time64.h
-
--- 
-2.25.0
-
+>  else
+>  CC_COMPAT ?= $(CROSS_COMPILE_COMPAT)gcc
+> +LD_COMPAT ?= $(CC_COMPAT)
+>  endif
+>  
+>  cc32-option = $(call try-run,\
+> @@ -171,7 +173,7 @@ quiet_cmd_vdsold_and_vdso_check = LD32    $@
+>        cmd_vdsold_and_vdso_check = $(cmd_vdsold); $(cmd_vdso_check)
+>  
+>  quiet_cmd_vdsold = LD32    $@
+> -      cmd_vdsold = $(CC_COMPAT) -Wp,-MD,$(depfile) $(VDSO_LDFLAGS) \
+> +      cmd_vdsold = $(LD_COMPAT) -Wp,-MD,$(depfile) $(VDSO_LDFLAGS) \
+>                     -Wl,-T $(filter %.lds,$^) $(filter %.o,$^) -o $@
+>  quiet_cmd_vdsocc = CC32    $@
+>        cmd_vdsocc = $(CC_COMPAT) -Wp,-MD,$(depfile) $(VDSO_CFLAGS) -c -o $@ $<
+> -- 
+> 2.25.0
+> 

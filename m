@@ -6,24 +6,24 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAA5CC3B18C
-	for <linux-mips@archiver.kernel.org>; Thu, 13 Feb 2020 16:17:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10CF1C3B189
+	for <linux-mips@archiver.kernel.org>; Thu, 13 Feb 2020 16:17:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 835172073C
-	for <linux-mips@archiver.kernel.org>; Thu, 13 Feb 2020 16:17:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DBE9A24677
+	for <linux-mips@archiver.kernel.org>; Thu, 13 Feb 2020 16:17:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728644AbgBMQRA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 13 Feb 2020 11:17:00 -0500
-Received: from foss.arm.com ([217.140.110.172]:49856 "EHLO foss.arm.com"
+        id S1729826AbgBMQRJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 13 Feb 2020 11:17:09 -0500
+Received: from foss.arm.com ([217.140.110.172]:49954 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728514AbgBMQRA (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 13 Feb 2020 11:17:00 -0500
+        id S1729355AbgBMQRI (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 13 Feb 2020 11:17:08 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 62A0A1045;
-        Thu, 13 Feb 2020 08:16:59 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A0142328;
+        Thu, 13 Feb 2020 08:17:07 -0800 (PST)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D542C3F6CF;
-        Thu, 13 Feb 2020 08:16:56 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1F5E43F6CF;
+        Thu, 13 Feb 2020 08:17:05 -0800 (PST)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
@@ -33,9 +33,9 @@ Cc:     catalin.marinas@arm.com, will.deacon@arm.com, arnd@arndb.de,
         luto@kernel.org, mingo@redhat.com, bp@alien8.de, sboyd@kernel.org,
         salyzyn@android.com, pcc@google.com, 0x7f454c46@gmail.com,
         ndesaulniers@google.com, avagin@openvz.org
-Subject: [PATCH 06/19] linux/time32.h: Extract common header for vDSO
-Date:   Thu, 13 Feb 2020 16:16:01 +0000
-Message-Id: <20200213161614.23246-7-vincenzo.frascino@arm.com>
+Subject: [PATCH 09/19] linux/ktime.h: Extract common header for vDSO
+Date:   Thu, 13 Feb 2020 16:16:04 +0000
+Message-Id: <20200213161614.23246-10-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200213161614.23246-1-vincenzo.frascino@arm.com>
 References: <20200213161614.23246-1-vincenzo.frascino@arm.com>
@@ -51,66 +51,58 @@ a userspace library (UAPI and a minimal set of kernel headers). To make
 this possible it is necessary to isolate from the kernel headers the
 common parts that are strictly necessary to build the library.
 
-Split time32.h into linux and common headers to make the latter suitable
+Split ktime.h into linux and common headers to make the latter suitable
 for inclusion in the vDSO library.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- include/common/time32.h | 17 +++++++++++++++++
- include/linux/time32.h  | 13 +------------
- 2 files changed, 18 insertions(+), 12 deletions(-)
- create mode 100644 include/common/time32.h
+ include/common/ktime.h | 16 ++++++++++++++++
+ include/linux/ktime.h  |  9 +--------
+ 2 files changed, 17 insertions(+), 8 deletions(-)
+ create mode 100644 include/common/ktime.h
 
-diff --git a/include/common/time32.h b/include/common/time32.h
+diff --git a/include/common/ktime.h b/include/common/ktime.h
 new file mode 100644
-index 000000000000..d5b85abdfaf1
+index 000000000000..4dd6c6762ad4
 --- /dev/null
-+++ b/include/common/time32.h
-@@ -0,0 +1,17 @@
++++ b/include/common/ktime.h
+@@ -0,0 +1,16 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __COMMON_TIME32_H
-+#define __COMMON_TIME32_H
++#ifndef __COMMON_KTIME_H
++#define __COMMON_KTIME_H
 +
-+typedef s32		old_time32_t;
++#include <common/jiffies.h>
 +
-+struct old_timespec32 {
-+	old_time32_t	tv_sec;
-+	s32		tv_nsec;
-+};
++/*
++ * The resolution of the clocks. The resolution value is returned in
++ * the clock_getres() system call to give application programmers an
++ * idea of the (in)accuracy of timers. Timer values are rounded up to
++ * this resolution values.
++ */
++#define LOW_RES_NSEC		TICK_NSEC
++#define KTIME_LOW_RES		(LOW_RES_NSEC)
 +
-+struct old_timeval32 {
-+	old_time32_t	tv_sec;
-+	s32		tv_usec;
-+};
-+
-+#endif /* __COMMON_TIME32_H */
-diff --git a/include/linux/time32.h b/include/linux/time32.h
-index cad4c3186002..39ff2f55e8d7 100644
---- a/include/linux/time32.h
-+++ b/include/linux/time32.h
-@@ -11,21 +11,10 @@
++#endif /* __COMMON_KTIME_H */
+diff --git a/include/linux/ktime.h b/include/linux/ktime.h
+index b2bb44f87f5a..0e1fadeb23c3 100644
+--- a/include/linux/ktime.h
++++ b/include/linux/ktime.h
+@@ -253,14 +253,7 @@ static inline __must_check bool ktime_to_timespec64_cond(const ktime_t kt,
+ 	}
+ }
  
- #include <linux/time64.h>
- #include <linux/timex.h>
-+#include <common/time32.h>
+-/*
+- * The resolution of the clocks. The resolution value is returned in
+- * the clock_getres() system call to give application programmers an
+- * idea of the (in)accuracy of timers. Timer values are rounded up to
+- * this resolution values.
+- */
+-#define LOW_RES_NSEC		TICK_NSEC
+-#define KTIME_LOW_RES		(LOW_RES_NSEC)
++#include <common/ktime.h>
  
- #define TIME_T_MAX	(__kernel_old_time_t)((1UL << ((sizeof(__kernel_old_time_t) << 3) - 1)) - 1)
- 
--typedef s32		old_time32_t;
--
--struct old_timespec32 {
--	old_time32_t	tv_sec;
--	s32		tv_nsec;
--};
--
--struct old_timeval32 {
--	old_time32_t	tv_sec;
--	s32		tv_usec;
--};
--
- struct old_itimerspec32 {
- 	struct old_timespec32 it_interval;
- 	struct old_timespec32 it_value;
+ static inline ktime_t ns_to_ktime(u64 ns)
+ {
 -- 
 2.25.0
 

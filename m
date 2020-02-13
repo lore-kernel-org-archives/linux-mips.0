@@ -2,121 +2,97 @@ Return-Path: <SRS0=iLA2=4B=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CBB2C3B189
-	for <linux-mips@archiver.kernel.org>; Thu, 13 Feb 2020 15:59:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E453C2BA83
+	for <linux-mips@archiver.kernel.org>; Thu, 13 Feb 2020 16:16:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6444C24671
-	for <linux-mips@archiver.kernel.org>; Thu, 13 Feb 2020 15:59:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581609550;
-	bh=zSg6T09HqcBiqYeTqt4FTCQO6B5h/IbyxlbEvz0yLW8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=M9k/l7/l7Wkyyd8L/6t6SQobbKfJzazQOXK2YJBKGFmtAgyi8hrBii3Cdi9AjTX8K
-	 3spNCTg0iv0J6Q4Co75SB0UpZEWD8McpWli7fYE2mfuxA8lISSNB4P0pgfTfUaerkU
-	 E4EDGlA9jpBDS7QapN28wjK6+mCIsbtcRmHZx3BY=
+	by mail.kernel.org (Postfix) with ESMTP id F067A24649
+	for <linux-mips@archiver.kernel.org>; Thu, 13 Feb 2020 16:16:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728872AbgBMPY6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 13 Feb 2020 10:24:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39614 "EHLO mail.kernel.org"
+        id S1727943AbgBMQQq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 13 Feb 2020 11:16:46 -0500
+Received: from foss.arm.com ([217.140.110.172]:49692 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728869AbgBMPY6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 13 Feb 2020 10:24:58 -0500
-Received: from localhost (unknown [104.132.1.104])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 306AC246C0;
-        Thu, 13 Feb 2020 15:24:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581607497;
-        bh=zSg6T09HqcBiqYeTqt4FTCQO6B5h/IbyxlbEvz0yLW8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xQ4LtvXRi8Ex3Xa/t6/YwEktHJCrzcny16RXETW0HiMdW36jHLxLc9Awi4qT+AJQJ
-         80NOChK5pIkVRPijkAXW35lNRc8wycUiseKosC8xjJFK9Bgir20kalO3YMGGpazAdp
-         5FIGoA0g8orX02QV4h1YSXEkZHp0/JjOIgZTRkk0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Lobakin <alobakin@dlink.ru>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        James Hogan <jhogan@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Rob Herring <robh@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH 4.14 032/173] MIPS: fix indentation of the RELOCS message
-Date:   Thu, 13 Feb 2020 07:18:55 -0800
-Message-Id: <20200213151941.675722065@linuxfoundation.org>
+        id S1725781AbgBMQQq (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 13 Feb 2020 11:16:46 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A69F41045;
+        Thu, 13 Feb 2020 08:16:45 -0800 (PST)
+Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 235143F6CF;
+        Thu, 13 Feb 2020 08:16:43 -0800 (PST)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        clang-built-linux@googlegroups.com, x86@kernel.org
+Cc:     catalin.marinas@arm.com, will.deacon@arm.com, arnd@arndb.de,
+        linux@armlinux.org.uk, paul.burton@mips.com, tglx@linutronix.de,
+        luto@kernel.org, mingo@redhat.com, bp@alien8.de, sboyd@kernel.org,
+        salyzyn@android.com, pcc@google.com, 0x7f454c46@gmail.com,
+        ndesaulniers@google.com, avagin@openvz.org
+Subject: [PATCH 01/19] linux/const.h: Extract common header for vDSO
+Date:   Thu, 13 Feb 2020 16:15:56 +0000
+Message-Id: <20200213161614.23246-2-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200213151931.677980430@linuxfoundation.org>
-References: <20200213151931.677980430@linuxfoundation.org>
-User-Agent: quilt/0.66
+In-Reply-To: <20200213161614.23246-1-vincenzo.frascino@arm.com>
+References: <20200213161614.23246-1-vincenzo.frascino@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Alexander Lobakin <alobakin@dlink.ru>
+The vDSO library should only include the necessary headers required for
+a userspace library (UAPI and a minimal set of kernel headers). To make
+this possible it is necessary to isolate from the kernel headers the
+common parts that are strictly necessary to build the library.
 
-commit a53998802e178451701d59d38e36f551422977ba upstream.
+Split const.h into linux and common headers to make the latter suitable
+for inclusion in the vDSO library.
 
-quiet_cmd_relocs lacks a whitespace which results in:
-
-  LD      vmlinux
-  SORTEX  vmlinux
-  SYSMAP  System.map
-  RELOCS vmlinux
-  Building modules, stage 2.
-  MODPOST 64 modules
-
-After this patch:
-
-  LD      vmlinux
-  SORTEX  vmlinux
-  SYSMAP  System.map
-  RELOCS  vmlinux
-  Building modules, stage 2.
-  MODPOST 64 modules
-
-Typo is present in kernel tree since the introduction of relocatable
-kernel support in commit e818fac595ab ("MIPS: Generate relocation table
-when CONFIG_RELOCATABLE"), but the relocation scripts were moved to
-Makefile.postlink later with commit 44079d3509ae ("MIPS: Use
-Makefile.postlink to insert relocations into vmlinux").
-
-Fixes: 44079d3509ae ("MIPS: Use Makefile.postlink to insert relocations into vmlinux")
-Cc: <stable@vger.kernel.org> # v4.11+
-Signed-off-by: Alexander Lobakin <alobakin@dlink.ru>
-[paulburton@kernel.org: Fixup commit references in commit message.]
-Signed-off-by: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <jhogan@kernel.org>
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Rob Herring <robh@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- arch/mips/Makefile.postlink |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/common/const.h | 10 ++++++++++
+ include/linux/const.h  |  5 +----
+ 2 files changed, 11 insertions(+), 4 deletions(-)
+ create mode 100644 include/common/const.h
 
---- a/arch/mips/Makefile.postlink
-+++ b/arch/mips/Makefile.postlink
-@@ -12,7 +12,7 @@ __archpost:
- include scripts/Kbuild.include
+diff --git a/include/common/const.h b/include/common/const.h
+new file mode 100644
+index 000000000000..cc209eec47a1
+--- /dev/null
++++ b/include/common/const.h
+@@ -0,0 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __COMMON_CONST_H
++#define __COMMON_CONST_H
++
++#include <uapi/linux/const.h>
++
++#define UL(x)		(_UL(x))
++#define ULL(x)		(_ULL(x))
++
++#endif /* __COMMON_CONST_H */
+diff --git a/include/linux/const.h b/include/linux/const.h
+index 7b55a55f5911..447a5b98d5a3 100644
+--- a/include/linux/const.h
++++ b/include/linux/const.h
+@@ -1,9 +1,6 @@
+ #ifndef _LINUX_CONST_H
+ #define _LINUX_CONST_H
  
- CMD_RELOCS = arch/mips/boot/tools/relocs
--quiet_cmd_relocs = RELOCS $@
-+quiet_cmd_relocs = RELOCS  $@
-       cmd_relocs = $(CMD_RELOCS) $@
+-#include <uapi/linux/const.h>
+-
+-#define UL(x)		(_UL(x))
+-#define ULL(x)		(_ULL(x))
++#include <common/const.h>
  
- # `@true` prevents complaint when there is nothing to be done
-
+ #endif /* _LINUX_CONST_H */
+-- 
+2.25.0
 

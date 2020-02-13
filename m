@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6919C3B18B
-	for <linux-mips@archiver.kernel.org>; Thu, 13 Feb 2020 15:41:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CBB2C3B189
+	for <linux-mips@archiver.kernel.org>; Thu, 13 Feb 2020 15:59:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A82BC217F4
-	for <linux-mips@archiver.kernel.org>; Thu, 13 Feb 2020 15:41:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6444C24671
+	for <linux-mips@archiver.kernel.org>; Thu, 13 Feb 2020 15:59:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581608460;
-	bh=PiBdcD+Bje6p3RdBSrjXgWJm4Gd4Cq0tAJ6WKxdJb8U=;
+	s=default; t=1581609550;
+	bh=zSg6T09HqcBiqYeTqt4FTCQO6B5h/IbyxlbEvz0yLW8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=1jpUgmeNuUVwCy9jyy4+y1tKYcbWKO/ntKt7Hwh0iOd2E29/hN5JxKAq2irw+VTX8
-	 d1ZroZRgTourAAFpcb+Dqj6HDTVtZ9Nge0JwBA8tU+Iv0PZk+iCGWp88q4MId+O1tc
-	 3mw/7xWnk0pGmHuNfNkZm/s3Vdx/YygueOL7zoXY=
+	b=M9k/l7/l7Wkyyd8L/6t6SQobbKfJzazQOXK2YJBKGFmtAgyi8hrBii3Cdi9AjTX8K
+	 3spNCTg0iv0J6Q4Co75SB0UpZEWD8McpWli7fYE2mfuxA8lISSNB4P0pgfTfUaerkU
+	 E4EDGlA9jpBDS7QapN28wjK6+mCIsbtcRmHZx3BY=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728618AbgBMPkp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 13 Feb 2020 10:40:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56400 "EHLO mail.kernel.org"
+        id S1728872AbgBMPY6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 13 Feb 2020 10:24:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387749AbgBMP2i (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 13 Feb 2020 10:28:38 -0500
+        id S1728869AbgBMPY6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 13 Feb 2020 10:24:58 -0500
 Received: from localhost (unknown [104.132.1.104])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 500812467D;
-        Thu, 13 Feb 2020 15:28:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 306AC246C0;
+        Thu, 13 Feb 2020 15:24:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581607718;
-        bh=PiBdcD+Bje6p3RdBSrjXgWJm4Gd4Cq0tAJ6WKxdJb8U=;
+        s=default; t=1581607497;
+        bh=zSg6T09HqcBiqYeTqt4FTCQO6B5h/IbyxlbEvz0yLW8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dPU12V8meH2xefUYncCHTXDHRW95IPJXc4tJZtL6sUSXuTR/rbpB83LM04i/pZvou
-         +zt/WxmW44KsEAM7DXrlcG/mBJ94Y2xY3I5orGWPyrxEQ4khjiESpbwAhZKQ/C7E5e
-         vGGb8kD6GWp5QzCjJ/R++ONL5jXOmPJU36zxsWBY=
+        b=xQ4LtvXRi8Ex3Xa/t6/YwEktHJCrzcny16RXETW0HiMdW36jHLxLc9Awi4qT+AJQJ
+         80NOChK5pIkVRPijkAXW35lNRc8wycUiseKosC8xjJFK9Bgir20kalO3YMGGpazAdp
+         5FIGoA0g8orX02QV4h1YSXEkZHp0/JjOIgZTRkk0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        stable@vger.kernel.org, Alexander Lobakin <alobakin@dlink.ru>,
         Paul Burton <paulburton@kernel.org>,
         Ralf Baechle <ralf@linux-mips.org>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org
-Subject: [PATCH 5.5 052/120] MIPS: Loongson: Fix potential NULL dereference in loongson3_platform_init()
-Date:   Thu, 13 Feb 2020 07:20:48 -0800
-Message-Id: <20200213151919.611428309@linuxfoundation.org>
+        James Hogan <jhogan@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Rob Herring <robh@kernel.org>, linux-mips@vger.kernel.org
+Subject: [PATCH 4.14 032/173] MIPS: fix indentation of the RELOCS message
+Date:   Thu, 13 Feb 2020 07:18:55 -0800
+Message-Id: <20200213151941.675722065@linuxfoundation.org>
 X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200213151901.039700531@linuxfoundation.org>
-References: <20200213151901.039700531@linuxfoundation.org>
+In-Reply-To: <20200213151931.677980430@linuxfoundation.org>
+References: <20200213151931.677980430@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -62,38 +62,61 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: Alexander Lobakin <alobakin@dlink.ru>
 
-commit 72d052e28d1d2363f9107be63ef3a3afdea6143c upstream.
+commit a53998802e178451701d59d38e36f551422977ba upstream.
 
-If kzalloc fails, it should return -ENOMEM, otherwise may trigger a NULL
-pointer dereference.
+quiet_cmd_relocs lacks a whitespace which results in:
 
-Fixes: 3adeb2566b9b ("MIPS: Loongson: Improve LEFI firmware interface")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+  LD      vmlinux
+  SORTEX  vmlinux
+  SYSMAP  System.map
+  RELOCS vmlinux
+  Building modules, stage 2.
+  MODPOST 64 modules
+
+After this patch:
+
+  LD      vmlinux
+  SORTEX  vmlinux
+  SYSMAP  System.map
+  RELOCS  vmlinux
+  Building modules, stage 2.
+  MODPOST 64 modules
+
+Typo is present in kernel tree since the introduction of relocatable
+kernel support in commit e818fac595ab ("MIPS: Generate relocation table
+when CONFIG_RELOCATABLE"), but the relocation scripts were moved to
+Makefile.postlink later with commit 44079d3509ae ("MIPS: Use
+Makefile.postlink to insert relocations into vmlinux").
+
+Fixes: 44079d3509ae ("MIPS: Use Makefile.postlink to insert relocations into vmlinux")
+Cc: <stable@vger.kernel.org> # v4.11+
+Signed-off-by: Alexander Lobakin <alobakin@dlink.ru>
+[paulburton@kernel.org: Fixup commit references in commit message.]
 Signed-off-by: Paul Burton <paulburton@kernel.org>
 Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Huacai Chen <chenhc@lemote.com>
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: James Hogan <jhogan@kernel.org>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Rob Herring <robh@kernel.org>
 Cc: linux-mips@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/mips/loongson64/platform.c |    3 +++
- 1 file changed, 3 insertions(+)
+ arch/mips/Makefile.postlink |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/mips/loongson64/platform.c
-+++ b/arch/mips/loongson64/platform.c
-@@ -27,6 +27,9 @@ static int __init loongson3_platform_ini
- 			continue;
+--- a/arch/mips/Makefile.postlink
++++ b/arch/mips/Makefile.postlink
+@@ -12,7 +12,7 @@ __archpost:
+ include scripts/Kbuild.include
  
- 		pdev = kzalloc(sizeof(struct platform_device), GFP_KERNEL);
-+		if (!pdev)
-+			return -ENOMEM;
-+
- 		pdev->name = loongson_sysconf.sensors[i].name;
- 		pdev->id = loongson_sysconf.sensors[i].id;
- 		pdev->dev.platform_data = &loongson_sysconf.sensors[i];
+ CMD_RELOCS = arch/mips/boot/tools/relocs
+-quiet_cmd_relocs = RELOCS $@
++quiet_cmd_relocs = RELOCS  $@
+       cmd_relocs = $(CMD_RELOCS) $@
+ 
+ # `@true` prevents complaint when there is nothing to be done
 
 

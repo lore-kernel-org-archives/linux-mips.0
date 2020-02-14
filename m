@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 824F2C3B1AA
-	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 17:19:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0ED40C3B1AB
+	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 17:20:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4F7EC2467E
-	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 17:19:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D4C94222C2
+	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 17:20:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="DPm2fp5U"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="I826faO5"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394638AbgBNRTP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 14 Feb 2020 12:19:15 -0500
-Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.124]:19639 "EHLO
-        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391607AbgBNQKx (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 14 Feb 2020 11:10:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1581696642;
+        id S2390285AbgBNRTu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 14 Feb 2020 12:19:50 -0500
+Received: from mo4-p03-ob.smtp.rzone.de ([81.169.146.175]:14760 "EHLO
+        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391595AbgBNQKt (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 14 Feb 2020 11:10:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1581696641;
         s=strato-dkim-0002; d=goldelico.com;
         h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
         X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=3oO7x2A3vdUHmUPMqDNJJ9DsdN1nPGYoXmW4gDFFS+k=;
-        b=DPm2fp5U1fSACRGiAgOjmYWs7+jNqufvSiK2JUET9VWvfbKBXUFnSFfk+CQdH5v8kS
-        sfxtQ7ne5Mg9dh6kacDYiRNiDY1D40MAx4Bv2eXxTZLRkS1wkXoTFEKMdfs4OmbOMwgJ
-        CZQy0eIldUQPPsN2UyMYS2coPHDQF0T+cIgnksQHuGnYVZxMDWG4JzyROEfxCDjkoWzd
-        OydLAWUqPizxg7CiHF9x4FbCi65mK4FgjAYmDgKw3K/tTw1/1fSCK436IasMtR0dMhiy
-        T7ZKmek8AivltBVTZ1bL+5mabQuODbeV9VZh/LCXn7LWIUSdafwWz26d2lHmEYiCiWwg
-        tZRg==
+        bh=tz5FT9e8j/vOF6dHesX7jElKIt8MXbKvwaqQV2chsVc=;
+        b=I826faO5T/TvkRm4b44fKQRk6/GbQN4VWUSiNG6gkDRGy/JUhuMJR+8xnFMppsb0zP
+        0BrRdW88d+ASFDdpKjHypiL1falTEQwChfC+lJQCYX2BRRJT/dstJOlQXJlXDUklq2mJ
+        +ePGLjINTi2K/kg//9/R3MDpLPC5kvN44r7pgAsY6orpKztBLC4Ta8mt6IU7xcfelct6
+        T9r0h2O9vhj82Wl5gsKg9spBZWHJVum/EtXPu5Tc2dzELQr74ZWzQv9MOO08MbWQKsRp
+        uAzIRgPbD4b3oUiaWh9AwTm4lPF0aGGq417yfIl02jkb1+D58wcaN1R8GVdtyzTWrSTr
+        UpQg==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UNf2M7OMfsfQx3"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
         by smtp.strato.de (RZmta 46.1.12 DYNA|AUTH)
-        with ESMTPSA id U06217w1EGAXFl7
+        with ESMTPSA id U06217w1EGAUFl3
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Fri, 14 Feb 2020 17:10:33 +0100 (CET)
+        Fri, 14 Feb 2020 17:10:30 +0100 (CET)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Paul Boddie <paul@boddie.org.uk>,
         Paul Cercueil <paul@crapouillou.net>,
@@ -55,10 +55,11 @@ To:     Paul Boddie <paul@boddie.org.uk>,
         Kees Cook <keescook@chromium.org>
 Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
-Subject: [PATCH v2 12/12] MIPS: DTS: CI20: fix interrupt for pcf8563 RTC
-Date:   Fri, 14 Feb 2020 17:10:24 +0100
-Message-Id: <42aed0c7c063fa6c289fcbf361645056e15f513c.1581696624.git.hns@goldelico.com>
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com,
+        Alex Smith <alex.smith@imgtec.com>
+Subject: [PATCH v2 08/12] MIPS: DTS: CI20: add DT node for IR sensor
+Date:   Fri, 14 Feb 2020 17:10:20 +0100
+Message-Id: <31af38e43747fbcc1248bcb83975997d1385838e.1581696624.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <cover.1581696624.git.hns@goldelico.com>
 References: <cover.1581696624.git.hns@goldelico.com>
@@ -69,30 +70,34 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Interrupts should not be specified by interrupt line but by
-gpio parent and reference.
+From: Alex Smith <alex.smith@imgtec.com>
 
-Fixes: 73f2b940474d ("MIPS: CI20: DTS: Add I2C nodes")
+The infrared sensor on the CI20 board is connected to a GPIO and can
+be operated by using the gpio-ir-recv driver. Add a DT node for the
+sensor to allow that driver to be used.
+
+Signed-off-by: Alex Smith <alex.smith@imgtec.com>
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- arch/mips/boot/dts/ingenic/ci20.dts | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/mips/boot/dts/ingenic/ci20.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
-index 8f9d182566db..4bacefa2cfce 100644
+index e1364f941c7d..b4a820313992 100644
 --- a/arch/mips/boot/dts/ingenic/ci20.dts
 +++ b/arch/mips/boot/dts/ingenic/ci20.dts
-@@ -298,7 +298,9 @@ Optional input supply properties:
- 		rtc@51 {
- 			compatible = "nxp,pcf8563";
- 			reg = <0x51>;
--			interrupts = <110>;
-+
-+			interrupt-parent = <&gpf>;
-+			interrupts = <30 IRQ_TYPE_LEVEL_LOW>;
- 		};
- };
+@@ -62,6 +62,11 @@
+ 		enable-active-high;
+ 	};
  
++	ir: ir-receiver {
++		compatible = "gpio-ir-receiver";
++		gpios = <&gpe 3 GPIO_ACTIVE_LOW>;
++	};
++
+ 	wlan0_power: fixedregulator@1 {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "wlan0_power";
 -- 
 2.23.0
 

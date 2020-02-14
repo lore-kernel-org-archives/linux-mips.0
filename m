@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FFEEC3B1A4
-	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 16:10:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84214C2BA83
+	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 16:10:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D450A222C2
-	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 16:10:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5574B24695
+	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 16:10:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="oWm214Xc"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="qqR6ysT+"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391629AbgBNQKs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 14 Feb 2020 11:10:48 -0500
-Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.104]:28077 "EHLO
-        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391581AbgBNQKr (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 14 Feb 2020 11:10:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1581696639;
+        id S2391648AbgBNQKw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 14 Feb 2020 11:10:52 -0500
+Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.124]:36123 "EHLO
+        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391603AbgBNQKu (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 14 Feb 2020 11:10:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1581696641;
         s=strato-dkim-0002; d=goldelico.com;
         h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
         X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=tc4xhvDjnfG1jLVOTwuj+X2pkCzFOljdsKLqfh9DWVg=;
-        b=oWm214Xciqg4X4MwO7KqdW3b7GCDSw3THNLui/B9XqlsU3E12OOGgJzABsaYIs/wGI
-        eq/fw/hTAgisEnWxo3wfV2SgeEsw4c0KSE1fPuivG4Lt6TlTqD7+LKmdz1yhvi25IuLn
-        bJGMBg8d1qDRXMtQj3+O06ZjFgpwS/1A3TVuOjM5ZwJKOrimjknpItQXmTc2l3wFA+DW
-        P45AVTjtnTWdyU1izvQ6TkE81bCEfekHQfBhoVQa2kr3riLZAjqjbtlzwfCAVWddwFaS
-        s9NJN/JQ+sOGhgjsy8Zpy+fjmpDqITu6sZr39NqtWV02Nkgpbre/40Hh08aXm3Bl2oIA
-        cXDA==
+        bh=dZbZVnixfoO3ZI6/71WGGwComZxww6jvUSKhufZA4ck=;
+        b=qqR6ysT+tq1UT58oNVjbDZpcqqp4orVxHFkTflGkO6wVlP2TF8HBx3xLLUY3bhtLQo
+        Zscr3oXH0pD+M2EfKPS1MjtQePLHWDOWYVVASGDKS3niSsnUb9UyAcjrRXhNbSDoJQdv
+        Pqwf/Q6uVedE0GNIa/xpsFUm7LplgyJ/PPmIqR2+KX572aecjXdFyP3SFNiMsTQ3p4ex
+        dtaZQdLF38e6Mt9wnNbPEczKaVy92a86kYG5Gq369btAC/7XNMJ112HZVE/ICcEVqYyd
+        sZ7Wvn0tad/24RcZaduQXZP1DHSZsbVgsrp70V2vDuAu/OQjVTbO4gmM8YXXrLZF3Jqz
+        r3/g==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UNf2M7OMfsfQx3"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
         by smtp.strato.de (RZmta 46.1.12 DYNA|AUTH)
-        with ESMTPSA id U06217w1EGASFkz
+        with ESMTPSA id U06217w1EGAWFl5
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Fri, 14 Feb 2020 17:10:28 +0100 (CET)
+        Fri, 14 Feb 2020 17:10:32 +0100 (CET)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Paul Boddie <paul@boddie.org.uk>,
         Paul Cercueil <paul@crapouillou.net>,
@@ -56,9 +56,9 @@ To:     Paul Boddie <paul@boddie.org.uk>,
 Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
         letux-kernel@openphoenux.org, kernel@pyra-handheld.com
-Subject: [PATCH v2 04/12] MIPS: CI20: defconfig: compile leds-gpio driver into the kernel and configure for LED triggers
-Date:   Fri, 14 Feb 2020 17:10:16 +0100
-Message-Id: <4a4e7f7a7d3cbb7a65134091e9f64aab6ff10482.1581696624.git.hns@goldelico.com>
+Subject: [PATCH v2 10/12] MIPS: DTS: CI20: add DT node for SW1 as Enter button
+Date:   Fri, 14 Feb 2020 17:10:22 +0100
+Message-Id: <c3ee5a9d9831c291cff3762c01a6f3d8665745d2.1581696624.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <cover.1581696624.git.hns@goldelico.com>
 References: <cover.1581696624.git.hns@goldelico.com>
@@ -69,35 +69,47 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-DTS has been augmented to add some gpio-leds. We need the leds-gpio driver
-and enable the triggers.
+The SW1 button can be used as a simple one-button keyboard
+and is connected to PD17.
+
+Note: SW1 has a second meaning to change the boot sequence
+when pressed while powering on.
 
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- arch/mips/configs/ci20_defconfig | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ arch/mips/boot/dts/ingenic/ci20.dts | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/arch/mips/configs/ci20_defconfig b/arch/mips/configs/ci20_defconfig
-index e0d3c9d4c2ae..30a47a7a2994 100644
---- a/arch/mips/configs/ci20_defconfig
-+++ b/arch/mips/configs/ci20_defconfig
-@@ -167,3 +167,16 @@ CONFIG_STACKTRACE=y
- # CONFIG_FTRACE is not set
- CONFIG_CMDLINE_BOOL=y
- CONFIG_CMDLINE="earlycon console=ttyS4,115200 clk_ignore_unused"
-+CONFIG_LEDS_CLASS=y
-+CONFIG_LEDS_GPIO=y
-+CONFIG_LEDS_TRIGGERS=y
-+CONFIG_LEDS_TRIGGER_MTD=y
-+CONFIG_LEDS_TRIGGER_TIMER=y
-+CONFIG_LEDS_TRIGGER_ONESHOT=y
-+CONFIG_LEDS_TRIGGER_ONESHOT=y
-+CONFIG_LEDS_TRIGGER_HEARTBEAT=y
-+CONFIG_LEDS_TRIGGER_BACKLIGHT=m
-+CONFIG_LEDS_TRIGGER_CPU=y
-+CONFIG_LEDS_TRIGGER_DEFAULT_ON=y
-+CONFIG_LEDS_TRIGGER_TRANSIENT=y
-+CONFIG_LEDS_TRIGGER_CAMERA=m
+diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
+index b4a820313992..8f9d182566db 100644
+--- a/arch/mips/boot/dts/ingenic/ci20.dts
++++ b/arch/mips/boot/dts/ingenic/ci20.dts
+@@ -4,6 +4,7 @@
+ #include "jz4780.dtsi"
+ #include <dt-bindings/clock/ingenic,tcu.h>
+ #include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
+ 
+ / {
+ 	compatible = "img,ci20", "ingenic,jz4780";
+@@ -25,6 +26,17 @@
+ 		       0x30000000 0x30000000>;
+ 	};
+ 
++	gpio-keys {
++		compatible = "gpio-keys";
++
++		sw1 {
++			label = "ci20:sw1";
++			linux,code = <KEY_ENTER>;
++			gpios = <&gpd 17 GPIO_ACTIVE_HIGH>;
++			wakeup-source;
++		};
++	};
++
+ 	leds {
+ 		compatible = "gpio-leds";
+ 
 -- 
 2.23.0
 

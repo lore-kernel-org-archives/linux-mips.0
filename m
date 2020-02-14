@@ -2,99 +2,94 @@ Return-Path: <SRS0=hE5h=4C=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94D56C3B19D
-	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 16:03:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D68F9C2BA83
+	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 16:10:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 644B82187F
-	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 16:03:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581696190;
-	bh=SADULr2v8CoS9zmj1WlBhdagSQ+W/CvrBu4siprNm2E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=zk34zJpHDmI0LUNPp3lGaAvDIvzqNwKwIZsAkUzKNlYqQDayZRrvn6F2uSIx6EiLZ
-	 jtFmmOEQJ/E6ZlZsLAbGH9R0uiOPLz5mfwcodrUbah8ywp4KDLvXZSq/txXgxfltlD
-	 rUF1QSWzNKDzavdtlfK0FEDuXY5Bm02cuh2POnJ0=
+	by mail.kernel.org (Postfix) with ESMTP id A03FA2469B
+	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 16:10:43 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="JZRJ4FMP"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389559AbgBNQDI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 14 Feb 2020 11:03:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389550AbgBNQDH (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:03:07 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5DCFC24654;
-        Fri, 14 Feb 2020 16:03:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581696187;
-        bh=SADULr2v8CoS9zmj1WlBhdagSQ+W/CvrBu4siprNm2E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jdG+HDEZJbo6Dw/egrZwLbcIDvCbqxzCLBxCULMR+jpkGgcdnQZMfDzGBBdoSEa7M
-         5I7PEbxqInQ417938gocuHuyKp1xW+SOxKo47LoHe6oyarAj4KEWy0qgx9yZ0L7RH9
-         okIZm56215X3iQGAyBdTX/KG1N//mUSj58FqoX9U=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Paul Burton <paulburton@kernel.org>,
+        id S2391602AbgBNQKn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 14 Feb 2020 11:10:43 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.171]:8823 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391042AbgBNQKm (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 14 Feb 2020 11:10:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1581696638;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=jlcXe1GGaAraVsZORKSVtw7OXag13VFOYmFZdQixrBw=;
+        b=JZRJ4FMP9ZXCuXrDPeTLweGqbpMjbcDGLrGWfZrmP/8UaXOcnSTheRxk6xPiPrEzQ8
+        nS54VLuD+QNtqYo32gbUAJCiwQZAdip36T9+60Xj4dRV9+6cZUBeZOKm9CYL/TD7Py4L
+        hilDgakghvlnaIGmgJ4UJ5f6yqzfzvcr+4wSKpya5zYQgH8kEJVmq5telkK4S2fJDv8p
+        /zUiRdxvdgLEgv7gvwBQylEfIs1TD/xHQliCO1Ozr7tLGwV/37O09HRq4WEyPMpHAAGr
+        6tzoF3OZ9IXE65HWqb3KScUWRY55dp6fUf+MpOlnUzfR5GOjTRR5iKrVssPDnOFnM/nV
+        AsUg==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UNf2M7OMfsfQx3"
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+        by smtp.strato.de (RZmta 46.1.12 DYNA|AUTH)
+        with ESMTPSA id U06217w1EGARFkw
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Fri, 14 Feb 2020 17:10:27 +0100 (CET)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     Paul Boddie <paul@boddie.org.uk>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Ralf Baechle <ralf@linux-mips.org>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 056/459] MIPS: Loongson: Fix potential NULL dereference in loongson3_platform_init()
-Date:   Fri, 14 Feb 2020 10:55:06 -0500
-Message-Id: <20200214160149.11681-56-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214160149.11681-1-sashal@kernel.org>
-References: <20200214160149.11681-1-sashal@kernel.org>
+        Paul Burton <paulburton@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        letux-kernel@openphoenux.org, kernel@pyra-handheld.com
+Subject: [PATCH v2 01/12] drm: ingenic-drm: add MODULE_DEVICE_TABLE
+Date:   Fri, 14 Feb 2020 17:10:13 +0100
+Message-Id: <1b5475c88032b3851c6d33443e688b432af42a9f.1581696624.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <cover.1581696624.git.hns@goldelico.com>
+References: <cover.1581696624.git.hns@goldelico.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Add MODULE_DEVICE_TABLE so that the driver can load by
+matching the device tree if compiled as module.
 
-[ Upstream commit 72d052e28d1d2363f9107be63ef3a3afdea6143c ]
-
-If kzalloc fails, it should return -ENOMEM, otherwise may trigger a NULL
-pointer dereference.
-
-Fixes: 3adeb2566b9b ("MIPS: Loongson: Improve LEFI firmware interface")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Signed-off-by: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Huacai Chen <chenhc@lemote.com>
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- arch/mips/loongson64/loongson-3/platform.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/ingenic/ingenic-drm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/loongson64/loongson-3/platform.c b/arch/mips/loongson64/loongson-3/platform.c
-index 13f3404f00300..9674ae1361a85 100644
---- a/arch/mips/loongson64/loongson-3/platform.c
-+++ b/arch/mips/loongson64/loongson-3/platform.c
-@@ -27,6 +27,9 @@ static int __init loongson3_platform_init(void)
- 			continue;
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm.c b/drivers/gpu/drm/ingenic/ingenic-drm.c
+index 6d47ef7b148c..d8617096dd8e 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm.c
+@@ -844,6 +844,8 @@ static const struct of_device_id ingenic_drm_of_match[] = {
+ 	{ /* sentinel */ },
+ };
  
- 		pdev = kzalloc(sizeof(struct platform_device), GFP_KERNEL);
-+		if (!pdev)
-+			return -ENOMEM;
++MODULE_DEVICE_TABLE(of, ingenic_drm_of_match);
 +
- 		pdev->name = loongson_sysconf.sensors[i].name;
- 		pdev->id = loongson_sysconf.sensors[i].id;
- 		pdev->dev.platform_data = &loongson_sysconf.sensors[i];
+ static struct platform_driver ingenic_drm_driver = {
+ 	.driver = {
+ 		.name = "ingenic-drm",
 -- 
-2.20.1
+2.23.0
 

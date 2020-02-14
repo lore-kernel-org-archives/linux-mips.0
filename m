@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CF41C3B1A6
-	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 17:19:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67569C2BA83
+	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 17:19:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9FACB24649
-	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 17:19:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 371C324649
+	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 17:19:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="CgPlTloS"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="Ys4CgBNh"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391658AbgBNQKy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 14 Feb 2020 11:10:54 -0500
-Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.123]:32030 "EHLO
+        id S2389755AbgBNRTK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 14 Feb 2020 12:19:10 -0500
+Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.121]:13620 "EHLO
         mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391604AbgBNQKx (ORCPT
+        with ESMTP id S2391605AbgBNQKx (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Fri, 14 Feb 2020 11:10:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1581696641;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1581696640;
         s=strato-dkim-0002; d=goldelico.com;
         h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
         X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=87P0OD8XaKZo4miCqHORxCklVwyh7VqETa9wtLbJ/YE=;
-        b=CgPlTloSD00Bc5lbHigNX4xl7PUfSiSfWjbPmb3Ar2SjsBXvLvuNjKJUR5ynPUO6Mm
-        WD90I9BTBdgbNmlaHWASBcGfcu5mUROyy2v9JXMhuDohx7NjcvFgcQxDimTDXxfFZ+zn
-        IEkoqgRoZnooVel36Ejy0epG+fWj3nzqvGhrnn/yDtOscO3UPxyQ0ONV1MbORLd/TyqG
-        xoxMzyhOlG/lO9Uvcobrckb7yCtjO6KCjK72LPVsuKsSXn7BSU1zd4mCctIZON/PnNBC
-        BlPfy9R6YWvd+yVIxV85FZ1+bU2KPCLCJWWa4rHUFlMZjbJZJfOO/2xO0otFdMpa+X+q
-        ys5g==
+        bh=3bosFD/maVT7s0PxPwS4PL1iP9bgaYLTqR2vJvqzmIk=;
+        b=Ys4CgBNhZwV+Ktwgs1/SWm7SlnuXl0jUdYYSHJf/C20OuPIdPY3Ek9zJ0/majsiWo2
+        ZZHhtJTyWvvRUH8zRcq36W3UqIMA0TdUwsR8uYbEAEOPg3J8hsh5TB7YMx2O/SBQSHbk
+        qb7uXloWhNtOz6a3mBeg2Wx75RzSrfm4D9/PUv+wtm2P9WTko8zUwsi48MMWKsKHfAXF
+        q/6TzCCkKmHpG0jv1w1M8thivMs2L5KWfiCz+1JliDqmwPgteLtT6ntpn/LKHBU70UA2
+        0FVPt4VfXJC4ncjeNaiD8+aUO2MXWXTTMjO9EA2LLVvjcCC3Xs1yS1k4bJ8Gwp2zVKE9
+        8WvA==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UNf2M7OMfsfQx3"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
         by smtp.strato.de (RZmta 46.1.12 DYNA|AUTH)
-        with ESMTPSA id U06217w1EGAWFl6
+        with ESMTPSA id U06217w1EGAVFl4
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Fri, 14 Feb 2020 17:10:32 +0100 (CET)
+        Fri, 14 Feb 2020 17:10:31 +0100 (CET)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Paul Boddie <paul@boddie.org.uk>,
         Paul Cercueil <paul@crapouillou.net>,
@@ -56,9 +56,9 @@ To:     Paul Boddie <paul@boddie.org.uk>,
 Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
         letux-kernel@openphoenux.org, kernel@pyra-handheld.com
-Subject: [PATCH v2 11/12] MIPS: CI20: defconfig: configure for CONFIG_KEYBOARD_GPIO=m
-Date:   Fri, 14 Feb 2020 17:10:23 +0100
-Message-Id: <7f4bd0fa642e6a1d2143787a0452889297a888de.1581696624.git.hns@goldelico.com>
+Subject: [PATCH v2 09/12] MIPS: CI20: defconfig: compile gpio-ir driver
+Date:   Fri, 14 Feb 2020 17:10:21 +0100
+Message-Id: <e754e1cbb4504123a97fcf044e892afd2ed8abc8.1581696624.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <cover.1581696624.git.hns@goldelico.com>
 References: <cover.1581696624.git.hns@goldelico.com>
@@ -69,25 +69,26 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The SW1 button is hooked up to send input events.
+The CI20 board has a gpio based IR receiver.
 
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- arch/mips/configs/ci20_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/configs/ci20_defconfig | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/arch/mips/configs/ci20_defconfig b/arch/mips/configs/ci20_defconfig
-index 0458ea4d54e8..0db0088bbc1c 100644
+index 74e5775b8a05..0458ea4d54e8 100644
 --- a/arch/mips/configs/ci20_defconfig
 +++ b/arch/mips/configs/ci20_defconfig
-@@ -89,6 +89,7 @@ CONFIG_I2C_JZ4780=y
- CONFIG_SPI=y
- CONFIG_SPI_GPIO=y
- CONFIG_GPIO_SYSFS=y
-+CONFIG_KEYBOARD_GPIO=m
- # CONFIG_HWMON is not set
- CONFIG_WATCHDOG=y
- CONFIG_JZ4740_WDT=y
+@@ -181,3 +181,8 @@ CONFIG_LEDS_TRIGGER_CPU=y
+ CONFIG_LEDS_TRIGGER_DEFAULT_ON=y
+ CONFIG_LEDS_TRIGGER_TRANSIENT=y
+ CONFIG_LEDS_TRIGGER_CAMERA=m
++CONFIG_LIRC=y
++CONFIG_MEDIA_SUPPORT=m
++CONFIG_RC_DEVICES=y
++CONFIG_IR_GPIO_CIR=m
++CONFIG_IR_GPIO_TX=m
 -- 
 2.23.0
 

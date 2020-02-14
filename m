@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A942AC3B1A2
-	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 16:24:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 113CDC2BA83
+	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 16:44:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 734F524796
-	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 16:24:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D4AFE24680
+	for <linux-mips@archiver.kernel.org>; Fri, 14 Feb 2020 16:44:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581697480;
+	s=default; t=1581698642;
 	bh=KNL8q96VW054YfXBZfeHGlfLCZJ5LleWzR+KoB/9j4w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=NFV3fQG+KUji0HS5iJnGClQGFbZ0o++kz4ugWOM9t3kDl4+HTbxlfcEe+k7jAXkvo
-	 DJzt5HFYk0jdOZ3rWSjinKkgn8Rb+eFq6SigGFp9x5JYS5INu6I0fMMIOfNwf7eDzH
-	 0PgU1Un9SLMmc2CQHrXGFahRTnatXUNi9iVzL+PM=
+	b=lTSPATwHROtck/tNwKDQe/m3PoZpc5+m9K4QAO5+GLwDzB7yB9AagdPttxYaUoWnD
+	 L/uykI1boS79nqAuPCn/kIe96Ge77+wf/BKjCKsi5sFViW8mpeq8bLBdZfMFsKCmE/
+	 FnsdBYCN2sQWVCfaH2xdQ32Go5AkPp9QTPJksAIc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405935AbgBNQYj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 14 Feb 2020 11:24:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33310 "EHLO mail.kernel.org"
+        id S2393082AbgBNQVq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 14 Feb 2020 11:21:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405926AbgBNQYi (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:24:38 -0500
+        id S2393079AbgBNQVq (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:21:46 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B86C247A9;
-        Fri, 14 Feb 2020 16:24:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59AB8246BF;
+        Fri, 14 Feb 2020 16:21:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581697477;
+        s=default; t=1581697305;
         bh=KNL8q96VW054YfXBZfeHGlfLCZJ5LleWzR+KoB/9j4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=03xaPTOzIeAlPmFiVCCibCcXsWpfUMFTAzDlGXsN2AqJlV20orQ+NMesV6g0hOaGK
-         7ymkN4Na83EpH2gJ53UuSLq1toWTkq3DqX+PaM0Z8h8eS6w8DvJfC5sD8NqfIwbkKi
-         MpYm1bNDj2ul+uWT+cK25j+r5DsrNvmvXdPnIWXg=
+        b=BuxFGYAYjyP7ybq323UEzMEuTgl1m5ICFRLK2theYcftkEChrdA/VOm2LOU39gjuh
+         dukJHaPEFd6+hNylFyfwWUi2RhAhFL4tTD/UzMsr2n+QYPaP0PwwYzeQ1txqBbM28N
+         XrbpNxFUzSgZEHol9QYXHAflCcyrgYu+xKtUicis=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
@@ -46,12 +46,12 @@ Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
         Huacai Chen <chenhc@lemote.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         linux-mips@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 009/100] MIPS: Loongson: Fix potential NULL dereference in loongson3_platform_init()
-Date:   Fri, 14 Feb 2020 11:22:53 -0500
-Message-Id: <20200214162425.21071-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 017/141] MIPS: Loongson: Fix potential NULL dereference in loongson3_platform_init()
+Date:   Fri, 14 Feb 2020 11:19:17 -0500
+Message-Id: <20200214162122.19794-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214162425.21071-1-sashal@kernel.org>
-References: <20200214162425.21071-1-sashal@kernel.org>
+In-Reply-To: <20200214162122.19794-1-sashal@kernel.org>
+References: <20200214162122.19794-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore

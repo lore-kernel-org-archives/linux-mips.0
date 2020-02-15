@@ -4,25 +4,25 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73F41C71153
-	for <linux-mips@archiver.kernel.org>; Sat, 15 Feb 2020 18:56:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83182C7114D
+	for <linux-mips@archiver.kernel.org>; Sat, 15 Feb 2020 18:56:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 52FEE24654
-	for <linux-mips@archiver.kernel.org>; Sat, 15 Feb 2020 18:56:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 65AEF2083B
+	for <linux-mips@archiver.kernel.org>; Sat, 15 Feb 2020 18:56:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727928AbgBOS4f (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 15 Feb 2020 13:56:35 -0500
-Received: from out28-121.mail.aliyun.com ([115.124.28.121]:60803 "EHLO
-        out28-121.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727799AbgBOS4T (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 15 Feb 2020 13:56:19 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08278246|-1;CH=green;DM=CONTINUE|CONTINUE|true|0.656193-0.0159137-0.327893;DS=CONTINUE|ham_system_inform|0.00787411-0.000299376-0.991826;FP=0|0|0|0|0|-1|-1|-1;HT=e01a16384;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=24;RT=24;SR=0;TI=SMTPD_---.GoTIZgt_1581792955;
+        id S1727795AbgBOS4Q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 15 Feb 2020 13:56:16 -0500
+Received: from out28-49.mail.aliyun.com ([115.124.28.49]:41743 "EHLO
+        out28-49.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726233AbgBOS4P (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 15 Feb 2020 13:56:15 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.086072|-1;CH=green;DM=CONTINUE|CONTINUE|true|0.296506-0.0118045-0.69169;DS=CONTINUE|ham_system_inform|0.00938196-0.00027899-0.990339;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03306;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=24;RT=24;SR=0;TI=SMTPD_---.GoTIZgt_1581792955;
 Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.GoTIZgt_1581792955)
           by smtp.aliyun-inc.com(10.147.42.241);
-          Sun, 16 Feb 2020 02:56:12 +0800
+          Sun, 16 Feb 2020 02:56:09 +0800
 From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
         <zhouyanjie@wanyeetech.com>
 To:     linux-mips@vger.kernel.org
@@ -36,9 +36,9 @@ Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
         ebiederm@xmission.com, miquel.raynal@bootlin.com,
         paul@boddie.org.uk, hns@goldelico.com,
         mips-creator-ci20-dev@googlegroups.com
-Subject: [PATCH v5 5/7] dt-bindings: MIPS: Document Ingenic SoCs binding.
-Date:   Sun, 16 Feb 2020 02:55:30 +0800
-Message-Id: <1581792932-108032-7-git-send-email-zhouyanjie@wanyeetech.com>
+Subject: [PATCH v5 3/7] MIPS: CI20: Modify DTS to support high resolution timer for SMP.
+Date:   Sun, 16 Feb 2020 02:55:28 +0800
+Message-Id: <1581792932-108032-5-git-send-email-zhouyanjie@wanyeetech.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1581792932-108032-1-git-send-email-zhouyanjie@wanyeetech.com>
 References: <1581792932-108032-1-git-send-email-zhouyanjie@wanyeetech.com>
@@ -50,8 +50,8 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Document the available properties for the SoC root node and the
-CPU nodes of the devicetree for the Ingenic XBurst SoCs.
+Modify DTS, change tcu channel from 2 to 3, channel #0 and #1 for
+per core local timer, #2 for clocksource.
 
 Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
 Tested-by: Paul Boddie <paul@boddie.org.uk>
@@ -60,123 +60,43 @@ Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
 
 Notes:
     v1->v2:
-    Change the two Document from txt to yaml.
+    No change.
     
     v2->v3:
-    Fix formatting errors.
+    No change.
     
     v3->v4:
-    Fix bugs in the two yaml files.
+    Rebase on top of kernel 5.6-rc1.
     
     v4->v5:
-    No change.
+    Move [5/6] in v4 to this patch, to ensure that we can
+    git-bisect without ending up with a broken kernel.
 
- .../bindings/mips/ingenic/ingenic,cpu.yaml         | 53 ++++++++++++++++++++++
- .../bindings/mips/ingenic/ingenic,soc.yaml         | 35 ++++++++++++++
- 2 files changed, 88 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.yaml
- create mode 100644 Documentation/devicetree/bindings/mips/ingenic/ingenic,soc.yaml
+ arch/mips/boot/dts/ingenic/ci20.dts | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.yaml b/Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.yaml
-new file mode 100644
-index 00000000..cb600ae
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.yaml
-@@ -0,0 +1,53 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mips/ingenic/ingenic,cpu.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
+index 37b9316..29437aa 100644
+--- a/arch/mips/boot/dts/ingenic/ci20.dts
++++ b/arch/mips/boot/dts/ingenic/ci20.dts
+@@ -455,7 +455,14 @@
+ };
+ 
+ &tcu {
+-	/* 3 MHz for the system timer and clocksource */
+-	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER1>;
+-	assigned-clock-rates = <3000000>, <3000000>;
++	/* 3 MHz for the system timers, 750kHz for the clocksource */
++	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER1>,
++					  <&tcu TCU_CLK_TIMER2>;
++	assigned-clock-rates = <3000000>, <3000000>, <750000>;
 +
-+title: Bindings for Ingenic XBurst family CPUs
-+
-+maintainers:
-+  - 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-+description: |
-+  Ingenic XBurst family CPUs shall have the following properties.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: ingenic,xburst
-+      - const: ingenic,xburst2
-+
-+  reg:
-+    description: |
-+      The number of the CPU.
-+
-+required:
-+  - device_type
-+  - compatible
-+  - reg
-+
-+examples:
-+  - |
-+    cpus {
-+    	#address-cells = <1>;
-+    	#size-cells = <0>;
-+
-+    	cpu0: cpu@0 {
-+    		device_type = "cpu";
-+    		compatible = "ingenic,xburst";
-+    		reg = <0>;
-+
-+    		clocks = <&cgu JZ4780_CLK_CPU>;
-+    		clock-names = "cpu";
-+    	};
-+
-+    	cpu1: cpu@1 {
-+    		device_type = "cpu";
-+    		compatible = "ingenic,xburst";
-+    		reg = <1>;
-+
-+    		clocks = <&cgu JZ4780_CLK_CORE1>;
-+    		clock-names = "cpu";
-+    	};
-+    };
-+...
-diff --git a/Documentation/devicetree/bindings/mips/ingenic/ingenic,soc.yaml b/Documentation/devicetree/bindings/mips/ingenic/ingenic,soc.yaml
-new file mode 100644
-index 00000000..11e5cde
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mips/ingenic/ingenic,soc.yaml
-@@ -0,0 +1,35 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mips/ingenic/ingenic,soc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Bindings for Ingenic SoCs with XBurst CPU inside.
-+
-+maintainers:
-+  - 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-+description: |
-+  Ingenic SoCs with XBurst CPU inside shall have the following properties.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: ingenic,jz4740
-+      - const: ingenic,jz4725b
-+      - const: ingenic,jz4760
-+      - const: ingenic,jz4760b
-+      - const: ingenic,jz4770
-+      - const: ingenic,jz4780
-+      - const: ingenic,x1000
-+      - const: ingenic,x1000e
-+      - const: ingenic,x1500
-+
-+required:
-+  - compatible
-+
-+examples:
-+  - |
-+    #address-cells = <1>;
-+    #size-cells = <1>;
-+    compatible = "ingenic,jz4780";
-+...
++	/*
++	 * Use channel #0 and #1 for the per core system timer,
++	 * and use channel #2 for the clocksource.
++	 */
++	ingenic,pwm-channels-mask = <0xF8>;
+ };
 -- 
 2.7.4
 

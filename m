@@ -2,99 +2,106 @@ Return-Path: <SRS0=kNAq=4E=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81937C2BA83
-	for <linux-mips@archiver.kernel.org>; Sun, 16 Feb 2020 18:11:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3EA5C2BA83
+	for <linux-mips@archiver.kernel.org>; Sun, 16 Feb 2020 19:21:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5DFDD20857
-	for <linux-mips@archiver.kernel.org>; Sun, 16 Feb 2020 18:11:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EC9522072C
+	for <linux-mips@archiver.kernel.org>; Sun, 16 Feb 2020 19:21:08 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="OEFPZwUh"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725899AbgBPSLO convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 16 Feb 2020 13:11:14 -0500
-Received: from mout.kundenserver.de ([217.72.192.73]:43101 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgBPSLO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 16 Feb 2020 13:11:14 -0500
-Received: from mail-qv1-f52.google.com ([209.85.219.52]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MC2wN-1jAr2z21oT-00CPB6; Sun, 16 Feb 2020 19:11:12 +0100
-Received: by mail-qv1-f52.google.com with SMTP id p2so6627875qvo.10;
-        Sun, 16 Feb 2020 10:11:12 -0800 (PST)
-X-Gm-Message-State: APjAAAVdAhhTXGBVMxgMhlinMFl8qxvoz+FGEi4vwpbT8vMIN8Hait9+
-        smgBddOrmaIFqF1v5j8umdU+g1E335ROqP2UhmE=
-X-Google-Smtp-Source: APXvYqzvtOyO80NGJ0NQzbdKQvJf1lkKW8T220YClkzb69MFsE4nIeROks8Hz90TjXKc5YYn+5v58NnqAVTN3OLIhHE=
-X-Received: by 2002:a05:6214:524:: with SMTP id x4mr10124633qvw.4.1581876671327;
- Sun, 16 Feb 2020 10:11:11 -0800 (PST)
+        id S1726482AbgBPTVI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 16 Feb 2020 14:21:08 -0500
+Received: from mo4-p03-ob.smtp.rzone.de ([81.169.146.175]:18748 "EHLO
+        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726043AbgBPTVI (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 16 Feb 2020 14:21:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1581880865;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=Ube8VBr6jQ46GNcYtt3t/7muF+rpEcuH7jTgqb7/If4=;
+        b=OEFPZwUhNwRxALw7zK1OKmlIQoLcvy+XECwgqWA6vu5IHkuiaLQ4Um5Qo0wMkUF1MQ
+        6g2v5kOX0MvAHRe1PuKZslSGJ17rwAnaHXP2+y0PO5xSg0MyEpcicLPfsWyZWp3ezaPV
+        VeGmz2MndUw6C1AYAP5uKCXWbyeP0WNX8Hxgu7v3WMHq3pEC2lBZIINeL1B8KJAovn6O
+        XQco8iL77YDoUkouDQpqKFLz633EoS0RzjuK2FU4gQ6UhGMSAu8Y2bYdgMEWwPI9RIOX
+        qKMUgQmsEwPYljPM/8mRGbXxalTEp2T1o71V5M+olSFbBV/TWqATVD1YQxvjOn5LRcY4
+        B5Cg==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UNf2M0OoPPevMB"
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+        by smtp.strato.de (RZmta 46.1.12 DYNA|AUTH)
+        with ESMTPSA id U06217w1GJKuJlc
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Sun, 16 Feb 2020 20:20:56 +0100 (CET)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Mathieu Malaterre <malat@debian.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com
+Subject: [RFC v3 5/9] nvmem: MAINTAINERS: add maintainer for JZ4780 efuse driver
+Date:   Sun, 16 Feb 2020 20:20:47 +0100
+Message-Id: <1f956bba79044d8787adb9e00c19e4780f50241a.1581880851.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <cover.1581880851.git.hns@goldelico.com>
+References: <cover.1581880851.git.hns@goldelico.com>
 MIME-Version: 1.0
-References: <cover.1577111363.git.christophe.leroy@c-s.fr> <bd4557a7-9715-59aa-5d8e-488c5e516a98@c-s.fr>
- <20200109200733.GS3191@gate.crashing.org> <77a8bf25-6615-6c0a-56d4-eae7aa8a8f09@c-s.fr>
- <20200111113328.GX3191@gate.crashing.org>
-In-Reply-To: <20200111113328.GX3191@gate.crashing.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sun, 16 Feb 2020 19:10:55 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a11wX1zJ+TAacDTkYsrzvfdVmNrcB6OC23aFvCxF57opQ@mail.gmail.com>
-Message-ID: <CAK8P3a11wX1zJ+TAacDTkYsrzvfdVmNrcB6OC23aFvCxF57opQ@mail.gmail.com>
-Subject: Re: Surprising code generated for vdso_read_begin()
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:HLqAkIdoPfiPyFHDmbvrtr7n5xYGZph2jMmE62iSDBEnJFcP4Qc
- /SnGSw2icyqhgyrplUKr8475IJrVw8nnHseRauGk4BEdX1ZxxVYn7cydGBYeWj3jBAax9Hb
- WkLyZIbs6QouruTACgn8W6ljRDG3ctdYHnqdTmww8WpSgBHO4GPc4LxGGMxhj5qA7mqGVoK
- MmLLeVohRb/RD/yXVbwOw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TogwV+iRtEQ=:cU9tZONLF1toHxisqha2Fb
- KzA/Yaf3sW5bq2jYKfVL9Dg6sef78hInu/lOHeohFGLDnfLlOi67PvhWEzDXQ8ljDc3o/mRKC
- rHSMe7X08knS3o6SHgg46AQ/RIocNdco1Nr+RE4zM5AKNK3ZjfCgs0aGFl3oUBp8/bWCfv/Rz
- sPxbdMf1KmoOnXyzm6n+XijtBDA991owf073r/xmk14kgK+FYKLGGWB7lxFCZp7Uwcs981Ud3
- g60zYQ8RicLHPwwiMlUDlZ6B1F5fsyncH36B1dtR0NYcuKuAf8e3vNKcWdRIUHNkNrlXEz6Q1
- Sf/xlFDheBhryTBIW+xcGfB51Ze6u4qrMkVf6GJ6mwmIu29kwUnM8xJ5m0CNwo2frkfgaqrJ4
- Bbh09sG0X9+gwAi5MeEqXciInTnz77zYSOSdK95G4O/n0cASKkHaCICLnQSkLajpQEpQVK5yc
- DZ+4Tzv2t/lmOdd8KsF3Tq5z2GZww7Zi/2YeCGv1tdQXx5a34KiLltsNIauHIvf9fPYG3uj0R
- KvzWtc//q6opalb2/MWhlq/vDcVI8B6qnUUBJgNnQHm8q2wpXMXxAAUIz9LFM3vpd+f8S2x8S
- feak26XmKB8ofpLlQareojXGbbdUmKkxETNxvWG3mrabe070PyDSKuE5j7kQwDpQHIA2OIhgy
- Ie0m9k86ZBM9BuAQ8puc3ciPng5G+QrpOIPoU9hrK8RDw6JFE6FdX7Y8U6aytk6JMIrN2WVhG
- GPycFqA1LqgXc0P1zcDj1/ci6mBYmkt+Q9RaQwpsoRPvL3cNwmL8vF4zNbIdDf260+x0dvvZg
- zaYgIbCTw2Xo2mDM6n/GhN3Thk0jde791M+5ND5VRc+X4PIw5M=
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Jan 11, 2020 at 12:33 PM Segher Boessenkool
-<segher@kernel.crashing.org> wrote:
->
-> On Fri, Jan 10, 2020 at 07:45:44AM +0100, Christophe Leroy wrote:
-> > Le 09/01/2020 à 21:07, Segher Boessenkool a écrit :
-> > >It looks like the compiler did loop peeling.  What GCC version is this?
-> > >Please try current trunk (to become GCC 10), or at least GCC 9?
-> >
-> > It is with GCC 5.5
-> >
-> > https://mirrors.edge.kernel.org/pub/tools/crosstool/ doesn't have more
-> > recent than 8.1
->
-> Arnd, can you update the tools?  We are at 8.3 and 9.2 now :-)  Or is
-> this hard and/or painful to do?
+From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
 
-To follow up on this older thread, I have now uploaded 6.5, 7.5, 8.3 and 9.2
-binaries, as well as a recent 10.0 snapshot.
+This patch brings support for the JZ4780 efuse. Currently it only expose
+a read only access to the entire 8K bits efuse memory.
 
-I hope these work, let me know if there are problems.
+Tested-by: Mathieu Malaterre <malat@debian.org>
+Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+Signed-off-by: Mathieu Malaterre <malat@debian.org>
+---
+ MAINTAINERS | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-       Arnd
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 33f811f517d4..88f247456a48 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8270,6 +8270,11 @@ M:	Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+ S:	Maintained
+ F:	drivers/dma/dma-jz4780.c
+ 
++INGENIC JZ4780 EFUSE Driver
++M:	PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
++S:	Maintained
++F:	drivers/nvmem/jz4780-efuse.c
++
+ INGENIC JZ4780 NAND DRIVER
+ M:	Harvey Hunt <harveyhuntnexus@gmail.com>
+ L:	linux-mtd@lists.infradead.org
+-- 
+2.23.0
+

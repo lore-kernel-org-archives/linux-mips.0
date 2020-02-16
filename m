@@ -7,66 +7,60 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85618C7619B
-	for <linux-mips@archiver.kernel.org>; Sun, 16 Feb 2020 19:21:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5D31C3B1BF
+	for <linux-mips@archiver.kernel.org>; Sun, 16 Feb 2020 20:21:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6248A20857
-	for <linux-mips@archiver.kernel.org>; Sun, 16 Feb 2020 19:21:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4F37D2086A
+	for <linux-mips@archiver.kernel.org>; Sun, 16 Feb 2020 20:21:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="BABAFtaD"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="eS2G6TKU"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgBPTVI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 16 Feb 2020 14:21:08 -0500
-Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.100]:16455 "EHLO
-        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726036AbgBPTVI (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 16 Feb 2020 14:21:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1581880864;
+        id S1726037AbgBPUVI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 16 Feb 2020 15:21:08 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.170]:8509 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726020AbgBPUVI (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 16 Feb 2020 15:21:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1581884466;
         s=strato-dkim-0002; d=goldelico.com;
         h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
         X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=vmDYEr1Ci3CaW1+MaKFxny28O8OXp6bacidAtKmGGQo=;
-        b=BABAFtaDoAay2rDVcM7FElNPtwd8QpkxCcY7c3FZLwbzgS7BLcW0HsyuiDnC/bkhWl
-        qfNLuj7tatPF/WY2NoMp/0xNKBTkbsmRLphlgfYaUzQNLiznmTlPAU8newGUHWzHN+pj
-        cJ+L/Y9VJK1BNlUu9U+TymjVOY0v4YLuIDc0CuT5HkreYRxRjvxOikDey78F94sZl8Ep
-        pLbIvp5C017TwoG7lvTKXuo8YKcPZtYzKLwZrYQeQ3VFR4LGxjejUp0eR/bFViPfHidN
-        KbTtYzwFgwP+7HoGEHkxvV2xLBG8VSrZCmDwefeTjzJQ90JgigmkZgl4ZbFkjARW/C7E
-        uvMA==
+        bh=0lwRY9T/vQcOBJYlZ2p0ZLpMFPC/FqS0O8Fyu7RLxI4=;
+        b=eS2G6TKU296YQNZhwodX8gnsgXk5a0GH76x1PXHcptDc94cTINB8fw6mSru6FXYWYL
+        hIuZFAv3Qw6vc4KArCj2ATSTmZPVlpd/dWXMWsvmi9Dzrs2LfPuGl4X/NvSazUf9vIsG
+        JRg65PoM6rhYxkm1XJhrhwK7my0cwSL4YtBTMb/6tD/OeDGLcYQYXcMQIifizZTbBy+6
+        QCDUuWABxMLGmDW9dvfhxfeU+ufeiQ40EJ9NMEx2lFFz5pugokv+tv5vA9k8nJfege1Q
+        8Y88GLgUoUQx1ZEjlGbaRQ2GbSgzP2imVyYgGxlyPnO+aGEfVR3Wgf5jFbwhzAdhIw/2
+        qyfQ==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UNf2M0OoPPevMB"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
         by smtp.strato.de (RZmta 46.1.12 DYNA|AUTH)
-        with ESMTPSA id U06217w1GJKuJld
+        with ESMTPSA id U06217w1GKL2Jr2
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Sun, 16 Feb 2020 20:20:56 +0100 (CET)
+        Sun, 16 Feb 2020 21:21:02 +0100 (CET)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-To:     PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
+To:     Paul Boddie <paul@boddie.org.uk>,
         Paul Cercueil <paul@crapouillou.net>,
-        Mathieu Malaterre <malat@debian.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Ralf Baechle <ralf@linux-mips.org>,
         Paul Burton <paulburton@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
         Andi Kleen <ak@linux.intel.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, letux-kernel@openphoenux.org,
-        kernel@pyra-handheld.com
-Subject: [RFC v3 6/9] MIPS: DTS: JZ4780: define node for JZ4780 efuse
-Date:   Sun, 16 Feb 2020 20:20:48 +0100
-Message-Id: <974fc10f0134a4449f4d4ba545b651cd7f772542.1581880851.git.hns@goldelico.com>
+        Kees Cook <keescook@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com, Alex Smith <alex.smith@imgtec.com>
+Subject: [PATCH v3 2/6] MIPS: DTS: CI20: add DT node for IR sensor
+Date:   Sun, 16 Feb 2020 21:20:56 +0100
+Message-Id: <c18873d6502f2d69f4d02e7d615bd8012c0b0f3d.1581884459.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.23.0
-In-Reply-To: <cover.1581880851.git.hns@goldelico.com>
-References: <cover.1581880851.git.hns@goldelico.com>
+In-Reply-To: <cover.1581884459.git.hns@goldelico.com>
+References: <cover.1581884459.git.hns@goldelico.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
@@ -74,55 +68,34 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+From: Alex Smith <alex.smith@imgtec.com>
 
-This patch brings support for the JZ4780 efuse. Currently it only exposes
-a read only access to the entire 8K bits efuse memory and the
-ethernet mac address for the davicom dm9000 chip on the CI20 board.
+The infrared sensor on the CI20 board is connected to a GPIO and can
+be operated by using the gpio-ir-recv driver. Add a DT node for the
+sensor to allow that driver to be used.
 
-Tested-by: Mathieu Malaterre <malat@debian.org>
-Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Signed-off-by: Mathieu Malaterre <malat@debian.org>
+Signed-off-by: Alex Smith <alex.smith@imgtec.com>
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- arch/mips/boot/dts/ingenic/jz4780.dtsi | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ arch/mips/boot/dts/ingenic/ci20.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-index 301b62da025e..4cc8abe675c2 100644
---- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-@@ -393,7 +393,7 @@
- 
- 	nemc: nemc@13410000 {
- 		compatible = "ingenic,jz4780-nemc";
--		reg = <0x13410000 0x10000>;
-+		reg = <0x13410000 0x4c>;
- 		#address-cells = <2>;
- 		#size-cells = <1>;
- 		ranges = <1 0 0x1b000000 0x1000000
-@@ -408,6 +408,21 @@
- 		status = "disabled";
+diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
+index 37b93166bf22..59c104289ece 100644
+--- a/arch/mips/boot/dts/ingenic/ci20.dts
++++ b/arch/mips/boot/dts/ingenic/ci20.dts
+@@ -60,6 +60,11 @@
+ 		enable-active-high;
  	};
  
-+	efuse: efuse@134100d0 {
-+		compatible = "ingenic,jz4780-efuse";
-+		reg = <0x134100d0 0x2c>;
-+
-+		clocks = <&cgu JZ4780_CLK_AHB2>;
-+		clock-names = "bus_clk";
-+
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		eth0_addr: eth-mac-addr@0x22 {
-+			reg = <0x22 0x6>;
-+		};
++	ir: ir-receiver {
++		compatible = "gpio-ir-receiver";
++		gpios = <&gpe 3 GPIO_ACTIVE_LOW>;
 +	};
 +
- 	dma: dma@13420000 {
- 		compatible = "ingenic,jz4780-dma";
- 		reg = <0x13420000 0x400
+ 	wlan0_power: fixedregulator@1 {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "wlan0_power";
 -- 
 2.23.0
 

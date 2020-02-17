@@ -2,104 +2,103 @@ Return-Path: <SRS0=O+by=4F=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B87D7C34021
-	for <linux-mips@archiver.kernel.org>; Mon, 17 Feb 2020 16:46:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9125CC34022
+	for <linux-mips@archiver.kernel.org>; Mon, 17 Feb 2020 16:55:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8F2E1215A4
-	for <linux-mips@archiver.kernel.org>; Mon, 17 Feb 2020 16:46:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1581957977;
-	bh=/DaX8+TZSwBPiTZVH9FgOz76O3KL16JyFS/ijkhuk44=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=CZ8Gshpwc1SVd7FZVA90k5ePmrTjpRVq+Al/pRvi8QCxZoFbkQ4O5l4O0HmcUbSO6
-	 XFIIbXzAR3PEU76HUsI+RU0QWOHuqqBNBob4u86Ad06VgZ9hL5DRg1fFdV2WPQESEC
-	 XPULqCtG3B8BdLF5JP1TeWfuC0gYXTQh+EPc2NqE=
+	by mail.kernel.org (Postfix) with ESMTP id D3E3E21D7D
+	for <linux-mips@archiver.kernel.org>; Mon, 17 Feb 2020 16:55:39 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="BC+LE7ZC"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728977AbgBQQqR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 17 Feb 2020 11:46:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41174 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728736AbgBQQqR (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 17 Feb 2020 11:46:17 -0500
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5D1C214D8;
-        Mon, 17 Feb 2020 16:46:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581957976;
-        bh=/DaX8+TZSwBPiTZVH9FgOz76O3KL16JyFS/ijkhuk44=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XKRFlaKp1IYIDGXDUJvH5mH8wXq/PXWxby8tJqhb0Gldfy+UFk8+5flsOaGzmHdfo
-         HlDNAYeeQrm/bDaFOCjFhUdWXO6SEKGWsxUiE0Of4uCTM0915fDbv4hNzC3UL8lKqY
-         xrdgGSn1GXDrxC+bKBaQ4bujFS0dC8o+hjZV23us=
-Date:   Mon, 17 Feb 2020 16:46:09 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        linux-arch@vger.kernel.org, ndesaulniers@google.com,
-        0x7f454c46@gmail.com, avagin@openvz.org, arnd@arndb.de,
-        sboyd@kernel.org, catalin.marinas@arm.com, x86@kernel.org,
-        will.deacon@arm.com, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, clang-built-linux@googlegroups.com,
-        paul.burton@mips.com, mingo@redhat.com, bp@alien8.de,
-        luto@kernel.org, linux@armlinux.org.uk, tglx@linutronix.de,
-        salyzyn@android.com, pcc@google.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 19/19] arm64: vdso32: Enable Clang Compilation
-Message-ID: <20200217164608.GA2708@willie-the-truck>
-References: <20200213161614.23246-1-vincenzo.frascino@arm.com>
- <20200213161614.23246-20-vincenzo.frascino@arm.com>
- <20200213184454.GA4663@ubuntu-m2-xlarge-x86>
- <0cee3707-d526-3766-3dde-543c8dbd8e68@arm.com>
+        id S1728864AbgBQQzj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 17 Feb 2020 11:55:39 -0500
+Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.101]:17082 "EHLO
+        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728810AbgBQQzj (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 17 Feb 2020 11:55:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1581958537;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=ex+tP/S3jJM/1n8mzovxtL99ooZIHpji+z8Ck9o3ixM=;
+        b=BC+LE7ZCAZveaAFoluYtb4Q3baSJX5raqCmebCJfRBHA81Z4xWBNhmHNxuV2VQu8bL
+        CbVTsOFh1QY3fPDznpjmCjYpCDgD9bUeYeSKH2usPSqUxVXxBGll/970irVOG4zJwp+i
+        +SbJTRRl3DtHb/O7qFqHzqvKUWrL25BxTzyJSdie3DuzgiVPZShzG3mHNEywGrhhjeyo
+        M2HitpNrNCb702vgmy7KhTo5XW2iJh+eC9nvxsCuPo+NZNvTemC/NSiMpMskc+tyGr3I
+        8POIbz/SSwrHFSYXBF9h8/oLSyxqpYu5AmF56RFJP6rWVPxGsZkmvZyVd2Pk47hh4WMd
+        fbhA==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1mfYzBGHXL8GTnsvhg="
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+        by smtp.strato.de (RZmta 46.1.12 DYNA|AUTH)
+        with ESMTPSA id U06217w1HGtYOqv
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Mon, 17 Feb 2020 17:55:34 +0100 (CET)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Mathieu Malaterre <malat@debian.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com
+Subject: [RFC v4 6/6] MIPS: DTS: CI20: make DM9000 Ethernet controller use NVMEM to find the default MAC address
+Date:   Mon, 17 Feb 2020 17:55:30 +0100
+Message-Id: <1c124c43c0cd96274cb0386d68aa01ad8ef8b2cb.1581958529.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <cover.1581958529.git.hns@goldelico.com>
+References: <cover.1581958529.git.hns@goldelico.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0cee3707-d526-3766-3dde-543c8dbd8e68@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Feb 17, 2020 at 12:26:16PM +0000, Vincenzo Frascino wrote:
-> On 13/02/2020 18:44, Nathan Chancellor wrote:
-> > On Thu, Feb 13, 2020 at 04:16:14PM +0000, Vincenzo Frascino wrote:
-> >> Enable Clang Compilation for the vdso32 library.
-> 
-> [...]
-> 
-> >> +LD_COMPAT ?= $(CROSS_COMPILE_COMPAT)gcc
-> > 
-> > Well this is unfortunate :/
-> > 
-> > It looks like adding the --target flag to VDSO_LDFLAGS allows
-> > clang to link the vDSO just fine although it does warn that -nostdinc
-> > is unused:
-> > 
-> > clang-11: warning: argument unused during compilation: '-nostdinc'
-> > [-Wunused-command-line-argument]
-> >
-> 
-> This is why ended up in this "unfortunate" situation :) I wanted to avoid the
-> warning.
-> 
-> > It would be nice if the logic of commit fe00e50b2db8 ("ARM: 8858/1:
-> > vdso: use $(LD) instead of $(CC) to link VDSO") could be adopted here
-> > but I get that this Makefile is its own beast :) at the very least, I
-> > think that the --target flag should be added to VDSO_LDFLAGS so that gcc
-> > is not a requirement for this but I am curious if you tried that already
-> > and noticed any issues with it.
-> > 
-> 
-> --target is my preferred way as well, I can try to play another little bit with
-> the flags and see what I can come up with in the next version.
+There is a unique MAC address programmed into the eFuses
+of the JZ4780 chip in the CI20 factory. By using this
+for initializing the DM9000 Ethernet controller, every
+CI20 board has an individual - but stable - MAC address
+and DHCP can assign stable IP addresses.
 
-Yes, please. I'd even prefer the warning rather than silently assuming that
-a cross gcc is kicking around on the path.
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ arch/mips/boot/dts/ingenic/ci20.dts | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Will
+diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
+index 37b93166bf22..6dc1f9eeff00 100644
+--- a/arch/mips/boot/dts/ingenic/ci20.dts
++++ b/arch/mips/boot/dts/ingenic/ci20.dts
+@@ -355,6 +355,9 @@
+ 
+ 		interrupt-parent = <&gpe>;
+ 		interrupts = <19 4>;
++
++		nvmem-cells = <&eth0_addr>;
++		nvmem-cell-names = "mac-address";
+ 	};
+ };
+ 
+-- 
+2.23.0
+

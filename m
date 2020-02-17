@@ -1,94 +1,108 @@
-Return-Path: <SRS0=kNAq=4E=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=O+by=4F=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB4BCC761A2
-	for <linux-mips@archiver.kernel.org>; Sun, 16 Feb 2020 20:21:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53154C3B1BF
+	for <linux-mips@archiver.kernel.org>; Mon, 17 Feb 2020 00:23:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 85CC922522
-	for <linux-mips@archiver.kernel.org>; Sun, 16 Feb 2020 20:21:37 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="aEiL40/f"
+	by mail.kernel.org (Postfix) with ESMTP id 28F17208C4
+	for <linux-mips@archiver.kernel.org>; Mon, 17 Feb 2020 00:23:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgBPUVN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 16 Feb 2020 15:21:13 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:20114 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727668AbgBPUVM (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 16 Feb 2020 15:21:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1581884470;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=VEEfWHHyq9WgZwXb3jwjztdop9r9n8E/QSOLXxJz8lU=;
-        b=aEiL40/fzwRl69BnESLZPm75U8rZcokjTH9o/18USk6QsqiwrdwoinCEFjwZMAw3ED
-        BKoEwIOfiuo4m/TrxLZdWqTP3YVOqNkwpsn7UYlVhDhNtAF6th1+So2bqtRKuv+DAYJi
-        6b2QXuqd6mCo9my6McKWYV+5Ybrb7UXQVsNSJfWpgaL9Z8aqNEmmyqxQg8KKFzoHYKfD
-        r1BaXYf0X9VbPhatIYdT1FGM/yJyEaSc5ZsUVrzDCtZ2SlV+jFk77g/yvPyva6gOjxlj
-        nsoStChVGtfgUURhBIIxIrx/XlwKdKgh21Wol89+B3eSdiDAf+I1FTG8DnJyrfQYWFqM
-        4z4w==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UNf2M0OoPPevMB"
-X-RZG-CLASS-ID: mo00
-Received: from iMac.fritz.box
-        by smtp.strato.de (RZmta 46.1.12 DYNA|AUTH)
-        with ESMTPSA id U06217w1GKL1Jr1
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Sun, 16 Feb 2020 21:21:01 +0100 (CET)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-To:     Paul Boddie <paul@boddie.org.uk>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
-        kernel@pyra-handheld.com
-Subject: [PATCH v3 1/6] MIPS: DTS: jz4780: add #includes for irq.h and gpio.h
-Date:   Sun, 16 Feb 2020 21:20:55 +0100
-Message-Id: <043d2e1f931ea85769c0932657e18f2808caa35b.1581884459.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <cover.1581884459.git.hns@goldelico.com>
-References: <cover.1581884459.git.hns@goldelico.com>
+        id S1726128AbgBQAXC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 16 Feb 2020 19:23:02 -0500
+Received: from mail-yw1-f65.google.com ([209.85.161.65]:36336 "EHLO
+        mail-yw1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726099AbgBQAXC (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 16 Feb 2020 19:23:02 -0500
+Received: by mail-yw1-f65.google.com with SMTP id n184so7166607ywc.3;
+        Sun, 16 Feb 2020 16:23:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RvBPrsaf/vx3QAte1Qnpsp+hszyxo6KbY+gYM2/7LjA=;
+        b=e8nko6o8jnyQyJikRA1fe5DZNTm6bYrKK+LVuMwN4L5yV1lpe3Y3Q89oC08chKlN5f
+         07gM/qKk5hXZDaRl3+4KcT0TYvEruuLIL9Em7hVwCpBbYlD8e3Sx/a6L37oEHcRLPgDP
+         Aj8OdwOtqjnxDGQqQCNKzrdeinxKrrjvQBAdmWe4oP4i+DLsuliIfr4Y6ylRyg8tnTxt
+         hZl1050AaXQPet92kyn2ptGmB+ynMyUp03u+j7pW5uQy7apRsK0px75LTfBSBw7TCy5x
+         +CICS4fGzT8/m4Ls1KpcAQs3fJEJr1kxf1Uu6U+tTPCG9dlt+LQtGJfQ9+T/+i+Kkzjf
+         Ug3A==
+X-Gm-Message-State: APjAAAVrilw6XuqqbcA1Cm452G7CJfx6bC7kcMzLEelW+TQYesSUuX6Q
+        sO03ceGlVqzLBbExLmfT+a7A096v9zVzrr/AkMo=
+X-Google-Smtp-Source: APXvYqyQCU/hZKc6c+ps40FzzNag7kfR8UYQvQHgYyMzprLyT5uqFzzA36KlL+ZEwnYZDX8HWAovcgTPrrSJi42fqBw=
+X-Received: by 2002:a81:4f8b:: with SMTP id d133mr11513961ywb.368.1581898981330;
+ Sun, 16 Feb 2020 16:23:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200211212455.3307-1-mark.tomlinson@alliedtelesis.co.nz>
+In-Reply-To: <20200211212455.3307-1-mark.tomlinson@alliedtelesis.co.nz>
+From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
+Date:   Mon, 17 Feb 2020 01:22:50 +0100
+Message-ID: <CAAdtpL5Tf-8O=xMKO33DWDs=2_Hsdk=FQSNO5Gsrx=9hWvENdg@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: cavium_octeon: Fix syncw generation.
+To:     Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Cc:     Paul Burton <paulburton@kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        chris.packham@alliedtelesis.co.nz,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The constants from irq.h and gpio.h can and should be
-used in the jz4780.dtsi and derived DTS like ci20.dts.
+Hi Mark,
 
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
----
- arch/mips/boot/dts/ingenic/jz4780.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+On Tue, Feb 11, 2020 at 10:42 PM Mark Tomlinson
+<mark.tomlinson@alliedtelesis.co.nz> wrote:
+>
+> The Cavium Octeon CPU uses a special sync instruction for implementing
+> wmb, and due to a CPU bug, the instruction must appear twice. A macro
+> had been defined to hide this:
+>
+>  #define __SYNC_rpt(type)     (1 + (type == __SYNC_wmb))
+>
+> which was intended to evaluate to 2 for __SYNC_wmb, and 1 for any other
+> type of sync. However, this expression is evaluated by the assembler,
+> and not the compiler, and the result of '==' in the assembler is 0 or
+> -1, not 0 or 1 as it is in C. The net result was wmb() producing no code
+> at all. The simple fix in this patch is to change the '+' to '-'.
 
-diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-index f928329b034b..112a24deff71 100644
---- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-@@ -1,6 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <dt-bindings/clock/jz4780-cgu.h>
- #include <dt-bindings/dma/jz4780-dma.h>
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
- 
- / {
- 	#address-cells = <1>;
--- 
-2.23.0
+Isn't this particular to the assembler implementation?
+Can you explicit the assembler you are using in the commit description?
+Assuming we have to look at your commit in 3 years from now, we'll
+wonder what assembler you were using.
 
+Thanks,
+
+Phil.
+
+> Fixes: bf92927251b3 ("MIPS: barrier: Add __SYNC() infrastructure")
+> Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+> ---
+>  arch/mips/include/asm/sync.h | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/mips/include/asm/sync.h b/arch/mips/include/asm/sync.h
+> index 7c6a1095f5..aabd097933 100644
+> --- a/arch/mips/include/asm/sync.h
+> +++ b/arch/mips/include/asm/sync.h
+> @@ -155,9 +155,11 @@
+>   * effective barrier as noted by commit 6b07d38aaa52 ("MIPS: Octeon: Use
+>   * optimized memory barrier primitives."). Here we specify that the affected
+>   * sync instructions should be emitted twice.
+> + * Note that this expression is evaluated by the assembler (not the compiler),
+> + * and that the assembler evaluates '==' as 0 or -1, not 0 or 1.
+>   */
+>  #ifdef CONFIG_CPU_CAVIUM_OCTEON
+> -# define __SYNC_rpt(type)      (1 + (type == __SYNC_wmb))
+> +# define __SYNC_rpt(type)      (1 - (type == __SYNC_wmb))
+>  #else
+>  # define __SYNC_rpt(type)      1
+>  #endif
+> --
+> 2.25.0
+>

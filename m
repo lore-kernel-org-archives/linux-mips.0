@@ -2,142 +2,132 @@ Return-Path: <SRS0=7YAP=4G=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BBFCC34031
-	for <linux-mips@archiver.kernel.org>; Tue, 18 Feb 2020 21:09:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A4C7C34031
+	for <linux-mips@archiver.kernel.org>; Tue, 18 Feb 2020 21:26:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6DD712176D
-	for <linux-mips@archiver.kernel.org>; Tue, 18 Feb 2020 21:09:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1E3B52173E
+	for <linux-mips@archiver.kernel.org>; Tue, 18 Feb 2020 21:26:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1582061173;
+	bh=HmXo1LB8OB9WHetBsej2WEnq6ZZ39GIT6ZFL4BTgvR4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=gs2xXsSRRA1Myox+gZ1felwOQy5jcO2m5twg/G2mpsfwsnXIxo8wCRFzl6Dm7Ob2A
+	 MzZdp6zxPWrr/y82DHoo8cV9o5gI6liwUqIyj7YXmBCHBTB18rvfXuzuvNSHspatb4
+	 sOmRCXOiajMnQVYbt0QaEaB0j/VLscus+/x+ZBiw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgBRVHp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 18 Feb 2020 16:07:45 -0500
-Received: from mga07.intel.com ([134.134.136.100]:6395 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726339AbgBRVHp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 18 Feb 2020 16:07:45 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Feb 2020 13:07:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,457,1574150400"; 
-   d="scan'208";a="253856397"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
-  by orsmga002.jf.intel.com with ESMTP; 18 Feb 2020 13:07:44 -0800
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Peter Xu <peterx@redhat.com>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>
-Subject: [PATCH v6 02/22] KVM: Reinstall old memslots if arch preparation fails
-Date:   Tue, 18 Feb 2020 13:07:16 -0800
-Message-Id: <20200218210736.16432-3-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200218210736.16432-1-sean.j.christopherson@intel.com>
-References: <20200218210736.16432-1-sean.j.christopherson@intel.com>
+        id S1726595AbgBRV0M (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 18 Feb 2020 16:26:12 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:43762 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726339AbgBRV0M (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 18 Feb 2020 16:26:12 -0500
+Received: by mail-oi1-f193.google.com with SMTP id p125so21628764oif.10;
+        Tue, 18 Feb 2020 13:26:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FBPkXpeYhwlQjEm8h9p4qJHC0WNjgbFbJ3Ke8WGyPBM=;
+        b=Rqgh2LWnOAPWjZ8KZl94JfvxtMHxu6vbYlVrPNWEsgs/AALWVNsh1NtJ5KrwOFWm1i
+         NLim4Zcq0WJQkSHrLATBvI2mmSTjeUo3OvnKT+fL0niepXSbV/kd3hnGFZvLJ+53/FaP
+         xLZUwd1R52xOB5xDF72l40ioriID9ov8XcF5Cqen+bvhEUtHy6d9f4o11zYYzg/YWh6s
+         18ipi9sdUShAgmm+GMvW01FO+/vFNie/Mll1i1n8eB1DvOAWGYasrtnJZxlXftQFlXwL
+         qK1in00QK5wQJLCW7fYrUm/xbQwZk10H7IttL26VcFzwtA/0twAiY2bur5iLtYUav4Hi
+         ArSA==
+X-Gm-Message-State: APjAAAWhwukuNfN/5Xyxzv9heQ34JG883/0wioVHAxV2f0iUSvBUfMus
+        dZL9esWYdlFTV5prnDzFrA==
+X-Google-Smtp-Source: APXvYqz+09mjoyPzbo4w/ESpYhcZUDvhBc+W905MCab1uX/0MfjKD0RzIRARpXpes5JkXIfdeYENDw==
+X-Received: by 2002:aca:e106:: with SMTP id y6mr2629105oig.131.1582061171568;
+        Tue, 18 Feb 2020 13:26:11 -0800 (PST)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y22sm1756180otq.31.2020.02.18.13.26.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Feb 2020 13:26:10 -0800 (PST)
+Received: (nullmailer pid 32562 invoked by uid 1000);
+        Tue, 18 Feb 2020 21:26:09 -0000
+Date:   Tue, 18 Feb 2020 15:26:09 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Mathieu Malaterre <malat@debian.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com
+Subject: Re: [RFC v4 2/6] Bindings: nvmem: add bindings for JZ4780 efuse
+Message-ID: <20200218212609.GA30081@bogus>
+References: <cover.1581958529.git.hns@goldelico.com>
+ <86b78db4d607e0bdda6def018bc7f73207ce82e8.1581958529.git.hns@goldelico.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86b78db4d607e0bdda6def018bc7f73207ce82e8.1581958529.git.hns@goldelico.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Reinstall the old memslots if preparing the new memory region fails
-after invalidating a to-be-{re}moved memslot.
+On Mon, Feb 17, 2020 at 05:55:26PM +0100, H. Nikolaus Schaller wrote:
+> From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+> 
+> This patch brings support for the JZ4780 efuse. Currently it only expose
+> a read only access to the entire 8K bits efuse memory.
+> 
+> Tested-by: Mathieu Malaterre <malat@debian.org>
+> Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+> Signed-off-by: Mathieu Malaterre <malat@debian.org>
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> ---
+>  .../bindings/nvmem/ingenic,jz4780-efuse.txt     | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.txt
 
-Remove the superfluous 'old_memslots' variable so that it's somewhat
-clear that the error handling path needs to free the unused memslots,
-not simply the 'old' memslots.
+Please convert to a DT schema.
 
-Fixes: bc6678a33d9b9 ("KVM: introduce kvm->srcu and convert kvm_set_memory_region to SRCU update")
-Reviewed-by: Christoffer Dall <christoffer.dall@arm.com>
-Reviewed-by: Peter Xu <peterx@redhat.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- virt/kvm/kvm_main.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+> diff --git a/Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.txt b/Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.txt
+> new file mode 100644
+> index 000000000000..339e74daa9a9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.txt
+> @@ -0,0 +1,17 @@
+> +Ingenic JZ EFUSE driver bindings
+> +
+> +Required properties:
+> +- "compatible"		Must be set to "ingenic,jz4780-efuse"
+> +- "reg"			Register location and length
+> +- "clocks"		Handle for the ahb clock for the efuse.
+> +- "clock-names"		Must be "bus_clk"
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 67ae2d5c37b2..ac9c7c103453 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -999,7 +999,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
- 	unsigned long npages;
- 	struct kvm_memory_slot *slot;
- 	struct kvm_memory_slot old, new;
--	struct kvm_memslots *slots = NULL, *old_memslots;
-+	struct kvm_memslots *slots;
- 	int as_id, id;
- 	enum kvm_mr_change change;
- 
-@@ -1107,7 +1107,13 @@ int __kvm_set_memory_region(struct kvm *kvm,
- 		slot = id_to_memslot(slots, id);
- 		slot->flags |= KVM_MEMSLOT_INVALID;
- 
--		old_memslots = install_new_memslots(kvm, as_id, slots);
-+		/*
-+		 * We can re-use the old memslots, the only difference from the
-+		 * newly installed memslots is the invalid flag, which will get
-+		 * dropped by update_memslots anyway.  We'll also revert to the
-+		 * old memslots if preparing the new memory region fails.
-+		 */
-+		slots = install_new_memslots(kvm, as_id, slots);
- 
- 		/* From this point no new shadow pages pointing to a deleted,
- 		 * or moved, memslot will be created.
-@@ -1117,13 +1123,6 @@ int __kvm_set_memory_region(struct kvm *kvm,
- 		 *	- kvm_is_visible_gfn (mmu_check_root)
- 		 */
- 		kvm_arch_flush_shadow_memslot(kvm, slot);
--
--		/*
--		 * We can re-use the old_memslots from above, the only difference
--		 * from the currently installed memslots is the invalid flag.  This
--		 * will get overwritten by update_memslots anyway.
--		 */
--		slots = old_memslots;
- 	}
- 
- 	r = kvm_arch_prepare_memory_region(kvm, &new, mem, change);
-@@ -1137,15 +1136,17 @@ int __kvm_set_memory_region(struct kvm *kvm,
- 	}
- 
- 	update_memslots(slots, &new, change);
--	old_memslots = install_new_memslots(kvm, as_id, slots);
-+	slots = install_new_memslots(kvm, as_id, slots);
- 
- 	kvm_arch_commit_memory_region(kvm, mem, &old, &new, change);
- 
- 	kvm_free_memslot(kvm, &old, &new);
--	kvfree(old_memslots);
-+	kvfree(slots);
- 	return 0;
- 
- out_slots:
-+	if (change == KVM_MR_DELETE || change == KVM_MR_MOVE)
-+		slots = install_new_memslots(kvm, as_id, slots);
- 	kvfree(slots);
- out_free:
- 	kvm_free_memslot(kvm, &new, &old);
--- 
-2.24.1
+'clk' is redundant. How about 'ahb'?
 
+> +
+> +Example:
+> +
+> +efuse: efuse@134100d0 {
+> +	compatible = "ingenic,jz4780-efuse";
+> +	reg = <0x134100d0 0x2c>;
+> +
+> +	clocks = <&cgu JZ4780_CLK_AHB2>;
+> +	clock-names = "bus_clk";
+> +};
+> -- 
+> 2.23.0
+> 

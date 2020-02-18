@@ -6,25 +6,25 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60A6CC3404D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B24DC3404C
 	for <linux-mips@archiver.kernel.org>; Tue, 18 Feb 2020 23:54:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 383742465A
+	by mail.kernel.org (Postfix) with ESMTP id 1A6602465D
 	for <linux-mips@archiver.kernel.org>; Tue, 18 Feb 2020 23:54:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727973AbgBRXyp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1727951AbgBRXyp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Tue, 18 Feb 2020 18:54:45 -0500
-Received: from mga04.intel.com ([192.55.52.120]:40044 "EHLO mga04.intel.com"
+Received: from mga14.intel.com ([192.55.52.115]:60654 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726808AbgBRXyo (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1727601AbgBRXyo (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Tue, 18 Feb 2020 18:54:44 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Feb 2020 15:54:40 -0800
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Feb 2020 15:54:40 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.70,458,1574150400"; 
-   d="scan'208";a="224313180"
+   d="scan'208";a="224313177"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
   by orsmga007.jf.intel.com with ESMTP; 18 Feb 2020 15:54:39 -0800
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
@@ -45,9 +45,9 @@ Cc:     Paul Mackerras <paulus@ozlabs.org>,
         linux-mips@vger.kernel.org, kvm@vger.kernel.org,
         kvm-ppc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 9/9] KVM: SVM: Annotate svm_x86_ops as __initdata
-Date:   Tue, 18 Feb 2020 15:54:37 -0800
-Message-Id: <20200218235437.20533-10-sean.j.christopherson@intel.com>
+Subject: [PATCH v2 8/9] KVM: VMX: Annotate vmx_x86_ops as __initdata
+Date:   Tue, 18 Feb 2020 15:54:36 -0800
+Message-Id: <20200218235437.20533-9-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200218235437.20533-1-sean.j.christopherson@intel.com>
 References: <20200218235437.20533-1-sean.j.christopherson@intel.com>
@@ -58,27 +58,27 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Tag svm_x86_ops with __initdata now the the struct is copied by value to
+Tag vmx_x86_ops with __initdata now the the struct is copied by value to
 a common x86 instance of kvm_x86_ops as part of kvm_init().
 
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- arch/x86/kvm/svm.c | 2 +-
+ arch/x86/kvm/vmx/vmx.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/svm.c b/arch/x86/kvm/svm.c
-index 59af4f5386de..69d63e6dce0e 100644
---- a/arch/x86/kvm/svm.c
-+++ b/arch/x86/kvm/svm.c
-@@ -7374,7 +7374,7 @@ static void svm_pre_update_apicv_exec_ctrl(struct kvm *kvm, bool activate)
- 	avic_update_access_page(kvm, activate);
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 813dfbbfe98b..c9dcef9fc586 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7564,7 +7564,7 @@ static bool vmx_check_apicv_inhibit_reasons(ulong bit)
+ 	return supported & BIT(bit);
  }
  
--static struct kvm_x86_ops svm_x86_ops __ro_after_init = {
-+static struct kvm_x86_ops svm_x86_ops __initdata = {
- 	.hardware_unsetup = svm_hardware_unsetup,
- 	.hardware_enable = svm_hardware_enable,
- 	.hardware_disable = svm_hardware_disable,
+-static struct kvm_x86_ops vmx_x86_ops __ro_after_init = {
++static struct kvm_x86_ops vmx_x86_ops __initdata = {
+ 	.hardware_unsetup = hardware_unsetup,
+ 
+ 	.hardware_enable = hardware_enable,
 -- 
 2.24.1
 

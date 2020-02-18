@@ -6,25 +6,25 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18E7BC34049
-	for <linux-mips@archiver.kernel.org>; Tue, 18 Feb 2020 21:08:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C73D7C34049
+	for <linux-mips@archiver.kernel.org>; Tue, 18 Feb 2020 21:08:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E46D12176D
-	for <linux-mips@archiver.kernel.org>; Tue, 18 Feb 2020 21:08:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AB98A2464E
+	for <linux-mips@archiver.kernel.org>; Tue, 18 Feb 2020 21:08:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbgBRVIO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 18 Feb 2020 16:08:14 -0500
-Received: from mga07.intel.com ([134.134.136.100]:6395 "EHLO mga07.intel.com"
+        id S1727778AbgBRVIc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 18 Feb 2020 16:08:32 -0500
+Received: from mga07.intel.com ([134.134.136.100]:6399 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727620AbgBRVHx (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 18 Feb 2020 16:07:53 -0500
+        id S1727503AbgBRVHw (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 18 Feb 2020 16:07:52 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Feb 2020 13:07:47 -0800
+  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Feb 2020 13:07:46 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.70,457,1574150400"; 
-   d="scan'208";a="253856469"
+   d="scan'208";a="253856458"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
   by orsmga002.jf.intel.com with ESMTP; 18 Feb 2020 13:07:46 -0800
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
@@ -48,9 +48,9 @@ Cc:     Paul Mackerras <paulus@ozlabs.org>,
         Christoffer Dall <christoffer.dall@arm.com>,
         Peter Xu <peterx@redhat.com>,
         =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>
-Subject: [PATCH v6 21/22] KVM: x86/mmu: Use ranged-based TLB flush for dirty log memslot flush
-Date:   Tue, 18 Feb 2020 13:07:35 -0800
-Message-Id: <20200218210736.16432-22-sean.j.christopherson@intel.com>
+Subject: [PATCH v6 18/22] KVM: Dynamically size memslot array based on number of used slots
+Date:   Tue, 18 Feb 2020 13:07:32 -0800
+Message-Id: <20200218210736.16432-19-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200218210736.16432-1-sean.j.christopherson@intel.com>
 References: <20200218210736.16432-1-sean.j.christopherson@intel.com>
@@ -61,36 +61,99 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Use the with_address() variant to when performing a TLB flush for a
-specific memslot via kvm_arch_flush_remote_tlbs_memslot(), i.e. when
-flushing after clearing dirty bits during KVM_{GET,CLEAR}_DIRTY_LOG.
-This aligns all dirty log memslot-specific TLB flushes to use the
-with_address() variant and paves the way for consolidating the relevant
-code.
+Now that the memslot logic doesn't assume memslots are always non-NULL,
+dynamically size the array of memslots instead of unconditionally
+allocating memory for the maximum number of memslots.
 
-Note, moving to the with_address() variant only affects functionality
-when running as a HyperV guest.
+Note, because a to-be-deleted memslot must first be invalidated, the
+array size cannot be immediately reduced when deleting a memslot.
+However, consecutive deletions will realize the memory savings, i.e.
+a second deletion will trim the entry.
 
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Tested-by: Christoffer Dall <christoffer.dall@arm.com>
+Tested-by: Marc Zyngier <maz@kernel.org>
+Reviewed-by: Peter Xu <peterx@redhat.com>
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/kvm_host.h |  2 +-
+ virt/kvm/kvm_main.c      | 31 ++++++++++++++++++++++++++++---
+ 2 files changed, 29 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 026e4a5c8e86..8a6516ce2983 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5950,7 +5950,8 @@ void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
- 	 * kvm_mmu_slot_remove_write_access().
- 	 */
- 	lockdep_assert_held(&kvm->slots_lock);
--	kvm_flush_remote_tlbs(kvm);
-+	kvm_flush_remote_tlbs_with_address(kvm, memslot->base_gfn,
-+					   memslot->npages);
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 72b46d6f7f4a..f85cc9771ade 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -431,11 +431,11 @@ static inline int kvm_arch_vcpu_memslots_id(struct kvm_vcpu *vcpu)
+  */
+ struct kvm_memslots {
+ 	u64 generation;
+-	struct kvm_memory_slot memslots[KVM_MEM_SLOTS_NUM];
+ 	/* The mapping table from slot id to the index in memslots[]. */
+ 	short id_to_index[KVM_MEM_SLOTS_NUM];
+ 	atomic_t lru_slot;
+ 	int used_slots;
++	struct kvm_memory_slot memslots[];
+ };
+ 
+ struct kvm {
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 2f2c434ab2c9..0583143aca90 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -566,7 +566,7 @@ static struct kvm_memslots *kvm_alloc_memslots(void)
+ 		return NULL;
+ 
+ 	for (i = 0; i < KVM_MEM_SLOTS_NUM; i++)
+-		slots->id_to_index[i] = slots->memslots[i].id = -1;
++		slots->id_to_index[i] = -1;
+ 
+ 	return slots;
+ }
+@@ -1078,6 +1078,32 @@ static struct kvm_memslots *install_new_memslots(struct kvm *kvm,
+ 	return old_memslots;
  }
  
- void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
++/*
++ * Note, at a minimum, the current number of used slots must be allocated, even
++ * when deleting a memslot, as we need a complete duplicate of the memslots for
++ * use when invalidating a memslot prior to deleting/moving the memslot.
++ */
++static struct kvm_memslots *kvm_dup_memslots(struct kvm_memslots *old,
++					     enum kvm_mr_change change)
++{
++	struct kvm_memslots *slots;
++	size_t old_size, new_size;
++
++	old_size = sizeof(struct kvm_memslots) +
++		   (sizeof(struct kvm_memory_slot) * old->used_slots);
++
++	if (change == KVM_MR_CREATE)
++		new_size = old_size + sizeof(struct kvm_memory_slot);
++	else
++		new_size = old_size;
++
++	slots = kvzalloc(new_size, GFP_KERNEL_ACCOUNT);
++	if (likely(slots))
++		memcpy(slots, old, old_size);
++
++	return slots;
++}
++
+ static int kvm_set_memslot(struct kvm *kvm,
+ 			   const struct kvm_userspace_memory_region *mem,
+ 			   struct kvm_memory_slot *old,
+@@ -1088,10 +1114,9 @@ static int kvm_set_memslot(struct kvm *kvm,
+ 	struct kvm_memslots *slots;
+ 	int r;
+ 
+-	slots = kvzalloc(sizeof(struct kvm_memslots), GFP_KERNEL_ACCOUNT);
++	slots = kvm_dup_memslots(__kvm_memslots(kvm, as_id), change);
+ 	if (!slots)
+ 		return -ENOMEM;
+-	memcpy(slots, __kvm_memslots(kvm, as_id), sizeof(struct kvm_memslots));
+ 
+ 	if (change == KVM_MR_DELETE || change == KVM_MR_MOVE) {
+ 		/*
 -- 
 2.24.1
 

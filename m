@@ -1,132 +1,132 @@
-Return-Path: <SRS0=7YAP=4G=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=fD5o=4H=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CA84C3404C
-	for <linux-mips@archiver.kernel.org>; Tue, 18 Feb 2020 23:55:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C57AC3404E
+	for <linux-mips@archiver.kernel.org>; Wed, 19 Feb 2020 05:49:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id DF06E208E4
-	for <linux-mips@archiver.kernel.org>; Tue, 18 Feb 2020 23:55:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2648524670
+	for <linux-mips@archiver.kernel.org>; Wed, 19 Feb 2020 05:49:11 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="gUDoMSdW"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727620AbgBRXyj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 18 Feb 2020 18:54:39 -0500
-Received: from mga04.intel.com ([192.55.52.120]:40044 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726641AbgBRXyj (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 18 Feb 2020 18:54:39 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Feb 2020 15:54:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,458,1574150400"; 
-   d="scan'208";a="224313154"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
-  by orsmga007.jf.intel.com with ESMTP; 18 Feb 2020 15:54:38 -0800
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/9] KVM: Move x86 init ops to separate struct
-Date:   Tue, 18 Feb 2020 15:54:28 -0800
-Message-Id: <20200218235437.20533-1-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.24.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726038AbgBSFtI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 19 Feb 2020 00:49:08 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.167]:11182 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725994AbgBSFtI (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 19 Feb 2020 00:49:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1582091344;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=alpNl+QogLXB42TE03qgaGa0z0wDQj+d62gUywp3S5A=;
+        b=gUDoMSdW6YuIkmZ1jMtThaM78Tob0DWmoyyzqlDnevMz5t8SNbCVClfVXfAH11WihO
+        PpDjA4HRPc2U2ua1q4/Q6PTwI0Hdzvpziq6MgEoiNDvJkhFuFfTQ6EOu1ZkYfphIud7w
+        08eNoGYbNp0O731QDLTK+CBQZO7INRXmfLHajgvrF0z/GrUuBgavlV5ax2OW5pIeAptq
+        U2/AkE/s7/fjhLh+XykUEmVwuByJCcbbSju/BlW7oE1uFOW84ksd4EH73LV0b7FQ8ATp
+        DpJ29TpFG9cRlw+qKhIV1zrJ9bPl9ZncIDdmT4d9X9TR5kEN40JML91XPV9tlHqPdlbY
+        Qglw==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDlSZXA4LLQg="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 46.1.12 DYNA|AUTH)
+        with ESMTPSA id U06217w1J5mvVzS
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Wed, 19 Feb 2020 06:48:57 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Subject: Re: [RFC v4 2/6] Bindings: nvmem: add bindings for JZ4780 efuse
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20200218212609.GA30081@bogus>
+Date:   Wed, 19 Feb 2020 06:48:56 +0100
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-mips@vger.kernel.org,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <CFE9AEF5-FFF9-44A9-90D8-DE6AC7E7DD4F@goldelico.com>
+References: <cover.1581958529.git.hns@goldelico.com> <86b78db4d607e0bdda6def018bc7f73207ce82e8.1581958529.git.hns@goldelico.com> <20200218212609.GA30081@bogus>
+To:     PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Mathieu Malaterre <malat@debian.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+X-Mailer: Apple Mail (2.3124)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The non-x86 part of this series is wholly contained in patch 01.  Compared
-to other recent kvm-wide changes, this one is very straightforward (famous
-last words).
 
-Like a few other architectures, e.g. PPC, x86 uses a set of global hooks
-to call back into vendor code on demand.  A handlful of the x86 hooks are
-used only within the scope of kvm_init().  This series moves the init-only
-hooks to a separate struct, partly to clean up the code a bit, but mainly
-so that the runtime hooks can be made available only after the x86 vendor
-has completed its ->hardware_setup().  While working on a different series
-I spent a fair bit of time scratching my as to why a kvm_x86_ops wasn't
-working, and eventually realized VMX's callback wasn't "ready" because the
-vmcs_config hadn't yet been populated.
+> Am 18.02.2020 um 22:26 schrieb Rob Herring <robh@kernel.org>:
+>=20
+> On Mon, Feb 17, 2020 at 05:55:26PM +0100, H. Nikolaus Schaller wrote:
+>> From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+>>=20
+>> This patch brings support for the JZ4780 efuse. Currently it only =
+expose
+>> a read only access to the entire 8K bits efuse memory.
+>>=20
+>> Tested-by: Mathieu Malaterre <malat@debian.org>
+>> Signed-off-by: PrasannaKumar Muralidharan =
+<prasannatsmkumar@gmail.com>
+>> Signed-off-by: Mathieu Malaterre <malat@debian.org>
+>> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+>> ---
+>> .../bindings/nvmem/ingenic,jz4780-efuse.txt     | 17 =
++++++++++++++++++
+>> 1 file changed, 17 insertions(+)
+>> create mode 100644 =
+Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.txt
+>=20
+> Please convert to a DT schema.
 
-Due to lack of a cross-compiling setup, the non-x86 changes in patch 01
-are untested.
+Is there someone of you who can help to do that?
 
-The SVM changes in patch 02 are fairly well tested, e.g. fudged things
-enough to ensure KVM didn't explode on a null pointer.
+DT schemas are still like a Chinese dialect for me (i.e. I can decipher =
+with help but neither speak nor write).
 
-Patch 05 is a bit scary as a rogue dereference of kvm_x86_ops before
-->hardware_setup() will crash KVM (maybe the kernel?).  I didn't find any
-obvious ways to use kvm_x86_ops on AMD, and tested on a few different
-Intel CPUs, so I'm reasonably confident that there are no existing
-violations.
+BR and thanks,
+Nikolaus
 
-v2:
-  - Rebase to kvm/queue, 2c2787938512 ("KVM: selftests: Stop ...")
-  - Collect tags. [Cornelia]
-  - Add a patch to make kvm_x86_ops its own instance and copy
-    {vmx,svm}_x86_ops by value, which saves a memory access on every
-    invocation of a kvm_x86_ops hook. [Paolo]
-  - Add patches to tag {vmx,svm}_x86_ops as __initdata after they're
-    copied by value.
-
-Sean Christopherson (9):
-  KVM: Pass kvm_init()'s opaque param to additional arch funcs
-  KVM: x86: Move init-only kvm_x86_ops to separate struct
-  KVM: VMX: Move hardware_setup() definition below vmx_x86_ops
-  KVM: VMX: Configure runtime hooks using vmx_x86_ops
-  KVM: x86: Set kvm_x86_ops only after ->hardware_setup() completes
-  KVM: x86: Copy kvm_x86_ops by value to eliminate layer of indirection
-  KVM: x86: Drop __exit from kvm_x86_ops' hardware_unsetup()
-  KVM: VMX: Annotate vmx_x86_ops as __initdata
-  KVM: SVM: Annotate svm_x86_ops as __initdata
-
- arch/mips/kvm/mips.c            |   4 +-
- arch/powerpc/kvm/powerpc.c      |   4 +-
- arch/s390/kvm/kvm-s390.c        |   4 +-
- arch/x86/include/asm/kvm_host.h |  35 +--
- arch/x86/kvm/cpuid.c            |  24 +-
- arch/x86/kvm/hyperv.c           |   8 +-
- arch/x86/kvm/kvm_cache_regs.h   |  10 +-
- arch/x86/kvm/lapic.c            |  30 +--
- arch/x86/kvm/mmu.h              |   4 +-
- arch/x86/kvm/mmu/mmu.c          |  38 ++--
- arch/x86/kvm/pmu.c              |  30 +--
- arch/x86/kvm/pmu.h              |   2 +-
- arch/x86/kvm/svm.c              |  21 +-
- arch/x86/kvm/trace.h            |   4 +-
- arch/x86/kvm/vmx/nested.c       |  17 +-
- arch/x86/kvm/vmx/nested.h       |   3 +-
- arch/x86/kvm/vmx/pmu_intel.c    |   2 +-
- arch/x86/kvm/vmx/vmx.c          | 353 +++++++++++++++--------------
- arch/x86/kvm/x86.c              | 384 ++++++++++++++++----------------
- arch/x86/kvm/x86.h              |   4 +-
- include/linux/kvm_host.h        |   4 +-
- virt/kvm/arm/arm.c              |   4 +-
- virt/kvm/kvm_main.c             |  18 +-
- 23 files changed, 519 insertions(+), 488 deletions(-)
-
--- 
-2.24.1
+>=20
+>> diff --git =
+a/Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.txt =
+b/Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.txt
+>> new file mode 100644
+>> index 000000000000..339e74daa9a9
+>> --- /dev/null
+>> +++ =
+b/Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.txt
+>> @@ -0,0 +1,17 @@
+>> +Ingenic JZ EFUSE driver bindings
+>> +
+>> +Required properties:
+>> +- "compatible"		Must be set to "ingenic,jz4780-efuse"
+>> +- "reg"			Register location and length
+>> +- "clocks"		Handle for the ahb clock for the efuse.
+>> +- "clock-names"		Must be "bus_clk"
+>=20
+> 'clk' is redundant. How about 'ahb'?
+>=20
+>> +
+>> +Example:
+>> +
+>> +efuse: efuse@134100d0 {
+>> +	compatible =3D "ingenic,jz4780-efuse";
+>> +	reg =3D <0x134100d0 0x2c>;
+>> +
+>> +	clocks =3D <&cgu JZ4780_CLK_AHB2>;
+>> +	clock-names =3D "bus_clk";
+>> +};
+>> --=20
+>> 2.23.0
+>>=20
 

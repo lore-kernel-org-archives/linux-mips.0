@@ -2,277 +2,457 @@ Return-Path: <SRS0=K/D6=4J=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77729C11D00
-	for <linux-mips@archiver.kernel.org>; Fri, 21 Feb 2020 00:42:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44372C11D24
+	for <linux-mips@archiver.kernel.org>; Fri, 21 Feb 2020 05:12:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4E149208E4
-	for <linux-mips@archiver.kernel.org>; Fri, 21 Feb 2020 00:42:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 016F424653
+	for <linux-mips@archiver.kernel.org>; Fri, 21 Feb 2020 05:12:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="PIMCrVwc"
+	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="byvXi1+u"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729741AbgBUAm0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 20 Feb 2020 19:42:26 -0500
-Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17809 "EHLO
+        id S1726100AbgBUFMx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 21 Feb 2020 00:12:53 -0500
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17826 "EHLO
         sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729739AbgBUAm0 (ORCPT
+        by vger.kernel.org with ESMTP id S1725973AbgBUFMx (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 20 Feb 2020 19:42:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1582245723;
+        Fri, 21 Feb 2020 00:12:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1582261895;
         s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
-        h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=nQkhWD0vzRMeJaAuRM8hbcXEG7NWeiBqW3cYe1zDt/w=;
-        b=PIMCrVwciVoB4eQxbm/LMi18sPJJpckNt7uAQDGpBIY2EqG2FfJy/r6w/MVYm52N
-        fPw4iV3F9T7unkNWUR4BOWi2Bgcm2+JNo31/AH4O0sOENpwog72Hlj99QuERzbdoeDA
-        Uw6wUq96CL5jffIRphngF7jfBKG8HDenwW7gukVc=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 1582245721005355.3785947856163; Fri, 21 Feb 2020 08:42:01 +0800 (CST)
-Date:   Fri, 21 Feb 2020 08:42:01 +0800
+        h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        bh=HICXcoLAntejme88fw+g+f7cdOyeLuzwcz8Pyf3Sw38=;
+        b=byvXi1+upj8cKespzms3+Pkw+1ay322f4dABemHp9uSzxSwrPPxYxGMtjlEUopK7
+        UUHx1tjMym6/bTzc+h4IGTCs2iWnC68iNr8CE8NSXOX3A8rBGwhiza8SVXgLZDd0CRj
+        SXUpBcp/PVfpOeGJAygdz3fNBvYK1UR2GqYvHviQ=
+Received: from localhost.localdomain (39.155.141.144 [39.155.141.144]) by mx.zoho.com.cn
+        with SMTPS id 1582261894263984.0477111080212; Fri, 21 Feb 2020 13:11:34 +0800 (CST)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     "John Garry" <john.garry@huawei.com>
-Cc:     "xuwei (O)" <xuwei5@huawei.com>, "bhelgaas" <bhelgaas@google.com>,
-        "andyshevchenko" <andy.shevchenko@gmail.com>,
-        "Arnd Bergmann" <arnd@arndb.de>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "Linux Mips" <linux-mips@vger.kernel.org>
-Message-ID: <1706531b3a8.108e582396993.7792774458896054798@flygoat.com>
-In-Reply-To: <6c49e5e0-b6f2-fe23-caec-4742c3d1d3a0@huawei.com>
-References: <1705dbe62ce.10ae800394772.9222265269135747883@flygoat.com>
- <5E4E55F7.70800@hisilicon.com>
- <e3ddd7de-54b2-bdba-2233-6ace40072430@huawei.com>
- <17062738bc0.c380503c6222.6801557833645076299@flygoat.com>
- <1ebf4461-eb37-ff58-1faf-dd24d83f85cf@huawei.com>
- <170632822e1.12fede49a6919.5706082545515934736@flygoat.com>
- <e54a9936-5cf3-777d-3e91-58d2be96bf1c@huawei.com> <6c49e5e0-b6f2-fe23-caec-4742c3d1d3a0@huawei.com>
-Subject: Re: Questions about logic_pio
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Huacai Chen <chenhc@lemote.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Allison Randal <allison@lohutok.net>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Message-ID: <20200221050942.507775-2-jiaxun.yang@flygoat.com>
+Subject: [PATCH v4 01/10] irqchip: Add driver for Loongson I/O Local Interrupt Controller
+Date:   Fri, 21 Feb 2020 13:09:16 +0800
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200221050942.507775-1-jiaxun.yang@flygoat.com>
+References: <20200221050942.507775-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Priority: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=BA=94, 2020-02-21 02:32:39 John Garry=
- <john.garry@huawei.com> =E6=92=B0=E5=86=99 ----
- > On 20/02/2020 17:39, John Garry wrote:
- > > On 20/02/2020 15:12, Jiaxun Yang wrote:
- > >>
- > >>   ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E5=9B=9B, 2020-02-20 22:23:57 Joh=
-n Garry=20
- > >> <john.garry@huawei.com> =E6=92=B0=E5=86=99 ----
- > >>   > > Also Cc MIPS list to check other's opinions.
- > >>   > >
- > >>   > > Hi John.
- > >>   > >
- > >>   >
- > >>   > Hi Jiaxun Yang,
- > >>   >
- > >>   > > Thanks for your kind explanation, however, I think this way is
- > >>   > > violating how I/O ports supposed to work, at least in MIPS worl=
-d.
- > >>   >
- > >>   > For a bit more history, please understand that the core PCI code =
-was
- > >>   > managing non-native IO port space in the same way before we added=
- the
- > >>   > logic PIO framework. The only real functional change here was tha=
-t we
- > >>   > introduced the indirect-io region within the IO port space, under
- > >>   > CONFIG_INDIRECT_PIO.
- > >>
- > >> I'm going to do more investigation. Thanks.
- > >>
- > >>   >
- > >>   > >
- > >>   > >   > >>
- > >>   > >   > >> After dig into logic pio logic, I found that logic pio i=
-s=20
- > >> trying to "allocate" an io_start
- > >>   > >   > >> for MMIO ranges, the allocation starts from 0x0. And=20
- > >> later the io_start is used to calculate
- > >>   > >   > >> cpu_address.  In my opinion, for direct MMIO access,=20
- > >> logic_pio address should always
- > >>   > >   > >> equal to hw address,
- > >>   > >   >
- > >>   > >   > I'm not sure what you mean by simply the hw address.
- > >>   > >   >
- > >>   > >
- > >>   > > I meant  hw_start should always equal to io_start.
- > >>   > >
- > >>   > >
- > >>   > > MIPS have their own wrapped inl/outl functions,
- > >>   >
- > >>   > Can you please point me to these? I could not find them in arch/m=
-ips
- > >>
- > >> They are built by __BUILD_IOPORT_PFX(bus, bwlq, type) macro.
- > >> Just using mips_io_port_base + offset to handle inl/outl, the same wa=
-y=20
- > >> PCI_IOBASE.
- > >=20
- > > Right, so I had a glance through the code and mips has it own manageme=
-nt=20
- > > of this IO port space. And, like you say, mips_io_port_base is=20
- > > equivalent to PCI_IOBASE.
- > >=20
- > >>
- > >>   >
- > >>   > I will also note that arch/mips/include/asm/io.h does not include
- > >>   > asm-generic io.h today
- > >>
- > >> Yes, and I'm attempting to take advantage of asm-generic.
- > >=20
- > > I just don't think it's as simple as saying we want to take advantage =
-of=20
- > > asm-generic. asm-generic io.h includes logic_pio.h, which uses logical=
-=20
- > > PIO to manage IO port space and relies on PIO_IOBASE. This is=20
- > > incompatible with having some other framework - like mips_io_port_base=
- -=20
- > > managing IO port space at the same time.
- > >=20
- > > The core PCI code relies on logical PIO to manage IO port space for wh=
-en=20
- > > PCI_IOBASE is defined.
- > >=20
- > >>
- > >>   >
- > >>   > doing the samething with
- > >>   > > PCI_IOBASE enabled one. I was just trying to use PCI_IOBASE=20
- > >> instead.
- > >>   > >
- > >>   > > Originally, the I/O ports layout seems like this:
- > >>   > >
- > >>   > > 00000020-00000021 : pic1
- > >>   > > 00000060-0000006f : i8042
- > >>   > > 00000070-00000077 : rtc0
- > >>   > > 000000a0-000000a1 : pic2
- > >>   > > 00000170-00000177 : pata_atiixp
- > >>   > > 000001f0-000001f7 : pata_atiixp
- > >>   > > 00000376-00000376 : pata_atiixp
- > >>   > > 000003f6-000003f6 : pata_atiixp
- > >>   > > 00000800-000008ff : acpi
- > >>   > > 00001000-00001008 : piix4_smbus
- > >>   > > 00004000-0003ffff : pci io space
- > >>   > >    00004000-00004fff : PCI Bus 0000:01
- > >>   > >      00004000-000040ff : 0000:01:05.0
- > >>   > >    00005000-00005fff : PCI Bus 0000:03
- > >>   > >      00005000-0000501f : 0000:03:00.0
- > >>   > >
- > >>   > > But with PCI_IOBASE defined, I got this:
- > >>   > >
- > >>   > > host bridge /bus@10000000/pci@10000000 ranges:
- > >>   > >        MEM 0x0040000000..0x007fffffff -> 0x0040000000
- > >>   > >         IO 0x0000004000..0x0000007fff -> 0x0000004000
- > >>   > > resource collision: [io  0x0000-0x3fff] conflicts with pic1 [io=
- =20
- > >> 0x0020-0x0021]
- > >>   > >
- > >>   > > Because io_start was allocated to 0x0 by Logic PIO.
- > >>   > >
- > >>   > > There are a lot of devices that have fixed ioports thanks to=20
- > >> x86's legacy.
- > >>   >
- > >>   > Well, yes, I'm not so surprised.
- > >>   >
- > >>   > So if MIPS does not have native IO port access, then surely you n=
-eed
- > >>   > some host bridge to translate host CPU MMIO accesses to port I/O
- > >>   > accesses, right? Where are these CPU addresses defined?
- > >>
- > >> It is defined by the variable mips_io_port_base.
- > >>
- > >>   >
- > >>   > > For example, in my hardware, ioports for RTC, PIC, I8042 are=20
- > >> unmoveable,
- > >>   > > and they can't be managed by logic pio subsystem. > Also, the=
-=20
- > >> PCI Hostbridge got implied by DeviceTree that it's I/O range
- > >>   > > started from 0x4000 in bus side
- > >>   >
- > >>   > which bus is this?
- > >>
- > >> They're all located under "ISA Range".  Just an MMIO range that will=
-=20
- > >> resend
- > >> the request to ISA I/O. --ioports for both PCI and some legacy device=
-s.
- > >>
- > >> In that range, base + 0x0000 to 0x4000 is preserved for PIO devices=
-=20
- > >> (e.g.) I8259
- > >> and base + 0x4000 to MMIO_LIMIT are for PCI devices under host bridge=
-.
- > >> For the host bridge, ioports it can decode starts from 0x4000.
- > >>
- > >> My intentional behavior is that when I'm specifying in dts that the I=
-O=20
- > >> Range of PCI host
- > >> bridge is 0x4000 to 0x7fff, it would request the IO_RESOURCE start=20
- > >> from 0x4000
- > >> to 0x7fff, also tell the host driver to decode  0x4000 to 0x7fff in I=
-O=20
- > >> BAR, And let the drivers
- > >> access 0x4000 to 0x7fff via inl/outl, rather than allocate from PIO=
-=20
- > >> 0x0 to 0x3fff.
- > >>
- > >>   >
- > >>   > , but then, Logic PIO remapped to PCI_IOBASE + 0x0.
- > >>   > > The real address should be PCI_IOBASE + 0x4000,
- > >>   >
- > >>   > You seem to be using two methods to manage IO port space, and the=
-y=20
- > >> seem
- > >>   > to be conflicting.
- > >>
- > >> So... Are there any way to handle these unmoveable devices in logic=
-=20
- > >> pio world?
- > >=20
- > > When you say that they are unmovable, they are at a fixed address on=
-=20
- > > this "ISA Range", right? If so, yes, you should be able to handle it i=
-n=20
- > > logical PIO. You just need to deal with translating logical PIO=20
- > > addresses to ISA bus addresses. We do this very thing in our LPC drive=
-r=20
- > > - see drivers/bus/hisi_lpc.c
- >=20
- > I will add this may not cover your need, as you probably cannot deal=20
- > with any logical PIO <-> ISA translation without modifying the device=20
- > driver. For this, we may need to reserve the first 0x4000 in logical PIO=
-=20
- > space for this sort of legacy host.
+This controller appeared on Loongson family of chips as the primary
+package interrupt source.
 
-Hi,
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+ drivers/irqchip/Kconfig                |   9 +
+ drivers/irqchip/Makefile               |   1 +
+ drivers/irqchip/irq-loongson-liointc.c | 338 +++++++++++++++++++++++++
+ 3 files changed, 348 insertions(+)
+ create mode 100644 drivers/irqchip/irq-loongson-liointc.c
 
-After thinking twice, I realized that the most convenient way for me is
-adding an option to get rid of the mess of logic PIO. MIPS system is emulat=
-ing
-x86's behavior, while logic PIO isn't designed for such platform.
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index 6d397732138d..c609eaa319d2 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -513,4 +513,13 @@ config EXYNOS_IRQ_COMBINER
+ =09  Say yes here to add support for the IRQ combiner devices embedded
+ =09  in Samsung Exynos chips.
+=20
++config LOONGSON_LIOINTC
++=09bool "Loongson Local I/O Interrupt Controller"
++=09depends on MACH_LOONGSON64
++=09default y
++=09select IRQ_DOMAIN
++=09select GENERIC_IRQ_CHIP
++=09help
++=09  Support for the Loongson Local I/O Interrupt Controller.
++
+ endmenu
+diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+index eae0d78cbf22..5e7678efdfe6 100644
+--- a/drivers/irqchip/Makefile
++++ b/drivers/irqchip/Makefile
+@@ -105,3 +105,4 @@ obj-$(CONFIG_MADERA_IRQ)=09=09+=3D irq-madera.o
+ obj-$(CONFIG_LS1X_IRQ)=09=09=09+=3D irq-ls1x.o
+ obj-$(CONFIG_TI_SCI_INTR_IRQCHIP)=09+=3D irq-ti-sci-intr.o
+ obj-$(CONFIG_TI_SCI_INTA_IRQCHIP)=09+=3D irq-ti-sci-inta.o
++obj-$(CONFIG_LOONGSON_LIOINTC)=09=09+=3D irq-loongson-liointc.o
+diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-l=
+oongson-liointc.c
+new file mode 100644
+index 000000000000..d7efab9f4ee7
+--- /dev/null
++++ b/drivers/irqchip/irq-loongson-liointc.c
+@@ -0,0 +1,338 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Copyright (C) 2020, Jiaxun Yang <jiaxun.yang@flygoat.com>
++ *  Loongson Local IO Interrupt Controller support
++ */
++
++#include <linux/errno.h>
++#include <linux/init.h>
++#include <linux/types.h>
++#include <linux/interrupt.h>
++#include <linux/ioport.h>
++#include <linux/irqchip.h>
++#include <linux/of_address.h>
++#include <linux/of_irq.h>
++#include <linux/io.h>
++#include <linux/smp.h>
++#include <linux/irqchip/chained_irq.h>
++
++#include <boot_param.h>
++
++#define LIOINTC_CHIP_IRQ=0932
++#define LIOINTC_NUM_PARENT 4
++
++#define LIOINTC_REG_INTx_MAP(x)=09(x * 0x1)
++#define LIOINTC_INTC_CHIP_START=090x20
++
++#define LIOINTC_REG_INTC_STATUS=09(LIOINTC_INTC_CHIP_START + 0x20)
++#define LIOINTC_REG_INTC_EN_STATUS=09(LIOINTC_INTC_CHIP_START + 0x04)
++#define LIOINTC_REG_INTC_ENABLE=09(LIOINTC_INTC_CHIP_START + 0x08)
++#define LIOINTC_REG_INTC_DISABLE=09(LIOINTC_INTC_CHIP_START + 0x0c)
++#define LIOINTC_REG_INTC_POL=09(LIOINTC_INTC_CHIP_START + 0x10)
++#define LIOINTC_REG_INTC_EDGE=09(LIOINTC_INTC_CHIP_START + 0x14)
++
++#define BUGGY_LPC_IRQ=0910
++
++#define LIOINTC_SHIFT_INTx=094
++
++struct liointc_handler_data {
++=09struct liointc_priv *priv;
++=09u32 parent_int_map;
++};
++
++struct liointc_priv {
++=09void __iomem *base;
++=09struct irq_chip_generic *gc;
++=09u8 map_cache[LIOINTC_CHIP_IRQ];
++=09struct liointc_handler_data handler[LIOINTC_NUM_PARENT];
++=09u8 possible_parent_mask;
++=09bool have_lpc_irq_bug;
++};
++
++static void liointc_chained_handle_irq(struct irq_desc *desc)
++{
++=09struct liointc_handler_data *handler =3D irq_desc_get_handler_data(desc=
+);
++=09struct irq_chip *chip =3D irq_desc_get_chip(desc);
++=09struct irq_chip_generic *gc =3D handler->priv->gc;
++=09u32 pending;
++
++=09chained_irq_enter(chip, desc);
++
++=09pending =3D readl(gc->reg_base + LIOINTC_REG_INTC_STATUS);
++
++=09if (!pending) {
++=09=09/* Always blame LPC IRQ if we have that Bug with LPC interrupt enabl=
+ed */
++=09=09if (handler->priv->have_lpc_irq_bug &&
++=09=09=09(handler->parent_int_map & ~gc->mask_cache & BIT(BUGGY_LPC_IRQ)))
++=09=09=09generic_handle_irq(irq_find_mapping(gc->domain, BUGGY_LPC_IRQ));
++=09=09else
++=09=09=09spurious_interrupt();
++=09}
++
++=09while (pending) {
++=09=09int bit =3D __ffs(pending);
++
++=09=09generic_handle_irq(irq_find_mapping(gc->domain, bit));
++=09=09pending &=3D ~BIT(bit);
++=09}
++
++=09chained_irq_exit(chip, desc);
++}
++
++static void map_cache_set_core(struct liointc_priv *priv, int irq, int cor=
+e)
++{
++=09priv->map_cache[irq] &=3D ~GENMASK(3, 0);
++=09priv->map_cache[irq] |=3D BIT(core);
++}
++
++static void write_map_cache(struct liointc_priv *priv, int irq)
++{
++=09writeb(priv->map_cache[irq],
++=09=09priv->base + LIOINTC_REG_INTx_MAP(irq));
++}
++
++static void liointc_set_bit(struct irq_chip_generic *gc,
++=09=09=09=09unsigned int offset,
++=09=09=09=09u32 mask, bool set)
++{
++=09if (set)
++=09=09writel(readl(gc->reg_base + offset) | mask,
++=09=09=09=09gc->reg_base + offset);
++=09else
++=09=09writel(readl(gc->reg_base + offset) & ~mask,
++=09=09=09=09gc->reg_base + offset);
++}
++
++static int liointc_set_type(struct irq_data *data, unsigned int type)
++{
++=09struct irq_chip_generic *gc =3D irq_data_get_irq_chip_data(data);
++=09u32 mask =3D data->mask;
++=09unsigned long flags;
++
++=09irq_gc_lock_irqsave(gc, flags);
++=09switch (type) {
++=09case IRQ_TYPE_LEVEL_HIGH:
++=09=09liointc_set_bit(gc, LIOINTC_REG_INTC_EDGE, mask, false);
++=09=09liointc_set_bit(gc, LIOINTC_REG_INTC_POL, mask, true);
++=09=09break;
++=09case IRQ_TYPE_LEVEL_LOW:
++=09=09liointc_set_bit(gc, LIOINTC_REG_INTC_EDGE, mask, false);
++=09=09liointc_set_bit(gc, LIOINTC_REG_INTC_POL, mask, false);
++=09=09break;
++=09case IRQ_TYPE_EDGE_RISING:
++=09=09liointc_set_bit(gc, LIOINTC_REG_INTC_EDGE, mask, true);
++=09=09liointc_set_bit(gc, LIOINTC_REG_INTC_POL, mask, true);
++=09=09break;
++=09case IRQ_TYPE_EDGE_FALLING:
++=09=09liointc_set_bit(gc, LIOINTC_REG_INTC_EDGE, mask, true);
++=09=09liointc_set_bit(gc, LIOINTC_REG_INTC_POL, mask, false);
++=09=09break;
++=09default:
++=09=09return -EINVAL;
++=09}
++=09irq_gc_unlock_irqrestore(gc, flags);
++
++=09irqd_set_trigger_type(data, type);
++=09return 0;
++}
++
++static int liointc_set_affinity(struct irq_data *idata,
++=09=09=09=09const cpumask_t *cpu_mask, bool force)
++{
++=09return -ENAVAIL;
++}
++
++static void liointc_resume(struct irq_chip_generic *gc)
++{
++=09struct liointc_priv *priv =3D gc->private;
++=09unsigned long flags;
++=09int i;
++
++=09irq_gc_lock_irqsave(gc, flags);
++=09/* Revert map cache */
++=09for (i =3D 0; i < LIOINTC_CHIP_IRQ; i++)
++=09=09write_map_cache(priv, i);
++
++=09/* Revert mask cache again */
++=09writel(gc->mask_cache, gc->reg_base + LIOINTC_REG_INTC_DISABLE);
++=09writel(~gc->mask_cache, gc->reg_base + LIOINTC_REG_INTC_ENABLE);
++=09irq_gc_unlock_irqrestore(gc, flags);
++}
++
++static void validate_parent_mask(struct liointc_priv *priv, u32 of_parent_=
+int_map[])
++{
++=09u32 proceed_mask =3D 0x0, duplicated_mask =3D 0x0;
++=09int i;
++=09int fallback_parent =3D __ffs(priv->possible_parent_mask);
++
++=09for (i =3D 0; i < LIOINTC_NUM_PARENT; i++) {
++=09=09/* Try if the parent is avilable */
++=09=09if (!(priv->possible_parent_mask & BIT(i)))
++=09=09=09continue;
++
++=09=09priv->handler[i].parent_int_map =3D of_parent_int_map[i];
++
++=09=09/* Detect if the IRQ have previously proceed */
++=09=09duplicated_mask |=3D (priv->handler[i].parent_int_map & proceed_mask=
+);
++=09=09proceed_mask |=3D priv->handler[i].parent_int_map;
++=09}
++
++=09/* Fallback IRQs with no map bit set */
++=09while (~proceed_mask) {
++=09=09int bit =3D __ffs(~proceed_mask);
++
++=09=09pr_warn("loongson-liointc: Found homeless IRQ %d, map to INT%d\n",
++=09=09=09bit, fallback_parent);
++=09=09priv->handler[fallback_parent].parent_int_map |=3D BIT(bit);
++=09=09proceed_mask |=3D BIT(bit);
++=09}
++
++=09/* Fallback IRQs with multiple map bit set */
++=09while (duplicated_mask) {
++=09=09int bit =3D __ffs(duplicated_mask);
++
++=09=09pr_warn("loongson-liointc: IRQ %d have multiple parents, map to INT%=
+d\n",
++=09=09=09bit, fallback_parent);
++=09=09/* Clear the bit in all parent bits */
++=09=09for (i =3D 0; i < LIOINTC_NUM_PARENT; i++)
++=09=09=09priv->handler[i].parent_int_map &=3D ~BIT(bit);
++
++=09=09priv->handler[fallback_parent].parent_int_map |=3D BIT(bit);
++=09=09duplicated_mask &=3D ~BIT(bit);
++=09}
++
++=09/* Generate parent INT part of map Cache */
++=09for (i =3D 0; i < LIOINTC_NUM_PARENT; i++) {
++=09=09u32 pending =3D priv->handler[i].parent_int_map;
++
++=09=09while (pending) {
++=09=09=09int bit =3D __ffs(pending);
++
++=09=09=09priv->map_cache[bit] =3D BIT(i) << LIOINTC_SHIFT_INTx;
++=09=09=09pending &=3D ~BIT(bit);
++=09=09}
++=09}
++}
++
++static const char *parent_names[] =3D {"int0", "int1", "int2", "int3"};
++
++int __init liointc_of_init(struct device_node *node,
++=09=09=09=09struct device_node *parent)
++{
++=09struct irq_chip_generic *gc;
++=09struct irq_domain *domain;
++=09struct irq_chip_type *ct;
++=09struct liointc_priv *priv;
++=09u32 of_parent_int_map[LIOINTC_NUM_PARENT];
++=09int parent_irq[LIOINTC_NUM_PARENT];
++=09int core =3D loongson_sysconf.boot_cpu_id;
++=09int i, err =3D 0;
++=09int sz;
++
++=09priv =3D kzalloc(sizeof(*priv), GFP_KERNEL);
++=09if (!priv)
++=09=09return -ENOMEM;
++
++=09priv->base =3D of_iomap(node, 0);
++=09if (!priv->base) {
++=09=09err =3D -ENODEV;
++=09=09goto out_free_priv;
++=09}
++
++=09if (of_device_is_compatible(node, "loongson,liointc-1.0"))
++=09=09priv->have_lpc_irq_bug =3D true;
++
++=09for (i =3D 0; i < LIOINTC_NUM_PARENT; i++) {
++=09=09parent_irq[i] =3D of_irq_get_byname(node, parent_names[i]);
++=09=09if (parent_irq[i] >=3D 0)
++=09=09=09priv->possible_parent_mask |=3D BIT(i);
++=09}
++
++
++=09if (!priv->possible_parent_mask) {
++=09=09pr_err("loongson-liointc: No parent\n");
++=09=09err =3D -ENOMEM;
++=09=09goto out_iounmap;
++=09}
++
++=09sz =3D of_property_read_variable_u32_array(node, "loongson,parent_int_m=
+ap",
++=09=09=09=09=09=09&of_parent_int_map[0], LIOINTC_NUM_PARENT,
++=09=09=09=09=09=09LIOINTC_NUM_PARENT);
++=09if (sz < 4) {
++=09=09pr_err("loongson-liointc: No parent_int_map\n");
++=09=09err =3D -ENODEV;
++=09=09goto out_iounmap;
++=09}
++
++=09/* Setup IRQ domain */
++=09domain =3D irq_domain_add_linear(node, 32,
++=09=09=09=09=09&irq_generic_chip_ops, priv);
++=09if (!domain) {
++=09=09pr_err("loongson-liointc: cannot add IRQ domain\n");
++=09=09err =3D -ENOMEM;
++=09=09goto out_iounmap;
++=09}
++
++=09err =3D irq_alloc_domain_generic_chips(domain, 32, 1,
++=09=09=09=09=09node->full_name, handle_level_irq,
++=09=09=09=09=09IRQ_NOPROBE, 0, 0);
++=09if (err) {
++=09=09pr_err("loongson-liointc: unable to register IRQ domain\n");
++=09=09err =3D -ENOMEM;
++=09=09goto out_free_domain;
++=09}
++
++
++=09/* Disable all IRQs */
++=09writel(0xffffffff, priv->base + LIOINTC_REG_INTC_DISABLE);
++=09/* Set to level triggered */
++=09writel(0x0, priv->base + LIOINTC_REG_INTC_EDGE);
++
++=09validate_parent_mask(priv, &of_parent_int_map[0]);
++
++=09for (i =3D 0; i < LIOINTC_CHIP_IRQ; i++) {
++=09=09map_cache_set_core(priv, i, core);
++=09=09write_map_cache(priv, i);
++=09}
++
++=09gc =3D irq_get_domain_generic_chip(domain, 0);
++=09gc->private =3D priv;
++=09gc->reg_base =3D priv->base;
++=09gc->domain =3D domain;
++=09gc->resume =3D liointc_resume;
++
++=09ct =3D gc->chip_types;
++=09ct->regs.enable =3D LIOINTC_REG_INTC_ENABLE;
++=09ct->regs.disable =3D LIOINTC_REG_INTC_DISABLE;
++=09ct->chip.irq_unmask =3D irq_gc_unmask_enable_reg;
++=09ct->chip.irq_mask =3D irq_gc_mask_disable_reg;
++=09ct->chip.irq_mask_ack =3D irq_gc_mask_disable_reg;
++=09ct->chip.irq_set_type =3D liointc_set_type;
++=09ct->chip.irq_set_affinity =3D liointc_set_affinity;
++
++=09gc->mask_cache =3D 0xffffffff;
++=09priv->gc =3D gc;
++
++=09for (i =3D 0; i < LIOINTC_NUM_PARENT; i++) {
++=09=09if (parent_irq[i] < 0)
++=09=09=09continue;
++
++=09=09priv->handler[i].priv =3D priv;
++=09=09irq_set_chained_handler_and_data(parent_irq[i],
++=09=09=09=09liointc_chained_handle_irq, &priv->handler[i]);
++=09}
++
++=09return 0;
++
++out_free_domain:
++=09irq_domain_remove(domain);
++out_iounmap:
++=09iounmap(priv->base);
++out_free_priv:
++=09kfree(priv);
++
++=09return err;
++}
++
++IRQCHIP_DECLARE(loongson_liointc_1_0, "loongson,liointc-1.0", liointc_of_i=
+nit);
++IRQCHIP_DECLARE(loongson_liointc_1_0a, "loongson,liointc-1.0a", liointc_of=
+_init);
+--=20
+2.25.0
 
-Or probably I need a variation of Logic PIO, which leave MMIO space AS-IS
-(not try to reallocate it) but still preserving higher 0x4000 for indirect =
-access.
-
-Thanks a lot!
- >=20
- > That would not be a bad thing - see=20
- > https://lore.kernel.org/linux-pci/1560262374-67875-1-git-send-email-john=
-.garry@huawei.com/
- >=20
- >=20
- > >=20
- > > This driver deals with legacy IO ports where we need to bitbang=20
- > > accesses, i.e. we don't support MMIO for this.
- > >>
- >=20
 

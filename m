@@ -2,99 +2,78 @@ Return-Path: <SRS0=mITV=4N=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CED60C35DF5
-	for <linux-mips@archiver.kernel.org>; Tue, 25 Feb 2020 07:04:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47008C35E08
+	for <linux-mips@archiver.kernel.org>; Tue, 25 Feb 2020 15:28:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 98C98218AC
-	for <linux-mips@archiver.kernel.org>; Tue, 25 Feb 2020 07:04:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1582614249;
-	bh=NMPFUZiFDj4QHklT0HPS3y58SQFsxneE6tCKPPGaeJM=;
-	h=Date:From:To:CC:CC:CC:Subject:References:In-Reply-To:List-ID:
-	 From;
-	b=RCe4WWTSbJ5ufiZuaTFgAAQDD0ndAJGRCCfZSNE6FD+h9ppmD88Rt5EaWzkfC3lJ5
-	 yjSinqTEBb92l8DwtJLsuHkkkrPzC75tVGABNGAiVUB8YhbEnNvaau+OJ7jEjijx6n
-	 CeC3zlHBdxZfCM+YVJ7Yso54xC0hMAmxvPq9vuxc=
+	by mail.kernel.org (Postfix) with ESMTP id 02D4124670
+	for <linux-mips@archiver.kernel.org>; Tue, 25 Feb 2020 15:28:22 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="KMBo+P8W"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726936AbgBYHEJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 25 Feb 2020 02:04:09 -0500
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:41000 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbgBYHEJ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 25 Feb 2020 02:04:09 -0500
-Received: by mail-pl1-f195.google.com with SMTP id t14so5101630plr.8;
-        Mon, 24 Feb 2020 23:04:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:to:cc:cc:cc:subject
-         :references:in-reply-to;
-        bh=iYcb5A6UzA2Shk8jjtL3apQZNq8xVehLtpqARp80zYk=;
-        b=VXAPUK4Rl/ReAcodLmMjLrxuTe4YQXk6AeDGov8QK71S9/RLr+THuX4RoKKDhpVHrG
-         lTyIF31HLLj1h+3mrlRjH/DEs1yFX/5F0qFahS7NNf80DgDWlPkVcxsE+cdLSO/F/ouZ
-         H3bre8cQQ6ycfDGQY+T/7S3RqFe5Ay8cIVtnblQnigCEmNzylAa/wXC2tSrY8l1GS1zN
-         m53hRSqZmeyBT3XHds6O6yn+i64dKk7Em1NdzgxaGX2IG4rSU5TwzWLQJWSR36MTqbfC
-         J9k3AW3N5IzSTAuw+/5fDjmslZ6J6aUDDoE68mAPlxlny8oet/dSk12HDDjWuybo/HAq
-         qJZg==
-X-Gm-Message-State: APjAAAXUkkuPZEW7n3jnZDtJ6I1hUCw1X6r/ES9wDBenZBQZFqVGyTTw
-        8ZLox94c6a3wyOUn9Pq1c7I=
-X-Google-Smtp-Source: APXvYqzD6D5xMLYJA5CvMIbTvN5K9gW/ZqKWDK+ekhwz+ssY3ksY81LFSi4rnKrzKMe4b76xgJ0ixA==
-X-Received: by 2002:a17:902:6a84:: with SMTP id n4mr53128896plk.294.1582614248011;
-        Mon, 24 Feb 2020 23:04:08 -0800 (PST)
-Received: from localhost ([2601:646:8a00:9810:5af3:56d9:f882:39d4])
-        by smtp.gmail.com with ESMTPSA id 13sm15331394pfi.78.2020.02.24.23.04.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Feb 2020 23:04:07 -0800 (PST)
-Message-ID: <5e54c6e7.1c69fb81.ef5e1.a15a@mx.google.com>
-Date:   Mon, 24 Feb 2020 23:04:01 -0800
-From:   Paul Burton <paulburton@kernel.org>
-To:     Paul Burton <paulburton@kernel.org>
-CC:     linux-mips@vger.kernel.org
-CC:     linux-kernel@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     linux-mips@vger.kernel.org
-Subject: Re: [PATCH v2] MAINTAINERS: Hand MIPS over to Thomas
-References:  <20200222170417.1531867-1-paulburton@kernel.org>
-In-Reply-To:  <20200222170417.1531867-1-paulburton@kernel.org>
+        id S1729817AbgBYP2V (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 25 Feb 2020 10:28:21 -0500
+Received: from outils.crapouillou.net ([89.234.176.41]:35836 "EHLO
+        crapouillou.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730900AbgBYP2V (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 25 Feb 2020 10:28:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1582644498; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:references; bh=yVuOmBJWZzHIWYiiB34lmWOpjCeJmYGne24gcLJDlVM=;
+        b=KMBo+P8WR/EsI4REQQa6i/hMnhdZLGpmKN0BoygmdCNNKWXnfmmZDsXTlk0O5nFhC74Ect
+        CP32nuhtD9W2KrI8dR9+KrfEni6KlVrif6CcvMHHE9a1dzskuHUxjkjcVIb+e424oJpklS
+        K9+xsOFz5dBVH6JX+oGsYSJ2qYOHh/g=
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tbogendoerfer@suse.de>
+Cc:     od@zcrc.me, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        stable@vger.kernel.org
+Subject: [PATCH] MIPS: Fix CONFIG_MIPS_CMDLINE_DTB_EXTEND handling
+Date:   Tue, 25 Feb 2020 12:28:09 -0300
+Message-Id: <20200225152810.45048-1-paul@crapouillou.net>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello,
+The CONFIG_MIPS_CMDLINE_DTB_EXTEND option is used so that the kernel
+arguments provided in the 'bootargs' property in devicetree are extended
+with the kernel arguments provided by the bootloader.
 
-Paul Burton wrote:
-> My time with MIPS the company has reached its end, and so at best I'll
-> have little time spend on maintaining arch/mips/.
-> 
-> Ralf last authored a patch over 2 years ago, the last time he committed
-> one is even further back & activity was sporadic for a while before
-> that. The reality is that he isn't active.
-> 
-> Having a new maintainer with time to do things properly will be
-> beneficial all round. Thomas Bogendoerfer has been involved in MIPS
-> development for a long time & has offered to step up as maintainer, so
-> add Thomas and remove myself & Ralf from the MIPS entry.
-> 
-> Ralf already has an entry in CREDITS to honor his contributions, so this
-> just adds one for me.
+The code was broken, as it didn't actually take any of the kernel
+arguments provided in devicetree when that option was set.
 
-Applied to mips-fixes.
+Fixes: 7784cac69735 ("MIPS: cmdline: Clean up boot_command_line
+initialization")
+Cc: stable@vger.kernel.org
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ arch/mips/kernel/setup.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> commit 3234f4ed3066
-> https://git.kernel.org/mips/c/3234f4ed3066
-> 
-> Signed-off-by: Paul Burton <paulburton@kernel.org>
-> Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
-> Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 1ac2752fb791..a7b469d89e2c 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -605,7 +605,8 @@ static void __init bootcmdline_init(char **cmdline_p)
+ 	 * If we're configured to take boot arguments from DT, look for those
+ 	 * now.
+ 	 */
+-	if (IS_ENABLED(CONFIG_MIPS_CMDLINE_FROM_DTB))
++	if (IS_ENABLED(CONFIG_MIPS_CMDLINE_FROM_DTB) ||
++	    IS_ENABLED(CONFIG_MIPS_CMDLINE_DTB_EXTEND))
+ 		of_scan_flat_dt(bootcmdline_scan_chosen, &dt_bootargs);
+ #endif
+ 
+-- 
+2.25.0
 
-Thanks,
-    Paul
-
-[ This message was auto-generated; if you believe anything is incorrect
-  then please email paulburton@kernel.org to report it. ]

@@ -2,376 +2,381 @@ Return-Path: <SRS0=Dz96=4O=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CD78C4BA12
-	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 09:21:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3B59C4BA11
+	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 11:16:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E06D6222C2
-	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 09:21:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C420C24689
+	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 11:16:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="CrDwixOK"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="ps6QwJt2"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726936AbgBZJVy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 26 Feb 2020 04:21:54 -0500
-Received: from pandora.armlinux.org.uk ([78.32.30.218]:44656 "EHLO
-        pandora.armlinux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726494AbgBZJVy (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 26 Feb 2020 04:21:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=+Os/7yUni0JJHrrhjZ+cA+bqBG4cxaWE6UbZw8s44OM=; b=CrDwixOK6nLbMxCygaOTCyF1n
-        BxFSaKZIbyk/KJ6vddrVI1/Y9trjIDDKAJzjZG7fGsH4nzd5Zowh5nZIpAIdD6W1Zwu+EoTcyBNWh
-        LdV+vEwLb68c57RPhMgvsGMyYfMggPg7I75goE3MSBTnIaR0j25ixMvUK8qxAwrHF/IUB3WLqD8fm
-        BB9G1bF7Hw0TgOcldTxlWAD6kc394N4tlihiT2BvLdcfihYwsIlabBpXZ8kHeA66Ha+SeNWXWSlPH
-        hwhNkCx4jzSBek1OaS0DEL0NztyEwxwA/wEwLBiu2j4UlrQQfYZu2fpXSOl5AMfSQR8F/E7hkyslj
-        vL+xk1b5w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57098)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1j6ssu-0006Z7-Sy; Wed, 26 Feb 2020 09:21:41 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1j6sss-0008I5-BR; Wed, 26 Feb 2020 09:21:38 +0000
-Date:   Wed, 26 Feb 2020 09:21:38 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Chris Snook <chris.snook@gmail.com>,
-        Jay Cliburn <jcliburn@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org,
-        Vivien Didelot <vivien.didelot@gmail.com>
-Subject: Re: [PATCH v8 1/1] net: ag71xx: port to phylink
-Message-ID: <20200226092138.GV25745@shell.armlinux.org.uk>
-References: <20200226054624.14199-1-o.rempel@pengutronix.de>
+        id S1728205AbgBZLQJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 26 Feb 2020 06:16:09 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.84]:19252 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728220AbgBZLQI (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 26 Feb 2020 06:16:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1582715764;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=WSuXAnbL7Nt1egDeqa/C00Mg5mGsK7pGkG84tnvTLjY=;
+        b=ps6QwJt2sQt7Nzq+mkFUC2fFqZJIbGPvWT48UX6NL9oqbHdZDIbYd3V4fv6fmhMo5n
+        PryfXQjjd8ElP0iEK9tTnLBVruq5eSHBtAtfTcuPp/s091REsc8uFXDNF9JCvUYnLFws
+        xysMLxCudMcBNdUzlB/mzEUtcPKPtIhhk7H962zqR4Dgi8IDNLzNnoY2nFNvDUqXwzO2
+        HGaIREf3A97ATAGaZWbiJw/EJOI2jQALdohDjwpAEx6WsL8D8Z2ZTuLKZyWsAJkmqceS
+        8qwewT1FSN8YniQJojJG3OS0AaYHdsK9roqONtEX1e51rDbp5eri4XuYmbwvmY2CYRpg
+        vo/g==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0pAzoz/Oc2x"
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+        by smtp.strato.de (RZmta 46.1.12 DYNA|AUTH)
+        with ESMTPSA id U06217w1QBG24Ce
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Wed, 26 Feb 2020 12:16:02 +0100 (CET)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Mathieu Malaterre <malat@debian.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com
+Subject: [PATCH v6 1/6] nvmem: add driver for JZ4780 efuse
+Date:   Wed, 26 Feb 2020 12:15:56 +0100
+Message-Id: <2a675558c6c7ba6df86669176004fe4703645793.1582715761.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <cover.1582715761.git.hns@goldelico.com>
+References: <cover.1582715761.git.hns@goldelico.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200226054624.14199-1-o.rempel@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 06:46:24AM +0100, Oleksij Rempel wrote:
-> The port to phylink was done as close as possible to initial
-> functionality.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
-> changes v8:
-> - set the autoneg bit
-> - provide implementations for the mac_pcs_get_state and mac_an_restart
->   methods
-> - do phylink_disconnect_phy() on _stop()
-> - rename ag71xx_phy_setup() to ag71xx_phylink_setup() 
+From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
 
-There will be one more change required; I'm changing the prototype for
-the mac_link_up() function, and I suggest as you don't support in-band
-AN that most of the setup for speed and duplex gets moved out of your
-mac_config() implementation to mac_link_up().
+This patch brings support for the JZ4780 efuse. Currently it only exposes
+a read only access to the entire 8K bits efuse memory and nvmem cells.
 
-The patches have been available on netdev for just over a week now.
+To fetch for example the MAC address:
 
-> 
->  drivers/net/ethernet/atheros/Kconfig  |   2 +-
->  drivers/net/ethernet/atheros/ag71xx.c | 150 +++++++++++++++++---------
->  2 files changed, 98 insertions(+), 54 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/atheros/Kconfig b/drivers/net/ethernet/atheros/Kconfig
-> index 0058051ba925..2720bde5034e 100644
-> --- a/drivers/net/ethernet/atheros/Kconfig
-> +++ b/drivers/net/ethernet/atheros/Kconfig
-> @@ -20,7 +20,7 @@ if NET_VENDOR_ATHEROS
->  config AG71XX
->  	tristate "Atheros AR7XXX/AR9XXX built-in ethernet mac support"
->  	depends on ATH79
-> -	select PHYLIB
-> +	select PHYLINK
->  	help
->  	  If you wish to compile a kernel for AR7XXX/91XXX and enable
->  	  ethernet support, then you should always answer Y to this.
-> diff --git a/drivers/net/ethernet/atheros/ag71xx.c b/drivers/net/ethernet/atheros/ag71xx.c
-> index e95687a780fb..9692ae1734a8 100644
-> --- a/drivers/net/ethernet/atheros/ag71xx.c
-> +++ b/drivers/net/ethernet/atheros/ag71xx.c
-> @@ -32,6 +32,7 @@
->  #include <linux/of_mdio.h>
->  #include <linux/of_net.h>
->  #include <linux/of_platform.h>
-> +#include <linux/phylink.h>
->  #include <linux/regmap.h>
->  #include <linux/reset.h>
->  #include <linux/clk.h>
-> @@ -314,6 +315,8 @@ struct ag71xx {
->  	dma_addr_t stop_desc_dma;
->  
->  	phy_interface_t phy_if_mode;
-> +	struct phylink *phylink;
-> +	struct phylink_config phylink_config;
->  
->  	struct delayed_work restart_work;
->  	struct timer_list oom_timer;
-> @@ -845,24 +848,23 @@ static void ag71xx_hw_start(struct ag71xx *ag)
->  	netif_wake_queue(ag->ndev);
->  }
->  
-> -static void ag71xx_link_adjust(struct ag71xx *ag, bool update)
-> +static void ag71xx_mac_config(struct phylink_config *config, unsigned int mode,
-> +			      const struct phylink_link_state *state)
->  {
-> -	struct phy_device *phydev = ag->ndev->phydev;
-> +	struct ag71xx *ag = netdev_priv(to_net_dev(config->dev));
->  	u32 cfg2;
->  	u32 ifctl;
->  	u32 fifo5;
->  
-> -	if (!phydev->link && update) {
-> -		ag71xx_hw_stop(ag);
-> +	if (phylink_autoneg_inband(mode))
->  		return;
-> -	}
->  
->  	if (!ag71xx_is(ag, AR7100) && !ag71xx_is(ag, AR9130))
->  		ag71xx_fast_reset(ag);
->  
->  	cfg2 = ag71xx_rr(ag, AG71XX_REG_MAC_CFG2);
->  	cfg2 &= ~(MAC_CFG2_IF_1000 | MAC_CFG2_IF_10_100 | MAC_CFG2_FDX);
-> -	cfg2 |= (phydev->duplex) ? MAC_CFG2_FDX : 0;
-> +	cfg2 |= (state->duplex) ? MAC_CFG2_FDX : 0;
->  
->  	ifctl = ag71xx_rr(ag, AG71XX_REG_MAC_IFCTL);
->  	ifctl &= ~(MAC_IFCTL_SPEED);
-> @@ -870,7 +872,7 @@ static void ag71xx_link_adjust(struct ag71xx *ag, bool update)
->  	fifo5 = ag71xx_rr(ag, AG71XX_REG_FIFO_CFG5);
->  	fifo5 &= ~FIFO_CFG5_BM;
->  
-> -	switch (phydev->speed) {
-> +	switch (state->speed) {
->  	case SPEED_1000:
->  		cfg2 |= MAC_CFG2_IF_1000;
->  		fifo5 |= FIFO_CFG5_BM;
-> @@ -883,7 +885,6 @@ static void ag71xx_link_adjust(struct ag71xx *ag, bool update)
->  		cfg2 |= MAC_CFG2_IF_10_100;
->  		break;
->  	default:
-> -		WARN(1, "not supported speed %i\n", phydev->speed);
->  		return;
->  	}
->  
-> @@ -897,58 +898,91 @@ static void ag71xx_link_adjust(struct ag71xx *ag, bool update)
->  	ag71xx_wr(ag, AG71XX_REG_MAC_CFG2, cfg2);
->  	ag71xx_wr(ag, AG71XX_REG_FIFO_CFG5, fifo5);
->  	ag71xx_wr(ag, AG71XX_REG_MAC_IFCTL, ifctl);
-> +}
->  
-> -	ag71xx_hw_start(ag);
-> +static void ag71xx_mac_validate(struct phylink_config *config,
-> +			    unsigned long *supported,
-> +			    struct phylink_link_state *state)
-> +{
-> +	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) = { 0, };
-> +
-> +	if (state->interface != PHY_INTERFACE_MODE_NA &&
-> +	    state->interface != PHY_INTERFACE_MODE_GMII &&
-> +	    state->interface != PHY_INTERFACE_MODE_MII) {
-> +		bitmap_zero(supported, __ETHTOOL_LINK_MODE_MASK_NBITS);
-> +		return;
-> +	}
-> +
-> +	phylink_set(mask, MII);
-> +
-> +	phylink_set(mask, Autoneg);
-> +	phylink_set(mask, 10baseT_Half);
-> +	phylink_set(mask, 10baseT_Full);
-> +	phylink_set(mask, 100baseT_Half);
-> +	phylink_set(mask, 100baseT_Full);
-> +
-> +	if (state->interface == PHY_INTERFACE_MODE_NA ||
-> +	    state->interface == PHY_INTERFACE_MODE_GMII) {
-> +		phylink_set(mask, 1000baseT_Full);
-> +		phylink_set(mask, 1000baseX_Full);
-> +	}
->  
-> -	if (update)
-> -		phy_print_status(phydev);
-> +	bitmap_and(supported, supported, mask,
-> +		   __ETHTOOL_LINK_MODE_MASK_NBITS);
-> +	bitmap_and(state->advertising, state->advertising, mask,
-> +		   __ETHTOOL_LINK_MODE_MASK_NBITS);
->  }
->  
-> -static void ag71xx_phy_link_adjust(struct net_device *ndev)
-> +static void ag71xx_mac_pcs_get_state(struct phylink_config *config,
-> +				     struct phylink_link_state *state)
->  {
-> -	struct ag71xx *ag = netdev_priv(ndev);
-> +	state->link = 0;
-> +}
->  
-> -	ag71xx_link_adjust(ag, true);
-> +static void ag71xx_mac_an_restart(struct phylink_config *config)
-> +{
-> +	/* Not Supported */
->  }
->  
-> -static int ag71xx_phy_connect(struct ag71xx *ag)
-> +static void ag71xx_mac_link_down(struct phylink_config *config,
-> +				 unsigned int mode, phy_interface_t interface)
->  {
-> -	struct device_node *np = ag->pdev->dev.of_node;
-> -	struct net_device *ndev = ag->ndev;
-> -	struct device_node *phy_node;
-> -	struct phy_device *phydev;
-> -	int ret;
-> +	struct ag71xx *ag = netdev_priv(to_net_dev(config->dev));
->  
-> -	if (of_phy_is_fixed_link(np)) {
-> -		ret = of_phy_register_fixed_link(np);
-> -		if (ret < 0) {
-> -			netif_err(ag, probe, ndev, "Failed to register fixed PHY link: %d\n",
-> -				  ret);
-> -			return ret;
-> -		}
-> +	ag71xx_hw_stop(ag);
-> +}
->  
-> -		phy_node = of_node_get(np);
-> -	} else {
-> -		phy_node = of_parse_phandle(np, "phy-handle", 0);
-> -	}
-> +static void ag71xx_mac_link_up(struct phylink_config *config, unsigned int mode,
-> +			       phy_interface_t interface,
-> +			       struct phy_device *phy)
-> +{
-> +	struct ag71xx *ag = netdev_priv(to_net_dev(config->dev));
->  
-> -	if (!phy_node) {
-> -		netif_err(ag, probe, ndev, "Could not find valid phy node\n");
-> -		return -ENODEV;
-> -	}
-> +	ag71xx_hw_start(ag);
-> +}
->  
-> -	phydev = of_phy_connect(ag->ndev, phy_node, ag71xx_phy_link_adjust,
-> -				0, ag->phy_if_mode);
-> +static const struct phylink_mac_ops ag71xx_phylink_mac_ops = {
-> +	.validate = ag71xx_mac_validate,
-> +	.mac_pcs_get_state = ag71xx_mac_pcs_get_state,
-> +	.mac_an_restart = ag71xx_mac_an_restart,
-> +	.mac_config = ag71xx_mac_config,
-> +	.mac_link_down = ag71xx_mac_link_down,
-> +	.mac_link_up = ag71xx_mac_link_up,
-> +};
->  
-> -	of_node_put(phy_node);
-> +static int ag71xx_phylink_setup(struct ag71xx *ag)
-> +{
-> +	struct phylink *phylink;
->  
-> -	if (!phydev) {
-> -		netif_err(ag, probe, ndev, "Could not connect to PHY device\n");
-> -		return -ENODEV;
-> -	}
-> +	ag->phylink_config.dev = &ag->ndev->dev;
-> +	ag->phylink_config.type = PHYLINK_NETDEV;
->  
-> -	phy_attached_info(phydev);
-> +	phylink = phylink_create(&ag->phylink_config, ag->pdev->dev.fwnode,
-> +				 ag->phy_if_mode, &ag71xx_phylink_mac_ops);
-> +	if (IS_ERR(phylink))
-> +		return PTR_ERR(phylink);
->  
-> +	ag->phylink = phylink;
->  	return 0;
->  }
->  
-> @@ -1239,6 +1273,13 @@ static int ag71xx_open(struct net_device *ndev)
->  	unsigned int max_frame_len;
->  	int ret;
->  
-> +	ret = phylink_of_phy_connect(ag->phylink, ag->pdev->dev.of_node, 0);
-> +	if (ret) {
-> +		netif_err(ag, link, ndev, "phylink_of_phy_connect filed with err: %i\n",
-> +			  ret);
-> +		goto err;
-> +	}
-> +
->  	max_frame_len = ag71xx_max_frame_len(ndev->mtu);
->  	ag->rx_buf_size =
->  		SKB_DATA_ALIGN(max_frame_len + NET_SKB_PAD + NET_IP_ALIGN);
-> @@ -1251,11 +1292,7 @@ static int ag71xx_open(struct net_device *ndev)
->  	if (ret)
->  		goto err;
->  
-> -	ret = ag71xx_phy_connect(ag);
-> -	if (ret)
-> -		goto err;
-> -
-> -	phy_start(ndev->phydev);
-> +	phylink_start(ag->phylink);
->  
->  	return 0;
->  
-> @@ -1268,8 +1305,8 @@ static int ag71xx_stop(struct net_device *ndev)
->  {
->  	struct ag71xx *ag = netdev_priv(ndev);
->  
-> -	phy_stop(ndev->phydev);
-> -	phy_disconnect(ndev->phydev);
-> +	phylink_stop(ag->phylink);
-> +	phylink_disconnect_phy(ag->phylink);
->  	ag71xx_hw_disable(ag);
->  
->  	return 0;
-> @@ -1414,13 +1451,14 @@ static void ag71xx_restart_work_func(struct work_struct *work)
->  {
->  	struct ag71xx *ag = container_of(work, struct ag71xx,
->  					 restart_work.work);
-> -	struct net_device *ndev = ag->ndev;
->  
->  	rtnl_lock();
->  	ag71xx_hw_disable(ag);
->  	ag71xx_hw_enable(ag);
-> -	if (ndev->phydev->link)
-> -		ag71xx_link_adjust(ag, false);
-> +
-> +	phylink_stop(ag->phylink);
-> +	phylink_start(ag->phylink);
-> +
->  	rtnl_unlock();
->  }
->  
-> @@ -1759,6 +1797,12 @@ static int ag71xx_probe(struct platform_device *pdev)
->  
->  	platform_set_drvdata(pdev, ndev);
->  
-> +	err = ag71xx_phylink_setup(ag);
-> +	if (err) {
-> +		netif_err(ag, probe, ndev, "failed to setup phylink (%d)\n", err);
-> +		goto err_mdio_remove;
-> +	}
-> +
->  	err = register_netdev(ndev);
->  	if (err) {
->  		netif_err(ag, probe, ndev, "unable to register net device\n");
-> -- 
-> 2.25.0
-> 
-> 
+dd if=/sys/devices/platform/134100d0.efuse/jz4780-efuse0/nvmem bs=1 skip=34 count=6 status=none | xxd
 
+Tested-by: Mathieu Malaterre <malat@debian.org>
+Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+Signed-off-by: Mathieu Malaterre <malat@debian.org>
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ drivers/nvmem/Kconfig        |  12 ++
+ drivers/nvmem/Makefile       |   2 +
+ drivers/nvmem/jz4780-efuse.c | 239 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 253 insertions(+)
+ create mode 100644 drivers/nvmem/jz4780-efuse.c
+
+diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
+index 35efab1ba8d9..d7b7f6d688e7 100644
+--- a/drivers/nvmem/Kconfig
++++ b/drivers/nvmem/Kconfig
+@@ -55,6 +55,18 @@ config NVMEM_IMX_OCOTP_SCU
+ 	  This is a driver for the SCU On-Chip OTP Controller (OCOTP)
+ 	  available on i.MX8 SoCs.
+ 
++config JZ4780_EFUSE
++	tristate "JZ4780 EFUSE Memory Support"
++	depends on MACH_INGENIC || COMPILE_TEST
++	depends on HAS_IOMEM
++	depends on OF
++	select REGMAP_MMIO
++	help
++	  Say Y here to include support for JZ4780 efuse memory found on
++	  all JZ4780 SoC based devices.
++	  To compile this driver as a module, choose M here: the module
++	  will be called nvmem_jz4780_efuse.
++
+ config NVMEM_LPC18XX_EEPROM
+ 	tristate "NXP LPC18XX EEPROM Memory Support"
+ 	depends on ARCH_LPC18XX || COMPILE_TEST
+diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
+index 6b466cd1427b..65a268d17807 100644
+--- a/drivers/nvmem/Makefile
++++ b/drivers/nvmem/Makefile
+@@ -18,6 +18,8 @@ obj-$(CONFIG_NVMEM_IMX_OCOTP)	+= nvmem-imx-ocotp.o
+ nvmem-imx-ocotp-y		:= imx-ocotp.o
+ obj-$(CONFIG_NVMEM_IMX_OCOTP_SCU)	+= nvmem-imx-ocotp-scu.o
+ nvmem-imx-ocotp-scu-y		:= imx-ocotp-scu.o
++obj-$(CONFIG_JZ4780_EFUSE)		+= nvmem_jz4780_efuse.o
++nvmem_jz4780_efuse-y		:= jz4780-efuse.o
+ obj-$(CONFIG_NVMEM_LPC18XX_EEPROM)	+= nvmem_lpc18xx_eeprom.o
+ nvmem_lpc18xx_eeprom-y	:= lpc18xx_eeprom.o
+ obj-$(CONFIG_NVMEM_LPC18XX_OTP)	+= nvmem_lpc18xx_otp.o
+diff --git a/drivers/nvmem/jz4780-efuse.c b/drivers/nvmem/jz4780-efuse.c
+new file mode 100644
+index 000000000000..4b8077a8d251
+--- /dev/null
++++ b/drivers/nvmem/jz4780-efuse.c
+@@ -0,0 +1,239 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * JZ4780 EFUSE Memory Support driver
++ *
++ * Copyright (c) 2017 PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
++ * Copyright (c) 2020 H. Nikolaus Schaller <hns@goldelico.com>
++ */
++
++/*
++ * Currently supports JZ4780 efuse which has 8K programmable bit.
++ * Efuse is separated into seven segments as below:
++ *
++ * -----------------------------------------------------------------------
++ * | 64 bit | 128 bit | 128 bit | 3520 bit | 8 bit | 2296 bit | 2048 bit |
++ * -----------------------------------------------------------------------
++ *
++ * The rom itself is accessed using a 9 bit address line and an 8 word wide bus
++ * which reads/writes based on strobes. The strobe is configured in the config
++ * register and is based on number of cycles of the bus clock.
++ *
++ * Driver supports read only as the writes are done in the Factory.
++ */
++
++#include <linux/bitops.h>
++#include <linux/clk.h>
++#include <linux/module.h>
++#include <linux/nvmem-provider.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/regmap.h>
++#include <linux/timer.h>
++
++#define JZ_EFUCTRL		(0x0)	/* Control Register */
++#define JZ_EFUCFG		(0x4)	/* Configure Register*/
++#define JZ_EFUSTATE		(0x8)	/* Status Register */
++#define JZ_EFUDATA(n)		(0xC + (n) * 4)
++
++/* We read 32 byte chunks to avoid complexity in the driver. */
++#define JZ_EFU_READ_SIZE 32
++
++#define EFUCTRL_ADDR_MASK	0x3FF
++#define EFUCTRL_ADDR_SHIFT	21
++#define EFUCTRL_LEN_MASK	0x1F
++#define EFUCTRL_LEN_SHIFT	16
++#define EFUCTRL_PG_EN		BIT(15)
++#define EFUCTRL_WR_EN		BIT(1)
++#define EFUCTRL_RD_EN		BIT(0)
++
++#define EFUCFG_INT_EN		BIT(31)
++#define EFUCFG_RD_ADJ_MASK	0xF
++#define EFUCFG_RD_ADJ_SHIFT	20
++#define EFUCFG_RD_STR_MASK	0xF
++#define EFUCFG_RD_STR_SHIFT	16
++#define EFUCFG_WR_ADJ_MASK	0xF
++#define EFUCFG_WR_ADJ_SHIFT	12
++#define EFUCFG_WR_STR_MASK	0xFFF
++#define EFUCFG_WR_STR_SHIFT	0
++
++#define EFUSTATE_WR_DONE	BIT(1)
++#define EFUSTATE_RD_DONE	BIT(0)
++
++struct jz4780_efuse {
++	struct device *dev;
++	struct regmap *map;
++	struct clk *clk;
++};
++
++/* main entry point */
++static int jz4780_efuse_read(void *context, unsigned int offset,
++			     void *val, size_t bytes)
++{
++	struct jz4780_efuse *efuse = context;
++
++	while (bytes > 0) {
++		unsigned int start = offset & ~(JZ_EFU_READ_SIZE - 1);
++		unsigned int chunk = min(bytes, (start + JZ_EFU_READ_SIZE)
++					 - offset);
++		char buf[JZ_EFU_READ_SIZE];
++		unsigned int tmp;
++		u32 ctrl;
++		int ret;
++
++		ctrl = (start << EFUCTRL_ADDR_SHIFT)
++			| ((JZ_EFU_READ_SIZE - 1) << EFUCTRL_LEN_SHIFT)
++			| EFUCTRL_RD_EN;
++
++		regmap_update_bits(efuse->map, JZ_EFUCTRL,
++				   (EFUCTRL_ADDR_MASK << EFUCTRL_ADDR_SHIFT) |
++				   (EFUCTRL_LEN_MASK << EFUCTRL_LEN_SHIFT) |
++				   EFUCTRL_PG_EN | EFUCTRL_WR_EN |
++				   EFUCTRL_RD_EN,
++				   ctrl);
++
++		ret = regmap_read_poll_timeout(efuse->map, JZ_EFUSTATE,
++					       tmp, tmp & EFUSTATE_RD_DONE,
++					       1 * MSEC_PER_SEC,
++					       50 * MSEC_PER_SEC);
++		if (ret < 0) {
++			dev_err(efuse->dev, "Time out while reading efuse data");
++			return ret;
++		}
++
++		ret = regmap_bulk_read(efuse->map, JZ_EFUDATA(0),
++				       buf, JZ_EFU_READ_SIZE / sizeof(u32));
++		if (ret < 0)
++			return ret;
++
++		memcpy(val, &buf[offset - start], chunk);
++
++		val += chunk;
++		offset += chunk;
++		bytes -= chunk;
++	}
++
++	return 0;
++}
++
++static struct nvmem_config jz4780_efuse_nvmem_config = {
++	.name = "jz4780-efuse",
++	.size = 1024,
++	.word_size = 1,
++	.stride = 1,
++	.owner = THIS_MODULE,
++	.reg_read = jz4780_efuse_read,
++};
++
++static const struct regmap_config jz4780_efuse_regmap_config = {
++	.reg_bits = 32,
++	.val_bits = 32,
++	.reg_stride = 4,
++	.max_register = JZ_EFUDATA(7),
++};
++
++static int jz4780_efuse_probe(struct platform_device *pdev)
++{
++	struct nvmem_device *nvmem;
++	struct jz4780_efuse *efuse;
++	struct nvmem_config cfg;
++	unsigned long clk_rate;
++	unsigned long rd_adj;
++	unsigned long rd_strobe;
++	struct device *dev = &pdev->dev;
++	void __iomem *regs;
++	int ret;
++
++	efuse = devm_kzalloc(dev, sizeof(*efuse), GFP_KERNEL);
++	if (!efuse)
++		return -ENOMEM;
++
++	regs = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(regs))
++		return PTR_ERR(regs);
++
++	efuse->map = devm_regmap_init_mmio(dev, regs,
++					   &jz4780_efuse_regmap_config);
++	if (IS_ERR(efuse->map))
++		return PTR_ERR(efuse->map);
++
++	efuse->clk = devm_clk_get(&pdev->dev, NULL);
++	if (IS_ERR(efuse->clk))
++		return PTR_ERR(efuse->clk);
++
++	ret = clk_prepare_enable(efuse->clk);
++	if (ret < 0)
++		return ret;
++
++	clk_rate = clk_get_rate(efuse->clk);
++
++	efuse->dev = dev;
++
++	/*
++	 * rd_adj and rd_strobe are 4 bit values
++	 * conditions:
++	 *   bus clk_period * (rd_adj + 1) > 6.5ns
++	 *   bus clk_period * (rd_adj + 5 + rd_strobe) > 35ns
++	 *   i.e. rd_adj >= 6.5ns / clk_period
++	 *   i.e. rd_strobe >= 35 ns / clk_period - 5 - rd_adj + 1
++	 * constants:
++	 *   1 / 6.5ns == 153846154 Hz
++	 *   1 / 35ns == 28571429 Hz
++	 */
++
++	rd_adj = clk_rate / 153846154;
++	rd_strobe = clk_rate / 28571429 - 5 - rd_adj + 1;
++
++	if (rd_adj > BIT(4) - 1 || rd_strobe > BIT(4) - 1) {
++		dev_err(&pdev->dev, "Cannot set clock configuration\n");
++		return -EINVAL;
++	}
++
++	regmap_update_bits(efuse->map, JZ_EFUCFG,
++			   (EFUCFG_RD_ADJ_MASK << EFUCFG_RD_ADJ_SHIFT) |
++			   (EFUCFG_RD_STR_MASK << EFUCFG_RD_STR_SHIFT),
++			   (rd_adj << EFUCFG_RD_ADJ_SHIFT) |
++			   (rd_strobe << EFUCFG_RD_STR_SHIFT));
++
++	cfg = jz4780_efuse_nvmem_config;
++	cfg.dev = &pdev->dev;
++	cfg.priv = efuse;
++
++	nvmem = devm_nvmem_register(dev, &cfg);
++	if (IS_ERR(nvmem))
++		return PTR_ERR(nvmem);
++
++	platform_set_drvdata(pdev, efuse);
++
++	return 0;
++}
++
++static int jz4780_efuse_remove(struct platform_device *pdev)
++{
++	struct jz4780_efuse *efuse = platform_get_drvdata(pdev);
++
++	clk_disable_unprepare(efuse->clk);
++
++	return 0;
++}
++
++static const struct of_device_id jz4780_efuse_match[] = {
++	{ .compatible = "ingenic,jz4780-efuse" },
++	{ /* sentinel */ },
++};
++MODULE_DEVICE_TABLE(of, jz4780_efuse_match);
++
++static struct platform_driver jz4780_efuse_driver = {
++	.probe  = jz4780_efuse_probe,
++	.remove  = jz4780_efuse_remove,
++	.driver = {
++		.name = "jz4780-efuse",
++		.of_match_table = jz4780_efuse_match,
++	},
++};
++module_platform_driver(jz4780_efuse_driver);
++
++MODULE_AUTHOR("PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>");
++MODULE_AUTHOR("H. Nikolaus Schaller <hns@goldelico.com>");
++MODULE_AUTHOR("Paul Cercueil <paul@crapouillou.net>");
++MODULE_DESCRIPTION("Ingenic JZ4780 efuse driver");
++MODULE_LICENSE("GPL v2");
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 12.1Mbps down 622kbps up
-According to speedtest.net: 11.9Mbps down 500kbps up
+2.23.0
+

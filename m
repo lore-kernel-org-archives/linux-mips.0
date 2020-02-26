@@ -2,145 +2,66 @@ Return-Path: <SRS0=Dz96=4O=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09B96C4BA11
-	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 11:16:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF6A3C4BA12
+	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 14:59:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D316E24689
-	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 11:16:56 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="P2XeAw31"
+	by mail.kernel.org (Postfix) with ESMTP id CDD5924680
+	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 14:59:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728274AbgBZLQN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 26 Feb 2020 06:16:13 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:12391 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728252AbgBZLQN (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 26 Feb 2020 06:16:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1582715769;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
-        Subject:Sender;
-        bh=6en+8D+Os1k3MMDTIZGpH+G1werye7fUM88nASmsZpA=;
-        b=P2XeAw31XknJY13M4cjllM5Y7M3dwvLMmaZWlZr5SzW7XVlH6AGsrrYJRdMoarG2cX
-        wpGiVlq/ns1Y+hCGCmCdBPgvJ5Y//pChX/TY7ODidRbMCWYebCJjs+7fw3EA3hEumbgY
-        mp4YjjOqAY1uZGAzyjCWu3Yj0xos5LN47r2BMD31kcsphMs28McSUmPQUab+kleTeOyU
-        wXXqqK9Ot8LpOeEd/pfb6Q7/SoN9biIUv6RKrZVy9s2I0w8OYffxrZqd/8z5rSmTQxf2
-        2RnRm75A5B+2d831usycu9lyTG3Ls4uA7Yya3awsIGPwENr8pz3dhmQe7qAN14BZNACq
-        qH0g==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0pAzoz/Oc2x"
-X-RZG-CLASS-ID: mo00
-Received: from iMac.fritz.box
-        by smtp.strato.de (RZmta 46.1.12 DYNA|AUTH)
-        with ESMTPSA id U06217w1QBG14Cb
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Wed, 26 Feb 2020 12:16:01 +0100 (CET)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-To:     PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Mathieu Malaterre <malat@debian.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, letux-kernel@openphoenux.org,
-        kernel@pyra-handheld.com
-Subject: [PATCH v6 0/6] MIPS: CI20: Add efuse driver for Ingenic JZ4780 and attach to DM9000 for stable MAC addresses
-Date:   Wed, 26 Feb 2020 12:15:55 +0100
-Message-Id: <cover.1582715761.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.23.0
+        id S1726366AbgBZO7g (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 26 Feb 2020 09:59:36 -0500
+Received: from elvis.franken.de ([193.175.24.41]:38970 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726063AbgBZO7g (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 26 Feb 2020 09:59:36 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1j6y9t-0001cq-00; Wed, 26 Feb 2020 15:59:33 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 4FF4BC0E99; Wed, 26 Feb 2020 15:59:17 +0100 (CET)
+Date:   Wed, 26 Feb 2020 15:59:17 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Paul Burton <paulburton@kernel.org>, od@zcrc.me,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Fix CONFIG_MIPS_CMDLINE_DTB_EXTEND handling
+Message-ID: <20200226145917.GA12722@alpha.franken.de>
+References: <20200225152810.45048-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200225152810.45048-1-paul@crapouillou.net>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-* add dependency on CONFIG_OF and select REGMAP_MMIO (suggested by Paul Cercueil <paul@crapouillou.net>)
-* add clk_prepare_enable() (suggested by Paul Cercueil <paul@crapouillou.net>)
-* inline jz4780_efuse_read_32bytes() since it is only used once
-* remove read optimization for full block (suggested by Paul Cercueil <paul@crapouillou.net>)
-* simplify calculations for rd_adj and rd_strobe (suggested by Paul Cercueil <paul@crapouillou.net>)
-* do calculations for rd_adj and rd_strobe in local variables
-* fix overflow check (did allow for 5 bit values although register is 4 bit wide)
-* fixes for yaml (sugested by Andreas Kemnade <andreas@kemnade.info>)
+On Tue, Feb 25, 2020 at 12:28:09PM -0300, Paul Cercueil wrote:
+> The CONFIG_MIPS_CMDLINE_DTB_EXTEND option is used so that the kernel
+> arguments provided in the 'bootargs' property in devicetree are extended
+> with the kernel arguments provided by the bootloader.
+> 
+> The code was broken, as it didn't actually take any of the kernel
+> arguments provided in devicetree when that option was set.
+> 
+> Fixes: 7784cac69735 ("MIPS: cmdline: Clean up boot_command_line
+> initialization")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  arch/mips/kernel/setup.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-PATCH V5 2020-02-22 11:25:35:
-* no longer RFC but PATCH
-* add yaml bindings (by Andreas Kemnade <andreas@kemnade.info>)
-* fixes to yaml (suggested by Rob Herring <robh@kernel.org>)
+applied to mips-fixes.
 
-RFC V4 2020-02-17 17:55:35:
-* removed read_only for nvmem config because there is no write method
-* Kconfig: replaced depends MACH_JZ4780 with MACH_INGENIC
-* run through checkpatch and fixed issues
-* made use of devm_nvram_register() and get rid of jz4780_efuse_remove()
-  (suggested by Srinivas Kandagatla <srinivas.kandagatla@linaro.org>)
-* squashed previous patch 1/9 and 2/9 into single (regmap based) driver
-
-RFC V3 2020-02-16 20:20:59:
-
-This series is based on and a follow up for
-
-https://lore.kernel.org/patchwork/cover/868157/
-
-("[v2,0/2] Add efuse driver for Ingenic JZ4780 SoC")
-
-Original authors were
-PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Mathieu Malaterre <malat@debian.org>
-
-and there are additions / code improvements by
-H. Nikolaus Schaller <hns@goldelico.com>
-Paul Cercueil <paul@crapouillou.net>
-
-This setup works, if the dm9000 driver is compiled
-as a module.
-
-Therefore it is all RFC level. It is also not completely
-checkpatched.
-
-
-H. Nikolaus Schaller (1):
-  MIPS: DTS: CI20: make DM9000 Ethernet controller use NVMEM to find the
-    default MAC address
-
-PrasannaKumar Muralidharan (5):
-  nvmem: add driver for JZ4780 efuse
-  Bindings: nvmem: add bindings for JZ4780 efuse
-  Documentation: ABI: nvmem: add documentation for JZ4780 efuse ABI
-  nvmem: MAINTAINERS: add maintainer for JZ4780 efuse driver
-  MIPS: DTS: JZ4780: define node for JZ4780 efuse
-
- .../ABI/testing/sysfs-driver-jz4780-efuse     |  16 ++
- .../bindings/nvmem/ingenic,jz4780-efuse.yaml  |  50 ++++
- MAINTAINERS                                   |   5 +
- arch/mips/boot/dts/ingenic/ci20.dts           |   3 +
- arch/mips/boot/dts/ingenic/jz4780.dtsi        |  17 +-
- drivers/nvmem/Kconfig                         |  12 +
- drivers/nvmem/Makefile                        |   2 +
- drivers/nvmem/jz4780-efuse.c                  | 239 ++++++++++++++++++
- 8 files changed, 343 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/ABI/testing/sysfs-driver-jz4780-efuse
- create mode 100644 Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.yaml
- create mode 100644 drivers/nvmem/jz4780-efuse.c
+Thomas.
 
 -- 
-2.23.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

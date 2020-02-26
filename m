@@ -2,96 +2,131 @@ Return-Path: <SRS0=Dz96=4O=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E6FCC4BA1E
-	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 17:39:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C12C1C4BA24
+	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 19:13:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D74A520801
-	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 17:39:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 900212465D
+	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 19:13:21 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="biKRRS3d"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgBZRjb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 26 Feb 2020 12:39:31 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54830 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726752AbgBZRjb (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 26 Feb 2020 12:39:31 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 764CFAC66;
-        Wed, 26 Feb 2020 17:39:29 +0000 (UTC)
-Subject: Re: [PATCH V2 2/4] mm/vma: Make vma_is_accessible() available for
- general use
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
+        id S1727513AbgBZTNU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 26 Feb 2020 14:13:20 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:35283 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727497AbgBZTNU (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 26 Feb 2020 14:13:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1582744398;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=rmAyGFH2w0GQdDqcolLuvQb3bXwl+Mlnr1aULm9Zmtc=;
+        b=biKRRS3dxnZ2gWZXq4Wxhu/ZGWhZfJ4x/idUbOGxce+LpsqYgTgCSQHMgx8oooURKq
+        E7RyH/mhiK2JKm3D2IojrPC7sR9kUwTr9FsE/bhxVrt10/81+J6QllCpH+uUItWWIsUY
+        g2c9KJ22QfL85zEQOdkygmnTqBweniAA/2ZEOW6AvVWJduXkWt/4vkn3rhMzWLKv6e/y
+        ooX+zK4po6kkcBerVLJls6fTxjxh180xECz0IETkvpRL6f4adD3d49oqz3HuxeQj7lXx
+        reHNW5OZ057sRrHsU0ayK7eVbA25kVD7uEkWT+6fB8qxA70k5lbB8tzGjF7/IhoxJ+21
+        AZTA==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0pAzoz/Oc2x"
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+        by smtp.strato.de (RZmta 46.1.12 DYNA|AUTH)
+        with ESMTPSA id U06217w1QJD16bK
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Wed, 26 Feb 2020 20:13:01 +0100 (CET)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Paul Boddie <paul@boddie.org.uk>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Ralf Baechle <ralf@linux-mips.org>,
         Paul Burton <paulburton@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-sh@vger.kernel.org
-References: <1582520593-30704-1-git-send-email-anshuman.khandual@arm.com>
- <1582520593-30704-3-git-send-email-anshuman.khandual@arm.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <c2a38ca8-1134-6e7d-c10a-658e282fcd4e@suse.cz>
-Date:   Wed, 26 Feb 2020 18:39:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-gpio@vger.kernel.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com,
+        Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+Subject: [RFC 1/8] dt-bindings: video: Add jz4780-lcd binding
+Date:   Wed, 26 Feb 2020 20:12:53 +0100
+Message-Id: <d7dd7c52a9f6cb4e31bce69bb6879e46bfba530c.1582744379.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <cover.1582744379.git.hns@goldelico.com>
+References: <cover.1582744379.git.hns@goldelico.com>
 MIME-Version: 1.0
-In-Reply-To: <1582520593-30704-3-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 2/24/20 6:03 AM, Anshuman Khandual wrote:
-> Lets move vma_is_accessible() helper to include/linux/mm.h which makes it
-> available for general use. While here, this replaces all remaining open
-> encodings for VMA access check with vma_is_accessible().
-> 
-> Cc: Guo Ren <guoren@kernel.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Paul Burton <paulburton@kernel.org>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: linux-mips@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Acked-by: Guo Ren <guoren@kernel.org>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+From: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz
+Add DT bindings for the LCD controller on the jz4780 SoC
+
+Signed-off-by: Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
+---
+ .../bindings/display/ingenic-jz4780-lcd.txt   | 39 +++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/ingenic-jz4780-lcd.txt
+
+diff --git a/Documentation/devicetree/bindings/display/ingenic-jz4780-lcd.txt b/Documentation/devicetree/bindings/display/ingenic-jz4780-lcd.txt
+new file mode 100644
+index 000000000000..8512ce3f93df
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/ingenic-jz4780-lcd.txt
+@@ -0,0 +1,39 @@
++Bindings for Ingenic JZ4780 LCD Controller
++
++LCD Controller is the Display Controller for the Ingenic JZ4780 SoC
++
++Required properties:
++- compatible: should be "ingenic,jz4780-lcd"
++- reg: Should contain the address & size of the LCD controller registers.
++- interrupts: Should specify the interrupt provided by parent.
++- clocks: Should contain two clock specifiers for the JZ4780_CLK_TVE JZ4780_CLK_LCD0PIXCLK.
++- clock-names : Must be "lcd_clk", "lcd_pixclk";
++- port: A port node with endpoint definitions as defined in
++  Documentation/devicetree/bindings/media/video-interfaces.txt.
++
++Optional properties:
++- interrupt-parent: phandle to parent interrupt controller
++
++Example:
++
++lcd: jz4780-lcdk@0x13050000 {
++	compatible = "ingenic,jz4780-lcd";
++	reg = <0x13050000 0x1800>;
++
++	clocks = <&cgu JZ4780_CLK_TVE>, <&cgu JZ4780_CLK_LCD0PIXCLK>;
++	clock-names = "lcd_clk", "lcd_pixclk";
++
++	interrupt-parent = <&intc>;
++	interrupts = <31>;
++
++	jz4780_lcd_out: port {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			jz4780_out_hdmi: endpoint@0 {
++				reg = <0>;
++				remote-endpoint = <&hdmi_in_lcd>;
++			};
++		};
++
++};
+-- 
+2.23.0
+

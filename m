@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62F88C4BA10
-	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 11:16:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4C85C4BA0B
+	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 11:16:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 394512468B
-	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 11:16:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AA0B124689
+	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 11:16:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="D3OUHSG0"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="WYq47klY"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728308AbgBZLQS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 26 Feb 2020 06:16:18 -0500
-Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.100]:28814 "EHLO
+        id S1728280AbgBZLQv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 26 Feb 2020 06:16:51 -0500
+Received: from mo4-p03-ob.smtp.rzone.de ([81.169.146.174]:29860 "EHLO
         mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728277AbgBZLQR (ORCPT
+        with ESMTP id S1728279AbgBZLQR (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Wed, 26 Feb 2020 06:16:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1582715773;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1582715771;
         s=strato-dkim-0002; d=goldelico.com;
         h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
         X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=GELR2YwBhpj7Jht63ghsU23J1Jj6ZDwKHerFXjUqVS0=;
-        b=D3OUHSG0MzAM14+qBZTAsTKjcax98MAS5KgQvYTb4dSnzrrcArBUUSl2Gg/ROyzODB
-        OcT3fnZpmXjshB3Vq4Q57D/8NbqkfqCJ0h6MVbqWIk6g2ZSKmiGo3f/2XijfFP616HWH
-        /IhzugAqmpDNmaOW67fRalb1eLWh7VxjjJfo6hbzLdZlSIu2K6l1dPXoZB6T2TUNg9C7
-        Mdu9zpGEIJ9RB4BYvF/kvXiX1R8KRTUn8Y0vSX+2F3qNse2/IsrlIdM1kg40hWksh3b5
-        zIMgol2ILLi8oo8sqC8rRu6gVrGtIrSS1uJwffsVd7GJpvWy1Mcbf46ErRdKBfeEDrWG
-        STnA==
+        bh=OorRicA6O0BqMUCCjYWxKu7Ba8UJ22PVgP64SgMW0Uk=;
+        b=WYq47klYpL7Tt/e0bSuhwnCSZko7n2qq16CJUAPLm2hLNFt+nqFvumI1vCWiDmNtOm
+        ZfYbMRgM3jjvISFMa3wlD9SLXOqAez7lHaPN/IeUcVxsZ2srHzyRRmcDRCCKJFZuhPdq
+        w34ds3OG/jB4PIRcAupCajFyA7cnSh6pC2s0qnYkYv0JsvEfzz2kwM+HkVFPK8hPC6VG
+        n3axyTgQ+ztPoi1e/JiwCB6YIDKu2AJJAFEtfvBL+lsJFwwS6mNIobpx9uwVyWLDD73s
+        oLCLi+Lo/+eacQtSV10rVV+e8qcVB5Buk+VLubecAepGOj+NVLSnqWGVeDmwgzYL62nS
+        ducg==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0pAzoz/Oc2x"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
         by smtp.strato.de (RZmta 46.1.12 DYNA|AUTH)
-        with ESMTPSA id U06217w1QBG44Ch
+        with ESMTPSA id U06217w1QBG34Cf
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Wed, 26 Feb 2020 12:16:04 +0100 (CET)
+        Wed, 26 Feb 2020 12:16:03 +0100 (CET)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
         Andreas Kemnade <andreas@kemnade.info>,
@@ -62,9 +62,9 @@ To:     PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
 Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-mips@vger.kernel.org, letux-kernel@openphoenux.org,
         kernel@pyra-handheld.com
-Subject: [PATCH v6 4/6] nvmem: MAINTAINERS: add maintainer for JZ4780 efuse driver
-Date:   Wed, 26 Feb 2020 12:15:59 +0100
-Message-Id: <6bce187fd0800841754fecdbd67e254ce77a4bac.1582715761.git.hns@goldelico.com>
+Subject: [PATCH v6 2/6] Bindings: nvmem: add bindings for JZ4780 efuse
+Date:   Wed, 26 Feb 2020 12:15:57 +0100
+Message-Id: <4b243cc120ca6f9a23e217d070e7f6a42f11f8b4.1582715761.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <cover.1582715761.git.hns@goldelico.com>
 References: <cover.1582715761.git.hns@goldelico.com>
@@ -83,26 +83,70 @@ a read only access to the entire 8K bits efuse memory.
 Tested-by: Mathieu Malaterre <malat@debian.org>
 Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
 Signed-off-by: Mathieu Malaterre <malat@debian.org>
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+[converted to yaml]
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
 ---
- MAINTAINERS | 5 +++++
- 1 file changed, 5 insertions(+)
+ .../bindings/nvmem/ingenic,jz4780-efuse.yaml  | 50 +++++++++++++++++++
+ 1 file changed, 50 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.yaml
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index fcd79fc38928..fcb8d89c2b2e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8271,6 +8271,11 @@ M:	Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
- S:	Maintained
- F:	drivers/dma/dma-jz4780.c
- 
-+INGENIC JZ4780 EFUSE Driver
-+M:	PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-+S:	Maintained
-+F:	drivers/nvmem/jz4780-efuse.c
+diff --git a/Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.yaml b/Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.yaml
+new file mode 100644
+index 000000000000..b9c0ea09b335
+--- /dev/null
++++ b/Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.yaml
+@@ -0,0 +1,50 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/nvmem/ingenic,jz4780-efuse.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- INGENIC JZ4780 NAND DRIVER
- M:	Harvey Hunt <harveyhuntnexus@gmail.com>
- L:	linux-mtd@lists.infradead.org
++title: Ingenic JZ EFUSE driver bindings
++
++maintainers:
++  - PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
++
++allOf:
++  - $ref: "nvmem.yaml#"
++
++properties:
++  compatible:
++    enum:
++      - ingenic,jz4780-efuse
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    # Handle for the ahb for the efuse.
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: ahb2
++
++required:
++  - compatible
++  - reg
++  - clocks
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/jz4780-cgu.h>
++
++    efuse@134100d0 {
++        compatible = "ingenic,jz4780-efuse";
++        reg = <0x134100d0 0x2c>;
++
++        clocks = <&cgu JZ4780_CLK_AHB2>;
++        clock-names = "ahb2";
++    };
++
++...
 -- 
 2.23.0
 

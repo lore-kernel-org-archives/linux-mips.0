@@ -1,98 +1,71 @@
-Return-Path: <SRS0=Dz96=4O=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=kbB/=4P=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC8D7C4BA24
-	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 19:13:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A639C4BA24
+	for <linux-mips@archiver.kernel.org>; Thu, 27 Feb 2020 07:12:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A791120656
-	for <linux-mips@archiver.kernel.org>; Wed, 26 Feb 2020 19:13:48 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="a3j6DMoH"
+	by mail.kernel.org (Postfix) with ESMTP id ED26824683
+	for <linux-mips@archiver.kernel.org>; Thu, 27 Feb 2020 07:12:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727242AbgBZTNo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 26 Feb 2020 14:13:44 -0500
-Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.101]:28202 "EHLO
-        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727287AbgBZTNN (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 26 Feb 2020 14:13:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1582744391;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=0KwFWogrkYd3WbP4B9tFSDqdj5/ZkSqbBbEVxlZwGEA=;
-        b=a3j6DMoHnyFV5JohDO304EjH+kmJqX6FaYH5XNaYMFXdMvHq6JuEDM8JRr6G49R54U
-        ETepDUDRMHGKp5+Hib2Fn1N91+jZ4OM5ye8e2BCsBO7IA3+/vVU3+3cg9EIyJ/JKQEZO
-        p/fb/aW+6yfMqz5cmTkJZGJ0wXgbjVS8sD/ni8pXJgxZoAd/xmwOfXjZZnPFItubV90B
-        5Rii1ZUgbdlXZyZyxEpSkqJMmEA2caYj8prxnko814fn9fq5UlP4LFN3Kz3603i93lNq
-        5fcr6c2hc2hlAI1IiqTypiMY9JALpOqOBTSqeNPry39V5MHMXO5TBkkm3wyMncSv4V6K
-        54JA==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0pAzoz/Oc2x"
-X-RZG-CLASS-ID: mo00
-Received: from iMac.fritz.box
-        by smtp.strato.de (RZmta 46.1.12 DYNA|AUTH)
-        with ESMTPSA id U06217w1QJD26bM
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Wed, 26 Feb 2020 20:13:02 +0100 (CET)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Paul Boddie <paul@boddie.org.uk>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-gpio@vger.kernel.org, letux-kernel@openphoenux.org,
-        kernel@pyra-handheld.com,
-        "H. Nikolaus Schaller" <hns@goldelico.com>
-Subject: [RFC 3/8] drm: ingenic-drm: add MODULE_DEVICE_TABLE
-Date:   Wed, 26 Feb 2020 20:12:55 +0100
-Message-Id: <d59ba39a17f052b6d3ca1947bd62467224fac2d0.1582744379.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <cover.1582744379.git.hns@goldelico.com>
-References: <cover.1582744379.git.hns@goldelico.com>
+        id S1727413AbgB0HMC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 27 Feb 2020 02:12:02 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11116 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727336AbgB0HMC (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 27 Feb 2020 02:12:02 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 9B7E8BFD2EB74ED299E8;
+        Thu, 27 Feb 2020 15:11:55 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.439.0; Thu, 27 Feb 2020 15:11:44 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <ralf@linux-mips.org>, <paulburton@kernel.org>,
+        <tglx@linutronix.de>, <sboyd@kernel.org>,
+        <geert+renesas@glider.be>, <f4bug@amsat.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+CC:     YueHaibing <yuehaibing@huawei.com>, <linux-mips@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+Subject: [PATCH -next] MIPS: pic32mzda: Drop pointless static qualifier
+Date:   Thu, 27 Feb 2020 07:05:02 +0000
+Message-ID: <20200227070502.106762-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-so that the driver can load by matching the device tree
-if compiled as module.
+There is no need to have the 'struct device_node *node' variable static
+since new value always be assigned before use it.
 
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- drivers/gpu/drm/ingenic/ingenic-drm.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/mips/pic32/pic32mzda/time.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm.c b/drivers/gpu/drm/ingenic/ingenic-drm.c
-index 6d47ef7b148c..d8617096dd8e 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm.c
-@@ -844,6 +844,8 @@ static const struct of_device_id ingenic_drm_of_match[] = {
- 	{ /* sentinel */ },
- };
+diff --git a/arch/mips/pic32/pic32mzda/time.c b/arch/mips/pic32/pic32mzda/time.c
+index 754924f26089..7174e9abbb1b 100644
+--- a/arch/mips/pic32/pic32mzda/time.c
++++ b/arch/mips/pic32/pic32mzda/time.c
+@@ -23,7 +23,7 @@ static const struct of_device_id pic32_infra_match[] = {
  
-+MODULE_DEVICE_TABLE(of, ingenic_drm_of_match);
-+
- static struct platform_driver ingenic_drm_driver = {
- 	.driver = {
- 		.name = "ingenic-drm",
--- 
-2.23.0
+ static unsigned int pic32_xlate_core_timer_irq(void)
+ {
+-	static struct device_node *node;
++	struct device_node *node;
+ 	unsigned int irq;
+ 
+ 	node = of_find_matching_node(NULL, pic32_infra_match);
+
+
 

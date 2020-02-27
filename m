@@ -2,102 +2,166 @@ Return-Path: <SRS0=kbB/=4P=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7871C35677
-	for <linux-mips@archiver.kernel.org>; Thu, 27 Feb 2020 14:49:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3907EC11D3D
+	for <linux-mips@archiver.kernel.org>; Thu, 27 Feb 2020 14:49:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A4B53246AD
-	for <linux-mips@archiver.kernel.org>; Thu, 27 Feb 2020 14:49:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1582814973;
-	bh=KNL8q96VW054YfXBZfeHGlfLCZJ5LleWzR+KoB/9j4w=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=jC8NDhYXM6ypaUA/nBmt/kXb7hUJDjWukpPtQgjIAxcwagIq2zU16rwqHLBmg8sEW
-	 xq55K3Yq/mxfxJcCK8GTBIbBpKKxcT5gXLwEyRNCNsstX6JxwpJS5crap6Sn9lCAfd
-	 2qS9yV2PUBH0VFFmCQKk4ZIvEyXwgZD66XhNmgVM=
+	by mail.kernel.org (Postfix) with ESMTP id 0C7A8246AC
+	for <linux-mips@archiver.kernel.org>; Thu, 27 Feb 2020 14:49:49 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="JsB2xcdn"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729468AbgB0NlD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 27 Feb 2020 08:41:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729444AbgB0NlC (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 27 Feb 2020 08:41:02 -0500
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1815020726;
-        Thu, 27 Feb 2020 13:40:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582810860;
-        bh=KNL8q96VW054YfXBZfeHGlfLCZJ5LleWzR+KoB/9j4w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ecb7Et4znBkjlITfrqQHob5uz25j4mxvxVb/EHnKKch7soRJKo6pIlrOfMQXubvuM
-         wRVHiqF/39O4CWgV0mczi7q1saognB/DTMGGyxfAW0F8qjj7n6QkwlNpW3bl6HQ07Y
-         39BY1zAsBsezmPOvt7bUPD+7ICE8mCQSQXL9o4mc=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Paul Burton <paulburton@kernel.org>,
+        id S1729684AbgB0Oto (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 27 Feb 2020 09:49:44 -0500
+Received: from outils.crapouillou.net ([89.234.176.41]:35668 "EHLO
+        crapouillou.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729517AbgB0Otn (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 27 Feb 2020 09:49:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1582814980; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tLgwQgOa6r2cwTcDG0bb37UBVU1Q+pAZGWA4HImdZZQ=;
+        b=JsB2xcdnyQ/+DcnFlBFwy/epanejNjvDGiC/OsJ5iqJrtMR6Gftlf3d6Aj9aqldUvta+QC
+        CPmS2tWeUJeRzDy/jYIPBXFY6Y272TnhSolCJG4hzFocr43JyE4dReM4tdMX+NauoGSdj2
+        tZ1LMCC1BXUu+oyf9FhXEq4lHp9uxJQ=
+Date:   Thu, 27 Feb 2020 11:49:17 -0300
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v6 2/6] Bindings: nvmem: add bindings for JZ4780 efuse
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Mathieu Malaterre <malat@debian.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Ralf Baechle <ralf@linux-mips.org>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 026/113] MIPS: Loongson: Fix potential NULL dereference in loongson3_platform_init()
-Date:   Thu, 27 Feb 2020 14:35:42 +0100
-Message-Id: <20200227132215.859062761@linuxfoundation.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200227132211.791484803@linuxfoundation.org>
-References: <20200227132211.791484803@linuxfoundation.org>
-User-Agent: quilt/0.66
+        Paul Burton <paulburton@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com
+Message-Id: <1582814957.3.3@crapouillou.net>
+In-Reply-To: <4b243cc120ca6f9a23e217d070e7f6a42f11f8b4.1582715761.git.hns@goldelico.com>
+References: <cover.1582715761.git.hns@goldelico.com>
+        <4b243cc120ca6f9a23e217d070e7f6a42f11f8b4.1582715761.git.hns@goldelico.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-
-[ Upstream commit 72d052e28d1d2363f9107be63ef3a3afdea6143c ]
-
-If kzalloc fails, it should return -ENOMEM, otherwise may trigger a NULL
-pointer dereference.
-
-Fixes: 3adeb2566b9b ("MIPS: Loongson: Improve LEFI firmware interface")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Signed-off-by: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Huacai Chen <chenhc@lemote.com>
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/mips/loongson64/loongson-3/platform.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/mips/loongson64/loongson-3/platform.c b/arch/mips/loongson64/loongson-3/platform.c
-index 25a97cc0ee336..0db4cc3196ebd 100644
---- a/arch/mips/loongson64/loongson-3/platform.c
-+++ b/arch/mips/loongson64/loongson-3/platform.c
-@@ -31,6 +31,9 @@ static int __init loongson3_platform_init(void)
- 			continue;
- 
- 		pdev = kzalloc(sizeof(struct platform_device), GFP_KERNEL);
-+		if (!pdev)
-+			return -ENOMEM;
-+
- 		pdev->name = loongson_sysconf.sensors[i].name;
- 		pdev->id = loongson_sysconf.sensors[i].id;
- 		pdev->dev.platform_data = &loongson_sysconf.sensors[i];
--- 
-2.20.1
+Hi Nikolaus,
 
 
+Le mer., f=E9vr. 26, 2020 at 12:15, H. Nikolaus Schaller=20
+<hns@goldelico.com> a =E9crit :
+> From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+>=20
+> This patch brings support for the JZ4780 efuse. Currently it only=20
+> exposes
+> a read only access to the entire 8K bits efuse memory.
+>=20
+> Tested-by: Mathieu Malaterre <malat@debian.org>
+> Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+> Signed-off-by: Mathieu Malaterre <malat@debian.org>
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> [converted to yaml]
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> ---
+>  .../bindings/nvmem/ingenic,jz4780-efuse.yaml  | 50=20
+> +++++++++++++++++++
+>  1 file changed, 50 insertions(+)
+>  create mode 100644=20
+> Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.yaml
+>=20
+> diff --git=20
+> a/Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.yaml=20
+> b/Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.yaml
+> new file mode 100644
+> index 000000000000..b9c0ea09b335
+> --- /dev/null
+> +++=20
+> b/Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.yaml
+> @@ -0,0 +1,50 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/nvmem/ingenic,jz4780-efuse.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Ingenic JZ EFUSE driver bindings
+> +
+> +maintainers:
+> +  - PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+> +
+> +allOf:
+> +  - $ref: "nvmem.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ingenic,jz4780-efuse
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    # Handle for the ahb for the efuse.
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: ahb2
+
+Your driver does not actually require the clock to be 'ahb2', it will=20
+take the first clock independently of its name. So 'clock-names' can be=20
+dropped.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/jz4780-cgu.h>
+> +
+> +    efuse@134100d0 {
+> +        compatible =3D "ingenic,jz4780-efuse";
+> +        reg =3D <0x134100d0 0x2c>;
+> +
+> +        clocks =3D <&cgu JZ4780_CLK_AHB2>;
+> +        clock-names =3D "ahb2";
+
+Same here.
+
+Cheers,
+-Paul
+
+> +    };
+> +
+> +...
+> --
+> 2.23.0
+>=20
+
+=
 

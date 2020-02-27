@@ -2,109 +2,102 @@ Return-Path: <SRS0=kbB/=4P=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D211C35677
-	for <linux-mips@archiver.kernel.org>; Thu, 27 Feb 2020 14:49:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7871C35677
+	for <linux-mips@archiver.kernel.org>; Thu, 27 Feb 2020 14:49:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D458924697
-	for <linux-mips@archiver.kernel.org>; Thu, 27 Feb 2020 14:49:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A4B53246AD
+	for <linux-mips@archiver.kernel.org>; Thu, 27 Feb 2020 14:49:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1582814973;
+	bh=KNL8q96VW054YfXBZfeHGlfLCZJ5LleWzR+KoB/9j4w=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=jC8NDhYXM6ypaUA/nBmt/kXb7hUJDjWukpPtQgjIAxcwagIq2zU16rwqHLBmg8sEW
+	 xq55K3Yq/mxfxJcCK8GTBIbBpKKxcT5gXLwEyRNCNsstX6JxwpJS5crap6Sn9lCAfd
+	 2qS9yV2PUBH0VFFmCQKk4ZIvEyXwgZD66XhNmgVM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732211AbgB0OtT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 27 Feb 2020 09:49:19 -0500
-Received: from elvis.franken.de ([193.175.24.41]:40389 "EHLO elvis.franken.de"
+        id S1729468AbgB0NlD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 27 Feb 2020 08:41:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730163AbgB0OtS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 27 Feb 2020 09:49:18 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1j7KTU-0005c6-00
-        for linux-mips@vger.kernel.org; Thu, 27 Feb 2020 15:49:16 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A0078C0EB3; Thu, 27 Feb 2020 15:49:10 +0100 (CET)
-Date:   Thu, 27 Feb 2020 15:49:10 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org
-Subject: MIPS Hardware support
-Message-ID: <20200227144910.GA25011@alpha.franken.de>
+        id S1729444AbgB0NlC (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 27 Feb 2020 08:41:02 -0500
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1815020726;
+        Thu, 27 Feb 2020 13:40:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582810860;
+        bh=KNL8q96VW054YfXBZfeHGlfLCZJ5LleWzR+KoB/9j4w=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ecb7Et4znBkjlITfrqQHob5uz25j4mxvxVb/EHnKKch7soRJKo6pIlrOfMQXubvuM
+         wRVHiqF/39O4CWgV0mczi7q1saognB/DTMGGyxfAW0F8qjj7n6QkwlNpW3bl6HQ07Y
+         39BY1zAsBsezmPOvt7bUPD+7ICE8mCQSQXL9o4mc=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 026/113] MIPS: Loongson: Fix potential NULL dereference in loongson3_platform_init()
+Date:   Thu, 27 Feb 2020 14:35:42 +0100
+Message-Id: <20200227132215.859062761@linuxfoundation.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200227132211.791484803@linuxfoundation.org>
+References: <20200227132211.791484803@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi,
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-we have 47 MIPS system types and I'd like to get an overview how alive
-they really are. I've already grouped the 47 systems a little bit by
-hardware I already own and regulary test kernels. Could you please
-give me some feedback about the "unclassified" systems ? What systems
-are supported by qemu (real test not just repeating qemu docs) ?
-Thank you for your help.
+[ Upstream commit 72d052e28d1d2363f9107be63ef3a3afdea6143c ]
 
-Thomas.
+If kzalloc fails, it should return -ENOMEM, otherwise may trigger a NULL
+pointer dereference.
 
-Hardware I own and regulary boot current kernels:
+Fixes: 3adeb2566b9b ("MIPS: Loongson: Improve LEFI firmware interface")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Paul Burton <paulburton@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Huacai Chen <chenhc@lemote.com>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/mips/loongson64/loongson-3/platform.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Jazz family of machines (MACH_JAZZ)	/* runs with qemu */
-SGI IP22 (Indy/Indigo2) (SGI_IP22)
-SGI IP27 (Origin200/2000) (SGI_IP27)
-SGI IP28 (Indigo2 R10k) (SGI_IP28)
-SGI IP30 (Octane/Octane2) (SGI_IP30) 
-SGI IP32 (O2) (SGI_IP32)
-SNI RM200/300/400 (SNI_RM)
-
-Hardware I own, but not booted for a while:
-
-Texas Instruments AR7 (AR7)
-Cobalt Server (MIPS_COBALT)
-DECstations (MACH_DECSTATION)
-Lantiq based platforms (LANTIQ)
-Ralink based machines (RALINK)
-Sibyte BCM91480B-BigSur (SIBYTE_BIGSUR)
-
-Unclassified:
-
-Generic board-agnostic MIPS kernel (MIPS_GENERIC)
-Alchemy processor based machines (MIPS_ALCHEMY)
-Atheros AR231x/AR531x SoC support (ATH25)
-Atheros AR71XX/AR724X/AR913X based boards (ATH79)
-Broadcom Generic BMIPS kernel (BMIPS_GENERIC)
-Broadcom BCM47XX based boards (BCM47XX)
-Broadcom BCM63XX based boards (BCM63XX)
-Ingenic SoC based machines (MACH_INGENIC)
-LASAT Networks platforms (LASAT)
-Loongson 32-bit family of machines (MACH_LOONGSON32)
-Loongson-2E/F family of machines (MACH_LOONGSON2EF)
-Loongson 64-bit family of machines (MACH_LOONGSON64)
-IMG Pistachio SoC based boards (MACH_PISTACHIO)
-MIPS Malta board (MIPS_MALTA)
-Microchip PIC32 Family (MACH_PIC32)
-NEC EMMA2RH Mark-eins board (NEC_MARKEINS)
-NEC VR4100 series based machines (MACH_VR41XX)
-NXP STB220 board (NXP_STB220)
-NXP 225 board (NXP_STB225)
-PMC-Sierra MSP chipsets (PMC_MSP)
-Sibyte BCM91120C-CRhine (SIBYTE_CRHINE)
-Sibyte BCM91120x-Carmel (SIBYTE_CARMEL)
-Sibyte BCM91125C-CRhone (SIBYTE_CRHONE)
-Sibyte BCM91125E-Rhone (SIBYTE_RHONE)
-Sibyte BCM91250A-SWARM (SIBYTE_SWARM)
-Sibyte BCM91250C2-LittleSur (SIBYTE_LITTLESUR)
-Sibyte BCM91250E-Sentosa (SIBYTE_SENTOSA)
-Toshiba TX39 series based machines (MACH_TX39XX)
-Toshiba TX49 series based machines (MACH_TX49XX)
-Mikrotik RB532 boards (MIKROTIK_RB532)
-Cavium Networks Octeon SoC based boards (CAVIUM_OCTEON_SOC)
-Netlogic XLR/XLS based systems (NLM_XLR_BOARD)
-Netlogic XLP based systems (NLM_XLP_BOARD)
-Para-Virtualized guest system (MIPS_PARAVIRT)
-
+diff --git a/arch/mips/loongson64/loongson-3/platform.c b/arch/mips/loongson64/loongson-3/platform.c
+index 25a97cc0ee336..0db4cc3196ebd 100644
+--- a/arch/mips/loongson64/loongson-3/platform.c
++++ b/arch/mips/loongson64/loongson-3/platform.c
+@@ -31,6 +31,9 @@ static int __init loongson3_platform_init(void)
+ 			continue;
+ 
+ 		pdev = kzalloc(sizeof(struct platform_device), GFP_KERNEL);
++		if (!pdev)
++			return -ENOMEM;
++
+ 		pdev->name = loongson_sysconf.sensors[i].name;
+ 		pdev->id = loongson_sysconf.sensors[i].id;
+ 		pdev->dev.platform_data = &loongson_sysconf.sensors[i];
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.20.1
+
+
+

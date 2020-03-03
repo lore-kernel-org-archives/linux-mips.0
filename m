@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BF28C3F2C6
-	for <linux-mips@archiver.kernel.org>; Tue,  3 Mar 2020 18:00:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4700C3F2D1
+	for <linux-mips@archiver.kernel.org>; Tue,  3 Mar 2020 18:05:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 39936215A4
-	for <linux-mips@archiver.kernel.org>; Tue,  3 Mar 2020 18:00:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 728842073B
+	for <linux-mips@archiver.kernel.org>; Tue,  3 Mar 2020 18:05:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1583258458;
+	s=default; t=1583258757;
 	bh=rMQn7kjsa7T0S3IBhZrsTg2HDBVaXevtNP7v9XkF4Dg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=dDER4AMkrPVrxBhhPPUA4n6+Guqfkw8q5tDjFUdps9mtNNdasR3+UmxbliU7tnH19
-	 aheXUgHRxlTNZbiF+TgQfXET+MX6Hhb8ISv/olQ4sXzltFa36rKYi5FC+mqHcNlBtO
-	 ciKThTcDVwElLL9L7rQTdeQ4pBZ/dCsGkTQyNZz4=
+	b=nXehY1rgqeXz5lnDOJWYCo/7qlbRgpdPW5O2rUUQa0qhEWkz9ItwP/Qa6RT2NJiwQ
+	 55zuh2ERhVD/nlkEh0d7YLk+UKGT3G0TPRNmWVR7aqlXwZiCVFiAUXAEps/nlNJm3X
+	 AA2y6BuCyhW1TuKa4lQpSimxpz4qVClkufFyXfF4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387570AbgCCSA4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 3 Mar 2020 13:00:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44816 "EHLO mail.kernel.org"
+        id S1733121AbgCCR5j (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 3 Mar 2020 12:57:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387861AbgCCSAx (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 3 Mar 2020 13:00:53 -0500
+        id S1732834AbgCCR5j (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 3 Mar 2020 12:57:39 -0500
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60AFF20656;
-        Tue,  3 Mar 2020 18:00:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 158D12072D;
+        Tue,  3 Mar 2020 17:57:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583258452;
+        s=default; t=1583258258;
         bh=rMQn7kjsa7T0S3IBhZrsTg2HDBVaXevtNP7v9XkF4Dg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mijGe8m1m8P3anIBopwTfzLRv00gHoazw4qF+j/Pt9hX7Mkue7/j+TVzVsrCeJ+5H
-         MQmWUqig7A/cGz8jLhksqR8ERvtfcbw1Mu0Xsly1gJxKHwnulL19GE+IAm74CJcVx5
-         +NicDymf0rQOJFMvHk9t0PVcT6ziO7hzhFo+M6E8=
+        b=xyMJncZ96Z/bNhIaE4L9NRGDtGpX2D8+byn/yuwGSxxpC01gEltZlr/gD8BeJGA/+
+         rQl4OpB8suRN+697OnJ61EpXyC1WhUtmaDwH/afhNWeBSNX71nYhO8WULve1tEyify
+         S9s8KZ1bAvNgri+F1Njjd3J2aWcje4sNSfD+8Efo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -45,12 +45,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Paul Burton <paulburton@kernel.org>, ralf@linux-mips.org,
         linux-mips@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH 4.19 54/87] MIPS: VPE: Fix a double free and a memory leak in release_vpe()
-Date:   Tue,  3 Mar 2020 18:43:45 +0100
-Message-Id: <20200303174355.218566706@linuxfoundation.org>
+Subject: [PATCH 5.4 094/152] MIPS: VPE: Fix a double free and a memory leak in release_vpe()
+Date:   Tue,  3 Mar 2020 18:43:12 +0100
+Message-Id: <20200303174313.271395649@linuxfoundation.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200303174349.075101355@linuxfoundation.org>
-References: <20200303174349.075101355@linuxfoundation.org>
+In-Reply-To: <20200303174302.523080016@linuxfoundation.org>
+References: <20200303174302.523080016@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

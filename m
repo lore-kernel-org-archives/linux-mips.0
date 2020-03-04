@@ -2,70 +2,120 @@ Return-Path: <SRS0=Q0mV=4V=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE4ACC3F2D1
-	for <linux-mips@archiver.kernel.org>; Wed,  4 Mar 2020 21:55:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B054AC3F2D1
+	for <linux-mips@archiver.kernel.org>; Wed,  4 Mar 2020 22:14:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id BB7A620866
-	for <linux-mips@archiver.kernel.org>; Wed,  4 Mar 2020 21:55:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8CBC420870
+	for <linux-mips@archiver.kernel.org>; Wed,  4 Mar 2020 22:14:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387905AbgCDVzm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 4 Mar 2020 16:55:42 -0500
-Received: from elvis.franken.de ([193.175.24.41]:51174 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728926AbgCDVzm (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 4 Mar 2020 16:55:42 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1j9bzN-0000mm-00; Wed, 04 Mar 2020 22:55:37 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 832E3C0EF9; Wed,  4 Mar 2020 21:31:44 +0100 (CET)
-Date:   Wed, 4 Mar 2020 21:31:44 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     afzal mohammed <afzal.mohd.ma@gmail.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Ralf Baechle <ralf@linux-mips.org>,
+        id S2388540AbgCDWOi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 4 Mar 2020 17:14:38 -0500
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:39894 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388462AbgCDWOh (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 4 Mar 2020 17:14:37 -0500
+Received: from [192.168.42.210] ([93.22.132.175])
+        by mwinf5d06 with ME
+        id ANEZ2200C3nCjhH03NEZnp; Wed, 04 Mar 2020 23:14:34 +0100
+X-ME-Helo: [192.168.42.210]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 04 Mar 2020 23:14:34 +0100
+X-ME-IP: 93.22.132.175
+Subject: Re: AW: [PATCH 5.5 110/176] MIPS: VPE: Fix a double free and a memory
+ leak in release_vpe()
+To:     Walter Harms <wharms@bfs.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
         Paul Burton <paulburton@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        "Maciej W. Rozycki" <macro@linux-mips.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Keguang Zhang <keguang.zhang@gmail.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        John Crispin <john@phrozen.org>
-Subject: Re: [PATCH v3] MIPS: Replace setup_irq() by request_irq()
-Message-ID: <20200304203144.GA4323@alpha.franken.de>
-References: <20200304005549.5832-1-afzal.mohd.ma@gmail.com>
+        "ralf@linux-mips.org" <ralf@linux-mips.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+References: <20200303174304.593872177@linuxfoundation.org>
+ <20200303174317.555620066@linuxfoundation.org>
+ <adf1859b4dcc497285ebbda017ece22d@bfs.de>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <33446ca8-0ace-e081-47fa-ceddf7fe80df@wanadoo.fr>
+Date:   Wed, 4 Mar 2020 23:14:30 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <adf1859b4dcc497285ebbda017ece22d@bfs.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200304005549.5832-1-afzal.mohd.ma@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Language: en-US
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Mar 04, 2020 at 06:25:43AM +0530, afzal mohammed wrote:
-> Hi mips maintainers,
-> 
-> if okay w/ this change, please consider taking it thr' your tree, else please
-> let me know.
+Le 04/03/2020 à 22:28, Walter Harms a écrit :
+> ________________________________________
+> Von: kernel-janitors-owner@vger.kernel.org <kernel-janitors-owner@vger.kernel.org> im Auftrag von Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Gesendet: Dienstag, 3. März 2020 18:42
+> An: linux-kernel@vger.kernel.org
+> Cc: Greg Kroah-Hartman; stable@vger.kernel.org; Christophe JAILLET; Paul Burton; ralf@linux-mips.org; linux-mips@vger.kernel.org; kernel-janitors@vger.kernel.org
+> Betreff: [PATCH 5.5 110/176] MIPS: VPE: Fix a double free and a memory leak in release_vpe()
+>
+> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>
+> commit bef8e2dfceed6daeb6ca3e8d33f9c9d43b926580 upstream.
+>
+> Pointer on the memory allocated by 'alloc_progmem()' is stored in
+> 'v->load_addr'. So this is this memory that should be freed by
+> 'release_progmem()'.
+>
+> 'release_progmem()' is only a call to 'kfree()'.
+>
+> With the current code, there is both a double free and a memory leak.
+> Fix it by passing the correct pointer to 'release_progmem()'.
+>
+> Fixes: e01402b115ccc ("More AP / SP bits for the 34K, the Malta bits and things. Still wants")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Signed-off-by: Paul Burton <paulburton@kernel.org>
+> Cc: ralf@linux-mips.org
+> Cc: linux-mips@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: kernel-janitors@vger.kernel.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+> ---
+>   arch/mips/kernel/vpe.c |    2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> --- a/arch/mips/kernel/vpe.c
+> +++ b/arch/mips/kernel/vpe.c
+> @@ -134,7 +134,7 @@ void release_vpe(struct vpe *v)
+>   {
+>          list_del(&v->list);
+>          if (v->load_addr)
+> -               release_progmem(v);
+> +               release_progmem(v->load_addr);
+>          kfree(v);
+>   }
+>
+>
+> since release_progmem() is kfree() it is also possible to drop "if (v->load_addr)"
+>
+> jm2c
+>
+> re,
+>   wh
 
-sorry this doesn't even compile for the first platform I've tested:
+Agreed.
 
-In file included from /home/tbogendoerfer/wip/korg/linux/arch/mips/sni/reset.c:11:0:
-/home/tbogendoerfer/wip/korg/linux/arch/mips/include/asm/sni.h:242:8: error: unknown type name ‘irqreturn_t’
- extern irqreturn_t sni_isa_irq_handler(int dummy, void *p);
-        ~~~~~~~~~~~
+My patch had the following comment after the patch description:
+---
+The 'if (v->load_addr)' looks also redundant, but, well, the code is old
+and I feel lazy tonight to send another patch for only that.
+---
 
-Thomas.
+git log shows nearly no update since end of 2015, so I kept my proposal 
+as minimal :)
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+CJ
+

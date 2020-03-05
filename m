@@ -7,49 +7,49 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F048C3F2D2
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:18:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89EE6C3F2D2
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:21:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5D62F207FD
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:18:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 578E620637
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:21:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1583428727;
-	bh=xdxquL3/J/TF/6FpMbpPPmLRbnPza8xPq8JmVaRpTVY=;
+	s=default; t=1583428885;
+	bh=Mc9vkGPDUaDyDV/P8kywreIweeOriVdDe6jvOFFt0pI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=R9LxcZ7j0x07JB3r0ejoor8wi6H4tUKBhVGRVcbIG+Nqb5NfxehE9zg4jsa7IY9/3
-	 biqX1ouZkOCB2o/2RwJOg4VjYtDauPrqxeepfzsMWhjwdLYrSTGihshR9o6BTp5rWR
-	 jzHJfopoGHh9XG7jWKwrn8z/uKjUH+qbJRDraVJc=
+	b=UpE8IraNTVlL1qL3O3mllgSVs0gmbJ8gfwoSxcEaomMur6c3/r2H75TJkRAvjxbGS
+	 UusKgPKQeJe52n6AYEvaVNdb1oWvEnTVbZHnv0Iv2wiL5yG5J/hW3SMUpeaDL4UN4w
+	 j4oZVEeLBBulV+S/eB2CwpaXjui1m3bTJcJ6d2CE=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgCERSl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 5 Mar 2020 12:18:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42272 "EHLO mail.kernel.org"
+        id S1727642AbgCERVU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 5 Mar 2020 12:21:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728079AbgCERP2 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 5 Mar 2020 12:15:28 -0500
+        id S1727726AbgCEROh (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 5 Mar 2020 12:14:37 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61FBB20848;
-        Thu,  5 Mar 2020 17:15:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2FA0C21744;
+        Thu,  5 Mar 2020 17:14:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583428528;
-        bh=xdxquL3/J/TF/6FpMbpPPmLRbnPza8xPq8JmVaRpTVY=;
+        s=default; t=1583428477;
+        bh=Mc9vkGPDUaDyDV/P8kywreIweeOriVdDe6jvOFFt0pI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zoB+IwARxlXevPQuaPOXEqUqflAxIucuCxqgkicPFjwbNVatJcN2RXxNigxw3XnlJ
-         WnORBmFr+fgDgqyoPxu65RDRfmKjXbXSioPmO2izdOZMmbEGak40AMwrcbyb0xJAxC
-         VKzAXhapMtYthvkWhub8znL/d5YOXZFr1RFjb8YA=
+        b=s8YQ2J5GkPX7ITcoxRFZPl2PuJK7ffxcF38Roif/WNrBcCo1hBJ1/XdPp2KPnXvUq
+         IpsaRcFm/VE9RLsA8sN6vLt2/13pZDo1T9pLmRLdIjY+AnwDC6tp5AYU15GtQTSHnB
+         e+gZgSfFd8XJL5ciiRS90x3zSRJazZh0Rz+rAJXs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Paul Burton <paulburton@kernel.org>, ralf@linux-mips.org,
         linux-mips@vger.kernel.org, kernel-janitors@vger.kernel.org,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 09/31] MIPS: VPE: Fix a double free and a memory leak in 'release_vpe()'
-Date:   Thu,  5 Mar 2020 12:14:53 -0500
-Message-Id: <20200305171516.30028-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 13/58] MIPS: VPE: Fix a double free and a memory leak in 'release_vpe()'
+Date:   Thu,  5 Mar 2020 12:13:34 -0500
+Message-Id: <20200305171420.29595-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200305171516.30028-1-sashal@kernel.org>
-References: <20200305171516.30028-1-sashal@kernel.org>
+In-Reply-To: <20200305171420.29595-1-sashal@kernel.org>
+References: <20200305171420.29595-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -85,7 +85,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/mips/kernel/vpe.c b/arch/mips/kernel/vpe.c
-index 0bef238d2c0c6..0d5f9c8f5bdac 100644
+index 6176b9acba950..d0d832ab3d3b8 100644
 --- a/arch/mips/kernel/vpe.c
 +++ b/arch/mips/kernel/vpe.c
 @@ -134,7 +134,7 @@ void release_vpe(struct vpe *v)

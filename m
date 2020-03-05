@@ -2,155 +2,113 @@ Return-Path: <SRS0=m+3q=4W=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D9FBC3F2D1
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 12:42:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D69CC3F2D7
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:14:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 666D720848
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 12:42:44 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="vU/DIA2J"
+	by mail.kernel.org (Postfix) with ESMTP id 262C024654
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:14:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1583428485;
+	bh=9g2gIbbLljcopMLsa1wpkRfrnY5cLA9djOVfX6VbqYg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=aB3ptCe/zNDbJsMDjakZmD7Ke91qTFnebORgtI3s2TZyUCHwq7cpfmXX+LFhuxUWu
+	 ulyIZvlV2ocijrHh7KEYZbF9g9Z/8HWp7pTC+vGANzFRZdUYgWjFuIW4UIFwSauWa0
+	 W6l7H3w6J+lKIyMGprwX+U0W3oQI68mlDCmo43NI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726436AbgCEMmo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 5 Mar 2020 07:42:44 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:36452 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgCEMmn (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 5 Mar 2020 07:42:43 -0500
-Received: by mail-pg1-f196.google.com with SMTP id d9so2725322pgu.3;
-        Thu, 05 Mar 2020 04:42:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Iv+8lkf0g9FKK4aGWH4FIny5NJBBPfHf9mcxAx6Usno=;
-        b=vU/DIA2JriGM1rc8p00USJ6gdHsZ5BR6i8mFgZBslRFCcZJf3lWyuL/hEcjDcjWXsQ
-         M2mM+hEBtRdN3ib2OsUf706OptuaUPu2sBlX1JBGSSMA1wJeWy34m23puTA8Tn5yND80
-         1V97QccuIFkkgVj55WkNTYelL6uVYDOHPV/qZUn553vCcU/XeBL+skLsNo/9xeucBLnF
-         mrEzTDnqMXzyKdeCKYZsEg03k+cwbZMbh77lG0OaOdRCzW6jK6FEjIdj4aSNEDdiqpDk
-         T6K79tf1w6PoN6Dh2FuW/7i0CZG+n0RGlaqO5mmlJpevaT6qcdesvhnp+ElkHKBKs1nd
-         qy7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Iv+8lkf0g9FKK4aGWH4FIny5NJBBPfHf9mcxAx6Usno=;
-        b=SQtXe60DpvefBlqUXV/ryMch3FJWacrL8qw5vogcEpvVDRJQ8LrgJRCOezMZoyBa58
-         YrfN8HpqApeHiWJn+AHS3sYojQnVPJ+DLvyHxNiPYxFZbjpOGXkEHSfJboBwdJa6gJZh
-         fzdi33SZtOdriMMTQFV5vFQNMvYvTXn081BA4+bqk131r1T4AvTdGlln8y2GMrSdO5ck
-         6WeG0/IDdmxA4jFTVLolVLE6bhq+yG3OoZTSTqBSfYogzNVvkZ6JBVAy+ft7qtFbc4k4
-         usE4Uovx/ExDcTjVJfWSp6ZzXGNnvYUMhczrvhqIbWSF538Qq8Y7a3X68e5yhSNgRXSa
-         DC5w==
-X-Gm-Message-State: ANhLgQ3sazcup6UliCixXGhwNEUAZ8Iyk8O1sh2QpY3hk0iQtfIAGzwG
-        mcMqO4980GLqwmmrN8kEck4=
-X-Google-Smtp-Source: ADFU+vtYWl43QzYXnKwbkZvQID3ixOcFBQpoNs4i8/pbVTarGyppbev2Io0/PMNQniAOpJVFs5jfRg==
-X-Received: by 2002:a63:d244:: with SMTP id t4mr7428763pgi.241.1583412162761;
-        Thu, 05 Mar 2020 04:42:42 -0800 (PST)
-Received: from localhost ([106.51.232.35])
-        by smtp.gmail.com with ESMTPSA id z6sm7412661pfq.39.2020.03.05.04.42.41
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 05 Mar 2020 04:42:42 -0800 (PST)
-Date:   Thu, 5 Mar 2020 18:12:40 +0530
-From:   afzal mohammed <afzal.mohd.ma@gmail.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Ralf Baechle <ralf@linux-mips.org>,
+        id S1727770AbgCEROn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 5 Mar 2020 12:14:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41042 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727764AbgCEROm (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 5 Mar 2020 12:14:42 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC84C24654;
+        Thu,  5 Mar 2020 17:14:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1583428481;
+        bh=9g2gIbbLljcopMLsa1wpkRfrnY5cLA9djOVfX6VbqYg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lXi2eyLm8+51IMgjiFx9RjLWEwcP3KlcOJkkVTzsSLnACEh2rxQjsZ/p4Bj2NLy5g
+         l7UxP+LYSQOjQkU+sJp24H1hU7ObcN3+ajn/J0IaMgZor7sEzwBrOdkiYottghIJkc
+         nmsg2XM0kTgAMueqs+aWUaSkJUT5Ct5683Uy9tMQ=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Paul Burton <paulburton@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        "Maciej W. Rozycki" <macro@linux-mips.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Keguang Zhang <keguang.zhang@gmail.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        John Crispin <john@phrozen.org>
-Subject: Re: [PATCH v3] MIPS: Replace setup_irq() by request_irq()
-Message-ID: <20200305124240.GA4940@afzalpc>
-References: <20200304005549.5832-1-afzal.mohd.ma@gmail.com>
- <20200304203144.GA4323@alpha.franken.de>
- <20200305122950.GA4981@afzalpc>
+        Ralf Baechle <ralf@linux-mips.org>, linux-mips@vger.kernel.org,
+        clang-built-linux@googlegroups.com, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 17/58] MIPS: vdso: Wrap -mexplicit-relocs in cc-option
+Date:   Thu,  5 Mar 2020 12:13:38 -0500
+Message-Id: <20200305171420.29595-17-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200305171420.29595-1-sashal@kernel.org>
+References: <20200305171420.29595-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200305122950.GA4981@afzalpc>
-User-Agent: Mutt/1.9.3 (2018-01-21)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Thomas,
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-On Thu, Mar 05, 2020 at 05:59:50PM +0530, afzal mohammed wrote:
+[ Upstream commit 72cf3b3df423c1bbd8fa1056fed009d3a260f8a9 ]
 
-> For your reference, diff between v4 & v3 below,
+Clang does not support this option and errors out:
 
-i messed up with the diff b/n v4 & v3, correct one as follows, v4 is a
-proper one, only diff generation got messed up.
+clang-11: error: unknown argument: '-mexplicit-relocs'
 
-Regards
-afzal
+Clang does not appear to need this flag like GCC does because the jalr
+check that was added in commit 976c23af3ee5 ("mips: vdso: add build
+time check that no 'jalr t9' calls left") passes just fine with
 
-diff --git a/arch/mips/include/asm/sni.h b/arch/mips/include/asm/sni.h
-index b8653de25ca1..7dfa297ce597 100644
---- a/arch/mips/include/asm/sni.h
-+++ b/arch/mips/include/asm/sni.h
-@@ -11,6 +11,8 @@
- #ifndef __ASM_SNI_H
- #define __ASM_SNI_H
- 
-+#include <linux/irqreturn.h>
-+
- extern unsigned int sni_brd_type;
- 
- #define SNI_BRD_10		   2
-diff --git a/arch/mips/pmcs-msp71xx/msp_time.c b/arch/mips/pmcs-msp71xx/msp_time.c
-index 5f211d2d14ff..baf0da8b4c98 100644
---- a/arch/mips/pmcs-msp71xx/msp_time.c
-+++ b/arch/mips/pmcs-msp71xx/msp_time.c
-@@ -76,7 +76,7 @@ void __init plat_time_init(void)
- 
- unsigned int get_c0_compare_int(void)
- {
--	unsigned log flags = IRQF_PERCPU | IRQF_TIMER | IRQF_SHARED;
-+	unsigned long flags = IRQF_PERCPU | IRQF_TIMER | IRQF_SHARED;
- 
- 	/* MIPS_MT modes may want timer for second VPE */
- 	if ((get_current_vpe()) && !tim_installed) {
-diff --git a/arch/mips/ralink/cevt-rt3352.c b/arch/mips/ralink/cevt-rt3352.c
-index 84013214434a..269d4877d120 100644
---- a/arch/mips/ralink/cevt-rt3352.c
-+++ b/arch/mips/ralink/cevt-rt3352.c
-@@ -89,7 +89,7 @@ static int systick_shutdown(struct clock_event_device *evt)
- 	sdev = container_of(evt, struct systick_device, dev);
- 
- 	if (sdev->irq_requested)
--		free_irq(systick.dev.irq, &systick_irqaction);
-+		free_irq(systick.dev.irq, &systick.dev);
- 	sdev->irq_requested = 0;
- 	iowrite32(0, systick.membase + SYSTICK_CONFIG);
- 
-diff --git a/arch/mips/sni/time.c b/arch/mips/sni/time.c
-index 5254a3a1f37c..240bb68ec247 100644
---- a/arch/mips/sni/time.c
-+++ b/arch/mips/sni/time.c
-@@ -62,14 +62,12 @@ static irqreturn_t a20r_interrupt(int irq, void *dev_id)
- static void __init sni_a20r_timer_setup(void)
- {
- 	struct clock_event_device *cd = &a20r_clockevent_device;
--	struct irqaction *action = &a20r_irqaction;
- 	unsigned int cpu = smp_processor_id();
- 
- 	cd->cpumask		= cpumask_of(cpu);
- 	clockevents_register_device(cd);
--	action->dev_id = cd;
- 	if (request_irq(SNI_A20R_IRQ_TIMER, a20r_interrupt,
--			IRQF_PERCPU | IRQF_TIMER, "a20r-timer", NULL))
-+			IRQF_PERCPU | IRQF_TIMER, "a20r-timer", cd))
- 		pr_err("Failed to register a20r-timer interrupt\n");
- }
- 
+$ make ARCH=mips CC=clang CROSS_COMPILE=mipsel-linux-gnu- malta_defconfig arch/mips/vdso/
+
+even before commit d3f703c4359f ("mips: vdso: fix 'jalr t9' crash in
+vdso code").
+
+-mrelax-pic-calls has been supported since clang 9, which is the
+earliest version that could build a working MIPS kernel, and it is the
+default for clang so just leave it be.
+
+Fixes: d3f703c4359f ("mips: vdso: fix 'jalr t9' crash in vdso code")
+Link: https://github.com/ClangBuiltLinux/linux/issues/890
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Paul Burton <paulburton@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: clang-built-linux@googlegroups.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/mips/vdso/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
+index 08c835d48520b..3dcfdee678fb9 100644
+--- a/arch/mips/vdso/Makefile
++++ b/arch/mips/vdso/Makefile
+@@ -29,7 +29,7 @@ endif
+ cflags-vdso := $(ccflags-vdso) \
+ 	$(filter -W%,$(filter-out -Wa$(comma)%,$(KBUILD_CFLAGS))) \
+ 	-O3 -g -fPIC -fno-strict-aliasing -fno-common -fno-builtin -G 0 \
+-	-mrelax-pic-calls -mexplicit-relocs \
++	-mrelax-pic-calls $(call cc-option, -mexplicit-relocs) \
+ 	-fno-stack-protector -fno-jump-tables -DDISABLE_BRANCH_PROFILING \
+ 	$(call cc-option, -fno-asynchronous-unwind-tables) \
+ 	$(call cc-option, -fno-stack-protector)
+-- 
+2.20.1
+

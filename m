@@ -2,52 +2,51 @@ Return-Path: <SRS0=m+3q=4W=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC97EC3F2D2
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:23:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D96D0C3F2D7
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:24:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A4BD4207FD
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:23:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9F98D20870
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:24:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1583429023;
-	bh=Tkr/6mrr1glEaInkhIb3wjUGtu3WF0DzZoe3urzNmhE=;
+	s=default; t=1583429042;
+	bh=Mc9vkGPDUaDyDV/P8kywreIweeOriVdDe6jvOFFt0pI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=KX2MqA+Ll8d7eU9To/1XnK4dqVFO7we+HsVv0R0Z0rScyyE/SsY6OJd1CEKWRnqbL
-	 r1uReJCfz0eLNKTpV7oib1m9A5oKN5iOqL+juoOW1WfYjqtfkHkiTZmMUwubCv68yN
-	 C6VI44aWJ0cYMRQWy3oM8w+6Fr9hSMUu5skR/yS8=
+	b=j6ULoQXI++uTVzhuJX6EjgeCYLS8XACgilSMlBXQWwo5aTiIsobDVjzZpJ9hTcmfx
+	 nKb8rgVic0Ydl/vIMzJxU6gvr9w2g6/GQd+SBdOhWwNpy6za0SCBv0LHh3MXkI6KqS
+	 6YOdmqy3wlH7lD7M193vF4qZa1zFYQykS+HUwmh4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727174AbgCERNi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 5 Mar 2020 12:13:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39166 "EHLO mail.kernel.org"
+        id S1726992AbgCERNb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 5 Mar 2020 12:13:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727137AbgCERNi (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 5 Mar 2020 12:13:38 -0500
+        id S1726970AbgCERNa (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 5 Mar 2020 12:13:30 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B051321D56;
-        Thu,  5 Mar 2020 17:13:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BD0E2166E;
+        Thu,  5 Mar 2020 17:13:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583428417;
-        bh=Tkr/6mrr1glEaInkhIb3wjUGtu3WF0DzZoe3urzNmhE=;
+        s=default; t=1583428410;
+        bh=Mc9vkGPDUaDyDV/P8kywreIweeOriVdDe6jvOFFt0pI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q2TSkB9w4oyi2LrOeheG+d0zFjonUHScMUqZYYJuflBbYjFe6rPgpPES3LRRxfKxj
-         7pPgivaE9k0sd2/aKhri8iA/AzK8sVi8zBihqNQqE5qRyQTXrkgcKw3pDlmjlX+4r9
-         dS6qkasJvIV8b+K85BiijVzSo1TuGWcMc9KuC9W4=
+        b=WF+mDlne7hBHCooLpVJ/r13CFtlPudKQjfaZRrnQHf4aw6zNoM6OgysjpjlBqWMtN
+         SSHk7F/sXVll10AhsskPh8+Ou+maSKVs7hv+ObEIFLQ7Y7Y9LgkO5JawhiZbcbD4B7
+         V2yhz4RxDhc5Jcg0HzHieA9zxvwdf5hop2uiiEd8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>, linux-mips@vger.kernel.org,
-        clang-built-linux@googlegroups.com, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.5 20/67] MIPS: vdso: Wrap -mexplicit-relocs in cc-option
-Date:   Thu,  5 Mar 2020 12:12:21 -0500
-Message-Id: <20200305171309.29118-20-sashal@kernel.org>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Paul Burton <paulburton@kernel.org>, ralf@linux-mips.org,
+        linux-mips@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 14/67] MIPS: VPE: Fix a double free and a memory leak in 'release_vpe()'
+Date:   Thu,  5 Mar 2020 12:12:15 -0500
+Message-Id: <20200305171309.29118-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200305171309.29118-1-sashal@kernel.org>
 References: <20200305171309.29118-1-sashal@kernel.org>
@@ -60,55 +59,44 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 72cf3b3df423c1bbd8fa1056fed009d3a260f8a9 ]
+[ Upstream commit bef8e2dfceed6daeb6ca3e8d33f9c9d43b926580 ]
 
-Clang does not support this option and errors out:
+Pointer on the memory allocated by 'alloc_progmem()' is stored in
+'v->load_addr'. So this is this memory that should be freed by
+'release_progmem()'.
 
-clang-11: error: unknown argument: '-mexplicit-relocs'
+'release_progmem()' is only a call to 'kfree()'.
 
-Clang does not appear to need this flag like GCC does because the jalr
-check that was added in commit 976c23af3ee5 ("mips: vdso: add build
-time check that no 'jalr t9' calls left") passes just fine with
+With the current code, there is both a double free and a memory leak.
+Fix it by passing the correct pointer to 'release_progmem()'.
 
-$ make ARCH=mips CC=clang CROSS_COMPILE=mipsel-linux-gnu- malta_defconfig arch/mips/vdso/
-
-even before commit d3f703c4359f ("mips: vdso: fix 'jalr t9' crash in
-vdso code").
-
--mrelax-pic-calls has been supported since clang 9, which is the
-earliest version that could build a working MIPS kernel, and it is the
-default for clang so just leave it be.
-
-Fixes: d3f703c4359f ("mips: vdso: fix 'jalr t9' crash in vdso code")
-Link: https://github.com/ClangBuiltLinux/linux/issues/890
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Fixes: e01402b115ccc ("More AP / SP bits for the 34K, the Malta bits and things. Still wants")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: ralf@linux-mips.org
 Cc: linux-mips@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
-Cc: clang-built-linux@googlegroups.com
+Cc: kernel-janitors@vger.kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/vdso/Makefile | 2 +-
+ arch/mips/kernel/vpe.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-index bfb65b2d57c7f..2cf4b6131d88d 100644
---- a/arch/mips/vdso/Makefile
-+++ b/arch/mips/vdso/Makefile
-@@ -29,7 +29,7 @@ endif
- cflags-vdso := $(ccflags-vdso) \
- 	$(filter -W%,$(filter-out -Wa$(comma)%,$(KBUILD_CFLAGS))) \
- 	-O3 -g -fPIC -fno-strict-aliasing -fno-common -fno-builtin -G 0 \
--	-mrelax-pic-calls -mexplicit-relocs \
-+	-mrelax-pic-calls $(call cc-option, -mexplicit-relocs) \
- 	-fno-stack-protector -fno-jump-tables -DDISABLE_BRANCH_PROFILING \
- 	$(call cc-option, -fno-asynchronous-unwind-tables) \
- 	$(call cc-option, -fno-stack-protector)
+diff --git a/arch/mips/kernel/vpe.c b/arch/mips/kernel/vpe.c
+index 6176b9acba950..d0d832ab3d3b8 100644
+--- a/arch/mips/kernel/vpe.c
++++ b/arch/mips/kernel/vpe.c
+@@ -134,7 +134,7 @@ void release_vpe(struct vpe *v)
+ {
+ 	list_del(&v->list);
+ 	if (v->load_addr)
+-		release_progmem(v);
++		release_progmem(v->load_addr);
+ 	kfree(v);
+ }
+ 
 -- 
 2.20.1
 

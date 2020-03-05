@@ -2,122 +2,115 @@ Return-Path: <SRS0=m+3q=4W=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-5.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBF9EC3F2D9
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:24:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35637C3F2D2
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:53:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9359621556
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:24:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1583429049;
-	bh=kJdYtdkXoUJqBCbsGNBYogiLr8GIFp4ngkilDarlmMY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=Q4H908fPYGlVc4l5VV2ip4yb9wpU+2lqQRgCEXYGFQd7lpVfO13cIR1L06XEc4FKR
-	 lLLVPVryLKdaQelepPVISQrHq/A937QvZVpOjMFvKz4C/HTlwgsS7JhOIDFV7ntbla
-	 T8v/9YyF8ARSAo7LZU3PqC/WZAssDNl6UavTS5e8=
+	by mail.kernel.org (Postfix) with ESMTP id 0BE812146E
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:53:02 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="g+HMjmto"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727059AbgCERYI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 5 Mar 2020 12:24:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726565AbgCERNZ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 5 Mar 2020 12:13:25 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC8AB21556;
-        Thu,  5 Mar 2020 17:13:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583428403;
-        bh=kJdYtdkXoUJqBCbsGNBYogiLr8GIFp4ngkilDarlmMY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e8ZeQqPe8yLy8Kpys082g7lf12klGpp12kfomwXWEVW+HLPJvnL/E7ca+LQM2FYSN
-         CPgW+GDoROKqhtstImWRaFy1VpVoCW5/IZfu2gjbTFDx9Qoz5F3bI3QVBTAyrdt6oh
-         U+YMKSdMx5krzFEDL65L5P1oEE+GTvX6yG4f14Xw=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Victor Kamensky <kamensky@cisco.com>,
-        Bruce Ashfield <bruce.ashfield@gmail.com>,
+        id S1726173AbgCERxB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 5 Mar 2020 12:53:01 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:50725 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbgCERxB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 5 Mar 2020 12:53:01 -0500
+Received: by mail-wm1-f68.google.com with SMTP id a5so7381125wmb.0
+        for <linux-mips@vger.kernel.org>; Thu, 05 Mar 2020 09:53:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KcyqRvrpWHyXsg3I8LCAXPYVgW36m1Cq/+UDOpNaVeo=;
+        b=g+HMjmtozjjhSxVZrLc4ZlEqwlIP5Yg+vjIf4mOfH206Navl+swLn6iWKn2xtVanr3
+         vRXFfih6VU0JY+fNCbU4QMuffm+ogWSlbru2ro0rmbE+QNXF5ugQMzsR2kbwMFIVO0Ip
+         97oUvOGquM3T+mg7eKjAkqifk1m5rOaGxYX5ycvl1JqIszq+O1eI2Mrzefx7aImTs75r
+         3S7kIANr8koPWohZ7gC1A1L9lDQ/wOHWx50TQTTVPVYruQvhaSH7o3kHyqEhUitlEhDV
+         o6D92P7M6KhG8O09XC7GWWB58m1XVkuE0Hm1VRWOh9d9SI6BHDnyGgyJpH7jpF3G0+e7
+         j6lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KcyqRvrpWHyXsg3I8LCAXPYVgW36m1Cq/+UDOpNaVeo=;
+        b=Q1KetuwjyhokMES9Seh4UmKs2fGby/nFibY3kMEnRnu17agxHVhq0Xom7Or5GfqgGK
+         2BlFGQMaapRi0rS2Yziaru9cLXkALQc1LDy0ZU1dpAJKIFwbSE4ue88z8/WO5+aXY2p7
+         3FOFe1mnaKR3qOedEVXY/vEC9WyDeNx9dTxrhw5P8JbIJRr51Xuegy8tvFyON4O1oaHd
+         q/vDQMrbnmP7SC2swzqzFaGhMFhG//ky2GxR7+N9Vjp1LV+ZanCh2JS9gEzYMIVnBT32
+         J+eBGuaZKz2Vn9lArCl+xxSUSa1QfiCciP+Wj//fECloMGuxRt5cFHc4PE/PmUsi8ECp
+         3LUQ==
+X-Gm-Message-State: ANhLgQ3xG3PBSAvq8qRqbVng6+TeFHIkwkjCCt5ZSMgjn1FCLZ11uDBL
+        sOa/R6npVwCpRLRuh/jkBwNl3w==
+X-Google-Smtp-Source: ADFU+vuW+uectjdhI4kDRkzGukNNpiJGlsIkqt4eAKS4/2+Q77zLj1vuhdIE1wBz2TDMOMKBN/x3IQ==
+X-Received: by 2002:a7b:cb42:: with SMTP id v2mr11012702wmj.170.1583430779468;
+        Thu, 05 Mar 2020 09:52:59 -0800 (PST)
+Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.googlemail.com with ESMTPSA id v14sm6568362wrr.34.2020.03.05.09.52.57
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Mar 2020 09:52:58 -0800 (PST)
+Subject: Re: [PATCH v8 3/7] Bindings: nvmem: add bindings for JZ4780 efuse
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Mathieu Malaterre <malat@debian.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
         Paul Burton <paulburton@kernel.org>,
-        linux-mips@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
-        James Hogan <jhogan@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        richard.purdie@linuxfoundation.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.5 10/67] mips: vdso: fix 'jalr t9' crash in vdso code
-Date:   Thu,  5 Mar 2020 12:12:11 -0500
-Message-Id: <20200305171309.29118-10-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200305171309.29118-1-sashal@kernel.org>
-References: <20200305171309.29118-1-sashal@kernel.org>
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com
+References: <cover.1582905653.git.hns@goldelico.com>
+ <37d3b9e4c60692215fff0e75a78ac1e7792aaf75.1582905653.git.hns@goldelico.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <8d507b75-1c06-b38e-3b7a-8422f63a4959@linaro.org>
+Date:   Thu, 5 Mar 2020 17:52:57 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <37d3b9e4c60692215fff0e75a78ac1e7792aaf75.1582905653.git.hns@goldelico.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Victor Kamensky <kamensky@cisco.com>
 
-[ Upstream commit d3f703c4359ff06619b2322b91f69710453e6b6d ]
 
-Observed that when kernel is built with Yocto mips64-poky-linux-gcc,
-and mips64-poky-linux-gnun32-gcc toolchain, resulting vdso contains
-'jalr t9' instructions in its code and since in vdso case nobody
-sets GOT table code crashes when instruction reached. On other hand
-observed that when kernel is built mips-poky-linux-gcc toolchain, the
-same 'jalr t9' instruction are replaced with PC relative function
-calls using 'bal' instructions.
+On 28/02/2020 16:00, H. Nikolaus Schaller wrote:
+> From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+> 
+> This patch brings support for the JZ4780 efuse. Currently it only exposes
+> a read only access to the entire 8K bits efuse memory.
+> 
+> Tested-by: Mathieu Malaterre <malat@debian.org>
+> Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+> Signed-off-by: Mathieu Malaterre <malat@debian.org>
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> [converted to yaml]
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> ---
+>   .../bindings/nvmem/ingenic,jz4780-efuse.yaml  | 45 +++++++++++++++++++
+>   1 file changed, 45 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/nvmem/ingenic,jz4780-efuse.yaml
 
-The difference boils down to -mrelax-pic-calls and -mexplicit-relocs
-gcc options that gets different default values depending on gcc
-target triplets and corresponding binutils. -mrelax-pic-calls got
-enabled by default only in mips-poky-linux-gcc case. MIPS binutils
-ld relies on R_MIPS_JALR relocation to convert 'jalr t9' into 'bal'
-and such relocation is generated only if -mrelax-pic-calls option
-is on.
-
-Please note 'jalr t9' conversion to 'bal' can happen only to static
-functions. These static PIC calls use mips local GOT entries that
-are supposed to be filled with start of DSO value by run-time linker
-(missing in VDSO case) and they do not have dynamic relocations.
-Global mips GOT entries must have dynamic relocations and they should
-be prevented by cmd_vdso_check Makefile rule.
-
-Solution call out -mrelax-pic-calls and -mexplicit-relocs options
-explicitly while compiling MIPS vdso code. That would get correct
-and consistent between different toolchains behaviour.
-
-Reported-by: Bruce Ashfield <bruce.ashfield@gmail.com>
-Signed-off-by: Victor Kamensky <kamensky@cisco.com>
-Signed-off-by: Paul Burton <paulburton@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <jhogan@kernel.org>
-Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc: richard.purdie@linuxfoundation.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/mips/vdso/Makefile | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-index e05938997e696..96afd73c94e8a 100644
---- a/arch/mips/vdso/Makefile
-+++ b/arch/mips/vdso/Makefile
-@@ -29,6 +29,7 @@ endif
- cflags-vdso := $(ccflags-vdso) \
- 	$(filter -W%,$(filter-out -Wa$(comma)%,$(KBUILD_CFLAGS))) \
- 	-O3 -g -fPIC -fno-strict-aliasing -fno-common -fno-builtin -G 0 \
-+	-mrelax-pic-calls -mexplicit-relocs \
- 	-fno-stack-protector -fno-jump-tables -DDISABLE_BRANCH_PROFILING \
- 	$(call cc-option, -fno-asynchronous-unwind-tables) \
- 	$(call cc-option, -fno-stack-protector)
--- 
-2.20.1
-
+Applied thanks,
+--srini

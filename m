@@ -2,52 +2,55 @@ Return-Path: <SRS0=m+3q=4W=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B543C3F2D7
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:21:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC97EC3F2D2
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:23:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E92E320637
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:21:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A4BD4207FD
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Mar 2020 17:23:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1583428895;
-	bh=57I+7quQKDQmsEDDJITB3L2NMIr5sFzOXq0CxdhIvnc=;
+	s=default; t=1583429023;
+	bh=Tkr/6mrr1glEaInkhIb3wjUGtu3WF0DzZoe3urzNmhE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=ie+PNrHUSRSIbtnDnwz5lP3uqnIkFQf1fK/veFOJVoN3Z8Emfz4Lo5PTWi8+IIYST
-	 KgHG2SZcFg4EpYyl/pmPT0Lba16ijt+ng2TLAbhTgDKPVZJI7WuNWEo9qphHeJIOCJ
-	 xZXyoC/8duojMLoapnuClY5fIx64aQJcO+OT6hRk=
+	b=KX2MqA+Ll8d7eU9To/1XnK4dqVFO7we+HsVv0R0Z0rScyyE/SsY6OJd1CEKWRnqbL
+	 r1uReJCfz0eLNKTpV7oib1m9A5oKN5iOqL+juoOW1WfYjqtfkHkiTZmMUwubCv68yN
+	 C6VI44aWJ0cYMRQWy3oM8w+6Fr9hSMUu5skR/yS8=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727726AbgCERV1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 5 Mar 2020 12:21:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40808 "EHLO mail.kernel.org"
+        id S1727174AbgCERNi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 5 Mar 2020 12:13:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727720AbgCEROe (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 5 Mar 2020 12:14:34 -0500
+        id S1727137AbgCERNi (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 5 Mar 2020 12:13:38 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A99DB24654;
-        Thu,  5 Mar 2020 17:14:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B051321D56;
+        Thu,  5 Mar 2020 17:13:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583428474;
-        bh=57I+7quQKDQmsEDDJITB3L2NMIr5sFzOXq0CxdhIvnc=;
+        s=default; t=1583428417;
+        bh=Tkr/6mrr1glEaInkhIb3wjUGtu3WF0DzZoe3urzNmhE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SUuRd9GKlAEfk5asN8JlZUM3GguoNJftarQsTI4MFpO7cAq4g9P2BtR8vajHzx+wN
-         YHvz6hsvtgldgyXJM8XGNhpfihVVw4vJcAWsZDoCpBdJAXtQBZ53yvLon9t+FLNQhi
-         B0vnifldyGDEpJaIEr8rhFC8tV9lMHvu9nBSgYmY=
+        b=q2TSkB9w4oyi2LrOeheG+d0zFjonUHScMUqZYYJuflBbYjFe6rPgpPES3LRRxfKxj
+         7pPgivaE9k0sd2/aKhri8iA/AzK8sVi8zBihqNQqE5qRyQTXrkgcKw3pDlmjlX+4r9
+         dS6qkasJvIV8b+K85BiijVzSo1TuGWcMc9KuC9W4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Paul Burton <paulburton@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 11/58] MIPS: Disable VDSO time functionality on microMIPS
-Date:   Thu,  5 Mar 2020 12:13:32 -0500
-Message-Id: <20200305171420.29595-11-sashal@kernel.org>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>, linux-mips@vger.kernel.org,
+        clang-built-linux@googlegroups.com, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 20/67] MIPS: vdso: Wrap -mexplicit-relocs in cc-option
+Date:   Thu,  5 Mar 2020 12:12:21 -0500
+Message-Id: <20200305171309.29118-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200305171420.29595-1-sashal@kernel.org>
-References: <20200305171420.29595-1-sashal@kernel.org>
+In-Reply-To: <20200305171309.29118-1-sashal@kernel.org>
+References: <20200305171309.29118-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -57,62 +60,55 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Paul Burton <paulburton@kernel.org>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-[ Upstream commit 07015d7a103c4420b69a287b8ef4d2535c0f4106 ]
+[ Upstream commit 72cf3b3df423c1bbd8fa1056fed009d3a260f8a9 ]
 
-A check we're about to add to pick up on function calls that depend on
-bogus use of the GOT in the VDSO picked up on instances of such function
-calls in microMIPS builds. Since the code appears genuinely problematic,
-and given the relatively small amount of use & testing that microMIPS
-sees, go ahead & disable the VDSO for microMIPS builds.
+Clang does not support this option and errors out:
 
+clang-11: error: unknown argument: '-mexplicit-relocs'
+
+Clang does not appear to need this flag like GCC does because the jalr
+check that was added in commit 976c23af3ee5 ("mips: vdso: add build
+time check that no 'jalr t9' calls left") passes just fine with
+
+$ make ARCH=mips CC=clang CROSS_COMPILE=mipsel-linux-gnu- malta_defconfig arch/mips/vdso/
+
+even before commit d3f703c4359f ("mips: vdso: fix 'jalr t9' crash in
+vdso code").
+
+-mrelax-pic-calls has been supported since clang 9, which is the
+earliest version that could build a working MIPS kernel, and it is the
+default for clang so just leave it be.
+
+Fixes: d3f703c4359f ("mips: vdso: fix 'jalr t9' crash in vdso code")
+Link: https://github.com/ClangBuiltLinux/linux/issues/890
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
 Signed-off-by: Paul Burton <paulburton@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: clang-built-linux@googlegroups.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/vdso/Makefile | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ arch/mips/vdso/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-index 3fa4bbe1bae53..b6b1eb638fb14 100644
+index bfb65b2d57c7f..2cf4b6131d88d 100644
 --- a/arch/mips/vdso/Makefile
 +++ b/arch/mips/vdso/Makefile
-@@ -48,6 +48,8 @@ endif
- 
- CFLAGS_REMOVE_vgettimeofday.o = -pg
- 
-+DISABLE_VDSO := n
-+
- #
- # For the pre-R6 code in arch/mips/vdso/vdso.h for locating
- # the base address of VDSO, the linker will emit a R_MIPS_PC32
-@@ -61,11 +63,24 @@ CFLAGS_REMOVE_vgettimeofday.o = -pg
- ifndef CONFIG_CPU_MIPSR6
-   ifeq ($(call ld-ifversion, -lt, 225000000, y),y)
-     $(warning MIPS VDSO requires binutils >= 2.25)
--    obj-vdso-y := $(filter-out vgettimeofday.o, $(obj-vdso-y))
--    ccflags-vdso += -DDISABLE_MIPS_VDSO
-+    DISABLE_VDSO := y
-   endif
- endif
- 
-+#
-+# GCC (at least up to version 9.2) appears to emit function calls that make use
-+# of the GOT when targeting microMIPS, which we can't use in the VDSO due to
-+# the lack of relocations. As such, we disable the VDSO for microMIPS builds.
-+#
-+ifdef CONFIG_CPU_MICROMIPS
-+  DISABLE_VDSO := y
-+endif
-+
-+ifeq ($(DISABLE_VDSO),y)
-+  obj-vdso-y := $(filter-out vgettimeofday.o, $(obj-vdso-y))
-+  ccflags-vdso += -DDISABLE_MIPS_VDSO
-+endif
-+
- # VDSO linker flags.
- VDSO_LDFLAGS := \
- 	-Wl,-Bsymbolic -Wl,--no-undefined -Wl,-soname=linux-vdso.so.1 \
+@@ -29,7 +29,7 @@ endif
+ cflags-vdso := $(ccflags-vdso) \
+ 	$(filter -W%,$(filter-out -Wa$(comma)%,$(KBUILD_CFLAGS))) \
+ 	-O3 -g -fPIC -fno-strict-aliasing -fno-common -fno-builtin -G 0 \
+-	-mrelax-pic-calls -mexplicit-relocs \
++	-mrelax-pic-calls $(call cc-option, -mexplicit-relocs) \
+ 	-fno-stack-protector -fno-jump-tables -DDISABLE_BRANCH_PROFILING \
+ 	$(call cc-option, -fno-asynchronous-unwind-tables) \
+ 	$(call cc-option, -fno-stack-protector)
 -- 
 2.20.1
 

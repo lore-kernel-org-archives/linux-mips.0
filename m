@@ -2,125 +2,82 @@ Return-Path: <SRS0=UYFZ=4X=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15D98C10F26
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:34:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75016C10DCE
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:49:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EAA53208C3
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:34:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 445BB2084E
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:49:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727138AbgCFNdE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 6 Mar 2020 08:33:04 -0500
-Received: from foss.arm.com ([217.140.110.172]:33358 "EHLO foss.arm.com"
+        id S1726240AbgCFNtL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 6 Mar 2020 08:49:11 -0500
+Received: from elvis.franken.de ([193.175.24.41]:53471 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727234AbgCFNdD (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 6 Mar 2020 08:33:03 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DC9E81063;
-        Fri,  6 Mar 2020 05:33:02 -0800 (PST)
-Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2794E3F6CF;
-        Fri,  6 Mar 2020 05:33:00 -0800 (PST)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        clang-built-linux@googlegroups.com, x86@kernel.org
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Paul Burton <paul.burton@mips.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mark Salyzyn <salyzyn@android.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrei Vagin <avagin@openvz.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: [PATCH v2 03/20] linux/limits.h: Extract common header for vDSO
-Date:   Fri,  6 Mar 2020 13:32:25 +0000
-Message-Id: <20200306133242.26279-4-vincenzo.frascino@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200306133242.26279-1-vincenzo.frascino@arm.com>
-References: <20200306133242.26279-1-vincenzo.frascino@arm.com>
+        id S1726090AbgCFNtK (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 6 Mar 2020 08:49:10 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jADLf-0006oD-00; Fri, 06 Mar 2020 14:49:07 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 1F769C0F60; Fri,  6 Mar 2020 14:48:58 +0100 (CET)
+Date:   Fri, 6 Mar 2020 14:48:58 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     YunQiang Su <syq@debian.org>
+Cc:     linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH v2] Use ELF_BASE_PLATFORM to pass ISA level
+Message-ID: <20200306134858.GA11459@alpha.franken.de>
+References: <20200302022209.82874-1-syq@debian.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200302022209.82874-1-syq@debian.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The vDSO library should only include the necessary headers required for
-a userspace library (UAPI and a minimal set of kernel headers). To make
-this possible it is necessary to isolate from the kernel headers the
-common parts that are strictly necessary to build the library.
+On Mon, Mar 02, 2020 at 10:22:10AM +0800, YunQiang Su wrote:
+> Some userland application/program runtime/dynamic loaded need to
+> know about the current ISA level to use the best runtime.
+> While kernel doesn't provides this info.
+> 
+> ELF_PLATFORM only provides some info about the CPU, with very few info,
+> for example, the value is "mips" for both 24Kc and P6600.
+> 
+> Currently ELF_BASE_PLATFORM is not used by MIPS (only by powerpc).
+> So we cant set its value as:
+>   mips2, mips3, mips4, mips5,
+>   mips32, mips32r2, mips32r6
+>   mips64, mips64r2, mips64r6
+> Then in userland, we can get it by:
+>   getauxval(AT_BASE_PLATFORM)
+> 
+> The only problem is that it seems has different defination than ppc:
+>   on ppc, it is the mircoarchitecture
+> while now we use it as ISA level on MIPS.
 
-Split limits.h into linux and common headers to make the latter suitable
-for inclusion in the vDSO library.
+while I see how this could be used, it feels incomplete to me. What
+about implemented ASEs ? Can't you just use information already present
+in /proc/cpuinfo ?
 
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
----
- include/common/limits.h | 18 ++++++++++++++++++
- include/linux/limits.h  | 13 +------------
- 2 files changed, 19 insertions(+), 12 deletions(-)
- create mode 100644 include/common/limits.h
+> diff --git a/arch/mips/include/asm/elf.h b/arch/mips/include/asm/elf.h
+> index f8f44b1a6cbb..5aa29ced6970 100644
+> --- a/arch/mips/include/asm/elf.h
+> +++ b/arch/mips/include/asm/elf.h
+> @@ -2113,6 +2130,7 @@ EXPORT_SYMBOL(__ua_limit);
+>  
+>  const char *__cpu_name[NR_CPUS];
+>  const char *__elf_platform;
+> +const char *__elf_base_platform = NULL;
 
-diff --git a/include/common/limits.h b/include/common/limits.h
-new file mode 100644
-index 000000000000..587269010add
---- /dev/null
-+++ b/include/common/limits.h
-@@ -0,0 +1,18 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __COMMON_LIMITS_H
-+#define __COMMON_LIMITS_H
-+
-+#define USHRT_MAX	((unsigned short)~0U)
-+#define SHRT_MAX	((short)(USHRT_MAX >> 1))
-+#define SHRT_MIN	((short)(-SHRT_MAX - 1))
-+#define INT_MAX		((int)(~0U >> 1))
-+#define INT_MIN		(-INT_MAX - 1)
-+#define UINT_MAX	(~0U)
-+#define LONG_MAX	((long)(~0UL >> 1))
-+#define LONG_MIN	(-LONG_MAX - 1)
-+#define ULONG_MAX	(~0UL)
-+#define LLONG_MAX	((long long)(~0ULL >> 1))
-+#define LLONG_MIN	(-LLONG_MAX - 1)
-+#define ULLONG_MAX	(~0ULL)
-+
-+#endif /* __COMMON_LIMITS_H */
-diff --git a/include/linux/limits.h b/include/linux/limits.h
-index 76afcd24ff8c..ac20d2b2edd9 100644
---- a/include/linux/limits.h
-+++ b/include/linux/limits.h
-@@ -4,19 +4,8 @@
- 
- #include <uapi/linux/limits.h>
- #include <linux/types.h>
-+#include <common/limits.h>
- 
--#define USHRT_MAX	((unsigned short)~0U)
--#define SHRT_MAX	((short)(USHRT_MAX >> 1))
--#define SHRT_MIN	((short)(-SHRT_MAX - 1))
--#define INT_MAX		((int)(~0U >> 1))
--#define INT_MIN		(-INT_MAX - 1)
--#define UINT_MAX	(~0U)
--#define LONG_MAX	((long)(~0UL >> 1))
--#define LONG_MIN	(-LONG_MAX - 1)
--#define ULONG_MAX	(~0UL)
--#define LLONG_MAX	((long long)(~0ULL >> 1))
--#define LLONG_MIN	(-LLONG_MAX - 1)
--#define ULLONG_MAX	(~0ULL)
- #define SIZE_MAX	(~(size_t)0)
- #define PHYS_ADDR_MAX	(~(phys_addr_t)0)
- 
+no need to init static data with 0
+
+Thomas.
+
 -- 
-2.25.1
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

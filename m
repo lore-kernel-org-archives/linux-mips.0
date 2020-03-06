@@ -4,27 +4,27 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F266C10F00
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 12:18:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9855DC10F00
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 12:18:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 603EB20866
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 12:18:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7B7152166E
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 12:18:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727141AbgCFMSX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 6 Mar 2020 07:18:23 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:35024 "EHLO
+        id S1726891AbgCFMSD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 6 Mar 2020 07:18:03 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:35018 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726646AbgCFMSD (ORCPT
+        with ESMTP id S1726240AbgCFMSD (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Fri, 6 Mar 2020 07:18:03 -0500
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id D7EE7803079F;
-        Fri,  6 Mar 2020 12:11:35 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 314C88030794;
+        Fri,  6 Mar 2020 12:11:08 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id J3UrBVqSDUAw; Fri,  6 Mar 2020 15:11:35 +0300 (MSK)
+        with ESMTP id iVZeer33sGnc; Fri,  6 Mar 2020 15:11:07 +0300 (MSK)
 From:   <Sergey.Semin@baikalelectronics.ru>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
@@ -33,15 +33,15 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Paul Burton <paulburton@kernel.org>,
         Ralf Baechle <ralf@linux-mips.org>,
         <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 10/22] mips: Add CP0 Write Merge config support
-Date:   Fri, 6 Mar 2020 15:08:34 +0300
+Subject: [PATCH 06/22] mips: cm: Add L2 ECC/parity errors reporting
+Date:   Fri, 6 Mar 2020 15:08:30 +0300
 In-Reply-To: <20200306120847.32690-1-Sergey.Semin@baikalelectronics.ru>
 References: <20200306120847.32690-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
-Message-Id: <20200306121135.D7EE7803079F@mail.baikalelectronics.ru>
+Message-Id: <20200306121108.314C88030794@mail.baikalelectronics.ru>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
@@ -49,22 +49,12 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-CP0 config register may indicate whether write-through merging
-is allowed. Currently there are two types of the merging available:
-SysAD Valid and Full modes. Whether each of them are supported by
-the core is implementation dependent. Moreover whether the ability
-to change the mode also depends on the chip family instance. Taking
-into account all of this we created a dedicated mm_config() method
-to detect and enable merging if it's supported. It is called for
-MIPS-type processors at CPU-probe stage and attempts to detect whether
-the write merging is available. If it's known to be supported and
-switchable, then switch on the full mode. Otherwise just perform the
-CP0.Config.MM field analysis.
-
-In addition there are platforms like InterAptiv/ProAptiv, which do have
-the MM bit field set by default, but having write-through cacheing
-unsupported makes write-merging also unsupported. In this case we just
-ignore the MM field value.
+According to the MIPS32 InterAptiv software manual error codes 24 - 26
+of CM2 indicate L2 ECC/parity error with switching to a corresponding
+errors info fields. This patch provides these errors parsing code,
+which handles the read/write uncorrectable and correctable ECC/parity
+errors, and prints instruction causing the fault, RAM array type, cache
+way/dword and syndrome associated with the faulty data.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
@@ -72,126 +62,103 @@ Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: Paul Burton <paulburton@kernel.org>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 ---
- arch/mips/include/asm/cpu-features.h |  8 +++++
- arch/mips/include/asm/cpu.h          |  4 ++-
- arch/mips/include/asm/mipsregs.h     |  3 ++
- arch/mips/kernel/cpu-probe.c         | 48 ++++++++++++++++++++++++++++
- 4 files changed, 62 insertions(+), 1 deletion(-)
+ arch/mips/kernel/mips-cm.c | 62 ++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 60 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
-index 7e22b9c1e279..2b818f2036d0 100644
---- a/arch/mips/include/asm/cpu-features.h
-+++ b/arch/mips/include/asm/cpu-features.h
-@@ -630,6 +630,14 @@
- # endif
- #endif
+diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
+index 361bfc91a0e6..f60af512c877 100644
+--- a/arch/mips/kernel/mips-cm.c
++++ b/arch/mips/kernel/mips-cm.c
+@@ -114,6 +114,48 @@ static char *cm2_core[8] = {
+ 	"Exclusive/OK", "Exclusive/Data"
+ };
  
-+#ifndef cpu_has_mm_sysad
-+# define cpu_has_mm_sysad	__opt(MIPS_CPU_MM_SYSAD)
-+#endif
++static char *cm2_l2_type[4] = {
++	[0x0] = "None",
++	[0x1] = "Tag RAM single/double ECC error",
++	[0x2] = "Data RAM single/double ECC error",
++	[0x3] = "WS RAM uncorrectable dirty parity"
++};
 +
-+#ifndef cpu_has_mm_full
-+# define cpu_has_mm_full	__opt(MIPS_CPU_MM_FULL)
-+#endif
++static char *cm2_l2_instr[32] = {
++	[0x00] = "L2_NOP",
++	[0x01] = "L2_ERR_CORR",
++	[0x02] = "L2_TAG_INV",
++	[0x03] = "L2_WS_CLEAN",
++	[0x04] = "L2_RD_MDYFY_WR",
++	[0x05] = "L2_WS_MRU",
++	[0x06] = "L2_EVICT_LN2",
++	[0x07] = "0x07",
++	[0x08] = "L2_EVICT",
++	[0x09] = "L2_REFL",
++	[0x0a] = "L2_RD",
++	[0x0b] = "L2_WR",
++	[0x0c] = "L2_EVICT_MRU",
++	[0x0d] = "L2_SYNC",
++	[0x0e] = "L2_REFL_ERR",
++	[0x0f] = "0x0f",
++	[0x10] = "L2_INDX_WB_INV",
++	[0x11] = "L2_INDX_LD_TAG",
++	[0x12] = "L2_INDX_ST_TAG",
++	[0x13] = "L2_INDX_ST_DATA",
++	[0x14] = "L2_INDX_ST_ECC",
++	[0x15] = "0x15",
++	[0x16] = "0x16",
++	[0x17] = "0x17",
++	[0x18] = "L2_FTCH_AND_LCK",
++	[0x19] = "L2_HIT_INV",
++	[0x1a] = "L2_HIT_WB_INV",
++	[0x1b] = "L2_HIT_WB",
++	[0x1c] = "0x1c",
++	[0x1d] = "0x1d",
++	[0x1e] = "0x1e",
++	[0x1f] = "0x1f"
++};
 +
- /*
-  * Guest capabilities
-  */
-diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-index 9bae99b568c9..191529ef0d05 100644
---- a/arch/mips/include/asm/cpu.h
-+++ b/arch/mips/include/asm/cpu.h
-@@ -417,7 +417,9 @@ enum cpu_type_enum {
- #define MIPS_CPU_MT_PER_TC_PERF_COUNTERS \
- 				BIT_ULL(56)	/* CPU has perf counters implemented per TC (MIPSMT ASE) */
- #define MIPS_CPU_MMID		BIT_ULL(57)	/* CPU supports MemoryMapIDs */
--#define MIPS_CPU_MAC_2008_ONLY	BIT_ULL(58)	/* CPU Only support MAC2008 Fused multiply-add instruction */
-+#define MIPS_CPU_MM_SYSAD	BIT_ULL(58)	/* CPU supports write-through SysAD Valid merge */
-+#define MIPS_CPU_MM_FULL	BIT_ULL(59)	/* CPU supports write-through full merge */
-+#define MIPS_CPU_MAC_2008_ONLY	BIT_ULL(60)	/* CPU Only support MAC2008 Fused multiply-add instruction */
+ static char *cm2_causes[32] = {
+ 	"None", "GC_WR_ERR", "GC_RD_ERR", "COH_WR_ERR",
+ 	"COH_RD_ERR", "MMIO_WR_ERR", "MMIO_RD_ERR", "0x07",
+@@ -121,7 +163,7 @@ static char *cm2_causes[32] = {
+ 	"0x0c", "0x0d", "0x0e", "0x0f",
+ 	"0x10", "INTVN_WR_ERR", "INTVN_RD_ERR", "0x13",
+ 	"0x14", "0x15", "0x16", "0x17",
+-	"0x18", "0x19", "0x1a", "0x1b",
++	"L2_RD_UNCORR", "L2_WR_UNCORR", "L2_CORR", "0x1b",
+ 	"0x1c", "0x1d", "0x1e", "0x1f"
+ };
  
- /*
-  * CPU ASE encodings
-diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index 796fe47cfd17..b1c761279b13 100644
---- a/arch/mips/include/asm/mipsregs.h
-+++ b/arch/mips/include/asm/mipsregs.h
-@@ -563,6 +563,9 @@
- #define MIPS_CONF_MT_FTLB	(_ULCAST_(4) <<  7)
- #define MIPS_CONF_AR		(_ULCAST_(7) << 10)
- #define MIPS_CONF_AT		(_ULCAST_(3) << 13)
-+#define MIPS_CONF_MM		(_ULCAST_(3) << 17)
-+#define MIPS_CONF_MM_SYSAD	(_ULCAST_(1) << 17)
-+#define MIPS_CONF_MM_FULL	(_ULCAST_(2) << 17)
- #define MIPS_CONF_M		(_ULCAST_(1) << 31)
- 
- /*
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index c912277fa27a..ffe8956b7981 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -650,6 +650,52 @@ static int set_ftlb_enable(struct cpuinfo_mips *c, enum ftlb_flags flags)
- 	return 0;
- }
- 
-+static int mm_config(struct cpuinfo_mips *c)
-+{
-+	unsigned int config0, update, mm;
+@@ -360,7 +402,7 @@ void mips_cm_error_report(void)
+ 				 "CCA=%lu TR=%s MCmd=%s STag=%lu "
+ 				 "SPort=%lu\n", cca_bits, cm2_tr[tr_bits],
+ 				 cm2_cmd[cmd_bits], stag_bits, sport_bits);
+-		} else {
++		} else if (cause < 24) {
+ 			/* glob state & sresp together */
+ 			unsigned long c3_bits = (cm_error >> 18) & 7;
+ 			unsigned long c2_bits = (cm_error >> 15) & 7;
+@@ -377,6 +419,22 @@ void mips_cm_error_report(void)
+ 				 cm2_core[c1_bits], cm2_core[c0_bits],
+ 				 sc_bit ? "True" : "False",
+ 				 cm2_cmd[cmd_bits], sport_bits);
++		} else {
++			unsigned long muc_bit = (cm_error >> 23) & 1;
++			unsigned long ins_bits = (cm_error >> 18) & 0x1f;
++			unsigned long arr_bits = (cm_error >> 16) & 3;
++			unsigned long dw_bits = (cm_error >> 12) & 15;
++			unsigned long way_bits = (cm_error >> 9) & 7;
++			unsigned long mway_bit = (cm_error >> 8) & 1;
++			unsigned long syn_bits = (cm_error >> 0) & 0xFF;
 +
-+	config0 = read_c0_config();
-+	mm = config0 & MIPS_CONF_MM;
-+
-+	/*
-+	 * It's implementation dependent what type of write-merge is supported
-+	 * and whether it can be enabled/disabled. If it is settable lets make
-+	 * the merging allowed by default. Some platforms might have
-+	 * write-through caching unsupported. In this case just ignore the
-+	 * CP0.Config.MM bit field value.
-+	 */
-+	switch (c->cputype) {
-+	case CPU_24K:
-+	case CPU_34K:
-+	case CPU_74K:
-+	case CPU_P5600:
-+	case CPU_P6600:
-+		c->options |= MIPS_CPU_MM_FULL;
-+		update = MIPS_CONF_MM_FULL;
-+		break;
-+	case CPU_1004K:
-+	case CPU_1074K:
-+	case CPU_INTERAPTIV:
-+	case CPU_PROAPTIV:
-+		mm = 0;
-+		/* fall through */
-+	default:
-+		update = 0;
-+		break;
-+	}
-+
-+	if (update) {
-+		config0 = (config0 & ~MIPS_CONF_MM) | update;
-+		write_c0_config(config0);
-+	} else if (mm == MIPS_CONF_MM_SYSAD) {
-+		c->options |= MIPS_CPU_MM_SYSAD;
-+	} else if (mm == MIPS_CONF_MM_FULL) {
-+		c->options |= MIPS_CPU_MM_FULL;
-+	}
-+
-+	return 0;
-+}
-+
- static inline unsigned int decode_config0(struct cpuinfo_mips *c)
- {
- 	unsigned int config0;
-@@ -1741,6 +1787,8 @@ static inline void cpu_probe_mips(struct cpuinfo_mips *c, unsigned int cpu)
- 
- 	spram_config();
- 
-+	mm_config(c);
-+
- 	switch (__get_cpu_type(c->cputype)) {
- 	case CPU_M5150:
- 	case CPU_P5600:
++			snprintf(buf, sizeof(buf),
++				 "Type=%s%s Instr=%s DW=%lu Way=%lu "
++				 "MWay=%s Syndrome=0x%02lx",
++				 muc_bit ? "Multi-UC " : "",
++				 cm2_l2_type[arr_bits],
++				 cm2_l2_instr[ins_bits], dw_bits, way_bits,
++				 mway_bit ? "True" : "False", syn_bits);
+ 		}
+ 		pr_err("CM_ERROR=%08llx %s <%s>\n", cm_error,
+ 		       cm2_causes[cause], buf);
 -- 
 2.25.1
 

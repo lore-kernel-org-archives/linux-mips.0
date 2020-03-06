@@ -6,24 +6,24 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26260C10F00
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:34:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F5A1C3F2D6
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:34:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 01C8D217F4
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:34:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 08DDA2166E
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:34:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727541AbgCFNdn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 6 Mar 2020 08:33:43 -0500
-Received: from foss.arm.com ([217.140.110.172]:33792 "EHLO foss.arm.com"
+        id S1727466AbgCFNd1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 6 Mar 2020 08:33:27 -0500
+Received: from foss.arm.com ([217.140.110.172]:33638 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726490AbgCFNdn (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 6 Mar 2020 08:33:43 -0500
+        id S1726733AbgCFNd1 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 6 Mar 2020 08:33:27 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5E0AA1063;
-        Fri,  6 Mar 2020 05:33:42 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 96D9F4B2;
+        Fri,  6 Mar 2020 05:33:26 -0800 (PST)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7F30B3F6CF;
-        Fri,  6 Mar 2020 05:33:39 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D58623F6CF;
+        Fri,  6 Mar 2020 05:33:23 -0800 (PST)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
@@ -43,11 +43,10 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Peter Collingbourne <pcc@google.com>,
         Dmitry Safonov <0x7f454c46@gmail.com>,
         Andrei Vagin <avagin@openvz.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Paul Burton <paulburton@kernel.org>
-Subject: [PATCH v2 16/20] mips: vdso: Enable mips to use common headers
-Date:   Fri,  6 Mar 2020 13:32:38 +0000
-Message-Id: <20200306133242.26279-17-vincenzo.frascino@arm.com>
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: [PATCH v2 11/20] linux/elfnote.h: Replace elf.h with UAPI equivalent
+Date:   Fri,  6 Mar 2020 13:32:33 +0000
+Message-Id: <20200306133242.26279-12-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200306133242.26279-1-vincenzo.frascino@arm.com>
 References: <20200306133242.26279-1-vincenzo.frascino@arm.com>
@@ -58,102 +57,32 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Enable mips to use only the common headers in the implementation of
-the vDSO library.
+The vDSO library should only include the necessary headers required for
+a userspace library (UAPI and a minimal set of kernel headers). To make
+this possible it is necessary to isolate from the kernel headers the
+common parts that are strictly necessary to build the library.
 
-Cc: Paul Burton <paulburton@kernel.org>
+Replace linux/elf.h with UAPI equivalent in elfnote.h to make the header
+suitable for vDSO inclusion.
+
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- arch/mips/include/asm/common/processor.h  | 27 +++++++++++++++++++++++
- arch/mips/include/asm/processor.h         | 16 +-------------
- arch/mips/include/asm/vdso/gettimeofday.h |  4 ----
- 3 files changed, 28 insertions(+), 19 deletions(-)
- create mode 100644 arch/mips/include/asm/common/processor.h
+ include/linux/elfnote.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/common/processor.h b/arch/mips/include/asm/common/processor.h
-new file mode 100644
-index 000000000000..d2ee5d397d2b
---- /dev/null
-+++ b/arch/mips/include/asm/common/processor.h
-@@ -0,0 +1,27 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (C) 2020 ARM Ltd.
-+ */
-+#ifndef __ASM_COMMON_PROCESSOR_H
-+#define __ASM_COMMON_PROCESSOR_H
-+
-+#ifndef __ASSEMBLY__
-+
-+#ifdef CONFIG_CPU_LOONGSON64
-+/*
-+ * Loongson-3's SFB (Store-Fill-Buffer) may buffer writes indefinitely when a
-+ * tight read loop is executed, because reads take priority over writes & the
-+ * hardware (incorrectly) doesn't ensure that writes will eventually occur.
-+ *
-+ * Since spin loops of any kind should have a cpu_relax() in them, force an SFB
-+ * flush from cpu_relax() such that any pending writes will become visible as
-+ * expected.
-+ */
-+#define cpu_relax()	smp_mb()
-+#else
-+#define cpu_relax()	barrier()
-+#endif
-+
-+#endif /* __ASSEMBLY__ */
-+
-+#endif /* __ASM_COMMON_PROCESSOR_H */
-diff --git a/arch/mips/include/asm/processor.h b/arch/mips/include/asm/processor.h
-index 7619ad319400..b7eca25e2066 100644
---- a/arch/mips/include/asm/processor.h
-+++ b/arch/mips/include/asm/processor.h
-@@ -22,6 +22,7 @@
- #include <asm/dsemul.h>
- #include <asm/mipsregs.h>
- #include <asm/prefetch.h>
-+#include <asm/common/processor.h>
+diff --git a/include/linux/elfnote.h b/include/linux/elfnote.h
+index f236f5b931b2..594d4e78654f 100644
+--- a/include/linux/elfnote.h
++++ b/include/linux/elfnote.h
+@@ -59,7 +59,7 @@
+ 	ELFNOTE_END
  
+ #else	/* !__ASSEMBLER__ */
+-#include <linux/elf.h>
++#include <uapi/linux/elf.h>
  /*
-  * System setup and hardware flags..
-@@ -385,21 +386,6 @@ unsigned long get_wchan(struct task_struct *p);
- #define KSTK_ESP(tsk) (task_pt_regs(tsk)->regs[29])
- #define KSTK_STATUS(tsk) (task_pt_regs(tsk)->cp0_status)
- 
--#ifdef CONFIG_CPU_LOONGSON64
--/*
-- * Loongson-3's SFB (Store-Fill-Buffer) may buffer writes indefinitely when a
-- * tight read loop is executed, because reads take priority over writes & the
-- * hardware (incorrectly) doesn't ensure that writes will eventually occur.
-- *
-- * Since spin loops of any kind should have a cpu_relax() in them, force an SFB
-- * flush from cpu_relax() such that any pending writes will become visible as
-- * expected.
-- */
--#define cpu_relax()	smp_mb()
--#else
--#define cpu_relax()	barrier()
--#endif
--
- /*
-  * Return_address is a replacement for __builtin_return_address(count)
-  * which on certain architectures cannot reasonably be implemented in GCC
-diff --git a/arch/mips/include/asm/vdso/gettimeofday.h b/arch/mips/include/asm/vdso/gettimeofday.h
-index a58687e26c5d..e8ab2fafe067 100644
---- a/arch/mips/include/asm/vdso/gettimeofday.h
-+++ b/arch/mips/include/asm/vdso/gettimeofday.h
-@@ -13,12 +13,8 @@
- 
- #ifndef __ASSEMBLY__
- 
--#include <linux/compiler.h>
--#include <linux/time.h>
--
- #include <asm/vdso/vdso.h>
- #include <asm/clocksource.h>
--#include <asm/io.h>
- #include <asm/unistd.h>
- #include <asm/vdso.h>
- 
+  * Use an anonymous structure which matches the shape of
+  * Elf{32,64}_Nhdr, but includes the name and desc data.  The size and
 -- 
 2.25.1
 

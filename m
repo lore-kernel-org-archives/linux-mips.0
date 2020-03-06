@@ -4,27 +4,27 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C20B8C10DCE
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 12:49:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B6C9C3F2D6
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 12:49:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9DDF121739
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 12:49:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7E65324677
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 12:49:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727220AbgCFMtB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 6 Mar 2020 07:49:01 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:35618 "EHLO
+        id S1726251AbgCFMtS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 6 Mar 2020 07:49:18 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:35726 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727210AbgCFMtB (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 6 Mar 2020 07:49:01 -0500
+        with ESMTP id S1727291AbgCFMtS (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 6 Mar 2020 07:49:18 -0500
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 9F6E18030786;
-        Fri,  6 Mar 2020 12:48:58 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 20636803079F;
+        Fri,  6 Mar 2020 12:49:16 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id o_34hQbYHInT; Fri,  6 Mar 2020 15:48:58 +0300 (MSK)
+        with ESMTP id Y9qB47JrHVtj; Fri,  6 Mar 2020 15:49:15 +0300 (MSK)
 From:   <Sergey.Semin@baikalelectronics.ru>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
@@ -33,15 +33,15 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Paul Burton <paulburton@kernel.org>,
         Ralf Baechle <ralf@linux-mips.org>,
         <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 13/22] mips: MAAR: Add XPA mode support
-Date:   Fri, 6 Mar 2020 15:46:56 +0300
+Subject: [PATCH 19/22] mips: Add udelay lpj numbers adjustment
+Date:   Fri, 6 Mar 2020 15:47:02 +0300
 In-Reply-To: <20200306124705.6595-1-Sergey.Semin@baikalelectronics.ru>
 References: <20200306124705.6595-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
-Message-Id: <20200306124858.9F6E18030786@mail.baikalelectronics.ru>
+Message-Id: <20200306124916.20636803079F@mail.baikalelectronics.ru>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
@@ -49,17 +49,17 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-When XPA mode is enabled the normally 32-bits MAAR pair registers
-are extended to be of 64-bits width as in pure 64-bits MIPS
-architecture. In this case the MAAR registers can enable the
-speculative loads/stores for addresses of up to 39-bits width.
-But in this case the process of the MAAR initialization changes a bit.
-The upper 32-bits of the registers are supposed to be accessed by mean
-of the dedicated instructions mfhc0/mthc0 and there is a CP0.MAAR.VH
-bit which should be set together with CP0.MAAR.VL as indication
-of the boundary validity. All of these peculiarities were taken into
-account in this commit so the speculative loads/stores would work
-when XPA mode is enabled.
+Loops-per-jiffies is a special number which represents a number of
+noop-loop cycles per CPU-scheduler quantum - jiffies. As you
+understand aside from CPU-specific implementation it depends on
+the CPU frequency. So when a platform has the CPU frequency fixed,
+we have no problem and the current udelay interface will work
+just fine. But as soon as CPU-freq driver is enabled and the cores
+frequency changes, we'll end up with distorted udelay's. In order
+to fix this we have to accordinly adjust the per-CPU udelay_val
+(the same as the global loops_per_jiffy) number. This can be done
+in the CPU-freq transition event handler. We subscribe to that event
+in the MIPS arch time-inititalization method.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
@@ -67,113 +67,96 @@ Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: Paul Burton <paulburton@kernel.org>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 ---
- arch/mips/include/asm/maar.h     | 17 +++++++++++++++--
- arch/mips/include/asm/mipsregs.h | 10 ++++++++++
- arch/mips/mm/init.c              |  8 +++++++-
- 3 files changed, 32 insertions(+), 3 deletions(-)
+ arch/mips/kernel/time.c | 70 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
 
-diff --git a/arch/mips/include/asm/maar.h b/arch/mips/include/asm/maar.h
-index 6908b93c4ff9..99f1c3e4b11f 100644
---- a/arch/mips/include/asm/maar.h
-+++ b/arch/mips/include/asm/maar.h
-@@ -32,7 +32,7 @@ unsigned platform_maar_init(unsigned num_pairs);
-  * @upper:	The highest address that the MAAR pair will affect. Must be
-  *		aligned to one byte before a 2^16 byte boundary.
-  * @attrs:	The accessibility attributes to program, eg. MIPS_MAAR_S. The
-- *		MIPS_MAAR_VL attribute will automatically be set.
-+ *		MIPS_MAAR_VL/MIPS_MAAR_VH attributes will automatically be set.
-  *
-  * Program the pair of MAAR registers specified by idx to apply the attributes
-  * specified by attrs to the range of addresses from lower to higher.
-@@ -48,17 +48,30 @@ static inline void write_maar_pair(unsigned idx, phys_addr_t lower,
- 	/* Automatically set MIPS_MAAR_VL */
- 	attrs |= MIPS_MAAR_VL;
+diff --git a/arch/mips/kernel/time.c b/arch/mips/kernel/time.c
+index 37e9413a393d..ce89e18af024 100644
+--- a/arch/mips/kernel/time.c
++++ b/arch/mips/kernel/time.c
+@@ -18,12 +18,82 @@
+ #include <linux/smp.h>
+ #include <linux/spinlock.h>
+ #include <linux/export.h>
++#include <linux/cpufreq.h>
++#include <linux/delay.h>
  
--	/* Write the upper address & attributes (only MIPS_MAAR_VL matters) */
+ #include <asm/cpu-features.h>
+ #include <asm/cpu-type.h>
+ #include <asm/div64.h>
+ #include <asm/time.h>
+ 
++#ifdef CONFIG_CPU_FREQ
++
++static DEFINE_PER_CPU(unsigned long, pcp_lpj_ref);
++static DEFINE_PER_CPU(unsigned long, pcp_lpj_ref_freq);
++static unsigned long glb_lpj_ref;
++static unsigned long glb_lpj_ref_freq;
++
++static int cpufreq_callback(struct notifier_block *nb,
++			    unsigned long val, void *data)
++{
++	struct cpufreq_freqs *freq = data;
++	struct cpumask *cpus = freq->policy->cpus;
++	unsigned long lpj;
++	int cpu;
++
 +	/*
-+	 * Write the upper address & attributes (both MIPS_MAAR_VL and
-+	 * MIPS_MAAR_VH matter)
++	 * Skip lpj numbers adjustment if the CPU-freq transition is safe for
++	 * the loops delay. (Is this possible?)
 +	 */
- 	write_c0_maari(idx << 1);
- 	back_to_back_c0_hazard();
- 	write_c0_maar(((upper >> 4) & MIPS_MAAR_ADDR) | attrs);
- 	back_to_back_c0_hazard();
-+#ifdef CONFIG_XPA
-+	upper >>= MIPS_MAARX_ADDR_SHIFT;
-+	writex_c0_maar(((upper >> 4) & MIPS_MAARX_ADDR) | MIPS_MAARX_VH);
-+	back_to_back_c0_hazard();
-+#endif
- 
- 	/* Write the lower address & attributes */
- 	write_c0_maari((idx << 1) | 0x1);
- 	back_to_back_c0_hazard();
- 	write_c0_maar((lower >> 4) | attrs);
- 	back_to_back_c0_hazard();
-+#ifdef CONFIG_XPA
-+	lower >>= MIPS_MAARX_ADDR_SHIFT;
-+	writex_c0_maar(((lower >> 4) & MIPS_MAARX_ADDR) | MIPS_MAARX_VH);
-+	back_to_back_c0_hazard();
-+#endif
- }
- 
- /**
-diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index 554813a1f6d6..41094f4cf6a7 100644
---- a/arch/mips/include/asm/mipsregs.h
-+++ b/arch/mips/include/asm/mipsregs.h
-@@ -778,6 +778,14 @@
- #define MIPS_MAAR_ADDR_SHIFT	12
- #define MIPS_MAAR_S		(_ULCAST_(1) << 1)
- #define MIPS_MAAR_VL		(_ULCAST_(1) << 0)
-+#ifdef CONFIG_XPA
-+#define MIPS_MAAR_V		(MIPS_MAAR_VH | MIPS_MAAR_VL)
-+#else
-+#define MIPS_MAAR_V		MIPS_MAAR_VL
-+#endif
-+#define MIPS_MAARX_VH		(_ULCAST_(1) << 31)
-+#define MIPS_MAARX_ADDR		0xF
-+#define MIPS_MAARX_ADDR_SHIFT	32
- 
- /* MAARI bit definitions */
- #define MIPS_MAARI_INDEX	(_ULCAST_(0x3f) << 0)
-@@ -1738,6 +1746,8 @@ do {									\
- #define write_c0_lladdr(val)	__write_ulong_c0_register($17, 0, val)
- #define read_c0_maar()		__read_ulong_c0_register($17, 1)
- #define write_c0_maar(val)	__write_ulong_c0_register($17, 1, val)
-+#define readx_c0_maar()		__readx_32bit_c0_register($17, 1)
-+#define writex_c0_maar(val)	__writex_32bit_c0_register($17, 1, val)
- #define read_c0_maari()		__read_32bit_c0_register($17, 2)
- #define write_c0_maari(val)	__write_32bit_c0_register($17, 2, val)
- 
-diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index 79684000de0e..620ebfa45ec1 100644
---- a/arch/mips/mm/init.c
-+++ b/arch/mips/mm/init.c
-@@ -358,17 +358,23 @@ void maar_init(void)
- 		write_c0_maari(i);
- 		back_to_back_c0_hazard();
- 		upper = read_c0_maar();
-+#ifdef CONFIG_XPA
-+		upper |= (phys_addr_t)readx_c0_maar() << MIPS_MAARX_ADDR_SHIFT;
-+#endif
- 
- 		write_c0_maari(i + 1);
- 		back_to_back_c0_hazard();
- 		lower = read_c0_maar();
-+#ifdef CONFIG_XPA
-+		lower |= (phys_addr_t)readx_c0_maar() << MIPS_MAARX_ADDR_SHIFT;
-+#endif
- 
- 		attr = lower & upper;
- 		lower = (lower & MIPS_MAAR_ADDR) << 4;
- 		upper = ((upper & MIPS_MAAR_ADDR) << 4) | 0xffff;
- 
- 		pr_info("  [%d]: ", i / 2);
--		if (!(attr & MIPS_MAAR_VL)) {
-+		if ((attr & MIPS_MAAR_V) != MIPS_MAAR_V) {
- 			pr_cont("disabled\n");
- 			continue;
- 		}
++	if (freq->flags & CPUFREQ_CONST_LOOPS)
++		return NOTIFY_OK;
++
++	/* Save the initial values of the lpjes for future scaling. */
++	if (!glb_lpj_ref) {
++		glb_lpj_ref = boot_cpu_data.udelay_val;
++		glb_lpj_ref_freq = freq->old;
++
++		for_each_online_cpu(cpu) {
++			per_cpu(pcp_lpj_ref, cpu) =
++				cpu_data[cpu].udelay_val;
++			per_cpu(pcp_lpj_ref_freq, cpu) = freq->old;
++		}
++	}
++
++	/*
++	 * Adjust global lpj variable and per-CPU udelay_val number in
++	 * accordance with the new CPU frequency.
++	 */
++	if ((val == CPUFREQ_PRECHANGE  && freq->old < freq->new) ||
++	    (val == CPUFREQ_POSTCHANGE && freq->old > freq->new)) {
++		loops_per_jiffy = cpufreq_scale(glb_lpj_ref,
++						glb_lpj_ref_freq,
++						freq->new);
++
++		for_each_cpu(cpu, cpus) {
++			lpj = cpufreq_scale(per_cpu(pcp_lpj_ref, cpu),
++					    per_cpu(pcp_lpj_ref_freq, cpu),
++					    freq->new);
++			cpu_data[cpu].udelay_val = (unsigned int)lpj;
++		}
++	}
++
++	return NOTIFY_OK;
++}
++
++static struct notifier_block cpufreq_notifier = {
++	.notifier_call  = cpufreq_callback,
++};
++
++static int __init register_cpufreq_notifier(void)
++{
++	return cpufreq_register_notifier(&cpufreq_notifier,
++					 CPUFREQ_TRANSITION_NOTIFIER);
++}
++core_initcall(register_cpufreq_notifier);
++
++#endif /* !CONFIG_CPU_FREQ */
++
+ /*
+  * forward reference
+  */
 -- 
 2.25.1
 

@@ -4,26 +4,26 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31E77C10F27
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:33:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 299E8C10F00
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:33:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0B06C20866
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:33:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0CE0D2166E
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:33:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727286AbgCFNdJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 6 Mar 2020 08:33:09 -0500
-Received: from foss.arm.com ([217.140.110.172]:33426 "EHLO foss.arm.com"
+        id S1727397AbgCFNdP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 6 Mar 2020 08:33:15 -0500
+Received: from foss.arm.com ([217.140.110.172]:33498 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727186AbgCFNdJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 6 Mar 2020 08:33:09 -0500
+        id S1727186AbgCFNdP (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 6 Mar 2020 08:33:15 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C83834B2;
-        Fri,  6 Mar 2020 05:33:08 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B900A31B;
+        Fri,  6 Mar 2020 05:33:14 -0800 (PST)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 13A6D3F6CF;
-        Fri,  6 Mar 2020 05:33:05 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 00F583F6CF;
+        Fri,  6 Mar 2020 05:33:11 -0800 (PST)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
@@ -44,9 +44,9 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Dmitry Safonov <0x7f454c46@gmail.com>,
         Andrei Vagin <avagin@openvz.org>,
         Nick Desaulniers <ndesaulniers@google.com>
-Subject: [PATCH v2 05/20] linux/time.h: Extract common header for vDSO
-Date:   Fri,  6 Mar 2020 13:32:27 +0000
-Message-Id: <20200306133242.26279-6-vincenzo.frascino@arm.com>
+Subject: [PATCH v2 07/20] linux/time64.h: Extract common header for vDSO
+Date:   Fri,  6 Mar 2020 13:32:29 +0000
+Message-Id: <20200306133242.26279-8-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200306133242.26279-1-vincenzo.frascino@arm.com>
 References: <20200306133242.26279-1-vincenzo.frascino@arm.com>
@@ -62,49 +62,64 @@ a userspace library (UAPI and a minimal set of kernel headers). To make
 this possible it is necessary to isolate from the kernel headers the
 common parts that are strictly necessary to build the library.
 
-Split time.h into linux and common headers to make the latter suitable
+Split time64.h into linux and common headers to make the latter suitable
 for inclusion in the vDSO library.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- include/common/time.h | 12 ++++++++++++
- include/linux/time.h  |  5 +----
- 2 files changed, 13 insertions(+), 4 deletions(-)
- create mode 100644 include/common/time.h
+ include/common/time64.h | 14 ++++++++++++++
+ include/linux/time64.h  | 10 +---------
+ 2 files changed, 15 insertions(+), 9 deletions(-)
+ create mode 100644 include/common/time64.h
 
-diff --git a/include/common/time.h b/include/common/time.h
+diff --git a/include/common/time64.h b/include/common/time64.h
 new file mode 100644
-index 000000000000..90eb9bdb40ec
+index 000000000000..ff5a72fafb30
 --- /dev/null
-+++ b/include/common/time.h
-@@ -0,0 +1,12 @@
++++ b/include/common/time64.h
+@@ -0,0 +1,14 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __COMMON_TIME_H
-+#define __COMMON_TIME_H
++#ifndef __COMMON_TIME64_H
++#define __COMMON_TIME64_H
 +
-+#include <uapi/linux/types.h>
++/* Parameters used to convert the timespec values: */
++#define MSEC_PER_SEC	1000L
++#define USEC_PER_MSEC	1000L
++#define NSEC_PER_USEC	1000L
++#define NSEC_PER_MSEC	1000000L
++#define USEC_PER_SEC	1000000L
++#define NSEC_PER_SEC	1000000000L
++#define FSEC_PER_SEC	1000000000000000LL
 +
-+struct timens_offset {
-+	s64	sec;
-+	u64	nsec;
-+};
-+
-+#endif /* __COMMON_TIME_H */
-diff --git a/include/linux/time.h b/include/linux/time.h
-index 8ef5e5cc9f57..617a01e2c8bb 100644
---- a/include/linux/time.h
-+++ b/include/linux/time.h
-@@ -111,9 +111,6 @@ static inline bool itimerspec64_valid(const struct itimerspec64 *its)
-  */
- #define time_between32(t, l, h) ((u32)(h) - (u32)(l) >= (u32)(t) - (u32)(l))
++#endif /* __COMMON_TIME64_H */
+diff --git a/include/linux/time64.h b/include/linux/time64.h
+index 19125489ae94..3d8b3739e885 100644
+--- a/include/linux/time64.h
++++ b/include/linux/time64.h
+@@ -3,6 +3,7 @@
+ #define _LINUX_TIME64_H
  
--struct timens_offset {
--	s64	sec;
--	u64	nsec;
--};
-+# include <common/time.h>
+ #include <linux/math64.h>
++#include <common/time64.h>
  
- #endif
+ typedef __s64 time64_t;
+ typedef __u64 timeu64_t;
+@@ -19,15 +20,6 @@ struct itimerspec64 {
+ 	struct timespec64 it_value;
+ };
+ 
+-/* Parameters used to convert the timespec values: */
+-#define MSEC_PER_SEC	1000L
+-#define USEC_PER_MSEC	1000L
+-#define NSEC_PER_USEC	1000L
+-#define NSEC_PER_MSEC	1000000L
+-#define USEC_PER_SEC	1000000L
+-#define NSEC_PER_SEC	1000000000L
+-#define FSEC_PER_SEC	1000000000000000LL
+-
+ /* Located here for timespec[64]_valid_strict */
+ #define TIME64_MAX			((s64)~((u64)1 << 63))
+ #define TIME64_MIN			(-TIME64_MAX - 1)
 -- 
 2.25.1
 

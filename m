@@ -4,26 +4,26 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 380DEC10F25
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:33:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79A58C10F00
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:33:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 11EE421775
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:33:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5B2DB206D5
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:33:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727557AbgCFNdq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 6 Mar 2020 08:33:46 -0500
-Received: from foss.arm.com ([217.140.110.172]:33828 "EHLO foss.arm.com"
+        id S1727589AbgCFNdw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 6 Mar 2020 08:33:52 -0500
+Received: from foss.arm.com ([217.140.110.172]:33892 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727554AbgCFNdp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 6 Mar 2020 08:33:45 -0500
+        id S1727581AbgCFNdv (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 6 Mar 2020 08:33:51 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 560C7106F;
-        Fri,  6 Mar 2020 05:33:45 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 442584B2;
+        Fri,  6 Mar 2020 05:33:51 -0800 (PST)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 946EA3F6CF;
-        Fri,  6 Mar 2020 05:33:42 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 830793F6CF;
+        Fri,  6 Mar 2020 05:33:48 -0800 (PST)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
@@ -44,9 +44,9 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Dmitry Safonov <0x7f454c46@gmail.com>,
         Andrei Vagin <avagin@openvz.org>,
         Nick Desaulniers <ndesaulniers@google.com>
-Subject: [PATCH v2 17/20] x86: vdso: Enable x86 to use common headers
-Date:   Fri,  6 Mar 2020 13:32:39 +0000
-Message-Id: <20200306133242.26279-18-vincenzo.frascino@arm.com>
+Subject: [PATCH v2 19/20] lib: vdso: Enable common headers
+Date:   Fri,  6 Mar 2020 13:32:41 +0000
+Message-Id: <20200306133242.26279-20-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200306133242.26279-1-vincenzo.frascino@arm.com>
 References: <20200306133242.26279-1-vincenzo.frascino@arm.com>
@@ -57,79 +57,106 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Enable x86 to use only the common headers in the implementation
-of the vDSO library.
+The vDSO library should only include the necessary headers required for
+a userspace library (UAPI and a minimal set of kernel headers). To make
+this possible it is necessary to isolate from the kernel headers the
+common parts that are strictly necessary to build the library.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
+Refactor the unified vdso code to use the common headers.
+
 Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- arch/x86/include/asm/common/processor.h | 23 +++++++++++++++++++++++
- arch/x86/include/asm/processor.h        | 12 +-----------
- 2 files changed, 24 insertions(+), 11 deletions(-)
- create mode 100644 arch/x86/include/asm/common/processor.h
+ include/vdso/datapage.h | 32 +++++++++++++++++++++++++++++---
+ lib/vdso/gettimeofday.c | 21 ---------------------
+ 2 files changed, 29 insertions(+), 24 deletions(-)
 
-diff --git a/arch/x86/include/asm/common/processor.h b/arch/x86/include/asm/common/processor.h
-new file mode 100644
-index 000000000000..60ca2ee6e672
---- /dev/null
-+++ b/arch/x86/include/asm/common/processor.h
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
+diff --git a/include/vdso/datapage.h b/include/vdso/datapage.h
+index c5f347cc5e55..21842a73cbcf 100644
+--- a/include/vdso/datapage.h
++++ b/include/vdso/datapage.h
+@@ -4,9 +4,19 @@
+ 
+ #ifndef __ASSEMBLY__
+ 
+-#include <linux/bits.h>
+-#include <linux/time.h>
+-#include <linux/types.h>
++#include <linux/compiler.h>
++#include <uapi/linux/time.h>
++#include <uapi/linux/types.h>
++#include <uapi/asm-generic/errno-base.h>
++
++#include <common/bits.h>
++#include <common/ktime.h>
++#include <common/limits.h>
++#include <common/math64.h>
++#include <common/processor.h>
++#include <common/time.h>
++#include <common/time32.h>
++#include <common/time64.h>
+ 
+ #define VDSO_BASES	(CLOCK_TAI + 1)
+ #define VDSO_HRES	(BIT(CLOCK_REALTIME)		| \
+@@ -101,6 +111,22 @@ struct vdso_data {
+  */
+ extern struct vdso_data _vdso_data[CS_BASES] __attribute__((visibility("hidden")));
+ 
 +/*
-+ * Copyright (C) 2020 ARM Ltd.
++ * The generic vDSO implementation requires that gettimeofday.h
++ * provides:
++ * - __arch_get_vdso_data(): to get the vdso datapage.
++ * - __arch_get_hw_counter(): to get the hw counter based on the
++ *   clock_mode.
++ * - gettimeofday_fallback(): fallback for gettimeofday.
++ * - clock_gettime_fallback(): fallback for clock_gettime.
++ * - clock_getres_fallback(): fallback for clock_getres.
 + */
-+#ifndef __ASM_COMMON_PROCESSOR_H
-+#define __ASM_COMMON_PROCESSOR_H
++#ifdef ENABLE_COMPAT_VDSO
++#include <asm/vdso/compat_gettimeofday.h>
++#else
++#include <asm/vdso/gettimeofday.h>
++#endif /* ENABLE_COMPAT_VDSO */
 +
-+#ifndef __ASSEMBLY__
-+
-+/* REP NOP (PAUSE) is a good thing to insert into busy-wait loops. */
-+static __always_inline void rep_nop(void)
-+{
-+	asm volatile("rep; nop" ::: "memory");
-+}
-+
-+static __always_inline void cpu_relax(void)
-+{
-+	rep_nop();
-+}
-+
-+#endif /* __ASSEMBLY__ */
-+
-+#endif /* __ASM_COMMON_PROCESSOR_H */
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 09705ccc393c..d66c5dd42cff 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -26,6 +26,7 @@ struct vm86;
- #include <asm/fpu/types.h>
- #include <asm/unwind_hints.h>
- #include <asm/vmxfeatures.h>
-+#include <asm/common/processor.h>
+ #endif /* !__ASSEMBLY__ */
  
- #include <linux/personality.h>
- #include <linux/cache.h>
-@@ -677,17 +678,6 @@ static inline unsigned int cpuid_edx(unsigned int op)
- 	return edx;
- }
- 
--/* REP NOP (PAUSE) is a good thing to insert into busy-wait loops. */
--static __always_inline void rep_nop(void)
--{
--	asm volatile("rep; nop" ::: "memory");
--}
--
--static __always_inline void cpu_relax(void)
--{
--	rep_nop();
--}
--
+ #endif /* __VDSO_DATAPAGE_H */
+diff --git a/lib/vdso/gettimeofday.c b/lib/vdso/gettimeofday.c
+index f8b8ec5e63ac..e3244f74feea 100644
+--- a/lib/vdso/gettimeofday.c
++++ b/lib/vdso/gettimeofday.c
+@@ -2,30 +2,9 @@
  /*
-  * This function forces the icache and prefetched instruction stream to
-  * catch up with reality in two very specific cases:
+  * Generic userspace implementations of gettimeofday() and similar.
+  */
+-#include <linux/compiler.h>
+-#include <linux/math64.h>
+-#include <linux/time.h>
+-#include <linux/kernel.h>
+-#include <linux/hrtimer_defs.h>
+ #include <vdso/datapage.h>
+ #include <vdso/helpers.h>
+ 
+-/*
+- * The generic vDSO implementation requires that gettimeofday.h
+- * provides:
+- * - __arch_get_vdso_data(): to get the vdso datapage.
+- * - __arch_get_hw_counter(): to get the hw counter based on the
+- *   clock_mode.
+- * - gettimeofday_fallback(): fallback for gettimeofday.
+- * - clock_gettime_fallback(): fallback for clock_gettime.
+- * - clock_getres_fallback(): fallback for clock_getres.
+- */
+-#ifdef ENABLE_COMPAT_VDSO
+-#include <asm/vdso/compat_gettimeofday.h>
+-#else
+-#include <asm/vdso/gettimeofday.h>
+-#endif /* ENABLE_COMPAT_VDSO */
+-
+ #ifndef vdso_calc_delta
+ /*
+  * Default implementation which works for all sane clocksources. That
 -- 
 2.25.1
 

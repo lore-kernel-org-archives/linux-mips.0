@@ -6,24 +6,24 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C631AC10F25
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:34:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8E3DC10F28
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:34:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id A777D20848
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:34:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CADEA20848
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Mar 2020 13:34:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727226AbgCFNdG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 6 Mar 2020 08:33:06 -0500
-Received: from foss.arm.com ([217.140.110.172]:33392 "EHLO foss.arm.com"
+        id S1727450AbgCFNdY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 6 Mar 2020 08:33:24 -0500
+Received: from foss.arm.com ([217.140.110.172]:33602 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727152AbgCFNdG (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 6 Mar 2020 08:33:06 -0500
+        id S1726733AbgCFNdY (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 6 Mar 2020 08:33:24 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D26A131B;
-        Fri,  6 Mar 2020 05:33:05 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F9CA31B;
+        Fri,  6 Mar 2020 05:33:23 -0800 (PST)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1E0EE3F6CF;
-        Fri,  6 Mar 2020 05:33:03 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DCD743F6CF;
+        Fri,  6 Mar 2020 05:33:20 -0800 (PST)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
@@ -44,9 +44,9 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Dmitry Safonov <0x7f454c46@gmail.com>,
         Andrei Vagin <avagin@openvz.org>,
         Nick Desaulniers <ndesaulniers@google.com>
-Subject: [PATCH v2 04/20] linux/math64.h: Extract common header for vDSO
-Date:   Fri,  6 Mar 2020 13:32:26 +0000
-Message-Id: <20200306133242.26279-5-vincenzo.frascino@arm.com>
+Subject: [PATCH v2 10/20] common: Introduce processor.h
+Date:   Fri,  6 Mar 2020 13:32:32 +0000
+Message-Id: <20200306133242.26279-11-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200306133242.26279-1-vincenzo.frascino@arm.com>
 References: <20200306133242.26279-1-vincenzo.frascino@arm.com>
@@ -62,84 +62,35 @@ a userspace library (UAPI and a minimal set of kernel headers). To make
 this possible it is necessary to isolate from the kernel headers the
 common parts that are strictly necessary to build the library.
 
-Split math64.h into linux and common headers to make the latter suitable
-for inclusion in the vDSO library.
+Introduce processor.h to contain all the processor specific functions
+that are suitable for vDSO inclusion.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- include/common/math64.h | 24 ++++++++++++++++++++++++
- include/linux/math64.h  | 20 +-------------------
- 2 files changed, 25 insertions(+), 19 deletions(-)
- create mode 100644 include/common/math64.h
+ include/common/processor.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+ create mode 100644 include/common/processor.h
 
-diff --git a/include/common/math64.h b/include/common/math64.h
+diff --git a/include/common/processor.h b/include/common/processor.h
 new file mode 100644
-index 000000000000..4e1870e40182
+index 000000000000..f9f971cb4235
 --- /dev/null
-+++ b/include/common/math64.h
-@@ -0,0 +1,24 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __COMMON_MATH64_H
-+#define __COMMON_MATH64_H
++++ b/include/common/processor.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) 2020 ARM Ltd.
++ */
++#ifndef __COMMON_PROCESSOR_H
++#define __COMMON_PROCESSOR_H
 +
-+static __always_inline u32
-+__iter_div_u64_rem(u64 dividend, u32 divisor, u64 *remainder)
-+{
-+	u32 ret = 0;
++#ifndef __ASSEMBLY__
 +
-+	while (dividend >= divisor) {
-+		/* The following asm() prevents the compiler from
-+		   optimising this loop into a modulo operation.  */
-+		asm("" : "+rm"(dividend));
++#include <asm/common/processor.h>
 +
-+		dividend -= divisor;
-+		ret++;
-+	}
++#endif /* __ASSEMBLY__ */
 +
-+	*remainder = dividend;
-+
-+	return ret;
-+}
-+
-+#endif /* __COMMON_MATH64_H */
-diff --git a/include/linux/math64.h b/include/linux/math64.h
-index 65bef21cdddb..54eb486b5d1a 100644
---- a/include/linux/math64.h
-+++ b/include/linux/math64.h
-@@ -3,6 +3,7 @@
- #define _LINUX_MATH64_H
- 
- #include <linux/types.h>
-+#include <common/math64.h>
- #include <asm/div64.h>
- 
- #if BITS_PER_LONG == 64
-@@ -142,25 +143,6 @@ static inline s64 div_s64(s64 dividend, s32 divisor)
- 
- u32 iter_div_u64_rem(u64 dividend, u32 divisor, u64 *remainder);
- 
--static __always_inline u32
--__iter_div_u64_rem(u64 dividend, u32 divisor, u64 *remainder)
--{
--	u32 ret = 0;
--
--	while (dividend >= divisor) {
--		/* The following asm() prevents the compiler from
--		   optimising this loop into a modulo operation.  */
--		asm("" : "+rm"(dividend));
--
--		dividend -= divisor;
--		ret++;
--	}
--
--	*remainder = dividend;
--
--	return ret;
--}
--
- #ifndef mul_u32_u32
- /*
-  * Many a GCC version messes this up and generates a 64x64 mult :-(
++#endif /* __COMMON_PROCESSOR_H */
 -- 
 2.25.1
 

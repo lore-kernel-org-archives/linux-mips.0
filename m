@@ -2,95 +2,91 @@ Return-Path: <SRS0=EFHC=42=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40BFFC18E5A
-	for <linux-mips@archiver.kernel.org>; Mon,  9 Mar 2020 11:44:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DADACC10F27
+	for <linux-mips@archiver.kernel.org>; Mon,  9 Mar 2020 12:24:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 19AAB20675
-	for <linux-mips@archiver.kernel.org>; Mon,  9 Mar 2020 11:44:08 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L41pRj4U"
+	by mail.kernel.org (Postfix) with ESMTP id ABCB720866
+	for <linux-mips@archiver.kernel.org>; Mon,  9 Mar 2020 12:24:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725956AbgCILoH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 9 Mar 2020 07:44:07 -0400
-Received: from mail-io1-f54.google.com ([209.85.166.54]:43639 "EHLO
-        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725796AbgCILoH (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 9 Mar 2020 07:44:07 -0400
-Received: by mail-io1-f54.google.com with SMTP id n21so8747352ioo.10
-        for <linux-mips@vger.kernel.org>; Mon, 09 Mar 2020 04:44:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a7Fn/ysZi27k5qcwQE2SFpFqlS2suD8Fxcr6X+5F0Fk=;
-        b=L41pRj4U0plrl3O+KBLLoBG6EiEi+71Wx4/sDHw70pZ2ZDGcRafC+zhQv0hGhjrK33
-         zAj/FcoWKG/rRv6YMd3IdrkPSlNMw4z2JCER2NJFRezsUb9wA0RhpXz/KOO1qYPbvyU0
-         sogggLjXLB6eNPMqM0wucKcJasRA0S0laQbXtOyEpdvypopNR+QckoGX5IAONuhwwjWA
-         rHKdSFj7SBI2eO0gaIsTrxLIdfXOx3gqcPrCCXLDVlgbUIvh0KqNaYVyuCAQM4EocbbZ
-         wJS3kZy3wbEcBnnyoUqMRvGBmHWi3Dut5oTdpW1/+IV9YeuKhkQcAtudFInpgerNPIDD
-         rRSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a7Fn/ysZi27k5qcwQE2SFpFqlS2suD8Fxcr6X+5F0Fk=;
-        b=jC1V/fgEOe+fLm+ylBcg43hz4IlAFrqup9yCfAhct9bSbmePs9w3T/oPxwmEImulkO
-         FJ2XdaMDaIroBIrfJGVgg3jDIdnpgtIGoLzmxUrnieKyKDDKKdGJQogpZ3RvQbNaTZnT
-         X6QqXL43PuIMYMC61weZfCwldAHajZM2E3YWdFyyetqe/uK2G/hsJT0YgTZNkg7w9cv9
-         m7C4k9s5aDfCT82qS4JaorNd4e9oqhXOWsRYHd5ZdjrOt/zSKVe/J2hZNLEdEVFY0FDW
-         GlCnv517lUW0ratTFqehfVI4GOXANf6gL42pokqqLEbGKxsP9Lp/eIJSt22wXkDBQh5n
-         12Kg==
-X-Gm-Message-State: ANhLgQ1+4qyJqcc6RrfhhlcDB1e9PFHQ18Fqsd0IavPLrbUrDz1j7ITq
-        rgDLsz1LxoMovXv8dGDoIdnHlFZGr+eXBcID1EVUrE8g
-X-Google-Smtp-Source: ADFU+vuoxvpfgWNG99agTYOnbxAyC2j23mhqFInvcuY2Z8odGXnSrwEFcWC2jsYFNU1ATP+jnrGIHOPjDulWGG+gr+g=
-X-Received: by 2002:a5d:9707:: with SMTP id h7mr12903558iol.112.1583754247081;
- Mon, 09 Mar 2020 04:44:07 -0700 (PDT)
+        id S1726402AbgCIMYg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 9 Mar 2020 08:24:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:51506 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726368AbgCIMYg (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 9 Mar 2020 08:24:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F1B7F30E;
+        Mon,  9 Mar 2020 05:24:34 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 20D953F6CF;
+        Mon,  9 Mar 2020 05:24:32 -0700 (PDT)
+Date:   Mon, 9 Mar 2020 12:24:30 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, clang-built-linux@googlegroups.com,
+        x86@kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Paul Burton <paul.burton@mips.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mark Salyzyn <salyzyn@android.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andrei Vagin <avagin@openvz.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v2 00/20] Introduce common headers
+Message-ID: <20200309122429.GB26309@lakrids.cambridge.arm.com>
+References: <20200306133242.26279-1-vincenzo.frascino@arm.com>
+ <3278D604-28F1-47A1-BAB8-D8EB439995E8@amacapital.net>
+ <b18c7ce1-0948-a9e2-2d7e-d019669a71e1@arm.com>
 MIME-Version: 1.0
-References: <20200227144910.GA25011@alpha.franken.de> <CA+QBN9DRUMkd+cOvHMJfe_-7rdhUpb=BiC7BBWN2ZS5-fNXtfw@mail.gmail.com>
- <20200304162249.GA14388@alpha.franken.de>
-In-Reply-To: <20200304162249.GA14388@alpha.franken.de>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Mon, 9 Mar 2020 19:43:55 +0800
-Message-ID: <CAAhV-H6gMpKbuJ-=Cxf1pmw3Crm_bpZ2BFcr_BLgUCeF7dF0UQ@mail.gmail.com>
-Subject: Re: MIPS Hardware support
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     "dtb ." <carlojpisani@gmail.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b18c7ce1-0948-a9e2-2d7e-d019669a71e1@arm.com>
+User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi, Thomas,
+On Mon, Mar 09, 2020 at 11:07:08AM +0000, Vincenzo Frascino wrote:
+> Hi Andy,
+> 
+> On 3/6/20 4:04 PM, Andy Lutomirski wrote:
+> 
+> [...]
+> 
+> >>
+> >> To solve the problem, I decided to use the approach below:
+> >>  * Extract from include/linux/ the vDSO required kernel interface
+> >>    and place it in include/common/
+> > 
+> > I really like the approach, but I’m wondering if “common” is the
+> > right name. This directory is headers that aren’t stable ABI like
+> > uapi but are shared between the kernel and the vDSO. Regular user
+> > code should *not* include these, right?
+> > 
+> > Would “vdso” or perhaps “private-abi” be clearer?
+> 
+> Thanks! These headers are definitely not "uapi" like and they are meant to
+> evolve in future like any other kernel header. We have just to make sure that
+> the evolution does not break what we are trying to achieve with this series.
 
-I come from Lemote Inc., the largest Loongson ODM/OEM corporation, I
-have all kinds of Loongson-3 machines (with RS780, SR5690, LS2H or
-LS7A bridges) and a few Loongson-2H/2K machines.
+Given we already include uapi/* headers in kernel code, I think placing
+these in a vdso/* namespace would be fine. I think that more clearly
+expresses the constraints on the headers than private-abi/* would.
 
-I'm working hard together with Jiaxun Yang to modernize Loongson-3's
-kernel, thank you.
-
-Huacai
-
-On Thu, Mar 5, 2020 at 12:29 AM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
->
-> On Mon, Mar 02, 2020 at 09:35:09AM +0100, dtb . wrote:
-> > when (which kernel future release?) do you think it will be possible
-> > to have a working PCI subsystem with SGI IP30? I'd love to use a
-> > PCI_EHCI card, and a PCI_SATA card for a couple of practical projects.
->
-> 32bit DMA support for bridge (which is needed at least for EHCI) is
-> on my todo list, but it's not top priority.
->
-> Thomas.
->
-> --
-> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-> good idea.                                                [ RFC1925, 2.3 ]
+Thanks,
+Mark.

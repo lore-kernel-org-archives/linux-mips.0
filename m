@@ -2,100 +2,121 @@ Return-Path: <SRS0=1/Ay=43=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDC02C10F27
-	for <linux-mips@archiver.kernel.org>; Tue, 10 Mar 2020 13:37:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79A7CC18E5A
+	for <linux-mips@archiver.kernel.org>; Tue, 10 Mar 2020 13:47:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8DB3220675
-	for <linux-mips@archiver.kernel.org>; Tue, 10 Mar 2020 13:37:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1583847429;
-	bh=rMQn7kjsa7T0S3IBhZrsTg2HDBVaXevtNP7v9XkF4Dg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=paRQDBeH4uAszfk9DVS0UGydhaAJ2/ggUT24TyAfnbsj84i+cPok2dQyzixIbOhro
-	 wO1zZybZ0YsA4GT7a1yabXAS6SvSNre9ZOxMRUUvp+4UFqr8UUmQOKWrJ3WiCJw9Kb
-	 5lZByIDvSQN1poJL/fh09qTpGJM/MiW6dewTwcRM=
+	by mail.kernel.org (Postfix) with ESMTP id 59F6520637
+	for <linux-mips@archiver.kernel.org>; Tue, 10 Mar 2020 13:47:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726882AbgCJMlW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 10 Mar 2020 08:41:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40796 "EHLO mail.kernel.org"
+        id S1727104AbgCJNrA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 10 Mar 2020 09:47:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:37284 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726837AbgCJMlV (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 10 Mar 2020 08:41:21 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 44D1324695;
-        Tue, 10 Mar 2020 12:41:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583844080;
-        bh=rMQn7kjsa7T0S3IBhZrsTg2HDBVaXevtNP7v9XkF4Dg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I1JxvhDPgDdPbfsnjCQzklPKuKYeH34p3jYxw+MsAleqZaoD5vlZMGSgwDJve/kcb
-         HBer8cTXymqF4VCWBT2qnulLughtIaoKkViJa9HFSlLkHA1QXxJ2MhRXNT3OoAJF3y
-         /nieGO+TXiFXQ+bNESnLDMU1h0CttBVCiuFoe6qc=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Paul Burton <paulburton@kernel.org>, ralf@linux-mips.org,
-        linux-mips@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH 4.4 24/72] MIPS: VPE: Fix a double free and a memory leak in release_vpe()
-Date:   Tue, 10 Mar 2020 13:38:37 +0100
-Message-Id: <20200310123607.860475256@linuxfoundation.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200310123601.053680753@linuxfoundation.org>
-References: <20200310123601.053680753@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1726444AbgCJNrA (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 10 Mar 2020 09:47:00 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C8E4A30E;
+        Tue, 10 Mar 2020 06:46:58 -0700 (PDT)
+Received: from [10.163.1.203] (unknown [10.163.1.203])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 26DEA3F6CF;
+        Tue, 10 Mar 2020 06:46:44 -0700 (PDT)
+Subject: Re: [PATCH V2] mm/special: Create generic fallbacks for pte_special()
+ and pte_mkspecial()
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mm@kvack.org, Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Guo Ren <guoren@kernel.org>, Brian Cain <bcain@codeaurora.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Sam Creasey <sammy@sammy.net>, Michal Simek <monstr@monstr.eu>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Guan Xuetao <gxt@pku.edu.cn>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, nios2-dev@lists.rocketboards.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1583802551-15406-1-git-send-email-anshuman.khandual@arm.com>
+ <20200310132747.GA12601@alpha.franken.de>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <a8341dde-aa59-b425-ac23-b6005e0a67ec@arm.com>
+Date:   Tue, 10 Mar 2020 19:16:42 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200310132747.GA12601@alpha.franken.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-
-commit bef8e2dfceed6daeb6ca3e8d33f9c9d43b926580 upstream.
-
-Pointer on the memory allocated by 'alloc_progmem()' is stored in
-'v->load_addr'. So this is this memory that should be freed by
-'release_progmem()'.
-
-'release_progmem()' is only a call to 'kfree()'.
-
-With the current code, there is both a double free and a memory leak.
-Fix it by passing the correct pointer to 'release_progmem()'.
-
-Fixes: e01402b115ccc ("More AP / SP bits for the 34K, the Malta bits and things. Still wants")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Paul Burton <paulburton@kernel.org>
-Cc: ralf@linux-mips.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- arch/mips/kernel/vpe.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/arch/mips/kernel/vpe.c
-+++ b/arch/mips/kernel/vpe.c
-@@ -134,7 +134,7 @@ void release_vpe(struct vpe *v)
- {
- 	list_del(&v->list);
- 	if (v->load_addr)
--		release_progmem(v);
-+		release_progmem(v->load_addr);
- 	kfree(v);
- }
- 
 
 
+On 03/10/2020 06:57 PM, Thomas Bogendoerfer wrote:
+> On Tue, Mar 10, 2020 at 06:39:11AM +0530, Anshuman Khandual wrote:
+>> diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
+>> index aef5378f909c..8e4e4be1ca00 100644
+>> --- a/arch/mips/include/asm/pgtable.h
+>> +++ b/arch/mips/include/asm/pgtable.h
+>> @@ -269,6 +269,36 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
+>>   */
+>>  extern pgd_t swapper_pg_dir[];
+>>  
+>> +/*
+>> + * Platform specific pte_special() and pte_mkspecial() definitions
+>> + * are required only when ARCH_HAS_PTE_SPECIAL is enabled.
+>> + */
+>> +#if !defined(CONFIG_32BIT) && !defined(CONFIG_CPU_HAS_RIXI)
+> 
+> this looks wrong.
+> 
+> current Kconfig statement is
+> 
+> select ARCH_HAS_PTE_SPECIAL if !(32BIT && CPU_HAS_RIXI)
+> 
+> so we can't use PTE_SPECIAL on 32bit _and_ CPUs with RIXI support.
+
+I already had asked for clarification on this.
+
+> 
+> Why can't we use
+> 
+> #if defined(CONFIG_ARCH_HAS_PTE_SPECIAL)
+> 
+> here as the comment already suggests ?
+
+Yes, that will be easier and will automatically adjust in case
+ARCH_HAS_PTE_SPECIAL scope changes later. Will respin the patch.
+
+> 
+> Thomas.
+> 

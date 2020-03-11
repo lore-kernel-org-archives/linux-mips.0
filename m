@@ -6,44 +6,36 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E9C1C10F25
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Mar 2020 05:06:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37954C18E5A
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Mar 2020 05:07:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2173921655
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Mar 2020 05:06:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1C57221D56
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Mar 2020 05:07:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725958AbgCKFGv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 11 Mar 2020 01:06:51 -0400
-Received: from smtprelay0027.hostedemail.com ([216.40.44.27]:42604 "EHLO
+        id S1728220AbgCKFHR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 11 Mar 2020 01:07:17 -0400
+Received: from smtprelay0162.hostedemail.com ([216.40.44.162]:51800 "EHLO
         smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727184AbgCKFGu (ORCPT
+        by vger.kernel.org with ESMTP id S1728130AbgCKFHO (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 11 Mar 2020 01:06:50 -0400
+        Wed, 11 Mar 2020 01:07:14 -0400
 Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id EC692181D330D;
-        Wed, 11 Mar 2020 05:06:48 +0000 (UTC)
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 4B629101684F2;
+        Wed, 11 Mar 2020 05:07:13 +0000 (UTC)
 X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-HE-Tag: earth44_1e21c7c654313
-X-Filterd-Recvd-Size: 4150
+X-HE-Tag: queen12_21d50d9d4a639
+X-Filterd-Recvd-Size: 2278
 Received: from joe-laptop.perches.com (unknown [47.151.143.254])
         (Authenticated sender: joe@perches.com)
         by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 11 Mar 2020 05:06:46 +0000 (UTC)
+        Wed, 11 Mar 2020 05:07:12 +0000 (UTC)
 From:   Joe Perches <joe@perches.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
+To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: [PATCH -next 004/491] PERFORMANCE EVENTS SUBSYSTEM: Use fallthrough;
-Date:   Tue, 10 Mar 2020 21:51:18 -0700
-Message-Id: <73d22360c5c665fd7f480a209ae46807dfb07bbe.1583896348.git.joe@perches.com>
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org
+Subject: [PATCH -next 015/491] KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips): Use fallthrough;
+Date:   Tue, 10 Mar 2020 21:51:29 -0700
+Message-Id: <5a1ee76be0f502af626f50313456730d75fe424b.1583896348.git.joe@perches.com>
 X-Mailer: git-send-email 2.24.0
 In-Reply-To: <cover.1583896344.git.joe@perches.com>
 References: <cover.1583896344.git.joe@perches.com>
@@ -61,94 +53,48 @@ Link: https://lore.kernel.org/lkml/b56602fcf79f849e733e7b521bb0e17895d390fa.1582
 
 Signed-off-by: Joe Perches <joe@perches.com>
 ---
- arch/mips/kernel/perf_event_mipsxx.c | 6 +++---
- arch/x86/events/intel/core.c         | 7 +++----
- arch/x86/events/intel/lbr.c          | 2 +-
- kernel/events/core.c                 | 3 +--
- 4 files changed, 8 insertions(+), 10 deletions(-)
+ arch/mips/kvm/emulate.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
-index 128fc9..484948 100644
---- a/arch/mips/kernel/perf_event_mipsxx.c
-+++ b/arch/mips/kernel/perf_event_mipsxx.c
-@@ -790,15 +790,15 @@ static void reset_counters(void *arg)
- 	case 4:
- 		mipsxx_pmu_write_control(3, 0);
- 		mipspmu.write_counter(3, 0);
--		/* fall through */
-+		fallthrough;
- 	case 3:
- 		mipsxx_pmu_write_control(2, 0);
- 		mipspmu.write_counter(2, 0);
--		/* fall through */
-+		fallthrough;
- 	case 2:
- 		mipsxx_pmu_write_control(1, 0);
- 		mipspmu.write_counter(1, 0);
--		/* fall through */
-+		fallthrough;
- 	case 1:
- 		mipsxx_pmu_write_control(0, 0);
- 		mipspmu.write_counter(0, 0);
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 332954..8cd3bb 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -4637,8 +4637,7 @@ __init int intel_pmu_init(void)
- 
- 	case INTEL_FAM6_CORE2_MEROM:
- 		x86_add_quirk(intel_clovertown_quirk);
--		/* fall through */
--
-+		fallthrough;
- 	case INTEL_FAM6_CORE2_MEROM_L:
- 	case INTEL_FAM6_CORE2_PENRYN:
- 	case INTEL_FAM6_CORE2_DUNNINGTON:
-@@ -5017,7 +5016,7 @@ __init int intel_pmu_init(void)
- 
- 	case INTEL_FAM6_SKYLAKE_X:
- 		pmem = true;
--		/* fall through */
-+		fallthrough;
- 	case INTEL_FAM6_SKYLAKE_L:
- 	case INTEL_FAM6_SKYLAKE:
- 	case INTEL_FAM6_KABYLAKE_L:
-@@ -5069,7 +5068,7 @@ __init int intel_pmu_init(void)
- 	case INTEL_FAM6_ICELAKE_X:
- 	case INTEL_FAM6_ICELAKE_D:
- 		pmem = true;
--		/* fall through */
-+		fallthrough;
- 	case INTEL_FAM6_ICELAKE_L:
- 	case INTEL_FAM6_ICELAKE:
- 	case INTEL_FAM6_TIGERLAKE_L:
-diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-index 65113b1..2e2c6fb 100644
---- a/arch/x86/events/intel/lbr.c
-+++ b/arch/x86/events/intel/lbr.c
-@@ -967,7 +967,7 @@ static int branch_type(unsigned long from, unsigned long to, int abort)
- 			ret = X86_BR_ZERO_CALL;
- 			break;
- 		}
--		/* fall through */
-+		fallthrough;
- 	case 0x9a: /* call far absolute */
- 		ret = X86_BR_CALL;
- 		break;
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 6a47c3..7a8ed4d5 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -9762,8 +9762,7 @@ perf_event_parse_addr_filter(struct perf_event *event, char *fstr,
- 		case IF_SRC_KERNELADDR:
- 		case IF_SRC_KERNEL:
- 			kernel = 1;
--			/* fall through */
--
+diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
+index 754094..8c80333 100644
+--- a/arch/mips/kvm/emulate.c
++++ b/arch/mips/kvm/emulate.c
+@@ -64,7 +64,7 @@ static int kvm_compute_return_epc(struct kvm_vcpu *vcpu, unsigned long instpc,
+ 		switch (insn.r_format.func) {
+ 		case jalr_op:
+ 			arch->gprs[insn.r_format.rd] = epc + 8;
+-			/* Fall through */
 +			fallthrough;
- 		case IF_SRC_FILEADDR:
- 		case IF_SRC_FILE:
- 			if (state != IF_STATE_SOURCE)
+ 		case jr_op:
+ 			nextpc = arch->gprs[insn.r_format.rs];
+ 			break;
+@@ -140,7 +140,7 @@ static int kvm_compute_return_epc(struct kvm_vcpu *vcpu, unsigned long instpc,
+ 		/* These are unconditional and in j_format. */
+ 	case jal_op:
+ 		arch->gprs[31] = instpc + 8;
+-		/* fall through */
++		fallthrough;
+ 	case j_op:
+ 		epc += 4;
+ 		epc >>= 28;
+@@ -1724,14 +1724,14 @@ enum emulation_result kvm_mips_emulate_load(union mips_instruction inst,
+ 
+ 	case lhu_op:
+ 		vcpu->mmio_needed = 1;	/* unsigned */
+-		/* fall through */
++		fallthrough;
+ 	case lh_op:
+ 		run->mmio.len = 2;
+ 		break;
+ 
+ 	case lbu_op:
+ 		vcpu->mmio_needed = 1;	/* unsigned */
+-		/* fall through */
++		fallthrough;
+ 	case lb_op:
+ 		run->mmio.len = 1;
+ 		break;
 -- 
 2.24.0
 

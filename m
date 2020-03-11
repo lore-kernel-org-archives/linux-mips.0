@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37954C18E5A
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Mar 2020 05:07:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98170C10F25
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Mar 2020 05:08:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1C57221D56
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Mar 2020 05:07:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7689C2192A
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Mar 2020 05:08:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728220AbgCKFHR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 11 Mar 2020 01:07:17 -0400
-Received: from smtprelay0162.hostedemail.com ([216.40.44.162]:51800 "EHLO
+        id S1726713AbgCKFIa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 11 Mar 2020 01:08:30 -0400
+Received: from smtprelay0239.hostedemail.com ([216.40.44.239]:52550 "EHLO
         smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728130AbgCKFHO (ORCPT
+        by vger.kernel.org with ESMTP id S1728200AbgCKFHN (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 11 Mar 2020 01:07:14 -0400
+        Wed, 11 Mar 2020 01:07:13 -0400
 Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 4B629101684F2;
-        Wed, 11 Mar 2020 05:07:13 +0000 (UTC)
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id C492A8415;
+        Wed, 11 Mar 2020 05:07:11 +0000 (UTC)
 X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-HE-Tag: queen12_21d50d9d4a639
-X-Filterd-Recvd-Size: 2278
+X-HE-Tag: title31_219eac731e337
+X-Filterd-Recvd-Size: 1529
 Received: from joe-laptop.perches.com (unknown [47.151.143.254])
         (Authenticated sender: joe@perches.com)
         by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 11 Mar 2020 05:07:12 +0000 (UTC)
+        Wed, 11 Mar 2020 05:07:10 +0000 (UTC)
 From:   Joe Perches <joe@perches.com>
-To:     linux-kernel@vger.kernel.org
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
 Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org
-Subject: [PATCH -next 015/491] KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips): Use fallthrough;
-Date:   Tue, 10 Mar 2020 21:51:29 -0700
-Message-Id: <5a1ee76be0f502af626f50313456730d75fe424b.1583896348.git.joe@perches.com>
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH -next 014/491] DECSTATION PLATFORM SUPPORT: Use fallthrough;
+Date:   Tue, 10 Mar 2020 21:51:28 -0700
+Message-Id: <79ddf8b6b0d77cd6489711e817fce622f8a85d0b.1583896348.git.joe@perches.com>
 X-Mailer: git-send-email 2.24.0
 In-Reply-To: <cover.1583896344.git.joe@perches.com>
 References: <cover.1583896344.git.joe@perches.com>
@@ -53,47 +53,21 @@ Link: https://lore.kernel.org/lkml/b56602fcf79f849e733e7b521bb0e17895d390fa.1582
 
 Signed-off-by: Joe Perches <joe@perches.com>
 ---
- arch/mips/kvm/emulate.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/mips/dec/tc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
-index 754094..8c80333 100644
---- a/arch/mips/kvm/emulate.c
-+++ b/arch/mips/kvm/emulate.c
-@@ -64,7 +64,7 @@ static int kvm_compute_return_epc(struct kvm_vcpu *vcpu, unsigned long instpc,
- 		switch (insn.r_format.func) {
- 		case jalr_op:
- 			arch->gprs[insn.r_format.rd] = epc + 8;
--			/* Fall through */
-+			fallthrough;
- 		case jr_op:
- 			nextpc = arch->gprs[insn.r_format.rs];
- 			break;
-@@ -140,7 +140,7 @@ static int kvm_compute_return_epc(struct kvm_vcpu *vcpu, unsigned long instpc,
- 		/* These are unconditional and in j_format. */
- 	case jal_op:
- 		arch->gprs[31] = instpc + 8;
+diff --git a/arch/mips/dec/tc.c b/arch/mips/dec/tc.c
+index 732027c..dba583 100644
+--- a/arch/mips/dec/tc.c
++++ b/arch/mips/dec/tc.c
+@@ -52,7 +52,7 @@ int __init tc_bus_get_info(struct tc_bus *tbus)
+ 	case MACH_DS5900:
+ 		tbus->ext_slot_base = 0x20000000;
+ 		tbus->ext_slot_size = 0x20000000;
 -		/* fall through */
 +		fallthrough;
- 	case j_op:
- 		epc += 4;
- 		epc >>= 28;
-@@ -1724,14 +1724,14 @@ enum emulation_result kvm_mips_emulate_load(union mips_instruction inst,
- 
- 	case lhu_op:
- 		vcpu->mmio_needed = 1;	/* unsigned */
--		/* fall through */
-+		fallthrough;
- 	case lh_op:
- 		run->mmio.len = 2;
- 		break;
- 
- 	case lbu_op:
- 		vcpu->mmio_needed = 1;	/* unsigned */
--		/* fall through */
-+		fallthrough;
- 	case lb_op:
- 		run->mmio.len = 1;
+ 	case MACH_DS5000_1XX:
+ 		tbus->num_tcslots = 3;
  		break;
 -- 
 2.24.0

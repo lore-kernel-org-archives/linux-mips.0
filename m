@@ -4,26 +4,26 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 584CDC10DCE
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 15:44:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DECF7C10DCE
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 15:44:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 39DAF2074B
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 15:44:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B9F9A2072C
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 15:44:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbgCMPof (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 13 Mar 2020 11:44:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:58542 "EHLO foss.arm.com"
+        id S1727229AbgCMPol (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 13 Mar 2020 11:44:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:58610 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727144AbgCMPoe (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 13 Mar 2020 11:44:34 -0400
+        id S1727224AbgCMPol (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 13 Mar 2020 11:44:41 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6982831B;
-        Fri, 13 Mar 2020 08:44:34 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1CEF1045;
+        Fri, 13 Mar 2020 08:44:40 -0700 (PDT)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 71A853F67D;
-        Fri, 13 Mar 2020 08:44:31 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CABC63F67D;
+        Fri, 13 Mar 2020 08:44:37 -0700 (PDT)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
@@ -46,9 +46,9 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Marc Zyngier <maz@kernel.org>,
         Mark Rutland <Mark.Rutland@arm.com>
-Subject: [PATCH v3 09/26] linux/math64.h: Extract common header for vDSO
-Date:   Fri, 13 Mar 2020 15:43:28 +0000
-Message-Id: <20200313154345.56760-10-vincenzo.frascino@arm.com>
+Subject: [PATCH v3 11/26] linux/time32.h: Extract common header for vDSO
+Date:   Fri, 13 Mar 2020 15:43:30 +0000
+Message-Id: <20200313154345.56760-12-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200313154345.56760-1-vincenzo.frascino@arm.com>
 References: <20200313154345.56760-1-vincenzo.frascino@arm.com>
@@ -64,84 +64,65 @@ a userspace library (UAPI and a minimal set of kernel headers). To make
 this possible it is necessary to isolate from the kernel headers the
 common parts that are strictly necessary to build the library.
 
-Split math64.h into linux and common headers to make the latter suitable
+Split time32.h into linux and common headers to make the latter suitable
 for inclusion in the vDSO library.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- include/linux/math64.h | 20 +-------------------
- include/vdso/math64.h  | 24 ++++++++++++++++++++++++
- 2 files changed, 25 insertions(+), 19 deletions(-)
- create mode 100644 include/vdso/math64.h
+ include/linux/time32.h | 14 ++------------
+ include/vdso/time32.h  | 17 +++++++++++++++++
+ 2 files changed, 19 insertions(+), 12 deletions(-)
+ create mode 100644 include/vdso/time32.h
 
-diff --git a/include/linux/math64.h b/include/linux/math64.h
-index 65bef21cdddb..11a267413e8e 100644
---- a/include/linux/math64.h
-+++ b/include/linux/math64.h
-@@ -3,6 +3,7 @@
- #define _LINUX_MATH64_H
+diff --git a/include/linux/time32.h b/include/linux/time32.h
+index cad4c3186002..0933f28214c0 100644
+--- a/include/linux/time32.h
++++ b/include/linux/time32.h
+@@ -12,19 +12,9 @@
+ #include <linux/time64.h>
+ #include <linux/timex.h>
  
- #include <linux/types.h>
-+#include <vdso/math64.h>
- #include <asm/div64.h>
+-#define TIME_T_MAX	(__kernel_old_time_t)((1UL << ((sizeof(__kernel_old_time_t) << 3) - 1)) - 1)
+-
+-typedef s32		old_time32_t;
+-
+-struct old_timespec32 {
+-	old_time32_t	tv_sec;
+-	s32		tv_nsec;
+-};
++#include <vdso/time32.h>
  
- #if BITS_PER_LONG == 64
-@@ -142,25 +143,6 @@ static inline s64 div_s64(s64 dividend, s32 divisor)
+-struct old_timeval32 {
+-	old_time32_t	tv_sec;
+-	s32		tv_usec;
+-};
++#define TIME_T_MAX	(__kernel_old_time_t)((1UL << ((sizeof(__kernel_old_time_t) << 3) - 1)) - 1)
  
- u32 iter_div_u64_rem(u64 dividend, u32 divisor, u64 *remainder);
- 
--static __always_inline u32
--__iter_div_u64_rem(u64 dividend, u32 divisor, u64 *remainder)
--{
--	u32 ret = 0;
--
--	while (dividend >= divisor) {
--		/* The following asm() prevents the compiler from
--		   optimising this loop into a modulo operation.  */
--		asm("" : "+rm"(dividend));
--
--		dividend -= divisor;
--		ret++;
--	}
--
--	*remainder = dividend;
--
--	return ret;
--}
--
- #ifndef mul_u32_u32
- /*
-  * Many a GCC version messes this up and generates a 64x64 mult :-(
-diff --git a/include/vdso/math64.h b/include/vdso/math64.h
+ struct old_itimerspec32 {
+ 	struct old_timespec32 it_interval;
+diff --git a/include/vdso/time32.h b/include/vdso/time32.h
 new file mode 100644
-index 000000000000..7da703ee5561
+index 000000000000..fdf56f932f67
 --- /dev/null
-+++ b/include/vdso/math64.h
-@@ -0,0 +1,24 @@
++++ b/include/vdso/time32.h
+@@ -0,0 +1,17 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __VDSO_MATH64_H
-+#define __VDSO_MATH64_H
++#ifndef __VDSO_TIME32_H
++#define __VDSO_TIME32_H
 +
-+static __always_inline u32
-+__iter_div_u64_rem(u64 dividend, u32 divisor, u64 *remainder)
-+{
-+	u32 ret = 0;
++typedef s32		old_time32_t;
 +
-+	while (dividend >= divisor) {
-+		/* The following asm() prevents the compiler from
-+		   optimising this loop into a modulo operation.  */
-+		asm("" : "+rm"(dividend));
++struct old_timespec32 {
++	old_time32_t	tv_sec;
++	s32		tv_nsec;
++};
 +
-+		dividend -= divisor;
-+		ret++;
-+	}
++struct old_timeval32 {
++	old_time32_t	tv_sec;
++	s32		tv_usec;
++};
 +
-+	*remainder = dividend;
-+
-+	return ret;
-+}
-+
-+#endif /* __VDSO_MATH64_H */
++#endif /* __VDSO_TIME32_H */
 -- 
 2.25.1
 

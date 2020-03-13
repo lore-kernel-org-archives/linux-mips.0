@@ -4,27 +4,26 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A065C2BB1D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98D7DC4CECE
 	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 15:44:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0C7C42074E
+	by mail.kernel.org (Postfix) with ESMTP id 7A9B920749
 	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 15:44:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgCMPoK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 13 Mar 2020 11:44:10 -0400
-Received: from foss.arm.com ([217.140.110.172]:58244 "EHLO foss.arm.com"
+        id S1727059AbgCMPoR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 13 Mar 2020 11:44:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:58318 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726420AbgCMPoJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 13 Mar 2020 11:44:09 -0400
+        id S1726420AbgCMPoP (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 13 Mar 2020 11:44:15 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6EADFEC;
-        Fri, 13 Mar 2020 08:44:08 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 197E731B;
+        Fri, 13 Mar 2020 08:44:15 -0700 (PDT)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BFF493F67D;
-        Fri, 13 Mar 2020 08:44:05 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 245443F67D;
+        Fri, 13 Mar 2020 08:44:12 -0700 (PDT)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
@@ -47,9 +46,9 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Marc Zyngier <maz@kernel.org>,
         Mark Rutland <Mark.Rutland@arm.com>
-Subject: [PATCH v3 01/26] linux/const.h: Extract common header for vDSO
-Date:   Fri, 13 Mar 2020 15:43:20 +0000
-Message-Id: <20200313154345.56760-2-vincenzo.frascino@arm.com>
+Subject: [PATCH v3 03/26] linux/limits.h: Extract common header for vDSO
+Date:   Fri, 13 Mar 2020 15:43:22 +0000
+Message-Id: <20200313154345.56760-4-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200313154345.56760-1-vincenzo.frascino@arm.com>
 References: <20200313154345.56760-1-vincenzo.frascino@arm.com>
@@ -65,47 +64,65 @@ a userspace library (UAPI and a minimal set of kernel headers). To make
 this possible it is necessary to isolate from the kernel headers the
 common parts that are strictly necessary to build the library.
 
-Split const.h into linux and common headers to make the latter suitable
+Split limits.h into linux and common headers to make the latter suitable
 for inclusion in the vDSO library.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- include/linux/const.h |  5 +----
- include/vdso/const.h  | 10 ++++++++++
- 2 files changed, 11 insertions(+), 4 deletions(-)
- create mode 100644 include/vdso/const.h
+ include/linux/limits.h | 13 +------------
+ include/vdso/limits.h  | 18 ++++++++++++++++++
+ 2 files changed, 19 insertions(+), 12 deletions(-)
+ create mode 100644 include/vdso/limits.h
 
-diff --git a/include/linux/const.h b/include/linux/const.h
-index 7b55a55f5911..81b8aae5a855 100644
---- a/include/linux/const.h
-+++ b/include/linux/const.h
-@@ -1,9 +1,6 @@
- #ifndef _LINUX_CONST_H
- #define _LINUX_CONST_H
+diff --git a/include/linux/limits.h b/include/linux/limits.h
+index 76afcd24ff8c..7fc497ee1393 100644
+--- a/include/linux/limits.h
++++ b/include/linux/limits.h
+@@ -4,19 +4,8 @@
  
--#include <uapi/linux/const.h>
--
--#define UL(x)		(_UL(x))
--#define ULL(x)		(_ULL(x))
-+#include <vdso/const.h>
+ #include <uapi/linux/limits.h>
+ #include <linux/types.h>
++#include <vdso/limits.h>
  
- #endif /* _LINUX_CONST_H */
-diff --git a/include/vdso/const.h b/include/vdso/const.h
+-#define USHRT_MAX	((unsigned short)~0U)
+-#define SHRT_MAX	((short)(USHRT_MAX >> 1))
+-#define SHRT_MIN	((short)(-SHRT_MAX - 1))
+-#define INT_MAX		((int)(~0U >> 1))
+-#define INT_MIN		(-INT_MAX - 1)
+-#define UINT_MAX	(~0U)
+-#define LONG_MAX	((long)(~0UL >> 1))
+-#define LONG_MIN	(-LONG_MAX - 1)
+-#define ULONG_MAX	(~0UL)
+-#define LLONG_MAX	((long long)(~0ULL >> 1))
+-#define LLONG_MIN	(-LLONG_MAX - 1)
+-#define ULLONG_MAX	(~0ULL)
+ #define SIZE_MAX	(~(size_t)0)
+ #define PHYS_ADDR_MAX	(~(phys_addr_t)0)
+ 
+diff --git a/include/vdso/limits.h b/include/vdso/limits.h
 new file mode 100644
-index 000000000000..94b385ad438d
+index 000000000000..7d2cd75c7ac2
 --- /dev/null
-+++ b/include/vdso/const.h
-@@ -0,0 +1,10 @@
++++ b/include/vdso/limits.h
+@@ -0,0 +1,18 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __VDSO_CONST_H
-+#define __VDSO_CONST_H
++#ifndef __VDSO_LIMITS_H
++#define __VDSO_LIMITS_H
 +
-+#include <uapi/linux/const.h>
++#define USHRT_MAX	((unsigned short)~0U)
++#define SHRT_MAX	((short)(USHRT_MAX >> 1))
++#define SHRT_MIN	((short)(-SHRT_MAX - 1))
++#define INT_MAX		((int)(~0U >> 1))
++#define INT_MIN		(-INT_MAX - 1)
++#define UINT_MAX	(~0U)
++#define LONG_MAX	((long)(~0UL >> 1))
++#define LONG_MIN	(-LONG_MAX - 1)
++#define ULONG_MAX	(~0UL)
++#define LLONG_MAX	((long long)(~0ULL >> 1))
++#define LLONG_MIN	(-LLONG_MAX - 1)
++#define ULLONG_MAX	(~0ULL)
 +
-+#define UL(x)		(_UL(x))
-+#define ULL(x)		(_ULL(x))
-+
-+#endif /* __VDSO_CONST_H */
++#endif /* __VDSO_LIMITS_H */
 -- 
 2.25.1
 

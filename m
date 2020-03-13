@@ -2,116 +2,120 @@ Return-Path: <SRS0=GG9e=46=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 742DDC10DCE
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 03:09:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20BB4C10DCE
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 03:14:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 41899206E2
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 03:09:39 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nz4f66aN"
+	by mail.kernel.org (Postfix) with ESMTP id F2293206F7
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 03:14:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgCMDJi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 12 Mar 2020 23:09:38 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:40858 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726331AbgCMDJi (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 12 Mar 2020 23:09:38 -0400
-Received: by mail-qk1-f196.google.com with SMTP id m2so10201895qka.7;
-        Thu, 12 Mar 2020 20:09:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=y+mnyt60IrxwqY8gBOAa8U5kdnGh5BymccVlM/S5jFY=;
-        b=Nz4f66aNz6UTRMnsPJWo6PaiGAphRvXBFNmEApfnqp0ngUNkyOWys98tc5BOTi5y5v
-         Bnf264UnBx3FcBO7QPuz1olSvo4ASZVq8wQib9InhpdjcHH1yYz1Smn9Ty7ZHX+SdvTy
-         ZP/vRMW2AzJP9RDCy7o9AnrqHADLkvqqVW7ml/JDCMcm3yXNN62SzTqEy0BigZ8cgyA6
-         N0Zi4hAHTATlw3dscZvq+gt/fURHDj8ka8zKM7cmYAS1QCFR5f0T6d3urRSCMivkfoXP
-         vgf/IAN33DjVgBj6PoC9W+T+/3ucq/F8oiG9rUjN/VBXiuuwGUiStNOpTLnOy8WTaIFY
-         nBEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=y+mnyt60IrxwqY8gBOAa8U5kdnGh5BymccVlM/S5jFY=;
-        b=NeV87iIeZxrpQDRedbeS6SVmoAYRA/XsAQrK5mIhPmQcW20IWA/3avNh5byyNS5/Eg
-         PLvh1s7MYV4g6KAb/FkqyHwu6zTisRo2/Pt3VpvKYY3zM4EPiWglkcAwxrpzvv2r4qxl
-         dryH7Ai4DLOprkCTV8K68ntfumsku1uRbqkgexXSKtOR4Mc8fmHvivvszIX8qLW8UlpN
-         FkyCf7GnXoy95CURrrdzDs7LRv/TIr+yvz6d5GRxL4bVJM3/rjp6f1OR31wmOC3Y+4ar
-         HddGxK99ki9KBBDSXjrbmWPsGtRo9iiFuXdXeDNAeTROU41ICcmvLLNSOXzQNbfXBUod
-         jGdg==
-X-Gm-Message-State: ANhLgQ1mByARvrMuHNip62SHiiYlcR7hBOeuvIBBkumuherl3Qp6T/YB
-        Z7UKGCuPxWPd2+yyAjAnCarwi0Yd
-X-Google-Smtp-Source: ADFU+vu+aRNTNzG+JZz8Cif9Nt9Ku+azqqksRXrAV27uFGOEeGQcvkMUMIIc6rVKT9cqdZgFUfJKDQ==
-X-Received: by 2002:a05:620a:1236:: with SMTP id v22mr10999159qkj.101.1584068977427;
-        Thu, 12 Mar 2020 20:09:37 -0700 (PDT)
-Received: from [10.0.0.29] (pool-98-118-94-114.bstnma.fios.verizon.net. [98.118.94.114])
-        by smtp.gmail.com with ESMTPSA id m92sm2452426qtd.94.2020.03.12.20.09.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Mar 2020 20:09:36 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Kamal Dasu <kdasu.kdev@gmail.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2] MIPS: c-r4k: Invalidate BMIPS5000 ZSCM prefetch lines
-Date:   Thu, 12 Mar 2020 23:09:35 -0400
-Message-Id: <2388CCC9-8C2A-4907-988D-7A239DE0DD6C@gmail.com>
-References: <20200311214432.GA5900@alpha.franken.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-mips@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        James Hogan <jhogan@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20200311214432.GA5900@alpha.franken.de>
+        id S1726442AbgCMDO2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 12 Mar 2020 23:14:28 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:55504 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726377AbgCMDO2 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 12 Mar 2020 23:14:28 -0400
+Received: from localhost.localdomain.localdomain (unknown [125.69.47.232])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn9uK+mpe1gcaAA--.45S4;
+        Fri, 13 Mar 2020 11:14:20 +0800 (CST)
+From:   Xing Li <lixing@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-X-Mailer: iPhone Mail (17D50)
+Cc:     linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maobibo@loongson.cn,
+        chenhc@lemote.com, jiaxun.yang@flygoat.com
+Subject: [PATCH v2 Resend 3/3] KVM: MIPS: Support kvm modules autoprobed when startup system
+Date:   Fri, 13 Mar 2020 11:14:17 +0800
+Message-Id: <1584069257-30896-3-git-send-email-lixing@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1584069257-30896-1-git-send-email-lixing@loongson.cn>
+References: <1584069257-30896-1-git-send-email-lixing@loongson.cn>
+X-CM-TRANSID: AQAAf9Dxn9uK+mpe1gcaAA--.45S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cr1xCFy7uF1UKFWkuw4rKrg_yoW8Zr1rpF
+        4DAa93Cr45uryDJFWfZFnFgrW3Ja1DG3yj9ayjgryjv3ZYqFs8Jws2kwnxKr1DXFsIq3WF
+        gas3Xr1jka92vw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBv14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
+        8EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxd
+        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+        v20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8GwCF04
+        k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18
+        MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr4
+        1lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l
+        IxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4
+        A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU5pnQUUUUU=
+X-CM-SenderInfo: pol0x03j6o00pqjv00gofq/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This is needed on dma reads from device. =20
+Currently, the module_init of kvm_mips_init cannot force the kvm
+modules insmod when startup system.
 
-Kamal
+Add new feature CPU_MIPS_VZ in elf_hwcap to support KVM auto probe
+when hardware virtualization supported.
 
+Signed-off-by: Xing Li <lixing@loongson.cn>
+---
+ arch/mips/include/uapi/asm/hwcap.h | 1 +
+ arch/mips/kernel/cpu-probe.c       | 4 +++-
+ arch/mips/kvm/mips.c               | 3 ++-
+ 3 files changed, 6 insertions(+), 2 deletions(-)
 
-> On Mar 11, 2020, at 5:44 PM, Thomas Bogendoerfer <tsbogend@alpha.franken.d=
-e> wrote:
->=20
-> =EF=BB=BFOn Wed, Mar 11, 2020 at 01:54:23PM -0700, Florian Fainelli wrote:=
-
->>> On 2/7/20 2:33 PM, Kamal Dasu wrote:
->>> Zephyr secondary cache is 256KB, 128B lines. 32B sectors. A secondary ca=
-che
->>> line can contain two instruction cache lines (64B), or four data cache
->>> lines (32B). Hardware prefetch Cache detects stream access, and prefetch=
-es
->>> ahead of processor access. Add support to invalidate BMIPS5000 cpu zephy=
-r
->>> secondary cache module (ZSCM) on DMA from device so that data returned i=
-s
->>> coherent during DMA read operations.
->>>=20
->>> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
->>=20
->> Thomas can review and apply this patch? Thank you!
->=20
-> looks good to me. I only wonder whether r4k_dma_cache_wbinv() also
-> needs this ?
->=20
-> Thomas.
->=20
-> --=20
-> Crap can work. Given enough thrust pigs will fly, but it's not necessarily=
- a
-> good idea.                                                [ RFC1925, 2.3 ]=
+diff --git a/arch/mips/include/uapi/asm/hwcap.h b/arch/mips/include/uapi/asm/hwcap.h
+index 1ade1da..9e66509 100644
+--- a/arch/mips/include/uapi/asm/hwcap.h
++++ b/arch/mips/include/uapi/asm/hwcap.h
+@@ -17,5 +17,6 @@
+ #define HWCAP_LOONGSON_MMI  (1 << 11)
+ #define HWCAP_LOONGSON_EXT  (1 << 12)
+ #define HWCAP_LOONGSON_EXT2 (1 << 13)
++#define HWCAP_MIPS_VZ       (1 << 14)
+ 
+ #endif /* _UAPI_ASM_HWCAP_H */
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index c543326..b305269 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -2242,8 +2242,10 @@ void cpu_probe(void)
+ 	if (cpu_has_loongson_ext2)
+ 		elf_hwcap |= HWCAP_LOONGSON_EXT2;
+ 
+-	if (cpu_has_vz)
++	if (cpu_has_vz) {
+ 		cpu_probe_vz(c);
++		elf_hwcap |= HWCAP_MIPS_VZ;
++	}
+ 
+ 	cpu_probe_vmbits(c);
+ 
+diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+index 1109924..1da5df3 100644
+--- a/arch/mips/kvm/mips.c
++++ b/arch/mips/kvm/mips.c
+@@ -19,6 +19,7 @@
+ #include <linux/sched/signal.h>
+ #include <linux/fs.h>
+ #include <linux/memblock.h>
++#include <linux/cpufeature.h>
+ 
+ #include <asm/fpu.h>
+ #include <asm/page.h>
+@@ -1742,7 +1743,7 @@ static void __exit kvm_mips_exit(void)
+ 	unregister_die_notifier(&kvm_mips_csr_die_notifier);
+ }
+ 
+-module_init(kvm_mips_init);
++module_cpu_feature_match(MIPS_VZ, kvm_mips_init);
+ module_exit(kvm_mips_exit);
+ 
+ EXPORT_TRACEPOINT_SYMBOL(kvm_exit);
+-- 
+2.1.0
 

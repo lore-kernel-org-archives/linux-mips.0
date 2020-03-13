@@ -2,35 +2,65 @@ Return-Path: <SRS0=GG9e=46=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8D1DC4CECE
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 15:46:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49180C10DCE
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 16:19:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8B6CB20746
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 15:46:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1E8D4206B7
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 16:19:33 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UaJGqhaS"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgCMPoV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 13 Mar 2020 11:44:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:58354 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727066AbgCMPoS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 13 Mar 2020 11:44:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 44F9DFEC;
-        Fri, 13 Mar 2020 08:44:18 -0700 (PDT)
-Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4FAC73F67D;
-        Fri, 13 Mar 2020 08:44:15 -0700 (PDT)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S1726952AbgCMQTc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 13 Mar 2020 12:19:32 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:36061 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726461AbgCMQTc (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 13 Mar 2020 12:19:32 -0400
+Received: by mail-wm1-f68.google.com with SMTP id g62so10964713wme.1;
+        Fri, 13 Mar 2020 09:19:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DzWpdx6328OZ0aH4x17MPaDC7GHF6Gljp2V0qUX/DXo=;
+        b=UaJGqhaStKvtpmCHIX3kKDpHnWc+X5jToC5SA/qFSF367bfEjsz2TVGFQPWSP8HeUx
+         GRLu8BKAOod/fH4D9Sowc0g+v0PGZvefYUcatrjW7Hns/gHMn0/5MvDT//4Z9EWPhYvQ
+         KJah4mfhH2zRxGewD8tH3WSFEYvcHtW/vfQO6ucpmC8zuWcsqvQ5w246yKiWspujo/Ly
+         vdN9l8dgYdikc6SF9YTp5CKa4Mi8ppQT3A9PbDL/lzQqsfGXhMpz8T50Q2WliEJDvN7x
+         nJt9rp5Tyx77XMF6/Rv1OlehOLOIkgQL2QYO5J0J0WTA4aa++VluIhkdS0C3yTOp8PjN
+         Y+nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DzWpdx6328OZ0aH4x17MPaDC7GHF6Gljp2V0qUX/DXo=;
+        b=NYITuNGP1USg2O+J0QUggvMzwJGEABlr/kQ8vA6LpF7qh8OypZIH5jS67eFUxDPVvR
+         vHxHw3p5hnWaCXAuLpaft2KSxZOtrTWNIv1fbNvoyBKgcLhY/f8n5XTIUUj/TSVouRcC
+         VP6xtTFV52lZGKaTxqqh9XK15ZUtxQsrKQNqn7aKD41l6n9qMPTh+zX8lD0S7sz2siwC
+         bdUApVEE1Zwbj8yUuS1w3W9+eBGyHMsiZHzebskGOi3rGZQkg944tYxjcuUubsGjBVqE
+         GN7Cpx9rJu5lLlBAaYE7z9U0iXlRrnhOwUBy7tDEhmOzLRQ+dZmiYK7pGclTiOvZivb7
+         Y+6A==
+X-Gm-Message-State: ANhLgQ0nkLk+z7jmzJ5oE8HbNJpPdIJJmng49E2+NFABaxEv4GqIBD/Z
+        GJDguFYk8wQI5ptm9hj9eik=
+X-Google-Smtp-Source: ADFU+vsq06fil7othF27XQT8Yzw4TwrwXBYm7m6KjdoRKe730VpT0nmboNEJS30sUYpx7sh4hoWlkQ==
+X-Received: by 2002:a1c:791a:: with SMTP id l26mr11500620wme.103.1584116370132;
+        Fri, 13 Mar 2020 09:19:30 -0700 (PDT)
+Received: from [10.83.36.153] ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id w1sm16365071wmc.11.2020.03.13.09.19.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Mar 2020 09:19:29 -0700 (PDT)
+Subject: Re: [PATCH v3 00/26] Introduce common headers for vDSO
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
         clang-built-linux@googlegroups.com, x86@kernel.org
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>,
         Arnd Bergmann <arnd@arndb.de>,
         Russell King <linux@armlinux.org.uk>,
@@ -42,78 +72,63 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Mark Salyzyn <salyzyn@android.com>,
         Kees Cook <keescook@chromium.org>,
         Peter Collingbourne <pcc@google.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
         Andrei Vagin <avagin@openvz.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Marc Zyngier <maz@kernel.org>,
         Mark Rutland <Mark.Rutland@arm.com>
-Subject: [PATCH v3 04/26] x86:Introduce asm/vdso/clocksource.h
-Date:   Fri, 13 Mar 2020 15:43:23 +0000
-Message-Id: <20200313154345.56760-5-vincenzo.frascino@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200313154345.56760-1-vincenzo.frascino@arm.com>
 References: <20200313154345.56760-1-vincenzo.frascino@arm.com>
+From:   Dmitry Safonov <0x7f454c46@gmail.com>
+Message-ID: <693b6a61-b5f6-2744-1579-b356e6510547@gmail.com>
+Date:   Fri, 13 Mar 2020 16:19:23 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200313154345.56760-1-vincenzo.frascino@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The vDSO library should only include the necessary headers required for
-a userspace library (UAPI and a minimal set of kernel headers). To make
-this possible it is necessary to isolate from the kernel headers the
-common parts that are strictly necessary to build the library.
+Hi Vincenzo, all
 
-Introduce asm/vdso/clocksource.h to contain all the arm64 specific
-functions that are suitable for vDSO inclusion.
+I like the idea, but I'm wondering if we could have less-grained
+headers? Like, AFAICS the patches create headers < 10 lines and even
+mostly < 5 lines.. I like that header's names perfectly describe what's
+inside, but I'm not sure how effective to have a lot of extra-small
+includes.
 
-This header will be required by a future patch that will generalize
-vdso/clocksource.h.
+Or maybe there's a plan to grow the code in them?
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
----
- arch/x86/include/asm/clocksource.h      |  5 +----
- arch/x86/include/asm/vdso/clocksource.h | 10 ++++++++++
- 2 files changed, 11 insertions(+), 4 deletions(-)
- create mode 100644 arch/x86/include/asm/vdso/clocksource.h
+On 3/13/20 3:43 PM, Vincenzo Frascino wrote:
+[..]
+>  create mode 100644 arch/arm/include/asm/vdso/clocksource.h
+>  create mode 100644 arch/arm/include/asm/vdso/cp15.h
+>  create mode 100644 arch/arm/include/asm/vdso/processor.h
+>  create mode 100644 arch/arm64/include/asm/vdso/arch_timer.h
+>  create mode 100644 arch/arm64/include/asm/vdso/clocksource.h
+>  create mode 100644 arch/arm64/include/asm/vdso/processor.h
+>  create mode 100644 arch/mips/include/asm/vdso/clocksource.h
+>  create mode 100644 arch/mips/include/asm/vdso/processor.h
+>  create mode 100644 arch/x86/include/asm/vdso/clocksource.h
+>  create mode 100644 arch/x86/include/asm/vdso/processor.h
+>  create mode 100644 include/vdso/bits.h
+>  create mode 100644 include/vdso/clocksource.h
+>  create mode 100644 include/vdso/const.h
+>  create mode 100644 include/vdso/jiffies.h
+>  create mode 100644 include/vdso/ktime.h
+>  create mode 100644 include/vdso/limits.h
+>  create mode 100644 include/vdso/math64.h
+>  create mode 100644 include/vdso/processor.h
+>  create mode 100644 include/vdso/time.h
+>  create mode 100644 include/vdso/time32.h
+>  create mode 100644 include/vdso/time64.h
 
-diff --git a/arch/x86/include/asm/clocksource.h b/arch/x86/include/asm/clocksource.h
-index d561db67f96d..dc9dc7b3911a 100644
---- a/arch/x86/include/asm/clocksource.h
-+++ b/arch/x86/include/asm/clocksource.h
-@@ -4,10 +4,7 @@
- #ifndef _ASM_X86_CLOCKSOURCE_H
- #define _ASM_X86_CLOCKSOURCE_H
- 
--#define VDSO_ARCH_CLOCKMODES	\
--	VDSO_CLOCKMODE_TSC,	\
--	VDSO_CLOCKMODE_PVCLOCK,	\
--	VDSO_CLOCKMODE_HVCLOCK
-+#include <asm/vdso/clocksource.h>
- 
- extern unsigned int vclocks_used;
- 
-diff --git a/arch/x86/include/asm/vdso/clocksource.h b/arch/x86/include/asm/vdso/clocksource.h
-new file mode 100644
-index 000000000000..119ac8612d89
---- /dev/null
-+++ b/arch/x86/include/asm/vdso/clocksource.h
-@@ -0,0 +1,10 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_VDSO_CLOCKSOURCE_H
-+#define __ASM_VDSO_CLOCKSOURCE_H
-+
-+#define VDSO_ARCH_CLOCKMODES	\
-+	VDSO_CLOCKMODE_TSC,	\
-+	VDSO_CLOCKMODE_PVCLOCK,	\
-+	VDSO_CLOCKMODE_HVCLOCK
-+
-+#endif /* __ASM_VDSO_CLOCKSOURCE_H */
--- 
-2.25.1
+Maybe we could made them less-grained?
 
+I.e, time32 + time64 + time.h => time.h?
+
+Thanks for Cc,
+          Dmitry

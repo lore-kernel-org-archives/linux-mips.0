@@ -6,24 +6,24 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 223F5C2BB1D
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 15:44:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51E5BC5ACBF
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 15:45:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 023522074A
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 15:44:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 331332072C
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Mar 2020 15:45:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727269AbgCMPot (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 13 Mar 2020 11:44:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:58690 "EHLO foss.arm.com"
+        id S1727378AbgCMPpE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 13 Mar 2020 11:45:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:58874 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726851AbgCMPor (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 13 Mar 2020 11:44:47 -0400
+        id S1727369AbgCMPpE (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 13 Mar 2020 11:45:04 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 262EB1063;
-        Fri, 13 Mar 2020 08:44:47 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8764C31B;
+        Fri, 13 Mar 2020 08:45:03 -0700 (PDT)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2FEEF3F67D;
-        Fri, 13 Mar 2020 08:44:44 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 73A0E3F67D;
+        Fri, 13 Mar 2020 08:45:00 -0700 (PDT)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
@@ -45,10 +45,11 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Andrei Vagin <avagin@openvz.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <Mark.Rutland@arm.com>
-Subject: [PATCH v3 13/26] linux/jiffies.h: Extract common header for vDSO
-Date:   Fri, 13 Mar 2020 15:43:32 +0000
-Message-Id: <20200313154345.56760-14-vincenzo.frascino@arm.com>
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH v3 18/26] arm64: Introduce asm/vdso/processor.h
+Date:   Fri, 13 Mar 2020 15:43:37 +0000
+Message-Id: <20200313154345.56760-19-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200313154345.56760-1-vincenzo.frascino@arm.com>
 References: <20200313154345.56760-1-vincenzo.frascino@arm.com>
@@ -64,55 +65,96 @@ a userspace library (UAPI and a minimal set of kernel headers). To make
 this possible it is necessary to isolate from the kernel headers the
 common parts that are strictly necessary to build the library.
 
-Split jiffies.h into linux and common headers to make the latter suitable
-for inclusion in the vDSO library.
+Introduce asm/vdso/processor.h to contain all the arm64 specific
+functions that are suitable for vDSO inclusion.
 
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- include/linux/jiffies.h |  4 +---
- include/vdso/jiffies.h  | 11 +++++++++++
- 2 files changed, 12 insertions(+), 3 deletions(-)
- create mode 100644 include/vdso/jiffies.h
+ arch/arm64/include/asm/processor.h      | 16 ++-----------
+ arch/arm64/include/asm/vdso/processor.h | 31 +++++++++++++++++++++++++
+ 2 files changed, 33 insertions(+), 14 deletions(-)
+ create mode 100644 arch/arm64/include/asm/vdso/processor.h
 
-diff --git a/include/linux/jiffies.h b/include/linux/jiffies.h
-index e3279ef24d28..fed6ba96c527 100644
---- a/include/linux/jiffies.h
-+++ b/include/linux/jiffies.h
-@@ -8,6 +8,7 @@
- #include <linux/types.h>
- #include <linux/time.h>
- #include <linux/timex.h>
-+#include <vdso/jiffies.h>
- #include <asm/param.h>			/* for HZ */
- #include <generated/timeconst.h>
+diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
+index 5ba63204d078..89ba2c5be504 100644
+--- a/arch/arm64/include/asm/processor.h
++++ b/arch/arm64/include/asm/processor.h
+@@ -28,6 +28,8 @@
+ #include <linux/string.h>
+ #include <linux/thread_info.h>
  
-@@ -59,9 +60,6 @@
++#include <vdso/processor.h>
++
+ #include <asm/alternative.h>
+ #include <asm/cpufeature.h>
+ #include <asm/hw_breakpoint.h>
+@@ -47,15 +49,6 @@
+ #define TASK_SIZE_64		(UL(1) << vabits_actual)
  
- extern int register_refined_jiffies(long clock_tick_rate);
+ #ifdef CONFIG_COMPAT
+-#if defined(CONFIG_ARM64_64K_PAGES) && defined(CONFIG_KUSER_HELPERS)
+-/*
+- * With CONFIG_ARM64_64K_PAGES enabled, the last page is occupied
+- * by the compat vectors page.
+- */
+-#define TASK_SIZE_32		UL(0x100000000)
+-#else
+-#define TASK_SIZE_32		(UL(0x100000000) - PAGE_SIZE)
+-#endif /* CONFIG_ARM64_64K_PAGES */
+ #define TASK_SIZE		(test_thread_flag(TIF_32BIT) ? \
+ 				TASK_SIZE_32 : TASK_SIZE_64)
+ #define TASK_SIZE_OF(tsk)	(test_tsk_thread_flag(tsk, TIF_32BIT) ? \
+@@ -256,11 +249,6 @@ extern void release_thread(struct task_struct *);
  
--/* TICK_NSEC is the time between ticks in nsec assuming SHIFTED_HZ */
--#define TICK_NSEC ((NSEC_PER_SEC+HZ/2)/HZ)
+ unsigned long get_wchan(struct task_struct *p);
+ 
+-static inline void cpu_relax(void)
+-{
+-	asm volatile("yield" ::: "memory");
+-}
 -
- /* TICK_USEC is the time between ticks in usec assuming SHIFTED_HZ */
- #define TICK_USEC ((USEC_PER_SEC + HZ/2) / HZ)
- 
-diff --git a/include/vdso/jiffies.h b/include/vdso/jiffies.h
+ /* Thread switching */
+ extern struct task_struct *cpu_switch_to(struct task_struct *prev,
+ 					 struct task_struct *next);
+diff --git a/arch/arm64/include/asm/vdso/processor.h b/arch/arm64/include/asm/vdso/processor.h
 new file mode 100644
-index 000000000000..2f9d596c8b29
+index 000000000000..fb4883212a2d
 --- /dev/null
-+++ b/include/vdso/jiffies.h
-@@ -0,0 +1,11 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __VDSO_JIFFIES_H
-+#define __VDSO_JIFFIES_H
++++ b/arch/arm64/include/asm/vdso/processor.h
+@@ -0,0 +1,31 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) 2020 ARM Ltd.
++ */
++#ifndef __ASM_VDSO_PROCESSOR_H
++#define __ASM_VDSO_PROCESSOR_H
 +
-+#include <asm/param.h>			/* for HZ */
-+#include <vdso/time64.h>
++#ifndef __ASSEMBLY__
 +
-+/* TICK_NSEC is the time between ticks in nsec assuming SHIFTED_HZ */
-+#define TICK_NSEC ((NSEC_PER_SEC+HZ/2)/HZ)
++#include <asm/page-def.h>
 +
-+#endif /* __VDSO_JIFFIES_H */
++#ifdef CONFIG_COMPAT
++#if defined(CONFIG_ARM64_64K_PAGES) && defined(CONFIG_KUSER_HELPERS)
++/*
++ * With CONFIG_ARM64_64K_PAGES enabled, the last page is occupied
++ * by the compat vectors page.
++ */
++#define TASK_SIZE_32		UL(0x100000000)
++#else
++#define TASK_SIZE_32		(UL(0x100000000) - PAGE_SIZE)
++#endif /* CONFIG_ARM64_64K_PAGES */
++#endif /* CONFIG_COMPAT */
++
++static inline void cpu_relax(void)
++{
++	asm volatile("yield" ::: "memory");
++}
++
++#endif /* __ASSEMBLY__ */
++
++#endif /* __ASM_VDSO_PROCESSOR_H */
 -- 
 2.25.1
 

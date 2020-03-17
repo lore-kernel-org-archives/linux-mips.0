@@ -6,24 +6,24 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC638C18E5B
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:23:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89826C18E5B
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:23:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9E35320736
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:23:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6D01520736
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:23:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbgCQMXM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 17 Mar 2020 08:23:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:36626 "EHLO foss.arm.com"
+        id S1727050AbgCQMXV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 17 Mar 2020 08:23:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:36736 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726916AbgCQMXL (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 17 Mar 2020 08:23:11 -0400
+        id S1726916AbgCQMXU (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 17 Mar 2020 08:23:20 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BD415101E;
-        Tue, 17 Mar 2020 05:23:10 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 65EAE101E;
+        Tue, 17 Mar 2020 05:23:20 -0700 (PDT)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AB8F53F534;
-        Tue, 17 Mar 2020 05:23:07 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 700573F534;
+        Tue, 17 Mar 2020 05:23:17 -0700 (PDT)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
@@ -45,11 +45,10 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Andrei Vagin <avagin@openvz.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH v4 06/26] arm64: Introduce asm/vdso/clocksource.h
-Date:   Tue, 17 Mar 2020 12:22:00 +0000
-Message-Id: <20200317122220.30393-7-vincenzo.frascino@arm.com>
+        Mark Rutland <Mark.Rutland@arm.com>
+Subject: [PATCH v4 09/26] linux/math64.h: Extract common header for vDSO
+Date:   Tue, 17 Mar 2020 12:22:03 +0000
+Message-Id: <20200317122220.30393-10-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200317122220.30393-1-vincenzo.frascino@arm.com>
 References: <20200317122220.30393-1-vincenzo.frascino@arm.com>
@@ -65,49 +64,84 @@ a userspace library (UAPI and a minimal set of kernel headers). To make
 this possible it is necessary to isolate from the kernel headers the
 common parts that are strictly necessary to build the library.
 
-Introduce asm/vdso/clocksource.h to contain all the arm64 specific
-functions that are suitable for vDSO inclusion.
+Split math64.h into linux and common headers to make the latter suitable
+for inclusion in the vDSO library.
 
-This header will be required by a future patch that will generalize
-vdso/clocksource.h.
-
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- arch/arm64/include/asm/clocksource.h      | 3 +--
- arch/arm64/include/asm/vdso/clocksource.h | 8 ++++++++
- 2 files changed, 9 insertions(+), 2 deletions(-)
- create mode 100644 arch/arm64/include/asm/vdso/clocksource.h
+ include/linux/math64.h | 20 +-------------------
+ include/vdso/math64.h  | 24 ++++++++++++++++++++++++
+ 2 files changed, 25 insertions(+), 19 deletions(-)
+ create mode 100644 include/vdso/math64.h
 
-diff --git a/arch/arm64/include/asm/clocksource.h b/arch/arm64/include/asm/clocksource.h
-index eb82e9d95c5d..482185566b0c 100644
---- a/arch/arm64/include/asm/clocksource.h
-+++ b/arch/arm64/include/asm/clocksource.h
-@@ -2,7 +2,6 @@
- #ifndef _ASM_CLOCKSOURCE_H
- #define _ASM_CLOCKSOURCE_H
+diff --git a/include/linux/math64.h b/include/linux/math64.h
+index 65bef21cdddb..11a267413e8e 100644
+--- a/include/linux/math64.h
++++ b/include/linux/math64.h
+@@ -3,6 +3,7 @@
+ #define _LINUX_MATH64_H
  
--#define VDSO_ARCH_CLOCKMODES	\
--	VDSO_CLOCKMODE_ARCHTIMER
-+#include <asm/vdso/clocksource.h>
+ #include <linux/types.h>
++#include <vdso/math64.h>
+ #include <asm/div64.h>
  
- #endif
-diff --git a/arch/arm64/include/asm/vdso/clocksource.h b/arch/arm64/include/asm/vdso/clocksource.h
+ #if BITS_PER_LONG == 64
+@@ -142,25 +143,6 @@ static inline s64 div_s64(s64 dividend, s32 divisor)
+ 
+ u32 iter_div_u64_rem(u64 dividend, u32 divisor, u64 *remainder);
+ 
+-static __always_inline u32
+-__iter_div_u64_rem(u64 dividend, u32 divisor, u64 *remainder)
+-{
+-	u32 ret = 0;
+-
+-	while (dividend >= divisor) {
+-		/* The following asm() prevents the compiler from
+-		   optimising this loop into a modulo operation.  */
+-		asm("" : "+rm"(dividend));
+-
+-		dividend -= divisor;
+-		ret++;
+-	}
+-
+-	*remainder = dividend;
+-
+-	return ret;
+-}
+-
+ #ifndef mul_u32_u32
+ /*
+  * Many a GCC version messes this up and generates a 64x64 mult :-(
+diff --git a/include/vdso/math64.h b/include/vdso/math64.h
 new file mode 100644
-index 000000000000..df6ea65c1dec
+index 000000000000..7da703ee5561
 --- /dev/null
-+++ b/arch/arm64/include/asm/vdso/clocksource.h
-@@ -0,0 +1,8 @@
++++ b/include/vdso/math64.h
+@@ -0,0 +1,24 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_VDSOCLOCKSOURCE_H
-+#define __ASM_VDSOCLOCKSOURCE_H
++#ifndef __VDSO_MATH64_H
++#define __VDSO_MATH64_H
 +
-+#define VDSO_ARCH_CLOCKMODES	\
-+	VDSO_CLOCKMODE_ARCHTIMER
++static __always_inline u32
++__iter_div_u64_rem(u64 dividend, u32 divisor, u64 *remainder)
++{
++	u32 ret = 0;
 +
-+#endif
++	while (dividend >= divisor) {
++		/* The following asm() prevents the compiler from
++		   optimising this loop into a modulo operation.  */
++		asm("" : "+rm"(dividend));
++
++		dividend -= divisor;
++		ret++;
++	}
++
++	*remainder = dividend;
++
++	return ret;
++}
++
++#endif /* __VDSO_MATH64_H */
 -- 
 2.25.1
 

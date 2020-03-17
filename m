@@ -4,122 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10164C3F2CE
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:24:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A31BFC2BB1D
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 13:10:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E42C02076E
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:24:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7B97C20752
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 13:10:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727316AbgCQMYC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 17 Mar 2020 08:24:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:37060 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726452AbgCQMXt (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 17 Mar 2020 08:23:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71C0C101E;
-        Tue, 17 Mar 2020 05:23:49 -0700 (PDT)
-Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6157C3F534;
-        Tue, 17 Mar 2020 05:23:46 -0700 (PDT)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-mips@vger.kernel.org, x86@kernel.org
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Paul Burton <paul.burton@mips.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mark Salyzyn <salyzyn@android.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrei Vagin <avagin@openvz.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH v4 18/26] arm64: vdso32: Replace TASK_SIZE_32 check in vgettimeofday
-Date:   Tue, 17 Mar 2020 12:22:12 +0000
-Message-Id: <20200317122220.30393-19-vincenzo.frascino@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200317122220.30393-1-vincenzo.frascino@arm.com>
-References: <20200317122220.30393-1-vincenzo.frascino@arm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726250AbgCQNKH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 17 Mar 2020 09:10:07 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:54014 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726130AbgCQNKH (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 17 Mar 2020 09:10:07 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxD94bzHBerosbAA--.10S2;
+        Tue, 17 Mar 2020 21:09:47 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH] MIPS: Loongson: Do not initialise statics to 0
+Date:   Tue, 17 Mar 2020 21:09:46 +0800
+Message-Id: <1584450586-27917-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxD94bzHBerosbAA--.10S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruFyUZFy5urWrXr1UArWUJwb_yoW3KwcE9F
+        47tw4DK3s5AF18u34UX3y5XFW2gas8WanruF1kJryY9w1YvFn8JF4vvwn5Krn8Xr4YyFZ5
+        Way8Jr13CanFgjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbc8FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW5GwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU1iihUUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-For ABI compatibility with arm32, the compat vDSO layer on arm64 needs
-to return -EINVAL when UINTPTR_MAX is passed as argument to the
-clock_get* functions.
+Fix the following checkpatch error:
 
-Replace TASK_SIZE_32 with a more semantically correct formula that checks
-for wrapping around 0.
+ERROR: do not initialise statics to 0
+#125: FILE: loongson64/numa.c:125:
++	static unsigned long num_physpages = 0;
 
-Note: This will allow to not define TASK_SIZE_32 for the vdso headers in a
-future patch that will introduce asm/vdso/processor.h on arm64.
-
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- arch/arm64/kernel/vdso32/vgettimeofday.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ arch/mips/loongson64/numa.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/vdso32/vgettimeofday.c b/arch/arm64/kernel/vdso32/vgettimeofday.c
-index 54fc1c2ce93f..91138077b073 100644
---- a/arch/arm64/kernel/vdso32/vgettimeofday.c
-+++ b/arch/arm64/kernel/vdso32/vgettimeofday.c
-@@ -8,11 +8,14 @@
- #include <linux/time.h>
- #include <linux/types.h>
- 
-+#define VALID_CLOCK_ID(x) \
-+	((x >= 0) && (x < VDSO_BASES))
-+
- int __vdso_clock_gettime(clockid_t clock,
- 			 struct old_timespec32 *ts)
+diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
+index e5b40c5..1ae072d 100644
+--- a/arch/mips/loongson64/numa.c
++++ b/arch/mips/loongson64/numa.c
+@@ -122,7 +122,7 @@ static unsigned long nid_to_addroffset(unsigned int nid)
+ static void __init szmem(unsigned int node)
  {
- 	/* The checks below are required for ABI consistency with arm */
--	if ((u32)ts >= TASK_SIZE_32)
-+	if ((u32)ts > UINTPTR_MAX - sizeof(*ts) + 1)
- 		return -EFAULT;
+ 	u32 i, mem_type;
+-	static unsigned long num_physpages = 0;
++	static unsigned long num_physpages;
+ 	u64 node_id, node_psize, start_pfn, end_pfn, mem_start, mem_size;
  
- 	return __cvdso_clock_gettime32(clock, ts);
-@@ -22,7 +25,7 @@ int __vdso_clock_gettime64(clockid_t clock,
- 			   struct __kernel_timespec *ts)
- {
- 	/* The checks below are required for ABI consistency with arm */
--	if ((u32)ts >= TASK_SIZE_32)
-+	if ((u32)ts > UINTPTR_MAX - sizeof(*ts) + 1)
- 		return -EFAULT;
- 
- 	return __cvdso_clock_gettime(clock, ts);
-@@ -38,9 +41,12 @@ int __vdso_clock_getres(clockid_t clock_id,
- 			struct old_timespec32 *res)
- {
- 	/* The checks below are required for ABI consistency with arm */
--	if ((u32)res >= TASK_SIZE_32)
-+	if ((u32)res > UINTPTR_MAX - sizeof(res) + 1)
- 		return -EFAULT;
- 
-+	if (!VALID_CLOCK_ID(clock_id) && res == NULL)
-+		return -EINVAL;
-+
- 	return __cvdso_clock_getres_time32(clock_id, res);
- }
- 
+ 	/* Parse memory information and activate */
 -- 
-2.25.1
+2.1.0
 

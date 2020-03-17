@@ -6,24 +6,24 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADA03C2BB1D
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:23:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9132FC18E5B
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:23:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 907EF20777
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:23:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 700BA20777
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:23:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727178AbgCQMXg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 17 Mar 2020 08:23:36 -0400
-Received: from foss.arm.com ([217.140.110.172]:36908 "EHLO foss.arm.com"
+        id S1726998AbgCQMXS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 17 Mar 2020 08:23:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:36702 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727138AbgCQMXg (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 17 Mar 2020 08:23:36 -0400
+        id S1726992AbgCQMXR (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 17 Mar 2020 08:23:17 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4BD08FEC;
-        Tue, 17 Mar 2020 05:23:36 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39ED3FEC;
+        Tue, 17 Mar 2020 05:23:17 -0700 (PDT)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 569503F534;
-        Tue, 17 Mar 2020 05:23:33 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 443C83F534;
+        Tue, 17 Mar 2020 05:23:14 -0700 (PDT)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
@@ -46,9 +46,9 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Marc Zyngier <maz@kernel.org>,
         Mark Rutland <Mark.Rutland@arm.com>
-Subject: [PATCH v4 14/26] linux/ktime.h: Extract common header for vDSO
-Date:   Tue, 17 Mar 2020 12:22:08 +0000
-Message-Id: <20200317122220.30393-15-vincenzo.frascino@arm.com>
+Subject: [PATCH v4 08/26] linux/clocksource.h: Extract common header for vDSO
+Date:   Tue, 17 Mar 2020 12:22:02 +0000
+Message-Id: <20200317122220.30393-9-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200317122220.30393-1-vincenzo.frascino@arm.com>
 References: <20200317122220.30393-1-vincenzo.frascino@arm.com>
@@ -64,58 +64,67 @@ a userspace library (UAPI and a minimal set of kernel headers). To make
 this possible it is necessary to isolate from the kernel headers the
 common parts that are strictly necessary to build the library.
 
-Split ktime.h into linux and common headers to make the latter suitable
-for inclusion in the vDSO library.
+Split clocksource.h into linux and common headers to make the latter
+suitable for inclusion in the vDSO library.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- include/linux/ktime.h |  9 +--------
- include/vdso/ktime.h  | 16 ++++++++++++++++
- 2 files changed, 17 insertions(+), 8 deletions(-)
- create mode 100644 include/vdso/ktime.h
+ include/linux/clocksource.h | 11 +----------
+ include/vdso/clocksource.h  | 23 +++++++++++++++++++++++
+ 2 files changed, 24 insertions(+), 10 deletions(-)
+ create mode 100644 include/vdso/clocksource.h
 
-diff --git a/include/linux/ktime.h b/include/linux/ktime.h
-index b2bb44f87f5a..1fcfce97a020 100644
---- a/include/linux/ktime.h
-+++ b/include/linux/ktime.h
-@@ -253,14 +253,7 @@ static inline __must_check bool ktime_to_timespec64_cond(const ktime_t kt,
- 	}
- }
+diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+index 02e3282719bd..86d143db6523 100644
+--- a/include/linux/clocksource.h
++++ b/include/linux/clocksource.h
+@@ -28,16 +28,7 @@ struct module;
+ #include <asm/clocksource.h>
+ #endif
  
--/*
-- * The resolution of the clocks. The resolution value is returned in
-- * the clock_getres() system call to give application programmers an
-- * idea of the (in)accuracy of timers. Timer values are rounded up to
-- * this resolution values.
-- */
--#define LOW_RES_NSEC		TICK_NSEC
--#define KTIME_LOW_RES		(LOW_RES_NSEC)
-+#include <vdso/ktime.h>
+-enum vdso_clock_mode {
+-	VDSO_CLOCKMODE_NONE,
+-#ifdef CONFIG_GENERIC_GETTIMEOFDAY
+-	VDSO_ARCH_CLOCKMODES,
+-#endif
+-	VDSO_CLOCKMODE_MAX,
+-
+-	/* Indicator for time namespace VDSO */
+-	VDSO_CLOCKMODE_TIMENS = INT_MAX
+-};
++#include <vdso/clocksource.h>
  
- static inline ktime_t ns_to_ktime(u64 ns)
- {
-diff --git a/include/vdso/ktime.h b/include/vdso/ktime.h
+ /**
+  * struct clocksource - hardware abstraction for a free running counter
+diff --git a/include/vdso/clocksource.h b/include/vdso/clocksource.h
 new file mode 100644
-index 000000000000..a0fd07239e0e
+index 000000000000..ab58330e4e5d
 --- /dev/null
-+++ b/include/vdso/ktime.h
-@@ -0,0 +1,16 @@
++++ b/include/vdso/clocksource.h
+@@ -0,0 +1,23 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __VDSO_KTIME_H
-+#define __VDSO_KTIME_H
++#ifndef __VDSO_CLOCKSOURCE_H
++#define __VDSO_CLOCKSOURCE_H
 +
-+#include <vdso/jiffies.h>
++#include <vdso/limits.h>
 +
-+/*
-+ * The resolution of the clocks. The resolution value is returned in
-+ * the clock_getres() system call to give application programmers an
-+ * idea of the (in)accuracy of timers. Timer values are rounded up to
-+ * this resolution values.
-+ */
-+#define LOW_RES_NSEC		TICK_NSEC
-+#define KTIME_LOW_RES		(LOW_RES_NSEC)
++#if defined(CONFIG_ARCH_CLOCKSOURCE_DATA) || \
++	defined(CONFIG_GENERIC_GETTIMEOFDAY)
++#include <asm/vdso/clocksource.h>
++#endif /* CONFIG_ARCH_CLOCKSOURCE_DATA || CONFIG_GENERIC_GETTIMEOFDAY */
 +
-+#endif /* __VDSO_KTIME_H */
++enum vdso_clock_mode {
++	VDSO_CLOCKMODE_NONE,
++#ifdef CONFIG_GENERIC_GETTIMEOFDAY
++	VDSO_ARCH_CLOCKMODES,
++#endif
++	VDSO_CLOCKMODE_MAX,
++
++	/* Indicator for time namespace VDSO */
++	VDSO_CLOCKMODE_TIMENS = INT_MAX
++};
++
++#endif /* __VDSO_CLOCKSOURCE_H */
 -- 
 2.25.1
 

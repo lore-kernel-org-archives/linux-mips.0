@@ -4,26 +4,26 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87C8DC5ACC0
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:23:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50E39C18E5B
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:23:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 6AC1D20736
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:23:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2F7082077D
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:23:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgCQMW6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 17 Mar 2020 08:22:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:36482 "EHLO foss.arm.com"
+        id S1726837AbgCQMXF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 17 Mar 2020 08:23:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:36552 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726651AbgCQMW6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 17 Mar 2020 08:22:58 -0400
+        id S1726664AbgCQMXE (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 17 Mar 2020 08:23:04 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E694F101E;
-        Tue, 17 Mar 2020 05:22:57 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4ACBB30E;
+        Tue, 17 Mar 2020 05:23:04 -0700 (PDT)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F12AA3F534;
-        Tue, 17 Mar 2020 05:22:54 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 53C193F534;
+        Tue, 17 Mar 2020 05:23:01 -0700 (PDT)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
@@ -46,9 +46,9 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Marc Zyngier <maz@kernel.org>,
         Mark Rutland <Mark.Rutland@arm.com>
-Subject: [PATCH v4 02/26] linux/bits.h: Extract common header for vDSO
-Date:   Tue, 17 Mar 2020 12:21:56 +0000
-Message-Id: <20200317122220.30393-3-vincenzo.frascino@arm.com>
+Subject: [PATCH v4 04/26] x86:Introduce asm/vdso/clocksource.h
+Date:   Tue, 17 Mar 2020 12:21:58 +0000
+Message-Id: <20200317122220.30393-5-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200317122220.30393-1-vincenzo.frascino@arm.com>
 References: <20200317122220.30393-1-vincenzo.frascino@arm.com>
@@ -64,46 +64,55 @@ a userspace library (UAPI and a minimal set of kernel headers). To make
 this possible it is necessary to isolate from the kernel headers the
 common parts that are strictly necessary to build the library.
 
-Split bits.h into linux and common headers to make the latter suitable
-for inclusion in the vDSO library.
+Introduce asm/vdso/clocksource.h to contain all the arm64 specific
+functions that are suitable for vDSO inclusion.
 
+This header will be required by a future patch that will generalize
+vdso/clocksource.h.
+
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- include/linux/bits.h | 2 +-
- include/vdso/bits.h  | 9 +++++++++
- 2 files changed, 10 insertions(+), 1 deletion(-)
- create mode 100644 include/vdso/bits.h
+ arch/x86/include/asm/clocksource.h      |  5 +----
+ arch/x86/include/asm/vdso/clocksource.h | 10 ++++++++++
+ 2 files changed, 11 insertions(+), 4 deletions(-)
+ create mode 100644 arch/x86/include/asm/vdso/clocksource.h
 
-diff --git a/include/linux/bits.h b/include/linux/bits.h
-index 669d69441a62..a740bbcf3cd2 100644
---- a/include/linux/bits.h
-+++ b/include/linux/bits.h
-@@ -3,9 +3,9 @@
- #define __LINUX_BITS_H
+diff --git a/arch/x86/include/asm/clocksource.h b/arch/x86/include/asm/clocksource.h
+index d561db67f96d..dc9dc7b3911a 100644
+--- a/arch/x86/include/asm/clocksource.h
++++ b/arch/x86/include/asm/clocksource.h
+@@ -4,10 +4,7 @@
+ #ifndef _ASM_X86_CLOCKSOURCE_H
+ #define _ASM_X86_CLOCKSOURCE_H
  
- #include <linux/const.h>
-+#include <vdso/bits.h>
- #include <asm/bitsperlong.h>
+-#define VDSO_ARCH_CLOCKMODES	\
+-	VDSO_CLOCKMODE_TSC,	\
+-	VDSO_CLOCKMODE_PVCLOCK,	\
+-	VDSO_CLOCKMODE_HVCLOCK
++#include <asm/vdso/clocksource.h>
  
--#define BIT(nr)			(UL(1) << (nr))
- #define BIT_ULL(nr)		(ULL(1) << (nr))
- #define BIT_MASK(nr)		(UL(1) << ((nr) % BITS_PER_LONG))
- #define BIT_WORD(nr)		((nr) / BITS_PER_LONG)
-diff --git a/include/vdso/bits.h b/include/vdso/bits.h
+ extern unsigned int vclocks_used;
+ 
+diff --git a/arch/x86/include/asm/vdso/clocksource.h b/arch/x86/include/asm/vdso/clocksource.h
 new file mode 100644
-index 000000000000..6d005a1f5d94
+index 000000000000..119ac8612d89
 --- /dev/null
-+++ b/include/vdso/bits.h
-@@ -0,0 +1,9 @@
++++ b/arch/x86/include/asm/vdso/clocksource.h
+@@ -0,0 +1,10 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __VDSO_BITS_H
-+#define __VDSO_BITS_H
++#ifndef __ASM_VDSO_CLOCKSOURCE_H
++#define __ASM_VDSO_CLOCKSOURCE_H
 +
-+#include <vdso/const.h>
++#define VDSO_ARCH_CLOCKMODES	\
++	VDSO_CLOCKMODE_TSC,	\
++	VDSO_CLOCKMODE_PVCLOCK,	\
++	VDSO_CLOCKMODE_HVCLOCK
 +
-+#define BIT(nr)			(UL(1) << (nr))
-+
-+#endif	/* __VDSO_BITS_H */
++#endif /* __ASM_VDSO_CLOCKSOURCE_H */
 -- 
 2.25.1
 

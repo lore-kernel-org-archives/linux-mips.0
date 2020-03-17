@@ -2,98 +2,269 @@ Return-Path: <SRS0=hiBl=5C=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-11.8 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9AEFC2BB1D
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 09:53:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE4E9C2BB1D
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:22:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 93AE220757
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 09:53:36 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="aGfwBsRG"
+	by mail.kernel.org (Postfix) with ESMTP id A4F0620777
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:22:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726077AbgCQJxf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 17 Mar 2020 05:53:35 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:35148 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725928AbgCQJxf (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 17 Mar 2020 05:53:35 -0400
-Received: by mail-lj1-f194.google.com with SMTP id u12so22054657ljo.2
-        for <linux-mips@vger.kernel.org>; Tue, 17 Mar 2020 02:53:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ahtq2mQzZ/hKQzTlMcOpLhf6uob8xhN3CPDjeFKWyEM=;
-        b=aGfwBsRGZVXeDImvcp1rxaXVNVG6sI22MgbooYe+Fj1c8fxvBgW1JJUhESsKVK12dh
-         YGCH6QRWdfHOjrZGqWX5n5US/FhYIpo3wJovZ2G868vnRoVPGYgf1htRfNqFhBuToyPu
-         DABPhm4gTU6Rekp3tY5L5NbchKoy0A+oaLQu4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ahtq2mQzZ/hKQzTlMcOpLhf6uob8xhN3CPDjeFKWyEM=;
-        b=bUHvk79Idm0gh63+BBx1hplQdMNX2P1kDckVUBr8YZGrBu2Sj34wkVA7ETumUNL05K
-         s2AhBf24/0PiBgD5Cn7EpbiKq7qXfqH0g7/XqBcykGf72sxQU/HB76R/L0XYJYhM/p1e
-         i6Kwl+7hhqyYGE4MqzC5HFGxiOHkERLMfionxMfyUr70Hb15xoIUoGsihy571APWUG2A
-         dJ62O89Esu5YNuSdU1ANvM791jX4WOO0O4+j7mq2+oQqLVmGHuvGoW4AI69WQo8v3oB6
-         v3QotJM3AcyFknYYVV3IryBEf1SxTPwptfaGMwrPqJ+fvUztq0SomWL0+eEuuUxPEn6n
-         2sVw==
-X-Gm-Message-State: ANhLgQ3hyrTNZiMzi/cmNdejJutM+lOJuIagoU9w5StcpEw0pNUYIlf3
-        D7hGlqhD3aIaQjQgmRdizMzc0SfSEdz+xkOFX0Uhuw==
-X-Google-Smtp-Source: ADFU+vvxuOLt1IwGKsrImxS13GFlvtmnCJR669U9slmviidnh+ZhPft+usarUg8t0soUz8b6zMNszgIWOKrVO9BWE+A=
-X-Received: by 2002:a2e:9214:: with SMTP id k20mr2344374ljg.157.1584438812259;
- Tue, 17 Mar 2020 02:53:32 -0700 (PDT)
+        id S1726410AbgCQMWx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 17 Mar 2020 08:22:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:36416 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725906AbgCQMWw (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 17 Mar 2020 08:22:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 90A7A30E;
+        Tue, 17 Mar 2020 05:22:51 -0700 (PDT)
+Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 764FF3F534;
+        Tue, 17 Mar 2020 05:22:48 -0700 (PDT)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-mips@vger.kernel.org, x86@kernel.org
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Paul Burton <paul.burton@mips.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mark Salyzyn <salyzyn@android.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andrei Vagin <avagin@openvz.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <Mark.Rutland@arm.com>
+Subject: [PATCH v4 00/26] Introduce common headers for vDSO
+Date:   Tue, 17 Mar 2020 12:21:54 +0000
+Message-Id: <20200317122220.30393-1-vincenzo.frascino@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200317040742.12143-1-rayagonda.kokatanur@broadcom.com> <e94bbb2c-6f36-61bb-d26a-2ce3e1a139e0@cogentembedded.com>
-In-Reply-To: <e94bbb2c-6f36-61bb-d26a-2ce3e1a139e0@cogentembedded.com>
-From:   Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-Date:   Tue, 17 Mar 2020 15:23:20 +0530
-Message-ID: <CAHO=5PEiPK=uF_rEJ+ujaP=oq2fPR1VHvczjZ1JQAqDdjTsMHQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] firmware: tee_bnxt: remove unused variable init
-To:     Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Cc:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        linux-mips@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Mar 17, 2020 at 2:39 PM Sergei Shtylyov
-<sergei.shtylyov@cogentembedded.com> wrote:
->
-> Hello!
->
-> On 17.03.2020 7:07, Rayagonda Kokatanur wrote:
->
-> > Remove unused variable initialization.
->
->     I think it's not an initialization, it's an assignment. :-)
-Thanks  will fix it and send v2.
->
-> > Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-> > ---
-> >   drivers/firmware/broadcom/tee_bnxt_fw.c | 2 --
-> >   1 file changed, 2 deletions(-)
-> >
-> > diff --git a/drivers/firmware/broadcom/tee_bnxt_fw.c b/drivers/firmware/broadcom/tee_bnxt_fw.c
-> > index ed10da5313e8..6fd62657e35f 100644
-> > --- a/drivers/firmware/broadcom/tee_bnxt_fw.c
-> > +++ b/drivers/firmware/broadcom/tee_bnxt_fw.c
-> > @@ -143,8 +143,6 @@ int tee_bnxt_copy_coredump(void *buf, u32 offset, u32 size)
-> >       prepare_args(TA_CMD_BNXT_COPY_COREDUMP, &arg, param);
-> >
-> >       while (rbytes)  {
-> > -             nbytes = rbytes;
-> > -
-> >               nbytes = min_t(u32, rbytes, param[0].u.memref.size);
-> >
-> >               /* Fill additional invoke cmd params */
->
-> MBR, Sergei
+Back in July last year we started having a problem in building compat
+vDSOs on arm64 [1] [2] that was not present when the arm64 porting to
+the Unified vDSO was done. In particular when the compat vDSO on such
+architecture is built with gcc it generates the warning below:
+
+In file included from ./arch/arm64/include/asm/thread_info.h:17:0,
+                 from ./include/linux/thread_info.h:38,
+                 from ./arch/arm64/include/asm/preempt.h:5,
+                 from ./include/linux/preempt.h:78,
+                 from ./include/linux/spinlock.h:51,
+                 from ./include/linux/seqlock.h:36,
+                 from ./include/linux/time.h:6,
+                 from ./lib/vdso/gettimeofday.c:7,
+                 from <command-line>:0:
+./arch/arm64/include/asm/memory.h: In function ‘__tag_set’:
+./arch/arm64/include/asm/memory.h:233:15: warning: cast from pointer
+                to integer of different size [-Wpointer-to-int-cast]
+  u64 __addr = (u64)addr & ~__tag_shifted(0xff);
+               ^
+In file included from ./arch/arm64/include/asm/pgtable-hwdef.h:8:0,
+                 from ./arch/arm64/include/asm/processor.h:34,
+                 from ./arch/arm64/include/asm/elf.h:118,
+                 from ./include/linux/elf.h:5,
+                 from ./include/linux/elfnote.h:62,
+                 from arch/arm64/kernel/vdso32/note.c:11:
+./arch/arm64/include/asm/memory.h: In function ‘__tag_set’:
+./arch/arm64/include/asm/memory.h:233:15: warning: cast from pointer
+                to integer of different size [-Wpointer-to-int-cast]
+  u64 __addr = (u64)addr & ~__tag_shifted(0xff);
+
+The same porting does not build at all when the selected compiler is
+clang.
+
+I started an investigation to try to understand better the problem and
+after various discussions at Plumbers and Recipes last year the
+conclusion was that the vDSO library as it stands it is including more
+headers that it needs. In particular, being a user-space library, it
+should require only the UAPI and a minimal vDSO kernel interface instead
+of all the kernel-related inline functions which are not directly used
+and in some cases can have side effects.
+
+To solve the problem, I decided to use the approach below:
+  * Extract from include/linux/ the vDSO required kernel interface
+    and place it in include/vdso/
+  * Make sure that where meaningful the kernel includes "vdso" headers.
+  * Limit the vDSO library to include headers coming only from UAPI
+    and "vdso" (with 2 exceptions compiler.h for barriers and param.h
+    for HZ).
+  * Adapt all the architectures that support the unified vDSO library
+    to use "vdso" headers.
+
+According to me this approach allows up to exercise a better control on
+what the vDSO library can include and to prevent potential issues in
+future.
+
+This patch series contains the implementation of the described approach.
+
+The "vdso" headers have been verified on all the architectures that support
+unified vDSO using the vdsotest [3] testsuite for what concerns the vDSO part
+and randconfig to verify that they are included in the correct places.
+
+To simplify the testing, a copy of the patchset on top of a recent linux
+tree can be found at [4].
+
+[1] https://github.com/ClangBuiltLinux/linux/issues/595
+[2] https://lore.kernel.org/lkml/20190926151704.GH9689@arrakis.emea.arm.com
+[3] https://github.com/nathanlynch/vdsotest
+[4] git://linux-arm.org/linux-vf.git common-headers/v4
+
+Changes:
+--------
+v4:
+  - Dropped vDSO optimization patch for arm64.
+  - Introduce a new patch to drop dependency from TASK_SIZE_32 on arm64.
+  - Addressed review comments.
+  - Rebased on tip/timers/core.
+v3:
+  - Changed the namespace from common to vdso.
+  - Addressed an issue involving parisc modules compilation.
+  - Added vdso header for clocksource.h.
+  - Addressed review comments.
+  - Rebased on tip/timers/core.
+v2:
+  - Addressed review comments for clang support.
+  - Rebased on 5.6-rc4.
+
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will.deacon@arm.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Paul Burton <paul.burton@mips.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Mark Salyzyn <salyzyn@android.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: Andrei Vagin <avagin@openvz.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Mark Rutland <Mark.Rutland@arm.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+
+Vincenzo Frascino (26):
+  linux/const.h: Extract common header for vDSO
+  linux/bits.h: Extract common header for vDSO
+  linux/limits.h: Extract common header for vDSO
+  x86:Introduce asm/vdso/clocksource.h
+  arm: Introduce asm/vdso/clocksource.h
+  arm64: Introduce asm/vdso/clocksource.h
+  mips: Introduce asm/vdso/clocksource.h
+  linux/clocksource.h: Extract common header for vDSO
+  linux/math64.h: Extract common header for vDSO
+  linux/time.h: Extract common header for vDSO
+  linux/time32.h: Extract common header for vDSO
+  linux/time64.h: Extract common header for vDSO
+  linux/jiffies.h: Extract common header for vDSO
+  linux/ktime.h: Extract common header for vDSO
+  common: Introduce processor.h
+  scripts: Fix the inclusion order in modpost
+  linux/elfnote.h: Replace elf.h with UAPI equivalent
+  arm64: vdso32: Replace TASK_SIZE_32 check in vgettimeofday
+  arm64: Introduce asm/vdso/processor.h
+  arm64: vdso: Include common headers in the vdso library
+  arm64: vdso32: Include common headers in the vdso library
+  mips: vdso: Enable mips to use common headers
+  x86: vdso: Enable x86 to use common headers
+  arm: vdso: Enable arm to use common headers
+  lib: vdso: Enable common headers
+  arm64: vdso32: Enable Clang Compilation
+
+ arch/arm/include/asm/clocksource.h            |  6 +--
+ arch/arm/include/asm/cp15.h                   | 20 +---------
+ arch/arm/include/asm/processor.h              | 11 +-----
+ arch/arm/include/asm/vdso/clocksource.h       |  8 ++++
+ arch/arm/include/asm/vdso/cp15.h              | 38 +++++++++++++++++++
+ arch/arm/include/asm/vdso/gettimeofday.h      |  4 +-
+ arch/arm/include/asm/vdso/processor.h         | 22 +++++++++++
+ arch/arm64/include/asm/clocksource.h          |  3 +-
+ arch/arm64/include/asm/processor.h            |  7 +---
+ arch/arm64/include/asm/vdso/clocksource.h     |  8 ++++
+ .../include/asm/vdso/compat_gettimeofday.h    |  2 +-
+ arch/arm64/include/asm/vdso/gettimeofday.h    |  1 -
+ arch/arm64/include/asm/vdso/processor.h       | 17 +++++++++
+ arch/arm64/kernel/vdso/vgettimeofday.c        |  2 -
+ arch/arm64/kernel/vdso32/Makefile             | 11 ++++++
+ arch/arm64/kernel/vdso32/vgettimeofday.c      | 13 ++++---
+ arch/mips/include/asm/clocksource.h           |  4 +-
+ arch/mips/include/asm/processor.h             | 16 +-------
+ arch/mips/include/asm/vdso/clocksource.h      |  9 +++++
+ arch/mips/include/asm/vdso/gettimeofday.h     |  4 --
+ arch/mips/include/asm/vdso/processor.h        | 27 +++++++++++++
+ arch/x86/include/asm/clocksource.h            |  5 +--
+ arch/x86/include/asm/processor.h              | 12 +-----
+ arch/x86/include/asm/vdso/clocksource.h       | 10 +++++
+ arch/x86/include/asm/vdso/processor.h         | 23 +++++++++++
+ include/linux/bits.h                          |  2 +-
+ include/linux/clocksource.h                   | 11 +-----
+ include/linux/const.h                         |  5 +--
+ include/linux/elfnote.h                       |  2 +-
+ include/linux/jiffies.h                       |  4 +-
+ include/linux/ktime.h                         |  9 +----
+ include/linux/limits.h                        | 13 +------
+ include/linux/math64.h                        | 20 +---------
+ include/linux/time.h                          |  5 +--
+ include/linux/time32.h                        | 14 +------
+ include/linux/time64.h                        | 10 +----
+ include/vdso/bits.h                           |  9 +++++
+ include/vdso/clocksource.h                    | 23 +++++++++++
+ include/vdso/const.h                          | 10 +++++
+ include/vdso/datapage.h                       | 33 ++++++++++++++--
+ include/vdso/jiffies.h                        | 11 ++++++
+ include/vdso/ktime.h                          | 16 ++++++++
+ include/vdso/limits.h                         | 19 ++++++++++
+ include/vdso/math64.h                         | 24 ++++++++++++
+ include/vdso/processor.h                      | 14 +++++++
+ include/vdso/time.h                           | 12 ++++++
+ include/vdso/time32.h                         | 17 +++++++++
+ include/vdso/time64.h                         | 14 +++++++
+ lib/vdso/gettimeofday.c                       | 22 -----------
+ scripts/mod/modpost.c                         |  6 ++-
+ 50 files changed, 412 insertions(+), 196 deletions(-)
+ create mode 100644 arch/arm/include/asm/vdso/clocksource.h
+ create mode 100644 arch/arm/include/asm/vdso/cp15.h
+ create mode 100644 arch/arm/include/asm/vdso/processor.h
+ create mode 100644 arch/arm64/include/asm/vdso/clocksource.h
+ create mode 100644 arch/arm64/include/asm/vdso/processor.h
+ create mode 100644 arch/mips/include/asm/vdso/clocksource.h
+ create mode 100644 arch/mips/include/asm/vdso/processor.h
+ create mode 100644 arch/x86/include/asm/vdso/clocksource.h
+ create mode 100644 arch/x86/include/asm/vdso/processor.h
+ create mode 100644 include/vdso/bits.h
+ create mode 100644 include/vdso/clocksource.h
+ create mode 100644 include/vdso/const.h
+ create mode 100644 include/vdso/jiffies.h
+ create mode 100644 include/vdso/ktime.h
+ create mode 100644 include/vdso/limits.h
+ create mode 100644 include/vdso/math64.h
+ create mode 100644 include/vdso/processor.h
+ create mode 100644 include/vdso/time.h
+ create mode 100644 include/vdso/time32.h
+ create mode 100644 include/vdso/time64.h
+
+-- 
+2.25.1
+

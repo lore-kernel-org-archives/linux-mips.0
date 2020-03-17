@@ -6,24 +6,24 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12358C10F29
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:24:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10164C3F2CE
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:24:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E7B26206EC
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:24:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E42C02076E
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:24:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726478AbgCQMYX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 17 Mar 2020 08:24:23 -0400
-Received: from foss.arm.com ([217.140.110.172]:37202 "EHLO foss.arm.com"
+        id S1727316AbgCQMYC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 17 Mar 2020 08:24:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:37060 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727223AbgCQMYD (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 17 Mar 2020 08:24:03 -0400
+        id S1726452AbgCQMXt (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 17 Mar 2020 08:23:49 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 96E4530E;
-        Tue, 17 Mar 2020 05:24:02 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71C0C101E;
+        Tue, 17 Mar 2020 05:23:49 -0700 (PDT)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 86AAD3F534;
-        Tue, 17 Mar 2020 05:23:59 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6157C3F534;
+        Tue, 17 Mar 2020 05:23:46 -0700 (PDT)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
@@ -46,10 +46,10 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Marc Zyngier <maz@kernel.org>,
         Mark Rutland <Mark.Rutland@arm.com>,
-        Paul Burton <paulburton@kernel.org>
-Subject: [PATCH v4 22/26] mips: vdso: Enable mips to use common headers
-Date:   Tue, 17 Mar 2020 12:22:16 +0000
-Message-Id: <20200317122220.30393-23-vincenzo.frascino@arm.com>
+        Will Deacon <will@kernel.org>
+Subject: [PATCH v4 18/26] arm64: vdso32: Replace TASK_SIZE_32 check in vgettimeofday
+Date:   Tue, 17 Mar 2020 12:22:12 +0000
+Message-Id: <20200317122220.30393-19-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200317122220.30393-1-vincenzo.frascino@arm.com>
 References: <20200317122220.30393-1-vincenzo.frascino@arm.com>
@@ -60,102 +60,66 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Enable mips to use only the common headers in the implementation of
-the vDSO library.
+For ABI compatibility with arm32, the compat vDSO layer on arm64 needs
+to return -EINVAL when UINTPTR_MAX is passed as argument to the
+clock_get* functions.
 
-Cc: Paul Burton <paulburton@kernel.org>
+Replace TASK_SIZE_32 with a more semantically correct formula that checks
+for wrapping around 0.
+
+Note: This will allow to not define TASK_SIZE_32 for the vdso headers in a
+future patch that will introduce asm/vdso/processor.h on arm64.
+
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- arch/mips/include/asm/processor.h         | 16 +-------------
- arch/mips/include/asm/vdso/gettimeofday.h |  4 ----
- arch/mips/include/asm/vdso/processor.h    | 27 +++++++++++++++++++++++
- 3 files changed, 28 insertions(+), 19 deletions(-)
- create mode 100644 arch/mips/include/asm/vdso/processor.h
+ arch/arm64/kernel/vdso32/vgettimeofday.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/include/asm/processor.h b/arch/mips/include/asm/processor.h
-index 7619ad319400..4c9cc667f3ed 100644
---- a/arch/mips/include/asm/processor.h
-+++ b/arch/mips/include/asm/processor.h
-@@ -22,6 +22,7 @@
- #include <asm/dsemul.h>
- #include <asm/mipsregs.h>
- #include <asm/prefetch.h>
-+#include <asm/vdso/processor.h>
+diff --git a/arch/arm64/kernel/vdso32/vgettimeofday.c b/arch/arm64/kernel/vdso32/vgettimeofday.c
+index 54fc1c2ce93f..91138077b073 100644
+--- a/arch/arm64/kernel/vdso32/vgettimeofday.c
++++ b/arch/arm64/kernel/vdso32/vgettimeofday.c
+@@ -8,11 +8,14 @@
+ #include <linux/time.h>
+ #include <linux/types.h>
  
- /*
-  * System setup and hardware flags..
-@@ -385,21 +386,6 @@ unsigned long get_wchan(struct task_struct *p);
- #define KSTK_ESP(tsk) (task_pt_regs(tsk)->regs[29])
- #define KSTK_STATUS(tsk) (task_pt_regs(tsk)->cp0_status)
- 
--#ifdef CONFIG_CPU_LOONGSON64
--/*
-- * Loongson-3's SFB (Store-Fill-Buffer) may buffer writes indefinitely when a
-- * tight read loop is executed, because reads take priority over writes & the
-- * hardware (incorrectly) doesn't ensure that writes will eventually occur.
-- *
-- * Since spin loops of any kind should have a cpu_relax() in them, force an SFB
-- * flush from cpu_relax() such that any pending writes will become visible as
-- * expected.
-- */
--#define cpu_relax()	smp_mb()
--#else
--#define cpu_relax()	barrier()
--#endif
--
- /*
-  * Return_address is a replacement for __builtin_return_address(count)
-  * which on certain architectures cannot reasonably be implemented in GCC
-diff --git a/arch/mips/include/asm/vdso/gettimeofday.h b/arch/mips/include/asm/vdso/gettimeofday.h
-index 88c3de1bdf22..c63ddcaea54c 100644
---- a/arch/mips/include/asm/vdso/gettimeofday.h
-+++ b/arch/mips/include/asm/vdso/gettimeofday.h
-@@ -13,12 +13,8 @@
- 
- #ifndef __ASSEMBLY__
- 
--#include <linux/compiler.h>
--#include <linux/time.h>
--
- #include <asm/vdso/vdso.h>
- #include <asm/clocksource.h>
--#include <asm/io.h>
- #include <asm/unistd.h>
- #include <asm/vdso.h>
- 
-diff --git a/arch/mips/include/asm/vdso/processor.h b/arch/mips/include/asm/vdso/processor.h
-new file mode 100644
-index 000000000000..511c95d735e6
---- /dev/null
-+++ b/arch/mips/include/asm/vdso/processor.h
-@@ -0,0 +1,27 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (C) 2020 ARM Ltd.
-+ */
-+#ifndef __ASM_VDSO_PROCESSOR_H
-+#define __ASM_VDSO_PROCESSOR_H
++#define VALID_CLOCK_ID(x) \
++	((x >= 0) && (x < VDSO_BASES))
 +
-+#ifndef __ASSEMBLY__
+ int __vdso_clock_gettime(clockid_t clock,
+ 			 struct old_timespec32 *ts)
+ {
+ 	/* The checks below are required for ABI consistency with arm */
+-	if ((u32)ts >= TASK_SIZE_32)
++	if ((u32)ts > UINTPTR_MAX - sizeof(*ts) + 1)
+ 		return -EFAULT;
+ 
+ 	return __cvdso_clock_gettime32(clock, ts);
+@@ -22,7 +25,7 @@ int __vdso_clock_gettime64(clockid_t clock,
+ 			   struct __kernel_timespec *ts)
+ {
+ 	/* The checks below are required for ABI consistency with arm */
+-	if ((u32)ts >= TASK_SIZE_32)
++	if ((u32)ts > UINTPTR_MAX - sizeof(*ts) + 1)
+ 		return -EFAULT;
+ 
+ 	return __cvdso_clock_gettime(clock, ts);
+@@ -38,9 +41,12 @@ int __vdso_clock_getres(clockid_t clock_id,
+ 			struct old_timespec32 *res)
+ {
+ 	/* The checks below are required for ABI consistency with arm */
+-	if ((u32)res >= TASK_SIZE_32)
++	if ((u32)res > UINTPTR_MAX - sizeof(res) + 1)
+ 		return -EFAULT;
+ 
++	if (!VALID_CLOCK_ID(clock_id) && res == NULL)
++		return -EINVAL;
 +
-+#ifdef CONFIG_CPU_LOONGSON64
-+/*
-+ * Loongson-3's SFB (Store-Fill-Buffer) may buffer writes indefinitely when a
-+ * tight read loop is executed, because reads take priority over writes & the
-+ * hardware (incorrectly) doesn't ensure that writes will eventually occur.
-+ *
-+ * Since spin loops of any kind should have a cpu_relax() in them, force an SFB
-+ * flush from cpu_relax() such that any pending writes will become visible as
-+ * expected.
-+ */
-+#define cpu_relax()	smp_mb()
-+#else
-+#define cpu_relax()	barrier()
-+#endif
-+
-+#endif /* __ASSEMBLY__ */
-+
-+#endif /* __ASM_VDSO_PROCESSOR_H */
+ 	return __cvdso_clock_getres_time32(clock_id, res);
+ }
+ 
 -- 
 2.25.1
 

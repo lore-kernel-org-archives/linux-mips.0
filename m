@@ -4,26 +4,26 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42558C10F29
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:23:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87C8DC5ACC0
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:23:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1BF5B2076D
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:23:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6AC1D20736
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:23:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725916AbgCQMWz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 17 Mar 2020 08:22:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:36446 "EHLO foss.arm.com"
+        id S1726725AbgCQMW6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 17 Mar 2020 08:22:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:36482 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726651AbgCQMWz (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 17 Mar 2020 08:22:55 -0400
+        id S1726651AbgCQMW6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 17 Mar 2020 08:22:58 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BBA71FEC;
-        Tue, 17 Mar 2020 05:22:54 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E694F101E;
+        Tue, 17 Mar 2020 05:22:57 -0700 (PDT)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C69383F534;
-        Tue, 17 Mar 2020 05:22:51 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F12AA3F534;
+        Tue, 17 Mar 2020 05:22:54 -0700 (PDT)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
@@ -46,9 +46,9 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Marc Zyngier <maz@kernel.org>,
         Mark Rutland <Mark.Rutland@arm.com>
-Subject: [PATCH v4 01/26] linux/const.h: Extract common header for vDSO
-Date:   Tue, 17 Mar 2020 12:21:55 +0000
-Message-Id: <20200317122220.30393-2-vincenzo.frascino@arm.com>
+Subject: [PATCH v4 02/26] linux/bits.h: Extract common header for vDSO
+Date:   Tue, 17 Mar 2020 12:21:56 +0000
+Message-Id: <20200317122220.30393-3-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200317122220.30393-1-vincenzo.frascino@arm.com>
 References: <20200317122220.30393-1-vincenzo.frascino@arm.com>
@@ -64,47 +64,46 @@ a userspace library (UAPI and a minimal set of kernel headers). To make
 this possible it is necessary to isolate from the kernel headers the
 common parts that are strictly necessary to build the library.
 
-Split const.h into linux and common headers to make the latter suitable
+Split bits.h into linux and common headers to make the latter suitable
 for inclusion in the vDSO library.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- include/linux/const.h |  5 +----
- include/vdso/const.h  | 10 ++++++++++
- 2 files changed, 11 insertions(+), 4 deletions(-)
- create mode 100644 include/vdso/const.h
+ include/linux/bits.h | 2 +-
+ include/vdso/bits.h  | 9 +++++++++
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+ create mode 100644 include/vdso/bits.h
 
-diff --git a/include/linux/const.h b/include/linux/const.h
-index 7b55a55f5911..81b8aae5a855 100644
---- a/include/linux/const.h
-+++ b/include/linux/const.h
-@@ -1,9 +1,6 @@
- #ifndef _LINUX_CONST_H
- #define _LINUX_CONST_H
+diff --git a/include/linux/bits.h b/include/linux/bits.h
+index 669d69441a62..a740bbcf3cd2 100644
+--- a/include/linux/bits.h
++++ b/include/linux/bits.h
+@@ -3,9 +3,9 @@
+ #define __LINUX_BITS_H
  
--#include <uapi/linux/const.h>
--
--#define UL(x)		(_UL(x))
--#define ULL(x)		(_ULL(x))
-+#include <vdso/const.h>
+ #include <linux/const.h>
++#include <vdso/bits.h>
+ #include <asm/bitsperlong.h>
  
- #endif /* _LINUX_CONST_H */
-diff --git a/include/vdso/const.h b/include/vdso/const.h
+-#define BIT(nr)			(UL(1) << (nr))
+ #define BIT_ULL(nr)		(ULL(1) << (nr))
+ #define BIT_MASK(nr)		(UL(1) << ((nr) % BITS_PER_LONG))
+ #define BIT_WORD(nr)		((nr) / BITS_PER_LONG)
+diff --git a/include/vdso/bits.h b/include/vdso/bits.h
 new file mode 100644
-index 000000000000..94b385ad438d
+index 000000000000..6d005a1f5d94
 --- /dev/null
-+++ b/include/vdso/const.h
-@@ -0,0 +1,10 @@
++++ b/include/vdso/bits.h
+@@ -0,0 +1,9 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __VDSO_CONST_H
-+#define __VDSO_CONST_H
++#ifndef __VDSO_BITS_H
++#define __VDSO_BITS_H
 +
-+#include <uapi/linux/const.h>
++#include <vdso/const.h>
 +
-+#define UL(x)		(_UL(x))
-+#define ULL(x)		(_ULL(x))
++#define BIT(nr)			(UL(1) << (nr))
 +
-+#endif /* __VDSO_CONST_H */
++#endif	/* __VDSO_BITS_H */
 -- 
 2.25.1
 

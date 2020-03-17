@@ -6,24 +6,24 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC148C18E5B
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:24:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B753EC2BB1D
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:24:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9DB71206EC
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:24:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 989D6206EC
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Mar 2020 12:24:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgCQMYQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 17 Mar 2020 08:24:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:37340 "EHLO foss.arm.com"
+        id S1727354AbgCQMYG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 17 Mar 2020 08:24:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:37226 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727391AbgCQMYP (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 17 Mar 2020 08:24:15 -0400
+        id S1726452AbgCQMYG (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 17 Mar 2020 08:24:06 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 876C0FEC;
-        Tue, 17 Mar 2020 05:24:15 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C2B95FEC;
+        Tue, 17 Mar 2020 05:24:05 -0700 (PDT)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5CCB13F534;
-        Tue, 17 Mar 2020 05:24:12 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD3723F534;
+        Tue, 17 Mar 2020 05:24:02 -0700 (PDT)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
@@ -45,12 +45,10 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Andrei Vagin <avagin@openvz.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH v4 26/26] arm64: vdso32: Enable Clang Compilation
-Date:   Tue, 17 Mar 2020 12:22:20 +0000
-Message-Id: <20200317122220.30393-27-vincenzo.frascino@arm.com>
+        Mark Rutland <Mark.Rutland@arm.com>
+Subject: [PATCH v4 23/26] x86: vdso: Enable x86 to use common headers
+Date:   Tue, 17 Mar 2020 12:22:17 +0000
+Message-Id: <20200317122220.30393-24-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200317122220.30393-1-vincenzo.frascino@arm.com>
 References: <20200317122220.30393-1-vincenzo.frascino@arm.com>
@@ -61,41 +59,79 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Enable Clang Compilation for the vdso32 library.
+Enable x86 to use only the common headers in the implementation
+of the vDSO library.
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com> # build
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- arch/arm64/kernel/vdso32/Makefile | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/x86/include/asm/processor.h      | 12 +-----------
+ arch/x86/include/asm/vdso/processor.h | 23 +++++++++++++++++++++++
+ 2 files changed, 24 insertions(+), 11 deletions(-)
+ create mode 100644 arch/x86/include/asm/vdso/processor.h
 
-diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
-index 04df57b43cb1..3964738ebbde 100644
---- a/arch/arm64/kernel/vdso32/Makefile
-+++ b/arch/arm64/kernel/vdso32/Makefile
-@@ -10,7 +10,18 @@ include $(srctree)/lib/vdso/Makefile
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 09705ccc393c..94789db550df 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -26,6 +26,7 @@ struct vm86;
+ #include <asm/fpu/types.h>
+ #include <asm/unwind_hints.h>
+ #include <asm/vmxfeatures.h>
++#include <asm/vdso/processor.h>
  
- # Same as cc-*option, but using CC_COMPAT instead of CC
- ifeq ($(CONFIG_CC_IS_CLANG), y)
-+COMPAT_GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE_COMPAT)elfedit))
-+COMPAT_GCC_TOOLCHAIN := $(realpath $(COMPAT_GCC_TOOLCHAIN_DIR)/..)
+ #include <linux/personality.h>
+ #include <linux/cache.h>
+@@ -677,17 +678,6 @@ static inline unsigned int cpuid_edx(unsigned int op)
+ 	return edx;
+ }
+ 
+-/* REP NOP (PAUSE) is a good thing to insert into busy-wait loops. */
+-static __always_inline void rep_nop(void)
+-{
+-	asm volatile("rep; nop" ::: "memory");
+-}
+-
+-static __always_inline void cpu_relax(void)
+-{
+-	rep_nop();
+-}
+-
+ /*
+  * This function forces the icache and prefetched instruction stream to
+  * catch up with reality in two very specific cases:
+diff --git a/arch/x86/include/asm/vdso/processor.h b/arch/x86/include/asm/vdso/processor.h
+new file mode 100644
+index 000000000000..57b1a7034c64
+--- /dev/null
++++ b/arch/x86/include/asm/vdso/processor.h
+@@ -0,0 +1,23 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) 2020 ARM Ltd.
++ */
++#ifndef __ASM_VDSO_PROCESSOR_H
++#define __ASM_VDSO_PROCESSOR_H
 +
-+CC_COMPAT_CLANG_FLAGS := --target=$(notdir $(CROSS_COMPILE_COMPAT:%-=%))
-+CC_COMPAT_CLANG_FLAGS += --prefix=$(COMPAT_GCC_TOOLCHAIN_DIR)
-+CC_COMPAT_CLANG_FLAGS += -no-integrated-as -Qunused-arguments
-+ifneq ($(COMPAT_GCC_TOOLCHAIN),)
-+CC_COMPAT_CLANG_FLAGS += --gcc-toolchain=$(COMPAT_GCC_TOOLCHAIN)
-+endif
++#ifndef __ASSEMBLY__
 +
- CC_COMPAT ?= $(CC)
-+CC_COMPAT += $(CC_COMPAT_CLANG_FLAGS)
- else
- CC_COMPAT ?= $(CROSS_COMPILE_COMPAT)gcc
- endif
++/* REP NOP (PAUSE) is a good thing to insert into busy-wait loops. */
++static __always_inline void rep_nop(void)
++{
++	asm volatile("rep; nop" ::: "memory");
++}
++
++static __always_inline void cpu_relax(void)
++{
++	rep_nop();
++}
++
++#endif /* __ASSEMBLY__ */
++
++#endif /* __ASM_VDSO_PROCESSOR_H */
 -- 
 2.25.1
 

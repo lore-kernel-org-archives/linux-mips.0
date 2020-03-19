@@ -2,54 +2,55 @@ Return-Path: <SRS0=V2wV=5E=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06FE9C43332
-	for <linux-mips@archiver.kernel.org>; Thu, 19 Mar 2020 13:25:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 192D6C4332D
+	for <linux-mips@archiver.kernel.org>; Thu, 19 Mar 2020 13:25:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D47D42098B
-	for <linux-mips@archiver.kernel.org>; Thu, 19 Mar 2020 13:25:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E6870208C3
+	for <linux-mips@archiver.kernel.org>; Thu, 19 Mar 2020 13:25:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1584624325;
-	bh=Tkr/6mrr1glEaInkhIb3wjUGtu3WF0DzZoe3urzNmhE=;
+	s=default; t=1584624358;
+	bh=kJdYtdkXoUJqBCbsGNBYogiLr8GIFp4ngkilDarlmMY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=G27PlbDA0o5x9nD4aafHGxkxZXvLvDTbwGtpVeA32qDvwEctt9m6rJDmVcVqbZAsk
-	 YVjO80Zy7J0tRr/OfJYdj7jPPXlYx7gv5kZ28vhfiDyZRtjQEbiSXbR86P7xEuTIY4
-	 ThwqZhB/bQX2D81D4GCI1smCBev/XrqNXH65oKyk=
+	b=pUnblxrTsQEsM0sDPLw+SLpsqxYDFy89lTalnSHbzUfVfYNBRwvnB+7fZZTz82vei
+	 tCgJOBpF18CXDFGSL8ndzZwTIoal1+CK7jc94JyCAlhX6xZMycXsA2crwZEpjko/pb
+	 WHieTSqxxA/bwjUBx3zS88r6tHrXdl7wwUnGsNAQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730608AbgCSNZR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 19 Mar 2020 09:25:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52754 "EHLO mail.kernel.org"
+        id S1730229AbgCSNZw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 19 Mar 2020 09:25:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730605AbgCSNZQ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 19 Mar 2020 09:25:16 -0400
+        id S1730694AbgCSNZv (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 19 Mar 2020 09:25:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64AB12098B;
-        Thu, 19 Mar 2020 13:25:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8045D208C3;
+        Thu, 19 Mar 2020 13:25:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584624315;
-        bh=Tkr/6mrr1glEaInkhIb3wjUGtu3WF0DzZoe3urzNmhE=;
+        s=default; t=1584624351;
+        bh=kJdYtdkXoUJqBCbsGNBYogiLr8GIFp4ngkilDarlmMY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ubelOgWI6SWwRNjFJKr8nhVUyc4t+U6IYPyk8yfFEsm+mUczZO6GHkKuONfuArz8+
-         1Etx39qGUSVCj7cjzmUXqv6f1QV3Jos77cZIHiWQABSarXIAZZfH1yHT/djw9D3uki
-         AG83i1kRk/57C6OH71U/yNmbGKRHhlA1k8tHpmIM=
+        b=WDmgnlBAdY82QQ6cayWDQgfBx8T2WYBPyIabciDR/EpXXhdW5eRGUyf/dBCU70sHQ
+         Yq+nFlDEu7H42l/sG75fjmLUsvXQj2Tk5Fs99e+xSSz0u2/ocJy/IaxPZDjGJTWmAE
+         ro2MdfcbAec7sI6WfswFNrbhft+CdaV2MiiubkAk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
+        stable@vger.kernel.org, Bruce Ashfield <bruce.ashfield@gmail.com>,
+        Victor Kamensky <kamensky@cisco.com>,
         Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>, linux-mips@vger.kernel.org,
-        clang-built-linux@googlegroups.com, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.5 20/65] MIPS: vdso: Wrap -mexplicit-relocs in cc-option
-Date:   Thu, 19 Mar 2020 14:04:02 +0100
-Message-Id: <20200319123932.742469978@linuxfoundation.org>
+        linux-mips@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
+        James Hogan <jhogan@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        richard.purdie@linuxfoundation.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.5 13/65] mips: vdso: fix jalr t9 crash in vdso code
+Date:   Thu, 19 Mar 2020 14:03:55 +0100
+Message-Id: <20200319123930.497716995@linuxfoundation.org>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <20200319123926.466988514@linuxfoundation.org>
 References: <20200319123926.466988514@linuxfoundation.org>
@@ -62,52 +63,59 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Victor Kamensky <kamensky@cisco.com>
 
-[ Upstream commit 72cf3b3df423c1bbd8fa1056fed009d3a260f8a9 ]
+[ Upstream commit d3f703c4359ff06619b2322b91f69710453e6b6d ]
 
-Clang does not support this option and errors out:
+Observed that when kernel is built with Yocto mips64-poky-linux-gcc,
+and mips64-poky-linux-gnun32-gcc toolchain, resulting vdso contains
+'jalr t9' instructions in its code and since in vdso case nobody
+sets GOT table code crashes when instruction reached. On other hand
+observed that when kernel is built mips-poky-linux-gcc toolchain, the
+same 'jalr t9' instruction are replaced with PC relative function
+calls using 'bal' instructions.
 
-clang-11: error: unknown argument: '-mexplicit-relocs'
+The difference boils down to -mrelax-pic-calls and -mexplicit-relocs
+gcc options that gets different default values depending on gcc
+target triplets and corresponding binutils. -mrelax-pic-calls got
+enabled by default only in mips-poky-linux-gcc case. MIPS binutils
+ld relies on R_MIPS_JALR relocation to convert 'jalr t9' into 'bal'
+and such relocation is generated only if -mrelax-pic-calls option
+is on.
 
-Clang does not appear to need this flag like GCC does because the jalr
-check that was added in commit 976c23af3ee5 ("mips: vdso: add build
-time check that no 'jalr t9' calls left") passes just fine with
+Please note 'jalr t9' conversion to 'bal' can happen only to static
+functions. These static PIC calls use mips local GOT entries that
+are supposed to be filled with start of DSO value by run-time linker
+(missing in VDSO case) and they do not have dynamic relocations.
+Global mips GOT entries must have dynamic relocations and they should
+be prevented by cmd_vdso_check Makefile rule.
 
-$ make ARCH=mips CC=clang CROSS_COMPILE=mipsel-linux-gnu- malta_defconfig arch/mips/vdso/
+Solution call out -mrelax-pic-calls and -mexplicit-relocs options
+explicitly while compiling MIPS vdso code. That would get correct
+and consistent between different toolchains behaviour.
 
-even before commit d3f703c4359f ("mips: vdso: fix 'jalr t9' crash in
-vdso code").
-
--mrelax-pic-calls has been supported since clang 9, which is the
-earliest version that could build a working MIPS kernel, and it is the
-default for clang so just leave it be.
-
-Fixes: d3f703c4359f ("mips: vdso: fix 'jalr t9' crash in vdso code")
-Link: https://github.com/ClangBuiltLinux/linux/issues/890
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Reported-by: Bruce Ashfield <bruce.ashfield@gmail.com>
+Signed-off-by: Victor Kamensky <kamensky@cisco.com>
 Signed-off-by: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: linux-mips@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: clang-built-linux@googlegroups.com
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <jhogan@kernel.org>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: richard.purdie@linuxfoundation.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/vdso/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/vdso/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-index bfb65b2d57c7f..2cf4b6131d88d 100644
+index e05938997e696..96afd73c94e8a 100644
 --- a/arch/mips/vdso/Makefile
 +++ b/arch/mips/vdso/Makefile
-@@ -29,7 +29,7 @@ endif
+@@ -29,6 +29,7 @@ endif
  cflags-vdso := $(ccflags-vdso) \
  	$(filter -W%,$(filter-out -Wa$(comma)%,$(KBUILD_CFLAGS))) \
  	-O3 -g -fPIC -fno-strict-aliasing -fno-common -fno-builtin -G 0 \
--	-mrelax-pic-calls -mexplicit-relocs \
-+	-mrelax-pic-calls $(call cc-option, -mexplicit-relocs) \
++	-mrelax-pic-calls -mexplicit-relocs \
  	-fno-stack-protector -fno-jump-tables -DDISABLE_BRANCH_PROFILING \
  	$(call cc-option, -fno-asynchronous-unwind-tables) \
  	$(call cc-option, -fno-stack-protector)

@@ -2,125 +2,136 @@ Return-Path: <SRS0=V2wV=5E=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 878B2C4332B
-	for <linux-mips@archiver.kernel.org>; Thu, 19 Mar 2020 13:30:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8EB0C4332B
+	for <linux-mips@archiver.kernel.org>; Thu, 19 Mar 2020 15:49:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 59040208D6
-	for <linux-mips@archiver.kernel.org>; Thu, 19 Mar 2020 13:30:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9D1AA20724
+	for <linux-mips@archiver.kernel.org>; Thu, 19 Mar 2020 15:49:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1584624617;
-	bh=2+JddXm05lMAvMt7a5HtaUlUsXMzX06xKsrUO7VAvF8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=exQIM2Mg6T1reDF1qYd9X06I3vPHGebvr+0l2QPdGCwngsmXAGOJlLe/065WYqI04
-	 42NlZM1ZL1UmitJybboQBE9UbyoawzAm4UQ46YJjDgBpqb5xMAFeViCgtJRoyJPday
-	 pAjBXUVwtbBdjx9mQ7rMhjhF3WUuIWr0sruDIBLo=
+	s=default; t=1584632954;
+	bh=Og0HIKIkiN/fo+UUAiNjwmu2SNnF9lBxvD5U1TRSBhI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
+	b=FQhJWj9kV8gbGI/K1xAJNKnw35KgIJvIC9bIXRORHgZNbBZudH6dgutPntuTkf/z7
+	 vCLYhgNrszJhEJgdQFG2AJ4GU8BOmAe7ej+Z9NyIpGY6lRyeJ2h32pZU1O1cMwg4Aw
+	 AmVrXOj5YNWBxXWj2TTlGgfhotSwnnl/d+xC6bJc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728489AbgCSNaM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 19 Mar 2020 09:30:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728927AbgCSNWC (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 19 Mar 2020 09:22:02 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A54420724;
-        Thu, 19 Mar 2020 13:22:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584624120;
-        bh=2+JddXm05lMAvMt7a5HtaUlUsXMzX06xKsrUO7VAvF8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ye9CSkUKT/3f+pmUOp0MLi/8cCcc5kR+VhrkJIONf/x22DSMN/CB9qO9XNX1ERdT1
-         cEGjXqNoXmfHk52OPIc8lUUgI3hfpE00A26hebthUwePtFCwB5i9nppcZ/5Grc0Jbh
-         aVlKP9zyQWKQO5uIm51PS4NmLMYJLrmf1npNKQGg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bruce Ashfield <bruce.ashfield@gmail.com>,
-        Victor Kamensky <kamensky@cisco.com>,
-        Paul Burton <paulburton@kernel.org>,
-        linux-mips@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
-        James Hogan <jhogan@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        richard.purdie@linuxfoundation.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 14/60] mips: vdso: fix jalr t9 crash in vdso code
-Date:   Thu, 19 Mar 2020 14:03:52 +0100
-Message-Id: <20200319123923.535642309@linuxfoundation.org>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <20200319123919.441695203@linuxfoundation.org>
-References: <20200319123919.441695203@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1727346AbgCSPtO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 19 Mar 2020 11:49:14 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:42387 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727189AbgCSPtO (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 19 Mar 2020 11:49:14 -0400
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 02JFmuqs029340;
+        Fri, 20 Mar 2020 00:48:57 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 02JFmuqs029340
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1584632937;
+        bh=8ePxFKbmCNPyEVXbZg9bxrLPtjJ0hIQvHoR+u5cuXlk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TWHYuVJqAJHGT2J/QN0ivaoF5RblRJztHn1gOuaI3JETl0zptVkq8T5+IXuCK4qj7
+         J89oQxTtEECTesBc5eApZqSSN4GdC62fWYMLAJTkoWV7+IHOEqftqrZ5NcBiwkhwBM
+         CxSC3NIpyv2BLiPHF0F6YJ6ea+sb138b1q+pSfQJl8gPsJbsU46roHObS5Zt/EYKoR
+         jH/q0j4XKsj4S6mt9Mo3OS5rPK96/XmRnxu5efm0jfFAwaydKqu2eDmic7ZYZjw0Jc
+         FeJt19pNG2spVwm5aNFlLXinGseNnLC5Lq40skmNx100yljF3Lzq9kKKlqEW/Ja1xD
+         kCiKka1weSc7A==
+X-Nifty-SrcIP: [209.85.217.43]
+Received: by mail-vs1-f43.google.com with SMTP id m9so1953761vso.2;
+        Thu, 19 Mar 2020 08:48:57 -0700 (PDT)
+X-Gm-Message-State: ANhLgQ0uhvPfo7XoYRjUcAUEanC2Gx95ToKSplt7/0UBhgFBqtNE6d7A
+        o52kYKPOpOZ9Af3Q01wRBBbs6q5pPj7pcvw3PfQ=
+X-Google-Smtp-Source: ADFU+vuE+c3n/dpA4yyF3d1WQF2dPe5+qKC0jhqbTt6w2aU3d4Li83bNqcwgm5RvBt3ESyOremdAfr8BAiJJv9QTriU=
+X-Received: by 2002:a67:33cb:: with SMTP id z194mr2807732vsz.155.1584632936269;
+ Thu, 19 Mar 2020 08:48:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200311223725.27662-2-masahiroy@kernel.org> <202003121230.lys3M8E8%lkp@intel.com>
+ <CAK7LNARwR5X2C_VzK_3RZo+30Cu3uPuiw-rFUut1j8azLhbxAA@mail.gmail.com> <20200312083943.GA7278@alpha.franken.de>
+In-Reply-To: <20200312083943.GA7278@alpha.franken.de>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 20 Mar 2020 00:48:20 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT8AVh8PawDsUoStjYMsOq-DLJbW30SpX7hDDJHZNCd9g@mail.gmail.com>
+Message-ID: <CAK7LNAT8AVh8PawDsUoStjYMsOq-DLJbW30SpX7hDDJHZNCd9g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] kbuild: link lib-y objects to vmlinux forcibly
+ when CONFIG_MODULES=y
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
+        kbuild-all@lists.01.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "sparclinux@vger.kernel.org, David S . Miller" <davem@davemloft.net>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ilie Halip <ilie.halip@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        kbuild test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Victor Kamensky <kamensky@cisco.com>
+Hi Thomas,
 
-[ Upstream commit d3f703c4359ff06619b2322b91f69710453e6b6d ]
+On Thu, Mar 12, 2020 at 5:40 PM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> On Thu, Mar 12, 2020 at 03:12:28PM +0900, Masahiro Yamada wrote:
+> > I got the following report from 0-day bot.
+> > Please advise me how to fix it.
+> >
+> >
+> > I am not sure how multi-platform works in MIPS.
+> >
+> > The cavium-octeon platform has its own implementation
+> > of various functions.
+> >
+> > So, vmlinux links different library routines
+> > depending on whether CONFIG_CAVIUM_OCTEON_SOC, correct?
+>
+> for cavium memcpy is directly linked in via octeon-memcpy.o, while for
+> every other platform it's coming from lib/lib.a(memcpy.o).
+>
+> What have you changed, that this doesn't work anymore ?
+>
+> Thomas.
 
-Observed that when kernel is built with Yocto mips64-poky-linux-gcc,
-and mips64-poky-linux-gnun32-gcc toolchain, resulting vdso contains
-'jalr t9' instructions in its code and since in vdso case nobody
-sets GOT table code crashes when instruction reached. On other hand
-observed that when kernel is built mips-poky-linux-gcc toolchain, the
-same 'jalr t9' instruction are replaced with PC relative function
-calls using 'bal' instructions.
 
-The difference boils down to -mrelax-pic-calls and -mexplicit-relocs
-gcc options that gets different default values depending on gcc
-target triplets and corresponding binutils. -mrelax-pic-calls got
-enabled by default only in mips-poky-linux-gcc case. MIPS binutils
-ld relies on R_MIPS_JALR relocation to convert 'jalr t9' into 'bal'
-and such relocation is generated only if -mrelax-pic-calls option
-is on.
+I want to change all objects from lib-y
+to be linked to vmlinux (exactly like obj-y )
+if CONFIG_MODULES is enabled.
 
-Please note 'jalr t9' conversion to 'bal' can happen only to static
-functions. These static PIC calls use mips local GOT entries that
-are supposed to be filled with start of DSO value by run-time linker
-(missing in VDSO case) and they do not have dynamic relocations.
-Global mips GOT entries must have dynamic relocations and they should
-be prevented by cmd_vdso_check Makefile rule.
+https://patchwork.kernel.org/patch/11432969/
 
-Solution call out -mrelax-pic-calls and -mexplicit-relocs options
-explicitly while compiling MIPS vdso code. That would get correct
-and consistent between different toolchains behaviour.
 
-Reported-by: Bruce Ashfield <bruce.ashfield@gmail.com>
-Signed-off-by: Victor Kamensky <kamensky@cisco.com>
-Signed-off-by: Paul Burton <paulburton@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: James Hogan <jhogan@kernel.org>
-Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc: richard.purdie@linuxfoundation.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/mips/vdso/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+EXPORT_SYMBOL in libraries
+must be linked to vmlinux all the time,
+even if there is no call-site in vmlinux.
+I believe this is a good simplification because
+EXPORT_SYMBOL is interface to loadable modules.
 
-diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
-index 996a934ece7d6..3fa4bbe1bae53 100644
---- a/arch/mips/vdso/Makefile
-+++ b/arch/mips/vdso/Makefile
-@@ -29,6 +29,7 @@ endif
- cflags-vdso := $(ccflags-vdso) \
- 	$(filter -W%,$(filter-out -Wa$(comma)%,$(KBUILD_CFLAGS))) \
- 	-O3 -g -fPIC -fno-strict-aliasing -fno-common -fno-builtin -G 0 \
-+	-mrelax-pic-calls -mexplicit-relocs \
- 	-fno-stack-protector -fno-jump-tables -DDISABLE_BRANCH_PROFILING \
- 	$(call cc-option, -fno-asynchronous-unwind-tables) \
- 	$(call cc-option, -fno-stack-protector)
+As it turned out, lib-y is (ab)used to avoid
+multiple definition errors.
+
+The 0-day detected a bug of 32-bit sparc:
+https://patchwork.kernel.org/patch/11432969/
+
+And, another is this one.
+
+MIPS relies on that
+arch/mips/lib/lib.a is weaker than octeon ones.
+
+So, annotating __weak is a good solution
+(thanks Nick!).
+
+If I send a patch, is it acceptable?
+
+
 -- 
-2.20.1
-
-
-
+Best Regards
+Masahiro Yamada

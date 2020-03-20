@@ -6,24 +6,24 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FAA3C10DCE
-	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 14:56:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83FFAC4332B
+	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 14:56:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2EECA20777
-	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 14:56:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 624DE20777
+	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 14:56:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbgCTOzr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 20 Mar 2020 10:55:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:50630 "EHLO foss.arm.com"
+        id S1727665AbgCTOz3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 20 Mar 2020 10:55:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:50430 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727744AbgCTOzp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 20 Mar 2020 10:55:45 -0400
+        id S1727049AbgCTOzZ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 20 Mar 2020 10:55:25 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8F97D1045;
-        Fri, 20 Mar 2020 07:55:44 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2EE891FB;
+        Fri, 20 Mar 2020 07:55:25 -0700 (PDT)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9AB903F792;
-        Fri, 20 Mar 2020 07:55:41 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A87E3F792;
+        Fri, 20 Mar 2020 07:55:22 -0700 (PDT)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
@@ -45,9 +45,9 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Marc Zyngier <maz@kernel.org>,
         Mark Rutland <Mark.Rutland@arm.com>
-Subject: [PATCH v5 19/26] arm64: Introduce asm/vdso/processor.h
-Date:   Fri, 20 Mar 2020 14:53:44 +0000
-Message-Id: <20200320145351.32292-20-vincenzo.frascino@arm.com>
+Subject: [PATCH v5 13/26] linux/jiffies.h: Extract common header for vDSO
+Date:   Fri, 20 Mar 2020 14:53:38 +0000
+Message-Id: <20200320145351.32292-14-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200320145351.32292-1-vincenzo.frascino@arm.com>
 References: <20200320145351.32292-1-vincenzo.frascino@arm.com>
@@ -63,67 +63,55 @@ a userspace library (UAPI and a minimal set of kernel headers). To make
 this possible it is necessary to isolate from the kernel headers the
 common parts that are strictly necessary to build the library.
 
-Introduce asm/vdso/processor.h to contain all the arm64 specific
-functions that are suitable for vDSO inclusion.
+Split jiffies.h into linux and common headers to make the latter suitable
+for inclusion in the vDSO library.
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- arch/arm64/include/asm/processor.h      |  7 ++-----
- arch/arm64/include/asm/vdso/processor.h | 17 +++++++++++++++++
- 2 files changed, 19 insertions(+), 5 deletions(-)
- create mode 100644 arch/arm64/include/asm/vdso/processor.h
+ include/linux/jiffies.h |  4 +---
+ include/vdso/jiffies.h  | 11 +++++++++++
+ 2 files changed, 12 insertions(+), 3 deletions(-)
+ create mode 100644 include/vdso/jiffies.h
 
-diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
-index 5ba63204d078..e51ef2dc5749 100644
---- a/arch/arm64/include/asm/processor.h
-+++ b/arch/arm64/include/asm/processor.h
-@@ -28,6 +28,8 @@
- #include <linux/string.h>
- #include <linux/thread_info.h>
+diff --git a/include/linux/jiffies.h b/include/linux/jiffies.h
+index e3279ef24d28..fed6ba96c527 100644
+--- a/include/linux/jiffies.h
++++ b/include/linux/jiffies.h
+@@ -8,6 +8,7 @@
+ #include <linux/types.h>
+ #include <linux/time.h>
+ #include <linux/timex.h>
++#include <vdso/jiffies.h>
+ #include <asm/param.h>			/* for HZ */
+ #include <generated/timeconst.h>
  
-+#include <vdso/processor.h>
-+
- #include <asm/alternative.h>
- #include <asm/cpufeature.h>
- #include <asm/hw_breakpoint.h>
-@@ -256,11 +258,6 @@ extern void release_thread(struct task_struct *);
+@@ -59,9 +60,6 @@
  
- unsigned long get_wchan(struct task_struct *p);
+ extern int register_refined_jiffies(long clock_tick_rate);
  
--static inline void cpu_relax(void)
--{
--	asm volatile("yield" ::: "memory");
--}
+-/* TICK_NSEC is the time between ticks in nsec assuming SHIFTED_HZ */
+-#define TICK_NSEC ((NSEC_PER_SEC+HZ/2)/HZ)
 -
- /* Thread switching */
- extern struct task_struct *cpu_switch_to(struct task_struct *prev,
- 					 struct task_struct *next);
-diff --git a/arch/arm64/include/asm/vdso/processor.h b/arch/arm64/include/asm/vdso/processor.h
+ /* TICK_USEC is the time between ticks in usec assuming SHIFTED_HZ */
+ #define TICK_USEC ((USEC_PER_SEC + HZ/2) / HZ)
+ 
+diff --git a/include/vdso/jiffies.h b/include/vdso/jiffies.h
 new file mode 100644
-index 000000000000..ff830b766ad2
+index 000000000000..2f9d596c8b29
 --- /dev/null
-+++ b/arch/arm64/include/asm/vdso/processor.h
-@@ -0,0 +1,17 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (C) 2020 ARM Ltd.
-+ */
-+#ifndef __ASM_VDSO_PROCESSOR_H
-+#define __ASM_VDSO_PROCESSOR_H
++++ b/include/vdso/jiffies.h
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __VDSO_JIFFIES_H
++#define __VDSO_JIFFIES_H
 +
-+#ifndef __ASSEMBLY__
++#include <asm/param.h>			/* for HZ */
++#include <vdso/time64.h>
 +
-+static inline void cpu_relax(void)
-+{
-+	asm volatile("yield" ::: "memory");
-+}
++/* TICK_NSEC is the time between ticks in nsec assuming SHIFTED_HZ */
++#define TICK_NSEC ((NSEC_PER_SEC+HZ/2)/HZ)
 +
-+#endif /* __ASSEMBLY__ */
-+
-+#endif /* __ASM_VDSO_PROCESSOR_H */
++#endif /* __VDSO_JIFFIES_H */
 -- 
 2.25.1
 

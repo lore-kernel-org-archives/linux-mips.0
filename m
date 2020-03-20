@@ -2,78 +2,93 @@ Return-Path: <SRS0=rNzc=5F=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFB6EC4332B
-	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 21:24:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6152C4332B
+	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 22:36:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 91AE620777
-	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 21:24:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 74CE72072D
+	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 22:36:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1584743791;
+	bh=0vqbm4XJz75nS9JCUuacIOsCxnqj7KiwBApSTZm+9PY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=djgo03J6Cm7Ay23CJXakiKYEtBOsub3p/eNUaVbxRHKwWnA/4Q2ptSsnipDEwd0iQ
+	 bYBnqCqv5AneRSd/nnd0imGp5U0hFPmDMjwJaMFHId6d5AmkTI48gzC3npKWM8m6QO
+	 w+EGXmnI3OsMIsGdKeKOJHpC0cMQxkSg7xsc8cSw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbgCTVYa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 20 Mar 2020 17:24:30 -0400
-Received: from eddie.linux-mips.org ([148.251.95.138]:52820 "EHLO
-        cvs.linux-mips.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726983AbgCTVYa (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 20 Mar 2020 17:24:30 -0400
-Received: (from localhost user: 'macro', uid#1010) by eddie.linux-mips.org
-        with ESMTP id S23992645AbgCTVYZhCTr9 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org> + 1 other);
-        Fri, 20 Mar 2020 22:24:25 +0100
-Date:   Fri, 20 Mar 2020 21:24:25 +0000 (GMT)
-From:   "Maciej W. Rozycki" <macro@linux-mips.org>
+        id S1726880AbgCTWgb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 20 Mar 2020 18:36:31 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:44121 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726855AbgCTWga (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 20 Mar 2020 18:36:30 -0400
+Received: by mail-il1-f193.google.com with SMTP id j69so7134956ila.11;
+        Fri, 20 Mar 2020 15:36:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rI7HBQwLbfPUFmbFR+AsX9oV78cHxKTg/4ZkxCj7UGI=;
+        b=LeWiiVxq33qrVP6MpBb4Bd7QBnMcZN1SCNW57XLL8N3klBOyQaP6SXweml2KHVvZqq
+         orrQWCbT3wByng4J8IqC3NqK+gqt5V5DHD/Kl7GFS9P6yVv6emsqn9dDuEEivPlG0wCI
+         ud85nTuSb4PZ41CrxYsyfrbxSlJc9ZWUGrvjHB1fYIXu2NfrcTyHdNu2Knc4Y1sCwKu2
+         PNPyeb8lvhjROyAlsOIOoobtfoK3JlNmF+27KmIy7Ms5/iFt/EFcjVPyWC4GKSySPKzJ
+         02XuG0A2ZpWuGTKtsb9osXvNNW2bb/wPgRrS2CjJboRfIUnwAdlkh1LhSnheBzlAe5Fn
+         UDdA==
+X-Gm-Message-State: ANhLgQ05JTlzVwa8xj1GoANXrSd12G6PfDJlY9z7M2ICNFEb034Yv/QN
+        XEBvP5lfoi+8dAeZIUg75/13fX8=
+X-Google-Smtp-Source: ADFU+vvlaK/dU0+cnAmSEA65L7XF3zpMhApyC8eQaPP1+ptlzSe6DXm0yH2xaf9FnyHyvXgMYAnubg==
+X-Received: by 2002:a92:91da:: with SMTP id e87mr9956797ill.183.1584743789955;
+        Fri, 20 Mar 2020 15:36:29 -0700 (PDT)
+Received: from rob-hp-laptop ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id j1sm1947302iop.32.2020.03.20.15.36.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Mar 2020 15:36:29 -0700 (PDT)
+Received: (nullmailer pid 23817 invoked by uid 1000);
+        Fri, 20 Mar 2020 22:36:27 -0000
+Date:   Fri, 20 Mar 2020 16:36:27 -0600
+From:   Rob Herring <robh@kernel.org>
 To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-cc:     Manuel Lauss <manuel.lauss@gmail.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+Cc:     linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Huacai Chen <chenhc@lemote.com>,
-        Linux-MIPS <linux-mips@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH] MIPS: Loongson: Add model name to /proc/cpuinfo
-In-Reply-To: <788597FA-6AD6-4218-886F-35C0916EA3F2@flygoat.com>
-Message-ID: <alpine.LFD.2.21.2003202109190.2689954@eddie.linux-mips.org>
-References: <1583908414-22858-1-git-send-email-yangtiezhu@loongson.cn> <CAOLZvyHEnnpWWhEAWx9RZASVjjQ=6HTREqwY+LK0hm=J4Wd8Xg@mail.gmail.com> <788597FA-6AD6-4218-886F-35C0916EA3F2@flygoat.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Allison Randal <allison@lohutok.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 08/11] dt-bindings: mips: Add loongson boards
+Message-ID: <20200320223627.GA23779@bogus>
+References: <20200318062102.8145-1-jiaxun.yang@flygoat.com>
+ <20200318062102.8145-9-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200318062102.8145-9-jiaxun.yang@flygoat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, 11 Mar 2020, Jiaxun Yang wrote:
-
-> __cpu_name[] will be displayed as "cpu model" in cpuinfo, however
-> in x86 world, the name line is started with "model name".
-> Most user applications like lscpu, hwinfo is following x86's rule, we don't have superpower to move all of them.
+On Wed, 18 Mar 2020 14:20:36 +0800, Jiaxun Yang wrote:
 > 
-> Also rename "cpu model" will break current ABI, so just create a new array
-> for it would be a better option.
+> Prepare for later dts.
+> 
+> Co-developed-by: Huacai Chen <chenhc@lemote.com>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> 
+> --
+> v4-v5:
+> 	Remove unnecessary kernel details.
+> ---
+>  .../bindings/mips/loongson/devices.yaml       | 27 +++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mips/loongson/devices.yaml
+> 
 
- Well, /proc/cpuinfo is not an ABI, it's meant for human interaction (use 
-`sysfs' for machine processing).
-
- If tools want to use it anyway, then fine, but they need to adapt to the 
-relative volatility of the free-form text interface, and also learn all 
-the world is not x86 (just like all the MIPS world is not Loongson, so if 
-you argue about adding effectively a duplicate field, then that would have 
-to be applied across all the platforms).  IOW fix the tool and do not work 
-its deficiencies around in the kernel just because it seems easier for you 
-to do.
-
- Here's how example /proc/cpuinfo looks like on RISC-V/Linux BTW:
-
-processor	: 0
-hart		: 1
-isa		: rv64imafdc
-mmu		: sv39
-uarch		: sifive,rocket0
-
-[...]
-
--- every Linux platform is different in this respect and tools have to 
-live with that.
-
-  Maciej
+Reviewed-by: Rob Herring <robh@kernel.org>

@@ -6,24 +6,24 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83FFAC4332B
-	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 14:56:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EB87C54EEB
+	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 14:56:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 624DE20777
+	by mail.kernel.org (Postfix) with ESMTP id E0D0820714
 	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 14:56:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727665AbgCTOz3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 20 Mar 2020 10:55:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:50430 "EHLO foss.arm.com"
+        id S1727312AbgCTOzL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 20 Mar 2020 10:55:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:50262 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727049AbgCTOzZ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 20 Mar 2020 10:55:25 -0400
+        id S1727526AbgCTOzJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 20 Mar 2020 10:55:09 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2EE891FB;
-        Fri, 20 Mar 2020 07:55:25 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 48B22FEC;
+        Fri, 20 Mar 2020 07:55:09 -0700 (PDT)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A87E3F792;
-        Fri, 20 Mar 2020 07:55:22 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 510D33F792;
+        Fri, 20 Mar 2020 07:55:06 -0700 (PDT)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
@@ -45,9 +45,9 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Marc Zyngier <maz@kernel.org>,
         Mark Rutland <Mark.Rutland@arm.com>
-Subject: [PATCH v5 13/26] linux/jiffies.h: Extract common header for vDSO
-Date:   Fri, 20 Mar 2020 14:53:38 +0000
-Message-Id: <20200320145351.32292-14-vincenzo.frascino@arm.com>
+Subject: [PATCH v5 08/26] linux/clocksource.h: Extract common header for vDSO
+Date:   Fri, 20 Mar 2020 14:53:33 +0000
+Message-Id: <20200320145351.32292-9-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200320145351.32292-1-vincenzo.frascino@arm.com>
 References: <20200320145351.32292-1-vincenzo.frascino@arm.com>
@@ -63,55 +63,67 @@ a userspace library (UAPI and a minimal set of kernel headers). To make
 this possible it is necessary to isolate from the kernel headers the
 common parts that are strictly necessary to build the library.
 
-Split jiffies.h into linux and common headers to make the latter suitable
-for inclusion in the vDSO library.
+Split clocksource.h into linux and common headers to make the latter
+suitable for inclusion in the vDSO library.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- include/linux/jiffies.h |  4 +---
- include/vdso/jiffies.h  | 11 +++++++++++
- 2 files changed, 12 insertions(+), 3 deletions(-)
- create mode 100644 include/vdso/jiffies.h
+ include/linux/clocksource.h | 11 +----------
+ include/vdso/clocksource.h  | 23 +++++++++++++++++++++++
+ 2 files changed, 24 insertions(+), 10 deletions(-)
+ create mode 100644 include/vdso/clocksource.h
 
-diff --git a/include/linux/jiffies.h b/include/linux/jiffies.h
-index e3279ef24d28..fed6ba96c527 100644
---- a/include/linux/jiffies.h
-+++ b/include/linux/jiffies.h
-@@ -8,6 +8,7 @@
- #include <linux/types.h>
- #include <linux/time.h>
- #include <linux/timex.h>
-+#include <vdso/jiffies.h>
- #include <asm/param.h>			/* for HZ */
- #include <generated/timeconst.h>
+diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+index 02e3282719bd..86d143db6523 100644
+--- a/include/linux/clocksource.h
++++ b/include/linux/clocksource.h
+@@ -28,16 +28,7 @@ struct module;
+ #include <asm/clocksource.h>
+ #endif
  
-@@ -59,9 +60,6 @@
- 
- extern int register_refined_jiffies(long clock_tick_rate);
- 
--/* TICK_NSEC is the time between ticks in nsec assuming SHIFTED_HZ */
--#define TICK_NSEC ((NSEC_PER_SEC+HZ/2)/HZ)
+-enum vdso_clock_mode {
+-	VDSO_CLOCKMODE_NONE,
+-#ifdef CONFIG_GENERIC_GETTIMEOFDAY
+-	VDSO_ARCH_CLOCKMODES,
+-#endif
+-	VDSO_CLOCKMODE_MAX,
 -
- /* TICK_USEC is the time between ticks in usec assuming SHIFTED_HZ */
- #define TICK_USEC ((USEC_PER_SEC + HZ/2) / HZ)
+-	/* Indicator for time namespace VDSO */
+-	VDSO_CLOCKMODE_TIMENS = INT_MAX
+-};
++#include <vdso/clocksource.h>
  
-diff --git a/include/vdso/jiffies.h b/include/vdso/jiffies.h
+ /**
+  * struct clocksource - hardware abstraction for a free running counter
+diff --git a/include/vdso/clocksource.h b/include/vdso/clocksource.h
 new file mode 100644
-index 000000000000..2f9d596c8b29
+index 000000000000..ab58330e4e5d
 --- /dev/null
-+++ b/include/vdso/jiffies.h
-@@ -0,0 +1,11 @@
++++ b/include/vdso/clocksource.h
+@@ -0,0 +1,23 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __VDSO_JIFFIES_H
-+#define __VDSO_JIFFIES_H
++#ifndef __VDSO_CLOCKSOURCE_H
++#define __VDSO_CLOCKSOURCE_H
 +
-+#include <asm/param.h>			/* for HZ */
-+#include <vdso/time64.h>
++#include <vdso/limits.h>
 +
-+/* TICK_NSEC is the time between ticks in nsec assuming SHIFTED_HZ */
-+#define TICK_NSEC ((NSEC_PER_SEC+HZ/2)/HZ)
++#if defined(CONFIG_ARCH_CLOCKSOURCE_DATA) || \
++	defined(CONFIG_GENERIC_GETTIMEOFDAY)
++#include <asm/vdso/clocksource.h>
++#endif /* CONFIG_ARCH_CLOCKSOURCE_DATA || CONFIG_GENERIC_GETTIMEOFDAY */
 +
-+#endif /* __VDSO_JIFFIES_H */
++enum vdso_clock_mode {
++	VDSO_CLOCKMODE_NONE,
++#ifdef CONFIG_GENERIC_GETTIMEOFDAY
++	VDSO_ARCH_CLOCKMODES,
++#endif
++	VDSO_CLOCKMODE_MAX,
++
++	/* Indicator for time namespace VDSO */
++	VDSO_CLOCKMODE_TIMENS = INT_MAX
++};
++
++#endif /* __VDSO_CLOCKSOURCE_H */
 -- 
 2.25.1
 

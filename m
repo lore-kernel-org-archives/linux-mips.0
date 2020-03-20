@@ -6,24 +6,24 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40C27C4332B
-	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 14:55:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D053C4332B
+	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 14:55:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1AC17208CA
-	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 14:55:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0B50920714
+	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 14:55:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727708AbgCTOzc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 20 Mar 2020 10:55:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:50500 "EHLO foss.arm.com"
+        id S1727751AbgCTOzj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 20 Mar 2020 10:55:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:50566 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727702AbgCTOzc (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 20 Mar 2020 10:55:32 -0400
+        id S1727744AbgCTOzi (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 20 Mar 2020 10:55:38 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8499B1063;
-        Fri, 20 Mar 2020 07:55:31 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38FDF7FA;
+        Fri, 20 Mar 2020 07:55:38 -0700 (PDT)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8F21D3F792;
-        Fri, 20 Mar 2020 07:55:28 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 436313F792;
+        Fri, 20 Mar 2020 07:55:35 -0700 (PDT)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
@@ -45,9 +45,9 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Marc Zyngier <maz@kernel.org>,
         Mark Rutland <Mark.Rutland@arm.com>
-Subject: [PATCH v5 15/26] common: Introduce processor.h
-Date:   Fri, 20 Mar 2020 14:53:40 +0000
-Message-Id: <20200320145351.32292-16-vincenzo.frascino@arm.com>
+Subject: [PATCH v5 17/26] linux/elfnote.h: Replace elf.h with UAPI equivalent
+Date:   Fri, 20 Mar 2020 14:53:42 +0000
+Message-Id: <20200320145351.32292-18-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200320145351.32292-1-vincenzo.frascino@arm.com>
 References: <20200320145351.32292-1-vincenzo.frascino@arm.com>
@@ -63,35 +63,27 @@ a userspace library (UAPI and a minimal set of kernel headers). To make
 this possible it is necessary to isolate from the kernel headers the
 common parts that are strictly necessary to build the library.
 
-Introduce processor.h to contain all the processor specific functions
-that are suitable for vDSO inclusion.
+Replace linux/elf.h with UAPI equivalent in elfnote.h to make the header
+suitable for vDSO inclusion.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- include/vdso/processor.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
- create mode 100644 include/vdso/processor.h
+ include/linux/elfnote.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/vdso/processor.h b/include/vdso/processor.h
-new file mode 100644
-index 000000000000..fbe8265ea3c4
---- /dev/null
-+++ b/include/vdso/processor.h
-@@ -0,0 +1,14 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (C) 2020 ARM Ltd.
-+ */
-+#ifndef __VDSO_PROCESSOR_H
-+#define __VDSO_PROCESSOR_H
-+
-+#ifndef __ASSEMBLY__
-+
-+#include <asm/vdso/processor.h>
-+
-+#endif /* __ASSEMBLY__ */
-+
-+#endif /* __VDSO_PROCESSOR_H */
+diff --git a/include/linux/elfnote.h b/include/linux/elfnote.h
+index f236f5b931b2..594d4e78654f 100644
+--- a/include/linux/elfnote.h
++++ b/include/linux/elfnote.h
+@@ -59,7 +59,7 @@
+ 	ELFNOTE_END
+ 
+ #else	/* !__ASSEMBLER__ */
+-#include <linux/elf.h>
++#include <uapi/linux/elf.h>
+ /*
+  * Use an anonymous structure which matches the shape of
+  * Elf{32,64}_Nhdr, but includes the name and desc data.  The size and
 -- 
 2.25.1
 

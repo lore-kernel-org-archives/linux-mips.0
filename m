@@ -2,74 +2,90 @@ Return-Path: <SRS0=rNzc=5F=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 891B8C4332D
-	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 15:39:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FADBC4332D
+	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 19:09:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5CB0820752
-	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 15:39:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 205CA20775
+	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 19:09:04 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TgKMm5iU"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727530AbgCTPj2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 20 Mar 2020 11:39:28 -0400
-Received: from eddie.linux-mips.org ([148.251.95.138]:39712 "EHLO
-        cvs.linux-mips.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727060AbgCTPj2 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 20 Mar 2020 11:39:28 -0400
-Received: (from localhost user: 'macro', uid#1010) by eddie.linux-mips.org
-        with ESMTP id S23992475AbgCTPjZQAhSh (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 20 Mar 2020 16:39:25 +0100
-Date:   Fri, 20 Mar 2020 15:39:25 +0000 (GMT)
-From:   "Maciej W. Rozycki" <macro@linux-mips.org>
-To:     Patrick Doyle <wpdster@gmail.com>
-cc:     post@pfrst.de, linux-mips@vger.kernel.org
-Subject: Re: Address space in MIPS Linux kernel
-In-Reply-To: <CAF_dkJDm=Kk6n-KqFZjabQ8GUY-axrhN4W2CBNmkzy++jBk2=A@mail.gmail.com>
-Message-ID: <alpine.LFD.2.21.2003201517230.2689954@eddie.linux-mips.org>
-References: <CAF_dkJCQuF0MaYddfqVRJ-8tNPWVkR8Q0ZYz22DUi9moAWsxeQ@mail.gmail.com> <Pine.LNX.4.64.2003061230320.1467@Mobile0.Peter> <CAF_dkJDm=Kk6n-KqFZjabQ8GUY-axrhN4W2CBNmkzy++jBk2=A@mail.gmail.com>
+        id S1726783AbgCTTJE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 20 Mar 2020 15:09:04 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:45076 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726738AbgCTTJD (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 20 Mar 2020 15:09:03 -0400
+Received: by mail-qk1-f194.google.com with SMTP id c145so8031925qke.12
+        for <linux-mips@vger.kernel.org>; Fri, 20 Mar 2020 12:09:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Coq8Ofu0U4DzajTyhT8NeznOYJKInngYKZ9RcK+J5Zc=;
+        b=TgKMm5iUsoUUoejkZRb1Y2VzGYc8z9CnyuC9wQVsIy7WKcewVGEE8cg2tWoTWOZk+L
+         bJlvH0s02E9ZSOIrQO4TRysFLjONSmPWmBhZ7d2lfxNIa5P/p0Wh76y1rw5cD/+qySCm
+         H4Z1kvipxe9K75PM42OsCC0jvcXW7vXL9P8kzx8GGx0RuMO4raPgTcqbL4nlwT7j6Jx5
+         pxxd/+AIlBLf1+OwW58e+vjPFmfBhvzFDKwZBtOYkbcDFzgcBSATzrSPN+MRCPoOCsRW
+         aZjR05UMvHYtOK4pzcWdBm+pSJAXh9LMnIq43SeMHFZYwgxtB7pfnNktjB1/L4NxuHSK
+         4hJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Coq8Ofu0U4DzajTyhT8NeznOYJKInngYKZ9RcK+J5Zc=;
+        b=EsQBbs3e6+GHtI7z3Wnbe0IKbdLFrVyvyYpfJYgAQfPh3E2vt+jLkneAjQmPue2tqB
+         JoUWkrF7L9/M5ovEZiPv37goUvqvYSKs5OwZdOhDI1rr6R2TVu7/PPws52BatyItn1tK
+         DvUKP/97Z6Vi2jTxe8scF5GdVZC5lxz5b8jlzWtYdPepp0AXTiZGeAy67FJ4xvSRe9xE
+         LziuENzIpcNM6PXBin/NhaZlPTwsywovSr6kZ9XUarSDfw+jJUyh4HSLrsc0V8NaIjKF
+         iCoJB7DYk/VhoZow54jr4k3J0hOSAazv8TzDTpmXbWU9ZIovOv3/Ug0zinnsakzerXFD
+         Ck0A==
+X-Gm-Message-State: ANhLgQ1L1YfO07xVzBL28WfiBRtNlHT/V0oIL8kGtwzCgBdpKhJgmyR6
+        xgNa3vxt6xhgIvrbCluCs+9YNZ1iQnyi/itTx9bFxA==
+X-Google-Smtp-Source: ADFU+vsEZzYu5wnaJbVv/GC3QPoANu+VJJDOnYqV31V+/SH805yGhSM2xF7V5uzn5KioGNJTPk1CCK03/hFMfyEfwrs=
+X-Received: by 2002:a05:620a:95b:: with SMTP id w27mr6169196qkw.238.1584731342710;
+ Fri, 20 Mar 2020 12:09:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <CAF_dkJCQuF0MaYddfqVRJ-8tNPWVkR8Q0ZYz22DUi9moAWsxeQ@mail.gmail.com>
+ <Pine.LNX.4.64.2003061230320.1467@Mobile0.Peter> <CAF_dkJDm=Kk6n-KqFZjabQ8GUY-axrhN4W2CBNmkzy++jBk2=A@mail.gmail.com>
+ <alpine.LFD.2.21.2003201517230.2689954@eddie.linux-mips.org>
+In-Reply-To: <alpine.LFD.2.21.2003201517230.2689954@eddie.linux-mips.org>
+From:   Patrick Doyle <wpdster@gmail.com>
+Date:   Fri, 20 Mar 2020 15:08:36 -0400
+Message-ID: <CAF_dkJDBtT=G+i9hPM81ik1zK2aiRbo3T4wT27zbubrunW7+og@mail.gmail.com>
+Subject: Re: Address space in MIPS Linux kernel
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc:     post@pfrst.de, linux-mips@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, 6 Mar 2020, Patrick Doyle wrote:
-
-> Thank you for your reply.  I managed to find my MIPS book finally, and read:
-> 
-> kuseg: 0x00000000-0x7FFFFFFF - User space mapped addresses
-> kseg0: 0x80000000-0x9FFFFFFF - Cached, "untranslated" address
-> kseg1: 0xA0000000-0xBFFFFFFF - Uncached, "untranslated" address
-> kseg2: 0xC0000000-0xFFFFFFFF - Kernel space mapped addresses (cached?)
-
- KSEG2 addresses will have the caching attribute set to one requested with 
-the allocation that has made them.  At the hardware level the attribute is 
-held in the respective TLB entries.
-
-> So, I guess I'm wondering how the kernel ends up with some addresses
-> in kseg0 and some in kseg2.  Is there any significance to the fact
-> that one address is in kseg2 while the other is in kseg0.  I may be
-> chasing down a rabbit hole here, but, at this point, I don't know
-> what's causing my kernel panic, and I noticed something I didn't
-> understand (kseg2 vs kseg0), so I figured I would ask folks on this
-> list and learn something.  Maybe this will ultimately point me to the
-> source of my problem.  Maybe I will just learn something new.  Either
-> way, I win.
-
- KSEG2 addresses are handed out with virtual allocations, typically 
-`vmalloc' and friends (also used for mapping kernel modules), but also 
-`ioremap' and friends if hardware constraints mandate it.  KSEG0 addresses 
-are handed out with regular allocations made with `kmalloc' and friends, 
-and also `ioremap' and friends where feasible.  Also addresses coming from 
-the kernel executable and the stack will be in KSEG0.
-
- This is for 32-bit MIPS/Linux configurations; 64-bit ones have additional 
-segments, which will be used accordingly.
-
- HTH,
-
-  Maciej
+On Fri, Mar 20, 2020 at 11:39 AM Maciej W. Rozycki <macro@linux-mips.org> wrote:
+>  KSEG2 addresses are handed out with virtual allocations, typically
+> `vmalloc' and friends (also used for mapping kernel modules), but also
+> `ioremap' and friends if hardware constraints mandate it.  KSEG0 addresses
+> are handed out with regular allocations made with `kmalloc' and friends,
+> and also `ioremap' and friends where feasible.  Also addresses coming from
+> the kernel executable and the stack will be in KSEG0.
+>
+>  This is for 32-bit MIPS/Linux configurations; 64-bit ones have additional
+> segments, which will be used accordingly.
+>
+>  HTH,
+>
+>   Maciej
+Thanks.  I tracked down the call to vmalloc.  I'm still have no clue
+why we are triggering a kernel panic when/where we do, but it clearly
+does not have anything to do with calling memmove() from KSEG2 space
+to KSEG0 space, and I am now looking elsewhere (like what resources
+may get allocated/locked on the way to that call to memmove() that
+don't get freed/unlocked on the way back up, or what resources were
+not locked that should have been).
+--wpd

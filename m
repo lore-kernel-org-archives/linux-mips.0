@@ -6,24 +6,24 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63768C4332D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98F6DC43332
 	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 14:56:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 4108B2076E
+	by mail.kernel.org (Postfix) with ESMTP id 7BC952078C
 	for <linux-mips@archiver.kernel.org>; Fri, 20 Mar 2020 14:56:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727210AbgCTO4M (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 20 Mar 2020 10:56:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:50846 "EHLO foss.arm.com"
+        id S1727822AbgCTOzz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 20 Mar 2020 10:55:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:50738 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727885AbgCTO4E (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 20 Mar 2020 10:56:04 -0400
+        id S1727856AbgCTOzy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 20 Mar 2020 10:55:54 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF4B71FB;
-        Fri, 20 Mar 2020 07:56:03 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38DE71FB;
+        Fri, 20 Mar 2020 07:55:54 -0700 (PDT)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C92783F792;
-        Fri, 20 Mar 2020 07:56:00 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2917A3F792;
+        Fri, 20 Mar 2020 07:55:51 -0700 (PDT)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
@@ -44,10 +44,11 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Andrei Vagin <avagin@openvz.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <Mark.Rutland@arm.com>
-Subject: [PATCH v5 25/26] lib: vdso: Enable common headers
-Date:   Fri, 20 Mar 2020 14:53:50 +0000
-Message-Id: <20200320145351.32292-26-vincenzo.frascino@arm.com>
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Paul Burton <paulburton@kernel.org>
+Subject: [PATCH v5 22/26] mips: vdso: Enable mips to use common headers
+Date:   Fri, 20 Mar 2020 14:53:47 +0000
+Message-Id: <20200320145351.32292-23-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200320145351.32292-1-vincenzo.frascino@arm.com>
 References: <20200320145351.32292-1-vincenzo.frascino@arm.com>
@@ -58,108 +59,102 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The vDSO library should only include the necessary headers required for
-a userspace library (UAPI and a minimal set of kernel headers). To make
-this possible it is necessary to isolate from the kernel headers the
-common parts that are strictly necessary to build the library.
+Enable mips to use only the common headers in the implementation of
+the vDSO library.
 
-Refactor the unified vdso code to use the common headers.
-
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Paul Burton <paulburton@kernel.org>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- include/vdso/datapage.h | 33 ++++++++++++++++++++++++++++++---
- lib/vdso/gettimeofday.c | 22 ----------------------
- 2 files changed, 30 insertions(+), 25 deletions(-)
+ arch/mips/include/asm/processor.h         | 16 +-------------
+ arch/mips/include/asm/vdso/gettimeofday.h |  4 ----
+ arch/mips/include/asm/vdso/processor.h    | 27 +++++++++++++++++++++++
+ 3 files changed, 28 insertions(+), 19 deletions(-)
+ create mode 100644 arch/mips/include/asm/vdso/processor.h
 
-diff --git a/include/vdso/datapage.h b/include/vdso/datapage.h
-index 30c4cb0428d1..5cbc9fcbfd45 100644
---- a/include/vdso/datapage.h
-+++ b/include/vdso/datapage.h
-@@ -4,9 +4,20 @@
+diff --git a/arch/mips/include/asm/processor.h b/arch/mips/include/asm/processor.h
+index 7619ad319400..4c9cc667f3ed 100644
+--- a/arch/mips/include/asm/processor.h
++++ b/arch/mips/include/asm/processor.h
+@@ -22,6 +22,7 @@
+ #include <asm/dsemul.h>
+ #include <asm/mipsregs.h>
+ #include <asm/prefetch.h>
++#include <asm/vdso/processor.h>
+ 
+ /*
+  * System setup and hardware flags..
+@@ -385,21 +386,6 @@ unsigned long get_wchan(struct task_struct *p);
+ #define KSTK_ESP(tsk) (task_pt_regs(tsk)->regs[29])
+ #define KSTK_STATUS(tsk) (task_pt_regs(tsk)->cp0_status)
+ 
+-#ifdef CONFIG_CPU_LOONGSON64
+-/*
+- * Loongson-3's SFB (Store-Fill-Buffer) may buffer writes indefinitely when a
+- * tight read loop is executed, because reads take priority over writes & the
+- * hardware (incorrectly) doesn't ensure that writes will eventually occur.
+- *
+- * Since spin loops of any kind should have a cpu_relax() in them, force an SFB
+- * flush from cpu_relax() such that any pending writes will become visible as
+- * expected.
+- */
+-#define cpu_relax()	smp_mb()
+-#else
+-#define cpu_relax()	barrier()
+-#endif
+-
+ /*
+  * Return_address is a replacement for __builtin_return_address(count)
+  * which on certain architectures cannot reasonably be implemented in GCC
+diff --git a/arch/mips/include/asm/vdso/gettimeofday.h b/arch/mips/include/asm/vdso/gettimeofday.h
+index 88c3de1bdf22..c63ddcaea54c 100644
+--- a/arch/mips/include/asm/vdso/gettimeofday.h
++++ b/arch/mips/include/asm/vdso/gettimeofday.h
+@@ -13,12 +13,8 @@
  
  #ifndef __ASSEMBLY__
  
--#include <linux/bits.h>
--#include <linux/time.h>
--#include <linux/types.h>
-+#include <linux/compiler.h>
-+#include <uapi/linux/time.h>
-+#include <uapi/linux/types.h>
-+#include <uapi/asm-generic/errno-base.h>
-+
-+#include <vdso/bits.h>
-+#include <vdso/clocksource.h>
-+#include <vdso/ktime.h>
-+#include <vdso/limits.h>
-+#include <vdso/math64.h>
-+#include <vdso/processor.h>
-+#include <vdso/time.h>
-+#include <vdso/time32.h>
-+#include <vdso/time64.h>
- 
- #define VDSO_BASES	(CLOCK_TAI + 1)
- #define VDSO_HRES	(BIT(CLOCK_REALTIME)		| \
-@@ -99,6 +110,22 @@ struct vdso_data {
-  */
- extern struct vdso_data _vdso_data[CS_BASES] __attribute__((visibility("hidden")));
- 
-+/*
-+ * The generic vDSO implementation requires that gettimeofday.h
-+ * provides:
-+ * - __arch_get_vdso_data(): to get the vdso datapage.
-+ * - __arch_get_hw_counter(): to get the hw counter based on the
-+ *   clock_mode.
-+ * - gettimeofday_fallback(): fallback for gettimeofday.
-+ * - clock_gettime_fallback(): fallback for clock_gettime.
-+ * - clock_getres_fallback(): fallback for clock_getres.
-+ */
-+#ifdef ENABLE_COMPAT_VDSO
-+#include <asm/vdso/compat_gettimeofday.h>
-+#else
-+#include <asm/vdso/gettimeofday.h>
-+#endif /* ENABLE_COMPAT_VDSO */
-+
- #endif /* !__ASSEMBLY__ */
- 
- #endif /* __VDSO_DATAPAGE_H */
-diff --git a/lib/vdso/gettimeofday.c b/lib/vdso/gettimeofday.c
-index 72d282ffd156..a2909af4b924 100644
---- a/lib/vdso/gettimeofday.c
-+++ b/lib/vdso/gettimeofday.c
-@@ -2,31 +2,9 @@
- /*
-  * Generic userspace implementations of gettimeofday() and similar.
-  */
 -#include <linux/compiler.h>
--#include <linux/math64.h>
 -#include <linux/time.h>
--#include <linux/kernel.h>
--#include <linux/hrtimer_defs.h>
--#include <linux/clocksource.h>
- #include <vdso/datapage.h>
- #include <vdso/helpers.h>
- 
--/*
-- * The generic vDSO implementation requires that gettimeofday.h
-- * provides:
-- * - __arch_get_vdso_data(): to get the vdso datapage.
-- * - __arch_get_hw_counter(): to get the hw counter based on the
-- *   clock_mode.
-- * - gettimeofday_fallback(): fallback for gettimeofday.
-- * - clock_gettime_fallback(): fallback for clock_gettime.
-- * - clock_getres_fallback(): fallback for clock_getres.
-- */
--#ifdef ENABLE_COMPAT_VDSO
--#include <asm/vdso/compat_gettimeofday.h>
--#else
--#include <asm/vdso/gettimeofday.h>
--#endif /* ENABLE_COMPAT_VDSO */
 -
- #ifndef vdso_calc_delta
- /*
-  * Default implementation which works for all sane clocksources. That
+ #include <asm/vdso/vdso.h>
+ #include <asm/clocksource.h>
+-#include <asm/io.h>
+ #include <asm/unistd.h>
+ #include <asm/vdso.h>
+ 
+diff --git a/arch/mips/include/asm/vdso/processor.h b/arch/mips/include/asm/vdso/processor.h
+new file mode 100644
+index 000000000000..511c95d735e6
+--- /dev/null
++++ b/arch/mips/include/asm/vdso/processor.h
+@@ -0,0 +1,27 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) 2020 ARM Ltd.
++ */
++#ifndef __ASM_VDSO_PROCESSOR_H
++#define __ASM_VDSO_PROCESSOR_H
++
++#ifndef __ASSEMBLY__
++
++#ifdef CONFIG_CPU_LOONGSON64
++/*
++ * Loongson-3's SFB (Store-Fill-Buffer) may buffer writes indefinitely when a
++ * tight read loop is executed, because reads take priority over writes & the
++ * hardware (incorrectly) doesn't ensure that writes will eventually occur.
++ *
++ * Since spin loops of any kind should have a cpu_relax() in them, force an SFB
++ * flush from cpu_relax() such that any pending writes will become visible as
++ * expected.
++ */
++#define cpu_relax()	smp_mb()
++#else
++#define cpu_relax()	barrier()
++#endif
++
++#endif /* __ASSEMBLY__ */
++
++#endif /* __ASM_VDSO_PROCESSOR_H */
 -- 
 2.25.1
 

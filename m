@@ -2,116 +2,197 @@ Return-Path: <SRS0=L2QF=5G=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23040C4332B
-	for <linux-mips@archiver.kernel.org>; Sat, 21 Mar 2020 17:43:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81215C43332
+	for <linux-mips@archiver.kernel.org>; Sat, 21 Mar 2020 20:26:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id EC03F20732
-	for <linux-mips@archiver.kernel.org>; Sat, 21 Mar 2020 17:43:12 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UXIHaUBh"
+	by mail.kernel.org (Postfix) with ESMTP id 58DEA20777
+	for <linux-mips@archiver.kernel.org>; Sat, 21 Mar 2020 20:26:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbgCURnM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 21 Mar 2020 13:43:12 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:46899 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726961AbgCURnM (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 21 Mar 2020 13:43:12 -0400
-Received: by mail-pg1-f196.google.com with SMTP id k191so3631741pgc.13;
-        Sat, 21 Mar 2020 10:43:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3fStVl9rL3YRgIiAf/TzVVtMNrh3VX50fi0qgiiuA8o=;
-        b=UXIHaUBhFEcnW+OMHvNaZ8x6pk7Kw7xSi1XSqUQ/ypXJwX+/0kjbU9/UcI39UYrFww
-         L4SWYiuz/x5ZDo+euy1EVFm6/xEfsJuGVNtbr58w1aJIyLLbxr5Zvw2YV6+Jz2IFJLx1
-         hSKDnD+ugCfCtYPbwa0qtQZzvaVCFI/U0Hh49Bh/9v4+8cPYNZpxmxPxHCL/ucL4FfPB
-         t55wM9/sifQrsJ2x7qaYOUyTwSXOMqFFX7kbT5BvfLIkW8EyaBXHAHAACDZSlA65LB0e
-         +oYG1mMj2pkG+negyyMWiq2E57sl6r93kYgmOlv5Tvke5FfWZ2pC2/wfVUCgtyT6TaL9
-         9P/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3fStVl9rL3YRgIiAf/TzVVtMNrh3VX50fi0qgiiuA8o=;
-        b=Za4uAK/Rnst3X52J/G6OTQ+l4s/AZHOKh6kKpQ5ZdDLx15z4OYR19Y68wga1kyVUUG
-         ee5zp6q5qTKny4UFqJGpeahJ/qbnOYjH1s7/aAjvoabkGxio6N2MmF1B0inrNYClKF9Z
-         MOd0xVTsyXhNx5gGofVLaVBNvXW8pVFwDfi3J6j7y008urMcx6FX2pPbORPJ3I/qcYNr
-         IUiPrlnt7xGuMXWU6edZb9U/MOBHUwNGMOwT3jQEnIOFM1lfl1EPLWcYQSrcMbwm9rXV
-         eklcwN1zNrtM67GneGGnNA2PoQjkjbwMKjFMWBSJG+MQzQ9NbQcQblBL0Dv5ERnfTyFi
-         MKlg==
-X-Gm-Message-State: ANhLgQ2QqQUUd2GCN1Ivg6KqoHNYnAiZxGyaoY7bqL3CaSA4W3yIPBqY
-        SDFD7Q2H5qPCaJxAoSHqado=
-X-Google-Smtp-Source: ADFU+vtSB9sj3T3LCfhecLdyVMoQimjNCV0Ow3ys209048E+VImdKW1kqpUYGGvxT4nwaYSYvsoI7Q==
-X-Received: by 2002:a63:e856:: with SMTP id a22mr1215468pgk.283.1584812590871;
-        Sat, 21 Mar 2020 10:43:10 -0700 (PDT)
-Received: from localhost ([49.207.51.24])
-        by smtp.gmail.com with ESMTPSA id f127sm8973833pfa.9.2020.03.21.10.43.09
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 21 Mar 2020 10:43:10 -0700 (PDT)
-Date:   Sat, 21 Mar 2020 23:13:03 +0530
-From:   afzal mohammed <afzal.mohd.ma@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, x86@kernel.org,
-        linux-sh@vger.kernel.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-ia64@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-c6x-dev@linux-c6x.org, linux-omap@vger.kernel.org,
-        linux-alpha@vger.kernel.org, Julia Lawall <Julia.Lawall@lip6.fr>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Michal Marek <michal.lkml@markovi.net>
-Subject: Re: [PATCH 00/18] genirq: Remove setup_irq()
-Message-ID: <20200321174303.GA7930@afzalpc>
-References: <cover.1581478323.git.afzal.mohd.ma@gmail.com>
- <87y2somido.fsf@nanos.tec.linutronix.de>
- <20200227110713.GA5708@afzalpc>
+        id S1728103AbgCUU0K (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 21 Mar 2020 16:26:10 -0400
+Received: from mga03.intel.com ([134.134.136.65]:8930 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728047AbgCUU0J (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 21 Mar 2020 16:26:09 -0400
+IronPort-SDR: TxNpF2DZIE2I9osG2XyIHB+Tw811oTZD/NGvYOr0Vu3vme0GxEvjvdy5oNp8mYbVwXNCB83L9q
+ WV8KnyiHfu6A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Mar 2020 13:26:07 -0700
+IronPort-SDR: Jv0pLYZ19RWfHjiGVPuiNt2slUITQoctVuGyHeww7eUSmTNQXWh3Mlck792AzZXVb2IjBZBJrh
+ iiI1ETaujtng==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,289,1580803200"; 
+   d="scan'208";a="280773547"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
+  by fmsmga002.fm.intel.com with ESMTP; 21 Mar 2020 13:26:07 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 4/9] KVM: VMX: Configure runtime hooks using vmx_x86_ops
+Date:   Sat, 21 Mar 2020 13:25:58 -0700
+Message-Id: <20200321202603.19355-5-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200321202603.19355-1-sean.j.christopherson@intel.com>
+References: <20200321202603.19355-1-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200227110713.GA5708@afzalpc>
-User-Agent: Mutt/1.9.3 (2018-01-21)
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Thomas,
+Configure VMX's runtime hooks by modifying vmx_x86_ops directly instead
+of using the global kvm_x86_ops.  This sets the stage for waiting until
+after ->hardware_setup() to set kvm_x86_ops with the vendor's
+implementation.
 
-On Thu, Feb 27, 2020 at 04:37:13PM +0530, afzal mohammed wrote:
-> On Thu, Feb 27, 2020 at 11:31:15AM +0100, Thomas Gleixner wrote:
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+---
+ arch/x86/kvm/vmx/nested.c | 15 ++++++++-------
+ arch/x86/kvm/vmx/nested.h |  3 ++-
+ arch/x86/kvm/vmx/vmx.c    | 27 ++++++++++++++-------------
+ 3 files changed, 24 insertions(+), 21 deletions(-)
 
-> > Vs. merging this series, I suggest the following approach:
-> > 
-> >    - Resubmit the individual changes as single patches or small series
-> >      to the relevant maintainers and subsystem mailing lists. They have
-> >      no dependency on a core change and can be applied where they belong
-> >      to.
-> > 
-> >    - After 5.6-rc6, verify which parts have made their way into
-> >      linux-next and resubmit the ignored ones as a series to me along
-> >      with the removal of the core parts.
-> > 
-> > That way we can avoid conflicting changes between subsystems and the tip
-> > irq/core branch as much as possible.
-> 
-> Okay, i will do accordingly.
-
-i am on it, is delayed due to the reason as mentioned at,
-
-https://lkml.kernel.org/r/20200321172626.GA6323@afzalpc
-
-[ not repeating contents here since other mail was sent just now,
-  cc'ing you ]
-
-Regards
-afzal
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index 4ff859c99946..87fea22c3799 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -6241,7 +6241,8 @@ void nested_vmx_hardware_unsetup(void)
+ 	}
+ }
+ 
+-__init int nested_vmx_hardware_setup(int (*exit_handlers[])(struct kvm_vcpu *))
++__init int nested_vmx_hardware_setup(struct kvm_x86_ops *ops,
++				     int (*exit_handlers[])(struct kvm_vcpu *))
+ {
+ 	int i;
+ 
+@@ -6277,12 +6278,12 @@ __init int nested_vmx_hardware_setup(int (*exit_handlers[])(struct kvm_vcpu *))
+ 	exit_handlers[EXIT_REASON_INVVPID]	= handle_invvpid;
+ 	exit_handlers[EXIT_REASON_VMFUNC]	= handle_vmfunc;
+ 
+-	kvm_x86_ops->check_nested_events = vmx_check_nested_events;
+-	kvm_x86_ops->get_nested_state = vmx_get_nested_state;
+-	kvm_x86_ops->set_nested_state = vmx_set_nested_state;
+-	kvm_x86_ops->get_vmcs12_pages = nested_get_vmcs12_pages;
+-	kvm_x86_ops->nested_enable_evmcs = nested_enable_evmcs;
+-	kvm_x86_ops->nested_get_evmcs_version = nested_get_evmcs_version;
++	ops->check_nested_events = vmx_check_nested_events;
++	ops->get_nested_state = vmx_get_nested_state;
++	ops->set_nested_state = vmx_set_nested_state;
++	ops->get_vmcs12_pages = nested_get_vmcs12_pages;
++	ops->nested_enable_evmcs = nested_enable_evmcs;
++	ops->nested_get_evmcs_version = nested_get_evmcs_version;
+ 
+ 	return 0;
+ }
+diff --git a/arch/x86/kvm/vmx/nested.h b/arch/x86/kvm/vmx/nested.h
+index f70968b76d33..ac56aefa49e3 100644
+--- a/arch/x86/kvm/vmx/nested.h
++++ b/arch/x86/kvm/vmx/nested.h
+@@ -19,7 +19,8 @@ enum nvmx_vmentry_status {
+ void vmx_leave_nested(struct kvm_vcpu *vcpu);
+ void nested_vmx_setup_ctls_msrs(struct nested_vmx_msrs *msrs, u32 ept_caps);
+ void nested_vmx_hardware_unsetup(void);
+-__init int nested_vmx_hardware_setup(int (*exit_handlers[])(struct kvm_vcpu *));
++__init int nested_vmx_hardware_setup(struct kvm_x86_ops *ops,
++				     int (*exit_handlers[])(struct kvm_vcpu *));
+ void nested_vmx_set_vmcs_shadowing_bitmap(void);
+ void nested_vmx_free_vcpu(struct kvm_vcpu *vcpu);
+ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 82dab775d520..cfa9093bdc06 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7860,16 +7860,16 @@ static __init int hardware_setup(void)
+ 	 * using the APIC_ACCESS_ADDR VMCS field.
+ 	 */
+ 	if (!flexpriority_enabled)
+-		kvm_x86_ops->set_apic_access_page_addr = NULL;
++		vmx_x86_ops.set_apic_access_page_addr = NULL;
+ 
+ 	if (!cpu_has_vmx_tpr_shadow())
+-		kvm_x86_ops->update_cr8_intercept = NULL;
++		vmx_x86_ops.update_cr8_intercept = NULL;
+ 
+ #if IS_ENABLED(CONFIG_HYPERV)
+ 	if (ms_hyperv.nested_features & HV_X64_NESTED_GUEST_MAPPING_FLUSH
+ 	    && enable_ept) {
+-		kvm_x86_ops->tlb_remote_flush = hv_remote_flush_tlb;
+-		kvm_x86_ops->tlb_remote_flush_with_range =
++		vmx_x86_ops.tlb_remote_flush = hv_remote_flush_tlb;
++		vmx_x86_ops.tlb_remote_flush_with_range =
+ 				hv_remote_flush_tlb_with_range;
+ 	}
+ #endif
+@@ -7884,7 +7884,7 @@ static __init int hardware_setup(void)
+ 
+ 	if (!cpu_has_vmx_apicv()) {
+ 		enable_apicv = 0;
+-		kvm_x86_ops->sync_pir_to_irr = NULL;
++		vmx_x86_ops.sync_pir_to_irr = NULL;
+ 	}
+ 
+ 	if (cpu_has_vmx_tsc_scaling()) {
+@@ -7916,10 +7916,10 @@ static __init int hardware_setup(void)
+ 		enable_pml = 0;
+ 
+ 	if (!enable_pml) {
+-		kvm_x86_ops->slot_enable_log_dirty = NULL;
+-		kvm_x86_ops->slot_disable_log_dirty = NULL;
+-		kvm_x86_ops->flush_log_dirty = NULL;
+-		kvm_x86_ops->enable_log_dirty_pt_masked = NULL;
++		vmx_x86_ops.slot_enable_log_dirty = NULL;
++		vmx_x86_ops.slot_disable_log_dirty = NULL;
++		vmx_x86_ops.flush_log_dirty = NULL;
++		vmx_x86_ops.enable_log_dirty_pt_masked = NULL;
+ 	}
+ 
+ 	if (!cpu_has_vmx_preemption_timer())
+@@ -7947,9 +7947,9 @@ static __init int hardware_setup(void)
+ 	}
+ 
+ 	if (!enable_preemption_timer) {
+-		kvm_x86_ops->set_hv_timer = NULL;
+-		kvm_x86_ops->cancel_hv_timer = NULL;
+-		kvm_x86_ops->request_immediate_exit = __kvm_request_immediate_exit;
++		vmx_x86_ops.set_hv_timer = NULL;
++		vmx_x86_ops.cancel_hv_timer = NULL;
++		vmx_x86_ops.request_immediate_exit = __kvm_request_immediate_exit;
+ 	}
+ 
+ 	kvm_set_posted_intr_wakeup_handler(wakeup_handler);
+@@ -7965,7 +7965,8 @@ static __init int hardware_setup(void)
+ 		nested_vmx_setup_ctls_msrs(&vmcs_config.nested,
+ 					   vmx_capability.ept);
+ 
+-		r = nested_vmx_hardware_setup(kvm_vmx_exit_handlers);
++		r = nested_vmx_hardware_setup(&vmx_x86_ops,
++					      kvm_vmx_exit_handlers);
+ 		if (r)
+ 			return r;
+ 	}
+-- 
+2.24.1
 

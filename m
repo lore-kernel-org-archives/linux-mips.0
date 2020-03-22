@@ -2,105 +2,120 @@ Return-Path: <SRS0=JC39=5H=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09F19C43333
-	for <linux-mips@archiver.kernel.org>; Sun, 22 Mar 2020 05:40:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B01E3C4332D
+	for <linux-mips@archiver.kernel.org>; Sun, 22 Mar 2020 08:33:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D23C220722
-	for <linux-mips@archiver.kernel.org>; Sun, 22 Mar 2020 05:40:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7DAF520774
+	for <linux-mips@archiver.kernel.org>; Sun, 22 Mar 2020 08:33:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qpVJsvU7"
+	dkim=pass (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="xA9t41iw"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgCVFkZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 22 Mar 2020 01:40:25 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:43429 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgCVFkZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 22 Mar 2020 01:40:25 -0400
-Received: by mail-pg1-f195.google.com with SMTP id u12so5359867pgb.10;
-        Sat, 21 Mar 2020 22:40:24 -0700 (PDT)
+        id S1726781AbgCVIdy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 22 Mar 2020 04:33:54 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:45351 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726738AbgCVIdx (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 22 Mar 2020 04:33:53 -0400
+Received: by mail-lj1-f194.google.com with SMTP id t17so404020ljc.12
+        for <linux-mips@vger.kernel.org>; Sun, 22 Mar 2020 01:33:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=spP+yCGSzPzhe+8wghduZrLrXmzq5c5ZgZYSiNEqLBI=;
-        b=qpVJsvU7hkYt3W99PKuoEMfwXr92qpJIkIm8CSZQbserjPIxwrAKcNXjpnPNRLTaxu
-         63OYk6p7jtaQHxbxeZLFH5vq/HZSs6i1xJRV/cvQHN64qOrJnaEZFe3GWyoHK/fIHH85
-         knFIj/fBu6TKbQD3We08BnpjmvcLUk+mk4kP7TBRObuAb2h+1eq5fWpUtIhlZh+ue3zP
-         nlmUyP7eKwBoAKlteRpXBhn3/ddzHsu3o97kdvOmF44p6yznbWvN6AQDjiMV+eMBDgrC
-         pLdf0ugcprMtwriWbxr1hPVFUGTuGIKCsWibD5+ElN53wm0RNNIv2l5UBorzSUP+ktTn
-         6ZTA==
+        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GYodu1hNAeAFvsnGp4c01oeXRlI7ca0lNBKuCrt4USY=;
+        b=xA9t41iwzU3rmuI25Ttw6r0xiC/AkGVhv2DijmSzsj8OvXACJUJ23FTgsgcgnod1c/
+         e3q+mRPx6Lhr4FIkaLnzxWjCp05TFrx4mjWhsPWhpas0AFonhcI8TwMMTJz5izVE2fjR
+         jrkk/4ciPyk/4dVj8G2B/LYhUzEHXktfQ2TOo3nuHqjbUCpwDvHkSzmTnzxrkk0eDEOc
+         p+ekQiVSMWezqPdJlM3dOrin1KVYvYkuKxfPIe2LqEPvONtxEWvZM7FcHqGZZVmLTznd
+         IBW6hps1AsKbeQgJ7q+sQwxe9pKkmj/o8DoggCVmzd3ROM31RvG/inq3k7LMdHrbe+3a
+         eiLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=spP+yCGSzPzhe+8wghduZrLrXmzq5c5ZgZYSiNEqLBI=;
-        b=l+w/hLmDwtbl/EiwYguwJAXi/CrLZVElc7v5afKJVPqnRctrFOz03TP4PaV0bkiepr
-         vjWaA6bp7SmK+fCN9numFtYZJppmZ0W0PcJFcRF7rCEw3HDUSLOIa74bCpU+ynhcezcf
-         ROu5tCBR6NwPkbAoQqWv+wX81mxQryMjMas/wd1B7KwDHsD6xyXZqO2FifH8TD1ld/OJ
-         F4m3fFu9kAR2WZsRFemRKeK2xTJGvA42b4SSgNPQH1AJjjGKoNil6aDfmpECx2WHUkWe
-         KJGqbVgIhprpN/jVpEJUCwdXfJXPAjDNGV9+J3cdN/uygzhLsKEUw7GrGaXsam3CFaYi
-         Qv7Q==
-X-Gm-Message-State: ANhLgQ0nWHd+ChzWPXas7GIwLLyNzNkb4Gk2zxGPpDLw5PzvZwR7kfoM
-        4dPw7Gt/L2orazdDhSKBnE8VhitF
-X-Google-Smtp-Source: ADFU+vsv5Jyp3yjIOXaxdDtCfInZ7GyXCcd8Cialhv34o12iz3INqzCy+ClrQ9Ah+p+GlO1fg8HXMg==
-X-Received: by 2002:a62:868a:: with SMTP id x132mr17147262pfd.208.1584855624030;
-        Sat, 21 Mar 2020 22:40:24 -0700 (PDT)
-Received: from xps.vpn2.bfsu.edu.cn ([103.125.232.133])
-        by smtp.gmail.com with ESMTPSA id b23sm910831pft.116.2020.03.21.22.40.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Mar 2020 22:40:23 -0700 (PDT)
-From:   YunQiang Su <syq@debian.org>
-To:     mtk.manpages@gmail.com
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GYodu1hNAeAFvsnGp4c01oeXRlI7ca0lNBKuCrt4USY=;
+        b=GCm8FhWxkgTjuTUCcEdR/sDow0507sU8cykHhYo3UNwYzu7aWw2DwICagbpndVajXE
+         eJKMRjQPQl2L1JqY5ZkHny3Pp9tCT/qOSiLx3Hoi+EMm3KrNFpWiMpwj71LC4B07Wr/t
+         j8CVWigCnCXgMCvzN96ptU3NLg9WMvVjnAjQd1rjQn3T6McSCsVyzXgpraWvyf6e6OnA
+         iroqJmQth+VEHOFob9/O548bSyCuA0GAeM/aJIw2ykuJdyuHV8291t19cpqTT1bOWYIG
+         f5vrE+t8FigcRRt/hWrRscD3/BU884CljiCime6ZvNz72MuOdpjHNfFk9ps/NY3k1i51
+         0aWg==
+X-Gm-Message-State: ANhLgQ1gbfmgtQFRK7b8M6cFKYqsXdXSHxA7Y6iRESETZ3sbOcqCUJ2E
+        Dh7YPJcRxhGs2phyPCK+mod36g==
+X-Google-Smtp-Source: ADFU+vuI5Tkw5meA3Xbn2em83MyEo8gnVpoDHqSWCfvI72ZfI0JP4vg3rOr+eXuzCdAf0NHXrwRHXg==
+X-Received: by 2002:a05:651c:106c:: with SMTP id y12mr2510877ljm.170.1584866030990;
+        Sun, 22 Mar 2020 01:33:50 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:4416:1ee0:bdcc:9012:53a3:648d? ([2a00:1fa0:4416:1ee0:bdcc:9012:53a3:648d])
+        by smtp.gmail.com with ESMTPSA id d26sm7993714lfm.0.2020.03.22.01.33.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Mar 2020 01:33:50 -0700 (PDT)
+Subject: Re: [PATCH] getauxval.3: MIPS, AT_BASE_PLATFORM passes ISA level
+To:     YunQiang Su <syq@debian.org>, mtk.manpages@gmail.com
 Cc:     linux-man@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, YunQiang Su <syq@debian.org>
-Subject: [PATCH] getauxval.3: MIPS, AT_BASE_PLATFORM passes ISA level
-Date:   Sun, 22 Mar 2020 13:39:16 +0800
-Message-Id: <20200322053916.391906-1-syq@debian.org>
-X-Mailer: git-send-email 2.26.0.rc2
+        linux-kernel@vger.kernel.org
+References: <20200322053916.391906-1-syq@debian.org>
+From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-ID: <4d4b7b0f-7e55-c400-3b5f-5c9a04bac40f@cogentembedded.com>
+Date:   Sun, 22 Mar 2020 11:33:49 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200322053916.391906-1-syq@debian.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Since Linux 5.7, on MIPS, we use AT_BASE_PLATFORM to pass ISA level.
-The values may be:
-  mips2, mips3, mips4, mips5,
-  mips32, mips32r2, mips32r6,
-  mips64, mips64r2, mips64r6.
+Hello!
 
-This behaivor is different with PowerPC.
+On 22.03.2020 8:39, YunQiang Su wrote:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=e585b768da111f2c2d413de6214e83bbdfee8f22
-Signed-off-by: YunQiang Su <syq@debian.org>
----
- man3/getauxval.3 | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+> Since Linux 5.7, on MIPS, we use AT_BASE_PLATFORM to pass ISA level.
+> The values may be:
+>    mips2, mips3, mips4, mips5,
+>    mips32, mips32r2, mips32r6,
+>    mips64, mips64r2, mips64r6.
+> 
+> This behaivor is different with PowerPC.
 
-diff --git a/man3/getauxval.3 b/man3/getauxval.3
-index 456371c6a..518faf5d3 100644
---- a/man3/getauxval.3
-+++ b/man3/getauxval.3
-@@ -60,9 +60,10 @@ values are present on all architectures.
- The base address of the program interpreter (usually, the dynamic linker).
- .TP
- .BR AT_BASE_PLATFORM
--A pointer to a string identifying the real platform; may differ from
--.BR AT_PLATFORM
--(PowerPC only).
-+A pointer to a string (PowerPC and MIPS only).
-+On PowerPC, this identifys the real platform; may differ from
-+.BR AT_PLATFORM "."
-+On MIPS, this identifys the ISA level (Since 5.7).
- .TP
- .BR AT_CLKTCK
- The frequency with which
--- 
-2.26.0.rc2
+    Behavior.
 
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=e585b768da111f2c2d413de6214e83bbdfee8f22
+> Signed-off-by: YunQiang Su <syq@debian.org>
+> ---
+>   man3/getauxval.3 | 7 ++++---
+>   1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/man3/getauxval.3 b/man3/getauxval.3
+> index 456371c6a..518faf5d3 100644
+> --- a/man3/getauxval.3
+> +++ b/man3/getauxval.3
+> @@ -60,9 +60,10 @@ values are present on all architectures.
+>   The base address of the program interpreter (usually, the dynamic linker).
+>   .TP
+>   .BR AT_BASE_PLATFORM
+> -A pointer to a string identifying the real platform; may differ from
+> -.BR AT_PLATFORM
+> -(PowerPC only).
+> +A pointer to a string (PowerPC and MIPS only).
+> +On PowerPC, this identifys the real platform; may differ from
+
+    Identifies.
+
+> +.BR AT_PLATFORM "."
+> +On MIPS, this identifys the ISA level (Since 5.7).
+
+    Same here.
+
+[...]
+
+MBR, Sergei

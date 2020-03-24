@@ -2,206 +2,380 @@ Return-Path: <SRS0=otLQ=5J=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90048C43331
-	for <linux-mips@archiver.kernel.org>; Tue, 24 Mar 2020 15:28:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B00A7C2BAEE
+	for <linux-mips@archiver.kernel.org>; Tue, 24 Mar 2020 15:38:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 64AB020789
-	for <linux-mips@archiver.kernel.org>; Tue, 24 Mar 2020 15:28:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 770CE20714
+	for <linux-mips@archiver.kernel.org>; Tue, 24 Mar 2020 15:38:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pvUrJGil"
+	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="T5Whujpi"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727680AbgCXP2O (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 24 Mar 2020 11:28:14 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:37887 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727699AbgCXP2N (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 24 Mar 2020 11:28:13 -0400
-Received: by mail-pl1-f195.google.com with SMTP id x1so3497543plm.4
-        for <linux-mips@vger.kernel.org>; Tue, 24 Mar 2020 08:28:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x+18KwjdW7xn5gJkSFR3X8gc0R4qDrX19hXMt3Pj6ho=;
-        b=pvUrJGil7R+6087PktRP0/DECaIQVODZg2s3+A40va3GDuZgZJd/rEpxH0IDIITB39
-         LIT3rFOghdff2XoPs/frGcHKhiobNuOAkPX4mJMqXszaDO4PhTfd8ugtyX+dpOSs49tS
-         kCVVsV2r3IdqK2aTziiqgZFaqJZa2BHugJRW/bHnO/obVGywPzwCWHmTo8TUqO5SPQGp
-         5Egsvu96gJ5/MAi1Fo5kankhyEj6HSAxcPQ0ydC3bkwkZcEpjLQzoogJxcn3ECC8z30S
-         FmPygP1OwqGgUIsTe4WBmYsr6e+MG7gau5eNBLI3tzJDf86zngiYu2FoH8dD0npDaS56
-         aKTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x+18KwjdW7xn5gJkSFR3X8gc0R4qDrX19hXMt3Pj6ho=;
-        b=dA6x9eukLFDyLm2AzbJmxm2lE1J7h68odkeZjoOBfvmW5NEjxOatR6mwpZPlD/4fpr
-         i1UiHBGIIUh2NYjSXQj2VXVyPPwP4/LapKwAUkK5RTHy6pZQHko3N5+i8UDmdnWyCsyW
-         F5s2aoUYfUt6kAa5DY/Wr9riu6QwfwOkAcYXnUoKf18zluzcOvL/B/LGYYZCXbX3P57k
-         XwHtImfPWfMmr2kM1Ph2Rf/kHdjeOt6GeuFJcdv9vcC9h4Ut77ZRCN1moMzS2NzgsilJ
-         GdueZiCb3AcYxf5hYbP4Tv6SDLj30uE9yk5o5PaefP9Z3mqTFFW8AcXEOUIqLytUCHA6
-         VZKw==
-X-Gm-Message-State: ANhLgQ2SmQ/jzCCO1sOSu2JznYgqZ8ehRCe1xMrwuGxyofDog3+1eEAk
-        WZDiO8iPSqgjvx9QkSwfbaA=
-X-Google-Smtp-Source: ADFU+vuyf/gEhAf3CAGcpb87/uvQf3XVXrSZ6HrgPkNdzqZ0NlTq0YZRD0V+4G7cP1Qlq1Sa6bwrJw==
-X-Received: by 2002:a17:90a:2042:: with SMTP id n60mr6078928pjc.0.1585063691180;
-        Tue, 24 Mar 2020 08:28:11 -0700 (PDT)
-Received: from titan.hq.cloud.yunionyun.com ([47.244.19.249])
-        by smtp.gmail.com with ESMTPSA id k6sm1602879pfa.214.2020.03.24.08.28.08
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 24 Mar 2020 08:28:10 -0700 (PDT)
-From:   Yousong Zhou <yszhou4tech@gmail.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org,
-        Yousong Zhou <yszhou4tech@gmail.com>
-Subject: [PATCH v2] MIPS: Exclude more dsemul code when CONFIG_MIPS_FP_SUPPORT=n
-Date:   Tue, 24 Mar 2020 23:27:51 +0800
-Message-Id: <20200324152751.57666-1-yszhou4tech@gmail.com>
+        id S1728825AbgCXPic (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 24 Mar 2020 11:38:32 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17887 "EHLO
+        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728725AbgCXPib (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 24 Mar 2020 11:38:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1585064211;
+        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
+        h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        bh=4GS+fzgHRhPzfIm1JsnxfQzRHz6CyvzmhR6kJTWisc4=;
+        b=T5Whujpi28xlX4a4nyuyKjHRnnja5iq/fwuLgCSvhLGibeIsSRO7TEtJf1053dps
+        zLPCsYF08+FJnvYyUaP4LQLuLOZavRA/rAyHkIbT4syDq8zRbzeQgTcoUfbuTe3Br3n
+        qbywFig5wAMtYDydgaBU/9nPQt/4HNIOgylSeDhw=
+Received: from localhost.localdomain (39.155.141.144 [39.155.141.144]) by mx.zoho.com.cn
+        with SMTPS id 1585064210387234.52774611307268; Tue, 24 Mar 2020 23:36:50 +0800 (CST)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Allison Randal <allison@lohutok.net>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Message-ID: <20200324153624.23109-2-jiaxun.yang@flygoat.com>
+Subject: [PATCH v6 01/11] irqchip: Add driver for Loongson I/O Local Interrupt Controller
+Date:   Tue, 24 Mar 2020 23:35:58 +0800
+X-Mailer: git-send-email 2.26.0.rc2
+In-Reply-To: <20200324153624.23109-1-jiaxun.yang@flygoat.com>
+References: <20200324153624.23109-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This furthers what commit 42b10815d559 ("MIPS: Don't compile math-emu
-when CONFIG_MIPS_FP_SUPPORT=n") has done
+This controller appeared on Loongson family of chips as the primary
+package interrupt source.
 
-Signed-off-by: Yousong Zhou <yszhou4tech@gmail.com>
+Co-developed-by: Huacai Chen <chenhc@lemote.com>
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+
 ---
-v2 <- v1: Fix using unknown symbol CONFIG_MIPS_FP_EMULATOR, @tsbogend
+v4-v5:
+=09Resolve suggestions from maz:
+=09=09- Remove DT validation
+=09=09- Simplify unnucessary functions & variables
+---
+ drivers/irqchip/Kconfig                |   9 +
+ drivers/irqchip/Makefile               |   1 +
+ drivers/irqchip/irq-loongson-liointc.c | 259 +++++++++++++++++++++++++
+ 3 files changed, 269 insertions(+)
+ create mode 100644 drivers/irqchip/irq-loongson-liointc.c
 
- arch/mips/include/asm/processor.h | 12 ++++++------
- arch/mips/kernel/process.c        | 10 ++++++++--
- arch/mips/kernel/vdso.c           | 26 +++++++++++++++-----------
- 3 files changed, 29 insertions(+), 19 deletions(-)
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index 6d397732138d..c609eaa319d2 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -513,4 +513,13 @@ config EXYNOS_IRQ_COMBINER
+ =09  Say yes here to add support for the IRQ combiner devices embedded
+ =09  in Samsung Exynos chips.
+=20
++config LOONGSON_LIOINTC
++=09bool "Loongson Local I/O Interrupt Controller"
++=09depends on MACH_LOONGSON64
++=09default y
++=09select IRQ_DOMAIN
++=09select GENERIC_IRQ_CHIP
++=09help
++=09  Support for the Loongson Local I/O Interrupt Controller.
++
+ endmenu
+diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+index eae0d78cbf22..5e7678efdfe6 100644
+--- a/drivers/irqchip/Makefile
++++ b/drivers/irqchip/Makefile
+@@ -105,3 +105,4 @@ obj-$(CONFIG_MADERA_IRQ)=09=09+=3D irq-madera.o
+ obj-$(CONFIG_LS1X_IRQ)=09=09=09+=3D irq-ls1x.o
+ obj-$(CONFIG_TI_SCI_INTR_IRQCHIP)=09+=3D irq-ti-sci-intr.o
+ obj-$(CONFIG_TI_SCI_INTA_IRQCHIP)=09+=3D irq-ti-sci-inta.o
++obj-$(CONFIG_LOONGSON_LIOINTC)=09=09+=3D irq-loongson-liointc.o
+diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-l=
+oongson-liointc.c
+new file mode 100644
+index 000000000000..8b6d7b8ddaca
+--- /dev/null
++++ b/drivers/irqchip/irq-loongson-liointc.c
+@@ -0,0 +1,259 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Copyright (C) 2020, Jiaxun Yang <jiaxun.yang@flygoat.com>
++ *  Loongson Local IO Interrupt Controller support
++ */
++
++#include <linux/errno.h>
++#include <linux/init.h>
++#include <linux/types.h>
++#include <linux/interrupt.h>
++#include <linux/ioport.h>
++#include <linux/irqchip.h>
++#include <linux/of_address.h>
++#include <linux/of_irq.h>
++#include <linux/io.h>
++#include <linux/smp.h>
++#include <linux/irqchip/chained_irq.h>
++
++#include <boot_param.h>
++
++#define LIOINTC_CHIP_IRQ=0932
++#define LIOINTC_NUM_PARENT 4
++
++#define LIOINTC_INTC_CHIP_START=090x20
++
++#define LIOINTC_REG_INTC_STATUS=09(LIOINTC_INTC_CHIP_START + 0x20)
++#define LIOINTC_REG_INTC_EN_STATUS=09(LIOINTC_INTC_CHIP_START + 0x04)
++#define LIOINTC_REG_INTC_ENABLE=09(LIOINTC_INTC_CHIP_START + 0x08)
++#define LIOINTC_REG_INTC_DISABLE=09(LIOINTC_INTC_CHIP_START + 0x0c)
++#define LIOINTC_REG_INTC_POL=09(LIOINTC_INTC_CHIP_START + 0x10)
++#define LIOINTC_REG_INTC_EDGE=09(LIOINTC_INTC_CHIP_START + 0x14)
++
++#define LIOINTC_SHIFT_INTx=094
++
++struct liointc_handler_data {
++=09struct liointc_priv=09*priv;
++=09u32=09=09=09parent_int_map;
++};
++
++struct liointc_priv {
++=09struct irq_chip_generic=09=09*gc;
++=09struct liointc_handler_data=09handler[LIOINTC_NUM_PARENT];
++=09u8=09=09=09=09map_cache[LIOINTC_CHIP_IRQ];
++};
++
++static void liointc_chained_handle_irq(struct irq_desc *desc)
++{
++=09struct liointc_handler_data *handler =3D irq_desc_get_handler_data(desc=
+);
++=09struct irq_chip *chip =3D irq_desc_get_chip(desc);
++=09struct irq_chip_generic *gc =3D handler->priv->gc;
++=09u32 pending;
++
++=09chained_irq_enter(chip, desc);
++
++=09pending =3D readl(gc->reg_base + LIOINTC_REG_INTC_STATUS);
++
++=09if (!pending)
++=09=09spurious_interrupt();
++
++=09while (pending) {
++=09=09int bit =3D __ffs(pending);
++
++=09=09generic_handle_irq(irq_find_mapping(gc->domain, bit));
++=09=09pending &=3D ~BIT(bit);
++=09}
++
++=09chained_irq_exit(chip, desc);
++}
++
++static void liointc_set_bit(struct irq_chip_generic *gc,
++=09=09=09=09unsigned int offset,
++=09=09=09=09u32 mask, bool set)
++{
++=09if (set)
++=09=09writel(readl(gc->reg_base + offset) | mask,
++=09=09=09=09gc->reg_base + offset);
++=09else
++=09=09writel(readl(gc->reg_base + offset) & ~mask,
++=09=09=09=09gc->reg_base + offset);
++}
++
++static int liointc_set_type(struct irq_data *data, unsigned int type)
++{
++=09struct irq_chip_generic *gc =3D irq_data_get_irq_chip_data(data);
++=09u32 mask =3D data->mask;
++=09unsigned long flags;
++
++=09irq_gc_lock_irqsave(gc, flags);
++=09switch (type) {
++=09case IRQ_TYPE_LEVEL_HIGH:
++=09=09liointc_set_bit(gc, LIOINTC_REG_INTC_EDGE, mask, false);
++=09=09liointc_set_bit(gc, LIOINTC_REG_INTC_POL, mask, true);
++=09=09break;
++=09case IRQ_TYPE_LEVEL_LOW:
++=09=09liointc_set_bit(gc, LIOINTC_REG_INTC_EDGE, mask, false);
++=09=09liointc_set_bit(gc, LIOINTC_REG_INTC_POL, mask, false);
++=09=09break;
++=09case IRQ_TYPE_EDGE_RISING:
++=09=09liointc_set_bit(gc, LIOINTC_REG_INTC_EDGE, mask, true);
++=09=09liointc_set_bit(gc, LIOINTC_REG_INTC_POL, mask, true);
++=09=09break;
++=09case IRQ_TYPE_EDGE_FALLING:
++=09=09liointc_set_bit(gc, LIOINTC_REG_INTC_EDGE, mask, true);
++=09=09liointc_set_bit(gc, LIOINTC_REG_INTC_POL, mask, false);
++=09=09break;
++=09default:
++=09=09return -EINVAL;
++=09}
++=09irq_gc_unlock_irqrestore(gc, flags);
++
++=09irqd_set_trigger_type(data, type);
++=09return 0;
++}
++
++static void liointc_resume(struct irq_chip_generic *gc)
++{
++=09struct liointc_priv *priv =3D gc->private;
++=09unsigned long flags;
++=09int i;
++
++=09irq_gc_lock_irqsave(gc, flags);
++=09/* Disable all at first */
++=09writel(0xffffffff, gc->reg_base + LIOINTC_REG_INTC_DISABLE);
++=09/* Revert map cache */
++=09for (i =3D 0; i < LIOINTC_CHIP_IRQ; i++)
++=09=09writeb(priv->map_cache[i], gc->reg_base + i);
++=09/* Revert mask cache */
++=09writel(~gc->mask_cache, gc->reg_base + LIOINTC_REG_INTC_ENABLE);
++=09irq_gc_unlock_irqrestore(gc, flags);
++}
++
++static const char const *parent_names[] =3D {"int0", "int1", "int2", "int3=
+"};
++
++int __init liointc_of_init(struct device_node *node,
++=09=09=09=09struct device_node *parent)
++{
++=09struct irq_chip_generic *gc;
++=09struct irq_domain *domain;
++=09struct irq_chip_type *ct;
++=09struct liointc_priv *priv;
++=09void __iomem *base;
++=09u32 of_parent_int_map[LIOINTC_NUM_PARENT];
++=09int parent_irq[LIOINTC_NUM_PARENT];
++=09bool have_parent =3D FALSE;
++=09int sz, i, err =3D 0;
++
++=09priv =3D kzalloc(sizeof(*priv), GFP_KERNEL);
++=09if (!priv)
++=09=09return -ENOMEM;
++
++=09base =3D of_iomap(node, 0);
++=09if (!base) {
++=09=09err =3D -ENODEV;
++=09=09goto out_free_priv;
++=09}
++
++=09for (i =3D 0; i < LIOINTC_NUM_PARENT; i++) {
++=09=09parent_irq[i] =3D of_irq_get_byname(node, parent_names[i]);
++=09=09if (parent_irq[i] > 0)
++=09=09=09have_parent =3D TRUE;
++=09}
++=09if (!have_parent) {
++=09=09err =3D -ENODEV;
++=09=09goto out_iounmap;
++=09}
++
++=09sz =3D of_property_read_variable_u32_array(node, "loongson,parent_int_m=
+ap",
++=09=09=09=09=09=09&of_parent_int_map[0], LIOINTC_NUM_PARENT,
++=09=09=09=09=09=09LIOINTC_NUM_PARENT);
++=09if (sz < 4) {
++=09=09pr_err("loongson-liointc: No parent_int_map\n");
++=09=09err =3D -ENODEV;
++=09=09goto out_iounmap;
++=09}
++
++=09for (i =3D 0; i < LIOINTC_NUM_PARENT; i++)
++=09=09priv->handler[i].parent_int_map =3D of_parent_int_map[i];
++
++=09/* Setup IRQ domain */
++=09domain =3D irq_domain_add_linear(node, 32,
++=09=09=09=09=09&irq_generic_chip_ops, priv);
++=09if (!domain) {
++=09=09pr_err("loongson-liointc: cannot add IRQ domain\n");
++=09=09err =3D -EINVAL;
++=09=09goto out_iounmap;
++=09}
++
++=09err =3D irq_alloc_domain_generic_chips(domain, 32, 1,
++=09=09=09=09=09node->full_name, handle_level_irq,
++=09=09=09=09=09IRQ_NOPROBE, 0, 0);
++=09if (err) {
++=09=09pr_err("loongson-liointc: unable to register IRQ domain\n");
++=09=09goto out_free_domain;
++=09}
++
++
++=09/* Disable all IRQs */
++=09writel(0xffffffff, base + LIOINTC_REG_INTC_DISABLE);
++=09/* Set to level triggered */
++=09writel(0x0, base + LIOINTC_REG_INTC_EDGE);
++
++=09/* Generate parent INT part of map cache */
++=09for (i =3D 0; i < LIOINTC_NUM_PARENT; i++) {
++=09=09u32 pending =3D priv->handler[i].parent_int_map;
++
++=09=09while (pending) {
++=09=09=09int bit =3D __ffs(pending);
++
++=09=09=09priv->map_cache[bit] =3D BIT(i) << LIOINTC_SHIFT_INTx;
++=09=09=09pending &=3D ~BIT(bit);
++=09=09}
++=09}
++
++=09for (i =3D 0; i < LIOINTC_CHIP_IRQ; i++) {
++=09=09/* Generate core part of map cache */
++=09=09priv->map_cache[i] |=3D BIT(loongson_sysconf.boot_cpu_id);
++=09=09writeb(priv->map_cache[i], base + i);
++=09}
++
++=09gc =3D irq_get_domain_generic_chip(domain, 0);
++=09gc->private =3D priv;
++=09gc->reg_base =3D base;
++=09gc->domain =3D domain;
++=09gc->resume =3D liointc_resume;
++
++=09ct =3D gc->chip_types;
++=09ct->regs.enable =3D LIOINTC_REG_INTC_ENABLE;
++=09ct->regs.disable =3D LIOINTC_REG_INTC_DISABLE;
++=09ct->chip.irq_unmask =3D irq_gc_unmask_enable_reg;
++=09ct->chip.irq_mask =3D irq_gc_mask_disable_reg;
++=09ct->chip.irq_mask_ack =3D irq_gc_mask_disable_reg;
++=09ct->chip.irq_set_type =3D liointc_set_type;
++
++=09gc->mask_cache =3D 0xffffffff;
++=09priv->gc =3D gc;
++
++=09for (i =3D 0; i < LIOINTC_NUM_PARENT; i++) {
++=09=09if (parent_irq[i] <=3D 0)
++=09=09=09continue;
++
++=09=09priv->handler[i].priv =3D priv;
++=09=09irq_set_chained_handler_and_data(parent_irq[i],
++=09=09=09=09liointc_chained_handle_irq, &priv->handler[i]);
++=09}
++
++=09return 0;
++
++out_free_domain:
++=09irq_domain_remove(domain);
++out_iounmap:
++=09iounmap(base);
++out_free_priv:
++=09kfree(priv);
++
++=09return err;
++}
++
++IRQCHIP_DECLARE(loongson_liointc_1_0, "loongson,liointc-1.0", liointc_of_i=
+nit);
++IRQCHIP_DECLARE(loongson_liointc_1_0a, "loongson,liointc-1.0a", liointc_of=
+_init);
+--=20
+2.26.0.rc2
 
-diff --git a/arch/mips/include/asm/processor.h b/arch/mips/include/asm/processor.h
-index 7619ad319400..813ba94d87bb 100644
---- a/arch/mips/include/asm/processor.h
-+++ b/arch/mips/include/asm/processor.h
-@@ -253,13 +253,13 @@ struct thread_struct {
- #ifdef CONFIG_MIPS_FP_SUPPORT
- 	/* Saved fpu/fpu emulator stuff. */
- 	struct mips_fpu_struct fpu FPU_ALIGN;
--#endif
- 	/* Assigned branch delay slot 'emulation' frame */
- 	atomic_t bd_emu_frame;
- 	/* PC of the branch from a branch delay slot 'emulation' */
- 	unsigned long bd_emu_branch_pc;
- 	/* PC to continue from following a branch delay slot 'emulation' */
- 	unsigned long bd_emu_cont_pc;
-+#endif
- #ifdef CONFIG_MIPS_MT_FPAFF
- 	/* Emulated instruction count */
- 	unsigned long emulated_fp;
-@@ -302,7 +302,11 @@ struct thread_struct {
- 		.fpr		= {{{0,},},},			\
- 		.fcr31		= 0,				\
- 		.msacsr		= 0,				\
--	},
-+	},							\
-+	/* Delay slot emulation */				\
-+	.bd_emu_frame = ATOMIC_INIT(BD_EMUFRAME_NONE),		\
-+	.bd_emu_branch_pc = 0,					\
-+	.bd_emu_cont_pc = 0,
- #else
- # define FPU_INIT
- #endif
-@@ -334,10 +338,6 @@ struct thread_struct {
- 	 * FPU affinity state (null if not FPAFF)		\
- 	 */							\
- 	FPAFF_INIT						\
--	/* Delay slot emulation */				\
--	.bd_emu_frame = ATOMIC_INIT(BD_EMUFRAME_NONE),		\
--	.bd_emu_branch_pc = 0,					\
--	.bd_emu_cont_pc = 0,					\
- 	/*							\
- 	 * Saved DSP stuff					\
- 	 */							\
-diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-index 339870ed92f7..b2a797557825 100644
---- a/arch/mips/kernel/process.c
-+++ b/arch/mips/kernel/process.c
-@@ -75,7 +75,9 @@ void start_thread(struct pt_regs * regs, unsigned long pc, unsigned long sp)
- 	lose_fpu(0);
- 	clear_thread_flag(TIF_MSA_CTX_LIVE);
- 	clear_used_math();
-+#ifdef CONFIG_MIPS_FP_SUPPORT
- 	atomic_set(&current->thread.bd_emu_frame, BD_EMUFRAME_NONE);
-+#endif
- 	init_dsp();
- 	regs->cp0_epc = pc;
- 	regs->regs[29] = sp;
-@@ -176,7 +178,9 @@ int copy_thread_tls(unsigned long clone_flags, unsigned long usp,
- 	clear_tsk_thread_flag(p, TIF_FPUBOUND);
- #endif /* CONFIG_MIPS_MT_FPAFF */
- 
-+#ifdef CONFIG_MIPS_FP_SUPPORT
- 	atomic_set(&p->thread.bd_emu_frame, BD_EMUFRAME_NONE);
-+#endif
- 
- 	if (clone_flags & CLONE_SETTLS)
- 		ti->tp_value = tls;
-@@ -650,8 +654,10 @@ unsigned long mips_stack_top(void)
- {
- 	unsigned long top = TASK_SIZE & PAGE_MASK;
- 
--	/* One page for branch delay slot "emulation" */
--	top -= PAGE_SIZE;
-+	if (IS_ENABLED(CONFIG_MIPS_FP_SUPPORT)) {
-+		/* One page for branch delay slot "emulation" */
-+		top -= PAGE_SIZE;
-+	}
- 
- 	/* Space for the VDSO, data page & GIC user page */
- 	top -= PAGE_ALIGN(current->thread.abi->vdso->size);
-diff --git a/arch/mips/kernel/vdso.c b/arch/mips/kernel/vdso.c
-index bc35f8499111..3adb7354bc01 100644
---- a/arch/mips/kernel/vdso.c
-+++ b/arch/mips/kernel/vdso.c
-@@ -71,10 +71,12 @@ subsys_initcall(init_vdso);
- 
- static unsigned long vdso_base(void)
- {
--	unsigned long base;
-+	unsigned long base = STACK_TOP;
- 
--	/* Skip the delay slot emulation page */
--	base = STACK_TOP + PAGE_SIZE;
-+	if (IS_ENABLED(CONFIG_MIPS_FP_SUPPORT)) {
-+		/* Skip the delay slot emulation page */
-+		base += PAGE_SIZE;
-+	}
- 
- 	if (current->flags & PF_RANDOMIZE) {
- 		base += get_random_int() & (VDSO_RANDOMIZE_SIZE - 1);
-@@ -95,14 +97,16 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 	if (down_write_killable(&mm->mmap_sem))
- 		return -EINTR;
- 
--	/* Map delay slot emulation page */
--	base = mmap_region(NULL, STACK_TOP, PAGE_SIZE,
--			   VM_READ | VM_EXEC |
--			   VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC,
--			   0, NULL);
--	if (IS_ERR_VALUE(base)) {
--		ret = base;
--		goto out;
-+	if (IS_ENABLED(CONFIG_MIPS_FP_SUPPORT)) {
-+		/* Map delay slot emulation page */
-+		base = mmap_region(NULL, STACK_TOP, PAGE_SIZE,
-+				VM_READ | VM_EXEC |
-+				VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC,
-+				0, NULL);
-+		if (IS_ERR_VALUE(base)) {
-+			ret = base;
-+			goto out;
-+		}
- 	}
- 
- 	/*
+

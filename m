@@ -5,36 +5,36 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22153C1975A
-	for <linux-mips@archiver.kernel.org>; Wed, 25 Mar 2020 04:01:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32F98C54FD3
+	for <linux-mips@archiver.kernel.org>; Wed, 25 Mar 2020 04:02:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E18672074D
-	for <linux-mips@archiver.kernel.org>; Wed, 25 Mar 2020 04:01:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F401D20753
+	for <linux-mips@archiver.kernel.org>; Wed, 25 Mar 2020 04:02:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="A/kprHm6"
+	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="SFyAX5SD"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726017AbgCYEBT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 25 Mar 2020 00:01:19 -0400
-Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17814 "EHLO
+        id S1726262AbgCYECg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 25 Mar 2020 00:02:36 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17855 "EHLO
         sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725263AbgCYEBT (ORCPT
+        by vger.kernel.org with ESMTP id S1725939AbgCYECg (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 25 Mar 2020 00:01:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1585108817;
+        Wed, 25 Mar 2020 00:02:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1585108885;
         s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
         h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        bh=JV1rNdnx9buJ6QvvmNhPnHsJZgIXv+xyASVQ93NXFoY=;
-        b=A/kprHm6K/xqDUVP+cMXpymCC9BAG6GwPHaieZOmyCI7dRHaEcMuLJD7R1Vj+PqB
-        ggwdhxBRvEfe+3hMK3qoc+GifyHzIeOIROBOL6EfKKWg9Xhe/i8tygB8ZUrmA6GcKYz
-        ofgrpicIlK2LFlrpSx7JNSG5CeBfre7eMRkdnYqI=
+        bh=cLyI0BpamZw44VwG9Zfsq9MpkvbcqMXVy1374BYQT2Y=;
+        b=SFyAX5SDD8yvS0iV6jyB6fgTB7gYXfumRFKrkkcbp+JPTNkjnCdp3pJNS7vfafJA
+        uvn5cga2SfcX5qgmbYqmCdSn0jbWqpVL/xEpstH9snBNli2Q6gMRxNEc4bAEt3Moe60
+        uJoFgjLlERCXBy3O4vtXB/Snw1slrkx1mMZrCVTk=
 Received: from localhost.localdomain (39.155.141.144 [39.155.141.144]) by mx.zoho.com.cn
-        with SMTPS id 1585108815317133.5840528855042; Wed, 25 Mar 2020 12:00:15 +0800 (CST)
+        with SMTPS id 1585108884023721.9200297881632; Wed, 25 Mar 2020 12:01:24 +0800 (CST)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Rob Herring <robh@kernel.org>, Huacai Chen <chenhc@lemote.com>,
+        Huacai Chen <chenhc@lemote.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Jason Cooper <jason@lakedaemon.net>,
         Marc Zyngier <maz@kernel.org>,
@@ -48,9 +48,9 @@ Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Allison Randal <allison@lohutok.net>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Message-ID: <20200325035537.156911-9-jiaxun.yang@flygoat.com>
-Subject: [PATCH v8 08/11] dt-bindings: mips: Add loongson boards
-Date:   Wed, 25 Mar 2020 11:55:01 +0800
+Message-ID: <20200325035537.156911-11-jiaxun.yang@flygoat.com>
+Subject: [PATCH v8 10/11] MIPS: Loongson64: Load built-in dtbs
+Date:   Wed, 25 Mar 2020 11:55:03 +0800
 X-Mailer: git-send-email 2.26.0.rc2
 In-Reply-To: <20200325035537.156911-1-jiaxun.yang@flygoat.com>
 References: <20200325035537.156911-1-jiaxun.yang@flygoat.com>
@@ -63,58 +63,130 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Prepare for later dts.
+Load proper dtb according to firmware passed parameters and
+CPU PRID.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
 Co-developed-by: Huacai Chen <chenhc@lemote.com>
 Signed-off-by: Huacai Chen <chenhc@lemote.com>
-
---
-v4-v5:
-=09Remove unnecessary kernel details.
-v5-v6:
-=09Use quad & octa instead of 4 and 8.
 ---
- .../bindings/mips/loongson/devices.yaml       | 27 +++++++++++++++++++
- 1 file changed, 27 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mips/loongson/devices=
-.yaml
+ .../asm/mach-loongson64/builtin_dtbs.h        | 13 +++++++++++
+ .../include/asm/mach-loongson64/loongson.h    |  1 +
+ arch/mips/loongson64/env.c                    | 23 +++++++++++++++++++
+ arch/mips/loongson64/setup.c                  | 16 +++++++++++++
+ 4 files changed, 53 insertions(+)
+ create mode 100644 arch/mips/include/asm/mach-loongson64/builtin_dtbs.h
 
-diff --git a/Documentation/devicetree/bindings/mips/loongson/devices.yaml b=
-/Documentation/devicetree/bindings/mips/loongson/devices.yaml
+diff --git a/arch/mips/include/asm/mach-loongson64/builtin_dtbs.h b/arch/mi=
+ps/include/asm/mach-loongson64/builtin_dtbs.h
 new file mode 100644
-index 000000000000..74ed4e397a78
+index 000000000000..853c6d80887b
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/mips/loongson/devices.yaml
-@@ -0,0 +1,27 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mips/loongson/devices.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/arch/mips/include/asm/mach-loongson64/builtin_dtbs.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copyright (C) 2019 Jiaxun Yang <jiaxun.yang@flygoat.com>
++ *
++ * Built-in Generic dtbs for MACH_LOONGSON64
++ */
 +
-+title: Loongson based Platforms Device Tree Bindings
++#ifndef __ASM_MACH_LOONGSON64_BUILTIN_DTBS_H_
++#define __ASM_MACH_LOONGSON64_BUILTIN_DTBS_H_
 +
-+maintainers:
-+  - Jiaxun Yang <jiaxun.yang@flygoat.com>
-+description: |
-+  Devices with a Loongson CPU shall have the following properties.
++extern u32 __dtb_loongson3_4core_rs780e_begin[];
++extern u32 __dtb_loongson3_8core_rs780e_begin[];
++#endif
+diff --git a/arch/mips/include/asm/mach-loongson64/loongson.h b/arch/mips/i=
+nclude/asm/mach-loongson64/loongson.h
+index a8fce112a9b0..fde1b75c45ea 100644
+--- a/arch/mips/include/asm/mach-loongson64/loongson.h
++++ b/arch/mips/include/asm/mach-loongson64/loongson.h
+@@ -25,6 +25,7 @@ extern const struct plat_smp_ops loongson3_smp_ops;
+ /* loongson-specific command line, env and memory initialization */
+ extern void __init prom_init_memory(void);
+ extern void __init prom_init_env(void);
++extern void *loongson_fdt_blob;
+=20
+ /* irq operation functions */
+ extern void mach_irq_dispatch(unsigned int pending);
+diff --git a/arch/mips/loongson64/env.c b/arch/mips/loongson64/env.c
+index 0daeb7bcf023..2554ef11170d 100644
+--- a/arch/mips/loongson64/env.c
++++ b/arch/mips/loongson64/env.c
+@@ -17,6 +17,7 @@
+ #include <asm/bootinfo.h>
+ #include <loongson.h>
+ #include <boot_param.h>
++#include <builtin_dtbs.h>
+ #include <workarounds.h>
+=20
+ u32 cpu_clock_freq;
+@@ -120,6 +121,28 @@ void __init prom_init_env(void)
+ =09=09loongson_sysconf.cores_per_node - 1) /
+ =09=09loongson_sysconf.cores_per_node;
+=20
++=09if ((read_c0_prid() & PRID_IMP_MASK) =3D=3D PRID_IMP_LOONGSON_64C) {
++=09=09switch (read_c0_prid() & PRID_REV_MASK) {
++=09=09case PRID_REV_LOONGSON3A_R1:
++=09=09case PRID_REV_LOONGSON3A_R2_0:
++=09=09case PRID_REV_LOONGSON3A_R2_1:
++=09=09case PRID_REV_LOONGSON3A_R3_0:
++=09=09case PRID_REV_LOONGSON3A_R3_1:
++=09=09=09loongson_fdt_blob =3D __dtb_loongson3_4core_rs780e_begin;
++=09=09=09break;
++=09=09case PRID_REV_LOONGSON3B_R1:
++=09=09case PRID_REV_LOONGSON3B_R2:
++=09=09=09loongson_fdt_blob =3D __dtb_loongson3_8core_rs780e_begin;
++=09=09=09break;
++=09=09default:
++=09=09=09break;
++=09=09}
++=09}
 +
-+properties:
-+  $nodename:
-+    const: '/'
-+  compatible:
-+    oneOf:
 +
-+      - description: Generic Loongson3 Quad Core + RS780E
-+        items:
-+          - const: loongson,loongson3-4core-rs780e
++=09if (!loongson_fdt_blob)
++=09=09pr_err("Failed to determine built-in Loongson64 dtb\n");
 +
-+      - description: Generic Loongson3 Octa Core + RS780E
-+        items:
-+          - const: loongson,loongson3-8core-rs780e
-+...
+ =09loongson_sysconf.pci_mem_start_addr =3D eirq_source->pci_mem_start_addr=
+;
+ =09loongson_sysconf.pci_mem_end_addr =3D eirq_source->pci_mem_end_addr;
+ =09loongson_sysconf.pci_io_base =3D eirq_source->pci_io_start_addr;
+diff --git a/arch/mips/loongson64/setup.c b/arch/mips/loongson64/setup.c
+index 4fd27f4f90ed..6fe3ffffcaa6 100644
+--- a/arch/mips/loongson64/setup.c
++++ b/arch/mips/loongson64/setup.c
+@@ -8,9 +8,15 @@
+=20
+ #include <asm/wbflush.h>
+ #include <asm/bootinfo.h>
++#include <linux/libfdt.h>
++#include <linux/of_fdt.h>
++
++#include <asm/prom.h>
+=20
+ #include <loongson.h>
+=20
++void *loongson_fdt_blob;
++
+ static void wbflush_loongson(void)
+ {
+ =09asm(".set\tpush\n\t"
+@@ -27,4 +33,14 @@ EXPORT_SYMBOL(__wbflush);
+=20
+ void __init plat_mem_setup(void)
+ {
++=09if (loongson_fdt_blob)
++=09=09__dt_setup_arch(loongson_fdt_blob);
++}
++
++void __init device_tree_init(void)
++{
++=09if (!initial_boot_params)
++=09=09return;
++
++=09unflatten_and_copy_device_tree();
+ }
 --=20
 2.26.0.rc2
 

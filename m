@@ -2,66 +2,70 @@ Return-Path: <SRS0=AwUQ=5K=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F02B3C1975A
-	for <linux-mips@archiver.kernel.org>; Wed, 25 Mar 2020 17:34:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA72BC54FCF
+	for <linux-mips@archiver.kernel.org>; Wed, 25 Mar 2020 17:34:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D549620740
-	for <linux-mips@archiver.kernel.org>; Wed, 25 Mar 2020 17:34:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 83B2320740
+	for <linux-mips@archiver.kernel.org>; Wed, 25 Mar 2020 17:34:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727695AbgCYRe3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 25 Mar 2020 13:34:29 -0400
-Received: from elvis.franken.de ([193.175.24.41]:34605 "EHLO elvis.franken.de"
+        id S1727834AbgCYRef (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 25 Mar 2020 13:34:35 -0400
+Received: from elvis.franken.de ([193.175.24.41]:34618 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727826AbgCYRe3 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 25 Mar 2020 13:34:29 -0400
+        id S1727826AbgCYRef (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 25 Mar 2020 13:34:35 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jH9v6-0008NM-00; Wed, 25 Mar 2020 18:34:24 +0100
+        id 1jH9v6-0008NM-03; Wed, 25 Mar 2020 18:34:24 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 405D9C0D46; Wed, 25 Mar 2020 18:30:43 +0100 (CET)
-Date:   Wed, 25 Mar 2020 18:30:43 +0100
+        id 41FCFC0D49; Wed, 25 Mar 2020 18:33:28 +0100 (CET)
+Date:   Wed, 25 Mar 2020 18:33:28 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Huacai Chen <chenhc@lemote.com>
-Cc:     linux-mips@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>,
-        Zhangjin Wu <wuzhangjin@gmail.com>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>, stable@vger.kernel.org,
-        Pei Huang <huangpei@loongson.cn>
-Subject: Re: [PATCH] MIPS/tlbex: Fix LDDIR usage in setup_pw() for Loongson-3
-Message-ID: <20200325173043.GA17524@alpha.franken.de>
-References: <1585107894-8803-1-git-send-email-chenhc@lemote.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v8 00/11] Modernize Loongson64 Machine v8
+Message-ID: <20200325173328.GD17524@alpha.franken.de>
+References: <20190827085302.5197-1-jiaxun.yang@flygoat.com>
+ <20200325035537.156911-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1585107894-8803-1-git-send-email-chenhc@lemote.com>
+In-Reply-To: <20200325035537.156911-1-jiaxun.yang@flygoat.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Mar 25, 2020 at 11:44:54AM +0800, Huacai Chen wrote:
-> LDDIR/LDPTE is Loongson-3's acceleration for Page Table Walking. If BD
-> (Base Directory, the 4th page directory) is not enabled, then GDOffset
-> is biased by BadVAddr[63:62]. So, if GDOffset (aka. BadVAddr[47:36] for
-> Loongson-3) is big enough, "0b11(BadVAddr[63:62])|BadVAddr[47:36]|...."
-> can far beyond pg_swapper_dir. This means the pg_swapper_dir may NOT be
-> accessed by LDDIR correctly, so fix it by set PWDirExt in CP0_PWCtl.
+On Wed, Mar 25, 2020 at 11:54:53AM +0800, Jiaxun Yang wrote:
+> Loongson have a long history of contributing their code to mainline kernel.
+> However, it seems like recent years, they are focusing on maintain a kernel by themselves
+> rather than contribute there code to the community.
 > 
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Pei Huang <huangpei@loongson.cn>
-> Signed-off-by: Huacai Chen <chenhc@lemote.com>
-> ---
->  arch/mips/mm/tlbex.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> Kernel is progress rapidly too. Their code slept in mainline for a long peroid without proper
+> maintainance and became outdated.
+> 
+> This patchset brings modern DeviceTree and irqchip support to the Loongson64 machine, and leaves
+> Loongson 2e/f alone since they are too legacy to touch.
+> 
+> PCI and some legacy I/O device will be converted later, together with LS7A PCH support.
 
-applied to mips-next.
-
-Thomas.
+applied series minus patch 6 to mips-next.
 
 -- 
 Crap can work. Given enough thrust pigs will fly, but it's not necessarily a

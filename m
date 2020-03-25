@@ -2,94 +2,62 @@ Return-Path: <SRS0=AwUQ=5K=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 171D1C54FD0
-	for <linux-mips@archiver.kernel.org>; Wed, 25 Mar 2020 17:34:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F02B3C1975A
+	for <linux-mips@archiver.kernel.org>; Wed, 25 Mar 2020 17:34:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id E9E30207FF
-	for <linux-mips@archiver.kernel.org>; Wed, 25 Mar 2020 17:34:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D549620740
+	for <linux-mips@archiver.kernel.org>; Wed, 25 Mar 2020 17:34:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727718AbgCYRe0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 25 Mar 2020 13:34:26 -0400
-Received: from elvis.franken.de ([193.175.24.41]:34596 "EHLO elvis.franken.de"
+        id S1727695AbgCYRe3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 25 Mar 2020 13:34:29 -0400
+Received: from elvis.franken.de ([193.175.24.41]:34605 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727695AbgCYRe0 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 25 Mar 2020 13:34:26 -0400
+        id S1727826AbgCYRe3 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 25 Mar 2020 13:34:29 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jH9v6-0008NM-02; Wed, 25 Mar 2020 18:34:24 +0100
+        id 1jH9v6-0008NM-00; Wed, 25 Mar 2020 18:34:24 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 2A90AC0D49; Wed, 25 Mar 2020 18:32:15 +0100 (CET)
-Date:   Wed, 25 Mar 2020 18:32:15 +0100
+        id 405D9C0D46; Wed, 25 Mar 2020 18:30:43 +0100 (CET)
+Date:   Wed, 25 Mar 2020 18:30:43 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-mips@vger.kernel.org,
-        "Maciej W . Rozycki" <macro@linux-mips.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        Alexander Lobakin <alobakin@dlink.ru>,
-        Paul Burton <paulburton@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] MIPS: do not compile generic functions for
- CONFIG_CAVIUM_OCTEON_SOC
-Message-ID: <20200325173215.GC17524@alpha.franken.de>
-References: <20200325074529.24772-1-masahiroy@kernel.org>
+To:     Huacai Chen <chenhc@lemote.com>
+Cc:     linux-mips@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>,
+        Zhangjin Wu <wuzhangjin@gmail.com>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, stable@vger.kernel.org,
+        Pei Huang <huangpei@loongson.cn>
+Subject: Re: [PATCH] MIPS/tlbex: Fix LDDIR usage in setup_pw() for Loongson-3
+Message-ID: <20200325173043.GA17524@alpha.franken.de>
+References: <1585107894-8803-1-git-send-email-chenhc@lemote.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200325074529.24772-1-masahiroy@kernel.org>
+In-Reply-To: <1585107894-8803-1-git-send-email-chenhc@lemote.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Mar 25, 2020 at 04:45:29PM +0900, Masahiro Yamada wrote:
-> MIPS provides multiple definitions for the following functions:
+On Wed, Mar 25, 2020 at 11:44:54AM +0800, Huacai Chen wrote:
+> LDDIR/LDPTE is Loongson-3's acceleration for Page Table Walking. If BD
+> (Base Directory, the 4th page directory) is not enabled, then GDOffset
+> is biased by BadVAddr[63:62]. So, if GDOffset (aka. BadVAddr[47:36] for
+> Loongson-3) is big enough, "0b11(BadVAddr[63:62])|BadVAddr[47:36]|...."
+> can far beyond pg_swapper_dir. This means the pg_swapper_dir may NOT be
+> accessed by LDDIR correctly, so fix it by set PWDirExt in CP0_PWCtl.
 > 
->   fw_init_cmdline
->   __delay
->   __udelay
->   __ndelay
->   memmove
->   __rmemcpy
->   memcpy
->   __copy_user
-> 
-> The generic ones are defined in lib-y objects, which are overridden by
-> the Octeon ones when CONFIG_CAVIUM_OCTEON_SOC is enabled.
-> 
-> The use of EXPORT_SYMBOL in static libraries potentially causes a
-> problem for the llvm linker [1]. So, I want to forcibly link lib-y
-> objects to vmlinux when CONFIG_MODULES=y.
-> 
-> As a groundwork, we must fix multiple definitions that have previously
-> been hidden by lib-y.
-> 
-> If you look at lib/string.c, arch can define __HAVE_ARCH_* to opt out
-> the generic implementation.
-> 
-> Similarly, this commit adds CONFIG_HAVE_PLAT_* to allow a platform
-> to opt out the MIPS generic code.
-> 
-> [1]: https://github.com/ClangBuiltLinux/linux/issues/515
-> 
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Pei Huang <huangpei@loongson.cn>
+> Signed-off-by: Huacai Chen <chenhc@lemote.com>
 > ---
-> 
-> Changes in v2:
->   - Use #ifdef instead of __weak. This avoids increasing image size.
-> 
->  arch/mips/Kconfig          | 12 ++++++++++++
->  arch/mips/fw/lib/cmdline.c |  2 ++
->  arch/mips/lib/delay.c      |  4 ++++
->  arch/mips/lib/memcpy.S     |  3 +++
->  4 files changed, 21 insertions(+)
+>  arch/mips/mm/tlbex.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 
 applied to mips-next.
 

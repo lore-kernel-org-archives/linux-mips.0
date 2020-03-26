@@ -2,42 +2,42 @@ Return-Path: <SRS0=JtkL=5L=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4BD3C43331
-	for <linux-mips@archiver.kernel.org>; Thu, 26 Mar 2020 06:18:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D276C43331
+	for <linux-mips@archiver.kernel.org>; Thu, 26 Mar 2020 06:18:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 96B9420719
-	for <linux-mips@archiver.kernel.org>; Thu, 26 Mar 2020 06:18:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 30AC720719
+	for <linux-mips@archiver.kernel.org>; Thu, 26 Mar 2020 06:18:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="Qs/HyLnL"
+	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="MHRQ9fmY"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgCZGSb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 26 Mar 2020 02:18:31 -0400
-Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17921 "EHLO
+        id S1726213AbgCZGSi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 26 Mar 2020 02:18:38 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17922 "EHLO
         sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726213AbgCZGSb (ORCPT
+        by vger.kernel.org with ESMTP id S1726336AbgCZGSh (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 26 Mar 2020 02:18:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1585203482;
+        Thu, 26 Mar 2020 02:18:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1585203478;
         s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
         h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        bh=BBAi/x5l0TjKfhcRwZy2KnKo2sELK7ufBAqCxGvsXXU=;
-        b=Qs/HyLnLzVODDYIVg/gnXYS7SVonuG84qAKpf0UR/h6cTHXhmZvw/N+ZGdDZaHCG
-        UrtWFBgY79YmJtWnfh4hrewUEhW7+afm4XjbMkHmVjTimVYe0nbMDuutPe4Kb/D1iK4
-        iQEnBRUu93pZtytl3HV8ooEYuMielsof7EfFpWBs=
+        bh=jb4NhSls4sPTUmWkcz9ETsBikQsJwZxN7Jmf4baOZ/k=;
+        b=MHRQ9fmYb3vUwC05zaJQ9KTSUxjF+kqbyS/HCfFbEgNsTLMae2at56+I6KCbOfne
+        wVmAjG/IdlJZlbxlz0TRgLqzv8pK2vOoTrCAnQgpP1nmm46Oqc1O9Eh98bLlotRpkjN
+        vaei1xZfScIGSWBuNWbwSZPUJBJ5OBTw4WMvaAvY=
 Received: from localhost.localdomain (39.155.141.144 [39.155.141.144]) by mx.zoho.com.cn
-        with SMTPS id 1585203480271207.56902501820855; Thu, 26 Mar 2020 14:18:00 +0800 (CST)
+        with SMTPS id 158520347753210.850805907365725; Thu, 26 Mar 2020 14:17:57 +0800 (CST)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     tsbogend@alpha.franken.de, maz@kernel.org, chenhc@lemote.com,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <20200326061704.387483-7-jiaxun.yang@flygoat.com>
-Subject: [RFC PATCH 4/6] MIPS: kernel: Use mips_cpu_map_virq helper
-Date:   Thu, 26 Mar 2020 14:17:02 +0800
+Message-ID: <20200326061704.387483-2-jiaxun.yang@flygoat.com>
+Subject: [RFC PATCH 1/6] MIPS: irq_cpu: Add a helper to map virq for CPU IRQ
+Date:   Thu, 26 Mar 2020 14:16:57 +0800
 X-Mailer: git-send-email 2.26.0.rc2
 In-Reply-To: <20200326061704.387483-1-jiaxun.yang@flygoat.com>
 References: <20200326061704.387483-1-jiaxun.yang@flygoat.com>
@@ -50,75 +50,90 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Remove the use of MIPS_CPU_IRQ_BASE and step forward
-to purely irq domain based platform.
+To care legacy platform without dt, we need this helper
+to map virq for cpu_irq in order to deal with legacy drivers
+rely on irq number.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/kernel/cevt-r4k.c          | 2 +-
- arch/mips/kernel/perf_event_mipsxx.c | 3 ++-
- arch/mips/kernel/rtlx-mt.c           | 7 +++++--
- 3 files changed, 8 insertions(+), 4 deletions(-)
+ arch/mips/include/asm/irq_cpu.h | 19 ++++++++++++++++++-
+ drivers/irqchip/irq-mips-cpu.c  |  8 ++++----
+ 2 files changed, 22 insertions(+), 5 deletions(-)
 
-diff --git a/arch/mips/kernel/cevt-r4k.c b/arch/mips/kernel/cevt-r4k.c
-index 17a9cbb8b3df..d838b1cad0f7 100644
---- a/arch/mips/kernel/cevt-r4k.c
-+++ b/arch/mips/kernel/cevt-r4k.c
-@@ -247,7 +247,7 @@ int c0_compare_int_usable(void)
+diff --git a/arch/mips/include/asm/irq_cpu.h b/arch/mips/include/asm/irq_cp=
+u.h
+index 83d7331ab215..231c5dc64c19 100644
+--- a/arch/mips/include/asm/irq_cpu.h
++++ b/arch/mips/include/asm/irq_cpu.h
+@@ -9,12 +9,29 @@
+ #ifndef _ASM_IRQ_CPU_H
+ #define _ASM_IRQ_CPU_H
 =20
- unsigned int __weak get_c0_compare_int(void)
- {
--=09return MIPS_CPU_IRQ_BASE + cp0_compare_irq;
-+=09return mips_cpu_map_virq(p0_compare_irq);
- }
++#include <linux/irqdomain.h>
++
+ extern void mips_cpu_irq_init(void);
++extern struct irq_domain *mips_cpu_irq_domain;
 =20
- int r4k_clockevent_init(void)
-diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_e=
-vent_mipsxx.c
-index 128fc9999c56..8fc484fe8afa 100644
---- a/arch/mips/kernel/perf_event_mipsxx.c
-+++ b/arch/mips/kernel/perf_event_mipsxx.c
-@@ -20,6 +20,7 @@
- #include <linux/uaccess.h>
+ #ifdef CONFIG_IRQ_DOMAIN
+-struct device_node;
+ extern int mips_cpu_irq_of_init(struct device_node *of_node,
+ =09=09=09=09struct device_node *parent);
++
++static inline int mips_cpu_map_virq(int hwirq)
++{
++=09struct irq_fwspec fwspec;
++
++=09fwspec.fwnode =3D mips_cpu_irq_domain->fwnode;
++=09fwspec.param_count =3D 1;
++=09fwspec.param[0] =3D hwirq;
++=09return irq_create_fwspec_mapping(&fwspec);
++}
++#else
++static inline int mips_cpu_map_virq(int hwirq)
++{
++=09return MIPS_CPU_IRQ_BASE + hwirq;
++}
+ #endif
 =20
- #include <asm/irq.h>
-+#include <asm/irq_cpu.h>
- #include <asm/irq_regs.h>
- #include <asm/stacktrace.h>
- #include <asm/time.h> /* For perf_irq */
-@@ -1702,7 +1703,7 @@ init_hw_perf_events(void)
- =09if (get_c0_perfcount_int)
- =09=09irq =3D get_c0_perfcount_int();
- =09else if (cp0_perfcount_irq >=3D 0)
--=09=09irq =3D MIPS_CPU_IRQ_BASE + cp0_perfcount_irq;
-+=09=09irq =3D mips_cpu_map_virq(cp0_perfcount_irq);
- =09else
- =09=09irq =3D -1;
+ #endif /* _ASM_IRQ_CPU_H */
+diff --git a/drivers/irqchip/irq-mips-cpu.c b/drivers/irqchip/irq-mips-cpu.=
+c
+index 95d4fd8f7a96..19734b11b36d 100644
+--- a/drivers/irqchip/irq-mips-cpu.c
++++ b/drivers/irqchip/irq-mips-cpu.c
+@@ -34,7 +34,7 @@
+ #include <asm/mipsmtregs.h>
+ #include <asm/setup.h>
 =20
-diff --git a/arch/mips/kernel/rtlx-mt.c b/arch/mips/kernel/rtlx-mt.c
-index 38c6925a1bea..110ed768d2ef 100644
---- a/arch/mips/kernel/rtlx-mt.c
-+++ b/arch/mips/kernel/rtlx-mt.c
-@@ -16,14 +16,17 @@
+-static struct irq_domain *irq_domain;
++struct irq_domain *mips_cpu_irq_domain;
+ static struct irq_domain *ipi_domain;
 =20
- #include <asm/mips_mt.h>
- #include <asm/vpe.h>
-+#include <asm/irq_cpu.h>
- #include <asm/rtlx.h>
+ static inline void unmask_mips_irq(struct irq_data *d)
+@@ -141,7 +141,7 @@ asmlinkage void __weak plat_irq_dispatch(void)
+ =09=09if (IS_ENABLED(CONFIG_GENERIC_IRQ_IPI) && irq < 2)
+ =09=09=09virq =3D irq_linear_revmap(ipi_domain, irq);
+ =09=09else
+-=09=09=09virq =3D irq_linear_revmap(irq_domain, irq);
++=09=09=09virq =3D irq_linear_revmap(mips_cpu_irq_domain, irq);
+ =09=09do_IRQ(virq);
+ =09=09pending &=3D ~BIT(irq);
+ =09}
+@@ -251,10 +251,10 @@ static void __init __mips_cpu_irq_init(struct device_=
+node *of_node)
+ =09clear_c0_status(ST0_IM);
+ =09clear_c0_cause(CAUSEF_IP);
 =20
- static int major;
+-=09irq_domain =3D irq_domain_add_legacy(of_node, 8, MIPS_CPU_IRQ_BASE, 0,
++=09mips_cpu_irq_domain =3D irq_domain_add_legacy(of_node, 8, MIPS_CPU_IRQ_=
+BASE, 0,
+ =09=09=09=09=09   &mips_cpu_intc_irq_domain_ops,
+ =09=09=09=09=09   NULL);
+-=09if (!irq_domain)
++=09if (!mips_cpu_irq_domain)
+ =09=09panic("Failed to add irqdomain for MIPS CPU");
 =20
- static void rtlx_dispatch(void)
- {
--=09if (read_c0_cause() & read_c0_status() & C_SW0)
--=09=09do_IRQ(MIPS_CPU_IRQ_BASE + MIPS_CPU_RTLX_IRQ);
-+=09if (read_c0_cause() & read_c0_status() & C_SW0) {
-+=09=09do_IRQ(irq_linear_revmap(mips_cpu_irq_domain,
-+=09=09=09=09=09=09MIPS_CPU_RTLX_IRQ);
-+=09}
- }
-=20
- /*
+ =09/*
 --=20
 2.26.0.rc2
 

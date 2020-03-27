@@ -2,128 +2,76 @@ Return-Path: <SRS0=bSdX=5M=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0018C2D0E7
-	for <linux-mips@archiver.kernel.org>; Fri, 27 Mar 2020 02:05:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC77AC2D0ED
+	for <linux-mips@archiver.kernel.org>; Fri, 27 Mar 2020 06:27:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id C6F51206F8
-	for <linux-mips@archiver.kernel.org>; Fri, 27 Mar 2020 02:05:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 89E9A20705
+	for <linux-mips@archiver.kernel.org>; Fri, 27 Mar 2020 06:27:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="LbZ7uBCT"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="MHijPGAJ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727607AbgC0CAu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 26 Mar 2020 22:00:50 -0400
-Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17934 "EHLO
+        id S1726217AbgC0G1t (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 27 Mar 2020 02:27:49 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17875 "EHLO
         sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727763AbgC0CAu (ORCPT
+        by vger.kernel.org with ESMTP id S1725857AbgC0G1t (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 26 Mar 2020 22:00:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1585274428;
+        Fri, 27 Mar 2020 02:27:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1585290402;
         s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
-        h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        bh=Kx/RvUy29LIaM9vg2gfWYogH4sFRuIpw2ok5VAjbz/o=;
-        b=LbZ7uBCTQ1pwMn7Lka1QW4ja75j0W/CieeUt1X4RWIcVznqFsKvKIjMJVYTBqqPD
-        GjuK2wEG/lpIL1AtPjAIEowzUdn+fbmqgGgGRFdHQMm+czOwIemPJO6VV8ii9hJEmKz
-        kHfaMUe+h7RctlRov5qxKbetDEkqK1qgzNdKzuy0=
-Received: from localhost.localdomain (39.155.141.144 [39.155.141.144]) by mx.zoho.com.cn
-        with SMTPS id 1585274426630972.1934863157895; Fri, 27 Mar 2020 10:00:26 +0800 (CST)
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     tsbogend@alpha.franken.de, chenhc@lemote.com,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <20200327020016.460733-1-jiaxun.yang@flygoat.com>
-Subject: [PATCH RESEND v2 1/2] MIPS: cacheinfo: Add missing VCache
-Date:   Fri, 27 Mar 2020 10:00:15 +0800
-X-Mailer: git-send-email 2.26.0.rc2
-In-Reply-To: <20200326105956.455291-1-jiaxun.yang@flygoat.com>
-References: <20200326105956.455291-1-jiaxun.yang@flygoat.com>
+        h=Date:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding:Subject:To:CC:From:Message-ID;
+        bh=UoGQjp02SZU51biG4JZ6PBIIfzrJ6T8Qawk+9xg9Btw=;
+        b=MHijPGAJo0DC6YIAcR8HKhFTs0oCxZuOoFElNhvOFi1bVSjLyk2TXUPTLDllwwuN
+        Bv5GOX6QjxvtsgCK5zGutXlHTTkOsmL2J0soTGrZZGrQTleIy03svp47bgFyWOvWYCS
+        bRbPUH/XMeBmk8H17+3Zufbt27WIBYIwfJJVMWoo=
+Received: from [10.233.233.252] (115.193.86.228 [115.193.86.228]) by mx.zoho.com.cn
+        with SMTPS id 1585290398265664.6145661046983; Fri, 27 Mar 2020 14:26:38 +0800 (CST)
+Date:   Fri, 27 Mar 2020 14:26:34 +0800
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20200325132756.GA13750@infradead.org>
+References: <1584932355-3642-1-git-send-email-yangtiezhu@loongson.cn> <1584932355-3642-3-git-send-email-yangtiezhu@loongson.cn> <20200325132756.GA13750@infradead.org>
 MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 2/3] MIPS: Loongson: Add DMA support for 7A1000
+To:     Christoph Hellwig <hch@infradead.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+CC:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <7786800D-3B37-4F0D-8E55-17F595D97EF2@flygoat.com>
 X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Victim Cache is defined by Loongson as per-core unified
-private Cache.
-Add this into cacheinfo and make cache levels selfincrement
-instead of hardcode levels.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- arch/mips/kernel/cacheinfo.c | 34 ++++++++++++++++++++++++++--------
- 1 file changed, 26 insertions(+), 8 deletions(-)
 
-diff --git a/arch/mips/kernel/cacheinfo.c b/arch/mips/kernel/cacheinfo.c
-index 47312c529410..83548331ee94 100644
---- a/arch/mips/kernel/cacheinfo.c
-+++ b/arch/mips/kernel/cacheinfo.c
-@@ -35,6 +35,11 @@ static int __init_cache_level(unsigned int cpu)
-=20
- =09leaves +=3D (c->icache.waysize) ? 2 : 1;
-=20
-+=09if (c->vcache.waysize) {
-+=09=09levels++;
-+=09=09leaves++;
-+=09}
-+
- =09if (c->scache.waysize) {
- =09=09levels++;
- =09=09leaves++;
-@@ -74,25 +79,38 @@ static int __populate_cache_leaves(unsigned int cpu)
- =09struct cpuinfo_mips *c =3D &current_cpu_data;
- =09struct cpu_cacheinfo *this_cpu_ci =3D get_cpu_cacheinfo(cpu);
- =09struct cacheinfo *this_leaf =3D this_cpu_ci->info_list;
-+=09int level =3D 1;
-=20
- =09if (c->icache.waysize) {
--=09=09/* L1 caches are per core */
-+=09=09/* D/I caches are per core */
- =09=09fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
--=09=09populate_cache(dcache, this_leaf, 1, CACHE_TYPE_DATA);
-+=09=09populate_cache(dcache, this_leaf, level, CACHE_TYPE_DATA);
- =09=09fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
--=09=09populate_cache(icache, this_leaf, 1, CACHE_TYPE_INST);
-+=09=09populate_cache(icache, this_leaf, level, CACHE_TYPE_INST);
-+=09=09level++;
- =09} else {
--=09=09populate_cache(dcache, this_leaf, 1, CACHE_TYPE_UNIFIED);
-+=09=09populate_cache(dcache, this_leaf, level, CACHE_TYPE_UNIFIED);
-+=09=09level++;
-+=09}
-+
-+=09if (c->vcache.waysize) {
-+=09=09/* Vcache is per core as well */
-+=09=09fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
-+=09=09populate_cache(vcache, this_leaf, level, CACHE_TYPE_UNIFIED);
-+=09=09level++;
- =09}
-=20
- =09if (c->scache.waysize) {
--=09=09/* L2 cache is per cluster */
-+=09=09/* Scache is per cluster */
- =09=09fill_cpumask_cluster(cpu, &this_leaf->shared_cpu_map);
--=09=09populate_cache(scache, this_leaf, 2, CACHE_TYPE_UNIFIED);
-+=09=09populate_cache(scache, this_leaf, level, CACHE_TYPE_UNIFIED);
-+=09=09level++;
- =09}
-=20
--=09if (c->tcache.waysize)
--=09=09populate_cache(tcache, this_leaf, 3, CACHE_TYPE_UNIFIED);
-+=09if (c->tcache.waysize) {
-+=09=09populate_cache(tcache, this_leaf, level, CACHE_TYPE_UNIFIED);
-+=09=09level++;
-+=09}
-=20
- =09this_cpu_ci->cpu_map_populated =3D true;
-=20
+=E4=BA=8E 2020=E5=B9=B43=E6=9C=8825=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=889=
+:27:56, Christoph Hellwig <hch@infradead=2Eorg> =E5=86=99=E5=88=B0:
+>On Mon, Mar 23, 2020 at 10:59:14AM +0800, Tiezhu Yang wrote:
+>> Implement __phys_to_dma() and __dma_to_phys() according to the
+>> node id offset in the 7A1000 DMA route config register=2E
+>
+>Can you please try to just use the dma_pfn_offset field in struct
+>device
+>for all loongson platforms?  I'm pretty sure I asked for that last time
+>around=2E=2E
+
+Here we have a problem that dma_pfn_offset doesn't fit our platform=2E
+
+We have multiple dma-ranges that translate in to different address and
+dma_pfn_offset can only handle single range=20
+with fixed offset=2E
+
+Thanks=2E
+
 --=20
-2.26.0.rc2
-
-
+Jiaxun Yang

@@ -7,41 +7,40 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8CC2C2D0EC
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0018C2D0E7
 	for <linux-mips@archiver.kernel.org>; Fri, 27 Mar 2020 02:05:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 9286D20787
+	by mail.kernel.org (Postfix) with ESMTP id C6F51206F8
 	for <linux-mips@archiver.kernel.org>; Fri, 27 Mar 2020 02:05:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="MEAxfFOV"
+	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="LbZ7uBCT"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727509AbgC0CAs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 26 Mar 2020 22:00:48 -0400
-Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17952 "EHLO
+        id S1727607AbgC0CAu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 26 Mar 2020 22:00:50 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17934 "EHLO
         sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727607AbgC0CAs (ORCPT
+        by vger.kernel.org with ESMTP id S1727763AbgC0CAu (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 26 Mar 2020 22:00:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1585274429;
+        Thu, 26 Mar 2020 22:00:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1585274428;
         s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
         h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        bh=sRlx4FvE7Zyh96ZOX4NGXGy3JtbyLAqS0bJOJWnAYDY=;
-        b=MEAxfFOVPBTHG1XuoLwNhN1272/kt3F8sQE8EKHUhl4Fulbn6Bif0idQtD5efJw7
-        iqXU15yzo16ixDPvxByAhOZmGpwZV0YNcxVPSmjjs09waG4JKpfMD8aIdx23ZwWXSc3
-        mNG9gmuGb/ElmrC+XfIUwrQArMC9A/j4ptPD6gEw=
+        bh=Kx/RvUy29LIaM9vg2gfWYogH4sFRuIpw2ok5VAjbz/o=;
+        b=LbZ7uBCTQ1pwMn7Lka1QW4ja75j0W/CieeUt1X4RWIcVznqFsKvKIjMJVYTBqqPD
+        GjuK2wEG/lpIL1AtPjAIEowzUdn+fbmqgGgGRFdHQMm+czOwIemPJO6VV8ii9hJEmKz
+        kHfaMUe+h7RctlRov5qxKbetDEkqK1qgzNdKzuy0=
 Received: from localhost.localdomain (39.155.141.144 [39.155.141.144]) by mx.zoho.com.cn
-        with SMTPS id 1585274427205166.35780654547034; Fri, 27 Mar 2020 10:00:27 +0800 (CST)
+        with SMTPS id 1585274426630972.1934863157895; Fri, 27 Mar 2020 10:00:26 +0800 (CST)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     tsbogend@alpha.franken.de, chenhc@lemote.com,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <20200327020016.460733-2-jiaxun.yang@flygoat.com>
-Subject: [PATCH RESEND v2 2/2] MIPS: Loongson64: Set cluster for cores
-Date:   Fri, 27 Mar 2020 10:00:16 +0800
+Message-ID: <20200327020016.460733-1-jiaxun.yang@flygoat.com>
+Subject: [PATCH RESEND v2 1/2] MIPS: cacheinfo: Add missing VCache
+Date:   Fri, 27 Mar 2020 10:00:15 +0800
 X-Mailer: git-send-email 2.26.0.rc2
-In-Reply-To: <20200327020016.460733-1-jiaxun.yang@flygoat.com>
+In-Reply-To: <20200326105956.455291-1-jiaxun.yang@flygoat.com>
 References: <20200326105956.455291-1-jiaxun.yang@flygoat.com>
- <20200327020016.460733-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-ZohoCNMailClient: External
@@ -51,34 +50,79 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-cluster is required for cacheinfo to set shared_cpu_map correctly.
+Victim Cache is defined by Loongson as per-core unified
+private Cache.
+Add this into cacheinfo and make cache levels selfincrement
+instead of hardcode levels.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-
 ---
-v2: cpu_data should be indexed by logical id
+ arch/mips/kernel/cacheinfo.c | 34 ++++++++++++++++++++++++++--------
+ 1 file changed, 26 insertions(+), 8 deletions(-)
 
-RESEND because the previous mail was messed up too.
-I tried to write a script to automation my work flow
-but it's quite buggy.
-I won't use it any more.
----
- arch/mips/loongson64/smp.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
-index e1fe8bbb377d..35568dec17a4 100644
---- a/arch/mips/loongson64/smp.c
-+++ b/arch/mips/loongson64/smp.c
-@@ -404,6 +404,8 @@ static void __init loongson3_smp_setup(void)
- =09=09=09__cpu_number_map[i] =3D num;
- =09=09=09__cpu_logical_map[num] =3D i;
- =09=09=09set_cpu_possible(num, true);
-+=09=09=09/* Loongson processors are always grouped by 4 */
-+=09=09=09cpu_set_cluster(&cpu_data[num], i / 4);
- =09=09=09num++;
- =09=09}
- =09=09i++;
+diff --git a/arch/mips/kernel/cacheinfo.c b/arch/mips/kernel/cacheinfo.c
+index 47312c529410..83548331ee94 100644
+--- a/arch/mips/kernel/cacheinfo.c
++++ b/arch/mips/kernel/cacheinfo.c
+@@ -35,6 +35,11 @@ static int __init_cache_level(unsigned int cpu)
+=20
+ =09leaves +=3D (c->icache.waysize) ? 2 : 1;
+=20
++=09if (c->vcache.waysize) {
++=09=09levels++;
++=09=09leaves++;
++=09}
++
+ =09if (c->scache.waysize) {
+ =09=09levels++;
+ =09=09leaves++;
+@@ -74,25 +79,38 @@ static int __populate_cache_leaves(unsigned int cpu)
+ =09struct cpuinfo_mips *c =3D &current_cpu_data;
+ =09struct cpu_cacheinfo *this_cpu_ci =3D get_cpu_cacheinfo(cpu);
+ =09struct cacheinfo *this_leaf =3D this_cpu_ci->info_list;
++=09int level =3D 1;
+=20
+ =09if (c->icache.waysize) {
+-=09=09/* L1 caches are per core */
++=09=09/* D/I caches are per core */
+ =09=09fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
+-=09=09populate_cache(dcache, this_leaf, 1, CACHE_TYPE_DATA);
++=09=09populate_cache(dcache, this_leaf, level, CACHE_TYPE_DATA);
+ =09=09fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
+-=09=09populate_cache(icache, this_leaf, 1, CACHE_TYPE_INST);
++=09=09populate_cache(icache, this_leaf, level, CACHE_TYPE_INST);
++=09=09level++;
+ =09} else {
+-=09=09populate_cache(dcache, this_leaf, 1, CACHE_TYPE_UNIFIED);
++=09=09populate_cache(dcache, this_leaf, level, CACHE_TYPE_UNIFIED);
++=09=09level++;
++=09}
++
++=09if (c->vcache.waysize) {
++=09=09/* Vcache is per core as well */
++=09=09fill_cpumask_siblings(cpu, &this_leaf->shared_cpu_map);
++=09=09populate_cache(vcache, this_leaf, level, CACHE_TYPE_UNIFIED);
++=09=09level++;
+ =09}
+=20
+ =09if (c->scache.waysize) {
+-=09=09/* L2 cache is per cluster */
++=09=09/* Scache is per cluster */
+ =09=09fill_cpumask_cluster(cpu, &this_leaf->shared_cpu_map);
+-=09=09populate_cache(scache, this_leaf, 2, CACHE_TYPE_UNIFIED);
++=09=09populate_cache(scache, this_leaf, level, CACHE_TYPE_UNIFIED);
++=09=09level++;
+ =09}
+=20
+-=09if (c->tcache.waysize)
+-=09=09populate_cache(tcache, this_leaf, 3, CACHE_TYPE_UNIFIED);
++=09if (c->tcache.waysize) {
++=09=09populate_cache(tcache, this_leaf, level, CACHE_TYPE_UNIFIED);
++=09=09level++;
++=09}
+=20
+ =09this_cpu_ci->cpu_map_populated =3D true;
+=20
 --=20
 2.26.0.rc2
 

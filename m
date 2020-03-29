@@ -2,82 +2,99 @@ Return-Path: <SRS0=tfgx=5O=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70C5CC43331
-	for <linux-mips@archiver.kernel.org>; Sun, 29 Mar 2020 13:42:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9C76C2D0ED
+	for <linux-mips@archiver.kernel.org>; Sun, 29 Mar 2020 17:36:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 43457206DB
-	for <linux-mips@archiver.kernel.org>; Sun, 29 Mar 2020 13:42:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2023B20780
+	for <linux-mips@archiver.kernel.org>; Sun, 29 Mar 2020 17:36:10 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="ZW157KiE"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgC2Nmv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 29 Mar 2020 09:42:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:58288 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727903AbgC2Nmv (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 29 Mar 2020 09:42:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B302231B;
-        Sun, 29 Mar 2020 06:42:50 -0700 (PDT)
-Received: from [10.163.1.70] (unknown [10.163.1.70])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5731E3F71F;
-        Sun, 29 Mar 2020 06:42:43 -0700 (PDT)
-Subject: Re: [PATCH 0/2] mm/thp: Rename pmd_mknotpresent() as pmd_mknotvalid()
-To:     linux-mm@kvack.org
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
+        id S1728385AbgC2RgJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 29 Mar 2020 13:36:09 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:17458 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727933AbgC2RgJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 29 Mar 2020 13:36:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1585503366;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=3bPEDGqyJOBTZ1dmWLnKidK90rqP4ViQpq+Ni8TIszo=;
+        b=ZW157KiEkI5Si2uEU7hBYeSSWdMfQqWLNbSYPBaIr7XsFuBNC2tLGKrC2Al6NNoG+j
+        wGxFGfRF25h+nPIEyFdOGZctkTEvsM66xCTHObdx2xQyjQqt1eQv9fP+nhmZBsHs1eYp
+        /NZaA+I8QDBYYnipKxkV+ZUGGwbCbD/YGazyA3HXXFQ5XyWTRC+rjuzlHRk7quI5a1Ht
+        Df1AiCJZZEWtcEFyMVgyBCdDK20K/fw3BeOQw6Me42OtTKkxWiNZSZCHexna7wMcGDda
+        15tIUp2VGq8hhLTYZYsX6EKrGt1qKjOMGfg7P2vRmGaHE+85iOQaDuIESxTmrK/B0HyX
+        Nllw==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0pDz2rsNxxv"
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+        by smtp.strato.de (RZmta 46.2.1 DYNA|AUTH)
+        with ESMTPSA id m02241w2THZwBM9
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Sun, 29 Mar 2020 19:35:58 +0200 (CEST)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Paul Boddie <paul@boddie.org.uk>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        nouveau@lists.freedesktop.org, linuxppc-dev@lists.ozlabs.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <1584680057-13753-1-git-send-email-anshuman.khandual@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <2e67f1b8-d196-89e4-aee1-f552db1433a0@arm.com>
-Date:   Sun, 29 Mar 2020 19:12:35 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Kees Cook <keescook@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-gpio@vger.kernel.org, letux-kernel@openphoenux.org,
+        mips-creator-ci20-dev@googlegroups.com
+Subject: [RFC v3 2/8] drm: ingenic-drm: add MODULE_DEVICE_TABLE
+Date:   Sun, 29 Mar 2020 19:35:48 +0200
+Message-Id: <02c8f35fde969fd852a62740b4fa8a01c53b79ef.1585503354.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1585503354.git.hns@goldelico.com>
+References: <cover.1585503354.git.hns@goldelico.com>
 MIME-Version: 1.0
-In-Reply-To: <1584680057-13753-1-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+so that the driver can load by matching the device tree
+if compiled as module.
 
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ drivers/gpu/drm/ingenic/ingenic-drm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 03/20/2020 10:24 AM, Anshuman Khandual wrote:
-> This series renames pmd_mknotpresent() as pmd_mknotvalid(). Before that it
-> drops an existing pmd_mknotpresent() definition from powerpc platform which
-> was never required as it defines it's pmdp_invalidate() through subscribing
-> __HAVE_ARCH_PMDP_INVALIDATE. This does not create any functional change.
-> 
-> This rename was suggested by Catalin during a previous discussion while we
-> were trying to change the THP helpers on arm64 platform for migration.
-> 
-> https://patchwork.kernel.org/patch/11019637/
-> 
-> This series is based on v5.6-rc6.
-> 
-> Boot tested on arm64 and x86 platforms.
-> Built tested on many other platforms including the ones changed here.
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm.c b/drivers/gpu/drm/ingenic/ingenic-drm.c
+index 6d47ef7b148c..bcba2f024842 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm.c
+@@ -843,6 +843,7 @@ static const struct of_device_id ingenic_drm_of_match[] = {
+ 	{ .compatible = "ingenic,jz4770-lcd", .data = &jz4770_soc_info },
+ 	{ /* sentinel */ },
+ };
++MODULE_DEVICE_TABLE(of, ingenic_drm_of_match);
+ 
+ static struct platform_driver ingenic_drm_driver = {
+ 	.driver = {
+-- 
+2.25.1
 
-Gentle ping, any updates regarding this ?

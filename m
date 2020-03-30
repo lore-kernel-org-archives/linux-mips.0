@@ -6,351 +6,450 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51503C43331
-	for <linux-mips@archiver.kernel.org>; Mon, 30 Mar 2020 08:38:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E9BDC43331
+	for <linux-mips@archiver.kernel.org>; Mon, 30 Mar 2020 08:39:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 1F2842073B
-	for <linux-mips@archiver.kernel.org>; Mon, 30 Mar 2020 08:38:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4DFFE2082D
+	for <linux-mips@archiver.kernel.org>; Mon, 30 Mar 2020 08:39:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729390AbgC3Ii5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 30 Mar 2020 04:38:57 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:56720 "EHLO loongson.cn"
+        id S1729741AbgC3IjC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 30 Mar 2020 04:39:02 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:56774 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726017AbgC3Ii5 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 30 Mar 2020 04:38:57 -0400
+        id S1726017AbgC3IjB (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 30 Mar 2020 04:39:01 -0400
 Received: from kvm-dev1.localdomain (unknown [10.2.5.134])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax1ukZsIFeIJchAA--.7S2;
-        Mon, 30 Mar 2020 16:38:49 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxr2ofsIFeJZchAA--.18S2;
+        Mon, 30 Mar 2020 16:38:55 +0800 (CST)
 From:   bibo mao <maobibo@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Huacai Chen <chenhc@lemote.com>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 01/39] MIPS: Add-mach-header-files-option
-Date:   Mon, 30 Mar 2020 04:38:49 -0400
-Message-Id: <1585557529-18194-1-git-send-email-maobibo@loongson.cn>
+Subject: [PATCH 04/39] MIPS: loongson32: Add header files path prefix
+Date:   Mon, 30 Mar 2020 04:38:55 -0400
+Message-Id: <1585557535-21072-1-git-send-email-maobibo@loongson.cn>
 X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AQAAf9Ax1ukZsIFeIJchAA--.7S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuw1UZF4kZw1fCF17XF1rXrb_yoWfXry8pa
-        1DAa1kGrZ8WryUAFyrAr929r43Jan5GrWY9Fyjga4jv3W2qF1DJrs3Krn8Ary8XFWqq3W0
-        gFWfWw15Xr4Ivw7anT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9Fb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY
-        62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWrXVW3AwAv7V
-        C2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkI
-        ecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267
-        AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW7JVWDJw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWU
-        JwCI42IY6I8E87Iv67AKxVWxJVW8Jr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-        sGvfC2KfnxnUUI43ZEXa7IUYfR65UUUUU==
+X-CM-TRANSID: AQAAf9Dxr2ofsIFeJZchAA--.18S2
+X-Coremail-Antispam: 1UD129KBjvAXoW3Kr1rXw17KF1xXr18ZF1rCrg_yoW8AryDto
+        Z2yFnrGr48JFWUJF4jgF45A3yxWFnYqF4ay3yfA398JFZIv3srJFy09rnFqF18Cryxtwnx
+        GrWrurW8Xrs7taykn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUUY07k0a2IF6w4xM7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0
+        x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj4
+        1l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0
+        I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7
+        xvwVC2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Wrv_ZF1lYx0Ex4A2jsIE14v26r
+        4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE-syl42xK
+        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Ar0_tr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJw
+        CI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Cr0_Gr1UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jDwIDUUUUU=
 X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Some header files are used without pathname prefix, it will
-cause confliction if there exists the same filename locally.
-
-This patch adds HAVE_MACH_HEAD_FILES option, with this enabled,
-it will remove header files platform specific from
-arch/mips/include/asm/mach-xxx to directory
-arch/mips/mach-xxx/include/mach
+Remove header files from arch/mips/include/asm/mach-loongson32
+to arch/mips/loongson32/include/mach
 
 Signed-off-by: bibo mao <maobibo@loongson.cn>
 ---
- arch/mips/Kconfig                    | 4 ++++
- arch/mips/Makefile                   | 2 ++
- arch/mips/include/asm/addrspace.h    | 4 ++++
- arch/mips/include/asm/cache.h        | 4 ++++
- arch/mips/include/asm/cpu-features.h | 4 ++++
- arch/mips/include/asm/fixmap.h       | 4 ++++
- arch/mips/include/asm/floppy.h       | 4 ++++
- arch/mips/include/asm/i8259.h        | 4 ++++
- arch/mips/include/asm/ide.h          | 6 ++++++
- arch/mips/include/asm/io.h           | 5 +++++
- arch/mips/include/asm/irq.h          | 4 ++++
- arch/mips/include/asm/mc146818rtc.h  | 4 ++++
- arch/mips/include/asm/mmzone.h       | 4 ++++
- arch/mips/include/asm/page.h         | 4 ++++
- arch/mips/include/asm/topology.h     | 4 ++++
- arch/mips/include/asm/war.h          | 4 ++++
- arch/mips/kernel/head.S              | 4 ++++
- 17 files changed, 69 insertions(+)
+ arch/mips/Kconfig                                              |  1 +
+ arch/mips/loongson32/Platform                                  |  2 +-
+ arch/mips/loongson32/common/irq.c                              |  4 ++--
+ arch/mips/loongson32/common/platform.c                         | 10 +++++-----
+ arch/mips/loongson32/common/prom.c                             |  2 +-
+ arch/mips/loongson32/common/reset.c                            |  2 +-
+ arch/mips/loongson32/common/time.c                             |  4 ++--
+ arch/mips/loongson32/include/mach/cpu-feature-overrides.h      |  2 ++
+ .../asm/mach-loongson32 => loongson32/include/mach}/cpufreq.h  |  0
+ .../asm/mach-loongson32 => loongson32/include/mach}/dma.h      |  0
+ arch/mips/loongson32/include/mach/ioremap.h                    |  2 ++
+ .../asm/mach-loongson32 => loongson32/include/mach}/irq.h      |  0
+ arch/mips/loongson32/include/mach/kernel-entry-init.h          |  2 ++
+ arch/mips/loongson32/include/mach/kmalloc.h                    |  2 ++
+ .../mach-loongson32 => loongson32/include/mach}/loongson1.h    | 10 +++++-----
+ arch/mips/loongson32/include/mach/mangle-port.h                |  2 ++
+ .../asm/mach-loongson32 => loongson32/include/mach}/nand.h     |  0
+ .../asm/mach-loongson32 => loongson32/include/mach}/platform.h |  4 ++--
+ .../asm/mach-loongson32 => loongson32/include/mach}/regs-clk.h |  0
+ .../asm/mach-loongson32 => loongson32/include/mach}/regs-mux.h |  0
+ .../asm/mach-loongson32 => loongson32/include/mach}/regs-pwm.h |  0
+ .../asm/mach-loongson32 => loongson32/include/mach}/regs-rtc.h |  0
+ .../asm/mach-loongson32 => loongson32/include/mach}/regs-wdt.h |  0
+ arch/mips/loongson32/include/mach/spaces.h                     |  2 ++
+ arch/mips/loongson32/include/mach/topology.h                   |  2 ++
+ arch/mips/loongson32/include/mach/war.h                        |  2 ++
+ arch/mips/loongson32/ls1b/board.c                              |  8 ++++----
+ arch/mips/loongson32/ls1c/board.c                              |  2 +-
+ drivers/clk/loongson1/clk-loongson1b.c                         |  2 +-
+ drivers/clk/loongson1/clk-loongson1c.c                         |  2 +-
+ drivers/cpufreq/loongson1-cpufreq.c                            |  4 ++--
+ drivers/rtc/rtc-ls1x.c                                         |  2 +-
+ drivers/watchdog/loongson1_wdt.c                               |  2 +-
+ 33 files changed, 47 insertions(+), 30 deletions(-)
+ create mode 100644 arch/mips/loongson32/include/mach/cpu-feature-overrides.h
+ rename arch/mips/{include/asm/mach-loongson32 => loongson32/include/mach}/cpufreq.h (100%)
+ rename arch/mips/{include/asm/mach-loongson32 => loongson32/include/mach}/dma.h (100%)
+ create mode 100644 arch/mips/loongson32/include/mach/ioremap.h
+ rename arch/mips/{include/asm/mach-loongson32 => loongson32/include/mach}/irq.h (100%)
+ create mode 100644 arch/mips/loongson32/include/mach/kernel-entry-init.h
+ create mode 100644 arch/mips/loongson32/include/mach/kmalloc.h
+ rename arch/mips/{include/asm/mach-loongson32 => loongson32/include/mach}/loongson1.h (91%)
+ create mode 100644 arch/mips/loongson32/include/mach/mangle-port.h
+ rename arch/mips/{include/asm/mach-loongson32 => loongson32/include/mach}/nand.h (100%)
+ rename arch/mips/{include/asm/mach-loongson32 => loongson32/include/mach}/platform.h (95%)
+ rename arch/mips/{include/asm/mach-loongson32 => loongson32/include/mach}/regs-clk.h (100%)
+ rename arch/mips/{include/asm/mach-loongson32 => loongson32/include/mach}/regs-mux.h (100%)
+ rename arch/mips/{include/asm/mach-loongson32 => loongson32/include/mach}/regs-pwm.h (100%)
+ rename arch/mips/{include/asm/mach-loongson32 => loongson32/include/mach}/regs-rtc.h (100%)
+ rename arch/mips/{include/asm/mach-loongson32 => loongson32/include/mach}/regs-wdt.h (100%)
+ create mode 100644 arch/mips/loongson32/include/mach/spaces.h
+ create mode 100644 arch/mips/loongson32/include/mach/topology.h
+ create mode 100644 arch/mips/loongson32/include/mach/war.h
 
 diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index a1f973c..12f05bb 100644
+index 8645207..3c38202 100644
 --- a/arch/mips/Kconfig
 +++ b/arch/mips/Kconfig
-@@ -1117,6 +1117,10 @@ config SCHED_OMIT_FRAME_POINTER
- 	bool
- 	default y
+@@ -447,6 +447,7 @@ config LASAT
+ config MACH_LOONGSON32
+ 	bool "Loongson 32-bit family of machines"
+ 	select SYS_SUPPORTS_ZBOOT
++	select HAVE_MACH_HEAD_FILES
+ 	help
+ 	  This enables support for the Loongson-1 family of machines.
  
-+config HAVE_MACH_HEAD_FILES
-+	bool
-+	default n
-+
- #
- # Select some configuration options automatically based on user selections.
- #
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index e1c44ae..dae3d53 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -263,7 +263,9 @@ load-y					= $(CONFIG_PHYSICAL_START)
- endif
+diff --git a/arch/mips/loongson32/Platform b/arch/mips/loongson32/Platform
+index 7f8e342..b3f061a 100644
+--- a/arch/mips/loongson32/Platform
++++ b/arch/mips/loongson32/Platform
+@@ -1,4 +1,4 @@
+ cflags-$(CONFIG_CPU_LOONGSON32)		+= -march=mips32r2 -Wa,--trap
+ platform-$(CONFIG_MACH_LOONGSON32)	+= loongson32/
+-cflags-$(CONFIG_MACH_LOONGSON32)	+= -I$(srctree)/arch/mips/include/asm/mach-loongson32
++cflags-$(CONFIG_MACH_LOONGSON32)	+= -I$(srctree)/arch/mips/loongson32/include
+ load-$(CONFIG_CPU_LOONGSON32)		+= 0xffffffff80200000
+diff --git a/arch/mips/loongson32/common/irq.c b/arch/mips/loongson32/common/irq.c
+index 9a50070..0e82336 100644
+--- a/arch/mips/loongson32/common/irq.c
++++ b/arch/mips/loongson32/common/irq.c
+@@ -7,8 +7,8 @@
+ #include <linux/irq.h>
+ #include <asm/irq_cpu.h>
  
- entry-y				= $(shell $(objtree)/arch/mips/tools/elf-entry vmlinux)
-+ifndef CONFIG_HAVE_MACH_HEAD_FILES
- cflags-y			+= -I$(srctree)/arch/mips/include/asm/mach-generic
-+endif
- drivers-$(CONFIG_PCI)		+= arch/mips/pci/
- 
- #
-diff --git a/arch/mips/include/asm/addrspace.h b/arch/mips/include/asm/addrspace.h
-index 59a48c6..9cf7926 100644
---- a/arch/mips/include/asm/addrspace.h
-+++ b/arch/mips/include/asm/addrspace.h
-@@ -10,7 +10,11 @@
- #ifndef _ASM_ADDRSPACE_H
- #define _ASM_ADDRSPACE_H
- 
-+#ifdef CONFIG_HAVE_MACH_HEAD_FILES
-+#include <mach/spaces.h>
-+#else
- #include <spaces.h>
-+#endif
- 
- /*
-  *  Configure language
-diff --git a/arch/mips/include/asm/cache.h b/arch/mips/include/asm/cache.h
-index 8b14c27..a0867f9 100644
---- a/arch/mips/include/asm/cache.h
-+++ b/arch/mips/include/asm/cache.h
-@@ -9,7 +9,11 @@
- #ifndef _ASM_CACHE_H
- #define _ASM_CACHE_H
- 
-+#ifdef CONFIG_HAVE_MACH_HEAD_FILES
-+#include <mach/kmalloc.h>
-+#else
- #include <kmalloc.h>
-+#endif
- 
- #define L1_CACHE_SHIFT		CONFIG_MIPS_L1_CACHE_SHIFT
- #define L1_CACHE_BYTES		(1 << L1_CACHE_SHIFT)
-diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
-index de44c92..facd189 100644
---- a/arch/mips/include/asm/cpu-features.h
-+++ b/arch/mips/include/asm/cpu-features.h
-@@ -12,7 +12,11 @@
- #include <asm/cpu.h>
- #include <asm/cpu-info.h>
- #include <asm/isa-rev.h>
-+#ifdef CONFIG_HAVE_MACH_HEAD_FILES
-+#include <mach/cpu-feature-overrides.h>
-+#else
- #include <cpu-feature-overrides.h>
-+#endif
- 
- #define __ase(ase)			(cpu_data[0].ases & (ase))
- #define __isa(isa)			(cpu_data[0].isa_level & (isa))
-diff --git a/arch/mips/include/asm/fixmap.h b/arch/mips/include/asm/fixmap.h
-index 1784d43..1723929 100644
---- a/arch/mips/include/asm/fixmap.h
-+++ b/arch/mips/include/asm/fixmap.h
-@@ -14,7 +14,11 @@
- #define _ASM_FIXMAP_H
- 
- #include <asm/page.h>
-+#ifdef CONFIG_HAVE_MACH_HEAD_FILES
-+#include <mach/spaces.h>
-+#else
- #include <spaces.h>
-+#endif
- #ifdef CONFIG_HIGHMEM
- #include <linux/threads.h>
- #include <asm/kmap_types.h>
-diff --git a/arch/mips/include/asm/floppy.h b/arch/mips/include/asm/floppy.h
-index 021d09a..55fb950 100644
---- a/arch/mips/include/asm/floppy.h
-+++ b/arch/mips/include/asm/floppy.h
-@@ -51,6 +51,10 @@ static inline void fd_cacheflush(char * addr, long size)
- 
- #define EXTRA_FLOPPY_PARAMS
- 
-+#ifdef CONFIG_HAVE_MACH_HEAD_FILES
-+#include <mach/floppy.h>
-+#else
- #include <floppy.h>
-+#endif
- 
- #endif /* _ASM_FLOPPY_H */
-diff --git a/arch/mips/include/asm/i8259.h b/arch/mips/include/asm/i8259.h
-index a54b964..f9b6518 100644
---- a/arch/mips/include/asm/i8259.h
-+++ b/arch/mips/include/asm/i8259.h
-@@ -14,7 +14,11 @@
- #include <linux/spinlock.h>
- 
- #include <asm/io.h>
-+#ifdef CONFIG_HAVE_MACH_HEAD_FILES
+-#include <loongson1.h>
+-#include <irq.h>
++#include <mach/loongson1.h>
 +#include <mach/irq.h>
-+#else
- #include <irq.h>
-+#endif
  
- /* i8259A PIC registers */
- #define PIC_MASTER_CMD		0x20
-diff --git a/arch/mips/include/asm/ide.h b/arch/mips/include/asm/ide.h
-index bb674c3..1302c7d 100644
---- a/arch/mips/include/asm/ide.h
-+++ b/arch/mips/include/asm/ide.h
-@@ -8,6 +8,12 @@
- #ifndef __ASM_IDE_H
- #define __ASM_IDE_H
+ #define LS1X_INTC_REG(n, x) \
+ 		((void __iomem *)KSEG1ADDR(LS1X_INTC_BASE + (n * 0x18) + (x)))
+diff --git a/arch/mips/loongson32/common/platform.c b/arch/mips/loongson32/common/platform.c
+index 794c96c..9a783f8 100644
+--- a/arch/mips/loongson32/common/platform.c
++++ b/arch/mips/loongson32/common/platform.c
+@@ -13,11 +13,11 @@
+ #include <linux/stmmac.h>
+ #include <linux/usb/ehci_pdriver.h>
  
-+#ifdef CONFIG_HAVE_MACH_HEAD_FILES
-+#include <mach/ide.h>
-+#else
- #include <ide.h>
-+#endif
+-#include <platform.h>
+-#include <loongson1.h>
+-#include <cpufreq.h>
+-#include <dma.h>
+-#include <nand.h>
++#include <mach/platform.h>
++#include <mach/loongson1.h>
++#include <mach/cpufreq.h>
++#include <mach/dma.h>
++#include <mach/nand.h>
  
- #endif /* __ASM_IDE_H */
-diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-index cf1f2a4..fe8f4a9 100644
---- a/arch/mips/include/asm/io.h
-+++ b/arch/mips/include/asm/io.h
-@@ -31,8 +31,13 @@
- #include <asm/processor.h>
- #include <asm/string.h>
+ /* 8250/16550 compatible UART */
+ #define LS1X_UART(_id)						\
+diff --git a/arch/mips/loongson32/common/prom.c b/arch/mips/loongson32/common/prom.c
+index fd76114..9b7dfc6 100644
+--- a/arch/mips/loongson32/common/prom.c
++++ b/arch/mips/loongson32/common/prom.c
+@@ -11,7 +11,7 @@
+ #include <asm/bootinfo.h>
+ #include <asm/fw/fw.h>
  
-+#ifdef CONFIG_HAVE_MACH_HEAD_FILES
-+#include <mach/ioremap.h>
-+#include <mach/mangle-port.h>
-+#else
- #include <ioremap.h>
- #include <mangle-port.h>
-+#endif
+-#include <loongson1.h>
++#include <mach/loongson1.h>
  
- /*
-  * Raw operations are never swapped in software.  OTOH values that raw
-diff --git a/arch/mips/include/asm/irq.h b/arch/mips/include/asm/irq.h
-index c5d3517..c8cab02 100644
---- a/arch/mips/include/asm/irq.h
-+++ b/arch/mips/include/asm/irq.h
-@@ -15,7 +15,11 @@
+ unsigned long memsize;
  
- #include <asm/mipsmtregs.h>
+diff --git a/arch/mips/loongson32/common/reset.c b/arch/mips/loongson32/common/reset.c
+index 0c7399b..3e44b7f 100644
+--- a/arch/mips/loongson32/common/reset.c
++++ b/arch/mips/loongson32/common/reset.c
+@@ -9,7 +9,7 @@
+ #include <asm/idle.h>
+ #include <asm/reboot.h>
  
-+#ifdef CONFIG_HAVE_MACH_HEAD_FILES
-+#include <mach/irq.h>
-+#else
- #include <irq.h>
-+#endif
+-#include <loongson1.h>
++#include <mach/loongson1.h>
  
- #define IRQ_STACK_SIZE			THREAD_SIZE
- #define IRQ_STACK_START			(IRQ_STACK_SIZE - 16)
-diff --git a/arch/mips/include/asm/mc146818rtc.h b/arch/mips/include/asm/mc146818rtc.h
-index 68b4da6..a0e1d91 100644
---- a/arch/mips/include/asm/mc146818rtc.h
-+++ b/arch/mips/include/asm/mc146818rtc.h
-@@ -11,6 +11,10 @@
- #ifndef _ASM_MC146818RTC_H
- #define _ASM_MC146818RTC_H
+ static void __iomem *wdt_reg_base;
  
-+#ifdef CONFIG_HAVE_MACH_HEAD_FILES
-+#include <mach/mc146818rtc.h>
-+#else
- #include <mc146818rtc.h>
-+#endif
+diff --git a/arch/mips/loongson32/common/time.c b/arch/mips/loongson32/common/time.c
+index 459b15c..7313eaa 100644
+--- a/arch/mips/loongson32/common/time.c
++++ b/arch/mips/loongson32/common/time.c
+@@ -8,8 +8,8 @@
+ #include <linux/sizes.h>
+ #include <asm/time.h>
  
- #endif /* _ASM_MC146818RTC_H */
-diff --git a/arch/mips/include/asm/mmzone.h b/arch/mips/include/asm/mmzone.h
-index b826b84..043f88c 100644
---- a/arch/mips/include/asm/mmzone.h
-+++ b/arch/mips/include/asm/mmzone.h
-@@ -9,8 +9,12 @@
- #include <asm/page.h>
+-#include <loongson1.h>
+-#include <platform.h>
++#include <mach/loongson1.h>
++#include <mach/platform.h>
  
- #ifdef CONFIG_NEED_MULTIPLE_NODES
-+#ifdef CONFIG_HAVE_MACH_HEAD_FILES
-+#include <mach/mmzone.h>
-+#else
- # include <mmzone.h>
- #endif
-+#endif
+ #ifdef CONFIG_CEVT_CSRC_LS1X
  
- #ifndef pa_to_nid
- #define pa_to_nid(addr) 0
-diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
-index 0ba4ce6..4fb4ee2 100644
---- a/arch/mips/include/asm/page.h
-+++ b/arch/mips/include/asm/page.h
-@@ -9,7 +9,11 @@
- #ifndef _ASM_PAGE_H
- #define _ASM_PAGE_H
+diff --git a/arch/mips/loongson32/include/mach/cpu-feature-overrides.h b/arch/mips/loongson32/include/mach/cpu-feature-overrides.h
+new file mode 100644
+index 0000000..f3e0e12
+--- /dev/null
++++ b/arch/mips/loongson32/include/mach/cpu-feature-overrides.h
+@@ -0,0 +1,2 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#include <asm/mach-generic/cpu-feature-overrides.h>
+diff --git a/arch/mips/include/asm/mach-loongson32/cpufreq.h b/arch/mips/loongson32/include/mach/cpufreq.h
+similarity index 100%
+rename from arch/mips/include/asm/mach-loongson32/cpufreq.h
+rename to arch/mips/loongson32/include/mach/cpufreq.h
+diff --git a/arch/mips/include/asm/mach-loongson32/dma.h b/arch/mips/loongson32/include/mach/dma.h
+similarity index 100%
+rename from arch/mips/include/asm/mach-loongson32/dma.h
+rename to arch/mips/loongson32/include/mach/dma.h
+diff --git a/arch/mips/loongson32/include/mach/ioremap.h b/arch/mips/loongson32/include/mach/ioremap.h
+new file mode 100644
+index 0000000..2369393
+--- /dev/null
++++ b/arch/mips/loongson32/include/mach/ioremap.h
+@@ -0,0 +1,2 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#include <asm/mach-generic/ioremap.h>
+diff --git a/arch/mips/include/asm/mach-loongson32/irq.h b/arch/mips/loongson32/include/mach/irq.h
+similarity index 100%
+rename from arch/mips/include/asm/mach-loongson32/irq.h
+rename to arch/mips/loongson32/include/mach/irq.h
+diff --git a/arch/mips/loongson32/include/mach/kernel-entry-init.h b/arch/mips/loongson32/include/mach/kernel-entry-init.h
+new file mode 100644
+index 0000000..19b872be
+--- /dev/null
++++ b/arch/mips/loongson32/include/mach/kernel-entry-init.h
+@@ -0,0 +1,2 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#include <asm/mach-generic/kernel-entry-init.h>
+diff --git a/arch/mips/loongson32/include/mach/kmalloc.h b/arch/mips/loongson32/include/mach/kmalloc.h
+new file mode 100644
+index 0000000..4f056db
+--- /dev/null
++++ b/arch/mips/loongson32/include/mach/kmalloc.h
+@@ -0,0 +1,2 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#include <asm/mach-generic/kmalloc.h>
+diff --git a/arch/mips/include/asm/mach-loongson32/loongson1.h b/arch/mips/loongson32/include/mach/loongson1.h
+similarity index 91%
+rename from arch/mips/include/asm/mach-loongson32/loongson1.h
+rename to arch/mips/loongson32/include/mach/loongson1.h
+index eb3ddbe..8b53f47 100644
+--- a/arch/mips/include/asm/mach-loongson32/loongson1.h
++++ b/arch/mips/loongson32/include/mach/loongson1.h
+@@ -45,10 +45,10 @@
+ #define LS1X_NAND_BASE			0x1fe78000
+ #define LS1X_CLK_BASE			0x1fe78030
  
-+#ifdef CONFIG_HAVE_MACH_HEAD_FILES
-+#include <mach/spaces.h>
-+#else
- #include <spaces.h>
-+#endif
- #include <linux/const.h>
- #include <linux/kernel.h>
- #include <asm/mipsregs.h>
-diff --git a/arch/mips/include/asm/topology.h b/arch/mips/include/asm/topology.h
-index 0673d2d..ed955bb 100644
---- a/arch/mips/include/asm/topology.h
-+++ b/arch/mips/include/asm/topology.h
-@@ -8,7 +8,11 @@
- #ifndef __ASM_TOPOLOGY_H
- #define __ASM_TOPOLOGY_H
+-#include <regs-clk.h>
+-#include <regs-mux.h>
+-#include <regs-pwm.h>
+-#include <regs-rtc.h>
+-#include <regs-wdt.h>
++#include <mach/regs-clk.h>
++#include <mach/regs-mux.h>
++#include <mach/regs-pwm.h>
++#include <mach/regs-rtc.h>
++#include <mach/regs-wdt.h>
  
-+#ifdef CONFIG_HAVE_MACH_HEAD_FILES
-+#include <mach/topology.h>
-+#else
- #include <topology.h>
-+#endif
- #include <linux/smp.h>
+ #endif /* __ASM_MACH_LOONGSON32_LOONGSON1_H */
+diff --git a/arch/mips/loongson32/include/mach/mangle-port.h b/arch/mips/loongson32/include/mach/mangle-port.h
+new file mode 100644
+index 0000000..b9736e3
+--- /dev/null
++++ b/arch/mips/loongson32/include/mach/mangle-port.h
+@@ -0,0 +1,2 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#include <asm/mach-generic/mangle-port.h>
+diff --git a/arch/mips/include/asm/mach-loongson32/nand.h b/arch/mips/loongson32/include/mach/nand.h
+similarity index 100%
+rename from arch/mips/include/asm/mach-loongson32/nand.h
+rename to arch/mips/loongson32/include/mach/nand.h
+diff --git a/arch/mips/include/asm/mach-loongson32/platform.h b/arch/mips/loongson32/include/mach/platform.h
+similarity index 95%
+rename from arch/mips/include/asm/mach-loongson32/platform.h
+rename to arch/mips/loongson32/include/mach/platform.h
+index eb83e27..e2f8ac7 100644
+--- a/arch/mips/include/asm/mach-loongson32/platform.h
++++ b/arch/mips/loongson32/include/mach/platform.h
+@@ -8,8 +8,8 @@
  
- #ifdef CONFIG_SMP
-diff --git a/arch/mips/include/asm/war.h b/arch/mips/include/asm/war.h
-index 1eedd59..66264e1 100644
---- a/arch/mips/include/asm/war.h
-+++ b/arch/mips/include/asm/war.h
-@@ -9,7 +9,11 @@
- #ifndef _ASM_WAR_H
- #define _ASM_WAR_H
+ #include <linux/platform_device.h>
  
-+#ifdef CONFIG_HAVE_MACH_HEAD_FILES
-+#include <mach/war.h>
-+#else
- #include <war.h>
-+#endif
+-#include <dma.h>
+-#include <nand.h>
++#include <mach/dma.h>
++#include <mach/nand.h>
  
- /*
-  * Work around certain R4000 CPU errata (as implemented by GCC):
-diff --git a/arch/mips/kernel/head.S b/arch/mips/kernel/head.S
-index 351d40f..a45cdae 100644
---- a/arch/mips/kernel/head.S
-+++ b/arch/mips/kernel/head.S
-@@ -24,7 +24,11 @@
- #include <asm/mipsregs.h>
- #include <asm/stackframe.h>
+ extern struct platform_device ls1x_uart_pdev;
+ extern struct platform_device ls1x_cpufreq_pdev;
+diff --git a/arch/mips/include/asm/mach-loongson32/regs-clk.h b/arch/mips/loongson32/include/mach/regs-clk.h
+similarity index 100%
+rename from arch/mips/include/asm/mach-loongson32/regs-clk.h
+rename to arch/mips/loongson32/include/mach/regs-clk.h
+diff --git a/arch/mips/include/asm/mach-loongson32/regs-mux.h b/arch/mips/loongson32/include/mach/regs-mux.h
+similarity index 100%
+rename from arch/mips/include/asm/mach-loongson32/regs-mux.h
+rename to arch/mips/loongson32/include/mach/regs-mux.h
+diff --git a/arch/mips/include/asm/mach-loongson32/regs-pwm.h b/arch/mips/loongson32/include/mach/regs-pwm.h
+similarity index 100%
+rename from arch/mips/include/asm/mach-loongson32/regs-pwm.h
+rename to arch/mips/loongson32/include/mach/regs-pwm.h
+diff --git a/arch/mips/include/asm/mach-loongson32/regs-rtc.h b/arch/mips/loongson32/include/mach/regs-rtc.h
+similarity index 100%
+rename from arch/mips/include/asm/mach-loongson32/regs-rtc.h
+rename to arch/mips/loongson32/include/mach/regs-rtc.h
+diff --git a/arch/mips/include/asm/mach-loongson32/regs-wdt.h b/arch/mips/loongson32/include/mach/regs-wdt.h
+similarity index 100%
+rename from arch/mips/include/asm/mach-loongson32/regs-wdt.h
+rename to arch/mips/loongson32/include/mach/regs-wdt.h
+diff --git a/arch/mips/loongson32/include/mach/spaces.h b/arch/mips/loongson32/include/mach/spaces.h
+new file mode 100644
+index 0000000..39a4d72
+--- /dev/null
++++ b/arch/mips/loongson32/include/mach/spaces.h
+@@ -0,0 +1,2 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#include <asm/mach-generic/spaces.h>
+diff --git a/arch/mips/loongson32/include/mach/topology.h b/arch/mips/loongson32/include/mach/topology.h
+new file mode 100644
+index 0000000..86e585b
+--- /dev/null
++++ b/arch/mips/loongson32/include/mach/topology.h
+@@ -0,0 +1,2 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#include <asm/mach-generic/topology.h>
+diff --git a/arch/mips/loongson32/include/mach/war.h b/arch/mips/loongson32/include/mach/war.h
+new file mode 100644
+index 0000000..5b0422a
+--- /dev/null
++++ b/arch/mips/loongson32/include/mach/war.h
+@@ -0,0 +1,2 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#include <asm/mach-generic/war.h>
+diff --git a/arch/mips/loongson32/ls1b/board.c b/arch/mips/loongson32/ls1b/board.c
+index 727e067..555449e 100644
+--- a/arch/mips/loongson32/ls1b/board.c
++++ b/arch/mips/loongson32/ls1b/board.c
+@@ -7,10 +7,10 @@
+ #include <linux/mtd/partitions.h>
+ #include <linux/sizes.h>
  
-+#ifdef CONFIG_HAVE_MACH_HEAD_FILES
-+#include <mach/kernel-entry-init.h>
-+#else
- #include <kernel-entry-init.h>
-+#endif
+-#include <loongson1.h>
+-#include <dma.h>
+-#include <nand.h>
+-#include <platform.h>
++#include <mach/loongson1.h>
++#include <mach/dma.h>
++#include <mach/nand.h>
++#include <mach/platform.h>
  
- 	/*
- 	 * For the moment disable interrupts, mark the kernel mode and
+ static const struct gpio_led ls1x_gpio_leds[] __initconst = {
+ 	{
+diff --git a/arch/mips/loongson32/ls1c/board.c b/arch/mips/loongson32/ls1c/board.c
+index e9de6da..481512b 100644
+--- a/arch/mips/loongson32/ls1c/board.c
++++ b/arch/mips/loongson32/ls1c/board.c
+@@ -3,7 +3,7 @@
+  * Copyright (c) 2016 Yang Ling <gnaygnil@gmail.com>
+  */
+ 
+-#include <platform.h>
++#include <mach/platform.h>
+ 
+ static struct platform_device *ls1c_platform_devices[] __initdata = {
+ 	&ls1x_uart_pdev,
+diff --git a/drivers/clk/loongson1/clk-loongson1b.c b/drivers/clk/loongson1/clk-loongson1b.c
+index 13a2ca2..d590c1e 100644
+--- a/drivers/clk/loongson1/clk-loongson1b.c
++++ b/drivers/clk/loongson1/clk-loongson1b.c
+@@ -8,7 +8,7 @@
+ #include <linux/io.h>
+ #include <linux/err.h>
+ 
+-#include <loongson1.h>
++#include <mach/loongson1.h>
+ #include "clk.h"
+ 
+ #define OSC		(33 * 1000000)
+diff --git a/drivers/clk/loongson1/clk-loongson1c.c b/drivers/clk/loongson1/clk-loongson1c.c
+index 703f876..c58c3ad 100644
+--- a/drivers/clk/loongson1/clk-loongson1c.c
++++ b/drivers/clk/loongson1/clk-loongson1c.c
+@@ -7,7 +7,7 @@
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
+ 
+-#include <loongson1.h>
++#include <mach/loongson1.h>
+ #include "clk.h"
+ 
+ #define OSC		(24 * 1000000)
+diff --git a/drivers/cpufreq/loongson1-cpufreq.c b/drivers/cpufreq/loongson1-cpufreq.c
+index 0ea8877..3de842e 100644
+--- a/drivers/cpufreq/loongson1-cpufreq.c
++++ b/drivers/cpufreq/loongson1-cpufreq.c
+@@ -18,8 +18,8 @@
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ 
+-#include <cpufreq.h>
+-#include <loongson1.h>
++#include <mach/cpufreq.h>
++#include <mach/loongson1.h>
+ 
+ struct ls1x_cpufreq {
+ 	struct device *dev;
+diff --git a/drivers/rtc/rtc-ls1x.c b/drivers/rtc/rtc-ls1x.c
+index 8bd3405..4d9128b 100644
+--- a/drivers/rtc/rtc-ls1x.c
++++ b/drivers/rtc/rtc-ls1x.c
+@@ -13,7 +13,7 @@
+ #include <linux/delay.h>
+ #include <linux/types.h>
+ #include <linux/io.h>
+-#include <loongson1.h>
++#include <mach/loongson1.h>
+ 
+ #define LS1X_RTC_REG_OFFSET	(LS1X_RTC_BASE + 0x20)
+ #define LS1X_RTC_REGS(x) \
+diff --git a/drivers/watchdog/loongson1_wdt.c b/drivers/watchdog/loongson1_wdt.c
+index bb3d075c..fd6ef37 100644
+--- a/drivers/watchdog/loongson1_wdt.c
++++ b/drivers/watchdog/loongson1_wdt.c
+@@ -7,7 +7,7 @@
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/watchdog.h>
+-#include <loongson1.h>
++#include <mach/loongson1.h>
+ 
+ #define DEFAULT_HEARTBEAT	30
+ 
 -- 
 1.8.3.1
 

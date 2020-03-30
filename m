@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBE10C2D0E9
-	for <linux-mips@archiver.kernel.org>; Mon, 30 Mar 2020 08:39:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F500C43331
+	for <linux-mips@archiver.kernel.org>; Mon, 30 Mar 2020 08:39:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id AE0C120748
-	for <linux-mips@archiver.kernel.org>; Mon, 30 Mar 2020 08:39:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D709020748
+	for <linux-mips@archiver.kernel.org>; Mon, 30 Mar 2020 08:39:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729774AbgC3IjK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 30 Mar 2020 04:39:10 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:56858 "EHLO loongson.cn"
+        id S1729654AbgC3Ija (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 30 Mar 2020 04:39:30 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:56806 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729763AbgC3IjK (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 30 Mar 2020 04:39:10 -0400
+        id S1729731AbgC3IjD (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 30 Mar 2020 04:39:03 -0400
 Received: from kvm-dev1.localdomain (unknown [10.2.5.134])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv9smsIFeLZchAA--.9S2;
-        Mon, 30 Mar 2020 16:39:02 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf94hsIFeKJchAA--.5S2;
+        Mon, 30 Mar 2020 16:38:57 +0800 (CST)
 From:   bibo mao <maobibo@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Huacai Chen <chenhc@lemote.com>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 07/39] MIPS: ath79: Add header files path prefix
-Date:   Mon, 30 Mar 2020 04:39:02 -0400
-Message-Id: <1585557542-23310-1-git-send-email-maobibo@loongson.cn>
+Subject: [PATCH 05/39] MIPS: ar7: Add header files path prefix
+Date:   Mon, 30 Mar 2020 04:38:57 -0400
+Message-Id: <1585557537-21355-1-git-send-email-maobibo@loongson.cn>
 X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AQAAf9Dxv9smsIFeLZchAA--.9S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxtr43ArWkXrWkCw1kXr4ktFb_yoWfurWrpa
-        1DAa4kGr4UuryUAr13Zry2vr45Xan8uFWj9ry5W347Za4SqF15JFs5K34kAry8tF4DK3Wr
-        WFW3Xr45Jws29aUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: AQAAf9Dxf94hsIFeKJchAA--.5S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxKw1fCrWxGr1rKrykKw13CFg_yoWDGFy3pa
+        1DA3WkGr4Uuw1UArWxZF9F9r43tan0grWDKFyUW34UZ3Waq3WUJrs5JrnxAr97JFWkt3WF
+        gFZxXr45Jwsavw7anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUkIb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
         0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
         A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
@@ -52,227 +52,277 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Remove header files from arch/mips/include/asm/mach-ath79
-to arch/mips/ath79/include/mach
+Remove header files from arch/mips/include/asm/mach-ar7
+to arch/mips/ar7/include/mach
 
 Signed-off-by: bibo mao <maobibo@loongson.cn>
 ---
- arch/mips/Kconfig                                                   | 1 +
- arch/mips/ath79/Platform                                            | 2 +-
- arch/mips/ath79/clock.c                                             | 4 ++--
- arch/mips/ath79/common.c                                            | 4 ++--
- arch/mips/ath79/early_printk.c                                      | 6 +++---
- .../{include/asm/mach-ath79 => ath79/include/mach}/ar71xx_regs.h    | 0
- .../{include/asm/mach-ath79 => ath79/include/mach}/ar933x_uart.h    | 0
- arch/mips/{include/asm/mach-ath79 => ath79/include/mach}/ath79.h    | 0
- .../asm/mach-ath79 => ath79/include/mach}/cpu-feature-overrides.h   | 0
- arch/mips/ath79/include/mach/ioremap.h                              | 2 ++
- arch/mips/{include/asm/mach-ath79 => ath79/include/mach}/irq.h      | 0
- .../asm/mach-ath79 => ath79/include/mach}/kernel-entry-init.h       | 0
- arch/mips/ath79/include/mach/kmalloc.h                              | 2 ++
- arch/mips/ath79/include/mach/mangle-port.h                          | 2 ++
- arch/mips/ath79/include/mach/spaces.h                               | 2 ++
- arch/mips/ath79/include/mach/topology.h                             | 2 ++
- arch/mips/ath79/include/mach/war.h                                  | 2 ++
- arch/mips/ath79/setup.c                                             | 4 ++--
- drivers/irqchip/irq-ath79-cpu.c                                     | 2 +-
- drivers/tty/serial/ar933x_uart.c                                    | 2 +-
- 20 files changed, 25 insertions(+), 12 deletions(-)
- rename arch/mips/{include/asm/mach-ath79 => ath79/include/mach}/ar71xx_regs.h (100%)
- rename arch/mips/{include/asm/mach-ath79 => ath79/include/mach}/ar933x_uart.h (100%)
- rename arch/mips/{include/asm/mach-ath79 => ath79/include/mach}/ath79.h (100%)
- rename arch/mips/{include/asm/mach-ath79 => ath79/include/mach}/cpu-feature-overrides.h (100%)
- create mode 100644 arch/mips/ath79/include/mach/ioremap.h
- rename arch/mips/{include/asm/mach-ath79 => ath79/include/mach}/irq.h (100%)
- rename arch/mips/{include/asm/mach-ath79 => ath79/include/mach}/kernel-entry-init.h (100%)
- create mode 100644 arch/mips/ath79/include/mach/kmalloc.h
- create mode 100644 arch/mips/ath79/include/mach/mangle-port.h
- create mode 100644 arch/mips/ath79/include/mach/spaces.h
- create mode 100644 arch/mips/ath79/include/mach/topology.h
- create mode 100644 arch/mips/ath79/include/mach/war.h
+ arch/mips/Kconfig                                             | 1 +
+ arch/mips/ar7/Platform                                        | 2 +-
+ arch/mips/ar7/clock.c                                         | 2 +-
+ arch/mips/ar7/gpio.c                                          | 2 +-
+ arch/mips/{include/asm/mach-ar7 => ar7/include/mach}/ar7.h    | 0
+ arch/mips/ar7/include/mach/cpu-feature-overrides.h            | 2 ++
+ arch/mips/ar7/include/mach/ioremap.h                          | 2 ++
+ arch/mips/{include/asm/mach-ar7 => ar7/include/mach}/irq.h    | 0
+ arch/mips/ar7/include/mach/kernel-entry-init.h                | 2 ++
+ arch/mips/ar7/include/mach/kmalloc.h                          | 2 ++
+ arch/mips/ar7/include/mach/mangle-port.h                      | 2 ++
+ arch/mips/{include/asm/mach-ar7 => ar7/include/mach}/prom.h   | 0
+ arch/mips/{include/asm/mach-ar7 => ar7/include/mach}/spaces.h | 0
+ arch/mips/ar7/include/mach/topology.h                         | 2 ++
+ arch/mips/ar7/include/mach/war.h                              | 2 ++
+ arch/mips/ar7/irq.c                                           | 2 +-
+ arch/mips/ar7/memory.c                                        | 2 +-
+ arch/mips/ar7/platform.c                                      | 4 ++--
+ arch/mips/ar7/prom.c                                          | 4 ++--
+ arch/mips/ar7/setup.c                                         | 4 ++--
+ arch/mips/ar7/time.c                                          | 2 +-
+ drivers/net/ethernet/ti/cpmac.c                               | 2 +-
+ drivers/watchdog/ar7_wdt.c                                    | 2 +-
+ 23 files changed, 29 insertions(+), 14 deletions(-)
+ rename arch/mips/{include/asm/mach-ar7 => ar7/include/mach}/ar7.h (100%)
+ create mode 100644 arch/mips/ar7/include/mach/cpu-feature-overrides.h
+ create mode 100644 arch/mips/ar7/include/mach/ioremap.h
+ rename arch/mips/{include/asm/mach-ar7 => ar7/include/mach}/irq.h (100%)
+ create mode 100644 arch/mips/ar7/include/mach/kernel-entry-init.h
+ create mode 100644 arch/mips/ar7/include/mach/kmalloc.h
+ create mode 100644 arch/mips/ar7/include/mach/mangle-port.h
+ rename arch/mips/{include/asm/mach-ar7 => ar7/include/mach}/prom.h (100%)
+ rename arch/mips/{include/asm/mach-ar7 => ar7/include/mach}/spaces.h (100%)
+ create mode 100644 arch/mips/ar7/include/mach/topology.h
+ create mode 100644 arch/mips/ar7/include/mach/war.h
 
 diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 7fec160..069fa94 100644
+index 3c38202..2bb678d 100644
 --- a/arch/mips/Kconfig
 +++ b/arch/mips/Kconfig
-@@ -223,6 +223,7 @@ config ATH79
- 	select SYS_SUPPORTS_ZBOOT_UART_PROM
- 	select USE_OF
- 	select USB_EHCI_ROOT_HUB_TT if USB_EHCI_HCD_PLATFORM
+@@ -182,6 +182,7 @@ config AR7
+ 	select GPIOLIB
+ 	select VLYNQ
+ 	select HAVE_CLK
 +	select HAVE_MACH_HEAD_FILES
  	help
- 	  Support for the Atheros AR71XX/AR724X/AR913X SoCs.
- 
-diff --git a/arch/mips/ath79/Platform b/arch/mips/ath79/Platform
-index 2bd6636..c423827 100644
---- a/arch/mips/ath79/Platform
-+++ b/arch/mips/ath79/Platform
-@@ -3,5 +3,5 @@
+ 	  Support for the Texas Instruments AR7 System-on-a-Chip
+ 	  family: TNETD7100, 7200 and 7300.
+diff --git a/arch/mips/ar7/Platform b/arch/mips/ar7/Platform
+index 21f9102..1491003 100644
+--- a/arch/mips/ar7/Platform
++++ b/arch/mips/ar7/Platform
+@@ -2,5 +2,5 @@
+ # Texas Instruments AR7
  #
+ platform-$(CONFIG_AR7)		+= ar7/
+-cflags-$(CONFIG_AR7)		+= -I$(srctree)/arch/mips/include/asm/mach-ar7
++cflags-$(CONFIG_AR7)		+= -I$(srctree)/arch/mips/ar7/include
+ load-$(CONFIG_AR7)		+= 0xffffffff94100000
+diff --git a/arch/mips/ar7/clock.c b/arch/mips/ar7/clock.c
+index 95def94..2be9dd4 100644
+--- a/arch/mips/ar7/clock.c
++++ b/arch/mips/ar7/clock.c
+@@ -16,7 +16,7 @@
+ #include <linux/clk.h>
  
- platform-$(CONFIG_ATH79)	+= ath79/
--cflags-$(CONFIG_ATH79)		+= -I$(srctree)/arch/mips/include/asm/mach-ath79
-+cflags-$(CONFIG_ATH79)		+= -I$(srctree)/arch/mips/ath79/include
- load-$(CONFIG_ATH79)		= 0xffffffff80060000
-diff --git a/arch/mips/ath79/clock.c b/arch/mips/ath79/clock.c
-index 050f655..d84f119 100644
---- a/arch/mips/ath79/clock.c
-+++ b/arch/mips/ath79/clock.c
-@@ -21,8 +21,8 @@
- 
- #include <asm/div64.h>
- 
--#include <asm/mach-ath79/ath79.h>
--#include <asm/mach-ath79/ar71xx_regs.h>
-+#include <mach/ath79.h>
-+#include <mach/ar71xx_regs.h>
- #include "common.h"
- 
- #define AR71XX_BASE_FREQ	40000000
-diff --git a/arch/mips/ath79/common.c b/arch/mips/ath79/common.c
-index 137abbc..2fc96a5 100644
---- a/arch/mips/ath79/common.c
-+++ b/arch/mips/ath79/common.c
-@@ -14,8 +14,8 @@
- #include <linux/types.h>
- #include <linux/spinlock.h>
- 
--#include <asm/mach-ath79/ath79.h>
--#include <asm/mach-ath79/ar71xx_regs.h>
-+#include <mach/ath79.h>
-+#include <mach/ar71xx_regs.h>
- #include "common.h"
- 
- static DEFINE_SPINLOCK(ath79_device_reset_lock);
-diff --git a/arch/mips/ath79/early_printk.c b/arch/mips/ath79/early_printk.c
-index 782732c..f56d23b 100644
---- a/arch/mips/ath79/early_printk.c
-+++ b/arch/mips/ath79/early_printk.c
-@@ -12,9 +12,9 @@
  #include <asm/addrspace.h>
- #include <asm/setup.h>
+-#include <asm/mach-ar7/ar7.h>
++#include <mach/ar7.h>
  
--#include <asm/mach-ath79/ath79.h>
--#include <asm/mach-ath79/ar71xx_regs.h>
--#include <asm/mach-ath79/ar933x_uart.h>
-+#include <mach/ath79.h>
-+#include <mach/ar71xx_regs.h>
-+#include <mach/ar933x_uart.h>
+ #define BOOT_PLL_SOURCE_MASK	0x3
+ #define CPU_PLL_SOURCE_SHIFT	16
+diff --git a/arch/mips/ar7/gpio.c b/arch/mips/ar7/gpio.c
+index 8b006ad..b95ae9f 100644
+--- a/arch/mips/ar7/gpio.c
++++ b/arch/mips/ar7/gpio.c
+@@ -9,7 +9,7 @@
+ #include <linux/export.h>
+ #include <linux/gpio.h>
  
- static void (*_prom_putchar)(char);
+-#include <asm/mach-ar7/ar7.h>
++#include <mach/ar7.h>
  
-diff --git a/arch/mips/include/asm/mach-ath79/ar71xx_regs.h b/arch/mips/ath79/include/mach/ar71xx_regs.h
+ #define AR7_GPIO_MAX 32
+ #define TITAN_GPIO_MAX 51
+diff --git a/arch/mips/include/asm/mach-ar7/ar7.h b/arch/mips/ar7/include/mach/ar7.h
 similarity index 100%
-rename from arch/mips/include/asm/mach-ath79/ar71xx_regs.h
-rename to arch/mips/ath79/include/mach/ar71xx_regs.h
-diff --git a/arch/mips/include/asm/mach-ath79/ar933x_uart.h b/arch/mips/ath79/include/mach/ar933x_uart.h
-similarity index 100%
-rename from arch/mips/include/asm/mach-ath79/ar933x_uart.h
-rename to arch/mips/ath79/include/mach/ar933x_uart.h
-diff --git a/arch/mips/include/asm/mach-ath79/ath79.h b/arch/mips/ath79/include/mach/ath79.h
-similarity index 100%
-rename from arch/mips/include/asm/mach-ath79/ath79.h
-rename to arch/mips/ath79/include/mach/ath79.h
-diff --git a/arch/mips/include/asm/mach-ath79/cpu-feature-overrides.h b/arch/mips/ath79/include/mach/cpu-feature-overrides.h
-similarity index 100%
-rename from arch/mips/include/asm/mach-ath79/cpu-feature-overrides.h
-rename to arch/mips/ath79/include/mach/cpu-feature-overrides.h
-diff --git a/arch/mips/ath79/include/mach/ioremap.h b/arch/mips/ath79/include/mach/ioremap.h
+rename from arch/mips/include/asm/mach-ar7/ar7.h
+rename to arch/mips/ar7/include/mach/ar7.h
+diff --git a/arch/mips/ar7/include/mach/cpu-feature-overrides.h b/arch/mips/ar7/include/mach/cpu-feature-overrides.h
+new file mode 100644
+index 0000000..f3e0e12
+--- /dev/null
++++ b/arch/mips/ar7/include/mach/cpu-feature-overrides.h
+@@ -0,0 +1,2 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#include <asm/mach-generic/cpu-feature-overrides.h>
+diff --git a/arch/mips/ar7/include/mach/ioremap.h b/arch/mips/ar7/include/mach/ioremap.h
 new file mode 100644
 index 0000000..2369393
 --- /dev/null
-+++ b/arch/mips/ath79/include/mach/ioremap.h
++++ b/arch/mips/ar7/include/mach/ioremap.h
 @@ -0,0 +1,2 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +#include <asm/mach-generic/ioremap.h>
-diff --git a/arch/mips/include/asm/mach-ath79/irq.h b/arch/mips/ath79/include/mach/irq.h
+diff --git a/arch/mips/include/asm/mach-ar7/irq.h b/arch/mips/ar7/include/mach/irq.h
 similarity index 100%
-rename from arch/mips/include/asm/mach-ath79/irq.h
-rename to arch/mips/ath79/include/mach/irq.h
-diff --git a/arch/mips/include/asm/mach-ath79/kernel-entry-init.h b/arch/mips/ath79/include/mach/kernel-entry-init.h
-similarity index 100%
-rename from arch/mips/include/asm/mach-ath79/kernel-entry-init.h
-rename to arch/mips/ath79/include/mach/kernel-entry-init.h
-diff --git a/arch/mips/ath79/include/mach/kmalloc.h b/arch/mips/ath79/include/mach/kmalloc.h
+rename from arch/mips/include/asm/mach-ar7/irq.h
+rename to arch/mips/ar7/include/mach/irq.h
+diff --git a/arch/mips/ar7/include/mach/kernel-entry-init.h b/arch/mips/ar7/include/mach/kernel-entry-init.h
+new file mode 100644
+index 0000000..19b872be
+--- /dev/null
++++ b/arch/mips/ar7/include/mach/kernel-entry-init.h
+@@ -0,0 +1,2 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#include <asm/mach-generic/kernel-entry-init.h>
+diff --git a/arch/mips/ar7/include/mach/kmalloc.h b/arch/mips/ar7/include/mach/kmalloc.h
 new file mode 100644
 index 0000000..4f056db
 --- /dev/null
-+++ b/arch/mips/ath79/include/mach/kmalloc.h
++++ b/arch/mips/ar7/include/mach/kmalloc.h
 @@ -0,0 +1,2 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +#include <asm/mach-generic/kmalloc.h>
-diff --git a/arch/mips/ath79/include/mach/mangle-port.h b/arch/mips/ath79/include/mach/mangle-port.h
+diff --git a/arch/mips/ar7/include/mach/mangle-port.h b/arch/mips/ar7/include/mach/mangle-port.h
 new file mode 100644
 index 0000000..b9736e3
 --- /dev/null
-+++ b/arch/mips/ath79/include/mach/mangle-port.h
++++ b/arch/mips/ar7/include/mach/mangle-port.h
 @@ -0,0 +1,2 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +#include <asm/mach-generic/mangle-port.h>
-diff --git a/arch/mips/ath79/include/mach/spaces.h b/arch/mips/ath79/include/mach/spaces.h
-new file mode 100644
-index 0000000..39a4d72
---- /dev/null
-+++ b/arch/mips/ath79/include/mach/spaces.h
-@@ -0,0 +1,2 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#include <asm/mach-generic/spaces.h>
-diff --git a/arch/mips/ath79/include/mach/topology.h b/arch/mips/ath79/include/mach/topology.h
+diff --git a/arch/mips/include/asm/mach-ar7/prom.h b/arch/mips/ar7/include/mach/prom.h
+similarity index 100%
+rename from arch/mips/include/asm/mach-ar7/prom.h
+rename to arch/mips/ar7/include/mach/prom.h
+diff --git a/arch/mips/include/asm/mach-ar7/spaces.h b/arch/mips/ar7/include/mach/spaces.h
+similarity index 100%
+rename from arch/mips/include/asm/mach-ar7/spaces.h
+rename to arch/mips/ar7/include/mach/spaces.h
+diff --git a/arch/mips/ar7/include/mach/topology.h b/arch/mips/ar7/include/mach/topology.h
 new file mode 100644
 index 0000000..86e585b
 --- /dev/null
-+++ b/arch/mips/ath79/include/mach/topology.h
++++ b/arch/mips/ar7/include/mach/topology.h
 @@ -0,0 +1,2 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +#include <asm/mach-generic/topology.h>
-diff --git a/arch/mips/ath79/include/mach/war.h b/arch/mips/ath79/include/mach/war.h
+diff --git a/arch/mips/ar7/include/mach/war.h b/arch/mips/ar7/include/mach/war.h
 new file mode 100644
 index 0000000..5b0422a
 --- /dev/null
-+++ b/arch/mips/ath79/include/mach/war.h
++++ b/arch/mips/ar7/include/mach/war.h
 @@ -0,0 +1,2 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +#include <asm/mach-generic/war.h>
-diff --git a/arch/mips/ath79/setup.c b/arch/mips/ath79/setup.c
-index acb4fd6..1b2226c 100644
---- a/arch/mips/ath79/setup.c
-+++ b/arch/mips/ath79/setup.c
-@@ -27,8 +27,8 @@
- #include <asm/prom.h>
- #include <asm/fw/fw.h>
- 
--#include <asm/mach-ath79/ath79.h>
--#include <asm/mach-ath79/ar71xx_regs.h>
-+#include <mach/ath79.h>
-+#include <mach/ar71xx_regs.h>
- #include "common.h"
- 
- #define ATH79_SYS_TYPE_LEN	64
-diff --git a/drivers/irqchip/irq-ath79-cpu.c b/drivers/irqchip/irq-ath79-cpu.c
-index 923e4bb..8f4ffcb 100644
---- a/drivers/irqchip/irq-ath79-cpu.c
-+++ b/drivers/irqchip/irq-ath79-cpu.c
-@@ -15,7 +15,7 @@
- #include <linux/of.h>
+diff --git a/arch/mips/ar7/irq.c b/arch/mips/ar7/irq.c
+index f0a7942..7b177f0 100644
+--- a/arch/mips/ar7/irq.c
++++ b/arch/mips/ar7/irq.c
+@@ -10,7 +10,7 @@
  
  #include <asm/irq_cpu.h>
--#include <asm/mach-ath79/ath79.h>
-+#include <mach/ath79.h>
+ #include <asm/mipsregs.h>
+-#include <asm/mach-ar7/ar7.h>
++#include <mach/ar7.h>
  
- /*
-  * The IP2/IP3 lines are tied to a PCI/WMAC/USB device. Drivers for
-diff --git a/drivers/tty/serial/ar933x_uart.c b/drivers/tty/serial/ar933x_uart.c
-index 3bdd56a..5147f8e 100644
---- a/drivers/tty/serial/ar933x_uart.c
-+++ b/drivers/tty/serial/ar933x_uart.c
-@@ -27,7 +27,7 @@
+ #define EXCEPT_OFFSET	0x80
+ #define PACE_OFFSET	0xA0
+diff --git a/arch/mips/ar7/memory.c b/arch/mips/ar7/memory.c
+index ad6efb3..28c3bfc 100644
+--- a/arch/mips/ar7/memory.c
++++ b/arch/mips/ar7/memory.c
+@@ -15,7 +15,7 @@
+ #include <asm/page.h>
+ #include <asm/sections.h>
  
- #include <asm/div64.h>
+-#include <asm/mach-ar7/ar7.h>
++#include <mach/ar7.h>
  
--#include <asm/mach-ath79/ar933x_uart.h>
-+#include <mach/ar933x_uart.h>
+ static int __init memsize(void)
+ {
+diff --git a/arch/mips/ar7/platform.c b/arch/mips/ar7/platform.c
+index 215149a..1eb816c 100644
+--- a/arch/mips/ar7/platform.c
++++ b/arch/mips/ar7/platform.c
+@@ -24,8 +24,8 @@
+ #include <linux/clk.h>
  
- #define DRIVER_NAME "ar933x-uart"
+ #include <asm/addrspace.h>
+-#include <asm/mach-ar7/ar7.h>
+-#include <asm/mach-ar7/prom.h>
++#include <mach/ar7.h>
++#include <mach/prom.h>
+ 
+ /*****************************************************************************
+  * VLYNQ Bus
+diff --git a/arch/mips/ar7/prom.c b/arch/mips/ar7/prom.c
+index 5810d39..7ac39fd 100644
+--- a/arch/mips/ar7/prom.c
++++ b/arch/mips/ar7/prom.c
+@@ -15,8 +15,8 @@
+ #include <asm/bootinfo.h>
+ #include <asm/setup.h>
+ 
+-#include <asm/mach-ar7/ar7.h>
+-#include <asm/mach-ar7/prom.h>
++#include <mach/ar7.h>
++#include <mach/prom.h>
+ 
+ #define MAX_ENTRY 80
+ 
+diff --git a/arch/mips/ar7/setup.c b/arch/mips/ar7/setup.c
+index b3ffe7c..3134dfa 100644
+--- a/arch/mips/ar7/setup.c
++++ b/arch/mips/ar7/setup.c
+@@ -9,8 +9,8 @@
+ #include <linux/time.h>
+ 
+ #include <asm/reboot.h>
+-#include <asm/mach-ar7/ar7.h>
+-#include <asm/mach-ar7/prom.h>
++#include <mach/ar7.h>
++#include <mach/prom.h>
+ 
+ static void ar7_machine_restart(char *command)
+ {
+diff --git a/arch/mips/ar7/time.c b/arch/mips/ar7/time.c
+index 72aa77d..3f08a79 100644
+--- a/arch/mips/ar7/time.c
++++ b/arch/mips/ar7/time.c
+@@ -12,7 +12,7 @@
+ #include <linux/clk.h>
+ 
+ #include <asm/time.h>
+-#include <asm/mach-ar7/ar7.h>
++#include <mach/ar7.h>
+ 
+ void __init plat_time_init(void)
+ {
+diff --git a/drivers/net/ethernet/ti/cpmac.c b/drivers/net/ethernet/ti/cpmac.c
+index a530afe..09aec63 100644
+--- a/drivers/net/ethernet/ti/cpmac.c
++++ b/drivers/net/ethernet/ti/cpmac.c
+@@ -29,7 +29,7 @@
+ #include <linux/gpio.h>
+ #include <linux/atomic.h>
+ 
+-#include <asm/mach-ar7/ar7.h>
++#include <mach/ar7.h>
+ 
+ MODULE_AUTHOR("Eugene Konev <ejka@imfi.kspu.ru>");
+ MODULE_DESCRIPTION("TI AR7 ethernet driver (CPMAC)");
+diff --git a/drivers/watchdog/ar7_wdt.c b/drivers/watchdog/ar7_wdt.c
+index c087027..d1cb477 100644
+--- a/drivers/watchdog/ar7_wdt.c
++++ b/drivers/watchdog/ar7_wdt.c
+@@ -26,7 +26,7 @@
+ #include <linux/clk.h>
+ 
+ #include <asm/addrspace.h>
+-#include <asm/mach-ar7/ar7.h>
++#include <mach/ar7.h>
+ 
+ #define LONGNAME "TI AR7 Watchdog Timer"
  
 -- 
 1.8.3.1

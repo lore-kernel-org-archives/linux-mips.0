@@ -2,124 +2,116 @@ Return-Path: <SRS0=cf5P=5Q=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67F2DC43331
-	for <linux-mips@archiver.kernel.org>; Tue, 31 Mar 2020 13:33:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72636C2D0F1
+	for <linux-mips@archiver.kernel.org>; Tue, 31 Mar 2020 15:47:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 44A8820784
-	for <linux-mips@archiver.kernel.org>; Tue, 31 Mar 2020 13:33:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 486AD20781
+	for <linux-mips@archiver.kernel.org>; Tue, 31 Mar 2020 15:47:57 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KxNPvEdB"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730216AbgCaNdz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 31 Mar 2020 09:33:55 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:37368 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730845AbgCaNdy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 31 Mar 2020 09:33:54 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf9+pRoNeSSIiAA--.19S2;
-        Tue, 31 Mar 2020 21:33:30 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v3 0/3] Add basic support for Loongson 7A1000 bridge chip
-Date:   Tue, 31 Mar 2020 21:33:25 +0800
-Message-Id: <1585661608-3356-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dxf9+pRoNeSSIiAA--.19S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCrWfZF1DZryrZrW7Jr47urg_yoW5Ar4kpF
-        W5ua1fGr1DGr1xAas3ur18uF4Fyrn3JrZxWwsrGryUAasIqF1jqr929F15K3W2k3sa9a1U
-        Xry2g3ykK3Z8Ca7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyG14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j
-        6r4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxG
-        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
-        vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IY
-        x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
-        xKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x02
-        67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUj6pB7UUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1731013AbgCaPr5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 31 Mar 2020 11:47:57 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:31080 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730999AbgCaPr4 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 31 Mar 2020 11:47:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585669676;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=JZtZSbKo5LIE2USs8ZYw0MKFj7vPTw9aUaKq/XN8w6g=;
+        b=KxNPvEdBUo23UzmjFTIyZ4QFSqeDAsMNRhZ2JYMqW0Yoe8ZrlxDh4FLJXTbXlt9o3iBXDe
+        vehWY5mbDWq8GW7yUwndW1kVOGU+B3gRwXNH/vnXrH96by7HDvkOWCPzWEttmwL3Fnhaps
+        ASd66qq8oRBShngx61T//LSQyTswdy8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-107-tCcb4IJzNseAWG37EiM-yA-1; Tue, 31 Mar 2020 11:47:54 -0400
+X-MC-Unique: tCcb4IJzNseAWG37EiM-yA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1812C149C0;
+        Tue, 31 Mar 2020 15:47:53 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BD76060BE2;
+        Tue, 31 Mar 2020 15:47:49 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     linux-mips@vger.kernel.org, peterx@redhat.com, rppt@linux.ibm.com
+Subject: [PATCH] KVM: MIPS: fix compilation
+Date:   Tue, 31 Mar 2020 11:47:49 -0400
+Message-Id: <20200331154749.5457-1-pbonzini@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The Loongson 7A1000 bridge chip has been released for several years
-since the second half of 2017, but it is not supported by the Linux
-mainline kernel while it only works well with the Loongson internal
-kernel version. When I update the latest version of Linux mainline
-kernel on the Loongson 3A3000 CPU and 7A1000 bridge chip system,
-the boot process failed and I feel depressed.
+Commit 31168f033e37 is correct that pud_index() & __pud_offset() are the same
+when pud_index() is actually provided, however it does not take into account
+the __PAGETABLE_PUD_FOLDED case.  Provide kvm_pud_index so that MIPS KVM
+compiles.
 
-The 7A1000 bridge chip is used a lot with 3A3000 or 3A4000 CPU in
-the most Loongson desktop and sever products, it is important to
-support Loongson 7A1000 bridge chip by the Linux mainline kernel.
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/mips/kvm/mmu.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-This patch series adds the basic support for the Loongson 7A1000
-bridge chip, the patch about vendor ID and SATA has been merged
-into the mainline tree, the next work is to refactor the code about
-the interrupt controller, and then power management and some other
-controller device drivers.
-
-By the way, if you want the boot process is successful (just for
-test) on the Loongson 3A3000 CPU and 7A1000 bridge chip system,
-you should not only apply these patches, but also need the support
-for SATA and interrupt controller in the v1 patch series.
-
-This patch series is based on mips-next.
-
-If you have any questions and suggestions, please let me know.
-
-Thanks,
-
-Tiezhu Yang
-
-v2:
-  - The split patch series about Loongson vendor ID and SATA controller
-    has been merged into the linux-block.git by Jens Axboe [1].
-
-  - Think about using hierarchy IRQ domain in the patch of interrupt
-    controller, and this maybe depend on the patch series by Jiaxun
-    ("Modernize Loongson64 Machine"), so the patch about interrupt is
-    not included in this v2 patch series.
-
-v3:
-  - The split patch series about Loongson vendor ID and SATA controller
-    has been merged into the mainline tree [2]
-
-  - Modify the macro definition and add comment to make it easy to read
-
-  - Move ls7a1000_pci_class_quirk() to fixup-loongson3.c
-
-  - Use PCI_VENDOR_ID_LOONGSON in pci_ids.h instead of 0x0014
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=for-next&id=9acb9fe18d86
-    https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=for-next&id=e49bd683e00b
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9acb9fe18d86
-    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e49bd683e00b
-
-Tiezhu Yang (3):
-  MIPS: Loongson: Get host bridge information
-  MIPS: Loongson: Add DMA support for 7A1000
-  MIPS: Loongson: Add PCI support for 7A1000
-
- arch/mips/include/asm/mach-loongson64/boot_param.h | 20 +++++++
- arch/mips/loongson64/dma.c                         |  9 ++--
- arch/mips/loongson64/env.c                         | 22 ++++++++
- arch/mips/loongson64/init.c                        | 17 ++++++
- arch/mips/pci/fixup-loongson3.c                    | 12 +++++
- arch/mips/pci/ops-loongson3.c                      | 63 ++++++++++++++++++++--
- 6 files changed, 136 insertions(+), 7 deletions(-)
-
+diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
+index 7dad7a293eae..ccf98c22fd2c 100644
+--- a/arch/mips/kvm/mmu.c
++++ b/arch/mips/kvm/mmu.c
+@@ -25,6 +25,12 @@
+ #define KVM_MMU_CACHE_MIN_PAGES 2
+ #endif
+ 
++#if defined(__PAGETABLE_PUD_FOLDED)
++#define kvm_pud_index(gva) 0
++#else
++#define kvm_pud_index(gva) pud_index(gva)
++#endif
++
+ static int mmu_topup_memory_cache(struct kvm_mmu_memory_cache *cache,
+ 				  int min, int max)
+ {
+@@ -234,8 +240,8 @@ static bool kvm_mips_flush_gpa_pud(pud_t *pud, unsigned long start_gpa,
+ {
+ 	pmd_t *pmd;
+ 	unsigned long end = ~0ul;
+-	int i_min = pud_index(start_gpa);
+-	int i_max = pud_index(end_gpa);
++	int i_min = kvm_pud_index(start_gpa);
++	int i_max = kvm_pud_index(end_gpa);
+ 	bool safe_to_remove = (i_min == 0 && i_max == PTRS_PER_PUD - 1);
+ 	int i;
+ 
+@@ -361,8 +367,8 @@ static int kvm_mips_##name##_pud(pud_t *pud, unsigned long start,	\
+ 	int ret = 0;							\
+ 	pmd_t *pmd;							\
+ 	unsigned long cur_end = ~0ul;					\
+-	int i_min = pud_index(start);				\
+-	int i_max = pud_index(end);					\
++	int i_min = kvm_pud_index(start);				\
++	int i_max = kvm_pud_index(end);					\
+ 	int i;								\
+ 									\
+ 	for (i = i_min; i <= i_max; ++i, start = 0) {			\
+@@ -896,8 +902,8 @@ static bool kvm_mips_flush_gva_pud(pud_t *pud, unsigned long start_gva,
+ {
+ 	pmd_t *pmd;
+ 	unsigned long end = ~0ul;
+-	int i_min = pud_index(start_gva);
+-	int i_max = pud_index(end_gva);
++	int i_min = kvm_pud_index(start_gva);
++	int i_max = kvm_pud_index(end_gva);
+ 	bool safe_to_remove = (i_min == 0 && i_max == PTRS_PER_PUD - 1);
+ 	int i;
+ 
 -- 
-2.1.0
+2.18.2
 

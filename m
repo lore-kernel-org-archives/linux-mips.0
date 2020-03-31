@@ -2,121 +2,151 @@ Return-Path: <SRS0=cf5P=5Q=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.8 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B28CC43331
-	for <linux-mips@archiver.kernel.org>; Tue, 31 Mar 2020 09:58:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 645CFC2D0F0
+	for <linux-mips@archiver.kernel.org>; Tue, 31 Mar 2020 13:33:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 29BAC208E4
-	for <linux-mips@archiver.kernel.org>; Tue, 31 Mar 2020 09:58:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 42AD82071A
+	for <linux-mips@archiver.kernel.org>; Tue, 31 Mar 2020 13:33:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730342AbgCaJ61 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 31 Mar 2020 05:58:27 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:35100 "EHLO loongson.cn"
+        id S1730848AbgCaNdl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 31 Mar 2020 09:33:41 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:37366 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729997AbgCaJ61 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 31 Mar 2020 05:58:27 -0400
-Received: from [10.130.0.79] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxP+g6FINeEg8iAA--.70S3;
-        Tue, 31 Mar 2020 17:58:19 +0800 (CST)
-Subject: Re: [PATCH v2 2/3] MIPS: Loongson: Add DMA support for 7A1000
-To:     Christoph Hellwig <hch@infradead.org>
-References: <1584932355-3642-1-git-send-email-yangtiezhu@loongson.cn>
- <1584932355-3642-3-git-send-email-yangtiezhu@loongson.cn>
- <20200325132756.GA13750@infradead.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Jianmin Lv <lvjianmin@loongson.cn>
+        id S1730464AbgCaNdk (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 31 Mar 2020 09:33:40 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf9+pRoNeSSIiAA--.19S3;
+        Tue, 31 Mar 2020 21:33:31 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <8ac84cd0-d6a5-6029-1c67-992399064f67@loongson.cn>
-Date:   Tue, 31 Mar 2020 17:58:18 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <20200325132756.GA13750@infradead.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxP+g6FINeEg8iAA--.70S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zr4xuryftF4kZw1DAF4xZwb_yoW8Zw17pF
-        10gr4fGr4qgr429397Zw4kXryrAFs8Cry5GrWDGr90kF90gr90y340ya1jga93Wr1kAw4x
-        ZrWqgrWxZF15u3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
-        IcxG8wCY02Avz4vE14v_GFWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUSsjbUUUUU=
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v3 1/3] MIPS: Loongson: Get host bridge information
+Date:   Tue, 31 Mar 2020 21:33:26 +0800
+Message-Id: <1585661608-3356-2-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1585661608-3356-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1585661608-3356-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9Dxf9+pRoNeSSIiAA--.19S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCryDAr1Uuw4kCrWDJw48Crg_yoW5Zr4Upa
+        9ay3WrGrs5Wr13urs5ArWj9r1fAan5tFsxWFW2gw1Y9F97Xw1YqFsYkF18Zr47AFs8Ga48
+        X3sagr48GF43Cw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9v14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84
+        ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
+        xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
+        vE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
+        r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxC20s
+        026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
+        JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
+        v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xva
+        j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
+        W8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjgTmJUUUUU==
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 03/25/2020 09:27 PM, Christoph Hellwig wrote:
-> On Mon, Mar 23, 2020 at 10:59:14AM +0800, Tiezhu Yang wrote:
->> Implement __phys_to_dma() and __dma_to_phys() according to the
->> node id offset in the 7A1000 DMA route config register.
-> Can you please try to just use the dma_pfn_offset field in struct device
-> for all loongson platforms?  I'm pretty sure I asked for that last time
-> around..
+Read the address of host bridge configuration space to get the vendor ID
+and device ID of host bridge, and then we can distinguish various types
+of host bridge such as Loongson 7A1000 or AMD RS780E.
 
-Hi Christoph,
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
 
-In the current market, the most used bridge chip on the Loongson platform
-are AMD RS780E and Loongson 7A1000, the AMD RS780E is already supported by
-the mainline kernel.
+v3:
+  - Modify the macro definition HOST_BRIDGE_CONFIG_ADDR and
+    add comment to make it easy to read.
+  - Use PCI_VENDOR_ID_LOONGSON in pci_ids.h instead of 0x0014
 
-If use the default implementation of __phys_to_dma() and __dma_to_phys()
-in dma-direct.h when CONFIG_ARCH_HAS_PHYS_TO_DMA is not set, it works
-well used with 7A1000 on the Loongson single-way and multi-way platform,
-and also works well used with RS780E on the Loongson single-way platform,
-but the DMA address will be wrong on the non-node0 used with RS780E on
-the Loongson multi-way platform.
+  PCI_VENDOR_ID_LOONGSON depends on the mainline tree's commit:
+  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9acb9fe18d86
 
-Just as the description in the code comment, the devices get node id from
-40 bit of HyperTransport bus, so we extract 2 bit node id (bit 44~45) from
-48 bit address space of Loongson CPU and embed it into HyperTransport bus
-(bit 37-38), this operation can be done only at the software level used
-with RS780E on the Loongson multi-way platform, because it has no hardware
-function to translate address of node id, this is a hardware compatibility
-problem.
+ arch/mips/include/asm/mach-loongson64/boot_param.h |  6 ++++++
+ arch/mips/loongson64/env.c                         | 18 ++++++++++++++++++
+ 2 files changed, 24 insertions(+)
 
-Device
-     |
-     | DMA address
-     |
-Host Bridge
-     |
-     | HT bus address (40 bit)
-     |
-    CPU
-     |
-     | physical address (48 bit)
-     |
-    RAM
-
-The Loongson 7A1000 has dma_node_id_offset field in the DMA route config
-register, the hardware can use the dma_node_id_offset to translate address
-of node id automatically, so we can get correct address when just use the
-dma_pfn_offset field in struct device.
-
-For the above reasons, in order to maintain downward compatibility to
-support the AMD RS780E bridge chip, it is better to use the platform
-dependent implementation of __phys_to_dma() and __dma_to_phys().
-
-Thanks,
-
-Tiezhu Yang
+diff --git a/arch/mips/include/asm/mach-loongson64/boot_param.h b/arch/mips/include/asm/mach-loongson64/boot_param.h
+index 2ed483e..a272427 100644
+--- a/arch/mips/include/asm/mach-loongson64/boot_param.h
++++ b/arch/mips/include/asm/mach-loongson64/boot_param.h
+@@ -192,6 +192,11 @@ struct boot_params {
+ 	struct efi_reset_system_t reset_system;
+ };
+ 
++enum loongson_bridge_type {
++	RS780E = 1,
++	LS7A1000 = 2
++};
++
+ struct loongson_system_configuration {
+ 	u32 nr_cpus;
+ 	u32 nr_nodes;
+@@ -200,6 +205,7 @@ struct loongson_system_configuration {
+ 	u16 boot_cpu_id;
+ 	u16 reserved_cpus_mask;
+ 	enum loongson_cpu_type cputype;
++	enum loongson_bridge_type bridgetype;
+ 	u64 ht_control_base;
+ 	u64 pci_mem_start_addr;
+ 	u64 pci_mem_end_addr;
+diff --git a/arch/mips/loongson64/env.c b/arch/mips/loongson64/env.c
+index 2554ef1..257a9b6 100644
+--- a/arch/mips/loongson64/env.c
++++ b/arch/mips/loongson64/env.c
+@@ -14,12 +14,15 @@
+  * Author: Wu Zhangjin, wuzhangjin@gmail.com
+  */
+ #include <linux/export.h>
++#include <linux/pci_ids.h>
+ #include <asm/bootinfo.h>
+ #include <loongson.h>
+ #include <boot_param.h>
+ #include <builtin_dtbs.h>
+ #include <workarounds.h>
+ 
++#define HOST_BRIDGE_CONFIG_ADDR	((void __iomem *)TO_UNCAC(0x1a000000))
++
+ u32 cpu_clock_freq;
+ EXPORT_SYMBOL(cpu_clock_freq);
+ struct efi_memory_map_loongson *loongson_memmap;
+@@ -43,6 +46,8 @@ void __init prom_init_env(void)
+ 	struct system_loongson *esys;
+ 	struct efi_cpuinfo_loongson *ecpu;
+ 	struct irq_source_routing_table *eirq_source;
++	u32 id;
++	u16 vendor, device;
+ 
+ 	/* firmware arguments are initialized in head.S */
+ 	boot_p = (struct boot_params *)fw_arg2;
+@@ -178,4 +183,17 @@ void __init prom_init_env(void)
+ 		memcpy(loongson_sysconf.sensors, esys->sensors,
+ 			sizeof(struct sensor_device) * loongson_sysconf.nr_sensors);
+ 	pr_info("CpuClock = %u\n", cpu_clock_freq);
++
++	/* Read the ID of PCI host bridge to detect bridge type */
++	id = readl(HOST_BRIDGE_CONFIG_ADDR);
++	vendor = id & 0xffff;
++	device = (id >> 16) & 0xffff;
++
++	if (vendor == PCI_VENDOR_ID_LOONGSON && device == 0x7a00) {
++		pr_info("The bridge chip is Loongson 7A1000\n");
++		loongson_sysconf.bridgetype = LS7A1000;
++	} else {
++		pr_info("The bridge chip is AMD RS780E or SR5690\n");
++		loongson_sysconf.bridgetype = RS780E;
++	}
+ }
+-- 
+2.1.0
 

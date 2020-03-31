@@ -2,184 +2,112 @@ Return-Path: <SRS0=cf5P=5Q=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MIME_BASE64_TEXT,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 875B3C2D0F1
-	for <linux-mips@archiver.kernel.org>; Tue, 31 Mar 2020 16:34:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C0E9C43331
+	for <linux-mips@archiver.kernel.org>; Tue, 31 Mar 2020 18:08:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5ED0A212CC
-	for <linux-mips@archiver.kernel.org>; Tue, 31 Mar 2020 16:34:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CB261212CC
+	for <linux-mips@archiver.kernel.org>; Tue, 31 Mar 2020 18:08:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RwOBCAFb"
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="gO/eZcWl"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730548AbgCaQeC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 31 Mar 2020 12:34:02 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:35750 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726595AbgCaQeB (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 31 Mar 2020 12:34:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585672440;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X9yGbZJZcTDAf4kkcRp2Ft+jto/DPsExKthWpzXZsf8=;
-        b=RwOBCAFbhKqxsbPZjcGTGBcaUkmmFGPEao79UIa+3pQXv7vyfSdcqtRtsJnvvnLgBUnTk6
-        g1Ill9yhQAnfkM8TKymnCVAQ+DjJQV+fpFM9Fym02oX/QyDNWTfYzXzkY/39o/aC0Je+HQ
-        wwnHNnvgFjudxGSylIP4BPFUvF1Y7Jg=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-281-Oo6kCczKPvORwkIrRqwh9A-1; Tue, 31 Mar 2020 12:33:59 -0400
-X-MC-Unique: Oo6kCczKPvORwkIrRqwh9A-1
-Received: by mail-wm1-f72.google.com with SMTP id o5so1284912wmo.6
-        for <linux-mips@vger.kernel.org>; Tue, 31 Mar 2020 09:33:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=X9yGbZJZcTDAf4kkcRp2Ft+jto/DPsExKthWpzXZsf8=;
-        b=n1n13XsUyFqdoyeYTjL2ZBrGCcEfiQ31aZKzpMo39Igx4vPfbru3x+oKcpIEsd81OR
-         YVbJSjcOu3qLprMdet6i8mof3sMJhYkRJlTVXP4HrWFn9nbHoVA+pfAhFDcc1BrSTqWJ
-         QbybLvNf594zGry7/6mhLm0MgMj67IjGeHJ7kHuf5al2L13paYyyj+aCldOzoQeqX9XH
-         0heHh9juY+7U2SkaadYCkTaawqR20YFQGUFldCkIpL4cYnEz/2ePHP02Kl5BV8w9pO0o
-         C5RB93aEMmglDMxrxNwg6SDMzTd5aC3LB57IzTzWW5zUeBHne8Lx/V15cLEW3Uudv3/J
-         9znw==
-X-Gm-Message-State: ANhLgQ0Wvtx5v9AbCxyllCyqNwBN8KjYJk1fu/ESlPaLxmYrH/6k9g3/
-        uE5mDbKvpnFQ0lMmb+6dU4fJwEHmQ3XwkR7XDa6proYe/KJ8MXP2k2SRSSJf6B96NBsfrwYjCTs
-        7JZibrGgtgcaQOKyg74HaCQ==
-X-Received: by 2002:a1c:6885:: with SMTP id d127mr4308139wmc.33.1585672438091;
-        Tue, 31 Mar 2020 09:33:58 -0700 (PDT)
-X-Google-Smtp-Source: ADFU+vsvpNN4gBPIgc2ZIYkWbDIAgbPhijWN0Kg8An9gAyuDMWqJ79G2a6EDVOBAiaOi++KlIXWV0w==
-X-Received: by 2002:a1c:6885:: with SMTP id d127mr4308060wmc.33.1585672436921;
-        Tue, 31 Mar 2020 09:33:56 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:b55d:5ed2:8a41:41ea? ([2001:b07:6468:f312:b55d:5ed2:8a41:41ea])
-        by smtp.gmail.com with ESMTPSA id b6sm28552659wrp.59.2020.03.31.09.33.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 31 Mar 2020 09:33:56 -0700 (PDT)
-Subject: Re: [PATCH] KVM: MIPS: fix compilation
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-mips@vger.kernel.org, peterx@redhat.com
-References: <20200331154749.5457-1-pbonzini@redhat.com>
- <20200331160703.GF30942@linux.ibm.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <b2d15996-1e8b-02a5-7abd-3eb380442092@redhat.com>
-Date:   Tue, 31 Mar 2020 18:33:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1727349AbgCaSIc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 31 Mar 2020 14:08:32 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:1679 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726199AbgCaSIc (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 31 Mar 2020 14:08:32 -0400
+X-UUID: 174587bf37f543c0bcedc8c9f412e457-20200401
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=B2WGXD+okc3OAMherNCj95maawSKPkr+yhClbmy/cpc=;
+        b=gO/eZcWlGlRN12xXvBy/Jx3LzDA4HGqr7peHlErgIFjkcMhPpGsJPjCoVhHnvj4P3uqMCsunbu58eLcVqadc4/813e30sCzGlcVl79yPGXmxDs/8L5SVXfoTcP0squHjpiOSrKB/zVuMnIXK4kUzZ1Pp0r7ac4NyS8sGvvkZvnI=;
+X-UUID: 174587bf37f543c0bcedc8c9f412e457-20200401
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <weijie.gao@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 421072275; Wed, 01 Apr 2020 02:08:19 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31DR.mediatek.inc
+ (172.27.6.102) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Wed, 1 Apr
+ 2020 02:08:15 +0800
+Received: from mcddlt001.mediatek.inc (10.19.240.15) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
+ Transport; Wed, 1 Apr 2020 02:08:13 +0800
+From:   Weijie Gao <weijie.gao@mediatek.com>
+To:     <linux-mtd@lists.infradead.org>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mips@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Piotr Sroka <piotrs@cadence.com>,
+        Mason Yang <masonccyang@mxic.com.tw>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Weijie Gao <weijie.gao@mediatek.com>
+Subject: [PATCH 2/2] dt-bindings: add documentation for mt7621-nand driver
+Date:   Wed, 1 Apr 2020 02:07:59 +0800
+Message-ID: <1585678079-5999-2-git-send-email-weijie.gao@mediatek.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1585678079-5999-1-git-send-email-weijie.gao@mediatek.com>
+References: <1585678079-5999-1-git-send-email-weijie.gao@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20200331160703.GF30942@linux.ibm.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 3384A60C0D5DDDAA02D07F0CCC8D72BA3C78905B95A6884107B1114CBA68EF0C2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 31/03/20 18:07, Mike Rapoport wrote:
-> On Tue, Mar 31, 2020 at 11:47:49AM -0400, Paolo Bonzini wrote:
->> Commit 31168f033e37 is correct that pud_index() & __pud_offset() are the same
->> when pud_index() is actually provided, however it does not take into account
->> the __PAGETABLE_PUD_FOLDED case.  Provide kvm_pud_index so that MIPS KVM
->> compiles.
->>
->> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
->> ---
->>  arch/mips/kvm/mmu.c | 18 ++++++++++++------
->>  1 file changed, 12 insertions(+), 6 deletions(-)
->>
->> diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
->> index 7dad7a293eae..ccf98c22fd2c 100644
->> --- a/arch/mips/kvm/mmu.c
->> +++ b/arch/mips/kvm/mmu.c
->> @@ -25,6 +25,12 @@
->>  #define KVM_MMU_CACHE_MIN_PAGES 2
->>  #endif
->>  
->> +#if defined(__PAGETABLE_PUD_FOLDED)
->> +#define kvm_pud_index(gva) 0
->> +#else
->> +#define kvm_pud_index(gva) pud_index(gva)
->> +#endif
->> +
-> 
-> I'd prefer simply making pud_index() always defined. When pud level is
-> folded asm-generic/pgtable-nopud.h will define PTRS_PER_PUD to 1 and
-> pud_index() will evaluate to 0 anyway.
-
-I won't queue this patch for now, let's wait for the MIPS people to say
-what they prefer.  Thanks!
-
-Paolo
-
-> diff --git a/arch/mips/include/asm/pgtable-64.h b/arch/mips/include/asm/pgtable-64.h
-> index f92716cfa4f4..ee5dc0c145b9 100644
-> --- a/arch/mips/include/asm/pgtable-64.h
-> +++ b/arch/mips/include/asm/pgtable-64.h
-> @@ -172,6 +172,8 @@
->  
->  extern pte_t invalid_pte_table[PTRS_PER_PTE];
->  
-> +#define pud_index(address)	(((address) >> PUD_SHIFT) & (PTRS_PER_PUD - 1))
-> +
->  #ifndef __PAGETABLE_PUD_FOLDED
->  /*
->   * For 4-level pagetables we defines these ourselves, for 3-level the
-> @@ -210,8 +212,6 @@ static inline void p4d_clear(p4d_t *p4dp)
->  	p4d_val(*p4dp) = (unsigned long)invalid_pud_table;
->  }
->  
-> -#define pud_index(address)	(((address) >> PUD_SHIFT) & (PTRS_PER_PUD - 1))
-> -
->  static inline unsigned long p4d_page_vaddr(p4d_t p4d)
->  {
->  	return p4d_val(p4d);
-> 
->>  static int mmu_topup_memory_cache(struct kvm_mmu_memory_cache *cache,
->>  				  int min, int max)
->>  {
->> @@ -234,8 +240,8 @@ static bool kvm_mips_flush_gpa_pud(pud_t *pud, unsigned long start_gpa,
->>  {
->>  	pmd_t *pmd;
->>  	unsigned long end = ~0ul;
->> -	int i_min = pud_index(start_gpa);
->> -	int i_max = pud_index(end_gpa);
->> +	int i_min = kvm_pud_index(start_gpa);
->> +	int i_max = kvm_pud_index(end_gpa);
->>  	bool safe_to_remove = (i_min == 0 && i_max == PTRS_PER_PUD - 1);
->>  	int i;
->>  
->> @@ -361,8 +367,8 @@ static int kvm_mips_##name##_pud(pud_t *pud, unsigned long start,	\
->>  	int ret = 0;							\
->>  	pmd_t *pmd;							\
->>  	unsigned long cur_end = ~0ul;					\
->> -	int i_min = pud_index(start);				\
->> -	int i_max = pud_index(end);					\
->> +	int i_min = kvm_pud_index(start);				\
->> +	int i_max = kvm_pud_index(end);					\
->>  	int i;								\
->>  									\
->>  	for (i = i_min; i <= i_max; ++i, start = 0) {			\
->> @@ -896,8 +902,8 @@ static bool kvm_mips_flush_gva_pud(pud_t *pud, unsigned long start_gva,
->>  {
->>  	pmd_t *pmd;
->>  	unsigned long end = ~0ul;
->> -	int i_min = pud_index(start_gva);
->> -	int i_max = pud_index(end_gva);
->> +	int i_min = kvm_pud_index(start_gva);
->> +	int i_max = kvm_pud_index(end_gva);
->>  	bool safe_to_remove = (i_min == 0 && i_max == PTRS_PER_PUD - 1);
->>  	int i;
->>  
->> -- 
->> 2.18.2
->>
-> 
+VGhpcyBwYXRjaCBhZGRzIGRvY3VtZW50YXRpb24gZm9yIE1lZGlhVGVrIE1UNzYyMSBOQU5EIGZs
+YXNoIGNvbnRyb2xsZXINCmRyaXZlci4NCg0KU2lnbmVkLW9mZi1ieTogV2VpamllIEdhbyA8d2Vp
+amllLmdhb0BtZWRpYXRlay5jb20+DQotLS0NCiAuLi4vYmluZGluZ3MvbXRkL21lZGlhdGVrLG10
+NzYyMS1uZmMueWFtbCAgICAgfCA2OCArKysrKysrKysrKysrKysrKysrDQogMSBmaWxlIGNoYW5n
+ZWQsIDY4IGluc2VydGlvbnMoKykNCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9tZWRpYXRlayxtdDc2MjEtbmZjLnlhbWwNCg0KZGlmZiAt
+LWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvbWVkaWF0ZWssbXQ3
+NjIxLW5mYy55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9tZWRp
+YXRlayxtdDc2MjEtbmZjLnlhbWwNCm5ldyBmaWxlIG1vZGUgMTAwNjQ0DQppbmRleCAwMDAwMDAw
+MDAwMDAuLjFjYTBjNWU5NWU0Yw0KLS0tIC9kZXYvbnVsbA0KKysrIGIvRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9tZWRpYXRlayxtdDc2MjEtbmZjLnlhbWwNCkBAIC0wLDAg
+KzEsNjggQEANCisjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wDQorJVlBTUwgMS4y
+DQorLS0tDQorJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9tdGQvbWVkaWF0ZWss
+bXQ3NjIxLW5mYy55YW1sIw0KKyRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNj
+aGVtYXMvY29yZS55YW1sIw0KKw0KK3RpdGxlOiBNZWRpYVRlayBNVDc2MjEgU29DIE5BTkQgRmxh
+c2ggQ29udHJvbGxlciAoTkZDKSBEVCBiaW5kaW5nDQorDQorbWFpbnRhaW5lcnM6DQorICAtIFdl
+aWppZSBHYW8gPHdlaWppZS5nYW9AbWVkaWF0ZWsuY29tPg0KKw0KK2Rlc2NyaXB0aW9uOiB8DQor
+ICBUaGlzIGRyaXZlciB1c2VzIGEgc2luZ2xlIG5vZGUgdG8gZGVzY3JpYmUgYm90aCBOQU5EIEZs
+YXNoIGNvbnRyb2xsZXINCisgIGludGVyZmFjZSAoTkZJKSBhbmQgRUNDIGVuZ2luZSBmb3IgTVQ3
+NjIxIFNvQy4NCisgIE1UNzYyMSBzdXBwb3J0cyBvbmx5IG9uZSBjaGlwIHNlbGVjdC4NCisNCitw
+cm9wZXJ0aWVzOg0KKyAgIiNhZGRyZXNzLWNlbGxzIjogZmFsc2UNCisgICIjc2l6ZS1jZWxscyI6
+IGZhbHNlDQorDQorICBjb21wYXRpYmxlOg0KKyAgICBlbnVtOg0KKyAgICAgIC0gbWVkaWF0ZWss
+bXQ3NjIxLW5mYw0KKw0KKyAgcmVnOg0KKyAgICBpdGVtczoNCisgICAgICAtIGRlc2NyaXB0aW9u
+OiBSZWdpc3RlciBiYXNlIG9mIE5GSSBjb3JlDQorICAgICAgLSBkZXNjcmlwdGlvbjogUmVnaXN0
+ZXIgYmFzZSBvZiBFQ0MgZW5naW5lDQorDQorICByZWctbmFtZXM6DQorICAgIGl0ZW1zOg0KKyAg
+ICAgIC0gY29uc3Q6IG5maQ0KKyAgICAgIC0gY29uc3Q6IGVjYw0KKw0KKyAgY2xvY2tzOg0KKyAg
+ICBpdGVtczoNCisgICAgICAtIGRlc2NyaXB0aW9uOiBTb3VyY2UgY2xvY2sgZm9yIE5GSSBjb3Jl
+LCBmaXhlZCAxMjVNSHoNCisNCisgIGNsb2NrLW5hbWVzOg0KKyAgICBpdGVtczoNCisgICAgICAt
+IGNvbnN0OiBuZmlfY2xrDQorDQorcmVxdWlyZWQ6DQorICAtIGNvbXBhdGlibGUNCisgIC0gcmVn
+DQorICAtIHJlZy1uYW1lcw0KKyAgLSBjbG9ja3MNCisgIC0gY2xvY2stbmFtZXMNCisNCitleGFt
+cGxlczoNCisgIC0gfA0KKyAgICBuZmljbG9jazogbmZpY2xvY2sgew0KKyAgICAJI2Nsb2NrLWNl
+bGxzID0gPDA+Ow0KKyAgICAJY29tcGF0aWJsZSA9ICJmaXhlZC1jbG9jayI7DQorDQorICAgIAlj
+bG9jay1mcmVxdWVuY3kgPSA8MTI1MDAwMDAwPjsNCisgICAgfTsNCisNCisgICAgbmFuZEAxZTAw
+MzAwMCB7DQorICAgIAljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10NzYyMS1uZmMiOw0KKw0KKyAg
+ICAJcmVnID0gPDB4MWUwMDMwMDAgMHg4MDANCisgICAgCSAgICAgICAweDFlMDAzODAwIDB4ODAw
+PjsNCisgICAgCXJlZy1uYW1lcyA9ICJuZmkiLCAiZWNjIjsNCisNCisgICAgCWNsb2NrcyA9IDwm
+bmZpY2xvY2s+Ow0KKyAgICAJY2xvY2stbmFtZXMgPSAibmZpX2NsayI7DQorICAgIH07DQotLSAN
+CjIuMTcuMQ0K
 

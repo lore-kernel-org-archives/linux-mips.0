@@ -1,109 +1,136 @@
-Return-Path: <SRS0=cf5P=5Q=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=eI0u=5R=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B61BC43331
-	for <linux-mips@archiver.kernel.org>; Tue, 31 Mar 2020 22:00:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E714AC2D0E8
+	for <linux-mips@archiver.kernel.org>; Wed,  1 Apr 2020 03:09:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 5CE8C208E0
-	for <linux-mips@archiver.kernel.org>; Tue, 31 Mar 2020 22:00:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1585692055;
-	bh=68y8XV+c+ckwiJ0Ks/NEh1YXjXG1GeqhNoCYKrAzUoM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=Bvd7VOWjpor30EBQ14Wx2V6CIP9gPHtDnoIjjeEWJ3QlZkidVpfWvB4/v6RurV2rl
-	 uSQCbdLLwDDWdLKpd3zhgVnqcDp6czqasUHXko1cdm79E2PCMzKRR2S7wTo64acw8C
-	 BFyBxcczPQY6efpXtg4m1IDmrzpCpuyFsewhjHAg=
+	by mail.kernel.org (Postfix) with ESMTP id ACC2D2077D
+	for <linux-mips@archiver.kernel.org>; Wed,  1 Apr 2020 03:09:58 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="X11A1BFs"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730589AbgCaWAz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 31 Mar 2020 18:00:55 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:34618 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727955AbgCaWAy (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 31 Mar 2020 18:00:54 -0400
-Received: by mail-il1-f196.google.com with SMTP id t11so21067366ils.1;
-        Tue, 31 Mar 2020 15:00:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lc33E5Df9rZgd4qmK0wjmDHg2/VwMCkladXOyRxwDEQ=;
-        b=bgXmYjkO/QXHC+uOvMiTFY+STAW8VjaXPbVR42M8rXRfgJyTGV98WTnmjOU10qSwXu
-         Vh67M0cgtS6QLN4igqk7j6k9fXI/bJv9c5mGQUzdUbMH18uRsgcQ0JxUBduX0bJZoXmB
-         0FSCTPaXAmPOnVNCESe3wND20TGui1dP5pRkJmuVeHXkgq0rV7YcH72kmAs5iWLG3U20
-         MrNlBy4PdFxHOXmQRL2bfQfQppmBJQtllF35Cxf1j50nZ+D/GpTpycYBfba3/uh/TB/y
-         jqF09l8NLspnMyN4P/Bg7A1cF8+CXvxUMrWv814pe1oOnl2WDZ+li5ZiIh4gDUWAovIK
-         pAvw==
-X-Gm-Message-State: ANhLgQ3TUlwyn+iGmY4aK4/vcnrdlL90eR/2Rge9hqry+pB4LiQP1TyC
-        +KUvMcN4SBrbtFQdfnKtig==
-X-Google-Smtp-Source: ADFU+vt2obj9Pp0WVbC2XhGR8Zra56tn+jusDQkYJG1LqYScGnHUFR99v3w+nmrFf44+CRhVQro3Zw==
-X-Received: by 2002:a92:1d4b:: with SMTP id d72mr18236810ild.14.1585692053642;
-        Tue, 31 Mar 2020 15:00:53 -0700 (PDT)
-Received: from rob-hp-laptop ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id n6sm43408iod.9.2020.03.31.15.00.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Mar 2020 15:00:52 -0700 (PDT)
-Received: (nullmailer pid 19586 invoked by uid 1000);
-        Tue, 31 Mar 2020 22:00:51 -0000
-Date:   Tue, 31 Mar 2020 16:00:51 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Weijie Gao <weijie.gao@mediatek.com>
-Cc:     linux-mtd@lists.infradead.org, linux-mediatek@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Piotr Sroka <piotrs@cadence.com>,
-        Mason Yang <masonccyang@mxic.com.tw>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Weijie Gao <weijie.gao@mediatek.com>
-Subject: Re: [PATCH 2/2] dt-bindings: add documentation for mt7621-nand driver
-Message-ID: <20200331220051.GA18084@bogus>
-References: <1585678079-5999-1-git-send-email-weijie.gao@mediatek.com>
- <1585678079-5999-2-git-send-email-weijie.gao@mediatek.com>
+        id S1731611AbgDADJx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 31 Mar 2020 23:09:53 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17813 "EHLO
+        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731703AbgDADJw (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 31 Mar 2020 23:09:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1585710560;
+        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
+        h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        bh=oHT243SqhEnlwJmznwvLkEn/AwmbR4FJ1c5fVo13EZM=;
+        b=X11A1BFsafZip2AqAGmsYowNKs5b1HFHI7LNlZ2k2e/8EKKp0EFyyDcetVoXmQ91
+        /1VMsOW7IlLqg1NteiG3FXzN4RiqBP/ob1msPVcdj8Q9s2ZKUaQl120eKf2RTmlnv8j
+        qgrf2js902OWTeCbxQ/iEzurjUtfXrsSGjbTdw5Y=
+Received: from localhost.localdomain (39.155.141.144 [39.155.141.144]) by mx.zoho.com.cn
+        with SMTPS id 1585710558237311.0139215144561; Wed, 1 Apr 2020 11:09:18 +0800 (CST)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Paul Burton <paulburton@kernel.org>, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <20200401030658.1174045-4-jiaxun.yang@flygoat.com>
+Subject: [PATCH v2 3/5] dt-bindings: Document Loongson PCI Host Controller
+Date:   Wed,  1 Apr 2020 11:06:47 +0800
+X-Mailer: git-send-email 2.26.0.rc2
+In-Reply-To: <20200401030658.1174045-1-jiaxun.yang@flygoat.com>
+References: <20200401030658.1174045-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1585678079-5999-2-git-send-email-weijie.gao@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, 1 Apr 2020 02:07:59 +0800, Weijie Gao wrote:
-> This patch adds documentation for MediaTek MT7621 NAND flash controller
-> driver.
-> 
-> Signed-off-by: Weijie Gao <weijie.gao@mediatek.com>
-> ---
->  .../bindings/mtd/mediatek,mt7621-nfc.yaml     | 68 +++++++++++++++++++
->  1 file changed, 68 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/mediatek,mt7621-nfc.yaml
-> 
+PCI host controller found on Loongson PCHs and SoCs.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+ .../devicetree/bindings/pci/loongson.yaml     | 57 +++++++++++++++++++
+ 1 file changed, 57 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pci/loongson.yaml
 
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/mediatek,mt7621-nfc.example.dt.yaml: nand@1e003000: reg: [[503328768, 2048, 503330816, 2048]] is too short
+diff --git a/Documentation/devicetree/bindings/pci/loongson.yaml b/Document=
+ation/devicetree/bindings/pci/loongson.yaml
+new file mode 100644
+index 000000000000..2995437ef61a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pci/loongson.yaml
+@@ -0,0 +1,57 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pci/loongson.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Loongson PCI Host Controller
++
++maintainers:
++  - Jiaxun Yang <jiaxun.yang@flygoat.com>
++
++description: |+
++  PCI host controller found on Loongson PCHs and SoCs.
++
++allOf:
++  - $ref: /schemas/pci/pci-bus.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - const: loongson,rs780e-pci
++      - const: loongson,ls7a-pci
++      - const: loongson,ls2k-pci
++
++  reg:
++    minItems: 1
++    maxItems: 2
++    items:
++      - description: CFG0 standard config space register
++      - description: CFG1 extended config space register
++
++  ranges:
++    maxItems: 3
++
++
++required:
++  - compatible
++  - reg
++  - ranges
++
++examples:
++  - |
++
++    bus {
++        #address-cells =3D <2>;
++        #size-cells =3D <2>;
++        pcie@40000000 {
++            compatible =3D "loongson,rs780e-pci";
++            device_type =3D "pci";
++            #address-cells =3D <3>;
++            #size-cells =3D <2>;
++
++            reg =3D <0 0x1a000000 0 0x0200000>;
++            ranges =3D <0x02000000 0 0x40000000 0 0x40000000 0 0x40000000>=
+;
++        };
++    };
++...
+--=20
+2.26.0.rc2
 
-See https://patchwork.ozlabs.org/patch/1264888
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.

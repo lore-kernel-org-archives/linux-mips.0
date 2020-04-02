@@ -2,101 +2,114 @@ Return-Path: <SRS0=r4AD=5S=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A530C43331
-	for <linux-mips@archiver.kernel.org>; Thu,  2 Apr 2020 08:16:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9292C43331
+	for <linux-mips@archiver.kernel.org>; Thu,  2 Apr 2020 10:51:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 66027208E4
-	for <linux-mips@archiver.kernel.org>; Thu,  2 Apr 2020 08:16:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1585815388;
-	bh=jxX8zNXGWAksHrGOsQVTIOOhLq7/MR35pRNCX6fWCos=;
-	h=From:To:Cc:Subject:Date:List-ID:From;
-	b=V4vGX2xL/5kovwWS3ge38mIvXcwLmgg8fVSiiJwqxjcvLvRYhIbuZgLndEja46gMM
-	 hBz4Wrow8Z1ue6eVmSs8ACsD3u4sDMbkq6ITmRjEM3hJVIBvIDLbsft/lfM8Dn9+4T
-	 fDFzpfXfQ3mjxTBpx3LbhyVPXexoemB3Mbcl7e/s=
+	by mail.kernel.org (Postfix) with ESMTP id 9917C2078B
+	for <linux-mips@archiver.kernel.org>; Thu,  2 Apr 2020 10:51:25 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="AjAsHQYn"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387714AbgDBIQY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 2 Apr 2020 04:16:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387574AbgDBIQY (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 2 Apr 2020 04:16:24 -0400
-Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F074D206F6;
-        Thu,  2 Apr 2020 08:16:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585815383;
-        bh=jxX8zNXGWAksHrGOsQVTIOOhLq7/MR35pRNCX6fWCos=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BqgoIuUHpNdmRSH98YK6zhpsptJiDZILd8lnD1NxEG6YImrDeiUj8YmwIukQQTRqt
-         Uw9RQW7bSFWCdoxvxs7/lfLWoRkU5cO24QB+HajjW1mte71fCGBjq/jjU629/X9AYV
-         baIRQbtXFwwgByK5TUXM0mI2E31fAj+mY+BLP+c0=
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
-        maobibo <maobibo@loongson.cn>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH] mips: define pud_index() regardless of page table folding
-Date:   Thu,  2 Apr 2020 11:16:14 +0300
-Message-Id: <20200402081614.5696-1-rppt@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S2387726AbgDBKvZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 2 Apr 2020 06:51:25 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17882 "EHLO
+        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387592AbgDBKvZ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 2 Apr 2020 06:51:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1585824667;
+        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
+        h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        bh=wo0+AUxnoZlrbKC5hxp6GLkb/pZHeEjSheMrmhdzJdg=;
+        b=AjAsHQYnAt6ISbnGXlGVm/3UXUCLeWEcz7FoSKYEr/2x/g1EIs1WGklwJVu56xuZ
+        ezUDrTUdoEY9kNT7TNABeHJyzebNP+jlM+HDF+B7XcEQ4W/9vyFYIr7dsWWEU2l7UDs
+        CYDAFMl+wl6bXoe9h4+nbtVFBlMoVDPxH6gtZl/I=
+Received: from localhost.localdomain (39.155.141.144 [39.155.141.144]) by mx.zoho.com.cn
+        with SMTPS id 1585824666964419.4005134939064; Thu, 2 Apr 2020 18:51:06 +0800 (CST)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Huacai Chen <chenhc@lemote.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-ID: <20200402104851.368465-3-jiaxun.yang@flygoat.com>
+Subject: [PATCH 3/5] dt-bindings: Document Loongson RS780E PCH ACPI Controller
+Date:   Thu,  2 Apr 2020 18:48:41 +0800
+X-Mailer: git-send-email 2.26.0.rc2
+In-Reply-To: <20200402104851.368465-1-jiaxun.yang@flygoat.com>
+References: <20200402104851.368465-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+This controller is attached under ISA Bus and can be found
+in Loongson-3 systems with RS780E PCH.
 
-Commit 31168f033e37 ("mips: drop __pXd_offset() macros that duplicate
-pXd_index() ones") is correct that pud_index() & __pud_offset() are the
-same when pud_index() is actually provided, however it does not take into
-account the __PAGETABLE_PUD_FOLDED case. This has broken MIPS KVM
-compilation because it relied on availability of pud_index().
-
-Define pud_index() regardless of page table folded. It will evaluate to
-actual index for 4-level pagetables and to 0 for folded PUD level.
-
-Link: https://lore.kernel.org/lkml/20200331154749.5457-1-pbonzini@redhat.com
-Reported-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/include/asm/pgtable-64.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../bindings/mips/loongson/rs780e-acpi.yaml   | 40 +++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mips/loongson/rs780e-=
+acpi.yaml
 
-diff --git a/arch/mips/include/asm/pgtable-64.h b/arch/mips/include/asm/pgtable-64.h
-index f92716cfa4f4..ee5dc0c145b9 100644
---- a/arch/mips/include/asm/pgtable-64.h
-+++ b/arch/mips/include/asm/pgtable-64.h
-@@ -172,6 +172,8 @@
- 
- extern pte_t invalid_pte_table[PTRS_PER_PTE];
- 
-+#define pud_index(address)	(((address) >> PUD_SHIFT) & (PTRS_PER_PUD - 1))
+diff --git a/Documentation/devicetree/bindings/mips/loongson/rs780e-acpi.ya=
+ml b/Documentation/devicetree/bindings/mips/loongson/rs780e-acpi.yaml
+new file mode 100644
+index 000000000000..d317897e1115
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mips/loongson/rs780e-acpi.yaml
+@@ -0,0 +1,40 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/mips/loongson/rs780e-acpi.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
- #ifndef __PAGETABLE_PUD_FOLDED
- /*
-  * For 4-level pagetables we defines these ourselves, for 3-level the
-@@ -210,8 +212,6 @@ static inline void p4d_clear(p4d_t *p4dp)
- 	p4d_val(*p4dp) = (unsigned long)invalid_pud_table;
- }
- 
--#define pud_index(address)	(((address) >> PUD_SHIFT) & (PTRS_PER_PUD - 1))
--
- static inline unsigned long p4d_page_vaddr(p4d_t p4d)
- {
- 	return p4d_val(p4d);
--- 
-2.25.1
++title: Loongson RS780E PCH ACPI Controller
++
++maintainers:
++  - Jiaxun Yang <jiaxun.yang@flygoat.com>
++
++description: |
++  This controller can be found in Loongson-3 systems with RS780E PCH.
++
++properties:
++  compatible:
++    const: loongson,rs780e-acpi
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++examples:
++  - |
++    isa@0 {
++      compatible =3D "isa";
++      #address-cells =3D <2>;
++      #size-cells =3D <1>;
++      ranges =3D <1 0 0 0x1000>;
++
++      acpi@800 {
++        compatible =3D "loongson,rs780e-acpi";
++        reg =3D <1 0x800 0x100>;
++      };
++    };
++
++...
+--=20
+2.26.0.rc2
+
 

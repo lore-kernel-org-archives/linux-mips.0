@@ -2,86 +2,84 @@ Return-Path: <SRS0=Lzxv=5V=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 549B8C2BA1B
-	for <linux-mips@archiver.kernel.org>; Sun,  5 Apr 2020 02:52:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35539C2BA19
+	for <linux-mips@archiver.kernel.org>; Sun,  5 Apr 2020 08:40:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2040220737
-	for <linux-mips@archiver.kernel.org>; Sun,  5 Apr 2020 02:52:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1586055120;
-	bh=pMU5hjfEYql1E5373yITTzoPsv8h4BkUjm9FjPsRF6Y=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=GRjqPiCHIPxypEbOCqtn+/YahCgDnmtxcio7/U4EGQd1NW6YD+3eZxJkuLIsDDmJE
-	 LWagrLj/P8R8jvn4raO0D0b5hkktlP1In70/DV+FD+UU0+DKUBw9h1kBae2DFD/MBD
-	 b7tT4aW4xcvvHTWPM3Apqgg28ZTeloRs98MPFp1M=
+	by mail.kernel.org (Postfix) with ESMTP id 012DE20678
+	for <linux-mips@archiver.kernel.org>; Sun,  5 Apr 2020 08:40:52 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="IYYgMZyi"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbgDECv2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 4 Apr 2020 22:51:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726410AbgDECv1 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 4 Apr 2020 22:51:27 -0400
-Received: from mail.kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C61992072B;
-        Sun,  5 Apr 2020 02:51:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586055087;
-        bh=pMU5hjfEYql1E5373yITTzoPsv8h4BkUjm9FjPsRF6Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LeXbzDddUVoAl8jKGJYhcF45v/1x6GoE+kwTC9C8U9qWMkRP4FEUJ8On7moMzd6Pu
-         /T1a9RH4RIAoeh2gxqJdKnrWpTRHvz8xVlf250JmP5i2FAk9q6QeJkFcGSUThQEy4Z
-         S0KHsYag+QN6BLylqfbKwJFNpqHfFoYISGMfFbE4=
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        id S1726364AbgDEIkw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 5 Apr 2020 04:40:52 -0400
+Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17581 "EHLO
+        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726308AbgDEIkw (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 5 Apr 2020 04:40:52 -0400
+X-Greylist: delayed 920 seconds by postgrey-1.27 at vger.kernel.org; Sun, 05 Apr 2020 04:40:51 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1586075102;
+        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
+        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        bh=jlfqA7A2mmN1MCE9Hu767OVJ/7u6nHkaQCRHUH9vIcI=;
+        b=IYYgMZyiU3o33Tg3dO7svxhHO1GN8WczdboM3eNpfiTMRRuPToWQZQ1D1P0vOtPW
+        GFw4GM2403Fnmo03B47ozPxh3shyipdmVSbiuom2uHSay74TLw1tJHmxfT4+kjK3nmb
+        Skx/wzzg19y3Ke3LC6V6Kf/CoRVnCLrvRGcfjzvc=
+Received: from localhost.localdomain (39.155.141.144 [39.155.141.144]) by mx.zoho.com.cn
+        with SMTPS id 1586075100036667.996448622306; Sun, 5 Apr 2020 16:25:00 +0800 (CST)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Fangrui Song <maskray@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Subject: [PATCH 5/9] MIPS: Remove redundant CLKDEV_LOOKUP selects
-Date:   Sat,  4 Apr 2020 19:51:19 -0700
-Message-Id: <20200405025123.154688-6-sboyd@kernel.org>
-X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
-In-Reply-To: <20200405025123.154688-1-sboyd@kernel.org>
-References: <20200405025123.154688-1-sboyd@kernel.org>
+        linux-kernel@vger.kernel.org
+Message-ID: <20200405082451.694910-1-jiaxun.yang@flygoat.com>
+Subject: [PATCH] MIPS: malta: Set load address for 32bit kernel correctly
+Date:   Sun,  5 Apr 2020 16:24:49 +0800
+X-Mailer: git-send-email 2.26.0.rc2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The ATH79 config selects COMMON_CLK already, and the COMMON_CLK config
-option already selects CLKDEV_LOOKUP, and CLKDEV_LOOKUP already selects
-HAVE_CLK so it's redundant to have these selected again.
+LLD failed to link vmlinux with 64bit load address for 32bit ELF
+while bfd will strip 64bit address into 32bit silently.
+To fix LLD build, we should supply a 32bit load address for 32bit
+kernel.
 
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: <linux-mips@vger.kernel.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Reviewed-by: Fangrui Song <maskray@google.com>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
 ---
- arch/mips/Kconfig | 2 --
- 1 file changed, 2 deletions(-)
+ arch/mips/mti-malta/Platform | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 797d7f1ad5fe..e53a8dd5c19b 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -209,9 +209,7 @@ config ATH79
- 	select DMA_NONCOHERENT
- 	select GPIOLIB
- 	select PINCTRL
--	select HAVE_CLK
- 	select COMMON_CLK
--	select CLKDEV_LOOKUP
- 	select IRQ_MIPS_CPU
- 	select SYS_HAS_CPU_MIPS32_R2
- 	select SYS_HAS_EARLY_PRINTK
--- 
-Sent by a computer, using git, on the internet
+diff --git a/arch/mips/mti-malta/Platform b/arch/mips/mti-malta/Platform
+index 2cc72c9b38e3..f9b49cba1764 100644
+--- a/arch/mips/mti-malta/Platform
++++ b/arch/mips/mti-malta/Platform
+@@ -6,6 +6,10 @@ cflags-$(CONFIG_MIPS_MALTA)=09+=3D -I$(srctree)/arch/mips/=
+include/asm/mach-malta
+ ifdef CONFIG_KVM_GUEST
+     load-$(CONFIG_MIPS_MALTA)=09+=3D 0x0000000040100000
+ else
++ifdef CONFIG_64BIT
+     load-$(CONFIG_MIPS_MALTA)=09+=3D 0xffffffff80100000
++else
++    load-$(CONFIG_MIPS_MALTA)=09+=3D 0x80100000
++endif
+ endif
+ all-$(CONFIG_MIPS_MALTA)=09:=3D $(COMPRESSION_FNAME).bin
+--=20
+2.26.0.rc2
+
 

@@ -2,126 +2,126 @@ Return-Path: <SRS0=q5jY=5W=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 392BCC2BA2B
-	for <linux-mips@archiver.kernel.org>; Mon,  6 Apr 2020 10:57:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45B0FC2BA19
+	for <linux-mips@archiver.kernel.org>; Mon,  6 Apr 2020 11:11:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 0BE5B20678
-	for <linux-mips@archiver.kernel.org>; Mon,  6 Apr 2020 10:57:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 026212072A
+	for <linux-mips@archiver.kernel.org>; Mon,  6 Apr 2020 11:11:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tl9rRJmb"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="HWFrAsg7"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727181AbgDFK5b (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 6 Apr 2020 06:57:31 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:45746 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726841AbgDFK5b (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 6 Apr 2020 06:57:31 -0400
-Received: by mail-qt1-f194.google.com with SMTP id 71so5575768qtc.12;
-        Mon, 06 Apr 2020 03:57:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OJVdbc4/URe+WGm2RIHS01C+7ItQ2Hr946YFGhM+r6Q=;
-        b=tl9rRJmbLLwNSi8rayLraEGERtM53Mp91HzHN5ePmODbG56ymHSstnBEbRubx8reNa
-         royNt0lqw3KDwLjrw/AcEWNx9n3XQHOcNSlLLd3oc/r2upxFhfFi8QkY8bjLDoss8a+7
-         13lNlh1b2yo9aAwIUP6nQ39u/wsUbeZggzpTW0LibRAX/R8SXBBTmsuIAjIXXfzxy7bt
-         b/k/a66oSC6CEeH0T9K/gTBFiPiaZNUMiypnBLdVaxQfaWNJlQgIqIrJ0wTcXiNgBc7K
-         pkeluKPCcmsZtSA9Fvjvk0msGJ//RldzC24nesu6jwsar5wquD4JJU/V9ok0RMIbtaU5
-         A+UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OJVdbc4/URe+WGm2RIHS01C+7ItQ2Hr946YFGhM+r6Q=;
-        b=X8lmB1SNiV88n8koLGajvFe1HqH64fSxmEicJ0rM1T08ldG0+5sDpRHjcHjy1wJDv8
-         mThErgnGbbyBzhVJIoPFhC71RsrbdAFfbu+N2GVk1R5jy8DbmBm8jsPZhB7HmiNUhmrM
-         XGzs/xRWSJEPEW0Xg9v0ob5FpdULO0afZOxFygsBgT698ynuCrdjCsebLDr3/ReNvsBO
-         gWogJCYFZF5PHqZudtdjCq0BmmSgav08nfZHHz1KjnocEL5BHHsuMlj96nIhkSXvOWwK
-         e3jcmlQchs+WIhsqvJGOObVXM+kIvb+mYIUU2HbXg+FfORYcOmJnfYmppSsY6i9rb1yX
-         Da2Q==
-X-Gm-Message-State: AGi0PuYiZaQ5wwg7paaPRTWX30y0fjsuIRM6gPDCpJeomdpVASi/pbby
-        2PFvwp94N9LJHorIhMu4RYHssS1vxj0Cuyj2fA8=
-X-Google-Smtp-Source: APiQypKi+rVw7Yx3tuLfh/w9IDdOMDAcQDOY1nccoBuxFkH975v+GT9qKuQMZQBbgq5YPrSWScSrivupcGdAfyxbwsk=
-X-Received: by 2002:ac8:1a8a:: with SMTP id x10mr8463923qtj.154.1586170650053;
- Mon, 06 Apr 2020 03:57:30 -0700 (PDT)
+        id S1727048AbgDFLLq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 6 Apr 2020 07:11:46 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17841 "EHLO
+        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726873AbgDFLLq (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 6 Apr 2020 07:11:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1586171466;
+        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
+        h=Date:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding:Subject:To:CC:From:Message-ID;
+        bh=Y6H0UZ+rUE7MyyGuh8+kpzPUZz7EvzhkzLuIA8Y0cbg=;
+        b=HWFrAsg7jj35y2hzV4v4EB/Vet6MmdhW8rHbiJqCjULfMr4nsnIZ5ptGmbdFJmDk
+        dIcucmWMia4qv2vFhFt5xI3ACXET5zYtyeDZK1Rz1aw+8JCKFDtX1J6oWZwQDOqfrvP
+        oK6FPcbPjG5XBHjV95efIMLBYsAo5PNICq63hU3o=
+Received: from [26.26.26.1] (115.193.87.168 [115.193.87.168]) by mx.zoho.com.cn
+        with SMTPS id 1586171461806156.29970469650766; Mon, 6 Apr 2020 19:11:01 +0800 (CST)
+Date:   Mon, 06 Apr 2020 19:10:58 +0800
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAKcpw6U=VW+h4sU1fzrsqXU9z-zVfcFsENKHgAD4paqtndip2w@mail.gmail.com>
+References: <20200405082451.694910-1-jiaxun.yang@flygoat.com> <alpine.LFD.2.21.2004051738000.4156324@eddie.linux-mips.org> <96C9B1A0-2F89-4650-B0A4-6A6242A2AA0A@flygoat.com> <alpine.LFD.2.21.2004051817310.4156324@eddie.linux-mips.org> <CAKcpw6U=VW+h4sU1fzrsqXU9z-zVfcFsENKHgAD4paqtndip2w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200405082451.694910-1-jiaxun.yang@flygoat.com>
- <alpine.LFD.2.21.2004051738000.4156324@eddie.linux-mips.org>
- <96C9B1A0-2F89-4650-B0A4-6A6242A2AA0A@flygoat.com> <alpine.LFD.2.21.2004051817310.4156324@eddie.linux-mips.org>
-In-Reply-To: <alpine.LFD.2.21.2004051817310.4156324@eddie.linux-mips.org>
-From:   YunQiang Su <wzssyqa@gmail.com>
-Date:   Mon, 6 Apr 2020 18:57:18 +0800
-Message-ID: <CAKcpw6U=VW+h4sU1fzrsqXU9z-zVfcFsENKHgAD4paqtndip2w@mail.gmail.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Subject: Re: [PATCH] MIPS: malta: Set load address for 32bit kernel correctly
-To:     "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips <linux-mips@vger.kernel.org>,
+To:     YunQiang Su <wzssyqa@gmail.com>,
+        "Maciej W. Rozycki" <macro@linux-mips.org>
+CC:     linux-mips <linux-mips@vger.kernel.org>,
         Fangrui Song <maskray@google.com>,
         Nathan Chancellor <natechancellor@gmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <079F408B-9C44-4317-8DD3-7A1896564960@flygoat.com>
+X-ZohoCNMailClient: External
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Maciej W. Rozycki <macro@linux-mips.org> =E4=BA=8E2020=E5=B9=B44=E6=9C=886=
-=E6=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=881:23=E5=86=99=E9=81=93=EF=BC=
-=9A
+
+
+=E4=BA=8E 2020=E5=B9=B44=E6=9C=886=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=886:=
+57:18, YunQiang Su <wzssyqa@gmail=2Ecom> =E5=86=99=E5=88=B0:
+>Maciej W=2E Rozycki <macro@linux-mips=2Eorg> =E4=BA=8E2020=E5=B9=B44=E6=
+=9C=886=E6=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=881:23=E5=86=99=E9=81=93=
+=EF=BC=9A
+>>
+>> On Mon, 6 Apr 2020, Jiaxun Yang wrote:
+>>
+>> > > Given the description above I think it should be done uniformly
+>and
+>> > >automatically across all platforms by trimming the address
+>supplied
+>> > >with
+>> > >$(load-y) to low 8 digits in a single place, that is at the place
+>where
+>> > >
+>> > >the variable is consumed=2E  This will reduce clutter across
+>Makefile
+>> > >fragments, avoid inconsistencies and extra work to handle
+>individual
+>> > >platforms as the problem is triggered over and over again, and
+>limit
+>> > >the
+>> > >risk of mistakes=2E
+>> >
+>> > I was intended to do like this but failed to find a proper way=2E
+>> >
+>> > Makefile isn't designed for any kind of calculation=2E
+>> > And shell variables are 64-bit signed so it can't hold such a huge
+>variable=2E
+>> >
+>> > Just wish somebody can give me a way to do like:
+>> >
+>> > ifndef CONFIG_64BIT
+>> > load-y =3D $(load-y) & 0xffffffff
+>> > endif
+>>
+>>  Use the usual shell tools like `sed', `cut', `awk', or whatever we
+>use in
 >
-> On Mon, 6 Apr 2020, Jiaxun Yang wrote:
+>perl may be the easiest to use tool here=2E
 >
-> > > Given the description above I think it should be done uniformly and
-> > >automatically across all platforms by trimming the address supplied
-> > >with
-> > >$(load-y) to low 8 digits in a single place, that is at the place wher=
-e
-> > >
-> > >the variable is consumed.  This will reduce clutter across Makefile
-> > >fragments, avoid inconsistencies and extra work to handle individual
-> > >platforms as the problem is triggered over and over again, and limit
-> > >the
-> > >risk of mistakes.
-> >
-> > I was intended to do like this but failed to find a proper way.
-> >
-> > Makefile isn't designed for any kind of calculation.
-> > And shell variables are 64-bit signed so it can't hold such a huge vari=
-able.
-> >
-> > Just wish somebody can give me a way to do like:
-> >
-> > ifndef CONFIG_64BIT
-> > load-y =3D $(load-y) & 0xffffffff
-> > endif
+>ifndef CONFIG_64BIT
+>  load-y :=3D $(shell $(PERL) -e 'print $(load-y) & 0xffffffff')
+>endif
 >
->  Use the usual shell tools like `sed', `cut', `awk', or whatever we use i=
-n
+>Note that it is `:=3D' instead of '=3D'=2E
 
-perl may be the easiest to use tool here.
+It seems like perl is not one of kernel's build dependencies=2E[1]
+I'm comsidering a alternative solution,
+write a small hostprog in C to deal with that=2E
 
-ifndef CONFIG_64BIT
-  load-y :=3D $(shell $(PERL) -e 'print $(load-y) & 0xffffffff')
-endif
+Thanks=2E
 
-Note that it is `:=3D' instead of '=3D'.
+[1]: https://www=2Ekernel=2Eorg/doc/html/v5=2E6/process/changes=2Ehtml
 
-> the kernel build already for other purposes.  There's no need to do any
-> actual calculation here to extract the last 8 characters (and the leading
-> `0x' prefix).  At worst you can write a small C program, compile it with
-> the build system compiler and run, as we already do for some stuff.
+
 >
->   Maciej
-
-
+>> the kernel build already for other purposes=2E  There's no need to do
+>any
+>> actual calculation here to extract the last 8 characters (and the
+>leading
+>> `0x' prefix)=2E  At worst you can write a small C program, compile it
+>with
+>> the build system compiler and run, as we already do for some stuff=2E
+>>
+>>   Maciej
 
 --=20
-YunQiang Su
+Jiaxun Yang

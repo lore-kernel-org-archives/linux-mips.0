@@ -2,45 +2,45 @@ Return-Path: <SRS0=N3nD=5Y=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68047C2D0EA
-	for <linux-mips@archiver.kernel.org>; Wed,  8 Apr 2020 11:43:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21266C2D0EA
+	for <linux-mips@archiver.kernel.org>; Wed,  8 Apr 2020 13:03:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 2FF8D20787
-	for <linux-mips@archiver.kernel.org>; Wed,  8 Apr 2020 11:43:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D32882076D
+	for <linux-mips@archiver.kernel.org>; Wed,  8 Apr 2020 13:03:27 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="K0DaOXAu"
+	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="QZlSRLor"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728572AbgDHLnh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 8 Apr 2020 07:43:37 -0400
-Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17840 "EHLO
+        id S1728281AbgDHND1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 8 Apr 2020 09:03:27 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17868 "EHLO
         sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728506AbgDHLng (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 8 Apr 2020 07:43:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1586345939; cv=none; 
+        by vger.kernel.org with ESMTP id S1728877AbgDHND1 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 8 Apr 2020 09:03:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1586350837; cv=none; 
         d=zoho.com.cn; s=zohoarc; 
-        b=pPf/pc3k9vjuwDh3UVX8al2oStSaSo6Rs7akY2rznXSXpkV830E+GsikAYsA6oo9r689yqSBtj+b4AnpcNfFDBxheRiGDPT3nnrLVvHIs9QRtXsyb7Q5Pu948mNlWvuVX7T5iHKTECUa5cFceTGsSuHhQvqpqCPaIWILYbmKwcg=
+        b=CNTU47fQERVmRseYdTvPW4iDk4wtDzfI8G6KDFW5Acrlv3reV1+nTCadNJGuOYUXuYh4+AEDVEHOkmUnDYCe4OJJKGVrDvzs4Qe7XfDaIL7F6r0aMGvg+6Xnq+j9agZ0TuvTq+jI8pVspVn/89QJK3PzcRCzY39VSgROLflvByw=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1586345939; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=+So5B32ryvAjtvrOHDFwVo1iY55d65dAEsJtVoTGv5Q=; 
-        b=Ba2o7RTwLWy5uk8yTbup8yR+cmbVpqlx9hVsJ34b7jX6yucCagtUm43kBIbUp88uvdau2h2HU9NmdWz128QG4vUhUmcEGKjQrcGw2tXziyNYibcd/t8RmXSx6bvVteoXFHRDRkF09wmiFd+mWmmQMGka6aWGnzAkT6KOCVLeDdg=
+        t=1586350837; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=vYhLojl6vl4ywO3XmADviLh5o4y3XTv8xzj+M3OtVkQ=; 
+        b=jzQ4bEdSTUs6KhH11LuD8CqZQYg9iKy5DzMPUsQ+IwQLgf5Mki16RQHZhtpAkBs8xNcX3v1X68ZzzY70lNnu7zkhgwSUXHmO2qdhX1Cd+eEhnNvDDNH1t5V+slUBKB+KrPET/pJ7JoqU4avLj9GVACl2T3V4/CkgMl2aKKNQugc=
 ARC-Authentication-Results: i=1; mx.zoho.com.cn;
         dkim=pass  header.i=flygoat.com;
         spf=pass  smtp.mailfrom=jiaxun.yang@flygoat.com;
         dmarc=pass header.from=<jiaxun.yang@flygoat.com> header.from=<jiaxun.yang@flygoat.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1586345939;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1586350837;
         s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
         h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        bh=+So5B32ryvAjtvrOHDFwVo1iY55d65dAEsJtVoTGv5Q=;
-        b=K0DaOXAuXjFvMhmHcm7BcxQVDkPi5ZjFwjhz4Fxtwor2KjS6ZeeoyHMizo7lUQh9
-        ++8jadptvuPjbDE/obpLSuimF9R/KtsvKCrduI62b/YAOMM0sJYzLIPjzF9Qw8AHJ8s
-        FTtJnETJcvqIBl01LNef6XLWN6EpzvhHGxjvIj8g=
+        bh=vYhLojl6vl4ywO3XmADviLh5o4y3XTv8xzj+M3OtVkQ=;
+        b=QZlSRLor5ye10lda7Hm6z7Z4ZCbWaC/icJpmPb7aBLwch/l3FD2cdWSd9/CMNzFn
+        +OZzjqrAN/HT2jU9qHg5i2/k+VZqLHNAjFc+5OVOUMAXMP6sgHwhNKEh9FWtSYxU0cq
+        aHpDSBlZ1hVfbg7rXZoEkaDiFx3fJpEuzeKGvgBw=
 Received: from localhost.localdomain (39.155.141.144 [39.155.141.144]) by mx.zoho.com.cn
-        with SMTPS id 1586345938193401.8350435087435; Wed, 8 Apr 2020 19:38:58 +0800 (CST)
+        with SMTPS id 1586350832335802.4494337653545; Wed, 8 Apr 2020 21:00:32 +0800 (CST)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
@@ -55,37 +55,27 @@ Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Robert Richter <rric@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Jason Cooper <jason@lakedaemon.net>,
         Marc Zyngier <maz@kernel.org>,
         Paul Burton <paulburton@kernel.org>,
         Allison Randal <allison@lohutok.net>,
-        Enrico Weigelt <info@metux.net>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Zhou Yanjie <zhouyanjie@zoho.com>,
-        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>, YunQiang Su <syq@debian.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Richard Fontana <rfontana@redhat.com>,
         Arnd Bergmann <arnd@arndb.de>,
         Serge Semin <fancer.lancer@gmail.com>,
         Matt Redfearn <matt.redfearn@mips.com>,
         Steve Winslow <swinslow@gmail.com>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Richard Fontana <rfontana@redhat.com>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        Peter Xu <peterx@redhat.com>,
         Mike Rapoport <rppt@linux.ibm.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
         Kamal Dasu <kdasu.kdev@gmail.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
         linux-kernel@vger.kernel.org,
         bcm-kernel-feedback-list@broadcom.com, oprofile-list@lists.sf.net
-Message-ID: <20200408113505.2528103-4-jiaxun.yang@flygoat.com>
-Subject: [PATCH 03/12] arch_topology: Make it avilable for MIPS
-Date:   Wed,  8 Apr 2020 19:34:13 +0800
+Message-ID: <20200408130024.2529220-1-jiaxun.yang@flygoat.com>
+Subject: [PATCH 06/12] MIPS: Kernel: Switch to new topology interface
+Date:   Wed,  8 Apr 2020 20:59:48 +0800
 X-Mailer: git-send-email 2.26.0.rc2
 In-Reply-To: <20200408113505.2528103-1-jiaxun.yang@flygoat.com>
 References: <20200408113505.2528103-1-jiaxun.yang@flygoat.com>
@@ -98,178 +88,154 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Simply drop unnecessary archtecture limitions and add dummy
-function for platforms without OF/COMMON_CLK support.
-Also exclude functions for arm that existed in platform code.
+Adapt topology functions to new interface in various of kernel
+parts like perf, proc.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- drivers/base/arch_topology.c | 121 +++++++++++++++++++----------------
- 1 file changed, 66 insertions(+), 55 deletions(-)
+ arch/mips/kernel/cacheinfo.c         | 5 +++--
+ arch/mips/kernel/perf_event_mipsxx.c | 4 ++--
+ arch/mips/kernel/proc.c              | 8 ++++----
+ arch/mips/mm/c-r4k.c                 | 4 ++--
+ arch/mips/mm/context.c               | 4 ++--
+ arch/mips/oprofile/op_model_mipsxx.c | 4 ++--
+ 6 files changed, 15 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-index 4d0a0038b476..9c2405d08dae 100644
---- a/drivers/base/arch_topology.c
-+++ b/drivers/base/arch_topology.c
-@@ -143,57 +143,6 @@ void topology_normalize_cpu_scale(void)
- =09}
+diff --git a/arch/mips/kernel/cacheinfo.c b/arch/mips/kernel/cacheinfo.c
+index 47312c529410..582c866b294f 100644
+--- a/arch/mips/kernel/cacheinfo.c
++++ b/arch/mips/kernel/cacheinfo.c
+@@ -3,6 +3,7 @@
+  * MIPS cacheinfo support
+  */
+ #include <linux/cacheinfo.h>
++#include <asm/topology.h>
+=20
+ /* Populates leaf and increments to next leaf */
+ #define populate_cache(cache, leaf, c_level, c_type)=09=09\
+@@ -62,10 +63,10 @@ static void fill_cpumask_siblings(int cpu, cpumask_t *c=
+pu_map)
+ static void fill_cpumask_cluster(int cpu, cpumask_t *cpu_map)
+ {
+ =09int cpu1;
+-=09int cluster =3D cpu_cluster(&cpu_data[cpu]);
++=09int cluster =3D cpu_topology[cpu].package_id;
+=20
+ =09for_each_possible_cpu(cpu1)
+-=09=09if (cpu_cluster(&cpu_data[cpu1]) =3D=3D cluster)
++=09=09if (cpu_topology[cpu1].package_id =3D=3D cluster)
+ =09=09=09cpumask_set_cpu(cpu1, cpu_map);
  }
 =20
--bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int =
-cpu)
--{
--=09struct clk *cpu_clk;
--=09static bool cap_parsing_failed;
--=09int ret;
--=09u32 cpu_capacity;
--
--=09if (cap_parsing_failed)
--=09=09return false;
--
--=09ret =3D of_property_read_u32(cpu_node, "capacity-dmips-mhz",
--=09=09=09=09   &cpu_capacity);
--=09if (!ret) {
--=09=09if (!raw_capacity) {
--=09=09=09raw_capacity =3D kcalloc(num_possible_cpus(),
--=09=09=09=09=09       sizeof(*raw_capacity),
--=09=09=09=09=09       GFP_KERNEL);
--=09=09=09if (!raw_capacity) {
--=09=09=09=09cap_parsing_failed =3D true;
--=09=09=09=09return false;
--=09=09=09}
--=09=09}
--=09=09raw_capacity[cpu] =3D cpu_capacity;
--=09=09pr_debug("cpu_capacity: %pOF cpu_capacity=3D%u (raw)\n",
--=09=09=09cpu_node, raw_capacity[cpu]);
--
--=09=09/*
--=09=09 * Update freq_factor for calculating early boot cpu capacities.
--=09=09 * For non-clk CPU DVFS mechanism, there's no way to get the
--=09=09 * frequency value now, assuming they are running at the same
--=09=09 * frequency (by keeping the initial freq_factor value).
--=09=09 */
--=09=09cpu_clk =3D of_clk_get(cpu_node, 0);
--=09=09if (!PTR_ERR_OR_ZERO(cpu_clk)) {
--=09=09=09per_cpu(freq_factor, cpu) =3D
--=09=09=09=09clk_get_rate(cpu_clk) / 1000;
--=09=09=09clk_put(cpu_clk);
--=09=09}
--=09} else {
--=09=09if (raw_capacity) {
--=09=09=09pr_err("cpu_capacity: missing %pOF raw capacity\n",
--=09=09=09=09cpu_node);
--=09=09=09pr_err("cpu_capacity: partial information: fallback to 1024 for a=
-ll CPUs\n");
--=09=09}
--=09=09cap_parsing_failed =3D true;
--=09=09free_raw_capacity();
--=09}
--
--=09return !ret;
--}
--
- #ifdef CONFIG_CPU_FREQ
- static cpumask_var_t cpus_to_visit;
- static void parsing_done_workfn(struct work_struct *work);
-@@ -275,7 +224,64 @@ static void parsing_done_workfn(struct work_struct *wo=
-rk)
- core_initcall(free_raw_capacity);
+diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_e=
+vent_mipsxx.c
+index 128fc9999c56..e9ed3526bad0 100644
+--- a/arch/mips/kernel/perf_event_mipsxx.c
++++ b/arch/mips/kernel/perf_event_mipsxx.c
+@@ -127,7 +127,7 @@ static DEFINE_RWLOCK(pmuint_rwlock);
+ =09=09=09 0 : (smp_processor_id() & MIPS_CPUID_TO_COUNTER_MASK))
+ #else
+ #define vpe_id()=09(cpu_has_mipsmt_pertccounters ? \
+-=09=09=09 0 : cpu_vpe_id(&current_cpu_data))
++=09=09=09 0 : cpu_vpe_id(smp_processor_id()))
  #endif
 =20
--#if defined(CONFIG_ARM64) || defined(CONFIG_RISCV)
-+#if defined(CONFIG_OF) && !defined(CONFIG_ARM)
-+#if defined(CONFIG_COMMON_CLK)
-+bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int =
-cpu)
-+{
-+=09struct clk *cpu_clk;
-+=09static bool cap_parsing_failed;
-+=09int ret;
-+=09u32 cpu_capacity;
-+
-+=09if (cap_parsing_failed)
-+=09=09return false;
-+
-+=09ret =3D of_property_read_u32(cpu_node, "capacity-dmips-mhz",
-+=09=09=09=09   &cpu_capacity);
-+=09if (!ret) {
-+=09=09if (!raw_capacity) {
-+=09=09=09raw_capacity =3D kcalloc(num_possible_cpus(),
-+=09=09=09=09=09       sizeof(*raw_capacity),
-+=09=09=09=09=09       GFP_KERNEL);
-+=09=09=09if (!raw_capacity) {
-+=09=09=09=09cap_parsing_failed =3D true;
-+=09=09=09=09return false;
-+=09=09=09}
-+=09=09}
-+=09=09raw_capacity[cpu] =3D cpu_capacity;
-+=09=09pr_debug("cpu_capacity: %pOF cpu_capacity=3D%u (raw)\n",
-+=09=09=09cpu_node, raw_capacity[cpu]);
-+
-+=09=09/*
-+=09=09 * Update freq_factor for calculating early boot cpu capacities.
-+=09=09 * For non-clk CPU DVFS mechanism, there's no way to get the
-+=09=09 * frequency value now, assuming they are running at the same
-+=09=09 * frequency (by keeping the initial freq_factor value).
-+=09=09 */
-+=09=09cpu_clk =3D of_clk_get(cpu_node, 0);
-+=09=09if (!PTR_ERR_OR_ZERO(cpu_clk)) {
-+=09=09=09per_cpu(freq_factor, cpu) =3D
-+=09=09=09=09clk_get_rate(cpu_clk) / 1000;
-+=09=09=09clk_put(cpu_clk);
-+=09=09}
-+=09} else {
-+=09=09if (raw_capacity) {
-+=09=09=09pr_err("cpu_capacity: missing %pOF raw capacity\n",
-+=09=09=09=09cpu_node);
-+=09=09=09pr_err("cpu_capacity: partial information: fallback to 1024 for a=
-ll CPUs\n");
-+=09=09}
-+=09=09cap_parsing_failed =3D true;
-+=09=09free_raw_capacity();
-+=09}
-+
-+=09return !ret;
-+}
-+#else
-+bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int =
-cpu)
-+{
-+=09=09return false;
-+}
-+#endif /* CONFIG_COMMON_CLK */
- /*
-  * This function returns the logic cpu number of the node.
-  * There are basically three kinds of return values:
-@@ -461,7 +467,12 @@ static int __init parse_dt_topology(void)
- =09of_node_put(cn);
- =09return ret;
- }
--#endif
-+#else
-+static int __init parse_dt_topology(void)
-+{
-+=09return 0;
-+}
-+#endif /* CONFIG_OF & !CONFIG_ARM */
+ /* Copied from op_model_mipsxx.c */
+@@ -343,7 +343,7 @@ static void mipsxx_pmu_enable_event(struct hw_perf_even=
+t *evt, int idx)
+ =09=09 */
+ =09=09cpu =3D (event->cpu >=3D 0) ? event->cpu : smp_processor_id();
+=20
+-=09=09ctrl =3D M_PERFCTL_VPEID(cpu_vpe_id(&cpu_data[cpu]));
++=09=09ctrl =3D M_PERFCTL_VPEID(cpu_vpe_id(smp_processor_id()));
+ =09=09ctrl |=3D M_TC_EN_VPE;
+ =09=09cpuc->saved_ctrl[idx] |=3D ctrl;
+ =09=09pr_debug("Enabling perf counter for CPU%d\n", cpu);
+diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
+index f8d36710cd58..e8795b262ca2 100644
+--- a/arch/mips/kernel/proc.c
++++ b/arch/mips/kernel/proc.c
+@@ -138,14 +138,14 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+ =09=09      cpu_data[n].srsets);
+ =09seq_printf(m, "kscratch registers\t: %d\n",
+ =09=09      hweight8(cpu_data[n].kscratch_mask));
+-=09seq_printf(m, "package\t\t\t: %d\n", cpu_data[n].package);
+-=09seq_printf(m, "core\t\t\t: %d\n", cpu_core(&cpu_data[n]));
++=09seq_printf(m, "package\t\t\t: %d\n", cpu_cluster(n));
++=09seq_printf(m, "core\t\t\t: %d\n", cpu_core(n));
+=20
+ #if defined(CONFIG_MIPS_MT_SMP) || defined(CONFIG_CPU_MIPSR6)
+ =09if (cpu_has_mipsmt)
+-=09=09seq_printf(m, "VPE\t\t\t: %d\n", cpu_vpe_id(&cpu_data[n]));
++=09=09seq_printf(m, "VPE\t\t\t: %d\n", cpu_vpe_id(n));
+ =09else if (cpu_has_vp)
+-=09=09seq_printf(m, "VP\t\t\t: %d\n", cpu_vpe_id(&cpu_data[n]));
++=09=09seq_printf(m, "VP\t\t\t: %d\n", cpu_vpe_id(n));
+ #endif
+=20
+ =09sprintf(fmt, "VCE%%c exceptions\t\t: %s\n",
+diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+index 36a311348739..851559ef0bc3 100644
+--- a/arch/mips/mm/c-r4k.c
++++ b/arch/mips/mm/c-r4k.c
+@@ -547,7 +547,7 @@ static inline int has_valid_asid(const struct mm_struct=
+ *mm, unsigned int type)
+ =09if (cpu_has_mmid)
+ =09=09return cpu_context(0, mm) !=3D 0;
+=20
+-=09/* cpu_sibling_map[] undeclared when !CONFIG_SMP */
++=09/* topology_sibling_cpumask undeclared when !CONFIG_SMP */
+ #ifdef CONFIG_SMP
+ =09/*
+ =09 * If r4k_on_each_cpu does SMP calls, it does them to a single VPE in
+@@ -555,7 +555,7 @@ static inline int has_valid_asid(const struct mm_struct=
+ *mm, unsigned int type)
+ =09 * Otherwise we need to worry about all present CPUs.
+ =09 */
+ =09if (r4k_op_needs_ipi(type))
+-=09=09mask =3D &cpu_sibling_map[smp_processor_id()];
++=09=09mask =3D topology_sibling_cpumask(smp_processor_id());
+ #endif
+ =09for_each_cpu(i, mask)
+ =09=09if (cpu_context(i, mm))
+diff --git a/arch/mips/mm/context.c b/arch/mips/mm/context.c
+index b25564090939..ad2d8b7f464b 100644
+--- a/arch/mips/mm/context.c
++++ b/arch/mips/mm/context.c
+@@ -241,12 +241,12 @@ void check_switch_mmu_context(struct mm_struct *mm)
+ =09 * increase then we need to invalidate any TLB entries for our MMID
+ =09 * that we might otherwise pick up from a sibling.
+ =09 *
+-=09 * We ifdef on CONFIG_SMP because cpu_sibling_map isn't defined in
++=09 * We ifdef on CONFIG_SMP because topology_sibling_cpumask isn't define=
+d in
+ =09 * CONFIG_SMP=3Dn kernels.
+ =09 */
+ #ifdef CONFIG_SMP
+ =09if (cpu_has_shared_ftlb_entries &&
+-=09    cpumask_intersects(&tlb_flush_pending, &cpu_sibling_map[cpu])) {
++=09    cpumask_intersects(&tlb_flush_pending, topology_sibling_cpumask(cpu=
+))) {
+ =09=09/* Ensure we operate on the new MMID */
+ =09=09mtc0_tlbw_hazard();
+=20
+diff --git a/arch/mips/oprofile/op_model_mipsxx.c b/arch/mips/oprofile/op_m=
+odel_mipsxx.c
+index a537bf98912c..0129dfcf5d55 100644
+--- a/arch/mips/oprofile/op_model_mipsxx.c
++++ b/arch/mips/oprofile/op_model_mipsxx.c
+@@ -37,9 +37,9 @@ static int perfcount_irq;
+=20
+ #ifdef CONFIG_MIPS_MT_SMP
+ #define WHAT=09=09(MIPS_PERFCTRL_MT_EN_VPE | \
+-=09=09=09 M_PERFCTL_VPEID(cpu_vpe_id(&current_cpu_data)))
++=09=09=09 M_PERFCTL_VPEID(cpu_vpe_id(smp_processor_id())))
+ #define vpe_id()=09(cpu_has_mipsmt_pertccounters ? \
+-=09=09=090 : cpu_vpe_id(&current_cpu_data))
++=09=09=090 : cpu_vpe_id(smp_processor_id()))
 =20
  /*
-  * cpu topology table
-@@ -562,7 +573,7 @@ __weak int __init parse_acpi_topology(void)
- =09return 0;
- }
-=20
--#if defined(CONFIG_ARM64) || defined(CONFIG_RISCV)
-+#if !defined(CONFIG_ARM)
- void __init init_cpu_topology(void)
- {
- =09reset_cpu_topology();
-@@ -576,4 +587,4 @@ void __init init_cpu_topology(void)
- =09else if (of_have_populated_dt() && parse_dt_topology())
- =09=09reset_cpu_topology();
- }
--#endif
-+#endif /* !CONFIG_ARM */
+  * The number of bits to shift to convert between counters per core and
 --=20
 2.26.0.rc2
 

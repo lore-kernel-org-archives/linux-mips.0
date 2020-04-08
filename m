@@ -2,123 +2,150 @@ Return-Path: <SRS0=N3nD=5Y=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEE10C2D0EA
-	for <linux-mips@archiver.kernel.org>; Wed,  8 Apr 2020 07:30:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45B89C2D0EA
+	for <linux-mips@archiver.kernel.org>; Wed,  8 Apr 2020 11:39:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 8F3DD2074F
-	for <linux-mips@archiver.kernel.org>; Wed,  8 Apr 2020 07:30:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 05AFB2082D
+	for <linux-mips@archiver.kernel.org>; Wed,  8 Apr 2020 11:39:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="f3B2Odmv"
+	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="OLVRyIHI"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgDHHaI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 8 Apr 2020 03:30:08 -0400
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17696 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726689AbgDHHaI (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 8 Apr 2020 03:30:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1586330965; cv=none; 
+        id S1728520AbgDHLjo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 8 Apr 2020 07:39:44 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17845 "EHLO
+        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728495AbgDHLjo (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 8 Apr 2020 07:39:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1586345849; cv=none; 
         d=zoho.com.cn; s=zohoarc; 
-        b=Iycq5DlQ6SOtacyxA7XZxR+thyTuiVVtzIWJLfYi9XnYxwGhquS9MqjNxszhk68P93h2x/7dxVpMgRXoSCcAPgARjQvIXh82P7GdTOu2BxTJaN9dQPyYMjoI92rEi+vW0A/kuUXFpUSKL9VoqJDCNboJlMyN+qX7Hb+L5Xzt08I=
+        b=rOB4eIqHBzvfjx1r/DJQtcmeMIlpQOlMIV88Vb8er5WNnj5myzwMeVcXVVOovP3XndRAn4agq72yUOjsuDn+3urEXlBCvweRu/LEssLGGchCigJ49m6Tmw+rcJGpCb8yDSry3/3HR8sMi1AmchkNH7uxZ1aCKhcdl3n6mg6vouk=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1586330965; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=GNVZm3rqhhIk0ti5k0VINiyIi16Ulbzcehh+RXhWBNo=; 
-        b=kFOW50PX46xQnCjo1S9w/CKkkNsmhmFe6T8h68JG7hifzrhUmnQvqDakglihp1+bYTRwUETIsyKh0IoxOxRWGKLlnYOyPig8mUMxpam7t2+657NH+DRAlq90Vc7inTHzN9n2KfFTY5r4Pj61ddypTKfEq2Eoa7D4zAAw3KsyIU8=
+        t=1586345849; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=xfRiY7sN5wTn7Esit9RnU+5Uk6h1t0zgJThoq+Q/xtE=; 
+        b=bw9Gmk7NZUcOc4oX5bPsh37NoQWg0Fq7CNWbeQQWNm8KyC2xHoKVZWVDPDrXqfGgYymzYVawf63vhf8m2aoxphRhquyzYnglQ1Dc7uCTo3MwudZPh3V5I41TmOTyEJqQDIbsQCcpwwzyAm+jYECjvR7Gqr5M5wsDUHM072uqCo4=
 ARC-Authentication-Results: i=1; mx.zoho.com.cn;
         dkim=pass  header.i=flygoat.com;
         spf=pass  smtp.mailfrom=jiaxun.yang@flygoat.com;
         dmarc=pass header.from=<jiaxun.yang@flygoat.com> header.from=<jiaxun.yang@flygoat.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1586330965;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1586345849;
         s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
-        h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=GNVZm3rqhhIk0ti5k0VINiyIi16Ulbzcehh+RXhWBNo=;
-        b=f3B2OdmvXKAck7Mb/q3crvtDKQsn3TqdDLfCWY1ykXQUh20aHjtdXwLV1za0TCiZ
-        Z0CaBXE+JD68vRly4w2Edx3HMUCpG+d2NiopxKxm91CoVqdsSG8UcENlN3iqq4pGn53
-        zi7KH3G50PelkIl4AWUKhk8gHzg/fJ+KNV4oQbhA=
-Received: from flygoat-x1e (183.156.33.240 [183.156.33.240]) by mx.zoho.com.cn
-        with SMTPS id 1586330963417478.574454780491; Wed, 8 Apr 2020 15:29:23 +0800 (CST)
-Date:   Wed, 8 Apr 2020 15:29:22 +0800
+        h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        bh=xfRiY7sN5wTn7Esit9RnU+5Uk6h1t0zgJThoq+Q/xtE=;
+        b=OLVRyIHIWLpCVYdms33TIvNnPkbg7Qq8jKfrCeRAVHEalhQggh5YlnE+oY7EwTHe
+        Ey1HCvqH8d8tBZ22SaYFOZIVtnjFFQGYu1sD4fgu9sY5S50EIvFdlEl9UZUFgSW7d4a
+        BYb6WdD+tQ7Lw9fjJ/5GiU46vvHFPQ6GT4I/lR9Y=
+Received: from localhost.localdomain (39.155.141.144 [39.155.141.144]) by mx.zoho.com.cn
+        with SMTPS id 158634584664433.36732062087788; Wed, 8 Apr 2020 19:37:26 +0800 (CST)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Hamish Martin" <Hamish.Martin@alliedtelesis.co.nz>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: Dealing with holes in CPU address space
-Message-ID: <20200408152922.14f90ff3@flygoat-x1e>
-In-Reply-To: <fcb8f2655452f60a7c734e2ce54ac4d47eec7e92.camel@alliedtelesis.co.nz>
-References: <fcb8f2655452f60a7c734e2ce54ac4d47eec7e92.camel@alliedtelesis.co.nz>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Robert Richter <rric@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Allison Randal <allison@lohutok.net>,
+        Enrico Weigelt <info@metux.net>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+        Richard Fontana <rfontana@redhat.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Zhou Yanjie <zhouyanjie@zoho.com>,
+        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>, YunQiang Su <syq@debian.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Matt Redfearn <matt.redfearn@mips.com>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Steve Winslow <swinslow@gmail.com>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Peter Xu <peterx@redhat.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, oprofile-list@lists.sf.net
+Message-ID: <20200408113505.2528103-2-jiaxun.yang@flygoat.com>
+Subject: [PATCH 01/12] MIPS: setup: Drop prefill_possible_map
+Date:   Wed,  8 Apr 2020 19:34:11 +0800
+X-Mailer: git-send-email 2.26.0.rc2
+In-Reply-To: <20200408113505.2528103-1-jiaxun.yang@flygoat.com>
+References: <20200408113505.2528103-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, 8 Apr 2020 05:14:22 +0000
-Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
+All the plat_smp_setup are setting up possible cpus in their
+platform code. So prefill_possible_map is actually overwriting
+platform's setup, which seems unreasonable.
 
-> Hi All,
-> 
-> I'm trying to port an old Broadcom MIPS CPU (BCM53003) to a shiny new
-> kernel. I have some old historic source from a long forgotten Broadcom
-> LDK but I'd prefer to do things the modern way with device-trees.
-> 
-> The problem I've been grappling with is trying to open up access to
-> all of the RAM on the board. It has 512MB of DDR2. The CPU has two
-> areas where this appears. The first 128MB is from 0 to 0x07ffffff the
-> second area is from 0x88000000 to 0x9fffffff.
-> 
-> SoC peripherals are at 0x18000000 and there is an IO window for flash
-> at 0x20000000.
-> 
-> The old code has some custom tlb initialisation to deal with this but
-> I figured it should be possible with the following dts snippet.
-> 
->         memory@0 {
->                 device_type = "memory";
->                 reg = <0x00000000 0x08000000
->                        0x88000000 0x18000000>;
->         };
-> 
-> I end up with only 128MB available. This appears to be
-> because the default HIGHMEM_START of 0x20000000 stops the rest from
-> being made available. If I add an override of HIGHMEM_START to
-> 0xffffffff I seem to have the full 512MB avaiable but then I get a
-> kernel panic
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+ arch/mips/kernel/setup.c | 20 --------------------
+ 1 file changed, 20 deletions(-)
 
-Hi,
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 10bef8f78e7c..8a418783a6bb 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -761,25 +761,6 @@ static void __init resource_init(void)
+ =09}
+ }
+=20
+-#ifdef CONFIG_SMP
+-static void __init prefill_possible_map(void)
+-{
+-=09int i, possible =3D num_possible_cpus();
+-
+-=09if (possible > nr_cpu_ids)
+-=09=09possible =3D nr_cpu_ids;
+-
+-=09for (i =3D 0; i < possible; i++)
+-=09=09set_cpu_possible(i, true);
+-=09for (; i < NR_CPUS; i++)
+-=09=09set_cpu_possible(i, false);
+-
+-=09nr_cpu_ids =3D possible;
+-}
+-#else
+-static inline void prefill_possible_map(void) {}
+-#endif
+-
+ void __init setup_arch(char **cmdline_p)
+ {
+ =09cpu_probe();
+@@ -804,7 +785,6 @@ void __init setup_arch(char **cmdline_p)
+=20
+ =09resource_init();
+ =09plat_smp_setup();
+-=09prefill_possible_map();
+=20
+ =09cpu_cache_init();
+ =09paging_init();
+--=20
+2.26.0.rc2
 
-Have you tried to enable CONFIG_HIGHMEM?
 
-> 
->   CPU 0 Unable to handle kernel paging request at virtual address
-> 1fc00000, epc == 800167b8, ra == 800e2860
-> 
-> 0x1fc00000 is in the range where the SoC peripherals are so I'm
-> thinking that is the problem. But then again that is a virtual address
-> so maybe it's just a co-incidence.
-
-0x1fc00000 should be the Boot ROM's physical address. Probably you
-forgot to convert it into virtual address in your platform code?
-
-Check the EPC of exception in vmlinux with addr2line may help. (Don't
-forget to compile your kernel with debuginfo). 
-
-> 
-> Anyway I'd really appreciate any guidance that anyone could provide on
-> this. Even if it's just "go look at this SoC".
-> 
-> Thanks,
-> Chris
-> 
-> 
-
---
-Jiaxun Yang

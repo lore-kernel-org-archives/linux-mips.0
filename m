@@ -2,95 +2,132 @@ Return-Path: <SRS0=QrYc=5Z=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9D63C38A2D
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Apr 2020 09:54:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78D4DC2BA2B
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Apr 2020 10:13:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id D74CC21473
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Apr 2020 09:44:47 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="VpPDIoNl"
+	by mail.kernel.org (Postfix) with ESMTP id 55CC8221EB
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Apr 2020 10:13:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725970AbgDIJoq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Apr 2020 05:44:46 -0400
-Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17834 "EHLO
-        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726678AbgDIJoq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 9 Apr 2020 05:44:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1586425460; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=H39yX74lcg1/DyN1rhfjQMoM6Upn5/GGA8Z81cYA68ISRLecLA7Mosqxi8CTTDVCU9QGIuyGbi4pSyXEs2WMnlOT+/rT99RmWuybLC/lGduJ40ljQJBfbqCMi1GuCYnp+f0U6c4jXZeip6KgpIPqT1z04WgTs/4I3U18lnRbWcs=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1586425460; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=mDp/62cVxTov2Kp4fbuoUXG4HJasEtmIN7KMz62z3Z8=; 
-        b=Tf0hMjojBWUnVRNhPaTMofrFL3oTDWbpT8gvS2l9Ufz1xLP8WBLBV+v2CtTiKPHwEnvG0p6fc0onlmQZ/jxRZSKQY125wBFdvSnTW86y4g1G2Tu1lR5LerJ5uXx8fXitxvpxQXfD5o3EnQu2YefgF/JS652Z3wo6nUZw1LyvzmQ=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=flygoat.com;
-        spf=pass  smtp.mailfrom=jiaxun.yang@flygoat.com;
-        dmarc=pass header.from=<jiaxun.yang@flygoat.com> header.from=<jiaxun.yang@flygoat.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1586425460;
-        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
-        h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=mDp/62cVxTov2Kp4fbuoUXG4HJasEtmIN7KMz62z3Z8=;
-        b=VpPDIoNlDKZc/FEl92YKUnv7N46OevyMxdepJR3YRygAeyJkmLls3gvSEdu8s+4L
-        xYy1D9hWxEN3ZXuULxe4XxezOJu0AAnMLqyyvINqHqfpWZ/+n0RsLw3XQog/z9sPg/L
-        es3PdlbUz/MF51HvDzATxgX8QK3r71iJG2WjX7co=
-Received: from flygoat-x1e (122.235.212.87 [122.235.212.87]) by mx.zoho.com.cn
-        with SMTPS id 1586425458160477.20350102307873; Thu, 9 Apr 2020 17:44:18 +0800 (CST)
-Date:   Thu, 9 Apr 2020 17:44:17 +0800
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     Huacai Chen <chenhc@lemote.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>,
-        Zhangjin Wu <wuzhangjin@gmail.com>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Pei Huang <huangpei@loongson.cn>,
-        Shuangshuang Zhang <zhangshuangshuang@loongson.cn>
-Subject: Re: [PATCH] MIPS: Loongson-3: Add some unaligned instructions
- emulation
-Message-ID: <20200409174417.6e83e70e@flygoat-x1e>
-In-Reply-To: <1586425675-31860-1-git-send-email-chenhc@lemote.com>
-References: <1586425675-31860-1-git-send-email-chenhc@lemote.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726641AbgDIKNm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Apr 2020 06:13:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:48000 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725783AbgDIKNm (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 9 Apr 2020 06:13:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2922D31B;
+        Thu,  9 Apr 2020 03:13:42 -0700 (PDT)
+Received: from bogus (unknown [10.37.12.63])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A5833F73D;
+        Thu,  9 Apr 2020 03:13:33 -0700 (PDT)
+Date:   Thu, 9 Apr 2020 11:13:30 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Robert Richter <rric@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Allison Randal <allison@lohutok.net>,
+        Enrico Weigelt <info@metux.net>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Zhou Yanjie <zhouyanjie@zoho.com>,
+        =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>, YunQiang Su <syq@debian.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Matt Redfearn <matt.redfearn@mips.com>,
+        Steve Winslow <swinslow@gmail.com>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Richard Fontana <rfontana@redhat.com>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Peter Xu <peterx@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, oprofile-list@lists.sf.net
+Subject: Re: [PATCH 03/12] arch_topology: Make it avilable for MIPS
+Message-ID: <20200409101330.GB25948@bogus>
+References: <20200408113505.2528103-1-jiaxun.yang@flygoat.com>
+ <20200408113505.2528103-4-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200408113505.2528103-4-jiaxun.yang@flygoat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu,  9 Apr 2020 17:47:55 +0800
-Huacai Chen <chenhc@lemote.com> wrote:
-
-> 1, Add unaligned gslq, gssq, gslqc1, gssqc1 emulation;
-> 2, Add unaligned gsl{h, w, d}x, gss{h, w, d}x emulation;
-> 3, Add unaligned gslwxc1, gsswxc1, gsldxc1, gssdxc1 emulation.
-
-Probably you should split your changes into two patches?
-The first patch moves load & store helpers to the header and the second
-one adds emulation in exception handler.
-
-Thanks.
-
-> 
-> Signed-off-by: Pei Huang <huangpei@loongson.cn>
-> Signed-off-by: Shuangshuang Zhang <zhangshuangshuang@loongson.cn>
-> Signed-off-by: Huacai Chen <chenhc@lemote.com>
+On Wed, Apr 08, 2020 at 07:34:13PM +0800, Jiaxun Yang wrote:
+> Simply drop unnecessary archtecture limitions and add dummy
+> function for platforms without OF/COMMON_CLK support.
+> Also exclude functions for arm that existed in platform code.
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 > ---
->  arch/mips/include/asm/fpu_emulator.h |   2 -
->  arch/mips/include/asm/inst.h         | 773
-> ++++++++++++++++++++++++++++++++++ arch/mips/include/uapi/asm/inst.h
->   |  26 ++ arch/mips/kernel/unaligned.c         | 775
-> ----------------------------------- arch/mips/loongson64/cop2-ex.c
->    | 274 ++++++++++++- 5 files changed, 1072 insertions(+), 778
-> deletions(-)
-> 
+>  drivers/base/arch_topology.c | 121 +++++++++++++++++++----------------
+>  1 file changed, 66 insertions(+), 55 deletions(-)
+>
+> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> index 4d0a0038b476..9c2405d08dae 100644
+> --- a/drivers/base/arch_topology.c
+> +++ b/drivers/base/arch_topology.c
+> @@ -143,57 +143,6 @@ void topology_normalize_cpu_scale(void)
+>  	}
+>  }
+>
+
+[...]
+
+>  #ifdef CONFIG_CPU_FREQ
+>  static cpumask_var_t cpus_to_visit;
+>  static void parsing_done_workfn(struct work_struct *work);
+> @@ -275,7 +224,64 @@ static void parsing_done_workfn(struct work_struct *work)
+>  core_initcall(free_raw_capacity);
+>  #endif
+>
+> -#if defined(CONFIG_ARM64) || defined(CONFIG_RISCV)
+> +#if defined(CONFIG_OF) && !defined(CONFIG_ARM)
+
+topology_parse_cpu_capacity is used even on ARM, so you can't do the above.
+
+> +#if defined(CONFIG_COMMON_CLK)
+
+Not required, it will either fail in of_clk_get or clk_get_rate if the
+platform doesn't support.
+
+[...]
+
+> -#if defined(CONFIG_ARM64) || defined(CONFIG_RISCV)
+> +#if !defined(CONFIG_ARM)
+
+I think we need to see if we can merge ARM support too or rename these
+functions in ARM. Since we wanted to keep changes minimum when we moved
+ARM64 and RISCV to common, we skipped ARM. May be worth giving it a shot ?
 
 --
-Jiaxun Yang
+Regards,
+Sudeep

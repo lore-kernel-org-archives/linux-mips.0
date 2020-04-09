@@ -2,86 +2,97 @@ Return-Path: <SRS0=QrYc=5Z=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B6B3C2BB85
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Apr 2020 06:44:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F02F2C2BB1D
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Apr 2020 07:10:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 08AE12082D
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Apr 2020 06:44:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1586414683;
-	bh=pMU5hjfEYql1E5373yITTzoPsv8h4BkUjm9FjPsRF6Y=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=deuwLXzLtxlhp9jC8diGP9ZOEX7Gvf32J5rHrrEBMZuubPSeiUN40FCXPUgnTe5/u
-	 yRCFGmcTJCYFnNau+te/9Rdnkcnq0Sn+moybHs5F8xm0X7qRyfZP9jRNmXGX8AB5N3
-	 K8IfIr1VnOFV6IVv8arrZPmawAHiZGtyF7S3omuM=
+	by mail.kernel.org (Postfix) with ESMTP id C77802072F
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Apr 2020 07:10:02 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="Rn346rSU"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbgDIGoU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Apr 2020 02:44:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726642AbgDIGoU (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 9 Apr 2020 02:44:20 -0400
-Received: from mail.kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39B612137B;
-        Thu,  9 Apr 2020 06:44:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586414660;
-        bh=pMU5hjfEYql1E5373yITTzoPsv8h4BkUjm9FjPsRF6Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t0ObWNqNYbBXcHNBmJ/VZBKiqi28Ia1JFPwGr9kBh+HZtyjk3fhb5Z1CesnasvObu
-         aVmgLMeQHo752wkkefR5vmjBi27R+JANWJY81WaV1aH/KBLL7PMTVUTwbHVBg9rZY4
-         Jxh9+Zkdhpm48Q6/oGsHZwgNHJA07djaHgcup4dM=
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        id S1726538AbgDIHKB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Apr 2020 03:10:01 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17833 "EHLO
+        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725283AbgDIHKA (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 9 Apr 2020 03:10:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1586416166; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=Wobei5WInAshMdDygBVluMCD7o9t7TapeJXQK82SdObVJZK7WIRu1ef+g0DEdPKAb4NihMBgGC95mH/COHr2mDwhK5ftrFhLjlahVBYZkoZVs/cWazRrKafjahLVFr1ah/9yzzKp9doKPad27EQVbEOkmLMCi2MEgFaYDi082GY=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1586416166; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=Qa2n9evYcQirCgCpxB3IDp9QTiqPYtFJmnGql3MTeb8=; 
+        b=P3bM1gBFwIY5AN1PVPkki5jLmeClwQNmRudkjeYe5Us0InylAecwEu/wVJfwqNBZy1boaYIOHWM8wEJFZ9tqUcuytIK3fKN9LR1VGJ5PQsfjiCagUsw2qtHdEhSH0YhM4a5oUbPV/s4ob/ayyxjpXQ5A7M8C2z9FsA8JRRQ17OU=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=flygoat.com;
+        spf=pass  smtp.mailfrom=jiaxun.yang@flygoat.com;
+        dmarc=pass header.from=<jiaxun.yang@flygoat.com> header.from=<jiaxun.yang@flygoat.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1586416166;
+        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
+        h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=Qa2n9evYcQirCgCpxB3IDp9QTiqPYtFJmnGql3MTeb8=;
+        b=Rn346rSUB56UKQTyGi9/TAn+tnlZa9mO9YJECtbdJu0t56UJPKRZVzcnIidSCzze
+        VtIC9aWgAoJ3yr3d9ytiNbakVSw0tpzB3T+bgwQqaIxko6DwA1mvUyAWBT/XrjkPWdi
+        75y5QlFet0/84yqaveSQpLa0G2VRtG9Sol53OgRk=
+Received: from flygoat-x1e (122.235.212.87 [122.235.212.87]) by mx.zoho.com.cn
+        with SMTPS id 1586416164370380.5460093713225; Thu, 9 Apr 2020 15:09:24 +0800 (CST)
+Date:   Thu, 9 Apr 2020 15:09:23 +0800
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     YunQiang Su <wzssyqa@gmail.com>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Subject: [PATCH v2 05/10] MIPS: Remove redundant CLKDEV_LOOKUP selects
-Date:   Wed,  8 Apr 2020 23:44:11 -0700
-Message-Id: <20200409064416.83340-6-sboyd@kernel.org>
-X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
-In-Reply-To: <20200409064416.83340-1-sboyd@kernel.org>
-References: <20200409064416.83340-1-sboyd@kernel.org>
+        linux-mips <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH] MIPS: Limit check_bugs32() under CONFIG_32BIT
+Message-ID: <20200409150923.5b224361@flygoat-x1e>
+In-Reply-To: <CAKcpw6XywbOs-rh5ko0uz9vLz9nkgrJ0LiRTSkQQaU9dZbg7oQ@mail.gmail.com>
+References: <1586401829-22242-1-git-send-email-yangtiezhu@loongson.cn>
+        <CAKcpw6XywbOs-rh5ko0uz9vLz9nkgrJ0LiRTSkQQaU9dZbg7oQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The ATH79 config selects COMMON_CLK already, and the COMMON_CLK config
-option already selects CLKDEV_LOOKUP, and CLKDEV_LOOKUP already selects
-HAVE_CLK so it's redundant to have these selected again.
+On Thu, 9 Apr 2020 12:43:28 +0800
+YunQiang Su <wzssyqa@gmail.com> wrote:
 
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: <linux-mips@vger.kernel.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
----
- arch/mips/Kconfig | 2 --
- 1 file changed, 2 deletions(-)
+> Tiezhu Yang <yangtiezhu@loongson.cn> =E4=BA=8E2020=E5=B9=B44=E6=9C=889=E6=
+=97=A5=E5=91=A8=E5=9B=9B
+> =E4=B8=8A=E5=8D=8811:10=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > There is no need to build and call check_bugs32() under
+> > CONFIG_64BIT, just limit it under CONFIG_32BIT. =20
+>=20
+> Since 32bit is subset of 64bit, and due to the code, I think that the
+> initial purpose
+> of check_bugs32() is also willing to run even with CONFIG_64BIT.
+>=20
+> For example, if we have a CPU which is 64bit, and work well on 64bit
+> mode, while has a bug only on 32bit mode, check_bugs32 should be used
+> here.
+>=20
+> Loongson's 3A 1000 is the example, I cannot support FP32 mode well.
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 797d7f1ad5fe..e53a8dd5c19b 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -209,9 +209,7 @@ config ATH79
- 	select DMA_NONCOHERENT
- 	select GPIOLIB
- 	select PINCTRL
--	select HAVE_CLK
- 	select COMMON_CLK
--	select CLKDEV_LOOKUP
- 	select IRQ_MIPS_CPU
- 	select SYS_HAS_CPU_MIPS32_R2
- 	select SYS_HAS_EARLY_PRINTK
--- 
-Sent by a computer, using git, on the internet
+In this case bugs32 only contains a workaround for MIPS34K, which is a
+MIPS32 processor. It's safe to do so.
 
+But my suggestion is if you're going to clean-up bugs and workarounds
+you'd better establish a file for silicon bugs and provide Kconfig
+options to enable & disable them. Manage bug dependencies by Kconfig
+will be easier.
+
+Thanks.
+
+--
+Jiaxun Yang

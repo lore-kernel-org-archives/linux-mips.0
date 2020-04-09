@@ -2,29 +2,29 @@ Return-Path: <SRS0=QrYc=5Z=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 972B9C2BA2B
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Apr 2020 10:19:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CB42C2BA2B
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Apr 2020 10:31:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.kernel.org (Postfix) with ESMTP id 7105620857
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Apr 2020 10:19:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E656120757
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Apr 2020 10:31:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725987AbgDIKT5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Apr 2020 06:19:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:48108 "EHLO foss.arm.com"
+        id S1726663AbgDIKbd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Apr 2020 06:31:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:48268 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725972AbgDIKT5 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 9 Apr 2020 06:19:57 -0400
+        id S1725970AbgDIKbd (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 9 Apr 2020 06:31:33 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0414631B;
-        Thu,  9 Apr 2020 03:19:55 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A694031B;
+        Thu,  9 Apr 2020 03:31:33 -0700 (PDT)
 Received: from bogus (unknown [10.37.12.63])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 853483F73D;
-        Thu,  9 Apr 2020 03:19:46 -0700 (PDT)
-Date:   Thu, 9 Apr 2020 11:19:43 +0100
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D8893F73D;
+        Thu,  9 Apr 2020 03:31:24 -0700 (PDT)
+Date:   Thu, 9 Apr 2020 11:31:21 +0100
 From:   Sudeep Holla <sudeep.holla@arm.com>
 To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
 Cc:     linux-mips@vger.kernel.org,
@@ -47,8 +47,8 @@ Cc:     linux-mips@vger.kernel.org,
         Paul Burton <paulburton@kernel.org>,
         Allison Randal <allison@lohutok.net>,
         Enrico Weigelt <info@metux.net>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
         Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
-        Alexios Zavras <alexios.zavras@intel.com>,
         Richard Fontana <rfontana@redhat.com>,
         Paul Cercueil <paul@crapouillou.net>,
         Zhou Yanjie <zhouyanjie@zoho.com>,
@@ -58,38 +58,72 @@ Cc:     linux-mips@vger.kernel.org,
         Serge Semin <fancer.lancer@gmail.com>,
         Matt Redfearn <matt.redfearn@mips.com>,
         Steve Winslow <swinslow@gmail.com>,
+        Alexios Zavras <alexios.zavras@intel.com>,
         Peter Xu <peterx@redhat.com>,
         afzal mohammed <afzal.mohd.ma@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
         Kamal Dasu <kdasu.kdev@gmail.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
         Oleksij Rempel <linux@rempel-privat.de>,
+        Sudeep Holla <sudeep.holla@arm.com>,
         linux-kernel@vger.kernel.org,
         bcm-kernel-feedback-list@broadcom.com, oprofile-list@lists.sf.net
-Subject: Re: [PATCH 04/12] arch_topology: Reset all cpus in reset_cpu_topology
-Message-ID: <20200409101943.GC25948@bogus>
+Subject: Re: [PATCH 05/12] MIPS: Switch to arch_topology
+Message-ID: <20200409103121.GD25948@bogus>
 References: <20200408113505.2528103-1-jiaxun.yang@flygoat.com>
- <20200408113505.2528103-5-jiaxun.yang@flygoat.com>
+ <20200408113505.2528103-6-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200408113505.2528103-5-jiaxun.yang@flygoat.com>
+In-Reply-To: <20200408113505.2528103-6-jiaxun.yang@flygoat.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Apr 08, 2020 at 07:34:14PM +0800, Jiaxun Yang wrote:
-> For MIPS platform, when topology isn't probed by DeviceTree,
-> possible_cpu might be empty when calling init_cpu_topology,
-> that may result cpu_topology not fully reseted for all CPUs.
-> So here we can reset all cpus instead of possible cpus.
+On Wed, Apr 08, 2020 at 07:34:15PM +0800, Jiaxun Yang wrote:
+> Previously, MIPS is using self-defined "globalnumber" in struct
+> mips_cpuinfo to store topology information. However, it's not friendly
+> to DeviceTree based systems and lack of cpu_capacity related feature
+> which can take advantage of multi-cluster system.
+>
+> Here, we enabled arch_topology for MIPS and adapted some functions
+> to fit arch_topology structure.
+> Also, we implmented smp_store_cpu_info to probe CPU's topology information
+> by "globalnumber" registers in VP ASE or Ebase.CPUNum for legacy systems.
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+>  arch/mips/Kconfig                |  1 +
+>  arch/mips/include/asm/cpu-info.h | 49 ----------------------------
+>  arch/mips/include/asm/smp.h      |  2 --
+>  arch/mips/include/asm/topology.h | 48 +++++++++++++++++++++++++---
+>  arch/mips/kernel/cpu-probe.c     | 43 -------------------------
+>  arch/mips/kernel/setup.c         |  1 +
+>  arch/mips/kernel/smp.c           | 55 ++++----------------------------
+>  arch/mips/kernel/topology.c      | 42 ++++++++++++++++++++++++
+>  8 files changed, 93 insertions(+), 148 deletions(-)
 >
 
-Why not set all CPUs upto NR_CPUS in possible cpus_mask as
-default to begin with ?
+[...]
 
--- 
+> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+> index 8a418783a6bb..b9fefc5dc702 100644
+> --- a/arch/mips/kernel/setup.c
+> +++ b/arch/mips/kernel/setup.c
+> @@ -784,6 +784,7 @@ void __init setup_arch(char **cmdline_p)
+>  	dmi_setup();
+>
+>  	resource_init();
+> +	init_cpu_topology();
+>  	plat_smp_setup();
+>
+
+Continuing my reply on previous patch, I see possible_cpu_mask being
+set up in plat_smp_setup. Why not reverse the order above. Further I see
+that the logical->physical CPU mapping is done in plat_smp_setup which
+is required to store/save any topology information.
+
+--
 Regards,
 Sudeep

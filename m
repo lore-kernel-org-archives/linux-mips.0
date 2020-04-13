@@ -2,177 +2,128 @@ Return-Path: <SRS0=vOB2=55=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 669BFC2BA19
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Apr 2020 11:35:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 941D0C2BB86
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Apr 2020 11:54:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3D56520753
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Apr 2020 11:35:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D84752063A
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Apr 2020 11:54:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="vgL/gYJX"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="jzCixlMi"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728730AbgDMITX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 13 Apr 2020 04:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:42722 "EHLO
+        id S1727887AbgDMLyn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 13 Apr 2020 07:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727971AbgDMITV (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Apr 2020 04:19:21 -0400
-Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [149.28.68.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF2FC00860B
-        for <linux-mips@vger.kernel.org>; Mon, 13 Apr 2020 01:19:20 -0700 (PDT)
-Received: from flygoat-x1e (unknown [IPv6:240e:390:49e:92c0::d68])
-        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 1680920CF2;
-        Mon, 13 Apr 2020 08:19:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
-        t=1586765960; bh=4oWYtlgTtO0X4LB3G6OgFIKhhJH7k9TnuQnTQzRB24o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vgL/gYJXeBGHG1mziH4t6cGyVwTKL3Fd8sATYRT5Y5Y5qLRFdPZrkpLT0ZzvJ2FoZ
-         hzL398788Qe1tgyx1pfiaUWRRX+05cKSO7N5e1EK+AOqtstAvz1povGiZy39PSbqbq
-         bx3SpCHz3hzJQjG0fV7jh7g5MbeK0iF1Mf2Z+zRD5jeRt6DMHbBv2L7L61+OKfrR75
-         5iaPJljwdBn3NfBzqzNBByprnt29vTlWqcf9Pj6FpAoEqTEc10hDRaO4GEIJhE0D68
-         +rb+cCjt7Zx/Goas7c4nUaPQBsm2HSwn3obSkn2fzM8qkIMSNNCWXOc4ay5NXf9lmr
-         TgbZYXUbC1fgQ==
-Date:   Mon, 13 Apr 2020 16:18:42 +0800
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     Huacai Chen <chenhc@lemote.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        kvm@vger.kernel.org, qemu-devel@nongnu.org,
-        linux-mips@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        aleksandar.qemu.devel@gmail.com
-Subject: Re: [PATCH 0/15] KVM: MIPS: Add Loongson-3 support (Host Side)
-Message-ID: <20200413161842.57ad8be4@flygoat-x1e>
-In-Reply-To: <1586763024-12197-1-git-send-email-chenhc@lemote.com>
-References: <1586763024-12197-1-git-send-email-chenhc@lemote.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        with ESMTP id S1727907AbgDMLyn (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Apr 2020 07:54:43 -0400
+X-Greylist: delayed 328 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Apr 2020 07:54:42 EDT
+X-Greylist: delayed 168 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 13 Apr 2020 04:49:13 PDT
+Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5301::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B230EC03BC92;
+        Mon, 13 Apr 2020 04:49:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586778552;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=8iHbGZPtb+jLR7wFq0bcz83kvyfN8ojZLOZPdfJ3DN0=;
+        b=jzCixlMigoLBab/r7rphEa3/lu/SkG5/YzIXqlSxSNbYbt4gEJH6z6P8UBE6+x6go1
+        gZ0TfJ9kz5VbA50HcICeDhcPbZ8530tSfnPaQ8Ou3io7NpMT4GILnqbWToNFBy4NVGGw
+        X1MD6y8m4pwWe0N1ZDxB/uQc1l67d8TNMBbr/Wf6yg/U0rc92E13mftGWtk+EW9I68kT
+        XI1keCnkvKtjLfehGLJOzPWujqS/LraH9QFwoSmFzfeqWESCA4chQAUGNMtMkDOD2H3I
+        Uc6CGjTJu64/FAryger9klPNAaKJQbpM3ZiWh1WDYZZsM2+tZkDa+uV3+A/f+8vNgqXy
+        D+nQ==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDlSfXA0Mwc0="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 46.2.1 DYNA|AUTH)
+        with ESMTPSA id m02241w3DBkC5CU
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Mon, 13 Apr 2020 13:46:12 +0200 (CEST)
+Subject: Re: DRM interaction problems on Ingenic CI20 / jz4780 with dw-hdmi and ingenic-drm
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=iso-8859-1
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <125Q8Q.9F49TXF6ZICX1@crapouillou.net>
+Date:   Mon, 13 Apr 2020 13:46:12 +0200
+Cc:     Dave Airlie <airlied@linux.ie>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Andy Yan <andy.yan@rock-chips.com>,
+        Yakir Yang <ykk@rock-chips.com>,
+        Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>,
+        Paul Boddie <paul@boddie.org.uk>, linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        MIPS Creator CI20 Development 
+        <mips-creator-ci20-dev@googlegroups.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <AAFD4E35-E830-4CED-956E-E354BC012698@goldelico.com>
+References: <ED77DCA8-FF50-4E9E-A4B8-688262774723@goldelico.com> <125Q8Q.9F49TXF6ZICX1@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>
+X-Mailer: Apple Mail (2.3124)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, 13 Apr 2020 15:30:09 +0800
-Huacai Chen <chenhc@lemote.com> wrote:
 
-> We are preparing to add KVM support for Loongson-3. VZ extension is
-> fully supported in Loongson-3A R4+, and we will not care about old
-> CPUs (at least now). We already have a full functional Linux kernel
-> (based on Linux-5.4.x LTS) and QEMU (based on 5.0.0-rc2) and their git
-> repositories are here:
-> 
-> QEMU: https://github.com/chenhuacai/qemu
-> Kernel: https://github.com/chenhuacai/linux
-> 
-> Of course these two repositories need to be rework and not suitable
-> for upstream (especially the commits need to be splitted). We show
-> them here is just to tell others what we have done, and how
-> KVM/Loongson will look like.
-> 
-> Our plan is make the KVM host side be upstream first, and after that,
-> we will make the KVM guest side and QEMU emulator be upstream.
+> Am 13.04.2020 um 13:25 schrieb Paul Cercueil <paul@crapouillou.net>:
+>=20
+> Hi Nikolaus,
+>=20
+>=20
+> Le sam. 11 avril 2020 =E0 16:14, H. Nikolaus Schaller =
+<hns@goldelico.com> a =E9crit :
+>> Hi,
+>> we (Paul Boddie and me) are working to get HDMI functional on the
+>> Ingenic CI20 board with jz4780 SoC which uses a specialization of
+>> the dw-hdmi driver.
+>> So far we have identified two issues.
+>> The first is that HPD interrupts are not properly processed.
+>> drm_helper_hpd_irq_event() is called by HPD events but
+>> dev->mode_config.poll_enabled is false.
+>> Therefore the interrupt is ignored and nothing happens.
+>> Now I wonder about the logic behind checking for poll_enabled.
+>> I understand that a driver can do either polling or irq or both.
+>> Therefore handling the irq_event shouldn't be disabled by =
+poll_enabled
+>> being false. Otherwise we can only do: nothing, polling, polling+irq
+>> but not irq alone.
+>> The jz4780 hdmi subsystem (drm/bridge/dw-hdmi.c) uses
+>> 	connector->polled =3D DRM_CONNECTOR_POLL_HPD;
+>> but shouldn't this enable polling? Note that there seems to be
+>> no (direct) call to drm_kms_helper_poll_init().
+>> If we set dev->mode_config.poll_enabled =3D true in
+>> drm_helper_hpd_irq_event() things start to work.
+>> Please can you clarify what would be best practise here to
+>> get HPD event handling working.
+>> The other issue is in dw-hdmi.c:
+>> We found out that ingenic_drm_encoder_atomic_check() fails because
+>> info->num_bus_formats =3D=3D 0
+>> and not 1. This blocks further initialization.
+>> The reason seems to be that dw_hdmi_bridge_attach() does not call
+>> drm_display_info_set_bus_formats() with a proper format like
+>> other drivers (e.g. drm/bridge/ti-tfp410.c) are doing.
+>> We have patched to set a single bus format MEDIA_BUS_FMT_RGB888_1X24
+>> and then DRM setup seems to work (although we still have no valid
+>> HDMI signal but that is likely something else).
+>> Please can you explain how setting the bus format should be fixed
+>> in dw-hdmi.c.
+>> If these questions should be forwarded to other specialists, please
+>> do so.
+>=20
+> It should be sent to the DRI mailing list, you missed the most =
+important one.
 
-+ Aleksandar as QEMU/MIPS mainatiner
+Ah, ok.
 
-I was involved in KVM/Loongson development a bit and also intend to
-help with mainline these works.
-
-After dealing with basic LS7A PCH kernel support, I'm going to
-cooperate with Huacai and anyone who interested in to deal with
-following stuff:
-
-- Basic QEMU/TCG support for Loongson64 instructions.
-	Well, it seems unrelated with KVM, but that would make
-	development easier with cross ISA emulation. I'm not going to
-	implement all the features like Loongson's page table fast walk
-	extension and binary translation extension but I'll ensure any
-	binary compiled with march=loongson3a can run flawlessly on
-	TCG.
-
-- Design of Loongson-VIRT QEMU machine
-	It is nearly impossible to bring a real Loongson system into
-	QEMU. Both RS780E and LS7A PCH have tons of unreasonable design
-	that would make the emulation extremely complex, Loongson
-	company's KVM implementation[1] has already proofed that,
-	thay're now in the hell. So we all agreed that we should build
-	a machine from draft. I think we should reuse existing infra as
-	far as possible to reduce our work load. I'm planing to use
-	pci-host-cam-generic together with VIRTIO PCI devices and a
-	a strip down version of loongson,liointc-1.0a to build a pure
-	PCI based system. But if any one have better idea please just
-	tell us, I'm still considering how to implement SMP-IPI and ACPI
-	stuff.
-
-- BIOS in VM
-	This has a lower priority. But BIOS is required to make a
-	emulated machine looks like a real machine. Loongson have their
-	open-sourced PMON and close-sourced UEFI(Based on tianocore).
-	I'd really with Loongson or Lemote will open-source their UEFI
-	but PMON is also a option.
-
-Any kind of feedback is appreciated.
-
-Thanks.
-
-Wish you good health :-)
-
-
-[1]: http://cgit.loongnix.org/cgit/linux-3.10/ &
-http://cgit.loongnix.org/cgit/qemu-2.7.0/
-
-Btw: I think Cc qemu-devel for the whole series is a little bit
-disturb, probably we should only Cc qemu-devel for the cover letter.
-
-> 
-> Mike Rapoport(1):
->  mips: define pud_index() regardless of page table folding
-> 
-> Xing Li(2):
->  KVM: MIPS: Define KVM_ENTRYHI_ASID to cpu_asid_mask(&boot_cpu_data)
->  KVM: MIPS: Fix VPN2_MASK definition for variable cpu_vmbits
-> 
-> Huacai Chen(12):
->  KVM: MIPS: Increase KVM_MAX_VCPUS and KVM_USER_MEM_SLOTS to 16
->  KVM: MIPS: Add EVENTFD support which is needed by VHOST
->  KVM: MIPS: Use lddir/ldpte instructions to lookup gpa_mm.pgd
->  KVM: MIPS: Introduce and use cpu_guest_has_ldpte
->  KVM: MIPS: Use root tlb to control guest's CCA for Loongson-3
->  KVM: MIPS: Let indexed cacheops cause guest exit on Loongson-3
->  KVM: MIPS: Add more types of virtual interrupts
->  KVM: MIPS: Add Loongson-3 Virtual IPI interrupt support
->  KVM: MIPS: Add CPUCFG emulation for Loongson-3
->  KVM: MIPS: Add CONFIG6 and DIAG registers emulation
->  KVM: MIPS: Add more MMIO load/store instructions emulation
->  KVM: MIPS: Enable KVM support for Loongson-3
-> 
-> Signed-off-by: Huacai Chen <chenhc@lemote.com>
-> ---
->  arch/mips/Kconfig                    |   1 +
->  arch/mips/include/asm/cpu-features.h |   3 +
->  arch/mips/include/asm/kvm_host.h     |  50 +++-
->  arch/mips/include/asm/mipsregs.h     |   7 +
->  arch/mips/include/asm/pgtable-64.h   |   4 +-
->  arch/mips/include/uapi/asm/inst.h    |  11 +
->  arch/mips/kernel/cpu-probe.c         |   2 +
->  arch/mips/kvm/Kconfig                |   1 +
->  arch/mips/kvm/Makefile               |   5 +-
->  arch/mips/kvm/emulate.c              | 461
-> ++++++++++++++++++++++++++++++++++- arch/mips/kvm/entry.c
->    |  19 +- arch/mips/kvm/interrupt.c            |  93 +------
->  arch/mips/kvm/interrupt.h            |  14 +-
->  arch/mips/kvm/loongson_ipi.c         | 215 ++++++++++++++++
->  arch/mips/kvm/mips.c                 |  49 +++-
->  arch/mips/kvm/tlb.c                  |  39 +++
->  arch/mips/kvm/trap_emul.c            |   3 +
->  arch/mips/kvm/vz.c                   | 204 +++++++++++-----
->  18 files changed, 1013 insertions(+), 168 deletions(-)
->  create mode 100644 arch/mips/kvm/loongson_ipi.c
-> --
-> 2.7.0
+>=20
+> -Paul
+>=20
+>> BR and thanks,
+>> Nikolaus Schaller
 

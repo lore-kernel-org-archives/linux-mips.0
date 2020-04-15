@@ -2,39 +2,70 @@ Return-Path: <SRS0=w/KO=57=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43E3AC38A2B
-	for <linux-mips@archiver.kernel.org>; Wed, 15 Apr 2020 08:37:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87AC6C3815B
+	for <linux-mips@archiver.kernel.org>; Wed, 15 Apr 2020 09:15:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 243B320656
-	for <linux-mips@archiver.kernel.org>; Wed, 15 Apr 2020 08:37:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6828420768
+	for <linux-mips@archiver.kernel.org>; Wed, 15 Apr 2020 09:15:37 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="QmYfPFax"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408162AbgDOIhL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 15 Apr 2020 04:37:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
+        id S2635974AbgDOJPf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 15 Apr 2020 05:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2894624AbgDOIf4 (ORCPT
+        by vger.kernel.org with ESMTP id S2635968AbgDOJPa (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:35:56 -0400
-Received: from mo6-p04-ob.smtp.rzone.de (mo6-p04-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5304::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA724C061A10;
-        Wed, 15 Apr 2020 01:35:54 -0700 (PDT)
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UNf2M7O2CKN9ej"
-X-RZG-CLASS-ID: mo00
-Received: from iMac.fritz.box
-        by smtp.strato.de (RZmta 46.4.0 DYNA|AUTH)
-        with ESMTPSA id 6028a2w3F8ZS0Iw
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Wed, 15 Apr 2020 10:35:28 +0200 (CEST)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Wed, 15 Apr 2020 05:15:30 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0720C061A41
+        for <linux-mips@vger.kernel.org>; Wed, 15 Apr 2020 02:15:29 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id q19so2829602ljp.9
+        for <linux-mips@vger.kernel.org>; Wed, 15 Apr 2020 02:15:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=69T9ZGqlIy7aImGgwrs75/hfGvsilwincFfwWiQFobg=;
+        b=QmYfPFaxi91fzgnYBmzUnbNLZxOG0Qvv9XHtQXYm/D+sTky/Yc25iONfxBlY/7wqsB
+         fRtQYUCgyxgK4p3vjoCdR1E4K1nsTfSz3bWGNyVBA7FGlzJ7W7xAZUor5i5MsgsA0hU6
+         1sVmcbUlUP1cDxtb+3jC+HIaRfadnrNzRFcNUoV22EicSEE5dlVf6RJieO6E9yC3PemP
+         qMb4hRiVMAXxE1MiwCuSopLulXmT+VCKUbpRSEH+BCrvLMZ4tKOYKabhdtdCWnXgNuRk
+         9lpcy+vti6/lVgJJk2gVDZg/BOarCjaD0Ak6NlGy7RcdUdyYk3SImWtP+7AMtEZqo2NA
+         +piQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=69T9ZGqlIy7aImGgwrs75/hfGvsilwincFfwWiQFobg=;
+        b=PfQlXDCnLdJKB/I7n4odrgSd52e0xivlHCx4mvr8PYxKyX7v76X+NNdknM0jiYb36/
+         y+uopESvoG3bIdKHymcZpXZ9ebKJSOYiFxCtTLKbH7XIbxV0eCttTFHRPMetZb0igVvL
+         GGSPbasi+/bTaATL9uaEQ25RNcM9HmG5KqMd2yvTPdpT7kdQk1VcsnFaPiQxa873Jhkw
+         dWx7pW1didpG/cTEVAobW7cDMI0TQhSDU/07+3ETVrEvrQwHv9ImzdS52EK5r3QM9jKp
+         D1eSJAmlWUrkVo5UDjH/JfEzmkRBqRbs3MwEdkYmPhJqFmOvTGvFVhH2uuY3oPP2qMuX
+         OVRQ==
+X-Gm-Message-State: AGi0PuZox6I50Rx9SuinYBbyPlL37kighaDBW01xCoAMndnIKj9XBXFU
+        R5PqhePe239KBtHxTwW/Wa3u0Q==
+X-Google-Smtp-Source: APiQypJt4bgg1yrZutHX1jnCNUTiEGk5PA6dcO1xYRoqGEwzcnoywOgKJNgJRfEssnCyTOQijG6tmA==
+X-Received: by 2002:a2e:6c0a:: with SMTP id h10mr2542581ljc.195.1586942127891;
+        Wed, 15 Apr 2020 02:15:27 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:81b:6e8d:a1dd:9870:4166:dead? ([2a00:1fa0:81b:6e8d:a1dd:9870:4166:dead])
+        by smtp.gmail.com with ESMTPSA id m13sm12192031lfk.12.2020.04.15.02.15.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Apr 2020 02:15:27 -0700 (PDT)
+Subject: Re: [PATCH v6 08/12] arm: dts: s5pv210: Add G3D node
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
         Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
         Tony Lindgren <tony@atomide.com>,
         Paul Cercueil <paul@crapouillou.net>,
         Ralf Baechle <ralf@linux-mips.org>,
@@ -51,55 +82,51 @@ Cc:     Philipp Rossak <embed3d@gmail.com>,
         kernel@pyra-handheld.com, linux-mips@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org,
-        "H . Nikolaus Schaller" <hns@goldelico.com>
-Subject: [PATCH v6 10/12] ARM: dts: sun6i: a31s: add sgx gpu child node
-Date:   Wed, 15 Apr 2020 10:35:17 +0200
-Message-Id: <fed0dc035c2e7cfe068588d7b5232924d2960ab1.1586939718.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1586939718.git.hns@goldelico.com>
+        Jonathan Bakker <xc-racer2@live.ca>
 References: <cover.1586939718.git.hns@goldelico.com>
+ <b6733f80546bf3e6b3799f716b9c8e0f407de03d.1586939718.git.hns@goldelico.com>
+From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-ID: <b6ffa74a-acef-f329-0d9e-981483499e16@cogentembedded.com>
+Date:   Wed, 15 Apr 2020 12:15:17 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <b6733f80546bf3e6b3799f716b9c8e0f407de03d.1586939718.git.hns@goldelico.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Philipp Rossak <embed3d@gmail.com>
+Hello!
 
-We are adding the devicetree binding for the PVR-SGX-544-115 gpu.
+On 15.04.2020 11:35, H. Nikolaus Schaller wrote:
 
-This driver is currently under development in the openpvrsgx-devgroup.
-Right now the full binding is not figured out, so we provide here a
-placeholder. It will be completed as soon as there is a demo available.
+> From: Jonathan Bakker <xc-racer2@live.ca>
+> 
+> to add support for SGX540 GPU.
+> 
+> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> ---
+>   arch/arm/boot/dts/s5pv210.dtsi | 15 +++++++++++++++
+>   1 file changed, 15 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/s5pv210.dtsi b/arch/arm/boot/dts/s5pv210.dtsi
+> index 2ad642f51fd9..e7fc709c0cca 100644
+> --- a/arch/arm/boot/dts/s5pv210.dtsi
+> +++ b/arch/arm/boot/dts/s5pv210.dtsi
+> @@ -512,6 +512,21 @@ vic3: interrupt-controller@f2300000 {
+>   			#interrupt-cells = <1>;
+>   		};
+>   
+> +		g3d: g3d@f3000000 {
 
-The currently used binding that is used during development is more
-complete and was already verifyed by loading the kernelmodule successful.
+    Should be named generically, "gpu@f3000000", according to the DT spec 0.2, 
+section 2.2.2. It's either "gpu" or "display" TTBOMK...
 
-Signed-off-by: Philipp Rossak <embed3d@gmail.com>
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
----
- arch/arm/boot/dts/sun6i-a31s.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+[...]
 
-diff --git a/arch/arm/boot/dts/sun6i-a31s.dtsi b/arch/arm/boot/dts/sun6i-a31s.dtsi
-index 97e2c51d0aea..669770d2934a 100644
---- a/arch/arm/boot/dts/sun6i-a31s.dtsi
-+++ b/arch/arm/boot/dts/sun6i-a31s.dtsi
-@@ -59,3 +59,13 @@ &pio {
- &tcon0 {
- 	compatible = "allwinner,sun6i-a31s-tcon";
- };
-+
-+&gpu {
-+	compatible = "allwinner,sun8i-a31s-sgx544-115",
-+		     "img,sgx544-115", "img,sgx544";
-+	/*
-+	 * This node is currently a placeholder for the gpu.
-+	 * This will be completed when a full demonstration
-+	 * of the openpvrsgx driver is available for this board.
-+	 */
-+};
--- 
-2.25.1
-
+MBR, Sergei

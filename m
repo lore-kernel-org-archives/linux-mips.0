@@ -6,30 +6,30 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D731C3815B
-	for <linux-mips@archiver.kernel.org>; Wed, 15 Apr 2020 08:36:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B22FEC3815B
+	for <linux-mips@archiver.kernel.org>; Wed, 15 Apr 2020 08:36:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 322602168B
-	for <linux-mips@archiver.kernel.org>; Wed, 15 Apr 2020 08:36:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 931D420857
+	for <linux-mips@archiver.kernel.org>; Wed, 15 Apr 2020 08:36:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894652AbgDOIgG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 15 Apr 2020 04:36:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40286 "EHLO
+        id S2408102AbgDOIgI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 15 Apr 2020 04:36:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726471AbgDOIgE (ORCPT
+        by vger.kernel.org with ESMTP id S2894654AbgDOIgH (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:36:04 -0400
-Received: from mo6-p03-ob.smtp.rzone.de (mo6-p03-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5303::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A87FC061A10;
-        Wed, 15 Apr 2020 01:36:02 -0700 (PDT)
+        Wed, 15 Apr 2020 04:36:07 -0400
+Received: from mo6-p04-ob.smtp.rzone.de (mo6-p04-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5304::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF43C061A0C;
+        Wed, 15 Apr 2020 01:36:06 -0700 (PDT)
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UNf2M7O2CKN9ej"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
         by smtp.strato.de (RZmta 46.4.0 DYNA|AUTH)
-        with ESMTPSA id 6028a2w3F8ZO0Iq
+        with ESMTPSA id 6028a2w3F8ZQ0It
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Wed, 15 Apr 2020 10:35:24 +0200 (CEST)
+        Wed, 15 Apr 2020 10:35:26 +0200 (CEST)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
         Rob Herring <robh+dt@kernel.org>,
@@ -52,9 +52,9 @@ Cc:     Philipp Rossak <embed3d@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org,
         "H. Nikolaus Schaller" <hns@goldelico.com>
-Subject: [PATCH v6 05/12] ARM: DTS: omap36xx: add sgx gpu child node
-Date:   Wed, 15 Apr 2020 10:35:12 +0200
-Message-Id: <c47e1d9256392fcf69ae399558008bfe1f5b302d.1586939718.git.hns@goldelico.com>
+Subject: [PATCH v6 07/12] ARM: DTS: omap5: add sgx gpu child node
+Date:   Wed, 15 Apr 2020 10:35:14 +0200
+Message-Id: <004611c9660943759b635a87484932869927cf74.1586939718.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1586939718.git.hns@goldelico.com>
 References: <cover.1586939718.git.hns@goldelico.com>
@@ -67,32 +67,41 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 and add interrupt.
 
-Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # GTA04, BeagleBoard XM
+Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # Pyra-Handheld.
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- arch/arm/boot/dts/omap36xx.dtsi | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/omap5.dtsi | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/boot/dts/omap36xx.dtsi b/arch/arm/boot/dts/omap36xx.dtsi
-index 71f3c8f1f924..b308dbb3b1bb 100644
---- a/arch/arm/boot/dts/omap36xx.dtsi
-+++ b/arch/arm/boot/dts/omap36xx.dtsi
-@@ -211,10 +211,11 @@ sgx_module: target-module@50000000 {
+diff --git a/arch/arm/boot/dts/omap5.dtsi b/arch/arm/boot/dts/omap5.dtsi
+index 2ac7f021c284..1cf41664fd00 100644
+--- a/arch/arm/boot/dts/omap5.dtsi
++++ b/arch/arm/boot/dts/omap5.dtsi
+@@ -270,7 +270,7 @@ sata: sata@4a141100 {
+ 			ports-implemented = <0x1>;
+ 		};
+ 
+-		target-module@56000000 {
++		sgx_module: target-module@56000000 {
+ 			compatible = "ti,sysc-omap4", "ti,sysc";
+ 			reg = <0x5600fe00 0x4>,
+ 			      <0x5600fe10 0x4>;
+@@ -287,10 +287,11 @@ target-module@56000000 {
  			#size-cells = <1>;
- 			ranges = <0 0x50000000 0x2000000>;
+ 			ranges = <0 0x56000000 0x2000000>;
  
 -			/*
 -			 * Closed source PowerVR driver, no child device
 -			 * binding or driver in mainline
 -			 */
 +			gpu: gpu@0 {
-+				compatible = "ti,omap3-sgx530-125", "img,sgx530-125", "img,sgx530";
-+				reg = <0x0 0x10000>;	/* 64kB */
-+				interrupts = <21>;
++				compatible = "ti,omap5-sgx544-116", "img,sgx544-116", "img,sgx544";
++				reg = <0x0 0x10000>;
++				interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
 +			};
  		};
- 	};
  
+ 		target-module@58000000 {
 -- 
 2.25.1
 

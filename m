@@ -4,32 +4,32 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E32E7C2BB85
-	for <linux-mips@archiver.kernel.org>; Wed, 15 Apr 2020 08:36:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A073BC2BA19
+	for <linux-mips@archiver.kernel.org>; Wed, 15 Apr 2020 08:36:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CA4C82137B
-	for <linux-mips@archiver.kernel.org>; Wed, 15 Apr 2020 08:36:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8705620656
+	for <linux-mips@archiver.kernel.org>; Wed, 15 Apr 2020 08:36:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894648AbgDOIgE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 15 Apr 2020 04:36:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
+        id S2405045AbgDOIg4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 15 Apr 2020 04:36:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2894641AbgDOIgB (ORCPT
+        by vger.kernel.org with ESMTP id S2894644AbgDOIgC (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 15 Apr 2020 04:36:01 -0400
+        Wed, 15 Apr 2020 04:36:02 -0400
 Received: from mo6-p04-ob.smtp.rzone.de (mo6-p04-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5304::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0832C061A0C;
-        Wed, 15 Apr 2020 01:36:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A389BC061A0E;
+        Wed, 15 Apr 2020 01:36:01 -0700 (PDT)
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UNf2M7O2CKN9ej"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
         by smtp.strato.de (RZmta 46.4.0 DYNA|AUTH)
-        with ESMTPSA id 6028a2w3F8ZU0Iy
+        with ESMTPSA id 6028a2w3F8ZP0Ir
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Wed, 15 Apr 2020 10:35:30 +0200 (CEST)
+        Wed, 15 Apr 2020 10:35:25 +0200 (CEST)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
         Rob Herring <robh+dt@kernel.org>,
@@ -51,11 +51,10 @@ Cc:     Philipp Rossak <embed3d@gmail.com>,
         kernel@pyra-handheld.com, linux-mips@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Paul Boddie <paul@boddie.org.uk>
-Subject: [PATCH v6 12/12] MIPS: DTS: jz4780: add sgx gpu node
-Date:   Wed, 15 Apr 2020 10:35:19 +0200
-Message-Id: <2ee64babb11f79fe4a03b7bad6c94fbbe0ce4b64.1586939718.git.hns@goldelico.com>
+        "H. Nikolaus Schaller" <hns@goldelico.com>
+Subject: [PATCH v6 06/12] ARM: DTS: omap4: add sgx gpu child node
+Date:   Wed, 15 Apr 2020 10:35:13 +0200
+Message-Id: <dc8ff147e82d9b7862f0122801d30600a80f314c.1586939718.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1586939718.git.hns@goldelico.com>
 References: <cover.1586939718.git.hns@goldelico.com>
@@ -66,41 +65,71 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-and add interrupt and clocks.
+and add interrupt.
 
-Tested to build for CI20 board and load a driver.
-Setup can not yet be fully tested since there is no working
-HDMI driver for jz4780.
+Since omap4420/30/60 and omap4470 come with different SGX variants
+we need to introduce a new omap4470.dtsi. If an omap4470 board
+does not want to use SGX it is no problem to still include
+omap4460.dtsi.
 
-Suggested-by: Paul Boddie <paul@boddie.org.uk>
-Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # CI20.
+Tested-by: H. Nikolaus Schaller <hns@goldelico.com> # PandaBoard ES
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- arch/mips/boot/dts/ingenic/jz4780.dtsi | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/arm/boot/dts/omap4.dtsi   | 11 ++++++-----
+ arch/arm/boot/dts/omap4470.dts | 15 +++++++++++++++
+ 2 files changed, 21 insertions(+), 5 deletions(-)
+ create mode 100644 arch/arm/boot/dts/omap4470.dts
 
-diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-index bb89653d16a3..883fe2c4c9e1 100644
---- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-@@ -357,6 +357,17 @@ i2c4: i2c@10054000 {
- 		status = "disabled";
- 	};
+diff --git a/arch/arm/boot/dts/omap4.dtsi b/arch/arm/boot/dts/omap4.dtsi
+index 763bdea8c829..15ff3d7146af 100644
+--- a/arch/arm/boot/dts/omap4.dtsi
++++ b/arch/arm/boot/dts/omap4.dtsi
+@@ -389,7 +389,7 @@ abb_iva: regulator-abb-iva {
+ 			status = "disabled";
+ 		};
  
-+	gpu: gpu@13040000 {
-+		compatible = "ingenic,jz4780-sgx540-130", "img,sgx540-130", "img,sgx540";
-+		reg = <0x13040000 0x4000>;
+-		target-module@56000000 {
++		sgx_module: target-module@56000000 {
+ 			compatible = "ti,sysc-omap4", "ti,sysc";
+ 			reg = <0x5600fe00 0x4>,
+ 			      <0x5600fe10 0x4>;
+@@ -408,10 +408,11 @@ target-module@56000000 {
+ 			#size-cells = <1>;
+ 			ranges = <0 0x56000000 0x2000000>;
+ 
+-			/*
+-			 * Closed source PowerVR driver, no child device
+-			 * binding or driver in mainline
+-			 */
++			gpu: gpu@0 {
++				compatible = "ti,omap4-sgx540-120", "img,sgx540-120", "img,sgx540";
++				reg = <0x0 0x2000000>;	/* 32MB */
++				interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
++			};
+ 		};
+ 
+ 		/*
+diff --git a/arch/arm/boot/dts/omap4470.dts b/arch/arm/boot/dts/omap4470.dts
+new file mode 100644
+index 000000000000..f29c581300bf
+--- /dev/null
++++ b/arch/arm/boot/dts/omap4470.dts
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Device Tree Source for OMAP4470 SoC
++ *
++ * Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.com/
++ *
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2.  This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
++ */
++#include "omap4460.dtsi"
 +
-+		clocks = <&cgu JZ4780_CLK_GPU>;
-+		clock-names = "gpu";
-+
-+		interrupt-parent = <&intc>;
-+		interrupts = <63>;
-+	};
-+
- 	nemc: nemc@13410000 {
- 		compatible = "ingenic,jz4780-nemc";
- 		reg = <0x13410000 0x10000>;
++&sgx {
++	compatible = "ti,omap4470-sgx544-112", "img,sgx544-112", "img,sgx544";
++};
 -- 
 2.25.1
 

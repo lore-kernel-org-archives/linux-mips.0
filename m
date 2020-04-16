@@ -3,50 +3,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BEC0C2BB55
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Apr 2020 16:41:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C320C352BE
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Apr 2020 16:41:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 79C542223E
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Apr 2020 16:41:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 435F122244
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Apr 2020 16:41:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728208AbgDPQlc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 16 Apr 2020 12:41:32 -0400
-Received: from elvis.franken.de ([193.175.24.41]:42196 "EHLO elvis.franken.de"
+        id S2388208AbgDPQlg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 16 Apr 2020 12:41:36 -0400
+Received: from elvis.franken.de ([193.175.24.41]:42211 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728068AbgDPQlc (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 16 Apr 2020 12:41:32 -0400
+        id S1731023AbgDPQlf (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 16 Apr 2020 12:41:35 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jP7Zy-0001kl-00; Thu, 16 Apr 2020 18:41:30 +0200
+        id 1jP7Zy-0001kl-05; Thu, 16 Apr 2020 18:41:30 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 5CB44C0135; Thu, 16 Apr 2020 18:34:16 +0200 (CEST)
-Date:   Thu, 16 Apr 2020 18:34:16 +0200
+        id 4946EC0144; Thu, 16 Apr 2020 18:40:55 +0200 (CEST)
+Date:   Thu, 16 Apr 2020 18:40:55 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     bibo mao <maobibo@loongson.cn>
-Cc:     linux-mips@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Fix typo for user_ld macro definition
-Message-ID: <20200416163416.GA24743@alpha.franken.de>
-References: <1586944603-5107-1-git-send-email-maobibo@loongson.cn>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH] MIPS: Loongson: Use CONFIG_NR_CPUS_DEFAULT_64 to support
+ more CPUs
+Message-ID: <20200416164055.GF24743@alpha.franken.de>
+References: <1585638006-19439-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1586944603-5107-1-git-send-email-maobibo@loongson.cn>
+In-Reply-To: <1585638006-19439-1-git-send-email-yangtiezhu@loongson.cn>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 05:56:43PM +0800, bibo mao wrote:
-> There is typo for macro user_ld if __ASSEMBLY__ is declared, this
-> patch fixes this issue.
+On Tue, Mar 31, 2020 at 03:00:06PM +0800, Tiezhu Yang wrote:
+> When I update the mainline kernel on the Loongson 2-way platform which
+> has 8 CPUs, it only shows 4 CPUs due to NR_CPUS is 4, this is obviously
+> wrong.
 > 
-> Signed-off-by: bibo mao <maobibo@loongson.cn>
+> In order to support more CPUs on the Loongson platform, it is better
+> to use CONFIG_NR_CPUS_DEFAULT_64 instead of CONFIG_NR_CPUS_DEFAULT_4
+> to specify the maximum number of CPUs which the kernel will support.
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 > ---
->  arch/mips/include/asm/asm-eva.h | 2 +-
+>  arch/mips/Kconfig | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 
 applied to mips-next.

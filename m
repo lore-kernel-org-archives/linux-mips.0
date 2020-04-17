@@ -2,139 +2,72 @@ Return-Path: <SRS0=rInD=6B=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82167C2BB55
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Apr 2020 06:33:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2288C2BB1D
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Apr 2020 07:14:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 63767206D9
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Apr 2020 06:33:55 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a5gzAXzJ"
+	by mail.kernel.org (Postfix) with ESMTP id B4FF2214D8
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Apr 2020 07:14:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727818AbgDQGdy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 17 Apr 2020 02:33:54 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42983 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727913AbgDQGdw (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Apr 2020 02:33:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587105230;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aRp3vqzXNggkBlbb5TjXuZYOr8GevPVbWARU6hChYxw=;
-        b=a5gzAXzJIrV0XgpXiIwM454VPvFtu3tbmICqq68YzQBOoEqCgtJiWyrE64HVk8/vNQJmR6
-        JgBoCNmvbaDvijkLc6KpYvHR7N+Fs9HWObAKPmwaQuRKYawNmvRIXz5iWbdcFbv+zDiYWQ
-        lyL51RdZuF6rgP1R+5ruoDKcPnUg7w4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-183-OImE4PnjMpKFrrWTMwbC7Q-1; Fri, 17 Apr 2020 02:33:48 -0400
-X-MC-Unique: OImE4PnjMpKFrrWTMwbC7Q-1
-Received: by mail-wr1-f72.google.com with SMTP id q10so513209wrv.10
-        for <linux-mips@vger.kernel.org>; Thu, 16 Apr 2020 23:33:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=aRp3vqzXNggkBlbb5TjXuZYOr8GevPVbWARU6hChYxw=;
-        b=g6lqFgCp0cO7OChPFU1deTCln4BFgRiNQad6u5QA3yZ7SNiqlettNoHIJ2q2LA+qEO
-         f/wvknTBRMdhZmEedCf/aBcMA0Gp4K9CSE9ZeuvEn+1HJsFDs0u7vPZWAGuGAJbFyrkG
-         gaLEcFpDn6IdO4AcQhAmhnz3MVsKW3d1473i1CNtbZgNinZ9+1Wr0WBLNXQpk41vKLjI
-         BCbdSi8HtemWtYRy+J+3Y1RxZMWJIl6PxHwwzBLtWusj36FAynwg4keBd2S6V5w6QQd8
-         LK2Q8BsqGMkjS15hUp60u7JH0mBqrVMVr3PaYVerZHJA0bCVb+uUS7Y003jmnNuSkVGd
-         JJ0A==
-X-Gm-Message-State: AGi0PuatCYmBj/T9CrE0u8gZIpjnilWA7TBGvMuRPv6BFwGLaRtBG2ya
-        dYMni8iOuTXYcztOTsLjAhKhwAZ/4+zORNmCI+c074tVSclRJ0YjWPKQTUKQtcnsDThHmS3U/lI
-        qot/wTE1yHvHzuyACsCc1Zw==
-X-Received: by 2002:a1c:5a06:: with SMTP id o6mr1725646wmb.34.1587105227213;
-        Thu, 16 Apr 2020 23:33:47 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLC+56jzTsL7mtJ8WJVomZZD1bGAAbZ16bTvi8qD3oQHVUMVTlOszcQ+jGs26hCvKjQJ7zNyQ==
-X-Received: by 2002:a1c:5a06:: with SMTP id o6mr1725618wmb.34.1587105226999;
-        Thu, 16 Apr 2020 23:33:46 -0700 (PDT)
-Received: from redhat.com (bzq-79-183-51-3.red.bezeqint.net. [79.183.51.3])
-        by smtp.gmail.com with ESMTPSA id k184sm6461323wmf.9.2020.04.16.23.33.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Apr 2020 23:33:46 -0700 (PDT)
-Date:   Fri, 17 Apr 2020 02:33:43 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, geert@linux-m68k.org,
-        tsbogend@alpha.franken.de, benh@kernel.crashing.org,
-        paulus@samba.org, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        borntraeger@de.ibm.com, Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH V2] vhost: do not enable VHOST_MENU by default
-Message-ID: <20200417022929-mutt-send-email-mst@kernel.org>
-References: <20200415024356.23751-1-jasowang@redhat.com>
- <20200416185426-mutt-send-email-mst@kernel.org>
- <b7e2deb7-cb64-b625-aeb4-760c7b28c0c8@redhat.com>
+        id S1728928AbgDQHOg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 17 Apr 2020 03:14:36 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:47410 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728159AbgDQHOg (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 17 Apr 2020 03:14:36 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id DF904651BC3299EB9F34;
+        Fri, 17 Apr 2020 15:14:20 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
+ 15:14:11 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <f.fainelli@gmail.com>, <tglx@linutronix.de>,
+        <jason@lakedaemon.net>, <maz@kernel.org>, <justinpopo6@gmail.com>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] irqchip/irq-bcm7038-l1: make bcm7038_l1_of_init() static
+Date:   Fri, 17 Apr 2020 15:40:36 +0800
+Message-ID: <20200417074036.46594-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b7e2deb7-cb64-b625-aeb4-760c7b28c0c8@redhat.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 11:12:14AM +0800, Jason Wang wrote:
-> 
-> On 2020/4/17 上午6:55, Michael S. Tsirkin wrote:
-> > On Wed, Apr 15, 2020 at 10:43:56AM +0800, Jason Wang wrote:
-> > > We try to keep the defconfig untouched after decoupling CONFIG_VHOST
-> > > out of CONFIG_VIRTUALIZATION in commit 20c384f1ea1a
-> > > ("vhost: refine vhost and vringh kconfig") by enabling VHOST_MENU by
-> > > default. Then the defconfigs can keep enabling CONFIG_VHOST_NET
-> > > without the caring of CONFIG_VHOST.
-> > > 
-> > > But this will leave a "CONFIG_VHOST_MENU=y" in all defconfigs and even
-> > > for the ones that doesn't want vhost. So it actually shifts the
-> > > burdens to the maintainers of all other to add "CONFIG_VHOST_MENU is
-> > > not set". So this patch tries to enable CONFIG_VHOST explicitly in
-> > > defconfigs that enables CONFIG_VHOST_NET and CONFIG_VHOST_VSOCK.
-> > > 
-> > > Acked-by: Christian Borntraeger<borntraeger@de.ibm.com>  (s390)
-> > > Acked-by: Michael Ellerman<mpe@ellerman.id.au>  (powerpc)
-> > > Cc: Thomas Bogendoerfer<tsbogend@alpha.franken.de>
-> > > Cc: Benjamin Herrenschmidt<benh@kernel.crashing.org>
-> > > Cc: Paul Mackerras<paulus@samba.org>
-> > > Cc: Michael Ellerman<mpe@ellerman.id.au>
-> > > Cc: Heiko Carstens<heiko.carstens@de.ibm.com>
-> > > Cc: Vasily Gorbik<gor@linux.ibm.com>
-> > > Cc: Christian Borntraeger<borntraeger@de.ibm.com>
-> > > Reported-by: Geert Uytterhoeven<geert@linux-m68k.org>
-> > > Signed-off-by: Jason Wang<jasowang@redhat.com>
-> > I rebased this on top of OABI fix since that
-> > seems more orgent to fix.
-> > Pushed to my vhost branch pls take a look and
-> > if possible test.
-> > Thanks!
-> 
-> 
-> I test this patch by generating the defconfigs that wants vhost_net or
-> vhost_vsock. All looks fine.
-> 
-> But having CONFIG_VHOST_DPN=y may end up with the similar situation that
-> this patch want to address.
-> Maybe we can let CONFIG_VHOST depends on !ARM || AEABI then add another
-> menuconfig for VHOST_RING and do something similar?
-> 
-> Thanks
+Fix the following sparse warning:
 
-Sorry I don't understand. After this patch CONFIG_VHOST_DPN is just
-an internal variable for the OABI fix. I kept it separate
-so it's easy to revert for 5.8. Yes we could squash it into
-VHOST directly but I don't see how that changes logic at all.
+drivers/irqchip/irq-bcm7038-l1.c:419:12: warning: symbol
+'bcm7038_l1_of_init' was not declared. Should it be static?
 
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ drivers/irqchip/irq-bcm7038-l1.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/irqchip/irq-bcm7038-l1.c b/drivers/irqchip/irq-bcm7038-l1.c
+index eb9bce93cd05..fd7c537fb42a 100644
+--- a/drivers/irqchip/irq-bcm7038-l1.c
++++ b/drivers/irqchip/irq-bcm7038-l1.c
+@@ -416,7 +416,7 @@ static const struct irq_domain_ops bcm7038_l1_domain_ops = {
+ 	.map			= bcm7038_l1_map,
+ };
+ 
+-int __init bcm7038_l1_of_init(struct device_node *dn,
++static int __init bcm7038_l1_of_init(struct device_node *dn,
+ 			      struct device_node *parent)
+ {
+ 	struct bcm7038_l1_chip *intc;
 -- 
-MST
+2.21.1
 

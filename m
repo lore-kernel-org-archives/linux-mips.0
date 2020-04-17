@@ -2,72 +2,102 @@ Return-Path: <SRS0=rInD=6B=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2288C2BB1D
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Apr 2020 07:14:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A94D5C2BB55
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Apr 2020 07:28:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B4FF2214D8
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Apr 2020 07:14:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9407321D82
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Apr 2020 07:28:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728928AbgDQHOg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 17 Apr 2020 03:14:36 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:47410 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728159AbgDQHOg (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 17 Apr 2020 03:14:36 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id DF904651BC3299EB9F34;
-        Fri, 17 Apr 2020 15:14:20 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
- 15:14:11 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <f.fainelli@gmail.com>, <tglx@linutronix.de>,
-        <jason@lakedaemon.net>, <maz@kernel.org>, <justinpopo6@gmail.com>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] irqchip/irq-bcm7038-l1: make bcm7038_l1_of_init() static
-Date:   Fri, 17 Apr 2020 15:40:36 +0800
-Message-ID: <20200417074036.46594-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S1729021AbgDQH23 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 17 Apr 2020 03:28:29 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:45351 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728419AbgDQH20 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Apr 2020 03:28:26 -0400
+Received: by mail-ot1-f67.google.com with SMTP id i22so670688otp.12;
+        Fri, 17 Apr 2020 00:28:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CAlxRW45me+SFTqp2fMa5KvZpf6cMRTo76EH5fkTTvc=;
+        b=T8RvlSE0CoW2/ucpNcN3ufjhCCk8wpFi1WceqsbknanNI27mF3UL7sRQ90y9nHLckb
+         GxLtxG/MLWc/7D7FNcVO03/bWn0CRD3wU6g8RBrTVhg2a0kTgkTmqEdOyxWOESZh22T0
+         uGZVyokJR//7/YQYTxnO/hOcjmc+eAvEsOR0pCSoq7Igm6GZvb4zHvDTK4UwnZXB8EeN
+         KAdfmyquu3O45M5wLUfmBq97XXXKqomORgN/UnSY9TUdox4PxPwMJwjHy7mtqu6dRtQv
+         drKIipc35fCwiNQHOPWN61zZpPw33QAoQQX9ERcF3n4pm4jA7l9WP9a2C0mTmWk3hB37
+         +9sg==
+X-Gm-Message-State: AGi0Pua6aUY2Xvm3S2T8ksi7QEXjSlhKvPNzo2NomZxo9a5jVdgPZEMz
+        n/Ly0BfrV2zBFhVNQ+yjQyf4lpDr9fuL6tUlIgo1wQ==
+X-Google-Smtp-Source: APiQypK7KuRAoPktsLMQh2Me8mfNzHEYpwL9p+AMo7Mc+i20vMVMtApNzN65ngvXei2FszcvDlo15xrOTNLy+/p43Ec=
+X-Received: by 2002:a9d:7590:: with SMTP id s16mr1548442otk.250.1587108505576;
+ Fri, 17 Apr 2020 00:28:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+References: <20200416220130.13343-1-willy@infradead.org>
+In-Reply-To: <20200416220130.13343-1-willy@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 17 Apr 2020 09:28:14 +0200
+Message-ID: <CAMuHMdWxhVoPCZ5+=Pf1LFpdE9vPv9GGTqTYMQP9oFz7eCxDaQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/11] Make PageWriteback use the PageLocked optimisation
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Fix the following sparse warning:
+Hi Matthew,
 
-drivers/irqchip/irq-bcm7038-l1.c:419:12: warning: symbol
-'bcm7038_l1_of_init' was not declared. Should it be static?
+On Fri, Apr 17, 2020 at 12:01 AM Matthew Wilcox <willy@infradead.org> wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> PageWaiters is used by PageWriteback and PageLocked (and no other page
+> flags), so it makes sense to use the same codepaths that have already been
+> optimised for PageLocked, even if there's probably no real performance
+> benefit to be had.
+>
+> Unfortunately, clear_bit_unlock_is_negative_byte() isn't present on every
+> architecture, and the default implementation is only available in filemap.c
+> while I want to use it in page-writeback.c.  Rather than move the default
+> implementation to a header file, I've done optimised implementations for
+> alpha and ia64.  I can't figure out optimised implementations for m68k,
+> mips, riscv and s390, so I've just replicated the effect of the generic
+> implementation in them.  I leave it to the experts to fix that (... or
+> convert over to using asm-generic/bitops/lock.h ...)
+>
+> v3:
+>  - Added implementations of clear_bit_unlock_is_negative_byte()
+>    to architectures which need it
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- drivers/irqchip/irq-bcm7038-l1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I have two questions here?
+  1. Why not implement arch_clear_bit_unlock_is_negative_byte()
+     instead, so the kasan check in asm-generic is used everywhere?
+  2. Why not add the default implementation to
+     include/asm-generic/bitops/instrumented-lock.h, in case an arch_*()
+     variant is not provided yet?
 
-diff --git a/drivers/irqchip/irq-bcm7038-l1.c b/drivers/irqchip/irq-bcm7038-l1.c
-index eb9bce93cd05..fd7c537fb42a 100644
---- a/drivers/irqchip/irq-bcm7038-l1.c
-+++ b/drivers/irqchip/irq-bcm7038-l1.c
-@@ -416,7 +416,7 @@ static const struct irq_domain_ops bcm7038_l1_domain_ops = {
- 	.map			= bcm7038_l1_map,
- };
- 
--int __init bcm7038_l1_of_init(struct device_node *dn,
-+static int __init bcm7038_l1_of_init(struct device_node *dn,
- 			      struct device_node *parent)
- {
- 	struct bcm7038_l1_chip *intc;
--- 
-2.21.1
+Note that you did 1 for s390.
+Thanks!
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

@@ -2,116 +2,76 @@ Return-Path: <SRS0=rInD=6B=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 704C7C352BE
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Apr 2020 11:07:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E380C352BE
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Apr 2020 11:07:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 44CB321D95
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Apr 2020 11:07:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1587121644;
-	bh=DmgltjBK4QKApIxoMn7dgc25Veb7MiJLv9jXdkjAQro=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
-	b=d8Ko+Fc9+a/Z5rTcdvEeSFCycbAehvTmarvnNa85lkhlHK1wrP3NGuuNOAfyKsGRk
-	 2nxR70TO1GjAnkg0gIr5NiOGxEyuuqzUEceqEiz3cVKVw7aLwzjFnYDHFIE2Abx4iZ
-	 tuBHK//T7ine2/koAMrJPwessM6hVfCOcoICwGTo=
+	by mail.kernel.org (Postfix) with ESMTP id 884CF221EA
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Apr 2020 11:07:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729844AbgDQLHY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 17 Apr 2020 07:07:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729468AbgDQLHX (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 17 Apr 2020 07:07:23 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E3CB208E4;
-        Fri, 17 Apr 2020 11:07:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587121643;
-        bh=DmgltjBK4QKApIxoMn7dgc25Veb7MiJLv9jXdkjAQro=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=o3t5BLykt3O4YtNk20NOWGLDpJz8/j148eKWCx1KIcJh6qhiCzQYwkRo/qgIGsssN
-         BBM2O815lkk6xpvScuEtaiWsA3ptDdyvFKZV+7PEgdM3uWG4sJQZT/PhMNeuq+iXe1
-         whUXkJziBI0uti6u3IpoNeVK9HgFLXXBGQM/Cw6E=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jPOq9-0049ii-EA; Fri, 17 Apr 2020 12:07:21 +0100
+        id S1730140AbgDQLHg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 17 Apr 2020 07:07:36 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:33870 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729468AbgDQLHg (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 17 Apr 2020 07:07:36 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 788EBBD8543B75C212DE;
+        Fri, 17 Apr 2020 19:07:34 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Fri, 17 Apr 2020
+ 19:07:26 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <f.fainelli@gmail.com>, <tglx@linutronix.de>,
+        <jason@lakedaemon.net>, <maz@kernel.org>, <justinpopo6@gmail.com>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH v2] irqchip/irq-bcm7038-l1: make bcm7038_l1_of_init() static
+Date:   Fri, 17 Apr 2020 19:33:51 +0800
+Message-ID: <20200417113351.43839-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Fri, 17 Apr 2020 12:07:21 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        f.fainelli@gmail.com, tglx@linutronix.de, jason@lakedaemon.net,
-        justinpopo6@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH] irqchip/irq-bcm7038-l1: make bcm7038_l1_of_init() static
-In-Reply-To: <b2f6f8cd-557c-3978-f176-e615cba8b458@huawei.com>
-References: <20200417074036.46594-1-yanaijie@huawei.com>
- <ecb3e3e1-7761-faa7-10fa-67da69604306@cogentembedded.com>
- <b2f6f8cd-557c-3978-f176-e615cba8b458@huawei.com>
-Message-ID: <a71e75e8e391c76bf2f260abbaad4f9d@kernel.org>
-X-Sender: maz@kernel.org
-User-Agent: Roundcube Webmail/1.3.10
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: yanaijie@huawei.com, sergei.shtylyov@cogentembedded.com, f.fainelli@gmail.com, tglx@linutronix.de, jason@lakedaemon.net, justinpopo6@gmail.com, bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, hulkci@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 2020-04-17 11:56, Jason Yan wrote:
-> 在 2020/4/17 18:26, Sergei Shtylyov 写道:
->> Hello!
->> 
->> On 17.04.2020 10:40, Jason Yan wrote:
->> 
->>> Fix the following sparse warning:
->>> 
->>> drivers/irqchip/irq-bcm7038-l1.c:419:12: warning: symbol
->>> 'bcm7038_l1_of_init' was not declared. Should it be static?
->>> 
->>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>> Signed-off-by: Jason Yan <yanaijie@huawei.com>
->>> ---
->>>   drivers/irqchip/irq-bcm7038-l1.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>> 
->>> diff --git a/drivers/irqchip/irq-bcm7038-l1.c 
->>> b/drivers/irqchip/irq-bcm7038-l1.c
->>> index eb9bce93cd05..fd7c537fb42a 100644
->>> --- a/drivers/irqchip/irq-bcm7038-l1.c
->>> +++ b/drivers/irqchip/irq-bcm7038-l1.c
->>> @@ -416,7 +416,7 @@ static const struct irq_domain_ops 
->>> bcm7038_l1_domain_ops = {
->>>       .map            = bcm7038_l1_map,
->>>   };
->>> -int __init bcm7038_l1_of_init(struct device_node *dn,
->>> +static int __init bcm7038_l1_of_init(struct device_node *dn,
->>>                     struct device_node *parent)
->> 
->>     Reindent the above line please, it should start under *struct* on 
->> the 1st line.
-> 
-> OK, will cook a new one.
+Fix the following sparse warning:
 
-Please don't bother. I've picked the patch already, and it is on its way 
-to Linus.
+drivers/irqchip/irq-bcm7038-l1.c:419:12: warning: symbol
+'bcm7038_l1_of_init' was not declared. Should it be static?
 
-Thanks,
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ v1->v2: Reindent the second line of the function
 
-         M.
+ drivers/irqchip/irq-bcm7038-l1.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/irqchip/irq-bcm7038-l1.c b/drivers/irqchip/irq-bcm7038-l1.c
+index eb9bce93cd05..90cac1cac177 100644
+--- a/drivers/irqchip/irq-bcm7038-l1.c
++++ b/drivers/irqchip/irq-bcm7038-l1.c
+@@ -416,8 +416,8 @@ static const struct irq_domain_ops bcm7038_l1_domain_ops = {
+ 	.map			= bcm7038_l1_map,
+ };
+ 
+-int __init bcm7038_l1_of_init(struct device_node *dn,
+-			      struct device_node *parent)
++static int __init bcm7038_l1_of_init(struct device_node *dn,
++				     struct device_node *parent)
+ {
+ 	struct bcm7038_l1_chip *intc;
+ 	int idx, ret;
 -- 
-Jazz is not dead. It just smells funny...
+2.21.1
+

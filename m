@@ -2,84 +2,66 @@ Return-Path: <SRS0=F7EY=6E=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16C3DC3815B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A6DBC3A5A0
 	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 07:27:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F3A5C21D94
-	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 07:27:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 847C320BED
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 07:27:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726361AbgDTH1u (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 20 Apr 2020 03:27:50 -0400
-Received: from elvis.franken.de ([193.175.24.41]:47925 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726117AbgDTH1n (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1726271AbgDTH1n (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Mon, 20 Apr 2020 03:27:43 -0400
+Received: from elvis.franken.de ([193.175.24.41]:47915 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726197AbgDTH1k (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 20 Apr 2020 03:27:40 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jQQqA-00070o-02; Mon, 20 Apr 2020 09:27:38 +0200
+        id 1jQQqA-00070o-04; Mon, 20 Apr 2020 09:27:38 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 75795C0181; Mon, 20 Apr 2020 09:20:15 +0200 (CEST)
-Date:   Mon, 20 Apr 2020 09:20:15 +0200
+        id 157C1C0181; Mon, 20 Apr 2020 09:22:57 +0200 (CEST)
+Date:   Mon, 20 Apr 2020 09:22:57 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Mathieu Malaterre <malat@debian.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, letux-kernel@openphoenux.org,
-        kernel@pyra-handheld.com
-Subject: Re: [PATCH v8 6/7] MIPS: DTS: JZ4780: define node for JZ4780 efuse
-Message-ID: <20200420072015.GC4627@alpha.franken.de>
-References: <cover.1582905653.git.hns@goldelico.com>
- <cff8afa0a6960d30f697a273a349247ac2e682a8.1582905653.git.hns@goldelico.com>
+To:     Joshua Kinard <kumba@gentoo.org>
+Cc:     linux-mips@vger.kernel.org
+Subject: Re: [PATCH] Add missing ifdefs to SGI Platform files for IP22, IP32
+Message-ID: <20200420072257.GE4627@alpha.franken.de>
+References: <87be6e36-04de-684b-0361-91de9ce2c731@gentoo.org>
+ <20200416163051.GA24457@alpha.franken.de>
+ <f4c06481-7fa3-d84c-5aa9-f991daef058c@gentoo.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cff8afa0a6960d30f697a273a349247ac2e682a8.1582905653.git.hns@goldelico.com>
+In-Reply-To: <f4c06481-7fa3-d84c-5aa9-f991daef058c@gentoo.org>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Feb 28, 2020 at 05:00:52PM +0100, H. Nikolaus Schaller wrote:
-> From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+On Thu, Apr 16, 2020 at 07:18:35PM -0400, Joshua Kinard wrote:
+> On 4/16/2020 12:30, Thomas Bogendoerfer wrote:
+> > On Mon, Mar 30, 2020 at 11:25:52PM -0400, Joshua Kinard wrote:
+> >> The attached patch fixes the SGI-specific Platform files to only be
+> >> included when their specific platform is actually built.  Both the
+> >> IP27 and IP30 Platform files already have such ifdefs in place.  This
+> >> patch adds the same to the IP22 and IP32 Platform files.
+> > 
+> > looking at all other Platform files, I fail to see why this is needed.
+> > It looks like removing the ifdefs from IP27 and IP30 is the way to
+> > go. What do I miss here ?
+> > 
+> > Thomas.
 > 
-> This patch brings support for the JZ4780 efuse. Currently it only exposes
-> a read only access to the entire 8K bits efuse memory and the
-> ethernet mac address for the davicom dm9000 chip on the CI20 board.
-> 
-> It also changes the nemc ranges definition to give the driver
-> access to the efuse registers, which are in the middle of the
-> nemc reg range.
-> 
-> Tested-by: Mathieu Malaterre <malat@debian.org>
-> Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-> Signed-off-by: Mathieu Malaterre <malat@debian.org>
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-> ---
->  arch/mips/boot/dts/ingenic/jz4780.dtsi | 19 +++++++++++++++++--
->  1 file changed, 17 insertions(+), 2 deletions(-)
+> I ran into an issue long ago where an IP32 kernel tried dragging in some of
+> the directives in IP30 because of the missing ifdef checks, thus causing the
+> build to fail.
 
-applied to mips-next.
+do you still see this problem ? If yes, I'd like to understand why first.
+If no, what about dropping this patch ?
 
 Thomas.
 

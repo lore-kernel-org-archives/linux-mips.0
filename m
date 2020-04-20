@@ -3,61 +3,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A4D7C3815B
-	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 09:16:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D5D1C3815B
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 09:18:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3E72E20CC7
-	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 09:16:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0B7B32078E
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 09:18:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725988AbgDTJQw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 20 Apr 2020 05:16:52 -0400
-Received: from elvis.franken.de ([193.175.24.41]:48049 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725886AbgDTJQv (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 20 Apr 2020 05:16:51 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jQSXh-00019d-00; Mon, 20 Apr 2020 11:16:41 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id AAFE5C0181; Mon, 20 Apr 2020 11:07:26 +0200 (CEST)
-Date:   Mon, 20 Apr 2020 11:07:26 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Huacai Chen <chenhc@lemote.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND 0/5] Loongson64: RS780E clean-ups
-Message-ID: <20200420090726.GA9388@alpha.franken.de>
-References: <20200420073347.157230-1-jiaxun.yang@flygoat.com>
+        id S1726328AbgDTJSA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 20 Apr 2020 05:18:00 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:46976 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725773AbgDTJSA (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 20 Apr 2020 05:18:00 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 0CDDE2A0A3B;
+        Mon, 20 Apr 2020 10:17:58 +0100 (BST)
+Date:   Mon, 20 Apr 2020 11:17:54 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
+        brendanhiggins@google.com, tglx@linutronix.de,
+        anders.roxell@linaro.org, masonccyang@mxic.com.tw,
+        piotrs@cadence.com, robh+dt@kernel.org, linux-mips@vger.kernel.org,
+        hauke.mehrtens@intel.com, qi-ming.wu@intel.com,
+        cheol.yong.kim@intel.com
+Subject: Re: [PATCH v2 2/2] mtd: rawnand: Add NAND controller support on
+ Intel LGM SoC
+Message-ID: <20200420111754.5863324b@collabora.com>
+In-Reply-To: <20200419222040.GJ185537@smile.fi.intel.com>
+References: <20200417082147.43384-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        <20200417082147.43384-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+        <20200418105533.477ce529@collabora.com>
+        <20200419222040.GJ185537@smile.fi.intel.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200420073347.157230-1-jiaxun.yang@flygoat.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 03:33:35PM +0800, Jiaxun Yang wrote:
-> Basically ensure all RS780E stuff is enabled by DeviceTree.
-> So I can post LS7A support later on.
+On Mon, 20 Apr 2020 01:20:40 +0300
+Andy Shevchenko <andriy.shevchenko@intel.com> wrote:
+
+> On Sat, Apr 18, 2020 at 10:55:33AM +0200, Boris Brezillon wrote:
+> > On Fri, 17 Apr 2020 16:21:47 +0800
+> > "Ramuthevar,Vadivel MuruganX"
+> > <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
+> >   
+> > > From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>  
 > 
-> Hi Thomas, could you please pick them into MIPS tree?
+> > > +static const struct of_device_id lgm_nand_match[] = {
+> > > +	{ .compatible = "intel,lgm-nand", },
+> > > +	{}
+> > > +};
+> > > +MODULE_DEVICE_TABLE(of, lgm_nand_match);  
+> > 
+> > You probably have a missing "depends on OF" in your Kconfig.  
+> 
+> Since it's using device property API, dependency is not needed.
+> 
 
-well, first patch doesn't apply, because it relies on your PCI patch
-series. I've fixed this while applying and then faced
-
-arch/mips/loongson64/pci.o: In function `pcibios_init':
-pci.c:(.init.text+0x44): undefined reference to `sbx00_acpi_init'
-
-IMHO there is something to improve...
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+There's no compile-time dependency, but this driver will be pretty
+useless if all its users have the NAND controller node defined in their
+DT and CONFIG_OF is not enabled. I guess the OF option is selected by
+arches, so explicitly depending on OF is only relevant if you change
+the dependency rules as suggested in my other reply.

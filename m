@@ -6,97 +6,78 @@ X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E6A9C3815B
-	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 17:30:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0C98C54FD0
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 17:31:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 487F120782
-	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 17:30:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A3D9121D94
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 17:31:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbgDTRak (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 20 Apr 2020 13:30:40 -0400
-Received: from smtprelay0214.hostedemail.com ([216.40.44.214]:39548 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726396AbgDTRaj (ORCPT
+        id S1726903AbgDTRbU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 20 Apr 2020 13:31:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726067AbgDTRbT (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 20 Apr 2020 13:30:39 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id CD7071802EC18;
-        Mon, 20 Apr 2020 17:30:37 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-HE-Tag: wire77_794acccb34a52
-X-Filterd-Recvd-Size: 2900
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 20 Apr 2020 17:30:33 +0000 (UTC)
-Message-ID: <0cff04825062a6e4b04a19cac80152b9943402b1.camel@perches.com>
-Subject: Re: [PATCHv3 01/50] kallsyms/printk: Add loglvl to print_ip_sym()
-From:   Joe Perches <joe@perches.com>
-To:     Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Slaby <jslaby@suse.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Ben Segall <bsegall@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Hogan <jhogan@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Simek <monstr@monstr.eu>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Will Deacon <will@kernel.org>, linux-mips@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Date:   Mon, 20 Apr 2020 10:28:17 -0700
-In-Reply-To: <7616c5f4-def1-7362-ceef-db76107b9c2b@arista.com>
-References: <20200418201944.482088-1-dima@arista.com>
-         <20200418201944.482088-2-dima@arista.com>
-         <24a1f021e52ccabfd53baa22b93947ef10e6bf3b.camel@perches.com>
-         <7616c5f4-def1-7362-ceef-db76107b9c2b@arista.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        Mon, 20 Apr 2020 13:31:19 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED8BC061A0F;
+        Mon, 20 Apr 2020 10:31:19 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jQaGL-0003DP-4G; Mon, 20 Apr 2020 19:31:17 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 81C6F101623; Mon, 20 Apr 2020 19:31:16 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Thomas Bogendoerfer <tbogendoerfer@suse.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH 0/3] Remove setup_percpu_irq() & remove_percpu_irq
+In-Reply-To: <20200419144638.ysghqzklebkeer4z@afzalpc>
+References: <cover.1586434781.git.afzal.mohd.ma@gmail.com> <20200419144638.ysghqzklebkeer4z@afzalpc>
+Date:   Mon, 20 Apr 2020 19:31:16 +0200
+Message-ID: <87pnc2awt7.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, 2020-04-20 at 18:25 +0100, Dmitry Safonov wrote:
-> Hi Joe,
+Afzal,
 
-Hi Dmitry.
+afzal mohammed <afzal.mohd.ma@gmail.com> writes:
+> On Sat, Apr 11, 2020 at 09:34:07PM +0530, afzal mohammed wrote:
+>
+>> While doing the removal of setup_irq(), it was observed that
+>> setup_percpu_irq() also can be removed similarly by replacing it w/
+>> request_percpu_irq(), which does allocate memory. In the initial
+>> setup_irq() removal cover letters [1], it was mentioned that
+>> setup_percpu_irq() is untouched.
+>> 
+>> After removing setup_irq(), it does not look good to let live
+>> setup_percpu_irq(), especially since it being a low hanging fruit. Hence
+>> replace setup_percpu_irq() by it's allocator equivalent.
+>> request_percpu_irq() cannot be used since all the users need to pass
+>> IRQF_TIMER flag, which it would not allow. Thus it's variant,
+>> __request_percpu_irq() is used.
+>> 
+>> In addition to removing setup_percpu_irq() definition,
+>> remove_percpu_irq(), unused, is also removed.
+>
+> Do you feel that this series adds value ?, if not, i will abandon this
+> series.
 
-> On 4/18/20 9:40 PM, Joe Perches wrote:
-> > On Sat, 2020-04-18 at 21:18 +0100, Dmitry Safonov wrote:
-> > > print_ip_sym() needs to have a log level parameter to comply with other
-> > > parts being printed. Otherwise, half of the expected backtrace would be
-> > > printed and other may be missing with some logging level.
-> > 
-> > I'd rather create another extension to %ps that also emits
-> > the [<address>] along with the symbol lookup and retire
-> > print_ip_sym altogether.
-> 
-> Makes sense.
-> Would you mind if I'll do it on the top of these patches?
-> [not to mix new printk-format with patches those add loglvl parameter]
+ 7 files changed, 10 insertions(+), 75 deletions(-)
 
-Of course not, but the proposal below doesn't compile
-and I've been playing with a slightly different
-implementation.
+is definitely worth it. There is no point in having two interfaces. I'll
+have a look at the changes later today.
 
-I'll post it in a few days.
+Thanks,
 
-
+        tglx

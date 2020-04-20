@@ -2,38 +2,38 @@ Return-Path: <SRS0=F7EY=6E=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 285EFC3A5A0
-	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 08:52:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F08FC3815B
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 09:15:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 12D6021473
-	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 08:52:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 57E472078E
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 09:15:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725959AbgDTIwG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 20 Apr 2020 04:52:06 -0400
-Received: from mga07.intel.com ([134.134.136.100]:12626 "EHLO mga07.intel.com"
+        id S1725994AbgDTJPY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 20 Apr 2020 05:15:24 -0400
+Received: from mga14.intel.com ([192.55.52.115]:12508 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726067AbgDTIwG (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 20 Apr 2020 04:52:06 -0400
-IronPort-SDR: dIEl2FRVd1/leTQGJBJP5s6qp9kwjf7gWA6O+Cziqdv6oH4prSN0zZOvc5qBgb+rkT3/8Ez1Fe
- YWKuAqAbRfmg==
+        id S1725865AbgDTJPY (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 20 Apr 2020 05:15:24 -0400
+IronPort-SDR: ERLGhk0r8U8rMQUG/GRuYVRN2yb7z9Z6KkP/dvk124RNgDkAGRKEWkTHahHmRJLCyjMevRrxng
+ YNMq2Q4eUulQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2020 01:52:05 -0700
-IronPort-SDR: a4Eg2d6xmIyLQNhuk3IUdkIwFTZ6KS18J6L0i5/tGdasi0tIKLFxqKcrFcXxezFSbjfA2ZkxZR
- FrL2tcDJJcFA==
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2020 02:15:23 -0700
+IronPort-SDR: isaKgCpWgOqEpkT9mN/xaHP6Fa/X+Nj6YLMccDHBdtzjyTO8/Hx3QWzI7ibS+5geRDhK3kscXa
+ Q0+sNtjD0C5A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,406,1580803200"; 
-   d="scan'208";a="254875643"
+   d="scan'208";a="258285784"
 Received: from linux.intel.com ([10.54.29.200])
-  by orsmga003.jf.intel.com with ESMTP; 20 Apr 2020 01:52:05 -0700
+  by orsmga006.jf.intel.com with ESMTP; 20 Apr 2020 02:15:23 -0700
 Received: from [10.249.68.96] (vramuthx-mobl1.gar.corp.intel.com [10.249.68.96])
-        by linux.intel.com (Postfix) with ESMTP id 2D39B5802C9;
-        Mon, 20 Apr 2020 01:51:59 -0700 (PDT)
+        by linux.intel.com (Postfix) with ESMTP id 3106C580479;
+        Mon, 20 Apr 2020 02:15:17 -0700 (PDT)
 Subject: Re: [PATCH v2 2/2] mtd: rawnand: Add NAND controller support on Intel
  LGM SoC
 To:     Boris Brezillon <boris.brezillon@collabora.com>
@@ -47,17 +47,15 @@ Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
         qi-ming.wu@intel.com, cheol.yong.kim@intel.com
 References: <20200417082147.43384-1-vadivel.muruganx.ramuthevar@linux.intel.com>
  <20200417082147.43384-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200418105533.477ce529@collabora.com>
- <79e186a8-68fb-0e75-910b-9f1b40679ca2@linux.intel.com>
- <20200420094018.6fdbda68@collabora.com>
+ <20200420102959.2659774d@collabora.com>
 From:   "Ramuthevar, Vadivel MuruganX" 
         <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <65120cb5-9d8d-27a1-a7c1-1e88e18e00b6@linux.intel.com>
-Date:   Mon, 20 Apr 2020 16:51:58 +0800
+Message-ID: <85f510a8-59a8-0ac4-23bf-86c5c2b85a96@linux.intel.com>
+Date:   Mon, 20 Apr 2020 17:15:16 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200420094018.6fdbda68@collabora.com>
+In-Reply-To: <20200420102959.2659774d@collabora.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -66,42 +64,36 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-   On 20/4/2020 3:40 pm, Boris Brezillon wrote:
+Hi Boris,
+     Thank you very much for the review comments and your time...
 
-> On Mon, 20 Apr 2020 12:18:34 +0800
-> "Ramuthevar, Vadivel MuruganX"
+On 20/4/2020 4:29 pm, Boris Brezillon wrote:
+> On Fri, 17 Apr 2020 16:21:47 +0800
+> "Ramuthevar,Vadivel MuruganX"
 > <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
 >
+>> +
+>> +	res = devm_platform_ioremap_resource_byname(pdev, lgm_host->cs_name);
+>> +	lgm_host->nandaddr_va = res;
+>> +	nandaddr_pa = res->start;
+>> +	if (IS_ERR(lgm_host->nandaddr_va))
+>> +		return PTR_ERR(lgm_host->nandaddr_va);
+> Hm, I didn't realize you needed the physical address for DMA transfers.
+> Just use platform_get_resource_by_name()+devm_ioremap_resource() in
+> that case.
 >
->>>> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
->>>> index a80a46bb5b8b..9efc4bbaf4a3 100644
->>>> --- a/drivers/mtd/nand/raw/Kconfig
->>>> +++ b/drivers/mtd/nand/raw/Kconfig
->>>> @@ -457,6 +457,13 @@ config MTD_NAND_CADENCE
->>>>    	  Enable the driver for NAND flash on platforms using a Cadence NAND
->>>>    	  controller.
->>>>    
->>>> +config MTD_NAND_INTEL_LGM
->>>> +	tristate "Support for NAND controller on Intel LGM SoC"
->>>> +	depends on X86
->>> Do we have a hard dependency on x86 here? Maybe 'depends on HAS_MMIO'
->>> would be enough.
->> yes Boris, we have hard dependency on x86.
-> Given that the driver will also be used on a MIPS platform I would say
-> no :P. Just to be clear, I was suggesting to replace the soon to emerge
->
-> 	depends on X86 || MIPS || COMPILE_TEST
-> 	depends HAS_IOMEM
->
-> rule by
->
-> 	depends on OF || COMPILE_TEST
-> 	depends HAS_IOMEM
+Yes, you are right, needed the physical address for DMA transfers.
+>> +
+>> +	writel(LGM_BUSCON_CMULT_V4 | LGM_BUSCON_RECOVC(1) |
+>> +	       LGM_BUSCON_HOLDC(1) | LGM_BUSCON_WAITRDC(2) |
+>> +	       LGM_BUSCON_WAITWRC(2) | LGM_BUSCON_BCGEN_CS | LGM_BUSCON_ALEC |
+>> +	       LGM_BUSCON_SETUP_EN, lgm_host->lgm_va + LGM_BUSCON(cs));
+> I'm sure some the timings you hardcode here can be extracted from the
+> NAND timings. Can you see if you can implement ->setup_data_interface()
+> instead.
 
-Thank you for the suggestion !
-
-Yes, you are right since MIPS based SoCs also using the same driver, so 
-we can add the above rule.
+Yes, I have seen few of the drivers implemented 
+->setup_data_interface(), Noted.
 
 Regards
 Vadivel

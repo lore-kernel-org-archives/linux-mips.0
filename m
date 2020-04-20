@@ -1,43 +1,42 @@
-Return-Path: <SRS0=MiQc=6D=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=F7EY=6E=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3F29C3A5A0
-	for <linux-mips@archiver.kernel.org>; Sun, 19 Apr 2020 22:28:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFF67C54FCB
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 03:28:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 88CCA21473
-	for <linux-mips@archiver.kernel.org>; Sun, 19 Apr 2020 22:28:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C20CA21D82
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Apr 2020 03:28:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726049AbgDSW2V (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 19 Apr 2020 18:28:21 -0400
-Received: from mga05.intel.com ([192.55.52.43]:59485 "EHLO mga05.intel.com"
+        id S1726050AbgDTD2V (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 19 Apr 2020 23:28:21 -0400
+Received: from mga09.intel.com ([134.134.136.24]:38261 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725848AbgDSW2U (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 19 Apr 2020 18:28:20 -0400
-IronPort-SDR: YdqpwMrfgpoC84ppwJ97RGM0CqlkCXFCH76UccdgMLk/WnQv3PDyaJZXetlzZFYyxzYvbWbHKr
- UNtpFWpYt30w==
+        id S1725865AbgDTD2V (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 19 Apr 2020 23:28:21 -0400
+IronPort-SDR: HxJ2i4q39Vzlq9hk71piAICkRbLiE2pmH84WUcEaBnStIN0ltZ/W2OeJRiK4/xuQOQdBCSwOZj
+ b3GqoFoXcZUw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2020 15:28:20 -0700
-IronPort-SDR: Nh+Dex8K9ftQjDSvavCHtA2y3a9nVX58784fZWSVhNqHos1DyHm21UfAcqen4FhIVAQ9CFSSxP
- PEoGt9ZMnosw==
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2020 20:28:20 -0700
+IronPort-SDR: HAo3SnHSgS33uHmI/1WIj+u8MQgHZlw7cOFUr8mBDve0Oo8JvF0iK+RXOd39QJm38wIK6S1q0o
+ bGN5MbOYUoYg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,404,1580803200"; 
-   d="scan'208";a="289824346"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002.fm.intel.com with ESMTP; 19 Apr 2020 15:28:15 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1jQIQD-001v9r-Qw; Mon, 20 Apr 2020 01:28:17 +0300
-Date:   Mon, 20 Apr 2020 01:28:17 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
+X-IronPort-AV: E=Sophos;i="5.72,405,1580803200"; 
+   d="scan'208";a="333784767"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga001.jf.intel.com with ESMTP; 19 Apr 2020 20:28:20 -0700
+Received: from [10.249.68.96] (vramuthx-mobl1.gar.corp.intel.com [10.249.68.96])
+        by linux.intel.com (Postfix) with ESMTP id 90C52580479;
+        Sun, 19 Apr 2020 20:28:15 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] mtd: rawnand: Add NAND controller support on Intel
+ LGM SoC
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
 Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
         devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
         richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
@@ -46,119 +45,122 @@ Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
         masonccyang@mxic.com.tw, piotrs@cadence.com, robh+dt@kernel.org,
         linux-mips@vger.kernel.org, hauke.mehrtens@intel.com,
         qi-ming.wu@intel.com, cheol.yong.kim@intel.com
-Subject: Re: [PATCH v2 2/2] mtd: rawnand: Add NAND controller support on
- Intel LGM SoC
-Message-ID: <20200419222817.GK185537@smile.fi.intel.com>
 References: <20200417082147.43384-1-vadivel.muruganx.ramuthevar@linux.intel.com>
  <20200417082147.43384-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200419222817.GK185537@smile.fi.intel.com>
+From:   "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <cee6075c-a801-a0a9-f0b7-83c0a8c4fe80@linux.intel.com>
+Date:   Mon, 20 Apr 2020 11:28:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417082147.43384-3-vadivel.muruganx.ramuthevar@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200419222817.GK185537@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 04:21:47PM +0800, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> 
-> This patch adds the new IP of Nand Flash Controller(NFC) support
-> on Intel's Lightning Mountain(LGM) SoC.
-> 
-> DMA is used for burst data transfer operation, also DMA HW supports
-> aligned 32bit memory address and aligned data access by default.
-> DMA burst of 8 supported. Data register used to support the read/write
-> operation from/to device.
-> 
-> NAND controller driver implements ->exec_op() to replace legacy hooks,
-> these specific call-back method to execute NAND operations.
+Hi Andy,
 
-I guess untested version slipped into mailing list...
-See below why.
+   Thank you very much for the review comments and your time...
 
-...
+On 20/4/2020 6:28 am, Andy Shevchenko wrote:
+> On Fri, Apr 17, 2020 at 04:21:47PM +0800, Ramuthevar,Vadivel MuruganX wrote:
+>> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+>>
+>> This patch adds the new IP of Nand Flash Controller(NFC) support
+>> on Intel's Lightning Mountain(LGM) SoC.
+>>
+>> DMA is used for burst data transfer operation, also DMA HW supports
+>> aligned 32bit memory address and aligned data access by default.
+>> DMA burst of 8 supported. Data register used to support the read/write
+>> operation from/to device.
+>>
+>> NAND controller driver implements ->exec_op() to replace legacy hooks,
+>> these specific call-back method to execute NAND operations.
+> I guess untested version slipped into mailing list...
+> See below why.
 
-> +#include <linux/clk.h>
-> +#include <linux/completion.h>
-> +#include <linux/dmaengine.h>
-> +#include <linux/dma-direction.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/err.h>
-> +#include <linux/init.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/module.h>
-> +#include <linux/resource.h>
-> +#include <linux/sched.h>
-> +#include <linux/types.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/rawnand.h>
-> +#include <linux/mtd/nand_ecc.h>
-> +#include <linux/platform_device.h>
+Sorry, This is original patch only , header files are mis-aligned so 
+looks like un-tested patch.
 
-> +#include <linux/of.h>
+> ...
+>
+>> +#include <linux/clk.h>
+>> +#include <linux/completion.h>
+>> +#include <linux/dmaengine.h>
+>> +#include <linux/dma-direction.h>
+>> +#include <linux/dma-mapping.h>
+>> +#include <linux/err.h>
+>> +#include <linux/init.h>
+>> +#include <linux/iopoll.h>
+>> +#include <linux/module.h>
+>> +#include <linux/resource.h>
+>> +#include <linux/sched.h>
+>> +#include <linux/types.h>
+>> +#include <linux/mtd/mtd.h>
+>> +#include <linux/mtd/rawnand.h>
+>> +#include <linux/mtd/nand_ecc.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/of.h>
+> Do you need this?
+Noted, will check and drop if it is notnecessary.
+>> +#include <linux/mtd/partitions.h>
+>> +#include <linux/io.h>
+>> +#include <linux/slab.h>
+>> +#include <mtd/mtd-abi.h>
+>> +#include <linux/mod_devicetable.h>
+>> +#include <linux/mtd/nand.h>
+> Basically, do you need all of them?
+>
+> And maybe keep them in order?
+Sure, will update.
+> ...
+>
+>> +static int lgm_dma_init(struct device *dev, struct lgm_nand_host *lgm_host)
+>> +{
+>> +	int ret;
+>> +
+>> +	/* Prepare for TX DMA: */
+>> +	lgm_host->dma_tx = dma_request_chan(dev, "tx");
+>> +	if (IS_ERR(lgm_host->dma_tx)) {
+>> +		ret = PTR_ERR(lgm_host->dma_tx);
+>> +		dev_err(dev, "can't get the TX DMA channel, error %d!\n", ret);
+>> +		goto err;
+>> +	}
+>> +
+>> +	/* Prepare for RX: */
+>> +	lgm_host->dma_rx = dma_request_chan(dev, "rx");
+>> +	if (IS_ERR(lgm_host->dma_rx)) {
+>> +		ret = PTR_ERR(lgm_host->dma_rx);
+>> +		dev_err(dev, "can't get the RX DMA channel, error %d\n", ret);
+> I suspect this error path hasn't been tested. I don't see where tx channel
+> freeing is happening.
+Good catch, Thanks!, will update
+>> +		goto err;
+>> +	}
+>> +
+>> +	return 0;
+>> +err:
+>> +	return ret;
+> Redundant label.
+Noted.
+>> +}
+> ...
+>
+>> +	res = devm_platform_ioremap_resource_byname(pdev, lgm_host->cs_name);
+>> +	lgm_host->nandaddr_va = res;
+>> +	nandaddr_pa = res->start;
+>> +	if (IS_ERR(lgm_host->nandaddr_va))
+>> +		return PTR_ERR(lgm_host->nandaddr_va);
+> I'm wonderig what is this.  How is it even compile?
 
-Do you need this?
+Agreed!, need a correction, but it's compiled.
 
-> +#include <linux/mtd/partitions.h>
-> +#include <linux/io.h>
-> +#include <linux/slab.h>
-> +#include <mtd/mtd-abi.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/mtd/nand.h>
-
-Basically, do you need all of them?
-
-And maybe keep them in order?
-
-...
-
-> +static int lgm_dma_init(struct device *dev, struct lgm_nand_host *lgm_host)
-> +{
-> +	int ret;
-> +
-> +	/* Prepare for TX DMA: */
-> +	lgm_host->dma_tx = dma_request_chan(dev, "tx");
-> +	if (IS_ERR(lgm_host->dma_tx)) {
-> +		ret = PTR_ERR(lgm_host->dma_tx);
-> +		dev_err(dev, "can't get the TX DMA channel, error %d!\n", ret);
-> +		goto err;
-> +	}
-> +
-> +	/* Prepare for RX: */
-> +	lgm_host->dma_rx = dma_request_chan(dev, "rx");
-> +	if (IS_ERR(lgm_host->dma_rx)) {
-> +		ret = PTR_ERR(lgm_host->dma_rx);
-> +		dev_err(dev, "can't get the RX DMA channel, error %d\n", ret);
-
-I suspect this error path hasn't been tested. I don't see where tx channel
-freeing is happening.
-
-> +		goto err;
-> +	}
-> +
-> +	return 0;
-
-> +err:
-> +	return ret;
-
-Redundant label.
-
-> +}
-
-...
-
-> +	res = devm_platform_ioremap_resource_byname(pdev, lgm_host->cs_name);
-> +	lgm_host->nandaddr_va = res;
-> +	nandaddr_pa = res->start;
-> +	if (IS_ERR(lgm_host->nandaddr_va))
-> +		return PTR_ERR(lgm_host->nandaddr_va);
-
-I'm wondering what is this.  How is it even compile?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Regards
+Vadivel
+>

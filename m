@@ -2,69 +2,95 @@ Return-Path: <SRS0=U64L=6F=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2900C54FD0
-	for <linux-mips@archiver.kernel.org>; Tue, 21 Apr 2020 12:00:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43DF0C54FC9
+	for <linux-mips@archiver.kernel.org>; Tue, 21 Apr 2020 14:15:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AD7BA206D4
-	for <linux-mips@archiver.kernel.org>; Tue, 21 Apr 2020 12:00:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2AB19206F4
+	for <linux-mips@archiver.kernel.org>; Tue, 21 Apr 2020 14:15:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728633AbgDUMAn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 21 Apr 2020 08:00:43 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:34842 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726691AbgDUMAn (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 21 Apr 2020 08:00:43 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx790y4J5e5YgqAA--.41S2;
-        Tue, 21 Apr 2020 19:59:47 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v3 0/3] MIPS: Fix some issues about arch_mem_init()
-Date:   Tue, 21 Apr 2020 19:59:43 +0800
-Message-Id: <1587470386-27133-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx790y4J5e5YgqAA--.41S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYO7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87
-        Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
-        6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72
-        CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7
-        MxkIecxEwVAFwVW8KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
-        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
-        JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20x
-        vEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv
-        67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43
-        ZEXa7VUURpB3UUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1726018AbgDUOPz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 21 Apr 2020 10:15:55 -0400
+Received: from muru.com ([72.249.23.125]:50572 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728712AbgDUOPz (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 21 Apr 2020 10:15:55 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id CD62F8081;
+        Tue, 21 Apr 2020 14:16:33 +0000 (UTC)
+Date:   Tue, 21 Apr 2020 07:15:43 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Philipp Rossak <embed3d@gmail.com>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        James Hogan <jhogan@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        OpenPVRSGX Linux Driver Group <openpvrsgx-devgroup@letux.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, kernel@pyra-handheld.com,
+        linux-mips@vger.kernel.org,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v6 00/12] ARM/MIPS: DTS: add child nodes describing the
+ PVRSGX GPU present in some OMAP SoC and JZ4780 (and many more)
+Message-ID: <20200421141543.GU37466@atomide.com>
+References: <cover.1586939718.git.hns@goldelico.com>
+ <20200415101008.zxzxca2vlfsefpdv@gilmour.lan>
+ <2E3401F1-A106-4396-8FE6-51CAB72926A4@goldelico.com>
+ <20200415130233.rgn7xrtwqicptke2@gilmour.lan>
+ <C589D06E-435E-4316-AD0A-8498325039E3@goldelico.com>
+ <10969e64-fe1f-d692-4984-4ba916bd2161@gmail.com>
+ <20200420073842.nx4xb3zqvu23arkc@gilmour.lan>
+ <b5a06c19-7a3e-bcb8-5ae3-76901b9c6c35@gmail.com>
+ <20200421112129.zjmkmzo3aftksgka@gilmour.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200421112129.zjmkmzo3aftksgka@gilmour.lan>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-v3:
-  - remove the Fixes tag of patch 2/3
+* Maxime Ripard <maxime@cerno.tech> [200421 11:22]:
+> On Tue, Apr 21, 2020 at 11:57:33AM +0200, Philipp Rossak wrote:
+> > I had a look on genpd and I'm not really sure if that fits.
+> > 
+> > It is basically some bit that verify that the clocks should be enabled or
+> > disabled.
+> 
+> No, it can do much more than that. It's a framework to control the SoCs power
+> domains, so clocks might be a part of it, but most of the time it's going to be
+> about powering up a particular device.
 
-v2:
-  - modify the subject of patch 3/3
+Note that on omaps there are actually SoC module specific registers.
+And there can be multiple devices within a single target module on
+omaps. So the extra dts node and device is justified there.
 
-Tiezhu Yang (3):
-  MIPS: Do not initialise globals to 0
-  MIPS: Cleanup code about plat_mem_setup()
-  MIPS: Make sparse_init() using top-down allocation
+For other SoCs, the SGX clocks are probably best handled directly
+in pvr-drv.c PM runtime functions unless a custom hardware wrapper
+with SoC specific registers exists.
 
- arch/mips/include/asm/bootinfo.h |  2 +-
- arch/mips/kernel/setup.c         | 14 +++++++++++---
- 2 files changed, 12 insertions(+), 4 deletions(-)
+Regards,
 
--- 
-2.1.0
+Tony
+
 

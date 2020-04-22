@@ -1,262 +1,216 @@
 Return-Path: <SRS0=ydSH=63=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=DATE_IN_PAST_96_XX,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Level: *
+X-Spam-Status: No, score=1.3 required=3.0 tests=DATE_IN_PAST_96_XX,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 563BCC433DF
-	for <linux-mips@archiver.kernel.org>; Wed, 13 May 2020 22:23:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BBE3C433DF
+	for <linux-mips@archiver.kernel.org>; Wed, 13 May 2020 22:36:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 505202065C
-	for <linux-mips@archiver.kernel.org>; Wed, 13 May 2020 22:23:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7A8F5206F5
+	for <linux-mips@archiver.kernel.org>; Wed, 13 May 2020 22:36:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731138AbgEMWXF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 13 May 2020 18:23:05 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:61133 "EHLO
+        id S1728035AbgEMWgi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 13 May 2020 18:36:38 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:62213 "EHLO
         esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730064AbgEMWXE (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 13 May 2020 18:23:04 -0400
-IronPort-SDR: yexkrOKO2iVAoGW9XWov+YvxtjjcTsS1LeB3m3LJot+7lz4cPI2zCwdZuD2r6OyY6E5jzsxqQ3
- 5P7R7CV9ZFcvByFge4O7DEihAiKPtRut5XoNIBGDgl07D8eNmW46bxC1vE0g3Lp0XOkF8ixCIg
- mSuAHgThNcijigkGX+cEHLtlhcCxAjGZesgjTwG6YdY4ycqH65oWUBLwSBt+VSBulXBt9gxEtH
- 7OI2923CqMGC2EDC+I4ZHq/Ee50IuDBsZQ2hQW1aXsErw8dtY4Rv7TvS1r4HqpU3ShLV5UK0H7
- V68=
+        with ESMTP id S1726034AbgEMWgh (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 13 May 2020 18:36:37 -0400
+IronPort-SDR: YeEA8IVBElCJfyjv4KdA5XDi/91iBYuY5MdgoMpZhENqQethg6VUX9KUWFu6EPN1599tIbVKXa
+ 61Sv4Uu4rviL+wXVcSNsxg6GYLvt7GZ9fPSwce1demDJNuEdLzFVTfAP40LUvsD3jxGPbB22QZ
+ ef9J3jx2iidjr84nAfVsa+RRKI47D4Ql0jdouQZIEhB8NrWg5W/cbqI1rEJddF8bHK9WepjO+f
+ pgEQwtu4RpB7PbzMvG1iNNGmR8ZCg8Y1rcgZTMTjE41gDXPKIZboZdeuehUKYexMSMeshaLY1/
+ VzQ=
 X-IronPort-AV: E=Sophos;i="5.73,389,1583164800"; 
-   d="scan'208";a="137620224"
+   d="scan'208";a="137621565"
 Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 14 May 2020 06:23:03 +0800
-IronPort-SDR: TLBvdpXwg970kmEm5osqnWHOc8GbtP97wOPC5cf73YYlRwFCfdNSp0896sbcC4B1sKKclqnijf
- ku1w3CpU//SzMJzPEIlpWLClfK/3R6L+E=
+  by ob1.hgst.iphmx.com with ESMTP; 14 May 2020 06:36:36 +0800
+IronPort-SDR: GgmjffSaWk53IZVB4vI9i/ycbu5ZDse8/3h0QSBfiKWK40T+diatXBqBnidoyjkFsND6n1Broy
+ 20kPuqDlR9blPpUvt8NFOjOvDXSc5t9nw=
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 15:13:16 -0700
-IronPort-SDR: KYruNOjKLoQ8AwlGdQBr13ru8Y4GGC0ommx6movQJMP3nq4NTdhcJX6B8t+P0K+3OPWhe/yH94
- ouLRkQDBr57g==
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 15:26:50 -0700
+IronPort-SDR: 8WiAWgkxXm9fzMjnvX3pGMGm8nFHyBBFOppvM0DbPvE32doIyGS/tQasiVBViqHLwbhBH0opzx
+ z3YEMxMV8THg==
 WDCIronportException: Internal
 Received: from unknown (HELO redsun52) ([10.149.66.28])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 15:23:02 -0700
-X-Received: from CY4PR04MB0374.namprd04.prod.outlook.com (2603:10b6:a03:117::45)
+  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2020 15:36:36 -0700
+X-Received: from DM6PR04MB3993.namprd04.prod.outlook.com (2603:10b6:a03:60::16)
  by BYAPR04MB5176.namprd04.prod.outlook.com with HTTPS via
- BYAPR08CA0068.NAMPRD08.PROD.OUTLOOK.COM; Wed, 13 May 2020 22:19:15 +0000
-X-Received: from BN6PR21CA0015.namprd21.prod.outlook.com (2603:10b6:404:8e::25)
- by CY4PR04MB0374.namprd04.prod.outlook.com (2603:10b6:903:bb::10) with
+ BYAPR07CA0039.NAMPRD07.PROD.OUTLOOK.COM; Wed, 13 May 2020 22:34:01 +0000
+X-Received: from BN7PR06CA0047.namprd06.prod.outlook.com (2603:10b6:408:34::24)
+ by DM6PR04MB3993.namprd04.prod.outlook.com (2603:10b6:5:ae::26) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.33; Wed, 13 May
- 2020 22:19:15 +0000
-X-Received: from BN3NAM04FT036.eop-NAM04.prod.protection.outlook.com
- (2603:10b6:404:8e:cafe::54) by BN6PR21CA0015.outlook.office365.com
- (2603:10b6:404:8e::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.1 via Frontend
- Transport; Wed, 13 May 2020 22:19:14 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.34; Wed, 13 May
+ 2020 22:34:00 +0000
+X-Received: from BN3NAM04FT022.eop-NAM04.prod.protection.outlook.com
+ (2603:10b6:408:34:cafe::1f) by BN7PR06CA0047.outlook.office365.com
+ (2603:10b6:408:34::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.20 via Frontend
+ Transport; Wed, 13 May 2020 22:34:00 +0000
 Authentication-Results: spf=none (sender IP is 216.71.153.141)
  smtp.mailfrom=linux-mips.org; wdc.com; dkim=none (message not signed)
  header.d=none;wdc.com; dmarc=none action=none header.from=linux-mips.org;
 X-Received: from esa3.hgst.iphmx.com (216.71.153.141) by
- BN3NAM04FT036.mail.protection.outlook.com (10.152.93.184) with Microsoft SMTP
+ BN3NAM04FT022.mail.protection.outlook.com (10.152.92.174) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3000.19 via Frontend Transport; Wed, 13 May 2020 22:19:14 +0000
+ 15.20.3000.19 via Frontend Transport; Wed, 13 May 2020 22:33:59 +0000
 Authentication-Results-Original: esa3.hgst.iphmx.com; dkim=none (message not
  signed) header.i=none; spf=None smtp.mailfrom=macro@linux-mips.org; spf=None
  smtp.helo=postmaster@cvs.linux-mips.org
 X-Ironport-Dmarc-Check-Result: validskip
-IronPort-SDR: TZX4iXsRV8QJIgtAfarVTxH2vv9kSP1tJpaghLwdPiGWuory8XY2+OnBWh7JimM6+HldPIMQlG
- 9/CWr25AHV40iQgYODTsNnYZ3RoxEYaWsLDtR2aDDteT28Vlbzk1IA1lJLeRpg5auN9byL2OWr
- h0ZzWJbP4OfoGi76BIoFZenj/kxAuXoQIZGKAYEQtCkQUuM+YqkbZtUS6HB7dCGLeag+VhNsb7
- cB7H00Ty76+lmNjrrKi0hptlSg3Rai1Gvz5n6A6NvF2LrzLY3a+VcT69PUp1gpujUdUyOcXw5U
- jtz1+nrcz915nNxrlGChcIMD
-IronPort-PHdr: =?us-ascii?q?9a23=3ANq62KRxCPIbFP2LXCy+O+j09IxM/srCxBDY+r6?=
- =?us-ascii?q?Qd2ugSIJqq85mqBkHD//Il1AaPAdyGraMZwLKI+4nbGkU4qa6bt34DdJEeHz?=
- =?us-ascii?q?Qksu4x2zIaPcieFEfgJ+TrZSFpVO5LVVti4m3peRMNQJW2aFLduGC94iAPER?=
- =?us-ascii?q?vjKwV1Ov71GonPhMiryuy+4ZLebxhIiTanZb5/LBq6oRnQu8ILnYZsN6E9xw?=
- =?us-ascii?q?fTrHBVYepW32RoJVySnxb4+Mi9+YNo/jpTtfw86cNOSL32cKskQ7NWCjQmKH?=
- =?us-ascii?q?0169bwtRbfVwuP52ATXXsQnxFVHgXK9hD6XpP2sivnqupw3TSRMMPqQbwoXz?=
- =?us-ascii?q?mp8rxmQwH0higZKzE58XnXis1ug6JdvBKhvAF0z4rNbI2IKPZyYqbRcNUHTm?=
- =?us-ascii?q?RDQ8lRTTRMDI28YYUREuQOP+VWr4fyqFQStha+GRWgCP/zxjNUmnP6w6s32P?=
- =?us-ascii?q?khHwHc2wwgGsoDvHrTotrvKKgSUP66zKvVxjrDdf9dxCvz6I/JcxEhvf6MXr?=
- =?us-ascii?q?NwfcTMwkQoEgPKlEmfqZbiPz6O0uQNsm6b7/dvVO62jm4nqhlxoiO1yscrkI?=
- =?us-ascii?q?nJiZsYx1bZ/ip23Ig7P8e3SFJnYdG6CptQsTmXOpd4T84tTWxluSc3xL0HtJ?=
- =?us-ascii?q?C1fCUH1Jcqyh/dZvCafYaF7BPuWfuSLDp2hHxrd66yiRmu/EWkyuPxUtW43U?=
- =?us-ascii?q?pKoydDj9LCuHcN1xnJ5ciGTPtw5kOh1iuU1wzJ8eFLOlg4lbHcK5482L4/io?=
- =?us-ascii?q?QcsErZES/shkr6lqiWdl8r+uSw5OTnY6nmpp+BN4BvkA3xLqMumsm5DO8lMQ?=
- =?us-ascii?q?YOR3CW9fmz2bDg50H1XrVHguAsnqTdsJ3WP9kXq6C6DgJTz40t8QywDy2839?=
- =?us-ascii?q?QdhXQHLExKeBaAj4XxJ17OPuv4Ae27g1Stljdr2v/HMqTkApXMNnjDi63tfb?=
- =?us-ascii?q?Fn605T0AYzzNZf6IxICrwZPf7+VUz8uMbGAhI5LgC42eLqBdVn2o8DV2+CAb?=
- =?us-ascii?q?eVMKbIvl+J4uIvLfOMZIgQuDvlLvgq/eLhjWU+mVIGeamp3J0XaG23H/h/Jk?=
- =?us-ascii?q?WZYGLsgswbHWcNpAo+Q/TmiEeeXj5Le3ayQ6U86yk+CI28EYjDXIetjaeP3S?=
- =?us-ascii?q?imApJafHxJCleJESSgS4LRdf4KZziPI4dalToLHeykQpQizxi/nAD9zLVjI6?=
- =?us-ascii?q?zf/ShO5rz5090grcjanhA/93RLSYyn1HOcRGJ11CtcQjY9xqdXpU1710fG1K?=
- =?us-ascii?q?lgmLpfD9MFtKABaRszKZOJl78yMNv1QA+UO47REAz8EPy7HTE8SM4wyNYSYk?=
- =?us-ascii?q?F7Xu+vlQ3HwzHzXedHmqeCX9o0/bnAmXnpJ8NtjX3B0fppg1onR55JMmurzu?=
- =?us-ascii?q?56+hPIDoHE20Oei+6xdKsa0SKMvGeOxGaDpgdZBQh3V6iWFWsHaB7wqtL0rl?=
- =?us-ascii?q?jHU6foDL0mNgVbzsvXL6JBcNrBiVRAWeemPdXGeCS2gWjjTQ2QyOaqa4znM3?=
- =?us-ascii?q?4YwD2bCEUAlFUL+m2aMAElGiq7i2nAF3pqFFTycwbp8PFl7nShQRZunTuHZE?=
- =?us-ascii?q?Bgybe5vyUtq6bNEaE12bQJ8GcssDwvWlayxM6QCsKAohond6JZM5s75x9c2G?=
- =?us-ascii?q?TVuhY1N4G8L61kml8Vchhm2iGmnxRxBIJalME2rXQshANsIKOc2VlFenuWx5?=
- =?us-ascii?q?f1crHQL2Dz+lioZebT01rE1/6S+6ES+LE9qk34+gazGQtHkT0v0tVY1Wed+o?=
- =?us-ascii?q?SfCQMTVZzrVUNkvxN+przcfmw8/9aNiS0qa/Tt9G6fnYtyVLhAqF7oZdpUPa?=
- =?us-ascii?q?KaGRWnHtYTXI6uJ/c23VmxbhcUeutV8f1RXYvuev2Y1aqsJOslkiihiDEN5Y?=
- =?us-ascii?q?l2yEWk8yt6V/6N2pcd2LefxATNBFKexB+x99v6n4xJf2RYG2O00y/MAI9Xe7?=
- =?us-ascii?q?03eIcTEiGpOcL9lZ1uwpXqXXBf7luqAVgLjdSxdy2VaVjshFcC70kcrH25lC?=
- =?us-ascii?q?f99ARayGl4/IyY2iGGg+n5fUFBOmFQWC9jlVfpMc6/iNVIFE6vJxMkkheo/w?=
- =?us-ascii?q?7z2rRbqaJjLmLSXVYtHWC+LmdsVbG1v6aDZMgH4Y0hsCFeWuCxKV6ATbu1rx?=
- =?us-ascii?q?wf2iLlV2xQoVJzPymtoYn8lgdmhXi1J2ho6n7Yf9xggBLe/MeaQuRen3IHSC?=
- =?us-ascii?q?R+lTjLFw28Mt2urrD239/ItuGzUX7kV4UGKHW7i9nd7W3quCszWk3s1+q+kd?=
- =?us-ascii?q?DmDwUghCLg3oIsVSrTsFD9eonux+KxNuc0GysgTFL69cd+HZlz14Uqg5RFk3?=
- =?us-ascii?q?0TjY+S1X4Gl3rjdNBawbm4a2ACD21uoZad8E3+1UtvI2jcjZr+TWmYy9B9as?=
- =?us-ascii?q?OSaX0NnCY86d1aTaKV9KcCmjF66Andz0qZcb12mTETzuEr4XgRjrQSoAQayS?=
- =?us-ascii?q?OZE+lDT3kdBjTlklGz1/77qaxWYGi1dr3pihh6nNa8HPSHoxlHHnHjdcV6RH?=
- =?us-ascii?q?Ii3oBEKFvJlUbLxMTkdd3XN4pBvQOP1RPBifVFbZcwjuFMgjBoazrw?=
+IronPort-SDR: uhe/zc8TKAhcm3vBtT664jbW6g1U0KRC5/I51WOqeXa522cy7LwdFDNs0vzbgTEZ+VCniNpiYm
+ lh8HAkwTTkNmgoZmoYwVtn/b2hOC2MrN3VVjBVuZQk9ToxGXb+ZIE1ybvifP+zkwsvtAkXuOWh
+ U7AD2C5xf1sqYPRBQSKJsCMgDfSZONtSV61lI7rL0O/OP7sK3jagRNApC/pkGAo6Lg7dkA8Uo3
+ bRCG8A5hgFYUeUBlxji2TcmNHIEkvK3fsAd3F5vTyYnhGdJJMop37/pUm6TV0oifC0pTZ3DmHC
+ /6F++0vQJwKcLW1OQLUkY45Q
+IronPort-PHdr: =?us-ascii?q?9a23=3AtJnC8BCyvXjOr5g6fHEKUyQJP3N1i/DPJgcQr6?=
+ =?us-ascii?q?AfoPdwSPT/psbcNUDSrc9gkEXOFd2Cra4d1qyH7uu4CCQp2tWoiDg6aptCVh?=
+ =?us-ascii?q?sI2409vjcLJ4q7M3D9N+PgdCcgHc5PBxdP9nC/NlVJSo6lPwWB6nK94iQPFR?=
+ =?us-ascii?q?rhKAF7Ovr6GpLIj8Swyuu+54Dfbx9HiTagYb5+NhG7oAXeusUKhYZpN7o8xA?=
+ =?us-ascii?q?bOrnZUYepd2HlmJUiUnxby58ew+IBs/iFNsP8/9MBOTLv3cb0gQbNXEDopPW?=
+ =?us-ascii?q?Y15Nb2tRbYVguA+mEcUmQNnRVWBQXO8Qz3UY3wsiv+sep9xTWaMMjrRr06RT?=
+ =?us-ascii?q?iu86FmQwLzhSwZKzA27n3Yis1ojKJavh2hoQB/w5XJa42RLfZyY7/Rcc8fSW?=
+ =?us-ascii?q?dHQ81fVTFOApmkYoUBD+QPI/tWoIv+qVsAohSxGRKhBP/zxjNUmnP6wbE23/?=
+ =?us-ascii?q?onHArb3AIgBdUOsHHModn7M6kdS/y6zKjWwjXBcvhZ2S3x45XUfBAmoPCNXa?=
+ =?us-ascii?q?5/ccnQyUUhCgjIiVCQppb5MDOP0eQAqGyb7+tmVeKyhG8rsgRxojm3xsc3kI?=
+ =?us-ascii?q?XJgZgVyl/d+Ch/3Y06KsG2RlRhbt64DJtfqTuaN41uT84iQGxluyU3xLIHtJ?=
+ =?us-ascii?q?O/YiUH1YkrygDcZvKHbYWF4g7uWfqPLTtlmX5odq6yiwiv/EauxeDxV8e53E?=
+ =?us-ascii?q?tKoCdGj9XBsG0G2R/L6sWfV/dw8USs1SyR2w3T9+1IO0Q5mKrBJ5I8zLM9lZ?=
+ =?us-ascii?q?weulnZECDsgkX5lqqWe10k+ue27+TnZa3rqYOCN49vkA3+NqUumsqiAeU3Kw?=
+ =?us-ascii?q?QOWmmb+fyn1LH5+k35WrpKguU3kqnfrp/aOdwWqrO2DgJWyIov9RayAyq83N?=
+ =?us-ascii?q?kcnXQLNk9JdRyEgoTxPlHBOvH4DfOxg1S2lzdrwujLPrj7DZrRNHjDl6zsfb?=
+ =?us-ascii?q?J8605a1QoywslT55dVCrEZO/L/QEjxtMbXDhMhKQy73/7nCMlh1oMZQW+PB7?=
+ =?us-ascii?q?WWP7/IsV+P/e8uLfSDa5MPtDnhLPgl4q2msXhsu1gGfbSglbgWbnmiErwyIF?=
+ =?us-ascii?q?ica3PEjdoHDWAN+A0kQ7q5pkeFVGsZQn+5Xq8+rg59QLihH5bIRYHnyOiE1S?=
+ =?us-ascii?q?yhGbVSZ2ZbGhWJEG/zMYKeVKFfO2qpPsZ9n2lcBvCaQIg72ETr7VeikeA1B/?=
+ =?us-ascii?q?fI+iAeqZPo3cR04OuWrxwp6DhoFJ3DizOAVGgv2GMHXCNw3bh/pFw7wVCGgu?=
+ =?us-ascii?q?B0gP1dQNpU4f4BEgI3LoXVwOEyDdfuEhnAcdGERBfuQtivDTwrCNNkxdgIbh?=
+ =?us-ascii?q?U1AM2s2zbE2SfiGLoJj/qODZ0w/Ljb2i30Ls1nzF7C1a88nxwjQ9NUc2q8if?=
+ =?us-ascii?q?037BDdUqjOlUjRjKO2beIc0SrKoX+E1naLtVpEXRRYWrveG3QeYFbG6NH4/l?=
+ =?us-ascii?q?iESKWhUO51CAZKxM+cJ6cPUeXH1wQcFtHkPtmWI2+qkjz2BRmT2vWNdIrvay?=
+ =?us-ascii?q?MW2yCPQE4D2xse+3qLL0A3GzuhrmTCDTdvCUOKAQuk8O9wr2m+R1M1yAfCZl?=
+ =?us-ascii?q?No1r688BoYzfKGTPZb0rUBsSYn4zJ6VFO01MjRI96BoRdxOaBdech7501IlA?=
+ =?us-ascii?q?e7/0R8MpGmM6F+lwsbegVzsVnp0kY/AYFBnM426XIymVMueeTCjQoHJm7ehM?=
+ =?us-ascii?q?ugadi1YiHo8RuiarDbwATTy9/NvKcA8+h+qk3juRHvHU0noBAFm5FY1WWR4p?=
+ =?us-ascii?q?LSAU8cS5X0Bwwy/hNgoJneYy8g98bR1GV3d66uvXWRvrBhTPtg0Rumc9pFZe?=
+ =?us-ascii?q?mBHQToFOUeBs6zOKkvmkCyKBUeM6oBvL5xNMSgefyc3aetN+s1hyqoumNB5J?=
+ =?us-ascii?q?EkiBC2+iFxS/DF09M++9/DhlrVcTD6gR/hv9v+wsZEaioOWGunyS30QoVWY/?=
+ =?us-ascii?q?86e4FDEmqoL8Ctjtxjm57gXWJZ/1+/FjZkkIeofxSVdVn0wQxX0wwev3WmnS?=
+ =?us-ascii?q?KyyzE8nSsuq+KT2ynHwuKqcxRiWCYDXG55kVLlOpS5lfgRQlPuawkviQvg4E?=
+ =?us-ascii?q?fi3O5cvqs+Z2jfTEFUfjTnemFvVqzj09jKK8VL6Z4urWBWSLHlPQDcEOOk5U?=
+ =?us-ascii?q?pHlXq4TzgW3j0wejC0t4+skgdz0ySdI21v6nvBecRggxzY4Y+5J7YZ0zwYSS?=
+ =?us-ascii?q?1/kTSSCEK7Oozj+NyfjZDrtuG4SnLkU5xLam/s14zK507ZrSV6RAaymfy+gI?=
+ =?us-ascii?q?itCQ8hzSryzMVnTw3Dsg26ZojtyrT/NON/ZQ9vHlC2uK8YUslu14A3gp8Xw3?=
+ =?us-ascii?q?0TgJ6YqGEfn1D0N9FKgPOsXD82XTcOhuXtzk3g0UxnIGiOwtunBHGcxNZxIt?=
+ =?us-ascii?q?y7enhQ3TgyvZgTVfWkqYdclC4wmWKW6ALcZf8nxmUW1+Bo7H8cnvFMvQs11W?=
+ =?us-ascii?q?OaGL9ARUQ=3D?=
 X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0EUBADGcbxefYpf+5RmHgEBCxIMQIE?=
- =?us-ascii?q?8C4IldlAlAwQLLI0mh1+bSTwPATEKBAEBAoRCAoIrBjkGDgIDAQEBAwIFAQE?=
- =?us-ascii?q?BBAEBAQIBAQEDAgEBAQECEAEBFjo0YFOBR4FBLAkGAwEvDII7KQERXn4BAQE?=
- =?us-ascii?q?BAQEBAQEBAQEBAQEBAQEBAQEBARICDVRpAgEDEig/EAsOOFcGNYMFglclD6Q?=
- =?us-ascii?q?jAYEoPgIjAT8BDIEFiX6BNIROQYVbBoE4jBw6BoFBP4ERMwOCLC4+gk4ZAgE?=
- =?us-ascii?q?Bh1cEkRkBoWQHA4JNiB2QFx2dSZoLlWkigUQNB30IgyRNAQIBAgEMAQICAQE?=
- =?us-ascii?q?BAgEBCAEBAQGUL4UUhUNDMDcCBggBAQMJj0QBAQ?=
-X-IPAS-Result: =?us-ascii?q?A0EUBADGcbxefYpf+5RmHgEBCxIMQIE8C4IldlAlAwQLL?=
- =?us-ascii?q?I0mh1+bSTwPATEKBAEBAoRCAoIrBjkGDgIDAQEBAwIFAQEBBAEBAQIBAQEDA?=
- =?us-ascii?q?gEBAQECEAEBFjo0YFOBR4FBLAkGAwEvDII7KQERXn4BAQEBAQEBAQEBAQEBA?=
- =?us-ascii?q?QEBAQEBAQEBARICDVRpAgEDEig/EAsOOFcGNYMFglclD6QjAYEoPgIjAT8BD?=
- =?us-ascii?q?IEFiX6BNIROQYVbBoE4jBw6BoFBP4ERMwOCLC4+gk4ZAgEBh1cEkRkBoWQHA?=
- =?us-ascii?q?4JNiB2QFx2dSZoLlWkigUQNB30IgyRNAQIBAgEMAQICAQEBAgEBCAEBAQGUL?=
- =?us-ascii?q?4UUhUNDMDcCBggBAQMJj0QBAQ?=
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0HOAABDdbxefYpf+5RmHQEBAQEJARI?=
+ =?us-ascii?q?BBQUBQIE2BQELAYIkgWsDBAuNUodfJZtgDwE7BAEBhEQCgisGOQYOAgMBAQE?=
+ =?us-ascii?q?DAgUBAQEEAQEBAgEBAQMCAQEBAQIQAQEWOjRgU4FHgUEsCQYDATuCOykBg2I?=
+ =?us-ascii?q?BAQECARIoPwULCw44VwY1hVwFIKQmAYEoPgIjAT8BDIEFiX6BNIpzgTgBjFU?=
+ =?us-ascii?q?GgUE/gUQDgiwuPoogIgSyfgcDgk2YNB2CTAGafK90IoFYfQiDJUwBAgECAQw?=
+ =?us-ascii?q?BAgIBAQECAQEIAQEBAZ8GQ2cCBggBAQMJj0QBAQ?=
+X-IPAS-Result: =?us-ascii?q?A0HOAABDdbxefYpf+5RmHQEBAQEJARIBBQUBQIE2BQELA?=
+ =?us-ascii?q?YIkgWsDBAuNUodfJZtgDwE7BAEBhEQCgisGOQYOAgMBAQEDAgUBAQEEAQEBA?=
+ =?us-ascii?q?gEBAQMCAQEBAQIQAQEWOjRgU4FHgUEsCQYDATuCOykBg2IBAQECARIoPwULC?=
+ =?us-ascii?q?w44VwY1hVwFIKQmAYEoPgIjAT8BDIEFiX6BNIpzgTgBjFUGgUE/gUQDgiwuP?=
+ =?us-ascii?q?oogIgSyfgcDgk2YNB2CTAGafK90IoFYfQiDJUwBAgECAQwBAgIBAQECAQEIA?=
+ =?us-ascii?q?QEBAZ8GQ2cCBggBAQMJj0QBAQ?=
 X-IronPort-AV: E=Sophos;i="5.73,389,1583164800"; 
-   d="scan'208";a="141966952"
+   d="scan'208";a="141968369"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 X-Received: from eddie.linux-mips.org (HELO cvs.linux-mips.org) ([148.251.95.138])
-  by esa3.hgst.iphmx.com with ESMTP; 14 May 2020 06:19:13 +0800
+  by esa3.hgst.iphmx.com with ESMTP; 14 May 2020 06:33:57 +0800
 X-Received: (from localhost user: 'macro', uid#1010) by eddie.linux-mips.org
-        with ESMTP id S23991633AbgEMWTL00TsP (ORCPT <rfc822;macro@wdc.com>);
-        Thu, 14 May 2020 00:19:11 +0200
-Date:   Mon, 13 Apr 2020 21:08:46 +0100 (BST)
+        with ESMTP id S23991633AbgEMWdzbDykz (ORCPT <rfc822;macro@wdc.com>);
+        Thu, 14 May 2020 00:33:55 +0200
+Date:   Wed, 22 Apr 2020 18:14:54 +0100 (BST)
 From:   "Maciej W. Rozycki" <macro@linux-mips.org>
-To:     Fangrui Song <maskray@google.com>
-cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Borislav Petkov <bp@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] MIPS: Truncate link address into 32bit for 32bit
- kernel
-In-Reply-To: <20200413153453.zi4jvu3c4ul23e23@google.com>
-Message-ID: <alpine.LFD.2.21.2004132107550.851719@eddie.linux-mips.org>
-References: <20200413062651.3992652-1-jiaxun.yang@flygoat.com> <alpine.LFD.2.21.2004130736410.851719@eddie.linux-mips.org> <20200413153205.4ee52239@flygoat-x1e> <20200413153453.zi4jvu3c4ul23e23@google.com>
+To:     Joshua Kinard <kumba@gentoo.org>
+cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH] Add missing ifdefs to SGI Platform files for IP22,
+ IP32
+In-Reply-To: <69f0ba65-161c-744a-42c0-c8bb435cce3c@gentoo.org>
+Message-ID: <alpine.LFD.2.21.2004221813180.851719@eddie.linux-mips.org>
+References: <87be6e36-04de-684b-0361-91de9ce2c731@gentoo.org> <20200416163051.GA24457@alpha.franken.de> <f4c06481-7fa3-d84c-5aa9-f991daef058c@gentoo.org> <20200420072257.GE4627@alpha.franken.de> <69f0ba65-161c-744a-42c0-c8bb435cce3c@gentoo.org>
 Content-Type: text/plain; charset=US-ASCII
-X-ReSent-Date: Wed, 13 May 2020 23:19:07 +0100 (BST)
+X-ReSent-Date: Wed, 13 May 2020 23:33:49 +0100 (BST)
 X-Resent-Sender: "Maciej W. Rozycki" <macro@linux-mips.org>
 X-ReSent-From: "Maciej W. Rozycki" <macro@linux-mips.org>
 X-ReSent-To: "Maciej W. Rozycki" <macro@wdc.com>
-X-ReSent-Subject: Re: [PATCH v4] MIPS: Truncate link address into 32bit for
- 32bit kernel
-X-ReSent-Message-ID: <alpine.LFD.2.21.2005132319070.1120869@eddie.linux-mips.org>
+X-ReSent-Subject: Re: [PATCH] Add missing ifdefs to SGI Platform files for
+ IP22, IP32
+X-ReSent-Message-ID: <alpine.LFD.2.21.2005132333490.1120869@eddie.linux-mips.org>
 X-Return-Path: macro@linux-mips.org
-X-MS-Exchange-Organization-ExpirationStartTime: 13 May 2020 22:19:14.3540
+X-MS-Exchange-Organization-ExpirationStartTime: 13 May 2020 22:33:59.6856
  (UTC)
 X-MS-Exchange-Organization-ExpirationStartTimeReason: OriginalSubmit
 X-MS-Exchange-Organization-ExpirationInterval: 1:00:00:00.0000000
 X-MS-Exchange-Organization-ExpirationIntervalReason: OriginalSubmit
-X-MS-Exchange-Organization-Network-Message-Id: d55ca279-a0d5-4aa6-243d-08d7f78bab5a
+X-MS-Exchange-Organization-Network-Message-Id: 21502f82-7d03-4631-032e-08d7f78dbb0d
 X-EOPAttributedMessage: 0
 X-MS-Exchange-Organization-MessageDirectionality: Originating
 X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:216.71.153.141;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:esa3.hgst.iphmx.com;PTR:esa3.hgst.iphmx.com;CAT:NONE;SFTY:;SFS:(4636009)(33430700002)(34756004)(7636003)(8676002)(42186006)(1096003)(107886003)(26005)(5660300002)(6666004)(86362001)(966005)(7596003)(8936002)(33440700001)(54906003)(4326008)(336012)(6862004)(356005)(82310400002)(1736002);DIR:INB;SFP:;
+X-Forefront-Antispam-Report: CIP:216.71.153.141;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:esa3.hgst.iphmx.com;PTR:esa3.hgst.iphmx.com;CAT:NONE;SFTY:;SFS:(4636009)(33430700002)(42186006)(5660300002)(7596003)(8676002)(107886003)(7636003)(4744005)(34756004)(33440700001)(4326008)(356005)(8936002)(1096003)(6862004)(336012)(26005)(82310400002)(86362001)(1736002);DIR:INB;SFP:;
 X-MS-PublicTrafficType: Email
-X-MS-Exchange-Organization-AuthSource: BN3NAM04FT036.eop-NAM04.prod.protection.outlook.com
+X-MS-Exchange-Organization-AuthSource: BN3NAM04FT022.eop-NAM04.prod.protection.outlook.com
 X-MS-Exchange-Organization-AuthAs: Anonymous
 X-OriginatorOrg: sharedspace.onmicrosoft.com
-X-MS-Office365-Filtering-Correlation-Id: d55ca279-a0d5-4aa6-243d-08d7f78bab5a
-X-MS-TrafficTypeDiagnostic: CY4PR04MB0374:
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-Correlation-Id: 21502f82-7d03-4631-032e-08d7f78dbb0d
+X-MS-TrafficTypeDiagnostic: DM6PR04MB3993:
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-Organization-SCL: 1
 X-Microsoft-Antispam: BCL:0;
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2020 22:19:14.0842
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2020 22:33:59.4217
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d55ca279-a0d5-4aa6-243d-08d7f78bab5a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21502f82-7d03-4631-032e-08d7f78dbb0d
 X-MS-Exchange-CrossTenant-Id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=b61c8803-16f3-4c35-9b17-6f65f441df86;Ip=[216.71.153.141];Helo=[esa3.hgst.iphmx.com]
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR04MB0374
-X-MS-Exchange-Transport-EndToEndLatency: 00:00:01.8162536
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB3993
+X-MS-Exchange-Transport-EndToEndLatency: 00:00:01.8650667
 X-MS-Exchange-Processed-By-BccFoldering: 15.20.2979.027
 X-Microsoft-Antispam-Mailbox-Delivery: ucf:1;jmr:0;auth:0;dest:C;OFR:CustomRules;ENG:(20160514016)(750127)(520002050)(944506383)(944626516);
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?0o0bCTELxBkISYuiTZX9t8b0x0kaYx0/h32EmG8ZfUn7aEyWX3+hxpRRh3uS?=
- =?us-ascii?Q?hqXoEQcw/aBndAvtItXOH59kM0bRCx3Naxzwn6q6uzHUYXUvkCJqOifXxUXB?=
- =?us-ascii?Q?qwVFXYVkMH4qiwm1Sn4TsoRvy9J4yIYFnEEzQrfI+JyzOLhukeKC4309O8T7?=
- =?us-ascii?Q?rB0cElPiZo0ixOArLZprjebe4ShxtChuNPE8nxf+IW5aVCJbf3Hd7jWWA4Ya?=
- =?us-ascii?Q?OTROgpuzrlUvoVx9o7U1ZWOr8IG5BYxnxtrJOMFBVTL4jTOkAj8c6gSFgmVS?=
- =?us-ascii?Q?xRT0mR22C1pwAAYmiXh+VoJ/9SGx5ONosfDwKSEd7ZOht4ZXHEnMmeguOa1B?=
- =?us-ascii?Q?zccq/YQhNW3Oc9f+m37CCkEZmG4ynWhJsTG/neKJ7L3E0GBxkXHN46BIc/DM?=
- =?us-ascii?Q?ew76xSp0mS9Ds+vuO8wglFsKenk4PzU7xKHtLF/UlhnbTElpXso+ZuQlVubF?=
- =?us-ascii?Q?NnZQgfX/EjoZNQYRTn69IpBp40y29mDMesjxNfDxz973T97ZkZjrsthOvp56?=
- =?us-ascii?Q?bpno1z6D1c3Kq/wO7CxApYSGCSDsnA4VQia14E7zcCXeWGMoktHEOpbR8PDS?=
- =?us-ascii?Q?ePNJFJv+pyv3wts3HnIPunCkXHf2AHqR1E4pvXAhQQpAuVH1iOROo8fBHEmS?=
- =?us-ascii?Q?6Asm91sr0tt9DJMYYsXrOcEmHXhEW/cQV3NIHTjs6hGmcknSKNpqWXD8kk9j?=
- =?us-ascii?Q?ZUbwJkCGIr+0+QTcJM8Mel2qrONP3wjJuzbMPgwnC9grkyZ2FDzfhEvzYuMk?=
- =?us-ascii?Q?sYAiQKjOD/JyRO2oKGalMG86gI1Pptcr8v2ddcy3iPw+AoBV4Q8Heq/G/UAq?=
- =?us-ascii?Q?Grv2SnVER/TujpxKCnQfOVl0LUNRRzricQl+R3qu/cZdidZm/88C1HQozjER?=
- =?us-ascii?Q?KVvjZ33NSlQqgRGkHzAmo2bZ2eC7dA/fqhD2Y9L7wN50NsyW0zu3N0pVzZ7a?=
- =?us-ascii?Q?76NO2yDtKAD3EoCcFp+66/wPW4A0Uud7m8UDA2oLdrdkeL5613E1iJJBv2ry?=
- =?us-ascii?Q?WxoPoDYkH13fMgDVDz2BvJdjmpBrJzmkdlxdeEk1a4K39YEqyHRS5moA3L4X?=
- =?us-ascii?Q?EXRV6Fkex9XLhEthjp0M7VKJQ4qtO2fE0vo56UFQdoDOwHoiqK+oaf3kXNo0?=
- =?us-ascii?Q?rkAD5v/fuEVvFme22qJQIPD/Tu6rvht18dmUZqOZMr7YyfK8iywLEJDSXq9g?=
- =?us-ascii?Q?YyukfnNsYYfA3Ob08UJ1eEucTF29gj5ptVGFKebKnyeQa/ZgwWUOi4cTg0+Y?=
- =?us-ascii?Q?SAjMvRFQgkHwdunh+V2b8nI0MLoxD6h0pSM1AugS9rxrgrCGgYDqllV9z/0t?=
- =?us-ascii?Q?+A/AqeBpJEZigDr0Marp2hUG9DLthT0FfXV0yJy+uAguPJF6JswkBUYpQ+FW?=
- =?us-ascii?Q?jq8T/Jxc+Z/LmEDFV+We+TEkk+d06XyHc9RoLRZSiLCA4lPyct7XwJ8gr4v7?=
- =?us-ascii?Q?+QP15LOlXAWNDiLyiCyfmvkufNCPAkH/?=
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?zLINO+Pt4r6VlTbbvvV/kPnqFWzZ6GVvZi/CsvdkOm6JE2HgN+DD3HigNcv4?=
+ =?us-ascii?Q?40+7xfJ2xzoiDyMi0feU/DWGvmufy8RJDeaAgH8UD/43YLwDIWMIJVjJl32F?=
+ =?us-ascii?Q?eqn9rog+YK+IeWFaCny1+MkhJ4koQKoMpmKbqrKvRuT4iaDnRoYseoOp1Xh2?=
+ =?us-ascii?Q?f6whASz+oY491PrEPg5CxPMa9E8jlV2i0OFhe92KTFYRSICm+PTtlMMy1Vzj?=
+ =?us-ascii?Q?GJGIgy+506eH83YP5A5RMTBTmBTGh9zsFP/7XSzlvGb3UTObvS256rqh7d4b?=
+ =?us-ascii?Q?J9bVW2ICAuo9BK3asVCeoHQhXqNacQFwWL8V6PnDHALojLCsS6NB4i6Fv2Ys?=
+ =?us-ascii?Q?JhuKwNulASRB8SLXm6FPurSaubU/+SkqPWbF+VGifppodIiUy2V8g301tgRS?=
+ =?us-ascii?Q?M86AznKXadEXg4NHudP2OklTur6oO+osCN1HsmKyXe1qA55OBkSecqB/U23h?=
+ =?us-ascii?Q?WYU2EVuNYgR4aKUO/Ia+gaDt4h15fMgNUvKP1gUP6LN05wrWFutbYNDLBHmg?=
+ =?us-ascii?Q?E+1w8otL9OlcqsqtpHOVWmMXIimnrJOGtCDRUoD7tAWsvGHxiX3xdzPRsr/6?=
+ =?us-ascii?Q?HzkD6k4RDVvdVqhkbviQOGyHhtR7rV3F14K64HTs9g1UXG4Elt3lAnkIhVTF?=
+ =?us-ascii?Q?yNVyeOncgzY2Ws4v2Ebda412PTtGy1c8Y631sCmi3djAjoUS5dNn5T42qf6h?=
+ =?us-ascii?Q?gbBOhQfIRQqKfxFGNBD9mIok5iiLRWuTLNL6ZK5XAE90pnzuVjhXDejPMmaO?=
+ =?us-ascii?Q?TohcrqkQlDaaAfcwrAI4CkNa/ZwsgU/Tc7QSR/A8ezVTXZPgN4WMntCRNf0r?=
+ =?us-ascii?Q?ak1eaxAAIIjqSPKuZp/7BCbAaE5qQn/pooXlfEjTluJwPsNTzKNd/DdH94C+?=
+ =?us-ascii?Q?CqPnXaOUxdwVekNvoy043xOvo+vCgIGb5N7vKjfl8b6hNxmEzdSvgf3tr0Sl?=
+ =?us-ascii?Q?czrHAw7v6WQmG0fNEhF/RUVPwB31fM0LcuzrnW0zoNOwa9nllF3Se7ntED40?=
+ =?us-ascii?Q?//HmmBR72fggtcJlXq97fCYOc+4IGparUwausLYE/5RsMFEfxo606wckdKk8?=
+ =?us-ascii?Q?aAamsjS53INaio7DRk1+hClbQ1YK9qGfHMxTtlNNTfVw9G6bk/H/mR5KfGWi?=
+ =?us-ascii?Q?o7MCe4UskOB7mPWMLwL9GaFfnitjj/+f5/abjnnDz/vou0jTNpvtgY+ioSxQ?=
+ =?us-ascii?Q?+Y7+kWGkbsyfEmZsnPUbAkD6aGUJutrILT0WLQ=3D=3D?=
 MIME-Version: 1.0
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, 13 Apr 2020, Fangrui Song wrote:
+On Tue, 21 Apr 2020, Joshua Kinard wrote:
 
-> >> > diff --git a/arch/mips/kernel/vmlinux.lds.S
-> >> > b/arch/mips/kernel/vmlinux.lds.S index a5f00ec73ea6..5226cd8e4bee
-> >> > 100644 --- a/arch/mips/kernel/vmlinux.lds.S
-> >> > +++ b/arch/mips/kernel/vmlinux.lds.S
-> >> > @@ -55,7 +55,7 @@ SECTIONS
-> >> >   /* . = 0xa800000000300000; */
-> >> >   . = 0xffffffff80300000;
-> >> > #endif
-> >> > -	. = VMLINUX_LOAD_ADDRESS;
-> >> > +	. = VMLINUX_LINK_ADDRESS;
-> >>
-> >> The CONFIG_BOOT_ELF64 cruft right above it looks interesting to me,
-> >> never have ever been used.  We have had the current arrangement since:
-> >
-> >It confused me either.
-> >It's only used by SGI so probably it's time to rename it as
-> >BOOT_SEG_ELF64.
-> >
-> >Wish someone could clarify what is it.
-> >
-> >Thanks.
-> 
-> Agreed that -Ttext in
-> 
-> arch/mips/boot/compressed/Makefile
-> 100:      cmd_zld = $(LD) $(KBUILD_LDFLAGS) -Ttext $(VMLINUZ_LOAD_ADDRESS) -T
-> $< $(vmlinuzobjs-y) -o $@
-> 
-> and a few other places are brittle. They need to be replaced with Output
-> Section Address:
-> (https://sourceware.org/binutils/docs/ld/Output-Section-Address.html
-> https://github.com/llvm/llvm-project/blob/master/lld/docs/ELF/linker_script.rst#output-section-address)
-> 
-> -Ttext changes the address of .text . This can lead to the change of the
-> address of the text segment (RX), but this is not guaranteed (many
-> sections can be placed before .text and they are not affected).
+> It also means I basically found another ICE in gcc, completely by accident.
+>  I wouldn't be surprised if no one has looked at the -mr10k-cache-barrier
+> code paths in gcc since the code was added years ago.  Not sure how I am
+> going to report that one to gcc upstream...
 
- That is unrelated, but you're free to clean it up of course.
+ If it used to work, but does not anymore, then you can try bisecting GCC.  
 
   Maciej
 

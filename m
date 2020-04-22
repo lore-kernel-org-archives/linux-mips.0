@@ -2,117 +2,75 @@ Return-Path: <SRS0=eDKN=6G=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAA51C55189
-	for <linux-mips@archiver.kernel.org>; Wed, 22 Apr 2020 12:59:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4DFBC55185
+	for <linux-mips@archiver.kernel.org>; Wed, 22 Apr 2020 13:00:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A05B1206EC
-	for <linux-mips@archiver.kernel.org>; Wed, 22 Apr 2020 12:59:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A731020736
+	for <linux-mips@archiver.kernel.org>; Wed, 22 Apr 2020 13:00:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbgDVM7P (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 22 Apr 2020 08:59:15 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:50913 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725924AbgDVM7P (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 22 Apr 2020 08:59:15 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0TwKABpW_1587560291;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0TwKABpW_1587560291)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 22 Apr 2020 20:58:11 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     pbonzini@redhat.com, tsbogend@alpha.franken.de, paulus@ozlabs.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        cohuck@redhat.com, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        sean.j.christopherson@intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tianjia.zhang@linux.alibaba.com
-Subject: [PATCH v2 0/7] clean up redundant 'kvm_run' parameters
-Date:   Wed, 22 Apr 2020 20:58:03 +0800
-Message-Id: <20200422125810.34847-1-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726362AbgDVNAY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 22 Apr 2020 09:00:24 -0400
+Received: from mga04.intel.com ([192.55.52.120]:16985 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726168AbgDVNAY (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 22 Apr 2020 09:00:24 -0400
+IronPort-SDR: DjKi2CAn2YVcnAu/OcskBQVJmxVs56d0Kno4P90hbd5/67nqgDGkD0rrPc3/jOe7+Iy9hU/Bq1
+ OyVVfVYhDnqg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2020 06:00:24 -0700
+IronPort-SDR: mrNopApmj+qqPJpgHBUjtQ5hdlXCMTqnJaXk0fwhNJz1G8W6XcnHC2aNOmYA+aFaK/a2aHcbE/
+ AkDfQv/XB4tw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,414,1580803200"; 
+   d="scan'208";a="457132719"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 22 Apr 2020 06:00:22 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 025FD58F; Wed, 22 Apr 2020 16:00:21 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+        linux-mips@vger.kernel.org, Vikas Gupta <vikas.gupta@broadcom.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1] firmware: tee_bnxt: Use UUID API for exporting the UUID
+Date:   Wed, 22 Apr 2020 16:00:21 +0300
+Message-Id: <20200422130021.38424-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.26.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In the current kvm version, 'kvm_run' has been included in the 'kvm_vcpu'
-structure. Earlier than historical reasons, many kvm-related function
-parameters retain the 'kvm_run' and 'kvm_vcpu' parameters at the same time.
-This patch does a unified cleanup of these remaining redundant parameters.
+There is export_uuid() function which exports uuid_t to the u8 array.
+Use it instead of open coding variant.
 
-This series of patches has completely cleaned the architecture of
-arm64, mips, ppc, and s390 (no such redundant code on x86). Due to
-the large number of modified codes, a separate patch is made for each
-platform. On the ppc platform, there is also a redundant structure
-pointer of 'kvm_run' in 'vcpu_arch', which has also been cleaned
-separately.
+This allows to hide the uuid_t internals.
 
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
-v2 change:
-  s390 retains the original variable name and minimizes modification.
+ drivers/firmware/broadcom/tee_bnxt_fw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tianjia Zhang (7):
-  KVM: s390: clean up redundant 'kvm_run' parameters
-  KVM: arm64: clean up redundant 'kvm_run' parameters
-  KVM: PPC: Remove redundant kvm_run from vcpu_arch
-  KVM: PPC: clean up redundant 'kvm_run' parameters
-  KVM: PPC: clean up redundant kvm_run parameters in assembly
-  KVM: MIPS: clean up redundant 'kvm_run' parameters
-  KVM: MIPS: clean up redundant kvm_run parameters in assembly
-
- arch/arm64/include/asm/kvm_coproc.h      |  12 +--
- arch/arm64/include/asm/kvm_host.h        |  11 +--
- arch/arm64/include/asm/kvm_mmu.h         |   2 +-
- arch/arm64/kvm/handle_exit.c             |  36 +++----
- arch/arm64/kvm/sys_regs.c                |  13 ++-
- arch/mips/include/asm/kvm_host.h         |  32 +------
- arch/mips/kvm/emulate.c                  |  59 ++++--------
- arch/mips/kvm/entry.c                    |  15 +--
- arch/mips/kvm/mips.c                     |  14 +--
- arch/mips/kvm/trap_emul.c                | 114 ++++++++++-------------
- arch/mips/kvm/vz.c                       |  26 ++----
- arch/powerpc/include/asm/kvm_book3s.h    |  16 ++--
- arch/powerpc/include/asm/kvm_host.h      |   1 -
- arch/powerpc/include/asm/kvm_ppc.h       |  27 +++---
- arch/powerpc/kvm/book3s.c                |   4 +-
- arch/powerpc/kvm/book3s.h                |   2 +-
- arch/powerpc/kvm/book3s_64_mmu_hv.c      |  12 +--
- arch/powerpc/kvm/book3s_64_mmu_radix.c   |   4 +-
- arch/powerpc/kvm/book3s_emulate.c        |  10 +-
- arch/powerpc/kvm/book3s_hv.c             |  64 ++++++-------
- arch/powerpc/kvm/book3s_hv_nested.c      |  12 +--
- arch/powerpc/kvm/book3s_interrupts.S     |  17 ++--
- arch/powerpc/kvm/book3s_paired_singles.c |  72 +++++++-------
- arch/powerpc/kvm/book3s_pr.c             |  33 ++++---
- arch/powerpc/kvm/booke.c                 |  39 ++++----
- arch/powerpc/kvm/booke.h                 |   8 +-
- arch/powerpc/kvm/booke_emulate.c         |   2 +-
- arch/powerpc/kvm/booke_interrupts.S      |   9 +-
- arch/powerpc/kvm/bookehv_interrupts.S    |  10 +-
- arch/powerpc/kvm/e500_emulate.c          |  15 ++-
- arch/powerpc/kvm/emulate.c               |  10 +-
- arch/powerpc/kvm/emulate_loadstore.c     |  32 +++----
- arch/powerpc/kvm/powerpc.c               |  72 +++++++-------
- arch/powerpc/kvm/trace_hv.h              |   6 +-
- arch/s390/kvm/kvm-s390.c                 |  37 +++++---
- virt/kvm/arm/arm.c                       |   6 +-
- virt/kvm/arm/mmio.c                      |  11 ++-
- virt/kvm/arm/mmu.c                       |   5 +-
- 38 files changed, 396 insertions(+), 474 deletions(-)
-
+diff --git a/drivers/firmware/broadcom/tee_bnxt_fw.c b/drivers/firmware/broadcom/tee_bnxt_fw.c
+index ed10da5313e86..4cf0c2576037d 100644
+--- a/drivers/firmware/broadcom/tee_bnxt_fw.c
++++ b/drivers/firmware/broadcom/tee_bnxt_fw.c
+@@ -197,7 +197,7 @@ static int tee_bnxt_fw_probe(struct device *dev)
+ 		return -ENODEV;
+ 
+ 	/* Open session with Bnxt load Trusted App */
+-	memcpy(sess_arg.uuid, bnxt_device->id.uuid.b, TEE_IOCTL_UUID_LEN);
++	export_uuid(sess_arg.uuid, &bnxt_device->id.uuid);
+ 	sess_arg.clnt_login = TEE_IOCTL_LOGIN_PUBLIC;
+ 	sess_arg.num_params = 0;
+ 
 -- 
-2.17.1
+2.26.1
 

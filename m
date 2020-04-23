@@ -2,151 +2,104 @@ Return-Path: <SRS0=3EWu=6H=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.6 required=3.0 tests=DATE_IN_FUTURE_06_12,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,HK_RANDOM_FROM,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4921C55192
-	for <linux-mips@archiver.kernel.org>; Thu, 23 Apr 2020 11:11:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B276C54FCB
+	for <linux-mips@archiver.kernel.org>; Thu, 23 Apr 2020 11:45:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9F83320857
-	for <linux-mips@archiver.kernel.org>; Thu, 23 Apr 2020 11:11:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 35BFC2077D
+	for <linux-mips@archiver.kernel.org>; Thu, 23 Apr 2020 11:45:26 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="caVDZ0Hv"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgDWLLc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 23 Apr 2020 07:11:32 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:35822 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726805AbgDWLLc (ORCPT
+        id S1727122AbgDWLp0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 23 Apr 2020 07:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727088AbgDWLpZ (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 23 Apr 2020 07:11:32 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0TwQiqf0_1587640283;
-Received: from 30.27.118.66(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0TwQiqf0_1587640283)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 23 Apr 2020 19:11:25 +0800
-Subject: Re: [PATCH v2 1/7] KVM: s390: clean up redundant 'kvm_run' parameters
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Cc:     pbonzini@redhat.com, tsbogend@alpha.franken.de, paulus@ozlabs.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org,
-        frankja@linux.ibm.com, david@redhat.com, heiko.carstens@de.ibm.com,
-        gor@linux.ibm.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, maz@kernel.org,
-        james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com, christoffer.dall@arm.com,
-        peterx@redhat.com, thuth@redhat.com, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200422125810.34847-1-tianjia.zhang@linux.alibaba.com>
- <20200422125810.34847-2-tianjia.zhang@linux.alibaba.com>
- <20200422154543.2efba3dd.cohuck@redhat.com>
- <dc5e0fa3-558b-d606-bda9-ed281cf9e9ae@de.ibm.com>
- <20200422180403.03f60b0c.cohuck@redhat.com>
- <5e1e126d-f1b0-196c-594b-4289d0afb9a8@linux.alibaba.com>
- <20200423123901.72a4c6a4.cohuck@redhat.com>
- <71344f73-c34f-a373-49d1-5d839c6be5f6@linux.alibaba.com>
- <1d73b700-4a20-3d7a-66d1-29b5afa03f4d@de.ibm.com>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <9a477117-7295-c4f4-097f-bfb146670435@linux.alibaba.com>
-Date:   Thu, 23 Apr 2020 19:11:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 23 Apr 2020 07:45:25 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96ECCC035494
+        for <linux-mips@vger.kernel.org>; Thu, 23 Apr 2020 04:45:25 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id t40so2390307pjb.3
+        for <linux-mips@vger.kernel.org>; Thu, 23 Apr 2020 04:45:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FfKfDBS3E7O8+6weeyCOGB77mjSuhzvIHDondzmM7AE=;
+        b=caVDZ0HvxmyvmnuVbBENJMWBXz8S1/DGSCWPsRXLQwTzFWtxz1pA2c7NOkRkIV8CRN
+         k0RGr2ghXYmJi7mqC9UuihpLlVLSDcN+cla4v4KmyeY4nPQUjnqIy33flS6tiLURmn5g
+         ygWVBjeLgmgsnT3U50zojZ0R+6C4srWGurAD1seUOp0IhtK0REHIpGNVKBMd9+laF/sx
+         7xnYZQ3c3P5rvC/znlpGkRjkl9RE+Df5A8D+DJw4qkszkTtdgRdD5yoq0SLLBzkCnBu3
+         nunm7UQoE9SnzVimyBQ+UUXkScTr6Ekl3vDfr3rpbPgzqyEQ0/zFASa5lU+I7SLealXn
+         vMxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FfKfDBS3E7O8+6weeyCOGB77mjSuhzvIHDondzmM7AE=;
+        b=qIaXdjvuxHGkOxvzcyfdza85Qrn/f75CofV5kJNkbVM4uYU2BF7mUTPv84hA2ENoIL
+         FG3K4xYGxvEFLifonV58Ok/BG8MLbjH3M7AJjG7JxWQP5LHdfUkKmDGYRUI6XHgMN4tJ
+         hpzZesgBmpb1UeIqXbWsqIsMIA587HsZd5gJ/nG61YrSykDGo3ldvLjKzEa1ww7JR1GA
+         rXMC4lpYLjtBp8MTWxTb0aGh6/mewP1YD2IJE1fugj+Ity5/vDRg99FEzkhNvJKXBykU
+         /FztNgs9ijuur9MJfGUzIZcxCbilaT/Rmge2Odi9Av5EF9i5L5jY4/Sj1wDVNxh/Zjz9
+         2veA==
+X-Gm-Message-State: AGi0PuagdScQEL1ppLssyGCQit230tOEpbCgvqf05OaHCOQlcoldK06k
+        kxUeuJsAobgPlj05YVyfK+g=
+X-Google-Smtp-Source: APiQypKmSltNn/m3xT+76CSs5WizHmPRw2vuxIfzhx8szOQhDBPGdP9ZuIZf2THBzbbrejICjuH8TQ==
+X-Received: by 2002:a17:90a:aa0e:: with SMTP id k14mr157650pjq.74.1587642325030;
+        Thu, 23 Apr 2020 04:45:25 -0700 (PDT)
+Received: from huangll.lan ([47.74.51.72])
+        by smtp.gmail.com with ESMTPSA id u2sm2121327pjn.20.2020.04.23.04.45.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Apr 2020 04:45:24 -0700 (PDT)
+From:   Liangliang Huang <huanglllzu@gmail.com>
+X-Google-Original-From: Liangliang Huang <huangll@lemote.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>,
+        Zhangjin Wu <wuzhangjin@gmail.com>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Liangliang Huang <huangll@lemote.com>
+Subject: [PATCH] MIPS: arch_send_call_function_single_ipi() calling conventions change
+Date:   Thu, 23 Apr 2020 19:44:21 -0400
+Message-Id: <20200423234421.13805-1-huangll@lemote.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <1d73b700-4a20-3d7a-66d1-29b5afa03f4d@de.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+Use mp_ops->send_ipi_single() instead of mp_ops->send_ipi_mask() in
+arch_send_call_function_single_ipi(). send_ipi_single() can send
+IPI signal to a special cpu more efficiently.
 
+Signed-off-by: Liangliang Huang <huangll@lemote.com>
+---
+ arch/mips/include/asm/smp.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 2020/4/23 19:00, Christian Borntraeger wrote:
-> 
-> 
-> On 23.04.20 12:58, Tianjia Zhang wrote:
->>
->>
->> On 2020/4/23 18:39, Cornelia Huck wrote:
->>> On Thu, 23 Apr 2020 11:01:43 +0800
->>> Tianjia Zhang <tianjia.zhang@linux.alibaba.com> wrote:
->>>
->>>> On 2020/4/23 0:04, Cornelia Huck wrote:
->>>>> On Wed, 22 Apr 2020 17:58:04 +0200
->>>>> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
->>>>>    
->>>>>> On 22.04.20 15:45, Cornelia Huck wrote:
->>>>>>> On Wed, 22 Apr 2020 20:58:04 +0800
->>>>>>> Tianjia Zhang <tianjia.zhang@linux.alibaba.com> wrote:
->>>>>>>       
->>>>>>>> In the current kvm version, 'kvm_run' has been included in the 'kvm_vcpu'
->>>>>>>> structure. Earlier than historical reasons, many kvm-related function
->>>>>>>
->>>>>>> s/Earlier than/For/ ?
->>>>>>>       
->>>>>>>> parameters retain the 'kvm_run' and 'kvm_vcpu' parameters at the same time.
->>>>>>>> This patch does a unified cleanup of these remaining redundant parameters.
->>>>>>>>
->>>>>>>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
->>>>>>>> ---
->>>>>>>>     arch/s390/kvm/kvm-s390.c | 37 ++++++++++++++++++++++---------------
->>>>>>>>     1 file changed, 22 insertions(+), 15 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
->>>>>>>> index e335a7e5ead7..d7bb2e7a07ff 100644
->>>>>>>> --- a/arch/s390/kvm/kvm-s390.c
->>>>>>>> +++ b/arch/s390/kvm/kvm-s390.c
->>>>>>>> @@ -4176,8 +4176,9 @@ static int __vcpu_run(struct kvm_vcpu *vcpu)
->>>>>>>>         return rc;
->>>>>>>>     }
->>>>>>>>     -static void sync_regs_fmt2(struct kvm_vcpu *vcpu, struct kvm_run *kvm_run)
->>>>>>>> +static void sync_regs_fmt2(struct kvm_vcpu *vcpu)
->>>>>>>>     {
->>>>>>>> +    struct kvm_run *kvm_run = vcpu->run;
->>>>>>>>         struct runtime_instr_cb *riccb;
->>>>>>>>         struct gs_cb *gscb;
->>>>>>>>     @@ -4235,7 +4236,7 @@ static void sync_regs_fmt2(struct kvm_vcpu *vcpu, struct kvm_run *kvm_run)
->>>>>>>>             }
->>>>>>>>             if (vcpu->arch.gs_enabled) {
->>>>>>>>                 current->thread.gs_cb = (struct gs_cb *)
->>>>>>>> -                        &vcpu->run->s.regs.gscb;
->>>>>>>> +                        &kvm_run->s.regs.gscb;
->>>>>>>
->>>>>>> Not sure if these changes (vcpu->run-> => kvm_run->) are really worth
->>>>>>> it. (It seems they amount to at least as much as the changes advertised
->>>>>>> in the patch description.)
->>>>>>>
->>>>>>> Other opinions?
->>>>>>
->>>>>> Agreed. It feels kind of random. Maybe just do the first line (move kvm_run from the
->>>>>> function parameter list into the variable declaration)? Not sure if this is better.
->>>>>>    
->>>>>
->>>>> There's more in this patch that I cut... but I think just moving
->>>>> kvm_run from the parameter list would be much less disruptive.
->>>>>     
->>>>
->>>> I think there are two kinds of code(`vcpu->run->` and `kvm_run->`), but
->>>> there will be more disruptive, not less.
->>>
->>> I just fail to see the benefit; sure, kvm_run-> is convenient, but the
->>> current code is just fine, and any rework should be balanced against
->>> the cost (e.g. cluttering git annotate).
->>>
->>
->> cluttering git annotate ? Does it mean Fix xxxx ("comment"). Is it possible to solve this problem by splitting this patch?
-> 
-> No its about breaking git blame (and bugfix backports) for just a cosmetic improvement.
-> And I agree with Conny: the cost is higher than the benefit.
-> 
+diff --git a/arch/mips/include/asm/smp.h b/arch/mips/include/asm/smp.h
+index 7990c1c..5d9ff61 100644
+--- a/arch/mips/include/asm/smp.h
++++ b/arch/mips/include/asm/smp.h
+@@ -125,7 +125,7 @@ static inline void arch_send_call_function_single_ipi(int cpu)
+ {
+ 	extern const struct plat_smp_ops *mp_ops;	/* private */
+ 
+-	mp_ops->send_ipi_mask(cpumask_of(cpu), SMP_CALL_FUNCTION);
++	mp_ops->send_ipi_single(cpu, SMP_CALL_FUNCTION);
+ }
+ 
+ static inline void arch_send_call_function_ipi_mask(const struct cpumask *mask)
+-- 
+2.7.0
 
-I will make a fix in the v3 version. Help to see if there are problems 
-with the next few patches.
-
-Thanks,
-Tianjia

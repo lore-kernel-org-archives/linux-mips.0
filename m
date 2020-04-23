@@ -2,119 +2,98 @@ Return-Path: <SRS0=3EWu=6H=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 742EAC5518A
-	for <linux-mips@archiver.kernel.org>; Thu, 23 Apr 2020 03:14:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 526C9C2BA19
+	for <linux-mips@archiver.kernel.org>; Thu, 23 Apr 2020 05:42:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5B91920857
-	for <linux-mips@archiver.kernel.org>; Thu, 23 Apr 2020 03:14:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3129B206B9
+	for <linux-mips@archiver.kernel.org>; Thu, 23 Apr 2020 05:42:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgDWDO7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 22 Apr 2020 23:14:59 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:52788 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726454AbgDWDO6 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 22 Apr 2020 23:14:58 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07484;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0TwNry4Z_1587611689;
-Received: from 30.27.118.66(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0TwNry4Z_1587611689)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 23 Apr 2020 11:14:51 +0800
-Subject: Re: [PATCH v2 1/7] KVM: s390: clean up redundant 'kvm_run' parameters
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Cc:     pbonzini@redhat.com, tsbogend@alpha.franken.de, paulus@ozlabs.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org,
-        frankja@linux.ibm.com, david@redhat.com, heiko.carstens@de.ibm.com,
-        gor@linux.ibm.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, maz@kernel.org,
-        james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com, christoffer.dall@arm.com,
-        peterx@redhat.com, thuth@redhat.com, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200422125810.34847-1-tianjia.zhang@linux.alibaba.com>
- <20200422125810.34847-2-tianjia.zhang@linux.alibaba.com>
- <20200422154543.2efba3dd.cohuck@redhat.com>
- <dc5e0fa3-558b-d606-bda9-ed281cf9e9ae@de.ibm.com>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <ed11e51e-7861-a93d-ac9f-ae81f94630b0@linux.alibaba.com>
-Date:   Thu, 23 Apr 2020 11:14:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726576AbgDWFm6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 23 Apr 2020 01:42:58 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:39819 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725854AbgDWFm6 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 23 Apr 2020 01:42:58 -0400
+Received: by mail-io1-f67.google.com with SMTP id w4so5122489ioc.6;
+        Wed, 22 Apr 2020 22:42:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gmCpsolV5O6IrBICHK4TbSGq0+YV2uB2pTUJIO1xgPg=;
+        b=I0erHkM9gab2v6fIm/fx9sY8JccCgcSBStlCz385vJAPG9YuLcg9qAX+jMoRXwqUk+
+         ausA3ZEJUt0I2WMsPso/MtHa4VrUqdOLCjkYAvOYVEiiGTtlSyz6b9KeTY3XIWCBLjsc
+         CvjWnYdz1DRFJhff0883zp8KW/d/vcdmLg0b1ICVc6MypJkIqSy0euo9spetjT/eX1If
+         GYt5Yg/yXN+JZyv6Jxzkk26eD9ZMD8MjbMy+QHf8qWLEgBE5UBmDLSW1PimKmQxK6fJC
+         b9+TTe6BJfVIg0B9UTtAow7r35joAzeucB/0maq0O7/SnfhF0ehFQMiq9iSmZQEYcYhD
+         O4Zg==
+X-Gm-Message-State: AGi0PuZSkufsw/aes9zq5p/0xsXn2uSDyqgRaqqB+9CDNWbTqWGHz1+M
+        eO+p2AMuKc0i4p+LeN8iq74wO4TJmDtQ1QgH0lU=
+X-Google-Smtp-Source: APiQypIsomUxi7LXs971z/6bCPclQ9Yy5q0il+Vgc/GXU9zRdFij6HYKYfU6mC4VjIKigwxWLOddJLzfuGIzAxd2cbk=
+X-Received: by 2002:a6b:6c01:: with SMTP id a1mr2149899ioh.196.1587620577403;
+ Wed, 22 Apr 2020 22:42:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <dc5e0fa3-558b-d606-bda9-ed281cf9e9ae@de.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20200422142428.1249684-1-jiaxun.yang@flygoat.com>
+In-Reply-To: <20200422142428.1249684-1-jiaxun.yang@flygoat.com>
+From:   Huacai Chen <chenhc@lemote.com>
+Date:   Thu, 23 Apr 2020 13:50:20 +0800
+Message-ID: <CAAhV-H70zSz0T5QYHXAEZP5vJA67+8XRsx8n2wgdpfjigaiofg@mail.gmail.com>
+Subject: Re: [PATCH 0/6] Loongson PCH IRQ Support
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+Hi, Jiaxun,
 
+We have established a rule before, so please don't call the PCH bridge
+as Loongson-7A or Loongson-7A1000. You can call it LS7A, or Loongson's
+LS7A if needed.
 
-On 2020/4/22 23:58, Christian Borntraeger wrote:
-> 
-> 
-> On 22.04.20 15:45, Cornelia Huck wrote:
->> On Wed, 22 Apr 2020 20:58:04 +0800
->> Tianjia Zhang <tianjia.zhang@linux.alibaba.com> wrote:
->>
->>> In the current kvm version, 'kvm_run' has been included in the 'kvm_vcpu'
->>> structure. Earlier than historical reasons, many kvm-related function
->>
->> s/Earlier than/For/ ?
->>
->>> parameters retain the 'kvm_run' and 'kvm_vcpu' parameters at the same time.
->>> This patch does a unified cleanup of these remaining redundant parameters.
->>>
->>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
->>> ---
->>>   arch/s390/kvm/kvm-s390.c | 37 ++++++++++++++++++++++---------------
->>>   1 file changed, 22 insertions(+), 15 deletions(-)
->>>
->>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
->>> index e335a7e5ead7..d7bb2e7a07ff 100644
->>> --- a/arch/s390/kvm/kvm-s390.c
->>> +++ b/arch/s390/kvm/kvm-s390.c
->>> @@ -4176,8 +4176,9 @@ static int __vcpu_run(struct kvm_vcpu *vcpu)
->>>   	return rc;
->>>   }
->>>   
->>> -static void sync_regs_fmt2(struct kvm_vcpu *vcpu, struct kvm_run *kvm_run)
->>> +static void sync_regs_fmt2(struct kvm_vcpu *vcpu)
->>>   {
->>> +	struct kvm_run *kvm_run = vcpu->run;
->>>   	struct runtime_instr_cb *riccb;
->>>   	struct gs_cb *gscb;
->>>   
->>> @@ -4235,7 +4236,7 @@ static void sync_regs_fmt2(struct kvm_vcpu *vcpu, struct kvm_run *kvm_run)
->>>   		}
->>>   		if (vcpu->arch.gs_enabled) {
->>>   			current->thread.gs_cb = (struct gs_cb *)
->>> -						&vcpu->run->s.regs.gscb;
->>> +						&kvm_run->s.regs.gscb;
->>
->> Not sure if these changes (vcpu->run-> => kvm_run->) are really worth
->> it. (It seems they amount to at least as much as the changes advertised
->> in the patch description.)
->>
->> Other opinions?
-> 
-> Agreed. It feels kind of random. Maybe just do the first line (move kvm_run from the
-> function parameter list into the variable declaration)? Not sure if this is better.
-> 
+Huacai
 
-Why not, `kvm_run` is equivalent to `vcpu->run`, which is also part of 
-the cleanup, or do you mean to put this change in another patch?
-
-Thanks,
-Tianjia
+On Wed, Apr 22, 2020 at 10:26 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+>
+> This series mainly added IRQ support for Loongson-7A1000 PCH.
+> DeviceTree will be added later as PCI support is also pending
+> for reviewing.
+>
+> Jiaxun Yang (6):
+>   irqchip: Add Loongson HyperTransport Vector support
+>   dt-bindings: interrupt-controller: Add Loongson HTVEC
+>   irqchip: Add Loongson PCH PIC controller
+>   dt-bindings: interrupt-controller: Add Loongson PCH PIC
+>   irqchip: Add Loongson PCH MSI controller
+>   dt-bindings: interrupt-controller: Add Loongson PCH MSI
+>
+>  .../interrupt-controller/loongson,htvec.yaml  |  59 ++++
+>  .../loongson,pch-msi.yaml                     |  56 ++++
+>  .../loongson,pch-pic.yaml                     |  55 ++++
+>  drivers/irqchip/Kconfig                       |  26 ++
+>  drivers/irqchip/Makefile                      |   3 +
+>  drivers/irqchip/irq-loongson-htvec.c          | 217 ++++++++++++++
+>  drivers/irqchip/irq-loongson-pch-msi.c        | 265 ++++++++++++++++++
+>  drivers/irqchip/irq-loongson-pch-pic.c        | 256 +++++++++++++++++
+>  8 files changed, 937 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongson,htvec.yaml
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongson,pch-pic.yaml
+>  create mode 100644 drivers/irqchip/irq-loongson-htvec.c
+>  create mode 100644 drivers/irqchip/irq-loongson-pch-msi.c
+>  create mode 100644 drivers/irqchip/irq-loongson-pch-pic.c
+>
+> --
+> 2.26.0.rc2
+>

@@ -1,118 +1,120 @@
-Return-Path: <SRS0=eDKN=6G=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=3EWu=6H=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E267C55185
-	for <linux-mips@archiver.kernel.org>; Wed, 22 Apr 2020 22:16:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A72F2C55191
+	for <linux-mips@archiver.kernel.org>; Thu, 23 Apr 2020 02:54:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7849C2084D
-	for <linux-mips@archiver.kernel.org>; Wed, 22 Apr 2020 22:16:47 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UnJh9sM7"
+	by mail.kernel.org (Postfix) with ESMTP id 905F42168B
+	for <linux-mips@archiver.kernel.org>; Thu, 23 Apr 2020 02:54:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726102AbgDVWQr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 22 Apr 2020 18:16:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725839AbgDVWQq (ORCPT
+        id S1726537AbgDWCyp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 22 Apr 2020 22:54:45 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:57904 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726515AbgDWCyo (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 22 Apr 2020 18:16:46 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80857C03C1A9;
-        Wed, 22 Apr 2020 15:16:46 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id m18so3637369otq.9;
-        Wed, 22 Apr 2020 15:16:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hdhi8o/uOWcv18fMCxckchm+UgJLFPrhgXGldfLApj0=;
-        b=UnJh9sM7TSGeIv5MmNHB3mprcjGwRVXmTsZwxjCCzsUMzS+l7EtlEXjRCSRxgr1I70
-         JydOlv45izuM8lq0rY7WwxAW32zwlU4ZhpUV9EGBGCeXCVFER6QJ1uSgtl3gi4eJ4OmI
-         6FZzTKPDSRP6yySRUQe1ahy0LgvocWhJ8qwXhrbmsK0H4BEpxFM/YQjkLKddCTqBFXoR
-         Enwa9d4YFYqbYEmFQBGdTSseKQ+AWJNsK/iCwElHIxJgTQTpfQj+pjIJsUHfmHx6FLm/
-         nhU7ZfCo6c5htRQM1tzhTAhbiGtDYIzrA1m/woRwVLY61lu039f3kkXHB9lWtEaGKd2G
-         33RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hdhi8o/uOWcv18fMCxckchm+UgJLFPrhgXGldfLApj0=;
-        b=BMNC8zftxy7MvhrtA8Oi+sSk7OhkCeyPRQ5EUUkqxqHhqTP5YYlJmavPk8w3ze6kLZ
-         WYwo50VDzR5ZU7CVuLnQc7X+q5mVl1bRIyLWyaqaeCjlx+X3aoFI+3rNIbM+MsT9WxpR
-         qG87gWELyZyizbXzhO6oyjuf1XME8B2hppbxzPpsn1LMJinUJSaeZXTYY50KOkh47Ns8
-         nOFGPzcG1LH4f4EflMYC0J5HreMJdcuIoWOt06qVAXCQQqKPtHqbByuQ2rMXKq5DLqxy
-         wjwn1wmbFy7pRfj0N9jSqc2SOGl0b3Z/Av3b72xXlYMQCyO9xvTxZeBvgeS/Cmm/2PTq
-         5EEw==
-X-Gm-Message-State: AGi0PuYaeocX8hvYaAiBeProWCjvmqQaEl2Gf2z9NFugWvzhfBU9uEoM
-        YnQvzFpIvqssMdMQC2/NH/M=
-X-Google-Smtp-Source: APiQypKDY7D7Ugla8GvkGcOcThXiQDbHYF9zM45CaLEWSa0aMvcq3ZC8x2ch5cZFJoO4NsH7Y9UiBA==
-X-Received: by 2002:a05:6830:18e3:: with SMTP id d3mr1034479otf.117.1587593805830;
-        Wed, 22 Apr 2020 15:16:45 -0700 (PDT)
-Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id 186sm194282ooi.30.2020.04.22.15.16.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 Apr 2020 15:16:45 -0700 (PDT)
-Date:   Wed, 22 Apr 2020 15:16:43 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, clang-built-linux@googlegroups.com,
-        "Maciej W . Rozycki" <macro@linux-mips.org>,
-        Fangrui Song <maskray@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Jouni Hogander <jouni.hogander@unikie.com>,
-        Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>,
-        Borislav Petkov <bp@suse.de>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] MIPS: Truncate link address into 32bit for 32bit
- kernel
-Message-ID: <20200422221643.GA46781@ubuntu-s3-xlarge-x86>
-References: <20200413062651.3992652-1-jiaxun.yang@flygoat.com>
- <20200422143258.1250960-1-jiaxun.yang@flygoat.com>
+        Wed, 22 Apr 2020 22:54:44 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0TwO5QT5_1587610476;
+Received: from 30.27.118.66(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0TwO5QT5_1587610476)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 23 Apr 2020 10:54:37 +0800
+Subject: Re: [PATCH v2 1/7] KVM: s390: clean up redundant 'kvm_run' parameters
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     pbonzini@redhat.com, tsbogend@alpha.franken.de, paulus@ozlabs.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200422125810.34847-1-tianjia.zhang@linux.alibaba.com>
+ <20200422125810.34847-2-tianjia.zhang@linux.alibaba.com>
+ <20200422154543.2efba3dd.cohuck@redhat.com>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <e115bcf6-edf3-7465-f592-4e93e5ad984c@linux.alibaba.com>
+Date:   Thu, 23 Apr 2020 10:54:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422143258.1250960-1-jiaxun.yang@flygoat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200422154543.2efba3dd.cohuck@redhat.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 10:32:54PM +0800, Jiaxun Yang wrote:
-> LLD failed to link vmlinux with 64bit load address for 32bit ELF
-> while bfd will strip 64bit address into 32bit silently.
-> To fix LLD build, we should truncate load address provided by platform
-> into 32bit for 32bit kernel.
-> 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> Link: https://github.com/ClangBuiltLinux/linux/issues/786
-> Link: https://sourceware.org/bugzilla/show_bug.cgi?id=25784
-> Reviewed-by: Maciej W. Rozycki <macro@linux-mips.org>
-> Reviewed-by: Fangrui Song <maskray@google.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Cc: Nathan Chancellor <natechancellor@gmail.com>
-> --
-> V2: Take MaskRay's shell magic.
-> 
-> V3: After spent an hour on dealing with special character issue in
-> Makefile, I gave up to do shell hacks and write a util in C instead.
-> Thanks Maciej for pointing out Makefile variable problem.
-> 
-> v4: Finally we managed to find a Makefile method to do it properly
-> thanks to Kees. As it's too far from the initial version, I removed
-> Review & Test tag from Nick and Fangrui and Cc instead.
-> 
-> v5: Care vmlinuz as well.
 
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+
+On 2020/4/22 21:45, Cornelia Huck wrote:
+> On Wed, 22 Apr 2020 20:58:04 +0800
+> Tianjia Zhang <tianjia.zhang@linux.alibaba.com> wrote:
+> 
+>> In the current kvm version, 'kvm_run' has been included in the 'kvm_vcpu'
+>> structure. Earlier than historical reasons, many kvm-related function
+> 
+> s/Earlier than/For/ ?
+> 
+
+Yes, it should be replaced like this.
+
+>> parameters retain the 'kvm_run' and 'kvm_vcpu' parameters at the same time.
+>> This patch does a unified cleanup of these remaining redundant parameters.
+>>
+>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+>> ---
+>>   arch/s390/kvm/kvm-s390.c | 37 ++++++++++++++++++++++---------------
+>>   1 file changed, 22 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+>> index e335a7e5ead7..d7bb2e7a07ff 100644
+>> --- a/arch/s390/kvm/kvm-s390.c
+>> +++ b/arch/s390/kvm/kvm-s390.c
+>> @@ -4176,8 +4176,9 @@ static int __vcpu_run(struct kvm_vcpu *vcpu)
+>>   	return rc;
+>>   }
+>>   
+>> -static void sync_regs_fmt2(struct kvm_vcpu *vcpu, struct kvm_run *kvm_run)
+>> +static void sync_regs_fmt2(struct kvm_vcpu *vcpu)
+>>   {
+>> +	struct kvm_run *kvm_run = vcpu->run;
+>>   	struct runtime_instr_cb *riccb;
+>>   	struct gs_cb *gscb;
+>>   
+>> @@ -4235,7 +4236,7 @@ static void sync_regs_fmt2(struct kvm_vcpu *vcpu, struct kvm_run *kvm_run)
+>>   		}
+>>   		if (vcpu->arch.gs_enabled) {
+>>   			current->thread.gs_cb = (struct gs_cb *)
+>> -						&vcpu->run->s.regs.gscb;
+>> +						&kvm_run->s.regs.gscb;
+> 
+> Not sure if these changes (vcpu->run-> => kvm_run->) are really worth
+> it. (It seems they amount to at least as much as the changes advertised
+> in the patch description.)
+> 
+> Other opinions?
+> 
+
+Why not replace `vcpu->run->` to `kvm_run->` ? If not, there will be 
+both styles of code, which is confusing. I will be confused and think 
+that this is something different.
+
+Thanks,
+Tianjia
+
+>>   			restore_gs_cb(current->thread.gs_cb);
+>>   		}
+>>   		preempt_enable();

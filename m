@@ -7,42 +7,42 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88670C54FCB
-	for <linux-mips@archiver.kernel.org>; Fri, 24 Apr 2020 20:35:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E6BEC55197
+	for <linux-mips@archiver.kernel.org>; Fri, 24 Apr 2020 20:35:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 65B612168B
-	for <linux-mips@archiver.kernel.org>; Fri, 24 Apr 2020 20:35:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E22502173E
+	for <linux-mips@archiver.kernel.org>; Fri, 24 Apr 2020 20:35:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="IxcvDnwE"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="XHketxzB"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726162AbgDXUew (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 24 Apr 2020 16:34:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
+        id S1726423AbgDXUfl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 24 Apr 2020 16:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgDXUeu (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 24 Apr 2020 16:34:50 -0400
-Received: from mo6-p03-ob.smtp.rzone.de (mo6-p03-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5303::12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BEFC09B04A;
-        Fri, 24 Apr 2020 13:34:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1587760486;
+        with ESMTP id S1726124AbgDXUev (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 24 Apr 2020 16:34:51 -0400
+Received: from mo6-p04-ob.smtp.rzone.de (mo6-p04-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5304::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 417DDC09B04D;
+        Fri, 24 Apr 2020 13:34:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1587760488;
         s=strato-dkim-0002; d=goldelico.com;
         h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
         X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=9/u09F3HoVBIGlKehJVw2jT0y8zlyJomRxDWKKY4hbk=;
-        b=IxcvDnwEEo+yQkMdrVVMrbc0OiFIxDMQwABPpDh4rHBnrPbeeIgr6lQzoqSia2bh4b
-        SYmpZN5zwm9WUd4l/d9viUlCUc6Fv917kvqsiDNm3ZK8aKrVWzBgFw+ZJDdk2NCAMu3O
-        oIxsUVQzwZMlnnzd6PUza2KToqrQXd3KeDriBskQpNt+hkTO2nGG8rQkLe7ABJ+2FyRo
-        QVrhPTgDQpdtYf8ikGIYbfAOGcJJrd+j0FVICOWPYluvXX8p/Ltgynf3zE3vEu86T8Rb
-        ZL9ljGJIX9Svu1VX15cO1dWbcAdUO9bzcfpd7jDcWin1FEqae+iB6tGCOkeGfU8h+VSW
-        FCUw==
+        bh=iwq6f4uxoyZcQOQDzwMpNIO6Xy6nAFRtGvlqeQKWcIs=;
+        b=XHketxzB7+Lk9FXIR0lbyCs4RJklqKBC9dgHsBPPlpIR/yTtadGdjiVicE5/MZZjd7
+        nanYycDJ8cBta3wWsIo98JkcLlHyXtGF+gb/Zy3qwoJPsyWJ9zmg6WgdXdZPF+gQOxcT
+        DyuzDX4IKcNT51auJ+8ysC1r+91N3uBOAfCYa0qhtdg0xKwNrZNRMKVdBFDdIXThjHgl
+        CrbytsIwU7a4VJ1pWs8RF4WZmj/Jv1UNif3GRL0X5X/6ZpvpOxqIrXPvL1wIJYNUcgeg
+        qdEnwTdXSe3PHFrO995rt6bS/5Ox8r/Tfdp1E3QvQBUHqKimPYhqnGiTQ3ENvO4i8LoV
+        DlVQ==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1mfYzBGHXH6GK44R2FE"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
         by smtp.strato.de (RZmta 46.6.2 DYNA|AUTH)
-        with ESMTPSA id R0acebw3OKYJEVA
+        with ESMTPSA id R0acebw3OKYPEVI
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Fri, 24 Apr 2020 22:34:19 +0200 (CEST)
+        Fri, 24 Apr 2020 22:34:25 +0200 (CEST)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
         Rob Herring <robh+dt@kernel.org>,
@@ -65,10 +65,10 @@ Cc:     Jonathan Bakker <xc-racer2@live.ca>,
         kernel@pyra-handheld.com, linux-mips@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org,
-        "H. Nikolaus Schaller" <hns@goldelico.com>
-Subject: [PATCH v7 02/12] ARM: DTS: am33xx: add sgx gpu child node
-Date:   Fri, 24 Apr 2020 22:34:05 +0200
-Message-Id: <deab217b6b785d9c3d82a1941565b655e5ee4ce7.1587760454.git.hns@goldelico.com>
+        "H . Nikolaus Schaller" <hns@goldelico.com>
+Subject: [PATCH v7 10/12] ARM: dts: sun6i: a31s: add sgx gpu child node
+Date:   Fri, 24 Apr 2020 22:34:13 +0200
+Message-Id: <1b0bd980347024c4b598fb89a32a55321d2eebd0.1587760454.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1587760454.git.hns@goldelico.com>
 References: <cover.1587760454.git.hns@goldelico.com>
@@ -79,42 +79,41 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add SGX GPU node with interrupt. Tested on BeagleBone Black.
+From: Philipp Rossak <embed3d@gmail.com>
 
+We are adding the devicetree binding for the PVR-SGX-544-115 gpu.
+
+This driver is currently under development in the openpvrsgx-devgroup.
+Right now the full binding is not figured out, so we provide here a
+placeholder. It will be completed as soon as there is a demo available.
+
+The currently used binding that is used during development is more
+complete and was already verifyed by loading the kernelmodule successful.
+
+Signed-off-by: Philipp Rossak <embed3d@gmail.com>
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- arch/arm/boot/dts/am33xx.dtsi | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ arch/arm/boot/dts/sun6i-a31s.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
-index a35f5052d76f..155424d87156 100644
---- a/arch/arm/boot/dts/am33xx.dtsi
-+++ b/arch/arm/boot/dts/am33xx.dtsi
-@@ -564,7 +564,7 @@ aes: aes@0 {
- 			};
- 		};
- 
--		target-module@56000000 {
-+		sgx_module: target-module@56000000 {
- 			compatible = "ti,sysc-omap4", "ti,sysc";
- 			reg = <0x5600fe00 0x4>,
- 			      <0x5600fe10 0x4>;
-@@ -583,10 +583,11 @@ target-module@56000000 {
- 			#size-cells = <1>;
- 			ranges = <0 0x56000000 0x1000000>;
- 
--			/*
--			 * Closed source PowerVR driver, no child device
--			 * binding or driver in mainline
--			 */
-+			gpu: gpu@0 {
-+				compatible = "ti,am3352-sgx530-125", "img,sgx530-125", "img,sgx530";
-+				reg = <0x00 0x1000000>;	/* 16 MB */
-+				interrupts = <37>;
-+			};
- 		};
- 	};
+diff --git a/arch/arm/boot/dts/sun6i-a31s.dtsi b/arch/arm/boot/dts/sun6i-a31s.dtsi
+index 97e2c51d0aea..669770d2934a 100644
+--- a/arch/arm/boot/dts/sun6i-a31s.dtsi
++++ b/arch/arm/boot/dts/sun6i-a31s.dtsi
+@@ -59,3 +59,13 @@ &pio {
+ &tcon0 {
+ 	compatible = "allwinner,sun6i-a31s-tcon";
  };
++
++&gpu {
++	compatible = "allwinner,sun8i-a31s-sgx544-115",
++		     "img,sgx544-115", "img,sgx544";
++	/*
++	 * This node is currently a placeholder for the gpu.
++	 * This will be completed when a full demonstration
++	 * of the openpvrsgx driver is available for this board.
++	 */
++};
 -- 
 2.25.1
 

@@ -2,127 +2,119 @@ Return-Path: <SRS0=TOSZ=6I=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE903C54FCB
-	for <linux-mips@archiver.kernel.org>; Fri, 24 Apr 2020 19:10:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22016C55186
+	for <linux-mips@archiver.kernel.org>; Fri, 24 Apr 2020 20:34:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A4ABA20736
-	for <linux-mips@archiver.kernel.org>; Fri, 24 Apr 2020 19:10:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1587755450;
-	bh=MfFP+6c7B6JLpXC5m9+1qaniqSz/QSXG2thGgEplmH8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=pf02x7UiNBmwQOaaVID849RUNqHvTSMbgCiHPVq1iNHdX8/0a9/5ECc666bnqE70c
-	 Ky46chgyp5LD6mDWUAyRXLQySFspUnM21EeaZA4jPYfbu7+xgssrInvxV+/m3eCMdh
-	 ypR5MkfBf5uDebivBLux4zz/BX891VtWWJKJXjcA=
+	by mail.kernel.org (Postfix) with ESMTP id F29AE215A4
+	for <linux-mips@archiver.kernel.org>; Fri, 24 Apr 2020 20:34:51 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="l3ZW+OBc"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727049AbgDXTKu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 24 Apr 2020 15:10:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55896 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726793AbgDXTKu (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 24 Apr 2020 15:10:50 -0400
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EA6F20736;
-        Fri, 24 Apr 2020 19:10:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587755449;
-        bh=MfFP+6c7B6JLpXC5m9+1qaniqSz/QSXG2thGgEplmH8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rgKmfrMj1o/4cX50G1dvBw6xSNKJvBJx+AAKL5ZgLFgW4rvrnAuV6UzfEioIptCjd
-         9sspRnYsWFw27CdTR4aZLzGR63oSGt56WkFjjhi088vk8cMIAZucbR00cL2/tdS1aS
-         vfSWnSopPuP5b6tP6Hc/Aaq/q1x/osY2VsrvDEso=
-Received: by mail-qv1-f49.google.com with SMTP id v10so5240142qvr.2;
-        Fri, 24 Apr 2020 12:10:49 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZUyrmeu1REItT1Jjyb17IjUZBay1s2UWH9yjrncNgQsqNMcOcx
-        TnFzHYvk1VbRU3HGBkU9vxi4KUxY4TUcGxAWhg==
-X-Google-Smtp-Source: APiQypL6nxwSwL1BSBuuHSRL7v8AeB98h/sxDCOI2obb6oGnVpTZ6TVIRL9TpJ9D4J0DlGUb56NPwcffqM7uZdaaWHA=
-X-Received: by 2002:a05:6214:227:: with SMTP id j7mr10830437qvt.85.1587755448530;
- Fri, 24 Apr 2020 12:10:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200424130847.328584-1-jiaxun.yang@flygoat.com> <20200424130847.328584-6-jiaxun.yang@flygoat.com>
-In-Reply-To: <20200424130847.328584-6-jiaxun.yang@flygoat.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 24 Apr 2020 14:10:36 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+33XrBowgg+pSAFLu-KChYzuFKL6DJRrOPuq60nSFN4g@mail.gmail.com>
-Message-ID: <CAL_Jsq+33XrBowgg+pSAFLu-KChYzuFKL6DJRrOPuq60nSFN4g@mail.gmail.com>
-Subject: Re: [PATCH v5 5/6] MIPS: DTS: Loongson64: Add PCI Controller Node
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        id S1726130AbgDXUev (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 24 Apr 2020 16:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726121AbgDXUeu (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 24 Apr 2020 16:34:50 -0400
+Received: from mo6-p04-ob.smtp.rzone.de (mo6-p04-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5304::5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A602C09B049;
+        Fri, 24 Apr 2020 13:34:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1587760485;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=aeLQCupRaiUXbpss4HFlekm68gu+EZORgbPWCj4bUNQ=;
+        b=l3ZW+OBcvbDY7isy1fAmFenBtzfvigTsSRmvgWABoGgG2XTW8X6UyP+zexjhbZI66+
+        cYSmSdzRneGrNSIc0KH6SoOtngruwClfh/H9dGhmil/ydnX7RqoxPfBY97V5ntWu0OiU
+        /Xoft1PAI4F1UW3wGpzuPiFNSdw/pTxIGYzq/gWyaw1vS1/tSXN9Q9uWFYQkaO66RPJ+
+        I/Ma99WSXVKKLTCT/m+9ZxY+wsnah9uFIlGJisM4nKvWtO1XfErL5KR84uZ2gB7wcS3R
+        J0ejaNG9mV83M51oI5YI2mDoEn3WzR2LtrrkkOPtMPfNc+4tYbqUxvXu7vInozfeUlA0
+        NWGA==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1mfYzBGHXH6GK44R2FE"
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+        by smtp.strato.de (RZmta 46.6.2 DYNA|AUTH)
+        with ESMTPSA id R0acebw3OKYNEVF
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Fri, 24 Apr 2020 22:34:23 +0200 (CEST)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Ralf Baechle <ralf@linux-mips.org>,
         Paul Burton <paulburton@kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        James Hogan <jhogan@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Jonathan Bakker <xc-racer2@live.ca>,
+        Philipp Rossak <embed3d@gmail.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        openpvrsgx-devgroup@letux.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com, linux-mips@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        "H. Nikolaus Schaller" <hns@goldelico.com>
+Subject: [PATCH v7 07/12] ARM: DTS: omap5: add sgx gpu child node
+Date:   Fri, 24 Apr 2020 22:34:10 +0200
+Message-Id: <5840297da588ba37f65a2a4f4f1421922fe28a06.1587760454.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1587760454.git.hns@goldelico.com>
+References: <cover.1587760454.git.hns@goldelico.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 8:10 AM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
->
-> Add PCI Host controller node for Loongson64 with RS780E PCH dts.
-> Note that PCI interrupts are probed via legacy way, as different
-> machine have different interrupt arrangement, we can't cover all
-> of them in dt.
->
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> --
-> v2: Clean-up
-> ---
->  arch/mips/boot/dts/loongson/rs780e-pch.dtsi | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/mips/boot/dts/loongson/rs780e-pch.dtsi b/arch/mips/boot/dts/loongson/rs780e-pch.dtsi
-> index 8687c4f7370a..5e68ceae20ca 100644
-> --- a/arch/mips/boot/dts/loongson/rs780e-pch.dtsi
-> +++ b/arch/mips/boot/dts/loongson/rs780e-pch.dtsi
-> @@ -5,10 +5,25 @@ bus@10000000 {
->                 compatible = "simple-bus";
->                 #address-cells = <2>;
->                 #size-cells = <2>;
-> -               ranges = <0 0x10000000 0 0x10000000 0 0x10000000
-> +               ranges = <0 0x00000000 0 0x00000000 0 0x00010000 /* I/O Ports */
+Add SGX GPU node with interrupt. Tested on Pyra-Handheld.
 
-You're changing the first entry, so bus@10000000 unit-address should change.
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ arch/arm/boot/dts/omap5.dtsi | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-Are i/o addresses really at 0x0 physical address?
+diff --git a/arch/arm/boot/dts/omap5.dtsi b/arch/arm/boot/dts/omap5.dtsi
+index 2ac7f021c284..1cf41664fd00 100644
+--- a/arch/arm/boot/dts/omap5.dtsi
++++ b/arch/arm/boot/dts/omap5.dtsi
+@@ -270,7 +270,7 @@ sata: sata@4a141100 {
+ 			ports-implemented = <0x1>;
+ 		};
+ 
+-		target-module@56000000 {
++		sgx_module: target-module@56000000 {
+ 			compatible = "ti,sysc-omap4", "ti,sysc";
+ 			reg = <0x5600fe00 0x4>,
+ 			      <0x5600fe10 0x4>;
+@@ -287,10 +287,11 @@ target-module@56000000 {
+ 			#size-cells = <1>;
+ 			ranges = <0 0x56000000 0x2000000>;
+ 
+-			/*
+-			 * Closed source PowerVR driver, no child device
+-			 * binding or driver in mainline
+-			 */
++			gpu: gpu@0 {
++				compatible = "ti,omap5-sgx544-116", "img,sgx544-116", "img,sgx544";
++				reg = <0x0 0x10000>;
++				interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
++			};
+ 		};
+ 
+ 		target-module@58000000 {
+-- 
+2.25.1
 
-> +                               0 0x10000000 0 0x10000000 0 0x10000000
->                                 0 0x40000000 0 0x40000000 0 0x40000000
->                                 0xfd 0xfe000000 0xfd 0xfe000000  0 0x2000000 /* PCI Config Space */>;
->
-> +               pci@1a000000 {
-> +                       compatible = "loongson,rs780e-pci";
-> +                       device_type = "pci";
-> +                       #address-cells = <3>;
-> +                       #size-cells = <2>;
-> +
-> +                       reg = <0 0x1a000000 0 0x02000000>;
-> +
-> +                       ranges = <0x01000000 0 0x00004000 0 0x00004000 0 0x00004000>,
-> +                                <0x02000000 0 0x40000000 0 0x40000000 0 0x40000000>;
-> +
-> +                       bus-range = <0x00 0xff>;
-
-Not needed.
-
-> +               };
-> +
->                 isa {
->                         compatible = "isa";
->                         #address-cells = <2>;
-> --
-> 2.26.0.rc2
->

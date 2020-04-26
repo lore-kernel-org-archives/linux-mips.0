@@ -2,72 +2,97 @@ Return-Path: <SRS0=xXT0=6K=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 884AEC54FCB
-	for <linux-mips@archiver.kernel.org>; Sun, 26 Apr 2020 16:55:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E6DCC54FCB
+	for <linux-mips@archiver.kernel.org>; Sun, 26 Apr 2020 17:09:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6F6E02071C
-	for <linux-mips@archiver.kernel.org>; Sun, 26 Apr 2020 16:55:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EEBDB2071C
+	for <linux-mips@archiver.kernel.org>; Sun, 26 Apr 2020 17:09:39 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="JeZ7oaAB"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgDZQzB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 26 Apr 2020 12:55:01 -0400
-Received: from elvis.franken.de ([193.175.24.41]:56069 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726152AbgDZQzA (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 26 Apr 2020 12:55:00 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jSkYM-00023Z-00; Sun, 26 Apr 2020 18:54:50 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 41C58C0323; Sun, 26 Apr 2020 18:43:15 +0200 (CEST)
-Date:   Sun, 26 Apr 2020 18:43:15 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
-        Huacai Chen <chenhc@lemote.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Zhou Yanjie <zhouyanjie@zoho.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>, YunQiang Su <syq@debian.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Allison Randal <allison@lohutok.net>,
+        id S1726157AbgDZRJj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 26 Apr 2020 13:09:39 -0400
+Received: from outils.crapouillou.net ([89.234.176.41]:46274 "EHLO
+        crapouillou.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726143AbgDZRJj (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 26 Apr 2020 13:09:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1587920977; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CNV6l4isjrOBsCEJPV/4tGbmk1UULky87Fc71u/Vgqo=;
+        b=JeZ7oaABfsBG/baBMbr6RXayjhNYmmLA/gwNVNjmbxr3AW68cqlfiTggs2Y59zuQUGL5Vg
+        U5lFB9GzsDI7EroRJRc/IAbyonmEC2OteeKUGcvkiWC4ccvl4s7VXyyza6I4tZBrRYH80p
+        yVdZ0m6fdd3i6OyB/j2bjgBdPc0QaI0=
+Date:   Sun, 26 Apr 2020 19:09:26 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] mips/mm: Add page soft dirty tracking
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Guoyun Sun <sunguoyun@loongson.cn>,
+        Paul Burton <paulburton@kernel.org>,
+        Daniel Silsby <dansilsby@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Dmitry Korotin <dkorotin@wavecomp.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Price <steven.price@arm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Mike Rapoport <rppt@linux.ibm.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Kamal Dasu <kdasu.kdev@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Kernel: Identify Loongson-2K processors
-Message-ID: <20200426164315.GA9832@alpha.franken.de>
-References: <20200422144349.1252775-1-jiaxun.yang@flygoat.com>
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        TieZhu Yang <yangtiezhu@loongson.cn>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Message-Id: <QNNE9Q.WIYO7ZSN6WHE@crapouillou.net>
+In-Reply-To: <20200426165441.GA10053@alpha.franken.de>
+References: <1587460527-13986-1-git-send-email-sunguoyun@loongson.cn>
+        <20200426165441.GA10053@alpha.franken.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422144349.1252775-1-jiaxun.yang@flygoat.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 10:43:44PM +0800, Jiaxun Yang wrote:
-> Loongson-2K (Loongson64 Reduced) is a family of SoC shipped with
-> gs264e core.
-> 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
->  arch/mips/include/asm/cpu.h  |  4 ++++
->  arch/mips/kernel/cpu-probe.c | 19 ++++++++++++++++++-
->  arch/mips/kernel/idle.c      |  3 ++-
->  arch/mips/mm/c-r4k.c         | 12 +++++++++---
->  4 files changed, 33 insertions(+), 5 deletions(-)
+Hi Thomas,
 
-applied to mips-next.
+Le dim. 26 avril 2020 =E0 18:54, Thomas Bogendoerfer=20
+<tsbogend@alpha.franken.de> a =E9crit :
+> On Tue, Apr 21, 2020 at 05:15:27PM +0800, Guoyun Sun wrote:
+>>  User space checkpoint and restart tool (CRIU) needs the page's=20
+>> change
+>>  to be soft tracked. This allows to do a pre checkpoint and then dump
+>>  only touched pages.
+>>=20
+>>  Signed-off-by: Guoyun Sun <sunguoyun@loongson.cn>
+>>  ---
+>>   arch/mips/Kconfig                    |  1 +
+>>   arch/mips/include/asm/pgtable-bits.h |  8 ++++--
+>>   arch/mips/include/asm/pgtable.h      | 48=20
+>> ++++++++++++++++++++++++++++++++++--
+>=20
+> this breaks all 32bit builds where CPU support RIXI, because it=20
+> overflows
+> pgtable_bits.
 
-Thomas.
+I think we'd need to make PTEs 64-bit at some point.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+We wanted to add support for huge-pages on 32-bit MIPS and faced the=20
+same issue.
+
+-Paul
+
+> Thomas.
+>=20
+> --
+> Crap can work. Given enough thrust pigs will fly, but it's not=20
+> necessarily a
+> good idea.                                                [ RFC1925,=20
+> 2.3 ]
+
+

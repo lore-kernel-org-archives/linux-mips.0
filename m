@@ -2,65 +2,67 @@ Return-Path: <SRS0=xXT0=6K=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 489D2C55194
-	for <linux-mips@archiver.kernel.org>; Sun, 26 Apr 2020 13:46:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBC16C54FCB
+	for <linux-mips@archiver.kernel.org>; Sun, 26 Apr 2020 13:46:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 332DC20700
-	for <linux-mips@archiver.kernel.org>; Sun, 26 Apr 2020 13:46:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B575A20700
+	for <linux-mips@archiver.kernel.org>; Sun, 26 Apr 2020 13:46:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbgDZNqz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 26 Apr 2020 09:46:55 -0400
-Received: from elvis.franken.de ([193.175.24.41]:55774 "EHLO elvis.franken.de"
+        id S1726205AbgDZNq6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 26 Apr 2020 09:46:58 -0400
+Received: from elvis.franken.de ([193.175.24.41]:55783 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725876AbgDZNqy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 26 Apr 2020 09:46:54 -0400
+        id S1726140AbgDZNq5 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 26 Apr 2020 09:46:57 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jShcS-0000jA-00; Sun, 26 Apr 2020 15:46:52 +0200
+        id 1jShcS-0000jA-02; Sun, 26 Apr 2020 15:46:52 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 28010C02FB; Sun, 26 Apr 2020 15:45:04 +0200 (CEST)
-Date:   Sun, 26 Apr 2020 15:45:04 +0200
+        id 36453C0301; Sun, 26 Apr 2020 15:46:28 +0200 (CEST)
+Date:   Sun, 26 Apr 2020 15:46:28 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Huacai Chen <chenhc@lemote.com>
-Cc:     linux-mips@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>,
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>,
         Zhangjin Wu <wuzhangjin@gmail.com>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH] MIPS: Rename the "Fill" cache ops to avoid build failure
-Message-ID: <20200426134504.GA8299@alpha.franken.de>
-References: <1587899392-10579-1-git-send-email-chenhc@lemote.com>
+        "open list:MIPS" <linux-mips@vger.kernel.org>
+Subject: Re: [PATCH] fs/seq_file.c: Rename the "Fill" label to avoid build
+ failure
+Message-ID: <20200426134628.GC8299@alpha.franken.de>
+References: <1587716944-28250-1-git-send-email-chenhc@lemote.com>
+ <20200424112721.GE13910@bombadil.infradead.org>
+ <CAAhV-H4obH6BS7TNJzpZvxhBo6W8qRamOh8K92rk1OaB4PxosA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1587899392-10579-1-git-send-email-chenhc@lemote.com>
+In-Reply-To: <CAAhV-H4obH6BS7TNJzpZvxhBo6W8qRamOh8K92rk1OaB4PxosA@mail.gmail.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Apr 26, 2020 at 07:09:52PM +0800, Huacai Chen wrote:
-> MIPS define a "Fill" macro as a cache operation in cacheops.h, this
-> will cause build failure under some special configurations because in
-> seq_file.c there is a "Fill" label. To avoid this failure we rename the
-> "Fill" macro to "Fill_I" which has the same coding style as other cache
-> operations in cacheops.h (we think renaming the "Fill" macro is more
-> reasonable than renaming the "Fill" label).
+On Sat, Apr 25, 2020 at 10:54:23AM +0800, Huacai Chen wrote:
+> On Fri, Apr 24, 2020 at 7:27 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Fri, Apr 24, 2020 at 04:29:04PM +0800, Huacai Chen wrote:
+> > > MIPS define a "Fill" macro as a cache operation in cacheops.h, this
+> > > will cause build failure under some special configurations. To avoid
+> > > this failure we rename the "Fill" label in seq_file.c.
+> >
+> > You should rename the Fill macro in the mips header instead.
+> > I'd suggest Fill_R4000 of R4000_Fill.
 > 
-> Callers of "Fill" macro is also updated.
-> 
-> Signed-off-by: Huacai Chen <chenhc@lemote.com>
-> ---
->  arch/mips/include/asm/cacheops.h   | 2 +-
->  arch/mips/mm/c-r4k.c               | 2 +-
->  arch/mips/pmcs-msp71xx/msp_setup.c | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
+> What do you think about this? If you agree to rename the "Fill" macro
+> in cacheops.h, I want to rename it to Fill_I, because it has the same
+> coding style as other cache operations in cacheops.h.
 
-applied to mips-next.
+works for me, I've merged your patch to mips-next.
 
 Thomas.
 

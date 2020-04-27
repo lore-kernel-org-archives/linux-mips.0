@@ -2,623 +2,143 @@ Return-Path: <SRS0=QTdo=6L=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EFCBC54FD0
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Apr 2020 09:00:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97FB6C54FD0
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Apr 2020 09:11:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1C53D2064A
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Apr 2020 09:00:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 768B32064A
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Apr 2020 09:11:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nBHUtq3N"
+	dkim=pass (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="raiJTN/H"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgD0JAx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 27 Apr 2020 05:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39242 "EHLO
+        id S1726891AbgD0JL4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 27 Apr 2020 05:11:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726434AbgD0JAx (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Apr 2020 05:00:53 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ABE8C061A10
-        for <linux-mips@vger.kernel.org>; Mon, 27 Apr 2020 02:00:53 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 145so8687510pfw.13
-        for <linux-mips@vger.kernel.org>; Mon, 27 Apr 2020 02:00:53 -0700 (PDT)
+        with ESMTP id S1726831AbgD0JLz (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Apr 2020 05:11:55 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCFBC09B053
+        for <linux-mips@vger.kernel.org>; Mon, 27 Apr 2020 02:11:53 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id t11so13153843lfe.4
+        for <linux-mips@vger.kernel.org>; Mon, 27 Apr 2020 02:11:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=s8O51bw/oYYZXw6w1DmZnBz93dw6n249jIuB/Szjfd4=;
-        b=nBHUtq3NaxnXn8bqt1cU5QFM8gr/bavIIijLjmaUsPuLrB0k9HholKDvpL7kYZ0e7Z
-         zIfzUZ3rFM0a4PMsH66VG7Qa30SqHcb5EsJNi2A6yFviU6Z6EoXY5IOEu/+zz9VM0Owx
-         k/ov16cv79FYz8JBqn6DVHnTq2jTp0sW8gwZbB7YvWFtMEuAFfE4dQaLjh5yMTQ/at2z
-         ZKH4KA8eYq1kiRSuuIf2PlsjHBAoxCSzz1xtnlC+fyjIBROA2pmHUZuq7NPXtde4N9CK
-         4ymSY7CC0ZBy6uW+tHSesm1XxgL1wGdEdSBsJFUt7xDkmbNEdvQQwHkKNUy4yiV9PdDk
-         wb9A==
+        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yBDkRvrTx74S5+gZjwEZ9iACmQsB1T2mQm+OV8dNjho=;
+        b=raiJTN/HRYGaHVksUpfYX1wyYGDzcsdeCn7DrhKbOfDdjw/MLRxJJ8twCfPbR+Hi+d
+         m8bbSAERhc78/7BNmN1M53+RrtZEJ6gtB3M4L/MvDLvZWeuPCjfITc/mc+iiDbRI3jjR
+         G56jqF9qTkDPlKs5mhLYIS5vYGfrbcvcZP6AW/yU1q9cczrf8qBd6r6oWB5XL28M/Frw
+         orziZWnsTcshI8t2j3gcbvEYPcMnUScLotRV1QDBsU66EKXEGD/B5hQGFC8FNcH0EZn5
+         2nZz6AH/d9ZmaJHEkzCchnk/7O80CEbGvOIVKmb/R/WB+M2sfP/FfJQ89qshWJydfTWv
+         l8cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
-        bh=s8O51bw/oYYZXw6w1DmZnBz93dw6n249jIuB/Szjfd4=;
-        b=q495+zYh6CIcv/N8qar2zGMqBeBWAaJLFO6RPf6V8MdL2xK8YDbJit2A2n2Ek9qMj6
-         fQLz1K9pJpHi1nxreNV9EAl8/17NarSGUPU/ldaZb2ZFMdu3zHI2YOOdTL5yY4yOv5gG
-         q2k01PUpCowMR4BtDOYSDIcr1lUpOM/KYTM0fmrS4T/wVRDPW8cKIIFRSXlEuQ+Owj+8
-         GIQwLlSyLOixbjryPUWyOmz75WlHG1Y4BhTrbP2MvQkH+uZ+DE7p0jq60msbCEW+Dubg
-         6crtGZD+LJpk8JVxGDIA5toBlRdJKqPrgFCIdFBP9LS1Dft3dbf5RfQ81E99GOtE2aC1
-         0TqA==
-X-Gm-Message-State: AGi0PuZ4LDgu/PRWLc3LpV8IQTMjyJUL2VkZeYcZ3TEX2mc7Ti/O3nt1
-        mPhFqTozBne/rjnsElmGjvE=
-X-Google-Smtp-Source: APiQypLIIgA7weTDuL+5CmEAv51S2yZ0MkQiLxLEwy5vlNZO+LRm9wSwOkuB9Oh9ExGEi4wfKcAroA==
-X-Received: by 2002:a63:3190:: with SMTP id x138mr2634927pgx.53.1587978052929;
-        Mon, 27 Apr 2020 02:00:52 -0700 (PDT)
-Received: from software.domain.org (28.144.92.34.bc.googleusercontent.com. [34.92.144.28])
-        by smtp.gmail.com with ESMTPSA id r63sm11931662pfr.42.2020.04.27.02.00.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 27 Apr 2020 02:00:52 -0700 (PDT)
-From:   Huacai Chen <chenhc@lemote.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>,
-        Zhangjin Wu <wuzhangjin@gmail.com>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhc@lemote.com>
-Subject: [PATCH] MIPS: perf: Add hardware perf events support for new Loongson-3
-Date:   Mon, 27 Apr 2020 17:00:40 +0800
-Message-Id: <1587978040-29624-1-git-send-email-chenhc@lemote.com>
-X-Mailer: git-send-email 2.7.0
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yBDkRvrTx74S5+gZjwEZ9iACmQsB1T2mQm+OV8dNjho=;
+        b=XGj8BzdnzuVX8MKAf+bvIOaYGTeGmL2Df9IBw3hebjG5ZBUnSPQTLUMTro207PlM5B
+         13zLfnwM9WMbWy+2y76VUVcjc2VAJa6rYyfehZMA4X0qDdKezcz/ZGH+5IN2myelNMR7
+         VPOvwDvaeWEq1GC4x2vLWVY0auInnGiiDXDPoXo2VHo17VGRzGoC7Xzl8hFsTkS8+Axg
+         1QBsyYVu/N4EJHIV1Z5GXuvbsKjQ87Ib+hRUmWQ53geZPvXFF4sx/mlpVLeKZgs9gfVG
+         8ChLUjjdWQ7CIMmr5fstKpab0K+WusmzmMUOkBosyyLAjxi1Ls+Dt8ubnt5u0IGdOTdu
+         in9Q==
+X-Gm-Message-State: AGi0PuaEci8F9d0fAUGDPxjMme03cEdJKH7ZbGP4s77VebuIs0LlvgUd
+        eU/30jW3RvO5s4KdROF4LjbyGLRkqhMkKA==
+X-Google-Smtp-Source: APiQypJyVX/9wGU9KkPKAbdOn5EfnQbiZMB1wIjiO7M9xszAG/gddAjg0bucMZClaTTySjGPgz8dTA==
+X-Received: by 2002:ac2:5930:: with SMTP id v16mr14736464lfi.103.1587978712022;
+        Mon, 27 Apr 2020 02:11:52 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:468e:1152:9c79:cdeb:725:5fa4? ([2a00:1fa0:468e:1152:9c79:cdeb:725:5fa4])
+        by smtp.gmail.com with ESMTPSA id h6sm9088671ljj.29.2020.04.27.02.11.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Apr 2020 02:11:51 -0700 (PDT)
+Subject: Re: [PATCH 2/8] dt-bindings: intc: Convert ingenic,intc.txt to YAML
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     od@zcrc.me, =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-mips@vger.kernel.org
+References: <20200426185856.38826-1-paul@crapouillou.net>
+ <20200426185856.38826-2-paul@crapouillou.net>
+From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-ID: <f865b39a-3e8d-a367-45b2-aa5e7412e81a@cogentembedded.com>
+Date:   Mon, 27 Apr 2020 12:11:46 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200426185856.38826-2-paul@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-New Loongson-3 means Loongson-3A R2 (Loongson-3A2000) and newer CPUs.
-Loongson-3 processors have three types of PMU types (so there are three
-event maps): Loongson-3A1000/Loonngson-3B1000/Loongson-3B1500 is Type-1,
-Loongson-3A2000/Loongson-3A3000 is Type-2, Loongson-3A4000+ is Type-3.
+Hello!
 
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
----
- .../asm/mach-loongson64/cpu-feature-overrides.h    |   1 +
- arch/mips/kernel/perf_event_mipsxx.c               | 358 +++++++++++++++++++--
- 2 files changed, 330 insertions(+), 29 deletions(-)
+On 26.04.2020 21:58, Paul Cercueil wrote:
 
-diff --git a/arch/mips/include/asm/mach-loongson64/cpu-feature-overrides.h b/arch/mips/include/asm/mach-loongson64/cpu-feature-overrides.h
-index 4fab38c..b6e9c99 100644
---- a/arch/mips/include/asm/mach-loongson64/cpu-feature-overrides.h
-+++ b/arch/mips/include/asm/mach-loongson64/cpu-feature-overrides.h
-@@ -48,5 +48,6 @@
- #define cpu_hwrena_impl_bits	0xc0000000
- #define cpu_has_mac2008_only	1
- #define cpu_has_mips_r2_exec_hazard 0
-+#define cpu_has_perf_cntr_intr_bit	0
- 
- #endif /* __ASM_MACH_LOONGSON64_CPU_FEATURE_OVERRIDES_H */
-diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
-index 128fc99..c96eb03 100644
---- a/arch/mips/kernel/perf_event_mipsxx.c
-+++ b/arch/mips/kernel/perf_event_mipsxx.c
-@@ -90,6 +90,7 @@ struct mips_pmu {
- 	unsigned int	num_counters;
- };
- 
-+static int counter_bits;
- static struct mips_pmu mipspmu;
- 
- #define M_PERFCTL_EVENT(event)		(((event) << MIPS_PERFCTRL_EVENT_S) & \
-@@ -118,6 +119,7 @@ static struct mips_pmu mipspmu;
- #define M_PERFCTL_CONFIG_MASK		0x1f
- #endif
- 
-+#define CNTR_BIT_MASK(n)	(((n) == 64) ? ~0ULL : ((1ULL<<(n))-1))
- 
- #ifdef CONFIG_MIPS_PERF_SHARED_TC_COUNTERS
- static DEFINE_RWLOCK(pmuint_rwlock);
-@@ -154,6 +156,31 @@ static void pause_local_counters(void);
- static irqreturn_t mipsxx_pmu_handle_irq(int, void *);
- static int mipsxx_pmu_handle_shared_irq(void);
- 
-+/* 0: Not Loongson-3
-+ * 1: Loongson-3A1000/3B1000/3B1500
-+ * 2: Loongson-3A2000/3A3000
-+ * 3: Loongson-3A4000+
-+ */
-+
-+#define LOONGSON_PMU_TYPE0 0
-+#define LOONGSON_PMU_TYPE1 1
-+#define LOONGSON_PMU_TYPE2 2
-+#define LOONGSON_PMU_TYPE3 3
-+
-+static inline int get_loongson3_pmu_type(void)
-+{
-+	if (boot_cpu_type() != CPU_LOONGSON64)
-+		return LOONGSON_PMU_TYPE0;
-+	if ((boot_cpu_data.processor_id & PRID_COMP_MASK) == PRID_COMP_LEGACY)
-+		return LOONGSON_PMU_TYPE1;
-+	if ((boot_cpu_data.processor_id & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64C)
-+		return LOONGSON_PMU_TYPE2;
-+	if ((boot_cpu_data.processor_id & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64G)
-+		return LOONGSON_PMU_TYPE3;
-+
-+	return LOONGSON_PMU_TYPE0;
-+}
-+
- static unsigned int mipsxx_pmu_swizzle_perf_idx(unsigned int idx)
- {
- 	if (vpe_id() == 1)
-@@ -186,17 +213,18 @@ static u64 mipsxx_pmu_read_counter(unsigned int idx)
- 
- static u64 mipsxx_pmu_read_counter_64(unsigned int idx)
- {
-+	u64 mask = CNTR_BIT_MASK(counter_bits);
- 	idx = mipsxx_pmu_swizzle_perf_idx(idx);
- 
- 	switch (idx) {
- 	case 0:
--		return read_c0_perfcntr0_64();
-+		return read_c0_perfcntr0_64() & mask;
- 	case 1:
--		return read_c0_perfcntr1_64();
-+		return read_c0_perfcntr1_64() & mask;
- 	case 2:
--		return read_c0_perfcntr2_64();
-+		return read_c0_perfcntr2_64() & mask;
- 	case 3:
--		return read_c0_perfcntr3_64();
-+		return read_c0_perfcntr3_64() & mask;
- 	default:
- 		WARN_ONCE(1, "Invalid performance counter number (%d)\n", idx);
- 		return 0;
-@@ -225,6 +253,7 @@ static void mipsxx_pmu_write_counter(unsigned int idx, u64 val)
- 
- static void mipsxx_pmu_write_counter_64(unsigned int idx, u64 val)
- {
-+	val &= CNTR_BIT_MASK(counter_bits);
- 	idx = mipsxx_pmu_swizzle_perf_idx(idx);
- 
- 	switch (idx) {
-@@ -286,12 +315,16 @@ static int mipsxx_pmu_alloc_counter(struct cpu_hw_events *cpuc,
- 				    struct hw_perf_event *hwc)
- {
- 	int i;
-+	unsigned long cntr_mask;
- 
- 	/*
- 	 * We only need to care the counter mask. The range has been
- 	 * checked definitely.
- 	 */
--	unsigned long cntr_mask = (hwc->event_base >> 8) & 0xffff;
-+	if (get_loongson3_pmu_type() != LOONGSON_PMU_TYPE2)
-+		cntr_mask = (hwc->event_base >> 8) & 0xffff;
-+	else
-+		cntr_mask = (hwc->event_base >> 10) & 0xffff;
- 
- 	for (i = mipspmu.num_counters - 1; i >= 0; i--) {
- 		/*
-@@ -320,10 +353,16 @@ static void mipsxx_pmu_enable_event(struct hw_perf_event *evt, int idx)
- 
- 	WARN_ON(idx < 0 || idx >= mipspmu.num_counters);
- 
--	cpuc->saved_ctrl[idx] = M_PERFCTL_EVENT(evt->event_base & 0xff) |
--		(evt->config_base & M_PERFCTL_CONFIG_MASK) |
--		/* Make sure interrupt enabled. */
--		MIPS_PERFCTRL_IE;
-+	if (get_loongson3_pmu_type() != LOONGSON_PMU_TYPE2)
-+		cpuc->saved_ctrl[idx] = M_PERFCTL_EVENT(evt->event_base & 0xff) |
-+			(evt->config_base & M_PERFCTL_CONFIG_MASK) |
-+			/* Make sure interrupt enabled. */
-+			MIPS_PERFCTRL_IE;
-+	else
-+		cpuc->saved_ctrl[idx] = M_PERFCTL_EVENT(evt->event_base & 0x3ff) |
-+			(evt->config_base & M_PERFCTL_CONFIG_MASK) |
-+			/* Make sure interrupt enabled. */
-+			MIPS_PERFCTRL_IE;
- 
- 	if (IS_ENABLED(CONFIG_CPU_BMIPS5000)) {
- 		/* enable the counter for the calling thread */
-@@ -396,6 +435,10 @@ static int mipspmu_event_set_period(struct perf_event *event,
- 
- 	local64_set(&hwc->prev_count, mipspmu.overflow - left);
- 
-+	if (get_loongson3_pmu_type() == LOONGSON_PMU_TYPE2)
-+		mipsxx_pmu_write_control(idx,
-+				M_PERFCTL_EVENT(hwc->event_base & 0x3ff));
-+
- 	mipspmu.write_counter(idx, mipspmu.overflow - left);
- 
- 	perf_event_update_userpage(event);
-@@ -667,8 +710,12 @@ static unsigned int mipspmu_perf_event_encode(const struct mips_perf_event *pev)
- 			(pev->event_id & 0xff);
- 	else
- #endif /* CONFIG_MIPS_MT_SMP */
--		return ((pev->cntr_mask & 0xffff00) |
--			(pev->event_id & 0xff));
-+	if (get_loongson3_pmu_type() != LOONGSON_PMU_TYPE2)
-+		return (pev->cntr_mask & 0xffff00) |
-+			(pev->event_id & 0xff);
-+	else
-+		return (pev->cntr_mask & 0xfffc00) |
-+			(pev->event_id & 0x3ff);
- }
- 
- static const struct mips_perf_event *mipspmu_map_general_event(int idx)
-@@ -783,9 +830,83 @@ static int n_counters(void)
- 	return counters;
- }
- 
-+static void loongson3_reset_counters(void *arg)
-+{
-+	int counters = (int)(long)arg;
-+
-+	switch (counters) {
-+	case 4:
-+		mipsxx_pmu_write_control(3, 0);
-+		mipspmu.write_counter(3, 0);
-+		mipsxx_pmu_write_control(3, 127<<5);
-+		mipspmu.write_counter(3, 0);
-+		mipsxx_pmu_write_control(3, 191<<5);
-+		mipspmu.write_counter(3, 0);
-+		mipsxx_pmu_write_control(3, 255<<5);
-+		mipspmu.write_counter(3, 0);
-+		mipsxx_pmu_write_control(3, 319<<5);
-+		mipspmu.write_counter(3, 0);
-+		mipsxx_pmu_write_control(3, 383<<5);
-+		mipspmu.write_counter(3, 0);
-+		mipsxx_pmu_write_control(3, 575<<5);
-+		mipspmu.write_counter(3, 0);
-+	case 3:
-+		mipsxx_pmu_write_control(2, 0);
-+		mipspmu.write_counter(2, 0);
-+		mipsxx_pmu_write_control(2, 127<<5);
-+		mipspmu.write_counter(2, 0);
-+		mipsxx_pmu_write_control(2, 191<<5);
-+		mipspmu.write_counter(2, 0);
-+		mipsxx_pmu_write_control(2, 255<<5);
-+		mipspmu.write_counter(2, 0);
-+		mipsxx_pmu_write_control(2, 319<<5);
-+		mipspmu.write_counter(2, 0);
-+		mipsxx_pmu_write_control(2, 383<<5);
-+		mipspmu.write_counter(2, 0);
-+		mipsxx_pmu_write_control(2, 575<<5);
-+		mipspmu.write_counter(2, 0);
-+	case 2:
-+		mipsxx_pmu_write_control(1, 0);
-+		mipspmu.write_counter(1, 0);
-+		mipsxx_pmu_write_control(1, 127<<5);
-+		mipspmu.write_counter(1, 0);
-+		mipsxx_pmu_write_control(1, 191<<5);
-+		mipspmu.write_counter(1, 0);
-+		mipsxx_pmu_write_control(1, 255<<5);
-+		mipspmu.write_counter(1, 0);
-+		mipsxx_pmu_write_control(1, 319<<5);
-+		mipspmu.write_counter(1, 0);
-+		mipsxx_pmu_write_control(1, 383<<5);
-+		mipspmu.write_counter(1, 0);
-+		mipsxx_pmu_write_control(1, 575<<5);
-+		mipspmu.write_counter(1, 0);
-+	case 1:
-+		mipsxx_pmu_write_control(0, 0);
-+		mipspmu.write_counter(0, 0);
-+		mipsxx_pmu_write_control(0, 127<<5);
-+		mipspmu.write_counter(0, 0);
-+		mipsxx_pmu_write_control(0, 191<<5);
-+		mipspmu.write_counter(0, 0);
-+		mipsxx_pmu_write_control(0, 255<<5);
-+		mipspmu.write_counter(0, 0);
-+		mipsxx_pmu_write_control(0, 319<<5);
-+		mipspmu.write_counter(0, 0);
-+		mipsxx_pmu_write_control(0, 383<<5);
-+		mipspmu.write_counter(0, 0);
-+		mipsxx_pmu_write_control(0, 575<<5);
-+		mipspmu.write_counter(0, 0);
-+	}
-+}
-+
- static void reset_counters(void *arg)
- {
- 	int counters = (int)(long)arg;
-+
-+	if (get_loongson3_pmu_type() == LOONGSON_PMU_TYPE2) {
-+		loongson3_reset_counters(arg);
-+		return;
-+	}
-+
- 	switch (counters) {
- 	case 4:
- 		mipsxx_pmu_write_control(3, 0);
-@@ -834,13 +955,30 @@ static const struct mips_perf_event i6x00_event_map[PERF_COUNT_HW_MAX] = {
- 	[PERF_COUNT_HW_BRANCH_MISSES]       = { 0x16, CNTR_EVEN | CNTR_ODD },
- };
- 
--static const struct mips_perf_event loongson3_event_map[PERF_COUNT_HW_MAX] = {
-+static const struct mips_perf_event loongson3_event_map1[PERF_COUNT_HW_MAX] = {
- 	[PERF_COUNT_HW_CPU_CYCLES] = { 0x00, CNTR_EVEN },
- 	[PERF_COUNT_HW_INSTRUCTIONS] = { 0x00, CNTR_ODD },
- 	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS] = { 0x01, CNTR_EVEN },
- 	[PERF_COUNT_HW_BRANCH_MISSES] = { 0x01, CNTR_ODD },
- };
- 
-+static const struct mips_perf_event loongson3_event_map2[PERF_COUNT_HW_MAX] = {
-+	[PERF_COUNT_HW_CPU_CYCLES] = { 0x80, CNTR_ALL },
-+	[PERF_COUNT_HW_INSTRUCTIONS] = { 0x81, CNTR_ALL },
-+	[PERF_COUNT_HW_CACHE_MISSES] = { 0x18, CNTR_ALL },
-+	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS] = { 0x94, CNTR_ALL },
-+	[PERF_COUNT_HW_BRANCH_MISSES] = { 0x9c, CNTR_ALL },
-+};
-+
-+static const struct mips_perf_event loongson3_event_map3[PERF_COUNT_HW_MAX] = {
-+	[PERF_COUNT_HW_CPU_CYCLES] = { 0x00, CNTR_ALL },
-+	[PERF_COUNT_HW_INSTRUCTIONS] = { 0x01, CNTR_ALL },
-+	[PERF_COUNT_HW_CACHE_REFERENCES] = { 0x1c, CNTR_ALL },
-+	[PERF_COUNT_HW_CACHE_MISSES] = { 0x1d, CNTR_ALL },
-+	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS] = { 0x02, CNTR_ALL },
-+	[PERF_COUNT_HW_BRANCH_MISSES] = { 0x08, CNTR_ALL },
-+};
-+
- static const struct mips_perf_event octeon_event_map[PERF_COUNT_HW_MAX] = {
- 	[PERF_COUNT_HW_CPU_CYCLES] = { 0x01, CNTR_ALL },
- 	[PERF_COUNT_HW_INSTRUCTIONS] = { 0x03, CNTR_ALL },
-@@ -1064,7 +1202,7 @@ static const struct mips_perf_event i6x00_cache_map
- },
- };
- 
--static const struct mips_perf_event loongson3_cache_map
-+static const struct mips_perf_event loongson3_cache_map1
- 				[PERF_COUNT_HW_CACHE_MAX]
- 				[PERF_COUNT_HW_CACHE_OP_MAX]
- 				[PERF_COUNT_HW_CACHE_RESULT_MAX] = {
-@@ -1109,12 +1247,127 @@ static const struct mips_perf_event loongson3_cache_map
- [C(BPU)] = {
- 	/* Using the same code for *HW_BRANCH* */
- 	[C(OP_READ)] = {
--		[C(RESULT_ACCESS)]      = { 0x02, CNTR_EVEN },
--		[C(RESULT_MISS)]        = { 0x02, CNTR_ODD },
-+		[C(RESULT_ACCESS)]      = { 0x01, CNTR_EVEN },
-+		[C(RESULT_MISS)]        = { 0x01, CNTR_ODD },
- 	},
- 	[C(OP_WRITE)] = {
--		[C(RESULT_ACCESS)]      = { 0x02, CNTR_EVEN },
--		[C(RESULT_MISS)]        = { 0x02, CNTR_ODD },
-+		[C(RESULT_ACCESS)]      = { 0x01, CNTR_EVEN },
-+		[C(RESULT_MISS)]        = { 0x01, CNTR_ODD },
-+	},
-+},
-+};
-+
-+static const struct mips_perf_event loongson3_cache_map2
-+				[PERF_COUNT_HW_CACHE_MAX]
-+				[PERF_COUNT_HW_CACHE_OP_MAX]
-+				[PERF_COUNT_HW_CACHE_RESULT_MAX] = {
-+[C(L1D)] = {
-+	/*
-+	 * Like some other architectures (e.g. ARM), the performance
-+	 * counters don't differentiate between read and write
-+	 * accesses/misses, so this isn't strictly correct, but it's the
-+	 * best we can do. Writes and reads get combined.
-+	 */
-+	[C(OP_READ)] = {
-+		[C(RESULT_ACCESS)]	= { 0x156, CNTR_ALL },
-+	},
-+	[C(OP_WRITE)] = {
-+		[C(RESULT_ACCESS)]	= { 0x155, CNTR_ALL },
-+		[C(RESULT_MISS)]        = { 0x153, CNTR_ALL },
-+	},
-+},
-+[C(L1I)] = {
-+	[C(OP_READ)] = {
-+		[C(RESULT_MISS)]	= { 0x18, CNTR_ALL },
-+	},
-+	[C(OP_WRITE)] = {
-+		[C(RESULT_MISS)]        = { 0x18, CNTR_ALL },
-+	},
-+},
-+[C(LL)] = {
-+	[C(OP_READ)] = {
-+		[C(RESULT_ACCESS)]	= { 0x1b6, CNTR_ALL },
-+	},
-+	[C(OP_WRITE)] = {
-+		[C(RESULT_ACCESS)]	= { 0x1b7, CNTR_ALL },
-+	},
-+	[C(OP_PREFETCH)] = {
-+		[C(RESULT_ACCESS)]	= { 0x1bf, CNTR_ALL },
-+	},
-+},
-+[C(DTLB)] = {
-+	[C(OP_READ)] = {
-+		[C(RESULT_MISS)]        = { 0x92, CNTR_ALL },
-+	},
-+	[C(OP_WRITE)] = {
-+		[C(RESULT_MISS)]        = { 0x92, CNTR_ALL },
-+	},
-+},
-+[C(ITLB)] = {
-+	[C(OP_READ)] = {
-+		[C(RESULT_MISS)]	= { 0x1a, CNTR_ALL },
-+	},
-+	[C(OP_WRITE)] = {
-+		[C(RESULT_MISS)]	= { 0x1a, CNTR_ALL },
-+	},
-+},
-+[C(BPU)] = {
-+	/* Using the same code for *HW_BRANCH* */
-+	[C(OP_READ)] = {
-+		[C(RESULT_ACCESS)]      = { 0x94, CNTR_ALL },
-+		[C(RESULT_MISS)]        = { 0x9c, CNTR_ALL },
-+	},
-+},
-+};
-+
-+static const struct mips_perf_event loongson3_cache_map3
-+				[PERF_COUNT_HW_CACHE_MAX]
-+				[PERF_COUNT_HW_CACHE_OP_MAX]
-+				[PERF_COUNT_HW_CACHE_RESULT_MAX] = {
-+[C(L1D)] = {
-+	/*
-+	 * Like some other architectures (e.g. ARM), the performance
-+	 * counters don't differentiate between read and write
-+	 * accesses/misses, so this isn't strictly correct, but it's the
-+	 * best we can do. Writes and reads get combined.
-+	 */
-+	[C(OP_READ)] = {
-+		[C(RESULT_ACCESS)]      = { 0x1e, CNTR_ALL },
-+		[C(RESULT_MISS)]        = { 0x1f, CNTR_ALL },
-+	},
-+	[C(OP_PREFETCH)] = {
-+		[C(RESULT_ACCESS)]	= { 0xaa, CNTR_ALL },
-+		[C(RESULT_MISS)]	= { 0xa9, CNTR_ALL },
-+	},
-+},
-+[C(L1I)] = {
-+	[C(OP_READ)] = {
-+		[C(RESULT_ACCESS)]	= { 0x1c, CNTR_ALL },
-+		[C(RESULT_MISS)]	= { 0x1d, CNTR_ALL },
-+	},
-+},
-+[C(LL)] = {
-+	[C(OP_READ)] = {
-+		[C(RESULT_ACCESS)]	= { 0x2e, CNTR_ALL },
-+		[C(RESULT_MISS)]	= { 0x2f, CNTR_ALL },
-+	},
-+},
-+[C(DTLB)] = {
-+	[C(OP_READ)] = {
-+		[C(RESULT_ACCESS)]      = { 0x14, CNTR_ALL },
-+		[C(RESULT_MISS)]	= { 0x1b, CNTR_ALL },
-+	},
-+},
-+[C(ITLB)] = {
-+	[C(OP_READ)] = {
-+		[C(RESULT_MISS)]	= { 0x1a, CNTR_ALL },
-+	},
-+},
-+[C(BPU)] = {
-+	/* Using the same code for *HW_BRANCH* */
-+	[C(OP_READ)] = {
-+		[C(RESULT_ACCESS)]      = { 0x02, CNTR_ALL },
-+		[C(RESULT_MISS)]        = { 0x08, CNTR_ALL },
- 	},
- },
- };
-@@ -1178,7 +1431,6 @@ static const struct mips_perf_event bmips5000_cache_map
- },
- };
- 
--
- static const struct mips_perf_event octeon_cache_map
- 				[PERF_COUNT_HW_CACHE_MAX]
- 				[PERF_COUNT_HW_CACHE_OP_MAX]
-@@ -1512,6 +1764,7 @@ static irqreturn_t mipsxx_pmu_handle_irq(int irq, void *dev)
- static const struct mips_perf_event *mipsxx_pmu_map_raw_event(u64 config)
- {
- 	/* currently most cores have 7-bit event numbers */
-+	int pmu_type;
- 	unsigned int raw_id = config & 0xff;
- 	unsigned int base_id = raw_id & 0x7f;
- 
-@@ -1624,8 +1877,32 @@ static const struct mips_perf_event *mipsxx_pmu_map_raw_event(u64 config)
- 				raw_id > 127 ? CNTR_ODD : CNTR_EVEN;
- 		break;
- 	case CPU_LOONGSON64:
--		raw_event.cntr_mask = raw_id > 127 ? CNTR_ODD : CNTR_EVEN;
--	break;
-+		pmu_type = get_loongson3_pmu_type();
-+
-+		switch (pmu_type) {
-+		case LOONGSON_PMU_TYPE1:
-+			raw_event.cntr_mask = raw_id > 127 ? CNTR_ODD : CNTR_EVEN;
-+			break;
-+		case LOONGSON_PMU_TYPE2:
-+			base_id = config & 0x3ff;
-+			raw_event.cntr_mask = CNTR_ALL;
-+
-+			if ((base_id >= 1 && base_id < 28) ||
-+				(base_id >= 64 && base_id < 90) ||
-+				(base_id >= 128 && base_id < 164) ||
-+				(base_id >= 192 && base_id < 200) ||
-+				(base_id >= 256 && base_id < 274) ||
-+				(base_id >= 320 && base_id < 358) ||
-+				(base_id >= 384 && base_id < 574))
-+				break;
-+			else
-+				return ERR_PTR(-EOPNOTSUPP);
-+		case LOONGSON_PMU_TYPE3:
-+			base_id = raw_id;
-+			raw_event.cntr_mask = CNTR_ALL;
-+			break;
-+		}
-+		break;
- 	}
- 
- 	raw_event.event_id = base_id;
-@@ -1683,8 +1960,7 @@ static const struct mips_perf_event *xlp_pmu_map_raw_event(u64 config)
- static int __init
- init_hw_perf_events(void)
- {
--	int counters, irq;
--	int counter_bits;
-+	int counters, irq, pmu_type;
- 
- 	pr_info("Performance counters: ");
- 
-@@ -1771,8 +2047,25 @@ init_hw_perf_events(void)
- 		break;
- 	case CPU_LOONGSON64:
- 		mipspmu.name = "mips/loongson3";
--		mipspmu.general_event_map = &loongson3_event_map;
--		mipspmu.cache_event_map = &loongson3_cache_map;
-+		pmu_type = get_loongson3_pmu_type();
-+
-+		switch (pmu_type) {
-+		case LOONGSON_PMU_TYPE1:
-+			counters = 2;
-+			mipspmu.general_event_map = &loongson3_event_map1;
-+			mipspmu.cache_event_map = &loongson3_cache_map1;
-+			break;
-+		case LOONGSON_PMU_TYPE2:
-+			counters = 4;
-+			mipspmu.general_event_map = &loongson3_event_map2;
-+			mipspmu.cache_event_map = &loongson3_cache_map2;
-+			break;
-+		case LOONGSON_PMU_TYPE3:
-+			counters = 4;
-+			mipspmu.general_event_map = &loongson3_event_map3;
-+			mipspmu.cache_event_map = &loongson3_cache_map3;
-+			break;
-+		}
- 		break;
- 	case CPU_CAVIUM_OCTEON:
- 	case CPU_CAVIUM_OCTEON_PLUS:
-@@ -1803,19 +2096,26 @@ init_hw_perf_events(void)
- 	mipspmu.irq = irq;
- 
- 	if (read_c0_perfctrl0() & MIPS_PERFCTRL_W) {
--		mipspmu.max_period = (1ULL << 63) - 1;
--		mipspmu.valid_count = (1ULL << 63) - 1;
--		mipspmu.overflow = 1ULL << 63;
-+		if (get_loongson3_pmu_type() == LOONGSON_PMU_TYPE2) {
-+			counter_bits = 48;
-+			mipspmu.max_period = (1ULL << 47) - 1;
-+			mipspmu.valid_count = (1ULL << 47) - 1;
-+			mipspmu.overflow = 1ULL << 47;
-+		} else {
-+			counter_bits = 64;
-+			mipspmu.max_period = (1ULL << 63) - 1;
-+			mipspmu.valid_count = (1ULL << 63) - 1;
-+			mipspmu.overflow = 1ULL << 63;
-+		}
- 		mipspmu.read_counter = mipsxx_pmu_read_counter_64;
- 		mipspmu.write_counter = mipsxx_pmu_write_counter_64;
--		counter_bits = 64;
- 	} else {
-+		counter_bits = 32;
- 		mipspmu.max_period = (1ULL << 31) - 1;
- 		mipspmu.valid_count = (1ULL << 31) - 1;
- 		mipspmu.overflow = 1ULL << 31;
- 		mipspmu.read_counter = mipsxx_pmu_read_counter;
- 		mipspmu.write_counter = mipsxx_pmu_write_counter;
--		counter_bits = 32;
- 	}
- 
- 	on_each_cpu(reset_counters, (void *)(long)counters, 1);
--- 
-2.7.0
+> Convert the ingenic,intc.txt doc file to ingenic,intc.yaml.
+> 
+> Some compatible strings now require a fallback, as the controller
+> generally works the same across the SoCs families.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+[...]
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/ingenic,intc.yaml b/Documentation/devicetree/bindings/interrupt-controller/ingenic,intc.yaml
+> new file mode 100644
+> index 000000000000..28b27e1a6e9d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/ingenic,intc.yaml
+> @@ -0,0 +1,63 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/interrupt-controller/ingenic,intc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Ingenic SoCs interrupt controller devicetree bindings
+> +
+> +maintainers:
+> +  - Paul Cercueil <paul@crapouillou.net>
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^interrupt-controller@[0-9a-f]+$"
+> +
+> +  compatible:
+> +    oneOf:
+> +      - enum:
+> +        - ingenic,jz4740-intc
+> +        - ingenic,jz4760-intc
+> +        - ingenic,jz4780-intc
+> +      - items:
+> +        - enum:
+> +          - ingenic,jz4775-intc
+> +          - ingenic,jz4770-intc
+> +        - const: ingenic,jz4760-intc
+> +      - items:
+> +        - const: ingenic,x1000-intc
+> +        - const: ingenic,jz4780-intc
+> +      - items:
+> +        - const: ingenic,jz4725b-intc
+> +        - const: ingenic,jz4740-intc
+> +
+> +  "#interrupt-cells":
+> +    const: 1
 
+    Do double quotes work the same as the single ones?
+
+[...]
+
+MBR, Sergei

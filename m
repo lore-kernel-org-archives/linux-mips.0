@@ -2,63 +2,63 @@ Return-Path: <SRS0=4oka=6M=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-14.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 058F6C83008
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Apr 2020 22:14:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 867D1C83004
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Apr 2020 22:15:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D844920731
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Apr 2020 22:14:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 605AC2085B
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Apr 2020 22:15:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Iti+Hequ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cboZAHaR"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbgD1WOv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 28 Apr 2020 18:14:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
+        id S1726361AbgD1WO6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 28 Apr 2020 18:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726884AbgD1WOr (ORCPT
+        by vger.kernel.org with ESMTP id S1726946AbgD1WOs (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 28 Apr 2020 18:14:47 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA90C03C1AC;
-        Tue, 28 Apr 2020 15:14:45 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id 72so35653389otu.1;
-        Tue, 28 Apr 2020 15:14:45 -0700 (PDT)
+        Tue, 28 Apr 2020 18:14:48 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96ED9C03C1AE;
+        Tue, 28 Apr 2020 15:14:48 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id m13so35588371otf.6;
+        Tue, 28 Apr 2020 15:14:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=D5XPjNeCefGZdrfYepQszWv1EoAyH1SJYjMY9egLiRQ=;
-        b=Iti+HequGOL2PRuJbXnmbHCjiKuiBfJAzPaw8pDrLBFUO76wVbANTBmENBrQptVY+X
-         FBumW6Q8M+cJTNNXqkgRIn/BpEW8C4gKFGoOESrw47zC2a6WrAzQH6qGn9YY1yOhQ67K
-         EMVmi6vrNlI4Ug3rb/6YM1mmA9JQwUBotIlqKLfQAl7rKtBO/H7s0FurgDgDdqR/7Pdn
-         byjVkaxjygBHj5EPMqqJRwqwdiN5qa4UJeWxCq8HnLKu8gG7oYy4IU2lUpV4fGn+fM18
-         vozwJ5GyPiHVyoBoWclyp9cS6to49xOt0mHwaou1wH+RgEcXp37H+5yOM3sNf7jGCsbP
-         3fAA==
+        bh=7RXicgLKtxfo0xJMhMqi5KWPBmvi4LyzTbOskfEYJQQ=;
+        b=cboZAHaR1XgMdVyexb3ZGscW0yg4jWB0WpJQsyGN+lTcL8lo0DgeHrbARXRAwiBelT
+         fv11CmiuZPcFsPUdZ8Dk+cJFKE8pyoidKR1d3NFr2BdZlfocsEijQwaSXTfJi06/l5hd
+         bghcn7uaGbR50pQ0KULUrZ/37+Xhf1drNozRzBeTLWLqMJN2OItBt7D8ILHkk7qhUv/R
+         FVSPXdnhK/XVrHtHF742d0mlh5PFTggLAAnQhz+u409zzuWp1T2W2dG3BUDYMand6XtU
+         M0E5oV3fpNweYRrDo7ridTW0Qfj/E++JGqWAGbPgSO8EfX8jQx9qmsZ7JzcIP7Qij4H1
+         Sqlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=D5XPjNeCefGZdrfYepQszWv1EoAyH1SJYjMY9egLiRQ=;
-        b=clg0EzYuGYbeXL+48/jJkgshIL46NOiQMJ1wyYZ5aTMul3ihPuG1CebRh7/ZioU1zG
-         f3UNaFyZH81J/dDuezwmtfvV8WLfUIf9yxmdy+ciSBGGEOyzGbdYyFn4F3WKuEBn74G4
-         wMe3LXHabmgHb6mXC49tCIc1r5R6OCKF53tcvUC59Yi2lMOzys+L7/dpUo/QRUSsL4TL
-         lrE/UQO9u34rvnMErwpg/ISPIz02vCnXE41LY0niB9DKvTQEA+QDH61JGWYgLMGweug7
-         mMtFNOcXWwUXubnRqhq8vOALChZsLsTzQF/tRm+c+6y301wTvQNPHXB26v7K4wFrvZxh
-         NVdQ==
-X-Gm-Message-State: AGi0Pub2QSjtOkZpvil/SgvRSCVBYvPxjWXYJ/opwtXIlZn8QSKoOYxG
-        tQT4hJXfZ3ZSCdy6Yxh1tEM=
-X-Google-Smtp-Source: APiQypJKBJEUubwCVk6BCR1txO0tCzVgiFwxHfcCK5o8MX1rilWMul+BWNV6kI1sscPSPp8xdpLWng==
-X-Received: by 2002:a05:6830:1ac6:: with SMTP id r6mr1353744otc.311.1588112085030;
-        Tue, 28 Apr 2020 15:14:45 -0700 (PDT)
+        bh=7RXicgLKtxfo0xJMhMqi5KWPBmvi4LyzTbOskfEYJQQ=;
+        b=jTdy/cX5adnxpDedcssbFj6GHk2j55rBwxPJRDs0APjjAIIZXpwDMtlAnU1AFSdUDT
+         SjhIiV5HX4wy9rtPU65TPuqmQGBcNzQrXMLkegBnMsbr5KE3jDgE0InQeOdNEHMqwu/W
+         MO0Ql4ZDPACNN4+dDuqQALJ+ekahxmpIKtZ35lvH4CEyg6LKkRf/hlwLlS+EAXjSHYGo
+         rW2YJJmWGkoZc0c2j7PX6Atbi8j/kihPFsiVwYhLmEza1anMKsVAHmxnv286tRZb0SW1
+         qPYcT39S+nvjaDJfOS+bTzhoTtkaztPlSvbPC+H955dXsqaeUFrPIhK/qfvDIrVNFOKK
+         84UA==
+X-Gm-Message-State: AGi0PuYZDZyJ4LnlohK8iz5PI5YRrdCfhFN+EaEWvdaYDFwqgQNPPLQC
+        KYFXSjh7NqsmW8xEwT/SjWc=
+X-Google-Smtp-Source: APiQypL7QIFgYkaJ3tpdi/WMTCTqv80Zf90fvEaMBmkj0KaYd0MyEcNgUPXo4UrUQWWmFQ5wK66MQQ==
+X-Received: by 2002:a05:6830:92:: with SMTP id a18mr25129047oto.317.1588112087977;
+        Tue, 28 Apr 2020 15:14:47 -0700 (PDT)
 Received: from localhost.localdomain ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id 186sm5267476ooi.30.2020.04.28.15.14.44
+        by smtp.gmail.com with ESMTPSA id 186sm5267476ooi.30.2020.04.28.15.14.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 15:14:44 -0700 (PDT)
+        Tue, 28 Apr 2020 15:14:47 -0700 (PDT)
 From:   Nathan Chancellor <natechancellor@gmail.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Masahiro Yamada <masahiroy@kernel.org>
@@ -70,9 +70,9 @@ Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Dmitry Golovin <dima@golovin.in>,
         Sedat Dilek <sedat.dilek@gmail.com>,
         Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH v4 3/5] MIPS: Unconditionally specify '-EB' or '-EL'
-Date:   Tue, 28 Apr 2020 15:14:17 -0700
-Message-Id: <20200428221419.2530697-4-natechancellor@gmail.com>
+Subject: [PATCH v4 5/5] MIPS: VDSO: Allow ld.lld to link the VDSO
+Date:   Tue, 28 Apr 2020 15:14:19 -0700
+Message-Id: <20200428221419.2530697-6-natechancellor@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200428221419.2530697-1-natechancellor@gmail.com>
 References: <20200423171807.29713-1-natechancellor@gmail.com>
@@ -85,103 +85,62 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This was all done to work around a GCC bug that has been fixed after
-4.2. The kernel requires GCC 4.6 or newer so remove all of these hacks
-and just use the traditional flags.
+Currently, when linking with ld.lld, this warning pops up:
 
- $ mips64-linux-gcc --version | head -n1
- mips64-linux-gcc (GCC) 4.6.3
+    arch/mips/vdso/Makefile:70: MIPS VDSO requires binutils >= 2.25
 
- $ mips64-linux-gcc -EB -dM -E -C -x c /dev/null | grep MIPSE
- #define MIPSEB 1
- #define __MIPSEB__ 1
- #define _MIPSEB 1
- #define __MIPSEB 1
+CONFIG_LD_VERSION is set with scripts/ld-version.sh, which is specific
+to GNU ld. It returns 0 for ld.lld so CONFIG_MIPS_LD_CAN_LINK_VDSO does
+not set.
 
- $ mips64-linux-gcc -EL -dM -E -C -x c /dev/null | grep MIPSE
- #define __MIPSEL__ 1
- #define MIPSEL 1
- #define _MIPSEL 1
- #define __MIPSEL 1
+ld.lld has a completely different versioning scheme (as it follows
+LLVM's versioning) and it does not have the issue mentioned in the
+comment block so it should be allowed to link the VDSO.
 
-This is necessary when converting the MIPS VDSO to use $(LD) instead of
-$(CC) to link because the OUTPUT_FORMAT is defaulted to little endian
-and only flips to big endian when '-EB' is set on the command line.
-There is no issue currently because the compiler explicitly passes
-'-EB' or '-EL' to the linker regardless of whether or not it was
-provided by the user. Passing '-v' to VDSO_LDFLAGS shows:
+With this patch, the VDSO successfully links and shows P_MIPS_PC32 in
+vgettimeofday.o.
 
-<gcc_prefix>/libexec/gcc/mips64-linux/9.3.0/collect2 ... -EB ...
+$ llvm-objdump -Dr arch/mips/vdso/vgettimeofday.o | grep R_MIPS_PC32
+			00000024:  R_MIPS_PC32	_start
+			000000b0:  R_MIPS_PC32	_start
+			000002bc:  R_MIPS_PC32	_start
+			0000036c:  R_MIPS_PC32	_start
+			00000468:  R_MIPS_PC32	_start
 
-even though '-EB' is nowhere to be found in KBUILD_CFLAGS. The VDSO
-Makefile already supports getting '-EB' or '-EL' from KBUILD_CFLAGS
-through a filter directive but '-EB' or '-EL' is not always present.
-
-If we do not do this, we will see the following error when compiling
-for big endian:
-
-$ make -j$(nproc) ARCH=mips CROSS_COMPILE=mips64-linux- \
-  64r2el_defconfig arch/mips/vdso/
-...
-mips64-linux-ld: arch/mips/vdso/elf.o: compiled for a big endian system
-and target is little endian
-mips64-linux-ld: arch/mips/vdso/elf.o: endianness incompatible with that
-of the selected emulation
-mips64-linux-ld: failed to merge target specific data of file
-arch/mips/vdso/elf.o
-...
-
-Remove this legacy hack and just use '-EB' and '-EL' unconditionally.
-
-Reported-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Reported-by: Dmitry Golovin <dima@golovin.in>
 Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/785
+Link: https://github.com/llvm/llvm-project/commit/e364e2e9ce50c12eb2bf093560e1a1a8544d455a
 ---
 
 v3 -> v4:
 
-* New patch.
+* No changes.
 
- arch/mips/Makefile | 25 -------------------------
- 1 file changed, 25 deletions(-)
+v2 -> v3:
 
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index e1c44aed81565..301efb90b51ed 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -116,33 +116,8 @@ endif
+* No changes.
+
+v1 -> v2:
+
+* Move into Kconfig so that the warning does not happen.
+
+ arch/mips/vdso/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/vdso/Kconfig b/arch/mips/vdso/Kconfig
+index 36a52158d849b..7aec721398d59 100644
+--- a/arch/mips/vdso/Kconfig
++++ b/arch/mips/vdso/Kconfig
+@@ -12,7 +12,7 @@
+ # the lack of relocations. As such, we disable the VDSO for microMIPS builds.
  
- cflags-y += -ffreestanding
+ config MIPS_LD_CAN_LINK_VDSO
+-	def_bool LD_VERSION >= 225000000
++	def_bool LD_VERSION >= 225000000 || LD_IS_LLD
  
--#
--# We explicitly add the endianness specifier if needed, this allows
--# to compile kernels with a toolchain for the other endianness. We
--# carefully avoid to add it redundantly because gcc 3.3/3.4 complains
--# when fed the toolchain default!
--#
--# Certain gcc versions up to gcc 4.1.1 (probably 4.2-subversion as of
--# 2006-10-10 don't properly change the predefined symbols if -EB / -EL
--# are used, so we kludge that here.  A bug has been filed at
--# http://gcc.gnu.org/bugzilla/show_bug.cgi?id=29413.
--#
--# clang doesn't suffer from these issues and our checks against -dumpmachine
--# don't work so well when cross compiling, since without providing --target
--# clang's output will be based upon the build machine. So for clang we simply
--# unconditionally specify -EB or -EL as appropriate.
--#
--ifdef CONFIG_CC_IS_CLANG
- cflags-$(CONFIG_CPU_BIG_ENDIAN)		+= -EB
- cflags-$(CONFIG_CPU_LITTLE_ENDIAN)	+= -EL
--else
--undef-all += -UMIPSEB -U_MIPSEB -U__MIPSEB -U__MIPSEB__
--undef-all += -UMIPSEL -U_MIPSEL -U__MIPSEL -U__MIPSEL__
--predef-be += -DMIPSEB -D_MIPSEB -D__MIPSEB -D__MIPSEB__
--predef-le += -DMIPSEL -D_MIPSEL -D__MIPSEL -D__MIPSEL__
--cflags-$(CONFIG_CPU_BIG_ENDIAN)		+= $(shell $(CC) -dumpmachine |grep -q 'mips.*el-.*' && echo -EB $(undef-all) $(predef-be))
--cflags-$(CONFIG_CPU_LITTLE_ENDIAN)	+= $(shell $(CC) -dumpmachine |grep -q 'mips.*el-.*' || echo -EL $(undef-all) $(predef-le))
--endif
- 
- cflags-$(CONFIG_SB1XXX_CORELIS)	+= $(call cc-option,-mno-sched-prolog) \
- 				   -fno-omit-frame-pointer
+ config MIPS_DISABLE_VDSO
+ 	def_bool CPU_MICROMIPS || (!CPU_MIPSR6 && !MIPS_LD_CAN_LINK_VDSO)
 -- 
 2.26.2
 

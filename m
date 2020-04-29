@@ -2,91 +2,102 @@ Return-Path: <SRS0=M0X/=6N=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0ACF6C83000
-	for <linux-mips@archiver.kernel.org>; Wed, 29 Apr 2020 18:33:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29461C83004
+	for <linux-mips@archiver.kernel.org>; Wed, 29 Apr 2020 18:43:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D8E492076B
-	for <linux-mips@archiver.kernel.org>; Wed, 29 Apr 2020 18:33:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E81EB206C0
+	for <linux-mips@archiver.kernel.org>; Wed, 29 Apr 2020 18:43:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1588185816;
+	bh=uEtgYlERQwqAmdzsvUwtxwArJftqcHvrYovUv0U11AU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=qsBKBUQd84plR5te623w1t7J52WSlbJDWK3cNQxk9Cmgpmsh59azZXHOLLB/FXJqF
+	 HXgpT6rbhsJUkY9egMu4p53KEs/a3wvrL9GVVBCFOOvNbjhyZPr8o+vtRwpPAW3i0A
+	 NCwiooMfVBkzkd90RkSjLwZTWxs0KNXPIa/l85iQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbgD2Sdb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 29 Apr 2020 14:33:31 -0400
-Received: from elvis.franken.de ([193.175.24.41]:60653 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726519AbgD2Sdb (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 29 Apr 2020 14:33:31 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jTrWH-000430-01; Wed, 29 Apr 2020 20:33:17 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id CEF21C034E; Wed, 29 Apr 2020 20:25:05 +0200 (CEST)
-Date:   Wed, 29 Apr 2020 20:25:05 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+        id S1726456AbgD2Sna (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 29 Apr 2020 14:43:30 -0400
+Received: from mail-oo1-f67.google.com ([209.85.161.67]:34104 "EHLO
+        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726481AbgD2Sna (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 29 Apr 2020 14:43:30 -0400
+Received: by mail-oo1-f67.google.com with SMTP id q204so671008ooq.1;
+        Wed, 29 Apr 2020 11:43:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=yGhK3HaqbTPZiDc01w13tznQrtyKagfsL0YGpSLp9V4=;
+        b=qQS1TnGkPBE0qnsrbWzX8vMQYMpRZs8ciWUughlZSecsMBmbmT2sVt3zQAmDh/fZS6
+         uAcDCnYk1cHgJU+RLvGaeUfi5sZnDMsQQNLIsqSB7dq7tNTjeN49k9SbRABYRt53tDXk
+         AmRaURe5czs4aTuyH9TIbHiSsNYiQiOSApLeqk1D2CnJLkXjRn48+dinKnhjIbHy6lzJ
+         K5XYAx+r0iDI3bYCSm5Q/ZEYNk2bNGPmP0IH9H7RdhWI/L1nggz7XXCG7uh+aoGvSjOt
+         0MySE+2S0CgIDVZyDDml577qToO0VnvfuQFTS6w9wsoJFX9OSkdHdW+a9G6X/w27Cjlm
+         3M4g==
+X-Gm-Message-State: AGi0PuYtn+/CJHfgBKYBLIxuTOk4EfY62HTw/pFcFgSHA6cnYLL3qt6+
+        Sxid5U7/D/TMArIHgyJA7w==
+X-Google-Smtp-Source: APiQypKdzbHafmOU5qNFDG4p8xvLwoSybYIgvKvM6RuUy3zuV5g1H8Ui3VJ5dMoccojZ7oRFV1ueAQ==
+X-Received: by 2002:a4a:d0d6:: with SMTP id u22mr26838776oor.63.1588185807787;
+        Wed, 29 Apr 2020 11:43:27 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id c13sm627194oos.14.2020.04.29.11.43.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Apr 2020 11:43:27 -0700 (PDT)
+Received: (nullmailer pid 14812 invoked by uid 1000);
+        Wed, 29 Apr 2020 18:43:25 -0000
+Date:   Wed, 29 Apr 2020 13:43:25 -0500
+From:   Rob Herring <robh@kernel.org>
 To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, john.garry@huawei.com,
+Cc:     linux-mips@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Huacai Chen <chenhc@lemote.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Stephen Kitt <steve@sk2.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <f4bug@amsat.org>,
-        Daniel Silsby <dansilsby@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] MIPS: Massage address spaces headers
-Message-ID: <20200429182505.GB21158@alpha.franken.de>
-References: <20200428021437.2000066-1-jiaxun.yang@flygoat.com>
- <20200428021437.2000066-2-jiaxun.yang@flygoat.com>
- <20200428113326.GD11443@alpha.franken.de>
- <7613695F-5A83-4B57-A2E6-0EE27DCF397F@flygoat.com>
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Paul Burton <paulburton@kernel.org>, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/5] PCI: Add Loongson PCI Controller support
+Message-ID: <20200429184325.64eyiubr3badd7uc@bogus>
+References: <20200428011429.1852081-1-jiaxun.yang@flygoat.com>
+ <20200428011429.1852081-3-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7613695F-5A83-4B57-A2E6-0EE27DCF397F@flygoat.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200428011429.1852081-3-jiaxun.yang@flygoat.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 07:45:19PM +0800, Jiaxun Yang wrote:
+On Tue, Apr 28, 2020 at 09:14:17AM +0800, Jiaxun Yang wrote:
+> This controller can be found on Loongson-2K SoC, Loongson-3
+> systems with RS780E/LS7A PCH.
 > 
+> The RS780E part of code was previously located at
+> arch/mips/pci/ops-loongson3.c and now it can use generic PCI
+> driver implementation.
 > 
-> 于 2020年4月28日 GMT+08:00 下午7:33:26, Thomas Bogendoerfer <tsbogend@alpha.franken.de> 写到:
-> >On Tue, Apr 28, 2020 at 10:14:12AM +0800, Jiaxun Yang wrote:
-> >> That would allow us modify kernel vm address spaces without
-> >> step into the hell of includes.
-> >> 
-> >> Also use some marcos for address spaces to make spaces.h more
-> >> clear.
-> >> 
-> >> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> >
-> >I don't like this patch as I can't see a good reason for shuffling
-> >stuff arround. Can you drop this from this series ?
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 > 
-> The problem is without this patch we'll have to include pgtable-32.h and
-> pgtable-64.h into asm/io.h, and that will become totally hell.
+> --
+> v2:
+> 	- Clean up according to rob's suggestions
+> 	- Claim that it can't work as a module
+> v3:
+> 	- Fix a typo
+> v4:
+> 	- More clean-ups: Drop flag check, use devfn
+> v7:
+> 	- Fix ordering according to huacai's suggestion
+> ---
+>  drivers/pci/controller/Kconfig        |  10 +
+>  drivers/pci/controller/Makefile       |   1 +
+>  drivers/pci/controller/pci-loongson.c | 251 ++++++++++++++++++++++++++
+>  3 files changed, 262 insertions(+)
+>  create mode 100644 drivers/pci/controller/pci-loongson.c
 
-sure, but this would just mean moving VMALLOC_START, but not the other
-stuff in this patch, which is more what I dislike...
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Reviewed-by: Rob Herring <robh@kernel.org>

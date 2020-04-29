@@ -2,141 +2,121 @@ Return-Path: <SRS0=M0X/=6N=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63957C83000
-	for <linux-mips@archiver.kernel.org>; Wed, 29 Apr 2020 15:34:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A853CC83004
+	for <linux-mips@archiver.kernel.org>; Wed, 29 Apr 2020 18:33:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 351BA206F0
-	for <linux-mips@archiver.kernel.org>; Wed, 29 Apr 2020 15:34:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 886B921D7F
+	for <linux-mips@archiver.kernel.org>; Wed, 29 Apr 2020 18:33:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbgD2Pew (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 29 Apr 2020 11:34:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726519AbgD2Pev (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 29 Apr 2020 11:34:51 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53F3C03C1AD;
-        Wed, 29 Apr 2020 08:34:51 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id BE9912A03C9;
-        Wed, 29 Apr 2020 16:34:48 +0100 (BST)
-Date:   Wed, 29 Apr 2020 17:34:46 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
-        brendanhiggins@google.com, tglx@linutronix.de,
-        anders.roxell@linaro.org, masonccyang@mxic.com.tw,
-        robh+dt@kernel.org, linux-mips@vger.kernel.org,
-        hauke.mehrtens@intel.com, andriy.shevchenko@intel.com,
-        qi-ming.wu@intel.com, cheol.yong.kim@intel.com
-Subject: Re: [PATCH v4 1/2] dt-bindings: mtd: Add YAML for Nand Flash
- Controller support
-Message-ID: <20200429173446.6682dfb8@collabora.com>
-In-Reply-To: <20200429104205.18780-2-vadivel.muruganx.ramuthevar@linux.intel.com>
-References: <20200429104205.18780-1-vadivel.muruganx.ramuthevar@linux.intel.com>
-        <20200429104205.18780-2-vadivel.muruganx.ramuthevar@linux.intel.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726456AbgD2SdU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 29 Apr 2020 14:33:20 -0400
+Received: from elvis.franken.de ([193.175.24.41]:60637 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726481AbgD2SdU (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 29 Apr 2020 14:33:20 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jTrWH-000430-03; Wed, 29 Apr 2020 20:33:17 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id D3A39C034E; Wed, 29 Apr 2020 20:33:05 +0200 (CEST)
+Date:   Wed, 29 Apr 2020 20:33:05 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Huacai Chen <chenhc@lemote.com>
+Cc:     linux-mips@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>,
+        Zhangjin Wu <wuzhangjin@gmail.com>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, chenj <chenj@lemote.com>
+Subject: Re: [PATCH 1/2] MIPS: Loongson-3: Enable COP2 usage in kernel
+Message-ID: <20200429183305.GB21234@alpha.franken.de>
+References: <1588153121-28507-1-git-send-email-chenhc@lemote.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1588153121-28507-1-git-send-email-chenhc@lemote.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, 29 Apr 2020 18:42:04 +0800
-"Ramuthevar,Vadivel MuruganX"
-<vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
+On Wed, Apr 29, 2020 at 05:38:40PM +0800, Huacai Chen wrote:
+> From: chenj <chenj@lemote.com>
+> 
+> Loongson-3's COP2 is Multi-Media coprocessor, it is disabled in kernel
+> mode by default. However, gslq/gssq (16-bytes load/store instructions)
+> overrides the instruction format of lwc2/swc2. If we wan't to use gslq/
+> gssq for optimization in kernel, we should enable COP2 usage in kernel.
 
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> 
-> Add YAML file for dt-bindings to support NAND Flash Controller
-> on Intel's Lightning Mountain SoC.
-> 
-> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> ---
->  .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 61 ++++++++++++++++++++++
->  1 file changed, 61 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-> new file mode 100644
-> index 000000000000..6dd899d367b4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-> @@ -0,0 +1,61 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/intel,lgm-nand.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Intel LGM SoC NAND Controller Device Tree Bindings
-> +
-> +allOf:
-> +  - $ref: "nand-controller.yaml"
-> +
-> +maintainers:
-> +  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: intel,lgm-nand-controller
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  dmas:
-> +    maxItems: 2
-> +
-> +  dma-names:
-> +    enum:
-> +      - rx
-> +      - tx
-> +
-> +  pinctrl-names: true
-> +
-> +patternProperties:
-> +  "^pinctrl-[0-9]+$": true
-> +
-> +  "^nand@[a-f0-9]+$":
-> +    type: object
-> +    properties:
-> +      reg:
-> +        minimum: 0
-> +        maximum: 7
-> +
-> +      nand-ecc-mode: true
-> +
-> +      nand-ecc-algo:
-> +        const: hw
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - dmas
-> +
-> +additionalProperties: false
-> +
-> +...
+What aboout context switches ? Or is the copro only used by one kernel
+driver ?
 
-Can you provide an example? I'd like to make sure the binding looks
-good.
+> diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+> index ce40fbf..0f71540 100644
+> --- a/arch/mips/include/asm/mipsregs.h
+> +++ b/arch/mips/include/asm/mipsregs.h
+> @@ -386,6 +386,7 @@
+>  #define ST0_CU1			0x20000000
+>  #define ST0_CU2			0x40000000
+>  #define ST0_CU3			0x80000000
+> +#define ST0_MM			0x40000000	/* Loongson-3 naming */
+
+please use ST0_CU2, so everybody understands it's COO2
+
+> @@ -450,7 +450,11 @@
+>   */
+>  		.macro	CLI
+>  		mfc0	t0, CP0_STATUS
+> +#ifdef CONFIG_CPU_LOONGSON64
+> +		li	t1, ST0_CU0 | ST0_MM | STATMASK
+> +#else
+>  		li	t1, ST0_CU0 | STATMASK
+> +#endif
+
+you are doing this three time in this file. How about doing
+
+#ifdef CONFIG_CPU_LOONGSON64
+#define ST0_MASK	ST0_CU0 | ST0_CU2
+#else
+#define ST0_MASK	ST0_CU0
+#endif
+
+and use ST0_MASK ?
+
+> diff --git a/arch/mips/kernel/head.S b/arch/mips/kernel/head.S
+> index 3b02ffe..cdac82d 100644
+> --- a/arch/mips/kernel/head.S
+> +++ b/arch/mips/kernel/head.S
+> @@ -45,18 +45,34 @@
+>  
+>  	.macro	setup_c0_status_pri
+>  #ifdef CONFIG_64BIT
+> +#ifdef CONFIG_CPU_LOONGSON64
+> +	setup_c0_status ST0_KX|ST0_MM 0
+> +#else
+>  	setup_c0_status ST0_KX 0
+> +#endif
+
+same thing here.
+
+> --- a/arch/mips/kernel/r4k_switch.S
+> +++ b/arch/mips/kernel/r4k_switch.S
+> @@ -53,6 +53,9 @@
+>  	nor	a3, $0, a3
+>  	and	a2, a3
+>  	or	a2, t1
+> +#ifdef CONFIG_CPU_LOONGSON64
+> +	or	a2, ST0_MM
+> +#endif
+
+this looks wrong. If THERAD_STATUS is setup correct, you don't need
+to mess with ST0_CU2 here.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

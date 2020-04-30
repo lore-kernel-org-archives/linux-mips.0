@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1660C83003
-	for <linux-mips@archiver.kernel.org>; Thu, 30 Apr 2020 03:17:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2BE9C83003
+	for <linux-mips@archiver.kernel.org>; Thu, 30 Apr 2020 03:18:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A7FA02082E
-	for <linux-mips@archiver.kernel.org>; Thu, 30 Apr 2020 03:17:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9E5302082E
+	for <linux-mips@archiver.kernel.org>; Thu, 30 Apr 2020 03:18:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="DciG8bOB"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="XtcTv1tL"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726355AbgD3DRo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 29 Apr 2020 23:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40498 "EHLO
+        id S1726404AbgD3DSr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 29 Apr 2020 23:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726309AbgD3DRo (ORCPT
+        by vger.kernel.org with ESMTP id S1726357AbgD3DSr (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 29 Apr 2020 23:17:44 -0400
+        Wed, 29 Apr 2020 23:18:47 -0400
 Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010AAC035494
-        for <linux-mips@vger.kernel.org>; Wed, 29 Apr 2020 20:17:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF7AC035494
+        for <linux-mips@vger.kernel.org>; Wed, 29 Apr 2020 20:18:47 -0700 (PDT)
 Received: from localhost.localdomain (unknown [103.125.232.133])
-        by vultr.net.flygoat.com (Postfix) with ESMTPSA id B1AFE20CEF;
-        Thu, 30 Apr 2020 03:17:39 +0000 (UTC)
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 5E93B20CFA;
+        Thu, 30 Apr 2020 03:18:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
-        t=1588216662; bh=TilINnJ2MMcbnY3Fs41A2Lq9IVrxTc127sCcUuEu3Qo=;
+        t=1588216727; bh=TilINnJ2MMcbnY3Fs41A2Lq9IVrxTc127sCcUuEu3Qo=;
         h=From:To:Cc:Subject:Date:From;
-        b=DciG8bOBYdvop4eLGAd57jpUzFxitUwn5CqTpxEo+fiE5NIGgfFjzIn4tL/ylk6Ww
-         uNjR27FFD4q/LMOyIT2cJCTOEThHQ0t/BS9/DgsAHdKAfw3/Dvh9RJlUTqFuseBzv3
-         9rvM4uG3RuepJUkqYglrhK1NNFN1dOqiHM6OkcBuVEHesF3IlXxVeAeT1rO8xEH1NG
-         0VCSKitEsTV7GNjVJoq7N1wSMd6jilobbDlp7ZqC5zAw1N4IwayzQtXYXzfc74BX+q
-         NfzEC6zKi81JcZTcgWwvah4NHWrDkhrypl7pkqN8+8BHzkVZMn88jPvaFV9gD9niWA
-         r27abnOihzupQ==
+        b=XtcTv1tLXmvoxsJ3ymyev3btC0xDlLCOzoLaqJxTC/3DZvuH+MTNFTnZYDN+/3xA8
+         qmJWR62HUtoYcZMlH03RFiCv3WkUfij3D1o1hVeZW9U4SdOb31z3aeS4oUDe+udLHu
+         LahS3jFCzhYMTa8RHScepe0pNNXVHevu+YI2vJOsnEKk2b6/wAYI/DXPS44H5K85xA
+         vGl81j+yi7lnUYuYUBR2ATDyfu1gSfXQXRiPUxSI6pncEZUZPrbHEH4HOlLEFX6SOo
+         DnhzGX6Yx/QkHw+mHZMJKN438JRBoMT8REtVEF3McklXOaKw86TE2G92x32OhY2kS/
+         EcTCD3sccFEsg==
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     chenhc@lemote.com, tsbogend@alpha.franken.de,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
 Subject: [PATCH] MIPS: Loongson64: Probe CPU features via CPUCFG
-Date:   Thu, 30 Apr 2020 11:13:46 +0800
-Message-Id: <20200430031346.2591394-1-jiaxun.yang@flygoat.com>
+Date:   Thu, 30 Apr 2020 11:18:35 +0800
+Message-Id: <20200430031835.2591588-1-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.26.0.rc2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit

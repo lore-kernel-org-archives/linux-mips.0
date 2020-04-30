@@ -2,49 +2,67 @@ Return-Path: <SRS0=JnEF=6O=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9E12C47247
-	for <linux-mips@archiver.kernel.org>; Thu, 30 Apr 2020 16:48:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F587C47258
+	for <linux-mips@archiver.kernel.org>; Thu, 30 Apr 2020 20:38:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8C6532070B
-	for <linux-mips@archiver.kernel.org>; Thu, 30 Apr 2020 16:48:26 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="tYZ3EUqg"
+	by mail.kernel.org (Postfix) with ESMTP id 386D9208D6
+	for <linux-mips@archiver.kernel.org>; Thu, 30 Apr 2020 20:38:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgD3Qs0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 30 Apr 2020 12:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726396AbgD3Qs0 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:48:26 -0400
-Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D2CC035494
-        for <linux-mips@vger.kernel.org>; Thu, 30 Apr 2020 09:48:26 -0700 (PDT)
-Received: from localhost.localdomain (unknown [103.125.232.133])
-        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 2C5A020CE8;
-        Thu, 30 Apr 2020 16:48:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
-        t=1588265304; bh=qsFYWOW1f6+Cp5nDQBjeJyYf5PYH2tcNzIfWS+WY9zk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tYZ3EUqglxhZX5KQNsBwCmSH1eUm70HbL5fqJdG7CPZ9gbPZTz6CMRE0sthAmCBHU
-         byjysBYxKD78nEpUdE1VvZ9qmbJvCVM+fm3Y6frCfs8WS9MVuvtq3Ug3F6Jk9zDyVQ
-         gZH/S7Ip1CQpbYPw/FDDpIuMO3AdJzvbsctxk1TI+KXGpqNwIt1nCLGulLyzX7rPWN
-         FkGn/o5eWHu3sbJGgQ89tWaGWpnT9CntgJC1wcBqZ7Z4a9sf1PGhX7wb2SNFjd0zY5
-         //HRkf4oUeHWUAyksUfXVljbukPdkG0cZ0+s8ceG826tL8vTLO3vEAYHp/pQnidc2H
-         YCicwXhpaQDag==
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     chenhc@lemote.com, tsbogend@alpha.franken.de,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH] MIPS: Loongson64: Correct TLB type for Loongson-3 Classic
-Date:   Fri,  1 May 2020 00:48:02 +0800
-Message-Id: <20200430164802.2809056-1-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.26.0.rc2
+        id S1727041AbgD3Uiv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 30 Apr 2020 16:38:51 -0400
+Received: from mga14.intel.com ([192.55.52.115]:61499 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726626AbgD3Uiv (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 30 Apr 2020 16:38:51 -0400
+IronPort-SDR: bJ3zyopMOWYlyaSeb1lwDl9PhHdpzMt/pFU2hqtw9ooX6XEoqrIZaUmVJNmv3ifGQbdg/R2fEr
+ M5XmgxAS2MFg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 13:38:49 -0700
+IronPort-SDR: D17QC4GuvkvagsbQzhsWMllqtH4pQoXw3+YB8DmVDQH5kIEwBMTkXxo65c+tv10pHrRcqkGuZ7
+ BLWcgEAlXhRQ==
+X-IronPort-AV: E=Sophos;i="5.73,337,1583222400"; 
+   d="scan'208";a="293688007"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 13:38:49 -0700
+From:   ira.weiny@intel.com
+To:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH V1 01/10] arch/kmap: Remove BUG_ON()
+Date:   Thu, 30 Apr 2020 13:38:36 -0700
+Message-Id: <20200430203845.582900-2-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200430203845.582900-1-ira.weiny@intel.com>
+References: <20200430203845.582900-1-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
@@ -52,37 +70,193 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Huacai just informed me that some early Loongson-3A2000 had wrong
-TLB type in Config0 register. That means we have to correct it via
-PRID.
+From: Ira Weiny <ira.weiny@intel.com>
 
-It looks like I shoudn't drop MIPS_CPU_FTLB flag in PRID case for
-Loongson-3 Classic.
+Replace the use of BUG_ON(in_interrupt()) in the kmap() and kunmap()
+in favor of might_sleep().
 
-Fixes: da1bd29742b1 ("MIPS: Loongson64: Probe CPU features via CPUCFG")
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Reported-by: Huacai Chen <chenhc@lemote.com>
+Besides the benefits of might_sleep(), this normalizes the
+implementations such that they can be made generic in subsequent
+patches.
+
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- arch/mips/kernel/cpu-probe.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/arc/include/asm/highmem.h        | 2 +-
+ arch/arc/mm/highmem.c                 | 2 +-
+ arch/arm/mm/highmem.c                 | 2 +-
+ arch/csky/mm/highmem.c                | 2 +-
+ arch/microblaze/include/asm/highmem.h | 2 +-
+ arch/mips/mm/highmem.c                | 2 +-
+ arch/nds32/mm/highmem.c               | 2 +-
+ arch/powerpc/include/asm/highmem.h    | 2 +-
+ arch/sparc/include/asm/highmem.h      | 4 ++--
+ arch/x86/mm/highmem_32.c              | 3 +--
+ arch/xtensa/include/asm/highmem.h     | 4 ++--
+ 11 files changed, 13 insertions(+), 14 deletions(-)
 
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index 1736c173b242..ca2e6f1af4fe 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -1999,8 +1999,11 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
- 		 * Loongson-3 Classic did not implement MIPS standard TLBINV
- 		 * but implemented TLBINVF and EHINV. As currently we're only
- 		 * using these two features, enable MIPS_CPU_TLBINV as well.
-+		 *
-+		 * Also some early Loongson-3A2000 had wrong TLB type in Config
-+		 * register, we correct it here.
- 		 */
--		c->options |= MIPS_CPU_TLBINV | MIPS_CPU_LDPTE;
-+		c->options |= MIPS_CPU_FTLB | MIPS_CPU_TLBINV | MIPS_CPU_LDPTE;
- 		c->writecombine = _CACHE_UNCACHED_ACCELERATED;
- 		c->ases |= (MIPS_ASE_LOONGSON_MMI | MIPS_ASE_LOONGSON_CAM |
- 			MIPS_ASE_LOONGSON_EXT | MIPS_ASE_LOONGSON_EXT2);
+diff --git a/arch/arc/include/asm/highmem.h b/arch/arc/include/asm/highmem.h
+index 1af00accb37f..042e92921c4c 100644
+--- a/arch/arc/include/asm/highmem.h
++++ b/arch/arc/include/asm/highmem.h
+@@ -45,7 +45,7 @@ static inline void flush_cache_kmaps(void)
+ 
+ static inline void kunmap(struct page *page)
+ {
+-	BUG_ON(in_interrupt());
++	might_sleep();
+ 	if (!PageHighMem(page))
+ 		return;
+ 	kunmap_high(page);
+diff --git a/arch/arc/mm/highmem.c b/arch/arc/mm/highmem.c
+index fc8849e4f72e..39ef7b9a3aa9 100644
+--- a/arch/arc/mm/highmem.c
++++ b/arch/arc/mm/highmem.c
+@@ -51,7 +51,7 @@ static pte_t * fixmap_page_table;
+ 
+ void *kmap(struct page *page)
+ {
+-	BUG_ON(in_interrupt());
++	might_sleep();
+ 	if (!PageHighMem(page))
+ 		return page_address(page);
+ 
+diff --git a/arch/arm/mm/highmem.c b/arch/arm/mm/highmem.c
+index a76f8ace9ce6..cc6eb79ef20c 100644
+--- a/arch/arm/mm/highmem.c
++++ b/arch/arm/mm/highmem.c
+@@ -42,7 +42,7 @@ EXPORT_SYMBOL(kmap);
+ 
+ void kunmap(struct page *page)
+ {
+-	BUG_ON(in_interrupt());
++	might_sleep();
+ 	if (!PageHighMem(page))
+ 		return;
+ 	kunmap_high(page);
+diff --git a/arch/csky/mm/highmem.c b/arch/csky/mm/highmem.c
+index 813129145f3d..690d678649d1 100644
+--- a/arch/csky/mm/highmem.c
++++ b/arch/csky/mm/highmem.c
+@@ -29,7 +29,7 @@ EXPORT_SYMBOL(kmap);
+ 
+ void kunmap(struct page *page)
+ {
+-	BUG_ON(in_interrupt());
++	might_sleep();
+ 	if (!PageHighMem(page))
+ 		return;
+ 	kunmap_high(page);
+diff --git a/arch/microblaze/include/asm/highmem.h b/arch/microblaze/include/asm/highmem.h
+index 332c78e15198..99ced7278b5c 100644
+--- a/arch/microblaze/include/asm/highmem.h
++++ b/arch/microblaze/include/asm/highmem.h
+@@ -66,7 +66,7 @@ static inline void *kmap(struct page *page)
+ 
+ static inline void kunmap(struct page *page)
+ {
+-	BUG_ON(in_interrupt());
++	might_sleep();
+ 	if (!PageHighMem(page))
+ 		return;
+ 	kunmap_high(page);
+diff --git a/arch/mips/mm/highmem.c b/arch/mips/mm/highmem.c
+index d08e6d7d533b..edd889f6cede 100644
+--- a/arch/mips/mm/highmem.c
++++ b/arch/mips/mm/highmem.c
+@@ -28,7 +28,7 @@ EXPORT_SYMBOL(kmap);
+ 
+ void kunmap(struct page *page)
+ {
+-	BUG_ON(in_interrupt());
++	might_sleep();
+ 	if (!PageHighMem(page))
+ 		return;
+ 	kunmap_high(page);
+diff --git a/arch/nds32/mm/highmem.c b/arch/nds32/mm/highmem.c
+index 022779af6148..4c7c28e994ea 100644
+--- a/arch/nds32/mm/highmem.c
++++ b/arch/nds32/mm/highmem.c
+@@ -24,7 +24,7 @@ EXPORT_SYMBOL(kmap);
+ 
+ void kunmap(struct page *page)
+ {
+-	BUG_ON(in_interrupt());
++	might_sleep();
+ 	if (!PageHighMem(page))
+ 		return;
+ 	kunmap_high(page);
+diff --git a/arch/powerpc/include/asm/highmem.h b/arch/powerpc/include/asm/highmem.h
+index a4b65b186ec6..529512f6d65a 100644
+--- a/arch/powerpc/include/asm/highmem.h
++++ b/arch/powerpc/include/asm/highmem.h
+@@ -74,7 +74,7 @@ static inline void *kmap(struct page *page)
+ 
+ static inline void kunmap(struct page *page)
+ {
+-	BUG_ON(in_interrupt());
++	might_sleep();
+ 	if (!PageHighMem(page))
+ 		return;
+ 	kunmap_high(page);
+diff --git a/arch/sparc/include/asm/highmem.h b/arch/sparc/include/asm/highmem.h
+index 18d776925c45..7dd2d4b3f980 100644
+--- a/arch/sparc/include/asm/highmem.h
++++ b/arch/sparc/include/asm/highmem.h
+@@ -55,7 +55,7 @@ void kunmap_high(struct page *page);
+ 
+ static inline void *kmap(struct page *page)
+ {
+-	BUG_ON(in_interrupt());
++	might_sleep();
+ 	if (!PageHighMem(page))
+ 		return page_address(page);
+ 	return kmap_high(page);
+@@ -63,7 +63,7 @@ static inline void *kmap(struct page *page)
+ 
+ static inline void kunmap(struct page *page)
+ {
+-	BUG_ON(in_interrupt());
++	might_sleep();
+ 	if (!PageHighMem(page))
+ 		return;
+ 	kunmap_high(page);
+diff --git a/arch/x86/mm/highmem_32.c b/arch/x86/mm/highmem_32.c
+index 0a1898b8552e..8af66382672b 100644
+--- a/arch/x86/mm/highmem_32.c
++++ b/arch/x86/mm/highmem_32.c
+@@ -15,8 +15,7 @@ EXPORT_SYMBOL(kmap);
+ 
+ void kunmap(struct page *page)
+ {
+-	if (in_interrupt())
+-		BUG();
++	might_sleep();
+ 	if (!PageHighMem(page))
+ 		return;
+ 	kunmap_high(page);
+diff --git a/arch/xtensa/include/asm/highmem.h b/arch/xtensa/include/asm/highmem.h
+index 04e9340eac4b..413848cc1e56 100644
+--- a/arch/xtensa/include/asm/highmem.h
++++ b/arch/xtensa/include/asm/highmem.h
+@@ -73,7 +73,7 @@ static inline void *kmap(struct page *page)
+ 	 */
+ 	BUILD_BUG_ON(PKMAP_BASE <
+ 		     TLBTEMP_BASE_1 + TLBTEMP_SIZE);
+-	BUG_ON(in_interrupt());
++	might_sleep();
+ 	if (!PageHighMem(page))
+ 		return page_address(page);
+ 	return kmap_high(page);
+@@ -81,7 +81,7 @@ static inline void *kmap(struct page *page)
+ 
+ static inline void kunmap(struct page *page)
+ {
+-	BUG_ON(in_interrupt());
++	might_sleep();
+ 	if (!PageHighMem(page))
+ 		return;
+ 	kunmap_high(page);
 -- 
-2.26.0.rc2
+2.25.1
 

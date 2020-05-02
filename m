@@ -2,81 +2,107 @@ Return-Path: <SRS0=5aZV=6Q=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B5EDC3A5A9
-	for <linux-mips@archiver.kernel.org>; Sat,  2 May 2020 11:58:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15B7CC3A5A9
+	for <linux-mips@archiver.kernel.org>; Sat,  2 May 2020 13:46:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 01112216FD
-	for <linux-mips@archiver.kernel.org>; Sat,  2 May 2020 11:58:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 03C7721974
+	for <linux-mips@archiver.kernel.org>; Sat,  2 May 2020 13:46:35 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="LwCFPJa1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgEBL6s (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 2 May 2020 07:58:48 -0400
-Received: from elvis.franken.de ([193.175.24.41]:36650 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726654AbgEBL6s (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 2 May 2020 07:58:48 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jUqn8-00009X-00; Sat, 02 May 2020 13:58:46 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id EEC2BC036B; Sat,  2 May 2020 13:22:21 +0200 (CEST)
-Date:   Sat, 2 May 2020 13:22:21 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Huacai Chen <chenhc@lemote.com>
-Cc:     linux-mips@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>,
-        Zhangjin Wu <wuzhangjin@gmail.com>,
-        Huacai Chen <chenhuacai@gmail.com>,
+        id S1728052AbgEBNqf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 2 May 2020 09:46:35 -0400
+Received: from [115.28.160.31] ([115.28.160.31]:46292 "EHLO
+        mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
+        by vger.kernel.org with ESMTP id S1728034AbgEBNqf (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 2 May 2020 09:46:35 -0400
+Received: from localhost.localdomain (unknown [116.236.177.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id F145860161;
+        Sat,  2 May 2020 21:39:44 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
+        t=1588426785; bh=Yn5Z+8DuiLQa/cJoX6ZPjTfvrkeW8daV39JuqCOjncU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=LwCFPJa1IQlHNPrUJoiwMwVjqjsrAGXI4Hmf5pPaunBrgQ3YQgqLOROyMZzEkt1zg
+         idYNXm3u1jnrRquGh59TYqbBSJhtEoIW+ALTHIC3MBV7N13eQ1JoNLSTdR1SrB9sWe
+         OaQVPErj+VfZy97kh1eB4fm1ZG3EgBdHgy9rDuw4=
+From:   WANG Xuerui <git@xen0n.name>
+To:     linux-mips@vger.kernel.org
+Cc:     WANG Xuerui <git@xen0n.name>, Huacai Chen <chenhc@lemote.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH V2] MIPS: perf: Remove unnecessary "fallthrough" pseudo
- keywords
-Message-ID: <20200502112221.GA5092@alpha.franken.de>
-References: <1588416384-18200-1-git-send-email-chenhc@lemote.com>
+Subject: [PATCH 2/4] MIPS: Loongson64: define offsets and known revisions for some CPUCFG features
+Date:   Sat,  2 May 2020 21:38:44 +0800
+Message-Id: <20200502133846.40590-3-git@xen0n.name>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200502133846.40590-1-git@xen0n.name>
+References: <20200502133846.40590-1-git@xen0n.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1588416384-18200-1-git-send-email-chenhc@lemote.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, May 02, 2020 at 06:46:24PM +0800, Huacai Chen wrote:
-> The last branch of switch-case doesn't need a "fallthrough" pseudo
-> keyword, and it will cause errors when building a kernel with -Werror:
-> 
->    arch/mips/kernel/perf_event_mipsxx.c: In function 'reset_counters':
->    include/linux/compiler_attributes.h:200:41: error: attribute 'fallthrough' not preceding a case label or default label [-Werror]
->      200 | # define fallthrough                    __attribute__((__fallthrough__))
->          |                                         ^~~~~~~~~~~~~
-> >> arch/mips/kernel/perf_event_mipsxx.c:932:3: note: in expansion of macro 'fallthrough'
->      932 |   fallthrough;
->          |   ^~~~~~~~~~~
->    arch/mips/kernel/perf_event_mipsxx.c: In function 'loongson3_reset_counters':
->    include/linux/compiler_attributes.h:200:41: error: attribute 'fallthrough' not preceding a case label or default label [-Werror]
->      200 | # define fallthrough                    __attribute__((__fallthrough__))
->          |                                         ^~~~~~~~~~~~~
->    arch/mips/kernel/perf_event_mipsxx.c:903:3: note: in expansion of macro 'fallthrough'
->      903 |   fallthrough;
->          |   ^~~~~~~~~~~
->    cc1: all warnings being treated as errors
-> 
-> Fix it by removing unnecessary "fallthrough" pseudo keywords.
-> 
-> Fixes: e9dfbaaeef1c9fe ("MIPS: perf: Add hardware perf events support for new Loongson-3")
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Signed-off-by: Huacai Chen <chenhc@lemote.com>
-> ---
->  arch/mips/kernel/perf_event_mipsxx.c | 2 --
->  1 file changed, 2 deletions(-)
+Add the constants for easier and maintainable composition of CPUCFG
+values.
 
-applied to mips-next.
+Signed-off-by: WANG Xuerui <git@xen0n.name>
+Cc: Huacai Chen <chenhc@lemote.com>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+ .../asm/mach-loongson64/loongson_regs.h       | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-Thomas.
-
+diff --git a/arch/mips/include/asm/mach-loongson64/loongson_regs.h b/arch/mips/include/asm/mach-loongson64/loongson_regs.h
+index 3fa94c6ec3b9..8508afffdfd1 100644
+--- a/arch/mips/include/asm/mach-loongson64/loongson_regs.h
++++ b/arch/mips/include/asm/mach-loongson64/loongson_regs.h
+@@ -67,6 +67,8 @@ static inline u32 read_cpucfg(u32 reg)
+ #define LOONGSON_CFG1_SFBP	BIT(29)
+ #define LOONGSON_CFG1_CDMAP	BIT(30)
+ 
++#define LOONGSON_CFG1_FPREV_OFFSET	1
++
+ #define LOONGSON_CFG2 0x2
+ #define LOONGSON_CFG2_LEXT1	BIT(0)
+ #define LOONGSON_CFG2_LEXT2	BIT(1)
+@@ -90,6 +92,13 @@ static inline u32 read_cpucfg(u32 reg)
+ #define LOONGSON_CFG2_LCSRP	BIT(27)
+ #define LOONGSON_CFG2_LDISBLIKELY	BIT(28)
+ 
++#define LOONGSON_CFG2_LPMREV_OFFSET	9
++#define LOONGSON_CFG2_LPM_REV1		(1 << LOONGSON_CFG2_LPMREV_OFFSET)
++#define LOONGSON_CFG2_LPM_REV2		(2 << LOONGSON_CFG2_LPMREV_OFFSET)
++#define LOONGSON_CFG2_LVZREV_OFFSET	16
++#define LOONGSON_CFG2_LVZ_REV1		(1 << LOONGSON_CFG2_LVZREV_OFFSET)
++#define LOONGSON_CFG2_LVZ_REV2		(2 << LOONGSON_CFG2_LVZREV_OFFSET)
++
+ #define LOONGSON_CFG3 0x3
+ #define LOONGSON_CFG3_LCAMP	BIT(0)
+ #define LOONGSON_CFG3_LCAMREV	GENMASK(3, 1)
+@@ -97,6 +106,16 @@ static inline u32 read_cpucfg(u32 reg)
+ #define LOONGSON_CFG3_LCAMKW	GENMASK(19, 12)
+ #define LOONGSON_CFG3_LCAMVW	GENMASK(27, 20)
+ 
++#define LOONGSON_CFG3_LCAMREV_OFFSET	1
++#define LOONGSON_CFG3_LCAM_REV1		(1 << LOONGSON_CFG3_LCAMREV_OFFSET)
++#define LOONGSON_CFG3_LCAM_REV2		(2 << LOONGSON_CFG3_LCAMREV_OFFSET)
++#define LOONGSON_CFG3_LCAMNUM_OFFSET	4
++#define LOONGSON_CFG3_LCAMNUM_REV1	(0x3f << LOONGSON_CFG3_LCAMNUM_OFFSET)
++#define LOONGSON_CFG3_LCAMKW_OFFSET	12
++#define LOONGSON_CFG3_LCAMKW_REV1	(0x27 << LOONGSON_CFG3_LCAMKW_OFFSET)
++#define LOONGSON_CFG3_LCAMVW_OFFSET	20
++#define LOONGSON_CFG3_LCAMVW_REV1	(0x3f << LOONGSON_CFG3_LCAMVW_OFFSET)
++
+ #define LOONGSON_CFG4 0x4
+ #define LOONGSON_CFG4_CCFREQ	GENMASK(31, 0)
+ 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.21.0
+

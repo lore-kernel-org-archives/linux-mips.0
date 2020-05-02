@@ -2,100 +2,115 @@ Return-Path: <SRS0=5aZV=6Q=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02AF7C47257
-	for <linux-mips@archiver.kernel.org>; Sat,  2 May 2020 10:20:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C639CC3A5A9
+	for <linux-mips@archiver.kernel.org>; Sat,  2 May 2020 10:34:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D65D6216FD
-	for <linux-mips@archiver.kernel.org>; Sat,  2 May 2020 10:20:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A5EFA216FD
+	for <linux-mips@archiver.kernel.org>; Sat,  2 May 2020 10:34:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgEBKUJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 2 May 2020 06:20:09 -0400
-Received: from elvis.franken.de ([193.175.24.41]:36582 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726548AbgEBKUF (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 2 May 2020 06:20:05 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jUpFa-00085x-00; Sat, 02 May 2020 12:20:02 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id EE3F2C0365; Sat,  2 May 2020 12:04:22 +0200 (CEST)
-Date:   Sat, 2 May 2020 12:04:22 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Huacai Chen <chenhc@lemote.com>
-Cc:     linux-mips@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>,
-        Zhangjin Wu <wuzhangjin@gmail.com>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH] MIPS: perf: Remove unnecessary "fallthrough" pseudo
- keywords
-Message-ID: <20200502100422.GA3913@alpha.franken.de>
-References: <1588395326-5351-1-git-send-email-chenhc@lemote.com>
+        id S1726654AbgEBKec (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 2 May 2020 06:34:32 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:46398 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726574AbgEBKeb (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 2 May 2020 06:34:31 -0400
+Received: by mail-il1-f194.google.com with SMTP id x2so6654634ilp.13
+        for <linux-mips@vger.kernel.org>; Sat, 02 May 2020 03:34:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/z7t4CgoNx+kNMkg0cpmMZOsydNl0J7ylOfW8VQIu50=;
+        b=AT1wgZB9zqn4xJ1KKw43QfEO1i5rOzJ3puSnxjBayPSLSTBaLS4wAIcVaNbdW7oF7E
+         05xb44KpwmcD6L+DJ+nHSOK6WKYaX2UIKgu+pyTCmNhUBdZLHftLkc3knJLfEIZ5yNOa
+         JM7OTjNn3a9yk5AVeadx155dmlioxV2FEOxlaHSfaLmh+1viYn1rN96zGvQLPmm2AAvI
+         iTO6PNcMdc35R0qjE+2tTgX8qs3KewFo4RHCoaXXSdqrm3uV0Nqp/oEEBogW42avHo8e
+         n1rwJezMBPabw7UxJQp5VAF+SuPhQOZR7+fXx8lOO+gMhDtFtD7+iZe461bNYSHm86Sk
+         E+1g==
+X-Gm-Message-State: AGi0PuaO6ATtAZZ61PvG6Lk9pq2D/e0RxyJku0czbJMa0EOIlK5rX87V
+        zrvmjtNZpLmmw6dpLUI/fvVuq9Ma6Y4JtoqxdjU=
+X-Google-Smtp-Source: APiQypLB0jNfOAfF/EBNZT4E2C2cGYLGpYiDQ6UT35+5LKTrhSQ5UlHimOF74Kicsz/14HvRpQu3yZ0dzJpUVNGpbKs=
+X-Received: by 2002:a92:dc0d:: with SMTP id t13mr7707180iln.287.1588415670841;
+ Sat, 02 May 2020 03:34:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1588395326-5351-1-git-send-email-chenhc@lemote.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <1588395326-5351-1-git-send-email-chenhc@lemote.com> <20200502100422.GA3913@alpha.franken.de>
+In-Reply-To: <20200502100422.GA3913@alpha.franken.de>
+From:   Huacai Chen <chenhc@lemote.com>
+Date:   Sat, 2 May 2020 18:42:04 +0800
+Message-ID: <CAAhV-H58Lg2V=epdcWJB+TLTzCbwaYLtXY+c3vAQT1i1sde2xQ@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: perf: Remove unnecessary "fallthrough" pseudo keywords
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Fuxin Zhang <zhangfx@lemote.com>,
+        Zhangjin Wu <wuzhangjin@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, May 02, 2020 at 12:55:26PM +0800, Huacai Chen wrote:
-> The last branch of switch-case doesn't need a "fallthrough" pseudo
-> keyword, and it will cause errors when building a kernel with -Werror:
-> 
->    arch/mips/kernel/perf_event_mipsxx.c: In function 'reset_counters':
->    include/linux/compiler_attributes.h:200:41: error: attribute 'fallthrough' not preceding a case label or default label [-Werror]
->      200 | # define fallthrough                    __attribute__((__fallthrough__))
->          |                                         ^~~~~~~~~~~~~
-> >> arch/mips/kernel/perf_event_mipsxx.c:932:3: note: in expansion of macro 'fallthrough'
->      932 |   fallthrough;
->          |   ^~~~~~~~~~~
->    arch/mips/kernel/perf_event_mipsxx.c: In function 'loongson3_reset_counters':
->    include/linux/compiler_attributes.h:200:41: error: attribute 'fallthrough' not preceding a case label or default label [-Werror]
->      200 | # define fallthrough                    __attribute__((__fallthrough__))
->          |                                         ^~~~~~~~~~~~~
->    arch/mips/kernel/perf_event_mipsxx.c:903:3: note: in expansion of macro 'fallthrough'
->      903 |   fallthrough;
->          |   ^~~~~~~~~~~
->    cc1: all warnings being treated as errors
-> 
-> Fix it by removing unnecessary "fallthrough" pseudo keywords.
-> 
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Signed-off-by: Huacai Chen <chenhc@lemote.com>
-> ---
->  arch/mips/kernel/perf_event_mipsxx.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
-> index a14974c..710b2c7 100644
-> --- a/arch/mips/kernel/perf_event_mipsxx.c
-> +++ b/arch/mips/kernel/perf_event_mipsxx.c
-> @@ -900,7 +900,6 @@ static void loongson3_reset_counters(void *arg)
->  		mipspmu.write_counter(0, 0);
->  		mipsxx_pmu_write_control(0, 575<<5);
->  		mipspmu.write_counter(0, 0);
-> -		fallthrough;
->  	}
->  }
->  
-> @@ -929,7 +928,6 @@ static void reset_counters(void *arg)
->  	case 1:
->  		mipsxx_pmu_write_control(0, 0);
->  		mipspmu.write_counter(0, 0);
-> -		fallthrough;
->  	}
->  }
+OK, I will send V2 soon.
 
-please add breaks in both places.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+On Sat, May 2, 2020 at 6:20 PM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> On Sat, May 02, 2020 at 12:55:26PM +0800, Huacai Chen wrote:
+> > The last branch of switch-case doesn't need a "fallthrough" pseudo
+> > keyword, and it will cause errors when building a kernel with -Werror:
+> >
+> >    arch/mips/kernel/perf_event_mipsxx.c: In function 'reset_counters':
+> >    include/linux/compiler_attributes.h:200:41: error: attribute 'fallthrough' not preceding a case label or default label [-Werror]
+> >      200 | # define fallthrough                    __attribute__((__fallthrough__))
+> >          |                                         ^~~~~~~~~~~~~
+> > >> arch/mips/kernel/perf_event_mipsxx.c:932:3: note: in expansion of macro 'fallthrough'
+> >      932 |   fallthrough;
+> >          |   ^~~~~~~~~~~
+> >    arch/mips/kernel/perf_event_mipsxx.c: In function 'loongson3_reset_counters':
+> >    include/linux/compiler_attributes.h:200:41: error: attribute 'fallthrough' not preceding a case label or default label [-Werror]
+> >      200 | # define fallthrough                    __attribute__((__fallthrough__))
+> >          |                                         ^~~~~~~~~~~~~
+> >    arch/mips/kernel/perf_event_mipsxx.c:903:3: note: in expansion of macro 'fallthrough'
+> >      903 |   fallthrough;
+> >          |   ^~~~~~~~~~~
+> >    cc1: all warnings being treated as errors
+> >
+> > Fix it by removing unnecessary "fallthrough" pseudo keywords.
+> >
+> > Reported-by: kbuild test robot <lkp@intel.com>
+> > Signed-off-by: Huacai Chen <chenhc@lemote.com>
+> > ---
+> >  arch/mips/kernel/perf_event_mipsxx.c | 2 --
+> >  1 file changed, 2 deletions(-)
+> >
+> > diff --git a/arch/mips/kernel/perf_event_mipsxx.c b/arch/mips/kernel/perf_event_mipsxx.c
+> > index a14974c..710b2c7 100644
+> > --- a/arch/mips/kernel/perf_event_mipsxx.c
+> > +++ b/arch/mips/kernel/perf_event_mipsxx.c
+> > @@ -900,7 +900,6 @@ static void loongson3_reset_counters(void *arg)
+> >               mipspmu.write_counter(0, 0);
+> >               mipsxx_pmu_write_control(0, 575<<5);
+> >               mipspmu.write_counter(0, 0);
+> > -             fallthrough;
+> >       }
+> >  }
+> >
+> > @@ -929,7 +928,6 @@ static void reset_counters(void *arg)
+> >       case 1:
+> >               mipsxx_pmu_write_control(0, 0);
+> >               mipspmu.write_counter(0, 0);
+> > -             fallthrough;
+> >       }
+> >  }
+>
+> please add breaks in both places.
+>
+> Thomas.
+>
+> --
+> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+> good idea.                                                [ RFC1925, 2.3 ]

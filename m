@@ -2,43 +2,46 @@ Return-Path: <SRS0=5aZV=6Q=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81FE4C47259
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CCD9C47257
 	for <linux-mips@archiver.kernel.org>; Sat,  2 May 2020 13:46:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 58B252495B
+	by mail.kernel.org (Postfix) with ESMTP id 32F5D24958
 	for <linux-mips@archiver.kernel.org>; Sat,  2 May 2020 13:46:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="Wt8APCGR"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="r7DQWLtJ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728038AbgEBNqh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 2 May 2020 09:46:37 -0400
-Received: from [115.28.160.31] ([115.28.160.31]:46294 "EHLO
+        id S1728035AbgEBNqg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 2 May 2020 09:46:36 -0400
+Received: from [115.28.160.31] ([115.28.160.31]:46296 "EHLO
         mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1727921AbgEBNqg (ORCPT
+        by vger.kernel.org with ESMTP id S1728038AbgEBNqg (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Sat, 2 May 2020 09:46:36 -0400
-X-Greylist: delayed 422 seconds by postgrey-1.27 at vger.kernel.org; Sat, 02 May 2020 09:46:34 EDT
 Received: from localhost.localdomain (unknown [116.236.177.50])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 45B5160116;
-        Sat,  2 May 2020 21:39:26 +0800 (CST)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 4547060162;
+        Sat,  2 May 2020 21:39:49 +0800 (CST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
-        t=1588426766; bh=P/n1c6JWhEf22XFhND6QqhfwwtBTQs37y5I0h1cKLUM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Wt8APCGRuZ0Ckfp3csDAPZR/QLXsGeqiTNGBljoayzoXcJjo4C4vL0LnTPGZuTdo7
-         sfCYhSL78mX9xx6bL9o+PKmZRPdV4wVMEgaX2lZ44XpqZ8Jkr3Dp/q9ihdnJcjGn7f
-         72IShiagIW+rv3sJuU04KnOnW+CqfyKhpglUZ2FQ=
+        t=1588426789; bh=ONRtGOA4myqnZrJLa5c+bfIHlPkdzZQWJl5rHs3mfJA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=r7DQWLtJ/OJM2slr13qfVQjX7i5oC4ujHJBiCrEMKOVaYmwaJMyDFTlUMo8PBSnsH
+         uC+bBFeJuV/QY9DGm2Gr9Hr5fyIH2S11O0EG7UZBtKAjPZf7CCF4jjO+cZbnK060DT
+         OK5ceSxCOa/dGgPXeZVLSeipAvsDG6bniPg1+6NI=
 From:   WANG Xuerui <git@xen0n.name>
 To:     linux-mips@vger.kernel.org
-Cc:     WANG Xuerui <git@xen0n.name>
-Subject: [PATCH 0/4] CPUCFG emulation on older Loongson64 cores
-Date:   Sat,  2 May 2020 21:38:42 +0800
-Message-Id: <20200502133846.40590-1-git@xen0n.name>
+Cc:     WANG Xuerui <git@xen0n.name>, Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: [PATCH 3/4] MIPS: define more Loongson CP0.Config6 and CP0.Diag feature bits
+Date:   Sat,  2 May 2020 21:38:45 +0800
+Message-Id: <20200502133846.40590-4-git@xen0n.name>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200502133846.40590-1-git@xen0n.name>
+References: <20200502133846.40590-1-git@xen0n.name>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
@@ -46,38 +49,41 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This patch series brings the CPUCFG instruction to older Loongson64
-cores, enabling a unified way to query processor characteristics on
-Loongson64 systems. A detailed explanation may be found in the last
-commit.
+These are exposed to userland alternatively via the new CPUCFG
+instruction on Loongson-3A R4 and above. Add definitions for readback
+on older cores.
 
-One unresolved point is how to best introduce machtype-specific bits
-into the generic MIPS code, namely the cpu probing and trap handler
-parts. I have been struggling over whether to lift this logic into
-arch/mips/kernel, but the instruction's encoding (reusing LWC2 opcode)
-might be too invasive to be useful to other MIPS platforms. What do
-people think is the best way forward?
+Signed-off-by: WANG Xuerui <git@xen0n.name>
+Cc: Huacai Chen <chenhc@lemote.com>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+ arch/mips/include/asm/mipsregs.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-WANG Xuerui (4):
-  MIPS: Loongson64: fix typos in loongson_regs.h
-  MIPS: Loongson64: define offsets and known revisions for some CPUCFG
-    features
-  MIPS: define more Loongson CP0.Config6 and CP0.Diag feature bits
-  MIPS: emulate CPUCFG instruction on older Loongson64 cores
-
- arch/mips/Kconfig                             |  11 ++
- arch/mips/include/asm/cpu-info.h              |   9 ++
- .../include/asm/mach-loongson64/cpucfg-emul.h |  67 +++++++++
- .../asm/mach-loongson64/loongson_regs.h       |  27 +++-
- arch/mips/include/asm/mipsregs.h              |   6 +
- arch/mips/kernel/cpu-probe.c                  | 129 ++++++++++++++++++
- arch/mips/kernel/traps.c                      |  57 ++++++++
- arch/mips/loongson64/Makefile                 |   1 +
- arch/mips/loongson64/cpucfg-emul.c            |  80 +++++++++++
- 9 files changed, 383 insertions(+), 4 deletions(-)
- create mode 100644 arch/mips/include/asm/mach-loongson64/cpucfg-emul.h
- create mode 100644 arch/mips/loongson64/cpucfg-emul.c
-
+diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+index 796fe47cfd17..90f843c72774 100644
+--- a/arch/mips/include/asm/mipsregs.h
++++ b/arch/mips/include/asm/mipsregs.h
+@@ -681,6 +681,10 @@
+ #define MIPS_CONF6_FTLBDIS	(_ULCAST_(1) << 22)
+ /* FTLB probability bits */
+ #define MIPS_CONF6_FTLBP_SHIFT	(16)
++/* Loongson-3 feature bits */
++#define MIPS_CONF6_LOONGSON_SCRAND	(_ULCAST_(1) << 17)
++#define MIPS_CONF6_LOONGSON_LLEXC	(_ULCAST_(1) << 16)
++#define MIPS_CONF6_LOONGSON_STFILL	(_ULCAST_(1) << 8)
+ 
+ #define MIPS_CONF7_WII		(_ULCAST_(1) << 31)
+ 
+@@ -997,6 +1001,8 @@
+ #define LOONGSON_DIAG_ITLB	(_ULCAST_(1) << 2)
+ /* Flush DTLB */
+ #define LOONGSON_DIAG_DTLB	(_ULCAST_(1) << 3)
++/* Allow some CACHE instructions (CACHE0, 1, 3, 21 and 23) in user mode */
++#define LOONGSON_DIAG_UCAC	(_ULCAST_(1) << 8)
+ /* Flush VTLB */
+ #define LOONGSON_DIAG_VTLB	(_ULCAST_(1) << 12)
+ /* Flush FTLB */
 -- 
 2.21.0
 

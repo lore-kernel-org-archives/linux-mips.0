@@ -2,34 +2,34 @@ Return-Path: <SRS0=QtrI=6S=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53CB1C28CBC
-	for <linux-mips@archiver.kernel.org>; Mon,  4 May 2020 01:09:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C408EC47258
+	for <linux-mips@archiver.kernel.org>; Mon,  4 May 2020 01:09:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2ECB82071C
-	for <linux-mips@archiver.kernel.org>; Mon,  4 May 2020 01:09:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ABE032192A
+	for <linux-mips@archiver.kernel.org>; Mon,  4 May 2020 01:09:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgEDBJX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 3 May 2020 21:09:23 -0400
-Received: from mga11.intel.com ([192.55.52.93]:17935 "EHLO mga11.intel.com"
+        id S1727800AbgEDBJ0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 3 May 2020 21:09:26 -0400
+Received: from mga07.intel.com ([134.134.136.100]:13497 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726282AbgEDBJW (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 3 May 2020 21:09:22 -0400
-IronPort-SDR: A9YDjvCFSAVRZt9PK6T6bah1ORcFaay/xLXeYJlc6YM+kvTo9s31EfXuPQPfGhntjjL6mPEk1b
- znGgE4vjXnFQ==
+        id S1727097AbgEDBJ0 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 3 May 2020 21:09:26 -0400
+IronPort-SDR: 8v4zquBLj9nQaWcCLCIRLQkyGbFw09q1sW05X77bosxzAm9Sav0F61yzTlCr/jQTo5uAnmx/d1
+ 3P/QFhFKlejA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2020 18:09:20 -0700
-IronPort-SDR: fHucA4RWhttBOWYdNcVbZcLe92djrCMA36BhMr8sTNTq9uR1pF6GcVTIexdnyZrcSkJFrWzqIJ
- LnPtCLKlHAVA==
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2020 18:09:25 -0700
+IronPort-SDR: ZSCL1OBmHekbrt5+HBLZ8Fxmb1Nc0vQYn2mn6M+yKJYCIlGguc1xYvBoYx40xzAEK02lQjZQ62
+ 93hH0f5y4m/A==
 X-IronPort-AV: E=Sophos;i="5.73,350,1583222400"; 
-   d="scan'208";a="248071661"
+   d="scan'208";a="338179768"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2020 18:09:19 -0700
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2020 18:09:24 -0700
 From:   ira.weiny@intel.com
 To:     linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -56,12 +56,13 @@ Cc:     Ira Weiny <ira.weiny@intel.com>,
         linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
         linux-xtensa@linux-xtensa.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH V2 00/11] Subject: Remove duplicated kmap code
-Date:   Sun,  3 May 2020 18:09:01 -0700
-Message-Id: <20200504010912.982044-1-ira.weiny@intel.com>
+Subject: [PATCH V2 05/11] {x86,powerpc,microblaze}/kmap: Move preempt disable
+Date:   Sun,  3 May 2020 18:09:06 -0700
+Message-Id: <20200504010912.982044-6-ira.weiny@intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200504010912.982044-1-ira.weiny@intel.com>
+References: <20200504010912.982044-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
@@ -70,78 +71,190 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Ira Weiny <ira.weiny@intel.com>
 
-The kmap infrastructure has been copied almost verbatim to every architecture.
-This series consolidates obvious duplicated code by defining core functions
-which call into the architectures only when needed.
+During this kmap() conversion series we must maintain bisect-ability.
+To do this, kmap_atomic_prot() in x86, powerpc, and microblaze need to
+remain functional.
 
-Some of the k[un]map_atomic() implementations have some similarities but the
-similarities were not sufficient to warrant further changes.
+Create a temporary inline version of kmap_atomic_prot within these
+architectures so we can rework their kmap_atomic() calls and then lift
+kmap_atomic_prot() to the core.
 
-In addition we remove a duplicate implementation of kmap() in DRM.
-
-Testing was done by 0day to cover all the architectures I can't readily
-build/test.
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
 ---
 Changes from V1:
-	Fix bisect-ability
-	Update commit message and fix line lengths
-	Remove unneded kunmap_atomic_high() declarations
-	Remove unneded kmap_atomic_high() declarations
-	collect reviews
-	rebase to 5.7-rc4
+	New patch
+---
+ arch/microblaze/include/asm/highmem.h | 11 ++++++++++-
+ arch/microblaze/mm/highmem.c          | 10 ++--------
+ arch/powerpc/include/asm/highmem.h    | 11 ++++++++++-
+ arch/powerpc/mm/highmem.c             |  9 ++-------
+ arch/x86/include/asm/highmem.h        | 11 ++++++++++-
+ arch/x86/mm/highmem_32.c              | 10 ++--------
+ 6 files changed, 36 insertions(+), 26 deletions(-)
 
-Changes from V0:
-	Define kmap_flush_tlb() and make kmap() truely arch independent.
-	Redefine the k[un]map_atomic_* code to call into the architectures for
-		high mem pages
-	Ensure all architectures define kmap_prot, use it appropriately, and
-		define kmap_atomic_prot()
-	Remove drm implementation of kmap_atomic()
-
-Ira Weiny (11):
-  arch/kmap: Remove BUG_ON()
-  arch/xtensa: Move kmap build bug out of the way
-  arch/kmap: Remove redundant arch specific kmaps
-  arch/kunmap: Remove duplicate kunmap implementations
-  {x86,powerpc,microblaze}/kmap: Move preempt disable
-  arch/kmap_atomic: Consolidate duplicate code
-  arch/kunmap_atomic: Consolidate duplicate code
-  arch/kmap: Ensure kmap_prot visibility
-  arch/kmap: Don't hard code kmap_prot values
-  arch/kmap: Define kmap_atomic_prot() for all arch's
-  drm: Remove drm specific kmap_atomic code
-
- arch/arc/include/asm/highmem.h        | 15 -------
- arch/arc/mm/highmem.c                 | 28 +++---------
- arch/arm/include/asm/highmem.h        |  7 ---
- arch/arm/mm/highmem.c                 | 35 +++------------
- arch/csky/include/asm/highmem.h       |  9 +---
- arch/csky/mm/highmem.c                | 43 +++++--------------
- arch/microblaze/include/asm/highmem.h | 28 +-----------
- arch/microblaze/mm/highmem.c          | 16 ++-----
- arch/microblaze/mm/init.c             |  3 --
- arch/mips/include/asm/highmem.h       |  9 +---
- arch/mips/mm/cache.c                  |  6 +--
- arch/mips/mm/highmem.c                | 49 ++++-----------------
- arch/nds32/include/asm/highmem.h      |  7 ---
- arch/nds32/mm/highmem.c               | 39 +++--------------
- arch/parisc/include/asm/cacheflush.h  |  4 +-
- arch/powerpc/include/asm/highmem.h    | 29 +------------
- arch/powerpc/mm/highmem.c             | 21 ++-------
- arch/powerpc/mm/mem.c                 |  3 --
- arch/sparc/include/asm/highmem.h      | 22 ----------
- arch/sparc/mm/highmem.c               | 18 +++-----
- arch/x86/include/asm/highmem.h        |  9 ----
- arch/x86/mm/highmem_32.c              | 50 ++-------------------
- arch/xtensa/include/asm/highmem.h     | 27 ------------
- arch/xtensa/mm/highmem.c              | 22 ++++------
- drivers/gpu/drm/ttm/ttm_bo_util.c     | 56 ++----------------------
- drivers/gpu/drm/vmwgfx/vmwgfx_blit.c  | 16 +++----
- include/drm/ttm/ttm_bo_api.h          |  4 --
- include/linux/highmem.h               | 62 +++++++++++++++++++++++++--
- 28 files changed, 140 insertions(+), 497 deletions(-)
-
+diff --git a/arch/microblaze/include/asm/highmem.h b/arch/microblaze/include/asm/highmem.h
+index 0c94046f2d58..ec9954b091e1 100644
+--- a/arch/microblaze/include/asm/highmem.h
++++ b/arch/microblaze/include/asm/highmem.h
+@@ -51,7 +51,16 @@ extern pte_t *pkmap_page_table;
+ #define PKMAP_NR(virt)  ((virt - PKMAP_BASE) >> PAGE_SHIFT)
+ #define PKMAP_ADDR(nr)  (PKMAP_BASE + ((nr) << PAGE_SHIFT))
+ 
+-extern void *kmap_atomic_prot(struct page *page, pgprot_t prot);
++extern void *kmap_atomic_high_prot(struct page *page, pgprot_t prot);
++void *kmap_atomic_prot(struct page *page, pgprot_t prot)
++{
++	preempt_disable();
++	pagefault_disable();
++	if (!PageHighMem(page))
++		return page_address(page);
++
++	return kmap_atomic_high_prot(page, prot);
++}
+ extern void __kunmap_atomic(void *kvaddr);
+ 
+ static inline void *kmap_atomic(struct page *page)
+diff --git a/arch/microblaze/mm/highmem.c b/arch/microblaze/mm/highmem.c
+index d7569f77fa15..0e3efaa8a004 100644
+--- a/arch/microblaze/mm/highmem.c
++++ b/arch/microblaze/mm/highmem.c
+@@ -32,18 +32,12 @@
+  */
+ #include <asm/tlbflush.h>
+ 
+-void *kmap_atomic_prot(struct page *page, pgprot_t prot)
++void *kmap_atomic_high_prot(struct page *page, pgprot_t prot)
+ {
+ 
+ 	unsigned long vaddr;
+ 	int idx, type;
+ 
+-	preempt_disable();
+-	pagefault_disable();
+-	if (!PageHighMem(page))
+-		return page_address(page);
+-
+-
+ 	type = kmap_atomic_idx_push();
+ 	idx = type + KM_TYPE_NR*smp_processor_id();
+ 	vaddr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
+@@ -55,7 +49,7 @@ void *kmap_atomic_prot(struct page *page, pgprot_t prot)
+ 
+ 	return (void *) vaddr;
+ }
+-EXPORT_SYMBOL(kmap_atomic_prot);
++EXPORT_SYMBOL(kmap_atomic_high_prot);
+ 
+ void __kunmap_atomic(void *kvaddr)
+ {
+diff --git a/arch/powerpc/include/asm/highmem.h b/arch/powerpc/include/asm/highmem.h
+index ba3371977d49..d049806a8354 100644
+--- a/arch/powerpc/include/asm/highmem.h
++++ b/arch/powerpc/include/asm/highmem.h
+@@ -59,7 +59,16 @@ extern pte_t *pkmap_page_table;
+ #define PKMAP_NR(virt)  ((virt-PKMAP_BASE) >> PAGE_SHIFT)
+ #define PKMAP_ADDR(nr)  (PKMAP_BASE + ((nr) << PAGE_SHIFT))
+ 
+-extern void *kmap_atomic_prot(struct page *page, pgprot_t prot);
++extern void *kmap_atomic_high_prot(struct page *page, pgprot_t prot);
++static inline void *kmap_atomic_prot(struct page *page, pgprot_t prot)
++{
++	preempt_disable();
++	pagefault_disable();
++	if (!PageHighMem(page))
++		return page_address(page);
++
++	return kmap_atomic_high_prot(page, prot);
++}
+ extern void __kunmap_atomic(void *kvaddr);
+ 
+ static inline void *kmap_atomic(struct page *page)
+diff --git a/arch/powerpc/mm/highmem.c b/arch/powerpc/mm/highmem.c
+index 320c1672b2ae..f075cef6d663 100644
+--- a/arch/powerpc/mm/highmem.c
++++ b/arch/powerpc/mm/highmem.c
+@@ -30,16 +30,11 @@
+  * be used in IRQ contexts, so in some (very limited) cases we need
+  * it.
+  */
+-void *kmap_atomic_prot(struct page *page, pgprot_t prot)
++void *kmap_atomic_high_prot(struct page *page, pgprot_t prot)
+ {
+ 	unsigned long vaddr;
+ 	int idx, type;
+ 
+-	preempt_disable();
+-	pagefault_disable();
+-	if (!PageHighMem(page))
+-		return page_address(page);
+-
+ 	type = kmap_atomic_idx_push();
+ 	idx = type + KM_TYPE_NR*smp_processor_id();
+ 	vaddr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
+@@ -49,7 +44,7 @@ void *kmap_atomic_prot(struct page *page, pgprot_t prot)
+ 
+ 	return (void*) vaddr;
+ }
+-EXPORT_SYMBOL(kmap_atomic_prot);
++EXPORT_SYMBOL(kmap_atomic_high_prot);
+ 
+ void __kunmap_atomic(void *kvaddr)
+ {
+diff --git a/arch/x86/include/asm/highmem.h b/arch/x86/include/asm/highmem.h
+index 90b96594d6c5..61f47fef40e5 100644
+--- a/arch/x86/include/asm/highmem.h
++++ b/arch/x86/include/asm/highmem.h
+@@ -58,7 +58,16 @@ extern unsigned long highstart_pfn, highend_pfn;
+ #define PKMAP_NR(virt)  ((virt-PKMAP_BASE) >> PAGE_SHIFT)
+ #define PKMAP_ADDR(nr)  (PKMAP_BASE + ((nr) << PAGE_SHIFT))
+ 
+-void *kmap_atomic_prot(struct page *page, pgprot_t prot);
++extern void *kmap_atomic_high_prot(struct page *page, pgprot_t prot);
++static inline void *kmap_atomic_prot(struct page *page, pgprot_t prot)
++{
++	preempt_disable();
++	pagefault_disable();
++	if (!PageHighMem(page))
++		return page_address(page);
++
++	return kmap_atomic_high_prot(page, prot);
++}
+ void *kmap_atomic(struct page *page);
+ void __kunmap_atomic(void *kvaddr);
+ void *kmap_atomic_pfn(unsigned long pfn);
+diff --git a/arch/x86/mm/highmem_32.c b/arch/x86/mm/highmem_32.c
+index c4ebfd0ae401..48b56b1af902 100644
+--- a/arch/x86/mm/highmem_32.c
++++ b/arch/x86/mm/highmem_32.c
+@@ -12,17 +12,11 @@
+  * However when holding an atomic kmap it is not legal to sleep, so atomic
+  * kmaps are appropriate for short, tight code paths only.
+  */
+-void *kmap_atomic_prot(struct page *page, pgprot_t prot)
++void *kmap_atomic_high_prot(struct page *page, pgprot_t prot)
+ {
+ 	unsigned long vaddr;
+ 	int idx, type;
+ 
+-	preempt_disable();
+-	pagefault_disable();
+-
+-	if (!PageHighMem(page))
+-		return page_address(page);
+-
+ 	type = kmap_atomic_idx_push();
+ 	idx = type + KM_TYPE_NR*smp_processor_id();
+ 	vaddr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
+@@ -32,7 +26,7 @@ void *kmap_atomic_prot(struct page *page, pgprot_t prot)
+ 
+ 	return (void *)vaddr;
+ }
+-EXPORT_SYMBOL(kmap_atomic_prot);
++EXPORT_SYMBOL(kmap_atomic_high_prot);
+ 
+ void *kmap_atomic(struct page *page)
+ {
 -- 
 2.25.1
 

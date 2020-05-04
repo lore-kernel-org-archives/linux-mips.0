@@ -7,59 +7,59 @@ X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83585C47259
-	for <linux-mips@archiver.kernel.org>; Mon,  4 May 2020 11:04:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C863C47247
+	for <linux-mips@archiver.kernel.org>; Mon,  4 May 2020 11:04:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 532AD20658
-	for <linux-mips@archiver.kernel.org>; Mon,  4 May 2020 11:04:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1D96D2073E
+	for <linux-mips@archiver.kernel.org>; Mon,  4 May 2020 11:04:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I/RN6QXq"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FBjvkEVg"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728104AbgEDLEW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 4 May 2020 07:04:22 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:60539 "EHLO
+        id S1728632AbgEDLEF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 4 May 2020 07:04:05 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:50204 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728551AbgEDLEH (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 4 May 2020 07:04:07 -0400
+        by vger.kernel.org with ESMTP id S1728587AbgEDLED (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 4 May 2020 07:04:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588590244;
+        s=mimecast20190719; t=1588590239;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1VkfN+lWbvFtfkCLXoWvPciyWXkGdcSzlEXtJA502Gk=;
-        b=I/RN6QXqlYf6GrAl6LsgUOJ8syiGu96kHl27n3g2IQwqsNkgeGZ2ekDKqsHnz24LRRahwH
-        4m4qmjRwcvaUj6ebMeedHB9bROE33GOKktoC3lBGQ4+u5ryKoa1+rxwtoKAPasx63zE03g
-        dWzoprZQY+Fe3jWXpepevb9TBWm5YsQ=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-89-GAwK7DR4OuK0N2cAZt4Siw-1; Mon, 04 May 2020 07:04:01 -0400
-X-MC-Unique: GAwK7DR4OuK0N2cAZt4Siw-1
-Received: by mail-wm1-f72.google.com with SMTP id w2so4684355wmc.3
-        for <linux-mips@vger.kernel.org>; Mon, 04 May 2020 04:04:01 -0700 (PDT)
+        bh=fSn3n1+VKSGdJaAakXEFfOuaSKKQn6CmMSoun+hZIb8=;
+        b=FBjvkEVg2QBJXvqQECkZq8PNVyHuu8qliOmfXWaaBXcYb3Uv93Ia+bgcyRW+GOU8WUjdiw
+        njS+17vgRXk8tOGeIzs7FgjMDP/wLsiUpjXOTOKaTJImdWy7VTgj4vRD1a8+CkMPOjchsF
+        yREHn8+yVRZ5/614MArjjJS3/MjGGrM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-463-A6NQAVvBMICu-AEIbkDa-w-1; Mon, 04 May 2020 07:03:57 -0400
+X-MC-Unique: A6NQAVvBMICu-AEIbkDa-w-1
+Received: by mail-wm1-f71.google.com with SMTP id d134so7194798wmd.0
+        for <linux-mips@vger.kernel.org>; Mon, 04 May 2020 04:03:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1VkfN+lWbvFtfkCLXoWvPciyWXkGdcSzlEXtJA502Gk=;
-        b=VuSitvwGtxSBxfw9tKpNdtyAhVFOqk0nPj4s5515IPUgqVj6fkEer9285o9NWHZOaz
-         5FMEOJtOfujnz3gvUfb+Hjz6y+h15LQY0bCcdQm9NXqsPCVQ+Nk0KYV0rXLpnjuPsl81
-         y6mz0JwlG1/GtoRg7Tk/kBFrFDqpt6cko7dY053wo8L4+XIdIRfcLuXEYbtgFcUtG3ew
-         IzpKRdtRlpMZlXGGuNbKSqvZFUpRfMt2N4mDaBy5Zkx5QGMP+TkB6W+/3RgSCH8Sbs0d
-         WMv2ysUh0pFlc8l6T8SXMBFJZiLEZtXj07Z1dHBsWsbpVzAzjfhcSd5C0oYwPoDB0GRe
-         f/eQ==
-X-Gm-Message-State: AGi0Pua5RYsbJCWrjyOhGmqENuoVkxYsN/le00+irTsj1dGG4wd2yabp
-        r8IQsjfikQjixe3FZTMJ6QicMkXKrlNUdsNMMLCOZs7yMT+1keJ9EqOUKyFRTNuT59gXZ6ViwQn
-        85UgkIr6DYAFnBih1BbHa0A==
-X-Received: by 2002:adf:d4d0:: with SMTP id w16mr18692742wrk.264.1588590238153;
-        Mon, 04 May 2020 04:03:58 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJMYICkAN9cpMz9cRRnOmDV9/d+/9UnH/NwQK5n40Rp0IwiF44IBJDbWOx2hddQWmKHbvqNNQ==
-X-Received: by 2002:adf:d4d0:: with SMTP id w16mr18692707wrk.264.1588590237693;
-        Mon, 04 May 2020 04:03:57 -0700 (PDT)
+        bh=fSn3n1+VKSGdJaAakXEFfOuaSKKQn6CmMSoun+hZIb8=;
+        b=JQ1hpNQ3P55L8cWR1NeHdmqP9nVoFpL7wMwj4nvym4vq09h8y9uRZxNi1MhlOsj0Th
+         utHQE7Fx+NIGj4ylZl8tGWKPRkgwx/AHfB/Ou1b34/ZK+ZevuuVOrV074/E/2kLlMzye
+         YeqaOFv9UlA3SBq4782I9Cpo/QTs8gX2PTL3GMqmX+H3jcdYf4Axd+/CadIYTlZLuO4U
+         6MV/oOy8dQpt+PyH7gJabtGHhieJ288Svol1xdBc4e/K2NC2ITqfJMC9pFbG/CmZoZZ8
+         nfgJ+1CbJ44/XkJqikt7X5zl7csSKurPC09Qqb4X5NkB3WPOcdXsLSNdZbbt9N0+wDTo
+         eOXA==
+X-Gm-Message-State: AGi0PuZlN8ljaonjZbOqsQPFAfWCHWH5V+QKki9o4j7b1RvnV99Mvqsu
+        kJw+48DCSLmTJM4M03VApX4rDbvIU59LFwxJY8kBZbZOSL/SB9Yh+HD9yPqb+/IifV+40eUrFk9
+        FHLMnmBrsANRkjb5I2HN92A==
+X-Received: by 2002:a05:600c:2284:: with SMTP id 4mr13390261wmf.97.1588590235192;
+        Mon, 04 May 2020 04:03:55 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLJqu3DOrztAyLE6v9HzeLihNpmYDouMJppNQ0dvBekcYyyFI3qXLea1b9RhQ4EcLdqXBNh8g==
+X-Received: by 2002:a05:600c:2284:: with SMTP id 4mr13390197wmf.97.1588590234420;
+        Mon, 04 May 2020 04:03:54 -0700 (PDT)
 Received: from localhost.localdomain.com ([194.230.155.213])
-        by smtp.gmail.com with ESMTPSA id a13sm10885750wrv.67.2020.05.04.04.03.56
+        by smtp.gmail.com with ESMTPSA id a13sm10885750wrv.67.2020.05.04.04.03.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 May 2020 04:03:57 -0700 (PDT)
+        Mon, 04 May 2020 04:03:53 -0700 (PDT)
 From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
 To:     kvm@vger.kernel.org
 Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
@@ -74,9 +74,9 @@ Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
         kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-s390@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Subject: [PATCH v2 4/5] stats_fs fs: virtual fs to show stats to the end-user
-Date:   Mon,  4 May 2020 13:03:43 +0200
-Message-Id: <20200504110344.17560-5-eesposit@redhat.com>
+Subject: [PATCH v2 2/5] stats_fs API: create, add and remove stats_fs sources and values
+Date:   Mon,  4 May 2020 13:03:41 +0200
+Message-Id: <20200504110344.17560-3-eesposit@redhat.com>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <20200504110344.17560-1-eesposit@redhat.com>
 References: <20200504110344.17560-1-eesposit@redhat.com>
@@ -87,732 +87,1030 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add virtual fs that maps stats_fs sources with directories, and values
-(simple or aggregates) to files.
+Introduction to the stats_fs API, that allows to easily create, add
+and remove stats_fs sources and values. The API allows to easily building
+the statistics directory tree to automatically gather them for the linux
+kernel. The main functionalities are: create a source, add child
+sources/values/aggregates, register it to the root source (that on
+the virtual fs would be /sys/kernel/statsfs), ad perform a search for
+a value/aggregate.
 
-Every time a file is read/cleared, the fs internally invokes the stats_fs
-API to get/set the requested value.
+This allows creating any kind of source tree, making it more flexible
+also to future readjustments.
 
-fs/stats_fs/inode.c is pretty much similar to what is done in
-fs/debugfs/inode.c, with the exception that the API is only
-composed by stats_fs_create_file, stats_fs_create_dir and stats_fs_remove.
+The API representation is only logical and will be backed up
+by a virtual file system in patch 4.
+Its usage will be shared between the stats_fs file system
+and the end-users like kvm, the former calling it when it needs to
+display and clear statistics, the latter to add values and sources.
 
 Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
 ---
- fs/stats_fs/Makefile       |   2 +-
- fs/stats_fs/inode.c        | 337 +++++++++++++++++++++++++++++++++++++
- fs/stats_fs/internal.h     |  15 ++
- fs/stats_fs/stats_fs.c     | 163 ++++++++++++++++++
- include/linux/stats_fs.h   |  15 ++
- include/uapi/linux/magic.h |   1 +
- tools/lib/api/fs/fs.c      |  21 +++
- 7 files changed, 553 insertions(+), 1 deletion(-)
- create mode 100644 fs/stats_fs/inode.c
+ MAINTAINERS              |   7 +
+ fs/Kconfig               |   6 +
+ fs/Makefile              |   1 +
+ fs/stats_fs/Makefile     |   4 +
+ fs/stats_fs/internal.h   |  20 ++
+ fs/stats_fs/stats_fs.c   | 610 +++++++++++++++++++++++++++++++++++++++
+ include/linux/stats_fs.h | 289 +++++++++++++++++++
+ 7 files changed, 937 insertions(+)
+ create mode 100644 fs/stats_fs/Makefile
+ create mode 100644 fs/stats_fs/internal.h
+ create mode 100644 fs/stats_fs/stats_fs.c
+ create mode 100644 include/linux/stats_fs.h
 
-diff --git a/fs/stats_fs/Makefile b/fs/stats_fs/Makefile
-index 9db130fac6b6..ac12c27545f6 100644
---- a/fs/stats_fs/Makefile
-+++ b/fs/stats_fs/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
--stats_fs-objs	:= stats_fs.o
-+stats_fs-objs	:= inode.o stats_fs.o
- stats_fs-tests-objs	:= stats_fs-tests.o
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b816a453b10e..a8403d07cee5 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5229,6 +5229,13 @@ F:	include/linux/debugfs.h
+ F:	include/linux/kobj*
+ F:	lib/kobj*
  
- obj-$(CONFIG_STATS_FS)	+= stats_fs.o
-diff --git a/fs/stats_fs/inode.c b/fs/stats_fs/inode.c
-new file mode 100644
-index 000000000000..865ee91656ba
---- /dev/null
-+++ b/fs/stats_fs/inode.c
-@@ -0,0 +1,337 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ *  inode.c - part of stats_fs, a tiny little stats_fs file system
-+ *
-+ *  Copyright (C) 2020 Emanuele Giuseppe Esposito <eesposit@redhat.com>
-+ *  Copyright (C) 2020 Redhat
-+ */
-+#define pr_fmt(fmt)	"stats_fs: " fmt
++STATS_FS
++M:	Paolo Bonzini <pbonzini@redhat.com>
++R:	Emanuele Giuseppe Esposito <e.emanuelegiuseppe@gmail.com>
++S:	Supported
++F:	include/linux/stats_fs.h
++F:	fs/stats_fs
 +
-+#include <linux/module.h>
-+#include <linux/fs.h>
-+#include <linux/mount.h>
-+#include <linux/init.h>
+ DRIVERS FOR ADAPTIVE VOLTAGE SCALING (AVS)
+ M:	Kevin Hilman <khilman@kernel.org>
+ M:	Nishanth Menon <nm@ti.com>
+diff --git a/fs/Kconfig b/fs/Kconfig
+index f08fbbfafd9a..1b0de0f19e96 100644
+--- a/fs/Kconfig
++++ b/fs/Kconfig
+@@ -328,4 +328,10 @@ source "fs/unicode/Kconfig"
+ config IO_WQ
+ 	bool
+ 
++config STATS_FS
++	bool "Statistics Filesystem"
++	help
++	  stats_fs is a virtual file system that provides counters and
++	  other statistics about the running kernel.
++
+ endmenu
+diff --git a/fs/Makefile b/fs/Makefile
+index 2ce5112b02c8..91558eca0cf7 100644
+--- a/fs/Makefile
++++ b/fs/Makefile
+@@ -125,6 +125,7 @@ obj-$(CONFIG_BEFS_FS)		+= befs/
+ obj-$(CONFIG_HOSTFS)		+= hostfs/
+ obj-$(CONFIG_CACHEFILES)	+= cachefiles/
+ obj-$(CONFIG_DEBUG_FS)		+= debugfs/
++obj-$(CONFIG_STATS_FS)		+= stats_fs/
+ obj-$(CONFIG_TRACING)		+= tracefs/
+ obj-$(CONFIG_OCFS2_FS)		+= ocfs2/
+ obj-$(CONFIG_BTRFS_FS)		+= btrfs/
+diff --git a/fs/stats_fs/Makefile b/fs/stats_fs/Makefile
+new file mode 100644
+index 000000000000..94fe52d590d5
+--- /dev/null
++++ b/fs/stats_fs/Makefile
+@@ -0,0 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0-only
++stats_fs-objs	:= stats_fs.o
++
++obj-$(CONFIG_STATS_FS)	+= stats_fs.o
+diff --git a/fs/stats_fs/internal.h b/fs/stats_fs/internal.h
+new file mode 100644
+index 000000000000..ddf262a60736
+--- /dev/null
++++ b/fs/stats_fs/internal.h
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _STATS_FS_INTERNAL_H_
++#define _STATS_FS_INTERNAL_H_
++
++#include <linux/list.h>
++#include <linux/kref.h>
++#include <linux/rwsem.h>
 +#include <linux/stats_fs.h>
-+#include <linux/string.h>
-+#include <linux/seq_file.h>
-+#include <linux/parser.h>
-+#include <linux/magic.h>
++
++/* values, grouped by base */
++struct stats_fs_value_source {
++	void *base_addr;
++	bool files_created;
++	struct stats_fs_value *values;
++	struct list_head list_element;
++};
++
++int stats_fs_val_get_mode(struct stats_fs_value *val);
++
++#endif /* _STATS_FS_INTERNAL_H_ */
+diff --git a/fs/stats_fs/stats_fs.c b/fs/stats_fs/stats_fs.c
+new file mode 100644
+index 000000000000..b63de12769e2
+--- /dev/null
++++ b/fs/stats_fs/stats_fs.c
+@@ -0,0 +1,610 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/module.h>
++#include <linux/errno.h>
++#include <linux/file.h>
++#include <linux/fs.h>
 +#include <linux/slab.h>
++#include <linux/rwsem.h>
++#include <linux/list.h>
++#include <linux/kref.h>
++#include <linux/limits.h>
++#include <linux/stats_fs.h>
 +
 +#include "internal.h"
 +
-+#define STATS_FS_DEFAULT_MODE	0700
-+
-+static struct simple_fs stats_fs;
-+static bool stats_fs_registered;
-+
-+struct stats_fs_mount_opts {
-+	kuid_t uid;
-+	kgid_t gid;
-+	umode_t mode;
++struct stats_fs_aggregate_value {
++	uint64_t sum, min, max;
++	uint32_t count, count_zero;
 +};
 +
-+enum {
-+	Opt_uid,
-+	Opt_gid,
-+	Opt_mode,
-+	Opt_err
-+};
-+
-+static const match_table_t tokens = {
-+	{Opt_uid, "uid=%u"},
-+	{Opt_gid, "gid=%u"},
-+	{Opt_mode, "mode=%o"},
-+	{Opt_err, NULL}
-+};
-+
-+struct stats_fs_fs_info {
-+	struct stats_fs_mount_opts mount_opts;
-+};
-+
-+static int stats_fs_parse_options(char *data, struct stats_fs_mount_opts *opts)
++static int is_val_signed(struct stats_fs_value *val)
 +{
-+	substring_t args[MAX_OPT_ARGS];
-+	int option;
-+	int token;
-+	kuid_t uid;
-+	kgid_t gid;
-+	char *p;
++	return val->type & STATS_FS_SIGN;
++}
 +
-+	opts->mode = STATS_FS_DEFAULT_MODE;
++int stats_fs_val_get_mode(struct stats_fs_value *val)
++{
++	return val->mode ? val->mode : 0644;
++}
 +
-+	while ((p = strsep(&data, ",")) != NULL) {
-+		if (!*p)
-+			continue;
++static struct stats_fs_value *find_value(struct stats_fs_value_source *src,
++					 struct stats_fs_value *val)
++{
++	struct stats_fs_value *entry;
 +
-+		token = match_token(p, tokens, args);
-+		switch (token) {
-+		case Opt_uid:
-+			if (match_int(&args[0], &option))
-+				return -EINVAL;
-+			uid = make_kuid(current_user_ns(), option);
-+			if (!uid_valid(uid))
-+				return -EINVAL;
-+			opts->uid = uid;
-+			break;
-+		case Opt_gid:
-+			if (match_int(&args[0], &option))
-+				return -EINVAL;
-+			gid = make_kgid(current_user_ns(), option);
-+			if (!gid_valid(gid))
-+				return -EINVAL;
-+			opts->gid = gid;
-+			break;
-+		case Opt_mode:
-+			if (match_octal(&args[0], &option))
-+				return -EINVAL;
-+			opts->mode = option & S_IALLUGO;
-+			break;
-+		/*
-+		 * We might like to report bad mount options here;
-+		 * but traditionally stats_fs has ignored all mount options
-+		 */
++	for (entry = src->values; entry->name; entry++) {
++		if (entry == val)
++			return entry;
++	}
++	return NULL;
++}
++
++static struct stats_fs_value *
++search_value_in_source(struct stats_fs_source *src, struct stats_fs_value *arg,
++		       struct stats_fs_value_source **val_src)
++{
++	struct stats_fs_value *entry;
++	struct stats_fs_value_source *src_entry;
++
++	list_for_each_entry (src_entry, &src->values_head, list_element) {
++		entry = find_value(src_entry, arg);
++		if (entry) {
++			*val_src = src_entry;
++			return entry;
 +		}
 +	}
 +
-+	return 0;
++	return NULL;
 +}
-+
-+static int stats_fs_apply_options(struct super_block *sb)
-+{
-+	struct stats_fs_fs_info *fsi = sb->s_fs_info;
-+	struct inode *inode = d_inode(sb->s_root);
-+	struct stats_fs_mount_opts *opts = &fsi->mount_opts;
-+
-+	inode->i_mode &= ~S_IALLUGO;
-+	inode->i_mode |= opts->mode;
-+
-+	inode->i_uid = opts->uid;
-+	inode->i_gid = opts->gid;
-+
-+	return 0;
-+}
-+
-+static int stats_fs_remount(struct super_block *sb, int *flags, char *data)
-+{
-+	int err;
-+	struct stats_fs_fs_info *fsi = sb->s_fs_info;
-+
-+	sync_filesystem(sb);
-+	err = stats_fs_parse_options(data, &fsi->mount_opts);
-+	if (err)
-+		goto fail;
-+
-+	stats_fs_apply_options(sb);
-+
-+fail:
-+	return err;
-+}
-+
-+static int stats_fs_show_options(struct seq_file *m, struct dentry *root)
-+{
-+	struct stats_fs_fs_info *fsi = root->d_sb->s_fs_info;
-+	struct stats_fs_mount_opts *opts = &fsi->mount_opts;
-+
-+	if (!uid_eq(opts->uid, GLOBAL_ROOT_UID))
-+		seq_printf(m, ",uid=%u",
-+			   from_kuid_munged(&init_user_ns, opts->uid));
-+	if (!gid_eq(opts->gid, GLOBAL_ROOT_GID))
-+		seq_printf(m, ",gid=%u",
-+			   from_kgid_munged(&init_user_ns, opts->gid));
-+	if (opts->mode != STATS_FS_DEFAULT_MODE)
-+		seq_printf(m, ",mode=%o", opts->mode);
-+
-+	return 0;
-+}
-+
-+
-+static void stats_fs_free_inode(struct inode *inode)
-+{
-+	kfree(inode->i_private);
-+	free_inode_nonrcu(inode);
-+}
-+
-+static const struct super_operations stats_fs_super_operations = {
-+	.statfs		= simple_statfs,
-+	.remount_fs	= stats_fs_remount,
-+	.show_options	= stats_fs_show_options,
-+	.free_inode	= stats_fs_free_inode,
-+};
-+
-+static int stats_fs_fill_super(struct super_block *sb, void *data, int silent)
-+{
-+	static const struct tree_descr stats_fs_files[] = {{""}};
-+	struct stats_fs_fs_info *fsi;
-+	int err;
-+
-+	fsi = kzalloc(sizeof(struct stats_fs_fs_info), GFP_KERNEL);
-+	sb->s_fs_info = fsi;
-+	if (!fsi) {
-+		err = -ENOMEM;
-+		goto fail;
-+	}
-+
-+	err = stats_fs_parse_options(data, &fsi->mount_opts);
-+	if (err)
-+		goto fail;
-+
-+	err  =  simple_fill_super(sb, STATSFS_MAGIC, stats_fs_files);
-+	if (err)
-+		goto fail;
-+
-+	sb->s_op = &stats_fs_super_operations;
-+
-+	stats_fs_apply_options(sb);
-+
-+	return 0;
-+
-+fail:
-+	kfree(fsi);
-+	sb->s_fs_info = NULL;
-+	return err;
-+}
-+
-+static struct dentry *stats_fs_mount(struct file_system_type *fs_type,
-+			int flags, const char *dev_name,
-+			void *data)
-+{
-+	return mount_single(fs_type, flags, data, stats_fs_fill_super);
-+}
-+
-+static struct file_system_type stats_fs_fs_type = {
-+	.owner =	THIS_MODULE,
-+	.name =		"statsfs",
-+	.mount =	stats_fs_mount,
-+	.kill_sb =	kill_litter_super,
-+};
-+MODULE_ALIAS_FS("statsfs");
-+
-+
-+/**
-+ * stats_fs_create_file - create a file in the stats_fs filesystem
-+ * @val: a pointer to a stats_fs_value containing all the infos of
-+ * the file to create (name, permission)
-+ * @src: a pointer to a stats_fs_source containing the dentry of where
-+ * to add this file
-+ *
-+ * This function will return a pointer to a dentry if it succeeds.  This
-+ * pointer must be passed to the stats_fs_remove() function when the file is
-+ * to be removed (no automatic cleanup happens if your module is unloaded,
-+ * you are responsible here.)  If an error occurs, ERR_PTR(-ERROR) will be
-+ * returned.
-+ *
-+ * Val and src will be also inglobated in a ststsfs_data_inode struct
-+ * that will be internally stored as inode->i_private and used in the
-+ * get/set attribute functions (see stats_fs_ops in stats_fs.c).
-+ */
-+struct dentry *stats_fs_create_file(struct stats_fs_value *val, struct stats_fs_source *src)
-+{
-+	struct dentry *dentry;
-+	struct inode *inode;
-+	struct stats_fs_data_inode *val_inode;
-+
-+	val_inode = kzalloc(sizeof(struct stats_fs_data_inode), GFP_KERNEL);
-+	if (!val_inode) {
-+		printk(KERN_ERR
-+			"Kzalloc failure in stats_fs_create_files (ENOMEM)\n");
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
-+	val_inode->src = src;
-+	val_inode->val = val;
-+
-+
-+	dentry = simplefs_create_file(&stats_fs, &stats_fs_fs_type,
-+				      val->name, stats_fs_val_get_mode(val),
-+					  src->source_dentry, val_inode, &inode);
-+	if (IS_ERR(dentry))
-+		return dentry;
-+
-+	inode->i_fop = &stats_fs_ops;
-+
-+	return simplefs_finish_dentry(dentry, inode);
-+}
-+/**
-+ * stats_fs_create_dir - create a directory in the stats_fs filesystem
-+ * @name: a pointer to a string containing the name of the directory to
-+ *        create.
-+ * @parent: a pointer to the parent dentry for this file.  This should be a
-+ *          directory dentry if set.  If this parameter is NULL, then the
-+ *          directory will be created in the root of the stats_fs filesystem.
-+ *
-+ * This function creates a directory in stats_fs with the given name.
-+ *
-+ * This function will return a pointer to a dentry if it succeeds.  This
-+ * pointer must be passed to the stats_fs_remove() function when the file is
-+ * to be removed (no automatic cleanup happens if your module is unloaded,
-+ * you are responsible here.)  If an error occurs, ERR_PTR(-ERROR) will be
-+ * returned.
-+ */
-+struct dentry *stats_fs_create_dir(const char *name, struct dentry *parent)
-+{
-+	struct dentry *dentry;
-+	struct inode *inode;
-+
-+	dentry = simplefs_create_dir(&stats_fs, &stats_fs_fs_type,
-+				     name, 0755, parent, &inode);
-+	if (IS_ERR(dentry))
-+		return dentry;
-+
-+	inode->i_op = &simple_dir_inode_operations;
-+	return simplefs_finish_dentry(dentry, inode);
-+}
-+
-+static void remove_one(struct dentry *victim)
-+{
-+	simple_release_fs(&stats_fs);
-+}
-+
-+/**
-+ * stats_fs_remove - recursively removes a directory
-+ * @dentry: a pointer to a the dentry of the directory to be removed.  If this
-+ *          parameter is NULL or an error value, nothing will be done.
-+ *
-+ * This function recursively removes a directory tree in stats_fs that
-+ * was previously created with a call to another stats_fs function
-+ * (like stats_fs_create_file() or variants thereof.)
-+ *
-+ * This function is required to be called in order for the file to be
-+ * removed, no automatic cleanup of files will happen when a module is
-+ * removed, you are responsible here.
-+ */
-+void stats_fs_remove(struct dentry *dentry)
-+{
-+	if (IS_ERR_OR_NULL(dentry))
-+		return;
-+
-+	simple_pin_fs(&stats_fs, &stats_fs_fs_type);
-+	simple_recursive_removal(dentry, remove_one);
-+	simple_release_fs(&stats_fs);
-+}
-+/**
-+ * stats_fs_initialized - Tells whether stats_fs has been registered
-+ */
-+bool stats_fs_initialized(void)
-+{
-+	return stats_fs_registered;
-+}
-+EXPORT_SYMBOL_GPL(stats_fs_initialized);
-+
-+static int __init stats_fs_init(void)
-+{
-+	int retval;
-+
-+	retval = sysfs_create_mount_point(kernel_kobj, "statsfs");
-+	if (retval)
-+		return retval;
-+
-+	retval = register_filesystem(&stats_fs_fs_type);
-+	if (retval)
-+		sysfs_remove_mount_point(kernel_kobj, "statsfs");
-+	else
-+		stats_fs_registered = true;
-+
-+	return retval;
-+}
-+core_initcall(stats_fs_init);
-diff --git a/fs/stats_fs/internal.h b/fs/stats_fs/internal.h
-index ddf262a60736..1f7bb1da6c3c 100644
---- a/fs/stats_fs/internal.h
-+++ b/fs/stats_fs/internal.h
-@@ -15,6 +15,21 @@ struct stats_fs_value_source {
- 	struct list_head list_element;
- };
- 
-+struct stats_fs_data_inode {
-+	struct stats_fs_source *src;
-+	struct stats_fs_value *val;
-+};
-+
-+extern const struct file_operations stats_fs_ops;
-+
-+struct dentry *stats_fs_create_file(struct stats_fs_value *val,
-+				   struct stats_fs_source *src);
-+
-+struct dentry *stats_fs_create_dir(const char *name, struct dentry *parent);
-+
-+void stats_fs_remove(struct dentry *dentry);
-+#define stats_fs_remove_recursive stats_fs_remove
-+
- int stats_fs_val_get_mode(struct stats_fs_value *val);
- 
- #endif /* _STATS_FS_INTERNAL_H_ */
-diff --git a/fs/stats_fs/stats_fs.c b/fs/stats_fs/stats_fs.c
-index b63de12769e2..4ac6fe1ec62e 100644
---- a/fs/stats_fs/stats_fs.c
-+++ b/fs/stats_fs/stats_fs.c
-@@ -17,16 +17,114 @@ struct stats_fs_aggregate_value {
- 	uint32_t count, count_zero;
- };
- 
-+static void stats_fs_source_remove_files(struct stats_fs_source *src);
-+
- static int is_val_signed(struct stats_fs_value *val)
- {
- 	return val->type & STATS_FS_SIGN;
- }
- 
-+static int stats_fs_attr_get(void *data, u64 *val)
-+{
-+	int r = -EFAULT;
-+	struct stats_fs_data_inode *val_inode =
-+		(struct stats_fs_data_inode *)data;
-+
-+	r = stats_fs_source_get_value(val_inode->src, val_inode->val, val);
-+	return r;
-+}
-+
-+static int stats_fs_attr_clear(void *data, u64 val)
-+{
-+	int r = -EFAULT;
-+	struct stats_fs_data_inode *val_inode =
-+		(struct stats_fs_data_inode *)data;
-+
-+	if (val)
-+		return -EINVAL;
-+
-+	r = stats_fs_source_clear(val_inode->src, val_inode->val);
-+	return r;
-+}
-+
- int stats_fs_val_get_mode(struct stats_fs_value *val)
- {
- 	return val->mode ? val->mode : 0644;
- }
- 
-+static int stats_fs_attr_data_open(struct inode *inode, struct file *file)
-+{
-+	struct stats_fs_data_inode *val_inode;
-+	char *fmt;
-+
-+	val_inode = (struct stats_fs_data_inode *)inode->i_private;
-+
-+	/* Inodes hold a  pointer to the source which is not included in the
-+	 * refcount, so they files be opened while destroy is running, but
-+	 * values are removed (base_addr = NULL) before the source is destroyed.
-+	 */
-+	if (!kref_get_unless_zero(&val_inode->src->refcount))
-+		return -ENOENT;
-+
-+	if (is_val_signed(val_inode->val))
-+		fmt = "%lld\n";
-+	else
-+		fmt = "%llu\n";
-+
-+	if (simple_attr_open(inode, file, stats_fs_attr_get,
-+			     stats_fs_val_get_mode(val_inode->val) & 0222 ?
-+				     stats_fs_attr_clear :
-+				     NULL,
-+			     fmt)) {
-+		stats_fs_source_put(val_inode->src);
-+		return -ENOMEM;
-+	}
-+	return 0;
-+}
-+
-+static int stats_fs_attr_release(struct inode *inode, struct file *file)
-+{
-+	struct stats_fs_data_inode *val_inode;
-+
-+	val_inode = (struct stats_fs_data_inode *)inode->i_private;
-+
-+	simple_attr_release(inode, file);
-+	stats_fs_source_put(val_inode->src);
-+
-+	return 0;
-+}
-+
-+const struct file_operations stats_fs_ops = {
-+	.owner = THIS_MODULE,
-+	.open = stats_fs_attr_data_open,
-+	.release = stats_fs_attr_release,
-+	.read = simple_attr_read,
-+	.write = simple_attr_write,
-+	.llseek = no_llseek,
-+};
 +
 +/* Called with rwsem held for writing */
-+static void stats_fs_source_remove_files_locked(struct stats_fs_source *src)
-+{
-+	struct stats_fs_source *child;
-+
-+	if (src->source_dentry == NULL)
-+		return;
-+
-+	list_for_each_entry (child, &src->subordinates_head, list_element)
-+		stats_fs_source_remove_files(child);
-+
-+	stats_fs_remove_recursive(src->source_dentry);
-+	src->source_dentry = NULL;
-+}
-+
-+static void stats_fs_source_remove_files(struct stats_fs_source *src)
-+{
-+	down_write(&src->rwsem);
-+	stats_fs_source_remove_files_locked(src);
-+	up_write(&src->rwsem);
-+}
-+
- static struct stats_fs_value *find_value(struct stats_fs_value_source *src,
- 					 struct stats_fs_value *val)
- {
-@@ -57,6 +155,62 @@ search_value_in_source(struct stats_fs_source *src, struct stats_fs_value *arg,
- 	return NULL;
- }
- 
-+/* Called with rwsem held for writing */
-+static void stats_fs_create_files_locked(struct stats_fs_source *source)
++static struct stats_fs_value_source *create_value_source(void *base)
 +{
 +	struct stats_fs_value_source *val_src;
-+	struct stats_fs_value *val;
 +
-+	if (!source->source_dentry)
-+		return;
++	val_src = kzalloc(sizeof(struct stats_fs_value_source), GFP_KERNEL);
++	if (!val_src)
++		return ERR_PTR(-ENOMEM);
 +
-+	list_for_each_entry (val_src, &source->values_head, list_element) {
-+		if (val_src->files_created)
-+			continue;
++	val_src->base_addr = base;
++	INIT_LIST_HEAD(&val_src->list_element);
 +
-+		for (val = val_src->values; val->name; val++)
-+			stats_fs_create_file(val, source);
-+
-+		val_src->files_created = true;
-+	}
++	return val_src;
 +}
++
++int stats_fs_source_add_values(struct stats_fs_source *source,
++			       struct stats_fs_value *stat, void *ptr)
++{
++	struct stats_fs_value_source *val_src;
++	struct stats_fs_value_source *entry;
++
++	down_write(&source->rwsem);
++
++	list_for_each_entry (entry, &source->values_head, list_element) {
++		if (entry->base_addr == ptr && entry->values == stat) {
++			up_write(&source->rwsem);
++			return -EEXIST;
++		}
++	}
++
++	val_src = create_value_source(ptr);
++	val_src->values = (struct stats_fs_value *)stat;
++
++	/* add the val_src to the source list */
++	list_add(&val_src->list_element, &source->values_head);
++
++	up_write(&source->rwsem);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(stats_fs_source_add_values);
++
++void stats_fs_source_add_subordinate(struct stats_fs_source *source,
++				     struct stats_fs_source *sub)
++{
++	down_write(&source->rwsem);
++
++	stats_fs_source_get(sub);
++	list_add(&sub->list_element, &source->subordinates_head);
++
++	up_write(&source->rwsem);
++}
++EXPORT_SYMBOL_GPL(stats_fs_source_add_subordinate);
 +
 +/* Called with rwsem held for writing */
 +static void
-+stats_fs_create_files_recursive_locked(struct stats_fs_source *source,
-+				       struct dentry *parent_dentry)
++stats_fs_source_remove_subordinate_locked(struct stats_fs_source *source,
++					  struct stats_fs_source *sub)
 +{
-+	struct stats_fs_source *child;
++	struct stats_fs_source *src_entry;
 +
-+	/* first check values in this folder, since it might be new */
-+	if (!source->source_dentry) {
-+		source->source_dentry =
-+			stats_fs_create_dir(source->name, parent_dentry);
-+	}
-+
-+	stats_fs_create_files_locked(source);
-+
-+	list_for_each_entry (child, &source->subordinates_head, list_element) {
-+		if (child->source_dentry == NULL) {
-+			/* assume that if child has a folder,
-+			 * also the sub-child have that.
-+			 */
-+			down_write(&child->rwsem);
-+			stats_fs_create_files_recursive_locked(
-+				child, source->source_dentry);
-+			up_write(&child->rwsem);
++	list_for_each_entry (src_entry, &source->subordinates_head,
++			     list_element) {
++		if (src_entry == sub) {
++			list_del_init(&src_entry->list_element);
++			stats_fs_source_put(src_entry);
++			return;
 +		}
 +	}
 +}
 +
-+void stats_fs_source_register(struct stats_fs_source *source)
++void stats_fs_source_remove_subordinate(struct stats_fs_source *source,
++					struct stats_fs_source *sub)
 +{
 +	down_write(&source->rwsem);
-+	stats_fs_create_files_recursive_locked(source, NULL);
++	stats_fs_source_remove_subordinate_locked(source, sub);
 +	up_write(&source->rwsem);
 +}
-+EXPORT_SYMBOL_GPL(stats_fs_source_register);
++EXPORT_SYMBOL_GPL(stats_fs_source_remove_subordinate);
 +
- /* Called with rwsem held for writing */
- static struct stats_fs_value_source *create_value_source(void *base)
- {
-@@ -93,6 +247,9 @@ int stats_fs_source_add_values(struct stats_fs_source *source,
- 	/* add the val_src to the source list */
- 	list_add(&val_src->list_element, &source->values_head);
- 
-+	/* create child if it's the case */
-+	stats_fs_create_files_locked(source);
++/* Called with rwsem held for reading */
++static uint64_t get_simple_value(struct stats_fs_value_source *src,
++				 struct stats_fs_value *val)
++{
++	uint64_t value_found;
++	void *address;
 +
- 	up_write(&source->rwsem);
- 
- 	return 0;
-@@ -106,6 +263,9 @@ void stats_fs_source_add_subordinate(struct stats_fs_source *source,
- 
- 	stats_fs_source_get(sub);
- 	list_add(&sub->list_element, &source->subordinates_head);
-+	if (source->source_dentry)
-+		stats_fs_create_files_recursive_locked(sub,
-+						       source->source_dentry);
- 
- 	up_write(&source->rwsem);
- }
-@@ -122,6 +282,7 @@ stats_fs_source_remove_subordinate_locked(struct stats_fs_source *source,
- 			     list_element) {
- 		if (src_entry == sub) {
- 			list_del_init(&src_entry->list_element);
-+			stats_fs_source_remove_files(src_entry);
- 			stats_fs_source_put(src_entry);
- 			return;
- 		}
-@@ -565,6 +726,8 @@ static void stats_fs_source_destroy(struct kref *kref_source)
- 		stats_fs_source_remove_subordinate_locked(source, child);
- 	}
- 
-+	stats_fs_source_remove_files_locked(source);
++	address = src->base_addr + val->offset;
 +
- 	up_write(&source->rwsem);
- 	kfree(source->name);
- 	kfree(source);
-diff --git a/include/linux/stats_fs.h b/include/linux/stats_fs.h
-index dc2d2e11f5ea..b04c42d827cf 100644
---- a/include/linux/stats_fs.h
-+++ b/include/linux/stats_fs.h
-@@ -87,6 +87,18 @@ struct stats_fs_source {
-  */
- struct stats_fs_source *stats_fs_source_create(const char *fmt, ...);
- 
-+/**
-+ * stats_fs_source_register - register a source in the stats_fs filesystem
-+ * @source: a pointer to the source that will be registered
++	switch (val->type) {
++	case STATS_FS_U8:
++		value_found = *((uint8_t *)address);
++		break;
++	case STATS_FS_U8 | STATS_FS_SIGN:
++		value_found = *((int8_t *)address);
++		break;
++	case STATS_FS_U16:
++		value_found = *((uint16_t *)address);
++		break;
++	case STATS_FS_U16 | STATS_FS_SIGN:
++		value_found = *((int16_t *)address);
++		break;
++	case STATS_FS_U32:
++		value_found = *((uint32_t *)address);
++		break;
++	case STATS_FS_U32 | STATS_FS_SIGN:
++		value_found = *((int32_t *)address);
++		break;
++	case STATS_FS_U64:
++		value_found = *((uint64_t *)address);
++		break;
++	case STATS_FS_U64 | STATS_FS_SIGN:
++		value_found = *((int64_t *)address);
++		break;
++	case STATS_FS_BOOL:
++		value_found = *((uint8_t *)address);
++		break;
++	default:
++		value_found = 0;
++		break;
++	}
++
++	return value_found;
++}
++
++/* Called with rwsem held for reading */
++static void clear_simple_value(struct stats_fs_value_source *src,
++			       struct stats_fs_value *val)
++{
++	void *address;
++
++	address = src->base_addr + val->offset;
++
++	switch (val->type) {
++	case STATS_FS_U8:
++		*((uint8_t *)address) = 0;
++		break;
++	case STATS_FS_U8 | STATS_FS_SIGN:
++		*((int8_t *)address) = 0;
++		break;
++	case STATS_FS_U16:
++		*((uint16_t *)address) = 0;
++		break;
++	case STATS_FS_U16 | STATS_FS_SIGN:
++		*((int16_t *)address) = 0;
++		break;
++	case STATS_FS_U32:
++		*((uint32_t *)address) = 0;
++		break;
++	case STATS_FS_U32 | STATS_FS_SIGN:
++		*((int32_t *)address) = 0;
++		break;
++	case STATS_FS_U64:
++		*((uint64_t *)address) = 0;
++		break;
++	case STATS_FS_U64 | STATS_FS_SIGN:
++		*((int64_t *)address) = 0;
++		break;
++	case STATS_FS_BOOL:
++		*((uint8_t *)address) = 0;
++		break;
++	default:
++		break;
++	}
++}
++
++/* Called with rwsem held for reading */
++static void
++search_all_simple_values(struct stats_fs_source *src,
++			 struct stats_fs_value_source *ref_src_entry,
++			 struct stats_fs_value *val,
++			 struct stats_fs_aggregate_value *agg)
++{
++	struct stats_fs_value_source *src_entry;
++	uint64_t value_found;
++
++	list_for_each_entry (src_entry, &src->values_head, list_element) {
++		/* skip aggregates */
++		if (src_entry->base_addr == NULL)
++			continue;
++
++		/* useless to search here */
++		if (src_entry->values != ref_src_entry->values)
++			continue;
++
++		/* must be here */
++		value_found = get_simple_value(src_entry, val);
++		agg->sum += value_found;
++		agg->count++;
++		agg->count_zero += (value_found == 0);
++
++		if (is_val_signed(val)) {
++			agg->max = (((int64_t)value_found) >=
++				    ((int64_t)agg->max)) ?
++					   value_found :
++					   agg->max;
++			agg->min = (((int64_t)value_found) <=
++				    ((int64_t)agg->min)) ?
++					   value_found :
++					   agg->min;
++		} else {
++			agg->max = (value_found >= agg->max) ? value_found :
++							       agg->max;
++			agg->min = (value_found <= agg->min) ? value_found :
++							       agg->min;
++		}
++	}
++}
++
++/* Called with rwsem held for reading */
++static void
++do_recursive_aggregation(struct stats_fs_source *root,
++			 struct stats_fs_value_source *ref_src_entry,
++			 struct stats_fs_value *val,
++			 struct stats_fs_aggregate_value *agg)
++{
++	struct stats_fs_source *subordinate;
++
++	/* search all simple values in this folder */
++	search_all_simple_values(root, ref_src_entry, val, agg);
++
++	/* recursively search in all subfolders */
++	list_for_each_entry (subordinate, &root->subordinates_head,
++			     list_element) {
++		down_read(&subordinate->rwsem);
++		do_recursive_aggregation(subordinate, ref_src_entry, val, agg);
++		up_read(&subordinate->rwsem);
++	}
++}
++
++/* Called with rwsem held for reading */
++static void init_aggregate_value(struct stats_fs_aggregate_value *agg,
++				 struct stats_fs_value *val)
++{
++	agg->count = agg->count_zero = agg->sum = 0;
++	if (is_val_signed(val)) {
++		agg->max = S64_MIN;
++		agg->min = S64_MAX;
++	} else {
++		agg->max = 0;
++		agg->min = U64_MAX;
++	}
++}
++
++/* Called with rwsem held for reading */
++static void store_final_value(struct stats_fs_aggregate_value *agg,
++			      struct stats_fs_value *val, uint64_t *ret)
++{
++	int operation;
++
++	operation = val->aggr_kind | is_val_signed(val);
++
++	switch (operation) {
++	case STATS_FS_AVG:
++		*ret = agg->count ? agg->sum / agg->count : 0;
++		break;
++	case STATS_FS_AVG | STATS_FS_SIGN:
++		*ret = agg->count ? ((int64_t)agg->sum) / agg->count : 0;
++		break;
++	case STATS_FS_SUM:
++	case STATS_FS_SUM | STATS_FS_SIGN:
++		*ret = agg->sum;
++		break;
++	case STATS_FS_MIN:
++	case STATS_FS_MIN | STATS_FS_SIGN:
++		*ret = agg->min;
++		break;
++	case STATS_FS_MAX:
++	case STATS_FS_MAX | STATS_FS_SIGN:
++		*ret = agg->max;
++		break;
++	case STATS_FS_COUNT_ZERO:
++	case STATS_FS_COUNT_ZERO | STATS_FS_SIGN:
++		*ret = agg->count_zero;
++		break;
++	default:
++		break;
++	}
++}
++
++/* Called with rwsem held for reading */
++static int stats_fs_source_get_value_locked(struct stats_fs_source *source,
++					    struct stats_fs_value *arg,
++					    uint64_t *ret)
++{
++	struct stats_fs_value_source *src_entry;
++	struct stats_fs_value *found;
++	struct stats_fs_aggregate_value aggr;
++
++	*ret = 0;
++
++	if (!arg)
++		return -ENOENT;
++
++	/* look in simple values */
++	found = search_value_in_source(source, arg, &src_entry);
++
++	if (!found) {
++		printk(KERN_ERR "Stats_fs: Value in source \"%s\" not found!\n",
++		       source->name);
++		return -ENOENT;
++	}
++
++	if (src_entry->base_addr != NULL) {
++		*ret = get_simple_value(src_entry, found);
++		return 0;
++	}
++
++	/* look in aggregates */
++	init_aggregate_value(&aggr, found);
++	do_recursive_aggregation(source, src_entry, found, &aggr);
++	store_final_value(&aggr, found, ret);
++
++	return 0;
++}
++
++int stats_fs_source_get_value(struct stats_fs_source *source,
++			      struct stats_fs_value *arg, uint64_t *ret)
++{
++	int retval;
++
++	down_read(&source->rwsem);
++	retval = stats_fs_source_get_value_locked(source, arg, ret);
++	up_read(&source->rwsem);
++
++	return retval;
++}
++EXPORT_SYMBOL_GPL(stats_fs_source_get_value);
++
++/* Called with rwsem held for reading */
++static void set_all_simple_values(struct stats_fs_source *src,
++				  struct stats_fs_value_source *ref_src_entry,
++				  struct stats_fs_value *val)
++{
++	struct stats_fs_value_source *src_entry;
++
++	list_for_each_entry (src_entry, &src->values_head, list_element) {
++		/* skip aggregates */
++		if (src_entry->base_addr == NULL)
++			continue;
++
++		/* wrong to search here */
++		if (src_entry->values != ref_src_entry->values)
++			continue;
++
++		if (src_entry->base_addr &&
++		    src_entry->values == ref_src_entry->values)
++			clear_simple_value(src_entry, val);
++	}
++}
++
++/* Called with rwsem held for reading */
++static void do_recursive_clean(struct stats_fs_source *root,
++			       struct stats_fs_value_source *ref_src_entry,
++			       struct stats_fs_value *val)
++{
++	struct stats_fs_source *subordinate;
++
++	/* search all simple values in this folder */
++	set_all_simple_values(root, ref_src_entry, val);
++
++	/* recursively search in all subfolders */
++	list_for_each_entry (subordinate, &root->subordinates_head,
++			     list_element) {
++		down_read(&subordinate->rwsem);
++		do_recursive_clean(subordinate, ref_src_entry, val);
++		up_read(&subordinate->rwsem);
++	}
++}
++
++/* Called with rwsem held for reading */
++static int stats_fs_source_clear_locked(struct stats_fs_source *source,
++					struct stats_fs_value *val)
++{
++	struct stats_fs_value_source *src_entry;
++	struct stats_fs_value *found;
++
++	if (!val)
++		return -ENOENT;
++
++	/* look in simple values */
++	found = search_value_in_source(source, val, &src_entry);
++
++	if (!found) {
++		printk(KERN_ERR "Stats_fs: Value in source \"%s\" not found!\n",
++		       source->name);
++		return -ENOENT;
++	}
++
++	if (src_entry->base_addr != NULL) {
++		clear_simple_value(src_entry, found);
++		return 0;
++	}
++
++	/* look in aggregates */
++	do_recursive_clean(source, src_entry, found);
++
++	return 0;
++}
++
++int stats_fs_source_clear(struct stats_fs_source *source,
++			  struct stats_fs_value *val)
++{
++	int retval;
++
++	down_read(&source->rwsem);
++	retval = stats_fs_source_clear_locked(source, val);
++	up_read(&source->rwsem);
++
++	return retval;
++}
++
++/* Called with rwsem held for reading */
++static struct stats_fs_value *
++find_value_by_name(struct stats_fs_value_source *src, char *val)
++{
++	struct stats_fs_value *entry;
++
++	for (entry = src->values; entry->name; entry++)
++		if (!strcmp(entry->name, val))
++			return entry;
++
++	return NULL;
++}
++
++/* Called with rwsem held for reading */
++static struct stats_fs_value *
++search_in_source_by_name(struct stats_fs_source *src, char *name)
++{
++	struct stats_fs_value *entry;
++	struct stats_fs_value_source *src_entry;
++
++	list_for_each_entry (src_entry, &src->values_head, list_element) {
++		entry = find_value_by_name(src_entry, name);
++		if (entry)
++			return entry;
++	}
++
++	return NULL;
++}
++
++int stats_fs_source_get_value_by_name(struct stats_fs_source *source,
++				      char *name, uint64_t *ret)
++{
++	struct stats_fs_value *val;
++	int retval;
++
++	down_read(&source->rwsem);
++	val = search_in_source_by_name(source, name);
++
++	if (!val) {
++		*ret = 0;
++		up_read(&source->rwsem);
++		return -ENOENT;
++	}
++
++	retval = stats_fs_source_get_value_locked(source, val, ret);
++	up_read(&source->rwsem);
++
++	return retval;
++}
++EXPORT_SYMBOL_GPL(stats_fs_source_get_value_by_name);
++
++void stats_fs_source_get(struct stats_fs_source *source)
++{
++	kref_get(&source->refcount);
++}
++EXPORT_SYMBOL_GPL(stats_fs_source_get);
++
++void stats_fs_source_revoke(struct stats_fs_source *source)
++{
++	struct stats_fs_value_source *val_src_entry;
++
++	down_write(&source->rwsem);
++
++	list_for_each_entry (val_src_entry, &source->values_head, list_element)
++		val_src_entry->base_addr = NULL;
++
++	up_write(&source->rwsem);
++}
++EXPORT_SYMBOL_GPL(stats_fs_source_revoke);
++
++/* Called with rwsem held for writing
 + *
-+ * Add the given folder as direct child of /sys/kernel/statsfs.
-+ * It also starts to recursively search its own child and create all folders
-+ * and files if they weren't already. All subsequent add_subordinate calls
-+ * on the same source that is used in this function will create corresponding
-+ * files and directories.
++ * The refcount is 0 and the lock was taken before refcount
++ * went from 1 to 0
 + */
-+void stats_fs_source_register(struct stats_fs_source *source);
++static void stats_fs_source_destroy(struct kref *kref_source)
++{
++	struct stats_fs_value_source *val_src_entry;
++	struct list_head *it, *safe;
++	struct stats_fs_source *child, *source;
 +
- /**
-  * stats_fs_source_add_values - adds values to the given source
-  * @source: a pointer to the source that will receive the values
-@@ -235,6 +247,9 @@ static inline struct stats_fs_source *stats_fs_source_create(const char *fmt,
- 	return ERR_PTR(-ENODEV);
- }
- 
-+static inline void stats_fs_source_register(struct stats_fs_source *source)
-+{ }
++	source = container_of(kref_source, struct stats_fs_source, refcount);
 +
- static inline int stats_fs_source_add_values(struct stats_fs_source *source,
- 					     struct stats_fs_value *val,
- 					     void *base_ptr)
-diff --git a/include/uapi/linux/magic.h b/include/uapi/linux/magic.h
-index d78064007b17..46c66ea3fc9e 100644
---- a/include/uapi/linux/magic.h
-+++ b/include/uapi/linux/magic.h
-@@ -10,6 +10,7 @@
- #define CRAMFS_MAGIC		0x28cd3d45	/* some random number */
- #define CRAMFS_MAGIC_WEND	0x453dcd28	/* magic number with the wrong endianess */
- #define DEBUGFS_MAGIC          0x64626720
-+#define STATSFS_MAGIC          0x73746174
- #define SECURITYFS_MAGIC	0x73636673
- #define SELINUX_MAGIC		0xf97cff8c
- #define SMACK_MAGIC		0x43415d53	/* "SMAC" */
-diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
-index 027b18f7ed8c..6fe306206dfb 100644
---- a/tools/lib/api/fs/fs.c
-+++ b/tools/lib/api/fs/fs.c
-@@ -35,6 +35,10 @@
- #define TRACEFS_MAGIC          0x74726163
- #endif
- 
-+#ifndef STATSFS_MAGIC
-+#define STATSFS_MAGIC          0x73746174
-+#endif
++	/* iterate through the values and delete them */
++	list_for_each_safe (it, safe, &source->values_head) {
++		val_src_entry = list_entry(it, struct stats_fs_value_source,
++					   list_element);
++		kfree(val_src_entry);
++	}
 +
- #ifndef HUGETLBFS_MAGIC
- #define HUGETLBFS_MAGIC        0x958458f6
- #endif
-@@ -76,6 +80,16 @@ static const char * const tracefs__known_mountpoints[] = {
- 	0,
- };
- 
-+#ifndef STATSFS_DEFAULT_PATH
-+#define STATSFS_DEFAULT_PATH "/sys/kernel/statsfs"
-+#endif
++	/* iterate through the subordinates and delete them */
++	list_for_each_safe (it, safe, &source->subordinates_head) {
++		child = list_entry(it, struct stats_fs_source, list_element);
++		stats_fs_source_remove_subordinate_locked(source, child);
++	}
 +
-+static const char * const statsfs__known_mountpoints[] = {
-+	STATSFS_DEFAULT_PATH,
-+	"/statsfs",
-+	0,
++	up_write(&source->rwsem);
++	kfree(source->name);
++	kfree(source);
++}
++
++void stats_fs_source_put(struct stats_fs_source *source)
++{
++	kref_put_rwsem(&source->refcount, stats_fs_source_destroy,
++		       &source->rwsem);
++}
++EXPORT_SYMBOL_GPL(stats_fs_source_put);
++
++struct stats_fs_source *stats_fs_source_create(const char *fmt, ...)
++{
++	va_list ap;
++	char buf[100];
++	struct stats_fs_source *ret;
++	int char_needed;
++
++	va_start(ap, fmt);
++	char_needed = vsnprintf(buf, 100, fmt, ap);
++	va_end(ap);
++
++	ret = kzalloc(sizeof(struct stats_fs_source), GFP_KERNEL);
++	if (!ret)
++		return ERR_PTR(-ENOMEM);
++
++	ret->name = kstrdup(buf, GFP_KERNEL);
++	if (!ret->name) {
++		kfree(ret);
++		return ERR_PTR(-ENOMEM);
++	}
++
++	kref_init(&ret->refcount);
++	init_rwsem(&ret->rwsem);
++
++	INIT_LIST_HEAD(&ret->values_head);
++	INIT_LIST_HEAD(&ret->subordinates_head);
++	INIT_LIST_HEAD(&ret->list_element);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(stats_fs_source_create);
+diff --git a/include/linux/stats_fs.h b/include/linux/stats_fs.h
+new file mode 100644
+index 000000000000..dc2d2e11f5ea
+--- /dev/null
++++ b/include/linux/stats_fs.h
+@@ -0,0 +1,289 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ *  stats_fs.h - a tiny little statistics file system
++ *
++ *  Copyright (C) 2020 Emanuele Giuseppe Esposito
++ *  Copyright (C) 2020 Redhat.
++ *
++ */
++
++#ifndef _STATS_FS_H_
++#define _STATS_FS_H_
++
++#include <linux/list.h>
++
++/* Used to distinguish signed types */
++#define STATS_FS_SIGN 0x8000
++
++enum stat_type {
++	STATS_FS_U8 = 0,
++	STATS_FS_U16 = 1,
++	STATS_FS_U32 = 2,
++	STATS_FS_U64 = 3,
++	STATS_FS_BOOL = 4,
++	STATS_FS_S8 = STATS_FS_U8 | STATS_FS_SIGN,
++	STATS_FS_S16 = STATS_FS_U16 | STATS_FS_SIGN,
++	STATS_FS_S32 = STATS_FS_U32 | STATS_FS_SIGN,
++	STATS_FS_S64 = STATS_FS_U64 | STATS_FS_SIGN,
 +};
 +
- static const char * const hugetlbfs__known_mountpoints[] = {
- 	0,
- };
-@@ -100,6 +114,7 @@ enum {
- 	FS__TRACEFS = 3,
- 	FS__HUGETLBFS = 4,
- 	FS__BPF_FS = 5,
-+	FS__STATSFS = 6,
- };
- 
- #ifndef TRACEFS_MAGIC
-@@ -127,6 +142,11 @@ static struct fs fs__entries[] = {
- 		.mounts	= tracefs__known_mountpoints,
- 		.magic	= TRACEFS_MAGIC,
- 	},
-+	[FS__STATSFS] = {
-+		.name	= "statsfs",
-+		.mounts	= statsfs__known_mountpoints,
-+		.magic	= STATSFS_MAGIC,
-+	},
- 	[FS__HUGETLBFS] = {
- 		.name	= "hugetlbfs",
- 		.mounts = hugetlbfs__known_mountpoints,
-@@ -297,6 +317,7 @@ FS(sysfs,   FS__SYSFS);
- FS(procfs,  FS__PROCFS);
- FS(debugfs, FS__DEBUGFS);
- FS(tracefs, FS__TRACEFS);
-+FS(statsfs, FS__STATSFS);
- FS(hugetlbfs, FS__HUGETLBFS);
- FS(bpf_fs, FS__BPF_FS);
- 
++enum stat_aggr {
++	STATS_FS_NONE = 0,
++	STATS_FS_SUM,
++	STATS_FS_MIN,
++	STATS_FS_MAX,
++	STATS_FS_COUNT_ZERO,
++	STATS_FS_AVG,
++};
++
++struct stats_fs_value {
++	/* Name of the stat */
++	char *name;
++
++	/* Offset from base address to field containing the value */
++	int offset;
++
++	/* Type of the stat BOOL,U64,... */
++	enum stat_type type;
++
++	/* Aggregate type: MIN, MAX, SUM,... */
++	enum stat_aggr aggr_kind;
++
++	/* File mode */
++	uint16_t mode;
++};
++
++struct stats_fs_source {
++	struct kref refcount;
++
++	char *name;
++
++	/* list of source stats_fs_value_source*/
++	struct list_head values_head;
++
++	/* list of struct stats_fs_source for subordinate sources */
++	struct list_head subordinates_head;
++
++	struct list_head list_element;
++
++	struct rw_semaphore rwsem;
++
++	struct dentry *source_dentry;
++};
++
++#if defined(CONFIG_STATS_FS)
++
++/**
++ * stats_fs_source_create - create a stats_fs_source
++ * Creates a stats_fs_source with the given name. This
++ * does not mean it will be backed by the filesystem yet, it will only
++ * be visible to the user once one of its parents (or itself) are
++ * registered in stats_fs.
++ *
++ * Returns a pointer to a stats_fs_source if it succeeds.
++ * This or one of the parents' pointer must be passed to the stats_fs_put()
++ * function when the file is to be removed.  If an error occurs,
++ * ERR_PTR(-ERROR) will be returned.
++ */
++struct stats_fs_source *stats_fs_source_create(const char *fmt, ...);
++
++/**
++ * stats_fs_source_add_values - adds values to the given source
++ * @source: a pointer to the source that will receive the values
++ * @val: a pointer to the NULL terminated stats_fs_value array to add
++ * @base_ptr: a pointer to the base pointer used by these values
++ *
++ * In addition to adding values to the source, also create the
++ * files in the filesystem if the source already is backed up by a directory.
++ *
++ * Returns 0 it succeeds. If the value are already in the
++ * source and have the same base_ptr, -EEXIST is returned.
++ */
++int stats_fs_source_add_values(struct stats_fs_source *source,
++			       struct stats_fs_value *val, void *base_ptr);
++
++/**
++ * stats_fs_source_add_subordinate - adds a child to the given source
++ * @parent: a pointer to the parent source
++ * @child: a pointer to child source to add
++ *
++ * Recursively create all files in the stats_fs filesystem
++ * only if the parent has already a dentry (created with
++ * stats_fs_source_register).
++ * This avoids the case where this function is called before register.
++ */
++void stats_fs_source_add_subordinate(struct stats_fs_source *parent,
++				     struct stats_fs_source *child);
++
++/**
++ * stats_fs_source_remove_subordinate - removes a child from the given source
++ * @parent: a pointer to the parent source
++ * @child: a pointer to child source to remove
++ *
++ * Look if there is such child in the parent. If so,
++ * it will remove all its files and call stats_fs_put on the child.
++ */
++void stats_fs_source_remove_subordinate(struct stats_fs_source *parent,
++					struct stats_fs_source *child);
++
++/**
++ * stats_fs_source_get_value - search a value in the source (and
++ * subordinates)
++ * @source: a pointer to the source that will be searched
++ * @val: a pointer to the stats_fs_value to search
++ * @ret: a pointer to the uint64_t that will hold the found value
++ *
++ * Look up in the source if a value with same value pointer
++ * exists.
++ * If not, it will return -ENOENT. If it exists and it's a simple value
++ * (not an aggregate), the value that it points to will be returned.
++ * If it exists and it's an aggregate (aggr_type != STATS_FS_NONE), all
++ * subordinates will be recursively searched and every simple value match
++ * will be used to aggregate the final result. For example if it's a sum,
++ * all suboordinates having the same value will be sum together.
++ *
++ * This function will return 0 it succeeds.
++ */
++int stats_fs_source_get_value(struct stats_fs_source *source,
++			      struct stats_fs_value *val, uint64_t *ret);
++
++/**
++ * stats_fs_source_get_value_by_name - search a value in the source (and
++ * subordinates)
++ * @source: a pointer to the source that will be searched
++ * @name: a pointer to the string representing the value to search
++ *        (for example "exits")
++ * @ret: a pointer to the uint64_t that will hold the found value
++ *
++ * Same as stats_fs_source_get_value, but initially the name is used
++ * to search in the given source if there is a value with a matching
++ * name. If so, stats_fs_source_get_value will be called with the found
++ * value, otherwise -ENOENT will be returned.
++ */
++int stats_fs_source_get_value_by_name(struct stats_fs_source *source,
++				      char *name, uint64_t *ret);
++
++/**
++ * stats_fs_source_clear - search and clears a value in the source (and
++ * subordinates)
++ * @source: a pointer to the source that will be searched
++ * @val: a pointer to the stats_fs_value to search
++ *
++ * Look up in the source if a value with same value pointer
++ * exists.
++ * If not, it will return -ENOENT. If it exists and it's a simple value
++ * (not an aggregate), the value that it points to will be set to 0.
++ * If it exists and it's an aggregate (aggr_type != STATS_FS_NONE), all
++ * subordinates will be recursively searched and every simple value match
++ * will be set to 0.
++ *
++ * This function will return 0 it succeeds.
++ */
++int stats_fs_source_clear(struct stats_fs_source *source,
++			  struct stats_fs_value *val);
++
++/**
++ * stats_fs_source_revoke - disconnect the source from its backing data
++ * @source: a pointer to the source that will be revoked
++ *
++ * Ensure that stats_fs will not access the data that were passed to
++ * stats_fs_source_add_value for this source.
++ *
++ * Because open files increase the reference count for a stats_fs_source,
++ * the source can end up living longer than the data that provides the
++ * values for the source.  Calling stats_fs_source_revoke just before the
++ * backing data is freed avoids accesses to freed data structures.  The
++ * sources will return 0.
++ */
++void stats_fs_source_revoke(struct stats_fs_source *source);
++
++/**
++ * stats_fs_source_get - increases refcount of source
++ * @source: a pointer to the source whose refcount will be increased
++ */
++void stats_fs_source_get(struct stats_fs_source *source);
++
++/**
++ * stats_fs_source_put - decreases refcount of source and deletes if needed
++ * @source: a pointer to the source whose refcount will be decreased
++ *
++ * If refcount arrives to zero, take care of deleting
++ * and free the source resources and files, by firstly recursively calling
++ * stats_fs_source_remove_subordinate to the child and then deleting
++ * its own files and allocations.
++ */
++void stats_fs_source_put(struct stats_fs_source *source);
++
++/**
++ * stats_fs_initialized - returns true if stats_fs fs has been registered
++ */
++bool stats_fs_initialized(void);
++
++#else
++
++#include <linux/err.h>
++
++/*
++ * We do not return NULL from these functions if CONFIG_STATS_FS is not enabled
++ * so users have a chance to detect if there was a real error or not.  We don't
++ * want to duplicate the design decision mistakes of procfs and devfs again.
++ */
++
++static inline struct stats_fs_source *stats_fs_source_create(const char *fmt,
++							     ...)
++{
++	return ERR_PTR(-ENODEV);
++}
++
++static inline int stats_fs_source_add_values(struct stats_fs_source *source,
++					     struct stats_fs_value *val,
++					     void *base_ptr)
++{
++	return -ENODEV;
++}
++
++static inline void
++stats_fs_source_add_subordinate(struct stats_fs_source *parent,
++				struct stats_fs_source *child)
++{ }
++
++static inline void
++stats_fs_source_remove_subordinate(struct stats_fs_source *parent,
++				   struct stats_fs_source *child)
++{ }
++
++static inline int stats_fs_source_get_value(struct stats_fs_source *source,
++					    struct stats_fs_value *val,
++					    uint64_t *ret)
++{
++	return -ENODEV;
++}
++
++static inline int
++stats_fs_source_get_value_by_name(struct stats_fs_source *source, char *name,
++				  uint64_t *ret)
++{
++	return -ENODEV;
++}
++
++static inline int stats_fs_source_clear(struct stats_fs_source *source,
++					struct stats_fs_value *val)
++{
++	return -ENODEV;
++}
++
++static inline void stats_fs_source_revoke(struct stats_fs_source *source)
++{ }
++
++static inline void stats_fs_source_get(struct stats_fs_source *source)
++{ }
++
++static inline void stats_fs_source_put(struct stats_fs_source *source)
++{ }
++
++static inline bool stats_fs_initialized(void)
++{ }
++
++#endif
++
++#endif
 -- 
 2.25.2
 

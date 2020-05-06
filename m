@@ -6,25 +6,25 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37A1FC47257
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27E3BC4724C
 	for <linux-mips@archiver.kernel.org>; Wed,  6 May 2020 17:54:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1D174214D8
-	for <linux-mips@archiver.kernel.org>; Wed,  6 May 2020 17:54:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0A53320A8B
+	for <linux-mips@archiver.kernel.org>; Wed,  6 May 2020 17:54:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727872AbgEFRyd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1728619AbgEFRyd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 6 May 2020 13:54:33 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:33116 "EHLO
+Received: from mail.baikalelectronics.com ([87.245.175.226]:33108 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728681AbgEFRyd (ORCPT
+        with ESMTP id S1727872AbgEFRyd (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Wed, 6 May 2020 13:54:33 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 948DE8000B81;
-        Wed,  6 May 2020 17:44:19 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id AB0F08000B83;
+        Wed,  6 May 2020 17:44:25 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id yB4vVyCw6pxE; Wed,  6 May 2020 20:44:19 +0300 (MSK)
+        with ESMTP id B_9z6KI_Q5VF; Wed,  6 May 2020 20:44:25 +0300 (MSK)
 From:   <Sergey.Semin@baikalelectronics.ru>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
@@ -32,15 +32,16 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Paul Burton <paulburton@kernel.org>,
         Ralf Baechle <ralf@linux-mips.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Rob Herring <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Allison Randal <allison@lohutok.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <devicetree@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 14/20] mips: Use offset-sized IO-mem accessors in CPS debug printout
-Date:   Wed, 6 May 2020 20:42:32 +0300
-Message-ID: <20200506174238.15385-15-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v2 18/20] mips: csrc-r4k: Decrease r4k-clocksource rating if CPU_FREQ enabled
+Date:   Wed, 6 May 2020 20:42:36 +0300
+Message-ID: <20200506174238.15385-19-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
 References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
  <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
@@ -55,67 +56,43 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-Similar to commit 8e5c62e38a88 ("mips: early_printk_8250: Use offset-sized
-IO-mem accessors") the IO-memory might require to use a proper load/store
-instructions (like Bailal-T1 IO-memory). To fix the cps-vec UART debug
-printout lets use the memory access instructions in accordance with the
-UART registers offset config specified at boot time.
+Commit 07d69579e7fe ("MIPS: Don't register r4k sched clock when
+CPUFREQ enabled") disabled the r4k-clock usage for scheduler ticks
+counting due to the scheduler being non-tolerant for unstable
+clocks sources. For the same reason the clock should be used
+in the system clocksource framework only as a last resort if CPU
+frequency may change.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: Paul Burton <paulburton@kernel.org>
 Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: Rob Herring <robh+dt@kernel.org>
 Cc: linux-pm@vger.kernel.org
 Cc: devicetree@vger.kernel.org
-
 ---
-There might be another problem in cps-vec-ns16550.S connected with the
-difference in CPU/devices endinanness on some platforms. But there is
-no such for Baikal-T1 SoC.
----
- arch/mips/kernel/cps-vec-ns16550.S | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ arch/mips/kernel/csrc-r4k.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/mips/kernel/cps-vec-ns16550.S b/arch/mips/kernel/cps-vec-ns16550.S
-index d5a67b4ce9f6..2adb1c56c7c5 100644
---- a/arch/mips/kernel/cps-vec-ns16550.S
-+++ b/arch/mips/kernel/cps-vec-ns16550.S
-@@ -14,16 +14,30 @@
- #define UART_TX_OFS	(UART_TX << CONFIG_MIPS_CPS_NS16550_SHIFT)
- #define UART_LSR_OFS	(UART_LSR << CONFIG_MIPS_CPS_NS16550_SHIFT)
+diff --git a/arch/mips/kernel/csrc-r4k.c b/arch/mips/kernel/csrc-r4k.c
+index 437dda64fd7a..d81fb374f477 100644
+--- a/arch/mips/kernel/csrc-r4k.c
++++ b/arch/mips/kernel/csrc-r4k.c
+@@ -71,7 +71,11 @@ int __init init_r4k_clocksource(void)
+ 		return -ENXIO;
  
-+#if CONFIG_MIPS_CPS_NS16550_SHIFT == 0
-+# define UART_L		lb
-+# define UART_S		sb
-+#elif CONFIG_MIPS_CPS_NS16550_SHIFT == 1
-+# define UART_L		lh
-+# define UART_S		sh
-+#elif CONFIG_MIPS_CPS_NS16550_SHIFT == 2
-+# define UART_L		lw
-+# define UART_S		sw
+ 	/* Calculate a somewhat reasonable rating value */
++#ifndef CONFIG_CPU_FREQ
+ 	clocksource_mips.rating = 200 + mips_hpt_frequency / 10000000;
 +#else
-+# define UART_L		lw
-+# define UART_S		sb
++	clocksource_mips.rating = 99;
 +#endif
-+
- /**
-  * _mips_cps_putc() - write a character to the UART
-  * @a0: ASCII character to write
-  * @t9: UART base address
-  */
- LEAF(_mips_cps_putc)
--1:	lw		t0, UART_LSR_OFS(t9)
-+1:	UART_L		t0, UART_LSR_OFS(t9)
- 	andi		t0, t0, UART_LSR_TEMT
- 	beqz		t0, 1b
--	sb		a0, UART_TX_OFS(t9)
-+	UART_S		a0, UART_TX_OFS(t9)
- 	jr		ra
- 	END(_mips_cps_putc)
  
+ 	/*
+ 	 * R2 onwards makes the count accessible to user mode so it can be used
 -- 
 2.25.1
 

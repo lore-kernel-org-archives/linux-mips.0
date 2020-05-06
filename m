@@ -4,32 +4,34 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3916FC28CBC
-	for <linux-mips@archiver.kernel.org>; Wed,  6 May 2020 13:43:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C476FC47256
+	for <linux-mips@archiver.kernel.org>; Wed,  6 May 2020 13:43:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 157362068E
-	for <linux-mips@archiver.kernel.org>; Wed,  6 May 2020 13:43:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AE6142068E
+	for <linux-mips@archiver.kernel.org>; Wed,  6 May 2020 13:43:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728297AbgEFNnj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 6 May 2020 09:43:39 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3826 "EHLO huawei.com"
+        id S1728770AbgEFNnu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 6 May 2020 09:43:50 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:59162 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726529AbgEFNnj (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 6 May 2020 09:43:39 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id DDA8859BBBF4A8403685;
-        Wed,  6 May 2020 21:43:37 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Wed, 6 May 2020
- 21:43:28 +0800
+        id S1728248AbgEFNnr (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 6 May 2020 09:43:47 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id D9F70D5D8D679C911836;
+        Wed,  6 May 2020 21:43:42 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Wed, 6 May 2020
+ 21:43:37 +0800
 From:   Jason Yan <yanaijie@huawei.com>
-To:     <tsbogend@alpha.franken.de>, <yanaijie@huawei.com>,
+To:     <tsbogend@alpha.franken.de>, <tglx@linutronix.de>,
         <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] MIPS: Remove dead code in pci.h
-Date:   Wed, 6 May 2020 21:42:50 +0800
-Message-ID: <20200506134250.32550-1-yanaijie@huawei.com>
+CC:     Jason Yan <yanaijie@huawei.com>
+Subject: [PATCH] MIPS: Lasat: Remove dead code in lasat.h
+Date:   Wed, 6 May 2020 21:42:58 +0800
+Message-ID: <20200506134258.32634-1-yanaijie@huawei.com>
 X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -46,22 +48,24 @@ keep it now.
 
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- arch/mips/include/asm/mach-rc32434/pci.h | 3 ---
- 1 file changed, 3 deletions(-)
+ arch/mips/include/asm/lasat/lasat.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/arch/mips/include/asm/mach-rc32434/pci.h b/arch/mips/include/asm/mach-rc32434/pci.h
-index 6f40d1515580..9a6eefd12757 100644
---- a/arch/mips/include/asm/mach-rc32434/pci.h
-+++ b/arch/mips/include/asm/mach-rc32434/pci.h
-@@ -319,9 +319,6 @@ struct pci_msu {
- #define PCIM_H_EA		0x3
- #define PCIM_H_IA_FIX		0x4
- #define PCIM_H_IA_RR		0x5
+diff --git a/arch/mips/include/asm/lasat/lasat.h b/arch/mips/include/asm/lasat/lasat.h
+index 483be606960d..7659818f6553 100644
+--- a/arch/mips/include/asm/lasat/lasat.h
++++ b/arch/mips/include/asm/lasat/lasat.h
+@@ -121,11 +121,6 @@ struct lasat_eeprom_struct_pre7 {
+ #define LASAT_BMID_SAFEPIPE5000		5
+ #define LASAT_BMID_SAFEPIPE7000		6
+ #define LASAT_BMID_SAFEPIPE1000		7
 -#if 0
--#define PCI_ADDR_START		0x13000000
+-#define LASAT_BMID_SAFEPIPE30		7
+-#define LASAT_BMID_SAFEPIPE5100		8
+-#define LASAT_BMID_SAFEPIPE7100		9
 -#endif
- 
- #define PCI_ADDR_START		0x50000000
+ #define LASAT_BMID_UNKNOWN		0xf
+ #define LASAT_MAX_BMID_NAMES		9   /* no larger than 15! */
  
 -- 
 2.21.1

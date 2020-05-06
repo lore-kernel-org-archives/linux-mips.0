@@ -4,39 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	TVD_PH_BODY_ACCOUNTS_PRE,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03DE6C28CBC
-	for <linux-mips@archiver.kernel.org>; Wed,  6 May 2020 23:32:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A3DDC54E49
+	for <linux-mips@archiver.kernel.org>; Wed,  6 May 2020 23:32:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D06A020735
-	for <linux-mips@archiver.kernel.org>; Wed,  6 May 2020 23:32:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 21B8C20A8B
+	for <linux-mips@archiver.kernel.org>; Wed,  6 May 2020 23:32:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727898AbgEFXcA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 6 May 2020 19:32:00 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:34640 "EHLO
+        id S1727852AbgEFXbz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 6 May 2020 19:31:55 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:34558 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727119AbgEFXb7 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 6 May 2020 19:31:59 -0400
+        with ESMTP id S1727119AbgEFXby (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 6 May 2020 19:31:54 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 9205D80307C2;
-        Wed,  6 May 2020 23:31:55 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 70B2C8030808;
+        Wed,  6 May 2020 23:31:51 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Cja-hvFMOdwU; Thu,  7 May 2020 02:31:54 +0300 (MSK)
+        with ESMTP id MhBbxmp3w3vz; Thu,  7 May 2020 02:31:48 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jslaby@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+        Long Cheng <long.cheng@mediatek.com>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Paul Burton <paulburton@kernel.org>,
         Ralf Baechle <ralf@linux-mips.org>,
         Arnd Bergmann <arnd@arndb.de>,
-        Long Cheng <long.cheng@mediatek.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
@@ -44,12 +45,14 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linux-mips@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Stefan Roese <sr@denx.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
         <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 3/4] serial: 8250_dw: Simplify the ref clock rate setting procedure
-Date:   Thu, 7 May 2020 02:31:34 +0300
-Message-ID: <20200506233136.11842-4-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v3 1/4] serial: 8250: Fix max baud limit in generic 8250 port
+Date:   Thu, 7 May 2020 02:31:32 +0300
+Message-ID: <20200506233136.11842-2-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20200506233136.11842-1-Sergey.Semin@baikalelectronics.ru>
 References: <20200323024611.16039-1-Sergey.Semin@baikalelectronics.ru>
  <20200506233136.11842-1-Sergey.Semin@baikalelectronics.ru>
@@ -62,11 +65,31 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Really instead of twice checking the clk_round_rate() return value
-we could do it once, and if it isn't error the clock rate can be changed.
-By doing so we decrease a number of ret-value tests and remove a weird
-goto-based construction implemented in the dw8250_set_termios() method.
+Standard 8250 UART ports are designed in a way so they can communicate
+with baud rates up to 1/16 of a reference frequency. It's expected from
+most of the currently supported UART controllers. That's why the former
+version of serial8250_get_baud_rate() method called uart_get_baud_rate()
+with min and max baud rates passed as (port->uartclk / 16 / UART_DIV_MAX)
+and ((port->uartclk + tolerance) / 16) respectively. Doing otherwise, like
+it was suggested in commit ("serial: 8250_mtk: support big baud rate."),
+caused acceptance of bauds, which was higher than the normal UART
+controllers actually supported. As a result if some user-space program
+requested to set a baud greater than (uartclk / 16) it would have been
+permitted without truncation, but then serial8250_get_divisor(baud)
+(which calls uart_get_divisor() to get the reference clock divisor) would
+have returned a zero divisor. Setting zero divisor will cause an
+unpredictable effect varying from chip to chip. In case of DW APB UART the
+communications just stop.
 
+Lets fix this problem by getting back the limitation of (uartclk +
+tolerance) / 16 maximum baud supported by the generic 8250 port. Mediatek
+8250 UART ports driver developer shouldn't have touched it in the first
+place  notably seeing he already provided a custom version of set_termios()
+callback in that glue-driver which took into account the extended baud
+rate values and accordingly updated the standard and vendor-specific
+divisor latch registers anyway.
+
+Fixes: 81bb549fdf14 ("serial: 8250_mtk: support big baud rate.")
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
@@ -83,38 +106,31 @@ Cc: linux-mips@vger.kernel.org
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-mediatek@lists.infradead.org
 ---
- drivers/tty/serial/8250/8250_dw.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+ drivers/tty/serial/8250/8250_port.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
-index aab3cccc6789..12866083731d 100644
---- a/drivers/tty/serial/8250/8250_dw.c
-+++ b/drivers/tty/serial/8250/8250_dw.c
-@@ -282,20 +282,13 @@ static void dw8250_set_termios(struct uart_port *p, struct ktermios *termios,
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index f77bf820b7a3..4d83c85a7389 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -2615,6 +2615,8 @@ static unsigned int serial8250_get_baud_rate(struct uart_port *port,
+ 					     struct ktermios *termios,
+ 					     struct ktermios *old)
+ {
++	unsigned int tolerance = port->uartclk / 100;
++
+ 	/*
+ 	 * Ask the core to calculate the divisor for us.
+ 	 * Allow 1% tolerance at the upper limit so uart clks marginally
+@@ -2623,7 +2625,7 @@ static unsigned int serial8250_get_baud_rate(struct uart_port *port,
+ 	 */
+ 	return uart_get_baud_rate(port, termios, old,
+ 				  port->uartclk / 16 / UART_DIV_MAX,
+-				  port->uartclk);
++				  (port->uartclk + tolerance) / 16);
+ }
  
- 	clk_disable_unprepare(d->clk);
- 	rate = clk_round_rate(d->clk, baud * 16);
--	if (rate < 0)
--		ret = rate;
--	else if (rate == 0)
--		ret = -ENOENT;
--	else
-+	if (rate > 0) {
- 		ret = clk_set_rate(d->clk, rate);
-+		if (!ret)
-+			p->uartclk = rate;
-+	}
- 	clk_prepare_enable(d->clk);
- 
--	if (ret)
--		goto out;
--
--	p->uartclk = rate;
--
--out:
- 	p->status &= ~UPSTAT_AUTOCTS;
- 	if (termios->c_cflag & CRTSCTS)
- 		p->status |= UPSTAT_AUTOCTS;
+ void
 -- 
 2.25.1
 

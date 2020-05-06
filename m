@@ -1,143 +1,155 @@
-Return-Path: <SRS0=uxCP=6V=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=Dx8O=6U=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50031C38A2A
-	for <linux-mips@archiver.kernel.org>; Thu,  7 May 2020 21:19:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00328C28CBC
+	for <linux-mips@archiver.kernel.org>; Wed,  6 May 2020 05:52:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2C60A20731
-	for <linux-mips@archiver.kernel.org>; Thu,  7 May 2020 21:19:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B8F96206F9
+	for <linux-mips@archiver.kernel.org>; Wed,  6 May 2020 05:52:57 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="EGxnwT5h"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726542AbgEGVTb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 7 May 2020 17:19:31 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:38566 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726531AbgEGVTa (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 7 May 2020 17:19:30 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 8EF3C803087C;
-        Thu,  7 May 2020 21:19:27 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id iD8rLD5BeSaP; Fri,  8 May 2020 00:19:26 +0300 (MSK)
-Date:   Fri, 8 May 2020 00:19:23 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        id S1727095AbgEFFw5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 6 May 2020 01:52:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727032AbgEFFw5 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 6 May 2020 01:52:57 -0400
+Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20038C061A0F;
+        Tue,  5 May 2020 22:52:57 -0700 (PDT)
+Received: from localhost.localdomain (unknown [142.147.94.151])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 3FD83204A8;
+        Wed,  6 May 2020 05:52:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1588744374; bh=Qs/DwRJNvaR0cgSNfVQJ/PlQdecYtaVAKH2WIZDkGtA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EGxnwT5hhlrhm1PEiMc1FZkNDebDdalGurlZlPd566I3ucuimacpx70s9iUHBi2zD
+         qr+9GS07jQ8Humbqvxe2yY6DiyUpkRZknEYBtnmf5/lWDjVwr3dHJKfAk9IURb4L3U
+         UV6oLmzGNblr/EWBhFajD1DShp71vzlJ5nJWlWeltYvlTRgqgrPzM+dkSSCM8si5kP
+         28dIC7mdnLZqHH+o0PotEf0qRAZHf2auaFlnBbRbP8UgR92ht1Wb6XEAD4BTofCMRS
+         fpMJ0BQIlrQhWqrLYprKqY2mtU2GQTHrK1jclJNeIUIa5mB4LPoqnVtnO3QQwyOIDF
+         ooxLHKZOKXe9A==
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        clang-built-linux@googlegroups.com,
+        "Maciej W . Rozycki" <macro@linux-mips.org>,
+        Fangrui Song <maskray@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Alexander Lobakin <alobakin@dlink.ru>,
-        Huacai Chen <chenhc@lemote.com>,
-        Cedric Hombourger <Cedric_Hombourger@mentor.com>,
-        =?utf-8?B?UmVuw6k=?= van Dorst <opensource@vdorst.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Jessica Yu <jeyu@kernel.org>,
         Masahiro Yamada <masahiroy@kernel.org>,
-        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 07/20] mips: Add MIPS Warrior P5600 support
-Message-ID: <20200507211923.kfu2ly3ncqms4c2u@mobilestation>
-References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
- <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
- <20200506174238.15385-8-Sergey.Semin@baikalelectronics.ru>
- <20200507111735.GF11616@alpha.franken.de>
+        Jouni Hogander <jouni.hogander@unikie.com>,
+        Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>,
+        Borislav Petkov <bp@suse.de>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        linux-kernel@vger.kernel.org
+Subject: 
+Date:   Wed,  6 May 2020 13:52:45 +0800
+Message-Id: <20200506055245.3013374-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.26.0.rc2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200507111735.GF11616@alpha.franken.de>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, May 07, 2020 at 01:17:35PM +0200, Thomas Bogendoerfer wrote:
-> On Wed, May 06, 2020 at 08:42:25PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
-> >  
-> > +config CPU_P5600
-> > +	bool "MIPS Warrior P5600"
-> > +	depends on SYS_HAS_CPU_P5600
-> > +	select CPU_HAS_PREFETCH
-> > +	select CPU_SUPPORTS_32BIT_KERNEL
-> > +	select CPU_SUPPORTS_HIGHMEM
-> > +	select CPU_SUPPORTS_MSA
-> > +	select CPU_SUPPORTS_UNCACHED_ACCELERATED
-> > +	select CPU_SUPPORTS_CPUFREQ
-> > +	select CPU_MIPSR2_IRQ_VI
-> > +	select CPU_MIPSR2_IRQ_EI
-> > +	select HAVE_KVM
-> > +	select MIPS_O32_FP64_SUPPORT
-> > +	help
-> > +	  Choose this option to build a kernel for MIPS Warrior P5600 CPU.
-> > +	  It's based on MIPS32r5 ISA with XPA, EVA, dual/quad issue exec pipes,
-> > +	  MMU with two-levels TLB, UCA, MSA, MDU core level features and system
-> > +	  level features like up to six P5600 calculation cores, CM2 with L2
-> > +	  cache, IOCU/IOMMU (though might be unused depending on the system-
-> > +	  specific IP core configuration), GIC, CPC, virtualisation module,
-> > +	  eJTAG and PDtrace.
-> > +
-> >  config CPU_R3000
-> >  	bool "R3000"
-> >  	depends on SYS_HAS_CPU_R3000
-> > @@ -1841,7 +1863,8 @@ endchoice
-> >  config CPU_MIPS32_3_5_FEATURES
-> >  	bool "MIPS32 Release 3.5 Features"
-> >  	depends on SYS_HAS_CPU_MIPS32_R3_5
-> > -	depends on CPU_MIPS32_R2 || CPU_MIPS32_R5 || CPU_MIPS32_R6
-> > +	depends on CPU_MIPS32_R2 || CPU_MIPS32_R5 || CPU_MIPS32_R6 || \
-> > +		   CPU_P5600
-> >  	help
-> >  	  Choose this option to build a kernel for release 2 or later of the
-> >  	  MIPS32 architecture including features from the 3.5 release such as
-> > @@ -1861,7 +1884,7 @@ config CPU_MIPS32_3_5_EVA
-> >  config CPU_MIPS32_R5_FEATURES
-> >  	bool "MIPS32 Release 5 Features"
-> >  	depends on SYS_HAS_CPU_MIPS32_R5
-> > -	depends on CPU_MIPS32_R2 || CPU_MIPS32_R5
-> > +	depends on CPU_MIPS32_R2 || CPU_MIPS32_R5 || CPU_P5600
-> >  	help
-> >  	  Choose this option to build a kernel for release 2 or later of the
-> >  	  MIPS32 architecture including features from release 5 such as
-> > @@ -2016,6 +2039,10 @@ config SYS_HAS_CPU_MIPS64_R6
-> >  	bool
-> >  	select ARCH_HAS_SYNC_DMA_FOR_CPU if DMA_NONCOHERENT
-> >  
-> > +config SYS_HAS_CPU_P5600
-> > +	bool
-> > +	select ARCH_HAS_SYNC_DMA_FOR_CPU if DMA_NONCOHERENT
-> > +
-> 
-> P5600 is CPU_MIPS_R5 so can't you select it here and drop all the || CPU_5600
-> above/below ?
+Subject: [PATCH v6] MIPS: Truncate link address into 32bit for 32bit kernel
+In-Reply-To: <20200413062651.3992652-1-jiaxun.yang@flygoat.com>
 
-Alas, We can't do this so easy. CONFIG_CPU_MIPS32_{R2,R5,R6} and any other
-CONFIG_CPU_* configs is something that kernel config-file is supposed to select.
-Their availability is enabled by the CONFIG_SYS_HAS_CPU_* configs. CONFIG_CPU_*
-is supposed to activate CPU-specific features and there is only one
-CONFIG_CPU_x can be enabled at a time seeing it's a part of the "CPU type"
-choice kconfig menu. In addition the CPU config also tunes a compiler to activate
-the arch-specific ISA and optimizations in the arch/mips/Makefile by setting
--march=cpu-name (where cpu-name can be p5600, mips32r5, etc).
+LLD failed to link vmlinux with 64bit load address for 32bit ELF
+while bfd will strip 64bit address into 32bit silently.
+To fix LLD build, we should truncate load address provided by platform
+into 32bit for 32bit kernel.
 
-Yes, P5600 is based on the MIPS32r5, but it also has got some specific features
-(see config CPU_P5600 and config MIPS32_R5), which makes it to be different from
-the ancestor. So In addition to the difficulties described above IMHO converting
-CPU_P5600 to a set of features activated on top of the CPU_MIPS32_R5 config
-would contradict the design of the CPU-support configs implemented in the MIPS
-arch subsystem.
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/786
+Link: https://sourceware.org/bugzilla/show_bug.cgi?id=25784
+Reviewed-by: Fangrui Song <maskray@google.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Cc: Maciej W. Rozycki <macro@linux-mips.org>
+---
+V2: Take MaskRay's shell magic.
 
--Sergey
+V3: After spent an hour on dealing with special character issue in
+Makefile, I gave up to do shell hacks and write a util in C instead.
+Thanks Maciej for pointing out Makefile variable problem.
 
-> 
-> Thomas.
-> 
-> -- 
-> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-> good idea.                                                [ RFC1925, 2.3 ]
+v4: Finally we managed to find a Makefile method to do it properly
+thanks to Kees. As it's too far from the initial version, I removed
+Review & Test tag from Nick and Fangrui and Cc instead.
+
+v5: Care vmlinuz as well.
+
+v6: Rename to LIKER_LOAD_ADDRESS 
+---
+ arch/mips/Makefile                 | 13 ++++++++++++-
+ arch/mips/boot/compressed/Makefile |  2 +-
+ arch/mips/kernel/vmlinux.lds.S     |  2 +-
+ 3 files changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index e1c44aed8156..68c0f22fefc0 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -288,12 +288,23 @@ ifdef CONFIG_64BIT
+   endif
+ endif
+ 
++# When linking a 32-bit executable the LLVM linker cannot cope with a
++# 32-bit load address that has been sign-extended to 64 bits.  Simply
++# remove the upper 32 bits then, as it is safe to do so with other
++# linkers.
++ifdef CONFIG_64BIT
++	load-ld			= $(load-y)
++else
++	load-ld			= $(subst 0xffffffff,0x,$(load-y))
++endif
++
+ KBUILD_AFLAGS	+= $(cflags-y)
+ KBUILD_CFLAGS	+= $(cflags-y)
+-KBUILD_CPPFLAGS += -DVMLINUX_LOAD_ADDRESS=$(load-y)
++KBUILD_CPPFLAGS += -DVMLINUX_LOAD_ADDRESS=$(load-y) -DLINKER_LOAD_ADDRESS=$(load-ld)
+ KBUILD_CPPFLAGS += -DDATAOFFSET=$(if $(dataoffset-y),$(dataoffset-y),0)
+ 
+ bootvars-y	= VMLINUX_LOAD_ADDRESS=$(load-y) \
++		  LINKER_LOAD_ADDRESS=$(load-ld) \
+ 		  VMLINUX_ENTRY_ADDRESS=$(entry-y) \
+ 		  PLATFORM="$(platform-y)" \
+ 		  ITS_INPUTS="$(its-y)"
+diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
+index 0df0ee8a298d..3d391256ab7e 100644
+--- a/arch/mips/boot/compressed/Makefile
++++ b/arch/mips/boot/compressed/Makefile
+@@ -90,7 +90,7 @@ ifneq ($(zload-y),)
+ VMLINUZ_LOAD_ADDRESS := $(zload-y)
+ else
+ VMLINUZ_LOAD_ADDRESS = $(shell $(obj)/calc_vmlinuz_load_addr \
+-		$(obj)/vmlinux.bin $(VMLINUX_LOAD_ADDRESS))
++		$(obj)/vmlinux.bin $(LINKER_LOAD_ADDRESS))
+ endif
+ UIMAGE_LOADADDR = $(VMLINUZ_LOAD_ADDRESS)
+ 
+diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
+index a5f00ec73ea6..5226cd8e4bee 100644
+--- a/arch/mips/kernel/vmlinux.lds.S
++++ b/arch/mips/kernel/vmlinux.lds.S
+@@ -55,7 +55,7 @@ SECTIONS
+ 	/* . = 0xa800000000300000; */
+ 	. = 0xffffffff80300000;
+ #endif
+-	. = VMLINUX_LOAD_ADDRESS;
++	. = LINKER_LOAD_ADDRESS;
+ 	/* read-only */
+ 	_text = .;	/* Text and read-only data */
+ 	.text : {

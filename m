@@ -6,50 +6,51 @@ X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23C61C38A24
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB9D7C38A2A
 	for <linux-mips@archiver.kernel.org>; Thu,  7 May 2020 08:39:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 08A152078C
+	by mail.kernel.org (Postfix) with ESMTP id 8E553207DD
 	for <linux-mips@archiver.kernel.org>; Thu,  7 May 2020 08:39:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726069AbgEGIjX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 7 May 2020 04:39:23 -0400
-Received: from elvis.franken.de ([193.175.24.41]:43283 "EHLO elvis.franken.de"
+        id S1726408AbgEGIjY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 7 May 2020 04:39:24 -0400
+Received: from elvis.franken.de ([193.175.24.41]:43284 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725809AbgEGIjX (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1726029AbgEGIjX (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Thu, 7 May 2020 04:39:23 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jWc3t-0006Ql-01; Thu, 07 May 2020 10:39:21 +0200
+        id 1jWc3t-0006Ql-03; Thu, 07 May 2020 10:39:21 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A7B1EC03A8; Thu,  7 May 2020 10:37:37 +0200 (CEST)
-Date:   Thu, 7 May 2020 10:37:37 +0200
+        id 2AD92C03A8; Thu,  7 May 2020 10:38:11 +0200 (CEST)
+Date:   Thu, 7 May 2020 10:38:11 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Jason Yan <yanaijie@huawei.com>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Remove dead code in pci.h
-Message-ID: <20200507083737.GA8924@alpha.franken.de>
-References: <20200506134250.32550-1-yanaijie@huawei.com>
+Subject: Re: [PATCH] MIPS: Octeon: Remove dead code in
+ __cvmx_helper_npi_probe()
+Message-ID: <20200507083811.GC8924@alpha.franken.de>
+References: <20200506134315.32810-1-yanaijie@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200506134250.32550-1-yanaijie@huawei.com>
+In-Reply-To: <20200506134315.32810-1-yanaijie@huawei.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, May 06, 2020 at 09:42:50PM +0800, Jason Yan wrote:
+On Wed, May 06, 2020 at 09:43:15PM +0800, Jason Yan wrote:
 > This code has been marked dead for more than 10 years. Seems no need to
 > keep it now.
 > 
 > Signed-off-by: Jason Yan <yanaijie@huawei.com>
 > ---
->  arch/mips/include/asm/mach-rc32434/pci.h | 3 ---
->  1 file changed, 3 deletions(-)
+>  arch/mips/cavium-octeon/executive/cvmx-helper-npi.c | 12 ------------
+>  1 file changed, 12 deletions(-)
 
-applied to mips-next.
+appled to mips-next.
 
 Thomas.
 

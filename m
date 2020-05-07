@@ -2,72 +2,83 @@ Return-Path: <SRS0=uxCP=6V=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 749FBC54E4A
-	for <linux-mips@archiver.kernel.org>; Thu,  7 May 2020 11:43:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0942BC38A24
+	for <linux-mips@archiver.kernel.org>; Thu,  7 May 2020 11:45:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 549CE208CA
-	for <linux-mips@archiver.kernel.org>; Thu,  7 May 2020 11:43:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E461821473
+	for <linux-mips@archiver.kernel.org>; Thu,  7 May 2020 11:45:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbgEGLnW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 7 May 2020 07:43:22 -0400
-Received: from elvis.franken.de ([193.175.24.41]:43576 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725914AbgEGLnV (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 7 May 2020 07:43:21 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jWevq-00081e-03; Thu, 07 May 2020 13:43:14 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 93899C0409; Thu,  7 May 2020 13:09:51 +0200 (CEST)
-Date:   Thu, 7 May 2020 13:09:51 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Sergey.Semin@baikalelectronics.ru
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
+        id S1726222AbgEGLpz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 7 May 2020 07:45:55 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:58981 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725903AbgEGLpz (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 7 May 2020 07:45:55 -0400
+X-Originating-IP: 86.202.105.35
+Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id C8CFFFF815;
+        Thu,  7 May 2020 11:45:25 +0000 (UTC)
+Date:   Thu, 7 May 2020 13:45:25 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, Zhou Yanjie <zhouyanjie@zoho.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 11/20] mips: MAAR: Use more precise address mask
-Message-ID: <20200507110951.GD11616@alpha.franken.de>
-References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
- <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
- <20200506174238.15385-12-Sergey.Semin@baikalelectronics.ru>
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        linux-gpio@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH] pinctrl: ocelot: Add platform dependency
+Message-ID: <20200507114525.GE34497@piout.net>
+References: <20200507114015.24461-1-geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200506174238.15385-12-Sergey.Semin@baikalelectronics.ru>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200507114015.24461-1-geert+renesas@glider.be>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, May 06, 2020 at 08:42:29PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
-> From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Hi,
+
+On 07/05/2020 13:40:15+0200, Geert Uytterhoeven wrote:
+> The Microsemi Ocelot pin controller is only present on Microsemi Ocelot
+> and Jaguar2 SoCs.  Add a platform dependency to the PINCTRL_OCELOT
+> config symbol, to avoid asking the user about it when configuring a
+> kernel without Ocelot or Jaguar2 support.
 > 
-> Indeed according to the P5600/P6000 manual the MAAR pair register
-> address field either takes [12:31] bits for 32-bits non-XPA systems
-> and [12:35] otherwise. In any case the current address mask is just
-> wrong for 64-bit and 32-bits XPA chips. So lets extend it to 39-bits
-> value. This shall cover the 64-bits architecture and systems with XPA
-> enabled, and won't cause any problem for non-XPA 32-bit systems, since
-> the value will be just truncated when written to the 32-bits register.
 
-according to MIPS32 Priveleged Resoure Architecture Rev. 6.02
-ADDR spans from bit 12 to bit 55. So your patch fits only for P5600.
-Does the wider mask cause any problems ?
+I have to NAK here because there are upcoming (hopefully this cycle)
+SoCs using this driver.
 
-Thomas.
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/pinctrl/Kconfig | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
+> index f0ce4ce3e0f52456..bed67c08a0892240 100644
+> --- a/drivers/pinctrl/Kconfig
+> +++ b/drivers/pinctrl/Kconfig
+> @@ -394,8 +394,8 @@ config PINCTRL_RK805
+>  
+>  config PINCTRL_OCELOT
+>  	bool "Pinctrl driver for the Microsemi Ocelot and Jaguar2 SoCs"
+> -	depends on OF
+> -	depends on HAS_IOMEM
+> +	depends on OF && HAS_IOMEM
+> +	depends on MSCC_OCELOT || COMPILE_TEST
+>  	select GPIOLIB
+>  	select GPIOLIB_IRQCHIP
+>  	select GENERIC_PINCONF
+> -- 
+> 2.17.1
+> 
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com

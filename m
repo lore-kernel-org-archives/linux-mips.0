@@ -2,88 +2,81 @@ Return-Path: <SRS0=uxCP=6V=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 654A6C38A24
-	for <linux-mips@archiver.kernel.org>; Thu,  7 May 2020 09:11:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE8F7C38A2A
+	for <linux-mips@archiver.kernel.org>; Thu,  7 May 2020 09:48:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 404C12075E
-	for <linux-mips@archiver.kernel.org>; Thu,  7 May 2020 09:11:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B453421473
+	for <linux-mips@archiver.kernel.org>; Thu,  7 May 2020 09:48:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726268AbgEGJLX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 7 May 2020 05:11:23 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:45266 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgEGJLW (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 7 May 2020 05:11:22 -0400
-Received: by mail-ot1-f66.google.com with SMTP id e20so3875287otk.12;
-        Thu, 07 May 2020 02:11:21 -0700 (PDT)
+        id S1725900AbgEGJsS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 7 May 2020 05:48:18 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:33848 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725893AbgEGJsS (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 7 May 2020 05:48:18 -0400
+Received: by mail-il1-f195.google.com with SMTP id w6so332221ilg.1
+        for <linux-mips@vger.kernel.org>; Thu, 07 May 2020 02:48:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BkZGWfknPCW9diM50jSAbHmaT0n2Sk6fsGRA0H7i0Xs=;
-        b=NAQm1ihsGf3Cf64FKrLokGUipqAiGlf5C2qjlgZ3GTmlXHVSdPMhktaEcfFi2L0YK5
-         5L333nPj04luJ3OqzILUtu2g4te+jdSSyG21YGNF7NDmP4nJ3y6R468bmdPorsny/YQ2
-         dDzNJUENiOi2sxMd5jtnNeJFv3oeVxsc0Lm/Nhjjcm28J0scPraq9JZq+ZRtqsuQ07lu
-         fhjMc0JbH5t/GiEs+9ustZqUzR78X9Y9d10JrDR+y3loVXQllgrjwT6jtJncddNRP8tj
-         0DGH4VJcCmCI/JMizoKYT9vbCXFmDpSL6L2NyFT5FXQUSJfCAChxhRkcMgEgZ4XH9G5G
-         4U5A==
-X-Gm-Message-State: AGi0PuYl3p2vZ2bAc4gRbe5oTL9SqaUznl85goIeuRGfjOFnp8BiBG6y
-        FvnVsXvWWWHC3zawu3jYkP/o4mcU9Qb/n7I+I0yycg==
-X-Google-Smtp-Source: APiQypJIyICbLvXxZlx0vjJlnk4zSUwjrVCNGJvVapRli59iojyXUbrXZScuCYamWR/wpuc1PxLmCTWsBtgZ2096MmE=
-X-Received: by 2002:a9d:63da:: with SMTP id e26mr3966867otl.107.1588842681338;
- Thu, 07 May 2020 02:11:21 -0700 (PDT)
+        bh=Youw7iSMbP9L05CcfWncOVsshX5qlrRR1BJSpni7dzk=;
+        b=scDCSSBYcHIXL7DSgMKP25c/SmsbhpYws/2wMVu2n/0CCmkWZKy8FNQUfdpJsGQGlW
+         12+rqpSWhicLZcN8plYB0iHD74UIuSStlOjQgwJ0xCdS1NqdcP2YpySC/TF2RE4oVweJ
+         f216FsyA+PgLfs2iHZI3bUpvRVVpm8GAfQFXsFZ9DzuRAmL02pEOoDY3MEtCgi3OgHGn
+         o8bhGwAo0hhyieu9Y0Zg1uvyXf2Qri780VpD1zS1cm0UVu4DB+sc/NAwI4qRQhwPhf63
+         8oA2GddpymDOcZfbviqzuCFfSd1RrWidtm5CzPJfHpl2HTni3qvsSTfLYkTSnXWZDsUE
+         MIpg==
+X-Gm-Message-State: AGi0PuaR3evsT+S8uqC4op57kVFUHgSk0sudqLwhj2vXKkaMP0pgym+2
+        C41cr/YNofb2XmWdki9e4dyuR5ipvcjV9VliATSiBYN4
+X-Google-Smtp-Source: APiQypKqTaUN1qJqtnnZPhfiP5eDWgt2PpB6EqH7jUmMOonv62YS4QTLcL8DFCcKpeDMQTMO0Dc3pOyY+rx7mbclxeg=
+X-Received: by 2002:a92:dc0d:: with SMTP id t13mr13824907iln.287.1588844897553;
+ Thu, 07 May 2020 02:48:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200506090452.1290-1-geert+renesas@glider.be> <20200507084058.GA9624@alpha.franken.de>
-In-Reply-To: <20200507084058.GA9624@alpha.franken.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 7 May 2020 11:11:10 +0200
-Message-ID: <CAMuHMdU=iZfBg9wkZ1JM_eLe8j-nVp0Q8761UM7p_UUEhuf1+w@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: ingenic: Replace <linux/clk-provider.h> by <linux/of_clk.h>
+References: <1588830863-30416-1-git-send-email-chenhc@lemote.com> <20200507083500.GA8887@alpha.franken.de>
+In-Reply-To: <20200507083500.GA8887@alpha.franken.de>
+From:   Huacai Chen <chenhc@lemote.com>
+Date:   Thu, 7 May 2020 17:55:56 +0800
+Message-ID: <CAAhV-H55qE0HFvDF7DgVr5ze6LRjBm5DBZyy9xCaDVcNdd1JXw@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: asm: Use __ASSEMBLY__ to guard some macros to avoid
+ build error
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Fuxin Zhang <zhangfx@lemote.com>,
+        Zhangjin Wu <wuzhangjin@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Thomas,
+Hi, Thomas,
 
-On Thu, May 7, 2020 at 11:05 AM Thomas Bogendoerfer
+On Thu, May 7, 2020 at 4:39 PM Thomas Bogendoerfer
 <tsbogend@alpha.franken.de> wrote:
-> On Wed, May 06, 2020 at 11:04:52AM +0200, Geert Uytterhoeven wrote:
-> > The JZ4740 setup code is not a clock provider, and just needs to call
-> > of_clk_init().
-> >
-> > Hence it can include <linux/of_clk.h> instead of <linux/clk-provider.h>.
-> >
-> > Fixes: f932449c11dabb4b ("MIPS: ingenic: Drop obsolete code, merge the rest in setup.c")
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > ---
-> >  arch/mips/jz4740/setup.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> Does this need to go via mips-fixes ? Or is mips-next good enough ?
+> On Thu, May 07, 2020 at 01:54:23PM +0800, Huacai Chen wrote:
+> > Use __ASSEMBLY__ to guard definitions of some macros (PANIC and PRINT)
+> > to avoid build error:
+> >
+> > 1, PANIC conflicts with drivers/scsi/smartpqi/smartpqi_init.c
+> > 2, PRINT conflicts with net/netfilter/nf_conntrack_h323_asn1.c and net/
+> >    mac80211/debugfs_sta.c
+>
+> how about prefixing them to make them more unique ? Something like
+> MIPS_ASM_PRINT/MIPS_ASM_PANIC ?
+Thanks for your review, and I will send a new patch by renaming them.
 
-The commit fixed is not yet upstream, only in next, and the fix is
-non-critical.  It could even be merged into the original commit,
-depending on your rebase policy.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Regards,
+Huacai
+>
+> Thomas.
+>
+> --
+> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+> good idea.                                                [ RFC1925, 2.3 ]

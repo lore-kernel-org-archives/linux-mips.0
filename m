@@ -3,82 +3,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2986FC47247
-	for <linux-mips@archiver.kernel.org>; Fri,  8 May 2020 13:31:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD198C47247
+	for <linux-mips@archiver.kernel.org>; Fri,  8 May 2020 13:31:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 160922495B
-	for <linux-mips@archiver.kernel.org>; Fri,  8 May 2020 13:31:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 990102496F
+	for <linux-mips@archiver.kernel.org>; Fri,  8 May 2020 13:31:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbgEHNbo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 8 May 2020 09:31:44 -0400
-Received: from elvis.franken.de ([193.175.24.41]:44851 "EHLO elvis.franken.de"
+        id S1727952AbgEHNbt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 8 May 2020 09:31:49 -0400
+Received: from elvis.franken.de ([193.175.24.41]:44857 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727975AbgEHNbo (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1727981AbgEHNbo (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Fri, 8 May 2020 09:31:44 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jX36M-0003ty-03; Fri, 08 May 2020 15:31:42 +0200
+        id 1jX36M-0003ty-00; Fri, 08 May 2020 15:31:42 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 9EAF3C041B; Fri,  8 May 2020 15:28:09 +0200 (CEST)
-Date:   Fri, 8 May 2020 15:28:09 +0200
+        id 26EE4C0419; Fri,  8 May 2020 15:01:49 +0200 (CEST)
+Date:   Fri, 8 May 2020 15:01:49 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Sergey.Semin@baikalelectronics.ru
-Cc:     Paul Burton <paulburton@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <f4bug@amsat.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 08/20] mips: Fix cpu_has_mips64r1/2 activation for
- MIPS32 CPUs
-Message-ID: <20200508132809.GA15641@alpha.franken.de>
-References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
- <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
- <20200506174238.15385-9-Sergey.Semin@baikalelectronics.ru>
+To:     Huacai Chen <chenhc@lemote.com>
+Cc:     linux-mips@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>,
+        Zhangjin Wu <wuzhangjin@gmail.com>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH] MIPS: inst.h: Stop including asm.h to avoid various
+ build failures
+Message-ID: <20200508130149.GA14297@alpha.franken.de>
+References: <1588930212-5255-1-git-send-email-chenhc@lemote.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200506174238.15385-9-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <1588930212-5255-1-git-send-email-chenhc@lemote.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, May 06, 2020 at 08:42:26PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
-> From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
-> index e2f31bd6363b..7e22b9c1e279 100644
-> --- a/arch/mips/include/asm/cpu-features.h
-> +++ b/arch/mips/include/asm/cpu-features.h
-> @@ -64,6 +64,8 @@
->  	((MIPS_ISA_REV >= (ge)) && (MIPS_ISA_REV < (lt)))
->  #define __isa_range_or_flag(ge, lt, flag) \
->  	(__isa_range(ge, lt) || ((MIPS_ISA_REV < (lt)) && __isa(flag)))
-> +#define __isa_range_and_flag(ge, lt, flag) \
-> +	(__isa_range(ge, lt) && __isa(flag))
->  
->  /*
->   * SMP assumption: Options of CPU 0 are a superset of all processors.
-> @@ -291,10 +293,10 @@
->  # define cpu_has_mips32r6	__isa_ge_or_flag(6, MIPS_CPU_ISA_M32R6)
->  #endif
->  #ifndef cpu_has_mips64r1
-> -# define cpu_has_mips64r1	__isa_range_or_flag(1, 6, MIPS_CPU_ISA_M64R1)
-> +# define cpu_has_mips64r1	__isa_range_and_flag(1, 6, MIPS_CPU_ISA_M64R1)
+On Fri, May 08, 2020 at 05:30:12PM +0800, Huacai Chen wrote:
+> Commit d339cd02b888eb8 ("MIPS: Move unaligned load/store helpers to
+> inst.h") causes a lot of build failures because macros in asm.h conflict
+> with various subsystems. Some of these conflictions has been fixed (such
+> as LONG, PANIC and PRINT) by adjusting asm.h, but some of them is nearly
+> impossible to fix (such as PTR and END). The only reason of including
+> asm.h in inst.h is that we need the PTR macro which is used by unaligned
+> load/store helpers. So in this patch we define a new PTR_STR macro and
+> use it to replace STR(PTR), then we can stop including asm.h to avoid
+> various build failures.
+> 
+> Fixes: d339cd02b888eb8 ("MIPS: Move unaligned load/store helpers to inst.h")
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Signed-off-by: Huacai Chen <chenhc@lemote.com>
+> ---
+>  arch/mips/include/asm/inst.h | 184 ++++++++++++++++++++++---------------------
 
-that's not the correct fix. You want to check for cpu_has_64bits here.
-Something like 
-
-# define cpu_has_mips64r1    (cpu_has_64bits && __isa_range_or_flag(1, 6, MIPS_CPU_ISA_M64R1))
-
-should do the trick.
+applied to mips-next. /me hopes this is the last fix... thanks
 
 Thomas.
 

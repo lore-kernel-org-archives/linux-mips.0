@@ -2,134 +2,87 @@ Return-Path: <SRS0=/ci8=6W=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F01DC47254
-	for <linux-mips@archiver.kernel.org>; Fri,  8 May 2020 11:53:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FB07C38A2A
+	for <linux-mips@archiver.kernel.org>; Fri,  8 May 2020 11:55:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 612D4215A4
-	for <linux-mips@archiver.kernel.org>; Fri,  8 May 2020 11:53:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1588938821;
-	bh=jzJEqUl7O2hoMsDgMhYgkpN3Z6UxDEbLpvdrbJ3KRrI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=Q6oo2XKKUpZdEqua6kUAzW3LlKEbs/cpNrBfGoYgTMMkHcQsW/6yA4IUsqbPJUdQO
-	 FuC7bvlS5Q4FfbItqTam32UH1W+7Hxt7/VMpF4WiXXpp6hTIAQJL4xmYRkiU4W12uB
-	 nX4fj8q6DaKC6wI7vDINPu/EZh5BOlH7pFbEtKWQ=
+	by mail.kernel.org (Postfix) with ESMTP id 7865020708
+	for <linux-mips@archiver.kernel.org>; Fri,  8 May 2020 11:55:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgEHLxi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 8 May 2020 07:53:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726636AbgEHLxh (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 8 May 2020 07:53:37 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F28420708;
-        Fri,  8 May 2020 11:53:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588938816;
-        bh=jzJEqUl7O2hoMsDgMhYgkpN3Z6UxDEbLpvdrbJ3KRrI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=unZZyYdpUTKrHMtCm8KsBWR5frLQlAiisCSejaTBg+JDqqEeVcSetcJfh4htKJXWr
-         H1XUC2+vGwayrJFMuiJo6HOc/OwQPwy6RSE5unyim2rfFgJKQ9na6uaHNNjeWmlVqR
-         DxOrv4P7w22gfrFLPRfxDx3bfzuUWoLwSqiG0SlQ=
-Date:   Fri, 8 May 2020 12:53:34 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Vinod Koul <vkoul@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/6] dmaengine: dw: Print warning if multi-block is
- unsupported
-Message-ID: <20200508115334.GE4820@sirena.org.uk>
-References: <20200306131048.ADBE18030797@mail.baikalelectronics.ru>
- <20200508105304.14065-1-Sergey.Semin@baikalelectronics.ru>
- <20200508105304.14065-5-Sergey.Semin@baikalelectronics.ru>
- <20200508112604.GJ185537@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="N1GIdlSm9i+YlY4t"
-Content-Disposition: inline
-In-Reply-To: <20200508112604.GJ185537@smile.fi.intel.com>
-X-Cookie: Give him an evasive answer.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726950AbgEHLzM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 8 May 2020 07:55:12 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:49586 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726636AbgEHLzM (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 8 May 2020 07:55:12 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxX92ZSLVebikyAA--.9S5;
+        Fri, 08 May 2020 19:55:07 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH 3/3] MIPS: Loongson: Add log before power off due to high temperature
+Date:   Fri,  8 May 2020 19:55:04 +0800
+Message-Id: <1588938904-924-4-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1588938904-924-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1588938904-924-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9DxX92ZSLVebikyAA--.9S5
+X-Coremail-Antispam: 1UD129KBjvdXoWrZF4UKF4kWFy3ZF48Gr1ftFb_yoWfuwc_uF
+        W0grnrGr1rKwn0yr12kFnxuryjk34kWF1xZr1Iq39Ik345Jr95Ar4UAFZ7X3WUGrWYkFn8
+        Ja90ya4fCFWfCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbSkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWwA2048vs2IY02
+        0Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
+        wVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
+        x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I2
+        62IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcV
+        AFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG
+        0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4kMxAIw28Icx
+        kI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2Iq
+        xVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42
+        IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY
+        6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aV
+        CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sRRH7KJUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+When the CPU temperature is too high, it is better to print a log before
+power off, this is useful when analysis the abnormal issues.
 
---N1GIdlSm9i+YlY4t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ drivers/platform/mips/cpu_hwmon.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-On Fri, May 08, 2020 at 02:26:04PM +0300, Andy Shevchenko wrote:
-> On Fri, May 08, 2020 at 01:53:02PM +0300, Serge Semin wrote:
+diff --git a/drivers/platform/mips/cpu_hwmon.c b/drivers/platform/mips/cpu_hwmon.c
+index 7b4bde1..6dfecd8 100644
+--- a/drivers/platform/mips/cpu_hwmon.c
++++ b/drivers/platform/mips/cpu_hwmon.c
+@@ -162,10 +162,12 @@ static void do_thermal_timer(struct work_struct *work)
+ 			temp_max = value;
+ 	}
+ 
+-	if (temp_max <= CPU_THERMAL_THRESHOLD)
++	if (temp_max <= CPU_THERMAL_THRESHOLD) {
+ 		schedule_delayed_work(&thermal_work, msecs_to_jiffies(5000));
+-	else
++	} else {
++		pr_emerg("Power off due to high temperature: %d\n", value);
+ 		orderly_poweroff(true);
++	}
+ }
+ 
+ static int __init loongson_hwmon_init(void)
+-- 
+2.1.0
 
-> > Multi-block support provides a way to map the kernel-specific SG-table so
-> > the DW DMA device would handle it as a whole instead of handling the
-> > SG-list items or so called LLP block items one by one. So if true LLP
-> > list isn't supported by the DW DMA engine, then soft-LLP mode will be
-> > utilized to load and execute each LLP-block one by one. A problem may
-> > happen for multi-block DMA slave transfers, when the slave device buffers
-> > (for example Tx and Rx FIFOs) depend on each other and have size smaller
-> > than the block size. In this case writing data to the DMA slave Tx buffer
-> > may cause the Rx buffer overflow if Rx DMA channel is paused to
-> > reinitialize the DW DMA controller with a next Rx LLP item. In particular
-> > We've discovered this problem in the framework of the DW APB SPI device
-
-> Mark, do we have any adjustment knobs in SPI core to cope with this?
-
-Frankly I'm not sure I follow what the issue is - is an LLP block item
-different from a SG list entry?  As far as I can tell the problem is
-that the DMA controller does not support chaining transactions together
-and possibly also has a limit on the transfer size?  Or possibly some
-issue with the DMA controller locking the CPU out of the I/O bus for
-noticable periods?  I can't really think what we could do about that if
-the issue is transfer sizes, that just seems like hardware which is
-never going to work reliably.  If the issue is not being able to chain
-transfers then possibly an option to linearize messages into a single
-transfer as suggested to cope with PIO devices with ill considered
-automated chip select handling, though at some point you have to worry
-about the cost of the memcpy() vs the cost of just doing PIO.
-
-> > working in conjunction with DW DMA. Since there is no comprehensive way to
-> > fix it right now lets at least print a warning for the first found
-> > multi-blockless DW DMAC channel. This shall point a developer to the
-> > possible cause of the problem if one would experience a sudden data loss.
-
-I thought from the description of the SPI driver I just reviewed that
-this hardware didn't have DMA?  Or are there separate blocks in the
-hardware that have a more standard instantiation of the DesignWare SPI
-controller with DMA attached?
-
---N1GIdlSm9i+YlY4t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl61SD0ACgkQJNaLcl1U
-h9DP6wf/dFDiSHbfTbYpSBNRkptpoGaeMDgglGVpj5gntGcn3CfTESvxjfYguuNL
-N0xgW+7ee24CfMkR02v6ZvvKavFGKggBsOw/WjyHnltNYKXiY1vfdk+bDnVLoXEM
-hq7TOqA7PZkP2ChJVoG7Vnd/WBFVpWKijUcYzv8t4T2ZaHO7tymWslrXwf0wHKgK
-z9nxZa3131s4PqJdAG6PQ7AMDiTahYC8sRV+g3Kt7sNG/Ub/TWfjS1mjJ01t7uZq
-BS6BvYsSGJgmKXqE9dqVkQMs/zttV8LFDK+ScuAArL/ReS0g1OUdNP4S8AiTUgNn
-aqIe5ALvWnDBWfIi0sP1ZYXSHWI+sA==
-=gYvy
------END PGP SIGNATURE-----
-
---N1GIdlSm9i+YlY4t--

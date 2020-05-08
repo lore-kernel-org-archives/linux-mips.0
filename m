@@ -2,80 +2,104 @@ Return-Path: <SRS0=/ci8=6W=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD309C38A2A
-	for <linux-mips@archiver.kernel.org>; Fri,  8 May 2020 11:55:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D0BAC38A2A
+	for <linux-mips@archiver.kernel.org>; Fri,  8 May 2020 12:15:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B650C215A4
-	for <linux-mips@archiver.kernel.org>; Fri,  8 May 2020 11:55:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7BD59208D6
+	for <linux-mips@archiver.kernel.org>; Fri,  8 May 2020 12:15:57 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="HmpjRH8U"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727799AbgEHLz2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 8 May 2020 07:55:28 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:49584 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727783AbgEHLz1 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 8 May 2020 07:55:27 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxX92ZSLVebikyAA--.9S4;
-        Fri, 08 May 2020 19:55:06 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH 2/3] MIPS: Loongson: Add hwmon support for generic CPU
-Date:   Fri,  8 May 2020 19:55:03 +0800
-Message-Id: <1588938904-924-3-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1588938904-924-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1588938904-924-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9DxX92ZSLVebikyAA--.9S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrurW5JrWfGrWfZF1UXFW3Awb_yoWxuFc_Wa
-        109rWfJr95GrnIk3W8Kr1fWry2yr1DWa1xuwnxtw4av345C34FvrZ0ya47X3WUGayYkF43
-        CwsYqryfCasxCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbSkFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXwA2048vs2IY02
-        0Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
-        x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I2
-        62IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcV
-        AFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG
-        0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4kMxAIw28Icx
-        kI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2Iq
-        xVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42
-        IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY
-        6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aV
-        CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sRRVc_JUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1726689AbgEHMP5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 8 May 2020 08:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726627AbgEHMP4 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 8 May 2020 08:15:56 -0400
+Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4373C05BD43;
+        Fri,  8 May 2020 05:15:56 -0700 (PDT)
+Received: from flygoat-x1e (unknown [IPv6:240e:e0:f181:b238:7275:17ea:845e:bb31])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 5189A2049E;
+        Fri,  8 May 2020 12:15:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1588940156; bh=UlB/LTQO9GDoNBWvUvxhRQdqtyIVKakesW0HTOXtYEY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HmpjRH8UIJe/LGtE/KC4xshp8rXQyfTRgfTtU/ZHHyOip/0iU/qXM8YZ7BfFEZyFZ
+         6TyU+Pv5kC/pms8VXZMRefwS8Q62sa1VRbuJ6GpguxtnMeTQn/q90m7GW7Ch640bnG
+         TZxQie1uUxnJ6m8hjCffzP5geBSOmcHc7nycjdtAxZ4Fd1ejSm/tV+sPY+QMO8zPBL
+         N5NK6i1RD9qrGTZYE+4NxDWvjxtb1f4+yuv6iwXsXcEAbssbkKFOJMHPyPhc5kbAf3
+         RR4bmSjeSHIH+H8110o8qAhgZraRnYjjPjSXeDZF4fPU5h0AN8MIPrLsxmoHZ9r4ja
+         2Lw1Daucvo8bw==
+Date:   Fri, 8 May 2020 20:15:34 +0800
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     <Sergey.Semin@baikalelectronics.ru>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 17/20] mips: Add udelay lpj numbers adjustment
+Message-ID: <20200508201534.2a54da17@flygoat-x1e>
+In-Reply-To: <20200506174238.15385-18-Sergey.Semin@baikalelectronics.ru>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+        <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+        <20200506174238.15385-18-Sergey.Semin@baikalelectronics.ru>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add PRID_IMP_LOONGSON_64G case to enable hwmon support for Loongson
-generic CPU such as 3A4000 and newer CPU.
+On Wed, 6 May 2020 20:42:35 +0300
+<Sergey.Semin@baikalelectronics.ru> wrote:
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> 
+> Loops-per-jiffies is a special number which represents a number of
+> noop-loop cycles per CPU-scheduler quantum - jiffies. As you
+> understand aside from CPU-specific implementation it depends on
+> the CPU frequency. So when a platform has the CPU frequency fixed,
+> we have no problem and the current udelay interface will work
+> just fine. But as soon as CPU-freq driver is enabled and the cores
+> frequency changes, we'll end up with distorted udelay's. In order
+> to fix this we have to accordinly adjust the per-CPU udelay_val
+> (the same as the global loops_per_jiffy) number. This can be done
+> in the CPU-freq transition event handler. We subscribe to that event
+> in the MIPS arch time-inititalization method.
+> 
+> Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: linux-pm@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+
+That have been absent in MIPS kernel so long!
+
+Thanks.
+> ---
+[...]
 ---
- drivers/platform/mips/cpu_hwmon.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/platform/mips/cpu_hwmon.c b/drivers/platform/mips/cpu_hwmon.c
-index add5f52..7b4bde1 100644
---- a/drivers/platform/mips/cpu_hwmon.c
-+++ b/drivers/platform/mips/cpu_hwmon.c
-@@ -43,6 +43,7 @@ int loongson3_cpu_temp(int cpu)
- 		break;
- 	case PRID_REV_LOONGSON3A_R3_0:
- 	case PRID_REV_LOONGSON3A_R3_1:
-+	case PRID_IMP_LOONGSON_64G:
- 	default:
- 		reg = (reg & 0xffff)*731/0x4000 - 273;
- 		break;
--- 
-2.1.0
-
+Jiaxun Yang

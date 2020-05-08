@@ -2,172 +2,196 @@ Return-Path: <SRS0=/ci8=6W=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE849C38A2A
-	for <linux-mips@archiver.kernel.org>; Fri,  8 May 2020 11:43:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8B4CC47254
+	for <linux-mips@archiver.kernel.org>; Fri,  8 May 2020 11:44:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BA2742145D
-	for <linux-mips@archiver.kernel.org>; Fri,  8 May 2020 11:43:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9B1EF208E4
+	for <linux-mips@archiver.kernel.org>; Fri,  8 May 2020 11:44:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gIfE0RDC"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="HxQak6FU"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgEHLnp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 8 May 2020 07:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726792AbgEHLno (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 8 May 2020 07:43:44 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59843C05BD43;
-        Fri,  8 May 2020 04:43:44 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id k1so1496377wrx.4;
-        Fri, 08 May 2020 04:43:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qKGhrUPEHY1fphcNoABX/IHv164kpoZpOU/cK61zd18=;
-        b=gIfE0RDCPNifBmsmWO7ny5anKMbhPu3jhwrv8CXiPnxjeuz95+8OyDHZmJFYj7jAvd
-         hpCHM8e4T4P8d2hDJpLvDDRrnT5y3+iZJ8F6F8kHQZiEE4vxnm+lK5PdS9HtaHxhG7d5
-         jao8mgYREs4uQpenwhP3hLfKVRbTmhhUNyvNrOjwsbTLNl6P0mSPeHTnuTrr7PL41Xez
-         hsrQHIUl9YmfMsCKshraJNWLs/opu6CzMxV23p29+SCRzRR6g7dRjGswaYNZkTuQi8SY
-         DcaSsmRp4t/9qof9GgGaZWzBlMY1A0MdMJM/1tzO4eYLK87TuHUi2DKTvr3RB+mK9NEv
-         k8BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qKGhrUPEHY1fphcNoABX/IHv164kpoZpOU/cK61zd18=;
-        b=i0drPRRBRu01qWWmRfdd03b1VU5WXZLyDyHgaCgv7jNYDrBOxNOkbh7ZmcFJ9hthD+
-         Ozcp3HaO4qFjh3XzVve+IkC7/bZ+zKUzfCRZkj0sc2mFwC++m5YLGS4XN7IOxClnAc6P
-         z5F5UPOifgUrs7tkbmcVpv4XCMkgt+gxCiW7bkEvpvEfND7pvgc4GxSUdQ5PXn3U5ulD
-         tY5PdBjQtvavQ+Mxkjjbsh3QalUTxA5LV2Agut+4vAqDK73s8QfTCrKOBQdRYuKXT9KO
-         NbiuxXbvJ0OO2DQ+AyXf8RE2gPDg+94jUqGZO2ioHppOj+CsSYKrI3rPtVbJauLifpVX
-         4ROA==
-X-Gm-Message-State: AGi0Pubg67W8fLCOdZkmyvEFYHyxcWdJg1j9TM8AAp0yrku9CPwJe+wA
-        ZizNRPKYMKuLa7pmpMIKdWyWCm9ic3jYLEMb+H4=
-X-Google-Smtp-Source: APiQypK/2c0ZqyQa5bx07zYKDpZDBfCeDhkkWNQ5ES1fs2vEL0KHQqN5iu+gcwH1k/K8c88MGNYIffy75833IjusxZE=
-X-Received: by 2002:adf:dc50:: with SMTP id m16mr2524484wrj.329.1588938222913;
- Fri, 08 May 2020 04:43:42 -0700 (PDT)
+        id S1727088AbgEHLop (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 8 May 2020 07:44:45 -0400
+Received: from vultr.net.flygoat.com ([149.28.68.211]:33140 "EHLO
+        vultr.net.flygoat.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726616AbgEHLoo (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 8 May 2020 07:44:44 -0400
+Received: from localhost.localdomain (unknown [142.147.94.151])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 27DEB1FAF8;
+        Fri,  8 May 2020 11:44:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1588938284; bh=djhA+pWLVznYTxzEsv2OH955jaE1BFm3cgrL7ihd24I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HxQak6FUYXR4kMgKJP6wLI/yIcLZyXhXjFek3Uwg0xIlFNBx9B5CGxQynuELLKUKG
+         DWndUd+oy8Mac33YtQhpuK8xdXi1BpEqrWOs2MHxpOXGZgSR8Tixk4myTuT1NbglV9
+         4LsudLAQfvAmMAbZPRO4UoCQ6qvc1CNEm4cpN5DIqbnK3AecKeWoHropvTLbkznq9B
+         U6NKDYpCY7m93/mHWnQQwbwItja9S1eOlz2JIxKbyMqo3VWsOOh//dsa9UQM36Lu7T
+         dDVsCgHYDIZEMavGeGweB2GYt3Cc+pMmbDUbuSDE51yiNEWAnr+YB9z3r+MED6hY23
+         yQioYgD5sFpSg==
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     chenhc@lemote.com, tsbogend@alpha.franken.de,
+        john.garry@huawei.com, Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: [PATCH RESEND v3 1/3] MIPS: Move VMALLOC_START into spaces.h
+Date:   Fri,  8 May 2020 19:44:36 +0800
+Message-Id: <20200508114438.3092215-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.26.0.rc2
+In-Reply-To: <20200426114806.1176629-1-jiaxun.yang@flygoat.com>
+References: <20200426114806.1176629-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-References: <1588500367-1056-1-git-send-email-chenhc@lemote.com>
-In-Reply-To: <1588500367-1056-1-git-send-email-chenhc@lemote.com>
-From:   Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
-Date:   Fri, 8 May 2020 13:43:30 +0200
-Message-ID: <CAHiYmc4f1N-8mvMEZNcxVP+zbxjp0=OWFQc2pDDssnpmZ6eJig@mail.gmail.com>
-Subject: Re: [PATCH V3 00/14] KVM: MIPS: Add Loongson-3 support (Host Side)
-To:     Huacai Chen <chenhc@lemote.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        kvm@vger.kernel.org, QEMU Developers <qemu-devel@nongnu.org>,
-        linux-mips@vger.kernel.org,
-        =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>,
-        Fuxin Zhang <zhangfx@lemote.com>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-=D0=BD=D0=B5=D0=B4, 3. =D0=BC=D0=B0=D1=98 2020. =D1=83 12:06 Huacai Chen <c=
-henhc@lemote.com> =D1=98=D0=B5 =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=D0=BE/=
-=D0=BB=D0=B0:
->
-> We are preparing to add KVM support for Loongson-3. VZ extension is
-> fully supported in Loongson-3A R4+, and we will not care about old CPUs
-> (at least now). We already have a full functional Linux kernel (based
-> on Linux-5.4.x LTS) and QEMU (based on 5.0.0-rc2) and their git
-> repositories are here:
->
-> QEMU: https://github.com/chenhuacai/qemu
-> Kernel: https://github.com/chenhuacai/linux
->
-> Of course these two repositories need to be rework and not suitable for
-> upstream (especially the commits need to be splitted). We show them here
-> is just to tell others what we have done, and how KVM/Loongson will look
-> like.
->
-> Our plan is make the KVM host side be upstream first, and after that,
-> we will make the KVM guest side and QEMU emulator be upstream.
->
+That would allow us modify kernel vm address spaces without
+step into the hell of includes.
 
-Huacei, I absolutely salute this series, as it is, in my opinion, of
-tremendous significance not only for Loongson, but also for KVM for
-MIPS in general.
+Also move some page defines into page-def.h to allow PAGE_SIZE
+to be used in spaces.h.
 
-As you probably know, James Hogan left KVM for MIPS kernel
-maintainership some time ago. It was really too bad, as he was and
-still is, from my direct experience, an excellent colleague and
-engineer.
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+Resending as previous version was messed up.
+---
+ arch/mips/include/asm/mach-generic/spaces.h | 12 +++++++++
+ arch/mips/include/asm/page-def.h            | 28 +++++++++++++++++++++
+ arch/mips/include/asm/page.h                | 21 ----------------
+ arch/mips/include/asm/pgtable-32.h          |  2 --
+ arch/mips/include/asm/pgtable-64.h          |  6 -----
+ 5 files changed, 40 insertions(+), 29 deletions(-)
+ create mode 100644 arch/mips/include/asm/page-def.h
 
-KVM for MIPS kernel maintainership left orphaned put me (as the
-maintainer for KVM for MIPS in QEMU) in an awkward position.
+diff --git a/arch/mips/include/asm/mach-generic/spaces.h b/arch/mips/include/asm/mach-generic/spaces.h
+index ee5ebe98f6cf..44fefde46a10 100644
+--- a/arch/mips/include/asm/mach-generic/spaces.h
++++ b/arch/mips/include/asm/mach-generic/spaces.h
+@@ -13,6 +13,7 @@
+ #include <linux/const.h>
+ 
+ #include <asm/mipsregs.h>
++#include <asm/page-def.h>
+ 
+ /*
+  * This gives the physical RAM offset.
+@@ -103,4 +104,15 @@
+ #endif
+ #endif
+ 
++#ifdef CONFIG_64BIT
++/*
++ * TLB refill handlers also map the vmalloc area into xuseg.  Avoid
++ * the first couple of pages so NULL pointer dereferences will still
++ * reliably trap.
++ */
++#define VMALLOC_START		(MAP_BASE + (2 * PAGE_SIZE))
++#else
++#define VMALLOC_START	  MAP_BASE
++#endif
++
+ #endif /* __ASM_MACH_GENERIC_SPACES_H */
+diff --git a/arch/mips/include/asm/page-def.h b/arch/mips/include/asm/page-def.h
+new file mode 100644
+index 000000000000..6506b611f44b
+--- /dev/null
++++ b/arch/mips/include/asm/page-def.h
+@@ -0,0 +1,28 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef __ASM_PAGE_DEF_H
++#define __ASM_PAGE_DEF_H
++
++#include <linux/const.h>
++
++/*
++ * PAGE_SHIFT determines the page size
++ */
++#ifdef CONFIG_PAGE_SIZE_4KB
++#define PAGE_SHIFT	12
++#endif
++#ifdef CONFIG_PAGE_SIZE_8KB
++#define PAGE_SHIFT	13
++#endif
++#ifdef CONFIG_PAGE_SIZE_16KB
++#define PAGE_SHIFT	14
++#endif
++#ifdef CONFIG_PAGE_SIZE_32KB
++#define PAGE_SHIFT	15
++#endif
++#ifdef CONFIG_PAGE_SIZE_64KB
++#define PAGE_SHIFT	16
++#endif
++#define PAGE_SIZE	(_AC(1, UL) << PAGE_SHIFT)
++#define PAGE_MASK	(~((1 << PAGE_SHIFT) - 1))
++
++#endif /* __ASM_PAGE_DEF_H */
+diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
+index e2f503fc7a84..07f6a55eec5d 100644
+--- a/arch/mips/include/asm/page.h
++++ b/arch/mips/include/asm/page.h
+@@ -14,27 +14,6 @@
+ #include <linux/kernel.h>
+ #include <asm/mipsregs.h>
+ 
+-/*
+- * PAGE_SHIFT determines the page size
+- */
+-#ifdef CONFIG_PAGE_SIZE_4KB
+-#define PAGE_SHIFT	12
+-#endif
+-#ifdef CONFIG_PAGE_SIZE_8KB
+-#define PAGE_SHIFT	13
+-#endif
+-#ifdef CONFIG_PAGE_SIZE_16KB
+-#define PAGE_SHIFT	14
+-#endif
+-#ifdef CONFIG_PAGE_SIZE_32KB
+-#define PAGE_SHIFT	15
+-#endif
+-#ifdef CONFIG_PAGE_SIZE_64KB
+-#define PAGE_SHIFT	16
+-#endif
+-#define PAGE_SIZE	(_AC(1,UL) << PAGE_SHIFT)
+-#define PAGE_MASK	(~((1 << PAGE_SHIFT) - 1))
+-
+ /*
+  * This is used for calculating the real page sizes
+  * for FTLB or VTLB + FTLB configurations.
+diff --git a/arch/mips/include/asm/pgtable-32.h b/arch/mips/include/asm/pgtable-32.h
+index 1945c8970141..40049fda596b 100644
+--- a/arch/mips/include/asm/pgtable-32.h
++++ b/arch/mips/include/asm/pgtable-32.h
+@@ -95,8 +95,6 @@ extern int add_temporary_entry(unsigned long entrylo0, unsigned long entrylo1,
+ #define USER_PTRS_PER_PGD	(0x80000000UL/PGDIR_SIZE)
+ #define FIRST_USER_ADDRESS	0UL
+ 
+-#define VMALLOC_START	  MAP_BASE
+-
+ #define PKMAP_END	((FIXADDR_START) & ~((LAST_PKMAP << PAGE_SHIFT)-1))
+ #define PKMAP_BASE	(PKMAP_END - PAGE_SIZE * LAST_PKMAP)
+ 
+diff --git a/arch/mips/include/asm/pgtable-64.h b/arch/mips/include/asm/pgtable-64.h
+index ee5dc0c145b9..a3fb463ba86a 100644
+--- a/arch/mips/include/asm/pgtable-64.h
++++ b/arch/mips/include/asm/pgtable-64.h
+@@ -139,12 +139,6 @@
+ #define USER_PTRS_PER_PGD       ((TASK_SIZE64 / PGDIR_SIZE)?(TASK_SIZE64 / PGDIR_SIZE):1)
+ #define FIRST_USER_ADDRESS	0UL
+ 
+-/*
+- * TLB refill handlers also map the vmalloc area into xuseg.  Avoid
+- * the first couple of pages so NULL pointer dereferences will still
+- * reliably trap.
+- */
+-#define VMALLOC_START		(MAP_BASE + (2 * PAGE_SIZE))
+ #define VMALLOC_END	\
+ 	(MAP_BASE + \
+ 	 min(PTRS_PER_PGD * PTRS_PER_PUD * PTRS_PER_PMD * PTRS_PER_PTE * PAGE_SIZE, \
+-- 
+2.26.0.rc2
 
-May I ask that you and me jointly assume KVM for MIPS kernel
-maintainership? For me, it makes perfect sense, and I would certainly
-enjoy working with you. If you agree, please add such patch at the end
-of this series, in its next version.
-
-Yours,
-Aleksandar
-
-
-> V1 -> V2:
-> 1, Remove "mips: define pud_index() regardless of page table folding"
->    because it has been applied.
-> 2, Make Loongson-specific code be guarded by CONFIG_CPU_LOONGSON64.
->
-> V2 -> V3:
-> 1, Emulate a reduced feature list of CPUCFG.
-> 2, Fix all possible checkpatch.pl errors and warnings.
->
-> Xing Li(2):
->  KVM: MIPS: Define KVM_ENTRYHI_ASID to cpu_asid_mask(&boot_cpu_data)
->  KVM: MIPS: Fix VPN2_MASK definition for variable cpu_vmbits
->
-> Huacai Chen(12):
->  KVM: MIPS: Increase KVM_MAX_VCPUS and KVM_USER_MEM_SLOTS to 16
->  KVM: MIPS: Add EVENTFD support which is needed by VHOST
->  KVM: MIPS: Use lddir/ldpte instructions to lookup gpa_mm.pgd
->  KVM: MIPS: Introduce and use cpu_guest_has_ldpte
->  KVM: MIPS: Use root tlb to control guest's CCA for Loongson-3
->  KVM: MIPS: Let indexed cacheops cause guest exit on Loongson-3
->  KVM: MIPS: Add more types of virtual interrupts
->  KVM: MIPS: Add Loongson-3 Virtual IPI interrupt support
->  KVM: MIPS: Add CPUCFG emulation for Loongson-3
->  KVM: MIPS: Add CONFIG6 and DIAG registers emulation
->  KVM: MIPS: Add more MMIO load/store instructions emulation
->  KVM: MIPS: Enable KVM support for Loongson-3
->
-> Signed-off-by: Huacai Chen <chenhc@lemote.com>
-> ---
->  arch/mips/Kconfig                    |   1 +
->  arch/mips/include/asm/cpu-features.h |   3 +
->  arch/mips/include/asm/kvm_host.h     |  52 +++-
->  arch/mips/include/asm/mipsregs.h     |   7 +
->  arch/mips/include/uapi/asm/inst.h    |  11 +
->  arch/mips/kernel/cpu-probe.c         |   2 +
->  arch/mips/kvm/Kconfig                |   1 +
->  arch/mips/kvm/Makefile               |   5 +-
->  arch/mips/kvm/emulate.c              | 503 +++++++++++++++++++++++++++++=
-+++++-
->  arch/mips/kvm/entry.c                |  19 +-
->  arch/mips/kvm/interrupt.c            |  93 +------
->  arch/mips/kvm/interrupt.h            |  14 +-
->  arch/mips/kvm/loongson_ipi.c         | 214 +++++++++++++++
->  arch/mips/kvm/mips.c                 |  49 +++-
->  arch/mips/kvm/tlb.c                  |  41 +++
->  arch/mips/kvm/trap_emul.c            |   3 +
->  arch/mips/kvm/vz.c                   | 235 +++++++++++-----
->  17 files changed, 1087 insertions(+), 166 deletions(-)
->  create mode 100644 arch/mips/kvm/loongson_ipi.c
-> --
-> 2.7.0

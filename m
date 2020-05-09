@@ -2,162 +2,258 @@ Return-Path: <SRS0=WzUO=6X=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA812C47255
-	for <linux-mips@archiver.kernel.org>; Sat,  9 May 2020 04:24:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3705BC28CBC
+	for <linux-mips@archiver.kernel.org>; Sat,  9 May 2020 07:13:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 850FA21775
-	for <linux-mips@archiver.kernel.org>; Sat,  9 May 2020 04:24:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0FA4024953
+	for <linux-mips@archiver.kernel.org>; Sat,  9 May 2020 07:12:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725820AbgEIEYw convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 9 May 2020 00:24:52 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:36359 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725795AbgEIEYv (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 9 May 2020 00:24:51 -0400
-Received: by mail-io1-f66.google.com with SMTP id k6so3932129iob.3;
-        Fri, 08 May 2020 21:24:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=T729zuWLucZwsQ3fGdwS2CX71Nd+c9u7n/xXTLXgwos=;
-        b=ojy5wwrujp74GwIluAwT0Yp7j0TMPNJsGXPCYbB232tcr6ePY+ygbvIQNZQOAB3se9
-         nHZE+v7t39ulQ/36LDnQQiyzcupDTQNPkB2Ab0vI8jNyxkIgpNrwv5BVfrsjwaMPlrDT
-         rDBdmaZYUbiOPMF2PtHcTlN+pXJkVs0ID4hue3OeoUe5A9eGUloLboRzZdwSpl4zZPAB
-         4BVsWmGW2OSvRwbbe9WNtHM2hShEaZ7wYRwQmuyMJAAezzXFRmsVSsuPK/itliK0dLIj
-         NN0gKk10TjEX95qL98YX4TMYhg+5NS3BizTkjH0KUlFPxFSm6Pj8xWGmWc9R9zWIHHOu
-         kdwA==
-X-Gm-Message-State: AGi0PubaDPADrixYRYNYSnCUHJv0q4y66kpqr8pq4qNn2zddwqFB1iUI
-        50sfoUSwlUsgHGgYvcNaaRXvuO1cJiwf/3lzLw1vr7ai
-X-Google-Smtp-Source: APiQypJh1BjUcRA4lxUJWeKav/PPITNxXFDGZKYVfEZckYRMBOyxoLqKXw7BuxYc66PDgEeX2hQ8fHq2fRWX+XNO74E=
-X-Received: by 2002:a02:966a:: with SMTP id c97mr5911573jai.106.1588998290317;
- Fri, 08 May 2020 21:24:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <1588500367-1056-1-git-send-email-chenhc@lemote.com> <CAHiYmc4f1N-8mvMEZNcxVP+zbxjp0=OWFQc2pDDssnpmZ6eJig@mail.gmail.com>
-In-Reply-To: <CAHiYmc4f1N-8mvMEZNcxVP+zbxjp0=OWFQc2pDDssnpmZ6eJig@mail.gmail.com>
-From:   Huacai Chen <chenhc@lemote.com>
-Date:   Sat, 9 May 2020 12:32:30 +0800
-Message-ID: <CAAhV-H6521opsPrsorDK+Dk3qDHjOK=c7L5qmS=_O7cF4Uh=UA@mail.gmail.com>
-Subject: Re: [PATCH V3 00/14] KVM: MIPS: Add Loongson-3 support (Host Side)
-To:     Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        kvm <kvm@vger.kernel.org>,
-        QEMU Developers <qemu-devel@nongnu.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>,
-        Fuxin Zhang <zhangfx@lemote.com>,
+        id S1728760AbgEIHM7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 9 May 2020 03:12:59 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:44591 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728625AbgEIHM7 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 9 May 2020 03:12:59 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf93sV7ZeMnUyAA--.1S3;
+        Sat, 09 May 2020 15:12:46 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v2 1/2] MIPS: Loongson: Cleanup cpu_hwmon.c
+Date:   Sat,  9 May 2020 15:12:43 +0800
+Message-Id: <1589008364-2294-2-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1589008364-2294-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1589008364-2294-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9Dxf93sV7ZeMnUyAA--.1S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Gw4xGrW7GF4fWw4xuw48WFg_yoW3ZFW7pr
+        WDJay09F4UWFs7Gan7Zw47Cry5ArnIgay7G3sxu3s7AanxXF4jqa42yFWYyrn3KrWFqa1f
+        JryDXa1DGa1UWF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84
+        ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
+        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+        IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GF4l42xK82
+        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
+        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
+        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF
+        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87
+        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU8NtIDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi, Aleksandar,
+Fix the following checkpatch warnings and errors:
 
-On Fri, May 8, 2020 at 7:43 PM Aleksandar Markovic
-<aleksandar.qemu.devel@gmail.com> wrote:
->
-> нед, 3. мај 2020. у 12:06 Huacai Chen <chenhc@lemote.com> је написао/ла:
-> >
-> > We are preparing to add KVM support for Loongson-3. VZ extension is
-> > fully supported in Loongson-3A R4+, and we will not care about old CPUs
-> > (at least now). We already have a full functional Linux kernel (based
-> > on Linux-5.4.x LTS) and QEMU (based on 5.0.0-rc2) and their git
-> > repositories are here:
-> >
-> > QEMU: https://github.com/chenhuacai/qemu
-> > Kernel: https://github.com/chenhuacai/linux
-> >
-> > Of course these two repositories need to be rework and not suitable for
-> > upstream (especially the commits need to be splitted). We show them here
-> > is just to tell others what we have done, and how KVM/Loongson will look
-> > like.
-> >
-> > Our plan is make the KVM host side be upstream first, and after that,
-> > we will make the KVM guest side and QEMU emulator be upstream.
-> >
->
-> Huacei, I absolutely salute this series, as it is, in my opinion, of
-> tremendous significance not only for Loongson, but also for KVM for
-> MIPS in general.
->
-> As you probably know, James Hogan left KVM for MIPS kernel
-> maintainership some time ago. It was really too bad, as he was and
-> still is, from my direct experience, an excellent colleague and
-> engineer.
->
-> KVM for MIPS kernel maintainership left orphaned put me (as the
-> maintainer for KVM for MIPS in QEMU) in an awkward position.
->
-> May I ask that you and me jointly assume KVM for MIPS kernel
-> maintainership? For me, it makes perfect sense, and I would certainly
-> enjoy working with you. If you agree, please add such patch at the end
-> of this series, in its next version.
-I'm very glad to join maintainership with you, thank you for your invitation.
+ERROR: do not initialise statics to 0
+#14: FILE: drivers/platform/mips/cpu_hwmon.c:14:
++static int csr_temp_enable = 0;
 
-Regards,
-Huacai
+WARNING: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+#60: FILE: drivers/platform/mips/cpu_hwmon.c:60:
++static SENSOR_DEVICE_ATTR(name, S_IRUGO, get_hwmon_name, NULL, 0);
 
->
-> Yours,
-> Aleksandar
->
->
-> > V1 -> V2:
-> > 1, Remove "mips: define pud_index() regardless of page table folding"
-> >    because it has been applied.
-> > 2, Make Loongson-specific code be guarded by CONFIG_CPU_LOONGSON64.
-> >
-> > V2 -> V3:
-> > 1, Emulate a reduced feature list of CPUCFG.
-> > 2, Fix all possible checkpatch.pl errors and warnings.
-> >
-> > Xing Li(2):
-> >  KVM: MIPS: Define KVM_ENTRYHI_ASID to cpu_asid_mask(&boot_cpu_data)
-> >  KVM: MIPS: Fix VPN2_MASK definition for variable cpu_vmbits
-> >
-> > Huacai Chen(12):
-> >  KVM: MIPS: Increase KVM_MAX_VCPUS and KVM_USER_MEM_SLOTS to 16
-> >  KVM: MIPS: Add EVENTFD support which is needed by VHOST
-> >  KVM: MIPS: Use lddir/ldpte instructions to lookup gpa_mm.pgd
-> >  KVM: MIPS: Introduce and use cpu_guest_has_ldpte
-> >  KVM: MIPS: Use root tlb to control guest's CCA for Loongson-3
-> >  KVM: MIPS: Let indexed cacheops cause guest exit on Loongson-3
-> >  KVM: MIPS: Add more types of virtual interrupts
-> >  KVM: MIPS: Add Loongson-3 Virtual IPI interrupt support
-> >  KVM: MIPS: Add CPUCFG emulation for Loongson-3
-> >  KVM: MIPS: Add CONFIG6 and DIAG registers emulation
-> >  KVM: MIPS: Add more MMIO load/store instructions emulation
-> >  KVM: MIPS: Enable KVM support for Loongson-3
-> >
-> > Signed-off-by: Huacai Chen <chenhc@lemote.com>
-> > ---
-> >  arch/mips/Kconfig                    |   1 +
-> >  arch/mips/include/asm/cpu-features.h |   3 +
-> >  arch/mips/include/asm/kvm_host.h     |  52 +++-
-> >  arch/mips/include/asm/mipsregs.h     |   7 +
-> >  arch/mips/include/uapi/asm/inst.h    |  11 +
-> >  arch/mips/kernel/cpu-probe.c         |   2 +
-> >  arch/mips/kvm/Kconfig                |   1 +
-> >  arch/mips/kvm/Makefile               |   5 +-
-> >  arch/mips/kvm/emulate.c              | 503 ++++++++++++++++++++++++++++++++++-
-> >  arch/mips/kvm/entry.c                |  19 +-
-> >  arch/mips/kvm/interrupt.c            |  93 +------
-> >  arch/mips/kvm/interrupt.h            |  14 +-
-> >  arch/mips/kvm/loongson_ipi.c         | 214 +++++++++++++++
-> >  arch/mips/kvm/mips.c                 |  49 +++-
-> >  arch/mips/kvm/tlb.c                  |  41 +++
-> >  arch/mips/kvm/trap_emul.c            |   3 +
-> >  arch/mips/kvm/vz.c                   | 235 +++++++++++-----
-> >  17 files changed, 1087 insertions(+), 166 deletions(-)
-> >  create mode 100644 arch/mips/kvm/loongson_ipi.c
-> > --
-> > 2.7.0
+WARNING: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+#84: FILE: drivers/platform/mips/cpu_hwmon.c:84:
++static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO, get_cpu_temp, NULL, 1);
+
+WARNING: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+#85: FILE: drivers/platform/mips/cpu_hwmon.c:85:
++static SENSOR_DEVICE_ATTR(temp1_label, S_IRUGO, cpu_temp_label, NULL, 1);
+
+WARNING: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+#86: FILE: drivers/platform/mips/cpu_hwmon.c:86:
++static SENSOR_DEVICE_ATTR(temp2_input, S_IRUGO, get_cpu_temp, NULL, 2);
+
+WARNING: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+#87: FILE: drivers/platform/mips/cpu_hwmon.c:87:
++static SENSOR_DEVICE_ATTR(temp2_label, S_IRUGO, cpu_temp_label, NULL, 2);
+
+WARNING: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+#88: FILE: drivers/platform/mips/cpu_hwmon.c:88:
++static SENSOR_DEVICE_ATTR(temp3_input, S_IRUGO, get_cpu_temp, NULL, 3);
+
+WARNING: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+#89: FILE: drivers/platform/mips/cpu_hwmon.c:89:
++static SENSOR_DEVICE_ATTR(temp3_label, S_IRUGO, cpu_temp_label, NULL, 3);
+
+WARNING: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+#90: FILE: drivers/platform/mips/cpu_hwmon.c:90:
++static SENSOR_DEVICE_ATTR(temp4_input, S_IRUGO, get_cpu_temp, NULL, 4);
+
+WARNING: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
+#91: FILE: drivers/platform/mips/cpu_hwmon.c:91:
++static SENSOR_DEVICE_ATTR(temp4_label, S_IRUGO, cpu_temp_label, NULL, 4);
+
+WARNING: Missing a blank line after declarations
+#120: FILE: drivers/platform/mips/cpu_hwmon.c:120:
++	int id = (to_sensor_dev_attr(attr))->index - 1;
++	return sprintf(buf, "CPU %d Temperature\n", id);
+
+WARNING: Missing a blank line after declarations
+#128: FILE: drivers/platform/mips/cpu_hwmon.c:128:
++	int value = loongson3_cpu_temp(id);
++	return sprintf(buf, "%d\n", value);
+
+ERROR: spaces required around that '=' (ctx:VxV)
+#135: FILE: drivers/platform/mips/cpu_hwmon.c:135:
++	for (i=0; i<nr_packages; i++)
+ 	      ^
+
+ERROR: spaces required around that '<' (ctx:VxV)
+#135: FILE: drivers/platform/mips/cpu_hwmon.c:135:
++	for (i=0; i<nr_packages; i++)
+ 	           ^
+
+ERROR: spaces required around that '=' (ctx:VxV)
+#145: FILE: drivers/platform/mips/cpu_hwmon.c:145:
++	for (i=0; i<nr_packages; i++)
+ 	      ^
+
+ERROR: spaces required around that '<' (ctx:VxV)
+#145: FILE: drivers/platform/mips/cpu_hwmon.c:145:
++	for (i=0; i<nr_packages; i++)
+ 	           ^
+
+ERROR: spaces required around that '=' (ctx:VxV)
+#156: FILE: drivers/platform/mips/cpu_hwmon.c:156:
++	for (i=0; i<nr_packages; i++) {
+ 	      ^
+
+ERROR: spaces required around that '<' (ctx:VxV)
+#156: FILE: drivers/platform/mips/cpu_hwmon.c:156:
++	for (i=0; i<nr_packages; i++) {
+ 	           ^
+
+WARNING: line over 80 characters
+#175: FILE: drivers/platform/mips/cpu_hwmon.c:175:
++		csr_temp_enable = csr_readl(LOONGSON_CSR_FEATURES) & LOONGSON_CSRF_TEMP;
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ drivers/platform/mips/cpu_hwmon.c | 33 ++++++++++++++++++---------------
+ 1 file changed, 18 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/platform/mips/cpu_hwmon.c b/drivers/platform/mips/cpu_hwmon.c
+index 0d27cb7..fa42b13 100644
+--- a/drivers/platform/mips/cpu_hwmon.c
++++ b/drivers/platform/mips/cpu_hwmon.c
+@@ -11,7 +11,7 @@
+ #include <loongson_hwmon.h>
+ #include <loongson_regs.h>
+ 
+-static int csr_temp_enable = 0;
++static int csr_temp_enable;
+ 
+ /*
+  * Loongson-3 series cpu has two sensors inside,
+@@ -44,7 +44,7 @@ int loongson3_cpu_temp(int cpu)
+ 	case PRID_REV_LOONGSON3A_R3_0:
+ 	case PRID_REV_LOONGSON3A_R3_1:
+ 	default:
+-		reg = (reg & 0xffff)*731/0x4000 - 273;
++		reg = (reg & 0xffff) * 731 / 0x4000 - 273;
+ 		break;
+ 	}
+ 
+@@ -57,7 +57,7 @@ static struct device *cpu_hwmon_dev;
+ 
+ static ssize_t get_hwmon_name(struct device *dev,
+ 			struct device_attribute *attr, char *buf);
+-static SENSOR_DEVICE_ATTR(name, S_IRUGO, get_hwmon_name, NULL, 0);
++static SENSOR_DEVICE_ATTR(name, 0444, get_hwmon_name, NULL, 0);
+ 
+ static struct attribute *cpu_hwmon_attributes[] = {
+ 	&sensor_dev_attr_name.dev_attr.attr,
+@@ -81,14 +81,14 @@ static ssize_t get_cpu_temp(struct device *dev,
+ static ssize_t cpu_temp_label(struct device *dev,
+ 			struct device_attribute *attr, char *buf);
+ 
+-static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO, get_cpu_temp, NULL, 1);
+-static SENSOR_DEVICE_ATTR(temp1_label, S_IRUGO, cpu_temp_label, NULL, 1);
+-static SENSOR_DEVICE_ATTR(temp2_input, S_IRUGO, get_cpu_temp, NULL, 2);
+-static SENSOR_DEVICE_ATTR(temp2_label, S_IRUGO, cpu_temp_label, NULL, 2);
+-static SENSOR_DEVICE_ATTR(temp3_input, S_IRUGO, get_cpu_temp, NULL, 3);
+-static SENSOR_DEVICE_ATTR(temp3_label, S_IRUGO, cpu_temp_label, NULL, 3);
+-static SENSOR_DEVICE_ATTR(temp4_input, S_IRUGO, get_cpu_temp, NULL, 4);
+-static SENSOR_DEVICE_ATTR(temp4_label, S_IRUGO, cpu_temp_label, NULL, 4);
++static SENSOR_DEVICE_ATTR(temp1_input, 0444, get_cpu_temp, NULL, 1);
++static SENSOR_DEVICE_ATTR(temp1_label, 0444, cpu_temp_label, NULL, 1);
++static SENSOR_DEVICE_ATTR(temp2_input, 0444, get_cpu_temp, NULL, 2);
++static SENSOR_DEVICE_ATTR(temp2_label, 0444, cpu_temp_label, NULL, 2);
++static SENSOR_DEVICE_ATTR(temp3_input, 0444, get_cpu_temp, NULL, 3);
++static SENSOR_DEVICE_ATTR(temp3_label, 0444, cpu_temp_label, NULL, 3);
++static SENSOR_DEVICE_ATTR(temp4_input, 0444, get_cpu_temp, NULL, 4);
++static SENSOR_DEVICE_ATTR(temp4_label, 0444, cpu_temp_label, NULL, 4);
+ 
+ static const struct attribute *hwmon_cputemp[4][3] = {
+ 	{
+@@ -117,6 +117,7 @@ static ssize_t cpu_temp_label(struct device *dev,
+ 			struct device_attribute *attr, char *buf)
+ {
+ 	int id = (to_sensor_dev_attr(attr))->index - 1;
++
+ 	return sprintf(buf, "CPU %d Temperature\n", id);
+ }
+ 
+@@ -125,6 +126,7 @@ static ssize_t get_cpu_temp(struct device *dev,
+ {
+ 	int id = (to_sensor_dev_attr(attr))->index - 1;
+ 	int value = loongson3_cpu_temp(id);
++
+ 	return sprintf(buf, "%d\n", value);
+ }
+ 
+@@ -132,7 +134,7 @@ static int create_sysfs_cputemp_files(struct kobject *kobj)
+ {
+ 	int i, ret = 0;
+ 
+-	for (i=0; i<nr_packages; i++)
++	for (i = 0; i < nr_packages; i++)
+ 		ret = sysfs_create_files(kobj, hwmon_cputemp[i]);
+ 
+ 	return ret;
+@@ -142,7 +144,7 @@ static void remove_sysfs_cputemp_files(struct kobject *kobj)
+ {
+ 	int i;
+ 
+-	for (i=0; i<nr_packages; i++)
++	for (i = 0; i < nr_packages; i++)
+ 		sysfs_remove_files(kobj, hwmon_cputemp[i]);
+ }
+ 
+@@ -153,7 +155,7 @@ static void do_thermal_timer(struct work_struct *work)
+ {
+ 	int i, value, temp_max = 0;
+ 
+-	for (i=0; i<nr_packages; i++) {
++	for (i = 0; i < nr_packages; i++) {
+ 		value = loongson3_cpu_temp(i);
+ 		if (value > temp_max)
+ 			temp_max = value;
+@@ -172,7 +174,8 @@ static int __init loongson_hwmon_init(void)
+ 	pr_info("Loongson Hwmon Enter...\n");
+ 
+ 	if (cpu_has_csr())
+-		csr_temp_enable = csr_readl(LOONGSON_CSR_FEATURES) & LOONGSON_CSRF_TEMP;
++		csr_temp_enable = csr_readl(LOONGSON_CSR_FEATURES) &
++				  LOONGSON_CSRF_TEMP;
+ 
+ 	cpu_hwmon_dev = hwmon_device_register(NULL);
+ 	if (IS_ERR(cpu_hwmon_dev)) {
+-- 
+2.1.0
+

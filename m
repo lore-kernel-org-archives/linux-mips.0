@@ -2,144 +2,57 @@ Return-Path: <SRS0=g+8T=6Y=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1FF5C54E8D
-	for <linux-mips@archiver.kernel.org>; Sun, 10 May 2020 10:59:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E9F0C38A2A
+	for <linux-mips@archiver.kernel.org>; Sun, 10 May 2020 20:06:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D79C8208DB
-	for <linux-mips@archiver.kernel.org>; Sun, 10 May 2020 10:59:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EE07C20737
+	for <linux-mips@archiver.kernel.org>; Sun, 10 May 2020 20:06:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726085AbgEJK6c (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 10 May 2020 06:58:32 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:46516 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgEJK6b (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 10 May 2020 06:58:31 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 569BC8030802;
-        Sun, 10 May 2020 10:58:26 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4ZvitKkdah1v; Sun, 10 May 2020 13:58:25 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
-        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
-        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 0/7] watchdog: dw_wdt: Take Baikal-T1 DW WDT peculiarities into account
-Date:   Sun, 10 May 2020 13:58:00 +0300
-Message-ID: <20200510105807.880-1-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200306132758.703FC8030704@mail.baikalelectronics.ru>
-References: <20200306132758.703FC8030704@mail.baikalelectronics.ru>
+        id S1728630AbgEJUGS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 10 May 2020 16:06:18 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:44495 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728071AbgEJUGS (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 10 May 2020 16:06:18 -0400
+Received: from localhost.localdomain (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 83FFB200005;
+        Sun, 10 May 2020 20:06:15 +0000 (UTC)
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-mtd@lists.infradead.org
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-mips@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH 4/4] mtd: rawnand: au1550nd: Patch the read/write buf helper prototypes
+Date:   Sun, 10 May 2020 22:06:14 +0200
+Message-Id: <20200510200614.2774-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200419193037.1544035-5-boris.brezillon@collabora.com>
+References: 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: eb83af4d4d2180e2ad4927fc1832ff27d02eb543
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There were a few features enabled at the time of the Baikal-T1 SoC DW WDT
-IP synthesis, which weren't taken into account in the DW WDT driver available
-in the kernel. First of all the SoC engineers synthesized the watchdog core
-with WDT_USE_FIX_TOP set to false (don't really know why, but they did).
-Due to this the timer reset values weren't fixed as the driver expected
-but were initialized with a pre-defined values selected by the engineers.
-Secondly the driver expected that the watchdog APB bus and the timer had
-synchronous reference clocks, while Baikal-T1 SoC DW WDT was created with
-asynchronous ones. So the driver should enable two clock devices: APB bus
-clocks and a separate timer reference clock. Finally DW Watchdog Timer is
-capable of generating a pre-timeout interrupt if corresponding config is
-enabled. The problem was that the pre-timeout IRQ happens when the set
-timeout elapses, while the actual WDT expiration and subsequent reboot take
-place in the next timeout. This makes the pre-timeout functionality
-implementation a bit tricky, since in this case we would have to find a
-WDT timeout twice smaller the requested timeout. All of the changes described
-above are provided by the patches in this patchset.
+On Sun, 2020-04-19 at 19:30:37 UTC, Boris Brezillon wrote:
+> To match the types passed by au1550nd_exec_instr() function.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-In addition traditionally we replaced the legacy plain text-based dt-binding
-file with yaml-based one and added the controller registers dump DebugFS node
-to ease the driver debug procedure.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
-This patchset is rebased and tested on the mainline Linux kernel 5.6-rc4:
-base-commit: 0e698dfa2822 ("Linux 5.7-rc4")
-tag: v5.7-rc4
-
-Changelog v2:
-- Rearrange SoBs.
-- Discard BE copyright header from the binding file.
-- Replace "additionalProperties: false" with "unevaluatedProperties: false"
-  property in the binding.
-- Move the APB3 clocks support declared in the dt binding file into a
-  dedicated patch.
-- Move $ref to the root level of the "snps,watchdog-tops" property
-  so does the constraints.
-- Make Pre-timeout IRQs support being optional.
-- Add "ms" suffix to the methods returning msec and convert the methods
-  with no "ms" suffix to return a timeout in sec.
-- Make sure minimum timeout is at least 1 sec.
-- Refactor the timeouts calculation procedure to to retain the timeouts in
-  the ascending order.
-- Make sure there is no integer overflow in milliseconds calculation. It
-  is saved in a dedicated uint field of the timeout structure.
-- Discard timeout/pretimeout/ping/enable DebugFS nodes. Registers state
-  dump node is only left.
-
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>
-Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
-Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-Cc: Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>
-Cc: Vadim Vlasov <V.Vlasov@baikalelectronics.ru>
-Cc: Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-watchdog@vger.kernel.org
-Cc: devicetree@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-
-Serge Semin (7):
-  dt-bindings: watchdog: Convert DW WDT binding to DT schema
-  dt-bindings: watchdog: dw-wdt: Support devices with asynch clocks
-  dt-bindings: watchdog: dw-wdt: Add watchdog TOPs array property
-  watchdog: dw_wdt: Support devices with non-fixed TOP values
-  watchdog: dw_wdt: Support devices with asynch clocks
-  watchdog: dw_wdt: Add pre-timeouts support
-  watchdog: dw_wdt: Add DebugFS files
-
- .../devicetree/bindings/watchdog/dw_wdt.txt   |  24 -
- .../bindings/watchdog/snps,dw-wdt.yaml        |  91 ++++
- drivers/watchdog/dw_wdt.c                     | 437 ++++++++++++++++--
- 3 files changed, 495 insertions(+), 57 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/watchdog/dw_wdt.txt
- create mode 100644 Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
-
--- 
-2.25.1
-
+Miquel

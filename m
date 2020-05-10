@@ -4,39 +4,39 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FB63C54E49
-	for <linux-mips@archiver.kernel.org>; Sun, 10 May 2020 07:57:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ACBDC54E8A
+	for <linux-mips@archiver.kernel.org>; Sun, 10 May 2020 07:57:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D833C208DB
-	for <linux-mips@archiver.kernel.org>; Sun, 10 May 2020 07:57:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E693B208DB
+	for <linux-mips@archiver.kernel.org>; Sun, 10 May 2020 07:57:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="eFIotFDG"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VdXdviLy"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729411AbgEJH5P (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 10 May 2020 03:57:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
+        id S1729434AbgEJH5X (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 10 May 2020 03:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729361AbgEJH45 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 10 May 2020 03:56:57 -0400
+        with ESMTP id S1729321AbgEJH4u (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 10 May 2020 03:56:50 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CC2C061A0C;
-        Sun, 10 May 2020 00:56:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7410C061A0E;
+        Sun, 10 May 2020 00:56:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=4ek5EujzgHPIbdEvHkQJFfygtnYVEDi+YXEorFGRVI0=; b=eFIotFDGouc70Vrc0YBQvt3tXt
-        LpU0O3gYOtPu3VsEhuy5wQuxNPWojPeqgCFlM5dSKEEFImUpmprGSjWQZ0isM9qf0f11fe/znjQZc
-        dHP24av3IL8YSbIBVKgKGNrXTko0pMvt+QsDVILQNBIiYm4VuFQbXqFd9OEKE9mbXLFXDl7Ac8ztU
-        IXG+W0ZPOVZjUynFgojDlBd+6dx5U549BrQCjSBWN76+Cv9TTohQNUrM+o6UeGSn2P4KFxoBVDps7
-        z67jvijRstZAJtCqNA/oQIVDxN2zVd3y0Ekl61cmtoKGPPt46ywCJMoWhCt6Bt8Fgc72s1NettA9x
-        SFoo+bxg==;
+        bh=fx6bBrPOGEjXhNeaz51guyTlixZC0l8IQKU5XAHGw70=; b=VdXdviLyJyWpWRc0iLUjbpAAiT
+        6IgZhpMGojIMsz7ZsCzDu4V1w3B9lfosjCLFz07LlOtWg2rgoqcMialU+OSgrMY05gAyqdKiuWqkJ
+        r5zvHgHeHt+sDd1mH+1/9hqGLX8fSyUhUEqwkCj5Idqjc7uLLoBqiyyqX2eR1W1kNrYLTklc3ZqMS
+        eN8oRNeJZiG/VKXC2qEEIa3AsTWctz4fRspf/uAtCThMecqTWXoQ+3w2w8ekYoi2HA0WWvMQAlQQm
+        zDKaX7FQx4uXPm2Rc1hUFvcPNgaBNVXP+G/mWysvyzP3KQWeTdd7jpx7vamt1IiHjUdrs9EJZRMRV
+        LzzsE/Cw==;
 Received: from [2001:4bb8:180:9d3f:c70:4a89:bc61:2] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jXgpL-0001Mc-7G; Sun, 10 May 2020 07:56:47 +0000
+        id 1jXgp9-0001Bf-B4; Sun, 10 May 2020 07:56:35 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -52,9 +52,9 @@ Cc:     Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
         linux-arch@vger.kernel.org, linux-mm@kvack.org,
         linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
         linux-fsdevel@vger.kernel.org
-Subject: [PATCH 30/31] nommu: use flush_icache_user_range in brk and mmap
-Date:   Sun, 10 May 2020 09:55:09 +0200
-Message-Id: <20200510075510.987823-31-hch@lst.de>
+Subject: [PATCH 26/31] m68k: implement flush_icache_user_range
+Date:   Sun, 10 May 2020 09:55:05 +0200
+Message-Id: <20200510075510.987823-27-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200510075510.987823-1-hch@lst.de>
 References: <20200510075510.987823-1-hch@lst.de>
@@ -66,35 +66,55 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-These obviously operate on user addresses.
+Rename the current flush_icache_range to flush_icache_user_range as
+per commit ae92ef8a4424 ("PATCH] flush icache in correct context") there
+seems to be an assumption that it operates on user addresses.  Add a
+flush_icache_range around it that for now is a no-op.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- mm/nommu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/m68k/include/asm/cacheflush_mm.h | 2 ++
+ arch/m68k/mm/cache.c                  | 7 ++++++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/mm/nommu.c b/mm/nommu.c
-index 318df4e236c99..aed7acaed2383 100644
---- a/mm/nommu.c
-+++ b/mm/nommu.c
-@@ -443,7 +443,7 @@ SYSCALL_DEFINE1(brk, unsigned long, brk)
- 	/*
- 	 * Ok, looks good - let it rip.
- 	 */
--	flush_icache_range(mm->brk, brk);
-+	flush_icache_user_range(mm->brk, brk);
- 	return mm->brk = brk;
- }
+diff --git a/arch/m68k/include/asm/cacheflush_mm.h b/arch/m68k/include/asm/cacheflush_mm.h
+index 95376bf84faa5..1ac55e7b47f01 100644
+--- a/arch/m68k/include/asm/cacheflush_mm.h
++++ b/arch/m68k/include/asm/cacheflush_mm.h
+@@ -257,6 +257,8 @@ static inline void __flush_page_to_ram(void *vaddr)
+ extern void flush_icache_user_page(struct vm_area_struct *vma, struct page *page,
+ 				    unsigned long addr, int len);
+ extern void flush_icache_range(unsigned long address, unsigned long endaddr);
++extern void flush_icache_user_range(unsigned long address,
++		unsigned long endaddr);
  
-@@ -1287,7 +1287,7 @@ unsigned long do_mmap(struct file *file,
- 	/* we flush the region from the icache only when the first executable
- 	 * mapping of it is made  */
- 	if (vma->vm_flags & VM_EXEC && !region->vm_icache_flushed) {
--		flush_icache_range(region->vm_start, region->vm_end);
-+		flush_icache_user_range(region->vm_start, region->vm_end);
- 		region->vm_icache_flushed = true;
+ static inline void copy_to_user_page(struct vm_area_struct *vma,
+ 				     struct page *page, unsigned long vaddr,
+diff --git a/arch/m68k/mm/cache.c b/arch/m68k/mm/cache.c
+index 99057cd5ff7f1..7915be3a09712 100644
+--- a/arch/m68k/mm/cache.c
++++ b/arch/m68k/mm/cache.c
+@@ -73,7 +73,7 @@ static unsigned long virt_to_phys_slow(unsigned long vaddr)
+ 
+ /* Push n pages at kernel virtual address and clear the icache */
+ /* RZ: use cpush %bc instead of cpush %dc, cinv %ic */
+-void flush_icache_range(unsigned long address, unsigned long endaddr)
++void flush_icache_user_range(unsigned long address, unsigned long endaddr)
+ {
+ 	if (CPU_IS_COLDFIRE) {
+ 		unsigned long start, end;
+@@ -104,6 +104,11 @@ void flush_icache_range(unsigned long address, unsigned long endaddr)
+ 			      : "di" (FLUSH_I));
  	}
+ }
++
++void flush_icache_range(unsigned long address, unsigned long endaddr)
++{
++	flush_icache_user_range(address, endaddr);
++}
+ EXPORT_SYMBOL(flush_icache_range);
  
+ void flush_icache_user_page(struct vm_area_struct *vma, struct page *page,
 -- 
 2.26.2
 

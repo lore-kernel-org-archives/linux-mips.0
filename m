@@ -2,97 +2,194 @@ Return-Path: <SRS0=q4jA=6Z=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67E47C54E8F
-	for <linux-mips@archiver.kernel.org>; Mon, 11 May 2020 18:25:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73E44C54E8D
+	for <linux-mips@archiver.kernel.org>; Mon, 11 May 2020 18:27:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 553B120752
-	for <linux-mips@archiver.kernel.org>; Mon, 11 May 2020 18:25:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 51288207FF
+	for <linux-mips@archiver.kernel.org>; Mon, 11 May 2020 18:27:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1589221649;
+	bh=lDHar79Z4HHKrJBGwuXzy0YNiwMg8sKm3v01RezBD+Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=q8Ss88beldV7MQBLNIw94hv6oGdz8TBknkhYL+UAaaSMkUOLXk4fazg2iA9azEuhg
+	 l4dt5r42yTAMz9ml8NGteu5v/iAZ/rjbPNIYklD+Bne3j3nR8X2ERuntRBY2rY6MLa
+	 Syt6piia5jC/riFYFPrkldmJYdSfrJyNqABPU4K4=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729969AbgEKSZl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 11 May 2020 14:25:41 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:49720 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729678AbgEKSZl (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 11 May 2020 14:25:41 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 4B329803080A;
-        Mon, 11 May 2020 18:25:38 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Vze97ONxmtmJ; Mon, 11 May 2020 21:25:36 +0300 (MSK)
-Date:   Mon, 11 May 2020 21:25:35 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/6] dmaengine: dw: Print warning if multi-block is
- unsupported
-Message-ID: <20200511182535.uvijbdjreqw2zsfc@mobilestation>
-References: <20200306131048.ADBE18030797@mail.baikalelectronics.ru>
- <20200508105304.14065-1-Sergey.Semin@baikalelectronics.ru>
- <20200508105304.14065-5-Sergey.Semin@baikalelectronics.ru>
- <20200508112604.GJ185537@smile.fi.intel.com>
- <20200508115334.GE4820@sirena.org.uk>
- <20200511021016.wptcgnc3iq3kadgz@mobilestation>
- <20200511115813.GG8216@sirena.org.uk>
- <20200511134502.hjbu5evkiuh75chr@mobilestation>
- <CAHp75VdOi1rwaKjzowhj0KA-eNNL4NxpiCeqfELFgO_RcnZ-xw@mail.gmail.com>
- <20200511174800.GM8216@sirena.org.uk>
+        id S1731028AbgEKS1Z (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 11 May 2020 14:27:25 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:44601 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729772AbgEKS1Z (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 11 May 2020 14:27:25 -0400
+Received: by mail-ot1-f66.google.com with SMTP id j4so8344924otr.11;
+        Mon, 11 May 2020 11:27:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0hPBkYeKIiodMWs/enk89cPCGVXGgMcnp/mkphaKHR0=;
+        b=O6XgTj/V8prOCbfC1OnEO1b0FUTmpFXhSNlc8/KS/DG3awquhhvln+DUAAzrSijyIx
+         Vx/RjdRGPBaIvgOpuzgPwBcw0VH7M0WilzlfLtclP/Vmc2RwqgLD/FTw3Fr6Oh8+3uPq
+         PKS6XYjNYUCMmlO0mON27H1v1Dbrl8cqfYFrnFvoQ4aa3ZdKLdrlWBB/DDmGJ0FIc8Ir
+         xvwQCMhB9zjt+GI0pyV/cIhIB1hzz02Q+GqzxbaxfsaYf0T/afYKx+M0LKlwdpXa6Zw1
+         tPAWZQWWeb+x7DcFKjFLc5FstuN4rS6nofXUpd71HkONqXruv8lIhednHmLB+Dnk3qVU
+         NzPg==
+X-Gm-Message-State: AGi0Puatv+PTp7RUA8IMxHZXNwT1vtFl8tjz+4JuBkUZSgdIQRZH4EnJ
+        h+N0vu9zMX2ifqsF5m7CGA==
+X-Google-Smtp-Source: APiQypKkLLpfS5uFZ7qDGesr8w1obstysUYqHlic1hxCJgCQLeL+ae1OZe/dsWHP/TD49Qm1gGUNpg==
+X-Received: by 2002:a9d:7858:: with SMTP id c24mr13282165otm.163.1589221644004;
+        Mon, 11 May 2020 11:27:24 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id e91sm2834465otb.40.2020.05.11.11.27.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2020 11:27:23 -0700 (PDT)
+Received: (nullmailer pid 6693 invoked by uid 1000);
+        Mon, 11 May 2020 15:37:12 -0000
+Date:   Mon, 11 May 2020 10:37:12 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
+        brendanhiggins@google.com, tglx@linutronix.de,
+        boris.brezillon@collabora.com, anders.roxell@linaro.org,
+        masonccyang@mxic.com.tw, linux-mips@vger.kernel.org,
+        hauke.mehrtens@intel.com, andriy.shevchenko@intel.com,
+        qi-ming.wu@intel.com, cheol.yong.kim@intel.com
+Subject: Re: [PATCH v5 1/2] dt-bindings: mtd: Add YAML for Nand Flash
+ Controller support
+Message-ID: <20200511153712.GA25497@bogus>
+References: <20200507001537.4034-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200507001537.4034-2-vadivel.muruganx.ramuthevar@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200511174800.GM8216@sirena.org.uk>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20200507001537.4034-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, May 11, 2020 at 06:48:00PM +0100, Mark Brown wrote:
-> On Mon, May 11, 2020 at 04:58:53PM +0300, Andy Shevchenko wrote:
-> > On Mon, May 11, 2020 at 4:48 PM Serge Semin
+On Thu, May 07, 2020 at 08:15:36AM +0800, Ramuthevar,Vadivel MuruganX wrote:
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 > 
-> > > So the question is of how to export the multi-block LLP flag from DW DMAc
-> > > driver. Andy?
+> Add YAML file for dt-bindings to support NAND Flash Controller
+> on Intel's Lightning Mountain SoC.
+
+The $subject should some how reflect this is for this SoC.
+
 > 
-> > I'm not sure I understand why do you need this being exported. Just
-> > always supply SG list out of single entry and define the length
-> > according to the maximum segment size (it's done IIRC in SPI core).
+> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> ---
+>  .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 85 ++++++++++++++++++++++
+>  1 file changed, 85 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
 > 
-> If there's a limit from the dmaengine it'd be a bit cleaner to export
-> the limit from the DMA engine (and it'd help with code reuse for clients
-> that might work with other DMA controllers without needing to add custom
-> compatibles for those instantiations).
+> diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+> new file mode 100644
+> index 000000000000..69b592ae62f4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+> @@ -0,0 +1,85 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/intel,lgm-nand.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Intel LGM SoC NAND Controller Device Tree Bindings
+> +
+> +allOf:
+> +  - $ref: "nand-controller.yaml"
+> +
+> +maintainers:
+> +  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: intel,lgm-nand-controller
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  dmas:
+> +    maxItems: 2
+> +
+> +  dma-names:
+> +    enum:
+> +      - rx
+> +      - tx
+> +
+> +  pinctrl-names: true
+> +
+> +patternProperties:
+> +  "^pinctrl-[0-9]+$": true
 
-Right. I've already posted a patch which exports the max segment size from the
-DW DMA controller driver. The SPI core will get the limit in the spi_map_buf()
-method by calling the dma_get_max_seg_size() function. The problem I
-described concerns of how to determine whether to apply the solution Andy
-suggested, since normally if DW DMA controller has true multi-block LLP
-supported the workaround isn't required. So in order to solve the problem in a
-generic way the easiest way would be to somehow get the noLLP flag from the DW
-DMAC private data and select a one-by-one SG entries submission algorithm
-instead of the normal one... On the other hand we could just implement a
-flag-based quirks in the DW APB SSI driver and determine whether the LLP
-problem exists for the platform-specific DW APB SSI controller.
+Don't need the pinctrl properties. The tooling adds them.
 
--Sergey
+> +
+> +  "^nand@[a-f0-9]+$":
+> +    type: object
+> +    properties:
+> +      reg:
+> +        minimum: 0
+> +        maximum: 7
+> +
+> +      nand-ecc-mode: true
+> +
+> +      nand-ecc-algo:
+> +        const: hw
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - dmas
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/intel,lgm-clk.h>
 
+Is this applied somewhere? It's missing in my check and will break the 
+build.
+
+> +    nand-controller@e0f00000 {
+> +      compatible = "intel,nand-controller";
+> +      reg = <0xe0f00000 0x100>,
+> +            <0xe1000000 0x300>,
+> +            <0xe1400000 0x8000>,
+> +            <0xe1c00000 0x1000>;
+> +      reg-names = "ebunand", "hsnand", "nand_cs0", "nand_cs1";
+> +      clocks = <&cgu0 LGM_GCLK_EBU>;
+> +      dma-names = "tx", "rx";
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      #clock-cells = <1>;
+> +
+> +      nand@0 {
+> +        reg = <0>;
+> +        nand-on-flash-bbt;
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +      };
+> +    };
+> +
+> +...
+> -- 
+> 2.11.0
+> 

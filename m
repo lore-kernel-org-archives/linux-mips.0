@@ -2,146 +2,105 @@ Return-Path: <SRS0=q4jA=6Z=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F389EC54E8D
-	for <linux-mips@archiver.kernel.org>; Mon, 11 May 2020 18:27:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 018D8C54E8F
+	for <linux-mips@archiver.kernel.org>; Mon, 11 May 2020 18:32:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CCCF320736
-	for <linux-mips@archiver.kernel.org>; Mon, 11 May 2020 18:27:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1589221665;
-	bh=wr6tOmnAcNrr6IctbfLutwZDO3utUlyv8xeCTtEXHnI=;
-	h=Date:From:To:List-Id:Cc:Subject:References:In-Reply-To:List-ID:
-	 From;
-	b=xTg0Fv6GF4/bY0lLKAaaGYbDjRfqgurou2rY3jVIULz3sTfktihJ1jRRjs9LHFixh
-	 V43e0MmkQ9KnRxTWfTDvTgNNSW9Bf9U707J03OVxKrTNQP2rWrO4fwxLu358e8AvHm
-	 Uk24oRfl/3xlFoZsnrZNUO5n7NaRUg2+T6k6njYQ=
+	by mail.kernel.org (Postfix) with ESMTP id E1DEB206D9
+	for <linux-mips@archiver.kernel.org>; Mon, 11 May 2020 18:32:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731199AbgEKS1m convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 11 May 2020 14:27:42 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:39247 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729772AbgEKS1l (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 11 May 2020 14:27:41 -0400
-Received: by mail-oi1-f195.google.com with SMTP id b18so15958578oic.6;
-        Mon, 11 May 2020 11:27:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=2JfjrBftKXN1Y8kaiLtcmfBfKVjdy+M8XvkIRemlfR0=;
-        b=ld6cX7Fo0Ub01MfgPkT7KEytD2kQ/36Oxxhz2wLoxLTaNcly5gZdrlmlB55O81mfAc
-         dNJfsP1d9XtZn9iYg+SnQWJg/CI1eeVCFDRWMjJ8dPQ15uM977jn7P3RbNdn8UwowWxG
-         hWJg0GzOqwNXD5uoIzrwYPbXBPcTKCBGHccmBDiUuESZV5iiPUK876dTBPGn8WVI1ZPW
-         LFXhJlWkH3L5T2mni0ARYcOIncETpQkrBKHZiop8Q4F0q2xfilAgLE8mwVi47NEnHa6V
-         GMA2StoEulTJexM7KBGf1HReAsDvNk7dDdYo/A/dqrM/fhxk7wXUUDTOy+mJoyF8M6e4
-         j92Q==
-X-Gm-Message-State: AGi0Puaw35Ds8TsFyAw+9EkAOPw2TAYHTkEXeWwGbi7S/EPgJlqBMptO
-        SPU9pdMPma0uijKBeJr9wF60EV4=
-X-Google-Smtp-Source: APiQypK9DJaEDWtbzE/LXd1gCQLYx0ARKrfAhytLbY5MnQhV/Uv5zb6kFMG5kSsOB2OTrWH2cf8+rw==
-X-Received: by 2002:aca:c4d3:: with SMTP id u202mr20837487oif.113.1589221659931;
-        Mon, 11 May 2020 11:27:39 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id r6sm3011205oom.26.2020.05.11.11.27.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 11:27:39 -0700 (PDT)
-Received: (nullmailer pid 8023 invoked by uid 1000);
-        Mon, 11 May 2020 15:38:04 -0000
-Date:   Mon, 11 May 2020 10:38:04 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-List-Id: <soc.lore.kernel.org>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        soc@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Olof Johansson <olof@lixom.net>, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        id S1729969AbgEKScv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 11 May 2020 14:32:51 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:49770 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729727AbgEKScv (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 11 May 2020 14:32:51 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 3A2FD803088B;
+        Mon, 11 May 2020 18:32:48 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id P1N1qOkT7GET; Mon, 11 May 2020 21:32:47 +0300 (MSK)
+Date:   Mon, 11 May 2020 21:32:47 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Paul Burton <paulburton@kernel.org>,
-        devicetree@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: memory: Add Baikal-T1 L2-cache
- Control Block binding
-Message-ID: <20200511153804.GA7015@bogus>
-References: <20200306130731.938808030702@mail.baikalelectronics.ru>
- <20200507230705.6468-1-Sergey.Semin@baikalelectronics.ru>
- <20200507230705.6468-2-Sergey.Semin@baikalelectronics.ru>
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/6] dmaengine: dw: Print warning if multi-block is
+ unsupported
+Message-ID: <20200511183247.y6cfss22pe67nouf@mobilestation>
+References: <20200306131048.ADBE18030797@mail.baikalelectronics.ru>
+ <20200508105304.14065-1-Sergey.Semin@baikalelectronics.ru>
+ <20200508105304.14065-5-Sergey.Semin@baikalelectronics.ru>
+ <20200508112604.GJ185537@smile.fi.intel.com>
+ <20200508115334.GE4820@sirena.org.uk>
+ <20200511021016.wptcgnc3iq3kadgz@mobilestation>
+ <20200511115813.GG8216@sirena.org.uk>
+ <20200511134502.hjbu5evkiuh75chr@mobilestation>
+ <20200511174414.GL8216@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200507230705.6468-2-Sergey.Semin@baikalelectronics.ru>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200511174414.GL8216@sirena.org.uk>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, 8 May 2020 02:07:03 +0300, Serge Semin wrote:
-> There is a single register provided by the SoC system controller,
-> which can be used to tune the L2-cache RAM up. It only provides a way
-> to change the L2-RAM access latencies. So aside from "be,bt1-l2-ctl"
-> compatible string the device node can be optionally equipped with the
-> properties of Tag/Data/WS latencies.
+On Mon, May 11, 2020 at 06:44:14PM +0100, Mark Brown wrote:
+> On Mon, May 11, 2020 at 04:45:02PM +0300, Serge Semin wrote:
+> > On Mon, May 11, 2020 at 12:58:13PM +0100, Mark Brown wrote:
 > 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Paul Burton <paulburton@kernel.org>
-> Cc: Ralf Baechle <ralf@linux-mips.org>
-> Cc: Olof Johansson <olof@lixom.net>
-> Cc: Boris Brezillon <bbrezillon@kernel.org>
-> Cc: Paul Cercueil <paul@crapouillou.net>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Cc: linux-mips@vger.kernel.org
-> Cc: soc@kernel.org
+> > > That sounds like you need to also impose a limit on the maximum message
+> > > size as well then, with that you should be able to handle messages up
+> > > to whatever that limit is.  There's code for that bit already, so long
+> > > as the limit is not too low it should be fine for most devices and
+> > > client drivers can see the limit so they can be updated to work with it
+> > > if needed.
 > 
-> ---
+> > Hmm, this might work. The problem will be with imposing such limitation through
+> > the DW APB SSI driver. In order to do this I need to know:
 > 
-> Changelog v2:
-> - Move driver to the memory subsystem.
-> - Use dual GPL/BSD license.
-> - Use single lined copyright header.
-> - Move "allOf" restrictions to the root level of the properties.
-> - Discard syscon compatible string and reg property.
-> - The DT node is supposed to be a child of the Baikal-T1 system controller
->   node.
-> ---
->  .../memory-controllers/baikal,bt1-l2-ctl.yaml | 59 +++++++++++++++++++
->  1 file changed, 59 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/baikal,bt1-l2-ctl.yaml
+> > 1) Whether multi-block LLP is supported by the DW DMA controller.
+> > 2) Maximum DW DMA transfer block size.
 > 
+> There is a constraint enumeration interface in the DMA API which you
+> should be able to extend for this if it doesn't already support what you
+> need.
 
+Yes, that's max segment size.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+> 
+> > Then I'll be able to use this information in the can_dma() callback to enable
+> > the DMA xfers only for the safe transfers. Did you mean something like this when
+> > you said "There's code for that bit already" ? If you meant the max_dma_len
+> > parameter, then setting it won't work, because it just limits the SG items size
+> > not the total length of a single transfer.
+> 
+> You can set max_transfer_size and/or max_message_size in the SPI driver
+> - you should be able to do this on probe.
 
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/memory-controllers/baikal,bt1-l2-ctl.example.dt.yaml: l2_ctl: 'baikal,l2-data-latency', 'baikal,l2-tag-latency', 'baikal,l2-ws-latency' do not match any of the regexes: '^#.*', '^(at25|devbus|dmacap|dsa|exynos|fsi[ab]|gpio-fan|gpio|gpmc|hdmi|i2c-gpio),.*', '^(keypad|m25p|max8952|max8997|max8998|mpmc),.*', '^(pinctrl-single|#pinctrl-single|PowerPC),.*', '^(pl022|pxa-mmc|rcar_sound|rotary-encoder|s5m8767|sdhci),.*', '^(simple-audio-card|simple-graph-card|st-plgpio|st-spics|ts),.*', '^GEFanuc,.*', '^ORCL,.*', '^SUNW,.*', '^[a-zA-Z0-9#_][a-zA-Z0-9+\\-._@]{0,63}$', '^[a-zA-Z0-9+\\-._]*@[0-9a-zA-Z,]*$', '^abilis,.*', '^abracon,.*', '^acme,.*', '^actions,.*', '^active-semi,.*', '^ad,.*', '^adafruit,.*', '^adapteva,.*', '^adaptrum,.*', '^adh,.*', '^adi,.*', '^advantech,.*', '^aeroflexgaisler,.*', '^al,.*', '^allegro,.*', '^allo,.*', '^allwinner,.*', '^alphascale,.*', '^altr,.*', '^amarula,.*', '^amazon,.*', '^amcc,.*', '^am
- d,.*', '^amediatech,.*', '^amlogic,.*', '^ampire,.*', '^ams,.*', '^amstaos,.*', '^analogix,.*', '^andestech,.*', '^anvo,.*', '^apm,.*', '^aptina,.*', '^arasan,.*', '^archermind,.*', '^arctic,.*', '^arcx,.*', '^aries,.*', '^arm,.*', '^armadeus,.*', '^arrow,.*', '^artesyn,.*', '^asahi-kasei,.*', '^asc,.*', '^aspeed,.*', '^asus,.*', '^atlas,.*', '^atmel,.*', '^auo,.*', '^auvidea,.*', '^avago,.*', '^avia,.*', '^avic,.*', '^avnet,.*', '^axentia,.*', '^axis,.*', '^azoteq,.*', '^azw,.*', '^bananapi,.*', '^beacon,.*', '^bhf,.*', '^bitmain,.*', '^boe,.*', '^bosch,.*', '^boundary,.*', '^brcm,.*', '^broadmobi,.*', '^bticino,.*', '^buffalo,.*', '^bur,.*', '^calaosystems,.*', '^calxeda,.*', '^capella,.*', '^cascoda,.*', '^catalyst,.*', '^cavium,.*', '^cdns,.*', '^cdtech,.*', '^ceva,.*', '^chipidea,.*', '^chipone,.*', '^chipspark,.*', '^chrp,.*', '^chunghwa,.*', '^chuwi,.*', '^ciaa,.*', '^cirrus,.*', '^cloudengines,.*', '^cnm,.*', '^cnxt,.*', '^colorfly,.*', '^compulab,.*', '^coreriver,.*', '^cor
- pro,.*', '^cortina,.*', '^cosmic,.*', '^crane,.*', '^creative,.*', '^crystalfontz,.*', '^csky,.*', '^csq,.*', '^cubietech,.*', '^cypress,.*', '^cznic,.*', '^dallas,.*', '^dataimage,.*', '^davicom,.*', '^dell,.*', '^delta,.*', '^denx,.*', '^devantech,.*', '^dh,.*', '^difrnce,.*', '^digi,.*', '^digilent,.*', '^dioo,.*', '^dlc,.*', '^dlg,.*', '^dlink,.*', '^dmo,.*', '^domintech,.*', '^dongwoon,.*', '^dptechnics,.*', '^dragino,.*', '^dserve,.*', '^dynaimage,.*', '^ea,.*', '^ebs-systart,.*', '^ebv,.*', '^eckelmann,.*', '^edt,.*', '^eeti,.*', '^einfochips,.*', '^elan,.*', '^elgin,.*', '^elida,.*', '^embest,.*', '^emlid,.*', '^emmicro,.*', '^empire-electronix,.*', '^emtrion,.*', '^endless,.*', '^ene,.*', '^energymicro,.*', '^engicam,.*', '^epcos,.*', '^epfl,.*', '^epson,.*', '^esp,.*', '^est,.*', '^ettus,.*', '^eukrea,.*', '^everest,.*', '^everspin,.*', '^evervision,.*', '^exar,.*', '^excito,.*', '^ezchip,.*', '^facebook,.*', '^fairphone,.*', '^faraday,.*', '^fastrax,.*', '^fcs,.*', '^feix
- in,.*', '^feiyang,.*', '^firefly,.*', '^focaltech,.*', '^frida,.*', '^friendlyarm,.*', '^fsl,.*', '^fujitsu,.*', '^gardena,.*', '^gateworks,.*', '^gcw,.*', '^ge,.*', '^geekbuying,.*', '^gef,.*', '^gemei,.*', '^geniatech,.*', '^giantec,.*', '^giantplus,.*', '^globalscale,.*', '^globaltop,.*', '^gmt,.*', '^goodix,.*', '^google,.*', '^grinn,.*', '^grmn,.*', '^gumstix,.*', '^gw,.*', '^hannstar,.*', '^haoyu,.*', '^hardkernel,.*', '^hideep,.*', '^himax,.*', '^hisilicon,.*', '^hit,.*', '^hitex,.*', '^holt,.*', '^holtek,.*', '^honeywell,.*', '^hoperun,.*', '^hp,.*', '^hsg,.*', '^hugsun,.*', '^hwacom,.*', '^hydis,.*', '^hyundai,.*', '^i2se,.*', '^ibm,.*', '^icplus,.*', '^idt,.*', '^ifi,.*', '^ilitek,.*', '^img,.*', '^incircuit,.*', '^inet-tek,.*', '^infineon,.*', '^inforce,.*', '^ingenic,.*', '^innolux,.*', '^inside-secure,.*', '^inspur,.*', '^intel,.*', '^intercontrol,.*', '^invensense,.*', '^inversepath,.*', '^iom,.*', '^isee,.*', '^isil,.*', '^issi,.*', '^ite,.*', '^itead,.*', '^iwave,.*'
- , '^jdi,.*', '^jedec,.*', '^jesurun,.*', '^jianda,.*', '^kam,.*', '^karo,.*', '^keithkoep,.*', '^keymile,.*', '^khadas,.*', '^kiebackpeter,.*', '^kinetic,.*', '^kingdisplay,.*', '^kingnovel,.*', '^kionix,.*', '^kobo,.*', '^koe,.*', '^kontron,.*', '^kosagi,.*', '^kyo,.*', '^lacie,.*', '^laird,.*', '^lamobo,.*', '^lantiq,.*', '^lattice,.*', '^leadtek,.*', '^leez,.*', '^lego,.*', '^lemaker,.*', '^lenovo,.*', '^lg,.*', '^lgphilips,.*', '^libretech,.*', '^licheepi,.*', '^linaro,.*', '^linksprite,.*', '^linksys,.*', '^linutronix,.*', '^linux,.*', '^linx,.*', '^lltc,.*', '^logicpd,.*', '^logictechno,.*', '^longcheer,.*', '^loongson,.*', '^lsi,.*', '^lwn,.*', '^macnica,.*', '^mapleboard,.*', '^marvell,.*', '^maxbotix,.*', '^maxim,.*', '^mbvl,.*', '^mcube,.*', '^meas,.*', '^mecer,.*', '^mediatek,.*', '^megachips,.*', '^mele,.*', '^melexis,.*', '^melfas,.*', '^mellanox,.*', '^memsic,.*', '^menlo,.*', '^merrii,.*', '^micrel,.*', '^microchip,.*', '^microcrystal,.*', '^micron,.*', '^microsoft,.*
- ', '^mikroe,.*', '^miniand,.*', '^minix,.*', '^miramems,.*', '^mitsubishi,.*', '^mosaixtech,.*', '^motorola,.*', '^moxa,.*', '^mpl,.*', '^mps,.*', '^mqmaker,.*', '^mrvl,.*', '^mscc,.*', '^msi,.*', '^mti,.*', '^multi-inno,.*', '^mundoreader,.*', '^murata,.*', '^mxicy,.*', '^myir,.*', '^national,.*', '^nec,.*', '^neonode,.*', '^netgear,.*', '^netlogic,.*', '^netron-dy,.*', '^netxeon,.*', '^neweast,.*', '^newhaven,.*', '^nexbox,.*', '^nextthing,.*', '^ni,.*', '^nintendo,.*', '^nlt,.*', '^nokia,.*', '^nordic,.*', '^novtech,.*', '^nutsboard,.*', '^nuvoton,.*', '^nvd,.*', '^nvidia,.*', '^nxp,.*', '^oceanic,.*', '^okaya,.*', '^oki,.*', '^olimex,.*', '^olpc,.*', '^onion,.*', '^onnn,.*', '^ontat,.*', '^opalkelly,.*', '^opencores,.*', '^openrisc,.*', '^option,.*', '^oranth,.*', '^orisetech,.*', '^ortustech,.*', '^osddisplays,.*', '^overkiz,.*', '^ovti,.*', '^oxsemi,.*', '^ozzmaker,.*', '^panasonic,.*', '^parade,.*', '^parallax,.*', '^pda,.*', '^pericom,.*', '^pervasive,.*', '^phicomm,.*', '^p
- hytec,.*', '^picochip,.*', '^pine64,.*', '^pineriver,.*', '^pixcir,.*', '^plantower,.*', '^plathome,.*', '^plda,.*', '^plx,.*', '^pni,.*', '^pocketbook,.*', '^polaroid,.*', '^portwell,.*', '^poslab,.*', '^pov,.*', '^powervr,.*', '^primux,.*', '^probox2,.*', '^pulsedlight,.*', '^purism,.*', '^qca,.*', '^qcom,.*', '^qemu,.*', '^qi,.*', '^qiaodian,.*', '^qihua,.*', '^qnap,.*', '^radxa,.*', '^raidsonic,.*', '^ralink,.*', '^ramtron,.*', '^raspberrypi,.*', '^raydium,.*', '^rda,.*', '^realtek,.*', '^renesas,.*', '^rervision,.*', '^richtek,.*', '^ricoh,.*', '^rikomagic,.*', '^riscv,.*', '^rockchip,.*', '^rocktech,.*', '^rohm,.*', '^ronbo,.*', '^roofull,.*', '^samsung,.*', '^samtec,.*', '^sancloud,.*', '^sandisk,.*', '^satoz,.*', '^sbs,.*', '^schindler,.*', '^seagate,.*', '^seirobotics,.*', '^semtech,.*', '^sensirion,.*', '^sensortek,.*', '^sff,.*', '^sgd,.*', '^sgmicro,.*', '^sgx,.*', '^sharp,.*', '^shimafuji,.*', '^si-en,.*', '^si-linux,.*', '^sifive,.*', '^sigma,.*', '^sii,.*', '^sil,.*',
-  '^silabs,.*', '^silead,.*', '^silergy,.*', '^siliconmitus,.*', '^simtek,.*', '^sinlinx,.*', '^sinovoip,.*', '^sipeed,.*', '^sirf,.*', '^sis,.*', '^sitronix,.*', '^skyworks,.*', '^smsc,.*', '^snps,.*', '^sochip,.*', '^socionext,.*', '^solidrun,.*', '^solomon,.*', '^sony,.*', '^spansion,.*', '^sprd,.*', '^sst,.*', '^st,.*', '^st-ericsson,.*', '^starry,.*', '^startek,.*', '^ste,.*', '^stericsson,.*', '^summit,.*', '^sunchip,.*', '^swir,.*', '^syna,.*', '^synology,.*', '^tbs,.*', '^tbs-biometrics,.*', '^tcg,.*', '^tcl,.*', '^technexion,.*', '^technologic,.*', '^techstar,.*', '^tempo,.*', '^terasic,.*', '^tfc,.*', '^thine,.*', '^ti,.*', '^tianma,.*', '^tlm,.*', '^tmt,.*', '^topeet,.*', '^toppoly,.*', '^topwise,.*', '^toradex,.*', '^toshiba,.*', '^toumaz,.*', '^tpk,.*', '^tplink,.*', '^tpo,.*', '^tq,.*', '^tronfy,.*', '^tronsmart,.*', '^truly,.*', '^tsd,.*', '^tyan,.*', '^u-blox,.*', '^ubnt,.*', '^ucrobotics,.*', '^udoo,.*', '^ugoos,.*', '^uniwest,.*', '^upisemi,.*', '^urt,.*', '^usi,.*'
- , '^utoo,.*', '^v3,.*', '^vamrs,.*', '^variscite,.*', '^via,.*', '^videostrong,.*', '^virtio,.*', '^vishay,.*', '^vitesse,.*', '^vivante,.*', '^vocore,.*', '^voipac,.*', '^vot,.*', '^vxt,.*', '^waveshare,.*', '^wd,.*', '^wetek,.*', '^wexler,.*', '^whwave,.*', '^wi2wi,.*', '^winbond,.*', '^winstar,.*', '^wits,.*', '^wlf,.*', '^wm,.*', '^wobo,.*', '^x-powers,.*', '^xes,.*', '^xiaomi,.*', '^xillybus,.*', '^xinpeng,.*', '^xlnx,.*', '^xunlong,.*', '^xylon,.*', '^yna,.*', '^yones-toptech,.*', '^ysoft,.*', '^zarlink,.*', '^zeitec,.*', '^zidoo,.*', '^zii,.*', '^zte,.*', '^zyxel,.*'
+Thanks for the explanation. Max segment size being set to the DMA controller generic
+device should work well. There is no need in setting the transfer and messages
+size limitations. Besides I don't really see the
+max_transfer_size/max_message_size callbacks utilized in the SPI core. These
+functions are called in the spi-mem.c driver only. Do I miss something?
 
-See https://patchwork.ozlabs.org/patch/1285665
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
+-Sergey
 

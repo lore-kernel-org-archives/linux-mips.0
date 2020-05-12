@@ -2,195 +2,78 @@ Return-Path: <SRS0=OQC4=62=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.0 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36098C47255
-	for <linux-mips@archiver.kernel.org>; Tue, 12 May 2020 03:02:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 077C5C54E4B
+	for <linux-mips@archiver.kernel.org>; Tue, 12 May 2020 07:45:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0B8DC206D7
-	for <linux-mips@archiver.kernel.org>; Tue, 12 May 2020 03:02:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D69712075E
+	for <linux-mips@archiver.kernel.org>; Tue, 12 May 2020 07:45:36 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="rG40wsRK"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728301AbgELDCk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 11 May 2020 23:02:40 -0400
-Received: from mga04.intel.com ([192.55.52.120]:53041 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728115AbgELDCk (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 11 May 2020 23:02:40 -0400
-IronPort-SDR: 4MUYzYtIuZ6g9ldfiyH23CIMEPJsbbShNv8XvxJp/GZTUxlGQLnu6++8lt5yIcN+/aN2RCt+r4
- aTbR5nzmbROA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2020 20:02:38 -0700
-IronPort-SDR: i7GYBvH7NWY5BhrLrDKVlLB4CtNS91qsG4blQFRYPkdRiwakAQyVDqsrzKVqLZVZMgcS7fpRbr
- aK0y2FXO+ZUA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,381,1583222400"; 
-   d="scan'208";a="409140692"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga004.jf.intel.com with ESMTP; 11 May 2020 20:02:38 -0700
-Received: from [10.214.160.177] (vramuthx-MOBL1.gar.corp.intel.com [10.214.160.177])
-        by linux.intel.com (Postfix) with ESMTP id 88D37580646;
-        Mon, 11 May 2020 20:02:33 -0700 (PDT)
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Subject: Re: [PATCH v5 1/2] dt-bindings: mtd: Add YAML for Nand Flash
- Controller support
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
-        brendanhiggins@google.com, tglx@linutronix.de,
-        boris.brezillon@collabora.com, anders.roxell@linaro.org,
-        masonccyang@mxic.com.tw, linux-mips@vger.kernel.org,
-        hauke.mehrtens@intel.com, andriy.shevchenko@intel.com,
-        qi-ming.wu@intel.com, cheol.yong.kim@intel.com
-References: <20200507001537.4034-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200507001537.4034-2-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200511153712.GA25497@bogus>
-From:   "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <b500fb0b-7793-7f08-890c-c2424299af34@linux.intel.com>
-Date:   Tue, 12 May 2020 11:02:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728085AbgELHpg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 12 May 2020 03:45:36 -0400
+Received: from vultr.net.flygoat.com ([149.28.68.211]:33396 "EHLO
+        vultr.net.flygoat.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725823AbgELHpg (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 May 2020 03:45:36 -0400
+Received: from flygoat-x1e (unknown [IPv6:2409:891e:6960:188a:d689:51ea:9df3:fb0d])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 1B86220EF2;
+        Tue, 12 May 2020 07:45:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1589269536; bh=gLTp49mpZiT1mKN/xk1CeZnPzNwoQHdm6EUF8eGHTgM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rG40wsRKJ6uQTQ64Ys7UF25V9HsQSUtEkolqpkkodA0hksCCNXDd6+CMEkDxM2mWt
+         JcnEQgE8RR0iBu+UZig2p4t4R6KAN3oZkck/FQwI+yvJUSjjQR3qKSJkd1vtAtqvW6
+         TtLbxnuo7qfN+yRteAFbsND/vT3Qz5It6srkI2ojM9+rznRz92kwOQtM9OSJewU0T7
+         5JB+IYwEwHYS2sRKiI1ptPNBtWJgX4rnrnxi+7eKsX8TsEZZmH0Oz7xgY2mgs03k/z
+         Q4FUw0T9G+/iWgewqq/8SKdTXED+rQBvdyNJX8TxUosSLjDdZ+JNWsf3LF8EtUtkMh
+         TUOZkArcudZHQ==
+Date:   Tue, 12 May 2020 15:45:21 +0800
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     maz@kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Huacai Chen <chenhc@lemote.com>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH v3 1/6] irqchip: Add Loongson HyperTransport Vector
+ support
+Message-ID: <20200512154521.7d3c47b6@flygoat-x1e>
+In-Reply-To: <20200501092139.2988670-1-jiaxun.yang@flygoat.com>
+References: <20200422142428.1249684-1-jiaxun.yang@flygoat.com>
+        <20200501092139.2988670-1-jiaxun.yang@flygoat.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200511153712.GA25497@bogus>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Rob,
+On Fri,  1 May 2020 17:21:32 +0800
+Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
 
-   Thank you for the review comments and your time...
+> This controller appears on Loongson-3 chips for receiving interrupt
+> vectors from PCH's PIC and PCH's PCIe MSI interrupts.
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+> v2:
+> 	- Style cleanup
+> 	- Set ack callback and set correct edge_irq handler
+> 
+> v3:
+> 	- Correct bitops in ACK callback
 
-On 11/5/2020 11:37 pm, Rob Herring wrote:
-> On Thu, May 07, 2020 at 08:15:36AM +0800, Ramuthevar,Vadivel MuruganX wrote:
->> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->>
->> Add YAML file for dt-bindings to support NAND Flash Controller
->> on Intel's Lightning Mountain SoC.
-> 
-> The $subject should some how reflect this is for this SoC.
-Noted, will update.
-> 
->>
->> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->> ---
->>   .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 85 ++++++++++++++++++++++
->>   1 file changed, 85 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
->> new file mode 100644
->> index 000000000000..69b592ae62f4
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
->> @@ -0,0 +1,85 @@
->> +# SPDX-License-Identifier: GPL-2.0
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/mtd/intel,lgm-nand.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Intel LGM SoC NAND Controller Device Tree Bindings
->> +
->> +allOf:
->> +  - $ref: "nand-controller.yaml"
->> +
->> +maintainers:
->> +  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->> +
->> +properties:
->> +  compatible:
->> +    const: intel,lgm-nand-controller
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +  dmas:
->> +    maxItems: 2
->> +
->> +  dma-names:
->> +    enum:
->> +      - rx
->> +      - tx
->> +
->> +  pinctrl-names: true
->> +
->> +patternProperties:
->> +  "^pinctrl-[0-9]+$": true
-> 
-> Don't need the pinctrl properties. The tooling adds them.
-ok, will drop.
-> 
->> +
->> +  "^nand@[a-f0-9]+$":
->> +    type: object
->> +    properties:
->> +      reg:
->> +        minimum: 0
->> +        maximum: 7
->> +
->> +      nand-ecc-mode: true
->> +
->> +      nand-ecc-algo:
->> +        const: hw
->> +
->> +    additionalProperties: false
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - clocks
->> +  - clock-names
->> +  - dmas
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/clock/intel,lgm-clk.h>
-> 
-> Is this applied somewhere? It's missing in my check and will break the
-> build.
-You have already reviewed the below patch which has the file
-https://lkml.org/lkml/2020/4/17/31
+Any update about v3?
 
-Regards
-Vadivel
+Thanks.
 
-> 
->> +    nand-controller@e0f00000 {
->> +      compatible = "intel,nand-controller";
->> +      reg = <0xe0f00000 0x100>,
->> +            <0xe1000000 0x300>,
->> +            <0xe1400000 0x8000>,
->> +            <0xe1c00000 0x1000>;
->> +      reg-names = "ebunand", "hsnand", "nand_cs0", "nand_cs1";
->> +      clocks = <&cgu0 LGM_GCLK_EBU>;
->> +      dma-names = "tx", "rx";
->> +      #address-cells = <1>;
->> +      #size-cells = <0>;
->> +      #clock-cells = <1>;
->> +
->> +      nand@0 {
->> +        reg = <0>;
->> +        nand-on-flash-bbt;
->> +        #address-cells = <1>;
->> +        #size-cells = <1>;
->> +      };
->> +    };
->> +
->> +...
->> -- 
->> 2.11.0
->>
+[...]
+--
+Jiaxun Yang

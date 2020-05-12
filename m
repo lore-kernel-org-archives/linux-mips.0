@@ -2,86 +2,81 @@ Return-Path: <SRS0=OQC4=62=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4271DC2D0F7
-	for <linux-mips@archiver.kernel.org>; Tue, 12 May 2020 20:57:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DFB0C2D0F8
+	for <linux-mips@archiver.kernel.org>; Tue, 12 May 2020 21:26:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0F8EF20747
-	for <linux-mips@archiver.kernel.org>; Tue, 12 May 2020 20:57:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1589317027;
-	bh=5gGS/kREg9s+XNv7GUjNyurstL9eB6+qSztqF3hwYbA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=bdG4mZjzJAmberJAFFHKylpcUvYeWzw1LAqufhJlzJfMcPzxygjRvxA9tdxQBwLgJ
-	 SaK4moiTly/V4fgLUzfjQQghKU/Pw2JbIA9A6fgqMp6bGw1ZpS5UI9kqjdUeLS4O9H
-	 dOjANx3s/4kQI76K370gr8yR9Jr8zcBFRSaF1l1A=
+	by mail.kernel.org (Postfix) with ESMTP id 117EA20769
+	for <linux-mips@archiver.kernel.org>; Tue, 12 May 2020 21:26:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726324AbgELU5G (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 12 May 2020 16:57:06 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:38488 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgELU5G (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 May 2020 16:57:06 -0400
-Received: by mail-ot1-f67.google.com with SMTP id m33so11712210otc.5;
-        Tue, 12 May 2020 13:57:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qvUUedHnYOA9VhTIK7kcGh9CI/Hd/XYwgfKqm+/Yr7k=;
-        b=NPkzQlj5Rj2bgvOowIrcrbz9efZflCj6L9QpGla3n521FQrUScwrV1K3AN9x8LtcYj
-         i63vmtMsB6WH/f5/H0Y8EGrkCwo6IOoJPyIYPDeCkgR4Pes0UohnycTt2CEEZO6un0BC
-         K/+M6oX77Pz9bhRVJHNIE9Ph6ECQ6g/S3tCRG4ceoUSnSpWKZPhoGPXrZMPgb7griZ+c
-         8Zit9xwSuaiImrYmUsEtzdWHcht9yXg3wEEiGVPv5kDlCdsZer+vTBpEH0birp3Hz6lY
-         os1MfJN3WiFGsSeLgPNsMo0flWkGbv3eYP8Qko328UUJZTEPPZ643FLMwHscpoqRFTGO
-         bxjg==
-X-Gm-Message-State: AGi0PuZxRLhWt1jDP/LQwngpwyQgup1N2I3BI7UcrIohBi3gcFStmzMB
-        vKFnPRW67wPHOqKckJeC0g==
-X-Google-Smtp-Source: APiQypKxoK6XahigHniSCqU5q0UEdrqSbdanvccX89CoJG47HdsJz8ESRaTYPp8ZSB7EoZNLtAc2nA==
-X-Received: by 2002:a05:6830:242a:: with SMTP id k10mr18442786ots.346.1589317025769;
-        Tue, 12 May 2020 13:57:05 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t9sm5581365oie.24.2020.05.12.13.57.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 13:57:04 -0700 (PDT)
-Received: (nullmailer pid 10497 invoked by uid 1000);
-        Tue, 12 May 2020 20:57:04 -0000
-Date:   Tue, 12 May 2020 15:57:04 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     Jason Cooper <jason@lakedaemon.net>, linux-mips@vger.kernel.org,
-        maz@kernel.org, devicetree@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v3 6/6] dt-bindings: interrupt-controller: Add Loongson
- PCH MSI
-Message-ID: <20200512205704.GA10412@bogus>
-References: <20200422142428.1249684-1-jiaxun.yang@flygoat.com>
- <20200501092139.2988670-1-jiaxun.yang@flygoat.com>
- <20200501092139.2988670-6-jiaxun.yang@flygoat.com>
+        id S1731251AbgELV0y (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 12 May 2020 17:26:54 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:55108 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728313AbgELV0y (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 May 2020 17:26:54 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 2AEE9803080B;
+        Tue, 12 May 2020 21:26:52 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 91xGUihf2XO6; Wed, 13 May 2020 00:26:51 +0300 (MSK)
+Date:   Wed, 13 May 2020 00:26:50 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Allison Randal <allison@lohutok.net>,
+        Gareth Williams <gareth.williams.jx@renesas.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 04/17] spi: dw: Cleanup generic DW DMA code namings
+Message-ID: <20200512212650.bmq5i3mrl5mydcvz@mobilestation>
+References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
+ <20200508132943.9826-5-Sergey.Semin@baikalelectronics.ru>
+ <20200508194324.GA185537@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200501092139.2988670-6-jiaxun.yang@flygoat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200508194324.GA185537@smile.fi.intel.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri,  1 May 2020 17:21:37 +0800, Jiaxun Yang wrote:
-> Add binding for Loongson PCH MSI controller.
+On Fri, May 08, 2020 at 10:43:24PM +0300, Andy Shevchenko wrote:
+> On Fri, May 08, 2020 at 04:29:29PM +0300, Serge Semin wrote:
+> > Since from now the former Intel MID platform layer will be used
+> > as a generic DW SPI DMA module, lets alter the internal methods
+> > naming to be DMA-related instead of having the "mid_" prefix. In
+> > addition the DW PCI-DMA specific methods and structures should
+> > be named with pci-suffexes, since we'll implement the DW MMIO DMA
+> > specific functions and objects soon.
 > 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
->  .../loongson,pch-msi.yaml                     | 56 +++++++++++++++++++
->  1 file changed, 56 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongson,pch-msi.yaml
-> 
+> I think we rather leave Intel Medfield things alone.  And I think I did this already in spi/for-next in less invasive way.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+The naming is horrible in that module. Since it's going to be a generic DMA
+driver the prefixes should be correspondingly fixed. Currently they are a bit
+random.
+
+-Sergey
+
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 

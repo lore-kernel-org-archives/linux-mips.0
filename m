@@ -2,60 +2,61 @@ Return-Path: <SRS0=ydSH=63=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3B2ECA90AF
-	for <linux-mips@archiver.kernel.org>; Wed, 13 May 2020 13:43:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D457C2D0FA
+	for <linux-mips@archiver.kernel.org>; Wed, 13 May 2020 13:44:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A510C20657
-	for <linux-mips@archiver.kernel.org>; Wed, 13 May 2020 13:43:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8CBB4204EF
+	for <linux-mips@archiver.kernel.org>; Wed, 13 May 2020 13:44:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=unikie-com.20150623.gappssmtp.com header.i=@unikie-com.20150623.gappssmtp.com header.b="JlunmVgs"
+	dkim=pass (2048-bit key) header.d=unikie-com.20150623.gappssmtp.com header.i=@unikie-com.20150623.gappssmtp.com header.b="y2zmzGuE"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387791AbgEMNnv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 13 May 2020 09:43:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57636 "EHLO
+        id S2388412AbgEMNoD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 13 May 2020 09:44:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728981AbgEMNnu (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 13 May 2020 09:43:50 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C176C061A0C
-        for <linux-mips@vger.kernel.org>; Wed, 13 May 2020 06:43:50 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id x73so13673943lfa.2
-        for <linux-mips@vger.kernel.org>; Wed, 13 May 2020 06:43:49 -0700 (PDT)
+        with ESMTP id S2388444AbgEMNoB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 13 May 2020 09:44:01 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FB1EC061A0E
+        for <linux-mips@vger.kernel.org>; Wed, 13 May 2020 06:44:01 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id x73so13674426lfa.2
+        for <linux-mips@vger.kernel.org>; Wed, 13 May 2020 06:44:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=unikie-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PaJevbZIPR9cQWW6ZlOPEwmiiaqCW5xTfzjVVgbFkNY=;
-        b=JlunmVgsPuOydJIlIkrLJ49YmyWYImJcQvMxBLLDW5hNYPxTJpiMIJCl/IZACnazRp
-         vvD7pKfeL/1q8QtreuY0vDi4q3RRU6bM5NXvY3yXsuY5/g5Hy5KbuKvAa4IH4E8+VDDA
-         MyY8yHhgpe/vgfcU+bZSUY/PFXzPtjAma2X0D/exNVlK2E08zBE/CCdtMYNMR78YIlzo
-         ItLNk2R3bc6a9JS+c8ZBV8QpwLBI4dtgxEiIxKBVnO5PhPY7WSO6UoQtBPBEraQOXXIf
-         +Q3lkztFuxP+LtlD56GQVa3ys0f5AN531DSQoWPh1iKKQj3cCZXSn146h7cwzlk/mZrC
-         kwLg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1wL5R3vO+lL8Dd7C3wcfbER/n0qOq9bKPHk33Ao8I8U=;
+        b=y2zmzGuE0bY6Wzs20HJTlF3Ku+To8zkjs9keaGD2QzqTmd3kjIY/Cmy02j7Yr2ZyIH
+         uvr25QWNDWz/OTcSxt3AJynav+MUpHUzgvIYKuj8c/2djPkqeNXr6uZuCbSlHrFtpmhh
+         TCoJ86Sq4fx0D6LCp46G9s0ncSkAaaxNMV+6bssmsefOkdTXlHPP8Bcz/nxRTudwU52x
+         H1cXmKUyXmxw9PN9aWjV1LB0ilyfRzDQKPAFSBDp2vHv7tPK+/Mf3zb4ih90gyeLCqwE
+         BtdyM1dlxT/tGfXYkLhB1eoui1V5lEHxZ5g5dL0sESv17EXJ7FaqFShlJZiWviqELym9
+         x59g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PaJevbZIPR9cQWW6ZlOPEwmiiaqCW5xTfzjVVgbFkNY=;
-        b=g746gGBM4ESlS8aAbym8/AB9t3VWm169BF0VIM8HxhJDT/BGlnirNg54z1oIlzIIeE
-         hKKofiMo3TdZFrvPbDFeYnd8LLGUdANWdbjjc/yMsm+A5T+JICdoI7B7j2yl8Uy6WnqK
-         GOJTQZaR+Fqs4rJ150dm9MtUY0K5Gmo8be9h+BSI72Jej7dTnKpyx35VsRqKMIvPw9l4
-         6f/lxLYfAH7ZzwFKyE6vb7UD9bK8a8FhtKKW/MWJwk+qhOw4AHw4UjFh02lMH4dnA1SL
-         QWjflWrDenH3+B5lhdzKYe2rj3tEZXUKSztHiszif1nWTR2t1opnR0eC+5Z7MhDoO/8A
-         1asw==
-X-Gm-Message-State: AOAM532Le2rK61bwldvAaJVo5uZKu8IdAATZnvIibSYZPxMeYRWSJ1gQ
-        bjuYSnIgg23KWW1tHAbUIE2lmA==
-X-Google-Smtp-Source: ABdhPJxDqfocFwIBA8KASncnF9+Zf2uyRFzOOXCODAlRVo7BwXxpoE8F25bB5SRjbyHZyZuLLXDmSQ==
-X-Received: by 2002:a05:6512:3ea:: with SMTP id n10mr18217513lfq.127.1589377427954;
-        Wed, 13 May 2020 06:43:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1wL5R3vO+lL8Dd7C3wcfbER/n0qOq9bKPHk33Ao8I8U=;
+        b=m4nFAPjyxW2WJe09NolqzJG8Jk59BKOFQo0dJGAmZ0R7epcDwjsxnVA985Y8TOp3tR
+         pT6Hkfbj2ca65bZv3s8bJMXN1HtMiLpq2speOjWavcHC/z1wnv2xIKPmueRp0enDNBTh
+         iJGPsHm3dzK3NE3G+Tih/7XZsLNp9ZIt0t8rf/QKY5u/oMbHvcxjxchFu5BmA1ogdX2x
+         UmWofhh1nXzOlXqtXWtHES2dGj0IQi0DlDDFmg2zqoKSP0zLFHI5P2XAkwm04hfsadQK
+         4XDuN2UwVyZ2VWrdNlOVb98+fekcUmqSlVU5Oah+NCBOTds10Z8DCgXV6pKr+WA5yVIk
+         Rjog==
+X-Gm-Message-State: AOAM531wb5mptCUso5FOqWMHVUS6xc86hxPCHtmL9XSrr1gtn8b5KKPF
+        WXK2F+7WS96xzXiw0A+nP8iUpw==
+X-Google-Smtp-Source: ABdhPJwo5nA4XGhm02IeyJVF/ciPFR3CiqLopqOKjUy7RMLM32IUAHhVQMeBzrNc3Kv9+6PfC2ktwg==
+X-Received: by 2002:ac2:599b:: with SMTP id w27mr12134864lfn.164.1589377439396;
+        Wed, 13 May 2020 06:43:59 -0700 (PDT)
 Received: from localhost.localdomain ([109.204.235.119])
-        by smtp.googlemail.com with ESMTPSA id t16sm17441367lff.72.2020.05.13.06.43.45
+        by smtp.googlemail.com with ESMTPSA id t16sm17441367lff.72.2020.05.13.06.43.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 06:43:46 -0700 (PDT)
+        Wed, 13 May 2020 06:43:58 -0700 (PDT)
 From:   john mathew <john.mathew@unikie.com>
 X-Google-Original-From: john mathew <John.Mathew@unikie.com>
 To:     linux-doc@vger.kernel.org
@@ -67,11 +68,15 @@ Cc:     linux-kernel@vger.kernel.org, corbet@lwn.net, mingo@redhat.com,
         lukas.bulwahn@gmail.com, x86@kernel.org,
         linux-mips@vger.kernel.org, tglx@linutronix.de,
         mostafa.chamanara@gmail.com, willy@infradead.org,
-        valentin.schneider@arm.com, john mathew <John.Mathew@unikie.com>
-Subject: [PATCH] Fixes
-Date:   Wed, 13 May 2020 16:43:34 +0300
-Message-Id: <20200513134338.19688-1-John.Mathew@unikie.com>
+        valentin.schneider@arm.com, John Mathew <john.mathew@unikie.com>,
+        Mostafa Chamanara <mostafa.chamanara@basemark.com>,
+        Oleg Tsymbal <oleg.tsymbal@unikie.com>
+Subject: [RFC PATCH v4 3/3] docs: scheduler: Add introduction to scheduler context-switch
+Date:   Wed, 13 May 2020 16:43:38 +0300
+Message-Id: <20200513134338.19688-5-John.Mathew@unikie.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200513134338.19688-1-John.Mathew@unikie.com>
+References: <20200513134338.19688-1-John.Mathew@unikie.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -80,500 +85,350 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
----
- Documentation/scheduler/cfs-overview.rst      | 113 ++++++------
- Documentation/scheduler/sched-cas.rst         |  74 ++++++++
- .../scheduler/sched-data-structs.rst          | 163 +++++-------------
- Documentation/scheduler/sched-design-CFS.rst  |  20 +++
- Documentation/scheduler/sched-features.rst    |   1 +
- 5 files changed, 192 insertions(+), 179 deletions(-)
- create mode 100644 Documentation/scheduler/sched-cas.rst
+From: John Mathew <john.mathew@unikie.com>
 
-diff --git a/Documentation/scheduler/cfs-overview.rst b/Documentation/scheduler/cfs-overview.rst
-index b717f2d3e340..3ce559f285f7 100644
---- a/Documentation/scheduler/cfs-overview.rst
-+++ b/Documentation/scheduler/cfs-overview.rst
-@@ -6,26 +6,26 @@ CFS Overview
+Add documentation for introduction to
+ -context-switch
+ -x86 context-switch
+ -MIPS context switch
+
+Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Co-developed-by: Mostafa Chamanara <mostafa.chamanara@basemark.com>
+Signed-off-by: Mostafa Chamanara <mostafa.chamanara@basemark.com>
+Co-developed-by: Oleg Tsymbal <oleg.tsymbal@unikie.com>
+Signed-off-by: Oleg Tsymbal <oleg.tsymbal@unikie.com>
+Signed-off-by: John Mathew <john.mathew@unikie.com>
+---
+ Documentation/scheduler/arch-specific.rst     |   3 +
+ Documentation/scheduler/context-switching.rst | 125 ++++++++++++++++++
+ Documentation/scheduler/index.rst             |   1 +
+ .../scheduler/mips-context-switch.rst         |  89 +++++++++++++
+ .../scheduler/x86-context-switch.rst          |  65 +++++++++
+ 5 files changed, 283 insertions(+)
+ create mode 100644 Documentation/scheduler/context-switching.rst
+ create mode 100644 Documentation/scheduler/mips-context-switch.rst
+ create mode 100644 Documentation/scheduler/x86-context-switch.rst
+
+diff --git a/Documentation/scheduler/arch-specific.rst b/Documentation/scheduler/arch-specific.rst
+index c9c34863d994..65dc393b605f 100644
+--- a/Documentation/scheduler/arch-specific.rst
++++ b/Documentation/scheduler/arch-specific.rst
+@@ -9,3 +9,6 @@ Architecture Specific Scheduler Implementation Differences
  
- Linux 2.6.23 introduced a modular scheduler core and a Completely Fair
- Scheduler (CFS) implemented as a scheduling module. A brief overview of the
--CFS design is provided in :doc:`sched-design-CFS`
-+CFS design is provided in :doc: `sched-design-CFS`
- 
- In addition there have been many improvements to the CFS, a few of which are
- 
- **Thermal Pressure**:
--cpu_capacity initially reflects the maximum possible capacity of a CPU.
--Thermal pressure on a CPU means this maximum possible capacity is
--unavailable due to thermal events. Average thermal pressure for a CPU
--is now subtracted from its maximum possible capacity so that cpu_capacity
--reflects the remaining maximum capacity.
--
--**Use Idle CPU for NUMA balancing**:
--Idle CPU is used as a migration target instead of comparing tasks.
--Information on an idle core is cached while gathering statistics
--and this is used to avoid a second scan of the node runqueues if load is
--not imbalanced. Preference is given to an idle core rather than an
--idle SMT sibling to avoid packing HT siblings due to linearly scanning
--the node cpumask. Multiple tasks can attempt to select an idle CPU but
--fail because a NUMA balance is active on that CPU, in this case instead of
--failing, an alternative idle CPU scanned.
-+Scale CPU capacity mechanism for CFS so it knows how much CPU capacity is left
-+for its use after higher priority sched classes (RT, DL), IRQs and
-+'Thermal Pressure' have reduced the 'original' CPU capacity.
-+Thermal pressure on a CPU means the maximum possible capacity is
-+unavailable due to thermal events.
+ .. toctree::
+    :maxdepth: 2
 +
-+** Optimizations to NUMA balancing**:
-+When gathering NUMA statistics, information about whether a core is Idle
-+is also cached. In case of an imbalance, instead of doing a second scan of
-+the node runqueues, the idle core is used as the migration target. When
-+doing so multiple tasks can attempt to select an idle CPU but fail, because
-+a NUMA balance is active on that CPU. In this case an alternative idle CPU
-+scanned. Another optimization is to terminate the search for swap candidate
-+when a reasonable one is found instead of searching all the CPUs on the
-+target domain.
- 
- **Asymmetric CPU capacity wakeup scan**:
- Previous assumption that CPU capacities within an SD_SHARE_PKG_RESOURCES
-@@ -38,34 +38,24 @@ If no idle CPU is big enough, the idle CPU with the highest capacity is
- picked.
- 
- **Optimized idle core selection**:
--Previously all threads of a core were looped through to evaluate if the
--core is idle or not. This was unnecessary. If a thread of a core is not
--idle, skip evaluating other threads of a core. Also while clearing the
--cpumask, bits of all CPUs of a core can be cleared in one shot.
-+Skipped looping through all the threads of a core to evaluate if the
-+core is idle or not. If a thread of a core is not idle, evaluation of
-+other threads of the core can be skipped.
- 
- **Load balance aggressively for SCHED_IDLE CPUs**:
--The fair scheduler performs periodic load balance on every CPU to check
--if it can pull some tasks from other busy CPUs. The duration of this
--periodic load balance is set to scheduler domain's balance_interval and
--multiplied by a busy_factor (set to 32 by default) for the busy CPUs. This
--multiplication is done for busy CPUs to avoid doing load balance too
--often and rather spend more time executing actual task. While that is
--the right thing to do for the CPUs busy with SCHED_OTHER or SCHED_BATCH
--tasks, it may not be the optimal thing for CPUs running only SCHED_IDLE
--tasks. With the recent enhancements in the fair scheduler around SCHED_IDLE
--CPUs, it is now preferred to enqueue a newly-woken task to a SCHED_IDLE
--CPU instead of other busy or idle CPUs. The same reasoning is applied
--to the load balancer as well to make it migrate tasks more aggressively
--to a SCHED_IDLE CPU, as that will reduce the scheduling latency of the
--migrated (SCHED_OTHER) tasks. Fair scheduler now does the next
-+Newly-woken task is preferred to be  enqueued on a SCHED_IDLE CPU instead
-+of other busy or idle CPUs. Also load balancer is made to migrate tasks more
-+aggressively to a SCHED_IDLE CPU. Fair scheduler now does the next
- load balance soon after the last non-SCHED_IDLE task is dequeued from a
--runqueue, i.e. making the CPU SCHED_IDLE.
-+runqueue, i.e. making the CPU SCHED_IDLE. Also the the busy_factor
-+used with the balance interval to prevent frequent load balancing
-+is ignored for such CPU's.
- 
- **Load balancing algorithm Reworked**:
--The load balancing algorithm contained some heuristics which became
--meaningless since the rework of the scheduler's metrics like the
--introduction of PELT. The new load balancing algorithm fixes several
--pending wrong tasks placement
-+Some heuristics in the load balancing algorithm became meaningless because
-+of the rework of the scheduler's metrics like the introduction of PELT.
-+Those heuristics were removed. The new load balancing algorithm also fixes
-+several pending wrong tasks placement
- 
-  * the 1 task per CPU case with asymmetric system
-  * the case of CFS task preempted by other class
-@@ -73,41 +63,40 @@ pending wrong tasks placement
- 
- Also the load balance decisions have been consolidated in the 3 separate
- functions.
-+* update_sd_pick_busiest() select the busiest sched_group.
-+* find_busiest_group() checks if there is an imbalance between local and
-+busiest group.
-+* calculate_imbalance() decides what have to be moved.
- 
- **Energy-aware wake-ups speeded up**:
--EAS computes the energy impact of migrating a waking task when deciding
--on which CPU it should run. However, the previous approach had high algorithmic
--complexity, which resulted in prohibitively high wake-up latencies on
--systems with complex energy models, such as systems with per-CPU DVFS. On
--such systems, the algorithm complexity was O(n^2). To address this,
--the EAS wake-up path was re-factored to compute the energy 'delta' on a
--per-performance domain basis, rather than system-wide, which brings the
--complexity down to O(n).
-+Algorithmic complexity of the EAS was reduced from O(n^2) to O(n).
-+Previous algorithm resulted in prohibitively high wake-up latencies on
-+systems with complex energy models, such as systems with per-CPU DVFS.
-+The EAS wake-up path was re-factored to compute the energy 'delta' on a
-+per-performance domain basis, rather than the whole system.
- 
- **Selection of an energy-efficient CPU on task wake-up**:
--If an Energy Model (EM) is available and if the system isn't overutilized,
--waking tasks are re-routed into an energy-aware placement algorithm.
--The selection of an energy-efficient CPU for a task is achieved by estimating
--the impact on system-level active energy resulting from the placement of the
--task on the CPU with the highest spare capacity in each performance domain.
--This strategy spreads tasks in a performance domain and avoids overly
-+An Energy efficient CPU is found by estimating the impact on system-level
-+active energy resulting from the placement of the task on the CPU with the
-+highest spare capacity in each performance domain. Energy Model (EM) is
-+used for this. This strategy spreads tasks in a performance domain and avoids overly
- aggressive task packing. The best CPU energy-wise is then selected if it
- saves a large enough amount of energy with respect to prev_cpu.
- 
- **Consider misfit tasks when load-balancing**:
--On asymmetric CPU capacity systems load intensive tasks can end up on
--CPUs that don't suit their compute demand. In this scenario 'misfit'
--tasks are migrated to CPUs with higher compute capacity to ensure better
--throughput. A new group_type: group_misfit_task is added and indicates this
-+A task which ends up on a CPU which doesn't suit its compute demand is
-+identified as a misfit task in asymmetric CPU capacity systems. These
-+'misfit' tasks are migrated to CPUs with higher compute capacity to ensure
-+better throughput. A new group_type: group_misfit_task is added and indicates this
- scenario. Tweaks to the load-balance code are done to make the migrations
- happen. Misfit balancing is done between a source group of lower per-CPU
- capacity and destination group of higher compute capacity. Otherwise, misfit
- balancing is ignored.
- 
-+
- **Make schedstats a runtime tunable that is disabled by default**:
--schedstats is very useful during debugging and performance tuning but it
--incurred overhead to calculate the stats. A kernel command-line and sysctl
--tunable was added to enable or disable schedstats on demand (when it's built in).
--It is disabled by default. The benefits are dependent on how
--scheduler-intensive the workload is.
-+A kernel command-line and sysctl tunable was added to enable or disable
-+schedstats on demand (when it's built in). It is disabled by default.
-+The benefits are dependent on how scheduler-intensive the workload is.
-+
- 
-diff --git a/Documentation/scheduler/sched-cas.rst b/Documentation/scheduler/sched-cas.rst
++   x86-context-switch
++   mips-context-switch
+diff --git a/Documentation/scheduler/context-switching.rst b/Documentation/scheduler/context-switching.rst
 new file mode 100644
-index 000000000000..ab2cabedd2c0
+index 000000000000..44a185764d3c
 --- /dev/null
-+++ b/Documentation/scheduler/sched-cas.rst
-@@ -0,0 +1,74 @@
++++ b/Documentation/scheduler/context-switching.rst
+@@ -0,0 +1,125 @@
 +.. SPDX-License-Identifier: GPL-2.0+
 +
-+=========================
-+Capacity-Aware Scheduling
-+=========================
++==========================
++Process context switching
++==========================
 +
-+Scheduling load balancing on Asymmetric Multiprocessor systems was improved
-+through the introduction of Capacity-Aware Scheduling. It identifies the
-+most efficient CPU to assign a task based on its capacity. This capacity
-+may be asymmetric due to heterogeneous computing architecture such
-+as ARM big.LITTLE. Scheduler gets information about asymmetric capacities
-+when the scheduler domain hierarchy is built using build_sched_domains().
-+CPU capacities are provided to the scheduler topology code through the
-+architecture specific implementation of the arch_scale_cpu_capacity().
-+The SD_ASYM_CPUCAPACITY flag is set by the scheduler topology for a domain
-+in the hierarchy where all CPU capacities are visible for any cpu's point
-+of view on asymmetric CPU capacity systems. The scheduler can then take
-+capacity asymmetry into account when load balancing.
++Context Switching
++-----------------
 +
-+Initial CPU capacities are derived from the Device Tree and CPU frequency.
-+For RISC-V & ARM64 it is done in drivers/base/arch_topology.c. A cpu-map
-+device tree is parsed to obtain the cpu topology and the initial CPU capacity
-+is set using the CPUFreq subsystem. A callback is registered to the CPUFreq
-+subsystem to rebuild sched_domains when CPU frequency changes.
++Context switching, the switching from a running task to another,
++is done by the context_switch() function defined in kernel/sched.c.
++It is called by __schedule() when a new process has been selected to run.
++The execution flow is as follows:
 +
-+Asymmetric CPU capacity information is used in
++* prepare_task_switch() performs necessary kernel preparations for the
++  context switch and then calls prepare_arch_switch() for architecture
++  specific context switch preparation. This call must be paired with a
++  subsequent finish_task_switch() after the context switch. The various
++  steps are:
 +
-+* Energy Aware Scheduling: The scheduler is  able to predict the impact of
-+  its decisions on the energy consumed by CPUs. Described in :doc: `sched-energy` .
-+* Optimized task wakeup load balancing by finding idle CPU with enough capacity.
++  - Prepare kcov for context switch. Context switch does switch_mm() to the
++    next task's mm, then switch_to() that new task. This means vmalloc'd
++    regions which had previously been faulted in can transiently disappear in
++    the context of the prev task. Functions instrumented by KCOV may try to
++    access a vmalloc'd kcov_area during this window, and result in a recursive
++    fault. This is avoided by setting a new flag: KCOV_IN_CTXSW in kcov_mode
++    prior to switching the mm, and cleared once the new task is live.
++  - Update sched_info statistics for both the prev and next tasks.
++  - Handle perf subsystem context switch from previous task to next.
++    The various steps are:
 +
-+The different scheduler classes asymmetric use the Asymmetric CPU capacity
-+information differently.
++    * Remove perf events for the task being context-switched out.
++    * Stop each perf event and update the event value in event->count.
++    * Call the context switch callback for PMU with flag indicating
++      schedule out.
++    * Create a PERF_RECORD_MISC_SWITCH_OUT perf event.
++    * Context switch the perf event contexts between the current and next tasks.
++    * Schedule out current cgroup events if cgroup perf events exist on the
++      CPU.
 +
-+**CFS capacity awareness**
++  - Set TIF_NOTIFY_RESUME flag on the current thread for the Restartable
++    sequence mechanism. Restartable sequences allow user-space to perform
++    update operations on per-cpu data without requiring heavy-weight atomic
++    operations.
++  - Fire preempt notifiers. A task can request the scheduler to notify it
++    whenever it is preempted or scheduled back in. This allows the task to
++    swap any special-purpose registers like the FPU or Intel's VT registers.
++  - Claim the next task as running to prevent load balancing run on it.
 +
-+Used to identify misfit tasks:
-+A load intensive task on a CPU which doesn't meet its compute demand is
-+identified as a misfit task. 'Misfit' tasks are migrated to CPUs with
-+higher compute capacity to ensure better throughput. CFS periodically updates
-+the misfit status of the current task by comparing its load vs the CPU capacity
-+using task_fits_capacity(). If the load is more than the CPU capacity the
-+calculated misfit load is updated to the runqueue rq->misfit_task_load.
-+This load is then considered by the load balancing operations to migrate
-+the task to a CPU of higher capacity.
++* arch_start_context_switch() batches the reload of page tables and other
++  process state with the actual context switch code for paravirtualized
++  guests.
 +
-+Modified wakeup logic to support DynamIQ systems:
-+When the scheduler class calls select_task_rq_fair to select a runqueue for
-+a waking task, load balancing is performed by selecting the idlest CPU in
-+the idlest group, or under certain conditions an idle sibling CPU if the
-+domain has SD_WAKE_AFFINE set. In DynamIQ systems Last Level Cache (LLC)
-+domain of a CPU spans all CPUs in the system. This may include CPU's of
-+different capacities. So in select_idle_sibling() an idle sibling is picked
-+based on CPU capacity for asymmetric CPU capacity systems and for symmetric
-+systems use LLC domain is used. The policy is to pick the first idle CPU
-+which is big enough for the task (task_util * margin < cpu_capacity).
-+If no idle CPU is big enough, the idle CPU with the highest capacity is
-+picked. For asymmetric CPU capacity systems select_idle_sibling() operates
-+on the sd_asym_cpucapacity sched_domain pointer, which is guaranteed to span
-+all known CPU capacities in the system. This works for both "legacy"
-+big.LITTLE (LITTLEs & bigs split at MC, joined at DIE) and for newer
-+DynamIQ systems (e.g. LITTLEs and bigs in the same MC domain).
++* Transfer the real and anonymous address spaces between the switching tasks.
++  Four possible transfer types are:
++
++  * kernel task switching to another kernel task
++  * user task switching to a kernel task
++  * kernel task switching to user task
++  * user task switching to user task
++
++  For a kernel task switching to kernel task enter_lazy_tlb() is called
++  which is an architecture specific implementation to handle a context
++  without an mm. Architectures implement lazy tricks to minimize TLB
++  flushes here. The active address space from the previous task is
++  borrowed (transferred) to the next task.
++
++  For a user task switching to kernel task it will have a real address
++  space and so its anonymous users counter is incremented. This makes
++  sure that the address space will not get freed even after the previous
++  task exits.
++
++  For a user task switching to user task the architecture specific
++  switch_mm_irqs_off() or switch_mm() functions are called.  The main
++  functionality of these calls is to switch the address space between
++  the user space processes.  This includes switching the page table pointers
++  either via retrieved valid ASID for the process or page mapping in the TLB.
++
++  For a kernel task switching to a user task, switch_mm_irqs_off()
++  replaces the address space of prev kernel task with the next from the user
++  task. Same as for exiting process in this case, the context_switch()
++  function saves the pointer to the memory descriptor used by prev in the
++  runqueue’s prev_mm field and resets prev task active address space.
++
++* prepare_lock_switch() releases lockdep of the runqueue lock to handle
++  the special case of the scheduler context switch where the runqueue lock
++  will be released by the next task.
++
++* Architecture specific implementation of switch_to() switches the
++  register state and the stack. This involves saving and restoring stack
++  information and the processor registers and any other
++  architecture-specific state that must be managed and restored on a
++  per-process basis.
++
++* finish_task_switch() performs the final steps of the context switch:
++
++  - Emit a warning if the preempt count is corrupted and set the preempt count
++    to FORK_PREEMPT_COUNT.
++  - Reset the pointer to the memory descriptor used by prev which was set in
++    context_switch().
++  - Store the state of the previous task to handle the possibility of a DEAD
++    task.
++  - Do virtual CPU time accounting for the previous task.
++  - Handle perf subsystem context switch from previous task to current:
++
++    - Add perf events for the current task.
++    - Schedule in current cgroup events if cgroup perf events exist on the
++      CPU.
++    - Context switch the perf event contexts between the prev and current
++      tasks.
++    - Clear the PERF_RECORD_MISC_SWITCH_OUT perf event.
++    - Call the context switch callback for PMU with flag indicating
++      schedule in.
++  - Free the task for load balancing run on it.
++  - Unlock the rq lock.
++  - Clear the KCOV_IN_CTXSW in kcov_mode which was set in prepare_task_switch
++    now that the new task is live.
++  - Fire preempt notifiers to notify about task scheduled back in.
++  - If the prev task state indicated that it was dead, the corresponding
++    scheduler class task_dead hook is called. Function-return probe
++    instances associated with the task are removed and put back on the
++    free list. Stack for the task is freed and drop the RCU references.
++  - Evaluate the need for No idle tick due to the context switch and do the
++    idle tick if needed.
++
+diff --git a/Documentation/scheduler/index.rst b/Documentation/scheduler/index.rst
+index f311abe5b711..691fdfe32954 100644
+--- a/Documentation/scheduler/index.rst
++++ b/Documentation/scheduler/index.rst
+@@ -20,6 +20,7 @@ specific implementation differences.
+     sched-data-structs
+     cfs-overview
+     sched-design-CFS
++    context-switching
+     sched-features
+     arch-specific
+     sched-debugging
+diff --git a/Documentation/scheduler/mips-context-switch.rst b/Documentation/scheduler/mips-context-switch.rst
+new file mode 100644
+index 000000000000..d833ab6d8a76
+--- /dev/null
++++ b/Documentation/scheduler/mips-context-switch.rst
+@@ -0,0 +1,89 @@
++.. SPDX-License-Identifier: GPL-2.0+
++
++==============================================
++MIPS Architecture And Scheduler implementation
++==============================================
++
++Multi-threading in MIPS CPUs
++-----------------------------
++The MIPS architecture defines four coprocessors.
++
++- CP0: supports virtual memory system and exception handling.
++- CP1: reserved for the floating point coprocessor, the FPU.
++- CP2: available for specific implementations.
++- CP3: reserved for floating point operations in the release 1
++  implementation of MIPS64.
++
++MIPS32 and MIPS64 architectures provide support for optional components
++known as Modules or Application Specific Extensions. The MT module
++enables the architecture to support multi-threaded implementations.
++This includes support for virtual processors and lightweight thread
++contexts. Implementation of MT features depends on the individual MIPS
++cores. The virtual processing element (VPE) maintains a complete copy
++of the processor state as seen by the software system which includes
++interrupts, register set, and MMU. This enables a single processor to
++appear to an SMP operating system like two separate cores if it has
++2 VPE's. For example two separate OSes can run on each VPE such as Linux
++and and an RTOS.
++
++A lighter version of VPE enables threading at the user/application
++software level.  It is called Thread Context (TC). TC is the hardware
++state necessary to support a thread of execution. This includes a set
++of general purpose registers (GPRs), a program counter (PC), and some
++multiplier and coprocessor state.  TCs have common execution unit.
++MIPS ISA provides instructions to utilize TC.
++
++The Quality of service block of the MT module allows the allocation of
++processor cycles to threads, and sets relative thread priorities. This
++enables 2 thread prioritization mechanisms. The user can prioritize one
++thread over the other as well as allocate a specific ratio of the cycles
++to specific threads. These mechanisms allocate bandwidth to a set
++of threads effectively. QoS block improves system level determinism
++and predictability. Qos block can be replaced by more application
++specific blocks.
++
++MIPS Context Switch
++-------------------
++
++Context switch behavior specific to MIPS begins in the way
++:c:macro:`switch_to()` macro is implemented. The main steps in the MIPS
++implementation of the macro are:
++
++* Handle the FPU affinity management feature. This feature is enabled
++  by the :c:macro:`CONFIG_MIPS_MT_FPAFF` at build time. The macro checks
++  if the FPU was used in the most recent time slice. In case FPU was not
++  used, the restriction of having to run on a CPU with FPU is removed.
++* Disable the FPU and clear the bit indicating the FPU was used in this
++  quantum for the task for the previous task.
++* If FPU is enabled in the next task, check FCSR for any unmasked
++  exceptions pending, clear them and send a signal.
++* If MIPS DSP modules is enabled, save the DSP context of the previous
++  task and restore the dsp context of the next task.
++* If coprocessor 2 is present set the access allowed field of the
++  coprocessor 2.
++* If coprocessor 2 access allowed field was set in previous task, clear it.
++* Clear the the access allowed field of the coprocessor 2.
++* Clear the llbit on MIPS release 6 such that instruction eretnc can be
++  used unconditionally when returning to userland in entry.S.
++  LLbit is used to specify operation for instructions that provide atomic
++  read-modify-write. LLbit is set when a linked load occurs and is tested
++  by the conditional store.  It is cleared, during other CPU operation,
++  when a store to the location would no longer be atomic. In particular,
++  it is cleared by exception return instructions.  eretnc instruction
++  enables to return from interrupt, exception, or error trap without
++  clearing the LLbit.
++* Clear the global variable ll_bit used by MIPS exception handler.
++* Write the thread pointer to the MIPS userlocal register if the CPU
++  supports this feature. This register is not interpreted by hardware and
++  can be used to share data between privileged and unprivileged software.
++* If hardware watchpoint feature is enabled during build, the watchpoint
++  registers are restored from the next task.
++* Finally the MIPS processor specific implementation of the resume()
++  function is called. It restores the registers of the next task including
++  the stack pointer. The implementation is in assembly in the following
++  architecutre specific files ::
++
++    arch/mips/kernel/r4k_switch.S
++    arch/mips/kernel/r2300_switch.S
++    arch/mips/kernel/octeon_switch.S
++
+diff --git a/Documentation/scheduler/x86-context-switch.rst b/Documentation/scheduler/x86-context-switch.rst
+new file mode 100644
+index 000000000000..68453e99cb2b
+--- /dev/null
++++ b/Documentation/scheduler/x86-context-switch.rst
+@@ -0,0 +1,65 @@
++.. SPDX-License-Identifier: GPL-2.0+
++
++X86 Context Switch
++------------------
++
++The x86 architecture context switching logic is as follows.
++After the switching of MM in the scheduler context_switch() calls the x86
++implementation of :c:macro:`switch_to()`. For x86 arch it is located at ::
++
++    arch/x86/include/asm/switch_to.h
++
++Since kernel 4.9, switch_to() has been split into two parts: a
++`prepare_switch_to()` macro and the inline assembly implementation of
++__switch_to_asm() in the assembly files ::
++
++    arch/x86/entry/entry_64.S
++    arch/x86/entry/entry_32.S
++
++prepare_switch_to() handles the case when stack uses virtual memory. This
++is configured at build time and is enabled in most modern distributions.
++This function accesses the stack pointer to prevent a double fault.
++Switching to a stack that has top-level paging entry that is not
++present in the current MM will result in a page fault which will be promoted
++to double fault and the result is a panic. So it is necessary to probe the
++stack now so that the vmalloc_fault can fix the page tables.
++
++The main steps of the inline assembly function __switch_to_asm() are:
++
++* store the callee saved registers to the old stack which will be switched
++  away from.
++* swap the stack pointers between the old and the new task.
++* move the stack canary value to the current CPU's interrupt stack
++* if return trampoline is enabled, overwrite all entries in the RSB on
++  exiting a guest, to prevent malicious branch target predictions from
++  affecting the host kernel.
++* restore all registers from the new stack previously pushed in reverse
++  order.
++* jump to a C implementation of __switch_to(). The sources are located in::
++
++      arch/x86/kernel/process_64.c
++      arch/x86/kernel/process_32.c
 +
 +
-+** RT & DL capacity awareness **
++The main steps of the C function __switch_to() which is effectively
++the new task running are as follows:
 +
-+
-+
-+
-+
-+
-+
-+
-+
-diff --git a/Documentation/scheduler/sched-data-structs.rst b/Documentation/scheduler/sched-data-structs.rst
-index ec900367cc0c..a16408676b71 100644
---- a/Documentation/scheduler/sched-data-structs.rst
-+++ b/Documentation/scheduler/sched-data-structs.rst
-@@ -36,36 +36,6 @@ runqueue. The scheduler traverses the sched_entity hierarchy to pick the
- next task to run on the CPU. The entity gets picked up from the cfs_rq on
- which it is queued and its time slice is divided among all the tasks on its my_q.
- 
--Virtual Runtime
--~~~~~~~~~~~~~~~~~
--Virtual Run Time or vruntime is the amount of time a task has spent running
--on the CPU. It is updated periodically by scheduler_tick(). Tasks are stored
--in the CFS scheduling class rbtree sorted by vruntime. scheduler_tick() calls
--corresponding hook of CFS which first updates the runtime statistics of the
--currently running task and checks if the current task needs to be preempted.
--vruntime of the task based on the formula ::
--
--    vruntime += delta_exec * (NICE_0_LOAD/curr->load.weight);
--
--where:
--
--* delta_exec is the time in nanoseconds spent by the task since the last time
--  vruntime was updated.
--* NICE_0_LOAD is the load of a task with normal priority.
--* curr is the shed_entity instance of the cfs_rq struct of the currently
--  running task.
--* load.weight: sched_entity load_weight. load_weight is the encoding of
--  the tasks priority and vruntime. The load of a task is the metric
--  indicating the number of CPUs needed to make satisfactory progress on its
--  job. Load of a task influences the time a task spends on the CPU and also
--  helps to estimate the overall CPU load which is needed for load balancing.
--  Priority of the task is not enough for the scheduler to estimate the
--  vruntime of a process. So priority value must be mapped to the capacity of
--  the standard CPU which is done in the array :c:type:`sched_prio_to_weight[]`.
--  The array contains mappings for the nice values from -20 to 19. Nice value
--  0 is mapped to 1024. Each entry advances by approximately 1.25 which means
--  for every increment in nice value the task gets 10% less CPU and vice versa.
--
- Scheduler classes
- ~~~~~~~~~~~~~~~~~
- It is an extensible hierarchy of scheduler modules. The modules encapsulate
-@@ -78,109 +48,68 @@ The important methods of scheduler class are:
- 
- enqueue_task and dequeue_task
-     These functions are used to put and remove tasks from the runqueue
--    respectively. The function takes the runqueue, the task which needs to
--    be enqueued/dequeued and a bit mask of flags. The main purpose of the
--    flags is to describe why the enqueue or dequeue is being called.
--    The different flags used are described in ::
-+    respectively to change a property of a task. This is referred to as
-+    change pattern.  Change is defined as the following sequence of calls::
-+
-+         * dequeue_task()
-+         * put_prev_task()
-+         * change a property
-+         * enqueue_task()
-+         * set_next_task()
-+
-+    The enqueue_task function takes the runqueue, the task which needs to
-+    be enqueued/dequeued and a bit mask of flags as parameters. The main
-+    purpose of the flags is to describe why the enqueue or dequeue is being
-+    called. The different flags used are described in ::
- 
-         kernel/sched/sched.h
- 
--    enqueue_task and dequeue_task are called for following purposes.
--
--    - When waking a newly created task for the first time. Called with
--      ENQUEUE_NOCLOCK
--    - When migrating a task from one CPU's runqueue to another. Task will be
--      first dequeued from its old runqueue, new CPU will be added to the
--      task struct,  runqueue of the new CPU will be retrieved and task is
--      then enqueued on this new runqueue.
--    - When do_set_cpus_allowed() is called to change a tasks CPU affinity. If
--      the task is queued on a runqueue, it is first dequeued with the
--      DEQUEUE_SAVE and DEQUEUE_NOCLOCK flags set. The set_cpus_allowed()
--      function of the corresponding scheduling class will be called.
--      enqueue_task() is then called with ENQUEUE_RESTORE and ENQUEUE_NOCLOCK
--      flags set.
--    - When changing the priority of a task using rt_mutex_setprio(). This
--      function implements the priority inheritance logic of the RT mutex
--      code. This function changes the effective priority of a task which may
--      in turn change the scheduling class of the task. If so enqueue_task is
--      called with flags corresponding to each class.
--    - When user changes the nice value of the task. If the task is queued on
--      a runqueue, it first needs to be dequeued, then its load weight and
--      effective priority needs to be set. Following which the task is
--      enqueued with ENQUEUE_RESTORE and ENQUEUE_NOCLOCK flags set.
--    - When __sched_setscheduler() is called. This function enables changing
--      the scheduling policy and/or RT priority of a thread. If the task is
--      on a runqueue, it will be first dequeued, changes will be made and
--      then enqueued.
--    - When moving tasks between scheduling groups. The runqueue of the tasks
--      is changed when moving between groups. For this purpose if the task
--      is running on a queue, it is first dequeued with DEQUEUE_SAVE, DEQUEUE_MOVE
--      and DEQUEUE_NOCLOCK flags set, followed by which scheduler function to
--      change the tsk->se.cfs_rq and tsk->se.parent and then task is enqueued
--      on the runqueue with the same flags used in dequeue.
-+    Some places where the enqueue_task and dequeue_task are called for
-+    changing task properties are
-+
-+    * When migrating a task from one CPU's runqueue to another.
-+    * When changing a tasks CPU affinity.
-+    * When changing the priority of a task.
-+    * When changing the nice value of the task.
-+    * When changing the scheduling policy and/or RT priority of a thread.
- 
- pick_next_task
--    Called by __schedule() to pick the next best task to run.
--    Scheduling class structure has a pointer pointing to the next scheduling
--    class type and each scheduling class is linked using a singly linked list.
--    The __schedule() function iterates through the corresponding
--    functions of the scheduler classes in priority order to pick up the next
--    best task to run. Since tasks belonging to the idle class and fair class
--    are frequent, the scheduler optimizes the picking of next task to call
--    the pick_next_task_fair() if the previous task was of the similar
--    scheduling class.
-+    Called by the scheduler to pick the next best task to run. The scheduler
-+    iterates through the corresponding functions of the scheduler classes
-+    in priority order to pick up the next best task to run. Since tasks
-+    belonging to the idle class and fair class are frequent, the scheduler
-+    optimizes the picking of next task to call the pick_next_task_fair()
-+    if the previous task was of the similar scheduling class.
- 
- put_prev_task
-     Called by the scheduler when a running task is being taken off a CPU.
--    The behavior of this function depends on individual scheduling classes
--    and called in the following cases.
--
--    - When do_set_cpus_allowed() is called and if the task is currently running.
--    - When scheduler pick_next_task() is called, the put_prev_task() is
--      called with the previous task as function argument.
--    - When rt_mutex_setprio() is called and if the task is currently running.
--    - When user changes the nice value of the task and if the task is
--      currently running.
--    - When __sched_setscheduler() is called and if the task is currently
--      running.
--    - When moving tasks between scheduling groups through the sched_move_task()
--      and if the task is ćurrently running.
--
-+    The behavior of this function depends on individual scheduling classes.
-     In CFS class this function is used to put the currently running task back
-     into the CFS RB tree. When a task is running it is dequeued from the tree.
-     This is to prevent redundant enqueue's and dequeue's for updating its
-     vruntime. vruntime of tasks on the tree needs to be updated by update_curr()
--    to keep the tree in sync. In DL(deadline) and RT classes additional tree is
--    maintained for facilitating task migration between CPUs through push
--    operation between runqueues for load balancing. Task will be added to
--    this queue if it is present on the scheduling class rq and the task has
--    affinity to more than one CPU.
-+    to keep the tree in sync. In SCHED_DEADLINE and RT classes additional tree
-+    is maintained to push tasks from the current CPU to another CPU where the
-+    task can preempt and start executing. Task will be added to this queue
-+    if it is present on the scheduling class rq and the task has affinity
-+    to more than one CPU.
- 
- set_next_task
-     Pairs with the put_prev_task(), this function is called when the next
-     task is set to run on the CPU. This function is called in all the places
--    where put_prev_task is called to complete the 'change'. Change is defined
--    as the following sequence of calls::
--
--         - dequeue task
--         - put task
--         - change the property
--         - enqueue task
--         - set task as current task
--
--    It resets the run time statistics for the entity with
--    the runqueue clock.
--    In case of CFS scheduling class, it will set the pointer to the current
--    scheduling entity to the picked task and accounts bandwidth usage on
--    the cfs_rq. In addition it will also remove the current entity from the
--    CFS runqueue for vruntime update optimization opposite to what was done
--    in put_prev_task.
--    For the SCHED_DEADLINE and RT classes it will
--
--    - dequeue the picked task from the tree of pushable tasks.
--    - update the load average in case the previous task belonged to another
-+    where put_prev_task is called to complete the 'change pattern'. In case
-+    of CFS scheduling class, it will set current scheduling entity to the
-+    picked task and accounts bandwidth usage on the cfs_rq. In addition it
-+    will also remove the current entity from the CFS runqueue for the vruntime
-+    update optimization, opposite to what was done in put_prev_task.
-+    For the SCHED_DEADLINE and RT classes it will remove the task from the
-+    tree of pushable tasks trigger the balance callback to push another task
-+    which is non running on the current CPU for execution on another CPU.
-+
-+    * dequeue the picked task from the tree of pushable tasks.
-+    * update the load average in case the previous task belonged to another
-       class.
--    - queues the function to push tasks from current runqueue to other CPUs
-+    * queues the function to push tasks from current runqueue to other CPUs
-       which can preempt and start execution. Balance callback list is used.
- 
- task_tick
-@@ -192,7 +121,7 @@ task_tick
-     hrtick() is called from high resolution timers to deliver an accurate
-     preemption tick as the regular scheduler tick that runs at 1/HZ can be
-     too coarse when nice levels are used.
--    sched_tick_remote() Gets called by the offloaded residual 1Hz scheduler
-+    sched_tick_remote() gets called by the offloaded residual 1Hz scheduler
-     tick. In order to reduce interruptions to bare metal tasks, it is possible
-     to outsource these scheduler ticks to the global workqueue so that a
-     housekeeping CPU handles those remotely.
-diff --git a/Documentation/scheduler/sched-design-CFS.rst b/Documentation/scheduler/sched-design-CFS.rst
-index a96c72651877..0556783019cf 100644
---- a/Documentation/scheduler/sched-design-CFS.rst
-+++ b/Documentation/scheduler/sched-design-CFS.rst
-@@ -44,6 +44,26 @@ value (i.e., the task which executed least so far).  CFS always tries to split
- up CPU time between runnable tasks as close to "ideal multitasking hardware" as
- possible.
- 
-+vruntime of the task based on the formula ::
-+
-+    vruntime += delta_exec * (NICE_0_LOAD/se->load);
-+
-+where:
-+
-+* delta_exec is the time in nanoseconds spent by the task since the last time
-+  vruntime was updated.
-+* NICE_0_LOAD is the load of a task with default priority.
-+* se->load: sched_entity load_weight. load_weight is the obtained by mapping
-+  of priority value to the capacity of the standard CPU which is done in
-+  the array :c:type:`sched_prio_to_weight[]`. The array contains mappings
-+  for the nice values from -20 to 19. Nice value 0 is mapped to 1024. Each
-+  entry advances by approximately 1.25 which means for every increment in
-+  nice value the task gets 10% less CPU and vice versa.
-+  When the se->load is updated the se->avg is also updated for SMP
-+  configurations. Load balancing decisions are based (amongst other things)
-+  on the sums of se.avg.load_avg, which is the 'load' signal generated via
-+  PELT. PELT(Per-entity load tracking) is described in :doc: `sched-pelt`.
-+
- Most of the rest of CFS's design just falls out of this really simple concept,
- with a few add-on embellishments like nice levels, multiprocessing and various
- algorithm variants to recognize sleepers.
-diff --git a/Documentation/scheduler/sched-features.rst b/Documentation/scheduler/sched-features.rst
-index 1afbd9cc8d52..e576c7d9e556 100644
---- a/Documentation/scheduler/sched-features.rst
-+++ b/Documentation/scheduler/sched-features.rst
-@@ -17,4 +17,5 @@ Scheduler Features
-    sched-energy
-    sched-nice-design
-    sched-rt-group
-+   sched-cas
-    completion
++* retrieve the thread :c:type:`struct thread_struct <thread_struct>`
++  and fpu :c:type:`struct fpu <fpu>` structs from the next and previous
++  tasks.
++* get the current CPU TSS :c:type:`struct tss_struct <tss_struct>`.
++* save the current FPU state while on the old task.
++* store the FS and GS segment registers before changing the thread local
++  storage.
++* reload the GDT for the new tasks TLS.
++  Following is effectively arch_end_context_switch().
++* save the ES and DS segments of the previous task and load the same from
++  the nest task.
++* load the FS and GS segment registers.
++* update the current task of the CPU.
++* update the top of stack pointer for the CPU for entry trampoline.
++* initialize FPU state for next task.
++* set sp0 to point to the entry trampoline stack.
++* call _switch_to_xtra() to handle debug registers, I/O
++  bitmaps and speculation mitigation.
++* write the task's CLOSid/RMID to IA32_PQR_MSR.
 -- 
 2.17.1
 

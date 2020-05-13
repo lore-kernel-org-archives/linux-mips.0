@@ -1,187 +1,155 @@
-Return-Path: <SRS0=OQC4=62=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=ydSH=63=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-3.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 421B4C2D0FA
-	for <linux-mips@archiver.kernel.org>; Tue, 12 May 2020 23:00:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0816C2D0F8
+	for <linux-mips@archiver.kernel.org>; Wed, 13 May 2020 01:20:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 18EE420740
-	for <linux-mips@archiver.kernel.org>; Tue, 12 May 2020 23:00:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8DFA0206F5
+	for <linux-mips@archiver.kernel.org>; Wed, 13 May 2020 01:20:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=dabbelt-com.20150623.gappssmtp.com header.i=@dabbelt-com.20150623.gappssmtp.com header.b="YV0IEXO5"
+	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="bcpCCd4I"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731620AbgELXAa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 12 May 2020 19:00:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731538AbgELXA3 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 May 2020 19:00:29 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AA9C061A0F
-        for <linux-mips@vger.kernel.org>; Tue, 12 May 2020 16:00:29 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id x10so6046717plr.4
-        for <linux-mips@vger.kernel.org>; Tue, 12 May 2020 16:00:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TxR+iMR41NNC8Tp0Yh5G0J9anaHo/y+mAo5OJ6FnE3w=;
-        b=YV0IEXO5IABYUMUtMWw6Y0a2xNZhYt4iDNMNdBJAdhkLz+DhDJrEb2/tely+kMRfBe
-         elzT7mfwntttCi0+nBJzpxqW1RzbdA4k2z5m0sbPhXbgm86NhUGJ6ezv1UWvqUAF6AFb
-         GwYEyZnEpPlXtS0AdB1oOMIXhoSzH1oQ3QYdKyFvf7rV9a0F5474HoxquQdEEcVsoVZk
-         mkFDvy/LaDlTuj+uY+/sZnyRH+3w/Rut2ArIzwHPIrhPI856FrWtiOC99MOqCPnAlAt1
-         y5de0EiQgDBn8VhocdW7T7X+feJnXd114pzMo7qEMcn1qfbF3zf4gbB8O6Pkx7p0q4QB
-         ZmJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=TxR+iMR41NNC8Tp0Yh5G0J9anaHo/y+mAo5OJ6FnE3w=;
-        b=GNXCsqzPkIjckPUvVoBVrAfR46QCwQqdHVWOr+U9MM3DUMdy4hG/kq7wS+YE2tdS6N
-         KXMq3Q46+Ay32La1ujHWZvJofI45w2MbBPI0AcGH5LuNVgc+KBEraxv6Wev6VSzis9kO
-         guVKInLZZsFehEDMr4IB6h1YlvapMAQ+AAxIpez9rNHqSASgI7MjgAGDIlWwQXwCP7yR
-         k9Sm/L+uBk7ZAnjIezXZkT8dDtzNzuBfk3VUH3PxXpN61Keq7uT/X5RizwtlAm8UH+W6
-         NAEaL1NX5JEvTvb7nYIyuDuNB8PvQUc2dP3Kjk0UmlDxQH7Y/QNDoa/HGgVvdF83/Eh9
-         KHcw==
-X-Gm-Message-State: AGi0PubS7scypJU7qcjtGEuQrwyW/W0iYDb7U5AMdTWt7VhNJBQyg0gw
-        FLTFXfiGnstJvFnX/t4FQ3riqw==
-X-Google-Smtp-Source: APiQypKPbiNIuzOhnfWZK3aSuAimZ6kMvjtjoB3PUVWkLgrXCsrrvonJs2vHPqxiHQA1YoMJYuJ02Q==
-X-Received: by 2002:a17:90a:2281:: with SMTP id s1mr31687737pjc.68.1589324428530;
-        Tue, 12 May 2020 16:00:28 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id w143sm12602170pfc.165.2020.05.12.16.00.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 May 2020 16:00:26 -0700 (PDT)
-Date:   Tue, 12 May 2020 16:00:26 -0700 (PDT)
-X-Google-Original-Date: Tue, 12 May 2020 15:59:50 PDT (-0700)
-Subject:     Re: [PATCH 19/31] riscv: use asm-generic/cacheflush.h
-In-Reply-To: <20200510075510.987823-20-hch@lst.de>
-CC:     akpm@linux-foundation.org, Arnd Bergmann <arnd@arndb.de>,
-        zippel@linux-m68k.org, linux-arch@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, monstr@monstr.eu, jeyu@kernel.org,
-        linux-ia64@vger.kernel.org, linux-c6x-dev@linux-c6x.org,
-        linux-sh@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        x86@kernel.org, linux-um@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-m68k@lists.linux-m68k.org,
-        openrisc@lists.librecores.org, linux-alpha@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Christoph Hellwig <hch@lst.de>
-Message-ID: <mhng-8adbedbc-0f91-4291-9471-2df5eb7b802b@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S1731653AbgEMBUr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 12 May 2020 21:20:47 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17766 "EHLO
+        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731604AbgEMBUr (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 12 May 2020 21:20:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1589332815; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=cjRqHgQoFQcF9dXuptd75t76dh9Ox5nQ6TBCswsAIE4vmMvZMewIFAKPRRPZe/PJS2bY6Znhx+4w0WAA5Mc10//xuHcGOXibicDt0DNxz/yqmBq9jqQYI0HOJKQZLeRu97PeXH0+eg7Wh7IEp7qIfK2cgzhh49fR11LSI9OmNkM=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1589332815; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=UUH9TBEsGZClV0UvQJYkiGlyJwxsXutgInjbHM/99OA=; 
+        b=UeVNz+dMSImscqxWTjoQW6hcrDNWN8PeWNk2/x2Z7sWF8rnNDKBCow+UF1rwxfp6prWwIgTltl1mXREQhk3JzzzL9uRc8V36S/nmjqTuPp8mHYV/KUcZasCsX1zXsKb+mm4yvqUoOl5SfBFRA/dS2EfEd67YRPZXmbW7VWWx9bw=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=flygoat.com;
+        spf=pass  smtp.mailfrom=jiaxun.yang@flygoat.com;
+        dmarc=pass header.from=<jiaxun.yang@flygoat.com> header.from=<jiaxun.yang@flygoat.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1589332815;
+        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
+        h=Date:From:To:CC:Subject:Reply-to:In-Reply-To:References:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=UUH9TBEsGZClV0UvQJYkiGlyJwxsXutgInjbHM/99OA=;
+        b=bcpCCd4IolU5WLkjKiiyehRsPV+/qDkYcYvv6kgawo3IpvNaL0dpUfqw1G/bJJ3B
+        hTpUDBXWRJAWXQfNpXFhEmkx6v6tDlprHuJHAJtFK56CoaoP5V9/naZuiG0Yo92b7Hd
+        2ymduufrqGSTuebNjO6jnOS0hJEjt+PQJZIAEou0=
+Received: from [127.0.0.1] (223.104.5.223 [223.104.5.223]) by mx.zoho.com.cn
+        with SMTPS id 1589332811518609.5936666834109; Wed, 13 May 2020 09:20:11 +0800 (CST)
+Date:   Wed, 13 May 2020 09:20:08 +0800
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     linux-pci@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Paul Burton <paulburton@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v9 2/5] PCI: Add Loongson PCI Controller support
+User-Agent: K-9 Mail for Android
+Reply-to: jiaxun.yang@flygoat.com
+In-Reply-To: <20200512180602.GA273658@bjorn-Precision-5520>
+References: <20200512180602.GA273658@bjorn-Precision-5520>
+Message-ID: <08C2301A-7349-4044-80F4-0B0520780DB9@flygoat.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, 10 May 2020 00:54:58 PDT (-0700), Christoph Hellwig wrote:
-> RISC-V needs almost no cache flushing routines of its own.  Rely on
-> asm-generic/cacheflush.h for the defaults.
->
-> Also remove the pointless __KERNEL__ ifdef while we're at it.
-> ---
->  arch/riscv/include/asm/cacheflush.h | 62 ++---------------------------
->  1 file changed, 3 insertions(+), 59 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/cacheflush.h b/arch/riscv/include/asm/cacheflush.h
-> index c8677c75f82cb..a167b4fbdf007 100644
-> --- a/arch/riscv/include/asm/cacheflush.h
-> +++ b/arch/riscv/include/asm/cacheflush.h
-> @@ -8,65 +8,6 @@
->
->  #include <linux/mm.h>
->
-> -#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
-> -
-> -/*
-> - * The cache doesn't need to be flushed when TLB entries change when
-> - * the cache is mapped to physical memory, not virtual memory
-> - */
-> -static inline void flush_cache_all(void)
-> -{
-> -}
-> -
-> -static inline void flush_cache_mm(struct mm_struct *mm)
-> -{
-> -}
-> -
-> -static inline void flush_cache_dup_mm(struct mm_struct *mm)
-> -{
-> -}
-> -
-> -static inline void flush_cache_range(struct vm_area_struct *vma,
-> -				     unsigned long start,
-> -				     unsigned long end)
-> -{
-> -}
-> -
-> -static inline void flush_cache_page(struct vm_area_struct *vma,
-> -				    unsigned long vmaddr,
-> -				    unsigned long pfn)
-> -{
-> -}
-> -
-> -static inline void flush_dcache_mmap_lock(struct address_space *mapping)
-> -{
-> -}
-> -
-> -static inline void flush_dcache_mmap_unlock(struct address_space *mapping)
-> -{
-> -}
-> -
-> -static inline void flush_icache_page(struct vm_area_struct *vma,
-> -				     struct page *page)
-> -{
-> -}
-> -
-> -static inline void flush_cache_vmap(unsigned long start, unsigned long end)
-> -{
-> -}
-> -
-> -static inline void flush_cache_vunmap(unsigned long start, unsigned long end)
-> -{
-> -}
-> -
-> -#define copy_to_user_page(vma, page, vaddr, dst, src, len) \
-> -	do { \
-> -		memcpy(dst, src, len); \
-> -		flush_icache_user_range(vma, page, vaddr, len); \
-> -	} while (0)
-> -#define copy_from_user_page(vma, page, vaddr, dst, src, len) \
-> -	memcpy(dst, src, len)
-> -
->  static inline void local_flush_icache_all(void)
->  {
->  	asm volatile ("fence.i" ::: "memory");
-> @@ -79,6 +20,7 @@ static inline void flush_dcache_page(struct page *page)
->  	if (test_bit(PG_dcache_clean, &page->flags))
->  		clear_bit(PG_dcache_clean, &page->flags);
->  }
-> +#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
->
->  /*
->   * RISC-V doesn't have an instruction to flush parts of the instruction cache,
-> @@ -105,4 +47,6 @@ void flush_icache_mm(struct mm_struct *mm, bool local);
->  #define SYS_RISCV_FLUSH_ICACHE_LOCAL 1UL
->  #define SYS_RISCV_FLUSH_ICACHE_ALL   (SYS_RISCV_FLUSH_ICACHE_LOCAL)
->
-> +#include <asm-generic/cacheflush.h>
-> +
->  #endif /* _ASM_RISCV_CACHEFLUSH_H */
 
-Thanks!
 
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+=E4=BA=8E 2020=E5=B9=B45=E6=9C=8813=E6=97=A5 GMT+08:00 =E4=B8=8A=E5=8D=882=
+:06:02, Bjorn Helgaas <helgaas@kernel=2Eorg> =E5=86=99=E5=88=B0:
+>On Tue, May 12, 2020 at 03:43:56PM +0800, Jiaxun Yang wrote:
+>> This controller can be found on Loongson-2K SoC, Loongson-3
+>> systems with RS780E/LS7A PCH=2E
+>>=20
+>> The RS780E part of code was previously located at
+>> arch/mips/pci/ops-loongson3=2Ec and now it can use generic PCI
+>> driver implementation=2E
+>>=20
+>> Signed-off-by: Jiaxun Yang <jiaxun=2Eyang@flygoat=2Ecom>
+>> Reviewed-by: Rob Herring <robh@kernel=2Eorg>
+>
+>> +static void system_bus_quirk(struct pci_dev *pdev)
+>> +{
+>> +	u16 tmp;
+>> +
+>> +	/*=20
+>> +	 * These devices are not sharing resouces with rest of devices
+>> +	 * on host bus and firmware will ensure their BARs are placed
+>> +	 * in safe ranges=2E Also there might be some config registers
+>> +	 * in their config space so kernel shouldn't ignore them=2E
+>
+>"Firmware ensuring BARs are placed in 'safe' ranges" is not a
+>sufficient answer=2E  As I said before, Linux needs to know both the
+>ADDRESS and the SIZE of whatever non-standard BARs these are=2E
+>Otherwise, we're liable to assign that space to a different device=2E
 
-Were you trying to get these all in at once, or do you want me to take it into
-my tree?
+The address assigned to these devices will never be a part of resources
+belongs to the host bridge=2E That's enforced by hardware and firmware,
+so address conflict would never happen=2E
+
+I'm doing like this to ensure kernel will discover this device but do noth=
+ing
+about assignment of resources to it=2E
+
+>
+>If you have to hard-code the size, so be it=2E  That would mean the
+>hardware is completely broken, but at least we could make Linux deal
+>with it=2E  If the hardware consumes address space we don't know about,
+>we can't deal with that=2E
+>
+>> +	 */
+>> +	pdev->mmio_always_on =3D 1;
+>> +	pdev->non_compliant_bars =3D 1;
+>> +}
+>
+>> +void __iomem *pci_loongson_map_bus(struct pci_bus *bus, unsigned int d=
+evfn,
+>> +			       int where)
+>> +{
+>> +	unsigned char busnum =3D bus->number;
+>> +	struct pci_host_bridge *bridge =3D pci_find_host_bridge(bus);
+>> +	struct loongson_pci *priv =3D  pci_host_bridge_priv(bridge);
+>> +
+>> +	/*
+>> +	 * Do not read more than one device on the bus other than
+>> +	 * the host bus 0=2E
+>> +	 */
+>
+>If the hardware is restricted such that the root bus number must be
+>zero, pleae say that explicitly here=2E  Otherwise, it just looks like
+>a bug=2E
+>
+>> +	if (priv->flags & FLAG_DEV_FIX && busnum !=3D 0 &&
+>> +		PCI_SLOT(devfn) > 0)
+>> +		return NULL;
+>> +
+>> +	/* CFG0 can only access standard space */
+>> +	if (where < PCI_CFG_SPACE_SIZE && priv->cfg0_base)
+>> +		return cfg0_map(priv, busnum, devfn, where);
+>> +
+>> +	/* CFG1 can access extended space */
+>> +	if (where < PCI_CFG_SPACE_EXP_SIZE && priv->cfg1_base)
+>> +		return cfg1_map(priv, busnum, devfn, where);
+>> +
+>> +	return NULL;
+>> +}
+
+--=20
+Jiaxun Yang

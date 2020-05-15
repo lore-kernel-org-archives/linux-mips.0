@@ -2,58 +2,106 @@ Return-Path: <SRS0=Dyp6=65=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C96EC433DF
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 08:38:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35BA9C433E0
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 08:51:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 690382054F
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 08:38:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0BEA4206F1
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 08:51:40 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=cogentembedded-com.20150623.gappssmtp.com header.i=@cogentembedded-com.20150623.gappssmtp.com header.b="ifUAfR6z"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726922AbgEOIiM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 May 2020 04:38:12 -0400
-Received: from elvis.franken.de ([193.175.24.41]:54118 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726894AbgEOIiM (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 15 May 2020 04:38:12 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jZVr7-0007jn-00; Fri, 15 May 2020 10:38:09 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 324E6C04A1; Fri, 15 May 2020 10:10:46 +0200 (CEST)
-Date:   Fri, 15 May 2020 10:10:46 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH v1 1/2] MIPS: ath79: ar9331_dpt_module: update led nodes
-Message-ID: <20200515081046.GA8653@alpha.franken.de>
-References: <20200510060324.25134-1-o.rempel@pengutronix.de>
+        id S1727837AbgEOIvj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 May 2020 04:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727833AbgEOIvj (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 15 May 2020 04:51:39 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12260C061A0C
+        for <linux-mips@vger.kernel.org>; Fri, 15 May 2020 01:51:39 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id g1so1367273ljk.7
+        for <linux-mips@vger.kernel.org>; Fri, 15 May 2020 01:51:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=E8iSa6ALDqacyJ/a+HRe0nZCH4WvMfQxe+p585lwoJE=;
+        b=ifUAfR6z5qzxx2rSJkcgO+arSZPSic63yjaBwBK+DBtdY41jLP1+kSNu7RDNaz6Rz7
+         uy8vIdVtQPqR4XjnUdzngajCpDyOrLcnBZI5rmDlAU+NgSr5B0wf/EZtSzP3Yv4XFLRl
+         h1DS5lpjBTR4bFDjpUtKXXS0eviDfS0h0/Jg/US9uB+flzv+Fx+D4Gogami8mz7gpaFE
+         HDJw6tllwrmoRy5xtniAg5kd9FSAzLnuMqrEKpiJmojLr223NbhFraZnEJo55fc7WOgA
+         9powX8lqymWuLCZwl6D8TXwuliU6FPoYuNxvsF2EQLwirxzivoY6nDoYBfeWOcRyyypg
+         +a7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=E8iSa6ALDqacyJ/a+HRe0nZCH4WvMfQxe+p585lwoJE=;
+        b=erPFrxlaLfncX5Uu+fBZA6gnS0yDzwRwyJ2LIZZA7fGf+EsQOedR7oObluY88Q0KRC
+         ET9jfl22axkeMq8r3a3zXKgQmdGYy3mVun4/Fc0rz8AUkTwhIEj/TfXsUayUkl55X0bJ
+         aDsbeWmLDvFZWKRCqimrClhV4zZgG1G7or8I8qAs0ar7ZMQ27mvNJDfSVR7U29M74Idz
+         YvSGU1dXLTQ2rm02bbamhUoKQMP5RqU6BRyQm4pyXjxfajM35mfwqDaZb3fgaMnicder
+         2Iq2rB6zfGJ9NWOypSyVp0ulKlNeVUKeYCZlkkJArq7wbYSzbSKXeGPUQhgI52jKmkdG
+         Cw0Q==
+X-Gm-Message-State: AOAM532IPqjXivNs6G+3DF3yFRW4GXd38lWRxATUH4xmsnCujFBpgUAL
+        m+FK3w8XkVJDwcCachOUUe8S6z/os8U7sw==
+X-Google-Smtp-Source: ABdhPJy/YvG5iCdqZMV5vnOhHeT1sBeHj6YHDTBZHwNFu044wP6T3JgWzucfB2LxnYJz4S5Zqa3i3g==
+X-Received: by 2002:a2e:9455:: with SMTP id o21mr1599107ljh.245.1589532697455;
+        Fri, 15 May 2020 01:51:37 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:46b9:e14c:2541:1887:9a5d:d412? ([2a00:1fa0:46b9:e14c:2541:1887:9a5d:d412])
+        by smtp.gmail.com with ESMTPSA id x2sm797962ljc.106.2020.05.15.01.51.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 May 2020 01:51:36 -0700 (PDT)
+Subject: Re: [PATCH 1/2] MIPS: Loongson: Fix fatal error during GPU init
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+References: <1589508901-18077-1-git-send-email-yangtiezhu@loongson.cn>
+From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-ID: <1264becb-44aa-9e29-4e67-d1b5fbc0b56c@cogentembedded.com>
+Date:   Fri, 15 May 2020 11:51:24 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200510060324.25134-1-o.rempel@pengutronix.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <1589508901-18077-1-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, May 10, 2020 at 08:03:23AM +0200, Oleksij Rempel wrote:
-> Fit led nodes to the latest naming schema.
+Hello!
+
+On 15.05.2020 5:15, Tiezhu Yang wrote:
+
+> When ATI Radeon graphics card has been compiled directly into the kernel
+                                ^ driver
+
+> instead of as a module, we should make sure the firmware for the model
+> (check available ones in /lib/firmware/radeon) is built-in to the kernel
+> as well, otherwise there exists the following fatal error during GPU init,
+> change CONFIG_DRM_RADEON=y to CONFIG_DRM_RADEON=m to fix it.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  arch/mips/boot/dts/qca/ar9331_dpt_module.dts | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> [    1.900997] [drm] Loading RS780 Microcode
+> [    1.905077] radeon 0000:01:05.0: Direct firmware load for radeon/RS780_pfp.bin failed with error -2
+> [    1.914140] r600_cp: Failed to load firmware "radeon/RS780_pfp.bin"
+> [    1.920405] [drm:r600_init] *ERROR* Failed to load firmware!
+> [    1.926069] radeon 0000:01:05.0: Fatal error during GPU init
+> [    1.931729] [drm] radeon: finishing device.
+> 
+> Fixes: 024e6a8b5bb1 ("MIPS: Loongson: Add a Loongson-3 default config file")
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+[...]
 
-both patches applied to mips-next.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+MBR, Sergei

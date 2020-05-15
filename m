@@ -2,95 +2,101 @@ Return-Path: <SRS0=Dyp6=65=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 882F5C433E0
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 04:10:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B076C433E0
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 06:09:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6B1AC20728
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 04:10:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7174620767
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 06:09:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1589522962;
+	bh=kgLtAKAfE9tPkcpQWYFZxlQ+PomFFTOqOI8Aot+uWlI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=KVrefPbq3+rUOXX2KCsHeDMPIpCu7uwnkC3HF3GrgsxrqM+T/4WPOHYRWtoIeGB+O
+	 dx86PTDEwEE3xiZ+8AwtoqG489r9OQx+MmlDjasPe92N3FW051QI9vhnjnBEY2CKk1
+	 P1PScSATJS/Lp2uliolfeG4vyn3gkO9bLMzn/14g=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726226AbgEOEKg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 May 2020 00:10:36 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:54196 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725616AbgEOEKc (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 15 May 2020 00:10:32 -0400
-Received: from kvm-dev1.localdomain (unknown [10.2.5.134])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT98hFr5eHPU0AA--.1S2;
-        Fri, 15 May 2020 12:10:09 +0800 (CST)
-From:   Bibo Mao <maobibo@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        id S1726295AbgEOGJT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 May 2020 02:09:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726137AbgEOGJS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 15 May 2020 02:09:18 -0400
+Received: from localhost (unknown [122.178.196.30])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 62AAE2065F;
+        Fri, 15 May 2020 06:09:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589522958;
+        bh=kgLtAKAfE9tPkcpQWYFZxlQ+PomFFTOqOI8Aot+uWlI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HpXT4he0xdWcmrcjS/VNjmglDEDWEmj7Vq5dRgrt8nABPbVNpJdj7fQGxuf5pbFTW
+         sX6vt6Rt6SyZc0kmQsycfvi27XzW5xB1arzxtopdHNvrEf5B9Wf36v7BA7aq9ErklA
+         M3tNNI2EvAsesfJnoomkv6nPDwSLn/APVqdO7Cgo=
+Date:   Fri, 15 May 2020 11:39:11 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Paul Burton <paulburton@kernel.org>,
-        Dmitry Korotin <dkorotin@wavecomp.com>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org
-Subject: [PATCH 1/3] MIPS: Do not flush tlb page when updating PTE entry
-Date:   Fri, 15 May 2020 12:10:07 +0800
-Message-Id: <1589515809-32422-1-git-send-email-maobibo@loongson.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AQAAf9DxT98hFr5eHPU0AA--.1S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruw1xtr4DAFW5ZFykCFWxZwb_yoWDWrc_C3
-        WxZanYg3y0grsrCrW7Aws3GryY9a1kG34DXr1xW3s0ya45Ar4kGayvvFsrXr4Y9Fyvkrs5
-        CrZYkw1akFnFqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbs8YjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY
-        04v7MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
-        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
-        GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
-        vEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280
-        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43
-        ZEXa7IU8489tUUUUU==
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-mips@vger.kernel.org, dmaengine@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] dt-bindings: dma: dw: Add max burst transaction
+ length property
+Message-ID: <20200515060911.GF333670@vkoul-mobl>
+References: <20200306131048.ADBE18030797@mail.baikalelectronics.ru>
+ <20200508105304.14065-1-Sergey.Semin@baikalelectronics.ru>
+ <20200508105304.14065-3-Sergey.Semin@baikalelectronics.ru>
+ <20200508111242.GH185537@smile.fi.intel.com>
+ <20200511200528.nfkc2zkh3bvupn7l@mobilestation>
+ <20200511210138.GN185537@smile.fi.intel.com>
+ <20200511213531.wnywlljiulvndx6s@mobilestation>
+ <20200512090804.GR185537@smile.fi.intel.com>
+ <20200512114946.x777yb6bhe22ccn5@mobilestation>
+ <20200512123840.GY185537@smile.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200512123840.GY185537@smile.fi.intel.com>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-It is not necessary to flush tlb page on all CPUs if suitable PTE
-entry exists already during page fault handling, just updating
-TLB is fine.
+On 12-05-20, 15:38, Andy Shevchenko wrote:
+> On Tue, May 12, 2020 at 02:49:46PM +0300, Serge Semin wrote:
+> > On Tue, May 12, 2020 at 12:08:04PM +0300, Andy Shevchenko wrote:
+> > > On Tue, May 12, 2020 at 12:35:31AM +0300, Serge Semin wrote:
+> > > > On Tue, May 12, 2020 at 12:01:38AM +0300, Andy Shevchenko wrote:
+> > > > > On Mon, May 11, 2020 at 11:05:28PM +0300, Serge Semin wrote:
+> > > > > > On Fri, May 08, 2020 at 02:12:42PM +0300, Andy Shevchenko wrote:
+> > > > > > > On Fri, May 08, 2020 at 01:53:00PM +0300, Serge Semin wrote:
+> 
+> ...
+> 
+> I leave it to Rob and Vinod.
+> It won't break our case, so, feel free with your approach.
 
-Here redefine flush_tlb_fix_spurious_fault as empty on mips system.
----
-Change in v2:
-- split flush_tlb_fix_spurious_fault and tlb update into two patches
-- comments typo modification
+I agree the DT is about describing the hardware and looks like value of
+1 is not allowed. If allowed it should be added..
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- arch/mips/include/asm/pgtable.h | 2 ++
- 1 file changed, 2 insertions(+)
+> P.S. Perhaps at some point we need to
+> 1) convert properties to be u32 (it will simplify things);
+> 2) convert legacy ones to proper format ('-' instead of '_', vendor prefix added);
+> 3) parse them in core with device property API.
 
-diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index aab0ec1..e215542 100644
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -454,6 +454,8 @@ static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
- 	return __pgprot(prot);
- }
- 
-+#define flush_tlb_fix_spurious_fault(vma, address) do { } while (0)
-+
- /*
-  * Conversion functions: convert a page and protection to a page entry,
-  * and a page entry and page directory to the page they refer to.
+These suggestions are good and should be done.
+
 -- 
-1.8.3.1
-
+~Vinod

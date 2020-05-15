@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C83C3C433E3
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:37:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4C56C433E7
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:37:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A073A2078C
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:37:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 918D4207BB
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:37:05 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Zx44eqfH"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="msMI36+C"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgEOOhJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 May 2020 10:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35566 "EHLO
+        id S1726372AbgEOOg5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 May 2020 10:36:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726163AbgEOOhJ (ORCPT
+        by vger.kernel.org with ESMTP id S1726140AbgEOOg4 (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 15 May 2020 10:37:09 -0400
+        Fri, 15 May 2020 10:36:56 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D65BEC061A0C;
-        Fri, 15 May 2020 07:37:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A41C061A0C;
+        Fri, 15 May 2020 07:36:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=NvlDCJ52IZIXq0+H620wKd1v1G0M5nfx6BSZiQRK5ug=; b=Zx44eqfHA7npmxCmbjsosOlA4U
-        QePh5U9nQ6FenRsZFS70d2HqAzbGy57uJ4pAxEQ4XZjMN2HKYMf1X5Dq+4mrGssqQxQ5CipZFX5dF
-        0cDxm2Qomgc+BiLv6x2TkQsXXsODMZt+QaGdn7vGgkEpnSFjRd9Y4gEFDU2rHhQrj2aJ5biV/aGVr
-        bOAk/HPJ3he8DkX35KBPRvtnOHiTQutI7iwgxJ0+rJ2CYEqwZknXtyvdJLydLugSzLAW7gLc250Y+
-        0WdL7/Dnh3Im6nwgESmG16TvF24wCM8RAtzyQ25GuTm2vDA8YcBI46F3Ua9y1bLWOfvkKngpOmpV1
-        8xfHW2ew==;
+        bh=f8uY0F5J9sPe3diCT135xJ/N/Dw+x4WW5zJnRGaybDU=; b=msMI36+CPB2aX7WIDOvf9a7ihe
+        A7+CS1wrGUYzvnMjk+QNuVEq6hdstYIgZPQorAgs/fWSXI09jbVs89riMnRBVwBQviupyy3DYOayE
+        JmluGvH20OMtC9Xya8H8+tf43obb46YOBQDhJyEunvFokJSClqB+BYiCKrmFLOa42PsHXDhDHPrDg
+        +WL9g+3vPWyosfG4RR5+SAek+0gkDoqEOMBae3KTFjfCYISW1pGgPedRT2GT+SPT55i+D+tHCdocc
+        hwAsGs57t3OgA7geJGJWqHENAgWbH0LMOJor1hUDGuRNCVKlG9U2TeWdIlcGEah5uy0ULp3wurKV4
+        KfwrUS2Q==;
 Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jZbSI-0003nx-7L; Fri, 15 May 2020 14:36:54 +0000
+        id 1jZbSF-0003nT-QU; Fri, 15 May 2020 14:36:52 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -53,9 +53,9 @@ Cc:     Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
         linux-arch@vger.kernel.org, linux-mm@kvack.org,
         linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
         linux-fsdevel@vger.kernel.org
-Subject: [PATCH 02/29] nds32: unexport flush_icache_page
-Date:   Fri, 15 May 2020 16:36:19 +0200
-Message-Id: <20200515143646.3857579-3-hch@lst.de>
+Subject: [PATCH 01/29] arm: fix the flush_icache_range arguments in set_fiq_handler
+Date:   Fri, 15 May 2020 16:36:18 +0200
+Message-Id: <20200515143646.3857579-2-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
 References: <20200515143646.3857579-1-hch@lst.de>
@@ -67,25 +67,29 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-flush_icache_page is only used by mm/memory.c.
+The arguments passed look bogus, try to fix them to something that seems
+to make sense.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/nds32/mm/cacheflush.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm/kernel/fiq.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/nds32/mm/cacheflush.c b/arch/nds32/mm/cacheflush.c
-index 254703653b6f5..8f168b33065fa 100644
---- a/arch/nds32/mm/cacheflush.c
-+++ b/arch/nds32/mm/cacheflush.c
-@@ -35,7 +35,6 @@ void flush_icache_page(struct vm_area_struct *vma, struct page *page)
- 	kunmap_atomic((void *)kaddr);
- 	local_irq_restore(flags);
- }
--EXPORT_SYMBOL(flush_icache_page);
+diff --git a/arch/arm/kernel/fiq.c b/arch/arm/kernel/fiq.c
+index cd1234c103fcd..98ca3e3fa8471 100644
+--- a/arch/arm/kernel/fiq.c
++++ b/arch/arm/kernel/fiq.c
+@@ -98,8 +98,8 @@ void set_fiq_handler(void *start, unsigned int length)
  
- void flush_icache_user_range(struct vm_area_struct *vma, struct page *page,
- 	                     unsigned long addr, int len)
+ 	memcpy(base + offset, start, length);
+ 	if (!cache_is_vipt_nonaliasing())
+-		flush_icache_range((unsigned long)base + offset, offset +
+-				   length);
++		flush_icache_range((unsigned long)base + offset,
++				   (unsigned long)base + offset + length);
+ 	flush_icache_range(0xffff0000 + offset, 0xffff0000 + offset + length);
+ }
+ 
 -- 
 2.26.2
 

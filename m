@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ECCCC433E0
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:39:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C86EC433E2
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:39:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0E878207C4
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:39:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EF64C2078C
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:39:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="W5kTDVZU"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="COBcuw2s"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726724AbgEOOjX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 May 2020 10:39:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35694 "EHLO
+        id S1728383AbgEOOje (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 May 2020 10:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727853AbgEOOhq (ORCPT
+        by vger.kernel.org with ESMTP id S1727851AbgEOOhq (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
         Fri, 15 May 2020 10:37:46 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E572C05BD09;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53991C061A0C;
         Fri, 15 May 2020 07:37:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=8Bf5PQavcsPSk/30moW6k6biuN3Qcs8ONGd4UJ1YFiA=; b=W5kTDVZULzZpxH3nY2FA8EeWtC
-        0pxyBdBG5EpPvyEV/Z9cblrqAO9N+qw+On7PqqrTZSrzr1RPRzT0Phkdj87X2ZkuR7CYFd5S+eevF
-        0n9RgWvPZ7i7a5oAMZ97LJaLFd1pmN4dBgXCs6eEwOt8KECPC0rehSxD0JfrVfkON6hWEG8uvCKEo
-        RE3Nh1w1ujF7q1ih51KWgBKH42wZuT8D/Z+87xmnMUHz66GFWEvo7/Z/1jxMfp8DfHA1EpdUhRJ90
-        TDY+NbvF/S/3K0Xiky7/Ae8WckmjKhSIVCbnN11xUn1hKvhHlkCoTI3WbTQGOdOqP3J9XDfCsY7da
-        18ZV6AZA==;
+        bh=kQS44H8EzM8k3vQYjLlTfkfNkLQiGixe7Bw6b6gouAo=; b=COBcuw2sMnbx8n6F0r04JzqsVZ
+        vhsnRV88QAm1MMvzPpni3bCVqECArdsjrwXjVyJYlm/nGqC1AIEq9cWiMnSp/fzU7XIAXjNKwscfM
+        nVXUQU9d8CRR7QapoJ62NVVY23Jeq5tRK5o/GjOPHix1T3p4kQIooNVrQb1lQPjHzkliPq6DWjHvC
+        Lp1UMyIIXYjsBXTXQnxmhuVUDUq3DYtlyrQTKrhkom10fZQAQQWcBRxs+tdOnyQeZgEK5bq2Q4fZ5
+        CRtCX4IisNVhwlDMiN1J96maNni2cVQK6NLAIVY8S5Pb4KwJ0pbABeKSR0rJnkvQQRk7ExsxRZIgo
+        vlL7IhMg==;
 Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jZbSk-0004PG-IT; Fri, 15 May 2020 14:37:23 +0000
+        id 1jZbSu-0004ga-GD; Fri, 15 May 2020 14:37:33 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -53,9 +53,9 @@ Cc:     Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
         linux-arch@vger.kernel.org, linux-mm@kvack.org,
         linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
         linux-fsdevel@vger.kernel.org
-Subject: [PATCH 12/29] ia64: use asm-generic/cacheflush.h
-Date:   Fri, 15 May 2020 16:36:29 +0200
-Message-Id: <20200515143646.3857579-13-hch@lst.de>
+Subject: [PATCH 15/29] openrisc: use asm-generic/cacheflush.h
+Date:   Fri, 15 May 2020 16:36:32 +0200
+Message-Id: <20200515143646.3857579-16-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
 References: <20200515143646.3857579-1-hch@lst.de>
@@ -67,66 +67,56 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-IA64 needs almost no cache flushing routines of its own.  Rely on
+OpenRISC needs almost no cache flushing routines of its own.  Rely on
 asm-generic/cacheflush.h for the defaults.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/ia64/include/asm/cacheflush.h | 28 +++-------------------------
- 1 file changed, 3 insertions(+), 25 deletions(-)
+ arch/openrisc/include/asm/cacheflush.h | 31 +++++---------------------
+ 1 file changed, 6 insertions(+), 25 deletions(-)
 
-diff --git a/arch/ia64/include/asm/cacheflush.h b/arch/ia64/include/asm/cacheflush.h
-index 6d3478f8abc89..a8f1c86ac242a 100644
---- a/arch/ia64/include/asm/cacheflush.h
-+++ b/arch/ia64/include/asm/cacheflush.h
-@@ -12,44 +12,22 @@
- 
- #include <asm/page.h>
+diff --git a/arch/openrisc/include/asm/cacheflush.h b/arch/openrisc/include/asm/cacheflush.h
+index 79d5d7753fe4b..74d1fce4e8839 100644
+--- a/arch/openrisc/include/asm/cacheflush.h
++++ b/arch/openrisc/include/asm/cacheflush.h
+@@ -62,31 +62,12 @@ static inline void flush_dcache_page(struct page *page)
+ 	clear_bit(PG_dc_clean, &page->flags);
+ }
  
 -/*
-- * Cache flushing routines.  This is the kind of stuff that can be very expensive, so try
-- * to avoid them whenever possible.
+- * Other interfaces are not required since we do not have virtually
+- * indexed or tagged caches. So we can use the default here.
 - */
+-#define flush_cache_all()				do { } while (0)
+-#define flush_cache_mm(mm)				do { } while (0)
+-#define flush_cache_dup_mm(mm)				do { } while (0)
+-#define flush_cache_range(vma, start, end)		do { } while (0)
+-#define flush_cache_page(vma, vmaddr, pfn)		do { } while (0)
+-#define flush_dcache_mmap_lock(mapping)			do { } while (0)
+-#define flush_dcache_mmap_unlock(mapping)		do { } while (0)
+-#define flush_icache_range(start, end)			do { } while (0)
+-#define flush_icache_page(vma, pg)			do { } while (0)
+-#define flush_icache_user_range(vma, pg, adr, len)	do { } while (0)
+-#define flush_cache_vmap(start, end)			do { } while (0)
+-#define flush_cache_vunmap(start, end)			do { } while (0)
 -
--#define flush_cache_all()			do { } while (0)
--#define flush_cache_mm(mm)			do { } while (0)
--#define flush_cache_dup_mm(mm)			do { } while (0)
--#define flush_cache_range(vma, start, end)	do { } while (0)
--#define flush_cache_page(vma, vmaddr, pfn)	do { } while (0)
--#define flush_icache_page(vma,page)		do { } while (0)
--#define flush_cache_vmap(start, end)		do { } while (0)
--#define flush_cache_vunmap(start, end)		do { } while (0)
--
- #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
- #define flush_dcache_page(page)			\
- do {						\
- 	clear_bit(PG_arch_1, &(page)->flags);	\
- } while (0)
+-#define copy_to_user_page(vma, page, vaddr, dst, src, len)           \
+-	do {                                                         \
+-		memcpy(dst, src, len);                               \
+-		if (vma->vm_flags & VM_EXEC)                         \
+-			sync_icache_dcache(page);                    \
+-	} while (0)
++#define flush_icache_user_range(vma, page, addr, len)	\
++do {							\
++	if (vma->vm_flags & VM_EXEC)			\
++		sync_icache_dcache(page);		\
++} while (0)
  
--#define flush_dcache_mmap_lock(mapping)		do { } while (0)
--#define flush_dcache_mmap_unlock(mapping)	do { } while (0)
--
--extern void flush_icache_range (unsigned long start, unsigned long end);
-+extern void flush_icache_range(unsigned long start, unsigned long end);
-+#define flush_icache_range flush_icache_range
- extern void clflush_cache_range(void *addr, int size);
- 
--
- #define flush_icache_user_range(vma, page, user_addr, len)					\
- do {												\
- 	unsigned long _addr = (unsigned long) page_address(page) + ((user_addr) & ~PAGE_MASK);	\
- 	flush_icache_range(_addr, _addr + (len));						\
- } while (0)
- 
--#define copy_to_user_page(vma, page, vaddr, dst, src, len) \
--do { memcpy(dst, src, len); \
--     flush_icache_user_range(vma, page, vaddr, len); \
--} while (0)
--#define copy_from_user_page(vma, page, vaddr, dst, src, len) \
+-#define copy_from_user_page(vma, page, vaddr, dst, src, len)         \
 -	memcpy(dst, src, len)
 +#include <asm-generic/cacheflush.h>
  
- #endif /* _ASM_IA64_CACHEFLUSH_H */
+ #endif /* __ASM_CACHEFLUSH_H */
 -- 
 2.26.2
 

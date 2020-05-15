@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAC30C433E4
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:38:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7864C433E2
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:37:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B98E3207BB
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:38:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 82E2E207BB
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:37:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="uAJfNv2T"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Z7u5T16o"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbgEOOh7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 May 2020 10:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35730 "EHLO
+        id S1727929AbgEOOhz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 May 2020 10:37:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727943AbgEOOh5 (ORCPT
+        by vger.kernel.org with ESMTP id S1726301AbgEOOhx (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 15 May 2020 10:37:57 -0400
+        Fri, 15 May 2020 10:37:53 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C04CC061A0C;
-        Fri, 15 May 2020 07:37:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54505C061A0C;
+        Fri, 15 May 2020 07:37:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=HDHNR2vMO5LCySRH/6CT3QqjRsqvFZVzPMz3Qt7mA6o=; b=uAJfNv2TDWJ9JRrcHAJUafDd9C
-        KT8Rx9Bi4XWFozwmwOOqZsw3N64RQD9ErU02DTmQP9wUNQOf0ctXrgMstAhzy0XcLClxnojVhMHSL
-        o72cLiKWcbAIxAAtk5tDJ2JYF1SW/wJ3VMFyTu5yg8VxbDKil5E1qyNe7QfJqzY6uJ5PuwL7F7x5x
-        h0OKHzVB/oQMCDqHug9II4XGGw5HWXk4POJ5jWRB8Q+9GgljbxEiBFOxvUQ8fBl1TxTd3GPm8pcbk
-        CRNY1ZY6VC2rGV672WS/7S3Fxet+aDqDNd+FrRNCSE5AhEyFilH0csXCrw8hA1FZtyztlIyN9YIAY
-        aP4syW4g==;
+        bh=k6GtIYshQkzMKbjHn89HEgO/LyVVB61BpvX4N4bhIRg=; b=Z7u5T16oWlOT/9Iev8rQYxD8W/
+        /9yBGyGeS+MvTGoamw7v3lUDy94JUDJw3KUm4iPonlQetJDBWIjD85m/EaBqmKGRaEsdX/uoA+xCZ
+        /VN8LbxQ3vebJPxVwJJV5pmq1LijPBZDH0sK4h0ZLm3eNBf4RM/KxMhkDbCnabHiuOOcTKlCnZjuW
+        Jb7lcqQDFItvKzlzkdNF/9ZFudDU5np1Q0avEFrvoQaIz97kqk1SEHuQ2WjdAufe1pfUSAjeAtDy6
+        Y2icQP2EHvHf/7BJYI85Td0BuAv0FLlHc/FJOrN6RPtc9yVh1CE5wZpUSKIs9UOmEM/RNx65VJU25
+        +l7Sw3SA==;
 Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jZbT0-0004m1-QX; Fri, 15 May 2020 14:37:39 +0000
+        id 1jZbSx-0004j0-Pp; Fri, 15 May 2020 14:37:36 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -52,11 +52,10 @@ Cc:     Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-arch@vger.kernel.org, linux-mm@kvack.org,
         linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux-fsdevel@vger.kernel.org,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH 17/29] riscv: use asm-generic/cacheflush.h
-Date:   Fri, 15 May 2020 16:36:34 +0200
-Message-Id: <20200515143646.3857579-18-hch@lst.de>
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH 16/29] powerpc: use asm-generic/cacheflush.h
+Date:   Fri, 15 May 2020 16:36:33 +0200
+Message-Id: <20200515143646.3857579-17-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
 References: <20200515143646.3857579-1-hch@lst.de>
@@ -68,77 +67,78 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-RISC-V needs almost no cache flushing routines of its own.  Rely on
+Power needs almost no cache flushing routines of its own.  Rely on
 asm-generic/cacheflush.h for the defaults.
 
 Also remove the pointless __KERNEL__ ifdef while we're at it.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
 ---
- arch/riscv/include/asm/cacheflush.h | 62 ++---------------------------
- 1 file changed, 3 insertions(+), 59 deletions(-)
+ arch/powerpc/include/asm/cacheflush.h | 42 +++++++--------------------
+ 1 file changed, 10 insertions(+), 32 deletions(-)
 
-diff --git a/arch/riscv/include/asm/cacheflush.h b/arch/riscv/include/asm/cacheflush.h
-index c8677c75f82cb..a167b4fbdf007 100644
---- a/arch/riscv/include/asm/cacheflush.h
-+++ b/arch/riscv/include/asm/cacheflush.h
-@@ -8,65 +8,6 @@
+diff --git a/arch/powerpc/include/asm/cacheflush.h b/arch/powerpc/include/asm/cacheflush.h
+index e92191b390f31..e682c8e10e903 100644
+--- a/arch/powerpc/include/asm/cacheflush.h
++++ b/arch/powerpc/include/asm/cacheflush.h
+@@ -4,23 +4,9 @@
+ #ifndef _ASM_POWERPC_CACHEFLUSH_H
+ #define _ASM_POWERPC_CACHEFLUSH_H
  
+-#ifdef __KERNEL__
+-
  #include <linux/mm.h>
+ #include <asm/cputable.h>
  
--#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
--
 -/*
-- * The cache doesn't need to be flushed when TLB entries change when
-- * the cache is mapped to physical memory, not virtual memory
+- * No cache flushing is required when address mappings are changed,
+- * because the caches on PowerPCs are physically addressed.
 - */
--static inline void flush_cache_all(void)
--{
--}
+-#define flush_cache_all()			do { } while (0)
+-#define flush_cache_mm(mm)			do { } while (0)
+-#define flush_cache_dup_mm(mm)			do { } while (0)
+-#define flush_cache_range(vma, start, end)	do { } while (0)
+-#define flush_cache_page(vma, vmaddr, pfn)	do { } while (0)
+-#define flush_icache_page(vma, page)		do { } while (0)
+-#define flush_cache_vunmap(start, end)		do { } while (0)
 -
--static inline void flush_cache_mm(struct mm_struct *mm)
--{
--}
--
--static inline void flush_cache_dup_mm(struct mm_struct *mm)
--{
--}
--
--static inline void flush_cache_range(struct vm_area_struct *vma,
--				     unsigned long start,
--				     unsigned long end)
--{
--}
--
--static inline void flush_cache_page(struct vm_area_struct *vma,
--				    unsigned long vmaddr,
--				    unsigned long pfn)
--{
--}
--
--static inline void flush_dcache_mmap_lock(struct address_space *mapping)
--{
--}
--
--static inline void flush_dcache_mmap_unlock(struct address_space *mapping)
--{
--}
--
--static inline void flush_icache_page(struct vm_area_struct *vma,
--				     struct page *page)
--{
--}
--
--static inline void flush_cache_vmap(unsigned long start, unsigned long end)
--{
--}
--
--static inline void flush_cache_vunmap(unsigned long start, unsigned long end)
--{
--}
--
+ #ifdef CONFIG_PPC_BOOK3S_64
+ /*
+  * Book3s has no ptesync after setting a pte, so without this ptesync it's
+@@ -33,20 +19,20 @@ static inline void flush_cache_vmap(unsigned long start, unsigned long end)
+ {
+ 	asm volatile("ptesync" ::: "memory");
+ }
+-#else
+-static inline void flush_cache_vmap(unsigned long start, unsigned long end) { }
+-#endif
++#define flush_cache_vmap flush_cache_vmap
++#endif /* CONFIG_PPC_BOOK3S_64 */
+ 
+ #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
+ extern void flush_dcache_page(struct page *page);
+-#define flush_dcache_mmap_lock(mapping)		do { } while (0)
+-#define flush_dcache_mmap_unlock(mapping)	do { } while (0)
+ 
+ void flush_icache_range(unsigned long start, unsigned long stop);
+-extern void flush_icache_user_range(struct vm_area_struct *vma,
+-				    struct page *page, unsigned long addr,
+-				    int len);
+-extern void flush_dcache_icache_page(struct page *page);
++#define flush_icache_range flush_icache_range
++
++void flush_icache_user_range(struct vm_area_struct *vma, struct page *page,
++		unsigned long addr, int len);
++#define flush_icache_user_range flush_icache_user_range
++
++void flush_dcache_icache_page(struct page *page);
+ void __flush_dcache_icache(void *page);
+ 
+ /**
+@@ -111,14 +97,6 @@ static inline void invalidate_dcache_range(unsigned long start,
+ 	mb();	/* sync */
+ }
+ 
 -#define copy_to_user_page(vma, page, vaddr, dst, src, len) \
 -	do { \
 -		memcpy(dst, src, len); \
@@ -147,24 +147,10 @@ index c8677c75f82cb..a167b4fbdf007 100644
 -#define copy_from_user_page(vma, page, vaddr, dst, src, len) \
 -	memcpy(dst, src, len)
 -
- static inline void local_flush_icache_all(void)
- {
- 	asm volatile ("fence.i" ::: "memory");
-@@ -79,6 +20,7 @@ static inline void flush_dcache_page(struct page *page)
- 	if (test_bit(PG_dcache_clean, &page->flags))
- 		clear_bit(PG_dcache_clean, &page->flags);
- }
-+#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 1
- 
- /*
-  * RISC-V doesn't have an instruction to flush parts of the instruction cache,
-@@ -105,4 +47,6 @@ void flush_icache_mm(struct mm_struct *mm, bool local);
- #define SYS_RISCV_FLUSH_ICACHE_LOCAL 1UL
- #define SYS_RISCV_FLUSH_ICACHE_ALL   (SYS_RISCV_FLUSH_ICACHE_LOCAL)
- 
+-#endif /* __KERNEL__ */
 +#include <asm-generic/cacheflush.h>
-+
- #endif /* _ASM_RISCV_CACHEFLUSH_H */
+ 
+ #endif /* _ASM_POWERPC_CACHEFLUSH_H */
 -- 
 2.26.2
 

@@ -2,55 +2,55 @@ Return-Path: <SRS0=Dyp6=65=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B0F42C433E0
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 07:30:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2F72C433DF
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 07:39:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 95C502065C
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 07:30:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D07F22065C
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 07:39:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726613AbgEOHaF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 May 2020 03:30:05 -0400
-Received: from elvis.franken.de ([193.175.24.41]:54056 "EHLO elvis.franken.de"
+        id S1726696AbgEOHj4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 May 2020 03:39:56 -0400
+Received: from elvis.franken.de ([193.175.24.41]:54067 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726434AbgEOHaE (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 15 May 2020 03:30:04 -0400
+        id S1726624AbgEOHj4 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 15 May 2020 03:39:56 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jZUnC-0007EJ-01; Fri, 15 May 2020 09:30:02 +0200
+        id 1jZUwf-0007Id-00; Fri, 15 May 2020 09:39:49 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id CB717C04A0; Fri, 15 May 2020 09:22:03 +0200 (CEST)
-Date:   Fri, 15 May 2020 09:22:03 +0200
+        id 3F748C04A0; Fri, 15 May 2020 09:39:38 +0200 (CEST)
+Date:   Fri, 15 May 2020 09:39:38 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: ralink: Don't include objects twice
-Message-ID: <20200515072203.GB6722@alpha.franken.de>
-References: <20200514143401.66888-1-tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v2 2/2] MIPS: Fix build errors under
+ CONFIG_HAVE_STD_PC_SERIAL_PORT
+Message-ID: <20200515073938.GA8289@alpha.franken.de>
+References: <1589512985-27419-1-git-send-email-yangtiezhu@loongson.cn>
+ <1589512985-27419-2-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200514143401.66888-1-tsbogend@alpha.franken.de>
+In-Reply-To: <1589512985-27419-2-git-send-email-yangtiezhu@loongson.cn>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, May 14, 2020 at 04:34:00PM +0200, Thomas Bogendoerfer wrote:
-> With the change of platform file inclusion object were included via
-> platform-y and core-y. Remove the core-y part to fix it.
-> 
-> Fixes: 26bff9eb49201aeb ("MIPS: Only include the platformfile needed")
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
->  arch/mips/ralink/Platform | 1 -
->  1 file changed, 1 deletion(-)
+On Fri, May 15, 2020 at 11:23:05AM +0800, Tiezhu Yang wrote:
+> When CONFIG_HAVE_STD_PC_SERIAL_PORT is set, include linux/module.h to fix
+> the following build errors:
 
-applied to mips-next.
+how are you doing this ? To me it looks like this CONFIG option isn't
+used anymore.
 
 Thomas.
 

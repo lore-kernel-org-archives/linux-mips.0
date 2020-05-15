@@ -2,116 +2,99 @@ Return-Path: <SRS0=Dyp6=65=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A953C433E0
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 20:40:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8FD9C433DF
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 21:14:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1194B2070A
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 20:40:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1589575248;
-	bh=7/Rpg+KXflBLuZsnLoyMnGo3Y9ufgp8qwJuPpO7BwaA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
-	b=Kp6dS8Zu8bbx9yfgISHzAVMrilVy/7z0TMBv216r+gkV2tcNYEC6m4tE0KQm4Ba9g
-	 L8LF12Hh+0oc7BBvQjQV6zRycu4lt7JLbYb99Pt9cUDFWcQM22YbpEqGNnVHKpYcpd
-	 uMr6Hh5dlI/hIpM5wwW4l/9mjHcPAZf3rlW8ItfI=
+	by mail.kernel.org (Postfix) with ESMTP id 97F1A20756
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 21:14:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbgEOUkr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 May 2020 16:40:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35872 "EHLO mail.kernel.org"
+        id S1726407AbgEOVOJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 May 2020 17:14:09 -0400
+Received: from elvis.franken.de ([193.175.24.41]:54593 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726179AbgEOUkr (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 15 May 2020 16:40:47 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90FD92065C;
-        Fri, 15 May 2020 20:40:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589575247;
-        bh=7/Rpg+KXflBLuZsnLoyMnGo3Y9ufgp8qwJuPpO7BwaA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=yYiOrVlBnM3aO59WMqUm3FSSQzFJGNL3VqcYNpP/dJzArRZ14W3EckZ3tyQpIm3P+
-         MrBsYFDV0RlVmYXRJ5hqynPd8nRvqZpfj1XibvEeXHaFByurO0jEiypqW5nKXCJHlS
-         5FbAPrnmkaWnlNtI5oAHxBPHONNGNE0HtTdo43GQ=
-Date:   Fri, 15 May 2020 13:40:46 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Bibo Mao <maobibo@loongson.cn>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Dmitry Korotin <dkorotin@wavecomp.com>,
-        Philippe =?ISO-8859-1?Q?Mathieu-Daud=E9?= <f4bug@amsat.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org
-Subject: Re: [PATCH 2/3] mm/memory.c: Update local TLB if PTE entry exists
-Message-Id: <20200515134046.cf107c6a13b9604c46ad71b8@linux-foundation.org>
-In-Reply-To: <1589515809-32422-2-git-send-email-maobibo@loongson.cn>
-References: <1589515809-32422-1-git-send-email-maobibo@loongson.cn>
-        <1589515809-32422-2-git-send-email-maobibo@loongson.cn>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726223AbgEOVOJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 15 May 2020 17:14:09 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jZheg-000560-01; Fri, 15 May 2020 23:14:06 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id A4250C04C5; Fri, 15 May 2020 23:13:53 +0200 (CEST)
+Date:   Fri, 15 May 2020 23:13:53 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Huacai Chen <chenhc@lemote.com>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        kvm <kvm@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Fuxin Zhang <zhangfx@lemote.com>
+Subject: Re: [PATCH V5 15/15] MAINTAINERS: Update KVM/MIPS maintainers
+Message-ID: <20200515211353.GB22922@alpha.franken.de>
+References: <1589359366-1669-1-git-send-email-chenhc@lemote.com>
+ <1589359366-1669-16-git-send-email-chenhc@lemote.com>
+ <AC9338A0-F449-4DCA-A294-248C86D57877@flygoat.com>
+ <CAAhV-H7OTeMy2Yp2PunD+2KVzzPDT+-xGGgbpRNzhb8C-p8-7g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAhV-H7OTeMy2Yp2PunD+2KVzzPDT+-xGGgbpRNzhb8C-p8-7g@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, 15 May 2020 12:10:08 +0800 Bibo Mao <maobibo@loongson.cn> wrote:
+On Fri, May 15, 2020 at 09:50:04AM +0800, Huacai Chen wrote:
+> On Thu, May 14, 2020 at 9:34 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+> > 于 2020年5月13日 GMT+08:00 下午4:42:46, Huacai Chen <chenhc@lemote.com> 写到:
+> > >James Hogan has become inactive for a long time and leaves KVM for MIPS
+> > >orphan. I'm working on KVM/Loongson and attempt to make it upstream both
+> > >in kernel and QEMU, while Aleksandar Markovic is already a maintainer of
+> > >QEMU/MIPS. We are both interested in QEMU/KVM/MIPS, and we have already
+> > >made some contributions in kernel and QEMU. If possible, we want to take
+> > >the KVM/MIPS maintainership.
+> > >
+> > >Signed-off-by: Huacai Chen <chenhc@lemote.com>
+> > >---
+> >
+> > Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> >
+> > Huacai is extremely experienced on virtualization,
+> > his PhD thesis is about virtualization too.
+> > He had been working on Loongson kernel for a long period.
+> >
+> > Alexander maintained QEMU/MIPS for some years, he is a expert on
+> > QEMU and MIPS architecture.
+> >
+> > I believe these guys can effectively bring MIPS/KVM support back to sea level again.
+> Thank you very much, and I think you won't be disappointed in us.
 
-> If there are two threads hitting page fault at the same page,
-> one thread updates PTE entry and local TLB, the other can
-> update local tlb also, rather than give up and do page fault
-> again.
->
-> ...
->
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -1770,8 +1770,8 @@ static vm_fault_t insert_pfn(struct vm_area_struct *vma, unsigned long addr,
->  			}
->  			entry = pte_mkyoung(*pte);
->  			entry = maybe_mkwrite(pte_mkdirty(entry), vma);
-> -			if (ptep_set_access_flags(vma, addr, pte, entry, 1))
-> -				update_mmu_cache(vma, addr, pte);
-> +			ptep_set_access_flags(vma, addr, pte, entry, 1);
-> +			update_mmu_cache(vma, addr, pte);
+I'm happy to see you taking care of the KVM part. So how is your plan
+to handle patches ? Do want to collect them and send pull requests to
+me ? Or should I just pick them up with your Acked-by ?
 
-Presumably these changes mean that other architectures will run
-update_mmu_cache() more frequently than they used to.  How much more
-frequently, and what will be the impact of this change?  (Please fully
-explain all this in the changelog).
+And could you do me a favour and check your mail setup. I always
+get failed deliveries:
 
->  		}
->  		goto out_unlock;
->  	}
->
-> ...
->
-> @@ -2463,7 +2462,8 @@ static inline bool cow_user_page(struct page *dst, struct page *src,
->  		vmf->pte = pte_offset_map_lock(mm, vmf->pmd, addr, &vmf->ptl);
->  		locked = true;
->  		if (!likely(pte_same(*vmf->pte, vmf->orig_pte))) {
-> -			/* The PTE changed under us. Retry page fault. */
-> +			/* The PTE changed under us, update local tlb */
-> +			pdate_mmu_cache(vma, addr, vmf->pte);
+  chenhc@lemote.com
+    SMTP error from remote mailer after end of data:
+    host mxbiz1.qq.com [203.205.232.191]: 550 Mail content denied. http://servic
+e.exmail.qq.com/cgi-bin/help?subtype=1&&id=20022&&no=1000726
 
-Missing a 'u' there.  Which tells me this patch isn't the one which you
-tested!
+or
 
->  			ret = false;
->  			goto pte_unlock;
->  		}
->
-> ...
->
+  chenhc@lemote.com
+    SMTP error from remote mailer after end of data:
+    host mxbiz1.qq.com [203.205.232.191]: 550 Ip frequency limited. http://servi
+ce.exmail.qq.com/cgi-bin/help?subtype=1&&id=20022&&no=1000725
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

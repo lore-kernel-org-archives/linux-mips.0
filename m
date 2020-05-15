@@ -6,21 +6,21 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57EB8C433E0
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 04:10:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 882F5C433E0
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 04:10:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3981220760
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 04:10:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6B1AC20728
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 04:10:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726194AbgEOEKc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 May 2020 00:10:32 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:54198 "EHLO loongson.cn"
+        id S1726226AbgEOEKg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 May 2020 00:10:36 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:54196 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726023AbgEOEKc (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1725616AbgEOEKc (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Fri, 15 May 2020 00:10:32 -0400
 Received: from kvm-dev1.localdomain (unknown [10.2.5.134])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT98hFr5eHPU0AA--.1S4;
-        Fri, 15 May 2020 12:10:10 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT98hFr5eHPU0AA--.1S2;
+        Fri, 15 May 2020 12:10:09 +0800 (CST)
 From:   Bibo Mao <maobibo@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
@@ -36,89 +36,61 @@ Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Mike Rapoport <rppt@linux.ibm.com>,
         Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
         "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org
-Subject: [PATCH 3/3] mm/memory.c: Add memory read privilege before filling PTE entry
-Date:   Fri, 15 May 2020 12:10:09 +0800
-Message-Id: <1589515809-32422-3-git-send-email-maobibo@loongson.cn>
+Subject: [PATCH 1/3] MIPS: Do not flush tlb page when updating PTE entry
+Date:   Fri, 15 May 2020 12:10:07 +0800
+Message-Id: <1589515809-32422-1-git-send-email-maobibo@loongson.cn>
 X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1589515809-32422-1-git-send-email-maobibo@loongson.cn>
-References: <1589515809-32422-1-git-send-email-maobibo@loongson.cn>
-X-CM-TRANSID: AQAAf9DxT98hFr5eHPU0AA--.1S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxJry3WrWUGFyDtw4rCF4UJwb_yoW8CrWDpF
-        Z3Cw1j9rs3Xw1DAF4xG3Z3Ar15ua1FgayrZF95C3W5Zwnxtr4Y9rWxJFWFvF97AFykGw1r
-        AF4jyw4UZa18uF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPab7Iv0xC_tr1lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF
-        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcV
-        CY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280
-        aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4
-        CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvj
-        eVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxw
-        CY02Avz4vE-syl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
-        x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6r
-        W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF
-        7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxV
-        WUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU
-        2asjUUUUU
+X-CM-TRANSID: AQAAf9DxT98hFr5eHPU0AA--.1S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruw1xtr4DAFW5ZFykCFWxZwb_yoWDWrc_C3
+        WxZanYg3y0grsrCrW7Aws3GryY9a1kG34DXr1xW3s0ya45Ar4kGayvvFsrXr4Y9Fyvkrs5
+        CrZYkw1akFnFqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbs8YjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY
+        04v7MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
+        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
+        GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
+        vEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280
+        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43
+        ZEXa7IU8489tUUUUU==
 X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On mips platform, hw PTE entry valid bit is set in pte_mkyoung
-function, it is used to set physical page with readable privilege.
+It is not necessary to flush tlb page on all CPUs if suitable PTE
+entry exists already during page fault handling, just updating
+TLB is fine.
 
-Here add pte_mkyoung function to make page readable on mips platform
-during page fault handling.
+Here redefine flush_tlb_fix_spurious_fault as empty on mips system.
+---
+Change in v2:
+- split flush_tlb_fix_spurious_fault and tlb update into two patches
+- comments typo modification
 
 Signed-off-by: Bibo Mao <maobibo@loongson.cn>
 ---
- mm/memory.c   | 3 +++
- mm/mprotect.c | 2 ++
- 2 files changed, 5 insertions(+)
+ arch/mips/include/asm/pgtable.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 57748de..26e0b8e 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2704,6 +2704,7 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
- 		}
- 		flush_cache_page(vma, vmf->address, pte_pfn(vmf->orig_pte));
- 		entry = mk_pte(new_page, vma->vm_page_prot);
-+		entry = pte_mkyoung(entry);
- 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
- 		/*
- 		 * Clear the pte entry and flush it first, before updating the
-@@ -3378,6 +3379,7 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 	__SetPageUptodate(page);
+diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
+index aab0ec1..e215542 100644
+--- a/arch/mips/include/asm/pgtable.h
++++ b/arch/mips/include/asm/pgtable.h
+@@ -454,6 +454,8 @@ static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
+ 	return __pgprot(prot);
+ }
  
- 	entry = mk_pte(page, vma->vm_page_prot);
-+	entry = pte_mkyoung(entry);
- 	if (vma->vm_flags & VM_WRITE)
- 		entry = pte_mkwrite(pte_mkdirty(entry));
- 
-@@ -3660,6 +3662,7 @@ vm_fault_t alloc_set_pte(struct vm_fault *vmf, struct mem_cgroup *memcg,
- 
- 	flush_icache_page(vma, page);
- 	entry = mk_pte(page, vma->vm_page_prot);
-+	entry = pte_mkyoung(entry);
- 	if (write)
- 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
- 	/* copy-on-write page */
-diff --git a/mm/mprotect.c b/mm/mprotect.c
-index 494192ca..673f1cd 100644
---- a/mm/mprotect.c
-+++ b/mm/mprotect.c
-@@ -131,6 +131,8 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
- 				ptent = pte_clear_uffd_wp(ptent);
- 			}
- 
-+			if (vma->vm_flags & VM_READ)
-+				ptent = pte_mkyoung(ptent);
- 			/* Avoid taking write faults for known dirty pages */
- 			if (dirty_accountable && pte_dirty(ptent) &&
- 					(pte_soft_dirty(ptent) ||
++#define flush_tlb_fix_spurious_fault(vma, address) do { } while (0)
++
+ /*
+  * Conversion functions: convert a page and protection to a page entry,
+  * and a page entry and page directory to the page they refer to.
 -- 
 1.8.3.1
 

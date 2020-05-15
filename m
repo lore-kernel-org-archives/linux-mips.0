@@ -2,144 +2,129 @@ Return-Path: <SRS0=Dyp6=65=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9237C433DF
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:40:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26E17C433E0
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:40:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C573420671
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:40:03 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="thoKBgaM"
+	by mail.kernel.org (Postfix) with ESMTP id 0E5242078C
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:40:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbgEOOhe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 May 2020 10:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726831AbgEOOh3 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 15 May 2020 10:37:29 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9120C061A0C;
-        Fri, 15 May 2020 07:37:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=A0UMmbAtyFU8Mgmehd8BwFzZHE+DazTplWu/8/CZIxQ=; b=thoKBgaMbx1Cx5CA4Atq9h0Hjc
-        5bfoBkf6B6l70gHgjHiu6NtD6O4OiCWdLEd2/qYyYSAwD8YOCsdDHCYKc7NJBE4lvcItE8kFKfk/E
-        IVklxzatDYx9U7wNUuJTfivt1P5gFyUyJ0cD0MBYfURGrTEyT9PcaERhdoIrOVnJcj2MdfKw25GEa
-        83N3SgpWztqjuy5GD/iOZWBJOJraIKdnfZwSWd1Lw6YgUv3HwmgOto1NGYTv/CZDZ6fb9R4cBehIU
-        B0bWmc1D8ab7q6CIbZuMjtll0x83iAkVdTSwiU1/VosyGWqL0mewvIilhiIUZoL8og6TsJMFiOW21
-        nycS90Qg==;
-Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jZbSS-0003yz-QR; Fri, 15 May 2020 14:37:05 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Andrew Morton <akpm@linux-foundation.org>,
+        id S1726278AbgEOOky (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 May 2020 10:40:54 -0400
+Received: from mga06.intel.com ([134.134.136.31]:28147 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726275AbgEOOky (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 15 May 2020 10:40:54 -0400
+IronPort-SDR: j7NeS0c8vCQJlJT0B2FckR9uTMK+3uKCEq7fK2xCmYs4hk97gMbrKHdv+5H9ie+moA734p+tll
+ iGb0VLQIp54w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 07:40:54 -0700
+IronPort-SDR: sE4KrJfb+F950VrQYghbTdseYseoCD3GtYpM+afg0mMFUPGBgSSsRVnmo6M9PHNfcRnmX+ydfZ
+ w+2wluTqA70Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,395,1583222400"; 
+   d="scan'208";a="263206144"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003.jf.intel.com with ESMTP; 15 May 2020 07:40:48 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jZbW6-006tCc-Uq; Fri, 15 May 2020 17:40:50 +0300
+Date:   Fri, 15 May 2020 17:40:50 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
         Arnd Bergmann <arnd@arndb.de>,
-        Roman Zippel <zippel@linux-m68k.org>
-Cc:     Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
-        x86@kernel.org, linux-alpha@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-c6x-dev@linux-c6x.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH 06/29] asm-generic: don't include <linux/mm.h> in cacheflush.h
-Date:   Fri, 15 May 2020 16:36:23 +0200
-Message-Id: <20200515143646.3857579-7-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
-References: <20200515143646.3857579-1-hch@lst.de>
+        Allison Randal <allison@lohutok.net>,
+        Gareth Williams <gareth.williams.jx@renesas.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Clement Leger <cleger@kalray.eu>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        "wuxu.wu" <wuxu.wu@huawei.com>,
+        Phil Edworthy <phil.edworthy@renesas.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 12/19] spi: dw: Fix Rx-only DMA transfers
+Message-ID: <20200515144050.GI1634618@smile.fi.intel.com>
+References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
+ <20200515104758.6934-1-Sergey.Semin@baikalelectronics.ru>
+ <20200515104758.6934-13-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200515104758.6934-13-Sergey.Semin@baikalelectronics.ru>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This seems to lead to some crazy include loops when using
-asm-generic/cacheflush.h on more architectures, so leave it
-to the arch header for now.
+On Fri, May 15, 2020 at 01:47:51PM +0300, Serge Semin wrote:
+> Tx-only DMA transfers are working perfectly fine since in this case
+> the code just ignores the Rx FIFO overflow interrupts. But it turns
+> out the SPI Rx-only transfers are broken since nothing pushing any
+> data to the shift registers, so the Rx FIFO is left empty and the
+> SPI core subsystems just returns a timeout error. Since DW DMAC
+> driver doesn't support something like cyclic write operations of
+> a single byte to a device register, the only way to support the
+> Rx-only SPI transfers is to fake it by using a dummy Tx-buffer.
+> This is what we intend to fix in this commit by setting the
+> SPI_CONTROLLER_MUST_TX flag for DMA-capable platform.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/um/include/asm/tlb.h         | 2 ++
- arch/x86/include/asm/cacheflush.h | 2 ++
- drivers/nvdimm/pmem.c             | 3 ++-
- include/asm-generic/cacheflush.h  | 3 ---
- 4 files changed, 6 insertions(+), 4 deletions(-)
+I'm fine with this if Mark considers this right thing to do.
+So, conditionally
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-diff --git a/arch/um/include/asm/tlb.h b/arch/um/include/asm/tlb.h
-index 70ee603839006..ff9c62828962c 100644
---- a/arch/um/include/asm/tlb.h
-+++ b/arch/um/include/asm/tlb.h
-@@ -2,6 +2,8 @@
- #ifndef __UM_TLB_H
- #define __UM_TLB_H
- 
-+#include <linux/mm.h>
-+
- #include <asm/tlbflush.h>
- #include <asm-generic/cacheflush.h>
- #include <asm-generic/tlb.h>
-diff --git a/arch/x86/include/asm/cacheflush.h b/arch/x86/include/asm/cacheflush.h
-index 63feaf2a5f93d..b192d917a6d0b 100644
---- a/arch/x86/include/asm/cacheflush.h
-+++ b/arch/x86/include/asm/cacheflush.h
-@@ -2,6 +2,8 @@
- #ifndef _ASM_X86_CACHEFLUSH_H
- #define _ASM_X86_CACHEFLUSH_H
- 
-+#include <linux/mm.h>
-+
- /* Caches aren't brain-dead on the intel. */
- #include <asm-generic/cacheflush.h>
- #include <asm/special_insns.h>
-diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-index 2df6994acf836..55282a6217407 100644
---- a/drivers/nvdimm/pmem.c
-+++ b/drivers/nvdimm/pmem.c
-@@ -7,7 +7,6 @@
-  * Copyright (c) 2015, Boaz Harrosh <boaz@plexistor.com>.
-  */
- 
--#include <asm/cacheflush.h>
- #include <linux/blkdev.h>
- #include <linux/hdreg.h>
- #include <linux/init.h>
-@@ -25,6 +24,8 @@
- #include <linux/dax.h>
- #include <linux/nd.h>
- #include <linux/backing-dev.h>
-+#include <linux/mm.h>
-+#include <asm/cacheflush.h>
- #include "pmem.h"
- #include "pfn.h"
- #include "nd.h"
-diff --git a/include/asm-generic/cacheflush.h b/include/asm-generic/cacheflush.h
-index 906277492ec59..bf9bb83e9fc8d 100644
---- a/include/asm-generic/cacheflush.h
-+++ b/include/asm-generic/cacheflush.h
-@@ -2,9 +2,6 @@
- #ifndef _ASM_GENERIC_CACHEFLUSH_H
- #define _ASM_GENERIC_CACHEFLUSH_H
- 
--/* Keep includes the same across arches.  */
--#include <linux/mm.h>
--
- #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
- 
- /*
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
+> Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Allison Randal <allison@lohutok.net>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Gareth Williams <gareth.williams.jx@renesas.com>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: linux-mips@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+> ---
+>  drivers/spi/spi-dw.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
+> index 1edb8cdd11ee..31607b40147d 100644
+> --- a/drivers/spi/spi-dw.c
+> +++ b/drivers/spi/spi-dw.c
+> @@ -517,6 +517,7 @@ int dw_spi_add_host(struct device *dev, struct dw_spi *dws)
+>  			dev_warn(dev, "DMA init failed\n");
+>  		} else {
+>  			master->can_dma = dws->dma_ops->can_dma;
+> +			master->flags |= SPI_CONTROLLER_MUST_TX;
+>  		}
+>  	}
+>  
+> -- 
+> 2.25.1
+> 
+
 -- 
-2.26.2
+With Best Regards,
+Andy Shevchenko
+
 

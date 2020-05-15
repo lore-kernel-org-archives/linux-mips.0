@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06BA5C433E5
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:39:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6A8FC433DF
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:40:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DA62F20671
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:39:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 97C5B2075F
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:40:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DdyZcp26"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FXLIDS/D"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728413AbgEOOjt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 May 2020 10:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727097AbgEOOhh (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
+        id S1727072AbgEOOhh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Fri, 15 May 2020 10:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727033AbgEOOhf (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 15 May 2020 10:37:35 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71DE8C05BD0A;
-        Fri, 15 May 2020 07:37:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90886C061A0C;
+        Fri, 15 May 2020 07:37:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=9OkRp1p3UvpvhrMloqYZ5BRhhjLRydsct9faQtkGwTk=; b=DdyZcp26/ow147BL9gUGZZnER7
-        vcCTRmMp36OtMyz9pn19PFkols5p+Nj3kQQ+jlz3xQh4MH/sjs2KmvQIAZVQQceUPBHHlCJNPsBhE
-        +V4VFDQRDsfz4ppjxrPcVC0i3Znl6X0WZ+eB02i4ZAUvjHiteAVQo16H/TU3CzVSOW9lJG0ALia4r
-        ovxaKmklN2eUI0ytL0Xzw2pUigOnnXYHm4EAbYD4UjXdBFdaCsw5Eft4WE8hp7WGJOJZgD6A9e+WW
-        z7TDLg9mqbBwkpvdSpQOyl6PRMV3rhIGbixYdQJOTjhWvpkxEleX4gG2HEIv1CzggF07ZucRfNtL/
-        pgIYQmMA==;
+        bh=nX/OxofzDc3fd8yYsXOf0skifLYVUPlkWiksPKDCM7I=; b=FXLIDS/DY4Fj1boiW2rPFwTzrf
+        TLYCawH6OO9WWcT32gM3EgdCV7jiRmXxHZgB1iFLz68wxD0wObOuUUchLBpN59Pj6xGTTlvy9JaYf
+        6GSInclud5EUw6NHZ5sybEVriC4nvVAcCGj48E/rkyJkybkGvFvh9o8wyRMidHYBKQBNgfqs51bPu
+        EG/JDYZ57S+4srwVZVTRC+dD5olxYQmWSpOqbb8IbN/2GOpLiSsjn0wknhezyt80x+IvF214YlG6b
+        h/73p9ZozmTVnJtX3b0NmkHzH2hfZ1s4lYMlQA6L05L7znOxrIASs48wi0vK64ZyNtNM2S1FXw4uT
+        xGmnSTIw==;
 Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jZbSe-0004HF-J3; Fri, 15 May 2020 14:37:17 +0000
+        id 1jZbSW-00041m-AW; Fri, 15 May 2020 14:37:08 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -53,9 +53,9 @@ Cc:     Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
         linux-arch@vger.kernel.org, linux-mm@kvack.org,
         linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
         linux-fsdevel@vger.kernel.org
-Subject: [PATCH 10/29] c6x: use asm-generic/cacheflush.h
-Date:   Fri, 15 May 2020 16:36:27 +0200
-Message-Id: <20200515143646.3857579-11-hch@lst.de>
+Subject: [PATCH 07/29] asm-generic: improve the flush_dcache_page stub
+Date:   Fri, 15 May 2020 16:36:24 +0200
+Message-Id: <20200515143646.3857579-8-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
 References: <20200515143646.3857579-1-hch@lst.de>
@@ -67,56 +67,44 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-C6x needs almost no cache flushing routines of its own.  Rely on
-asm-generic/cacheflush.h for the defaults.
+There is a magic ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE cpp symbol that
+guards non-stub availability of flush_dcache_pagge.  Use that to
+check if flush_dcache_pagg is implemented.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/c6x/include/asm/cacheflush.h | 19 +------------------
- 1 file changed, 1 insertion(+), 18 deletions(-)
+ include/asm-generic/cacheflush.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/c6x/include/asm/cacheflush.h b/arch/c6x/include/asm/cacheflush.h
-index 4540b40475e6c..10922d528de6d 100644
---- a/arch/c6x/include/asm/cacheflush.h
-+++ b/arch/c6x/include/asm/cacheflush.h
-@@ -16,21 +16,6 @@
- #include <asm/page.h>
- #include <asm/string.h>
+diff --git a/include/asm-generic/cacheflush.h b/include/asm-generic/cacheflush.h
+index bf9bb83e9fc8d..bbbb4d4ef6516 100644
+--- a/include/asm-generic/cacheflush.h
++++ b/include/asm-generic/cacheflush.h
+@@ -2,8 +2,6 @@
+ #ifndef _ASM_GENERIC_CACHEFLUSH_H
+ #define _ASM_GENERIC_CACHEFLUSH_H
  
--/*
-- * virtually-indexed cache management (our cache is physically indexed)
-- */
--#define flush_cache_all()			do {} while (0)
--#define flush_cache_mm(mm)			do {} while (0)
--#define flush_cache_dup_mm(mm)			do {} while (0)
--#define flush_cache_range(mm, start, end)	do {} while (0)
--#define flush_cache_page(vma, vmaddr, pfn)	do {} while (0)
--#define flush_cache_vmap(start, end)		do {} while (0)
--#define flush_cache_vunmap(start, end)		do {} while (0)
 -#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
--#define flush_dcache_page(page)			do {} while (0)
--#define flush_dcache_mmap_lock(mapping)		do {} while (0)
--#define flush_dcache_mmap_unlock(mapping)	do {} while (0)
 -
  /*
-  * physically-indexed cache management
-  */
-@@ -49,14 +34,12 @@ do {								  \
- 			(unsigned long) page_address(page) + PAGE_SIZE)); \
- } while (0)
+  * The cache doesn't need to be flushed when TLB entries change when
+  * the cache is mapped to physical memory, not virtual memory
+@@ -42,12 +40,14 @@ static inline void flush_cache_page(struct vm_area_struct *vma,
+ }
+ #endif
  
--
- #define copy_to_user_page(vma, page, vaddr, dst, src, len) \
- do {						     \
- 	memcpy(dst, src, len);			     \
- 	flush_icache_range((unsigned) (dst), (unsigned) (dst) + (len)); \
- } while (0)
+-#ifndef flush_dcache_page
++#ifndef ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+ static inline void flush_dcache_page(struct page *page)
+ {
+ }
++#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+ #endif
  
--#define copy_from_user_page(vma, page, vaddr, dst, src, len) \
--	memcpy(dst, src, len)
-+#include <asm-generic/cacheflush.h>
- 
- #endif /* _ASM_C6X_CACHEFLUSH_H */
++
+ #ifndef flush_dcache_mmap_lock
+ static inline void flush_dcache_mmap_lock(struct address_space *mapping)
+ {
 -- 
 2.26.2
 

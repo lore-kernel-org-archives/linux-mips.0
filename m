@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5A86C433DF
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:39:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B314C433E0
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:39:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8C87B2075F
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:39:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3ED912075F
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 14:39:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mJPHNJDn"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="U00g7SVm"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728165AbgEOOiV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 May 2020 10:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
+        id S1728004AbgEOOiA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 May 2020 10:38:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728138AbgEOOiS (ORCPT
+        by vger.kernel.org with ESMTP id S1727944AbgEOOh5 (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 15 May 2020 10:38:18 -0400
+        Fri, 15 May 2020 10:37:57 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7C8C061A0C;
-        Fri, 15 May 2020 07:38:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA40C05BD09;
+        Fri, 15 May 2020 07:37:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=oCdrIxNzR4NHS2NDYxpGK2EFu2WHsVdB0VGTwPSxhuk=; b=mJPHNJDn7vFUrE0crP3cr8ZzuE
-        wkVffsLiZuIGA8DyS86CQKhqkAJmrbIV79qGCT9sR+Rl9E7kPvEf6/IGi4QZ5ZeBa8oUZ2OdE2uqp
-        NIGBkGKr7vj38kjV+3P4R/5Upo6eYECYe4dngZlN41KLcHjMY4GqMSsFw9tAthizDHt0gErnL+PpQ
-        6k8bABtYmtroZOVh0f+uMAeOgfWaZNSub+AckrAKYXUlwpg4Otebfh0aSe8SKQ9lNDRUAr5dfnnMX
-        tzyi1w5krYiX0Wtq2wKUwqQZbSMoWdBcEid3w0GZLDxCxqTV7vO8GAj1NSzGxp7Fh8g5uuMGJMcq0
-        NFxMXPnw==;
+        bh=QKVIgxxqArZPDCcD+fcp72AY7pKZ1eMD6jkvekw50ps=; b=U00g7SVm+r79wulCB6FTYGkw2R
+        mRjWYIYyV0s9ydUNfDN6K5qNd19C5wPzcyqdvTfWLUuzKDBgaFjA/j7PIE3Ik9Qv4BLdMp9S+ecqJ
+        wMjUpwQRFD9dvbDYMKody/broi5k1VZaOWbhSNaKaizd07PkJ0djmXfFeF1Qw6hZ9Dpy4FCKopPYu
+        S/j9yHKeykn1OL0HU8wHBaV3EeyvT+n3ZvhzUx/KerOOi3kKY3R5FABp9POlwEC1ZNmy5ofW5/u9+
+        boVRGb5d7zr5S1XbTEie4sTFM2c2oZ3FyuZcpdA8JPIL+Jq94iMkKr0MrCpW5jDPc+pqijaaTfwZv
+        bsQqw1XA==;
 Received: from [2001:4bb8:188:1506:c70:4a89:bc61:2] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jZbTQ-0005B1-5T; Fri, 15 May 2020 14:38:04 +0000
+        id 1jZbT3-0004oj-R3; Fri, 15 May 2020 14:37:42 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -53,9 +53,9 @@ Cc:     Jessica Yu <jeyu@kernel.org>, Michal Simek <monstr@monstr.eu>,
         linux-arch@vger.kernel.org, linux-mm@kvack.org,
         linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
         linux-fsdevel@vger.kernel.org
-Subject: [PATCH 25/29] exec: only build read_code when needed
-Date:   Fri, 15 May 2020 16:36:42 +0200
-Message-Id: <20200515143646.3857579-26-hch@lst.de>
+Subject: [PATCH 18/29] arm,sparc,unicore32: remove flush_icache_user_range
+Date:   Fri, 15 May 2020 16:36:35 +0200
+Message-Id: <20200515143646.3857579-19-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200515143646.3857579-1-hch@lst.de>
 References: <20200515143646.3857579-1-hch@lst.de>
@@ -67,35 +67,71 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Only build read_code when binary formats that use it are built into the
-kernel.
+flush_icache_user_range is only used by <asm-generic/cacheflush.h>, so
+remove it from the architectures that implement it, but don't use
+<asm-generic/cacheflush.h>.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/exec.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm/include/asm/cacheflush.h       | 3 ---
+ arch/sparc/include/asm/cacheflush_32.h  | 2 --
+ arch/sparc/include/asm/cacheflush_64.h  | 1 -
+ arch/unicore32/include/asm/cacheflush.h | 3 ---
+ 4 files changed, 9 deletions(-)
 
-diff --git a/fs/exec.c b/fs/exec.c
-index 06b4c550af5d9..a4f766f296f8f 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1027,6 +1027,8 @@ int kernel_read_file_from_fd(int fd, void **buf, loff_t *size, loff_t max_size,
- }
- EXPORT_SYMBOL_GPL(kernel_read_file_from_fd);
+diff --git a/arch/arm/include/asm/cacheflush.h b/arch/arm/include/asm/cacheflush.h
+index 7114b9aa46b87..c78e14fcfb5df 100644
+--- a/arch/arm/include/asm/cacheflush.h
++++ b/arch/arm/include/asm/cacheflush.h
+@@ -318,9 +318,6 @@ extern void flush_kernel_dcache_page(struct page *);
+ #define flush_dcache_mmap_lock(mapping)		xa_lock_irq(&mapping->i_pages)
+ #define flush_dcache_mmap_unlock(mapping)	xa_unlock_irq(&mapping->i_pages)
  
-+#if defined(CONFIG_HAVE_AOUT) || defined(CONFIG_BINFMT_FLAT) || \
-+    defined(CONFIG_BINFMT_ELF_FDPIC)
- ssize_t read_code(struct file *file, unsigned long addr, loff_t pos, size_t len)
- {
- 	ssize_t res = vfs_read(file, (void __user *)addr, len, &pos);
-@@ -1035,6 +1037,7 @@ ssize_t read_code(struct file *file, unsigned long addr, loff_t pos, size_t len)
- 	return res;
- }
- EXPORT_SYMBOL(read_code);
-+#endif
- 
+-#define flush_icache_user_range(vma,page,addr,len) \
+-	flush_dcache_page(page)
+-
  /*
-  * Maps the mm_struct mm into the current task struct.
+  * We don't appear to need to do anything here.  In fact, if we did, we'd
+  * duplicate cache flushing elsewhere performed by flush_dcache_page().
+diff --git a/arch/sparc/include/asm/cacheflush_32.h b/arch/sparc/include/asm/cacheflush_32.h
+index fb66094a2c30c..41c6d734a4741 100644
+--- a/arch/sparc/include/asm/cacheflush_32.h
++++ b/arch/sparc/include/asm/cacheflush_32.h
+@@ -17,8 +17,6 @@
+ #define flush_icache_range(start, end)		do { } while (0)
+ #define flush_icache_page(vma, pg)		do { } while (0)
+ 
+-#define flush_icache_user_range(vma,pg,adr,len)	do { } while (0)
+-
+ #define copy_to_user_page(vma, page, vaddr, dst, src, len) \
+ 	do {							\
+ 		flush_cache_page(vma, vaddr, page_to_pfn(page));\
+diff --git a/arch/sparc/include/asm/cacheflush_64.h b/arch/sparc/include/asm/cacheflush_64.h
+index e7517434d1fa6..b9341836597ec 100644
+--- a/arch/sparc/include/asm/cacheflush_64.h
++++ b/arch/sparc/include/asm/cacheflush_64.h
+@@ -49,7 +49,6 @@ void __flush_dcache_range(unsigned long start, unsigned long end);
+ void flush_dcache_page(struct page *page);
+ 
+ #define flush_icache_page(vma, pg)	do { } while(0)
+-#define flush_icache_user_range(vma,pg,adr,len)	do { } while (0)
+ 
+ void flush_ptrace_access(struct vm_area_struct *, struct page *,
+ 			 unsigned long uaddr, void *kaddr,
+diff --git a/arch/unicore32/include/asm/cacheflush.h b/arch/unicore32/include/asm/cacheflush.h
+index 9393ca4047e93..ff0be92ebc320 100644
+--- a/arch/unicore32/include/asm/cacheflush.h
++++ b/arch/unicore32/include/asm/cacheflush.h
+@@ -162,9 +162,6 @@ extern void flush_dcache_page(struct page *);
+ #define flush_dcache_mmap_lock(mapping)		do { } while (0)
+ #define flush_dcache_mmap_unlock(mapping)	do { } while (0)
+ 
+-#define flush_icache_user_range(vma, page, addr, len)	\
+-	flush_dcache_page(page)
+-
+ /*
+  * We don't appear to need to do anything here.  In fact, if we did, we'd
+  * duplicate cache flushing elsewhere performed by flush_dcache_page().
 -- 
 2.26.2
 

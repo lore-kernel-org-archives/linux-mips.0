@@ -2,110 +2,96 @@ Return-Path: <SRS0=Dyp6=65=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23506C433DF
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 08:06:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84865C433DF
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 08:20:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F1F15206B6
-	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 08:06:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5E7152076A
+	for <linux-mips@archiver.kernel.org>; Fri, 15 May 2020 08:20:37 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=flygoat.com header.i=jiaxun.yang@flygoat.com header.b="SsP/HvLo"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbgEOIG6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 May 2020 04:06:58 -0400
-Received: from mga03.intel.com ([134.134.136.65]:40032 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726708AbgEOIG6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 15 May 2020 04:06:58 -0400
-IronPort-SDR: jg8xj5GKq8r+WPuJadTCF2v6dza/EK7l2oDuBRqQAD+EhwpAHlyFOs1BVLluCioTepXWeraKha
- ZRUC42ouC2fQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2020 01:06:58 -0700
-IronPort-SDR: y1UJqPzbkrsTCq4XzGUKwEyG7DqyQY5ttccd+stBOvqgSOZtIqrtZgGAdio0BI/x+gY5HlMblj
- MYOuE+kpJedw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,394,1583222400"; 
-   d="scan'208";a="464826884"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga006.fm.intel.com with ESMTP; 15 May 2020 01:06:56 -0700
-Received: from [10.213.147.163] (vramuthx-mobl1.gar.corp.intel.com [10.213.147.163])
-        by linux.intel.com (Postfix) with ESMTP id 361965804E0;
-        Fri, 15 May 2020 01:06:43 -0700 (PDT)
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Subject: Re: [PATCH v6 1/2] dt-bindings: mtd: Add Nand Flash Controller
- support for Intel LGM SoC
-From:   "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     masonccyang@mxic.com.tw, linux-mtd@lists.infradead.org,
-        richard@nod.at, boris.brezillon@collabora.com,
-        brendanhiggins@google.com, tglx@linutronix.de,
-        miquel.raynal@bootlin.com, vigneshr@ti.com,
-        hauke.mehrtens@intel.com, devicetree@vger.kernel.org,
-        anders.roxell@linaro.org, arnd@arndb.de, robh+dt@kernel.org,
-        andriy.shevchenko@intel.com, linux-mips@vger.kernel.org,
-        cheol.yong.kim@intel.com, linux-kernel@vger.kernel.org,
-        qi-ming.wu@intel.com
-References: <20200513104615.7905-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200513104615.7905-2-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200514125709.GA8436@bogus>
- <dc51e6af-bda8-d8b9-1782-f5c4d5d3fed7@linux.intel.com>
-Message-ID: <0ca30041-b2eb-5cff-9a90-f3021bc82622@linux.intel.com>
-Date:   Fri, 15 May 2020 16:06:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726727AbgEOIUh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 May 2020 04:20:37 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17781 "EHLO
+        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726723AbgEOIUg (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 15 May 2020 04:20:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1589530799; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=I5AO7eEHD447CccTdZaAOftVutHbnJp7+oCWupqOjxaFxHumOrHsLsPwTR3WD8F/Tj297dxDZKQZPIbALAPgKB2zjfG4DByeuIl7gn7+lxzrH8tnbGt4ZrzEdf6kQxO0f++bkXRJcNUAd7M4X7rIncAK8Hfh7QqAqqfgnuTBPn8=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1589530799; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=Qx19X+8L49YGzi+rmZOD+1r21r80p24bDOJwkcWDnQI=; 
+        b=U2ewBZCKPaMnwsBx1lSJCsv7Bd7+losI2aNQyg6D2v3zBJaN6h9qp5F0yG8ve35TLew9p0JHfU/GeASzsmf026nzi+j54LlnR3E/JZWpW1q3E72veBF1GB1f/YzIL90WkPEZH5pEEpbZ68qZNSIXw53NiEDuV0Ye86tE/97Uu24=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=flygoat.com;
+        spf=pass  smtp.mailfrom=jiaxun.yang@flygoat.com;
+        dmarc=pass header.from=<jiaxun.yang@flygoat.com> header.from=<jiaxun.yang@flygoat.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1589530799;
+        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
+        h=Date:From:To:CC:Subject:Reply-to:In-Reply-To:References:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=Qx19X+8L49YGzi+rmZOD+1r21r80p24bDOJwkcWDnQI=;
+        b=SsP/HvLo7zUc4qavU4jkMM0x7eO0RA1RDj+T0/JmskrpysldtZwG9gqhcSqyCeN5
+        VpyiT/WcqRtiT3ybc1kVRtPAsK40ZpbWH4ONgr5aw7Id1sQHxztn4EqOgq6CziIDQ4C
+        wfo1YF/8MiOqDAbFIRwUC/V2IqbtLgwgF47uAmLI=
+Received: from [127.0.0.1] (101.84.172.108 [101.84.172.108]) by mx.zoho.com.cn
+        with SMTPS id 1589530796515656.4604736588635; Fri, 15 May 2020 16:19:56 +0800 (CST)
+Date:   Fri, 15 May 2020 16:19:52 +0800
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+CC:     Huacai Chen <chenhc@lemote.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v2 2/2] MIPS: Fix build errors under CONFIG_HAVE_STD_PC_SERIAL_PORT
+User-Agent: K-9 Mail for Android
+Reply-to: jiaxun.yang@flygoat.com
+In-Reply-To: <7715fe64-5d28-f8c8-3b04-0bf2b9f16497@loongson.cn>
+References: <1589512985-27419-1-git-send-email-yangtiezhu@loongson.cn> <1589512985-27419-2-git-send-email-yangtiezhu@loongson.cn> <20200515073938.GA8289@alpha.franken.de> <7715fe64-5d28-f8c8-3b04-0bf2b9f16497@loongson.cn>
+Message-ID: <5AA0EB3A-DF33-4BE7-804C-45F6B51A0CF7@flygoat.com>
 MIME-Version: 1.0
-In-Reply-To: <dc51e6af-bda8-d8b9-1782-f5c4d5d3fed7@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Rob,
 
-On 15/5/2020 10:08 am, Ramuthevar, Vadivel MuruganX wrote:
-> Hi Rob,
-> 
-> On 14/5/2020 8:57 pm, Rob Herring wrote:
->> On Wed, 13 May 2020 18:46:14 +0800, Ramuthevar,Vadivel MuruganX wrote:
->>> From: Ramuthevar Vadivel Murugan 
->>> <vadivel.muruganx.ramuthevar@linux.intel.com>
->>>
->>> Add YAML file for dt-bindings to support NAND Flash Controller
->>> on Intel's Lightning Mountain SoC.
->>>
->>> Signed-off-by: Ramuthevar Vadivel Murugan 
->>> <vadivel.muruganx.ramuthevar@linux.intel.com>
->>> ---
->>>   .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 83 
->>> ++++++++++++++++++++++
->>>   1 file changed, 83 insertions(+)
->>>   create mode 100644 
->>> Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
->>>
->>
->>
->> My bot found errors running 'make dt_binding_check' on your patch:
->>
->> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/intel,lgm-nand.example.dt.yaml: 
->> nand-controller@e0f00000: 'dmas' is a dependency of 'dma-names'
->>
->> See https://patchwork.ozlabs.org/patch/1289160
->>
->> If you already ran 'make dt_binding_check' and didn't see the above
->> error(s), then make sure dt-schema is up to date:
->>
->> pip3 install 
->> git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
->>
->> Please check and re-submit.Sure, will check and re-submit, Thanks!
 
-Regards
-Vadivel
+=E4=BA=8E 2020=E5=B9=B45=E6=9C=8815=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=883=
+:54:46, Tiezhu Yang <yangtiezhu@loongson=2Ecn> =E5=86=99=E5=88=B0:
+>On 05/15/2020 03:39 PM, Thomas Bogendoerfer wrote:
+>> On Fri, May 15, 2020 at 11:23:05AM +0800, Tiezhu Yang wrote:
+>>> When CONFIG_HAVE_STD_PC_SERIAL_PORT is set, include linux/module=2Eh t=
+o fix
+>>> the following build errors:
+>> how are you doing this ? To me it looks like this CONFIG option isn't
+>> used anymore=2E
+>
+>Because I will use arch/mips/kernel/8250-platform=2Ec in the near future,
+>so make MACH_LOONGSON64 selects HAVE_STD_PC_SERIAL_PORT, then
+>I find the build errors=2E
+
+Please never use it=2E
+If you are willing to add serial port then please do it
+in devicetree=2E
+Platform devices in wild is dangerous and it will break everything=2E
+
+>
+>Thanks,
+>Tiezhu Yang
+>
+>>
+>> Thomas=2E
+>>
+>
+
+--=20
+Jiaxun Yang

@@ -2,75 +2,66 @@ Return-Path: <SRS0=1jvS=66=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3279C433E4
-	for <linux-mips@archiver.kernel.org>; Sat, 16 May 2020 15:38:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D7B4C433DF
+	for <linux-mips@archiver.kernel.org>; Sat, 16 May 2020 15:38:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7DFC520727
-	for <linux-mips@archiver.kernel.org>; Sat, 16 May 2020 15:38:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5603D20727
+	for <linux-mips@archiver.kernel.org>; Sat, 16 May 2020 15:38:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726986AbgEPPib (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1727098AbgEPPib (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Sat, 16 May 2020 11:38:31 -0400
-Received: from elvis.franken.de ([193.175.24.41]:55491 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:55489 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726984AbgEPPia (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1726986AbgEPPia (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Sat, 16 May 2020 11:38:30 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jZytP-0004GR-03; Sat, 16 May 2020 17:38:27 +0200
+        id 1jZytP-0004GR-00; Sat, 16 May 2020 17:38:27 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 15B63C04D3; Sat, 16 May 2020 17:38:04 +0200 (CEST)
-Date:   Sat, 16 May 2020 17:38:04 +0200
+        id CCA48C04D2; Sat, 16 May 2020 17:35:47 +0200 (CEST)
+Date:   Sat, 16 May 2020 17:35:47 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+To:     Huacai Chen <chenhc@lemote.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        kvm <kvm@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Fuxin Zhang <zhangfx@lemote.com>
-Subject: Re: [PATCH V5 15/15] MAINTAINERS: Update KVM/MIPS maintainers
-Message-ID: <20200516153804.GD3334@alpha.franken.de>
+        kvm@vger.kernel.org, linux-mips@vger.kernel.org,
+        Fuxin Zhang <zhangfx@lemote.com>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH V5 14/15] KVM: MIPS: Enable KVM support for Loongson-3
+Message-ID: <20200516153547.GA3334@alpha.franken.de>
 References: <1589359366-1669-1-git-send-email-chenhc@lemote.com>
- <1589359366-1669-16-git-send-email-chenhc@lemote.com>
- <AC9338A0-F449-4DCA-A294-248C86D57877@flygoat.com>
- <CAAhV-H7OTeMy2Yp2PunD+2KVzzPDT+-xGGgbpRNzhb8C-p8-7g@mail.gmail.com>
- <20200515211353.GB22922@alpha.franken.de>
- <CAAhV-H58G7+se6VTBMo2R4joDXngF-c_W=fh8=zD8rVnono=gg@mail.gmail.com>
- <1a22adb0-0b7a-24a3-e762-7b9919a70a8e@redhat.com>
+ <1589359366-1669-15-git-send-email-chenhc@lemote.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1a22adb0-0b7a-24a3-e762-7b9919a70a8e@redhat.com>
+In-Reply-To: <1589359366-1669-15-git-send-email-chenhc@lemote.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, May 16, 2020 at 01:55:23PM +0200, Paolo Bonzini wrote:
-> On 16/05/20 11:36, Huacai Chen wrote:
-> >> I'm happy to see you taking care of the KVM part. So how is your plan
-> >> to handle patches ? Do want to collect them and send pull requests to
-> >> me ? Or should I just pick them up with your Acked-by ?
-> > I think we can only use the second method, because both Aleksandar and
-> > me don't have a kernel tree in kernel.org now.
+On Wed, May 13, 2020 at 04:42:45PM +0800, Huacai Chen wrote:
+> This patch enable KVM support for Loongson-3 by selecting HAVE_KVM, but
+> only enable KVM/VZ on Loongson-3A R4+ (because VZ of early processors
+> are incomplete). Besides, Loongson-3 support SMP guests, so we clear the
+> linked load bit of LLAddr in kvm_vz_vcpu_load() if the guest has more
+> than one VCPUs.
 > 
-> If you don't mind, I generally prefer to have MIPS changs submitted
-> through the KVM tree, because KVM patches rarely have intrusive changes
-> in generic arch files.  It's more common to have generic KVM patches
-> that require touching all architectures.
+> Signed-off-by: Huacai Chen <chenhc@lemote.com>
+> Co-developed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+>  arch/mips/Kconfig            | 1 +
+>  arch/mips/kernel/cpu-probe.c | 1 +
+>  arch/mips/kvm/vz.c           | 2 +-
+>  3 files changed, 3 insertions(+), 1 deletion(-)
 
-works for me.
-
-> For 5.8 I don't have anything planned that could cause conflicts, so
-> this time it doesn't matter; but I can pick these up too if Thomas acks
-> patches 6, 12 and 14.
-
-I've acked all three pacthes
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
 Thomas.
 

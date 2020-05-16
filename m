@@ -6,24 +6,24 @@ X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D870C433DF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F582C433E0
 	for <linux-mips@archiver.kernel.org>; Sat, 16 May 2020 15:38:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 816AF207C3
+	by mail.kernel.org (Postfix) with ESMTP id 6EB2720756
 	for <linux-mips@archiver.kernel.org>; Sat, 16 May 2020 15:38:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727941AbgEPPia (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1727938AbgEPPia (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Sat, 16 May 2020 11:38:30 -0400
-Received: from elvis.franken.de ([193.175.24.41]:55492 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:55490 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727098AbgEPPia (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1726990AbgEPPia (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Sat, 16 May 2020 11:38:30 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jZytP-0004GR-02; Sat, 16 May 2020 17:38:27 +0200
+        id 1jZytP-0004GR-01; Sat, 16 May 2020 17:38:27 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id BA823C04D3; Sat, 16 May 2020 17:37:26 +0200 (CEST)
-Date:   Sat, 16 May 2020 17:37:26 +0200
+        id 3D72FC04D3; Sat, 16 May 2020 17:36:44 +0200 (CEST)
+Date:   Sat, 16 May 2020 17:36:44 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Huacai Chen <chenhc@lemote.com>
 Cc:     Paolo Bonzini <pbonzini@redhat.com>,
@@ -32,34 +32,34 @@ Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         Fuxin Zhang <zhangfx@lemote.com>,
         Huacai Chen <chenhuacai@gmail.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH V5 06/15] KVM: MIPS: Introduce and use cpu_guest_has_ldpte
-Message-ID: <20200516153726.GC3334@alpha.franken.de>
+Subject: Re: [PATCH V5 12/15] KVM: MIPS: Add CONFIG6 and DIAG registers
+ emulation
+Message-ID: <20200516153644.GB3334@alpha.franken.de>
 References: <1589359366-1669-1-git-send-email-chenhc@lemote.com>
- <1589359366-1669-7-git-send-email-chenhc@lemote.com>
+ <1589359366-1669-13-git-send-email-chenhc@lemote.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1589359366-1669-7-git-send-email-chenhc@lemote.com>
+In-Reply-To: <1589359366-1669-13-git-send-email-chenhc@lemote.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, May 13, 2020 at 04:42:37PM +0800, Huacai Chen wrote:
-> Loongson-3 has lddir/ldpte instructions and their related CP0 registers
-> are the same as HTW. So we introduce a cpu_guest_has_ldpte flag and use
-> it to indicate whether we need to save/restore HTW related CP0 registers
-> (PWBase, PWSize, PWField and PWCtl).
+On Wed, May 13, 2020 at 04:42:43PM +0800, Huacai Chen wrote:
+> Loongson-3 has CONFIG6 and DIAG registers which need to be emulated.
+> CONFIG6 is mostly used to enable/disable FTLB and SFB, while DIAG is
+> mostly used to flush BTB, ITLB, DTLB, VTLB and FTLB.
 > 
-> Reviewed-by: Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
 > Signed-off-by: Huacai Chen <chenhc@lemote.com>
 > Co-developed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 > ---
->  arch/mips/include/asm/cpu-features.h |  3 +++
->  arch/mips/kernel/cpu-probe.c         |  1 +
->  arch/mips/kvm/vz.c                   | 26 +++++++++++++-------------
->  3 files changed, 17 insertions(+), 13 deletions(-)
+>  arch/mips/include/asm/kvm_host.h |  7 +++++
+>  arch/mips/include/asm/mipsregs.h |  7 +++++
+>  arch/mips/kvm/tlb.c              | 41 ++++++++++++++++++++++++++
+>  arch/mips/kvm/vz.c               | 62 +++++++++++++++++++++++++++++++++++++++-
+>  4 files changed, 116 insertions(+), 1 deletion(-)
 
 Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 

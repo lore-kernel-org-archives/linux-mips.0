@@ -2,123 +2,69 @@ Return-Path: <SRS0=1jvS=66=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 593E2C433E0
-	for <linux-mips@archiver.kernel.org>; Sat, 16 May 2020 14:06:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D870C433DF
+	for <linux-mips@archiver.kernel.org>; Sat, 16 May 2020 15:38:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3305F20671
-	for <linux-mips@archiver.kernel.org>; Sat, 16 May 2020 14:06:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 816AF207C3
+	for <linux-mips@archiver.kernel.org>; Sat, 16 May 2020 15:38:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726302AbgEPOGd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 16 May 2020 10:06:33 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:40236 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726298AbgEPOGd (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 16 May 2020 10:06:33 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id B8B9C8030809;
-        Sat, 16 May 2020 14:06:30 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id kzvn8ktOIz_p; Sat, 16 May 2020 17:06:28 +0300 (MSK)
-Date:   Sat, 16 May 2020 17:06:27 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Allison Randal <allison@lohutok.net>,
-        Gareth Williams <gareth.williams.jx@renesas.com>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 05/19] spi: dw: Enable interrupts in accordance with
- DMA xfer mode
-Message-ID: <20200516140627.zwigqoz335lhkxns@mobilestation>
-References: <20200508132943.9826-1-Sergey.Semin@baikalelectronics.ru>
- <20200515104758.6934-1-Sergey.Semin@baikalelectronics.ru>
- <20200515104758.6934-6-Sergey.Semin@baikalelectronics.ru>
- <20200515122700.GY185537@smile.fi.intel.com>
+        id S1727941AbgEPPia (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 16 May 2020 11:38:30 -0400
+Received: from elvis.franken.de ([193.175.24.41]:55492 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727098AbgEPPia (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 16 May 2020 11:38:30 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jZytP-0004GR-02; Sat, 16 May 2020 17:38:27 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id BA823C04D3; Sat, 16 May 2020 17:37:26 +0200 (CEST)
+Date:   Sat, 16 May 2020 17:37:26 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Huacai Chen <chenhc@lemote.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        kvm@vger.kernel.org, linux-mips@vger.kernel.org,
+        Fuxin Zhang <zhangfx@lemote.com>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH V5 06/15] KVM: MIPS: Introduce and use cpu_guest_has_ldpte
+Message-ID: <20200516153726.GC3334@alpha.franken.de>
+References: <1589359366-1669-1-git-send-email-chenhc@lemote.com>
+ <1589359366-1669-7-git-send-email-chenhc@lemote.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200515122700.GY185537@smile.fi.intel.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <1589359366-1669-7-git-send-email-chenhc@lemote.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, May 15, 2020 at 03:27:00PM +0300, Andy Shevchenko wrote:
-> On Fri, May 15, 2020 at 01:47:44PM +0300, Serge Semin wrote:
-> > It's pointless to track the Tx overrun interrupts if Rx-only SPI
-> > transfer is issued. Similarly there is no need in handling the Rx
-> > overrun/underrun interrupts if Tx-only SPI transfer is executed.
-> > So lets unmask the interrupts only if corresponding SPI
-> > transactions are implied.
+On Wed, May 13, 2020 at 04:42:37PM +0800, Huacai Chen wrote:
+> Loongson-3 has lddir/ldpte instructions and their related CP0 registers
+> are the same as HTW. So we introduce a cpu_guest_has_ldpte flag and use
+> it to indicate whether we need to save/restore HTW related CP0 registers
+> (PWBase, PWSize, PWField and PWCtl).
 > 
-> My comments below.
-> 
-> > Co-developed-by: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
-> > Signed-off-by: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-> > Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > Cc: Paul Burton <paulburton@kernel.org>
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > Cc: Arnd Bergmann <arnd@arndb.de>
-> > Cc: Allison Randal <allison@lohutok.net>
-> > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Cc: Gareth Williams <gareth.williams.jx@renesas.com>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: linux-mips@vger.kernel.org
-> > Cc: devicetree@vger.kernel.org
-> 
-> I think you really need to revisit Cc list in all patches (DT people hardly
-> interested in this one, though ones where properties are being used might be
-> point of interest).
-> 
-> ...
-> 
-> >  	/* Set the interrupt mask */
-> > -	spi_umask_intr(dws, SPI_INT_TXOI | SPI_INT_RXUI | SPI_INT_RXOI);
-> > +	spi_umask_intr(dws, imr);
-> 
+> Reviewed-by: Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
+> Signed-off-by: Huacai Chen <chenhc@lemote.com>
+> Co-developed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+>  arch/mips/include/asm/cpu-features.h |  3 +++
+>  arch/mips/kernel/cpu-probe.c         |  1 +
+>  arch/mips/kvm/vz.c                   | 26 +++++++++++++-------------
+>  3 files changed, 17 insertions(+), 13 deletions(-)
 
-> Can we rather do like this
-> 
-> 	/* Set the interrupt mask */
-> 	if (xfer->tx_buf)
-> 		imr |= SPI_INT_TXOI;
-> 	if (xfer->rx_buf)
-> 		imr |= SPI_INT_RXUI | SPI_INT_RXOI;
-> 	spi_umask_intr(dws, imr);
-> 
-> ?
-> 
-> (First block sets DMA, second one IRQ)
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-I'd rather leave it as is.
+Thomas.
 
--Sergey
-
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

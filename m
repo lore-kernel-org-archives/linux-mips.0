@@ -2,72 +2,58 @@ Return-Path: <SRS0=JGv4=67=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B05DC433E0
-	for <linux-mips@archiver.kernel.org>; Sun, 17 May 2020 08:55:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AFBBC433E0
+	for <linux-mips@archiver.kernel.org>; Sun, 17 May 2020 11:01:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7D986206F4
-	for <linux-mips@archiver.kernel.org>; Sun, 17 May 2020 08:55:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E41292070A
+	for <linux-mips@archiver.kernel.org>; Sun, 17 May 2020 11:01:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbgEQIzp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 17 May 2020 04:55:45 -0400
-Received: from elvis.franken.de ([193.175.24.41]:56346 "EHLO elvis.franken.de"
+        id S1727845AbgEQLBW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 17 May 2020 07:01:22 -0400
+Received: from elvis.franken.de ([193.175.24.41]:56509 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727051AbgEQIzo (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 17 May 2020 04:55:44 -0400
+        id S1727832AbgEQLBW (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 17 May 2020 07:01:22 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jaF5B-0003F8-01; Sun, 17 May 2020 10:55:41 +0200
+        id 1jaH2m-000449-01; Sun, 17 May 2020 13:01:20 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id E6ECBC04D6; Sun, 17 May 2020 10:37:54 +0200 (CEST)
-Date:   Sun, 17 May 2020 10:37:54 +0200
+        id ED5A2C04EC; Sun, 17 May 2020 12:59:55 +0200 (CEST)
+Date:   Sun, 17 May 2020 12:59:55 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     WANG Xuerui <git@xen0n.name>
-Cc:     linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH v2 RESEND 4/4] MIPS: emulate CPUCFG instruction on older
- Loongson64 cores
-Message-ID: <20200517083754.GB3939@alpha.franken.de>
-References: <20200503103304.40678-5-git@xen0n.name>
- <20200503105012.43246-1-git@xen0n.name>
+To:     Joshua Kinard <kumba@gentoo.org>
+Cc:     linux-mips@vger.kernel.org
+Subject: Re: [PATCH v2] MIPS: Split R10000 to allow for R12K+ optimizations
+Message-ID: <20200517105955.GB5508@alpha.franken.de>
+References: <19dc5a54-4f53-5f69-5ade-4c354f63a356@gentoo.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200503105012.43246-1-git@xen0n.name>
+In-Reply-To: <19dc5a54-4f53-5f69-5ade-4c354f63a356@gentoo.org>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, May 03, 2020 at 06:50:13PM +0800, WANG Xuerui wrote:
-> +#endif
-> +
-> +#endif /* _ASM_MACH_LOONGSON64_CPUCFG_EMUL_H_ */
-> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-> index ca2e6f1af4fe..907e31ff562f 100644
-> --- a/arch/mips/kernel/cpu-probe.c
-> +++ b/arch/mips/kernel/cpu-probe.c
-> @@ -28,6 +28,8 @@
->  #include <asm/spram.h>
->  #include <linux/uaccess.h>
->  
-> +#include <asm/mach-loongson64/cpucfg-emul.h>
-> +
+On Wed, May 13, 2020 at 08:55:27PM -0400, Joshua Kinard wrote:
+> From: Joshua Kinard <kumba@gentoo.org>
+> 
+> The attached patch adds more-specific support for R12000 and higher
+> CPUs by splitting the R10000 logic at several places.  This avoids
+> the workarounds enabled by R10000_LLSC_WAR and passes -mno-fix-r10000
+> to gcc during the kernel compile.
 
-this doesn't fly:
-
-In file included from /local/tbogendoerfer/korg/linux/arch/mips/kernel/cpu-probe.c:31:0:
-/local/tbogendoerfer/korg/linux/arch/mips/include/asm/mach-loongson64/cpucfg-emul.h:7:27: fatal error: loongson_regs.h: No such file or directory
- #include <loongson_regs.h>
-                           ^
-compilation terminated.
-
-Is there a chance to put this code in a loongsoon specific file ?
+I've seen this patch multiple times already and I always think there
+is something wrong with it. So we want to allow a way to disable
+bug workarounds for old R10k (rev < 3.0), why not call it that way ?
+Something like CONFIG_R10000_WORKAROUNDS, which defaults to y.
+The only thing we would be missing is the -march=r12000 not sure,
+if this makes much difference. Do I miss something else ?
 
 Thomas.
 

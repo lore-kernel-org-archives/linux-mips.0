@@ -2,172 +2,150 @@ Return-Path: <SRS0=DuhB=7A=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.3 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8C5EC433E0
-	for <linux-mips@archiver.kernel.org>; Mon, 18 May 2020 17:30:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6593C433E0
+	for <linux-mips@archiver.kernel.org>; Mon, 18 May 2020 18:11:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C01C320715
-	for <linux-mips@archiver.kernel.org>; Mon, 18 May 2020 17:30:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1589823008;
-	bh=uvDP+Zsn33HA9UQOZuLaPSQjuf9YyVkv+d1PvzLPl4U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=PMVM5v/7Y6e3OCHBTlLxciT8lJgIOW+P5l06a1L03luaX7Yihhbgv9f0VKAG0ZXko
-	 V95pESK4lk7CmD86hDiYlNcMSi881sJvvnoXeFx6wbNzqv4arRdCTHCfM8ZTI5GiRI
-	 byQYYDsEbGwgDB7+M8WwPCpkRaJ1860OB5tF7AKM=
+	by mail.kernel.org (Postfix) with ESMTP id 948E420671
+	for <linux-mips@archiver.kernel.org>; Mon, 18 May 2020 18:11:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728489AbgERRaI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 18 May 2020 13:30:08 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:46463 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727006AbgERRaI (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 May 2020 13:30:08 -0400
-Received: by mail-io1-f65.google.com with SMTP id j8so11446468iog.13;
-        Mon, 18 May 2020 10:30:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PTOUdH5q/gBjSGJq+w1TUSNCKtr5l7RbM0PZ63Xd5j8=;
-        b=jj3lOisq5PCegWOA6FiMUZrKwJQATDBOz6vkpBd5S4JFlsjDHQ686xNk+QTQNKBDLv
-         Cje6w/ANIu06epH4y0kOk1GYOpTm6PHyWhfM/L2Me3aB+r8+D7aHgVID+y9e1IunPpo3
-         Qi7NNSJoZKwWfcAr1BIPbW14EY6BanKBnEHW1OBaB9U1hATO1F2O0hH5W8b/kLTzf43M
-         Xuv/x5DqpgkMSYXnZ9X5kQ3du87jGoXTbrBHlrubA9/KKz3YHozZpvHko+dcl7gcqiga
-         pi2wNHVeKT3KOVXrwVixHKzC4ir8z68CMSD52SassV/WDWdNoAJTRj+ZiKDkLt2lgzwc
-         0iyw==
-X-Gm-Message-State: AOAM530k5f/c1XWyy6nMk2xUn5ucrOou65rFQg0TAS3axPGCwrpdMlGn
-        AQoaDaXG5LgWIL6SVvScdA==
-X-Google-Smtp-Source: ABdhPJw0u1Q4n3Qej1lC8o9EuafyzbzxmDa15mtQHzCbN5ErWCc8HFGGdeNFMagt00jnvodcVlJewQ==
-X-Received: by 2002:a02:c959:: with SMTP id u25mr16414471jao.46.1589823006502;
-        Mon, 18 May 2020 10:30:06 -0700 (PDT)
-Received: from rob-hp-laptop ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id e12sm4404457ilr.61.2020.05.18.10.30.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 May 2020 10:30:05 -0700 (PDT)
-Received: (nullmailer pid 12811 invoked by uid 1000);
-        Mon, 18 May 2020 17:30:03 -0000
-Date:   Mon, 18 May 2020 11:30:03 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        id S1732756AbgERSLK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 18 May 2020 14:11:10 -0400
+Received: from mga04.intel.com ([192.55.52.120]:52500 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728606AbgERSLI (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 18 May 2020 14:11:08 -0400
+IronPort-SDR: MEihRUQKPD9yLYzUOyQEKFWM725X5E1TW5wxJL26f7d7grexz9Y/SMaIpHJZCs3EXY9zAUzGC1
+ OcI675kOf6IQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2020 11:11:08 -0700
+IronPort-SDR: 4PTj0JCNuHA2KBITWxMsHBG0lvanYZRK6CkXelcZuJd9rLLbOv9o5Xe4vuYLc2cXwOltPBKNMq
+ LeWae4iARKuw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,407,1583222400"; 
+   d="scan'208";a="308177709"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by FMSMGA003.fm.intel.com with ESMTP; 18 May 2020 11:11:08 -0700
+Date:   Mon, 18 May 2020 11:11:08 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
         Dan Williams <dan.j.williams@intel.com>,
-        linux-mips@vger.kernel.org, dmaengine@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] dt-bindings: dma: dw: Add max burst transaction
- length property
-Message-ID: <20200518173003.GA13764@bogus>
-References: <20200511210138.GN185537@smile.fi.intel.com>
- <20200511213531.wnywlljiulvndx6s@mobilestation>
- <20200512090804.GR185537@smile.fi.intel.com>
- <20200512114946.x777yb6bhe22ccn5@mobilestation>
- <20200512123840.GY185537@smile.fi.intel.com>
- <20200515060911.GF333670@vkoul-mobl>
- <20200515105137.GK185537@smile.fi.intel.com>
- <20200515105658.GR333670@vkoul-mobl>
- <20200515111112.4umynrpgzjnca223@mobilestation>
- <20200517174739.uis3wfievdcmtsxj@mobilestation>
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, dri-devel@lists.freedesktop.org,
+        Christian Koenig <christian.koenig@amd.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH V3 07/15] arch/kunmap_atomic: Consolidate duplicate code
+Message-ID: <20200518181107.GC3025231@iweiny-DESK2.sc.intel.com>
+References: <20200507150004.1423069-1-ira.weiny@intel.com>
+ <20200507150004.1423069-8-ira.weiny@intel.com>
+ <20200516223306.GA161252@roeck-us.net>
+ <20200518034938.GA3023182@iweiny-DESK2.sc.intel.com>
+ <20200518042932.GA59205@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200517174739.uis3wfievdcmtsxj@mobilestation>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200518042932.GA59205@roeck-us.net>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, May 17, 2020 at 08:47:39PM +0300, Serge Semin wrote:
-> On Fri, May 15, 2020 at 02:11:13PM +0300, Serge Semin wrote:
-> > On Fri, May 15, 2020 at 04:26:58PM +0530, Vinod Koul wrote:
-> > > On 15-05-20, 13:51, Andy Shevchenko wrote:
-> > > > On Fri, May 15, 2020 at 11:39:11AM +0530, Vinod Koul wrote:
-> > > > > On 12-05-20, 15:38, Andy Shevchenko wrote:
-> > > > > > On Tue, May 12, 2020 at 02:49:46PM +0300, Serge Semin wrote:
-> > > > > > > On Tue, May 12, 2020 at 12:08:04PM +0300, Andy Shevchenko wrote:
-> > > > > > > > On Tue, May 12, 2020 at 12:35:31AM +0300, Serge Semin wrote:
-> > > > > > > > > On Tue, May 12, 2020 at 12:01:38AM +0300, Andy Shevchenko wrote:
-> > > > > > > > > > On Mon, May 11, 2020 at 11:05:28PM +0300, Serge Semin wrote:
-> > > > > > > > > > > On Fri, May 08, 2020 at 02:12:42PM +0300, Andy Shevchenko wrote:
-> > > > > > > > > > > > On Fri, May 08, 2020 at 01:53:00PM +0300, Serge Semin wrote:
+On Sun, May 17, 2020 at 09:29:32PM -0700, Guenter Roeck wrote:
+> On Sun, May 17, 2020 at 08:49:39PM -0700, Ira Weiny wrote:
+> > On Sat, May 16, 2020 at 03:33:06PM -0700, Guenter Roeck wrote:
+> > > On Thu, May 07, 2020 at 07:59:55AM -0700, ira.weiny@intel.com wrote:
+> > > > From: Ira Weiny <ira.weiny@intel.com>
 > > > > 
-> > > > ...
+> > > > Every single architecture (including !CONFIG_HIGHMEM) calls...
 > > > > 
-> > > > > > I leave it to Rob and Vinod.
-> > > > > > It won't break our case, so, feel free with your approach.
-> > > > > 
-> > > > > I agree the DT is about describing the hardware and looks like value of
-> > > > > 1 is not allowed. If allowed it should be added..
+> > > > 	pagefault_enable();
+> > > > 	preempt_enable();
 > > > > 
-> > > > It's allowed at *run time*, it's illegal in *pre-silicon stage* when
-> > > > synthesizing the IP.
+> > > > ... before returning from __kunmap_atomic().  Lift this code into the
+> > > > kunmap_atomic() macro.
+> > > > 
+> > > > While we are at it rename __kunmap_atomic() to kunmap_atomic_high() to
+> > > > be consistent.
+> > > > 
+> > > > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 > > > 
-> > > Then it should be added ..
+> > > This patch results in:
+> > > 
+> > > Starting init: /bin/sh exists but couldn't execute it (error -14)
+> > > 
+> > > when trying to boot microblazeel:petalogix-ml605 in qemu.
 > > 
-> > Vinod, max-burst-len is "MAXimum" burst length not "run-time or current or any
-> > other" burst length. It's a constant defined at the IP-core synthesis stage and
-> > according to the Data Book, MAX burst length can't be 1. The allowed values are
-> > exactly as I described in the binding [4, 8, 16, 32, ...]. MAX burst length
-> > defines the upper limit of the run-time burst length. So setting it to 1 isn't
-> > about describing a hardware, but using DT for the software convenience.
+> > Thanks for the report.  I'm not readily seeing the issue.
 > > 
-> > -Sergey
+> > Do you have a kernel config?  Specifically is CONFIG_HIGHMEM set?
+> > 
+> See below. Yes, CONFIG_HIGHMEM is set.
 > 
-> Vinod, to make this completely clear. According to the DW DMAC data book:
-> - In general, run-time parameter of the DMA transaction burst length (set in
->   the SRC_MSIZE/DST_MSIZE fields of the channel control register) may belong
->   to the set [1, 4, 8, 16, 32, 64, 128, 256].
-> - Actual upper limit of the burst length run-time parameter is limited by a
->   constant defined at the IP-synthesize stage (it's called DMAH_CHx_MAX_MULT_SIZE)
->   and this constant belongs to the set [4, 8, 16, 32, 64, 128, 256]. (See, no 1
->   in this set).
+> The scripts used to build and boot the image are at:
 > 
-> So the run-time burst length in a case of particular DW DMA controller belongs
-> to the range:
-> 1 <= SRC_MSIZE <= DMAH_CHx_MAX_MULT_SIZE
-> and
-> 1 <= DST_MSIZE <= DMAH_CHx_MAX_MULT_SIZE
+> https://github.com/groeck/linux-build-test/tree/master/rootfs/microblazeel
 > 
-> See. No mater which DW DMA controller we get each of them will at least support
-> the burst length of 1 and 4 transfer words. This is determined by design of the
-> DW DMA controller IP since DMAH_CHx_MAX_MULT_SIZE constant set starts with 4.
-> 
-> In this patch I suggest to add the max-burst-len property, which specifies
-> the upper limit for the run-time burst length. Since the maximum burst length
-> capable to be set to the SRC_MSIZE/DST_MSIZE fields of the DMA channel control
-> register is determined by the DMAH_CHx_MAX_MULT_SIZE constant (which can't be 1
-> by the DW DMA IP design), max-burst-len property as being also responsible for
-> the maximum burst length setting should be associated with DMAH_CHx_MAX_MULT_SIZE
-> thus should belong to the same set [4, 8, 16, 32, 64, 128, 256].
-> 
-> So 1 shouldn't be in the enum of the max-burst-len property constraint, because
-> hardware doesn't support such limitation by design, while setting 1 as
-> max-burst-len would mean incorrect description of the DMA controller.
-> 
-> Vinod, could you take a look at the info I provided above and say your final word
-> whether 1 should be really allowed to be in the max-burst-len enum constraints?
-> I'll do as you say in the next version of the patchset.
+> Hope this helps,
 
-I generally think the synthesis time IP configuration should be implied 
-by the compatible string which is why we have SoC specific compatible 
-strings (Of course I dream for IP vendors to make all that discoverable 
-which is only occasionally the case). There are exceptions to this. If 
-one SoC has the same IP configured in different ways, then we'd probably 
-have properties for the differences.
+Thank you ...
 
-As to whether h/w configuration is okay in DT, the answer is yes. The 
-question is whether it is determined by SoC, board, OS and also who 
-would set it and how often. Something tuned per board and independent of 
-the OS/user is the ideal example. 
+Could you try the following patch?
 
-Rob
+
+commit 82c284b2bb74ca195dfcd35b70a175f010b9fd46 (HEAD -> lm-kmap17)
+Author: Ira Weiny <ira.weiny@intel.com>
+Date:   Mon May 18 11:01:10 2020 -0700
+
+    microblaze/kmap: Don't enable pagefault/preempt twice
+    
+    The kunmap_atomic clean up failed to remove the pagefault/preempt
+    enables on this path.
+    
+    Fixes: bee2128a09e6 ("arch/kunmap_atomic: consolidate duplicate code")
+    Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
+diff --git a/arch/microblaze/mm/highmem.c b/arch/microblaze/mm/highmem.c
+index ee8a422b2b76..92e0890416c9 100644
+--- a/arch/microblaze/mm/highmem.c
++++ b/arch/microblaze/mm/highmem.c
+@@ -57,11 +57,8 @@ void kunmap_atomic_high(void *kvaddr)
+        int type;
+        unsigned int idx;
+ 
+-       if (vaddr < __fix_to_virt(FIX_KMAP_END)) {
+-               pagefault_enable();
+-               preempt_enable();
++       if (vaddr < __fix_to_virt(FIX_KMAP_END))
+                return;
+-       }
+ 
+        type = kmap_atomic_idx();
+ 

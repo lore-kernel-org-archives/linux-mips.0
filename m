@@ -6,27 +6,24 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E29BC433E3
-	for <linux-mips@archiver.kernel.org>; Mon, 18 May 2020 16:28:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 509D5C433DF
+	for <linux-mips@archiver.kernel.org>; Mon, 18 May 2020 16:28:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8439A207E8
-	for <linux-mips@archiver.kernel.org>; Mon, 18 May 2020 16:28:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 279D4207ED
+	for <linux-mips@archiver.kernel.org>; Mon, 18 May 2020 16:28:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727035AbgERQ2p (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 18 May 2020 12:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727987AbgERQ2p (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 May 2020 12:28:45 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A42C061A0C
-        for <linux-mips@vger.kernel.org>; Mon, 18 May 2020 09:28:44 -0700 (PDT)
+        id S1727973AbgERQ2r (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 18 May 2020 12:28:47 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:41894 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727938AbgERQ2q (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 May 2020 12:28:46 -0400
 Received: from localhost.localdomain (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 611642A0EEA;
-        Mon, 18 May 2020 17:28:43 +0100 (BST)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 0C0CC2A0F0D;
+        Mon, 18 May 2020 17:28:44 +0100 (BST)
 From:   Boris Brezillon <boris.brezillon@collabora.com>
 To:     Miquel Raynal <miquel.raynal@bootlin.com>,
         linux-mtd@lists.infradead.org, Hauke Mehrtens <hauke@hauke-m.de>,
@@ -36,393 +33,285 @@ Cc:     Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         Tudor Ambarus <tudor.ambarus@microchip.com>,
         Boris Brezillon <boris.brezillon@collabora.com>
-Subject: [PATCH v2 6/8] mtd: rawnand: bcm47xx: Get rid of the legacy implementation
-Date:   Mon, 18 May 2020 18:28:35 +0200
-Message-Id: <20200518162837.304471-7-boris.brezillon@collabora.com>
+Subject: [PATCH v2 8/8] mtd: rawnand: bcm47xx: Merge all source files
+Date:   Mon, 18 May 2020 18:28:37 +0200
+Message-Id: <20200518162837.304471-9-boris.brezillon@collabora.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200518162837.304471-1-boris.brezillon@collabora.com>
 References: <20200518162837.304471-1-boris.brezillon@collabora.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Now that exec_op() is implemented we don't need to implement all those
-legacy hooks, which simplifies the code quite a bit.
+Given the number of lines it doesn't make sense to split the code.
+Let's merge everything and move the driver to drivers/mtd/nand/raw.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
 Changes in v2:
-* Add R-b
+* Fix the Makefile entry
+* Merge commits doing the source merge and the file move
+* Rename the driver bcm47xx-nand-controller
 ---
- .../nand/raw/bcm47xxnflash/bcm47xxnflash.h    |   6 -
- .../mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c  | 315 ------------------
- 2 files changed, 321 deletions(-)
+ drivers/mtd/nand/raw/Makefile                 |  2 +-
+ ...ps_bcm4706.c => bcm47xx-nand-controller.c} | 81 ++++++++++++++++++-
+ drivers/mtd/nand/raw/bcm47xxnflash/Makefile   |  5 --
+ .../nand/raw/bcm47xxnflash/bcm47xxnflash.h    | 21 -----
+ drivers/mtd/nand/raw/bcm47xxnflash/main.c     | 77 ------------------
+ 5 files changed, 79 insertions(+), 107 deletions(-)
+ rename drivers/mtd/nand/raw/{bcm47xxnflash/ops_bcm4706.c => bcm47xx-nand-controller.c} (81%)
+ delete mode 100644 drivers/mtd/nand/raw/bcm47xxnflash/Makefile
+ delete mode 100644 drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
+ delete mode 100644 drivers/mtd/nand/raw/bcm47xxnflash/main.c
 
-diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h b/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
-index 00d0974b73cb..8de0e7e0a3a4 100644
---- a/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
-+++ b/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
-@@ -14,12 +14,6 @@ struct bcm47xxnflash {
- 	struct bcma_drv_cc *cc;
- 
- 	struct nand_chip nand_chip;
--
--	unsigned curr_command;
--	int curr_page_addr;
--	int curr_column;
--
--	u8 id_data[8];
- };
- 
- int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n);
-diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-index edf0c3d7b561..b6c5db9acac9 100644
+diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
+index 2d136b158fb7..854107365774 100644
+--- a/drivers/mtd/nand/raw/Makefile
++++ b/drivers/mtd/nand/raw/Makefile
+@@ -47,7 +47,7 @@ obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
+ obj-y					+= ingenic/
+ obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
+ obj-$(CONFIG_MTD_NAND_XWAY)		+= xway_nand.o
+-obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
++obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xx-nand-controller.o
+ obj-$(CONFIG_MTD_NAND_SUNXI)		+= sunxi_nand.o
+ obj-$(CONFIG_MTD_NAND_HISI504)	        += hisi504_nand.o
+ obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
+diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xx-nand-controller.c
+similarity index 81%
+rename from drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
+rename to drivers/mtd/nand/raw/bcm47xx-nand-controller.c
+index e34a13b7f919..ff8b86a8e923 100644
 --- a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-+++ b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-@@ -75,313 +75,10 @@ static int bcm47xxnflash_ops_bcm4706_ctl_cmd(struct bcma_drv_cc *cc, u32 code)
- 	return 0;
- }
++++ b/drivers/mtd/nand/raw/bcm47xx-nand-controller.c
+@@ -5,13 +5,14 @@
+  * Copyright (C) 2012 Rafał Miłecki <zajec5@gmail.com>
+  */
  
--static int bcm47xxnflash_ops_bcm4706_poll(struct bcma_drv_cc *cc)
--{
--	int i;
+-#include "bcm47xxnflash.h"
 -
--	for (i = 0; i < NFLASH_READY_RETRIES; i++) {
--		if (bcma_cc_read32(cc, BCMA_CC_NFLASH_CTL) & NCTL_READY) {
--			if (bcma_cc_read32(cc, BCMA_CC_NFLASH_CTL) &
--			    BCMA_CC_NFLASH_CTL_ERR) {
--				pr_err("Error on polling\n");
--				return -EBUSY;
--			} else {
--				return 0;
--			}
--		}
--	}
--
--	pr_err("Polling timeout!\n");
--	return -EBUSY;
--}
--
--/**************************************************
-- * R/W
-- **************************************************/
--
--static void bcm47xxnflash_ops_bcm4706_read(struct mtd_info *mtd, uint8_t *buf,
--					   int len)
--{
--	struct nand_chip *nand_chip = mtd_to_nand(mtd);
--	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
--
--	u32 ctlcode;
--	u32 *dest = (u32 *)buf;
--	int i;
--	int toread;
--
--	BUG_ON(b47n->curr_page_addr & ~nand_chip->pagemask);
--	/* Don't validate column using nand_chip->page_shift, it may be bigger
--	 * when accessing OOB */
--
--	while (len) {
--		/* We can read maximum of 0x200 bytes at once */
--		toread = min(len, 0x200);
--
--		/* Set page and column */
--		bcma_cc_write32(b47n->cc, BCMA_CC_NFLASH_COL_ADDR,
--				b47n->curr_column);
--		bcma_cc_write32(b47n->cc, BCMA_CC_NFLASH_ROW_ADDR,
--				b47n->curr_page_addr);
--
--		/* Prepare to read */
--		ctlcode = NCTL_CSA | NCTL_CMD1W | NCTL_ROW | NCTL_COL |
--			  NCTL_CMD0;
--		ctlcode |= NAND_CMD_READSTART << 8;
--		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, ctlcode))
--			return;
--		if (bcm47xxnflash_ops_bcm4706_poll(b47n->cc))
--			return;
--
--		/* Eventually read some data :) */
--		for (i = 0; i < toread; i += 4, dest++) {
--			ctlcode = NCTL_CSA | NCTL_DATA_CYCLES(4) | NCTL_READ;
--			if (i == toread - 4) /* Last read goes without that */
--				ctlcode &= ~NCTL_CSA;
--			if (bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc,
--							      ctlcode))
--				return;
--			*dest = bcma_cc_read32(b47n->cc, BCMA_CC_NFLASH_DATA);
--		}
--
--		b47n->curr_column += toread;
--		len -= toread;
--	}
--}
--
--static void bcm47xxnflash_ops_bcm4706_write(struct mtd_info *mtd,
--					    const uint8_t *buf, int len)
--{
--	struct nand_chip *nand_chip = mtd_to_nand(mtd);
--	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
--	struct bcma_drv_cc *cc = b47n->cc;
--
--	u32 ctlcode;
--	const u32 *data = (u32 *)buf;
--	int i;
--
--	BUG_ON(b47n->curr_page_addr & ~nand_chip->pagemask);
--	/* Don't validate column using nand_chip->page_shift, it may be bigger
--	 * when accessing OOB */
--
--	for (i = 0; i < len; i += 4, data++) {
--		bcma_cc_write32(cc, BCMA_CC_NFLASH_DATA, *data);
--
--		ctlcode = NCTL_CSA | NCTL_DATA_CYCLES(4) | NCTL_WRITE;
--		if (i == len - 4) /* Last read goes without that */
--			ctlcode &= ~NCTL_CSA;
--		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, ctlcode)) {
--			pr_err("%s ctl_cmd didn't work!\n", __func__);
--			return;
--		}
--	}
--
--	b47n->curr_column += len;
--}
--
++#include <linux/delay.h>
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/slab.h>
+-#include <linux/delay.h>
++#include <linux/platform_device.h>
+ #include <linux/bcma/bcma.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/rawnand.h>
+ 
+ /* Broadcom uses 1'000'000 but it seems to be too many. Tests on WNDR4500 has
+  * shown ~1000 retries as maxiumum. */
+@@ -48,6 +49,17 @@
+ #define CONF_COL_BYTES(x)		(((x) - 1) << 4)
+ #define CONF_ROW_BYTES(x)		(((x) - 1) << 6)
+ 
++#ifndef pr_fmt
++#define pr_fmt(fmt)		KBUILD_MODNAME ": " fmt
++#endif
++
++struct bcm47xxnflash {
++	struct nand_controller base;
++	struct bcma_drv_cc *cc;
++
++	struct nand_chip nand_chip;
++};
++
  /**************************************************
-  * NAND chip ops
+  * Various helpers
   **************************************************/
+@@ -266,3 +278,66 @@ int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n)
  
--static void bcm47xxnflash_ops_bcm4706_cmd_ctrl(struct nand_chip *nand_chip,
--					       int cmd, unsigned int ctrl)
--{
--	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
--	u32 code = 0;
+ 	return err;
+ }
++
++static const char *probes[] = { "bcm47xxpart", NULL };
++
++static int bcm47xxnflash_probe(struct platform_device *pdev)
++{
++	struct bcma_nflash *nflash = dev_get_platdata(&pdev->dev);
++	struct bcm47xxnflash *b47n;
++	struct mtd_info *mtd;
++	int err = 0;
++
++	b47n = devm_kzalloc(&pdev->dev, sizeof(*b47n), GFP_KERNEL);
++	if (!b47n)
++		return -ENOMEM;
++
++	nand_set_controller_data(&b47n->nand_chip, b47n);
++	mtd = nand_to_mtd(&b47n->nand_chip);
++	mtd->dev.parent = &pdev->dev;
++	b47n->cc = container_of(nflash, struct bcma_drv_cc, nflash);
++
++	if (b47n->cc->core->bus->chipinfo.id == BCMA_CHIP_ID_BCM4706) {
++		err = bcm47xxnflash_ops_bcm4706_init(b47n);
++	} else {
++		pr_err("Device not supported\n");
++		err = -ENOTSUPP;
++	}
++	if (err) {
++		pr_err("Initialization failed: %d\n", err);
++		return err;
++	}
++
++	platform_set_drvdata(pdev, b47n);
++
++	err = mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
++	if (err) {
++		pr_err("Failed to register MTD device: %d\n", err);
++		return err;
++	}
++
++	return 0;
++}
++
++static int bcm47xxnflash_remove(struct platform_device *pdev)
++{
++	struct bcm47xxnflash *nflash = platform_get_drvdata(pdev);
++
++	nand_release(&nflash->nand_chip);
++
++	return 0;
++}
++
++static struct platform_driver bcm47xxnflash_driver = {
++	.probe	= bcm47xxnflash_probe,
++	.remove = bcm47xxnflash_remove,
++	.driver = {
++		.name = "bcma_nflash",
++	},
++};
++module_platform_driver(bcm47xxnflash_driver);
++
++MODULE_DESCRIPTION("NAND flash driver for BCMA bus");
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Rafał Miłecki");
++
+diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/Makefile b/drivers/mtd/nand/raw/bcm47xxnflash/Makefile
+deleted file mode 100644
+index b531a630c9cf..000000000000
+--- a/drivers/mtd/nand/raw/bcm47xxnflash/Makefile
++++ /dev/null
+@@ -1,5 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-bcm47xxnflash-y				+= main.o
+-bcm47xxnflash-y				+= ops_bcm4706.o
 -
--	if (cmd == NAND_CMD_NONE)
--		return;
+-obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash.o
+diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h b/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
+deleted file mode 100644
+index 8de0e7e0a3a4..000000000000
+--- a/drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
++++ /dev/null
+@@ -1,21 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __BCM47XXNFLASH_H
+-#define __BCM47XXNFLASH_H
 -
--	if (cmd & NAND_CTRL_CLE)
--		code = cmd | NCTL_CMD0;
+-#ifndef pr_fmt
+-#define pr_fmt(fmt)		KBUILD_MODNAME ": " fmt
+-#endif
 -
--	/* nCS is not needed for reset command */
--	if (cmd != NAND_CMD_RESET)
--		code |= NCTL_CSA;
+-#include <linux/mtd/mtd.h>
+-#include <linux/mtd/rawnand.h>
 -
--	bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, code);
--}
+-struct bcm47xxnflash {
+-	struct nand_controller base;
+-	struct bcma_drv_cc *cc;
 -
--/* Default nand_select_chip calls cmd_ctrl, which is not used in BCM4706 */
--static void bcm47xxnflash_ops_bcm4706_select_chip(struct nand_chip *chip,
--						  int cs)
--{
--	return;
--}
+-	struct nand_chip nand_chip;
+-};
 -
--static int bcm47xxnflash_ops_bcm4706_dev_ready(struct nand_chip *nand_chip)
--{
--	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
+-int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n);
 -
--	return !!(bcma_cc_read32(b47n->cc, BCMA_CC_NFLASH_CTL) & NCTL_READY);
--}
--
+-#endif /* BCM47XXNFLASH */
+diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/main.c b/drivers/mtd/nand/raw/bcm47xxnflash/main.c
+deleted file mode 100644
+index 8dae97c1dbe7..000000000000
+--- a/drivers/mtd/nand/raw/bcm47xxnflash/main.c
++++ /dev/null
+@@ -1,77 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
 -/*
-- * Default nand_command and nand_command_lp don't match BCM4706 hardware layout.
-- * For example, reading chip id is performed in a non-standard way.
-- * Setting column and page is also handled differently, we use a special
-- * registers of ChipCommon core. Hacking cmd_ctrl to understand and convert
-- * standard commands would be much more complicated.
+- * BCM47XX NAND flash driver
+- *
+- * Copyright (C) 2012 Rafał Miłecki <zajec5@gmail.com>
 - */
--static void bcm47xxnflash_ops_bcm4706_cmdfunc(struct nand_chip *nand_chip,
--					      unsigned command, int column,
--					      int page_addr)
+-
+-#include "bcm47xxnflash.h"
+-
+-#include <linux/module.h>
+-#include <linux/kernel.h>
+-#include <linux/slab.h>
+-#include <linux/platform_device.h>
+-#include <linux/bcma/bcma.h>
+-
+-MODULE_DESCRIPTION("NAND flash driver for BCMA bus");
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Rafał Miłecki");
+-
+-static const char *probes[] = { "bcm47xxpart", NULL };
+-
+-static int bcm47xxnflash_probe(struct platform_device *pdev)
 -{
--	struct mtd_info *mtd = nand_to_mtd(nand_chip);
--	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
--	struct bcma_drv_cc *cc = b47n->cc;
--	u32 ctlcode;
--	int i;
+-	struct bcma_nflash *nflash = dev_get_platdata(&pdev->dev);
+-	struct bcm47xxnflash *b47n;
+-	struct mtd_info *mtd;
+-	int err = 0;
 -
--	if (column != -1)
--		b47n->curr_column = column;
--	if (page_addr != -1)
--		b47n->curr_page_addr = page_addr;
+-	b47n = devm_kzalloc(&pdev->dev, sizeof(*b47n), GFP_KERNEL);
+-	if (!b47n)
+-		return -ENOMEM;
 -
--	switch (command) {
--	case NAND_CMD_RESET:
--		nand_chip->legacy.cmd_ctrl(nand_chip, command, NAND_CTRL_CLE);
+-	nand_set_controller_data(&b47n->nand_chip, b47n);
+-	mtd = nand_to_mtd(&b47n->nand_chip);
+-	mtd->dev.parent = &pdev->dev;
+-	b47n->cc = container_of(nflash, struct bcma_drv_cc, nflash);
 -
--		ndelay(100);
--		nand_wait_ready(nand_chip);
--		break;
--	case NAND_CMD_READID:
--		ctlcode = NCTL_CSA | NCTL_SPECADDR | NCTL_CMD1W | NCTL_CMD0;
--		ctlcode |= NAND_CMD_READID;
--		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, ctlcode)) {
--			pr_err("READID error\n");
--			break;
--		}
--
--		/*
--		 * Reading is specific, last one has to go without NCTL_CSA
--		 * bit. We don't know how many reads NAND subsystem is going
--		 * to perform, so cache everything.
--		 */
--		for (i = 0; i < ARRAY_SIZE(b47n->id_data); i++) {
--			ctlcode = NCTL_CSA | NCTL_READ | NCTL_DATA_CYCLES(1);
--			if (i == ARRAY_SIZE(b47n->id_data) - 1)
--				ctlcode &= ~NCTL_CSA;
--			if (bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc,
--							      ctlcode)) {
--				pr_err("READID error\n");
--				break;
--			}
--			b47n->id_data[i] =
--				bcma_cc_read32(b47n->cc, BCMA_CC_NFLASH_DATA)
--				& 0xFF;
--		}
--
--		break;
--	case NAND_CMD_STATUS:
--		ctlcode = NCTL_CSA | NCTL_CMD0 | NAND_CMD_STATUS;
--		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, ctlcode))
--			pr_err("STATUS command error\n");
--		break;
--	case NAND_CMD_READ0:
--		break;
--	case NAND_CMD_READOOB:
--		if (page_addr != -1)
--			b47n->curr_column += mtd->writesize;
--		break;
--	case NAND_CMD_ERASE1:
--		bcma_cc_write32(cc, BCMA_CC_NFLASH_ROW_ADDR,
--				b47n->curr_page_addr);
--		ctlcode = NCTL_ROW | NCTL_CMD1W | NCTL_CMD0 |
--			  NAND_CMD_ERASE1 | (NAND_CMD_ERASE2 << 8);
--		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, ctlcode))
--			pr_err("ERASE1 failed\n");
--		break;
--	case NAND_CMD_ERASE2:
--		break;
--	case NAND_CMD_SEQIN:
--		/* Set page and column */
--		bcma_cc_write32(cc, BCMA_CC_NFLASH_COL_ADDR,
--				b47n->curr_column);
--		bcma_cc_write32(cc, BCMA_CC_NFLASH_ROW_ADDR,
--				b47n->curr_page_addr);
--
--		/* Prepare to write */
--		ctlcode = NCTL_CSA | NCTL_ROW | NCTL_COL | NCTL_CMD0;
--		ctlcode |= NAND_CMD_SEQIN;
--		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, ctlcode))
--			pr_err("SEQIN failed\n");
--		break;
--	case NAND_CMD_PAGEPROG:
--		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, NCTL_CMD0 |
--							  NAND_CMD_PAGEPROG))
--			pr_err("PAGEPROG failed\n");
--		if (bcm47xxnflash_ops_bcm4706_poll(cc))
--			pr_err("PAGEPROG not ready\n");
--		break;
--	default:
--		pr_err("Command 0x%X unsupported\n", command);
--		break;
+-	if (b47n->cc->core->bus->chipinfo.id == BCMA_CHIP_ID_BCM4706) {
+-		err = bcm47xxnflash_ops_bcm4706_init(b47n);
+-	} else {
+-		pr_err("Device not supported\n");
+-		err = -ENOTSUPP;
 -	}
--	b47n->curr_command = command;
--}
--
--static u8 bcm47xxnflash_ops_bcm4706_read_byte(struct nand_chip *nand_chip)
--{
--	struct mtd_info *mtd = nand_to_mtd(nand_chip);
--	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
--	struct bcma_drv_cc *cc = b47n->cc;
--	u32 tmp = 0;
--
--	switch (b47n->curr_command) {
--	case NAND_CMD_READID:
--		if (b47n->curr_column >= ARRAY_SIZE(b47n->id_data)) {
--			pr_err("Requested invalid id_data: %d\n",
--			       b47n->curr_column);
--			return 0;
--		}
--		return b47n->id_data[b47n->curr_column++];
--	case NAND_CMD_STATUS:
--		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc,
--						      NCTL_READ |
--						      NCTL_DATA_CYCLES(1)))
--			return 0;
--		return bcma_cc_read32(cc, BCMA_CC_NFLASH_DATA) & 0xff;
--	case NAND_CMD_READOOB:
--		bcm47xxnflash_ops_bcm4706_read(mtd, (u8 *)&tmp, 4);
--		return tmp & 0xFF;
+-	if (err) {
+-		pr_err("Initialization failed: %d\n", err);
+-		return err;
 -	}
 -
--	pr_err("Invalid command for byte read: 0x%X\n", b47n->curr_command);
+-	platform_set_drvdata(pdev, b47n);
+-
+-	err = mtd_device_parse_register(mtd, probes, NULL, NULL, 0);
+-	if (err) {
+-		pr_err("Failed to register MTD device: %d\n", err);
+-		return err;
+-	}
+-
 -	return 0;
 -}
 -
--static void bcm47xxnflash_ops_bcm4706_read_buf(struct nand_chip *nand_chip,
--					       uint8_t *buf, int len)
+-static int bcm47xxnflash_remove(struct platform_device *pdev)
 -{
--	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
+-	struct bcm47xxnflash *nflash = platform_get_drvdata(pdev);
 -
--	switch (b47n->curr_command) {
--	case NAND_CMD_READ0:
--	case NAND_CMD_READOOB:
--		bcm47xxnflash_ops_bcm4706_read(nand_to_mtd(nand_chip), buf,
--					       len);
--		return;
--	}
+-	nand_release(&nflash->nand_chip);
 -
--	pr_err("Invalid command for buf read: 0x%X\n", b47n->curr_command);
+-	return 0;
 -}
 -
--static void bcm47xxnflash_ops_bcm4706_write_buf(struct nand_chip *nand_chip,
--						const uint8_t *buf, int len)
--{
--	struct bcm47xxnflash *b47n = nand_get_controller_data(nand_chip);
+-static struct platform_driver bcm47xxnflash_driver = {
+-	.probe	= bcm47xxnflash_probe,
+-	.remove = bcm47xxnflash_remove,
+-	.driver = {
+-		.name = "bcma_nflash",
+-	},
+-};
 -
--	switch (b47n->curr_command) {
--	case NAND_CMD_SEQIN:
--		bcm47xxnflash_ops_bcm4706_write(nand_to_mtd(nand_chip), buf,
--						len);
--		return;
--	}
--
--	pr_err("Invalid command for buf write: 0x%X\n", b47n->curr_command);
--}
--
- static int
- bcm47xxnflash_ops_bcm4706_exec_cmd_addr(struct nand_chip *chip,
- 					const struct nand_subop *subop)
-@@ -525,7 +222,6 @@ static const struct nand_controller_ops bcm47xxnflash_ops = {
- 
- int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n)
- {
--	struct nand_chip *nand_chip = (struct nand_chip *)&b47n->nand_chip;
- 	int err;
- 	u32 freq;
- 	u16 clock;
-@@ -538,17 +234,6 @@ int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n)
- 	nand_controller_init(&b47n->base);
- 	b47n->base.ops = &bcm47xxnflash_ops;
- 	b47n->nand_chip.controller = &b47n->base;
--	nand_chip->legacy.select_chip = bcm47xxnflash_ops_bcm4706_select_chip;
--	nand_chip->legacy.cmd_ctrl = bcm47xxnflash_ops_bcm4706_cmd_ctrl;
--	nand_chip->legacy.dev_ready = bcm47xxnflash_ops_bcm4706_dev_ready;
--	b47n->nand_chip.legacy.cmdfunc = bcm47xxnflash_ops_bcm4706_cmdfunc;
--	b47n->nand_chip.legacy.read_byte = bcm47xxnflash_ops_bcm4706_read_byte;
--	b47n->nand_chip.legacy.read_buf = bcm47xxnflash_ops_bcm4706_read_buf;
--	b47n->nand_chip.legacy.write_buf = bcm47xxnflash_ops_bcm4706_write_buf;
--	b47n->nand_chip.legacy.set_features = nand_get_set_features_notsupp;
--	b47n->nand_chip.legacy.get_features = nand_get_set_features_notsupp;
--
--	nand_chip->legacy.chip_delay = 50;
- 	b47n->nand_chip.bbt_options = NAND_BBT_USE_FLASH;
- 	b47n->nand_chip.ecc.mode = NAND_ECC_NONE; /* TODO: implement ECC */
- 
+-module_platform_driver(bcm47xxnflash_driver);
 -- 
 2.25.4
 

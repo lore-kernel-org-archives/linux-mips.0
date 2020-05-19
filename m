@@ -2,61 +2,93 @@ Return-Path: <SRS0=6LX1=7B=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3017FC433E0
-	for <linux-mips@archiver.kernel.org>; Tue, 19 May 2020 16:00:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CEA8C433E2
+	for <linux-mips@archiver.kernel.org>; Tue, 19 May 2020 16:00:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0D9A7207FB
-	for <linux-mips@archiver.kernel.org>; Tue, 19 May 2020 16:00:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D4B70207D8
+	for <linux-mips@archiver.kernel.org>; Tue, 19 May 2020 16:00:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729219AbgESQAJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 19 May 2020 12:00:09 -0400
-Received: from elvis.franken.de ([193.175.24.41]:59262 "EHLO elvis.franken.de"
+        id S1729311AbgESQAL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 19 May 2020 12:00:11 -0400
+Received: from elvis.franken.de ([193.175.24.41]:59275 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729204AbgESQAJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 19 May 2020 12:00:09 -0400
+        id S1729211AbgESQAK (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 19 May 2020 12:00:10 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jb4ex-0001Fc-01; Tue, 19 May 2020 18:00:03 +0200
+        id 1jb4ew-0001Fc-00; Tue, 19 May 2020 18:00:02 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 6AE10C0136; Tue, 19 May 2020 17:59:19 +0200 (CEST)
-Date:   Tue, 19 May 2020 17:59:19 +0200
+        id 0EC79C012F; Tue, 19 May 2020 17:42:13 +0200 (CEST)
+Date:   Tue, 19 May 2020 17:42:13 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Joshua Kinard <kumba@gentoo.org>
-Cc:     linux-mips@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] MIPS: Split R10000 to allow for R12K+
- optimizations
-Message-ID: <20200519155919.GC15797@alpha.franken.de>
-References: <677e22b32c5beb082885ba41f3dd1006660ee69f.1589753297.git.kumba@gentoo.org>
+To:     Sergey.Semin@baikalelectronics.ru
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Allison Randal <allison@lohutok.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Zhou Yanjie <zhouyanjie@zoho.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 12/20] mips: MAAR: Add XPA mode support
+Message-ID: <20200519154213.GA15797@alpha.franken.de>
+References: <20200306124807.3596F80307C2@mail.baikalelectronics.ru>
+ <20200506174238.15385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200506174238.15385-13-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <677e22b32c5beb082885ba41f3dd1006660ee69f.1589753297.git.kumba@gentoo.org>
+In-Reply-To: <20200506174238.15385-13-Sergey.Semin@baikalelectronics.ru>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, May 17, 2020 at 07:24:37PM -0400, Joshua Kinard wrote:
-> From: Joshua Kinard <kumba@gentoo.org>
+On Wed, May 06, 2020 at 08:42:30PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
+> From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 > 
-> Add more-specific support for R12000 and higher CPUs by splitting the
-> R10000 logic at several places.  This avoids the workarounds enabled
-> by R10000_LLSC_WAR and passes -mno-fix-r10000 to gcc during the kernel
-> compile.
+> When XPA mode is enabled the normally 32-bits MAAR pair registers
+> are extended to be of 64-bits width as in pure 64-bits MIPS
+> architecture. In this case the MAAR registers can enable the
+> speculative loads/stores for addresses of up to 39-bits width.
+> But in this case the process of the MAAR initialization changes a bit.
+> The upper 32-bits of the registers are supposed to be accessed by mean
+> of the dedicated instructions mfhc0/mthc0 and there is a CP0.MAAR.VH
+> bit which should be set together with CP0.MAAR.VL as indication
+> of the boundary validity. All of these peculiarities were taken into
+> account in this commit so the speculative loads/stores would work
+> when XPA mode is enabled.
+> 
+> Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: linux-pm@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+> ---
+>  arch/mips/include/asm/maar.h     | 17 +++++++++++++++--
+>  arch/mips/include/asm/mipsregs.h | 10 ++++++++++
+>  arch/mips/mm/init.c              |  8 +++++++-
+>  3 files changed, 32 insertions(+), 3 deletions(-)
 
-I've looked at gcc-10 and to me it looks like all R10K type CPUs are treated
-the same. And it looks like that even MIPSpro doesn't have any special options
-for R12k/R14k/R16k. So the only difference between -march=r10000 and
--march=r12000 is that r10k implies -mfix-r10000 (you probably know that
-as it's your change). Therefore I don't see a reason to add the patch
-as it is. I'm still open for adding a CPU_R10000_WORKAROUNDS option.
-If you don't want to do it I'll probably add it, when IP35 support emerges
-as this is so far the only platform I know, where no R10k was ever used.
+applied to mips-next.
 
 Thomas.
 

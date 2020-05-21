@@ -6,46 +6,44 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3B39C433E5
-	for <linux-mips@archiver.kernel.org>; Thu, 21 May 2020 20:49:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8193AC433E7
+	for <linux-mips@archiver.kernel.org>; Thu, 21 May 2020 20:49:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AEB9320814
-	for <linux-mips@archiver.kernel.org>; Thu, 21 May 2020 20:49:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6709320823
+	for <linux-mips@archiver.kernel.org>; Thu, 21 May 2020 20:49:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730325AbgEUUtO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 21 May 2020 16:49:14 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:40534 "EHLO
+        id S1730454AbgEUUt0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 21 May 2020 16:49:26 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:40602 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730130AbgEUUtN (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 21 May 2020 16:49:13 -0400
+        with ESMTP id S1730257AbgEUUtO (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 21 May 2020 16:49:14 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 2C9D880005EE;
-        Thu, 21 May 2020 20:49:09 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 9670D80004AB;
+        Thu, 21 May 2020 20:49:11 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id V3W7VpCXuOqi; Thu, 21 May 2020 23:49:07 +0300 (MSK)
+        with ESMTP id 8A92xlCvLCE3; Thu, 21 May 2020 23:49:10 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Daniel Lezcano <daniel.lezcano@linaro.org>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Paul Burton <paulburton@kernel.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Ralf Baechle <ralf@linux-mips.org>,
         Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Arnd Bergmann <arnd@arndb.de>,
         Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
         <linux-rtc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Allison Randal <allison@lohutok.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 5/8] clocksource: dw_apb_timer: Affiliate of-based timer with any CPU
-Date:   Thu, 21 May 2020 23:48:14 +0300
-Message-ID: <20200521204818.25436-6-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v5 7/8] clocksource: mips-gic-timer: Register as sched_clock
+Date:   Thu, 21 May 2020 23:48:16 +0300
+Message-ID: <20200521204818.25436-8-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20200521204818.25436-1-Sergey.Semin@baikalelectronics.ru>
 References: <20200521204818.25436-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -57,23 +55,28 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Currently any DW APB Timer device detected in OF is bound to CPU #0.
-Doing so is redundant since DW APB Timer isn't CPU-local timer, but as
-having APB interface is normally accessible from any CPU in the system. By
-artificially affiliating the DW timer to the very first CPU we may and in
-our case will make the clockevent subsystem to decline the more performant
-real CPU-local timers selection in favor of in fact non-local and
-accessible over a slow bus - DW APB Timers.
+From: Paul Burton <paulburton@kernel.org>
 
-Let's not affiliate the of-detected DW APB Timers to any CPU. By doing so
-the clockevent framework would prefer to select the real CPU-local timer
-instead of DW APB one. Otherwise if there is no other than DW APB device
-for clockevents tracking then it will be selected.
+The MIPS GIC timer is well suited for use as sched_clock, so register it
+as such.
 
+Whilst the existing gic_read_count() function matches the prototype
+needed by sched_clock_register() already, we split it into 2 functions
+in order to remove the need to evaluate the mips_cm_is64 condition
+within each call since sched_clock should be as fast as possible.
+
+Note the sched clock framework needs the clock source being stable in
+order to rely on it. So we register the MIPS GIC timer as schedule clocks
+only if it's, if either the system doesn't have CPU-frequency enabled or
+the CPU frequency is changed by means of the CPC core clock divider
+available on the platforms with CM3 or newer.
+
+Signed-off-by: Paul Burton <paulburton@kernel.org>
+Co-developed-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+[Sergey.Semin@baikalelectronics.ru: Register sched-clock if CM3 or !CPU-freq]
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Burton <paulburton@kernel.org>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: Alessandro Zummo <a.zummo@towertech.it>
 Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
@@ -85,26 +88,79 @@ Cc: devicetree@vger.kernel.org
 
 ---
 
-Changelog v5:
-- This is a new patch created after reconsidering the solution of the DW
-  APB Timer CPU-affiliation problem.
+Changelog v3:
+- Register sched clocks only if MIPS GIC belongs to CM3 or if CPU-freq
+  isn't supported.
 ---
- drivers/clocksource/dw_apb_timer_of.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clocksource/mips-gic-timer.c | 31 ++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clocksource/dw_apb_timer_of.c b/drivers/clocksource/dw_apb_timer_of.c
-index 8c28b127759f..2db490f35c20 100644
---- a/drivers/clocksource/dw_apb_timer_of.c
-+++ b/drivers/clocksource/dw_apb_timer_of.c
-@@ -73,7 +73,7 @@ static void __init add_clockevent(struct device_node *event_timer)
+diff --git a/drivers/clocksource/mips-gic-timer.c b/drivers/clocksource/mips-gic-timer.c
+index 8b5f8ae723cb..ef12c12c2432 100644
+--- a/drivers/clocksource/mips-gic-timer.c
++++ b/drivers/clocksource/mips-gic-timer.c
+@@ -16,6 +16,7 @@
+ #include <linux/notifier.h>
+ #include <linux/of_irq.h>
+ #include <linux/percpu.h>
++#include <linux/sched_clock.h>
+ #include <linux/smp.h>
+ #include <linux/time.h>
+ #include <asm/mips-cps.h>
+@@ -24,13 +25,10 @@ static DEFINE_PER_CPU(struct clock_event_device, gic_clockevent_device);
+ static int gic_timer_irq;
+ static unsigned int gic_frequency;
  
- 	timer_get_base_and_rate(event_timer, &iobase, &rate);
+-static u64 notrace gic_read_count(void)
++static u64 notrace gic_read_count_2x32(void)
+ {
+ 	unsigned int hi, hi2, lo;
  
--	ced = dw_apb_clockevent_init(0, event_timer->name, 300, iobase, irq,
-+	ced = dw_apb_clockevent_init(-1, event_timer->name, 300, iobase, irq,
- 				     rate);
- 	if (!ced)
- 		panic("Unable to initialise clockevent device");
+-	if (mips_cm_is64)
+-		return read_gic_counter();
+-
+ 	do {
+ 		hi = read_gic_counter_32h();
+ 		lo = read_gic_counter_32l();
+@@ -40,6 +38,19 @@ static u64 notrace gic_read_count(void)
+ 	return (((u64) hi) << 32) + lo;
+ }
+ 
++static u64 notrace gic_read_count_64(void)
++{
++	return read_gic_counter();
++}
++
++static u64 notrace gic_read_count(void)
++{
++	if (mips_cm_is64)
++		return gic_read_count_64();
++
++	return gic_read_count_2x32();
++}
++
+ static int gic_next_event(unsigned long delta, struct clock_event_device *evt)
+ {
+ 	int cpu = cpumask_first(evt->cpumask);
+@@ -228,6 +239,18 @@ static int __init gic_clocksource_of_init(struct device_node *node)
+ 	/* And finally start the counter */
+ 	clear_gic_config(GIC_CONFIG_COUNTSTOP);
+ 
++	/*
++	 * It's safe to use the MIPS GIC timer as a sched clock source only if
++	 * its ticks are stable, which is true on either the platforms with
++	 * stable CPU frequency or on the platforms with CM3 and CPU frequency
++	 * change performed by the CPC core clocks divider.
++	 */
++	if (mips_cm_revision() >= CM_REV_CM3 || !IS_ENABLED(CONFIG_CPU_FREQ)) {
++		sched_clock_register(mips_cm_is64 ?
++				     gic_read_count_64 : gic_read_count_2x32,
++				     64, gic_frequency);
++	}
++
+ 	return 0;
+ }
+ TIMER_OF_DECLARE(mips_gic_timer, "mti,gic-timer",
 -- 
 2.25.1
 

@@ -2,155 +2,88 @@ Return-Path: <SRS0=kTqc=7D=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03B7AC433E0
-	for <linux-mips@archiver.kernel.org>; Thu, 21 May 2020 03:31:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB984C433DF
+	for <linux-mips@archiver.kernel.org>; Thu, 21 May 2020 07:18:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DFBC420738
-	for <linux-mips@archiver.kernel.org>; Thu, 21 May 2020 03:31:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B7DA22083E
+	for <linux-mips@archiver.kernel.org>; Thu, 21 May 2020 07:18:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728193AbgEUDbC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 20 May 2020 23:31:02 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:60934 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726954AbgEUDbC (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 20 May 2020 23:31:02 -0400
-Received: from kvm-dev1.localdomain (unknown [10.2.5.134])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx793d9cVewz03AA--.629S4;
-        Thu, 21 May 2020 11:30:39 +0800 (CST)
-From:   Bibo Mao <maobibo@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        id S1728053AbgEUHSX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 21 May 2020 03:18:23 -0400
+Received: from elvis.franken.de ([193.175.24.41]:32937 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727003AbgEUHSX (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 21 May 2020 03:18:23 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jbfTA-0001b7-00; Thu, 21 May 2020 09:18:20 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 3B807C0155; Thu, 21 May 2020 09:11:11 +0200 (CEST)
+Date:   Thu, 21 May 2020 09:11:11 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Paul Burton <paulburton@kernel.org>,
-        Dmitry Korotin <dkorotin@wavecomp.com>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org,
-        David Hildenbrand <david@redhat.com>
-Subject: [PATCH v5 3/4] mm/memory.c: Add memory read privilege on page fault handling
-Date:   Thu, 21 May 2020 11:30:36 +0800
-Message-Id: <1590031837-9582-3-git-send-email-maobibo@loongson.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1590031837-9582-1-git-send-email-maobibo@loongson.cn>
-References: <1590031837-9582-1-git-send-email-maobibo@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx793d9cVewz03AA--.629S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxZFy5KF13KFW5CFy3Gr1rJFb_yoW5AFy7pF
-        Z7CwnY9rsrXw1xAFWfGFn29r1ruw4rKFWY9rySk3Wku3ZxJrn8Wrs7GayFv34kJFWkK3Wr
-        Gr4jqr4UZay2vaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPSb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF
-        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcV
-        CY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280
-        aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4
-        CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvj
-        eVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxw
-        CY02Avz4vE-syl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
-        x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6r
-        W5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF
-        7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI
-        0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7I
-        U5DMa5UUUUU==
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Zhou Yanjie <zhouyanjie@zoho.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 08/14] mips: MAAR: Use more precise address mask
+Message-ID: <20200521071111.GA7309@alpha.franken.de>
+References: <20200521003443.11385-1-Sergey.Semin@baikalelectronics.ru>
+ <20200521003443.11385-9-Sergey.Semin@baikalelectronics.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200521003443.11385-9-Sergey.Semin@baikalelectronics.ru>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Here add pte_sw_mkyoung function to make page readable on MIPS
-platform during page fault handling. This patch improves page
-fault latency about 10% on my MIPS machine with lmbench
-lat_pagefault case.
+On Thu, May 21, 2020 at 03:34:37AM +0300, Serge Semin wrote:
+> Indeed according to the MIPS32 Privileged Resource Architecgture the MAAR
+> pair register address field either takes [12:31] bits for non-XPA systems
+> and [12:55] otherwise. In any case the current address mask is just
+> wrong for 64-bit and 32-bits XPA chips. So lets extend it to 59-bits
+> of physical address value. This shall cover the 64-bits architecture and
+> systems with XPA enabled, and won't cause any problem for non-XPA 32-bit
+> systems, since address values exceeding the architecture specific MAAR
+> mask will be just truncated with setting zeros in the unsupported upper
+> bits.
+> 
+> Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: devicetree@vger.kernel.org
+> 
+> ---
+> 
+> Changelog v3:
+> - In accordance with MIPS32/64 Privileged Resource Architecture Extend
+>   the MAAR Addr mask to value [12:55] instead of P5600-specific [12:35].
+> ---
+>  arch/mips/include/asm/mipsregs.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-It is noop function on other arches, there is no negative
-influence on those architectures.
+applied to mips-next.
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- arch/mips/include/asm/pgtable.h |  2 ++
- include/asm-generic/pgtable.h   | 16 ++++++++++++++++
- mm/memory.c                     |  3 +++
- 3 files changed, 21 insertions(+)
+Thomas.
 
-diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index 5f610ec..9cd811e 100644
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -414,6 +414,8 @@ static inline pte_t pte_mkyoung(pte_t pte)
- 	return pte;
- }
- 
-+#define pte_sw_mkyoung	pte_mkyoung
-+
- #ifdef CONFIG_MIPS_HUGE_TLB_SUPPORT
- static inline int pte_huge(pte_t pte)	{ return pte_val(pte) & _PAGE_HUGE; }
- 
-diff --git a/include/asm-generic/pgtable.h b/include/asm-generic/pgtable.h
-index 329b8c8..7dcfa30 100644
---- a/include/asm-generic/pgtable.h
-+++ b/include/asm-generic/pgtable.h
-@@ -227,6 +227,22 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addres
- }
- #endif
- 
-+/*
-+ * On some architectures hardware does not set page access bit when accessing
-+ * memory page, it is responsibilty of software setting this bit. It brings
-+ * out extra page fault penalty to track page access bit. For optimization page
-+ * access bit can be set during all page fault flow on these arches.
-+ * To be differentiate with macro pte_mkyoung, this macro is used on platforms
-+ * where software maintains page access bit.
-+ */
-+#ifndef pte_sw_mkyoung
-+static inline pte_t pte_sw_mkyoung(pte_t pte)
-+{
-+	return pte;
-+}
-+#define pte_sw_mkyoung	pte_sw_mkyoung
-+#endif
-+
- #ifndef pte_savedwrite
- #define pte_savedwrite pte_write
- #endif
-diff --git a/mm/memory.c b/mm/memory.c
-index 9e2be4a..33d3b4c 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2704,6 +2704,7 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
- 		}
- 		flush_cache_page(vma, vmf->address, pte_pfn(vmf->orig_pte));
- 		entry = mk_pte(new_page, vma->vm_page_prot);
-+		entry = pte_sw_mkyoung(entry);
- 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
- 		/*
- 		 * Clear the pte entry and flush it first, before updating the
-@@ -3378,6 +3379,7 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 	__SetPageUptodate(page);
- 
- 	entry = mk_pte(page, vma->vm_page_prot);
-+	entry = pte_sw_mkyoung(entry);
- 	if (vma->vm_flags & VM_WRITE)
- 		entry = pte_mkwrite(pte_mkdirty(entry));
- 
-@@ -3660,6 +3662,7 @@ vm_fault_t alloc_set_pte(struct vm_fault *vmf, struct mem_cgroup *memcg,
- 
- 	flush_icache_page(vma, page);
- 	entry = mk_pte(page, vma->vm_page_prot);
-+	entry = pte_sw_mkyoung(entry);
- 	if (write)
- 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
- 	/* copy-on-write page */
 -- 
-1.8.3.1
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

@@ -6,45 +6,44 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE88FC433E0
-	for <linux-mips@archiver.kernel.org>; Thu, 21 May 2020 00:54:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4162FC433E1
+	for <linux-mips@archiver.kernel.org>; Thu, 21 May 2020 00:54:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 97DD520758
-	for <linux-mips@archiver.kernel.org>; Thu, 21 May 2020 00:54:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 27AD720756
+	for <linux-mips@archiver.kernel.org>; Thu, 21 May 2020 00:54:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgEUAyG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 20 May 2020 20:54:06 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:33466 "EHLO
+        id S1727068AbgEUAyO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 20 May 2020 20:54:14 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:33586 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726819AbgEUAyG (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 20 May 2020 20:54:06 -0400
+        with ESMTP id S1727927AbgEUAyM (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 20 May 2020 20:54:12 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 717998030779;
-        Thu, 21 May 2020 00:54:01 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id DCBD280005C9;
+        Thu, 21 May 2020 00:54:07 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id wPC4TaviKpRM; Thu, 21 May 2020 03:54:00 +0300 (MSK)
+        with ESMTP id GVLJ1IN06VAq; Thu, 21 May 2020 03:54:07 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>
+        Daniel Lezcano <daniel.lezcano@linaro.org>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Paul Burton <paulburton@kernel.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Ralf Baechle <ralf@linux-mips.org>,
         Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Arnd Bergmann <arnd@arndb.de>, <linux-mips@vger.kernel.org>,
-        <linux-rtc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-Subject: [PATCH v4 3/7] dt-bindings: interrupt-controller: Convert mti,gic to DT schema
-Date:   Thu, 21 May 2020 03:53:16 +0300
-Message-ID: <20200521005321.12129-4-Sergey.Semin@baikalelectronics.ru>
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <linux-rtc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 6/7] clocksource: mips-gic-timer: Register as sched_clock
+Date:   Thu, 21 May 2020 03:53:19 +0300
+Message-ID: <20200521005321.12129-7-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20200521005321.12129-1-Sergey.Semin@baikalelectronics.ru>
 References: <20200521005321.12129-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -56,281 +55,112 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Modern device tree bindings are supposed to be created as YAML-files
-in accordance with DT schema. This commit replaces MIPS GIC legacy bare
-text binding with YAML file. As before the binding file states that the
-corresponding dts node is supposed to be compatible with MIPS Global
-Interrupt Controller indicated by the "mti,gic" compatible string and
-to provide a mandatory interrupt-controller and '#interrupt-cells'
-properties. There might be optional registers memory range,
-"mti,reserved-cpu-vectors" and "mti,reserved-ipi-vectors" properties
-specified.
+From: Paul Burton <paulburton@kernel.org>
 
-MIPS GIC also includes a free-running global timer, per-CPU count/compare
-timers, and a watchdog. Since currently the GIC Timer is only supported the
-DT schema expects an IRQ and clock-phandler charged timer sub-node with
-"mti,mips-gic-timer" compatible string.
+The MIPS GIC timer is well suited for use as sched_clock, so register it
+as such.
 
+Whilst the existing gic_read_count() function matches the prototype
+needed by sched_clock_register() already, we split it into 2 functions
+in order to remove the need to evaluate the mips_cm_is64 condition
+within each call since sched_clock should be as fast as possible.
+
+Note the sched clock framework needs the clock source being stable in
+order to rely on it. So we register the MIPS GIC timer as schedule clocks
+only if it's, if either the system doesn't have CPU-frequency enabled or
+the CPU frequency is changed by means of the CPC core clock divider
+available on the platforms with CM3 or newer.
+
+Signed-off-by: Paul Burton <paulburton@kernel.org>
+Co-developed-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+[Sergey.Semin@baikalelectronics.ru: Register sched-clock if CM3 or !CPU-freq]
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Rob Herring <robh@kernel.org>
 Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Burton <paulburton@kernel.org>
 Cc: Ralf Baechle <ralf@linux-mips.org>
 Cc: Alessandro Zummo <a.zummo@towertech.it>
 Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
 Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Rob Herring <robh+dt@kernel.org>
 Cc: linux-mips@vger.kernel.org
 Cc: linux-rtc@vger.kernel.org
+Cc: devicetree@vger.kernel.org
 
 ---
-
-I don't really know who is the corresponding driver maintainer, so I
-added Paul to the maintainers property since he used to be looking for the
-MIPS arch and Thomas looking after it now. Any idea what email should be
-specified there instead?
 
 Changelog v3:
-- Since timer sub-node has no unit-address, the node shouldn't be named
-  with one. So alter the MIPS GIC bindings to have a pure "timer"
-  sub-node.
-- Discard allOf: [ $ref: /schemas/interrupt-controller.yaml# ].
-- Since it's a conversion patch use GPL-2.0-only SPDX header.
+- Register sched clocks only if MIPS GIC belongs to CM3 or if CPU-freq
+  isn't supported.
 ---
- .../interrupt-controller/mips-gic.txt         |  67 --------
- .../interrupt-controller/mti,gic.yaml         | 148 ++++++++++++++++++
- 2 files changed, 148 insertions(+), 67 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/mips-gic.txt
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/mti,gic.yaml
+ drivers/clocksource/mips-gic-timer.c | 31 ++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/mips-gic.txt b/Documentation/devicetree/bindings/interrupt-controller/mips-gic.txt
-deleted file mode 100644
-index 173595305e26..000000000000
---- a/Documentation/devicetree/bindings/interrupt-controller/mips-gic.txt
-+++ /dev/null
-@@ -1,67 +0,0 @@
--MIPS Global Interrupt Controller (GIC)
+diff --git a/drivers/clocksource/mips-gic-timer.c b/drivers/clocksource/mips-gic-timer.c
+index 8b5f8ae723cb..ef12c12c2432 100644
+--- a/drivers/clocksource/mips-gic-timer.c
++++ b/drivers/clocksource/mips-gic-timer.c
+@@ -16,6 +16,7 @@
+ #include <linux/notifier.h>
+ #include <linux/of_irq.h>
+ #include <linux/percpu.h>
++#include <linux/sched_clock.h>
+ #include <linux/smp.h>
+ #include <linux/time.h>
+ #include <asm/mips-cps.h>
+@@ -24,13 +25,10 @@ static DEFINE_PER_CPU(struct clock_event_device, gic_clockevent_device);
+ static int gic_timer_irq;
+ static unsigned int gic_frequency;
+ 
+-static u64 notrace gic_read_count(void)
++static u64 notrace gic_read_count_2x32(void)
+ {
+ 	unsigned int hi, hi2, lo;
+ 
+-	if (mips_cm_is64)
+-		return read_gic_counter();
 -
--The MIPS GIC routes external interrupts to individual VPEs and IRQ pins.
--It also supports local (per-processor) interrupts and software-generated
--interrupts which can be used as IPIs.  The GIC also includes a free-running
--global timer, per-CPU count/compare timers, and a watchdog.
--
--Required properties:
--- compatible : Should be "mti,gic".
--- interrupt-controller : Identifies the node as an interrupt controller
--- #interrupt-cells : Specifies the number of cells needed to encode an
--  interrupt specifier.  Should be 3.
--  - The first cell is the type of interrupt, local or shared.
--    See <include/dt-bindings/interrupt-controller/mips-gic.h>.
--  - The second cell is the GIC interrupt number.
--  - The third cell encodes the interrupt flags.
--    See <include/dt-bindings/interrupt-controller/irq.h> for a list of valid
--    flags.
--
--Optional properties:
--- reg : Base address and length of the GIC registers.  If not present,
--  the base address reported by the hardware GCR_GIC_BASE will be used.
--- mti,reserved-cpu-vectors : Specifies the list of CPU interrupt vectors
--  to which the GIC may not route interrupts.  Valid values are 2 - 7.
--  This property is ignored if the CPU is started in EIC mode.
--- mti,reserved-ipi-vectors : Specifies the range of GIC interrupts that are
--  reserved for IPIs.
--  It accepts 2 values, the 1st is the starting interrupt and the 2nd is the size
--  of the reserved range.
--  If not specified, the driver will allocate the last 2 * number of VPEs in the
--  system.
--
--Required properties for timer sub-node:
--- compatible : Should be "mti,gic-timer".
--- interrupts : Interrupt for the GIC local timer.
--
--Optional properties for timer sub-node:
--- clocks : GIC timer operating clock.
--- clock-frequency : Clock frequency at which the GIC timers operate.
--
--Note that one of clocks or clock-frequency must be specified.
--
--Example:
--
--	gic: interrupt-controller@1bdc0000 {
--		compatible = "mti,gic";
--		reg = <0x1bdc0000 0x20000>;
--
--		interrupt-controller;
--		#interrupt-cells = <3>;
--
--		mti,reserved-cpu-vectors = <7>;
--		mti,reserved-ipi-vectors = <40 8>;
--
--		timer {
--			compatible = "mti,gic-timer";
--			interrupts = <GIC_LOCAL 1 IRQ_TYPE_NONE>;
--			clock-frequency = <50000000>;
--		};
--	};
--
--	uart@18101400 {
--		...
--		interrupt-parent = <&gic>;
--		interrupts = <GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH>;
--		...
--	};
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/mti,gic.yaml b/Documentation/devicetree/bindings/interrupt-controller/mti,gic.yaml
-new file mode 100644
-index 000000000000..9f0eb3addac4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/interrupt-controller/mti,gic.yaml
-@@ -0,0 +1,148 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/interrupt-controller/mti,gic.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+ 	do {
+ 		hi = read_gic_counter_32h();
+ 		lo = read_gic_counter_32l();
+@@ -40,6 +38,19 @@ static u64 notrace gic_read_count(void)
+ 	return (((u64) hi) << 32) + lo;
+ }
+ 
++static u64 notrace gic_read_count_64(void)
++{
++	return read_gic_counter();
++}
 +
-+title: MIPS Global Interrupt Controller
++static u64 notrace gic_read_count(void)
++{
++	if (mips_cm_is64)
++		return gic_read_count_64();
 +
-+maintainers:
-+  - Paul Burton <paulburton@kernel.org>
-+  - Thomas Bogendoerfer <tsbogend@alpha.franken.de>
++	return gic_read_count_2x32();
++}
 +
-+description: |
-+  The MIPS GIC routes external interrupts to individual VPEs and IRQ pins.
-+  It also supports local (per-processor) interrupts and software-generated
-+  interrupts which can be used as IPIs. The GIC also includes a free-running
-+  global timer, per-CPU count/compare timers, and a watchdog.
+ static int gic_next_event(unsigned long delta, struct clock_event_device *evt)
+ {
+ 	int cpu = cpumask_first(evt->cpumask);
+@@ -228,6 +239,18 @@ static int __init gic_clocksource_of_init(struct device_node *node)
+ 	/* And finally start the counter */
+ 	clear_gic_config(GIC_CONFIG_COUNTSTOP);
+ 
++	/*
++	 * It's safe to use the MIPS GIC timer as a sched clock source only if
++	 * its ticks are stable, which is true on either the platforms with
++	 * stable CPU frequency or on the platforms with CM3 and CPU frequency
++	 * change performed by the CPC core clocks divider.
++	 */
++	if (mips_cm_revision() >= CM_REV_CM3 || !IS_ENABLED(CONFIG_CPU_FREQ)) {
++		sched_clock_register(mips_cm_is64 ?
++				     gic_read_count_64 : gic_read_count_2x32,
++				     64, gic_frequency);
++	}
 +
-+properties:
-+  compatible:
-+    const: mti,gic
-+
-+  "#interrupt-cells":
-+    const: 3
-+    description: |
-+      The 1st cell is the type of interrupt: local or shared defined in the
-+      file 'dt-bindings/interrupt-controller/mips-gic.h'. The 2nd cell is the
-+      GIC interrupt number. The 3d cell encodes the interrupt flags setting up
-+      the IRQ trigger modes, which are defined in the file
-+      'dt-bindings/interrupt-controller/irq.h'.
-+
-+  reg:
-+    description: |
-+      Base address and length of the GIC registers space. If not present,
-+      the base address reported by the hardware GCR_GIC_BASE will be used.
-+    maxItems: 1
-+
-+  interrupt-controller: true
-+
-+  mti,reserved-cpu-vectors:
-+    description: |
-+      Specifies the list of CPU interrupt vectors to which the GIC may not
-+      route interrupts. This property is ignored if the CPU is started in EIC
-+      mode.
-+    allOf:
-+      - $ref: /schemas/types.yaml#definitions/uint32-array
-+      - minItems: 1
-+        maxItems: 6
-+        uniqueItems: true
-+        items:
-+          minimum: 2
-+          maximum: 7
-+
-+  mti,reserved-ipi-vectors:
-+    description: |
-+      Specifies the range of GIC interrupts that are reserved for IPIs.
-+      It accepts two values: the 1st is the starting interrupt and the 2nd is
-+      the size of the reserved range. If not specified, the driver will
-+      allocate the last (2 * number of VPEs in the system).
-+    allOf:
-+      - $ref: /schemas/types.yaml#definitions/uint32-array
-+      - items:
-+          - minimum: 0
-+            maximum: 254
-+          - minimum: 2
-+            maximum: 254
-+
-+  timer:
-+    type: object
-+    description: |
-+      MIPS GIC includes a free-running global timer, per-CPU count/compare
-+      timers, and a watchdog. Currently only the GIC Timer is supported.
-+    properties:
-+      compatible:
-+        const: mti,gic-timer
-+
-+      interrupts:
-+        description: |
-+          Interrupt for the GIC local timer, so normally it's suppose to be of
-+          <GIC_LOCAL X IRQ_TYPE_NONE> format.
-+        maxItems: 1
-+
-+      clocks:
-+        maxItems: 1
-+
-+      clock-frequency: true
-+
-+    required:
-+      - compatible
-+      - interrupts
-+
-+    oneOf:
-+      - required:
-+          - clocks
-+      - required:
-+          - clock-frequency
-+
-+    additionalProperties: false
-+
-+unevaluatedProperties: false
-+
-+required:
-+  - compatible
-+  - "#interrupt-cells"
-+  - interrupt-controller
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/mips-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    interrupt-controller@1bdc0000 {
-+      compatible = "mti,gic";
-+      reg = <0x1bdc0000 0x20000>;
-+      interrupt-controller;
-+      #interrupt-cells = <3>;
-+      mti,reserved-cpu-vectors = <7>;
-+      mti,reserved-ipi-vectors = <40 8>;
-+
-+      timer {
-+        compatible = "mti,gic-timer";
-+        interrupts = <GIC_LOCAL 1 IRQ_TYPE_NONE>;
-+        clock-frequency = <50000000>;
-+      };
-+    };
-+  - |
-+    #include <dt-bindings/interrupt-controller/mips-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    interrupt-controller@1bdc0000 {
-+      compatible = "mti,gic";
-+      reg = <0x1bdc0000 0x20000>;
-+      interrupt-controller;
-+      #interrupt-cells = <3>;
-+
-+      timer {
-+        compatible = "mti,gic-timer";
-+        interrupts = <GIC_LOCAL 1 IRQ_TYPE_NONE>;
-+        clocks = <&cpu_pll>;
-+      };
-+    };
-+  - |
-+    interrupt-controller {
-+      compatible = "mti,gic";
-+      interrupt-controller;
-+      #interrupt-cells = <3>;
-+    };
-+...
+ 	return 0;
+ }
+ TIMER_OF_DECLARE(mips_gic_timer, "mti,gic-timer",
 -- 
 2.25.1
 

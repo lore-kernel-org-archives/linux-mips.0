@@ -6,68 +6,67 @@ X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE310C433E2
-	for <linux-mips@archiver.kernel.org>; Fri, 22 May 2020 07:31:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29A03C433E0
+	for <linux-mips@archiver.kernel.org>; Fri, 22 May 2020 07:31:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BE98520814
-	for <linux-mips@archiver.kernel.org>; Fri, 22 May 2020 07:31:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 13EC420814
+	for <linux-mips@archiver.kernel.org>; Fri, 22 May 2020 07:31:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728676AbgEVHbH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1728654AbgEVHbH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Fri, 22 May 2020 03:31:07 -0400
-Received: from elvis.franken.de ([193.175.24.41]:34137 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:34151 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728312AbgEVHbF (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1728369AbgEVHbF (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Fri, 22 May 2020 03:31:05 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jc28x-0003HE-02; Fri, 22 May 2020 09:30:59 +0200
+        id 1jc28x-0003HE-06; Fri, 22 May 2020 09:30:59 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id EFB62C015D; Fri, 22 May 2020 09:28:18 +0200 (CEST)
-Date:   Fri, 22 May 2020 09:28:18 +0200
+        id 9B7DAC015D; Fri, 22 May 2020 09:29:40 +0200 (CEST)
+Date:   Fri, 22 May 2020 09:29:40 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Paul Burton <paulburton@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Burton <paulburton@kernel.org>,
         Ralf Baechle <ralf@linux-mips.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Allison Randal <allison@lohutok.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 05/13] mips: Fix cpu_has_mips64r1/2 activation for
- MIPS32 CPUs
-Message-ID: <20200522072818.GC7331@alpha.franken.de>
+Subject: Re: [PATCH v4 11/13] mips: Add udelay lpj numbers adjustment
+Message-ID: <20200522072940.GG7331@alpha.franken.de>
 References: <20200521140725.29571-1-Sergey.Semin@baikalelectronics.ru>
- <20200521140725.29571-6-Sergey.Semin@baikalelectronics.ru>
+ <20200521140725.29571-12-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200521140725.29571-6-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200521140725.29571-12-Sergey.Semin@baikalelectronics.ru>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, May 21, 2020 at 05:07:16PM +0300, Serge Semin wrote:
-> Commit 1aeba347b3a9 ("MIPS: Hardcode cpu_has_mips* where target ISA
-> allows") updated the cpu_has_mips* macro to be replaced with a constant
-> expression where it's possible. By mistake it wasn't done correctly
-> for cpu_has_mips64r1/cpu_has_mips64r2 macro. They are defined to
-> be replaced with conditional expression __isa_range_or_flag(), which
-> means either ISA revision being within the range or the corresponding
-> CPU options flag was set at the probe stage or both being true at the
-> same time. But the ISA level value doesn't indicate whether the ISA is
-> MIPS32 or MIPS64. Due to this if we select MIPS32r1 - MIPS32r5
-> architectures the __isa_range() macro will activate the
-> cpu_has_mips64rX flags, which is incorrect. In order to fix the
-> problem we make sure the 64bits CPU support is enabled by means of
-> checking the flag cpu_has_64bits aside with proper ISA range and specific
-> Revision flag being set.
+On Thu, May 21, 2020 at 05:07:22PM +0300, Serge Semin wrote:
+> Loops-per-jiffies is a special number which represents a number of
+> noop-loop cycles per CPU-scheduler quantum - jiffies. As you
+> understand aside from CPU-specific implementation it depends on
+> the CPU frequency. So when a platform has the CPU frequency fixed,
+> we have no problem and the current udelay interface will work
+> just fine. But as soon as CPU-freq driver is enabled and the cores
+> frequency changes, we'll end up with distorted udelay's. In order
+> to fix this we have to accordinly adjust the per-CPU udelay_val
+> (the same as the global loops_per_jiffy) number. This can be done
+> in the CPU-freq transition event handler. We subscribe to that event
+> in the MIPS arch time-inititalization method.
 > 
-> Fixes: 1aeba347b3a9 ("MIPS: Hardcode cpu_has_mips* where target ISA allows")
+> Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
 > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 > Cc: Paul Burton <paulburton@kernel.org>
 > Cc: Ralf Baechle <ralf@linux-mips.org>
@@ -75,8 +74,8 @@ On Thu, May 21, 2020 at 05:07:16PM +0300, Serge Semin wrote:
 > Cc: Rob Herring <robh+dt@kernel.org>
 > Cc: devicetree@vger.kernel.org
 > ---
->  arch/mips/include/asm/cpu-features.h | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+>  arch/mips/kernel/time.c | 70 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 70 insertions(+)
 
 applied to mips-next.
 

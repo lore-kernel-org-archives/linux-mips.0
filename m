@@ -1,96 +1,121 @@
-Return-Path: <SRS0=RuC1=7E=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=s+tq=7F=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B5FCC433E0
-	for <linux-mips@archiver.kernel.org>; Fri, 22 May 2020 22:37:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4BA9C433DF
+	for <linux-mips@archiver.kernel.org>; Sat, 23 May 2020 02:10:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E6A49207F9
-	for <linux-mips@archiver.kernel.org>; Fri, 22 May 2020 22:37:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9275A206DD
+	for <linux-mips@archiver.kernel.org>; Sat, 23 May 2020 02:10:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731209AbgEVWh1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 22 May 2020 18:37:27 -0400
-Received: from elvis.franken.de ([193.175.24.41]:34928 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731029AbgEVWh1 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 22 May 2020 18:37:27 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jcGI0-00019h-00; Sat, 23 May 2020 00:37:16 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 9BF9CC0183; Sat, 23 May 2020 00:36:56 +0200 (CEST)
-Date:   Sat, 23 May 2020 00:36:56 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Huacai Chen <chenhc@lemote.com>,
-        Paul Burton <paulburton@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v10 5/5] MIPS: Loongson64: Switch to generic PCI driver
-Message-ID: <20200522223656.GA22313@alpha.franken.de>
-References: <20200427060551.1372591-1-jiaxun.yang@flygoat.com>
- <20200514131650.3587281-1-jiaxun.yang@flygoat.com>
- <20200514131650.3587281-5-jiaxun.yang@flygoat.com>
- <20200522142550.GB15261@alpha.franken.de>
- <20200522152210.GA15567@e121166-lin.cambridge.arm.com>
+        id S2387427AbgEWCKW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 22 May 2020 22:10:22 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:41642 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387413AbgEWCKV (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 22 May 2020 22:10:21 -0400
+Received: from [10.20.42.25] (unknown [10.20.42.25])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn90Ihshegw04AA--.385S3;
+        Sat, 23 May 2020 10:10:17 +0800 (CST)
+Subject: Re: [PATCH v3 0/1] CPUCFG emulation on older Loongson64 cores
+To:     jiaxun.yang@flygoat.com
+References: <20200521181403.6078-1-git@xen0n.name>
+ <4701b93c.f740.1723c46a295.Coremail.maobibo@loongson.cn>
+ <B61EB510-C793-492B-8A3F-4C340190DC21@flygoat.com>
+ <42b4126b.f787.1723cbbd44e.Coremail.maobibo@loongson.cn>
+ <50F35B43-9313-4083-A98F-45FCA3F516E2@flygoat.com>
+Cc:     WANG Xuerui <git@xen0n.name>, linux-mips@vger.kernel.org
+From:   maobibo <maobibo@loongson.cn>
+Message-ID: <bedfcdc3-ae99-2920-c08e-94a269406d80@loongson.cn>
+Date:   Sat, 23 May 2020 10:10:16 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200522152210.GA15567@e121166-lin.cambridge.arm.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <50F35B43-9313-4083-A98F-45FCA3F516E2@flygoat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dxn90Ihshegw04AA--.385S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF13Xw4kGw47XryDCF47XFb_yoW8Kry5pa
+        4Ykw4agFZFkF1kAr4DW3WS934FkF4kGw45JFZ3G34rCwsFkF42kr12yF45Aa12vw45Cr1j
+        q39xJF1DA3W5AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG
+        8wCY02Avz4vE-syl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y
+        6r17MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU8pnQUUUUUU==
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, May 22, 2020 at 04:22:11PM +0100, Lorenzo Pieralisi wrote:
-> On Fri, May 22, 2020 at 04:25:50PM +0200, Thomas Bogendoerfer wrote:
-> > On Thu, May 14, 2020 at 09:16:41PM +0800, Jiaxun Yang wrote:
-> > > We can now enable generic PCI driver in Kconfig, and remove legacy
-> > > PCI driver code.
-> > > 
-> > > Radeon vbios quirk is moved to the platform folder to fit the
-> > > new structure.
-> > > 
-> > > Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> > > --
-> > > v9: Fix licenses tag
-> > > ---
-> > >  arch/mips/Kconfig                  |   1 +
-> > >  arch/mips/loongson64/Makefile      |   2 +-
-> > >  arch/mips/loongson64/vbios_quirk.c |  29 ++++++++
-> > >  arch/mips/pci/Makefile             |   1 -
-> > >  arch/mips/pci/fixup-loongson3.c    |  71 ------------------
-> > >  arch/mips/pci/ops-loongson3.c      | 116 -----------------------------
-> > >  6 files changed, 31 insertions(+), 189 deletions(-)
-> > >  create mode 100644 arch/mips/loongson64/vbios_quirk.c
-> > >  delete mode 100644 arch/mips/pci/fixup-loongson3.c
-> > >  delete mode 100644 arch/mips/pci/ops-loongson3.c
-> > 
-> > Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+
+
+On 05/22/2020 10:34 PM, Jiaxun Yang wrote:
 > 
-> This patch (so the series) does not apply to v5.7-rc1 which is our
-> baseline. I reiterate the point, isn't it better to take the whole
-> series through the MIPS tree ?
+> 
+> 于 2020年5月22日 GMT+08:00 下午10:14:02, "毛碧波" <maobibo@loongson.cn> 写到:
+>>
+>>
+>>
+>> &gt; -----原始邮件-----
+>> &gt; 发件人: "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+>> &gt; 发送时间: 2020-05-22 20:57:33 (星期五)
+>> &gt; 收件人: "毛碧波" <maobibo@loongson.cn>, "WANG Xuerui" <git@xen0n.name>
+>> &gt; 抄送: linux-mips@vger.kernel.org
+>> &gt; 主题: Re: [PATCH v3 0/1] CPUCFG emulation on older Loongson64 cores
+>> &gt; 
+>> &gt; 
+>> &gt; 
+>> &gt; 于 2020年5月22日 GMT+08:00 下午8:06:01, "毛碧波" <maobibo@loongson.cn> 写到:
+>> &gt; &gt;Sorry for late reponse.
+>> &gt; &gt;I just want to know how to solve compatibility on older kernel.
+>> &gt; &gt;It is ok to run user application with cpucfg instr on new kernel with this
+>> &gt; &gt;patch, however what if the application is running on older kernel without
+>> &gt; &gt;cpucfg simulation?
+>> &gt; 
+>> &gt; Application can firstly probe if CPUCFG is supported by kernel &amp; hardware
+>> &gt; by fork a thread and catch SIGILL signal or HWCAP.
+>> &gt; Then decide use legacy methods or CPUCFG to probe other features.
+>> &gt; 
+>> &gt; Similar method have been proofed on Arm.
+>> Sure, if  that works, what is the purpose of this patch? Do we need cpucfg
+>> simulation on older machine since there is proper method already?
+> 
+> Because it's more efficient and elegant.
+> Also applications can assume systems without CPUCFG have
+> no Loongson extension support.
+> That can save hundreds lines in various applications.
+You can add add this to hwcap/cpuinfo though it is difficult to add vendor specific
+hwcap. Application can check hwcap and then use cpucfg gracefully. 
 
-sounds better then
+I do not see usage of cpucfg simulation on older machine, do we add new instruction emulation if there is new instruction?  On the other way is there cpuid simulation on x86 system?
 
-> Failing that, the series has to
-> be rebased (or split differently so that it can be taken through
-> different trees), just let me know.
+> 
+> We can kill ugly probe method in applications when all
+> machine have upgraded kernel.
+I doubt application vendor has the willing of removing so-called ugly code but work broken
+on older kernel.
 
-so let's take via mips-next. So can I add your Acked-by to the
-first three patches ?
+> 
+> And as you can see, cpucfg is exporting more config options than any
+> existing methods like HWCAP or cpuinfo.
+> And they may valuable to applications.
+> 
+> Btw: Please fix your email client.
+> 
+> Thanks.
+> 
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]

@@ -2,109 +2,94 @@ Return-Path: <SRS0=tUeC=7H=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16F0BC433E0
-	for <linux-mips@archiver.kernel.org>; Mon, 25 May 2020 02:53:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE7A8C433DF
+	for <linux-mips@archiver.kernel.org>; Mon, 25 May 2020 03:47:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 02C5920849
-	for <linux-mips@archiver.kernel.org>; Mon, 25 May 2020 02:53:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ADD0C207DA
+	for <linux-mips@archiver.kernel.org>; Mon, 25 May 2020 03:47:11 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="VM98ejsh"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388398AbgEYCxc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 24 May 2020 22:53:32 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:40798 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388471AbgEYCxX (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 24 May 2020 22:53:23 -0400
-Received: from kvm-dev1.localdomain (unknown [10.2.5.134])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxj974MsteoL84AA--.426S2;
-        Mon, 25 May 2020 10:52:40 +0800 (CST)
-From:   Bibo Mao <maobibo@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Dmitry Korotin <dkorotin@wavecomp.com>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org,
-        David Hildenbrand <david@redhat.com>
-Subject: [PATCH v6 1/4] MIPS: Do not flush tlb page when updating PTE entry
-Date:   Mon, 25 May 2020 10:52:37 +0800
-Message-Id: <1590375160-6997-1-git-send-email-maobibo@loongson.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AQAAf9Dxj974MsteoL84AA--.426S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uFW3ZryxtrWkKr4DAF43Wrg_yoW8Xw1kpF
-        ZrArykKw4DG3y0yFy8Ar1v9r43J3yDKrWUKryDAryDZanrXF1kKrs3t3WIyry8XFyak3W0
-        gF4jqr4DZw42v3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvmb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
-        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxa
-        n2IY04v7MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-        UI43ZEXa7IU5q385UUUUU==
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+        id S1728617AbgEYDrL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 24 May 2020 23:47:11 -0400
+Received: from mail-m973.mail.163.com ([123.126.97.3]:46642 "EHLO
+        mail-m973.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728324AbgEYDrL (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 24 May 2020 23:47:11 -0400
+X-Greylist: delayed 911 seconds by postgrey-1.27 at vger.kernel.org; Sun, 24 May 2020 23:47:10 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=6IIXyf48wsHgqxd09c
+        IS/+VIQjuoiphPvmEZfA1FK2I=; b=VM98ejsh2KJDz3pcVRV6fzBVHFQbSmIFiG
+        NxRiHdZH4PeEeRGgqy9+ZXOVxTv89q5goD/dvubwCXFHPBGmLmCnPFysdYAz+Xl1
+        5Lr570BxzahWFxtLl7Y9sIilGAM50wJuNJIBbo6NTWkkYyJfJZsXtjHCEcd20rfY
+        IfztGiQ4I=
+Received: from localhost.localdomain (unknown [124.64.17.235])
+        by smtp3 (Coremail) with SMTP id G9xpCgA3pKwbPMte3DLsAg--.227S4;
+        Mon, 25 May 2020 11:31:48 +0800 (CST)
+From:   YuanJunQing <yuanjunqing66@163.com>
+To:     tsbogend@alpha.franken.de
+Cc:     paulburton@kernel.org, chenhc@lemote.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liulichao@loongson.cn, YuanJunQing <yuanjunqing66@163.com>
+Subject: [PATCH] MIPS: Fix IRQ tracing when call handle_fpe()
+Date:   Mon, 25 May 2020 11:31:23 +0800
+Message-Id: <20200525033123.13114-1-yuanjunqing66@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: G9xpCgA3pKwbPMte3DLsAg--.227S4
+X-Coremail-Antispam: 1Uf129KBjvdXoW7XrWUurykKryUurWrCF17KFg_yoWDXwc_Kr
+        4Iq3yj9rn8GwsxWF1xtw4rWr92gw4SgF9akryq9w4Yyr15urn09r4kWFykX3Z3Wr4SkFWI
+        y3s8CFn3CF1xtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUHUqUUUUUU==
+X-Originating-IP: [124.64.17.235]
+X-CM-SenderInfo: h1xd0ypxqtx0rjwwqiywtou0bp/1tbiNgQvXFWBjPQihAAAsL
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-It is not necessary to flush tlb page on all CPUs if suitable PTE
-entry exists already during page fault handling, just updating
-TLB is fine.
+ Register "a1" is unsaved in this function,
+ when CONFIG_TRACE_IRQFLAGS is enabled,
+ the TRACE_IRQS_OFF macro will call trace_hardirqs_off(),
+ and this may change register "a1".
+ The variment of register "a1" may send SIGFPE signal
+ to task when call do_fpe(),and this may kill the task.
 
-Here redefine flush_tlb_fix_spurious_fault as empty on MIPS system.
-V6:
-- Add update_mmu_tlb function as empty on all platform except mips
-  system, we use this function to update local tlb for page fault
-  smp-race handling
-V5:
-- define update_mmu_cache function specified on MIPS platform, and
-  add page fault smp-race stats info
-V4:
-- add pte_sw_mkyoung function to implement readable privilege, and
-  this function is  only in effect on MIPS system.
-- add page valid bit judgement in function pte_modify
-V3:
-- add detailed changelog, modify typo issue in patch V2
-v2:
-- split flush_tlb_fix_spurious_fault and tlb update into two patches
-- comments typo modification
-- separate tlb update and add pte readable privilege into two patches
-
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+Signed-off-by: YuanJunQing <yuanjunqing66@163.com>
 ---
- arch/mips/include/asm/pgtable.h | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/mips/kernel/genex.S | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index 9b01d2d..0d625c2 100644
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -478,6 +478,8 @@ static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
- 	return __pgprot(prot);
- }
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index 8236fb291e3f..956a76429773 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -480,16 +480,18 @@ NESTED(nmi_handler, PT_SIZE, sp)
+ 	/* gas fails to assemble cfc1 for some archs (octeon).*/ \
+ 	.set	mips1
+ 	SET_HARDFLOAT
+-	cfc1	a1, fcr31
++	cfc1	s0, fcr31
+ 	.set	pop
+ 	CLI
+ 	TRACE_IRQS_OFF
++	move    a1,s0
+ 	.endm
  
-+#define flush_tlb_fix_spurious_fault(vma, address) do { } while (0)
-+
- /*
-  * Conversion functions: convert a page and protection to a page entry,
-  * and a page entry and page directory to the page they refer to.
+ 	.macro	__build_clear_msa_fpe
+-	_cfcmsa	a1, MSA_CSR
++	_cfcmsa	s0, MSA_CSR
+ 	CLI
+ 	TRACE_IRQS_OFF
++	move    a1,s0
+ 	.endm
+ 
+ 	.macro	__build_clear_ade
 -- 
-1.8.3.1
+2.17.1
 

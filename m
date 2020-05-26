@@ -2,120 +2,104 @@ Return-Path: <SRS0=VU9m=7I=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A780EC433DF
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 10:27:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B76EEC433DF
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 11:03:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 874A520776
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 10:27:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 803DF2088E
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 11:03:48 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W8H3MQBs"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731881AbgEZK1B (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 26 May 2020 06:27:01 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31442 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731815AbgEZK1A (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 26 May 2020 06:27:00 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04QA5xxx057571;
-        Tue, 26 May 2020 06:25:20 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 316wyrpry4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 May 2020 06:25:20 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04QALbLM089259;
-        Tue, 26 May 2020 06:25:20 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 316wyrprxg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 May 2020 06:25:19 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 04QALwVn011238;
-        Tue, 26 May 2020 10:25:18 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04fra.de.ibm.com with ESMTP id 316uf8a9qn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 May 2020 10:25:17 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04QAPFY2000510
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 May 2020 10:25:15 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9FB46A404D;
-        Tue, 26 May 2020 10:25:15 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C2F65A4051;
-        Tue, 26 May 2020 10:25:11 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue, 26 May 2020 10:25:11 +0000 (GMT)
-Date:   Tue, 26 May 2020 15:55:11 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     john mathew <john.mathew@unikie.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        corbet@lwn.net, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, tsbogend@alpha.franken.de,
-        lukas.bulwahn@gmail.com, x86@kernel.org,
-        linux-mips@vger.kernel.org, tglx@linutronix.de,
-        mostafa.chamanara@gmail.com, willy@infradead.org,
-        valentin.schneider@arm.com, rdunlap@infradead.org,
-        Mostafa Chamanara <mostafa.chamanara@basemark.com>,
-        Oleg Tsymbal <oleg.tsymbal@unikie.com>
-Subject: Re: [RFC PATCH v5 3/3] docs: scheduler: Add introduction to
- scheduler context-switch
-Message-ID: <20200526102511.GA5681@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20200514092637.15684-1-John.Mathew@unikie.com>
- <20200514092637.15684-4-John.Mathew@unikie.com>
+        id S2388821AbgEZLDs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 26 May 2020 07:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388818AbgEZLDr (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 May 2020 07:03:47 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80AADC03E97E;
+        Tue, 26 May 2020 04:03:47 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id u26so902023wmn.1;
+        Tue, 26 May 2020 04:03:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WNmMCHQhQQzWJi0EZ9sZ2eNrgpixzlI5wsbtnbpPOeQ=;
+        b=W8H3MQBsUXQUTKWEZv7Q4Wk5HwDwJdE5VIPVKx+zWM7nL/hLhk8fUgVZoZNICPIvG0
+         1zoT0s+z/2Uv5zk25wqMi7ut5qOG+bwb93BOIqTvneSorUvGx/1fr4EsD7ZLWH6ZYPrz
+         W+Z5ITMvhz3cPFDKQ6h7AU2ur68mjrW9SdlT7nW34AgQX712TTPrfUe9ZKbVpLEBaaDY
+         i8ycYtToxxp1HYjSM45zR2OTK5bVlhZ7+DDBMndag9ROlbixbMr2v4u7ADw9zMFby959
+         DE2F9pb9UXKhPQY4TGyfX/g/IgP17wjspC8azvkAo3B2XRw9fGf2qbJcb1ywsootcNWv
+         O4AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WNmMCHQhQQzWJi0EZ9sZ2eNrgpixzlI5wsbtnbpPOeQ=;
+        b=GV/c8ooCXxooIXIDdNLXFb4Q1Ur5/TV8/7mfoRiBdgSxVPP9IKX1SmgBIuzJnK23ax
+         16cTYT4SqGE0JuOLJYoXVVR2Ke39mk5B7MZY6b+CouwyX7CwcLIfxvEZ/+Hr0rwn/gYI
+         TZAt60FRg9J4CHyvXXab47zFW+tjo8UkcLGsY4VuLyKfN4CVrgDPSxGrmxmaR5dEU7EU
+         vVWGxh9omi2y2SBAJNxJZud3h5I8DTV/xusbN+GYVc5Pb2h7wVeaJp4fw0c3CtHii4Yr
+         k1RJzUVsYMNNlixBIOUys4Cy5zt97Xx2jCjmamlu7Iq1mERf2ZZ+wkZza211SUHEIT1S
+         ZFJQ==
+X-Gm-Message-State: AOAM532EPbgnaS4HSlxY42Lx3pisNIwACbpOuuBa0PE7Rp2D4RjUIplA
+        FwCPjE30qyxu8cw/mTD7/6E=
+X-Google-Smtp-Source: ABdhPJy1dn8nJ7EBF1K3qfcolfl264laLlQTJniTWhVfeQbgu6WJ9Veq4i5pRVpVi/dlQexl8ZDiDA==
+X-Received: by 2002:a05:600c:2041:: with SMTP id p1mr960165wmg.152.1590491026217;
+        Tue, 26 May 2020 04:03:46 -0700 (PDT)
+Received: from skynet.lan (172.red-88-15-120.dynamicip.rima-tde.net. [88.15.120.172])
+        by smtp.gmail.com with ESMTPSA id l204sm11196246wmf.19.2020.05.26.04.03.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 04:03:45 -0700 (PDT)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     tsbogend@alpha.franken.de, f.fainelli@gmail.com,
+        jonas.gorski@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH] MIPS: BCM63xx: fix 6328 boot selection bit
+Date:   Tue, 26 May 2020 13:03:24 +0200
+Message-Id: <20200526110324.1324754-1-noltari@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <20200514092637.15684-4-John.Mathew@unikie.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-05-26_01:2020-05-26,2020-05-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- impostorscore=0 phishscore=0 adultscore=0 clxscore=1011 malwarescore=0
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 spamscore=0
- mlxscore=0 bulkscore=0 cotscore=-2147483648 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005260073
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-* john mathew <john.mathew@unikie.com> [2020-05-14 12:26:37]:
+MISC_STRAP_BUS_BOOT_SEL_SHIFT is 18 according to Broadcom's GPL source code.
 
-> +
-> +Context Switching
-> +-----------------
-> +
-> +Context switching, the switching from a running task to another,
-> +is done by the context_switch() function defined in kernel/sched.c.
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+---
+ arch/mips/include/asm/mach-bcm63xx/bcm63xx_regs.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-context_switch is defined in kernel/sched/core.c 
-
-> +It is called by __schedule() when a new process has been selected to run.
-> +The execution flow is as follows:
-> +
-> +
-> +  For a kernel task switching to a user task, switch_mm_irqs_off()
-> +  replaces the address space of prev kernel task with the next from the user
-> +  task. Same as for exiting process in this case, the context_switch()
-
-Did you mean existing instead of exiting?
-
-> +  function saves the pointer to the memory descriptor used by prev in the
-> +  runqueue???s prev_mm field and resets prev task active address space.
-> +
+diff --git a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_regs.h b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_regs.h
+index bc3444cd4ef2..9ceb5e72889f 100644
+--- a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_regs.h
++++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_regs.h
+@@ -1367,8 +1367,8 @@
+ #define MISC_STRAPBUS_6328_REG		0x240
+ #define STRAPBUS_6328_FCVO_SHIFT	7
+ #define STRAPBUS_6328_FCVO_MASK		(0x1f << STRAPBUS_6328_FCVO_SHIFT)
+-#define STRAPBUS_6328_BOOT_SEL_SERIAL	(1 << 28)
+-#define STRAPBUS_6328_BOOT_SEL_NAND	(0 << 28)
++#define STRAPBUS_6328_BOOT_SEL_SERIAL	(1 << 18)
++#define STRAPBUS_6328_BOOT_SEL_NAND	(0 << 18)
+ 
+ /*************************************************************************
+  * _REG relative to RSET_PCIE
 -- 
-Thanks and Regards
-Srikar Dronamraju
+2.26.2
+

@@ -6,40 +6,40 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20F73C433E4
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 21:56:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 49DEFC433E3
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 21:56:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 090E520707
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 21:56:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 32C01208DB
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 21:56:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391025AbgEZV4L (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 26 May 2020 17:56:11 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:59996 "EHLO
+        id S2390069AbgEZVzp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 26 May 2020 17:55:45 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:59900 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390105AbgEZVzw (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 May 2020 17:55:52 -0400
+        with ESMTP id S2389641AbgEZVzo (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 May 2020 17:55:44 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id E29AD8030875;
-        Tue, 26 May 2020 21:55:40 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id A90078030869;
+        Tue, 26 May 2020 21:55:38 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id jkT4lF_zg2hd; Wed, 27 May 2020 00:55:40 +0300 (MSK)
+        with ESMTP id TGe2VgAH7JHm; Wed, 27 May 2020 00:55:38 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Wolfram Sang <wsa@the-dreams.de>
+        Wolfram Sang <wsa@the-dreams.de>,
+        Rob Herring <robh+dt@kernel.org>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 07/12] i2c: designware: Add Baytrail sem config DW I2C platform dependency
-Date:   Wed, 27 May 2020 00:55:23 +0300
-Message-ID: <20200526215528.16417-8-Sergey.Semin@baikalelectronics.ru>
+        <linux-mips@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 04/12] dt-bindings: i2c: dw: Add Baikal-T1 SoC I2C controller
+Date:   Wed, 27 May 2020 00:55:20 +0300
+Message-ID: <20200526215528.16417-5-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20200526215528.16417-1-Sergey.Semin@baikalelectronics.ru>
 References: <20200526215528.16417-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -51,76 +51,44 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Currently Intel Baytrail I2C semaphore is a feature of the DW APB I2C
-platform driver. It's a bit confusing to see it's config in the menu at
-some separated place with no reference to the platform code. Let's move the
-config definition to be below the I2C_DESIGNWARE_PLATFORM config and mark
-it with "depends on I2C_DESIGNWARE_PLATFORM" statement. By doing so the
-config menu will display the feature right below the DW I2C platform
-driver item and will indent it to the right so signifying its belonging.
+Add the "baikal,bt1-sys-i2c" compatible string to the DW I2C binding. Even
+though the corresponding node is supposed to be a child of the Baikal-T1
+System Controller, its reg property is left required for compatibility.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Rob Herring <robh+dt@kernel.org>
 Cc: linux-mips@vger.kernel.org
-Cc: devicetree@vger.kernel.org
 
 ---
+
+Changelog v2:
+- Make the reg property being optional if it's Baikal-T1 System I2C DT
+  node.
 
 Changelog v3:
-
-- Replace if-endif clause around the I2C_DESIGNWARE_BAYTRAIL config
-  with "depends on" operator.
+- Get back the reg property being mandatory even if it's Baikal-T1 System
+  I2C DT node. Rob says it has to be in the DT node if there is a
+  dedicated registers range in the System Controller registers space.
 ---
- drivers/i2c/busses/Kconfig | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+ Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index b907d4046942..4e1997642e73 100644
---- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -538,6 +538,19 @@ config I2C_DESIGNWARE_PLATFORM
- 	  This driver can also be built as a module.  If so, the module
- 	  will be called i2c-designware-platform.
+diff --git a/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml b/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+index 101d78e8f19d..8c9b3db1b1b8 100644
+--- a/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
++++ b/Documentation/devicetree/bindings/i2c/snps,designware-i2c.yaml
+@@ -31,6 +31,8 @@ properties:
+         items:
+           - const: mscc,ocelot-i2c
+           - const: snps,designware-i2c
++      - description: Baikal-T1 SoC System I2C controller
++        const: baikal,bt1-sys-i2c
  
-+config I2C_DESIGNWARE_BAYTRAIL
-+	bool "Intel Baytrail I2C semaphore support"
-+	depends on ACPI
-+	depends on I2C_DESIGNWARE_PLATFORM
-+	depends on (I2C_DESIGNWARE_PLATFORM=m && IOSF_MBI) || \
-+		   (I2C_DESIGNWARE_PLATFORM=y && IOSF_MBI=y)
-+	help
-+	  This driver enables managed host access to the PMIC I2C bus on select
-+	  Intel BayTrail platforms using the X-Powers AXP288 PMIC. It allows
-+	  the host to request uninterrupted access to the PMIC's I2C bus from
-+	  the platform firmware controlling it. You should say Y if running on
-+	  a BayTrail system using the AXP288.
-+
- config I2C_DESIGNWARE_SLAVE
- 	bool "Synopsys DesignWare Slave"
- 	depends on I2C_DESIGNWARE_CORE
-@@ -560,18 +573,6 @@ config I2C_DESIGNWARE_PCI
- 	  This driver can also be built as a module.  If so, the module
- 	  will be called i2c-designware-pci.
- 
--config I2C_DESIGNWARE_BAYTRAIL
--	bool "Intel Baytrail I2C semaphore support"
--	depends on ACPI
--	depends on (I2C_DESIGNWARE_PLATFORM=m && IOSF_MBI) || \
--		   (I2C_DESIGNWARE_PLATFORM=y && IOSF_MBI=y)
--	help
--	  This driver enables managed host access to the PMIC I2C bus on select
--	  Intel BayTrail platforms using the X-Powers AXP288 PMIC. It allows
--	  the host to request uninterrupted access to the PMIC's I2C bus from
--	  the platform firmware controlling it. You should say Y if running on
--	  a BayTrail system using the AXP288.
--
- config I2C_DIGICOLOR
- 	tristate "Conexant Digicolor I2C driver"
- 	depends on ARCH_DIGICOLOR || COMPILE_TEST
+   reg:
+     minItems: 1
 -- 
 2.26.2
 

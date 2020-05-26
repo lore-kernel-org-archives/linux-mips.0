@@ -2,187 +2,84 @@ Return-Path: <SRS0=VU9m=7I=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09268C433E1
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 13:00:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7877CC433E0
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 13:07:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E19162086A
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 13:00:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 53E2220899
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 13:07:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389305AbgEZNAM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 26 May 2020 09:00:12 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:57302 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731765AbgEZM7k (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 May 2020 08:59:40 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 229A2803086E;
-        Tue, 26 May 2020 12:59:36 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 6BwnblpFgAFz; Tue, 26 May 2020 15:59:35 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh+dt@kernel.org>
-List-Id: <soc.lore.kernel.org>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        id S1728965AbgEZNHP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 26 May 2020 09:07:15 -0400
+Received: from elvis.franken.de ([193.175.24.41]:39889 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726437AbgEZNHP (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 26 May 2020 09:07:15 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jdZIW-00088o-00; Tue, 26 May 2020 15:07:12 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 76711C0274; Tue, 26 May 2020 15:01:28 +0200 (CEST)
+Date:   Tue, 26 May 2020 15:01:28 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Lichao Liu <liulichao@loongson.cn>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Paul Burton <paulburton@kernel.org>,
-        Olof Johansson <olof@lixom.net>, <linux-mips@vger.kernel.org>,
-        <soc@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 2/6] dt-bindings: bus: Add Baikal-T1 APB-bus binding
-Date:   Tue, 26 May 2020 15:59:24 +0300
-Message-ID: <20200526125928.17096-3-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200526125928.17096-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200526125928.17096-1-Sergey.Semin@baikalelectronics.ru>
+        Robin Murphy <robin.murphy@arm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Max Filippov <jcmvbkbc@gmail.com>, yuanjunqing@loongson.cn,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH] MIPS: CPU_LOONGSON2EF need software to maintain cache
+ consistency
+Message-ID: <20200526130128.GA8487@alpha.franken.de>
+References: <20200526111438.3788-1-liulichao@loongson.cn>
+ <20200526193859.0adaea3b@halation.net.flygoat.com>
+ <e9c015c2-b979-27c8-5f43-7af8d43174c5@loongson.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e9c015c2-b979-27c8-5f43-7af8d43174c5@loongson.cn>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Baikal-T1 CPU or DMAC MMIO requests are handled by the AMBA 3 AXI
-Interconnect which routes them to the AXI-APB bridge, which in turn
-serializes accesses and routes them to the corresponding APB slave device.
-This binding describes the AXI-APB bridge considered as the APB-bus. It is
-supposed to be compatible with "be,bt1-apb" and "simple-bus" drivers,
-should be equipped with EHB MMIO region and a region with no slave device
-mapped, interrupts line number, APB reference clock and domain reset line.
+On Tue, May 26, 2020 at 08:40:28PM +0800, Lichao Liu wrote:
+> Loongson-2EF need software maintain cache consistency, So when using 
+> streaming DMA, software needs to maintain consistency.
+> 
+> dma_map_single() is correct, but dma_unmap_single is wrong. 
+> 
+> The function call path:
+> 'dma_unmap_single->dma_unmap_page_attrs->dma_direct_unmap_page->
+>  dma_direct_sync_single_for_cpu->arch_sync_dma_for_cpu->
+>  cpu_needs_post_dma_flush'
+> 
+> In current version, 'cpu_needs_post_dma_flush' will return false 
+> at Loongon-2EF platform, and dma_unmap_single will not invalidate cache, 
+> driver may access wrong dma data.
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Olof Johansson <olof@lixom.net>
-Cc: linux-mips@vger.kernel.org
-Cc: soc@kernel.org
+why should it ? CPU must not touch data while it's mapped for DMA.
 
----
+> I don't know what's the exact meaning of "fill random cachelines with 
+> stale data at any time". I always think 'cpu_needs_post_dma_flush()' 
+> means whether this platform needs software to maintain cache consistency.
 
-Changelog v2:
-- Move driver to the bus subsystem.
-- Don't use a multi-arg clock phandle reference in the examples dt-bindings
-  property. Thus redundant include statement can be removed.
-- Use dual GPL/BSD license.
-- Use single lined copyright header.
-- Lowercase the unit-address.
-- Convert a dedicated EHB block binding to the Baikal-T1 APB-bus one.
-- Add APB reference clock and reset support.
-- Replace "additionalProperties: false" property with
-  "unevaluatedProperties: false".
-- Add reg-names property.
----
- .../bindings/bus/baikal,bt1-apb.yaml          | 90 +++++++++++++++++++
- 1 file changed, 90 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/bus/baikal,bt1-apb.yaml
+this will only happen, if cpu speculates creates dirty cache lines
+by speculation as R10k type of CPUs do.
 
-diff --git a/Documentation/devicetree/bindings/bus/baikal,bt1-apb.yaml b/Documentation/devicetree/bindings/bus/baikal,bt1-apb.yaml
-new file mode 100644
-index 000000000000..d6a3b71ea835
---- /dev/null
-+++ b/Documentation/devicetree/bindings/bus/baikal,bt1-apb.yaml
-@@ -0,0 +1,90 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright (C) 2020 BAIKAL ELECTRONICS, JSC
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/bus/baikal,bt1-apb.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Baikal-T1 APB-bus
-+
-+maintainers:
-+  - Serge Semin <fancer.lancer@gmail.com>
-+
-+description: |
-+  Baikal-T1 CPU or DMAC MMIO requests are handled by the AMBA 3 AXI Interconnect
-+  which routes them to the AXI-APB bridge. This interface is a single master
-+  multiple slaves bus in turn serializing IO accesses and routing them to the
-+  addressed APB slave devices. In case of any APB protocol collisions, slave
-+  device not responding on timeout an IRQ is raised with an erroneous address
-+  reported to the APB terminator (APB Errors Handler Block).
-+
-+allOf:
-+ - $ref: /schemas/simple-bus.yaml#
-+
-+properties:
-+  compatible:
-+    contains:
-+      const: baikal,bt1-apb
-+
-+  reg:
-+    items:
-+      - description: APB EHB MMIO registers
-+      - description: APB MMIO region with no any device mapped
-+
-+  reg-names:
-+    items:
-+      - const: ehb
-+      - const: nodev
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: APB reference clock
-+
-+  clock-names:
-+    items:
-+      - const: pclk
-+
-+  resets:
-+    items:
-+      - description: APB domain reset line
-+
-+  reset-names:
-+    items:
-+      - const: prst
-+
-+unevaluatedProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/mips-gic.h>
-+
-+    bus@1f059000 {
-+      compatible = "baikal,bt1-apb", "simple-bus";
-+      reg = <0 0x1f059000 0 0x1000>,
-+            <0 0x1d000000 0 0x2040000>;
-+      reg-names = "ehb", "nodev";
-+      #address-cells = <1>;
-+      #size-cells = <1>;
-+
-+      ranges;
-+
-+      interrupts = <GIC_SHARED 16 IRQ_TYPE_LEVEL_HIGH>;
-+
-+      clocks = <&ccu_sys 1>;
-+      clock-names = "pclk";
-+
-+      resets = <&ccu_sys 1>;
-+      reset-names = "prst";
-+    };
-+...
+> I found this problem in 4.19.90 kernel's ethernet driver, 
+> and this patch can fix this problem.
+
+if CPU isn't affected by the R10k speculation problem, it sounds more
+like wrong usage of DMA api.
+
+Thomas.
+
 -- 
-2.26.2
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

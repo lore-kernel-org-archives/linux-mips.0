@@ -2,48 +2,52 @@ Return-Path: <SRS0=VU9m=7I=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7D34C433DF
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 13:51:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68746C433E0
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 14:03:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ADC622086A
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 13:51:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 492AF208C3
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 14:03:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731354AbgEZNvS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 26 May 2020 09:51:18 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:57744 "EHLO
+        id S1731858AbgEZODC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 26 May 2020 10:03:02 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:57906 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726930AbgEZNvN (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 May 2020 09:51:13 -0400
+        with ESMTP id S1731846AbgEZODB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 May 2020 10:03:01 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id A555C803086C;
-        Tue, 26 May 2020 13:51:07 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 9E531803086D;
+        Tue, 26 May 2020 14:02:58 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id SCw7iAFEZl58; Tue, 26 May 2020 16:51:06 +0300 (MSK)
+        with ESMTP id eLOR7vdUy706; Tue, 26 May 2020 17:02:57 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Sebastian Reichel <sre@kernel.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
-        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
-        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paul.burton@imgtec.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH RESEND v3 0/2] syscon: Alter syscon and reboot drivers
-Date:   Tue, 26 May 2020 16:50:59 +0300
-Message-ID: <20200526135102.21236-1-Sergey.Semin@baikalelectronics.ru>
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        James Hogan <jhogan@kernel.org>, <linux-mips@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH 1/6] dt-bindings: power: Convert mti,mips-cpc to DT schema
+Date:   Tue, 26 May 2020 17:02:38 +0300
+Message-ID: <20200526140243.21946-2-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200526140243.21946-1-Sergey.Semin@baikalelectronics.ru>
+References: <20200526140243.21946-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -53,64 +57,80 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This is a small patchset about tuning the syscon infrastructure a bit.
-As it's going to be general in the framework of the Baikal-T1 SoC support
-integration into the kernel, we suggest to replace the legacy text-based
-syscon-reboot-mode dts-bindings file with yaml-based one. Then seeing a
-syscon reboot block is normally expected to be a part of a system
-controller and based on the discussion
-https://lore.kernel.org/linux-pm/20200306130402.1F4F0803079F@mail.baikalelectronics.ru/
-we decided to alter the syscon reboot driver so one would also try to fetch
-the syscon registers map from a parental DT node. regmap property is left
-supported although it's marked as deprecated from now.
-
-This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
-0e698dfa2822 ("Linux 5.7-rc4")
-tag: v5.7-rc4
-
-Changelog v2:
-- Add Sebastian' Acked-by tag to patch 1.
-- Use a shorter summary describing the bindings modification patches.
-- Our corporate email server doesn't change Message-Id anymore, so the patchset
-  is resubmitted being in the cover-letter-threaded format.
-- Discard patch with syscon "-endian" property support. As Rob said It shall be
-  in the common dt-schema.
-- Replace patches of adding a regmap property support to the syscon-reboot-mode
-  with patches making syscon-reboot a sub-node of a system controller node.
-- Mark regmap property as deprecated from now.
-
-Link: https://lore.kernel.org/linux-pm/20200507233846.11548-1-Sergey.Semin@baikalelectronics.ru/
-Changelog v3:
-- Discard the commit 6acd3ecd88ff ("dt-bindings: power: reset: Convert
-  syscon-reboot-mode to DT schema") since it has been merged in by Sebatian.
-- Add Rob's Reviewed-by tag to the patch "dt-bindings: power: reset: Unrequire
-  regmap property in syscon-reboot node"
+It's a Cluster Power Controller embedded into the MIPS IP cores.
+Currently the corresponding dts node is supposed to have compatible
+and reg properties.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>
-Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
-Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-Cc: Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>
-Cc: Vadim Vlasov <V.Vlasov@baikalelectronics.ru>
-Cc: Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: devicetree@vger.kernel.org
-Cc: linux-pm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-Serge Semin (2):
-  dt-bindings: power: reset: Unrequire regmap property in syscon-reboot
-    node
-  power: reset: syscon-reboot: Add parental syscon support
+---
 
- .../bindings/power/reset/syscon-reboot.yaml       | 15 ++++++++++-----
- drivers/power/reset/syscon-reboot.c               |  7 +++++--
- 2 files changed, 15 insertions(+), 7 deletions(-)
+Changelog prev:
+- Reword the changelog summary - use shorter version.
+- Lowercase the example hex'es.
+---
+ .../bindings/power/mti,mips-cpc.txt           |  8 -----
+ .../bindings/power/mti,mips-cpc.yaml          | 35 +++++++++++++++++++
+ 2 files changed, 35 insertions(+), 8 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.txt
+ create mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.yaml
 
+diff --git a/Documentation/devicetree/bindings/power/mti,mips-cpc.txt b/Documentation/devicetree/bindings/power/mti,mips-cpc.txt
+deleted file mode 100644
+index c6b82511ae8a..000000000000
+--- a/Documentation/devicetree/bindings/power/mti,mips-cpc.txt
++++ /dev/null
+@@ -1,8 +0,0 @@
+-Binding for MIPS Cluster Power Controller (CPC).
+-
+-This binding allows a system to specify where the CPC registers are
+-located.
+-
+-Required properties:
+-compatible : Should be "mti,mips-cpc".
+-regs: Should describe the address & size of the CPC register region.
+diff --git a/Documentation/devicetree/bindings/power/mti,mips-cpc.yaml b/Documentation/devicetree/bindings/power/mti,mips-cpc.yaml
+new file mode 100644
+index 000000000000..9cd92a57130c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/mti,mips-cpc.yaml
+@@ -0,0 +1,35 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/power/mti,mips-cpc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MIPS Cluster Power Controller
++
++description: |
++  Defines a location of the MIPS Cluster Power Controller registers.
++
++maintainers:
++  - Paul Burton <paulburton@kernel.org>
++
++properties:
++  compatible:
++    const: mti,mips-cpc
++
++  reg:
++    description: |
++      Base address and size of an unoccupied memory region, which will be
++      used to map the MIPS CPC registers block.
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++examples:
++  - |
++    cpc@1bde0000 {
++      compatible = "mti,mips-cpc";
++      reg = <0 0x1bde0000 0 0x8000>;
++    };
++...
 -- 
 2.26.2
 

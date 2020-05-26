@@ -2,154 +2,115 @@ Return-Path: <SRS0=VU9m=7I=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CB94C433E4
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 16:03:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E8EEC433E0
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 16:09:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5D6022086A
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 16:03:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 26958207D8
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 16:09:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1590509359;
+	bh=o7X0LsAaef0eoYFS70zUdJBxKV3nil2kjKPUkH9WY1o=;
+	h=Date:From:To:List-Id:Cc:Subject:References:In-Reply-To:List-ID:
+	 From;
+	b=PCib9aBeb2lJijbF/DmtohDmbejx4uCFkdpQg2prZ9ebLvFiF4EHF2/2HQUkXlyeZ
+	 3+oG136D5JkwmSY5+riZuG2p/8HzLyrevoErIEDlzD0U3FXxq5JoyVq6TirpJCREs/
+	 NpMNftEJbOU9Hi1ArauGzoO9eid733J/W/jNkFEk=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728830AbgEZQDb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 26 May 2020 12:03:31 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:58754 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727862AbgEZQDa (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 May 2020 12:03:30 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 859CB803086D;
-        Tue, 26 May 2020 16:03:27 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id hKunuLm8sZ5L; Tue, 26 May 2020 19:03:23 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        id S2388477AbgEZQJS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 26 May 2020 12:09:18 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:45641 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388373AbgEZQJS (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 May 2020 12:09:18 -0400
+Received: by mail-il1-f193.google.com with SMTP id 9so2502948ilg.12;
+        Tue, 26 May 2020 09:09:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c24TAX9eZkc7nqjyxn5z29SNHBuSwFKeXoaN8/HMgWM=;
+        b=BOKcq9MVzpqsRNqbPPEpOGRiKL2QlTuH0xPCM7yIqK/63A0Gg6NE5fJqnC58CTg2Pq
+         nakFyPPNOoFlyfS9OEPTSO5ahPaJc+gtM7xu44+YRLZukyqz22MHB/taSOlF2u7o7r3/
+         EmsaJb28exzyWgstLl7AdvCqsS14V2Mx9OzCjJd2aEQ83KDjjbpD3tk0VhVzsm5zTPCx
+         8YUJ6PbZmVgBRvfg++3mY7zcaRwsXhP2/3D2iXnEZ14QcKDO+UMj5xeK83fc9mqmGy3u
+         2vaJyOFx9dd42TEL1dPM1w4mOv8MwbVdgGw/tHdzQzFi0j5I0TQFxKV9cCWFFHJQpKEM
+         bxxA==
+X-Gm-Message-State: AOAM530Xul+I/5NE35zMpY2amYIs73HDA/dFwTDzlO3+Vb9rbXMTXMuD
+        uX7Gdd+gsD4zH70rk/T3nw==
+X-Google-Smtp-Source: ABdhPJxwr3dqawH8+SWnEPm4Q2+Tuopm79dpOC3bN7jhQKABwVvB5cM1bK2uK6nYRp1kjDtiZ6fg5w==
+X-Received: by 2002:a92:d6cc:: with SMTP id z12mr1742481ilp.179.1590509357261;
+        Tue, 26 May 2020 09:09:17 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id w26sm221173ill.19.2020.05.26.09.09.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2020 09:09:16 -0700 (PDT)
+Received: (nullmailer pid 4042318 invoked by uid 1000);
+        Tue, 26 May 2020 16:09:15 -0000
+Date:   Tue, 26 May 2020 10:09:15 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+List-Id: <soc.lore.kernel.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
         Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        <linux-mips@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 1/3] serial: 8250: Add 8250 port clock update method
-Date:   Tue, 26 May 2020 19:03:14 +0300
-Message-ID: <20200526160316.26136-2-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200526160316.26136-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200526160316.26136-1-Sergey.Semin@baikalelectronics.ru>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mips@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>, soc@kernel.org,
+        Paul Burton <paulburton@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 3/6] dt-bindings: memory: Add Baikal-T1 L2-cache
+ Control Block binding
+Message-ID: <20200526160915.GA4042264@bogus>
+References: <20200526125928.17096-1-Sergey.Semin@baikalelectronics.ru>
+ <20200526125928.17096-4-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200526125928.17096-4-Sergey.Semin@baikalelectronics.ru>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Some platforms can be designed in a way so the UART port reference clock
-might be asynchronously changed at some point. In Baikal-T1 SoC this may
-happen due to the reference clock being shared between two UART ports, on
-the Allwinner SoC the reference clock is derived from the CPU clock, so
-any CPU frequency change should get to be known/reflected by/in the UART
-controller as well. But it's not enough to just update the
-uart_port->uartclk field of the corresponding UART port, the 8250
-controller reference clock divisor should be altered so to preserve
-current baud rate setting. All of these things is done in a coherent
-way by calling the serial8250_update_uartclk() method provided in this
-patch. Though note that it isn't supposed to be called from within the
-UART port callbacks because the locks using to the protect the UART port
-data are already taken in there.
+On Tue, 26 May 2020 15:59:25 +0300, Serge Semin wrote:
+> There is a single register provided by the SoC system controller,
+> which can be used to tune the L2-cache RAM up. It only provides a way
+> to change the L2-RAM access latencies. So aside from "be,bt1-l2-ctl"
+> compatible string the device node can be optionally equipped with the
+> properties of Tag/Data/WS latencies.
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Olof Johansson <olof@lixom.net>
+> Cc: linux-mips@vger.kernel.org
+> Cc: soc@kernel.org
+> 
+> ---
+> 
+> Changelog v2:
+> - Move driver to the memory subsystem.
+> - Use dual GPL/BSD license.
+> - Use single lined copyright header.
+> - Move "allOf" restrictions to the root level of the properties.
+> - Discard syscon compatible string and reg property.
+> - The DT node is supposed to be a child of the Baikal-T1 system controller
+>   node.
+> 
+> Changelog v3:
+> - Get the reg property back even though the driver is using the parental
+>   syscon regmap.
+> - The DT schema will live separately from the system controller, but the
+>   corresponding sub-node of the later DT schema will $ref this one.
+> - Set non-default latencies in the example.
+> ---
+>  .../memory-controllers/baikal,bt1-l2-ctl.yaml | 63 +++++++++++++++++++
+>  1 file changed, 63 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/baikal,bt1-l2-ctl.yaml
+> 
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-
----
-
-Changelog v4:
-- Export serial8250_update_uartclk() symbol for GPL modules only.
----
- drivers/tty/serial/8250/8250_port.c | 38 +++++++++++++++++++++++++++++
- include/linux/serial_8250.h         |  2 ++
- 2 files changed, 40 insertions(+)
-
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-index 4d83c85a7389..5596868c8832 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -2628,6 +2628,44 @@ static unsigned int serial8250_get_baud_rate(struct uart_port *port,
- 				  (port->uartclk + tolerance) / 16);
- }
- 
-+/*
-+ * Note in order to avoid the tty port mutex deadlock don't use the next method
-+ * within the uart port callbacks. Primarily it's supposed to be utilized to
-+ * handle a sudden reference clock rate change.
-+ */
-+void serial8250_update_uartclk(struct uart_port *port, unsigned int uartclk)
-+{
-+	struct uart_8250_port *up = up_to_u8250p(port);
-+	unsigned int baud, quot, frac = 0;
-+	struct ktermios *termios;
-+	unsigned long flags;
-+
-+	mutex_lock(&port->state->port.mutex);
-+
-+	if (port->uartclk == uartclk)
-+		goto out_lock;
-+
-+	port->uartclk = uartclk;
-+	termios = &port->state->port.tty->termios;
-+
-+	baud = serial8250_get_baud_rate(port, termios, NULL);
-+	quot = serial8250_get_divisor(port, baud, &frac);
-+
-+	spin_lock_irqsave(&port->lock, flags);
-+
-+	uart_update_timeout(port, termios->c_cflag, baud);
-+
-+	serial8250_set_divisor(port, baud, quot, frac);
-+	serial_port_out(port, UART_LCR, up->lcr);
-+	serial8250_out_MCR(up, UART_MCR_DTR | UART_MCR_RTS);
-+
-+	spin_unlock_irqrestore(&port->lock, flags);
-+
-+out_lock:
-+	mutex_unlock(&port->state->port.mutex);
-+}
-+EXPORT_SYMBOL_GPL(serial8250_update_uartclk);
-+
- void
- serial8250_do_set_termios(struct uart_port *port, struct ktermios *termios,
- 			  struct ktermios *old)
-diff --git a/include/linux/serial_8250.h b/include/linux/serial_8250.h
-index 6545f8cfc8fa..2b70f736b091 100644
---- a/include/linux/serial_8250.h
-+++ b/include/linux/serial_8250.h
-@@ -155,6 +155,8 @@ extern int early_serial_setup(struct uart_port *port);
- 
- extern int early_serial8250_setup(struct earlycon_device *device,
- 					 const char *options);
-+extern void serial8250_update_uartclk(struct uart_port *port,
-+				      unsigned int uartclk);
- extern void serial8250_do_set_termios(struct uart_port *port,
- 		struct ktermios *termios, struct ktermios *old);
- extern void serial8250_do_set_ldisc(struct uart_port *port,
--- 
-2.26.2
-
+Reviewed-by: Rob Herring <robh@kernel.org>

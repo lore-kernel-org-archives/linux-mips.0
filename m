@@ -2,77 +2,110 @@ Return-Path: <SRS0=VU9m=7I=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49EE2C433E0
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 05:59:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8600AC433E0
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 07:22:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1FFE1207D8
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 05:59:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 461642070A
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 07:22:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=ozlabs.org header.i=@ozlabs.org header.b="dr7/DCW1"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Vqh+9szH"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726689AbgEZF7c (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 26 May 2020 01:59:32 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:34689 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726598AbgEZF7b (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 26 May 2020 01:59:31 -0400
-Received: by ozlabs.org (Postfix, from userid 1003)
-        id 49WNZn11tSz9sRY; Tue, 26 May 2020 15:59:29 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ozlabs.org; s=201707;
-        t=1590472769; bh=UvsMjZEYjC+bU7cDuBcQ49xsO8s4tc7S4Vm5YquVl3s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dr7/DCW1ueRx4rYAQYErFOviGddLWKlo5BpU5HFciy9CJet5sWJEf2BjRFaWIfdr8
-         exnM7o9NB/Edk/VdBss9/EVVuN4f8bDfV11zfFBbmNSYetArbeqDrPhOe9n7g0jy2w
-         jPlaaGtU/Bys9q0B1FhwBdGuQzbxpZlMef7Omzw1nQCaKfe0sUl0HzmqRRaLXCiNsq
-         9mwubjD8MVwaThkdXmLYOSbANn8EQAl66FmLO02dquKK/12GEHaZ8qqqsY5MwEIHvQ
-         CTVrP2oC3cIqV5tanqXHRykuANp24K+isJl9f5Ks+0pA8PSIeFjFgqi3fPTEglfkPk
-         PJf2vvuHBAlag==
-Date:   Tue, 26 May 2020 15:49:50 +1000
-From:   Paul Mackerras <paulus@ozlabs.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     pbonzini@redhat.com, tsbogend@alpha.franken.de, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, borntraeger@de.ibm.com,
-        frankja@linux.ibm.com, david@redhat.com, cohuck@redhat.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        sean.j.christopherson@intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com,
-        chenhuacai@gmail.com, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/7] KVM: PPC: clean up redundant 'kvm_run' parameters
-Message-ID: <20200526054950.GC282305@thinks.paulus.ozlabs.org>
-References: <20200427043514.16144-1-tianjia.zhang@linux.alibaba.com>
- <20200427043514.16144-5-tianjia.zhang@linux.alibaba.com>
+        id S1726928AbgEZHWv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 26 May 2020 03:22:51 -0400
+Received: from mail-m972.mail.163.com ([123.126.97.2]:33580 "EHLO
+        mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726768AbgEZHWu (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 May 2020 03:22:50 -0400
+X-Greylist: delayed 910 seconds by postgrey-1.27 at vger.kernel.org; Tue, 26 May 2020 03:22:50 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=bkSJj
+        PRUKYUDwFkyPzThVgbKD1YuAi6I43MZcpH/s8I=; b=Vqh+9szHVRs6SKbD3K4o3
+        O11U5YVtsRU8DxAs4N+AHZvRZvG2y1XxuOnULRU5qi0Hh82c2ESl7Ke/DZHYQZfu
+        FInuwilB9rNwQOy1wgQcSWsRei6YoZcY3V6bEcPcRqEKjUGGy3oKyWO6kapcfqT3
+        Rg4E0uJQYY3VZSNlFFFBoc=
+Received: from [172.20.10.2] (unknown [124.64.17.235])
+        by smtp2 (Coremail) with SMTP id GtxpCgAXauInwMxeX977Bg--.54S2;
+        Tue, 26 May 2020 15:07:28 +0800 (CST)
+Subject: Re: [PATCH] MIPS: Fix IRQ tracing when call handle_fpe()
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     paulburton@kernel.org, chenhc@lemote.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liulichao@loongson.cn
+References: <20200525033123.13114-1-yuanjunqing66@163.com>
+ <20200525084234.GA5057@alpha.franken.de>
+From:   yuanjunqing <yuanjunqing66@163.com>
+Message-ID: <76f2c756-0ae4-83f5-becf-6f1b3319f6fd@163.com>
+Date:   Tue, 26 May 2020 15:07:16 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200427043514.16144-5-tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <20200525084234.GA5057@alpha.franken.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: GtxpCgAXauInwMxeX977Bg--.54S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7KF1ruF4rtw4rJrWkXw4Utwb_yoW8Jw47p3
+        y8C3Z5KF4qgrWjvrW7Cwn5GrW5Kw4kArWY9Fs5tay5X3WrXF4ktF4IqwsIgryq9r1kua1f
+        KFyqg34j9FsxA3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jN739UUUUU=
+X-Originating-IP: [124.64.17.235]
+X-CM-SenderInfo: h1xd0ypxqtx0rjwwqiywtou0bp/xtbBUQowXFaD7O3HBgABsj
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 12:35:11PM +0800, Tianjia Zhang wrote:
-> In the current kvm version, 'kvm_run' has been included in the 'kvm_vcpu'
-> structure. For historical reasons, many kvm-related function parameters
-> retain the 'kvm_run' and 'kvm_vcpu' parameters at the same time. This
-> patch does a unified cleanup of these remaining redundant parameters.
-> 
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-This looks OK, though possibly a little larger than it needs to be
-because of variable name changes (kvm_run -> run) that aren't strictly
-necessary.
+在 2020/5/25 下午4:42, Thomas Bogendoerfer 写道:
+> On Mon, May 25, 2020 at 11:31:23AM +0800, YuanJunQing wrote:
+>>  Register "a1" is unsaved in this function,
+>>  when CONFIG_TRACE_IRQFLAGS is enabled,
+>>  the TRACE_IRQS_OFF macro will call trace_hardirqs_off(),
+>>  and this may change register "a1".
+>>  The variment of register "a1" may send SIGFPE signal
+>>  to task when call do_fpe(),and this may kill the task.
+>>
+>> Signed-off-by: YuanJunQing <yuanjunqing66@163.com>
+>> ---
+>>  arch/mips/kernel/genex.S | 6 ++++--
+>>  1 file changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+>> index 8236fb291e3f..956a76429773 100644
+>> --- a/arch/mips/kernel/genex.S
+>> +++ b/arch/mips/kernel/genex.S
+>> @@ -480,16 +480,18 @@ NESTED(nmi_handler, PT_SIZE, sp)
+>>  	/* gas fails to assemble cfc1 for some archs (octeon).*/ \
+>>  	.set	mips1
+>>  	SET_HARDFLOAT
+>> -	cfc1	a1, fcr31
+>> +	cfc1	s0, fcr31
+>>  	.set	pop
+>>  	CLI
+>>  	TRACE_IRQS_OFF
+>> +	move    a1,s0
+>>  	.endm
+> do we realy need to read fcr31 that early ? Wouldn't it work to
+> just move the cfc1 below TRACE_IRQS_OFF ?
+>
+> Thomas.
 
-Reviewed-by: Paul Mackerras <paulus@ozlabs.org>
+
+ yes, it can work when we just move the cfc1 below TRACE_IRQS_OFF,
+ and the code is written as follows.
+
+ 	CLI
+ 	TRACE_IRQS_OFF
+ 	.set	mips1
+ 	SET_HARDFLOAT
+	cfc1	a1, fcr31
+ 	.set	pop
+       .endm
+
+

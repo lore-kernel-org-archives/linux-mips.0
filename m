@@ -2,138 +2,98 @@ Return-Path: <SRS0=VU9m=7I=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E44DC433DF
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 15:26:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2B5DC433E0
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 15:41:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 579C920723
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 15:26:32 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="QriFjjUj"
+	by mail.kernel.org (Postfix) with ESMTP id 8FDD9206D5
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 15:41:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728279AbgEZP0c (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 26 May 2020 11:26:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727921AbgEZP0b (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 May 2020 11:26:31 -0400
-Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0E6C03E96D
-        for <linux-mips@vger.kernel.org>; Tue, 26 May 2020 08:26:27 -0700 (PDT)
-Received: from halation.net.flygoat.com (unknown [IPv6:240e:390:49e:d1a0::d68])
-        by vultr.net.flygoat.com (Postfix) with ESMTPSA id B40CC204CB;
-        Tue, 26 May 2020 15:26:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
-        t=1590506787; bh=Cy4sJrybsIIcV0DWfPR1iSRhV3HmC6oZr85GVbuQKHc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QriFjjUjEbxCamfVI222A95SCxdrESTok7B6brsd4DFOdGXCkpdRrY07edZolKa0G
-         gAmt/IfQBbft3KcHukLfGZtNpseV2FjjAziHBuqkEepYcgD5YWQszE+CdBQyQIebzM
-         cPV/hIw/ArkTiBsw/AEIRswn7GTMR+YSWe/8bBm6/2hxrAn0Y34vhuPdvuQiySVfnv
-         ABfJB62j4cMXLcR0SvkUazsJk3tvQM8ZtH2EDVgullpOTvQSqrKzAUNGyoKpF9x/RL
-         VSZi/0eWuREhgCc0cpqiusVdLiLGbK4RYY9neQ8pSFUXkk8fCwiOraSKquc8ZKriaQ
-         qdLRRzlgAesIw==
-Date:   Tue, 26 May 2020 23:25:56 +0800
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Lichao Liu <liulichao@loongson.cn>,
-        Paul Burton <paulburton@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Max Filippov <jcmvbkbc@gmail.com>, yuanjunqing@loongson.cn,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH] MIPS: CPU_LOONGSON2EF need software to maintain cache
- consistency
-Message-ID: <20200526232556.14a40f6c@halation.net.flygoat.com>
-In-Reply-To: <1d594568-e457-533e-122a-c7e449c0f05d@arm.com>
-References: <20200526111438.3788-1-liulichao@loongson.cn>
-        <20200526193859.0adaea3b@halation.net.flygoat.com>
-        <e9c015c2-b979-27c8-5f43-7af8d43174c5@loongson.cn>
-        <20200526130128.GA8487@alpha.franken.de>
-        <1d594568-e457-533e-122a-c7e449c0f05d@arm.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729652AbgEZPle (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 26 May 2020 11:41:34 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:58532 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729309AbgEZPle (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 May 2020 11:41:34 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 5D814803086E;
+        Tue, 26 May 2020 15:41:31 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id PIJ20QByC4TS; Tue, 26 May 2020 18:41:30 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>, <linux-mips@vger.kernel.org>,
+        <linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 2/7] dt-bindings: watchdog: dw-wdt: Support devices with asynch clocks
+Date:   Tue, 26 May 2020 18:41:18 +0300
+Message-ID: <20200526154123.24402-3-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200526154123.24402-1-Sergey.Semin@baikalelectronics.ru>
+References: <20200526154123.24402-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, 26 May 2020 14:29:50 +0100
-Robin Murphy <robin.murphy@arm.com> wrote:
+DW Watchdog IP core can be synthesised with asynchronous timer/APB
+clocks support (WDT_ASYNC_CLK_MODE_ENABLE == 1). In this case
+separate clock signals are supposed to be used to feed watchdog timer
+and APB interface of the device. Let's update the DW Watchdog DT node
+schema so it would support the optional APB3 bus clock specified along
+with the mandatory watchdog timer reference clock.
 
-> On 2020-05-26 14:01, Thomas Bogendoerfer wrote:
-> > On Tue, May 26, 2020 at 08:40:28PM +0800, Lichao Liu wrote:  
-> >> Loongson-2EF need software maintain cache consistency, So when
-> >> using streaming DMA, software needs to maintain consistency.
-> >>
-> >> dma_map_single() is correct, but dma_unmap_single is wrong.
-> >>
-> >> The function call path:
-> >> 'dma_unmap_single->dma_unmap_page_attrs->dma_direct_unmap_page->
-> >>   dma_direct_sync_single_for_cpu->arch_sync_dma_for_cpu->
-> >>   cpu_needs_post_dma_flush'
-> >>
-> >> In current version, 'cpu_needs_post_dma_flush' will return false
-> >> at Loongon-2EF platform, and dma_unmap_single will not invalidate
-> >> cache, driver may access wrong dma data.  
-> > 
-> > why should it ? CPU must not touch data while it's mapped for DMA.
-> >   
-> >> I don't know what's the exact meaning of "fill random cachelines
-> >> with stale data at any time". I always think
-> >> 'cpu_needs_post_dma_flush()' means whether this platform needs
-> >> software to maintain cache consistency.  
-> > 
-> > this will only happen, if cpu speculates creates dirty cache lines
-> > by speculation as R10k type of CPUs do.  
-> 
-> Will it? The usual pattern for this problem is that the CPU 
-> speculatively fills a (clean) cache line after a DMA_FROM_DEVICE 
-> operation has begun, but before the device has actually written to
-> that part of the buffer. Thus a subsequent CPU read after the
-> operation is complete can hit in the cache and return the previous
-> data rather than the updated data that the device wrote. I don't know
-> about MIPS specifically, but that can certainly happen on Arm.
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-mips@vger.kernel.org
 
-Checked the manual of Loongson-2F again and I must admit the case may
-happen on Loongson-2EF processor.
+---
 
-R4k manual didn't show the details of speculative policy but I think
-that should be applied to all R4k like processors?
+Changelog v2:
+- It's a new patch unpinned from the previous one.
+---
+ .../devicetree/bindings/watchdog/snps,dw-wdt.yaml         | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-So what we need is a post Invalidate after DMA_FROM_DEVICE?
-DMA to device should not affected at all.
-
-The origin R10k errata looks like a different story. Both from and to
-device is affected because cache line was incorrectly marked as dirty
-and it may writeback old data to memory already modified by uncached
-write even CPU doesn't perform any cached write to that line. 
-
-See details at Page 22 of R10k UM[1].
-Not sure if BMIPS here is the same case. 
-
-Thanks.
-
-[1]:http://www.ece.mtu.edu/faculty/rmkieckh/cla/4173/REFERENCES/MIPS-R10K-uman1.pdf
-
-- Jiaxun
-
-> 
-> >> I found this problem in 4.19.90 kernel's ethernet driver,
-> >> and this patch can fix this problem.  
-> > 
-> > if CPU isn't affected by the R10k speculation problem, it sounds
-> > more like wrong usage of DMA api.  
-> 
-> Sure, explicit accesses to the mapped buffer would be a software
-> error, but if legitimate non-overlapping accesses to other data
-> nearby can trigger the CPU to speculatively fetch lines from the
-> DMA-mapped region, that's generally beyond software's control.
-> 
-> Robin.
-
+diff --git a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+index 4f6944756ab4..5bf6dc6377f3 100644
+--- a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
++++ b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+@@ -24,8 +24,16 @@ properties:
+     maxItems: 1
+ 
+   clocks:
++    minItems: 1
+     items:
+       - description: Watchdog timer reference clock
++      - description: APB3 interface clock
++
++  clock-names:
++    minItems: 1
++    items:
++      - const: tclk
++      - const: pclk
+ 
+   resets:
+     description: Phandle to the DW Watchdog reset lane
+-- 
+2.26.2
 

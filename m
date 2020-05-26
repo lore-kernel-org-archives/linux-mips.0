@@ -2,46 +2,49 @@ Return-Path: <SRS0=VU9m=7I=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97E27C433E2
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 21:56:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54E40C433DF
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 22:21:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7E11C208DB
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 21:56:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 38272208C9
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 22:21:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390013AbgEZVzo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 26 May 2020 17:55:44 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:59830 "EHLO
+        id S2391548AbgEZWVV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 26 May 2020 18:21:21 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:60074 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389384AbgEZVzo (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 May 2020 17:55:44 -0400
+        with ESMTP id S2389613AbgEZWVU (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 May 2020 18:21:20 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id A381C803086D;
-        Tue, 26 May 2020 21:55:36 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 167C2803086E;
+        Tue, 26 May 2020 22:21:17 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id uTdaH333Hlk4; Wed, 27 May 2020 00:55:36 +0300 (MSK)
+        with ESMTP id kg_cMxTvKrmA; Wed, 27 May 2020 01:21:15 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        <linux-mips@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 01/12] scripts/dtc: check: Add 10bit/slave i2c reg flags support
-Date:   Wed, 27 May 2020 00:55:17 +0300
-Message-ID: <20200526215528.16417-2-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200526215528.16417-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200526215528.16417-1-Sergey.Semin@baikalelectronics.ru>
+        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>,
+        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+        Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-mips@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/4] clk: Add Baikal-T1 SoC Clock Control Unit support
+Date:   Wed, 27 May 2020 01:20:52 +0300
+Message-ID: <20200526222056.18072-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -51,79 +54,122 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Recently the I2C-controllers slave interface support was added to the
-kernel I2C subsystem. In this case Linux can be used as, for example,
-a I2C EEPROM machine. See [1] for details. Other than instantiating
-the EEPROM-slave device from user-space there is a way to declare the
-device in dts. In this case firstly the I2C bus controller must support
-the slave interface. Secondly I2C-slave sub-node of that controller
-must have "reg"-property with flag I2C_OWN_SLAVE_ADDRESS set (flag is
-declared in [2]). That flag is declared as (1 << 30), which when set
-makes dtc unhappy about too big address set for a I2C-slave:
+Stephen, Michael, the merge window is upon us, please review/merge in/whatever
+this patchset.
 
-Warning (i2c_bus_reg): /example-2/i2c@1120000/eeprom@64: I2C bus unit address format error, expected "40000064"
-Warning (i2c_bus_reg): /example-2/i2c@1120000/eeprom@64:reg: I2C address must be less than 10-bits, got "0x40000064"
+Clocks Control Unit is the core of Baikal-T1 SoC responsible for the chip
+subsystems clocking and resetting. The CCU is connected with an external
+fixed rate oscillator, which signal is transformed into clocks of various
+frequencies and then propagated to either individual IP-blocks or to groups
+of blocks (clock domains). The transformation is done by means of PLLs and
+gateable/non-gateable, fixed/variable dividers embedded into the CCU. There
+are five PLLs to create a clock for the MIPS P5600 cores, the embedded DDR
+controller, SATA, Ethernet and PCIe domains. The last three PLLs CLKOUT are
+then passed over CCU dividers to create signals required for the target clock
+domains: individual AXI and APB bus clocks, SoC devices reference clocks.
+The CCU divider registers may also provide a way to reset the target devices
+state.
 
-Similar problem would have happened if we had set the 10-bit address
-flag I2C_TEN_BIT_ADDRESS in the "reg"-property.
+So this patchset introduces the Baikal-T1 clock and reset drivers of CCU
+PLLs, AXI-bus clock dividers and system devices clock dividers.
 
-In order to fix the problem we suggest to alter the I2C-bus reg-check
-algorithm, so one would be aware of the upper bits set. Normally if no
-flag specified, the 7-bit address is expected in the "reg"-property.
-If I2C_TEN_BIT_ADDRESS is set, then the 10-bit address check will be
-performed. The I2C_OWN_SLAVE_ADDRESS flag will be just ignored.
+This patchset is rebased and tested on the mainline Linux kernel 5.7-rc4:
+0e698dfa2822 ("Linux 5.7-rc4")
+tag: v5.7-rc4
 
-[1] Documentation/i2c/slave-interface.rst
-[2] include/dt-bindings/i2c/i2c.h
+Changelog v2:
+- Rearrange the SoBs.
+- Discard comments in the binding files headers.
+- Add dual GPL/BSD license to the bindings.
+- Add spaces around the ASCII-graphics in the bindings description.
+- Discard redundant dt objects check against "/schemas/clock/clock.yaml#"
+  schema.
+- Discard redundant descriptions of the "#clock-cells" and "#reset-cells"
+  properties in dt bindings schema.
+- Discard "reg" property since the CCU dividers DT nodes are supposed be
+  children of the syscon-compatible system controller node.
+- Remove "clock-output-names" property support.
+- Replace "additionalProperties: false" with "unevaluatedProperties: false"
+  in the bindings.
+- Lowercase the nodes name in the binding examples.
+- Use "clock-controller" node name suffix in the binding examples.
+- Remove unnecessary comments in the clocks and resets dt-binding header
+  files.
+- Don't enable the CCU clock drivers by default for COMPILE_TEST config.
+- Make sure the CCU drivers depend on OF kernel config only when built for
+  Baikal-T1-based platform.
+- Fix spelling in the CCU PLL and Dividers kernel configs description.
+- Replace lock delay and frequency calculation macros with inline functions.
+- Use 64-bits arithmetics in the CCU PLL frequency calculation function.
+- Use FIELD_{GET,PREP}() macro instead of handwritten field setters and
+  getters.
+- Discard CLK_IGNORE_UNUSED flag setting. It's redundant since CLK_IS_CRITICAL
+  is enough for cases when it's appropriate.
+- Comment out the CLK_IS_CRITICAL flag settings.
+- Discard !pll and !div tests from ccu_pll_hw_unregister() and ccu_div_get_clk_id()
+  methods respectively.
+- Discard alive probe messages.
+- Convert the drivers to using syscon regmap instead of direct IO methods,
+  since now the PLLs DT node is supposed to be a sub-node of the Baikal-T1
+  System Controller node.
+- Add DebugFS nodes in RO-mode by default.
+
+Link: https://lore.kernel.org/linux-clk/20200506222300.30895-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v3:
+- Get the reg property back to the DT bindings even though the driver is
+  using the parental syscon regmap.
+- The DT schema will live separately from the system controller, but the
+  corresponding sub-node of the later DT schema will $ref this one.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+Cc: Ekaterina Skachko <Ekaterina.Skachko@baikalelectronics.ru>
+Cc: Vadim Vlasov <V.Vlasov@baikalelectronics.ru>
+Cc: Alexey Kolotnikov <Alexey.Kolotnikov@baikalelectronics.ru>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-clk@vger.kernel.org
 Cc: linux-mips@vger.kernel.org
-Cc: linux-i2c@vger.kernel.org
----
- scripts/dtc/checks.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-diff --git a/scripts/dtc/checks.c b/scripts/dtc/checks.c
-index 4b3c486f1399..6321fc5b7404 100644
---- a/scripts/dtc/checks.c
-+++ b/scripts/dtc/checks.c
-@@ -1028,6 +1028,7 @@ static void check_i2c_bus_reg(struct check *c, struct dt_info *dti, struct node
- 	const char *unitname = get_unitname(node);
- 	char unit_addr[17];
- 	uint32_t reg = 0;
-+	uint32_t addr;
- 	int len;
- 	cell_t *cells = NULL;
- 
-@@ -1044,17 +1045,21 @@ static void check_i2c_bus_reg(struct check *c, struct dt_info *dti, struct node
- 	}
- 
- 	reg = fdt32_to_cpu(*cells);
--	snprintf(unit_addr, sizeof(unit_addr), "%x", reg);
-+	addr = reg & 0x3FFFFFFFU;
-+	snprintf(unit_addr, sizeof(unit_addr), "%x", addr);
- 	if (!streq(unitname, unit_addr))
- 		FAIL(c, dti, node, "I2C bus unit address format error, expected \"%s\"",
- 		     unit_addr);
- 
- 	for (len = prop->val.len; len > 0; len -= 4) {
- 		reg = fdt32_to_cpu(*(cells++));
--		if (reg > 0x3ff)
-+		addr = reg & 0x3FFFFFFFU;
-+		if ((reg & (1 << 31)) && addr > 0x3ff)
- 			FAIL_PROP(c, dti, node, prop, "I2C address must be less than 10-bits, got \"0x%x\"",
--				  reg);
--
-+				  addr);
-+		else if (!(reg & (1 << 31)) && addr > 0x7f)
-+			FAIL_PROP(c, dti, node, prop, "I2C address must be less than 7-bits, got \"0x%x\"",
-+				  addr);
- 	}
- }
- WARNING(i2c_bus_reg, check_i2c_bus_reg, NULL, &reg_format, &i2c_bus_bridge);
+Serge Semin (4):
+  dt-bindings: clk: Add Baikal-T1 CCU PLLs binding
+  dt-bindings: clk: Add Baikal-T1 CCU Dividers binding
+  clk: Add Baikal-T1 CCU PLLs driver
+  clk: Add Baikal-T1 CCU Dividers driver
+
+ .../bindings/clock/baikal,bt1-ccu-div.yaml    | 188 ++++++
+ .../bindings/clock/baikal,bt1-ccu-pll.yaml    | 131 ++++
+ drivers/clk/Kconfig                           |   1 +
+ drivers/clk/Makefile                          |   1 +
+ drivers/clk/baikal-t1/Kconfig                 |  42 ++
+ drivers/clk/baikal-t1/Makefile                |   3 +
+ drivers/clk/baikal-t1/ccu-div.c               | 602 ++++++++++++++++++
+ drivers/clk/baikal-t1/ccu-div.h               | 110 ++++
+ drivers/clk/baikal-t1/ccu-pll.c               | 558 ++++++++++++++++
+ drivers/clk/baikal-t1/ccu-pll.h               |  64 ++
+ drivers/clk/baikal-t1/clk-ccu-div.c           | 487 ++++++++++++++
+ drivers/clk/baikal-t1/clk-ccu-pll.c           | 204 ++++++
+ include/dt-bindings/clock/bt1-ccu.h           |  48 ++
+ include/dt-bindings/reset/bt1-ccu.h           |  25 +
+ 14 files changed, 2464 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/baikal,bt1-ccu-div.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/baikal,bt1-ccu-pll.yaml
+ create mode 100644 drivers/clk/baikal-t1/Kconfig
+ create mode 100644 drivers/clk/baikal-t1/Makefile
+ create mode 100644 drivers/clk/baikal-t1/ccu-div.c
+ create mode 100644 drivers/clk/baikal-t1/ccu-div.h
+ create mode 100644 drivers/clk/baikal-t1/ccu-pll.c
+ create mode 100644 drivers/clk/baikal-t1/ccu-pll.h
+ create mode 100644 drivers/clk/baikal-t1/clk-ccu-div.c
+ create mode 100644 drivers/clk/baikal-t1/clk-ccu-pll.c
+ create mode 100644 include/dt-bindings/clock/bt1-ccu.h
+ create mode 100644 include/dt-bindings/reset/bt1-ccu.h
+
 -- 
 2.26.2
 

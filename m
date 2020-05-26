@@ -2,249 +2,78 @@ Return-Path: <SRS0=VU9m=7I=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91499C433DF
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 11:05:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EFADC433DF
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 11:14:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 62553207CB
-	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 11:05:51 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WfzmWy96"
+	by mail.kernel.org (Postfix) with ESMTP id 0E369208A7
+	for <linux-mips@archiver.kernel.org>; Tue, 26 May 2020 11:14:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389143AbgEZLFu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 26 May 2020 07:05:50 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23441 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2389155AbgEZLFu (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 May 2020 07:05:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1590491148;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YL7I5JCIHEnCOMA27cTClA3wSdtYCHTGXJdbbFxfa+8=;
-        b=WfzmWy96QKi5ekA1JKgXSwX1RSnZgHvJV9OKmTWFVTJ2AcC/9OXXOQLZ8XucgHO6QRPaXs
-        1WgMwR71vkLGummXyeYBN2SsJ8tVPqE82xyBGByetceYpsMmPd2baKkh5KbYKJLXoRmuZO
-        zfPLY7fRDwn8fzeQk7TK3/zu6GUlB0c=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-400-I2GIQ8J5NdiCN9-xZ7t8bA-1; Tue, 26 May 2020 07:05:46 -0400
-X-MC-Unique: I2GIQ8J5NdiCN9-xZ7t8bA-1
-Received: by mail-wm1-f70.google.com with SMTP id b65so706579wmb.5
-        for <linux-mips@vger.kernel.org>; Tue, 26 May 2020 04:05:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YL7I5JCIHEnCOMA27cTClA3wSdtYCHTGXJdbbFxfa+8=;
-        b=UXZvNaNEvtxUi0zwQo8MCt2tEdJpEG4aaWwmd0h0ff4J0q59CMnvh8RbMSkXaepBkV
-         5T+wCspfDG4z7vfNZGXcYw5OtVEe2DtCZOyBzSF3IOkhaitIVZGIeDA7l/KkaTIGc8S6
-         k4ZiIVwXzRxOZ61zTM6HVc/EMMj6Q449eFdypvLrY1CYfzkTliMAo8onQQzlTfAfgUf7
-         VL0/epGQoEDIWHIqEJA5wIsG3BSnBcUjtNHRyzVc/3Ix2q0raxGbqu4fZCr0KOHmJe36
-         F5uJ7u6ufc3I4ROJnNrydaB7k5ixmLPlz9Cf4ku5m0iWyqNJbmfXPxOEExPu+nj/HK6q
-         f9dg==
-X-Gm-Message-State: AOAM533lzXzU9lRStsYWJExI5ZLNziPGvhcTc5aF+tv5vEms7AhkrTqy
-        A05+h+gMJx7VAFd0LlZbK+vW+RsgG6Jh+L8FuUsPWKnElDTul3EQ5q9OSV0cgHlhOBunyzQU4h6
-        uFY8u6VOz0kVGqDkuiTrYSg==
-X-Received: by 2002:a5d:484b:: with SMTP id n11mr18085338wrs.356.1590491145437;
-        Tue, 26 May 2020 04:05:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyo4BV3xWVL52mX4Nu+TG9ys/JSV0Y3savYX2kM7iRzxuz+P1aX7wtkuMtb+MvbeCMZqXp14Q==
-X-Received: by 2002:a5d:484b:: with SMTP id n11mr18085316wrs.356.1590491145188;
-        Tue, 26 May 2020 04:05:45 -0700 (PDT)
-Received: from localhost.localdomain.com ([194.230.155.118])
-        by smtp.gmail.com with ESMTPSA id d6sm22928240wrj.90.2020.05.26.04.05.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 04:05:36 -0700 (PDT)
-From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Emanuele Giuseppe Esposito <e.emanuelegiuseppe@gmail.com>,
-        David Rientjes <rientjes@google.com>,
-        Jonathan Adams <jwadams@google.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Subject: [PATCH v3 7/7] [not for merge] netstats: example use of stats_fs API
-Date:   Tue, 26 May 2020 13:03:17 +0200
-Message-Id: <20200526110318.69006-8-eesposit@redhat.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200526110318.69006-1-eesposit@redhat.com>
-References: <20200526110318.69006-1-eesposit@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S2388748AbgEZLO6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 26 May 2020 07:14:58 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:54090 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388712AbgEZLO6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 26 May 2020 07:14:58 -0400
+Received: from localhost.localdomain (unknown [124.64.16.78])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxNuof+sxeFkI5AA--.96S2;
+        Tue, 26 May 2020 19:14:44 +0800 (CST)
+From:   Lichao Liu <liulichao@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Paul Burton <paulburton@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Lichao Liu <liulichao@loongson.cn>, yuanjunqing@loongson.cn,
+        linux-mips@vger.kernel.org
+Subject: [PATCH] MIPS: CPU_LOONGSON2EF need software to maintain cache consistency
+Date:   Tue, 26 May 2020 19:14:38 +0800
+Message-Id: <20200526111438.3788-1-liulichao@loongson.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: AQAAf9AxNuof+sxeFkI5AA--.96S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrur1DXw4xCr48Xr47ury5CFg_yoWxArXEkr
+        srK3yfWrs5uFWUZFykArs5GFyDXFWDu347AFnrKF1YkF98Za1rGay7tFZ7Jr1UuFs09FWf
+        tasxZrW8Cas2gjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8KwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUDcTQUUUUU=
+X-CM-SenderInfo: xolxzxpfkd0qxorr0wxvrqhubq/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Apply stats_fs on the networking statistics subsystem.
-
-Currently it only works with disabled network namespace
-(CONFIG_NET_NS=n), because multiple namespaces will have the same
-device name under the same root source that will cause a conflict in
-stats_fs.
-
-Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
+CPU_LOONGSON2EF need software to maintain cache consistency,
+so modify the 'cpu_needs_post_dma_flush' function to return true
+when the cpu type is CPU_LOONGSON2EF.
 ---
- include/linux/netdevice.h |  2 ++
- net/Kconfig               |  1 +
- net/core/dev.c            | 66 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 69 insertions(+)
+ arch/mips/mm/dma-noncoherent.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 130a668049ab..408c4e7b0e21 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -48,6 +48,7 @@
- #include <uapi/linux/if_bonding.h>
- #include <uapi/linux/pkt_cls.h>
- #include <linux/hashtable.h>
-+#include <linux/stats_fs.h>
- 
- struct netpoll_info;
- struct device;
-@@ -2117,6 +2118,7 @@ struct net_device {
- 	unsigned		wol_enabled:1;
- 
- 	struct list_head	net_notifier_list;
-+	struct stats_fs_source	*stats_fs_src;
- 
- #if IS_ENABLED(CONFIG_MACSEC)
- 	/* MACsec management functions */
-diff --git a/net/Kconfig b/net/Kconfig
-index df8d8c9bd021..3441d5bb6107 100644
---- a/net/Kconfig
-+++ b/net/Kconfig
-@@ -8,6 +8,7 @@ menuconfig NET
- 	select NLATTR
- 	select GENERIC_NET_UTILS
- 	select BPF
-+	select STATS_FS_API
- 	---help---
- 	  Unless you really know what you are doing, you should say Y here.
- 	  The reason is that some programs need kernel networking support even
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 522288177bbd..3db48cd1a097 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -142,6 +142,7 @@
- #include <linux/net_namespace.h>
- #include <linux/indirect_call_wrapper.h>
- #include <net/devlink.h>
-+#include <linux/stats_fs.h>
- 
- #include "net-sysfs.h"
- 
-@@ -150,6 +151,11 @@
- /* This should be increased if a protocol with a bigger head is added. */
- #define GRO_MAX_HEAD (MAX_HEADER + 128)
- 
-+#define NETDEV_STAT(str, m, ...)						\
-+	{ str, offsetof(struct rtnl_link_stats64, m),				\
-+	  &stats_fs_type_netdev_u64,						\
-+	  STATS_FS_SUM, ## __VA_ARGS__ }
-+
- static DEFINE_SPINLOCK(ptype_lock);
- static DEFINE_SPINLOCK(offload_lock);
- struct list_head ptype_base[PTYPE_HASH_SIZE] __read_mostly;
-@@ -196,6 +202,53 @@ static DEFINE_READ_MOSTLY_HASHTABLE(napi_hash, 8);
- 
- static seqcount_t devnet_rename_seq;
- 
-+static uint64_t stats_fs_get_netdev_u64(struct stats_fs_value *val,
-+					void *base)
-+{
-+	struct net_device *netdev = (struct net_device *)base;
-+	struct rtnl_link_stats64 net_stats;
-+
-+	dev_get_stats(netdev, &net_stats);
-+
-+	return stats_fs_get_u64(val, &net_stats);
-+}
-+
-+static struct stats_fs_type stats_fs_type_netdev_u64 = {
-+	.get = stats_fs_get_netdev_u64,
-+	.clear = NULL,
-+	.sign = false
-+};
-+
-+static struct stats_fs_source *netdev_root;
-+
-+static struct stats_fs_value stats_fs_netdev_entries[] = {
-+	NETDEV_STAT("rx_packets", rx_packets),
-+	NETDEV_STAT("tx_packets", tx_packets),
-+	NETDEV_STAT("rx_bytes", rx_bytes),
-+	NETDEV_STAT("tx_bytes", tx_bytes),
-+	NETDEV_STAT("rx_errors", rx_errors),
-+	NETDEV_STAT("tx_errors", tx_errors),
-+	NETDEV_STAT("rx_dropped", rx_dropped),
-+	NETDEV_STAT("tx_dropped", tx_dropped),
-+	NETDEV_STAT("multicast", multicast),
-+	NETDEV_STAT("collisions", collisions),
-+	NETDEV_STAT("rx_length_errors", rx_length_errors),
-+	NETDEV_STAT("rx_over_errors", rx_over_errors),
-+	NETDEV_STAT("rx_crc_errors", rx_crc_errors),
-+	NETDEV_STAT("rx_frame_errors", rx_frame_errors),
-+	NETDEV_STAT("rx_fifo_errors", rx_fifo_errors),
-+	NETDEV_STAT("rx_missed_errors", rx_missed_errors),
-+	NETDEV_STAT("tx_aborted_errors", tx_aborted_errors),
-+	NETDEV_STAT("tx_carrier_errors", tx_carrier_errors),
-+	NETDEV_STAT("tx_fifo_errors", tx_fifo_errors),
-+	NETDEV_STAT("tx_heartbeat_errors", tx_heartbeat_errors),
-+	NETDEV_STAT("tx_window_errors", tx_window_errors),
-+	NETDEV_STAT("rx_compressed", rx_compressed),
-+	NETDEV_STAT("tx_compressed", tx_compressed),
-+	NETDEV_STAT("rx_nohandler", rx_nohandler),
-+	{ NULL }
-+};
-+
- static inline void dev_base_seq_inc(struct net *net)
- {
- 	while (++net->dev_base_seq == 0)
-@@ -8783,6 +8836,11 @@ static void rollback_registered_many(struct list_head *head)
- 	ASSERT_RTNL();
- 
- 	list_for_each_entry_safe(dev, tmp, head, unreg_list) {
-+		stats_fs_source_remove_subordinate(netdev_root,
-+						   dev->stats_fs_src);
-+		stats_fs_source_revoke(dev->stats_fs_src);
-+		stats_fs_source_put(dev->stats_fs_src);
-+
- 		/* Some devices call without registering
- 		 * for initialization unwind. Remove those
- 		 * devices and proceed with the remaining.
-@@ -9436,6 +9494,11 @@ int register_netdevice(struct net_device *dev)
- 	    dev->rtnl_link_state == RTNL_LINK_INITIALIZED)
- 		rtmsg_ifinfo(RTM_NEWLINK, dev, ~0U, GFP_KERNEL);
- 
-+	dev->stats_fs_src = stats_fs_source_create(0, dev->name);
-+	stats_fs_source_add_subordinate(netdev_root, dev->stats_fs_src);
-+	stats_fs_source_add_values(dev->stats_fs_src, stats_fs_netdev_entries,
-+				   dev, 0);
-+
- out:
- 	return ret;
- 
-@@ -10500,6 +10563,9 @@ static int __init net_dev_init(void)
- 	if (netdev_kobject_init())
- 		goto out;
- 
-+	netdev_root = stats_fs_source_create(0, "net");
-+	stats_fs_source_register(netdev_root);
-+
- 	INIT_LIST_HEAD(&ptype_all);
- 	for (i = 0; i < PTYPE_HASH_SIZE; i++)
- 		INIT_LIST_HEAD(&ptype_base[i]);
+diff --git a/arch/mips/mm/dma-noncoherent.c b/arch/mips/mm/dma-noncoherent.c
+index fcea92d95d86..563c2c0d0c81 100644
+--- a/arch/mips/mm/dma-noncoherent.c
++++ b/arch/mips/mm/dma-noncoherent.c
+@@ -33,6 +33,7 @@ static inline bool cpu_needs_post_dma_flush(void)
+ 	case CPU_R10000:
+ 	case CPU_R12000:
+ 	case CPU_BMIPS5000:
++	case CPU_LOONGSON2EF:
+ 		return true;
+ 	default:
+ 		/*
 -- 
-2.25.4
+2.17.1
 

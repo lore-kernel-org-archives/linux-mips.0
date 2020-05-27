@@ -2,93 +2,118 @@ Return-Path: <SRS0=HxbC=7J=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8408C433E0
-	for <linux-mips@archiver.kernel.org>; Wed, 27 May 2020 12:07:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9404FC433DF
+	for <linux-mips@archiver.kernel.org>; Wed, 27 May 2020 12:07:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C4320207CB
-	for <linux-mips@archiver.kernel.org>; Wed, 27 May 2020 12:07:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 75BF3207CB
+	for <linux-mips@archiver.kernel.org>; Wed, 27 May 2020 12:07:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728149AbgE0MHY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 27 May 2020 08:07:24 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:34850 "EHLO
+        id S1729318AbgE0MHf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 27 May 2020 08:07:35 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:34952 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgE0MHX (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 May 2020 08:07:23 -0400
+        with ESMTP id S1728762AbgE0MHf (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 May 2020 08:07:35 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 3ED58803080A;
-        Wed, 27 May 2020 12:07:18 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id E6031803083C;
+        Wed, 27 May 2020 12:07:30 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 6yp1ZNgKw_kt; Wed, 27 May 2020 15:07:17 +0300 (MSK)
-Date:   Wed, 27 May 2020 15:07:16 +0300
+        with ESMTP id 3-mIWG8B65qo; Wed, 27 May 2020 15:07:30 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
         Wolfram Sang <wsa@the-dreams.de>,
-        Rob Herring <robh+dt@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        <linux-mips@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 03/12] dt-bindings: i2c: Discard i2c-slave flag from
- the DW I2C example
-Message-ID: <20200527120716.4dke6psqpw726wrd@mobilestation>
-References: <20200526215528.16417-1-Sergey.Semin@baikalelectronics.ru>
- <20200526215528.16417-4-Sergey.Semin@baikalelectronics.ru>
- <CAHp75VdHC+fZNgc5oFbgYaNDebudDROcM_peRzOZpTVy55+tJg@mail.gmail.com>
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 10/11] i2c: designware: Move reg-space remapping into a dedicated function
+Date:   Wed, 27 May 2020 15:01:10 +0300
+Message-ID: <20200527120111.5781-11-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200527120111.5781-1-Sergey.Semin@baikalelectronics.ru>
+References: <20200527120111.5781-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdHC+fZNgc5oFbgYaNDebudDROcM_peRzOZpTVy55+tJg@mail.gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, May 27, 2020 at 12:30:04PM +0300, Andy Shevchenko wrote:
-> On Wed, May 27, 2020 at 1:00 AM Serge Semin
-> <Sergey.Semin@baikalelectronics.ru> wrote:
-> >
-> > dtc currently doesn't support I2C_OWN_SLAVE_ADDRESS flag set in the
-> > i2c "reg" property. If it is the compiler will print a warning:
-> 
-> Shouldn't be dtc whatever tools fixed?
+This is a preparation patch before adding a quirk with custom registers
+map creation required for the Baikal-T1 System I2C support.
 
-See the first patch in the series.
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: devicetree@vger.kernel.org
 
-> 
-> > Warning (i2c_bus_reg): /example-2/i2c@1120000/eeprom@64: I2C bus unit address format error, expected "40000064"
-> > Warning (i2c_bus_reg): /example-2/i2c@1120000/eeprom@64:reg: I2C address must be less than 10-bits, got "0x40000064"
-> >
-> > In order to silence dtc up let's discard the flag from the DW I2C DT
-> > binding example for now. Just revert this commit when dtc is fixed.
-> 
-> Doesn't sound like a good idea. If user happens in between of these
-> ping-pong change, how they will know this subtle issue?
+---
 
-As I see it, there are three ways we can follow.
-1) Apply the patch and revert when dtc is fixed.
-2) Apply the patch, but add a comment above the property, that we need
-   to get the 0x40000064 address back when dtc is dixed.
-3) Leave this ugly warning be until dtc is fixed.
+Changelog v3:
+- This is a new patch, which has been created due to declining the
+  glue-layer approach.
 
-In a comment to v2 Rob mentioned a solution like 1). Personally I am ok with
-either, though I'd like to see a Rob's final comment about this.
+Changelog v4:
+- Use PTR_ERR_OR_ZERO() helper in the bt1_i2c_request_regs() method.
+- Discard devm_platform_get_and_ioremap_resource() utilization.
+---
+ drivers/i2c/busses/i2c-designware-platdrv.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
--Sergey 
+diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
+index ad292de2d260..061c8d506c7c 100644
+--- a/drivers/i2c/busses/i2c-designware-platdrv.c
++++ b/drivers/i2c/busses/i2c-designware-platdrv.c
+@@ -108,6 +108,15 @@ static void dw_i2c_plat_pm_cleanup(struct dw_i2c_dev *dev)
+ 		pm_runtime_put_noidle(dev->dev);
+ }
+ 
++static int dw_i2c_plat_request_regs(struct dw_i2c_dev *dev)
++{
++	struct platform_device *pdev = to_platform_device(dev->dev);
++
++	dev->base = devm_platform_ioremap_resource(pdev, 0);
++
++	return PTR_ERR_OR_ZERO(dev->base);
++}
++
+ static int dw_i2c_plat_probe(struct platform_device *pdev)
+ {
+ 	struct dw_i2c_platform_data *pdata = dev_get_platdata(&pdev->dev);
+@@ -125,15 +134,14 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	dev->flags |= (uintptr_t)device_get_match_data(&pdev->dev);
+-
+-	dev->base = devm_platform_ioremap_resource(pdev, 0);
+-	if (IS_ERR(dev->base))
+-		return PTR_ERR(dev->base);
+-
+ 	dev->dev = &pdev->dev;
+ 	dev->irq = irq;
+ 	platform_set_drvdata(pdev, dev);
+ 
++	ret = dw_i2c_plat_request_regs(dev);
++	if (ret)
++		return ret;
++
+ 	dev->rst = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
+ 	if (IS_ERR(dev->rst))
+ 		return PTR_ERR(dev->rst);
+-- 
+2.26.2
 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko

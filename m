@@ -2,128 +2,135 @@ Return-Path: <SRS0=HxbC=7J=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.9 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	PDS_TONAME_EQ_TOLOCAL_HDRS_LCASE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1,USER_IN_DEF_DKIM_WL autolearn=no autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 768B8C433DF
-	for <linux-mips@archiver.kernel.org>; Wed, 27 May 2020 20:55:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C96C4C433DF
+	for <linux-mips@archiver.kernel.org>; Wed, 27 May 2020 21:08:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5212D20899
-	for <linux-mips@archiver.kernel.org>; Wed, 27 May 2020 20:55:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A154620835
+	for <linux-mips@archiver.kernel.org>; Wed, 27 May 2020 21:08:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tnKZJrMI"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Eu4IoVjs"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgE0Uzj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 27 May 2020 16:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726718AbgE0Uzi (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 May 2020 16:55:38 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BCAC03E97D
-        for <linux-mips@vger.kernel.org>; Wed, 27 May 2020 13:55:38 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id c3so687166otr.12
-        for <linux-mips@vger.kernel.org>; Wed, 27 May 2020 13:55:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=CR9dwsvfsyVy6G6eufz7hLC4jiMaO3cWV54dCy7eHCU=;
-        b=tnKZJrMIcf0/z4kaB+rJl3FXPTJHht//RCQa4J59uzyChfalXhlpPFz5E0fYsdyFFE
-         ZJvl5QVLp1xf7s4kzKZpAW5feSDjc2nAFIp4uAutc73kgMQqJ7Qf4gVH0kuM6JXaf4rr
-         Cc5K/SBc3R3k210aYcI++2fWr6jGHExFKnZYm/oJqnBwanurHfAFGaTRti3RuuUw2v1a
-         KjoFcUj5mweabEKNICEPUCPMZzsVLMma4k1+nxXVAD/X/3p/r9fScN26LuA3aBf30jkv
-         WRC8LDsOwmZKb7/sIxW3Qk/N0n3lIJT5LPbRwMNKnRAl8DuZN85iuQMQXMRdU6NhSJ2A
-         ONMQ==
+        id S2387410AbgE0VID (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 27 May 2020 17:08:03 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:57429 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728475AbgE0VIB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 27 May 2020 17:08:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590613679;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3sSNRFYrb0CdmbwXzPVaN6Wl+qrkOkjvYM/9vtvRcHo=;
+        b=Eu4IoVjsrhT3li/XvMZj7RRjOdwTvNumFAFfw+ppIjxEZIqdDG7vqhTTN1M/yJOf2Lh+8p
+        nOQqFyiu5wz5kIclZaQn6+gWqr/WJPZ+yIeY8fUN3f7BCJhd2AxPfV8pQOBl7q1sUDViHM
+        FtcA7G05xHY0kLkbKUzqYmjD3WYvHjY=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-145-rw8NBqAZMsKR8cC-AhNNpQ-1; Wed, 27 May 2020 17:07:57 -0400
+X-MC-Unique: rw8NBqAZMsKR8cC-AhNNpQ-1
+Received: by mail-wm1-f69.google.com with SMTP id t9so244777wml.4
+        for <linux-mips@vger.kernel.org>; Wed, 27 May 2020 14:07:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=CR9dwsvfsyVy6G6eufz7hLC4jiMaO3cWV54dCy7eHCU=;
-        b=rKFJ170l5uC+gqoVLcaXgGpGCqocc3Z3tUZKlexqiW03VzRq6mA4/tvV5hvghCqxTF
-         gcfrWlki5fEoHTXzXlPQa9tPmCXvfjsUltH95NG6oDWIzGOW6ubuBVRJ5JF1ACoscQSK
-         wCa5ypvVlQHSBXxwHUd1spLc5aK8r8VYzv/UsmeW46FVDioJBQ7be8QkRFUAyn8UWq2u
-         ZUrpNFupSnIly0WjRrtcF0+gTy0OfG5/1Wel7sXVJRxm/nN0nGV6Fl5b1ws7n3YMwMgF
-         R5mSsxXaRTRuMHk36pyN2033AOmV/ZMO8/GSxrFH+bXjUoFtVwCRlA3aaRBOaUQLuR/I
-         OFaw==
-X-Gm-Message-State: AOAM531H7QMrR6002ttDXI0JkjPXsXBbKi/xyV4tgu2Fu1LMOH0qo7qN
-        tsDwaIvMn8c32EYuzJUSfp4RBg==
-X-Google-Smtp-Source: ABdhPJxe3WPDsF/Ss6eKC+aL78ToDj1r+IEd2rMAwohSMI+2b4yzHLOnjhl8EBq8paJZUxhB9cJ54g==
-X-Received: by 2002:a05:6830:18a:: with SMTP id q10mr6226851ota.25.1590612937438;
-        Wed, 27 May 2020 13:55:37 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id g22sm1150339ooh.36.2020.05.27.13.55.34
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 27 May 2020 13:55:36 -0700 (PDT)
-Date:   Wed, 27 May 2020 13:55:18 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     maobibo <maobibo@loongson.cn>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Dmitry Korotin <dkorotin@wavecomp.com>,
-        =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v3 3/3] mm/memory.c: Add memory read privilege before
- filling PTE entry
-In-Reply-To: <d1646320-51ec-4b5f-bcad-41eba85b78cf@loongson.cn>
-Message-ID: <alpine.LSU.2.11.2005271329050.6217@eggly.anvils>
-References: <1589778529-25627-1-git-send-email-maobibo@loongson.cn> <1589778529-25627-3-git-send-email-maobibo@loongson.cn> <20200518135747.d8837ba6742b2d193e14fbb0@linux-foundation.org> <d1646320-51ec-4b5f-bcad-41eba85b78cf@loongson.cn>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3sSNRFYrb0CdmbwXzPVaN6Wl+qrkOkjvYM/9vtvRcHo=;
+        b=l8fHq5RAapQkJHdtX6/yZM9GjEJrjmMs3yWHqfBdt1RLjGFQ6DRJN2a1NCPd1XiGd6
+         zVNsLT5nYsSc6Dy5FXEKNjw3XtcQuxUzJEZFQUSuG+f88PLjozGXq0JTitYUrZXyMwk9
+         DB7TgqvlqvBZf6PpwO/y5PAsk3CpXs+xZO608EFfAHJCZ2c00i8JHo/DxOzH/6Es0Z92
+         PR3t2iRsHvMOwJ0FU6Nwvv1z/SGwrIQedsJBxa3wZzGe3TOvFRQjO5WBVVVwG3Kn1Tdg
+         AJyNeOs16wLZzrBo1efRtN+XTbdDDcci07zLfCb89ZGrU/znUSEIpv3KXJd38N+P02qq
+         Q/cw==
+X-Gm-Message-State: AOAM531y/rIt0ZllsWE3s1Ot73fHNwpdzyB/TJXZVDRNqQKKsonJ5xr4
+        gYSA+zg0f7Yr2DGTb7XeVkkFFyEB99HKwTKMd6e7sOLA21+Mihx20kbz1ncW3bWjXeX9gYlyruw
+        YlPBz9E8ZNj5DPg77ifcTVg==
+X-Received: by 2002:adf:e908:: with SMTP id f8mr195576wrm.184.1590613676653;
+        Wed, 27 May 2020 14:07:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz/MqK9aixnJqSNydmC9tSwCyqyq7nI9EAoQtkXsEPNQuE8I0JoA6xnM6f4HETfKsks8bq+5g==
+X-Received: by 2002:adf:e908:: with SMTP id f8mr195551wrm.184.1590613676318;
+        Wed, 27 May 2020 14:07:56 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:3c1c:ffba:c624:29b8? ([2001:b07:6468:f312:3c1c:ffba:c624:29b8])
+        by smtp.gmail.com with ESMTPSA id v27sm4074887wrv.81.2020.05.27.14.07.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 May 2020 14:07:55 -0700 (PDT)
+Subject: Re: [PATCH v3 0/7] Statsfs: a new ram-based file system for Linux
+ kernel statistics
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Cc:     kvm@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Jim Mattson <jmattson@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Emanuele Giuseppe Esposito <e.emanuelegiuseppe@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        Jonathan Adams <jwadams@google.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>
+References: <20200526110318.69006-1-eesposit@redhat.com>
+ <20200526153128.448bfb43@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <6a754b40-b148-867d-071d-8f31c5c0d172@redhat.com>
+ <20200527132321.54bcdf04@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <af2ba926-73bc-26c3-7ce7-bd45f657fd85@redhat.com>
+Date:   Wed, 27 May 2020 23:07:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20200527132321.54bcdf04@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, 19 May 2020, maobibo wrote:
-> On 05/19/2020 04:57 AM, Andrew Morton wrote:
-> > On Mon, 18 May 2020 13:08:49 +0800 Bibo Mao <maobibo@loongson.cn> wrote:
-> > 
-> >> On mips platform, hw PTE entry valid bit is set in pte_mkyoung
-> >> function, it is used to set physical page with readable privilege.
-> > 
-> > pte_mkyoung() seems to be a strange place to set the pte's valid bit. 
-> > Why is it done there?  Can it be done within mips's mk_pte()?
-> On MIPS system hardware cannot set PAGE_ACCESS bit when accessing the page,
-> software sets PAGE_ACCESS software bit and PAGE_VALID hw bit together during page
-> fault stage.
+On 27/05/20 22:23, Jakub Kicinski wrote:
+> On Wed, 27 May 2020 15:14:41 +0200 Emanuele Giuseppe Esposito wrote:
+>> Regarding the config, as I said the idea is to gather multiple 
+>> subsystems' statistics, therefore there wouldn't be a single 
+>> configuration method like in netlink.
+>> For example in kvm there are file descriptors for configuration, and 
+>> creating them requires no privilege, contrary to the network interfaces.
+>
+> Enumerating networking interfaces, addresses, and almost all of the
+> configuration requires no extra privilege. In fact I'd hope that
+> whatever daemon collects network stats doesn't run as root :)
 > 
-> If mk_pte is called in page fault flow, it is ok to set both bits. If it is not 
-> called in page fault, PAGE_ACCESS is set however there is no actual memory accessing.
+> I think enumerating objects is of primary importance, and statistics 
+> of those objects are subordinate.
 
-Sorry for joining in so late, but would you please explain that some more:
-preferably in the final commit message, if not here.
+I see what you meant now.  statsfs can also be used to enumerate objects
+if one is so inclined (with the prototype in patch 7, for example, each
+network interface becomes a directory).
 
-I still don't understand why this is not done in the same way as on other
-architectures - those that care (I just checked x86, powerpc, arm, arm64,
-but not all of them) make sure that all the bits they want are there in
-mm/mmap.c's protection_map[16], which then feeds into vma->vm_page_prot,
-and so into mk_pte() as Andrew indicated.
+> Again, I have little KVM knowledge, but BPF also uses a fd-based API,
+> and carries stats over the same syscall interface.
 
-And I can see that arch/mips/mm/cache.c has a setup_protection_map()
-to do that: why does it not set the additional bits that you want?
-including the valid bit and the accessed (young) bit, as others do.
-Are you saying that there are circumstances in which it is wrong
-for mk_pte() to set the additional bits?
+Can BPF stats (for BPF scripts created by whatever process is running in
+the system) be collected by an external daemon that does not have access
+to the file descriptor?  For KVM it's of secondary importance to gather
+stats in the program; it can be nice to have and we are thinking of a
+way to export the stats over the fd-based API, but it's less useful than
+system-wide monitoring.  Perhaps this is a difference between the two.
 
-I'm afraid that generic mm developers will have no clue as to whether
-or not to add a pte_sw_mkyoung() after a mk_pte(); and generic source
-will be the cleaner if it turns out not to be needed (but thank you
-for making sure that it does nothing on the other architectures).
+Another case where stats and configuration are separate is CPUs, where
+CPU enumeration is done in sysfs but statistics are exposed in various
+procfs files such as /proc/interrupts and /proc/stats.
 
-Hugh
+Thanks,
+
+Paolo
+

@@ -6,87 +6,82 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33209C433E1
-	for <linux-mips@archiver.kernel.org>; Wed, 27 May 2020 11:39:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA23DC433E0
+	for <linux-mips@archiver.kernel.org>; Wed, 27 May 2020 11:39:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1871A20873
-	for <linux-mips@archiver.kernel.org>; Wed, 27 May 2020 11:39:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 86E36207D3
+	for <linux-mips@archiver.kernel.org>; Wed, 27 May 2020 11:39:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728007AbgE0Li4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 27 May 2020 07:38:56 -0400
-Received: from elvis.franken.de ([193.175.24.41]:41068 "EHLO elvis.franken.de"
+        id S1730062AbgE0Li3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 27 May 2020 07:38:29 -0400
+Received: from elvis.franken.de ([193.175.24.41]:41055 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730063AbgE0Lia (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 27 May 2020 07:38:30 -0400
+        id S1729712AbgE0Li2 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 27 May 2020 07:38:28 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jduO3-00011U-00; Wed, 27 May 2020 13:38:19 +0200
+        id 1jduO3-00011U-03; Wed, 27 May 2020 13:38:19 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 3E183C04CD; Wed, 27 May 2020 13:32:56 +0200 (CEST)
-Date:   Wed, 27 May 2020 13:32:56 +0200
+        id 77FD5C0594; Wed, 27 May 2020 13:35:02 +0200 (CEST)
+Date:   Wed, 27 May 2020 13:35:02 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Bibo Mao <maobibo@loongson.cn>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Huacai Chen <chenhc@lemote.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         Paul Burton <paulburton@kernel.org>,
-        Dmitry Korotin <dkorotin@wavecomp.com>,
-        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <f4bug@amsat.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v7 0/4] MIPS: page fault handling optimization
-Message-ID: <20200527113256.GA13537@alpha.franken.de>
-References: <1590546320-21814-1-git-send-email-maobibo@loongson.cn>
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v11 0/5] Loongson Generic PCI v11
+Message-ID: <20200527113502.GD13537@alpha.franken.de>
+References: <20200427060551.1372591-1-jiaxun.yang@flygoat.com>
+ <20200526092130.145550-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1590546320-21814-1-git-send-email-maobibo@loongson.cn>
+In-Reply-To: <20200526092130.145550-1-jiaxun.yang@flygoat.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, May 27, 2020 at 10:25:16AM +0800, Bibo Mao wrote:
-> V7:
-> - define function flush_tlb_fix_spurious_fault as inline rather
->   than macro
-> V6:
-> - Add update_mmu_tlb function as empty on all platform except mips
->   system, we use this function to update local tlb for page fault
->   smp-race handling
-> V5:
-> - define update_mmu_cache function specified on MIPS platform, and
->   add page fault smp-race stats info
-> V4:
-> - add pte_sw_mkyoung function to implement readable privilege, and
->   this function is  only in effect on MIPS system.
-> - add page valid bit judgement in function pte_modify
-> V3:
-> - add detailed changelog, modify typo issue in patch V2
-> v2:
-> - split flush_tlb_fix_spurious_fault and tlb update into two patches
-> - comments typo modification
-> - separate tlb update and add pte readable privilege into two patches
+On Tue, May 26, 2020 at 05:21:11PM +0800, Jiaxun Yang wrote:
+> v11 fixes a minor style issue in patch 2.
 > 
-> Bibo Mao (4):
->   MIPS: Do not flush tlb page when updating PTE entry
->   mm/memory.c: Update local TLB if PTE entry exists
->   mm/memory.c: Add memory read privilege on page fault handling
->   MIPS: mm: add page valid judgement in function pte_modify
+> Now it have got enough ack,
+> Thomas, cloud you please apply it to mips-next?
 > 
->  arch/mips/include/asm/pgtable.h | 37 +++++++++++++++++++++++++++++++++++--
->  include/asm-generic/pgtable.h   | 33 +++++++++++++++++++++++++++++++++
->  mm/memory.c                     | 30 ++++++++++++++++++++++--------
->  3 files changed, 90 insertions(+), 10 deletions(-)
+> Thanks.
+> 
+> Jiaxun Yang (5):
+>   PCI: Don't disable decoding when mmio_always_on is set
+>   PCI: Add Loongson PCI Controller support
+>   dt-bindings: Document Loongson PCI Host Controller
+>   MIPS: DTS: Loongson64: Add PCI Controller Node
+>   MIPS: Loongson64: Switch to generic PCI driver
+> 
+>  .../devicetree/bindings/pci/loongson.yaml     |  62 +++++
+>  arch/mips/Kconfig                             |   1 +
+>  arch/mips/boot/dts/loongson/rs780e-pch.dtsi   |  12 +
+>  arch/mips/loongson64/Makefile                 |   2 +-
+>  arch/mips/loongson64/vbios_quirk.c            |  29 ++
+>  arch/mips/pci/Makefile                        |   1 -
+>  arch/mips/pci/fixup-loongson3.c               |  71 -----
+>  arch/mips/pci/ops-loongson3.c                 | 116 --------
+>  drivers/pci/controller/Kconfig                |  10 +
+>  drivers/pci/controller/Makefile               |   1 +
+>  drivers/pci/controller/pci-loongson.c         | 247 ++++++++++++++++++
+>  drivers/pci/probe.c                           |   2 +-
+>  12 files changed, 364 insertions(+), 190 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/pci/loongson.yaml
+>  create mode 100644 arch/mips/loongson64/vbios_quirk.c
+>  delete mode 100644 arch/mips/pci/fixup-loongson3.c
+>  delete mode 100644 arch/mips/pci/ops-loongson3.c
+>  create mode 100644 drivers/pci/controller/pci-loongson.c
 
-series applied to mips-next.
+applied to mips-next.
 
 Thomas.
 

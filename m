@@ -6,82 +6,50 @@ X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA23DC433E0
-	for <linux-mips@archiver.kernel.org>; Wed, 27 May 2020 11:39:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ABCEC433DF
+	for <linux-mips@archiver.kernel.org>; Wed, 27 May 2020 11:56:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 86E36207D3
-	for <linux-mips@archiver.kernel.org>; Wed, 27 May 2020 11:39:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 105C0207D8
+	for <linux-mips@archiver.kernel.org>; Wed, 27 May 2020 11:56:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730062AbgE0Li3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 27 May 2020 07:38:29 -0400
-Received: from elvis.franken.de ([193.175.24.41]:41055 "EHLO elvis.franken.de"
+        id S1728254AbgE0LzM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 27 May 2020 07:55:12 -0400
+Received: from elvis.franken.de ([193.175.24.41]:41117 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729712AbgE0Li2 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 27 May 2020 07:38:28 -0400
+        id S1729451AbgE0LzK (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 27 May 2020 07:55:10 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jduO3-00011U-03; Wed, 27 May 2020 13:38:19 +0200
+        id 1jdueJ-00019x-00; Wed, 27 May 2020 13:55:07 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 77FD5C0594; Wed, 27 May 2020 13:35:02 +0200 (CEST)
-Date:   Wed, 27 May 2020 13:35:02 +0200
+        id 2D3BEC0594; Wed, 27 May 2020 13:41:06 +0200 (CEST)
+Date:   Wed, 27 May 2020 13:41:06 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Huacai Chen <chenhc@lemote.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Paul Burton <paulburton@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v11 0/5] Loongson Generic PCI v11
-Message-ID: <20200527113502.GD13537@alpha.franken.de>
-References: <20200427060551.1372591-1-jiaxun.yang@flygoat.com>
- <20200526092130.145550-1-jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Borislav Petkov <bp@suse.de>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Fangrui Song <maskray@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] MIPS: head.S: Always jump to kernel_entry at head
+ of text
+Message-ID: <20200527114106.GA13965@alpha.franken.de>
+References: <20200527063438.391949-1-jiaxun.yang@flygoat.com>
+ <20200527063438.391949-2-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200526092130.145550-1-jiaxun.yang@flygoat.com>
+In-Reply-To: <20200527063438.391949-2-jiaxun.yang@flygoat.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, May 26, 2020 at 05:21:11PM +0800, Jiaxun Yang wrote:
-> v11 fixes a minor style issue in patch 2.
-> 
-> Now it have got enough ack,
-> Thomas, cloud you please apply it to mips-next?
-> 
-> Thanks.
-> 
-> Jiaxun Yang (5):
->   PCI: Don't disable decoding when mmio_always_on is set
->   PCI: Add Loongson PCI Controller support
->   dt-bindings: Document Loongson PCI Host Controller
->   MIPS: DTS: Loongson64: Add PCI Controller Node
->   MIPS: Loongson64: Switch to generic PCI driver
-> 
->  .../devicetree/bindings/pci/loongson.yaml     |  62 +++++
->  arch/mips/Kconfig                             |   1 +
->  arch/mips/boot/dts/loongson/rs780e-pch.dtsi   |  12 +
->  arch/mips/loongson64/Makefile                 |   2 +-
->  arch/mips/loongson64/vbios_quirk.c            |  29 ++
->  arch/mips/pci/Makefile                        |   1 -
->  arch/mips/pci/fixup-loongson3.c               |  71 -----
->  arch/mips/pci/ops-loongson3.c                 | 116 --------
->  drivers/pci/controller/Kconfig                |  10 +
->  drivers/pci/controller/Makefile               |   1 +
->  drivers/pci/controller/pci-loongson.c         | 247 ++++++++++++++++++
->  drivers/pci/probe.c                           |   2 +-
->  12 files changed, 364 insertions(+), 190 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/pci/loongson.yaml
->  create mode 100644 arch/mips/loongson64/vbios_quirk.c
->  delete mode 100644 arch/mips/pci/fixup-loongson3.c
->  delete mode 100644 arch/mips/pci/ops-loongson3.c
->  create mode 100644 drivers/pci/controller/pci-loongson.c
+On Wed, May 27, 2020 at 02:34:32PM +0800, Jiaxun Yang wrote:
+> Buggy loaders like early version of PMON2000 sometimes ignore
+> elf_entry and goto start of text directly.
 
-applied to mips-next.
+so select BOOT_RAW on those broken platforms, no need for this change.
 
 Thomas.
 

@@ -2,105 +2,128 @@ Return-Path: <SRS0=2CSL=7K=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6084BC433E0
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 12:52:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F6AEC433E0
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 13:00:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 35D08206F1
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 12:52:57 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Foj/fqXx"
+	by mail.kernel.org (Postfix) with ESMTP id 099A12075F
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 13:00:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389872AbgE1Mw4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 28 May 2020 08:52:56 -0400
-Received: from mail-m974.mail.163.com ([123.126.97.4]:44044 "EHLO
-        mail-m974.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389828AbgE1Mw4 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 May 2020 08:52:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=2Dyep
-        fzfBy/KOzfvHORsBmKYgJNqknyTEsRuBABT7qc=; b=Foj/fqXxXyDIVuGFEl7qi
-        UlBxG5Za9tlCt3B/5YEQmywa9p9RNwgyUZ3sKhVgyOQct6Nm5A8MA45/q45nIOVV
-        d2IetGiMAgSzc2tcmXfXYc6hGmD3t9slGCecKoMbJXhVFssB/29qGB0pvht5WzJ5
-        o1NrqGhEWXp+XeJEda3KzE=
-Received: from [172.20.10.2] (unknown [124.64.18.22])
-        by smtp4 (Coremail) with SMTP id HNxpCgB3LyuIsM9ev5+aBA--.24S2;
-        Thu, 28 May 2020 20:37:37 +0800 (CST)
-Subject: Re: [PATCH] MIPS: Fix IRQ tracing when call handle_fpe() and
- handle_msa_fpe()
-To:     tsbogend@alpha.franken.de
-Cc:     paulburton@kernel.org, chenhc@lemote.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liulichao@loongson.cn
-References: <20200528123505.4219-1-yuanjunqing66@163.com>
-From:   yuanjunqing <yuanjunqing66@163.com>
-Message-ID: <57a8191b-1c64-9a5e-7935-050263d715fb@163.com>
-Date:   Thu, 28 May 2020 20:37:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S2390053AbgE1NAy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 28 May 2020 09:00:54 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:41840 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389878AbgE1NAx (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 May 2020 09:00:53 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 1155C80307C7;
+        Thu, 28 May 2020 13:00:52 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id QOYHV0u7-PkZ; Thu, 28 May 2020 16:00:51 +0300 (MSK)
+Date:   Thu, 28 May 2020 16:00:50 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Arnd Bergmann <arnd@arndb.de>
+List-Id: <soc.lore.kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "soc@kernel.org" <soc@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/6] bus: Add Baikal-T1 AXI-bus driver
+Message-ID: <20200528130050.f7mmznwpbvvasf2w@mobilestation>
+References: <20200526125928.17096-1-Sergey.Semin@baikalelectronics.ru>
+ <20200526125928.17096-5-Sergey.Semin@baikalelectronics.ru>
+ <CAHp75VcfkPPy5YjNrcv8c6doyQz5C47QyREE0v6tfQjXYrBijQ@mail.gmail.com>
+ <CAK8P3a2WMqTRitUU86hSV3HSK12-hF_RDoFg51PRGTLmXwznvA@mail.gmail.com>
+ <20200528122738.rbl2dkgep4ipr2je@mobilestation>
+ <CAK8P3a1ctV8Lj4PGJyzZ_eRMcXxoW1T7Wbk_2wkT4HUcFUTqdQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200528123505.4219-1-yuanjunqing66@163.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: HNxpCgB3LyuIsM9ev5+aBA--.24S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Wr4UAr18Cw1kWry5Aw1UZFb_yoWkJFc_Kr
-        42kw4DKrn8Grn3ur17tay8X3s7tw4agrnayr1qvw1Yvr45Wrn0kFZ5K3Wvqwn3XrsakF4I
-        y3W5JFnFkF1IyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUe-Vy7UUUUU==
-X-Originating-IP: [124.64.18.22]
-X-CM-SenderInfo: h1xd0ypxqtx0rjwwqiywtou0bp/xtbBzxEyXFaD7WC+bwAAs5
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1ctV8Lj4PGJyzZ_eRMcXxoW1T7Wbk_2wkT4HUcFUTqdQ@mail.gmail.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-sorry!
+On Thu, May 28, 2020 at 02:44:32PM +0200, Arnd Bergmann wrote:
+> On Thu, May 28, 2020 at 2:27 PM Serge Semin
+> <Sergey.Semin@baikalelectronics.ru> wrote:
+> >
+> > On Thu, May 28, 2020 at 02:14:58PM +0200, Arnd Bergmann wrote:
+> > > On Thu, May 28, 2020 at 12:01 AM Andy Shevchenko
+> > > <andy.shevchenko@gmail.com> wrote:
+> > > > On Tuesday, May 26, 2020, Serge Semin <Sergey.Semin@baikalelectronics.ru> wrote:
+> > > >>
+> > > >> AXI3-bus is the main communication bus connecting all high-speed
+> > > >> peripheral IP-cores with RAM controller and MIPS P5600 cores on Baikal-T1
+> > > >> SoC. Bus traffic arbitration is done by means of DW AMBA 3 AXI
+> > > >> Interconnect (so called AXI Main Interconnect) routing IO requests from
+> > > >> one SoC block to another. This driver provides a way to detect any bus
+> > > >> protocol errors and device not responding situations by means of an
+> > > >> embedded on top of the interconnect errors handler block (EHB). AXI
+> > > >> Interconnect QoS arbitration tuning is currently unsupported.
+> > > >> The bus doesn't provide a way to detect the interconnected devices,
+> > > >> so they are supposed to be statically defined like by means of the
+> > > >> simple-bus sub-nodes.
+> > > >
+> > > >
+> > > >
+> > > > Few comments in case if you need a new version. Main point is about sysfs_streq().
+> > >
+> > > I've applied the patch now and folded in fixes for the build warnings and
+> > > errors pointed out by the test robot, but I did not include the changes you
+> > > suggested.
+> >
+> > Are you saying that the build-errors and warnings have already been fixed by
+> > you, right? If so could you please give me a link to the repo with those
+> > commits, so I'd work with the up-to-date code?
+> 
 
-ÔÚ 2020/5/28 ÏÂÎç8:35, YuanJunQing Ð´µÀ:
->  Register "a1" is unsaved in this function,
->  when CONFIG_TRACE_IRQFLAGS is enabled,
->  the TRACE_IRQS_OFF macro will call trace_hardirqs_off(),
->  and this may change register "a1".
->  The changed register "a1" as argument will be send
->  to do_fpe() and do_msa_fpe().
->
-> Signed-off-by: YuanJunQing <yuanjunqing66@163.com>
-> ---
->  arch/mips/kernel/genex.S | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-> index 8236fb291e3f..a1b966f3578e 100644
-> --- a/arch/mips/kernel/genex.S
-> +++ b/arch/mips/kernel/genex.S
-> @@ -476,20 +476,20 @@ NESTED(nmi_handler, PT_SIZE, sp)
->  	.endm
->  
->  	.macro	__build_clear_fpe
-> +	CLI
-> +	TRACE_IRQS_OFF
->  	.set	push
->  	/* gas fails to assemble cfc1 for some archs (octeon).*/ \
->  	.set	mips1
->  	SET_HARDFLOAT
->  	cfc1	a1, fcr31
->  	.set	pop
-> -	CLI
-> -	TRACE_IRQS_OFF
->  	.endm
->  
->  	.macro	__build_clear_msa_fpe
-> -	_cfcmsa	a1, MSA_CSR
->  	CLI
->  	TRACE_IRQS_OFF
-> +	_cfcmsa	a1, MSA_CSR
->  	.endm
->  
->  	.macro	__build_clear_ade
+> I've pushed it to https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git/,
+> 
+> I made a local "baikal/drivers" branch with just your patches, updated
+> to address the build reports. This is merged into the "arm/drivers"
+> branch that contains all driver specific changes across all SoCs and
+> this is what I'll send to Linus next week.
+> 
+> There is also the "for-next" branch that contains all arm/* branches,
+> and this is what gets pulled into linux-next, so your patches will show
+> up there tomorrow as well.
 
+I see. Thanks for explanation. I've monitored the soc/soc.git a few minutes
+ago, but the gitolite web-interface showed me that the last update was made
+9 hours ago. So I thought you could be using some another repo. Now I see
+the fresh updates and the drivers being merges.
+
+I'll address the Andy's comments and send a follow-up patches with fixes shortly
+today.
+
+BTW I don't see the next commit:
+[PATCH v3 3/6] dt-bindings: memory: Add Baikal-T1 L2-cache Control Block binding
+in the baikal/drivers, so the l2-ctl binding hasn't been merged into the
+arm/drivers and for-next branches. You must have missed that patch. Could you
+please make sure it's also merged in?
+
+Thanks
+-Sergey
+
+> 
+> You can normally check the status of any submission to soc@kernel.org
+> at https://patchwork.kernel.org/project/linux-soc/list/, but it seems that
+> has not picked up the status yet, and I'll have to update it manually.
+> 
+>        Arnd

@@ -2,170 +2,153 @@ Return-Path: <SRS0=2CSL=7K=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A32BC433DF
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 15:41:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83470C433E0
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 15:50:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 752402073B
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 15:41:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6A96B207F9
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 15:50:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404538AbgE1PlE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 28 May 2020 11:41:04 -0400
-Received: from mga01.intel.com ([192.55.52.88]:63981 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404548AbgE1PlB (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 28 May 2020 11:41:01 -0400
-IronPort-SDR: 67BICs3DDzDuOl1nURv3d8U8+p9K7nqeokhhJS8x4G9UVPgpjIyYX3nuWLUwKwBIRWYIa/6kOn
- WMirdBD8ctfw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 08:41:00 -0700
-IronPort-SDR: QMad0E4ObD5A8za3WFpwWgXLxAUWZwR79GYj7VyE+O3tV8iyhhpsSiRL5wD5VNnmF7WkOw5i3R
- RmFg5NThmbDw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,445,1583222400"; 
-   d="scan'208";a="302849840"
-Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
-  by orsmga008.jf.intel.com with ESMTP; 28 May 2020 08:40:56 -0700
-From:   "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-To:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, miquel.raynal@bootlin.com
-Cc:     richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
-        brendanhiggins@google.com, tglx@linutronix.de,
-        boris.brezillon@collabora.com, anders.roxell@linaro.org,
-        masonccyang@mxic.com.tw, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, hauke.mehrtens@intel.com,
-        andriy.shevchenko@intel.com, qi-ming.wu@intel.com,
-        cheol.yong.kim@intel.com,
-        Ramuthevar Vadivel Murugan 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Subject: [PATCH v10 1/2] dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
-Date:   Thu, 28 May 2020 23:39:28 +0800
-Message-Id: <20200528153929.46859-2-vadivel.muruganx.ramuthevar@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200528153929.46859-1-vadivel.muruganx.ramuthevar@linux.intel.com>
-References: <20200528153929.46859-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S2404564AbgE1PuX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 28 May 2020 11:50:23 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:43234 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404503AbgE1PuW (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 May 2020 11:50:22 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 226DD803083A;
+        Thu, 28 May 2020 15:50:19 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id scf8l9YyCqMo; Thu, 28 May 2020 18:50:18 +0300 (MSK)
+Date:   Thu, 28 May 2020 18:50:17 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 10/10] dmaengine: dw: Initialize max_sg_nents with
+ nollp flag
+Message-ID: <20200528155017.ayetroojyvxl74kb@mobilestation>
+References: <20200526225022.20405-1-Sergey.Semin@baikalelectronics.ru>
+ <20200526225022.20405-11-Sergey.Semin@baikalelectronics.ru>
+ <20200528145630.GV1634618@smile.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200528145630.GV1634618@smile.fi.intel.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+On Thu, May 28, 2020 at 05:56:30PM +0300, Andy Shevchenko wrote:
+> On Wed, May 27, 2020 at 01:50:21AM +0300, Serge Semin wrote:
+> > Multi-block support provides a way to map the kernel-specific SG-table so
+> > the DW DMA device would handle it as a whole instead of handling the
+> > SG-list items or so called LLP block items one by one. So if true LLP
+> > list isn't supported by the DW DMA engine, then soft-LLP mode will be
+> > utilized to load and execute each LLP-block one by one. The soft-LLP mode
+> > of the DMA transactions execution might not work well for some DMA
+> > consumers like SPI due to its Tx and Rx buffers inter-dependency. Let's
+> > expose the nollp flag indicating the soft-LLP mode by means of the
+> > max_sg_nents capability, so the DMA consumer would be ready to somehow
+> > workaround errors caused by such mode being utilized.
+> > 
+> 
+> In principal I agree, one nit below.
+> If you are okay with it, feel free to add my Rb tag.
+> 
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: linux-mips@vger.kernel.org
+> > Cc: devicetree@vger.kernel.org
+> > 
+> > ---
+> > 
+> > Changelog v3:
+> > - This is a new patch created as a result of the discussion with Vinud and
+> >   Andy in the framework of DW DMA burst and LLP capabilities.
+> > ---
+> >  drivers/dma/dw/core.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> > 
+> > diff --git a/drivers/dma/dw/core.c b/drivers/dma/dw/core.c
+> > index 29c4ef08311d..b850eb7fd084 100644
+> > --- a/drivers/dma/dw/core.c
+> > +++ b/drivers/dma/dw/core.c
+> > @@ -1054,6 +1054,15 @@ static void dwc_caps(struct dma_chan *chan, struct dma_slave_caps *caps)
+> >  	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
+> >  
+> >  	caps->max_burst = dwc->max_burst;
+> > +
+> > +	/*
+> > +	 * It might be crucial for some devices to have the hardware
+> > +	 * accelerated multi-block transfers supported, aka LLPs in DW DMAC
+> > +	 * notation. So if LLPs are supported then max_sg_nents is set to
+> > +	 * zero which means unlimited number of SG entries can be handled in a
+> > +	 * single DMA transaction, otherwise it's just one SG entry.
+> > +	 */
+> 
+> > +	caps->max_sg_nents = dwc->nollp;
+> 
 
-Add YAML file for dt-bindings to support NAND Flash Controller
-on Intel's Lightning Mountain SoC.
+> To be on the safer side I would explicitly do it like
+> 
+> 	if (dwc->nollp)
+> 	 /* your nice comment */
+> 	 = 1;
+> 	else
+> 	 /* Unlimited */
+> 	 = 0;
+> 
+> type or content of nollp theoretically can be changed and this will affect maximum segments.
 
-Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
----
- .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 93 ++++++++++++++++++++++
- 1 file changed, 93 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+Agree. Though I don't like formatting you suggested. If I add my nice comment
+between if-statement and assignment the the former will be look detached from
+the if-statement, which seems a bit ugly. So I'd leave the comment above the
+whole if-else statement, especially seeing I've already mentioned there about
+the unlimited number of SG entries there.
 
-diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-new file mode 100644
-index 000000000000..afecc9920e04
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-@@ -0,0 +1,93 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/intel,lgm-nand.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Intel LGM SoC NAND Controller Device Tree Bindings
-+
-+allOf:
-+  - $ref: "nand-controller.yaml"
-+
-+maintainers:
-+  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-+
-+properties:
-+  compatible:
-+    const: intel,lgm-nand-controller
-+
-+  reg:
-+    maxItems: 6
-+
-+  reg-names:
-+    items:
-+       - const: ebunand
-+       - const: hsnand
-+       - const: nand_cs0
-+       - const: nand_cs1
-+       - const: addr_sel0
-+       - const: addr_sel1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  dmas:
-+    maxItems: 2
-+
-+  dma-names:
-+    items:
-+      - const: tx
-+      - const: rx
-+
-+patternProperties:
-+  "^nand@[a-f0-9]+$":
-+    type: object
-+    properties:
-+      reg:
-+        minimum: 0
-+        maximum: 7
-+
-+      nand-ecc-mode: true
-+
-+      nand-ecc-algo:
-+        const: hw
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - clocks
-+  - dmas
-+  - dma-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    nand-controller@e0f00000 {
-+      compatible = "intel,lgm-nand";
-+      reg = <0xe0f00000 0x100>,
-+            <0xe1000000 0x300>,
-+            <0xe1400000 0x8000>,
-+            <0xe1c00000 0x1000>,
-+            <0x17400000 0x4>,
-+            <0x17c00000 0x4>;
-+      reg-names = "ebunand", "hsnand", "nand_cs0", "nand_cs1",
-+        "addr_sel0", "addr_sel1";
-+      clocks = <&cgu0 125>;
-+      dmas = <&dma0 8>, <&dma0 9>;
-+      dma-names = "tx", "rx";
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      nand@0 {
-+        reg = <0>;
-+        nand-on-flash-bbt;
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+      };
-+    };
-+
-+...
--- 
-2.11.0
+	/*
+	 * It might be crucial for some devices to have the hardware
+	 * accelerated multi-block transfers supported, aka LLPs in DW DMAC
+	 * notation. So if LLPs are supported then max_sg_nents is set to
+	 * zero which means unlimited number of SG entries can be handled in a
+	 * single DMA transaction, otherwise it's just one SG entry.
+	 */
+ 	if (dwc->nollp)
+ 		caps->max_sg_nents = 1;
+ 	else
+ 		caps->max_sg_nents = 0;
 
+-Sergey
+
+> 
+> >  }
+> >  
+> >  int do_dma_probe(struct dw_dma_chip *chip)
+> > -- 
+> > 2.26.2
+> > 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 

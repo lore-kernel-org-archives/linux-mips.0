@@ -2,106 +2,152 @@ Return-Path: <SRS0=2CSL=7K=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F597C433DF
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 20:38:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0881EC433E0
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 22:24:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5B6292073B
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 20:38:47 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I1cMDUG4"
+	by mail.kernel.org (Postfix) with ESMTP id E22D8207BC
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 22:24:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407274AbgE1Uiq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 28 May 2020 16:38:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407218AbgE1Uip (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 May 2020 16:38:45 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9010CC08C5C6;
-        Thu, 28 May 2020 13:38:45 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id d10so143813pgn.4;
-        Thu, 28 May 2020 13:38:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uUmAHxoLCci70CIyQKHJVkgQVBujsUNyRL0aI0R0aqo=;
-        b=I1cMDUG4Wbl6ZX/z5HWJTm2du5yh0gMU/JPmyLOA29gjDIaqZCuFlq1Akwl3x2elMt
-         ocKJz6UFSs9RV8uUTGDo6qDUWd3ujnAqcC0wVQzxSf5C4KAdnYFrC2ux/mp9wHzQoU3I
-         8sxF6hLFmWwdrvdGrJQR23vCVeXjvY3uf4ee+i0j7VVO7ldGgG6UHkEwvEs7NSJvucXr
-         u/HX7g9A/JHwTmtNm/pizzgaEFtaHRhTXL/OSQZU6alHCgQkzALi5i6A9EqjaPivx4Ho
-         YuugbZTUH2NeinzeiTFXp2XiO++0eeSonK5SMIVAiaoA3IMaWw/M6AJvPgZqSbvhlFLk
-         lFIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uUmAHxoLCci70CIyQKHJVkgQVBujsUNyRL0aI0R0aqo=;
-        b=IxfjS8uS3RD4gupLgRT3aQi0J1qxkiIQW8burB1ym+nuF6AbCWIJwtbFL5h1xsBNH+
-         eU7ycey3at/NcmDQMpKsMYM9IRqMz0hdNjD2ZioW6pdWdPIA3I9jWc6o6jDHcJKOjWBS
-         rt53vx1V3BJy53ODlDc/PZI5jwN/5xYVVY4OgnGjTZrceKGGDQr57eVXaUhc7qvxCcll
-         M00oitiocwwMAQo3gs4HvIiLoLzLlBElYDyG0JBOa2tbxZPs2WrJkKYREhUp3yC/s0Zv
-         hLGh0bJwK5Ja+mUXQQCrhqZqCXS1WaIxjKFmYc8VQDwqaXqKGvolOWD4C6BS6uWG1ec1
-         A1nA==
-X-Gm-Message-State: AOAM531wGp0ZtG3xBvNfUpzdu9rBHP+Pd5VibI6KiUHzhzTmvCl5wPr5
-        bgzA1RdRMbH5Iu2FxCh4FvYL6UwO90DnPSm0Qfc=
-X-Google-Smtp-Source: ABdhPJwe8DmfXiHurV89f6av71936kl+HM4lp/ZzAxpMRXlN2Qv/GB4+dYblIxf4soDqHWyWkLuJ27OfLk4KVGGMVXw=
-X-Received: by 2002:aa7:99c8:: with SMTP id v8mr5137217pfi.36.1590698325132;
- Thu, 28 May 2020 13:38:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200526225022.20405-1-Sergey.Semin@baikalelectronics.ru>
- <20200526225022.20405-10-Sergey.Semin@baikalelectronics.ru>
- <20200528145224.GT1634618@smile.fi.intel.com> <20200528154022.3reghhjcd4dnsr3g@mobilestation>
-In-Reply-To: <20200528154022.3reghhjcd4dnsr3g@mobilestation>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 28 May 2020 23:38:28 +0300
-Message-ID: <CAHp75VcPVO6yOmyrSBfjVk5eSYhC4J0QXAfOhjRXGd4=FemezA@mail.gmail.com>
-Subject: Re: [PATCH v3 09/10] dmaengine: dw: Introduce max burst length hw config
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        id S2437113AbgE1WYQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 28 May 2020 18:24:16 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:44594 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437098AbgE1WYO (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 May 2020 18:24:14 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 497C280307C1;
+        Thu, 28 May 2020 22:24:11 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 1Wrd4nGrPMil; Fri, 29 May 2020 01:24:10 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 04/11] dmaengine: Introduce max SG list entries capability
+Date:   Fri, 29 May 2020 01:23:54 +0300
+Message-ID: <20200528222401.26941-5-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200528222401.26941-1-Sergey.Semin@baikalelectronics.ru>
+References: <20200528222401.26941-1-Sergey.Semin@baikalelectronics.ru>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, May 28, 2020 at 6:43 PM Serge Semin
-<Sergey.Semin@baikalelectronics.ru> wrote:
-> On Thu, May 28, 2020 at 05:52:24PM +0300, Andy Shevchenko wrote:
-> > On Wed, May 27, 2020 at 01:50:20AM +0300, Serge Semin wrote:
+Some devices may lack the support of the hardware accelerated SG list
+entries automatic walking through and execution. In this case a burden of
+the SG list traversal and DMA engine re-initialization lies on the
+DMA engine driver (normally implemented by using a DMA transfer completion
+IRQ to recharge the DMA device with a next SG list entry). But such
+solution may not be suitable for some DMA consumers. In particular SPI
+devices need both Tx and Rx DMA channels work synchronously in order
+to avoid the Rx FIFO overflow. In case if Rx DMA channel is paused for
+some time while the Tx DMA channel works implicitly pulling data into the
+Rx FIFO, the later will be eventually overflown, which will cause the data
+loss. So if SG list entries aren't automatically fetched by the DMA
+engine, but are one-by-one manually selected for execution in the
+ISRs/deferred work/etc., such problem will eventually happen due to the
+non-deterministic latencies of the service execution.
 
-...
+In order to let the DMA consumer know about the DMA device capabilities
+regarding the hardware accelerated SG list traversal we introduce the
+max_sg_list capability. It is supposed to be initialized by the DMA engine
+driver with 0 if there is no limitation for the number of SG entries
+atomically executed and with non-zero value if there is such constraints,
+so the upper limit is determined by the number set to the property.
 
-> > Perhaps,
-> >
-> >       /* DesignWare DMA supports burst value from 0 */
-> >       caps->min_burst = 0;
->
-> Regarding min_burst being zero. I don't fully understand what it means.
-> It means no burst or burst with minimum length or what?
-> In fact DW DMA burst length starts from 1. Remember the burst-length run-time
-> parameter we were arguing about? Anyway the driver makes sure that both
-> 0 and 1 requested burst length are setup as burst length of 1 in the
-> CTLx.SRC_MSIZE, CTLx.DST_MSIZE fields.
+Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: devicetree@vger.kernel.org
 
-Yeah, I also thought about it after I sent a message. 1 sounds better.
+---
 
+Changelog v3:
+- This is a new patch created as a result of the discussion with Vinud and
+  Andy in the framework of DW DMA burst and LLP capabilities.
+
+Changelog v4:
+- Fix of->if typo. It should be definitely of.
+---
+ drivers/dma/dmaengine.c   | 1 +
+ include/linux/dmaengine.h | 8 ++++++++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
+index b332ffe52780..ad56ad58932c 100644
+--- a/drivers/dma/dmaengine.c
++++ b/drivers/dma/dmaengine.c
+@@ -592,6 +592,7 @@ int dma_get_slave_caps(struct dma_chan *chan, struct dma_slave_caps *caps)
+ 	caps->directions = device->directions;
+ 	caps->min_burst = device->min_burst;
+ 	caps->max_burst = device->max_burst;
++	caps->max_sg_nents = device->max_sg_nents;
+ 	caps->residue_granularity = device->residue_granularity;
+ 	caps->descriptor_reuse = device->descriptor_reuse;
+ 	caps->cmd_pause = !!device->device_pause;
+diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+index 0c7403b27133..a7e4d8dfdd19 100644
+--- a/include/linux/dmaengine.h
++++ b/include/linux/dmaengine.h
+@@ -467,6 +467,9 @@ enum dma_residue_granularity {
+  *	should be checked by controller as well
+  * @min_burst: min burst capability per-transfer
+  * @max_burst: max burst capability per-transfer
++ * @max_sg_nents: max number of SG list entries executed in a single atomic
++ *	DMA tansaction with no intermediate IRQ for reinitialization. Zero
++ *	value means unlimited number of entries.
+  * @cmd_pause: true, if pause is supported (i.e. for reading residue or
+  *	       for resume later)
+  * @cmd_resume: true, if resume is supported
+@@ -481,6 +484,7 @@ struct dma_slave_caps {
+ 	u32 directions;
+ 	u32 min_burst;
+ 	u32 max_burst;
++	u32 max_sg_nents;
+ 	bool cmd_pause;
+ 	bool cmd_resume;
+ 	bool cmd_terminate;
+@@ -773,6 +777,9 @@ struct dma_filter {
+  *	should be checked by controller as well
+  * @min_burst: min burst capability per-transfer
+  * @max_burst: max burst capability per-transfer
++ * @max_sg_nents: max number of SG list entries executed in a single atomic
++ *	DMA tansaction with no intermediate IRQ for reinitialization. Zero
++ *	value means unlimited number of entries.
+  * @residue_granularity: granularity of the transfer residue reported
+  *	by tx_status
+  * @device_alloc_chan_resources: allocate resources and return the
+@@ -844,6 +851,7 @@ struct dma_device {
+ 	u32 directions;
+ 	u32 min_burst;
+ 	u32 max_burst;
++	u32 max_sg_nents;
+ 	bool descriptor_reuse;
+ 	enum dma_residue_granularity residue_granularity;
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.26.2
+

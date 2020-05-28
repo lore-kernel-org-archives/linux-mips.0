@@ -2,73 +2,86 @@ Return-Path: <SRS0=2CSL=7K=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3027C433E0
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 13:13:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D02DFC433E0
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 13:40:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C100D2089D
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 13:13:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BAD4920814
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 13:40:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390244AbgE1NNM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 28 May 2020 09:13:12 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:41922 "EHLO
+        id S2390425AbgE1Nkv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 28 May 2020 09:40:51 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:42070 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390241AbgE1NNL (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 May 2020 09:13:11 -0400
+        with ESMTP id S2390335AbgE1Nkv (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 May 2020 09:40:51 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 94FCE80307C0;
-        Thu, 28 May 2020 13:13:08 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 76FA480307C0;
+        Thu, 28 May 2020 13:40:48 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id U40uSsS2PPMI; Thu, 28 May 2020 16:13:08 +0300 (MSK)
-Date:   Thu, 28 May 2020 16:13:07 +0300
+        with ESMTP id i8BwLYz9B2fO; Thu, 28 May 2020 16:40:47 +0300 (MSK)
+Date:   Thu, 28 May 2020 16:40:46 +0300
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Arnd Bergmann <arnd@arndb.de>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
 List-Id: <soc.lore.kernel.org>
 CC:     Serge Semin <fancer.lancer@gmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Paul Burton <paulburton@kernel.org>,
         Olof Johansson <olof@lixom.net>,
         Rob Herring <robh+dt@kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        SoC Team <soc@kernel.org>, DTML <devicetree@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "soc@kernel.org" <soc@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 5/6] bus: Add Baikal-T1 APB-bus driver
-Message-ID: <20200528131307.phopcjymtqhl2jyr@mobilestation>
+Subject: Re: [PATCH v3 4/6] bus: Add Baikal-T1 AXI-bus driver
+Message-ID: <20200528134046.scxig3she3wyjyko@mobilestation>
 References: <20200526125928.17096-1-Sergey.Semin@baikalelectronics.ru>
- <20200526125928.17096-6-Sergey.Semin@baikalelectronics.ru>
- <CAK8P3a1KT6G0pcLt56spm2O_Q5m_s+cdHfUrp2YUStS0wGigwQ@mail.gmail.com>
+ <20200526125928.17096-5-Sergey.Semin@baikalelectronics.ru>
+ <CAHp75VcfkPPy5YjNrcv8c6doyQz5C47QyREE0v6tfQjXYrBijQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a1KT6G0pcLt56spm2O_Q5m_s+cdHfUrp2YUStS0wGigwQ@mail.gmail.com>
+In-Reply-To: <CAHp75VcfkPPy5YjNrcv8c6doyQz5C47QyREE0v6tfQjXYrBijQ@mail.gmail.com>
 X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, May 28, 2020 at 02:17:17PM +0200, Arnd Bergmann wrote:
-> On Tue, May 26, 2020 at 2:59 PM Serge Semin
-> <Sergey.Semin@baikalelectronics.ru> wrote:
-> >
-> > Baikal-T1 AXI-APB bridge is used to access the SoC subsystem CSRs.
-> > IO requests are routed to this bus by means of the DW AMBA 3 AXI
-> > Interconnect. In case if an attempted APB transaction stays with no
-> > response for a pre-defined time an interrupt occurs and the bus gets
-> > freed for a next operation. This driver provides the interrupt handler
-> > to detect the erroneous address, prints an error message about the
-> > address fault, updates an errors counter. The counter and the APB-bus
-> > operations timeout can be accessed via corresponding sysfs nodes.
-> > A dedicated sysfs-node can be also used to artificially cause the
-> > bus errors described above.
-> >
+On Thu, May 28, 2020 at 01:00:57AM +0300, Andy Shevchenko wrote:
+> On Tuesday, May 26, 2020, Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> wrote:
+> 
+> > AXI3-bus is the main communication bus connecting all high-speed
+> > peripheral IP-cores with RAM controller and MIPS P5600 cores on Baikal-T1
+> > SoC. Bus traffic arbitration is done by means of DW AMBA 3 AXI
+> > Interconnect (so called AXI Main Interconnect) routing IO requests from
+> > one SoC block to another. This driver provides a way to detect any bus
+> > protocol errors and device not responding situations by means of an
+> > embedded on top of the interconnect errors handler block (EHB). AXI
+> > Interconnect QoS arbitration tuning is currently unsupported.
+> > The bus doesn't provide a way to detect the interconnected devices,
+> > so they are supposed to be statically defined like by means of the
+> > simple-bus sub-nodes.
+> 
+> 
+> 
+> Few comments in case if you need a new version. Main point is about
+> sysfs_streq().
+
+Hello, Andy. Thanks for your comments. I'll address most of them in a follow-up
+patches. See just one note below.
+
+> 
+> 
 > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 > > Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
 > > Cc: Paul Burton <paulburton@kernel.org>
@@ -78,39 +91,27 @@ On Thu, May 28, 2020 at 02:17:17PM +0200, Arnd Bergmann wrote:
 > > Cc: soc@kernel.org
 > > Cc: devicetree@vger.kernel.org
 > >
-> > ---
-> 
-> Applied with this fixup:
 
-I'm afraid linux/io.h is also needed here.(
+[nip]
+
+> > +
+> > +static void bt1_axi_clear_data(void *data)
+> > +{
+> > +       struct bt1_axi *axi = data;
+> > +       struct platform_device *pdev = to_platform_device(axi->dev);
+> > +
+> > +       platform_set_drvdata(pdev, NULL);
+> 
+> 
+
+> Doesn't device driver core do this already?
+
+It doesn't on remove. This cleanups the drvdata pointer when the driver is
+unloaded at the moment of remove() callback calling. This is a good
+practice to leave the device the same as it has been before usage including
+the pointer value. In this case if theoretically someone (though very
+unlikely, but anyway) would try to use the pointer without having it
+initialized, the NULL-dereference would pop up, otherwise we may
+corrupt someones memory, which is very nasty.
 
 -Sergey
-
-> 
-> --- a/drivers/bus/bt1-apb.c
-> +++ b/drivers/bus/bt1-apb.c
-> @@ -16,6 +16,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/interrupt.h>
->  #include <linux/nmi.h>
-> +#include <linux/of.h>
->  #include <linux/regmap.h>
->  #include <linux/clk.h>
->  #include <linux/reset.h>
-> @@ -309,13 +310,13 @@ static ssize_t timeout_store(struct device *dev,
->  }
->  static DEVICE_ATTR_RW(timeout);
-> 
-> -static int inject_error_show(struct device *dev, struct device_attribute *attr,
-> +static ssize_t inject_error_show(struct device *dev, struct
-> device_attribute *attr,
->                              char *buf)
->  {
->         return scnprintf(buf, PAGE_SIZE, "Error injection: nodev irq\n");
->  }
-> 
-> -static int inject_error_store(struct device *dev,
-> +static ssize_t inject_error_store(struct device *dev,
->                               struct device_attribute *attr,
->                               const char *data, size_t count)
->  {

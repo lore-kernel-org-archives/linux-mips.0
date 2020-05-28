@@ -2,61 +2,115 @@ Return-Path: <SRS0=2CSL=7K=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72CC8C433DF
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 13:07:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3027C433E0
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 13:13:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5777720723
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 13:07:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C100D2089D
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 13:13:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390030AbgE1NHg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 28 May 2020 09:07:36 -0400
-Received: from elvis.franken.de ([193.175.24.41]:42402 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390049AbgE1NHf (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 28 May 2020 09:07:35 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jeIFt-0002v1-00; Thu, 28 May 2020 15:07:29 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 173F2C05A4; Thu, 28 May 2020 14:39:20 +0200 (CEST)
-Date:   Thu, 28 May 2020 14:39:20 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH] MIPS: Loongson64: Remove not used pci.c
-Message-ID: <20200528123920.GA18321@alpha.franken.de>
-References: <1590665351-2956-1-git-send-email-yangtiezhu@loongson.cn>
+        id S2390244AbgE1NNM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 28 May 2020 09:13:12 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:41922 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390241AbgE1NNL (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 May 2020 09:13:11 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 94FCE80307C0;
+        Thu, 28 May 2020 13:13:08 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id U40uSsS2PPMI; Thu, 28 May 2020 16:13:08 +0300 (MSK)
+Date:   Thu, 28 May 2020 16:13:07 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Arnd Bergmann <arnd@arndb.de>
+List-Id: <soc.lore.kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        SoC Team <soc@kernel.org>, DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 5/6] bus: Add Baikal-T1 APB-bus driver
+Message-ID: <20200528131307.phopcjymtqhl2jyr@mobilestation>
+References: <20200526125928.17096-1-Sergey.Semin@baikalelectronics.ru>
+ <20200526125928.17096-6-Sergey.Semin@baikalelectronics.ru>
+ <CAK8P3a1KT6G0pcLt56spm2O_Q5m_s+cdHfUrp2YUStS0wGigwQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1590665351-2956-1-git-send-email-yangtiezhu@loongson.cn>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <CAK8P3a1KT6G0pcLt56spm2O_Q5m_s+cdHfUrp2YUStS0wGigwQ@mail.gmail.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, May 28, 2020 at 07:29:11PM +0800, Tiezhu Yang wrote:
-> After commit 6423e59a64e7 ("MIPS: Loongson64: Switch to generic PCI
-> driver"), arch/mips/loongson64/pci.c is not used any more, remove it.
+On Thu, May 28, 2020 at 02:17:17PM +0200, Arnd Bergmann wrote:
+> On Tue, May 26, 2020 at 2:59 PM Serge Semin
+> <Sergey.Semin@baikalelectronics.ru> wrote:
+> >
+> > Baikal-T1 AXI-APB bridge is used to access the SoC subsystem CSRs.
+> > IO requests are routed to this bus by means of the DW AMBA 3 AXI
+> > Interconnect. In case if an attempted APB transaction stays with no
+> > response for a pre-defined time an interrupt occurs and the bus gets
+> > freed for a next operation. This driver provides the interrupt handler
+> > to detect the erroneous address, prints an error message about the
+> > address fault, updates an errors counter. The counter and the APB-bus
+> > operations timeout can be accessed via corresponding sysfs nodes.
+> > A dedicated sysfs-node can be also used to artificially cause the
+> > bus errors described above.
+> >
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> > Cc: Paul Burton <paulburton@kernel.org>
+> > Cc: Olof Johansson <olof@lixom.net>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: linux-mips@vger.kernel.org
+> > Cc: soc@kernel.org
+> > Cc: devicetree@vger.kernel.org
+> >
+> > ---
 > 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  arch/mips/loongson64/pci.c | 49 ----------------------------------------------
->  1 file changed, 49 deletions(-)
->  delete mode 100644 arch/mips/loongson64/pci.c
+> Applied with this fixup:
 
-applied to mips-next.
+I'm afraid linux/io.h is also needed here.(
 
-Thomas.
+-Sergey
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> 
+> --- a/drivers/bus/bt1-apb.c
+> +++ b/drivers/bus/bt1-apb.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/nmi.h>
+> +#include <linux/of.h>
+>  #include <linux/regmap.h>
+>  #include <linux/clk.h>
+>  #include <linux/reset.h>
+> @@ -309,13 +310,13 @@ static ssize_t timeout_store(struct device *dev,
+>  }
+>  static DEVICE_ATTR_RW(timeout);
+> 
+> -static int inject_error_show(struct device *dev, struct device_attribute *attr,
+> +static ssize_t inject_error_show(struct device *dev, struct
+> device_attribute *attr,
+>                              char *buf)
+>  {
+>         return scnprintf(buf, PAGE_SIZE, "Error injection: nodev irq\n");
+>  }
+> 
+> -static int inject_error_store(struct device *dev,
+> +static ssize_t inject_error_store(struct device *dev,
+>                               struct device_attribute *attr,
+>                               const char *data, size_t count)
+>  {

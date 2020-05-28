@@ -2,355 +2,166 @@ Return-Path: <SRS0=2CSL=7K=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BABBCC433DF
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 15:29:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF906C433DF
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 15:35:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 965DB20897
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 15:29:31 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="TnaNU5x1"
+	by mail.kernel.org (Postfix) with ESMTP id AB85F20888
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 15:35:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404428AbgE1P3H (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 28 May 2020 11:29:07 -0400
-Received: from vultr.net.flygoat.com ([149.28.68.211]:34604 "EHLO
-        vultr.net.flygoat.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404409AbgE1P24 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 May 2020 11:28:56 -0400
-Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
-        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 361B720F0F;
-        Thu, 28 May 2020 15:28:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
-        t=1590679735; bh=YBUn3Oz5CnhmVZaWN0CnLBfCQOSFI6MPNke/jZ3j1CA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TnaNU5x1lqfcxt30YPR4CMMJVMlOnl3N1huHXoySWc52hzIRYsyjHSaeyrxBduWyA
-         6Lxf5k1nLhCR+pJlHLFRUw0iz9ky94XBKJCBF4Tusb2EuEDo6GxX9qCiBNs5MElt+T
-         n2zSWsF4wi8D8mlPHN0hDUcP33XLCIlS+/ztebYATIoNmq3HU88iIXvzpDoCzQqRh7
-         n41XTSRmg4kBChTAOBMmW4KZcB7IWh2sNiFQ6QHkJVxObd3bDKl58+pvLiZAzCea1p
-         uGexTNDvv0hsvMW8nKi/BgkRVRiquS8vW0Ma1h8EsxHBpdZcUctNJnj814TWd4glD4
-         VQnvSKF0ymhoQ==
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     maz@kernel.org
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Huacai Chen <chenhc@lemote.com>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: [PATCH v5 3/6] irqchip: Add Loongson PCH PIC controller
-Date:   Thu, 28 May 2020 23:27:51 +0800
-Message-Id: <20200528152757.1028711-4-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.27.0.rc0
-In-Reply-To: <20200528152757.1028711-1-jiaxun.yang@flygoat.com>
-References: <20200528152757.1028711-1-jiaxun.yang@flygoat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S2404209AbgE1Pfs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 28 May 2020 11:35:48 -0400
+Received: from mga17.intel.com ([192.55.52.151]:22947 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404218AbgE1Pfq (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 28 May 2020 11:35:46 -0400
+IronPort-SDR: 7ymR2pejEJ8ByTZkFSGWIn4h6PRDeW5Tjny7KzVRgTyN52OoTPlQs6q1hIOPBhUx0GC7uf2k+D
+ lQN5Sfb1xaJw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2020 08:35:45 -0700
+IronPort-SDR: sXPKXO3wkFWOkAdnZpr2krg/D4fragJU6/8L7l08jgIB91MEo2NHukoe7+nNVs7TVUpMddNMAX
+ 9TAiJEXxGAaA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,445,1583222400"; 
+   d="scan'208";a="345941386"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga001.jf.intel.com with ESMTP; 28 May 2020 08:35:41 -0700
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, miquel.raynal@bootlin.com
+Cc:     richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
+        brendanhiggins@google.com, tglx@linutronix.de,
+        boris.brezillon@collabora.com, anders.roxell@linaro.org,
+        masonccyang@mxic.com.tw, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, hauke.mehrtens@intel.com,
+        andriy.shevchenko@intel.com, qi-ming.wu@intel.com,
+        cheol.yong.kim@intel.com,
+        "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v9 0/2] mtd: rawnand: Add NAND controller support on Intel LGM SoC 
+Date:   Thu, 28 May 2020 23:34:17 +0800
+Message-Id: <20200528153419.46775-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This controller appears on Loongson LS7A family of PCH to transform
-interrupts from devices into HyperTransport vectorized interrrupts
-and send them to procrssor's HT vector controller.
+This patch adds the new IP of Nand Flash Controller(NFC) support
+on Intel's Lightning Mountain(LGM) SoC.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+DMA is used for burst data transfer operation, also DMA HW supports
+aligned 32bit memory address and aligned data access by default.
+DMA burst of 8 supported. Data register used to support the read/write
+operation from/to device.
+
+NAND controller also supports in-built HW ECC engine.
+
+NAND controller driver implements ->exec_op() to replace legacy hooks,
+these specific call-back method to execute NAND operations.
+
+Thanks Boris, Andy, Arnd and Rob for the review comments and suggestions.
 ---
-v2:
-	- Style clean-ups
-	- Use IRQ_FASTEOI_HIERARCHY_HANDLERS
-	- Move lock into bitclr & bitset
-	- Make loongson,pic-base-vec as required property
+v10:
+  - No Change
+v9:
+  - No change 
+v8:
+  - fix the kbuild bot warnings
+  - correct the typo's
+v7:
+  - indentation issue is fixed
+  - add error check for retrieve the resource from dt
+v6:
+  - update EBU_ADDR_SELx register base value build it from DT
+  - Add tabs in in Kconfig
+v5:
+  - replace by 'HSNAND_CLE_OFFS | HSNAND_CS_OFFS' to NAND_WRITE_CMD and NAND_WRITE_ADDR
+  - remove the unused macros
+  - update EBU_ADDR_MASK(x) macro
+  - update the EBU_ADDR_SELx register values to be written
 v4:
-	- Fix variable declear ordering
-	- Remove irqsave for spin-locks
+  - add ebu_nand_cs structure for multiple-CS support
+  - mask/offset encoding for 0x51 value
+  - update macro HSNAND_CTL_ENABLE_ECC
+  - drop the op argument and un-used macros.
+  - updated the datatype and macros
+  - add function disable nand module
+  - remove ebu_host->dma_rx = NULL;
+  - rename MMIO address range variables to ebu and hsnand
+  - implement ->setup_data_interface()
+  - update label err_cleanup_nand and err_cleanup_dma
+  - add return value check in the nand_remove function
+  - add/remove tabs and spaces as per coding standard
+  - encoded CS ids by reg property
+v3:
+  - Add depends on MACRO in Kconfig
+  - file name update in Makefile
+  - file name update to intel-nand-controller
+  - modification of MACRO divided like EBU, HSNAND and NAND
+  - add NAND_ALE_OFFS, NAND_CLE_OFFS and NAND_CS_OFFS
+  - rename lgm_ to ebu_ and _va suffix is removed in the whole file
+  - rename structure and varaibles as per review comments.
+  - remove lgm_read_byte(), lgm_dev_ready() and cmd_ctrl() un-used function
+  - update in exec_op() as per review comments
+  - rename function lgm_dma_exit() by lgm_dma_cleanup()
+  - hardcoded magic value  for base and offset replaced by MACRO defined
+  - mtd_device_unregister() + nand_cleanup() instead of nand_release()
+v2:
+  - implement the ->exec_op() to replaces the legacy hook-up.
+  - update the commit message
+  - add MIPS maintainers and xway_nand driver author in CC
+
+v1:
+ - initial version
+
+dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
 ---
- drivers/irqchip/Kconfig                |   9 +
- drivers/irqchip/Makefile               |   1 +
- drivers/irqchip/irq-loongson-pch-pic.c | 243 +++++++++++++++++++++++++
- 3 files changed, 253 insertions(+)
- create mode 100644 drivers/irqchip/irq-loongson-pch-pic.c
+v10:
+  - fix bot errors
+v9:
+  - Rob's review comments address
+  - dual licensed
+  - compatible change
+  - add reg-names
+  - drop clock-names and clock-cells
+  - correct typo's
+v8:
+  No change
+v7:
+  - Rob's review comments addressed
+  - dt-schema build issue fixed with upgraded dt-schema
+v6:
+  - Rob's review comments addressed in YAML file
+  - add addr_sel0 and addr_sel1 reg-names in YAML example
+v5:
+  - add the example in YAML file
+v4:
+  - No change
+v3:
+  - No change
+v2:
+  YAML compatible string update to intel, lgm-nand-controller
+v1:
+  - initial version
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index de4564e2ea88..5524a621638c 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -540,4 +540,13 @@ config LOONGSON_HTVEC
- 	help
- 	  Support for the Loongson3 HyperTransport Interrupt Vector Controller.
- 
-+config LOONGSON_PCH_PIC
-+	bool "Loongson PCH PIC Controller"
-+	depends on MACH_LOONGSON64 || COMPILE_TEST
-+	default MACH_LOONGSON64
-+	select IRQ_DOMAIN_HIERARCHY
-+	select IRQ_FASTEOI_HIERARCHY_HANDLERS
-+	help
-+	  Support for the Loongson PCH PIC Controller.
-+
- endmenu
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index 74561879f5a7..acc72331cec8 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -108,3 +108,4 @@ obj-$(CONFIG_TI_SCI_INTA_IRQCHIP)	+= irq-ti-sci-inta.o
- obj-$(CONFIG_LOONGSON_LIOINTC)		+= irq-loongson-liointc.o
- obj-$(CONFIG_LOONGSON_HTPIC)		+= irq-loongson-htpic.o
- obj-$(CONFIG_LOONGSON_HTVEC)		+= irq-loongson-htvec.o
-+obj-$(CONFIG_LOONGSON_PCH_PIC)		+= irq-loongson-pch-pic.o
-diff --git a/drivers/irqchip/irq-loongson-pch-pic.c b/drivers/irqchip/irq-loongson-pch-pic.c
-new file mode 100644
-index 000000000000..2a05b9305012
---- /dev/null
-+++ b/drivers/irqchip/irq-loongson-pch-pic.c
-@@ -0,0 +1,243 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ *  Copyright (C) 2020, Jiaxun Yang <jiaxun.yang@flygoat.com>
-+ *  Loongson PCH PIC support
-+ */
-+
-+#define pr_fmt(fmt) "pch-pic: " fmt
-+
-+#include <linux/interrupt.h>
-+#include <linux/irq.h>
-+#include <linux/irqchip.h>
-+#include <linux/irqdomain.h>
-+#include <linux/kernel.h>
-+#include <linux/platform_device.h>
-+#include <linux/of_address.h>
-+#include <linux/of_irq.h>
-+#include <linux/of_platform.h>
-+
-+/* Registers */
-+#define PCH_PIC_MASK		0x20
-+#define PCH_PIC_HTMSI_EN	0x40
-+#define PCH_PIC_EDGE		0x60
-+#define PCH_PIC_CLR		0x80
-+#define PCH_PIC_AUTO0		0xc0
-+#define PCH_PIC_AUTO1		0xe0
-+#define PCH_INT_ROUTE(irq)	(0x100 + irq)
-+#define PCH_INT_HTVEC(irq)	(0x200 + irq)
-+#define PCH_PIC_POL		0x3e0
-+
-+#define PIC_COUNT_PER_REG	32
-+#define PIC_REG_COUNT		2
-+#define PIC_COUNT		(PIC_COUNT_PER_REG * PIC_REG_COUNT)
-+#define PIC_REG_IDX(irq_id)	((irq_id) / PIC_COUNT_PER_REG)
-+#define PIC_REG_BIT(irq_id)	((irq_id) % PIC_COUNT_PER_REG)
-+
-+struct pch_pic {
-+	void __iomem		*base;
-+	struct irq_domain	*pic_domain;
-+	u32			ht_vec_base;
-+	raw_spinlock_t		pic_lock;
-+};
-+
-+static void pch_pic_bitset(struct pch_pic *priv, int offset, int bit)
-+{
-+	u32 reg;
-+	void __iomem *addr = priv->base + offset + PIC_REG_IDX(bit) * 4;
-+
-+	raw_spin_lock(&priv->pic_lock);
-+	reg = readl(addr);
-+	reg |= BIT(PIC_REG_BIT(bit));
-+	writel(reg, addr);
-+	raw_spin_unlock(&priv->pic_lock);
-+}
-+
-+static void pch_pic_bitclr(struct pch_pic *priv, int offset, int bit)
-+{
-+	u32 reg;
-+	void __iomem *addr = priv->base + offset + PIC_REG_IDX(bit) * 4;
-+
-+	raw_spin_lock(&priv->pic_lock);
-+	reg = readl(addr);
-+	reg &= ~BIT(PIC_REG_BIT(bit));
-+	writel(reg, addr);
-+	raw_spin_unlock(&priv->pic_lock);
-+}
-+
-+static void pch_pic_eoi_irq(struct irq_data *d)
-+{
-+	u32 idx = PIC_REG_IDX(d->hwirq);
-+	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-+
-+	writel(BIT(PIC_REG_BIT(d->hwirq)),
-+			priv->base + PCH_PIC_CLR + idx * 4);
-+}
-+
-+static void pch_pic_mask_irq(struct irq_data *d)
-+{
-+	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-+
-+	pch_pic_bitset(priv, PCH_PIC_MASK, d->hwirq);
-+	irq_chip_mask_parent(d);
-+}
-+
-+static void pch_pic_unmask_irq(struct irq_data *d)
-+{
-+	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-+
-+	irq_chip_unmask_parent(d);
-+	pch_pic_bitclr(priv, PCH_PIC_MASK, d->hwirq);
-+}
-+
-+static int pch_pic_set_type(struct irq_data *d, unsigned int type)
-+{
-+	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-+	int ret = 0;
-+
-+	switch (type) {
-+	case IRQ_TYPE_EDGE_RISING:
-+		pch_pic_bitset(priv, PCH_PIC_EDGE, d->hwirq);
-+		pch_pic_bitclr(priv, PCH_PIC_POL, d->hwirq);
-+		break;
-+	case IRQ_TYPE_EDGE_FALLING:
-+		pch_pic_bitset(priv, PCH_PIC_EDGE, d->hwirq);
-+		pch_pic_bitset(priv, PCH_PIC_POL, d->hwirq);
-+		break;
-+	case IRQ_TYPE_LEVEL_HIGH:
-+		pch_pic_bitclr(priv, PCH_PIC_EDGE, d->hwirq);
-+		pch_pic_bitclr(priv, PCH_PIC_POL, d->hwirq);
-+		break;
-+	case IRQ_TYPE_LEVEL_LOW:
-+		pch_pic_bitclr(priv, PCH_PIC_EDGE, d->hwirq);
-+		pch_pic_bitset(priv, PCH_PIC_POL, d->hwirq);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static struct irq_chip pch_pic_irq_chip = {
-+	.name			= "PCH PIC",
-+	.irq_mask		= pch_pic_mask_irq,
-+	.irq_unmask		= pch_pic_unmask_irq,
-+	.irq_ack		= irq_chip_ack_parent,
-+	.irq_eoi		= pch_pic_eoi_irq,
-+	.irq_set_affinity	= irq_chip_set_affinity_parent,
-+	.irq_set_type		= pch_pic_set_type,
-+};
-+
-+static int pch_pic_alloc(struct irq_domain *domain, unsigned int virq,
-+			      unsigned int nr_irqs, void *arg)
-+{
-+	int err;
-+	unsigned int type;
-+	unsigned long hwirq;
-+	struct irq_fwspec fwspec;
-+	struct pch_pic *priv = domain->host_data;
-+
-+	irq_domain_translate_twocell(domain, arg, &hwirq, &type);
-+
-+	fwspec.fwnode = domain->parent->fwnode;
-+	fwspec.param_count = 1;
-+	fwspec.param[0] = hwirq + priv->ht_vec_base;
-+
-+	err = irq_domain_alloc_irqs_parent(domain, virq, 1, &fwspec);
-+	if (err)
-+		return err;
-+
-+	irq_domain_set_info(domain, virq, hwirq,
-+			    &pch_pic_irq_chip, priv,
-+			    handle_fasteoi_ack_irq, NULL, NULL);
-+	irq_set_probe(virq);
-+
-+	return 0;
-+}
-+
-+static const struct irq_domain_ops pch_pic_domain_ops = {
-+	.translate	= irq_domain_translate_twocell,
-+	.alloc		= pch_pic_alloc,
-+	.free		= irq_domain_free_irqs_parent,
-+};
-+
-+static void pch_pic_reset(struct pch_pic *priv)
-+{
-+	int i;
-+
-+	for (i = 0; i < PIC_COUNT; i++) {
-+		/* Write vectore ID */
-+		writeb(priv->ht_vec_base + i, priv->base + PCH_INT_HTVEC(i));
-+		/* Hardcode route to HT0 Lo */
-+		writeb(1, priv->base + PCH_INT_ROUTE(i));
-+	}
-+
-+	for (i = 0; i < PIC_REG_COUNT; i++) {
-+		/* Clear IRQ cause registers, mask all interrupts */
-+		writel_relaxed(0xFFFFFFFF, priv->base + PCH_PIC_MASK + 4 * i);
-+		writel_relaxed(0xFFFFFFFF, priv->base + PCH_PIC_CLR + 4 * i);
-+		/* Clear auto bounce, we don't need that */
-+		writel_relaxed(0, priv->base + PCH_PIC_AUTO0 + 4 * i);
-+		writel_relaxed(0, priv->base + PCH_PIC_AUTO1 + 4 * i);
-+		/* Enable HTMSI transformer */
-+		writel_relaxed(0xFFFFFFFF, priv->base + PCH_PIC_HTMSI_EN + 4 * i);
-+	}
-+}
-+
-+static int pch_pic_of_init(struct device_node *node,
-+				struct device_node *parent)
-+{
-+	struct pch_pic *priv;
-+	struct irq_domain *parent_domain;
-+	int err;
-+
-+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	raw_spin_lock_init(&priv->pic_lock);
-+	priv->base = of_iomap(node, 0);
-+	if (!priv->base) {
-+		err = -ENOMEM;
-+		goto free_priv;
-+	}
-+
-+	parent_domain = irq_find_host(parent);
-+	if (!parent_domain) {
-+		pr_err("Failed to find the parent domain\n");
-+		err = -ENXIO;
-+		goto iounmap_base;
-+	}
-+
-+	if (of_property_read_u32(node, "loongson,pic-base-vec",
-+				&priv->ht_vec_base)) {
-+		pr_err("Failed to determine pic-base-vec\n");
-+		err = -EINVAL;
-+		goto iounmap_base;
-+	}
-+
-+	priv->pic_domain = irq_domain_create_hierarchy(parent_domain, 0,
-+						       PIC_COUNT,
-+						       of_node_to_fwnode(node),
-+						       &pch_pic_domain_ops,
-+						       priv);
-+	if (!priv->pic_domain) {
-+		pr_err("Failed to create IRQ domain\n");
-+		err = -ENOMEM;
-+		goto iounmap_base;
-+	}
-+
-+	pch_pic_reset(priv);
-+
-+	return 0;
-+
-+iounmap_base:
-+	iounmap(priv->base);
-+free_priv:
-+	kfree(priv);
-+
-+	return err;
-+}
-+
-+IRQCHIP_DECLARE(pch_pic, "loongson,pch-pic-1.0", pch_pic_of_init);
+Ramuthevar Vadivel Murugan (2):
+  dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
+  mtd: rawnand: Add NAND controller support on Intel LGM SoC
+
+ .../devicetree/bindings/mtd/intel,lgm-nand.yaml    |  93 +++
+ drivers/mtd/nand/raw/Kconfig                       |   8 +
+ drivers/mtd/nand/raw/Makefile                      |   1 +
+ drivers/mtd/nand/raw/intel-nand-controller.c       | 747 +++++++++++++++++++++
+ 4 files changed, 849 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+ create mode 100644 drivers/mtd/nand/raw/intel-nand-controller.c
+
 -- 
-2.27.0.rc0
-
+2.11.0

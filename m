@@ -2,129 +2,170 @@ Return-Path: <SRS0=2CSL=7K=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E49A5C433DF
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 04:33:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50DFCC433E1
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 05:13:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CE44A2084C
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 04:33:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3A5332084C
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 05:13:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725308AbgE1Edf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 28 May 2020 00:33:35 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:50296 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725298AbgE1Edf (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 28 May 2020 00:33:35 -0400
-Received: from [10.20.42.25] (unknown [10.20.42.25])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn2r_Ps9e4wI6AA--.1019S3;
-        Thu, 28 May 2020 12:33:04 +0800 (CST)
-Subject: Re: [PATCH v3 3/3] mm/memory.c: Add memory read privilege before
- filling PTE entry
-To:     Hugh Dickins <hughd@google.com>
-References: <1589778529-25627-1-git-send-email-maobibo@loongson.cn>
- <1589778529-25627-3-git-send-email-maobibo@loongson.cn>
- <20200518135747.d8837ba6742b2d193e14fbb0@linux-foundation.org>
- <d1646320-51ec-4b5f-bcad-41eba85b78cf@loongson.cn>
- <alpine.LSU.2.11.2005271329050.6217@eggly.anvils>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Dmitry Korotin <dkorotin@wavecomp.com>,
-        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        "Maciej W. Rozycki" <macro@wdc.com>, linux-mm@kvack.org,
-        David Hildenbrand <david@redhat.com>
-From:   maobibo <maobibo@loongson.cn>
-Message-ID: <b5219f15-f0bb-55b0-010a-104d42bd64c2@loongson.cn>
-Date:   Thu, 28 May 2020 12:33:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.11.2005271329050.6217@eggly.anvils>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Dxn2r_Ps9e4wI6AA--.1019S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF1kZw48AF47Gry7Jw1xuFg_yoW8KF1fpa
-        ySya12kr4DKrn2yFy2gw1xZF15C3yktFW5WrnxJryj9398XryrKr4aqFZYga1UCr4fCa1F
-        yrW8Xr98ua9xZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvEb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xK
-        xwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-        b7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
-        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
-        evJa73UjIFyTuYvjxUg0D7DUUUU
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+        id S1727953AbgE1FNp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 28 May 2020 01:13:45 -0400
+Received: from mga11.intel.com ([192.55.52.93]:53123 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727944AbgE1FNn (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 28 May 2020 01:13:43 -0400
+IronPort-SDR: s7kIB4b8lDSpyv78rpZzMeGa2fJiCGnrTwRRoxAfKTfPS2105okArxibjzpFoHer4yWC/iczMQ
+ j33f/4cHTOsA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 22:13:43 -0700
+IronPort-SDR: YhQovfW8BEf126dOmg2zZeRLCSK4ruN2mFnWRs1sKAYa87MlkwAYBnAvUi75c0wQqdsthB+s9N
+ B6Xh8eeWrv+g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,443,1583222400"; 
+   d="scan'208";a="267091920"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by orsmga003.jf.intel.com with ESMTP; 27 May 2020 22:13:38 -0700
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, miquel.raynal@bootlin.com
+Cc:     richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
+        brendanhiggins@google.com, tglx@linutronix.de,
+        boris.brezillon@collabora.com, anders.roxell@linaro.org,
+        masonccyang@mxic.com.tw, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, hauke.mehrtens@intel.com,
+        andriy.shevchenko@intel.com, qi-ming.wu@intel.com,
+        cheol.yong.kim@intel.com,
+        Ramuthevar Vadivel Murugan 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v9 1/2] dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
+Date:   Thu, 28 May 2020 13:12:10 +0800
+Message-Id: <20200528051211.3063-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200528051211.3063-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+References: <20200528051211.3063-1-vadivel.muruganx.ramuthevar@linux.intel.com>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 
+Add YAML file for dt-bindings to support NAND Flash Controller
+on Intel's Lightning Mountain SoC.
 
-On 05/28/2020 04:55 AM, Hugh Dickins wrote:
-> On Tue, 19 May 2020, maobibo wrote:
->> On 05/19/2020 04:57 AM, Andrew Morton wrote:
->>> On Mon, 18 May 2020 13:08:49 +0800 Bibo Mao <maobibo@loongson.cn> wrote:
->>>
->>>> On mips platform, hw PTE entry valid bit is set in pte_mkyoung
->>>> function, it is used to set physical page with readable privilege.
->>>
->>> pte_mkyoung() seems to be a strange place to set the pte's valid bit. 
->>> Why is it done there?  Can it be done within mips's mk_pte()?
->> On MIPS system hardware cannot set PAGE_ACCESS bit when accessing the page,
->> software sets PAGE_ACCESS software bit and PAGE_VALID hw bit together during page
->> fault stage.
->>
->> If mk_pte is called in page fault flow, it is ok to set both bits. If it is not 
->> called in page fault, PAGE_ACCESS is set however there is no actual memory accessing.
-> 
-> Sorry for joining in so late, but would you please explain that some more:
-> preferably in the final commit message, if not here.
-> 
-> I still don't understand why this is not done in the same way as on other
-> architectures - those that care (I just checked x86, powerpc, arm, arm64,
-> but not all of them) make sure that all the bits they want are there in
-> mm/mmap.c's protection_map[16], which then feeds into vma->vm_page_prot,
-> and so into mk_pte() as Andrew indicated.
-> 
-> And I can see that arch/mips/mm/cache.c has a setup_protection_map()
-> to do that: why does it not set the additional bits that you want?
-> including the valid bit and the accessed (young) bit, as others do.
-> Are you saying that there are circumstances in which it is wrong
-> for mk_pte() to set the additional bits?
-MIPS is actually strange here, _PAGE_ACCESSED is not set in protection_map.
-I do not understand history of mips neither. 
+Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+---
+ .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 93 ++++++++++++++++++++++
+ 1 file changed, 93 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
 
-On x86/aarch/powerpc system, _PAGE_ACCESSED bit is set in the beginning. How does
-software track memory page accessing frequency?  Does software not care current
-status about _PAGE_ACCESSED bit, just calles madvise_cold to clear this bit, and
-then watches whether this bit is changed or not?
-
-regards
-bibo,mao
-> 
-> I'm afraid that generic mm developers will have no clue as to whether
-> or not to add a pte_sw_mkyoung() after a mk_pte(); and generic source
-> will be the cleaner if it turns out not to be needed (but thank you
-> for making sure that it does nothing on the other architectures).
-> 
-> Hugh
-> 
+diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+new file mode 100644
+index 000000000000..8672d03b4e6a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+@@ -0,0 +1,93 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/intel,lgm-nand.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Intel LGM SoC NAND Controller Device Tree Bindings
++
++allOf:
++  - $ref: "nand-controller.yaml"
++
++maintainers:
++  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
++
++properties:
++  compatible:
++    const: intel,lgm-nand
++
++  reg:
++    maxItems: 6
++
++  reg-names:
++    items:
++       - const: ebunand
++       - const: hsnand
++       - const: nand_cs0
++       - const: nand_cs1
++       - const: addr_sel0
++       - const: addr_sel1
++
++  clocks:
++    maxItems: 1
++
++  dmas:
++    maxItems: 2
++
++  dma-names:
++    items:
++      - const: tx
++      - const: rx
++
++patternProperties:
++  "^nand@[a-f0-9]+$":
++    type: object
++    properties:
++      reg:
++        minimum: 0
++        maximum: 7
++
++      nand-ecc-mode: true
++
++      nand-ecc-algo:
++        const: hw
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - clocks
++  - dmas
++  - dma-names
++
++additionalProperties: false
++
++examples:
++  - |
++    nand-controller@e0f00000 {
++      compatible = "intel,lgm-nand";
++      reg = <0xe0f00000 0x100>,
++            <0xe1000000 0x300>,
++            <0xe1400000 0x8000>,
++            <0xe1c00000 0x1000>,
++            <0x17400000 0x4>,
++            <0x17c00000 0x4>;
++      reg-names = "ebunand", "hsnand", "nand_cs0", "nand_cs1",
++        "addr_sel0", "addr_sel1";
++      clocks = <&cgu0 125>;
++      dmas = <&dma0 8>, <&dma0 9>;
++      dma-names = "tx", "rx";
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      nand@0 {
++        reg = <0>;
++        nand-on-flash-bbt;
++        #address-cells = <1>;
++        #size-cells = <1>;
++      };
++    };
++
++...
+-- 
+2.11.0
 

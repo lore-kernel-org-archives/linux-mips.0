@@ -2,163 +2,133 @@ Return-Path: <SRS0=2CSL=7K=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.4 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74114C433E6
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 05:16:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98E5FC433E2
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 05:22:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 50F6420721
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 05:16:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6FE38206F1
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 05:22:39 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fmMMpN5z"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgE1FNi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 28 May 2020 01:13:38 -0400
-Received: from mga09.intel.com ([134.134.136.24]:1646 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727896AbgE1FNi (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 28 May 2020 01:13:38 -0400
-IronPort-SDR: ImV7ws41MY1JqxolhFoZD72UmkhEpEPbFP1C9SUpv0x2nd9EymslzpcjHmkR3ZmphKapX3d0vJ
- ibcUBVo4lYEg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2020 22:13:37 -0700
-IronPort-SDR: nrT4BrWIWNwvR5rQfELYTwjIrfw8uZM85wNV6TkXXfnvdZk5VQryfNlw4Mklxbwihq46FNka7n
- bdnUPUadj9yA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,443,1583222400"; 
-   d="scan'208";a="345789079"
-Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
-  by orsmga001.jf.intel.com with ESMTP; 27 May 2020 22:13:33 -0700
-From:   "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-To:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, miquel.raynal@bootlin.com
-Cc:     richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
-        brendanhiggins@google.com, tglx@linutronix.de,
-        boris.brezillon@collabora.com, anders.roxell@linaro.org,
-        masonccyang@mxic.com.tw, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, hauke.mehrtens@intel.com,
-        andriy.shevchenko@intel.com, qi-ming.wu@intel.com,
-        cheol.yong.kim@intel.com,
-        "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Subject: [PATCH v9 0/2] mtd: rawnand: Add NAND controller support on Intel LGM SoC
-Date:   Thu, 28 May 2020 13:12:09 +0800
-Message-Id: <20200528051211.3063-1-vadivel.muruganx.ramuthevar@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
+        id S1725830AbgE1FWi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 28 May 2020 01:22:38 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:47104 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727773AbgE1FWf (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 28 May 2020 01:22:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1590643353;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J+iKV2WQ6lOBXo37IQKk0z/KDQxyIDc+E74qSJBHsLY=;
+        b=fmMMpN5zq9WxGYd3BlLKOuwp1jPI18Y6IsCNOM/SyPPfP/FEpCxD6edkCZI35Pr0y68S+V
+        i5jIuYSO/UJlX9F9MUb7ahM5mrZfoqHB0ocp2FlnlHvmWwQ5dZErlGjs8X6jY3EMUKs73T
+        KeCheblfPme+Rf4Zu2l6gs+ov4Cyox8=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-187-IRFYmuKtOOuU3mYEYUy-Tw-1; Thu, 28 May 2020 01:22:30 -0400
+X-MC-Unique: IRFYmuKtOOuU3mYEYUy-Tw-1
+Received: by mail-ed1-f71.google.com with SMTP id s14so3060473edr.7
+        for <linux-mips@vger.kernel.org>; Wed, 27 May 2020 22:22:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=J+iKV2WQ6lOBXo37IQKk0z/KDQxyIDc+E74qSJBHsLY=;
+        b=IDtb1m0qp1KRjGACgbqV8Ac1YfgrTRHaFg2875DS3YPar25s9KIklp/bj3PLeikIZq
+         sNuWfqYysQgdZ7yOygWK9PkCmtRffBtzTfgf+jQwyvf0AKzR3pMoDbcZYQvg6yBgf1yJ
+         D2/QhZ/xi4CEVv5U4EayP026pBOdbq2SpzdDPwE+/YlH4X16g/5jQcT+mWCSjwNwANZE
+         ZJSn7XfRcEPbD2NUAesvi2lrtKExfKwfrLEli8tmTLUGJxR1T8s3UmuSH45qNvMUqBhd
+         GY6BNbAyXSkw+IeEgfCPYCtLli2zvrIdoUTygvzf8hlIeOfiRet90fT8kgEK0haN+5zV
+         zSHg==
+X-Gm-Message-State: AOAM532I8zh9eFXzusk2MfMl/i/z3RGMKeOg4BRCJtO4SceaejYtEKPl
+        XwDtAAXDqb84JVsdnvC1kAApXTvyDh0LTrZAc+8RC3+NjMBkGyi4U0R9d+r+7mR2DoOzzJmkayZ
+        Y5/6aAibWy8+6//HyU8/hdw==
+X-Received: by 2002:a50:d6d0:: with SMTP id l16mr1387317edj.317.1590643349034;
+        Wed, 27 May 2020 22:22:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzJyu6Bj2R7xQtg6fbTx+WdDfElhcWjvy2DluItTe1wU0Un+QkFMtlI7BVZ+bXqt+0zrNq85A==
+X-Received: by 2002:a50:d6d0:: with SMTP id l16mr1387289edj.317.1590643348729;
+        Wed, 27 May 2020 22:22:28 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:3c1c:ffba:c624:29b8? ([2001:b07:6468:f312:3c1c:ffba:c624:29b8])
+        by smtp.gmail.com with ESMTPSA id g23sm4521316ejo.28.2020.05.27.22.22.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 May 2020 22:22:28 -0700 (PDT)
+Subject: Re: [PATCH v3 0/7] Statsfs: a new ram-based file system for Linux
+ kernel statistics
+To:     David Ahern <dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Cc:     kvm@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Jim Mattson <jmattson@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Emanuele Giuseppe Esposito <e.emanuelegiuseppe@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        Jonathan Adams <jwadams@google.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>
+References: <20200526110318.69006-1-eesposit@redhat.com>
+ <20200526153128.448bfb43@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <6a754b40-b148-867d-071d-8f31c5c0d172@redhat.com>
+ <20200527132321.54bcdf04@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <af2ba926-73bc-26c3-7ce7-bd45f657fd85@redhat.com>
+ <b6fa4439-c6b8-63a4-84fd-fbac3d4f10fd@gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c33f59e4-36ca-8fa9-af8f-b4cec4896b00@redhat.com>
+Date:   Thu, 28 May 2020 07:22:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <b6fa4439-c6b8-63a4-84fd-fbac3d4f10fd@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This patch adds the new IP of Nand Flash Controller(NFC) support
-on Intel's Lightning Mountain(LGM) SoC.
+On 28/05/20 00:21, David Ahern wrote:
+> On 5/27/20 3:07 PM, Paolo Bonzini wrote:
+>> I see what you meant now.  statsfs can also be used to enumerate objects
+>> if one is so inclined (with the prototype in patch 7, for example, each
+>> network interface becomes a directory).
+> 
+> there are many use cases that have 100's to 1000's have network devices.
+> Having a sysfs entry per device already bloats memory usage for these
+> use cases; another filesystem with an entry per device makes that worse.
+> Really the wrong direction for large scale systems.
 
-DMA is used for burst data transfer operation, also DMA HW supports
-aligned 32bit memory address and aligned data access by default.
-DMA burst of 8 supported. Data register used to support the read/write
-operation from/to device.
+Hi David,
 
-NAND controller also supports in-built HW ECC engine.
+IMO the important part for now is having a flexible kernel API for
+exposing statistics across multiple subsystems, so that they can be
+harvested in an efficient way.  The userspace API is secondary, and
+multiple APIs can be added to cater for different usecases.
 
-NAND controller driver implements ->exec_op() to replace legacy hooks,
-these specific call-back method to execute NAND operations.
+For example, as of the first five patches the memory usage is the same
+as what is now in the mainline kernel, since all the patchset does is
+take existing debugfs inodes and move them to statsfs.  I agree that, if
+the concept is extended to the whole kernel, scalability and memory
+usage becomes an issue; and indeed, the long-term plan is to support a
+binary format that is actually _more_ efficient than the status quo for
+large scale systems.
 
-Thanks Boris, Andy, Arnd and Rob for the review comments and suggestions.
----
-v9:
-   No change 
-v8:
-  - fix the kbuild bot warnings
-  - correct the typo's
-v7:
-  - indentation issue is fixed
-  - add error check for retrieve the resource from dt
-v6:
-  - update EBU_ADDR_SELx register base value build it from DT
-  - Add tabs in in Kconfig
-v5:
-  - replace by 'HSNAND_CLE_OFFS | HSNAND_CS_OFFS' to NAND_WRITE_CMD and NAND_WRITE_ADDR
-  - remove the unused macros
-  - update EBU_ADDR_MASK(x) macro
-  - update the EBU_ADDR_SELx register values to be written
-v4:
-  - add ebu_nand_cs structure for multiple-CS support
-  - mask/offset encoding for 0x51 value
-  - update macro HSNAND_CTL_ENABLE_ECC
-  - drop the op argument and un-used macros.
-  - updated the datatype and macros
-  - add function disable nand module
-  - remove ebu_host->dma_rx = NULL;
-  - rename MMIO address range variables to ebu and hsnand
-  - implement ->setup_data_interface()
-  - update label err_cleanup_nand and err_cleanup_dma
-  - add return value check in the nand_remove function
-  - add/remove tabs and spaces as per coding standard
-  - encoded CS ids by reg property
-v3:
-  - Add depends on MACRO in Kconfig
-  - file name update in Makefile
-  - file name update to intel-nand-controller
-  - modification of MACRO divided like EBU, HSNAND and NAND
-  - add NAND_ALE_OFFS, NAND_CLE_OFFS and NAND_CS_OFFS
-  - rename lgm_ to ebu_ and _va suffix is removed in the whole file
-  - rename structure and varaibles as per review comments.
-  - remove lgm_read_byte(), lgm_dev_ready() and cmd_ctrl() un-used function
-  - update in exec_op() as per review comments
-  - rename function lgm_dma_exit() by lgm_dma_cleanup()
-  - hardcoded magic value  for base and offset replaced by MACRO defined
-  - mtd_device_unregister() + nand_cleanup() instead of nand_release()
-v2:
-  - implement the ->exec_op() to replaces the legacy hook-up.
-  - update the commit message
-  - add MIPS maintainers and xway_nand driver author in CC
+In the meanwhile, the new filesystem can be disabled (see the difference
+between "STATS_FS" and "STATS_FS_API") if it imposes undesirable overhead.
 
-v1:
- - initial version
+Thanks,
 
-dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
----
-v9:
-  - Rob's review comments address
-  - dual licensed
-  - compatible change
-  - add reg-names
-  - drop clock-names and clock-cells
-  - correct typo's
-v8:
-  No change
-v7:
-  - Rob's review comments addressed
-  - dt-schema build issue fixed with upgraded dt-schema
-v6:
-  - Rob's review comments addressed in YAML file
-  - add addr_sel0 and addr_sel1 reg-names in YAML example
-v5:
-  - add the example in YAML file
-v4:
-  - No change
-v3:
-  - No change
-v2:
-  YAML compatible string update to intel, lgm-nand-controller
-v1:
-  - initial version
-
-Ramuthevar Vadivel Murugan (2):
-  dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
-  mtd: rawnand: Add NAND controller support on Intel LGM SoC
-
- .../devicetree/bindings/mtd/intel,lgm-nand.yaml    |  93 +++
- drivers/mtd/nand/raw/Kconfig                       |   8 +
- drivers/mtd/nand/raw/Makefile                      |   1 +
- drivers/mtd/nand/raw/intel-nand-controller.c       | 747 +++++++++++++++++++++
- 4 files changed, 849 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
- create mode 100644 drivers/mtd/nand/raw/intel-nand-controller.c
-
--- 
-2.11.0
+Paolo
 

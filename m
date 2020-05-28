@@ -4,27 +4,27 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA655C433E0
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 22:26:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FFB3C433DF
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 22:27:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8C0B5208A7
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 22:26:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 27A12208A7
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 22:27:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437177AbgE1WY6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 28 May 2020 18:24:58 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:44666 "EHLO
+        id S2437126AbgE1W1s (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 28 May 2020 18:27:48 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:44674 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437102AbgE1WYR (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 May 2020 18:24:17 -0400
+        with ESMTP id S2437107AbgE1WYQ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 May 2020 18:24:16 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id B2AFC8030772;
-        Thu, 28 May 2020 22:24:12 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 8DB348030778;
+        Thu, 28 May 2020 22:24:14 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 0okL1buVKGVd; Fri, 29 May 2020 01:24:12 +0300 (MSK)
+        with ESMTP id 5UMa74twAlQZ; Fri, 29 May 2020 01:24:14 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -37,9 +37,9 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <dmaengine@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 06/11] dmaengine: dw: Take HC_LLP flag into account for noLLP auto-config
-Date:   Fri, 29 May 2020 01:23:56 +0300
-Message-ID: <20200528222401.26941-7-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v4 09/11] dmaengine: dw: Initialize min_burst capability
+Date:   Fri, 29 May 2020 01:23:59 +0300
+Message-ID: <20200528222401.26941-10-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20200528222401.26941-1-Sergey.Semin@baikalelectronics.ru>
 References: <20200528222401.26941-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -51,15 +51,14 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Full multi-block transfers functionality is enabled in DW DMA
-controller only if CHx_MULTI_BLK_EN is set. But LLP-based transfers
-can be executed only if hardcode channel x LLP register feature isn't
-enabled, which can be switched on at the IP core synthesis for
-optimization. If it's enabled then the LLP register is hardcoded to
-zero, so the blocks chaining based on the LLPs is unsupported.
+According to the DW APB DMAC data book the minimum burst transaction
+length is 1 and it's true for any version of the controller since
+isn't parametrised in the coreAssembler so can't be changed at the
+IP-core synthesis stage. Let's initialise the min_burst member of the
+DMA controller descriptor so the DMA clients could use it to properly
+optimize the DMA requests.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
@@ -69,54 +68,24 @@ Cc: devicetree@vger.kernel.org
 
 ---
 
-Changelog v2:
-- Rearrange SoBs.
-- Add comment about why hardware accelerated LLP list support depends
-  on both MBLK_EN and HC_LLP configs setting.
-- Use explicit bits state comparison operator.
-
-Changelog v3:
-- Move the patch to the head of the series.
+Changelog v4:
+- This is a new patch suggested by Andy.
 ---
- drivers/dma/dw/core.c | 11 ++++++++++-
- drivers/dma/dw/regs.h |  1 +
- 2 files changed, 11 insertions(+), 1 deletion(-)
+ drivers/dma/dw/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/dma/dw/core.c b/drivers/dma/dw/core.c
-index 21cb2a58dbd2..33e99d95b3d3 100644
+index ceded21537e2..a8cebb1dbb68 100644
 --- a/drivers/dma/dw/core.c
 +++ b/drivers/dma/dw/core.c
-@@ -1178,8 +1178,17 @@ int do_dma_probe(struct dw_dma_chip *chip)
- 			 */
- 			dwc->block_size =
- 				(4 << ((pdata->block_size >> 4 * i) & 0xf)) - 1;
-+
-+			/*
-+			 * According to the DW DMA databook the true scatter-
-+			 * gether LLPs aren't available if either multi-block
-+			 * config is disabled (CHx_MULTI_BLK_EN == 0) or the
-+			 * LLP register is hard-coded to zeros
-+			 * (CHx_HC_LLP == 1).
-+			 */
- 			dwc->nollp =
--				(dwc_params >> DWC_PARAMS_MBLK_EN & 0x1) == 0;
-+				(dwc_params >> DWC_PARAMS_MBLK_EN & 0x1) == 0 ||
-+				(dwc_params >> DWC_PARAMS_HC_LLP & 0x1) == 1;
- 		} else {
- 			dwc->block_size = pdata->block_size;
- 			dwc->nollp = !pdata->multi_block[i];
-diff --git a/drivers/dma/dw/regs.h b/drivers/dma/dw/regs.h
-index 3fce66ecee7a..1ab840b06e79 100644
---- a/drivers/dma/dw/regs.h
-+++ b/drivers/dma/dw/regs.h
-@@ -125,6 +125,7 @@ struct dw_dma_regs {
+@@ -1229,6 +1229,7 @@ int do_dma_probe(struct dw_dma_chip *chip)
+ 	dw->dma.device_issue_pending = dwc_issue_pending;
  
- /* Bitfields in DWC_PARAMS */
- #define DWC_PARAMS_MBLK_EN	11		/* multi block transfer */
-+#define DWC_PARAMS_HC_LLP	13		/* set LLP register to zero */
- 
- /* bursts size */
- enum dw_dma_msize {
+ 	/* DMA capabilities */
++	dw->dma.min_burst = 1;
+ 	dw->dma.src_addr_widths = DW_DMA_BUSWIDTHS;
+ 	dw->dma.dst_addr_widths = DW_DMA_BUSWIDTHS;
+ 	dw->dma.directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV) |
 -- 
 2.26.2
 

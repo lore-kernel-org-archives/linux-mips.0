@@ -2,30 +2,30 @@ Return-Path: <SRS0=2CSL=7K=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E360C433E0
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 12:27:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F166FC433E1
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 12:37:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3758B212CC
-	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 12:27:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC38A2074B
+	for <linux-mips@archiver.kernel.org>; Thu, 28 May 2020 12:37:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389621AbgE1M1q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 28 May 2020 08:27:46 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:41658 "EHLO
+        id S2389745AbgE1MhY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 28 May 2020 08:37:24 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:41708 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389582AbgE1M1m (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 May 2020 08:27:42 -0400
+        with ESMTP id S2389734AbgE1MhY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 May 2020 08:37:24 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id EAE7080307C1;
-        Thu, 28 May 2020 12:27:39 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id A320280307C1;
+        Thu, 28 May 2020 12:37:21 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id xivIFUGzzQkd; Thu, 28 May 2020 15:27:39 +0300 (MSK)
-Date:   Thu, 28 May 2020 15:27:38 +0300
+        with ESMTP id U2DxeE0TpbnE; Thu, 28 May 2020 15:37:21 +0300 (MSK)
+Date:   Thu, 28 May 2020 15:37:20 +0300
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Arnd Bergmann <arnd@arndb.de>
 List-Id: <soc.lore.kernel.org>
@@ -42,7 +42,7 @@ CC:     Serge Semin <fancer.lancer@gmail.com>,
         "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH v3 4/6] bus: Add Baikal-T1 AXI-bus driver
-Message-ID: <20200528122738.rbl2dkgep4ipr2je@mobilestation>
+Message-ID: <20200528123720.4wv2cmbownc4ejb7@mobilestation>
 References: <20200526125928.17096-1-Sergey.Semin@baikalelectronics.ru>
  <20200526125928.17096-5-Sergey.Semin@baikalelectronics.ru>
  <CAHp75VcfkPPy5YjNrcv8c6doyQz5C47QyREE0v6tfQjXYrBijQ@mail.gmail.com>
@@ -82,16 +82,14 @@ On Thu, May 28, 2020 at 02:14:58PM +0200, Arnd Bergmann wrote:
 > errors pointed out by the test robot, but I did not include the changes you
 > suggested.
 
-Are you saying that the build-errors and warnings have already been fixed by
-you, right? If so could you please give me a link to the repo with those
-commits, so I'd work with the up-to-date code?
+On the other hand if you haven't pushed the patches to the public repo yet,
+I could just resend the series. So have you?
+
+-Sergey
 
 > 
 > Serge, could you send a follow-up patch to address those?
 
-Ok.
-
--Sergey
 
 > 
 >      Arnd

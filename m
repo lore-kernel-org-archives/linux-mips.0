@@ -2,97 +2,332 @@ Return-Path: <SRS0=FAjd=7L=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0010EC433E0
-	for <linux-mips@archiver.kernel.org>; Fri, 29 May 2020 14:26:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA76BC433E0
+	for <linux-mips@archiver.kernel.org>; Fri, 29 May 2020 14:41:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DCAE22073B
-	for <linux-mips@archiver.kernel.org>; Fri, 29 May 2020 14:26:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CF7EC207BC
+	for <linux-mips@archiver.kernel.org>; Fri, 29 May 2020 14:41:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgE2O0t convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 29 May 2020 10:26:49 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:39068 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726900AbgE2O0t (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 29 May 2020 10:26:49 -0400
-Received: by mail-qt1-f196.google.com with SMTP id k22so2030787qtm.6
-        for <linux-mips@vger.kernel.org>; Fri, 29 May 2020 07:26:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nKBg+KBAm9AMX5S67x4gASOAHBGKT/3jyOi0pbKL+HY=;
-        b=a7nBgn2QbMzqEK4RyCy3Iwx9oNOwDQWBCgjN+h+XN4PP6OJMJ60hYlLV51+8Ynla71
-         5KtkSIPYOdtgNOs4RTH+9jIU2ASaMxI8MU0gBopUvT5KD5JIwkKrBR1GIzbh+mswK5Gj
-         InSbSDLTgNYqus5/U/NozWy2tR/1Nm9VTFGfzg/k/HWRsiP0DeLxqK4Px/QnMDKn6PWr
-         rhpUUiFhlcZYXlegNu924zBcLNsPYYJfHgzsMCaW2ejJ5Jed/VPjDs4Z0uoEnjMurRfQ
-         xjfde5+jhw5Xpz8Vd4d50oso9Yd8yDqHcPTtpb1F+R+eCf/QFmPTYaS3yBBBz9fpQJ4k
-         xUsA==
-X-Gm-Message-State: AOAM531jtbE1UKmUSwMSxHaNiB8qvRtYiS3kKyUZVE+8IGQu3w7CndSe
-        qMsn+GtDM9ZGbY3bnj9+ln5UYlNcOHZBSKVu9jE1md81LYA=
-X-Google-Smtp-Source: ABdhPJwmIHDaotg7MsqXSBveDjy0KO+vzLtFwioqn6V8h01zBqM3SbjaZW0k+Z3ANoEyEekWNd74AEXhFtLjIhYXXhA=
-X-Received: by 2002:ac8:3267:: with SMTP id y36mr9527066qta.241.1590762407748;
- Fri, 29 May 2020 07:26:47 -0700 (PDT)
+        id S1727803AbgE2OlH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 29 May 2020 10:41:07 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:48812 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726849AbgE2OlG (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 29 May 2020 10:41:06 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 9FC7C8030779;
+        Fri, 29 May 2020 14:40:59 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id demBEqpKRx5m; Fri, 29 May 2020 17:40:58 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>, <linux-mips@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 01/11] dt-bindings: dma: dw: Convert DW DMAC to DT binding
+Date:   Fri, 29 May 2020 17:40:44 +0300
+Message-ID: <20200529144054.4251-2-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200529144054.4251-1-Sergey.Semin@baikalelectronics.ru>
+References: <20200529144054.4251-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-References: <20200528231628.120171-1-syq@debian.org> <20200529110913.GA11310@alpha.franken.de>
-In-Reply-To: <20200529110913.GA11310@alpha.franken.de>
-From:   YunQiang Su <syq@debian.org>
-Date:   Fri, 29 May 2020 22:26:37 +0800
-Message-ID: <CAKcpw6VkZBtiewrczgT1YS6C1KWf5WnWGf2vZRg+-k24yOD3_Q@mail.gmail.com>
-Subject: Re: [PATCH] mips: add o32_fp64 boot param to disable FP64 support
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips <linux-mips@vger.kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhc@lemote.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Thomas Bogendoerfer <tsbogend@alpha.franken.de> 于2020年5月29日周五 下午7:09写道：
->
-> On Fri, May 29, 2020 at 07:16:28AM +0800, YunQiang Su wrote:
-> > When build with CONFIG_O32_FP64_SUPPORTS, even all of the userland
-> > is FPXX, we cannot run any FP32 binary.
->
-> I don't understand what this means. Can you explain what the problem
-> is ?
->
+Modern device tree bindings are supposed to be created as YAML-files
+in accordance with dt-schema. This commit replaces the Synopsis
+Designware DMA controller legacy bare text bindings with YAML file.
+The only required prorties are "compatible", "reg", "#dma-cells" and
+"interrupts", which will be used by the driver to correctly find the
+controller memory region and handle its events. The rest of the properties
+are optional, since in case if either "dma-channels" or "dma-masters" isn't
+specified, the driver will attempt to auto-detect the IP core
+configuration.
 
-Some or most CPU cannot run FP32 application if
-CONFIG_O32_FP64_SUPPORTS is enabled.
-So we switch the whole Debian archive to FPXX. But the golang cannot
-support FP32 now.
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linux-mips@vger.kernel.org
 
-So I wish provides a way to support FP32 and FP64 with a single kernel image.
+---
 
-> > Then we need to disable FP64 support temporarily with a boot param:
-> >    o32_fp64=no/disable
->
-> A boot parameter should IMHO be last resort. But I need to understand
-> the problem first to think about different ways to solve this.
->
+Changelog v2:
+- Rearrange SoBs.
+- Move $ref to the root level of the properties. So do do with the
+  constraints.
+- Discard default settings defined out of the property enum constraint.
+- Replace "additionalProperties: false" with "unevaluatedProperties: false"
+  property.
+- Remove a label definition from the binding example.
+---
+ .../bindings/dma/snps,dma-spear1340.yaml      | 161 ++++++++++++++++++
+ .../devicetree/bindings/dma/snps-dma.txt      |  69 --------
+ 2 files changed, 161 insertions(+), 69 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml
+ delete mode 100644 Documentation/devicetree/bindings/dma/snps-dma.txt
 
-Yes, I guess that we have a better solution, but I have no idea how to:
-   1. switch by /sys or /proc ?
-   2. support per-process mode switch.
+diff --git a/Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml b/Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml
+new file mode 100644
+index 000000000000..e7611840a7cf
+--- /dev/null
++++ b/Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml
+@@ -0,0 +1,161 @@
++# SPDX-License-Identifier: GPL-2.0-only
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/dma/snps,dma-spear1340.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Synopsys Designware DMA Controller
++
++maintainers:
++  - Viresh Kumar <vireshk@kernel.org>
++  - Andy Shevchenko <andriy.shevchenko@linux.intel.com>
++
++allOf:
++  - $ref: "dma-controller.yaml#"
++
++properties:
++  compatible:
++    const: snps,dma-spear1340
++
++  "#dma-cells":
++    const: 3
++    description: |
++      First cell is a phandle pointing to the DMA controller. Second one is
++      the DMA request line number. Third cell is the memory master identifier
++      for transfers on dynamically allocated channel. Fourth cell is the
++      peripheral master identifier for transfers on an allocated channel.
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    description: AHB interface reference clock.
++    const: hclk
++
++  dma-channels:
++    description: |
++      Number of DMA channels supported by the controller. In case if
++      not specified the driver will try to auto-detect this and
++      the rest of the optional parameters.
++    minimum: 1
++    maximum: 8
++
++  dma-requests:
++    minimum: 1
++    maximum: 16
++
++  dma-masters:
++    $ref: /schemas/types.yaml#definitions/uint32
++    description: |
++      Number of DMA masters supported by the controller. In case if
++      not specified the driver will try to auto-detect this and
++      the rest of the optional parameters.
++    minimum: 1
++    maximum: 4
++
++  chan_allocation_order:
++    $ref: /schemas/types.yaml#definitions/uint32
++    description: |
++      DMA channels allocation order specifier. Zero means ascending order
++      (first free allocated), while one - descending (last free allocated).
++    default: 0
++    enum: [0, 1]
++
++  chan_priority:
++    $ref: /schemas/types.yaml#definitions/uint32
++    description: |
++      DMA channels priority order. Zero means ascending channels priority
++      so the very first channel has the highest priority. While 1 means
++      descending priority (the last channel has the highest priority).
++    default: 0
++    enum: [0, 1]
++
++  block_size:
++    $ref: /schemas/types.yaml#definitions/uint32
++    description: Maximum block size supported by the DMA controller.
++    enum: [3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095]
++
++  data-width:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    description: Data bus width per each DMA master in bytes.
++    items:
++      maxItems: 4
++      items:
++        enum: [4, 8, 16, 32]
++
++  data_width:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    deprecated: true
++    description: |
++      Data bus width per each DMA master in (2^n * 8) bits. This property is
++      deprecated. It' usage is discouraged in favor of data-width one. Moreover
++      the property incorrectly permits to define data-bus width of 8 and 16
++      bits, which is impossible in accordance with DW DMAC IP-core data book.
++    items:
++      maxItems: 4
++      items:
++        enum:
++          - 0 # 8 bits
++          - 1 # 16 bits
++          - 2 # 32 bits
++          - 3 # 64 bits
++          - 4 # 128 bits
++          - 5 # 256 bits
++        default: 0
++
++  multi-block:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    description: |
++      LLP-based multi-block transfer supported by hardware per
++      each DMA channel.
++    items:
++      maxItems: 8
++      items:
++        enum: [0, 1]
++        default: 1
++
++  snps,dma-protection-control:
++    $ref: /schemas/types.yaml#definitions/uint32
++    description: |
++      Bits one-to-one passed to the AHB HPROT[3:1] bus. Each bit setting
++      indicates the following features: bit 0 - privileged mode,
++      bit 1 - DMA is bufferable, bit 2 - DMA is cacheable.
++    default: 0
++    minimum: 0
++    maximum: 7
++
++unevaluatedProperties: false
++
++required:
++  - compatible
++  - "#dma-cells"
++  - reg
++  - interrupts
++
++examples:
++  - |
++    dma-controller@fc000000 {
++      compatible = "snps,dma-spear1340";
++      reg = <0xfc000000 0x1000>;
++      interrupt-parent = <&vic1>;
++      interrupts = <12>;
++
++      dma-channels = <8>;
++      dma-requests = <16>;
++      dma-masters = <4>;
++      #dma-cells = <3>;
++
++      chan_allocation_order = <1>;
++      chan_priority = <1>;
++      block_size = <0xfff>;
++      data-width = <8 8>;
++      multi-block = <0 0 0 0 0 0 0 0>;
++      snps,max-burst-len = <16 16 4 4 4 4 4 4>;
++    };
++...
+diff --git a/Documentation/devicetree/bindings/dma/snps-dma.txt b/Documentation/devicetree/bindings/dma/snps-dma.txt
+deleted file mode 100644
+index 0bedceed1963..000000000000
+--- a/Documentation/devicetree/bindings/dma/snps-dma.txt
++++ /dev/null
+@@ -1,69 +0,0 @@
+-* Synopsys Designware DMA Controller
+-
+-Required properties:
+-- compatible: "snps,dma-spear1340"
+-- reg: Address range of the DMAC registers
+-- interrupt: Should contain the DMAC interrupt number
+-- dma-channels: Number of channels supported by hardware
+-- dma-requests: Number of DMA request lines supported, up to 16
+-- dma-masters: Number of AHB masters supported by the controller
+-- #dma-cells: must be <3>
+-- chan_allocation_order: order of allocation of channel, 0 (default): ascending,
+-  1: descending
+-- chan_priority: priority of channels. 0 (default): increase from chan 0->n, 1:
+-  increase from chan n->0
+-- block_size: Maximum block size supported by the controller
+-- data-width: Maximum data width supported by hardware per AHB master
+-  (in bytes, power of 2)
+-
+-
+-Deprecated properties:
+-- data_width: Maximum data width supported by hardware per AHB master
+-  (0 - 8bits, 1 - 16bits, ..., 5 - 256bits)
+-
+-
+-Optional properties:
+-- multi-block: Multi block transfers supported by hardware. Array property with
+-  one cell per channel. 0: not supported, 1 (default): supported.
+-- snps,dma-protection-control: AHB HPROT[3:1] protection setting.
+-  The default value is 0 (for non-cacheable, non-buffered,
+-  unprivileged data access).
+-  Refer to include/dt-bindings/dma/dw-dmac.h for possible values.
+-
+-Example:
+-
+-	dmahost: dma@fc000000 {
+-		compatible = "snps,dma-spear1340";
+-		reg = <0xfc000000 0x1000>;
+-		interrupt-parent = <&vic1>;
+-		interrupts = <12>;
+-
+-		dma-channels = <8>;
+-		dma-requests = <16>;
+-		dma-masters = <2>;
+-		#dma-cells = <3>;
+-		chan_allocation_order = <1>;
+-		chan_priority = <1>;
+-		block_size = <0xfff>;
+-		data-width = <8 8>;
+-	};
+-
+-DMA clients connected to the Designware DMA controller must use the format
+-described in the dma.txt file, using a four-cell specifier for each channel.
+-The four cells in order are:
+-
+-1. A phandle pointing to the DMA controller
+-2. The DMA request line number
+-3. Memory master for transfers on allocated channel
+-4. Peripheral master for transfers on allocated channel
+-
+-Example:
+-	
+-	serial@e0000000 {
+-		compatible = "arm,pl011", "arm,primecell";
+-		reg = <0xe0000000 0x1000>;
+-		interrupts = <0 35 0x4>;
+-		dmas = <&dmahost 12 0 1>,
+-			<&dmahost 13 1 0>;
+-		dma-names = "rx", "rx";
+-	};
+-- 
+2.26.2
 
-I think that the 2) should be better.
-
-https://web.archive.org/web/20180828210612/https://dmz-
-portal.mips.com/wiki/MIPS_O32_ABI_-_FR0_and_FR1_Interlinking
-
-
-
-
-> Thomas.
->
-> --
-> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-> good idea.                                                [ RFC1925, 2.3 ]

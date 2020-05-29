@@ -6,39 +6,41 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 062E4C433E0
-	for <linux-mips@archiver.kernel.org>; Fri, 29 May 2020 13:12:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E789C433E1
+	for <linux-mips@archiver.kernel.org>; Fri, 29 May 2020 13:12:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E26B021501
-	for <linux-mips@archiver.kernel.org>; Fri, 29 May 2020 13:12:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 56428207BC
+	for <linux-mips@archiver.kernel.org>; Fri, 29 May 2020 13:12:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbgE2NMW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 29 May 2020 09:12:22 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:48200 "EHLO
+        id S1727112AbgE2NM2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 29 May 2020 09:12:28 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:48170 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726701AbgE2NMU (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 29 May 2020 09:12:20 -0400
+        with ESMTP id S1727093AbgE2NM1 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 29 May 2020 09:12:27 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id D72008029EA0;
-        Fri, 29 May 2020 13:12:17 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id CB9818029EA5;
+        Fri, 29 May 2020 13:12:24 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id wrc_ijKojq8N; Fri, 29 May 2020 16:12:17 +0300 (MSK)
+        with ESMTP id YzOyTpdIMmze; Fri, 29 May 2020 16:12:24 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mark Brown <broonie@kernel.org>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Arnd Bergmann <arnd@arndb.de>, Feng Tang <feng.tang@intel.com>,
         Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-spi@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v6 07/16] spi: dw: Use DMA max burst to set the request thresholds
-Date:   Fri, 29 May 2020 16:11:56 +0300
-Message-ID: <20200529131205.31838-8-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v6 15/16] spi: dw: Use regset32 DebugFS method to create regdump file
+Date:   Fri, 29 May 2020 16:12:04 +0300
+Message-ID: <20200529131205.31838-16-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20200529131205.31838-1-Sergey.Semin@baikalelectronics.ru>
 References: <20200529131205.31838-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -50,18 +52,14 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Each channel of DMA controller may have a limited length of burst
-transaction (number of IO operations performed at ones in a single
-DMA client request). This parameter can be used to setup the most
-optimal DMA Tx/Rx data level values. In order to avoid the Tx buffer
-overrun we can set the DMA Tx level to be of FIFO depth minus the
-maximum burst transactions length. To prevent the Rx buffer underflow
-the DMA Rx level should be set to the maximum burst transactions length.
-This commit setups the DMA channels and the DW SPI DMA Tx/Rx levels
-in accordance with these rules.
+DebugFS kernel interface provides a dedicated method to create the
+registers dump file. Use it instead of creating a generic DebugFS
+file with manually written read callback function.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
+Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
 Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
@@ -73,109 +71,139 @@ Cc: devicetree@vger.kernel.org
 ---
 
 Changelog v3:
-- Use min() method to calculate the optimal burst values.
+- Add commas in the debugfs_reg32 structure initializer and after the last
+  item of the array dw_spi_dbgfs_regs.
 ---
- drivers/spi/spi-dw-mid.c | 37 +++++++++++++++++++++++++++++++++----
- drivers/spi/spi-dw.h     |  2 ++
- 2 files changed, 35 insertions(+), 4 deletions(-)
+ drivers/spi/spi-dw-core.c | 86 ++++++++++++---------------------------
+ drivers/spi/spi-dw.h      |  2 +
+ 2 files changed, 28 insertions(+), 60 deletions(-)
 
-diff --git a/drivers/spi/spi-dw-mid.c b/drivers/spi/spi-dw-mid.c
-index 189b517f77fc..1cf9e3ffe07b 100644
---- a/drivers/spi/spi-dw-mid.c
-+++ b/drivers/spi/spi-dw-mid.c
-@@ -36,6 +36,31 @@ static bool mid_spi_dma_chan_filter(struct dma_chan *chan, void *param)
- 	return true;
+diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
+index 4d1849699a12..323c66c5db50 100644
+--- a/drivers/spi/spi-dw-core.c
++++ b/drivers/spi/spi-dw-core.c
+@@ -29,66 +29,29 @@ struct chip_data {
+ };
+ 
+ #ifdef CONFIG_DEBUG_FS
+-#define SPI_REGS_BUFSIZE	1024
+-static ssize_t dw_spi_show_regs(struct file *file, char __user *user_buf,
+-		size_t count, loff_t *ppos)
+-{
+-	struct dw_spi *dws = file->private_data;
+-	char *buf;
+-	u32 len = 0;
+-	ssize_t ret;
+-
+-	buf = kzalloc(SPI_REGS_BUFSIZE, GFP_KERNEL);
+-	if (!buf)
+-		return 0;
+-
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"%s registers:\n", dev_name(&dws->master->dev));
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"=================================\n");
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"CTRLR0: \t0x%08x\n", dw_readl(dws, DW_SPI_CTRLR0));
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"CTRLR1: \t0x%08x\n", dw_readl(dws, DW_SPI_CTRLR1));
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"SSIENR: \t0x%08x\n", dw_readl(dws, DW_SPI_SSIENR));
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"SER: \t\t0x%08x\n", dw_readl(dws, DW_SPI_SER));
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"BAUDR: \t\t0x%08x\n", dw_readl(dws, DW_SPI_BAUDR));
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"TXFTLR: \t0x%08x\n", dw_readl(dws, DW_SPI_TXFTLR));
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"RXFTLR: \t0x%08x\n", dw_readl(dws, DW_SPI_RXFTLR));
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"TXFLR: \t\t0x%08x\n", dw_readl(dws, DW_SPI_TXFLR));
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"RXFLR: \t\t0x%08x\n", dw_readl(dws, DW_SPI_RXFLR));
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"SR: \t\t0x%08x\n", dw_readl(dws, DW_SPI_SR));
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"IMR: \t\t0x%08x\n", dw_readl(dws, DW_SPI_IMR));
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"ISR: \t\t0x%08x\n", dw_readl(dws, DW_SPI_ISR));
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"DMACR: \t\t0x%08x\n", dw_readl(dws, DW_SPI_DMACR));
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"DMATDLR: \t0x%08x\n", dw_readl(dws, DW_SPI_DMATDLR));
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"DMARDLR: \t0x%08x\n", dw_readl(dws, DW_SPI_DMARDLR));
+-	len += scnprintf(buf + len, SPI_REGS_BUFSIZE - len,
+-			"=================================\n");
+-
+-	ret = simple_read_from_buffer(user_buf, count, ppos, buf, len);
+-	kfree(buf);
+-	return ret;
++
++#define DW_SPI_DBGFS_REG(_name, _off)	\
++{					\
++	.name = _name,			\
++	.offset = _off,			\
  }
  
-+static void mid_spi_maxburst_init(struct dw_spi *dws)
-+{
-+	struct dma_slave_caps caps;
-+	u32 max_burst, def_burst;
-+	int ret;
-+
-+	def_burst = dws->fifo_len / 2;
-+
-+	ret = dma_get_slave_caps(dws->rxchan, &caps);
-+	if (!ret && caps.max_burst)
-+		max_burst = caps.max_burst;
-+	else
-+		max_burst = RX_BURST_LEVEL;
-+
-+	dws->rxburst = min(max_burst, def_burst);
-+
-+	ret = dma_get_slave_caps(dws->txchan, &caps);
-+	if (!ret && caps.max_burst)
-+		max_burst = caps.max_burst;
-+	else
-+		max_burst = TX_BURST_LEVEL;
-+
-+	dws->txburst = min(max_burst, def_burst);
-+}
-+
- static int mid_spi_dma_init_mfld(struct device *dev, struct dw_spi *dws)
- {
- 	struct dw_dma_slave slave = {
-@@ -73,6 +98,8 @@ static int mid_spi_dma_init_mfld(struct device *dev, struct dw_spi *dws)
+-static const struct file_operations dw_spi_regs_ops = {
+-	.owner		= THIS_MODULE,
+-	.open		= simple_open,
+-	.read		= dw_spi_show_regs,
+-	.llseek		= default_llseek,
++static const struct debugfs_reg32 dw_spi_dbgfs_regs[] = {
++	DW_SPI_DBGFS_REG("CTRLR0", DW_SPI_CTRLR0),
++	DW_SPI_DBGFS_REG("CTRLR1", DW_SPI_CTRLR1),
++	DW_SPI_DBGFS_REG("SSIENR", DW_SPI_SSIENR),
++	DW_SPI_DBGFS_REG("SER", DW_SPI_SER),
++	DW_SPI_DBGFS_REG("BAUDR", DW_SPI_BAUDR),
++	DW_SPI_DBGFS_REG("TXFTLR", DW_SPI_TXFTLR),
++	DW_SPI_DBGFS_REG("RXFTLR", DW_SPI_RXFTLR),
++	DW_SPI_DBGFS_REG("TXFLR", DW_SPI_TXFLR),
++	DW_SPI_DBGFS_REG("RXFLR", DW_SPI_RXFLR),
++	DW_SPI_DBGFS_REG("SR", DW_SPI_SR),
++	DW_SPI_DBGFS_REG("IMR", DW_SPI_IMR),
++	DW_SPI_DBGFS_REG("ISR", DW_SPI_ISR),
++	DW_SPI_DBGFS_REG("DMACR", DW_SPI_DMACR),
++	DW_SPI_DBGFS_REG("DMATDLR", DW_SPI_DMATDLR),
++	DW_SPI_DBGFS_REG("DMARDLR", DW_SPI_DMARDLR),
+ };
  
- 	init_completion(&dws->dma_completion);
+ static int dw_spi_debugfs_init(struct dw_spi *dws)
+@@ -100,8 +63,11 @@ static int dw_spi_debugfs_init(struct dw_spi *dws)
+ 	if (!dws->debugfs)
+ 		return -ENOMEM;
  
-+	mid_spi_maxburst_init(dws);
-+
- 	return 0;
- 
- free_rxchan:
-@@ -100,6 +127,8 @@ static int mid_spi_dma_init_generic(struct device *dev, struct dw_spi *dws)
- 
- 	init_completion(&dws->dma_completion);
- 
-+	mid_spi_maxburst_init(dws);
+-	debugfs_create_file("registers", S_IFREG | S_IRUGO,
+-		dws->debugfs, (void *)dws, &dw_spi_regs_ops);
++	dws->regset.regs = dw_spi_dbgfs_regs;
++	dws->regset.nregs = ARRAY_SIZE(dw_spi_dbgfs_regs);
++	dws->regset.base = dws->regs;
++	debugfs_create_regset32("registers", 0400, dws->debugfs, &dws->regset);
 +
  	return 0;
  }
  
-@@ -229,7 +258,7 @@ static struct dma_async_tx_descriptor *dw_spi_dma_prepare_tx(struct dw_spi *dws,
- 	memset(&txconf, 0, sizeof(txconf));
- 	txconf.direction = DMA_MEM_TO_DEV;
- 	txconf.dst_addr = dws->dma_addr;
--	txconf.dst_maxburst = TX_BURST_LEVEL;
-+	txconf.dst_maxburst = dws->txburst;
- 	txconf.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 	txconf.dst_addr_width = convert_dma_width(dws->n_bytes);
- 	txconf.device_fc = false;
-@@ -321,7 +350,7 @@ static struct dma_async_tx_descriptor *dw_spi_dma_prepare_rx(struct dw_spi *dws,
- 	memset(&rxconf, 0, sizeof(rxconf));
- 	rxconf.direction = DMA_DEV_TO_MEM;
- 	rxconf.src_addr = dws->dma_addr;
--	rxconf.src_maxburst = RX_BURST_LEVEL;
-+	rxconf.src_maxburst = dws->rxburst;
- 	rxconf.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 	rxconf.src_addr_width = convert_dma_width(dws->n_bytes);
- 	rxconf.device_fc = false;
-@@ -346,8 +375,8 @@ static int mid_spi_dma_setup(struct dw_spi *dws, struct spi_transfer *xfer)
- {
- 	u16 imr = 0, dma_ctrl = 0;
- 
--	dw_writel(dws, DW_SPI_DMARDLR, RX_BURST_LEVEL - 1);
--	dw_writel(dws, DW_SPI_DMATDLR, TX_BURST_LEVEL);
-+	dw_writel(dws, DW_SPI_DMARDLR, dws->rxburst - 1);
-+	dw_writel(dws, DW_SPI_DMATDLR, dws->fifo_len - dws->txburst);
- 
- 	if (xfer->tx_buf) {
- 		dma_ctrl |= SPI_DMA_TDMAE;
 diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
-index 9585d0c83a6d..9247670fcdfb 100644
+index 0b2cd7994513..151ba316619e 100644
 --- a/drivers/spi/spi-dw.h
 +++ b/drivers/spi/spi-dw.h
-@@ -142,7 +142,9 @@ struct dw_spi {
+@@ -3,6 +3,7 @@
+ #define DW_SPI_HEADER_H
  
- 	/* DMA info */
- 	struct dma_chan		*txchan;
-+	u32			txburst;
- 	struct dma_chan		*rxchan;
-+	u32			rxburst;
- 	unsigned long		dma_chan_busy;
- 	dma_addr_t		dma_addr; /* phy address of the Data register */
- 	const struct dw_spi_dma_ops *dma_ops;
+ #include <linux/completion.h>
++#include <linux/debugfs.h>
+ #include <linux/irqreturn.h>
+ #include <linux/io.h>
+ #include <linux/scatterlist.h>
+@@ -152,6 +153,7 @@ struct dw_spi {
+ 
+ #ifdef CONFIG_DEBUG_FS
+ 	struct dentry *debugfs;
++	struct debugfs_regset32 regset;
+ #endif
+ };
+ 
 -- 
 2.26.2
 

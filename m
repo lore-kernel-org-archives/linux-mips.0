@@ -2,66 +2,61 @@ Return-Path: <SRS0=YAo+=7M=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 546CAC433E0
-	for <linux-mips@archiver.kernel.org>; Sat, 30 May 2020 13:09:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DBADC433E0
+	for <linux-mips@archiver.kernel.org>; Sat, 30 May 2020 13:15:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2F00A207BC
-	for <linux-mips@archiver.kernel.org>; Sat, 30 May 2020 13:09:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 649252074B
+	for <linux-mips@archiver.kernel.org>; Sat, 30 May 2020 13:15:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1590844189;
-	bh=WhjS/pGbgG5GCIYYKCDHTl07S+ISNbYJnu6798ZkKbQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
-	b=x7beOCzL2lwnm3cnELYkT7786+9IGx6TMUO/X9Xj3ivVOJgO66OcW1LBwm4/0EsUe
-	 +9I7LkGif4iQ/t4+P/2Hz1d8MnTJXYzFn+3qsvbGYbzBRD1StrMr9yaOrTIdvVuf5W
-	 iQ8fmd+KwPEGsqHckHUoPs4c6jgOEl6VtZjYUMaw=
+	s=default; t=1590844558;
+	bh=VceDSw21CiOfGJeqHBr1CP4d0xYCY00d31XuwrH77Jk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=DkCf85BwJy95JqXnIZueQ4alp3roQQTs3WB5/gOPZ053ZacApxd4QU7xYnMrMdwhk
+	 hWf15nhH8i2E7gi7hxrbQ8IYpMhXcBAa8w+RZIOBxSRbvWg/ZfP0fLsCz3F0HkE4H6
+	 UuKR1wtbBv4sVA8TG6pZx/L7S+IOHehl+UaGOtLg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728304AbgE3NJs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 30 May 2020 09:09:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51150 "EHLO mail.kernel.org"
+        id S1728433AbgE3NP6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 30 May 2020 09:15:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727947AbgE3NJs (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 30 May 2020 09:09:48 -0400
+        id S1727947AbgE3NP5 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 30 May 2020 09:15:57 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 09BF32074A;
-        Sat, 30 May 2020 13:09:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8AFBA2074A;
+        Sat, 30 May 2020 13:15:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590844188;
-        bh=WhjS/pGbgG5GCIYYKCDHTl07S+ISNbYJnu6798ZkKbQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MtTtaJBWHxkIx2CwHiJSAzGdHdr3kEUozF6jtPJ9Vq0Yyda/UXCuxoD92gLJWSp2q
-         zbp5jZD/kUw5hw3UJkDpb8aMGzdS+hcUbxSp8MelNm6mIhpMDUdewC3m+COQ6wzGI9
-         8ynpaf2PXwJtPeQNzJgQSCZDndzsY2ts2Glf6FH0=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        s=default; t=1590844557;
+        bh=VceDSw21CiOfGJeqHBr1CP4d0xYCY00d31XuwrH77Jk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=aVFSSCom4H9LHoxhuFn21pSETGkaKylK0YvCvLucRPX0jI6hztPTZnbP7mvnCxy4l
+         oA+AGKd0ckZc3i0+ubbQrSZm01+ROfuZeNR0pGFvQomCNspGw9SscgzpO6h2dS5r5E
+         z1k18Ix4rl6KA3vuYsaD/PcAHZOHHaKWMEJPDUBk=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
         by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <maz@kernel.org>)
-        id 1jf1FC-00GXlU-8p; Sat, 30 May 2020 14:09:46 +0100
-Date:   Sat, 30 May 2020 14:09:45 +0100
-Message-ID: <87pnalzi06.wl-maz@kernel.org>
+        id 1jf1L9-00GXrc-Uf; Sat, 30 May 2020 14:15:56 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     kbuild test robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Huacai Chen <chenhc@lemote.com>, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH 2/2] irqchip: loongson-*: Fix COMPILE_TEST
-In-Reply-To: <20200530121113.1797678-3-jiaxun.yang@flygoat.com>
+Cc:     Jason Cooper <jason@lakedaemon.net>, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Huacai Chen <chenhc@lemote.com>
+Subject: Re: [PATCH 0/2] irqchip: loongson-*: Two small fixes
+Date:   Sat, 30 May 2020 14:15:35 +0100
+Message-Id: <159084442227.135078.812738924633130027.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200530121113.1797678-1-jiaxun.yang@flygoat.com>
 References: <20200530121113.1797678-1-jiaxun.yang@flygoat.com>
-        <20200530121113.1797678-3-jiaxun.yang@flygoat.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 EasyPG/1.0.0 Emacs/26
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: jiaxun.yang@flygoat.com, lkp@intel.com, tglx@linutronix.de, jason@lakedaemon.net, chenhc@lemote.com, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+X-SA-Exim-Rcpt-To: jiaxun.yang@flygoat.com, jason@lakedaemon.net, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, tglx@linutronix.de, chenhc@lemote.com
 X-SA-Exim-Mail-From: maz@kernel.org
 X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-mips-owner@vger.kernel.org
@@ -69,77 +64,28 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, 30 May 2020 13:11:13 +0100,
-Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+On Sat, 30 May 2020 20:11:11 +0800, Jiaxun Yang wrote:
 > 
-> spurious_interrupt helper only exists on MIPS and x86,
-> so define a dummy function on other architectures to fix
-> COMPILE_TEST.
+> Jiaxun Yang (2):
+>   irqchip: loongson-pci-msi: Fix a typo in Kconfig
+>   irqchip: loongson-*: Fix COMPILE_TEST
 > 
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
+>  drivers/irqchip/Kconfig                | 2 +-
 >  drivers/irqchip/irq-loongson-htpic.c   | 4 ++++
 >  drivers/irqchip/irq-loongson-htvec.c   | 4 ++++
 >  drivers/irqchip/irq-loongson-liointc.c | 4 ++++
->  3 files changed, 12 insertions(+)
+>  4 files changed, 13 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/irqchip/irq-loongson-htpic.c b/drivers/irqchip/irq-loongson-htpic.c
-> index dd018c22ea83..7f38fdb2cb43 100644
-> --- a/drivers/irqchip/irq-loongson-htpic.c
-> +++ b/drivers/irqchip/irq-loongson-htpic.c
-> @@ -26,6 +26,10 @@ struct loongson_htpic {
->  
->  static struct loongson_htpic *htpic;
->  
-> +#if !defined(CONFIG_MIPS) && !defined(CONFIG_X86)
-> +static inline void spurious_interrupt(void) { }
-> +#endif
+> [...]
 
-No, that's really horrible, and it doesn't scale. Dropping the
-COMPILE_TEST dependency is cleaner, and we should look into having a
-common framework across architectures to account for spurious
-interrupts.
+Applied to irqchip-next, thanks!
 
-Not to mention that the HTPIC is not compiled with COMPILE_TEST anyway.
+[1/2] irqchip/loongson-pci-msi: Fix a typo in Kconfig
+      commit: 8abfb9b77d8707873088356cfee5bcbb842212af
 
-> +
->  static void htpic_irq_dispatch(struct irq_desc *desc)
->  {
->  	struct loongson_htpic *priv = irq_desc_get_handler_data(desc);
-> diff --git a/drivers/irqchip/irq-loongson-htvec.c b/drivers/irqchip/irq-loongson-htvec.c
-> index 1ece9337c78d..03c3973d7525 100644
-> --- a/drivers/irqchip/irq-loongson-htvec.c
-> +++ b/drivers/irqchip/irq-loongson-htvec.c
-> @@ -33,6 +33,10 @@ struct htvec {
->  	raw_spinlock_t		htvec_lock;
->  };
->  
-> +#if !defined(CONFIG_MIPS) && !defined(CONFIG_X86)
-> +static inline void spurious_interrupt(void) { }
-> +#endif
-
-I've already addressed this by dropping COMPILE_TEST.
-
-> +
->  static void htvec_irq_dispatch(struct irq_desc *desc)
->  {
->  	int i;
-> diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
-> index 63b61474a0cc..e31744e2d800 100644
-> --- a/drivers/irqchip/irq-loongson-liointc.c
-> +++ b/drivers/irqchip/irq-loongson-liointc.c
-> @@ -46,6 +46,10 @@ struct liointc_priv {
->  	bool				has_lpc_irq_errata;
->  };
->  
-> +#if !defined(CONFIG_MIPS) && !defined(CONFIG_X86)
-> +static inline void spurious_interrupt(void) { }
-> +#endif
-
-Neither is this one.
+Cheers,
 
 	M.
-
 -- 
 Without deviation from the norm, progress is not possible.
+

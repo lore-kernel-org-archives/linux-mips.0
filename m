@@ -7,39 +7,40 @@ X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4163DC433E0
-	for <linux-mips@archiver.kernel.org>; Sat, 30 May 2020 07:33:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38D4EC433DF
+	for <linux-mips@archiver.kernel.org>; Sat, 30 May 2020 07:33:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1BE262070E
-	for <linux-mips@archiver.kernel.org>; Sat, 30 May 2020 07:33:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 169B32070E
+	for <linux-mips@archiver.kernel.org>; Sat, 30 May 2020 07:33:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="HfbFF7EB"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="Ovl2gd+t"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728841AbgE3Hdf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 30 May 2020 03:33:35 -0400
-Received: from [115.28.160.31] ([115.28.160.31]:33970 "EHLO
+        id S1728838AbgE3Hdh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 30 May 2020 03:33:37 -0400
+Received: from [115.28.160.31] ([115.28.160.31]:33946 "EHLO
         mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1728838AbgE3Hdf (ORCPT
+        by vger.kernel.org with ESMTP id S1726843AbgE3Hdh (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 30 May 2020 03:33:35 -0400
+        Sat, 30 May 2020 03:33:37 -0400
 Received: from localhost.localdomain (unknown [116.236.177.50])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 359B46018C;
-        Sat, 30 May 2020 15:33:26 +0800 (CST)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id CE76060132;
+        Sat, 30 May 2020 15:33:08 +0800 (CST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
-        t=1590824006; bh=g25WwYqpKt2/jiCoOVS8HthalXCjmHQUuUhUc8JyTxE=;
+        t=1590823988; bh=kAZ1xoBK9L1MIPBc/uTjTOY9HtoxIwuxka97TTPZxhE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HfbFF7EBQH147qfaajsDCO5UNmFGpRXqLnZrc10tpC6TApk6MCNbYo6G194zatKWU
-         pjkNzJFy/8XbZksYkohCHFM9YbFbiKaPV/PIfvaYR5Lk6OSLhgUefJzQPowIehJBSb
-         dwo7dADeaBamLDZCb2IVCPQAOwhE3P9++1Hwfj8A=
+        b=Ovl2gd+tdX0uH61fKXiiyIZwLUEx0KbVMyMEif48HC60wZIRtohZB418qDqgp9Px6
+         WvUlRmaWwmJcx3O812Ypy+gydD0MMsqqgDgEtKDLOH7irZfh88XuezLDpAhCigWg5B
+         /oBZTCyt6yoCRgy85zn0R/Fu0cGo+t/yX2a+wTks=
 From:   WANG Xuerui <git@xen0n.name>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc:     WANG Xuerui <git@xen0n.name>, linux-mips@vger.kernel.org,
-        Huacai Chen <chenhc@lemote.com>
-Subject: [PATCH v2 3/3] MIPS: Loongson64: Reorder CPUCFG model match arms
-Date:   Sat, 30 May 2020 15:32:43 +0800
-Message-Id: <20200530073243.16411-4-git@xen0n.name>
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: [PATCH v2 1/3] MIPS: Loongson64: Guard against future cores without CPUCFG
+Date:   Sat, 30 May 2020 15:32:41 +0800
+Message-Id: <20200530073243.16411-2-git@xen0n.name>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200530073243.16411-1-git@xen0n.name>
 References: <20200530073243.16411-1-git@xen0n.name>
@@ -50,66 +51,144 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Originally the match arms are ordered by model release date, however
-the LOONGSON_64R cores are even more reduced capability-wise. So put
-them at top of the switch block.
+Previously it was thought that all future Loongson cores would come with
+native CPUCFG. From new information shared by Huacai this is definitely
+not true (maybe some future 2K cores, for example), so collisions at
+PRID_REV level are inevitable. The CPU model matching needs to take
+PRID_IMP into consideration.
 
-Suggested-by: Huacai Chen <chenhc@lemote.com>
+The emulation logic needs to be disabled for those future cores as well,
+as we cannot possibly encode their non-discoverable features right now.
+
+Reported-by: Huacai Chen <chenhc@lemote.com>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Signed-off-by: WANG Xuerui <git@xen0n.name>
 ---
- arch/mips/loongson64/cpucfg-emul.c | 32 +++++++++++++++---------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ .../include/asm/mach-loongson64/cpucfg-emul.h | 11 ++++++
+ arch/mips/kernel/traps.c                      |  4 ++
+ arch/mips/loongson64/cpucfg-emul.c            | 37 ++++++++++---------
+ 3 files changed, 35 insertions(+), 17 deletions(-)
 
+diff --git a/arch/mips/include/asm/mach-loongson64/cpucfg-emul.h b/arch/mips/include/asm/mach-loongson64/cpucfg-emul.h
+index 01dc308df7b2..d64af19c210d 100644
+--- a/arch/mips/include/asm/mach-loongson64/cpucfg-emul.h
++++ b/arch/mips/include/asm/mach-loongson64/cpucfg-emul.h
+@@ -12,6 +12,12 @@
+ 
+ void loongson3_cpucfg_synthesize_data(struct cpuinfo_mips *c);
+ 
++static inline bool loongson3_cpucfg_emulation_enabled(struct cpuinfo_mips *c)
++{
++	/* All supported cores have non-zero LOONGSON_CFG1 data. */
++	return c->loongson3_cpucfg_data[0] != 0;
++}
++
+ static inline u32 loongson3_cpucfg_read_synthesized(struct cpuinfo_mips *c,
+ 	__u64 sel)
+ {
+@@ -53,6 +59,11 @@ static inline void loongson3_cpucfg_synthesize_data(struct cpuinfo_mips *c)
+ {
+ }
+ 
++static inline bool loongson3_cpucfg_emulation_enabled(struct cpuinfo_mips *c)
++{
++	return false;
++}
++
+ static inline u32 loongson3_cpucfg_read_synthesized(struct cpuinfo_mips *c,
+ 	__u64 sel)
+ {
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 2d5b16daf331..22f805a73921 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -722,6 +722,10 @@ static int simulate_loongson3_cpucfg(struct pt_regs *regs,
+ 
+ 		perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, regs, 0);
+ 
++		/* Do not emulate on unsupported core models. */
++		if (!loongson3_cpucfg_emulation_enabled(&current_cpu_data))
++			return -1;
++
+ 		regs->regs[rd] = loongson3_cpucfg_read_synthesized(
+ 			&current_cpu_data, sel);
+ 
 diff --git a/arch/mips/loongson64/cpucfg-emul.c b/arch/mips/loongson64/cpucfg-emul.c
-index ca75f07252df..cd619b47ba1f 100644
+index fdd52b21c1df..c16023a13379 100644
 --- a/arch/mips/loongson64/cpucfg-emul.c
 +++ b/arch/mips/loongson64/cpucfg-emul.c
-@@ -137,6 +137,22 @@ void loongson3_cpucfg_synthesize_data(struct cpuinfo_mips *c)
+@@ -134,13 +134,9 @@ void loongson3_cpucfg_synthesize_data(struct cpuinfo_mips *c)
+ 	c->loongson3_cpucfg_data[1] = 0;
+ 	c->loongson3_cpucfg_data[2] = 0;
  
- 	/* Add CPUCFG features non-discoverable otherwise. */
- 	switch (c->processor_id & (PRID_IMP_MASK | PRID_REV_MASK)) {
+-	/* Add CPUCFG features non-discoverable otherwise.
+-	 *
+-	 * All Loongson processors covered by CPUCFG emulation have distinct
+-	 * PRID_REV, so take advantage of this.
+-	 */
+-	switch (c->processor_id & PRID_REV_MASK) {
+-	case PRID_REV_LOONGSON3A_R1:
++	/* Add CPUCFG features non-discoverable otherwise. */
++	switch (c->processor_id & (PRID_IMP_MASK | PRID_REV_MASK)) {
++	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3A_R1:
+ 		c->loongson3_cpucfg_data[0] |= (LOONGSON_CFG1_LSLDR0 |
+ 			LOONGSON_CFG1_LSSYNCI | LOONGSON_CFG1_LSUCA |
+ 			LOONGSON_CFG1_LLSYNC | LOONGSON_CFG1_TGTSYNC);
+@@ -153,8 +149,8 @@ void loongson3_cpucfg_synthesize_data(struct cpuinfo_mips *c)
+ 			LOONGSON_CFG3_LCAMVW_REV1);
+ 		break;
+ 
+-	case PRID_REV_LOONGSON3B_R1:
+-	case PRID_REV_LOONGSON3B_R2:
++	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3B_R1:
++	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3B_R2:
+ 		c->loongson3_cpucfg_data[0] |= (LOONGSON_CFG1_LSLDR0 |
+ 			LOONGSON_CFG1_LSSYNCI | LOONGSON_CFG1_LSUCA |
+ 			LOONGSON_CFG1_LLSYNC | LOONGSON_CFG1_TGTSYNC);
+@@ -167,10 +163,10 @@ void loongson3_cpucfg_synthesize_data(struct cpuinfo_mips *c)
+ 			LOONGSON_CFG3_LCAMVW_REV1);
+ 		break;
+ 
+-	case PRID_REV_LOONGSON2K_R1_0:
+-	case PRID_REV_LOONGSON2K_R1_1:
+-	case PRID_REV_LOONGSON2K_R1_2:
+-	case PRID_REV_LOONGSON2K_R1_3:
 +	case PRID_IMP_LOONGSON_64R | PRID_REV_LOONGSON2K_R1_0:
 +	case PRID_IMP_LOONGSON_64R | PRID_REV_LOONGSON2K_R1_1:
 +	case PRID_IMP_LOONGSON_64R | PRID_REV_LOONGSON2K_R1_2:
 +	case PRID_IMP_LOONGSON_64R | PRID_REV_LOONGSON2K_R1_3:
-+		decode_loongson_config6(c);
-+		probe_uca(c);
-+
-+		c->loongson3_cpucfg_data[0] |= (LOONGSON_CFG1_LSLDR0 |
-+			LOONGSON_CFG1_LSSYNCI | LOONGSON_CFG1_LLSYNC |
-+			LOONGSON_CFG1_TGTSYNC);
-+		c->loongson3_cpucfg_data[1] |= (LOONGSON_CFG2_LBT1 |
-+			LOONGSON_CFG2_LBT2 | LOONGSON_CFG2_LPMP |
-+			LOONGSON_CFG2_LPM_REV2);
-+		c->loongson3_cpucfg_data[2] = 0;
-+		break;
-+
- 	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3A_R1:
- 		c->loongson3_cpucfg_data[0] |= (LOONGSON_CFG1_LSLDR0 |
- 			LOONGSON_CFG1_LSSYNCI | LOONGSON_CFG1_LSUCA |
-@@ -164,22 +180,6 @@ void loongson3_cpucfg_synthesize_data(struct cpuinfo_mips *c)
- 			LOONGSON_CFG3_LCAMVW_REV1);
+ 		decode_loongson_config6(c);
+ 		probe_uca(c);
+ 
+@@ -183,10 +179,10 @@ void loongson3_cpucfg_synthesize_data(struct cpuinfo_mips *c)
+ 		c->loongson3_cpucfg_data[2] = 0;
  		break;
  
--	case PRID_IMP_LOONGSON_64R | PRID_REV_LOONGSON2K_R1_0:
--	case PRID_IMP_LOONGSON_64R | PRID_REV_LOONGSON2K_R1_1:
--	case PRID_IMP_LOONGSON_64R | PRID_REV_LOONGSON2K_R1_2:
--	case PRID_IMP_LOONGSON_64R | PRID_REV_LOONGSON2K_R1_3:
--		decode_loongson_config6(c);
--		probe_uca(c);
--
--		c->loongson3_cpucfg_data[0] |= (LOONGSON_CFG1_LSLDR0 |
--			LOONGSON_CFG1_LSSYNCI | LOONGSON_CFG1_LLSYNC |
--			LOONGSON_CFG1_TGTSYNC);
--		c->loongson3_cpucfg_data[1] |= (LOONGSON_CFG2_LBT1 |
--			LOONGSON_CFG2_LBT2 | LOONGSON_CFG2_LPMP |
--			LOONGSON_CFG2_LPM_REV2);
--		c->loongson3_cpucfg_data[2] = 0;
--		break;
--
- 	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3A_R2_0:
- 	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3A_R2_1:
- 	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3A_R3_0:
+-	case PRID_REV_LOONGSON3A_R2_0:
+-	case PRID_REV_LOONGSON3A_R2_1:
+-	case PRID_REV_LOONGSON3A_R3_0:
+-	case PRID_REV_LOONGSON3A_R3_1:
++	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3A_R2_0:
++	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3A_R2_1:
++	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3A_R3_0:
++	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3A_R3_1:
+ 		decode_loongson_config6(c);
+ 		probe_uca(c);
+ 
+@@ -203,6 +199,13 @@ void loongson3_cpucfg_synthesize_data(struct cpuinfo_mips *c)
+ 			LOONGSON_CFG3_LCAMKW_REV1 |
+ 			LOONGSON_CFG3_LCAMVW_REV1);
+ 		break;
++
++	default:
++		/* It is possible that some future Loongson cores still do
++		 * not have CPUCFG, so do not emulate anything for these
++		 * cores.
++		 */
++		return;
+ 	}
+ 
+ 	/* This feature is set by firmware, but all known Loongson-64 systems
 -- 
 2.26.2
 

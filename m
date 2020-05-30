@@ -2,193 +2,193 @@ Return-Path: <SRS0=YAo+=7M=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.5 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38D4EC433DF
-	for <linux-mips@archiver.kernel.org>; Sat, 30 May 2020 07:33:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 657ECC433E2
+	for <linux-mips@archiver.kernel.org>; Sat, 30 May 2020 07:36:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 169B32070E
-	for <linux-mips@archiver.kernel.org>; Sat, 30 May 2020 07:33:38 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="Ovl2gd+t"
+	by mail.kernel.org (Postfix) with ESMTP id 4E22A207D0
+	for <linux-mips@archiver.kernel.org>; Sat, 30 May 2020 07:36:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728838AbgE3Hdh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 30 May 2020 03:33:37 -0400
-Received: from [115.28.160.31] ([115.28.160.31]:33946 "EHLO
-        mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1726843AbgE3Hdh (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 30 May 2020 03:33:37 -0400
-Received: from localhost.localdomain (unknown [116.236.177.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id CE76060132;
-        Sat, 30 May 2020 15:33:08 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
-        t=1590823988; bh=kAZ1xoBK9L1MIPBc/uTjTOY9HtoxIwuxka97TTPZxhE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ovl2gd+tdX0uH61fKXiiyIZwLUEx0KbVMyMEif48HC60wZIRtohZB418qDqgp9Px6
-         WvUlRmaWwmJcx3O812Ypy+gydD0MMsqqgDgEtKDLOH7irZfh88XuezLDpAhCigWg5B
-         /oBZTCyt6yoCRgy85zn0R/Fu0cGo+t/yX2a+wTks=
-From:   WANG Xuerui <git@xen0n.name>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     WANG Xuerui <git@xen0n.name>, linux-mips@vger.kernel.org,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH v2 1/3] MIPS: Loongson64: Guard against future cores without CPUCFG
-Date:   Sat, 30 May 2020 15:32:41 +0800
-Message-Id: <20200530073243.16411-2-git@xen0n.name>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200530073243.16411-1-git@xen0n.name>
-References: <20200530073243.16411-1-git@xen0n.name>
+        id S1728929AbgE3Hg3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 30 May 2020 03:36:29 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:52118 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728881AbgE3Hg2 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 30 May 2020 03:36:28 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 084698029EA0;
+        Sat, 30 May 2020 07:36:24 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Web-dGyjf-zT; Sat, 30 May 2020 10:36:23 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 7/7] watchdog: dw_wdt: Add DebugFS files
+Date:   Sat, 30 May 2020 10:35:57 +0300
+Message-ID: <20200530073557.22661-8-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200530073557.22661-1-Sergey.Semin@baikalelectronics.ru>
+References: <20200530073557.22661-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Previously it was thought that all future Loongson cores would come with
-native CPUCFG. From new information shared by Huacai this is definitely
-not true (maybe some future 2K cores, for example), so collisions at
-PRID_REV level are inevitable. The CPU model matching needs to take
-PRID_IMP into consideration.
+For the sake of the easier device-driver debug procedure, we added a
+DebugFS file with the controller registers state. It's available only if
+kernel is configured with DebugFS support.
 
-The emulation logic needs to be disabled for those future cores as well,
-as we cannot possibly encode their non-discoverable features right now.
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: devicetree@vger.kernel.org
 
-Reported-by: Huacai Chen <chenhc@lemote.com>
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Signed-off-by: WANG Xuerui <git@xen0n.name>
 ---
- .../include/asm/mach-loongson64/cpucfg-emul.h | 11 ++++++
- arch/mips/kernel/traps.c                      |  4 ++
- arch/mips/loongson64/cpucfg-emul.c            | 37 ++++++++++---------
- 3 files changed, 35 insertions(+), 17 deletions(-)
 
-diff --git a/arch/mips/include/asm/mach-loongson64/cpucfg-emul.h b/arch/mips/include/asm/mach-loongson64/cpucfg-emul.h
-index 01dc308df7b2..d64af19c210d 100644
---- a/arch/mips/include/asm/mach-loongson64/cpucfg-emul.h
-+++ b/arch/mips/include/asm/mach-loongson64/cpucfg-emul.h
-@@ -12,6 +12,12 @@
+Changelog v2:
+- Rearrange SoBs.
+- Discard timeout/pretimeout/ping/enable DebugFS nodes. Registers state
+  dump node is only left.
+---
+ drivers/watchdog/dw_wdt.c | 68 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
+
+diff --git a/drivers/watchdog/dw_wdt.c b/drivers/watchdog/dw_wdt.c
+index 7a171920dd21..4fec2c6a3c01 100644
+--- a/drivers/watchdog/dw_wdt.c
++++ b/drivers/watchdog/dw_wdt.c
+@@ -28,6 +28,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/reset.h>
+ #include <linux/watchdog.h>
++#include <linux/debugfs.h>
  
- void loongson3_cpucfg_synthesize_data(struct cpuinfo_mips *c);
+ #define WDOG_CONTROL_REG_OFFSET		    0x00
+ #define WDOG_CONTROL_REG_WDT_EN_MASK	    0x01
+@@ -39,8 +40,14 @@
+ #define WDOG_COUNTER_RESTART_KICK_VALUE	    0x76
+ #define WDOG_INTERRUPT_STATUS_REG_OFFSET    0x10
+ #define WDOG_INTERRUPT_CLEAR_REG_OFFSET     0x14
++#define WDOG_COMP_PARAMS_5_REG_OFFSET       0xe4
++#define WDOG_COMP_PARAMS_4_REG_OFFSET       0xe8
++#define WDOG_COMP_PARAMS_3_REG_OFFSET       0xec
++#define WDOG_COMP_PARAMS_2_REG_OFFSET       0xf0
+ #define WDOG_COMP_PARAMS_1_REG_OFFSET       0xf4
+ #define WDOG_COMP_PARAMS_1_USE_FIX_TOP      BIT(6)
++#define WDOG_COMP_VERSION_REG_OFFSET        0xf8
++#define WDOG_COMP_TYPE_REG_OFFSET           0xfc
  
-+static inline bool loongson3_cpucfg_emulation_enabled(struct cpuinfo_mips *c)
-+{
-+	/* All supported cores have non-zero LOONGSON_CFG1 data. */
-+	return c->loongson3_cpucfg_data[0] != 0;
-+}
+ /* There are sixteen TOPs (timeout periods) that can be set in the watchdog. */
+ #define DW_WDT_NUM_TOPS		16
+@@ -85,6 +92,10 @@ struct dw_wdt {
+ 	/* Save/restore */
+ 	u32			control;
+ 	u32			timeout;
 +
- static inline u32 loongson3_cpucfg_read_synthesized(struct cpuinfo_mips *c,
- 	__u64 sel)
- {
-@@ -53,6 +59,11 @@ static inline void loongson3_cpucfg_synthesize_data(struct cpuinfo_mips *c)
- {
++#ifdef CONFIG_DEBUG_FS
++	struct dentry		*dbgfs_dir;
++#endif
+ };
+ 
+ #define to_dw_wdt(wdd)	container_of(wdd, struct dw_wdt, wdd)
+@@ -484,6 +495,59 @@ static int dw_wdt_init_timeouts(struct dw_wdt *dw_wdt, struct device *dev)
+ 	return 0;
  }
  
-+static inline bool loongson3_cpucfg_emulation_enabled(struct cpuinfo_mips *c)
-+{
-+	return false;
++#ifdef CONFIG_DEBUG_FS
++
++#define DW_WDT_DBGFS_REG(_name, _off) \
++{				      \
++	.name = _name,		      \
++	.offset = _off		      \
 +}
 +
- static inline u32 loongson3_cpucfg_read_synthesized(struct cpuinfo_mips *c,
- 	__u64 sel)
- {
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 2d5b16daf331..22f805a73921 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -722,6 +722,10 @@ static int simulate_loongson3_cpucfg(struct pt_regs *regs,
- 
- 		perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, regs, 0);
- 
-+		/* Do not emulate on unsupported core models. */
-+		if (!loongson3_cpucfg_emulation_enabled(&current_cpu_data))
-+			return -1;
++static const struct debugfs_reg32 dw_wdt_dbgfs_regs[] = {
++	DW_WDT_DBGFS_REG("cr", WDOG_CONTROL_REG_OFFSET),
++	DW_WDT_DBGFS_REG("torr", WDOG_TIMEOUT_RANGE_REG_OFFSET),
++	DW_WDT_DBGFS_REG("ccvr", WDOG_CURRENT_COUNT_REG_OFFSET),
++	DW_WDT_DBGFS_REG("crr", WDOG_COUNTER_RESTART_REG_OFFSET),
++	DW_WDT_DBGFS_REG("stat", WDOG_INTERRUPT_STATUS_REG_OFFSET),
++	DW_WDT_DBGFS_REG("param5", WDOG_COMP_PARAMS_5_REG_OFFSET),
++	DW_WDT_DBGFS_REG("param4", WDOG_COMP_PARAMS_4_REG_OFFSET),
++	DW_WDT_DBGFS_REG("param3", WDOG_COMP_PARAMS_3_REG_OFFSET),
++	DW_WDT_DBGFS_REG("param2", WDOG_COMP_PARAMS_2_REG_OFFSET),
++	DW_WDT_DBGFS_REG("param1", WDOG_COMP_PARAMS_1_REG_OFFSET),
++	DW_WDT_DBGFS_REG("version", WDOG_COMP_VERSION_REG_OFFSET),
++	DW_WDT_DBGFS_REG("type", WDOG_COMP_TYPE_REG_OFFSET)
++};
 +
- 		regs->regs[rd] = loongson3_cpucfg_read_synthesized(
- 			&current_cpu_data, sel);
- 
-diff --git a/arch/mips/loongson64/cpucfg-emul.c b/arch/mips/loongson64/cpucfg-emul.c
-index fdd52b21c1df..c16023a13379 100644
---- a/arch/mips/loongson64/cpucfg-emul.c
-+++ b/arch/mips/loongson64/cpucfg-emul.c
-@@ -134,13 +134,9 @@ void loongson3_cpucfg_synthesize_data(struct cpuinfo_mips *c)
- 	c->loongson3_cpucfg_data[1] = 0;
- 	c->loongson3_cpucfg_data[2] = 0;
- 
--	/* Add CPUCFG features non-discoverable otherwise.
--	 *
--	 * All Loongson processors covered by CPUCFG emulation have distinct
--	 * PRID_REV, so take advantage of this.
--	 */
--	switch (c->processor_id & PRID_REV_MASK) {
--	case PRID_REV_LOONGSON3A_R1:
-+	/* Add CPUCFG features non-discoverable otherwise. */
-+	switch (c->processor_id & (PRID_IMP_MASK | PRID_REV_MASK)) {
-+	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3A_R1:
- 		c->loongson3_cpucfg_data[0] |= (LOONGSON_CFG1_LSLDR0 |
- 			LOONGSON_CFG1_LSSYNCI | LOONGSON_CFG1_LSUCA |
- 			LOONGSON_CFG1_LLSYNC | LOONGSON_CFG1_TGTSYNC);
-@@ -153,8 +149,8 @@ void loongson3_cpucfg_synthesize_data(struct cpuinfo_mips *c)
- 			LOONGSON_CFG3_LCAMVW_REV1);
- 		break;
- 
--	case PRID_REV_LOONGSON3B_R1:
--	case PRID_REV_LOONGSON3B_R2:
-+	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3B_R1:
-+	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3B_R2:
- 		c->loongson3_cpucfg_data[0] |= (LOONGSON_CFG1_LSLDR0 |
- 			LOONGSON_CFG1_LSSYNCI | LOONGSON_CFG1_LSUCA |
- 			LOONGSON_CFG1_LLSYNC | LOONGSON_CFG1_TGTSYNC);
-@@ -167,10 +163,10 @@ void loongson3_cpucfg_synthesize_data(struct cpuinfo_mips *c)
- 			LOONGSON_CFG3_LCAMVW_REV1);
- 		break;
- 
--	case PRID_REV_LOONGSON2K_R1_0:
--	case PRID_REV_LOONGSON2K_R1_1:
--	case PRID_REV_LOONGSON2K_R1_2:
--	case PRID_REV_LOONGSON2K_R1_3:
-+	case PRID_IMP_LOONGSON_64R | PRID_REV_LOONGSON2K_R1_0:
-+	case PRID_IMP_LOONGSON_64R | PRID_REV_LOONGSON2K_R1_1:
-+	case PRID_IMP_LOONGSON_64R | PRID_REV_LOONGSON2K_R1_2:
-+	case PRID_IMP_LOONGSON_64R | PRID_REV_LOONGSON2K_R1_3:
- 		decode_loongson_config6(c);
- 		probe_uca(c);
- 
-@@ -183,10 +179,10 @@ void loongson3_cpucfg_synthesize_data(struct cpuinfo_mips *c)
- 		c->loongson3_cpucfg_data[2] = 0;
- 		break;
- 
--	case PRID_REV_LOONGSON3A_R2_0:
--	case PRID_REV_LOONGSON3A_R2_1:
--	case PRID_REV_LOONGSON3A_R3_0:
--	case PRID_REV_LOONGSON3A_R3_1:
-+	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3A_R2_0:
-+	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3A_R2_1:
-+	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3A_R3_0:
-+	case PRID_IMP_LOONGSON_64C | PRID_REV_LOONGSON3A_R3_1:
- 		decode_loongson_config6(c);
- 		probe_uca(c);
- 
-@@ -203,6 +199,13 @@ void loongson3_cpucfg_synthesize_data(struct cpuinfo_mips *c)
- 			LOONGSON_CFG3_LCAMKW_REV1 |
- 			LOONGSON_CFG3_LCAMVW_REV1);
- 		break;
++static void dw_wdt_dbgfs_init(struct dw_wdt *dw_wdt)
++{
++	struct device *dev = dw_wdt->wdd.parent;
++	struct debugfs_regset32 *regset;
 +
-+	default:
-+		/* It is possible that some future Loongson cores still do
-+		 * not have CPUCFG, so do not emulate anything for these
-+		 * cores.
-+		 */
++	regset = devm_kzalloc(dev, sizeof(*regset), GFP_KERNEL);
++	if (!regset)
 +		return;
- 	}
++
++	regset->regs = dw_wdt_dbgfs_regs;
++	regset->nregs = ARRAY_SIZE(dw_wdt_dbgfs_regs);
++	regset->base = dw_wdt->regs;
++
++	dw_wdt->dbgfs_dir = debugfs_create_dir(dev_name(dev), NULL);
++
++	debugfs_create_regset32("registers", 0444, dw_wdt->dbgfs_dir, regset);
++}
++
++static void dw_wdt_dbgfs_clear(struct dw_wdt *dw_wdt)
++{
++	debugfs_remove_recursive(dw_wdt->dbgfs_dir);
++}
++
++#else /* !CONFIG_DEBUG_FS */
++
++static void dw_wdt_dbgfs_init(struct dw_wdt *dw_wdt) {}
++static void dw_wdt_dbgfs_clear(struct dw_wdt *dw_wdt) {}
++
++#endif /* !CONFIG_DEBUG_FS */
++
+ static int dw_wdt_drv_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+@@ -607,6 +671,8 @@ static int dw_wdt_drv_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto out_disable_pclk;
  
- 	/* This feature is set by firmware, but all known Loongson-64 systems
++	dw_wdt_dbgfs_init(dw_wdt);
++
+ 	return 0;
+ 
+ out_disable_pclk:
+@@ -621,6 +687,8 @@ static int dw_wdt_drv_remove(struct platform_device *pdev)
+ {
+ 	struct dw_wdt *dw_wdt = platform_get_drvdata(pdev);
+ 
++	dw_wdt_dbgfs_clear(dw_wdt);
++
+ 	watchdog_unregister_device(&dw_wdt->wdd);
+ 	reset_control_assert(dw_wdt->rst);
+ 	clk_disable_unprepare(dw_wdt->pclk);
 -- 
 2.26.2
 

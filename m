@@ -2,101 +2,132 @@ Return-Path: <SRS0=YAo+=7M=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C5C7C433E1
-	for <linux-mips@archiver.kernel.org>; Sat, 30 May 2020 18:14:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5ADBC433E2
+	for <linux-mips@archiver.kernel.org>; Sat, 30 May 2020 21:06:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4C3F620722
-	for <linux-mips@archiver.kernel.org>; Sat, 30 May 2020 18:14:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1590862475;
-	bh=UcgMnbWVfvBjv+v+D7HF4E+1En0QCkN0V0BLFqoCM6s=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:List-ID:From;
-	b=jhEodeHJMCY/uPnwBOLssP3oViN1IEJ64y6K2PTsXYkushiJFqTP89rw76HOs3I81
-	 WwisN0RKk8vdFOw6obDLzEPueJv9jev/z/KUyKMcxBy0bi/yGm1KUs1h6eHsQPs+uw
-	 ncwj+oRmBaoMgxRTusgQI+1Q2PeQd8SSgUL0Sgj8=
+	by mail.kernel.org (Postfix) with ESMTP id C13F62076B
+	for <linux-mips@archiver.kernel.org>; Sat, 30 May 2020 21:06:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729294AbgE3SOY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 30 May 2020 14:14:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57156 "EHLO mail.kernel.org"
+        id S1729098AbgE3VF6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 30 May 2020 17:05:58 -0400
+Received: from sauhun.de ([88.99.104.3]:37032 "EHLO pokefinder.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728927AbgE3SOX (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 30 May 2020 14:14:23 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42B5920774;
-        Sat, 30 May 2020 18:14:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590862463;
-        bh=UcgMnbWVfvBjv+v+D7HF4E+1En0QCkN0V0BLFqoCM6s=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=e7bPydJqmjKqzrBfvCM3/4UwGU+fF4fezrySjJL4CZn7slwfG7KIGTCwV6iS0VDB/
-         JQXWtHXnDnqNwTkzl5C0nVYDXWyUhPrsyD2IGNAd9dzinceEO3rja/69apDGoMKaAx
-         9mMjnWUk0GZRUzF2dgTOsq5Myq1B0jFPr6764jKI=
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200526222056.18072-4-Sergey.Semin@baikalelectronics.ru>
-References: <20200526222056.18072-1-Sergey.Semin@baikalelectronics.ru> <20200526222056.18072-4-Sergey.Semin@baikalelectronics.ru>
-Subject: Re: [PATCH v3 3/4] clk: Add Baikal-T1 CCU PLLs driver
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        id S1728741AbgE3VF5 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 30 May 2020 17:05:57 -0400
+Received: from localhost (p5486c6a9.dip0.t-ipconnect.de [84.134.198.169])
+        by pokefinder.org (Postfix) with ESMTPSA id B79692C206B;
+        Sat, 30 May 2020 23:05:54 +0200 (CEST)
+Date:   Sat, 30 May 2020 23:05:54 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
         Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Date:   Sat, 30 May 2020 11:14:22 -0700
-Message-ID: <159086246246.69627.14574003566166284722@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 08/11] i2c: designware: Convert driver to using regmap
+ API
+Message-ID: <20200530210554.GA15682@ninjato>
+References: <20200528093322.23553-1-Sergey.Semin@baikalelectronics.ru>
+ <20200528093322.23553-9-Sergey.Semin@baikalelectronics.ru>
+ <20200530110930.GC1038@ninjato>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="a8Wt8u1KmwUX3Y2C"
+Content-Disposition: inline
+In-Reply-To: <20200530110930.GC1038@ninjato>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Quoting Serge Semin (2020-05-26 15:20:55)
-> Baikal-T1 is supposed to be supplied with a high-frequency external
-> oscillator. But in order to create signals suitable for each IP-block
-> embedded into the SoC the oscillator output is primarily connected to
-> a set of CCU PLLs. There are five of them to create clocks for the MIPS
-> P5600 cores, an embedded DDR controller, SATA, Ethernet and PCIe domains.
-> The last three domains though named by the biggest system interfaces in
-> fact include nearly all of the rest SoC peripherals. Each of the PLLs is
-> based on True Circuits TSMC CLN28HPM IP-core with an interface wrapper
-> (so called safe PLL' clocks switcher) to simplify the PLL configuration
-> procedure.
->=20
-> This driver creates the of-based hardware clocks to use them then in
-> the corresponding subsystems. In order to simplify the driver code we
-> split the functionality up into the PLLs clocks operations and hardware
-> clocks declaration/registration procedures.
->=20
-> Even though the PLLs are based on the same IP-core, they may have some
-> differences. In particular, some CCU PLLs support the output clock change
-> without gating them (like CPU or PCIe PLLs), while the others don't, some
-> CCU PLLs are critical and aren't supposed to be gated. In order to cover
-> all of these cases the hardware clocks driver is designed with an
-> info-descriptor pattern. So there are special static descriptors declared
-> for each PLL, which is then used to create a hardware clock with proper
-> operations. Additionally debugfs-files are provided for each PLL' field
-> to make sure the implemented rate-PLLs-dividers calculation algorithm is
-> correct.
->=20
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: linux-mips@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
->=20
-> ---
 
-Applied to clk-next
+--a8Wt8u1KmwUX3Y2C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, May 30, 2020 at 01:09:30PM +0200, Wolfram Sang wrote:
+> On Thu, May 28, 2020 at 12:33:18PM +0300, Serge Semin wrote:
+> > Seeing the DW I2C driver is using flags-based accessors with two
+> > conditional clauses it would be better to replace them with the regmap
+> > API IO methods and to initialize the regmap object with read/write
+> > callbacks specific to the controller registers map implementation. This
+> > will be also handy for the drivers with non-standard registers mapping
+> > (like an embedded into the Baikal-T1 System Controller DW I2C block, wh=
+ich
+> > glue-driver is a part of this series).
+> >=20
+> > As before the driver tries to detect the mapping setup at probe stage a=
+nd
+> > creates a regmap object accordingly, which will be used by the rest of =
+the
+> > code to correctly access the controller registers. In two places it was
+> > appropriate to convert the hand-written read-modify-write and
+> > read-poll-loop design patterns to the corresponding regmap API
+> > ready-to-use methods.
+> >=20
+> > Note the regmap IO methods return value is checked only at the probe
+> > stage. The rest of the code won't do this because basically we have
+> > MMIO-based regmap so non of the read/write methods can fail (this also
+> > won't be needed for the Baikal-T1-specific I2C controller).
+> >=20
+> > Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> > Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> > Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Cc: devicetree@vger.kernel.org
+> > Cc: linux-mips@vger.kernel.org
+>=20
+> My codecheckers found these, rightfully I'd say:
+>=20
+> SPARSE
+> drivers/i2c/busses/i2c-designware-master.c:427:53: warning: incorrect typ=
+e in argument 3 (different signedness)
+> drivers/i2c/busses/i2c-designware-master.c:427:53:    expected unsigned i=
+nt *val
+> drivers/i2c/busses/i2c-designware-master.c:427:53:    got int *
+>=20
+> CC
+> drivers/i2c/busses/i2c-designware-common.c:127: warning: Excess function =
+parameter 'base' description in 'i2c_dw_init_regmap'
+>=20
+> ^ means there is an argument documented which does not exist in the
+> function declaration
+
+Well, I fixed these two minor things for your now...
+
+
+--a8Wt8u1KmwUX3Y2C
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl7Syq4ACgkQFA3kzBSg
+KbY0gQ//YKOc7BeIxNJoEgL1mTbEvdfy6VyzbzoS8K4/J/XOSLeftwBr6tSTUNVQ
+37AcCaqImPPbzUz3EOL9mkfyduGNeVlY+BomsSqABB3SzamwSzo5GajCb64zizjj
+PlrA2ki7SjHINrO3vIIvsxMyU9gqVUR2v8ImRmnNPVm2qzmbRs+/IfnokRxbwZwT
+CHefaToS6go4dCGuCCA5MXPbWlI66j1YH59sewh6IxI/eH6gi/vRdFrJIzhlnyef
+TqHGLeypN0rewdrv1jgr53UF/pInKr9k8XC4xM35TZXjfh5FaQTgfXS2q35c1wYi
+72Cm30DLz9m6YBWEksiCBPUl22oJY3uN//W7SE+d78B1Y5rgszbU47xB7DAXEtUx
+uEzSVx/yUVobrfwuJn5BQHJRS18uQOl6I61X31qE5VFkDqaRJNjAX2E7+XhaQVSr
+wqGzm9AnFmCmNHbanNjW4EnzObW8mq23LXLAWJbWurpEIFL3HinktUN0JliSBysv
+AV67nD+0H0nBSBYul6aEi5EWgK+b4PyvaW/GEC1mGzT0jwxqiP+585SGIAGlMcLd
+8CeXJo0aPPlvGoZZxR1SXv7qlsyuJVIy3PauXfyZf/obw0+wkFZ2Gl5oyaKOGGTA
+a7yvUdM9AFaJ2zzgO4Y+cmOFpg47PIZ54nhyKwAOmD3iGSyx/HI=
+=PIEk
+-----END PGP SIGNATURE-----
+
+--a8Wt8u1KmwUX3Y2C--

@@ -2,115 +2,138 @@ Return-Path: <SRS0=Opa8=7O=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9116C433DF
-	for <linux-mips@archiver.kernel.org>; Mon,  1 Jun 2020 12:31:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9C12C433E0
+	for <linux-mips@archiver.kernel.org>; Mon,  1 Jun 2020 13:11:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B7834207D5
-	for <linux-mips@archiver.kernel.org>; Mon,  1 Jun 2020 12:31:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1591014692;
-	bh=DEEaUOEt24o9uKz0Ey7PzyuEOfgwa1FgnGsP3iqM8hA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
-	b=mXK3JQgOpGV3TEy6yDuCS4jf4ISEH6Exq6pX2sfNZRLWr8RCoysPaj0gpf27NMWdv
-	 fU1T76D4t969nkCmzdnZ5ET2bzKeL4ANk2lXC94R9VkgRVglOf0khWe1lSU8Es8T58
-	 lY+k/w8JDY5n7l/6/MQjQrZZTbNt9/ANQ/T/9v4E=
+	by mail.kernel.org (Postfix) with ESMTP id CC62520823
+	for <linux-mips@archiver.kernel.org>; Mon,  1 Jun 2020 13:11:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726067AbgFAMb3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 1 Jun 2020 08:31:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbgFAMb3 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 1 Jun 2020 08:31:29 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D68CF20679;
-        Mon,  1 Jun 2020 12:31:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591014689;
-        bh=DEEaUOEt24o9uKz0Ey7PzyuEOfgwa1FgnGsP3iqM8hA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=0CjmdrqbPcjg4n3n7xmuSB+DmHeJBjq9UcdxGvTjQEnWpKeZ3MrsgddfBUnWzKJEX
-         zzmb3e4pB8bSjWojsKLWXrWFmLzMj/Mfuv1pUg7fPKOMOabVdq7MnoClr2ZC5eCd8v
-         9y9NdiEc4U84iYsuML66RjoGviT9y1faIlL87DX8=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jfjbD-00Gtms-CX; Mon, 01 Jun 2020 13:31:27 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 01 Jun 2020 13:31:27 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
+        id S1726968AbgFANLo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 1 Jun 2020 09:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726232AbgFANLm (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 1 Jun 2020 09:11:42 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DDEBC08C5C9;
+        Mon,  1 Jun 2020 06:11:41 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jfkE5-0006zl-Fz; Mon, 01 Jun 2020 15:11:37 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 1777D1C0244;
+        Mon,  1 Jun 2020 15:11:37 +0200 (CEST)
+Date:   Mon, 01 Jun 2020 13:11:36 -0000
+From:   "tip-bot2 for Serge Semin" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] clocksource: dw_apb_timer_of: Fix missing
+ clockevent timers
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Paul Burton <paul.burton@imgtec.com>,
-        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
-        James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v2 0/6] mips: Add DT bindings for MIPS CDMM and
- MIPS GIC
-In-Reply-To: <20200601122121.15809-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200601122121.15809-1-Sergey.Semin@baikalelectronics.ru>
-User-Agent: Roundcube Webmail/1.4.4
-Message-ID: <d59ef33155e2ae965e79522ab220c177@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: Sergey.Semin@baikalelectronics.ru, tsbogend@alpha.franken.de, tglx@linutronix.de, gregkh@linuxfoundation.org, fancer.lancer@gmail.com, Alexey.Malahov@baikalelectronics.ru, paul.burton@imgtec.com, robh+dt@kernel.org, arnd@arndb.de, jason@lakedaemon.net, rjw@rjwysocki.net, daniel.lezcano@linaro.org, jhogan@kernel.org, linux-mips@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200521204818.25436-7-Sergey.Semin@baikalelectronics.ru>
+References: <20200521204818.25436-7-Sergey.Semin@baikalelectronics.ru>
+MIME-Version: 1.0
+Message-ID: <159101709692.17951.17644672319168275333.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 2020-06-01 13:21, Serge Semin wrote:
+The following commit has been merged into the timers/core branch of tip:
 
-[...]
+Commit-ID:     6d2e16a3181bafb77b535095c39ad1c8b9558c8c
+Gitweb:        https://git.kernel.org/tip/6d2e16a3181bafb77b535095c39ad1c8b9558c8c
+Author:        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+AuthorDate:    Thu, 21 May 2020 23:48:15 +03:00
+Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
+CommitterDate: Sat, 23 May 2020 00:02:59 +02:00
 
-> Since Paul isn't looking after the MIPS arch code anymore, Ralf hasn't
-> been seen maintaining MIPS for a long time, Thomas is only responsible
-> for the next part of it:
-> 	F:      Documentation/devicetree/bindings/mips/
-> 	F:      Documentation/mips/
-> 	F:      arch/mips/
-> 	F:      drivers/platform/mips/
-> the MIPS-specific drivers like:
-> 	F:	drivers/bus/mips_cdmm.c
-> 	F:	drivers/irqchip/irq-mips-cpu.c
-> 	F:	drivers/irqchip/irq-mips-gic.c
-> 	F:	drivers/clocksource/mips-gic-timer.c
-> 	F:	drivers/cpuidle/cpuidle-cps.c
-> seem to be left for the subsystems maintainers to support. So if you 
-> don't
-> mind or unless there is a better alternative, I can help with looking
-> after them to ease the maintainers review burden and since I'll be 
-> working
-> on our MIPS-based SoC drivers integrating into the mainline kernel repo
-> anyway. If you don't like this idea, please just decline the last
-> patch in the series.
+clocksource: dw_apb_timer_of: Fix missing clockevent timers
 
-Given how deeply integrated the MIPS GIC is in the architecture, I'd
-really like Thomas to co-maintain it, or at the very least give his
-blessing on you being the dedicated point of contact for MIPS GIC
-stuff.
+Commit 100214889973 ("clocksource: dw_apb_timer_of: use
+clocksource_of_init") replaced a publicly available driver
+initialization method with one called by the timer_probe() method
+available after CLKSRC_OF. In current implementation it traverses
+all the timers available in the system and calls their initialization
+methods if corresponding devices were either in dtb or in acpi. But
+if before the commit any number of available timers would be installed
+as clockevent and clocksource devices, after that there would be at most
+two. The rest are just ignored since default case branch doesn't do
+anything. I don't see a reason of such behaviour, neither the commit
+message explains it. Moreover this might be wrong if on some platforms
+these timers might be used for different purpose, as virtually CPU-local
+clockevent timers and as an independent broadcast timer. So in order
+to keep the compatibility with the platforms where the order of the
+timers detection has some meaning, lets add the secondly discovered
+timer to be of clocksource/sched_clock type, while the very first and
+the others would provide the clockevents service.
 
-Thanks,
+Fixes: 100214889973 ("clocksource: dw_apb_timer_of: use clocksource_of_init")
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Alessandro Zummo <a.zummo@towertech.it>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-rtc@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20200521204818.25436-7-Sergey.Semin@baikalelectronics.ru
+---
+ drivers/clocksource/dw_apb_timer_of.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+diff --git a/drivers/clocksource/dw_apb_timer_of.c b/drivers/clocksource/dw_apb_timer_of.c
+index 2db490f..ab3ddeb 100644
+--- a/drivers/clocksource/dw_apb_timer_of.c
++++ b/drivers/clocksource/dw_apb_timer_of.c
+@@ -147,10 +147,6 @@ static int num_called;
+ static int __init dw_apb_timer_init(struct device_node *timer)
+ {
+ 	switch (num_called) {
+-	case 0:
+-		pr_debug("%s: found clockevent timer\n", __func__);
+-		add_clockevent(timer);
+-		break;
+ 	case 1:
+ 		pr_debug("%s: found clocksource timer\n", __func__);
+ 		add_clocksource(timer);
+@@ -161,6 +157,8 @@ static int __init dw_apb_timer_init(struct device_node *timer)
+ #endif
+ 		break;
+ 	default:
++		pr_debug("%s: found clockevent timer\n", __func__);
++		add_clockevent(timer);
+ 		break;
+ 	}
+ 

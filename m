@@ -6,29 +6,30 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65E1BC433DF
-	for <linux-mips@archiver.kernel.org>; Mon,  1 Jun 2020 12:21:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A972C433DF
+	for <linux-mips@archiver.kernel.org>; Mon,  1 Jun 2020 12:21:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4A49F207FB
-	for <linux-mips@archiver.kernel.org>; Mon,  1 Jun 2020 12:21:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 426CC2081A
+	for <linux-mips@archiver.kernel.org>; Mon,  1 Jun 2020 12:21:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgFAMVe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 1 Jun 2020 08:21:34 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:50074 "EHLO
+        id S1727803AbgFAMVi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 1 Jun 2020 08:21:38 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:50012 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726751AbgFAMVd (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 1 Jun 2020 08:21:33 -0400
+        with ESMTP id S1727095AbgFAMVh (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 1 Jun 2020 08:21:37 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 385958030611;
-        Mon,  1 Jun 2020 12:21:31 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id CCA6E80307C2;
+        Mon,  1 Jun 2020 12:21:29 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id L3QZ5iE8BB-p; Mon,  1 Jun 2020 15:21:30 +0300 (MSK)
+        with ESMTP id cYRH4AvC4J4J; Mon,  1 Jun 2020 15:21:28 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Thomas Gleixner <tglx@linutronix.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Paul Burton <paulburton@kernel.org>,
         Rob Herring <robh+dt@kernel.org>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
@@ -42,9 +43,9 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         James Hogan <jhogan@kernel.org>, <linux-mips@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Rob Herring <robh@kernel.org>
-Subject: [PATCH v2 3/6] dt-bindings: bus: Add MIPS CDMM controller
-Date:   Mon, 1 Jun 2020 15:21:18 +0300
-Message-ID: <20200601122121.15809-4-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v2 1/6] dt-bindings: power: Convert mti,mips-cpc to DT schema
+Date:   Mon, 1 Jun 2020 15:21:16 +0300
+Message-ID: <20200601122121.15809-2-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20200601122121.15809-1-Sergey.Semin@baikalelectronics.ru>
 References: <20200601122121.15809-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -56,8 +57,9 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-It's a Common Device Memory Map controller embedded into the MIPS IP
-cores, which dts node is supposed to have compatible and reg properties.
+It's a Cluster Power Controller embedded into the MIPS IP cores.
+Currently the corresponding dts node is supposed to have compatible
+and reg properties.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Reviewed-by: Rob Herring <robh@kernel.org>
@@ -65,40 +67,57 @@ Reviewed-by: Rob Herring <robh@kernel.org>
 ---
 
 Changelog prev:
+- Reword the changelog summary - use shorter version.
 - Lowercase the example hex'es.
 ---
- .../bindings/bus/mti,mips-cdmm.yaml           | 35 +++++++++++++++++++
- 1 file changed, 35 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/bus/mti,mips-cdmm.yaml
+ .../bindings/power/mti,mips-cpc.txt           |  8 -----
+ .../bindings/power/mti,mips-cpc.yaml          | 35 +++++++++++++++++++
+ 2 files changed, 35 insertions(+), 8 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.txt
+ create mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.yaml
 
-diff --git a/Documentation/devicetree/bindings/bus/mti,mips-cdmm.yaml b/Documentation/devicetree/bindings/bus/mti,mips-cdmm.yaml
+diff --git a/Documentation/devicetree/bindings/power/mti,mips-cpc.txt b/Documentation/devicetree/bindings/power/mti,mips-cpc.txt
+deleted file mode 100644
+index c6b82511ae8a..000000000000
+--- a/Documentation/devicetree/bindings/power/mti,mips-cpc.txt
++++ /dev/null
+@@ -1,8 +0,0 @@
+-Binding for MIPS Cluster Power Controller (CPC).
+-
+-This binding allows a system to specify where the CPC registers are
+-located.
+-
+-Required properties:
+-compatible : Should be "mti,mips-cpc".
+-regs: Should describe the address & size of the CPC register region.
+diff --git a/Documentation/devicetree/bindings/power/mti,mips-cpc.yaml b/Documentation/devicetree/bindings/power/mti,mips-cpc.yaml
 new file mode 100644
-index 000000000000..b3ba98515cbe
+index 000000000000..9cd92a57130c
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/bus/mti,mips-cdmm.yaml
++++ b/Documentation/devicetree/bindings/power/mti,mips-cpc.yaml
 @@ -0,0 +1,35 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/bus/mti,mips-cdmm.yaml#
++$id: http://devicetree.org/schemas/power/mti,mips-cpc.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: MIPS Common Device Memory Map
++title: MIPS Cluster Power Controller
 +
 +description: |
-+  Defines a location of the MIPS Common Device Memory Map registers.
++  Defines a location of the MIPS Cluster Power Controller registers.
 +
 +maintainers:
-+  - James Hogan <jhogan@kernel.org>
++  - Paul Burton <paulburton@kernel.org>
 +
 +properties:
 +  compatible:
-+    const: mti,mips-cdmm
++    const: mti,mips-cpc
 +
 +  reg:
 +    description: |
 +      Base address and size of an unoccupied memory region, which will be
-+      used to map the MIPS CDMM registers block.
++      used to map the MIPS CPC registers block.
 +    maxItems: 1
 +
 +required:
@@ -107,9 +126,9 @@ index 000000000000..b3ba98515cbe
 +
 +examples:
 +  - |
-+    cdmm@1bde8000 {
-+      compatible = "mti,mips-cdmm";
-+      reg = <0 0x1bde8000 0 0x8000>;
++    cpc@1bde0000 {
++      compatible = "mti,mips-cpc";
++      reg = <0 0x1bde0000 0 0x8000>;
 +    };
 +...
 -- 

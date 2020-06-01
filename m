@@ -2,90 +2,112 @@ Return-Path: <SRS0=Opa8=7O=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 548C0C433DF
-	for <linux-mips@archiver.kernel.org>; Mon,  1 Jun 2020 15:38:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC8AAC433DF
+	for <linux-mips@archiver.kernel.org>; Mon,  1 Jun 2020 15:52:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2A8782065C
-	for <linux-mips@archiver.kernel.org>; Mon,  1 Jun 2020 15:38:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1591025928;
-	bh=C0KobNhQsbqQyjusaD9Mru5CNdSlm9q1OMIO3NR81+U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
-	b=TAg0mU8qLQRvwNha/MqqrBoccDXdC3dJ1aWFIqiuS/uVusrlkwKW5WkMnNMTEQKFb
-	 JARTA3wjjl10Yuh1qjzBS9/z+IgWWx5ExyGJcCCIJ/hvy4a1oW8/FzC5vBtD6d/JkZ
-	 RxP56qNgGg9O88R+75XgEipeOz2rkWAsMXiA3e+4=
+	by mail.kernel.org (Postfix) with ESMTP id C54F220734
+	for <linux-mips@archiver.kernel.org>; Mon,  1 Jun 2020 15:52:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726287AbgFAPis (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 1 Jun 2020 11:38:48 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:44654 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgFAPir (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 1 Jun 2020 11:38:47 -0400
-Received: by mail-io1-f66.google.com with SMTP id p20so7311570iop.11;
-        Mon, 01 Jun 2020 08:38:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CDM37rioFaHDwFqAto2+Bw+wARtkcLP5WD+n2feLzXw=;
-        b=XZhpnvt+LDmyo6/SbHgzmIj/fg/9nUqDi+EV39SGe/7VwYObqaz722SK6eXXP5S+1o
-         /8XL4KIqvoBx/CL+wN3qPVP6q/8B/Nnhsrw/PSPYIUpVti2NFlp3O1gakk7OzAaUggY1
-         3aiZOEl6skvuGmMm8g2xIuLdN/ZbLGRraOUARegU5R2j2i2x38/L/JLrmMFYQOXjd/C0
-         1vJGPhdqm/E6UrtZsA540qjeJ8sijEFqpzsDCL9aGWqq2ND8rdDta8fM7/SlsItj16KL
-         feBDz4jlRuks5KPic638WRBertpGi7bAL1XPmZvBgDLyyjfK/1LlZdG2bEVY+2mhgAYv
-         0lYg==
-X-Gm-Message-State: AOAM533ZVhCirngyweFPlDdvYYkgSiyzYyuRp0m4DpnZ/FMNB6e61RlE
-        z/L8On1dxBt0sa1KnH9ZLA==
-X-Google-Smtp-Source: ABdhPJzFApjLBdOEoq97wU671Fuxf5SQK6949rH8EWZ5Y/LYwbVomscZOA7JDF6HRFZfUOyYrPnk7g==
-X-Received: by 2002:a5d:8cc1:: with SMTP id k1mr9372757iot.123.1591025926294;
-        Mon, 01 Jun 2020 08:38:46 -0700 (PDT)
-Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id v17sm7452956iln.67.2020.06.01.08.38.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 08:38:45 -0700 (PDT)
-Received: (nullmailer pid 955608 invoked by uid 1000);
-        Mon, 01 Jun 2020 15:38:44 -0000
-Date:   Mon, 1 Jun 2020 09:38:44 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     brendanhiggins@google.com, linux-mips@vger.kernel.org,
-        linux-mtd@lists.infradead.org, tglx@linutronix.de,
-        hauke.mehrtens@intel.com, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, andriy.shevchenko@intel.com,
-        anders.roxell@linaro.org, cheol.yong.kim@intel.com, arnd@arndb.de,
-        boris.brezillon@collabora.com, qi-ming.wu@intel.com,
-        linux-kernel@vger.kernel.org, richard@nod.at,
-        masonccyang@mxic.com.tw, vigneshr@ti.com, miquel.raynal@bootlin.com
-Subject: Re: [PATCH v11 1/2] dt-bindings: mtd: Add Nand Flash Controller
- support for Intel LGM SoC
-Message-ID: <20200601153844.GA955555@bogus>
-References: <20200530005117.10986-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200530005117.10986-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S1727921AbgFAPwJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 1 Jun 2020 11:52:09 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:51260 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726287AbgFAPwJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 1 Jun 2020 11:52:09 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 682DD8030802;
+        Mon,  1 Jun 2020 15:52:06 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ZBZK0Artunwm; Mon,  1 Jun 2020 18:52:05 +0300 (MSK)
+Date:   Mon, 1 Jun 2020 18:52:04 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paul.burton@imgtec.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        James Hogan <jhogan@kernel.org>, <linux-mips@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 6/6] MAINTAINERS: Add maintainers for MIPS core drivers
+Message-ID: <20200601155204.hsatjbukj6haxhld@mobilestation>
+References: <20200601122121.15809-1-Sergey.Semin@baikalelectronics.ru>
+ <20200601122121.15809-7-Sergey.Semin@baikalelectronics.ru>
+ <CAHp75Vec8DA+dVDGif7UhBtxDPFZG0nnCav=qLJON=j8=9QxSA@mail.gmail.com>
+ <20200601151903.ipd5ikw35z53eq2t@mobilestation>
+ <CAHp75VdQYBqRUbUEHqjp0XE8bEsRcfTuDRn=R-j4c9TYH6niqw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200530005117.10986-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+In-Reply-To: <CAHp75VdQYBqRUbUEHqjp0XE8bEsRcfTuDRn=R-j4c9TYH6niqw@mail.gmail.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, 30 May 2020 08:51:16 +0800, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> 
-> Add YAML file for dt-bindings to support NAND Flash Controller
-> on Intel's Lightning Mountain SoC.
-> 
-> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> ---
->  .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 99 ++++++++++++++++++++++
->  1 file changed, 99 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+On Mon, Jun 01, 2020 at 06:30:22PM +0300, Andy Shevchenko wrote:
+> On Mon, Jun 1, 2020 at 6:19 PM Serge Semin
+> <Sergey.Semin@baikalelectronics.ru> wrote:
+> > On Mon, Jun 01, 2020 at 04:56:21PM +0300, Andy Shevchenko wrote:
+> > > On Mon, Jun 1, 2020 at 3:26 PM Serge Semin
+> > > <Sergey.Semin@baikalelectronics.ru> wrote:
+> > > >
+> > > > Add myself as a maintainer of MIPS CPU and GIC IRQchip, MIPS GIC timer
+> > > > and MIPS CPS CPUidle drivers.
+> > > ...
+> > > > +MIPS CORE DRIVERS
+> > > > +M:     Serge Semin <fancer.lancer@gmail.com>
+> > > > +L:     linux-mips@vger.kernel.org
+> > > > +S:     Supported
+> > > > +F:     drivers/bus/mips_cdmm.c
+> > > > +F:     drivers/irqchip/irq-mips-cpu.c
+> > > > +F:     drivers/irqchip/irq-mips-gic.c
+> > > > +F:     drivers/clocksource/mips-gic-timer.c
+> > > > +F:     drivers/cpuidle/cpuidle-cps.c
+> > >
+> > > I think nowadays checkpatch.pl warns on wrong ordering in this data base.
+> >
+> > Alas it doesn't.
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> Ah, it definitely will.
+> it was relatively recently added by:
+> commit 9bbce40a4f72fe01a65669aee9f4036baa7fa26e
+> Author: Joe Perches <joe@perches.com>
+> Date:   Tue May 26 10:36:34 2020 +1000
+> 
+>    checkpatch: additional MAINTAINER section entry ordering checks
+> 
+> 
+> > Good point though.
+> 
+> You're welcome.
+
+Next time I won't forget that then. BTW the notes at the top of the MAINTAINERS
+file don't explicitly say about the files-list order. Only about the
+whole maintainers list entries order. Seeing the rest of the sub-entries like
+L:, M:, etc. aren't ordered then it's probably better to have an explicit
+statement, that files should be alphabetically listed, especially when
+checkpatch.pl starts warning about that.
+
+-Sergey
+
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko

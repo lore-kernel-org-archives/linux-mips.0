@@ -2,170 +2,105 @@ Return-Path: <SRS0=Opa8=7O=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0B58C433E0
-	for <linux-mips@archiver.kernel.org>; Mon,  1 Jun 2020 13:13:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93416C433DF
+	for <linux-mips@archiver.kernel.org>; Mon,  1 Jun 2020 13:56:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BBC772074B
-	for <linux-mips@archiver.kernel.org>; Mon,  1 Jun 2020 13:13:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6C4BB2077D
+	for <linux-mips@archiver.kernel.org>; Mon,  1 Jun 2020 13:56:34 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zf2g5J8P"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728388AbgFANNb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 1 Jun 2020 09:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48196 "EHLO
+        id S1726073AbgFAN4d (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 1 Jun 2020 09:56:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726201AbgFANLl (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 1 Jun 2020 09:11:41 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BFF8C08C5C0;
-        Mon,  1 Jun 2020 06:11:41 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jfkE4-0006yq-FJ; Mon, 01 Jun 2020 15:11:36 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 0BA3F1C0244;
-        Mon,  1 Jun 2020 15:11:36 +0200 (CEST)
-Date:   Mon, 01 Jun 2020 13:11:35 -0000
-From:   "tip-bot2 for Serge Semin" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource: mips-gic-timer: Mark GIC timer as
- unstable if ref clock changes
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200521204818.25436-9-Sergey.Semin@baikalelectronics.ru>
-References: <20200521204818.25436-9-Sergey.Semin@baikalelectronics.ru>
+        with ESMTP id S1726017AbgFAN4d (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 1 Jun 2020 09:56:33 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D7EC05BD43;
+        Mon,  1 Jun 2020 06:56:33 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id v2so3499199pfv.7;
+        Mon, 01 Jun 2020 06:56:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NnJ2aNDnHxnX78YplbfmtL0qZ9sbXLKRHhLXydSwmbs=;
+        b=Zf2g5J8PciyeJ3M9+j9tm0SwFeo02JbuT4cP06zTvhbTncf3t6qGuKO3/zDXILg+VA
+         /lVKDICquxnsOLoCRpcX1QWuRbOsdmb/53MIiJOEs0NqIXvhe/JSmYpEi7kP6oFItp1a
+         aqN+vPmWGGZl7ha1s6daaAp31F3bz7A2zVCVXBgpZaopOCp3J9eQiHyhyF3Oq/bUDZ6V
+         C30GTaRiN68Q0QZB1pHk9lf+tLEHkYxkMuzLtTXhdYyNQ3icrxRjUlSaa86al0+kisyK
+         JXxeKcE7NozwBzv8b0ytibUZPujyh+QkpzNOAFhr5S10S10imEDYbpmUikjfyiC/QW4Y
+         qkGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NnJ2aNDnHxnX78YplbfmtL0qZ9sbXLKRHhLXydSwmbs=;
+        b=h7bXIEOu4YWUVdwbh0rXjwnnYc/cp26cwQU/nBtACqXR5+DNVti7wLyMBXU7Ny5aFb
+         kFnpPuHW8hW0H8YaKs9+J1YH2NnoJDiymlrQQAGTLpP8lMoLURVOw/rmc4i/MmaESYBZ
+         k10TBqsC/aintHRxlI1dpdFflwE2pu05SBG0z2g86ZdqNv9ayCAd0c8Uj9ykRbrqNJPd
+         KtM4YcxChtlg0RPgxyA5Tgyac82p4HzbPowQRlpXGsiSTp/JAkqNuZOkS2DysD2hRYgF
+         +6tY6m8u4RYNFqZw6JrmSOKE0NRh/n4g4Y9Lq96wke5kfM7LxNnuOanVVMfSb1lFbu2L
+         GNFw==
+X-Gm-Message-State: AOAM531x4Degw20qm8lEstYUUOGsFBZUmqFQEK4kP7gyhOxdAc3CdbmC
+        W4q8HJYZIOMxVYPHAZ8f6E0qli5YLKqm2oiAKv4=
+X-Google-Smtp-Source: ABdhPJzp4kqPEV9xtuw6yNWIcBe/q7YWBMM7fE0PPWGX8XNJn90BPLkgNVLDiPMj9eaJDZp2o54lQV8nSax2uYQma+4=
+X-Received: by 2002:a62:1c46:: with SMTP id c67mr14165404pfc.170.1591019793048;
+ Mon, 01 Jun 2020 06:56:33 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <159101709590.17951.10382391604771292137.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+References: <20200601122121.15809-1-Sergey.Semin@baikalelectronics.ru> <20200601122121.15809-7-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200601122121.15809-7-Sergey.Semin@baikalelectronics.ru>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 1 Jun 2020 16:56:21 +0300
+Message-ID: <CAHp75Vec8DA+dVDGif7UhBtxDPFZG0nnCav=qLJON=j8=9QxSA@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] MAINTAINERS: Add maintainers for MIPS core drivers
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Paul Burton <paul.burton@imgtec.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+On Mon, Jun 1, 2020 at 3:26 PM Serge Semin
+<Sergey.Semin@baikalelectronics.ru> wrote:
+>
+> Add myself as a maintainer of MIPS CPU and GIC IRQchip, MIPS GIC timer
+> and MIPS CPS CPUidle drivers.
+...
+> +MIPS CORE DRIVERS
+> +M:     Serge Semin <fancer.lancer@gmail.com>
+> +L:     linux-mips@vger.kernel.org
+> +S:     Supported
+> +F:     drivers/bus/mips_cdmm.c
+> +F:     drivers/irqchip/irq-mips-cpu.c
+> +F:     drivers/irqchip/irq-mips-gic.c
+> +F:     drivers/clocksource/mips-gic-timer.c
+> +F:     drivers/cpuidle/cpuidle-cps.c
 
-Commit-ID:     7d7de1a65349811b24971c5e8e040e6aac192dd4
-Gitweb:        https://git.kernel.org/tip/7d7de1a65349811b24971c5e8e040e6aac192dd4
-Author:        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-AuthorDate:    Thu, 21 May 2020 23:48:17 +03:00
-Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CommitterDate: Sat, 23 May 2020 00:03:16 +02:00
+I think nowadays checkpatch.pl warns on wrong ordering in this data base.
 
-clocksource: mips-gic-timer: Mark GIC timer as unstable if ref clock changes
 
-Currently clocksource framework doesn't support the clocks with variable
-frequency. Since MIPS GIC timer ticks rate might be unstable on some
-platforms, we must make sure that it justifies the clocksource
-requirements. MIPS GIC timer is incremented with the CPU cluster reference
-clocks rate. So in case if CPU frequency changes, the MIPS GIC tick rate
-changes synchronously. Due to this the clocksource subsystem can't rely on
-the timer to measure system clocks anymore. This commit marks the MIPS GIC
-based clocksource as unstable if reference clock (normally it's a CPU
-reference clocks) rate changes. The clocksource will execute a watchdog
-thread, which lowers the MIPS GIC timer rating to zero and fallbacks to a
-new stable one.
-
-Note we don't need to set the CLOCK_SOURCE_MUST_VERIFY flag to the MIPS
-GIC clocksource since normally the timer is stable. The only reason why
-it gets unstable is due to the ref clock rate change, which event we
-detect here in the driver by means of the clocks event notifier.
-
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Alessandro Zummo <a.zummo@towertech.it>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-rtc@vger.kernel.org
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20200521204818.25436-9-Sergey.Semin@baikalelectronics.ru
----
- drivers/clocksource/Kconfig          |  1 +
- drivers/clocksource/mips-gic-timer.c | 19 ++++++++++++++++++-
- 2 files changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index c824002..9141838 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -570,6 +570,7 @@ config CLKSRC_VERSATILE
- config CLKSRC_MIPS_GIC
- 	bool
- 	depends on MIPS_GIC
-+	select CLOCKSOURCE_WATCHDOG
- 	select TIMER_OF
- 
- config CLKSRC_TANGO_XTAL
-diff --git a/drivers/clocksource/mips-gic-timer.c b/drivers/clocksource/mips-gic-timer.c
-index ef12c12..be4175f 100644
---- a/drivers/clocksource/mips-gic-timer.c
-+++ b/drivers/clocksource/mips-gic-timer.c
-@@ -24,6 +24,9 @@
- static DEFINE_PER_CPU(struct clock_event_device, gic_clockevent_device);
- static int gic_timer_irq;
- static unsigned int gic_frequency;
-+static bool __read_mostly gic_clock_unstable;
-+
-+static void gic_clocksource_unstable(char *reason);
- 
- static u64 notrace gic_read_count_2x32(void)
- {
-@@ -125,8 +128,10 @@ static int gic_clk_notifier(struct notifier_block *nb, unsigned long action,
- {
- 	struct clk_notifier_data *cnd = data;
- 
--	if (action == POST_RATE_CHANGE)
-+	if (action == POST_RATE_CHANGE) {
-+		gic_clocksource_unstable("ref clock rate change");
- 		on_each_cpu(gic_update_frequency, (void *)cnd->new_rate, 1);
-+	}
- 
- 	return NOTIFY_OK;
- }
-@@ -172,6 +177,18 @@ static struct clocksource gic_clocksource = {
- 	.vdso_clock_mode	= VDSO_CLOCKMODE_GIC,
- };
- 
-+static void gic_clocksource_unstable(char *reason)
-+{
-+	if (gic_clock_unstable)
-+		return;
-+
-+	gic_clock_unstable = true;
-+
-+	pr_info("GIC timer is unstable due to %s\n", reason);
-+
-+	clocksource_mark_unstable(&gic_clocksource);
-+}
-+
- static int __init __gic_clocksource_init(void)
- {
- 	unsigned int count_width;
+-- 
+With Best Regards,
+Andy Shevchenko

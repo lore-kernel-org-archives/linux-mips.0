@@ -2,76 +2,111 @@ Return-Path: <SRS0=c8ks=7Q=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95E51C433E0
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Jun 2020 09:42:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52007C433E0
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Jun 2020 14:22:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6F9E12065C
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Jun 2020 09:42:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 37EE420679
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Jun 2020 14:22:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726360AbgFCJmW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Jun 2020 05:42:22 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:43412 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725854AbgFCJmW (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 3 Jun 2020 05:42:22 -0400
-Received: from kvm-dev1.localdomain (unknown [10.2.5.134])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxL955cNdeqAQ9AA--.3197S2;
-        Wed, 03 Jun 2020 17:42:17 +0800 (CST)
-From:   Bibo Mao <maobibo@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: Do not flush tlb when setting pmd entry
-Date:   Wed,  3 Jun 2020 17:42:13 +0800
-Message-Id: <1591177333-17833-1-git-send-email-maobibo@loongson.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AQAAf9DxL955cNdeqAQ9AA--.3197S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKr17uryxCF15Zw1xuF47twb_yoWxtFc_J3
-        W2y398GryYqrsrt3yrWFZ5JFyDuayDuF18CrsFvryYy3s5Aa1kXayjqryjyr45XrWIvrWr
-        Gr98Zr909F17tjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb7xYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE-syl42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jY6wZUUUUU=
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+        id S1725905AbgFCOWI convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Jun 2020 10:22:08 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:37741 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725890AbgFCOWI (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Jun 2020 10:22:08 -0400
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 06B3C240009;
+        Wed,  3 Jun 2020 14:22:04 +0000 (UTC)
+Date:   Wed, 3 Jun 2020 16:22:03 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     linux-mtd@lists.infradead.org, Hauke Mehrtens <hauke@hauke-m.de>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        linux-mips@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: [PATCH v2 0/8] mtd: rawnand: bcm47xx: Convert to exec_op() (and
+ more)
+Message-ID: <20200603162203.7db6462a@xps13>
+In-Reply-To: <20200518162837.304471-1-boris.brezillon@collabora.com>
+References: <20200518162837.304471-1-boris.brezillon@collabora.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Function set_pmd_at is to set pmd entry, if tlb entry need to
-be flushed, there exists pmdp_huge_clear_flush alike function
-before set_pmd_at is called. So it is not necessary to call
-flush_tlb_all in this function.
+Hello,
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- arch/mips/mm/pgtable-64.c | 1 -
- 1 file changed, 1 deletion(-)
+Boris Brezillon <boris.brezillon@collabora.com> wrote on Mon, 18 May
+2020 18:28:29 +0200:
 
-diff --git a/arch/mips/mm/pgtable-64.c b/arch/mips/mm/pgtable-64.c
-index 6fd6e96..a236752 100644
---- a/arch/mips/mm/pgtable-64.c
-+++ b/arch/mips/mm/pgtable-64.c
-@@ -101,7 +101,6 @@ void set_pmd_at(struct mm_struct *mm, unsigned long addr,
- 		pmd_t *pmdp, pmd_t pmd)
- {
- 	*pmdp = pmd;
--	flush_tlb_all();
- }
- 
- void __init pagetable_init(void)
--- 
-1.8.3.1
+> Hello,
+> 
+> A bit of context to explain the motivation behind those conversions
+> I've been sending for the last couple of weeks. The raw NAND subsystem
+> carries a lot of history which makes any rework not only painful, but
+> also subject to regressions which we only detect when someone dares to
+> update its kernel on one of those ancient HW. While carrying drivers
+> for old HW is not a problem per se, carrying ancient and unmaintained
+> drivers that are not converted to new APIs is a maintenance burden,
+> hence this massive conversion attempt I'm conducting here.
+> 
+> So here is a series converting the BCM47XX NAND controller driver to
+> exec_op(), plus a bunch of minor improvements done along the way.
+> I hope I'll find someone to test those changes, but if there's no one
+> still having access to this  HW or no interest in keeping it supported
+> in recent kernel versions, we should definitely consider removing the
+> driver instead.
+> 
+> No major changes in this v2, apart from fixes for things reported by
+> Miquel. See the changelog on each patch for more details.
+> 
+> Regards,
+> 
+> Boris
+> 
+> Boris Brezillon (8):
+>   mtd: rawnand: Add an is_last flag to nand_subop
+>   mtd: rawnand: bcm47xx: Drop dependency on BCMA
+>   mtd: rawnand: bcm47xx: Allow compiling the driver when COMPILE_TEST=y
+>   mtd: rawnand: bcm47xx: Demistify a few more things
+>   mtd: rawnand: bcm47xx: Implement the exec_op() interface
+>   mtd: rawnand: bcm47xx: Get rid of the legacy implementation
+>   mtd: rawnand: bcm47xx: Simplify the init() function
+>   mtd: rawnand: bcm47xx: Merge all source files
+> 
+>  drivers/mtd/nand/raw/Kconfig                  |   3 +-
+>  drivers/mtd/nand/raw/Makefile                 |   2 +-
+>  .../mtd/nand/raw/bcm47xx-nand-controller.c    | 343 +++++++++++++
+>  drivers/mtd/nand/raw/bcm47xxnflash/Makefile   |   5 -
+>  .../nand/raw/bcm47xxnflash/bcm47xxnflash.h    |  26 -
+>  drivers/mtd/nand/raw/bcm47xxnflash/main.c     |  77 ---
+>  .../mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c  | 450 ------------------
+>  drivers/mtd/nand/raw/nand_base.c              |   2 +
+>  include/linux/mtd/rawnand.h                   |   2 +
+>  9 files changed, 349 insertions(+), 561 deletions(-)
+>  create mode 100644 drivers/mtd/nand/raw/bcm47xx-nand-controller.c
+>  delete mode 100644 drivers/mtd/nand/raw/bcm47xxnflash/Makefile
+>  delete mode 100644 drivers/mtd/nand/raw/bcm47xxnflash/bcm47xxnflash.h
+>  delete mode 100644 drivers/mtd/nand/raw/bcm47xxnflash/main.c
+>  delete mode 100644 drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
+> 
 
+Anyone to test this series?
+
+If not I will apply it as soon as v5.8-rc1 is released.
+
+
+Thanks,
+Miquèl

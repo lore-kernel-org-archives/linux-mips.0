@@ -4,34 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A25C2C433DF
-	for <linux-mips@archiver.kernel.org>; Fri,  5 Jun 2020 21:44:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2868BC433E0
+	for <linux-mips@archiver.kernel.org>; Fri,  5 Jun 2020 21:44:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8BC7C206E6
-	for <linux-mips@archiver.kernel.org>; Fri,  5 Jun 2020 21:44:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 05889206E6
+	for <linux-mips@archiver.kernel.org>; Fri,  5 Jun 2020 21:44:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728439AbgFEVjK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 5 Jun 2020 17:39:10 -0400
-Received: from mga17.intel.com ([192.55.52.151]:49312 "EHLO mga17.intel.com"
+        id S1728664AbgFEVoK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 5 Jun 2020 17:44:10 -0400
+Received: from mga04.intel.com ([192.55.52.120]:22537 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728407AbgFEVjJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 5 Jun 2020 17:39:09 -0400
-IronPort-SDR: yOUxP2A9ZMHNLNnvKyQEdTJTE2MIcajOLJgjBwTJYBGwWXkGVIt39TziZJ8qPC3tKhgixDAbaU
- UfJx6APvQ6wQ==
+        id S1728418AbgFEVjK (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 5 Jun 2020 17:39:10 -0400
+IronPort-SDR: uIc5YCn6PR90XQU4J8UYqd9wwHW38E2GscHOZfTegIYLYgGyx8o7lfjOqsMUMfSm0wPLa+vkxD
+ jgI62UOGwVPQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2020 14:39:08 -0700
-IronPort-SDR: YSVhY82sOCXDcB+FUAbcwT6ASdwsQiG5nW9NicQWovT4JldzzE93CtWvpKQxxHHPrS3LOZeOYf
- tpq5sj1oGtKQ==
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2020 14:39:09 -0700
+IronPort-SDR: H8FtkyTkq+kfR3GM/MSnkl6Fv5ZNCYmvyGw5Iw2YQz/49QgCjYUqVBtIE3U1lDEulgImpTXOAe
+ egrvLr8RD3rQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,477,1583222400"; 
-   d="scan'208";a="287860874"
+   d="scan'208";a="287860911"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
-  by orsmga002.jf.intel.com with ESMTP; 05 Jun 2020 14:39:07 -0700
+  by orsmga002.jf.intel.com with ESMTP; 05 Jun 2020 14:39:08 -0700
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
 To:     Marc Zyngier <maz@kernel.org>, Paul Mackerras <paulus@ozlabs.org>,
         Christian Borntraeger <borntraeger@de.ibm.com>,
@@ -56,9 +55,9 @@ Cc:     James Morse <james.morse@arm.com>,
         Junaid Shahid <junaids@google.com>,
         Ben Gardon <bgardon@google.com>,
         Christoffer Dall <christoffer.dall@arm.com>
-Subject: [PATCH 03/21] KVM: x86/mmu: Use consistent "mc" name for kvm_mmu_memory_cache locals
-Date:   Fri,  5 Jun 2020 14:38:35 -0700
-Message-Id: <20200605213853.14959-4-sean.j.christopherson@intel.com>
+Subject: [PATCH 15/21] KVM: Move x86's MMU memory cache helpers to common KVM code
+Date:   Fri,  5 Jun 2020 14:38:47 -0700
+Message-Id: <20200605213853.14959-16-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200605213853.14959-1-sean.j.christopherson@intel.com>
 References: <20200605213853.14959-1-sean.j.christopherson@intel.com>
@@ -69,72 +68,172 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Use "mc" for local variables to shorten line lengths and provide
-consistent names, which will be especially helpful when some of the
-helpers are moved to common KVM code in future patches.
+Move x86's memory cache helpers to common KVM code so that they can be
+reused by arm64 and MIPS in future patches.
 
-No functional change intended.
-
+Suggested-by: Christoffer Dall <christoffer.dall@arm.com>
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ arch/x86/kvm/mmu/mmu.c   | 53 --------------------------------------
+ include/linux/kvm_host.h |  7 +++++
+ virt/kvm/kvm_main.c      | 55 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 62 insertions(+), 53 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index cbc101663a89..36c90f004ef4 100644
+index b85d3e8e8403..a627437f73fd 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1060,27 +1060,27 @@ static void walk_shadow_page_lockless_end(struct kvm_vcpu *vcpu)
+@@ -1060,47 +1060,6 @@ static void walk_shadow_page_lockless_end(struct kvm_vcpu *vcpu)
  	local_irq_enable();
  }
  
--static int mmu_topup_memory_cache(struct kvm_mmu_memory_cache *cache, int min)
-+static int mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min)
+-static inline void *mmu_memory_cache_alloc_obj(struct kvm_mmu_memory_cache *mc,
+-					       gfp_t gfp_flags)
+-{
+-	gfp_flags |= mc->gfp_zero;
+-
+-	if (mc->kmem_cache)
+-		return kmem_cache_alloc(mc->kmem_cache, gfp_flags);
+-	else
+-		return (void *)__get_free_page(gfp_flags);
+-}
+-
+-static int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min)
+-{
+-	void *obj;
+-
+-	if (mc->nobjs >= min)
+-		return 0;
+-	while (mc->nobjs < ARRAY_SIZE(mc->objects)) {
+-		obj = mmu_memory_cache_alloc_obj(mc, GFP_KERNEL_ACCOUNT);
+-		if (!obj)
+-			return mc->nobjs >= min ? 0 : -ENOMEM;
+-		mc->objects[mc->nobjs++] = obj;
+-	}
+-	return 0;
+-}
+-
+-static int kvm_mmu_memory_cache_nr_free_objects(struct kvm_mmu_memory_cache *mc)
+-{
+-	return mc->nobjs;
+-}
+-
+-static void kvm_mmu_free_memory_cache(struct kvm_mmu_memory_cache *mc)
+-{
+-	while (mc->nobjs) {
+-		if (mc->kmem_cache)
+-			kmem_cache_free(mc->kmem_cache, mc->objects[--mc->nobjs]);
+-		else
+-			free_page((unsigned long)mc->objects[--mc->nobjs]);
+-	}
+-}
+-
+ static int mmu_topup_memory_caches(struct kvm_vcpu *vcpu, bool maybe_indirect)
  {
- 	void *obj;
+ 	int r;
+@@ -1132,18 +1091,6 @@ static void mmu_free_memory_caches(struct kvm_vcpu *vcpu)
+ 	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_page_header_cache);
+ }
  
--	if (cache->nobjs >= min)
+-static void *kvm_mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc)
+-{
+-	void *p;
+-
+-	if (WARN_ON(!mc->nobjs))
+-		p = mmu_memory_cache_alloc_obj(mc, GFP_ATOMIC | __GFP_ACCOUNT);
+-	else
+-		p = mc->objects[--mc->nobjs];
+-	BUG_ON(!p);
+-	return p;
+-}
+-
+ static struct pte_list_desc *mmu_alloc_pte_list_desc(struct kvm_vcpu *vcpu)
+ {
+ 	return kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_pte_list_desc_cache);
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index d38d6b9c24be..802b9e2306f0 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -815,6 +815,13 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *vcpu, bool usermode_vcpu_not_eligible);
+ void kvm_flush_remote_tlbs(struct kvm *kvm);
+ void kvm_reload_remote_mmus(struct kvm *kvm);
+ 
++#ifdef KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE
++int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min);
++int kvm_mmu_memory_cache_nr_free_objects(struct kvm_mmu_memory_cache *mc);
++void kvm_mmu_free_memory_cache(struct kvm_mmu_memory_cache *mc);
++void *kvm_mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc);
++#endif
++
+ bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
+ 				 struct kvm_vcpu *except,
+ 				 unsigned long *vcpu_bitmap, cpumask_var_t tmp);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 4db151f6101e..fead5f1d5594 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -342,6 +342,61 @@ void kvm_reload_remote_mmus(struct kvm *kvm)
+ 	kvm_make_all_cpus_request(kvm, KVM_REQ_MMU_RELOAD);
+ }
+ 
++#ifdef KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE
++static inline void *mmu_memory_cache_alloc_obj(struct kvm_mmu_memory_cache *mc,
++					       gfp_t gfp_flags)
++{
++	gfp_flags |= mc->gfp_zero;
++
++	if (mc->kmem_cache)
++		return kmem_cache_alloc(mc->kmem_cache, gfp_flags);
++	else
++		return (void *)__get_free_page(gfp_flags);
++}
++
++int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min)
++{
++	void *obj;
++
 +	if (mc->nobjs >= min)
- 		return 0;
--	while (cache->nobjs < ARRAY_SIZE(cache->objects)) {
--		if (cache->kmem_cache)
--			obj = kmem_cache_zalloc(cache->kmem_cache, GFP_KERNEL_ACCOUNT);
++		return 0;
 +	while (mc->nobjs < ARRAY_SIZE(mc->objects)) {
-+		if (mc->kmem_cache)
-+			obj = kmem_cache_zalloc(mc->kmem_cache, GFP_KERNEL_ACCOUNT);
- 		else
- 			obj = (void *)__get_free_page(GFP_KERNEL_ACCOUNT);
- 		if (!obj)
--			return cache->nobjs >= min ? 0 : -ENOMEM;
--		cache->objects[cache->nobjs++] = obj;
++		obj = mmu_memory_cache_alloc_obj(mc, GFP_KERNEL_ACCOUNT);
++		if (!obj)
 +			return mc->nobjs >= min ? 0 : -ENOMEM;
 +		mc->objects[mc->nobjs++] = obj;
- 	}
- 	return 0;
- }
- 
--static int mmu_memory_cache_free_objects(struct kvm_mmu_memory_cache *cache)
-+static int mmu_memory_cache_free_objects(struct kvm_mmu_memory_cache *mc)
- {
--	return cache->nobjs;
++	}
++	return 0;
++}
++
++int kvm_mmu_memory_cache_nr_free_objects(struct kvm_mmu_memory_cache *mc)
++{
 +	return mc->nobjs;
- }
- 
- static void mmu_free_memory_cache(struct kvm_mmu_memory_cache *mc)
-@@ -1395,10 +1395,10 @@ static struct kvm_rmap_head *gfn_to_rmap(struct kvm *kvm, gfn_t gfn,
- 
- static bool rmap_can_add(struct kvm_vcpu *vcpu)
++}
++
++void kvm_mmu_free_memory_cache(struct kvm_mmu_memory_cache *mc)
++{
++	while (mc->nobjs) {
++		if (mc->kmem_cache)
++			kmem_cache_free(mc->kmem_cache, mc->objects[--mc->nobjs]);
++		else
++			free_page((unsigned long)mc->objects[--mc->nobjs]);
++	}
++}
++
++void *kvm_mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc)
++{
++	void *p;
++
++	if (WARN_ON(!mc->nobjs))
++		p = mmu_memory_cache_alloc_obj(mc, GFP_ATOMIC | __GFP_ACCOUNT);
++	else
++		p = mc->objects[--mc->nobjs];
++	BUG_ON(!p);
++	return p;
++}
++#endif
++
+ static void kvm_vcpu_init(struct kvm_vcpu *vcpu, struct kvm *kvm, unsigned id)
  {
--	struct kvm_mmu_memory_cache *cache;
-+	struct kvm_mmu_memory_cache *mc;
- 
--	cache = &vcpu->arch.mmu_pte_list_desc_cache;
--	return mmu_memory_cache_free_objects(cache);
-+	mc = &vcpu->arch.mmu_pte_list_desc_cache;
-+	return mmu_memory_cache_free_objects(mc);
- }
- 
- static int rmap_add(struct kvm_vcpu *vcpu, u64 *spte, gfn_t gfn)
+ 	mutex_init(&vcpu->mutex);
 -- 
 2.26.0
 

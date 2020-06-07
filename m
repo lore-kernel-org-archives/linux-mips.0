@@ -1,215 +1,117 @@
-Return-Path: <SRS0=ufB7=7T=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=91jL=7U=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61202C433E0
-	for <linux-mips@archiver.kernel.org>; Sat,  6 Jun 2020 04:03:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84C0CC433DF
+	for <linux-mips@archiver.kernel.org>; Sun,  7 Jun 2020 13:10:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4229620723
-	for <linux-mips@archiver.kernel.org>; Sat,  6 Jun 2020 04:03:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5622720748
+	for <linux-mips@archiver.kernel.org>; Sun,  7 Jun 2020 13:10:50 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="JGqSh7xT"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726153AbgFFEDH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 6 Jun 2020 00:03:07 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:53238 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725791AbgFFEDH (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 6 Jun 2020 00:03:07 -0400
-Received: from kvm-dev1.localdomain (unknown [10.2.5.134])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxJuppFdtebUs+AA--.1078S2;
-        Sat, 06 Jun 2020 12:02:50 +0800 (CST)
-From:   Bibo Mao <maobibo@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v2 1/2] MIPS: Set page access bit with pgprot on platforms with RIXI
-Date:   Sat,  6 Jun 2020 12:02:48 +0800
-Message-Id: <1591416169-26666-1-git-send-email-maobibo@loongson.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AQAAf9AxJuppFdtebUs+AA--.1078S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3WF43GF1UtFy3CryUJFW3trb_yoWxur1kpF
-        97A34xArW2qry3AryxurnrAa1rCwsrtFWUJw17C3W8Z3y7XrykKrnrCa97ZrykuFWvva18
-        Aa1UXr48WayIvFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyvb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l
-        4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
-        AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
-        cVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
-        8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
-        wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU56c_DUUUUU==
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+        id S1726554AbgFGNKt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 7 Jun 2020 09:10:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726474AbgFGNKt (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 7 Jun 2020 09:10:49 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AC3C08C5C2;
+        Sun,  7 Jun 2020 06:10:48 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id mb16so15239746ejb.4;
+        Sun, 07 Jun 2020 06:10:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MX/EH+yzBWn8lnHAP2qqU7wLOvhFMWrYnulg7lebjTQ=;
+        b=JGqSh7xTSGCTwmqWpyH/EIVvTtUeUXKSxUMfRnj6g/gwjiAaArfRvidbM2j0z4WyOT
+         wbW4ie4YzmfYHakTxXFxI5C5zi72vDOI4Pyfrj4cgxBuFcI3KG2sOtOUaxsxKQsgB6TJ
+         91ZWDQ8Y+PNEU5ywTs0sZn3z+5caW7aYdrmfYWmpK23ptI9YDYPVLOESJyGt2jKNgSZs
+         yykodSmV5tdyB3ZTtesh8G2TSZErmyjtuKjz7BsiYR8bJN1AygZz+fT+TdsjKs8FPE52
+         6XztjgET/aA25rcb31+cUJ2oXMB0DDxx7VOsKRU7iVqB1ymopCtSxiBKemE9U9b/+AVr
+         3R3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MX/EH+yzBWn8lnHAP2qqU7wLOvhFMWrYnulg7lebjTQ=;
+        b=tIe6lAghfcAcRTPDyEf6JNMjYvMAN0nVC2UqJct+7TA2EUY/5AjQteYQx7bRgRAI9J
+         g8k33BV4hWvTF+jB+g7BMt1tkGROzJwhAwx29afgSpJtrcO0Wo/dh3Ymki414v3mcP8i
+         8FwZ44snx05j4rZUeRidsEmF3dX+kH8HsVVa49/S7vKJ60qGdT7f/aprvIwhRS8yi+ld
+         xePTjeipgUSiBOh9oDaYlJQoCxQMrsMUNcBNouK9NUM26sbbdsSglZg+1wIxm1d1ZCBm
+         wYgApsKPRMcKgLQHl3IcVaUhNpAmZMGfzB73/WhqMxQmn+3gqXI89LjjIbvTCIB6A6zI
+         agTw==
+X-Gm-Message-State: AOAM533NJ54gtKXs1R1RrMrmr2h8JF6HutXDezSCBC3gHW3+/lVj1rqT
+        ml8BIPh81cE6aE2JeaD7ZEk=
+X-Google-Smtp-Source: ABdhPJxEtsz38SPAOEW5T1+qoTrex7tTi646pKzpoR2FsB/ZnUnvaE0pGvgUiWZvL9LpswLvEtD0ow==
+X-Received: by 2002:a17:906:b1c3:: with SMTP id bv3mr17354363ejb.292.1591535447335;
+        Sun, 07 Jun 2020 06:10:47 -0700 (PDT)
+Received: from localhost.localdomain (p200300f137189200428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3718:9200:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id v24sm8437933ejf.20.2020.06.07.06.10.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Jun 2020 06:10:46 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     tsbogend@alpha.franken.de, hauke@hauke-m.de,
+        linux-mips@vger.kernel.org
+Cc:     john@phrozen.org, linux-kernel@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] MIPS: lantiq: xway: sysctrl: fix the GPHY clock alias names
+Date:   Sun,  7 Jun 2020 15:10:23 +0200
+Message-Id: <20200607131023.3136390-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On MIPS system which has rixi hardware bit, page access bit is not
-set in pgrot. For memory reading, there will be one page fault to
-allocate physical page; however valid bit is not set, there will
-be the second fast tlb-miss fault handling to set valid/access bit.
+The dt-bindings for the GSWIP describe that the node should be named
+"switch". Use the same name in sysctrl.c so the GSWIP driver can
+actually find the "gphy0" and "gphy1" clocks.
 
-This patch set page access/valid bit with pgrot if there is reading
-access privilege. It will reduce one tlb-miss handling for memory
-reading access.
-
-The valid/access bit will be cleared in order to track memory
-accessing activity. If the page is accessed, tlb-miss fast handling
-will set valid/access bit, pte_sw_mkyoung is not necessary in slow
-page fault path. This patch removes pte_sw_mkyoung function which
-is defined as empty function except MIPS system.
-
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
-Acked-by: Andrew Morton <akpm@linux-foundation.org>
+Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
+Cc: stable@vger.kernel.org
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
-v2:
-- refine commit log title
----
- arch/mips/include/asm/pgtable.h | 10 ++++++++--
- arch/mips/mm/cache.c            | 34 +++++++++++++++++-----------------
- include/asm-generic/pgtable.h   | 16 ----------------
- mm/memory.c                     |  3 ---
- 4 files changed, 25 insertions(+), 38 deletions(-)
+ arch/mips/lantiq/xway/sysctrl.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index 85b39c9..d066469 100644
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -25,6 +25,14 @@
- struct mm_struct;
- struct vm_area_struct;
- 
-+#define __PP	_PAGE_PRESENT
-+#define __NX	_PAGE_NO_EXEC
-+#define __NR	_PAGE_NO_READ
-+#define ___W	_PAGE_WRITE
-+#define ___A	_PAGE_ACCESSED
-+#define ___R	(_PAGE_SILENT_READ | _PAGE_ACCESSED)
-+#define __PC	_page_cachable_default
-+
- #define PAGE_NONE	__pgprot(_PAGE_PRESENT | _PAGE_NO_READ | \
- 				 _page_cachable_default)
- #define PAGE_SHARED	__pgprot(_PAGE_PRESENT | _PAGE_WRITE | \
-@@ -414,8 +422,6 @@ static inline pte_t pte_mkyoung(pte_t pte)
- 	return pte;
- }
- 
--#define pte_sw_mkyoung	pte_mkyoung
--
- #ifdef CONFIG_MIPS_HUGE_TLB_SUPPORT
- static inline int pte_huge(pte_t pte)	{ return pte_val(pte) & _PAGE_HUGE; }
- 
-diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
-index ad6df1c..f814e43 100644
---- a/arch/mips/mm/cache.c
-+++ b/arch/mips/mm/cache.c
-@@ -158,23 +158,23 @@ void __update_cache(unsigned long address, pte_t pte)
- static inline void setup_protection_map(void)
- {
- 	if (cpu_has_rixi) {
--		protection_map[0]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
--		protection_map[1]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC);
--		protection_map[2]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
--		protection_map[3]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC);
--		protection_map[4]  = __pgprot(_page_cachable_default | _PAGE_PRESENT);
--		protection_map[5]  = __pgprot(_page_cachable_default | _PAGE_PRESENT);
--		protection_map[6]  = __pgprot(_page_cachable_default | _PAGE_PRESENT);
--		protection_map[7]  = __pgprot(_page_cachable_default | _PAGE_PRESENT);
--
--		protection_map[8]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
--		protection_map[9]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC);
--		protection_map[10] = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE | _PAGE_NO_READ);
--		protection_map[11] = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
--		protection_map[12] = __pgprot(_page_cachable_default | _PAGE_PRESENT);
--		protection_map[13] = __pgprot(_page_cachable_default | _PAGE_PRESENT);
--		protection_map[14] = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_WRITE);
--		protection_map[15] = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_WRITE);
-+		protection_map[0]  = __pgprot(__PC | __PP | __NX | __NR);
-+		protection_map[1]  = __pgprot(__PC | __PP | __NX | ___R);
-+		protection_map[2]  = __pgprot(__PC | __PP | __NX | __NR);
-+		protection_map[3]  = __pgprot(__PC | __PP | __NX | ___R);
-+		protection_map[4]  = __pgprot(__PC | __PP | ___R);
-+		protection_map[5]  = __pgprot(__PC | __PP | ___R);
-+		protection_map[6]  = __pgprot(__PC | __PP | ___R);
-+		protection_map[7]  = __pgprot(__PC | __PP | ___R);
-+
-+		protection_map[8]  = __pgprot(__PC | __PP | __NX | __NR);
-+		protection_map[9]  = __pgprot(__PC | __PP | __NX | ___R);
-+		protection_map[10] = __pgprot(__PC | __PP | __NX | ___W | __NR);
-+		protection_map[11] = __pgprot(__PC | __PP | __NX | ___W | ___R);
-+		protection_map[12] = __pgprot(__PC | __PP | ___R);
-+		protection_map[13] = __pgprot(__PC | __PP | ___R);
-+		protection_map[14] = __pgprot(__PC | __PP | ___W | ___R);
-+		protection_map[15] = __pgprot(__PC | __PP | ___W | ___R);
- 
- 	} else {
- 		protection_map[0] = PAGE_NONE;
-diff --git a/include/asm-generic/pgtable.h b/include/asm-generic/pgtable.h
-index b5278ec..fa5c73f 100644
---- a/include/asm-generic/pgtable.h
-+++ b/include/asm-generic/pgtable.h
-@@ -244,22 +244,6 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addres
- }
- #endif
- 
--/*
-- * On some architectures hardware does not set page access bit when accessing
-- * memory page, it is responsibilty of software setting this bit. It brings
-- * out extra page fault penalty to track page access bit. For optimization page
-- * access bit can be set during all page fault flow on these arches.
-- * To be differentiate with macro pte_mkyoung, this macro is used on platforms
-- * where software maintains page access bit.
-- */
--#ifndef pte_sw_mkyoung
--static inline pte_t pte_sw_mkyoung(pte_t pte)
--{
--	return pte;
--}
--#define pte_sw_mkyoung	pte_sw_mkyoung
--#endif
--
- #ifndef pte_savedwrite
- #define pte_savedwrite pte_write
- #endif
-diff --git a/mm/memory.c b/mm/memory.c
-index c7c8960..8bb31c4 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2704,7 +2704,6 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
- 		}
- 		flush_cache_page(vma, vmf->address, pte_pfn(vmf->orig_pte));
- 		entry = mk_pte(new_page, vma->vm_page_prot);
--		entry = pte_sw_mkyoung(entry);
- 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
- 		/*
- 		 * Clear the pte entry and flush it first, before updating the
-@@ -3379,7 +3378,6 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 	__SetPageUptodate(page);
- 
- 	entry = mk_pte(page, vma->vm_page_prot);
--	entry = pte_sw_mkyoung(entry);
- 	if (vma->vm_flags & VM_WRITE)
- 		entry = pte_mkwrite(pte_mkdirty(entry));
- 
-@@ -3662,7 +3660,6 @@ vm_fault_t alloc_set_pte(struct vm_fault *vmf, struct mem_cgroup *memcg,
- 
- 	flush_icache_page(vma, page);
- 	entry = mk_pte(page, vma->vm_page_prot);
--	entry = pte_sw_mkyoung(entry);
- 	if (write)
- 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
- 	/* copy-on-write page */
+diff --git a/arch/mips/lantiq/xway/sysctrl.c b/arch/mips/lantiq/xway/sysctrl.c
+index aa37545ebe8f..b10342018d19 100644
+--- a/arch/mips/lantiq/xway/sysctrl.c
++++ b/arch/mips/lantiq/xway/sysctrl.c
+@@ -514,8 +514,8 @@ void __init ltq_soc_init(void)
+ 		clkdev_add_pmu("1e10b308.eth", NULL, 0, 0, PMU_SWITCH |
+ 			       PMU_PPE_DP | PMU_PPE_TC);
+ 		clkdev_add_pmu("1da00000.usif", "NULL", 1, 0, PMU_USIF);
+-		clkdev_add_pmu("1e108000.gswip", "gphy0", 0, 0, PMU_GPHY);
+-		clkdev_add_pmu("1e108000.gswip", "gphy1", 0, 0, PMU_GPHY);
++		clkdev_add_pmu("1e108000.switch", "gphy0", 0, 0, PMU_GPHY);
++		clkdev_add_pmu("1e108000.switch", "gphy1", 0, 0, PMU_GPHY);
+ 		clkdev_add_pmu("1e103100.deu", NULL, 1, 0, PMU_DEU);
+ 		clkdev_add_pmu("1e116000.mei", "afe", 1, 2, PMU_ANALOG_DSL_AFE);
+ 		clkdev_add_pmu("1e116000.mei", "dfe", 1, 0, PMU_DFE);
+@@ -538,8 +538,8 @@ void __init ltq_soc_init(void)
+ 				PMU_SWITCH | PMU_PPE_DPLUS | PMU_PPE_DPLUM |
+ 				PMU_PPE_EMA | PMU_PPE_TC | PMU_PPE_SLL01 |
+ 				PMU_PPE_QSB | PMU_PPE_TOP);
+-		clkdev_add_pmu("1e108000.gswip", "gphy0", 0, 0, PMU_GPHY);
+-		clkdev_add_pmu("1e108000.gswip", "gphy1", 0, 0, PMU_GPHY);
++		clkdev_add_pmu("1e108000.switch", "gphy0", 0, 0, PMU_GPHY);
++		clkdev_add_pmu("1e108000.switch", "gphy1", 0, 0, PMU_GPHY);
+ 		clkdev_add_pmu("1e103000.sdio", NULL, 1, 0, PMU_SDIO);
+ 		clkdev_add_pmu("1e103100.deu", NULL, 1, 0, PMU_DEU);
+ 		clkdev_add_pmu("1e116000.mei", "dfe", 1, 0, PMU_DFE);
 -- 
-1.8.3.1
+2.27.0
 

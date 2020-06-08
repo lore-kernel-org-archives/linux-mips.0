@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF41BC433E1
-	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:50:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ABB43C433E4
+	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:53:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9503920659
-	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:50:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7CDFE20812
+	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:53:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1591660248;
-	bh=1NwQk1K6lLsrqLB6IY13pY0x8Cx6AXaH8S5+lSyieKA=;
+	s=default; t=1591660380;
+	bh=LMSFAzpwIgroVpYfzbA+wI0NHZjv6JmhpGwIKtr8Ywk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=ODlKgAegJj1RD0dHMD3IdkS+H/DkCwewkxyiT04axtXdbc78xBjf88F0s7WgpyA79
-	 Ymw+YT0yyHz6qKOt3frKphoO7Dy7NfQLPtqXBFG25ResP8hUV+mNOw5XCzKx73HHdk
-	 +jt8HDX3fhHvO7dtsyhkT8bUkOCB24VwO0JfFxqQ=
+	b=t5gghNRvQa+YNd86wL2ZkIe51ca/VSeLSnagGa+CKQy0hmwZvk3ImE1xhBUmk2Sei
+	 SEXVASCwm+UghrXePDeI7S5JVyllS20xYmpZ2H89fpA7RynySJR2S9cKYFsVJYGjDZ
+	 PDWSziZDdjlvnDhHL3gkcnaEII5hW9Xy8oMsGrAo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731310AbgFHXur (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 Jun 2020 19:50:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51676 "EHLO mail.kernel.org"
+        id S1731652AbgFHXYk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 Jun 2020 19:24:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387524AbgFHXZO (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:25:14 -0400
+        id S1731643AbgFHXYj (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:24:39 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B59BC2086A;
-        Mon,  8 Jun 2020 23:25:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FDF420897;
+        Mon,  8 Jun 2020 23:24:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658714;
-        bh=1NwQk1K6lLsrqLB6IY13pY0x8Cx6AXaH8S5+lSyieKA=;
+        s=default; t=1591658679;
+        bh=LMSFAzpwIgroVpYfzbA+wI0NHZjv6JmhpGwIKtr8Ywk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OL/zCU7BgTkzB0ut3AvS6WHCu+ZZEEx58jVE0G6VCdyexS6xDBm2ecKCT4CuL6Joy
-         gioDHYYFVYgxduLUDkLg5cCoUcdg5pzs+TIUPqBDJW+jiw5WzbjbA6WThKy9WTByDm
-         QRVP8G+0hTgEOGNcjFJ4wNQOGT6NNlk28Ki014T0=
+        b=Ug09N3EYg0UMUEYiy9xVtZzVbkfE4MHGqiGpSIFLeSE9lb8ZlkFRA16/h7BnmvHqC
+         tW3Yfzxyhe0uj96/8LI/pFy30E7H0ZokeKUdaeFhTIVqjr3D98mH0xUrNBjIqfe/R6
+         7ds0ELBY+aY19b3b4Vi16q68LkfIWuqlCzvdNk5U=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+Cc:     YuanJunQing <yuanjunqing66@163.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 11/72] MIPS: Loongson: Build ATI Radeon GPU driver as module
-Date:   Mon,  8 Jun 2020 19:23:59 -0400
-Message-Id: <20200608232500.3369581-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 090/106] MIPS: Fix IRQ tracing when call handle_fpe() and handle_msa_fpe()
+Date:   Mon,  8 Jun 2020 19:22:22 -0400
+Message-Id: <20200608232238.3368589-90-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608232500.3369581-1-sashal@kernel.org>
-References: <20200608232500.3369581-1-sashal@kernel.org>
+In-Reply-To: <20200608232238.3368589-1-sashal@kernel.org>
+References: <20200608232238.3368589-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -58,44 +58,52 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: YuanJunQing <yuanjunqing66@163.com>
 
-[ Upstream commit a44de7497f91834df0b8b6d459e259788ba66794 ]
+[ Upstream commit 31e1b3efa802f97a17628dde280006c4cee4ce5e ]
 
-When ATI Radeon GPU driver has been compiled directly into the kernel
-instead of as a module, we should make sure the firmware for the model
-(check available ones in /lib/firmware/radeon) is built-in to the kernel
-as well, otherwise there exists the following fatal error during GPU init,
-change CONFIG_DRM_RADEON=y to CONFIG_DRM_RADEON=m to fix it.
+Register "a1" is unsaved in this function,
+ when CONFIG_TRACE_IRQFLAGS is enabled,
+ the TRACE_IRQS_OFF macro will call trace_hardirqs_off(),
+ and this may change register "a1".
+ The changed register "a1" as argument will be send
+ to do_fpe() and do_msa_fpe().
 
-[    1.900997] [drm] Loading RS780 Microcode
-[    1.905077] radeon 0000:01:05.0: Direct firmware load for radeon/RS780_pfp.bin failed with error -2
-[    1.914140] r600_cp: Failed to load firmware "radeon/RS780_pfp.bin"
-[    1.920405] [drm:r600_init] *ERROR* Failed to load firmware!
-[    1.926069] radeon 0000:01:05.0: Fatal error during GPU init
-[    1.931729] [drm] radeon: finishing device.
-
-Fixes: 024e6a8b5bb1 ("MIPS: Loongson: Add a Loongson-3 default config file")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: YuanJunQing <yuanjunqing66@163.com>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/configs/loongson3_defconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/kernel/genex.S | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
-index 324dfee23dfb..c871e40b8878 100644
---- a/arch/mips/configs/loongson3_defconfig
-+++ b/arch/mips/configs/loongson3_defconfig
-@@ -250,7 +250,7 @@ CONFIG_MEDIA_CAMERA_SUPPORT=y
- CONFIG_MEDIA_USB_SUPPORT=y
- CONFIG_USB_VIDEO_CLASS=m
- CONFIG_DRM=y
--CONFIG_DRM_RADEON=y
-+CONFIG_DRM_RADEON=m
- CONFIG_FB_RADEON=y
- CONFIG_LCD_CLASS_DEVICE=y
- CONFIG_LCD_PLATFORM=m
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index 6c257b52f57f..7fad007fe025 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -477,20 +477,20 @@ NESTED(nmi_handler, PT_SIZE, sp)
+ 	.endm
+ 
+ 	.macro	__build_clear_fpe
++	CLI
++	TRACE_IRQS_OFF
+ 	.set	push
+ 	/* gas fails to assemble cfc1 for some archs (octeon).*/ \
+ 	.set	mips1
+ 	SET_HARDFLOAT
+ 	cfc1	a1, fcr31
+ 	.set	pop
+-	CLI
+-	TRACE_IRQS_OFF
+ 	.endm
+ 
+ 	.macro	__build_clear_msa_fpe
+-	_cfcmsa	a1, MSA_CSR
+ 	CLI
+ 	TRACE_IRQS_OFF
++	_cfcmsa	a1, MSA_CSR
+ 	.endm
+ 
+ 	.macro	__build_clear_ade
 -- 
 2.25.1
 

@@ -7,53 +7,45 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E508C433E1
-	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:41:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0570DC433DF
+	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:41:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4DD6820659
-	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:41:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CBEE020659
+	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:41:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1591659679;
-	bh=nVXe8FaZDKRmoOVdxkOj0hnd3w/XVfG/LY8irr+XWOk=;
+	s=default; t=1591659703;
+	bh=zxO3PJAGsSjLXfupDU1pE86A7dJoZAUO53XBAIcTWFE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=QwsY2BiX2YqP88r9HDLJBx//1IiLUEGZMJAMQ8hQawgnvMw+SEMQez5mpmaGORpSO
-	 SwaoCA+fX+osNZjSMjI0uxY6+r6SKgrnnmpqO8zwpEjv9PSooLaPQ1Q4QW2Ra48ptx
-	 9T+nvb0u2Zh273HRKDjVl7Pid/fIMcj7pjbU9cII=
+	b=KXMC/aaIXmqi1EvP+qJeLkU0CDjR2CnFvug1L/S5EdEaktcZEBPGV+CGMSv5xjIGD
+	 Dh1umxkkwQIYsgqjJ/qlSRzzKtuajWPhWkpqv7543q0GNI4AfwoubJbKueSzf3WkPD
+	 VDtN7Odvwn+fG7Rrs2oNjbbfemREi9hQnxUQTJYU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731593AbgFHXlL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 Jun 2020 19:41:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56522 "EHLO mail.kernel.org"
+        id S1732153AbgFHXl0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 Jun 2020 19:41:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732160AbgFHX1r (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:27:47 -0400
+        id S1730703AbgFHX1k (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:27:40 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 707C92074B;
-        Mon,  8 Jun 2020 23:27:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB5BE20801;
+        Mon,  8 Jun 2020 23:27:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658867;
-        bh=nVXe8FaZDKRmoOVdxkOj0hnd3w/XVfG/LY8irr+XWOk=;
+        s=default; t=1591658859;
+        bh=zxO3PJAGsSjLXfupDU1pE86A7dJoZAUO53XBAIcTWFE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aLUFTljNGiitnahIQld9/bUipg2oUM1E8AIXXrBYutiL2GfBfEzT8NEO8dBg/qwLN
-         lo4zXsVI8xPLEKgrla1lTHZyjSbwb3Z6gOyy5/QdBhIuMHnZFnBb+a6Pg/3pqfWMw9
-         WNGa2csTeliQfagRDuznf9OiUm3+/+hiM1TR5zrw=
+        b=ivL4Ebwz7K0ffJX2Xyqav2WvAWjl3Ir6ImHxywnkJAl9n1FMf5CSK0tTKk3h65MVV
+         C/BXQUSZk3/lo0oNm7ITY++SGp+7a4uGEiFsLIPXaXWCaIy2jT8xdeuauuCGW6F8b1
+         tOwsnpD/seI1X0RxjGpNqC/kSDVmdrACe4Re4NyY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+Cc:     YuanJunQing <yuanjunqing66@163.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 48/50] spi: dw: Return any value retrieved from the dma_transfer callback
-Date:   Mon,  8 Jun 2020 19:26:38 -0400
-Message-Id: <20200608232640.3370262-48-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 43/50] MIPS: Fix IRQ tracing when call handle_fpe() and handle_msa_fpe()
+Date:   Mon,  8 Jun 2020 19:26:33 -0400
+Message-Id: <20200608232640.3370262-43-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608232640.3370262-1-sashal@kernel.org>
 References: <20200608232640.3370262-1-sashal@kernel.org>
@@ -66,69 +58,52 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+From: YuanJunQing <yuanjunqing66@163.com>
 
-[ Upstream commit f0410bbf7d0fb80149e3b17d11d31f5b5197873e ]
+[ Upstream commit 31e1b3efa802f97a17628dde280006c4cee4ce5e ]
 
-DW APB SSI DMA-part of the driver may need to perform the requested
-SPI-transfer synchronously. In that case the dma_transfer() callback
-will return 0 as a marker of the SPI transfer being finished so the
-SPI core doesn't need to wait and may proceed with the SPI message
-trasnfers pumping procedure. This will be needed to fix the problem
-when DMA transactions are finished, but there is still data left in
-the SPI Tx/Rx FIFOs being sent/received. But for now make dma_transfer
-to return 1 as the normal dw_spi_transfer_one() method.
+Register "a1" is unsaved in this function,
+ when CONFIG_TRACE_IRQFLAGS is enabled,
+ the TRACE_IRQS_OFF macro will call trace_hardirqs_off(),
+ and this may change register "a1".
+ The changed register "a1" as argument will be send
+ to do_fpe() and do_msa_fpe().
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
-Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Feng Tang <feng.tang@intel.com>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: devicetree@vger.kernel.org
-Link: https://lore.kernel.org/r/20200529131205.31838-3-Sergey.Semin@baikalelectronics.ru
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: YuanJunQing <yuanjunqing66@163.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-dw-mid.c | 2 +-
- drivers/spi/spi-dw.c     | 7 ++-----
- 2 files changed, 3 insertions(+), 6 deletions(-)
+ arch/mips/kernel/genex.S | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/spi/spi-dw-mid.c b/drivers/spi/spi-dw-mid.c
-index fe0ca3848d35..c079ab36275f 100644
---- a/drivers/spi/spi-dw-mid.c
-+++ b/drivers/spi/spi-dw-mid.c
-@@ -274,7 +274,7 @@ static int mid_spi_dma_transfer(struct dw_spi *dws, struct spi_transfer *xfer)
- 		dma_async_issue_pending(dws->txchan);
- 	}
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index ae810da4d499..59ed811eb32a 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -429,20 +429,20 @@ NESTED(nmi_handler, PT_SIZE, sp)
+ 	.endm
  
--	return 0;
-+	return 1;
- }
+ 	.macro	__build_clear_fpe
++	CLI
++	TRACE_IRQS_OFF
+ 	.set	push
+ 	/* gas fails to assemble cfc1 for some archs (octeon).*/ \
+ 	.set	mips1
+ 	SET_HARDFLOAT
+ 	cfc1	a1, fcr31
+ 	.set	pop
+-	CLI
+-	TRACE_IRQS_OFF
+ 	.endm
  
- static void mid_spi_dma_stop(struct dw_spi *dws)
-diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
-index 16f0def9df82..9baa1fc57f86 100644
---- a/drivers/spi/spi-dw.c
-+++ b/drivers/spi/spi-dw.c
-@@ -381,11 +381,8 @@ static int dw_spi_transfer_one(struct spi_master *master,
+ 	.macro	__build_clear_msa_fpe
+-	_cfcmsa	a1, MSA_CSR
+ 	CLI
+ 	TRACE_IRQS_OFF
++	_cfcmsa	a1, MSA_CSR
+ 	.endm
  
- 	spi_enable_chip(dws, 1);
- 
--	if (dws->dma_mapped) {
--		ret = dws->dma_ops->dma_transfer(dws, transfer);
--		if (ret < 0)
--			return ret;
--	}
-+	if (dws->dma_mapped)
-+		return dws->dma_ops->dma_transfer(dws, transfer);
- 
- 	if (chip->poll_mode)
- 		return poll_transfer(dws);
+ 	.macro	__build_clear_ade
 -- 
 2.25.1
 

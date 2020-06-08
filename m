@@ -4,48 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42FACC433E1
-	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:38:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5020DC433DF
+	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:38:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 209CB2074B
-	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:38:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2F8002074B
+	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:38:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1591659485;
-	bh=tIYI5t2J+LB5N5VtFiv4WB/Ab2by5Kx8c+vAdBocG20=;
+	s=default; t=1591659500;
+	bh=K/Qd2BVjoGnjBRAXKcRbdqs6eY78ZjkmNsEPRpMD6Og=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=ZvyC0hbHayhexA/Sr6XVPdb2465bfpeIB49gmGj9Pck2Ie4qFsC24LTLuNf16AEx+
-	 8UCAyDy3C+0zFskjxcPYa8E1j++NFq1ocQ6x3b56SQy5amFuz1NgcUMrt/OYpz4Bk6
-	 y0mFDJyR8jGiXSLTwVmK0XJc0S2e8anZCCzhfzQA=
+	b=pAlSSwFe/Teb/VUNlSEUyD2LglBQM20TZruAjgwWlQTbYZ6h4wSRlf6yzfvwFh52a
+	 R8NW6qrBkNBsaJHP525lZgJlyTiWcqmaFV/SvomeJjoBCTUT2rgXr7MxLMh5rK6Nv8
+	 hK3mX6jjc4zBdWxW+TL+oW4FFwUOD4f3AaQWq2iA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731047AbgFHXhz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 Jun 2020 19:37:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58300 "EHLO mail.kernel.org"
+        id S1731977AbgFHXiT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 Jun 2020 19:38:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732228AbgFHX2g (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:28:36 -0400
+        id S2387749AbgFHX22 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:28:28 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D7A60208A7;
-        Mon,  8 Jun 2020 23:28:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6615D208B8;
+        Mon,  8 Jun 2020 23:28:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658915;
-        bh=tIYI5t2J+LB5N5VtFiv4WB/Ab2by5Kx8c+vAdBocG20=;
+        s=default; t=1591658907;
+        bh=K/Qd2BVjoGnjBRAXKcRbdqs6eY78ZjkmNsEPRpMD6Og=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=thUFIwxAr+kdUa60SnSKx7mwPATUumv/zXpV3hdJjEJuC1FF+LtMYZM1NfwWGY5Xk
-         bBKc3aKxiMK/ssnsoWouRRLDIGFLZNAlMCBQDWka8f5m+GsQJw04+Eokpx2aw8tFEt
-         NdB+N2zSddvrOxIQUD3ZRU7F87niwU7Du1K7pmf8=
+        b=Ve4Ascz+bMMs95z9O5J0iw+Q6/ggUJfzpDzMnwEC+kxgO/jiR0vIVI5RJcJhDCJUy
+         1aM622RpaYyfoZjF7dcU229rRRak9Q7M/7OoWMEuAyOukDPubZfCizOjSq8i9htyCq
+         80TM9d7VrXiCWZtpEtKhvVkMFKNIbnLD+WX6HMXw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     YuanJunQing <yuanjunqing66@163.com>,
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 32/37] MIPS: Fix IRQ tracing when call handle_fpe() and handle_msa_fpe()
-Date:   Mon,  8 Jun 2020 19:27:44 -0400
-Message-Id: <20200608232750.3370747-32-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 27/37] mips: Add udelay lpj numbers adjustment
+Date:   Mon,  8 Jun 2020 19:27:39 -0400
+Message-Id: <20200608232750.3370747-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608232750.3370747-1-sashal@kernel.org>
 References: <20200608232750.3370747-1-sashal@kernel.org>
@@ -58,52 +64,125 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: YuanJunQing <yuanjunqing66@163.com>
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-[ Upstream commit 31e1b3efa802f97a17628dde280006c4cee4ce5e ]
+[ Upstream commit ed26aacfb5f71eecb20a51c4467da440cb719d66 ]
 
-Register "a1" is unsaved in this function,
- when CONFIG_TRACE_IRQFLAGS is enabled,
- the TRACE_IRQS_OFF macro will call trace_hardirqs_off(),
- and this may change register "a1".
- The changed register "a1" as argument will be send
- to do_fpe() and do_msa_fpe().
+Loops-per-jiffies is a special number which represents a number of
+noop-loop cycles per CPU-scheduler quantum - jiffies. As you
+understand aside from CPU-specific implementation it depends on
+the CPU frequency. So when a platform has the CPU frequency fixed,
+we have no problem and the current udelay interface will work
+just fine. But as soon as CPU-freq driver is enabled and the cores
+frequency changes, we'll end up with distorted udelay's. In order
+to fix this we have to accordinly adjust the per-CPU udelay_val
+(the same as the global loops_per_jiffy) number. This can be done
+in the CPU-freq transition event handler. We subscribe to that event
+in the MIPS arch time-inititalization method.
 
-Signed-off-by: YuanJunQing <yuanjunqing66@163.com>
+Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: devicetree@vger.kernel.org
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kernel/genex.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/mips/kernel/time.c | 70 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
 
-diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-index bb72f3ce7e29..7ffd158de76e 100644
---- a/arch/mips/kernel/genex.S
-+++ b/arch/mips/kernel/genex.S
-@@ -430,20 +430,20 @@ NESTED(nmi_handler, PT_SIZE, sp)
- 	.endm
+diff --git a/arch/mips/kernel/time.c b/arch/mips/kernel/time.c
+index 8d0170969e22..345978cc105b 100644
+--- a/arch/mips/kernel/time.c
++++ b/arch/mips/kernel/time.c
+@@ -22,12 +22,82 @@
+ #include <linux/smp.h>
+ #include <linux/spinlock.h>
+ #include <linux/export.h>
++#include <linux/cpufreq.h>
++#include <linux/delay.h>
  
- 	.macro	__build_clear_fpe
-+	CLI
-+	TRACE_IRQS_OFF
- 	.set	push
- 	/* gas fails to assemble cfc1 for some archs (octeon).*/ \
- 	.set	mips1
- 	SET_HARDFLOAT
- 	cfc1	a1, fcr31
- 	.set	pop
--	CLI
--	TRACE_IRQS_OFF
- 	.endm
+ #include <asm/cpu-features.h>
+ #include <asm/cpu-type.h>
+ #include <asm/div64.h>
+ #include <asm/time.h>
  
- 	.macro	__build_clear_msa_fpe
--	_cfcmsa	a1, MSA_CSR
- 	CLI
- 	TRACE_IRQS_OFF
-+	_cfcmsa	a1, MSA_CSR
- 	.endm
- 
- 	.macro	__build_clear_ade
++#ifdef CONFIG_CPU_FREQ
++
++static DEFINE_PER_CPU(unsigned long, pcp_lpj_ref);
++static DEFINE_PER_CPU(unsigned long, pcp_lpj_ref_freq);
++static unsigned long glb_lpj_ref;
++static unsigned long glb_lpj_ref_freq;
++
++static int cpufreq_callback(struct notifier_block *nb,
++			    unsigned long val, void *data)
++{
++	struct cpufreq_freqs *freq = data;
++	struct cpumask *cpus = freq->policy->cpus;
++	unsigned long lpj;
++	int cpu;
++
++	/*
++	 * Skip lpj numbers adjustment if the CPU-freq transition is safe for
++	 * the loops delay. (Is this possible?)
++	 */
++	if (freq->flags & CPUFREQ_CONST_LOOPS)
++		return NOTIFY_OK;
++
++	/* Save the initial values of the lpjes for future scaling. */
++	if (!glb_lpj_ref) {
++		glb_lpj_ref = boot_cpu_data.udelay_val;
++		glb_lpj_ref_freq = freq->old;
++
++		for_each_online_cpu(cpu) {
++			per_cpu(pcp_lpj_ref, cpu) =
++				cpu_data[cpu].udelay_val;
++			per_cpu(pcp_lpj_ref_freq, cpu) = freq->old;
++		}
++	}
++
++	/*
++	 * Adjust global lpj variable and per-CPU udelay_val number in
++	 * accordance with the new CPU frequency.
++	 */
++	if ((val == CPUFREQ_PRECHANGE  && freq->old < freq->new) ||
++	    (val == CPUFREQ_POSTCHANGE && freq->old > freq->new)) {
++		loops_per_jiffy = cpufreq_scale(glb_lpj_ref,
++						glb_lpj_ref_freq,
++						freq->new);
++
++		for_each_cpu(cpu, cpus) {
++			lpj = cpufreq_scale(per_cpu(pcp_lpj_ref, cpu),
++					    per_cpu(pcp_lpj_ref_freq, cpu),
++					    freq->new);
++			cpu_data[cpu].udelay_val = (unsigned int)lpj;
++		}
++	}
++
++	return NOTIFY_OK;
++}
++
++static struct notifier_block cpufreq_notifier = {
++	.notifier_call  = cpufreq_callback,
++};
++
++static int __init register_cpufreq_notifier(void)
++{
++	return cpufreq_register_notifier(&cpufreq_notifier,
++					 CPUFREQ_TRANSITION_NOTIFIER);
++}
++core_initcall(register_cpufreq_notifier);
++
++#endif /* CONFIG_CPU_FREQ */
++
+ /*
+  * forward reference
+  */
 -- 
 2.25.1
 

@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FF12C433E0
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:47:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4B16C433DF
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:48:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EEC6220774
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:47:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C5A8020774
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:48:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1591663654;
-	bh=P1M0F4EwizQ1m+WCRYB0aMIiqJbtW9nMEnIEncHeqtk=;
+	s=default; t=1591663680;
+	bh=V3MnRuuz7AkVJDRxqE0QST2YbXIz7es6hOmB/PD7LhA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=MiAHbP4PEnIrqQeU02bNUWzxV2sHUc/V4wOh6/395Ro4bGy0TiAodKRcmFzMzcq5S
-	 7WHjHMLUIiVyCoWvEIZkOx5hGOKX5hsMZfEe6Isw8+QyV84jJU2ZMPj+boeCyrBfxx
-	 NorUVF1g/CF62NEArhQ1iWZBN+BFQ+hapEWhG5bI=
+	b=n6GluqK0XRgkkhaRZwle94cC95+faYTliZ+jlSGj+qqXQBRvTlfPt/P8cSt4x3GcS
+	 16fXAzdc9CKjlo/bMudj9SUGe+K9bOtU2pU4SxgKbjLZuY50e/Cj/5S6u9JC57GN6t
+	 1X/FfuhNKAMEmfo79OLYy+lap9rKzhn5pcnYFrdI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731074AbgFIArO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 Jun 2020 20:47:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58208 "EHLO mail.kernel.org"
+        id S1728859AbgFHXLK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 Jun 2020 19:11:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728096AbgFHXLY (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:11:24 -0400
+        id S1728101AbgFHXLJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:11:09 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 410C420C56;
-        Mon,  8 Jun 2020 23:11:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8376F20C09;
+        Mon,  8 Jun 2020 23:11:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657883;
-        bh=P1M0F4EwizQ1m+WCRYB0aMIiqJbtW9nMEnIEncHeqtk=;
+        s=default; t=1591657868;
+        bh=V3MnRuuz7AkVJDRxqE0QST2YbXIz7es6hOmB/PD7LhA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LvZ7esLRCXr4ILoyVJxsL+cdTVU/F5Wf1KtoyBGc3c16hhShSf3qNi9cBCqvHN6Pk
-         OrtLUH/RHHswptxRbfYE5MzaCxMMbZfualLceUwgtq63Gnl50goe50mlgJXmbX8TSk
-         /8TmwfT1yENvqNQnaT0l5O3bB4QbnS6pzj73xX9M=
+        b=IYRaVVQguCR6CyDV59QDmnWFhlxvXSjLcTsddTXSRuDjhg6YkneKvwNRoeAlbP2BC
+         nwZP1LSQtMWhnDbgeYvvAN5h6rrkp/pHNqn9Gj6gNPCdBdtvNukykkCZz3t0/Tqvn0
+         Hnsrtz/Ht11M/1mh2l71++nrEoYJFHaKJ1sYdnSk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     YuanJunQing <yuanjunqing66@163.com>,
+Cc:     Ben Hutchings <ben@decadent.org.uk>, YunQiang Su <syq@debian.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 240/274] MIPS: Fix IRQ tracing when call handle_fpe() and handle_msa_fpe()
-Date:   Mon,  8 Jun 2020 19:05:33 -0400
-Message-Id: <20200608230607.3361041-240-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 229/274] MIPS: Fix exception handler memcpy()
+Date:   Mon,  8 Jun 2020 19:05:22 -0400
+Message-Id: <20200608230607.3361041-229-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
 References: <20200608230607.3361041-1-sashal@kernel.org>
@@ -58,52 +58,137 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: YuanJunQing <yuanjunqing66@163.com>
+From: Ben Hutchings <ben@decadent.org.uk>
 
-[ Upstream commit 31e1b3efa802f97a17628dde280006c4cee4ce5e ]
+[ Upstream commit f39293fd37fff74c531b7a52d0459cc77db85e7f ]
 
-Register "a1" is unsaved in this function,
- when CONFIG_TRACE_IRQFLAGS is enabled,
- the TRACE_IRQS_OFF macro will call trace_hardirqs_off(),
- and this may change register "a1".
- The changed register "a1" as argument will be send
- to do_fpe() and do_msa_fpe().
+The exception handler subroutines are declared as a single char, but
+when copied to the required addresses the copy length is 0x80.
 
-Signed-off-by: YuanJunQing <yuanjunqing66@163.com>
+When range checks are enabled for memcpy() this results in a build
+failure, with error messages such as:
+
+In file included from arch/mips/mti-malta/malta-init.c:15:
+In function 'memcpy',
+    inlined from 'mips_nmi_setup' at arch/mips/mti-malta/malta-init.c:98:2:
+include/linux/string.h:376:4: error: call to '__read_overflow2' declared with attribute error: detected read beyond size of object passed as 2nd parameter
+  376 |    __read_overflow2();
+      |    ^~~~~~~~~~~~~~~~~~
+
+Change the declarations to use type char[].
+
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Signed-off-by: YunQiang Su <syq@debian.org>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kernel/genex.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/mips/loongson2ef/common/init.c | 4 ++--
+ arch/mips/loongson64/init.c         | 4 ++--
+ arch/mips/mti-malta/malta-init.c    | 8 ++++----
+ arch/mips/pistachio/init.c          | 8 ++++----
+ 4 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-index 0a43c9125267..5b7c67a3f78f 100644
---- a/arch/mips/kernel/genex.S
-+++ b/arch/mips/kernel/genex.S
-@@ -476,20 +476,20 @@ NESTED(nmi_handler, PT_SIZE, sp)
- 	.endm
+diff --git a/arch/mips/loongson2ef/common/init.c b/arch/mips/loongson2ef/common/init.c
+index 45512178be77..ce3f02f75e2a 100644
+--- a/arch/mips/loongson2ef/common/init.c
++++ b/arch/mips/loongson2ef/common/init.c
+@@ -19,10 +19,10 @@ unsigned long __maybe_unused _loongson_addrwincfg_base;
+ static void __init mips_nmi_setup(void)
+ {
+ 	void *base;
+-	extern char except_vec_nmi;
++	extern char except_vec_nmi[];
  
- 	.macro	__build_clear_fpe
-+	CLI
-+	TRACE_IRQS_OFF
- 	.set	push
- 	/* gas fails to assemble cfc1 for some archs (octeon).*/ \
- 	.set	mips1
- 	SET_HARDFLOAT
- 	cfc1	a1, fcr31
- 	.set	pop
--	CLI
--	TRACE_IRQS_OFF
- 	.endm
+ 	base = (void *)(CAC_BASE + 0x380);
+-	memcpy(base, &except_vec_nmi, 0x80);
++	memcpy(base, except_vec_nmi, 0x80);
+ 	flush_icache_range((unsigned long)base, (unsigned long)base + 0x80);
+ }
  
- 	.macro	__build_clear_msa_fpe
--	_cfcmsa	a1, MSA_CSR
- 	CLI
- 	TRACE_IRQS_OFF
-+	_cfcmsa	a1, MSA_CSR
- 	.endm
+diff --git a/arch/mips/loongson64/init.c b/arch/mips/loongson64/init.c
+index da38944471f4..86c5e93258ce 100644
+--- a/arch/mips/loongson64/init.c
++++ b/arch/mips/loongson64/init.c
+@@ -17,10 +17,10 @@
+ static void __init mips_nmi_setup(void)
+ {
+ 	void *base;
+-	extern char except_vec_nmi;
++	extern char except_vec_nmi[];
  
- 	.macro	__build_clear_ade
+ 	base = (void *)(CAC_BASE + 0x380);
+-	memcpy(base, &except_vec_nmi, 0x80);
++	memcpy(base, except_vec_nmi, 0x80);
+ 	flush_icache_range((unsigned long)base, (unsigned long)base + 0x80);
+ }
+ 
+diff --git a/arch/mips/mti-malta/malta-init.c b/arch/mips/mti-malta/malta-init.c
+index ff2c1d809538..893af377aacc 100644
+--- a/arch/mips/mti-malta/malta-init.c
++++ b/arch/mips/mti-malta/malta-init.c
+@@ -90,24 +90,24 @@ static void __init console_config(void)
+ static void __init mips_nmi_setup(void)
+ {
+ 	void *base;
+-	extern char except_vec_nmi;
++	extern char except_vec_nmi[];
+ 
+ 	base = cpu_has_veic ?
+ 		(void *)(CAC_BASE + 0xa80) :
+ 		(void *)(CAC_BASE + 0x380);
+-	memcpy(base, &except_vec_nmi, 0x80);
++	memcpy(base, except_vec_nmi, 0x80);
+ 	flush_icache_range((unsigned long)base, (unsigned long)base + 0x80);
+ }
+ 
+ static void __init mips_ejtag_setup(void)
+ {
+ 	void *base;
+-	extern char except_vec_ejtag_debug;
++	extern char except_vec_ejtag_debug[];
+ 
+ 	base = cpu_has_veic ?
+ 		(void *)(CAC_BASE + 0xa00) :
+ 		(void *)(CAC_BASE + 0x300);
+-	memcpy(base, &except_vec_ejtag_debug, 0x80);
++	memcpy(base, except_vec_ejtag_debug, 0x80);
+ 	flush_icache_range((unsigned long)base, (unsigned long)base + 0x80);
+ }
+ 
+diff --git a/arch/mips/pistachio/init.c b/arch/mips/pistachio/init.c
+index a09a5da38e6b..558995ed6fe8 100644
+--- a/arch/mips/pistachio/init.c
++++ b/arch/mips/pistachio/init.c
+@@ -83,12 +83,12 @@ phys_addr_t mips_cdmm_phys_base(void)
+ static void __init mips_nmi_setup(void)
+ {
+ 	void *base;
+-	extern char except_vec_nmi;
++	extern char except_vec_nmi[];
+ 
+ 	base = cpu_has_veic ?
+ 		(void *)(CAC_BASE + 0xa80) :
+ 		(void *)(CAC_BASE + 0x380);
+-	memcpy(base, &except_vec_nmi, 0x80);
++	memcpy(base, except_vec_nmi, 0x80);
+ 	flush_icache_range((unsigned long)base,
+ 			   (unsigned long)base + 0x80);
+ }
+@@ -96,12 +96,12 @@ static void __init mips_nmi_setup(void)
+ static void __init mips_ejtag_setup(void)
+ {
+ 	void *base;
+-	extern char except_vec_ejtag_debug;
++	extern char except_vec_ejtag_debug[];
+ 
+ 	base = cpu_has_veic ?
+ 		(void *)(CAC_BASE + 0xa00) :
+ 		(void *)(CAC_BASE + 0x300);
+-	memcpy(base, &except_vec_ejtag_debug, 0x80);
++	memcpy(base, except_vec_ejtag_debug, 0x80);
+ 	flush_icache_range((unsigned long)base,
+ 			   (unsigned long)base + 0x80);
+ }
 -- 
 2.25.1
 

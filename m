@@ -7,45 +7,45 @@ X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23898C433E0
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:02:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AFC2C433E0
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:03:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EB9D720801
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:02:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1FE11207C3
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:03:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1591660961;
-	bh=O6auuTkwi7vwrtwutuGHafNgr5U2Ux5oBVPZFBpv+P8=;
+	s=default; t=1591661002;
+	bh=/747nDpUrA+HrhPyngwEof3PhSh74KiCISRw9/z8wE4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=BumqRDRA5IjAqJa5//7dLdaKj6GYBKAJOZjFisakRaBbpDNQD4uRzFgy/BPMM/R2b
-	 FVh4/c3CXHU7CxuAdiQ4HB53J3h+HEA9cWlqdf/OnZWWxdZJECQo58KghM8lVgY7yg
-	 BpI4AqQxI6yWADP2Np8fyrTm246n69X3FUkKTzzE=
+	b=OY7Fau6SJCcR1FgarSc3S4yjqbXL8kHsW+LiEIrteXqZwnoRRMfMgNDUtJ3l8KyCf
+	 bfOjfJprPWH9fxTJIjOEcyBQkva1aFJb2DIJtSFNSQZD+ooK7a6OHCX+kTwC3pfkn1
+	 D5LMQ69wy2uMqPPEiqCxmw6P6+iVxna/mJxDmtUU=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731260AbgFIACf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 Jun 2020 20:02:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46468 "EHLO mail.kernel.org"
+        id S1730525AbgFHXVy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 Jun 2020 19:21:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730905AbgFHXWD (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:22:03 -0400
+        id S1730510AbgFHXVx (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:21:53 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3815E20814;
-        Mon,  8 Jun 2020 23:22:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A67920899;
+        Mon,  8 Jun 2020 23:21:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658523;
-        bh=O6auuTkwi7vwrtwutuGHafNgr5U2Ux5oBVPZFBpv+P8=;
+        s=default; t=1591658513;
+        bh=/747nDpUrA+HrhPyngwEof3PhSh74KiCISRw9/z8wE4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=njzl6J8oT/hS42fcscLvdfKaNH5qEF1pq5Skc0NlTjrPkwAUdDrYn12YFAKq6/16J
-         38DsXtpUA0R3N7FWtGbKCcFgUc3o/RCIwBAwewEZbvFFOiyqreZZTHYFeRL0giOcDS
-         5sHaZgRIhrRrt7kyJEEO5ulY4OCQuqSTW/oeFuuw=
+        b=vz337WBolvU5zSAitlAIhtWfro20ELN4uvwfNqEd7IBE1LjBG9g6Y/IITeSZq9Qzl
+         lKHhZos9y2hdshDZlNLslJOJ++PsVAIBit1AfNgp24T5mvJQdEYPr7kDurdfd3P5QZ
+         0cJAuQuOk0v4FV3SLoq1sNEmMCmsts7A6wT40DAs=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     YuanJunQing <yuanjunqing66@163.com>,
+Cc:     Kaige Li <likaige@loongson.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 149/175] MIPS: Fix IRQ tracing when call handle_fpe() and handle_msa_fpe()
-Date:   Mon,  8 Jun 2020 19:18:22 -0400
-Message-Id: <20200608231848.3366970-149-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 142/175] MIPS: tools: Fix resource leak in elf-entry.c
+Date:   Mon,  8 Jun 2020 19:18:15 -0400
+Message-Id: <20200608231848.3366970-142-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
 References: <20200608231848.3366970-1-sashal@kernel.org>
@@ -58,52 +58,66 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: YuanJunQing <yuanjunqing66@163.com>
+From: Kaige Li <likaige@loongson.cn>
 
-[ Upstream commit 31e1b3efa802f97a17628dde280006c4cee4ce5e ]
+[ Upstream commit f33a0b941017b9cb5a4e975af198b855b2f2b455 ]
 
-Register "a1" is unsaved in this function,
- when CONFIG_TRACE_IRQFLAGS is enabled,
- the TRACE_IRQS_OFF macro will call trace_hardirqs_off(),
- and this may change register "a1".
- The changed register "a1" as argument will be send
- to do_fpe() and do_msa_fpe().
+There is a file descriptor resource leak in elf-entry.c, fix this
+by adding fclose() before return and die.
 
-Signed-off-by: YuanJunQing <yuanjunqing66@163.com>
+Signed-off-by: Kaige Li <likaige@loongson.cn>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kernel/genex.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/mips/tools/elf-entry.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-index efde27c99414..9c5f8a5d097f 100644
---- a/arch/mips/kernel/genex.S
-+++ b/arch/mips/kernel/genex.S
-@@ -474,20 +474,20 @@ NESTED(nmi_handler, PT_SIZE, sp)
- 	.endm
+diff --git a/arch/mips/tools/elf-entry.c b/arch/mips/tools/elf-entry.c
+index adde79ce7fc0..dbd14ff05b4c 100644
+--- a/arch/mips/tools/elf-entry.c
++++ b/arch/mips/tools/elf-entry.c
+@@ -51,11 +51,14 @@ int main(int argc, const char *argv[])
+ 	nread = fread(&hdr, 1, sizeof(hdr), file);
+ 	if (nread != sizeof(hdr)) {
+ 		perror("Unable to read input file");
++		fclose(file);
+ 		return EXIT_FAILURE;
+ 	}
  
- 	.macro	__build_clear_fpe
-+	CLI
-+	TRACE_IRQS_OFF
- 	.set	push
- 	/* gas fails to assemble cfc1 for some archs (octeon).*/ \
- 	.set	mips1
- 	SET_HARDFLOAT
- 	cfc1	a1, fcr31
- 	.set	pop
--	CLI
--	TRACE_IRQS_OFF
- 	.endm
+-	if (memcmp(hdr.ehdr32.e_ident, ELFMAG, SELFMAG))
++	if (memcmp(hdr.ehdr32.e_ident, ELFMAG, SELFMAG)) {
++		fclose(file);
+ 		die("Input is not an ELF\n");
++	}
  
- 	.macro	__build_clear_msa_fpe
--	_cfcmsa	a1, MSA_CSR
- 	CLI
- 	TRACE_IRQS_OFF
-+	_cfcmsa	a1, MSA_CSR
- 	.endm
+ 	switch (hdr.ehdr32.e_ident[EI_CLASS]) {
+ 	case ELFCLASS32:
+@@ -67,6 +70,7 @@ int main(int argc, const char *argv[])
+ 			entry = be32toh(hdr.ehdr32.e_entry);
+ 			break;
+ 		default:
++			fclose(file);
+ 			die("Invalid ELF encoding\n");
+ 		}
  
- 	.macro	__build_clear_ade
+@@ -83,14 +87,17 @@ int main(int argc, const char *argv[])
+ 			entry = be64toh(hdr.ehdr64.e_entry);
+ 			break;
+ 		default:
++			fclose(file);
+ 			die("Invalid ELF encoding\n");
+ 		}
+ 		break;
+ 
+ 	default:
++		fclose(file);
+ 		die("Invalid ELF class\n");
+ 	}
+ 
+ 	printf("0x%016" PRIx64 "\n", entry);
++	fclose(file);
+ 	return EXIT_SUCCESS;
+ }
 -- 
 2.25.1
 

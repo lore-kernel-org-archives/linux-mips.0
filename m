@@ -4,57 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7C35C433E1
-	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:50:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF41BC433E1
+	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:50:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C850A20812
-	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:50:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9503920659
+	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:50:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1591660226;
-	bh=U2ApDPJj7HqXeaaoWwL68rF6gEYm+1YdSFa/hATOdHg=;
+	s=default; t=1591660248;
+	bh=1NwQk1K6lLsrqLB6IY13pY0x8Cx6AXaH8S5+lSyieKA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=kdod7KE5ssdEECmTTVIdT0pszuelKQ8SG1PxXWkkeDSUpt9YEbqhL+HW5CzOr5E2n
-	 dlK7EnPFabB59l65J3vYFNSGzNo9wt7gHW+SdJRCCJ9tEqR1px7a0dLGzt3smO/hzo
-	 wp0CgOblbjb0rbC7i2WTbPTbDocvf0gysKbjdwN0=
+	b=ODlKgAegJj1RD0dHMD3IdkS+H/DkCwewkxyiT04axtXdbc78xBjf88F0s7WgpyA79
+	 Ymw+YT0yyHz6qKOt3frKphoO7Dy7NfQLPtqXBFG25ResP8hUV+mNOw5XCzKx73HHdk
+	 +jt8HDX3fhHvO7dtsyhkT8bUkOCB24VwO0JfFxqQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387505AbgFHXuQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 Jun 2020 19:50:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51768 "EHLO mail.kernel.org"
+        id S1731310AbgFHXur (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 Jun 2020 19:50:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731789AbgFHXZT (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:25:19 -0400
+        id S2387524AbgFHXZO (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:25:14 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB6462074B;
-        Mon,  8 Jun 2020 23:25:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B59BC2086A;
+        Mon,  8 Jun 2020 23:25:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658718;
-        bh=U2ApDPJj7HqXeaaoWwL68rF6gEYm+1YdSFa/hATOdHg=;
+        s=default; t=1591658714;
+        bh=1NwQk1K6lLsrqLB6IY13pY0x8Cx6AXaH8S5+lSyieKA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u9D4hwP3vnCedg1teiqN88cHzjk95qt/koNvVQtcy7oeqNL/BdRsPZGMxT1ZVBSgX
-         DvAKH7Ri13TjxMaYTnArQecGFA0xTIl8LdAGv2ms5xiGCT3XHBMq8cDJK6oHRrwJUe
-         gvvf9340OY0R1vDx5CiCYR2f6kAfTQUN89MNq0do=
+        b=OL/zCU7BgTkzB0ut3AvS6WHCu+ZZEEx58jVE0G6VCdyexS6xDBm2ecKCT4CuL6Joy
+         gioDHYYFVYgxduLUDkLg5cCoUcdg5pzs+TIUPqBDJW+jiw5WzbjbA6WThKy9WTByDm
+         QRVP8G+0hTgEOGNcjFJ4wNQOGT6NNlk28Ki014T0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-spi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 14/72] spi: dw: Enable interrupts in accordance with DMA xfer mode
-Date:   Mon,  8 Jun 2020 19:24:02 -0400
-Message-Id: <20200608232500.3369581-14-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 11/72] MIPS: Loongson: Build ATI Radeon GPU driver as module
+Date:   Mon,  8 Jun 2020 19:23:59 -0400
+Message-Id: <20200608232500.3369581-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608232500.3369581-1-sashal@kernel.org>
 References: <20200608232500.3369581-1-sashal@kernel.org>
@@ -67,68 +58,44 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-[ Upstream commit 43dba9f3f98c2b184a19f856f06fe22817bfd9e0 ]
+[ Upstream commit a44de7497f91834df0b8b6d459e259788ba66794 ]
 
-It's pointless to track the Tx overrun interrupts if Rx-only SPI
-transfer is issued. Similarly there is no need in handling the Rx
-overrun/underrun interrupts if Tx-only SPI transfer is executed.
-So lets unmask the interrupts only if corresponding SPI
-transactions are implied.
+When ATI Radeon GPU driver has been compiled directly into the kernel
+instead of as a module, we should make sure the firmware for the model
+(check available ones in /lib/firmware/radeon) is built-in to the kernel
+as well, otherwise there exists the following fatal error during GPU init,
+change CONFIG_DRM_RADEON=y to CONFIG_DRM_RADEON=m to fix it.
 
-Co-developed-by: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
-Signed-off-by: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: devicetree@vger.kernel.org
-Link: https://lore.kernel.org/r/20200522000806.7381-3-Sergey.Semin@baikalelectronics.ru
-Signed-off-by: Mark Brown <broonie@kernel.org>
+[    1.900997] [drm] Loading RS780 Microcode
+[    1.905077] radeon 0000:01:05.0: Direct firmware load for radeon/RS780_pfp.bin failed with error -2
+[    1.914140] r600_cp: Failed to load firmware "radeon/RS780_pfp.bin"
+[    1.920405] [drm:r600_init] *ERROR* Failed to load firmware!
+[    1.926069] radeon 0000:01:05.0: Fatal error during GPU init
+[    1.931729] [drm] radeon: finishing device.
+
+Fixes: 024e6a8b5bb1 ("MIPS: Loongson: Add a Loongson-3 default config file")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-dw-mid.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ arch/mips/configs/loongson3_defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-dw-mid.c b/drivers/spi/spi-dw-mid.c
-index 4f41d44e8b4c..c4244d2f1ee3 100644
---- a/drivers/spi/spi-dw-mid.c
-+++ b/drivers/spi/spi-dw-mid.c
-@@ -228,19 +228,23 @@ static struct dma_async_tx_descriptor *dw_spi_dma_prepare_rx(struct dw_spi *dws,
- 
- static int mid_spi_dma_setup(struct dw_spi *dws, struct spi_transfer *xfer)
- {
--	u16 dma_ctrl = 0;
-+	u16 imr = 0, dma_ctrl = 0;
- 
- 	dw_writel(dws, DW_SPI_DMARDLR, 0xf);
- 	dw_writel(dws, DW_SPI_DMATDLR, 0x10);
- 
--	if (xfer->tx_buf)
-+	if (xfer->tx_buf) {
- 		dma_ctrl |= SPI_DMA_TDMAE;
--	if (xfer->rx_buf)
-+		imr |= SPI_INT_TXOI;
-+	}
-+	if (xfer->rx_buf) {
- 		dma_ctrl |= SPI_DMA_RDMAE;
-+		imr |= SPI_INT_RXUI | SPI_INT_RXOI;
-+	}
- 	dw_writel(dws, DW_SPI_DMACR, dma_ctrl);
- 
- 	/* Set the interrupt mask */
--	spi_umask_intr(dws, SPI_INT_TXOI | SPI_INT_RXUI | SPI_INT_RXOI);
-+	spi_umask_intr(dws, imr);
- 
- 	dws->transfer_handler = dma_transfer;
- 
+diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
+index 324dfee23dfb..c871e40b8878 100644
+--- a/arch/mips/configs/loongson3_defconfig
++++ b/arch/mips/configs/loongson3_defconfig
+@@ -250,7 +250,7 @@ CONFIG_MEDIA_CAMERA_SUPPORT=y
+ CONFIG_MEDIA_USB_SUPPORT=y
+ CONFIG_USB_VIDEO_CLASS=m
+ CONFIG_DRM=y
+-CONFIG_DRM_RADEON=y
++CONFIG_DRM_RADEON=m
+ CONFIG_FB_RADEON=y
+ CONFIG_LCD_CLASS_DEVICE=y
+ CONFIG_LCD_PLATFORM=m
 -- 
 2.25.1
 

@@ -4,53 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCCA1C433E1
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:12:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE91AC433DF
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:13:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BDBF020812
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:12:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7A60C20775
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:13:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1591661548;
-	bh=iG3LVivJ8uCX8kUqM0xz71pkACuHrcE3caW6mKU03yI=;
+	s=default; t=1591661591;
+	bh=Uj+5VCm0E7vgGIJLWRdExksoYdJsy3dE8hmad513uVo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=xXM5wbXIdz+SiaZ2hBS5BneNYF39vuKQksvRTHS84keNyDsdSH6Y7Way265j8EfZz
-	 aq3T/rWzE9fxHJR7doxfLRtKlNudqCig62yKBjTeIAI6XoCGmNG8yzwUsB22vUsm1R
-	 kY/o4KfWpqSCfYDQqG8bp717SP+pDIG9en4ah9r8=
+	b=lwt80bA4Kpz4y8i6WH4p7ytxeycosY82UBSDtvB+98DBH6rZ/d4qX45fr1nDbfS7X
+	 0q5a48moFhJVyGMDdpE0lmHBqixGo89+BhLAkFm2BSpMEMeStgGa0akmPNtlZ/4TeD
+	 iQ42IAsa+CBIxS26/7BBygakT4Lvmn2K5Be2i+9U=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731407AbgFIAM1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 Jun 2020 20:12:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42714 "EHLO mail.kernel.org"
+        id S1731054AbgFIANF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 Jun 2020 20:13:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730040AbgFHXTm (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:19:42 -0400
+        id S1730817AbgFHXTf (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:19:35 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2865D20872;
-        Mon,  8 Jun 2020 23:19:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63F4620842;
+        Mon,  8 Jun 2020 23:19:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658382;
-        bh=iG3LVivJ8uCX8kUqM0xz71pkACuHrcE3caW6mKU03yI=;
+        s=default; t=1591658375;
+        bh=Uj+5VCm0E7vgGIJLWRdExksoYdJsy3dE8hmad513uVo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vyBYlcl/MLVqcLamAv+r2hBmRHtPZximk7oKhXyUbYgsrKsr3NnLa85JZkoByqH7V
-         rnEuKoFiuS2f9ucymMWswaOGAg+DpROrs+M8jdXXbRzxQeGaBHC9OfirxvdutCyWHt
-         GddaV2LMDbNlfFCZKtmuXzCNqmndB6KYrws/oxXQ=
+        b=BT7nqQpcGlykXS9Flb/mjNxe9hrVO/g9Wz5gO+xf+wXzbl4ZGTrap38I22dCGpry8
+         bEzuZTbkWlFBMWuACzWXW2i7MDGkytJse0PyTrdIU5Qcm5jD5Ro57hw478L1MrhHep
+         HdZcejPWCz8FDtVemCuIbKNO8ZuHwjO1Xo9Yg0Uk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 043/175] mips: Fix cpu_has_mips64r1/2 activation for MIPS32 CPUs
-Date:   Mon,  8 Jun 2020 19:16:36 -0400
-Message-Id: <20200608231848.3366970-43-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 037/175] MIPS: Loongson: Build ATI Radeon GPU driver as module
+Date:   Mon,  8 Jun 2020 19:16:30 -0400
+Message-Id: <20200608231848.3366970-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608231848.3366970-1-sashal@kernel.org>
 References: <20200608231848.3366970-1-sashal@kernel.org>
@@ -63,59 +58,44 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-[ Upstream commit a2ac81c6ef4018ea49c034ce165bb9ea1cf99f3e ]
+[ Upstream commit a44de7497f91834df0b8b6d459e259788ba66794 ]
 
-Commit 1aeba347b3a9 ("MIPS: Hardcode cpu_has_mips* where target ISA
-allows") updated the cpu_has_mips* macro to be replaced with a constant
-expression where it's possible. By mistake it wasn't done correctly
-for cpu_has_mips64r1/cpu_has_mips64r2 macro. They are defined to
-be replaced with conditional expression __isa_range_or_flag(), which
-means either ISA revision being within the range or the corresponding
-CPU options flag was set at the probe stage or both being true at the
-same time. But the ISA level value doesn't indicate whether the ISA is
-MIPS32 or MIPS64. Due to this if we select MIPS32r1 - MIPS32r5
-architectures the __isa_range() macro will activate the
-cpu_has_mips64rX flags, which is incorrect. In order to fix the
-problem we make sure the 64bits CPU support is enabled by means of
-checking the flag cpu_has_64bits aside with proper ISA range and specific
-Revision flag being set.
+When ATI Radeon GPU driver has been compiled directly into the kernel
+instead of as a module, we should make sure the firmware for the model
+(check available ones in /lib/firmware/radeon) is built-in to the kernel
+as well, otherwise there exists the following fatal error during GPU init,
+change CONFIG_DRM_RADEON=y to CONFIG_DRM_RADEON=m to fix it.
 
-Fixes: 1aeba347b3a9 ("MIPS: Hardcode cpu_has_mips* where target ISA allows")
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: devicetree@vger.kernel.org
+[    1.900997] [drm] Loading RS780 Microcode
+[    1.905077] radeon 0000:01:05.0: Direct firmware load for radeon/RS780_pfp.bin failed with error -2
+[    1.914140] r600_cp: Failed to load firmware "radeon/RS780_pfp.bin"
+[    1.920405] [drm:r600_init] *ERROR* Failed to load firmware!
+[    1.926069] radeon 0000:01:05.0: Fatal error during GPU init
+[    1.931729] [drm] radeon: finishing device.
+
+Fixes: 024e6a8b5bb1 ("MIPS: Loongson: Add a Loongson-3 default config file")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/cpu-features.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/mips/configs/loongson3_defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
-index 983a6a7f43a1..3e26b0c7391b 100644
---- a/arch/mips/include/asm/cpu-features.h
-+++ b/arch/mips/include/asm/cpu-features.h
-@@ -288,10 +288,12 @@
- # define cpu_has_mips32r6	__isa_ge_or_flag(6, MIPS_CPU_ISA_M32R6)
- #endif
- #ifndef cpu_has_mips64r1
--# define cpu_has_mips64r1	__isa_range_or_flag(1, 6, MIPS_CPU_ISA_M64R1)
-+# define cpu_has_mips64r1	(cpu_has_64bits && \
-+				 __isa_range_or_flag(1, 6, MIPS_CPU_ISA_M64R1))
- #endif
- #ifndef cpu_has_mips64r2
--# define cpu_has_mips64r2	__isa_range_or_flag(2, 6, MIPS_CPU_ISA_M64R2)
-+# define cpu_has_mips64r2	(cpu_has_64bits && \
-+				 __isa_range_or_flag(2, 6, MIPS_CPU_ISA_M64R2))
- #endif
- #ifndef cpu_has_mips64r6
- # define cpu_has_mips64r6	__isa_ge_and_flag(6, MIPS_CPU_ISA_M64R6)
+diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
+index 90ee0084d786..e41f4841cb4d 100644
+--- a/arch/mips/configs/loongson3_defconfig
++++ b/arch/mips/configs/loongson3_defconfig
+@@ -231,7 +231,7 @@ CONFIG_MEDIA_CAMERA_SUPPORT=y
+ CONFIG_MEDIA_USB_SUPPORT=y
+ CONFIG_USB_VIDEO_CLASS=m
+ CONFIG_DRM=y
+-CONFIG_DRM_RADEON=y
++CONFIG_DRM_RADEON=m
+ CONFIG_FB_RADEON=y
+ CONFIG_LCD_CLASS_DEVICE=y
+ CONFIG_LCD_PLATFORM=m
 -- 
 2.25.1
 

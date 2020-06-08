@@ -5,75 +5,71 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D82F4C433DF
-	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 09:41:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF1E5C433DF
+	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 10:18:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B7FC320774
-	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 09:41:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C9A33206D5
+	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 10:18:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CLeq0rnl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U3ywOkUm"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729264AbgFHJlC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 Jun 2020 05:41:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
+        id S1729358AbgFHKSf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 Jun 2020 06:18:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729260AbgFHJlA (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 8 Jun 2020 05:41:00 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F53C08C5C4;
-        Mon,  8 Jun 2020 02:41:00 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id f185so15807441wmf.3;
-        Mon, 08 Jun 2020 02:41:00 -0700 (PDT)
+        with ESMTP id S1729337AbgFHKSe (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 8 Jun 2020 06:18:34 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3446C08C5C3;
+        Mon,  8 Jun 2020 03:18:32 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id c71so14756126wmd.5;
+        Mon, 08 Jun 2020 03:18:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=il1m5NUP7re9G7KU6aHwcFuWrrrnzuYE/JMpUwdavKA=;
-        b=CLeq0rnlvqkHw2Qlwfd/NB4okSe7BM4LDkARQWALxpxMU9NXeBR5tgGn6UbrJR8bvT
-         o7MQf65r2QX2CAAHW7x7uYdO2NutqOzSjV0z/yDgc6S/qLiicFEVzsQL49h3mYHaid28
-         QMO+r/9q7akBk72uMZkOPi6facaSCzUKjKo8rZf9FzqArcoi+QoqhPY3j00NrGP7KSNz
-         1Z+P2U1Y42Nh8738GYGIyXhHp5EKWYXvvpCdOT/CBgDRJK7/oPndGA7Of+y+fm2HKUCf
-         PFB+VZ74lrsqENdaBJMzQGFZe3YwKjHIJoinfXmAwj0tnLIq4/e6MmPRNkmD4z755hw9
-         QqIQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8E3tUlnNWH0tzK24PYQO2JZkSdZVKVSOuDxhAs4jB0Q=;
+        b=U3ywOkUmYf3mWHDJ5irFC8gmotq0uHroech3SdtnZ2h1j//7yautxyU6AVnYtQKDDd
+         MLw1jO00ILaP9kybA31O0kfxOLcnCx0WSmIit7FKhJjM/+xIiOeX3PMeZ1xDHUQtjLc7
+         YRG1HiT8tWEh9ZzHbz4UQMAIuJWIxfBcLiujlcrE3PI4XQ6b+5S0X45sY9x5lYB6MZPb
+         fS1rMNdST7gM0V7CPm1ShXW0pTZ0s9Pb5mdzMEThvn2nrX9yRiLa17rbXDJLXW7piOiy
+         lwn1Jbbi+Mo4QVVHlF0t6sBmrNwa6LFTUCzZwrj0iKZPldI44bkj3/f5o6xU2WA6/rfc
+         CLrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=il1m5NUP7re9G7KU6aHwcFuWrrrnzuYE/JMpUwdavKA=;
-        b=ZGr03K/LtwgBnnnpeo4QsmRlbYzYUC7xtUIumJY0EpB+XNOYpiCjzj2nYvq8LL73O4
-         CBy5gd2U7DtAHopVRL86RcjLcQXHdXgP80PZaQVw0YfJHw88KDPYVH2YEYzbZ3xhJCZP
-         de4uhpM2DN/Acv2zpU+sXRniTZfntGs+59ybj/sNuJ1ULLm8cotxnZ6UqgvcZWfxZGb3
-         jGO19yCZUo30k/DjUSIHYXpGYE0sz3wFVNPGO+sNgKwL87nNzCYHe07Z8NspoYfA5fyf
-         IpNhrIW3VCnihSCsu1QBTZL88kG2uOmXhxiX8+413eY2P9wx55+95SwIBN+EQKtTraRL
-         M97Q==
-X-Gm-Message-State: AOAM533wtFO10vs1uyauJ9N5h+tfC1ENHGVKpOOxCZlhhXKqWEk2pEOr
-        8LhrqhzcxV3oIKIy3te2uvU=
-X-Google-Smtp-Source: ABdhPJwdwqoWaP8+TMuOU5+m89nd/NKtrkkJcMfiuCxPYHjWwM/xJi7bWdkRUO3z4i7W8AInvcYxJQ==
-X-Received: by 2002:a1c:4105:: with SMTP id o5mr15250547wma.168.1591609257618;
-        Mon, 08 Jun 2020 02:40:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8E3tUlnNWH0tzK24PYQO2JZkSdZVKVSOuDxhAs4jB0Q=;
+        b=DiRTR9E7/ap5ZSB2VaOFo5NVqhQH/sXdrRN/IsGgjne/cQJsDLf7J+dJJb4Fnbz6pz
+         d6hsD6s3Z/S73+SEGQZ3gPly56815rOuQmDgHEAO8vc+D2sHjfGVkO1/ZxfwC0y2orAh
+         NnjpgoXErgNpIcXGDn1EgiGImquTGZ9pokO7mktheuRa0RNHj5DBvtYUe/NfhMZ8J5Hs
+         STsYx/8+DZHhsNW1QXJe37PpQGGqJxye4Stv/VKPuOpcM5wnGsSDqZuXGFG6IjcOnCWE
+         AzdCIQTBLWbPF8t5BVJP2kYze5D0cz+ESs6UVDaMXBzHswv09FJqM62uoJMonOEoUkrL
+         Q77g==
+X-Gm-Message-State: AOAM533yClPM6kU4n3PVYdM8znM682EJElIRW5XxOCIKMA3QaUZbDNvm
+        MVRsarSOBi5v7kzx5lDZ+oc=
+X-Google-Smtp-Source: ABdhPJzEzWvF3GXeVLXaWIlhisc6qKBmVJ6I624X62ATg/sd/QOg5XVIOCaiAD+Pgto1msHjSemKuw==
+X-Received: by 2002:a1c:dd44:: with SMTP id u65mr16847352wmg.180.1591611511286;
+        Mon, 08 Jun 2020 03:18:31 -0700 (PDT)
 Received: from skynet.lan (28.red-83-49-61.dynamicip.rima-tde.net. [83.49.61.28])
-        by smtp.gmail.com with ESMTPSA id a3sm22096479wrp.91.2020.06.08.02.40.56
+        by smtp.gmail.com with ESMTPSA id z2sm22378439wrs.87.2020.06.08.03.18.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2020 02:40:57 -0700 (PDT)
+        Mon, 08 Jun 2020 03:18:30 -0700 (PDT)
 From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
         <noltari@gmail.com>
 To:     tsbogend@alpha.franken.de, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com, jonas.gorski@gmail.com,
-        linus.walleij@linaro.org, linux-mips@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org
+        jonas.gorski@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
 Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
         <noltari@gmail.com>
-Subject: [PATCH 1/2] MIPS: BCM63xx: add helper function to detect CFE
-Date:   Mon,  8 Jun 2020 11:40:52 +0200
-Message-Id: <20200608094053.3381512-2-noltari@gmail.com>
+Subject: [PATCH] MIPS: BCM63xx: add endif comments
+Date:   Mon,  8 Jun 2020 12:18:28 +0200
+Message-Id: <20200608101828.3383942-1-noltari@gmail.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200608094053.3381512-1-noltari@gmail.com>
-References: <20200608094053.3381512-1-noltari@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -82,36 +78,154 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-CFE passes argument 3 as "CFE1".
+There are plenty of ifdefs in board_bcm963xx.c without endif comments.
+Let's make the code easier to follow by adding proper comments.
 
 Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
 ---
- arch/mips/include/asm/mach-bcm63xx/bcm63xx_board.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/mips/bcm63xx/boards/board_bcm963xx.c | 33 +++++++++++------------
+ 1 file changed, 15 insertions(+), 18 deletions(-)
 
-diff --git a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_board.h b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_board.h
-index 1d19a726f86c..5af07796e8c7 100644
---- a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_board.h
-+++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_board.h
-@@ -2,6 +2,8 @@
- #ifndef BCM63XX_BOARD_H_
- #define BCM63XX_BOARD_H_
+diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+index 36ec3dc2c999..e8621074a8c2 100644
+--- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
++++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+@@ -67,7 +67,7 @@ static struct board_info __initdata board_cvg834g = {
+ 	.ephy_reset_gpio		= 36,
+ 	.ephy_reset_gpio_flags		= GPIOF_INIT_HIGH,
+ };
+-#endif
++#endif /* CONFIG_BCM63XX_CPU_3368 */
  
-+#include <asm/bootinfo.h>
-+
- const char *board_get_name(void);
+ /*
+  * known 6328 boards
+@@ -115,7 +115,7 @@ static struct board_info __initdata board_96328avng = {
+ 		},
+ 	},
+ };
+-#endif
++#endif /* CONFIG_BCM63XX_CPU_6328 */
  
- void board_prom_init(void);
-@@ -10,4 +12,8 @@ void board_setup(void);
+ /*
+  * known 6338 boards
+@@ -204,7 +204,7 @@ static struct board_info __initdata board_96338w = {
+ 		},
+ 	},
+ };
+-#endif
++#endif /* CONFIG_BCM63XX_CPU_6338 */
  
- int board_register_devices(void);
+ /*
+  * known 6345 boards
+@@ -216,7 +216,7 @@ static struct board_info __initdata board_96345gw2 = {
  
-+static inline bool bcm63xx_is_cfe_present(void) {
-+	return fw_arg3 == 0x43464531;
-+}
-+
- #endif /* ! BCM63XX_BOARD_H_ */
+ 	.has_uart0			= 1,
+ };
+-#endif
++#endif /* CONFIG_BCM63XX_CPU_6345 */
+ 
+ /*
+  * known 6348 boards
+@@ -464,7 +464,6 @@ static struct board_info __initdata board_rta1025w_16 = {
+ 	},
+ };
+ 
+-
+ static struct board_info __initdata board_DV201AMR = {
+ 	.name				= "DV201AMR",
+ 	.expected_cpu_id		= 0x6348,
+@@ -505,7 +504,7 @@ static struct board_info __initdata board_96348gw_a = {
+ 
+ 	.has_ohci0 = 1,
+ };
+-#endif
++#endif /* CONFIG_BCM63XX_CPU_6348 */
+ 
+ /*
+  * known 6358 boards
+@@ -530,7 +529,6 @@ static struct board_info __initdata board_96358vw = {
+ 		.force_duplex_full	= 1,
+ 	},
+ 
+-
+ 	.has_ohci0 = 1,
+ 	.has_pccard = 1,
+ 	.has_ehci0 = 1,
+@@ -654,7 +652,7 @@ static struct board_info __initdata board_DWVS0 = {
+ 
+ 	.has_ohci0			= 1,
+ };
+-#endif
++#endif /* CONFIG_BCM63XX_CPU_6358 */
+ 
+ /*
+  * all boards
+@@ -662,17 +660,17 @@ static struct board_info __initdata board_DWVS0 = {
+ static const struct board_info __initconst *bcm963xx_boards[] = {
+ #ifdef CONFIG_BCM63XX_CPU_3368
+ 	&board_cvg834g,
+-#endif
++#endif /* CONFIG_BCM63XX_CPU_3368 */
+ #ifdef CONFIG_BCM63XX_CPU_6328
+ 	&board_96328avng,
+-#endif
++#endif /* CONFIG_BCM63XX_CPU_6328 */
+ #ifdef CONFIG_BCM63XX_CPU_6338
+ 	&board_96338gw,
+ 	&board_96338w,
+-#endif
++#endif /* CONFIG_BCM63XX_CPU_6338 */
+ #ifdef CONFIG_BCM63XX_CPU_6345
+ 	&board_96345gw2,
+-#endif
++#endif /* CONFIG_BCM63XX_CPU_6345 */
+ #ifdef CONFIG_BCM63XX_CPU_6348
+ 	&board_96348r,
+ 	&board_96348gw,
+@@ -682,14 +680,13 @@ static const struct board_info __initconst *bcm963xx_boards[] = {
+ 	&board_DV201AMR,
+ 	&board_96348gw_a,
+ 	&board_rta1025w_16,
+-#endif
+-
++#endif /* CONFIG_BCM63XX_CPU_6348 */
+ #ifdef CONFIG_BCM63XX_CPU_6358
+ 	&board_96358vw,
+ 	&board_96358vw2,
+ 	&board_AGPFS0,
+ 	&board_DWVS0,
+-#endif
++#endif /* CONFIG_BCM63XX_CPU_6358 */
+ };
+ 
+ /*
+@@ -728,7 +725,7 @@ int bcm63xx_get_fallback_sprom(struct ssb_bus *bus, struct ssb_sprom *out)
+ 		return -EINVAL;
+ 	}
+ }
+-#endif
++#endif /* CONFIG_SSB_PCIHOST */
+ 
+ /*
+  * return board name for /proc/cpuinfo
+@@ -807,7 +804,7 @@ void __init board_prom_init(void)
+ 		if (BCMCPU_IS_6348())
+ 			val |= GPIO_MODE_6348_G2_PCI;
+ 	}
+-#endif
++#endif /* CONFIG_PCI */
+ 
+ 	if (board.has_pccard) {
+ 		if (BCMCPU_IS_6348())
+@@ -892,7 +889,7 @@ int __init board_register_devices(void)
+ 				&bcm63xx_get_fallback_sprom) < 0)
+ 			pr_err("failed to register fallback SPROM\n");
+ 	}
+-#endif
++#endif /* CONFIG_SSB_PCIHOST */
+ 
+ 	bcm63xx_spi_register();
+ 
 -- 
 2.26.2
 

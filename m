@@ -4,48 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D62D7C433DF
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:48:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 821ABC433E0
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:48:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A51E52078C
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:48:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5014120774
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:48:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1591663688;
-	bh=/747nDpUrA+HrhPyngwEof3PhSh74KiCISRw9/z8wE4=;
+	s=default; t=1591663708;
+	bh=eVw2k462iJ2Do0ojBFL2gwa0NOUuOVkmrSLmnwCge2o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=QRm8NQRH9D2m/FMP08TyICdqlkIYPopNFulZtVWLBSymHZRjdxYWP1GxbyYbYDUHm
-	 ZQp7MuvIBBWdU6VIhbggbZikwqDuJtpRLsVQALqL4rtDweNYGmDbfUlrD+M1W03N+E
-	 Ft70+jhFhpjN4LoKYDLuoflFDBhKyY7b+C9bpP18=
+	b=f1WiNI2TYPPakX+FeHKx9WWp5E6dy1T87amRL/eHP+zlbLlWEEUmX2COlQRxR3vnx
+	 +vgmOAV0eShz8MKtoinD7I1Y2wZcSkDKdNx0HKUDR2He4v5iLUEaiGYO7TxwCUdOZN
+	 ehBsWa/WYzVCy1vhnNe6Q5yVoSiXdsUOQUyGoGvo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727880AbgFIAsC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 Jun 2020 20:48:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57858 "EHLO mail.kernel.org"
+        id S1728939AbgFIAs1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 Jun 2020 20:48:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728850AbgFHXLJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:11:09 -0400
+        id S1727125AbgFHXK4 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:10:56 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A53242100A;
-        Mon,  8 Jun 2020 23:11:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B8FA208FE;
+        Mon,  8 Jun 2020 23:10:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591657869;
-        bh=/747nDpUrA+HrhPyngwEof3PhSh74KiCISRw9/z8wE4=;
+        s=default; t=1591657855;
+        bh=eVw2k462iJ2Do0ojBFL2gwa0NOUuOVkmrSLmnwCge2o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qmF7AeJLJF5fHHJNCmoCNi9bwdDc4NcfuhjJxHP6u24Zef4lXnLnkoeGzGvjsaOZ+
-         N06r9YHSrqzHn2VRX7A0rist5bCRSUtzRy22iDDe9ZlW1rEFzgRiuHGUegPLck+9+g
-         uNn9UR2tGID2/9QwjAInEOIBozm+hptSC1wjfX+0=
+        b=jb65WC1N9DK4h5ujlYgknQzKGblUIOd9qdgwnKY+xwJMxi6hkKnBFAN50L1nOTu28
+         o3t2xYQL2mo7H0+8yDF7eC6NEYEpcag5RVfGkP6/LH4VsG5kiY4+QswvO0wazE3HEE
+         Ml0wGORmCyoWzANqDucLZa/AIXBO/Cbd6X/0Ei9k=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kaige Li <likaige@loongson.cn>,
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.7 230/274] MIPS: tools: Fix resource leak in elf-entry.c
-Date:   Mon,  8 Jun 2020 19:05:23 -0400
-Message-Id: <20200608230607.3361041-230-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 219/274] mips: Add udelay lpj numbers adjustment
+Date:   Mon,  8 Jun 2020 19:05:12 -0400
+Message-Id: <20200608230607.3361041-219-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
 References: <20200608230607.3361041-1-sashal@kernel.org>
@@ -58,66 +64,125 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Kaige Li <likaige@loongson.cn>
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-[ Upstream commit f33a0b941017b9cb5a4e975af198b855b2f2b455 ]
+[ Upstream commit ed26aacfb5f71eecb20a51c4467da440cb719d66 ]
 
-There is a file descriptor resource leak in elf-entry.c, fix this
-by adding fclose() before return and die.
+Loops-per-jiffies is a special number which represents a number of
+noop-loop cycles per CPU-scheduler quantum - jiffies. As you
+understand aside from CPU-specific implementation it depends on
+the CPU frequency. So when a platform has the CPU frequency fixed,
+we have no problem and the current udelay interface will work
+just fine. But as soon as CPU-freq driver is enabled and the cores
+frequency changes, we'll end up with distorted udelay's. In order
+to fix this we have to accordinly adjust the per-CPU udelay_val
+(the same as the global loops_per_jiffy) number. This can be done
+in the CPU-freq transition event handler. We subscribe to that event
+in the MIPS arch time-inititalization method.
 
-Signed-off-by: Kaige Li <likaige@loongson.cn>
+Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: devicetree@vger.kernel.org
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/tools/elf-entry.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ arch/mips/kernel/time.c | 70 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
 
-diff --git a/arch/mips/tools/elf-entry.c b/arch/mips/tools/elf-entry.c
-index adde79ce7fc0..dbd14ff05b4c 100644
---- a/arch/mips/tools/elf-entry.c
-+++ b/arch/mips/tools/elf-entry.c
-@@ -51,11 +51,14 @@ int main(int argc, const char *argv[])
- 	nread = fread(&hdr, 1, sizeof(hdr), file);
- 	if (nread != sizeof(hdr)) {
- 		perror("Unable to read input file");
-+		fclose(file);
- 		return EXIT_FAILURE;
- 	}
+diff --git a/arch/mips/kernel/time.c b/arch/mips/kernel/time.c
+index 37e9413a393d..caa01457dce6 100644
+--- a/arch/mips/kernel/time.c
++++ b/arch/mips/kernel/time.c
+@@ -18,12 +18,82 @@
+ #include <linux/smp.h>
+ #include <linux/spinlock.h>
+ #include <linux/export.h>
++#include <linux/cpufreq.h>
++#include <linux/delay.h>
  
--	if (memcmp(hdr.ehdr32.e_ident, ELFMAG, SELFMAG))
-+	if (memcmp(hdr.ehdr32.e_ident, ELFMAG, SELFMAG)) {
-+		fclose(file);
- 		die("Input is not an ELF\n");
+ #include <asm/cpu-features.h>
+ #include <asm/cpu-type.h>
+ #include <asm/div64.h>
+ #include <asm/time.h>
+ 
++#ifdef CONFIG_CPU_FREQ
++
++static DEFINE_PER_CPU(unsigned long, pcp_lpj_ref);
++static DEFINE_PER_CPU(unsigned long, pcp_lpj_ref_freq);
++static unsigned long glb_lpj_ref;
++static unsigned long glb_lpj_ref_freq;
++
++static int cpufreq_callback(struct notifier_block *nb,
++			    unsigned long val, void *data)
++{
++	struct cpufreq_freqs *freq = data;
++	struct cpumask *cpus = freq->policy->cpus;
++	unsigned long lpj;
++	int cpu;
++
++	/*
++	 * Skip lpj numbers adjustment if the CPU-freq transition is safe for
++	 * the loops delay. (Is this possible?)
++	 */
++	if (freq->flags & CPUFREQ_CONST_LOOPS)
++		return NOTIFY_OK;
++
++	/* Save the initial values of the lpjes for future scaling. */
++	if (!glb_lpj_ref) {
++		glb_lpj_ref = boot_cpu_data.udelay_val;
++		glb_lpj_ref_freq = freq->old;
++
++		for_each_online_cpu(cpu) {
++			per_cpu(pcp_lpj_ref, cpu) =
++				cpu_data[cpu].udelay_val;
++			per_cpu(pcp_lpj_ref_freq, cpu) = freq->old;
++		}
 +	}
- 
- 	switch (hdr.ehdr32.e_ident[EI_CLASS]) {
- 	case ELFCLASS32:
-@@ -67,6 +70,7 @@ int main(int argc, const char *argv[])
- 			entry = be32toh(hdr.ehdr32.e_entry);
- 			break;
- 		default:
-+			fclose(file);
- 			die("Invalid ELF encoding\n");
- 		}
- 
-@@ -83,14 +87,17 @@ int main(int argc, const char *argv[])
- 			entry = be64toh(hdr.ehdr64.e_entry);
- 			break;
- 		default:
-+			fclose(file);
- 			die("Invalid ELF encoding\n");
- 		}
- 		break;
- 
- 	default:
-+		fclose(file);
- 		die("Invalid ELF class\n");
- 	}
- 
- 	printf("0x%016" PRIx64 "\n", entry);
-+	fclose(file);
- 	return EXIT_SUCCESS;
- }
++
++	/*
++	 * Adjust global lpj variable and per-CPU udelay_val number in
++	 * accordance with the new CPU frequency.
++	 */
++	if ((val == CPUFREQ_PRECHANGE  && freq->old < freq->new) ||
++	    (val == CPUFREQ_POSTCHANGE && freq->old > freq->new)) {
++		loops_per_jiffy = cpufreq_scale(glb_lpj_ref,
++						glb_lpj_ref_freq,
++						freq->new);
++
++		for_each_cpu(cpu, cpus) {
++			lpj = cpufreq_scale(per_cpu(pcp_lpj_ref, cpu),
++					    per_cpu(pcp_lpj_ref_freq, cpu),
++					    freq->new);
++			cpu_data[cpu].udelay_val = (unsigned int)lpj;
++		}
++	}
++
++	return NOTIFY_OK;
++}
++
++static struct notifier_block cpufreq_notifier = {
++	.notifier_call  = cpufreq_callback,
++};
++
++static int __init register_cpufreq_notifier(void)
++{
++	return cpufreq_register_notifier(&cpufreq_notifier,
++					 CPUFREQ_TRANSITION_NOTIFIER);
++}
++core_initcall(register_cpufreq_notifier);
++
++#endif /* CONFIG_CPU_FREQ */
++
+ /*
+  * forward reference
+  */
 -- 
 2.25.1
 

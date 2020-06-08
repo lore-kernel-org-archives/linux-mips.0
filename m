@@ -2,56 +2,51 @@ Return-Path: <SRS0=SMWl=7V=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9D2AC433DF
-	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:47:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC30BC433DF
+	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:48:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A7BBF204EF
-	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:47:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ABD80204EF
+	for <linux-mips@archiver.kernel.org>; Mon,  8 Jun 2020 23:48:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1591660056;
-	bh=VBKWQ5iLv1fYJthBSpg/mc/0FfYgJ1CTvw8ww/USsgc=;
+	s=default; t=1591660125;
+	bh=2qLyoYM5uT2rMeb6vdKw9v73BZGzqv06q+5YAIglqCc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=NzOgAtRJ6ylpxGfZbTerYEUqux8GARinFxhEua+3mk/DTDy0t9xP5Fjq7R2wj1a5Z
-	 fqGCHlSloazLCqCBqFtro3eoSNACQ2rYZa5FnsDnLFk0HG3NNhWfBsaXca6shHfVOo
-	 vRSAPXdgmUI+WlaiqNH17pbPxkqAvs616Cy5qxlg=
+	b=XkreAnJt33ICjiJOfO5uaOCOwn5r+G/cUC6HIO1mNdLK3ddyAsdPNpKM0+XG5gwEL
+	 swLAt3rzlhiwpqKIma+tAIcZEW9ernwx6xBI1uPdxTcphmmHtEKVeu29OPFgiA/aHz
+	 SZgO/VC+AW+67EUNDBn2P7MlqABPfRDEAWEiHCKw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387930AbgFHXrf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 Jun 2020 19:47:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52974 "EHLO mail.kernel.org"
+        id S1732108AbgFHXsZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 Jun 2020 19:48:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731910AbgFHX0C (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:26:02 -0400
+        id S1731851AbgFHXZq (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:25:46 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C833820812;
-        Mon,  8 Jun 2020 23:26:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86CA22068D;
+        Mon,  8 Jun 2020 23:25:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658762;
-        bh=VBKWQ5iLv1fYJthBSpg/mc/0FfYgJ1CTvw8ww/USsgc=;
+        s=default; t=1591658746;
+        bh=2qLyoYM5uT2rMeb6vdKw9v73BZGzqv06q+5YAIglqCc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DDvCcc243dK4VR4pUUfaJkujDEygfpycmvqc027JfPClzgMi2LCWrDKNJ7mBP+stB
-         FGe1F43mWDiBnp+HaUWue6jO8XlSn+JIULbovCJ9iJDV+dQIOx6IPZtyC5fK8CNtBX
-         L3QEUx/D3p8kzqIrQG7vy01mSm6ywJ6W7A7sFZfk=
+        b=kUGKKoA0uKeb49hOEdk5MkM+APjPBudSBpJZKeC8SZAjOMbxyjeeow7DMmG8JdrtM
+         0cSMAa5jJZZu0HHIXMEoadVKXuUWyN/rycntl+l2U5+0YC5lYSr/sDzI+QAGCZ5Zbo
+         46XrI5fLpV1jSpWELXAbebkKEktz9nMCQzhRcBFI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Fangrui Song <maskray@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        "Maciej W . Rozycki" <macro@linux-mips.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Juxin Gao <gaojuxin@loongson.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 4.14 45/72] MIPS: Truncate link address into 32bit for 32bit kernel
-Date:   Mon,  8 Jun 2020 19:24:33 -0400
-Message-Id: <20200608232500.3369581-45-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 32/72] MIPS: Make sparse_init() using top-down allocation
+Date:   Mon,  8 Jun 2020 19:24:20 -0400
+Message-Id: <20200608232500.3369581-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200608232500.3369581-1-sashal@kernel.org>
 References: <20200608232500.3369581-1-sashal@kernel.org>
@@ -64,86 +59,96 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-[ Upstream commit ff487d41036035376e47972c7c522490b839ab37 ]
+[ Upstream commit 269b3a9ac538c4ae87f84be640b9fa89914a2489 ]
 
-LLD failed to link vmlinux with 64bit load address for 32bit ELF
-while bfd will strip 64bit address into 32bit silently.
-To fix LLD build, we should truncate load address provided by platform
-into 32bit for 32bit kernel.
+In the current code, if CONFIG_SWIOTLB is set, when failed to get IO TLB
+memory from the low pages by plat_swiotlb_setup(), it may lead to the boot
+process failed with kernel panic.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Link: https://github.com/ClangBuiltLinux/linux/issues/786
-Link: https://sourceware.org/bugzilla/show_bug.cgi?id=25784
-Reviewed-by: Fangrui Song <maskray@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Cc: Maciej W. Rozycki <macro@linux-mips.org>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+(1) On the Loongson and SiByte platform
+arch/mips/loongson64/dma.c
+arch/mips/sibyte/common/dma.c
+void __init plat_swiotlb_setup(void)
+{
+	swiotlb_init(1);
+}
+
+kernel/dma/swiotlb.c
+void  __init
+swiotlb_init(int verbose)
+{
+...
+	vstart = memblock_alloc_low(PAGE_ALIGN(bytes), PAGE_SIZE);
+	if (vstart && !swiotlb_init_with_tbl(vstart, io_tlb_nslabs, verbose))
+		return;
+...
+	pr_warn("Cannot allocate buffer");
+	no_iotlb_memory = true;
+}
+
+phys_addr_t swiotlb_tbl_map_single()
+{
+...
+	if (no_iotlb_memory)
+		panic("Can not allocate SWIOTLB buffer earlier ...");
+...
+}
+
+(2) On the Cavium OCTEON platform
+arch/mips/cavium-octeon/dma-octeon.c
+void __init plat_swiotlb_setup(void)
+{
+...
+	octeon_swiotlb = memblock_alloc_low(swiotlbsize, PAGE_SIZE);
+	if (!octeon_swiotlb)
+		panic("%s: Failed to allocate %zu bytes align=%lx\n",
+		      __func__, swiotlbsize, PAGE_SIZE);
+...
+}
+
+Because IO_TLB_DEFAULT_SIZE is 64M, if the rest size of low memory is less
+than 64M when call plat_swiotlb_setup(), we can easily reproduce the panic
+case.
+
+In order to reduce the possibility of kernel panic when failed to get IO
+TLB memory under CONFIG_SWIOTLB, it is better to allocate low memory as
+small as possible before plat_swiotlb_setup(), so make sparse_init() using
+top-down allocation.
+
+Reported-by: Juxin Gao <gaojuxin@loongson.cn>
+Co-developed-by: Juxin Gao <gaojuxin@loongson.cn>
+Signed-off-by: Juxin Gao <gaojuxin@loongson.cn>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/Makefile                 | 13 ++++++++++++-
- arch/mips/boot/compressed/Makefile |  2 +-
- arch/mips/kernel/vmlinux.lds.S     |  2 +-
- 3 files changed, 14 insertions(+), 3 deletions(-)
+ arch/mips/kernel/setup.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index 5977884b008e..a4a06d173858 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -279,12 +279,23 @@ ifdef CONFIG_64BIT
-   endif
- endif
- 
-+# When linking a 32-bit executable the LLVM linker cannot cope with a
-+# 32-bit load address that has been sign-extended to 64 bits.  Simply
-+# remove the upper 32 bits then, as it is safe to do so with other
-+# linkers.
-+ifdef CONFIG_64BIT
-+	load-ld			= $(load-y)
-+else
-+	load-ld			= $(subst 0xffffffff,0x,$(load-y))
-+endif
-+
- KBUILD_AFLAGS	+= $(cflags-y)
- KBUILD_CFLAGS	+= $(cflags-y)
--KBUILD_CPPFLAGS += -DVMLINUX_LOAD_ADDRESS=$(load-y)
-+KBUILD_CPPFLAGS += -DVMLINUX_LOAD_ADDRESS=$(load-y) -DLINKER_LOAD_ADDRESS=$(load-ld)
- KBUILD_CPPFLAGS += -DDATAOFFSET=$(if $(dataoffset-y),$(dataoffset-y),0)
- 
- bootvars-y	= VMLINUX_LOAD_ADDRESS=$(load-y) \
-+		  LINKER_LOAD_ADDRESS=$(load-ld) \
- 		  VMLINUX_ENTRY_ADDRESS=$(entry-y) \
- 		  PLATFORM="$(platform-y)" \
- 		  ITS_INPUTS="$(its-y)"
-diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-index baa34e4deb78..516e593a8ee9 100644
---- a/arch/mips/boot/compressed/Makefile
-+++ b/arch/mips/boot/compressed/Makefile
-@@ -87,7 +87,7 @@ ifneq ($(zload-y),)
- VMLINUZ_LOAD_ADDRESS := $(zload-y)
- else
- VMLINUZ_LOAD_ADDRESS = $(shell $(obj)/calc_vmlinuz_load_addr \
--		$(obj)/vmlinux.bin $(VMLINUX_LOAD_ADDRESS))
-+		$(obj)/vmlinux.bin $(LINKER_LOAD_ADDRESS))
- endif
- UIMAGE_LOADADDR = $(VMLINUZ_LOAD_ADDRESS)
- 
-diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
-index 36f2e860ba3e..be63fff95b2a 100644
---- a/arch/mips/kernel/vmlinux.lds.S
-+++ b/arch/mips/kernel/vmlinux.lds.S
-@@ -50,7 +50,7 @@ SECTIONS
- 	/* . = 0xa800000000300000; */
- 	. = 0xffffffff80300000;
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 05ed4ed411c7..abd7ee9e90ab 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -911,7 +911,17 @@ static void __init arch_mem_init(char **cmdline_p)
+ 				BOOTMEM_DEFAULT);
  #endif
--	. = VMLINUX_LOAD_ADDRESS;
-+	. = LINKER_LOAD_ADDRESS;
- 	/* read-only */
- 	_text = .;	/* Text and read-only data */
- 	.text : {
+ 	device_tree_init();
++
++	/*
++	 * In order to reduce the possibility of kernel panic when failed to
++	 * get IO TLB memory under CONFIG_SWIOTLB, it is better to allocate
++	 * low memory as small as possible before plat_swiotlb_setup(), so
++	 * make sparse_init() using top-down allocation.
++	 */
++	memblock_set_bottom_up(false);
+ 	sparse_init();
++	memblock_set_bottom_up(true);
++
+ 	plat_swiotlb_setup();
+ 
+ 	dma_contiguous_reserve(PFN_PHYS(max_low_pfn));
 -- 
 2.25.1
 

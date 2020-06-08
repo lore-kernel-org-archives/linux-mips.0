@@ -4,53 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D6B2C433E1
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:23:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FF12C433E0
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:47:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E07CE20775
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:23:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EEC6220774
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 00:47:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1591662213;
-	bh=UxLFJSi2vnUJFRKmV691Uu4lf4Mr1Wmc8LbfMJiz7KI=;
+	s=default; t=1591663654;
+	bh=P1M0F4EwizQ1m+WCRYB0aMIiqJbtW9nMEnIEncHeqtk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=A1i8XNJyJKD+x9llINjZ+/Kff2LWKSTGJv5YAAZT31PWUXaNUkgZG2mGl4iBqZD/W
-	 GbwIuT/GVD1qlfcdtAZtor2iMixekGKA73Wd/VJg89wy1WMlzvTRJn1DVfiVOrpElp
-	 ncsCMxUCfTjicD37oUtGtr3gNi0egD+1zw3vd+RA=
+	b=MiAHbP4PEnIrqQeU02bNUWzxV2sHUc/V4wOh6/395Ro4bGy0TiAodKRcmFzMzcq5S
+	 7WHjHMLUIiVyCoWvEIZkOx5hGOKX5hsMZfEe6Isw8+QyV84jJU2ZMPj+boeCyrBfxx
+	 NorUVF1g/CF62NEArhQ1iWZBN+BFQ+hapEWhG5bI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728199AbgFIAXS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 Jun 2020 20:23:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38762 "EHLO mail.kernel.org"
+        id S1731074AbgFIArO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 Jun 2020 20:47:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729148AbgFHXRP (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 8 Jun 2020 19:17:15 -0400
+        id S1728096AbgFHXLY (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 8 Jun 2020 19:11:24 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 780CB2083E;
-        Mon,  8 Jun 2020 23:17:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 410C420C56;
+        Mon,  8 Jun 2020 23:11:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1591658235;
-        bh=UxLFJSi2vnUJFRKmV691Uu4lf4Mr1Wmc8LbfMJiz7KI=;
+        s=default; t=1591657883;
+        bh=P1M0F4EwizQ1m+WCRYB0aMIiqJbtW9nMEnIEncHeqtk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o/PYnR28aUUEshZruVU+htmWXhxxUT4Emg6Vw1Ygee4KoefXr9F6B385lCCbNxbea
-         kLxn88Pj170BjC+GXaVODDS5V2QrVl/sEBd1dwiJ/YKDCED5uVdoOdcWxa7Y5zG43E
-         z4uAOw+cPZ/wO+pKJNvdU25EkCGewUFtttQkP1es=
+        b=LvZ7esLRCXr4ILoyVJxsL+cdTVU/F5Wf1KtoyBGc3c16hhShSf3qNi9cBCqvHN6Pk
+         OrtLUH/RHHswptxRbfYE5MzaCxMMbZfualLceUwgtq63Gnl50goe50mlgJXmbX8TSk
+         /8TmwfT1yENvqNQnaT0l5O3bB4QbnS6pzj73xX9M=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mips@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.6 247/606] net: sgi: ioc3-eth: Fix return value check in ioc3eth_probe()
-Date:   Mon,  8 Jun 2020 19:06:12 -0400
-Message-Id: <20200608231211.3363633-247-sashal@kernel.org>
+Cc:     YuanJunQing <yuanjunqing66@163.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 240/274] MIPS: Fix IRQ tracing when call handle_fpe() and handle_msa_fpe()
+Date:   Mon,  8 Jun 2020 19:05:33 -0400
+Message-Id: <20200608230607.3361041-240-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200608231211.3363633-1-sashal@kernel.org>
-References: <20200608231211.3363633-1-sashal@kernel.org>
+In-Reply-To: <20200608230607.3361041-1-sashal@kernel.org>
+References: <20200608230607.3361041-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -60,47 +58,52 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Tang Bin <tangbin@cmss.chinamobile.com>
+From: YuanJunQing <yuanjunqing66@163.com>
 
-commit a7654211d0ffeaa8eb0545ea00f8445242cbce05 upstream.
+[ Upstream commit 31e1b3efa802f97a17628dde280006c4cee4ce5e ]
 
-In the function devm_platform_ioremap_resource(), if get resource
-failed, the return value is ERR_PTR() not NULL. Thus it must be
-replaced by IS_ERR(), or else it may result in crashes if a critical
-error path is encountered.
+Register "a1" is unsaved in this function,
+ when CONFIG_TRACE_IRQFLAGS is enabled,
+ the TRACE_IRQS_OFF macro will call trace_hardirqs_off(),
+ and this may change register "a1".
+ The changed register "a1" as argument will be send
+ to do_fpe() and do_msa_fpe().
 
-Fixes: 0ce5ebd24d25 ("mfd: ioc3: Add driver for SGI IOC3 chip")
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: YuanJunQing <yuanjunqing66@163.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/sgi/ioc3-eth.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/mips/kernel/genex.S | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/sgi/ioc3-eth.c b/drivers/net/ethernet/sgi/ioc3-eth.c
-index db6b2988e632..f4895777f5e3 100644
---- a/drivers/net/ethernet/sgi/ioc3-eth.c
-+++ b/drivers/net/ethernet/sgi/ioc3-eth.c
-@@ -865,14 +865,14 @@ static int ioc3eth_probe(struct platform_device *pdev)
- 	ip = netdev_priv(dev);
- 	ip->dma_dev = pdev->dev.parent;
- 	ip->regs = devm_platform_ioremap_resource(pdev, 0);
--	if (!ip->regs) {
--		err = -ENOMEM;
-+	if (IS_ERR(ip->regs)) {
-+		err = PTR_ERR(ip->regs);
- 		goto out_free;
- 	}
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index 0a43c9125267..5b7c67a3f78f 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -476,20 +476,20 @@ NESTED(nmi_handler, PT_SIZE, sp)
+ 	.endm
  
- 	ip->ssram = devm_platform_ioremap_resource(pdev, 1);
--	if (!ip->ssram) {
--		err = -ENOMEM;
-+	if (IS_ERR(ip->ssram)) {
-+		err = PTR_ERR(ip->ssram);
- 		goto out_free;
- 	}
+ 	.macro	__build_clear_fpe
++	CLI
++	TRACE_IRQS_OFF
+ 	.set	push
+ 	/* gas fails to assemble cfc1 for some archs (octeon).*/ \
+ 	.set	mips1
+ 	SET_HARDFLOAT
+ 	cfc1	a1, fcr31
+ 	.set	pop
+-	CLI
+-	TRACE_IRQS_OFF
+ 	.endm
  
+ 	.macro	__build_clear_msa_fpe
+-	_cfcmsa	a1, MSA_CSR
+ 	CLI
+ 	TRACE_IRQS_OFF
++	_cfcmsa	a1, MSA_CSR
+ 	.endm
+ 
+ 	.macro	__build_clear_ade
 -- 
 2.25.1
 

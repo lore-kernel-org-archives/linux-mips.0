@@ -2,137 +2,101 @@ Return-Path: <SRS0=zohb=7W=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08A7FC433E0
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 13:44:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3498FC433DF
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 13:52:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D6AEA207C3
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 13:44:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 130D220737
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Jun 2020 13:52:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DUxWZBBN"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bNcxCSaV"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730147AbgFINoG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 9 Jun 2020 09:44:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728799AbgFINmj (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 9 Jun 2020 09:42:39 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E711FC05BD1E;
-        Tue,  9 Jun 2020 06:42:37 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id h5so21380191wrc.7;
-        Tue, 09 Jun 2020 06:42:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7jeqUuW0hGtHPFhc2sVBu1AoQmVlpxLyTbacgMXEdX8=;
-        b=DUxWZBBN41gINwscR0RJwH3sDfQ73hrqc60FamwT1QU+qcaJdFFeOjtT0lDFDXjLnR
-         UCrXQhXwupNRKmfLWhbppejjSFykqXRAArndCJx8U6ls1ewIpQMHe4usSv7j3P5sdNxW
-         x5MlacZfwW72THPYVaszYh7Q47IE8EJ0foNehUlK7yFIEN2MRRPUQN4msrAa33w35WKf
-         idL3NwzxLnWaWXYsIKW2MS4tKOcNYar5rU6Uw0HugiAoDCw1qfm1N7xDzKTmCg/egdAt
-         itgqaFL/dUkvkkztpc6SS1zpgL3zrn4FOHed6ay53Cc1oOLtD4LE6DSYc27tJa2axjba
-         q52A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7jeqUuW0hGtHPFhc2sVBu1AoQmVlpxLyTbacgMXEdX8=;
-        b=cux2ybRaZi7qimFdL78CCbTxSI9stm7X/GA1EFRPY5d4JvXD1pN51YlYJ1qtNDv64h
-         5c4zA8J+JGiX6G+H5cpI2VYYjPxO19QDUIZ0Av5P/iCRDd9tX4ekSRfce3XRFZDBcgNc
-         DsTZON5P6xoJSxG7PFadb/NtXmmI+38Uq9BBGkukj8KnlbBNbZXbdop4d07OkxuMOaB/
-         FiwLmqg7FqisTB9MSerjwoda2hd3rCzHQIwG9OKGDhgE/BXPNN7ClzclBHtzPlB9b5TO
-         T9uD5A+6S6W41RqDywql1H1E6Kbhq+M0w6UHeuhRvHLLOhDrssCZbrA5tt4RRHCXlg/H
-         bOHw==
-X-Gm-Message-State: AOAM5332KLQNszlCf1u8F+JwlWZk533gCvhbMw514TH/0r34MJXNfXuW
-        WuB5rqrS6g+CUaqqbJAGr2o=
-X-Google-Smtp-Source: ABdhPJwPWGTDddUotMb53Rhg2Yvrr3ctp7WMj2Ax1vaav/7/tRHGwVX6cXlRWB+Hrx9fuPrUWXuxmw==
-X-Received: by 2002:adf:fd4f:: with SMTP id h15mr4471967wrs.397.1591710156590;
-        Tue, 09 Jun 2020 06:42:36 -0700 (PDT)
-Received: from skynet.lan (28.red-83-49-61.dynamicip.rima-tde.net. [83.49.61.28])
-        by smtp.gmail.com with ESMTPSA id w17sm3454067wra.71.2020.06.09.06.42.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2020 06:42:36 -0700 (PDT)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
-        tsbogend@alpha.franken.de, f.fainelli@gmail.com,
-        jonas.gorski@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH 2/7] dt-bindings: reset: add BCM6345 reset controller bindings
-Date:   Tue,  9 Jun 2020 15:42:27 +0200
-Message-Id: <20200609134232.4084718-3-noltari@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200609134232.4084718-1-noltari@gmail.com>
-References: <20200609134232.4084718-1-noltari@gmail.com>
+        id S1728388AbgFINwn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 9 Jun 2020 09:52:43 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:50152 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730338AbgFINwk (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 9 Jun 2020 09:52:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1591710759;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1QZxzGJLd7MwraWpl9HYsPVgjFSkkdnN13rxpeDTWvE=;
+        b=bNcxCSaVY4LbDXddGZPULryKNQOp9rhnZwPnUAkw4Wmu5KJtFh+k4aM8EFRnXVb5rsFxbc
+        7/K66D3UkgQEr5zQ7WoK6vmMPJ8Wco7pkZWyV2w62EjnwLsDRTC0J8sMoAoxlOPzJ7CkVt
+        4Z7fOflo5Bl+Ts91bC/g+WHCP8+friM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-374-SKVCis5-OQWdNQGNLlklxw-1; Tue, 09 Jun 2020 09:52:35 -0400
+X-MC-Unique: SKVCis5-OQWdNQGNLlklxw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ABB2A18A8235;
+        Tue,  9 Jun 2020 13:52:33 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-113-78.ams2.redhat.com [10.36.113.78])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 708335C1BD;
+        Tue,  9 Jun 2020 13:52:19 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Palmer Dabbelt <palmer@sifive.com>
+Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, rth@twiddle.net,
+        ink@jurassic.park.msu.ru, mattst88@gmail.com,
+        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        tony.luck@intel.com, fenghua.yu@intel.com, geert@linux-m68k.org,
+        monstr@monstr.eu, ralf@linux-mips.org, paul.burton@mips.com,
+        jhogan@kernel.org, James.Bottomley@HansenPartnership.com,
+        deller@gmx.de, benh@kernel.crashing.org, paulus@samba.org,
+        mpe@ellerman.id.au, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        borntraeger@de.ibm.com, ysato@users.sourceforge.jp,
+        dalias@libc.org, davem@davemloft.net, luto@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        x86@kernel.org, peterz@infradead.org, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, dhowells@redhat.com, firoz.khan@linaro.org,
+        stefan@agner.ch, schwidefsky@de.ibm.com, axboe@kernel.dk,
+        christian@brauner.io, hare@suse.com, deepa.kernel@gmail.com,
+        tycho@tycho.ws, kim.phillips@arm.com, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: Add a new fchmodat4() syscall, v2
+References: <20190717012719.5524-1-palmer@sifive.com>
+Date:   Tue, 09 Jun 2020 15:52:17 +0200
+In-Reply-To: <20190717012719.5524-1-palmer@sifive.com> (Palmer Dabbelt's
+        message of "Tue, 16 Jul 2019 18:27:15 -0700")
+Message-ID: <87o8pscpny.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add support for resetting blocks through the Linux reset controller
-subsystem for BCM63xx SoCs.
+* Palmer Dabbelt:
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- .../bindings/reset/brcm,bcm6345-reset.yaml    | 37 +++++++++++++++++++
- 1 file changed, 37 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/reset/brcm,bcm6345-reset.yaml
+> This patch set adds fchmodat4(), a new syscall. The actual
+> implementation is super simple: essentially it's just the same as
+> fchmodat(), but LOOKUP_FOLLOW is conditionally set based on the flags.
+> I've attempted to make this match "man 2 fchmodat" as closely as
+> possible, which says EINVAL is returned for invalid flags (as opposed to
+> ENOTSUPP, which is currently returned by glibc for AT_SYMLINK_NOFOLLOW).
+> I have a sketch of a glibc patch that I haven't even compiled yet, but
+> seems fairly straight-forward:
 
-diff --git a/Documentation/devicetree/bindings/reset/brcm,bcm6345-reset.yaml b/Documentation/devicetree/bindings/reset/brcm,bcm6345-reset.yaml
-new file mode 100644
-index 000000000000..eb3f2182e631
---- /dev/null
-+++ b/Documentation/devicetree/bindings/reset/brcm,bcm6345-reset.yaml
-@@ -0,0 +1,37 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/reset/brcm,bcm6345-reset.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: BCM6345 reset controller
-+
-+description: This document describes the BCM6345 reset controller.
-+
-+maintainers:
-+  - Álvaro Fernández Rojas <noltari@gmail.com>
-+
-+properties:
-+  compatible:
-+    const: brcm,bcm6345-reset
-+
-+  reg:
-+    maxItems: 2
-+
-+  "#reset-cells":
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#reset-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    reset-controller@10000010 {
-+      compatible = "brcm,bcm6345-reset";
-+      reg = <0x10000010 0x4>;
-+      #reset-cells = <1>;
-+    };
--- 
-2.26.2
+What's the status here?  We'd really like to see this system call in the
+kernel because our emulation in glibc has its problems (especially if
+/proc is not mounted).
+
+Thanks,
+Florian
 

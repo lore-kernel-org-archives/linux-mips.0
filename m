@@ -2,128 +2,124 @@ Return-Path: <SRS0=Ed0L=7X=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.9 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D445C433E1
-	for <linux-mips@archiver.kernel.org>; Wed, 10 Jun 2020 16:54:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F569C433DF
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Jun 2020 17:16:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 499552067B
-	for <linux-mips@archiver.kernel.org>; Wed, 10 Jun 2020 16:54:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1591808058;
-	bh=fAdBqinCGHfmgrDM2PwAAQJVvSRyeEDaH7oFdg5LMuc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=WhCTMiVXvJHrTLE0zGiwro8zyE7BvJjU2hM2u2YhdBXJWPvMjcRabDKzuham/cQfn
-	 CoA1sbUvBYZLIgmPaAKulIe4pkmINHfA/oFhkeONVonp2PNMJLmL8ZNYM4VelEqy4y
-	 xVsxoSOK9p8F26NZtuZo9iI35ty1YVcsTMEJ5x4o=
+	by mail.kernel.org (Postfix) with ESMTP id 4FD7E2070B
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Jun 2020 17:16:39 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="brLP8TzS"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbgFJQyP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 10 Jun 2020 12:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57866 "EHLO
+        id S1729565AbgFJRQi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 10 Jun 2020 13:16:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727004AbgFJQyO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 10 Jun 2020 12:54:14 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994FCC08C5C6
-        for <linux-mips@vger.kernel.org>; Wed, 10 Jun 2020 09:54:11 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id c21so1876917lfb.3
-        for <linux-mips@vger.kernel.org>; Wed, 10 Jun 2020 09:54:11 -0700 (PDT)
+        with ESMTP id S1729556AbgFJRQi (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 10 Jun 2020 13:16:38 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CDAC08C5C1;
+        Wed, 10 Jun 2020 10:16:37 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id l10so3143700wrr.10;
+        Wed, 10 Jun 2020 10:16:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PGXejVSpqx4L2PlHIfd5JVBtSOWL/TuutZfvvE958Z8=;
-        b=ZFce94Usj6EkI4Lk9l8ZbLgBKcrOaOEIKI+lsoHoWwucoH5PaFSFEUF5nSpDfmtX/m
-         zpiTKIsyT2HuVYK0uUKJl0hfSDP//4+ueTqu4gfQUH9jmW1Fx7086RKZCkNC01IFk27w
-         7I94+DibpxplQFqh0putGbec4FKBVLxsfzedA=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=pZ9UANk+nZchs0IApRkeYxkybXjNTy9EcUcgSkrSGAo=;
+        b=brLP8TzS+YCKpHhK48N7K/eL5bF4ui8zGe71EVKaIaSNEsE/Z4yq2ClHnMZjrKt6Ig
+         ubArUhO8v4mBnH6AHI0pDofcn6n++r68GaxE/GxJSje3EvcRki3dKyqtiZtv371ZOPcc
+         bgCkqKTxJsz/nCwXmU8OPI5GBeG4gtVW5Dahq1NRd8Ix6avCIi69wdRFz8rqzHZeqdJP
+         3JXFGzbJXz6qB6SxyZAjQNEXRGeT1szSBrqWQR24RqUohag9Q5Nq7FFytFerAGQCJwRU
+         mPlph2plh8vD2IWtgoGpw4gxRhsw8fLlfbrSma5wyiAQyztwo4Y+ruAmJSIBkPiesWcN
+         Em0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PGXejVSpqx4L2PlHIfd5JVBtSOWL/TuutZfvvE958Z8=;
-        b=R/r3weqp7GVmSict0a/1If9IserOrvbglSKIW28U5b6aEo5vGLLfZuLJmW4rSS6wca
-         5o27ZmSqpVP2TGm7sU65OazrlgecyValY/5QcmWodF+ayHvK5IozhU79mqsXMAcna7N0
-         M9UxhfJcG4PzwW07i0aS1jX3sgcvbVspeARaPs+dr7C67ycdecx62QsQrV5ktdn3gUs3
-         VE+LPQMO9NYHalyip1P8CXkYN4oC/8RdEMGuyvRpkodsNKwoQUOy3Kh1ShFbjCWALtye
-         kUR6U62/x3SCYa6sXdFu7OGwVBdIUNafrDpqm636774GLk2wvNjTCCPIkM3SSs5vvM/6
-         QPDw==
-X-Gm-Message-State: AOAM531wHNWpci04qh6sqCp7LcCW+nJmX0hXRlQT3oH1bJb6ZHHtKU9O
-        fUm6MiuWgz5ftQdHQSPzgpbOu2De8a4=
-X-Google-Smtp-Source: ABdhPJxo6jpXnBWpk0PZ33i8/YHZ1x+eqCzjvDp6aZqQUp3PwDZCbiPW2juqHUACXBWSnyT1KkLqbw==
-X-Received: by 2002:a05:6512:3049:: with SMTP id b9mr2162084lfb.44.1591808049164;
-        Wed, 10 Jun 2020 09:54:09 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id y21sm68190ljy.74.2020.06.10.09.54.05
-        for <linux-mips@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Jun 2020 09:54:06 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id x18so3385059lji.1
-        for <linux-mips@vger.kernel.org>; Wed, 10 Jun 2020 09:54:05 -0700 (PDT)
-X-Received: by 2002:a2e:8991:: with SMTP id c17mr1979736lji.421.1591808045437;
- Wed, 10 Jun 2020 09:54:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pZ9UANk+nZchs0IApRkeYxkybXjNTy9EcUcgSkrSGAo=;
+        b=mQJ1KX1cG5DDlVYNM0Zm+90NKzB+Jz43IycBweOhIZTJLKAC8MWhdJ2peBMyyUP10c
+         JWbquN6fM/u6wbx0MGm+xBOPBYK8cO9HdvCqc2KUQTgytPZwEG89A70I1xhnyWEjRdzo
+         LR9ByFr/ulZ+aW+GYak7JB2Sr4DKH5PHej7Qpn1mDMdyGe7svYjT2ijn2t90nhgQEu36
+         REUfKGm4PfIQKOn9v7qSTfgoGmEQutVLywtra7F/tuEPrfvxNEOL2w1vAZW7MgnYbUFs
+         3VtiTQK+UHFoZUn3HCqB+a3+GKew3hDIzzEh6hpyJdLmUQyq7SfohT2wXTqmuMv+IYTs
+         S2/g==
+X-Gm-Message-State: AOAM531FUqI4ZQddMFW8YU6RflURxDeXvv0T2af44HUj2okmMJ+RS45N
+        iMCoZ21wMu0K/7+QvilMFqA=
+X-Google-Smtp-Source: ABdhPJx7TXMDE0x4q1tNS/lbVYNvY27QjJQI3cLcIsrX0fz+OC1zXQXw0Ho15UIXRiEctaOOIgW4gg==
+X-Received: by 2002:adf:ec03:: with SMTP id x3mr4849006wrn.297.1591809396050;
+        Wed, 10 Jun 2020 10:16:36 -0700 (PDT)
+Received: from skynet.lan (28.red-83-49-61.dynamicip.rima-tde.net. [83.49.61.28])
+        by smtp.gmail.com with ESMTPSA id f11sm589048wrm.13.2020.06.10.10.16.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jun 2020 10:16:35 -0700 (PDT)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     hauke@hauke-m.de, zajec5@gmail.com, tsbogend@alpha.franken.de,
+        robh+dt@kernel.org, f.fainelli@gmail.com, jonas.gorski@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH v3 3/9] mips: bmips: dts: add BCM6362 power domain definitions
+Date:   Wed, 10 Jun 2020 19:16:24 +0200
+Message-Id: <20200610171630.465579-4-noltari@gmail.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200610171630.465579-1-noltari@gmail.com>
+References: <20200610163301.461160-1-noltari@gmail.com>
+ <20200610171630.465579-1-noltari@gmail.com>
 MIME-Version: 1.0
-References: <20200610174811.44b94525@thinkpad>
-In-Reply-To: <20200610174811.44b94525@thinkpad>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 10 Jun 2020 09:53:49 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgm0_0PjXaSVbrpDfgtn6UbDyWjSRnXvfdebweUYSZ+eA@mail.gmail.com>
-Message-ID: <CAHk-=wgm0_0PjXaSVbrpDfgtn6UbDyWjSRnXvfdebweUYSZ+eA@mail.gmail.com>
-Subject: Re: Possible duplicate page fault accounting on some archs after
- commit 4064b9827063
-To:     Gerald Schaefer <gerald.schaefer@de.ibm.com>
-Cc:     Peter Xu <peterx@redhat.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>, linux-mips@vger.kernel.org,
-        Nick Hu <nickhu@andestech.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        sparclinux@vger.kernel.org,
-        linux-um <linux-um@lists.infradead.org>,
-        Guan Xuetao <gxt@pku.edu.cn>, linux-xtensa@linux-xtensa.org,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 8:48 AM Gerald Schaefer
-<gerald.schaefer@de.ibm.com> wrote:
->
-> This was found by coincidence in s390 code, and a quick check showed that
-> there are quite a lot of other architectures that seem to be affected in a
-> similar way. I'm preparing a fix for s390, by moving the accounting behind
-> the retry loop, similar to x86. It is not completely straight-forward, so
-> I leave the fix for other archs to the respective maintainers.
+BCM6362 SoCs have a power domain controller to enable/disable certain
+components in order to save power.
 
-Hmm. I wonder if we could move the handling into  handle_mm_fault() itself.
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+---
+ v3: Separate dt-bindings definitions from power domain .dtsi support.
 
-It's _fairly_ trivial to do on the arch side, just as long as you
-remember to make the VM_FAULT_MAJOR bit sticky like x86 does with that
+ include/dt-bindings/soc/bcm6362-pm.h | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+ create mode 100644 include/dt-bindings/soc/bcm6362-pm.h
 
-        major |= fault & VM_FAULT_MAJOR;
+diff --git a/include/dt-bindings/soc/bcm6362-pm.h b/include/dt-bindings/soc/bcm6362-pm.h
+new file mode 100644
+index 000000000000..d087ba63c7a1
+--- /dev/null
++++ b/include/dt-bindings/soc/bcm6362-pm.h
+@@ -0,0 +1,21 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++
++#ifndef __DT_BINDINGS_BMIPS_BCM6362_PM_H
++#define __DT_BINDINGS_BMIPS_BCM6362_PM_H
++
++#define BCM6362_POWER_DOMAIN_SAR	0
++#define BCM6362_POWER_DOMAIN_IPSEC	1
++#define BCM6362_POWER_DOMAIN_MIPS	2
++#define BCM6362_POWER_DOMAIN_DECT	3
++#define BCM6362_POWER_DOMAIN_USBH	4
++#define BCM6362_POWER_DOMAIN_USBD	5
++#define BCM6362_POWER_DOMAIN_ROBOSW	6
++#define BCM6362_POWER_DOMAIN_PCM	7
++#define BCM6362_POWER_DOMAIN_PERIPH	8
++#define BCM6362_POWER_DOMAIN_ADSL_PHY	9
++#define BCM6362_POWER_DOMAIN_GMII_PADS	10
++#define BCM6362_POWER_DOMAIN_FAP	11
++#define BCM6362_POWER_DOMAIN_PCIE	12
++#define BCM6362_POWER_DOMAIN_WLAN_PADS	13
++
++#endif /* __DT_BINDINGS_BMIPS_BCM6362_PM_H */
+-- 
+2.26.2
 
-right after handle_mm_fault(). But it certainly doesn't seem like it
-would be hard to move into common code in handle_mm_fault() either, by
-just not doing the accounting if it's about to return VM_FAULT_RETRY
-or VM_FAULT_ERROR.
-
-That said, we want that perf_sw_event() accounting too, so we'd have
-to pass in a 'struct regs *' as well. And it's not clear which way
-accounting should go for other callers of handle_mm_fault() (ie gup
-etc).
-
-So I guess just having architectures fix it up individually and make
-sure they don't do it for retry conditions is the right thing to do..
-
-             Linus

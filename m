@@ -2,128 +2,134 @@ Return-Path: <SRS0=Ed0L=7X=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.4 required=3.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A455C433E2
-	for <linux-mips@archiver.kernel.org>; Wed, 10 Jun 2020 17:30:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 147E8C433E1
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Jun 2020 18:49:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 186DA2072E
-	for <linux-mips@archiver.kernel.org>; Wed, 10 Jun 2020 17:30:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EC8BF2072F
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Jun 2020 18:49:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ICDG62e1"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Uf3Tl88+"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbgFJR3D (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 10 Jun 2020 13:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35014 "EHLO
+        id S1729294AbgFJStR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 10 Jun 2020 14:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726441AbgFJR3D (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 10 Jun 2020 13:29:03 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C16C03E96B;
-        Wed, 10 Jun 2020 10:29:02 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id l26so2579048wme.3;
-        Wed, 10 Jun 2020 10:29:02 -0700 (PDT)
+        with ESMTP id S1726668AbgFJStP (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 10 Jun 2020 14:49:15 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4095AC03E96F
+        for <linux-mips@vger.kernel.org>; Wed, 10 Jun 2020 11:49:15 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id r1so1223657uam.6
+        for <linux-mips@vger.kernel.org>; Wed, 10 Jun 2020 11:49:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4fr+UL9O2HF9K/lBv8pVMY6XaRGJvWXm1sUH2VFByQY=;
-        b=ICDG62e1fP7sxVuWYjU4w++AldrRE/9kmK61YNF7cdPmqrwYd9/ju2jxHEvWTZdZXx
-         DV6oDoTm1MZmmgD/jDCT0mLjdSdmQTVNEC958giX5T51ZUoE6a7xnMg+jAyjlKOyr9Bm
-         CF6MuB4fXtlLjUZqrhbM3KzmRvNNZ9kpfxzNRorJ+H6tWfBp4pRP2wiEfsWyXlsSETIL
-         jqhM53H0+xW74JdyHhm4mmBwitDr0WuwAzc6csb5M8Fm0V8M/KaWf51UPDfHp2lda8Kp
-         5necvjI1Ncuh4b7P/SbP3qyDkCFdzmYJqrfhQphqjejBXcIQ/8mAI7K4h2EmcoEt8VC6
-         m9WQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0A0qTEHL/4KHt4CSQ8r/67Dw7HuODJhcnw3jBL6/4J0=;
+        b=Uf3Tl88+r0ZyuZCQWfWB4PKDaMKAKtTmR6Y9IRa+cZCE9Bel4uJmzIXjeKMF6RESzG
+         LfRsF4qIQ0RgpqHmWzJlWqVEBTAqGpfp3uDaBvyS+7FpOH2I5TCz8Aup8cO5pEGd0SCa
+         dZZRdSK4u8zEu43fSdct+eOH+fiK8d8XsddBgDh0+mFmO/treg7/Zgl5ppH2zXln/3rm
+         aHbacx6sUYuvLvgSVcBokZ6/H9kJZ2LLodZG55RSeTYZ6S48Q6/WxuvmnbLN+rlClHkk
+         xZgdZAOd7KqDVNt1dPiM0Ajs/2q3d6Fqn5vfCVRThl9/PLnPIFWioYOR1khnyt7cBCZC
+         QdEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4fr+UL9O2HF9K/lBv8pVMY6XaRGJvWXm1sUH2VFByQY=;
-        b=i6HLattSK17YbWHAKP0eyp6wMXecYLDYTe2o6I9982H1B+KCWLt+nxWU1RPT9wBqZj
-         IcscFcfxamidHlVQcAma7N4gO8na85kTwxBsjTzFFO/HRJ4PGo7RuUhl5dGn88OHteli
-         IrB326ESmLYVQwFVe29O9eGa8v/ahyjR7ImGkx6vS+8ig0vUgPJ6wFeN5Tz84tlkdTNY
-         M25c8/RGPQX095AWbejsJRbU5NiWpBQVXjMg61vPwQrSYkVol3593NltiWwHIEW5IBju
-         S4nsyYcqBfsCqcBTCMbC7lFTwNjY2SxiOchHSJGK2quy0JhWV9muW7gP7JUt3yA9zAS7
-         3JKg==
-X-Gm-Message-State: AOAM532g419S0l+uPbij0fCzRycsnjBcWctgXHVC50wVoffHAL1SNHEd
-        RPF2ig/sDs6kQXrcUVsOHQA=
-X-Google-Smtp-Source: ABdhPJxJAXhHMNsMi0fgj9mX+Pbnob9fP2EQmYvwQkhuo/R5EWo4rp96a+jkyScYU/aT3XEB2VQ93g==
-X-Received: by 2002:a7b:cbce:: with SMTP id n14mr4378632wmi.66.1591810141255;
-        Wed, 10 Jun 2020 10:29:01 -0700 (PDT)
-Received: from skynet.lan (28.red-83-49-61.dynamicip.rima-tde.net. [83.49.61.28])
-        by smtp.gmail.com with ESMTPSA id h188sm568551wmh.2.2020.06.10.10.29.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 10:29:00 -0700 (PDT)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
-        tsbogend@alpha.franken.de, f.fainelli@gmail.com,
-        jonas.gorski@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH v3 0/9] bmips: add bcm6345 reset controller support
-Date:   Wed, 10 Jun 2020 19:28:50 +0200
-Message-Id: <20200610172859.466334-1-noltari@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200609160244.4139366-1-noltari@gmail.com>
-References: <20200609160244.4139366-1-noltari@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0A0qTEHL/4KHt4CSQ8r/67Dw7HuODJhcnw3jBL6/4J0=;
+        b=eC+rUDdm/6rVVJrTYSVgbBB3DnLd0u1Q90f20aRswVKbl86hMNAgwhSbqDi0ZDfZ8q
+         ZJvtJkBj0icB7ismisBQMxGDTnNAp1bHQpE0umxzpcfzC5lb8i3paPhRMc/nLV9Dn2kO
+         OaQY856LSfPR6sGYs72lkQXXamQy0UkPUZXnqMJd99MUw969uotsdjq9qIBvGCv9yjjl
+         O1uMbpURNMJD37BcHYD6o6laRpJfOiBamLd6j7oWMratL2yk9Be9cJWHF2pbkKMpNvgl
+         RynyS1zmeio2Qu3AAWkL0umcwbQXkS1+mkN+C1RdYS2tsdzTNarItLQO15rb/3xNVyHb
+         hzaA==
+X-Gm-Message-State: AOAM533VzSBwPAkPM1g6v3Lt4mJe8Us7bGxV+qE3VDhqPCWT90iSpBKa
+        lMymwk2ko/CLVHdVQFW8765tjQcfGz5hOp6iPV0zxw==
+X-Google-Smtp-Source: ABdhPJx7n1Jzu9stxSW0B8Z2yESjtTjAbgEsU5PcOtsP0CIqXpGR8ePPHUya13zr/XKYKIv2ps3RYwappcy09FCWcjM=
+X-Received: by 2002:ab0:70c9:: with SMTP id r9mr3658814ual.15.1591814953932;
+ Wed, 10 Jun 2020 11:49:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200605213853.14959-1-sean.j.christopherson@intel.com> <20200605213853.14959-12-sean.j.christopherson@intel.com>
+In-Reply-To: <20200605213853.14959-12-sean.j.christopherson@intel.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Wed, 10 Jun 2020 11:49:02 -0700
+Message-ID: <CANgfPd9vBbX66RYWhW+Lpsrya8Q4SduDHzpbAhAqRyU3i-gHxA@mail.gmail.com>
+Subject: Re: [PATCH 11/21] KVM: x86/mmu: Zero allocate shadow pages (outside
+ of mmu_lock)
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Feiner <pfeiner@google.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Christoffer Dall <christoffer.dall@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-BCM63xx SoCs have a reset controller for certain components.
-
-v3: using reset-simple isn't possible since sleeping after performing the
-    reset is also needed.
-    Add BCM63268 and BCM6318 support.
-v2: add compatibility to reset-simple instead of adding a new driver.
-
-Álvaro Fernández Rojas (9):
-  mips: bmips: select ARCH_HAS_RESET_CONTROLLER
-  dt-bindings: reset: add BCM6345 reset controller bindings
-  reset: add BCM6345 reset controller driver
-  mips: bmips: dts: add BCM6328 reset controller support
-  mips: bmips: dts: add BCM6358 reset controller support
-  mips: bmips: dts: add BCM6362 reset controller support
-  mips: bmips: dts: add BCM6368 reset controller support
-  mips: bmips: dts: add BCM63268 reset controller support
-  mips: bmips: add BCM6318 reset controller definitions
-
- .../bindings/reset/brcm,bcm6345-reset.yaml    |  37 +++++
- arch/mips/Kconfig                             |   1 +
- arch/mips/boot/dts/brcm/bcm63268.dtsi         |   6 +
- arch/mips/boot/dts/brcm/bcm6328.dtsi          |   6 +
- arch/mips/boot/dts/brcm/bcm6358.dtsi          |   6 +
- arch/mips/boot/dts/brcm/bcm6362.dtsi          |   6 +
- arch/mips/boot/dts/brcm/bcm6368.dtsi          |   6 +
- drivers/reset/Kconfig                         |   7 +
- drivers/reset/Makefile                        |   1 +
- drivers/reset/reset-bcm6345.c                 | 135 ++++++++++++++++++
- include/dt-bindings/reset/bcm6318-reset.h     |  20 +++
- include/dt-bindings/reset/bcm63268-reset.h    |  26 ++++
- include/dt-bindings/reset/bcm6328-reset.h     |  18 +++
- include/dt-bindings/reset/bcm6358-reset.h     |  15 ++
- include/dt-bindings/reset/bcm6362-reset.h     |  22 +++
- include/dt-bindings/reset/bcm6368-reset.h     |  16 +++
- 16 files changed, 328 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/reset/brcm,bcm6345-reset.yaml
- create mode 100644 drivers/reset/reset-bcm6345.c
- create mode 100644 include/dt-bindings/reset/bcm6318-reset.h
- create mode 100644 include/dt-bindings/reset/bcm63268-reset.h
- create mode 100644 include/dt-bindings/reset/bcm6328-reset.h
- create mode 100644 include/dt-bindings/reset/bcm6358-reset.h
- create mode 100644 include/dt-bindings/reset/bcm6362-reset.h
- create mode 100644 include/dt-bindings/reset/bcm6368-reset.h
-
--- 
-2.26.2
-
+On Fri, Jun 5, 2020 at 2:39 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> Set __GFP_ZERO for the shadow page memory cache and drop the explicit
+> clear_page() from kvm_mmu_get_page().  This moves the cost of zeroing a
+> page to the allocation time of the physical page, i.e. when topping up
+> the memory caches, and thus avoids having to zero out an entire page
+> while holding mmu_lock.
+>
+> Cc: Peter Feiner <pfeiner@google.com>
+> Cc: Peter Shier <pshier@google.com>
+> Cc: Junaid Shahid <junaids@google.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Suggested-by: Ben Gardon <bgardon@google.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Reviewed-by: Ben Gardon <bgardon@google.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 6b0ec9060786..a8f8eebf67df 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -2545,7 +2545,6 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
+>                 if (level > PG_LEVEL_4K && need_sync)
+>                         flush |= kvm_sync_pages(vcpu, gfn, &invalid_list);
+>         }
+> -       clear_page(sp->spt);
+>         trace_kvm_mmu_get_page(sp, true);
+>
+>         kvm_mmu_flush_or_zap(vcpu, &invalid_list, false, flush);
+> @@ -5687,6 +5686,8 @@ int kvm_mmu_create(struct kvm_vcpu *vcpu)
+>         vcpu->arch.mmu_page_header_cache.kmem_cache = mmu_page_header_cache;
+>         vcpu->arch.mmu_page_header_cache.gfp_zero = __GFP_ZERO;
+>
+> +       vcpu->arch.mmu_shadow_page_cache.gfp_zero = __GFP_ZERO;
+> +
+>         vcpu->arch.mmu = &vcpu->arch.root_mmu;
+>         vcpu->arch.walk_mmu = &vcpu->arch.root_mmu;
+>
+> --
+> 2.26.0
+>

@@ -2,78 +2,76 @@ Return-Path: <SRS0=aZLx=72=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B018AC433E1
-	for <linux-mips@archiver.kernel.org>; Sat, 13 Jun 2020 08:22:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 622ABC433DF
+	for <linux-mips@archiver.kernel.org>; Sat, 13 Jun 2020 08:38:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 91615208FE
-	for <linux-mips@archiver.kernel.org>; Sat, 13 Jun 2020 08:22:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3B79B20836
+	for <linux-mips@archiver.kernel.org>; Sat, 13 Jun 2020 08:38:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sTnosNkZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tLVtudL6"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbgFMIWQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 13 Jun 2020 04:22:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50142 "EHLO
+        id S1726327AbgFMIiR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 13 Jun 2020 04:38:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726442AbgFMIVv (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 13 Jun 2020 04:21:51 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A118AC08C5C1;
-        Sat, 13 Jun 2020 01:21:49 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id x6so12098549wrm.13;
-        Sat, 13 Jun 2020 01:21:49 -0700 (PDT)
+        with ESMTP id S1725783AbgFMIiR (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 13 Jun 2020 04:38:17 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B3EAC03E96F;
+        Sat, 13 Jun 2020 01:38:17 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x6so12121890wrm.13;
+        Sat, 13 Jun 2020 01:38:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=AEQAdXu90LvQ2AREiNSrBT25q02451T/bmVdo1rl85I=;
-        b=sTnosNkZfJq+enWfeEumBw83MbvfBfG6O7SlMeJ/WYrtUtcLAB1wLSEOWFDU3bOomI
-         iFCk4aKwwJFkOcH8rRK+aJZu49MwPVIbuvEyHhv3PGuviq1a0BKJZUvlsCJQoLbTqtsN
-         rNROXAF0k2OeRIK7/Cw8iOJa20T/uGGsEcoiZnLDchldCOLQAkTTHtEvgKwNqAxQg8tD
-         TxRr6Ez8n2GZYYDCuc4PhOVDicHvBpuxd5B5oXuq0vE+rViJVYlhcYgRLJwoYhdORU7N
-         bwSpAQKjJBwbiYf0vq+qf2HUFWyhr97YL+19u33duS8s4yXA5981vx5wOLI0+NSYTjZb
-         yv+A==
+        bh=xtX3WPJttrHzLtySOOYSGEdhsmb/EFMomQI97Y+oq1o=;
+        b=tLVtudL6IHYrxFGEHA7K68mKObLrnTwh1NK4ZQPtvyWsrR1QTvB7F9UJj55Ca4fRaq
+         kKj4Ie22Rr6y50KPHYRovPc08b5pUC9Th8IDJHwALyKzTpc+HTUiqMnnVzIvln20T3yE
+         4+KCBNixuwINWSvY0sO0UbO4ODVjYKp4Pj7dKGv6As2rNoWB8vaNPorM0t0EYhWQHlDv
+         ruVqshPrpC6GChUXFp5Ffb0JDlMNmDgKCGSvkEYipnkPtFfPLjnc259MHJVWIZ9oMGJX
+         LMVBjMmrztHsjU9KekkeWMtleATbKKZQewotcEr9pZ3DEeBHvUzeLbs2x5VyPSC+mn1k
+         tUlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=AEQAdXu90LvQ2AREiNSrBT25q02451T/bmVdo1rl85I=;
-        b=TgVXzaDhWnPHqYLGa3gP99pQkExznfe6IDn1GCuaM90HcZBKdpziVzCdFX2utWBDGv
-         oCwA8zidHjKckmoSOi8STTWTY1BmSi6dpeW6NBSalWBczuCBThvSBbop2GNkV6uz5com
-         I6qFdqu6cAcIc6qXAd61lbPGbLw80s35090nLXLGQ1TH2G0e5xwvIkmp2kRPqt1b4X2Z
-         Zr73CypfmZ52F6l3Gc922YwtZHAIJhc35jNhzAmEfnuXj6fTOMY8ssukjXiF2juI/rJX
-         7ypk/zbKB49xFivNcbv93piI4g+blQI06jok8AGNUHqb5w0NQvreUPu3vAHMLEiE3Zig
-         jDYg==
-X-Gm-Message-State: AOAM530CACpy4vpUHKPOhG4QT0VqfptNgL/nkb1OfUZs4WcHQYUVbK2x
-        dEwjxUxFFdNuCJcZLkUGbTU=
-X-Google-Smtp-Source: ABdhPJzZiBiKIJ/ojqWqqYiFeDDIRCdctUBs/8RqjN3cMLJipWuI2orIRKuQT/6WUVAOKXCPDQ159w==
-X-Received: by 2002:a5d:4bc5:: with SMTP id l5mr19165177wrt.104.1592036507929;
-        Sat, 13 Jun 2020 01:21:47 -0700 (PDT)
+        bh=xtX3WPJttrHzLtySOOYSGEdhsmb/EFMomQI97Y+oq1o=;
+        b=Qtps9s3jKs8xj0rXhupKMAQZsQXpZPtJXcSu98areTwfVCsdyNLrWT38K72AQKQmDQ
+         Sh64DOA29nFpnEAp9wXiSgIZyBiEDFA7ESyNBQYyfnWiWAm6g696R6FkLzY1KLvgNHnM
+         eaHNjsuir/uCrNCp4XitcIYRYA3If7ELZriFhLkiwrhhS7jzGkJFI5iF6hWZJjbD+8r5
+         93AYWWONo7uPHQRtxt9DVW6n2JzBmlLflxg2kIggHYalKjMYOVhuE5g7QMK5YbjGclbl
+         4wc43rkzGblDcrkvt0etLC12glEfiGCPeHzHZEhLO2QuF7xk7CisEjQHQ84YPYfbjS8s
+         6GaQ==
+X-Gm-Message-State: AOAM5320qHky3RXjxXtEzROKhPWTZv+STYppwx3pGsBq/5E/byDpReYM
+        yz5gR/TNJyq1TpzBB2cg3LrS/vsP+Jg=
+X-Google-Smtp-Source: ABdhPJxEnxEsI2wTPvv5T6VYAaZGvg92Xt6d/pt0m1N0vct09DAihiAWPObReioQihMwJE7+EHTYCA==
+X-Received: by 2002:adf:ce8d:: with SMTP id r13mr20003195wrn.178.1592037495484;
+        Sat, 13 Jun 2020 01:38:15 -0700 (PDT)
 Received: from skynet.lan (168.red-88-20-188.staticip.rima-tde.net. [88.20.188.168])
-        by smtp.gmail.com with ESMTPSA id n189sm12243603wmb.43.2020.06.13.01.21.46
+        by smtp.gmail.com with ESMTPSA id l17sm11622704wmi.3.2020.06.13.01.38.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jun 2020 01:21:47 -0700 (PDT)
+        Sat, 13 Jun 2020 01:38:15 -0700 (PDT)
 From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
         <noltari@gmail.com>
-To:     hauke@hauke-m.de, zajec5@gmail.com, tsbogend@alpha.franken.de,
-        robh+dt@kernel.org, f.fainelli@gmail.com, jonas.gorski@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
+To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
+        tsbogend@alpha.franken.de, f.fainelli@gmail.com,
+        jonas.gorski@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com
 Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
         <noltari@gmail.com>
-Subject: [PATCH v4 4/9] mips: bmips: add BCM63268 power domain definitions
-Date:   Sat, 13 Jun 2020 10:21:35 +0200
-Message-Id: <20200613082140.2009461-5-noltari@gmail.com>
+Subject: [PATCH v4 0/9] bmips: add bcm6345 reset controller support
+Date:   Sat, 13 Jun 2020 10:38:04 +0200
+Message-Id: <20200613083813.2027186-1-noltari@gmail.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200613082140.2009461-1-noltari@gmail.com>
-References: <20200610171630.465579-1-noltari@gmail.com>
- <20200613082140.2009461-1-noltari@gmail.com>
+In-Reply-To: <20200610172859.466334-1-noltari@gmail.com>
+References: <20200610172859.466334-1-noltari@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -82,45 +80,51 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-BCM63268 SoCs have a power domain controller to enable/disable certain
-components in order to save power.
+BCM63xx SoCs have a reset controller for certain components.
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- v4: Remove "dts: " from commit title.
- v3: Separate dt-bindings definitions from power domain .dtsi support.
+v4: Fix device tree bindings documentation.
+v3: using reset-simple isn't possible since sleeping after performing the
+    reset is also needed.
+    Add BCM63268 and BCM6318 support.
+v2: add compatibility to reset-simple instead of adding a new driver.
 
- include/dt-bindings/soc/bcm63268-pm.h | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
- create mode 100644 include/dt-bindings/soc/bcm63268-pm.h
+Álvaro Fernández Rojas (9):
+  mips: bmips: select ARCH_HAS_RESET_CONTROLLER
+  dt-bindings: reset: add BCM6345 reset controller bindings
+  reset: add BCM6345 reset controller driver
+  mips: bmips: dts: add BCM6328 reset controller support
+  mips: bmips: dts: add BCM6358 reset controller support
+  mips: bmips: dts: add BCM6362 reset controller support
+  mips: bmips: dts: add BCM6368 reset controller support
+  mips: bmips: dts: add BCM63268 reset controller support
+  mips: bmips: add BCM6318 reset controller definitions
 
-diff --git a/include/dt-bindings/soc/bcm63268-pm.h b/include/dt-bindings/soc/bcm63268-pm.h
-new file mode 100644
-index 000000000000..84ded53a732f
---- /dev/null
-+++ b/include/dt-bindings/soc/bcm63268-pm.h
-@@ -0,0 +1,21 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+
-+#ifndef __DT_BINDINGS_BMIPS_BCM63268_PM_H
-+#define __DT_BINDINGS_BMIPS_BCM63268_PM_H
-+
-+#define BCM63268_POWER_DOMAIN_SAR	0
-+#define BCM63268_POWER_DOMAIN_IPSEC	1
-+#define BCM63268_POWER_DOMAIN_MIPS	2
-+#define BCM63268_POWER_DOMAIN_DECT	3
-+#define BCM63268_POWER_DOMAIN_USBH	4
-+#define BCM63268_POWER_DOMAIN_USBD	5
-+#define BCM63268_POWER_DOMAIN_ROBOSW	6
-+#define BCM63268_POWER_DOMAIN_PCM	7
-+#define BCM63268_POWER_DOMAIN_PERIPH	8
-+#define BCM63268_POWER_DOMAIN_VDSL_PHY	9
-+#define BCM63268_POWER_DOMAIN_VDSL_MIPS	10
-+#define BCM63268_POWER_DOMAIN_FAP	11
-+#define BCM63268_POWER_DOMAIN_PCIE	12
-+#define BCM63268_POWER_DOMAIN_WLAN_PADS	13
-+
-+#endif /* __DT_BINDINGS_BMIPS_BCM63268_PM_H */
+ .../bindings/reset/brcm,bcm6345-reset.yaml    |  37 +++++
+ arch/mips/Kconfig                             |   1 +
+ arch/mips/boot/dts/brcm/bcm63268.dtsi         |   6 +
+ arch/mips/boot/dts/brcm/bcm6328.dtsi          |   6 +
+ arch/mips/boot/dts/brcm/bcm6358.dtsi          |   6 +
+ arch/mips/boot/dts/brcm/bcm6362.dtsi          |   6 +
+ arch/mips/boot/dts/brcm/bcm6368.dtsi          |   6 +
+ drivers/reset/Kconfig                         |   7 +
+ drivers/reset/Makefile                        |   1 +
+ drivers/reset/reset-bcm6345.c                 | 135 ++++++++++++++++++
+ include/dt-bindings/reset/bcm6318-reset.h     |  20 +++
+ include/dt-bindings/reset/bcm63268-reset.h    |  26 ++++
+ include/dt-bindings/reset/bcm6328-reset.h     |  18 +++
+ include/dt-bindings/reset/bcm6358-reset.h     |  15 ++
+ include/dt-bindings/reset/bcm6362-reset.h     |  22 +++
+ include/dt-bindings/reset/bcm6368-reset.h     |  16 +++
+ 16 files changed, 328 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/reset/brcm,bcm6345-reset.yaml
+ create mode 100644 drivers/reset/reset-bcm6345.c
+ create mode 100644 include/dt-bindings/reset/bcm6318-reset.h
+ create mode 100644 include/dt-bindings/reset/bcm63268-reset.h
+ create mode 100644 include/dt-bindings/reset/bcm6328-reset.h
+ create mode 100644 include/dt-bindings/reset/bcm6358-reset.h
+ create mode 100644 include/dt-bindings/reset/bcm6362-reset.h
+ create mode 100644 include/dt-bindings/reset/bcm6368-reset.h
+
 -- 
 2.27.0
 

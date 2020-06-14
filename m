@@ -1,274 +1,97 @@
-Return-Path: <SRS0=aZLx=72=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=WqgU=73=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-5.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE809C433DF
-	for <linux-mips@archiver.kernel.org>; Sat, 13 Jun 2020 08:39:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE511C433E0
+	for <linux-mips@archiver.kernel.org>; Sun, 14 Jun 2020 04:46:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BEB7C206D7
-	for <linux-mips@archiver.kernel.org>; Sat, 13 Jun 2020 08:39:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A252A207C4
+	for <linux-mips@archiver.kernel.org>; Sun, 14 Jun 2020 04:46:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JOjb31zl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F1+EobDt"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbgFMIjM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 13 Jun 2020 04:39:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52646 "EHLO
+        id S1726065AbgFNEpv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 14 Jun 2020 00:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbgFMIiU (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 13 Jun 2020 04:38:20 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06293C08C5C2;
-        Sat, 13 Jun 2020 01:38:20 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id c71so9913389wmd.5;
-        Sat, 13 Jun 2020 01:38:19 -0700 (PDT)
+        with ESMTP id S1725265AbgFNEpu (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 14 Jun 2020 00:45:50 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D2FEC03E96F;
+        Sat, 13 Jun 2020 21:45:48 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id j6so2190409pgh.4;
+        Sat, 13 Jun 2020 21:45:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fGn8OGVIJlouJS3ntIMD902vMimxRcaD/4IsI9LdMpE=;
-        b=JOjb31zlCxXUgL7PRhpEtJfI8SMi/wybpfDWlIcrFAbl+9Zcm5mbwHVlNY+EhzBuYA
-         Hj+/BshoYLonHps3/8k0jK5uHA5gloBfHIUFyQpnIm48j1/nYBi8oO4P4V4sfPzGAtT2
-         XsIo8LkbXBfmU53ECYIwy7L4tRc9tZ2yQ0sfEKXx4qSA/a6OoGPQsBI4tuulrEtN+/JX
-         Uu+n6dGV7fnqXcwKSPewSeyBlpATYMgmyz9rQcYbGIHf+muL0T/shZqUftiuxvGD84BB
-         PIf6+dtzTbU7w71WoUIS8Opnm0sMcNMv5WiPPEjDPmWPOE461DDOTZYmyjMDfb+hSRni
-         gqGw==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=8gg5QrEU9y9uK+DCdRmHTpO7zkuXv8INfFU0qv5ZbRM=;
+        b=F1+EobDt1ICx3L43YXBaY/S+xi8hVpPb9gvHaLRnJeHlzyb2VV2FMGO/hXLQtZ0bqc
+         SlakszzsYNHaBmEitVc3aeqZ1tn3f7BHQ4kZCkPdspoSqq3+UjIV19M0Pq5/jPEVPg8q
+         fhO4NREKt/QTo+98AwAPb+WX6BsIVy7lP2fDH8h5uFbXGA9cyBDhVgHSCv0zh/Q0JDxo
+         bYdvTDJyztbGFJ4sAm/7laMuIj/SCC083/+ELhtdXdAn5PTdzfK9puNS1g++/2ACSjjj
+         m5LApDKS/3jGaLumbmr+ZMBdqa1Ibj0nN3nBRV1sje5rKTJlCZHAeD7xPGpcVSnm59zs
+         Xm1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fGn8OGVIJlouJS3ntIMD902vMimxRcaD/4IsI9LdMpE=;
-        b=TrX+PCSjmvCJv4Zaayw2NUJfX5CFBIC9O5WDNe132vgYmfyNF6AH7RYVhSWC+YEN8s
-         /cNn+9Q7jnLFyOfUYP4ODd3w5qsrTQJY67PTMTCUfKH7O64FU4W2fXpnnmz6AZL9Dr2L
-         jD6skRG+H/FCXPwY1tEvz+LTtiQE7hsc9lpBQsqGi8X3KY7mjt6728VfkOJFz/D0CzyH
-         g4Mg+CNPpSYElDRiZ6yz+fOGFkOuQxAVMqH0IlPUOIdcgdw4k1aPVrrTW8VXDCzMn+kx
-         yMvamcZ+5D8a7J1QgCk7etTZa978fqNr6w4sYi8wOVwSK2urpmHBOip3HqQCSFvuu2XG
-         H2aQ==
-X-Gm-Message-State: AOAM530ypFHy4i9xf0f+p2fGvC6APfIBLthPDivmDKI5P8Mhu2KG/AaL
-        dRyTg/txrurWR+T9rJF8eqM=
-X-Google-Smtp-Source: ABdhPJzveJqegEvqPHYDXyaN+v2lTmwi70HcJbL9xbCNay/XPFmHoSTbfVX/KOhn9UE6RYpWbvvDDw==
-X-Received: by 2002:a1c:2b86:: with SMTP id r128mr3132951wmr.13.1592037498581;
-        Sat, 13 Jun 2020 01:38:18 -0700 (PDT)
-Received: from skynet.lan (168.red-88-20-188.staticip.rima-tde.net. [88.20.188.168])
-        by smtp.gmail.com with ESMTPSA id l17sm11622704wmi.3.2020.06.13.01.38.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jun 2020 01:38:18 -0700 (PDT)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
-        tsbogend@alpha.franken.de, f.fainelli@gmail.com,
-        jonas.gorski@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH v4 3/9] reset: add BCM6345 reset controller driver
-Date:   Sat, 13 Jun 2020 10:38:07 +0200
-Message-Id: <20200613083813.2027186-4-noltari@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200613083813.2027186-1-noltari@gmail.com>
-References: <20200610172859.466334-1-noltari@gmail.com>
- <20200613083813.2027186-1-noltari@gmail.com>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8gg5QrEU9y9uK+DCdRmHTpO7zkuXv8INfFU0qv5ZbRM=;
+        b=HGWKnyorCsHAetCOV547Z0/EJFYZ+QAdgVsQGHp8XQjMAZJv0XkambFBTdnQMsOx3g
+         oGIdG1Fp0i37S33p/hXZ7dUlCthrQBufmJkzMfExid8uOGtcpPQSNiaNsPYhfEqg0STM
+         Lq77eBk2whC5tmbWcTnhomwUpORJ/uJV0nbAuQ6z1XpYjuRdxYAjLnyYBWjKgWxRq/uI
+         mOpZj58fy9tOT7/7Vm0nQgj+srQWFvsNr+LNq7ShTD3VBEljYXAOAI1MdxL4Y+Q2vVJp
+         dyJrYvMuao8E9FdsBePkABS46TIC79LbE50d9Gwb1pp+ROB3vH6UWOC9/c3ygWHWiXcQ
+         Wk6w==
+X-Gm-Message-State: AOAM532EQf4W3tYwBfN3HgvZZ/7I2lZg3T0KZN0yAVzcGTY0q2zIDW9S
+        3U8asPCwGd4dWTUGqIZSUNE=
+X-Google-Smtp-Source: ABdhPJzFP1BfCPGNEI7WxZci4ng51jhzqngxgUZKePXhK65118G4PfQSBVZX+xAlSFpKL4ppSfK3wg==
+X-Received: by 2002:a62:2942:: with SMTP id p63mr19181359pfp.56.1592109946808;
+        Sat, 13 Jun 2020 21:45:46 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id h3sm9644528pje.28.2020.06.13.21.45.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Jun 2020 21:45:45 -0700 (PDT)
+Subject: Re: [PATCH v4 2/9] mips: bmips: add BCM6328 power domain definitions
+To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
+        hauke@hauke-m.de, zajec5@gmail.com, tsbogend@alpha.franken.de,
+        robh+dt@kernel.org, f.fainelli@gmail.com, jonas.gorski@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20200610171630.465579-1-noltari@gmail.com>
+ <20200613082140.2009461-1-noltari@gmail.com>
+ <20200613082140.2009461-3-noltari@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <97cadafb-1b83-3d9e-a9f5-fd15a228febd@gmail.com>
+Date:   Sat, 13 Jun 2020 21:45:42 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20200613082140.2009461-3-noltari@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add support for resetting blocks through the Linux reset controller
-subsystem for BCM63xx SoCs.
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- v4: no changes.
- v3: using reset-simple isn't possible since sleeping after performing the
-     reset is also needed.
- v2: add compatibility to reset-simple instead of adding a new driver.
 
- drivers/reset/Kconfig         |   7 ++
- drivers/reset/Makefile        |   1 +
- drivers/reset/reset-bcm6345.c | 135 ++++++++++++++++++++++++++++++++++
- 3 files changed, 143 insertions(+)
- create mode 100644 drivers/reset/reset-bcm6345.c
+On 6/13/2020 1:21 AM, Álvaro Fernández Rojas wrote:
+> BCM6328 SoCs have a power domain controller to enable/disable certain
+> components in order to save power.
+> 
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
 
-diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index d9efbfd29646..9f1da978cef6 100644
---- a/drivers/reset/Kconfig
-+++ b/drivers/reset/Kconfig
-@@ -41,6 +41,13 @@ config RESET_BERLIN
- 	help
- 	  This enables the reset controller driver for Marvell Berlin SoCs.
- 
-+config RESET_BCM6345
-+	bool "BCM6345 Reset Controller"
-+	depends on BMIPS_GENERIC || COMPILE_TEST
-+	default BMIPS_GENERIC
-+	help
-+	  This enables the reset controller driver for BCM6345 SoCs.
-+
- config RESET_BRCMSTB
- 	tristate "Broadcom STB reset controller"
- 	depends on ARCH_BRCMSTB || COMPILE_TEST
-diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-index 249ed357c997..e642aae42f0f 100644
---- a/drivers/reset/Makefile
-+++ b/drivers/reset/Makefile
-@@ -6,6 +6,7 @@ obj-$(CONFIG_ARCH_TEGRA) += tegra/
- obj-$(CONFIG_RESET_A10SR) += reset-a10sr.o
- obj-$(CONFIG_RESET_ATH79) += reset-ath79.o
- obj-$(CONFIG_RESET_AXS10X) += reset-axs10x.o
-+obj-$(CONFIG_RESET_BCM6345) += reset-bcm6345.o
- obj-$(CONFIG_RESET_BERLIN) += reset-berlin.o
- obj-$(CONFIG_RESET_BRCMSTB) += reset-brcmstb.o
- obj-$(CONFIG_RESET_BRCMSTB_RESCAL) += reset-brcmstb-rescal.o
-diff --git a/drivers/reset/reset-bcm6345.c b/drivers/reset/reset-bcm6345.c
-new file mode 100644
-index 000000000000..6c9238762ee5
---- /dev/null
-+++ b/drivers/reset/reset-bcm6345.c
-@@ -0,0 +1,135 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * BCM6345 Reset Controller Driver
-+ *
-+ * Copyright (C) 2020 Álvaro Fernández Rojas <noltari@gmail.com>
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/platform_device.h>
-+#include <linux/reset-controller.h>
-+
-+#define BCM6345_RESET_NUM		32
-+#define BCM6345_RESET_SLEEP_MIN_US	10000
-+#define BCM6345_RESET_SLEEP_MAX_US	20000
-+
-+struct bcm6345_reset {
-+	struct reset_controller_dev rcdev;
-+	void __iomem *base;
-+	spinlock_t lock;
-+};
-+
-+static void bcm6345_reset_update(struct reset_controller_dev *rcdev,
-+				 unsigned long id, bool assert)
-+{
-+	struct bcm6345_reset *bcm6345_reset =
-+		container_of(rcdev, struct bcm6345_reset, rcdev);
-+	unsigned long flags;
-+	uint32_t val;
-+
-+	spin_lock_irqsave(&bcm6345_reset->lock, flags);
-+	val = __raw_readl(bcm6345_reset->base);
-+	if (assert)
-+		val &= ~BIT(id);
-+	else
-+		val |= BIT(id);
-+	__raw_writel(val, bcm6345_reset->base);
-+	spin_unlock_irqrestore(&bcm6345_reset->lock, flags);
-+}
-+
-+static int bcm6345_reset_assert(struct reset_controller_dev *rcdev,
-+				unsigned long id)
-+{
-+	bcm6345_reset_update(rcdev, id, true);
-+
-+	return 0;
-+}
-+
-+static int bcm6345_reset_deassert(struct reset_controller_dev *rcdev,
-+				  unsigned long id)
-+{
-+	bcm6345_reset_update(rcdev, id, false);
-+
-+	return 0;
-+}
-+
-+static int bcm6345_reset_reset(struct reset_controller_dev *rcdev,
-+			       unsigned long id)
-+{
-+	bcm6345_reset_update(rcdev, id, true);
-+	usleep_range(BCM6345_RESET_SLEEP_MIN_US,
-+		     BCM6345_RESET_SLEEP_MAX_US);
-+
-+	bcm6345_reset_update(rcdev, id, false);
-+	usleep_range(BCM6345_RESET_SLEEP_MIN_US,
-+		     BCM6345_RESET_SLEEP_MAX_US);
-+
-+	return 0;
-+}
-+
-+static int bcm6345_reset_status(struct reset_controller_dev *rcdev,
-+				unsigned long id)
-+{
-+	struct bcm6345_reset *bcm6345_reset =
-+		container_of(rcdev, struct bcm6345_reset, rcdev);
-+
-+	return !(__raw_readl(bcm6345_reset->base) & BIT(id));
-+}
-+
-+static struct reset_control_ops bcm6345_reset_ops = {
-+	.assert = bcm6345_reset_assert,
-+	.deassert = bcm6345_reset_deassert,
-+	.reset = bcm6345_reset_reset,
-+	.status = bcm6345_reset_status,
-+};
-+
-+static int __init bcm6345_reset_probe(struct platform_device *pdev)
-+{
-+	struct bcm6345_reset *bcm6345_reset;
-+	struct resource *res;
-+	int err;
-+
-+	bcm6345_reset = devm_kzalloc(&pdev->dev,
-+				     sizeof(*bcm6345_reset), GFP_KERNEL);
-+	if (!bcm6345_reset)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, bcm6345_reset);
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	bcm6345_reset->base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(bcm6345_reset->base))
-+		return PTR_ERR(bcm6345_reset->base);
-+
-+	spin_lock_init(&bcm6345_reset->lock);
-+	bcm6345_reset->rcdev.ops = &bcm6345_reset_ops;
-+	bcm6345_reset->rcdev.owner = THIS_MODULE;
-+	bcm6345_reset->rcdev.of_node = pdev->dev.of_node;
-+	bcm6345_reset->rcdev.of_reset_n_cells = 1;
-+	bcm6345_reset->rcdev.nr_resets = BCM6345_RESET_NUM;
-+
-+	err = devm_reset_controller_register(&pdev->dev,
-+					     &bcm6345_reset->rcdev);
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id bcm6345_reset_of_match[] = {
-+	{ .compatible = "brcm,bcm6345-reset" },
-+	{ },
-+};
-+
-+static struct platform_driver bcm6345_reset_driver = {
-+	.probe = bcm6345_reset_probe,
-+	.driver	= {
-+		.name = "bcm6345-reset",
-+		.of_match_table = bcm6345_reset_of_match,
-+		.suppress_bind_attrs = true,
-+	},
-+};
-+builtin_platform_driver(bcm6345_reset_driver);
+Reviewed-by: Florian Fainelli <F.fainelli@gmail.com>
 -- 
-2.27.0
-
+Florian

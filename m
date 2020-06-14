@@ -2,99 +2,143 @@ Return-Path: <SRS0=WqgU=73=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0B7EC433E0
-	for <linux-mips@archiver.kernel.org>; Sun, 14 Jun 2020 04:52:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38D60C433E0
+	for <linux-mips@archiver.kernel.org>; Sun, 14 Jun 2020 08:59:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B9F9E2074D
-	for <linux-mips@archiver.kernel.org>; Sun, 14 Jun 2020 04:52:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 17A912074D
+	for <linux-mips@archiver.kernel.org>; Sun, 14 Jun 2020 08:59:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EA8ZJ/30"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="q0MEkioP"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725267AbgFNEwI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 14 Jun 2020 00:52:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39978 "EHLO
+        id S1726947AbgFNI67 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 14 Jun 2020 04:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725265AbgFNEwI (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 14 Jun 2020 00:52:08 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D71C03E96F;
-        Sat, 13 Jun 2020 21:52:08 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id b5so6314639pfp.9;
-        Sat, 13 Jun 2020 21:52:08 -0700 (PDT)
+        with ESMTP id S1726814AbgFNI66 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 14 Jun 2020 04:58:58 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5954AC03E969;
+        Sun, 14 Jun 2020 01:58:58 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id h5so14071779wrc.7;
+        Sun, 14 Jun 2020 01:58:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=pwEq6EWpgufif9QPiano6bX2JLu9B/b2fY6JCl1CvF0=;
-        b=EA8ZJ/30lYzSM+O5Ao9/Ja09w1VYKLmQC6IgIxCv1GcHgzq0f7zYIFeiYGte+tvZpj
-         m8phLFt4LhYvOerJ0AEAz4uG1ZMO3Fp6Ljo8RTNAb5+S8u3GrJSfSDWnqNDErS+RBn6Q
-         EsSXqIGflYh7WkNRHLjlzB5No7BDJlYyBdRQMjUa+aZlxh0Nhkpjv6xOBlDlUQoB4LRo
-         L8Oa9KCpF7MRnAA4M2HIwFugVC1kfvp8495tVmDmkn46x7BXBC1y0pe/3/apXmUv2Eff
-         vXaZWTvcwbngVvktvneqElaD5G01ylxSIVXwJeNfY5nxoxo0ESGyA+/U85npSUYr7WHQ
-         cYWA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=kXhtPxyPMj9hJdJOhUgGWvj6GVSUU4BdjzU2bJ8gwjs=;
+        b=q0MEkioP0ms4O5ng9B1nEOkvj1dJQyU1BAJ2pwKXblymK4TO82BKTpNhYKeawKfR+9
+         7rOp0WA0f772iLvCSpkXTrpRFfooCeylgKtu884ibozVNDvlmGlCc8QBJAHc9ggRoGk9
+         tMlwa63KfiU1KhqwJHXxupLsUBQmHVPdTQO8/1OJ+9xGIH2EYfK+b7DVDbxTpSjCO33Q
+         rYGqyqm1gZy1iR2XUAOnOF6yKFwsIVjU9QXDFAX0/cJwHkobekaTAKanmYVEyMlZuEvw
+         s3YwBeoRb8xIlIlKi6n9fesfm2UzvSLXw4B2gBnzN7J2wSjrdvOTAw7BePL3aEo6ZQNB
+         10/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pwEq6EWpgufif9QPiano6bX2JLu9B/b2fY6JCl1CvF0=;
-        b=RZcC/gii/iqtmcuqvozo8CRH6gdq7wZy3JMOOIwQ878EoAA3MyEhgbe6ljOa3Zdvmu
-         VJU/t0cOantMq4QJ6f7D5sP0kIU5PtRACkL/sqMvmH+bsuatZf+x2+lkH7G3Y+wrYjdf
-         q091UBA/S+7pBbbMWq+qUr7x0vat9+wpCtfOMrVolpwKwbeZKOVvrbjj3XgUTEVCO4ap
-         K/zj7D8gg9NMrwu9Exlt+hiV4P/RhWXBET13pzL4ptitawYvDGWBoUOcyOVlt3K0X4Kj
-         tQfmmHkwTVJT7tXmgRnix7HXCcp6tnJ4JHEZyfXF3kJoZDshaqB7Fw35qFO+1X2topji
-         4I+w==
-X-Gm-Message-State: AOAM532wk390aQ7ms5XhD2kLluotv8/bsq3/Afliq8glauE7UaruWvLk
-        oCIugc1XhlK+/qCBKO8fim0=
-X-Google-Smtp-Source: ABdhPJxrPp5ZsndlHOswB03R3pfo+8b7pocnbx3Qc8nk69x8SYVX2vrDmgvUm/wJKjOzz5g+xLTfNw==
-X-Received: by 2002:a62:2d0:: with SMTP id 199mr12416482pfc.4.1592110327089;
-        Sat, 13 Jun 2020 21:52:07 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id r20sm10726402pfc.101.2020.06.13.21.52.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Jun 2020 21:52:06 -0700 (PDT)
-Subject: Re: [PATCH v4 3/9] reset: add BCM6345 reset controller driver
-To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
-        p.zabel@pengutronix.de, robh+dt@kernel.org,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=kXhtPxyPMj9hJdJOhUgGWvj6GVSUU4BdjzU2bJ8gwjs=;
+        b=bLGljRFUOTCYHBqrE/AE0IC/2uLy4nUwMv3235g4lu/nwLuM4fkmFiK7wZcGiQzq9Z
+         K3+Sx1f4ProDZ0cy3OX9df8NSnwcV9CMqAaYGdCwvDsOIEKGvESK71OxnolhQ//OCTjc
+         lULz4+LEw3J3rny4iEZVqYtHQIofgV2DI7BEHM9jl/XbralMyVtiQ/WLzr1s5x9TzGrY
+         emSulqpUpHZLFf26rEMSqadwvIi+WFedQHco7jwB9Azo9/TYskA8ycRPvQcw6vXF5vOn
+         M9IxISDFG0cPGS8nWvB0p/5fCpO0DR4wbkG5RS1lFWa+DXFrxDO/xVKLu0yFpLL7FUrf
+         4XCA==
+X-Gm-Message-State: AOAM532sBg1/IQF0z6zvW2PWtwxYyw8YRuxHWMK6KCenkSs6CLKKtnNw
+        RwC7IKIgD9x7NpSwgMXoC8o=
+X-Google-Smtp-Source: ABdhPJzjko+Tl9fB5gdlxBjzagRYEkwYLlElHidyLJ/SG6+grz9XlKc01XUKG+W6SIGArwcWOBGymQ==
+X-Received: by 2002:adf:db4c:: with SMTP id f12mr22552225wrj.387.1592125136998;
+        Sun, 14 Jun 2020 01:58:56 -0700 (PDT)
+Received: from skynet.lan (168.red-88-20-188.staticip.rima-tde.net. [88.20.188.168])
+        by smtp.gmail.com with ESMTPSA id u4sm17174043wmb.48.2020.06.14.01.58.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Jun 2020 01:58:56 -0700 (PDT)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
         tsbogend@alpha.franken.de, f.fainelli@gmail.com,
         jonas.gorski@gmail.com, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
         bcm-kernel-feedback-list@broadcom.com
-References: <20200610172859.466334-1-noltari@gmail.com>
- <20200613083813.2027186-1-noltari@gmail.com>
- <20200613083813.2027186-4-noltari@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <7996d8c7-c408-40bb-e468-f1121b69f662@gmail.com>
-Date:   Sat, 13 Jun 2020 21:52:02 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.9.0
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH v5 2/9] dt-bindings: reset: add BCM6345 reset controller bindings
+Date:   Sun, 14 Jun 2020 10:58:45 +0200
+Message-Id: <20200614085852.2130147-3-noltari@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200614085852.2130147-1-noltari@gmail.com>
+References: <20200613083813.2027186-1-noltari@gmail.com>
+ <20200614085852.2130147-1-noltari@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200613083813.2027186-4-noltari@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+Add device tree binding documentation for BCM6345 reset controller.
 
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ v5: no changes
+ v4: change license and fix maxItems.
+ v3: no changes
+ v2: no changes
 
-On 6/13/2020 1:38 AM, Álvaro Fernández Rojas wrote:
-> Add support for resetting blocks through the Linux reset controller
-> subsystem for BCM63xx SoCs.
-> 
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+ .../bindings/reset/brcm,bcm6345-reset.yaml    | 37 +++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/reset/brcm,bcm6345-reset.yaml
 
-With the kbuild robot error fixed:
-
-Reviewed-by: Florian Fainelli <F.fainelli@gmail.com>
-
-Thanks!
+diff --git a/Documentation/devicetree/bindings/reset/brcm,bcm6345-reset.yaml b/Documentation/devicetree/bindings/reset/brcm,bcm6345-reset.yaml
+new file mode 100644
+index 000000000000..560cf6522cb8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/reset/brcm,bcm6345-reset.yaml
+@@ -0,0 +1,37 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/reset/brcm,bcm6345-reset.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: BCM6345 reset controller
++
++description: This document describes the BCM6345 reset controller.
++
++maintainers:
++  - Álvaro Fernández Rojas <noltari@gmail.com>
++
++properties:
++  compatible:
++    const: brcm,bcm6345-reset
++
++  reg:
++    maxItems: 1
++
++  "#reset-cells":
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - "#reset-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    reset-controller@10000010 {
++      compatible = "brcm,bcm6345-reset";
++      reg = <0x10000010 0x4>;
++      #reset-cells = <1>;
++    };
 -- 
-Florian
+2.27.0
+

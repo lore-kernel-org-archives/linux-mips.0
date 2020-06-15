@@ -1,131 +1,203 @@
-Return-Path: <SRS0=WqgU=73=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=C1E1=74=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBC4AC433E1
-	for <linux-mips@archiver.kernel.org>; Sun, 14 Jun 2020 08:59:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9E42C433E1
+	for <linux-mips@archiver.kernel.org>; Mon, 15 Jun 2020 03:54:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BA9E1206D7
-	for <linux-mips@archiver.kernel.org>; Sun, 14 Jun 2020 08:59:37 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pMopbhSP"
+	by mail.kernel.org (Postfix) with ESMTP id C161D20882
+	for <linux-mips@archiver.kernel.org>; Mon, 15 Jun 2020 03:54:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgFNI65 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 14 Jun 2020 04:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726814AbgFNI65 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 14 Jun 2020 04:58:57 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB13CC03E969;
-        Sun, 14 Jun 2020 01:58:56 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id g10so11700064wmh.4;
-        Sun, 14 Jun 2020 01:58:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pGhe1kLEgAs1t6DKUVK5PIxiFYRJxWc8AEhPU58R/IE=;
-        b=pMopbhSP0bywBsSXxLktqm17BX6LQqmOrLquqc61uR95Ixlf00JoKb8PFxlTQvjwjY
-         +BdvGySK32VusFW8pWzVjkddIwpJOrqbPGxe0jO0Zoy9MQ2Z16/KM4L9Ka8Dopb2j/3o
-         T48sGi5o0ZvVLOZdek8qZ4DnXt3TjzKlSwSJj+pNd2YdDp//Ph6dEuoQtQ3Wz0514w+m
-         2jVUWM22okL24pEOjQaxeQBE94aWPmbgtP7EiKReKs8AabrFNFrdHs8kOOHjGvxL0ZVs
-         eMMjP+u8/0tB9XTdrpW2paqHQ7XE0vt4YEUmY4HR56lFC6rxIn4pUumwnKO4VQSrh5sg
-         4zUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pGhe1kLEgAs1t6DKUVK5PIxiFYRJxWc8AEhPU58R/IE=;
-        b=NYPPrXuJQUs8U0/YTgMCmjNE58DDQBCtzsv5yBCqEbZYBbZ6IXQs4jOIwUYa1N0RRH
-         nhe3dZFYmWKIPIyZLF6LYrUSpKxUfRoOXpBGB3kBeAvYpOiu16cuSKaF3gadFwBUY0Qn
-         FfrvuQKUPi0aK+sq7ZQf/0bk23as8GMt0aVtYZeDv1+B7udMVYbnh7g7X0iWVoaUuNVG
-         nrv7RRVYzdrE7Byed82b1pcMNA8FZZTrLwu1y+7ir5+LxE3A1DxHfpumVsM99xA98WKw
-         7ovUSV2y6e4JZ625Kxw+VB8ec7KA96gq8qQ5dgXIhU72AkqBfoJ+y0qQGpH6DZk9WPFA
-         0LNg==
-X-Gm-Message-State: AOAM533N6q796+07XjTx12Evd4uaOaay12stKz/0RzuHrgdcVqnzNgDg
-        30x+aKMTaFswHozVER2QqUg=
-X-Google-Smtp-Source: ABdhPJyxExAUFu4aeOemIjQTWCPgso3VzGshWleuacCZbbw21mlokHF9AhbLJwI0tyjRaQ+zAXq0fA==
-X-Received: by 2002:a1c:4143:: with SMTP id o64mr7256914wma.157.1592125135049;
-        Sun, 14 Jun 2020 01:58:55 -0700 (PDT)
-Received: from skynet.lan (168.red-88-20-188.staticip.rima-tde.net. [88.20.188.168])
-        by smtp.gmail.com with ESMTPSA id u4sm17174043wmb.48.2020.06.14.01.58.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jun 2020 01:58:54 -0700 (PDT)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
-        tsbogend@alpha.franken.de, f.fainelli@gmail.com,
-        jonas.gorski@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH v5 0/9] bmips: add bcm6345 reset controller support
-Date:   Sun, 14 Jun 2020 10:58:43 +0200
-Message-Id: <20200614085852.2130147-1-noltari@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200613083813.2027186-1-noltari@gmail.com>
-References: <20200613083813.2027186-1-noltari@gmail.com>
+        id S1728213AbgFODyI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 14 Jun 2020 23:54:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727971AbgFODyH (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 14 Jun 2020 23:54:07 -0400
+Received: from [10.44.0.192] (unknown [103.48.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 291D120768;
+        Mon, 15 Jun 2020 03:53:45 +0000 (UTC)
+To:     rppt@kernel.org
+Cc:     Hoan@os.amperecomputing.com, James.Bottomley@HansenPartnership.com,
+        akpm@linux-foundation.org, bcain@codeaurora.org, bhe@redhat.com,
+        catalin.marinas@arm.com, corbet@lwn.net, dalias@libc.org,
+        davem@davemloft.net, deller@gmx.de, geert@linux-m68k.org,
+        green.hu@gmail.com, guoren@kernel.org, gxt@pku.edu.cn,
+        heiko.carstens@de.ibm.com, jcmvbkbc@gmail.com,
+        ley.foon.tan@intel.com, linux-alpha@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linux@armlinux.org.uk, linuxppc-dev@lists.ozlabs.org,
+        mattst88@gmail.com, mhocko@kernel.org, monstr@monstr.eu,
+        mpe@ellerman.id.au, msalter@redhat.com, nickhu@andestech.com,
+        openrisc@lists.librecores.org, paul.walmsley@sifive.com,
+        richard@nod.at, rppt@linux.ibm.com, shorne@gmail.com,
+        sparclinux@vger.kernel.org, tony.luck@intel.com,
+        tsbogend@alpha.franken.de, uclinux-h8-devel@lists.sourceforge.jp,
+        vgupta@synopsys.com, x86@kernel.org, ysato@users.sourceforge.jp
+References: <20200412194859.12663-5-rppt@kernel.org>
+Subject: Re: [PATCH 04/21] mm: free_area_init: use maximal zone PFNs rather
+ than zone sizes
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <f53e68db-ed81-6ef6-5087-c7246d010ea2@linux-m68k.org>
+Date:   Mon, 15 Jun 2020 13:53:42 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200412194859.12663-5-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-BCM63xx SoCs have a reset controller for certain components.
+Hi Mike,
 
-v5: fix kbuild robot error (drop __init).
-v4: fix device tree bindings documentation.
-v3: using reset-simple isn't possible since sleeping after performing the
-    reset is also needed.
-    Add BCM63268 and BCM6318 support.
-v2: add compatibility to reset-simple instead of adding a new driver.
+From: Mike Rapoport <rppt@linux.ibm.com>
+> Currently, architectures that use free_area_init() to initialize memory map
+> and node and zone structures need to calculate zone and hole sizes. We can
+> use free_area_init_nodes() instead and let it detect the zone boundaries
+> while the architectures will only have to supply the possible limits for
+> the zones.
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-Álvaro Fernández Rojas (9):
-  mips: bmips: select ARCH_HAS_RESET_CONTROLLER
-  dt-bindings: reset: add BCM6345 reset controller bindings
-  reset: add BCM6345 reset controller driver
-  mips: bmips: dts: add BCM6328 reset controller support
-  mips: bmips: dts: add BCM6358 reset controller support
-  mips: bmips: dts: add BCM6362 reset controller support
-  mips: bmips: dts: add BCM6368 reset controller support
-  mips: bmips: dts: add BCM63268 reset controller support
-  mips: bmips: add BCM6318 reset controller definitions
+This is causing some new warnings for me on boot on at least one non-MMU m68k target:
 
- .../bindings/reset/brcm,bcm6345-reset.yaml    |  37 +++++
- arch/mips/Kconfig                             |   1 +
- arch/mips/boot/dts/brcm/bcm63268.dtsi         |   6 +
- arch/mips/boot/dts/brcm/bcm6328.dtsi          |   6 +
- arch/mips/boot/dts/brcm/bcm6358.dtsi          |   6 +
- arch/mips/boot/dts/brcm/bcm6362.dtsi          |   6 +
- arch/mips/boot/dts/brcm/bcm6368.dtsi          |   6 +
- drivers/reset/Kconfig                         |   7 +
- drivers/reset/Makefile                        |   1 +
- drivers/reset/reset-bcm6345.c                 | 135 ++++++++++++++++++
- include/dt-bindings/reset/bcm6318-reset.h     |  20 +++
- include/dt-bindings/reset/bcm63268-reset.h    |  26 ++++
- include/dt-bindings/reset/bcm6328-reset.h     |  18 +++
- include/dt-bindings/reset/bcm6358-reset.h     |  15 ++
- include/dt-bindings/reset/bcm6362-reset.h     |  22 +++
- include/dt-bindings/reset/bcm6368-reset.h     |  16 +++
- 16 files changed, 328 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/reset/brcm,bcm6345-reset.yaml
- create mode 100644 drivers/reset/reset-bcm6345.c
- create mode 100644 include/dt-bindings/reset/bcm6318-reset.h
- create mode 100644 include/dt-bindings/reset/bcm63268-reset.h
- create mode 100644 include/dt-bindings/reset/bcm6328-reset.h
- create mode 100644 include/dt-bindings/reset/bcm6358-reset.h
- create mode 100644 include/dt-bindings/reset/bcm6362-reset.h
- create mode 100644 include/dt-bindings/reset/bcm6368-reset.h
+...
+NET: Registered protocol family 17
+BUG: Bad page state in process swapper  pfn:20165
+page:41fe0ca0 refcount:0 mapcount:1 mapping:00000000 index:0x0
+flags: 0x0()
+raw: 00000000 00000100 00000122 00000000 00000000 00000000 00000000 00000000
+page dumped because: nonzero mapcount
+CPU: 0 PID: 1 Comm: swapper Not tainted 5.8.0-rc1-00001-g3a38f8a60c65-dirty #1
+Stack from 404c9ebc:
+         404c9ebc 4029ab28 4029ab28 40088470 41fe0ca0 40299e21 40299df1 404ba2a4
+         00020165 00000000 41fd2c10 402c7ba0 41fd2c04 40088504 41fe0ca0 40299e21
+         00000000 40088a12 41fe0ca0 41fe0ca4 0000020a 00000000 00000001 402ca000
+         00000000 41fe0ca0 41fd2c10 41fd2c10 00000000 00000000 402b2388 00000001
+         400a0934 40091056 404c9f44 404c9f44 40088db4 402c7ba0 00000001 41fd2c04
+         41fe0ca0 41fd2000 41fe0ca0 40089e02 4026ecf4 40089e4e 41fe0ca0 ffffffff
+Call Trace:
+         [<40088470>] 0x40088470
+  [<40088504>] 0x40088504
+  [<40088a12>] 0x40088a12
+  [<402ca000>] 0x402ca000
+  [<400a0934>] 0x400a0934
 
--- 
-2.27.0
+         [<40091056>] 0x40091056
+  [<40088db4>] 0x40088db4
+  [<40089e02>] 0x40089e02
+  [<4026ecf4>] 0x4026ecf4
+  [<40089e4e>] 0x40089e4e
+
+         [<4008ca26>] 0x4008ca26
+  [<4004adf8>] 0x4004adf8
+  [<402701ec>] 0x402701ec
+  [<4008f25e>] 0x4008f25e
+  [<400516f4>] 0x400516f4
+
+         [<4026eec0>] 0x4026eec0
+  [<400224f0>] 0x400224f0
+  [<402ca000>] 0x402ca000
+  [<4026eeda>] 0x4026eeda
+  [<40020b00>] 0x40020b00
+...
+
+Lots more of them.
+
+...
+BUG: Bad page state in process swapper  pfn:201a0
+page:41fe1400 refcount:0 mapcount:1 mapping:00000000 index:0x0
+flags: 0x0()
+raw: 00000000 00000100 00000122 00000000 00000000 00000000 00000000 00000000
+page dumped because: nonzero mapcount
+CPU: 0 PID: 1 Comm: swapper Tainted: G    B             5.8.0-rc1-00001-g3a38f8a60c65-dirty #1
+Stack from 404c9ebc:
+         404c9ebc 4029ab28 4029ab28 40088470 41fe1400 40299e21 40299df1 404ba2a4
+         000201a0 00000000 41fd2c10 402c7ba0 41fd2c04 40088504 41fe1400 40299e21
+         00000000 40088a12 41fe1400 41fe1404 0000020a 0000003b 00000001 40340000
+         00000000 41fe1400 41fd2c10 41fd2c10 00000000 00000000 41fe13e0 40022826
+         00000044 404c9f44 404c9f44 404c9f44 40088db4 402c7ba0 00000001 41fd2c04
+         41fe1400 41fd2000 41fe1400 40089e02 4026ecf4 40089e4e 41fe1400 ffffffff
+Call Trace:
+         [<40088470>] 0x40088470
+  [<40088504>] 0x40088504
+  [<40088a12>] 0x40088a12
+  [<40022826>] 0x40022826
+  [<40088db4>] 0x40088db4
+
+         [<40089e02>] 0x40089e02
+  [<4026ecf4>] 0x4026ecf4
+  [<40089e4e>] 0x40089e4e
+  [<4008ca26>] 0x4008ca26
+  [<4004adf8>] 0x4004adf8
+
+         [<402701ec>] 0x402701ec
+  [<4008f25e>] 0x4008f25e
+  [<400516f4>] 0x400516f4
+  [<4026eec0>] 0x4026eec0
+  [<400224f0>] 0x400224f0
+
+         [<402ca000>] 0x402ca000
+  [<4026eeda>] 0x4026eeda
+  [<40020b00>] 0x40020b00
+Freeing unused kernel memory: 648K
+This architecture does not have kernel memory protection.
+Run /init as init process
+...
+
+System boots pretty much as normal through user space after this.
+Seems to be fully operational despite all those BUGONs.
+
+Specifically this is a M5208EVB target (arch/m68k/configs/m5208evb).
+
+
+[snip]
+> diff --git a/arch/m68k/mm/init.c b/arch/m68k/mm/init.c
+> index b88d510d4fe3..6d3147662ff2 100644
+> --- a/arch/m68k/mm/init.c
+> +++ b/arch/m68k/mm/init.c
+> @@ -84,7 +84,7 @@ void __init paging_init(void)
+>  	 * page_alloc get different views of the world.
+>  	 */
+>  	unsigned long end_mem = memory_end & PAGE_MASK;
+> -	unsigned long zones_size[MAX_NR_ZONES] = { 0, };
+> +	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0, };
+>  
+>  	high_memory = (void *) end_mem;
+>  
+> @@ -98,8 +98,8 @@ void __init paging_init(void)
+>  	 */
+>  	set_fs (USER_DS);
+>  
+> -	zones_size[ZONE_DMA] = (end_mem - PAGE_OFFSET) >> PAGE_SHIFT;
+> -	free_area_init(zones_size);
+> +	max_zone_pfn[ZONE_DMA] = end_mem >> PAGE_SHIFT;
+> +	free_area_init(max_zone_pfn);
+
+This worries me a little. On this target PAGE_OFFSET will be non-0.
+
+Thoughts?
+
+Regards
+Greg
+
+
 

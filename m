@@ -8,56 +8,56 @@ X-Spam-Status: No, score=-9.6 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F10A8C433E2
-	for <linux-mips@archiver.kernel.org>; Wed, 17 Jun 2020 10:51:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 202A6C433E0
+	for <linux-mips@archiver.kernel.org>; Wed, 17 Jun 2020 10:51:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CAC5E20FC3
-	for <linux-mips@archiver.kernel.org>; Wed, 17 Jun 2020 10:51:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F219B214DB
+	for <linux-mips@archiver.kernel.org>; Wed, 17 Jun 2020 10:51:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mkBUbRo4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ig07ZXPf"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726797AbgFQKu4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 17 Jun 2020 06:50:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53344 "EHLO
+        id S1726893AbgFQKvP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 17 Jun 2020 06:51:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726773AbgFQKuz (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 17 Jun 2020 06:50:55 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97DDC061755;
-        Wed, 17 Jun 2020 03:50:54 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id l11so1851337wru.0;
-        Wed, 17 Jun 2020 03:50:54 -0700 (PDT)
+        with ESMTP id S1726727AbgFQKuv (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 17 Jun 2020 06:50:51 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3658DC061755;
+        Wed, 17 Jun 2020 03:50:51 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id r7so1844963wro.1;
+        Wed, 17 Jun 2020 03:50:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=q32jAFtYDGTd7ehWi2GSlZRUAUiNhVpvNu8v0nFr12M=;
-        b=mkBUbRo4unyaF1QFGNtUiXARCSxOZ7YVOI8T6RO5PyY0F0M8fuaTnhOuf86mnWdMVH
-         3Zkdh5odX0zsx24/FFK7pH3rimS/J0e7MIgWMPpcsQJgMXyJSXlfj+3vr9kcIkxjjmvA
-         EHcvdt94qRwnFhXFNLLKcb06Ejyzyvy67xB/Z351JE9Y+qE+o9vgnWlAmSFHN+L7VhLB
-         Zq/RvPYcdxLAZGPDSQ/LY6XwzQpbZVmtzmzSbNggYEdnwP1lfdk9zWdouEUs8dhbhFdT
-         D30ljuOZNx9ZmElSTm+op3xiAGkWeNqiE0U1RPJCXdgcYoHbaPLYTjL4ACv1JKpR1ebE
-         +1eA==
+        bh=Jj+NgUXyPVtjRlKAsLUW1Ywg7sxz/gprDC+dItpQr40=;
+        b=Ig07ZXPfXkckFhtMZW6TsfFbMnr006DYVz8Tz8/sGE1WfzsUnJaVxgWUfgOZwY0Ipd
+         zmuzViUZpSuzpCX+XkRT6XAzJ8q5+xbhQwKpAvovUZ2NJQllqUG0+0nViA1DbIVpRike
+         hpFirA5gX5s5PFK0JM925zT3r3ntGwPHbACIIEKaSJzpmso5xHDHwuCrGCbDTXveemho
+         Fzab+nOee8Dt8/0WAgby1o2jBpi1hKny8Fx0EgtibwZXGCJ+jP5tFd0vwV++pZYmzu1u
+         28mlzDgbkhUnb46s3cNk2Co5oTT2CF6eTjSfBc0sbjXLrQsgfmNArOynmorhiP3tGoIy
+         g7IA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=q32jAFtYDGTd7ehWi2GSlZRUAUiNhVpvNu8v0nFr12M=;
-        b=QEzl0utFUpcLcPcyt2OnqMKoU6G7FR+VvhVR7Bpzkyc0QL8E5u77ULj468nGnl/KiG
-         8WmDGefpApVmUq4yOriPqec23a3cc9EE4lto7RtKxnxSr8sVbNl6xA+nEmi+SjgRZafu
-         87WuqqHR8ZT3l89XNAxiT9L/Ns50JHaxaOd42EFtjptxdNibP/r2wx9sO7qJ97cHoQV0
-         TFuWeUwvILyQ+QaKXZ/23YFSzP1Cv5qnQJeLLGODq7yy3ql5AGbqQFSyPAwCk976NGZm
-         aytUX2xOua9oaGy81boHJsE3zTKlrqAM6bSEMph+Ad1J5QsyVhIIjONhCFj11ejUUDRA
-         O15g==
-X-Gm-Message-State: AOAM533vdt5SLNJFciawodXbrznn340HW0X8eORrqMPKeZy/xaSv7ERD
-        FlEUS50v9xO0O8dGR+E69HY3S+3sG7og+g==
-X-Google-Smtp-Source: ABdhPJyttkMj/wWuPtlLnPcfiFv18cRqA8UWh01OFGYr3vE+IydWYwQuwzIsNibREUR6/jZ2492rbQ==
-X-Received: by 2002:adf:f5d0:: with SMTP id k16mr8280025wrp.288.1592391052614;
-        Wed, 17 Jun 2020 03:50:52 -0700 (PDT)
+        bh=Jj+NgUXyPVtjRlKAsLUW1Ywg7sxz/gprDC+dItpQr40=;
+        b=nf2dAa2DU0g9lxf/6aaD0rFWWK8NK2BxLRoHztd+1/udbLse8M+xF9A3RBGVJDSuWO
+         8wdhvyCkiU92J/9/Kkt7noLGINlUsZsdIiKBy3xcBQJBLB2tCUe0XQiqsBWol0zGO/dL
+         rBMckwjCtkd7C7tveAEt47kfEQ64Vd+jHmCzwnXrMQoA0J7F/T/NbYGaZTjZwpNdOIIx
+         X33h9RhQE55UoLMnZB62oTGroTAtPkITSzFEzp9qdfEo8pS7wlT1Ux6dzUPh2P3wERuE
+         mBO7unaffrjlMw14G38TzgXlk0I5QLcbxQHIYgsiWYs4Ud4hDqP8wJDJCUVlwQV6BNa7
+         /qrw==
+X-Gm-Message-State: AOAM531GPH3Y4k/A6tdpYzLwq45MrmNjF01gwg40FvBqg8heKj8eifcW
+        HTvZIgbDff7HSv/pypTnBIw=
+X-Google-Smtp-Source: ABdhPJybvjQGZWCKdAYA5oWW1ihs+kacZo9wJ0YMZ18w59iM/Avb811/OrAFsDOK8pDzYqayq6oufQ==
+X-Received: by 2002:a5d:61c6:: with SMTP id q6mr6561938wrv.282.1592391049861;
+        Wed, 17 Jun 2020 03:50:49 -0700 (PDT)
 Received: from skynet.lan (90.red-88-20-62.staticip.rima-tde.net. [88.20.62.90])
-        by smtp.gmail.com with ESMTPSA id u12sm33331927wrq.90.2020.06.17.03.50.51
+        by smtp.gmail.com with ESMTPSA id u12sm33331927wrq.90.2020.06.17.03.50.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jun 2020 03:50:52 -0700 (PDT)
+        Wed, 17 Jun 2020 03:50:49 -0700 (PDT)
 From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
         <noltari@gmail.com>
 To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
@@ -66,10 +66,10 @@ To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
         bcm-kernel-feedback-list@broadcom.com
 Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>, Florian Fainelli <F.fainelli@gmail.com>
-Subject: [PATCH v7 9/9] mips: bmips: add BCM6318 reset controller definitions
-Date:   Wed, 17 Jun 2020 12:50:41 +0200
-Message-Id: <20200617105042.3824116-10-noltari@gmail.com>
+        <noltari@gmail.com>
+Subject: [PATCH v7 6/9] mips: bmips: dts: add BCM6362 reset controller support
+Date:   Wed, 17 Jun 2020 12:50:38 +0200
+Message-Id: <20200617105042.3824116-7-noltari@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200617105042.3824116-1-noltari@gmail.com>
 References: <20200617105042.3824116-1-noltari@gmail.com>
@@ -81,47 +81,68 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-BCM6318 SoCs have a reset controller for certain components.
+BCM6362 SoCs have a reset controller for certain components.
 
 Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-Acked-by: Florian Fainelli <F.fainelli@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
  v7: no changes.
- v6: fix BCM6318_RST_HOSTMIPS value (12 vs 11).
+ v6: no changes.
  v5: no changes.
  v4: no changes.
- v3: add new path with BCM6318 reset controller definitions.
+ v3: add reset controller definitions header file.
+ v2: no changes.
 
- include/dt-bindings/reset/bcm6318-reset.h | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
- create mode 100644 include/dt-bindings/reset/bcm6318-reset.h
+ arch/mips/boot/dts/brcm/bcm6362.dtsi      |  6 ++++++
+ include/dt-bindings/reset/bcm6362-reset.h | 22 ++++++++++++++++++++++
+ 2 files changed, 28 insertions(+)
+ create mode 100644 include/dt-bindings/reset/bcm6362-reset.h
 
-diff --git a/include/dt-bindings/reset/bcm6318-reset.h b/include/dt-bindings/reset/bcm6318-reset.h
+diff --git a/arch/mips/boot/dts/brcm/bcm6362.dtsi b/arch/mips/boot/dts/brcm/bcm6362.dtsi
+index 8ae6981735b8..443af6b4c838 100644
+--- a/arch/mips/boot/dts/brcm/bcm6362.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm6362.dtsi
+@@ -70,6 +70,12 @@ reboot: syscon-reboot@10000008 {
+ 			mask = <0x1>;
+ 		};
+ 
++		periph_rst: reset-controller@10000010 {
++			compatible = "brcm,bcm6345-reset";
++			reg = <0x10000010 0x4>;
++			#reset-cells = <1>;
++		};
++
+ 		periph_intc: interrupt-controller@10000020 {
+ 			compatible = "brcm,bcm6345-l1-intc";
+ 			reg = <0x10000020 0x10>,
+diff --git a/include/dt-bindings/reset/bcm6362-reset.h b/include/dt-bindings/reset/bcm6362-reset.h
 new file mode 100644
-index 000000000000..f882662505ea
+index 000000000000..7ebb0546e0ab
 --- /dev/null
-+++ b/include/dt-bindings/reset/bcm6318-reset.h
-@@ -0,0 +1,20 @@
++++ b/include/dt-bindings/reset/bcm6362-reset.h
+@@ -0,0 +1,22 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +
-+#ifndef __DT_BINDINGS_RESET_BCM6318_H
-+#define __DT_BINDINGS_RESET_BCM6318_H
++#ifndef __DT_BINDINGS_RESET_BCM6362_H
++#define __DT_BINDINGS_RESET_BCM6362_H
 +
-+#define BCM6318_RST_SPI		0
-+#define BCM6318_RST_EPHY	1
-+#define BCM6318_RST_SAR		2
-+#define BCM6318_RST_ENETSW	3
-+#define BCM6318_RST_USBD	4
-+#define BCM6318_RST_USBH	5
-+#define BCM6318_RST_PCIE_CORE	6
-+#define BCM6318_RST_PCIE	7
-+#define BCM6318_RST_PCIE_EXT	8
-+#define BCM6318_RST_PCIE_HARD	9
-+#define BCM6318_RST_ADSL	10
-+#define BCM6318_RST_PHYMIPS	11
-+#define BCM6318_RST_HOSTMIPS	12
++#define BCM6362_RST_SPI		0
++#define BCM6362_RST_IPSEC	1
++#define BCM6362_RST_EPHY	2
++#define BCM6362_RST_SAR		3
++#define BCM6362_RST_ENETSW	4
++#define BCM6362_RST_USBD	5
++#define BCM6362_RST_USBH	6
++#define BCM6362_RST_PCM		7
++#define BCM6362_RST_PCIE_CORE	8
++#define BCM6362_RST_PCIE	9
++#define BCM6362_RST_PCIE_EXT	10
++#define BCM6362_RST_WLAN_SHIM	11
++#define BCM6362_RST_DDR_PHY	12
++#define BCM6362_RST_FAP		13
++#define BCM6362_RST_WLAN_UBUS	14
 +
-+#endif /* __DT_BINDINGS_RESET_BCM6318_H */
++#endif /* __DT_BINDINGS_RESET_BCM6362_H */
 -- 
 2.27.0
 

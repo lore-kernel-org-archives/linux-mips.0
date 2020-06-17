@@ -2,189 +2,132 @@ Return-Path: <SRS0=1hEu=76=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E46BFC433E0
-	for <linux-mips@archiver.kernel.org>; Wed, 17 Jun 2020 21:50:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE9CAC433E0
+	for <linux-mips@archiver.kernel.org>; Wed, 17 Jun 2020 22:32:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C299B20897
-	for <linux-mips@archiver.kernel.org>; Wed, 17 Jun 2020 21:50:44 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gwvvo9mO"
+	by mail.kernel.org (Postfix) with ESMTP id CDF6F2098B
+	for <linux-mips@archiver.kernel.org>; Wed, 17 Jun 2020 22:32:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgFQVuk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 17 Jun 2020 17:50:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726758AbgFQVuk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 17 Jun 2020 17:50:40 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF1AC06174E;
-        Wed, 17 Jun 2020 14:50:40 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id v24so1547679plo.6;
-        Wed, 17 Jun 2020 14:50:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=2inp6DL1Tpkycn57HGb7bKgExPCkT7AU0S7N4Zm5vFs=;
-        b=Gwvvo9mOU5t201a9zj5JmgtflABhfhYczUd+LVugvwo8+GDqTuA5Mkec/W06P8aNIB
-         dDo0nW2p8dh9+V9NSxCHvhVQiRYywvotNaAX5duHdVGnOIa1YAsQXM6lF6qYzE0d1S8q
-         7CACGCuNASoQIEoi1nT8NkEULYYgzcsVFqOqFhtZdw094seNXsZur69I1czBiEPz7mqI
-         tmi/pMSL+OrVvq5RG4+KJUYwdzOWMBaIp8IbN++5K/ThkY7kam+ezfkqPhcDkpeY45IO
-         SQRAA6d9wG14qiuo6VxD/C6YsV5jw5Y/U4MYKBqG+ompA39r2egYNBJbFFrBS90fYmNM
-         Utfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2inp6DL1Tpkycn57HGb7bKgExPCkT7AU0S7N4Zm5vFs=;
-        b=SJEL8aaVvbF/2fNhK8/xqO0QME5IhhDUFdZCCTRj2zLN+O5jPXu4cRxnh4G/eEkbwL
-         +tO+qLlM6l6mAjIKLcHe7r0f0VZ3Nb/VGhF1HvLYinwk2xvgeEjfgrH5mV6Gr3xMSawB
-         GWwGPtiKn8qilgPx7L/zIJ4RVW9RoA3dzhXVGLsJkUWZjjaiILPmo379F5jiTEapF1ID
-         cddh+MopxdHfUcZSTjryrMjzlAinPWBmsSYEU+MpeDoKAkri9CKPSKC2XZoa89vfvioF
-         yiipbG+XcJApglIIQ8eR6+lXwiqoRP5/RWMovwj9LMHyvc5YdroFsReI45mNR/oFAFjX
-         WrVw==
-X-Gm-Message-State: AOAM533ZuPakEl3LRP1vqMpvtYbUS5AfPkVPy4VDRWVT2/cY/22s+Wob
-        cY+O9S41+li3r8AwppnCaLZhpTe8
-X-Google-Smtp-Source: ABdhPJwIUupeR6Q/8kfiMpacfI9dNWprV9GMSeiLVuJ66LCtcmufPiwuObOjIBZDi8wPQlZL4kq13w==
-X-Received: by 2002:a17:90b:4c4b:: with SMTP id np11mr1077511pjb.58.1592430638848;
-        Wed, 17 Jun 2020 14:50:38 -0700 (PDT)
-Received: from [10.230.188.43] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id j17sm666204pgk.66.2020.06.17.14.50.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Jun 2020 14:50:38 -0700 (PDT)
-Subject: Re: [PATCH 2/3] dt-bindings: Document BCM6328 PCIe Host Controller
-To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
-        bhelgaas@google.com, robh+dt@kernel.org, tsbogend@alpha.franken.de,
-        lorenzo.pieralisi@arm.com, p.zabel@pengutronix.de,
-        jiaxun.yang@flygoat.com, paulburton@kernel.org, info@metux.net,
-        allison@lohutok.net, kstewart@linuxfoundation.org,
-        tglx@linutronix.de, jonas.gorski@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-References: <20200617102556.3792821-1-noltari@gmail.com>
- <20200617102556.3792821-3-noltari@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <e4831ec7-dfe7-ce4d-585f-bf11a1cb1baa@gmail.com>
-Date:   Wed, 17 Jun 2020 14:50:35 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.9.0
+        id S1726835AbgFQWcQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 17 Jun 2020 18:32:16 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:57334 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726761AbgFQWcQ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 17 Jun 2020 18:32:16 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id F3DBA8040A6A;
+        Wed, 17 Jun 2020 22:32:10 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id nHQpljPh2UPG; Thu, 18 Jun 2020 01:32:07 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        <linux-mips@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 1/6] dt-bindings: power: Convert mti,mips-cpc to DT schema
+Date:   Thu, 18 Jun 2020 01:31:55 +0300
+Message-ID: <20200617223201.23259-2-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200617223201.23259-1-Sergey.Semin@baikalelectronics.ru>
+References: <20200617223201.23259-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-In-Reply-To: <20200617102556.3792821-3-noltari@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+It's a Cluster Power Controller embedded into the MIPS IP cores.
+Currently the corresponding dts node is supposed to have compatible
+and reg properties.
 
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
 
-On 6/17/2020 3:25 AM, Álvaro Fernández Rojas wrote:
-> BCM6328 PCIe host controller is found on BCM6328, BCM6362 and BCM63268 SoCs.
-> 
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> ---
->  .../bindings/pci/brcm,bcm6328-pcie.yaml       | 109 ++++++++++++++++++
->  1 file changed, 109 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/brcm,bcm6328-pcie.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/brcm,bcm6328-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,bcm6328-pcie.yaml
-> new file mode 100644
-> index 000000000000..d2bd4933a5fa
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/brcm,bcm6328-pcie.yaml
-> @@ -0,0 +1,109 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pci/brcm,bcm6328-pcie.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: BCM6328 PCIe Host Controller Device Tree Bindings
-> +
-> +maintainers:
-> +  - Álvaro Fernández Rojas <noltari@gmail.com>
-> +
-> +allOf:
-> +  - $ref: /schemas/pci/pci-bus.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +     - brcm,bcm6328-pcie
-> +     - brcm,bcm6362-pcie
-> +     - brcm,bcm63268-pcie
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: pcie
-> +
-> +  "#interrupt-cells":
-> +    const: 1
-> +
-> +  interrupt-map-mask:
-> +    maxItems: 1
-> +
-> +  interrupt-map:
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  ranges:
-> +    maxItems: 1
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  resets:
-> +    maxItems: 4
-> +
-> +  reset-names:
-> +    items:
-> +      - const: pcie
-> +      - const: pcie-core
-> +      - const: pcie-ext
-> +      - const: pcie-hard
-> +
-> +required:
-> +  - brcm,serdes
-> +  - clocks
-> +  - clock-names
-> +  - "#interrupt-cells"
-> +  - interrupt-map-mask
-> +  - interrupt-map
-> +  - ranges
-> +  - reg
-> +  - resets
-> +  - reset-names
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    serdes_cntl: syscon@10001800 {
-> +      compatible = "syscon";
-> +      reg = <0x10001800 0x4>;
-> +      native-endian;
-> +    };
+---
 
-I believe you could be modelling the SerDes as generic PHY driver which
-would be a little cleaner than the syscon approach. In newer chips like
-6318 it looks like you should be able to use pcie-brcmstb.c since the
-controller appears to be nearly the same and the PHY abstraction would
-work nicely there.
+Changelog prev:
+- Reword the changelog summary - use shorter version.
+- Lowercase the example hex'es.
+---
+ .../bindings/power/mti,mips-cpc.txt           |  8 -----
+ .../bindings/power/mti,mips-cpc.yaml          | 35 +++++++++++++++++++
+ 2 files changed, 35 insertions(+), 8 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.txt
+ create mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.yaml
+
+diff --git a/Documentation/devicetree/bindings/power/mti,mips-cpc.txt b/Documentation/devicetree/bindings/power/mti,mips-cpc.txt
+deleted file mode 100644
+index c6b82511ae8a..000000000000
+--- a/Documentation/devicetree/bindings/power/mti,mips-cpc.txt
++++ /dev/null
+@@ -1,8 +0,0 @@
+-Binding for MIPS Cluster Power Controller (CPC).
+-
+-This binding allows a system to specify where the CPC registers are
+-located.
+-
+-Required properties:
+-compatible : Should be "mti,mips-cpc".
+-regs: Should describe the address & size of the CPC register region.
+diff --git a/Documentation/devicetree/bindings/power/mti,mips-cpc.yaml b/Documentation/devicetree/bindings/power/mti,mips-cpc.yaml
+new file mode 100644
+index 000000000000..9cd92a57130c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/mti,mips-cpc.yaml
+@@ -0,0 +1,35 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/power/mti,mips-cpc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MIPS Cluster Power Controller
++
++description: |
++  Defines a location of the MIPS Cluster Power Controller registers.
++
++maintainers:
++  - Paul Burton <paulburton@kernel.org>
++
++properties:
++  compatible:
++    const: mti,mips-cpc
++
++  reg:
++    description: |
++      Base address and size of an unoccupied memory region, which will be
++      used to map the MIPS CPC registers block.
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++examples:
++  - |
++    cpc@1bde0000 {
++      compatible = "mti,mips-cpc";
++      reg = <0 0x1bde0000 0 0x8000>;
++    };
++...
 -- 
-Florian
+2.26.2
+

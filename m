@@ -6,40 +6,40 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E86FEC433E1
-	for <linux-mips@archiver.kernel.org>; Wed, 17 Jun 2020 23:41:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62DC2C433E5
+	for <linux-mips@archiver.kernel.org>; Wed, 17 Jun 2020 23:41:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D1E162166E
-	for <linux-mips@archiver.kernel.org>; Wed, 17 Jun 2020 23:41:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 46E3E21582
+	for <linux-mips@archiver.kernel.org>; Wed, 17 Jun 2020 23:41:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726854AbgFQXle (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 17 Jun 2020 19:41:34 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:57884 "EHLO
+        id S1726975AbgFQXkp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 17 Jun 2020 19:40:45 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:57800 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726848AbgFQXkr (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 17 Jun 2020 19:40:47 -0400
+        with ESMTP id S1726854AbgFQXko (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 17 Jun 2020 19:40:44 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 065938040A6A;
-        Wed, 17 Jun 2020 23:40:43 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id DB729803202E;
+        Wed, 17 Jun 2020 23:40:41 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Xid-sN17JxPT; Thu, 18 Jun 2020 02:40:42 +0300 (MSK)
+        with ESMTP id QUcOk74t3rAu; Thu, 18 Jun 2020 02:40:40 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Dan Williams <dan.j.williams@intel.com>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Arnd Bergmann <arnd@arndb.de>,
         Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <dmaengine@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v6 6/9] dmaengine: dw: Set DMA device max segment size parameter
-Date:   Thu, 18 Jun 2020 02:40:25 +0300
-Message-ID: <20200617234028.25808-7-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v6 3/9] dmaengine: Introduce min burst length capability
+Date:   Thu, 18 Jun 2020 02:40:22 +0300
+Message-ID: <20200617234028.25808-4-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20200617234028.25808-1-Sergey.Semin@baikalelectronics.ru>
 References: <20200617234028.25808-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -51,12 +51,10 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Maximum block size DW DMAC configuration corresponds to the max segment
-size DMA parameter in the DMA core subsystem notation. Lets set it with a
-value specific to the probed DW DMA controller. It shall help the DMA
-clients to create size-optimized SG-list items for the controller. This in
-turn will cause less dw_desc allocations, less LLP reinitializations,
-better DMA device performance.
+Some hardware aside from default 0/1 may have greater minimum burst
+transactions length constraints. Here we introduce the DMA device
+and slave capability, which if required can be initialized by the DMA
+engine driver with the device-specific value.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
@@ -69,37 +67,62 @@ Cc: devicetree@vger.kernel.org
 
 ---
 
-Changelog v2:
-- This is a new patch created in place of the dropped one:
-  "dmaengine: dw: Add LLP and block size config accessors".
-
 Changelog v3:
-- Use the block_size found for the very first channel instead of looking for
-  the maximum of maximum block sizes.
-- Don't define device-specific device_dma_parameters object, since it has
-  already been defined by the platform device core.
+- This is a new patch created as a result of the discussion with Vinud and
+  Andy in the framework of DW DMA burst and LLP capabilities.
 ---
- drivers/dma/dw/core.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/dma/dmaengine.c   | 1 +
+ include/linux/dmaengine.h | 4 ++++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/drivers/dma/dw/core.c b/drivers/dma/dw/core.c
-index 33e99d95b3d3..fb95920c429e 100644
---- a/drivers/dma/dw/core.c
-+++ b/drivers/dma/dw/core.c
-@@ -1229,6 +1229,13 @@ int do_dma_probe(struct dw_dma_chip *chip)
- 			     BIT(DMA_MEM_TO_MEM);
- 	dw->dma.residue_granularity = DMA_RESIDUE_GRANULARITY_BURST;
- 
-+	/*
-+	 * For now there is no hardware with non uniform maximum block size
-+	 * across all of the device channels, so we set the maximum segment
-+	 * size as the block size found for the very first channel.
-+	 */
-+	dma_set_max_seg_size(dw->dma.dev, dw->chan[0].block_size);
-+
- 	err = dma_async_device_register(&dw->dma);
- 	if (err)
- 		goto err_dma_register;
+diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
+index d31076d9ef25..b332ffe52780 100644
+--- a/drivers/dma/dmaengine.c
++++ b/drivers/dma/dmaengine.c
+@@ -590,6 +590,7 @@ int dma_get_slave_caps(struct dma_chan *chan, struct dma_slave_caps *caps)
+ 	caps->src_addr_widths = device->src_addr_widths;
+ 	caps->dst_addr_widths = device->dst_addr_widths;
+ 	caps->directions = device->directions;
++	caps->min_burst = device->min_burst;
+ 	caps->max_burst = device->max_burst;
+ 	caps->residue_granularity = device->residue_granularity;
+ 	caps->descriptor_reuse = device->descriptor_reuse;
+diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+index e1c03339918f..0c7403b27133 100644
+--- a/include/linux/dmaengine.h
++++ b/include/linux/dmaengine.h
+@@ -465,6 +465,7 @@ enum dma_residue_granularity {
+  *	Since the enum dma_transfer_direction is not defined as bit flag for
+  *	each type, the dma controller should set BIT(<TYPE>) and same
+  *	should be checked by controller as well
++ * @min_burst: min burst capability per-transfer
+  * @max_burst: max burst capability per-transfer
+  * @cmd_pause: true, if pause is supported (i.e. for reading residue or
+  *	       for resume later)
+@@ -478,6 +479,7 @@ struct dma_slave_caps {
+ 	u32 src_addr_widths;
+ 	u32 dst_addr_widths;
+ 	u32 directions;
++	u32 min_burst;
+ 	u32 max_burst;
+ 	bool cmd_pause;
+ 	bool cmd_resume;
+@@ -769,6 +771,7 @@ struct dma_filter {
+  *	Since the enum dma_transfer_direction is not defined as bit flag for
+  *	each type, the dma controller should set BIT(<TYPE>) and same
+  *	should be checked by controller as well
++ * @min_burst: min burst capability per-transfer
+  * @max_burst: max burst capability per-transfer
+  * @residue_granularity: granularity of the transfer residue reported
+  *	by tx_status
+@@ -839,6 +842,7 @@ struct dma_device {
+ 	u32 src_addr_widths;
+ 	u32 dst_addr_widths;
+ 	u32 directions;
++	u32 min_burst;
+ 	u32 max_burst;
+ 	bool descriptor_reuse;
+ 	enum dma_residue_granularity residue_granularity;
 -- 
 2.26.2
 

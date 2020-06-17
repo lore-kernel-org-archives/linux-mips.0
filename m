@@ -2,57 +2,67 @@ Return-Path: <SRS0=1hEu=76=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 624EEC433E2
-	for <linux-mips@archiver.kernel.org>; Wed, 17 Jun 2020 11:17:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9699C433E0
+	for <linux-mips@archiver.kernel.org>; Wed, 17 Jun 2020 11:17:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4954020734
-	for <linux-mips@archiver.kernel.org>; Wed, 17 Jun 2020 11:17:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A47DB20734
+	for <linux-mips@archiver.kernel.org>; Wed, 17 Jun 2020 11:17:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726986AbgFQLRd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 17 Jun 2020 07:17:33 -0400
-Received: from elvis.franken.de ([193.175.24.41]:35899 "EHLO elvis.franken.de"
+        id S1726905AbgFQLRl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 17 Jun 2020 07:17:41 -0400
+Received: from elvis.franken.de ([193.175.24.41]:35916 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726565AbgFQLRb (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 17 Jun 2020 07:17:31 -0400
+        id S1727012AbgFQLRi (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 17 Jun 2020 07:17:38 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jlW4P-0006Ho-04; Wed, 17 Jun 2020 13:17:29 +0200
+        id 1jlW4P-0006Ho-02; Wed, 17 Jun 2020 13:17:29 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 02B47C06C3; Wed, 17 Jun 2020 13:14:55 +0200 (CEST)
-Date:   Wed, 17 Jun 2020 13:14:55 +0200
+        id 43C36C06C3; Wed, 17 Jun 2020 13:14:04 +0200 (CEST)
+Date:   Wed, 17 Jun 2020 13:14:03 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Cc:     f.fainelli@gmail.com, jonas.gorski@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: BCM63xx: add endif comments
-Message-ID: <20200617111455.GE9940@alpha.franken.de>
-References: <20200608101828.3383942-1-noltari@gmail.com>
+To:     maobibo <maobibo@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Do not flush tlb when setting pmd entry
+Message-ID: <20200617111403.GC9940@alpha.franken.de>
+References: <1591177333-17833-1-git-send-email-maobibo@loongson.cn>
+ <20200615101443.GA10075@alpha.franken.de>
+ <4bef403d-baba-ddf8-c25c-3d6968897a53@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200608101828.3383942-1-noltari@gmail.com>
+In-Reply-To: <4bef403d-baba-ddf8-c25c-3d6968897a53@loongson.cn>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Jun 08, 2020 at 12:18:28PM +0200, Álvaro Fernández Rojas wrote:
-> There are plenty of ifdefs in board_bcm963xx.c without endif comments.
-> Let's make the code easier to follow by adding proper comments.
+On Tue, Jun 16, 2020 at 06:34:21PM +0800, maobibo wrote:
 > 
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> ---
->  arch/mips/bcm63xx/boards/board_bcm963xx.c | 33 +++++++++++------------
->  1 file changed, 15 insertions(+), 18 deletions(-)
+> 
+> On 06/15/2020 06:14 PM, Thomas Bogendoerfer wrote:
+> > On Wed, Jun 03, 2020 at 05:42:13PM +0800, Bibo Mao wrote:
+> >> Function set_pmd_at is to set pmd entry, if tlb entry need to
+> >> be flushed, there exists pmdp_huge_clear_flush alike function
+> >> before set_pmd_at is called. So it is not necessary to call
+> >> flush_tlb_all in this function.
+> > 
+> > have you checked all set_pmd_at() calls ? I found a few case where
+> > it's not clear to me, if tlb flushing is done... If you think this
+> > is still the right thing to do, please change arch/mips/mm/pgtable-32.c
+> > as well.
+> well, I will double check this and do more testing about thp and hugepage.
 
-applied to mips-next.
+I was more concerned about
+
+fs/dax.c
+fs/proc/task_mmu.c
+mm/rmap.c
 
 Thomas.
 

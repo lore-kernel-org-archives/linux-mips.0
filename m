@@ -3,144 +3,140 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 706F4C433E1
-	for <linux-mips@archiver.kernel.org>; Fri, 19 Jun 2020 16:06:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 735A8C433E2
+	for <linux-mips@archiver.kernel.org>; Fri, 19 Jun 2020 16:10:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 49DDC204EC
-	for <linux-mips@archiver.kernel.org>; Fri, 19 Jun 2020 16:06:27 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YefcB85r"
+	by mail.kernel.org (Postfix) with ESMTP id 54C5721707
+	for <linux-mips@archiver.kernel.org>; Fri, 19 Jun 2020 16:10:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1592583033;
+	bh=/wDY0J7ZCbV+kbdSd0PMHEoJW6LCkYfxvOWL2ZHCfxE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=budVBVORpCvJbN0ZoQCk3CsCasxY4xdiWcALI9Ya8YkDruVcKnRiAZCLQN1oJ72+K
+	 r/DtiRQVQKF85EQ7capsQu8DqgI2VPAEH0ZRSDYssGZx4XTRwGTv6hk2S+0TrBoQEK
+	 cqD3Sak9hvn7FNpnfbiwoRrRbfiPmEIssi0BCFhQ=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394200AbgFSQG0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 19 Jun 2020 12:06:26 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:50058 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2394020AbgFSQGH (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 19 Jun 2020 12:06:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592582765;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fdwEEPmGbF+7vaa9v+aN1XHbOlUdwOKUfmYW6uYEoCM=;
-        b=YefcB85riAbHoGU3YjA2sPfNbZE6JiL49GO79urIs3V2CGJau9/5vz83jwMrOAGyv5zxn8
-        OwFJHKfNijkkhdA3FuYsCvst37ORGAHIIUiFE/VeQLgDZ79AbmG9EZC55EDVp1WSCAMrm8
-        i/FuMFis+lSXokAffstCR9m66Dy537c=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-363-NZKFXwZhP92Bp7Z1RpDiqg-1; Fri, 19 Jun 2020 12:06:04 -0400
-X-MC-Unique: NZKFXwZhP92Bp7Z1RpDiqg-1
-Received: by mail-qt1-f199.google.com with SMTP id q21so7384735qtn.20
-        for <linux-mips@vger.kernel.org>; Fri, 19 Jun 2020 09:06:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fdwEEPmGbF+7vaa9v+aN1XHbOlUdwOKUfmYW6uYEoCM=;
-        b=YnIyRlazqVt88lOBQuxqtTKWPcdygO7B3G903CjktbxDI/aFePBz3FW1n3OcckYuPF
-         jnSXFixFzRmxnH+0VYMxzLIFS1Z32qpTIiKNaD7GErS19tUTVKG93uho9N5XPmwXPcQa
-         Z/KV5VCi74KsSbV5gRfmBWwUyo/N9dSWWyr5/b1vhLWoEKZt4D1DTYeQM3t7FKhKkeE/
-         2gNQlLoQote6O0+6C/zUa+/6u2RRZalvozbMuoTdjjl8CYiXdXjAgu5qhDL/GD4ei93B
-         A9/nkIgyqZdd4dmsrKW/2iLQL8/freuEbp+0zN5ZnF4D8SzflWkMqa0JiGlRJZe+7PhW
-         /5rA==
-X-Gm-Message-State: AOAM531PISXyHt0vO1Y2LlPKMnaw5Xx5bvjJV5unOyII4xUFcu4yRxnt
-        rdomWJi2E55OrbleSpWqE/xdMo/nLfygAD41uifVoU5OIyW2pPur7SB75JI86cWxTwsJiAWqUIU
-        44x5yOtSd5frAFAEQ13XhgQ==
-X-Received: by 2002:ac8:fec:: with SMTP id f41mr1437149qtk.212.1592582761259;
-        Fri, 19 Jun 2020 09:06:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz8wG2GTQ9R1eiAtzaifkaB+aa3jdUijFfrRdNWsFEhdltAKDggKtTyb2MbmKOZqrM66lR9pA==
-X-Received: by 2002:ac8:fec:: with SMTP id f41mr1437088qtk.212.1592582760619;
-        Fri, 19 Jun 2020 09:06:00 -0700 (PDT)
-Received: from xz-x1.redhat.com ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id g11sm6412604qkk.123.2020.06.19.09.05.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 09:05:59 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Gerald Schaefer <gerald.schaefer@de.ibm.com>, peterx@redhat.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        id S2391461AbgFSPGi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 19 Jun 2020 11:06:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391447AbgFSPGh (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:06:37 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74DC321841;
+        Fri, 19 Jun 2020 15:06:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592579195;
+        bh=/wDY0J7ZCbV+kbdSd0PMHEoJW6LCkYfxvOWL2ZHCfxE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=vBNFHgFx+J07nmymz6J96yBYCxn5RSArfvuwofpCAj74hg0NqCmRqV3MjQT5unkPd
+         PP/5r8yBY751GWfIglQ271RRMuXcXo0bxV8aDAcqSs0McMRjsKPJ2q+Aua7P0KHoAf
+         xrowFq/aVyyRragGrhQM6+do6cR5Rm6qoSKklqsM=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Subject: [PATCH 11/26] mm/mips: Use general page fault accounting
-Date:   Fri, 19 Jun 2020 12:05:23 -0400
-Message-Id: <20200619160538.8641-12-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200619160538.8641-1-peterx@redhat.com>
-References: <20200619160538.8641-1-peterx@redhat.com>
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 043/261] clocksource: dw_apb_timer_of: Fix missing clockevent timers
+Date:   Fri, 19 Jun 2020 16:30:54 +0200
+Message-Id: <20200619141651.995377300@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Use the general page fault accounting by passing regs into handle_mm_fault().
-It naturally solve the issue of multiple page fault accounting when page fault
-retry happened.
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-Fix PERF_COUNT_SW_PAGE_FAULTS perf event manually for page fault retries, by
-moving it before taking mmap_sem.
+[ Upstream commit 6d2e16a3181bafb77b535095c39ad1c8b9558c8c ]
 
-CC: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC: linux-mips@vger.kernel.org
-Signed-off-by: Peter Xu <peterx@redhat.com>
+Commit 100214889973 ("clocksource: dw_apb_timer_of: use
+clocksource_of_init") replaced a publicly available driver
+initialization method with one called by the timer_probe() method
+available after CLKSRC_OF. In current implementation it traverses
+all the timers available in the system and calls their initialization
+methods if corresponding devices were either in dtb or in acpi. But
+if before the commit any number of available timers would be installed
+as clockevent and clocksource devices, after that there would be at most
+two. The rest are just ignored since default case branch doesn't do
+anything. I don't see a reason of such behaviour, neither the commit
+message explains it. Moreover this might be wrong if on some platforms
+these timers might be used for different purpose, as virtually CPU-local
+clockevent timers and as an independent broadcast timer. So in order
+to keep the compatibility with the platforms where the order of the
+timers detection has some meaning, lets add the secondly discovered
+timer to be of clocksource/sched_clock type, while the very first and
+the others would provide the clockevents service.
+
+Fixes: 100214889973 ("clocksource: dw_apb_timer_of: use clocksource_of_init")
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Alessandro Zummo <a.zummo@towertech.it>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-rtc@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20200521204818.25436-7-Sergey.Semin@baikalelectronics.ru
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/mm/fault.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ drivers/clocksource/dw_apb_timer_of.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/mm/fault.c b/arch/mips/mm/fault.c
-index 31c2afb8f8a5..750a4978a12b 100644
---- a/arch/mips/mm/fault.c
-+++ b/arch/mips/mm/fault.c
-@@ -96,6 +96,8 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
- 
- 	if (user_mode(regs))
- 		flags |= FAULT_FLAG_USER;
-+
-+	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
- retry:
- 	down_read(&mm->mmap_sem);
- 	vma = find_vma(mm, address);
-@@ -152,12 +154,11 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
- 	 * make sure we exit gracefully rather than endlessly redo
- 	 * the fault.
- 	 */
--	fault = handle_mm_fault(vma, address, flags, NULL);
-+	fault = handle_mm_fault(vma, address, flags, regs);
- 
- 	if (fault_signal_pending(fault, regs))
- 		return;
- 
--	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
- 	if (unlikely(fault & VM_FAULT_ERROR)) {
- 		if (fault & VM_FAULT_OOM)
- 			goto out_of_memory;
-@@ -168,15 +169,6 @@ static void __kprobes __do_page_fault(struct pt_regs *regs, unsigned long write,
- 		BUG();
+diff --git a/drivers/clocksource/dw_apb_timer_of.c b/drivers/clocksource/dw_apb_timer_of.c
+index 8c28b127759f..6921b91b61ef 100644
+--- a/drivers/clocksource/dw_apb_timer_of.c
++++ b/drivers/clocksource/dw_apb_timer_of.c
+@@ -147,10 +147,6 @@ static int num_called;
+ static int __init dw_apb_timer_init(struct device_node *timer)
+ {
+ 	switch (num_called) {
+-	case 0:
+-		pr_debug("%s: found clockevent timer\n", __func__);
+-		add_clockevent(timer);
+-		break;
+ 	case 1:
+ 		pr_debug("%s: found clocksource timer\n", __func__);
+ 		add_clocksource(timer);
+@@ -161,6 +157,8 @@ static int __init dw_apb_timer_init(struct device_node *timer)
+ #endif
+ 		break;
+ 	default:
++		pr_debug("%s: found clockevent timer\n", __func__);
++		add_clockevent(timer);
+ 		break;
  	}
- 	if (flags & FAULT_FLAG_ALLOW_RETRY) {
--		if (fault & VM_FAULT_MAJOR) {
--			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ, 1,
--						  regs, address);
--			tsk->maj_flt++;
--		} else {
--			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN, 1,
--						  regs, address);
--			tsk->min_flt++;
--		}
- 		if (fault & VM_FAULT_RETRY) {
- 			flags |= FAULT_FLAG_TRIED;
  
 -- 
-2.26.2
+2.25.1
+
+
 

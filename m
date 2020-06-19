@@ -2,137 +2,143 @@ Return-Path: <SRS0=5AqY=AA=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64413C433E2
-	for <linux-mips@archiver.kernel.org>; Fri, 19 Jun 2020 16:53:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06D76C433E2
+	for <linux-mips@archiver.kernel.org>; Fri, 19 Jun 2020 17:01:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 421C320734
-	for <linux-mips@archiver.kernel.org>; Fri, 19 Jun 2020 16:53:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592585614;
-	bh=tusqSggmbCjVTGyD6rz3L0jioKmDgZahfSG5qdhwepY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=nYxoF5DvQswZOZ5JpXcZlEgri11SVbGLWa1UYK+ODndpH4H/De4bLScvrP88jA3Ki
-	 UlLEAPRyv+VyH12qLbBgglRwi1AwexGdC5+YQ9c/Q8vF0E61BixbAqxl5V+O90dx0H
-	 7oEO9OVlrqPL10DIhuliKiVjjVpt3grJ1MrMjrkU=
+	by mail.kernel.org (Postfix) with ESMTP id E37F520732
+	for <linux-mips@archiver.kernel.org>; Fri, 19 Jun 2020 17:01:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387691AbgFSOhT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 19 Jun 2020 10:37:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54000 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387650AbgFSOhN (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:37:13 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22F7E20DD4;
-        Fri, 19 Jun 2020 14:37:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577432;
-        bh=tusqSggmbCjVTGyD6rz3L0jioKmDgZahfSG5qdhwepY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E/G4AjbFkHj9LzAwd0iDM+drmMtZFlLuOQF/fq9QvSaV+WbUuaMt4mE2n6FuTWQSf
-         1ifstb1Vhofi/AdXzbPijI+Q6NEHtrtuHgdNQbNW+Bk+hPzJ3OezKlfedY6UuDVmfk
-         a4LVWF/9Y0r2T3Oy0u1LRIXzPUtgknj6/ZxRiBHg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        id S2387512AbgFSRBi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 19 Jun 2020 13:01:38 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:37424 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733192AbgFSRBh (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 19 Jun 2020 13:01:37 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 45B9480045E5;
+        Fri, 19 Jun 2020 17:01:28 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 2LmcmqX_SRgV; Fri, 19 Jun 2020 20:01:26 +0300 (MSK)
+Date:   Fri, 19 Jun 2020 20:01:25 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rob Herring <robh@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 049/101] spi: dw: Enable interrupts in accordance with DMA xfer mode
-Date:   Fri, 19 Jun 2020 16:32:38 +0200
-Message-Id: <20200619141616.642921141@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
-References: <20200619141614.001544111@linuxfoundation.org>
-User-Agent: quilt/0.66
+        Arnd Bergmann <arnd@arndb.de>, <linux-mips@vger.kernel.org>,
+        dmaengine <dmaengine@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/9] dt-bindings: dma: dw: Convert DW DMAC to DT
+ binding
+Message-ID: <20200619170125.7ww5ornsqctscine@mobilestation>
+References: <20200617234028.25808-1-Sergey.Semin@baikalelectronics.ru>
+ <20200617234028.25808-2-Sergey.Semin@baikalelectronics.ru>
+ <CAHp75Vd+3ZN51geXg+KiQYVpBZN7F+kgt-2Snw7VDiKiYVqX=A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vd+3ZN51geXg+KiQYVpBZN7F+kgt-2Snw7VDiKiYVqX=A@mail.gmail.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+On Thu, Jun 18, 2020 at 11:21:53AM +0300, Andy Shevchenko wrote:
+> On Thu, Jun 18, 2020 at 2:43 AM Serge Semin
+> <Sergey.Semin@baikalelectronics.ru> wrote:
+> >
+> > Modern device tree bindings are supposed to be created as YAML-files
+> > in accordance with dt-schema. This commit replaces the Synopsis
+> > Designware DMA controller legacy bare text bindings with YAML file.
+> > The only required prorties are "compatible", "reg", "#dma-cells" and
+> > "interrupts", which will be used by the driver to correctly find the
+> > controller memory region and handle its events. The rest of the properties
+> > are optional, since in case if either "dma-channels" or "dma-masters" isn't
+> > specified, the driver will attempt to auto-detect the IP core
+> > configuration.
+> >
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> > Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Cc: linux-mips@vger.kernel.org
+> 
+> 
 
-[ Upstream commit 43dba9f3f98c2b184a19f856f06fe22817bfd9e0 ]
+> Rob, here are questions to you.
 
-It's pointless to track the Tx overrun interrupts if Rx-only SPI
-transfer is issued. Similarly there is no need in handling the Rx
-overrun/underrun interrupts if Tx-only SPI transfer is executed.
-So lets unmask the interrupts only if corresponding SPI
-transactions are implied.
+Rob normally is very busy. So I hope you won't mind me answering in his stead.
 
-Co-developed-by: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
-Signed-off-by: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: devicetree@vger.kernel.org
-Link: https://lore.kernel.org/r/20200522000806.7381-3-Sergey.Semin@baikalelectronics.ru
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/spi/spi-dw-mid.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> > +  dma-channels:
+> > +    description: |
+> > +      Number of DMA channels supported by the controller. In case if
+> > +      not specified the driver will try to auto-detect this and
+> > +      the rest of the optional parameters.
+> > +    minimum: 1
+> > +    maximum: 8
+> 
+> ...
+> 
+> > +  multi-block:
+> 
+> > +      maxItems: 8
+> 
 
-diff --git a/drivers/spi/spi-dw-mid.c b/drivers/spi/spi-dw-mid.c
-index 4d6434b244e2..bd116f117b02 100644
---- a/drivers/spi/spi-dw-mid.c
-+++ b/drivers/spi/spi-dw-mid.c
-@@ -228,19 +228,23 @@ static struct dma_async_tx_descriptor *dw_spi_dma_prepare_rx(struct dw_spi *dws,
- 
- static int mid_spi_dma_setup(struct dw_spi *dws, struct spi_transfer *xfer)
- {
--	u16 dma_ctrl = 0;
-+	u16 imr = 0, dma_ctrl = 0;
- 
- 	dw_writel(dws, DW_SPI_DMARDLR, 0xf);
- 	dw_writel(dws, DW_SPI_DMATDLR, 0x10);
- 
--	if (xfer->tx_buf)
-+	if (xfer->tx_buf) {
- 		dma_ctrl |= SPI_DMA_TDMAE;
--	if (xfer->rx_buf)
-+		imr |= SPI_INT_TXOI;
-+	}
-+	if (xfer->rx_buf) {
- 		dma_ctrl |= SPI_DMA_RDMAE;
-+		imr |= SPI_INT_RXUI | SPI_INT_RXOI;
-+	}
- 	dw_writel(dws, DW_SPI_DMACR, dma_ctrl);
- 
- 	/* Set the interrupt mask */
--	spi_umask_intr(dws, SPI_INT_TXOI | SPI_INT_RXUI | SPI_INT_RXOI);
-+	spi_umask_intr(dws, imr);
- 
- 	dws->transfer_handler = dma_transfer;
- 
--- 
-2.25.1
+> This maximum is defined by above dma-channels property. Is there any
+> way to put it in the schema?
 
+Neither Json nor Yaml schema support inter-properties values dependencies
+out of box. If it's required, then a back-end must be properly tuned up.
+In other words the dt-schema framework should be altered to parse the
+"dma-channels" property and to apply the constraint to another property
+in accordance with its value.
 
+> 
+> ...
+> 
+> > +  snps,dma-protection-control:
+> > +    $ref: /schemas/types.yaml#definitions/uint32
+> > +    description: |
+> > +      Bits one-to-one passed to the AHB HPROT[3:1] bus. Each bit setting
+> > +      indicates the following features: bit 0 - privileged mode,
+> > +      bit 1 - DMA is bufferable, bit 2 - DMA is cacheable.
+> > +    default: 0
+> > +    minimum: 0
+> > +    maximum: 7
+> 
 
+> AFAIR this is defined by bit flags, does schema have a mechanism to
+> define flags-like entries?
+
+Normally a thing like that could be done by means of enum constraints.
+But it only works for cases with non-combinable bit-fields, for
+instance if there were only either privileged or bufferable or cacheable
+modes. Otherwise we would have to describe each combination of the bits
+setting, which as you understand would be very clumsy. Seeing there might
+be any combination of the HPROT bits setting here we have no choice but
+to use the range constraint.
+
+-Sergey
+
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko

@@ -7,55 +7,56 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4643C433E1
-	for <linux-mips@archiver.kernel.org>; Fri, 19 Jun 2020 16:21:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C78F9C433E2
+	for <linux-mips@archiver.kernel.org>; Fri, 19 Jun 2020 16:25:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A21C9217A0
-	for <linux-mips@archiver.kernel.org>; Fri, 19 Jun 2020 16:21:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A71D921924
+	for <linux-mips@archiver.kernel.org>; Fri, 19 Jun 2020 16:25:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1592583660;
-	bh=Pg7o7hR6OuF3WqB28s1pOE/hk0d383YdOIRcUIRuGsg=;
+	s=default; t=1592583901;
+	bh=stJzp+0uDkiYIjALJsrQp9bsVu0wkK33koz/CtwL74o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=codbri9otfLVcrRcV+aeaPRYL9DZU2C3KtqG7YJXI+Q0lTVFT5KWgB0eBtMjoX9n6
-	 OzrD9YnCRZQ9YQT0zsOQQguSSjaT4p9cL2/7oo3+59xfUJEDCN/bCrn4O55ZSPnOq1
-	 0XVTLfjHbnqc+9cb+1Kz76lMMZsMpkyJd4Ht+I2o=
+	b=WkiJVOOqaSAfhWFBEAHm0f00+NkBACGnlMUuz+w/F9k4yPk0aKLMT63mIoFXQB9GX
+	 ZcuVKz1sXdKutYpUSNOd6NdRkXRVkf2W+vo6j+D1J6V4D94FRapyE0NHuOVgBtKoy2
+	 ZaJtdr6/d4RWoghWQzM08EXZWTSk0ovXw3bGim60=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390667AbgFSPA7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 19 Jun 2020 11:00:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57378 "EHLO mail.kernel.org"
+        id S2394805AbgFSQYu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 19 Jun 2020 12:24:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390671AbgFSPA6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:00:58 -0400
+        id S2389898AbgFSO5v (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:57:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84DE020734;
-        Fri, 19 Jun 2020 15:00:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4F4521835;
+        Fri, 19 Jun 2020 14:57:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578858;
-        bh=Pg7o7hR6OuF3WqB28s1pOE/hk0d383YdOIRcUIRuGsg=;
+        s=default; t=1592578671;
+        bh=stJzp+0uDkiYIjALJsrQp9bsVu0wkK33koz/CtwL74o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f2LVDoNa45YBAG9lbXrTibHbHAkGdI/umi2h6DPNOabQa3Lw2QibgDUI5Ptt6uteL
-         4kbUZ3cqzhtCQ9D/rFeK1b8SOxX61+jDjZkcDDtP0BIk8pyiNxEiwgQsnHH3bGJL7I
-         rZSQdmQTuglTjCzF6/yb6L8yzsUzJ2vvnhHwvteU=
+        b=sTnmdRBDmcEeIKlOu9GEN6wlvhqqqT8Yrpe+hQMKhbZG9wG1ohhx01SfZ0hjiJYFc
+         8Zo4qMQMvl/WLbz6D4Md71uB++36WNES+w4Zcd/gG1E9mxTCFHYkMHPU/4DlYvUu1f
+         GXGocqQqgGiK34nZ3RwQZkzC2ZTptwXUcoPn9Fkk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Feng Tang <feng.tang@intel.com>,
         Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 182/267] spi: dw: Return any value retrieved from the dma_transfer callback
-Date:   Fri, 19 Jun 2020 16:32:47 +0200
-Message-Id: <20200619141657.498868116@linuxfoundation.org>
+Subject: [PATCH 4.19 111/267] clocksource: dw_apb_timer: Make CPU-affiliation being optional
+Date:   Fri, 19 Jun 2020 16:31:36 +0200
+Message-Id: <20200619141654.178893412@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
 References: <20200619141648.840376470@linuxfoundation.org>
@@ -70,67 +71,73 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-[ Upstream commit f0410bbf7d0fb80149e3b17d11d31f5b5197873e ]
+[ Upstream commit cee43dbf2ee3f430434e2b66994eff8a1aeda889 ]
 
-DW APB SSI DMA-part of the driver may need to perform the requested
-SPI-transfer synchronously. In that case the dma_transfer() callback
-will return 0 as a marker of the SPI transfer being finished so the
-SPI core doesn't need to wait and may proceed with the SPI message
-trasnfers pumping procedure. This will be needed to fix the problem
-when DMA transactions are finished, but there is still data left in
-the SPI Tx/Rx FIFOs being sent/received. But for now make dma_transfer
-to return 1 as the normal dw_spi_transfer_one() method.
+Currently the DW APB Timer driver binds each clockevent timers to a
+particular CPU. This isn't good for multiple reasons. First of all seeing
+the device is placed on APB bus (which makes it accessible from any CPU
+core), accessible over MMIO and having the DYNIRQ flag set we can be sure
+that manually binding the timer to any CPU just isn't correct. By doing
+so we just set an extra limitation on device usage. This also doesn't
+reflect the device actual capability, since by setting the IRQ affinity
+we can make it virtually local to any CPU. Secondly imagine if you had a
+real CPU-local timer with the same rating and the same CPU-affinity.
+In this case if DW APB timer was registered first, then due to the
+clockevent framework tick-timer selection procedure we'll end up with the
+real CPU-local timer being left unselected for clock-events tracking. But
+on most of the platforms (MIPS/ARM/etc) such timers are normally embedded
+into the CPU core and are accessible with much better performance then
+devices placed on APB. For instance in MIPS architectures there is
+r4k-timer, which is CPU-local, assigned with the same rating, and normally
+its clockevent device is registered after the platform-specific one.
+
+So in order to fix all of these issues let's make the DW APB Timer CPU
+affinity being optional and deactivated by passing a negative CPU id,
+which will effectively set the DW APB clockevent timer cpumask to
+'cpu_possible_mask'.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
-Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
 Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Alessandro Zummo <a.zummo@towertech.it>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Feng Tang <feng.tang@intel.com>
 Cc: Rob Herring <robh+dt@kernel.org>
 Cc: linux-mips@vger.kernel.org
+Cc: linux-rtc@vger.kernel.org
 Cc: devicetree@vger.kernel.org
-Link: https://lore.kernel.org/r/20200529131205.31838-3-Sergey.Semin@baikalelectronics.ru
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20200521204818.25436-5-Sergey.Semin@baikalelectronics.ru
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-dw-mid.c | 2 +-
- drivers/spi/spi-dw.c     | 7 ++-----
- 2 files changed, 3 insertions(+), 6 deletions(-)
+ drivers/clocksource/dw_apb_timer.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-dw-mid.c b/drivers/spi/spi-dw-mid.c
-index e1b34ef9a31c..10f328558d55 100644
---- a/drivers/spi/spi-dw-mid.c
-+++ b/drivers/spi/spi-dw-mid.c
-@@ -274,7 +274,7 @@ static int mid_spi_dma_transfer(struct dw_spi *dws, struct spi_transfer *xfer)
- 		dma_async_issue_pending(dws->txchan);
- 	}
- 
--	return 0;
-+	return 1;
- }
- 
- static void mid_spi_dma_stop(struct dw_spi *dws)
-diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
-index 3fbd6f01fb10..b1c137261d0f 100644
---- a/drivers/spi/spi-dw.c
-+++ b/drivers/spi/spi-dw.c
-@@ -383,11 +383,8 @@ static int dw_spi_transfer_one(struct spi_controller *master,
- 
- 	spi_enable_chip(dws, 1);
- 
--	if (dws->dma_mapped) {
--		ret = dws->dma_ops->dma_transfer(dws, transfer);
--		if (ret < 0)
--			return ret;
--	}
-+	if (dws->dma_mapped)
-+		return dws->dma_ops->dma_transfer(dws, transfer);
- 
- 	if (chip->poll_mode)
- 		return poll_transfer(dws);
+diff --git a/drivers/clocksource/dw_apb_timer.c b/drivers/clocksource/dw_apb_timer.c
+index 1f5f734e4919..a018199575e3 100644
+--- a/drivers/clocksource/dw_apb_timer.c
++++ b/drivers/clocksource/dw_apb_timer.c
+@@ -225,7 +225,8 @@ static int apbt_next_event(unsigned long delta,
+ /**
+  * dw_apb_clockevent_init() - use an APB timer as a clock_event_device
+  *
+- * @cpu:	The CPU the events will be targeted at.
++ * @cpu:	The CPU the events will be targeted at or -1 if CPU affiliation
++ *		isn't required.
+  * @name:	The name used for the timer and the IRQ for it.
+  * @rating:	The rating to give the timer.
+  * @base:	I/O base for the timer registers.
+@@ -260,7 +261,7 @@ dw_apb_clockevent_init(int cpu, const char *name, unsigned rating,
+ 	dw_ced->ced.max_delta_ticks = 0x7fffffff;
+ 	dw_ced->ced.min_delta_ns = clockevent_delta2ns(5000, &dw_ced->ced);
+ 	dw_ced->ced.min_delta_ticks = 5000;
+-	dw_ced->ced.cpumask = cpumask_of(cpu);
++	dw_ced->ced.cpumask = cpu < 0 ? cpu_possible_mask : cpumask_of(cpu);
+ 	dw_ced->ced.features = CLOCK_EVT_FEAT_PERIODIC |
+ 				CLOCK_EVT_FEAT_ONESHOT | CLOCK_EVT_FEAT_DYNIRQ;
+ 	dw_ced->ced.set_state_shutdown = apbt_shutdown;
 -- 
 2.25.1
 

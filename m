@@ -2,111 +2,115 @@ Return-Path: <SRS0=5AqY=AA=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B55B9C433DF
-	for <linux-mips@archiver.kernel.org>; Fri, 19 Jun 2020 20:03:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C5FDC433E0
+	for <linux-mips@archiver.kernel.org>; Fri, 19 Jun 2020 21:07:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 934A121531
-	for <linux-mips@archiver.kernel.org>; Fri, 19 Jun 2020 20:03:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 00AFF20890
+	for <linux-mips@archiver.kernel.org>; Fri, 19 Jun 2020 21:07:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388832AbgFSUDP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 19 Jun 2020 16:03:15 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:37896 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388821AbgFSUDP (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 19 Jun 2020 16:03:15 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id C3BBB80045E4;
-        Fri, 19 Jun 2020 20:03:12 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id fHwk4qyxZKn9; Fri, 19 Jun 2020 23:03:12 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
+        id S2391860AbgFSVHW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 19 Jun 2020 17:07:22 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:50614 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391572AbgFSVHV (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 19 Jun 2020 17:07:21 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 0A47C1C0C12; Fri, 19 Jun 2020 23:07:20 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 23:07:19 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Arnd Bergmann <arnd@arndb.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        <linux-mips@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v7 2/3] serial: 8250_dw: Simplify the ref clock rate setting procedure
-Date:   Fri, 19 Jun 2020 23:02:50 +0300
-Message-ID: <20200619200251.9066-3-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200619200251.9066-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200619200251.9066-1-Sergey.Semin@baikalelectronics.ru>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 182/267] spi: dw: Return any value retrieved from
+ the dma_transfer callback
+Message-ID: <20200619210719.GB12233@amd>
+References: <20200619141648.840376470@linuxfoundation.org>
+ <20200619141657.498868116@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="NMuMz9nt05w80d4+"
+Content-Disposition: inline
+In-Reply-To: <20200619141657.498868116@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Really instead of twice checking the clk_round_rate() return value
-we could do it once, and if it isn't error the clock rate can be changed.
-By doing so we decrease a number of ret-value tests and remove a weird
-goto-based construction implemented in the dw8250_set_termios() method.
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
+--NMuMz9nt05w80d4+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
----
+On Fri 2020-06-19 16:32:47, Greg Kroah-Hartman wrote:
+> From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+>=20
+> [ Upstream commit f0410bbf7d0fb80149e3b17d11d31f5b5197873e ]
+>=20
+> DW APB SSI DMA-part of the driver may need to perform the requested
+> SPI-transfer synchronously. In that case the dma_transfer() callback
+> will return 0 as a marker of the SPI transfer being finished so the
+> SPI core doesn't need to wait and may proceed with the SPI message
+> trasnfers pumping procedure. This will be needed to fix the problem
+> when DMA transactions are finished, but there is still data left in
+> the SPI Tx/Rx FIFOs being sent/received. But for now make dma_transfer
+> to return 1 as the normal dw_spi_transfer_one() method.
 
-Changelog v3:
-- This is a new patch.
----
- drivers/tty/serial/8250/8250_dw.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+As far as I understand, this is support for new SoC, not a fix?
 
-diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
-index aab3cccc6789..12866083731d 100644
---- a/drivers/tty/serial/8250/8250_dw.c
-+++ b/drivers/tty/serial/8250/8250_dw.c
-@@ -282,20 +282,13 @@ static void dw8250_set_termios(struct uart_port *p, struct ktermios *termios,
- 
- 	clk_disable_unprepare(d->clk);
- 	rate = clk_round_rate(d->clk, baud * 16);
--	if (rate < 0)
--		ret = rate;
--	else if (rate == 0)
--		ret = -ENOENT;
--	else
-+	if (rate > 0) {
- 		ret = clk_set_rate(d->clk, rate);
-+		if (!ret)
-+			p->uartclk = rate;
-+	}
- 	clk_prepare_enable(d->clk);
- 
--	if (ret)
--		goto out;
--
--	p->uartclk = rate;
--
--out:
- 	p->status &= ~UPSTAT_AUTOCTS;
- 	if (termios->c_cflag & CRTSCTS)
- 		p->status |= UPSTAT_AUTOCTS;
--- 
-2.26.2
+> +++ b/drivers/spi/spi-dw.c
+> @@ -383,11 +383,8 @@ static int dw_spi_transfer_one(struct spi_controller=
+ *master,
+> =20
+>  	spi_enable_chip(dws, 1);
+> =20
+> -	if (dws->dma_mapped) {
+> -		ret =3D dws->dma_ops->dma_transfer(dws, transfer);
+> -		if (ret < 0)
+> -			return ret;
+> -	}
+> +	if (dws->dma_mapped)
+> +		return dws->dma_ops->dma_transfer(dws, transfer);
+> =20
+>  	if (chip->poll_mode)
+>  		return poll_transfer(dws);
 
+Mainline patch simply changes return value, but code is different in
+v4.19, and poll_transfer will now be avoided when dws->dma_mapped. Is
+that a problem?
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--NMuMz9nt05w80d4+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl7tKQcACgkQMOfwapXb+vJ1sgCeOJVyrkyrloM2p+RmL54QRIPJ
+CLQAn1uKYJOgsc+yYzmNLkQTUJ86pN4t
+=lPtX
+-----END PGP SIGNATURE-----
+
+--NMuMz9nt05w80d4+--

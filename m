@@ -2,39 +2,38 @@ Return-Path: <SRS0=WsVe=AD=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7715C433DF
-	for <linux-mips@archiver.kernel.org>; Mon, 22 Jun 2020 20:11:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4386CC433E0
+	for <linux-mips@archiver.kernel.org>; Mon, 22 Jun 2020 20:11:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9FCB4207F5
-	for <linux-mips@archiver.kernel.org>; Mon, 22 Jun 2020 20:11:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 252D720776
+	for <linux-mips@archiver.kernel.org>; Mon, 22 Jun 2020 20:11:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730383AbgFVULt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 22 Jun 2020 16:11:49 -0400
+        id S1728863AbgFVUJI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 22 Jun 2020 16:09:08 -0400
 Received: from mga12.intel.com ([192.55.52.136]:60195 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730308AbgFVUJN (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 22 Jun 2020 16:09:13 -0400
-IronPort-SDR: 32/SRsXPg2r+gNtqNXZVPDlaBM8A3F8ZgSmQcS2v0YC+A2GP+hQ6NsMCroZbm8OOE2b5nTbIuc
- 3DrZfMjrx1HQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9660"; a="123527722"
+        id S1728530AbgFVUJH (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 22 Jun 2020 16:09:07 -0400
+IronPort-SDR: LFVSAjT7u+N5vZPa59QDReV12rIKpjnkbs0ZPYtCAaByNwjoV647sWDA9DyO2iqQvLylDTOiKB
+ iudShdzF19fg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9660"; a="123527692"
 X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
-   d="scan'208";a="123527722"
+   d="scan'208";a="123527692"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 13:09:11 -0700
-IronPort-SDR: IRgUCTEaPJr/2/orSxWBxKSmIS60menKPUWxbbZ7C2802ZcPzS1mSvGZqhNP3PjvlDU4QyUDeZ
- zZbdgzTcmLcA==
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 13:09:05 -0700
+IronPort-SDR: ACiGxnvdRH5yHzKRcBqEkHkrUW0Xmd5fP+wZakk5PUawdwmWwHSjFB8CI8ofv1H3JKPtVSPmv8
+ o5YF/XigfYJw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
-   d="scan'208";a="318877068"
+   d="scan'208";a="318877033"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
-  by FMSMGA003.fm.intel.com with ESMTP; 22 Jun 2020 13:09:10 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 22 Jun 2020 13:09:05 -0700
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
 To:     Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
         Arnd Bergmann <arnd@arndb.de>
@@ -54,12 +53,10 @@ Cc:     James Morse <james.morse@arm.com>,
         Peter Shier <pshier@google.com>,
         Junaid Shahid <junaids@google.com>,
         Christoffer Dall <christoffer.dall@arm.com>
-Subject: [PATCH v2 06/21] KVM: x86/mmu: Move fast_page_fault() call above mmu_topup_memory_caches()
-Date:   Mon, 22 Jun 2020 13:08:07 -0700
-Message-Id: <20200622200822.4426-7-sean.j.christopherson@intel.com>
+Subject: [PATCH v2 00/21] KVM: Cleanup and unify kvm_mmu_memory_cache usage
+Date:   Mon, 22 Jun 2020 13:08:01 -0700
+Message-Id: <20200622200822.4426-1-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200622200822.4426-1-sean.j.christopherson@intel.com>
-References: <20200622200822.4426-1-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
@@ -67,40 +64,94 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Avoid refilling the memory caches and potentially slow reclaim/swap when
-handling a fast page fault, which does not need to allocate any new
-objects.
+Note, patch 18 will conflict with the p4d rework in 5.8.  I originally
+stated I would send v2 only after that got pulled into Paolo's tree, but
+I got my timing wrong, i.e. I was thinking that would have already
+happened.  I'll send v3 if necessary.  I wanted to get v2 out there now
+that I actually compile tested other architectures.
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/kvm/mmu/mmu.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Marc, I interpreted your "nothing caught fire" as Tested-by for the arm64
+patches, let me know if that's not what you intended.
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 5e773564ab20..4b4c3234d623 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4095,6 +4095,9 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
- 	if (page_fault_handle_page_track(vcpu, error_code, gfn))
- 		return RET_PF_EMULATE;
- 
-+	if (fast_page_fault(vcpu, gpa, error_code))
-+		return RET_PF_RETRY;
-+
- 	r = mmu_topup_memory_caches(vcpu);
- 	if (r)
- 		return r;
-@@ -4102,9 +4105,6 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
- 	if (lpage_disallowed)
- 		max_level = PG_LEVEL_4K;
- 
--	if (fast_page_fault(vcpu, gpa, error_code))
--		return RET_PF_RETRY;
--
- 	mmu_seq = vcpu->kvm->mmu_notifier_seq;
- 	smp_rmb();
- 
+
+This series resurrects Christoffer Dall's series[1] to provide a common
+MMU memory cache implementation that can be shared by x86, arm64 and MIPS.
+
+It also picks up a suggested change from Ben Gardon[2] to clear shadow
+page tables during initial allocation so as to avoid clearing entire
+pages while holding mmu_lock.
+
+The front half of the patches do house cleaning on x86's memory cache
+implementation in preparation for moving it to common code, along with a
+fair bit of cleanup on the usage.  The middle chunk moves the patches to
+common KVM, and the last two chunks convert arm64 and MIPS to the common
+implementation.
+
+Fully tested on x86 only.  Compile tested patches 14-21 on arm64, MIPS,
+s390 and PowerPC.
+
+v2:
+  - Rebase to kvm-5.8-2, commit 49b3deaad345 ("Merge tag ...").
+  - Use an asm-generic kvm_types.h for s390 and PowerPC instead of an
+    empty arch-specific file. [Marc]
+  - Explicit document "GFP_PGTABLE_USER == GFP_KERNEL_ACCOUNT | GFP_ZERO"
+    in the arm64 conversion patch. [Marc]
+  - Collect review tags. [Ben]
+
+[1] https://lkml.kernel.org/r/20191105110357.8607-1-christoffer.dall@arm
+[2] https://lkml.kernel.org/r/20190926231824.149014-4-bgardon@google.com
+
+Sean Christopherson (21):
+  KVM: x86/mmu: Track the associated kmem_cache in the MMU caches
+  KVM: x86/mmu: Consolidate "page" variant of memory cache helpers
+  KVM: x86/mmu: Use consistent "mc" name for kvm_mmu_memory_cache locals
+  KVM: x86/mmu: Remove superfluous gotos from mmu_topup_memory_caches()
+  KVM: x86/mmu: Try to avoid crashing KVM if a MMU memory cache is empty
+  KVM: x86/mmu: Move fast_page_fault() call above
+    mmu_topup_memory_caches()
+  KVM: x86/mmu: Topup memory caches after walking GVA->GPA
+  KVM: x86/mmu: Clean up the gorilla math in mmu_topup_memory_caches()
+  KVM: x86/mmu: Separate the memory caches for shadow pages and gfn
+    arrays
+  KVM: x86/mmu: Make __GFP_ZERO a property of the memory cache
+  KVM: x86/mmu: Zero allocate shadow pages (outside of mmu_lock)
+  KVM: x86/mmu: Skip filling the gfn cache for guaranteed direct MMU
+    topups
+  KVM: x86/mmu: Prepend "kvm_" to memory cache helpers that will be
+    global
+  KVM: Move x86's version of struct kvm_mmu_memory_cache to common code
+  KVM: Move x86's MMU memory cache helpers to common KVM code
+  KVM: arm64: Drop @max param from mmu_topup_memory_cache()
+  KVM: arm64: Use common code's approach for __GFP_ZERO with memory
+    caches
+  KVM: arm64: Use common KVM implementation of MMU memory caches
+  KVM: MIPS: Drop @max param from mmu_topup_memory_cache()
+  KVM: MIPS: Account pages used for GPA page tables
+  KVM: MIPS: Use common KVM implementation of MMU memory caches
+
+ arch/arm64/include/asm/kvm_host.h  |  11 ---
+ arch/arm64/include/asm/kvm_types.h |   8 ++
+ arch/arm64/kvm/arm.c               |   2 +
+ arch/arm64/kvm/mmu.c               |  54 +++---------
+ arch/mips/include/asm/kvm_host.h   |  11 ---
+ arch/mips/include/asm/kvm_types.h  |   7 ++
+ arch/mips/kvm/mmu.c                |  44 ++--------
+ arch/powerpc/include/asm/Kbuild    |   1 +
+ arch/s390/include/asm/Kbuild       |   1 +
+ arch/x86/include/asm/kvm_host.h    |  14 +---
+ arch/x86/include/asm/kvm_types.h   |   7 ++
+ arch/x86/kvm/mmu/mmu.c             | 129 +++++++++--------------------
+ arch/x86/kvm/mmu/paging_tmpl.h     |  10 +--
+ include/asm-generic/kvm_types.h    |   5 ++
+ include/linux/kvm_host.h           |   7 ++
+ include/linux/kvm_types.h          |  19 +++++
+ virt/kvm/kvm_main.c                |  55 ++++++++++++
+ 17 files changed, 175 insertions(+), 210 deletions(-)
+ create mode 100644 arch/arm64/include/asm/kvm_types.h
+ create mode 100644 arch/mips/include/asm/kvm_types.h
+ create mode 100644 arch/x86/include/asm/kvm_types.h
+ create mode 100644 include/asm-generic/kvm_types.h
+
 -- 
 2.26.0
 

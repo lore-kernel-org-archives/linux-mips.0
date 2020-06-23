@@ -5,23 +5,23 @@ X-Spam-Level:
 X-Spam-Status: No, score=-10.0 required=3.0
 	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 190CDC433DF
-	for <linux-mips@archiver.kernel.org>; Tue, 23 Jun 2020 09:06:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8875DC433DF
+	for <linux-mips@archiver.kernel.org>; Tue, 23 Jun 2020 09:07:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EDA0120768
-	for <linux-mips@archiver.kernel.org>; Tue, 23 Jun 2020 09:06:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 67AE220702
+	for <linux-mips@archiver.kernel.org>; Tue, 23 Jun 2020 09:07:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732079AbgFWJGu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 23 Jun 2020 05:06:50 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:44728 "EHLO loongson.cn"
+        id S1732047AbgFWJG7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 23 Jun 2020 05:06:59 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:44764 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732043AbgFWJGu (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 23 Jun 2020 05:06:50 -0400
+        id S1732110AbgFWJGx (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 23 Jun 2020 05:06:53 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf2oexvFeJ7JIAA--.33S4;
-        Tue, 23 Jun 2020 17:06:42 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf2oexvFeJ7JIAA--.33S9;
+        Tue, 23 Jun 2020 17:06:45 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Jason Cooper <jason@lakedaemon.net>,
@@ -30,62 +30,60 @@ Cc:     Huacai Chen <chenhc@lemote.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-mips@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH 2/7 RESEND] irqchip/loongson-htpic: Remove redundant kfree operation
-Date:   Tue, 23 Jun 2020 17:06:33 +0800
-Message-Id: <1592903198-5505-3-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH 7/7 RESEND] dt-bindings: interrupt-controller: Fix typos in loongson,liointc.yaml
+Date:   Tue, 23 Jun 2020 17:06:38 +0800
+Message-Id: <1592903198-5505-8-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
 In-Reply-To: <1592903198-5505-1-git-send-email-yangtiezhu@loongson.cn>
 References: <1592903198-5505-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dxf2oexvFeJ7JIAA--.33S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrtr15XrW5ZrW3AF15Kr4xtFb_yoW3twb_Cr
-        WIqr9rJFW0gr1rC3y7ur47ZrySkw4kWF1kuF4aya4ft347tw1rAry7Ar4fJF47Wa1SkFn8
-        WFW7ZrykAw1xGjkaLaAFLSUrUUUU8b8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbAkYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
-        IE14v26r15M28IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kIII0Yj41l84x0c7CE
-        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6x
-        kF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv
-        6xkF7I0E14v26rxl6s0DM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc
-        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAF
-        wI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4
-        CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7AKxVWrXVW3AwCY
-        02Avz4vE14v_GFWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2
-        xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
-        WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr
-        0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG
-        6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F
-        4UJbIYCTnIWIevJa73UjIFyTuYvj4RAUUUUUUUU
+X-CM-TRANSID: AQAAf9Dxf2oexvFeJ7JIAA--.33S9
+X-Coremail-Antispam: 1UD129KBjvJXoWruw45tw4fGw4kCF18AF1xGrg_yoW8JF48pa
+        yDC3ZFgF4jqr13C3yDta4vk3W3Zr98AwnrGFZ5ZrWxJFsxuw1jqr4agFn5A3W5GrWxJFWU
+        XryrKa10gayjyaUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUmF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
+        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
+        z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
+        4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE
+        3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
+        x0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8
+        JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2
+        ka0xkIwI1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
+        6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
+        AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26ryj6F1UMIIF0xvE
+        2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
+        IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2
+        KfnxnUUI43ZEXa7VUj7KsUUUUUU==
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In the function htpic_of_init(), when kzalloc htpic fails, it should
-return -ENOMEM directly, no need to execute "goto" to kfree.
+Fix the following two typos in loongson,liointc.yaml:
+fron -> from
+it's -> its
 
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- drivers/irqchip/irq-loongson-htpic.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ .../devicetree/bindings/interrupt-controller/loongson,liointc.yaml    | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-loongson-htpic.c b/drivers/irqchip/irq-loongson-htpic.c
-index dd018c2..63f7280 100644
---- a/drivers/irqchip/irq-loongson-htpic.c
-+++ b/drivers/irqchip/irq-loongson-htpic.c
-@@ -93,10 +93,8 @@ int __init htpic_of_init(struct device_node *node, struct device_node *parent)
- 	}
- 
- 	htpic = kzalloc(sizeof(*htpic), GFP_KERNEL);
--	if (!htpic) {
--		err = -ENOMEM;
--		goto out_free;
--	}
-+	if (!htpic)
-+		return -ENOMEM;
- 
- 	htpic->base = of_iomap(node, 0);
- 	if (!htpic->base) {
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+index b1db21e..13908ca 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+@@ -51,8 +51,8 @@ properties:
+     description: |
+       This property points how the children interrupts will be mapped into CPU
+       interrupt lines. Each cell refers to a parent interrupt line from 0 to 3
+-      and each bit in the cell refers to a children interrupt fron 0 to 31.
+-      If a CPU interrupt line didn't connected with liointc, then keep it's
++      and each bit in the cell refers to a children interrupt from 0 to 31.
++      If a CPU interrupt line didn't connected with liointc, then keep its
+       cell with zero.
+     $ref: /schemas/types.yaml#/definitions/uint32-array
+     minItems: 4
 -- 
 2.1.0
 

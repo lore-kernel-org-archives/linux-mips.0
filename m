@@ -7,119 +7,85 @@ X-Spam-Status: No, score=-10.0 required=3.0
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FD9BC433E2
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 06:39:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55D6AC433E1
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 06:45:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 87E8120899
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 06:39:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 34D1D206FA
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 06:45:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389139AbgFXGjQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 24 Jun 2020 02:39:16 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:46456 "EHLO loongson.cn"
+        id S2389394AbgFXGpt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 24 Jun 2020 02:45:49 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:48430 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388476AbgFXGjQ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 24 Jun 2020 02:39:16 -0400
+        id S2389375AbgFXGps (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 24 Jun 2020 02:45:48 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxj9+j8_Je2R5JAA--.564S5;
-        Wed, 24 Jun 2020 14:33:10 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxXeuQ9vJebSBJAA--.397S3;
+        Wed, 24 Jun 2020 14:45:37 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v2 03/14] irqchip/csky-mpintc: Fix potential resource leaks
-Date:   Wed, 24 Jun 2020 14:32:36 +0800
-Message-Id: <1592980367-1816-4-git-send-email-yangtiezhu@loongson.cn>
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v2 1/7 RESEND] irqchip/loongson-htpic: Remove redundant kfree operation
+Date:   Wed, 24 Jun 2020 14:45:30 +0800
+Message-Id: <1592981136-3572-2-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1592980367-1816-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1592980367-1816-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dxj9+j8_Je2R5JAA--.564S5
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF47urWrWr1UAF1rKF15Arb_yoW8Aw1DpF
-        48u3ySgrZ7Gr1UWr1fC3W8XryrG3yftay8K34Skas3JrnxWr98CFW8AF1Duw1fJa1rGayf
-        Zrs7t3y5C3WDAFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9l14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
-        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-        8EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
-        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-        IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2
-        IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
-        6r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
-        AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
-        s7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26F4j6r4UJwCI42IY6I8E87Iv6xkF7I0E14v26F
-        4UJVW0obIYCTnIWIevJa73UjIFyTuYvjfUb1vaUUUUU
+In-Reply-To: <1592981136-3572-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1592981136-3572-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9DxXeuQ9vJebSBJAA--.397S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrtr15XrW5ZrW3AF15Kr4xtFb_yoW3twb_Cr
+        WIqr9rJFW0gr1rC3y7ur47ZrySkw4kWF1kuF4aya4ft347tw1rAry7Ar4fJF47Wa1SkFn8
+        WFW7ZrykAw1xGjkaLaAFLSUrUUUU1b8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbJxYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
+        IE14v26r18M28IrcIa0xkI8VCY1x0267AKxVWUCVW8JwA2ocxC64kIII0Yj41l84x0c7CE
+        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6x
+        kF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv
+        6xkF7I0E14v26rxl6s0DM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc
+        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAF
+        wI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4
+        CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7AKxVW8ZVWrXwCY
+        02Avz4vE14v_GF1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Xr0_Ar1lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE
+        14v26r4UJVWxJr1lIxAIcVC2z280aVCY1x0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43
+        ZEXa7xRATmhJUUUUU==
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There exists potential resource leaks in the error path, fix them.
+In the function htpic_of_init(), when kzalloc htpic fails, it should
+return -ENOMEM directly, no need to execute "goto" to kfree.
 
-Fixes: d8a5f5f79122 ("irqchip: add C-SKY SMP interrupt controller")
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- drivers/irqchip/irq-csky-mpintc.c | 26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
+ drivers/irqchip/irq-loongson-htpic.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/irqchip/irq-csky-mpintc.c b/drivers/irqchip/irq-csky-mpintc.c
-index a1534ed..c195e24 100644
---- a/drivers/irqchip/irq-csky-mpintc.c
-+++ b/drivers/irqchip/irq-csky-mpintc.c
-@@ -247,8 +247,10 @@ csky_mpintc_init(struct device_node *node, struct device_node *parent)
- 	if (INTCG_base == NULL) {
- 		INTCG_base = ioremap(mfcr("cr<31, 14>"),
- 				     INTCL_SIZE*nr_cpu_ids + INTCG_SIZE);
--		if (INTCG_base == NULL)
--			return -EIO;
-+		if (INTCG_base == NULL) {
-+			ret = -EIO;
-+			goto err_free;
-+		}
+diff --git a/drivers/irqchip/irq-loongson-htpic.c b/drivers/irqchip/irq-loongson-htpic.c
+index dd018c2..63f7280 100644
+--- a/drivers/irqchip/irq-loongson-htpic.c
++++ b/drivers/irqchip/irq-loongson-htpic.c
+@@ -93,10 +93,8 @@ int __init htpic_of_init(struct device_node *node, struct device_node *parent)
+ 	}
  
- 		INTCL_base = INTCG_base + INTCG_SIZE;
+ 	htpic = kzalloc(sizeof(*htpic), GFP_KERNEL);
+-	if (!htpic) {
+-		err = -ENOMEM;
+-		goto out_free;
+-	}
++	if (!htpic)
++		return -ENOMEM;
  
-@@ -257,8 +259,10 @@ csky_mpintc_init(struct device_node *node, struct device_node *parent)
- 
- 	root_domain = irq_domain_add_linear(node, nr_irq, &csky_irqdomain_ops,
- 					    NULL);
--	if (!root_domain)
--		return -ENXIO;
-+	if (!root_domain) {
-+		ret = -ENXIO;
-+		goto err_iounmap;
-+	}
- 
- 	/* for every cpu */
- 	for_each_present_cpu(cpu) {
-@@ -270,12 +274,22 @@ csky_mpintc_init(struct device_node *node, struct device_node *parent)
- 
- #ifdef CONFIG_SMP
- 	ipi_irq = irq_create_mapping(root_domain, IPI_IRQ);
--	if (!ipi_irq)
--		return -EIO;
-+	if (!ipi_irq) {
-+		ret = -EIO;
-+		goto err_domain_remove;
-+	}
- 
- 	set_send_ipi(&csky_mpintc_send_ipi, ipi_irq);
- #endif
- 
- 	return 0;
-+
-+err_domain_remove:
-+	irq_domain_remove(root_domain);
-+err_iounmap:
-+	iounmap(INTCG_base);
-+err_free:
-+	kfree(__trigger);
-+	return ret;
- }
- IRQCHIP_DECLARE(csky_mpintc, "csky,mpintc", csky_mpintc_init);
+ 	htpic->base = of_iomap(node, 0);
+ 	if (!htpic->base) {
 -- 
 2.1.0
 

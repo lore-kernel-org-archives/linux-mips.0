@@ -2,107 +2,96 @@ Return-Path: <SRS0=pQzS=AF=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C317C433E1
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 07:45:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B011C433E0
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 07:45:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 64A8320874
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 07:45:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 09B3320B80
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 07:45:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389885AbgFXHpj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 24 Jun 2020 03:45:39 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:35820 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389982AbgFXHpV (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S2390002AbgFXHpV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 24 Jun 2020 03:45:21 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:35790 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389928AbgFXHpU (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 24 Jun 2020 03:45:20 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxD2qIBPNevCZJAA--.660S2;
-        Wed, 24 Jun 2020 15:45:12 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxD2qIBPNevCZJAA--.660S11;
+        Wed, 24 Jun 2020 15:45:16 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Jason Cooper <jason@lakedaemon.net>,
         Marc Zyngier <maz@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
         Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v3 00/14 RESEND] irqchip: Fix potential resource leaks
-Date:   Wed, 24 Jun 2020 15:44:57 +0800
-Message-Id: <1592984711-3130-1-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH v3 09/14 RESEND] irqchip/mscc-ocelot: Fix potential resource leaks
+Date:   Wed, 24 Jun 2020 15:45:06 +0800
+Message-Id: <1592984711-3130-10-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxD2qIBPNevCZJAA--.660S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tr4DAw4UtFWDuw17XF1UZFb_yoW8uFyrpF
-        4xJa90vrW8Cay3JrnxAw1jyFy3XwnYyay7t3s7A343Xwn5WryDGF1UAw48XryUWayfGF1j
-        kF4rJFyUC3WDAFUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
-        CwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUXV
-        WUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW5JVW7JwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF
-        0xvEx4A2jsIE14v26r4UJVWxJr1lIxAIcVC2z280aVCY1x0267AKxVW0oVCq3bIYCTnIWI
-        evJa73UjIFyTuYvjfU0OJeDUUUU
+In-Reply-To: <1592984711-3130-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1592984711-3130-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9DxD2qIBPNevCZJAA--.660S11
+X-Coremail-Antispam: 1UD129KBjvdXoWrKw13uF47Ary7tFW8CrW7Jwb_yoWkXFb_Cr
+        s0g3s3GrWUKr4fJanrtwnxZ34kWr4v9F1vgrZ7t3Zxt34xK3s7Zr4avrsxAr48uFZ0krnr
+        Ga1j9r4xAw1xujkaLaAFLSUrUUUU0b8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbB8FF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
+        IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
+        F7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr
+        1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
+        3wAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I
+        8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCF
+        s4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7
+        CjxVAaw2AFwI0_GFv_Wrylc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC20s026xCa
+        FVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_Jr
+        Wlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26F1j
+        6w1UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r
+        1j6r1xMIIF0xvEx4A2jsIE14v26r4UJVWxJr1lIxAIcVC2z280aVCY1x0267AKxVW0oVCq
+        3bIYCTnIWIevJa73UjIFyTuYvjTRX2-nDUUUU
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-[git send-email failed due to too many commands,
- so only cc the major related email and resend it,
- sorry for that]
+There exists potential resource leaks in the error path, fix them.
 
-When I test the irqchip code of Loongson, I read the related code of other
-chips in drivers/irqchip and I find some potential resource leaks in the
-error path, I think it is better to fix them.
+Fixes: 19d99164480a ("irqchip: Add a driver for the Microsemi Ocelot controller")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ drivers/irqchip/irq-mscc-ocelot.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-v2:
-  - Split the first patch into a new patch series which
-    includes small patches and add "Fixes" tag
-  - Use "goto" label to handle error path in some patches
-
-v3:
-  - Add missed variable "ret" in the patch #5 and #13,
-    sorry for that
-
-Tiezhu Yang (14):
-  irqchip/ath79-misc: Fix potential resource leaks
-  irqchip/csky-apb-intc: Fix potential resource leaks
-  irqchip/csky-mpintc: Fix potential resource leaks
-  irqchip/davinci-aintc: Fix potential resource leaks
-  irqchip/davinci-cp-intc: Fix potential resource leaks
-  irqchip/digicolor: Fix potential resource leaks
-  irqchip/dw-apb-ictl: Fix potential resource leaks
-  irqchip/ls1x: Fix potential resource leaks
-  irqchip/mscc-ocelot: Fix potential resource leaks
-  irqchip/nvic: Fix potential resource leaks
-  irqchip/omap-intc: Fix potential resource leak
-  irqchip/riscv-intc: Fix potential resource leak
-  irqchip/s3c24xx: Fix potential resource leaks
-  irqchip/xilinx-intc: Fix potential resource leak
-
- drivers/irqchip/irq-ath79-misc.c      | 14 +++++++++++---
- drivers/irqchip/irq-csky-apb-intc.c   | 12 ++++++++++--
- drivers/irqchip/irq-csky-mpintc.c     | 26 ++++++++++++++++++++------
- drivers/irqchip/irq-davinci-aintc.c   | 17 +++++++++++++----
- drivers/irqchip/irq-davinci-cp-intc.c | 18 +++++++++++++++---
- drivers/irqchip/irq-digicolor.c       | 14 +++++++++++---
- drivers/irqchip/irq-dw-apb-ictl.c     | 11 ++++++++---
- drivers/irqchip/irq-ls1x.c            |  4 +++-
- drivers/irqchip/irq-mscc-ocelot.c     |  6 ++++--
- drivers/irqchip/irq-nvic.c            | 12 +++++++++---
- drivers/irqchip/irq-omap-intc.c       |  4 +++-
- drivers/irqchip/irq-riscv-intc.c      |  1 +
- drivers/irqchip/irq-s3c24xx.c         | 23 +++++++++++++++++------
- drivers/irqchip/irq-xilinx-intc.c     |  4 +++-
- 14 files changed, 128 insertions(+), 38 deletions(-)
-
+diff --git a/drivers/irqchip/irq-mscc-ocelot.c b/drivers/irqchip/irq-mscc-ocelot.c
+index 88143c0..e676ae2 100644
+--- a/drivers/irqchip/irq-mscc-ocelot.c
++++ b/drivers/irqchip/irq-mscc-ocelot.c
+@@ -73,7 +73,8 @@ static int __init ocelot_irq_init(struct device_node *node,
+ 				       &irq_generic_chip_ops, NULL);
+ 	if (!domain) {
+ 		pr_err("%pOFn: unable to add irq domain\n", node);
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto err_irq_dispose;
+ 	}
+ 
+ 	ret = irq_alloc_domain_generic_chips(domain, OCELOT_NR_IRQ, 1,
+@@ -109,9 +110,10 @@ static int __init ocelot_irq_init(struct device_node *node,
+ 
+ err_gc_free:
+ 	irq_free_generic_chip(gc);
+-
+ err_domain_remove:
+ 	irq_domain_remove(domain);
++err_irq_dispose:
++	irq_dispose_mapping(parent_irq);
+ 
+ 	return ret;
+ }
 -- 
 2.1.0
 

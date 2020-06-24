@@ -2,25 +2,26 @@ Return-Path: <SRS0=pQzS=AF=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C94FBC433DF
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 06:36:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E30FBC433E0
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 06:36:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 86D0B207DD
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 06:36:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C17E2207DD
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 06:36:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389263AbgFXGgI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S2389368AbgFXGgI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 24 Jun 2020 02:36:08 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:45768 "EHLO loongson.cn"
+Received: from mail.loongson.cn ([114.242.206.163]:45766 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389308AbgFXGfm (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S2389309AbgFXGfm (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Wed, 24 Jun 2020 02:35:42 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx39809PJeSB9JAA--.620S2;
-        Wed, 24 Jun 2020 14:35:33 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx39809PJeSB9JAA--.620S5;
+        Wed, 24 Jun 2020 14:35:35 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Jason Cooper <jason@lakedaemon.net>,
@@ -29,60 +30,67 @@ Cc:     Huacai Chen <chenhc@lemote.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-mips@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v2 0/7] irqchip: Fix some issues and do some code cleanups about Loongson
-Date:   Wed, 24 Jun 2020 14:35:24 +0800
-Message-Id: <1592980531-2121-1-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH v2 3/7] irqchip/loongson-htvec: Fix potential resource leak
+Date:   Wed, 24 Jun 2020 14:35:27 +0800
+Message-Id: <1592980531-2121-4-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx39809PJeSB9JAA--.620S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Gw13uFW5CFy3uF1UWF47CFg_yoW8Jr17pF
-        43C3yagr4UCrW7ZryfAry8Aryayryrta9rtay7twnxXF98J34DuF13JFykZrZ7ArWxWF1j
-        9ryFgrW093WDCF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBF14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
-        8cxan2IY04v7MxkF7I0En4kS14v26r1q6r43MxkIecxEwVAFwVW8AwCF04k20xvY0x0EwI
-        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
-        IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK
-        8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Cr0_Gr1UMIIF0xvEx4A2jsIEc7
-        CjxVAFwI0_Cr1j6rxdYxBIdaVFxhVjvjDU0xZFpf9x0JU3Ma5UUUUU=
+In-Reply-To: <1592980531-2121-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1592980531-2121-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9Dx39809PJeSB9JAA--.620S5
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF47XFy5AFWxZr48KFWUCFg_yoWDXrg_CF
+        yIgr97WFW8Ar1fJ34xCr43XFWavrWvgF409FW0yFW5Xa4xtw1xAr17Aw13CF47CFySvr95
+        Gr4S9ry0kw1xujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbPkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWwA2048vs2IY02
+        0Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
+        wVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM2
+        8EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
+        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+        IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
+        xKxwCY1x0262kKe7AKxVWUtVW8ZwCY02Avz4vE14v_GF1l42xK82IYc2Ij64vIr41l4I8I
+        3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxV
+        WUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAF
+        wI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2
+        IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26F4j6r4UJwCI42IY6I8E87Iv6xkF7I0E14v2
+        6F4UJVW0obIYCTnIWIevJa73UjIFyTuYvjfUn0edUUUUU
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Check the return value of irq_domain_translate_onecell() and
-irq_domain_translate_twocell(), do some code cleanups about
-Loongson to make it more clean and readable.
+There exists potential resource leak in the error path, fix it.
 
-v2:
-  - In order to avoid git send-email failed, make the related patches
-    about Loongson into a new patch series and add "Fixes" tag
+Fixes: 818e915fbac5 ("irqchip: Add Loongson HyperTransport Vector support")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ drivers/irqchip/irq-loongson-htvec.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Tiezhu Yang (7):
-  irqchip/loongson-htpic: Remove redundant kfree operation
-  irqchip/loongson-htpic: Remove unneeded select of I8259
-  irqchip/loongson-htvec: Fix potential resource leak
-  irqchip/loongson-htvec: Check return value of
-    irq_domain_translate_onecell()
-  irqchip/loongson-pch-pic: Check return value of
-    irq_domain_translate_twocell()
-  irqchip/loongson-pch-msi: Remove unneeded variable
-  dt-bindings: interrupt-controller: Fix typos in loongson,liointc.yaml
-
- .../bindings/interrupt-controller/loongson,liointc.yaml   |  4 ++--
- drivers/irqchip/Kconfig                                   |  1 -
- drivers/irqchip/irq-loongson-htpic.c                      |  6 ++----
- drivers/irqchip/irq-loongson-htvec.c                      | 10 ++++++++--
- drivers/irqchip/irq-loongson-pch-msi.c                    |  7 +------
- drivers/irqchip/irq-loongson-pch-pic.c                    | 15 +++++++++------
- 6 files changed, 22 insertions(+), 21 deletions(-)
-
+diff --git a/drivers/irqchip/irq-loongson-htvec.c b/drivers/irqchip/irq-loongson-htvec.c
+index 1ece933..b36d403 100644
+--- a/drivers/irqchip/irq-loongson-htvec.c
++++ b/drivers/irqchip/irq-loongson-htvec.c
+@@ -192,7 +192,7 @@ static int htvec_of_init(struct device_node *node,
+ 	if (!priv->htvec_domain) {
+ 		pr_err("Failed to create IRQ domain\n");
+ 		err = -ENOMEM;
+-		goto iounmap_base;
++		goto irq_dispose;
+ 	}
+ 
+ 	htvec_reset(priv);
+@@ -203,6 +203,9 @@ static int htvec_of_init(struct device_node *node,
+ 
+ 	return 0;
+ 
++irq_dispose:
++	for (; i > 0; i--)
++		irq_dispose_mapping(parent_irq[i - 1]);
+ iounmap_base:
+ 	iounmap(priv->base);
+ free_priv:
 -- 
 2.1.0
 

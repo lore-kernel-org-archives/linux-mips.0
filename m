@@ -5,55 +5,53 @@ X-Spam-Level:
 X-Spam-Status: No, score=-10.0 required=3.0
 	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEF75C433DF
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 07:36:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44194C433DF
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 07:45:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A325E20874
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 07:36:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2701320B80
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 07:45:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389715AbgFXHg1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 24 Jun 2020 03:36:27 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:33302 "EHLO loongson.cn"
+        id S2389985AbgFXHpT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 24 Jun 2020 03:45:19 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:35736 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389583AbgFXHg1 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 24 Jun 2020 03:36:27 -0400
+        id S2389583AbgFXHpT (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 24 Jun 2020 03:45:19 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_93mAPNezSRJAA--.399S8;
-        Wed, 24 Jun 2020 15:29:46 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxD2qIBPNevCZJAA--.660S9;
+        Wed, 24 Jun 2020 15:45:15 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Cc:     Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v3 06/14] irqchip/digicolor: Fix potential resource leaks
-Date:   Wed, 24 Jun 2020 15:29:34 +0800
-Message-Id: <1592983782-8842-7-git-send-email-yangtiezhu@loongson.cn>
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v3 07/14 RESEND] irqchip/dw-apb-ictl: Fix potential resource leaks
+Date:   Wed, 24 Jun 2020 15:45:04 +0800
+Message-Id: <1592984711-3130-8-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1592983782-8842-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1592983782-8842-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx_93mAPNezSRJAA--.399S8
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFy3Cr4fWF17Zw1kCFW8tFb_yoW8Cw4fpF
-        WUWa9IgrWIvw4xWFn2kFyDZF98Kr4xKa9ru3yxC3Z2vrn5C34qka4UAF1j9FyrCrWxZa1j
-        vFs7ta48C3WUKaDanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUQI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+In-Reply-To: <1592984711-3130-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1592984711-3130-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9DxD2qIBPNevCZJAA--.660S9
+X-Coremail-Antispam: 1UD129KBjvJXoW7KrWxZr43Ww48KFWDtFy7ZFb_yoW8WF43pF
+        4fW39YkryfJF17XFn3ArWUX3s3t3W8tay7C3yIkan3Xr9xC34DCryFyFyjvF15AFWxG3WS
+        kF4vyFyDCa1DJa7anT9S1TB71UUUUjDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUQK14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
         z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
         4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE
-        3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
-        x0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8
-        JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2
-        ka0xkIwI1lc7CjxVAaw2AFwI0_JF0_Jw1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48J
-        MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwV
-        AFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv2
-        0xvE14v26ryj6F1UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26c
-        xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4UJVWxJr1lIxAIcVC2z280aVCY1x02
-        67AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7VUjNB_UUUUUU==
+        3s1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c
+        02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE
+        4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mx
+        kF7I0En4kS14v26r4a6rW5MxkIecxEwVAFwVW8CwCF04k20xvY0x0EwIxGrwCFx2IqxVCF
+        s4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVW7JVWDJwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8Jr0_Cr1UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_GcCE3sUvcSsGvfC2KfnxnUUI43ZEXa7sR_ksqPUUUUU==
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
@@ -62,57 +60,56 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 There exists potential resource leaks in the error path, fix them.
 
-Fixes: 8041dfbd31cf ("irqchip: Conexant CX92755 interrupts controller driver")
+Fixes: 350d71b94fc9 ("irqchip: add DesignWare APB ICTL interrupt controller")
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- drivers/irqchip/irq-digicolor.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/irqchip/irq-dw-apb-ictl.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/irqchip/irq-digicolor.c b/drivers/irqchip/irq-digicolor.c
-index fc38d2d..18c6e77 100644
---- a/drivers/irqchip/irq-digicolor.c
-+++ b/drivers/irqchip/irq-digicolor.c
-@@ -89,7 +89,8 @@ static int __init digicolor_of_init(struct device_node *node,
- 	ucregs = syscon_regmap_lookup_by_phandle(node, "syscon");
- 	if (IS_ERR(ucregs)) {
- 		pr_err("%pOF: unable to map UC registers\n", node);
--		return PTR_ERR(ucregs);
-+		ret = PTR_ERR(ucregs);
-+		goto err_iounmap;
- 	}
- 	/* channel 1, regular IRQs */
- 	regmap_write(ucregs, UC_IRQ_CONTROL, 1);
-@@ -98,7 +99,8 @@ static int __init digicolor_of_init(struct device_node *node,
- 		irq_domain_add_linear(node, 64, &irq_generic_chip_ops, NULL);
- 	if (!digicolor_irq_domain) {
- 		pr_err("%pOF: unable to create IRQ domain\n", node);
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto err_iounmap;
+diff --git a/drivers/irqchip/irq-dw-apb-ictl.c b/drivers/irqchip/irq-dw-apb-ictl.c
+index e4550e9..bc9b750 100644
+--- a/drivers/irqchip/irq-dw-apb-ictl.c
++++ b/drivers/irqchip/irq-dw-apb-ictl.c
+@@ -86,12 +86,13 @@ static int __init dw_apb_ictl_init(struct device_node *np,
+ 	ret = of_address_to_resource(np, 0, &r);
+ 	if (ret) {
+ 		pr_err("%pOF: unable to get resource\n", np);
+-		return ret;
++		goto err_irq_dispose;
  	}
  
- 	ret = irq_alloc_domain_generic_chips(digicolor_irq_domain, 32, 1,
-@@ -106,7 +108,7 @@ static int __init digicolor_of_init(struct device_node *node,
- 					     clr, 0, 0);
+ 	if (!request_mem_region(r.start, resource_size(&r), np->full_name)) {
+ 		pr_err("%pOF: unable to request mem region\n", np);
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto err_irq_dispose;
+ 	}
+ 
+ 	iobase = ioremap(r.start, resource_size(&r));
+@@ -133,7 +134,7 @@ static int __init dw_apb_ictl_init(struct device_node *np,
+ 					     IRQ_GC_INIT_MASK_CACHE);
  	if (ret) {
- 		pr_err("%pOF: unable to allocate IRQ gc\n", node);
--		return ret;
+ 		pr_err("%pOF: unable to alloc irq domain gc\n", np);
+-		goto err_unmap;
 +		goto err_domain_remove;
  	}
  
- 	digicolor_set_gc(reg_base, 0, IC_INT0ENABLE_LO, IC_FLAG_CLEAR_LO);
-@@ -115,5 +117,11 @@ static int __init digicolor_of_init(struct device_node *node,
- 	set_handle_irq(digicolor_handle_irq);
+ 	for (i = 0; i < DIV_ROUND_UP(nrirqs, 32); i++) {
+@@ -150,10 +151,14 @@ static int __init dw_apb_ictl_init(struct device_node *np,
  
  	return 0;
-+
+ 
 +err_domain_remove:
-+	irq_domain_remove(digicolor_irq_domain);
-+err_iounmap:
-+	iounmap(reg_base);
-+	return ret;
++	irq_domain_remove(domain);
+ err_unmap:
+ 	iounmap(iobase);
+ err_release:
+ 	release_mem_region(r.start, resource_size(&r));
++err_irq_dispose:
++	irq_dispose_mapping(irq);
+ 	return ret;
  }
- IRQCHIP_DECLARE(conexant_digicolor_ic, "cnxt,cx92755-ic", digicolor_of_init);
+ IRQCHIP_DECLARE(dw_apb_ictl,
 -- 
 2.1.0
 

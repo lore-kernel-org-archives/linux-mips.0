@@ -5,23 +5,23 @@ X-Spam-Level:
 X-Spam-Status: No, score=-10.0 required=3.0
 	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9970C433E0
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 06:46:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31688C433DF
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 06:46:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D4075206EB
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 06:46:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 18C9A20706
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 06:46:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389383AbgFXGqI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 24 Jun 2020 02:46:08 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:48434 "EHLO loongson.cn"
+        id S2389382AbgFXGqU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 24 Jun 2020 02:46:20 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:48424 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389372AbgFXGpt (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S2389144AbgFXGpt (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Wed, 24 Jun 2020 02:45:49 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxXeuQ9vJebSBJAA--.397S7;
-        Wed, 24 Jun 2020 14:45:39 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxXeuQ9vJebSBJAA--.397S9;
+        Wed, 24 Jun 2020 14:45:40 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Jason Cooper <jason@lakedaemon.net>,
@@ -30,16 +30,16 @@ Cc:     Huacai Chen <chenhc@lemote.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-mips@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v2 5/7 RESEND] irqchip/loongson-pch-pic: Check return value of irq_domain_translate_twocell()
-Date:   Wed, 24 Jun 2020 14:45:34 +0800
-Message-Id: <1592981136-3572-6-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH v2 7/7 RESEND] dt-bindings: interrupt-controller: Fix typos in loongson,liointc.yaml
+Date:   Wed, 24 Jun 2020 14:45:36 +0800
+Message-Id: <1592981136-3572-8-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
 In-Reply-To: <1592981136-3572-1-git-send-email-yangtiezhu@loongson.cn>
 References: <1592981136-3572-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9DxXeuQ9vJebSBJAA--.397S7
-X-Coremail-Antispam: 1UD129KBjvJXoW7tF17JrW8tw15tw4UZry7Jrb_yoW8WF1xpF
-        4UAwnrXr4DJFyUZw1xCws5X343Jw1ftFW7KayfKas3WrZ5J34qkF1UCFn5ur4rZF43JFyU
-        Zrs8KFWUuF13AFJanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: AQAAf9DxXeuQ9vJebSBJAA--.397S9
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF4Dtw4rXr1ktry8Ww1Dtrb_yoW8Gry7pa
+        yDC3ZFgF4Utr17C3yDt3Wvk3W3Zr98AwnrGFZ3ZrWxJFsxuw1jqr4agF95A3W5GrWxtFWU
+        XryrKa10gFy2yw7anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUQa14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
         kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -60,47 +60,31 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Check the return value of irq_domain_translate_twocell() due to
-it may returns -EINVAL if failed and use variable fwspec for it,
-and then use a new variable parent_fwspec which is proper for
-irq_domain_alloc_irqs_parent().
+Fix the following two typos in loongson,liointc.yaml:
+fron -> from
+it's -> its
 
-Fixes: ef8c01eb64ca ("irqchip: Add Loongson PCH PIC controller")
+Fixes: b6280c8bb6f5 ("dt-bindings: interrupt-controller: Add Loongson LIOINTC")
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- drivers/irqchip/irq-loongson-pch-pic.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ .../devicetree/bindings/interrupt-controller/loongson,liointc.yaml    | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-loongson-pch-pic.c b/drivers/irqchip/irq-loongson-pch-pic.c
-index 2a05b93..016f32c 100644
---- a/drivers/irqchip/irq-loongson-pch-pic.c
-+++ b/drivers/irqchip/irq-loongson-pch-pic.c
-@@ -135,16 +135,19 @@ static int pch_pic_alloc(struct irq_domain *domain, unsigned int virq,
- 	int err;
- 	unsigned int type;
- 	unsigned long hwirq;
--	struct irq_fwspec fwspec;
-+	struct irq_fwspec *fwspec = arg;
-+	struct irq_fwspec parent_fwspec;
- 	struct pch_pic *priv = domain->host_data;
- 
--	irq_domain_translate_twocell(domain, arg, &hwirq, &type);
-+	err = irq_domain_translate_twocell(domain, fwspec, &hwirq, &type);
-+	if (err)
-+		return err;
- 
--	fwspec.fwnode = domain->parent->fwnode;
--	fwspec.param_count = 1;
--	fwspec.param[0] = hwirq + priv->ht_vec_base;
-+	parent_fwspec.fwnode = domain->parent->fwnode;
-+	parent_fwspec.param_count = 1;
-+	parent_fwspec.param[0] = hwirq + priv->ht_vec_base;
- 
--	err = irq_domain_alloc_irqs_parent(domain, virq, 1, &fwspec);
-+	err = irq_domain_alloc_irqs_parent(domain, virq, 1, &parent_fwspec);
- 	if (err)
- 		return err;
- 
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+index b1db21e..13908ca 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+@@ -51,8 +51,8 @@ properties:
+     description: |
+       This property points how the children interrupts will be mapped into CPU
+       interrupt lines. Each cell refers to a parent interrupt line from 0 to 3
+-      and each bit in the cell refers to a children interrupt fron 0 to 31.
+-      If a CPU interrupt line didn't connected with liointc, then keep it's
++      and each bit in the cell refers to a children interrupt from 0 to 31.
++      If a CPU interrupt line didn't connected with liointc, then keep its
+       cell with zero.
+     $ref: /schemas/types.yaml#/definitions/uint32-array
+     minItems: 4
 -- 
 2.1.0
 

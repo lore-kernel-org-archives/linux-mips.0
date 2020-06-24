@@ -2,90 +2,105 @@ Return-Path: <SRS0=pQzS=AF=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA2D0C433E0
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 02:39:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 178A4C433DF
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 06:33:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D079F2077D
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 02:39:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EF8A820FC3
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Jun 2020 06:33:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387985AbgFXCjs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 23 Jun 2020 22:39:48 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:56207 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387970AbgFXCjr (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 23 Jun 2020 22:39:47 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0U0YmjzJ_1592966379;
-Received: from 30.27.116.246(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U0YmjzJ_1592966379)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 24 Jun 2020 10:39:41 +0800
-Subject: Re: [PATCH v6 1/5] KVM: s390: clean up redundant 'kvm_run' parameters
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        pbonzini@redhat.com, tsbogend@alpha.franken.de, paulus@ozlabs.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org,
-        frankja@linux.ibm.com, david@redhat.com, cohuck@redhat.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        sean.j.christopherson@intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com,
-        chenhuacai@gmail.com
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200623131418.31473-1-tianjia.zhang@linux.alibaba.com>
- <20200623131418.31473-2-tianjia.zhang@linux.alibaba.com>
- <c49f8814-c7ea-6884-91c5-3dcd40c6509f@de.ibm.com>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <650c2193-5299-714e-92f4-75cbff319948@linux.alibaba.com>
-Date:   Wed, 24 Jun 2020 10:39:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <c49f8814-c7ea-6884-91c5-3dcd40c6509f@de.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S2389064AbgFXGdR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 24 Jun 2020 02:33:17 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:45158 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388405AbgFXGdR (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 24 Jun 2020 02:33:17 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxj9+j8_Je2R5JAA--.564S12;
+        Wed, 24 Jun 2020 14:33:14 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v2 10/14] irqchip/nvic: Fix potential resource leaks
+Date:   Wed, 24 Jun 2020 14:32:43 +0800
+Message-Id: <1592980367-1816-11-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1592980367-1816-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1592980367-1816-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9Dxj9+j8_Je2R5JAA--.564S12
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kw18Ww17Gr15tw13uFWruFg_yoW8GF1xpF
+        WUW390vr4fG3Wxur95Cw4UZryakrW0krWxK3ySk3Z7Zrn5A3yDuF18AF10vr1FkFWxCa1I
+        qF4kAFyrCF4UAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBj14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
+        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
+        z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
+        4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE
+        3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
+        x0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8
+        JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr4
+        1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
+        67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
+        8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20E
+        Y4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Cr0_Gr1UMIIF0xvEx4A2jsIEc7CjxV
+        AFwI0_Cr1j6rxdYxBIdaVFxhVjvjDU0xZFpf9x0JU6OJrUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+There exists potential resource leaks in the error path, fix them.
 
+Fixes: 292ec080491d ("irqchip: Add support for ARMv7-M NVIC")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ drivers/irqchip/irq-nvic.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-On 2020/6/23 23:31, Christian Borntraeger wrote:
-> 
-> 
-> On 23.06.20 15:14, Tianjia Zhang wrote:
->> In the current kvm version, 'kvm_run' has been included in the 'kvm_vcpu'
->> structure. For historical reasons, many kvm-related function parameters
->> retain the 'kvm_run' and 'kvm_vcpu' parameters at the same time. This
->> patch does a unified cleanup of these remaining redundant parameters.
->>
->> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
->> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> ---
->>   arch/s390/kvm/kvm-s390.c | 23 +++++++++++++++--------
->>   1 file changed, 15 insertions(+), 8 deletions(-)
-> 
-> Tinajia,
-> 
-> I have trouble seeing value in this particular patch. We add LOCs
-> without providing any noticable benefit. All other patches in this series at
-> least reduce the amount of code. So I would defer this to Paolo if he prefers
-> to have this way across all architectures.
+diff --git a/drivers/irqchip/irq-nvic.c b/drivers/irqchip/irq-nvic.c
+index f747e22..cd17f5d 100644
+--- a/drivers/irqchip/irq-nvic.c
++++ b/drivers/irqchip/irq-nvic.c
+@@ -94,7 +94,8 @@ static int __init nvic_of_init(struct device_node *node,
+ 
+ 	if (!nvic_irq_domain) {
+ 		pr_warn("Failed to allocate irq domain\n");
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto err_iounmap;
+ 	}
+ 
+ 	ret = irq_alloc_domain_generic_chips(nvic_irq_domain, 32, 1,
+@@ -102,8 +103,7 @@ static int __init nvic_of_init(struct device_node *node,
+ 					     clr, 0, IRQ_GC_INIT_MASK_CACHE);
+ 	if (ret) {
+ 		pr_warn("Failed to allocate irq chips\n");
+-		irq_domain_remove(nvic_irq_domain);
+-		return ret;
++		goto err_domain_remove;
+ 	}
+ 
+ 	for (i = 0; i < numbanks; ++i) {
+@@ -129,5 +129,11 @@ static int __init nvic_of_init(struct device_node *node,
+ 		writel_relaxed(0, nvic_base + NVIC_IPR + i);
+ 
+ 	return 0;
++
++err_domain_remove:
++	irq_domain_remove(nvic_irq_domain);
++err_iounmap:
++	iounmap(nvic_base);
++	return ret;
+ }
+ IRQCHIP_DECLARE(armv7m_nvic, "arm,armv7m-nvic", nvic_of_init);
+-- 
+2.1.0
 
-Yes, this is a full architecture optimization. Some of the architecture 
-optimization has been merged into the mainline. I think it is necessary 
-to unify this optimization. This is also the meaning of Paolo.
-You can refer to the email of the previous version:
-https://lkml.org/lkml/2020/4/27/16
-
-Thanks,
-Tianjia

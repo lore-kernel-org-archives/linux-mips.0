@@ -2,131 +2,388 @@ Return-Path: <SRS0=8aHI=AG=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.6 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0
+	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 429B3C433E0
-	for <linux-mips@archiver.kernel.org>; Thu, 25 Jun 2020 16:46:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13123C433E0
+	for <linux-mips@archiver.kernel.org>; Thu, 25 Jun 2020 17:38:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 176CA20823
-	for <linux-mips@archiver.kernel.org>; Thu, 25 Jun 2020 16:46:51 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="gB6CIWx2"
+	by mail.kernel.org (Postfix) with ESMTP id E9E88206BE
+	for <linux-mips@archiver.kernel.org>; Thu, 25 Jun 2020 17:38:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390785AbgFYQqe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 25 Jun 2020 12:46:34 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:49502 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390396AbgFYQqe (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Jun 2020 12:46:34 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05PGfvZx169156;
-        Thu, 25 Jun 2020 16:46:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=UEPtC+P7KIzY6w6/Ov/JEOtd2nMhGKGYQuzAtbcQOsw=;
- b=gB6CIWx2h6622MTQgbZSZ+oBWezbrX1y8ddqt+bWtjk+pikrfz189Vv/IPEDjIImvgPq
- Mwgbt5zMSxahSpqvU4Q0SiPmYl2WQzlVW1juXmu7esfbZ1MaDR3HSPjVsqOBGKkMooUg
- aUPCWDjvPDmvIhbwOMfgZaKcb8aTQyRcuQejd1oSL+wu0Z3MOn+QsmT5yw1uiQfXV4i5
- 4gTUSLA9fxaH5FPNd+mK91P3G2iBDk1lQ+/NJhXl/h2gZT0MwHTcQ9dkocFysuNYkBV5
- cDX4l3gNydhWutT5s1bwng88tGryqrk04NpBxNrxpBc4/U2nFyJ90KPdZf7HBIBE38aV yQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 31uusu1ms3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 25 Jun 2020 16:46:15 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05PGcGPW056764;
-        Thu, 25 Jun 2020 16:46:15 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 31uur9sres-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Jun 2020 16:46:14 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05PGk7fA012777;
-        Thu, 25 Jun 2020 16:46:08 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 25 Jun 2020 16:46:07 +0000
-Subject: Re: [PATCH 2/3] mm/huge_memory.c: update tlb entry if pmd is changed
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Bibo Mao <maobibo@loongson.cn>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Daniel Silsby <dansilsby@gmail.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <1592990792-1923-1-git-send-email-maobibo@loongson.cn>
- <1592990792-1923-2-git-send-email-maobibo@loongson.cn>
- <07f78e99-6e59-0bce-8ac0-50d7c7600461@oracle.com>
- <87lfkbl5gz.fsf@linux.ibm.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <6071df89-1438-1a25-136d-228b8863364e@oracle.com>
-Date:   Thu, 25 Jun 2020 09:46:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2406839AbgFYRhy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 25 Jun 2020 13:37:54 -0400
+Received: from out28-49.mail.aliyun.com ([115.124.28.49]:55189 "EHLO
+        out28-49.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405219AbgFYRhw (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Jun 2020 13:37:52 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436311|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0292448-0.0134207-0.957335;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03279;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.HsRfZK5_1593106660;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.HsRfZK5_1593106660)
+          by smtp.aliyun-inc.com(10.147.41.231);
+          Fri, 26 Jun 2020 01:37:46 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     linux-mips@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        paul.burton@mips.com, paul@crapouillou.net, robh+dt@kernel.org,
+        tsbogend@alpha.franken.de, ak@linux.intel.com,
+        ebiederm@xmission.com, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com
+Subject: [PATCH v2 1/3] MIPS: Ingenic: Add Ingenic X1830 support.
+Date:   Fri, 26 Jun 2020 01:37:14 +0800
+Message-Id: <20200625173716.56146-2-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200625173716.56146-1-zhouyanjie@wanyeetech.com>
+References: <20200625173716.56146-1-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-In-Reply-To: <87lfkbl5gz.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9663 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=18 spamscore=0
- adultscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006250104
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9663 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=18 bulkscore=0
- cotscore=-2147483648 malwarescore=0 mlxscore=0 clxscore=1011
- lowpriorityscore=0 mlxlogscore=999 phishscore=0 priorityscore=1501
- spamscore=0 impostorscore=0 adultscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006250104
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 6/25/20 5:01 AM, Aneesh Kumar K.V wrote:
-> Mike Kravetz <mike.kravetz@oracle.com> writes:
-> 
->> On 6/24/20 2:26 AM, Bibo Mao wrote:
->>> When set_pmd_at is called in function do_huge_pmd_anonymous_page,
->>> new tlb entry can be added by software on MIPS platform.
->>>
->>> Here add update_mmu_cache_pmd when pmd entry is set, and
->>> update_mmu_cache_pmd is defined as empty excepts arc/mips platform.
->>> This patch has no negative effect on other platforms except arc/mips
->>> system.
->>
->> I am confused by this comment.  It appears that update_mmu_cache_pmd
->> is defined as non-empty on arc, mips, powerpc and sparc architectures.
->> Am I missing something?
->>
->> If those architectures do provide update_mmu_cache_pmd, then the previous
->> patch and this one now call update_mmu_cache_pmd with the actual faulting
->> address instead of the huge page aligned address.  This was intentional
->> for mips.  However, are there any potential issues on the other architectures?
->> I am no expert in any of those architectures.  arc looks like it could be
->> problematic as update_mmu_cache_pmd calls update_mmu_cache and then
->> operates on (address & PAGE_MASK).  That could now be different.
->>
-> 
-> Also we added update_mmu_cache_pmd to update a THP entry. That could be
-> different from a hugetlb entry on some architectures. If we need to do
-> hugetlb equivalent for update_mmu_cache, we should add a different
-> function.
+Support the Ingenic X1830 SoC using the code under arch/mips/jz4740.
+This is left unselectable in Kconfig until a X1830 based board is
+added in a later commit.
 
-I do not know the mips architecture well enough or if the motivation for
-this patch was based on THP or hugetlb pages.  However, it will change
-the address passed to update_mmu_cache_pmd from huge page aligned to the
-actual faulting address.  Will such a change in the passed address impact
-the powerpc update_mmu_cache_pmd routine?
+Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
+Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+---
 
+Notes:
+    v1->v2:
+    No change.
+
+ arch/mips/boot/dts/ingenic/x1830.dtsi | 300 ++++++++++++++++++++++++++++++++++
+ arch/mips/jz4740/Kconfig              |   6 +
+ 2 files changed, 306 insertions(+)
+ create mode 100644 arch/mips/boot/dts/ingenic/x1830.dtsi
+
+diff --git a/arch/mips/boot/dts/ingenic/x1830.dtsi b/arch/mips/boot/dts/ingenic/x1830.dtsi
+new file mode 100644
+index 000000000000..6d2d6f227b45
+--- /dev/null
++++ b/arch/mips/boot/dts/ingenic/x1830.dtsi
+@@ -0,0 +1,300 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <dt-bindings/clock/ingenic,tcu.h>
++#include <dt-bindings/clock/x1830-cgu.h>
++#include <dt-bindings/dma/x1830-dma.h>
++
++/ {
++	#address-cells = <1>;
++	#size-cells = <1>;
++	compatible = "ingenic,x1830";
++
++	cpuintc: interrupt-controller {
++		#address-cells = <0>;
++		#interrupt-cells = <1>;
++		interrupt-controller;
++		compatible = "mti,cpu-interrupt-controller";
++	};
++
++	intc: interrupt-controller@10001000 {
++		compatible = "ingenic,x1830-intc", "ingenic,jz4780-intc";
++		reg = <0x10001000 0x50>;
++
++		interrupt-controller;
++		#interrupt-cells = <1>;
++
++		interrupt-parent = <&cpuintc>;
++		interrupts = <2>;
++	};
++
++	exclk: ext {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++	};
++
++	rtclk: rtc {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <32768>;
++	};
++
++	cgu: x1830-cgu@10000000 {
++		compatible = "ingenic,x1830-cgu";
++		reg = <0x10000000 0x100>;
++
++		#clock-cells = <1>;
++
++		clocks = <&exclk>, <&rtclk>;
++		clock-names = "ext", "rtc";
++	};
++
++	tcu: timer@10002000 {
++		compatible = "ingenic,x1830-tcu", "ingenic,x1000-tcu", "simple-mfd";
++		reg = <0x10002000 0x1000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0x0 0x10002000 0x1000>;
++
++		#clock-cells = <1>;
++
++		clocks = <&cgu X1830_CLK_RTCLK
++			  &cgu X1830_CLK_EXCLK
++			  &cgu X1830_CLK_PCLK>;
++		clock-names = "rtc", "ext", "pclk";
++
++		interrupt-controller;
++		#interrupt-cells = <1>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <27 26 25>;
++
++		wdt: watchdog@0 {
++			compatible = "ingenic,x1830-watchdog", "ingenic,jz4780-watchdog";
++			reg = <0x0 0x10>;
++
++			clocks = <&tcu TCU_CLK_WDT>;
++			clock-names = "wdt";
++		};
++	};
++
++	rtc: rtc@10003000 {
++		compatible = "ingenic,x1830-rtc", "ingenic,jz4780-rtc";
++		reg = <0x10003000 0x4c>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <32>;
++
++		clocks = <&cgu X1830_CLK_RTCLK>;
++		clock-names = "rtc";
++	};
++
++	pinctrl: pin-controller@10010000 {
++		compatible = "ingenic,x1830-pinctrl";
++		reg = <0x10010000 0x800>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		gpa: gpio@0 {
++			compatible = "ingenic,x1830-gpio";
++			reg = <0>;
++
++			gpio-controller;
++			gpio-ranges = <&pinctrl 0 0 32>;
++			#gpio-cells = <2>;
++
++			interrupt-controller;
++			#interrupt-cells = <2>;
++
++			interrupt-parent = <&intc>;
++			interrupts = <17>;
++		};
++
++		gpb: gpio@1 {
++			compatible = "ingenic,x1830-gpio";
++			reg = <1>;
++
++			gpio-controller;
++			gpio-ranges = <&pinctrl 0 32 32>;
++			#gpio-cells = <2>;
++
++			interrupt-controller;
++			#interrupt-cells = <2>;
++
++			interrupt-parent = <&intc>;
++			interrupts = <16>;
++		};
++
++		gpc: gpio@2 {
++			compatible = "ingenic,x1830-gpio";
++			reg = <2>;
++
++			gpio-controller;
++			gpio-ranges = <&pinctrl 0 64 32>;
++			#gpio-cells = <2>;
++
++			interrupt-controller;
++			#interrupt-cells = <2>;
++
++			interrupt-parent = <&intc>;
++			interrupts = <15>;
++		};
++
++		gpd: gpio@3 {
++			compatible = "ingenic,x1830-gpio";
++			reg = <3>;
++
++			gpio-controller;
++			gpio-ranges = <&pinctrl 0 96 32>;
++			#gpio-cells = <2>;
++
++			interrupt-controller;
++			#interrupt-cells = <2>;
++
++			interrupt-parent = <&intc>;
++			interrupts = <14>;
++		};
++	};
++
++	i2c0: i2c-controller@10050000 {
++		compatible = "ingenic,x1830-i2c", "ingenic,x1000-i2c";
++		reg = <0x10050000 0x1000>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <60>;
++
++		clocks = <&cgu X1830_CLK_SMB0>;
++
++		status = "disabled";
++	};
++
++	i2c1: i2c-controller@10051000 {
++		compatible = "ingenic,x1830-i2c", "ingenic,x1000-i2c";
++		reg = <0x10051000 0x1000>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <59>;
++
++		clocks = <&cgu X1830_CLK_SMB1>;
++
++		status = "disabled";
++	};
++
++	i2c2: i2c-controller@10052000 {
++		compatible = "ingenic,x1830-i2c", "ingenic,x1000-i2c";
++		reg = <0x10052000 0x1000>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <58>;
++
++		clocks = <&cgu X1830_CLK_SMB2>;
++
++		status = "disabled";
++	};
++
++	uart0: serial@10030000 {
++		compatible = "ingenic,x1830-uart", "ingenic,x1000-uart";
++		reg = <0x10030000 0x100>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <51>;
++
++		clocks = <&exclk>, <&cgu X1830_CLK_UART0>;
++		clock-names = "baud", "module";
++
++		status = "disabled";
++	};
++
++	uart1: serial@10031000 {
++		compatible = "ingenic,x1830-uart", "ingenic,x1000-uart";
++		reg = <0x10031000 0x100>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <50>;
++
++		clocks = <&exclk>, <&cgu X1830_CLK_UART1>;
++		clock-names = "baud", "module";
++
++		status = "disabled";
++	};
++
++	pdma: dma-controller@13420000 {
++		compatible = "ingenic,x1830-dma";
++		reg = <0x13420000 0x400
++			   0x13421000 0x40>;
++		#dma-cells = <2>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <10>;
++
++		clocks = <&cgu X1830_CLK_PDMA>;
++	};
++
++	mac: ethernet@134b0000 {
++		compatible = "ingenic,x1830-mac", "snps,dwmac";
++		reg = <0x134b0000 0x2000>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <55>;
++		interrupt-names = "macirq";
++
++		clocks = <&cgu X1830_CLK_MAC>;
++		clock-names = "stmmaceth";
++
++		status = "disabled";
++
++		mdio: mdio {
++			compatible = "snps,dwmac-mdio";
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			status = "disabled";
++		};
++	};
++
++	msc0: mmc@13450000 {
++		compatible = "ingenic,x1830-mmc", "ingenic,x1000-mmc";
++		reg = <0x13450000 0x1000>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <37>;
++
++		clocks = <&cgu X1830_CLK_MSC0>;
++		clock-names = "mmc";
++
++		cap-sd-highspeed;
++		cap-mmc-highspeed;
++		cap-sdio-irq;
++
++		dmas = <&pdma X1830_DMA_MSC0_RX 0xffffffff>,
++			   <&pdma X1830_DMA_MSC0_TX 0xffffffff>;
++		dma-names = "rx", "tx";
++
++		status = "disabled";
++	};
++
++	msc1: mmc@13460000 {
++		compatible = "ingenic,x1830-mmc", "ingenic,x1000-mmc";
++		reg = <0x13460000 0x1000>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <36>;
++
++		clocks = <&cgu X1830_CLK_MSC1>;
++		clock-names = "mmc";
++
++		cap-sd-highspeed;
++		cap-mmc-highspeed;
++		cap-sdio-irq;
++
++		dmas = <&pdma X1830_DMA_MSC1_RX 0xffffffff>,
++			   <&pdma X1830_DMA_MSC1_TX 0xffffffff>;
++		dma-names = "rx", "tx";
++
++		status = "disabled";
++	};
++};
+diff --git a/arch/mips/jz4740/Kconfig b/arch/mips/jz4740/Kconfig
+index 9c2e8c15bb97..cd0ddb52da99 100644
+--- a/arch/mips/jz4740/Kconfig
++++ b/arch/mips/jz4740/Kconfig
+@@ -50,3 +50,9 @@ config MACH_X1000
+ 	select MIPS_CPU_SCACHE
+ 	select SYS_HAS_CPU_MIPS32_R2
+ 	select SYS_SUPPORTS_HIGHMEM
++
++config MACH_X1830
++	bool
++	select MIPS_CPU_SCACHE
++	select SYS_HAS_CPU_MIPS32_R2
++	select SYS_SUPPORTS_HIGHMEM
 -- 
-Mike Kravetz
+2.11.0
+

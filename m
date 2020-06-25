@@ -2,81 +2,119 @@ Return-Path: <SRS0=8aHI=AG=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF2E7C433E0
-	for <linux-mips@archiver.kernel.org>; Thu, 25 Jun 2020 09:59:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D9A9C433DF
+	for <linux-mips@archiver.kernel.org>; Thu, 25 Jun 2020 12:01:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8BD7C2076E
-	for <linux-mips@archiver.kernel.org>; Thu, 25 Jun 2020 09:59:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 230F02067D
+	for <linux-mips@archiver.kernel.org>; Thu, 25 Jun 2020 12:01:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390002AbgFYJ7n (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 25 Jun 2020 05:59:43 -0400
-Received: from elvis.franken.de ([193.175.24.41]:37041 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388485AbgFYJ7n (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 25 Jun 2020 05:59:43 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1joOfV-0001nc-00; Thu, 25 Jun 2020 11:59:41 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 1DCD5C0708; Thu, 25 Jun 2020 11:40:59 +0200 (CEST)
-Date:   Thu, 25 Jun 2020 11:40:59 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        id S2404311AbgFYMBx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 25 Jun 2020 08:01:53 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36728 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404285AbgFYMBx (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 25 Jun 2020 08:01:53 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05PBa7fA164541;
+        Thu, 25 Jun 2020 08:01:26 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31vts0hfce-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Jun 2020 08:01:25 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05PBaUB3170434;
+        Thu, 25 Jun 2020 08:01:24 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31vts0hfbg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Jun 2020 08:01:24 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05PBxj3i010065;
+        Thu, 25 Jun 2020 12:01:23 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma01wdc.us.ibm.com with ESMTP id 31uurtbqb8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Jun 2020 12:01:23 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05PC1MR114156440
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Jun 2020 12:01:22 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B0804124058;
+        Thu, 25 Jun 2020 12:01:22 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EFE98124052;
+        Thu, 25 Jun 2020 12:01:18 +0000 (GMT)
+Received: from skywalker.linux.ibm.com (unknown [9.85.115.79])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 25 Jun 2020 12:01:18 +0000 (GMT)
+X-Mailer: emacs 27.0.91 (via feedmail 11-beta-1 I)
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Bibo Mao <maobibo@loongson.cn>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Paul Burton <paulburton@kernel.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH mips-next 0/3] MIPS: fix the two most annoying sparse
- floods
-Message-ID: <20200625094059.GA7660@alpha.franken.de>
-References: <OXAnLrccR2GxIpepN5IUjppNnjyVAnjQmCIx2RmgpMLsOzOBgXMKYvmjivy4Rq0bAVf11R5V9_FwfGx-MML3dShuOOoPUtAHUHUedlVrW_g=@pm.me>
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Daniel Silsby <dansilsby@gmail.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 2/3] mm/huge_memory.c: update tlb entry if pmd is changed
+In-Reply-To: <07f78e99-6e59-0bce-8ac0-50d7c7600461@oracle.com>
+References: <1592990792-1923-1-git-send-email-maobibo@loongson.cn>
+ <1592990792-1923-2-git-send-email-maobibo@loongson.cn>
+ <07f78e99-6e59-0bce-8ac0-50d7c7600461@oracle.com>
+Date:   Thu, 25 Jun 2020 17:31:16 +0530
+Message-ID: <87lfkbl5gz.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OXAnLrccR2GxIpepN5IUjppNnjyVAnjQmCIx2RmgpMLsOzOBgXMKYvmjivy4Rq0bAVf11R5V9_FwfGx-MML3dShuOOoPUtAHUHUedlVrW_g=@pm.me>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-25_05:2020-06-25,2020-06-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 cotscore=-2147483648
+ adultscore=0 mlxscore=0 malwarescore=0 clxscore=1011 phishscore=0
+ suspectscore=8 spamscore=0 impostorscore=0 priorityscore=1501
+ mlxlogscore=999 lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006250074
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Jun 20, 2020 at 09:33:38AM +0000, Alexander Lobakin wrote:
-> This set addresses the two most annoying sparse floods when building the
-> tree with C={1,2}: one in asm/io.h (in several mangle-port.h actually),
-> and one in asm/checksum.h.
-> Both of these comes from lack of forced typecasting and hence harmless,
-> but complicates real bug hunting, as asm/io.h is included in almost
-> every driver, while asm/checksum.h is included in lots of networking
-> code.
-> 
-> I also fixed two wrong __mem_ioswabq() macros while was nearby.
-> Tested on Generic MIPS platform -- no more flooding in console (there's
-> one more source in mips-cm.h, but it's included in just a few files, so
-> not a real problem. It can be issued separately anyway), while objdump
-> doesn't see any difference at all.
-> 
-> Alexander Lobakin (3):
->   MIPS: generic/ip32: io: fix __mem_ioswabq()
->   MIPS: io: fix sparse flood on asm/io.h
->   MIPS: checksum: fix sparse flooding on asm/checksum.h
-> 
->  arch/mips/include/asm/checksum.h                     |  4 ++--
->  .../include/asm/mach-cavium-octeon/mangle-port.h     | 12 +++++++++---
->  arch/mips/include/asm/mach-generic/mangle-port.h     | 12 ++++++------
->  arch/mips/include/asm/mach-ip27/mangle-port.h        |  6 +++---
->  arch/mips/include/asm/mach-ip30/mangle-port.h        |  6 +++---
->  arch/mips/include/asm/mach-ip32/mangle-port.h        |  6 +++---
->  arch/mips/include/asm/mach-tx39xx/mangle-port.h      |  6 +++---
->  arch/mips/include/asm/mach-tx49xx/mangle-port.h      |  6 +++---
->  8 files changed, 32 insertions(+), 26 deletions(-)
+Mike Kravetz <mike.kravetz@oracle.com> writes:
 
-series applied to mips-next.
+> On 6/24/20 2:26 AM, Bibo Mao wrote:
+>> When set_pmd_at is called in function do_huge_pmd_anonymous_page,
+>> new tlb entry can be added by software on MIPS platform.
+>> 
+>> Here add update_mmu_cache_pmd when pmd entry is set, and
+>> update_mmu_cache_pmd is defined as empty excepts arc/mips platform.
+>> This patch has no negative effect on other platforms except arc/mips
+>> system.
+>
+> I am confused by this comment.  It appears that update_mmu_cache_pmd
+> is defined as non-empty on arc, mips, powerpc and sparc architectures.
+> Am I missing something?
+>
+> If those architectures do provide update_mmu_cache_pmd, then the previous
+> patch and this one now call update_mmu_cache_pmd with the actual faulting
+> address instead of the huge page aligned address.  This was intentional
+> for mips.  However, are there any potential issues on the other architectures?
+> I am no expert in any of those architectures.  arc looks like it could be
+> problematic as update_mmu_cache_pmd calls update_mmu_cache and then
+> operates on (address & PAGE_MASK).  That could now be different.
+>
 
-Thomas.
+Also we added update_mmu_cache_pmd to update a THP entry. That could be
+different from a hugetlb entry on some architectures. If we need to do
+hugetlb equivalent for update_mmu_cache, we should add a different
+function.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+-aneesh

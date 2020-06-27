@@ -2,301 +2,266 @@ Return-Path: <SRS0=zHAK=AI=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=DKIM_INVALID,DKIM_SIGNED,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D616C433E2
-	for <linux-mips@archiver.kernel.org>; Sat, 27 Jun 2020 07:28:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C446C433DF
+	for <linux-mips@archiver.kernel.org>; Sat, 27 Jun 2020 14:35:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 48160214DB
-	for <linux-mips@archiver.kernel.org>; Sat, 27 Jun 2020 07:28:15 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Bn9qUHm8"
+	by mail.kernel.org (Postfix) with ESMTP id 3EE7B20757
+	for <linux-mips@archiver.kernel.org>; Sat, 27 Jun 2020 14:35:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1593268512;
+	bh=qu2PC/KfnpK0kWKvuL7CXpDG7X/LanYdYjS7VhuA2tc=;
+	h=From:To:Cc:Subject:Date:List-ID:From;
+	b=S5lh3PUE2YU/Lb8Ht9gQ7BzTk/JureLDbrba2p/UOAudjCbJvyJQoUdT5AoB5Mb3v
+	 GCW/C/OatvM3kxhcAr/X2dLqU5DBRIbPKYs6QxS1VZ3VKLflodL6w7uND57YmSTnfN
+	 EG+2gGSPqcoi0Ofc86SWIIyOs4pJNOyORRZ0+sVw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726084AbgF0H1g (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 27 Jun 2020 03:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgF0H1f (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 27 Jun 2020 03:27:35 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4562FC03E979;
-        Sat, 27 Jun 2020 00:27:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=R3jVFYS/2IFPi5AjMtMLrTJqX+oMKfiLgBtiR94GLYw=; b=Bn9qUHm8sqZ6dyAsMNQeF1SAQK
-        qOz9odcsurHGAun+rlEGFX2naZtghMIA4iNCvdFucZaRqG67gU/BFGYWdiPHinPyemWT8K/dzUAC7
-        BVUbz/HKtOV9kKV/EgSZKqY2fG0hCnWFXUMTpwq7lDPtzTsQiuS6/bg/Bz8z2nftTY5L3gSJAoAXB
-        Pn6BkPkmQEIAxTwtxkFd96A/2BLD9LG+ifLQGyGRS0vLmAK3CbtSvaZMgTeyuPHWg8dZGx1nW1cWK
-        Rr6EilWm74qOfkU1wwZa8elvp1Pu8z7WO97rTp0rUob9lw/SesjmfOOTo/qO94XivoWoxm2YE1gP5
-        DmesbwuA==;
-Received: from [2001:4bb8:184:76e3:595:ba65:ae56:65a6] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jp5F2-0006WL-Mh; Sat, 27 Jun 2020 07:27:15 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Brian Gerst <brgerst@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/5] exec: cleanup the execve wrappers
-Date:   Sat, 27 Jun 2020 09:27:00 +0200
-Message-Id: <20200627072704.2447163-2-hch@lst.de>
+        id S1725932AbgF0OfH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 27 Jun 2020 10:35:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725850AbgF0OfG (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 27 Jun 2020 10:35:06 -0400
+Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 341C22089D;
+        Sat, 27 Jun 2020 14:34:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593268505;
+        bh=qu2PC/KfnpK0kWKvuL7CXpDG7X/LanYdYjS7VhuA2tc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FBB5WzdHZCyO5w4PctPzcY7Z3LAstOygEoRUhk/Ng1G+Z4/lWOJE048kW7zjqiOhR
+         IdlIfwSDXvF8p9LDdqBSj5MmgeYKrg3f6jEZKT4anjo+p6hHbu6Ts9fIOvn7KQVkjy
+         XGJTIYBUuYdW9Ish6HFB+sclhFQo+pGzuMIA9dOg=
+From:   Mike Rapoport <rppt@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Joerg Roedel <joro@8bytes.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org,
+        sparclinux@vger.kernel.org
+Subject: [PATCH 0/8] mm: cleanup usage of <asm/pgalloc.h>
+Date:   Sat, 27 Jun 2020 17:34:45 +0300
+Message-Id: <20200627143453.31835-1-rppt@kernel.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200627072704.2447163-1-hch@lst.de>
-References: <20200627072704.2447163-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Remove a whole bunch of wrappers that eventually all call
-__do_execve_file, and consolidate the execvce helpers to:
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-  (1) __do_execveat, which is the lowest level helper implementing the
-      actual functionality
-  (2) do_execvat, which is used by all callers that want native
-      pointers
-  (3) do_compat_execve, which is used by all compat syscalls
+Hi,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/exec.c               | 98 +++++++++++------------------------------
- include/linux/binfmts.h | 12 ++---
- init/main.c             |  7 +--
- kernel/umh.c            | 16 +++----
- 4 files changed, 41 insertions(+), 92 deletions(-)
+Most architectures have very similar versions of pXd_alloc_one() and
+pXd_free_one() for intermediate levels of page table. 
+These patches add generic versions of these functions in
+<asm-generic/pgalloc.h> and enable use of the generic functions where
+appropriate.
 
-diff --git a/fs/exec.c b/fs/exec.c
-index e6e8a9a7032784..354fdaa536ae7d 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1815,10 +1815,7 @@ static int exec_binprm(struct linux_binprm *bprm)
- 	return 0;
- }
- 
--/*
-- * sys_execve() executes a new program.
-- */
--static int __do_execve_file(int fd, struct filename *filename,
-+static int __do_execveat(int fd, struct filename *filename,
- 			    struct user_arg_ptr argv,
- 			    struct user_arg_ptr envp,
- 			    int flags, struct file *file)
-@@ -1972,74 +1969,16 @@ static int __do_execve_file(int fd, struct filename *filename,
- 	return retval;
- }
- 
--static int do_execveat_common(int fd, struct filename *filename,
--			      struct user_arg_ptr argv,
--			      struct user_arg_ptr envp,
--			      int flags)
--{
--	return __do_execve_file(fd, filename, argv, envp, flags, NULL);
--}
--
--int do_execve_file(struct file *file, void *__argv, void *__envp)
--{
--	struct user_arg_ptr argv = { .ptr.native = __argv };
--	struct user_arg_ptr envp = { .ptr.native = __envp };
--
--	return __do_execve_file(AT_FDCWD, NULL, argv, envp, 0, file);
--}
--
--int do_execve(struct filename *filename,
--	const char __user *const __user *__argv,
--	const char __user *const __user *__envp)
--{
--	struct user_arg_ptr argv = { .ptr.native = __argv };
--	struct user_arg_ptr envp = { .ptr.native = __envp };
--	return do_execveat_common(AT_FDCWD, filename, argv, envp, 0);
--}
--
- int do_execveat(int fd, struct filename *filename,
- 		const char __user *const __user *__argv,
- 		const char __user *const __user *__envp,
--		int flags)
-+		int flags, struct file *file)
- {
- 	struct user_arg_ptr argv = { .ptr.native = __argv };
- 	struct user_arg_ptr envp = { .ptr.native = __envp };
- 
--	return do_execveat_common(fd, filename, argv, envp, flags);
--}
--
--#ifdef CONFIG_COMPAT
--static int compat_do_execve(struct filename *filename,
--	const compat_uptr_t __user *__argv,
--	const compat_uptr_t __user *__envp)
--{
--	struct user_arg_ptr argv = {
--		.is_compat = true,
--		.ptr.compat = __argv,
--	};
--	struct user_arg_ptr envp = {
--		.is_compat = true,
--		.ptr.compat = __envp,
--	};
--	return do_execveat_common(AT_FDCWD, filename, argv, envp, 0);
--}
--
--static int compat_do_execveat(int fd, struct filename *filename,
--			      const compat_uptr_t __user *__argv,
--			      const compat_uptr_t __user *__envp,
--			      int flags)
--{
--	struct user_arg_ptr argv = {
--		.is_compat = true,
--		.ptr.compat = __argv,
--	};
--	struct user_arg_ptr envp = {
--		.is_compat = true,
--		.ptr.compat = __envp,
--	};
--	return do_execveat_common(fd, filename, argv, envp, flags);
-+	return __do_execveat(fd, filename, argv, envp, flags, file);
- }
--#endif
- 
- void set_binfmt(struct linux_binfmt *new)
- {
-@@ -2070,7 +2009,7 @@ SYSCALL_DEFINE3(execve,
- 		const char __user *const __user *, argv,
- 		const char __user *const __user *, envp)
- {
--	return do_execve(getname(filename), argv, envp);
-+	return do_execveat(AT_FDCWD, getname(filename), argv, envp, 0, NULL);
- }
- 
- SYSCALL_DEFINE5(execveat,
-@@ -2080,18 +2019,34 @@ SYSCALL_DEFINE5(execveat,
- 		int, flags)
- {
- 	int lookup_flags = (flags & AT_EMPTY_PATH) ? LOOKUP_EMPTY : 0;
-+	struct filename *name = getname_flags(filename, lookup_flags, NULL);
- 
--	return do_execveat(fd,
--			   getname_flags(filename, lookup_flags, NULL),
--			   argv, envp, flags);
-+	return do_execveat(fd, name, argv, envp, flags, NULL);
- }
- 
- #ifdef CONFIG_COMPAT
-+static int do_compat_execve(int fd, struct filename *filename,
-+		const compat_uptr_t __user *__argv,
-+		const compat_uptr_t __user *__envp,
-+		int flags)
-+{
-+	struct user_arg_ptr argv = {
-+		.is_compat = true,
-+		.ptr.compat = __argv,
-+	};
-+	struct user_arg_ptr envp = {
-+		.is_compat = true,
-+		.ptr.compat = __envp,
-+	};
-+
-+	return __do_execveat(fd, filename, argv, envp, flags, NULL);
-+}
-+
- COMPAT_SYSCALL_DEFINE3(execve, const char __user *, filename,
- 	const compat_uptr_t __user *, argv,
- 	const compat_uptr_t __user *, envp)
- {
--	return compat_do_execve(getname(filename), argv, envp);
-+	return do_compat_execve(AT_FDCWD, getname(filename), argv, envp, 0);
- }
- 
- COMPAT_SYSCALL_DEFINE5(execveat, int, fd,
-@@ -2101,9 +2056,8 @@ COMPAT_SYSCALL_DEFINE5(execveat, int, fd,
- 		       int,  flags)
- {
- 	int lookup_flags = (flags & AT_EMPTY_PATH) ? LOOKUP_EMPTY : 0;
-+	struct filename *name = getname_flags(filename, lookup_flags, NULL);
- 
--	return compat_do_execveat(fd,
--				  getname_flags(filename, lookup_flags, NULL),
--				  argv, envp, flags);
-+	return do_compat_execve(fd, name, argv, envp, flags);
- }
- #endif
-diff --git a/include/linux/binfmts.h b/include/linux/binfmts.h
-index 4a20b7517dd036..bed702e4b1fbd9 100644
---- a/include/linux/binfmts.h
-+++ b/include/linux/binfmts.h
-@@ -134,13 +134,9 @@ int copy_string_kernel(const char *arg, struct linux_binprm *bprm);
- extern void set_binfmt(struct linux_binfmt *new);
- extern ssize_t read_code(struct file *, unsigned long, loff_t, size_t);
- 
--extern int do_execve(struct filename *,
--		     const char __user * const __user *,
--		     const char __user * const __user *);
--extern int do_execveat(int, struct filename *,
--		       const char __user * const __user *,
--		       const char __user * const __user *,
--		       int);
--int do_execve_file(struct file *file, void *__argv, void *__envp);
-+int do_execveat(int fd, struct filename *filename,
-+		const char __user *const __user *__argv,
-+		const char __user *const __user *__envp,
-+		int flags, struct file *file);
- 
- #endif /* _LINUX_BINFMTS_H */
-diff --git a/init/main.c b/init/main.c
-index 0ead83e86b5aa2..838950ea7bca22 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -1329,9 +1329,10 @@ static int run_init_process(const char *init_filename)
- 	pr_debug("  with environment:\n");
- 	for (p = envp_init; *p; p++)
- 		pr_debug("    %s\n", *p);
--	return do_execve(getname_kernel(init_filename),
--		(const char __user *const __user *)argv_init,
--		(const char __user *const __user *)envp_init);
-+	return do_execveat(AT_FDCWD, getname_kernel(init_filename),
-+			(const char __user *const __user *)argv_init,
-+			(const char __user *const __user *)envp_init,
-+			0, NULL);
- }
- 
- static int try_to_run_init_process(const char *init_filename)
-diff --git a/kernel/umh.c b/kernel/umh.c
-index 79f139a7ca03c6..7aa9a5817582ca 100644
---- a/kernel/umh.c
-+++ b/kernel/umh.c
-@@ -103,15 +103,13 @@ static int call_usermodehelper_exec_async(void *data)
- 	commit_creds(new);
- 
- 	sub_info->pid = task_pid_nr(current);
--	if (sub_info->file) {
--		retval = do_execve_file(sub_info->file,
--					sub_info->argv, sub_info->envp);
--		if (!retval)
--			current->flags |= PF_UMH;
--	} else
--		retval = do_execve(getname_kernel(sub_info->path),
--				   (const char __user *const __user *)sub_info->argv,
--				   (const char __user *const __user *)sub_info->envp);
-+	retval = do_execveat(AT_FDCWD,
-+			sub_info->path ? getname_kernel(sub_info->path) : NULL,
-+			(const char __user *const __user *)sub_info->argv,
-+			(const char __user *const __user *)sub_info->envp,
-+			0, sub_info->file);
-+	if (sub_info->file && !retval)
-+		current->flags |= PF_UMH;
- out:
- 	sub_info->retval = retval;
- 	/*
+In addition, functions declared and defined in <asm/pgalloc.h> headers
+are used mostly by core mm and early mm initialization in arch and there is
+no actual reason to have the <asm/pgalloc.h> included all over the place.
+The first patch in this series removes unneeded includes of <asm/pgalloc.h>
+
+In the end it didn't work out as neatly as I hoped and moving
+pXd_alloc_track() definitions to <asm-generic/pgalloc.h> would require
+unnecessary changes to arches that have custom page table allocations, so
+I've decided to move lib/ioremap.c to mm/ and make pgalloc-track.h local to
+mm/.
+
+Joerg Roedel (1):
+  mm: move p?d_alloc_track to separate header file
+
+Mike Rapoport (7):
+  mm: remove unneeded includes of <asm/pgalloc.h>
+  opeinrisc: switch to generic version of pte allocation
+  xtensa: switch to generic version of pte allocation
+  asm-generic: pgalloc: provide generic pmd_alloc_one() and pmd_free_one()
+  asm-generic: pgalloc: provide generic pud_alloc_one() and pud_free_one()
+  asm-generic: pgalloc: provide generic pgd_free()
+  mm: move lib/ioremap.c to mm/
+
+ arch/alpha/include/asm/pgalloc.h             | 21 +----
+ arch/alpha/include/asm/tlbflush.h            |  1 -
+ arch/alpha/kernel/core_irongate.c            |  1 -
+ arch/alpha/kernel/core_marvel.c              |  1 -
+ arch/alpha/kernel/core_titan.c               |  1 -
+ arch/alpha/kernel/machvec_impl.h             |  2 -
+ arch/alpha/kernel/smp.c                      |  1 -
+ arch/alpha/mm/numa.c                         |  1 -
+ arch/arc/mm/fault.c                          |  1 -
+ arch/arc/mm/init.c                           |  1 -
+ arch/arm/include/asm/pgalloc.h               | 12 +--
+ arch/arm/include/asm/tlb.h                   |  1 -
+ arch/arm/kernel/machine_kexec.c              |  1 -
+ arch/arm/kernel/smp.c                        |  1 -
+ arch/arm/kernel/suspend.c                    |  1 -
+ arch/arm/mach-omap2/omap-mpuss-lowpower.c    |  1 -
+ arch/arm/mm/hugetlbpage.c                    |  1 -
+ arch/arm/mm/mmu.c                            |  1 +
+ arch/arm64/include/asm/pgalloc.h             | 39 +---------
+ arch/arm64/kernel/smp.c                      |  1 -
+ arch/arm64/mm/hugetlbpage.c                  |  1 -
+ arch/arm64/mm/ioremap.c                      |  1 -
+ arch/arm64/mm/mmu.c                          |  1 +
+ arch/csky/include/asm/pgalloc.h              |  7 +-
+ arch/csky/kernel/smp.c                       |  1 -
+ arch/hexagon/include/asm/pgalloc.h           |  7 +-
+ arch/ia64/include/asm/pgalloc.h              | 24 ------
+ arch/ia64/include/asm/tlb.h                  |  1 -
+ arch/ia64/kernel/process.c                   |  1 -
+ arch/ia64/kernel/smp.c                       |  1 -
+ arch/ia64/kernel/smpboot.c                   |  1 -
+ arch/ia64/mm/contig.c                        |  1 -
+ arch/ia64/mm/discontig.c                     |  1 -
+ arch/ia64/mm/hugetlbpage.c                   |  1 -
+ arch/ia64/mm/tlb.c                           |  1 -
+ arch/m68k/include/asm/mmu_context.h          |  2 +-
+ arch/m68k/include/asm/sun3_pgalloc.h         |  7 +-
+ arch/m68k/kernel/dma.c                       |  2 +-
+ arch/m68k/kernel/traps.c                     |  3 +-
+ arch/m68k/mm/cache.c                         |  2 +-
+ arch/m68k/mm/fault.c                         |  1 -
+ arch/m68k/mm/kmap.c                          |  2 +-
+ arch/m68k/mm/mcfmmu.c                        |  1 +
+ arch/m68k/mm/memory.c                        |  1 -
+ arch/m68k/sun3x/dvma.c                       |  2 +-
+ arch/microblaze/include/asm/pgalloc.h        |  6 --
+ arch/microblaze/include/asm/tlbflush.h       |  1 -
+ arch/microblaze/kernel/process.c             |  1 -
+ arch/microblaze/kernel/signal.c              |  1 -
+ arch/mips/include/asm/pgalloc.h              | 19 +----
+ arch/mips/sgi-ip32/ip32-memory.c             |  1 -
+ arch/nds32/mm/mm-nds32.c                     |  2 +
+ arch/nios2/include/asm/pgalloc.h             |  7 +-
+ arch/openrisc/include/asm/pgalloc.h          | 33 +-------
+ arch/openrisc/include/asm/tlbflush.h         |  1 -
+ arch/openrisc/kernel/or32_ksyms.c            |  1 -
+ arch/parisc/include/asm/mmu_context.h        |  1 -
+ arch/parisc/include/asm/pgalloc.h            | 12 +--
+ arch/parisc/kernel/cache.c                   |  1 -
+ arch/parisc/kernel/pci-dma.c                 |  1 -
+ arch/parisc/kernel/process.c                 |  1 -
+ arch/parisc/kernel/signal.c                  |  1 -
+ arch/parisc/kernel/smp.c                     |  1 -
+ arch/parisc/mm/hugetlbpage.c                 |  1 -
+ arch/parisc/mm/ioremap.c                     |  2 +-
+ arch/powerpc/include/asm/tlb.h               |  1 -
+ arch/powerpc/mm/book3s64/hash_hugetlbpage.c  |  1 -
+ arch/powerpc/mm/book3s64/hash_pgtable.c      |  1 -
+ arch/powerpc/mm/book3s64/hash_tlb.c          |  1 -
+ arch/powerpc/mm/book3s64/radix_hugetlbpage.c |  1 -
+ arch/powerpc/mm/init_32.c                    |  1 -
+ arch/powerpc/mm/kasan/8xx.c                  |  1 -
+ arch/powerpc/mm/kasan/book3s_32.c            |  1 -
+ arch/powerpc/mm/mem.c                        |  1 -
+ arch/powerpc/mm/nohash/40x.c                 |  1 -
+ arch/powerpc/mm/nohash/8xx.c                 |  1 -
+ arch/powerpc/mm/nohash/fsl_booke.c           |  1 -
+ arch/powerpc/mm/nohash/kaslr_booke.c         |  1 -
+ arch/powerpc/mm/pgtable.c                    |  1 -
+ arch/powerpc/mm/pgtable_64.c                 |  1 -
+ arch/powerpc/mm/ptdump/hashpagetable.c       |  2 +-
+ arch/powerpc/mm/ptdump/ptdump.c              |  1 -
+ arch/powerpc/platforms/pseries/cmm.c         |  1 -
+ arch/riscv/include/asm/pgalloc.h             | 18 +----
+ arch/riscv/mm/fault.c                        |  1 -
+ arch/s390/include/asm/tlb.h                  |  1 -
+ arch/s390/include/asm/tlbflush.h             |  1 -
+ arch/s390/kernel/machine_kexec.c             |  1 -
+ arch/s390/kernel/ptrace.c                    |  1 -
+ arch/s390/kvm/diag.c                         |  1 -
+ arch/s390/kvm/priv.c                         |  1 -
+ arch/s390/kvm/pv.c                           |  1 -
+ arch/s390/mm/cmm.c                           |  1 -
+ arch/s390/mm/mmap.c                          |  1 -
+ arch/s390/mm/pgtable.c                       |  1 -
+ arch/sh/include/asm/pgalloc.h                |  4 +
+ arch/sh/kernel/idle.c                        |  1 -
+ arch/sh/kernel/machine_kexec.c               |  1 -
+ arch/sh/mm/cache-sh3.c                       |  1 -
+ arch/sh/mm/cache-sh7705.c                    |  1 -
+ arch/sh/mm/hugetlbpage.c                     |  1 -
+ arch/sh/mm/init.c                            |  1 +
+ arch/sh/mm/ioremap_fixed.c                   |  1 -
+ arch/sh/mm/tlb-sh3.c                         |  1 -
+ arch/sparc/include/asm/ide.h                 |  1 -
+ arch/sparc/include/asm/tlb_64.h              |  1 -
+ arch/sparc/kernel/leon_smp.c                 |  1 -
+ arch/sparc/kernel/process_32.c               |  1 -
+ arch/sparc/kernel/signal_32.c                |  1 -
+ arch/sparc/kernel/smp_32.c                   |  1 -
+ arch/sparc/kernel/smp_64.c                   |  1 +
+ arch/sparc/kernel/sun4m_irq.c                |  1 -
+ arch/sparc/mm/highmem.c                      |  1 -
+ arch/sparc/mm/io-unit.c                      |  1 -
+ arch/sparc/mm/iommu.c                        |  1 -
+ arch/sparc/mm/tlb.c                          |  1 -
+ arch/um/include/asm/pgalloc.h                |  9 +--
+ arch/um/include/asm/pgtable-3level.h         |  3 -
+ arch/um/kernel/mem.c                         | 17 -----
+ arch/x86/ia32/ia32_aout.c                    |  1 -
+ arch/x86/include/asm/mmu_context.h           |  1 -
+ arch/x86/include/asm/pgalloc.h               | 42 +---------
+ arch/x86/kernel/alternative.c                |  1 +
+ arch/x86/kernel/apic/apic.c                  |  1 -
+ arch/x86/kernel/mpparse.c                    |  1 -
+ arch/x86/kernel/traps.c                      |  1 -
+ arch/x86/mm/fault.c                          |  1 -
+ arch/x86/mm/hugetlbpage.c                    |  1 -
+ arch/x86/mm/kaslr.c                          |  1 -
+ arch/x86/mm/pgtable_32.c                     |  1 -
+ arch/x86/mm/pti.c                            |  1 -
+ arch/x86/platform/uv/bios_uv.c               |  1 +
+ arch/xtensa/include/asm/pgalloc.h            | 40 ++++------
+ arch/xtensa/kernel/xtensa_ksyms.c            |  1 -
+ arch/xtensa/mm/cache.c                       |  1 -
+ arch/xtensa/mm/fault.c                       |  1 -
+ drivers/block/xen-blkback/common.h           |  1 -
+ drivers/iommu/ipmmu-vmsa.c                   |  1 -
+ drivers/xen/balloon.c                        |  1 -
+ drivers/xen/privcmd.c                        |  1 -
+ fs/binfmt_elf_fdpic.c                        |  1 -
+ include/asm-generic/pgalloc.h                | 80 ++++++++++++++++++++
+ include/asm-generic/tlb.h                    |  1 -
+ include/linux/mm.h                           | 45 -----------
+ lib/Makefile                                 |  1 -
+ mm/Makefile                                  |  2 +-
+ mm/hugetlb.c                                 |  1 +
+ {lib => mm}/ioremap.c                        |  2 +
+ mm/pgalloc-track.h                           | 51 +++++++++++++
+ mm/sparse.c                                  |  1 -
+ mm/vmalloc.c                                 |  1 +
+ 151 files changed, 194 insertions(+), 451 deletions(-)
+ rename {lib => mm}/ioremap.c (99%)
+ create mode 100644 mm/pgalloc-track.h
+
 -- 
 2.26.2
 

@@ -2,123 +2,112 @@ Return-Path: <SRS0=3aij=AK=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC6A9C433E0
-	for <linux-mips@archiver.kernel.org>; Mon, 29 Jun 2020 19:29:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95F38C433E1
+	for <linux-mips@archiver.kernel.org>; Mon, 29 Jun 2020 21:29:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9CAC52067D
-	for <linux-mips@archiver.kernel.org>; Mon, 29 Jun 2020 19:29:03 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A3C7JMKe"
+	by mail.kernel.org (Postfix) with ESMTP id 6BE8B208DB
+	for <linux-mips@archiver.kernel.org>; Mon, 29 Jun 2020 21:29:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1593466192;
+	bh=IEYbbfxHL0R+rJ5eiAE7+uNb2jSF+lIweaM7Y+Gfts8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=rGuOjobJu5XyyYecHr89tZweaBfFRdi5LkdM/iv/34RTirfgj0qxBwxoIAEbIvWZq
+	 NgUHJSHcTnzWTlr7sdPhJGo8T6bSZD7NvJbAOauN0bpxlMPmurNEJ5TstsbakrbwiM
+	 MZYkWKl/+q3Z1vn6HwPQr6Hj7e3C3vL1FEgt0TJk=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730630AbgF2T3C (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 29 Jun 2020 15:29:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732436AbgF2T2q (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 29 Jun 2020 15:28:46 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD1D3C061755;
-        Mon, 29 Jun 2020 12:28:45 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id f5so3647930ljj.10;
-        Mon, 29 Jun 2020 12:28:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RBInpL/Za49/XjwUK8A/HWIZmWUwGYyRxdCJnIDd3Ig=;
-        b=A3C7JMKeEB3sJoq3A6GeNMPUsRgZSUY3/rVmrmegxNpUcrjl6D8Z/ibLjrxtUVuxKS
-         nKCOQh3RRYwaLrzSozk96EKdww8+fYCAPdwH8QJGWtFSqVjj8IqlAXWIuUetgdtyywKx
-         qzGS+jLA9afBu8dOfYcfwCww2q+LpI5uIb/LdGn/27F4N0jaEetuIyJRJgXAYDdTblVS
-         5XZvw+LkVbxktg8T1629GWo79XwHOgfbUh/ZY8OHlACaZ3P0ydhIaqfToNFUR+mq7qMM
-         SmUpFmZO5zUjvYMafKFhvwNwR4miilhO63RuAgYds5e70IC7NWAbiV14XOP/RDvNTjmt
-         g9XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RBInpL/Za49/XjwUK8A/HWIZmWUwGYyRxdCJnIDd3Ig=;
-        b=rvCUNbLfVbo9QYXbdPizkDcbW+7bPlJjdUHJLAbFHjh1oZpWmUjtukpe7vwd5zTgMB
-         defk3uzDeKnbhBGsTkDFkJ4xpBozxaMil4EHoS3vFLJUcZ+XXTI+TvYoTxvU0Lr5dD34
-         l44U489NkV3ElC7qJ7nuOo/q/Ie9qFWxsa76NxInY2p/Srpd3QWdqyByfEXAcvg06g9B
-         +6jViRxe2aPAaERH3SgM/kZAyBH+KAf+bfDWg9BT4+zhZhJyazBMGdPWyDDvvHs9/MD9
-         0+VTUioVkaP8qEfRqNiFJ8c1+CyboMj9mLIzXkEYQxTX7dgGKlHGTc29mX2dzcyEVSGP
-         S5YA==
-X-Gm-Message-State: AOAM532sNcrsZ0TG367EtSKdUKZOw9zRRnlizzYkevhcnOM7lrUfVhF5
-        2doseLtJd4nNX8QbAndJkjPREUn5aOW7gjViYmw=
-X-Google-Smtp-Source: ABdhPJzZJVxmTnAMNUQ40iw0js01vP110xyPx2ui71LxJnZcifaQu49DgbDPTsaYRsoVL+/z5PNnEpbP+zqyYZJFTCo=
-X-Received: by 2002:a05:651c:544:: with SMTP id q4mr9390835ljp.310.1593458923219;
- Mon, 29 Jun 2020 12:28:43 -0700 (PDT)
+        id S1731817AbgF2V3r (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 29 Jun 2020 17:29:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60652 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728909AbgF2SlZ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:41:25 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4D8323B08;
+        Mon, 29 Jun 2020 14:26:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593440768;
+        bh=IEYbbfxHL0R+rJ5eiAE7+uNb2jSF+lIweaM7Y+Gfts8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uV2p61E7ul0vof3Ye7MwmEoZfRUDkdelrmFKPTDe7nX3rTdBPdKqf+PXonbfnc+ZS
+         IE6x4O0iKrR9J6T3f7gZXK4vHqJrCxmgaTcwfOc3rNzgZnlvj20lMrj6UNr+h3I6Uo
+         wQMWBv7DyXdsEhfd31poJwTw1BFlfPXjllT+muXE=
+Date:   Mon, 29 Jun 2020 10:26:06 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Ralph Siemsen <ralph.siemsen@linaro.org>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Pavel Machek <pavel@denx.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 4.19 182/267] spi: dw: Return any value retrieved from
+ the dma_transfer callback
+Message-ID: <20200629142606.GR1931@sasha-vm>
+References: <20200619141648.840376470@linuxfoundation.org>
+ <20200619141657.498868116@linuxfoundation.org>
+ <20200619210719.GB12233@amd>
+ <20200622205121.4xuki7guyj6u5yul@mobilestation>
+ <20200626151800.GA22242@maple.netwinder.org>
 MIME-Version: 1.0
-References: <20200602183354.39707-1-zhouyanjie@wanyeetech.com>
- <20200602183354.39707-2-zhouyanjie@wanyeetech.com> <20200619110524.GA9391@alpha.franken.de>
-In-Reply-To: <20200619110524.GA9391@alpha.franken.de>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Mon, 29 Jun 2020 16:28:31 -0300
-Message-ID: <CAOMZO5CuxzMm+XFX6-mh55mcw5jgf5iYs-ej5NqjCsD6hSnr7Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] dt-bindings: MIPS: Document Ingenic SoCs binding.
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>, linux-mips@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        paul@crapouillou.net, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200626151800.GA22242@maple.netwinder.org>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 9:48 AM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
+On Fri, Jun 26, 2020 at 11:18:00AM -0400, Ralph Siemsen wrote:
+>Hi Serge, Pavel, Greg,
 >
-> On Wed, Jun 03, 2020 at 02:33:54AM +0800, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zh=
-ou Yanjie) wrote:
-> > Document the available properties for the SoC root node and the
-> > CPU nodes of the devicetree for the Ingenic XBurst SoCs.
-> >
-> > Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
-> > Tested-by: Paul Boddie <paul@boddie.org.uk>
-> > Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wa=
-nyeetech.com>
-> > ---
-> >
-> > Notes:
-> >     v1->v2:
-> >     1.Remove unnecessary "items".
-> >     2.Add "clocks" as suggested by Paul Cercueil.
-> >
-> >  .../bindings/mips/ingenic/ingenic,cpu.yaml         | 67 ++++++++++++++=
-++++++++
-> >  1 file changed, 67 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/mips/ingenic/inge=
-nic,cpu.yaml
+>On Mon, Jun 22, 2020 at 11:51:21PM +0300, Serge Semin wrote:
+>>Hello Pavel
+>>
+>>On Fri, Jun 19, 2020 at 11:07:19PM +0200, Pavel Machek wrote:
+>>
+>>>Mainline patch simply changes return value, but code is different in
+>>>v4.19, and poll_transfer will now be avoided when dws->dma_mapped. Is
+>>>that a problem?
+>>
+>>Actually no.) In that old 4.19 context it's even better to return straight away
+>>no matter what value is returned by the dma_transfer() callback.
 >
-> applied to mips-next.
+>This patch changes the return dma_transfer return value from 0 to 1, 
+>however it was only done in spi-dw-mid.c func mid_spi_dma_transfer().
+>
+>There is an identical function in spi-dw-mmio.c that needs the same 
+>treatment, otherwise access to the SPI device becomes erratic and even 
+>causes kernel to hang. Guess how I found this ;-)
+>
+>So the following patch is needed as well, at least in 4.9 and 4.19, I 
+>did not check/test other versions. Mainline does not need this, since 
+>the code seems to have been refactored to avoid the duplication.
+>
+>Regards,
+>-Ralph
+>
+>diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
+>index c563c2815093..99641c485288 100644
+>--- a/drivers/spi/spi-dw-mmio.c
+>+++ b/drivers/spi/spi-dw-mmio.c
+>@@ -358,7 +358,7 @@ static int mmio_spi_dma_transfer(struct dw_spi *dws, struct spi_transfer *xfer)
 
-This causes 'make dt_binding_check' to fail:
+Um, I can't find this function anywhere... what am I missing?
 
-$ make dt_binding_check
-  CHKDT   Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.yaml
-Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.yaml:
-while scanning a block scalar
-  in "<unicode string>", line 42, column 5
-found a tab character where an indentation space is expected
-  in "<unicode string>", line 46, column 1
-Documentation/devicetree/bindings/Makefile:20: recipe for target
-'Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.example.dts'
-failed
-make[1]: *** [Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.ex=
-ample.dts]
-Error 1
-Makefile:1343: recipe for target 'dt_binding_check' failed
-make: *** [dt_binding_check] Error 2
+-- 
+Thanks,
+Sasha

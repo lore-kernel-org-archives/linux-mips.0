@@ -2,96 +2,115 @@ Return-Path: <SRS0=3aij=AK=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A78CC433E2
-	for <linux-mips@archiver.kernel.org>; Mon, 29 Jun 2020 21:45:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3607BC433E0
+	for <linux-mips@archiver.kernel.org>; Mon, 29 Jun 2020 21:46:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1FDB72063A
-	for <linux-mips@archiver.kernel.org>; Mon, 29 Jun 2020 21:45:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 14CDA206A1
+	for <linux-mips@archiver.kernel.org>; Mon, 29 Jun 2020 21:46:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1593467178;
+	bh=gF4C5IJL9Z7p1l9MBEr0x0+yhKuUVQmPfhBBdsQPwNk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=V2oBntcd/H+VtMJQ5YiQsFR2cTtV2fHvkum3nHbZ5ezVBThBzLryObtwxDJ+fSOnR
+	 8YJIsbYC+p4abXpQSiEmwE5gYUYthxyq01LJtC2CDxjwyGZEGYiYjkKPGXXeeHrxYi
+	 uY0xmkp+pFTdcaVvqIlObgJYWSowkiWWlQ+iibss=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404060AbgF2VpS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 29 Jun 2020 17:45:18 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:49520 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727123AbgF2Shn (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 29 Jun 2020 14:37:43 -0400
-Received: from kvm-dev1.localdomain (unknown [10.2.5.134])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn9566flezmRMAA--.4772S2;
-        Mon, 29 Jun 2020 21:15:39 +0800 (CST)
-From:   bibo mao <maobibo@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Bibo Mao <maobibo@loongson.cn>
-Subject: [PATCH 1/2] hugetlb: clear huge pte during flush function on mips platform
-Date:   Mon, 29 Jun 2020 21:15:32 +0800
-Message-Id: <1593436533-8645-1-git-send-email-maobibo@loongson.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AQAAf9Dxn9566flezmRMAA--.4772S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZrWDGFWfKw4rAr17Ary3XFb_yoW8XF4kpF
-        WDCwn5G3ykGr9IkF1xZ34kK3y3tw4qgaySyFyrKF4FywnxXw4UKF97WFWUAw4kZrZ5ta18
-        uF4jqr4kAFsFvw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE-syl42xK
-        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
-        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUF9a9DUUUU
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+        id S2404127AbgF2VqQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 29 Jun 2020 17:46:16 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:44090 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403971AbgF2VqP (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 29 Jun 2020 17:46:15 -0400
+Received: by mail-il1-f193.google.com with SMTP id w73so4008872ila.11;
+        Mon, 29 Jun 2020 14:46:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uyW+jW1awHxTjKyRxm3xfnDiRBllSD4XGWQa5b78Aw8=;
+        b=bvczna650WplwrbE2t7lBZio1h82/M0jvHqMsVdFzDLnwQFT7OHKuk6ME5eHq6C7rI
+         INRc3gxByEzTCDdE1Rblvl0dRi0VUEOIiz/eUjDXGg+7xEJ2tj7qevgFZHHMV85Xvswz
+         cDvF/sAXKN8AoSqsNLHiTrwHZ++2hmE809fM+zcOpevJuL7j4TfKaJfdNTDT42MIukqU
+         w7cw0uatIu09PN4lUBHI+UxikLJQd6m2SQ5F2FChin9O56LWMKkhwVG7E3fS2QxVFScJ
+         VOm1qsH9Fspg8qd90mqmE0PoPtvpXRLndSEzDQTT2u3CPLJ84Jhddiogeou/pgHILVMX
+         GnrA==
+X-Gm-Message-State: AOAM530t+ex3qOLtQ+bOv5I1nLSdenyrJEMRcrLykP5qF6glB9Tm6xCN
+        p6h69JFn1NdGNlHJheg1bQ==
+X-Google-Smtp-Source: ABdhPJxBseoySQnNrO/ucBAVbxE8Ve40ZGwZtZVMP9DsPrIAMec0KapS8vUwFpWKDddIkdU/wn0rOw==
+X-Received: by 2002:a92:b684:: with SMTP id m4mr17425649ill.153.1593467174525;
+        Mon, 29 Jun 2020 14:46:14 -0700 (PDT)
+Received: from xps15 ([64.188.179.255])
+        by smtp.gmail.com with ESMTPSA id z9sm612748ilz.45.2020.06.29.14.46.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jun 2020 14:46:13 -0700 (PDT)
+Received: (nullmailer pid 2980772 invoked by uid 1000);
+        Mon, 29 Jun 2020 21:46:12 -0000
+Date:   Mon, 29 Jun 2020 15:46:12 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     devicetree@vger.kernel.org, Serge Semin <fancer.lancer@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Paul Burton <paulburton@kernel.org>
+Subject: Re: [PATCH v4 1/6] dt-bindings: power: Convert mti,mips-cpc to DT
+ schema
+Message-ID: <20200629214612.GA2979868@bogus>
+References: <20200617223201.23259-1-Sergey.Semin@baikalelectronics.ru>
+ <20200617223201.23259-2-Sergey.Semin@baikalelectronics.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200617223201.23259-2-Sergey.Semin@baikalelectronics.ru>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Bibo Mao <maobibo@loongson.cn>
+On Thu, 18 Jun 2020 01:31:55 +0300, Serge Semin wrote:
+> It's a Cluster Power Controller embedded into the MIPS IP cores.
+> Currently the corresponding dts node is supposed to have compatible
+> and reg properties.
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> 
+> ---
+> 
+> Changelog prev:
+> - Reword the changelog summary - use shorter version.
+> - Lowercase the example hex'es.
+> ---
+>  .../bindings/power/mti,mips-cpc.txt           |  8 -----
+>  .../bindings/power/mti,mips-cpc.yaml          | 35 +++++++++++++++++++
+>  2 files changed, 35 insertions(+), 8 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.txt
+>  create mode 100644 Documentation/devicetree/bindings/power/mti,mips-cpc.yaml
+> 
 
-If multiple threads are accessing the same huge page at the same
-time, hugetlb_cow will be called if one thread write the COW huge
-page. And function huge_ptep_clear_flush is called to notify other
-threads to clear the huge pte tlb entry. The other threads clear
-the huge pte tlb entry and reload it from page table, the reload
-huge pte entry may be old.
 
-This patch fixes this issue on mips platform, and it clears huge
-pte entry before notifying other threads to flush current huge
-page entry, it is similar with other architectures.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- arch/mips/include/asm/hugetlb.h | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/mti,mips-cpc.example.dt.yaml: example-0: cpc@1bde0000:reg:0: [0, 467533824, 0, 32768] is too long
 
-diff --git a/arch/mips/include/asm/hugetlb.h b/arch/mips/include/asm/hugetlb.h
-index 10e3be87..c214440 100644
---- a/arch/mips/include/asm/hugetlb.h
-+++ b/arch/mips/include/asm/hugetlb.h
-@@ -46,7 +46,13 @@ static inline pte_t huge_ptep_get_and_clear(struct mm_struct *mm,
- static inline void huge_ptep_clear_flush(struct vm_area_struct *vma,
- 					 unsigned long addr, pte_t *ptep)
- {
--	flush_tlb_page(vma, addr & huge_page_mask(hstate_vma(vma)));
-+	/*
-+	 * clear the huge pte entry firstly, so that the other smp threads will
-+	 * not get old pte entry after finishing flush_tlb_page and before
-+	 * setting new huge pte entry
-+	 */
-+	huge_ptep_get_and_clear(vma->vm_mm, addr, ptep);
-+	flush_tlb_page(vma, addr);
- }
- 
- #define __HAVE_ARCH_HUGE_PTE_NONE
--- 
-1.8.3.1
+
+See https://patchwork.ozlabs.org/patch/1311661
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
 

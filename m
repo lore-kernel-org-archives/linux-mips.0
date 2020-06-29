@@ -1,136 +1,112 @@
-Return-Path: <SRS0=MFM4=AJ=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=3aij=AK=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=-1.1 required=3.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2879C433DF
-	for <linux-mips@archiver.kernel.org>; Sun, 28 Jun 2020 17:01:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07B77C433E2
+	for <linux-mips@archiver.kernel.org>; Mon, 29 Jun 2020 18:45:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CE88D2076C
-	for <linux-mips@archiver.kernel.org>; Sun, 28 Jun 2020 17:01:12 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qQHd95GU"
+	by mail.kernel.org (Postfix) with ESMTP id DD289204EC
+	for <linux-mips@archiver.kernel.org>; Mon, 29 Jun 2020 18:45:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1593456333;
+	bh=O/nZ0BxK4nESVxMtlEZ3aR9HUzEjAJ3vpNzo90oK+Gw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=FQOC1fQkm2yul3uKsz5QfsRWRXVKadm9bDz1VCQhTdzDyhL4c+BN1rUt4H+jk2GoY
+	 Y+gvKy3UdS4UuQX9YLdCUkIsfwHKS/dwYRo6e/bT8StQmfhtM+R76MesOEH5cZSy6B
+	 f3lSd9BYrD0fKMz3wzmtapoXWiqB20cXUEjWaqHw=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726060AbgF1RBM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 28 Jun 2020 13:01:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726059AbgF1RBL (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 28 Jun 2020 13:01:11 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4338C03E979;
-        Sun, 28 Jun 2020 10:01:11 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id j4so11826447wrp.10;
-        Sun, 28 Jun 2020 10:01:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VgNIhjv1EK3OTEG7G6sROVk5jMErMnnRyNDyb3Aqm6w=;
-        b=qQHd95GUu+aUyNiADCd8YGN0Hpol/fUwfTrNf/ibDQXMVe5kwd/JQY4D5Ny5zEwlFe
-         B9fwO0sWsU+7acAPa9jX1vpmGa5hCRn1f9YX91ThbNSN1oukH6oc1xt62J525s/7CNCW
-         IoLv6U0br9Sp6/rFH054aLSoH7b/mIzvgjrGkH671+wMDWauWDDZwCgegBYYlDfrQTC2
-         SjCt/5Yg0XNz419teg+hSCk0wVoTydWBOj9JyNnigL/bHpjTmmiQ2AsQMrgUQabsyET8
-         fXQZPII5bYIzGY94trBJnA52Jx0s+p3tiJ0sDWQhEmcYcSkxxAHOm7171dyumB1n6w7B
-         cexA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VgNIhjv1EK3OTEG7G6sROVk5jMErMnnRyNDyb3Aqm6w=;
-        b=lmBX2NZ1KloHl7OKdeRmw3//XyNL9VCiRFrcyhuu5IOHQZ41ANU5LfR9KrOx9aCe8t
-         hKR2uQIic+2dewFUd41aySULGRnPGC1/Wiu5+dz0kp6WjXaaljrbYZdqyzgZNkU6Iphb
-         Q6Lf5+k5X5ssUIQOp4qZ48xoWBvTK3XaFk+JRmuIhJFj+XWyCCco9ZT692sBLhqmz3xk
-         RStVxGG4HEkPy8qEQHYqYdL6Boc7wIt9SubJySGEsT5yMJR7Nvjn2WnhG+9z8MbZ/oh7
-         JHIg8HhZKW/42YN00tB1JGeAL0vnSFa0MEUsePco95bBjsESD94cj/tAlfj5LQcwIKgp
-         GOXw==
-X-Gm-Message-State: AOAM530OLeL8etkCH6NwTjDwBAlvI1vy1cP3tCiTmSFyOiAZoDH+yocp
-        BBLawJay+7RWomBZ1PO+L4ITVLDLAUDAMPNwY8dHpg==
-X-Google-Smtp-Source: ABdhPJyCTtX1im/AM+Og+ncHlyjpPWhQyI/62rBeInG4t4LXJpk9IFVCi3pNj/dNjE4XmqRlxT0E5PtbUz9ifMDs2f0=
-X-Received: by 2002:a5d:6907:: with SMTP id t7mr13422798wru.329.1593363670422;
- Sun, 28 Jun 2020 10:01:10 -0700 (PDT)
+        id S1729272AbgF2SpR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 29 Jun 2020 14:45:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729264AbgF2SpP (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 29 Jun 2020 14:45:15 -0400
+Received: from kernel.org (unknown [87.71.40.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E93025581;
+        Mon, 29 Jun 2020 15:59:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593446372;
+        bh=O/nZ0BxK4nESVxMtlEZ3aR9HUzEjAJ3vpNzo90oK+Gw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ve2Rt8tVmffLLnlIRt4m0+FLkplbTh12wsmkxiiXh2shMIztHBj9/nk/f9S/ai5jU
+         3BFQpw5Dz/XZFCZs/y8ymsBDt+3vvNo/l/kVYqcYBemM5Bac+QbcUhusbQGI9QlPev
+         vYsxGXmlFAgYBNiTAVuThytC5RkEIP2ptiiEd7Jg=
+Date:   Mon, 29 Jun 2020 18:59:20 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Joerg Roedel <joro@8bytes.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org,
+        sparclinux@vger.kernel.org
+Subject: Re: [PATCH 4/8] asm-generic: pgalloc: provide generic
+ pmd_alloc_one() and pmd_free_one()
+Message-ID: <20200629155920.GD1492837@kernel.org>
+References: <20200627143453.31835-1-rppt@kernel.org>
+ <20200627143453.31835-5-rppt@kernel.org>
+ <20200627190304.GG25039@casper.infradead.org>
 MIME-Version: 1.0
-References: <1592984711-3130-1-git-send-email-yangtiezhu@loongson.cn>
- <e419a2acea6c1977eaef5d049d607749@kernel.org> <CAHiYmc6wmgHYm688pTFEAoyzD+nE68SPeJgCOcZLb2yRRgwGRg@mail.gmail.com>
- <80132dff49a64d238f775aa0bafe29e1@kernel.org> <CAHiYmc778AYK1UzOUnrU2VCyUExT3Zhu5nCSqeQOTZK2LbmFUg@mail.gmail.com>
- <e1c8747d684dbdf0f6acc2eea2025139@kernel.org>
-In-Reply-To: <e1c8747d684dbdf0f6acc2eea2025139@kernel.org>
-From:   Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
-Date:   Sun, 28 Jun 2020 19:00:58 +0200
-Message-ID: <CAHiYmc6wLRE+r6TP+_vtx7nJgMQwjcVjtWjYi2ChFjaMKv+ksg@mail.gmail.com>
-Subject: Re: [PATCH v3 00/14 RESEND] irqchip: Fix potential resource leaks
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200627190304.GG25039@casper.infradead.org>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-=D0=BD=D0=B5=D0=B4, 28. =D1=98=D1=83=D0=BD 2020. =D1=83 18:55 Marc Zyngier =
-<maz@kernel.org> =D1=98=D0=B5 =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=D0=BE/=
-=D0=BB=D0=B0:
->
-> On 2020-06-28 13:48, Aleksandar Markovic wrote:
-> > =D0=BD=D0=B5=D0=B4, 28. =D1=98=D1=83=D0=BD 2020. =D1=83 14:06 Marc Zyng=
-ier <maz@kernel.org> =D1=98=D0=B5 =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=D0=
-=BE/=D0=BB=D0=B0:
-> >>
-> >> On 2020-06-28 12:25, Aleksandar Markovic wrote:
-> >> > =D1=81=D1=80=D0=B5, 24. =D1=98=D1=83=D0=BD 2020. =D1=83 10:40 Marc Z=
-yngier <maz@kernel.org> =D1=98=D0=B5 =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=
-=D0=BE/=D0=BB=D0=B0:
-> >> >>
-> >> >> On 2020-06-24 08:44, Tiezhu Yang wrote:
-> >> >> > [git send-email failed due to too many commands,
-> >> >> >  so only cc the major related email and resend it,
-> >> >> >  sorry for that]
-> >> >>
-> >> >> This is becoming majorly annoying.
-> >> >
-> >> > I don't think this is the right vocabulary to welcome newcomers,
-> >> > however "terrible" thinks they did.
-> >> >
-> >> > Rather, patience, calmness and clear and detailed explanations would
-> >> > work much better - and certainly be much more helpful and useful to
-> >> > the community in the long run.
-> >>
-> >> Pray tell how you would have handled this. I expressed *my* personal
-> >> frustration at a SNR hovering below the 25% mark. I have only
-> >> indicated
-> >> that the current course of action was becoming a problem.
-> >>
-> >> And instead of taking the moral high ground, maybe you could actually
-> >> share your wisdom with Teizhu and help him becoming a better
-> >> contributor?
-> >>
-> >
-> > He will improve. This initial clumsiness is normal. It could have been
-> > avoided, true - for example, if he had had someone more experienced at
-> > hand, preferably a co-worker. He obviously acts alone. It will be
-> > better.
->
-> I thank you for imparting your insight on us. You clearly have helped
-> things moving forward, and I am sure Teizhu now knows a lot more about
-> what he should have done.
->
+On Sat, Jun 27, 2020 at 08:03:04PM +0100, Matthew Wilcox wrote:
+> On Sat, Jun 27, 2020 at 05:34:49PM +0300, Mike Rapoport wrote:
+> > More elaborate versions on arm64 and x86 account memory for the user page
+> > tables and call to pgtable_pmd_page_ctor() as the part of PMD page
+> > initialization.
+> > 
+> > Move the arm64 version to include/asm-generic/pgalloc.h and use the generic
+> > version on several architectures.
+> > 
+> > The pgtable_pmd_page_ctor() is a NOP when ARCH_ENABLE_SPLIT_PMD_PTLOCK is
+> > not enabled, so there is no functional change for most architectures except
+> > of the addition of __GFP_ACCOUNT for allocation of user page tables.
+> 
+> Thanks for including this line; it reminded me that we're not setting
+> the PageTable flag on the page, nor accounting it to the zone page stats.
+> Hope you don't mind me tagging a patch to do that on as 9/8.
 
-Irony and arrogance are certainly not the things that would attract
-future contributors. I think that is a real new insight - for you.
+We also never set PageTable flag for early page tables and for the page
+tables allocated directly with get_free_page(), e.g PTI, KASAN.
 
-Regards,
-Aleksandar
+> We could also do with a pud_page_[cd]tor and maybe even p4d/pgd versions.
+> But that brings me to the next question -- could/should some of this
+> be moved over to asm-generic/pgalloc.h?  The ctor/dtor aren't called
+> from anywhere else, and there's value to reducing the total amount of
+> code in mm.h, but then there's also value to keeping all the ifdef
+> ARCH_ENABLE_SPLIT_PMD_PTLOCK code together too.  So I'm a bit torn.
+> What do you think?
 
->          M.
-> --
-> Jazz is not dead. It just smells funny...
+-- 
+Sincerely yours,
+Mike.

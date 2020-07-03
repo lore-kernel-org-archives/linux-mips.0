@@ -2,152 +2,105 @@ Return-Path: <SRS0=2F/4=AO=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 725B1C433E0
-	for <linux-mips@archiver.kernel.org>; Fri,  3 Jul 2020 02:38:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C84ADC433DF
+	for <linux-mips@archiver.kernel.org>; Fri,  3 Jul 2020 03:00:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 597B4207CD
-	for <linux-mips@archiver.kernel.org>; Fri,  3 Jul 2020 02:38:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A2E01208FE
+	for <linux-mips@archiver.kernel.org>; Fri,  3 Jul 2020 03:00:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgGCCgG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 2 Jul 2020 22:36:06 -0400
-Received: from mga11.intel.com ([192.55.52.93]:52027 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725915AbgGCCgF (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 2 Jul 2020 22:36:05 -0400
-IronPort-SDR: T9V2w7ZbFRO40T3LLRpSOHxsZuBJ58XiXiy9R/Yl6xwsikJaW6bqJHuy6lKFwshGaAghMr9UW0
- mXu/VoZHx3Iw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="145213957"
-X-IronPort-AV: E=Sophos;i="5.75,306,1589266800"; 
-   d="scan'208";a="145213957"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 19:36:04 -0700
-IronPort-SDR: T2DxoJ+6pDgQH7e5SIxXyTgQ9QkegMOBSCNjFHu7YUc0H8gIQqRN5KQHpGrfYlDlqtc8ESDZ15
- OICltGe0pc2w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,306,1589266800"; 
-   d="scan'208";a="278295716"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
-  by orsmga003.jf.intel.com with ESMTP; 02 Jul 2020 19:36:04 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Gardon <bgardon@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Christoffer Dall <christoffer.dall@arm.com>
-Subject: [PATCH v3 00/21] KVM: Cleanup and unify kvm_mmu_memory_cache usage
-Date:   Thu,  2 Jul 2020 19:35:24 -0700
-Message-Id: <20200703023545.8771-1-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.26.0
+        id S1726048AbgGCDAG convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 2 Jul 2020 23:00:06 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:36078 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725915AbgGCDAG (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 2 Jul 2020 23:00:06 -0400
+Received: by mail-io1-f68.google.com with SMTP id y2so31090621ioy.3
+        for <linux-mips@vger.kernel.org>; Thu, 02 Jul 2020 20:00:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Q6YWpX/edcA+ETbRdMidH3dlYw218poo2zXkfknc2UA=;
+        b=Ae2IFx5k1tK1/5asq0pZMyuiOBBB/kpqzOb8v7X5snVhcR+MJSyjL/s1BAjfrabh28
+         mZSArcw5t6AJOezi3yRLUGLD2B3wytIi/IiUpeboPtqn2kLQpji5mbNXAtkPXYCS3ArG
+         z/9ZnA4fAKuQ4/CIWylpBHYqaRByIBm3UDh6AUuWR4oBTd8yONhDR6lprfRYwiWH3aXn
+         UeS4DSMQSRi9Yjlya3Bg0IEbZhYhHDzYfRI4sNcNWBCoQOPG9mLjqX7/wM0sf1FY+ADm
+         7QlumAraXhX5aa4x5u5LY9G2gGa7ZpqX5qe6vgkHJEges5eJ0X9xOz7Vt/pelJ0DMGkF
+         jg6w==
+X-Gm-Message-State: AOAM531ydrK/PwTJN+NjMmE8RKO9naZKnhPVKcKNazEj8tVphjunR6iZ
+        533I96CFkTgky+mExB401MHCoZrjJvf/FdkVBBfV0qGUoRre8g==
+X-Google-Smtp-Source: ABdhPJxis2U1h39iJtDy02eeCT3NmCXLrPYZxzhGNkV8/kjCNhzi5OtW8hX/naZ1s9oJVZPfuprLchLcLsHDfdITCPY=
+X-Received: by 2002:a5d:97d9:: with SMTP id k25mr10465144ios.42.1593745205262;
+ Thu, 02 Jul 2020 20:00:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200703000533.1716-1-r@hev.cc> <95165841-879d-c9fc-6628-446899bcd315@flygoat.com>
+In-Reply-To: <95165841-879d-c9fc-6628-446899bcd315@flygoat.com>
+From:   Huacai Chen <chenhc@lemote.com>
+Date:   Fri, 3 Jul 2020 10:59:54 +0800
+Message-ID: <CAAhV-H7QMw3nKy_x9Fyyfnp5Z21d3GAuW39yXijiVpM6i2Cwpw@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: Fix ejtag debug buffer address of per cpu
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Heiher <r@hev.cc>,
+        Linux MIPS Mailing List <linux-mips@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The only interesting delta from v2 is that patch 18 is updated to handle
-a conflict with arm64's p4d rework.  Resolution was straightforward
-(famous last words).
+Reviewed-by: Huacai Chen <chenhc@lemote.com>
 
-
-This series resurrects Christoffer Dall's series[1] to provide a common
-MMU memory cache implementation that can be shared by x86, arm64 and MIPS.
-
-It also picks up a suggested change from Ben Gardon[2] to clear shadow
-page tables during initial allocation so as to avoid clearing entire
-pages while holding mmu_lock.
-
-The front half of the patches do house cleaning on x86's memory cache
-implementation in preparation for moving it to common code, along with a
-fair bit of cleanup on the usage.  The middle chunk moves the patches to
-common KVM, and the last two chunks convert arm64 and MIPS to the common
-implementation.
-
-Fully tested on x86 only.  Compile tested patches 14-21 on arm64, MIPS,
-s390 and PowerPC.
-
-v3:
-  - Rebased to kvm/queue, commit a037ff353ba6 ("Merge ... into HEAD")
-  - Collect more review tags. [Ben]
-
-v2:
-  - Rebase to kvm-5.8-2, commit 49b3deaad345 ("Merge tag ...").
-  - Use an asm-generic kvm_types.h for s390 and PowerPC instead of an
-    empty arch-specific file. [Marc]
-  - Explicit document "GFP_PGTABLE_USER == GFP_KERNEL_ACCOUNT | GFP_ZERO"
-    in the arm64 conversion patch. [Marc]
-  - Collect review tags. [Ben]
-
-Sean Christopherson (21):
-  KVM: x86/mmu: Track the associated kmem_cache in the MMU caches
-  KVM: x86/mmu: Consolidate "page" variant of memory cache helpers
-  KVM: x86/mmu: Use consistent "mc" name for kvm_mmu_memory_cache locals
-  KVM: x86/mmu: Remove superfluous gotos from mmu_topup_memory_caches()
-  KVM: x86/mmu: Try to avoid crashing KVM if a MMU memory cache is empty
-  KVM: x86/mmu: Move fast_page_fault() call above
-    mmu_topup_memory_caches()
-  KVM: x86/mmu: Topup memory caches after walking GVA->GPA
-  KVM: x86/mmu: Clean up the gorilla math in mmu_topup_memory_caches()
-  KVM: x86/mmu: Separate the memory caches for shadow pages and gfn
-    arrays
-  KVM: x86/mmu: Make __GFP_ZERO a property of the memory cache
-  KVM: x86/mmu: Zero allocate shadow pages (outside of mmu_lock)
-  KVM: x86/mmu: Skip filling the gfn cache for guaranteed direct MMU
-    topups
-  KVM: x86/mmu: Prepend "kvm_" to memory cache helpers that will be
-    global
-  KVM: Move x86's version of struct kvm_mmu_memory_cache to common code
-  KVM: Move x86's MMU memory cache helpers to common KVM code
-  KVM: arm64: Drop @max param from mmu_topup_memory_cache()
-  KVM: arm64: Use common code's approach for __GFP_ZERO with memory
-    caches
-  KVM: arm64: Use common KVM implementation of MMU memory caches
-  KVM: MIPS: Drop @max param from mmu_topup_memory_cache()
-  KVM: MIPS: Account pages used for GPA page tables
-  KVM: MIPS: Use common KVM implementation of MMU memory caches
-
- arch/arm64/include/asm/kvm_host.h  |  11 ---
- arch/arm64/include/asm/kvm_types.h |   8 ++
- arch/arm64/kvm/arm.c               |   2 +
- arch/arm64/kvm/mmu.c               |  56 +++----------
- arch/mips/include/asm/kvm_host.h   |  11 ---
- arch/mips/include/asm/kvm_types.h  |   7 ++
- arch/mips/kvm/mmu.c                |  44 ++--------
- arch/powerpc/include/asm/Kbuild    |   1 +
- arch/s390/include/asm/Kbuild       |   1 +
- arch/x86/include/asm/kvm_host.h    |  14 +---
- arch/x86/include/asm/kvm_types.h   |   7 ++
- arch/x86/kvm/mmu/mmu.c             | 129 +++++++++--------------------
- arch/x86/kvm/mmu/paging_tmpl.h     |  10 +--
- include/asm-generic/kvm_types.h    |   5 ++
- include/linux/kvm_host.h           |   7 ++
- include/linux/kvm_types.h          |  19 +++++
- virt/kvm/kvm_main.c                |  55 ++++++++++++
- 17 files changed, 176 insertions(+), 211 deletions(-)
- create mode 100644 arch/arm64/include/asm/kvm_types.h
- create mode 100644 arch/mips/include/asm/kvm_types.h
- create mode 100644 arch/x86/include/asm/kvm_types.h
- create mode 100644 include/asm-generic/kvm_types.h
-
--- 
-2.26.0
-
+On Fri, Jul 3, 2020 at 8:32 AM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+>
+>
+>
+> 在 2020/7/3 上午8:05, Heiher 写道:
+> > From: Heiher <r@hev.cc>
+> >
+> > We can directly calculate pointer type offset of per cpu
+> > by shifting SMP_CPUID_PTRSHIFT.
+> >
+> > Cc: Paul Burton <paulburton@kernel.org>
+> > Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> > Cc: Huacai Chen <chenhc@lemote.com>
+> > Signed-off-by: Heiher <r@hev.cc>
+> > ---
+> Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+>
+> Btw:
+> linux-mips@linux-mips.org have been abandoned, please go to the new
+> list: linux-mips@vger.kernel.org.
+>
+> Thanks.
+>
+> >   arch/mips/kernel/genex.S | 2 --
+> >   1 file changed, 2 deletions(-)
+> >
+> > diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+> > index a1b966f3578e..a1ebb94b3626 100644
+> > --- a/arch/mips/kernel/genex.S
+> > +++ b/arch/mips/kernel/genex.S
+> > @@ -369,7 +369,6 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
+> >
+> >       ASM_CPUID_MFC0 k1, ASM_SMP_CPUID_REG
+> >       PTR_SRL k1, SMP_CPUID_PTRSHIFT
+> > -     PTR_SLL k1, LONGLOG
+> >       PTR_LA  k0, ejtag_debug_buffer_per_cpu
+> >       PTR_ADDU k0, k1
+> >
+> > @@ -392,7 +391,6 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
+> >   #ifdef CONFIG_SMP
+> >       ASM_CPUID_MFC0 k1, ASM_SMP_CPUID_REG
+> >       PTR_SRL k1, SMP_CPUID_PTRSHIFT
+> > -     PTR_SLL k1, LONGLOG
+> >       PTR_LA  k0, ejtag_debug_buffer_per_cpu
+> >       PTR_ADDU k0, k1
+> >       LONG_L  k1, 0(k0)

@@ -2,39 +2,38 @@ Return-Path: <SRS0=2F/4=AO=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0
-	tests=HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFD2BC433DF
-	for <linux-mips@archiver.kernel.org>; Fri,  3 Jul 2020 02:38:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 725B1C433E0
+	for <linux-mips@archiver.kernel.org>; Fri,  3 Jul 2020 02:38:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 97A1C207CD
-	for <linux-mips@archiver.kernel.org>; Fri,  3 Jul 2020 02:38:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 597B4207CD
+	for <linux-mips@archiver.kernel.org>; Fri,  3 Jul 2020 02:38:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbgGCCiB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 2 Jul 2020 22:38:01 -0400
-Received: from mga09.intel.com ([134.134.136.24]:3196 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726163AbgGCCgG (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1726144AbgGCCgG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Thu, 2 Jul 2020 22:36:06 -0400
-IronPort-SDR: 2ElqMqvAoN4SXu/jKWC5mO/Mg1b/m5t2o47WW3IzLI7s8Wo1K4uZY90xbfK88Iqon5qNvvcnGh
- dii+G3iPXJCQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="148599911"
+Received: from mga11.intel.com ([192.55.52.93]:52027 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725915AbgGCCgF (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 2 Jul 2020 22:36:05 -0400
+IronPort-SDR: T9V2w7ZbFRO40T3LLRpSOHxsZuBJ58XiXiy9R/Yl6xwsikJaW6bqJHuy6lKFwshGaAghMr9UW0
+ mXu/VoZHx3Iw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9670"; a="145213957"
 X-IronPort-AV: E=Sophos;i="5.75,306,1589266800"; 
-   d="scan'208";a="148599911"
+   d="scan'208";a="145213957"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 19:36:05 -0700
-IronPort-SDR: FQIJxA8etHlkCUX30t30A3XmQU4ZuKr+HFI63QtU5U9+x83WcePQGKOInvMJDxVzMuqlu5vq/k
- XZmmWAW/lSGw==
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2020 19:36:04 -0700
+IronPort-SDR: T2DxoJ+6pDgQH7e5SIxXyTgQ9QkegMOBSCNjFHu7YUc0H8gIQqRN5KQHpGrfYlDlqtc8ESDZ15
+ OICltGe0pc2w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,306,1589266800"; 
-   d="scan'208";a="278295748"
+   d="scan'208";a="278295716"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
-  by orsmga003.jf.intel.com with ESMTP; 02 Jul 2020 19:36:05 -0700
+  by orsmga003.jf.intel.com with ESMTP; 02 Jul 2020 19:36:04 -0700
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
 To:     Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
         Arnd Bergmann <arnd@arndb.de>
@@ -54,12 +53,10 @@ Cc:     James Morse <james.morse@arm.com>,
         Peter Shier <pshier@google.com>,
         Junaid Shahid <junaids@google.com>,
         Christoffer Dall <christoffer.dall@arm.com>
-Subject: [PATCH v3 10/21] KVM: x86/mmu: Make __GFP_ZERO a property of the memory cache
-Date:   Thu,  2 Jul 2020 19:35:34 -0700
-Message-Id: <20200703023545.8771-11-sean.j.christopherson@intel.com>
+Subject: [PATCH v3 00/21] KVM: Cleanup and unify kvm_mmu_memory_cache usage
+Date:   Thu,  2 Jul 2020 19:35:24 -0700
+Message-Id: <20200703023545.8771-1-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200703023545.8771-1-sean.j.christopherson@intel.com>
-References: <20200703023545.8771-1-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
@@ -67,61 +64,90 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add a gfp_zero flag to 'struct kvm_mmu_memory_cache' and use it to
-control __GFP_ZERO instead of hardcoding a call to kmem_cache_zalloc().
-A future patch needs such a flag for the __get_free_page() path, as
-gfn arrays do not need/want the allocator to zero the memory.  Convert
-the kmem_cache paths to __GFP_ZERO now so as to avoid a weird and
-inconsistent API in the future.
+The only interesting delta from v2 is that patch 18 is updated to handle
+a conflict with arm64's p4d rework.  Resolution was straightforward
+(famous last words).
 
-No functional change intended.
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/include/asm/kvm_host.h | 1 +
- arch/x86/kvm/mmu/mmu.c          | 7 ++++++-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+This series resurrects Christoffer Dall's series[1] to provide a common
+MMU memory cache implementation that can be shared by x86, arm64 and MIPS.
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index b71a4e77f65a..685fe5ac7124 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -251,6 +251,7 @@ struct kvm_kernel_irq_routing_entry;
-  */
- struct kvm_mmu_memory_cache {
- 	int nobjs;
-+	gfp_t gfp_zero;
- 	struct kmem_cache *kmem_cache;
- 	void *objects[KVM_NR_MEM_OBJS];
- };
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 8e1b55d8a728..ed36f5e63863 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1063,8 +1063,10 @@ static void walk_shadow_page_lockless_end(struct kvm_vcpu *vcpu)
- static inline void *mmu_memory_cache_alloc_obj(struct kvm_mmu_memory_cache *mc,
- 					       gfp_t gfp_flags)
- {
-+	gfp_flags |= mc->gfp_zero;
-+
- 	if (mc->kmem_cache)
--		return kmem_cache_zalloc(mc->kmem_cache, gfp_flags);
-+		return kmem_cache_alloc(mc->kmem_cache, gfp_flags);
- 	else
- 		return (void *)__get_free_page(gfp_flags);
- }
-@@ -5675,7 +5677,10 @@ int kvm_mmu_create(struct kvm_vcpu *vcpu)
- 	int ret;
- 
- 	vcpu->arch.mmu_pte_list_desc_cache.kmem_cache = pte_list_desc_cache;
-+	vcpu->arch.mmu_pte_list_desc_cache.gfp_zero = __GFP_ZERO;
-+
- 	vcpu->arch.mmu_page_header_cache.kmem_cache = mmu_page_header_cache;
-+	vcpu->arch.mmu_page_header_cache.gfp_zero = __GFP_ZERO;
- 
- 	vcpu->arch.mmu = &vcpu->arch.root_mmu;
- 	vcpu->arch.walk_mmu = &vcpu->arch.root_mmu;
+It also picks up a suggested change from Ben Gardon[2] to clear shadow
+page tables during initial allocation so as to avoid clearing entire
+pages while holding mmu_lock.
+
+The front half of the patches do house cleaning on x86's memory cache
+implementation in preparation for moving it to common code, along with a
+fair bit of cleanup on the usage.  The middle chunk moves the patches to
+common KVM, and the last two chunks convert arm64 and MIPS to the common
+implementation.
+
+Fully tested on x86 only.  Compile tested patches 14-21 on arm64, MIPS,
+s390 and PowerPC.
+
+v3:
+  - Rebased to kvm/queue, commit a037ff353ba6 ("Merge ... into HEAD")
+  - Collect more review tags. [Ben]
+
+v2:
+  - Rebase to kvm-5.8-2, commit 49b3deaad345 ("Merge tag ...").
+  - Use an asm-generic kvm_types.h for s390 and PowerPC instead of an
+    empty arch-specific file. [Marc]
+  - Explicit document "GFP_PGTABLE_USER == GFP_KERNEL_ACCOUNT | GFP_ZERO"
+    in the arm64 conversion patch. [Marc]
+  - Collect review tags. [Ben]
+
+Sean Christopherson (21):
+  KVM: x86/mmu: Track the associated kmem_cache in the MMU caches
+  KVM: x86/mmu: Consolidate "page" variant of memory cache helpers
+  KVM: x86/mmu: Use consistent "mc" name for kvm_mmu_memory_cache locals
+  KVM: x86/mmu: Remove superfluous gotos from mmu_topup_memory_caches()
+  KVM: x86/mmu: Try to avoid crashing KVM if a MMU memory cache is empty
+  KVM: x86/mmu: Move fast_page_fault() call above
+    mmu_topup_memory_caches()
+  KVM: x86/mmu: Topup memory caches after walking GVA->GPA
+  KVM: x86/mmu: Clean up the gorilla math in mmu_topup_memory_caches()
+  KVM: x86/mmu: Separate the memory caches for shadow pages and gfn
+    arrays
+  KVM: x86/mmu: Make __GFP_ZERO a property of the memory cache
+  KVM: x86/mmu: Zero allocate shadow pages (outside of mmu_lock)
+  KVM: x86/mmu: Skip filling the gfn cache for guaranteed direct MMU
+    topups
+  KVM: x86/mmu: Prepend "kvm_" to memory cache helpers that will be
+    global
+  KVM: Move x86's version of struct kvm_mmu_memory_cache to common code
+  KVM: Move x86's MMU memory cache helpers to common KVM code
+  KVM: arm64: Drop @max param from mmu_topup_memory_cache()
+  KVM: arm64: Use common code's approach for __GFP_ZERO with memory
+    caches
+  KVM: arm64: Use common KVM implementation of MMU memory caches
+  KVM: MIPS: Drop @max param from mmu_topup_memory_cache()
+  KVM: MIPS: Account pages used for GPA page tables
+  KVM: MIPS: Use common KVM implementation of MMU memory caches
+
+ arch/arm64/include/asm/kvm_host.h  |  11 ---
+ arch/arm64/include/asm/kvm_types.h |   8 ++
+ arch/arm64/kvm/arm.c               |   2 +
+ arch/arm64/kvm/mmu.c               |  56 +++----------
+ arch/mips/include/asm/kvm_host.h   |  11 ---
+ arch/mips/include/asm/kvm_types.h  |   7 ++
+ arch/mips/kvm/mmu.c                |  44 ++--------
+ arch/powerpc/include/asm/Kbuild    |   1 +
+ arch/s390/include/asm/Kbuild       |   1 +
+ arch/x86/include/asm/kvm_host.h    |  14 +---
+ arch/x86/include/asm/kvm_types.h   |   7 ++
+ arch/x86/kvm/mmu/mmu.c             | 129 +++++++++--------------------
+ arch/x86/kvm/mmu/paging_tmpl.h     |  10 +--
+ include/asm-generic/kvm_types.h    |   5 ++
+ include/linux/kvm_host.h           |   7 ++
+ include/linux/kvm_types.h          |  19 +++++
+ virt/kvm/kvm_main.c                |  55 ++++++++++++
+ 17 files changed, 176 insertions(+), 211 deletions(-)
+ create mode 100644 arch/arm64/include/asm/kvm_types.h
+ create mode 100644 arch/mips/include/asm/kvm_types.h
+ create mode 100644 arch/x86/include/asm/kvm_types.h
+ create mode 100644 include/asm-generic/kvm_types.h
+
 -- 
 2.26.0
 

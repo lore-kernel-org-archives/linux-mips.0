@@ -4,27 +4,27 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0468FC433DF
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Jul 2020 22:46:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4635AC433E4
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Jul 2020 22:46:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DF6E6206E2
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Jul 2020 22:46:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2C474206E2
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Jul 2020 22:46:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgGIWq3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Jul 2020 18:46:29 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:48196 "EHLO
+        id S1727844AbgGIWqm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Jul 2020 18:46:42 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:48198 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727078AbgGIWqU (ORCPT
+        with ESMTP id S1727081AbgGIWqU (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Thu, 9 Jul 2020 18:46:20 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 7E5CF8040A6B;
-        Thu,  9 Jul 2020 22:46:15 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 0413180045E5;
+        Thu,  9 Jul 2020 22:46:17 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id hmBHIJvAoxUb; Fri, 10 Jul 2020 01:46:14 +0300 (MSK)
+        with ESMTP id MRoD_kFL0_oL; Fri, 10 Jul 2020 01:46:16 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -37,9 +37,9 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <dmaengine@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v7 09/11] dmaengine: dw: Initialize min and max burst DMA device capability
-Date:   Fri, 10 Jul 2020 01:45:48 +0300
-Message-ID: <20200709224550.15539-10-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v7 11/11] dmaengine: dw: Initialize max_sg_nents capability
+Date:   Fri, 10 Jul 2020 01:45:50 +0300
+Message-ID: <20200709224550.15539-12-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20200709224550.15539-1-Sergey.Semin@baikalelectronics.ru>
 References: <20200709224550.15539-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -51,17 +51,19 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-According to the DW APB DMAC data book the minimum burst transaction
-length is 1 and it's true for any version of the controller since
-isn't parametrised in the coreAssembler so can't be changed at the
-IP-core synthesis stage. The maximum burst transaction can vary from
-channel to channel and from controller to controller depending on a
-IP-core parameter the system engineer activated during the IP-core
-synthesis. Let's initialise both min_burst and max_burst members of the
-DMA controller descriptor with extreme values so the DMA clients could
-use them to properly optimize the DMA requests. The channels and
-controller-specific max_burst length initialization will be introduced
-by the follow-up patches.
+Multi-block support provides a way to map the kernel-specific SG-table so
+the DW DMA device would handle it as a whole instead of handling the
+SG-list items or so called LLP block items one by one. So if true LLP
+list isn't supported by the DW DMA engine, then soft-LLP mode will be
+utilized to load and execute each LLP-block one by one. The soft-LLP mode
+of the DMA transactions execution might not work well for some DMA
+consumers like SPI due to its Tx and Rx buffers inter-dependency. Let's
+initialize the max_sg_nents DMA channels capability based on the nollp
+flag state. If it's true, no hardware accelerated LLP is available and
+max_sg_nents should be set with 1, which means that the DMA engine
+can handle only a single SG list entry at a time. If noLLP is set to
+false, then hardware accelerated LLP is supported and the DMA engine
+can handle infinite number of SG entries in a single DMA transaction.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
@@ -74,45 +76,39 @@ Cc: devicetree@vger.kernel.org
 
 ---
 
-Changelog v4:
-- This is a new patch suggested by Andy.
+Changelog v3:
+- This is a new patch created as a result of the discussion with Vinud and
+  Andy in the framework of DW DMA burst and LLP capabilities.
 
-Changelog v5:
-- Introduce macro with extreme min and max burst length supported by the
-  DW DMA controller.
-- Initialize max_burst length capability with extreme burst length supported
-  by the DW DMAC IP-core.
+Changelog v4:
+- Use explicit if-else statement when assigning the max_sg_nents field.
 ---
- drivers/dma/dw/core.c                | 2 ++
- include/linux/platform_data/dma-dw.h | 2 ++
- 2 files changed, 4 insertions(+)
+ drivers/dma/dw/core.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/drivers/dma/dw/core.c b/drivers/dma/dw/core.c
-index ceded21537e2..4887aa2fc73c 100644
+index 588b9bae827c..9dee5fa65153 100644
 --- a/drivers/dma/dw/core.c
 +++ b/drivers/dma/dw/core.c
-@@ -1229,6 +1229,8 @@ int do_dma_probe(struct dw_dma_chip *chip)
- 	dw->dma.device_issue_pending = dwc_issue_pending;
+@@ -1059,6 +1059,18 @@ static void dwc_caps(struct dma_chan *chan, struct dma_slave_caps *caps)
+ 	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
  
- 	/* DMA capabilities */
-+	dw->dma.min_burst = DW_DMA_MIN_BURST;
-+	dw->dma.max_burst = DW_DMA_MAX_BURST;
- 	dw->dma.src_addr_widths = DW_DMA_BUSWIDTHS;
- 	dw->dma.dst_addr_widths = DW_DMA_BUSWIDTHS;
- 	dw->dma.directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV) |
-diff --git a/include/linux/platform_data/dma-dw.h b/include/linux/platform_data/dma-dw.h
-index f3eaf9ec00a1..369e41e9dcc9 100644
---- a/include/linux/platform_data/dma-dw.h
-+++ b/include/linux/platform_data/dma-dw.h
-@@ -12,6 +12,8 @@
+ 	caps->max_burst = dwc->max_burst;
++
++	/*
++	 * It might be crucial for some devices to have the hardware
++	 * accelerated multi-block transfers supported, aka LLPs in DW DMAC
++	 * notation. So if LLPs are supported then max_sg_nents is set to
++	 * zero which means unlimited number of SG entries can be handled in a
++	 * single DMA transaction, otherwise it's just one SG entry.
++	 */
++	if (dwc->nollp)
++		caps->max_sg_nents = 1;
++	else
++		caps->max_sg_nents = 0;
+ }
  
- #define DW_DMA_MAX_NR_MASTERS	4
- #define DW_DMA_MAX_NR_CHANNELS	8
-+#define DW_DMA_MIN_BURST	1
-+#define DW_DMA_MAX_BURST	256
- 
- /**
-  * struct dw_dma_slave - Controller-specific information about a slave
+ int do_dma_probe(struct dw_dma_chip *chip)
 -- 
 2.26.2
 

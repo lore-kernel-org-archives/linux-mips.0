@@ -6,40 +6,41 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 745CAC433DF
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Jul 2020 22:47:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F1E3C433E1
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Jul 2020 22:47:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 59CA4206E2
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Jul 2020 22:47:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 768EE2070E
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Jul 2020 22:47:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727914AbgGIWq4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Jul 2020 18:46:56 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:48196 "EHLO
+        id S1726989AbgGIWqP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Jul 2020 18:46:15 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:48090 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726889AbgGIWqR (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 9 Jul 2020 18:46:17 -0400
+        with ESMTP id S1726889AbgGIWqP (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 9 Jul 2020 18:46:15 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 045D5803202F;
-        Thu,  9 Jul 2020 22:46:13 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id DE4E780045E4;
+        Thu,  9 Jul 2020 22:46:10 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id NzAlM3y_o2Qn; Fri, 10 Jul 2020 01:46:12 +0300 (MSK)
+        with ESMTP id GfUmouGNyPhz; Fri, 10 Jul 2020 01:46:10 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>
+        Rob Herring <robh+dt@kernel.org>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rob Herring <robh@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v7 05/11] dmaengine: Introduce DMA-device device_caps callback
-Date:   Fri, 10 Jul 2020 01:45:44 +0300
-Message-ID: <20200709224550.15539-6-Sergey.Semin@baikalelectronics.ru>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        <linux-mips@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v7 02/11] dt-bindings: dma: dw: Add max burst transaction length property
+Date:   Fri, 10 Jul 2020 01:45:41 +0300
+Message-ID: <20200709224550.15539-3-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20200709224550.15539-1-Sergey.Semin@baikalelectronics.ru>
 References: <20200709224550.15539-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -51,80 +52,59 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There are DMA devices (like ours version of Synopsys DW DMAC) which have
-DMA capabilities non-uniformly redistributed between the device channels.
-In order to provide a way of exposing the channel-specific parameters to
-the DMA engine consumers, we introduce a new DMA-device callback. In case
-if provided it gets called from the dma_get_slave_caps() method and is
-able to override the generic DMA-device capabilities.
+This array property is used to indicate the maximum burst transaction
+length supported by each DMA channel.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Rob Herring <robh+dt@kernel.org>
 Cc: linux-mips@vger.kernel.org
-Cc: devicetree@vger.kernel.org
 
 ---
+
+Changelog v2:
+- Rearrange SoBs.
+- Move $ref to the root level of the properties. So do with the
+  constraints.
+- Set default max-burst-len to 256 TR-WIDTH words.
 
 Changelog v3:
-- This is a new patch created as a result of the discussion with Vinod and
-  Andy in the framework of DW DMA burst and LLP capabilities.
-
-Changelog v5:
-- Add in-line comment at the point of the device_caps callback invocation.
-- Add doc-comment for the device_caps member of struct dma_device.
+- Add more details into the property description about what limitations
+  snps,max-burst-len defines.
 ---
- drivers/dma/dmaengine.c   | 10 ++++++++++
- include/linux/dmaengine.h |  4 ++++
- 2 files changed, 14 insertions(+)
+ .../bindings/dma/snps,dma-spear1340.yaml          | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
-index ad56ad58932c..ed1fd376f1a5 100644
---- a/drivers/dma/dmaengine.c
-+++ b/drivers/dma/dmaengine.c
-@@ -599,6 +599,16 @@ int dma_get_slave_caps(struct dma_chan *chan, struct dma_slave_caps *caps)
- 	caps->cmd_resume = !!device->device_resume;
- 	caps->cmd_terminate = !!device->device_terminate_all;
+diff --git a/Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml b/Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml
+index e7611840a7cf..20870f5c14dd 100644
+--- a/Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml
++++ b/Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml
+@@ -120,6 +120,21 @@ properties:
+         enum: [0, 1]
+         default: 1
  
-+	/*
-+	 * DMA engine device might be configured with non-uniformly
-+	 * distributed slave capabilities per device channels. In this
-+	 * case the corresponding driver may provide the device_caps
-+	 * callback to override the generic capabilities with
-+	 * channel-specific ones.
-+	 */
-+	if (device->device_caps)
-+		device->device_caps(chan, caps);
++  snps,max-burst-len:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    description: |
++      Maximum length of the burst transactions supported by the controller.
++      This property defines the upper limit of the run-time burst setting
++      (CTLx.SRC_MSIZE/CTLx.DST_MSIZE fields) so the allowed burst length
++      will be from 1 to max-burst-len words. It's an array property with one
++      cell per channel in the units determined by the value set in the
++      CTLx.SRC_TR_WIDTH/CTLx.DST_TR_WIDTH fields (data width).
++    items:
++      maxItems: 8
++      items:
++        enum: [4, 8, 16, 32, 64, 128, 256]
++        default: 256
 +
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(dma_get_slave_caps);
-diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-index a7e4d8dfdd19..298b721c8b9f 100644
---- a/include/linux/dmaengine.h
-+++ b/include/linux/dmaengine.h
-@@ -799,6 +799,8 @@ struct dma_filter {
-  *	be called after period_len bytes have been transferred.
-  * @device_prep_interleaved_dma: Transfer expression in a generic way.
-  * @device_prep_dma_imm_data: DMA's 8 byte immediate data to the dst address
-+ * @device_caps: May be used to override the generic DMA slave capabilities
-+ *	with per-channel specific ones
-  * @device_config: Pushes a new configuration to a channel, return 0 or an error
-  *	code
-  * @device_pause: Pauses any transfer happening on a channel. Returns
-@@ -899,6 +901,8 @@ struct dma_device {
- 		struct dma_chan *chan, dma_addr_t dst, u64 data,
- 		unsigned long flags);
- 
-+	void (*device_caps)(struct dma_chan *chan,
-+			    struct dma_slave_caps *caps);
- 	int (*device_config)(struct dma_chan *chan,
- 			     struct dma_slave_config *config);
- 	int (*device_pause)(struct dma_chan *chan);
+   snps,dma-protection-control:
+     $ref: /schemas/types.yaml#definitions/uint32
+     description: |
 -- 
 2.26.2
 

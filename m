@@ -2,96 +2,100 @@ Return-Path: <SRS0=ET+Y=AY=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF337C433EC
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Jul 2020 18:07:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41C6EC433F1
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Jul 2020 20:13:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B38842088E
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Jul 2020 18:07:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2C10720674
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Jul 2020 20:13:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730203AbgGMSHQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 13 Jul 2020 14:07:16 -0400
-Received: from out28-97.mail.aliyun.com ([115.124.28.97]:42997 "EHLO
-        out28-97.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730098AbgGMSHP (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Jul 2020 14:07:15 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1160357|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00699902-0.00107133-0.99193;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03302;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.I1D8Ndo_1594663624;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I1D8Ndo_1594663624)
-          by smtp.aliyun-inc.com(10.147.40.7);
-          Tue, 14 Jul 2020 02:07:12 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     tsbogend@alpha.franken.de, robh+dt@kernel.org
-Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paulburton@kernel.org,
-        paul@crapouillou.net, ak@linux.intel.com, ebiederm@xmission.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: [PATCH v3 2/3] dt-bindings: MIPS: Add Ingenic X1830 based boards.
-Date:   Tue, 14 Jul 2020 02:06:39 +0800
-Message-Id: <20200713180640.3990-3-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200713180640.3990-1-zhouyanjie@wanyeetech.com>
-References: <20200713180640.3990-1-zhouyanjie@wanyeetech.com>
+        id S1726963AbgGMUNL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 13 Jul 2020 16:13:11 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:58364 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgGMUNL (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Jul 2020 16:13:11 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 51EBA8030866;
+        Mon, 13 Jul 2020 20:13:08 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id RqU2vW_Nx0sU; Mon, 13 Jul 2020 23:13:07 +0300 (MSK)
+Date:   Mon, 13 Jul 2020 23:13:06 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 05/11] dmaengine: Introduce DMA-device device_caps
+ callback
+Message-ID: <20200713201306.4rfmvtjzklcldajc@mobilestation>
+References: <20200709224550.15539-1-Sergey.Semin@baikalelectronics.ru>
+ <20200709224550.15539-6-Sergey.Semin@baikalelectronics.ru>
+ <20200710084503.GE3703480@smile.fi.intel.com>
+ <20200710093834.su3nsjesnhntpd6d@mobilestation>
+ <20200713065131.GG34333@vkoul-mobl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200713065131.GG34333@vkoul-mobl>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add bindings for Ingenic X1830 based board, prepare for later dts.
+Hello Vinod,
+  
+Could you please keep on this patchset review? Really, the patchset isn't that
+big and complicated to be working on it for such a long time. I've sent it out
+at the time of the kernel 5.6. I've considered all the Andy's comments since
+then. There is going to be 5.9 merge window soon, but the patchset still under
+review procedure, while I still have some work, which depends on the changes
+provided by this patchset. It would be great to at least submit it for review
+before the next merge window, and super-great have it merged in before that.
 
-Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
+There is a Peter Ujfalusi comment to the patch
+"[PATCH v7 04/11] dmaengine: Introduce max SG list entries capability", which
+needs your attention. Could you please take a look at that? So I could submit
+the next patchset revision if you agree with the Peter' suggestion.
 
-Notes:
-    v1->v2:
-    No change.
-    
-    v2->v3:
-    No change.
+-Sergey
 
- Documentation/devicetree/bindings/mips/ingenic/devices.yaml | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mips/ingenic/devices.yaml b/Documentation/devicetree/bindings/mips/ingenic/devices.yaml
-index d1175030781a..feb695be9f66 100644
---- a/Documentation/devicetree/bindings/mips/ingenic/devices.yaml
-+++ b/Documentation/devicetree/bindings/mips/ingenic/devices.yaml
-@@ -8,7 +8,8 @@ title: Ingenic XBurst based Platforms Device Tree Bindings
- 
- maintainers:
-   - 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
--description: |
-+
-+description:
-   Devices with a Ingenic XBurst CPU shall have the following properties.
- 
- properties:
-@@ -32,8 +33,13 @@ properties:
-           - const: img,ci20
-           - const: ingenic,jz4780
- 
--      - description: YSH & ATIL General Board CU Neo
-+      - description: YSH & ATIL General Board, CU1000 Module with Neo Backplane
-         items:
-           - const: yna,cu1000-neo
--          - const: ingenic,x1000
-+          - const: ingenic,x1000e
-+
-+      - description: YSH & ATIL General Board, CU1830 Module with Neo Backplane
-+        items:
-+          - const: yna,cu1830-neo
-+          - const: ingenic,x1830
- ...
--- 
-2.11.0
-
+On Mon, Jul 13, 2020 at 12:21:31PM +0530, Vinod Koul wrote:
+> On 10-07-20, 12:38, Serge Semin wrote:
+> > On Fri, Jul 10, 2020 at 11:45:03AM +0300, Andy Shevchenko wrote:
+> > > On Fri, Jul 10, 2020 at 01:45:44AM +0300, Serge Semin wrote:
+> > > > There are DMA devices (like ours version of Synopsys DW DMAC) which have
+> > > > DMA capabilities non-uniformly redistributed between the device channels.
+> > > > In order to provide a way of exposing the channel-specific parameters to
+> > > > the DMA engine consumers, we introduce a new DMA-device callback. In case
+> > > > if provided it gets called from the dma_get_slave_caps() method and is
+> > > > able to override the generic DMA-device capabilities.
+> > > 
+> > 
+> > > In light of recent developments consider not to add 'slave' and a such words to the kernel.
+> > 
+> > As long as the 'slave' word is used in the name of the dma_slave_caps
+> > structure and in the rest of the DMA-engine subsystem, it will be ambiguous
+> > to use some else terminology. If renaming needs to be done, then it should be
+> > done synchronously for the whole subsystem.
+> 
+> Right, I have plans to tackle that during next merge window and have
+> started changes. Thankfully slave_dma can be replaced by peripheral dma
+> easily. But getting that in would be tricky as we need to change users
+> too.
+> 
+> -- 
+> ~Vinod

@@ -2,118 +2,91 @@ Return-Path: <SRS0=2vMi=AZ=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6350CC433FE
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Jul 2020 12:58:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 989F2C433DF
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Jul 2020 13:28:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4766922464
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Jul 2020 12:58:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7B5C422203
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Jul 2020 13:28:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728200AbgGNM6C (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 14 Jul 2020 08:58:02 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:33238 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726914AbgGNM6B (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 14 Jul 2020 08:58:01 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id CD47B8040A6C;
-        Tue, 14 Jul 2020 12:57:58 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id g7syMbi31EHN; Tue, 14 Jul 2020 15:57:57 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Thomas Gleixner <tglx@linutronix.de>,
+        id S1727096AbgGNN2u (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 14 Jul 2020 09:28:50 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:58533 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726661AbgGNN2t (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 14 Jul 2020 09:28:49 -0400
+Received: from mail-qk1-f174.google.com ([209.85.222.174]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1Mn2eN-1kcL7X03RH-00k5oM; Tue, 14 Jul 2020 15:28:48 +0200
+Received: by mail-qk1-f174.google.com with SMTP id j80so15536709qke.0;
+        Tue, 14 Jul 2020 06:28:47 -0700 (PDT)
+X-Gm-Message-State: AOAM531qKUh7ffI+aZwsrrvalHeMo6Kw2FghBcGwH/7htbL574Rjtx/H
+        wgykE67Hijc2xPNjOM1j6wW9NlxQX2TjuvDZqMo=
+X-Google-Smtp-Source: ABdhPJxHPIXfmlqcGBqu9OXRIk6erH/D8djWlmD0b3P/vROxLbkhNRC4oaHHQrBV5XAH3EWaILtop2qaNksWBICgIYg=
+X-Received: by 2002:a37:a496:: with SMTP id n144mr4552372qke.286.1594733326751;
+ Tue, 14 Jul 2020 06:28:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200714125753.22466-1-Sergey.Semin@baikalelectronics.ru> <20200714125753.22466-6-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200714125753.22466-6-Sergey.Semin@baikalelectronics.ru>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 14 Jul 2020 15:28:30 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a09RW+zCMJ9Luh2C3NkYPdY4Esu6EKk_QX_i4faV-rUjg@mail.gmail.com>
+Message-ID: <CAK8P3a09RW+zCMJ9Luh2C3NkYPdY4Esu6EKk_QX_i4faV-rUjg@mail.gmail.com>
+Subject: Re: [PATCH v5 5/6] bus: cdmm: Add MIPS R5 arch support
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>,
         Jason Cooper <jason@lakedaemon.net>,
         Marc Zyngier <maz@kernel.org>, James Hogan <jhogan@kernel.org>,
-        <linux-mips@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Rob Herring <robh@kernel.org>
-Subject: [PATCH v5 3/6] dt-bindings: bus: Add MIPS CDMM controller
-Date:   Tue, 14 Jul 2020 15:57:49 +0300
-Message-ID: <20200714125753.22466-4-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200714125753.22466-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200714125753.22466-1-Sergey.Semin@baikalelectronics.ru>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:vSOlFJOMQtdcJW89Ot+xnzfTZOdqBnZJxvDGkZWxoieSiauq1Op
+ TvKnJgap7NWslsMnVLDKFa79aabknwkWqafsgAlp1tDn/DGziuHYcYcjgwiUKhvV7T9rcWo
+ fM2xHMb7zUXmGw9vfG8OHy1S2//lUWhDxvtsurupdW+FDKk3LUoP2SYn7cHzjUHxfNRWa6P
+ LTLKkz8F1HIYaOzr2k3vw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jfoq56SE9Eg=:FVzCfhKgZlrrfI14j/B23F
+ VlKbX2/PArHmzzmT95EvRA5ecpEwrE7S9JHf66okVxVIbTdy3OmGoWb/MpMfAHHVcQYUWY9sO
+ 6Ltwc3+3zOg4uTfy2yJHN9KqSufBohHgnySm5bKCGybyybpUuBSA7UJt0MbqtQA15veNGYLAn
+ OEMZ2CETRQ14pCcRCqnz/9p4vLP00LsYgp+Qh7PrtAJDsoqcwkj1uUmYtvNgv2JQOct29nPM7
+ mH2i6lyYHKEuRnh5IrbFUn8rvQf9frSoCqyZfWmc7RBPqPghps0/WJUi5Z6Ds4tZs+Se+Ttfi
+ ef/ScXnCmi6HOgHtVu9fKuH5s+VEjzvhkeXqimwuipX3t9l7QGwleGEBkypHhSGlt5k1h1c/0
+ lJl4+96LY2LvbwY1HNUe9o0UBf1BQp73pj5tddwMr8VGWt9fhes2q22zCptGuCtrnhlrdotN5
+ YSxWSUMqRRfzD9r08/DEXssmqQLZ3380LESWWaM+HBLXJO5tGZsDj7K5fkcADkz3ACn2gvIWQ
+ 8Fq8O2y4dqE5LxxpVmBN/Ndf4K0Ruo52Is+jaH+9an9ORv8g5yCeaBwQ1zwvZ4aYEFn6qJnL7
+ hEoJnoK11mf6mwTIWMIFKFv2rqSYuv2vbsmdIhU2Tk3/tzHEQ86ZCG/shO5wqqhYr9oxVOkoE
+ 9TGvSp1IU+1a3ih+YIKnIy99sxsxox/JS4Hx5AXj4tNltY5/B3DZ37ZNz/5/6rOwpFCnfV6V9
+ vluyZTgkTE5XamkC0fh8thJEIaeeekMho2IbV4owJUSbFfS2aMqOBKtdAwk8WftIJSWPQNCta
+ KAVjMitGUB6/OTMXees0ctH2rUsib8XNrQ4jaf8EWUEUZylNNQMMBFDG9fFITZPZVPwnJlr4+
+ afBEunCKaJ3PyJYaLMAXyyWyOvzfH/hBMkzhHLKOrEJG6uWYG6lT7rbtoSecJwXAB6WT63b1n
+ DZb/gxcqyErWgzFLjgcHEnv7AN5AEQsQ2fxd73VaFCGCZEUcNy15g
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-It's a Common Device Memory Map controller embedded into the MIPS IP
-cores, which dts node is supposed to have compatible and reg properties.
+On Tue, Jul 14, 2020 at 2:58 PM Serge Semin
+<Sergey.Semin@baikalelectronics.ru> wrote:
+>
+>  config MIPS_CDMM
+>         bool "MIPS Common Device Memory Map (CDMM) Driver"
+> -       depends on CPU_MIPSR2
+> +       depends on CPU_MIPSR2 || CPU_MIPSR5
+>         help
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Wouldn't a kernel built for P5600 have CPU_MIPSR2 set already?
+I thought R5 was just a backwards-compatible extension of R2.
 
----
+If not, what about R3?
 
-Changelog prev:
-- Lowercase the example hex'es.
-
-Changelog v5:
-- Consider address and size cells being <1> by default for the examples.
----
- .../bindings/bus/mti,mips-cdmm.yaml           | 35 +++++++++++++++++++
- 1 file changed, 35 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/bus/mti,mips-cdmm.yaml
-
-diff --git a/Documentation/devicetree/bindings/bus/mti,mips-cdmm.yaml b/Documentation/devicetree/bindings/bus/mti,mips-cdmm.yaml
-new file mode 100644
-index 000000000000..9cc2d5f1beef
---- /dev/null
-+++ b/Documentation/devicetree/bindings/bus/mti,mips-cdmm.yaml
-@@ -0,0 +1,35 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/bus/mti,mips-cdmm.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MIPS Common Device Memory Map
-+
-+description: |
-+  Defines a location of the MIPS Common Device Memory Map registers.
-+
-+maintainers:
-+  - James Hogan <jhogan@kernel.org>
-+
-+properties:
-+  compatible:
-+    const: mti,mips-cdmm
-+
-+  reg:
-+    description: |
-+      Base address and size of an unoccupied memory region, which will be
-+      used to map the MIPS CDMM registers block.
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+examples:
-+  - |
-+    cdmm@1bde8000 {
-+      compatible = "mti,mips-cdmm";
-+      reg = <0x1bde8000 0x8000>;
-+    };
-+...
--- 
-2.26.2
-
+      Arnd

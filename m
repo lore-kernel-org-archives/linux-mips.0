@@ -5,59 +5,57 @@ X-Spam-Level:
 X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 564C9C433E1
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Jul 2020 07:27:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46023C433DF
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Jul 2020 07:26:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 370F8206F0
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Jul 2020 07:27:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2ACCA206F0
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Jul 2020 07:26:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725803AbgGNH1x (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 14 Jul 2020 03:27:53 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:45234 "EHLO loongson.cn"
+        id S1725601AbgGNH0C (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 14 Jul 2020 03:26:02 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:44924 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725306AbgGNH1w (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 14 Jul 2020 03:27:52 -0400
+        id S1725306AbgGNH0B (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 14 Jul 2020 03:26:01 -0400
 Received: from [10.130.0.75] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_x10Xg1fAUoEAA--.3940S3;
-        Tue, 14 Jul 2020 15:27:49 +0800 (CST)
-Subject: Re: [PATCH 4/4] MIPS: Loongson64: Reserve legacy MMIO space according
- to bridge type
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxnx4EXg1fvkkEAA--.3513S3;
+        Tue, 14 Jul 2020 15:25:56 +0800 (CST)
+Subject: Re: [PATCH 1/4] MIPS: Loongson64: Fix machine naming
 To:     Huacai Chen <chenhc@lemote.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 References: <1594294424-26218-1-git-send-email-chenhc@lemote.com>
- <1594294424-26218-4-git-send-email-chenhc@lemote.com>
 Cc:     linux-mips@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>,
         Zhangjin Wu <wuzhangjin@gmail.com>,
         Huacai Chen <chenhuacai@gmail.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <49e77802-d544-1d52-e9b6-85db2c938531@loongson.cn>
-Date:   Tue, 14 Jul 2020 15:27:48 +0800
+Message-ID: <fdc1b16e-d69f-3cde-8564-3806dd5306a2@loongson.cn>
+Date:   Tue, 14 Jul 2020 15:25:55 +0800
 User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
  Thunderbird/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <1594294424-26218-4-git-send-email-chenhc@lemote.com>
+In-Reply-To: <1594294424-26218-1-git-send-email-chenhc@lemote.com>
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Dx_x10Xg1fAUoEAA--.3940S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxArykXFWUJF43tF13Gr4rXwb_yoW5Zw4rpF
-        Z8A3WkCF4kWrW7Kr9Iyr1UCrWrAanagFZa9FWYqr4UZan5Wa42vr1ktF18Xr1UJFWkJ3Wx
-        Wrykuw1rZanFkaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+X-CM-TRANSID: AQAAf9Dxnx4EXg1fvkkEAA--.3513S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tFWrGF4rtr48GF1fKw4Durg_yoW8Wr45pw
+        nxA3ykKF4Igr1ayrn5J3yUXryxAay5JFZruF47tryUGrZa934avr1rta1YyFsIvF1rtayF
+        9ry0grWxC3Z7CFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvSb7Iv0xC_Cr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
         0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8JV
-        WxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG
-        8wCY02Avz4vE14v_GF4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
-        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
-        6r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
-        IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW8JVW3JwCI42IY6I8E87Iv
-        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-        uYvjxU4UGYDUUUU
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487
+        MxkIecxEwVAFwVW8CwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
+        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
+        JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
+        vEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280
+        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43
+        ZEXa7IU8a2NtUUUUU==
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
@@ -65,95 +63,43 @@ List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 On 07/09/2020 07:33 PM, Huacai Chen wrote:
-> Define MMIO_LOWER_RESERVED as a constant is incorrect, because different
-> PCHs (bridge types) have different legacy MMIO space size. According to
-> the datasheets, the legacy MMIO space size of LS7A is 0x20000, and which
-> of other PCHs is 0x4000. So it is necessary to reserve legacy MMIO space
-> according to the bridge type.
->
-> Currently IO_SPACE_LIMIT is defined as 0xffff which is too small for the
-> LS7A bridge, so increase it to 0xfffff for LOONGSON64.
+>  From previous commits, the machine names with "loongson3-" prefix have
+> renamed to "loongson64c-" prefix in documents, but the .dts files have
+> not been updated as well. So fix it.
 >
 > Signed-off-by: Huacai Chen <chenhc@lemote.com>
 
 Tested-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 
 > ---
->   arch/mips/include/asm/io.h                     |  4 ++++
->   arch/mips/include/asm/mach-loongson64/spaces.h |  3 ---
->   arch/mips/loongson64/init.c                    | 18 ++++++++++++++----
->   3 files changed, 18 insertions(+), 7 deletions(-)
+>   arch/mips/boot/dts/loongson/loongson64c_4core_rs780e.dts | 2 +-
+>   arch/mips/boot/dts/loongson/loongson64c_8core_rs780e.dts | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-> index 346fffd..7358372 100644
-> --- a/arch/mips/include/asm/io.h
-> +++ b/arch/mips/include/asm/io.h
-> @@ -51,7 +51,11 @@
+> diff --git a/arch/mips/boot/dts/loongson/loongson64c_4core_rs780e.dts b/arch/mips/boot/dts/loongson/loongson64c_4core_rs780e.dts
+> index acd53a1..d681a29 100644
+> --- a/arch/mips/boot/dts/loongson/loongson64c_4core_rs780e.dts
+> +++ b/arch/mips/boot/dts/loongson/loongson64c_4core_rs780e.dts
+> @@ -6,7 +6,7 @@
+>   #include "rs780e-pch.dtsi"
 >   
->   /* ioswab[bwlq], __mem_ioswab[bwlq] are defined in mangle-port.h */
+>   / {
+> -	compatible = "loongson,loongson3-4core-rs780e";
+> +	compatible = "loongson,loongson64c-4core-rs780e";
+>   };
 >   
-> +#ifndef CONFIG_CPU_LOONGSON64
->   #define IO_SPACE_LIMIT 0xffff
-> +#else
-> +#define IO_SPACE_LIMIT 0xfffff
-> +#endif
+>   &package0 {
+> diff --git a/arch/mips/boot/dts/loongson/loongson64c_8core_rs780e.dts b/arch/mips/boot/dts/loongson/loongson64c_8core_rs780e.dts
+> index 433f9c3..3c20441 100644
+> --- a/arch/mips/boot/dts/loongson/loongson64c_8core_rs780e.dts
+> +++ b/arch/mips/boot/dts/loongson/loongson64c_8core_rs780e.dts
+> @@ -6,7 +6,7 @@
+>   #include "rs780e-pch.dtsi"
 >   
->   /*
->    * On MIPS I/O ports are memory mapped, so we access them using normal
-> diff --git a/arch/mips/include/asm/mach-loongson64/spaces.h b/arch/mips/include/asm/mach-loongson64/spaces.h
-> index 3de0ac9..93bdd9e 100644
-> --- a/arch/mips/include/asm/mach-loongson64/spaces.h
-> +++ b/arch/mips/include/asm/mach-loongson64/spaces.h
-> @@ -11,8 +11,5 @@
->   #define PCI_IOSIZE	SZ_16M
->   #define MAP_BASE	(PCI_IOBASE + PCI_IOSIZE)
+>   / {
+> -	compatible = "loongson,loongson3-8core-rs780e";
+> +	compatible = "loongson,loongson64c-8core-rs780e";
+>   };
 >   
-> -/* Reserved at the start of PCI_IOBASE for legacy drivers */
-> -#define MMIO_LOWER_RESERVED	0x10000
-> -
->   #include <asm/mach-generic/spaces.h>
->   #endif
-> diff --git a/arch/mips/loongson64/init.c b/arch/mips/loongson64/init.c
-> index 59ddada..606cdc4 100644
-> --- a/arch/mips/loongson64/init.c
-> +++ b/arch/mips/loongson64/init.c
-> @@ -65,14 +65,25 @@ void __init prom_free_prom_memory(void)
->   
->   static __init void reserve_pio_range(void)
->   {
-> +	/* Reserved at the start of PCI_IOBASE for legacy drivers */
-> +	int mmio_lower_reserved;
->   	struct logic_pio_hwaddr *range;
->   
->   	range = kzalloc(sizeof(*range), GFP_ATOMIC);
->   	if (!range)
->   		return;
->   
-> +	switch (loongson_sysconf.bridgetype) {
-> +	case LS7A:
-> +		mmio_lower_reserved = 0x20000;
-> +		break;
-> +	default:
-> +		mmio_lower_reserved = 0x4000;
-> +		break;
-> +	}
-> +
->   	range->fwnode = &of_root->fwnode;
-> -	range->size = MMIO_LOWER_RESERVED;
-> +	range->size = mmio_lower_reserved;
->   	range->hw_start = LOONGSON_PCIIO_BASE;
->   	range->flags = LOGIC_PIO_CPU_MMIO;
->   
-> @@ -89,9 +100,8 @@ static __init void reserve_pio_range(void)
->   	 * i8259 would access I/O space, so mapping must be done here.
->   	 * Please remove it when all drivers can be managed by logic_pio.
->   	 */
-> -	ioremap_page_range(PCI_IOBASE, PCI_IOBASE + MMIO_LOWER_RESERVED,
-> -				LOONGSON_PCIIO_BASE,
-> -				pgprot_device(PAGE_KERNEL));
-> +	ioremap_page_range(PCI_IOBASE, PCI_IOBASE + mmio_lower_reserved,
-> +			LOONGSON_PCIIO_BASE, pgprot_device(PAGE_KERNEL));
->   
->   	return;
->   unregister:
+>   &package0 {
 

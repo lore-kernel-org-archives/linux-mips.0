@@ -2,144 +2,151 @@ Return-Path: <SRS0=2vMi=AZ=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 085C0C433DF
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Jul 2020 12:30:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5FA9C433E0
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Jul 2020 12:48:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E0AE321D79
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Jul 2020 12:30:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C8D822242C
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Jul 2020 12:48:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726352AbgGNMa6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 14 Jul 2020 08:30:58 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:41886 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726041AbgGNMa6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:30:58 -0400
-Received: from ticat.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf9dapQ1fV3EEAA--.990S2;
-        Tue, 14 Jul 2020 20:30:19 +0800 (CST)
-From:   Peng Fan <fanpeng@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mips/vdso: Fix resource leaks in genvdso.c
-Date:   Tue, 14 Jul 2020 20:30:18 +0800
-Message-Id: <1594729818-7859-1-git-send-email-fanpeng@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dxf9dapQ1fV3EEAA--.990S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF4ftF1UJrW8WrW3urWktFb_yoW8tF4UpF
-        sY9Fyv9rZ2kry7tw43J3409FZ5A3Z7Xryjgr4kA3yDZFWrX39FyrW8GFWFqFy5Aryav3yS
-        9a9ruFZ5Ar43t3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk2b7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6ryUMxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
-        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUI6wZUUUUU
-X-CM-SenderInfo: xidq1vtqj6z05rqj20fqof0/
+        id S1728069AbgGNMsQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 14 Jul 2020 08:48:16 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:32992 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726823AbgGNMsP (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 14 Jul 2020 08:48:15 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 4D24F8030809;
+        Tue, 14 Jul 2020 12:48:12 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id qVqk18cJToeC; Tue, 14 Jul 2020 15:48:11 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        <linux-mips@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v8 1/4] serial: 8250: Add 8250 port clock update method
+Date:   Tue, 14 Jul 2020 15:48:04 +0300
+Message-ID: <20200714124808.21493-2-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200714124808.21493-1-Sergey.Semin@baikalelectronics.ru>
+References: <20200714124808.21493-1-Sergey.Semin@baikalelectronics.ru>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Close "fd" before the return of map_vdso() and close "out_file"
-in main().
+Some platforms can be designed in a way so the UART port reference clock
+might be asynchronously changed at some point. In Baikal-T1 SoC this may
+happen due to the reference clock being shared between two UART ports, on
+the Allwinner SoC the reference clock is derived from the CPU clock, so
+any CPU frequency change should get to be known/reflected by/in the UART
+controller as well. But it's not enough to just update the
+uart_port->uartclk field of the corresponding UART port, the 8250
+controller reference clock divisor should be altered so to preserve
+current baud rate setting. All of these things is done in a coherent
+way by calling the serial8250_update_uartclk() method provided in this
+patch. Though note that it isn't supposed to be called from within the
+UART port callbacks because the locks using to the protect the UART port
+data are already taken in there.
 
-Signed-off-by: Peng Fan <fanpeng@loongson.cn>
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+
 ---
 
-v2:
-  - add one missing fclose()
+Changelog v4:
+- Export serial8250_update_uartclk() symbol for GPL modules only.
 
+Changelog v7:
+- Wake the device up on the serial port divider update.
 ---
- arch/mips/vdso/genvdso.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/tty/serial/8250/8250_port.c | 40 +++++++++++++++++++++++++++++
+ include/linux/serial_8250.h         |  2 ++
+ 2 files changed, 42 insertions(+)
 
-diff --git a/arch/mips/vdso/genvdso.c b/arch/mips/vdso/genvdso.c
-index be57b832..ccba50e 100644
---- a/arch/mips/vdso/genvdso.c
-+++ b/arch/mips/vdso/genvdso.c
-@@ -122,6 +122,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	if (fstat(fd, &stat) != 0) {
- 		fprintf(stderr, "%s: Failed to stat '%s': %s\n", program_name,
- 			path, strerror(errno));
-+		close(fd);
- 		return NULL;
- 	}
- 
-@@ -130,6 +131,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	if (addr == MAP_FAILED) {
- 		fprintf(stderr, "%s: Failed to map '%s': %s\n", program_name,
- 			path, strerror(errno));
-+		close(fd);
- 		return NULL;
- 	}
- 
-@@ -139,6 +141,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	if (memcmp(ehdr->e_ident, ELFMAG, SELFMAG) != 0) {
- 		fprintf(stderr, "%s: '%s' is not an ELF file\n", program_name,
- 			path);
-+		close(fd);
- 		return NULL;
- 	}
- 
-@@ -150,6 +153,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	default:
- 		fprintf(stderr, "%s: '%s' has invalid ELF class\n",
- 			program_name, path);
-+		close(fd);
- 		return NULL;
- 	}
- 
-@@ -161,6 +165,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	default:
- 		fprintf(stderr, "%s: '%s' has invalid ELF data order\n",
- 			program_name, path);
-+		close(fd);
- 		return NULL;
- 	}
- 
-@@ -168,15 +173,18 @@ static void *map_vdso(const char *path, size_t *_size)
- 		fprintf(stderr,
- 			"%s: '%s' has invalid ELF machine (expected EM_MIPS)\n",
- 			program_name, path);
-+		close(fd);
- 		return NULL;
- 	} else if (swap_uint16(ehdr->e_type) != ET_DYN) {
- 		fprintf(stderr,
- 			"%s: '%s' has invalid ELF type (expected ET_DYN)\n",
- 			program_name, path);
-+		close(fd);
- 		return NULL;
- 	}
- 
- 	*_size = stat.st_size;
-+	close(fd);
- 	return addr;
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index 4d83c85a7389..7bfa0f7d9d60 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -2628,6 +2628,46 @@ static unsigned int serial8250_get_baud_rate(struct uart_port *port,
+ 				  (port->uartclk + tolerance) / 16);
  }
  
-@@ -293,10 +301,12 @@ int main(int argc, char **argv)
- 	/* Calculate and write symbol offsets to <output file> */
- 	if (!get_symbols(dbg_vdso_path, dbg_vdso)) {
- 		unlink(out_path);
-+		fclose(out_file);
- 		return EXIT_FAILURE;
- 	}
++/*
++ * Note in order to avoid the tty port mutex deadlock don't use the next method
++ * within the uart port callbacks. Primarily it's supposed to be utilized to
++ * handle a sudden reference clock rate change.
++ */
++void serial8250_update_uartclk(struct uart_port *port, unsigned int uartclk)
++{
++	struct uart_8250_port *up = up_to_u8250p(port);
++	unsigned int baud, quot, frac = 0;
++	struct ktermios *termios;
++	unsigned long flags;
++
++	mutex_lock(&port->state->port.mutex);
++
++	if (port->uartclk == uartclk)
++		goto out_lock;
++
++	port->uartclk = uartclk;
++	termios = &port->state->port.tty->termios;
++
++	baud = serial8250_get_baud_rate(port, termios, NULL);
++	quot = serial8250_get_divisor(port, baud, &frac);
++
++	serial8250_rpm_get(up);
++	spin_lock_irqsave(&port->lock, flags);
++
++	uart_update_timeout(port, termios->c_cflag, baud);
++
++	serial8250_set_divisor(port, baud, quot, frac);
++	serial_port_out(port, UART_LCR, up->lcr);
++	serial8250_out_MCR(up, UART_MCR_DTR | UART_MCR_RTS);
++
++	spin_unlock_irqrestore(&port->lock, flags);
++	serial8250_rpm_put(up);
++
++out_lock:
++	mutex_unlock(&port->state->port.mutex);
++}
++EXPORT_SYMBOL_GPL(serial8250_update_uartclk);
++
+ void
+ serial8250_do_set_termios(struct uart_port *port, struct ktermios *termios,
+ 			  struct ktermios *old)
+diff --git a/include/linux/serial_8250.h b/include/linux/serial_8250.h
+index 6545f8cfc8fa..2b70f736b091 100644
+--- a/include/linux/serial_8250.h
++++ b/include/linux/serial_8250.h
+@@ -155,6 +155,8 @@ extern int early_serial_setup(struct uart_port *port);
  
- 	fprintf(out_file, "};\n");
-+	fclose(out_file);
- 
- 	return EXIT_SUCCESS;
- }
+ extern int early_serial8250_setup(struct earlycon_device *device,
+ 					 const char *options);
++extern void serial8250_update_uartclk(struct uart_port *port,
++				      unsigned int uartclk);
+ extern void serial8250_do_set_termios(struct uart_port *port,
+ 		struct ktermios *termios, struct ktermios *old);
+ extern void serial8250_do_set_ldisc(struct uart_port *port,
 -- 
-2.1.0
+2.26.2
 

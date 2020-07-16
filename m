@@ -7,65 +7,55 @@ X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2858C433E1
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Jul 2020 10:01:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ED49C433DF
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Jul 2020 10:02:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AB3332083B
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Jul 2020 10:01:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 058232081A
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Jul 2020 10:02:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727837AbgGPKB7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 16 Jul 2020 06:01:59 -0400
-Received: from elvis.franken.de ([193.175.24.41]:38162 "EHLO elvis.franken.de"
+        id S1727938AbgGPKCF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 16 Jul 2020 06:02:05 -0400
+Received: from elvis.franken.de ([193.175.24.41]:38190 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725996AbgGPKB6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1727030AbgGPKB6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Thu, 16 Jul 2020 06:01:58 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jw0iB-0008Mc-01; Thu, 16 Jul 2020 12:01:55 +0200
+        id 1jw0iA-0008Mc-00; Thu, 16 Jul 2020 12:01:54 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 5BBACC080E; Thu, 16 Jul 2020 11:55:01 +0200 (CEST)
-Date:   Thu, 16 Jul 2020 11:55:01 +0200
+        id 66B5CC07DD; Thu, 16 Jul 2020 11:39:40 +0200 (CEST)
+Date:   Thu, 16 Jul 2020 11:39:40 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     paulburton@kernel.org, linux-mips@vger.kernel.org,
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        =?utf-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>, od@zcrc.me,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mips: Replace HTTP links with HTTPS ones
-Message-ID: <20200716095501.GE8455@alpha.franken.de>
-References: <59938583-2ce4-c7bf-c454-89a1559be846@flygoat.com>
- <20200714191226.48652-1-grandmaster@al2klimov.de>
+Subject: Re: [PATCH 1/7] dt-bindings: vendor-prefixes: Add YLM
+Message-ID: <20200716093940.GA8455@alpha.franken.de>
+References: <20200623182432.187843-1-paul@crapouillou.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200714191226.48652-1-grandmaster@al2klimov.de>
+In-Reply-To: <20200623182432.187843-1-paul@crapouillou.net>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 09:12:26PM +0200, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
+On Tue, Jun 23, 2020 at 08:24:26PM +0200, Paul Cercueil wrote:
+> Shenzhen Yangliming Electronic Technology Co., Ltd., abbreviated YLM or
+> YLMChina, and known as Anbernic in the rest of the world, is a Chinese
+> manufacturer of handheld game consoles, some of which are known to be
+> running Linux.
 > 
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
-> 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 > ---
->  arch/mips/Kconfig           | 2 +-
->  arch/mips/include/asm/war.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 
-applied to mips-next.
+series applied to mips-next.
 
 Thomas.
 

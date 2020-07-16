@@ -4,58 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0BE2C433E4
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Jul 2020 10:01:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B9A2C433E2
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Jul 2020 10:01:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CB1C22083B
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Jul 2020 10:01:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F3DB120853
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Jul 2020 10:01:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgGPKB6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 16 Jul 2020 06:01:58 -0400
-Received: from elvis.franken.de ([193.175.24.41]:38165 "EHLO elvis.franken.de"
+        id S1727050AbgGPKB5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 16 Jul 2020 06:01:57 -0400
+Received: from elvis.franken.de ([193.175.24.41]:38164 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726942AbgGPKB6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 16 Jul 2020 06:01:58 -0400
+        id S1726898AbgGPKB5 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 16 Jul 2020 06:01:57 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jw0iB-0008Mc-00; Thu, 16 Jul 2020 12:01:55 +0200
+        id 1jw0iB-0008Mc-02; Thu, 16 Jul 2020 12:01:55 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 0F33CC080E; Thu, 16 Jul 2020 11:52:14 +0200 (CEST)
-Date:   Thu, 16 Jul 2020 11:52:14 +0200
+        id A5E8EC080E; Thu, 16 Jul 2020 11:55:58 +0200 (CEST)
+Date:   Thu, 16 Jul 2020 11:55:58 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Guoyun Sun <sunguoyun@loongson.cn>
-Cc:     Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH] MIPS: fix vdso different address spaces
-Message-ID: <20200716095213.GD8455@alpha.franken.de>
-References: <1594706867-4426-1-git-send-email-sunguoyun@loongson.cn>
+To:     Peng Fan <fanpeng@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mips/vdso: Fix resource leaks in genvdso.c
+Message-ID: <20200716095558.GF8455@alpha.franken.de>
+References: <1594729818-7859-1-git-send-email-fanpeng@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1594706867-4426-1-git-send-email-sunguoyun@loongson.cn>
+In-Reply-To: <1594729818-7859-1-git-send-email-fanpeng@loongson.cn>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 02:07:47PM +0800, Guoyun Sun wrote:
-> From: Sunguoyun <sunguoyun@loongson.cn>
+On Tue, Jul 14, 2020 at 08:30:18PM +0800, Peng Fan wrote:
+> Close "fd" before the return of map_vdso() and close "out_file"
+> in main().
 > 
-> sparse report build warning as follows:
-> arch/mips/vdso/vdso-n32-image.c:13:35:
-> incorrect type in assignment (different address spaces) @@
-> expected void *[usertype] vdso @@     got void [noderef] <asn:1> * @@
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> Signed-off-by: Sunguoyun <sunguoyun@loongson.cn>
+> Signed-off-by: Peng Fan <fanpeng@loongson.cn>
 > ---
->  arch/mips/vdso/genvdso.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> v2:
+>   - add one missing fclose()
+> 
+> ---
+>  arch/mips/vdso/genvdso.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 
 applied to mips-next.
 

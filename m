@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1F07C433E3
-	for <linux-mips@archiver.kernel.org>; Mon, 20 Jul 2020 07:45:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 234A7C433EB
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Jul 2020 07:44:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B474B22B4E
-	for <linux-mips@archiver.kernel.org>; Mon, 20 Jul 2020 07:45:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E617E22B4E
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Jul 2020 07:44:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="UcP5zdYg"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="QGiHRvim"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726389AbgGTHpD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 20 Jul 2020 03:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49550 "EHLO
+        id S1727097AbgGTHow (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 20 Jul 2020 03:44:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726030AbgGTHpD (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 20 Jul 2020 03:45:03 -0400
+        with ESMTP id S1726030AbgGTHow (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 20 Jul 2020 03:44:52 -0400
 Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B9FC061794;
-        Mon, 20 Jul 2020 00:45:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6E8C061794;
+        Mon, 20 Jul 2020 00:44:52 -0700 (PDT)
 Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
-        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 190F41FECC;
-        Mon, 20 Jul 2020 07:45:00 +0000 (UTC)
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 28B571FECA;
+        Mon, 20 Jul 2020 07:44:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
-        t=1595231103; bh=JQPKVllLBhjegV8oJ4/3W4Dq3jbR4Ki6pJQ0tsIkbus=;
+        t=1595231092; bh=7kyPXpWNdFxYWiKuEJD7T9ohyci+Zzk/Mord055cn14=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UcP5zdYgnNjqWjgyXOUFxxE2au/BJgpu+BZxvJyy0LkKw5yM1G2koAxT2P59M7IXj
-         pf6QtfVs0jdUgEfOeR2QQ9JCNB2AhpBtUkD1RbMGAV+R36zIh9vwjK5RyHzpIQKI37
-         nNodzXKkPbbCcpFRf2jNeHnojHlygLJvlLyQR2MfhzwokXFxai9b76xQuDaowd13sD
-         vlgXpxgbC6X4q+DnXhCrFursWHf9RX05he0i1304vE0h2uhXxJIUmL2RxPZpLoiO8D
-         c9Ob2q2Gnc38gy03meWBq7YAB8aCL6v0fgOlTqr+fgCMOtEDwhDZAf0CRyN8+Q/3/w
-         NN/D/3r77Gvgw==
+        b=QGiHRvimFif+6ui1w210g82PhjIKuMgNS5QzoufU1NHVbu2NXXuET4esRqDaDy3dD
+         eYnFJkQbyJXF0VXoT8gbhElokXEQ9FPF9tGb3/OQ96/lJy2ZV2Wx6GYXAecHFYyzCq
+         qTrvUMiO7Y09xv9rgoTdwz9hwaS4GmIe+VWaHd1M6+kj68DQh5TcH5ZJfLFIWX5qrO
+         82Hm+sk4J8cUbZYD+1R6IptCHlSHeSxpRL0QFWZjVP+udWJoTvCNjlUePtXXVWZ6Ni
+         TmZ5iQns4oVaa03gBJBV34MRUGw0h7wGl51NFEa7taJR0V5mbPlhmLGfmTg5+HDCEf
+         ZsKdB0FE5icdg==
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
@@ -44,12 +44,12 @@ Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Huacai Chen <chenhc@lemote.com>,
         Frank Rowand <frowand.list@gmail.com>,
         Paul Burton <paulburton@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] MIPS: Loongson64: Add ISA node for LS7A PCH
-Date:   Mon, 20 Jul 2020 15:42:38 +0800
-Message-Id: <20200720074249.596364-6-jiaxun.yang@flygoat.com>
+        Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 4/5] MIPS: Loongson64: DTS: Fix ISA range for RS780E PCH
+Date:   Mon, 20 Jul 2020 15:42:37 +0800
+Message-Id: <20200720074249.596364-5-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.28.0.rc1
 In-Reply-To: <20200720074249.596364-1-jiaxun.yang@flygoat.com>
 References: <20200720074249.596364-1-jiaxun.yang@flygoat.com>
@@ -60,33 +60,26 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Although currently we're not enabling any ISA device in devicetree,
-but this node is required to express the ranges of address reserved
-for ISA.
+Ranges should express the actual physical address on bus.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/mips/boot/dts/loongson/rs780e-pch.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-index 1c286bb8c703..724929ea3f5f 100644
---- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-+++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-@@ -19,6 +19,13 @@ pic: interrupt-controller@10000000 {
- 			#interrupt-cells = <2>;
- 		};
+diff --git a/arch/mips/boot/dts/loongson/rs780e-pch.dtsi b/arch/mips/boot/dts/loongson/rs780e-pch.dtsi
+index d4c803d74036..99174b52dfb8 100644
+--- a/arch/mips/boot/dts/loongson/rs780e-pch.dtsi
++++ b/arch/mips/boot/dts/loongson/rs780e-pch.dtsi
+@@ -25,7 +25,7 @@ isa {
+ 			compatible = "isa";
+ 			#address-cells = <2>;
+ 			#size-cells = <1>;
+-			ranges = <1 0 0 0 0x4000>;
++			ranges = <1 0 0 0x18000000 0x4000>;
  
-+		isa {
-+			compatible = "isa";
-+			#address-cells = <2>;
-+			#size-cells = <1>;
-+			ranges = <1 0 0 0x18000000 0x20000>;
-+		};
-+
- 		pci@1a000000 {
- 			compatible = "loongson,ls7a-pci";
- 			device_type = "pci";
+ 			rtc0: rtc@70 {
+ 				compatible = "motorola,mc146818";
 -- 
 2.28.0.rc1
 

@@ -2,68 +2,66 @@ Return-Path: <SRS0=idFI=BC=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C515C433ED
-	for <linux-mips@archiver.kernel.org>; Thu, 23 Jul 2020 09:12:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FE39C433DF
+	for <linux-mips@archiver.kernel.org>; Thu, 23 Jul 2020 09:42:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 855CE22CB3
-	for <linux-mips@archiver.kernel.org>; Thu, 23 Jul 2020 09:12:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5574920825
+	for <linux-mips@archiver.kernel.org>; Thu, 23 Jul 2020 09:42:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728209AbgGWJMq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 23 Jul 2020 05:12:46 -0400
-Received: from elvis.franken.de ([193.175.24.41]:46185 "EHLO elvis.franken.de"
+        id S1726127AbgGWJmi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 23 Jul 2020 05:42:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37878 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726177AbgGWJMp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 23 Jul 2020 05:12:45 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jyXHM-0001Ij-01; Thu, 23 Jul 2020 11:12:40 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 7EF88C092F; Thu, 23 Jul 2020 11:10:22 +0200 (CEST)
-Date:   Thu, 23 Jul 2020 11:10:22 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Cc:     hauke@hauke-m.de, zajec5@gmail.com, robh+dt@kernel.org,
-        f.fainelli@gmail.com, jonas.gorski@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 8/9] mips: bmips: dts: add BCM6362 power domain support
-Message-ID: <20200723091022.GB2749@alpha.franken.de>
-References: <20200610171630.465579-1-noltari@gmail.com>
- <20200613082140.2009461-1-noltari@gmail.com>
- <20200613082140.2009461-9-noltari@gmail.com>
+        id S1725911AbgGWJmi (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 23 Jul 2020 05:42:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 42675AEFA;
+        Thu, 23 Jul 2020 09:42:44 +0000 (UTC)
+From:   Jiri Slaby <jslaby@suse.cz>
+To:     tsbogend@alpha.franken.de
+Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
+        linux-mips@vger.kernel.org
+Subject: [PATCH] mips: traps, add __init to parity_protection_init
+Date:   Thu, 23 Jul 2020 11:42:35 +0200
+Message-Id: <20200723094235.12706-1-jslaby@suse.cz>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200613082140.2009461-9-noltari@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Jun 13, 2020 at 10:21:39AM +0200, Álvaro Fernández Rojas wrote:
-> BCM6362 SoCs have a power domain controller to enable/disable certain
-> components in order to save power.
-> 
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  v4: no changes.
->  v3: Separate dt-bindings definitions from power domain .dtsi support.
->  v2: Add dt-bindings header files.
-> 
->  arch/mips/boot/dts/brcm/bcm6362.dtsi | 6 ++++++
->  1 file changed, 6 insertions(+)
+It references __initdata and is called only from an __init function:
+trap_init. This avoids section mismatches (which I am seeing with gcc
+10).
 
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+---
+ arch/mips/kernel/traps.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index f655af68176c..702143ad7b47 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -1680,7 +1680,7 @@ __setup("nol2par", nol2parity);
+  * Some MIPS CPUs can enable/disable for cache parity detection, but do
+  * it different ways.
+  */
+-static inline void parity_protection_init(void)
++static inline __init void parity_protection_init(void)
+ {
+ #define ERRCTL_PE	0x80000000
+ #define ERRCTL_L2P	0x00800000
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.27.0
+

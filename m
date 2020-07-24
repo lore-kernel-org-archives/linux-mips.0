@@ -2,71 +2,100 @@ Return-Path: <SRS0=1qY3=BD=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 647A8C433E8
-	for <linux-mips@archiver.kernel.org>; Fri, 24 Jul 2020 11:48:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82F67C433EB
+	for <linux-mips@archiver.kernel.org>; Fri, 24 Jul 2020 15:58:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 496D22073E
-	for <linux-mips@archiver.kernel.org>; Fri, 24 Jul 2020 11:48:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 56E9B2064C
+	for <linux-mips@archiver.kernel.org>; Fri, 24 Jul 2020 15:58:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1595606323;
+	bh=QJs6vpHpyZQjCIgvhgDF5S37Cf/01U0IZI6OQETb4XQ=;
+	h=From:To:Cc:Subject:Date:List-ID:From;
+	b=BO5J8moXvLoarqIWtUKlq/FVM0+I7iGmp7U/FVPqX+BILcAJenU+jykE94LzMrtC4
+	 cq8m/YHGCJzluKA83DCqUVQpHRTn+HB6ENRE6J6Cs90OXA1CmYjPeYRZZ2UsBFcwPk
+	 hAUAs7Wi0t8d21d1M4ZfDx3asKpy7zTomg1pka7I=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726493AbgGXLsP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 24 Jul 2020 07:48:15 -0400
-Received: from elvis.franken.de ([193.175.24.41]:47135 "EHLO elvis.franken.de"
+        id S1726820AbgGXP6j (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 24 Jul 2020 11:58:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726280AbgGXLsO (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 24 Jul 2020 07:48:14 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jywBI-0003GQ-00; Fri, 24 Jul 2020 13:48:04 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 243D2C0931; Fri, 24 Jul 2020 13:09:13 +0200 (CEST)
-Date:   Fri, 24 Jul 2020 13:09:13 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     paul@crapouillou.net, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, paulburton@kernel.org,
-        jiaxun.yang@flygoat.com, Sergey.Semin@baikalelectronics.ru,
-        chenhc@lemote.com, Alexey.Malahov@baikalelectronics.ru,
-        huanglllzu@gmail.com, prasannatsmkumar@gmail.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: Re: [PATCH 1/1] MIPS: X2000: Add X2000 system type.
-Message-ID: <20200724110913.GA17183@alpha.franken.de>
-References: <20200722052119.60129-1-zhouyanjie@wanyeetech.com>
- <20200722052119.60129-2-zhouyanjie@wanyeetech.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200722052119.60129-2-zhouyanjie@wanyeetech.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        id S1726739AbgGXP6i (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 24 Jul 2020 11:58:38 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.213])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 541A22064C;
+        Fri, 24 Jul 2020 15:58:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595606318;
+        bh=QJs6vpHpyZQjCIgvhgDF5S37Cf/01U0IZI6OQETb4XQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=s7TBrz82uhjo4sQcyRNsZLhBfeTLvfqrHy/sjlDHsH+WffGke2E2siSwMU7YC2o+m
+         5PwJj34nZnAj2Sv/SZ/IVsrq3UfPhyQD9dXfwDxxn8budWjDnThlL0+26vOEuhhsf2
+         +7xdt1TU6gMQ/b8KcE6NuX2sq9SwmL8jbpmhqb7M=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] MAINTAINERS: Add linux-mips mailing list to JZ47xx entries
+Date:   Fri, 24 Jul 2020 17:58:16 +0200
+Message-Id: <20200724155816.8125-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 01:21:19PM +0800, 周琰杰 (Zhou Yanjie) wrote:
-> 1.Add "PRID_COMP_INGENIC_13" and "PRID_IMP_XBURST2" for X2000.
-> 2.Add X2000 system type for cat /proc/cpuinfo to give out X2000.
-> 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> ---
->  arch/mips/include/asm/bootinfo.h |  1 +
->  arch/mips/include/asm/cpu.h      |  6 ++++--
->  arch/mips/jz4740/setup.c         |  4 ++++
->  arch/mips/kernel/cpu-probe.c     | 11 +++++++++++
->  4 files changed, 20 insertions(+), 2 deletions(-)
+The entries for JZ47xx SoCs and its drivers lacked MIPS mailing list.
+Only MTD NAND driver pointed linux-mtd.  Add linux-mips so the relevant
+patches will get attention of MIPS developers.
 
-applied to mips-next.
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ MAINTAINERS | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Thomas.
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index cba0ed77775b..f41fc775a3c9 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8543,17 +8543,20 @@ F:	samples/bpf/ibumad_user.c
+ 
+ INGENIC JZ4780 DMA Driver
+ M:	Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
++L:	linux-mips@vger.kernel.org
+ S:	Maintained
+ F:	drivers/dma/dma-jz4780.c
+ 
+ INGENIC JZ4780 NAND DRIVER
+ M:	Harvey Hunt <harveyhuntnexus@gmail.com>
+ L:	linux-mtd@lists.infradead.org
++L:	linux-mips@vger.kernel.org
+ S:	Maintained
+ F:	drivers/mtd/nand/raw/ingenic/
+ 
+ INGENIC JZ47xx SoCs
+ M:	Paul Cercueil <paul@crapouillou.net>
++L:	linux-mips@vger.kernel.org
+ S:	Maintained
+ F:	arch/mips/boot/dts/ingenic/
+ F:	arch/mips/include/asm/mach-jz4740/
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.17.1
+

@@ -2,100 +2,118 @@ Return-Path: <SRS0=1qY3=BD=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82F67C433EB
-	for <linux-mips@archiver.kernel.org>; Fri, 24 Jul 2020 15:58:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DB5CC433E5
+	for <linux-mips@archiver.kernel.org>; Fri, 24 Jul 2020 18:42:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 56E9B2064C
-	for <linux-mips@archiver.kernel.org>; Fri, 24 Jul 2020 15:58:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1595606323;
-	bh=QJs6vpHpyZQjCIgvhgDF5S37Cf/01U0IZI6OQETb4XQ=;
-	h=From:To:Cc:Subject:Date:List-ID:From;
-	b=BO5J8moXvLoarqIWtUKlq/FVM0+I7iGmp7U/FVPqX+BILcAJenU+jykE94LzMrtC4
-	 cq8m/YHGCJzluKA83DCqUVQpHRTn+HB6ENRE6J6Cs90OXA1CmYjPeYRZZ2UsBFcwPk
-	 hAUAs7Wi0t8d21d1M4ZfDx3asKpy7zTomg1pka7I=
+	by mail.kernel.org (Postfix) with ESMTP id 0B29A2065E
+	for <linux-mips@archiver.kernel.org>; Fri, 24 Jul 2020 18:42:33 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tchdv+ux"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgGXP6j (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 24 Jul 2020 11:58:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726739AbgGXP6i (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 24 Jul 2020 11:58:38 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.213])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 541A22064C;
-        Fri, 24 Jul 2020 15:58:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595606318;
-        bh=QJs6vpHpyZQjCIgvhgDF5S37Cf/01U0IZI6OQETb4XQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=s7TBrz82uhjo4sQcyRNsZLhBfeTLvfqrHy/sjlDHsH+WffGke2E2siSwMU7YC2o+m
-         5PwJj34nZnAj2Sv/SZ/IVsrq3UfPhyQD9dXfwDxxn8budWjDnThlL0+26vOEuhhsf2
-         +7xdt1TU6gMQ/b8KcE6NuX2sq9SwmL8jbpmhqb7M=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] MAINTAINERS: Add linux-mips mailing list to JZ47xx entries
-Date:   Fri, 24 Jul 2020 17:58:16 +0200
-Message-Id: <20200724155816.8125-1-krzk@kernel.org>
+        id S1726658AbgGXSmc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 24 Jul 2020 14:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726411AbgGXSmc (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 24 Jul 2020 14:42:32 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADB0C0619D3;
+        Fri, 24 Jul 2020 11:42:31 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f1so8621742wro.2;
+        Fri, 24 Jul 2020 11:42:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=cJWPebvtfVQ4yMs95Aqk9HAmQuQ6TAMDSj0SSlM6Zyw=;
+        b=tchdv+uxYUIl91/+iKeAO23o2+daCsLjEzFBzBJ6nYL8WWL7/6shYVFUMrLlJ57wB0
+         YXrNyajSU8JqBrP6bd+yTRO9rEkoDlLTzPxgzYMilO/l3tsETh3tS2xRvlFnGBUOrG36
+         VwxueDDXHJj8AuaM78U+5YBM1chgmtCQnKrAcheq8CY74N7c78l9MXj0hLsJzeC+L4rn
+         9sPI9aDHFx222TxGJhTwKjLW5lK5T9nTl2UAOUIVwwKVmV1h8obiE2qr6BMles7cP9dA
+         EFZTy3q/SfOTNJfk7cKp4O78CMkJsQJ3Vw1jhcG2FiU3MsH0NNISBjddLadgeZw+IW++
+         97wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=cJWPebvtfVQ4yMs95Aqk9HAmQuQ6TAMDSj0SSlM6Zyw=;
+        b=l8IGwpfeGTApepR6xe8AHDQAC/EEJNACvzYfgGrS+F6rJXXpCjZSBB600htsov2IIt
+         lyADwh2fG4ydB8pW1fTplqn8pfBsJ84ZviSf8pf0q3d4I7jsJoB5+nlPKAv3QvxEbqd5
+         aPSyorxXo6Gc8fBKLDBb0p4VLocxHYN2GOnPzEFeP5m+cbiGEdXqAbPUWKRD8kg3SvbL
+         wjXiPRZNP20k7/yY4G4Z1UrpZ/JdcCzBaWPzPwPl0SnTNqNu7xc+6oQMUqQpAyyIokSx
+         1mLUGm3MnVrfYRlX2vff2n6wTJR83tEYqLiweHU1lOgg/taN2F+lxzzs+RzLzN2QVuJG
+         oN6Q==
+X-Gm-Message-State: AOAM530xvc8j3tMJj+IdlGxM53hoohGaTG/hbRM/jsor23+hqt7kK1tS
+        WStOj/Akx0f5FJfrqyMSMQ0T+ado
+X-Google-Smtp-Source: ABdhPJxqhvPctvXXdP0cG+tS9quJNro8PhQnOhAKWyWR68ZFJCc5uDLpM661JfE8Tgg5Mymb3EexZw==
+X-Received: by 2002:adf:c981:: with SMTP id f1mr9684667wrh.14.1595616150183;
+        Fri, 24 Jul 2020 11:42:30 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id s205sm2248948wme.7.2020.07.24.11.42.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jul 2020 11:42:29 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Justin Chen <justinpopo6@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM BMIPS MIPS
+        ARCHITECTURE),
+        linux-mips@vger.kernel.org (open list:BROADCOM BMIPS MIPS ARCHITECTURE)
+Subject: [PATCH] irqchip/irq-bcm7038-l1: Guard uses of cpu_logical_map
+Date:   Fri, 24 Jul 2020 11:41:56 -0700
+Message-Id: <20200724184157.29150-1-f.fainelli@gmail.com>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The entries for JZ47xx SoCs and its drivers lacked MIPS mailing list.
-Only MTD NAND driver pointed linux-mtd.  Add linux-mips so the relevant
-patches will get attention of MIPS developers.
+cpu_logical_map is only defined for CONFIG_SMP builds, when we are in an
+UP configuration, the boot CPU is 0.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 6468fc18b006 ("irqchip/irq-bcm7038-l1: Add PM support")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- MAINTAINERS | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/irqchip/irq-bcm7038-l1.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index cba0ed77775b..f41fc775a3c9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8543,17 +8543,20 @@ F:	samples/bpf/ibumad_user.c
+diff --git a/drivers/irqchip/irq-bcm7038-l1.c b/drivers/irqchip/irq-bcm7038-l1.c
+index fd7c537fb42a..4127eeab10af 100644
+--- a/drivers/irqchip/irq-bcm7038-l1.c
++++ b/drivers/irqchip/irq-bcm7038-l1.c
+@@ -327,7 +327,11 @@ static int bcm7038_l1_suspend(void)
+ 	u32 val;
  
- INGENIC JZ4780 DMA Driver
- M:	Zubair Lutfullah Kakakhel <Zubair.Kakakhel@imgtec.com>
-+L:	linux-mips@vger.kernel.org
- S:	Maintained
- F:	drivers/dma/dma-jz4780.c
+ 	/* Wakeup interrupt should only come from the boot cpu */
++#ifdef CONFIG_SMP
+ 	boot_cpu = cpu_logical_map(0);
++#else
++	boot_cpu = 0;
++#endif
  
- INGENIC JZ4780 NAND DRIVER
- M:	Harvey Hunt <harveyhuntnexus@gmail.com>
- L:	linux-mtd@lists.infradead.org
-+L:	linux-mips@vger.kernel.org
- S:	Maintained
- F:	drivers/mtd/nand/raw/ingenic/
+ 	list_for_each_entry(intc, &bcm7038_l1_intcs_list, list) {
+ 		for (word = 0; word < intc->n_words; word++) {
+@@ -347,7 +351,11 @@ static void bcm7038_l1_resume(void)
+ 	struct bcm7038_l1_chip *intc;
+ 	int boot_cpu, word;
  
- INGENIC JZ47xx SoCs
- M:	Paul Cercueil <paul@crapouillou.net>
-+L:	linux-mips@vger.kernel.org
- S:	Maintained
- F:	arch/mips/boot/dts/ingenic/
- F:	arch/mips/include/asm/mach-jz4740/
++#ifdef CONFIG_SMP
+ 	boot_cpu = cpu_logical_map(0);
++#else
++	boot_cpu = 0;
++#endif
+ 
+ 	list_for_each_entry(intc, &bcm7038_l1_intcs_list, list) {
+ 		for (word = 0; word < intc->n_words; word++) {
 -- 
 2.17.1
 

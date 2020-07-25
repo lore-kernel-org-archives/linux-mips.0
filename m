@@ -2,131 +2,215 @@ Return-Path: <SRS0=tExh=BE=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A8D0C433DF
-	for <linux-mips@archiver.kernel.org>; Sat, 25 Jul 2020 12:40:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59DAFC433E0
+	for <linux-mips@archiver.kernel.org>; Sat, 25 Jul 2020 13:25:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2C6AE206C1
-	for <linux-mips@archiver.kernel.org>; Sat, 25 Jul 2020 12:40:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2780C206F6
+	for <linux-mips@archiver.kernel.org>; Sat, 25 Jul 2020 13:25:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="RfE7cy+8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OcSX2fDZ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgGYMko (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 25 Jul 2020 08:40:44 -0400
-Received: from crapouillou.net ([89.234.176.41]:43986 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726583AbgGYMko (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 25 Jul 2020 08:40:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1595680842; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TSqCu54P76Pf8omFHiednQkv0plQDhhPIfzS3rmPvYA=;
-        b=RfE7cy+8GwZCNQD4Vy27gamIlVKhQGqzSrVyXgQfSDqQHV8tJfLfQsNEPKXrMOdrCNlcv6
-        E3iwFGJMdJ8n3HlHc4WBy772Blq+rAU/kkherEtxm6brq2HwuM67UXLGyuzNzJycApLEJ3
-        hSer8kJK171OU5JL0GTBHfX4Qi8JyOs=
-Date:   Sat, 25 Jul 2020 14:40:32 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH RESEND] memory: jz4780_nemc: Only request IO memory the
- driver will use
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     od@zcrc.me, =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "H . Nikolaus Schaller" <hns@goldelico.com>
-Message-Id: <K7Z0EQ.R0J26UF6HDOR@crapouillou.net>
-In-Reply-To: <20200723090414.5824-1-paul@crapouillou.net>
-References: <20200723090414.5824-1-paul@crapouillou.net>
+        id S1726652AbgGYNZj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 25 Jul 2020 09:25:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726639AbgGYNZj (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 25 Jul 2020 09:25:39 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC0F0C0619D3
+        for <linux-mips@vger.kernel.org>; Sat, 25 Jul 2020 06:25:38 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id k8so210918wma.2
+        for <linux-mips@vger.kernel.org>; Sat, 25 Jul 2020 06:25:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sNDB1lwSbhA7GI0Ygi3PqgzM1hEid/zge3LhuhDk23w=;
+        b=OcSX2fDZk/WSPw+Din9mBDwmMnEbQF04xDdgVHVF7AYEnW3XuUYXCUga/5VFi4+xt4
+         qbJJCvD2lY+HJFBwp5/ArBPQVsBXn1lGWP9GanS8TuSTfx0QXJSvSCY20Pc4FPAGg7f2
+         peeHgxXNYBLAbr1GtxYzNXYZtRQFo05HXqobbEwi5jU/es1LPvR6+UxjJFCBw4+QZ8r2
+         csyaMjwazoQ8KzdxZWKramRU81l+5rVzOfaeFS56+CXHJ9Mgwxvveubr1gg9koO3iXFN
+         pw5iJYQKQwrk4+jlwLt9tayJKbuLivUDk1I6u1rOxE5YbMvSXpzry5Wih98Ij+JU45Ep
+         lgng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sNDB1lwSbhA7GI0Ygi3PqgzM1hEid/zge3LhuhDk23w=;
+        b=spBPFbFTc29LYf0VwSlEQqT7exJsxy5BDT2GGbwvEtkxzHpov7/74DLQ8X9ds0EMmZ
+         cocsmhyBLsdfF8xN8Mh9SEDs65I3dMsoEj2X/Go28oUGwkPq9L1uPFmiDXifJGDG6iVI
+         as9SGiNg7PgozG0gFKOtBBWuVel1TFd0TrRGIzTmfL8J1NOKQS4kh6mH7mENDkxu77K5
+         rVGNBLLXws0NnPp47FKWc54/xbDZl3yzsr/dkg2zAtgl8xrJ26IRXZ1XtYmxQ2tOLSrU
+         iMxLdX2cUQhjMmKD2lk7/VpmHYGsaqRqO/N+mxFp3lNtG6NZYaAtyHdqJdRdvDXD3N8f
+         ga9A==
+X-Gm-Message-State: AOAM5324wExfJ4AsnRgjbq/uCzm254PQsiWwtBZbE2ipjuCFbc4L6oL/
+        TY007LF9au7cqeUXekt+Lxt4DsHV
+X-Google-Smtp-Source: ABdhPJx7Qczm+eLQUKEjL3O6y2Xf8iHrTmzYEwI7227+NPXYKfR5mCzHMd6a1WWT+E8am6dSghA8Dw==
+X-Received: by 2002:a1c:6804:: with SMTP id d4mr10490995wmc.175.1595683536547;
+        Sat, 25 Jul 2020 06:25:36 -0700 (PDT)
+Received: from localhost.localdomain (2a01cb058f8a18003dbee9eed79eb521.ipv6.abo.wanadoo.fr. [2a01:cb05:8f8a:1800:3dbe:e9ee:d79e:b521])
+        by smtp.gmail.com with ESMTPSA id g16sm4903175wrs.88.2020.07.25.06.25.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Jul 2020 06:25:35 -0700 (PDT)
+From:   Romain Naour <romain.naour@gmail.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Romain Naour <romain.naour@gmail.com>
+Subject: [PATCH] mips: Do not include hi and lo in clobber list for R6
+Date:   Sat, 25 Jul 2020 15:25:33 +0200
+Message-Id: <20200725132533.1326827-1-romain.naour@gmail.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Thomas, Greg,
+From [1]
+"GCC 10 (PR 91233) won't silently allow registers that are not architecturally
+available to be present in the clobber list anymore, resulting in build failure
+for mips*r6 targets in form of:
+...
+.../sysdep.h:146:2: error: the register ‘lo’ cannot be clobbered in ‘asm’ for the current target
+  146 |  __asm__ volatile (      \
+      |  ^~~~~~~
 
-Nevermind the previous note, it turns out a new maintainer (Krzysztof)=20
-just appeared for drivers/memory/, I will upstream this patch through=20
-him.
+This is because base R6 ISA doesn't define hi and lo registers w/o DSP extension.
+This patch provides the alternative clobber list for r6 targets that won't include
+those registers."
 
-Cheers,
--Paul
+Since kernel 5.4 and mips support for generic vDSO [2], the kernel fail to build
+for mips r6 cpus with gcc 10 for the same reason as glibc.
 
+[1] https://sourceware.org/git/?p=glibc.git;a=commit;h=020b2a97bb15f807c0482f0faee2184ed05bcad8
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id=24640f233b466051ad3a5d2786d2951e43026c9d
 
-Le jeu. 23 juil. 2020 =E0 11:04, Paul Cercueil <paul@crapouillou.net> a=20
-=E9crit :
-> The driver only uses the registers up to offset 0x54. Since the EFUSE
-> registers are in the middle of the NEMC registers, we only request
-> the registers we will use for now - that way the EFUSE driver can
-> probe too.
->=20
-> Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->=20
-> Notes:
->     Thomas:
->=20
->     drivers/memory/ has no dedicated maintainer, so sending this
->     patch upstream is like sending a bottle to the sea. Since it
->     touches a driver for a Ingenic SoC, if Greg doesn't take it
->     (I don't blame him - he's a busy man), could you take it in
->     your tree?
->=20
->     Thanks,
->     -Paul
->=20
->  drivers/memory/jz4780-nemc.c | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/memory/jz4780-nemc.c=20
-> b/drivers/memory/jz4780-nemc.c
-> index b232ed279fc3..647267ea8c63 100644
-> --- a/drivers/memory/jz4780-nemc.c
-> +++ b/drivers/memory/jz4780-nemc.c
-> @@ -8,6 +8,7 @@
->=20
->  #include <linux/clk.h>
->  #include <linux/init.h>
-> +#include <linux/io.h>
->  #include <linux/math64.h>
->  #include <linux/of.h>
->  #include <linux/of_address.h>
-> @@ -288,7 +289,19 @@ static int jz4780_nemc_probe(struct=20
-> platform_device *pdev)
->  	nemc->dev =3D dev;
->=20
->  	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	nemc->base =3D devm_ioremap_resource(dev, res);
-> +
-> +	/*
-> +	 * The driver only uses the registers up to offset 0x54. Since the=20
-> EFUSE
-> +	 * registers are in the middle of the NEMC registers, we only=20
-> request
-> +	 * the registers we will use for now - that way the EFUSE driver can
-> +	 * probe too.
-> +	 */
-> +	if (!devm_request_mem_region(dev, res->start, 0x54, dev_name(dev)))=20
-> {
-> +		dev_err(dev, "unable to request I/O memory region\n");
-> +		return -EBUSY;
-> +	}
-> +
-> +	nemc->base =3D devm_ioremap(dev, res->start, resource_size(res));
->  	if (IS_ERR(nemc->base)) {
->  		dev_err(dev, "failed to get I/O memory\n");
->  		return PTR_ERR(nemc->base);
-> --
-> 2.27.0
->=20
+Signed-off-by: Romain Naour <romain.naour@gmail.com>
+---
+ arch/mips/include/asm/vdso/gettimeofday.h | 45 +++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
+diff --git a/arch/mips/include/asm/vdso/gettimeofday.h b/arch/mips/include/asm/vdso/gettimeofday.h
+index c63ddcaea54c..6192d94928b9 100644
+--- a/arch/mips/include/asm/vdso/gettimeofday.h
++++ b/arch/mips/include/asm/vdso/gettimeofday.h
+@@ -30,12 +30,21 @@ static __always_inline long gettimeofday_fallback(
+ 	register long nr asm("v0") = __NR_gettimeofday;
+ 	register long error asm("a3");
+ 
++#if __mips_isa_rev >= 6
++	asm volatile(
++	"       syscall\n"
++	: "=r" (ret), "=r" (error)
++	: "r" (tv), "r" (tz), "r" (nr)
++	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
++	  "$14", "$15", "$24", "$25", "memory");
++#else
+ 	asm volatile(
+ 	"       syscall\n"
+ 	: "=r" (ret), "=r" (error)
+ 	: "r" (tv), "r" (tz), "r" (nr)
+ 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
+ 	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
++#endif
+ 
+ 	return error ? -ret : ret;
+ }
+@@ -54,12 +63,21 @@ static __always_inline long clock_gettime_fallback(
+ #endif
+ 	register long error asm("a3");
+ 
++#if __mips_isa_rev >= 6
++	asm volatile(
++	"       syscall\n"
++	: "=r" (ret), "=r" (error)
++	: "r" (clkid), "r" (ts), "r" (nr)
++	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
++	  "$14", "$15", "$24", "$25", "memory");
++#else
+ 	asm volatile(
+ 	"       syscall\n"
+ 	: "=r" (ret), "=r" (error)
+ 	: "r" (clkid), "r" (ts), "r" (nr)
+ 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
+ 	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
++#endif
+ 
+ 	return error ? -ret : ret;
+ }
+@@ -78,12 +96,21 @@ static __always_inline int clock_getres_fallback(
+ #endif
+ 	register long error asm("a3");
+ 
++#if __mips_isa_rev >= 6
++	asm volatile(
++	"       syscall\n"
++	: "=r" (ret), "=r" (error)
++	: "r" (clkid), "r" (ts), "r" (nr)
++	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
++	  "$14", "$15", "$24", "$25", "memory");
++#else
+ 	asm volatile(
+ 	"       syscall\n"
+ 	: "=r" (ret), "=r" (error)
+ 	: "r" (clkid), "r" (ts), "r" (nr)
+ 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
+ 	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
++#endif
+ 
+ 	return error ? -ret : ret;
+ }
+@@ -100,12 +127,21 @@ static __always_inline long clock_gettime32_fallback(
+ 	register long nr asm("v0") = __NR_clock_gettime;
+ 	register long error asm("a3");
+ 
++#if __mips_isa_rev >= 6
++	asm volatile(
++	"       syscall\n"
++	: "=r" (ret), "=r" (error)
++	: "r" (clkid), "r" (ts), "r" (nr)
++	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
++	  "$14", "$15", "$24", "$25", "memory");
++#else
+ 	asm volatile(
+ 	"       syscall\n"
+ 	: "=r" (ret), "=r" (error)
+ 	: "r" (clkid), "r" (ts), "r" (nr)
+ 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
+ 	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
++#endif
+ 
+ 	return error ? -ret : ret;
+ }
+@@ -120,12 +156,21 @@ static __always_inline int clock_getres32_fallback(
+ 	register long nr asm("v0") = __NR_clock_getres;
+ 	register long error asm("a3");
+ 
++#if __mips_isa_rev >= 6
++	asm volatile(
++	"       syscall\n"
++	: "=r" (ret), "=r" (error)
++	: "r" (clkid), "r" (ts), "r" (nr)
++	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
++	  "$14", "$15", "$24", "$25", "memory");
++#else
+ 	asm volatile(
+ 	"       syscall\n"
+ 	: "=r" (ret), "=r" (error)
+ 	: "r" (clkid), "r" (ts), "r" (nr)
+ 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
+ 	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
++#endif
+ 
+ 	return error ? -ret : ret;
+ }
+-- 
+2.25.4
 

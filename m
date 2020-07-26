@@ -2,110 +2,96 @@ Return-Path: <SRS0=ftTt=BF=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF6CCC433E4
-	for <linux-mips@archiver.kernel.org>; Sun, 26 Jul 2020 04:15:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31132C433E3
+	for <linux-mips@archiver.kernel.org>; Sun, 26 Jul 2020 08:32:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9E36D20715
-	for <linux-mips@archiver.kernel.org>; Sun, 26 Jul 2020 04:15:59 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mds+cXhH"
+	by mail.kernel.org (Postfix) with ESMTP id 154CA20791
+	for <linux-mips@archiver.kernel.org>; Sun, 26 Jul 2020 08:32:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725298AbgGZEP4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 26 Jul 2020 00:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726106AbgGZEPy (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 26 Jul 2020 00:15:54 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67BD3C0619D2;
-        Sat, 25 Jul 2020 21:15:54 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id a9so7335400pjd.3;
-        Sat, 25 Jul 2020 21:15:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=4WYzTUUdMZgoaXQcj1WqQmcltrZ3z5zlJgG5BDAvVq0=;
-        b=Mds+cXhHNoz5AXlWOYXU3s73JA7XvAoKNrtZ0EoUYw/9juGs858oarelVHf6MWejx/
-         K9qwRNU48Io3CpDFBwMxYkMly/guogRkDhKc5l4Cfga+EVXIORgOW2e12NUAcOcdZKr6
-         oK52z8X0jkbOo/87p2Q5o9O+QLCnpKDmL+Avmq9S07uECG3Kh6MTBpGsxOZlNaFT1Wcm
-         EJSyRBFw2X/6m3tRl0UnAJOcRaT3+hed9IcREYVk5eKDgZjYcsT7x7BN9f2MLYFpfix/
-         PA82QHvi9dKmU48qqAmpIedC24aGdFnWkx/FnvfnLjgVb4TxRXGoe+N3HJpIIfJr3Vcy
-         kE5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=4WYzTUUdMZgoaXQcj1WqQmcltrZ3z5zlJgG5BDAvVq0=;
-        b=CQGXSaFWZXDKL9shWKH2aJ0QQ3xjSUTTd6elt3lAZ40pGFJRKcqqQcDKmTVqc2CRN9
-         n0XM/k0vB7pJ37YowTgAvP0kmahesETFSSW2OqVO2odok/cFTRjIhoQHAY4Qj495JYzU
-         me6y2Uw1DRe5DJ+AW5HJoe+1vkseAHNY/ECta9Hw2LjdrV5sI+zrw2sIJR5qdsOo7G2f
-         zXIWGwrd9vbSQWJ4QLnbsbtDlr/WGGIv6ujQTkiosFYryFCSjVEyCVlkgFaeWRJXqnLR
-         1bKavAt3llRNCIeVp96JkKXlVV8zIcR7eBpCycJqC7WAQoP+1+7sCefZ872WtXVx9V5e
-         Wjrw==
-X-Gm-Message-State: AOAM53084VzbBvpedeXI+i2J0u9eoRTKDK7AbSytwZ1a+6HWIo2V7Moo
-        fmbEnuSe3HOqiVaRtsmrCK0=
-X-Google-Smtp-Source: ABdhPJysTVPd/ymZRoYHMSRlnRVchHuwkNi4184gSgJMYsFYwQOSJsmMh6BDWtCwUSoGz2ypa3V9tg==
-X-Received: by 2002:a17:90a:648d:: with SMTP id h13mr11662239pjj.44.1595736954007;
-        Sat, 25 Jul 2020 21:15:54 -0700 (PDT)
-Received: from localhost.localdomain (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id d16sm10725568pfo.156.2020.07.25.21.15.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Jul 2020 21:15:53 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-mips@linux-mips.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org (open list:BROADCOM BCM47XX MIPS
-        ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] MIPS: BCM47xx: Include bcm47xx_sprom.h
-Date:   Sat, 25 Jul 2020 21:15:21 -0700
-Message-Id: <20200726041521.5398-3-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200726041521.5398-1-f.fainelli@gmail.com>
-References: <20200726041521.5398-1-f.fainelli@gmail.com>
+        id S1727026AbgGZIc0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 26 Jul 2020 04:32:26 -0400
+Received: from elvis.franken.de ([193.175.24.41]:49123 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726106AbgGZIcX (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 26 Jul 2020 04:32:23 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jzc4y-0004Hg-04; Sun, 26 Jul 2020 10:32:20 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 5D564C0A2D; Sun, 26 Jul 2020 10:32:06 +0200 (CEST)
+Date:   Sun, 26 Jul 2020 10:32:06 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Bibo Mao <maobibo@loongson.cn>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2 1/2] MIPS: Set page access bit with pgprot on
+ platforms with RIXI
+Message-ID: <20200726083206.GE5032@alpha.franken.de>
+References: <1591416169-26666-1-git-send-email-maobibo@loongson.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1591416169-26666-1-git-send-email-maobibo@loongson.cn>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Now that bcm47xx_sprom.h contains a prototype for bcm47xx_fill_sprom,
-include that header file directly from bcm47xx.h.
+On Sat, Jun 06, 2020 at 12:02:48PM +0800, Bibo Mao wrote:
+> @@ -158,23 +158,23 @@ void __update_cache(unsigned long address, pte_t pte)
+>  static inline void setup_protection_map(void)
+>  {
+>  	if (cpu_has_rixi) {
+> -		protection_map[0]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+> -		protection_map[1]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC);
+> -		protection_map[2]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+> -		protection_map[3]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC);
+> -		protection_map[4]  = __pgprot(_page_cachable_default | _PAGE_PRESENT);
+> -		protection_map[5]  = __pgprot(_page_cachable_default | _PAGE_PRESENT);
+> -		protection_map[6]  = __pgprot(_page_cachable_default | _PAGE_PRESENT);
+> -		protection_map[7]  = __pgprot(_page_cachable_default | _PAGE_PRESENT);
+> -
+> -		protection_map[8]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+> -		protection_map[9]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC);
+> -		protection_map[10] = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE | _PAGE_NO_READ);
+> -		protection_map[11] = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
+> -		protection_map[12] = __pgprot(_page_cachable_default | _PAGE_PRESENT);
+> -		protection_map[13] = __pgprot(_page_cachable_default | _PAGE_PRESENT);
+> -		protection_map[14] = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_WRITE);
+> -		protection_map[15] = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_WRITE);
+> +		protection_map[0]  = __pgprot(__PC | __PP | __NX | __NR);
+> +		protection_map[1]  = __pgprot(__PC | __PP | __NX | ___R);
+> +		protection_map[2]  = __pgprot(__PC | __PP | __NX | __NR);
+> +		protection_map[3]  = __pgprot(__PC | __PP | __NX | ___R);
+> +		protection_map[4]  = __pgprot(__PC | __PP | ___R);
+> +		protection_map[5]  = __pgprot(__PC | __PP | ___R);
+> +		protection_map[6]  = __pgprot(__PC | __PP | ___R);
+> +		protection_map[7]  = __pgprot(__PC | __PP | ___R);
+> +
+> +		protection_map[8]  = __pgprot(__PC | __PP | __NX | __NR);
+> +		protection_map[9]  = __pgprot(__PC | __PP | __NX | ___R);
+> +		protection_map[10] = __pgprot(__PC | __PP | __NX | ___W | __NR);
+> +		protection_map[11] = __pgprot(__PC | __PP | __NX | ___W | ___R);
+> +		protection_map[12] = __pgprot(__PC | __PP | ___R);
+> +		protection_map[13] = __pgprot(__PC | __PP | ___R);
+> +		protection_map[14] = __pgprot(__PC | __PP | ___W | ___R);
+> +		protection_map[15] = __pgprot(__PC | __PP | ___W | ___R);
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/mips/include/asm/mach-bcm47xx/bcm47xx.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+you are doing two steps in one go, so it's not obvious you are not only
+using some macros, but also changing semantics. And while there are already
+really long lines, please leave it that way and only do the access bit
+change.
 
-diff --git a/arch/mips/include/asm/mach-bcm47xx/bcm47xx.h b/arch/mips/include/asm/mach-bcm47xx/bcm47xx.h
-index d7f1ef246d5c..93817bfb7fb2 100644
---- a/arch/mips/include/asm/mach-bcm47xx/bcm47xx.h
-+++ b/arch/mips/include/asm/mach-bcm47xx/bcm47xx.h
-@@ -10,6 +10,7 @@
- #include <linux/bcma/bcma.h>
- #include <linux/bcma/bcma_soc.h>
- #include <linux/bcm47xx_nvram.h>
-+#include <linux/bcm47xx_sprom.h>
- 
- enum bcm47xx_bus_type {
- #ifdef CONFIG_BCM47XX_SSB
-@@ -32,9 +33,6 @@ union bcm47xx_bus {
- extern union bcm47xx_bus bcm47xx_bus;
- extern enum bcm47xx_bus_type bcm47xx_bus_type;
- 
--void bcm47xx_fill_sprom(struct ssb_sprom *sprom, const char *prefix,
--			bool fallback);
--
- void bcm47xx_set_system_type(u16 chip_id);
- 
- #endif /* __ASM_BCM47XX_H */
+Thomas.
+
 -- 
-2.17.1
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

@@ -2,94 +2,68 @@ Return-Path: <SRS0=ftTt=BF=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A6D4C433EA
-	for <linux-mips@archiver.kernel.org>; Sun, 26 Jul 2020 15:57:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B52F0C433E1
+	for <linux-mips@archiver.kernel.org>; Sun, 26 Jul 2020 16:59:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2919F2065F
-	for <linux-mips@archiver.kernel.org>; Sun, 26 Jul 2020 15:57:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1595779020;
-	bh=v13Fxhc84IN1axB88Du7lE/qbL3kockSOUNFFm3PwLg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=C1gsYfWMCRK++SvUIohjtzWphA5vN4cGZICGuhYgJ15euq/kKiSvQeYPpQ7Yhm9GL
-	 xLNzJRDd4hzMChTmO62DikJOjBrNha7TcSssRXEKAZ3VG1cK0XbtrTWhxji8iVwtPt
-	 /bz9iEHomymF9HMKDztCSL50YQeu/meOxRUTWP+E=
+	by mail.kernel.org (Postfix) with ESMTP id 8861D206D8
+	for <linux-mips@archiver.kernel.org>; Sun, 26 Jul 2020 16:59:07 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="QtVxTnDb"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgGZP44 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 26 Jul 2020 11:56:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38200 "EHLO mail.kernel.org"
+        id S1726117AbgGZQ7H (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 26 Jul 2020 12:59:07 -0400
+Received: from crapouillou.net ([89.234.176.41]:59356 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726065AbgGZP44 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 26 Jul 2020 11:56:56 -0400
-Received: from localhost.localdomain (unknown [194.230.155.213])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22F0520714;
-        Sun, 26 Jul 2020 15:56:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595779015;
-        bh=v13Fxhc84IN1axB88Du7lE/qbL3kockSOUNFFm3PwLg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L7k3bNuchI6J7q85gstyyJGj9DVLqYIPWtl2Iz1ybboZmf8HR7kHFI63b6Xu/+Ger
-         UosG0vy04u6lE2tFKYlrKBVHu9LhYy3n9AC/+IBL56xIrJQIdkBJKp7zJGwKEDJKv8
-         OD7p+oc0w7tnPqsNVESsJ0Qdf/eVXf1Hm7eAc2eY=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 2/2] MAINTAINERS: Add linux-mips mailing list to JZ47xx entries
-Date:   Sun, 26 Jul 2020 17:55:59 +0200
-Message-Id: <20200726155559.4650-2-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200726155559.4650-1-krzk@kernel.org>
-References: <20200726155559.4650-1-krzk@kernel.org>
+        id S1726042AbgGZQ7H (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 26 Jul 2020 12:59:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1595782745; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:references; bh=DbBpSLw5/JLX90h2KR5FyFQ8Zg2QkV+H5IhMCbYo81U=;
+        b=QtVxTnDbFwPkZtSct8zNzmgxmD5h+8PByu4dgypb1ULQeVZQKGWkldlEotF0lM13uHrBI/
+        /B28lYgcIeGk8jt+nQN1FF3kmAAQ7rrP8oYXcH1MyhOqPoRdGRFO4OOmzEglSI0BzlGQtS
+        aYwRAC8D57Eu1GmQX8f6tluwELj/VmE=
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>, od@zcrc.me,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 1/2] MIPS: ath79: Remove unused include <asm/mips_machine.h>
+Date:   Sun, 26 Jul 2020 18:58:27 +0200
+Message-Id: <20200726165828.55175-1-paul@crapouillou.net>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The entries for JZ47xx SoCs and its drivers lacked MIPS mailing list.
-Only MTD NAND driver pointed linux-mtd.  Add linux-mips so the relevant
-patches will get attention of MIPS developers.
+Since commit 3a77e0d75eed ("MIPS: ath79: drop machfiles"), this header
+is not used anymore.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Paul Cercueil <paul@crapouillou.net>
-
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
+ arch/mips/ath79/setup.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Changes since v1:
-1. Do not update DMA driver entry
-2. Add ack
----
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 362863cae239..d1cc0afe0762 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8544,11 +8544,13 @@ F:	samples/bpf/ibumad_user.c
- INGENIC JZ4780 NAND DRIVER
- M:	Harvey Hunt <harveyhuntnexus@gmail.com>
- L:	linux-mtd@lists.infradead.org
-+L:	linux-mips@vger.kernel.org
- S:	Maintained
- F:	drivers/mtd/nand/raw/ingenic/
+diff --git a/arch/mips/ath79/setup.c b/arch/mips/ath79/setup.c
+index 4b7c066ac88e..7e7bf9c2ad26 100644
+--- a/arch/mips/ath79/setup.c
++++ b/arch/mips/ath79/setup.c
+@@ -23,7 +23,6 @@
+ #include <asm/idle.h>
+ #include <asm/time.h>		/* for mips_hpt_frequency */
+ #include <asm/reboot.h>		/* for _machine_{restart,halt} */
+-#include <asm/mips_machine.h>
+ #include <asm/prom.h>
+ #include <asm/fw/fw.h>
  
- INGENIC JZ47xx SoCs
- M:	Paul Cercueil <paul@crapouillou.net>
-+L:	linux-mips@vger.kernel.org
- S:	Maintained
- F:	arch/mips/boot/dts/ingenic/
- F:	arch/mips/include/asm/mach-jz4740/
 -- 
-2.17.1
+2.27.0
 

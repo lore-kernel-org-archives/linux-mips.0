@@ -2,59 +2,59 @@ Return-Path: <SRS0=ftTt=BF=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EC97C433F1
-	for <linux-mips@archiver.kernel.org>; Sun, 26 Jul 2020 08:32:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8917FC433E0
+	for <linux-mips@archiver.kernel.org>; Sun, 26 Jul 2020 08:32:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 19022206F6
-	for <linux-mips@archiver.kernel.org>; Sun, 26 Jul 2020 08:32:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5EEF920719
+	for <linux-mips@archiver.kernel.org>; Sun, 26 Jul 2020 08:32:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726100AbgGZIcd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 26 Jul 2020 04:32:33 -0400
-Received: from elvis.franken.de ([193.175.24.41]:49113 "EHLO elvis.franken.de"
+        id S1726244AbgGZIcW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 26 Jul 2020 04:32:22 -0400
+Received: from elvis.franken.de ([193.175.24.41]:49107 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726072AbgGZIcX (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 26 Jul 2020 04:32:23 -0400
+        id S1725972AbgGZIcW (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 26 Jul 2020 04:32:22 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jzc4y-0004Hg-03; Sun, 26 Jul 2020 10:32:20 +0200
+        id 1jzc4y-0004Hg-00; Sun, 26 Jul 2020 10:32:20 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id B9282C0A2D; Sun, 26 Jul 2020 10:25:17 +0200 (CEST)
-Date:   Sun, 26 Jul 2020 10:25:17 +0200
+        id AF654C09A9; Sun, 26 Jul 2020 10:22:14 +0200 (CEST)
+Date:   Sun, 26 Jul 2020 10:22:14 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Huacai Chen <chenhc@lemote.com>
-Cc:     linux-mips@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>,
-        Zhangjin Wu <wuzhangjin@gmail.com>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>, stable@vger.kernel.org
-Subject: Re: [PATCH V2] MIPS: CPU#0 is not hotpluggable
-Message-ID: <20200726082517.GD5032@alpha.franken.de>
-References: <1594896024-16624-1-git-send-email-chenhc@lemote.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH 0/6] mips: delete duplicated words
+Message-ID: <20200726082214.GA5032@alpha.franken.de>
+References: <20200726003429.20356-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1594896024-16624-1-git-send-email-chenhc@lemote.com>
+In-Reply-To: <20200726003429.20356-1-rdunlap@infradead.org>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 06:40:23PM +0800, Huacai Chen wrote:
-> Now CPU#0 is not hotpluggable on MIPS, so prevent to create /sys/devices
-> /system/cpu/cpu0/online which confuses some user-space tools.
+On Sat, Jul 25, 2020 at 05:34:23PM -0700, Randy Dunlap wrote:
+> Delete duplicated words in arch/mips/ header files.
 > 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Huacai Chen <chenhc@lemote.com>
-> ---
->  arch/mips/kernel/topology.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: linux-mips@vger.kernel.org
+> 
+>  arch/mips/include/asm/io.h              |    2 +-
+>  arch/mips/include/asm/octeon/cvmx-l2c.h |    2 +-
+>  arch/mips/include/asm/octeon/cvmx-pip.h |    2 +-
+>  arch/mips/include/asm/octeon/cvmx-pko.h |    7 +++----
+>  arch/mips/include/asm/octeon/cvmx-pow.h |    8 ++++----
+>  arch/mips/include/asm/octeon/octeon.h   |    2 +-
+>  6 files changed, 11 insertions(+), 12 deletions(-)
 
-applied to mips-next.
+series applied to mips-next.
 
 Thomas.
 

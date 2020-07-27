@@ -2,90 +2,72 @@ Return-Path: <SRS0=sC32=BG=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26226C433E1
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Jul 2020 17:50:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0ABC9C433E4
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Jul 2020 18:11:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0D0472070B
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Jul 2020 17:50:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1595872230;
-	bh=DpbVC711UQECix+vLjh9TkWry1+9XGV9rRIwKwAZg1E=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
-	b=BQ79R1GBEGA639ZVNJD0CSQmDQaEfqwyvhlQHevCKU3cUyXlu+OEacw29VBJRGPCG
-	 mK929KSTq4qj/SwWSdkWsV0YwRZMfXjZhG4ODBE1WyOj0FvLTA6eRzcSv8j9kW/j8z
-	 I3QKx3ysPHERIBcJ0tK7KyQucGzXmeKzhwfyEH24=
+	by mail.kernel.org (Postfix) with ESMTP id E60D92074F
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Jul 2020 18:11:39 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="RALWgwdk"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731067AbgG0Ru0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 27 Jul 2020 13:50:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52152 "EHLO mail.kernel.org"
+        id S1729179AbgG0SLg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 27 Jul 2020 14:11:36 -0400
+Received: from crapouillou.net ([89.234.176.41]:45736 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726905AbgG0Ru0 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:50:26 -0400
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DF822070B;
-        Mon, 27 Jul 2020 17:50:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595872226;
-        bh=DpbVC711UQECix+vLjh9TkWry1+9XGV9rRIwKwAZg1E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QWU1RvbRokMbDds1Y48qGOfm7MMN1PlBmqCLprZaq3PTpEJxGR4hdI0WxXW2NxF1T
-         U4Ab5bwoj1Ak6BU55OwVm5A7KzdQklQoYNirn7PVDCmB7RfOIr4oX7SpoEhId/ruSb
-         JmLYC/L+n4WyLqLrB0mq+dwhoNFKNw+B6qTPSAf4=
-Received: by mail-ot1-f49.google.com with SMTP id v21so5675879otj.9;
-        Mon, 27 Jul 2020 10:50:26 -0700 (PDT)
-X-Gm-Message-State: AOAM530Aw/Fm7tMm9PvOnF8qRBjsRl5DGOyl5nyXKGIDJ6NrzoK6jL/z
-        XOYr+KbmkgYn9yPCcB84xVASRBMZL+QFeZvRUg==
-X-Google-Smtp-Source: ABdhPJzLQ+VFFmth3kQyr6PdoZivQEsSJVM+Wbmdyi5M1azvg+1uvM+cK30w07oLnIQT1rD1U4oN04pnupX7lVaBLVU=
-X-Received: by 2002:a05:6830:1b79:: with SMTP id d25mr2667777ote.107.1595872225565;
- Mon, 27 Jul 2020 10:50:25 -0700 (PDT)
+        id S1728556AbgG0SLg (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 27 Jul 2020 14:11:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1595873494; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:references; bh=a1uZ6dI3revExsbwQsIqi1pThqXLFYmFNrGJ1505KSI=;
+        b=RALWgwdktf5953lze/tfqx7Md7gy21mrPtuv+5Fz9kcWprfLXgDfm92xrxZ4LEnnNVl5uL
+        P5IZoRn+JnOZm8cIFChAof2fwdOcZCdaaCLYCMYdeAGt30oIVPOF8SheY7xWy4rOGsuF7z
+        Ta74WF7tE432hLg//uKAJtMBpk7egCA=
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     od@zcrc.me, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        stable@vger.kernel.org
+Subject: [PATCH] MIPS: qi_lb60: Fix routing to audio amplifier
+Date:   Mon, 27 Jul 2020 20:11:28 +0200
+Message-Id: <20200727181128.25756-1-paul@crapouillou.net>
 MIME-Version: 1.0
-References: <20200725014529.1143208-1-jiaxun.yang@flygoat.com> <20200725014529.1143208-2-jiaxun.yang@flygoat.com>
-In-Reply-To: <20200725014529.1143208-2-jiaxun.yang@flygoat.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 27 Jul 2020 11:50:14 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKePrUW3-HoSnQawqhgg23XJ7MxzawD7TKt-__q3jM55g@mail.gmail.com>
-Message-ID: <CAL_JsqKePrUW3-HoSnQawqhgg23XJ7MxzawD7TKt-__q3jM55g@mail.gmail.com>
-Subject: Re: [PATCH v3 1/5] of_address: Add bus type match for pci ranges parser
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 7:45 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
->
-> So the parser can be used to parse range property of ISA bus.
->
-> As they're all using PCI-like method of range property, there is no need
-> start a new parser.
->
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
->
-> --
-> v2: Drop useless check, fix some na for bus_addr
->         add define of of_range_parser_init according to
->         Rob's suggestion.
-> v3: Abstract out has_flags. simplify define.
-> ---
->  drivers/of/address.c       | 29 +++++++++++++++++------------
->  include/linux/of_address.h |  4 ++++
->  2 files changed, 21 insertions(+), 12 deletions(-)
+The ROUT (right channel output of audio codec) was connected to INL
+(left channel of audio amplifier) instead of INR (right channel of audio
+amplifier).
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Fixes: 8ddebad15e9b ("MIPS: qi_lb60: Migrate to devicetree")
+Cc: stable@vger.kernel.org # v5.3
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ arch/mips/boot/dts/ingenic/qi_lb60.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/boot/dts/ingenic/qi_lb60.dts b/arch/mips/boot/dts/ingenic/qi_lb60.dts
+index 7a371d9c5a33..eda37fb516f0 100644
+--- a/arch/mips/boot/dts/ingenic/qi_lb60.dts
++++ b/arch/mips/boot/dts/ingenic/qi_lb60.dts
+@@ -69,7 +69,7 @@ sound {
+ 			"Speaker", "OUTL",
+ 			"Speaker", "OUTR",
+ 			"INL", "LOUT",
+-			"INL", "ROUT";
++			"INR", "ROUT";
+ 
+ 		simple-audio-card,aux-devs = <&amp>;
+ 
+-- 
+2.27.0
+

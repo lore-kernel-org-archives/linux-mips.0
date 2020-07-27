@@ -2,95 +2,90 @@ Return-Path: <SRS0=sC32=BG=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94F40C433E0
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Jul 2020 16:53:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26226C433E1
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Jul 2020 17:50:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6C4EE20729
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Jul 2020 16:53:49 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="H/B/SI3w"
+	by mail.kernel.org (Postfix) with ESMTP id 0D0472070B
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Jul 2020 17:50:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1595872230;
+	bh=DpbVC711UQECix+vLjh9TkWry1+9XGV9rRIwKwAZg1E=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-ID:From;
+	b=BQ79R1GBEGA639ZVNJD0CSQmDQaEfqwyvhlQHevCKU3cUyXlu+OEacw29VBJRGPCG
+	 mK929KSTq4qj/SwWSdkWsV0YwRZMfXjZhG4ODBE1WyOj0FvLTA6eRzcSv8j9kW/j8z
+	 I3QKx3ysPHERIBcJ0tK7KyQucGzXmeKzhwfyEH24=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728518AbgG0Qxt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 27 Jul 2020 12:53:49 -0400
-Received: from [115.28.160.31] ([115.28.160.31]:48628 "EHLO
-        mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1726620AbgG0Qxt (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 27 Jul 2020 12:53:49 -0400
-Received: from ld50.lan (unknown [112.64.68.106])
+        id S1731067AbgG0Ru0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 27 Jul 2020 13:50:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726905AbgG0Ru0 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 27 Jul 2020 13:50:26 -0400
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id ABB5B6006D;
-        Tue, 28 Jul 2020 00:51:11 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
-        t=1595868671; bh=0DY4w9F/JvIxZoLUyQIMs5zt2ofGuK1nyof5jeq8wA8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=H/B/SI3wM7DNRHXHEI+N7JUkrPs09kgktnmlRN8+5fQwu+ON0iSQby9ZlEysB1N+J
-         lTNrTzXVMDMt57iFoHpevTGZ6lQ+CxBjkd4MB93Eauq2yT4C9hB1wX3gsE47lObtZB
-         Bb0/JtDXs5AmqEFmqc9VztJMwWTtPjdrP9tmJiTo=
-From:   WANG Xuerui <git@xen0n.name>
-To:     linux-mips@vger.kernel.org
-Cc:     WANG Xuerui <git@xen0n.name>
-Subject: [PATCH v3 0/3] Refactor FTLBPar exception handling and add GSExc handler
-Date:   Tue, 28 Jul 2020 00:51:05 +0800
-Message-Id: <20200727165108.2378227-1-git@xen0n.name>
-X-Mailer: git-send-email 2.25.1
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DF822070B;
+        Mon, 27 Jul 2020 17:50:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595872226;
+        bh=DpbVC711UQECix+vLjh9TkWry1+9XGV9rRIwKwAZg1E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QWU1RvbRokMbDds1Y48qGOfm7MMN1PlBmqCLprZaq3PTpEJxGR4hdI0WxXW2NxF1T
+         U4Ab5bwoj1Ak6BU55OwVm5A7KzdQklQoYNirn7PVDCmB7RfOIr4oX7SpoEhId/ruSb
+         JmLYC/L+n4WyLqLrB0mq+dwhoNFKNw+B6qTPSAf4=
+Received: by mail-ot1-f49.google.com with SMTP id v21so5675879otj.9;
+        Mon, 27 Jul 2020 10:50:26 -0700 (PDT)
+X-Gm-Message-State: AOAM530Aw/Fm7tMm9PvOnF8qRBjsRl5DGOyl5nyXKGIDJ6NrzoK6jL/z
+        XOYr+KbmkgYn9yPCcB84xVASRBMZL+QFeZvRUg==
+X-Google-Smtp-Source: ABdhPJzLQ+VFFmth3kQyr6PdoZivQEsSJVM+Wbmdyi5M1azvg+1uvM+cK30w07oLnIQT1rD1U4oN04pnupX7lVaBLVU=
+X-Received: by 2002:a05:6830:1b79:: with SMTP id d25mr2667777ote.107.1595872225565;
+ Mon, 27 Jul 2020 10:50:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200725014529.1143208-1-jiaxun.yang@flygoat.com> <20200725014529.1143208-2-jiaxun.yang@flygoat.com>
+In-Reply-To: <20200725014529.1143208-2-jiaxun.yang@flygoat.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 27 Jul 2020 11:50:14 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKePrUW3-HoSnQawqhgg23XJ7MxzawD7TKt-__q3jM55g@mail.gmail.com>
+Message-ID: <CAL_JsqKePrUW3-HoSnQawqhgg23XJ7MxzawD7TKt-__q3jM55g@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] of_address: Add bus type match for pci ranges parser
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-It was found that some undocumented unprivileged instructions could
-crash the kernel with a "FTLB parity error" on Loongson-3A4000, but the
-error registers were garbage:
+On Fri, Jul 24, 2020 at 7:45 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+>
+> So the parser can be used to parse range property of ISA bus.
+>
+> As they're all using PCI-like method of range property, there is no need
+> start a new parser.
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+>
+> --
+> v2: Drop useless check, fix some na for bus_addr
+>         add define of of_range_parser_init according to
+>         Rob's suggestion.
+> v3: Abstract out has_flags. simplify define.
+> ---
+>  drivers/of/address.c       | 29 +++++++++++++++++------------
+>  include/linux/of_address.h |  4 ++++
+>  2 files changed, 21 insertions(+), 12 deletions(-)
 
-[  896.970419] FTLB error exception, cp0_ecc=0x00000002:
-[  896.975446] cp0_errorepc == ffffffffffffffff
-[  896.979755] c0_cacheerr == 00000000
-[  896.983277] Decoded c0_cacheerr: primary cache fault in insn reference.
-[  896.989963] Cache error exception:
-[  896.993396] cp0_errorepc == ffffffffffffffff
-[  896.997707] c0_cacheerr == 00000000
-[  897.001228] Decoded c0_cacheerr: primary cache fault in insn reference.
-[  897.007916] Error bits: 
-[  897.010467] IDX: 0x00000000
-[  897.013284] Kernel panic - not syncing: Can't handle the cache error!
-[  897.019807] ---[ end Kernel panic - not syncing: Can't handle the cache error! ]---
-
-Turns out the FTLBPar exception code is actually implementation-specific.
-On Loongson cores the exception is "GSExc" instead, and is non-fatal in
-Loongson's linux-3.10 fork. So we dynamically register the correct handler
-for the exception, and do not panic on the specific undocumented case.
-
-P.S. There is not much space left in the cpuinfo_mips.options flag. We
-should consider moving to something like x86's feature flags that is
-extensible.
-
-v3:
-- Simplified declaration of cpu_has_gsexcex, as suggested by Huacai
-
-v2:
-- Removed stray GSExc logic in cpu_probe_legacy, pointed out by Huacai
-
-WANG Xuerui (3):
-  MIPS: only register FTLBPar exception handler for supported models
-  MIPS: add definitions for Loongson-specific CP0.Diag1 register
-  MIPS: handle Loongson-specific GSExc exception
-
- arch/mips/include/asm/cpu-features.h |  8 ++++++
- arch/mips/include/asm/cpu.h          |  2 ++
- arch/mips/include/asm/mipsregs.h     | 11 ++++++++
- arch/mips/kernel/cpu-probe.c         | 16 ++++++++++++
- arch/mips/kernel/genex.S             |  7 +++++
- arch/mips/kernel/traps.c             | 38 +++++++++++++++++++++++++++-
- 6 files changed, 81 insertions(+), 1 deletion(-)
-
--- 
-2.25.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>

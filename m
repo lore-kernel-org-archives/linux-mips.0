@@ -2,48 +2,43 @@ Return-Path: <SRS0=sC32=BG=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8F57C433E5
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Jul 2020 16:51:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94F40C433E0
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Jul 2020 16:53:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8FDF620719
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Jul 2020 16:51:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6C4EE20729
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Jul 2020 16:53:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="uw6T3wyf"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="H/B/SI3w"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728642AbgG0Qvb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 27 Jul 2020 12:51:31 -0400
-Received: from [115.28.160.31] ([115.28.160.31]:48648 "EHLO
+        id S1728518AbgG0Qxt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 27 Jul 2020 12:53:49 -0400
+Received: from [115.28.160.31] ([115.28.160.31]:48628 "EHLO
         mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1729413AbgG0Qvb (ORCPT
+        by vger.kernel.org with ESMTP id S1726620AbgG0Qxt (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 27 Jul 2020 12:51:31 -0400
+        Mon, 27 Jul 2020 12:53:49 -0400
 Received: from ld50.lan (unknown [112.64.68.106])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 1386E60162;
-        Tue, 28 Jul 2020 00:51:19 +0800 (CST)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id ABB5B6006D;
+        Tue, 28 Jul 2020 00:51:11 +0800 (CST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
-        t=1595868679; bh=td/9LJuUWMaDC9c1+Th6QmDbQIW3NXQhjr+vt8pFX28=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uw6T3wyfB5tgk+wvmMN9KDSBnIu/kcuyPffaprzRBb0nbHncMmn+mMPhO881oGsfN
-         wJFbqi01hOkQ/vpfq2+tDNynFC4D/LfIT2p1mX9Nd8h9haSgWXSWbvIg0Odg3pKxU5
-         LOxnAmcj1kAy3gqNVy8J6z/qFj1N3WolDAZ/ZTFg=
+        t=1595868671; bh=0DY4w9F/JvIxZoLUyQIMs5zt2ofGuK1nyof5jeq8wA8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=H/B/SI3wM7DNRHXHEI+N7JUkrPs09kgktnmlRN8+5fQwu+ON0iSQby9ZlEysB1N+J
+         lTNrTzXVMDMt57iFoHpevTGZ6lQ+CxBjkd4MB93Eauq2yT4C9hB1wX3gsE47lObtZB
+         Bb0/JtDXs5AmqEFmqc9VztJMwWTtPjdrP9tmJiTo=
 From:   WANG Xuerui <git@xen0n.name>
 To:     linux-mips@vger.kernel.org
-Cc:     WANG Xuerui <git@xen0n.name>, Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH v3 3/3] MIPS: handle Loongson-specific GSExc exception
-Date:   Tue, 28 Jul 2020 00:51:08 +0800
-Message-Id: <20200727165108.2378227-4-git@xen0n.name>
+Cc:     WANG Xuerui <git@xen0n.name>
+Subject: [PATCH v3 0/3] Refactor FTLBPar exception handling and add GSExc handler
+Date:   Tue, 28 Jul 2020 00:51:05 +0800
+Message-Id: <20200727165108.2378227-1-git@xen0n.name>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200727165108.2378227-1-git@xen0n.name>
-References: <20200727165108.2378227-1-git@xen0n.name>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
@@ -51,186 +46,51 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Newer Loongson cores (Loongson-3A R2 and newer) use the
-implementation-dependent ExcCode 16 to signal Loongson-specific
-exceptions. The extended cause is put in the non-standard CP0.Diag1
-register which is CP0 Register 22 Select 1, called GSCause in Loongson
-manuals. Inside is an exception code bitfield called GSExcCode, only
-codes 0 to 6 inclusive are documented (so far, in the Loongson 3A3000
-User Manual, Volume 2).
+It was found that some undocumented unprivileged instructions could
+crash the kernel with a "FTLB parity error" on Loongson-3A4000, but the
+error registers were garbage:
 
-During experiments, it was found that some undocumented unprivileged
-instructions can trigger the also-undocumented GSExcCode 8 on Loongson
-3A4000. Processor state is not corrupted, but we cannot continue without
-further knowledge, and Loongson is not providing that information as of
-this writing. So we send SIGILL on seeing this exception code to thwart
-easy local DoS attacks.
+[  896.970419] FTLB error exception, cp0_ecc=0x00000002:
+[  896.975446] cp0_errorepc == ffffffffffffffff
+[  896.979755] c0_cacheerr == 00000000
+[  896.983277] Decoded c0_cacheerr: primary cache fault in insn reference.
+[  896.989963] Cache error exception:
+[  896.993396] cp0_errorepc == ffffffffffffffff
+[  896.997707] c0_cacheerr == 00000000
+[  897.001228] Decoded c0_cacheerr: primary cache fault in insn reference.
+[  897.007916] Error bits: 
+[  897.010467] IDX: 0x00000000
+[  897.013284] Kernel panic - not syncing: Can't handle the cache error!
+[  897.019807] ---[ end Kernel panic - not syncing: Can't handle the cache error! ]---
 
-Other exception codes are made fatal, partly because of insufficient
-knowledge, also partly because they are not as easily reproduced. None
-of them are encountered in the wild with upstream kernels and userspace
-so far.
+Turns out the FTLBPar exception code is actually implementation-specific.
+On Loongson cores the exception is "GSExc" instead, and is non-fatal in
+Loongson's linux-3.10 fork. So we dynamically register the correct handler
+for the exception, and do not panic on the specific undocumented case.
 
-Some older cores (Loongson-3A1000 and Loongson-3B1500) have ExcCode 16
-too, but the semantic is equivalent to GSExcCode 0. Because the
-respective manuals did not mention the CP0.Diag1 register or its read
-behavior, these cores are not covered in this patch, as MFC0 from
-non-existent CP0 registers is UNDEFINED according to the MIPS
-architecture spec.
+P.S. There is not much space left in the cpuinfo_mips.options flag. We
+should consider moving to something like x86's feature flags that is
+extensible.
 
-Signed-off-by: WANG Xuerui <git@xen0n.name>
-Cc: Huacai Chen <chenhc@lemote.com>
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/include/asm/cpu-features.h |  4 ++++
- arch/mips/include/asm/cpu.h          |  1 +
- arch/mips/include/asm/mipsregs.h     |  3 +++
- arch/mips/kernel/cpu-probe.c         |  3 +++
- arch/mips/kernel/genex.S             |  7 ++++++
- arch/mips/kernel/traps.c             | 35 ++++++++++++++++++++++++++++
- 6 files changed, 53 insertions(+)
+v3:
+- Simplified declaration of cpu_has_gsexcex, as suggested by Huacai
 
-diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
-index 0b1bc7ed913b..78cf7e300f12 100644
---- a/arch/mips/include/asm/cpu-features.h
-+++ b/arch/mips/include/asm/cpu-features.h
-@@ -572,6 +572,10 @@
- # define cpu_has_ftlbparex	__opt(MIPS_CPU_FTLBPAREX)
- #endif
- 
-+#ifndef cpu_has_gsexcex
-+# define cpu_has_gsexcex	__opt(MIPS_CPU_GSEXCEX)
-+#endif
-+
- #ifdef CONFIG_SMP
- /*
-  * Some systems share FTLB RAMs between threads within a core (siblings in
-diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-index 3a4773714b29..1b4a67c84538 100644
---- a/arch/mips/include/asm/cpu.h
-+++ b/arch/mips/include/asm/cpu.h
-@@ -426,6 +426,7 @@ enum cpu_type_enum {
- #define MIPS_CPU_MM_FULL	BIT_ULL(59)	/* CPU supports write-through full merge */
- #define MIPS_CPU_MAC_2008_ONLY	BIT_ULL(60)	/* CPU Only support MAC2008 Fused multiply-add instruction */
- #define MIPS_CPU_FTLBPAREX	BIT_ULL(61)	/* CPU has FTLB parity exception */
-+#define MIPS_CPU_GSEXCEX	BIT_ULL(62)	/* CPU has GSExc exception */
- 
- /*
-  * CPU ASE encodings
-diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index 5ba268266d16..4ddc12e4444a 100644
---- a/arch/mips/include/asm/mipsregs.h
-+++ b/arch/mips/include/asm/mipsregs.h
-@@ -474,6 +474,9 @@
- /* Implementation specific trap codes used by MIPS cores */
- #define MIPS_EXCCODE_TLBPAR	16	/* TLB parity error exception */
- 
-+/* Implementation specific trap codes used by Loongson cores */
-+#define LOONGSON_EXCCODE_GSEXC	16	/* Loongson-specific exception */
-+
- /*
-  * Bits in the coprocessor 0 config register.
-  */
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index 9e325862e810..9bb4a8732847 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -2043,6 +2043,9 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
- {
- 	decode_configs(c);
- 
-+	/* All Loongson processors covered here define ExcCode 16 as GSExc. */
-+	c->options |= MIPS_CPU_GSEXCEX;
-+
- 	switch (c->processor_id & PRID_IMP_MASK) {
- 	case PRID_IMP_LOONGSON_64R: /* Loongson-64 Reduced */
- 		switch (c->processor_id & PRID_REV_MASK) {
-diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-index a1b966f3578e..a7fe30363dda 100644
---- a/arch/mips/kernel/genex.S
-+++ b/arch/mips/kernel/genex.S
-@@ -498,6 +498,12 @@ NESTED(nmi_handler, PT_SIZE, sp)
- 	KMODE
- 	.endm
- 
-+	.macro __build_clear_gsexc
-+	MFC0	a1, CP0_DIAGNOSTIC1
-+	TRACE_IRQS_ON
-+	STI
-+	.endm
-+
- 	.macro	__BUILD_silent exception
- 	.endm
- 
-@@ -556,6 +562,7 @@ NESTED(nmi_handler, PT_SIZE, sp)
- 	BUILD_HANDLER fpe fpe fpe silent		/* #15 */
- #endif
- 	BUILD_HANDLER ftlb ftlb none silent		/* #16 */
-+	BUILD_HANDLER gsexc gsexc gsexc silent		/* #16 */
- 	BUILD_HANDLER msa msa sti silent		/* #21 */
- 	BUILD_HANDLER mdmx mdmx sti silent		/* #22 */
- #ifdef	CONFIG_HARDWARE_WATCHPOINTS
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 25a8a0d441be..fdb51e1f5f84 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -90,6 +90,7 @@ extern asmlinkage void handle_tr(void);
- extern asmlinkage void handle_msa_fpe(void);
- extern asmlinkage void handle_fpe(void);
- extern asmlinkage void handle_ftlb(void);
-+extern asmlinkage void handle_gsexc(void);
- extern asmlinkage void handle_msa(void);
- extern asmlinkage void handle_mdmx(void);
- extern asmlinkage void handle_watch(void);
-@@ -1900,6 +1901,37 @@ asmlinkage void do_ftlb(void)
- 	cache_parity_error();
- }
- 
-+asmlinkage void do_gsexc(struct pt_regs *regs, u32 diag1)
-+{
-+	u32 exccode = (diag1 & LOONGSON_DIAG1_EXCCODE) >>
-+			LOONGSON_DIAG1_EXCCODE_SHIFT;
-+	enum ctx_state prev_state;
-+
-+	prev_state = exception_enter();
-+
-+	switch (exccode) {
-+	case 0x08:
-+		/* Undocumented exception, will trigger on certain
-+		 * also-undocumented instructions accessible from userspace.
-+		 * Processor state is not otherwise corrupted, but currently
-+		 * we don't know how to proceed. Maybe there is some
-+		 * undocumented control flag to enable the instructions?
-+		 */
-+		force_sig(SIGILL);
-+		break;
-+
-+	default:
-+		/* None of the other exceptions, documented or not, have
-+		 * further details given; none are encountered in the wild
-+		 * either. Panic in case some of them turn out to be fatal.
-+		 */
-+		show_regs(regs);
-+		panic("Unhandled Loongson exception - GSCause = %08x", diag1);
-+	}
-+
-+	exception_exit(prev_state);
-+}
-+
- /*
-  * SDBBP EJTAG debug exception handler.
-  * We skip the instruction and return to the next instruction.
-@@ -2457,6 +2489,9 @@ void __init trap_init(void)
- 	if (cpu_has_ftlbparex)
- 		set_except_vector(MIPS_EXCCODE_TLBPAR, handle_ftlb);
- 
-+	if (cpu_has_gsexcex)
-+		set_except_vector(LOONGSON_EXCCODE_GSEXC, handle_gsexc);
-+
- 	if (cpu_has_rixiex) {
- 		set_except_vector(EXCCODE_TLBRI, tlb_do_page_fault_0);
- 		set_except_vector(EXCCODE_TLBXI, tlb_do_page_fault_0);
+v2:
+- Removed stray GSExc logic in cpu_probe_legacy, pointed out by Huacai
+
+WANG Xuerui (3):
+  MIPS: only register FTLBPar exception handler for supported models
+  MIPS: add definitions for Loongson-specific CP0.Diag1 register
+  MIPS: handle Loongson-specific GSExc exception
+
+ arch/mips/include/asm/cpu-features.h |  8 ++++++
+ arch/mips/include/asm/cpu.h          |  2 ++
+ arch/mips/include/asm/mipsregs.h     | 11 ++++++++
+ arch/mips/kernel/cpu-probe.c         | 16 ++++++++++++
+ arch/mips/kernel/genex.S             |  7 +++++
+ arch/mips/kernel/traps.c             | 38 +++++++++++++++++++++++++++-
+ 6 files changed, 81 insertions(+), 1 deletion(-)
+
 -- 
 2.25.1
 

@@ -7,50 +7,52 @@ X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51841C433E1
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Jul 2020 08:39:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E71EC433E4
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Jul 2020 08:39:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 34B66206D7
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Jul 2020 08:39:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3C86F2083E
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Jul 2020 08:39:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728120AbgG1IjA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 28 Jul 2020 04:39:00 -0400
-Received: from elvis.franken.de ([193.175.24.41]:51655 "EHLO elvis.franken.de"
+        id S1728282AbgG1IjC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 28 Jul 2020 04:39:02 -0400
+Received: from elvis.franken.de ([193.175.24.41]:51658 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727996AbgG1Ii7 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 28 Jul 2020 04:38:59 -0400
+        id S1728115AbgG1IjA (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 28 Jul 2020 04:39:00 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1k0L8B-0000DV-00; Tue, 28 Jul 2020 10:38:39 +0200
+        id 1k0L8B-0000DV-02; Tue, 28 Jul 2020 10:38:39 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 2D519C0A4B; Tue, 28 Jul 2020 10:30:00 +0200 (CEST)
-Date:   Tue, 28 Jul 2020 10:30:00 +0200
+        id B8779C0A94; Tue, 28 Jul 2020 10:30:51 +0200 (CEST)
+Date:   Tue, 28 Jul 2020 10:30:51 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Arnd Bergmann <arnd@arndb.de>, od@zcrc.me,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] MIPS: ath79: Remove unused include
- <asm/mips_machine.h>
-Message-ID: <20200728083000.GA9062@alpha.franken.de>
-References: <20200726165828.55175-1-paul@crapouillou.net>
+Cc:     od@zcrc.me, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] MIPS: qi_lb60: Fix routing to audio amplifier
+Message-ID: <20200728083051.GC9062@alpha.franken.de>
+References: <20200727181128.25756-1-paul@crapouillou.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200726165828.55175-1-paul@crapouillou.net>
+In-Reply-To: <20200727181128.25756-1-paul@crapouillou.net>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Jul 26, 2020 at 06:58:27PM +0200, Paul Cercueil wrote:
-> Since commit 3a77e0d75eed ("MIPS: ath79: drop machfiles"), this header
-> is not used anymore.
+On Mon, Jul 27, 2020 at 08:11:28PM +0200, Paul Cercueil wrote:
+> The ROUT (right channel output of audio codec) was connected to INL
+> (left channel of audio amplifier) instead of INR (right channel of audio
+> amplifier).
 > 
+> Fixes: 8ddebad15e9b ("MIPS: qi_lb60: Migrate to devicetree")
+> Cc: stable@vger.kernel.org # v5.3
 > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 > ---
->  arch/mips/ath79/setup.c | 1 -
->  1 file changed, 1 deletion(-)
+>  arch/mips/boot/dts/ingenic/qi_lb60.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 applied to mips-next.
 

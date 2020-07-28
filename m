@@ -2,238 +2,123 @@ Return-Path: <SRS0=slhF=BH=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48944C43459
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Jul 2020 05:14:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87F4AC433E1
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Jul 2020 05:48:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 215E022BF3
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Jul 2020 05:14:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1595913246;
-	bh=/P/lupA3C4FmvMBK6FgIXaCKoFOV5sz/UYytaknOuEQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=BaUNICVm1wMmzIIuj/NYsC0CdRsmdCpSVaK6K0KFyQS2RuHrNqnr0n2bs9x4nvazw
-	 D9Vxb0xMkWv17P+m1iEXreeHDupvXbAPoUhx9NcdO7/kq3rK4YZ5o5vwhhTSwSHP8k
-	 c/hXpzUqpDDeRNr9Pkh6IjWCN+yfBAxZLp42Gcik=
+	by mail.kernel.org (Postfix) with ESMTP id 5B61821883
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Jul 2020 05:48:06 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KWxDdEqt"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727797AbgG1FOD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 28 Jul 2020 01:14:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726319AbgG1FOD (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 28 Jul 2020 01:14:03 -0400
-Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8C9D2250E;
-        Tue, 28 Jul 2020 05:13:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595913242;
-        bh=/P/lupA3C4FmvMBK6FgIXaCKoFOV5sz/UYytaknOuEQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ekzq732XLM7rZfBBWAAa33F6g3rHV+mO9Fg/LM+KQ4w/RzQPvjwepYwzmsb/XoBCy
-         R3fxzP5eCFMU+VlLwKua74V7ztxqjN3g1jfg1aKz0z7pGC4wLm9HOldlh3tZl65Pw9
-         4if1i5cNzR0aZwsP0WdD+b3nm7gRU4We1i0oxnuA=
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Simek <monstr@monstr.eu>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Stafford Horne <shorne@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        clang-built-linux@googlegroups.com,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
-        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
-        uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org
-Subject: [PATCH 11/15] memblock: reduce number of parameters in for_each_mem_range()
-Date:   Tue, 28 Jul 2020 08:11:49 +0300
-Message-Id: <20200728051153.1590-12-rppt@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200728051153.1590-1-rppt@kernel.org>
-References: <20200728051153.1590-1-rppt@kernel.org>
+        id S1726816AbgG1FsG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 28 Jul 2020 01:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726536AbgG1FsF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 28 Jul 2020 01:48:05 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 900FAC061794
+        for <linux-mips@vger.kernel.org>; Mon, 27 Jul 2020 22:48:05 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id s189so12269897iod.2
+        for <linux-mips@vger.kernel.org>; Mon, 27 Jul 2020 22:48:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WQ0pC1DQThoK/AZiEC7D32glHuxBBVPldWJH00eCB2g=;
+        b=KWxDdEqtW1WLmhMNUYPqaKrwoMVmd7TRu5rWyGAITco0Mu8PWQF7X8D95xkT7Wxgvc
+         S5x5yxz+rF7DlM+n6jBF5RiqVx//5D+pkybJQFtbP2nrsudSycrqWVO/T0hhnk7BGFZy
+         sOmT9zoDDHXptCT84dwjpNCpvDYlqpnlySw4yZJZ6ZCP3GJMn6jM7lL9oN2KBYBxI6rO
+         qJSDlJ4L9AU8eWoBehDpA/6rvYev8cDUi2aqTCJR7JkqeytKIlk0A1TkrEUaJzZC4lZI
+         ZxNRQn+if0q/QJ2+Tdzm62BqHCzk+osYj/gWHXLUXnVtSNoQ09NYKPmu+0uLZ9hRHP9B
+         12Xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WQ0pC1DQThoK/AZiEC7D32glHuxBBVPldWJH00eCB2g=;
+        b=VV/aKbmDD89DBP0o5rGFrH3mAsnRUker32ngIAggpNEDJGfHA4/S8mIdFKQKUvcUd1
+         Tg3LiQ3TCqeqtA2KMilsSBU4lG4lQsR4JaofZXy+Aky6AIqECyyT3d9Zqx2zdHlafP1l
+         MBW+5VOfn4LS9uwuS5QCvdCdpkNf0xJywXDQ4WVGs+anrtNgOBGmwoCJTAv6+kzYT3Ut
+         SIPd5IE1P5EXtq2IGyxRIWTVYAwGTHp/GDNTKIoiHEpfvBkK2wMRkWIMguV7bm8I1P6N
+         rUOGGTtBgO4yh/M78YIc7f5NBLN2fNZR3IsZQPZRR3GW6lNayVUnRDoZBw2fod0qt2tO
+         CO/A==
+X-Gm-Message-State: AOAM530Fqt7e30QJQAXTuxBT2PJi+25LKRVgvL149mucaYThSfopbcWf
+        ocvqqKzr9k6T/qgizn/1BE5VOOESqepUktMm3rF8H+xkyUE1Sw==
+X-Google-Smtp-Source: ABdhPJwjeynbbY/9wynObx+xTE8bMjUQ+MUy97l4XZjM4Xbos5FNBXeLlFT6BsplAOGYsHIf+EO03aGF36few6JgHI0=
+X-Received: by 2002:a6b:ce11:: with SMTP id p17mr27558240iob.125.1595915284996;
+ Mon, 27 Jul 2020 22:48:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200727165108.2378227-1-git@xen0n.name>
+In-Reply-To: <20200727165108.2378227-1-git@xen0n.name>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Tue, 28 Jul 2020 13:47:53 +0800
+Message-ID: <CAAhV-H50C1hYLTqk5CEaO+gg3H0ih2Af7Sv8aEzk6WFeKsn2ig@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] Refactor FTLBPar exception handling and add GSExc handler
+To:     WANG Xuerui <git@xen0n.name>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+For the whole series:
 
-Currently for_each_mem_range() iterator is the most generic way to traverse
-memblock regions. As such, it has 8 parameters and it is hardly convenient
-to users. Most users choose to utilize one of its wrappers and the only
-user that actually needs most of the parameters outside memblock is s390
-crash dump implementation.
+Reviewed-by: Huacai Chen <chenhc@lemote.com>
 
-To avoid yet another naming for memblock iterators, rename the existing
-for_each_mem_range() to __for_each_mem_range() and add a new
-for_each_mem_range() wrapper with only index, start and end parameters.
-
-The new wrapper nicely fits into init_unavailable_mem() and will be used in
-upcoming changes to simplify memblock traversals.
-
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- .clang-format                          |  1 +
- arch/arm64/kernel/machine_kexec_file.c |  6 ++----
- arch/s390/kernel/crash_dump.c          |  8 ++++----
- include/linux/memblock.h               | 18 ++++++++++++++----
- mm/page_alloc.c                        |  3 +--
- 5 files changed, 22 insertions(+), 14 deletions(-)
-
-diff --git a/.clang-format b/.clang-format
-index a0a96088c74f..52ededab25ce 100644
---- a/.clang-format
-+++ b/.clang-format
-@@ -205,6 +205,7 @@ ForEachMacros:
-   - 'for_each_memblock_type'
-   - 'for_each_memcg_cache_index'
-   - 'for_each_mem_pfn_range'
-+  - '__for_each_mem_range'
-   - 'for_each_mem_range'
-   - 'for_each_mem_range_rev'
-   - 'for_each_migratetype_order'
-diff --git a/arch/arm64/kernel/machine_kexec_file.c b/arch/arm64/kernel/machine_kexec_file.c
-index 361a1143e09e..5b0e67b93cdc 100644
---- a/arch/arm64/kernel/machine_kexec_file.c
-+++ b/arch/arm64/kernel/machine_kexec_file.c
-@@ -215,8 +215,7 @@ static int prepare_elf_headers(void **addr, unsigned long *sz)
- 	phys_addr_t start, end;
- 
- 	nr_ranges = 1; /* for exclusion of crashkernel region */
--	for_each_mem_range(i, &memblock.memory, NULL, NUMA_NO_NODE,
--					MEMBLOCK_NONE, &start, &end, NULL)
-+	for_each_mem_range(i, &start, &end)
- 		nr_ranges++;
- 
- 	cmem = kmalloc(struct_size(cmem, ranges, nr_ranges), GFP_KERNEL);
-@@ -225,8 +224,7 @@ static int prepare_elf_headers(void **addr, unsigned long *sz)
- 
- 	cmem->max_nr_ranges = nr_ranges;
- 	cmem->nr_ranges = 0;
--	for_each_mem_range(i, &memblock.memory, NULL, NUMA_NO_NODE,
--					MEMBLOCK_NONE, &start, &end, NULL) {
-+	for_each_mem_range(i, &start, &end) {
- 		cmem->ranges[cmem->nr_ranges].start = start;
- 		cmem->ranges[cmem->nr_ranges].end = end - 1;
- 		cmem->nr_ranges++;
-diff --git a/arch/s390/kernel/crash_dump.c b/arch/s390/kernel/crash_dump.c
-index f96a5857bbfd..e28085c725ff 100644
---- a/arch/s390/kernel/crash_dump.c
-+++ b/arch/s390/kernel/crash_dump.c
-@@ -549,8 +549,8 @@ static int get_mem_chunk_cnt(void)
- 	int cnt = 0;
- 	u64 idx;
- 
--	for_each_mem_range(idx, &memblock.physmem, &oldmem_type, NUMA_NO_NODE,
--			   MEMBLOCK_NONE, NULL, NULL, NULL)
-+	__for_each_mem_range(idx, &memblock.physmem, &oldmem_type, NUMA_NO_NODE,
-+			     MEMBLOCK_NONE, NULL, NULL, NULL)
- 		cnt++;
- 	return cnt;
- }
-@@ -563,8 +563,8 @@ static void loads_init(Elf64_Phdr *phdr, u64 loads_offset)
- 	phys_addr_t start, end;
- 	u64 idx;
- 
--	for_each_mem_range(idx, &memblock.physmem, &oldmem_type, NUMA_NO_NODE,
--			   MEMBLOCK_NONE, &start, &end, NULL) {
-+	__for_each_mem_range(idx, &memblock.physmem, &oldmem_type, NUMA_NO_NODE,
-+			     MEMBLOCK_NONE, &start, &end, NULL) {
- 		phdr->p_filesz = end - start;
- 		phdr->p_type = PT_LOAD;
- 		phdr->p_offset = start;
-diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-index e6a23b3db696..d70c2835e913 100644
---- a/include/linux/memblock.h
-+++ b/include/linux/memblock.h
-@@ -142,7 +142,7 @@ void __next_reserved_mem_region(u64 *idx, phys_addr_t *out_start,
- void __memblock_free_late(phys_addr_t base, phys_addr_t size);
- 
- /**
-- * for_each_mem_range - iterate through memblock areas from type_a and not
-+ * __for_each_mem_range - iterate through memblock areas from type_a and not
-  * included in type_b. Or just type_a if type_b is NULL.
-  * @i: u64 used as loop variable
-  * @type_a: ptr to memblock_type to iterate
-@@ -153,7 +153,7 @@ void __memblock_free_late(phys_addr_t base, phys_addr_t size);
-  * @p_end: ptr to phys_addr_t for end address of the range, can be %NULL
-  * @p_nid: ptr to int for nid of the range, can be %NULL
-  */
--#define for_each_mem_range(i, type_a, type_b, nid, flags,		\
-+#define __for_each_mem_range(i, type_a, type_b, nid, flags,		\
- 			   p_start, p_end, p_nid)			\
- 	for (i = 0, __next_mem_range(&i, nid, flags, type_a, type_b,	\
- 				     p_start, p_end, p_nid);		\
-@@ -182,6 +182,16 @@ void __memblock_free_late(phys_addr_t base, phys_addr_t size);
- 	     __next_mem_range_rev(&i, nid, flags, type_a, type_b,	\
- 				  p_start, p_end, p_nid))
- 
-+/**
-+ * for_each_mem_range - iterate through memory areas.
-+ * @i: u64 used as loop variable
-+ * @p_start: ptr to phys_addr_t for start address of the range, can be %NULL
-+ * @p_end: ptr to phys_addr_t for end address of the range, can be %NULL
-+ */
-+#define for_each_mem_range(i, p_start, p_end) \
-+	__for_each_mem_range(i, &memblock.memory, NULL, NUMA_NO_NODE,	\
-+			     MEMBLOCK_NONE, p_start, p_end, NULL)
-+
- /**
-  * for_each_reserved_mem_region - iterate over all reserved memblock areas
-  * @i: u64 used as loop variable
-@@ -287,8 +297,8 @@ int __init deferred_page_init_max_threads(const struct cpumask *node_cpumask);
-  * soon as memblock is initialized.
-  */
- #define for_each_free_mem_range(i, nid, flags, p_start, p_end, p_nid)	\
--	for_each_mem_range(i, &memblock.memory, &memblock.reserved,	\
--			   nid, flags, p_start, p_end, p_nid)
-+	__for_each_mem_range(i, &memblock.memory, &memblock.reserved,	\
-+			     nid, flags, p_start, p_end, p_nid)
- 
- /**
-  * for_each_free_mem_range_reverse - rev-iterate through free memblock areas
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index e028b87ce294..95af111d69d3 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6972,8 +6972,7 @@ static void __init init_unavailable_mem(void)
- 	 * Loop through unavailable ranges not covered by memblock.memory.
- 	 */
- 	pgcnt = 0;
--	for_each_mem_range(i, &memblock.memory, NULL,
--			NUMA_NO_NODE, MEMBLOCK_NONE, &start, &end, NULL) {
-+	for_each_mem_range(i, &start, &end) {
- 		if (next < start)
- 			pgcnt += init_unavailable_range(PFN_DOWN(next),
- 							PFN_UP(start));
--- 
-2.26.2
-
+On Tue, Jul 28, 2020 at 2:53 AM WANG Xuerui <git@xen0n.name> wrote:
+>
+> It was found that some undocumented unprivileged instructions could
+> crash the kernel with a "FTLB parity error" on Loongson-3A4000, but the
+> error registers were garbage:
+>
+> [  896.970419] FTLB error exception, cp0_ecc=0x00000002:
+> [  896.975446] cp0_errorepc == ffffffffffffffff
+> [  896.979755] c0_cacheerr == 00000000
+> [  896.983277] Decoded c0_cacheerr: primary cache fault in insn reference.
+> [  896.989963] Cache error exception:
+> [  896.993396] cp0_errorepc == ffffffffffffffff
+> [  896.997707] c0_cacheerr == 00000000
+> [  897.001228] Decoded c0_cacheerr: primary cache fault in insn reference.
+> [  897.007916] Error bits:
+> [  897.010467] IDX: 0x00000000
+> [  897.013284] Kernel panic - not syncing: Can't handle the cache error!
+> [  897.019807] ---[ end Kernel panic - not syncing: Can't handle the cache error! ]---
+>
+> Turns out the FTLBPar exception code is actually implementation-specific.
+> On Loongson cores the exception is "GSExc" instead, and is non-fatal in
+> Loongson's linux-3.10 fork. So we dynamically register the correct handler
+> for the exception, and do not panic on the specific undocumented case.
+>
+> P.S. There is not much space left in the cpuinfo_mips.options flag. We
+> should consider moving to something like x86's feature flags that is
+> extensible.
+>
+> v3:
+> - Simplified declaration of cpu_has_gsexcex, as suggested by Huacai
+>
+> v2:
+> - Removed stray GSExc logic in cpu_probe_legacy, pointed out by Huacai
+>
+> WANG Xuerui (3):
+>   MIPS: only register FTLBPar exception handler for supported models
+>   MIPS: add definitions for Loongson-specific CP0.Diag1 register
+>   MIPS: handle Loongson-specific GSExc exception
+>
+>  arch/mips/include/asm/cpu-features.h |  8 ++++++
+>  arch/mips/include/asm/cpu.h          |  2 ++
+>  arch/mips/include/asm/mipsregs.h     | 11 ++++++++
+>  arch/mips/kernel/cpu-probe.c         | 16 ++++++++++++
+>  arch/mips/kernel/genex.S             |  7 +++++
+>  arch/mips/kernel/traps.c             | 38 +++++++++++++++++++++++++++-
+>  6 files changed, 81 insertions(+), 1 deletion(-)
+>
+> --
+> 2.25.1
+>

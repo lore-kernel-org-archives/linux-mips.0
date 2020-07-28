@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9368C43446
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Jul 2020 05:12:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C22CC433EA
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Jul 2020 05:13:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8928822B43
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Jul 2020 05:12:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5BF4F22BEF
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Jul 2020 05:13:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1595913174;
-	bh=qkTb6G6sC5adsTqHQyd7bT8V4WYx2oAV2sECBmwt5OQ=;
+	s=default; t=1595913194;
+	bh=w0NUYCkRPztxWdauIZ7iYp1zOp1jLcG8AD5t4PqIxsg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=TiH8ZCKUvuA5rOCF7C2KUDV+bqu4Mbo8LpxQ7vgFRCzK7vJA4y9CEiFZufxlVa1+c
-	 9wDncJXDVTxZqAZtKdaCrnGt+UNXt1lPa5Mc33FrUH6vCSE1vghdvyZLXB/Wc/XrPG
-	 uDAzHTSvz8vIsZTw3cdr9HNiMzYXkkk+zc7OI7PQ=
+	b=f/bAFEHfjZZH2kDJz1i6dreHabroBXJqSotFb7KlEH+ViASbntdlI1M1HgMcJ643t
+	 WLnJidZphsIXh0rN+FMohi/jaGcCJkoVWZwjI7AK/kvo4pJvDQ8eEaqYgXFni7paFe
+	 U1ncQlLfvfT4U03qJi6wPRz0gbr3wZaBs4sicQOg=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726975AbgG1FMy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 28 Jul 2020 01:12:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34784 "EHLO mail.kernel.org"
+        id S1726907AbgG1FNO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 28 Jul 2020 01:13:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726308AbgG1FMy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 28 Jul 2020 01:12:54 -0400
+        id S1726308AbgG1FNN (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 28 Jul 2020 01:13:13 -0400
 Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13A8121883;
-        Tue, 28 Jul 2020 05:12:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B649522B45;
+        Tue, 28 Jul 2020 05:13:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595913173;
-        bh=qkTb6G6sC5adsTqHQyd7bT8V4WYx2oAV2sECBmwt5OQ=;
+        s=default; t=1595913193;
+        bh=w0NUYCkRPztxWdauIZ7iYp1zOp1jLcG8AD5t4PqIxsg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wt1p0YyBgor/93NHcOqjOUm3At5dqz/sRzw9h9n6XfVzCHEaX1bZW3fuapQfmdf2z
-         sQz2uepSCtKxhcfipNySyfhMav8LB88xjE8OgOcqYfeQ3ZAJhYWReV0msWpup2pk2/
-         j6tZq2lZvVV2OFcdC/B0nOlrCcmOC888LNy9rcDk=
+        b=YAjIiROU+83p25BDNEgIN9KISlKJXThut30Rs4cNno1O6shiBCHaHk29LQKLS7Ax5
+         Ejyf6BAz+viwYwWWCNj69uR3Ffj9ovcm+78DaXms94OZuxA4yw2XiA7huGDx/Xn9eG
+         FxVpJAd03+F3yNWhAm0fZShWCJUQp1/pDjBxfrnc=
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -71,9 +71,9 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
         openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
         uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org
-Subject: [PATCH 04/15] arm64: numa: simplify dummy_numa_init()
-Date:   Tue, 28 Jul 2020 08:11:42 +0300
-Message-Id: <20200728051153.1590-5-rppt@kernel.org>
+Subject: [PATCH 06/15] powerpc: fadamp: simplify fadump_reserve_crash_area()
+Date:   Tue, 28 Jul 2020 08:11:44 +0300
+Message-Id: <20200728051153.1590-7-rppt@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200728051153.1590-1-rppt@kernel.org>
 References: <20200728051153.1590-1-rppt@kernel.org>
@@ -86,48 +86,49 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-dummy_numa_init() loops over memblock.memory and passes nid=0 to
-numa_add_memblk() which essentially wraps memblock_set_node(). However,
-memblock_set_node() can cope with entire memory span itself, so the loop
-over memblock.memory regions is redundant.
+fadump_reserve_crash_area() reserves memory from a specified base address
+till the end of the RAM.
 
-Replace the loop with a single call to memblock_set_node() to the entire
-memory.
+Replace iteration through the memblock.memory with a single call to
+memblock_reserve() with appropriate  that will take care of proper memory
+reservation.
 
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- arch/arm64/mm/numa.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ arch/powerpc/kernel/fadump.c | 20 +-------------------
+ 1 file changed, 1 insertion(+), 19 deletions(-)
 
-diff --git a/arch/arm64/mm/numa.c b/arch/arm64/mm/numa.c
-index aafcee3e3f7e..0cbdbcc885fb 100644
---- a/arch/arm64/mm/numa.c
-+++ b/arch/arm64/mm/numa.c
-@@ -423,19 +423,16 @@ static int __init numa_init(int (*init_func)(void))
-  */
- static int __init dummy_numa_init(void)
+diff --git a/arch/powerpc/kernel/fadump.c b/arch/powerpc/kernel/fadump.c
+index 78ab9a6ee6ac..2446a61e3c25 100644
+--- a/arch/powerpc/kernel/fadump.c
++++ b/arch/powerpc/kernel/fadump.c
+@@ -1658,25 +1658,7 @@ int __init fadump_reserve_mem(void)
+ /* Preserve everything above the base address */
+ static void __init fadump_reserve_crash_area(u64 base)
  {
-+	phys_addr_t start = memblock_start_of_DRAM();
-+	phys_addr_t end = memblock_end_of_DRAM();
- 	int ret;
--	struct memblock_region *mblk;
- 
- 	if (numa_off)
- 		pr_info("NUMA disabled\n"); /* Forced off on command line. */
--	pr_info("Faking a node at [mem %#018Lx-%#018Lx]\n",
--		memblock_start_of_DRAM(), memblock_end_of_DRAM() - 1);
+-	struct memblock_region *reg;
+-	u64 mstart, msize;
 -
--	for_each_memblock(memory, mblk) {
--		ret = numa_add_memblk(0, mblk->base, mblk->base + mblk->size);
--		if (!ret)
+-	for_each_memblock(memory, reg) {
+-		mstart = reg->base;
+-		msize  = reg->size;
+-
+-		if ((mstart + msize) < base)
 -			continue;
-+	pr_info("Faking a node at [mem %#018Lx-%#018Lx]\n", start, end - 1);
+-
+-		if (mstart < base) {
+-			msize -= (base - mstart);
+-			mstart = base;
+-		}
+-
+-		pr_info("Reserving %lluMB of memory at %#016llx for preserving crash data",
+-			(msize >> 20), mstart);
+-		memblock_reserve(mstart, msize);
+-	}
++	memblock_reserve(base, memblock_end_of_DRAM() - base);
+ }
  
-+	ret = numa_add_memblk(0, start, end);
-+	if (ret) {
- 		pr_err("NUMA init failed\n");
- 		return ret;
- 	}
+ unsigned long __init arch_reserved_kernel_pages(void)
 -- 
 2.26.2
 

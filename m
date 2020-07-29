@@ -2,42 +2,45 @@ Return-Path: <SRS0=P6ZB=BI=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CADBAC433E0
-	for <linux-mips@archiver.kernel.org>; Wed, 29 Jul 2020 13:14:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4333C433E1
+	for <linux-mips@archiver.kernel.org>; Wed, 29 Jul 2020 13:14:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6A2DA20809
-	for <linux-mips@archiver.kernel.org>; Wed, 29 Jul 2020 13:14:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8AF1120809
+	for <linux-mips@archiver.kernel.org>; Wed, 29 Jul 2020 13:14:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="TMIij7OS"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="ATM/OkcA"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726449AbgG2NO3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 29 Jul 2020 09:14:29 -0400
-Received: from [115.28.160.31] ([115.28.160.31]:44454 "EHLO
+        id S1726353AbgG2NOa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 29 Jul 2020 09:14:30 -0400
+Received: from [115.28.160.31] ([115.28.160.31]:44468 "EHLO
         mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1726353AbgG2NO2 (ORCPT
+        by vger.kernel.org with ESMTP id S1726391AbgG2NOa (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 29 Jul 2020 09:14:28 -0400
+        Wed, 29 Jul 2020 09:14:30 -0400
 Received: from ld50.lan (unknown [140.207.23.30])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id C13E760161;
-        Wed, 29 Jul 2020 21:14:23 +0800 (CST)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 7D62260163;
+        Wed, 29 Jul 2020 21:14:25 +0800 (CST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
-        t=1596028463; bh=Mhhlubv9eZaRUyNVr2CaJH4THwxa7LGX/5QNhtjsp1c=;
+        t=1596028465; bh=0eboB+A9cBFSQkK7MaPLi6RxWZgHBXLmtZEvZ//fxgo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TMIij7OSYCLm9K513yoERuaPOdo4gJCe1bUmnNDBg9Ui6RwuQ0Pd7qX+TWnUOBD2e
-         n/gDVjBQUbOABhM7jamnSbEBSceSj9se/IqzHW5jJRpJ9kxa/hkVDI6pBoEcS9+FEP
-         jOj2VjcT/SFd5KTsyZg2a55baew2QVKmNDubvE2c=
+        b=ATM/OkcAlp9ecUiSz/zfcgXS8vnVjrUkM+1nPySGC4sTgC3Bh5ut3KjApf0p4Bxxo
+         OJLyNuQ4hz+cT1wr5VFP0g5qzHxIIhymE0UUJwaJDSPYqVfSoQHPoWUTvZC56KFjx8
+         2hCjuXNPJxSkBqkgr4C7GRYnF/Dvk6d9OwoDBVrQ=
 From:   WANG Xuerui <git@xen0n.name>
 To:     linux-mips@vger.kernel.org
-Cc:     WANG Xuerui <git@xen0n.name>
-Subject: [PATCH v5 0/3] Refactor FTLBPar exception handling and add GSExc handler
-Date:   Wed, 29 Jul 2020 21:14:14 +0800
-Message-Id: <20200729131417.4000213-2-git@xen0n.name>
+Cc:     WANG Xuerui <git@xen0n.name>, Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: [PATCH v5 2/3] MIPS: add definitions for Loongson-specific CP0.Diag1 register
+Date:   Wed, 29 Jul 2020 21:14:16 +0800
+Message-Id: <20200729131417.4000213-4-git@xen0n.name>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200729131417.4000213-1-git@xen0n.name>
 References: <20200729131417.4000213-1-git@xen0n.name>
@@ -48,62 +51,45 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-It was found that some undocumented unprivileged instructions could
-crash the kernel with a "FTLB parity error" on Loongson-3A4000, but the
-error registers were garbage:
+This 32-bit CP0 register is named GSCause in Loongson manuals. It carries
+Loongson extended exception information. We name it Diag1 because we
+fear the "GSCause" name might get changed in the future.
 
-[  896.970419] FTLB error exception, cp0_ecc=0x00000002:
-[  896.975446] cp0_errorepc == ffffffffffffffff
-[  896.979755] c0_cacheerr == 00000000
-[  896.983277] Decoded c0_cacheerr: primary cache fault in insn reference.
-[  896.989963] Cache error exception:
-[  896.993396] cp0_errorepc == ffffffffffffffff
-[  896.997707] c0_cacheerr == 00000000
-[  897.001228] Decoded c0_cacheerr: primary cache fault in insn reference.
-[  897.007916] Error bits: 
-[  897.010467] IDX: 0x00000000
-[  897.013284] Kernel panic - not syncing: Can't handle the cache error!
-[  897.019807] ---[ end Kernel panic - not syncing: Can't handle the cache error! ]---
+Reviewed-by: Huacai Chen <chenhc@lemote.com>
+Signed-off-by: WANG Xuerui <git@xen0n.name>
+Cc: Huacai Chen <chenhc@lemote.com>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/mips/include/asm/mipsregs.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Turns out the FTLBPar exception code is actually implementation-specific.
-On Loongson cores the exception is "GSExc" instead, and is non-fatal in
-Loongson's linux-3.10 fork. So we dynamically register the correct handler
-for the exception, and do not panic on the specific undocumented case.
-
-P.S. There is not much space left in the cpuinfo_mips.options flag. We
-should consider moving to something like x86's feature flags that is
-extensible.
-
-v5:
-- Fixed broken build on pre-MIPS32 configs where mfc0 can't have
-  selector, pointed out by Thomas. Build-tested ip22_defconfig.
-- Added more description in the commit message of the 2nd patch
-
-v4:
-- Added Reviewed-by tags from Huacai
-- Dropped bouncing Cc addresses from the first patch
-- Fixed "MFC0" -> "mfc0" in genex.S, as that CP0 register is 32-bit
-  according to Loongson's manuals
-
-v3:
-- Simplified declaration of cpu_has_gsexcex, as suggested by Huacai
-
-v2:
-- Removed stray GSExc logic in cpu_probe_legacy, pointed out by Huacai
-
-WANG Xuerui (3):
-  MIPS: only register FTLBPar exception handler for supported models
-  MIPS: add definitions for Loongson-specific CP0.Diag1 register
-  MIPS: handle Loongson-specific GSExc exception
-
- arch/mips/include/asm/cpu-features.h |  8 ++++++
- arch/mips/include/asm/cpu.h          |  2 ++
- arch/mips/include/asm/mipsregs.h     | 11 ++++++++
- arch/mips/kernel/cpu-probe.c         | 16 ++++++++++++
- arch/mips/kernel/genex.S             | 14 ++++++++++
- arch/mips/kernel/traps.c             | 38 +++++++++++++++++++++++++++-
- 6 files changed, 88 insertions(+), 1 deletion(-)
-
+diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+index 11094d857b92..5ba268266d16 100644
+--- a/arch/mips/include/asm/mipsregs.h
++++ b/arch/mips/include/asm/mipsregs.h
+@@ -86,6 +86,7 @@
+ #define CP0_XCONTEXT $20
+ #define CP0_FRAMEMASK $21
+ #define CP0_DIAGNOSTIC $22
++#define CP0_DIAGNOSTIC1 $22, 1
+ #define CP0_DEBUG $23
+ #define CP0_DEPC $24
+ #define CP0_PERFORMANCE $25
+@@ -1051,6 +1052,13 @@
+ /* Flush FTLB */
+ #define LOONGSON_DIAG_FTLB	(_ULCAST_(1) << 13)
+ 
++/*
++ * Diag1 (GSCause in Loongson-speak) fields
++ */
++/* Loongson-specific exception code (GSExcCode) */
++#define LOONGSON_DIAG1_EXCCODE_SHIFT	2
++#define LOONGSON_DIAG1_EXCCODE		GENMASK(6, 2)
++
+ /* CvmCtl register field definitions */
+ #define CVMCTL_IPPCI_SHIFT	7
+ #define CVMCTL_IPPCI		(_U64CAST_(0x7) << CVMCTL_IPPCI_SHIFT)
 -- 
 2.25.1
 

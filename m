@@ -2,136 +2,65 @@ Return-Path: <SRS0=P6ZB=BI=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06FC8C433E0
-	for <linux-mips@archiver.kernel.org>; Wed, 29 Jul 2020 13:15:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69FB4C433E0
+	for <linux-mips@archiver.kernel.org>; Wed, 29 Jul 2020 13:19:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D956E20FC3
-	for <linux-mips@archiver.kernel.org>; Wed, 29 Jul 2020 13:15:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4726920809
+	for <linux-mips@archiver.kernel.org>; Wed, 29 Jul 2020 13:19:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="fIm2no8u"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="aemjsakF"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgG2NPN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 29 Jul 2020 09:15:13 -0400
-Received: from [115.28.160.31] ([115.28.160.31]:44458 "EHLO
+        id S1726802AbgG2NTr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 29 Jul 2020 09:19:47 -0400
+Received: from [115.28.160.31] ([115.28.160.31]:44526 "EHLO
         mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1726391AbgG2NPN (ORCPT
+        by vger.kernel.org with ESMTP id S1726353AbgG2NTq (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 29 Jul 2020 09:15:13 -0400
-Received: from ld50.lan (unknown [140.207.23.30])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Wed, 29 Jul 2020 09:19:46 -0400
+Received: from hanazono.local (unknown [116.236.177.53])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id A7E4F60162;
-        Wed, 29 Jul 2020 21:14:24 +0800 (CST)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 6496560161;
+        Wed, 29 Jul 2020 21:19:41 +0800 (CST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
-        t=1596028464; bh=Sy5D/qpMTXAVfR40gwMseHO9e3qqlPZ1+KWghnEkioY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fIm2no8uuCYl2yh08VZIRkTVk6qdZ0IEcDn90jm/q3Z+h2OSm2i9Fk+17T/MrK4WG
-         fyJltgbmGkwXl1H6gOx6fvR4WuctkcYFGFTMuMDebNDHhS+D8Q5vnd/A0nEEjZ2GUY
-         PjJSTBEquPnm17jiejGBDt4SMDo0AUiIh78pJMXY=
-From:   WANG Xuerui <git@xen0n.name>
-To:     linux-mips@vger.kernel.org
-Cc:     WANG Xuerui <git@xen0n.name>, Huacai Chen <chenhc@lemote.com>,
-        Paul Burton <paulburton@kernel.org>
-Subject: [PATCH v5 1/3] MIPS: only register FTLBPar exception handler for supported models
-Date:   Wed, 29 Jul 2020 21:14:15 +0800
-Message-Id: <20200729131417.4000213-3-git@xen0n.name>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200729131417.4000213-1-git@xen0n.name>
+        t=1596028781; bh=W6bm5VJC3uYl2a2NIj35azxKZiY1JY/4cXh9ZnTkSyg=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=aemjsakFISLW8lz/VrQe97XroXZUuDKa3sINDWk1qaZUkBGQNZp+EuPy+wBuOZh+p
+         ejoCY4sqYp7ihtZ1XaLnjKawHlRoZGixPK3Ze4tdx3nySimeFCvLCjCMyMrw11Ezxa
+         XWSxHuCINWWJ2wJucWNYdsiRwpfeOLnWUF1vV6w4=
+Subject: Re: [PATCH v5 0/3] Refactor FTLBPar exception handling and add GSExc
+ handler
+To:     WANG Xuerui <git@xen0n.name>, linux-mips@vger.kernel.org
 References: <20200729131417.4000213-1-git@xen0n.name>
+From:   WANG Xuerui <kernel@xen0n.name>
+Message-ID: <acd7799f-9d15-067c-cbcd-e425d3ecdda6@xen0n.name>
+Date:   Wed, 29 Jul 2020 21:19:41 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:81.0)
+ Gecko/20100101 Thunderbird/81.0a1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200729131417.4000213-1-git@xen0n.name>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Previously ExcCode 16 is unconditionally treated as the FTLB parity
-exception (FTLBPar), but in fact its semantic is implementation-
-dependent. Looking at various manuals it seems the FTLBPar exception is
-only present on some recent MIPS Technologies cores, so only register
-the handler on these.
+On 2020/7/29 21:14, WANG Xuerui wrote:
 
-Fixes: 75b5b5e0a262790f ("MIPS: Add support for FTLBs")
-Reviewed-by: Huacai Chen <chenhc@lemote.com>
-Signed-off-by: WANG Xuerui <git@xen0n.name>
-Cc: Paul Burton <paulburton@kernel.org>
----
- arch/mips/include/asm/cpu-features.h |  4 ++++
- arch/mips/include/asm/cpu.h          |  1 +
- arch/mips/kernel/cpu-probe.c         | 13 +++++++++++++
- arch/mips/kernel/traps.c             |  3 ++-
- 4 files changed, 20 insertions(+), 1 deletion(-)
+> [snip]
+>
+> v5:
+> - Fixed broken build on pre-MIPS32 configs where mfc0 can't have
+>   selector, pointed out by Thomas. Build-tested ip22_defconfig.
 
-diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
-index 724dfddcab92..0b1bc7ed913b 100644
---- a/arch/mips/include/asm/cpu-features.h
-+++ b/arch/mips/include/asm/cpu-features.h
-@@ -568,6 +568,10 @@
- # define cpu_has_mac2008_only	__opt(MIPS_CPU_MAC_2008_ONLY)
- #endif
- 
-+#ifndef cpu_has_ftlbparex
-+# define cpu_has_ftlbparex	__opt(MIPS_CPU_FTLBPAREX)
-+#endif
-+
- #ifdef CONFIG_SMP
- /*
-  * Some systems share FTLB RAMs between threads within a core (siblings in
-diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-index f5b04e8f6061..9d08bd33b11f 100644
---- a/arch/mips/include/asm/cpu.h
-+++ b/arch/mips/include/asm/cpu.h
-@@ -427,6 +427,7 @@ enum cpu_type_enum {
- #define MIPS_CPU_MM_SYSAD	BIT_ULL(58)	/* CPU supports write-through SysAD Valid merge */
- #define MIPS_CPU_MM_FULL	BIT_ULL(59)	/* CPU supports write-through full merge */
- #define MIPS_CPU_MAC_2008_ONLY	BIT_ULL(60)	/* CPU Only support MAC2008 Fused multiply-add instruction */
-+#define MIPS_CPU_FTLBPAREX	BIT_ULL(61)	/* CPU has FTLB parity exception */
- 
- /*
-  * CPU ASE encodings
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index d9e8d39a7289..519d101fd009 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -1827,6 +1827,19 @@ static inline void cpu_probe_mips(struct cpuinfo_mips *c, unsigned int cpu)
- 	default:
- 		break;
- 	}
-+
-+	/* Recent MIPS cores use the implementation-dependent ExcCode 16 for
-+	 * cache/FTLB parity exceptions.
-+	 */
-+	switch (__get_cpu_type(c->cputype)) {
-+	case CPU_PROAPTIV:
-+	case CPU_P5600:
-+	case CPU_P6600:
-+	case CPU_I6400:
-+	case CPU_I6500:
-+		c->options |= MIPS_CPU_FTLBPAREX;
-+		break;
-+	}
- }
- 
- static inline void cpu_probe_alchemy(struct cpuinfo_mips *c, unsigned int cpu)
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 06aba49d37c9..9c37a6997259 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -2454,7 +2454,8 @@ void __init trap_init(void)
- 	if (cpu_has_fpu && !cpu_has_nofpuex)
- 		set_except_vector(EXCCODE_FPE, handle_fpe);
- 
--	set_except_vector(MIPS_EXCCODE_TLBPAR, handle_ftlb);
-+	if (cpu_has_ftlbparex)
-+		set_except_vector(MIPS_EXCCODE_TLBPAR, handle_ftlb);
- 
- 	if (cpu_has_rixiex) {
- 		set_except_vector(EXCCODE_TLBRI, tlb_do_page_fault_0);
--- 
-2.25.1
+I accidentally left stray files in git send-email directory, and sent
+the cover letter twice. This mail lacked the second change entry for v5,
+please see the another cover letter. Sorry for the noise.
 

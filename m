@@ -2,145 +2,84 @@ Return-Path: <SRS0=JBiy=BK=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48ED7C433DF
-	for <linux-mips@archiver.kernel.org>; Fri, 31 Jul 2020 08:33:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B791EC433DF
+	for <linux-mips@archiver.kernel.org>; Fri, 31 Jul 2020 09:09:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1D8B2208E4
-	for <linux-mips@archiver.kernel.org>; Fri, 31 Jul 2020 08:33:26 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="bsRjpc5H"
+	by mail.kernel.org (Postfix) with ESMTP id 9C1C62072A
+	for <linux-mips@archiver.kernel.org>; Fri, 31 Jul 2020 09:09:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728594AbgGaId0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 31 Jul 2020 04:33:26 -0400
-Received: from [115.28.160.31] ([115.28.160.31]:40014 "EHLO
-        mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1728494AbgGaId0 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 31 Jul 2020 04:33:26 -0400
-Received: from hanazono.local (unknown [116.236.177.53])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id C255260130;
-        Fri, 31 Jul 2020 16:33:21 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
-        t=1596184402; bh=k/rgArit88h2OIcboYHgG+XD5TJS5EAhZcv7J3t+lVI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=bsRjpc5HvVev7q1qhFOKfcib8o1VPe5FXGjacL8nFgYY4IZG74bT826t7qK42JNkp
-         1ztaK5ZKjz1zHgOLU+9NncrSqwkdapZV09ZF+pNqWP3r8Ibd5G+KKT6NFg+a050jHJ
-         uUMqqtaW9Bq0x/ml1NXmH5Jldl5Zfxze9ufxyRag=
-Subject: Re: [PATCH] MIPS: Provide Kconfig option for default IEEE754
- conformance mode
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Huacai Chen <chenhc@lemote.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Zhou Yanjie <zhouyanjie@zoho.com>,
-        =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>,
-        Liangliang Huang <huanglllzu@gmail.com>,
-        linux-kernel@vger.kernel.org
-References: <20200731041018.1381642-1-jiaxun.yang@flygoat.com>
-From:   WANG Xuerui <kernel@xen0n.name>
-Message-ID: <e314d7f4-56cb-950f-6f38-d49a00101f5f@xen0n.name>
-Date:   Fri, 31 Jul 2020 16:33:21 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:81.0)
- Gecko/20100101 Thunderbird/81.0a1
+        id S1731923AbgGaJJz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 31 Jul 2020 05:09:55 -0400
+Received: from elvis.franken.de ([193.175.24.41]:56277 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731818AbgGaJJz (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 31 Jul 2020 05:09:55 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1k1R33-0005K6-01; Fri, 31 Jul 2020 11:09:53 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id DD277C0B21; Fri, 31 Jul 2020 11:05:26 +0200 (CEST)
+Date:   Fri, 31 Jul 2020 11:05:26 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-mips@linux-mips.org,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <linux-mips@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MIPS: BMIPS: Disable pref 30 for buggy CPUs
+Message-ID: <20200731090526.GB7946@alpha.franken.de>
+References: <20200731042401.22871-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200731041018.1381642-1-jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200731042401.22871-1-f.fainelli@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Jiaxun,
-
-Nice catch! Only one minor nit. Otherwise:
-
-Reviewed-by: WANG Xuerui <git@xen0n.name>
-
-
-On 2020/7/31 12:10, Jiaxun Yang wrote:
-> Requested by downstream distros, a Kconfig option for default
-> IEEE754 conformance mode allows them to set their mode to
-> relaxed by default.
->
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+On Thu, Jul 30, 2020 at 09:24:01PM -0700, Florian Fainelli wrote:
+> Disable pref 30 by utilizing the standard quirk method and matching the
+> affected SoCs: 7344, 7346, 7425.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 > ---
->  arch/mips/Kconfig            | 21 +++++++++++++++++++++
->  arch/mips/kernel/cpu-probe.c | 12 +++++++++++-
->  2 files changed, 32 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index f6bb446d30f0..ef5b2a177b1b 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -2877,6 +2877,27 @@ config MIPS_NR_CPU_NR_MAP
->  	default 1024 if MIPS_NR_CPU_NR_MAP_1024
->  	default NR_CPUS if !MIPS_NR_CPU_NR_MAP_1024
+>  arch/mips/bmips/setup.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/arch/mips/bmips/setup.c b/arch/mips/bmips/setup.c
+> index 19308df5f577..df0efea12611 100644
+> --- a/arch/mips/bmips/setup.c
+> +++ b/arch/mips/bmips/setup.c
+> @@ -110,6 +110,20 @@ static void bcm6368_quirks(void)
+>  	bcm63xx_fixup_cpu1();
+>  }
 >  
-> +choice
-> +	prompt "Default IEEE Std 754 conformance mode"
-> +	default IEEE754_DEFAULT_STRICT
-> +	help
-> +	  Default IEEE Std 754 conformance mode, see ieee754= kernel parameter
-> +	  for detail.
+> +static void bmips5000_pref30_quirk(void)
+> +{
+> +	__asm__ __volatile__(
+> +	"	li	$8, 0x5a455048\n"
+> +	"	.word	0x4088b00f\n"	/* mtc0 $8, $22, 15 */
+> +	"	nop; nop; nop\n"
+> +	"	.word	0x4008b008\n"	/* mfc0 $8, $22, 8 */
+> +	/* disable "pref 30" on buggy CPUs */
+> +	"	lui	$9, 0x0800\n"
+> +	"	or	$8, $9\n"
+> +	"	.word	0x4088b008\n"	/* mtc0 $8, $22, 8 */
+> +	: : : "$8", "$9");
 
-Here and the title, "IEEE Std 754" can be just "IEEE 754". I don't
-remember seeing the "IEEE Std 754" phrase anywhere.
+what's the reason for not using mfc/mtc here ?
 
-I suggest the following help message:
+Thomas.
 
-"Sets the default IEEE 754 conformance mode, same as overriding the
-default value for the ieee754= kernel parameter. See the kernel
-parameter for details."
-
-> +
-> +	config IEEE754_DEFAULT_STRICT
-> +		bool "Strict"
-> +
-> +	config IEEE754_DEFAULT_LEGACY
-> +		bool "Legacy"
-> +
-> +	config IEEE754_DEFAULT_STD2008
-> +		bool "2008"
-> +
-> +	config IEEE754_DEFAULT_RELAXED
-> +		bool "Relaxed"
-> +
-> +endchoice
-> +
->  #
->  # Timer Interrupt Frequency Configuration
->  #
-> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-> index d9e8d39a7289..03adeed58efb 100644
-> --- a/arch/mips/kernel/cpu-probe.c
-> +++ b/arch/mips/kernel/cpu-probe.c
-> @@ -157,7 +157,17 @@ static void cpu_set_fpu_2008(struct cpuinfo_mips *c)
->   * IEEE 754 conformance mode to use.  Affects the NaN encoding and the
->   * ABS.fmt/NEG.fmt execution mode.
->   */
-> -static enum { STRICT, LEGACY, STD2008, RELAXED } ieee754 = STRICT;
-> +enum ieee754_mode { STRICT, LEGACY, STD2008, RELAXED };
-> +
-> +#if defined(CONFIG_IEEE754_DEFAULT_STRICT)
-> +static enum ieee754_mode ieee754 = STRICT;
-> +#elif defined(CONFIG_IEEE754_DEFAULT_LEGACY)
-> +static enum ieee754_mode ieee754 = LEGACY;
-> +#elif defined(CONFIG_IEEE754_DEFAULT_STD2008)
-> +static enum ieee754_mode ieee754 = STD2008;
-> +#elif defined(CONFIG_IEEE754_DEFAULT_RELAXED)
-> +static enum ieee754_mode ieee754 = RELAXED;
-> +#endif
->  
->  /*
->   * Set the IEEE 754 NaN encodings and the ABS.fmt/NEG.fmt execution modes
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

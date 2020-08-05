@@ -2,116 +2,113 @@ Return-Path: <SRS0=BCID=BP=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.3 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3849C433E0
-	for <linux-mips@archiver.kernel.org>; Wed,  5 Aug 2020 16:47:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2015AC433DF
+	for <linux-mips@archiver.kernel.org>; Wed,  5 Aug 2020 17:39:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6B8E42076E
-	for <linux-mips@archiver.kernel.org>; Wed,  5 Aug 2020 16:47:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ECAA722D37
+	for <linux-mips@archiver.kernel.org>; Wed,  5 Aug 2020 17:39:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mymailcheap.com header.i=@mymailcheap.com header.b="haHFXP6d";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="cTHYaMoE"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mymailcheap.com header.i=@mymailcheap.com header.b="q0EzBw/H";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="HxqvFXf+"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725920AbgHEQrR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 5 Aug 2020 12:47:17 -0400
-Received: from relay5.mymailcheap.com ([159.100.241.64]:53783 "EHLO
+        id S1728924AbgHERjf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 5 Aug 2020 13:39:35 -0400
+Received: from relay5.mymailcheap.com ([159.100.248.207]:51954 "EHLO
         relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726915AbgHEQor (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 5 Aug 2020 12:44:47 -0400
-Received: from relay2.mymailcheap.com (relay2.mymailcheap.com [217.182.113.132])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id 6623720138;
-        Wed,  5 Aug 2020 14:05:40 +0000 (UTC)
+        with ESMTP id S1728915AbgHERea (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 5 Aug 2020 13:34:30 -0400
+Received: from relay4.mymailcheap.com (relay4.mymailcheap.com [137.74.80.156])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id C434526370
+        for <linux-mips@vger.kernel.org>; Wed,  5 Aug 2020 13:57:10 +0000 (UTC)
 Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay2.mymailcheap.com (Postfix) with ESMTPS id F0D453ECDA;
-        Wed,  5 Aug 2020 15:59:36 +0200 (CEST)
+        by relay4.mymailcheap.com (Postfix) with ESMTPS id 203A53F1D0;
+        Wed,  5 Aug 2020 15:52:00 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id CD7802A520;
-        Wed,  5 Aug 2020 15:59:36 +0200 (CEST)
+        by filter2.mymailcheap.com (Postfix) with ESMTP id DF4042A520;
+        Wed,  5 Aug 2020 15:51:59 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1596635976;
-        bh=S0OjsalZhEvIZt4IpeHX6PgqDxctcBe0fHDg4vfhXTE=;
+        s=default; t=1596635519;
+        bh=CLac2EjUFlcauyotKW1A9AVfqwV6qAvXNlOsMGyq7lc=;
         h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=haHFXP6dVcbqJe8MN/VtNlyS/R1FGB3Mu3s8Z3Cf31PF9YC+SgaFOeobpW9T45EzK
-         b1w/sBC6x27uGUzVZA400aMkbRj+UGXknHtHwJeX8Sks0ZLmf6VyfYKKKqb5IW52RE
-         187wK/ajVONwrrntKIQb2oIUYffKwmQPMSBMX2l8=
+        b=q0EzBw/HzsAjguJDrIld02zG5VFI454bS4VYAjYwNeXJB+S4FpgRejlf7BylqS66M
+         YesuF9ovGKxki9ElQqphfEVBkop4feD6fKTmq66gKqDYg3FMQmvGAYC4XKmsp5CKzs
+         +sC/t+ZhjuPKdy6ABAzD2OSYIix7l6GWntd3p4gc=
 X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
 Received: from filter2.mymailcheap.com ([127.0.0.1])
         by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id QmimT9RVqYc1; Wed,  5 Aug 2020 15:59:35 +0200 (CEST)
+        with ESMTP id p7yJAyvHKnOt; Wed,  5 Aug 2020 15:51:57 +0200 (CEST)
 Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
         (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Wed,  5 Aug 2020 15:59:35 +0200 (CEST)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 07D6D425BE;
-        Wed,  5 Aug 2020 13:59:35 +0000 (UTC)
+        Wed,  5 Aug 2020 15:51:57 +0200 (CEST)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id A311B425BD;
+        Wed,  5 Aug 2020 13:51:56 +0000 (UTC)
 Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="cTHYaMoE";
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="HxqvFXf+";
         dkim-atps=neutral
 AI-Spam-Status: Not processed
 Received: from [0.0.0.0] (li986-206.members.linode.com [45.33.36.206])
         (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 29486425BD;
-        Wed,  5 Aug 2020 13:59:18 +0000 (UTC)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 6F212425BC;
+        Wed,  5 Aug 2020 13:51:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1596635964;
-        bh=S0OjsalZhEvIZt4IpeHX6PgqDxctcBe0fHDg4vfhXTE=;
+        s=default; t=1596635511;
+        bh=CLac2EjUFlcauyotKW1A9AVfqwV6qAvXNlOsMGyq7lc=;
         h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=cTHYaMoESq7+fGabHgADpG5oML+zWL7rnb/3QhjaU3nbEE4nFok5qmyEq0TMy43vW
-         QJf4ZErjbupxtpgpkBbMmJAmjpESlGYjhabyjXt0otH5nq4BwFsWQmxgUNxMncOZmN
-         LPPpHy0LDAvjgCCgQQNDI6/zhJMHMs0l3bIiGNYk=
-Subject: Re: [PATCH v2] MIPS: Provide Kconfig option for default IEEE 754
- conformance mode
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     WANG Xuerui <git@xen0n.name>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Zhou Yanjie <zhouyanjie@zoho.com>,
-        Liangliang Huang <huanglllzu@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-References: <20200801061147.1412187-1-jiaxun.yang@flygoat.com>
+        b=HxqvFXf+B8dKlaqII6IBCCHlA9+s/zF6oT8C+jdH4FPB+jUCe5yRtMQvRcoCTt7yN
+         09SgNYg7hEBHXPn1BY6xauFjMSo5KGA95HHQxsXI7n8ZKMt/fWM7ZmEvNHjrSREqKs
+         clE3Hb66C2/cWvCYrifcVeMgYVfXQPMkmZ/xdxgI=
+Subject: Re: [PATCH V3 1/2] MIPS: Loongson-3: Enable COP2 usage in kernel
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Fuxin Zhang <zhangfx@lemote.com>,
+        Zhangjin Wu <wuzhangjin@gmail.com>
+References: <1588395344-5400-1-git-send-email-chenhc@lemote.com>
+ <D5AFA61A-5AAC-408C-9B3D-1E0829C9FB13@flygoat.com>
+ <CAAhV-H6M-BnBMzFYUom04mdBZhA4+9M3JTUC-dvckTMUeFw9+w@mail.gmail.com>
+ <20200805121021.GA12598@alpha.franken.de>
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <d03a350c-842c-c041-f11b-017ec68e3de4@flygoat.com>
-Date:   Wed, 5 Aug 2020 21:59:15 +0800
+Message-ID: <1c3cb503-720f-059e-2bac-ae692203c389@flygoat.com>
+Date:   Wed, 5 Aug 2020 21:51:44 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.1.0
 MIME-Version: 1.0
-In-Reply-To: <20200801061147.1412187-1-jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
+In-Reply-To: <20200805121021.GA12598@alpha.franken.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 07D6D425BE
-X-Spamd-Result: default: False [1.40 / 10.00];
+X-Rspamd-Queue-Id: A311B425BD
+X-Spamd-Result: default: False [-0.10 / 10.00];
          RCVD_VIA_SMTP_AUTH(0.00)[];
          ARC_NA(0.00)[];
          R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1];
          FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com,zoho.com];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
          TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
          MIME_GOOD(-0.10)[text/plain];
          R_SPF_SOFTFAIL(0.00)[~all];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1];
-         ML_SERVERS(-3.10)[213.133.102.83];
+         RCPT_COUNT_FIVE(0.00)[5];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         TO_DN_ALL(0.00)[];
          DKIM_TRACE(0.00)[flygoat.com:+];
          DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         RCVD_IN_DNSWL_NONE(0.00)[213.133.102.83:from];
          DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
          RCVD_NO_TLS_LAST(0.10)[];
          FROM_EQ_ENVFROM(0.00)[];
          MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         FREEMAIL_CC(0.00)[xen0n.name,gmail.com,lemote.com,zoho.com,vger.kernel.org];
-         SUSPICIOUS_RECIPS(1.50)[];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         FREEMAIL_CC(0.00)[vger.kernel.org,lemote.com,gmail.com];
+         MID_RHS_MATCH_FROM(0.00)[];
          RCVD_COUNT_TWO(0.00)[2]
 X-Rspamd-Server: mail20.mymailcheap.com
 Sender: linux-mips-owner@vger.kernel.org
@@ -121,26 +118,66 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 
 
-�� 2020/8/1 14:11, Jiaxun Yang д��:
-> Requested by downstream distros, a Kconfig option for default
-> IEEE 754 conformance mode allows them to set their mode to
-> relaxed by default.
->
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> Reviewed-by: WANG Xuerui <git@xen0n.name>
-> Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-> Reviewed-by: Huacai Chen <chenhc@lemote.com>
->
-> --
-> v2: Reword according to Xuerui's suggestion.
-> ---
-Hi Thomas,
+在 2020/8/5 20:10, Thomas Bogendoerfer 写道:
+> On Sat, Aug 01, 2020 at 03:59:41PM +0800, Huacai Chen wrote:
+>> On Wed, May 6, 2020 at 1:30 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+>>>
+>>>
+>>> 于 2020年5月2日 GMT+08:00 下午12:55:43, Huacai Chen <chenhc@lemote.com> 写到:
+>>>> Loongson-3's COP2 is Multi-Media coprocessor, it is disabled in kernel
+>>>> mode by default. However, gslq/gssq (16-bytes load/store instructions)
+>>>> overrides the instruction format of lwc2/swc2. If we wan't to use gslq/
+>>>> gssq for optimization in kernel, we should enable COP2 usage in kernel.
+>>>>
+>>>> Please pay attention that in this patch we only enable COP2 in kernel,
+>>>> which means it will lose ST0_CU2 when a process go to user space (try
+>>>> to use COP2 in user space will trigger an exception and then grab COP2,
+>>>> which is similar to FPU). And as a result, we need to modify the context
+>>>> switching code because the new scheduled process doesn't contain ST0_CU2
+>>>> in its THERAD_STATUS probably.
+>>>>
+>>>> Signed-off-by: Huacai Chen <chenhc@lemote.com>
+>>> Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+>>>
+>> Does this patch have some unresolved problems, or there is something unclear?
+> yes there is. Since this COP2 is a total black box to me, it would be
+> really helpfull to get some docs for it or at least some information what
+> it exactly does and how you want to use it in kernel code.
 
-Is it possible to get this patch into 5.9 merge window?
-I think it have got enough review tag, and the config option was requested
-by a Debian developer. The next Debian release will take 5.9 lts kernel and
-they don't want to ship a non-bootable kernel in a major release.
+FYI:
+Loongson doesn't have any CU2 register. It just reused LWC2 & LDC2 opcode
+to define some load & store instructions (e.g. 128bit load to two GPRs).
+
+I have a collection of these instructions here[1].
+
+ From GS464E (3A2000+), execuating these instruction won't produce COP2 
+unusable
+exception. But older Loongson cores (GS464) will still produce COP2 
+exception, thus
+we should have CU2 enabled in kernel. That would allow us use to these 
+instructions
+to optimize kernel.
+
+>
+> Looking closer at the patch I realized, that there is already support
+> for usage of COP2 in user land, which I thought isn't the case (at least
+> I understood that from one of your mails). So is there enough state
+> saving to support this ?
+
+Actually there is no CU2 state for Loongson to save.
+
+>
+> And finally what I stil don't like is the splittering of more
+> #ifdef LOONGSON into common code. I'd prefer a more generic way
+> to enable COPx for in kernel usage. Maybe a more generic config option
+> or a dynamic solution like the one for user land.
+Agreed. some Kconfig options or cpuinfo_mips.options can be helpful.
 
 Thanks.
 
 - Jiaxun
+
+[1]: https://github.com/FlyGoat/loongson-insn/
+>
+> Thomas.
+>

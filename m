@@ -2,115 +2,147 @@ Return-Path: <SRS0=BCID=BP=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28BA2C433DF
-	for <linux-mips@archiver.kernel.org>; Wed,  5 Aug 2020 19:29:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40B6EC433DF
+	for <linux-mips@archiver.kernel.org>; Wed,  5 Aug 2020 19:30:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E3812206F6
-	for <linux-mips@archiver.kernel.org>; Wed,  5 Aug 2020 19:29:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 021672075D
+	for <linux-mips@archiver.kernel.org>; Wed,  5 Aug 2020 19:30:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RdzmbMML"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="qgI5K9FE"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729041AbgHET3E (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 5 Aug 2020 15:29:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728587AbgHERKf (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 5 Aug 2020 13:10:35 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C17EC06179E;
-        Wed,  5 Aug 2020 10:10:17 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id v15so20124964lfg.6;
-        Wed, 05 Aug 2020 10:10:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q+69HNPUBLn+0j8xa7ztNqSpAC3bH5kdSFM7se7mw/Y=;
-        b=RdzmbMMLETEqNtoVgyRCKj1pU2wD/0M8qEqvRXNRRNY+b914UvXZkxoVgayVQubBPC
-         CE/souAwCoROj7cmbTcH2Md3LKEYbq7hyPYtIYReTO92nMUXfSeWszPI988KPS2REOZ/
-         x8Lg5axuTOlNvJMwV7URNblxu16MjbinauMnuxvVDwlqKDPHVH06HlMC2htBpXCjb11y
-         71kjYcUyosO0NzQGNjoXOZVONMcKv4BHAUmemA/OfyAvVhCb2Eag/fpp10a8cB3ymmQm
-         ukYz/pLgzNQdHe5F/wMNFpu3aiLl6i8gq8ye/o/O6zNgd9JR7Oi+/mkdZRJPFt4uOCZ/
-         Wj4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q+69HNPUBLn+0j8xa7ztNqSpAC3bH5kdSFM7se7mw/Y=;
-        b=TXA78WnFRc7+kmsk06wFjNijSy6LcK6tOgi2FTu2ciKvRimGzMeuck5iG/SZL7JiD9
-         GwZ+CFCpm9kMgB2Ld+pG1hFVfufKo3zPrBbmTqn5Y9qDfMdA7Oxl0qP3G/GesI4a61QB
-         BSYpmKkZk7PrSKqdiRb3FQ6EYKkVdzL/XqXwnsI9TvlVXpZEOAEJRSlGTbcGNJnpRK2x
-         vYCK9PIvqb8fjsv5ewo+yM54g6YjxZAwl4GhbGOenmAvFaTZgkumx8hW4yhBXqrY27xo
-         7joA0Jryu0v1/H1v77ciO/uy29dQaFhQjKcJEMEA7s4BabD6KpMiYJ/pDsMWabNqNQ7V
-         8NUQ==
-X-Gm-Message-State: AOAM532WYA+IN1EbKq89uAf0HSpe48/1ZkI9I2oWCmM69FfDECjegqem
-        4igrjEsW9b8kbHB0IENnsnh0LWeW4WNhD3NfjCE=
-X-Google-Smtp-Source: ABdhPJwrfD4lQmBmRhZhj4oSbWRKgm3lTiWKFBcnnoErai4/oJd38wR2GismiRK0iE3hYzt+6N6iDQ3Zkito0n/twrM=
-X-Received: by 2002:a05:6512:3b7:: with SMTP id v23mr2064439lfp.10.1596647415748;
- Wed, 05 Aug 2020 10:10:15 -0700 (PDT)
+        id S1726915AbgHETan (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 5 Aug 2020 15:30:43 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:20597 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728378AbgHETa1 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 5 Aug 2020 15:30:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1596655826; x=1628191826;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=22FNyOPpYPWk//S3AUoFOnpQi+utyKNlP93NhezS5ZQ=;
+  b=qgI5K9FEFK2UgET/clHaHZzNvF8A2Un2kYxyOXlpTF3Yb59xmxfPFg8d
+   Pwxu9bPo/8dGjbfDWhSlS8KAeoBJuk6x3GunuY+2QqdCDlH92ogmRziJM
+   VJrPEDlZLuiD972ESCDAQ9lzpjyRa8IkBIm5BAN4lPJQCj1mNRlcva6nq
+   Tsb+macQ/ECUKr/E2gMptOOgxeW6ABB3j3IchratDIa6CRyNjWFaBaKyh
+   0v/G1m/VPdelz7vRBw9OwHAiH8osZBxYJ0iPa9OVuVmTTUw+a9UYlniPa
+   b+bTILtvnRlzNTd6LBy+DwXIL2uVKz1dKseudKucqkWalYdjp8PNaYY2f
+   w==;
+IronPort-SDR: ubq9YOGV2iwm/yQRMo6y6tqSb+SbO+O3X3vhaQXBvY4j6CGcunyU6pXFlXjqB5xKa+ueKnZuoS
+ 49K/XL3Qe2U6lyWHIDBTRvUdbO0gjkI5QmO/VKh0EINdM3HL+gd09TQls8arSN9p1/JB7+kfsB
+ OnOWS64kzopCXmOqq50nMcrqR91I119Of8sUfj5Ht7JLdgC2E3Ck0Mtr5mB/WBR2JCwtE1z0DQ
+ WhuplqSFko0vsjQCPG05AWOvBL7FvYvwHmJyontyVGp/v5Rsb5fcMrv5Q0EHmm7LIDP8JXvr0M
+ pbw=
+X-IronPort-AV: E=Sophos;i="5.75,438,1589212800"; 
+   d="scan'208";a="253587414"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 06 Aug 2020 03:30:22 +0800
+IronPort-SDR: wEjx5pDVU305WbH5AwF9fA/XmkHKYTrsSVDvA35S9gh7yEtzz9TDG+p58BOZ+6Pau3m9HrQwKt
+ DghsGNZ22OKA==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 12:17:41 -0700
+IronPort-SDR: UxS74IHkuTgSa/zr/0eE6Ttb+qVm2kznk/CZSU8sPDe4YHP/x1DjwKUb4Pby73WrHTBt0hkDr1
+ 8fcBWc3hA/2A==
+WDCIronportException: Internal
+Received: from unknown (HELO redsun52) ([10.149.66.28])
+  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Aug 2020 12:30:21 -0700
+Date:   Wed, 5 Aug 2020 20:30:17 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@wdc.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Huacai Chen <chenhc@lemote.com>,
+        Zhou Yanjie <zhouyanjie@zoho.com>,
+        =?UTF-8?Q?=E5=91=A8=E7=90=B0=E6=9D=B0_=28Zhou_Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>,
+        Liangliang Huang <huanglllzu@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "Maciej W. Rozycki" <macro@linux-mips.org>
+Subject: Re: [PATCH] MIPS: Provide Kconfig option for default IEEE754
+ conformance mode
+In-Reply-To: <ceb71bef-b3e6-68ce-df80-bcff92085e66@flygoat.com>
+Message-ID: <alpine.LFD.2.21.2008051850390.24175@redsun52.ssa.fujisawa.hgst.com>
+References: <20200731041018.1381642-1-jiaxun.yang@flygoat.com> <20200731061702.fxdfyxpvd6qrhoql@mobilestation> <alpine.LFD.2.21.2008022213500.24175@redsun52.ssa.fujisawa.hgst.com> <ceb71bef-b3e6-68ce-df80-bcff92085e66@flygoat.com>
+User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
 MIME-Version: 1.0
-References: <20200802163601.8189-1-rppt@kernel.org> <20200802163601.8189-18-rppt@kernel.org>
-In-Reply-To: <20200802163601.8189-18-rppt@kernel.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 5 Aug 2020 19:10:04 +0200
-Message-ID: <CANiq72kaw7EMePMbgYyKMCkBC+7CgERq4FV2Lp-fH+ea3H12vg@mail.gmail.com>
-Subject: Re: [PATCH v2 17/17] memblock: use separate iterators for memory and
- reserved regions
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>, Baoquan He <bhe@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Simek <monstr@monstr.eu>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Stafford Horne <shorne@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        iommu@lists.linux-foundation.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-c6x-dev@linux-c6x.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mips@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org,
-        sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Aug 2, 2020 at 6:41 PM Mike Rapoport <rppt@kernel.org> wrote:
->
->  .clang-format                  |  3 ++-
+On Mon, 3 Aug 2020, Jiaxun Yang wrote:
 
-The .clang-format bit:
+> >   Well, originally plans were there to have NaN interlinking implemented
+> > and no such mess or desire for hacks like one here would result.  Cf.:
+> >
+> > <https://gcc.gnu.org/ml/gcc/2015-11/msg00068.html>,
+> > <https://gcc.gnu.org/ml/gcc/2016-05/msg00137.html>,
+> >
+> > and then:
+> >
+> > <https://lkml.org/lkml/2015/11/16/386>,
+> > <https://sourceware.org/ml/libc-alpha/2015-11/msg00485.html>,
+> > <https://sourceware.org/ml/binutils/2015-11/msg00170.html>,
+> > <https://gcc.gnu.org/ml/gcc-patches/2015-11/msg03241.html>.
+> >
+> > You could well pick this work up and complete it if you like.  Final
+> > conclusions for further work were made here:
+> >
+> > <https://gcc.gnu.org/ml/gcc/2016-11/msg00027.html>,
+> > <https://gcc.gnu.org/ml/gcc/2017-08/msg00260.html>,
+> > <https://gcc.gnu.org/ml/gcc/2017-10/msg00142.html>.
+> >
+> >   In the relaxed mode math programs may produce wrong results unless you
+> > rebuild all your software for the correct NaN mode for the hardware used
+> 
+> Unfortunately most of the hardware guys didn't understood the difficulty 
+> here.
+> They decided to implement their hardware (P5600 & LS3A4000) as NaN2008 only.
 
-Acked-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+ Sadly we (the software group) have lost the battle with the hardware 
+group for the architecture to have FCSR.NAN2008 at least optionally 
+writable, and the feature was subsequently removed from R5 on, along with 
+the writability of FCSR.ABS2008 and the FCSR.MAC2008 bit altogether.
 
-Cheers,
-Miguel
+ Still R3 did permit those bits to be r/w (check rev. 3.50 of the 
+architecture spec), which is why I implemented them as such in our FP 
+emulation and also QEMU (although I need to note that a competing QEMU 
+implementation was pushed upstream behind my back, which I believe wasn't 
+as complete as mine, so this part may or may not have been implemented).
+
+> I was thinking about let Kernel drop SIGFPE exception was caused by 
+> mismatched NaN,
+> as most applications don't rely on signaling NaN, but it is still a 
+> dirty hack. Not a good
+> idea in general.
+
+ I think you cannot reliably send SIGFPE, because hardware does not trap 
+on what it considers a qNaN.
+
+ The interlinking effort was there to let individual pieces of software 
+that have various requirements for NaNs, or do not use FP at all, to use a 
+set of rules for possibly being allowed to run on incompatible hardware or 
+loaded together by the dynamic loader.  For example there was a mode 
+specified where all NaNs were silently treated as qNaNs regardless of the 
+hardware interpretation of a specific encoding.
+
+ I maintain this is the way to move forward, and if you are serious about 
+keeping the architecture alive, then I strongly recommend to upstream the 
+implementation, possibly based on my patches previously published, 
+although as indicated in the discussion referred there have been design 
+issues observed, which mean a certain amount of rework will be required, 
+first on the spec, and then the implementation.
+
+ FWIW,
+
+  Maciej

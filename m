@@ -2,121 +2,127 @@ Return-Path: <SRS0=1KMn=BR=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.5 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D144AC433E4
-	for <linux-mips@archiver.kernel.org>; Fri,  7 Aug 2020 10:04:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C75BC433EA
+	for <linux-mips@archiver.kernel.org>; Fri,  7 Aug 2020 13:14:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AE4C320748
-	for <linux-mips@archiver.kernel.org>; Fri,  7 Aug 2020 10:04:33 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xl0TlF2A"
+	by mail.kernel.org (Postfix) with ESMTP id 36D0322CA1
+	for <linux-mips@archiver.kernel.org>; Fri,  7 Aug 2020 13:14:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbgHGKEd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 7 Aug 2020 06:04:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727012AbgHGKET (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 7 Aug 2020 06:04:19 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85087C061574;
-        Fri,  7 Aug 2020 03:04:18 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id l2so1130851wrc.7;
-        Fri, 07 Aug 2020 03:04:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bM0J9BY9hlOlDTgPTiPt5xBvQpjZw14N68GXCLytLh4=;
-        b=Xl0TlF2AYXjOHrVUx3YRahWREU4rysTrZ4BuKECvPifKYVXDA7YSVKfNCANZ3YzxlF
-         VzJdIY/mJsVbWZra2g9kwz+/MCZWZlAl9kJ0d+oLp22g/I7KRfSWwA+QuxV3C7PtXL5q
-         4tvK0SHfw98g8y5HIjnBV/KVb82PQTT7OFkAKEQRhqgo9ah/HGLFDg3atZ32zjdrsazg
-         lnz8l/RQY5PHo/zj7uO84lFx0R1Bwr3tra9kfDROSH25N2e4+LwobRG3Z9TIsVbebVby
-         sIjk1Gu9xXYah1OvPjmpI/+PitufsypuRk2+6f3kvHQq8HnaatHRisRCTZM5AkcdWQbh
-         pHeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bM0J9BY9hlOlDTgPTiPt5xBvQpjZw14N68GXCLytLh4=;
-        b=md62QrS8yjxgvOHjINGzWhiDaw4tiZP5mS5TS9GtPEp5/pJ+PwK8rQrDDckgTAfja+
-         yEz2f7kOk/Dbewi+wqf/WvMWmAFQwN1VZoBvV+tQOcI0hfFJx7o6OsncsY4aKQO/+duV
-         u4X69nGOPaKS8lKKJBqVaxWjGXA3QdcP/Gg1iZzpYqBqquwuSFfTzXj51T5mUDl9SXKc
-         qFhmW+3Tfu8gQ0HqZwXCaVZV6p3dnu2O7zDEK39rIRf9t8HDT0c2jqUUxfEPCr1xsrtU
-         ypCoGLXzagggk8rYKhTQKzhszlUUTFj7EYxOBfNfMgMIbP28bcCSXX9cH14TMlqrfa5L
-         9t4w==
-X-Gm-Message-State: AOAM533dpJBwoZ4Yg1qXsUnksvEzUiXyaRhSiB6w5MJ+Zn7huCDHheYr
-        X+UL5bexA6LUer9Sgs76J8s=
-X-Google-Smtp-Source: ABdhPJzQQ5m7RJXYM/fsF2n4GtMY7QgYPk0mQlXywjojMe2jEY6jLshpvF+6+/2Buf0VdjS2SZTrwg==
-X-Received: by 2002:a5d:6744:: with SMTP id l4mr12424824wrw.105.1596794656617;
-        Fri, 07 Aug 2020 03:04:16 -0700 (PDT)
-Received: from skynet.lan (88.red-83-49-60.dynamicip.rima-tde.net. [83.49.60.88])
-        by smtp.gmail.com with ESMTPSA id k1sm9875402wrw.91.2020.08.07.03.04.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Aug 2020 03:04:16 -0700 (PDT)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     tsbogend@alpha.franken.de, f.fainelli@gmail.com,
-        jonas.gorski@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH v2 2/4] MIPS: BCM63xx: remove EHCI from BCM6348 boards
-Date:   Fri,  7 Aug 2020 12:04:09 +0200
-Message-Id: <20200807100411.2904279-3-noltari@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200807100411.2904279-1-noltari@gmail.com>
-References: <20200807100411.2904279-1-noltari@gmail.com>
+        id S1726641AbgHGNO2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 7 Aug 2020 09:14:28 -0400
+Received: from elvis.franken.de ([193.175.24.41]:37647 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726630AbgHGNON (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 7 Aug 2020 09:14:13 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1k42CJ-0004e1-00; Fri, 07 Aug 2020 15:14:11 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 710E7C0C82; Fri,  7 Aug 2020 15:13:57 +0200 (CEST)
+Date:   Fri, 7 Aug 2020 15:13:57 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Fuxin Zhang <zhangfx@lemote.com>,
+        Zhangjin Wu <wuzhangjin@gmail.com>
+Subject: Re: [PATCH V3 1/2] MIPS: Loongson-3: Enable COP2 usage in kernel
+Message-ID: <20200807131357.GA11979@alpha.franken.de>
+References: <1588395344-5400-1-git-send-email-chenhc@lemote.com>
+ <D5AFA61A-5AAC-408C-9B3D-1E0829C9FB13@flygoat.com>
+ <CAAhV-H6M-BnBMzFYUom04mdBZhA4+9M3JTUC-dvckTMUeFw9+w@mail.gmail.com>
+ <20200805121021.GA12598@alpha.franken.de>
+ <1c3cb503-720f-059e-2bac-ae692203c389@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1c3cb503-720f-059e-2bac-ae692203c389@flygoat.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There's no EHCI controller on BCM6348.
+On Wed, Aug 05, 2020 at 09:51:44PM +0800, Jiaxun Yang wrote:
+> >yes there is. Since this COP2 is a total black box to me, it would be
+> >really helpfull to get some docs for it or at least some information what
+> >it exactly does and how you want to use it in kernel code.
+> 
+> FYI:
+> Loongson doesn't have any CU2 register. It just reused LWC2 & LDC2 opcode
+> to define some load & store instructions (e.g. 128bit load to two GPRs).
+> 
+> I have a collection of these instructions here[1].
+> 
+> From GS464E (3A2000+), execuating these instruction won't produce COP2
+> unusable
+> exception. But older Loongson cores (GS464) will still produce COP2
+> exception, thus
+> we should have CU2 enabled in kernel. That would allow us use to these
+> instructions
+> to optimize kernel.
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- v2: no changes.
+thank you that makes things a little bit clearer.
 
- arch/mips/bcm63xx/boards/board_bcm963xx.c | 3 ---
- 1 file changed, 3 deletions(-)
+How will this be used in kernel code ? Special assembler routines or
+by enabling gcc options ?
 
-diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-index 744aa16bab12..45f1bc437245 100644
---- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
-+++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-@@ -285,7 +285,6 @@ static struct board_info __initdata board_96348gw_10 = {
+> >And finally what I stil don't like is the splittering of more
+> >#ifdef LOONGSON into common code. I'd prefer a more generic way
+> >to enable COPx for in kernel usage. Maybe a more generic config option
+> >or a dynamic solution like the one for user land.
+> Agreed. some Kconfig options or cpuinfo_mips.options can be helpful.
+
+let's see whether this really is needed.
+
+To me it looks like the COP2 exception support for loongson makes
+thing worse than it helps. How about the patch below ? There is still
+a gap between starting the kernel and COP2 enabled for which I'm not
+sure, if we are hitting COP2 instructions.
+
+Thomas.
+
+diff --git a/arch/mips/include/asm/cop2.h b/arch/mips/include/asm/cop2.h
+index 6b7396a6a115..dfa72e9be64a 100644
+--- a/arch/mips/include/asm/cop2.h
++++ b/arch/mips/include/asm/cop2.h
+@@ -33,13 +33,6 @@ extern void nlm_cop2_restore(struct nlm_cop2_state *);
+ #define cop2_present		1
+ #define cop2_lazy_restore	0
  
- 	.has_ohci0			= 1,
- 	.has_pccard			= 1,
--	.has_ehci0			= 1,
+-#elif defined(CONFIG_CPU_LOONGSON64)
+-
+-#define cop2_present		1
+-#define cop2_lazy_restore	1
+-#define cop2_save(r)		do { (void)(r); } while (0)
+-#define cop2_restore(r)		do { (void)(r); } while (0)
+-
+ #else
  
- 	.leds = {
- 		{
-@@ -338,7 +337,6 @@ static struct board_info __initdata board_96348gw_11 = {
- 
- 	.has_ohci0 = 1,
- 	.has_pccard = 1,
--	.has_ehci0 = 1,
- 
- 	.leds = {
- 		{
-@@ -441,7 +439,6 @@ static struct board_info __initdata board_FAST2404 = {
- 
- 	.has_ohci0			= 1,
- 	.has_pccard			= 1,
--	.has_ehci0			= 1,
- };
- 
- static struct board_info __initdata board_rta1025w_16 = {
+ #define cop2_present		0
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index b95ef98fc847..f0a8ef5a8605 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -2194,6 +2194,11 @@ static void configure_status(void)
+ #ifdef CONFIG_64BIT
+ 	status_set |= ST0_FR|ST0_KX|ST0_SX|ST0_UX;
+ #endif
++#ifdef CONFIG_CPU_LOONGSON64
++	/* enable 16-bytes load/store instructions */
++	status_set |= ST0_CU2;
++#endif
++
+ 	if (current_cpu_data.isa_level & MIPS_CPU_ISA_IV)
+ 		status_set |= ST0_XX;
+ 	if (cpu_has_dsp)
+
+
+
 -- 
-2.27.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

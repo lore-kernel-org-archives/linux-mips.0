@@ -2,164 +2,131 @@ Return-Path: <SRS0=LPDv=BS=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7ACE8C433E0
-	for <linux-mips@archiver.kernel.org>; Sat,  8 Aug 2020 02:40:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6643C433DF
+	for <linux-mips@archiver.kernel.org>; Sat,  8 Aug 2020 07:25:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 562342070A
-	for <linux-mips@archiver.kernel.org>; Sat,  8 Aug 2020 02:40:28 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mymailcheap.com header.i=@mymailcheap.com header.b="FJCY0cku";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="Cpx0PyH2"
+	by mail.kernel.org (Postfix) with ESMTP id 8C1CB221E2
+	for <linux-mips@archiver.kernel.org>; Sat,  8 Aug 2020 07:25:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgHHCk1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 7 Aug 2020 22:40:27 -0400
-Received: from relay4.mymailcheap.com ([137.74.80.156]:35976 "EHLO
-        relay4.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726200AbgHHCk1 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 7 Aug 2020 22:40:27 -0400
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay4.mymailcheap.com (Postfix) with ESMTPS id 09CE13F1CF;
-        Sat,  8 Aug 2020 04:40:23 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id 26D332A0FA;
-        Fri,  7 Aug 2020 22:40:22 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1596854422;
-        bh=1nF3QarTGvr/e5w343LWySjb+/o2qTIdp+ZYnchZ+m0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=FJCY0ckukaqVoLGGnl28WwcUotKJp+eQ2TLrAO2Rx5TRJPiZq+5dZgF7+bNNQCWDq
-         y2YZrjsDZx3D33/sMWwgfw66jfChP2LNDqB+ATdRMANHn3Y/uMlQ4/F4slTIos7RJA
-         xOw8ywUAUU3lRWF66VGWJPltWd9soqHWVPmSgPX8=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id NA2cGUBcdtO1; Fri,  7 Aug 2020 22:40:20 -0400 (EDT)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Fri,  7 Aug 2020 22:40:20 -0400 (EDT)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 0B9344131B;
-        Sat,  8 Aug 2020 02:40:19 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="Cpx0PyH2";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [0.0.0.0] (unknown [203.86.239.91])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 5AADE4131B;
-        Sat,  8 Aug 2020 02:39:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1596854403;
-        bh=1nF3QarTGvr/e5w343LWySjb+/o2qTIdp+ZYnchZ+m0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Cpx0PyH2MXZgFu/nJtmUW98WbS7MVHnq2Bb6/XYA1Df7IbCwqZiy+GdN2Ci6xxv8s
-         MywhNxJm/sBOGf1chpXR6V8rac/eUr6EuOhpOy8zBQRXstIXhYESMgkyS4uqmtRLbM
-         nwh0m0MhyKi0TUpO0v5BmqJd1aVlMx7XY0V0Pj2A=
-Subject: Re: [PATCH 00/13] MIPS: Convert Ingenic to a generic board
-To:     Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>, od@zcrc.me,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        =?UTF-8?B?5ryG6bmP5oyv?= <aric.pzqi@ingenic.com>,
-        dongsheng.qiu@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, xuwanhao@wanyeetech.com
-References: <20200803170124.231110-1-paul@crapouillou.net>
- <ab985296-8441-4006-210d-a71503bd01f0@wanyeetech.com>
- <L8DPEQ.71Z8YA0QXBJA@crapouillou.net>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <49bb320d-27a7-2c9c-aeaa-68ee67be74f2@flygoat.com>
-Date:   Sat, 8 Aug 2020 10:39:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <L8DPEQ.71Z8YA0QXBJA@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Rspamd-Queue-Id: 0B9344131B
-X-Spamd-Result: default: False [-0.10 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[flygoat.com:+];
-         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         RCPT_COUNT_SEVEN(0.00)[11];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
-X-Rspamd-Server: mail20.mymailcheap.com
+        id S1725853AbgHHHZS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 8 Aug 2020 03:25:18 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:50506 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725764AbgHHHZS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 8 Aug 2020 03:25:18 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxmMVPUy5fb_4FAA--.2028S2;
+        Sat, 08 Aug 2020 15:25:05 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alex Deucher <alexander.deucher@amd.com>, christian.koenig@amd.com
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] gpu/drm: Remove TTM_PL_FLAG_WC of VRAM to fix writecombine issue for Loongson64
+Date:   Sat,  8 Aug 2020 15:25:02 +0800
+Message-Id: <1596871502-3432-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxmMVPUy5fb_4FAA--.2028S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGFyDGrW8Ww4UZFWrWF1kGrg_yoW5Zry7pF
+        4SkwnxG393tr1DtFW7GF18WF98Ca1kuay8Cr15Gw17u3y3ZFW8Wr9xJr4fJrWUXrW7t3yU
+        tr1kCr4qvFyYv3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyqb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCF
+        x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
+        v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
+        67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2
+        IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
+        xVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUqEoXUUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+Loongson processors have a writecombine issue that maybe failed to
+write back framebuffer used with ATI Radeon or AMD GPU at times,
+after commit 8a08e50cee66 ("drm: Permit video-buffers writecombine
+mapping for MIPS"), there exists some errors such as blurred screen
+and lockup, and so on.
 
+Remove the flag TTM_PL_FLAG_WC of VRAM to fix writecombine issue for
+Loongson64 to work well with ATI Radeon or AMD GPU, and it has no any
+influence on the other platforms.
 
-在 2020/8/8 上午12:45, Paul Cercueil 写道:
-> Hi Zhou,
->
-> Le sam. 8 août 2020 à 0:23, Zhou Yanjie <zhouyanjie@wanyeetech.com> a 
-> écrit :
->> Hi Paul,
->>
->> I'm not too sure if remove "cpu-feature-overrides.h" will cause some 
->> problems for X2000, because according to my current test on X2000, I 
->> found that it is somewhat different from the SoCs using XBurst1 CPU 
->> core, with the kernel source code provided by Ingenic, for example, 
->> we must configure "#define cpu_has_tlbinv 1" in 
->> "cpu-feature-overrides.h" to make the X2000 work normally, otherwise 
->> the kernel will get stuck. And X2000's interrupt controller has also 
->> been redesigned. If these differences make it impossible to share 
->> code, should we set a subdirectory of "xburst" and "xburst2" in 
->> "arch/mips/ingenic"? (I am just worried about this situation, so far 
->> I have not been able to successfully run the mainline kernel on X2000).
+[   60.958721] radeon 0000:03:00.0: ring 0 stalled for more than 10079msec
+[   60.965315] radeon 0000:03:00.0: GPU lockup (current fence id 0x0000000000000112 last fence id 0x000000000000011d on ring 0)
+[   60.976525] radeon 0000:03:00.0: ring 3 stalled for more than 10086msec
+[   60.983156] radeon 0000:03:00.0: GPU lockup (current fence id 0x0000000000000374 last fence id 0x00000000000003a8 on ring 3)
 
-Hi Yanjie,
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_object.c |  7 +++++--
+ drivers/gpu/drm/radeon/radeon_object.c     | 20 ++++++++++++++------
+ 2 files changed, 19 insertions(+), 8 deletions(-)
 
-TLBINV is a optional feature. We can always invalidate TLB via rewrite 
-TLB entry. If X2000 can't work
-without TLBINV it means there are some thing went wrong with TLB.
-You'd better investigate in detail.
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+index 5ac7b55..9f785f6 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+@@ -136,8 +136,11 @@ void amdgpu_bo_placement_from_domain(struct amdgpu_bo *abo, u32 domain)
+ 
+ 		places[c].fpfn = 0;
+ 		places[c].lpfn = 0;
+-		places[c].flags = TTM_PL_FLAG_WC | TTM_PL_FLAG_UNCACHED |
+-			TTM_PL_FLAG_VRAM;
++		if (IS_ENABLED(CONFIG_MACH_LOONGSON64))
++			places[c].flags = TTM_PL_FLAG_UNCACHED | TTM_PL_FLAG_VRAM;
++		else
++			places[c].flags = TTM_PL_FLAG_WC | TTM_PL_FLAG_UNCACHED |
++					  TTM_PL_FLAG_VRAM;
+ 
+ 		if (flags & AMDGPU_GEM_CREATE_CPU_ACCESS_REQUIRED)
+ 			places[c].lpfn = visible_pfn;
+diff --git a/drivers/gpu/drm/radeon/radeon_object.c b/drivers/gpu/drm/radeon/radeon_object.c
+index f3dee01..c6cede6 100644
+--- a/drivers/gpu/drm/radeon/radeon_object.c
++++ b/drivers/gpu/drm/radeon/radeon_object.c
+@@ -112,15 +112,23 @@ void radeon_ttm_placement_from_domain(struct radeon_bo *rbo, u32 domain)
+ 		    rbo->rdev->mc.visible_vram_size < rbo->rdev->mc.real_vram_size) {
+ 			rbo->placements[c].fpfn =
+ 				rbo->rdev->mc.visible_vram_size >> PAGE_SHIFT;
+-			rbo->placements[c++].flags = TTM_PL_FLAG_WC |
+-						     TTM_PL_FLAG_UNCACHED |
+-						     TTM_PL_FLAG_VRAM;
++			if (IS_ENABLED(CONFIG_MACH_LOONGSON64))
++				rbo->placements[c++].flags = TTM_PL_FLAG_UNCACHED |
++							     TTM_PL_FLAG_VRAM;
++			else
++				rbo->placements[c++].flags = TTM_PL_FLAG_WC |
++							     TTM_PL_FLAG_UNCACHED |
++							     TTM_PL_FLAG_VRAM;
+ 		}
+ 
+ 		rbo->placements[c].fpfn = 0;
+-		rbo->placements[c++].flags = TTM_PL_FLAG_WC |
+-					     TTM_PL_FLAG_UNCACHED |
+-					     TTM_PL_FLAG_VRAM;
++		if (IS_ENABLED(CONFIG_MACH_LOONGSON64))
++			rbo->placements[c++].flags = TTM_PL_FLAG_UNCACHED |
++						     TTM_PL_FLAG_VRAM;
++		else
++			rbo->placements[c++].flags = TTM_PL_FLAG_WC |
++						     TTM_PL_FLAG_UNCACHED |
++						     TTM_PL_FLAG_VRAM;
+ 	}
+ 
+ 	if (domain & RADEON_GEM_DOMAIN_GTT) {
+-- 
+2.1.0
 
-Refined interrupt controller can be enabled via DeviceTree, you only 
-have to write a new irqchip driver for it.
-
-Btw: My X2000 EVB is on the way thanks to Taobao~
-
-Thanks.
-
->
-> The <cpu-feature-overrides.h> is kind of a hack, to hardcode settings 
-> in case the CPU is not properly detected. The cpu-probe.c should be 
-> able to auto-detect these settings, including the inverted TLB that 
-> the X2000 has, reading from the CPU config registers ("TLB INV" info 
-> should be in config4). Right now cpu_probe_ingenic() doesn't read 
-> config4 (not present on older SoCs) but that's trivial to add.
->
-> As for your other question, I don't see any reason why we wouldn't be 
-> able to support the X2000 aside the others in a generic kernel, so 
-> don't worry :)
->
-> Cheers,
-> -Paul
->

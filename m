@@ -2,158 +2,108 @@ Return-Path: <SRS0=LPDv=BS=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21B60C433DF
-	for <linux-mips@archiver.kernel.org>; Sat,  8 Aug 2020 15:36:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2922FC433E0
+	for <linux-mips@archiver.kernel.org>; Sat,  8 Aug 2020 23:45:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EF5FB20748
-	for <linux-mips@archiver.kernel.org>; Sat,  8 Aug 2020 15:36:40 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mymailcheap.com header.i=@mymailcheap.com header.b="YVI7dwqD";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="gPia8sjH"
+	by mail.kernel.org (Postfix) with ESMTP id 02B0C20672
+	for <linux-mips@archiver.kernel.org>; Sat,  8 Aug 2020 23:45:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1596930348;
+	bh=x2EdT82fe7GeAYl9x+JFtiof54LVZjz/+2qJUuXzK6Y=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
+	b=Ha3SB8SpBPOmvGExLpsdMtaelIxYh98oUyPzkEmnjHwrU8FT0SyBdkG9WmBeUb9Ln
+	 xUtfl9HMQVlLe994Jy9qVb2rg8Ax3evaycWLpfURjN0G/J4i0SbXU/1FBaaJNdRsOt
+	 3xoj4tqC3iz+diWb+K+5Vh4oejLeapu9m+cy0lYc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgHHPgk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 8 Aug 2020 11:36:40 -0400
-Received: from relay3.mymailcheap.com ([217.182.119.155]:34998 "EHLO
-        relay3.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbgHHPgk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 8 Aug 2020 11:36:40 -0400
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay3.mymailcheap.com (Postfix) with ESMTPS id 47ACA3F1CC;
-        Sat,  8 Aug 2020 17:36:37 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id 854592A0FA;
-        Sat,  8 Aug 2020 11:36:36 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1596900996;
-        bh=xTHmmWbJYn3DJqIfOvyTzLoBnhl+h9i9sDegUtx8360=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=YVI7dwqDIcii02o8w+mlKeA1x9DaqkC8/vPUmGRc3tlCpLoA59YogUvWY98nIvEtv
-         eNGJRXtbJ3s0ad+CLmaCMTO9R8SORx2qvC8LDRe1eh1ZF27T5mU5MgUOANuXZ3orKc
-         PEqEChhmqgNZkqBI470aVUQJCFeVfoOvqlX8cRBs=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id GY-ZZec7x3dE; Sat,  8 Aug 2020 11:36:35 -0400 (EDT)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        id S1728334AbgHHXih (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 8 Aug 2020 19:38:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728326AbgHHXig (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 8 Aug 2020 19:38:36 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Sat,  8 Aug 2020 11:36:35 -0400 (EDT)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 42A2F419E4;
-        Sat,  8 Aug 2020 15:36:31 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="gPia8sjH";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [0.0.0.0] (li1000-254.members.linode.com [45.33.50.254])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 9869A425AA;
-        Sat,  8 Aug 2020 15:36:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1596900969;
-        bh=xTHmmWbJYn3DJqIfOvyTzLoBnhl+h9i9sDegUtx8360=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=gPia8sjHVJReT9gRMKcq5QcVEHxwsR+ptLFaoyKsuGfy5wBTvIke5xpQ3YikAq/Bn
-         zfvQqF7s82XteCAWbtLPc/gNe8Zp0yE1jsZvNhWSMRZW6D6+JvFE4ticSNCBAoJ06o
-         g98Wmc0zhjcugedDFyroGcS9K29qKroUbxzTJ5bg=
-Subject: Re: [PATCH] MIPS: VZ: Only include loongson_regs.h for CPU_LOONGSON64
-To:     Greg KH <greg@kroah.com>, Huacai Chen <chenhc@lemote.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        kvm@vger.kernel.org, linux-mips@vger.kernel.org,
-        Fuxin Zhang <zhangfx@lemote.com>,
-        Huacai Chen <chenhuacai@gmail.com>, stable@vger.kernel.org
-References: <1596891052-24052-1-git-send-email-chenhc@lemote.com>
- <20200808153123.GC369184@kroah.com>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <2b2937d0-eae6-a489-07bd-c40ded02ce89@flygoat.com>
-Date:   Sat, 8 Aug 2020 23:35:54 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B8DD20748;
+        Sat,  8 Aug 2020 23:38:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596929916;
+        bh=x2EdT82fe7GeAYl9x+JFtiof54LVZjz/+2qJUuXzK6Y=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=w+KezyTDvP1bD1aJCqx8I/y72KOzuH/iHHEpr+SEzMVUYTB8HmezKnmD3VclyikaG
+         WmDiAqtfbVT4GHIt3wGjtM4gvdLuO0VOdj7HhU7JY3azCAzRpUu9HM4uuB1C7BY6a7
+         cu0+e82+oKu6Blk5ERUvVMMYsSO8sl6/25SHBstk=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 52/58] irqchip/irq-bcm7038-l1: Guard uses of cpu_logical_map
+Date:   Sat,  8 Aug 2020 19:37:18 -0400
+Message-Id: <20200808233724.3618168-52-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200808233724.3618168-1-sashal@kernel.org>
+References: <20200808233724.3618168-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200808153123.GC369184@kroah.com>
-Content-Type: text/plain; charset=gbk; format=flowed
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Rspamd-Queue-Id: 42A2F419E4
-X-Spamd-Result: default: False [1.40 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[flygoat.com:+];
-         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         RCPT_COUNT_SEVEN(0.00)[10];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         FREEMAIL_CC(0.00)[redhat.com,alpha.franken.de,gmail.com,vger.kernel.org,lemote.com];
-         SUSPICIOUS_RECIPS(1.50)[];
-         RCVD_COUNT_TWO(0.00)[2]
-X-Rspamd-Server: mail20.mymailcheap.com
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+From: Florian Fainelli <f.fainelli@gmail.com>
 
+[ Upstream commit 9808357ff2e5bfe1e0dcafef5e78cc5b617a7078 ]
 
-ÔÚ 2020/8/8 ÏÂÎç11:31, Greg KH Ð´µÀ:
-> On Sat, Aug 08, 2020 at 08:50:52PM +0800, Huacai Chen wrote:
->> Only Loongson64 platform has and needs loongson_regs.h, including it
->> unconditionally will cause build errors.
->>
->> Fixes: 7f2a83f1c2a941ebfee5 ("KVM: MIPS: Add CPUCFG emulation for Loongson-3")
->> Cc: stable@vger.kernel.org
->> Reported-by: kernel test robot <lkp@intel.com>
->> Signed-off-by: Huacai Chen <chenhc@lemote.com>
->> ---
->>   arch/mips/kvm/vz.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/arch/mips/kvm/vz.c b/arch/mips/kvm/vz.c
->> index 3932f76..a474578 100644
->> --- a/arch/mips/kvm/vz.c
->> +++ b/arch/mips/kvm/vz.c
->> @@ -29,7 +29,9 @@
->>   #include <linux/kvm_host.h>
->>   
->>   #include "interrupt.h"
->> +#ifdef CONFIG_CPU_LOONGSON64
->>   #include "loongson_regs.h"
->> +#endif
-> The fix for this should be in the .h file, no #ifdef should be needed in
-> a .c file.
+cpu_logical_map is only defined for CONFIG_SMP builds, when we are in an
+UP configuration, the boot CPU is 0.
 
-The header file can only be reached when CONFIG_CPU_LOONGSON64 is 
-selected...
-Otherwise the include path of this file won't be a part of CFLAGS.
+Fixes: 6468fc18b006 ("irqchip/irq-bcm7038-l1: Add PM support")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20200724184157.29150-1-f.fainelli@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/irqchip/irq-bcm7038-l1.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Thanks.
+diff --git a/drivers/irqchip/irq-bcm7038-l1.c b/drivers/irqchip/irq-bcm7038-l1.c
+index fd7c537fb42ac..4127eeab10af1 100644
+--- a/drivers/irqchip/irq-bcm7038-l1.c
++++ b/drivers/irqchip/irq-bcm7038-l1.c
+@@ -327,7 +327,11 @@ static int bcm7038_l1_suspend(void)
+ 	u32 val;
+ 
+ 	/* Wakeup interrupt should only come from the boot cpu */
++#ifdef CONFIG_SMP
+ 	boot_cpu = cpu_logical_map(0);
++#else
++	boot_cpu = 0;
++#endif
+ 
+ 	list_for_each_entry(intc, &bcm7038_l1_intcs_list, list) {
+ 		for (word = 0; word < intc->n_words; word++) {
+@@ -347,7 +351,11 @@ static void bcm7038_l1_resume(void)
+ 	struct bcm7038_l1_chip *intc;
+ 	int boot_cpu, word;
+ 
++#ifdef CONFIG_SMP
+ 	boot_cpu = cpu_logical_map(0);
++#else
++	boot_cpu = 0;
++#endif
+ 
+ 	list_for_each_entry(intc, &bcm7038_l1_intcs_list, list) {
+ 		for (word = 0; word < intc->n_words; word++) {
+-- 
+2.25.1
 
-- Jiaxun
-
->
-> thanks,
->
-> greg k-h

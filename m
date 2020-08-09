@@ -1,103 +1,95 @@
-Return-Path: <SRS0=LPDv=BS=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=f98N=BT=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EAD1C433E0
-	for <linux-mips@archiver.kernel.org>; Sat,  8 Aug 2020 23:49:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C19FDC433DF
+	for <linux-mips@archiver.kernel.org>; Sun,  9 Aug 2020 01:28:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5A04A2083B
-	for <linux-mips@archiver.kernel.org>; Sat,  8 Aug 2020 23:49:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1596930556;
-	bh=BSX9EcTnUekZaIJkQio+Eo14SvKz1ux0nZh1+7uibnk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=n+qN6hBMY2zz1lXCHknFUUkQA72J/HuQzo2JXnxca5ZBB9mbXH3aT59ODlHQKFted
-	 f+D2GOZkaXqA1OEQwcb1rb4Hj+zzlIB0X9AITfEyxOuODW7jl9nhtgeLH9IHVs9beO
-	 DtYwX48jbo3FAhlVSwrGdiNMoYyOhV0uCkPDo/Jk=
+	by mail.kernel.org (Postfix) with ESMTP id 9D919206E9
+	for <linux-mips@archiver.kernel.org>; Sun,  9 Aug 2020 01:28:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727842AbgHHXhH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 8 Aug 2020 19:37:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727834AbgHHXhH (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 8 Aug 2020 19:37:07 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4969220716;
-        Sat,  8 Aug 2020 23:37:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596929827;
-        bh=BSX9EcTnUekZaIJkQio+Eo14SvKz1ux0nZh1+7uibnk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nTaSD538e8S5vKBicQoars1cYk23evCgKf+9YQYwzKAtiLu48xb+xrNXYZDL4hh0H
-         BJ4YhwYqvMOWPhxAO17a6C9LDRWwyVMPSpOM4guvv7ZmbTi1XmUypYF7FZSjDtlur5
-         rcghnF7FO+/4SUAE2FNqHZtGSXESD4Nlhs33Facw=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 59/72] irqchip/loongson-htvec: Fix potential resource leak
-Date:   Sat,  8 Aug 2020 19:35:28 -0400
-Message-Id: <20200808233542.3617339-59-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200808233542.3617339-1-sashal@kernel.org>
-References: <20200808233542.3617339-1-sashal@kernel.org>
+        id S1726073AbgHIB2z (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 8 Aug 2020 21:28:55 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:39307 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726071AbgHIB2z (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 8 Aug 2020 21:28:55 -0400
+Received: by mail-il1-f194.google.com with SMTP id z17so4852272ill.6;
+        Sat, 08 Aug 2020 18:28:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VS8yH85WvutsO/KjeEQ2FvfbJcVZS6nX5Zxp1darUqc=;
+        b=ePAJDTEFgL2Bn+H2WTjEDCgkRDv3glyvxCz/KnhdE1yYdfKVn0G5UgYdYFgXUM/k1H
+         ARzJHrnzzgusiIYtg2EvebxINac+KfayTTYeqULYQnIw94y+zp7ejHGWnNeIq22lXPTa
+         T7mOWCT1xezBylthxndCJJffCi8QNIabEGaFrYXf2Hm4h7DL7+AYIvv2Dx6bB9HpOD6C
+         BIuLT61EC1PL0r7M9zSghymSUm2B6+r4ZHmHopXq6bdrY4/XfVcXBmTAQt0S3WM3PLS9
+         lfMOqrjH8wOeqBF8BMLG6BNRKNoLqajaFJTibqla8dBxUUp1BB3dIeQEM4DdguWbU3Qb
+         ZbuA==
+X-Gm-Message-State: AOAM5322ojAuaBIf1lS4l6l5eS8M+Zcho+hnpMmPPCg3bYNSe7HEdf20
+        KhMOIMuQp5HdKBVYP82YS+ojBCNs0r46JvshYnkkjLr7+IY=
+X-Google-Smtp-Source: ABdhPJyXoPzVNwr0tJXZD05cAi3FhTBjqLmbBNMdvEQtSCscJAdZQTYIC+eBygDZqqi+6K/NkaFEPZZ9fWB5mwCqXTU=
+X-Received: by 2002:a92:d30a:: with SMTP id x10mr11616603ila.287.1596936533940;
+ Sat, 08 Aug 2020 18:28:53 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20200808123227.2873961-1-jiaxun.yang@flygoat.com>
+In-Reply-To: <20200808123227.2873961-1-jiaxun.yang@flygoat.com>
+From:   Huacai Chen <chenhc@lemote.com>
+Date:   Sun, 9 Aug 2020 09:28:42 +0800
+Message-ID: <CAAhV-H5aG5=rR8iHCp7HMa5eDeFo06GXx9gDjrDy+uFhWy28PA@mail.gmail.com>
+Subject: Re: [PATCH for-fixes] MIPS: Loongson64: Do not override watch and
+ ejtag feature
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Reviewed-by: Huacai Chen <chenhc@lemote.com>
 
-[ Upstream commit 652d54e77a438cf38a5731d8f9983c81e72dc429 ]
-
-In the function htvec_of_init(), system resource "parent_irq"
-was not released in an error case. Thus add a jump target for
-the completion of the desired exception handling.
-
-Fixes: 818e915fbac5 ("irqchip: Add Loongson HyperTransport Vector support")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/1594087972-21715-4-git-send-email-yangtiezhu@loongson.cn
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/irqchip/irq-loongson-htvec.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/irqchip/irq-loongson-htvec.c b/drivers/irqchip/irq-loongson-htvec.c
-index 1ece9337c78dc..b36d403383230 100644
---- a/drivers/irqchip/irq-loongson-htvec.c
-+++ b/drivers/irqchip/irq-loongson-htvec.c
-@@ -192,7 +192,7 @@ static int htvec_of_init(struct device_node *node,
- 	if (!priv->htvec_domain) {
- 		pr_err("Failed to create IRQ domain\n");
- 		err = -ENOMEM;
--		goto iounmap_base;
-+		goto irq_dispose;
- 	}
- 
- 	htvec_reset(priv);
-@@ -203,6 +203,9 @@ static int htvec_of_init(struct device_node *node,
- 
- 	return 0;
- 
-+irq_dispose:
-+	for (; i > 0; i--)
-+		irq_dispose_mapping(parent_irq[i - 1]);
- iounmap_base:
- 	iounmap(priv->base);
- free_priv:
--- 
-2.25.1
-
+On Sat, Aug 8, 2020 at 8:33 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+>
+> Do not override ejtag feature to 0 as Loongson 3A1000+ do have ejtag.
+> For watch, as KVM emulated CPU doesn't have watch feature, we should
+> not enable it unconditionally.
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+> This patch should go into mips-fixes tree as watch feature is blocking
+> KVM guest boot in some cases.
+> ---
+>  arch/mips/include/asm/mach-loongson64/cpu-feature-overrides.h | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/arch/mips/include/asm/mach-loongson64/cpu-feature-overrides.h b/arch/mips/include/asm/mach-loongson64/cpu-feature-overrides.h
+> index b6e9c99b85a5..eb181224eb4c 100644
+> --- a/arch/mips/include/asm/mach-loongson64/cpu-feature-overrides.h
+> +++ b/arch/mips/include/asm/mach-loongson64/cpu-feature-overrides.h
+> @@ -26,7 +26,6 @@
+>  #define cpu_has_counter                1
+>  #define cpu_has_dc_aliases     (PAGE_SIZE < 0x4000)
+>  #define cpu_has_divec          0
+> -#define cpu_has_ejtag          0
+>  #define cpu_has_inclusive_pcaches      1
+>  #define cpu_has_llsc           1
+>  #define cpu_has_mcheck         0
+> @@ -42,7 +41,6 @@
+>  #define cpu_has_veic           0
+>  #define cpu_has_vint           0
+>  #define cpu_has_vtag_icache    0
+> -#define cpu_has_watch          1
+>  #define cpu_has_wsbh           1
+>  #define cpu_has_ic_fills_f_dc  1
+>  #define cpu_hwrena_impl_bits   0xc0000000
+> --
+> 2.28.0.rc1
+>

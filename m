@@ -2,165 +2,125 @@ Return-Path: <SRS0=9iaY=BV=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87BB7C433E0
-	for <linux-mips@archiver.kernel.org>; Tue, 11 Aug 2020 14:39:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F543C433E0
+	for <linux-mips@archiver.kernel.org>; Tue, 11 Aug 2020 15:01:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 65E23204FD
-	for <linux-mips@archiver.kernel.org>; Tue, 11 Aug 2020 14:39:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 13A9D20782
+	for <linux-mips@archiver.kernel.org>; Tue, 11 Aug 2020 15:01:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mymailcheap.com header.i=@mymailcheap.com header.b="o4x1IOWG";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="sGK+w3Nz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ri7njzHP"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728779AbgHKOjK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 11 Aug 2020 10:39:10 -0400
-Received: from relay4.mymailcheap.com ([137.74.80.154]:52665 "EHLO
-        relay4.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728794AbgHKOjJ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 11 Aug 2020 10:39:09 -0400
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay4.mymailcheap.com (Postfix) with ESMTPS id 62B5D3F20A;
-        Tue, 11 Aug 2020 16:39:07 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 322F02A519;
-        Tue, 11 Aug 2020 16:39:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1597156747;
-        bh=iIou0YGXsaz4tenihi4kspgnU410+h+4rSvatxov18k=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=o4x1IOWGnMOooK/NSHeXWPwWNhS4rEUScv0trMtEpRcB9sZUwGQ6kLI2gDWc6foMf
-         LS9sc2Hv2RKwb1kIo+Ae0DzBR6pDDS+iQuDwu5xUxX8VMtMaSHrLHEvfL9lMq0xxwM
-         iciB3aYHBPpiijd7zNeukvYNVYCAYiqGPPscCqgg=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Uf-F6loMtAcP; Tue, 11 Aug 2020 16:39:06 +0200 (CEST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Tue, 11 Aug 2020 16:39:06 +0200 (CEST)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 9779640855;
-        Tue, 11 Aug 2020 14:39:05 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="sGK+w3Nz";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [0.0.0.0] (n11212042148.netvigator.com [112.120.42.148])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id C91AE40855;
-        Tue, 11 Aug 2020 14:38:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1597156738;
-        bh=iIou0YGXsaz4tenihi4kspgnU410+h+4rSvatxov18k=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=sGK+w3Nz2LronVjeIOj0dAd4di6kmCubd0B1A860wHQXz0D6/C1IWD03D/aYd/qjK
-         yqZPUihB4z8fmgmNuJgfFwhpkXmjGWW9MWK40apvDVwt+7BiDyf3728f6pDD4Saz+U
-         jYxLKQQem3oXQrxHUhrmaGLDpSj/bI4Ihvbb4beY=
-Subject: Re: [PATCH RESEND] KVM: MIPS/VZ: Fix build error caused by 'kvm_run'
- cleanup
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     Xingxing Su <suxingxing@loongson.cn>,
-        Huacai Chen <chenhc@lemote.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-mips@vger.kernel.org,
+        id S1728841AbgHKPB1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 11 Aug 2020 11:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728788AbgHKPB0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 11 Aug 2020 11:01:26 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315D7C06174A;
+        Tue, 11 Aug 2020 08:01:26 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id f7so11810214wrw.1;
+        Tue, 11 Aug 2020 08:01:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+Omhf4JBO1kZHIgbP4gDHiaQBVFEO7TFQZk4NOsjloA=;
+        b=ri7njzHPSdK+1vvpXER+6XhtZxEPcPjHNADeBwkSVNGZazFv+ojx2xY49M9VbK6QO5
+         u/0Jb/xaoLBFO1V9acq0xegoa8z9x/ebFpODSdvHbPE8csJpxQ2ZtFF7plMoCnsLcdUp
+         c9SwAbuerYK/Z1gT0k12/UJe5MKb7YCAm1fwU5mJgIISEhj+CweDkG+Edz3MNLihZ60r
+         qN/ba3yXsQ7X5mZ0eCi2OZRDbkwC0VVZMHU9K/P6Usb81XOBh/c3Ce5xltOXaQ3hK3WJ
+         YIgCo0dOoDDqeNRP80zcXuUqeF29sGjbGdQAzmn+csIE2MyhSiO+FfHuCNv+HWnEAnwX
+         I6cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+Omhf4JBO1kZHIgbP4gDHiaQBVFEO7TFQZk4NOsjloA=;
+        b=gj+nZHdrS//f37F5eZRD3Ce4ZbXgfFzeZTJqRwT11zrGdk6R4kEyYeLQo/jvqwcuOb
+         Kg0VB98+e9GBtQCNlaabCubAu6Z/qChCEx21C5aeDtSIGeSZovuMC6s8yIVn9sVn3PkE
+         JF/m5N6hf+bui81Bb+rV7h/fuhRsNjKIyf9UZTwXIGCxxSiME2oZATkUcfpb78YsqZzw
+         04TW2Fpl98YbTD3f2AIRD5NamCiF2AjtUTK6KvOcp6VWdXAw/3l+ZMYIVqGhk3TiC+ct
+         NqfEVaZWtR5sUQc61/nSP3CwzE7VG209IOOtrziYCPiGbtgw71pPOOBNB34VCZl+UCpL
+         HBgg==
+X-Gm-Message-State: AOAM532S7H2Njzddklci3Ejhq+l17q0VRQGNlkNGYiSz3iVftbmzMZTi
+        bUTJ3k44gPZj583QlC4grgA=
+X-Google-Smtp-Source: ABdhPJw89nJhwhRxpiAc7wtxhctP0JeXOUosd+DiR3bD4tyvj8F6bG+jdppW163PAWiolKNckTx2RQ==
+X-Received: by 2002:a5d:4a0b:: with SMTP id m11mr29054420wrq.407.1597158084729;
+        Tue, 11 Aug 2020 08:01:24 -0700 (PDT)
+Received: from skynet.lan (88.red-83-49-60.dynamicip.rima-tde.net. [83.49.60.88])
+        by smtp.gmail.com with ESMTPSA id 15sm5350494wmo.33.2020.08.11.08.01.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Aug 2020 08:01:24 -0700 (PDT)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     tsbogend@alpha.franken.de, f.fainelli@gmail.com,
+        jonas.gorski@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-References: <1597138297-2105-1-git-send-email-suxingxing@loongson.cn>
- <49a63b59-c03e-b9f5-03d6-ef268f5a6555@flygoat.com>
-Message-ID: <f44652c7-2716-7e56-6e04-3f990a197895@flygoat.com>
-Date:   Tue, 11 Aug 2020 22:38:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>
+Subject: [PATCH v3 1/4] MIPS: BCM63xx: remove duplicated new lines
+Date:   Tue, 11 Aug 2020 17:01:14 +0200
+Message-Id: <20200811150117.254620-2-noltari@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200811150117.254620-1-noltari@gmail.com>
+References: <20200811150117.254620-1-noltari@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <49a63b59-c03e-b9f5-03d6-ef268f5a6555@flygoat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Rspamd-Queue-Id: 9779640855
-X-Spamd-Result: default: False [1.40 / 10.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(0.00)[~all:c];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[flygoat.com:+];
-         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         RCVD_IN_DNSWL_NONE(0.00)[213.133.102.83:from];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
-         FREEMAIL_TO(0.00)[loongson.cn,lemote.com,alpha.franken.de,gmail.com,redhat.com];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Server: mail20.mymailcheap.com
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+There are 3 duplicated new lines, let's remove them.
 
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
+---
+ v3: no changes.
+ v2: no changes.
 
-在 2020/8/11 下午10:37, Jiaxun Yang 写道:
->
->
-> 在 2020/8/11 下午5:31, Xingxing Su 写道:
->> Commit c34b26b98caca48ec9ee9 ("KVM: MIPS: clean up redundant 'kvm_run'
->> parameters") remove the 'kvm_run' parameter in kvm_vz_gpsi_lwc2.
->>
->> The following build error:
->>
->> arch/mips/kvm/vz.c: In function ‘kvm_trap_vz_handle_gpsi’:
->> arch/mips/kvm/vz.c:1243:43: error: ‘run’ undeclared (first use in 
->> this function)
->>     er = kvm_vz_gpsi_lwc2(inst, opc, cause, run, vcpu);
->>                                             ^~~
->> arch/mips/kvm/vz.c:1243:43: note: each undeclared identifier is 
->> reported only
->> once for each function it appears in
->> scripts/Makefile.build:283: recipe for target 'arch/mips/kvm/vz.o' 
->> failed
->> make[2]: *** [arch/mips/kvm/vz.o] Error 1
->> scripts/Makefile.build:500: recipe for target 'arch/mips/kvm' failed
->> make[1]: *** [arch/mips/kvm] Error 2
->> Makefile:1785: recipe for target 'arch/mips' failed
->> make: *** [arch/mips] Error 2
->>
->> Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
->
-> That have already quened in Paolo's KVM tree.
->
-> Thanks.
+ arch/mips/bcm63xx/boards/board_bcm963xx.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Oops, I was looking at the wrong place, please ignore the noise.
+diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+index 230bf27c1fb8..744aa16bab12 100644
+--- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
++++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+@@ -32,7 +32,6 @@
+ 
+ #include <uapi/linux/bcm933xx_hcs.h>
+ 
+-
+ #define HCS_OFFSET_128K			0x20000
+ 
+ static struct board_info board;
+@@ -337,7 +336,6 @@ static struct board_info __initdata board_96348gw_11 = {
+ 		.force_duplex_full	= 1,
+ 	},
+ 
+-
+ 	.has_ohci0 = 1,
+ 	.has_pccard = 1,
+ 	.has_ehci0 = 1,
+@@ -580,7 +578,6 @@ static struct board_info __initdata board_96358vw2 = {
+ 		.force_duplex_full	= 1,
+ 	},
+ 
+-
+ 	.has_ohci0 = 1,
+ 	.has_pccard = 1,
+ 	.has_ehci0 = 1,
+-- 
+2.28.0
 
-Thanks.
-
-- Jiaxun
-
->
-> - Jiaxun
->
->> ---
->>   +cc Paolo Bonzini <pbonzini@redhat.com> and kvm@vger.kernel.org.
->>
->>

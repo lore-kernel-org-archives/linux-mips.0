@@ -1,59 +1,125 @@
-Received: from mail-io1-xd44.google.com ([IPv6:2607:f8b0:4864:20::d44]:32800
-        "EHLO mail-io1-xd44.google.com" rhost-flags-OK-OK-OK-OK)
-        by eddie.linux-mips.org with ESMTP id S23992922AbeK3WnW3Yy2B (ORCPT
-        <rfc822;linux-mips@linux-mips.org>); Fri, 30 Nov 2018 23:43:22 +0100
+Return-Path: <SRS0=9iaY=BV=vger.kernel.org=linux-mips-owner@kernel.org>
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+	aws-us-west-2-korg-lkml-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87212C433E0
+	for <linux-mips@archiver.kernel.org>; Tue, 11 Aug 2020 14:34:51 +0000 (UTC)
+Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
+	by mail.kernel.org (Postfix) with ESMTP id 5A0CE20866
+	for <linux-mips@archiver.kernel.org>; Tue, 11 Aug 2020 14:34:51 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mymailcheap.com header.i=@mymailcheap.com header.b="UVMqkN5Q";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="Hy9VAlV7"
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+        id S1728792AbgHKOev (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 11 Aug 2020 10:34:51 -0400
+Received: from relay4.mymailcheap.com ([137.74.80.154]:39845 "EHLO
+        relay4.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728791AbgHKOeu (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 11 Aug 2020 10:34:50 -0400
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay4.mymailcheap.com (Postfix) with ESMTPS id C54E13F1CF
+        for <linux-mips@vger.kernel.org>; Tue, 11 Aug 2020 16:34:46 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id F30802A3A8
+        for <linux-mips@vger.kernel.org>; Tue, 11 Aug 2020 10:34:45 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1597156486;
+        bh=6dJqrA1NPRsTFmML6GzvdCbUbd5EBnq3u5eeThyw6Xk=;
+        h=To:From:Subject:Date:From;
+        b=UVMqkN5Q/wc9a5wTLpJ/sgr7Gn2TSHvbZlXM+bSRvLdpxRZ2x0e61bZ4y7wj2qAKa
+         nbDrjpANRAmIWAY6ao50maAoWSEXxwDujt5nIZGvRa+NjV5jUbm0PmBHiYjFwcIHl9
+         91I0/ljReViqlb2u+3avqaD2y4/tZ6Nmkt/mkIMo=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id mpekS-yCfzqV for <linux-mips@vger.kernel.org>;
+        Tue, 11 Aug 2020 10:34:44 -0400 (EDT)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS
+        for <linux-mips@vger.kernel.org>; Tue, 11 Aug 2020 10:34:44 -0400 (EDT)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 936B240855
+        for <linux-mips@vger.kernel.org>; Tue, 11 Aug 2020 14:34:41 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="Hy9VAlV7";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [0.0.0.0] (n11212042148.netvigator.com [112.120.42.148])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id C981640855
+        for <linux-mips@vger.kernel.org>; Tue, 11 Aug 2020 14:34:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1597156457;
+        bh=6dJqrA1NPRsTFmML6GzvdCbUbd5EBnq3u5eeThyw6Xk=;
+        h=To:From:Subject:Date:From;
+        b=Hy9VAlV7An7r5GXHN5HcbnhSEBF5TO3J9F9FMJ4RA5P3a85NBFoDoI8JekuLYBPW/
+         KwDEqKJ4vjyFrYknxuhlPpF8skQOdldXbCy+MkkKsch4fCWYUPCNt9cZWFHuPHDIoa
+         EOSun+P2qK9YH7Bf+F9RKYze+jIDvskBrbiaGmKk=
+To:     "open list:MIPS" <linux-mips@vger.kernel.org>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: All linux-mips lists archives are now available at lore
+Message-ID: <8eafef86-1c29-842c-c35b-de0df9d386fb@flygoat.com>
+Date:   Tue, 11 Aug 2020 22:34:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20181124022035.17519-1-deepa.kernel@gmail.com>
- <20181124022035.17519-8-deepa.kernel@gmail.com> <CAF=yD-K=ZLZ_S=Y6YnhvvkfKQS=21ujwiGd7+JB9yDMtiX_9hg@mail.gmail.com>
- <CAF=yD-K3Ga8qojSh5Epa6m4EYn-Lvdo=e38MnFqOKch1128VHw@mail.gmail.com>
- <CABeXuvoDPvT45CCt2L0TReqtb1Q_-E8+toYu6qjiP0cxfdQNdA@mail.gmail.com> <CAF=yD-LngkYq23Q2TCJv_0PRiAryznYRWRbqYFaQkNO=U0w9gQ@mail.gmail.com>
-In-Reply-To: <CAF=yD-LngkYq23Q2TCJv_0PRiAryznYRWRbqYFaQkNO=U0w9gQ@mail.gmail.com>
-From: Deepa Dinamani <deepa.kernel@gmail.com>
-Date: Fri, 30 Nov 2018 14:43:10 -0800
-Message-ID: <CABeXuvp5OaVetzJJf2L5ZE1BP_KOO2FvvG8EWn5t29eCe-=dtg@mail.gmail.com>
-Subject: Re: [PATCH 7/8] socket: Add SO_TIMESTAMP[NS]_NEW
-Content-Type: text/plain; charset="UTF-8"
-Return-Path: <deepa.kernel@gmail.com>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: willemdebruijn.kernel@gmail.com
-Cc: "David S. Miller" <davem@davemloft.net>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Network Devel Mailing List <netdev@vger.kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>, y2038 Mailman List <y2038@lists.linaro.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Ralf Baechle <ralf@linux-mips.org>, rth@twiddle.net, linux-alpha@vger.kernel.org, "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>, Parisc List <linux-parisc@vger.kernel.org>, linux-rdma@vger.kernel.org, sparclinux <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Rspamd-Queue-Id: 936B240855
+X-Spamd-Result: default: False [-0.10 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         FROM_HAS_DN(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         PREVIOUSLY_DELIVERED(0.00)[linux-mips@vger.kernel.org];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         RCPT_COUNT_ONE(0.00)[1];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         TO_DN_ALL(0.00)[];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         RCVD_IN_DNSWL_NONE(0.00)[213.133.102.83:from];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
+X-Rspamd-Server: mail20.mymailcheap.com
+Sender: linux-mips-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <linux-mips.vger.kernel.org>
+X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Nov 25, 2018 at 6:33 AM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> On Sun, Nov 25, 2018 at 12:28 AM Deepa Dinamani <deepa.kernel@gmail.com> wrote:
-> >
-> > > > > +       if (type == SO_TIMESTAMP_NEW || type == SO_TIMESTAMPNS_NEW)
-> > > > > +               sock_set_flag(sk, SOCK_TSTAMP_NEW);
-> > > > > +       else
-> > > > > +               sock_reset_flag(sk, SOCK_TSTAMP_NEW);
-> > > > > +
-> > > >
-> > > > if adding a boolean whether the socket uses new or old-style
-> > > > timestamps, perhaps fail hard if a process tries to set a new-style
-> > > > option while an old-style is already set and vice versa. Also include
-> > > > SO_TIMESTAMPING_NEW as it toggles the same option.
-> >
-> > I do not think this is a problem.
-> > Consider this example, if there is a user application with updated
-> > socket timestamps is linking into a library that is yet to be updated.
->
-> Also consider applications that do not use libraries.
+Hi all,
 
-Arnd and I talked about this.
-We thought that the new options should behave like the already
-existing options. The patch already does this.
-Eg: Today if we set SO_TIMESTAMP and then try to switch to
-SO_TIMESTAMPNS then there is no fail.
+I have collect all the lists archives of linux-mips, from the SGI era to 
+linux-mips.org era,
+to lore.kernel.org, including the first mail of SGI's MIPS list [1].
 
-Do you still want a hard fail?
+At least we won't lost these treasures if linux-mips.org down :-)
 
--Deepa
+Btw:
+Due to some personal reasons I will be inactive until December.
+Sorry for the inconvenience.
+
+Thanks.
+
+[1]: 
+https://lore.kernel.org/linux-mips/199602241021.CAA19391@cthulhu.engr.sgi.com/
+
+- Jiaxun

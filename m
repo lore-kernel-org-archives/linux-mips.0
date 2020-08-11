@@ -2,123 +2,96 @@ Return-Path: <SRS0=9iaY=BV=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E251C433E0
-	for <linux-mips@archiver.kernel.org>; Tue, 11 Aug 2020 15:01:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20BA5C433DF
+	for <linux-mips@archiver.kernel.org>; Tue, 11 Aug 2020 16:30:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 28E9420771
-	for <linux-mips@archiver.kernel.org>; Tue, 11 Aug 2020 15:01:50 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="oYmEnwpI"
+	by mail.kernel.org (Postfix) with ESMTP id E64CE20658
+	for <linux-mips@archiver.kernel.org>; Tue, 11 Aug 2020 16:30:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728879AbgHKPBq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 11 Aug 2020 11:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728837AbgHKPB1 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 11 Aug 2020 11:01:27 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592C7C061788;
-        Tue, 11 Aug 2020 08:01:27 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id k8so3168449wma.2;
-        Tue, 11 Aug 2020 08:01:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/PamCJTJWS9McL3YMw+k49gmnnx82kmNjt/V1IJPP/I=;
-        b=oYmEnwpIQfNzxBaW7xyHlYGZ7gBxIlmi7VVyyEY9i+tNIV1xQSkmcPcaNt7ExW8gDT
-         9vDMuoZUE7maoFTnSoXHDOirn4ztEaKTVHNBozUX8qm+swQHSEH1rX/JXuDDZJCfy/pb
-         TuyjB1LV3W0FuvpXiXYZbRR0wkgNMfWGdyNZQdEyyKPOQUB34I+QYtawzU5+71YLfjAy
-         wvw039t3mNJ1aglJS8/da2lyCVRmgHf7RZQMprMrXIBxuNO0z6J4gjBeOOhvmQwke5TH
-         Yby0cOubgbbPViPvN4v1zwOdWIT745QAmxo8/n9i3SJb4IRv6B0pqCsa0wmGd9K4nbW1
-         q15Q==
+        id S1729090AbgHKQa3 convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 11 Aug 2020 12:30:29 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:38849 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728947AbgHKQa2 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 11 Aug 2020 12:30:28 -0400
+Received: by mail-ed1-f65.google.com with SMTP id i6so9548008edy.5;
+        Tue, 11 Aug 2020 09:30:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/PamCJTJWS9McL3YMw+k49gmnnx82kmNjt/V1IJPP/I=;
-        b=f/8y/F3oNRMSDm9amIlM2aQs9WskoLkm4G9VaPJFob89bKrBsrXDjOy518fWCZyOtH
-         LqInaMK99pfeContxs6hL5Ijqagiq0QaXVlPFvOY2do5C8vrfeqciflMqXcx5KZ+HOGv
-         W8l3AEmMikyGdy8V63uPVXYrxHa21vN7+88mCS9YUo3+LQBXZdiKzQ1cyjc4Qf/Uygvj
-         E1ZX5ynXNh4S/pFWoHhPUT/A6jKHwayj0fLO3rvcjTNb7AAxzcmq2wkkNIJculaq7NaR
-         MwOVQq+zgZRbyvK757zeZJvTLCXIC8YpOisIxVwG1fiawEk7u17uy4UABl2SdHXBneCh
-         55Hg==
-X-Gm-Message-State: AOAM532pwGaSmJHgSNoTcBNNMx4zfoJAGJCQ9+60tn0dJV9dR02m5/5D
-        Z8f7YXoj6eR2uLmVweilnsE=
-X-Google-Smtp-Source: ABdhPJyB6mUBDCgmoeQDB4nnf4wlqRwmDF87BAw3MEbpoX0X0eFFZ3M+TFnnTF51izQ+sNRlvQn2Uw==
-X-Received: by 2002:a05:600c:21d3:: with SMTP id x19mr4556815wmj.174.1597158085803;
-        Tue, 11 Aug 2020 08:01:25 -0700 (PDT)
-Received: from skynet.lan (88.red-83-49-60.dynamicip.rima-tde.net. [83.49.60.88])
-        by smtp.gmail.com with ESMTPSA id 15sm5350494wmo.33.2020.08.11.08.01.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Aug 2020 08:01:25 -0700 (PDT)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     tsbogend@alpha.franken.de, f.fainelli@gmail.com,
-        jonas.gorski@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH v3 2/4] MIPS: BCM63xx: remove EHCI from BCM6348 boards
-Date:   Tue, 11 Aug 2020 17:01:15 +0200
-Message-Id: <20200811150117.254620-3-noltari@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200811150117.254620-1-noltari@gmail.com>
-References: <20200811150117.254620-1-noltari@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9eqGj8EIJFVcHBsCD8Lv6m1EjN63VDEuZ5XkTm8I3vQ=;
+        b=i9ZBppot+hXxCaNmVWSeFJ6vzGBT0GzdLmXaOM7HvFMbJ7CBqmn+sejZOaZInP+0zS
+         Y1r6nSy2VXZ983R7+VUYG4aqyhtrq9t05RjEw4e0+RgXadjhWvm3rKacY0gsWvimspbw
+         o/rVCGFrAn3/fb2MHxBHAYB/xnKJ0o/x6M5041j7YwGBduNC+9Pn9oKsHtQZ7Tw8THso
+         Jq20Zx1L+qnXULvaOtG0KLJ29VS0Xo5oInU/+6k0NmFKIJYiZ3klD3gIGA6t6OO2Hiwp
+         GryMHCypAIGfCnwBbnEn4DI3Jz+KBR+0Hgx7jUh58xOvyFJoXF6bLA+4blvW7wft1Bok
+         ej0A==
+X-Gm-Message-State: AOAM531qHKZxWjje34iJcQ7m49DPK+pXA8AGg2jExT3TNj/CcXGEbwYj
+        NgApPHhlJ+SWksFzyN0FQUcJemmAG0dIxHkiC9Q=
+X-Google-Smtp-Source: ABdhPJy+sJzie+nNhws1WvRnHF1WPTTCyEH8ke79MTLAoB0XyL2e2Lj4p/CjY45d6S8t3lhptHLlwSprAqmdFvWMWzs=
+X-Received: by 2002:a05:6402:3130:: with SMTP id dd16mr19933740edb.55.1597163427068;
+ Tue, 11 Aug 2020 09:30:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200811150117.254620-1-noltari@gmail.com> <20200811150117.254620-4-noltari@gmail.com>
+In-Reply-To: <20200811150117.254620-4-noltari@gmail.com>
+From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
+Date:   Tue, 11 Aug 2020 18:30:15 +0200
+Message-ID: <CAAdtpL7f=KPgVmSqNpAyiyUUURFsDZqwE8A6v-ZHp2Sfut-Mqg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] MIPS: BCM63xx: enable EHCI for DWV-S0 board
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There's no EHCI controller on BCM6348.
+On Tue, Aug 11, 2020 at 5:01 PM Álvaro Fernández Rojas
+<noltari@gmail.com> wrote:
+>
+> BCM6358 SoCs have OHCI and EHCI controllers that share the same USB ports.
+> Therefore, the board should also have EHCI enabled.
+>
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
----
- v3: no changes.
- v2: no changes.
+Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
 
- arch/mips/bcm63xx/boards/board_bcm963xx.c | 3 ---
- 1 file changed, 3 deletions(-)
+> ---
+>  v3: Reword commit description to avoid possible confusions.
 
-diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-index 744aa16bab12..45f1bc437245 100644
---- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
-+++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-@@ -285,7 +285,6 @@ static struct board_info __initdata board_96348gw_10 = {
- 
- 	.has_ohci0			= 1,
- 	.has_pccard			= 1,
--	.has_ehci0			= 1,
- 
- 	.leds = {
- 		{
-@@ -338,7 +337,6 @@ static struct board_info __initdata board_96348gw_11 = {
- 
- 	.has_ohci0 = 1,
- 	.has_pccard = 1,
--	.has_ehci0 = 1,
- 
- 	.leds = {
- 		{
-@@ -441,7 +439,6 @@ static struct board_info __initdata board_FAST2404 = {
- 
- 	.has_ohci0			= 1,
- 	.has_pccard			= 1,
--	.has_ehci0			= 1,
- };
- 
- static struct board_info __initdata board_rta1025w_16 = {
--- 
-2.28.0
+Thanks!
 
+>  v2: no changes.
+>
+>  arch/mips/bcm63xx/boards/board_bcm963xx.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+> index 45f1bc437245..ac9570b66f37 100644
+> --- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
+> +++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+> @@ -645,6 +645,7 @@ static struct board_info __initdata board_DWVS0 = {
+>         },
+>
+>         .has_ohci0                      = 1,
+> +       .has_ehci0                      = 1,
+>  };
+>  #endif /* CONFIG_BCM63XX_CPU_6358 */
+>
+> --
+> 2.28.0
+>

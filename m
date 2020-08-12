@@ -2,61 +2,62 @@ Return-Path: <SRS0=mT94=BW=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6743C433DF
-	for <linux-mips@archiver.kernel.org>; Wed, 12 Aug 2020 07:52:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA083C433DF
+	for <linux-mips@archiver.kernel.org>; Wed, 12 Aug 2020 07:52:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A13F820771
-	for <linux-mips@archiver.kernel.org>; Wed, 12 Aug 2020 07:52:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9F116206B5
+	for <linux-mips@archiver.kernel.org>; Wed, 12 Aug 2020 07:52:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mbm+Mb1L"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j2DilTxD"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgHLHwk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 12 Aug 2020 03:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41954 "EHLO
+        id S1726927AbgHLHwm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 12 Aug 2020 03:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726479AbgHLHwk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 12 Aug 2020 03:52:40 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F30EC06174A;
-        Wed, 12 Aug 2020 00:52:39 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id a15so1091128wrh.10;
-        Wed, 12 Aug 2020 00:52:39 -0700 (PDT)
+        with ESMTP id S1726897AbgHLHwm (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 12 Aug 2020 03:52:42 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB87FC06174A;
+        Wed, 12 Aug 2020 00:52:41 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id g75so1018903wme.4;
+        Wed, 12 Aug 2020 00:52:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k795cS87OwKuyVO3rujC6YZeCCmb5P0Upy5SIYYKgDo=;
-        b=mbm+Mb1LVfp1wM95jDePVO+4Hamx49VtFfDg2H0PzGP+/WEmkz02+JrVumPuF6Q1L0
-         OYcA4pXP6TREQEy5gDBSuOah5XNc45V0rBSUb/74QL6kM0YwPZqTSqJXqrMhh620kAr8
-         fF29dctU7W1XDf3NXrnbHVUlXZJ16xe52UH+76C8xU5/bmewRvh37Fk9EyGzhi+2FsNu
-         idYV/8sF4eo+vVaWDP2CBnBHMyrloUR8qjWkFzTeHELq7z8660xTcBaJJIO8FYpAxIno
-         QmDi9VodB1GQd5bjRwfzw5JuFS2pFdfA0dabJwRqYIuChqx4q5mssOFsxqxDxQPX4UOM
-         ocqw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=929+dh1AtIEgfaabT2Jpl1udW5ZWOmPGilo19Uc2jmE=;
+        b=j2DilTxDdjXBrTJ81JgbsPZzICYwPhEhS4YUdSJVX7UpvQggnn4XCuLBZCXeAyg8KY
+         80euFMKmsPIJABMahJS30bBS/ILN3k24ClHqU1TKNsekx5NrFVyzGyV9UYi3NAs44Z+C
+         ed0Hs/I4GhhKIl8jNuJtuAHwB8/i0WQ9V2+8H855/qUsK0Zu6g2uq1k3iERgVJnl9mdI
+         nKMiYunXW8XQC/jqVIzSQqpDIcgw3Xcz+TsAZNGGZxbsL5/ieAk+/N94fak06aV8FptR
+         rJLow17yxeethnbj9ncyd1RzdykqrZq0dvyj9nYaGx6ABhCu2Y5hSRhnYOJrm1t2V+Bx
+         np9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=k795cS87OwKuyVO3rujC6YZeCCmb5P0Upy5SIYYKgDo=;
-        b=HDDhreBPIJZawBydVG8ck/RjnjzZvmBrkhJA/BfpKzvbR6Kxp7C8odQe13nQ1/9yMj
-         JmkfoZylE7qAtKA0AKJ0d+icMtH0R2zgVegrAApn8sosW1ZBBpgEO8yD6E5HM3pMzHe1
-         6BEzilrvJBZaFm9G8uFOJ2Aygae/q8Ah/86zcfR1jSmUfGFRqY/ffRKupQx8lUQUr/QM
-         INSERIWLKcVdQ9g19LgY2YTFDO+RhVVVCiB8LRslJlXx9HsMaNTlrZdVb0v9oezSb28d
-         KO9HiALr6jMA80vSIHjn1KIRxJQwmEL9PJE5Sl5XApmKtDJJmnvMlhd1ZmQ5kwsqdqdo
-         kvCw==
-X-Gm-Message-State: AOAM532LHIW86quuvdOStKMRPEdlknsrWapU0EsyrjamOpBtnK+VABf4
-        v4iM0XNLsgTJ641vetN6AtE=
-X-Google-Smtp-Source: ABdhPJzknrzfXN9Tkt6EkQuzqcitN3D20GBfvMDx/Rx/iPuj3YEEifWby+hgjNx8nGBtZWji//sytw==
-X-Received: by 2002:adf:ed85:: with SMTP id c5mr32710290wro.307.1597218757537;
-        Wed, 12 Aug 2020 00:52:37 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=929+dh1AtIEgfaabT2Jpl1udW5ZWOmPGilo19Uc2jmE=;
+        b=LvDo1uuNrVDhtTt2qQMm+99OvWwMsQARIny6FiwiYqaqOe6BzlvwskO4kyWK23F92c
+         ZiPjMEDISpmQeUY4n0nVmtAXjBA7fvdpWAXcLIToJ77kQKVU2gOO9YVnQ9Tjj4BfOLHU
+         Yl0vvOgpyXLWSSBgUF52L+ckkx4gQpOFiWwZ2jE21ohHpiW+W3+TFk9rkLZLrjtSVHH6
+         fOrlIhxO98lraaj5EBL2Hjq+jSQvGZQljnnOQKRqIJaqIPmJmy0QWhXAYmbgT4t110rz
+         1/D8mLpnOmegSZng2JnXdiLvXEcymqqgeYH9/CY8C12ptS2sfGjiChkAR2xT/B4chYig
+         VmMg==
+X-Gm-Message-State: AOAM5303QNuxqhtGlmH7bjOIIF39QrlaH81gX+tTGKK6baks+O1HovGR
+        w3MsJ46CwMHHZcPs5o21hC4=
+X-Google-Smtp-Source: ABdhPJx6YFEZgpPsw2QZ2xccLbfaZGwYAy9W2nrDDP2RyS8jW/lP1NnZEw8dgkaLijW7mxzMmdlNfA==
+X-Received: by 2002:a1c:24c4:: with SMTP id k187mr7251153wmk.148.1597218760577;
+        Wed, 12 Aug 2020 00:52:40 -0700 (PDT)
 Received: from skynet.lan (88.red-83-49-60.dynamicip.rima-tde.net. [83.49.60.88])
-        by smtp.gmail.com with ESMTPSA id 6sm2470984wmf.4.2020.08.12.00.52.36
+        by smtp.gmail.com with ESMTPSA id 6sm2470984wmf.4.2020.08.12.00.52.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Aug 2020 00:52:37 -0700 (PDT)
+        Wed, 12 Aug 2020 00:52:40 -0700 (PDT)
 From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
         <noltari@gmail.com>
 To:     tsbogend@alpha.franken.de, f.fainelli@gmail.com,
@@ -65,10 +66,12 @@ To:     tsbogend@alpha.franken.de, f.fainelli@gmail.com,
         linux-kernel@vger.kernel.org
 Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
         <noltari@gmail.com>
-Subject: [PATCH v4 0/5] MIPS: BCM63xx: board improvements
-Date:   Wed, 12 Aug 2020 09:52:30 +0200
-Message-Id: <20200812075235.366864-1-noltari@gmail.com>
+Subject: [PATCH v4 3/5] MIPS: BCM63xx: enable EHCI for DWV-S0 board
+Date:   Wed, 12 Aug 2020 09:52:33 +0200
+Message-Id: <20200812075235.366864-4-noltari@gmail.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200812075235.366864-1-noltari@gmail.com>
+References: <20200812075235.366864-1-noltari@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -77,20 +80,31 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-v4: Split license change to a new patch.
-v3: Reword DWV-S0 board commit description to avoid possible confusions.
-v2: switch to SPDX license identifier.
+BCM6358 SoCs have OHCI and EHCI controllers that share the same USB ports.
+Therefore, the board should also have EHCI enabled.
 
-Álvaro Fernández Rojas (5):
-  MIPS: BCM63xx: remove duplicated new lines
-  MIPS: BCM63xx: remove EHCI from BCM6348 boards
-  MIPS: BCM63xx: enable EHCI for DWV-S0 board
-  MIPS: BCM63xx: refactor board declarations
-  MIPS: BCM63xx: switch to SPDX license identifier
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ v4: no changes.
+ v3: Reword commit description to avoid possible confusions.
+ v2: no changes.
 
- arch/mips/bcm63xx/boards/board_bcm963xx.c | 625 +++++++++++-----------
- 1 file changed, 306 insertions(+), 319 deletions(-)
+ arch/mips/bcm63xx/boards/board_bcm963xx.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+index 45f1bc437245..ac9570b66f37 100644
+--- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
++++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
+@@ -645,6 +645,7 @@ static struct board_info __initdata board_DWVS0 = {
+ 	},
+ 
+ 	.has_ohci0			= 1,
++	.has_ehci0			= 1,
+ };
+ #endif /* CONFIG_BCM63XX_CPU_6358 */
+ 
 -- 
 2.28.0
 

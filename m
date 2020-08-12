@@ -2,78 +2,137 @@ Return-Path: <SRS0=mT94=BW=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.0 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05243C433E4
-	for <linux-mips@archiver.kernel.org>; Wed, 12 Aug 2020 01:32:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94AC5C433E0
+	for <linux-mips@archiver.kernel.org>; Wed, 12 Aug 2020 06:31:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D83412224D
-	for <linux-mips@archiver.kernel.org>; Wed, 12 Aug 2020 01:32:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7096020781
+	for <linux-mips@archiver.kernel.org>; Wed, 12 Aug 2020 06:31:42 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ya4Gpqyf"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgHLBcR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 11 Aug 2020 21:32:17 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:47554 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726564AbgHLBcP (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 11 Aug 2020 21:32:15 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx392aRjNfgboHAA--.4254S2;
-        Wed, 12 Aug 2020 09:32:12 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
-Cc:     kvm@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Add git tree for KVM/mips
-Date:   Wed, 12 Aug 2020 09:32:10 +0800
-Message-Id: <1597195930-13613-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx392aRjNfgboHAA--.4254S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrCr1UKr45Xr1DAryxZF43Wrg_yoWxXFb_CF
-        47JayxWryrGrZrA3yvg3ZrKFyFq3y8JF93Z3ZFqwsFyas8tryYqrZFy3s7C34DCr4kCrWD
-        Xay3Jwna9r43WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2xYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_KwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU2lksDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1726861AbgHLGbl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 12 Aug 2020 02:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726841AbgHLGbk (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 12 Aug 2020 02:31:40 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72A8C061787;
+        Tue, 11 Aug 2020 23:31:39 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id y3so938540wrl.4;
+        Tue, 11 Aug 2020 23:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=YqwGurqd5uK7QVmb7fPtpy/V1kBXzGsqFOzo+2XH/LE=;
+        b=Ya4GpqyffcFtEdhtT4EwJFaQs1w1mR07dIWgvOunrPPtYrgJdgNWpSW4IVjb76dDG8
+         BbpYwM7FIs2FZoR07mMWlaUdKK6ieJNujijdUtJ/8cjfJvMSIvXCtZqwuLgW/8nlbx+v
+         VLBz0kGDs7t9GdgxhGL8T3bG4MMCR2wENqFk7GtbCJCk3Dl9cg/PGokcEUNrwnX4cum7
+         HTAplB+cJP9Bfmg2JBCvwT7M2NFS4re4Lm29LIXdsRYodfjNzsd0dd3go+qToxM+xQQg
+         +KEzUROhF9P0lTuHrOpbvYaww2YpBgeL8SqaBVdjj4PTojx7Rhm+hL15Wno8LMbZlY3P
+         4PQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=YqwGurqd5uK7QVmb7fPtpy/V1kBXzGsqFOzo+2XH/LE=;
+        b=DjuOsasjCmaQrYsQVX2i3kst4+a3v+z+lavRkLvK2F8OPPeKM5ObypwLo3aDm+Cu20
+         C2t5jpahJZj0tpDGFThxEzf56g0ohAW5+66o9bR5a3AlM0mi7OwE/qn6EXRCOT99GcCS
+         J8PMSSR9Q1k/e2+t9Vt9cU27ZVziYHaBKsxDIMEBgaiZya6MM/qCi1rfLWqQCysENONT
+         ObmUQvUdnZ+f18RdKV2s1dnMsTUdxYp8XjPHUMRvgJGiHXfx9vmKt5eiRDvbAYKYutfb
+         srpkStPm0cRqDvGh/PSi6mpRxzPs0dO9mCJ8AlfPfCyhvwSUa2QGcLlonTkjaL1I6o8u
+         A7nQ==
+X-Gm-Message-State: AOAM530fazvwFby09QwQiJx1VqXsHNYoPJKJPKWk+3OZ10lHzO7934LO
+        lAI1VlH9Ki2a7ex3wB4z8lI=
+X-Google-Smtp-Source: ABdhPJwLeiwOnaE9laWkXf+yqDocujm7szRtXNwqPNogkrcqwSG691Unbt51woCcoPgHwF3ea5qbaA==
+X-Received: by 2002:adf:90d1:: with SMTP id i75mr30932503wri.278.1597213898407;
+        Tue, 11 Aug 2020 23:31:38 -0700 (PDT)
+Received: from skynet.lan (88.red-83-49-60.dynamicip.rima-tde.net. [83.49.60.88])
+        by smtp.gmail.com with ESMTPSA id m16sm2149945wrr.71.2020.08.11.23.31.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Aug 2020 23:31:37 -0700 (PDT)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     f.fainelli@gmail.com, robh+dt@kernel.org,
+        tsbogend@alpha.franken.de, jonas.gorski@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH 05/14] mips: bmips: add BCM6358 irq definitions
+Date:   Wed, 12 Aug 2020 08:31:20 +0200
+Message-Id: <20200812063129.361862-6-noltari@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200812063129.361862-1-noltari@gmail.com>
+References: <20200812063129.361862-1-noltari@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There is no git tree for KVM/mips in MAINTAINERS, it is not
-convinent to rebase, add it.
+Add header with BCM6358 definitions in order to be able to include it from
+device tree files.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
 ---
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+ .../bcm6358-interrupt-controller.h            | 38 +++++++++++++++++++
+ 1 file changed, 38 insertions(+)
+ create mode 100644 include/dt-bindings/interrupt-controller/bcm6358-interrupt-controller.h
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e627ed6..11c82c1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9546,6 +9546,7 @@ M:	Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
- L:	linux-mips@vger.kernel.org
- L:	kvm@vger.kernel.org
- S:	Maintained
-+T:	git git://git.kernel.org/pub/scm/virt/kvm/kvm.git
- F:	arch/mips/include/asm/kvm*
- F:	arch/mips/include/uapi/asm/kvm*
- F:	arch/mips/kvm/
+diff --git a/include/dt-bindings/interrupt-controller/bcm6358-interrupt-controller.h b/include/dt-bindings/interrupt-controller/bcm6358-interrupt-controller.h
+new file mode 100644
+index 000000000000..a098639dbe4e
+--- /dev/null
++++ b/include/dt-bindings/interrupt-controller/bcm6358-interrupt-controller.h
+@@ -0,0 +1,38 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++
++#ifndef __DT_BINDINGS_INTERRUPT_CONTROLLER_BCM6358_H
++#define __DT_BINDINGS_INTERRUPT_CONTROLLER_BCM6358_H
++
++#define BCM6358_IRQ_TIMER		0
++#define BCM6358_IRQ_SPI			1
++#define BCM6358_IRQ_UART0		2
++#define BCM6358_IRQ_UART1		3
++#define BCM6358_IRQ_OHCI		5
++#define BCM6358_IRQ_EMAC1		6
++#define BCM6358_IRQ_USBS		7
++#define BCM6358_IRQ_EMAC0		8
++#define BCM6358_IRQ_EPHY		9
++#define BCM6358_IRQ_EHCI		10
++#define BCM6358_IRQ_USB_CTL_RX_DMA	11
++#define BCM6358_IRQ_USB_CTL_TX_DMA	12
++#define BCM6358_IRQ_USB_BULK_RX_DMA	13
++#define BCM6358_IRQ_USB_BULK_TX_DMA	14
++#define BCM6358_IRQ_EMAC0_RX_DMA	15
++#define BCM6358_IRQ_EMAC0_TX_DMA	16
++#define BCM6358_IRQ_EMAC1_RX_DMA	17
++#define BCM6358_IRQ_EMAC1_TX_DMA	18
++#define BCM6358_IRQ_ATM		        19
++#define BCM6358_IRQ_EXT4		20
++#define BCM6358_IRQ_EXT5		21
++#define BCM6358_IRQ_PCM			22
++#define BCM6358_IRQ_PCM_RX_DMA		23
++#define BCM6358_IRQ_PCM_TX_DMA		24
++#define BCM6358_IRQ_EXT0		25
++#define BCM6358_IRQ_EXT1		26
++#define BCM6358_IRQ_EXT2		27
++#define BCM6358_IRQ_EXT3		28
++#define BCM6358_IRQ_ADSL		29
++#define BCM6358_IRQ_DG			30
++#define BCM6358_IRQ_MPI			31
++
++#endif /* __DT_BINDINGS_INTERRUPT_CONTROLLER_BCM6358_H */
 -- 
-2.1.0
+2.28.0
 

@@ -2,105 +2,83 @@ Return-Path: <SRS0=mT94=BW=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07B12C433DF
-	for <linux-mips@archiver.kernel.org>; Wed, 12 Aug 2020 09:15:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C54E9C433DF
+	for <linux-mips@archiver.kernel.org>; Wed, 12 Aug 2020 09:21:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B8B4D206C3
-	for <linux-mips@archiver.kernel.org>; Wed, 12 Aug 2020 09:15:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 90863207DE
+	for <linux-mips@archiver.kernel.org>; Wed, 12 Aug 2020 09:21:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="t2wsHSUq"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="E4ui8yfU"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgHLJPn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 12 Aug 2020 05:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726595AbgHLJPm (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 12 Aug 2020 05:15:42 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09322C06174A;
-        Wed, 12 Aug 2020 02:15:42 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id t23so1433820ljc.3;
-        Wed, 12 Aug 2020 02:15:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/3bbT+znQtvhBvyL05XoYG/sT1t/szYIcY75YFFqv74=;
-        b=t2wsHSUquV599ok7d7bCW6Ei5aL5mUDcxse9EkUaWZA6DDac8xIGsia/1RrFy0M6e0
-         tuM/DI8zi7D5/OgIcr6nEWZmVIb/SL2T3+h+ZOL3y5eSUTF9c1ZajUu1KH/kQxiLErog
-         fpjVPHqL4svpzM2QMPUs4qkbdAL/G4jBoi+c1ago8RYhyCE6PoUgiXyspAaqMmkIE5zb
-         EwinRv2r5DUdKlAdgWqZHUOliL23wWQ9s3TFSd97ec9j4uVQero1R7FxBsuvJja9NQRG
-         aFSpaaeMkniSdabQ5iYDw/Bn7ftlzGmp3MO38deO9etGxCI6DdS6X1EXesV3txXmQkC4
-         2fTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=/3bbT+znQtvhBvyL05XoYG/sT1t/szYIcY75YFFqv74=;
-        b=kFYurdZaIoOi7b33LxIzmeNxk0nyJUfztOfMHW3hQAhdzKuCBA8xBPog7Y2AIw+x2b
-         LMVudNSeEy62+6ornsQ6d/tIQrhTT5pMM8fG6unwz9U5HA/KOx+c6z6TfgmJRytWR7G8
-         UrexeOB1oZWSQj7uDiK68LJrlBIsGiqQL/3Nr6PJKptyO7YZmi0mEb9Rl4jrvqv6iOAw
-         px+tA9q4XT4E9ZbB24E4Rlm/zdty8KlZELrbeNpr1hSQ8gC2xZkCW0VB+mcD4o66MWZu
-         IDug4pgexuMZX3N5+1zDAFpq0Mg4+zSjDup3plY9u+P2znAhTiAdIcDsPIvIXltkNxzW
-         2W8g==
-X-Gm-Message-State: AOAM532SC6dUjgwu1v1MMrUzPTpD/6j/UD5966IdSMzdjfRt1F8iz5S2
-        HVgKTq1nBTqbtFdKeObfwd/Evw8NCSo=
-X-Google-Smtp-Source: ABdhPJzEnrexISBTxARVq2yOEqceqeSZvwAJY9hy/o23qvF9pO4LaoPbBKSxndRFqx54Qsam925pgA==
-X-Received: by 2002:a2e:a16f:: with SMTP id u15mr5210687ljl.5.1597223740380;
-        Wed, 12 Aug 2020 02:15:40 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:41b:98d0:14d2:8cca:fcf5:be6? ([2a00:1fa0:41b:98d0:14d2:8cca:fcf5:be6])
-        by smtp.gmail.com with ESMTPSA id e25sm310460ljp.47.2020.08.12.02.15.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Aug 2020 02:15:39 -0700 (PDT)
+        id S1726572AbgHLJVe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 12 Aug 2020 05:21:34 -0400
+Received: from crapouillou.net ([89.234.176.41]:37216 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726255AbgHLJVd (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 12 Aug 2020 05:21:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1597224091; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DU8hiVooevw2svajRRMAqZzXiDDtBuJEq9PAFVAh+/U=;
+        b=E4ui8yfUidBOt46tCJhPDUvRQG+qVa6jrj9BROIV00BiEjXqezkJ9UCgRj6Y99t+MVqDvH
+        +aqd6OM3sNA/4AlItZgKq0MlE6UYEXdd6IMAyQG0wzFZruGN62v0p5NqG+E/fYohjLjXkL
+        uQeBHw517SmDBjPPtc6poEM6+JpABls=
+Date:   Wed, 12 Aug 2020 11:21:21 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
 Subject: Re: [PATCH v2 07/13] MIPS: generic: Support booting with built-in or
  appended DTB
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Paul Burton <paulburton@kernel.org>,
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
-        =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>, od@zcrc.me,
+        =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>, od@zcrc.me,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Message-Id: <LZ1YEQ.KIROREMKUV102@crapouillou.net>
+In-Reply-To: <1380509b-6479-3f1b-9e5b-7eb14f7ab158@gmail.com>
 References: <20200812001510.460382-1-paul@crapouillou.net>
- <20200812001510.460382-8-paul@crapouillou.net>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <1380509b-6479-3f1b-9e5b-7eb14f7ab158@gmail.com>
-Date:   Wed, 12 Aug 2020 12:15:33 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        <20200812001510.460382-8-paul@crapouillou.net>
+        <1380509b-6479-3f1b-9e5b-7eb14f7ab158@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200812001510.460382-8-paul@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello!
 
-On 12.08.2020 3:15, Paul Cercueil wrote:
 
-> The plat_get_fdt() checked that the kernel was booted using UHI before
-> reading the 'fw_passed_dtb' variable. However, this variable is also set
-> when the kernel has been appended, or when it has been built into the
+Le mer. 12 ao=FBt 2020 =E0 12:15, Sergei Shtylyov=20
+<sergei.shtylyov@gmail.com> a =E9crit :
+> Hello!
+>=20
+> On 12.08.2020 3:15, Paul Cercueil wrote:
+>=20
+>> The plat_get_fdt() checked that the kernel was booted using UHI=20
+>> before
+>> reading the 'fw_passed_dtb' variable. However, this variable is also=20
+>> set
+>> when the kernel has been appended, or when it has been built into the
+>=20
+>    s/kernel/DT/?
 
-    s/kernel/DT/?
+Ooops :)
 
-> kernel.
-> 
-> Support these usecases by removing the UHI check.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-[...]
+>=20
+>> kernel.
+>>=20
+>> Support these usecases by removing the UHI check.
+>>=20
+>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> [...]
+>=20
+> MBR, Sergei
 
-MBR, Sergei
+

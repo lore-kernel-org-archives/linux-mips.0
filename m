@@ -4,94 +4,132 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8C52C433E5
-	for <linux-mips@archiver.kernel.org>; Sat, 15 Aug 2020 21:54:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 493C7C433E1
+	for <linux-mips@archiver.kernel.org>; Sat, 15 Aug 2020 22:01:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B9AE3204FD
-	for <linux-mips@archiver.kernel.org>; Sat, 15 Aug 2020 21:54:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2387F2053B
+	for <linux-mips@archiver.kernel.org>; Sat, 15 Aug 2020 22:01:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728483AbgHOVyH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 15 Aug 2020 17:54:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
+        id S1728132AbgHOWBv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 15 Aug 2020 18:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728082AbgHOVwh (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 15 Aug 2020 17:52:37 -0400
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1690BC0A3BE8;
-        Sat, 15 Aug 2020 09:35:45 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        with ESMTP id S1728761AbgHOVvZ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 15 Aug 2020 17:51:25 -0400
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050::465:101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26E8C0A3BE9
+        for <linux-mips@vger.kernel.org>; Sat, 15 Aug 2020 09:35:51 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
         (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
         (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4BTQsW1dB1zQl1c;
-        Sat, 15 Aug 2020 18:35:43 +0200 (CEST)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4BTQsX1JBpzKmfP;
+        Sat, 15 Aug 2020 18:35:44 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at heinlein-support.de
 Received: from smtp1.mailbox.org ([80.241.60.240])
-        by spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de [80.241.56.115]) (amavisd-new, port 10030)
-        with ESMTP id CwklkwhAjps1; Sat, 15 Aug 2020 18:35:40 +0200 (CEST)
+        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
+        with ESMTP id NKSNmlr3lftj; Sat, 15 Aug 2020 18:35:41 +0200 (CEST)
 From:   Hauke Mehrtens <hauke@hauke-m.de>
 To:     tsbogend@alpha.franken.de
 Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
         robh+dt@kernel.org, james.hartley@sondrel.com,
         rahulbedarkar89@gmail.com, wigyori@uid0.hu,
         Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH 2/3] MIPS: DTS: img: marduk: Add Cascoda CA8210 6LoWPAN
-Date:   Sat, 15 Aug 2020 18:35:13 +0200
-Message-Id: <20200815163514.11631-2-hauke@hauke-m.de>
+Subject: [PATCH 3/3] MIPS: DTS: img: marduk: Add NXP SC16IS752IPW
+Date:   Sat, 15 Aug 2020 18:35:14 +0200
+Message-Id: <20200815163514.11631-3-hauke@hauke-m.de>
 In-Reply-To: <20200815163514.11631-1-hauke@hauke-m.de>
 References: <20200815163514.11631-1-hauke@hauke-m.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-MBO-SPAM-Probability: *
-X-Rspamd-Score: 0.89 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 29BF51831
-X-Rspamd-UID: 66c5b7
+X-Rspamd-Score: 0.84 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 245BE182B
+X-Rspamd-UID: 3afc30
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add Cascoda CA8210 6LoWPAN controller to device tree.
+Add NXP SC16IS752IPW SPI-UART controller to device tree.
+
+This controller drives 2 UARTs and 7 LEDs on the board.
 
 Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 ---
- arch/mips/boot/dts/img/pistachio_marduk.dts | 22 +++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ arch/mips/boot/dts/img/pistachio_marduk.dts | 51 +++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
 
 diff --git a/arch/mips/boot/dts/img/pistachio_marduk.dts b/arch/mips/boot/dts/img/pistachio_marduk.dts
-index ea11a21b133b..633a41954cc0 100644
+index 633a41954cc0..f4965a484b72 100644
 --- a/arch/mips/boot/dts/img/pistachio_marduk.dts
 +++ b/arch/mips/boot/dts/img/pistachio_marduk.dts
-@@ -75,6 +75,28 @@
- 	VDD-supply = <&internal_dac_supply>;
+@@ -46,6 +46,46 @@
+ 		regulator-max-microvolt = <1800000>;
+ 	};
+ 
++	/* EXT clock from ca8210 is fed to sc16is752 */
++	ca8210_ext_clk: ca8210-ext-clk {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <16000000>;
++		clock-output-names = "ca8210_ext_clock";
++	};
++
++	gpioleds {
++		compatible = "gpio-leds";
++		user1 {
++			label = "marduk:red:user1";
++			gpios = <&sc16is752 0 GPIO_ACTIVE_LOW>;
++		};
++		user2 {
++			label = "marduk:red:user2";
++			gpios = <&sc16is752 1 GPIO_ACTIVE_LOW>;
++		};
++		user3 {
++			label = "marduk:red:user3";
++			gpios = <&sc16is752 2 GPIO_ACTIVE_LOW>;
++		};
++		user4 {
++			label = "marduk:red:user4";
++			gpios = <&sc16is752 3 GPIO_ACTIVE_LOW>;
++		};
++		user5 {
++			label = "marduk:red:user5";
++			gpios = <&sc16is752 4 GPIO_ACTIVE_LOW>;
++		};
++		user6 {
++			label = "marduk:red:user6";
++			gpios = <&sc16is752 5 GPIO_ACTIVE_LOW>;
++		};
++		user7 {
++			label = "marduk:red:user7";
++			gpios = <&sc16is752 6 GPIO_ACTIVE_LOW>;
++		};
++	};
++
+ 	leds {
+ 		compatible = "pwm-leds";
+ 		heartbeat {
+@@ -95,6 +135,17 @@
+ 		extclock-freq = <16000000>;
+ 		extclock-gpio = <2>;
+ 	};
++
++	sc16is752: sc16is752@1 {
++		compatible = "nxp,sc16is752";
++		reg = <1>;
++		clocks = <&ca8210_ext_clk>;
++		spi-max-frequency = <4000000>;
++		interrupt-parent = <&gpio0>;
++		interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
++		gpio-controller;
++		#gpio-cells = <2>;
++	};
  };
  
-+&spfi0 {
-+	status = "okay";
-+	pinctrl-0 = <&spim0_pins>, <&spim0_cs0_alt_pin>, <&spim0_cs2_alt_pin>, <&spim0_cs3_alt_pin>, <&spim0_cs4_alt_pin>;
-+	pinctrl-names = "default";
-+
-+	cs-gpios = <&gpio1 14 GPIO_ACTIVE_HIGH>, <&gpio0 2 GPIO_ACTIVE_HIGH>,
-+			<&gpio1 12 GPIO_ACTIVE_HIGH>, <&gpio1 13 GPIO_ACTIVE_HIGH>;
-+
-+	ca8210: ca8210@0 {
-+		status = "okay";
-+		compatible = "cascoda,ca8210";
-+		reg = <0>;
-+		spi-max-frequency = <4000000>;
-+		spi-cpol;
-+		reset-gpio = <&gpio0 12 GPIO_ACTIVE_HIGH>;
-+		irq-gpio = <&gpio2 12 GPIO_ACTIVE_HIGH>;
-+		extclock-enable;
-+		extclock-freq = <16000000>;
-+		extclock-gpio = <2>;
-+	};
-+};
-+
  &spfi1 {
- 	status = "okay";
- 
 -- 
 2.20.1
 

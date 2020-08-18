@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4641C433E3
-	for <linux-mips@archiver.kernel.org>; Tue, 18 Aug 2020 15:20:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E406FC433E4
+	for <linux-mips@archiver.kernel.org>; Tue, 18 Aug 2020 15:20:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 99BAE2054F
-	for <linux-mips@archiver.kernel.org>; Tue, 18 Aug 2020 15:20:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AF224206DA
+	for <linux-mips@archiver.kernel.org>; Tue, 18 Aug 2020 15:20:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1597764049;
-	bh=yru9/NdH9RLPoFs58u4GN0nY+Sogzjweg/tWDL+BinU=;
+	s=default; t=1597764056;
+	bh=DFgjPvI/vXV91uvzN+sme20WtWl/kJKoZupsBOJXfBQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=mXViNsNzjgjDAeLdw99XCiU9n7i6Gtpa0gWRv8ijyBhj1Ejc0QvqReTmWzhBMy+OJ
-	 47kWoCoRfeUku0cxo6mntAdxzTQBNWyrhOSaIrcq+q+uw6LnLNXg3UNPoI8tEmsILP
-	 j925ixpAf/hSIwUDCN9MSml00u981u7IbOXXCgWY=
+	b=U4U/0UcYlhT7TTiEzaAxsueO/b6Uu5iR0rKNxNu2/u7GsFk+55KSyfcpf2wqUFyw5
+	 n/3w27ZTE+QALT/j024UVdxEn08bk9xzzAA13E5rYGcWelU3VsAfO3tXAddbn1VhEK
+	 ehxAeY0UZClgzFARfPNhGaUBfO6a2azYXYs41v9g=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728057AbgHRPUd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 18 Aug 2020 11:20:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43812 "EHLO mail.kernel.org"
+        id S1728012AbgHRPST (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 18 Aug 2020 11:18:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728133AbgHRPTX (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 18 Aug 2020 11:19:23 -0400
+        id S1728002AbgHRPRd (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 18 Aug 2020 11:17:33 -0400
 Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA0A22076E;
-        Tue, 18 Aug 2020 15:19:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E54462054F;
+        Tue, 18 Aug 2020 15:17:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597763962;
-        bh=yru9/NdH9RLPoFs58u4GN0nY+Sogzjweg/tWDL+BinU=;
+        s=default; t=1597763852;
+        bh=DFgjPvI/vXV91uvzN+sme20WtWl/kJKoZupsBOJXfBQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W7/1L7PMB6ny+R6Ja3ZTgt7DiZrj2MhEUn1Baeko2Ljpt+IgAAd0BIY0K5+ddrHdy
-         0Cgsg9BHQIzldcepANhUopKY4V4j0vt9l3455AzJkS/6oRvNjT5K9fhzbiyGqh3U1M
-         mGXqQ6IOdYEbV7nbtMhzb+zOAQWJlqo2RxTvK8bI=
+        b=Sb4tO818fhfIY1L0sTQE8nDj+8mGi9uHOcqZnjg0uj3tpj6i4/rzppzDqqqompdjZ
+         iFUaYJr4fueUpI5iPhsaxdXJPjYQyvH1ESfKCPejy1fi1XGVCto65QLI3+mssBbcEL
+         8tsVYJMK/jhJgOVkQ7iYEV+fVy8vBFUiHXB5XJsI=
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Andy Lutomirski <luto@kernel.org>, Baoquan He <bhe@redhat.com>,
@@ -73,10 +73,10 @@ Cc:     Andy Lutomirski <luto@kernel.org>, Baoquan He <bhe@redhat.com>,
         linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
         openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
         uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH v3 14/17] x86/setup: simplify reserve_crashkernel()
-Date:   Tue, 18 Aug 2020 18:16:31 +0300
-Message-Id: <20200818151634.14343-15-rppt@kernel.org>
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH v3 04/17] arm64: numa: simplify dummy_numa_init()
+Date:   Tue, 18 Aug 2020 18:16:21 +0300
+Message-Id: <20200818151634.14343-5-rppt@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200818151634.14343-1-rppt@kernel.org>
 References: <20200818151634.14343-1-rppt@kernel.org>
@@ -89,110 +89,97 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-* Replace magic numbers with defines
-* Replace memblock_find_in_range() + memblock_reserve() with
-  memblock_phys_alloc_range()
-* Stop checking for low memory size in reserve_crashkernel_low(). The
-  allocation from limited range will anyway fail if there is no enough
-  memory, so there is no need for extra traversal of memblock.memory
+dummy_numa_init() loops over memblock.memory and passes nid=0 to
+numa_add_memblk() which essentially wraps memblock_set_node(). However,
+memblock_set_node() can cope with entire memory span itself, so the loop
+over memblock.memory regions is redundant.
+
+Using a single call to memblock_set_node() rather than a loop also fixes an
+issue with a buggy ACPI firmware in which the SRAT table covers some but
+not all of the memory in the EFI memory map.
+
+Jonathan Cameron says:
+
+  This issue can be easily triggered by having an SRAT table which fails
+  to cover all elements of the EFI memory map.
+
+  This firmware error is detected and a warning printed. e.g.
+  "NUMA: Warning: invalid memblk node 64 [mem 0x240000000-0x27fffffff]"
+  At that point we fall back to dummy_numa_init().
+
+  However, the failed ACPI init has left us with our memblocks all broken
+  up as we split them when trying to assign them to NUMA nodes.
+
+  We then iterate over the memblocks and add them to node 0.
+
+  numa_add_memblk() calls memblock_set_node() which merges regions that
+  were previously split up during the earlier attempt to add them to different
+  nodes during parsing of SRAT.
+
+  This means elements are moved in the memblock array and we can end up
+  in a different memblock after the call to numa_add_memblk().
+  Result is:
+
+  Unable to handle kernel paging request at virtual address 0000000000003a40
+  Mem abort info:
+    ESR = 0x96000004
+    EC = 0x25: DABT (current EL), IL = 32 bits
+    SET = 0, FnV = 0
+    EA = 0, S1PTW = 0
+  Data abort info:
+    ISV = 0, ISS = 0x00000004
+    CM = 0, WnR = 0
+  [0000000000003a40] user address but active_mm is swapper
+  Internal error: Oops: 96000004 [#1] PREEMPT SMP
+
+  ...
+
+  Call trace:
+    sparse_init_nid+0x5c/0x2b0
+    sparse_init+0x138/0x170
+    bootmem_init+0x80/0xe0
+    setup_arch+0x2a0/0x5fc
+    start_kernel+0x8c/0x648
+
+Replace the loop with a single call to memblock_set_node() to the entire
+memory.
 
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Acked-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Baoquan He <bhe@redhat.com>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 ---
- arch/x86/kernel/setup.c | 40 ++++++++++++++--------------------------
- 1 file changed, 14 insertions(+), 26 deletions(-)
+ arch/arm64/mm/numa.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 2cac39ade2e3..52e83ba607b3 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -420,13 +420,13 @@ static int __init reserve_crashkernel_low(void)
+diff --git a/arch/arm64/mm/numa.c b/arch/arm64/mm/numa.c
+index 73f8b49d485c..8a97cd3d2dfe 100644
+--- a/arch/arm64/mm/numa.c
++++ b/arch/arm64/mm/numa.c
+@@ -423,19 +423,16 @@ static int __init numa_init(int (*init_func)(void))
+  */
+ static int __init dummy_numa_init(void)
  {
- #ifdef CONFIG_X86_64
- 	unsigned long long base, low_base = 0, low_size = 0;
--	unsigned long total_low_mem;
-+	unsigned long low_mem_limit;
++	phys_addr_t start = memblock_start_of_DRAM();
++	phys_addr_t end = memblock_end_of_DRAM();
  	int ret;
+-	struct memblock_region *mblk;
  
--	total_low_mem = memblock_mem_size(1UL << (32 - PAGE_SHIFT));
-+	low_mem_limit = min(memblock_phys_mem_size(), CRASH_ADDR_LOW_MAX);
- 
- 	/* crashkernel=Y,low */
--	ret = parse_crashkernel_low(boot_command_line, total_low_mem, &low_size, &base);
-+	ret = parse_crashkernel_low(boot_command_line, low_mem_limit, &low_size, &base);
- 	if (ret) {
- 		/*
- 		 * two parts from kernel/dma/swiotlb.c:
-@@ -444,23 +444,17 @@ static int __init reserve_crashkernel_low(void)
- 			return 0;
- 	}
- 
--	low_base = memblock_find_in_range(0, 1ULL << 32, low_size, CRASH_ALIGN);
-+	low_base = memblock_phys_alloc_range(low_size, CRASH_ALIGN, 0, CRASH_ADDR_LOW_MAX);
- 	if (!low_base) {
- 		pr_err("Cannot reserve %ldMB crashkernel low memory, please try smaller size.\n",
- 		       (unsigned long)(low_size >> 20));
- 		return -ENOMEM;
- 	}
- 
--	ret = memblock_reserve(low_base, low_size);
--	if (ret) {
--		pr_err("%s: Error reserving crashkernel low memblock.\n", __func__);
--		return ret;
--	}
+ 	if (numa_off)
+ 		pr_info("NUMA disabled\n"); /* Forced off on command line. */
+-	pr_info("Faking a node at [mem %#018Lx-%#018Lx]\n",
+-		memblock_start_of_DRAM(), memblock_end_of_DRAM() - 1);
 -
--	pr_info("Reserving %ldMB of low memory at %ldMB for crashkernel (System low RAM: %ldMB)\n",
-+	pr_info("Reserving %ldMB of low memory at %ldMB for crashkernel (low RAM limit: %ldMB)\n",
- 		(unsigned long)(low_size >> 20),
- 		(unsigned long)(low_base >> 20),
--		(unsigned long)(total_low_mem >> 20));
-+		(unsigned long)(low_mem_limit >> 20));
+-	for_each_memblock(memory, mblk) {
+-		ret = numa_add_memblk(0, mblk->base, mblk->base + mblk->size);
+-		if (!ret)
+-			continue;
++	pr_info("Faking a node at [mem %#018Lx-%#018Lx]\n", start, end - 1);
  
- 	crashk_low_res.start = low_base;
- 	crashk_low_res.end   = low_base + low_size - 1;
-@@ -504,13 +498,13 @@ static void __init reserve_crashkernel(void)
- 		 * unless "crashkernel=size[KMG],high" is specified.
- 		 */
- 		if (!high)
--			crash_base = memblock_find_in_range(CRASH_ALIGN,
--						CRASH_ADDR_LOW_MAX,
--						crash_size, CRASH_ALIGN);
-+			crash_base = memblock_phys_alloc_range(crash_size,
-+						CRASH_ALIGN, CRASH_ALIGN,
-+						CRASH_ADDR_LOW_MAX);
- 		if (!crash_base)
--			crash_base = memblock_find_in_range(CRASH_ALIGN,
--						CRASH_ADDR_HIGH_MAX,
--						crash_size, CRASH_ALIGN);
-+			crash_base = memblock_phys_alloc_range(crash_size,
-+						CRASH_ALIGN, CRASH_ALIGN,
-+						CRASH_ADDR_HIGH_MAX);
- 		if (!crash_base) {
- 			pr_info("crashkernel reservation failed - No suitable area found.\n");
- 			return;
-@@ -518,19 +512,13 @@ static void __init reserve_crashkernel(void)
- 	} else {
- 		unsigned long long start;
- 
--		start = memblock_find_in_range(crash_base,
--					       crash_base + crash_size,
--					       crash_size, 1 << 20);
-+		start = memblock_phys_alloc_range(crash_size, SZ_1M, crash_base,
-+						  crash_base + crash_size);
- 		if (start != crash_base) {
- 			pr_info("crashkernel reservation failed - memory is in use.\n");
- 			return;
- 		}
++	ret = numa_add_memblk(0, start, end);
++	if (ret) {
+ 		pr_err("NUMA init failed\n");
+ 		return ret;
  	}
--	ret = memblock_reserve(crash_base, crash_size);
--	if (ret) {
--		pr_err("%s: Error reserving crashkernel memblock.\n", __func__);
--		return;
--	}
- 
- 	if (crash_base >= (1ULL << 32) && reserve_crashkernel_low()) {
- 		memblock_free(crash_base, crash_size);
 -- 
 2.26.2
 

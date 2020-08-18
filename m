@@ -1,99 +1,89 @@
-Return-Path: <SRS0=fjN+=B3=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=NL9X=B4=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A15CC433DF
-	for <linux-mips@archiver.kernel.org>; Mon, 17 Aug 2020 18:42:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A26AC433E1
+	for <linux-mips@archiver.kernel.org>; Tue, 18 Aug 2020 08:58:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 727F6204EC
-	for <linux-mips@archiver.kernel.org>; Mon, 17 Aug 2020 18:42:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1597689736;
-	bh=qiszeG2DETfNLk1h6LSV90irfUrBtYajyeWRmTxA694=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=CEAQTCd9Mb5rwiz3kmq0yMzW2v1X64g+x703I4Tg+39CYCOMxI1YtWY+Es76Lpm/+
-	 +ttpetUd8mzSPL9R71zEAeRxbaOrkk1KDkD3R31jWjWtd9lky18enf/2SNrp+xl0rj
-	 vlJEMikHuBAozBpF+YndgQ3viwsWDYePg6wScuuA=
+	by mail.kernel.org (Postfix) with ESMTP id E36AB207DF
+	for <linux-mips@archiver.kernel.org>; Tue, 18 Aug 2020 08:58:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389221AbgHQSmF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 17 Aug 2020 14:42:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50188 "EHLO mail.kernel.org"
+        id S1726630AbgHRI47 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 18 Aug 2020 04:56:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37694 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730096AbgHQSlp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 17 Aug 2020 14:41:45 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6055220578;
-        Mon, 17 Aug 2020 18:41:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597689704;
-        bh=qiszeG2DETfNLk1h6LSV90irfUrBtYajyeWRmTxA694=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lv2IgNnZkzv+mgS45C9KIxlOTvkSf7h5MH8+Iv2FkzTFNjx3mof2bkTNavcAtcIfL
-         e+cXrZwa+NHWgNQ1SFZ4cqU9Gk5AL4YjEN0uavWL8VEnpEfU1e8ISYgOdZmBq6HTfp
-         SUaGcskUd1ARRz1e73RekcSM0nCSqpLWRklimvOk=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 2/2] MAINTAINERS: Add linux-mips mailing list to JZ47xx entries
-Date:   Mon, 17 Aug 2020 20:41:31 +0200
-Message-Id: <20200817184131.907-2-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200817184131.907-1-krzk@kernel.org>
-References: <20200817184131.907-1-krzk@kernel.org>
+        id S1726370AbgHRI46 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 18 Aug 2020 04:56:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5A7DEB02B;
+        Tue, 18 Aug 2020 08:57:22 +0000 (UTC)
+From:   Jiri Slaby <jslaby@suse.cz>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiri Slaby <jslaby@suse.cz>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH 3/8] newport_con: make module's init & exit static using module_driver
+Date:   Tue, 18 Aug 2020 10:56:50 +0200
+Message-Id: <20200818085655.12071-3-jslaby@suse.cz>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200818085655.12071-1-jslaby@suse.cz>
+References: <20200818085655.12071-1-jslaby@suse.cz>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The entries for JZ47xx SoCs and its drivers lacked MIPS mailing list.
-Only MTD NAND driver pointed linux-mtd.  Add linux-mips so the relevant
-patches will get attention of MIPS developers.
+The compiler complains that newport_console_init and
+newport_console_exit are not declared:
+   drivers/video/console/newport_con.c:745:12: warning: no previous prototype for 'newport_console_init'
+   drivers/video/console/newport_con.c:750:13: warning: no previous prototype for 'newport_console_exit'
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Paul Cercueil <paul@crapouillou.net>
+Here, it translates into: they should be marked static. Do so by
+converting the simple un/registration to module_driver().
 
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-fbdev@vger.kernel.org
+Cc: linux-mips@vger.kernel.org
 ---
+ drivers/video/console/newport_con.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
 
-Changes since v1:
-1. Do not update DMA driver entry
-2. Add ack
----
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9ab3a7fd6451..33d0ea35d8b4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8583,11 +8583,13 @@ F:	samples/bpf/ibumad_user.c
- INGENIC JZ4780 NAND DRIVER
- M:	Harvey Hunt <harveyhuntnexus@gmail.com>
- L:	linux-mtd@lists.infradead.org
-+L:	linux-mips@vger.kernel.org
- S:	Maintained
- F:	drivers/mtd/nand/raw/ingenic/
+diff --git a/drivers/video/console/newport_con.c b/drivers/video/console/newport_con.c
+index 4d9110393479..0d0989040c58 100644
+--- a/drivers/video/console/newport_con.c
++++ b/drivers/video/console/newport_con.c
+@@ -751,18 +751,6 @@ static struct gio_driver newport_driver = {
+ 	.probe = newport_probe,
+ 	.remove = newport_remove,
+ };
+-
+-int __init newport_console_init(void)
+-{
+-	return gio_register_driver(&newport_driver);
+-}
+-
+-void __exit newport_console_exit(void)
+-{
+-	gio_unregister_driver(&newport_driver);
+-}
+-
+-module_init(newport_console_init);
+-module_exit(newport_console_exit);
++module_driver(newport_driver, gio_register_driver, gio_unregister_driver);
  
- INGENIC JZ47xx SoCs
- M:	Paul Cercueil <paul@crapouillou.net>
-+L:	linux-mips@vger.kernel.org
- S:	Maintained
- F:	arch/mips/boot/dts/ingenic/
- F:	arch/mips/include/asm/mach-jz4740/
+ MODULE_LICENSE("GPL");
 -- 
-2.17.1
+2.28.0
 

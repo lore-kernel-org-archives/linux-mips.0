@@ -7,37 +7,37 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF0B8C433E1
-	for <linux-mips@archiver.kernel.org>; Tue, 18 Aug 2020 15:18:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48112C433DF
+	for <linux-mips@archiver.kernel.org>; Tue, 18 Aug 2020 15:18:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8B38020882
-	for <linux-mips@archiver.kernel.org>; Tue, 18 Aug 2020 15:18:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 15D9D2076E
+	for <linux-mips@archiver.kernel.org>; Tue, 18 Aug 2020 15:18:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1597763899;
-	bh=J2TTgbSkpqMfLCXDnbmKHenVNbCxcYzX9yMnhVHfk48=;
+	s=default; t=1597763901;
+	bh=pd6tPUt2ij5eVwUys1N2/je9Ueo/gXQuNWSa4Q9eWYQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=up5T1AI5ynAa3GoJyaRJoa/DIlK4DGiDnG1lAO7wbjNz0LBWPH7uyBeNRIIqhoRiz
-	 z4yLlryAQ1A4ZQs+aaH7e0Npg05E1w9+BI1OgoXL3RKqDGlDs/eXoZnCdjtSVuDle2
-	 xxASRW7c/TOVUh0EPltfQfkxODqdj4ZGDyICPJRQ=
+	b=ikBk4XnxAdv9ncvcGrzPXmzKBJqKKeh61sZHUwyvwystf1mK9Htt4H6Bk+qwmAYot
+	 MnYnQtK1wf11TtCGH1lbtkkCvkiv201f4HKz+oisthfqLLeULvrUQsRpaiwqtnvjFG
+	 kZV16xruXGaZPHrQewIuRm7MdUwR6RITVTo0/WKs=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728029AbgHRPSS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 18 Aug 2020 11:18:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41656 "EHLO mail.kernel.org"
+        id S1728044AbgHRPSU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 18 Aug 2020 11:18:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727942AbgHRPRz (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 18 Aug 2020 11:17:55 -0400
+        id S1726736AbgHRPSR (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 18 Aug 2020 11:18:17 -0400
 Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1557A2083B;
-        Tue, 18 Aug 2020 15:17:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA7162087D;
+        Tue, 18 Aug 2020 15:18:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597763874;
-        bh=J2TTgbSkpqMfLCXDnbmKHenVNbCxcYzX9yMnhVHfk48=;
+        s=default; t=1597763896;
+        bh=pd6tPUt2ij5eVwUys1N2/je9Ueo/gXQuNWSa4Q9eWYQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nnpj9aHPG2KrOH4/+klVGNuK/8Jk1zpZIDm/NkthQ+PlCtSHYH5K9SF+vic/Hgljh
-         aX6GYVU+9totQf5Ls3jsX3v4EOxk19bt3ErWGD3vxRwxDr77xrhkql9OdQ1TIDsYPz
-         M1XgT1PKnZBp1hv2FG7lhMFlFVATie/SitWQyBf0=
+        b=aMwnH14VB9pEvRif2kVXF2j9PC1kC4UCHLgZKwNXLzSUzRVbdfutiHYDJNbY4L5Cn
+         DSx/dIQT+xRpE9G7mTEjerjFtWAArSIBhoi9OW+Gl+/Arns44xtJv2oiFd0qu78t60
+         DniuPQvPK80yg3qGzD04yvXU+ZjlZwAlZl+BmuiU=
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Andy Lutomirski <luto@kernel.org>, Baoquan He <bhe@redhat.com>,
@@ -73,9 +73,9 @@ Cc:     Andy Lutomirski <luto@kernel.org>, Baoquan He <bhe@redhat.com>,
         linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
         openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
         uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org
-Subject: [PATCH v3 06/17] riscv: drop unneeded node initialization
-Date:   Tue, 18 Aug 2020 18:16:23 +0300
-Message-Id: <20200818151634.14343-7-rppt@kernel.org>
+Subject: [PATCH v3 08/17] memblock: make for_each_memblock_type() iterator private
+Date:   Tue, 18 Aug 2020 18:16:25 +0300
+Message-Id: <20200818151634.14343-9-rppt@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200818151634.14343-1-rppt@kernel.org>
 References: <20200818151634.14343-1-rppt@kernel.org>
@@ -88,37 +88,48 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-RISC-V does not (yet) support NUMA  and for UMA architectures node 0 is
-used implicitly during early memory initialization.
-
-There is no need to call memblock_set_node(), remove this call and the
-surrounding code.
+for_each_memblock_type() is not used outside mm/memblock.c, move it there
+from include/linux/memblock.h
 
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Reviewed-by: Baoquan He <bhe@redhat.com>
 ---
- arch/riscv/mm/init.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ include/linux/memblock.h | 5 -----
+ mm/memblock.c            | 5 +++++
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 787c75f751a5..0485cfaacc72 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -191,15 +191,6 @@ void __init setup_bootmem(void)
- 	early_init_fdt_scan_reserved_mem();
- 	memblock_allow_resize();
- 	memblock_dump_all();
--
--	for_each_memblock(memory, reg) {
--		unsigned long start_pfn = memblock_region_memory_base_pfn(reg);
--		unsigned long end_pfn = memblock_region_memory_end_pfn(reg);
--
--		memblock_set_node(PFN_PHYS(start_pfn),
--				  PFN_PHYS(end_pfn - start_pfn),
--				  &memblock.memory, 0);
--	}
- }
+diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+index 9d925db0d355..550faf69fc1c 100644
+--- a/include/linux/memblock.h
++++ b/include/linux/memblock.h
+@@ -552,11 +552,6 @@ static inline unsigned long memblock_region_reserved_end_pfn(const struct memblo
+ 	     region < (memblock.memblock_type.regions + memblock.memblock_type.cnt);	\
+ 	     region++)
  
- #ifdef CONFIG_MMU
+-#define for_each_memblock_type(i, memblock_type, rgn)			\
+-	for (i = 0, rgn = &memblock_type->regions[0];			\
+-	     i < memblock_type->cnt;					\
+-	     i++, rgn = &memblock_type->regions[i])
+-
+ extern void *alloc_large_system_hash(const char *tablename,
+ 				     unsigned long bucketsize,
+ 				     unsigned long numentries,
+diff --git a/mm/memblock.c b/mm/memblock.c
+index 45f198750be9..59f3998ae5db 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -132,6 +132,11 @@ struct memblock_type physmem = {
+ };
+ #endif
+ 
++#define for_each_memblock_type(i, memblock_type, rgn)			\
++	for (i = 0, rgn = &memblock_type->regions[0];			\
++	     i < memblock_type->cnt;					\
++	     i++, rgn = &memblock_type->regions[i])
++
+ int memblock_debug __initdata_memblock;
+ static bool system_has_some_mirror __initdata_memblock = false;
+ static int memblock_can_resize __initdata_memblock;
 -- 
 2.26.2
 

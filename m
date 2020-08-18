@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2B50C433E3
-	for <linux-mips@archiver.kernel.org>; Tue, 18 Aug 2020 15:21:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA3EDC433E3
+	for <linux-mips@archiver.kernel.org>; Tue, 18 Aug 2020 15:21:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A0F0B2076E
-	for <linux-mips@archiver.kernel.org>; Tue, 18 Aug 2020 15:21:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C400E2076E
+	for <linux-mips@archiver.kernel.org>; Tue, 18 Aug 2020 15:21:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1597764060;
-	bh=PDSdSqs6s6DgqNLhBcuuvT25sUGk4T0hXtDSJGfBsrY=;
+	s=default; t=1597764087;
+	bh=Tc7JOtILZvhmn/QZSq/rDuumFmni1KkgrRzI9vNcyIs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=TvcXfreXGk985XJFt2zQ5nFFre6yu9pZCfq9W0Ma11yfyBqeFCw1QG7hZEp0CmYoR
-	 q+dS2+sHJQneehYZDJBxRU4Ou5Oi/pBxg38NgwpNMT0MvYBWhYObSIqj3r2c2Rx7ZI
-	 7OLWiq8DgvqJSytvKSwCid0sPRp63OfL7Y/sQjOc=
+	b=xiDn7697puYpVkpij/tIhzg96voLavZpTmMKaNitUb+IrGSBzlxUuGFDnX9ZZCWQH
+	 qugKo0ekOiksGCPV8bD0hRKGyYCznhQpBXtC3svyXEe0a6uSFGlFJ7Ypb7hWmub7RX
+	 afromH4GkuJlQ71w5NCV8xkY1HTth7DOobNsYZdo=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728004AbgHRPSR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 18 Aug 2020 11:18:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41940 "EHLO mail.kernel.org"
+        id S1727925AbgHRPVQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 18 Aug 2020 11:21:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727836AbgHRPSG (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 18 Aug 2020 11:18:06 -0400
+        id S1727956AbgHRPRL (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 18 Aug 2020 11:17:11 -0400
 Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF0552080C;
-        Tue, 18 Aug 2020 15:17:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3188A2054F;
+        Tue, 18 Aug 2020 15:16:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597763885;
-        bh=PDSdSqs6s6DgqNLhBcuuvT25sUGk4T0hXtDSJGfBsrY=;
+        s=default; t=1597763830;
+        bh=Tc7JOtILZvhmn/QZSq/rDuumFmni1KkgrRzI9vNcyIs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZRkPL5UtoYHI6d9QOQmC27otNdwTpYVIzy2mBxFcsar+pfVbZMUNsByEvMFu5/lVq
-         +/Teqoicmnsf77QsGmS6VSFHXMzDm2mnzA2PZaZ0ObJqLAuZt9daTQWOXKbk2AsBNG
-         rNswnU4dZW5M9JzlkIhRuIWROvJSpn3VRcFUWPxU=
+        b=LGeqCVGqnjrha4TWndZaE/VnVhphBLSJIhWexklI8V6bUgoTtQfgaa8M9GXlf/+XT
+         WHUWAaZKTipeFUYBV6OLDTInvZP09FVWD6Y83cd7blmmE3C/RloP3ygxxjtDeRP+pl
+         Lwv5+wEO4Xr3K0oZUXYD0eSo61PTTILdUD0cRgzU=
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Andy Lutomirski <luto@kernel.org>, Baoquan He <bhe@redhat.com>,
@@ -73,9 +73,9 @@ Cc:     Andy Lutomirski <luto@kernel.org>, Baoquan He <bhe@redhat.com>,
         linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
         openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
         uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org
-Subject: [PATCH v3 07/17] mircoblaze: drop unneeded NUMA and sparsemem initializations
-Date:   Tue, 18 Aug 2020 18:16:24 +0300
-Message-Id: <20200818151634.14343-8-rppt@kernel.org>
+Subject: [PATCH v3 02/17] dma-contiguous: simplify cma_early_percent_memory()
+Date:   Tue, 18 Aug 2020 18:16:19 +0300
+Message-Id: <20200818151634.14343-3-rppt@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200818151634.14343-1-rppt@kernel.org>
 References: <20200818151634.14343-1-rppt@kernel.org>
@@ -88,50 +88,45 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-microblaze does not support neither NUMA not SPARSMEM, so there is no point
-to call memblock_set_node() and sparse_memory_present_with_active_regions()
-functions during microblaze memory initialization.
+The memory size calculation in cma_early_percent_memory() traverses
+memblock.memory rather than simply call memblock_phys_mem_size(). The
+comment in that function suggests that at some point there should have been
+call to memblock_analyze() before memblock_phys_mem_size() could be used.
+As of now, there is no memblock_analyze() at all and
+memblock_phys_mem_size() can be used as soon as cold-plug memory is
+registerd with memblock.
 
-Remove these calls and the surrounding code.
+Replace loop over memblock.memory with a call to memblock_phys_mem_size().
 
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Baoquan He <bhe@redhat.com>
 ---
- arch/microblaze/mm/init.c | 14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
+ kernel/dma/contiguous.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
-index 0880a003573d..49e0c241f9b1 100644
---- a/arch/microblaze/mm/init.c
-+++ b/arch/microblaze/mm/init.c
-@@ -105,9 +105,8 @@ static void __init paging_init(void)
+diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
+index cff7e60968b9..0369fd5fda8f 100644
+--- a/kernel/dma/contiguous.c
++++ b/kernel/dma/contiguous.c
+@@ -73,16 +73,7 @@ early_param("cma", early_cma);
  
- void __init setup_memory(void)
+ static phys_addr_t __init __maybe_unused cma_early_percent_memory(void)
  {
 -	struct memblock_region *reg;
+-	unsigned long total_pages = 0;
 -
- #ifndef CONFIG_MMU
-+	struct memblock_region *reg;
- 	u32 kernel_align_start, kernel_align_size;
+-	/*
+-	 * We cannot use memblock_phys_mem_size() here, because
+-	 * memblock_analyze() has not been called yet.
+-	 */
+-	for_each_memblock(memory, reg)
+-		total_pages += memblock_region_memory_end_pfn(reg) -
+-			       memblock_region_memory_base_pfn(reg);
++	unsigned long total_pages = PHYS_PFN(memblock_phys_mem_size());
  
- 	/* Find main memory where is the kernel */
-@@ -161,17 +160,6 @@ void __init setup_memory(void)
- 	pr_info("%s: max_low_pfn: %#lx\n", __func__, max_low_pfn);
- 	pr_info("%s: max_pfn: %#lx\n", __func__, max_pfn);
- 
--	/* Add active regions with valid PFNs */
--	for_each_memblock(memory, reg) {
--		unsigned long start_pfn, end_pfn;
--
--		start_pfn = memblock_region_memory_base_pfn(reg);
--		end_pfn = memblock_region_memory_end_pfn(reg);
--		memblock_set_node(start_pfn << PAGE_SHIFT,
--				  (end_pfn - start_pfn) << PAGE_SHIFT,
--				  &memblock.memory, 0);
--	}
--
- 	paging_init();
+ 	return (total_pages * CONFIG_CMA_SIZE_PERCENTAGE / 100) << PAGE_SHIFT;
  }
- 
 -- 
 2.26.2
 

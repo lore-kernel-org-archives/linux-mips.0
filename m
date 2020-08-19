@@ -2,100 +2,102 @@ Return-Path: <SRS0=7/j6=B5=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC744C433DF
-	for <linux-mips@archiver.kernel.org>; Wed, 19 Aug 2020 07:12:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF81EC433E1
+	for <linux-mips@archiver.kernel.org>; Wed, 19 Aug 2020 10:47:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 91C8F2054F
-	for <linux-mips@archiver.kernel.org>; Wed, 19 Aug 2020 07:12:02 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QIUBzW0L"
+	by mail.kernel.org (Postfix) with ESMTP id A2929206B5
+	for <linux-mips@archiver.kernel.org>; Wed, 19 Aug 2020 10:47:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728131AbgHSHLx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 19 Aug 2020 03:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726697AbgHSG41 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 19 Aug 2020 02:56:27 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF59FC061389;
-        Tue, 18 Aug 2020 23:56:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=yG7qWXKBUIxg7RQ3+cci8dpYxavPbFHR4ZLuySoica4=; b=QIUBzW0L+6A9SSAc6/gO+tDQ+b
-        OxXtbUbEFqlmm0USEC/IXSplued4C+C6F0ZF30aKjG8eHH9Hw09fN5oDweD3DjZhb8ZVyBa3oNCMt
-        gHqvdLdvetFUsHVA2naOyxN49WiwYumPj0OJ9vWKMBhULQu9DljH3ttkuIFc8Xzwt6Kk9NdAWGMVc
-        M/hFcqjB5X000cNsrLFGiT0ucDiSShmdbC+Iz8B0HGkVX82jI1lTPPtC7Yho4FRHWN0jDXHB+oQYg
-        jtcO/Q7MNp4OEwi61wxBreFz6GJBwroT31V+Pbx43dXQbOQjKpB13S5G4CjWrDHb//3KK5l+B0jlz
-        QH4CysFQ==;
-Received: from [2001:4bb8:198:f3b2:86b6:2277:f429:37a1] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k8I0s-0008Kv-H4; Wed, 19 Aug 2020 06:55:58 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Pawel Osciak <pawel@osciak.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        iommu@lists.linux-foundation.org
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, nouveau@lists.freedesktop.org,
-        netdev@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
-        alsa-devel@alsa-project.org
-Subject: [PATCH 01/28] mm: turn alloc_pages into an inline function
-Date:   Wed, 19 Aug 2020 08:55:28 +0200
-Message-Id: <20200819065555.1802761-2-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200819065555.1802761-1-hch@lst.de>
-References: <20200819065555.1802761-1-hch@lst.de>
+        id S1727979AbgHSKry (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 19 Aug 2020 06:47:54 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:36001 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727949AbgHSKrn (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 19 Aug 2020 06:47:43 -0400
+Received: by mail-il1-f193.google.com with SMTP id z3so20254637ilh.3;
+        Wed, 19 Aug 2020 03:47:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kag/C6BLvwPbPiCq6syzURWI48YRwCfCVVcw53S19XM=;
+        b=dbvnQtR3IqSxRoUhROBpz+3KPnbHq5orMgeO6lkOslow51I4Ig+aayn9+RBRCVbHTw
+         frEt+RbFYaqY4yh67CsjhdZ1g4vnrY4ocN5ctH9YRRfjkmWQk1LSQm2rTlgZkhMJryFS
+         rhPYrmhEz7DhSaxElONeVTp+ZvSv20Ip8X+IWktCfEjKVrHpogj89CUSxLqYmhEnWvD1
+         oFMODXaPS/S96Xa3Aj/WsZOeFmAnd4lRx+SEyJz3vCdzHFEQXWIwVbkBSJ6Se64ilMlO
+         OjuI1sCkWXSbpx7z9G8wYEfjcOrgxH+UGDsLaRoUB4byPSmZTe5nXlGyTYDAUcH2k2Rk
+         /fTw==
+X-Gm-Message-State: AOAM531k1Rc287P5iLexUdCbSEQNmbumUkKBjX1MZj4K6KPnVXxdSApj
+        0TleU1x3YnlM61JM6rApBSbPYpUhl6zkQbaB/dNuaYDlwKWJiCLa
+X-Google-Smtp-Source: ABdhPJzfkBxqoXzAxToa2EkMk00dqE+haQfFIYG/EYYLFFgaZlE1quHjJsyWBWAAdjld6Vi0W6Q0Ke21pEo59UzsHdY=
+X-Received: by 2002:a05:6e02:cb0:: with SMTP id 16mr9996793ilg.147.1597834061939;
+ Wed, 19 Aug 2020 03:47:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20200819060722.2267677-1-git@xen0n.name>
+In-Reply-To: <20200819060722.2267677-1-git@xen0n.name>
+From:   Huacai Chen <chenhc@lemote.com>
+Date:   Wed, 19 Aug 2020 18:47:29 +0800
+Message-ID: <CAAhV-H5L0g53=1KngKyi1DA7sO6i0hXrPBDGKSHFMb53YRoRKw@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: Loongson64: Remove unnecessary inclusion of boot_param.h
+To:     WANG Xuerui <git@xen0n.name>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Youling Tang <tangyouling@loongson.cn>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-To prevent a compiler error when a method call alloc_pages is
-added (which I plan to for the dma_map_ops).
+Reviewed-by: Huacai Chen <chenhc@lemote.com>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- include/linux/gfp.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index 67a0774e080b98..dd2577c5407112 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -550,8 +550,10 @@ extern struct page *alloc_pages_vma(gfp_t gfp_mask, int order,
- #define alloc_hugepage_vma(gfp_mask, vma, addr, order) \
- 	alloc_pages_vma(gfp_mask, order, vma, addr, numa_node_id(), true)
- #else
--#define alloc_pages(gfp_mask, order) \
--		alloc_pages_node(numa_node_id(), gfp_mask, order)
-+static inline struct page *alloc_pages(gfp_t gfp_mask, unsigned int order)
-+{
-+	return alloc_pages_node(numa_node_id(), gfp_mask, order);
-+}
- #define alloc_pages_vma(gfp_mask, order, vma, addr, node, false)\
- 	alloc_pages(gfp_mask, order)
- #define alloc_hugepage_vma(gfp_mask, vma, addr, order) \
--- 
-2.28.0
-
+On Wed, Aug 19, 2020 at 2:08 PM WANG Xuerui <git@xen0n.name> wrote:
+>
+> The couple of #includes are unused by now; remove to prevent namespace
+> pollution.
+>
+> This fixes e.g. build of dm_thin, which has a VIRTUAL symbol that
+> conflicted with the newly-introduced one in mach-loongson64/boot_param.h.
+>
+> Fixes: 39c1485c8baa ("MIPS: KVM: Add kvm guest support for Loongson-3")
+> Signed-off-by: WANG Xuerui <git@xen0n.name>
+> ---
+>  arch/mips/include/asm/mach-loongson64/irq.h    | 2 --
+>  arch/mips/include/asm/mach-loongson64/mmzone.h | 1 -
+>  2 files changed, 3 deletions(-)
+>
+> diff --git a/arch/mips/include/asm/mach-loongson64/irq.h b/arch/mips/include/asm/mach-loongson64/irq.h
+> index f5e362f79701..bf2480923154 100644
+> --- a/arch/mips/include/asm/mach-loongson64/irq.h
+> +++ b/arch/mips/include/asm/mach-loongson64/irq.h
+> @@ -2,8 +2,6 @@
+>  #ifndef __ASM_MACH_LOONGSON64_IRQ_H_
+>  #define __ASM_MACH_LOONGSON64_IRQ_H_
+>
+> -#include <boot_param.h>
+> -
+>  /* cpu core interrupt numbers */
+>  #define NR_IRQS_LEGACY         16
+>  #define NR_MIPS_CPU_IRQS       8
+> diff --git a/arch/mips/include/asm/mach-loongson64/mmzone.h b/arch/mips/include/asm/mach-loongson64/mmzone.h
+> index 3a25dbd3b3e9..5eaca4fe3f92 100644
+> --- a/arch/mips/include/asm/mach-loongson64/mmzone.h
+> +++ b/arch/mips/include/asm/mach-loongson64/mmzone.h
+> @@ -9,7 +9,6 @@
+>  #ifndef _ASM_MACH_LOONGSON64_MMZONE_H
+>  #define _ASM_MACH_LOONGSON64_MMZONE_H
+>
+> -#include <boot_param.h>
+>  #define NODE_ADDRSPACE_SHIFT 44
+>  #define NODE0_ADDRSPACE_OFFSET 0x000000000000UL
+>  #define NODE1_ADDRSPACE_OFFSET 0x100000000000UL
+> --
+> 2.25.1
+>

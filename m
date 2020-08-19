@@ -7,36 +7,36 @@ X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 743E4C433E1
-	for <linux-mips@archiver.kernel.org>; Wed, 19 Aug 2020 07:04:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0789EC433E1
+	for <linux-mips@archiver.kernel.org>; Wed, 19 Aug 2020 07:04:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4753920786
-	for <linux-mips@archiver.kernel.org>; Wed, 19 Aug 2020 07:04:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CFB0220786
+	for <linux-mips@archiver.kernel.org>; Wed, 19 Aug 2020 07:04:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="D7imtfyJ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="MIBdEjIo"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbgHSHE1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 19 Aug 2020 03:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36764 "EHLO
+        id S1727880AbgHSG5U (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 19 Aug 2020 02:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726749AbgHSG5U (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 19 Aug 2020 02:57:20 -0400
+        with ESMTP id S1727824AbgHSG5D (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 19 Aug 2020 02:57:03 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E5AC061389;
-        Tue, 18 Aug 2020 23:57:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65414C061343;
+        Tue, 18 Aug 2020 23:57:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=Iqi9DC545gQ9g/f8jSVVhsHYzLAUQX784ygGs4ZRRGA=; b=D7imtfyJmxTmDyfgn+f/LPtdHL
-        JFZyrzg4cAvUvkGLFi8hr63dDldNzvDvjdUfyKGi3rCKELJdsb/0ku9p330bHyqU7mDN25/UoKGQC
-        6LlycBSAi/XryA293desvAT603BNGQXCefSTgvyP48l1Xuna09iOtPoh5V11H5m7rxNkmvaiK+58J
-        LTIReZzMh7JVtZ/xDjqBJitk59Ky6y6ydtrtA9bniyP8j5wL7gfEINESidgPs2A1Qe+pSEFfTkI3j
-        H16A3Wo77NIcudSUJb0dKatozTNv8uTjdMCRxhGt4KoM20trnSq8WcXP3gryV7oxhsJG60dlQHTPn
-        MJ/Z5Ggg==;
+        bh=X8i7nxueqjYiXXABx6iAbSqyBXetjeuy5DnMYgOTSbg=; b=MIBdEjIoLTHUEBHUGUn2hxEK+5
+        BevUewh66/hAJEodxv37XHol1UkTJvsD7JDl+I4rW2ckgBABThtPp31SAHD8ICQgZg9JKLfxRcH4k
+        kvTpdncuF+HUCxaXssYT/w0O4ikj+Sa+Lyaln7QVFgqhX6bxyjj0pvaSW2wvw4j8/oBw/WQ88dOqN
+        Q3mRJmv4cM/nFVeWy5kNDxSA93Axsk8QBY2jkY9bRnSUGTtFij8Kiwsj0O2Rue4Vw4+6MrVBOLl4l
+        sw31W2/w6nJQFhVEeODf45+zE6F1ZoCoe3LFOUxDAEiAGB56VL+rjQdReZWkrm5RWIPjt6oDiXNpz
+        MmYdslVQ==;
 Received: from [2001:4bb8:198:f3b2:86b6:2277:f429:37a1] (helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k8I1I-0008PN-Re; Wed, 19 Aug 2020 06:56:25 +0000
+        id 1k8I18-0008NZ-2u; Wed, 19 Aug 2020 06:56:14 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -57,9 +57,9 @@ Cc:     Tom Lendacky <thomas.lendacky@amd.com>, linux-doc@vger.kernel.org,
         netdev@vger.kernel.org, linux-nvme@lists.infradead.org,
         linux-scsi@vger.kernel.org, linux-mm@kvack.org,
         alsa-devel@alsa-project.org
-Subject: [PATCH 14/28] dma-direct: use phys_to_dma_direct in dma_direct_alloc
-Date:   Wed, 19 Aug 2020 08:55:41 +0200
-Message-Id: <20200819065555.1802761-15-hch@lst.de>
+Subject: [PATCH 09/28] MIPS/jazzdma: remove the unused vdma_remap function
+Date:   Wed, 19 Aug 2020 08:55:36 +0200
+Message-Id: <20200819065555.1802761-10-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200819065555.1802761-1-hch@lst.de>
 References: <20200819065555.1802761-1-hch@lst.de>
@@ -71,29 +71,106 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Replace the currently open code copy.
-
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- kernel/dma/direct.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ arch/mips/include/asm/jazzdma.h |  2 -
+ arch/mips/jazz/jazzdma.c        | 70 ---------------------------------
+ 2 files changed, 72 deletions(-)
 
-diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index 01120510968fa1..2e280b9c063449 100644
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -235,10 +235,7 @@ void *dma_direct_alloc(struct device *dev, size_t size,
- 			goto out_encrypt_pages;
- 	}
- done:
--	if (force_dma_unencrypted(dev))
--		*dma_handle = __phys_to_dma(dev, page_to_phys(page));
--	else
--		*dma_handle = phys_to_dma(dev, page_to_phys(page));
-+	*dma_handle = phys_to_dma_direct(dev, page_to_phys(page));
- 	return ret;
+diff --git a/arch/mips/include/asm/jazzdma.h b/arch/mips/include/asm/jazzdma.h
+index d13f940022d5f9..c831da7fa89803 100644
+--- a/arch/mips/include/asm/jazzdma.h
++++ b/arch/mips/include/asm/jazzdma.h
+@@ -10,8 +10,6 @@
+  */
+ extern unsigned long vdma_alloc(unsigned long paddr, unsigned long size);
+ extern int vdma_free(unsigned long laddr);
+-extern int vdma_remap(unsigned long laddr, unsigned long paddr,
+-		      unsigned long size);
+ extern unsigned long vdma_phys2log(unsigned long paddr);
+ extern unsigned long vdma_log2phys(unsigned long laddr);
+ extern void vdma_stats(void);		/* for debugging only */
+diff --git a/arch/mips/jazz/jazzdma.c b/arch/mips/jazz/jazzdma.c
+index 014773f0bfcd74..fe40dbed04c1d6 100644
+--- a/arch/mips/jazz/jazzdma.c
++++ b/arch/mips/jazz/jazzdma.c
+@@ -209,76 +209,6 @@ int vdma_free(unsigned long laddr)
  
- out_encrypt_pages:
+ EXPORT_SYMBOL(vdma_free);
+ 
+-/*
+- * Map certain page(s) to another physical address.
+- * Caller must have allocated the page(s) before.
+- */
+-int vdma_remap(unsigned long laddr, unsigned long paddr, unsigned long size)
+-{
+-	int first, pages;
+-
+-	if (laddr > 0xffffff) {
+-		if (vdma_debug)
+-			printk
+-			    ("vdma_map: Invalid logical address: %08lx\n",
+-			     laddr);
+-		return -EINVAL; /* invalid logical address */
+-	}
+-	if (paddr > 0x1fffffff) {
+-		if (vdma_debug)
+-			printk
+-			    ("vdma_map: Invalid physical address: %08lx\n",
+-			     paddr);
+-		return -EINVAL; /* invalid physical address */
+-	}
+-
+-	pages = (((paddr & (VDMA_PAGESIZE - 1)) + size) >> 12) + 1;
+-	first = laddr >> 12;
+-	if (vdma_debug)
+-		printk("vdma_remap: first=%x, pages=%x\n", first, pages);
+-	if (first + pages > VDMA_PGTBL_ENTRIES) {
+-		if (vdma_debug)
+-			printk("vdma_alloc: Invalid size: %08lx\n", size);
+-		return -EINVAL;
+-	}
+-
+-	paddr &= ~(VDMA_PAGESIZE - 1);
+-	while (pages > 0 && first < VDMA_PGTBL_ENTRIES) {
+-		if (pgtbl[first].owner != laddr) {
+-			if (vdma_debug)
+-				printk("Trying to remap other's pages.\n");
+-			return -EPERM;	/* not owner */
+-		}
+-		pgtbl[first].frame = paddr;
+-		paddr += VDMA_PAGESIZE;
+-		first++;
+-		pages--;
+-	}
+-
+-	/*
+-	 * Update translation table
+-	 */
+-	r4030_write_reg32(JAZZ_R4030_TRSTBL_INV, 0);
+-
+-	if (vdma_debug > 2) {
+-		int i;
+-		pages = (((paddr & (VDMA_PAGESIZE - 1)) + size) >> 12) + 1;
+-		first = laddr >> 12;
+-		printk("LADDR: ");
+-		for (i = first; i < first + pages; i++)
+-			printk("%08x ", i << 12);
+-		printk("\nPADDR: ");
+-		for (i = first; i < first + pages; i++)
+-			printk("%08x ", pgtbl[i].frame);
+-		printk("\nOWNER: ");
+-		for (i = first; i < first + pages; i++)
+-			printk("%08x ", pgtbl[i].owner);
+-		printk("\n");
+-	}
+-
+-	return 0;
+-}
+-
+ /*
+  * Translate a physical address to a logical address.
+  * This will return the logical address of the first
 -- 
 2.28.0
 

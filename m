@@ -7,68 +7,69 @@ X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11AD6C433DF
-	for <linux-mips@archiver.kernel.org>; Thu, 20 Aug 2020 10:25:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB22EC433E3
+	for <linux-mips@archiver.kernel.org>; Thu, 20 Aug 2020 11:09:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CFECE2078D
-	for <linux-mips@archiver.kernel.org>; Thu, 20 Aug 2020 10:25:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8A6B022BF3
+	for <linux-mips@archiver.kernel.org>; Thu, 20 Aug 2020 11:09:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QFNCCjnh"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ehZtgn4/"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729001AbgHTKZE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 20 Aug 2020 06:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37168 "EHLO
+        id S1728496AbgHTLJG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 20 Aug 2020 07:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731466AbgHTKYy (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 20 Aug 2020 06:24:54 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C78EC061342
-        for <linux-mips@vger.kernel.org>; Thu, 20 Aug 2020 03:24:49 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id i6so1168865edy.5
-        for <linux-mips@vger.kernel.org>; Thu, 20 Aug 2020 03:24:49 -0700 (PDT)
+        with ESMTP id S1730855AbgHTKJz (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 20 Aug 2020 06:09:55 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9110C061343
+        for <linux-mips@vger.kernel.org>; Thu, 20 Aug 2020 03:09:52 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id f24so1815023ejx.6
+        for <linux-mips@vger.kernel.org>; Thu, 20 Aug 2020 03:09:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FU3+CiJFzLHmOFDuQMwlaisWRGuHRN+5AV6txupwZrU=;
-        b=QFNCCjnhRiVXX1RwHJMrjJrm3FMIDmNx/PgDGVaGoYPr2orRHBTBO48N0vE/bjgnJ+
-         SYuYytDiRhiYZtZgJZ7z4/4vPKus2MwWgTKmnlMmLZQ4o8gAgDqGKHg0dO0uTStdh95b
-         tHYxvzFh9iEVHBmlKA/EhqmNwNT52r2I3xUhk=
+        bh=p7IDsCs3O3XVq6Oo36ltfbQDp/qQH17B8kNCHrYYi58=;
+        b=ehZtgn4/AxsmBi4CkUnsCHo/q6bpQxXO/GGgvrCHjALePJV0mY03gGKLtDpnr62vq7
+         KV3mdnnS1aNkayPfMEd6+kiXUtw5pXZFUZ/dq+zcrKhOGKgl7b3lXQNmHHz0Fv8waUXO
+         bUcyInFMwIZHXpvW8Pcz/o4WwKo7iyfKJp3kg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FU3+CiJFzLHmOFDuQMwlaisWRGuHRN+5AV6txupwZrU=;
-        b=HKfZXbh/NkziFDH7Ob/QaDhzqTNLK/MphUc2Ldmv7CtapTqgYOy/oLb000N5a8TarM
-         SqTmKcBV52EUHWgkU/tzmSoSjoIpW41r62xsP89AhsD+qnWvnm0ouwbz1bBUOMmPbW+A
-         ABhznXpRBkUxgXKV4jBeaElT7BgeikZdfnmm1ediOOlfv54v+xt2pp3IKOttZht+OvWB
-         Woy/bFDbCSyf663G/+1A12AJwjwbsUp5/svQ1eUSNd3OWMtbx6aHF/g9mMZZyAGuZgc1
-         uY3W6PI/KjKwGa6OByR8A3QZrvz1E+mRQUoCuVPLTk35NdBQ0iyexCT0z+s2H1298/EF
-         DK/A==
-X-Gm-Message-State: AOAM531IKmXOewBE5BUngdoRqX1YK5Ddhh6p5Njsd8GdJFdx8ZrjMEGX
-        hV7xcXvKvSoECchnPX2RK3sRAprImyQoqgDq
-X-Google-Smtp-Source: ABdhPJwPua1c0UmBuai8WOg7lZqt0snynQGdFJXBzxLk4iPsRhCTpZCB6QoYJNEDVLIP1xKE7PGJhw==
-X-Received: by 2002:aa7:d70a:: with SMTP id t10mr2180905edq.68.1597919087507;
-        Thu, 20 Aug 2020 03:24:47 -0700 (PDT)
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com. [209.85.221.46])
-        by smtp.gmail.com with ESMTPSA id s5sm1150673ejv.67.2020.08.20.03.24.46
+        bh=p7IDsCs3O3XVq6Oo36ltfbQDp/qQH17B8kNCHrYYi58=;
+        b=R/FqtloM2mcaA9tgXBCmBdjuGY44De4snqH0V28Z9wfJOQo5nIpesWDUxv/INunYBH
+         8u09v4+YIrw0rtTAdkV5gCYf6tGqil/xbPljJ8poDTZStmzcUF4OAqHuhEUejV1mkvQv
+         M9WFX/Qj5/+Px1Yo5NAQ+XSThEgj4m/7fU+5WMtSPFiMFhwCVPOORoQbYbZXkMX4f9++
+         /BJiAPAs4jjwzkHZpFMl1wvh2s4YPjYHJQmE3wPJMTZPy2wYdEMqsUPyQWFz0bjRLwk3
+         J9SF2Ch4NVD7WzM+k2KaNgdQUC6Ku2F4zRjuUlIeJLPMSZR0JhoQSpY5jC/16LQ8mp44
+         i6ZQ==
+X-Gm-Message-State: AOAM5320u7jjy/0s6ubk5IyLo11RaL/2IMWGrOByL7Fdj9IMbTAysd1e
+        m7ChvqaosEZFALs9oB4wtmGB9XPU2FFblxZe
+X-Google-Smtp-Source: ABdhPJwEGyM4gI72J7xkgvjzG96unlOrjMSqzABytNDFSouH3pW9lwNOuLAnr47EhUrm8W3b7zFzxA==
+X-Received: by 2002:a17:906:c406:: with SMTP id u6mr2641760ejz.47.1597918191280;
+        Thu, 20 Aug 2020 03:09:51 -0700 (PDT)
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
+        by smtp.gmail.com with ESMTPSA id e14sm1032434edl.86.2020.08.20.03.09.49
         for <linux-mips@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Aug 2020 03:24:47 -0700 (PDT)
-Received: by mail-wr1-f46.google.com with SMTP id l2so1495976wrc.7
-        for <linux-mips@vger.kernel.org>; Thu, 20 Aug 2020 03:24:46 -0700 (PDT)
-X-Received: by 2002:a5d:6744:: with SMTP id l4mr2717742wrw.105.1597919084826;
- Thu, 20 Aug 2020 03:24:44 -0700 (PDT)
+        Thu, 20 Aug 2020 03:09:50 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id d190so1064181wmd.4
+        for <linux-mips@vger.kernel.org>; Thu, 20 Aug 2020 03:09:49 -0700 (PDT)
+X-Received: by 2002:a1c:5581:: with SMTP id j123mr2797156wmb.11.1597918188072;
+ Thu, 20 Aug 2020 03:09:48 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200819065555.1802761-1-hch@lst.de> <20200819065555.1802761-6-hch@lst.de>
  <CAAFQd5COLxjydDYrfx47ht8tj-aNPiaVnC+WyQA7nvpW4gs=ww@mail.gmail.com>
  <62e4f4fc-c8a5-3ee8-c576-fe7178cb4356@arm.com> <CAAFQd5AcCTDguB2C9KyDiutXWoEvBL8tL7+a==Uo8vj_8CLOJw@mail.gmail.com>
- <2b32f1d8-16f7-3352-40a5-420993d52fb5@arm.com> <20200820050214.GA4815@lst.de>
-In-Reply-To: <20200820050214.GA4815@lst.de>
+ <20200819135738.GB17098@lst.de> <CAAFQd5BvpzJTycFvjntmX9W_d879hHFX+rJ8W9EK6+6cqFaVMA@mail.gmail.com>
+ <20200820044533.GA4570@lst.de>
+In-Reply-To: <20200820044533.GA4570@lst.de>
 From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Thu, 20 Aug 2020 12:24:31 +0200
-X-Gmail-Original-Message-ID: <CAAFQd5AknYpP5BamC=wJkEJyO-q47V6Gc+HT65h6B+HyT+-xjQ@mail.gmail.com>
-Message-ID: <CAAFQd5AknYpP5BamC=wJkEJyO-q47V6Gc+HT65h6B+HyT+-xjQ@mail.gmail.com>
+Date:   Thu, 20 Aug 2020 12:09:34 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5CEsC2h-oEdZOPTkUQ4WfFL0yyYu9dE5UscEVpLyMLrCg@mail.gmail.com>
+Message-ID: <CAAFQd5CEsC2h-oEdZOPTkUQ4WfFL0yyYu9dE5UscEVpLyMLrCg@mail.gmail.com>
 Subject: Re: [PATCH 05/28] media/v4l2: remove V4L2-FLAG-MEMORY-NON-CONSISTENT
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Robin Murphy <robin.murphy@arm.com>, alsa-devel@alsa-project.org,
@@ -102,80 +103,31 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 7:02 AM Christoph Hellwig <hch@lst.de> wrote:
+On Thu, Aug 20, 2020 at 6:45 AM Christoph Hellwig <hch@lst.de> wrote:
 >
-> On Wed, Aug 19, 2020 at 03:07:04PM +0100, Robin Murphy wrote:
-> >> FWIW, I asked back in time what the plan is for non-coherent
-> >> allocations and it seemed like DMA_ATTR_NON_CONSISTENT and
-> >> dma_sync_*() was supposed to be the right thing to go with. [2] The
-> >> same thread also explains why dma_alloc_pages() isn't suitable for the
-> >> users of dma_alloc_attrs() and DMA_ATTR_NON_CONSISTENT.
+> On Wed, Aug 19, 2020 at 04:11:52PM +0200, Tomasz Figa wrote:
+> > > > By the way, as a videobuf2 reviewer, I'd appreciate being CC'd on any
+> > > > series related to the subsystem-facing DMA API changes, since
+> > > > videobuf2 is one of the biggest users of it.
+> > >
+> > > The cc list is too long - I cc lists and key maintainers.  As a reviewer
+> > > should should watch your subsystems lists closely.
 > >
-> > AFAICS even back then Christoph was implying getting rid of NON_CONSISTENT
-> > and *replacing* it with something streaming-API-based - i.e. this series -
-> > not encouraging mixing the existing APIs. It doesn't seem impossible to
-> > implement a remapping version of this new dma_alloc_pages() for
-> > IOMMU-backed ops if it's really warranted (although at that point it seems
-> > like "non-coherent" vb2-dc starts to have significant conceptual overlap
-> > with vb2-sg).
+> > Well, I guess we can disagree on this, because there is no clear
+> > policy. I'm listed in the MAINTAINERS file for the subsystem and I
+> > believe the purpose of the file is to list the people to CC on
+> > relevant patches. We're all overloaded with work and having to look
+> > through the huge volume of mailing lists like linux-media doesn't help
+> > and thus I'd still appreciate being added on CC.
 >
-> You can alway vmap the returned pages from dma_alloc_pages, but it will
-> make cache invalidation hell - you'll need to use
-> invalidate_kernel_vmap_range and flush_kernel_vmap_range to properly
-> handle virtually indexed caches.
->
-> Or with remapping you mean using the iommu do de-scatter/gather?
+> I'm happy to Cc and active participant in the discussion.  I'm not
+> going to add all reviewers because even with the trimmed CC list
+> I'm already hitting the number of receipients limit on various lists.
 
-Ideally, both.
+Fair enough.
 
-For remapping in the CPU sense, there are drivers which rely on a
-contiguous kernel mapping of the vb2 buffers, which was provided by
-dma_alloc_attrs(). I think they could be reworked to work on single
-pages, but that would significantly complicate the code. At the same
-time, such drivers would actually benefit from a cached mapping,
-because they often have non-bursty, random access patterns.
-
-Then, in the IOMMU sense, the whole idea of videobuf2-dma-contig is to
-rely on the DMA API to always provide device-contiguous memory, as
-required by the hardware which only has a single pointer and size.
-
->
-> You can implement that trivially implement it yourself for the iommu
-> case:
->
-> {
->         merge_boundary = dma_get_merge_boundary(dev);
->         if (!merge_boundary || merge_boundary > chunk_size - 1) {
->                 /* can't coalesce */
->                 return -EINVAL;
->         }
->
->
->         nents = DIV_ROUND_UP(total_size, chunk_size);
->         sg = sgl_alloc();
->         for_each_sgl() {
->                 sg->page = __alloc_pages(get_order(chunk_size))
->                 sg->len = chunk_size;
->         }
->         dma_map_sg(sg, DMA_ATTR_SKIP_CPU_SYNC);
->         // you are guaranteed to get a single dma_addr out
-> }
->
-> Of course this still uses the scatterlist structure with its annoying
-> mix of input and output parametes, so I'd rather not expose it as
-> an official API at the DMA layer.
-
-The problem with the above open coded approach is that it requires
-explicit handling of the non-IOMMU and IOMMU cases and this is exactly
-what we don't want to have in vb2 and what was actually the job of the
-DMA API to hide. Is the plan to actually move the IOMMU handling out
-of the DMA API?
-
-Do you think we could instead turn it into a dma_alloc_noncoherent()
-helper, which has similar semantics as dma_alloc_attrs() and handles
-the various corner cases (e.g. invalidate_kernel_vmap_range and
-flush_kernel_vmap_range) to achieve the desired functionality without
-delegating the "hell", as you called it, to the users?
+We'll make your job easier and just turn my MAINTAINERS entry into a
+maintainer. :)
 
 Best regards,
 Tomasz

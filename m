@@ -7,49 +7,49 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 107CBC433E3
-	for <linux-mips@archiver.kernel.org>; Thu, 20 Aug 2020 00:10:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81FC2C433E1
+	for <linux-mips@archiver.kernel.org>; Thu, 20 Aug 2020 00:11:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E22B52224D
-	for <linux-mips@archiver.kernel.org>; Thu, 20 Aug 2020 00:09:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 58F6E20FC3
+	for <linux-mips@archiver.kernel.org>; Thu, 20 Aug 2020 00:11:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1597882199;
-	bh=88Xw40YC1QnjNuLG/+6YqfiY2ut1djo/oaUujd9yOWg=;
+	s=default; t=1597882308;
+	bh=COjiY0b/wWEh1aAE8ioSHBgdaNmtR5MlWi3AkEpblWg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=kSvk+oPsogiFzHRx1AKnnbR7Oew+a2D5REvJwVEoaa5IwaLfGATRoOwJrS179AG5I
-	 r5sYDssvb3uCvYYyCZoNRSdt1akan1nSJ1+m6IfHmgiyFlO2Gljh8jQ+aeHWfD1wc5
-	 1uMsShxp4RkAznSDO9CLZc0WCeVT3cT/Odtt9ODA=
+	b=fY2oxmFqq1JJuHsyrvmG/iAhDxwuprQwoGD/ThwMip072tDwWNxUpU5e8JoT4Mmnl
+	 GteLbKQCvF069pfFFAapwsbovv33IqxnAzPL1iTIriBUpDZlzuotoVsJCgg2udhjkm
+	 vsIOzr0T8/jesszW5AaQTIkxeHeFkRnLsSCXmaMM=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728090AbgHTAJr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 19 Aug 2020 20:09:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59698 "EHLO mail.kernel.org"
+        id S1728265AbgHTAL0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 19 Aug 2020 20:11:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727956AbgHTACk (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 19 Aug 2020 20:02:40 -0400
+        id S1727024AbgHTACH (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 19 Aug 2020 20:02:07 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C8142224D;
-        Thu, 20 Aug 2020 00:02:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E290A207FB;
+        Thu, 20 Aug 2020 00:02:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1597881760;
-        bh=88Xw40YC1QnjNuLG/+6YqfiY2ut1djo/oaUujd9yOWg=;
+        s=default; t=1597881726;
+        bh=COjiY0b/wWEh1aAE8ioSHBgdaNmtR5MlWi3AkEpblWg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o/7W16xXaMXyV5vg22pc7PLHGeL+XWmOZqBEjpeqUjIbpqK0rQ8Mi99SnCOJMNQd1
-         QYuSerAnuhOEDyMrvPgsW84r1toDHyi+cUBXvVrV2yzdLrtXWN3y5nt8YJQdzOhi7k
-         ZARQv2gJbo7t3gcJRr8h4T+BRQjmUlGI2BTQJvW4=
+        b=OOeQnnwtGA1Adv8q7iKke6zi3+VjC4QuGxcMLBfW02JMzSlMxphmqHY/6rMlu7y4J
+         2At8vmD9bvK4AXMS39gjVc40nyEyIkL5aWsxA2sdXuJIu/qUoHu/+hEbbbDJrdk+tj
+         UoD+cNwq7q240KiyLqHgNEyP24jpuYRHBudjWL2U=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Jinyang He <hejinyang@loongson.cn>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 07/22] MIPS: Fix unable to reserve memory for Crash kernel
-Date:   Wed, 19 Aug 2020 20:02:14 -0400
-Message-Id: <20200820000229.215333-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 08/24] MIPS: Fix unable to reserve memory for Crash kernel
+Date:   Wed, 19 Aug 2020 20:01:39 -0400
+Message-Id: <20200820000155.215089-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200820000229.215333-1-sashal@kernel.org>
-References: <20200820000229.215333-1-sashal@kernel.org>
+In-Reply-To: <20200820000155.215089-1-sashal@kernel.org>
+References: <20200820000155.215089-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
@@ -119,10 +119,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 7b06e6ee6817d..b8884de89c81e 100644
+index 573509e0f2d4e..3ace115740dd1 100644
 --- a/arch/mips/kernel/setup.c
 +++ b/arch/mips/kernel/setup.c
-@@ -494,7 +494,7 @@ static void __init mips_parse_crashkernel(void)
+@@ -497,7 +497,7 @@ static void __init mips_parse_crashkernel(void)
  	if (ret != 0 || crash_size <= 0)
  		return;
  

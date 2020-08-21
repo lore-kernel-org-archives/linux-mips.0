@@ -2,111 +2,75 @@ Return-Path: <SRS0=HWEQ=B7=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F7CCC433EC
-	for <linux-mips@archiver.kernel.org>; Fri, 21 Aug 2020 17:26:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06346C433DF
+	for <linux-mips@archiver.kernel.org>; Fri, 21 Aug 2020 19:31:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3F82521775
-	for <linux-mips@archiver.kernel.org>; Fri, 21 Aug 2020 17:26:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598030782;
-	bh=Z5woOFrn9WcoiLa0uM8U8LX6zAA+NteviTzChyljI7E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=nebhgfziYl4niQhd8lbxx0HNz11vsBnJiWnGhbb6zainfr+AQEIqnpj4LH2Rk3WVy
-	 9a2Ry4TpsYd/qOvQm56O4fkETIwJ4tNzzFiLWWhtQ3Abm80meE9n5DEBkncE2yku7e
-	 N+6R8NHAKb+49Ekwxq4RhkGS13+v8puXmsUl/0Dg=
+	by mail.kernel.org (Postfix) with ESMTP id DEB3B20714
+	for <linux-mips@archiver.kernel.org>; Fri, 21 Aug 2020 19:31:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728153AbgHUR0U (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 21 Aug 2020 13:26:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47254 "EHLO mail.kernel.org"
+        id S1725938AbgHUTb1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 21 Aug 2020 15:31:27 -0400
+Received: from orcam.me.uk ([81.187.245.177]:40872 "EHLO orcam.me.uk"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727849AbgHUQPJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:15:09 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AEB9622B43;
-        Fri, 21 Aug 2020 16:15:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598026509;
-        bh=Z5woOFrn9WcoiLa0uM8U8LX6zAA+NteviTzChyljI7E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DY9IhwL2JyK5t7WJYWvDGfb1y1WQqQ3PkiLFtp+j7436GEDxbzHxxDz2g/kaNYEwb
-         DWi5qofgnt9zMIENyRMFaYLrcbejLNeGydtbCMTDcnbFqPTLLVG5mFuhxBEm0JFAuh
-         MvE92CY5H8ocaVI7sEMZjbKln+dkCrROQNnCKSDI=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 36/62] MIPS: KVM: Limit Trap-and-Emulate to MIPS32R2 only
-Date:   Fri, 21 Aug 2020 12:13:57 -0400
-Message-Id: <20200821161423.347071-36-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200821161423.347071-1-sashal@kernel.org>
-References: <20200821161423.347071-1-sashal@kernel.org>
+        id S1725801AbgHUTb1 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 21 Aug 2020 15:31:27 -0400
+X-Greylist: delayed 478 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 Aug 2020 15:31:26 EDT
+Received: from bugs.linux-mips.org (eddie.linux-mips.org [IPv6:2a01:4f8:201:92aa::3])
+        by orcam.me.uk (Postfix) with ESMTPS id 688F72BE086;
+        Fri, 21 Aug 2020 20:23:17 +0100 (BST)
+Date:   Fri, 21 Aug 2020 20:23:16 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@linux-mips.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+cc:     Zhou Yanjie <zhouyanjie@wanyeetech.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>, od@zcrc.me,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        =?UTF-8?B?5ryG6bmP5oyv?= <aric.pzqi@ingenic.com>,
+        dongsheng.qiu@ingenic.com, rick.tyliu@ingenic.com,
+        yanfei.li@ingenic.com, xuwanhao@wanyeetech.com
+Subject: Re: [PATCH 00/13] MIPS: Convert Ingenic to a generic board
+In-Reply-To: <L8DPEQ.71Z8YA0QXBJA@crapouillou.net>
+Message-ID: <alpine.LFD.2.21.2008211949220.3460685@eddie.linux-mips.org>
+References: <20200803170124.231110-1-paul@crapouillou.net>        <ab985296-8441-4006-210d-a71503bd01f0@wanyeetech.com> <L8DPEQ.71Z8YA0QXBJA@crapouillou.net>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+On Fri, 7 Aug 2020, Paul Cercueil wrote:
 
-[ Upstream commit 01edc5e76ecfecf9a79eec2658f6146ef47bc816 ]
+> > I'm not too sure if remove "cpu-feature-overrides.h" will cause some
+> > problems for X2000, because according to my current test on X2000, I found
+> > that it is somewhat different from the SoCs using XBurst1 CPU core, with the
+> > kernel source code provided by Ingenic, for example, we must configure
+> > "#define cpu_has_tlbinv 1" in "cpu-feature-overrides.h" to make the X2000
+> > work normally, otherwise the kernel will get stuck. And X2000's interrupt
+> > controller has also been redesigned. If these differences make it impossible
+> > to share code, should we set a subdirectory of "xburst" and "xburst2" in
+> > "arch/mips/ingenic"? (I am just worried about this situation, so far I have
+> > not been able to successfully run the mainline kernel on X2000).
+> 
+> The <cpu-feature-overrides.h> is kind of a hack, to hardcode settings in case
+> the CPU is not properly detected. The cpu-probe.c should be able to
+> auto-detect these settings, including the inverted TLB that the X2000 has,
+> reading from the CPU config registers ("TLB INV" info should be in config4).
+> Right now cpu_probe_ingenic() doesn't read config4 (not present on older SoCs)
+> but that's trivial to add.
 
-After tons of fixes to get Trap-and-Emulate build on Loongson64,
-I've got panic on host machine when trying to run a VM.
+ FAOD <cpu-feature-overrides.h> is not a hack, but an optimisation measure 
+so that features known to be hardwired for a given machine/CPU do not have 
+to be dynamically queried every time referred.  In some cases that results 
+in large portions of code being optimised away by the compiler as well. 
 
-I found that it can never work on 64bit systems. Revewing the
-code, it looks like R6 can't supportrd by TE as well.
+ The hardcoded value for a feature defined in <cpu-feature-overrides.h> 
+always has to be the same as one in the corresponding bit of the `options' 
+member of `struct cpuinfo_mips', in this case MIPS_CPU_TLBINV.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-Id: <20200710063047.154611-3-jiaxun.yang@flygoat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/mips/Kconfig     | 1 +
- arch/mips/kvm/Kconfig | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 6fee1a133e9d6..2efc34ed94ebe 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -2202,6 +2202,7 @@ endchoice
- 
- config KVM_GUEST
- 	bool "KVM Guest Kernel"
-+	depends on CPU_MIPS32_R2
- 	depends on BROKEN_ON_SMP
- 	help
- 	  Select this option if building a guest kernel for KVM (Trap & Emulate)
-diff --git a/arch/mips/kvm/Kconfig b/arch/mips/kvm/Kconfig
-index 2bf02d849a3a8..032b3fca6cbba 100644
---- a/arch/mips/kvm/Kconfig
-+++ b/arch/mips/kvm/Kconfig
-@@ -37,10 +37,11 @@ choice
- 
- config KVM_MIPS_TE
- 	bool "Trap & Emulate"
-+	depends on CPU_MIPS32_R2
- 	help
- 	  Use trap and emulate to virtualize 32-bit guests in user mode. This
- 	  does not require any special hardware Virtualization support beyond
--	  standard MIPS32/64 r2 or later, but it does require the guest kernel
-+	  standard MIPS32 r2 or later, but it does require the guest kernel
- 	  to be configured with CONFIG_KVM_GUEST=y so that it resides in the
- 	  user address segment.
- 
--- 
-2.25.1
-
+  Maciej

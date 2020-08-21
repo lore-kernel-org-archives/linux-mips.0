@@ -5,50 +5,50 @@ X-Spam-Level:
 X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FEFEC433DF
-	for <linux-mips@archiver.kernel.org>; Fri, 21 Aug 2020 17:08:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D96E8C433E5
+	for <linux-mips@archiver.kernel.org>; Fri, 21 Aug 2020 17:16:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5FC1B20656
-	for <linux-mips@archiver.kernel.org>; Fri, 21 Aug 2020 17:08:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B7DB220748
+	for <linux-mips@archiver.kernel.org>; Fri, 21 Aug 2020 17:16:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1598029682;
-	bh=zCZ33BklVnKYUEopkh/0KayWTmTcqi6YUqN1XavLMJY=;
+	s=default; t=1598030171;
+	bh=duA5OZY/skQ/JAo3h/E2BEJCdypBbG0QAcMV7CMJLRU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=DezhU70ZscGUEtoAS1F5tPCZcAonhRSSBwGxmwzZN3rTvQNCWgrvH3ISw2odNX7NG
-	 1yQKzfFmeApzXsB8uOD1crIqT0gquw6qhgwq/AQL6H3b5hyxhk341jJYyuukSoPSF9
-	 U/TIatwEUVgBGO6oZxVmk0w7zgIzAbQF8/DXvudA=
+	b=PSKHktvIMmQ/g9K+Nr41r4LskQANH2FgAmbLSpVgtUP73rbv//qYvgl7qWC6MzA9b
+	 OWQ793o59sUVXRs+fqPlhIGfufKtIQ8TxLpJuCKoPveoWtiQTQTrHqc2ccsk1syfBX
+	 z8faZZiOAgcaWTV5EX/NuiD1ILw0jNAe4XGdiqsI=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728894AbgHURH6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 21 Aug 2020 13:07:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51668 "EHLO mail.kernel.org"
+        id S1728887AbgHURPq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 21 Aug 2020 13:15:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728210AbgHUQRp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 21 Aug 2020 12:17:45 -0400
+        id S1728093AbgHUQQh (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 21 Aug 2020 12:16:37 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C35421741;
-        Fri, 21 Aug 2020 16:17:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E870D2224D;
+        Fri, 21 Aug 2020 16:16:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598026664;
-        bh=zCZ33BklVnKYUEopkh/0KayWTmTcqi6YUqN1XavLMJY=;
+        s=default; t=1598026596;
+        bh=duA5OZY/skQ/JAo3h/E2BEJCdypBbG0QAcMV7CMJLRU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SxrxRAZ5vl0U3IULG0kMdkh3VJtGwzo+aL5NYxUWdlmEhRz3wELuWnZfGkQlM/kjg
-         DcoDmEq40ATbNBw/sFCiB5v6kZjF5dcgPmhUsma+lqKqBKtx2mSf8y4XjOyS6DO31C
-         8otQGFsO7eix2O88QqdaIjLzd+3yTorP4AjeDq5s=
+        b=PuS6/muXchPKbdCrgCG/o3144LAZNA5Yb5J5yRJaEJYagsb58jfS7xvvgqgY3Bv7J
+         kMafr1ZTrGRgdVKcHrvCjqRPFuJIW1HUxZedZG9r5SdgqIpjF6GEcZoj9L9oE6eGUi
+         P1tjOBg50Sgodl9nHsLwYn8RMqUvh03xH7m8Ojug=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Peng Fan <fanpeng@loongson.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 31/48] mips/vdso: Fix resource leaks in genvdso.c
-Date:   Fri, 21 Aug 2020 12:16:47 -0400
-Message-Id: <20200821161704.348164-31-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.7 40/61] mips/vdso: Fix resource leaks in genvdso.c
+Date:   Fri, 21 Aug 2020 12:15:24 -0400
+Message-Id: <20200821161545.347622-40-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200821161704.348164-1-sashal@kernel.org>
-References: <20200821161704.348164-1-sashal@kernel.org>
+In-Reply-To: <20200821161545.347622-1-sashal@kernel.org>
+References: <20200821161545.347622-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -73,7 +73,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 10 insertions(+)
 
 diff --git a/arch/mips/vdso/genvdso.c b/arch/mips/vdso/genvdso.c
-index b66b6b1c4aeb9..8f581a2c8578b 100644
+index be57b832bbe0a..ccba50ec8a40e 100644
 --- a/arch/mips/vdso/genvdso.c
 +++ b/arch/mips/vdso/genvdso.c
 @@ -122,6 +122,7 @@ static void *map_vdso(const char *path, size_t *_size)
@@ -135,7 +135,7 @@ index b66b6b1c4aeb9..8f581a2c8578b 100644
  	return addr;
  }
  
-@@ -280,10 +288,12 @@ int main(int argc, char **argv)
+@@ -293,10 +301,12 @@ int main(int argc, char **argv)
  	/* Calculate and write symbol offsets to <output file> */
  	if (!get_symbols(dbg_vdso_path, dbg_vdso)) {
  		unlink(out_path);

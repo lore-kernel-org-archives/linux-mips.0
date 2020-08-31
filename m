@@ -2,58 +2,74 @@ Return-Path: <SRS0=yHFx=CJ=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E4B6C433E2
-	for <linux-mips@archiver.kernel.org>; Mon, 31 Aug 2020 02:02:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E007BC433E6
+	for <linux-mips@archiver.kernel.org>; Mon, 31 Aug 2020 20:29:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7865A2076D
-	for <linux-mips@archiver.kernel.org>; Mon, 31 Aug 2020 02:02:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B669520866
+	for <linux-mips@archiver.kernel.org>; Mon, 31 Aug 2020 20:29:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgHaCCN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 30 Aug 2020 22:02:13 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:55854 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726579AbgHaCCM (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 30 Aug 2020 22:02:12 -0400
-Received: from localhost.localdomain (unknown [182.149.161.99])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx790VWkxfXX8PAA--.17082S2;
-        Mon, 31 Aug 2020 10:02:07 +0800 (CST)
-From:   Huang Pei <huangpei@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        ambrosehua@gmail.com
-Cc:     Li Xuefeng <lixuefeng@loongson.cn>,
-        Yang Tiezhu <yangtiezhu@loongson.cn>,
-        Gao Juxin <gaojuxin@loongson.cn>,
-        Fuxin Zhang <zhangfx@lemote.com>,
-        Huacai Chen <chenhc@lemote.com>, linux-mips@vger.kernel.org
-Subject: fix missing MSACSR and upper MSA initialization
-Date:   Mon, 31 Aug 2020 10:01:44 +0800
-Message-Id: <20200831020145.31706-1-huangpei@loongson.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: AQAAf9Dx790VWkxfXX8PAA--.17082S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYw7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z2
-        80aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
-        YxC7MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUCg4hUUUUU=
-X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
+        id S1728324AbgHaU3e (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 31 Aug 2020 16:29:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38736 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726167AbgHaU3e (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 31 Aug 2020 16:29:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 84576AD39;
+        Mon, 31 Aug 2020 20:29:32 +0000 (UTC)
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     tsbogend@alpha.franken.de
+Cc:     oleg@redhat.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dave@stgolabs.net,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: [PATCH] MIPS: Use rcu to lookup a task in mipsmt_sys_sched_setaffinity()
+Date:   Mon, 31 Aug 2020 13:14:02 -0700
+Message-Id: <20200831201402.2837-1-dave@stgolabs.net>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+The call simply looks up the corresponding task (without iterating
+the tasklist), which is safe under rcu instead of the tasklist_lock.
+In addition, the setaffinity counter part already does this.
 
-Add broken commit id 
+Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+---
+ arch/mips/kernel/mips-mt-fpaff.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/kernel/mips-mt-fpaff.c b/arch/mips/kernel/mips-mt-fpaff.c
+index 1a08428eedcf..6c590ef27648 100644
+--- a/arch/mips/kernel/mips-mt-fpaff.c
++++ b/arch/mips/kernel/mips-mt-fpaff.c
+@@ -167,7 +167,7 @@ asmlinkage long mipsmt_sys_sched_getaffinity(pid_t pid, unsigned int len,
+ 		return -EINVAL;
+ 
+ 	get_online_cpus();
+-	read_lock(&tasklist_lock);
++	rcu_read_lock();
+ 
+ 	retval = -ESRCH;
+ 	p = find_process_by_pid(pid);
+@@ -181,7 +181,7 @@ asmlinkage long mipsmt_sys_sched_getaffinity(pid_t pid, unsigned int len,
+ 	cpumask_and(&mask, &allowed, cpu_active_mask);
+ 
+ out_unlock:
+-	read_unlock(&tasklist_lock);
++	rcu_read_unlock();
+ 	put_online_cpus();
+ 	if (retval)
+ 		return retval;
+-- 
+2.26.2
 

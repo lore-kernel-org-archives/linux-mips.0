@@ -2,102 +2,97 @@ Return-Path: <SRS0=yHFx=CJ=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.5 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8522C433E7
-	for <linux-mips@archiver.kernel.org>; Mon, 31 Aug 2020 01:38:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D3A98C433E6
+	for <linux-mips@archiver.kernel.org>; Mon, 31 Aug 2020 02:02:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A16CC2071B
-	for <linux-mips@archiver.kernel.org>; Mon, 31 Aug 2020 01:38:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B51412078D
+	for <linux-mips@archiver.kernel.org>; Mon, 31 Aug 2020 02:02:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgHaBin (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 30 Aug 2020 21:38:43 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:50224 "EHLO loongson.cn"
+        id S1726630AbgHaCCM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 30 Aug 2020 22:02:12 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:55866 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726573AbgHaBim (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 30 Aug 2020 21:38:42 -0400
-Received: from ambrosehua-HP-xw6600-Workstation (unknown [182.149.161.99])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxuuSVVExf430PAA--.20338S2;
-        Mon, 31 Aug 2020 09:38:36 +0800 (CST)
-Date:   Mon, 31 Aug 2020 09:38:29 +0800
+        id S1726618AbgHaCCM (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 30 Aug 2020 22:02:12 -0400
+Received: from localhost.localdomain (unknown [182.149.161.99])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx790VWkxfXX8PAA--.17082S3;
+        Mon, 31 Aug 2020 10:02:08 +0800 (CST)
 From:   Huang Pei <huangpei@loongson.cn>
-To:     WANG Xuerui <kernel@xen0n.name>
-Cc:     linux-mips@vger.kernel.org
-Subject: Re: [PATCH Fixes] MIPS: add missing MSACSR and upper MSA
- initialization
-Message-ID: <20200831013829.5jvxr4xxdqwxdcom@ambrosehua-HP-xw6600-Workstation>
-References: <20200828085706.29190-1-huangpei@loongson.cn>
- <28ec8eab-065b-3bc5-986a-883211c2b522@xen0n.name>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <28ec8eab-065b-3bc5-986a-883211c2b522@xen0n.name>
-User-Agent: NeoMutt/20171215
-X-CM-TRANSID: AQAAf9AxuuSVVExf430PAA--.20338S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tF1kJF4UAr1DZFyUAr1rXrb_yoW8Wryrpa
-        98CF95Kw4rXF1vy3saya4Fqry3G39Yqr4Iva9xKayrXa15Gr1rGFn7tFnxWa4a9rWUWa10
-        ga4YqF1UKa92y37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUySb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
-        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC2
-        0s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
-        0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
-        14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20x
-        vaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v2
-        6r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07bOoGdUUUUU=
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        ambrosehua@gmail.com
+Cc:     Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Fuxin Zhang <zhangfx@lemote.com>,
+        Huacai Chen <chenhc@lemote.com>, linux-mips@vger.kernel.org
+Subject: [PATCH] MIPS: fix missing MSACSR and upper MSA initialization for cc97ab23
+Date:   Mon, 31 Aug 2020 10:01:45 +0800
+Message-Id: <20200831020145.31706-2-huangpei@loongson.cn>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200831020145.31706-1-huangpei@loongson.cn>
+References: <20200831020145.31706-1-huangpei@loongson.cn>
+X-CM-TRANSID: AQAAf9Dx790VWkxfXX8PAA--.17082S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Gr1fJFWfuw1rCFyDJFy7Jrb_yoW8JrWfpa
+        nrCF1DKw4UXFn7t3sayayFqrW3G3s5trW7Za9rK3yfXan8Wr15XF18JF9xXa4agrW0ga10
+        934Yvr4UKa92yw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBm14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
+        8EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4U
+        JwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
+        IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
+        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Gr1l42
+        xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWU
+        GwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI4
+        8JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4U
+        MIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I
+        8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOHUqUUUUU
 X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 11:26:19PM +0800, WANG Xuerui wrote:
-> Hi Pei,
-> 
-> On 8/28/20 4:57 PM, Huang Pei wrote:
-> > init_fp_ctx just initialize the fp/msa context, and own_fp_inatomic
-> > just restore FCSR and 64bit FP regs from it, but miss MSACSR and upper
-> > MSA regs for MSA, so MSACSR and MSA upper regs's value from previous
-> > task on current cpu can leak into current task and cause unpredictable
-> > behavior when MSA context not initialized.
-> > 
-> > Signed-off-by: Huang Pei <huangpei@loongson.cn>
-> Actually I think what Thomas meant by saying "add a Fixes tag" in the
-> previous thread was "to add a Fixes: tag to refer to the broken commit" . So
-> perhaps send a v3?
-> > ---
-> >   arch/mips/kernel/traps.c | 12 ++++++++++++
-> >   1 file changed, 12 insertions(+)
-> > 
-> > diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-> > index 38aa07ccdbcc..cf788591f091 100644
-> > --- a/arch/mips/kernel/traps.c
-> > +++ b/arch/mips/kernel/traps.c
-> > @@ -1287,6 +1287,18 @@ static int enable_restore_fp_context(int msa)
-> >   		err = own_fpu_inatomic(1);
-> >   		if (msa && !err) {
-> >   			enable_msa();
-> > +			/*
-> > +			 * with MSA enabled, userspace can see MSACSR
-> > +			 * and MSA regs, but the values in them are from
-> > +			 * other task before current task, restore them
-> > +			 * from saved fp/msa context
-> > +			 */
-> > +			write_msa_csr(current->thread.fpu.msacsr);
-> > +			/*
-> > +			 * own_fpu_inatomic(1) just restore low 64bit,
-> > +			 * fix the high 64bit
-> > +			 */
-> > +			init_msa_upper();
-> >   			set_thread_flag(TIF_USEDMSA);
-> >   			set_thread_flag(TIF_MSA_CTX_LIVE);
-> >   		}
-Got it, resend with a tag refering to hte broken commit
+In cc97ab235f3fe32401ca198cebe6f42642e95770, init_fp_ctx just initialize the
+fp/msa context, and own_fp_inatomic just restore FCSR and 64bit FP regs from
+it, but miss MSACSR and upper MSA regs for MSA, so MSACSR and MSA upper regs's
+value from previous task on current cpu can leak into current task and cause
+unpredictable behavior when MSA context not initialized.
+
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
+---
+ arch/mips/kernel/traps.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 38aa07ccdbcc..cf788591f091 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -1287,6 +1287,18 @@ static int enable_restore_fp_context(int msa)
+ 		err = own_fpu_inatomic(1);
+ 		if (msa && !err) {
+ 			enable_msa();
++			/*
++			 * with MSA enabled, userspace can see MSACSR
++			 * and MSA regs, but the values in them are from
++			 * other task before current task, restore them
++			 * from saved fp/msa context
++			 */
++			write_msa_csr(current->thread.fpu.msacsr);
++			/*
++			 * own_fpu_inatomic(1) just restore low 64bit,
++			 * fix the high 64bit
++			 */
++			init_msa_upper();
+ 			set_thread_flag(TIF_USEDMSA);
+ 			set_thread_flag(TIF_MSA_CTX_LIVE);
+ 		}
+-- 
+2.17.1
 

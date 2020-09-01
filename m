@@ -2,40 +2,44 @@ Return-Path: <SRS0=pUau=CK=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DA7FC433E2
-	for <linux-mips@archiver.kernel.org>; Tue,  1 Sep 2020 14:27:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AE5EC433E2
+	for <linux-mips@archiver.kernel.org>; Tue,  1 Sep 2020 14:28:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5654F206EB
-	for <linux-mips@archiver.kernel.org>; Tue,  1 Sep 2020 14:27:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2286E206EF
+	for <linux-mips@archiver.kernel.org>; Tue,  1 Sep 2020 14:28:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="KF+WLRjR"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="HhHU3Nc6"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728402AbgIAO1j (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 1 Sep 2020 10:27:39 -0400
-Received: from crapouillou.net ([89.234.176.41]:45164 "EHLO crapouillou.net"
+        id S1727032AbgIAO2T (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 1 Sep 2020 10:28:19 -0400
+Received: from crapouillou.net ([89.234.176.41]:45394 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728414AbgIAO1G (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:27:06 -0400
+        id S1728289AbgIAO1r (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 1 Sep 2020 10:27:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1598970417; h=from:from:sender:reply-to:subject:subject:date:date:
+        s=mail; t=1598970419; h=from:from:sender:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:references; bh=4dCf8/0XtPyUZ4cmE7yLaNcjFhJXlgKenCp5Jo5X9zA=;
-        b=KF+WLRjR4DUY9ttXTgdnhizaqS4CJChRdSvWBWFT9ez6bxAjWjkckGCpzKEGDZRv+Qa/lN
-        +sM87ZpMnK7FnuyS66xuQYkJ0Dn8BkuesC7Fdryh8h0w6rQQx9cSq+3VOvC2MvEhedILXH
-        60UJO5bJGtLTK0/nVGAGukkecBueEec=
+         in-reply-to:in-reply-to:references:references;
+        bh=yU+G5wm9UV0/Lr0JJrsdPUDzSeYzX6a4lcXqh4c6G+0=;
+        b=HhHU3Nc6W8OyBdfECWVhQHZrKsN6YU67y7ugf5zT0hdIOTsbRpIry/YTQJY4IHt7pyqlgm
+        u3XKVUQJRz67Ja9q01KpglQXo9i7er1TVwlHD/6zvqAvba2zwPnjfuKNohZBYBw9pEU9jp
+        G9nm5SGShMU9AI9MOC87A5L/Rrrvr1A=
 From:   Paul Cercueil <paul@crapouillou.net>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Nick Terrell <terrelln@fb.com>
 Cc:     od@zcrc.me, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v3 0/2] MIPS: Add support for ZSTD v3
-Date:   Tue,  1 Sep 2020 16:26:49 +0200
-Message-Id: <20200901142651.1165237-1-paul@crapouillou.net>
+Subject: [PATCH v3 2/2] MIPS: Add support for ZSTD-compressed kernels
+Date:   Tue,  1 Sep 2020 16:26:51 +0200
+Message-Id: <20200901142651.1165237-3-paul@crapouillou.net>
+In-Reply-To: <20200901142651.1165237-1-paul@crapouillou.net>
+References: <20200901142651.1165237-1-paul@crapouillou.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-mips-owner@vger.kernel.org
@@ -43,28 +47,111 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi,
+Add support for self-extracting kernels with a ZSTD compression.
 
-This small patchset adds support for self-extracting kernels compressed
-with ZSTD.
+Tested on a kernel for the GCW-Zero, it allows to reduce the size of the
+kernel file from 4.1 MiB with gzip to 3.5 MiB with ZSTD, and boots just
+as fast.
 
-Nick:
-I dropped your Reviewed-by on patch [1/2] since the code changed.
+Compressed kernels are now also compiled with -D__DISABLE_EXPORTS in
+order to disable the EXPORT_SYMBOL() macros inside of
+lib/zstd/decompress.c.
 
-Cheers,
--Paul
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
 
-Paul Cercueil (2):
-  lib: decompress_unzstd: Limit output size
-  MIPS: Add support for ZSTD-compressed kernels
+Notes:
+    v2: Add -D__DISABLE_EXPORTS to CFLAGS and use zstd22
+    
+    v3: Make memmove __weak, since it is provided for other compression
+        schemes
 
  arch/mips/Kconfig                      |  1 +
  arch/mips/boot/compressed/Makefile     |  3 ++-
  arch/mips/boot/compressed/decompress.c |  4 ++++
  arch/mips/boot/compressed/string.c     | 17 +++++++++++++++++
- lib/decompress_unzstd.c                |  7 ++++++-
- 5 files changed, 30 insertions(+), 2 deletions(-)
+ 4 files changed, 24 insertions(+), 1 deletion(-)
 
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index c95fa3a2484c..b9d7c4249dc9 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -1890,6 +1890,7 @@ config SYS_SUPPORTS_ZBOOT
+ 	select HAVE_KERNEL_LZMA
+ 	select HAVE_KERNEL_LZO
+ 	select HAVE_KERNEL_XZ
++	select HAVE_KERNEL_ZSTD
+ 
+ config SYS_SUPPORTS_ZBOOT_UART16550
+ 	bool
+diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
+index 6e56caef69f0..9a9ba77b745e 100644
+--- a/arch/mips/boot/compressed/Makefile
++++ b/arch/mips/boot/compressed/Makefile
+@@ -22,7 +22,7 @@ KBUILD_CFLAGS := $(filter-out -pg, $(KBUILD_CFLAGS))
+ 
+ KBUILD_CFLAGS := $(filter-out -fstack-protector, $(KBUILD_CFLAGS))
+ 
+-KBUILD_CFLAGS := $(KBUILD_CFLAGS) -D__KERNEL__ \
++KBUILD_CFLAGS := $(KBUILD_CFLAGS) -D__KERNEL__ -D__DISABLE_EXPORTS \
+ 	-DBOOT_HEAP_SIZE=$(BOOT_HEAP_SIZE) -D"VMLINUX_LOAD_ADDRESS_ULL=$(VMLINUX_LOAD_ADDRESS)ull"
+ 
+ KBUILD_AFLAGS := $(KBUILD_AFLAGS) -D__ASSEMBLY__ \
+@@ -70,6 +70,7 @@ tool_$(CONFIG_KERNEL_LZ4)     = lz4
+ tool_$(CONFIG_KERNEL_LZMA)    = lzma
+ tool_$(CONFIG_KERNEL_LZO)     = lzo
+ tool_$(CONFIG_KERNEL_XZ)      = xzkern
++tool_$(CONFIG_KERNEL_ZSTD)    = zstd22
+ 
+ targets += vmlinux.bin.z
+ $(obj)/vmlinux.bin.z: $(obj)/vmlinux.bin FORCE
+diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
+index 88f5d637b1c4..c61c641674e6 100644
+--- a/arch/mips/boot/compressed/decompress.c
++++ b/arch/mips/boot/compressed/decompress.c
+@@ -72,6 +72,10 @@ void error(char *x)
+ #include "../../../../lib/decompress_unxz.c"
+ #endif
+ 
++#ifdef CONFIG_KERNEL_ZSTD
++#include "../../../../lib/decompress_unzstd.c"
++#endif
++
+ const unsigned long __stack_chk_guard = 0x000a0dff;
+ 
+ void __stack_chk_fail(void)
+diff --git a/arch/mips/boot/compressed/string.c b/arch/mips/boot/compressed/string.c
+index 43beecc3587c..0b593b709228 100644
+--- a/arch/mips/boot/compressed/string.c
++++ b/arch/mips/boot/compressed/string.c
+@@ -5,6 +5,7 @@
+  * Very small subset of simple string routines
+  */
+ 
++#include <linux/compiler_attributes.h>
+ #include <linux/types.h>
+ 
+ void *memcpy(void *dest, const void *src, size_t n)
+@@ -27,3 +28,19 @@ void *memset(void *s, int c, size_t n)
+ 		ss[i] = c;
+ 	return s;
+ }
++
++void * __weak memmove(void *dest, const void *src, size_t n)
++{
++	unsigned int i;
++	const char *s = src;
++	char *d = dest;
++
++	if ((uintptr_t)dest < (uintptr_t)src) {
++		for (i = 0; i < n; i++)
++			d[i] = s[i];
++	} else {
++		for (i = n; i > 0; i--)
++			d[i - 1] = s[i - 1];
++	}
++	return dest;
++}
 -- 
 2.28.0
 

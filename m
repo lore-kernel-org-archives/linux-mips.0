@@ -2,136 +2,105 @@ Return-Path: <SRS0=pUau=CK=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 168DDC433E2
-	for <linux-mips@archiver.kernel.org>; Tue,  1 Sep 2020 15:09:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0334EC433E7
+	for <linux-mips@archiver.kernel.org>; Tue,  1 Sep 2020 15:23:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DAEEC20FC3
-	for <linux-mips@archiver.kernel.org>; Tue,  1 Sep 2020 15:09:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D431B206FA
+	for <linux-mips@archiver.kernel.org>; Tue,  1 Sep 2020 15:23:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lCL5SLaM"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="UvqMRf/V";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="QlglmDYf"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbgIAPJL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 1 Sep 2020 11:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727788AbgIAPJF (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 1 Sep 2020 11:09:05 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C41DC061244
-        for <linux-mips@vger.kernel.org>; Tue,  1 Sep 2020 08:09:05 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id i26so2130805ejb.12
-        for <linux-mips@vger.kernel.org>; Tue, 01 Sep 2020 08:09:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BIr3FRHLWeYI5mpm2jHeXhPihRGMNnmHYOmMOMeHpR4=;
-        b=lCL5SLaMFPqoPftiV2X8nocTTBdKqARvrqI17ufYPS0DtjiIyaSIs4CniiHZ/VEW8n
-         WoqCHbvQzPHbcjvAM7+zD7U98QNr5oxI5U75nYwYeOtUdaj7M9sptx5fdS3otDiC5uUz
-         5071XY7IwhHNlm+8JmyRZFrwvyyMI1Xxx/Jf4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BIr3FRHLWeYI5mpm2jHeXhPihRGMNnmHYOmMOMeHpR4=;
-        b=I4vGz/vOK69pwdWYgqla6yz8TSSCJnVaRZl1BbNOpA+pxLs57ZwlMw62xTdCLp7rll
-         Uz1SodNaUbdHvCGaWYREccZoiF/gnMXfsnCbyA12uTRDx84zAhW3n2GMbro8ELrMp6E1
-         9ZUPYkZJCh20zi2AJs06UA89mg8iEtZQpAriCXjSUmMxA+Vr9Tt7lcx0jfeT2PEoIe2H
-         G9ZwdXil9nLXl8K4lc7DK8QRASJyFmSmykOomFFi0HAwULlIC+FxPVXSEjkRu5nb8qnF
-         jsNRxkFBbmdNTex5cYRWyvipCVLaaBrY8rdbYbxv6VPvocEJNOzLTQ0MjDzyL5uUgXor
-         kPpg==
-X-Gm-Message-State: AOAM533shryFL85lcDzdKY40PJSCB4Y91rINXZa7/Qo8dmIzuEUG4iRT
-        wxs/tGA1dFHhr8tTqg2qmwjwhsT57gSaiQ==
-X-Google-Smtp-Source: ABdhPJz7zQOZHviVgNY9K00fqQQWSjEuJ738Nqd4wpLccIR51ovk8E0Trj5aATkvlO+UPEuq5mj3gA==
-X-Received: by 2002:a17:906:c34d:: with SMTP id ci13mr1791342ejb.356.1598972943845;
-        Tue, 01 Sep 2020 08:09:03 -0700 (PDT)
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com. [209.85.221.41])
-        by smtp.gmail.com with ESMTPSA id i35sm1320883edi.41.2020.09.01.08.09.03
-        for <linux-mips@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 08:09:03 -0700 (PDT)
-Received: by mail-wr1-f41.google.com with SMTP id a17so1941224wrn.6
-        for <linux-mips@vger.kernel.org>; Tue, 01 Sep 2020 08:09:03 -0700 (PDT)
-X-Received: by 2002:a5d:5150:: with SMTP id u16mr2332024wrt.197.1598972568491;
- Tue, 01 Sep 2020 08:02:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200819065555.1802761-1-hch@lst.de> <20200819065555.1802761-6-hch@lst.de>
- <CAAFQd5COLxjydDYrfx47ht8tj-aNPiaVnC+WyQA7nvpW4gs=ww@mail.gmail.com>
- <20200819135454.GA17098@lst.de> <CAAFQd5BuXP7t3d-Rwft85j=KTyXq7y4s24mQxLr=VoY9krEGZw@mail.gmail.com>
- <20200820044347.GA4533@lst.de> <20200820052004.GA5305@lst.de>
- <CAAFQd5CFiA2WBaaPQ9ezvMjYZfNw37c42UEy9Pk7kJyCi1mLzQ@mail.gmail.com>
- <20200820165407.GD12693@lst.de> <CAAFQd5D=NzgjosB51-O_cH27a8V6CPgCfaPSfHHz7nKJPbazgg@mail.gmail.com>
- <20200901110617.GA13232@lst.de>
-In-Reply-To: <20200901110617.GA13232@lst.de>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Tue, 1 Sep 2020 17:02:20 +0200
-X-Gmail-Original-Message-ID: <CAAFQd5CmPVSxmZJVn7HnNUn8srZbAbnfzpNMYw3KcDzn7xD2cg@mail.gmail.com>
-Message-ID: <CAAFQd5CmPVSxmZJVn7HnNUn8srZbAbnfzpNMYw3KcDzn7xD2cg@mail.gmail.com>
-Subject: Re: [PATCH 05/28] media/v4l2: remove V4L2-FLAG-MEMORY-NON-CONSISTENT
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     alsa-devel@alsa-project.org, linux-ia64@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        nouveau@lists.freedesktop.org, linux-nvme@lists.infradead.org,
-        linux-mips@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        linux-mm@kvack.org,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        id S1729725AbgIAPXD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 1 Sep 2020 11:23:03 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:42978 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729348AbgIAPXB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 1 Sep 2020 11:23:01 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 0E0068EE187;
+        Tue,  1 Sep 2020 08:22:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1598973779;
+        bh=oM6M8l0ba8Kwr86wVvWOr0ibc9GeoVF02RI3gdpRvZg=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=UvqMRf/V4bYGUnXRFYzHR0MoWszTvt72MUDJlkPgLVL7Z5C9ghIwUJJ5HYM5kfJ3n
+         5VYFPt986TvN+zbqjMT6pkl+t9bvzRZjP81gXVEMiUig/anUDkmm0cM9tI1gLXtLCF
+         UIwKWRUmpM4JixpLzQm9dVgj9tnlX6pm+UJWHqoc=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id U-JPs2CIcW43; Tue,  1 Sep 2020 08:22:58 -0700 (PDT)
+Received: from [153.66.254.174] (c-73-35-198-56.hsd1.wa.comcast.net [73.35.198.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 8B8B18EE0F5;
+        Tue,  1 Sep 2020 08:22:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1598973778;
+        bh=oM6M8l0ba8Kwr86wVvWOr0ibc9GeoVF02RI3gdpRvZg=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=QlglmDYfmn+LUmPHNl9G1vxZ4WANgTGEDBcv3VoTq5jkCobGzHRwV7MDXP/8CkPRF
+         DlnAvyJzmngr5D0/wC86DqyXRPVdp/OwUQc4zsVd3Mrk54apOxtDVbGKnBnOuqrFqS
+         /e8+ps58Vp9230FkQlqzYQQbltdvuVP33ee7Vxcw=
+Message-ID: <1598973776.4238.11.camel@HansenPartnership.com>
+Subject: Re: [PATCH 07/28] 53c700: improve non-coherent DMA handling
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Joonyoung Shim <jy0922.shim@samsung.com>,
-        linux-scsi@vger.kernel.org,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
         Kyungmin Park <kyungmin.park@samsung.com>,
         Ben Skeggs <bskeggs@redhat.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
         Pawel Osciak <pawel@osciak.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        iommu@lists.linux-foundation.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        linux-mm@kvack.org, alsa-devel@alsa-project.org
+Date:   Tue, 01 Sep 2020 08:22:56 -0700
+In-Reply-To: <20200901150554.GN14765@casper.infradead.org>
+References: <20200819065555.1802761-1-hch@lst.de>
+         <20200819065555.1802761-8-hch@lst.de>
+         <1598971960.4238.5.camel@HansenPartnership.com>
+         <20200901150554.GN14765@casper.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Sep 1, 2020 at 1:06 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Thu, Aug 20, 2020 at 07:33:48PM +0200, Tomasz Figa wrote:
-> > > It wasn't meant to be too insulting, but I found this out when trying
-> > > to figure out how to just disable it.  But it also ends up using
-> > > the actual dma attr flags for it's own consistency checks, so just
-> > > not setting the flag did not turn out to work that easily.
-> > >
-> >
-> > Yes, sadly the videobuf2 ended up becoming quite counterintuitive
-> > after growing for the long years and that is reflected in the design
-> > of this feature as well. I think we need to do something about it.
->
-> So I'm about to respin the series and wonder how we should proceed.
-> I've failed to come up with a clean patch to keep the flag and make
-> it a no-op.  Can you or your team give it a spin?
->
+On Tue, 2020-09-01 at 16:05 +0100, Matthew Wilcox wrote:
+> On Tue, Sep 01, 2020 at 07:52:40AM -0700, James Bottomley wrote:
+> > I think this looks mostly OK, except for one misnamed parameter
+> > below. Unfortunately, the last non-coherent parisc was the 700
+> > series and I no longer own a box, so I can't test that part of it
+> > (I can fire up the C360 to test it on a coherent arch).
+> 
+> I have a 715/50 that probably hasn't been powered on in 15 years if
+> you need something that old to test on (I believe the 725/100 uses
+> the 7100LC and so is coherent).  I'll need to set up a cross-compiler 
+> ...
 
-Okay, I'll take a look.
+I'm not going to say no to actual testing, but it's going to be a world
+of pain getting something so old going.  I do have a box of older
+systems I keep for architectural testing that I need to rummage around
+in ... I just have a vague memory that my 715 actually caught fire a
+decade ago and had to be disposed of.
 
-> Also I wonder if the flag should be renamed from NON_CONSISTENT
-> to NON_COHERENT - the consistent thing is a weird wart from the times
-> the old PCI DMA API that is mostly gone now.
+James
 
-It originated from the DMA_ATTR_NON_CONSISTENT flag, but agreed that
-NON_COHERENT would be more consistent (pun not intended) with the rest
-of the DMA API given the removal of that flag. Let me see if we can
-still change it.
-
-Best regards,
-Tomasz

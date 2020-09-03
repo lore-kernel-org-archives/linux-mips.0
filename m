@@ -6,65 +6,67 @@ X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45036C433E2
-	for <linux-mips@archiver.kernel.org>; Thu,  3 Sep 2020 08:27:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EF69C43461
+	for <linux-mips@archiver.kernel.org>; Thu,  3 Sep 2020 08:27:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2509920897
-	for <linux-mips@archiver.kernel.org>; Thu,  3 Sep 2020 08:27:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1E09B20897
+	for <linux-mips@archiver.kernel.org>; Thu,  3 Sep 2020 08:27:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbgICI1L (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 3 Sep 2020 04:27:11 -0400
-Received: from elvis.franken.de ([193.175.24.41]:50509 "EHLO elvis.franken.de"
+        id S1728234AbgICI1O (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 3 Sep 2020 04:27:14 -0400
+Received: from elvis.franken.de ([193.175.24.41]:50527 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726521AbgICI1L (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:27:11 -0400
+        id S1728228AbgICI1N (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 3 Sep 2020 04:27:13 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kDkaL-0000I1-00; Thu, 03 Sep 2020 10:27:09 +0200
+        id 1kDkaL-0000I1-02; Thu, 03 Sep 2020 10:27:09 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 36F7FC0E85; Thu,  3 Sep 2020 10:16:14 +0200 (CEST)
-Date:   Thu, 3 Sep 2020 10:16:14 +0200
+        id 102C2C0E86; Thu,  3 Sep 2020 10:20:04 +0200 (CEST)
+Date:   Thu, 3 Sep 2020 10:20:04 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Nick Terrell <terrelln@fb.com>, od@zcrc.me,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] MIPS: Add support for ZSTD v3
-Message-ID: <20200903081614.GA6220@alpha.franken.de>
-References: <20200901142651.1165237-1-paul@crapouillou.net>
+To:     Huacai Chen <chenhc@lemote.com>
+Cc:     Huang Pei <huangpei@loongson.cn>,
+        Paul Burton <paulburton@kernel.org>,
+        Paul Ambrose <ambrosehua@gmail.com>,
+        Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Fuxin Zhang <zhangfx@lemote.com>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>
+Subject: Re: [PATCH v4] MIPS: add missing MSACSR and upper MSA initialization
+Message-ID: <20200903082003.GC6220@alpha.franken.de>
+References: <20200901065309.5952-1-huangpei@loongson.cn>
+ <CAAhV-H4ZzPD46OBrKhO-9UaJT-eyZooTarsLj_-h-tNGWfa5gQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200901142651.1165237-1-paul@crapouillou.net>
+In-Reply-To: <CAAhV-H4ZzPD46OBrKhO-9UaJT-eyZooTarsLj_-h-tNGWfa5gQ@mail.gmail.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 04:26:49PM +0200, Paul Cercueil wrote:
-> Hi,
+On Tue, Sep 01, 2020 at 03:43:15PM +0800, Huacai Chen wrote:
+> Hi, all,
 > 
-> This small patchset adds support for self-extracting kernels compressed
-> with ZSTD.
-> 
-> Nick:
-> I dropped your Reviewed-by on patch [1/2] since the code changed.
-> 
-> Cheers,
-> -Paul
-> 
-> Paul Cercueil (2):
->   lib: decompress_unzstd: Limit output size
->   MIPS: Add support for ZSTD-compressed kernels
-> 
->  arch/mips/Kconfig                      |  1 +
->  arch/mips/boot/compressed/Makefile     |  3 ++-
->  arch/mips/boot/compressed/decompress.c |  4 ++++
->  arch/mips/boot/compressed/string.c     | 17 +++++++++++++++++
->  lib/decompress_unzstd.c                |  7 ++++++-
->  5 files changed, 30 insertions(+), 2 deletions(-)
+> On Tue, Sep 1, 2020 at 2:53 PM Huang Pei <huangpei@loongson.cn> wrote:
+> >
+> > In cc97ab235f ("MIPS: Simplify FP context initialization), init_fp_ctx
+> > just initialize the fp/msa context, and own_fp_inatomic just restore
+> > FCSR and 64bit FP regs from it, but miss MSACSR and upper MSA regs for
+> > MSA, so MSACSR and MSA upper regs's value from previous task on current
+> > cpu can leak into current task and cause unpredictable behavior when MSA
+> > context not initialized.
+> >
+> I still think this needs an ACK from Paul Burton.
 
-series applied to mips-next.
+I'm also curious why Paul removed the init_msa_upper() call in that patch,
+but I don't need an explicit ACK from him. I've checked how FPU/MSA
+context is setup and to me this patch does the correct thing. IMHO it doesn't
+do any harm. So if we find out they are for whatever reason redudant it's
+quite easy to revert this patch.
 
 Thomas.
 

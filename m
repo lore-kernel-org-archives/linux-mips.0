@@ -2,81 +2,97 @@ Return-Path: <SRS0=ECxE=CN=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEE7CC433E2
-	for <linux-mips@archiver.kernel.org>; Fri,  4 Sep 2020 10:37:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9275AC433E2
+	for <linux-mips@archiver.kernel.org>; Fri,  4 Sep 2020 12:32:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B52C9206D4
-	for <linux-mips@archiver.kernel.org>; Fri,  4 Sep 2020 10:37:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5A37C20797
+	for <linux-mips@archiver.kernel.org>; Fri,  4 Sep 2020 12:32:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729753AbgIDKaF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 4 Sep 2020 06:30:05 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:42988 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730185AbgIDKaA (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 4 Sep 2020 06:30:00 -0400
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxX90gF1Jfx8AQAA--.125S2;
-        Fri, 04 Sep 2020 18:29:53 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+        id S1729930AbgIDMcf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 4 Sep 2020 08:32:35 -0400
+Received: from elvis.franken.de ([193.175.24.41]:52961 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728588AbgIDMce (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 4 Sep 2020 08:32:34 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kEAtJ-0005xV-00; Fri, 04 Sep 2020 14:32:29 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 79461C00F2; Fri,  4 Sep 2020 14:32:23 +0200 (CEST)
+Date:   Fri, 4 Sep 2020 14:32:23 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     torvalds@linux-foundation.org
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: Loongson64: Remove unused loongson_reboot.
-Date:   Fri,  4 Sep 2020 18:29:51 +0800
-Message-Id: <1599215391-2644-1-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxX90gF1Jfx8AQAA--.125S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GF15WrWkJr1rCF4UZFW3Awb_yoWxZrX_tF
-        W2yr4rWF9ayr1xCa4UWr13Wr4xu34DK3W5CFnxJ34Fq3Z0qrsxJ3y8Ar4UtF13XrZ0vr13
-        Xr4kGF1xu3Z7KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb28YjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26F4j6r4UJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r4DMxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
-        IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
-        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jbiSdUUUUU=
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+Subject: [GIT PULL] MIPS fixes for v5.9
+Message-ID: <20200904123223.GA18627@alpha.franken.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Commit 1bdb7b76705a ("MIPS: Loongson64: Cleanup unused code")
-left the loongson_reboot unused, delete it.
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
 
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
----
- arch/mips/loongson64/reset.c | 5 -----
- 1 file changed, 5 deletions(-)
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
 
-diff --git a/arch/mips/loongson64/reset.c b/arch/mips/loongson64/reset.c
-index bc76710..3bb8a1e 100644
---- a/arch/mips/loongson64/reset.c
-+++ b/arch/mips/loongson64/reset.c
-@@ -15,11 +15,6 @@
- #include <loongson.h>
- #include <boot_param.h>
- 
--static inline void loongson_reboot(void)
--{
--	((void (*)(void))ioremap(LOONGSON_BOOT_BASE, 4)) ();
--}
--
- static void loongson_restart(char *command)
- {
- 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_fixes_5.9_1
+
+for you to fetch changes up to baf5cb30fbd1c22f6aa03c081794c2ee0f5be4da:
+
+  MIPS: SNI: Fix SCSI interrupt (2020-09-03 12:00:23 +0200)
+
+----------------------------------------------------------------
+A few MIPS fixes:
+
+- fallthrough fallout fix
+- BMIPS fixes
+- MSA fix to avoid leaking MSA register contents
+- Loongson perf and cpu feature fix
+- SNI interrupt fix
+
+----------------------------------------------------------------
+Florian Fainelli (2):
+      MIPS: mm: BMIPS5000 has inclusive physical caches
+      MIPS: BMIPS: Also call bmips_cpu_setup() for secondary cores
+
+He Zhe (1):
+      mips/oprofile: Fix fallthrough placement
+
+Huang Pei (1):
+      MIPS: add missing MSACSR and upper MSA initialization
+
+Jiaxun Yang (1):
+      MIPS: Loongson64: Do not override watch and ejtag feature
+
+Thomas Bogendoerfer (1):
+      MIPS: SNI: Fix SCSI interrupt
+
+Tiezhu Yang (1):
+      MIPS: perf: Fix wrong check condition of Loongson event IDs
+
+WANG Xuerui (1):
+      MIPS: Loongson64: Remove unnecessary inclusion of boot_param.h
+
+ .../mips/include/asm/mach-loongson64/cpu-feature-overrides.h |  2 --
+ arch/mips/include/asm/mach-loongson64/irq.h                  |  2 --
+ arch/mips/include/asm/mach-loongson64/mmzone.h               |  1 -
+ arch/mips/kernel/perf_event_mipsxx.c                         |  4 ++--
+ arch/mips/kernel/smp-bmips.c                                 |  2 ++
+ arch/mips/kernel/traps.c                                     | 12 ++++++++++++
+ arch/mips/mm/c-r4k.c                                         |  4 ++++
+ arch/mips/oprofile/op_model_mipsxx.c                         |  4 +++-
+ arch/mips/sni/a20r.c                                         |  4 ++--
+ 9 files changed, 25 insertions(+), 10 deletions(-)
 -- 
-2.1.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

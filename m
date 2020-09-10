@@ -2,101 +2,141 @@ Return-Path: <SRS0=3eD/=CT=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.0 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.4 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BA6AC433E2
-	for <linux-mips@archiver.kernel.org>; Thu, 10 Sep 2020 10:13:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0201C07548
+	for <linux-mips@archiver.kernel.org>; Thu, 10 Sep 2020 10:17:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B7A8221941
-	for <linux-mips@archiver.kernel.org>; Thu, 10 Sep 2020 10:13:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 60FA42145D
+	for <linux-mips@archiver.kernel.org>; Thu, 10 Sep 2020 10:17:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=zz.de header.i=@zz.de header.b="jV5xbZ7p"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TyMbFj/C"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbgIJKNy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 10 Sep 2020 06:13:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44258 "EHLO
+        id S1730804AbgIJKQr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 10 Sep 2020 06:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730556AbgIJKNu (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 10 Sep 2020 06:13:50 -0400
-X-Greylist: delayed 375 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 10 Sep 2020 03:13:49 PDT
-Received: from pax.zz.de (pax.zz.de [IPv6:2a01:4f8:201:92f3::f10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D92D3C061573
-        for <linux-mips@vger.kernel.org>; Thu, 10 Sep 2020 03:13:49 -0700 (PDT)
-Received: by pax.zz.de (Postfix, from userid 1181)
-        id 571F010012D; Thu, 10 Sep 2020 12:07:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=zz.de; s=mail;
-        t=1599732451; bh=W0mFI0Yj41ANC2MtFVkUZcMVw5ndhVnMhcrndSD696Y=;
-        h=Date:From:To:Subject:From;
-        b=jV5xbZ7p1BozhMf/L8W6Yikk1MeEnxL2EpYlVR6membODY0q6O8JhMTBqCKoUKuYd
-         M3ei8LLtyt344sLn671VhLXoRiCRxTB/UDJlX0920clr4zZO9HAaj3C9vT8fPFjCgd
-         YrJhBN2f99h2OAge4s21dyCy9rq16Uf5QnVIAMwRvuDzariXYRHyv8vSqpiPO4VBIl
-         Hv8IVvQszMHoz66UxYSkDC47R8G7vwkD2ASyDNSPQ9aDQBJjJLRD/I/Im/NkC01q0J
-         AGx3PRhjVHyn+VtsR3Cw++DUkLwj/Ui9MjVYERUjSvE74KYfP+9PcrLF1gc4rmA3EM
-         DUW91TMfXNQ8g==
-Date:   Thu, 10 Sep 2020 12:07:31 +0200
-From:   Florian Lohoff <f@zz.de>
-To:     linux-mips@vger.kernel.org
-Subject: Undust unknown hardware / Algo P-6064
-Message-ID: <20200910100729.c6qn22j6pfqxxu5z@pax.zz.de>
+        with ESMTP id S1730260AbgIJKQi (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 10 Sep 2020 06:16:38 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656B6C061756;
+        Thu, 10 Sep 2020 03:16:38 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id s13so5065195wmh.4;
+        Thu, 10 Sep 2020 03:16:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DqY3ytm1lW24L4dBr5ZhfVe1Kl4JG7b6aElJixa0DtQ=;
+        b=TyMbFj/CCKS/yEhzmJyx0SXASPCumWs129eaMWwliNPHoe9nGlJZk2Tsw17ABtL/mL
+         mWke72l5dRMmrFg9ieYmDr1jVfXiMwSmIMEMsNuXAYrMDmbRSlu2SEhpSFeukLVe3cg9
+         +5O+wBu+Jx7JfEyF9JNwdrWebHIVozT6N0VTqxSNEjrIsLOZ3R3dejl3APk21PLF2Oj8
+         +Kb8ACZuKGttnfzoDexc2yloyF3/YUcCQzcDsr90PZvO0KOXZEocClY8eSC4NnFPV4xO
+         lvhsU6vpfnm+pvKWrckJN/8r5bLtL/kaV4lfgkeSIGRnLzVQeQ+BBL7u23nOrwhO07G+
+         JHEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DqY3ytm1lW24L4dBr5ZhfVe1Kl4JG7b6aElJixa0DtQ=;
+        b=pmUw8PMCpmIHzSROi++DPz4KjuYgWtg1+Y5TE231Bqiqr8R2N1C3xqoxsiwBj6o1cg
+         uH2BXtjGnMGGoluHj644z5xr7xlqF6U2gftY836V0P2i1eGVJRbd6Kt5NRdxnuMIEUiL
+         l2iyGGPzmqplYZFS9cH521ZnO3ebnALHjbVC/Yy86VDwVom/j1SkB7EzjdV3z887JSV1
+         vBn2sxOKogw/Qr4Wwks6/Tsd6y+ZPpXYP0rtp5M7H0Cz9R+tTExVNwpFLc4afNM8kBHv
+         sPRTlUxnMhVTJVsmuIxtZtgT2oyddp39osiyXrTv8c0GKDU7rTuLb07sCHlL7FBgK0nz
+         qKBw==
+X-Gm-Message-State: AOAM531fehkY9RO3xn+p429hIZbAH2vvrEoH04VI6Oae8Aw4ljanDWzg
+        xuso8Ww0yrtKmBUnjJW0R1g=
+X-Google-Smtp-Source: ABdhPJxz+CTfYBRsr9wPZ8ehDJQEmTq++yYJr4Xo0s0U0R6hQKoUpOmBLcC8LM7TIOPThVoU3WYKbg==
+X-Received: by 2002:a1c:234b:: with SMTP id j72mr7837172wmj.153.1599732997083;
+        Thu, 10 Sep 2020 03:16:37 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.113.201])
+        by smtp.gmail.com with ESMTPSA id a127sm2936155wmh.34.2020.09.10.03.16.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Sep 2020 03:16:36 -0700 (PDT)
+Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
+ break;
+To:     Joe Perches <joe@perches.com>, LKML <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        oss-drivers@netronome.com, nouveau@lists.freedesktop.org,
+        alsa-devel <alsa-devel@alsa-project.org>,
+        dri-devel@lists.freedesktop.org, linux-ide@vger.kernel.org,
+        dm-devel@redhat.com, linux-mtd@lists.infradead.org,
+        linux-i2c@vger.kernel.org, sparclinux@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-rtc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        dccp@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, coreteam@netfilter.org,
+        intel-wired-lan@lists.osuosl.org, linux-serial@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Kees Cook <kees.cook@canonical.com>,
+        linux-media@vger.kernel.org, linux-pm@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-sctp@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-nvme@lists.infradead.org,
+        storagedev@microchip.com, ceph-devel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-mips@vger.kernel.org, iommu@lists.linux-foundation.org,
+        netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <81d852d4-115f-c6c6-ef80-17c47ec4849a@gmail.com>
+Date:   Thu, 10 Sep 2020 12:16:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yvsmazlv4tpgtqm7"
-Content-Disposition: inline
-Organization: rfc822 - pure communication
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 
---yvsmazlv4tpgtqm7
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
+On 09/09/2020 22:06, Joe Perches wrote:
+> diff --git a/drivers/net/wireless/mediatek/mt7601u/dma.c b/drivers/net/wireless/mediatek/mt7601u/dma.c
+> index 09f931d4598c..778be26d329f 100644
+> --- a/drivers/net/wireless/mediatek/mt7601u/dma.c
+> +++ b/drivers/net/wireless/mediatek/mt7601u/dma.c
+> @@ -193,11 +193,11 @@ static void mt7601u_complete_rx(struct urb *urb)
+>   	case -ESHUTDOWN:
+>   	case -ENOENT:
+>   		return;
+> +	case 0:
+> +		break;
+>   	default:
+>   		dev_err_ratelimited(dev->dev, "rx urb failed: %d\n",
+>   				    urb->status);
+> -		fallthrough;
+> -	case 0:
+>   		break;
+>   	}
+>   
+> @@ -238,11 +238,11 @@ static void mt7601u_complete_tx(struct urb *urb)
+>   	case -ESHUTDOWN:
+>   	case -ENOENT:
+>   		return;
+> +	case 0:
+> +		break;
+>   	default:
+>   		dev_err_ratelimited(dev->dev, "tx urb failed: %d\n",
+>   				    urb->status);
+> -		fallthrough;
+> -	case 0:
+>   		break;
+>   	}
 
-Hi,
-
-After i undusted a box which i moved around for years, which i
-thought to be a Swarm, i found it to be an Algorithmics P-6064.=20
-
-After some maintenance it turns on and ends up in PMON.
-
-=46rom what Google told me there was once upon a time a linux kernel
-sourcetree within Algorithmics supporting that board. It seems this
-never made it upstream.
-
-Are there any resources still available? Documentation? The old
-kernel source trees? Anything?
-
-Flo
---=20
-Florian Lohoff                                                 f@zz.de
-        UTF-8 Test: The =F0=9F=90=88 ran after a =F0=9F=90=81, but the =F0=
-=9F=90=81 ran away
-
---yvsmazlv4tpgtqm7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEdb9o7oebX2papQ/KkN1BIMsJ8i8FAl9Z+uEACgkQkN1BIMsJ
-8i9uyhAAifG3d6AeCJRdpYuesB/RDvE86WpY8BCh8PLMcdDRj9H1DhyNTiuktmwf
-/5auXgHjZbDBi2Jq63pTCxRrVIvy306SMK47fudsZ2UBXLjX9TBh6eIJSamSqKHq
-A0eomtOKaQYGzOM7KytNxDfxHEUOE3B5hGDKbqSNxa0zuNuH6VqY1aOC+NO0BtwY
-FLYMnQ8DTOxFYQs0JWo8JxzlBBB4eIfL3E3+IKomq/fUWDFMZxoAAQH/sRlZlR32
-c3dWsZQX4ZGl9vOGaI6i9G7X2FGsrGgH3yKVw8jS+rMfMt03yV7ZmonQbL0ScfiC
-Z2rrahlR3zuJd9fcQQ2j+caPDTzOvgowJoeGhMrrJxWwD7YX8AZcQSv5pzU+ty+8
-eeD69EY+Cq4uXEaDBoIrHM9bgsq4ChhilMnLGdCO9/Ha+7BxzTmsNHuLw+GyCOGJ
-/Xz2mlenYhKcv4kahjfvS+5RkPhbAIoCffJgc480/2ZvenC2+3dQdTn/DnqsjWhG
-pExB2mlvGUZT/QpEmDBmzat8jeXO6Np3nAHXAkhauaaDa9vL4SSGifbLA+j1Gyg+
-t02mXa32LWwZnv2DvYV/q8l7eoNYLax2NUF7RIzhvvydeWKMbfCnzDfVoS/NK5Xg
-+b1VJjVF4RYeBP8mB4t5nuT1oRI2dvy5wA/vj/fnrC3zAq7z0Vw=
-=SykY
------END PGP SIGNATURE-----
-
---yvsmazlv4tpgtqm7--
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>

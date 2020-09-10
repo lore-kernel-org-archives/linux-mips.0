@@ -2,69 +2,139 @@ Return-Path: <SRS0=3eD/=CT=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5529FC433E2
-	for <linux-mips@archiver.kernel.org>; Thu, 10 Sep 2020 09:37:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3913AC433E2
+	for <linux-mips@archiver.kernel.org>; Thu, 10 Sep 2020 10:08:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0A2E2207EA
-	for <linux-mips@archiver.kernel.org>; Thu, 10 Sep 2020 09:37:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D2A0D214F1
+	for <linux-mips@archiver.kernel.org>; Thu, 10 Sep 2020 10:08:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1599732519;
+	bh=GSM8J+48mwsvILRs4rmqaKqBdd8oi047X8MVr/4pEOQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:List-ID:From;
+	b=1LifVG2jctgSLrpLn1g/S1dL66SAhe7Zpd2JqSkh7disRb4v1NKSpdspsn7dYPmWc
+	 L6vuRTF6PDsNg3mm7vrrMmxXaG9HsxRvKQZGB2EW+Gyl27mZN/cur85SsoYf/FH74y
+	 H5LcJBFs/ZHHI9ROUWwvceDF5eikv6b0TcM1NNmc=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730786AbgIJJhr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 10 Sep 2020 05:37:47 -0400
-Received: from elvis.franken.de ([193.175.24.41]:33971 "EHLO elvis.franken.de"
+        id S1726569AbgIJKIj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 10 Sep 2020 06:08:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730461AbgIJJhq (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:37:46 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kGJ1U-00030W-00; Thu, 10 Sep 2020 11:37:44 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 905F6C0F61; Thu, 10 Sep 2020 11:37:09 +0200 (CEST)
-Date:   Thu, 10 Sep 2020 11:37:09 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     linux-mips@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RESEND PATCH v1] MIPS: uasm: false warning on use of
- uasm_i_lui()
-Message-ID: <20200910093709.GA10310@alpha.franken.de>
-References: <20200908164512.15379-1-james.quinlan@broadcom.com>
+        id S1725887AbgIJKIh (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 10 Sep 2020 06:08:37 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 645E920BED;
+        Thu, 10 Sep 2020 10:08:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599732516;
+        bh=GSM8J+48mwsvILRs4rmqaKqBdd8oi047X8MVr/4pEOQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AGn50qCzqlhgIZc4JK7k4G+YPcOs3M4SFoiMYMAYsbkrULYwsOqdLoDcT49/wpTwi
+         mkPK5r1z2D4fugmTfvnJhunpwBWBfSEH0P1mbyj+BN2UQol6snDyYoMRgZtW0hSOig
+         a6FHgyYXmWhSTCeYy/feVHkJjZQIBScn+ZBAWhKU=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kGJVK-00Ae3W-DK; Thu, 10 Sep 2020 11:08:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200908164512.15379-1-james.quinlan@broadcom.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 10 Sep 2020 11:08:34 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Huacai Chen <chenhc@lemote.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        linux-mips@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 3/3] irqchip/loongson-pch-pic: Reserve legacy LPC irqs
+In-Reply-To: <1599624552-17523-3-git-send-email-chenhc@lemote.com>
+References: <1599624552-17523-1-git-send-email-chenhc@lemote.com>
+ <1599624552-17523-3-git-send-email-chenhc@lemote.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <613dd7bc4d7eeec1a5fd30f679fc83eb@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: chenhc@lemote.com, tsbogend@alpha.franken.de, tglx@linutronix.de, jason@lakedaemon.net, linux-mips@vger.kernel.org, zhangfx@lemote.com, chenhuacai@gmail.com, jiaxun.yang@flygoat.com, stable@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 12:45:06PM -0400, Jim Quinlan wrote:
-> Currently, the example uasm code
+On 2020-09-09 05:09, Huacai Chen wrote:
+> Reserve legacy LPC irqs (0~15) to avoid spurious interrupts.
+
+How can they be spurious? Why are they enabled the first place?
+
+This looks like you are papering over a much bigger issue.
+
+         M.
 > 
-> 	uasm_i_lui(p, tmp, 0xa000);
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Huacai Chen <chenhc@lemote.com>
+> ---
+>  drivers/irqchip/irq-loongson-pch-pic.c | 19 ++++++++++++++++++-
+>  1 file changed, 18 insertions(+), 1 deletion(-)
 > 
-> issues a warning at Linux boot when the code is "assembled".  This is
-> because the "lui" instruction is defined by the macro "Ip_u1s2(_lui)" -- I
-> believe it should be Ip_u1u2(_lui) -- and its definition is associated with
-> the SIMM macro -- I believe it should be the UIMM macro.  The current code
-> takes a 32bit number and checks that it can be converted to a 16bit signed
-> immediate.  This check fails of course for an immediate such as 0x0000a000.
-
-IMHO SIMM is correct as the upper 16bits will be sign extended on 64bit
-CPUs.
-
-Your example looks like to try to load a KSEG1 address, so just use 
-
-uasm_i_lui(p, tmp, uasm_rel_hi(0xa0000000));
-
-which even makes it clearer, what this is about.
-
-Thomas.
+> diff --git a/drivers/irqchip/irq-loongson-pch-pic.c
+> b/drivers/irqchip/irq-loongson-pch-pic.c
+> index 9bf6b9a..9f6719c 100644
+> --- a/drivers/irqchip/irq-loongson-pch-pic.c
+> +++ b/drivers/irqchip/irq-loongson-pch-pic.c
+> @@ -35,6 +35,7 @@
+> 
+>  struct pch_pic {
+>  	void __iomem		*base;
+> +	struct irq_domain	*lpc_domain;
+>  	struct irq_domain	*pic_domain;
+>  	u32			ht_vec_base;
+>  	raw_spinlock_t		pic_lock;
+> @@ -184,9 +185,9 @@ static void pch_pic_reset(struct pch_pic *priv)
+>  static int pch_pic_of_init(struct device_node *node,
+>  				struct device_node *parent)
+>  {
+> +	int i, base, err;
+>  	struct pch_pic *priv;
+>  	struct irq_domain *parent_domain;
+> -	int err;
+> 
+>  	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+>  	if (!priv)
+> @@ -213,6 +214,22 @@ static int pch_pic_of_init(struct device_node 
+> *node,
+>  		goto iounmap_base;
+>  	}
+> 
+> +	base = irq_alloc_descs(-1, 0, NR_IRQS_LEGACY, 0);
+> +	if (base < 0) {
+> +		pr_err("Failed to allocate LPC IRQ numbers\n");
+> +		goto iounmap_base;
+> +	}
+> +
+> +	priv->lpc_domain = irq_domain_add_legacy(node, NR_IRQS_LEGACY, 0, 0,
+> +						 &irq_domain_simple_ops, NULL);
+> +	if (!priv->lpc_domain) {
+> +		pr_err("Failed to add irqdomain for LPC controller");
+> +		goto iounmap_base;
+> +	}
+> +
+> +	for (i = 0; i < NR_IRQS_LEGACY; i++)
+> +		irq_set_chip_and_handler(i, &dummy_irq_chip, handle_simple_irq);
+> +
+>  	priv->pic_domain = irq_domain_create_hierarchy(parent_domain, 0,
+>  						       PIC_COUNT,
+>  						       of_node_to_fwnode(node),
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Jazz is not dead. It just smells funny...

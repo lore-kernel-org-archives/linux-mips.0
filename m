@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0925C433E2
-	for <linux-mips@archiver.kernel.org>; Sat, 12 Sep 2020 11:10:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 721D8C43461
+	for <linux-mips@archiver.kernel.org>; Sat, 12 Sep 2020 11:10:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B776C2076C
-	for <linux-mips@archiver.kernel.org>; Sat, 12 Sep 2020 11:10:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3797A2078D
+	for <linux-mips@archiver.kernel.org>; Sat, 12 Sep 2020 11:10:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Fl2bqtSL"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Zk/gIvdN"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725961AbgILLKc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 12 Sep 2020 07:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46898 "EHLO
+        id S1725924AbgILLKw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 12 Sep 2020 07:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgILLJ2 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 12 Sep 2020 07:09:28 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73394C06138D
-        for <linux-mips@vger.kernel.org>; Sat, 12 Sep 2020 04:08:34 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id n3so3613253pjq.1
-        for <linux-mips@vger.kernel.org>; Sat, 12 Sep 2020 04:08:34 -0700 (PDT)
+        with ESMTP id S1725825AbgILLJx (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 12 Sep 2020 07:09:53 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B96C061347
+        for <linux-mips@vger.kernel.org>; Sat, 12 Sep 2020 04:08:36 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id n14so9086472pff.6
+        for <linux-mips@vger.kernel.org>; Sat, 12 Sep 2020 04:08:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=F4tHM0L8tNnxsWtLsTsMp6Ii6Rnl8nRf7R1d/DJ5GX0=;
-        b=Fl2bqtSL2iiRfZluzSWOTXzNL8dmVQDhsUPUUB10qGGSvjXPumusHfP3CokhnSfKCH
-         +t1jc2Q7OaXG85BoTd0A91s9q9C//+V6czJh5bMgwh6mcmDIOuQaMrCFly9wGejcGRUz
-         s31sojad768defEHNH0ElcsN5owiLsEYQ0XZ8=
+        bh=FZnp4yDc6/H8oZY5gPE0ntNCiw9S8Y24vH6szdlcBNQ=;
+        b=Zk/gIvdNfjQE/2unl26djetvFbMWk4A8shRgP7V779rbL1iDmAqb/WJsaeUEyvkWho
+         8jG+lsS6GNlo3kWdNKOEks2fdvmH3bO73kMlDWOuyuO55TqqWNyvjERND1Wyg09jCOar
+         c+he/PZbFxcnDUtW7NY4RKVcPovh+GacMTNqc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=F4tHM0L8tNnxsWtLsTsMp6Ii6Rnl8nRf7R1d/DJ5GX0=;
-        b=c44NbvxkA/0Sc97WdAopgUzHX7yDpVGLS4UAJFCl4/TdYZca5hJ05o4RXls4t7f7jw
-         CYu5i+lBzMgGP7SySzZMMx6cQfSjzTLQv/X0xFNPND5c0jHVni4dlckD6LzXvr5O9I4e
-         rji8szRSv2tkHMk3kahNMr5D8TnfrqFCWtVj8OqAKRqBKGId3EJ8s1tXPgAltIchqUIf
-         1moe+ZYhnH6fkLg4gNyV2aKkm87rdIxIwkAY63cB68948c2zctX71dbxDOJIAa9b0dCL
-         g8+H4hUZTWg3mehTse1lRKLtAM813W/4urJptvykInzYYq2DKx3p8464afJyxMLjj/IN
-         rWgw==
-X-Gm-Message-State: AOAM532VO2ydABpyFOPlDVQIHvO29PfBlbmTksKggcSh659xIgX5ljeP
-        1iRunwSfS+5EcRrOz1FEYDCrDQ==
-X-Google-Smtp-Source: ABdhPJxIVZvhB1EkQWrlPCCU/1v4hWzLbZ0KeU8jimuCS6pLb+8hNC5hU2kfhglj/9om5Lrdkt4vIA==
-X-Received: by 2002:a17:90b:374b:: with SMTP id ne11mr5637226pjb.21.1599908913988;
-        Sat, 12 Sep 2020 04:08:33 -0700 (PDT)
+        bh=FZnp4yDc6/H8oZY5gPE0ntNCiw9S8Y24vH6szdlcBNQ=;
+        b=G+uxpgvmURCkFr/2RTIaKvHrGXKq0a+Xq8zpzzU9ymTE0FAH+mdbv6vdUmXaEiNTwh
+         KB8W1vNeAqHnUql+x87YFZFMkaBDB6QABUVUEg5g5DJakaXZMHTkjDrBt/tJsdY7S6Vg
+         yZUnM/M//sn/9G4uHWxBKt2O0S15HTaaClikmoUM7fECc/nk//5H3EVXO9JxYf9QvOsm
+         CoYREo8hzHkXe1ZHM54oziGGl/l38aaU1pTKuirwSghhI4crVHk3BPnqx6OxxRS5WL70
+         wH8RCG9dEUtZXLuk9IJX+v8ov5loScT+5iCpu7aL+dfHUW5FVBBovYNWdJ6LC8r00HbL
+         OXvw==
+X-Gm-Message-State: AOAM532lCtZZxdzI7Greu9QzUslJzEVLZZGQ8+yBTFVmaKvdF6Iofw26
+        I/pPLmuy9Jf3AI+mwqF6XAyeLg==
+X-Google-Smtp-Source: ABdhPJxq4vqIb6iJR4MN1IGlGkXsD9IVC0sP3rRF3lcvwIHfpvEszE0WWk+A5K78Aa5hwg8SNrEAAg==
+X-Received: by 2002:aa7:9ac9:0:b029:13e:d13d:a133 with SMTP id x9-20020aa79ac90000b029013ed13da133mr6030859pfp.27.1599908916069;
+        Sat, 12 Sep 2020 04:08:36 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id m24sm4069132pgn.44.2020.09.12.04.08.27
+        by smtp.gmail.com with ESMTPSA id 17sm4796064pfi.55.2020.09.12.04.08.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2020 04:08:27 -0700 (PDT)
+        Sat, 12 Sep 2020 04:08:34 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -66,9 +66,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-xtensa@linux-xtensa.org,
         linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 11/15] selftests/seccomp: Remove SYSCALL_NUM_RET_SHARE_REG in favor of SYSCALL_RET_SET
-Date:   Sat, 12 Sep 2020 04:08:16 -0700
-Message-Id: <20200912110820.597135-12-keescook@chromium.org>
+Subject: [PATCH 15/15] selftests/seccomp: Use __NR_mknodat instead of __NR_mknod
+Date:   Sat, 12 Sep 2020 04:08:20 -0700
+Message-Id: <20200912110820.597135-16-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200912110820.597135-1-keescook@chromium.org>
 References: <20200912110820.597135-1-keescook@chromium.org>
@@ -79,86 +79,28 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Instead of special-casing the specific case of shared registers, create
-a default SYSCALL_RET_SET() macro (mirroring SYSCALL_NUM_SET()), that
-writes to the SYSCALL_RET register. For architectures that can't set the
-return value (for whatever reason), they can define SYSCALL_RET_SET()
-without an associated SYSCALL_RET() macro. This also paves the way for
-architectures that need to do special things to set the return value
-(e.g. powerpc).
+The __NR_mknod syscall doesn't exist on arm64 (only __NR_mknodat).
+Switch to the modern syscall.
 
+Fixes: ad5682184a81 ("selftests/seccomp: Check for EPOLLHUP for user_notif")
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- tools/testing/selftests/seccomp/seccomp_bpf.c | 33 +++++++++++++------
- 1 file changed, 23 insertions(+), 10 deletions(-)
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 2790d9cd50f4..623953a53032 100644
+index 26c712c6a575..b34ede28f314 100644
 --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
 +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -1753,8 +1753,8 @@ TEST_F(TRACE_poke, getpid_runs_normally)
- #elif defined(__s390__)
- # define ARCH_REGS		s390_regs
- # define SYSCALL_NUM(_regs)	(_regs).gprs[2]
--# define SYSCALL_RET(_regs)	(_regs).gprs[2]
--# define SYSCALL_NUM_RET_SHARE_REG
-+# define SYSCALL_RET_SET(_regs, _val)			\
-+		TH_LOG("Can't modify syscall return on this architecture")
- #elif defined(__mips__)
- # include <asm/unistd_nr_n32.h>
- # include <asm/unistd_nr_n64.h>
-@@ -1776,8 +1776,8 @@ TEST_F(TRACE_poke, getpid_runs_normally)
- 		else					\
- 			(_regs).regs[2] = _nr;		\
- 	} while (0)
--# define SYSCALL_RET(_regs)	(_regs).regs[2]
--# define SYSCALL_NUM_RET_SHARE_REG
-+# define SYSCALL_RET_SET(_regs, _val)			\
-+		TH_LOG("Can't modify syscall return on this architecture")
- #elif defined(__xtensa__)
- # define ARCH_REGS		struct user_pt_regs
- # define SYSCALL_NUM(_regs)	(_regs).syscall
-@@ -1804,9 +1804,26 @@ TEST_F(TRACE_poke, getpid_runs_normally)
- 		SYSCALL_NUM(_regs) = (_nr);	\
- 	} while (0)
- #endif
-+/*
-+ * Most architectures can change the syscall return value by just
-+ * writing to the SYSCALL_RET register. This is the default if not
-+ * defined above. If an architecture cannot set the return value
-+ * (for example when the syscall and return value register is
-+ * shared), report it with TH_LOG() in an arch-specific definition
-+ * of SYSCALL_RET_SET() above, and leave SYSCALL_RET undefined.
-+ */
-+#if !defined(SYSCALL_RET) && !defined(SYSCALL_RET_SET)
-+# error "One of SYSCALL_RET or SYSCALL_RET_SET is needed for this arch"
-+#endif
-+#ifndef SYSCALL_RET_SET
-+# define SYSCALL_RET_SET(_regs, _val)		\
-+	do {					\
-+		SYSCALL_RET(_regs) = (_val);	\
-+	} while (0)
-+#endif
+@@ -3773,7 +3773,7 @@ TEST(user_notification_filter_empty)
+ 	if (pid == 0) {
+ 		int listener;
  
- /* When the syscall return can't be changed, stub out the tests for it. */
--#ifdef SYSCALL_NUM_RET_SHARE_REG
-+#ifndef SYSCALL_RET
- # define EXPECT_SYSCALL_RETURN(val, action)	EXPECT_EQ(-1, action)
- #else
- # define EXPECT_SYSCALL_RETURN(val, action)		\
-@@ -1870,11 +1887,7 @@ void change_syscall(struct __test_metadata *_metadata,
+-		listener = user_notif_syscall(__NR_mknod, SECCOMP_FILTER_FLAG_NEW_LISTENER);
++		listener = user_notif_syscall(__NR_mknodat, SECCOMP_FILTER_FLAG_NEW_LISTENER);
+ 		if (listener < 0)
+ 			_exit(EXIT_FAILURE);
  
- 	/* If syscall is skipped, change return value. */
- 	if (syscall == -1)
--#ifdef SYSCALL_NUM_RET_SHARE_REG
--		TH_LOG("Can't modify syscall return on this architecture");
--#else
--		SYSCALL_RET(regs) = result;
--#endif
-+		SYSCALL_RET_SET(regs, result);
- 
- 	/* Flush any register changes made. */
- 	if (memcmp(&orig, &regs, sizeof(orig)) != 0)
 -- 
 2.25.1
 

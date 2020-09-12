@@ -8,51 +8,51 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE1A8C43461
-	for <linux-mips@archiver.kernel.org>; Sat, 12 Sep 2020 11:11:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86D7CC10DAA
+	for <linux-mips@archiver.kernel.org>; Sat, 12 Sep 2020 11:11:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9C2E021D6C
-	for <linux-mips@archiver.kernel.org>; Sat, 12 Sep 2020 11:11:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4EEDC21D6C
+	for <linux-mips@archiver.kernel.org>; Sat, 12 Sep 2020 11:11:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dIji5loM"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LqQ/QyMb"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725994AbgILLLe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1725874AbgILLLe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Sat, 12 Sep 2020 07:11:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46912 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725903AbgILLIx (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 12 Sep 2020 07:08:53 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932A8C0617B9
+        with ESMTP id S1725894AbgILLIu (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 12 Sep 2020 07:08:50 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 484E9C0617A5
         for <linux-mips@vger.kernel.org>; Sat, 12 Sep 2020 04:08:31 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id t7so2986347pjd.3
+Received: by mail-pf1-x442.google.com with SMTP id d6so9077809pfn.9
         for <linux-mips@vger.kernel.org>; Sat, 12 Sep 2020 04:08:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=C4bs7CzTnl1kRyMgFNAx/cMdF4zfB7LMPrNYc0foUqg=;
-        b=dIji5loM94lPX2BlTVOZY2wSfFrN4iEdIXvEB9ZXwb9K/O+5wmsPzNlErfm8yXGVnj
-         TZPx65IreQCDy5KfHVk+h3ribfRTCS3w07xBw9RenEHHmWnwHiCYzDqMOh8nMd28EDm/
-         Boz7+C1dQLQJ9R1+3Y82JwQo1BdlrCLDw68lI=
+        bh=jbIVGVeXL3UcD5Zx3+0sHrDQsZkQmD0nziWY3w5+YuI=;
+        b=LqQ/QyMbPHbN/COohSTcKyMAKLl5cT78qQitFk8CTTS3dxBKp0xZo1Q2/Pnj7vV2qy
+         RLb83+qRl281SbYQByqtCv58OW/cIMeoQuNZP7O7zHoBXuxMSUgD493bWxSJcqnwYYg9
+         rLdRfx2N0xOFGRKseP1KmNGFygnsLvdtukIbE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=C4bs7CzTnl1kRyMgFNAx/cMdF4zfB7LMPrNYc0foUqg=;
-        b=WZgVFy2H4/A+AdV56zrz/mG0O0ggcVxf5aCAMHb5MDq17bBNT482SPA8a04kPo+mz1
-         Ix6oLPg2IjO95p5ua1ffhYMwbAITYbrzKvA4dkpuSuGZAwES+ubP1xKyjlELCZAAMGnP
-         ilxnwDNPQOHq+8I7+JKEC8ZmWlP8ooGGcputQre0Q4NyCE57x93taNWIVd7AJNkrd+32
-         ToZuGXXfSkMcDLZFh/w+A/wSDnmXD3xKDikd6icX4CsNTZ1WFUMLQS/ytVW5Qhpp/lP1
-         ZRgB1JL/aa+ClSg/y5mgqiSBkmGKDvoppfLVtdnZ2pTfVcNiNhqdYUb8FYJtmOtKM+AO
-         OmIQ==
-X-Gm-Message-State: AOAM530PfGcddOjN7YuVuaM56bn3VZ+an65PiffxFCQ8fB5BNj/4U4Ng
-        ttb0Xcf1ApgyhwE979ZWXRU8gA==
-X-Google-Smtp-Source: ABdhPJx1tWnz+cXsPRMCEeezndnRWBXI9qrLyAtAljqVPQP8qrRmd00oQlT/nRtVdCFkQkBaLysfAw==
-X-Received: by 2002:a17:902:c404:: with SMTP id k4mr5997422plk.70.1599908909955;
-        Sat, 12 Sep 2020 04:08:29 -0700 (PDT)
+        bh=jbIVGVeXL3UcD5Zx3+0sHrDQsZkQmD0nziWY3w5+YuI=;
+        b=bJG2M4wEAaXNfcAM03MaRqdsU3kxsypiYxC3Fr5dUs0AQWb0H6R+H//ru2fny++5G/
+         qU3RkUy5j8fbBYKCKtaacUfZR76p2QS3xpx9+NuPMq/cpa84sW7tmTxSI/wSte3QtRk9
+         uoVilJ2RYRpHFq0SN/5eY47wLiTRlIq3UfUryB2IzQPPs0ymJYgA6s6e2AgPJFxpuY7M
+         FNAwmP6MN4Oav0fUyNnT1e9K+F8Fuoga9+aL5RG2+NTfo/vNwF2tBq62TJnFdUaxFksQ
+         sIjJxdcqb5CbJylzIUPR+ZVPoBQ8ku3RjlYabCsYR7d0BgawwkRaLJJUxe/b/SaHXUA8
+         K2Mw==
+X-Gm-Message-State: AOAM533fMqZmpvRJghy4sLICTnbN8uoexca1WThtDa2L9sHQshPOsFs8
+        7P8vcBgEnkxDI8Vzc0jbuVCt1Q==
+X-Google-Smtp-Source: ABdhPJxPd8dhUmxmmh/f8D3tYc3els9U203dCey201+Libct5mZfeDfZE6CqjRDTC4JFXw6rBxndIA==
+X-Received: by 2002:a05:6a00:1b:b029:13e:d13d:a101 with SMTP id h27-20020a056a00001bb029013ed13da101mr5730307pfk.29.1599908908451;
+        Sat, 12 Sep 2020 04:08:28 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id bx22sm4345524pjb.23.2020.09.12.04.08.25
+        by smtp.gmail.com with ESMTPSA id x20sm4980626pfr.190.2020.09.12.04.08.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Sat, 12 Sep 2020 04:08:27 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -67,9 +67,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-xtensa@linux-xtensa.org,
         linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 08/15] selftests/seccomp: Convert HAVE_GETREG into ARCH_GETREG/ARCH_SETREG
-Date:   Sat, 12 Sep 2020 04:08:13 -0700
-Message-Id: <20200912110820.597135-9-keescook@chromium.org>
+Subject: [PATCH 05/15] selftests/seccomp: arm64: Define SYSCALL_NUM_SET macro
+Date:   Sat, 12 Sep 2020 04:08:10 -0700
+Message-Id: <20200912110820.597135-6-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200912110820.597135-1-keescook@chromium.org>
 References: <20200912110820.597135-1-keescook@chromium.org>
@@ -80,87 +80,61 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Instead of special-casing the get/set-registers routines, move the
-HAVE_GETREG logic into the new ARCH_GETREG() and ARCH_SETREG() macros.
+Remove the arm64 special-case in change_syscall().
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- tools/testing/selftests/seccomp/seccomp_bpf.c | 27 ++++++++++---------
- 1 file changed, 15 insertions(+), 12 deletions(-)
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 27 +++++++++----------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
 
 diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 3b77bdbe7125..a986f2332327 100644
+index 610fc036e374..cfa606d96086 100644
 --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
 +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -1821,20 +1821,21 @@ TEST_F(TRACE_poke, getpid_runs_normally)
- 	} while (0)
- #endif
- 
--/* Use PTRACE_GETREGS and PTRACE_SETREGS when available. This is useful for
-+/*
-+ * Use PTRACE_GETREGS and PTRACE_SETREGS when available. This is useful for
-  * architectures without HAVE_ARCH_TRACEHOOK (e.g. User-mode Linux).
-  */
- #if defined(__x86_64__) || defined(__i386__) || defined(__mips__)
--#define HAVE_GETREGS
-+# define ARCH_GETREGS(_regs)	ptrace(PTRACE_GETREGS, tracee, 0, &(_regs))
-+# define ARCH_SETREGS(_regs)	ptrace(PTRACE_SETREGS, tracee, 0, &(_regs))
- #endif
- 
- /* Architecture-specific syscall fetching routine. */
- int get_syscall(struct __test_metadata *_metadata, pid_t tracee)
- {
- 	ARCH_REGS regs;
--#ifdef HAVE_GETREGS
--	EXPECT_EQ(0, ptrace(PTRACE_GETREGS, tracee, 0, &regs)) {
--		TH_LOG("PTRACE_GETREGS failed");
-+#ifdef ARCH_GETREGS
-+	EXPECT_EQ(0, ARCH_GETREGS(regs)) {
- 		return -1;
+@@ -1717,6 +1717,18 @@ TEST_F(TRACE_poke, getpid_runs_normally)
+ #elif defined(__aarch64__)
+ # define ARCH_REGS		struct user_pt_regs
+ # define SYSCALL_NUM(_regs)	(_regs).regs[8]
++# ifndef NT_ARM_SYSTEM_CALL
++#  define NT_ARM_SYSTEM_CALL 0x404
++# endif
++# define SYSCALL_NUM_SET(_regs, _nr)				\
++	do {							\
++		struct iovec __v;				\
++		typeof(_nr) __nr = (_nr);			\
++		__v.iov_base = &__nr;				\
++		__v.iov_len = sizeof(__nr);			\
++		EXPECT_EQ(0, ptrace(PTRACE_SETREGSET, tracee,	\
++				    NT_ARM_SYSTEM_CALL, &__v));	\
++	} while (0)
+ # define SYSCALL_RET(_regs)	(_regs).regs[0]
+ #elif defined(__riscv) && __riscv_xlen == 64
+ # define ARCH_REGS		struct user_regs_struct
+@@ -1852,23 +1864,10 @@ void change_syscall(struct __test_metadata *_metadata,
+ #if defined(__x86_64__) || defined(__i386__) || defined(__powerpc__) || \
+ 	defined(__s390__) || defined(__hppa__) || defined(__riscv) || \
+ 	defined(__xtensa__) || defined(__csky__) || defined(__sh__) || \
+-	defined(__mips__) || defined(__arm__)
++	defined(__mips__) || defined(__arm__) || defined(__aarch64__)
+ 	{
+ 		SYSCALL_NUM_SET(regs, syscall);
  	}
+-
+-#elif defined(__aarch64__)
+-# ifndef NT_ARM_SYSTEM_CALL
+-#  define NT_ARM_SYSTEM_CALL 0x404
+-# endif
+-	{
+-		iov.iov_base = &syscall;
+-		iov.iov_len = sizeof(syscall);
+-		ret = ptrace(PTRACE_SETREGSET, tracee, NT_ARM_SYSTEM_CALL,
+-			     &iov);
+-		EXPECT_EQ(0, ret);
+-	}
+-
  #else
-@@ -1855,17 +1856,19 @@ int get_syscall(struct __test_metadata *_metadata, pid_t tracee)
- void change_syscall(struct __test_metadata *_metadata,
- 		    pid_t tracee, int syscall, int result)
- {
--	int ret;
- 	ARCH_REGS regs;
--#ifdef HAVE_GETREGS
--	ret = ptrace(PTRACE_GETREGS, tracee, 0, &regs);
-+#ifdef ARCH_GETREGS
-+	EXPECT_EQ(0, ARCH_GETREGS(regs)) {
-+		return;
-+	}
- #else
-+	int ret;
- 	struct iovec iov;
- 	iov.iov_base = &regs;
- 	iov.iov_len = sizeof(regs);
- 	ret = ptrace(PTRACE_GETREGSET, tracee, NT_PRSTATUS, &iov);
--#endif
- 	EXPECT_EQ(0, ret);
-+#endif
- 
- 	SYSCALL_NUM_SET(regs, syscall);
- 
-@@ -1878,14 +1881,14 @@ void change_syscall(struct __test_metadata *_metadata,
- #endif
- 
- 	/* Flush any register changes made. */
--#ifdef HAVE_GETREGS
--	ret = ptrace(PTRACE_SETREGS, tracee, 0, &regs);
-+#ifdef ARCH_SETREGS
-+	EXPECT_EQ(0, ARCH_SETREGS(regs));
- #else
- 	iov.iov_base = &regs;
- 	iov.iov_len = sizeof(regs);
- 	ret = ptrace(PTRACE_SETREGSET, tracee, NT_PRSTATUS, &iov);
--#endif
- 	EXPECT_EQ(0, ret);
-+#endif
- }
- 
- void tracer_seccomp(struct __test_metadata *_metadata, pid_t tracee,
+ 	ASSERT_EQ(1, 0) {
+ 		TH_LOG("How is the syscall changed on this architecture?");
 -- 
 2.25.1
 

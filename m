@@ -2,220 +2,105 @@ Return-Path: <SRS0=ZuGs=CX=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84071C43461
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Sep 2020 16:47:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE9D6C43461
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Sep 2020 17:03:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 49B1B21D24
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Sep 2020 16:47:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 88307217BA
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Sep 2020 17:03:02 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KmfGrfDX"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="TVpqwhRG"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726094AbgINPJX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 14 Sep 2020 11:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
+        id S1725961AbgINRC4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 14 Sep 2020 13:02:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725992AbgINPJH (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 14 Sep 2020 11:09:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79CF6C06178A;
-        Mon, 14 Sep 2020 08:09:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=Hd44flV0rNOoconJIhItgKEmFIKY+u0t7YJsM9KNpfo=; b=KmfGrfDX7byZuKSDmAvqbHPmbG
-        rVaI8AfoPY6UsW2JcwgF4VuMlzi7fLK0J2xpI95SGy0q+W5zBRBcMVQ48ucc/QC/JtBbmBw2rpIi9
-        k2hdX5nDNJVJiGWdMoQGMk7KRRTGvh0MIF+0oRVh8VPbm/iHIJ4t0AAsaDW8cmC9dxwwIAuvWz6+v
-        Gta5PNKJzPOsjrE8pPJot2z39D/4owQoF9Nt8nXSM22jnkkdQMTdKKTO6VZE0csNfpqzMQatn8xP6
-        SS2WBIoSfFEy1gOvLpecVGJG4LcKAOo3nI1A6Rs3aY3bxSBocIMVe8GEYW4DiACK5ruWQPrRzPTSo
-        HLZyS2gw==;
-Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kHq5w-0003B7-Sc; Mon, 14 Sep 2020 15:08:41 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        iommu@lists.linux-foundation.org
-Cc:     Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        linux1394-devel@lists.sourceforge.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
-        alsa-devel@alsa-project.org
-Subject: [PATCH 10/17] hal2: convert to dma_alloc_noncoherent
-Date:   Mon, 14 Sep 2020 16:44:26 +0200
-Message-Id: <20200914144433.1622958-11-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200914144433.1622958-1-hch@lst.de>
-References: <20200914144433.1622958-1-hch@lst.de>
+        with ESMTP id S1726033AbgINRCp (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 14 Sep 2020 13:02:45 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19BC5C06174A
+        for <linux-mips@vger.kernel.org>; Mon, 14 Sep 2020 10:02:45 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id l15so6279781wmh.1
+        for <linux-mips@vger.kernel.org>; Mon, 14 Sep 2020 10:02:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XBsBN4g4WydhGxWoeGf4IyB73ADZjcR/c1AieyhiWwM=;
+        b=TVpqwhRGl8uCFTVBhKXTj2ew41sAH7bBSKeGCXZ2x1i0BmskYB6XAIUcAjezGBFWsg
+         Njzbq/518D+Z/5y0QzPUAWX+zP3ltC3gdgl6TnL01l5e07Vo2ZjNavpnUfdE3IUAxajy
+         BOtbaM5VqR3XVTqhzrPdQG2c/qnLnnN0wCgaQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XBsBN4g4WydhGxWoeGf4IyB73ADZjcR/c1AieyhiWwM=;
+        b=XmJuRcb5zbUtamTaNauOKW1pHVnlQR6gUdv7frrsKodUCeBmaHijPZTADin0zU0qcy
+         Zhqxz0o074LW0VKzlTRNk+PSq7y7Lp2w0ssngVAn6l6uSTl71jpsIQs3WyOpxLB/S5Fd
+         fecTdEk/DqdN9IxQVJhOWFNA+7dhouRr2ol39RnB1fjjI52UrHCsFYSAXFAnsKZ/Fs4P
+         AwmqQXJSlbp+0u42YgFTL8rHNq4UyhMy1jt8oivNLv5TezUafXEVX+TOnXcnAHIy0Tl+
+         38MYjzFmQHvfLYdnHShrlGnJlc3AVD2fOAWU5CYFqZ8gMojByjgvtMvUgdEeobD4SHMI
+         izFw==
+X-Gm-Message-State: AOAM532Cw2F2nqA46b6IfMYBmz6E4y8i+7jENgqqzwxLxgYp+nahG39S
+        ahl6jrZE12N+5GTOr0slf85rmRbPCIk+7kkdi8R0Pppgr44=
+X-Google-Smtp-Source: ABdhPJyLcp0SNDqyD1tDe2dF/Gmd6ajPcTyhHVQXfdJcEXkvuAIb6mvX1Hgg+eil+8E5rfUz0K99hRB/EtJweYNc6Bw=
+X-Received: by 2002:a1c:408a:: with SMTP id n132mr310643wma.45.1600102963699;
+ Mon, 14 Sep 2020 10:02:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20200908164512.15379-1-james.quinlan@broadcom.com> <20200910093709.GA10310@alpha.franken.de>
+In-Reply-To: <20200910093709.GA10310@alpha.franken.de>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Mon, 14 Sep 2020 13:02:32 -0400
+Message-ID: <CA+-6iNyvkvwPvr-_R8zivnKLtkwmYG34vephdYUJ7ywCqNmjMg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v1] MIPS: uasm: false warning on use of uasm_i_lui()
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Use the new non-coherent DMA API including proper ownership transfers.
-This also means we can allocate the buffer memory with the proper
-direction instead of bidirectional.
+On Thu, Sep 10, 2020 at 5:37 AM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> On Tue, Sep 08, 2020 at 12:45:06PM -0400, Jim Quinlan wrote:
+> > Currently, the example uasm code
+> >
+> >       uasm_i_lui(p, tmp, 0xa000);
+> >
+> > issues a warning at Linux boot when the code is "assembled".  This is
+> > because the "lui" instruction is defined by the macro "Ip_u1s2(_lui)" -- I
+> > believe it should be Ip_u1u2(_lui) -- and its definition is associated with
+> > the SIMM macro -- I believe it should be the UIMM macro.  The current code
+> > takes a 32bit number and checks that it can be converted to a 16bit signed
+> > immediate.  This check fails of course for an immediate such as 0x0000a000.
+>
+> IMHO SIMM is correct as the upper 16bits will be sign extended on 64bit
+> CPUs.
+>
+Hi Thomas,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- sound/mips/hal2.c | 58 ++++++++++++++++++++++-------------------------
- 1 file changed, 27 insertions(+), 31 deletions(-)
+Got it.
 
-diff --git a/sound/mips/hal2.c b/sound/mips/hal2.c
-index ec84bc4c3a6e77..9ac9b58d7c8cdd 100644
---- a/sound/mips/hal2.c
-+++ b/sound/mips/hal2.c
-@@ -441,7 +441,8 @@ static inline void hal2_stop_adc(struct snd_hal2 *hal2)
- 	hal2->adc.pbus.pbus->pbdma_ctrl = HPC3_PDMACTRL_LD;
- }
- 
--static int hal2_alloc_dmabuf(struct snd_hal2 *hal2, struct hal2_codec *codec)
-+static int hal2_alloc_dmabuf(struct snd_hal2 *hal2, struct hal2_codec *codec,
-+		enum dma_data_direction buffer_dir)
- {
- 	struct device *dev = hal2->card->dev;
- 	struct hal2_desc *desc;
-@@ -449,15 +450,15 @@ static int hal2_alloc_dmabuf(struct snd_hal2 *hal2, struct hal2_codec *codec)
- 	int count = H2_BUF_SIZE / H2_BLOCK_SIZE;
- 	int i;
- 
--	codec->buffer = dma_alloc_attrs(dev, H2_BUF_SIZE, &buffer_dma,
--					GFP_KERNEL, DMA_ATTR_NON_CONSISTENT);
-+	codec->buffer = dma_alloc_noncoherent(dev, H2_BUF_SIZE, &buffer_dma,
-+					buffer_dir, GFP_KERNEL);
- 	if (!codec->buffer)
- 		return -ENOMEM;
--	desc = dma_alloc_attrs(dev, count * sizeof(struct hal2_desc),
--			       &desc_dma, GFP_KERNEL, DMA_ATTR_NON_CONSISTENT);
-+	desc = dma_alloc_noncoherent(dev, count * sizeof(struct hal2_desc),
-+			&desc_dma, DMA_BIDIRECTIONAL, GFP_KERNEL);
- 	if (!desc) {
--		dma_free_attrs(dev, H2_BUF_SIZE, codec->buffer, buffer_dma,
--			       DMA_ATTR_NON_CONSISTENT);
-+		dma_free_noncoherent(dev, H2_BUF_SIZE, codec->buffer, buffer_dma,
-+				buffer_dir);
- 		return -ENOMEM;
- 	}
- 	codec->buffer_dma = buffer_dma;
-@@ -470,20 +471,22 @@ static int hal2_alloc_dmabuf(struct snd_hal2 *hal2, struct hal2_codec *codec)
- 		      desc_dma : desc_dma + (i + 1) * sizeof(struct hal2_desc);
- 		desc++;
- 	}
--	dma_cache_sync(dev, codec->desc, count * sizeof(struct hal2_desc),
--		       DMA_TO_DEVICE);
-+	dma_sync_single_for_device(dev, codec->desc_dma,
-+				   count * sizeof(struct hal2_desc),
-+				   DMA_BIDIRECTIONAL);
- 	codec->desc_count = count;
- 	return 0;
- }
- 
--static void hal2_free_dmabuf(struct snd_hal2 *hal2, struct hal2_codec *codec)
-+static void hal2_free_dmabuf(struct snd_hal2 *hal2, struct hal2_codec *codec,
-+		enum dma_data_direction buffer_dir)
- {
- 	struct device *dev = hal2->card->dev;
- 
--	dma_free_attrs(dev, codec->desc_count * sizeof(struct hal2_desc),
--		       codec->desc, codec->desc_dma, DMA_ATTR_NON_CONSISTENT);
--	dma_free_attrs(dev, H2_BUF_SIZE, codec->buffer, codec->buffer_dma,
--		       DMA_ATTR_NON_CONSISTENT);
-+	dma_free_noncoherent(dev, codec->desc_count * sizeof(struct hal2_desc),
-+		       codec->desc, codec->desc_dma, DMA_BIDIRECTIONAL);
-+	dma_free_noncoherent(dev, H2_BUF_SIZE, codec->buffer, codec->buffer_dma,
-+			buffer_dir);
- }
- 
- static const struct snd_pcm_hardware hal2_pcm_hw = {
-@@ -509,21 +512,16 @@ static int hal2_playback_open(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_hal2 *hal2 = snd_pcm_substream_chip(substream);
--	int err;
- 
- 	runtime->hw = hal2_pcm_hw;
--
--	err = hal2_alloc_dmabuf(hal2, &hal2->dac);
--	if (err)
--		return err;
--	return 0;
-+	return hal2_alloc_dmabuf(hal2, &hal2->dac, DMA_TO_DEVICE);
- }
- 
- static int hal2_playback_close(struct snd_pcm_substream *substream)
- {
- 	struct snd_hal2 *hal2 = snd_pcm_substream_chip(substream);
- 
--	hal2_free_dmabuf(hal2, &hal2->dac);
-+	hal2_free_dmabuf(hal2, &hal2->dac, DMA_TO_DEVICE);
- 	return 0;
- }
- 
-@@ -579,7 +577,9 @@ static void hal2_playback_transfer(struct snd_pcm_substream *substream,
- 	unsigned char *buf = hal2->dac.buffer + rec->hw_data;
- 
- 	memcpy(buf, substream->runtime->dma_area + rec->sw_data, bytes);
--	dma_cache_sync(hal2->card->dev, buf, bytes, DMA_TO_DEVICE);
-+	dma_sync_single_for_device(hal2->card->dev,
-+			hal2->dac.buffer_dma + rec->hw_data, bytes,
-+			DMA_TO_DEVICE);
- 
- }
- 
-@@ -597,22 +597,16 @@ static int hal2_capture_open(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_hal2 *hal2 = snd_pcm_substream_chip(substream);
--	struct hal2_codec *adc = &hal2->adc;
--	int err;
- 
- 	runtime->hw = hal2_pcm_hw;
--
--	err = hal2_alloc_dmabuf(hal2, adc);
--	if (err)
--		return err;
--	return 0;
-+	return hal2_alloc_dmabuf(hal2, &hal2->adc, DMA_FROM_DEVICE);
- }
- 
- static int hal2_capture_close(struct snd_pcm_substream *substream)
- {
- 	struct snd_hal2 *hal2 = snd_pcm_substream_chip(substream);
- 
--	hal2_free_dmabuf(hal2, &hal2->adc);
-+	hal2_free_dmabuf(hal2, &hal2->adc, DMA_FROM_DEVICE);
- 	return 0;
- }
- 
-@@ -667,7 +661,9 @@ static void hal2_capture_transfer(struct snd_pcm_substream *substream,
- 	struct snd_hal2 *hal2 = snd_pcm_substream_chip(substream);
- 	unsigned char *buf = hal2->adc.buffer + rec->hw_data;
- 
--	dma_cache_sync(hal2->card->dev, buf, bytes, DMA_FROM_DEVICE);
-+	dma_sync_single_for_cpu(hal2->card->dev,
-+			hal2->adc.buffer_dma + rec->hw_data, bytes,
-+			DMA_FROM_DEVICE);
- 	memcpy(substream->runtime->dma_area + rec->sw_data, buf, bytes);
- }
- 
--- 
-2.28.0
+Thanks,
+Jim
 
+> Your example looks like to try to load a KSEG1 address, so just use
+>
+> uasm_i_lui(p, tmp, uasm_rel_hi(0xa0000000));
+>
+> which even makes it clearer, what this is about.
+>
+> Thomas.
+>
+> --
+> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+> good idea.                                                [ RFC1925, 2.3 ]

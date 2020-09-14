@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-14.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D9F2C2BC11
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Sep 2020 14:25:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AB90C43461
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Sep 2020 14:32:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C655B208DB
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Sep 2020 14:25:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2335A207EA
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Sep 2020 14:32:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1600093532;
-	bh=neZeJyo/vrJWlGXfGrMWd1Maus0uo5g1Kgtkd1PsBV0=;
+	s=default; t=1600093937;
+	bh=FJGrFZh/wSlG57bHCjvhePW4NhaqITwdnUviTd90E1o=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=PIa2beuwcD+eXeAXHMvODunLCRtia0EuJZ+EwTjewo2EJDa/PqywxxUU43h39QTk4
-	 9AbC7qnmzYDoFp04smG1X8zGeIx3XYdNDRcpE44cTj46o450lHiW0eiqJWgeUfJLj2
-	 3qooq7UrRTgeOvBQOhVWFLmfRgvgZGEyxmRC61uU=
+	b=v9CmyeF27ILNpPGK2Z5T0RXfv57TDo+inztDa2OxK/QNGiNkpSYfqpHNzsDj2Vdzs
+	 msMbrqiTJ6uGeBd5mENEAD31BefjhzNENEnd0iwGceRSNW2PFHmi4pt8FN+GM2h1aL
+	 UNayVFcdEPxPqlSq9WNltIaKTnXNQrc5Czk98CCA=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbgINOZb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 14 Sep 2020 10:25:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60802 "EHLO mail.kernel.org"
+        id S1726649AbgINNFv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 14 Sep 2020 09:05:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726665AbgINNGE (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:06:04 -0400
+        id S1726616AbgINNF3 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 14 Sep 2020 09:05:29 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A0CE21D80;
-        Mon, 14 Sep 2020 13:05:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20DB32222A;
+        Mon, 14 Sep 2020 13:04:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600088725;
-        bh=neZeJyo/vrJWlGXfGrMWd1Maus0uo5g1Kgtkd1PsBV0=;
+        s=default; t=1600088673;
+        bh=FJGrFZh/wSlG57bHCjvhePW4NhaqITwdnUviTd90E1o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nRb+eAh78ZY6WUhJ73RcLsEOhwQ8KRW3u4jxFgH+vwaJXOUIZd99pIyimUx8pZrFC
-         ikWV1FMSIRuQNbzBhOAuEXyVN1ecPWT6EvCCvQGJBYG1uPP6TN5j8cSkNuvXrccHly
-         KhQq9w+NL4qRXvi73DzrF7TfezHyeTiTiLF7I6UU=
+        b=IPZ84mhEoyRPga2DH98rhbeTd3HY/6eUSFUdJThfihiGwdYshpOmG2+csdig2XmBX
+         AE21hP3lmmyk6aWqwdX/hoccOSdc2IERQQALwOoizmxdS0ZHtBVb4eaPVcecovi4d+
+         e+sqSsXlkAgLb56hbPvAoJEAwousK/EVzZ3fpK3E=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Huacai Chen <chenhc@lemote.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org,
         kvm@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 19/19] KVM: MIPS: Change the definition of kvm type
-Date:   Mon, 14 Sep 2020 09:05:02 -0400
-Message-Id: <20200914130502.1804708-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.8 29/29] KVM: MIPS: Change the definition of kvm type
+Date:   Mon, 14 Sep 2020 09:03:58 -0400
+Message-Id: <20200914130358.1804194-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200914130502.1804708-1-sashal@kernel.org>
-References: <20200914130502.1804708-1-sashal@kernel.org>
+In-Reply-To: <20200914130358.1804194-1-sashal@kernel.org>
+References: <20200914130358.1804194-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -103,10 +103,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-index e7f5ef6bed0fe..79485790f7b56 100644
+index 666d3350b4ac1..6c6836669ce16 100644
 --- a/arch/mips/kvm/mips.c
 +++ b/arch/mips/kvm/mips.c
-@@ -131,6 +131,8 @@ void kvm_arch_check_processor_compat(void *rtn)
+@@ -137,6 +137,8 @@ extern void kvm_init_loongson_ipi(struct kvm *kvm);
  int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
  {
  	switch (type) {
@@ -116,10 +116,10 @@ index e7f5ef6bed0fe..79485790f7b56 100644
  	case KVM_VM_MIPS_VZ:
  #else
 diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index 66ce6659ecb69..c297abc4e6697 100644
+index 4fdf303165827..65fd95f9784ce 100644
 --- a/include/uapi/linux/kvm.h
 +++ b/include/uapi/linux/kvm.h
-@@ -746,9 +746,10 @@ struct kvm_ppc_resize_hpt {
+@@ -789,9 +789,10 @@ struct kvm_ppc_resize_hpt {
  #define KVM_VM_PPC_HV 1
  #define KVM_VM_PPC_PR 2
  

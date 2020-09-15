@@ -2,96 +2,59 @@ Return-Path: <SRS0=dad+=CY=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25011C43461
-	for <linux-mips@archiver.kernel.org>; Tue, 15 Sep 2020 22:23:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21567C433E2
+	for <linux-mips@archiver.kernel.org>; Tue, 15 Sep 2020 22:24:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E5A9820872
-	for <linux-mips@archiver.kernel.org>; Tue, 15 Sep 2020 22:23:58 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ggAyOiqO"
+	by mail.kernel.org (Postfix) with ESMTP id EB0E920872
+	for <linux-mips@archiver.kernel.org>; Tue, 15 Sep 2020 22:24:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727690AbgIOWX5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 15 Sep 2020 18:23:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727670AbgIOQXt (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 15 Sep 2020 12:23:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A20CC061220;
-        Tue, 15 Sep 2020 09:02:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=JnWOu0cx9NLfix9YE81wCrP+ES0VrJcG1q9lrjV+EYM=; b=ggAyOiqOFzXeSouIBajY/EVdFC
-        yXY8z1jS3wcYP6NBtYA41rCKgLXjH4xMzXJCcuMRWfgS5jv0LZTxnxni0dsnIPTmwWqrY+WaHOyUo
-        FhLxOf/6xbypGZg0rI6l4flnT0WUVtv0GaY5z4SPjC0NveqARUdpQ6NNynBQOIbi9ZX0E0T5nZCUP
-        m14Y8GO+0A9XOgBUDBC039oN7DsgTfSWpnTNB9hj5ykcktjf5OJA5lVxYNVAsXydG6WNlG55nE4s1
-        Dc1KGOrKqQ7Czw31iODTSyUUN8tSRZ8ja/NK5ZMIpIgLZP4q5L9p/Rres83ygtgo2+rbd6NsrQxTH
-        aLZ3IQhA==;
-Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIDPO-0003vw-5i; Tue, 15 Sep 2020 16:02:18 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        iommu@lists.linux-foundation.org
-Cc:     Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        linux1394-devel@lists.sourceforge.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
-        alsa-devel@alsa-project.org
-Subject: [PATCH 04/18] drm/nouveau/gk20a: stop setting DMA_ATTR_NON_CONSISTENT
-Date:   Tue, 15 Sep 2020 17:51:08 +0200
-Message-Id: <20200915155122.1768241-5-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915155122.1768241-1-hch@lst.de>
-References: <20200915155122.1768241-1-hch@lst.de>
+        id S1727692AbgIOWYj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 15 Sep 2020 18:24:39 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49602 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727667AbgIOQXq (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 15 Sep 2020 12:23:46 -0400
+Received: from ip5f5af089.dynamic.kabel-deutschland.de ([95.90.240.137] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kIDOE-00061Q-NV; Tue, 15 Sep 2020 16:01:06 +0000
+Date:   Tue, 15 Sep 2020 18:01:05 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christian Brauner <christian@brauner.io>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org,
+        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 07/15] selftests/seccomp: Remove syscall setting #ifdefs
+Message-ID: <20200915160105.sqo7x2qyt6uwzphx@wittgenstein>
+References: <20200912110820.597135-1-keescook@chromium.org>
+ <20200912110820.597135-8-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200912110820.597135-8-keescook@chromium.org>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-DMA_ATTR_NON_CONSISTENT is a no-op except on PA-RISC and a few MIPS
-configs, so don't set it in this ARM specific driver part.
+On Sat, Sep 12, 2020 at 04:08:12AM -0700, Kees Cook wrote:
+> With all architectures now using the common SYSCALL_NUM_SET() macro, the
+> arch-specific #ifdef can be removed from change_syscall() itself.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c b/drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c
-index 985f2990ab0dda..13d4d7ac0697b4 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c
-@@ -594,8 +594,7 @@ gk20a_instmem_new(struct nvkm_device *device, int index,
- 
- 		nvkm_info(&imem->base.subdev, "using IOMMU\n");
- 	} else {
--		imem->attrs = DMA_ATTR_NON_CONSISTENT |
--			      DMA_ATTR_WEAK_ORDERING |
-+		imem->attrs = DMA_ATTR_WEAK_ORDERING |
- 			      DMA_ATTR_WRITE_COMBINE;
- 
- 		nvkm_info(&imem->base.subdev, "using DMA API\n");
--- 
-2.28.0
-
+Looks good!
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>

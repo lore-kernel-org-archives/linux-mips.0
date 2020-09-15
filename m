@@ -2,150 +2,106 @@ Return-Path: <SRS0=dad+=CY=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 876ECC31E40
-	for <linux-mips@archiver.kernel.org>; Tue, 15 Sep 2020 22:19:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B526C433E2
+	for <linux-mips@archiver.kernel.org>; Tue, 15 Sep 2020 22:22:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5010B208E4
-	for <linux-mips@archiver.kernel.org>; Tue, 15 Sep 2020 22:19:31 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="olAOSynY"
+	by mail.kernel.org (Postfix) with ESMTP id CDB1320872
+	for <linux-mips@archiver.kernel.org>; Tue, 15 Sep 2020 22:22:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgIOWT2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 15 Sep 2020 18:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727499AbgIOQ3r (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 15 Sep 2020 12:29:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C3AC06178B;
-        Tue, 15 Sep 2020 09:28:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=1/bEcy21h9dr4Lop81Jp+A+3tsDr/+YN8bI8sHR6ers=; b=olAOSynYlsHEGJhf6TUlmrckuE
-        /r0LGBccgU4hRqqI8td0cmd/yN43a1NVzzTHUUoIBhJriadMr+CZIn81GdOqHwGRRCnoGg0Lpn2As
-        D87gTkZYobl3hk2YFKI39vdQ/6KaZsMZZHwt9r8yylGEHBzR9RNXvP3ZAPY1xXRi6Vcg2UuFPe53e
-        0Nr6Ng4Fo3q7nEb85kHX3sqaqpJfeXNhK6gIhRiDcpSKQqPiwby8Brgzeb7Q8bHIHFeQFHcfeCFaO
-        30AdYUq1MYULU/w9BF2KXnq/TBqPJ/HePxZDgzUFxWt8R3Pzl7zV2oGhwr/DJ8H/v8eE7+ssTVi/j
-        0mVYXghw==;
-Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kIDon-0005qq-4D; Tue, 15 Sep 2020 16:28:33 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        iommu@lists.linux-foundation.org
-Cc:     Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        linux1394-devel@lists.sourceforge.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
-        alsa-devel@alsa-project.org
-Subject: [PATCH 16/18] dma-mapping: add new {alloc,free}_noncoherent dma_map_ops methods
-Date:   Tue, 15 Sep 2020 17:51:20 +0200
-Message-Id: <20200915155122.1768241-17-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915155122.1768241-1-hch@lst.de>
-References: <20200915155122.1768241-1-hch@lst.de>
+        id S1727690AbgIOWV5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 15 Sep 2020 18:21:57 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49633 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727681AbgIOQ0Z (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 15 Sep 2020 12:26:25 -0400
+Received: from ip5f5af089.dynamic.kabel-deutschland.de ([95.90.240.137] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kIDlp-0008Gy-Hv; Tue, 15 Sep 2020 16:25:29 +0000
+Date:   Tue, 15 Sep 2020 18:25:28 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christian Brauner <christian@brauner.io>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org,
+        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 14/15] selftests/clone3: Avoid OS-defined clone_args
+Message-ID: <20200915162528.x7admy45pdqsoke4@wittgenstein>
+References: <20200912110820.597135-1-keescook@chromium.org>
+ <20200912110820.597135-15-keescook@chromium.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200912110820.597135-15-keescook@chromium.org>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This will allow IOMMU drivers to allocate non-contigous memory and
-return a vmapped virtual address.
+On Sat, Sep 12, 2020 at 04:08:19AM -0700, Kees Cook wrote:
+> As the UAPI headers start to appear in distros, we need to avoid
+> outdated versions of struct clone_args to be able to test modern
+> features. Additionally pull in the syscall numbers correctly.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- include/linux/dma-mapping.h |  5 +++++
- kernel/dma/mapping.c        | 33 +++++++++++++++++++++++++++------
- 2 files changed, 32 insertions(+), 6 deletions(-)
+Hm, with this patch applied I'm getting:
 
-diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-index bf592cf0db4acb..b4b5d75260d6dc 100644
---- a/include/linux/dma-mapping.h
-+++ b/include/linux/dma-mapping.h
-@@ -80,6 +80,11 @@ struct dma_map_ops {
- 			gfp_t gfp);
- 	void (*free_pages)(struct device *dev, size_t size, struct page *vaddr,
- 			dma_addr_t dma_handle, enum dma_data_direction dir);
-+	void* (*alloc_noncoherent)(struct device *dev, size_t size,
-+			dma_addr_t *dma_handle, enum dma_data_direction dir,
-+			gfp_t gfp);
-+	void (*free_noncoherent)(struct device *dev, size_t size, void *vaddr,
-+			dma_addr_t dma_handle, enum dma_data_direction dir);
- 	int (*mmap)(struct device *, struct vm_area_struct *,
- 			  void *, dma_addr_t, size_t,
- 			  unsigned long attrs);
-diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-index 6f86c925b8251d..8614d7d2ee59a9 100644
---- a/kernel/dma/mapping.c
-+++ b/kernel/dma/mapping.c
-@@ -502,19 +502,40 @@ EXPORT_SYMBOL_GPL(dma_free_pages);
- void *dma_alloc_noncoherent(struct device *dev, size_t size,
- 		dma_addr_t *dma_handle, enum dma_data_direction dir, gfp_t gfp)
- {
--	struct page *page;
-+	const struct dma_map_ops *ops = get_dma_ops(dev);
-+	void *vaddr;
- 
--	page = dma_alloc_pages(dev, size, dma_handle, dir, gfp);
--	if (!page)
--		return NULL;
--	return page_address(page);
-+	if (!ops || !ops->alloc_noncoherent) {
-+		struct page *page;
-+
-+		page = dma_alloc_pages(dev, size, dma_handle, dir, gfp);
-+		if (!page)
-+			return NULL;
-+		return page_address(page);
-+	}
-+
-+	size = PAGE_ALIGN(size);
-+	vaddr = ops->alloc_noncoherent(dev, size, dma_handle, dir, gfp);
-+	if (vaddr)
-+		debug_dma_map_page(dev, virt_to_page(vaddr), 0, size, dir,
-+				   *dma_handle);
-+	return vaddr;
- }
- EXPORT_SYMBOL_GPL(dma_alloc_noncoherent);
- 
- void dma_free_noncoherent(struct device *dev, size_t size, void *vaddr,
- 		dma_addr_t dma_handle, enum dma_data_direction dir)
- {
--	dma_free_pages(dev, size, virt_to_page(vaddr), dma_handle, dir);
-+	const struct dma_map_ops *ops = get_dma_ops(dev);
-+
-+	if (!ops || !ops->free_noncoherent) {
-+		dma_free_pages(dev, size, virt_to_page(vaddr), dma_handle, dir);
-+		return;
-+	}
-+
-+	size = PAGE_ALIGN(size);
-+	debug_dma_unmap_page(dev, dma_handle, size, dir);
-+	ops->free_noncoherent(dev, size, vaddr, dma_handle, dir);
- }
- EXPORT_SYMBOL_GPL(dma_free_noncoherent);
- 
--- 
-2.28.0
+gcc -g -I../../../../usr/include/    clone3_set_tid.c /home/brauner/src/git/linux/linux/tools/testing/selftests/kselftest_harness.h /home/brauner/src/git/linux/linux/tools/testing/selftests/kselftest.h -lcap -o /home/brauner/src/git/linux/linux/tools/testing/selftests/clone3/clone3_set_tid
+In file included from clone3_set_tid.c:24:
+clone3_selftests.h:37:8: error: redefinition of ‘struct clone_args’
+   37 | struct clone_args {
+      |        ^~~~~~~~~~
+In file included from clone3_set_tid.c:12:
+/usr/include/linux/sched.h:92:8: note: originally defined here
+   92 | struct clone_args {
+      |        ^~~~~~~~~~
+make: *** [../lib.mk:140: /home/brauner/src/git/linux/linux/tools/testing/selftests/clone3/clone3_set_tid] Error 1
 
+One trick to avoid this could be:
+
+#ifndef CLONE_ARGS_SIZE_VER0
+#define CLONE_ARGS_SIZE_VER0 64 /* sizeof first published struct */
+#endif
+
+#ifndef CLONE_ARGS_SIZE_VER1
+#define CLONE_ARGS_SIZE_VER1 80 /* sizeof second published struct */
+#endif
+
+#ifndef CLONE_ARGS_SIZE_VER2
+#define CLONE_ARGS_SIZE_VER2 88 /* sizeof third published struct */
+#endif
+
+struct __clone_args {
+	__aligned_u64 flags;
+	__aligned_u64 pidfd;
+	__aligned_u64 child_tid;
+	__aligned_u64 parent_tid;
+	__aligned_u64 exit_signal;
+	__aligned_u64 stack;
+	__aligned_u64 stack_size;
+	__aligned_u64 tls;
+	__aligned_u64 set_tid;
+	__aligned_u64 set_tid_size;
+	__aligned_u64 cgroup;
+};
+
+static pid_t sys_clone3(struct __clone_args *args, size_t size)
+{
+	return syscall(__NR_clone3, args, size);
+}
+
+Christian

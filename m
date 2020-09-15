@@ -1,63 +1,101 @@
-Return-Path: <SRS0=dad+=CY=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=wEpE=CZ=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_2 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D48FC43461
-	for <linux-mips@archiver.kernel.org>; Tue, 15 Sep 2020 22:46:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DD0FC2D0E3
+	for <linux-mips@archiver.kernel.org>; Wed, 16 Sep 2020 00:26:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D750F208E4
-	for <linux-mips@archiver.kernel.org>; Tue, 15 Sep 2020 22:46:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3808D206DB
+	for <linux-mips@archiver.kernel.org>; Wed, 16 Sep 2020 00:26:46 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="ZDUvluzG";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="ZDUvluzG"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727307AbgIOWpl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 15 Sep 2020 18:45:41 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:47842 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727509AbgIOPxy (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 15 Sep 2020 11:53:54 -0400
-Received: from ip5f5af089.dynamic.kabel-deutschland.de ([95.90.240.137] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kIDGb-0005SV-UL; Tue, 15 Sep 2020 15:53:14 +0000
-Date:   Tue, 15 Sep 2020 17:53:13 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christian Brauner <christian@brauner.io>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 02/15] selftests/seccomp: Provide generic syscall setting
- macro
-Message-ID: <20200915155313.s5a3gxmjb2da6762@wittgenstein>
-References: <20200912110820.597135-1-keescook@chromium.org>
- <20200912110820.597135-3-keescook@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200912110820.597135-3-keescook@chromium.org>
+        id S1726839AbgIPA00 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 15 Sep 2020 20:26:26 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:34438 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726798AbgIOOMf (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:12:35 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 9BF068EE188;
+        Tue, 15 Sep 2020 07:10:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1600179008;
+        bh=+R+IKAKZQYkLR7KIiLxpuuPm5bZnjzeal3GKWrEShUo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ZDUvluzGV6yKCC/nF9wrKzitsx/6M3Qz4Dv0CFUEt0vmhscavKWlYegA3t3D9AtoS
+         cgl18SKCLQ6g+fOWhOlSE1rajdI6kKqsO/3XSzI9vcO6roMQjXQ+sBvii1pDKecG7Q
+         7/nP62+cOOfIkefYX7rGreL2C+Tu2bzmyrkPw+GQ=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id o2D0dkS7cauB; Tue, 15 Sep 2020 07:10:08 -0700 (PDT)
+Received: from [153.66.254.174] (c-73-35-198-56.hsd1.wa.comcast.net [73.35.198.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 329868EE107;
+        Tue, 15 Sep 2020 07:10:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1600179008;
+        bh=+R+IKAKZQYkLR7KIiLxpuuPm5bZnjzeal3GKWrEShUo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=ZDUvluzGV6yKCC/nF9wrKzitsx/6M3Qz4Dv0CFUEt0vmhscavKWlYegA3t3D9AtoS
+         cgl18SKCLQ6g+fOWhOlSE1rajdI6kKqsO/3XSzI9vcO6roMQjXQ+sBvii1pDKecG7Q
+         7/nP62+cOOfIkefYX7rGreL2C+Tu2bzmyrkPw+GQ=
+Message-ID: <1600179006.5092.6.camel@HansenPartnership.com>
+Subject: Re: [PATCH 07/17] 53c700: improve non-coherent DMA handling
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        iommu@lists.linux-foundation.org,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        linux1394-devel@lists.sourceforge.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
+        alsa-devel@alsa-project.org
+Date:   Tue, 15 Sep 2020 07:10:06 -0700
+In-Reply-To: <20200915062738.GA19113@lst.de>
+References: <20200914144433.1622958-1-hch@lst.de>
+         <20200914144433.1622958-8-hch@lst.de>
+         <1600096818.4061.7.camel@HansenPartnership.com>
+         <20200915062738.GA19113@lst.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Sep 12, 2020 at 04:08:07AM -0700, Kees Cook wrote:
-> In order to avoid "#ifdef"s in the main function bodies, create a new
-> macro, SYSCALL_NUM_SET(), where arch-specific logic can live.
+On Tue, 2020-09-15 at 08:27 +0200, Christoph Hellwig wrote:
+> On Mon, Sep 14, 2020 at 08:20:18AM -0700, James Bottomley wrote:
+> > If you're going to change the macros from taking a device to taking
+> > a hostdata structure then the descriptive argument name needs to
+> > change ... it can't be dev anymore.  I'm happy with it simply
+> > becoming 'h' if hostdata is too long.
+> > 
+> > I already asked for this on the first go around:
 > 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
+> And I did rename them, those hunks just accidentally slipped into
+> patch 12 instead of this one.  Fixed for the next versions.
 
-SYSCALL_SWITCH(_regs, nr)?
+Ah, yes, found it ... thanks for doing that!
 
-But looks good either way!
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+James
+

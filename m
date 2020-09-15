@@ -6,24 +6,24 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AF28C433E2
-	for <linux-mips@archiver.kernel.org>; Tue, 15 Sep 2020 16:22:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93DAFC433E2
+	for <linux-mips@archiver.kernel.org>; Tue, 15 Sep 2020 16:22:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1E79B20872
-	for <linux-mips@archiver.kernel.org>; Tue, 15 Sep 2020 16:22:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6764220756
+	for <linux-mips@archiver.kernel.org>; Tue, 15 Sep 2020 16:22:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727537AbgIOQWV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 15 Sep 2020 12:22:21 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:49527 "EHLO
+        id S1726320AbgIOQWp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 15 Sep 2020 12:22:45 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49549 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727658AbgIOQWP (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 15 Sep 2020 12:22:15 -0400
+        with ESMTP id S1727430AbgIOQWV (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 15 Sep 2020 12:22:21 -0400
 Received: from ip5f5af089.dynamic.kabel-deutschland.de ([95.90.240.137] helo=wittgenstein)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kIDYD-0007Hd-J1; Tue, 15 Sep 2020 16:11:25 +0000
-Date:   Tue, 15 Sep 2020 18:11:24 +0200
+        id 1kIDNS-0005wg-Oh; Tue, 15 Sep 2020 16:00:18 +0000
+Date:   Tue, 15 Sep 2020 18:00:18 +0200
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     Kees Cook <keescook@chromium.org>
 Cc:     linux-kernel@vger.kernel.org,
@@ -36,28 +36,23 @@ Cc:     linux-kernel@vger.kernel.org,
         linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-xtensa@linux-xtensa.org,
         linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 11/15] selftests/seccomp: Remove
- SYSCALL_NUM_RET_SHARE_REG in favor of SYSCALL_RET_SET
-Message-ID: <20200915161124.oqgoiegni3jqwtno@wittgenstein>
+Subject: Re: [PATCH 06/15] selftests/seccomp: mips: Remove O32-specific macro
+Message-ID: <20200915160018.fstuxjp5mkwieweq@wittgenstein>
 References: <20200912110820.597135-1-keescook@chromium.org>
- <20200912110820.597135-12-keescook@chromium.org>
+ <20200912110820.597135-7-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200912110820.597135-12-keescook@chromium.org>
+In-Reply-To: <20200912110820.597135-7-keescook@chromium.org>
 Sender: linux-mips-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Sep 12, 2020 at 04:08:16AM -0700, Kees Cook wrote:
-> Instead of special-casing the specific case of shared registers, create
-> a default SYSCALL_RET_SET() macro (mirroring SYSCALL_NUM_SET()), that
-> writes to the SYSCALL_RET register. For architectures that can't set the
-> return value (for whatever reason), they can define SYSCALL_RET_SET()
-> without an associated SYSCALL_RET() macro. This also paves the way for
-> architectures that need to do special things to set the return value
-> (e.g. powerpc).
+On Sat, Sep 12, 2020 at 04:08:11AM -0700, Kees Cook wrote:
+> Instead of having the mips O32 macro special-cased, pull the logic into
+> the SYSCALL_NUM() macro. Additionally include the ABI headers, since
+> these appear to have been missing, leaving __NR_O32_Linux undefined.
 > 
 > Signed-off-by: Kees Cook <keescook@chromium.org>
 > ---

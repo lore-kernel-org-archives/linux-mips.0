@@ -2,92 +2,101 @@ Return-Path: <SRS0=0XjY=C4=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35617C43463
-	for <linux-mips@archiver.kernel.org>; Sat, 19 Sep 2020 12:45:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B678FC43464
+	for <linux-mips@archiver.kernel.org>; Sat, 19 Sep 2020 14:31:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0DBB620663
-	for <linux-mips@archiver.kernel.org>; Sat, 19 Sep 2020 12:45:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8B03B2311B
+	for <linux-mips@archiver.kernel.org>; Sat, 19 Sep 2020 14:31:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbgISMpW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 19 Sep 2020 08:45:22 -0400
-Received: from out28-197.mail.aliyun.com ([115.124.28.197]:43476 "EHLO
-        out28-197.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726449AbgISMpW (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 19 Sep 2020 08:45:22 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.09383579|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0499707-0.000457718-0.949572;FP=0|0|0|0|0|-1|-1|-1;HT=e01a16368;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=16;RT=16;SR=0;TI=SMTPD_---.IZJIYjg_1600519505;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IZJIYjg_1600519505)
-          by smtp.aliyun-inc.com(10.147.42.198);
-          Sat, 19 Sep 2020 20:45:17 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     paulburton@kernel.org, tsbogend@alpha.franken.de,
-        paul@crapouillou.net
-Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        jiaxun.yang@flygoat.com, rppt@kernel.org,
-        Sergey.Semin@baikalelectronics.ru,
-        Alexey.Malahov@baikalelectronics.ru, akpm@linux-foundation.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: [PATCH 1/2] MIPS: X1000E: Add X1000E system type.
-Date:   Sat, 19 Sep 2020 20:44:36 +0800
-Message-Id: <20200919124437.89576-2-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200919124437.89576-1-zhouyanjie@wanyeetech.com>
-References: <20200919124437.89576-1-zhouyanjie@wanyeetech.com>
+        id S1726526AbgISObG convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 19 Sep 2020 10:31:06 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:23285 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726493AbgISObG (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 19 Sep 2020 10:31:06 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-281-bAjbsE6rN1eTAY15huzJqA-1; Sat, 19 Sep 2020 15:24:11 +0100
+X-MC-Unique: bAjbsE6rN1eTAY15huzJqA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sat, 19 Sep 2020 15:24:10 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sat, 19 Sep 2020 15:24:10 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: RE: let import_iovec deal with compat_iovecs as well
+Thread-Topic: let import_iovec deal with compat_iovecs as well
+Thread-Index: AQHWjbnKEn35LxofhEeT1lmdzdUiWqlwBNiw
+Date:   Sat, 19 Sep 2020 14:24:10 +0000
+Message-ID: <2c7bf42ee4314484ae0177280cd8f5f3@AcuMS.aculab.com>
+References: <20200918124533.3487701-1-hch@lst.de>
+In-Reply-To: <20200918124533.3487701-1-hch@lst.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add X1000 system type for cat /proc/cpuinfo to give out X1000E.
+From: Christoph Hellwig
+> Sent: 18 September 2020 13:45
+> 
+> this series changes import_iovec to transparently deal with comat iovec
+> structures, and then cleanups up a lot of code dupliation.  But to get
+> there it first has to fix the pre-existing bug that io_uring compat
+> contexts don't trigger the in_compat_syscall() check.  This has so far
+> been relatively harmless as very little code callable from io_uring used
+> the check, and even that code that could be called usually wasn't.
 
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
- arch/mips/generic/board-ingenic.c | 3 +++
- arch/mips/include/asm/bootinfo.h  | 1 +
- 2 files changed, 4 insertions(+)
+I thought about that change while writing my import_iovec() => iovec_import()
+patch - and thought that the io_uring code would (as usual) cause grief.
 
-diff --git a/arch/mips/generic/board-ingenic.c b/arch/mips/generic/board-ingenic.c
-index 0d7de8f9713d..c634ee35a6cd 100644
---- a/arch/mips/generic/board-ingenic.c
-+++ b/arch/mips/generic/board-ingenic.c
-@@ -23,6 +23,8 @@ static __init char *ingenic_get_system_type(unsigned long machtype)
- 	switch (machtype) {
- 	case MACH_INGENIC_X1830:
- 		return "X1830";
-+	case MACH_INGENIC_X1000E:
-+		return "X1000E";
- 	case MACH_INGENIC_X1000:
- 		return "X1000";
- 	case MACH_INGENIC_JZ4780:
-@@ -58,6 +60,7 @@ static const struct of_device_id ingenic_of_match[] __initconst = {
- 	{ .compatible = "ingenic,jz4770", .data = (void *)MACH_INGENIC_JZ4770 },
- 	{ .compatible = "ingenic,jz4780", .data = (void *)MACH_INGENIC_JZ4780 },
- 	{ .compatible = "ingenic,x1000", .data = (void *)MACH_INGENIC_X1000 },
-+	{ .compatible = "ingenic,x1000e", .data = (void *)MACH_INGENIC_X1000E },
- 	{ .compatible = "ingenic,x1830", .data = (void *)MACH_INGENIC_X1830 },
- 	{}
- };
-diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
-index 147c9327ce04..b6fdfbec1f07 100644
---- a/arch/mips/include/asm/bootinfo.h
-+++ b/arch/mips/include/asm/bootinfo.h
-@@ -79,6 +79,7 @@ enum ingenic_machine_type {
- 	MACH_INGENIC_JZ4775,
- 	MACH_INGENIC_JZ4780,
- 	MACH_INGENIC_X1000,
-+	MACH_INGENIC_X1000E,
- 	MACH_INGENIC_X1830,
- 	MACH_INGENIC_X2000,
- };
--- 
-2.11.0
+Christoph - did you see those patches?
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 

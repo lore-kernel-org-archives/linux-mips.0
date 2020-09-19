@@ -2,209 +2,150 @@ Return-Path: <SRS0=0XjY=C4=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A168C43464
-	for <linux-mips@archiver.kernel.org>; Sat, 19 Sep 2020 07:48:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8685C43464
+	for <linux-mips@archiver.kernel.org>; Sat, 19 Sep 2020 08:06:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D28DA2311B
-	for <linux-mips@archiver.kernel.org>; Sat, 19 Sep 2020 07:48:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 63FC921741
+	for <linux-mips@archiver.kernel.org>; Sat, 19 Sep 2020 08:06:48 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="NPIiKYAr"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726151AbgISHsw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 19 Sep 2020 03:48:52 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:33184 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726041AbgISHsw (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 19 Sep 2020 03:48:52 -0400
-Received: from localhost.localdomain (unknown [212.102.50.216])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxuuTHtWVfL2sWAA--.27267S2;
-        Sat, 19 Sep 2020 15:40:12 +0800 (CST)
-From:   Huang Pei <huangpei@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        ambrosehua@gmail.com
-Cc:     Bibo Mao <maobibo@loongson.cn>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mips@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Li Xuefeng <lixuefeng@loongson.cn>,
-        Yang Tiezhu <yangtiezhu@loongson.cn>,
-        Gao Juxin <gaojuxin@loongson.cn>,
-        Fuxin Zhang <zhangfx@lemote.com>,
-        Huacai Chen <chenhc@lemote.com>
-Subject: [PATCH] MIPS: make userspace mapping young by default
-Date:   Sat, 19 Sep 2020 15:39:48 +0800
-Message-Id: <20200919073948.16718-1-huangpei@loongson.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: AQAAf9AxuuTHtWVfL2sWAA--.27267S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKryxWr1DXr43GF48uF17Jrb_yoWxtF4kpa
-        4kC340y3yaqr13AryxZwnrAw1rAwsIqFy8Xw17C3W5X343Z34ktrsxGa9avrykuFZ2kw48
-        Z3WUXr4ruaya9rUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvI14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-        Yx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
-        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7Cj
-        xVA2Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x0JUdHUDUUUUU=
-X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
+        id S1726041AbgISIGr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 19 Sep 2020 04:06:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726312AbgISIGr (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 19 Sep 2020 04:06:47 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45155C0613CE
+        for <linux-mips@vger.kernel.org>; Sat, 19 Sep 2020 01:06:47 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id d6so4961966pfn.9
+        for <linux-mips@vger.kernel.org>; Sat, 19 Sep 2020 01:06:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=35YzUlNbVtiet2PZ45LS5yY7R0/2AJJr6WQjB9kb9DQ=;
+        b=NPIiKYArpLnpWfZp2HXxYn+rhNR6sHO84+EVXiHS/T9DNxwqVpJsTgJu6e6UOqIac5
+         bDkvvguK356n60RctscGCaXQ5NOApiENU+nr9wKDX2+G6Dwk6/Kt2ohTlILyR4XhG7Vd
+         EmOtzDVI6LSIRYyfxPFLa8F7JELTXGEK7gbOM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=35YzUlNbVtiet2PZ45LS5yY7R0/2AJJr6WQjB9kb9DQ=;
+        b=AFRHbSamt1UfQaN/cb29v+Ji46e6U0HTM0HuGw0BPGbeEcf0qXgNPiJtqfttpMKvup
+         TPjUMZt70dmHTQJjGWCfioVHdgLLcoh5cpxav5s24eEOiLdodNW370UWvyQ2oSY1qonN
+         RGAy5FRgJfg6MPf7qS9uPV0otJYiqFJtu/riNtDqjbR0GZUSArdZ4NH6O7TeHafxxDqd
+         Pu/i7dFatUC2AHCfy0mBoo+QUtRL8sk7+96BzZo70VLMjPic4Q/XJ69dV0ci9tdUEFs4
+         vwWl3ddCbuJfG/0hvwWDkyrAjPYjhcM5TgnbtSxYh/ypDLCJwvEPA8jkrFygUoNSTcRR
+         oDpw==
+X-Gm-Message-State: AOAM531HOhaByd/lQfkRH3EmsN87aak82QGTodaSMkS64DaP3q73UiLg
+        qXvjFI/zrySujOGu7nyWHQ64vQ==
+X-Google-Smtp-Source: ABdhPJyNRXL2Utm2uMp6p2aTrp/bIX0uxScQD/cHSmnwCqXqPd9T4QRySA1oqwyg3Lqotd99libtWg==
+X-Received: by 2002:a65:6449:: with SMTP id s9mr21340653pgv.388.1600502806814;
+        Sat, 19 Sep 2020 01:06:46 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id e27sm5744480pfj.62.2020.09.19.01.06.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Sep 2020 01:06:45 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christian Brauner <christian@brauner.io>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org,
+        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v2 3/4] selftests/seccomp: powerpc: Set syscall return during ptrace syscall exit
+Date:   Sat, 19 Sep 2020 01:06:36 -0700
+Message-Id: <20200919080637.259478-4-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200919080637.259478-1-keescook@chromium.org>
+References: <20200919080637.259478-1-keescook@chromium.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-MIPS page fault path take 3 exceptions (1 TLB Miss + 2 TLB Invalid), but
-the second TLB Invalid exception is just triggered by __update_tlb from
-do_page_fault writing tlb without _PAGE_VALID set. With this patch, it
-only take 1 TLB Miss + 1 TLB Invalid exceptions
+Some archs (like powerpc) only support changing the return code during
+syscall exit when ptrace is used. Test entry vs exit phases for which
+portions of the syscall number and return values need to be set at which
+different phases. For non-powerpc, all changes are made during ptrace
+syscall entry, as before. For powerpc, the syscall number is changed at
+ptrace syscall entry and the syscall return value is changed on ptrace
+syscall exit.
 
-This version removes pte_sw_mkyoung without polluting MM code and makes
-page fault delay of MIPS on par with other architecture and covers both
-no-RIXI and RIXI MIPS CPUS
+Reported-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Suggested-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Link: https://lore.kernel.org/linux-kselftest/20200911181012.171027-1-cascardo@canonical.com/
+Fixes: 58d0a862f573 ("seccomp: add tests for ptrace hole")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 25 ++++++++++++++++---
+ 1 file changed, 21 insertions(+), 4 deletions(-)
 
-[1]: https://lkml.kernel.org/lkml/1591416169-26666-1-git-send-email
--maobibo@loongson.cn/
----
-V3:
-- reformat with whitespace cleaned up following Thomas's advice
-V2:
-- remove unused asm-generic definition of pte_sw_mkyoung following Mao's
-advice
----
-Co-developed-by: Huang Pei <huangpei@loongson.cn>
-Signed-off-by: Huang Pei <huangpei@loongson.cn>
-Co-developed-by: Bibo Mao <maobibo@loonson.cn>
----
- arch/mips/include/asm/pgtable.h | 10 ++++------
- arch/mips/mm/cache.c            | 25 +++++++++++++------------
- include/linux/pgtable.h         |  8 --------
- mm/memory.c                     |  3 ---
- 4 files changed, 17 insertions(+), 29 deletions(-)
-
-diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index dd7a0f552cac..931fb35730f0 100644
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -27,11 +27,11 @@ struct vm_area_struct;
- 
- #define PAGE_NONE	__pgprot(_PAGE_PRESENT | _PAGE_NO_READ | \
- 				 _page_cachable_default)
--#define PAGE_SHARED	__pgprot(_PAGE_PRESENT | _PAGE_WRITE | \
--				 _page_cachable_default)
-+#define PAGE_SHARED    __pgprot(_PAGE_PRESENT | _PAGE_WRITE | \
-+				 __READABLE | _page_cachable_default)
- #define PAGE_COPY	__pgprot(_PAGE_PRESENT | _PAGE_NO_EXEC | \
--				 _page_cachable_default)
--#define PAGE_READONLY	__pgprot(_PAGE_PRESENT | \
-+				 __READABLE | _page_cachable_default)
-+#define PAGE_READONLY	__pgprot(_PAGE_PRESENT |  __READABLE | \
- 				 _page_cachable_default)
- #define PAGE_KERNEL	__pgprot(_PAGE_PRESENT | __READABLE | __WRITEABLE | \
- 				 _PAGE_GLOBAL | _page_cachable_default)
-@@ -414,8 +414,6 @@ static inline pte_t pte_mkyoung(pte_t pte)
- 	return pte;
- }
- 
--#define pte_sw_mkyoung	pte_mkyoung
--
- #ifdef CONFIG_MIPS_HUGE_TLB_SUPPORT
- static inline int pte_huge(pte_t pte)	{ return pte_val(pte) & _PAGE_HUGE; }
- 
-diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
-index 3e81ba000096..ed75f2871aad 100644
---- a/arch/mips/mm/cache.c
-+++ b/arch/mips/mm/cache.c
-@@ -159,22 +159,23 @@ static inline void setup_protection_map(void)
- {
- 	if (cpu_has_rixi) {
- 		protection_map[0]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
--		protection_map[1]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC);
-+		protection_map[1]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | __READABLE);
- 		protection_map[2]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
--		protection_map[3]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC);
--		protection_map[4]  = __pgprot(_page_cachable_default | _PAGE_PRESENT);
--		protection_map[5]  = __pgprot(_page_cachable_default | _PAGE_PRESENT);
--		protection_map[6]  = __pgprot(_page_cachable_default | _PAGE_PRESENT);
--		protection_map[7]  = __pgprot(_page_cachable_default | _PAGE_PRESENT);
-+		protection_map[3]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | __READABLE);
-+		protection_map[4]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | __READABLE);
-+		protection_map[5]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | __READABLE);
-+		protection_map[6]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | __READABLE);
-+		protection_map[7]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | __READABLE);
- 
- 		protection_map[8]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
--		protection_map[9]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC);
-+		protection_map[9]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | __READABLE);
- 		protection_map[10] = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE | _PAGE_NO_READ);
--		protection_map[11] = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
--		protection_map[12] = __pgprot(_page_cachable_default | _PAGE_PRESENT);
--		protection_map[13] = __pgprot(_page_cachable_default | _PAGE_PRESENT);
--		protection_map[14] = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_WRITE);
--		protection_map[15] = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_WRITE);
-+		protection_map[11] = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE | __READABLE);
-+		protection_map[12]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | __READABLE);
-+		protection_map[13]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | __READABLE);
-+		protection_map[14]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | __READABLE);
-+		protection_map[15]  = __pgprot(_page_cachable_default | _PAGE_PRESENT | _PAGE_NO_EXEC | __READABLE);
-+
- 
- 	} else {
- 		protection_map[0] = PAGE_NONE;
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index e8cbc2e795d5..ef9c5fa8673e 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -377,14 +377,6 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addres
-  * To be differentiate with macro pte_mkyoung, this macro is used on platforms
-  * where software maintains page access bit.
-  */
--#ifndef pte_sw_mkyoung
--static inline pte_t pte_sw_mkyoung(pte_t pte)
--{
--	return pte;
--}
--#define pte_sw_mkyoung	pte_sw_mkyoung
--#endif
--
- #ifndef pte_savedwrite
- #define pte_savedwrite pte_write
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+index 98ce5e8a6398..894c2404d321 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -1765,6 +1765,7 @@ TEST_F(TRACE_poke, getpid_runs_normally)
+ 			(_regs).ccr &= ~0x10000000;		\
+ 		}						\
+ 	} while (0)
++# define SYSCALL_RET_SET_ON_PTRACE_EXIT
+ #elif defined(__s390__)
+ # define ARCH_REGS		s390_regs
+ # define SYSCALL_NUM(_regs)	(_regs).gprs[2]
+@@ -1853,6 +1854,18 @@ TEST_F(TRACE_poke, getpid_runs_normally)
+ 	} while (0)
  #endif
-diff --git a/mm/memory.c b/mm/memory.c
-index 602f4283122f..5100ab5bcf77 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2705,7 +2705,6 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
- 		}
- 		flush_cache_page(vma, vmf->address, pte_pfn(vmf->orig_pte));
- 		entry = mk_pte(new_page, vma->vm_page_prot);
--		entry = pte_sw_mkyoung(entry);
- 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
- 		/*
- 		 * Clear the pte entry and flush it first, before updating the
-@@ -3386,7 +3385,6 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 	__SetPageUptodate(page);
  
- 	entry = mk_pte(page, vma->vm_page_prot);
--	entry = pte_sw_mkyoung(entry);
- 	if (vma->vm_flags & VM_WRITE)
- 		entry = pte_mkwrite(pte_mkdirty(entry));
++/*
++ * Some architectures (e.g. powerpc) can only set syscall
++ * return values on syscall exit during ptrace.
++ */
++const bool ptrace_entry_set_syscall_nr = true;
++const bool ptrace_entry_set_syscall_ret =
++#ifndef SYSCALL_RET_SET_ON_PTRACE_EXIT
++	true;
++#else
++	false;
++#endif
++
+ /*
+  * Use PTRACE_GETREGS and PTRACE_SETREGS when available. This is useful for
+  * architectures without HAVE_ARCH_TRACEHOOK (e.g. User-mode Linux).
+@@ -2006,11 +2019,15 @@ void tracer_ptrace(struct __test_metadata *_metadata, pid_t tracee,
+ 	 */
+ 	if (entry)
+ 		self->syscall_nr = get_syscall(_metadata, tracee);
+-	else
+-		return;
  
-@@ -3661,7 +3659,6 @@ vm_fault_t alloc_set_pte(struct vm_fault *vmf, struct page *page)
+-	syscall_nr = &syscall_nr_val;
+-	syscall_ret = &syscall_ret_val;
++	/*
++	 * Depending on the architecture's syscall setting abilities, we
++	 * pick which things to set during this phase (entry or exit).
++	 */
++	if (entry == ptrace_entry_set_syscall_nr)
++		syscall_nr = &syscall_nr_val;
++	if (entry == ptrace_entry_set_syscall_ret)
++		syscall_ret = &syscall_ret_val;
  
- 	flush_icache_page(vma, page);
- 	entry = mk_pte(page, vma->vm_page_prot);
--	entry = pte_sw_mkyoung(entry);
- 	if (write)
- 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
- 	/* copy-on-write page */
+ 	/* Now handle the actual rewriting cases. */
+ 	switch (self->syscall_nr) {
 -- 
-2.17.1
+2.25.1
 

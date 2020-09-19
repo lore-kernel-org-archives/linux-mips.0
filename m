@@ -2,171 +2,184 @@ Return-Path: <SRS0=0XjY=C4=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF21CC43465
-	for <linux-mips@archiver.kernel.org>; Sat, 19 Sep 2020 08:07:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C54D9C43463
+	for <linux-mips@archiver.kernel.org>; Sat, 19 Sep 2020 08:29:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 67BA7235FA
-	for <linux-mips@archiver.kernel.org>; Sat, 19 Sep 2020 08:07:04 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jgNwfK9r"
+	by mail.kernel.org (Postfix) with ESMTP id 8A14721741
+	for <linux-mips@archiver.kernel.org>; Sat, 19 Sep 2020 08:29:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726322AbgISIG5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 19 Sep 2020 04:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbgISIG4 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 19 Sep 2020 04:06:56 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB20DC0613D3
-        for <linux-mips@vger.kernel.org>; Sat, 19 Sep 2020 01:06:49 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id bd2so4202144plb.7
-        for <linux-mips@vger.kernel.org>; Sat, 19 Sep 2020 01:06:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mrLryApnJ9OrHIHAcwmpSGY4TxWSaJUHtyhtfo3Txxc=;
-        b=jgNwfK9rxr13QjIMA849prWXlVCgyfZx2+W0ylmX0aAIoJx1/qaNXA3wOcHdeOJlUp
-         2s3/qxs3FuB9H4lpwpHPrlrdp8/Q81BN9i8c12BTmQjY+cDMr1EtxTC2UPe4acoCa3T5
-         NgH4X89TkMDe7v6pAN1GmhBpZYl1R92hWMTxg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mrLryApnJ9OrHIHAcwmpSGY4TxWSaJUHtyhtfo3Txxc=;
-        b=MBL0MAnyjcJ5DN5StO6dhwtGKo18OAmXj6p1PholC1Ug3t31ccu22t5Y3Moub7LfgY
-         ByT4O6EylxCgVOuWbuYvE2UoGQO7rsv/3V59gZpJdU6nyb3ShX8pL6b/xhE6OeOkl4qE
-         wK9Z8TnSHgpo+HqPDtkkwBaSgkDPItWokYj5M18Kw3zc1L8oolT0ZZMLtXncXW5CU5y/
-         9tymIi10ZXQ5AXZQnyWvbklqWAFdkj8kL7qGlB+tRijZuVck+T0upr8gI7NtV7vEl2or
-         uBR5jiaVwICxZLlPx3HsLx1i9Vwsndd/5xyy+uhhQnFDdJTqTwru1IiM83+E4krIi9Mj
-         9IoA==
-X-Gm-Message-State: AOAM531smbN2nQBqo2+2eccx1n35Aca1mEP7fu3loT9A9uvtW/yB9Chp
-        UBIw9MvZiE1ERt8u+jl6ve3Omw==
-X-Google-Smtp-Source: ABdhPJxzGPHSPF8+6O/bh2fwfZiDgn7d7ypRGUb1tocspyrduFRi0uPCbZiKy5aQ8tiKYFmJtWgo5A==
-X-Received: by 2002:a17:902:9041:b029:d0:cc02:8540 with SMTP id w1-20020a1709029041b02900d0cc028540mr35396678plz.41.1600502809446;
-        Sat, 19 Sep 2020 01:06:49 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id m5sm4824996pjn.19.2020.09.19.01.06.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Sep 2020 01:06:45 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christian Brauner <christian@brauner.io>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v2 1/4] selftests/seccomp: Record syscall during ptrace entry
-Date:   Sat, 19 Sep 2020 01:06:34 -0700
-Message-Id: <20200919080637.259478-2-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200919080637.259478-1-keescook@chromium.org>
-References: <20200919080637.259478-1-keescook@chromium.org>
+        id S1726097AbgISI3r (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 19 Sep 2020 04:29:47 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:38778 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726041AbgISI3r (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 19 Sep 2020 04:29:47 -0400
+Received: from [10.130.0.187] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxD91zwWVfAG0WAA--.6874S3;
+        Sat, 19 Sep 2020 16:29:40 +0800 (CST)
+Subject: Re: [PATCH] MIPS: kexec: Add crashkernel=YM handling
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <1600480546-10448-1-git-send-email-tangyouling@loongson.cn>
+ <3F79DD89-BE1E-456F-9297-273DDBB4E12A@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Youling Tang <tangyouling@loongson.cn>
+Message-ID: <e0154fb4-f2bd-5017-17ea-9827b95b8e68@loongson.cn>
+Date:   Sat, 19 Sep 2020 16:29:39 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
+In-Reply-To: <3F79DD89-BE1E-456F-9297-273DDBB4E12A@flygoat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9DxD91zwWVfAG0WAA--.6874S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxWF47XrWDZr1DCr1rtrW8JFb_yoWrWr1xpr
+        yUAa15GF4xGF9rGw4fArn3CryFyw1vvayUKrs5tryFkF909F1ktr4fWF17uryqvr1vgF1x
+        ZFs2qFsF9w1FyaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvSb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487
+        MxkIecxEwVAFwVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
+        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
+        JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
+        vEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280
+        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43
+        ZEXa7IU0-djtUUUUU==
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In preparation for performing actions during ptrace syscall exit, save
-the syscall number during ptrace syscall entry. Some architectures do
-no have the syscall number available during ptrace syscall exit.
 
-Suggested-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Link: https://lore.kernel.org/linux-kselftest/20200911181012.171027-1-cascardo@canonical.com/
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- tools/testing/selftests/seccomp/seccomp_bpf.c | 40 +++++++++++++------
- 1 file changed, 27 insertions(+), 13 deletions(-)
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index bc0fb463c709..c0311b4c736b 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -1949,12 +1949,19 @@ void tracer_seccomp(struct __test_metadata *_metadata, pid_t tracee,
- 
- }
- 
-+FIXTURE(TRACE_syscall) {
-+	struct sock_fprog prog;
-+	pid_t tracer, mytid, mypid, parent;
-+	long syscall_nr;
-+};
-+
- void tracer_ptrace(struct __test_metadata *_metadata, pid_t tracee,
- 		   int status, void *args)
- {
--	int ret, nr;
-+	int ret;
- 	unsigned long msg;
- 	static bool entry;
-+	FIXTURE_DATA(TRACE_syscall) *self = args;
- 
- 	/*
- 	 * The traditional way to tell PTRACE_SYSCALL entry/exit
-@@ -1968,24 +1975,31 @@ void tracer_ptrace(struct __test_metadata *_metadata, pid_t tracee,
- 	EXPECT_EQ(entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY
- 			: PTRACE_EVENTMSG_SYSCALL_EXIT, msg);
- 
--	if (!entry)
-+	/*
-+	 * Some architectures only support setting return values during
-+	 * syscall exit under ptrace, and on exit the syscall number may
-+	 * no longer be available. Therefore, save the initial sycall
-+	 * number here, so it can be examined during both entry and exit
-+	 * phases.
-+	 */
-+	if (entry)
-+		self->syscall_nr = get_syscall(_metadata, tracee);
-+	else
- 		return;
- 
--	nr = get_syscall(_metadata, tracee);
--
--	if (nr == __NR_getpid)
-+	switch (self->syscall_nr) {
-+	case __NR_getpid:
- 		change_syscall(_metadata, tracee, __NR_getppid, 0);
--	if (nr == __NR_gettid)
-+		break;
-+	case __NR_gettid:
- 		change_syscall(_metadata, tracee, -1, 45000);
--	if (nr == __NR_openat)
-+		break;
-+	case __NR_openat:
- 		change_syscall(_metadata, tracee, -1, -ESRCH);
-+		break;
-+	}
- }
- 
--FIXTURE(TRACE_syscall) {
--	struct sock_fprog prog;
--	pid_t tracer, mytid, mypid, parent;
--};
--
- FIXTURE_VARIANT(TRACE_syscall) {
- 	/*
- 	 * All of the SECCOMP_RET_TRACE behaviors can be tested with either
-@@ -2044,7 +2058,7 @@ FIXTURE_SETUP(TRACE_syscall)
- 	self->tracer = setup_trace_fixture(_metadata,
- 					   variant->use_ptrace ? tracer_ptrace
- 							       : tracer_seccomp,
--					   NULL, variant->use_ptrace);
-+					   self, variant->use_ptrace);
- 
- 	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
- 	ASSERT_EQ(0, ret);
--- 
-2.25.1
+On 09/19/2020 03:02 PM, Jiaxun Yang wrote:
+>
+> 于 2020年9月19日 GMT+08:00 上午9:55:46, Youling Tang <tangyouling@loongson.cn> 写到:
+>> When the kernel crashkernel parameter is specified with just a size,
+>> we are supposed to allocate a region from RAM to store the crashkernel.
+>> However, MIPS merely reserves physical address zero with no checking
+>> that there is even RAM there.
+>>
+>> Fix this by lifting similar code from x86, importing it to MIPS with the
+>> MIPS specific parameters added. In the absence of any platform specific
+>> information, we allocate the crashkernel region from the first 512MB of
+>> physical memory (limited to CKSEG0 or KSEG0 address range).
+>>
+>> When X is not specified, crash_base defaults to 0 (crashkernel=YM@XM).
+>>
+>> E.g. without this patch:
+>>
+>> The environment as follows:
+>> [    0.000000] MIPS: machine is loongson,loongson64c-4core-ls7a
+>> ...
+>> [    0.000000] Kernel command line: root=/dev/sda2 crashkernel=96M ...
+>>
+>> The warning as follows:
+>> [    0.000000] Invalid memory region reserved for crash kernel
+>>
+>> And the iomem as follows:
+>> 00200000-0effffff : System RAM
+>>   00200000-00b47f87 : Kernel code
+>>   00b47f88-00dfffff : Kernel data
+>>   00e60000-01f73c7f : Kernel bss
+>> 1a000000-1bffffff : pci@1a000000
+>> ...
+>>
+>> With this patch:
+>>
+>> After increasing crash_base <= 0 handling.
+>>
+>> And the iomem as follows:
+>> 00200000-0effffff : System RAM
+>>   00200000-00b47f87 : Kernel code
+>>   00b47f88-00dfffff : Kernel data
+>>   00e60000-01f73c7f : Kernel bss
+>>   04000000-09ffffff : Crash kernel
+>> 1a000000-1bffffff : pci@1a000000
+>> ...
+>>
+>> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+>> ---
+>> arch/mips/kernel/setup.c | 24 +++++++++++++++++++++---
+>> 1 file changed, 21 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+>> index bf5f5ac..59a88ea 100644
+>> --- a/arch/mips/kernel/setup.c
+>> +++ b/arch/mips/kernel/setup.c
+>> @@ -477,6 +477,11 @@ early_param("elfcorehdr", early_parse_elfcorehdr);
+>> #endif
+>>
+>> #ifdef CONFIG_KEXEC
+>> +
+>> +/* 64M alignment for crash kernel regions */
+>> +#define CRASH_ALIGN	SZ_64M
+>> +#define CRASH_ADDR_MAX	SZ_512M
+> Hi Youling
+>
+> How do you determine the alignment requirement?
+>
+> Can we relax it?
+>
+> Thanks.
+>
+> - Jiaxun
+Hi Jiaxun
+
+Only when XM is not specified, 64M alignment is specified.
+
+After the capture kernel is configured with CRASH_DUMP, PHYSICAL_START
+defaults to 0x0xffffffff84000000 (64M). The kexec -p operation will
+succeed only when the reserved Crash kernel start address is consistent
+with PHYSICAL_START.
+
+The description of PHYSICAL_START in arch/mips/Kconfig:2996 is as follows:
+This gives the CKSEG0 or KSEG0 address where the kernel is loaded.If you
+plan to use kernel for capturing the crash dump change this value to start
+of the reserved region (the "X" value as specified in the 
+"crashkernel=YM@XM"
+command line boot parameter passed to the panic-ed kernel).
+
+Thanks,
+
+- Youling
+>> +
+>> static void __init mips_parse_crashkernel(void)
+>> {
+>> 	unsigned long long total_mem;
+>> @@ -489,9 +494,22 @@ static void __init mips_parse_crashkernel(void)
+>> 	if (ret != 0 || crash_size <= 0)
+>> 		return;
+>>
+>> -	if (!memblock_find_in_range(crash_base, crash_base + crash_size, crash_size, 1)) {
+>> -		pr_warn("Invalid memory region reserved for crash kernel\n");
+>> -		return;
+>> +	if (crash_base <= 0) {
+>> +		crash_base = memblock_find_in_range(CRASH_ALIGN, CRASH_ADDR_MAX,
+>> +							crash_size, CRASH_ALIGN);
+>> +		if (!crash_base) {
+>> +			pr_warn("crashkernel reservation failed - No suitable area found.\n");
+>> +			return;
+>> +		}
+>> +	} else {
+>> +		unsigned long long start;
+>> +
+>> +		start = memblock_find_in_range(crash_base, crash_base + crash_size,
+>> +						crash_size, 1);
+>> +		if (start != crash_base) {
+>> +			pr_warn("Invalid memory region reserved for crash kernel\n");
+>> +			return;
+>> +		}
+>> 	}
+>>
+>> 	crashk_res.start = crash_base;
 

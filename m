@@ -2,130 +2,108 @@ Return-Path: <SRS0=UAgD=C5=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C964C43465
-	for <linux-mips@archiver.kernel.org>; Sun, 20 Sep 2020 08:49:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEF60C43465
+	for <linux-mips@archiver.kernel.org>; Sun, 20 Sep 2020 11:07:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F0818216C4
-	for <linux-mips@archiver.kernel.org>; Sun, 20 Sep 2020 08:49:24 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="h8jv+ylt";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZMmhQ6D7"
+	by mail.kernel.org (Postfix) with ESMTP id 9AC7420EDD
+	for <linux-mips@archiver.kernel.org>; Sun, 20 Sep 2020 11:07:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgITItY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 20 Sep 2020 04:49:24 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44998 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726247AbgITItY (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 20 Sep 2020 04:49:24 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600591762;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yl4SJva1ZaL/QSosb5XX7oiMR9yOUZ2hryRMeN6gUOs=;
-        b=h8jv+yltDHIngnBBGJjPbxbwRp4WWvfUYCE010JZcD8mxV4UaeO8dLdDu13Q2cG+LY8JOQ
-        h6npHbPhilGj3v1VUqWxvnxWjS/ksALdSUA+5C9fXgz9TR+62SaZPqFm9CDQlxwGmO5sxH
-        Og/nMSeW9my8zlDQTOZZtLu/e9zkMmPgdx5NK5E8Rcfn4iS1ni7EpBlci97FKZLWMkER3O
-        +JFJopKrMaT622cTfw+fq7PTs6AJTMpiNhuh5DlxWwRcA1+vumWCIqGRFavPq8Rwh2wOji
-        LMGpm7pbhOs/2HMUMaIGkJEZas3RBbG5QRgXaIHLQPqkcnXaia1X2M3U1G452Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600591762;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yl4SJva1ZaL/QSosb5XX7oiMR9yOUZ2hryRMeN6gUOs=;
-        b=ZMmhQ6D75ka6LNiomg7OC2DwIv8yEqOFqmHU4LlJlX/duWyJlSPDqvfBsTbUq7MYp5KhFm
-        dW4ZRnByLA6ZBcCQ==
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "open list\:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
-        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-sparc <sparclinux@vger.kernel.org>
-Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of kmap_atomic & friends
-In-Reply-To: <87mu1lc5mp.fsf@nanos.tec.linutronix.de>
-References: <20200919091751.011116649@linutronix.de> <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com> <87mu1lc5mp.fsf@nanos.tec.linutronix.de>
-Date:   Sun, 20 Sep 2020 10:49:21 +0200
-Message-ID: <87k0wode9a.fsf@nanos.tec.linutronix.de>
+        id S1726298AbgITLHW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 20 Sep 2020 07:07:22 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:53210 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726280AbgITLHW (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 20 Sep 2020 07:07:22 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id D27E380307CB;
+        Sun, 20 Sep 2020 11:00:46 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id uS0z8x_TjkDE; Sun, 20 Sep 2020 14:00:46 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+        "Maciej W . Rozycki" <macro@linux-mips.org>,
+        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 2/2] mips: Introduce MIPS CM2 GCR Control register accessors
+Date:   Sun, 20 Sep 2020 14:00:10 +0300
+Message-ID: <20200920110010.16796-3-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200920110010.16796-1-Sergey.Semin@baikalelectronics.ru>
+References: <20200920110010.16796-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Sep 20 2020 at 08:41, Thomas Gleixner wrote:
-> On Sat, Sep 19 2020 at 10:18, Linus Torvalds wrote:
->> Maybe I've missed something.  Is it because the new interface still
->> does "pagefault_disable()" perhaps?
->>
->> But does it even need the pagefault_disable() at all? Yes, the
->> *atomic* one obviously needed it. But why does this new one need to
->> disable page faults?
->
-> It disables pagefaults because it can be called from atomic and
-> non-atomic context. That was the point to get rid of
->
->          if (preeemptible())
->          	kmap();
->          else
->                 kmap_atomic();
->
-> If it does not disable pagefaults, then it's just a lightweight variant
-> of kmap() for short lived mappings.
+For some reason these accessors have been absent from the MIPS kernel,
+while some of them can be used to tune the MIPS code execution up (the
+default value are fully acceptable though). For instance, in the framework
+of MIPS P5600/P6600 (see [1] for details) if we are sure the IO
+interconnect doesn't reorder the requests we can freely set
+GCR_CONTROL.SYNCDIS, which will make CM2 to respond on SYNCs just
+after a request is accepted on the L2/Memory interface instead of
+executing the legacy SYNC and waiting for the full response from
+L2/Memory. Needless to say that this will significantly speed the
+{read,write}X() IO-accessors due to having more lightweight barriers
+around the IO Loads and Stores. There are others MIPS Coherency Manager
+optimizations available in framework of that register like cache ops
+serialization limits, speculative read enable, etc, which can be useful
+for the various MIPS platforms.
 
-Actually most usage sites of kmap atomic do not need page faults to be
-disabled at all. As Daniel pointed out the implicit pagefault disable
-enforces copy_from_user_inatomic() even in places which are clearly
-preemptible task context.
+[1] MIPS32 P5600 Multiprocessing System Software User's Manual,
+    Document Number: MD01025, Revision 01.60, April 19, 2016, p. 400
 
-As we need to look at each instance anyway we can add the PF disable
-explicitely to the very few places which actually need it.
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-Thanks,
+---
 
-        tglx
+Folks, do you think it would be better to implement a dedicated config for
+arch/mips/kernel/mips-cm.c code, which would disable the SI_SyncTxEn
+acceptance by setting the GCR_CONTROL.SYNCDIS bit? Currently I intend to
+set it in the out platform-specific prom_init() method.
+---
+ arch/mips/include/asm/mips-cm.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/arch/mips/include/asm/mips-cm.h b/arch/mips/include/asm/mips-cm.h
+index aeae2effa123..17b2adf57e0c 100644
+--- a/arch/mips/include/asm/mips-cm.h
++++ b/arch/mips/include/asm/mips-cm.h
+@@ -143,6 +143,21 @@ GCR_ACCESSOR_RW(64, 0x008, base)
+ #define  CM_GCR_BASE_CMDEFTGT_IOCU0		2
+ #define  CM_GCR_BASE_CMDEFTGT_IOCU1		3
+ 
++/* GCR_CONTROL - Global CM2 Settings */
++GCR_ACCESSOR_RW(64, 0x010, control)
++#define CM_GCR_CONTROL_SYNCCTL			BIT(16)
++#define CM_GCR_CONTROL_SYNCDIS			BIT(5)
++#define CM_GCR_CONTROL_IVU_EN			BIT(4)
++#define CM_GCR_CONTROL_SHST_EN			BIT(3)
++#define CM_GCR_CONTROL_PARK_EN			BIT(2)
++#define CM_GCR_CONTROL_MMIO_LIMIT_DIS		BIT(1)
++#define CM_GCR_CONTROL_SPEC_READ_EN		BIT(0)
++
++/* GCR_CONTROL2 - Global CM2 Settings (continue) */
++GCR_ACCESSOR_RW(64, 0x018, control2)
++#define CM_GCR_CONTROL2_L2_CACHEOP_LIMIT	GENMASK(19, 16)
++#define CM_GCR_CONTROL2_L1_CACHEOP_LIMIT	GENMASK(3, 0)
++
+ /* GCR_ACCESS - Controls core/IOCU access to GCRs */
+ GCR_ACCESSOR_RW(32, 0x020, access)
+ #define CM_GCR_ACCESS_ACCESSEN			GENMASK(7, 0)
+-- 
+2.27.0
 

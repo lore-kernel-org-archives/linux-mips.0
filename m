@@ -7,41 +7,37 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07A1DC43465
-	for <linux-mips@archiver.kernel.org>; Sun, 20 Sep 2020 11:10:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91C19C43466
+	for <linux-mips@archiver.kernel.org>; Sun, 20 Sep 2020 11:12:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CADD420EDD
-	for <linux-mips@archiver.kernel.org>; Sun, 20 Sep 2020 11:10:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 69C49216C4
+	for <linux-mips@archiver.kernel.org>; Sun, 20 Sep 2020 11:12:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgITLJu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 20 Sep 2020 07:09:50 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:53248 "EHLO
+        id S1726396AbgITLMX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 20 Sep 2020 07:12:23 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:53280 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgITLJt (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 20 Sep 2020 07:09:49 -0400
+        with ESMTP id S1726262AbgITLMX (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 20 Sep 2020 07:12:23 -0400
+X-Greylist: delayed 522 seconds by postgrey-1.27 at vger.kernel.org; Sun, 20 Sep 2020 07:12:21 EDT
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 361978030833;
-        Sun, 20 Sep 2020 11:09:47 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 826848030865;
+        Sun, 20 Sep 2020 11:03:38 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 7sL0JnpcuwWw; Sun, 20 Sep 2020 14:09:46 +0300 (MSK)
+        with ESMTP id Bjp3YX6FKhWw; Sun, 20 Sep 2020 14:03:38 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Maxim Kaurkin <maxim.kaurkin@baikalelectronics.ru>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
-        Maxim Kaurkin <Maxim.Kaurkin@baikalelectronics.ru>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        <linux-mips@vger.kernel.org>, <linux-hwmon@vger.kernel.org>,
+        <linux-mips@vger.kernel.org>, <linux-clk@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/3] hwmon: bt1-pvt: Test sensor power supply on probe
-Date:   Sun, 20 Sep 2020 14:09:21 +0300
-Message-ID: <20200920110924.19741-2-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200920110924.19741-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200920110924.19741-1-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH] clk: baikal-t1: Mark Ethernet PLL as critical
+Date:   Sun, 20 Sep 2020 14:03:35 +0300
+Message-ID: <20200920110335.18034-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -50,86 +46,51 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Baikal-T1 PVT sensor has got a dedicated power supply domain (feed up by
-the external GPVT/VPVT_18 pins). In case if it isn't powered up, the
-registers will be accessible, but the sensor conversion just won't happen.
-Due to that an attempt to read data from any PVT sensor will cause the
-task hanging up.  For instance that will happen if XP11 jumper isn't
-installed on the Baikal-T1-based BFK3.1 board. Let's at least test whether
-the conversion work on the device probe procedure. By doing so will make
-sure that the PVT sensor is powered up at least at boot time.
+We've discovered that disabling the so called Ethernet PLL causes reset of
+the devices consuming its outgoing clock. The resets happen automatically
+even if each underlying clock gate is turned off. Due to that we can't
+disable the Ethernet PLL until the kernel is prepared for the corresponding
+resets. So for now just mark the PLL clock provider as critical.
 
-Fixes: 87976ce2825d ("hwmon: Add Baikal-T1 PVT sensor driver")
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: linux-mips@vger.kernel.org
 ---
- drivers/hwmon/bt1-pvt.c | 40 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+ drivers/clk/baikal-t1/clk-ccu-pll.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/hwmon/bt1-pvt.c b/drivers/hwmon/bt1-pvt.c
-index 94698cae0497..f4b7353c078a 100644
---- a/drivers/hwmon/bt1-pvt.c
-+++ b/drivers/hwmon/bt1-pvt.c
-@@ -13,6 +13,7 @@
- #include <linux/bitops.h>
- #include <linux/clk.h>
- #include <linux/completion.h>
-+#include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/hwmon-sysfs.h>
- #include <linux/hwmon.h>
-@@ -982,6 +983,41 @@ static int pvt_request_clks(struct pvt_hwmon *pvt)
- 	return 0;
- }
+diff --git a/drivers/clk/baikal-t1/clk-ccu-pll.c b/drivers/clk/baikal-t1/clk-ccu-pll.c
+index 1eec8c0b8f50..2445d4b12baf 100644
+--- a/drivers/clk/baikal-t1/clk-ccu-pll.c
++++ b/drivers/clk/baikal-t1/clk-ccu-pll.c
+@@ -51,11 +51,13 @@ struct ccu_pll_info {
+ };
  
-+static int pvt_check_pwr(struct pvt_hwmon *pvt)
-+{
-+	unsigned long tout;
-+	int ret = 0;
-+	u32 data;
-+
-+	/*
-+	 * Test out the sensor conversion functionality. If it is not done on
-+	 * time then the domain must have been unpowered and we won't be able
-+	 * to use the device later in this driver.
-+	 * Note If the power source is lost during the normal driver work the
-+	 * data read procedure will either return -ETIMEDOUT (for the
-+	 * alarm-less driver configuration) or just stop the repeated
-+	 * conversion. In the later case alas we won't be able to detect the
-+	 * problem.
-+	 */
-+	pvt_update(pvt->regs + PVT_INTR_MASK, PVT_INTR_ALL, PVT_INTR_ALL);
-+	pvt_update(pvt->regs + PVT_CTRL, PVT_CTRL_EN, PVT_CTRL_EN);
-+	pvt_set_tout(pvt, 0);
-+	readl(pvt->regs + PVT_DATA);
-+
-+	tout = PVT_TOUT_MIN / NSEC_PER_USEC;
-+	usleep_range(tout, 2 * tout);
-+
-+	data = readl(pvt->regs + PVT_DATA);
-+	if (!(data & PVT_DATA_VALID)) {
-+		ret = -ENODEV;
-+		dev_err(pvt->dev, "Sensor is powered down\n");
-+	}
-+
-+	pvt_update(pvt->regs + PVT_CTRL, PVT_CTRL_EN, 0);
-+
-+	return ret;
-+}
-+
- static void pvt_init_iface(struct pvt_hwmon *pvt)
- {
- 	u32 trim, temp;
-@@ -1109,6 +1145,10 @@ static int pvt_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
+ /*
+- * Mark as critical all PLLs except Ethernet one. CPU and DDR PLLs are sources
+- * of CPU cores and DDR controller reference clocks, due to which they
+- * obviously shouldn't be ever gated. SATA and PCIe PLLs are the parents of
+- * APB-bus and DDR controller AXI-bus clocks. If they are gated the system will
+- * be unusable.
++ * Alas we have to mark all PLLs as critical. CPU and DDR PLLs are sources of
++ * CPU cores and DDR controller reference clocks, due to which they obviously
++ * shouldn't be ever gated. SATA and PCIe PLLs are the parents of APB-bus and
++ * DDR controller AXI-bus clocks. If they are gated the system will be
++ * unusable. Moreover disabling SATA and Ethernet PLLs causes automatic reset
++ * of the corresponding subsystems. So until we aren't ready to re-initialize
++ * all the devices consuming those PLLs, they will be marked as critical too.
+  */
+ static const struct ccu_pll_info pll_info[] = {
+ 	CCU_PLL_INFO(CCU_CPU_PLL, "cpu_pll", "ref_clk", CCU_CPU_PLL_BASE,
+@@ -67,7 +69,7 @@ static const struct ccu_pll_info pll_info[] = {
+ 	CCU_PLL_INFO(CCU_PCIE_PLL, "pcie_pll", "ref_clk", CCU_PCIE_PLL_BASE,
+ 		     CLK_IS_CRITICAL),
+ 	CCU_PLL_INFO(CCU_ETH_PLL, "eth_pll", "ref_clk", CCU_ETH_PLL_BASE,
+-		     CLK_SET_RATE_GATE)
++		     CLK_IS_CRITICAL | CLK_SET_RATE_GATE)
+ };
  
-+	ret = pvt_check_pwr(pvt);
-+	if (ret)
-+		return ret;
-+
- 	pvt_init_iface(pvt);
- 
- 	ret = pvt_request_irq(pvt);
+ struct ccu_pll_data {
 -- 
 2.27.0
 

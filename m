@@ -5,38 +5,38 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3810EC4346D
-	for <linux-mips@archiver.kernel.org>; Mon, 21 Sep 2020 14:35:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C12B3C4346E
+	for <linux-mips@archiver.kernel.org>; Mon, 21 Sep 2020 14:35:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 064CE20708
-	for <linux-mips@archiver.kernel.org>; Mon, 21 Sep 2020 14:35:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8D52120BED
+	for <linux-mips@archiver.kernel.org>; Mon, 21 Sep 2020 14:35:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="h5C0cP74"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Cr3xQBVQ"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727263AbgIUOef (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 21 Sep 2020 10:34:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
+        id S1727813AbgIUOfz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 21 Sep 2020 10:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgIUOec (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 21 Sep 2020 10:34:32 -0400
+        with ESMTP id S1727349AbgIUOef (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 21 Sep 2020 10:34:35 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C7C4C0613CF;
-        Mon, 21 Sep 2020 07:34:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457F5C0613D0;
+        Mon, 21 Sep 2020 07:34:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=tfXqHGtFwgmM6UcSRx58+EM7ODTSdMOtwKoRg1u1yAY=; b=h5C0cP745frGI6LFd4dq0v1VC6
-        dlre8+k7vu02YmAZ8W+aYC7/KFVYWpjVw4xuvxDaZNd2Z6QBa9oiL0Wj/Hkv5xYC2wYLt9KCBe8bl
-        TYAoN6sz7hdDgHMalPgUQTr+fLk7AIcfJFZomtrhfeUIwlk6hulwAl1drU0/fuTNP7wSa0Q5YwXJV
-        epTQJexY9j8oJJFTiE4IOj814WqvBV14TzUclzJplEScbfbnyXCkjYiSnhMOe79Hf9o1hSteR7Rvm
-        SSHXMAUvLZDteiCW+SEwO+/7lrFRnDtCQ8YijeIlpmrJacTqjMfI2M+KPH2OSNdgKTyq62UNZlM0b
-        PcBfcm0Q==;
+        bh=hvHVjgb7+ogIHMv2QziVfmEo4wIHVDzxSBO7sgqq+LI=; b=Cr3xQBVQWALKH7tuoir4RRrOx5
+        ObtytscKgX2pD9jdFKZl7OAaSGqHvKMY6QdN1AAeL7iPRdfGMnnuAKRp2fO3zs/Qa1qanBrJcMzlp
+        2i6iNQiXjZlAfSdr8eSouVvMxW6Jwy5mKeEirvXr3ZTTiIIwvkxrQMh9XAJw5QuRUQsbNqdCQQyyW
+        WDrgFWFBzIj4YkZNzY0XDygo/V19wuSoL2WQzUur+fGNL+3uLi2J6QXLcsQR+yhOTXD5FmYG9PgHH
+        hyhjGiAZI27lRyg9jFDzu3lo4ZZQVp8d384XapZSVtaSeOjqaz3u6nukSqWN2rkY3CEe6gIiU4FAO
+        cLQDX6OQ==;
 Received: from p4fdb0c34.dip0.t-ipconnect.de ([79.219.12.52] helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kKMtY-0007qo-Gk; Mon, 21 Sep 2020 14:34:20 +0000
+        id 1kKMtc-0007rU-GX; Mon, 21 Sep 2020 14:34:24 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Alexander Viro <viro@zeniv.linux.org.uk>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -52,9 +52,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-arch@vger.kernel.org, linux-mm@kvack.org,
         netdev@vger.kernel.org, keyrings@vger.kernel.org,
         linux-security-module@vger.kernel.org
-Subject: [PATCH 01/11] compat.h: fix a spelling error in <linux/compat.h>
-Date:   Mon, 21 Sep 2020 16:34:24 +0200
-Message-Id: <20200921143434.707844-2-hch@lst.de>
+Subject: [PATCH 04/11] iov_iter: explicitly check for CHECK_IOVEC_ONLY in rw_copy_check_uvector
+Date:   Mon, 21 Sep 2020 16:34:27 +0200
+Message-Id: <20200921143434.707844-5-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200921143434.707844-1-hch@lst.de>
 References: <20200921143434.707844-1-hch@lst.de>
@@ -65,27 +65,38 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There is no compat_sys_readv64v2 syscall, only a compat_sys_preadv64v2
-one.
+Explicitly check for the magic value insted of implicitly relying on
+its numeric representation.   Also drop the rather pointless unlikely
+annotation.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- include/linux/compat.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/iov_iter.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/compat.h b/include/linux/compat.h
-index b354ce58966e2d..654c1ec36671a4 100644
---- a/include/linux/compat.h
-+++ b/include/linux/compat.h
-@@ -812,7 +812,7 @@ asmlinkage ssize_t compat_sys_pwritev2(compat_ulong_t fd,
- 		const struct compat_iovec __user *vec,
- 		compat_ulong_t vlen, u32 pos_low, u32 pos_high, rwf_t flags);
- #ifdef __ARCH_WANT_COMPAT_SYS_PREADV64V2
--asmlinkage long  compat_sys_readv64v2(unsigned long fd,
-+asmlinkage long  compat_sys_preadv64v2(unsigned long fd,
- 		const struct compat_iovec __user *vec,
- 		unsigned long vlen, loff_t pos, rwf_t flags);
- #endif
+diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+index d7e72343c360eb..a64867501a7483 100644
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -1709,8 +1709,7 @@ static ssize_t rw_copy_check_uvector(int type,
+ 			ret = -EINVAL;
+ 			goto out;
+ 		}
+-		if (type >= 0
+-		    && unlikely(!access_ok(buf, len))) {
++		if (type != CHECK_IOVEC_ONLY && !access_ok(buf, len)) {
+ 			ret = -EFAULT;
+ 			goto out;
+ 		}
+@@ -1824,7 +1823,7 @@ static ssize_t compat_rw_copy_check_uvector(int type,
+ 		}
+ 		if (len < 0)	/* size_t not fitting in compat_ssize_t .. */
+ 			goto out;
+-		if (type >= 0 &&
++		if (type != CHECK_IOVEC_ONLY &&
+ 		    !access_ok(compat_ptr(buf), len)) {
+ 			ret = -EFAULT;
+ 			goto out;
 -- 
 2.28.0
 

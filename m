@@ -7,24 +7,24 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A0F2C2D0E2
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63D7AC4727D
 	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 10:56:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C3607208A9
-	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 10:56:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1A2772399A
+	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 10:56:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbgIVK4l (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1726590AbgIVK4l (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Tue, 22 Sep 2020 06:56:41 -0400
-Received: from elvis.franken.de ([193.175.24.41]:51144 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:51150 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726473AbgIVK43 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1726573AbgIVK43 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Tue, 22 Sep 2020 06:56:29 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kKfxs-000822-00; Tue, 22 Sep 2020 12:56:04 +0200
+        id 1kKfxr-000822-05; Tue, 22 Sep 2020 12:56:03 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id EA522C0FFF; Tue, 22 Sep 2020 10:52:52 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 10:52:52 +0200
+        id 1F289C0FFF; Tue, 22 Sep 2020 10:51:16 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 10:51:16 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -44,36 +44,33 @@ Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
         linux-scsi@vger.kernel.org, linux-mm@kvack.org,
         alsa-devel@alsa-project.org
-Subject: Re: [PATCH 14/18] dma-mapping: remove dma_cache_sync
-Message-ID: <20200922085252.GH8477@alpha.franken.de>
+Subject: Re: [PATCH 12/18] sgiseeq: convert to dma_alloc_noncoherent
+Message-ID: <20200922085116.GF8477@alpha.franken.de>
 References: <20200915155122.1768241-1-hch@lst.de>
- <20200915155122.1768241-15-hch@lst.de>
+ <20200915155122.1768241-13-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915155122.1768241-15-hch@lst.de>
+In-Reply-To: <20200915155122.1768241-13-hch@lst.de>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 05:51:18PM +0200, Christoph Hellwig wrote:
-> All users are gone now, remove the API.
+On Tue, Sep 15, 2020 at 05:51:16PM +0200, Christoph Hellwig wrote:
+> Use the new non-coherent DMA API including proper ownership transfers.
+> This includes adding additional calls to dma_sync_desc_dev as the
+> old syncing was rather ad-hoc.
+> 
+> Thanks to Thomas Bogendoerfer for debugging the ownership transfer
+> issues.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  arch/mips/Kconfig               |  1 -
->  arch/mips/jazz/jazzdma.c        |  1 -
->  arch/mips/mm/dma-noncoherent.c  |  6 ------
->  arch/parisc/Kconfig             |  1 -
->  arch/parisc/kernel/pci-dma.c    |  6 ------
->  include/linux/dma-mapping.h     |  8 --------
->  include/linux/dma-noncoherent.h | 10 ----------
->  kernel/dma/Kconfig              |  3 ---
->  kernel/dma/mapping.c            | 14 --------------
->  9 files changed, 50 deletions(-)
+>  drivers/net/ethernet/seeq/sgiseeq.c | 28 ++++++++++++++++++----------
+>  1 file changed, 18 insertions(+), 10 deletions(-)
 
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de> (MIPS part)
+Tested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
 -- 
 Crap can work. Given enough thrust pigs will fly, but it's not necessarily a

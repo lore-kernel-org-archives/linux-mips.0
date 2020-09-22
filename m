@@ -2,77 +2,88 @@ Return-Path: <SRS0=HUKb=C7=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FD12C4363D
-	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 00:59:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D29EC4727E
+	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 01:25:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 55E8423A79
-	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 00:59:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 55AE22076E
+	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 01:25:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728874AbgIVA7T (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 21 Sep 2020 20:59:19 -0400
-Received: from out28-169.mail.aliyun.com ([115.124.28.169]:34359 "EHLO
-        out28-169.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728728AbgIVA7S (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 21 Sep 2020 20:59:18 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1250662|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.581776-0.00187243-0.416352;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03275;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.IaRkK6t_1600736353;
-Received: from 192.168.10.195(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IaRkK6t_1600736353)
-          by smtp.aliyun-inc.com(10.147.42.253);
-          Tue, 22 Sep 2020 08:59:15 +0800
-Subject: Re: [PATCH v2 1/2] MIPS: Ingenic: Add system type for new Ingenic
- SoCs.
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     paul@crapouillou.net, paulburton@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        jiaxun.yang@flygoat.com, Sergey.Semin@baikalelectronics.ru,
-        akpm@linux-foundation.org, rppt@kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        id S1729724AbgIVBZ3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 21 Sep 2020 21:25:29 -0400
+Received: from out28-49.mail.aliyun.com ([115.124.28.49]:40109 "EHLO
+        out28-49.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729701AbgIVBZZ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 21 Sep 2020 21:25:25 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1956483|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00634263-0.00035871-0.993299;FP=6623214144479563714|3|2|12|0|-1|-1|-1;HT=e02c03302;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=17;RT=17;SR=0;TI=SMTPD_---.IaRRVwp_1600737910;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IaRRVwp_1600737910)
+          by smtp.aliyun-inc.com(10.147.41.138);
+          Tue, 22 Sep 2020 09:25:21 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     tsbogend@alpha.franken.de, robh+dt@kernel.org,
+        paul@crapouillou.net, paulburton@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, jiaxun.yang@flygoat.com,
+        Sergey.Semin@baikalelectronics.ru, akpm@linux-foundation.org,
+        rppt@kernel.org, dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
         rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
         sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-References: <20200921174522.33866-1-zhouyanjie@wanyeetech.com>
- <20200921174522.33866-2-zhouyanjie@wanyeetech.com>
- <20200921201329.GA29269@alpha.franken.de>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <d0e662dd-f9aa-db41-7f74-6ced95e0fbc1@wanyeetech.com>
-Date:   Tue, 22 Sep 2020 08:59:09 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.0
+Subject: [PATCH v3 3/3] MIPS: Ingenic: Fix bugs when detecting L2 cache of JZ4775 and X1000E.
+Date:   Tue, 22 Sep 2020 09:24:44 +0800
+Message-Id: <20200922012444.44089-4-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200922012444.44089-1-zhouyanjie@wanyeetech.com>
+References: <20200922012444.44089-1-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-In-Reply-To: <20200921201329.GA29269@alpha.franken.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello Thomas,
+1.Fix bugs when detecting ways value of JZ4775's L2 cache.
+2.Fix bugs when detecting sets value and ways value of X1000E's L2 cache.
 
-在 2020/9/22 上午4:13, Thomas Bogendoerfer 写道:
-> On Tue, Sep 22, 2020 at 01:45:21AM +0800, 周琰杰 (Zhou Yanjie) wrote:
->> @@ -56,9 +64,13 @@ static const struct of_device_id ingenic_of_match[] __initconst = {
->>   	{ .compatible = "ingenic,jz4740", .data = (void *)MACH_INGENIC_JZ4740 },
->>   	{ .compatible = "ingenic,jz4725b", .data = (void *)MACH_INGENIC_JZ4725B },
->>   	{ .compatible = "ingenic,jz4770", .data = (void *)MACH_INGENIC_JZ4770 },
->> +	{ .compatible = "ingenic,jz4775", .data = (void *)MACH_INGENIC_JZ4775 },
->>   	{ .compatible = "ingenic,jz4780", .data = (void *)MACH_INGENIC_JZ4780 },
->>   	{ .compatible = "ingenic,x1000", .data = (void *)MACH_INGENIC_X1000 },
->> +	{ .compatible = "ingenic,x1000e", .data = (void *)MACH_INGENIC_X1000E },
->>   	{ .compatible = "ingenic,x1830", .data = (void *)MACH_INGENIC_X1830 },
->> +	{ .compatible = "ingenic,x2000", .data = (void *)MACH_INGENIC_X2000 },
->> +	{ .compatible = "ingenic,x2000e", .data = (void *)MACH_INGENIC_X2000E },
-> I get a warning from checkpatch:
->
-> WARNING: DT compatible string "ingenic,x2000e" appears un-documented -- check ./Documentation/devicetree/bindings/
+Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+---
 
+Notes:
+    v1->v2:
+    1.Add corrections to JZ4775's L2 cache ways parameter.
+    2.Add Paul Cercueil's Reviewed-by.
+    
+    v2->v3:
+    No change.
 
-My fault, I will fix this in the next version.
+ arch/mips/mm/sc-mips.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thanks and best regards!
+diff --git a/arch/mips/mm/sc-mips.c b/arch/mips/mm/sc-mips.c
+index 97dc0511e63f..dd0a5becaabd 100644
+--- a/arch/mips/mm/sc-mips.c
++++ b/arch/mips/mm/sc-mips.c
+@@ -228,6 +228,7 @@ static inline int __init mips_sc_probe(void)
+ 		 * contradicted by all documentation.
+ 		 */
+ 		case MACH_INGENIC_JZ4770:
++		case MACH_INGENIC_JZ4775:
+ 			c->scache.ways = 4;
+ 			break;
+ 
+@@ -236,6 +237,7 @@ static inline int __init mips_sc_probe(void)
+ 		 * but that is contradicted by all documentation.
+ 		 */
+ 		case MACH_INGENIC_X1000:
++		case MACH_INGENIC_X1000E:
+ 			c->scache.sets = 256;
+ 			c->scache.ways = 4;
+ 			break;
+-- 
+2.11.0
 
-> Thomas.
->

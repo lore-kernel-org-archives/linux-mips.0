@@ -2,73 +2,166 @@ Return-Path: <SRS0=HUKb=C7=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8618C4727E
-	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 01:25:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5EC8C4346E
+	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 02:06:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 711412076E
-	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 01:25:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 529FF23A60
+	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 02:06:39 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dKqUVZl1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729687AbgIVBZW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 21 Sep 2020 21:25:22 -0400
-Received: from out28-50.mail.aliyun.com ([115.124.28.50]:49989 "EHLO
-        out28-50.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729673AbgIVBZV (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 21 Sep 2020 21:25:21 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1911304|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0124073-0.000538969-0.987054;FP=0|0|0|0|0|-1|-1|-1;HT=e01l07381;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=17;RT=17;SR=0;TI=SMTPD_---.IaRRVwp_1600737910;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IaRRVwp_1600737910)
-          by smtp.aliyun-inc.com(10.147.41.138);
-          Tue, 22 Sep 2020 09:25:17 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     tsbogend@alpha.franken.de, robh+dt@kernel.org,
-        paul@crapouillou.net, paulburton@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, jiaxun.yang@flygoat.com,
-        Sergey.Semin@baikalelectronics.ru, akpm@linux-foundation.org,
-        rppt@kernel.org, dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: [PATCH v3 0/3] Repair Ingenic SoCs L2 cache capacity detection.
-Date:   Tue, 22 Sep 2020 09:24:41 +0800
-Message-Id: <20200922012444.44089-1-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
+        id S1729260AbgIVCGi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 21 Sep 2020 22:06:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728884AbgIVCGi (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 21 Sep 2020 22:06:38 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A47C061755
+        for <linux-mips@vger.kernel.org>; Mon, 21 Sep 2020 19:06:38 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id a19so15793417ilq.10
+        for <linux-mips@vger.kernel.org>; Mon, 21 Sep 2020 19:06:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9VSIniuosVUcGxg46RB89VQ5kzCnZyazzw6xIC0FvG0=;
+        b=dKqUVZl17Q3kXAgcr06p4UlY1N6qTV2Mue4anb6tYFurZL0W6gu6FrERYn/jWXURKI
+         HZUpdRbohepVE4ybVVLE/7ocnbYZKp99WmpKbf99i0E5FhqYJ9kzZdicze56GanbI0AL
+         acKRNySDxzdd4v54NWeBwSnudm5QL+GOoUguYA/95v0rCV3k2iWcq83Qz6Jwnyl0JSbq
+         l+k4GnZp39V3yTpU3V/KJAxoG/X2+9znpQSwp3uJh52bx7Hh0VzUOe6WgTctuuI1iuQM
+         9rgkuZFG+LkRWnOZx5BmqmWlry0Y//TI99/gZhCX8ffEXDp7efUB9cVU4lhXXabhZIGK
+         iekA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9VSIniuosVUcGxg46RB89VQ5kzCnZyazzw6xIC0FvG0=;
+        b=NLEvsHFQqt+dEb1LhCI4FC7sbo0cbPdNedMHI1WIGJIr+gFV2vMQUiPCv2loImkMXv
+         HPLMm2zehLykFRXVVzwa21EaoN+BlxwSZ3LV1qgOYyZSjKMAo4E3LvFmuvwVDm0mI5mp
+         AE81O2LkeV7hmtAEZkoJ3zKGS/OqNBN2ois4yEcJmdE5lckEr9ojx9h7WCb1VvxPG1Fm
+         HSwB7kbXRC4MoSsUVmvSpNR+zCzWLv3ejVF1OlgVPFH8PtXH9HXNH9cg80s8Sl0Kl26R
+         ZerVSQbZ+QTvvzh3CamyX2rPpF32YojASKrsw/8sA8DvLCxmpfoxb5lW58RLl16RIkFW
+         kAzA==
+X-Gm-Message-State: AOAM532+IkeSTYEI5uSeQn+VDE1isTXojI7za10O5pDTVYRo59GCXbXt
+        jDBbC8jetiCLTVdZm1Kmml1lPbieCXqPYFzfXw1y6bnAAZI=
+X-Google-Smtp-Source: ABdhPJxYMY3R3rzyd8AI/wmA2DQvsTMSYgMk2YHaa52XOOSipOwoZC5rW47WICFMomXDDFe0hOJ9/Vd40FHIta2qRco=
+X-Received: by 2002:a05:6e02:13ae:: with SMTP id h14mr2533166ilo.208.1600740397007;
+ Mon, 21 Sep 2020 19:06:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <1598255043-11839-1-git-send-email-chenhc@lemote.com>
+In-Reply-To: <1598255043-11839-1-git-send-email-chenhc@lemote.com>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Tue, 22 Sep 2020 10:06:24 +0800
+Message-ID: <CAAhV-H7hzoO6OfunBZ4R0dUDRNX=jyjhdurV6VdGhdtXZ4Mj5g@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: Loongson-3: Fix fp register access if MSA enabled
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Fuxin Zhang <zhangfx@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Pei Huang <huangpei@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-1.The X1000E SoC has a 4-way L2 cache with a capacity of 128 KiB.
-  The current code cannot detect its correctly, which will cause the
-  CU1000-Neo board using the X1000E SoC to report that it has found
-  a 5-way 320KiB L2 cache at boot time.
-2.The JZ4775 SoC has a 4-way L2 cache with a capacity of 256 KiB.
-  The current code cannot detect its correctly, which will cause the
-  Mensa board using the JZ4775 SoC to report that it has found a 5-way
-  320KiB L2 cache at boot time.
+Ping?
 
-This series of patches is to fix this problem.
-
-v2->v3:
-Fix the warning that appears when running checkpatch, add relevant
-compatible string.
-
-周琰杰 (Zhou Yanjie) (3):
-  dt-bindings: MIPS: Add X2000E based CU2000-Neo.
-  MIPS: Ingenic: Add system type for new Ingenic SoCs.
-  MIPS: Ingenic: Fix bugs when detecting L2 cache of JZ4775 and X1000E.
-
- Documentation/devicetree/bindings/mips/ingenic/devices.yaml |  5 +++++
- arch/mips/generic/board-ingenic.c                           | 12 ++++++++++++
- arch/mips/include/asm/bootinfo.h                            |  2 ++
- arch/mips/mm/sc-mips.c                                      |  2 ++
- 4 files changed, 21 insertions(+)
-
--- 
-2.11.0
-
+On Mon, Aug 24, 2020 at 3:40 PM Huacai Chen <chenhc@lemote.com> wrote:
+>
+> If MSA is enabled, FPU_REG_WIDTH is 128 rather than 64, then get_fpr64()
+> /set_fpr64() in the original unaligned instruction emulation code access
+> the wrong fp registers. This is because the current code doesn't specify
+> the correct index field, so fix it.
+>
+> Fixes: f83e4f9896eff614d0f2547a ("MIPS: Loongson-3: Add some unaligned instructions emulation")
+> Signed-off-by: Huacai Chen <chenhc@lemote.com>
+> Signed-off-by: Pei Huang <huangpei@loongson.cn>
+> ---
+>  arch/mips/loongson64/cop2-ex.c | 24 ++++++++----------------
+>  1 file changed, 8 insertions(+), 16 deletions(-)
+>
+> diff --git a/arch/mips/loongson64/cop2-ex.c b/arch/mips/loongson64/cop2-ex.c
+> index f130f62..00055d4 100644
+> --- a/arch/mips/loongson64/cop2-ex.c
+> +++ b/arch/mips/loongson64/cop2-ex.c
+> @@ -95,10 +95,8 @@ static int loongson_cu2_call(struct notifier_block *nfb, unsigned long action,
+>                         if (res)
+>                                 goto fault;
+>
+> -                       set_fpr64(current->thread.fpu.fpr,
+> -                               insn.loongson3_lswc2_format.rt, value);
+> -                       set_fpr64(current->thread.fpu.fpr,
+> -                               insn.loongson3_lswc2_format.rq, value_next);
+> +                       set_fpr64(&current->thread.fpu.fpr[insn.loongson3_lswc2_format.rt], 0, value);
+> +                       set_fpr64(&current->thread.fpu.fpr[insn.loongson3_lswc2_format.rq], 0, value_next);
+>                         compute_return_epc(regs);
+>                         own_fpu(1);
+>                 }
+> @@ -130,15 +128,13 @@ static int loongson_cu2_call(struct notifier_block *nfb, unsigned long action,
+>                                 goto sigbus;
+>
+>                         lose_fpu(1);
+> -                       value_next = get_fpr64(current->thread.fpu.fpr,
+> -                                       insn.loongson3_lswc2_format.rq);
+> +                       value_next = get_fpr64(&current->thread.fpu.fpr[insn.loongson3_lswc2_format.rq], 0);
+>
+>                         StoreDW(addr + 8, value_next, res);
+>                         if (res)
+>                                 goto fault;
+>
+> -                       value = get_fpr64(current->thread.fpu.fpr,
+> -                                       insn.loongson3_lswc2_format.rt);
+> +                       value = get_fpr64(&current->thread.fpu.fpr[insn.loongson3_lswc2_format.rt], 0);
+>
+>                         StoreDW(addr, value, res);
+>                         if (res)
+> @@ -204,8 +200,7 @@ static int loongson_cu2_call(struct notifier_block *nfb, unsigned long action,
+>                         if (res)
+>                                 goto fault;
+>
+> -                       set_fpr64(current->thread.fpu.fpr,
+> -                                       insn.loongson3_lsdc2_format.rt, value);
+> +                       set_fpr64(&current->thread.fpu.fpr[insn.loongson3_lsdc2_format.rt], 0, value);
+>                         compute_return_epc(regs);
+>                         own_fpu(1);
+>
+> @@ -221,8 +216,7 @@ static int loongson_cu2_call(struct notifier_block *nfb, unsigned long action,
+>                         if (res)
+>                                 goto fault;
+>
+> -                       set_fpr64(current->thread.fpu.fpr,
+> -                                       insn.loongson3_lsdc2_format.rt, value);
+> +                       set_fpr64(&current->thread.fpu.fpr[insn.loongson3_lsdc2_format.rt], 0, value);
+>                         compute_return_epc(regs);
+>                         own_fpu(1);
+>                         break;
+> @@ -286,8 +280,7 @@ static int loongson_cu2_call(struct notifier_block *nfb, unsigned long action,
+>                                 goto sigbus;
+>
+>                         lose_fpu(1);
+> -                       value = get_fpr64(current->thread.fpu.fpr,
+> -                                       insn.loongson3_lsdc2_format.rt);
+> +                       value = get_fpr64(&current->thread.fpu.fpr[insn.loongson3_lsdc2_format.rt], 0);
+>
+>                         StoreW(addr, value, res);
+>                         if (res)
+> @@ -305,8 +298,7 @@ static int loongson_cu2_call(struct notifier_block *nfb, unsigned long action,
+>                                 goto sigbus;
+>
+>                         lose_fpu(1);
+> -                       value = get_fpr64(current->thread.fpu.fpr,
+> -                                       insn.loongson3_lsdc2_format.rt);
+> +                       value = get_fpr64(&current->thread.fpu.fpr[insn.loongson3_lsdc2_format.rt], 0);
+>
+>                         StoreDW(addr, value, res);
+>                         if (res)
+> --
+> 2.7.0
+>

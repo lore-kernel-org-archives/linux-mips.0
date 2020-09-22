@@ -7,24 +7,24 @@ X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC156C4727E
-	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 10:56:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CD13C4727D
+	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 10:56:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9EAFA20BED
-	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 10:56:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 590CC239E5
+	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 10:56:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgIVK4V (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1726553AbgIVK4V (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Tue, 22 Sep 2020 06:56:21 -0400
-Received: from elvis.franken.de ([193.175.24.41]:51115 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:51118 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726419AbgIVK4V (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1726506AbgIVK4V (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Tue, 22 Sep 2020 06:56:21 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kKfxr-000822-02; Tue, 22 Sep 2020 12:56:03 +0200
+        id 1kKfxr-000822-03; Tue, 22 Sep 2020 12:56:03 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A8294C0FFF; Tue, 22 Sep 2020 10:49:57 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 10:49:57 +0200
+        id 2E7F0C0FFF; Tue, 22 Sep 2020 10:50:14 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 10:50:14 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -44,28 +44,28 @@ Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
         linux-scsi@vger.kernel.org, linux-mm@kvack.org,
         alsa-devel@alsa-project.org
-Subject: Re: [PATCH 09/18] sgiwd93: convert to dma_alloc_noncoherent
-Message-ID: <20200922084957.GC8477@alpha.franken.de>
+Subject: Re: [PATCH 10/18] hal2: convert to dma_alloc_noncoherent
+Message-ID: <20200922085014.GD8477@alpha.franken.de>
 References: <20200915155122.1768241-1-hch@lst.de>
- <20200915155122.1768241-10-hch@lst.de>
+ <20200915155122.1768241-11-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915155122.1768241-10-hch@lst.de>
+In-Reply-To: <20200915155122.1768241-11-hch@lst.de>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 05:51:13PM +0200, Christoph Hellwig wrote:
+On Tue, Sep 15, 2020 at 05:51:14PM +0200, Christoph Hellwig wrote:
 > Use the new non-coherent DMA API including proper ownership transfers.
-> This also means we can allocate the memory as DMA_TO_DEVICE instead
-> of bidirectional.
+> This also means we can allocate the buffer memory with the proper
+> direction instead of bidirectional.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  drivers/scsi/sgiwd93.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
+>  sound/mips/hal2.c | 58 ++++++++++++++++++++++-------------------------
+>  1 file changed, 27 insertions(+), 31 deletions(-)
 
 Tested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 

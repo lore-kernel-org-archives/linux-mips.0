@@ -4,70 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CD13C4727D
-	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 10:56:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05392C2D0E2
+	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 11:28:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 590CC239E5
-	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 10:56:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9F2D523A1B
+	for <linux-mips@archiver.kernel.org>; Tue, 22 Sep 2020 11:28:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726553AbgIVK4V (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 22 Sep 2020 06:56:21 -0400
-Received: from elvis.franken.de ([193.175.24.41]:51118 "EHLO elvis.franken.de"
+        id S1726515AbgIVL2G (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 22 Sep 2020 07:28:06 -0400
+Received: from elvis.franken.de ([193.175.24.41]:51213 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726506AbgIVK4V (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 22 Sep 2020 06:56:21 -0400
+        id S1726454AbgIVL2G (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 22 Sep 2020 07:28:06 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kKfxr-000822-03; Tue, 22 Sep 2020 12:56:03 +0200
+        id 1kKgSj-0008PU-00; Tue, 22 Sep 2020 13:27:57 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 2E7F0C0FFF; Tue, 22 Sep 2020 10:50:14 +0200 (CEST)
-Date:   Tue, 22 Sep 2020 10:50:14 +0200
+        id 25486C0FFF; Tue, 22 Sep 2020 13:26:59 +0200 (CEST)
+Date:   Tue, 22 Sep 2020 13:26:59 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        iommu@lists.linux-foundation.org,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        linux1394-devel@lists.sourceforge.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH 10/18] hal2: convert to dma_alloc_noncoherent
-Message-ID: <20200922085014.GD8477@alpha.franken.de>
-References: <20200915155122.1768241-1-hch@lst.de>
- <20200915155122.1768241-11-hch@lst.de>
+To:     Huacai Chen <chenhc@lemote.com>
+Cc:     linux-mips@vger.kernel.org, Fuxin Zhang <zhangfx@lemote.com>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Pei Huang <huangpei@loongson.cn>
+Subject: Re: [PATCH] MIPS: Loongson-3: Fix fp register access if MSA enabled
+Message-ID: <20200922112659.GA4866@alpha.franken.de>
+References: <1598255043-11839-1-git-send-email-chenhc@lemote.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915155122.1768241-11-hch@lst.de>
+In-Reply-To: <1598255043-11839-1-git-send-email-chenhc@lemote.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 05:51:14PM +0200, Christoph Hellwig wrote:
-> Use the new non-coherent DMA API including proper ownership transfers.
-> This also means we can allocate the buffer memory with the proper
-> direction instead of bidirectional.
+On Mon, Aug 24, 2020 at 03:44:03PM +0800, Huacai Chen wrote:
+> If MSA is enabled, FPU_REG_WIDTH is 128 rather than 64, then get_fpr64()
+> /set_fpr64() in the original unaligned instruction emulation code access
+> the wrong fp registers. This is because the current code doesn't specify
+> the correct index field, so fix it.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Fixes: f83e4f9896eff614d0f2547a ("MIPS: Loongson-3: Add some unaligned instructions emulation")
+> Signed-off-by: Huacai Chen <chenhc@lemote.com>
+> Signed-off-by: Pei Huang <huangpei@loongson.cn>
 > ---
->  sound/mips/hal2.c | 58 ++++++++++++++++++++++-------------------------
->  1 file changed, 27 insertions(+), 31 deletions(-)
+>  arch/mips/loongson64/cop2-ex.c | 24 ++++++++----------------
+>  1 file changed, 8 insertions(+), 16 deletions(-)
 
-Tested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+applied to mips-fixes.
+
+Thomas.
 
 -- 
 Crap can work. Given enough thrust pigs will fly, but it's not necessarily a

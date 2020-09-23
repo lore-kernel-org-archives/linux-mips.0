@@ -2,108 +2,192 @@ Return-Path: <SRS0=mihx=DA=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BBF3C4363D
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Sep 2020 21:30:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83879C4363D
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Sep 2020 22:45:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 42CE021D43
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Sep 2020 21:30:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 36C54208E4
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Sep 2020 22:45:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbgIWVaa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 23 Sep 2020 17:30:30 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:44297 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726668AbgIWVaa (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 23 Sep 2020 17:30:30 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-222-k0JZSzTkPJOZPjS-rTcoJw-1; Wed, 23 Sep 2020 22:30:26 +0100
-X-MC-Unique: k0JZSzTkPJOZPjS-rTcoJw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 23 Sep 2020 22:30:25 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 23 Sep 2020 22:30:25 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@arndb.de>, Al Viro <viro@zeniv.linux.org.uk>
-CC:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        David Howells <dhowells@redhat.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        linux-aio <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Networking <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Subject: RE: [PATCH 5/9] fs: remove various compat readv/writev helpers
-Thread-Topic: [PATCH 5/9] fs: remove various compat readv/writev helpers
-Thread-Index: AQHWkdnPrERbulCBlEyrFz5+sRsKWql2urog
-Date:   Wed, 23 Sep 2020 21:30:25 +0000
-Message-ID: <2e11ea867c644c5d96f8e4930e5c730d@AcuMS.aculab.com>
-References: <20200923060547.16903-1-hch@lst.de>
- <20200923060547.16903-6-hch@lst.de>
- <20200923142549.GK3421308@ZenIV.linux.org.uk> <20200923143251.GA14062@lst.de>
- <20200923145901.GN3421308@ZenIV.linux.org.uk>
- <20200923163831.GO3421308@ZenIV.linux.org.uk>
- <CAK8P3a3nkLUOkR+jwz2_2LcYTUTqdVf8JOtZqKWbtEDotNhFZA@mail.gmail.com>
-In-Reply-To: <CAK8P3a3nkLUOkR+jwz2_2LcYTUTqdVf8JOtZqKWbtEDotNhFZA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1726764AbgIWWpj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 23 Sep 2020 18:45:39 -0400
+Received: from mga02.intel.com ([134.134.136.20]:41185 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726696AbgIWWpe (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 23 Sep 2020 18:45:34 -0400
+IronPort-SDR: rd4dRM8i0Op1CTJECvVk73v+o5m1aHDNTpQl4LenNGJnEOREkknCzkHQ5bN/ptl1k8aq6wt2Qu
+ Rrpv8fL5EbFg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="148698570"
+X-IronPort-AV: E=Sophos;i="5.77,295,1596524400"; 
+   d="scan'208";a="148698570"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 15:45:33 -0700
+IronPort-SDR: Fr2JxZMxsomuX02zVQNCadcnQn8OG4+lUnDKf9BKljc31q3oeEAJran7O1u3QsqFtB5ZxEhbOZ
+ XohwXf3KsMRQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,295,1596524400"; 
+   d="scan'208";a="335660071"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
+  by fmsmga004.fm.intel.com with ESMTP; 23 Sep 2020 15:45:33 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Huacai Chen <chenhc@lemote.com>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
+        kvm-ppc@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Subject: [RFC PATCH 3/3] KVM: x86: Use KVM_BUG/KVM_BUG_ON to handle bugs that are fatal to the VM
+Date:   Wed, 23 Sep 2020 15:45:30 -0700
+Message-Id: <20200923224530.17735-4-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200923224530.17735-1-sean.j.christopherson@intel.com>
+References: <20200923224530.17735-1-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAyMyBTZXB0ZW1iZXIgMjAyMCAxOTo0Ng0KLi4u
-DQo+IFJlZ2FyZGxlc3Mgb2YgdGhhdCwgYW5vdGhlciBhZHZhbnRhZ2Ugb2YgaGF2aW5nIHRoZSBT
-WVNDQUxMX0RFQ0xBUkV4KCkNCj4gd291bGQgYmUgdGhlIGFiaWxpdHkgdG8gaW5jbHVkZSB0aGF0
-IGhlYWRlciBmaWxlIGZyb20gZWxzZXdoZXJlIHdpdGggYSBkaWZmZXJlbnQNCj4gbWFjcm8gZGVm
-aW5pdGlvbiB0byBjcmVhdGUgYSBtYWNoaW5lLXJlYWRhYmxlIHZlcnNpb24gb2YgdGhlIGludGVy
-ZmFjZSB3aGVuDQo+IGNvbWJpbmVkIHdpdGggdGhlIHN5c2NhbGwudGJsIGZpbGVzLiBUaGlzIGNv
-dWxkIGJlIHVzZWQgdG8gY3JlYXRlIGEgdXNlcg0KPiBzcGFjZSBzdHViIGZvciBjYWxsaW5nIGlu
-dG8gdGhlIGxvdy1sZXZlbCBzeXNjYWxsIHJlZ2FyZGxlc3Mgb2YgdGhlDQo+IGxpYmMgaW50ZXJm
-YWNlcywNCj4gb3IgZm9yIHN5bmNocm9uaXppbmcgdGhlIGludGVyZmFjZXMgd2l0aCBzdHJhY2Us
-IHFlbXUtdXNlciwgb3IgYW55dGhpbmcgdGhhdA0KPiBuZWVkcyB0byBkZWFsIHdpdGggdGhlIGxv
-dy1sZXZlbCBpbnRlcmZhY2UuDQoNCkEgc2ltaWxhciAndHJpY2snICh0aGF0IHByb2JhYmx5IHdv
-bid0IHdvcmsgaGVyZSkgaXMgdG8gcGFzcw0KdGhlIG5hbWUgb2YgYSAjZGVmaW5lIGZ1bmN0aW9u
-IGFzIGEgcGFyYW1ldGVyIHRvIGFub3RoZXIgZGVmaW5lLg0KVXNlZnVsIGZvciBkZWZpbmluZyBj
-b25zdGFudHMgYW5kIGVycm9yIHN0cmluZ3MgdG9nZXRoZXIuIGVnOg0KI2RlZmluZSBUUkFGRklD
-X0xJR0hUUyh4KSBcDQoJeChSRUQsIDAsICJSZWQiKSBcDQoJeChZRUxMT1csIDEsICJZZWxsb3cp
-IFwNCgl4KEdSRUVOLCAyLCAiR1JFRU4pDQoNCllvdSBjYW4gdGhlbiBkbyB0aGluZyBsaWtlOg0K
-I2RlZmluZSB4KHRva2VuLCB2YWx1ZSwgc3RyaW5nKSB0b2tlbiA9IHZhbHVlLA0KZW51bSB7VFJB
-RkZJQ19MSUdIVFMoeCkgTlVNX0xJR0hUU307DQojdW5kZWYgeA0KI2RlZmluZSB4KHRva2VuLCB2
-YWx1ZSwgc3RyaW5nKSBbdmFsdWVdID0gc3RyaW5nLA0KY29uc3QgY2hhciAqY29sb3Vyc1tdID0g
-e1RSQUZGSUNfTElHSFRTKHgpfTsNCiN1bmRlZiB4DQp0byBpbml0aWFsaXNlIGNvbnN0YW50cyBh
-bmQgYSBuYW1lIHRhYmxlIHRoYXQgYXJlIGFsd2F5cyBpbiBzeW5jLg0KDQpJdCBpcyBhbHNvIGEg
-Z29vZCB3YXkgdG8gZ2VuZXJhdGUgc291cmNlIGxpbmVzIHRoYXQgYXJlIG92ZXIgMU1CLg0KDQoJ
-RGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1v
-dW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEz
-OTczODYgKFdhbGVzKQ0K
+Add support for KVM_REQ_VM_BUGG in x86, and replace a variety of WARNs
+with KVM_BUG() and KVM_BUG_ON().  Return -EIO if a KVM_BUG is hit to
+align with the common KVM behavior of rejecting iocts() with -EIO if the
+VM is bugged.
+
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+---
+ arch/x86/kvm/svm/svm.c |  2 +-
+ arch/x86/kvm/vmx/vmx.c | 23 ++++++++++++++---------
+ arch/x86/kvm/x86.c     |  4 ++++
+ 3 files changed, 19 insertions(+), 10 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 3da5b2f1b4a1..e684794c6249 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -1380,7 +1380,7 @@ static void svm_cache_reg(struct kvm_vcpu *vcpu, enum kvm_reg reg)
+ 		load_pdptrs(vcpu, vcpu->arch.walk_mmu, kvm_read_cr3(vcpu));
+ 		break;
+ 	default:
+-		WARN_ON_ONCE(1);
++		KVM_BUG_ON(1, vcpu->kvm);
+ 	}
+ }
+ 
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 6f9a0c6d5dc5..810d46ab0a47 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -2250,7 +2250,7 @@ static void vmx_cache_reg(struct kvm_vcpu *vcpu, enum kvm_reg reg)
+ 		vcpu->arch.cr4 |= vmcs_readl(GUEST_CR4) & guest_owned_bits;
+ 		break;
+ 	default:
+-		WARN_ON_ONCE(1);
++		KVM_BUG_ON(1, vcpu->kvm);
+ 		break;
+ 	}
+ }
+@@ -4960,6 +4960,7 @@ static int handle_cr(struct kvm_vcpu *vcpu)
+ 			return kvm_complete_insn_gp(vcpu, err);
+ 		case 3:
+ 			WARN_ON_ONCE(enable_unrestricted_guest);
++
+ 			err = kvm_set_cr3(vcpu, val);
+ 			return kvm_complete_insn_gp(vcpu, err);
+ 		case 4:
+@@ -4985,14 +4986,13 @@ static int handle_cr(struct kvm_vcpu *vcpu)
+ 		}
+ 		break;
+ 	case 2: /* clts */
+-		WARN_ONCE(1, "Guest should always own CR0.TS");
+-		vmx_set_cr0(vcpu, kvm_read_cr0_bits(vcpu, ~X86_CR0_TS));
+-		trace_kvm_cr_write(0, kvm_read_cr0(vcpu));
+-		return kvm_skip_emulated_instruction(vcpu);
++		KVM_BUG(1, vcpu->kvm, "Guest always owns CR0.TS");
++		return -EIO;
+ 	case 1: /*mov from cr*/
+ 		switch (cr) {
+ 		case 3:
+ 			WARN_ON_ONCE(enable_unrestricted_guest);
++
+ 			val = kvm_read_cr3(vcpu);
+ 			kvm_register_write(vcpu, reg, val);
+ 			trace_kvm_cr_read(cr, val);
+@@ -5330,7 +5330,9 @@ static int handle_ept_misconfig(struct kvm_vcpu *vcpu)
+ 
+ static int handle_nmi_window(struct kvm_vcpu *vcpu)
+ {
+-	WARN_ON_ONCE(!enable_vnmi);
++	if (KVM_BUG_ON(!enable_vnmi, vcpu->kvm))
++		return -EIO;
++
+ 	exec_controls_clearbit(to_vmx(vcpu), CPU_BASED_NMI_WINDOW_EXITING);
+ 	++vcpu->stat.nmi_window_exits;
+ 	kvm_make_request(KVM_REQ_EVENT, vcpu);
+@@ -5908,7 +5910,8 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
+ 	 * below) should never happen as that means we incorrectly allowed a
+ 	 * nested VM-Enter with an invalid vmcs12.
+ 	 */
+-	WARN_ON_ONCE(vmx->nested.nested_run_pending);
++	if (KVM_BUG_ON(vmx->nested.nested_run_pending, vcpu->kvm))
++		return -EIO;
+ 
+ 	/* If guest state is invalid, start emulating */
+ 	if (vmx->emulation_required)
+@@ -6258,7 +6261,9 @@ static int vmx_sync_pir_to_irr(struct kvm_vcpu *vcpu)
+ 	int max_irr;
+ 	bool max_irr_updated;
+ 
+-	WARN_ON(!vcpu->arch.apicv_active);
++	if (KVM_BUG_ON(!vcpu->arch.apicv_active, vcpu->kvm))
++		return -EIO;
++
+ 	if (pi_test_on(&vmx->pi_desc)) {
+ 		pi_clear_on(&vmx->pi_desc);
+ 		/*
+@@ -6345,7 +6350,7 @@ static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
+ 	gate_desc *desc;
+ 	u32 intr_info = vmx_get_intr_info(vcpu);
+ 
+-	if (WARN_ONCE(!is_external_intr(intr_info),
++	if (KVM_BUG(!is_external_intr(intr_info), vcpu->kvm,
+ 	    "KVM: unexpected VM-Exit interrupt info: 0x%x", intr_info))
+ 		return;
+ 
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 17f4995e80a7..672eb5142b34 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8363,6 +8363,10 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 	bool req_immediate_exit = false;
+ 
+ 	if (kvm_request_pending(vcpu)) {
++		if (kvm_check_request(KVM_REQ_VM_BUGGED, vcpu)) {
++			r = -EIO;
++			goto out;
++		}
+ 		if (kvm_check_request(KVM_REQ_GET_VMCS12_PAGES, vcpu)) {
+ 			if (unlikely(!kvm_x86_ops.nested_ops->get_vmcs12_pages(vcpu))) {
+ 				r = 0;
+-- 
+2.28.0
 

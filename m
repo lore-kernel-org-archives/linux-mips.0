@@ -2,39 +2,38 @@ Return-Path: <SRS0=mihx=DA=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DD92C4363D
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Sep 2020 22:45:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 443D6C2D0A8
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Sep 2020 22:45:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 42738214F1
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Sep 2020 22:45:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 050BF208E4
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Sep 2020 22:45:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgIWWpe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 23 Sep 2020 18:45:34 -0400
+        id S1726600AbgIWWpd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 23 Sep 2020 18:45:33 -0400
 Received: from mga02.intel.com ([134.134.136.20]:41185 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726199AbgIWWpd (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 23 Sep 2020 18:45:33 -0400
-IronPort-SDR: TwKQbU6AXvUWNJXxzITS5gX7ljCwI/UEKtidamKO/BNhjp/NvrMWgCeoG8DcXVMjgxKs2TWSgX
- d15ck3b7oXbg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="148698564"
+        id S1726199AbgIWWpc (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 23 Sep 2020 18:45:32 -0400
+IronPort-SDR: 2IVVcutblxPLIHmNyjGNuwUpFak5783EmNgbLQ6zbP/8vey/jMevbsny7xwceSVzby2C4pwroa
+ /kAR4zYWcJAw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="148698553"
 X-IronPort-AV: E=Sophos;i="5.77,295,1596524400"; 
-   d="scan'208";a="148698564"
+   d="scan'208";a="148698553"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 15:45:33 -0700
-IronPort-SDR: AbPVqCuESrKK1QagClfee2VePOWMPCaSkPXjb5p9UqLqHJ2x8Bv825CzMgGhRh7vaqFV5ysJZu
- LlvB4682AtLg==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 15:45:32 -0700
+IronPort-SDR: J1/Cph9zE2IoIv9FqaGC+ceWMFJHwxEkjhilb2ZOjNuk9oeKV7hF68XZI2S5RsFxBN95q0EqeM
+ KiQhOpKHilBg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,295,1596524400"; 
-   d="scan'208";a="335660066"
+   d="scan'208";a="335660058"
 Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
-  by fmsmga004.fm.intel.com with ESMTP; 23 Sep 2020 15:45:32 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 23 Sep 2020 15:45:31 -0700
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
@@ -56,153 +55,48 @@ Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
         David Hildenbrand <david@redhat.com>,
         Cornelia Huck <cohuck@redhat.com>,
         Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: [RFC PATCH 2/3] KVM: Add infrastructure and macro to mark VM as bugged
-Date:   Wed, 23 Sep 2020 15:45:29 -0700
-Message-Id: <20200923224530.17735-3-sean.j.christopherson@intel.com>
+Subject: [RFC PATCH 0/3] KVM: Introduce "VM bugged" concept
+Date:   Wed, 23 Sep 2020 15:45:27 -0700
+Message-Id: <20200923224530.17735-1-sean.j.christopherson@intel.com>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200923224530.17735-1-sean.j.christopherson@intel.com>
-References: <20200923224530.17735-1-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Introduce the concept of a "bugged VM", i.e. a VM that has encountered a
-KVM bug and/or a CPU bug and is, for all intents and purposes, dead in
-the water.  Marking a VM as bugged is especially helpful to handle
-scenarios that can only be reach if there is a software/hardware bug,
-but can't easily return an error, e.g. x86's register caching callbacks.
+This series introduces a concept we've discussed a few times in x86 land.
+The crux of the problem is that x86 has a few cases where KVM could
+theoretically encounter a software or hardware bug deep in a call stack
+without any sane way to propagate the error out to userspace.
 
-Reject all ioctls() if a VM is bugged, and provide a new request so that
-arch specific code can kick running vCPUs out to userspace.
+Another use case would be for scenarios where letting the VM live will
+do more harm than good, e.g. we've been using KVM_BUG_ON for early TDX
+enabling as botching anything related to secure paging all but guarantees
+there will be a flood of WARNs and error messages because lower level PTE
+operations will fail if an upper level operation failed.
 
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: James Morse <james.morse@arm.com>
-Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: Huacai Chen <chenhc@lemote.com>
-Cc: Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
-Cc: linux-mips@vger.kernel.org
-Cc: Paul Mackerras <paulus@ozlabs.org>
-Cc: kvm-ppc@vger.kernel.org
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: Janosch Frank <frankja@linux.ibm.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Cornelia Huck <cohuck@redhat.com>
-Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: Wanpeng Li <wanpengli@tencent.com>
-Cc: Jim Mattson <jmattson@google.com>
-Cc: Joerg Roedel <joro@8bytes.org>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- include/linux/kvm_host.h | 27 +++++++++++++++++++++++++++
- virt/kvm/kvm_main.c      | 10 +++++-----
- 2 files changed, 32 insertions(+), 5 deletions(-)
+The basic idea is to WARN_ONCE if a bug is encountered, kick all vCPUs out
+to userspace, and mark the VM as bugged so that no ioctls() can be issued
+on the VM or its devices/vCPUs.
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 1d70aeeb7ec3..cb527d55908d 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -146,6 +146,7 @@ static inline bool is_error_page(struct page *page)
- #define KVM_REQ_MMU_RELOAD        (1 | KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
- #define KVM_REQ_PENDING_TIMER     2
- #define KVM_REQ_UNHALT            3
-+#define KVM_REQ_VM_BUGGED	  (4 | KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
- #define KVM_REQUEST_ARCH_BASE     8
- 
- #define KVM_ARCH_REQ_FLAGS(nr, flags) ({ \
-@@ -513,6 +514,8 @@ struct kvm {
- 	struct srcu_struct irq_srcu;
- 	pid_t userspace_pid;
- 	unsigned int max_halt_poll_ns;
-+
-+	bool vm_bugged;
- };
- 
- #define kvm_err(fmt, ...) \
-@@ -541,6 +544,30 @@ struct kvm {
- #define vcpu_err(vcpu, fmt, ...)					\
- 	kvm_err("vcpu%i " fmt, (vcpu)->vcpu_id, ## __VA_ARGS__)
- 
-+static inline void kvm_vm_bugged(struct kvm *kvm)
-+{
-+	kvm->vm_bugged = true;
-+	kvm_make_all_cpus_request(kvm, KVM_REQ_VM_BUGGED);
-+}
-+
-+#define KVM_BUG(cond, kvm, fmt...)				\
-+({								\
-+	int __ret = (cond);					\
-+								\
-+	if (WARN_ONCE(__ret && !(kvm)->vm_bugged, fmt))		\
-+		kvm_vm_bugged(kvm);				\
-+	unlikely(__ret);					\
-+})
-+
-+#define KVM_BUG_ON(cond, kvm)					\
-+({								\
-+	int __ret = (cond);					\
-+								\
-+	if (WARN_ON_ONCE(__ret && !(kvm)->vm_bugged))		\
-+		kvm_vm_bugged(kvm);				\
-+	unlikely(__ret);					\
-+})
-+
- static inline bool kvm_dirty_log_manual_protect_and_init_set(struct kvm *kvm)
- {
- 	return !!(kvm->manual_dirty_log_protect & KVM_DIRTY_LOG_INITIALLY_SET);
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index bf3f333c7a19..e216ce9d1c39 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -3191,7 +3191,7 @@ static long kvm_vcpu_ioctl(struct file *filp,
- 	struct kvm_fpu *fpu = NULL;
- 	struct kvm_sregs *kvm_sregs = NULL;
- 
--	if (vcpu->kvm->mm != current->mm)
-+	if (vcpu->kvm->mm != current->mm || vcpu->kvm->vm_bugged)
- 		return -EIO;
- 
- 	if (unlikely(_IOC_TYPE(ioctl) != KVMIO))
-@@ -3397,7 +3397,7 @@ static long kvm_vcpu_compat_ioctl(struct file *filp,
- 	void __user *argp = compat_ptr(arg);
- 	int r;
- 
--	if (vcpu->kvm->mm != current->mm)
-+	if (vcpu->kvm->mm != current->mm || vcpu->kvm->vm_bugged)
- 		return -EIO;
- 
- 	switch (ioctl) {
-@@ -3463,7 +3463,7 @@ static long kvm_device_ioctl(struct file *filp, unsigned int ioctl,
- {
- 	struct kvm_device *dev = filp->private_data;
- 
--	if (dev->kvm->mm != current->mm)
-+	if (dev->kvm->mm != current->mm || dev->kvm->vm_bugged)
- 		return -EIO;
- 
- 	switch (ioctl) {
-@@ -3679,7 +3679,7 @@ static long kvm_vm_ioctl(struct file *filp,
- 	void __user *argp = (void __user *)arg;
- 	int r;
- 
--	if (kvm->mm != current->mm)
-+	if (kvm->mm != current->mm || kvm->vm_bugged)
- 		return -EIO;
- 	switch (ioctl) {
- 	case KVM_CREATE_VCPU:
-@@ -3874,7 +3874,7 @@ static long kvm_vm_compat_ioctl(struct file *filp,
- 	struct kvm *kvm = filp->private_data;
- 	int r;
- 
--	if (kvm->mm != current->mm)
-+	if (kvm->mm != current->mm || kvm->vm_bugged)
- 		return -EIO;
- 	switch (ioctl) {
- 	case KVM_GET_DIRTY_LOG: {
+RFC as I've done nowhere near enough testing to verify that rejecting the
+ioctls(), evicting running vCPUs, etc... works as intended.
+
+Sean Christopherson (3):
+  KVM: Export kvm_make_all_cpus_request() for use in marking VMs as
+    bugged
+  KVM: Add infrastructure and macro to mark VM as bugged
+  KVM: x86: Use KVM_BUG/KVM_BUG_ON to handle bugs that are fatal to the
+    VM
+
+ arch/x86/kvm/svm/svm.c   |  2 +-
+ arch/x86/kvm/vmx/vmx.c   | 23 ++++++++++++--------
+ arch/x86/kvm/x86.c       |  4 ++++
+ include/linux/kvm_host.h | 45 ++++++++++++++++++++++++++++++++--------
+ virt/kvm/kvm_main.c      | 11 +++++-----
+ 5 files changed, 61 insertions(+), 24 deletions(-)
+
 -- 
 2.28.0
 

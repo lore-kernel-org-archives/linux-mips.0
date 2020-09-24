@@ -2,62 +2,61 @@ Return-Path: <SRS0=/n8D=DB=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A23D7C4742B
-	for <linux-mips@archiver.kernel.org>; Thu, 24 Sep 2020 13:59:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6714DC47428
+	for <linux-mips@archiver.kernel.org>; Thu, 24 Sep 2020 13:59:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5FCE823741
-	for <linux-mips@archiver.kernel.org>; Thu, 24 Sep 2020 13:59:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2EB6123741
+	for <linux-mips@archiver.kernel.org>; Thu, 24 Sep 2020 13:59:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728223AbgIXN7k (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 24 Sep 2020 09:59:40 -0400
-Received: from elvis.franken.de ([193.175.24.41]:55138 "EHLO elvis.franken.de"
+        id S1728065AbgIXN75 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 24 Sep 2020 09:59:57 -0400
+Received: from elvis.franken.de ([193.175.24.41]:55133 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728185AbgIXN70 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:59:26 -0400
+        id S1728148AbgIXN7Y (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 24 Sep 2020 09:59:24 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kLRmK-0005vQ-04; Thu, 24 Sep 2020 15:59:20 +0200
+        id 1kLRmK-0005vQ-01; Thu, 24 Sep 2020 15:59:20 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id AF736C101A; Thu, 24 Sep 2020 15:55:30 +0200 (CEST)
-Date:   Thu, 24 Sep 2020 15:55:30 +0200
+        id D22E6C101A; Thu, 24 Sep 2020 15:53:53 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 15:53:53 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Wei Li <liwei391@huawei.com>
-Cc:     Hauke Mehrtens <hauke@hauke-m.de>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>,
-        "Steven J. Hill" <Steven.Hill@imgtec.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        guohanjun@huawei.com
-Subject: Re: [PATCH] MIPS: BCM47XX: Remove the needless check with the 1074K
-Message-ID: <20200924135530.GE13973@alpha.franken.de>
-References: <20200923065326.44898-1-liwei391@huawei.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Huacai Chen <chenhc@lemote.com>, linux-mips@vger.kernel.org,
+        Fuxin Zhang <zhangfx@lemote.com>,
+        Huacai Chen <chenhuacai@gmail.com>
+Subject: Re: [PATCH V7 2/3] MIPS: Loongson-3: Enable COP2 usage in kernel
+Message-ID: <20200924135353.GB13973@alpha.franken.de>
+References: <1600679548-29154-1-git-send-email-chenhc@lemote.com>
+ <1600679548-29154-2-git-send-email-chenhc@lemote.com>
+ <20200921121554.GA8642@alpha.franken.de>
+ <177ADF0C-1633-449F-B589-712EA4857E79@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200923065326.44898-1-liwei391@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <177ADF0C-1633-449F-B589-712EA4857E79@flygoat.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 02:53:26PM +0800, Wei Li wrote:
-> As there is no known soc powered by mips 1074K in bcm47xx series,
-> the check with 1074K is needless. So just remove it.
+On Wed, Sep 23, 2020 at 05:44:02PM +0800, Jiaxun Yang wrote:
+> 于 2020年9月21日 GMT+08:00 下午8:15:54, Thomas Bogendoerfer <tsbogend@alpha.franken.de> 写到:
+> >thanks for doing this, I'm going to apply this later.
+> >
+> >This remind of another question, what about loongson2ef ? I'm getting
+> >kbuild failure because of enabled loongson-mmi mails. Are we are missing
+> >something like cflags-y += $(call cc-option,-mno-loongson-mmi) in Platform
+> >file ? Who is taking care of loongson2ef ?
 > 
-> Link: https://wireless.wiki.kernel.org/en/users/Drivers/b43/soc
-> Fixes: 442e14a2c55e ("MIPS: Add 1074K CPU support explicitly.")
-> Signed-off-by: Wei Li <liwei391@huawei.com>
-> ---
->  arch/mips/bcm47xx/setup.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I'll send a patch later. Sorry for the inconvenience.
 
-applied to mips-fixes.
+excellent, thank you.
 
 Thomas.
 

@@ -2,65 +2,92 @@ Return-Path: <SRS0=/n8D=DB=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB381C4742B
-	for <linux-mips@archiver.kernel.org>; Thu, 24 Sep 2020 13:59:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34893C47427
+	for <linux-mips@archiver.kernel.org>; Thu, 24 Sep 2020 13:59:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8C2E420888
-	for <linux-mips@archiver.kernel.org>; Thu, 24 Sep 2020 13:59:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F38D6238E3
+	for <linux-mips@archiver.kernel.org>; Thu, 24 Sep 2020 13:59:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728229AbgIXN7l (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1728232AbgIXN7l (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Thu, 24 Sep 2020 09:59:41 -0400
-Received: from elvis.franken.de ([193.175.24.41]:55143 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:55144 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728189AbgIXN70 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1728188AbgIXN70 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Thu, 24 Sep 2020 09:59:26 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kLRmK-0005vQ-03; Thu, 24 Sep 2020 15:59:20 +0200
+        id 1kLRmK-0005vQ-02; Thu, 24 Sep 2020 15:59:20 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 69F41C101A; Thu, 24 Sep 2020 15:55:14 +0200 (CEST)
-Date:   Thu, 24 Sep 2020 15:55:14 +0200
+        id 3CD9EC101A; Thu, 24 Sep 2020 15:54:29 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 15:54:29 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Wei Li <liwei391@huawei.com>
-Cc:     Paul Burton <paulburton@kernel.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+To:     Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <f4bug@amsat.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        open list <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org, Paul Burton <paul.burton@mips.com>,
         Huacai Chen <chenhc@lemote.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Leonid Yegoshin <Leonid.Yegoshin@imgtec.com>,
-        "Steven J. Hill" <Steven.Hill@imgtec.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        guohanjun@huawei.com
-Subject: Re: [PATCH] MIPS: Add the missing 'CPU_1074K' into __get_cpu_type()
-Message-ID: <20200924135514.GD13973@alpha.franken.de>
-References: <20200923065312.44851-1-liwei391@huawei.com>
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>
+Subject: Re: [PATCH 4.19 66/81] MIPS: Disable Loongson MMI instructions for
+ kernel build
+Message-ID: <20200924135429.GC13973@alpha.franken.de>
+References: <20191016214805.727399379@linuxfoundation.org>
+ <20191016214845.344235056@linuxfoundation.org>
+ <20200826210628.GA173536@roeck-us.net>
+ <20200903092621.GB2220117@kroah.com>
+ <CAAdtpL5ZPh4dBTVg57iF+PzOGFujvaNFxN4F_nEtAbB+=OGvhg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200923065312.44851-1-liwei391@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAdtpL5ZPh4dBTVg57iF+PzOGFujvaNFxN4F_nEtAbB+=OGvhg@mail.gmail.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 02:53:12PM +0800, Wei Li wrote:
-> Commit 442e14a2c55e ("MIPS: Add 1074K CPU support explicitly.") split
-> 1074K from the 74K as an unique CPU type, while it missed to add the
-> 'CPU_1074K' in __get_cpu_type(). So let's add it back.
+On Mon, Sep 07, 2020 at 05:35:26AM +0200, Philippe Mathieu-Daudé wrote:
+> On Thu, Sep 3, 2020 at 11:28 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Wed, Aug 26, 2020 at 02:06:28PM -0700, Guenter Roeck wrote:
+> > > Hi,
+> > >
+> > > On Wed, Oct 16, 2019 at 02:51:17PM -0700, Greg Kroah-Hartman wrote:
+> > > > From: Paul Burton <paul.burton@mips.com>
+> > > >
+> > > > commit 2f2b4fd674cadd8c6b40eb629e140a14db4068fd upstream.
+> > > >
+> > > > GCC 9.x automatically enables support for Loongson MMI instructions when
+> > > > using some -march= flags, and then errors out when -msoft-float is
+> > > > specified with:
+> > > >
+> > > >   cc1: error: ‘-mloongson-mmi’ must be used with ‘-mhard-float’
+> > > >
+> > > > The kernel shouldn't be using these MMI instructions anyway, just as it
+> > > > doesn't use floating point instructions. Explicitly disable them in
+> > > > order to fix the build with GCC 9.x.
+> > > >
+> > >
+> > > I still see this problem when trying to compile fuloong2e_defconfig with
+> > > gcc 9.x or later. Reason seems to be that the patch was applied to
+> > > arch/mips/loongson64/Platform, but fuloong2e_defconfig uses
+> > > arch/mips/loongson2ef/Platform.
+> > >
+> > > Am I missing something ?
+> >
+> > I don't know, sorry, that would be something that Paul understands.
+> >
+> > Paul?
 > 
-> Fixes: 442e14a2c55e ("MIPS: Add 1074K CPU support explicitly.")
-> Signed-off-by: Wei Li <liwei391@huawei.com>
-> ---
->  arch/mips/include/asm/cpu-type.h | 1 +
->  1 file changed, 1 insertion(+)
+> Cc'ing Thomas who now maintains this.
 
-applied to mips-fixes.
+I've queued a patch to fix this in mips-fixes.
 
 Thomas.
 

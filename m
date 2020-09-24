@@ -2,179 +2,78 @@ Return-Path: <SRS0=/n8D=DB=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BEC5C2D0E2
-	for <linux-mips@archiver.kernel.org>; Thu, 24 Sep 2020 08:48:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6BD2C4346E
+	for <linux-mips@archiver.kernel.org>; Thu, 24 Sep 2020 08:51:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E84C223787
-	for <linux-mips@archiver.kernel.org>; Thu, 24 Sep 2020 08:48:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6E03F2399A
+	for <linux-mips@archiver.kernel.org>; Thu, 24 Sep 2020 08:51:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727277AbgIXIsz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 24 Sep 2020 04:48:55 -0400
-Received: from mga09.intel.com ([134.134.136.24]:55811 "EHLO mga09.intel.com"
+        id S1727364AbgIXIva (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 24 Sep 2020 04:51:30 -0400
+Received: from elvis.franken.de ([193.175.24.41]:54784 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726710AbgIXIsz (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:48:55 -0400
-IronPort-SDR: 6o+mOtAf8+B4S+dj9O/KzqPWDrpRsUT3uppIeTcfKSMByGo+H4VJC3e/JQMrNLMggyCsr8KQ9x
- f4gRvf8Hjzfg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="162049882"
-X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; 
-   d="scan'208";a="162049882"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 01:48:54 -0700
-IronPort-SDR: MCNCzghyUlxZznh5lzzkEFFO82hGpdc27QO1MhFlLcS/c0wTg3vGf3p28dBfSdK7uizmSTiMRN
- VX/hK0JNiTCA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; 
-   d="scan'208";a="291963611"
-Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
-  by fmsmga008.fm.intel.com with ESMTP; 24 Sep 2020 01:48:50 -0700
-From:   "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-To:     miquel.raynal@bootlin.com, linux-kernel@vger.kernel.org
-Cc:     linux-mtd@lists.infradead.org, richard@nod.at, vigneshr@ti.com,
-        boris.brezillon@collabora.com, christophe.kerello@st.com,
-        piotrs@cadence.com, robert.jarzmik@free.fr,
-        brendanhiggins@google.com, devicetree@vger.kernel.org,
-        tglx@linutronix.de, hauke.mehrtens@intel.com, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, arnd@arndb.de,
-        andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com,
-        Ramuthevar Vadivel Murugan 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Subject: [PATCH v14 1/2] dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
-Date:   Thu, 24 Sep 2020 16:48:41 +0800
-Message-Id: <20200924084842.41741-2-vadivel.muruganx.ramuthevar@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200924084842.41741-1-vadivel.muruganx.ramuthevar@linux.intel.com>
-References: <20200924084842.41741-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S1727289AbgIXIv2 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 24 Sep 2020 04:51:28 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kLMyM-0003LM-00; Thu, 24 Sep 2020 10:51:26 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id B79BEC1009; Thu, 24 Sep 2020 10:20:08 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 10:20:08 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] MIPS: OCTEON: fix error - use 'ret' after remove it
+Message-ID: <20200924082008.GA7822@alpha.franken.de>
+References: <20200924064142.90491-1-miaoqinglang@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924064142.90491-1-miaoqinglang@huawei.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+On Thu, Sep 24, 2020 at 02:41:42PM +0800, Qinglang Miao wrote:
+> Variable ret was removed in commit 0ee69c589ec("MIPS: OCTEON:
+> use devm_platform_ioremap_resource") but still being used in
+> devm_release_mem_region which is unneeded. So remove this
+> line to fix error.
+> 
+> Fixes: 0ee69c589ec("MIPS: OCTEON: use devm_platform_ioremap_resource")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+> ---
+>  arch/mips/cavium-octeon/octeon-usb.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/arch/mips/cavium-octeon/octeon-usb.c b/arch/mips/cavium-octeon/octeon-usb.c
+> index 97f6dc31e1b4..987a94cbf3d0 100644
+> --- a/arch/mips/cavium-octeon/octeon-usb.c
+> +++ b/arch/mips/cavium-octeon/octeon-usb.c
+> @@ -534,8 +534,6 @@ static int __init dwc3_octeon_device_init(void)
+>  			dev_info(&pdev->dev, "clocks initialized.\n");
+>  			mutex_unlock(&dwc3_octeon_clocks_mutex);
+>  			devm_iounmap(&pdev->dev, base);
+> -			devm_release_mem_region(&pdev->dev, res->start,
+> -						resource_size(res));
+>  		}
+>  	} while (node != NULL);
 
-Add YAML file for dt-bindings to support NAND Flash Controller
-on Intel's Lightning Mountain SoC.
+I've reverted the orginal fix as IMHO the whole change is wrong.
+The code maps/unmaps the io region to setup clocks and phy and
+releases everything so the real driver can pick it up later.
+The devm_release_mem_region is important and since the device
+continues to exists, there is not auto-cleanup.
 
-Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 99 ++++++++++++++++++++++
- 1 file changed, 99 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+Thomas.
 
-diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-new file mode 100644
-index 000000000000..313daec4d783
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-@@ -0,0 +1,99 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/intel,lgm-nand.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Intel LGM SoC NAND Controller Device Tree Bindings
-+
-+allOf:
-+  - $ref: "nand-controller.yaml"
-+
-+maintainers:
-+  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-+
-+properties:
-+  compatible:
-+    const: intel,lgm-nand
-+
-+  reg:
-+    maxItems: 6
-+
-+  reg-names:
-+    items:
-+       - const: ebunand
-+       - const: hsnand
-+       - const: nand_cs0
-+       - const: nand_cs1
-+       - const: addr_sel0
-+       - const: addr_sel1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  dmas:
-+    maxItems: 2
-+
-+  dma-names:
-+    items:
-+      - const: tx
-+      - const: rx
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 0
-+
-+patternProperties:
-+  "^nand@[a-f0-9]+$":
-+    type: object
-+    properties:
-+      reg:
-+        minimum: 0
-+        maximum: 7
-+
-+      nand-ecc-mode: true
-+
-+      nand-ecc-algo:
-+        const: hw
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - clocks
-+  - dmas
-+  - dma-names
-+  - "#address-cells"
-+  - "#size-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    nand-controller@e0f00000 {
-+      compatible = "intel,lgm-nand";
-+      reg = <0xe0f00000 0x100>,
-+            <0xe1000000 0x300>,
-+            <0xe1400000 0x8000>,
-+            <0xe1c00000 0x1000>,
-+            <0x17400000 0x4>,
-+            <0x17c00000 0x4>;
-+      reg-names = "ebunand", "hsnand", "nand_cs0", "nand_cs1",
-+        "addr_sel0", "addr_sel1";
-+      clocks = <&cgu0 125>;
-+      dmas = <&dma0 8>, <&dma0 9>;
-+      dma-names = "tx", "rx";
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      nand@0 {
-+        reg = <0>;
-+        nand-ecc-mode = "hw";
-+      };
-+    };
-+
-+...
 -- 
-2.11.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

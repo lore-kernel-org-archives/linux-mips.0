@@ -2,152 +2,118 @@ Return-Path: <SRS0=/n8D=DB=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B74AEC47420
-	for <linux-mips@archiver.kernel.org>; Thu, 24 Sep 2020 19:37:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EE75C4346E
+	for <linux-mips@archiver.kernel.org>; Thu, 24 Sep 2020 23:39:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 421B823899
-	for <linux-mips@archiver.kernel.org>; Thu, 24 Sep 2020 19:37:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1F2A220B1F
+	for <linux-mips@archiver.kernel.org>; Thu, 24 Sep 2020 23:39:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Kr4u0+wK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hHrkTdXy"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728802AbgIXThA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 24 Sep 2020 15:37:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54944 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727292AbgIXThA (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 24 Sep 2020 15:37:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600976218;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=twNrygaxLsVZPNKYCHY3ZfHX7UvhS+LdDIfmkCz5FTg=;
-        b=Kr4u0+wKDT4eE4Ovfk8dVq+zwEnG3+m9nBXV98aP7EduhHCHW16A+CAkoAsez2npbw8dyM
-        F42oliu8ePZ+iErn6O4Kku3QUN9ZIpqaI29BaqqCM/MwyQAJ1jE7qUu8VTcTnyor0Tjv1G
-        AGafI+2TkSoImau4U/fywK786XFkk6M=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-578-Lvs3VKBvMR-AV03y-qFebw-1; Thu, 24 Sep 2020 15:36:56 -0400
-X-MC-Unique: Lvs3VKBvMR-AV03y-qFebw-1
-Received: by mail-wm1-f70.google.com with SMTP id u5so147747wme.3
-        for <linux-mips@vger.kernel.org>; Thu, 24 Sep 2020 12:36:56 -0700 (PDT)
+        id S1726557AbgIXXjy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 24 Sep 2020 19:39:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726397AbgIXXjy (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 24 Sep 2020 19:39:54 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FA0C0613CE;
+        Thu, 24 Sep 2020 16:39:54 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id i26so1074826ejb.12;
+        Thu, 24 Sep 2020 16:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=M/T6SMuSQxWkK9zNd1KTMPycKvBLqqSkvYfJSypIeZI=;
+        b=hHrkTdXyG4LnEOpfuTipZ7/o0M/roFSJ2oerQ7SbTz9bvtzI/OGVyiANTDtrtR4vKm
+         Bk1Gd5es+E1eNrOaNIDv8NUvuXhyi3ryhTo9vTMFFkKvK7avas2W4po0Peai7YA5gvQQ
+         ekS/I9N1LVqdZVBsF5abSf8eSTEcMHjWmsqmG/qmLJgGvKRnwQbesK0oPHq1GFSCZ8wd
+         Y3Sadcbk+TKF6JuCPYNhI0PEr2EzKD2a9QzO9LNWIqODYoUwN1lakjyYwoP0QPhJQV9I
+         IMvfSpYSpLVy/y4546B7f2PTyCRk+BC5Z6dXBxTsGdFWEBICKjNCwNk+b3DEuH5NYCDh
+         GdRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=twNrygaxLsVZPNKYCHY3ZfHX7UvhS+LdDIfmkCz5FTg=;
-        b=FtgF8H7+khbgfHsR/VVWvXMRVh4HOIXjUFL+BSFb3NXs1Ybe576i60onAoczoMKiXA
-         mLLQowlbM9fyvWEY8Ff7Axbc5dUXgIl6FmoPhZHjQ3934WeDaV6i8q9dtuscE9WQYtJJ
-         TeQkeKDKTRrSxU1N/SZYyopbF9bJzh1+1Dg1VAMcKVjf8ns6PKnLSBr7rYXNjairWN3T
-         pG9yLu867KuQSLsob8hyA65AkGgRnjSVuOiqqxSK4KY23ZT8WBfva+51rqd+NM8hXafm
-         wMYP/Epeq0y42lPwvT+W6WEV+Cf6AqSQvMM4hmuIw8+isqJw4LHSrMaPkwdI1GGkwAeB
-         /TJA==
-X-Gm-Message-State: AOAM532YyOTKl8pkNL88NOsVm8IJRjxXjBQ/Bp5kRx5rrwmPPWG7aZPx
-        iuvCCD6miWoAv8XEf9rbn0lCRlJX6IMBXRdu3R7bnYI4nfblbum4a8BT+5uZeSeGFB9AkmfjBMN
-        t2ny5myKm6vzgU67tHypEkA==
-X-Received: by 2002:adf:f34a:: with SMTP id e10mr491632wrp.91.1600976215160;
-        Thu, 24 Sep 2020 12:36:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJynpHjsvPmbyspQelrDSoXiAKotSicrrWAZZ3D0g/KyVrY5rzQz/w0XAUEKgRr9DXJGglK1Gg==
-X-Received: by 2002:adf:f34a:: with SMTP id e10mr491615wrp.91.1600976214950;
-        Thu, 24 Sep 2020 12:36:54 -0700 (PDT)
-Received: from x1.bristot.me (host-87-17-196-109.retail.telecomitalia.it. [87.17.196.109])
-        by smtp.gmail.com with ESMTPSA id h204sm302746wmf.35.2020.09.24.12.36.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 12:36:54 -0700 (PDT)
-Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
- kmap_atomic & friends
-To:     peterz@infradead.org, Steven Rostedt <rostedt@goodmis.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
-        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-sparc <sparclinux@vger.kernel.org>
-References: <87mu1lc5mp.fsf@nanos.tec.linutronix.de>
- <87k0wode9a.fsf@nanos.tec.linutronix.de>
- <CAHk-=wgbmwsTOKs23Z=71EBTrULoeaH2U3TNqT2atHEWvkBKdw@mail.gmail.com>
- <87eemwcpnq.fsf@nanos.tec.linutronix.de>
- <CAHk-=wgF-upZVpqJWK=TK7MS9H-Rp1ZxGfOG+dDW=JThtxAzVQ@mail.gmail.com>
- <87a6xjd1dw.fsf@nanos.tec.linutronix.de>
- <CAHk-=wjhxzx3KHHOMvdDj3Aw-_Mk5eRiNTUBB=tFf=vTkw1FeA@mail.gmail.com>
- <87sgbbaq0y.fsf@nanos.tec.linutronix.de>
- <20200923084032.GU1362448@hirez.programming.kicks-ass.net>
- <20200923115251.7cc63a7e@oasis.local.home>
- <20200924082717.GA1362448@hirez.programming.kicks-ass.net>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <7541acd1-65a0-0d55-4028-71cab544e90d@redhat.com>
-Date:   Thu, 24 Sep 2020 21:36:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=M/T6SMuSQxWkK9zNd1KTMPycKvBLqqSkvYfJSypIeZI=;
+        b=QBkbSSMZOj6Ybldi4nSeFH29/xDfkDiGjLrnq7S6b+8reY4Z2OAnmGHKEejpth1RFc
+         daF65EUdY3KluLpU8uwTXCx2CVKoLfr7XuCw3rVASj4bhOwW5l3zfwkjH2O3xiG/U0d3
+         JZZYBBlFg8QD3vg2lxnr8BEeYUh56QIvwy9b3qCJ/Rwy218VAWf1DyhjIc8yhCdt9ejE
+         ZZp9ncgar+PT+OpTMKmQaBuqEyL4SDqxsgs4NHG4llcqg0kYgGjOeR+sg3nm1sg60GrS
+         vn3a1ZVar1woO/kLVaGXMWhzh2xXIdyTThrvQBquxilVNrwY/rUIBI+mxoq6TOW8SMJX
+         aywg==
+X-Gm-Message-State: AOAM5310lHBFf6VlAxxdfn6XDr86mn0dNANwvC7HMSE55tKTJu0QV6oz
+        A/mtpuIckdFlQy8XP9zDb6A=
+X-Google-Smtp-Source: ABdhPJwt6kAxWnfM0LTveDjYti3nWXYPY1/qS4N0O4tLjaTaaxQEJP6TIOkKYWfp7ioihJ7VxD7CMQ==
+X-Received: by 2002:a17:906:56c2:: with SMTP id an2mr88857ejc.118.1600990792717;
+        Thu, 24 Sep 2020 16:39:52 -0700 (PDT)
+Received: from skbuf ([188.25.217.212])
+        by smtp.gmail.com with ESMTPSA id j9sm609650ejt.49.2020.09.24.16.39.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 16:39:51 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 02:39:49 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paul.burton@mips.com>,
+        James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "Allan W. Nielsen" <allan.nielsen@microchip.com>,
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>, hongbo.wang@nxp.com
+Subject: Re: [PATCH net-next v3 1/2] net: mscc: ocelot: Add support for tcam
+Message-ID: <20200924233949.lof7iduyfgjdxajv@skbuf>
+References: <1559287017-32397-1-git-send-email-horatiu.vultur@microchip.com>
+ <1559287017-32397-2-git-send-email-horatiu.vultur@microchip.com>
+ <CA+h21hprXnOYWExg7NxVZEX9Vjd=Y7o52ifKuAJqLwFuvDjaiw@mail.gmail.com>
+ <20200423082948.t7sgq4ikrbm4cbnt@soft-dev3.microsemi.net>
 MIME-Version: 1.0
-In-Reply-To: <20200924082717.GA1362448@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200423082948.t7sgq4ikrbm4cbnt@soft-dev3.microsemi.net>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 9/24/20 10:27 AM, peterz@infradead.org wrote:
-> So my current todo list is:
-> 
->  - Change RT PULL
->  - Change DL PULL
->  - Add migrate_disable() tracer; exactly like preempt/irqoff, except
->    measuring task-runtime instead of cpu-time.
->  - Add a mode that measures actual interference.
->  - Add a traceevent to detect preemption in migrate_disable().
-> 
-> 
-> And then I suppose I should twist Daniel's arm to update his model to
-> include these scenarios and numbers.
+Hi Horatiu,
 
-Challenge accepted :-)
+On Thu, Apr 23, 2020 at 10:29:48AM +0200, Horatiu Vultur wrote:
+> > > +static const struct vcap_props vcap_is2 = {
+> > > +       .name = "IS2",
+> > > +       .tg_width = 2,
+> > > +       .sw_count = 4,
+> > > +       .entry_count = VCAP_IS2_CNT,
+> > > +       .entry_words = BITS_TO_32BIT(VCAP_IS2_ENTRY_WIDTH),
+> > > +       .entry_width = VCAP_IS2_ENTRY_WIDTH,
+> > > +       .action_count = (VCAP_IS2_CNT + VCAP_PORT_CNT + 2),
+> > > +       .action_words = BITS_TO_32BIT(VCAP_IS2_ACTION_WIDTH),
+> > > +       .action_width = (VCAP_IS2_ACTION_WIDTH),
+> > > +       .action_type_width = 1,
+> > > +       .action_table = {
+> > > +               {
+> > > +                       .width = (IS2_AO_ACL_ID + IS2_AL_ACL_ID),
+> > > +                       .count = 2
+> > > +               },
+> > > +               {
+> > > +                       .width = 6,
+> > > +                       .count = 4
+> > > +               },
+> > > +       },
+> > > +       .counter_words = BITS_TO_32BIT(4 * ENTRY_WIDTH),
+> > > +       .counter_width = ENTRY_WIDTH,
+> > > +};
 
--- Daniel
+Coming again to this patch, I'm having a very hard time understanding
+how VCAP_IS2_ENTRY_WIDTH is derived and what it represents, especially
+since the VCAP_CONST_ENTRY_WIDTH register reads something different.
+Could you please explain?
 
+Thanks,
+-Vladimir

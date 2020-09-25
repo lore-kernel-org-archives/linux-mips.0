@@ -2,396 +2,88 @@ Return-Path: <SRS0=L8ot=DC=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 397A1C47428
-	for <linux-mips@archiver.kernel.org>; Fri, 25 Sep 2020 04:53:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D40ACC4727F
+	for <linux-mips@archiver.kernel.org>; Fri, 25 Sep 2020 06:21:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0DD86221EC
-	for <linux-mips@archiver.kernel.org>; Fri, 25 Sep 2020 04:53:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4039F2311B
+	for <linux-mips@archiver.kernel.org>; Fri, 25 Sep 2020 06:21:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YRZ6UItj"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="vdaCtn20"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727412AbgIYExO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 25 Sep 2020 00:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727132AbgIYEwD (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 25 Sep 2020 00:52:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF04C0613CE;
-        Thu, 24 Sep 2020 21:52:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=V2KQALojh4L6beBNImM13vl1+M9h9pbSNeu7cAMkUV4=; b=YRZ6UItjewrMGlnbC32fQHH0nL
-        X83aDncwPE4S+tAzXcTs147/MCyPcuKJjP5ADThQLA7wrBrzqeGAjrp6FjE1U9/h3zK4Fta7ItMLu
-        lGrL5xFgOYZtnSlKvTqMCC2ac3NXDeIKxxgzLrrtPBfi1Jiy5HlCKIyVDbgpIzLr9WxT80NGgYsvE
-        H0z53OI2xjmrSe5J9aFkHCJwR+vlS2kwDaUuJVRSZfZh7tDB4myry1cD4RgrJoOIoaCILBfUBIREx
-        eAdy9JLwmXYqD2E7xLRZ6TmqIe9rC3bo9UapR3RmAXGjgME/WMvQ21T+nPbJl0NHTUQJGLyKZ2wRF
-        HlTuMS7w==;
-Received: from p4fdb0c34.dip0.t-ipconnect.de ([79.219.12.52] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kLfi8-0002rL-Hy; Fri, 25 Sep 2020 04:51:56 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-aio@kvack.org, io-uring@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: [PATCH 7/9] fs: remove compat_sys_vmsplice
-Date:   Fri, 25 Sep 2020 06:51:44 +0200
-Message-Id: <20200925045146.1283714-8-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925045146.1283714-1-hch@lst.de>
-References: <20200925045146.1283714-1-hch@lst.de>
+        id S1727151AbgIYGV4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 25 Sep 2020 02:21:56 -0400
+Received: from [115.28.160.31] ([115.28.160.31]:52128 "EHLO
+        mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
+        by vger.kernel.org with ESMTP id S1726980AbgIYGV4 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 25 Sep 2020 02:21:56 -0400
+X-Greylist: delayed 517 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 02:21:55 EDT
+Received: from hanazono.local (unknown [58.33.27.210])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id BFB5A60090;
+        Fri, 25 Sep 2020 14:13:13 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
+        t=1601014393; bh=V0Ygvtf4vpO0JeazKdMA+3ySfJW8HmZ2bFd4D+BjQJk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=vdaCtn200P8bDkWt7a59PRBQDkd9IZmysThDky7awGnLrIQKrLZzElqmxYpU/hlgj
+         OJSjSACCATrLc7bzVcQS5lMOfIjkRwekLMrlX/m80wJnOg5vnKg12ZNFQ9vxcqFcLV
+         u8oUWgzg8w7VHKoenQ9h+E+RGEx47eeOIFelVgos=
+Subject: Re: [PATCH 1/4] rtc: ls2x: Add support for the Loongson-2K/LS7A RTC
+To:     Du Huanpeng <u74147@gmail.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     WANG Xuerui <git@xen0n.name>, linux-rtc@vger.kernel.org,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        Huacai Chen <chenhc@lemote.com>
+References: <20200923075845.360974-1-git@xen0n.name>
+ <20200923075845.360974-2-git@xen0n.name>
+ <2a478254-c4de-49dd-d598-c7553f4672bf@loongson.cn>
+ <20200923143149.GA11566@tkernel.org>
+From:   WANG Xuerui <i@xen0n.name>
+Message-ID: <3b35cd8d-012a-18b5-50c3-8dae19cc53b1@xen0n.name>
+Date:   Fri, 25 Sep 2020 14:13:13 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:83.0)
+ Gecko/20100101 Thunderbird/83.0a1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200923143149.GA11566@tkernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Now that import_iovec handles compat iovecs, the native vmsplice syscall
-can be used for the compat case as well.
+(Re-sending, as the original reply inadvertently contained an HTML part
+and has been blocked by all of the mailing lists.)
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/arm64/include/asm/unistd32.h             |  2 +-
- arch/mips/kernel/syscalls/syscall_n32.tbl     |  2 +-
- arch/mips/kernel/syscalls/syscall_o32.tbl     |  2 +-
- arch/parisc/kernel/syscalls/syscall.tbl       |  2 +-
- arch/powerpc/kernel/syscalls/syscall.tbl      |  2 +-
- arch/s390/kernel/syscalls/syscall.tbl         |  2 +-
- arch/sparc/kernel/syscalls/syscall.tbl        |  2 +-
- arch/x86/entry/syscall_x32.c                  |  1 +
- arch/x86/entry/syscalls/syscall_32.tbl        |  2 +-
- arch/x86/entry/syscalls/syscall_64.tbl        |  2 +-
- fs/splice.c                                   | 57 +++++--------------
- include/linux/compat.h                        |  4 --
- include/uapi/asm-generic/unistd.h             |  2 +-
- tools/include/uapi/asm-generic/unistd.h       |  2 +-
- .../arch/powerpc/entry/syscalls/syscall.tbl   |  2 +-
- .../perf/arch/s390/entry/syscalls/syscall.tbl |  2 +-
- .../arch/x86/entry/syscalls/syscall_64.tbl    |  2 +-
- 17 files changed, 28 insertions(+), 62 deletions(-)
+Hi Huanpeng,
 
-diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
-index 4a236493dca5b9..11dfae3a8563bd 100644
---- a/arch/arm64/include/asm/unistd32.h
-+++ b/arch/arm64/include/asm/unistd32.h
-@@ -697,7 +697,7 @@ __SYSCALL(__NR_sync_file_range2, compat_sys_aarch32_sync_file_range2)
- #define __NR_tee 342
- __SYSCALL(__NR_tee, sys_tee)
- #define __NR_vmsplice 343
--__SYSCALL(__NR_vmsplice, compat_sys_vmsplice)
-+__SYSCALL(__NR_vmsplice, sys_vmsplice)
- #define __NR_move_pages 344
- __SYSCALL(__NR_move_pages, compat_sys_move_pages)
- #define __NR_getcpu 345
-diff --git a/arch/mips/kernel/syscalls/syscall_n32.tbl b/arch/mips/kernel/syscalls/syscall_n32.tbl
-index c99a92646f8ee9..5a39d4de0ac85b 100644
---- a/arch/mips/kernel/syscalls/syscall_n32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
-@@ -278,7 +278,7 @@
- 267	n32	splice				sys_splice
- 268	n32	sync_file_range			sys_sync_file_range
- 269	n32	tee				sys_tee
--270	n32	vmsplice			compat_sys_vmsplice
-+270	n32	vmsplice			sys_vmsplice
- 271	n32	move_pages			compat_sys_move_pages
- 272	n32	set_robust_list			compat_sys_set_robust_list
- 273	n32	get_robust_list			compat_sys_get_robust_list
-diff --git a/arch/mips/kernel/syscalls/syscall_o32.tbl b/arch/mips/kernel/syscalls/syscall_o32.tbl
-index 075064d10661bf..136efc6b8c5444 100644
---- a/arch/mips/kernel/syscalls/syscall_o32.tbl
-+++ b/arch/mips/kernel/syscalls/syscall_o32.tbl
-@@ -318,7 +318,7 @@
- 304	o32	splice				sys_splice
- 305	o32	sync_file_range			sys_sync_file_range		sys32_sync_file_range
- 306	o32	tee				sys_tee
--307	o32	vmsplice			sys_vmsplice			compat_sys_vmsplice
-+307	o32	vmsplice			sys_vmsplice
- 308	o32	move_pages			sys_move_pages			compat_sys_move_pages
- 309	o32	set_robust_list			sys_set_robust_list		compat_sys_set_robust_list
- 310	o32	get_robust_list			sys_get_robust_list		compat_sys_get_robust_list
-diff --git a/arch/parisc/kernel/syscalls/syscall.tbl b/arch/parisc/kernel/syscalls/syscall.tbl
-index 192abde0001d9d..a9e184192caedd 100644
---- a/arch/parisc/kernel/syscalls/syscall.tbl
-+++ b/arch/parisc/kernel/syscalls/syscall.tbl
-@@ -330,7 +330,7 @@
- 292	32	sync_file_range		parisc_sync_file_range
- 292	64	sync_file_range		sys_sync_file_range
- 293	common	tee			sys_tee
--294	common	vmsplice		sys_vmsplice			compat_sys_vmsplice
-+294	common	vmsplice		sys_vmsplice
- 295	common	move_pages		sys_move_pages			compat_sys_move_pages
- 296	common	getcpu			sys_getcpu
- 297	common	epoll_pwait		sys_epoll_pwait			compat_sys_epoll_pwait
-diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
-index 6f1e2ecf0edad9..0d4985919ca34d 100644
---- a/arch/powerpc/kernel/syscalls/syscall.tbl
-+++ b/arch/powerpc/kernel/syscalls/syscall.tbl
-@@ -369,7 +369,7 @@
- 282	common	unshare				sys_unshare
- 283	common	splice				sys_splice
- 284	common	tee				sys_tee
--285	common	vmsplice			sys_vmsplice			compat_sys_vmsplice
-+285	common	vmsplice			sys_vmsplice
- 286	common	openat				sys_openat			compat_sys_openat
- 287	common	mkdirat				sys_mkdirat
- 288	common	mknodat				sys_mknodat
-diff --git a/arch/s390/kernel/syscalls/syscall.tbl b/arch/s390/kernel/syscalls/syscall.tbl
-index 6101cf2e004cb4..b5495a42814bd1 100644
---- a/arch/s390/kernel/syscalls/syscall.tbl
-+++ b/arch/s390/kernel/syscalls/syscall.tbl
-@@ -316,7 +316,7 @@
- 306  common	splice			sys_splice			sys_splice
- 307  common	sync_file_range		sys_sync_file_range		compat_sys_s390_sync_file_range
- 308  common	tee			sys_tee				sys_tee
--309  common	vmsplice		sys_vmsplice			compat_sys_vmsplice
-+309  common	vmsplice		sys_vmsplice			sys_vmsplice
- 310  common	move_pages		sys_move_pages			compat_sys_move_pages
- 311  common	getcpu			sys_getcpu			sys_getcpu
- 312  common	epoll_pwait		sys_epoll_pwait			compat_sys_epoll_pwait
-diff --git a/arch/sparc/kernel/syscalls/syscall.tbl b/arch/sparc/kernel/syscalls/syscall.tbl
-index a87ddb282ab16f..f1810c1a35caa5 100644
---- a/arch/sparc/kernel/syscalls/syscall.tbl
-+++ b/arch/sparc/kernel/syscalls/syscall.tbl
-@@ -38,7 +38,7 @@
- 23	64    	setuid			sys_setuid
- 24	32	getuid			sys_getuid16
- 24	64   	getuid			sys_getuid
--25	common	vmsplice		sys_vmsplice			compat_sys_vmsplice
-+25	common	vmsplice		sys_vmsplice
- 26	common	ptrace			sys_ptrace			compat_sys_ptrace
- 27	common	alarm			sys_alarm
- 28	common	sigaltstack		sys_sigaltstack			compat_sys_sigaltstack
-diff --git a/arch/x86/entry/syscall_x32.c b/arch/x86/entry/syscall_x32.c
-index aa321444a41f63..a4840b9d50ad14 100644
---- a/arch/x86/entry/syscall_x32.c
-+++ b/arch/x86/entry/syscall_x32.c
-@@ -16,6 +16,7 @@
- #define __x32_sys_writev	__x64_sys_writev
- #define __x32_sys_getsockopt	__x64_sys_getsockopt
- #define __x32_sys_setsockopt	__x64_sys_setsockopt
-+#define __x32_sys_vmsplice	__x64_sys_vmsplice
- 
- #define __SYSCALL_64(nr, sym)
- 
-diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
-index 54ab4beb517f25..0fb2f172581e51 100644
---- a/arch/x86/entry/syscalls/syscall_32.tbl
-+++ b/arch/x86/entry/syscalls/syscall_32.tbl
-@@ -327,7 +327,7 @@
- 313	i386	splice			sys_splice
- 314	i386	sync_file_range		sys_ia32_sync_file_range
- 315	i386	tee			sys_tee
--316	i386	vmsplice		sys_vmsplice			compat_sys_vmsplice
-+316	i386	vmsplice		sys_vmsplice
- 317	i386	move_pages		sys_move_pages			compat_sys_move_pages
- 318	i386	getcpu			sys_getcpu
- 319	i386	epoll_pwait		sys_epoll_pwait
-diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-index b1e59957c5c51c..642af919183de4 100644
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@ -388,7 +388,7 @@
- 529	x32	waitid			compat_sys_waitid
- 530	x32	set_robust_list		compat_sys_set_robust_list
- 531	x32	get_robust_list		compat_sys_get_robust_list
--532	x32	vmsplice		compat_sys_vmsplice
-+532	x32	vmsplice		sys_vmsplice
- 533	x32	move_pages		compat_sys_move_pages
- 534	x32	preadv			compat_sys_preadv64
- 535	x32	pwritev			compat_sys_pwritev64
-diff --git a/fs/splice.c b/fs/splice.c
-index 132d42b9871f9b..18d84544030b39 100644
---- a/fs/splice.c
-+++ b/fs/splice.c
-@@ -33,7 +33,6 @@
- #include <linux/security.h>
- #include <linux/gfp.h>
- #include <linux/socket.h>
--#include <linux/compat.h>
- #include <linux/sched/signal.h>
- 
- #include "internal.h"
-@@ -1332,20 +1331,6 @@ static int vmsplice_type(struct fd f, int *type)
-  * Currently we punt and implement it as a normal copy, see pipe_to_user().
-  *
-  */
--static long do_vmsplice(struct file *f, struct iov_iter *iter, unsigned int flags)
--{
--	if (unlikely(flags & ~SPLICE_F_ALL))
--		return -EINVAL;
--
--	if (!iov_iter_count(iter))
--		return 0;
--
--	if (iov_iter_rw(iter) == WRITE)
--		return vmsplice_to_pipe(f, iter, flags);
--	else
--		return vmsplice_to_user(f, iter, flags);
--}
--
- SYSCALL_DEFINE4(vmsplice, int, fd, const struct iovec __user *, uiov,
- 		unsigned long, nr_segs, unsigned int, flags)
- {
-@@ -1356,6 +1341,9 @@ SYSCALL_DEFINE4(vmsplice, int, fd, const struct iovec __user *, uiov,
- 	struct fd f;
- 	int type;
- 
-+	if (unlikely(flags & ~SPLICE_F_ALL))
-+		return -EINVAL;
-+
- 	f = fdget(fd);
- 	error = vmsplice_type(f, &type);
- 	if (error)
-@@ -1363,40 +1351,21 @@ SYSCALL_DEFINE4(vmsplice, int, fd, const struct iovec __user *, uiov,
- 
- 	error = import_iovec(type, uiov, nr_segs,
- 			     ARRAY_SIZE(iovstack), &iov, &iter);
--	if (error >= 0) {
--		error = do_vmsplice(f.file, &iter, flags);
--		kfree(iov);
--	}
--	fdput(f);
--	return error;
--}
-+	if (error < 0)
-+		goto out_fdput;
- 
--#ifdef CONFIG_COMPAT
--COMPAT_SYSCALL_DEFINE4(vmsplice, int, fd, const struct compat_iovec __user *, iov32,
--		    unsigned int, nr_segs, unsigned int, flags)
--{
--	struct iovec iovstack[UIO_FASTIOV];
--	struct iovec *iov = iovstack;
--	struct iov_iter iter;
--	ssize_t error;
--	struct fd f;
--	int type;
--
--	f = fdget(fd);
--	error = vmsplice_type(f, &type);
--	if (error)
--		return error;
-+	if (!iov_iter_count(&iter))
-+		error = 0;
-+	else if (iov_iter_rw(&iter) == WRITE)
-+		error = vmsplice_to_pipe(f.file, &iter, flags);
-+	else
-+		error = vmsplice_to_user(f.file, &iter, flags);
- 
--	error = import_iovec(type, (struct iovec __user *)iov32, nr_segs,
--			     ARRAY_SIZE(iovstack), &iov, &iter);
--	if (error >= 0) {
--		error = do_vmsplice(f.file, &iter, flags);
--		kfree(iov);
--	}
-+	kfree(iov);
-+out_fdput:
- 	fdput(f);
- 	return error;
- }
--#endif
- 
- SYSCALL_DEFINE6(splice, int, fd_in, loff_t __user *, off_in,
- 		int, fd_out, loff_t __user *, off_out,
-diff --git a/include/linux/compat.h b/include/linux/compat.h
-index 0f1620988267e6..9e8aa148651455 100644
---- a/include/linux/compat.h
-+++ b/include/linux/compat.h
-@@ -597,10 +597,6 @@ asmlinkage long compat_sys_signalfd4(int ufd,
- 				     const compat_sigset_t __user *sigmask,
- 				     compat_size_t sigsetsize, int flags);
- 
--/* fs/splice.c */
--asmlinkage long compat_sys_vmsplice(int fd, const struct compat_iovec __user *,
--				    unsigned int nr_segs, unsigned int flags);
--
- /* fs/stat.c */
- asmlinkage long compat_sys_newfstatat(unsigned int dfd,
- 				      const char __user *filename,
-diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
-index 211c9eacbda6eb..f2dcb0d5703014 100644
---- a/include/uapi/asm-generic/unistd.h
-+++ b/include/uapi/asm-generic/unistd.h
-@@ -237,7 +237,7 @@ __SC_COMP(__NR_signalfd4, sys_signalfd4, compat_sys_signalfd4)
- 
- /* fs/splice.c */
- #define __NR_vmsplice 75
--__SC_COMP(__NR_vmsplice, sys_vmsplice, compat_sys_vmsplice)
-+__SYSCALL(__NR_vmsplice, sys_vmsplice)
- #define __NR_splice 76
- __SYSCALL(__NR_splice, sys_splice)
- #define __NR_tee 77
-diff --git a/tools/include/uapi/asm-generic/unistd.h b/tools/include/uapi/asm-generic/unistd.h
-index 211c9eacbda6eb..f2dcb0d5703014 100644
---- a/tools/include/uapi/asm-generic/unistd.h
-+++ b/tools/include/uapi/asm-generic/unistd.h
-@@ -237,7 +237,7 @@ __SC_COMP(__NR_signalfd4, sys_signalfd4, compat_sys_signalfd4)
- 
- /* fs/splice.c */
- #define __NR_vmsplice 75
--__SC_COMP(__NR_vmsplice, sys_vmsplice, compat_sys_vmsplice)
-+__SYSCALL(__NR_vmsplice, sys_vmsplice)
- #define __NR_splice 76
- __SYSCALL(__NR_splice, sys_splice)
- #define __NR_tee 77
-diff --git a/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl b/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
-index 46be68029587f9..26f0347c15118b 100644
---- a/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
-+++ b/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
-@@ -363,7 +363,7 @@
- 282	common	unshare				sys_unshare
- 283	common	splice				sys_splice
- 284	common	tee				sys_tee
--285	common	vmsplice			sys_vmsplice			compat_sys_vmsplice
-+285	common	vmsplice			sys_vmsplice
- 286	common	openat				sys_openat			compat_sys_openat
- 287	common	mkdirat				sys_mkdirat
- 288	common	mknodat				sys_mknodat
-diff --git a/tools/perf/arch/s390/entry/syscalls/syscall.tbl b/tools/perf/arch/s390/entry/syscalls/syscall.tbl
-index fb5e61ce9d5838..02ad81f69bb7e3 100644
---- a/tools/perf/arch/s390/entry/syscalls/syscall.tbl
-+++ b/tools/perf/arch/s390/entry/syscalls/syscall.tbl
-@@ -316,7 +316,7 @@
- 306  common	splice			sys_splice			compat_sys_splice
- 307  common	sync_file_range		sys_sync_file_range		compat_sys_s390_sync_file_range
- 308  common	tee			sys_tee				compat_sys_tee
--309  common	vmsplice		sys_vmsplice			compat_sys_vmsplice
-+309  common	vmsplice		sys_vmsplice			sys_vmsplice
- 310  common	move_pages		sys_move_pages			compat_sys_move_pages
- 311  common	getcpu			sys_getcpu			compat_sys_getcpu
- 312  common	epoll_pwait		sys_epoll_pwait			compat_sys_epoll_pwait
-diff --git a/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl b/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
-index b1e59957c5c51c..642af919183de4 100644
---- a/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
-@@ -388,7 +388,7 @@
- 529	x32	waitid			compat_sys_waitid
- 530	x32	set_robust_list		compat_sys_set_robust_list
- 531	x32	get_robust_list		compat_sys_get_robust_list
--532	x32	vmsplice		compat_sys_vmsplice
-+532	x32	vmsplice		sys_vmsplice
- 533	x32	move_pages		compat_sys_move_pages
- 534	x32	preadv			compat_sys_preadv64
- 535	x32	pwritev			compat_sys_pwritev64
--- 
-2.28.0
+On 2020/9/23 22:31, Du Huanpeng wrote:
 
+>> rtc-ls2x --> rtc-ls2x-ls7a
+>> RTC_DRV_LS2X --> RTC_DRV_LS2X_LS7A
+>> Loongson LS2X RTC --> Loongson LS2X/LS7A RTC
+>>
+>> Maybe the related names include ls7a or LS7A is better to
+>> reflect the reality?
+> Is there any difference with the rtc IP in loongson 1* SoCs?
+
+From a cursory look at 1A and 7A manuals the registers seem to have the
+same layout. Some registers are marked as "reserved" on the 7A manual
+while having real meaning on 1A, like the sys_toytrim and sys_rtctrim
+registers.
+
+I am investigating whether the rtc_ls1x driver could be worked to
+support DT configuration, along with the hardcoded addresses when
+compiled for Loongson 1A. If so, adding a separate rtc_ls2x may not be
+necessary, rtc_ls1x would be turned into something like rtc_loongson
+instead.
+
+>
+> Regards,
+> Du Huanpeng

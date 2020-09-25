@@ -2,76 +2,65 @@ Return-Path: <SRS0=L8ot=DC=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69123C4727F
-	for <linux-mips@archiver.kernel.org>; Fri, 25 Sep 2020 21:12:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 853A0C4727F
+	for <linux-mips@archiver.kernel.org>; Fri, 25 Sep 2020 22:27:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 32B97221EC
-	for <linux-mips@archiver.kernel.org>; Fri, 25 Sep 2020 21:12:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4C63A238A0
+	for <linux-mips@archiver.kernel.org>; Fri, 25 Sep 2020 22:27:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1601072876;
+	bh=0iCjMbCMNSYY/zT4GH5XOGFfOqNB0JPq2bzvCYiyA3A=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:List-ID:From;
+	b=iqhqhlUxWzUOug/wMyOssUWsrbErzT9lYpK8SIibVudtLVrtusOQkFVGp66SuZBSz
+	 j8E5pHGsHyU7M+pvGI0VlGz4houo4h3sNp/pxbySW+0GBOrkY53HmdGvi53COg4p/J
+	 4zOG7Q3+lWVN4RJmX0PlHnN4wnn6dwyNLvmQNs+I=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbgIYVMP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 25 Sep 2020 17:12:15 -0400
-Received: from elvis.franken.de ([193.175.24.41]:57638 "EHLO elvis.franken.de"
+        id S1729035AbgIYW1s (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 25 Sep 2020 18:27:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgIYVMP (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:12:15 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kLv0o-0003HA-00; Fri, 25 Sep 2020 23:12:14 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 4FC3DC101A; Fri, 25 Sep 2020 20:07:08 +0200 (CEST)
-Date:   Fri, 25 Sep 2020 20:07:08 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     torvalds@linux-foundation.org
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] MIPS fixes for v5.9
-Message-ID: <20200925180708.GA5280@alpha.franken.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        id S1729012AbgIYW1p (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 25 Sep 2020 18:27:45 -0400
+Subject: Re: [GIT PULL] MIPS fixes for v5.9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601072865;
+        bh=0iCjMbCMNSYY/zT4GH5XOGFfOqNB0JPq2bzvCYiyA3A=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=nc6XAb/he/uhaoqGjdjwZsxg6DCxqGqwz12SoVzf4kdm3sSZPQZgFElz93cGQavfS
+         XY+dPukQ6q62eD7F1ClYqPyLyLiV7yeaqIPAjSu9IMF2/aBdPsDYFQO+pkK7KsIm/1
+         B2lv5zGTlVupJhLPbR9G6u/hNxvuiSX6GtJ+ocpU=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200925180708.GA5280@alpha.franken.de>
+References: <20200925180708.GA5280@alpha.franken.de>
+X-PR-Tracked-List-Id: <linux-mips.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200925180708.GA5280@alpha.franken.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_fixes_5.9_3
+X-PR-Tracked-Commit-Id: be090fa62080d8501a5651a73cb954721966b125
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b463b6f69974867b3b5885de2f488d72e979a751
+Message-Id: <160107286517.23838.6394559322045652148.pr-tracker-bot@kernel.org>
+Date:   Fri, 25 Sep 2020 22:27:45 +0000
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The following changes since commit b959b97860d0fee8c8f6a3e641d3c2ad76eab6be:
+The pull request you sent on Fri, 25 Sep 2020 20:07:08 +0200:
 
-  MIPS: SNI: Fix spurious interrupts (2020-09-16 22:40:58 +0200)
+> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_fixes_5.9_3
 
-are available in the Git repository at:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b463b6f69974867b3b5885de2f488d72e979a751
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_fixes_5.9_3
-
-for you to fetch changes up to be090fa62080d8501a5651a73cb954721966b125:
-
-  MIPS: BCM47XX: Remove the needless check with the 1074K (2020-09-23 14:48:53 +0200)
-
-----------------------------------------------------------------
-- fixed FP register access on Loongsoon-3
-- added missing 1074 cpu handling
-- fixed Loongson2ef build error
-
-----------------------------------------------------------------
-Huacai Chen (1):
-      MIPS: Loongson-3: Fix fp register access if MSA enabled
-
-Jiaxun Yang (1):
-      MIPS: Loongson2ef: Disable Loongson MMI instructions
-
-Wei Li (2):
-      MIPS: Add the missing 'CPU_1074K' into __get_cpu_type()
-      MIPS: BCM47XX: Remove the needless check with the 1074K
-
- arch/mips/bcm47xx/setup.c        |  2 +-
- arch/mips/include/asm/cpu-type.h |  1 +
- arch/mips/loongson2ef/Platform   |  4 ++++
- arch/mips/loongson64/cop2-ex.c   | 24 ++++++++----------------
- 4 files changed, 14 insertions(+), 17 deletions(-)
+Thank you!
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html

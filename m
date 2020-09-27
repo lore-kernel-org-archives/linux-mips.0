@@ -2,82 +2,94 @@ Return-Path: <SRS0=MUgy=DE=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E711C4346E
-	for <linux-mips@archiver.kernel.org>; Sun, 27 Sep 2020 09:11:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56867C4346E
+	for <linux-mips@archiver.kernel.org>; Sun, 27 Sep 2020 09:20:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 45A4E23998
-	for <linux-mips@archiver.kernel.org>; Sun, 27 Sep 2020 09:11:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1265523977
+	for <linux-mips@archiver.kernel.org>; Sun, 27 Sep 2020 09:20:54 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SIBHc8S1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgI0JLR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 27 Sep 2020 05:11:17 -0400
-Received: from elvis.franken.de ([193.175.24.41]:59884 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726387AbgI0JLQ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 27 Sep 2020 05:11:16 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kMShv-0001nG-00; Sun, 27 Sep 2020 11:10:59 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id CFAAAC1021; Sun, 27 Sep 2020 11:03:40 +0200 (CEST)
-Date:   Sun, 27 Sep 2020 11:03:40 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     robh+dt@kernel.org, paul@crapouillou.net, paulburton@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, jiaxun.yang@flygoat.com,
-        Sergey.Semin@baikalelectronics.ru, akpm@linux-foundation.org,
-        rppt@kernel.org, dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: Re: [PATCH v3 0/3] Repair Ingenic SoCs L2 cache capacity detection.
-Message-ID: <20200927090340.GA4929@alpha.franken.de>
-References: <20200922012444.44089-1-zhouyanjie@wanyeetech.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200922012444.44089-1-zhouyanjie@wanyeetech.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        id S1726299AbgI0JUx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 27 Sep 2020 05:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbgI0JUx (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 27 Sep 2020 05:20:53 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4CDC0613CE;
+        Sun, 27 Sep 2020 02:20:53 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id b124so6685370pfg.13;
+        Sun, 27 Sep 2020 02:20:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=49O4zHPx1PVwGbq+z1yRkKckf3sNv0jnpUzWYqsF8Ug=;
+        b=SIBHc8S1kVbejxLpkvkbAnmaMKtpEDgXAUTVYm7bTQrxeyEd68dqoh6aC6uWS7+b9o
+         CR7/Rag/PwVQImFjW8jOSYcUevO2p3YEEb4sMtSh+eINHTUDbVEc2MjmlLsDeNNhbH1M
+         V9SqIUm4DcGsJoDutnrn+ieu+PAxol1B/a6UAs0d+xRE24Rm+oqdEUNUjEqpi1FDcg7R
+         xX9BA0Zx/Yw7PdxkjE7EnOLIE6PcBgnBs1xcI4K/VLctyULi00fBOM5Kxx4A8TPVKmKa
+         eEwQ4GUCb/+EQeyzeuSLsQoRMG/LEc5qzPGkttMDa5bHJIs1wxC2oe6SVzSGnO9Ibsjc
+         kydQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=49O4zHPx1PVwGbq+z1yRkKckf3sNv0jnpUzWYqsF8Ug=;
+        b=Lw1XEnFb8uJilg77x2GGpTzcy4pe/wa9dORB7nqz5Wh18Bq8fWmgmK+1qxM/1RoQVA
+         q/l08OTMUKIr+GOOY/VVqx/JBxVae2XJy88posTg75vHNpdieerx4qQ7x1gbyKTCohTH
+         YZ3QvxoBQHkklPB6ARi8wrmxHcJcwacP6tDTI3oY3nZK/RuaRplRAjfNvDN9XWDwm7dP
+         mbxqDDZiA94wNDdU/e0pH4/5YF+J4URYm0sLiRphhVjYWSNTFl2oM+4YOVn+0VHfrZFL
+         899g5+vLgjZoj7Mf5zMJjj6Oslj/STWQrzob6J5jwoPsHnEWDTJj+8giAaxQAUPwb7pa
+         1xtA==
+X-Gm-Message-State: AOAM5333ASueyVNFsYZImteyUcHloE7PNSOhWsoy2GD9G3sSZIjPko6X
+        nQS23FPjZG30AABmqrzGgA==
+X-Google-Smtp-Source: ABdhPJxw54EShzs5KlINfZfjyTxxpk0MdCpSC7i0fIKaDsJd36PnNgvmSS3Xlyqn5MSjudlvrNkLXg==
+X-Received: by 2002:aa7:9583:0:b029:142:2501:396a with SMTP id z3-20020aa795830000b02901422501396amr6459109pfj.47.1601198453059;
+        Sun, 27 Sep 2020 02:20:53 -0700 (PDT)
+Received: from localhost.localdomain ([47.242.131.39])
+        by smtp.gmail.com with ESMTPSA id j19sm7780904pfe.108.2020.09.27.02.20.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Sep 2020 02:20:52 -0700 (PDT)
+From:   Pujin Shi <shipujin.t@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shipujin.t@gmail.com, Pujin Shi <shipujin.t@lemote.com>
+Subject: [PATCH v2] MIPS: idle: Add prototype for function check_wait
+Date:   Sun, 27 Sep 2020 17:20:41 +0800
+Message-Id: <20200927092041.1187-1-shipujin.t@gmail.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 09:24:41AM +0800, 周琰杰 (Zhou Yanjie) wrote:
-> 1.The X1000E SoC has a 4-way L2 cache with a capacity of 128 KiB.
->   The current code cannot detect its correctly, which will cause the
->   CU1000-Neo board using the X1000E SoC to report that it has found
->   a 5-way 320KiB L2 cache at boot time.
-> 2.The JZ4775 SoC has a 4-way L2 cache with a capacity of 256 KiB.
->   The current code cannot detect its correctly, which will cause the
->   Mensa board using the JZ4775 SoC to report that it has found a 5-way
->   320KiB L2 cache at boot time.
-> 
-> This series of patches is to fix this problem.
-> 
-> v2->v3:
-> Fix the warning that appears when running checkpatch, add relevant
-> compatible string.
-> 
-> 周琰杰 (Zhou Yanjie) (3):
->   dt-bindings: MIPS: Add X2000E based CU2000-Neo.
->   MIPS: Ingenic: Add system type for new Ingenic SoCs.
->   MIPS: Ingenic: Fix bugs when detecting L2 cache of JZ4775 and X1000E.
-> 
->  Documentation/devicetree/bindings/mips/ingenic/devices.yaml |  5 +++++
->  arch/mips/generic/board-ingenic.c                           | 12 ++++++++++++
->  arch/mips/include/asm/bootinfo.h                            |  2 ++
->  arch/mips/mm/sc-mips.c                                      |  2 ++
->  4 files changed, 21 insertions(+)
+This commit adds a prototype to fix warning at W=1:
 
-series applied to mips-next.
+  arch/mips/kernel/idle.c:126:13: error: no previous prototype for 'check_wait' [-Werror=missing-prototypes]
 
-Thomas.
+Signed-off-by: Pujin Shi <shipujin.t@lemote.com>
+---
+ arch/mips/include/asm/idle.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/arch/mips/include/asm/idle.h b/arch/mips/include/asm/idle.h
+index 655a6dbc861a..0992cad9c632 100644
+--- a/arch/mips/include/asm/idle.h
++++ b/arch/mips/include/asm/idle.h
+@@ -15,6 +15,8 @@ static inline int using_rollback_handler(void)
+ 	return cpu_wait == r4k_wait;
+ }
+ 
++extern void __init check_wait(void);
++
+ extern int mips_cpuidle_wait_enter(struct cpuidle_device *dev,
+ 				   struct cpuidle_driver *drv, int index);
+ 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.18.1
+

@@ -1,155 +1,112 @@
-Return-Path: <SRS0=h9v5=DH=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=Eeq1=DI=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27E8DC47425
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Sep 2020 23:53:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 288AEC4727C
+	for <linux-mips@archiver.kernel.org>; Thu,  1 Oct 2020 07:46:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 00EC921734
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Sep 2020 23:53:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C1B8E20838
+	for <linux-mips@archiver.kernel.org>; Thu,  1 Oct 2020 07:46:30 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=hev-cc.20150623.gappssmtp.com header.i=@hev-cc.20150623.gappssmtp.com header.b="FjOZVTlz"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731489AbgI3Xxa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Sep 2020 19:53:30 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:50677 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731302AbgI3Xxa (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Sep 2020 19:53:30 -0400
-X-Greylist: delayed 313 seconds by postgrey-1.27 at vger.kernel.org; Wed, 30 Sep 2020 19:53:28 EDT
-Received: from methusalix.internal.home.lespocky.de ([92.117.51.117]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis)
- id 1MWiYo-1jvFXk1OsC-00X0F6; Thu, 01 Oct 2020 01:47:52 +0200
-Received: from lemmy.internal.home.lespocky.de ([192.168.243.176] helo=lemmy.home.lespocky.de)
-        by methusalix.internal.home.lespocky.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <alex@home.lespocky.de>)
-        id 1kNlp7-0007a8-MI; Thu, 01 Oct 2020 01:47:50 +0200
-Received: (nullmailer pid 7811 invoked by uid 2001);
-        Wed, 30 Sep 2020 23:47:49 -0000
-From:   Alexander Dahl <post@lespocky.de>
-To:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexander Dahl <ada@thorsis.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Alexander Dahl <post@lespocky.de>
-Subject: [PATCH v6 6/7] arm64: dts: meson: Fix schema warnings for pwm-leds
-Date:   Thu,  1 Oct 2020 01:46:36 +0200
-Message-Id: <20200930234637.7573-7-post@lespocky.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200930234637.7573-1-post@lespocky.de>
-References: <20200930234637.7573-1-post@lespocky.de>
+        id S1725894AbgJAHqU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 1 Oct 2020 03:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgJAHqF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 1 Oct 2020 03:46:05 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54ABBC0613D0
+        for <linux-mips@vger.kernel.org>; Thu,  1 Oct 2020 00:46:04 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id j2so4585826eds.9
+        for <linux-mips@vger.kernel.org>; Thu, 01 Oct 2020 00:46:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hev-cc.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FrPg4td8G2Qt7V9A77qbswQsY+lnjAcu9L1LEPRn1eQ=;
+        b=FjOZVTlz2oOyZpoARCwXlynA4b81GjjKZGZFE8YJ2UWm//cCeuSy7LKy6L98lCJnBu
+         zmh3EQLBxlT/CDLmFHip+kNeaHdfGzZZPTsSocozxt3c3KOkLGbAJqlf0ukMEWH3f8y2
+         Hy5hDv9inBBT+0w6MjtbMr1KhYMZQ1UlrXd0FG5iJdpZFnt1VJwNfhiZWSHJvyrWveJY
+         WmXZyFQpUHJAhtiL37bN8nzAcHrr/KxkhAz+KuoeF4cgz7PgbMAeL7Mx4EwuVyxiI9r0
+         jdbjK8g7UX2Y5+F9puR5MsWOTpzHDxM/v31SXbNC962vpC9cmPtdqLxR8pviLXq90Y3O
+         x+WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FrPg4td8G2Qt7V9A77qbswQsY+lnjAcu9L1LEPRn1eQ=;
+        b=UgtqDC/+ndXDT3zD9xMSWbH/Gfkk8zHQ2GkU2nc3WW9wc1DpROrmo3iZFcpUmpmn1V
+         JeTiIN1GzR40fKoQbv5FT44o0KeH2UTxGVqjrsDZPl6XQ5H7zl63AVs9WTviPguvW4L0
+         CffzBk0VlmxTwQb4v/DBK/HpVz0xAdhwjsS2EX8cx4npCPyh6aqKPkunpG4gNY9UFLzb
+         GOY3Ahm7IY9rDqdOEpmsI7rU/loXruKdGqqFTDk0Nd7znTk6/2KY8bsRiPe3ySSnaw7R
+         u/ux/o5gRGOR4ex6OI/w32p2N/KUBBpJocm4ifBsfAeaRlKvGoZUTljM7AmvUVeKG4tv
+         o6gw==
+X-Gm-Message-State: AOAM530wcUd8ofnf2L6V+0tT7hijZBoKWTSnUdKoN59ymG2PWxlu3nzu
+        ZIy8kEfXByHfjujupd7HfcUAixzkvw7Y+d+op+r6kg==
+X-Google-Smtp-Source: ABdhPJxbpQG86t5w8S+sGfWvSdUVUnR0wFoLlDs9sx3yHdL+Bt4uyDejsxkJcx6nqbbCs4bcJ3NiwfP4l4dqlzEHvd0=
+X-Received: by 2002:a05:6402:cb4:: with SMTP id cn20mr6815465edb.369.1601538362884;
+ Thu, 01 Oct 2020 00:46:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scan-Signature: 57fe0bff746948a1c00c1c012c955907
-X-Provags-ID: V03:K1:aZN4vsQ09FD4ST1oiQw/j/zmw/WZNfS+WwJm4ljdYqSrse6wOJB
- HIwUSHD8ea0pFYgoq2609uGTcfq+/wDtaLXxV06FrmGKixxlLClh9iiByk498n0mUczE2FF
- F/K5zjrNkCk6f5MbiWHQn7sUxo+NM/BUwyGjUIuw14TGdLjs4Kwa+ZFrJCRuLIfO/DnScWu
- 5T8JxfvsL1SFxYJ42c6Uw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:uZY0ejErFkM=:NJi+ShfstAl+ru7Y3A3K4A
- t9i94xEbc0pNzV+Gx4LOFVA6cDdAY+MmTJNXvg5uP2Mfi9So0D3dBi/23arNLuKDV+tlX4/Uu
- pVdf0NMh1b6XXnVG/spPFE2D4qiePwUTTIRipJoJTc/8c4A6PYhWG5WwjwWFWH7/xiS6f5vqm
- eIaqvUS7QY3Pn9jIKtIQWXeADY1jjDVuToulKk8UiUg4vFQGyNfuQuySqCZ3bW3H7uJbQZehN
- LKIeokXpkqz3Y/35LU9LfwixGjAa+g3kTFxrp0Ytii3e+7sqJT1++SU2qxY+L4WlMBDb0056E
- 6yzofW4o6OQebcOYsp6gTf8tIrIfv1po/2GZg0OKFD2FlwrSi94G1ruJeQyRrShLaz1VzTRPY
- VAEYcxypEzZckQPwjIGGfNKzIh5tXRhSr8Q2BLOK1v0S8wEEW0EdpKi5HCDr2K43BdDPP4W4c
- xqW3Qop8IcCFSJAa5TxAM5tgUSkXgVxNS+j0vC/DIfnEMgjB3Wcnoc9DTItafvexYaDHFvrR1
- FOuWLgiQ6jWsXJSm5XX9kbecfUL6U4R3PVmk3TiIoDy/4MB4nDmN9O7jphi2ApuPrwJ9lMG2Z
- GjjIMYoiOJT81WY2+xiPhc6LoeA0aGC7SECJEB24rW8hXGPogI9nHoM/TFa+DRcl/Fme1rIDg
- BV8oivJqfSrPLMAVODjiHDi6XArUHJ3u+ZxSrPcqwfKFSM/36mQujJjVBupzsOsBKMl4M580f
- cDGvhVO4IorZyPWsE0JNblCY6yYxyZ1AwjjfpH30CXJMA2DJqJyRCDNYRunSLcWUNNHmMeEro
- 8reaqK85WPUu2z/Nzo4PMNiR7PF75FO+9lSo8cu7nbXAX0Iho/mgoYl9B2y9/DK7NiMu+hT
+References: <20200821031228.31231-1-r@hev.cc> <20200930111644.GA19903@alpha.franken.de>
+In-Reply-To: <20200930111644.GA19903@alpha.franken.de>
+From:   Hev <r@hev.cc>
+Date:   Thu, 1 Oct 2020 15:45:52 +0800
+Message-ID: <CAHirt9i06fyHxinkurR-AA8rW2_Qm=UmAFgCPABsj=K9YADT2Q@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: Optional SYNC emulation
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Paul Burton <paulburton@kernel.org>,
+        "Maciej W . Rozycki" <macro@linux-mips.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The node names for devices using the pwm-leds driver follow a certain
-naming scheme (now).
+Hello Thomas,
 
-Signed-off-by: Alexander Dahl <post@lespocky.de>
----
+On Wed, Sep 30, 2020 at 8:48 PM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> On Fri, Aug 21, 2020 at 11:12:28AM +0800, Heiher wrote:
+> > MIPS ISA defines several types of memory barrier, of which Type-0 (full barrier)
+> > is required, and the others are optional. In some vendor implementation (such as
+> > Loongson), all optional parts are implemented to emit an illegal instruction
+> > exception. Here, emulate to full barrier to ensure the functional semantics.
+> >
+> > If an implementation does not support SYNC 0, it should also not support SMP, so
+> > the `smp_mb()` is only a compilation barrier.
+>
+> I see your point, but isn't taking an exception already more than a
+> compiler barrier ? Does the missing sync hurt in real life ?
 
-Notes:
-    v6:
-      * added this patch to series
+As far as I known, the optional sync instruction has been used in user
+space programs (such as firefox), and the illegal instruction
+exception does not include the semantics of the memory barrier, so if
+the optional sync instruction is not simulated, the memory access
+order of these programs it may be different from the order in the
+code.
 
- .../arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts | 4 ++--
- arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts     | 4 ++--
- arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts          | 8 ++++----
- 3 files changed, 8 insertions(+), 8 deletions(-)
+About the compiler barrier, What if the hardware does not support SYNC
+0? I think it does not support SMP, so smp_mb() is only a compiler
+barrier and will not cause infinite recursion in the simulation.
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
-index 8bcdffdf55d0..adfc72500e66 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
-@@ -42,10 +42,10 @@
- 		};
- 	};
- 
--	pwmleds {
-+	led-controller {
- 		compatible = "pwm-leds";
- 
--		power {
-+		led-1 {
- 			label = "vim:red:power";
- 			pwms = <&pwm_AO_ab 1 7812500 0>;
- 			max-brightness = <255>;
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-index bff8ec2c1c70..dcb435af4e0b 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-@@ -81,10 +81,10 @@
- 		};
- 	};
- 
--	pwmleds {
-+	led-controller {
- 		compatible = "pwm-leds";
- 
--		power {
-+		led-1 {
- 			label = "vim:red:power";
- 			pwms = <&pwm_AO_ab 1 7812500 0>;
- 			max-brightness = <255>;
-diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts
-index 5ab139a34c01..039a8d0d1e9b 100644
---- a/arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts
-@@ -101,20 +101,20 @@
- 		};
- 	};
- 
--	leds {
-+	led-controller-1 {
- 		compatible = "gpio-leds";
- 
--		led-bluetooth {
-+		led-1 {
- 			label = "sei610:blue:bt";
- 			gpios = <&gpio GPIOC_7 (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAIN)>;
- 			default-state = "off";
- 		};
- 	};
- 
--	pwmleds {
-+	led-controller-2 {
- 		compatible = "pwm-leds";
- 
--		power {
-+		led-2 {
- 			label = "sei610:red:power";
- 			pwms = <&pwm_AO_ab 0 30518 0>;
- 			max-brightness = <255>;
+Thank you
+
+>
+> Thomas.
+>
+> --
+> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+> good idea.                                                [ RFC1925, 2.3 ]
+
 -- 
-2.20.1
-
+Best regards!
+Hev
+https://hev.cc

@@ -2,94 +2,89 @@ Return-Path: <SRS0=/9FO=DJ=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 204EAC4741F
-	for <linux-mips@archiver.kernel.org>; Fri,  2 Oct 2020 09:34:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32FDDC4363D
+	for <linux-mips@archiver.kernel.org>; Fri,  2 Oct 2020 09:52:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DE22520708
-	for <linux-mips@archiver.kernel.org>; Fri,  2 Oct 2020 09:34:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DA803206E3
+	for <linux-mips@archiver.kernel.org>; Fri,  2 Oct 2020 09:52:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726288AbgJBJeG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 2 Oct 2020 05:34:06 -0400
-Received: from mail.thorsis.com ([92.198.35.195]:36622 "EHLO mail.thorsis.com"
+        id S1726329AbgJBJw6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 2 Oct 2020 05:52:58 -0400
+Received: from elvis.franken.de ([193.175.24.41]:39814 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725993AbgJBJeG (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 2 Oct 2020 05:34:06 -0400
-X-Greylist: delayed 378 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Oct 2020 05:34:05 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.thorsis.com (Postfix) with ESMTP id 91F613B69;
-        Fri,  2 Oct 2020 11:27:46 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
-        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id vwTROurmSmhf; Fri,  2 Oct 2020 11:27:46 +0200 (CEST)
-Received: by mail.thorsis.com (Postfix, from userid 109)
-        id 59E2F4125; Fri,  2 Oct 2020 11:27:45 +0200 (CEST)
-From:   Alexander Dahl <ada@thorsis.com>
-To:     linux-leds@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Alexander Dahl <post@lespocky.de>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>, linux-omap@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Subject: Re: [PATCH v6 5/7] ARM: dts: Fix schema warnings for pwm-leds
-Date:   Fri, 02 Oct 2020 11:27:32 +0200
-Message-ID: <4533120.poq1GmoeVQ@ada>
-In-Reply-To: <CAJKOXPfBKnESpRkSDZp5CB3T-t95DXg2dNKQnNNXv6Q_ywck2w@mail.gmail.com>
-References: <20200930234637.7573-1-post@lespocky.de> <20200930234637.7573-6-post@lespocky.de> <CAJKOXPfBKnESpRkSDZp5CB3T-t95DXg2dNKQnNNXv6Q_ywck2w@mail.gmail.com>
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        id S1726181AbgJBJw6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 2 Oct 2020 05:52:58 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kOHkG-0002DT-00; Fri, 02 Oct 2020 11:52:56 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 1443DC1058; Fri,  2 Oct 2020 11:52:48 +0200 (CEST)
+Date:   Fri, 2 Oct 2020 11:52:48 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc:     Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        paul@pgazz.com, jeho@cs.utexas.edu
+Subject: Re: [PATCH] MIPS: remove the obsolete RM7000 extended interrupts
+ handler
+Message-ID: <20201002095248.GA9146@alpha.franken.de>
+References: <20200912142306.3604968-1-fazilyildiran@gmail.com>
+ <20200918135053.GB19202@alpha.franken.de>
+ <alpine.LFD.2.21.2009301529080.333514@eddie.linux-mips.org>
+ <20200930212131.GA14275@alpha.franken.de>
+ <alpine.LFD.2.21.2009302342030.333514@eddie.linux-mips.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.2.21.2009302342030.333514@eddie.linux-mips.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello Krzysztof,
-
-Am Freitag, 2. Oktober 2020, 11:12:50 CEST schrieb Krzysztof Kozlowski:
-> On Thu, 1 Oct 2020 at 01:53, Alexander Dahl <post@lespocky.de> wrote:
-> > The node names for devices using the pwm-leds driver follow a certain
-> > naming scheme (now).
-> > 
-> > Signed-off-by: Alexander Dahl <post@lespocky.de>
-> > ---
-> > 
-> > Notes:
-> >     v6:
-> >       * added this patch to series
-> >  
-> >  arch/arm/boot/dts/at91-kizbox.dts             | 10 +++----
-> >  arch/arm/boot/dts/at91-kizbox2-common.dtsi    |  8 +++---
-> >  arch/arm/boot/dts/at91-kizbox3-hs.dts         | 16 ++++++------
-> >  arch/arm/boot/dts/at91-kizbox3_common.dtsi    | 10 +++----
-> >  arch/arm/boot/dts/at91-kizboxmini-common.dtsi |  8 +++---
-> >  arch/arm/boot/dts/at91sam9m10g45ek.dts        | 10 +++----
-> >  arch/arm/boot/dts/at91sam9rlek.dts            | 10 +++----
-> >  .../boot/dts/berlin2cd-google-chromecast.dts  |  6 ++---
-> >  arch/arm/boot/dts/exynos5422-odroidhc1.dts    |  4 +--
-> >  arch/arm/boot/dts/exynos5422-odroidxu4.dts    |  4 +--
+On Thu, Oct 01, 2020 at 12:10:57AM +0100, Maciej W. Rozycki wrote:
+> On Wed, 30 Sep 2020, Thomas Bogendoerfer wrote:
 > 
-> Somehow you did not CC the maintainers... please use
-> scripts/get_maintainers.pl to obtain list of addresses.
+> > > > not yet;-) I have an RM7000 based system in my basement... I'm also
+> > > > not sure, if R7k O2s need that.
+> > > 
+> > >  One of the more exotic Malta daughtercards used that too I believe.  I'd 
+> > > have to check the docs.  Of course getting hands on such a daughtercard is 
+> > > another matter, but we continue having RM7000 enabled for the Malta.
+> > 
+> > I've checked interrupts on P6064 and doesn't use the "extented" interrupts.
+> > And since O2 uses the same CPU connector for all CPU boards I doubt it
+> > it either.
+> 
+>  Mind that interrupts can be asserted in the RM7k via an external write 
+> request too, and I'm fairly sure SGI hardware would use that rather than 
+> interrupt inputs given that R4000/R4400 SC/MC CPUs only have Int*(0) wired 
+> and all the remaining interrupts are only available via a processor write.  
+> Have you checked that?
 
-Well, that will be a huge list of Cc then.  What is the policy?  Everybody 
-gets the whole series or different list of receivers per patch?
+checked now, IP32 uses a single interrupt pin coming from CRIME ASIC,
+so nothing "fanncy" there and no use for the extended RM7k interrupts.
 
-> All these should be separate patches per sub-architecture.
+> > What about Malta ? 
+> 
+>  So this is the CoreBonito64 daughtercard, which can have either an RM5261 
+> or an RM7061 processor installed.  The Int*(9:6) inputs are not mentioned, 
+> which I take it means unconnected, and ExtRqst* has a pull-up and is 
+> otherwise wired to a debug connector only.  Which makes me conclude this 
+> feature cannot be used in a standard application with this card.
+> 
+>  NB there is another interrupt controller embedded in the Bonito64 system 
+> controller, which on the CoreBonito64, conversely, can actually be enabled 
+> with a jumper and used, but it's not usually either.
 
-I already suspected that.  Will do in v7.
+ok, thanks for the info.
 
-Thanks for your feedback.
-Alex
+Thomas.
 
-
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

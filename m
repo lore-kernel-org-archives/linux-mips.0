@@ -1,78 +1,148 @@
-Return-Path: <SRS0=NOLV=DK=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=OBGo=DL=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.5 required=3.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+	DKIM_INVALID,DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3FA0C41604
-	for <linux-mips@archiver.kernel.org>; Sat,  3 Oct 2020 21:07:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33DC7C41604
+	for <linux-mips@archiver.kernel.org>; Sun,  4 Oct 2020 01:17:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4B2AF206C1
-	for <linux-mips@archiver.kernel.org>; Sat,  3 Oct 2020 21:07:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C95E92067D
+	for <linux-mips@archiver.kernel.org>; Sun,  4 Oct 2020 01:17:20 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mymailcheap.com header.i=@mymailcheap.com header.b="Uypc8fsx";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="EQdCy5pM"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725901AbgJCVHL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 3 Oct 2020 17:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725897AbgJCVHL (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 3 Oct 2020 17:07:11 -0400
-Received: from orcam.me.uk (unknown [IPv6:2001:4190:8020::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 919C3C0613D0
-        for <linux-mips@vger.kernel.org>; Sat,  3 Oct 2020 14:07:11 -0700 (PDT)
-Received: from bugs.linux-mips.org (eddie.linux-mips.org [IPv6:2a01:4f8:201:92aa::3])
-        by orcam.me.uk (Postfix) with ESMTPS id DD9572BE086;
-        Sat,  3 Oct 2020 22:07:08 +0100 (BST)
-Date:   Sat, 3 Oct 2020 22:07:05 +0100 (BST)
-From:   "Maciej W. Rozycki" <macro@linux-mips.org>
-To:     Baoquan He <bhe@redhat.com>
-cc:     Huacai Chen <chenhc@lemote.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Dave Young <dyoung@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        kexec@lists.infradead.org, Fuxin Zhang <zhangfx@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH 1/3] MIPS: Crash kernel should be able to see old
- memories
-In-Reply-To: <20200923030847.GM25604@MiWiFi-R3L-srv>
-Message-ID: <alpine.LFD.2.21.2010032200470.333514@eddie.linux-mips.org>
-References: <1600828257-31316-1-git-send-email-chenhc@lemote.com> <20200923024548.GL25604@MiWiFi-R3L-srv> <CAAhV-H66O77hK7kB8cCcM6XUOc-TFEg_TJG+GrCSEdD89Qxb7g@mail.gmail.com> <20200923030847.GM25604@MiWiFi-R3L-srv>
+        id S1726226AbgJDBRU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 3 Oct 2020 21:17:20 -0400
+Received: from relay2.mymailcheap.com ([217.182.66.162]:52687 "EHLO
+        relay2.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726225AbgJDBRU (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 3 Oct 2020 21:17:20 -0400
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay2.mymailcheap.com (Postfix) with ESMTPS id BA9C23ECDA;
+        Sun,  4 Oct 2020 03:17:17 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id E51C02A0FC;
+        Sat,  3 Oct 2020 21:17:16 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1601774236;
+        bh=VpNMNzNhPvGmh9lm2Wahvlf6X8ISFXLwDCrgseSglWY=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=Uypc8fsxSwoHaVfw+r29RzKfwkn2DhhGm4yTEIICGCJWe/KGc4mGkVZeWfakYXmg8
+         i5uafZMomjgORp+zGaztOH0KwH5+VusPmxpNEBWn8mDHoaHvUFmsVSve4rHYP4MU+K
+         kSXR311VRWizk6150l9OO3ji4RLnVUeM1fJYd250=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ZB5GRAQkPbZ2; Sat,  3 Oct 2020 21:17:15 -0400 (EDT)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Sat,  3 Oct 2020 21:17:15 -0400 (EDT)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 5D13E4085B;
+        Sun,  4 Oct 2020 01:17:13 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="EQdCy5pM";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [127.0.0.1] (unknown [36.18.114.162])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 2BC664085B;
+        Sun,  4 Oct 2020 01:17:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1601774228;
+        bh=VpNMNzNhPvGmh9lm2Wahvlf6X8ISFXLwDCrgseSglWY=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=EQdCy5pM+KJ4Pd40DhZyIm3WdCi7cqRPoPZsn3fhGWlWYjr1h7CXDhbKTf4jtgEEw
+         R8Jbf2LUuFzOzO5J9KzuRZ1j1fKwa7GdwydoWDXFdPhSF8vfGN888LEDVfFVURXqHL
+         H6n54TCE8fIM/PG/d2d2pTy9yz+R9vJJeXKRSYEg=
+Date:   Sat, 03 Oct 2020 14:25:42 +0800
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+CC:     linux-mips@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        WANG Xuerui <git@xen0n.name>,
+        Paul Burton <paulburton@kernel.org>,
+        =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Liangliang Huang <huanglllzu@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: cevt-r4k: Enable intimer for Loongson64 CPUs with extimer
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20201002132721.GA12295@alpha.franken.de>
+References: <20200923110301.58125-1-jiaxun.yang@flygoat.com> <20201002132721.GA12295@alpha.franken.de>
+Message-ID: <CA420A99-C226-4A22-B3A6-4464DD8CFA1D@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 5D13E4085B
+X-Spamd-Result: default: False [1.40 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         RCPT_COUNT_TWELVE(0.00)[12];
+         RECEIVED_SPAMHAUS_PBL(0.00)[36.18.114.162:received];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         FREEMAIL_CC(0.00)[vger.kernel.org,lemote.com,baikalelectronics.ru,xen0n.name,kernel.org,wanyeetech.com,gmail.com,crapouillou.net];
+         SUSPICIOUS_RECIPS(1.50)[];
+         RCVD_COUNT_TWO(0.00)[2]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, 23 Sep 2020, Baoquan He wrote:
 
-> > > And we don't have mem=X@Y, only mem=nn[KMG].
-> > The relocatable kernel of MIPS is still unusable now, so MIPS should
-> > use mem=X@Y, and the crash kernel is always different from normal
-> > kernel.
-> 
-> Interesting. Seems MIPS does support mem=X@Y, even though the document
-> of 'mem=' says it's used to specify amount of memory, but not memory
-> region. Anyway, leave this to mips reviewers, thanks for replying.
-> 
-> ~~~~~~~~~~~~~~~~~~~
->         mem=nn[KMG]     [KNL,BOOT] Force usage of a specific amount of memory
->                         Amount of memory to be used in cases as follows:
 
- Yep, I implemented it for the DECstation back in 2000:
+=E4=BA=8E 2020=E5=B9=B410=E6=9C=882=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=889=
+:27:21, Thomas Bogendoerfer <tsbogend@alpha=2Efranken=2Ede> =E5=86=99=E5=88=
+=B0:
+>On Wed, Sep 23, 2020 at 07:02:54PM +0800, Jiaxun Yang wrote:
+>> =20
+>> +#ifdef CONFIG_CPU_LOONGSON64
+>> +static int c0_compare_int_enable(struct clock_event_device *cd)
+>> +{
+>> +	if (cpu_has_extimer)
+>> +		set_c0_config6(LOONGSON_CONF6_INTIMER);
+>
+>why are you not simply do this in loognson64 board setup code and avoid
+>the whole cluttering of #ifdef CONFIG_CPU_LOONGSON64 over common code ?
 
-commit 97b7ae4257ef7ba8ed9b7944a4f56a49af3e8abb
-Author: Ralf Baechle <ralf@linux-mips.org>
-Date:   Mon Dec 11 16:41:05 2000 +0000
+Because I'm going to add extimer support later that require dynamic switch=
+ of cevt-r4k=2E
 
-    Memmap fixes from Maciej.
+This callback is required=2E
 
-(from the LMO repo) in line with the x86 syntax.  I don't know why it 
-hasn't ever been documented in "Kernel Parameters" (for any port), but I'm 
-fairly sure it has been somewhere.
+Thanks=2E
 
- FWIW,
+- Jiaxun
 
-  Maciej
+>
+>Thomas=2E
+>

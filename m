@@ -2,147 +2,98 @@ Return-Path: <SRS0=OBGo=DL=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=3.0 tests=BAYES_00,DATE_IN_PAST_12_24,
-	DKIM_INVALID,DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33DC7C41604
-	for <linux-mips@archiver.kernel.org>; Sun,  4 Oct 2020 01:17:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02C24C4727D
+	for <linux-mips@archiver.kernel.org>; Sun,  4 Oct 2020 16:15:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C95E92067D
-	for <linux-mips@archiver.kernel.org>; Sun,  4 Oct 2020 01:17:20 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mymailcheap.com header.i=@mymailcheap.com header.b="Uypc8fsx";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="EQdCy5pM"
+	by mail.kernel.org (Postfix) with ESMTP id BF1C1206C1
+	for <linux-mips@archiver.kernel.org>; Sun,  4 Oct 2020 16:15:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=default; t=1601828138;
+	bh=ipIbwBDHbGx7U/nYVtWvwEV/y7/NQhikV5Ng+1S41wo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:List-ID:From;
+	b=W1d9Gqf7bJ6T7bh586WfOBZicp9iKjzPUJYqmroLx6u6PQfjqa61mIBVgpXIBVPh6
+	 iW9VpIv12w9YnsLtmECLDOnRE+aMsVxPfjxBRV8n4Xs+fGZ/1PMETOTHPewSYjpDG/
+	 WDOYQOPDksuo1PXKHee0wwO5cn3YR0labkuyvVk0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726226AbgJDBRU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 3 Oct 2020 21:17:20 -0400
-Received: from relay2.mymailcheap.com ([217.182.66.162]:52687 "EHLO
-        relay2.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726225AbgJDBRU (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 3 Oct 2020 21:17:20 -0400
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay2.mymailcheap.com (Postfix) with ESMTPS id BA9C23ECDA;
-        Sun,  4 Oct 2020 03:17:17 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id E51C02A0FC;
-        Sat,  3 Oct 2020 21:17:16 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1601774236;
-        bh=VpNMNzNhPvGmh9lm2Wahvlf6X8ISFXLwDCrgseSglWY=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=Uypc8fsxSwoHaVfw+r29RzKfwkn2DhhGm4yTEIICGCJWe/KGc4mGkVZeWfakYXmg8
-         i5uafZMomjgORp+zGaztOH0KwH5+VusPmxpNEBWn8mDHoaHvUFmsVSve4rHYP4MU+K
-         kSXR311VRWizk6150l9OO3ji4RLnVUeM1fJYd250=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ZB5GRAQkPbZ2; Sat,  3 Oct 2020 21:17:15 -0400 (EDT)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        id S1726230AbgJDQPc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 4 Oct 2020 12:15:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726083AbgJDQPc (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 4 Oct 2020 12:15:32 -0400
+Received: from localhost (unknown [171.61.67.142])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Sat,  3 Oct 2020 21:17:15 -0400 (EDT)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 5D13E4085B;
-        Sun,  4 Oct 2020 01:17:13 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="EQdCy5pM";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [127.0.0.1] (unknown [36.18.114.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 2BC664085B;
-        Sun,  4 Oct 2020 01:17:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1601774228;
-        bh=VpNMNzNhPvGmh9lm2Wahvlf6X8ISFXLwDCrgseSglWY=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=EQdCy5pM+KJ4Pd40DhZyIm3WdCi7cqRPoPZsn3fhGWlWYjr1h7CXDhbKTf4jtgEEw
-         R8Jbf2LUuFzOzO5J9KzuRZ1j1fKwa7GdwydoWDXFdPhSF8vfGN888LEDVfFVURXqHL
-         H6n54TCE8fIM/PG/d2d2pTy9yz+R9vJJeXKRSYEg=
-Date:   Sat, 03 Oct 2020 14:25:42 +0800
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     linux-mips@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        WANG Xuerui <git@xen0n.name>,
-        Paul Burton <paulburton@kernel.org>,
-        =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Liangliang Huang <huanglllzu@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: cevt-r4k: Enable intimer for Loongson64 CPUs with extimer
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20201002132721.GA12295@alpha.franken.de>
-References: <20200923110301.58125-1-jiaxun.yang@flygoat.com> <20201002132721.GA12295@alpha.franken.de>
-Message-ID: <CA420A99-C226-4A22-B3A6-4464DD8CFA1D@flygoat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 61CEB2068D;
+        Sun,  4 Oct 2020 16:15:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601828131;
+        bh=ipIbwBDHbGx7U/nYVtWvwEV/y7/NQhikV5Ng+1S41wo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BkrFjq5pesVDCZqCgigvVGnAkYU3kAenXEVcy0C+EYf4QSa7nY/PHBghx8c3UJ+K0
+         V7wA5EiZjeOgOA1F0vSfPpr62TK79z4/hmO6HvTvKyMEs+fXYkKqMHx+Zl0SJ9Rz3x
+         kkipw8CWwDYt7zwpufpGFZLd9NoEY63vruFFDBV0=
+Date:   Sun, 4 Oct 2020 21:45:26 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-spi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-leds@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-mips@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-serial@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Another round of adding missing
+ 'additionalProperties'
+Message-ID: <20201004161526.GA2968@vkoul-mobl>
+References: <20201002234143.3570746-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 5D13E4085B
-X-Spamd-Result: default: False [1.40 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[flygoat.com:+];
-         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         RCPT_COUNT_TWELVE(0.00)[12];
-         RECEIVED_SPAMHAUS_PBL(0.00)[36.18.114.162:received];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         FREEMAIL_CC(0.00)[vger.kernel.org,lemote.com,baikalelectronics.ru,xen0n.name,kernel.org,wanyeetech.com,gmail.com,crapouillou.net];
-         SUSPICIOUS_RECIPS(1.50)[];
-         RCVD_COUNT_TWO(0.00)[2]
-X-Rspamd-Server: mail20.mymailcheap.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002234143.3570746-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+On 02-10-20, 18:41, Rob Herring wrote:
 
+>  .../phy/amlogic,meson-g12a-usb2-phy.yaml      |  2 ++
+>  .../bindings/phy/qcom,ipq806x-usb-phy-hs.yaml |  2 ++
+>  .../bindings/phy/qcom,ipq806x-usb-phy-ss.yaml |  2 ++
+>  .../bindings/phy/qcom,qusb2-phy.yaml          |  1 +
+>  .../bindings/phy/qcom-usb-ipq4019-phy.yaml    |  2 ++
 
-=E4=BA=8E 2020=E5=B9=B410=E6=9C=882=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=889=
-:27:21, Thomas Bogendoerfer <tsbogend@alpha=2Efranken=2Ede> =E5=86=99=E5=88=
-=B0:
->On Wed, Sep 23, 2020 at 07:02:54PM +0800, Jiaxun Yang wrote:
->> =20
->> +#ifdef CONFIG_CPU_LOONGSON64
->> +static int c0_compare_int_enable(struct clock_event_device *cd)
->> +{
->> +	if (cpu_has_extimer)
->> +		set_c0_config6(LOONGSON_CONF6_INTIMER);
->
->why are you not simply do this in loognson64 board setup code and avoid
->the whole cluttering of #ifdef CONFIG_CPU_LOONGSON64 over common code ?
+For phy changes:
 
-Because I'm going to add extimer support later that require dynamic switch=
- of cevt-r4k=2E
+Acked-By: Vinod Koul <vkoul@kernel.org>
 
-This callback is required=2E
-
-Thanks=2E
-
-- Jiaxun
-
->
->Thomas=2E
->
+-- 
+~Vinod

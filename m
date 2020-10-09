@@ -2,124 +2,79 @@ Return-Path: <SRS0=dmOI=DQ=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 249D2C433DF
-	for <linux-mips@archiver.kernel.org>; Fri,  9 Oct 2020 12:26:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 646D4C43457
+	for <linux-mips@archiver.kernel.org>; Fri,  9 Oct 2020 12:51:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B8BA922284
-	for <linux-mips@archiver.kernel.org>; Fri,  9 Oct 2020 12:26:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2EE57222C2
+	for <linux-mips@archiver.kernel.org>; Fri,  9 Oct 2020 12:51:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733093AbgJIM0y (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 9 Oct 2020 08:26:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36476 "EHLO mx2.suse.de"
+        id S2387788AbgJIMvw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 9 Oct 2020 08:51:52 -0400
+Received: from elvis.franken.de ([193.175.24.41]:53488 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731594AbgJIM0x (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 9 Oct 2020 08:26:53 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9B408AC12;
-        Fri,  9 Oct 2020 12:26:51 +0000 (UTC)
+        id S1730740AbgJIMvs (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 9 Oct 2020 08:51:48 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kQrs7-0002EF-01; Fri, 09 Oct 2020 14:51:43 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 49978C1126; Fri,  9 Oct 2020 14:09:00 +0200 (CEST)
+Date:   Fri, 9 Oct 2020 14:09:00 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: cpu-probe: remove MIPS_CPU_BP_GHIST option bit
-Date:   Fri,  9 Oct 2020 14:26:48 +0200
-Message-Id: <20201009122649.85490-1-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.16.4
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        "Maciej W. Rozycki" <macro@linux-mips.org>,
+        Keguang Zhang <keguang.zhang@gmail.com>,
+        John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] MIPS: replace add_memory_region with memblock
+Message-ID: <20201009120900.GB10588@alpha.franken.de>
+References: <20201008084357.42780-1-tsbogend@alpha.franken.de>
+ <20201008152006.4khkbzsxqmmz76rw@mobilestation>
+ <631aa35e-2575-3ec0-ec0f-7d45e49b8373@flygoat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <631aa35e-2575-3ec0-ec0f-7d45e49b8373@flygoat.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-MIPS_CPU_BP_GHIST is only set two times and more or less immediately
-used in cpu-probe.c itself. Remove this option to make room in options
-word.
+On Fri, Oct 09, 2020 at 11:00:36AM +0800, Jiaxun Yang wrote:
+> 
+> 
+> 在 2020/10/8 23:20, Serge Semin 写道:
+> 
+> [...]
+> >
+> >>-		add_memory_region(LOONGSON_HIGHMEM_START,
+> >>-				  highmemsize << 20, BOOT_MEM_RAM);
+> >>-
+> >>-	add_memory_region(LOONGSON_PCI_MEM_END + 1, LOONGSON_HIGHMEM_START -
+> >>-			  LOONGSON_PCI_MEM_END - 1, BOOT_MEM_RESERVED);
+> >>-
+> >>+		memblock_add(LOONGSON_HIGHMEM_START, highmemsize << 20);
+> >The same question. Is it ok to discard the
+> >[LOONGSON_PCI_MEM_END+1:LOONGSON_HIGHMEM_START-LOONGSON_PCI_MEM_END-1] region
+> >removal operation?
+> Hi all,
+> 
+> I can confirm this reservation can be removed.
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
- arch/mips/include/asm/cpu-features.h                      |  3 ---
- arch/mips/include/asm/cpu.h                               |  1 -
- arch/mips/include/asm/mach-au1x00/cpu-feature-overrides.h |  1 -
- arch/mips/kernel/cpu-probe.c                              | 10 ++++------
- 4 files changed, 4 insertions(+), 11 deletions(-)
+thank you for confirming.
 
-diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
-index 78cf7e300f12..f2e216eef7da 100644
---- a/arch/mips/include/asm/cpu-features.h
-+++ b/arch/mips/include/asm/cpu-features.h
-@@ -171,9 +171,6 @@
- #ifndef cpu_has_llsc
- #define cpu_has_llsc		__isa_ge_or_opt(1, MIPS_CPU_LLSC)
- #endif
--#ifndef cpu_has_bp_ghist
--#define cpu_has_bp_ghist	__opt(MIPS_CPU_BP_GHIST)
--#endif
- #ifndef kernel_uses_llsc
- #define kernel_uses_llsc	cpu_has_llsc
- #endif
-diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-index 388a82f28a87..c9222cc2244f 100644
---- a/arch/mips/include/asm/cpu.h
-+++ b/arch/mips/include/asm/cpu.h
-@@ -398,7 +398,6 @@ enum cpu_type_enum {
- #define MIPS_CPU_RW_LLB		BIT_ULL(32)	/* LLADDR/LLB writes are allowed */
- #define MIPS_CPU_LPA		BIT_ULL(33)	/* CPU supports Large Physical Addressing */
- #define MIPS_CPU_CDMM		BIT_ULL(34)	/* CPU has Common Device Memory Map */
--#define MIPS_CPU_BP_GHIST	BIT_ULL(35)	/* R12K+ Branch Prediction Global History */
- #define MIPS_CPU_SP		BIT_ULL(36)	/* Small (1KB) page support */
- #define MIPS_CPU_FTLB		BIT_ULL(37)	/* CPU has Fixed-page-size TLB */
- #define MIPS_CPU_NAN_LEGACY	BIT_ULL(38)	/* Legacy NaN implemented */
-diff --git a/arch/mips/include/asm/mach-au1x00/cpu-feature-overrides.h b/arch/mips/include/asm/mach-au1x00/cpu-feature-overrides.h
-index ecfbb5aeada3..e6e527224a15 100644
---- a/arch/mips/include/asm/mach-au1x00/cpu-feature-overrides.h
-+++ b/arch/mips/include/asm/mach-au1x00/cpu-feature-overrides.h
-@@ -39,7 +39,6 @@
- #define cpu_has_guestctl2		0
- #define cpu_has_guestid			0
- #define cpu_has_drg			0
--#define cpu_has_bp_ghist		0
- #define cpu_has_mips16			0
- #define cpu_has_mips16e2		0
- #define cpu_has_mdmx			0
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index b8e073772bdb..e6853697a056 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -1278,8 +1278,9 @@ static inline void cpu_probe_legacy(struct cpuinfo_mips *c, unsigned int cpu)
- 		c->options = MIPS_CPU_TLB | MIPS_CPU_4K_CACHE | MIPS_CPU_4KEX |
- 			     MIPS_CPU_FPU | MIPS_CPU_32FPR |
- 			     MIPS_CPU_COUNTER | MIPS_CPU_WATCH |
--			     MIPS_CPU_LLSC | MIPS_CPU_BP_GHIST;
-+			     MIPS_CPU_LLSC;
- 		c->tlbsize = 64;
-+		write_c0_r10k_diag(read_c0_r10k_diag() | R10K_DIAG_E_GHIST);
- 		break;
- 	case PRID_IMP_R14000:
- 		if (((c->processor_id >> 4) & 0x0f) > 2) {
-@@ -1293,8 +1294,9 @@ static inline void cpu_probe_legacy(struct cpuinfo_mips *c, unsigned int cpu)
- 		c->options = MIPS_CPU_TLB | MIPS_CPU_4K_CACHE | MIPS_CPU_4KEX |
- 			     MIPS_CPU_FPU | MIPS_CPU_32FPR |
- 			     MIPS_CPU_COUNTER | MIPS_CPU_WATCH |
--			     MIPS_CPU_LLSC | MIPS_CPU_BP_GHIST;
-+			     MIPS_CPU_LLSC;
- 		c->tlbsize = 64;
-+		write_c0_r10k_diag(read_c0_r10k_diag() | R10K_DIAG_E_GHIST);
- 		break;
- 	case PRID_IMP_LOONGSON_64C:  /* Loongson-2/3 */
- 		switch (c->processor_id & PRID_REV_MASK) {
-@@ -2054,10 +2056,6 @@ void cpu_probe(void)
- 	else
- 		cpu_set_nofpu_opts(c);
- 
--	if (cpu_has_bp_ghist)
--		write_c0_r10k_diag(read_c0_r10k_diag() |
--				   R10K_DIAG_E_GHIST);
--
- 	if (cpu_has_mips_r2_r6) {
- 		c->srsets = ((read_c0_srsctl() >> 26) & 0x0f) + 1;
- 		/* R2 has Performance Counter Interrupt indicator */
+Thomas.
+
 -- 
-2.16.4
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

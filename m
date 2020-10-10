@@ -2,25 +2,26 @@ Return-Path: <SRS0=RjDG=DR=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1859BC433DF
-	for <linux-mips@archiver.kernel.org>; Sat, 10 Oct 2020 23:48:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 755E9C43457
+	for <linux-mips@archiver.kernel.org>; Sat, 10 Oct 2020 23:48:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CC6B22078D
-	for <linux-mips@archiver.kernel.org>; Sat, 10 Oct 2020 23:48:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 44ADC2078D
+	for <linux-mips@archiver.kernel.org>; Sat, 10 Oct 2020 23:48:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbgJJXsB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 10 Oct 2020 19:48:01 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:36514 "EHLO loongson.cn"
+        id S1726353AbgJJXsJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 10 Oct 2020 19:48:09 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:36530 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726098AbgJJXsB (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 10 Oct 2020 19:48:01 -0400
+        id S1727043AbgJJXsD (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 10 Oct 2020 19:48:03 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxGMQrSIJfLfobAA--.13680S2;
-        Sun, 11 Oct 2020 07:47:55 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxGMQrSIJfLfobAA--.13680S6;
+        Sun, 11 Oct 2020 07:47:57 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -28,57 +29,56 @@ To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v2 0/4 RESEND] Avoid build error, clean up numa.c and add /proc/boardinfo
-Date:   Sun, 11 Oct 2020 07:47:50 +0800
-Message-Id: <1602373674-4579-1-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH v2 4/4 RESEND] docs: fs: proc.rst: Add boardinfo description for Loongson64
+Date:   Sun, 11 Oct 2020 07:47:54 +0800
+Message-Id: <1602373674-4579-5-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxGMQrSIJfLfobAA--.13680S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZr1DJrW8uF1xuF4kGr18AFb_yoWDKFXEkF
-        ZFya48KryrAa4xJayxZF4fWFW7WayUW3ZxCF15XrWavas3ZFZxGFW8A3yjgF1kZ3Wjvrs5
-        XFW8Cr1kZFs2kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbcxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
-        1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVWfMxAI
-        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
-        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxG
-        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJw
-        CI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjS_M3UUUUU==
+In-Reply-To: <1602373674-4579-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1602373674-4579-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9DxGMQrSIJfLfobAA--.13680S6
+X-Coremail-Antispam: 1UD129KBjvdXoWrKF47WF4xAFWrtF4rWF4DJwb_yoWfJwc_Za
+        47XF48Zr4xZr1rJ3WUtF45WF17ArZ3Kw1UAa13JryUJw15J398JFWDAr17Ar48JrW2kryr
+        CFWkXrnxZF13WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbh8FF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
+        IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
+        F7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJw
+        A2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8JVW8Jr1l
+        e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
+        8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
+        jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6FWl42xK82
+        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
+        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMI
+        IF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF
+        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
+        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU0xhLUUUUU
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-[RESEND due to the following reason:
-Can not connect to recipient's server because of unstable
-network or firewall filter. rcpt handle timeout,last handle
-info: Host vger.kernel.org(23.128.96.18) command RCPT TO
-respond timeout or disconnected]
+Add a description for /proc/boardinfo on the Loongson platform.
 
-v2: add patch #4 suggested by Jiaxun 
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
 
-Tiezhu Yang (4):
-  MIPS: Loongson64: Select SMP in Kconfig to avoid build error
-  MIPS: Loongson64: Clean up numa.c
-  MIPS: Loongson64: Add /proc/boardinfo
-  docs: fs: proc.rst: Add boardinfo description for Loongson64
+v2: new added patch
 
- Documentation/filesystems/proc.rst                 |  1 +
- arch/mips/Kconfig                                  |  1 +
- arch/mips/configs/loongson3_defconfig              |  1 -
- arch/mips/include/asm/mach-loongson64/boot_param.h |  4 +++
- arch/mips/include/asm/mach-loongson64/mmzone.h     |  6 +---
- arch/mips/loongson64/Makefile                      |  2 +-
- arch/mips/loongson64/boardinfo.c                   | 40 ++++++++++++++++++++++
- arch/mips/loongson64/env.c                         | 10 ++++++
- arch/mips/loongson64/numa.c                        | 29 ++--------------
- 9 files changed, 61 insertions(+), 33 deletions(-)
- create mode 100644 arch/mips/loongson64/boardinfo.c
+ Documentation/filesystems/proc.rst | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+index 533c79e..3c4cb65 100644
+--- a/Documentation/filesystems/proc.rst
++++ b/Documentation/filesystems/proc.rst
+@@ -664,6 +664,7 @@ files are there, and which are missing.
+  File         Content
+  ============ ===============================================================
+  apm          Advanced power management info
++ boardinfo    Mainboard and BIOS info for Loongson64
+  buddyinfo    Kernel memory allocator information (see text)	(2.5)
+  bus          Directory containing bus specific information
+  cmdline      Kernel command line
 -- 
 2.1.0
 

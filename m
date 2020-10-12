@@ -2,57 +2,72 @@ Return-Path: <SRS0=bvV5=DT=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 926D8C43457
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C87B3C433E7
 	for <linux-mips@archiver.kernel.org>; Mon, 12 Oct 2020 10:38:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 42A8D20E65
+	by mail.kernel.org (Postfix) with ESMTP id 95C9B215A4
 	for <linux-mips@archiver.kernel.org>; Mon, 12 Oct 2020 10:38:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387669AbgJLKik (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S2387635AbgJLKik (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Mon, 12 Oct 2020 06:38:40 -0400
-Received: from elvis.franken.de ([193.175.24.41]:58417 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:58411 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387569AbgJLKiS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S2387596AbgJLKiS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Mon, 12 Oct 2020 06:38:18 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kRvDc-0008KW-06; Mon, 12 Oct 2020 12:38:16 +0200
+        id 1kRvDc-0008KW-01; Mon, 12 Oct 2020 12:38:16 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 39336C1140; Mon, 12 Oct 2020 12:31:43 +0200 (CEST)
-Date:   Mon, 12 Oct 2020 12:31:43 +0200
+        id 0D6E8C1140; Mon, 12 Oct 2020 12:29:35 +0200 (CEST)
+Date:   Mon, 12 Oct 2020 12:29:34 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: cpu-probe: remove MIPS_CPU_BP_GHIST option bit
-Message-ID: <20201012103143.GF7765@alpha.franken.de>
-References: <20201009122649.85490-1-tsbogend@alpha.franken.de>
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] MIPS: cpu-probe: move fpu probing/handling into
+ its own file
+Message-ID: <20201012102934.GA7765@alpha.franken.de>
+References: <20201008213327.11603-1-tsbogend@alpha.franken.de>
+ <alpine.LFD.2.21.2010100128110.866917@eddie.linux-mips.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201009122649.85490-1-tsbogend@alpha.franken.de>
+In-Reply-To: <alpine.LFD.2.21.2010100128110.866917@eddie.linux-mips.org>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 02:26:48PM +0200, Thomas Bogendoerfer wrote:
-> MIPS_CPU_BP_GHIST is only set two times and more or less immediately
-> used in cpu-probe.c itself. Remove this option to make room in options
-> word.
+On Sat, Oct 10, 2020 at 01:30:38AM +0100, Maciej W. Rozycki wrote:
+> On Thu, 8 Oct 2020, Thomas Bogendoerfer wrote:
 > 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
->  arch/mips/include/asm/cpu-features.h                      |  3 ---
->  arch/mips/include/asm/cpu.h                               |  1 -
->  arch/mips/include/asm/mach-au1x00/cpu-feature-overrides.h |  1 -
->  arch/mips/kernel/cpu-probe.c                              | 10 ++++------
->  4 files changed, 4 insertions(+), 11 deletions(-)
+> > +			/*
+> > +			 * MAC2008 toolchain never landed in real world, so we're only
+> > +			 * testing whether it can be disabled and don't try to enabled
+> > +			 * it.
+> > +			 */
+> > +			fcsr0 = fcsr & ~(FPU_CSR_ABS2008 | FPU_CSR_NAN2008 | FPU_CSR_MAC2008);
+> > +			write_32bit_cp1_register(CP1_STATUS, fcsr0);
+> > +			fcsr0 = read_32bit_cp1_register(CP1_STATUS);
+> > +
+> > +			fcsr1 = fcsr | FPU_CSR_ABS2008 | FPU_CSR_NAN2008;
+> > +			write_32bit_cp1_register(CP1_STATUS, fcsr1);
+> > +			fcsr1 = read_32bit_cp1_register(CP1_STATUS);
+> > +
+> > +			write_32bit_cp1_register(CP1_STATUS, fcsr);
+> > +
+> > +			if (c->isa_level & (MIPS_CPU_ISA_M32R2 | MIPS_CPU_ISA_M64R2)) {
+> > +				/*
+> > +				 * The bit for MAC2008 might be reused by R6 in future,
+> > +				 * so we only test for R2-R5.
+> > +				 */
+> 
+>  Umm, this has formatting issues with lines extending beyond column #80.
 
-applied to mips-next.
+I've fixed it while appling.
 
 Thomas.
 

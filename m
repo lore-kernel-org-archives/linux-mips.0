@@ -2,75 +2,120 @@ Return-Path: <SRS0=bvV5=DT=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C87B3C433E7
-	for <linux-mips@archiver.kernel.org>; Mon, 12 Oct 2020 10:38:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7168C433E7
+	for <linux-mips@archiver.kernel.org>; Mon, 12 Oct 2020 11:17:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 95C9B215A4
-	for <linux-mips@archiver.kernel.org>; Mon, 12 Oct 2020 10:38:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 856552076E
+	for <linux-mips@archiver.kernel.org>; Mon, 12 Oct 2020 11:17:59 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aZN0zmZ1"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387635AbgJLKik (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 12 Oct 2020 06:38:40 -0400
-Received: from elvis.franken.de ([193.175.24.41]:58411 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387596AbgJLKiS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 12 Oct 2020 06:38:18 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kRvDc-0008KW-01; Mon, 12 Oct 2020 12:38:16 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 0D6E8C1140; Mon, 12 Oct 2020 12:29:35 +0200 (CEST)
-Date:   Mon, 12 Oct 2020 12:29:34 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S2387843AbgJLLR7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 12 Oct 2020 07:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387681AbgJLLR6 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 12 Oct 2020 07:17:58 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24EF4C0613CE;
+        Mon, 12 Oct 2020 04:17:58 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id a7so16886940lfk.9;
+        Mon, 12 Oct 2020 04:17:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=prTaif8qDcd1qUoXq1ktzlUWrSZNMtNm6psMX/iuAJQ=;
+        b=aZN0zmZ1Bnb4ZKESN5+gvyU9vDYl+nq9X5WEEhXj9B78DPZvAMfYgJLi1csiPJuuFj
+         KV6mLEnhHr5LRfSxbOX/vzmteTI5y+v1HjtGO24VrcoRHDiGKog7e+LCF07pXN8rpVPF
+         dFdj4VMcNUPEeMoWmc22rPfNeBEvDn6vrstE+8wW97095XTNMB3CZS/w8QVOgJED8G/M
+         Z/6o2/QEunywdfzozbBFyMxVpKlMR7FmqFvG8al8g3hI6EULxgiCPimd2tj4Rb3jC5Bp
+         RIdvNWyo+fqDCePtGvIlJWTRKJWgawztZlYlsCnJyOzB+DHLyxtkWOwvWdepU5fyVcjF
+         YK4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=prTaif8qDcd1qUoXq1ktzlUWrSZNMtNm6psMX/iuAJQ=;
+        b=ZoAG6bUo7NtrgaHZg8lYB2BIV1NcGpt0PXpBvNUq10Kj+Rx/F2Yo74pWMJdHnvxEY3
+         OTVjuTr5QGx8flpLCinrYFV1es6BMfd8vJ3MbfddnQp9ej5soeDABmsyzgXp0rAT4YEi
+         Cfj8u4xZfCDtSNmmrtj86dHoiFq6v0sKmB6vJR5gUgN2frDVBBw54xziqG/DeOKuXWc9
+         i+RA/mqm62vrU94eLf018jP5xDpisYy3q5L+CSi/1pGwZLHqTeq2gHb5Mnc2oVc6P39R
+         tyq0vZQXbOxjHZMtZfF96c4G/NYqavo7w7Qsrtzt5HVtOJ+zO6jv82cEjH+eGURnmlq6
+         eZTg==
+X-Gm-Message-State: AOAM5302J4QPfeyrtGZOZAV48ckkN2ekR2lqb9obeZ0hEFUniU6xib0O
+        LbLJyeU7zNQP6WCBLjM5MVFqI5mnRdk=
+X-Google-Smtp-Source: ABdhPJyWQR8xZcT/FA4GwCUxHY1ZrdGttCgkq70KAmmv0Z5W9G9NiMMYOdVcNknHrLhZBPvmyHN6mg==
+X-Received: by 2002:ac2:4304:: with SMTP id l4mr2375183lfh.122.1602501476179;
+        Mon, 12 Oct 2020 04:17:56 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:4b8:f3cc:440d:a2c7:62b1:f1b? ([2a00:1fa0:4b8:f3cc:440d:a2c7:62b1:f1b])
+        by smtp.gmail.com with ESMTPSA id n7sm3209523lfi.103.2020.10.12.04.17.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Oct 2020 04:17:55 -0700 (PDT)
 Subject: Re: [PATCH v2 1/2] MIPS: cpu-probe: move fpu probing/handling into
  its own file
-Message-ID: <20201012102934.GA7765@alpha.franken.de>
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20201008213327.11603-1-tsbogend@alpha.franken.de>
  <alpine.LFD.2.21.2010100128110.866917@eddie.linux-mips.org>
+ <0d87a08c-3ae3-fc32-8e96-5692944b8289@gmail.com>
+ <alpine.LFD.2.21.2010101259400.866917@eddie.linux-mips.org>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <89f93c5f-e672-74aa-51c3-7829e6d9ef9b@gmail.com>
+Date:   Mon, 12 Oct 2020 14:17:54 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LFD.2.21.2010100128110.866917@eddie.linux-mips.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <alpine.LFD.2.21.2010101259400.866917@eddie.linux-mips.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 01:30:38AM +0100, Maciej W. Rozycki wrote:
-> On Thu, 8 Oct 2020, Thomas Bogendoerfer wrote:
+Hello!
+
+On 10/10/20 3:11 PM, Maciej W. Rozycki wrote:
+
+>>>   Umm, this has formatting issues with lines extending beyond column #80.
+>>
+>>    80 columns are no longer a line length limit -- 100 is, IIRC.
 > 
-> > +			/*
-> > +			 * MAC2008 toolchain never landed in real world, so we're only
-> > +			 * testing whether it can be disabled and don't try to enabled
-> > +			 * it.
-> > +			 */
-> > +			fcsr0 = fcsr & ~(FPU_CSR_ABS2008 | FPU_CSR_NAN2008 | FPU_CSR_MAC2008);
-> > +			write_32bit_cp1_register(CP1_STATUS, fcsr0);
-> > +			fcsr0 = read_32bit_cp1_register(CP1_STATUS);
-> > +
-> > +			fcsr1 = fcsr | FPU_CSR_ABS2008 | FPU_CSR_NAN2008;
-> > +			write_32bit_cp1_register(CP1_STATUS, fcsr1);
-> > +			fcsr1 = read_32bit_cp1_register(CP1_STATUS);
-> > +
-> > +			write_32bit_cp1_register(CP1_STATUS, fcsr);
-> > +
-> > +			if (c->isa_level & (MIPS_CPU_ISA_M32R2 | MIPS_CPU_ISA_M64R2)) {
-> > +				/*
-> > +				 * The bit for MAC2008 might be reused by R6 in future,
-> > +				 * so we only test for R2-R5.
-> > +				 */
+>  I don't think anything has changed here:
+
+   Oh, it did! Look for max_line_length in scripts/checkpatch.pl. :-)
+
+> "The preferred limit on the length of a single line is 80 columns.
 > 
->  Umm, this has formatting issues with lines extending beyond column #80.
+> "Statements longer than 80 columns should be broken into sensible chunks,
+> unless exceeding 80 columns significantly increases readability and does
+> not hide information."
+> 
+> -- from Documentation/process/coding-style.rst, "Breaking long lines and 
+> strings".
+> 
+>  And if it were to change anytime, then I think it would make sense for 
+> such a new rule to apply to new files only.  I would be strongly against 
+> it anyway, as the human's capability to parse lines has not changed when 
+> it comes to the quantity of characters easily processed at once: the angle 
+> spanned by eyes is hardwired.  For this reason the GNU toolchain projects 
 
-I've fixed it while appling.
+   The font sizea are not hardwired though...
 
-Thomas.
+> keep the limit even lower, at 74 columns (after extensive discussions).
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+   This is also close to a limit on the patch descriptions...
+
+>   Maciej
+
+MBR, Sergei
+

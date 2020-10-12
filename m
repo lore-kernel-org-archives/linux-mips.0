@@ -4,77 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 868BDC4363A
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C569C43467
 	for <linux-mips@archiver.kernel.org>; Mon, 12 Oct 2020 10:38:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3272C208FE
-	for <linux-mips@archiver.kernel.org>; Mon, 12 Oct 2020 10:38:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 04CAD20E65
+	for <linux-mips@archiver.kernel.org>; Mon, 12 Oct 2020 10:38:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387616AbgJLKiS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S2387614AbgJLKiS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Mon, 12 Oct 2020 06:38:18 -0400
-Received: from elvis.franken.de ([193.175.24.41]:58431 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:58413 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387599AbgJLKiS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S2387463AbgJLKiS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Mon, 12 Oct 2020 06:38:18 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kRvDc-0008KW-07; Mon, 12 Oct 2020 12:38:16 +0200
+        id 1kRvDc-0008KW-03; Mon, 12 Oct 2020 12:38:16 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 841EFC1140; Mon, 12 Oct 2020 12:34:47 +0200 (CEST)
-Date:   Mon, 12 Oct 2020 12:34:47 +0200
+        id 4A5A5C1140; Mon, 12 Oct 2020 12:30:21 +0200 (CEST)
+Date:   Mon, 12 Oct 2020 12:30:21 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH v2 1/4 RESEND] MIPS: Loongson64: Select SMP in Kconfig to
- avoid build error
-Message-ID: <20201012103447.GA7953@alpha.franken.de>
-References: <1602373674-4579-1-git-send-email-yangtiezhu@loongson.cn>
- <1602373674-4579-2-git-send-email-yangtiezhu@loongson.cn>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] MIPS: cpu-probe: introduce exclusive R3k CPU probe
+Message-ID: <20201012103021.GC7765@alpha.franken.de>
+References: <20201008213327.11603-1-tsbogend@alpha.franken.de>
+ <20201008213327.11603-2-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1602373674-4579-2-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <20201008213327.11603-2-tsbogend@alpha.franken.de>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Oct 11, 2020 at 07:47:51AM +0800, Tiezhu Yang wrote:
-> In the current code, CONFIG_SMP can be set as N by user on the Loongson
-> platform, then there exists the following build error under !CONFIG_SMP:
+On Thu, Oct 08, 2020 at 11:33:26PM +0200, Thomas Bogendoerfer wrote:
+> Running a kernel on a R3k of machine definitly will never see one of
+> the newer CPU cores. And since R3k system usually are low on memory
+> we could save quite some kbytes:
 > 
->   CC      arch/mips/kernel/asm-offsets.s
-> In file included from ./include/linux/gfp.h:9:0,
->                  from ./include/linux/xarray.h:14,
->                  from ./include/linux/radix-tree.h:18,
->                  from ./include/linux/fs.h:15,
->                  from ./include/linux/compat.h:17,
->                  from arch/mips/kernel/asm-offsets.c:12:
-> ./include/linux/topology.h: In function 'numa_node_id':
-> ./include/linux/topology.h:119:2: error: implicit declaration of function 'cpu_logical_map' [-Werror=implicit-function-declaration]
->   return cpu_to_node(raw_smp_processor_id());
->   ^
-> cc1: some warnings being treated as errors
-> scripts/Makefile.build:117: recipe for target 'arch/mips/kernel/asm-offsets.s' failed
-> make[1]: *** [arch/mips/kernel/asm-offsets.s] Error 1
+>    text	   data	    bss	    dec	    hex	filename
+>   15070	     88	     32	  15190	   3b56	arch/mips/kernel/cpu-probe.o
+>     844	      4	     16	    864	    360	arch/mips/kernel/cpu-r3k-probe.o
 > 
-> Select SMP in Kconfig to avoid the above build error and then remove
-> CONFIG_SMP=y in loongson3_defconfig.
-> 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 > ---
-> 
-> v2: no changes
-> 
->  arch/mips/Kconfig                     | 1 +
->  arch/mips/configs/loongson3_defconfig | 1 -
->  2 files changed, 1 insertion(+), 1 deletion(-)
+>  arch/mips/kernel/Makefile        |   8 +-
+>  arch/mips/kernel/cpu-r3k-probe.c | 171 +++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 178 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/mips/kernel/cpu-r3k-probe.c
 
 applied to mips-next.
 

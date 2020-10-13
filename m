@@ -2,71 +2,58 @@ Return-Path: <SRS0=Ie6I=DU=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.9 required=3.0 tests=BAYES_40,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D45D8C43457
-	for <linux-mips@archiver.kernel.org>; Tue, 13 Oct 2020 08:15:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 337F5C433DF
+	for <linux-mips@archiver.kernel.org>; Tue, 13 Oct 2020 09:32:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 82B2E20BED
-	for <linux-mips@archiver.kernel.org>; Tue, 13 Oct 2020 08:15:04 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=fastestway24.com header.i=@fastestway24.com header.b="eLrHscND"
+	by mail.kernel.org (Postfix) with ESMTP id E001120725
+	for <linux-mips@archiver.kernel.org>; Tue, 13 Oct 2020 09:32:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730344AbgJMIPD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 13 Oct 2020 04:15:03 -0400
-Received: from mail.fastestway24.com ([5.249.159.217]:55870 "EHLO
-        mail.fastestway24.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730423AbgJMIPD (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 13 Oct 2020 04:15:03 -0400
-X-Greylist: delayed 478 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 04:15:02 EDT
-Received: by mail.fastestway24.com (Postfix, from userid 1001)
-        id A7D7EA2DF9; Tue, 13 Oct 2020 09:06:37 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fastestway24.com;
-        s=mail; t=1602576422;
-        bh=YGOlxoddnI3PXnh41XMWUfU0z9xsorZLZcAPNbcZr/c=;
-        h=Date:From:To:Subject:From;
-        b=eLrHscNDDdLXHEZBpcHneb5JHR4HGczk4zeeOuEv5xEbNVeyB36B7ZCC/r2+ZQ3G6
-         IVSrIov0VyV4EeQmD7GKqRb4g2vTrI0tD2I8C3AfRB1+6ppVZeJhE/97U2uzLg8F1o
-         NvHVKLMXWq/h+lQvyrpA5FLD6jFKQersYRtAH95JNQr/1KgR3pxC1I7yOGDHcHMdHm
-         HnM0dqE44ungEVUMpu8H3C8BA/U8QSJZSw2w8qpLU3uRjqwANFTrBE0+AiDDrlzfMv
-         6vuPeASqYi1ybUrwuzonO3TrbhdWWjg+35WYtodb83R6oSGAnDQ2+GfnCZTfuUD4rU
-         K5BpHhTJXwzyQ==
-Received: by mail.fastestway24.com for <linux-mips@vger.kernel.org>; Tue, 13 Oct 2020 08:06:17 GMT
-Message-ID: <20201013074502-0.1.4d.9ke2.0.n2oqlz4j30@fastestway24.com>
-Date:   Tue, 13 Oct 2020 08:06:17 GMT
-From:   "William Jones" <william.jones@fastestway24.com>
-To:     <linux-mips@vger.kernel.org>
-Subject: Disinfectant
-X-Mailer: mail.fastestway24.com
+        id S2391065AbgJMJcl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 13 Oct 2020 05:32:41 -0400
+Received: from elvis.franken.de ([193.175.24.41]:60144 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388637AbgJMJcl (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 13 Oct 2020 05:32:41 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kSGfg-0003Vf-01; Tue, 13 Oct 2020 11:32:40 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 75A31C01C7; Tue, 13 Oct 2020 11:32:17 +0200 (CEST)
+Date:   Tue, 13 Oct 2020 11:32:17 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Chuanhong Guo <gch981213@gmail.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mips: ralink: enable zboot support
+Message-ID: <20201013093217.GB18418@alpha.franken.de>
+References: <20201013020554.1317237-1-gch981213@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201013020554.1317237-1-gch981213@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Good morning,
+On Tue, Oct 13, 2020 at 10:05:47AM +0800, Chuanhong Guo wrote:
+> Some of these ralink devices come with an ancient u-boot which can't
+> extract LZMA properly when image gets too big.
+> Enable zboot support to get a self-extracting kernel instead of relying
+> on broken u-boot support.
+> 
+> Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+> ---
+>  arch/mips/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
-looking for companies interested in raising additional capital by diversi=
-fying their offer in soaps, liquids and gels for hand disinfection and co=
-smetics for body and hair care.
+applied to mips-next.
 
-The distribution of innovative products corresponding to the current pref=
-erences of customers in the field of hygiene and preventive healthcare al=
-lows our partners to gain new markets and achieve better economic results=
-=2E
+Thomas.
 
-In addition to products with bactericidal action, our range includes show=
-er gels, shampoos and hair conditioners, as well as efficient, concentrat=
-ed detergents.
-
-The versatility (suitable for all skin types) combined with an affordable=
- price means that customers make an informed choice of a product among ot=
-hers available on the market.
-
-Are you interested in cooperation?
-
-
-William Jones
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

@@ -2,162 +2,111 @@ Return-Path: <SRS0=Ie6I=DU=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2D4BC43457
-	for <linux-mips@archiver.kernel.org>; Tue, 13 Oct 2020 04:37:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40BB9C43457
+	for <linux-mips@archiver.kernel.org>; Tue, 13 Oct 2020 05:55:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7C5C720878
-	for <linux-mips@archiver.kernel.org>; Tue, 13 Oct 2020 04:37:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 06CBD208D5
+	for <linux-mips@archiver.kernel.org>; Tue, 13 Oct 2020 05:55:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731731AbgJMEhC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 13 Oct 2020 00:37:02 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:56004 "EHLO loongson.cn"
+        id S2388548AbgJMFzN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 13 Oct 2020 01:55:13 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:41152 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726463AbgJMEhC (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 13 Oct 2020 00:37:02 -0400
-Received: from [10.130.0.80] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxr93mLoVf8fccAA--.8279S3;
-        Tue, 13 Oct 2020 12:36:55 +0800 (CST)
-Subject: Re: [PATCH v2 3/4 RESEND] MIPS: Loongson64: Add /proc/boardinfo
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <1602373674-4579-1-git-send-email-yangtiezhu@loongson.cn>
- <1602373674-4579-4-git-send-email-yangtiezhu@loongson.cn>
- <20201012103805.GC7953@alpha.franken.de>
- <95060519-530b-c5f5-537d-a7b217b39003@loongson.cn>
- <3707A9AD-DD41-4DD0-A015-DE4DC33279DE@flygoat.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Huacai Chen <chenhc@lemote.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+        id S2388506AbgJMFzN (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 13 Oct 2020 01:55:13 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxX8c3QYVfhPscAA--.14939S4;
+        Tue, 13 Oct 2020 13:55:06 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <f1a4ef4a-a293-5b07-3436-37835e92ca1e@loongson.cn>
-Date:   Tue, 13 Oct 2020 12:36:54 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <3707A9AD-DD41-4DD0-A015-DE4DC33279DE@flygoat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxr93mLoVf8fccAA--.8279S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxuFyUZFWDAryDJrW5Kry3urg_yoW5CF1UpF
-        Z3Aa1DGw4DGr1UCrnagw4kZFWSvrWYyrZYqF4ayw1xK3s5KFyfXrWxJFWjkF13Zr48Ja1j
-        qFW0kr45ZFn5CFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
-        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CE
-        bIxvr21lc2xSY4AK67AK6r45MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
-        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUfcTPUUUUU=
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH 2/2] Documentation: ABI: Add /sys/firmware/lefi/boardinfo description for Loongson64
+Date:   Tue, 13 Oct 2020 13:55:02 +0800
+Message-Id: <1602568502-18044-3-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1602568502-18044-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1602568502-18044-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9DxX8c3QYVfhPscAA--.14939S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7KryDXFWfuryUXFW3Ar43Jrb_yoW8Cryfpa
+        15Jan8GrZxG3WxXF93WFy8ZFyfZFs5JrWDGanxAr18JryDGFykZr4Uta1rZFW8Cr4rJayF
+        9F4xKr1rCF1UC3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBq14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
+        8EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1l
+        e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
+        8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
+        jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4rMxAIw2
+        8IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4l
+        x2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrw
+        CI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI
+        42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z2
+        80aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUUuWlPUUUUU==
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 10/13/2020 08:15 AM, Jiaxun Yang wrote:
->
-> 于 2020年10月12日 GMT+08:00 下午8:02:25, Tiezhu Yang <yangtiezhu@loongson.cn> 写到:
->> On 10/12/2020 06:38 PM, Thomas Bogendoerfer wrote:
->>> On Sun, Oct 11, 2020 at 07:47:53AM +0800, Tiezhu Yang wrote:
->>>> Add /proc/boardinfo to get mainboard and BIOS info easily on the Loongson
->>>> platform, this is useful to point out the current used mainboard type and
->>>> BIOS version when there exists problems related with hardware or firmware.
->>>>
->>>> E.g. with this patch:
->>>>
->>>> [loongson@linux ~]$ cat /proc/boardinfo
->>>> Board Info
->>>> Manufacturer            : LEMOTE
->>>> Board Name              : LEMOTE-LS3A4000-7A1000-1w-V01-pc
->>>> Family                  : LOONGSON3
->>>>
->>>> BIOS Info
->>>> Vendor                  : Kunlun
->>>> Version                 : Kunlun-A1901-V4.1.3-20200414093938
->>>> ROM Size                : 4 KB
->>>> Release Date            : 2020-04-14
->>> Why does Loongson64 need this extra file no other architecture or MIPS
->>> platform need ? Do others provide this information via a different method ?
->>> If yes, why can't Loongson64 do the same ?
->> Hi Thomas,
->>
->> This is related with the implementation of firmware.
->>
->> Using dmidecode command can get the similar info if there exists SMBIOS
->> in firmware, but the fact is there is no SMBIOS on some machines, we can
->> see nothing when execute dmidecode, like this:
->>
->> [root@linux loongson]# dmidecode
->> # dmidecode 2.12
->> # No SMBIOS nor DMI entry point found, sorry.
->>
->> The following three structures are already defined in the interface
->> specification about firmware and kernel on the Loongson platform,
->> this is common requirement and specific for Loongson64, so add a
->> new boardinfo.c file in arch/mips/loongson64.
->>
->> arch/mips/include/asm/mach-loongson64/boot_param.h
->> struct interface_info {
->>      u16 vers; /* version of the specificition */
->>      u16 size;
->>      u8  flag;
->>      char description[64];
->> } __packed;
->>
->> struct board_devices {
->>      char name[64];    /* hold the device name */
->>      u32 num_resources; /* number of device_resource */
->>      /* for each device's resource */
->>      struct resource_loongson resource[MAX_RESOURCE_NUMBER];
->>      /* arch specific additions */
->>      struct archdev_data archdata;
->> };
->>
->> struct loongson_special_attribute {
->>      u16 vers;     /* version of this special */
->>      char special_name[64]; /* special_atribute_name */
->>      u32 loongson_special_type; /* type of special device */
->>      /* for each device's resource */
->>      struct resource_loongson resource[MAX_RESOURCE_NUMBER];
->> };
-> Hi Tiezhu,
->
-> Through I don't think touching top level of proc would be a good idea. It's all about API consistency.
->
-> If you intend to provide user an interface then I guess /sys/firmware/lefi
-> like what DMI did or somewhere less critical is better.
->
-> There is no guarantee that Loongson64 device would come with LEFI,
-> although it's mandatory for now.
+Add a description for /sys/firmware/lefi/boardinfo on the Loongson
+platform.
 
-Hi Jiaxun,
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ .../ABI/testing/sysfs-firmware-lefi-boardinfo      | 35 ++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-firmware-lefi-boardinfo
 
-Thank you very much.
-
-Let us add /sys/firmware/lefi/boardinfo, I will do it and then send a 
-new patch.
-
-Thanks,
-Tiezhu
-
->
-> Thanks.
->
-> - Jiaxun
->
->> Thanks,
->> Tiezhu
->>
->>> Thomas.
->>>
+diff --git a/Documentation/ABI/testing/sysfs-firmware-lefi-boardinfo b/Documentation/ABI/testing/sysfs-firmware-lefi-boardinfo
+new file mode 100644
+index 0000000..5e3f614
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-firmware-lefi-boardinfo
+@@ -0,0 +1,35 @@
++What:		/sys/firmware/lefi/boardinfo
++Date:		October 2020
++Contact:	Tiezhu Yang <yangtiezhu@loongson.cn>
++Description:
++		Get mainboard and BIOS info easily on the Loongson platform,
++		this is useful to point out the current used mainboard type
++		and BIOS version when there exists problems related with
++		hardware or firmware.
++
++		The related structures are already defined in the interface
++		specification about firmware and kernel which are common
++		requirement and specific for Loongson64, so only add a new
++		boardinfo.c file in arch/mips/loongson64.
++
++		For example:
++
++		[loongson@linux ~]$ cat /sys/firmware/lefi/boardinfo
++		Board Info
++		Manufacturer            : LEMOTE
++		Board Name              : LEMOTE-LS3A4000-7A1000-1w-V01-pc
++		Family                  : LOONGSON3
++
++		BIOS Info
++		Vendor                  : Kunlun
++		Version                 : Kunlun-A1901-V4.1.3-20200414093938
++		ROM Size                : 4 KB
++		Release Date            : 2020-04-14
++
++		By the way, using dmidecode command can get the similar info if there
++		exists SMBIOS in firmware, but the fact is that there is no SMBIOS on
++		some machines, we can see nothing when execute dmidecode, like this:
++
++		[root@linux loongson]# dmidecode
++		# dmidecode 2.12
++		# No SMBIOS nor DMI entry point found, sorry.
+-- 
+2.1.0
 

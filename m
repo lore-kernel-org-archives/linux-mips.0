@@ -7,51 +7,49 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12266C433E7
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:15:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17AB8C4363D
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:15:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9D6F920BED
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:15:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AE40122202
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:15:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730303AbgJNKPD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 14 Oct 2020 06:15:03 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:46254 "EHLO
+        id S1729029AbgJNKPC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 14 Oct 2020 06:15:02 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:46092 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730134AbgJNKOa (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Oct 2020 06:14:30 -0400
+        with ESMTP id S1730151AbgJNKOe (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Oct 2020 06:14:34 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id EA7D780057A8;
-        Wed, 14 Oct 2020 10:14:21 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id F3C45800254C;
+        Wed, 14 Oct 2020 10:14:23 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id vflJAOCZxAbc; Wed, 14 Oct 2020 13:14:21 +0300 (MSK)
+        with ESMTP id h6oEBL6k3q-d; Wed, 14 Oct 2020 13:14:22 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Wei Xu <xuwei5@hisilicon.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Manu Gautam <mgautam@codeaurora.org>,
         Roger Quadros <rogerq@ti.com>,
         Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
@@ -62,11 +60,11 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH 18/20] arch: dts: Fix EHCI/OHCI DT nodes name
-Date:   Wed, 14 Oct 2020 13:14:00 +0300
-Message-ID: <20201014101402.18271-19-Sergey.Semin@baikalelectronics.ru>
+        <linux-samsung-soc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+Subject: [PATCH 20/20] arch: dts: Fix DWC USB3 DT nodes name
+Date:   Wed, 14 Oct 2020 13:14:02 +0300
+Message-ID: <20201014101402.18271-21-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -77,11 +75,18 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In accordance with the Generic EHCI/OHCI bindings the corresponding node
-name is suppose to comply with the Generic USB HCD DT schema, which
-requires the USB nodes to have the name acceptable by the regexp:
-"^usb(@.*)?" . Let's fix the DTS files, which have the nodes defined with
-incompatible names.
+In accordance with the DWC USB3 bindings the corresponding node name is
+suppose to comply with Generic USB HCD DT schema, which requires the USB
+nodes to have the name acceptable by the regexp: "^usb(@.*)?" . But a lot
+of the DWC USB3-compatible nodes defined in the ARM/ARM64 DTS files have
+name as "^dwc3@.*" or "^usb[1-3]@.*" or even "^dwusb@.*", which will cause
+the dtbs_check procedure failure. Let's fix the nodes naming to be
+compatible with the DWC USB3 DT schema to make dtbs_check happy.
+
+Note we don't change the DWC USB3-compatible nodes names of
+arch/arm64/boot/dts/apm/{apm-storm.dtsi,apm-shadowcat.dtsi} since the
+in-source comment says that the nodes name need to be preserved as
+"^dwusb@.*" for some backward compatibility.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
@@ -90,336 +95,475 @@ Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Please, test the patch out to make sure it doesn't brake the dependent DTS
 files. I did only a manual grepping of the possible nodes dependencies.
 ---
- arch/arc/boot/dts/axs10x_mb.dtsi               | 4 ++--
- arch/arc/boot/dts/hsdk.dts                     | 4 ++--
- arch/arc/boot/dts/vdk_axs10x_mb.dtsi           | 2 +-
- arch/arm/boot/dts/bcm5301x.dtsi                | 4 ++--
- arch/arm/boot/dts/bcm53573.dtsi                | 4 ++--
- arch/arm/boot/dts/hisi-x5hd2.dtsi              | 4 ++--
- arch/arm/boot/dts/lpc18xx.dtsi                 | 4 ++--
- arch/arm/boot/dts/stm32mp151.dtsi              | 4 ++--
- arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi | 4 ++--
- arch/arm64/boot/dts/hisilicon/hip06.dtsi       | 4 ++--
- arch/arm64/boot/dts/hisilicon/hip07.dtsi       | 4 ++--
- arch/mips/boot/dts/ingenic/jz4740.dtsi         | 2 +-
- arch/mips/boot/dts/ingenic/jz4770.dtsi         | 2 +-
- arch/mips/boot/dts/mti/sead3.dts               | 2 +-
- arch/mips/boot/dts/ralink/mt7628a.dtsi         | 2 +-
- arch/powerpc/boot/dts/akebono.dts              | 6 +++---
- 16 files changed, 28 insertions(+), 28 deletions(-)
+ arch/arm/boot/dts/armada-375.dtsi              | 2 +-
+ arch/arm/boot/dts/exynos5250.dtsi              | 2 +-
+ arch/arm/boot/dts/exynos54xx.dtsi              | 4 ++--
+ arch/arm/boot/dts/keystone-k2e.dtsi            | 4 ++--
+ arch/arm/boot/dts/keystone.dtsi                | 2 +-
+ arch/arm/boot/dts/ls1021a.dtsi                 | 2 +-
+ arch/arm/boot/dts/omap5-l4.dtsi                | 2 +-
+ arch/arm/boot/dts/stih407-family.dtsi          | 2 +-
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi   | 2 +-
+ arch/arm64/boot/dts/exynos/exynos5433.dtsi     | 4 ++--
+ arch/arm64/boot/dts/exynos/exynos7.dtsi        | 2 +-
+ arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi | 4 ++--
+ arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi | 6 +++---
+ arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 4 ++--
+ arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 4 ++--
+ arch/arm64/boot/dts/hisilicon/hi3660.dtsi      | 2 +-
+ arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi   | 4 ++--
+ arch/arm64/boot/dts/qcom/ipq8074.dtsi          | 4 ++--
+ arch/arm64/boot/dts/qcom/msm8996.dtsi          | 4 ++--
+ arch/arm64/boot/dts/qcom/msm8998.dtsi          | 2 +-
+ arch/arm64/boot/dts/qcom/qcs404-evb.dtsi       | 2 +-
+ arch/arm64/boot/dts/qcom/qcs404.dtsi           | 4 ++--
+ arch/arm64/boot/dts/qcom/sc7180.dtsi           | 2 +-
+ arch/arm64/boot/dts/qcom/sdm845.dtsi           | 4 ++--
+ arch/arm64/boot/dts/qcom/sm8150.dtsi           | 2 +-
+ 25 files changed, 38 insertions(+), 38 deletions(-)
 
-diff --git a/arch/arc/boot/dts/axs10x_mb.dtsi b/arch/arc/boot/dts/axs10x_mb.dtsi
-index 99d3e7175bf7..b64435385304 100644
---- a/arch/arc/boot/dts/axs10x_mb.dtsi
-+++ b/arch/arc/boot/dts/axs10x_mb.dtsi
-@@ -87,13 +87,13 @@ gmac: ethernet@18000 {
- 			mac-address = [00 00 00 00 00 00]; /* Filled in by U-Boot */
- 		};
+diff --git a/arch/arm/boot/dts/armada-375.dtsi b/arch/arm/boot/dts/armada-375.dtsi
+index 9805e507c695..7f2f24a29e6c 100644
+--- a/arch/arm/boot/dts/armada-375.dtsi
++++ b/arch/arm/boot/dts/armada-375.dtsi
+@@ -426,7 +426,7 @@ usb1: usb@54000 {
+ 				status = "disabled";
+ 			};
  
--		ehci@40000 {
-+		usb@40000 {
- 			compatible = "generic-ehci";
- 			reg = < 0x40000 0x100 >;
- 			interrupts = < 8 >;
- 		};
+-			usb2: usb3@58000 {
++			usb2: usb@58000 {
+ 				compatible = "marvell,armada-375-xhci";
+ 				reg = <0x58000 0x20000>,<0x5b880 0x80>;
+ 				interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/arch/arm/boot/dts/exynos5250.dtsi b/arch/arm/boot/dts/exynos5250.dtsi
+index e3dbe4166836..ebcf8b40ea81 100644
+--- a/arch/arm/boot/dts/exynos5250.dtsi
++++ b/arch/arm/boot/dts/exynos5250.dtsi
+@@ -629,7 +629,7 @@ usb_dwc3 {
+ 			#size-cells = <1>;
+ 			ranges;
  
--		ohci@60000 {
-+		usb@60000 {
- 			compatible = "generic-ohci";
- 			reg = < 0x60000 0x100 >;
- 			interrupts = < 8 >;
-diff --git a/arch/arc/boot/dts/hsdk.dts b/arch/arc/boot/dts/hsdk.dts
-index dcaa44e408ac..fdd4f7f635d3 100644
---- a/arch/arc/boot/dts/hsdk.dts
-+++ b/arch/arc/boot/dts/hsdk.dts
-@@ -234,7 +234,7 @@ phy0: ethernet-phy@0 { /* Micrel KSZ9031 */
+-			usbdrd_dwc3: dwc3@12000000 {
++			usbdrd_dwc3: usb@12000000 {
+ 				compatible = "synopsys,dwc3";
+ 				reg = <0x12000000 0x10000>;
+ 				interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/arch/arm/boot/dts/exynos54xx.dtsi b/arch/arm/boot/dts/exynos54xx.dtsi
+index 8aa5117e58ce..339243d19a80 100644
+--- a/arch/arm/boot/dts/exynos54xx.dtsi
++++ b/arch/arm/boot/dts/exynos54xx.dtsi
+@@ -148,7 +148,7 @@ usbdrd3_0: usb3-0 {
+ 			#size-cells = <1>;
+ 			ranges;
+ 
+-			usbdrd_dwc3_0: dwc3@12000000 {
++			usbdrd_dwc3_0: usb@12000000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0x12000000 0x10000>;
+ 				interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
+@@ -170,7 +170,7 @@ usbdrd3_1: usb3-1 {
+ 			#size-cells = <1>;
+ 			ranges;
+ 
+-			usbdrd_dwc3_1: dwc3@12400000 {
++			usbdrd_dwc3_1: usb@12400000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0x12400000 0x10000>;
+ 				phys = <&usbdrd_phy1 0>, <&usbdrd_phy1 1>;
+diff --git a/arch/arm/boot/dts/keystone-k2e.dtsi b/arch/arm/boot/dts/keystone-k2e.dtsi
+index 2d94faf31fab..d625ad10cfad 100644
+--- a/arch/arm/boot/dts/keystone-k2e.dtsi
++++ b/arch/arm/boot/dts/keystone-k2e.dtsi
+@@ -52,7 +52,7 @@ &soc0 {
+ 
+ 		usb: usb@2680000 {
+ 			interrupts = <GIC_SPI 152 IRQ_TYPE_EDGE_RISING>;
+-			dwc3@2690000 {
++			usb@2690000 {
+ 				interrupts = <GIC_SPI 152 IRQ_TYPE_EDGE_RISING>;
  			};
  		};
+@@ -78,7 +78,7 @@ keystone_usb1: usb@25000000 {
+ 			dma-ranges;
+ 			status = "disabled";
  
--		ohci@60000 {
-+		usb@60000 {
- 			compatible = "snps,hsdk-v1.0-ohci", "generic-ohci";
- 			reg = <0x60000 0x100>;
- 			interrupts = <15>;
-@@ -242,7 +242,7 @@ ohci@60000 {
+-			usb1: dwc3@25010000 {
++			usb1: usb@25010000 {
+ 				compatible = "synopsys,dwc3";
+ 				reg = <0x25010000 0x70000>;
+ 				interrupts = <GIC_SPI 414 IRQ_TYPE_EDGE_RISING>;
+diff --git a/arch/arm/boot/dts/keystone.dtsi b/arch/arm/boot/dts/keystone.dtsi
+index c298675a29a5..6f9748349f09 100644
+--- a/arch/arm/boot/dts/keystone.dtsi
++++ b/arch/arm/boot/dts/keystone.dtsi
+@@ -217,7 +217,7 @@ keystone_usb0: usb@2680000 {
+ 			dma-ranges;
+ 			status = "disabled";
+ 
+-			usb0: dwc3@2690000 {
++			usb0: usb@2690000 {
+ 				compatible = "synopsys,dwc3";
+ 				reg = <0x2690000 0x70000>;
+ 				interrupts = <GIC_SPI 393 IRQ_TYPE_EDGE_RISING>;
+diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.dtsi
+index 827373ef1a54..5c4104d301f1 100644
+--- a/arch/arm/boot/dts/ls1021a.dtsi
++++ b/arch/arm/boot/dts/ls1021a.dtsi
+@@ -874,7 +874,7 @@ usb2: usb@8600000 {
+ 			phy_type = "ulpi";
+ 		};
+ 
+-		usb3: usb3@3100000 {
++		usb3: usb@3100000 {
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0x3100000 0x0 0x10000>;
+ 			interrupts = <GIC_SPI 93 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/arch/arm/boot/dts/omap5-l4.dtsi b/arch/arm/boot/dts/omap5-l4.dtsi
+index f3d3a16b7c64..887b3359dd5a 100644
+--- a/arch/arm/boot/dts/omap5-l4.dtsi
++++ b/arch/arm/boot/dts/omap5-l4.dtsi
+@@ -194,7 +194,7 @@ usb3: omap_dwc3@0 {
+ 				#size-cells = <1>;
+ 				utmi-mode = <2>;
+ 				ranges = <0 0 0x20000>;
+-				dwc3: dwc3@10000 {
++				dwc3: usb@10000 {
+ 					compatible = "snps,dwc3";
+ 					reg = <0x10000 0x10000>;
+ 					interrupts = <GIC_SPI 92 IRQ_TYPE_LEVEL_HIGH>,
+diff --git a/arch/arm/boot/dts/stih407-family.dtsi b/arch/arm/boot/dts/stih407-family.dtsi
+index 23a1746f3baa..2352f76b5a69 100644
+--- a/arch/arm/boot/dts/stih407-family.dtsi
++++ b/arch/arm/boot/dts/stih407-family.dtsi
+@@ -681,7 +681,7 @@ st_dwc3: dwc3@8f94000 {
+ 
+ 			status = "disabled";
+ 
+-			dwc3: dwc3@9900000 {
++			dwc3: usb@9900000 {
+ 				compatible	= "snps,dwc3";
+ 				reg		= <0x09900000 0x100000>;
+ 				interrupts	= <GIC_SPI 155 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+index 9ce78a7b117d..7d1bbff25294 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+@@ -679,7 +679,7 @@ ohci0: usb@5101400 {
+ 			status = "disabled";
+ 		};
+ 
+-		dwc3: dwc3@5200000 {
++		dwc3: usb@5200000 {
+ 			compatible = "snps,dwc3";
+ 			reg = <0x05200000 0x10000>;
+ 			interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/arch/arm64/boot/dts/exynos/exynos5433.dtsi b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
+index 74ac4ac75865..3320e596cb3f 100644
+--- a/arch/arm64/boot/dts/exynos/exynos5433.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
+@@ -1651,7 +1651,7 @@ usbdrd30: usbdrd {
+ 			ranges;
+ 			status = "disabled";
+ 
+-			usbdrd_dwc3: dwc3@15400000 {
++			usbdrd_dwc3: usb@15400000 {
+ 				compatible = "snps,dwc3";
+ 				clocks = <&cmu_fsys CLK_SCLK_USBDRD30>,
+ 					<&cmu_fsys CLK_ACLK_USBDRD30>,
+@@ -1704,7 +1704,7 @@ usbhost30: usbhost {
+ 			ranges;
+ 			status = "disabled";
+ 
+-			usbhost_dwc3: dwc3@15a00000 {
++			usbhost_dwc3: usb@15a00000 {
+ 				compatible = "snps,dwc3";
+ 				clocks = <&cmu_fsys CLK_SCLK_USBHOST30>,
+ 					<&cmu_fsys CLK_ACLK_USBHOST30>,
+diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+index b9ed6a33e290..48cd3a04fd07 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+@@ -654,7 +654,7 @@ usbdrd3 {
+ 			#size-cells = <1>;
+ 			ranges;
+ 
+-			dwc3@15400000 {
++			usb@15400000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0x15400000 0x10000>;
+ 				interrupts = <GIC_SPI 223 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+index ff19ec415b60..06dac6be67e9 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+@@ -453,7 +453,7 @@ edma0: edma@2c00000 {
+ 				 <&clockgen 4 3>;
+ 		};
+ 
+-		usb0: usb3@2f00000 {
++		usb0: usb@2f00000 {
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0x2f00000 0x0 0x10000>;
+ 			interrupts = <0 60 0x4>;
+@@ -474,7 +474,7 @@ sata: sata@3200000 {
+ 			status = "disabled";
+ 		};
+ 
+-		usb1: usb2@8600000 {
++		usb1: usb@8600000 {
+ 			compatible = "fsl-usb2-dr-v2.5", "fsl-usb2-dr";
+ 			reg = <0x0 0x8600000 0x0 0x1000>;
+ 			interrupts = <0 139 0x4>;
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
+index 5c2e370f6316..1f45fa32e57b 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
+@@ -750,7 +750,7 @@ edma0: edma@2c00000 {
+ 				 <&clockgen 4 0>;
+ 		};
+ 
+-		usb0: usb3@2f00000 {
++		usb0: usb@2f00000 {
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0x2f00000 0x0 0x10000>;
+ 			interrupts = <0 60 0x4>;
+@@ -761,7 +761,7 @@ usb0: usb3@2f00000 {
+ 			status = "disabled";
+ 		};
+ 
+-		usb1: usb3@3000000 {
++		usb1: usb@3000000 {
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0x3000000 0x0 0x10000>;
+ 			interrupts = <0 61 0x4>;
+@@ -772,7 +772,7 @@ usb1: usb3@3000000 {
+ 			status = "disabled";
+ 		};
+ 
+-		usb2: usb3@3100000 {
++		usb2: usb@3100000 {
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0x3100000 0x0 0x10000>;
+ 			interrupts = <0 63 0x4>;
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+index 169f4742ae3b..96723b53a4e9 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+@@ -402,7 +402,7 @@ esdhc: esdhc@2140000 {
+ 			status = "disabled";
+ 		};
+ 
+-		usb0: usb3@3100000 {
++		usb0: usb@3100000 {
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0x3100000 0x0 0x10000>;
+ 			interrupts = <0 80 IRQ_TYPE_LEVEL_HIGH>;
+@@ -413,7 +413,7 @@ usb0: usb3@3100000 {
+ 			status = "disabled";
+ 		};
+ 
+-		usb1: usb3@3110000 {
++		usb1: usb@3110000 {
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0x3110000 0x0 0x10000>;
+ 			interrupts = <0 81 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+index 41102dacc2e1..d356ec2beee3 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+@@ -737,7 +737,7 @@ sata1: sata@3210000 {
  			dma-coherent;
  		};
  
--		ehci@40000 {
-+		usb@40000 {
- 			compatible = "snps,hsdk-v1.0-ehci", "generic-ehci";
- 			reg = <0x40000 0x100>;
- 			interrupts = <15>;
-diff --git a/arch/arc/boot/dts/vdk_axs10x_mb.dtsi b/arch/arc/boot/dts/vdk_axs10x_mb.dtsi
-index cbb179770293..90a412026e64 100644
---- a/arch/arc/boot/dts/vdk_axs10x_mb.dtsi
-+++ b/arch/arc/boot/dts/vdk_axs10x_mb.dtsi
-@@ -46,7 +46,7 @@ ethernet@18000 {
- 			clock-names = "stmmaceth";
+-		usb0: usb3@3100000 {
++		usb0: usb@3100000 {
+ 			status = "disabled";
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0x3100000 0x0 0x10000>;
+@@ -748,7 +748,7 @@ usb0: usb3@3100000 {
+ 			snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
  		};
  
--		ehci@40000 {
-+		usb@40000 {
- 			compatible = "generic-ehci";
- 			reg = < 0x40000 0x100 >;
- 			interrupts = < 8 >;
-diff --git a/arch/arm/boot/dts/bcm5301x.dtsi b/arch/arm/boot/dts/bcm5301x.dtsi
-index 0016720ce530..bf5656d79a55 100644
---- a/arch/arm/boot/dts/bcm5301x.dtsi
-+++ b/arch/arm/boot/dts/bcm5301x.dtsi
-@@ -261,7 +261,7 @@ usb2: usb2@21000 {
- 
- 			interrupt-parent = <&gic>;
- 
--			ehci: ehci@21000 {
-+			ehci: usb@21000 {
- 				#usb-cells = <0>;
- 
- 				compatible = "generic-ehci";
-@@ -283,7 +283,7 @@ ehci_port2: port@2 {
- 				};
+-		usb1: usb3@3110000 {
++		usb1: usb@3110000 {
+ 			status = "disabled";
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0x3110000 0x0 0x10000>;
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+index d25aac5e0bf8..aea3800029b5 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+@@ -1166,7 +1166,7 @@ usb_phy: usb-phy {
  			};
- 
--			ohci: ohci@22000 {
-+			ohci: usb@22000 {
- 				#usb-cells = <0>;
- 
- 				compatible = "generic-ohci";
-diff --git a/arch/arm/boot/dts/bcm53573.dtsi b/arch/arm/boot/dts/bcm53573.dtsi
-index 4af8e3293cff..51546fccc616 100644
---- a/arch/arm/boot/dts/bcm53573.dtsi
-+++ b/arch/arm/boot/dts/bcm53573.dtsi
-@@ -135,7 +135,7 @@ usb2: usb2@4000 {
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 
--			ehci: ehci@4000 {
-+			ehci: usb@4000 {
- 				compatible = "generic-ehci";
- 				reg = <0x4000 0x1000>;
- 				interrupt-parent = <&gic>;
-@@ -155,7 +155,7 @@ ehci_port2: port@2 {
- 				};
- 			};
- 
--			ohci: ohci@d000 {
-+			ohci: usb@d000 {
- 				#usb-cells = <0>;
- 
- 				compatible = "generic-ohci";
-diff --git a/arch/arm/boot/dts/hisi-x5hd2.dtsi b/arch/arm/boot/dts/hisi-x5hd2.dtsi
-index 3ee7967c202d..693b85b2cc7d 100644
---- a/arch/arm/boot/dts/hisi-x5hd2.dtsi
-+++ b/arch/arm/boot/dts/hisi-x5hd2.dtsi
-@@ -452,14 +452,14 @@ gmac1: ethernet@1841000 {
- 			status = "disabled";
  		};
  
--		usb0: ehci@1890000 {
-+		usb0: usb@1890000 {
- 			compatible = "generic-ehci";
- 			reg = <0x1890000 0x1000>;
- 			interrupts = <0 66 4>;
- 			clocks = <&clock HIX5HD2_USB_CLK>;
- 		};
+-		dwc3: dwc3@ff100000 {
++		dwc3: usb@ff100000 {
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0xff100000 0x0 0x100000>;
  
--		usb1: ohci@1880000 {
-+		usb1: usb@1880000 {
- 			compatible = "generic-ohci";
- 			reg = <0x1880000 0x1000>;
- 			interrupts = <0 67 4>;
-diff --git a/arch/arm/boot/dts/lpc18xx.dtsi b/arch/arm/boot/dts/lpc18xx.dtsi
-index 10b8249b8ab6..82ffd7b0ad8a 100644
---- a/arch/arm/boot/dts/lpc18xx.dtsi
-+++ b/arch/arm/boot/dts/lpc18xx.dtsi
-@@ -121,7 +121,7 @@ mmcsd: mmcsd@40004000 {
- 			status = "disabled";
- 		};
+diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
+index defcbd15edf9..34e97da98270 100644
+--- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
++++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
+@@ -1064,7 +1064,7 @@ &usb2 {
+ 	status = "okay";
+ 	extcon = <&usb2_id>;
  
--		usb0: ehci@40006100 {
-+		usb0: usb@40006100 {
- 			compatible = "nxp,lpc1850-ehci", "generic-ehci";
- 			reg = <0x40006100 0x100>;
- 			interrupts = <8>;
-@@ -133,7 +133,7 @@ usb0: ehci@40006100 {
- 			status = "disabled";
- 		};
+-	dwc3@7600000 {
++	usb@7600000 {
+ 		extcon = <&usb2_id>;
+ 		dr_mode = "otg";
+ 		maximum-speed = "high-speed";
+@@ -1075,7 +1075,7 @@ &usb3 {
+ 	status = "okay";
+ 	extcon = <&usb3_id>;
  
--		usb1: ehci@40007100 {
-+		usb1: usb@40007100 {
- 			compatible = "nxp,lpc1850-ehci", "generic-ehci";
- 			reg = <0x40007100 0x100>;
- 			interrupts = <9>;
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index bfe29023fbd5..576f7da564c5 100644
---- a/arch/arm/boot/dts/stm32mp151.dtsi
-+++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -1404,7 +1404,7 @@ ethernet0: ethernet@5800a000 {
- 			status = "disabled";
- 		};
- 
--		usbh_ohci: usbh-ohci@5800c000 {
-+		usbh_ohci: usb@5800c000 {
- 			compatible = "generic-ohci";
- 			reg = <0x5800c000 0x1000>;
- 			clocks = <&rcc USBH>;
-@@ -1413,7 +1413,7 @@ usbh_ohci: usbh-ohci@5800c000 {
- 			status = "disabled";
- 		};
- 
--		usbh_ehci: usbh-ehci@5800d000 {
-+		usbh_ehci: usb@5800d000 {
- 			compatible = "generic-ehci";
- 			reg = <0x5800d000 0x1000>;
- 			clocks = <&rcc USBH>;
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi b/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi
-index 12bc1d3ed424..a4acecb75c89 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi
-@@ -585,7 +585,7 @@ pcie: pcie@9860000 {
- 			status = "disabled";
- 		};
- 
--		ohci: ohci@9880000 {
-+		ohci: usb@9880000 {
- 			compatible = "generic-ohci";
- 			reg = <0x9880000 0x10000>;
- 			interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>;
-@@ -600,7 +600,7 @@ ohci: ohci@9880000 {
- 			status = "disabled";
- 		};
- 
--		ehci: ehci@9890000 {
-+		ehci: usb@9890000 {
- 			compatible = "generic-ehci";
- 			reg = <0x9890000 0x10000>;
- 			interrupts = <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/hisilicon/hip06.dtsi b/arch/arm64/boot/dts/hisilicon/hip06.dtsi
-index 50ceaa959bdc..1226440d54ad 100644
---- a/arch/arm64/boot/dts/hisilicon/hip06.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hip06.dtsi
-@@ -373,7 +373,7 @@ refclk: refclk {
- 			#clock-cells = <0>;
- 		};
- 
--		usb_ohci: ohci@a7030000 {
-+		usb_ohci: usb@a7030000 {
- 			compatible = "generic-ohci";
- 			reg = <0x0 0xa7030000 0x0 0x10000>;
- 			interrupt-parent = <&mbigen_usb>;
-@@ -382,7 +382,7 @@ usb_ohci: ohci@a7030000 {
- 			status = "disabled";
- 		};
- 
--		usb_ehci: ehci@a7020000 {
-+		usb_ehci: usb@a7020000 {
- 			compatible = "generic-ehci";
- 			reg = <0x0 0xa7020000 0x0 0x10000>;
- 			interrupt-parent = <&mbigen_usb>;
-diff --git a/arch/arm64/boot/dts/hisilicon/hip07.dtsi b/arch/arm64/boot/dts/hisilicon/hip07.dtsi
-index 4773a533fce5..93f99a5255ac 100644
---- a/arch/arm64/boot/dts/hisilicon/hip07.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hip07.dtsi
-@@ -1253,7 +1253,7 @@ uart0: uart@602b0000 {
- 			status = "disabled";
- 		};
- 
--		usb_ohci: ohci@a7030000 {
-+		usb_ohci: usb@a7030000 {
- 			compatible = "generic-ohci";
- 			reg = <0x0 0xa7030000 0x0 0x10000>;
- 			interrupt-parent = <&mbigen_usb>;
-@@ -1262,7 +1262,7 @@ usb_ohci: ohci@a7030000 {
- 			status = "disabled";
- 		};
- 
--		usb_ehci: ehci@a7020000 {
-+		usb_ehci: usb@a7020000 {
- 			compatible = "generic-ehci";
- 			reg = <0x0 0xa7020000 0x0 0x10000>;
- 			interrupt-parent = <&mbigen_usb>;
-diff --git a/arch/mips/boot/dts/ingenic/jz4740.dtsi b/arch/mips/boot/dts/ingenic/jz4740.dtsi
-index 1520585c235c..b989ff62ffbc 100644
---- a/arch/mips/boot/dts/ingenic/jz4740.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4740.dtsi
-@@ -281,7 +281,7 @@ dmac: dma-controller@13020000 {
- 		clocks = <&cgu JZ4740_CLK_DMA>;
+-	dwc3@6a00000 {
++	usb@6a00000 {
+ 		extcon = <&usb3_id>;
+ 		dr_mode = "otg";
  	};
+diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+index 96a5ec89b5f0..1129062a4ca1 100644
+--- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+@@ -427,7 +427,7 @@ usb_0: usb@8af8800 {
+ 			resets = <&gcc GCC_USB0_BCR>;
+ 			status = "disabled";
  
--	uhc: uhc@13030000 {
-+	uhc: usb@13030000 {
- 		compatible = "ingenic,jz4740-ohci", "generic-ohci";
- 		reg = <0x13030000 0x1000>;
+-			dwc_0: dwc3@8a00000 {
++			dwc_0: usb@8a00000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0x8a00000 0xcd00>;
+ 				interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
+@@ -468,7 +468,7 @@ usb_1: usb@8cf8800 {
+ 			resets = <&gcc GCC_USB1_BCR>;
+ 			status = "disabled";
  
-diff --git a/arch/mips/boot/dts/ingenic/jz4770.dtsi b/arch/mips/boot/dts/ingenic/jz4770.dtsi
-index fa11ac950499..e45c03038826 100644
---- a/arch/mips/boot/dts/ingenic/jz4770.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4770.dtsi
-@@ -417,7 +417,7 @@ dmac1: dma-controller@13420100 {
- 		interrupts = <23>;
+-			dwc_1: dwc3@8c00000 {
++			dwc_1: usb@8c00000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0x8c00000 0xcd00>;
+ 				interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+index 9951286db775..66b6d2f0a093 100644
+--- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+@@ -1767,7 +1767,7 @@ usb3: usb@6af8800 {
+ 			power-domains = <&gcc USB30_GDSC>;
+ 			status = "disabled";
+ 
+-			dwc3@6a00000 {
++			usb@6a00000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0x06a00000 0xcc00>;
+ 				interrupts = <0 131 IRQ_TYPE_LEVEL_HIGH>;
+@@ -1978,7 +1978,7 @@ usb2: usb@76f8800 {
+ 			power-domains = <&gcc USB30_GDSC>;
+ 			status = "disabled";
+ 
+-			dwc3@7600000 {
++			usb@7600000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0x07600000 0xcc00>;
+ 				interrupts = <0 138 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/arch/arm64/boot/dts/qcom/msm8998.dtsi b/arch/arm64/boot/dts/qcom/msm8998.dtsi
+index c45870600909..7cc7897e7b83 100644
+--- a/arch/arm64/boot/dts/qcom/msm8998.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8998.dtsi
+@@ -1678,7 +1678,7 @@ usb3: usb@a8f8800 {
+ 
+ 			resets = <&gcc GCC_USB_30_BCR>;
+ 
+-			usb3_dwc3: dwc3@a800000 {
++			usb3_dwc3: usb@a800000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0x0a800000 0xcd00>;
+ 				interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
+index 6422cf9d5855..88d7b7a53743 100644
+--- a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
++++ b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
+@@ -337,7 +337,7 @@ &usb2_phy_sec {
+ &usb3 {
+ 	status = "okay";
+ 
+-	dwc3@7580000 {
++	usb@7580000 {
+ 		dr_mode = "host";
  	};
+ };
+diff --git a/arch/arm64/boot/dts/qcom/qcs404.dtsi b/arch/arm64/boot/dts/qcom/qcs404.dtsi
+index b654b802e95c..f6ef17553064 100644
+--- a/arch/arm64/boot/dts/qcom/qcs404.dtsi
++++ b/arch/arm64/boot/dts/qcom/qcs404.dtsi
+@@ -544,7 +544,7 @@ usb3: usb@7678800 {
+ 			assigned-clock-rates = <19200000>, <200000000>;
+ 			status = "disabled";
  
--	uhc: uhc@13430000 {
-+	uhc: usb@13430000 {
- 		compatible = "generic-ohci";
- 		reg = <0x13430000 0x1000>;
+-			dwc3@7580000 {
++			usb@7580000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0x07580000 0xcd00>;
+ 				interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
+@@ -573,7 +573,7 @@ usb2: usb@79b8800 {
+ 			assigned-clock-rates = <19200000>, <133333333>;
+ 			status = "disabled";
  
-diff --git a/arch/mips/boot/dts/mti/sead3.dts b/arch/mips/boot/dts/mti/sead3.dts
-index 192c26ff1d3d..1cf6728af8fe 100644
---- a/arch/mips/boot/dts/mti/sead3.dts
-+++ b/arch/mips/boot/dts/mti/sead3.dts
-@@ -56,7 +56,7 @@ gic: interrupt-controller@1b1c0000 {
- 		interrupt-parent = <&cpu_intc>;
- 	};
+-			dwc3@78c0000 {
++			usb@78c0000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0x078c0000 0xcc00>;
+ 				interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index d46b3833e52f..bbc9a2b5c570 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -2673,7 +2673,7 @@ usb_1: usb@a6f8800 {
+ 					<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3>;
+ 			interconnect-names = "usb-ddr", "apps-usb";
  
--	ehci@1b200000 {
-+	usb@1b200000 {
- 		compatible = "generic-ehci";
- 		reg = <0x1b200000 0x1000>;
+-			usb_1_dwc3: dwc3@a600000 {
++			usb_1_dwc3: usb@a600000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0 0x0a600000 0 0xe000>;
+ 				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index 2884577dcb77..ca20e4e91f61 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -3573,7 +3573,7 @@ usb_1: usb@a6f8800 {
+ 					<&gladiator_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3_0>;
+ 			interconnect-names = "usb-ddr", "apps-usb";
  
-diff --git a/arch/mips/boot/dts/ralink/mt7628a.dtsi b/arch/mips/boot/dts/ralink/mt7628a.dtsi
-index 892e8ab863c5..45bf96a3d17a 100644
---- a/arch/mips/boot/dts/ralink/mt7628a.dtsi
-+++ b/arch/mips/boot/dts/ralink/mt7628a.dtsi
-@@ -275,7 +275,7 @@ usb_phy: usb-phy@10120000 {
- 		reset-names = "host", "device";
- 	};
+-			usb_1_dwc3: dwc3@a600000 {
++			usb_1_dwc3: usb@a600000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0 0x0a600000 0 0xcd00>;
+ 				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+@@ -3621,7 +3621,7 @@ usb_2: usb@a8f8800 {
+ 					<&gladiator_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3_1>;
+ 			interconnect-names = "usb-ddr", "apps-usb";
  
--	ehci@101c0000 {
-+	usb@101c0000 {
- 		compatible = "generic-ehci";
- 		reg = <0x101c0000 0x1000>;
+-			usb_2_dwc3: dwc3@a800000 {
++			usb_2_dwc3: usb@a800000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0 0x0a800000 0 0xcd00>;
+ 				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+index b86a7ead3006..167d14dda974 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+@@ -846,7 +846,7 @@ usb_1: usb@a6f8800 {
  
-diff --git a/arch/powerpc/boot/dts/akebono.dts b/arch/powerpc/boot/dts/akebono.dts
-index df18f8dc4642..343326c30380 100644
---- a/arch/powerpc/boot/dts/akebono.dts
-+++ b/arch/powerpc/boot/dts/akebono.dts
-@@ -126,7 +126,7 @@ SATA0: sata@30000010000 {
- 			interrupts = <93 2>;
- 		};
+ 			resets = <&gcc GCC_USB30_PRIM_BCR>;
  
--		EHCI0: ehci@30010000000 {
-+		EHCI0: usb@30010000000 {
- 			compatible = "ibm,476gtr-ehci", "generic-ehci";
- 			reg = <0x300 0x10000000 0x0 0x10000>;
- 			interrupt-parent = <&MPIC>;
-@@ -140,14 +140,14 @@ SD0: sd@30000000000 {
- 			interrupt-parent = <&MPIC>;
- 		};
- 
--		OHCI0: ohci@30010010000 {
-+		OHCI0: usb@30010010000 {
- 			compatible = "ibm,476gtr-ohci", "generic-ohci";
- 			reg = <0x300 0x10010000 0x0 0x10000>;
- 			interrupt-parent = <&MPIC>;
- 			interrupts = <89 1>;
- 			};
- 
--		OHCI1: ohci@30010020000 {
-+		OHCI1: usb@30010020000 {
- 			compatible = "ibm,476gtr-ohci", "generic-ohci";
- 			reg = <0x300 0x10020000 0x0 0x10000>;
- 			interrupt-parent = <&MPIC>;
+-			usb_1_dwc3: dwc3@a600000 {
++			usb_1_dwc3: usb@a600000 {
+ 				compatible = "snps,dwc3";
+ 				reg = <0 0x0a600000 0 0xcd00>;
+ 				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
 -- 
 2.27.0
 

@@ -7,25 +7,25 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14119C433DF
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D85EC3279D
 	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:14:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C80F720848
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:14:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 36B7C20BED
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:14:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730343AbgJNKOj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1730328AbgJNKOj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 14 Oct 2020 06:14:39 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:46074 "EHLO
+Received: from mail.baikalelectronics.com ([87.245.175.226]:46008 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729984AbgJNKOT (ORCPT
+        with ESMTP id S1729977AbgJNKOT (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Oct 2020 06:14:19 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 74D888001384;
-        Wed, 14 Oct 2020 10:14:13 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id AAD3A800248D;
+        Wed, 14 Oct 2020 10:14:12 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id dAu2Sp9vJkSs; Wed, 14 Oct 2020 13:14:12 +0300 (MSK)
+        with ESMTP id U2K9vQnEcy5U; Wed, 14 Oct 2020 13:14:12 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
@@ -47,9 +47,9 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 11/20] dt-bindings: usb: dwc3: Add synopsys,dwc3 compatible string
-Date:   Wed, 14 Oct 2020 13:13:53 +0300
-Message-ID: <20201014101402.18271-12-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH 10/20] dt-bindings: usb: dwc3: Add interrupt-names property support
+Date:   Wed, 14 Oct 2020 13:13:52 +0300
+Message-ID: <20201014101402.18271-11-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -60,38 +60,46 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The DWC USB3 driver and some DTS files like Exynos 5250, Keystone k2e, etc
-expects the DWC USB3 DT node to have the compatible string with the
-"synopsys" vendor prefix. Let's add the corresponding compatible string to
-the controller DT schema, but mark it as deprecated seeing the Synopsys,
-Inc. is presented with just "snps" vendor prefix.
+The controller driver supports two types of DWC USB3 devices: with a
+common interrupt lane and with individual interrupts for each mode. Add
+support for both these cases to the DWC USB3 DT schema.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
 ---
 
 Changelog v2:
-- Drop quotes from around the compat string constant.
+- Grammar fix: "s/both of these cases support/support for both these cases"
+- Drop quotes from around the string constants.
 ---
- Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-index 12102a84faf6..2f746ac64e71 100644
+index 994813f2e25f..12102a84faf6 100644
 --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
 +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-@@ -20,7 +20,10 @@ allOf:
- properties:
-   compatible:
-     contains:
--      const: snps,dwc3
-+      oneOf:
-+        - const: snps,dwc3
-+        - const: synopsys,dwc3
-+          deprecated: true
+@@ -23,9 +23,20 @@ properties:
+       const: snps,dwc3
  
    interrupts:
-     description: |
++    description: |
++      It's either a single common DWC3 interrupt (dwc_usb3) or individual
++      interrupts for the host, gadget and DRD modes.
+     minItems: 1
+     maxItems: 3
+ 
++  interrupt-names:
++    minItems: 1
++    maxItems: 3
++    oneOf:
++      - const: dwc_usb3
++      - items:
++          enum: [host, peripheral, otg]
++
+   clocks:
+     description:
+       In general the core supports three types of clocks. bus_early is a
 -- 
 2.27.0
 

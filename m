@@ -7,30 +7,34 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A647C43457
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:15:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11EB5C4363D
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:15:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1877D21D81
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:15:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C7528221FE
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:15:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387990AbgJNKPZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S2387958AbgJNKPZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 14 Oct 2020 06:15:25 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:45952 "EHLO
+Received: from mail.baikalelectronics.com ([87.245.175.226]:46182 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729669AbgJNKOQ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Oct 2020 06:14:16 -0400
+        with ESMTP id S1730080AbgJNKO0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Oct 2020 06:14:26 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 1ECCD803073C;
-        Wed, 14 Oct 2020 10:14:09 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 0692B803202E;
+        Wed, 14 Oct 2020 10:14:16 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id jXLq2i-h9V0q; Wed, 14 Oct 2020 13:14:08 +0300 (MSK)
+        with ESMTP id e4ldnC_N-Ltw; Wed, 14 Oct 2020 13:14:15 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>
+        Rob Herring <robh+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
@@ -41,15 +45,14 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Roger Quadros <rogerq@ti.com>,
         Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
         Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 05/20] dt-bindings: usb: usb-hcd: Add generic "usb-phy" property
-Date:   Wed, 14 Oct 2020 13:13:47 +0300
-Message-ID: <20201014101402.18271-6-Sergey.Semin@baikalelectronics.ru>
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-amlogic@lists.infradead.org>
+Subject: [PATCH 15/20] dt-bindings: usb: meson-g12a-usb: Validate DWC2/DWC3 sub-nodes
+Date:   Wed, 14 Oct 2020 13:13:57 +0300
+Message-ID: <20201014101402.18271-16-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -60,43 +63,38 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Even though the Generic PHY framework is the more preferable way of
-setting the USB PHY up, there are still many dts-files and DT bindings
-which rely on having the legacy "usb-phy" specified to attach particular
-USB PHYs to USB cores. Let's have the "usb-phy" property described in
-the generic USB HCD binding file so it would be validated against the
-nodes in which it's specified. Mark the property as deprecated to
-discourage the developers from using it.
+Amlogic G12A USB DT sub-nodes are supposed to be compatible with the
+generic DWC USB2 and USB3 devices. Since now we've got DT schemas for
+both of the later IP cores let's make sure that the Amlogic G12A USB
+DT nodes are fully evaluated including the DWC sub-nodes.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
 
 ---
 
 Changelog v2:
-- Discard '|' from the property description, since we don't need to preserve
-  the text formatting.
+- Use "oneOf: [dwc2.yaml#, snps,dwc3.yaml#]" instead of the bulky "if:
+  properties: compatibe: ..." statement.
 ---
- Documentation/devicetree/bindings/usb/usb-hcd.yaml | 7 +++++++
- 1 file changed, 7 insertions(+)
+ .../devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml  | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-index 1f9b40fdea70..264a660dc6ea 100644
---- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-+++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-@@ -22,6 +22,13 @@ properties:
-     description:
-       Name specifier for the USB PHY
+diff --git a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
+index a4b44a16aaef..7b2dc905c8ce 100644
+--- a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
++++ b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
+@@ -78,7 +78,9 @@ properties:
  
-+  usb-phy:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description:
-+      List of all the USB PHYs on this HCD to be accepted by the legacy USB
-+      Physical Layer subsystem.
-+    deprecated: true
-+
-   maximum-speed:
-    description:
-      Tells USB controllers we want to work up to a certain speed. In case this
+ patternProperties:
+   "^usb@[0-9a-f]+$":
+-    type: object
++    oneOf:
++      - $ref: dwc2.yaml#
++      - $ref: snps,dwc3.yaml#
+ 
+ additionalProperties: false
+ 
 -- 
 2.27.0
 

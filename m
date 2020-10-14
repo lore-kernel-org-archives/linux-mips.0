@@ -7,25 +7,25 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11EB5C4363D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EEAD9C4363A
 	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:15:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C7528221FE
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:15:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A170321D81
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:15:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387958AbgJNKPZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 14 Oct 2020 06:15:25 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:46182 "EHLO
+        id S2387919AbgJNKPY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 14 Oct 2020 06:15:24 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:46180 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730080AbgJNKO0 (ORCPT
+        with ESMTP id S1730085AbgJNKO0 (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Oct 2020 06:14:26 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 0692B803202E;
-        Wed, 14 Oct 2020 10:14:16 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id B5615800254A;
+        Wed, 14 Oct 2020 10:14:15 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id e4ldnC_N-Ltw; Wed, 14 Oct 2020 13:14:15 +0300 (MSK)
+        with ESMTP id KD9TK71YVkdt; Wed, 14 Oct 2020 13:14:14 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
@@ -50,9 +50,9 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-amlogic@lists.infradead.org>
-Subject: [PATCH 15/20] dt-bindings: usb: meson-g12a-usb: Validate DWC2/DWC3 sub-nodes
-Date:   Wed, 14 Oct 2020 13:13:57 +0300
-Message-ID: <20201014101402.18271-16-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH 14/20] dt-bindings: usb: meson-g12a-usb: Fix FL-adj property value
+Date:   Wed, 14 Oct 2020 13:13:56 +0300
+Message-ID: <20201014101402.18271-15-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -63,38 +63,36 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Amlogic G12A USB DT sub-nodes are supposed to be compatible with the
-generic DWC USB2 and USB3 devices. Since now we've got DT schemas for
-both of the later IP cores let's make sure that the Amlogic G12A USB
-DT nodes are fully evaluated including the DWC sub-nodes.
+An empty snps,quirk-frame-length-adjustment won't cause any change
+performed by the driver. Moreover the DT schema validation will fail,
+since it expects the property being assigned with some value. So set
+fix the example by setting a valid FL-adj value in accordance with
+Neil Armstrong comment.
 
+Link: https://lore.kernel.org/linux-usb/20201010224121.12672-16-Sergey.Semin@baikalelectronics.ru/
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Acked-by: Neil Armstrong <narmstrong@baylibre.com>
 
 ---
 
-Changelog v2:
-- Use "oneOf: [dwc2.yaml#, snps,dwc3.yaml#]" instead of the bulky "if:
-  properties: compatibe: ..." statement.
+Note the same problem is in the DT source file
+arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi .
 ---
- .../devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml  | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml    | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-index a4b44a16aaef..7b2dc905c8ce 100644
+index 5b04a7dfa018..a4b44a16aaef 100644
 --- a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
 +++ b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-@@ -78,7 +78,9 @@ properties:
- 
- patternProperties:
-   "^usb@[0-9a-f]+$":
--    type: object
-+    oneOf:
-+      - $ref: dwc2.yaml#
-+      - $ref: snps,dwc3.yaml#
- 
- additionalProperties: false
- 
+@@ -209,6 +209,6 @@ examples:
+               interrupts = <30>;
+               dr_mode = "host";
+               snps,dis_u2_susphy_quirk;
+-              snps,quirk-frame-length-adjustment;
++              snps,quirk-frame-length-adjustment = <0x20>;
+           };
+     };
 -- 
 2.27.0
 

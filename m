@@ -7,30 +7,37 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D85EC3279D
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:14:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81A88C2D0A2
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:15:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 36B7C20BED
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:14:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 35CDF20848
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:15:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730328AbgJNKOj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 14 Oct 2020 06:14:39 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:46008 "EHLO
+        id S2387795AbgJNKPD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 14 Oct 2020 06:15:03 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:46284 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729977AbgJNKOT (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Oct 2020 06:14:19 -0400
+        with ESMTP id S1730146AbgJNKO2 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Oct 2020 06:14:28 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id AAD3A800248D;
-        Wed, 14 Oct 2020 10:14:12 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 049E68002547;
+        Wed, 14 Oct 2020 10:14:22 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id U2K9vQnEcy5U; Wed, 14 Oct 2020 13:14:12 +0300 (MSK)
+        with ESMTP id GqeoHrezw9FX; Wed, 14 Oct 2020 13:14:21 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>
+        Rob Herring <robh+dt@kernel.org>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
@@ -47,9 +54,9 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 10/20] dt-bindings: usb: dwc3: Add interrupt-names property support
-Date:   Wed, 14 Oct 2020 13:13:52 +0300
-Message-ID: <20201014101402.18271-11-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH 19/20] arch: dts: Fix xHCI DT nodes name
+Date:   Wed, 14 Oct 2020 13:14:01 +0300
+Message-ID: <20201014101402.18271-20-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -60,46 +67,58 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The controller driver supports two types of DWC USB3 devices: with a
-common interrupt lane and with individual interrupts for each mode. Add
-support for both these cases to the DWC USB3 DT schema.
+In accordance with the Generic xHCI bindings the corresponding node name
+is suppose to comply with the Generic USB HCD DT schema, which requires
+the USB nodes to have the name acceptable by the regexp: "^usb(@.*)?" .
+Let's fix the DTS files, which have the xHCI-nodes defined with
+incompatible names.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
 ---
 
-Changelog v2:
-- Grammar fix: "s/both of these cases support/support for both these cases"
-- Drop quotes from around the string constants.
+Please, test the patch out to make sure it doesn't brake the dependent DTS
+files. I did only a manual grepping of the possible nodes dependencies.
 ---
- Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/arm/boot/dts/bcm5301x.dtsi               | 2 +-
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-index 994813f2e25f..12102a84faf6 100644
---- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-@@ -23,9 +23,20 @@ properties:
-       const: snps,dwc3
+diff --git a/arch/arm/boot/dts/bcm5301x.dtsi b/arch/arm/boot/dts/bcm5301x.dtsi
+index bf5656d79a55..cf89a44673c5 100644
+--- a/arch/arm/boot/dts/bcm5301x.dtsi
++++ b/arch/arm/boot/dts/bcm5301x.dtsi
+@@ -314,7 +314,7 @@ usb3: usb3@23000 {
  
-   interrupts:
-+    description: |
-+      It's either a single common DWC3 interrupt (dwc_usb3) or individual
-+      interrupts for the host, gadget and DRD modes.
-     minItems: 1
-     maxItems: 3
+ 			interrupt-parent = <&gic>;
  
-+  interrupt-names:
-+    minItems: 1
-+    maxItems: 3
-+    oneOf:
-+      - const: dwc_usb3
-+      - items:
-+          enum: [host, peripheral, otg]
-+
-   clocks:
-     description:
-       In general the core supports three types of clocks. bus_early is a
+-			xhci: xhci@23000 {
++			xhci: usb@23000 {
+ 				#usb-cells = <0>;
+ 
+ 				compatible = "generic-xhci";
+diff --git a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
+index 9dcf16beabf5..1e37ae181acf 100644
+--- a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
+@@ -275,7 +275,7 @@ CP11X_LABEL(thermal): thermal-sensor@70 {
+ 			};
+ 		};
+ 
+-		CP11X_LABEL(usb3_0): usb3@500000 {
++		CP11X_LABEL(usb3_0): usb@500000 {
+ 			compatible = "marvell,armada-8k-xhci",
+ 			"generic-xhci";
+ 			reg = <0x500000 0x4000>;
+@@ -287,7 +287,7 @@ CP11X_LABEL(usb3_0): usb3@500000 {
+ 			status = "disabled";
+ 		};
+ 
+-		CP11X_LABEL(usb3_1): usb3@510000 {
++		CP11X_LABEL(usb3_1): usb@510000 {
+ 			compatible = "marvell,armada-8k-xhci",
+ 			"generic-xhci";
+ 			reg = <0x510000 0x4000>;
 -- 
 2.27.0
 

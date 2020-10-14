@@ -7,25 +7,25 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA117C43457
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:15:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13355C433DF
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:16:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6F70D20848
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:15:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D00512173E
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Oct 2020 10:16:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729669AbgJNKPq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 14 Oct 2020 06:15:46 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:45950 "EHLO
+        id S1729605AbgJNKQB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 14 Oct 2020 06:16:01 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:45804 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729661AbgJNKOO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Oct 2020 06:14:14 -0400
+        with ESMTP id S1729462AbgJNKOL (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Oct 2020 06:14:11 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 837F0800163F;
-        Wed, 14 Oct 2020 10:14:10 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 01097803202F;
+        Wed, 14 Oct 2020 10:14:08 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id hmYmAbkdTfZP; Wed, 14 Oct 2020 13:14:10 +0300 (MSK)
+        with ESMTP id OWP8MM2kcLv1; Wed, 14 Oct 2020 13:14:07 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
@@ -47,9 +47,9 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 07/20] dt-bindings: usb: xhci: Add Broadcom STB v2 compatible device
-Date:   Wed, 14 Oct 2020 13:13:49 +0300
-Message-ID: <20201014101402.18271-8-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH 02/20] dt-bindings: usb: usb-hcd: Add "otg-rev" property restriction
+Date:   Wed, 14 Oct 2020 13:13:44 +0300
+Message-ID: <20201014101402.18271-3-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -60,30 +60,27 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-For some reason the "brcm,xhci-brcm-v2" compatible string has been missing
-in the original bindings file. Add it to the Generic xHCI Controllers DT
-schema since the controller driver expects it to be supported.
+There are only four OTG revisions are currently supported by the kernel:
+0x0100, 0x0120, 0x0130, 0x0200. Any another value is considered as
+invalid.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 ---
- Documentation/devicetree/bindings/usb/generic-xhci.yaml | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/usb/usb-hcd.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/generic-xhci.yaml b/Documentation/devicetree/bindings/usb/generic-xhci.yaml
-index 1ea1d49a8175..23d73df96ea3 100644
---- a/Documentation/devicetree/bindings/usb/generic-xhci.yaml
-+++ b/Documentation/devicetree/bindings/usb/generic-xhci.yaml
-@@ -26,7 +26,9 @@ properties:
-               - marvell,armada-8k-xhci
-           - const: generic-xhci
-       - description: Broadcom STB SoCs with xHCI
--        const: brcm,bcm7445-xhci
-+        enum:
-+          - brcm,xhci-brcm-v2
-+          - brcm,bcm7445-xhci
-       - description: Generic xHCI device
-         const: xhci-platform
-         deprecated: true
+diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+index ee7ea205c71d..e01d8a54971e 100644
+--- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
++++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+@@ -60,6 +60,7 @@ properties:
+       features (HNP/SRP/ADP) is enabled. If ADP is required, otg-rev should be
+       0x0200 or above.
+     $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [0x0100, 0x0120, 0x0130, 0x0200]
+ 
+   companion:
+     description: Phandle of a companion device
 -- 
 2.27.0
 

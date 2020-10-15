@@ -2,175 +2,117 @@ Return-Path: <SRS0=Uc4z=DW=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01EE4C433DF
-	for <linux-mips@archiver.kernel.org>; Thu, 15 Oct 2020 02:14:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 190A4C433DF
+	for <linux-mips@archiver.kernel.org>; Thu, 15 Oct 2020 05:27:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 88B7022257
-	for <linux-mips@archiver.kernel.org>; Thu, 15 Oct 2020 02:14:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AA5C422249
+	for <linux-mips@archiver.kernel.org>; Thu, 15 Oct 2020 05:27:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BUGxB1YA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b1kxc0/F"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728864AbgJOCOi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 14 Oct 2020 22:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
+        id S1726307AbgJOF1Z (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 15 Oct 2020 01:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726028AbgJOCOh (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Oct 2020 22:14:37 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813AAC05BD1A;
-        Wed, 14 Oct 2020 15:36:58 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id r127so1212313lff.12;
-        Wed, 14 Oct 2020 15:36:58 -0700 (PDT)
+        with ESMTP id S1725985AbgJOF1Z (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 15 Oct 2020 01:27:25 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B7FC061755;
+        Wed, 14 Oct 2020 22:27:25 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id h4so1238594pjk.0;
+        Wed, 14 Oct 2020 22:27:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BAhqLujKs3qvyU8mzyTrRxpaREp3Hw9vVWDBSKjqLnY=;
-        b=BUGxB1YA65cmz4OJ8kyPkuDCA+/Ycreilwo3cOCS4XMMcq6n+qcAHHm1nkgzJoV8kI
-         yxX6QTeZaUR+Kx7wqY2c30nPWaIV2Kov4qwGa4+p3V+X5ac9NuPgHOxlXHoOJxZDIsBl
-         yXUZpvZMtszcu5IWa4C+OfWnMQ354z9wlZ50kUZRh0H9JPLjATjcIoRTIadynuMj5enM
-         ABX49FKBmhAws+/g+5SphWYG7J69jz8A6BK23XKQhTdAwjpb5C6Bx69fORFnHqzoj0ZQ
-         WM3Gbu/IqKWl8gnX829aiUeSewYwyt3rB+aIZ8jTAIn7KdJLfnwjoVvCxcQLgBnWf3hC
-         /14Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=suwn4Ybo5octRzfTXo8Gwd9DEMEokqAoqQQ/uRbhrPE=;
+        b=b1kxc0/FM0XcnhSkjp/AVmYqOzjbSXwqbvHG/bwvzY8oysMpUBg7wNKfAN6iCVXeI0
+         i7C+mKZRe9ims1zW0zVeWk9Xbwz3rb62ZaWukL69hBZYNTh1K5fqDm99Q2JxAgy01acb
+         bVfk52/rxTuzzU/6EzY++qJcb5cFULMTGeofEO877/swhvauY9kbsJam2X98QDoIDXMl
+         Z4DRm/FKpnLzp+X+reufd0jpcp5JqHiLAOmuEzExPUS2QHbECsv6GWBsGc78n7Hlux3j
+         rH0itX4xij1zrt826BIwY9lpI2eMs064CCdBBcp2r4HjtvpERnETzeUux1T6J60DfpTb
+         Gq6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BAhqLujKs3qvyU8mzyTrRxpaREp3Hw9vVWDBSKjqLnY=;
-        b=VpQCEGBzTTPJCknqQygHvnGHQ2QdoeIvAyEaT7GzHRNTu7Jo4/tem1/sNIERtB8UOG
-         l5QhuI0LFIzVhuGMlqBc+naW1t//EHMjmqbCCq4/XH4uNOVPC6Q7LL5PlvgMUQpPh7HO
-         yricARks8mptS7IzaG7mkqbytvqMJBM8v9DFMeuDUBUL0Dl3WJKwKQiQrYmlwtOKa2Ot
-         JHqUtDu8oX1oWw07EVrhJQL9PvUcJF9nJ+l1ZJvM/Vq4vJDyP0d4mXyYLy/rdpsThflQ
-         tDY+xQKhUb+mDOZpeEl2iYsitymc8/CwTtK95SNYeGM2nioQ7xRdSIvsNNCb/RtPs/q4
-         zYdQ==
-X-Gm-Message-State: AOAM5330cdUjkTuUd/Q/deJl91SJ4z5rMPcfmPzKlBu8qBwl5V6QpscP
-        K7qK91HdBw6vDkyjolcD2wRB8GLA5U0=
-X-Google-Smtp-Source: ABdhPJxZisFbSGvURTBfOCD9EDQlBYtk/KEGQrFQGMEtiQdtgCqp/S/vrha8NPgrelxcV8hOJ2zN3g==
-X-Received: by 2002:a19:84d5:: with SMTP id g204mr78148lfd.194.1602715016908;
-        Wed, 14 Oct 2020 15:36:56 -0700 (PDT)
-Received: from mobilestation ([95.79.141.114])
-        by smtp.gmail.com with ESMTPSA id e73sm245572lfd.199.2020.10.14.15.36.55
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=suwn4Ybo5octRzfTXo8Gwd9DEMEokqAoqQQ/uRbhrPE=;
+        b=QmQAxRP/okVmuoRQeyyLdf7bSo7s7R+9ksFD3MAN534KM+lwgaBjfMFsALMILpXfxf
+         Pwc+5miboF5mnQlNUti4wRH1bKGtIWtjCkmv4w72r8tVQYYBAga7QorzmJYCxDqKXngM
+         u/1+PMJQ8NG5DUd3psPdSv712uX3U6jeNL9J5LvprSbqdXqbBVLfhic5Ndq2j3p5A+W+
+         TfN4KQgGLQBp5oCrI3Qn3wgfP+0ESPvZiOv1Z3haAT4NN4/Th0tN5TzYnTf1c/TfFNaE
+         ntcFODRVAq7OZCoKKN5NJvaq3ZWOLAbN/3d5wGXSmikMaktkISg+tuuLcX3CEC3VqtEg
+         NkKQ==
+X-Gm-Message-State: AOAM533mHxf/vY7s1iyfqt5ZMK3xEBOzRzAopqB2By17Dmb6w3ir9tEK
+        8O23UZWqRwMhvO31qzAqxdOi+qyOWpQ=
+X-Google-Smtp-Source: ABdhPJwSCuwDC/fbWIILvWoz7DaL6bE0i24zwO3oIW6Lh42RR6qBUaiAKx4Xaosxk8MY2KUx7I1KrA==
+X-Received: by 2002:a17:90a:be0e:: with SMTP id a14mr2683387pjs.57.1602739644440;
+        Wed, 14 Oct 2020 22:27:24 -0700 (PDT)
+Received: from guoguo-omen.lan ([240e:379:940:2525:1069:aebf:b411:6781])
+        by smtp.gmail.com with ESMTPSA id u25sm1481931pgl.31.2020.10.14.22.27.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 15:36:56 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 01:36:54 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] MIPS: DEC: Restore bootmem reservation for firmware
- working memory area
-Message-ID: <20201014223654.rntqmnrxldxovf3u@mobilestation>
-References: <alpine.LFD.2.21.2010142230090.866917@eddie.linux-mips.org>
+        Wed, 14 Oct 2020 22:27:23 -0700 (PDT)
+From:   Chuanhong Guo <gch981213@gmail.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Chuanhong Guo <gch981213@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        John Crispin <john@phrozen.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] mips: ralink: mt7621: add zboot debug console
+Date:   Thu, 15 Oct 2020 13:26:21 +0800
+Message-Id: <20201015052631.138783-1-gch981213@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LFD.2.21.2010142230090.866917@eddie.linux-mips.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Maciej,
-Regardless of a comment below feel free to add:
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+uartlite0 at 0x1e000c00 is a 16550 compatible uart controller. It's
+usually used for debug console and is already configured by u-boot.
+Add ZBOOT_UART16550 and related definitions in uart-16550.c for zboot
+debug output.
 
-On Wed, Oct 14, 2020 at 10:34:56PM +0100, Maciej W. Rozycki wrote:
-> Fix a crash on DEC platforms starting with:
-> 
-> VFS: Mounted root (nfs filesystem) on device 0:11.
-> Freeing unused PROM memory: 124k freed
-> BUG: Bad page state in process swapper  pfn:00001
-> page:(ptrval) refcount:0 mapcount:-128 mapping:00000000 index:0x1 pfn:0x1
-> flags: 0x0()
-> raw: 00000000 00000100 00000122 00000000 00000001 00000000 ffffff7f 00000000
-> page dumped because: nonzero mapcount
-> Modules linked in:
-> CPU: 0 PID: 1 Comm: swapper Not tainted 5.9.0-00858-g865c50e1d279 #1
-> Stack : 8065dc48 0000000b 8065d2b8 9bc27dcc 80645bfc 9bc259a4 806a1b97 80703124
->         80710000 8064a900 00000001 80099574 806b116c 1000ec00 9bc27d88 806a6f30
->         00000000 00000000 80645bfc 00000000 31232039 80706ba4 2e392e35 8039f348
->         2d383538 00000070 0000000a 35363867 00000000 806c2830 80710000 806b0000
->         80710000 8064a900 00000001 81000000 00000000 00000000 8035af2c 80700000
->         ...
-> Call Trace:
-> [<8004bc5c>] show_stack+0x34/0x104
-> [<8015675c>] bad_page+0xfc/0x128
-> [<80157714>] free_pcppages_bulk+0x1f4/0x5dc
-> [<801591cc>] free_unref_page+0xc0/0x130
-> [<8015cb04>] free_reserved_area+0x144/0x1d8
-> [<805abd78>] kernel_init+0x20/0x100
-> [<80046070>] ret_from_kernel_thread+0x14/0x1c
-> Disabling lock debugging due to kernel taint
-> 
-> caused by an attempt to free bootmem space that as from commit 
-> b93ddc4f9156 ("mips: Reserve memory for the kernel image resources") has 
-> not been anymore reserved due to the removal of generic MIPS arch code 
-> that used to reserve all the memory from the beginning of RAM up to the 
-> kernel load address.
-> 
-> This memory does need to be reserved on DEC platforms however as it is 
-> used by REX firmware as working area, as per the TURBOchannel firmware 
-> specification[1]:
-> 
-> Table 2-2  REX Memory Regions
-> -------------------------------------------------------------------------
->         Starting        Ending
-> Region  Address         Address         Use
-> -------------------------------------------------------------------------
-> 0       0xa0000000      0xa000ffff      Restart block, exception vectors,
->                                         REX stack and bss
-> 1       0xa0010000      0xa0017fff      Keyboard or tty drivers
-> 
-> 2       0xa0018000      0xa001f3ff 1)   CRT driver
-> 
-> 3       0xa0020000      0xa002ffff      boot, cnfg, init and t objects
-> 
-> 4       0xa0020000      0xa002ffff      64KB scratch space
-> -------------------------------------------------------------------------
-> 1) Note that the last 3 Kbytes of region 2 are reserved for backward
-> compatibility with previous system software.
-> -------------------------------------------------------------------------
-> 
+Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+---
+ arch/mips/boot/compressed/uart-16550.c | 6 ++++++
+ arch/mips/ralink/Kconfig               | 1 +
+ 2 files changed, 7 insertions(+)
 
-...
+diff --git a/arch/mips/boot/compressed/uart-16550.c b/arch/mips/boot/compressed/uart-16550.c
+index aee8d7b8f091..7122df28967a 100644
+--- a/arch/mips/boot/compressed/uart-16550.c
++++ b/arch/mips/boot/compressed/uart-16550.c
+@@ -35,6 +35,12 @@
+ #define IOTYPE unsigned int
+ #endif
+ 
++#ifdef CONFIG_SOC_MT7621
++#define UART0_BASE  0x1e000c00
++#define PORT(offset) (CKSEG1ADDR(UART0_BASE) + (4 * offset))
++#define IOTYPE unsigned int
++#endif
++
+ #ifndef IOTYPE
+ #define IOTYPE char
+ #endif
+diff --git a/arch/mips/ralink/Kconfig b/arch/mips/ralink/Kconfig
+index c10d8b233ab1..4c3c6ef330e3 100644
+--- a/arch/mips/ralink/Kconfig
++++ b/arch/mips/ralink/Kconfig
+@@ -52,6 +52,7 @@ choice
+ 		select SYS_SUPPORTS_SMP
+ 		select SYS_SUPPORTS_MIPS_CPS
+ 		select SYS_SUPPORTS_HIGHMEM
++		select SYS_SUPPORTS_ZBOOT_UART16550
+ 		select MIPS_GIC
+ 		select COMMON_CLK
+ 		select CLKSRC_MIPS_GIC
+-- 
+2.26.2
 
-> @@ -146,6 +150,9 @@ void __init plat_mem_setup(void)
->  
->  	ioport_resource.start = ~0UL;
->  	ioport_resource.end = 0UL;
-
-> +
-> +	/* Stay away from the firmware working memory area for now. */
-> +	memblock_reserve(PHYS_OFFSET, __pa_symbol(&_text) - PHYS_OFFSET);
-
-I am just wondering...
-Here we reserve a region within [PHYS_OFFSET, __pa_symbol(&_text)]. But then in
-the prom_free_prom_memory() method we'll get to free a region as either
-[PAGE_SIZE, __pa_symbol(&_text)] or [PAGE_SIZE, __pa_symbol(&_text) - 0x00020000].
-
-First of all the start address of the being freed region is PAGE_SIZE, which doesn't
-take the PHYS_OFFSET into account. I assume it won't cause problems because
-PHYS_OFFSET is set to 0 for DEC. If so then we either shouldn't use PHYS_OFFSET
-here or should take PHYS_OFFSET into account there on freeing or should just forget
-about that since other than confusion it won't cause any problem.)
-(I should have posted this question to v1 of this patch instead of pointing out
-on the confusing size argument of the memblock_reserve() method. Sorry about
-that.)
-
-Secondly why is PAGE_SIZE selected as the start address? It belongs to the
-Region 1 in accordance with "Table 2-2 REX Memory Regions" cited above. Thus we
-get to keep reserved just a part of the Region 1. Most likely it's the restart
-block and the exception vectors. Even assuming that the DEC developers knew what
-they were doing, I am wondering can we be sure that a single page is enough for
-all that data?..
-
--Sergey
-
->  }
->  
->  /*

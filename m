@@ -7,25 +7,25 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8885CC4363A
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E279C4363A
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4CA462224B
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 201BF2223C
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406098AbgJTLWT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 20 Oct 2020 07:22:19 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:51554 "EHLO
+        id S2393563AbgJTLV2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 20 Oct 2020 07:21:28 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:51318 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393572AbgJTLVa (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Oct 2020 07:21:30 -0400
+        with ESMTP id S2392686AbgJTLV0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Oct 2020 07:21:26 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 6235A803071C;
-        Tue, 20 Oct 2020 11:21:26 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id A99A58030867;
+        Tue, 20 Oct 2020 11:21:23 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id GdLIEJJnqmaq; Tue, 20 Oct 2020 14:21:25 +0300 (MSK)
+        with ESMTP id S-ECj01RbAp1; Tue, 20 Oct 2020 14:21:22 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
@@ -50,9 +50,9 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 12/16] dt-bindings: usb: dwc3: Add Frame Length Adj constraints
-Date:   Tue, 20 Oct 2020 14:20:57 +0300
-Message-ID: <20201020112101.19077-13-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v3 04/16] dt-bindings: usb: usb-hcd: Add "tpl-support" property
+Date:   Tue, 20 Oct 2020 14:20:49 +0300
+Message-ID: <20201020112101.19077-5-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -63,30 +63,40 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In accordance with the IP core databook the
-snps,quirk-frame-length-adjustment property can be set within [0, 0x3F].
-Let's make sure the DT schema applies a correct constraints on the
-property.
+The host controller device might be designed to work for the particular
+products or applications. In that case its DT node is supposed to be
+equipped with the tpl-support property.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Reviewed-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-index 6ab7cba56059..2a269624983a 100644
---- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-@@ -230,6 +230,8 @@ properties:
-       length adjustment when the fladj_30mhz_sdbnd signal is invalid or
-       incorrect.
-     $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 0
-+    maximum: 0x3f
+---
+
+Changelog v2:
+- Grammar fix: "s/it'/its"
+- Discard '|' from the property description, since we don't need to preserve
+  the text formatting.
+---
+ Documentation/devicetree/bindings/usb/usb-hcd.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+index a1a6cde7327d..1f9b40fdea70 100644
+--- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
++++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+@@ -101,6 +101,12 @@ properties:
+     enum: [host, peripheral]
+     default: peripheral
  
-   snps,rx-thr-num-pkt-prd:
-     description:
++  tpl-support:
++    description:
++      Indicates if the Targeted Peripheral List is supported for given
++      targeted hosts (non-PC hosts).
++    type: boolean
++
+ examples:
+   - |
+     usb {
 -- 
 2.27.0
 

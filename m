@@ -4,36 +4,34 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28ABFC43467
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8885CC4363A
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D71E322240
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4CA462224B
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406092AbgJTLWT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S2406098AbgJTLWT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Tue, 20 Oct 2020 07:22:19 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:51520 "EHLO
+Received: from mail.baikalelectronics.com ([87.245.175.226]:51554 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393560AbgJTLVa (ORCPT
+        with ESMTP id S2393572AbgJTLVa (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Oct 2020 07:21:30 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id E91CD8030816;
-        Tue, 20 Oct 2020 11:21:24 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 6235A803071C;
+        Tue, 20 Oct 2020 11:21:26 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id PfupDFmLH06H; Tue, 20 Oct 2020 14:21:24 +0300 (MSK)
+        with ESMTP id GdLIEJJnqmaq; Tue, 20 Oct 2020 14:21:25 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+        Rob Herring <robh+dt@kernel.org>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
@@ -42,6 +40,8 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Manu Gautam <mgautam@codeaurora.org>,
         Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
         Kevin Hilman <khilman@baylibre.com>,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
@@ -50,9 +50,9 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 08/16] dt-bindings: usb: renesas-xhci: Refer to the usb-xhci.yaml file
-Date:   Tue, 20 Oct 2020 14:20:53 +0300
-Message-ID: <20201020112101.19077-9-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v3 12/16] dt-bindings: usb: dwc3: Add Frame Length Adj constraints
+Date:   Tue, 20 Oct 2020 14:20:57 +0300
+Message-ID: <20201020112101.19077-13-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -63,40 +63,30 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-With minor peculiarities (like uploading some vendor-specific firmware)
-these are just Generic xHCI controllers fully compatible with its
-properties. Make sure the Renesas USB xHCI DT nodes are also validated
-against the Generic xHCI DT schema.
+In accordance with the IP core databook the
+snps,quirk-frame-length-adjustment property can be set within [0, 0x3F].
+Let's make sure the DT schema applies a correct constraints on the
+property.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Reviewed-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 ---
- Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml b/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml
-index add9f7b66da0..4491567152a1 100644
---- a/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml
-+++ b/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml
-@@ -11,7 +11,7 @@ maintainers:
-   - Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+index 6ab7cba56059..2a269624983a 100644
+--- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
++++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+@@ -230,6 +230,8 @@ properties:
+       length adjustment when the fladj_30mhz_sdbnd signal is invalid or
+       incorrect.
+     $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0
++    maximum: 0x3f
  
- allOf:
--  - $ref: "usb-hcd.yaml"
-+  - $ref: "usb-xhci.yaml"
- 
- properties:
-   compatible:
-@@ -68,7 +68,7 @@ required:
-   - power-domains
-   - resets
- 
--additionalProperties: false
-+unevaluatedProperties: false
- 
- examples:
-   - |
+   snps,rx-thr-num-pkt-prd:
+     description:
 -- 
 2.27.0
 

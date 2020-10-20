@@ -7,31 +7,31 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CAAAC54FB2
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E933C388F9
 	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BF5C522404
+	by mail.kernel.org (Postfix) with ESMTP id F23F222242
 	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392382AbgJTLVc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 20 Oct 2020 07:21:32 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:51558 "EHLO
+        id S2393603AbgJTLVb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 20 Oct 2020 07:21:31 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:51548 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393569AbgJTLVa (ORCPT
+        with ESMTP id S2393570AbgJTLVa (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Oct 2020 07:21:30 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id A5D18803202A;
-        Tue, 20 Oct 2020 11:21:27 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id E2E288030171;
+        Tue, 20 Oct 2020 11:21:25 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id yX6jY9shVz70; Tue, 20 Oct 2020 14:21:27 +0300 (MSK)
+        with ESMTP id cjSKv4RvSeTS; Tue, 20 Oct 2020 14:21:25 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>, Roger Quadros <rogerq@ti.com>
+        Rob Herring <robh+dt@kernel.org>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
@@ -39,6 +39,7 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
         Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
         Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
@@ -49,9 +50,9 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 15/16] dt-bindings: usb: keystone-dwc3: Validate DWC3 sub-node
-Date:   Tue, 20 Oct 2020 14:21:00 +0300
-Message-ID: <20201020112101.19077-16-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v3 11/16] dt-bindings: usb: dwc3: Add Tx De-emphasis constraints
+Date:   Tue, 20 Oct 2020 14:20:56 +0300
+Message-ID: <20201020112101.19077-12-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -62,10 +63,10 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-TI Keystone DWC3 compatible DT node is supposed to have a DWC USB3
-compatible sub-node to describe a fully functioning USB interface.
-Since DWC USB3 has now got a DT schema describing its DT node, let's make
-sure the TI Keystone DWC3 sub-node passes validation against it.
+In accordance with the driver comments the PIPE3 de-emphasis can be tuned
+to be either -6dB, -2.5dB or disabled. Let's add the de-emphasis
+property constraints so the DT schema would make sure the controller DT
+node is equipped with correct value.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Reviewed-by: Rob Herring <robh@kernel.org>
@@ -73,26 +74,27 @@ Reviewed-by: Rob Herring <robh@kernel.org>
 ---
 
 Changelog v2:
-- Grammar fix: "s/it'/its"
+- Grammar fix: "s/tunned/tuned"
+- Grammar fix: remove redundant "or" conjunction.
 ---
- Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml b/Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml
-index c1b19fc5d0a2..ca7fbe3ed22e 100644
---- a/Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml
-@@ -64,9 +64,7 @@ properties:
+diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+index 23f07222d3d7..6ab7cba56059 100644
+--- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
++++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+@@ -149,6 +149,10 @@ properties:
+       The value driven to the PHY is controlled by the LTSSM during USB3
+       Compliance mode.
+     $ref: /schemas/types.yaml#/definitions/uint8
++    enum:
++      - 0 # -6dB de-emphasis
++      - 1 # -3.5dB de-emphasis
++      - 2 # No de-emphasis
  
- patternProperties:
-   "usb@[a-f0-9]+$":
--    type: object
--    description: This is the node representing the DWC3 controller instance
--      Documentation/devicetree/bindings/usb/dwc3.txt
-+    $ref: snps,dwc3.yaml#
- 
- required:
-   - compatible
+   snps,dis_u3_susphy_quirk:
+     description: When set core will disable USB3 suspend phy
 -- 
 2.27.0
 

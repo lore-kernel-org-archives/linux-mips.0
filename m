@@ -7,31 +7,35 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 234BEC433E7
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A83BC43457
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C9B2922240
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2211A22240
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393566AbgJTLWG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 20 Oct 2020 07:22:06 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:51552 "EHLO
+        id S2393521AbgJTLWF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 20 Oct 2020 07:22:05 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:51556 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393568AbgJTLVa (ORCPT
+        with ESMTP id S2393567AbgJTLVa (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Oct 2020 07:21:30 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 6A60B803017C;
-        Tue, 20 Oct 2020 11:21:25 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 2FA83803017D;
+        Tue, 20 Oct 2020 11:21:27 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id BY9vIjNHL5cT; Tue, 20 Oct 2020 14:21:24 +0300 (MSK)
+        with ESMTP id zBgXc2_izpbG; Tue, 20 Oct 2020 14:21:26 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>
+        Rob Herring <robh+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
@@ -42,17 +46,15 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Roger Quadros <rogerq@ti.com>,
         Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
         Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 10/16] dt-bindings: usb: dwc3: Add interrupt-names property support
-Date:   Tue, 20 Oct 2020 14:20:55 +0300
-Message-ID: <20201020112101.19077-11-Sergey.Semin@baikalelectronics.ru>
+        Rob Herring <robh@kernel.org>,
+        <linux-amlogic@lists.infradead.org>
+Subject: [PATCH v3 14/16] dt-bindings: usb: meson-g12a-usb: Validate DWC2/DWC3 sub-nodes
+Date:   Tue, 20 Oct 2020 14:20:59 +0300
+Message-ID: <20201020112101.19077-15-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -63,47 +65,40 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The controller driver supports two types of DWC USB3 devices: with a
-common interrupt lane and with individual interrupts for each mode. Add
-support for both these cases to the DWC USB3 DT schema.
+Amlogic G12A USB DT sub-nodes are supposed to be compatible with the
+generic DWC USB2 and USB3 devices. Since now we've got DT schemas for
+both of the later IP cores let's make sure that the Amlogic G12A USB
+DT nodes are fully evaluated including the DWC sub-nodes.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
 Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
 ---
 
 Changelog v2:
-- Grammar fix: "s/both of these cases support/support for both these cases"
-- Drop quotes from around the string constants.
+- Use "oneOf: [dwc2.yaml#, snps,dwc3.yaml#]" instead of the bulky "if:
+  properties: compatibe: ..." statement.
 ---
- Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ .../devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml  | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-index 65bc66ec67d0..23f07222d3d7 100644
---- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-@@ -30,9 +30,20 @@ properties:
-       const: snps,dwc3
+diff --git a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
+index a4b44a16aaef..7b2dc905c8ce 100644
+--- a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
++++ b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
+@@ -78,7 +78,9 @@ properties:
  
-   interrupts:
-+    description: |
-+      It's either a single common DWC3 interrupt (dwc_usb3) or individual
-+      interrupts for the host, gadget and DRD modes.
-     minItems: 1
-     maxItems: 3
- 
-+  interrupt-names:
-+    minItems: 1
-+    maxItems: 3
+ patternProperties:
+   "^usb@[0-9a-f]+$":
+-    type: object
 +    oneOf:
-+      - const: dwc_usb3
-+      - items:
-+          enum: [host, peripheral, otg]
-+
-   clocks:
-     description:
-       In general the core supports three types of clocks. bus_early is a
++      - $ref: dwc2.yaml#
++      - $ref: snps,dwc3.yaml#
+ 
+ additionalProperties: false
+ 
 -- 
 2.27.0
 

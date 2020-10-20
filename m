@@ -4,38 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A83BC43457
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28ABFC43467
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2211A22240
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D71E322240
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393521AbgJTLWF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 20 Oct 2020 07:22:05 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:51556 "EHLO
+        id S2406092AbgJTLWT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 20 Oct 2020 07:22:19 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:51520 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393567AbgJTLVa (ORCPT
+        with ESMTP id S2393560AbgJTLVa (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Oct 2020 07:21:30 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 2FA83803017D;
-        Tue, 20 Oct 2020 11:21:27 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id E91CD8030816;
+        Tue, 20 Oct 2020 11:21:24 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id zBgXc2_izpbG; Tue, 20 Oct 2020 14:21:26 +0300 (MSK)
+        with ESMTP id PfupDFmLH06H; Tue, 20 Oct 2020 14:21:24 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
@@ -44,17 +42,17 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Manu Gautam <mgautam@codeaurora.org>,
         Roger Quadros <rogerq@ti.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        <linux-amlogic@lists.infradead.org>
-Subject: [PATCH v3 14/16] dt-bindings: usb: meson-g12a-usb: Validate DWC2/DWC3 sub-nodes
-Date:   Tue, 20 Oct 2020 14:20:59 +0300
-Message-ID: <20201020112101.19077-15-Sergey.Semin@baikalelectronics.ru>
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v3 08/16] dt-bindings: usb: renesas-xhci: Refer to the usb-xhci.yaml file
+Date:   Tue, 20 Oct 2020 14:20:53 +0300
+Message-ID: <20201020112101.19077-9-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -65,40 +63,40 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Amlogic G12A USB DT sub-nodes are supposed to be compatible with the
-generic DWC USB2 and USB3 devices. Since now we've got DT schemas for
-both of the later IP cores let's make sure that the Amlogic G12A USB
-DT nodes are fully evaluated including the DWC sub-nodes.
+With minor peculiarities (like uploading some vendor-specific firmware)
+these are just Generic xHCI controllers fully compatible with its
+properties. Make sure the Renesas USB xHCI DT nodes are also validated
+against the Generic xHCI DT schema.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
 Reviewed-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-
+Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 ---
+ Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Changelog v2:
-- Use "oneOf: [dwc2.yaml#, snps,dwc3.yaml#]" instead of the bulky "if:
-  properties: compatibe: ..." statement.
----
- .../devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml  | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-index a4b44a16aaef..7b2dc905c8ce 100644
---- a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-+++ b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-@@ -78,7 +78,9 @@ properties:
+diff --git a/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml b/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml
+index add9f7b66da0..4491567152a1 100644
+--- a/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml
++++ b/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml
+@@ -11,7 +11,7 @@ maintainers:
+   - Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
  
- patternProperties:
-   "^usb@[0-9a-f]+$":
--    type: object
-+    oneOf:
-+      - $ref: dwc2.yaml#
-+      - $ref: snps,dwc3.yaml#
+ allOf:
+-  - $ref: "usb-hcd.yaml"
++  - $ref: "usb-xhci.yaml"
  
- additionalProperties: false
+ properties:
+   compatible:
+@@ -68,7 +68,7 @@ required:
+   - power-domains
+   - resets
  
+-additionalProperties: false
++unevaluatedProperties: false
+ 
+ examples:
+   - |
 -- 
 2.27.0
 

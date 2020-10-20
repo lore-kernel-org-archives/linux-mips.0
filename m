@@ -7,25 +7,25 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DA75C433DF
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90C74C43457
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F286A22240
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4B9B02223C
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393568AbgJTLWl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 20 Oct 2020 07:22:41 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:51390 "EHLO
+        id S2406145AbgJTLWr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 20 Oct 2020 07:22:47 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:51286 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392736AbgJTLV1 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Oct 2020 07:21:27 -0400
+        with ESMTP id S2392667AbgJTLVZ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Oct 2020 07:21:25 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id E955280305E2;
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 6B198803073F;
         Tue, 20 Oct 2020 11:21:23 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id XXDfvDMNoEhE; Tue, 20 Oct 2020 14:21:23 +0300 (MSK)
+        with ESMTP id nLjgCbHIG9FU; Tue, 20 Oct 2020 14:21:22 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
@@ -50,9 +50,9 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 05/16] dt-bindings: usb: usb-hcd: Add generic "usb-phy" property
-Date:   Tue, 20 Oct 2020 14:20:50 +0300
-Message-ID: <20201020112101.19077-6-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v3 03/16] dt-bindings: usb: usb-hcd: Add "ulpi/serial/hsic" PHY types
+Date:   Tue, 20 Oct 2020 14:20:48 +0300
+Message-ID: <20201020112101.19077-4-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -63,13 +63,9 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Even though the Generic PHY framework is the more preferable way of
-setting the USB PHY up, there are still many dts-files and DT bindings
-which rely on having the legacy "usb-phy" specified to attach particular
-USB PHYs to USB cores. Let's have the "usb-phy" property described in
-the generic USB HCD binding file so it would be validated against the
-nodes in which it's specified. Mark the property as deprecated to
-discourage the developers from using it.
+Aside from the UTMI+ there are also ULPI, Serial and HSIC PHY types
+that can be specified in the phy_type HCD property. Add them to the
+enumeration of the acceptable values.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Reviewed-by: Rob Herring <robh@kernel.org>
@@ -77,30 +73,34 @@ Reviewed-by: Rob Herring <robh@kernel.org>
 ---
 
 Changelog v2:
-- Discard '|' from the property description, since we don't need to preserve
-  the text formatting.
+- Grammar fix: "s/PHY types can be/PHY types that can be"
+- Drop quotes from around the string constants.
 ---
- Documentation/devicetree/bindings/usb/usb-hcd.yaml | 7 +++++++
- 1 file changed, 7 insertions(+)
+ Documentation/devicetree/bindings/usb/usb-hcd.yaml | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-index 1f9b40fdea70..264a660dc6ea 100644
+index e01d8a54971e..a1a6cde7327d 100644
 --- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
 +++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-@@ -22,6 +22,13 @@ properties:
+@@ -46,11 +46,13 @@ properties:
+   phy_type:
      description:
-       Name specifier for the USB PHY
+       Tells USB controllers that we want to configure the core to support a
+-      UTMI+ PHY with an 8- or 16-bit interface if UTMI+ is selected. In case
+-      this isn't passed via DT, USB controllers should default to HW
+-      capability.
++      UTMI+ PHY with an 8- or 16-bit interface if UTMI+ is selected, UTMI+ low
++      pin interface if ULPI is specified, Serial core/PHY interconnect if
++      serial is specified and High-Speed Inter-Chip feature if HSIC is
++      selected. In case this isn't passed via DT, USB controllers should
++      default to HW capability.
+     $ref: /schemas/types.yaml#/definitions/string
+-    enum: [utmi, utmi_wide]
++    enum: [utmi, utmi_wide, ulpi, serial, hsic]
  
-+  usb-phy:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description:
-+      List of all the USB PHYs on this HCD to be accepted by the legacy USB
-+      Physical Layer subsystem.
-+    deprecated: true
-+
-   maximum-speed:
-    description:
-      Tells USB controllers we want to work up to a certain speed. In case this
+   otg-rev:
+     description:
 -- 
 2.27.0
 

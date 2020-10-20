@@ -2,29 +2,30 @@ Return-Path: <SRS0=ZIqX=D3=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14D1FC433DF
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DA75C433DF
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C8FA322242
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F286A22240
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 11:22:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393553AbgJTLV1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 20 Oct 2020 07:21:27 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:51206 "EHLO
+        id S2393568AbgJTLWl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 20 Oct 2020 07:22:41 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:51390 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392408AbgJTLVZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Oct 2020 07:21:25 -0400
+        with ESMTP id S2392736AbgJTLV1 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Oct 2020 07:21:27 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 0EF53803071A;
-        Tue, 20 Oct 2020 11:21:22 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id E955280305E2;
+        Tue, 20 Oct 2020 11:21:23 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id U7dMPDrKX8y1; Tue, 20 Oct 2020 14:21:20 +0300 (MSK)
+        with ESMTP id XXDfvDMNoEhE; Tue, 20 Oct 2020 14:21:23 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
@@ -47,10 +48,13 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 00/16] dt-bindings: usb: Add generic USB HCD, xHCI, DWC USB3 DT schema
-Date:   Tue, 20 Oct 2020 14:20:45 +0300
-Message-ID: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru>
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v3 05/16] dt-bindings: usb: usb-hcd: Add generic "usb-phy" property
+Date:   Tue, 20 Oct 2020 14:20:50 +0300
+Message-ID: <20201020112101.19077-6-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru>
+References: <20201020112101.19077-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -59,139 +63,44 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-We've performed some work on the Generic USB HCD, xHCI and DWC USB3 DT
-bindings in the framework of the Baikal-T1 SoC support integration into
-the kernel. This patchset is a result of that work.
-
-First of all we moved the generic USB properties from the legacy text
-bindings into the USB HCD DT schema. So now the generic USB HCD-compatible
-DT nodes are validated taking into account the optional properties like:
-maximum-speed, dr_mode, otg-rev, usb-role-switch, etc. We've fixed these
-properties a bit so they would correspond to what functionality kernel
-currently supports.
-
-Secondly we converted generic USB xHCI text bindings file into the DT
-schema. It had to be split up into two bindings: DT schema with generic
-xHCI properties and a generic xHCI device DT schema. The later will be
-used to validate the pure xHCI-based nodes, while the former can be
-utilized by some vendor-specific versions of xHCI.
-
-Thirdly, what was primarily intended to be done for Baikal-T1 SoC USB we
-converted the legacy text-based DWC USB3 bindings to DT schema and altered
-the result a bit so it would be more coherent with what actually
-controller and its driver support. Since we've now got the DWC USB3 DT
-schema, we made it used to validate the sub-nodes of the Qualcom, TI and
-Amlogic DWC3 DT nodes.
-
-Finally we've also fixed all the OHCI/EHCI, xHCI and DW USB3 compatible DT
-nodes so they would comply with the nodes naming scema declared in the USB
-HCD DT bindings file.
-
-Link: https://lore.kernel.org/linux-usb/20201010224121.12672-1-Sergey.Semin@baikalelectronics.ru/
-Changelog v2:
-- Thanks to Sergei Shtylyov for suggesting the commit logs grammar fixes:
-  [PATCH 04/18] dt-bindings: usb: usb-hcd: Add "ulpi/serial/hsic" PHY types
-  [PATCH 05/18] dt-bindings: usb: usb-hcd: Add "tpl-support" property
-  [PATCH 11/18] dt-bindings: usb: dwc3: Add interrupt-names property support
-  [PATCH 13/18] dt-bindings: usb: dwc3: Add Tx De-emphasis restrictions
-  [PATCH 17/18] dt-bindings: usb: keystone-dwc3: Validate DWC3 sub-node
-- Set FL-adj of the amlogiv,meson-g12a-usb controller with value 0x20 instead
-  of completely removing the property.
-- Drop the patch:
-  [PATCH 02/18] dt-bindings: usb: usb-hcd: Add "wireless" maximum-speed
-                property value
-  since "wireless" speed type is depracated due to lack of the device
-  supporting it.
-- Drop quotes from around the compat string constant.
-- Discard '|' from the property descriptions, since we don't need to preserve
-  the text formatting.
-- Convert abbreviated form of the "maximum-speed" enum constraint into
-  the multi-lined version of the list.
-- Fix the DW USB3 "clock-names" prop description to be refererring to the
-  enumerated clock-names instead of the ones from the Databook.
-- Add explicit "additionalProperties: true" to the usb-xhci.yaml schema,
-  since additionalProperties/unevaluatedProperties are going to be mandary
-  for each binding.
-- Use "oneOf: [dwc2.yaml#, snps,dwc3.yaml#]" instead of the bulky "if:
-  properties: compatibe: ..." statement.
-- Discard the "^dwc3@[0-9a-f]+$" nodes from being acceptable as sub-nodes
-  of the Qualcomm DWC3 DT nodes.
-- Add new patches:
-  [PATCH 18/20] arch: dts: Fix EHCI/OHCI DT nodes name
-  [PATCH 19/20] arch: dts: Fix xHCI DT nodes name
-  [PATCH 20/20] arch: dts: Fix DWC USB3 DT nodes name
-
-Link: https://lore.kernel.org/linux-usb/20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru
-Changelog v3:
-- Drop the patches:
-  [PATCH 18/20] arch: dts: Fix EHCI/OHCI DT nodes name
-  [PATCH 19/20] arch: dts: Fix xHCI DT nodes name
-  [PATCH 20/20] arch: dts: Fix DWC USB3 DT nodes name
-  as they are going to be submitted in the framework of a dedicated patchset.
-- Drop the patch:
-  [PATCH 11/20] dt-bindings: usb: dwc3: Add synopsys,dwc3 compatible string
-  since it's going to be replaced with the driver/dts fixup and moved to a
-  dedicated patchset.
-- Apply usb-xhci.yaml# schema for the DWC USB3 node only if the controller is
-  supposed to work as either host or otg.
+Even though the Generic PHY framework is the more preferable way of
+setting the USB PHY up, there are still many dts-files and DT bindings
+which rely on having the legacy "usb-phy" specified to attach particular
+USB PHYs to USB cores. Let's have the "usb-phy" property described in
+the generic USB HCD binding file so it would be validated against the
+nodes in which it's specified. Mark the property as deprecated to
+discourage the developers from using it.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Manu Gautam <mgautam@codeaurora.org>
-Cc: Roger Quadros <rogerq@ti.com>
-Cc: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Cc: Neil Armstrong <narmstrong@baylibre.com>
-Cc: Kevin Hilman <khilman@baylibre.com>
-Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-snps-arc@lists.infradead.org
-Cc: linux-mips@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-usb@vger.kernel.org
-Cc: devicetree@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-Serge Semin (16):
-  dt-bindings: usb: usb-hcd: Convert generic USB properties to DT schema
-  dt-bindings: usb: usb-hcd: Add "otg-rev" property restriction
-  dt-bindings: usb: usb-hcd: Add "ulpi/serial/hsic" PHY types
-  dt-bindings: usb: usb-hcd: Add "tpl-support" property
-  dt-bindings: usb: usb-hcd: Add generic "usb-phy" property
-  dt-bindings: usb: Convert xHCI bindings to DT schema
-  dt-bindings: usb: xhci: Add Broadcom STB v2 compatible device
-  dt-bindings: usb: renesas-xhci: Refer to the usb-xhci.yaml file
-  dt-bindings: usb: Convert DWC USB3 bindings to DT schema
-  dt-bindings: usb: dwc3: Add interrupt-names property support
-  dt-bindings: usb: dwc3: Add Tx De-emphasis constraints
-  dt-bindings: usb: dwc3: Add Frame Length Adj constraints
-  dt-bindings: usb: meson-g12a-usb: Fix FL-adj property value
-  dt-bindings: usb: meson-g12a-usb: Validate DWC2/DWC3 sub-nodes
-  dt-bindings: usb: keystone-dwc3: Validate DWC3 sub-node
-  dt-bindings: usb: qcom,dwc3: Validate DWC3 sub-node
+---
 
- .../usb/amlogic,meson-g12a-usb-ctrl.yaml      |   6 +-
- .../devicetree/bindings/usb/dwc3.txt          | 125 -------
- .../devicetree/bindings/usb/generic-xhci.yaml |  65 ++++
- .../devicetree/bindings/usb/generic.txt       |  57 ----
- .../devicetree/bindings/usb/qcom,dwc3.yaml    |   9 +-
- .../bindings/usb/renesas,usb-xhci.yaml        |   4 +-
- .../devicetree/bindings/usb/snps,dwc3.yaml    | 319 ++++++++++++++++++
- .../bindings/usb/ti,keystone-dwc3.yaml        |   4 +-
- .../devicetree/bindings/usb/usb-hcd.yaml      | 104 ++++++
- .../devicetree/bindings/usb/usb-xhci.txt      |  41 ---
- .../devicetree/bindings/usb/usb-xhci.yaml     |  42 +++
- 11 files changed, 540 insertions(+), 236 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/usb/dwc3.txt
- create mode 100644 Documentation/devicetree/bindings/usb/generic-xhci.yaml
- delete mode 100644 Documentation/devicetree/bindings/usb/generic.txt
- create mode 100644 Documentation/devicetree/bindings/usb/snps,dwc3.yaml
- delete mode 100644 Documentation/devicetree/bindings/usb/usb-xhci.txt
- create mode 100644 Documentation/devicetree/bindings/usb/usb-xhci.yaml
+Changelog v2:
+- Discard '|' from the property description, since we don't need to preserve
+  the text formatting.
+---
+ Documentation/devicetree/bindings/usb/usb-hcd.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+index 1f9b40fdea70..264a660dc6ea 100644
+--- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
++++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+@@ -22,6 +22,13 @@ properties:
+     description:
+       Name specifier for the USB PHY
+ 
++  usb-phy:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description:
++      List of all the USB PHYs on this HCD to be accepted by the legacy USB
++      Physical Layer subsystem.
++    deprecated: true
++
+   maximum-speed:
+    description:
+      Tells USB controllers we want to work up to a certain speed. In case this
 -- 
 2.27.0
 

@@ -7,42 +7,40 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1562EC433E7
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 12:02:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D37FAC433E7
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 12:02:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C630C22282
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 12:02:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8499F2242F
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Oct 2020 12:02:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394029AbgJTMAZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 20 Oct 2020 08:00:25 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:52080 "EHLO
+        id S2394162AbgJTMCN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 20 Oct 2020 08:02:13 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:52094 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394005AbgJTMAY (ORCPT
+        with ESMTP id S2393996AbgJTMAY (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Oct 2020 08:00:24 -0400
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 85BA08030867;
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 150C7803073D;
         Tue, 20 Oct 2020 12:00:22 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 51KBG2a3or_i; Tue, 20 Oct 2020 15:00:22 +0300 (MSK)
+        with ESMTP id t7AaUN551tqf; Tue, 20 Oct 2020 15:00:21 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Felipe Balbi <balbi@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mips@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH 14/29] mips: dts: ralink: mt7628a: Harmonize EHCI/OHCI DT nodes name
-Date:   Tue, 20 Oct 2020 14:59:44 +0300
-Message-ID: <20201020115959.2658-15-Sergey.Semin@baikalelectronics.ru>
+        <linux-kernel@vger.kernel.org>, <linux-mips@vger.kernel.org>
+Subject: [PATCH 13/29] mips: dts: sead3: Harmonize EHCI/OHCI DT nodes name
+Date:   Tue, 20 Oct 2020 14:59:43 +0300
+Message-ID: <20201020115959.2658-14-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -61,21 +59,21 @@ nodes are correctly named.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 ---
- arch/mips/boot/dts/ralink/mt7628a.dtsi | 2 +-
+ arch/mips/boot/dts/mti/sead3.dts | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/boot/dts/ralink/mt7628a.dtsi b/arch/mips/boot/dts/ralink/mt7628a.dtsi
-index 892e8ab863c5..45bf96a3d17a 100644
---- a/arch/mips/boot/dts/ralink/mt7628a.dtsi
-+++ b/arch/mips/boot/dts/ralink/mt7628a.dtsi
-@@ -275,7 +275,7 @@ usb_phy: usb-phy@10120000 {
- 		reset-names = "host", "device";
+diff --git a/arch/mips/boot/dts/mti/sead3.dts b/arch/mips/boot/dts/mti/sead3.dts
+index 192c26ff1d3d..1cf6728af8fe 100644
+--- a/arch/mips/boot/dts/mti/sead3.dts
++++ b/arch/mips/boot/dts/mti/sead3.dts
+@@ -56,7 +56,7 @@ gic: interrupt-controller@1b1c0000 {
+ 		interrupt-parent = <&cpu_intc>;
  	};
  
--	ehci@101c0000 {
-+	usb@101c0000 {
+-	ehci@1b200000 {
++	usb@1b200000 {
  		compatible = "generic-ehci";
- 		reg = <0x101c0000 0x1000>;
+ 		reg = <0x1b200000 0x1000>;
  
 -- 
 2.27.0

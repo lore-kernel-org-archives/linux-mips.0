@@ -7,49 +7,49 @@ X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AC80C4363A
-	for <linux-mips@archiver.kernel.org>; Tue, 27 Oct 2020 00:19:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC780C55178
+	for <linux-mips@archiver.kernel.org>; Tue, 27 Oct 2020 00:21:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1F78220708
-	for <linux-mips@archiver.kernel.org>; Tue, 27 Oct 2020 00:19:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 90FEC20708
+	for <linux-mips@archiver.kernel.org>; Tue, 27 Oct 2020 00:21:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=default; t=1603757979;
-	bh=B/CcbqpL7Ru/FtwNwUeyKnuBru5kdIAIToRsNgXwcd8=;
+	s=default; t=1603758115;
+	bh=K+pXON+EpeZwcukcdCKp2fT/ruRvzTT1E/1PKb+EpGg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:List-ID:From;
-	b=Tazrv/+Zmjhi/qi3bSHvdAO5NSAiIi7gRG1Py6KZQlLaxHsrY8+yHkkcvk8g5qnLq
-	 6CiucUAfFll2qQ9VPbhlQ37aPjN9jcnxfh6O8uOGHtQYphurako767LaU4IaSfO9oz
-	 LFhH0Fv/kcAYEC+rQ/ajQM4cv/cepjRvtnEV7cSs=
+	b=BIoMGinv81xbMV7q6JBFnRsV3cEMuyjY+be9kiOHzZXpXnSDAxMsdqqJXnIB2TgDU
+	 Vs307budGQRfLn4v08oROH3aZrl7M4SqkDPM2ri+ansZ1lCch8IffJPRF0e8elkcXf
+	 45HlQ0YAocMlygT98MiXTBt/kX65LGCVolJnaRd0=
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394887AbgJ0ATe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 26 Oct 2020 20:19:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58424 "EHLO mail.kernel.org"
+        id S2410977AbgJZXzt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 26 Oct 2020 19:55:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2411507AbgJ0AJz (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 26 Oct 2020 20:09:55 -0400
+        id S2410909AbgJZXzb (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:55:31 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D32FF20709;
-        Tue, 27 Oct 2020 00:09:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37CAB221FA;
+        Mon, 26 Oct 2020 23:55:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603757395;
-        bh=B/CcbqpL7Ru/FtwNwUeyKnuBru5kdIAIToRsNgXwcd8=;
+        s=default; t=1603756530;
+        bh=K+pXON+EpeZwcukcdCKp2fT/ruRvzTT1E/1PKb+EpGg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QjGeapZDZvyhuHrDP7pwwcdYsN27qC6rKR48nqMjfTf4ollMDI4q7bIxyWl5JoU/7
-         vnE63/+eYsgXQ3haPFzqqs9w3qeXjUe5H2lSv9ZhVMOlBZgyC46rCx//28SMymvhYl
-         wgoaPgvpR9wmqC5y3jL+T23A/8A/AbLLmPEknBjg=
+        b=aEO5s999gSymXSpAHcKUvFckPmXpn0/iyYSgTlGU3ERvVSIxAgCyuxGQtlHEWS/IW
+         Ep3+n/8PlJZsv9bycMMiGUrD0u3C+hjx75JPOclPPdIV/6AMNOKhvxpg+QMjmiw6TB
+         eccX1SIf5tAD4cq4J8fh+Dec3Zrra33HbDE/GOqE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Zejiang Tang <tangzejiang@loongson.cn>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 07/46] MIPS: ftrace: Remove redundant #ifdef CONFIG_DYNAMIC_FTRACE
-Date:   Mon, 26 Oct 2020 20:09:06 -0400
-Message-Id: <20201027000946.1026923-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 11/80] MIPS: ftrace: Remove redundant #ifdef CONFIG_DYNAMIC_FTRACE
+Date:   Mon, 26 Oct 2020 19:54:07 -0400
+Message-Id: <20201026235516.1025100-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201027000946.1026923-1-sashal@kernel.org>
-References: <20201027000946.1026923-1-sashal@kernel.org>
+In-Reply-To: <20201026235516.1025100-1-sashal@kernel.org>
+References: <20201026235516.1025100-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -73,7 +73,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 deletions(-)
 
 diff --git a/arch/mips/kernel/ftrace.c b/arch/mips/kernel/ftrace.c
-index 99285be0e0884..386f8dd0d703a 100644
+index 2625232bfe526..f57e68f40a348 100644
 --- a/arch/mips/kernel/ftrace.c
 +++ b/arch/mips/kernel/ftrace.c
 @@ -37,10 +37,6 @@ void arch_ftrace_update_code(int command)

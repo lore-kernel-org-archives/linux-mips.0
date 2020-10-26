@@ -1,65 +1,69 @@
-Return-Path: <SRS0=fGN9=EB=vger.kernel.org=linux-mips-owner@kernel.org>
+Return-Path: <SRS0=6nsr=EC=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 176D7C388F9
-	for <linux-mips@archiver.kernel.org>; Mon, 26 Oct 2020 22:55:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4915EC2D0A3
+	for <linux-mips@archiver.kernel.org>; Tue, 27 Oct 2020 00:02:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C81C72087C
-	for <linux-mips@archiver.kernel.org>; Mon, 26 Oct 2020 22:55:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 139D22087C
+	for <linux-mips@archiver.kernel.org>; Tue, 27 Oct 2020 00:02:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="JQw5fA5c"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20150623.gappssmtp.com header.i=@kernel-dk.20150623.gappssmtp.com header.b="ZWDgA8+y"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394915AbgJZWz1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 26 Oct 2020 18:55:27 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:41721 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394900AbgJZWz0 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 26 Oct 2020 18:55:26 -0400
-Received: by mail-ed1-f67.google.com with SMTP id l24so11450344edj.8
-        for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2020 15:55:25 -0700 (PDT)
+        id S2437406AbgJ0ACI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 26 Oct 2020 20:02:08 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:39485 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2411089AbgJZX4R (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 26 Oct 2020 19:56:17 -0400
+Received: by mail-pf1-f196.google.com with SMTP id e15so7114892pfh.6
+        for <linux-mips@vger.kernel.org>; Mon, 26 Oct 2020 16:56:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=J/+n1x0TPOHJCTfSVoXlG/q+OLrGnnNxrysZ0ZyIy+Y=;
-        b=JQw5fA5cqXZCTLCd2xkURV07bnYrA8gTT/8l9H7r6P+PgM37GQ7tblZcETghImepsU
-         AcI0oUILLNpw7+Lob5wOxm8oxXKZgdxlvk1iOdkoLk31eLVc1crb3sEhxCSb6bD2V31l
-         b7OGa6zHv0zDl28Z8OMcIxY0WvmVK7pWJSrW3Zs4sWifuxNiQ2iEW7pkdOAgHIEek3Fp
-         L3yESbOX+0gb8ueK46K6rtDj34b55Vtmz8U4fPoQ/Dv2vqBsFOJNMTpbG7mznOfR5TaL
-         kpOlREDICaBo0Xi3+x/a4pHYfGgO73EI5dQFmBZNKgKh2ry9/Y+FL54IAgbsbpnA0Xzm
-         BeOQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wqqvkA3oKUwkO5eXRPOBy8lXyQg0CiUtokie2wwagwI=;
+        b=ZWDgA8+yUlKx2dZgiyZDe66Bv6aQYo4o4sBrgULvsJ7L1mqryuSoN/tRsTLtRNf5gl
+         QA5GzgrsJ4IIXk6KefYiWNloPp5dTgRya5PAi5H2X1Ck5liCNMZ9plZFbXAFJkRhGENX
+         zRADl3Fzwzqt5UTeMExAEl9+J6C00UJYGVeM9r+kQpMj10I4tNzbDp+KUhpG26z8ohQ5
+         u9LGW1VxEtuEY5uYo6W0qmYrYYX9WPLdyfh3K/l7hHXtbXds+UPAtJe/6QdzpKUrKNEa
+         IHnev7OPcOoKpcEMuZBXfSj3e5H/bPp0SHxbMGuGbkkGN2ORlWbNlGQCKJOUg6Ub1kcx
+         WOrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=J/+n1x0TPOHJCTfSVoXlG/q+OLrGnnNxrysZ0ZyIy+Y=;
-        b=JtgATcRWswX20QjdQd3SeSkeOV+x8qlOEcNl6ER5iRTSlUSnTDCtpjtEZkR2lM4vxe
-         +DcZFa1bipJzNzrNW07UUIc8wMg+UmRTNURWteTat7cnxPBvk6NHaw+ghpqmp6o1XwDc
-         gJUDreRfn+jnOYvoyjTETVJaqj6saFo3b8veankelrPbYF0wZSPE/cx2opN/+Xp8rY69
-         EDCfXysdgacFxh1Zm9IqWOwQmmB+N21xjUmtPtAGmX+LMajJwSOMBeZCR+Vo3P5QhhjO
-         rRxRhlhLROln2yGEnH6ZeYijCM3o8vqVn5ekkVRJo67GadYTivsWuw/37UXZSBFZGhC/
-         tKIw==
-X-Gm-Message-State: AOAM532otRnraMFuLkBDCfCQwkWJxnfF0z1WfOtMiAZJRBwKamlbKVuX
-        OFEaNoQv0aW0YR1L3Z8j7dwf/xBKifP5BxRNIUanTw==
-X-Google-Smtp-Source: ABdhPJyAci+5cM2zXs7C2dh5O8VDIKXSp+LVa6rVM/MPlgy6tZLvyXi43c6iWM9w5BW9l3CIsdr5O5Od75OK4rN9ByQ=
-X-Received: by 2002:aa7:d9ce:: with SMTP id v14mr12828586eds.203.1603752924617;
- Mon, 26 Oct 2020 15:55:24 -0700 (PDT)
-MIME-Version: 1.0
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Mon, 26 Oct 2020 15:55:13 -0700
-Message-ID: <CAP045Aqrsb=CXHDHx4nS-pgg+MUDj14r-kN8_Jcbn-NAUziVag@mail.gmail.com>
-Subject: [REGRESSION] mm: process_vm_readv testcase no longer works after
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wqqvkA3oKUwkO5eXRPOBy8lXyQg0CiUtokie2wwagwI=;
+        b=W5ZYD4tH/3fH8bDqpPswCnJpHqsS9NYPnxWGDFRlx8TmueZa1UOhrZjXx4Cb2MEJar
+         bp3lQ9rkm4xCFSei5K6KJP4Vj441MAbLMEft4TZVlpmAz1K+wlJTBemwlBuuofHlm9V9
+         VNUrgBat7nr0M88Mvwtv+uAb1Txw1X/8QhqpeavsNSSWfCrKT4v7o/eVfKWsQfm4yuPY
+         VfRQ5QM5np2MPIqMZ0Y+TRhq77lUCKdK8zfNadr1hpLGim/6o4iDaYu1KDGbNU+EZQxf
+         ipNvsWo3BSEO4x7/iYcF++itGSpOXdMmw3nqRNKXC2l2aX6ij8WhXGGuA2fjIrNg+NDT
+         Asmw==
+X-Gm-Message-State: AOAM531Vabc56dhtQPw0r1KJ1MuYJUfSLbutnamjEfSpRUEd4dmd5LVO
+        smmVgU/AdZ3G6GCxaXb4EjQPIA==
+X-Google-Smtp-Source: ABdhPJzXWytxnG400Dp//klgHvFRu6jftuSrTTs7sW7oWyETnW8LM2mlLlQ2a53Jfzf5mLG9B/rX/w==
+X-Received: by 2002:a63:5f42:: with SMTP id t63mr569296pgb.0.1603756574857;
+        Mon, 26 Oct 2020 16:56:14 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id s38sm3637009pgm.62.2020.10.26.16.56.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 16:56:14 -0700 (PDT)
+Subject: Re: [REGRESSION] mm: process_vm_readv testcase no longer works after
  compat_prcoess_vm_readv removed
-To:     open list <linux-kernel@vger.kernel.org>,
+To:     Kyle Huey <me@kylehuey.com>,
+        open list <linux-kernel@vger.kernel.org>,
         Christoph Hellwig <hch@lst.de>
-Cc:     "Robert O'Callahan" <robert@ocallahan.org>,
+Cc:     Robert O'Callahan <robert@ocallahan.org>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        Arnd Bergmann <arnd@arndb.de>,
         David Howells <dhowells@redhat.com>,
         "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
         "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
@@ -73,21 +77,48 @@ Cc:     "Robert O'Callahan" <robert@ocallahan.org>,
         linux-mm@kvack.org, netdev@vger.kernel.org,
         keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
         Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <CAP045Aqrsb=CXHDHx4nS-pgg+MUDj14r-kN8_Jcbn-NAUziVag@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <70d5569e-4ad6-988a-e047-5d12d298684c@kernel.dk>
+Date:   Mon, 26 Oct 2020 17:56:11 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAP045Aqrsb=CXHDHx4nS-pgg+MUDj14r-kN8_Jcbn-NAUziVag@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-A test program from the rr[0] test suite, vm_readv_writev[1], no
-longer works on 5.10-rc1 when compiled as a 32 bit binary and executed
-on a 64 bit kernel. The first process_vm_readv call (on line 35) now
-fails with EFAULT. I have bisected this to
-c3973b401ef2b0b8005f8074a10e96e3ea093823.
+On 10/26/20 4:55 PM, Kyle Huey wrote:
+> A test program from the rr[0] test suite, vm_readv_writev[1], no
+> longer works on 5.10-rc1 when compiled as a 32 bit binary and executed
+> on a 64 bit kernel. The first process_vm_readv call (on line 35) now
+> fails with EFAULT. I have bisected this to
+> c3973b401ef2b0b8005f8074a10e96e3ea093823.
+> 
+> It should be fairly straightforward to extract the test case from our
+> repository into a standalone program.
 
-It should be fairly straightforward to extract the test case from our
-repository into a standalone program.
+Can you check with this applied?
 
-- Kyle
+diff --git a/mm/process_vm_access.c b/mm/process_vm_access.c
+index fd12da80b6f2..05676722d9cd 100644
+--- a/mm/process_vm_access.c
++++ b/mm/process_vm_access.c
+@@ -273,7 +273,8 @@ static ssize_t process_vm_rw(pid_t pid,
+ 		return rc;
+ 	if (!iov_iter_count(&iter))
+ 		goto free_iov_l;
+-	iov_r = iovec_from_user(rvec, riovcnt, UIO_FASTIOV, iovstack_r, false);
++	iov_r = iovec_from_user(rvec, riovcnt, UIO_FASTIOV, iovstack_r,
++				in_compat_syscall());
+ 	if (IS_ERR(iov_r)) {
+ 		rc = PTR_ERR(iov_r);
+ 		goto free_iov_l;
 
-[0] https://rr-project.org/
-[1] https://github.com/mozilla/rr/blob/master/src/test/vm_readv_writev.c
+-- 
+Jens Axboe
+

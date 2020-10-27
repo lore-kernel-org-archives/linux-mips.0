@@ -2,80 +2,83 @@ Return-Path: <SRS0=6nsr=EC=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A532CC55179
-	for <linux-mips@archiver.kernel.org>; Tue, 27 Oct 2020 16:30:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46204C4363A
+	for <linux-mips@archiver.kernel.org>; Tue, 27 Oct 2020 18:34:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4574821655
-	for <linux-mips@archiver.kernel.org>; Tue, 27 Oct 2020 16:30:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F3EDF20738
+	for <linux-mips@archiver.kernel.org>; Tue, 27 Oct 2020 18:34:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368505AbgJ0Qah (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 27 Oct 2020 12:30:37 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:32772 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751685AbgJ0Qag (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 27 Oct 2020 12:30:36 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 5A8CE80766;
-        Tue, 27 Oct 2020 17:30:31 +0100 (CET)
-Date:   Tue, 27 Oct 2020 17:30:29 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH] MIPS: ingenic: remove unused platform_data header file
-Message-ID: <20201027163029.GA442200@ravnborg.org>
-References: <20201026192040.GA350265@ravnborg.org>
- <20201027121043.GB13777@alpha.franken.de>
+        id S1813541AbgJ0See (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 27 Oct 2020 14:34:34 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40771 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1796344AbgJ0See (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 27 Oct 2020 14:34:34 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kXTni-0007Bv-QW; Tue, 27 Oct 2020 18:34:30 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiri Kosina <trivial@kernel.org>, linux-mips@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: Kconfig: fix a few trivial spelling mistakes
+Date:   Tue, 27 Oct 2020 18:34:30 +0000
+Message-Id: <20201027183430.56772-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027121043.GB13777@alpha.franken.de>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=fu7ymmwf c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=7gkXJVJtAAAA:8 a=ER_8r6IbAAAA:8 a=pGLkceISAAAA:8
-        a=VwQbUJbxAAAA:8 a=k-WWcVytrbrQ-gOoFrUA:9 a=CjuIK1q_8ugA:10
-        a=E9Po1WZjFZOl8hwRPBS3:22 a=9LHmKk7ezEChjTCyhBa9:22
-        a=AjGcO6oz07-iQ99wixmX:22
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Thomas,
+From: Colin Ian King <colin.king@canonical.com>
 
-On Tue, Oct 27, 2020 at 01:10:43PM +0100, Thomas Bogendoerfer wrote:
-> On Mon, Oct 26, 2020 at 08:20:40PM +0100, Sam Ravnborg wrote:
-> > There are no users of this headers file in the kernel.
-> > All users are likely migrated to device tree which is a good thing.
-> > 
-> > Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > Cc: Paul Cercueil <paul@crapouillou.net>
-> > Cc: Harvey Hunt <harveyhuntnexus@gmail.com>
-> > Cc: linux-mips@vger.kernel.org
-> > ---
-> > 
-> > I noticed this while surfing around in platform_data for no apperant
-> > reason. So no fancy tooling or some such involved.
-> > 
-> > 	Sam
-> > 
-> >  .../linux/platform_data/jz4740/jz4740_nand.h  | 25 -------------------
-> >  1 file changed, 25 deletions(-)
-> >  delete mode 100644 include/linux/platform_data/jz4740/jz4740_nand.h
-> 
-> applied to mips-next.
+There are a few spelling mistakes in the Kconfig, fix these.
 
-Thanks for the quick response. Hopefully I can contribute something a little
-more useful next time :-)
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ arch/mips/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-But then cleaning out old cruft is never a waste of time.
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 2000bb2b0220..ddaff19a9580 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2645,7 +2645,7 @@ config WAR_R4600_V1_INDEX_ICACHEOP
+ #  18. The CACHE instructions Hit_Writeback_Invalidate_D, Hit_Writeback_D,
+ #      Hit_Invalidate_D and Create_Dirty_Excl_D should only be
+ #      executed if there is no other dcache activity. If the dcache is
+-#      accessed for another instruction immeidately preceding when these
++#      accessed for another instruction immediately preceding when these
+ #      cache instructions are executing, it is possible that the dcache
+ #      tag match outputs used by these cache instructions will be
+ #      incorrect. These cache instructions should be preceded by at least
+@@ -3086,7 +3086,7 @@ config MIPS_O32_FP64_SUPPORT
+ 
+ 	  Although binutils currently supports use of this flag the details
+ 	  concerning its effect upon the O32 ABI in userland are still being
+-	  worked on. In order to avoid userland becoming dependant upon current
++	  worked on. In order to avoid userland becoming dependent upon current
+ 	  behaviour before the details have been finalised, this option should
+ 	  be considered experimental and only enabled by those working upon
+ 	  said details.
+@@ -3124,7 +3124,7 @@ choice
+ 
+ 		    objcopy --update-section .appended_dtb=<filename>.dtb vmlinux
+ 
+-		  This is meant as a backward compatiblity convenience for those
++		  This is meant as a backward compatibility convenience for those
+ 		  systems with a bootloader that can't be upgraded to accommodate
+ 		  the documented boot protocol using a device tree.
+ 
+-- 
+2.27.0
 
-	Sam

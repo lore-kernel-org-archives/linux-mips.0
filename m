@@ -2,100 +2,315 @@ Return-Path: <SRS0=hvK6=EE=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,LOTS_OF_MONEY,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 115F8C388F7
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 01:21:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CED8C5517A
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 02:00:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C6E8A20791
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 01:21:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4F6F420829
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 02:00:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732791AbgJ2BVS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 28 Oct 2020 21:21:18 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:60164 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729782AbgJ1WFE (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 28 Oct 2020 18:05:04 -0400
-Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id C6BA43ADAB9
-        for <linux-mips@vger.kernel.org>; Wed, 28 Oct 2020 10:35:12 +0000 (UTC)
-X-Originating-IP: 86.202.110.83
-Received: from localhost (lfbn-lyo-1-15-83.w86-202.abo.wanadoo.fr [86.202.110.83])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 48EA2FF808;
-        Wed, 28 Oct 2020 10:34:51 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     linux-mips@vger.kernel.org
-Subject: [BUG] Crash during futex initialization with gcc 10
-CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Date:   Wed, 28 Oct 2020 11:34:50 +0100
-Message-ID: <878sbqd4fp.fsf@BL-laptop>
+        id S1728975AbgJ2CAp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 28 Oct 2020 22:00:45 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:48369 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728006AbgJ1Vvf (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 28 Oct 2020 17:51:35 -0400
+Received: from methusalix.internal.home.lespocky.de ([92.117.45.118]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis)
+ id 1MT7ip-1kxPjS40Ip-00UcI8; Wed, 28 Oct 2020 21:40:02 +0100
+Received: from falbala.internal.home.lespocky.de ([192.168.243.94])
+        by methusalix.internal.home.lespocky.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <post@lespocky.de>)
+        id 1kXsEd-0002jR-O2; Wed, 28 Oct 2020 21:39:57 +0100
+Date:   Wed, 28 Oct 2020 21:39:54 +0100
+From:   Alexander Dahl <post@lespocky.de>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Alexander Dahl <ada@thorsis.com>,
+        Alexander Dahl <post@lespocky.de>, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v7 02/12] dt-bindings: leds: Convert pwm to yaml
+Message-ID: <20201028203953.eafmzeqba76qjlf2@falbala.internal.home.lespocky.de>
+Mail-Followup-To: Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexander Dahl <ada@thorsis.com>, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+References: <20201005203451.9985-1-post@lespocky.de>
+ <20201005203451.9985-3-post@lespocky.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="nwkumzirho5iba4d"
+Content-Disposition: inline
+In-Reply-To: <20201005203451.9985-3-post@lespocky.de>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Scan-Signature: e8e5211badca7b3e4c3721992337a85e
+X-Provags-ID: V03:K1:dFwaWUg7Hs1+6BjOpddvhs45I+5MLeawNEbLKR27jHnbgCj5ifc
+ gYT8HigTxAZrbMDX6/JPdfbDaFolzE8kEuGksu+jJMbNPJOki4vC4J8UisS9GY0wG28NRRz
+ NcInnsvPQVTBr/DWp2r63TtWmZWlMAONcdpEQLgqv5Ki0n2Oa80UXdCA4ZDNLFt5URfJug4
+ cxtSV54v9p6WgHStsK5mQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:gzz3n95gjfs=:hHvez/4McHVrzL3OX0D32f
+ /mYm8rTxXToff+h1rKtHcZmgoklySxxk+XBCOUTtiY6mf9KZs6CPkdPtjCzBTHXEACewZfU8t
+ ZX92A/cg34hfSH/qLP6uHmyl3sm8rZgjhfmODNhtVRqSL1yBUt7VoFp4O+xMEAK5mz+yCu2Rm
+ iGklg0sn8jVVieyJf4ohBj0jpC00XckF2oSRO4FK0fFLDDT6iG356sR5IHySLVV8isMSMswNs
+ 7/QhXZyqSx8aKiVqtFSET6XbhPL/qNwVQ4M6SnKNnCOYcjQwin2ARag9znS70Gxf1KUX8wCoT
+ 3D22ySm/UzuqNW93z4dQGoKUTbs56eQ0t6QwGbzfLbL34QjGeMWvlLDxO4CsLndZij4zIiENB
+ BfPV7R5t+K4iT+G1wnWExjfTh3WI8pemTfpcwHbrxpE71hZybyIbsYFhIysPL
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+
+--nwkumzirho5iba4d
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
 Hello,
 
-I saw a regression when building a MIPS kernel with gcc 10:
+Peter, Russel, could you please give your Acked-by or Signed-off-by on
+this patch?  Your ack is needed, because the license is now explicitly
+set (it was not explicit before), and you were the contributors to
+this binding before the conversion to yaml.
 
-futex hash table entries: 256 (order: 3, 32768 bytes, linear)
-CPU 0 Unable to handle kernel paging request at virtual address 00000000, epc == 801be4f0, ra == 80993778
-Oops[#1]:
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc8-00006-g6185221cb805 #3
-$ 0   : 00000000 00000001 00000000 00000000
-$ 4   : 87831e28 00000000 00000000 00000000
-$ 8   : 8782c000 87888000 00000100 00000051
-$12   : 09dcd4c5 87831c69 00000000 00000010
-$16   : 80960000 00000001 80960000 8095bc90
-$20   : 809d0000 809b3fc4 80987094 00000002
-$24   : 00000000 00000000
-$28   : 87830000 87831df8 809b3fe4 80993778
-Hi    : 00000010
-Lo    : 8a3d70e6
-epc   : 801be4f0 cmpxchg_futex_value_locked+0x2c/0x78
-ra    : 80993778 futex_init+0xb4/0x124
-Status: 11008403 KERNEL EXL IE
-Cause : 00800008 (ExcCode 02)
-BadVA : 00000000
-PrId  : 02019654 (MIPS 24KEc)
-Modules linked in:
-Process swapper/0 (pid: 1, threadinfo=(ptrval), task=(ptrval), tls=00000000)
-Stack : ffe4d6e0 001b291f 80963e60 80964fe0 00000000 87831e24 00000000 00000100
-        00000100 80a00000 00000000 00000008 809b3fe4 0a27934f 87878880 809936c4
-        87878880 80960000 00000000 80100120 00000000 00000000 00000000 87831e54
-        87831e54 87878895 8094cecc 80900000 00000000 00000001 80960000 00000001
-        809629c4 80908380 808ff7ec 80900000 0000007f 87878895 00000000 0a27934f
-        ...
-Call Trace:
-[<801be4f0>] cmpxchg_futex_value_locked+0x2c/0x78
-Code: 1440000f  00000000  0000000f <c0a30000> 14660005  00000000  00e00825  e0a10000  1020fff9
+Thanks and Greets
+Alex
 
----[ end trace e34236d22d7ecc0e ]---
-Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
----[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+On Mon, Oct 05, 2020 at 10:34:41PM +0200, Alexander Dahl wrote:
+> The example was adapted in the following ways:
+>=20
+> - make use of the now supported 'function' and 'color' properties
+> - remove pwm nodes, those are documented elsewhere
+> - align node names to new dt schema rules and dt recommendations
+>=20
+> License was not explicitly set before.  The license set now is
+> recommended by DT project.
+>=20
+> Suggested-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> Signed-off-by: Alexander Dahl <post@lespocky.de>
+> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> Cc: Russell King <linux@armlinux.org.uk>
+> ---
+>=20
+> Notes:
+>     NOTE: Due to license set/change this needs Acked-by or Signed-off-by =
+=66rom:
+>       * Peter Ujfalusi
+>       * Russell King
+>    =20
+>     That was discussed already with Peter (original author), still waiting
+>     for Acked-by though =E2=80=A6
+>    =20
+>     Changelog
+>     ---------
+>     v6 -> v7:
+>       * added Reviewed-by (Krzysztof Kozlowski)
+>       * reworded commit message (suggested by Krzysztof)
+>       * added Reviewed-by (Rob Herring)
+>    =20
+>     v5 -> v6:
+>       * removed pwm nodes from example (Rob)
+>       * renamed led-controller node in example (Rob)
+>    =20
+>     v4 -> v5:
+>       * updated based on feedback by Rob Herring
+>       * removed Acked-by
+>    =20
+>     v3 -> v4:
+>       * added Cc to original author of the binding
+>    =20
+>     v2 -> v3:
+>       * changed license identifier to recommended one
+>       * added Acked-by
+>    =20
+>     v2:
+>       * added this patch to series (Suggested-by: Jacek Anaszewski)
+>=20
+>  .../devicetree/bindings/leds/leds-pwm.txt     | 50 -------------
+>  .../devicetree/bindings/leds/leds-pwm.yaml    | 70 +++++++++++++++++++
+>  2 files changed, 70 insertions(+), 50 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.txt
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.txt b/Docume=
+ntation/devicetree/bindings/leds/leds-pwm.txt
+> deleted file mode 100644
+> index 6c6583c35f2f..000000000000
+> --- a/Documentation/devicetree/bindings/leds/leds-pwm.txt
+> +++ /dev/null
+> @@ -1,50 +0,0 @@
+> -LED connected to PWM
+> -
+> -Required properties:
+> -- compatible : should be "pwm-leds".
+> -
+> -Each LED is represented as a sub-node of the pwm-leds device.  Each
+> -node's name represents the name of the corresponding LED.
+> -
+> -LED sub-node properties:
+> -- pwms : PWM property to point to the PWM device (phandle)/port (id) and=
+ to
+> -  specify the period time to be used: <&phandle id period_ns>;
+> -- pwm-names : (optional) Name to be used by the PWM subsystem for the PW=
+M device
+> -  For the pwms and pwm-names property please refer to:
+> -  Documentation/devicetree/bindings/pwm/pwm.txt
+> -- max-brightness : Maximum brightness possible for the LED
+> -- active-low : (optional) For PWMs where the LED is wired to supply
+> -  rather than ground.
+> -- label :  (optional)
+> -  see Documentation/devicetree/bindings/leds/common.txt
+> -- linux,default-trigger :  (optional)
+> -  see Documentation/devicetree/bindings/leds/common.txt
+> -
+> -Example:
+> -
+> -twl_pwm: pwm {
+> -	/* provides two PWMs (id 0, 1 for PWM1 and PWM2) */
+> -	compatible =3D "ti,twl6030-pwm";
+> -	#pwm-cells =3D <2>;
+> -};
+> -
+> -twl_pwmled: pwmled {
+> -	/* provides one PWM (id 0 for Charing indicator LED) */
+> -	compatible =3D "ti,twl6030-pwmled";
+> -	#pwm-cells =3D <2>;
+> -};
+> -
+> -pwmleds {
+> -	compatible =3D "pwm-leds";
+> -	kpad {
+> -		label =3D "omap4::keypad";
+> -		pwms =3D <&twl_pwm 0 7812500>;
+> -		max-brightness =3D <127>;
+> -	};
+> -
+> -	charging {
+> -		label =3D "omap4:green:chrg";
+> -		pwms =3D <&twl_pwmled 0 7812500>;
+> -		max-brightness =3D <255>;
+> -	};
+> -};
+> diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.yaml b/Docum=
+entation/devicetree/bindings/leds/leds-pwm.yaml
+> new file mode 100644
+> index 000000000000..fe4d5fd25913
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/leds-pwm.yaml
+> @@ -0,0 +1,70 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/leds-pwm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: LEDs connected to PWM
+> +
+> +maintainers:
+> +  - Pavel Machek <pavel@ucw.cz>
+> +
+> +description:
+> +  Each LED is represented as a sub-node of the pwm-leds device.  Each
+> +  node's name represents the name of the corresponding LED.
+> +
+> +properties:
+> +  compatible:
+> +    const: pwm-leds
+> +
+> +patternProperties:
+> +  "^led(-[0-9a-f]+)?$":
+> +    type: object
+> +
+> +    $ref: common.yaml#
+> +
+> +    properties:
+> +      pwms:
+> +        maxItems: 1
+> +
+> +      pwm-names: true
+> +
+> +      max-brightness:
+> +        description:
+> +          Maximum brightness possible for the LED
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +      active-low:
+> +        description:
+> +          For PWMs where the LED is wired to supply rather than ground.
+> +        type: boolean
+> +
+> +    required:
+> +      - pwms
+> +      - max-brightness
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +
+> +    #include <dt-bindings/leds/common.h>
+> +
+> +    led-controller {
+> +        compatible =3D "pwm-leds";
+> +
+> +        led-1 {
+> +            label =3D "omap4::keypad";
+> +            pwms =3D <&twl_pwm 0 7812500>;
+> +            max-brightness =3D <127>;
+> +        };
+> +
+> +        led-2 {
+> +            color =3D <LED_COLOR_ID_GREEN>;
+> +            function =3D LED_FUNCTION_CHARGING;
+> +            pwms =3D <&twl_pwmled 0 7812500>;
+> +            max-brightness =3D <255>;
+> +        };
+> +    };
+> +
+> +...
+> --=20
+> 2.20.1
 
+--=20
+/"\ ASCII RIBBON | =C2=BBWith the first link, the chain is forged. The first
+\ / CAMPAIGN     | speech censured, the first thought forbidden, the
+ X  AGAINST      | first freedom denied, chains us all irrevocably.=C2=AB
+/ \ HTML MAIL    | (Jean-Luc Picard, quoting Judge Aaron Satie)
 
-If I use gcc 9.3 or if I disable the futex in the kernel configuration
-there is no crash anymore.
+--nwkumzirho5iba4d
+Content-Type: application/pgp-signature; name="signature.asc"
 
-The crash occurs after that the pagefault was disabled and yet we see a
-page fault. The exact part where it occurs is here:
-https://elixir.bootlin.com/linux/latest/source/arch/mips/include/asm/futex.h#L167
+-----BEGIN PGP SIGNATURE-----
 
-But it is too much MIPS assembly for me !
+iQIzBAABCAAdFiEEwo7muQJjlc+Prwj6NK3NAHIhXMYFAl+Z1xYACgkQNK3NAHIh
+XMa4dRAAwz5aGmTaCMVYq3Auo34qtLb+NsNbE0uPtTAJKafHT/YnSzgNgbf5urRz
+zKAeeoaiKjVICVDWeDrLdN607wylNBGn024FRat0tjDkZIOu08iMuyBvR9dOA8zd
+bp3xsK0f44DnZl+g0E/gIuuWe31PK/nY8h+etVAzcTqBsWVVDsT1zGBpXdYLpl6S
+DDjTaO+zUyK7gRBQt/qDUbmQAO1IIttfSy6qHUxxPgZliWI+/DpQgsFRdoZPV+QH
+bamaugY6vEaIkB5kr5O2QzHNmciUt/Jn7122YMMmVl7AE7ZPbGyVGtd/MXzQLXpQ
+IHz0CJKdh0SraLoDeeIOgWRdDD4qUgy4WuaxxIQB2VjnICRE3FHHZHM6BIOrNUjF
+sg+wsPXMnqRzAIa/ExjQCZBuhMrMLMNKRHLDwLTVgDz+qXb673vpHc0RyxrWC7YZ
+hhQpQkgaeSmCs23IgsI2jm0cKXMMq9yoDLGfVX+naP413sx/RiQPyKZNQnkXHOV/
+O48sd7eTz0BH6ZEBY6fSShd6SzQVUlYQGr2Ol4TXP1/Xa4LGlRzAvGvZOTiPukuX
+2kxyUpBKNHjR7+z9jJ0kAO6mIPiLgI0Ac698iEDWsLkKekuFyd1pYwAZLeMoFR8l
+J+PJ8ZiMqFxRQGr9QSHNwENi+KBFE4PweWPJ92XczoNxLhWyvBc=
+=tXqH
+-----END PGP SIGNATURE-----
 
-Does someone has an idea to fix it ?
-
-It is alos possible that the issue was in gcc itself, but we need to
-figure out what in order to report it to the gcc guys.
-
-Gregory
-
--- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+--nwkumzirho5iba4d--

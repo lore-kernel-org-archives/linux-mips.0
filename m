@@ -2,75 +2,66 @@ Return-Path: <SRS0=hvK6=EE=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6CF1C56201
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 01:04:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9199DC4363A
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 01:04:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5F6BD20791
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 01:04:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4923A2071A
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 01:04:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731928AbgJ2BET (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 28 Oct 2020 21:04:19 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:34680 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730049AbgJ1WGl (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 28 Oct 2020 18:06:41 -0400
-Received: from relay12.mail.gandi.net (unknown [217.70.178.232])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id E59163A1EA6;
-        Wed, 28 Oct 2020 19:21:51 +0000 (UTC)
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr [86.194.74.19])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 7BCB2200002;
-        Wed, 28 Oct 2020 19:21:28 +0000 (UTC)
-Date:   Wed, 28 Oct 2020 20:21:28 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Pavel Machek <pavel@ucw.cz>, Alexander Dahl <post@lespocky.de>,
-        Rob Herring <robh+dt@kernel.org>, Dan Murphy <dmurphy@ti.com>
-Cc:     linux-leds@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
-        Alexander Dahl <ada@thorsis.com>
-Subject: Re: [PATCH v7 00/12] leds: pwm: Make automatic labels work
-Message-ID: <20201028192128.GF12276@piout.net>
-References: <20201005203451.9985-1-post@lespocky.de>
- <160391135997.385141.5554228268638639718.b4-ty@bootlin.com>
+        id S2404172AbgJ2BEl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 28 Oct 2020 21:04:41 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:6921 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730044AbgJ1WGH (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 28 Oct 2020 18:06:07 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CLjT64z5Sz6wTG;
+        Wed, 28 Oct 2020 17:10:02 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 28 Oct 2020 17:09:49 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+CC:     <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Qinglang Miao" <miaoqinglang@huawei.com>
+Subject: [PATCH] mips: ar7: add missing iounmap() on error in ar7_gpio_init
+Date:   Wed, 28 Oct 2020 17:15:45 +0800
+Message-ID: <20201028091545.136212-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <160391135997.385141.5554228268638639718.b4-ty@bootlin.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 28/10/2020 19:56:14+0100, Alexandre Belloni wrote:
-> On Mon, 5 Oct 2020 22:34:39 +0200, Alexander Dahl wrote:
-> > Hei hei,
-> > 
-> > for leds-gpio you can use the properties 'function' and 'color' in the
-> > devicetree node and omit 'label', the label is constructed
-> > automatically.  This is a common feature supposed to be working for all
-> > LED drivers.  However it did not work until recently for the 'leds-pwm'
-> > driver.
-> > 
-> > [...]
-> 
-> Applied, thanks!
-> 
-> [1/2] ARM: dts: at91: smartkiz: Reference led node directly
->       commit: 02e46262af5db410da5a27783833d68e2bdfb352
-> [2/2] ARM: dts: at91: Fix schema warnings for pwm-leds
->       commit: 997ebd64df39f3916c37ca67a6eff58e79a13c73
+Add the missing iounmap() of gpch->regs before return from
+ar7_gpio_init() in the error handling case.
 
-This was obviously 04/12 and 05/12.
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+---
+ arch/mips/ar7/gpio.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/arch/mips/ar7/gpio.c b/arch/mips/ar7/gpio.c
+index 8b006addd..ae0e01b94 100644
+--- a/arch/mips/ar7/gpio.c
++++ b/arch/mips/ar7/gpio.c
+@@ -319,6 +319,7 @@ int __init ar7_gpio_init(void)
+ 	if (ret) {
+ 		printk(KERN_ERR "%s: failed to add gpiochip\n",
+ 					gpch->chip.label);
++		iounmap(gpch->regs);
+ 		return ret;
+ 	}
+ 	printk(KERN_INFO "%s: registered %d GPIOs\n",
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.23.0
+

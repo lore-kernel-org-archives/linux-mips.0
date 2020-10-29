@@ -4,67 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 517B3C55179
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 02:01:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9353DC55178
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 08:04:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1CED820791
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 02:01:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4AFC420838
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 08:04:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728079AbgJ2CBc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 28 Oct 2020 22:01:32 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6573 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727841AbgJ2CBb (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 28 Oct 2020 22:01:31 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CM7w960L7zhc21;
-        Thu, 29 Oct 2020 10:01:29 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 29 Oct 2020 10:01:20 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <tsbogend@alpha.franken.de>
-CC:     <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] mm/hugetlb: Make is_aligned_hugepage_range static
-Date:   Thu, 29 Oct 2020 10:13:20 +0800
-Message-ID: <1603937600-53015-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+        id S1726666AbgJ2IEx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 29 Oct 2020 04:04:53 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:58484 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726491AbgJ2IDk (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 29 Oct 2020 04:03:40 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_9JJd5pfmHcCAA--.10240S7;
+        Thu, 29 Oct 2020 16:03:36 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Lu Zeng <zenglu@loongson.cn>, Jun Yi <yijun@loongson.cn>
+Subject: [PATCH 5/6] MIPS: Loongson64: Make sure the PC address is correct when 3A4000+ CPU hotplug
+Date:   Thu, 29 Oct 2020 16:03:00 +0800
+Message-Id: <1603958581-4723-6-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1603958581-4723-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1603958581-4723-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9Dx_9JJd5pfmHcCAA--.10240S7
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZF18ZF1DGw4xuF1xKw48Zwb_yoW8Ar1fpa
+        9xA3ZFkF45Wr4DZFn5Gry8XF15AFZaqF97ZFW2vrWruas09w1Y9F1fCr1Fq3WxurykKFyU
+        Wr9YkF18CFZruw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBm14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
+        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
+        z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr
+        1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
+        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
+        IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4U
+        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GFyl42
+        xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWU
+        GwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI4
+        8JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4U
+        MIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I
+        8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUnLvKUUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Fix the following sparse warning:
+In loongson3_type3_play_dead(), in order to make sure the PC address is
+correct, use lw to read the low 32 bits first, if the result is not zero,
+then use ld to read the whole 64 bits, otherwise there maybe exists atomic
+problem due to write high 32 bits first and then low 32 bits, like this:
 
-arch/mips/mm/hugetlbpage.c:64:5: warning:
-symbol 'is_aligned_hugepage_range' was not declared. Should it be static?
+high 32 bits (write done)
+                                  -- only read high 32-bits which is wrong
+low 32 bits (not yet write done)
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+This problem is especially for Loongson 3A4000+ CPU due to using Mail_Send
+register which can only send 32 bits data one time. Although it is hard to
+reproduce, we can do something at the software level to avoid the risks for
+3A4000+ CPU, this change has no influence on the other Loongson CPUs.
+
+Signed-off-by: Lu Zeng <zenglu@loongson.cn>
+Signed-off-by: Jun Yi <yijun@loongson.cn>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- arch/mips/mm/hugetlbpage.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/loongson64/smp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/mm/hugetlbpage.c b/arch/mips/mm/hugetlbpage.c
-index 77ffece..774c988 100644
---- a/arch/mips/mm/hugetlbpage.c
-+++ b/arch/mips/mm/hugetlbpage.c
-@@ -61,7 +61,7 @@ pte_t *huge_pte_offset(struct mm_struct *mm, unsigned long addr,
- /*
-  * This function checks for proper alignment of input addr and len parameters.
-  */
--int is_aligned_hugepage_range(unsigned long addr, unsigned long len)
-+static int is_aligned_hugepage_range(unsigned long addr, unsigned long len)
- {
- 	if (len & ~HPAGE_MASK)
- 		return -EINVAL;
+diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
+index 33597d2..e486bbf 100644
+--- a/arch/mips/loongson64/smp.c
++++ b/arch/mips/loongson64/smp.c
+@@ -731,9 +731,10 @@ static void loongson3_type3_play_dead(int *state_addr)
+ 		"1: li    %[count], 0x100             \n" /* wait for init loop */
+ 		"2: bnez  %[count], 2b                \n" /* limit mailbox access */
+ 		"   addiu %[count], -1                \n"
+-		"   ld    %[initfunc], 0x20(%[base])  \n" /* get PC via mailbox */
++		"   lw    %[initfunc], 0x20(%[base])  \n" /* get PC (low 32 bits) via mailbox */
+ 		"   beqz  %[initfunc], 1b             \n"
+ 		"   nop                               \n"
++		"   ld    %[initfunc], 0x20(%[base])  \n" /* get PC (whole 64 bits) via mailbox */
+ 		"   ld    $sp, 0x28(%[base])          \n" /* get SP via mailbox */
+ 		"   ld    $gp, 0x30(%[base])          \n" /* get GP via mailbox */
+ 		"   ld    $a1, 0x38(%[base])          \n"
 -- 
-2.6.2
+2.1.0
 

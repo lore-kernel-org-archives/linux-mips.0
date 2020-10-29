@@ -7,45 +7,45 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5DA1C63697
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 267D3C6379D
 	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 22:33:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4C0E120FC3
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 22:33:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D996F2076B
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 22:33:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="g9uiGxDo";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="luMtij7p"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Uqj5unVY";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="o9n2jAfx"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726242AbgJ2Wdo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 29 Oct 2020 18:33:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56064 "EHLO
+        id S1726261AbgJ2Wdp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 29 Oct 2020 18:33:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbgJ2Wcf (ORCPT
+        with ESMTP id S1725891AbgJ2Wcf (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Thu, 29 Oct 2020 18:32:35 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D42EC0613DA;
-        Thu, 29 Oct 2020 15:32:31 -0700 (PDT)
-Message-Id: <20201029222652.302358281@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C955C0613D9;
+        Thu, 29 Oct 2020 15:32:27 -0700 (PDT)
+Message-Id: <20201029222651.992069499@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604010749;
+        s=2020; t=1604010745;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=qNblSYL+PvuzH63KJpcNLXY4ezwTF2j8DGcTkrl8CzE=;
-        b=g9uiGxDoZ7ZXpoa9KyavVFr3VQOQLQAN2KG3UnrWl5U4ft/lDRKXlvz1G/HC+P0RYnIr2u
-        rLXQGvLJr8ZVI3ZifAxNUwCB514Po3gS1iNsND2GQWvusrIddMmopCK0alQCaYQifsn16g
-        BRxC0oP5qPfihqhqNGjX863PAV7yZ6KXqwav+qxwxlPhZWhbB8Oi6TqqQZlHdTKtg9zsEg
-        or74Sk/qyESnME+pdt+Wdpg+e75KkOwyHi+YG0F1U3Ugt2daySrmBDKSfswsZr/qCtFW9u
-        p3NtqN7J6GpwvvdV6iGSAQgGl5DD0x2YC9tsRsnYDFdeVQizXTI8Zyaf3ny72w==
+        bh=pxWDXms+RLkdR685wH8ReSSfYlwhM44TN2eNrBZ0TPg=;
+        b=Uqj5unVYZnqtSO4r7Rye+ozhFPWXJKm8lEodR7nFFSetXfFan60U5mNqWBtfbZFmb533wK
+        AagwLuZLoJHIUU6R44yA9vkhULrBLKQ49zEP5ApoIgmSneBZAJKzC66R3SAnuhcYRkyqr8
+        eFMTo/A4RAZTlAyeOb3Mx2JvWE1XT/SvTF7vHJBB7FEtPmoAN0VZ2IUUhFsq4dhGInzFj1
+        utrnCo2OVsr8dcXRXdKu12cD8JkyGHvWNqlAWqzvnunNEtmOAE/k8eSYITwlhJu4hdTVZJ
+        qmoItb7a+ii8hO7pnt+rnL5xkPup7hfdYmLb8KAr7XUbi8KOPt3QTHBDXGJI9A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604010749;
+        s=2020e; t=1604010745;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=qNblSYL+PvuzH63KJpcNLXY4ezwTF2j8DGcTkrl8CzE=;
-        b=luMtij7pyzuhRYRe4DwSHukATlmykltgP/ZHYRb8RL2JeQG6QeudIS3wZ/jzIUh0L95Z5o
-        c6mGwkQdF0Dg0tAA==
-Date:   Thu, 29 Oct 2020 23:18:23 +0100
+        bh=pxWDXms+RLkdR685wH8ReSSfYlwhM44TN2eNrBZ0TPg=;
+        b=o9n2jAfx/7g/livoK+SKJuw+8e87tZ3f+Wo2TY4l/RKb9olw+TceYAFR+B2166FCpRCMRt
+        xhrVQDKRQGrW/sCQ==
+Date:   Thu, 29 Oct 2020 23:18:20 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     linux-arch@vger.kernel.org,
@@ -84,7 +84,7 @@ Cc:     linux-arch@vger.kernel.org,
         sparclinux@vger.kernel.org, Chris Zankel <chris@zankel.net>,
         Max Filippov <jcmvbkbc@gmail.com>,
         linux-xtensa@linux-xtensa.org
-Subject: [patch V2 17/18] mm/highmem: Provide kmap_local*
+Subject: [patch V2 14/18] mm/highmem: Remove the old kmap_atomic cruft
 References: <20201029221806.189523375@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -93,171 +93,148 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Now that the kmap atomic index is stored in task struct provide a
-preemptible variant. On context switch the maps of an outgoing task are
-removed and the map of the incoming task are restored. That's obviously
-slow, but highmem is slow anyway.
-
-The kmap_local.*() functions can be invoked from both preemptible and
-atomic context. kmap local sections disable migration to keep the resulting
-virtual mapping address correct, but disable neither pagefaults nor
-preemption.
-
-A wholesale conversion of kmap_atomic to be fully preemptible is not
-possible because some of the usage sites might rely on the preemption
-disable for serialization or on the implicit pagefault disable. Needs to be
-done on a case by case basis.
+All users gone.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+
 ---
-V2: Make it more consistent and add commentry
----
- include/linux/highmem.h |  115 +++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 100 insertions(+), 15 deletions(-)
+ include/linux/highmem.h |   61 ++----------------------------------------------
+ mm/highmem.c            |   28 ++++++++++++++++++----
+ 2 files changed, 27 insertions(+), 62 deletions(-)
 
 --- a/include/linux/highmem.h
 +++ b/include/linux/highmem.h
-@@ -86,17 +86,56 @@ static inline void kunmap(struct page *p
- }
- 
- /*
-- * kmap_atomic/kunmap_atomic is significantly faster than kmap/kunmap because
-- * no global lock is needed and because the kmap code must perform a global TLB
-- * invalidation when the kmap pool wraps.
-- *
-- * However when holding an atomic kmap it is not legal to sleep, so atomic
-- * kmaps are appropriate for short, tight code paths only.
-- *
-- * The use of kmap_atomic/kunmap_atomic is discouraged - kmap/kunmap
-- * gives a more generic (and caching) interface. But kmap_atomic can
-- * be used in IRQ contexts, so in some (very limited) cases we need
-- * it.
-+ * For highmem systems it is required to temporarily map pages
-+ * which reside in the portion of memory which is not covered
-+ * by the permanent kernel mapping.
-+ *
-+ * This comes in three flavors:
-+ *
-+ * 1) kmap/kunmap:
-+ *
-+ *    An interface to acquire longer term mappings with no restrictions
-+ *    on preemption and migration. This comes with an overhead as the
-+ *    mapping space is restricted and protected by a global lock. It
-+ *    also requires global TLB invalidation when the kmap pool wraps.
-+ *
-+ *    kmap() might block when the mapping space is fully utilized until a
-+ *    slot becomes available. Only callable from preemptible thread
-+ *    context.
-+ *
-+ * 2) kmap_local.*()/kunmap_local.*()
-+ *
-+ *    An interface to acquire short term mappings. Can be invoked from any
-+ *    context including interrupts. The mapping is per thread, CPU local
-+ *    and not globaly visible. It can only be used in the context which
-+ *    acquried the mapping. Nesting kmap_local.*() and kmap_atomic.*()
-+ *    mappings is allowed to a certain extent (up to KMAP_TYPE_NR).
-+ *
-+ *    Nested kmap_local.*() and kunmap_local.*() invocations have to be
-+ *    strictly ordered because the map implementation is stack based.
-+ *
-+ *    kmap_local.*() disables migration, but keeps preemption enabled. It's
-+ *    valid to take pagefaults in a kmap_local region unless the context in
-+ *    which the local kmap is acquired does not allow it for other reasons.
-+ *
-+ *    If a task holding local kmaps is preempted, the maps are removed on
-+ *    context switch and restored when the task comes back on the CPU. As
-+ *    the maps are strictly CPU local it is guaranteed that the task stays
-+ *    on the CPU and the CPU cannot be unplugged until the local kmaps are
-+ *    released.
-+ *
-+ * 3) kmap_atomic.*()/kunmap_atomic.*()
-+ *
-+ *    Based on the same mechanism as kmap local. Atomic kmap disables
-+ *    preemption and pagefaults. Only use if absolutely required, use
-+ *    the corresponding kmap_local variant if possible.
-+ *
-+ * Local and atomic kmaps are faster than kmap/kunmap, but impose
-+ * restrictions. Only use them when required.
-+ *
-+ * For !HIGHMEM enabled systems the kmap flavours are not doing any mapping
-+ * operation and kmap() won't sleep, but the kmap local and atomic variants
-+ * still disable migration resp. pagefaults and preemption.
+@@ -88,31 +88,16 @@ static inline void kunmap(struct page *p
+  * be used in IRQ contexts, so in some (very limited) cases we need
+  * it.
   */
+-
+-#ifndef CONFIG_KMAP_LOCAL
+-void *kmap_atomic_high_prot(struct page *page, pgprot_t prot);
+-void kunmap_atomic_high(void *kvaddr);
+-
  static inline void *kmap_atomic_prot(struct page *page, pgprot_t prot)
  {
-@@ -122,6 +161,28 @@ static inline void __kunmap_atomic(void
+ 	preempt_disable();
+ 	pagefault_disable();
+-	if (!PageHighMem(page))
+-		return page_address(page);
+-	return kmap_atomic_high_prot(page, prot);
+-}
+-
+-static inline void __kunmap_atomic(void *vaddr)
+-{
+-	kunmap_atomic_high(vaddr);
++	return __kmap_local_page_prot(page, prot);
+ }
+-#else /* !CONFIG_KMAP_LOCAL */
+ 
+-static inline void *kmap_atomic_prot(struct page *page, pgprot_t prot)
++static inline void *kmap_atomic(struct page *page)
+ {
+-	preempt_disable();
+-	pagefault_disable();
+-	return __kmap_local_page_prot(page, prot);
++	return kmap_atomic_prot(page, kmap_prot);
+ }
+ 
+ static inline void *kmap_atomic_pfn(unsigned long pfn)
+@@ -127,13 +112,6 @@ static inline void __kunmap_atomic(void
  	kunmap_local_indexed(addr);
  }
  
-+static inline void *kmap_local_page_prot(struct page *page, pgprot_t prot)
-+{
-+	migrate_disable();
-+	return __kmap_local_page_prot(page, prot);
-+}
-+
-+static inline void *kmap_local_page(struct page *page)
-+{
-+	return kmap_local_page_prot(page, kmap_prot);
-+}
-+
-+static inline void *kmap_local_pfn(unsigned long pfn)
-+{
-+	migrate_disable();
-+	return __kmap_local_pfn_prot(pfn, kmap_prot);
-+}
-+
-+static inline void __kunmap_local(void *vaddr)
-+{
-+	kunmap_local_indexed(vaddr);
-+}
-+
+-#endif /* CONFIG_KMAP_LOCAL */
+-
+-static inline void *kmap_atomic(struct page *page)
+-{
+-	return kmap_atomic_prot(page, kmap_prot);
+-}
+-
  /* declarations for linux/mm/highmem.c */
  unsigned int nr_free_highpages(void);
  extern atomic_long_t _totalhigh_pages;
-@@ -201,10 +262,27 @@ static inline void *kmap_atomic_pfn(unsi
+@@ -226,39 +204,6 @@ static inline void __kunmap_atomic(void
  
- static inline void __kunmap_atomic(void *addr)
- {
--	/*
--	 * Mostly nothing to do in the CONFIG_HIGHMEM=n case as kunmap_atomic()
--	 * handles re-enabling faults and preemption
--	 */
-+	__kunmap_local(addr);
+ #endif /* CONFIG_HIGHMEM */
+ 
+-#if defined(CONFIG_HIGHMEM) || defined(CONFIG_X86_32)
+-
+-DECLARE_PER_CPU(int, __kmap_atomic_idx);
+-
+-static inline int kmap_atomic_idx_push(void)
+-{
+-	int idx = __this_cpu_inc_return(__kmap_atomic_idx) - 1;
+-
+-#ifdef CONFIG_DEBUG_HIGHMEM
+-	WARN_ON_ONCE(in_irq() && !irqs_disabled());
+-	BUG_ON(idx >= KM_TYPE_NR);
+-#endif
+-	return idx;
+-}
+-
+-static inline int kmap_atomic_idx(void)
+-{
+-	return __this_cpu_read(__kmap_atomic_idx) - 1;
+-}
+-
+-static inline void kmap_atomic_idx_pop(void)
+-{
+-#ifdef CONFIG_DEBUG_HIGHMEM
+-	int idx = __this_cpu_dec_return(__kmap_atomic_idx);
+-
+-	BUG_ON(idx < 0);
+-#else
+-	__this_cpu_dec(__kmap_atomic_idx);
+-#endif
+-}
+-
+-#endif
+-
+ /*
+  * Prevent people trying to call kunmap_atomic() as if it were kunmap()
+  * kunmap_atomic() should get the return value of kmap_atomic, not the page.
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -32,10 +32,6 @@
+ #include <linux/vmalloc.h>
+ #include <asm/fixmap.h>
+ 
+-#if defined(CONFIG_HIGHMEM) || defined(CONFIG_X86_32)
+-DEFINE_PER_CPU(int, __kmap_atomic_idx);
+-#endif
+-
+ /*
+  * Virtual_count is not a pure "count".
+  *  0 means that it is not mapped, and has not been mapped
+@@ -370,6 +366,30 @@ EXPORT_SYMBOL(kunmap_high);
+ #endif /* CONFIG_HIGHMEM */
+ 
+ #ifdef CONFIG_KMAP_LOCAL
++
++static DEFINE_PER_CPU(int, __kmap_atomic_idx);
++
++static inline int kmap_atomic_idx_push(void)
++{
++	int idx = __this_cpu_inc_return(__kmap_atomic_idx) - 1;
++
++	WARN_ON_ONCE(in_irq() && !irqs_disabled());
++	BUG_ON(idx >= KM_TYPE_NR);
++	return idx;
 +}
 +
-+static inline void *kmap_local_page(struct page *page)
++static inline int kmap_atomic_idx(void)
 +{
-+	migrate_disable();
-+	return page_address(page);
++	return __this_cpu_read(__kmap_atomic_idx) - 1;
 +}
 +
-+static inline void *kmap_local_page_prot(struct page *page, pgprot_t prot)
++static inline void kmap_atomic_idx_pop(void)
 +{
-+	return kmap_local_page(page);
++	int idx = __this_cpu_dec_return(__kmap_atomic_idx);
++
++	BUG_ON(idx < 0);
 +}
 +
-+static inline void *kmap_local_pfn(unsigned long pfn)
-+{
-+	return kmap_local_page(pfn_to_page(pfn));
-+}
-+
-+static inline void __kunmap_local(void *addr)
-+{
- #ifdef ARCH_HAS_FLUSH_ON_KUNMAP
- 	kunmap_flush_on_unmap(addr);
+ #ifndef arch_kmap_local_post_map
+ # define arch_kmap_local_post_map(vaddr, pteval)	do { } while (0)
  #endif
-@@ -226,6 +304,13 @@ do {								\
- 	preempt_enable();					\
- } while (0)
- 
-+#define kunmap_local(__addr)					\
-+do {								\
-+	BUILD_BUG_ON(__same_type((__addr), struct page *));	\
-+	__kunmap_local(__addr);					\
-+	migrate_enable();					\
-+} while (0)
-+
- /* when CONFIG_HIGHMEM is not set these will be plain clear/copy_page */
- #ifndef clear_user_highpage
- static inline void clear_user_highpage(struct page *page, unsigned long vaddr)
 

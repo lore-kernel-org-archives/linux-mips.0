@@ -2,105 +2,72 @@ Return-Path: <SRS0=hvK6=EE=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B869C5517A
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 08:05:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72E4BC2D0A3
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 08:05:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AF2DE223FB
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 08:05:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2F891223C6
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 08:05:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727612AbgJ2IEx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 29 Oct 2020 04:04:53 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:58392 "EHLO loongson.cn"
+        id S1728033AbgJ2IFP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 29 Oct 2020 04:05:15 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:58388 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727009AbgJ2ID2 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1727264AbgJ2ID2 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Thu, 29 Oct 2020 04:03:28 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_9JJd5pfmHcCAA--.10240S4;
-        Thu, 29 Oct 2020 16:03:23 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_9JJd5pfmHcCAA--.10240S2;
+        Thu, 29 Oct 2020 16:03:22 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Huacai Chen <chenhc@lemote.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH 2/6] MIPS: Loongson64: Set the field ELPA of CP0_PAGEGRAIN only once
-Date:   Thu, 29 Oct 2020 16:02:57 +0800
-Message-Id: <1603958581-4723-3-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH 0/6] Modify some registers operations and move decode_cpucfg() to loongson_regs.h
+Date:   Thu, 29 Oct 2020 16:02:55 +0800
+Message-Id: <1603958581-4723-1-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1603958581-4723-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1603958581-4723-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx_9JJd5pfmHcCAA--.10240S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7KryxCw4fCr17tF18WF17Jrb_yoW8Xry7p3
-        y3CrZIkw4jq34UZF1rta4UZr18GFZ0gan7Z39rK3s5Xas8C3s2qr1xWF18Za45JrW8ta13
-        Xr4FqF4jga18Aa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBS14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-        8EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
-        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-        IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GFyl42xK82
-        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
-        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
-        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
-        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUUVyIDUUUU
+X-CM-TRANSID: AQAAf9Dx_9JJd5pfmHcCAA--.10240S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruFy8JF4xKrWkWrykZw4fXwb_yoW3Wrb_KF
+        W7ta4rJ3yxW3WfJa4DWr1xXrW7XFWUC3y3CFn8JrZagayYqryDZr48Ar4UWa1DWa1q9ry5
+        Xr48uFykA3WIqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcxFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GFyl
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUjwL05UUUUU==
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The field ELPA of CP0_PAGEGRAIN register is set at the beginning
-of the kernel entry point in kernel-entry-init.h, no need to set
-it again in numa.c, we can remove enable_lpa() and only print the
-related information.
+Tiezhu Yang (6):
+  MIPS: Loongson64: Do not write the read only field LPA of CP0_CONFIG3
+  MIPS: Loongson64: Set the field ELPA of CP0_PAGEGRAIN only once
+  MIPS: Loongson64: Set IPI_Enable register per core by itself
+  MIPS: Loongson64: Add Mail_Send support for 3A4000+ CPU
+  MIPS: Loongson64: Make sure the PC address is correct when 3A4000+ CPU
+    hotplug
+  MIPS: Loongson64: Move decode_cpucfg() to loongson_regs.h
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/loongson64/numa.c | 17 ++---------------
- 1 file changed, 2 insertions(+), 15 deletions(-)
+ .../asm/mach-loongson64/kernel-entry-init.h        |  8 ---
+ .../include/asm/mach-loongson64/loongson_regs.h    | 34 ++++++++++
+ arch/mips/kernel/cpu-probe.c                       | 31 +--------
+ arch/mips/loongson64/numa.c                        | 20 +-----
+ arch/mips/loongson64/smp.c                         | 78 +++++++++++++++++-----
+ 5 files changed, 97 insertions(+), 74 deletions(-)
 
-diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
-index c7e3cced..509b360 100644
---- a/arch/mips/loongson64/numa.c
-+++ b/arch/mips/loongson64/numa.c
-@@ -35,20 +35,6 @@ EXPORT_SYMBOL(__node_data);
- cpumask_t __node_cpumask[MAX_NUMNODES];
- EXPORT_SYMBOL(__node_cpumask);
- 
--static void enable_lpa(void)
--{
--	unsigned long value;
--
--	value = __read_32bit_c0_register($16, 3);
--	pr_info("CP0_Config3: CP0 16.3 (0x%lx)\n", value);
--
--	value = __read_32bit_c0_register($5, 1);
--	value |= 0x20000000;
--	__write_32bit_c0_register($5, 1, value);
--	value = __read_32bit_c0_register($5, 1);
--	pr_info("CP0_PageGrain: CP0 5.1 (0x%lx)\n", value);
--}
--
- static void cpu_node_probe(void)
- {
- 	int i;
-@@ -240,7 +226,8 @@ EXPORT_SYMBOL(pcibus_to_node);
- 
- void __init prom_init_numa_memory(void)
- {
--	enable_lpa();
-+	pr_info("CP0_Config3: CP0 16.3 (0x%x)\n", read_c0_config3());
-+	pr_info("CP0_PageGrain: CP0 5.1 (0x%x)\n", read_c0_pagegrain());
- 	prom_meminit();
- }
- EXPORT_SYMBOL(prom_init_numa_memory);
 -- 
 2.1.0
 

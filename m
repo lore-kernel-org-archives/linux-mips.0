@@ -4,159 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C510C55179
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 08:04:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB8ADC55178
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 08:05:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 123E120791
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 08:04:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7857922206
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 08:05:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725829AbgJ2IEw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 29 Oct 2020 04:04:52 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:58488 "EHLO loongson.cn"
+        id S1727648AbgJ2IEy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 29 Oct 2020 04:04:54 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:58386 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726657AbgJ2IDl (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:03:41 -0400
+        id S1726449AbgJ2ID2 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 29 Oct 2020 04:03:28 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_9JJd5pfmHcCAA--.10240S8;
-        Thu, 29 Oct 2020 16:03:37 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_9JJd5pfmHcCAA--.10240S3;
+        Thu, 29 Oct 2020 16:03:22 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Huacai Chen <chenhc@lemote.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH 6/6] MIPS: Loongson64: Move decode_cpucfg() to loongson_regs.h
-Date:   Thu, 29 Oct 2020 16:03:01 +0800
-Message-Id: <1603958581-4723-7-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH 1/6] MIPS: Loongson64: Do not write the read only field LPA of CP0_CONFIG3
+Date:   Thu, 29 Oct 2020 16:02:56 +0800
+Message-Id: <1603958581-4723-2-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
 In-Reply-To: <1603958581-4723-1-git-send-email-yangtiezhu@loongson.cn>
 References: <1603958581-4723-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx_9JJd5pfmHcCAA--.10240S8
-X-Coremail-Antispam: 1UD129KBjvJXoWxGrWfKF4fWryxurykZw18Krg_yoW5ZrWxpr
-        n7Zay3Kr4IkFyI934DJr4qgr4rAr9xCrs3ZFWfXw45ZasxJ3W5Xr97urykAr12yryIqa4x
-        uFZakrWayFsruw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE
-        3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
-        x0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8
-        JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r43Mx
-        AIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_
-        Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwI
-        xGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWx
-        JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcV
-        C2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjHmh7UUUUU==
+X-CM-TRANSID: AQAAf9Dx_9JJd5pfmHcCAA--.10240S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZF1rXry7ury7JrW5uw1DAwb_yoW8Ar17pa
+        n3A3Z5Gr45Ww1UuFn5CryUurWrJrZ3KrW2vanFgrykXasxK342gr1ft3W8JF95Xa95Ka1f
+        Wr9Y9r4jqanrG3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
+        8EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
+        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+        IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GFyl42xK82
+        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
+        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
+        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF
+        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
+        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU00PSUUUUU
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Since decode_cpucfg() is only used for Loongson64, just move
-it to loongson_regs.h to avoid the pollution of common code
-with #ifdef CONFIG_CPU_LOONGSON64.
+The field LPA of CP0_CONFIG3 register is read only for Loongson64, so the
+write operations are meaningless, remove them.
 
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- .../include/asm/mach-loongson64/loongson_regs.h    | 24 +++++++++++++++++
- arch/mips/kernel/cpu-probe.c                       | 31 +---------------------
- 2 files changed, 25 insertions(+), 30 deletions(-)
+ arch/mips/include/asm/mach-loongson64/kernel-entry-init.h | 8 --------
+ arch/mips/loongson64/numa.c                               | 3 ---
+ 2 files changed, 11 deletions(-)
 
-diff --git a/arch/mips/include/asm/mach-loongson64/loongson_regs.h b/arch/mips/include/asm/mach-loongson64/loongson_regs.h
-index 1659935..2d469d6 100644
---- a/arch/mips/include/asm/mach-loongson64/loongson_regs.h
-+++ b/arch/mips/include/asm/mach-loongson64/loongson_regs.h
-@@ -129,6 +129,30 @@ static inline u32 read_cpucfg(u32 reg)
- #define LOONGSON_CFG7_GCCAEQRP	BIT(0)
- #define LOONGSON_CFG7_UCAWINP	BIT(1)
+diff --git a/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h b/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h
+index 87a5bfb..e4d77f4 100644
+--- a/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h
++++ b/arch/mips/include/asm/mach-loongson64/kernel-entry-init.h
+@@ -19,10 +19,6 @@
+ 	.macro	kernel_entry_setup
+ 	.set	push
+ 	.set	mips64
+-	/* Set LPA on LOONGSON3 config3 */
+-	mfc0	t0, CP0_CONFIG3
+-	or	t0, (0x1 << 7)
+-	mtc0	t0, CP0_CONFIG3
+ 	/* Set ELPA on LOONGSON3 pagegrain */
+ 	mfc0	t0, CP0_PAGEGRAIN
+ 	or	t0, (0x1 << 29)
+@@ -54,10 +50,6 @@
+ 	.macro	smp_slave_setup
+ 	.set	push
+ 	.set	mips64
+-	/* Set LPA on LOONGSON3 config3 */
+-	mfc0	t0, CP0_CONFIG3
+-	or	t0, (0x1 << 7)
+-	mtc0	t0, CP0_CONFIG3
+ 	/* Set ELPA on LOONGSON3 pagegrain */
+ 	mfc0	t0, CP0_PAGEGRAIN
+ 	or	t0, (0x1 << 29)
+diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
+index cf9459f..c7e3cced 100644
+--- a/arch/mips/loongson64/numa.c
++++ b/arch/mips/loongson64/numa.c
+@@ -40,9 +40,6 @@ static void enable_lpa(void)
+ 	unsigned long value;
  
-+static inline void decode_cpucfg(struct cpuinfo_mips *c)
-+{
-+	u32 cfg1 = read_cpucfg(LOONGSON_CFG1);
-+	u32 cfg2 = read_cpucfg(LOONGSON_CFG2);
-+	u32 cfg3 = read_cpucfg(LOONGSON_CFG3);
-+
-+	if (cfg1 & LOONGSON_CFG1_MMI)
-+		c->ases |= MIPS_ASE_LOONGSON_MMI;
-+
-+	if (cfg2 & LOONGSON_CFG2_LEXT1)
-+		c->ases |= MIPS_ASE_LOONGSON_EXT;
-+
-+	if (cfg2 & LOONGSON_CFG2_LEXT2)
-+		c->ases |= MIPS_ASE_LOONGSON_EXT2;
-+
-+	if (cfg2 & LOONGSON_CFG2_LSPW) {
-+		c->options |= MIPS_CPU_LDPTE;
-+		c->guest.options |= MIPS_CPU_LDPTE;
-+	}
-+
-+	if (cfg3 & LOONGSON_CFG3_LCAMP)
-+		c->ases |= MIPS_ASE_LOONGSON_CAM;
-+}
-+
- static inline bool cpu_has_csr(void)
- {
- 	if (cpu_has_cfg())
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index e685369..1fa2c8b 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -31,6 +31,7 @@
- #include "fpu-probe.h"
+ 	value = __read_32bit_c0_register($16, 3);
+-	value |= 0x00000080;
+-	__write_32bit_c0_register($16, 3, value);
+-	value = __read_32bit_c0_register($16, 3);
+ 	pr_info("CP0_Config3: CP0 16.3 (0x%lx)\n", value);
  
- #include <asm/mach-loongson64/cpucfg-emul.h>
-+#include <asm/mach-loongson64/loongson_regs.h>
- 
- /* Hardware capabilities */
- unsigned int elf_hwcap __read_mostly;
-@@ -1692,33 +1693,6 @@ static inline void cpu_probe_cavium(struct cpuinfo_mips *c, unsigned int cpu)
- 	}
- }
- 
--#ifdef CONFIG_CPU_LOONGSON64
--#include <loongson_regs.h>
--
--static inline void decode_cpucfg(struct cpuinfo_mips *c)
--{
--	u32 cfg1 = read_cpucfg(LOONGSON_CFG1);
--	u32 cfg2 = read_cpucfg(LOONGSON_CFG2);
--	u32 cfg3 = read_cpucfg(LOONGSON_CFG3);
--
--	if (cfg1 & LOONGSON_CFG1_MMI)
--		c->ases |= MIPS_ASE_LOONGSON_MMI;
--
--	if (cfg2 & LOONGSON_CFG2_LEXT1)
--		c->ases |= MIPS_ASE_LOONGSON_EXT;
--
--	if (cfg2 & LOONGSON_CFG2_LEXT2)
--		c->ases |= MIPS_ASE_LOONGSON_EXT2;
--
--	if (cfg2 & LOONGSON_CFG2_LSPW) {
--		c->options |= MIPS_CPU_LDPTE;
--		c->guest.options |= MIPS_CPU_LDPTE;
--	}
--
--	if (cfg3 & LOONGSON_CFG3_LCAMP)
--		c->ases |= MIPS_ASE_LOONGSON_CAM;
--}
--
- static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
- {
- 	decode_configs(c);
-@@ -1787,9 +1761,6 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
- 		break;
- 	}
- }
--#else
--static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu) { }
--#endif
- 
- static inline void cpu_probe_ingenic(struct cpuinfo_mips *c, unsigned int cpu)
- {
+ 	value = __read_32bit_c0_register($5, 1);
 -- 
 2.1.0
 

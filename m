@@ -2,92 +2,294 @@ Return-Path: <SRS0=hvK6=EE=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7855CC2D0A3
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 08:05:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1DF3C56202
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 13:46:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 33C1C21D47
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 08:05:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6EDC52087E
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Oct 2020 13:46:39 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="XhUb+9X5"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727840AbgJ2IFO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 29 Oct 2020 04:05:14 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:58394 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726712AbgJ2ID2 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:03:28 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_9JJd5pfmHcCAA--.10240S5;
-        Thu, 29 Oct 2020 16:03:24 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH 3/6] MIPS: Loongson64: Set IPI_Enable register per core by itself
-Date:   Thu, 29 Oct 2020 16:02:58 +0800
-Message-Id: <1603958581-4723-4-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1603958581-4723-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1603958581-4723-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx_9JJd5pfmHcCAA--.10240S5
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFWUCw1xXr17ZFWUCry5twb_yoW8Xr4fp3
-        yIv3WUKr4UWwn7Aws5Jay5ZryFyrZ8XayxCa1xtF4rZ3s8ua4YqF48Ka4UZas7CFWvq3W3
-        u3sagr47GayfC3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBS14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
-        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-        8EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
-        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-        IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GFyl42xK82
-        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
-        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
-        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
-        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUUR6zDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1727415AbgJ2Nqf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 29 Oct 2020 09:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726354AbgJ2Nqf (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 29 Oct 2020 09:46:35 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC599C0613D3;
+        Thu, 29 Oct 2020 06:46:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=cSTsxDYLnXEEi/bDWUeAA20te1rJNVjNLggcXmbtZpQ=; b=XhUb+9X5JMWVorM4JHpoQ7L3c
+        AiUG1AryewCQipJ01tUvPuHknKuaIrwrLP6ZXuZXs/oD8Bh/wZrZovvYrMop17PDqM6/USIW2pUUD
+        umeOebeU4JGnmlVdsho1/rbxzTzmR36nWoPKdVF/cS/Ixz9EubS/wlFCmkLc1s0dwgtIBpNbCTthj
+        OGlL4pHZSq6Z1s4V0D/PZtQWWL1+2i5Ykl0ZKf5OlUxQUmiemIAvBUpvqt1BeXrkDiT25CoH0Xdjt
+        O4P8O/bfqdcv2y8Xb1crnRD6S15I68jz5RalozAoTAaK5LcE0TRm+2WU8TO1uIelV+a0u1QGLSDt8
+        gUmkphwwQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52480)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kY8G7-0004Rb-Ip; Thu, 29 Oct 2020 13:46:31 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kY8G6-0006AN-Hy; Thu, 29 Oct 2020 13:46:30 +0000
+Date:   Thu, 29 Oct 2020 13:46:30 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Alexander Dahl <post@lespocky.de>
+Cc:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Alexander Dahl <ada@thorsis.com>, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org, linux-mips@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v7 02/12] dt-bindings: leds: Convert pwm to yaml
+Message-ID: <20201029134630.GE1559@shell.armlinux.org.uk>
+References: <20201005203451.9985-1-post@lespocky.de>
+ <20201005203451.9985-3-post@lespocky.de>
+ <20201028203953.eafmzeqba76qjlf2@falbala.internal.home.lespocky.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201028203953.eafmzeqba76qjlf2@falbala.internal.home.lespocky.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In the current code, for example, core 1 sets Core[0, 1, 2, 3]_IPI_Enalbe
-register and core 2, 3 do the same thing on the 1-way Loongson64 platform,
-this is not necessary. Set IPI_Enable register per core by itself to avoid
-duplicate operations and make the logic more clear.
+On Wed, Oct 28, 2020 at 09:39:54PM +0100, Alexander Dahl wrote:
+> Hello,
+> 
+> Peter, Russel, could you please give your Acked-by or Signed-off-by on
+> this patch?  Your ack is needed, because the license is now explicitly
+> set (it was not explicit before), and you were the contributors to
+> this binding before the conversion to yaml.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/loongson64/smp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+For the license change only:
 
-diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
-index e744e1b..7d58853 100644
---- a/arch/mips/loongson64/smp.c
-+++ b/arch/mips/loongson64/smp.c
-@@ -348,8 +348,7 @@ static void loongson3_init_secondary(void)
- 	/* Set interrupt mask, but don't enable */
- 	change_c0_status(ST0_IM, imask);
- 
--	for (i = 0; i < num_possible_cpus(); i++)
--		loongson3_ipi_write32(0xffffffff, ipi_en0_regs[cpu_logical_map(i)]);
-+	loongson3_ipi_write32(0xffffffff, ipi_en0_regs[cpu_logical_map(cpu)]);
- 
- 	per_cpu(cpu_state, cpu) = CPU_ONLINE;
- 	cpu_set_core(&cpu_data[cpu],
-@@ -420,6 +419,7 @@ static void __init loongson3_smp_setup(void)
- 	ipi_status0_regs_init();
- 	ipi_en0_regs_init();
- 	ipi_mailbox_buf_init();
-+	loongson3_ipi_write32(0xffffffff, ipi_en0_regs[cpu_logical_map(0)]);
- 	cpu_set_core(&cpu_data[0],
- 		     cpu_logical_map(0) % loongson_sysconf.cores_per_package);
- 	cpu_data[0].package = cpu_logical_map(0) / loongson_sysconf.cores_per_package;
+Acked-by: Russell King <rmk+kernel@armlinux.org.uk>
+
+(Please drop the Cc attributation in the commit to
+linux@armlinux.org.uk thanks.)
+
+> 
+> Thanks and Greets
+> Alex
+> 
+> On Mon, Oct 05, 2020 at 10:34:41PM +0200, Alexander Dahl wrote:
+> > The example was adapted in the following ways:
+> > 
+> > - make use of the now supported 'function' and 'color' properties
+> > - remove pwm nodes, those are documented elsewhere
+> > - align node names to new dt schema rules and dt recommendations
+> > 
+> > License was not explicitly set before.  The license set now is
+> > recommended by DT project.
+> > 
+> > Suggested-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> > Signed-off-by: Alexander Dahl <post@lespocky.de>
+> > Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> > Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> > Cc: Russell King <linux@armlinux.org.uk>
+> > ---
+> > 
+> > Notes:
+> >     NOTE: Due to license set/change this needs Acked-by or Signed-off-by from:
+> >       * Peter Ujfalusi
+> >       * Russell King
+> >     
+> >     That was discussed already with Peter (original author), still waiting
+> >     for Acked-by though …
+> >     
+> >     Changelog
+> >     ---------
+> >     v6 -> v7:
+> >       * added Reviewed-by (Krzysztof Kozlowski)
+> >       * reworded commit message (suggested by Krzysztof)
+> >       * added Reviewed-by (Rob Herring)
+> >     
+> >     v5 -> v6:
+> >       * removed pwm nodes from example (Rob)
+> >       * renamed led-controller node in example (Rob)
+> >     
+> >     v4 -> v5:
+> >       * updated based on feedback by Rob Herring
+> >       * removed Acked-by
+> >     
+> >     v3 -> v4:
+> >       * added Cc to original author of the binding
+> >     
+> >     v2 -> v3:
+> >       * changed license identifier to recommended one
+> >       * added Acked-by
+> >     
+> >     v2:
+> >       * added this patch to series (Suggested-by: Jacek Anaszewski)
+> > 
+> >  .../devicetree/bindings/leds/leds-pwm.txt     | 50 -------------
+> >  .../devicetree/bindings/leds/leds-pwm.yaml    | 70 +++++++++++++++++++
+> >  2 files changed, 70 insertions(+), 50 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.txt
+> >  create mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.txt b/Documentation/devicetree/bindings/leds/leds-pwm.txt
+> > deleted file mode 100644
+> > index 6c6583c35f2f..000000000000
+> > --- a/Documentation/devicetree/bindings/leds/leds-pwm.txt
+> > +++ /dev/null
+> > @@ -1,50 +0,0 @@
+> > -LED connected to PWM
+> > -
+> > -Required properties:
+> > -- compatible : should be "pwm-leds".
+> > -
+> > -Each LED is represented as a sub-node of the pwm-leds device.  Each
+> > -node's name represents the name of the corresponding LED.
+> > -
+> > -LED sub-node properties:
+> > -- pwms : PWM property to point to the PWM device (phandle)/port (id) and to
+> > -  specify the period time to be used: <&phandle id period_ns>;
+> > -- pwm-names : (optional) Name to be used by the PWM subsystem for the PWM device
+> > -  For the pwms and pwm-names property please refer to:
+> > -  Documentation/devicetree/bindings/pwm/pwm.txt
+> > -- max-brightness : Maximum brightness possible for the LED
+> > -- active-low : (optional) For PWMs where the LED is wired to supply
+> > -  rather than ground.
+> > -- label :  (optional)
+> > -  see Documentation/devicetree/bindings/leds/common.txt
+> > -- linux,default-trigger :  (optional)
+> > -  see Documentation/devicetree/bindings/leds/common.txt
+> > -
+> > -Example:
+> > -
+> > -twl_pwm: pwm {
+> > -	/* provides two PWMs (id 0, 1 for PWM1 and PWM2) */
+> > -	compatible = "ti,twl6030-pwm";
+> > -	#pwm-cells = <2>;
+> > -};
+> > -
+> > -twl_pwmled: pwmled {
+> > -	/* provides one PWM (id 0 for Charing indicator LED) */
+> > -	compatible = "ti,twl6030-pwmled";
+> > -	#pwm-cells = <2>;
+> > -};
+> > -
+> > -pwmleds {
+> > -	compatible = "pwm-leds";
+> > -	kpad {
+> > -		label = "omap4::keypad";
+> > -		pwms = <&twl_pwm 0 7812500>;
+> > -		max-brightness = <127>;
+> > -	};
+> > -
+> > -	charging {
+> > -		label = "omap4:green:chrg";
+> > -		pwms = <&twl_pwmled 0 7812500>;
+> > -		max-brightness = <255>;
+> > -	};
+> > -};
+> > diff --git a/Documentation/devicetree/bindings/leds/leds-pwm.yaml b/Documentation/devicetree/bindings/leds/leds-pwm.yaml
+> > new file mode 100644
+> > index 000000000000..fe4d5fd25913
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/leds/leds-pwm.yaml
+> > @@ -0,0 +1,70 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/leds/leds-pwm.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: LEDs connected to PWM
+> > +
+> > +maintainers:
+> > +  - Pavel Machek <pavel@ucw.cz>
+> > +
+> > +description:
+> > +  Each LED is represented as a sub-node of the pwm-leds device.  Each
+> > +  node's name represents the name of the corresponding LED.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: pwm-leds
+> > +
+> > +patternProperties:
+> > +  "^led(-[0-9a-f]+)?$":
+> > +    type: object
+> > +
+> > +    $ref: common.yaml#
+> > +
+> > +    properties:
+> > +      pwms:
+> > +        maxItems: 1
+> > +
+> > +      pwm-names: true
+> > +
+> > +      max-brightness:
+> > +        description:
+> > +          Maximum brightness possible for the LED
+> > +        $ref: /schemas/types.yaml#/definitions/uint32
+> > +
+> > +      active-low:
+> > +        description:
+> > +          For PWMs where the LED is wired to supply rather than ground.
+> > +        type: boolean
+> > +
+> > +    required:
+> > +      - pwms
+> > +      - max-brightness
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +
+> > +    #include <dt-bindings/leds/common.h>
+> > +
+> > +    led-controller {
+> > +        compatible = "pwm-leds";
+> > +
+> > +        led-1 {
+> > +            label = "omap4::keypad";
+> > +            pwms = <&twl_pwm 0 7812500>;
+> > +            max-brightness = <127>;
+> > +        };
+> > +
+> > +        led-2 {
+> > +            color = <LED_COLOR_ID_GREEN>;
+> > +            function = LED_FUNCTION_CHARGING;
+> > +            pwms = <&twl_pwmled 0 7812500>;
+> > +            max-brightness = <255>;
+> > +        };
+> > +    };
+> > +
+> > +...
+> > -- 
+> > 2.20.1
+> 
+> -- 
+> /"\ ASCII RIBBON | »With the first link, the chain is forged. The first
+> \ / CAMPAIGN     | speech censured, the first thought forbidden, the
+>  X  AGAINST      | first freedom denied, chains us all irrevocably.«
+> / \ HTML MAIL    | (Jean-Luc Picard, quoting Judge Aaron Satie)
+
+
+
 -- 
-2.1.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!

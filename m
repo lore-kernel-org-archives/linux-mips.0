@@ -6,38 +6,42 @@ X-Spam-Status: No, score=-3.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C64BC4741F
-	for <linux-mips@archiver.kernel.org>; Fri, 30 Oct 2020 13:07:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F9C6C4741F
+	for <linux-mips@archiver.kernel.org>; Fri, 30 Oct 2020 19:35:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ACF50221FA
-	for <linux-mips@archiver.kernel.org>; Fri, 30 Oct 2020 13:07:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A57902151B
+	for <linux-mips@archiver.kernel.org>; Fri, 30 Oct 2020 19:35:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JKDGOHNW"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="db633F26";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="il7YKHja"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbgJ3NHB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 30 Oct 2020 09:07:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgJ3NHB (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 30 Oct 2020 09:07:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227DAC0613CF;
-        Fri, 30 Oct 2020 06:06:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rfcpHo3sYbHG9663+/oEKU5+yDacWVNSfCtmxqY30IA=; b=JKDGOHNWU/V8Y+2rs/k7xDcd+D
-        ywFaOKdh66CG7CRxohaMqHaFLXYS9D8UEmY4cTPadxISCv3CHKX+79wCldI0LV8nLjJimNpRjUFot
-        BbcFgkfMoOoVVqbSn6at/tUwkE3W4TeiBSkn85uGjZxEhlxcEUEn86bKSTG6W3x+/e6w76iTiIDMo
-        +S7YG45wv9UKO0gFrKbYfO0n5SfTbF1pG2kSlc2FKZXNaKU1XoICbQHjohPVjgTGHFNPIe1Xmtc6u
-        jm1U+Hxe5+XhivRe6Qrj/AgJuMiGDjrS/uMW8LgIirsxF3LkwsBxbZgQIkCutkdRTk0XP+Op+X95w
-        kA9B9H+g==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kYU6t-0002Yw-HM; Fri, 30 Oct 2020 13:06:27 +0000
-Date:   Fri, 30 Oct 2020 13:06:27 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
+        id S1727543AbgJ3TfW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 30 Oct 2020 15:35:22 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44354 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727449AbgJ3TfV (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 30 Oct 2020 15:35:21 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604086519;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KjnQMCzBdzGXaCOpmbjT8Ur9FZq3y7opRBflIXIldZw=;
+        b=db633F26JvpFY6g0OD9+HbOB2bGDkf74GvzdnzaI3Jackio3Pxmuc4jaTjmmTn0rWAIpK+
+        FwvojioAnGZiiH15k8FN/MiA2IKJM2U7IeHO0IsBZqBGgEsd8kwilqueFED/GNpoidpnzO
+        yy2TxOvoKUkHNkNBXz892WSrXAjSj1bek74dJCnwm2fooU7rVOQjFed7q+Vvsmw9zNfHs4
+        G2wInIc2Xh8w8e1+gsfiziPOVyn2tk/4xzLJndeycG1E0X5k3bHmibgmZZcOeJXy9ENlqt
+        1WjhiLEbUG/fvEPPOJsLp5CaNR4eEbW+SMl/VHUu0cW+yWNLKzRpz7CwuUxChg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604086519;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KjnQMCzBdzGXaCOpmbjT8Ur9FZq3y7opRBflIXIldZw=;
+        b=il7YKHjaiUFmDOQKgI3UCsxgkMmYaTjOnYVZzaPy8He727Hr6NRROPSIn6WIMwC/jiW6Jw
+        nlMa3TiG03b3UjDQ==
+To:     Matthew Wilcox <willy@infradead.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org,
         Linus Torvalds <torvalds@linuxfoundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -74,45 +78,62 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org,
         sparclinux@vger.kernel.org, Chris Zankel <chris@zankel.net>,
         Max Filippov <jcmvbkbc@gmail.com>,
         linux-xtensa@linux-xtensa.org
-Subject: Re: [patch V2 00/18] mm/highmem: Preemptible variant of kmap_atomic
- & friends
-Message-ID: <20201030130627.GI27442@casper.infradead.org>
-References: <20201029221806.189523375@linutronix.de>
+Subject: Re: [patch V2 00/18] mm/highmem: Preemptible variant of kmap_atomic & friends
+In-Reply-To: <20201030130627.GI27442@casper.infradead.org>
+References: <20201029221806.189523375@linutronix.de> <20201030130627.GI27442@casper.infradead.org>
+Date:   Fri, 30 Oct 2020 20:35:18 +0100
+Message-ID: <87k0v7mrrd.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029221806.189523375@linutronix.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 11:18:06PM +0100, Thomas Gleixner wrote:
-> This series provides kmap_local.* iomap_local variants which only disable
-> migration to keep the virtual mapping address stable accross preemption,
-> but do neither disable pagefaults nor preemption. The new functions can be
-> used in any context, but if used in atomic context the caller has to take
-> care of eventually disabling pagefaults.
+On Fri, Oct 30 2020 at 13:06, Matthew Wilcox wrote:
+> On Thu, Oct 29, 2020 at 11:18:06PM +0100, Thomas Gleixner wrote:
+>> This series provides kmap_local.* iomap_local variants which only disable
+>> migration to keep the virtual mapping address stable accross preemption,
+>> but do neither disable pagefaults nor preemption. The new functions can be
+>> used in any context, but if used in atomic context the caller has to take
+>> care of eventually disabling pagefaults.
+>
+> Could I ask for a CONFIG_KMAP_DEBUG which aliases all the kmap variants
+> to vmap()?  I think we currently have a problem in iov_iter on HIGHMEM
+> configs:
 
-Could I ask for a CONFIG_KMAP_DEBUG which aliases all the kmap variants
-to vmap()?  I think we currently have a problem in iov_iter on HIGHMEM
-configs:
+For kmap() that would work, but for kmap_atomic() not so much when it is
+called in non-preemptible context because vmap() might sleep.
 
-copy_page_to_iter() calls page_copy_sane() which checks:
+> copy_page_to_iter() calls page_copy_sane() which checks:
+>
+>         head = compound_head(page);
+>         if (likely(n <= v && v <= page_size(head)))
+>                 return true;
+>
+> but then:
+>
+>                 void *kaddr = kmap_atomic(page);
+>                 size_t wanted = copy_to_iter(kaddr + offset, bytes, i);
+>                 kunmap_atomic(kaddr);
+>
+> so if offset to offset+bytes is larger than PAGE_SIZE, this is going to
+> work for lowmem pages and fail miserably for highmem pages.  I suggest
+> vmap() because vmap has a PAGE_SIZE gap between each allocation.
 
-        head = compound_head(page);
-        if (likely(n <= v && v <= page_size(head)))
-                return true;
+On 32bit highmem the kmap_atomic() case is easy: Double the number of
+mapping slots and only use every second one, which gives you a guard
+page between the maps.
 
-but then:
+For 64bit we could do something ugly: Enable the highmem kmap_atomic()
+crud and enforce an alias mapping (at least on the architectures where
+this is reasonable). Then you get the same as for 32bit.
 
-                void *kaddr = kmap_atomic(page);
-                size_t wanted = copy_to_iter(kaddr + offset, bytes, i);
-                kunmap_atomic(kaddr);
+> Alternatively if we could have a kmap_atomic_compound(), that would
+> be awesome, but probably not realistic to implement.  I've more
+> or less resigned myself to having to map things one page at a time.
 
-so if offset to offset+bytes is larger than PAGE_SIZE, this is going to
-work for lowmem pages and fail miserably for highmem pages.  I suggest
-vmap() because vmap has a PAGE_SIZE gap between each allocation.
+That might be horribly awesome on 32bit :)
 
-Alternatively if we could have a kmap_atomic_compound(), that would
-be awesome, but probably not realistic to implement.  I've more
-or less resigned myself to having to map things one page at a time.
+Thanks,
+
+        tglx

@@ -2,91 +2,110 @@ Return-Path: <SRS0=L55W=EI=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EC30C2D0A3
-	for <linux-mips@archiver.kernel.org>; Mon,  2 Nov 2020 02:04:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6B55C388F2
+	for <linux-mips@archiver.kernel.org>; Mon,  2 Nov 2020 09:06:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3D09D223C7
-	for <linux-mips@archiver.kernel.org>; Mon,  2 Nov 2020 02:04:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 661F022275
+	for <linux-mips@archiver.kernel.org>; Mon,  2 Nov 2020 09:06:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727450AbgKBCE4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 1 Nov 2020 21:04:56 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:35064 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727409AbgKBCEz (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 1 Nov 2020 21:04:55 -0500
-Received: from [10.130.0.60] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxKtEyaZ9fYqcDAA--.5264S3;
-        Mon, 02 Nov 2020 10:04:34 +0800 (CST)
+        id S1728005AbgKBJGu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 2 Nov 2020 04:06:50 -0500
+Received: from relaygw2-23.mclink.it ([195.78.211.237]:48622 "EHLO
+        relaygw2-23.mclink.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727806AbgKBJGt (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 2 Nov 2020 04:06:49 -0500
+Received: from cgp-esgout01-rm.mail.irds.it ([172.24.30.44] verified)
+  by relaygw2-23.mclink.it (CommuniGate Pro SMTP 6.0.4)
+  with ESMTPS id 182290151 for linux-mips@vger.kernel.org; Mon, 02 Nov 2020 10:06:46 +0100
+X-Envelope-From: <mc5686@mclink.it>
+Received: from [192.168.7.128] (host-87-16-231-187.retail.telecomitalia.it [87.16.231.187])
+        (Authenticated sender: mc5686)
+        by cgp-esgout01-rm.mail.irds.it (Postfix) with ESMTPA id 5FDCC41B0E;
+        Mon,  2 Nov 2020 10:06:43 +0100 (CET)
 Subject: Re: Kexec on MIPS32R2?
-To:     Mauro Condarelli <mc5686@mclink.it>, linux-mips@vger.kernel.org
+To:     Jinyang He <hejinyang@loongson.cn>, linux-mips@vger.kernel.org
 References: <21a8d116-ed18-d1f1-9c72-019a619f7ebc@mclink.it>
-From:   Jinyang He <hejinyang@loongson.cn>
-Message-ID: <b0332180-2dd8-8eed-8cf1-b34640a8e343@loongson.cn>
-Date:   Mon, 2 Nov 2020 10:04:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+ <b0332180-2dd8-8eed-8cf1-b34640a8e343@loongson.cn>
+From:   Mauro Condarelli <mc5686@mclink.it>
+Message-ID: <8d77b80e-99b1-75fe-c9b4-a6d23c1904b5@mclink.it>
+Date:   Mon, 2 Nov 2020 10:06:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <21a8d116-ed18-d1f1-9c72-019a619f7ebc@mclink.it>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxKtEyaZ9fYqcDAA--.5264S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zr4ftry5WF13GrWkWF43GFg_yoW8Gr1kpF
-        1rCr4Sqrs5XFy0yw18Zw1xurWfZw4Y9Fy3JwnYgr95Ar4Dtryktrn29a129a4jqryrK3Wj
-        qFW3Xay0ka1Yy3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9Kb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VCY1x0262k0Y48FwI
-        0_Jr0_Gr1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvE
-        wIxGrwCYjI0SjxkI62AI1cAE67vIY487MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrw
-        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-        14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-        IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxK
-        x2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
-        AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUyXAwDUUUU
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+In-Reply-To: <b0332180-2dd8-8eed-8cf1-b34640a8e343@loongson.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Irideos-Libra-ESVA-Information: Please contact Irideos for more information
+X-Irideos-Libra-ESVA-ID: 5FDCC41B0E.A7F8E
+X-Irideos-Libra-ESVA: No virus found
+X-Irideos-Libra-ESVA-From: mc5686@mclink.it
+X-Irideos-Libra-ESVA-Watermark: 1604912803.6326@GyOH1j2DM3yfchaPFj5f8g
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi,
 
-On 11/02/2020 08:01 AM, Mauro Condarelli wrote:
-> Can someone confirm (or disconfirm, of course) kexec is supposed to work on MIPS32R2?
-> My attempts to use it on a MT7628-based board result in a silent hang (watchdog cuts in)
-> right after:
->
-> [  201.309836] kexec_core: Starting new kernel
-> [  201.318239] Will call new kernel at 004f0000
-> [  201.322581] Bye ...
->
-> Apparently old kernel jumps to `do_kexec()` and just dies; new kernel does not give a peep.
-> This can be completely my fault, of course, but I would like a confirm this is supposed to work.
->
-> Thanks in advance
-> Mauro Condarelli
-I'm not familiar with MIPSR2. I guess your platform (MT7628-based board)
-cannot use the common function. It may not give a machine specific 
-function, too.
 
-How CPU0 do in do_kexec()? Maybe arch/mips/kernel/reloacate_kernel.S 
-gives us
-some useful information. In this file CPU0 goes relocate_new_kernel() 
-and other
-CPUs go kexec_smp_wait() if CONFIG_SMP is enabled. Normally CPU0 will 
-enter the
-kernel_entry() of the new kernel. In my own understanding of the kexec 
-process,
-I find it extremely difficult to pass parameters. Please make sure your 
-platform
-passes the parameters necessary for startup. (See 
-arch/mips/kernel/head.S, such as
-dtb, fw_args* or other necessary parameters, this is what I said 
-"machine specific")
+Hi Jinyang,
 
+On 11/2/20 3:04 AM, Jinyang He wrote:
+> Hi,
+>
+> On 11/02/2020 08:01 AM, Mauro Condarelli wrote:
+>> Can someone confirm (or disconfirm, of course) kexec is supposed to work on MIPS32R2?
+>> My attempts to use it on a MT7628-based board result in a silent hang (watchdog cuts in)
+>> right after:
+>>
+>> [  201.309836] kexec_core: Starting new kernel
+>> [  201.318239] Will call new kernel at 004f0000
+>> [  201.322581] Bye ...
+>>
+>> Apparently old kernel jumps to `do_kexec()` and just dies; new kernel does not give a peep.
+>> This can be completely my fault, of course, but I would like a confirm this is supposed to work.
+>>
+>> Thanks in advance
+>> Mauro Condarelli
+> I'm not familiar with MIPSR2. I guess your platform (MT7628-based board)
+> cannot use the common function. It may not give a machine specific function, too.
+My SoC is single core, so I don't have CONFIG_SMP.
+Apparently (if I read code correctly) `do_kexec()` is actually `relocate_new_kernel`
+(arch/mips/kernel/relocate_kernel.S).
+No specific provisions seem to be available for my CPU (I see just a
+`#ifdef CONFIG_CPU_CAVIUM_OCTEON`, which is not my case).
+Unfortunately my understanding of MIPS assembly is insufficient to accurately follow
+this code.
+
+> How CPU0 do in do_kexec()? Maybe arch/mips/kernel/reloacate_kernel.S gives us
+> some useful information. In this file CPU0 goes relocate_new_kernel() and other
+> CPUs go kexec_smp_wait() if CONFIG_SMP is enabled. Normally CPU0 will enter the
+> kernel_entry() of the new kernel. In my own understanding of the kexec process,
+> I find it extremely difficult to pass parameters. Please make sure your platform
+> passes the parameters necessary for startup. (See arch/mips/kernel/head.S, such as
+> dtb, fw_args* or other necessary parameters, this is what I said "machine specific")
+One possible cause  of mishap is my kernel (currently) does *not* have a .dtb appended
+and I see no explicit option to reuse current DT.
+In my mips `kexec` there's a `--dtb=<file>` option but passing the same .dtb I use with
+u-Boot does not seem to work:
+
+# kexec -l /boot/vmlinuz --command-line="earlyprintk rootwait console=ttyS2,115200 mtdparts=spi0.0:312k(u-boot),4k(env),4k(factor
+y),2368k(kernel),-(filesystem) root=/dev/mmcblk0p7 tryboot=B" --dtb=/boot/u-boot.dtb
+# kexec -e
+[ 2030.833119] mtk_soc_eth 10100000.ethernet eth0: Link is Down
+[ 2030.848999] wlan0: deauthenticating from a0:04:60:9f:2f:f8 by local choice (Reason: 3=DEAUTH_LEAVING)
+Received Deauthentication event, reason: 3, from_ap: false
+Received error during CMD_TRIGGER_SCAN: Network is down (127)
+[ 2030.894637] kexec_core: Starting new kernel
+[ 2030.900005] Will call new kernel at 004f0000
+[ 2030.904326] Bye ...
+
+<HANG!>
+<watchdog reset>
+
+Any hint welcome as I'm completely out of my depth here.
+TiA!
+Mauro

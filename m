@@ -7,279 +7,105 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48547C388F2
-	for <linux-mips@archiver.kernel.org>; Tue,  3 Nov 2020 07:12:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9851CC388F7
+	for <linux-mips@archiver.kernel.org>; Tue,  3 Nov 2020 07:12:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1407A20870
-	for <linux-mips@archiver.kernel.org>; Tue,  3 Nov 2020 07:12:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 566DC208B6
+	for <linux-mips@archiver.kernel.org>; Tue,  3 Nov 2020 07:12:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727962AbgKCHMQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 3 Nov 2020 02:12:16 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:37274 "EHLO loongson.cn"
+        id S1727952AbgKCHMP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 3 Nov 2020 02:12:15 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:37244 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727687AbgKCHMQ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 3 Nov 2020 02:12:16 -0500
+        id S1727527AbgKCHMO (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 3 Nov 2020 02:12:14 -0500
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx79PGAqFfIKEEAA--.12977S6;
-        Tue, 03 Nov 2020 15:12:10 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx79PGAqFfIKEEAA--.12977S4;
+        Tue, 03 Nov 2020 15:12:07 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Huacai Chen <chenhc@lemote.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Lu Zeng <zenglu@loongson.cn>,
-        Jianmin Lv <lvjianmin@loongson.cn>
-Subject: [PATCH v3 4/6] MIPS: Loongson64: Add Mail_Send support for 3A4000+ CPU
-Date:   Tue,  3 Nov 2020 15:12:03 +0800
-Message-Id: <1604387525-23400-5-git-send-email-yangtiezhu@loongson.cn>
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v3 2/6] MIPS: Loongson64: Set the field ELPA of CP0_PAGEGRAIN only once
+Date:   Tue,  3 Nov 2020 15:12:01 +0800
+Message-Id: <1604387525-23400-3-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
 In-Reply-To: <1604387525-23400-1-git-send-email-yangtiezhu@loongson.cn>
 References: <1604387525-23400-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx79PGAqFfIKEEAA--.12977S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxKry8ZFy5uw4DXr4xWr18Grg_yoW3AFW8pF
-        ZIkw15GFWrta48u398GFyfXr1rGw1DWa9rtF47tFWjgFs8A3ZrWF97G3WUAw1DCa95XF1f
-        Zr1vkFWUKanrCa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUm014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr
-        1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE
-        3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
-        x0cI8IcVAFwI0_JrI_JrylYx0Ec7CjxVAajcxG14v26r1j6r4UMcIj6I8E87Iv67AKxVW8
-        JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5c
-        I20VAGYxC7MxkIecxEwVAFwVW8CwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
-        JVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
-        kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY
-        6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
-        vEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVj
-        vjDU0xZFpf9x0JUasjbUUUUU=
+X-CM-TRANSID: AQAAf9Dx79PGAqFfIKEEAA--.12977S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7KryxCw4fCr17tF18WF17Jrb_yoW8XF1Dp3
+        yfCrZIkw4jq345uF1rta4UZr18GFZYgan7Z39rK3s5Xas8C3s2qF1xuFy8Za45JrW8ta13
+        Xr4FqFWjga18Aa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUPC14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84
+        ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
+        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+        IY67AKxVWUGVWUXwAv7VCY1x0262k0Y48FwI0_Jr0_Gr1lYx0Ex4A2jsIE14v26r4j6F4U
+        McvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I64
+        8v4I1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4U
+        MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67
+        AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z2
+        80aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI
+        43ZEXa7sRRRwZ7UUUUU==
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Loongson 3A4000+ CPU has per-core Mail_Send register to send mail,
-there is no need to maintain register address of each core and node,
-just simply specify cpu number.
+The field ELPA of CP0_PAGEGRAIN register is set at the beginning
+of the kernel entry point in kernel-entry-init.h, no need to set
+it again in numa.c, we can remove enable_lpa() and only print the
+related information.
 
-Signed-off-by: Lu Zeng <zenglu@loongson.cn>
-Signed-off-by: Jianmin Lv <lvjianmin@loongson.cn>
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
 
-v2: Add some callbacks in csr_ipi_probe()
+v2: No changes
 v3: No changes
 
- .../include/asm/mach-loongson64/loongson_regs.h    |  10 ++
- arch/mips/loongson64/smp.c                         | 120 +++++++++++++++++----
- 2 files changed, 107 insertions(+), 23 deletions(-)
+ arch/mips/loongson64/numa.c | 17 ++---------------
+ 1 file changed, 2 insertions(+), 15 deletions(-)
 
-diff --git a/arch/mips/include/asm/mach-loongson64/loongson_regs.h b/arch/mips/include/asm/mach-loongson64/loongson_regs.h
-index 83dbb9f..1659935 100644
---- a/arch/mips/include/asm/mach-loongson64/loongson_regs.h
-+++ b/arch/mips/include/asm/mach-loongson64/loongson_regs.h
-@@ -227,6 +227,16 @@ static inline void csr_writeq(u64 val, u32 reg)
- #define CSR_IPI_SEND_CPU_SHIFT	16
- #define CSR_IPI_SEND_BLOCK	BIT(31)
+diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
+index c7e3cced..509b360 100644
+--- a/arch/mips/loongson64/numa.c
++++ b/arch/mips/loongson64/numa.c
+@@ -35,20 +35,6 @@ EXPORT_SYMBOL(__node_data);
+ cpumask_t __node_cpumask[MAX_NUMNODES];
+ EXPORT_SYMBOL(__node_cpumask);
  
-+#define LOONGSON_CSR_MAIL_BUF0		0x1020
-+#define LOONGSON_CSR_MAIL_SEND		0x1048
-+#define CSR_MAIL_SEND_BLOCK		BIT_ULL(31)
-+#define CSR_MAIL_SEND_BOX_LOW(box)	(box << 1)
-+#define CSR_MAIL_SEND_BOX_HIGH(box)	((box << 1) + 1)
-+#define CSR_MAIL_SEND_BOX_SHIFT		2
-+#define CSR_MAIL_SEND_CPU_SHIFT		16
-+#define CSR_MAIL_SEND_BUF_SHIFT		32
-+#define CSR_MAIL_SEND_H32_MASK		0xFFFFFFFF00000000ULL
-+
- static inline u64 drdtime(void)
- {
- 	int rID = 0;
-diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
-index 7d58853..736e98d 100644
---- a/arch/mips/loongson64/smp.c
-+++ b/arch/mips/loongson64/smp.c
-@@ -53,6 +53,29 @@ static uint32_t core0_c0count[NR_CPUS];
- 
- u32 (*ipi_read_clear)(int cpu);
- void (*ipi_write_action)(int cpu, u32 action);
-+void (*ipi_write_enable)(int cpu);
-+void (*ipi_clear_buf)(int cpu);
-+void (*ipi_write_buf)(int cpu, struct task_struct *idle);
-+
-+/* send mail via Mail_Send register for 3A4000+ CPU */
-+static void csr_mail_send(uint64_t data, int cpu, int mailbox)
-+{
-+	uint64_t val;
-+
-+	/* send high 32 bits */
-+	val = CSR_MAIL_SEND_BLOCK;
-+	val |= (CSR_MAIL_SEND_BOX_HIGH(mailbox) << CSR_MAIL_SEND_BOX_SHIFT);
-+	val |= (cpu << CSR_MAIL_SEND_CPU_SHIFT);
-+	val |= (data & CSR_MAIL_SEND_H32_MASK);
-+	csr_writeq(val, LOONGSON_CSR_MAIL_SEND);
-+
-+	/* send low 32 bits */
-+	val = CSR_MAIL_SEND_BLOCK;
-+	val |= (CSR_MAIL_SEND_BOX_LOW(mailbox) << CSR_MAIL_SEND_BOX_SHIFT);
-+	val |= (cpu << CSR_MAIL_SEND_CPU_SHIFT);
-+	val |= (data << CSR_MAIL_SEND_BUF_SHIFT);
-+	csr_writeq(val, LOONGSON_CSR_MAIL_SEND);
-+};
- 
- static u32 csr_ipi_read_clear(int cpu)
- {
-@@ -79,6 +102,35 @@ static void csr_ipi_write_action(int cpu, u32 action)
- 	}
- }
- 
-+static void csr_ipi_write_enable(int cpu)
-+{
-+	csr_writel(0xffffffff, LOONGSON_CSR_IPI_EN);
-+}
-+
-+static void csr_ipi_clear_buf(int cpu)
-+{
-+	csr_writeq(0, LOONGSON_CSR_MAIL_BUF0);
-+}
-+
-+static void csr_ipi_write_buf(int cpu, struct task_struct *idle)
-+{
-+	unsigned long startargs[4];
-+
-+	/* startargs[] are initial PC, SP and GP for secondary CPU */
-+	startargs[0] = (unsigned long)&smp_bootstrap;
-+	startargs[1] = (unsigned long)__KSTK_TOS(idle);
-+	startargs[2] = (unsigned long)task_thread_info(idle);
-+	startargs[3] = 0;
-+
-+	pr_debug("CPU#%d, func_pc=%lx, sp=%lx, gp=%lx\n",
-+		cpu, startargs[0], startargs[1], startargs[2]);
-+
-+	csr_mail_send(startargs[3], cpu_logical_map(cpu), 3);
-+	csr_mail_send(startargs[2], cpu_logical_map(cpu), 2);
-+	csr_mail_send(startargs[1], cpu_logical_map(cpu), 1);
-+	csr_mail_send(startargs[0], cpu_logical_map(cpu), 0);
-+}
-+
- static u32 legacy_ipi_read_clear(int cpu)
- {
- 	u32 action;
-@@ -96,14 +148,53 @@ static void legacy_ipi_write_action(int cpu, u32 action)
- 	loongson3_ipi_write32((u32)action, ipi_set0_regs[cpu]);
- }
- 
-+static void legacy_ipi_write_enable(int cpu)
-+{
-+	loongson3_ipi_write32(0xffffffff, ipi_en0_regs[cpu_logical_map(cpu)]);
-+}
-+
-+static void legacy_ipi_clear_buf(int cpu)
-+{
-+	loongson3_ipi_write64(0, ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x0);
-+}
-+
-+static void legacy_ipi_write_buf(int cpu, struct task_struct *idle)
-+{
-+	unsigned long startargs[4];
-+
-+	/* startargs[] are initial PC, SP and GP for secondary CPU */
-+	startargs[0] = (unsigned long)&smp_bootstrap;
-+	startargs[1] = (unsigned long)__KSTK_TOS(idle);
-+	startargs[2] = (unsigned long)task_thread_info(idle);
-+	startargs[3] = 0;
-+
-+	pr_debug("CPU#%d, func_pc=%lx, sp=%lx, gp=%lx\n",
-+			cpu, startargs[0], startargs[1], startargs[2]);
-+
-+	loongson3_ipi_write64(startargs[3],
-+			ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x18);
-+	loongson3_ipi_write64(startargs[2],
-+			ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x10);
-+	loongson3_ipi_write64(startargs[1],
-+			ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x8);
-+	loongson3_ipi_write64(startargs[0],
-+			ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x0);
-+}
-+
- static void csr_ipi_probe(void)
- {
- 	if (cpu_has_csr() && csr_readl(LOONGSON_CSR_FEATURES) & LOONGSON_CSRF_IPI) {
- 		ipi_read_clear = csr_ipi_read_clear;
- 		ipi_write_action = csr_ipi_write_action;
-+		ipi_write_enable = csr_ipi_write_enable;
-+		ipi_clear_buf = csr_ipi_clear_buf;
-+		ipi_write_buf = csr_ipi_write_buf;
- 	} else {
- 		ipi_read_clear = legacy_ipi_read_clear;
- 		ipi_write_action = legacy_ipi_write_action;
-+		ipi_write_enable = legacy_ipi_write_enable;
-+		ipi_clear_buf = legacy_ipi_clear_buf;
-+		ipi_write_buf = legacy_ipi_write_buf;
- 	}
- }
- 
-@@ -347,8 +438,7 @@ static void loongson3_init_secondary(void)
- 
- 	/* Set interrupt mask, but don't enable */
- 	change_c0_status(ST0_IM, imask);
+-static void enable_lpa(void)
+-{
+-	unsigned long value;
 -
--	loongson3_ipi_write32(0xffffffff, ipi_en0_regs[cpu_logical_map(cpu)]);
-+	ipi_write_enable(cpu);
- 
- 	per_cpu(cpu_state, cpu) = CPU_ONLINE;
- 	cpu_set_core(&cpu_data[cpu],
-@@ -380,8 +470,8 @@ static void loongson3_smp_finish(void)
- 
- 	write_c0_compare(read_c0_count() + mips_hpt_frequency/HZ);
- 	local_irq_enable();
--	loongson3_ipi_write64(0,
--			ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x0);
-+	ipi_clear_buf(cpu);
-+
- 	pr_info("CPU#%d finished, CP0_ST=%x\n",
- 			smp_processor_id(), read_c0_status());
- }
-@@ -419,7 +509,8 @@ static void __init loongson3_smp_setup(void)
- 	ipi_status0_regs_init();
- 	ipi_en0_regs_init();
- 	ipi_mailbox_buf_init();
--	loongson3_ipi_write32(0xffffffff, ipi_en0_regs[cpu_logical_map(0)]);
-+	ipi_write_enable(0);
-+
- 	cpu_set_core(&cpu_data[0],
- 		     cpu_logical_map(0) % loongson_sysconf.cores_per_package);
- 	cpu_data[0].package = cpu_logical_map(0) / loongson_sysconf.cores_per_package;
-@@ -439,27 +530,10 @@ static void __init loongson3_prepare_cpus(unsigned int max_cpus)
-  */
- static int loongson3_boot_secondary(int cpu, struct task_struct *idle)
+-	value = __read_32bit_c0_register($16, 3);
+-	pr_info("CP0_Config3: CP0 16.3 (0x%lx)\n", value);
+-
+-	value = __read_32bit_c0_register($5, 1);
+-	value |= 0x20000000;
+-	__write_32bit_c0_register($5, 1, value);
+-	value = __read_32bit_c0_register($5, 1);
+-	pr_info("CP0_PageGrain: CP0 5.1 (0x%lx)\n", value);
+-}
+-
+ static void cpu_node_probe(void)
  {
--	unsigned long startargs[4];
--
- 	pr_info("Booting CPU#%d...\n", cpu);
+ 	int i;
+@@ -240,7 +226,8 @@ EXPORT_SYMBOL(pcibus_to_node);
  
--	/* startargs[] are initial PC, SP and GP for secondary CPU */
--	startargs[0] = (unsigned long)&smp_bootstrap;
--	startargs[1] = (unsigned long)__KSTK_TOS(idle);
--	startargs[2] = (unsigned long)task_thread_info(idle);
--	startargs[3] = 0;
--
--	pr_debug("CPU#%d, func_pc=%lx, sp=%lx, gp=%lx\n",
--			cpu, startargs[0], startargs[1], startargs[2]);
-+	ipi_write_buf(cpu, idle);
- 
--	loongson3_ipi_write64(startargs[3],
--			ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x18);
--	loongson3_ipi_write64(startargs[2],
--			ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x10);
--	loongson3_ipi_write64(startargs[1],
--			ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x8);
--	loongson3_ipi_write64(startargs[0],
--			ipi_mailbox_buf[cpu_logical_map(cpu)] + 0x0);
- 	return 0;
+ void __init prom_init_numa_memory(void)
+ {
+-	enable_lpa();
++	pr_info("CP0_Config3: CP0 16.3 (0x%x)\n", read_c0_config3());
++	pr_info("CP0_PageGrain: CP0 5.1 (0x%x)\n", read_c0_pagegrain());
+ 	prom_meminit();
  }
- 
+ EXPORT_SYMBOL(prom_init_numa_memory);
 -- 
 2.1.0
 

@@ -7,42 +7,42 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F42AC8262E
-	for <linux-mips@archiver.kernel.org>; Tue,  3 Nov 2020 10:36:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9EE4C82621
+	for <linux-mips@archiver.kernel.org>; Tue,  3 Nov 2020 10:36:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D0FAE2242A
-	for <linux-mips@archiver.kernel.org>; Tue,  3 Nov 2020 10:36:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6F99621D40
+	for <linux-mips@archiver.kernel.org>; Tue,  3 Nov 2020 10:36:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZQhpZJ3+";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="+Tr1EUdB"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Xln5HZn6";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Op5J+Pel"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728379AbgKCKgK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 3 Nov 2020 05:36:10 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:37854 "EHLO
+        id S1728382AbgKCKdm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 3 Nov 2020 05:33:42 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:38330 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728408AbgKCKdr (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 3 Nov 2020 05:33:47 -0500
-Message-Id: <20201103095858.311016780@linutronix.de>
+        with ESMTP id S1728251AbgKCKdm (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 3 Nov 2020 05:33:42 -0500
+Message-Id: <20201103095857.777445435@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604399624;
+        s=2020; t=1604399617;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Cjsm5AI/c+3evBtpF2KjlIuXYCPOCd9e8tBiUfMlUaw=;
-        b=ZQhpZJ3+kLwAZrJXydOt+PuVIPxDpjWDA6FzsVyeE1usg/G1RiAciJ+g/1ozN8xiuc0c17
-        RaNnUX66QFZ6g+/Md+sO3vjst9IGcsoVU4cMn4smorjv2YRBImN1+rgl0ttOs2hSC2+XZZ
-        G9avgq7GfrZw2d+qivd3YkgN3zLDG+gLAdqZlsS3S5CYxubpcYtuSYKuMNeCyyLY6xUfaB
-        8CXdUxNwL64hRfu9SIduSwb1Bz7FjieyT0n/nq9XHMdRdrdAtLLKERmntXNNZ9KSP0MqyP
-        J/oz0kwJPhhq7GeT3Gvrytt4up4s+0ead/gIb6+lkesJN+z2l3Xs3f2lPm0k+w==
+        bh=OwqTXJYTSkJf11oVJT8rHfy9s8GkPXwtX0ujTyFp5nU=;
+        b=Xln5HZn6WiXk1iXwQx35CMqXpN0ega4Az20lsCbmSGSXI26/Fl4gJa9xmXwTQavzmvNleI
+        TlQkRgWyP/Xsw0IxYAk8f4YEWAeJBAfdRqdyvdWLphF7ACH298AZ3ccs0e2rDRpfx1cuEk
+        /PHRfxAqo/yYBb1EQQAScNyE8zlEKNg999lO8et89sf1RGJk1mv7CxKP/LJauNAhVcAnJP
+        YCVTX7EWKkvR85OzOCD9uVCD9n73T9F2oGNGVs4Dj+0I8EtOXhqjCY1I6bTdMxEqcIqPji
+        B5Ncy+UZUQHv5vZhbO8+RRKgOdQlUcXsv3QfEZT0N1e1y4g8PnWZ67FP11POiw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604399624;
+        s=2020e; t=1604399617;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Cjsm5AI/c+3evBtpF2KjlIuXYCPOCd9e8tBiUfMlUaw=;
-        b=+Tr1EUdBI2nqN/XcIr0/XkDukOyzZt/P5QZvNyJzjJ2uWVy7DSbkYWtDbt8rT4wXfOusfx
-        pgPkyLWSr37o52Bw==
-Date:   Tue, 03 Nov 2020 10:27:29 +0100
+        bh=OwqTXJYTSkJf11oVJT8rHfy9s8GkPXwtX0ujTyFp5nU=;
+        b=Op5J+PelB6yKOKOw0lu8STacsmNPD5NuEzqMyVpGKdPGQ/mFYGdk+LiEOHwfA6Ti3tQ8x7
+        79CM+zHxeGoUmSCg==
+Date:   Tue, 03 Nov 2020 10:27:24 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
@@ -50,9 +50,7 @@ Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
         Paul McKenney <paulmck@kernel.org>,
         Christoph Hellwig <hch@lst.de>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
+        Michal Simek <monstr@monstr.eu>,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         Benjamin LaHaise <bcrl@kvack.org>,
@@ -64,7 +62,6 @@ Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
         Russell King <linux@armlinux.org.uk>,
         Arnd Bergmann <arnd@arndb.de>,
         linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        Michal Simek <monstr@monstr.eu>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
         Greentime Hu <green.hu@gmail.com>,
@@ -74,7 +71,9 @@ Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
         Paul Mackerras <paulus@samba.org>,
         linuxppc-dev@lists.ozlabs.org,
         "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        sparclinux@vger.kernel.org, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org, Ingo Molnar <mingo@kernel.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
@@ -96,7 +95,7 @@ Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
         Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
         Rodrigo Vivi <rodrigo.vivi@intel.com>,
         intel-gfx@lists.freedesktop.org
-Subject: [patch V3 17/37] xtensa/mm/highmem: Switch to generic kmap atomic
+Subject: [patch V3 12/37] microblaze/mm/highmem: Switch to generic kmap atomic
 References: <20201103092712.714480842@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -105,154 +104,179 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-No reason having the same code in every architecture
+No reason having the same code in every architecture.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: linux-xtensa@linux-xtensa.org
+Cc: Michal Simek <monstr@monstr.eu>
 ---
 V3: Remove the kmap types cruft
 ---
- arch/xtensa/Kconfig               |    1 
- arch/xtensa/include/asm/fixmap.h  |    4 +--
- arch/xtensa/include/asm/highmem.h |   12 ++++++++-
- arch/xtensa/mm/highmem.c          |   46 ++++----------------------------------
- 4 files changed, 18 insertions(+), 45 deletions(-)
+ arch/microblaze/Kconfig               |    1 
+ arch/microblaze/include/asm/fixmap.h  |    4 -
+ arch/microblaze/include/asm/highmem.h |    6 ++
+ arch/microblaze/mm/Makefile           |    1 
+ arch/microblaze/mm/highmem.c          |   78 ----------------------------------
+ arch/microblaze/mm/init.c             |    6 --
+ 6 files changed, 8 insertions(+), 88 deletions(-)
 
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -666,6 +666,7 @@ endchoice
+--- a/arch/microblaze/Kconfig
++++ b/arch/microblaze/Kconfig
+@@ -155,6 +155,7 @@ config XILINX_UNCACHED_SHADOW
  config HIGHMEM
- 	bool "High Memory Support"
+ 	bool "High memory support"
  	depends on MMU
 +	select KMAP_LOCAL
  	help
- 	  Linux can use the full amount of RAM in the system by
- 	  default. However, the default MMUv2 setup only maps the
---- a/arch/xtensa/include/asm/fixmap.h
-+++ b/arch/xtensa/include/asm/fixmap.h
-@@ -16,7 +16,7 @@
+ 	  The address space of Microblaze processors is only 4 Gigabytes large
+ 	  and it has to accommodate user address space, kernel address
+--- a/arch/microblaze/include/asm/fixmap.h
++++ b/arch/microblaze/include/asm/fixmap.h
+@@ -20,7 +20,7 @@
+ #include <asm/page.h>
  #ifdef CONFIG_HIGHMEM
  #include <linux/threads.h>
- #include <linux/pgtable.h>
 -#include <asm/kmap_types.h>
 +#include <asm/kmap_size.h>
  #endif
  
- /*
-@@ -39,7 +39,7 @@ enum fixed_addresses {
- 	/* reserved pte's for temporary kernel mappings */
- 	FIX_KMAP_BEGIN,
- 	FIX_KMAP_END = FIX_KMAP_BEGIN +
--		(KM_TYPE_NR * NR_CPUS * DCACHE_N_COLORS) - 1,
-+		(KM_MAX_IDX * NR_CPUS * DCACHE_N_COLORS) - 1,
+ #define FIXADDR_TOP	((unsigned long)(-PAGE_SIZE))
+@@ -47,7 +47,7 @@ enum fixed_addresses {
+ 	FIX_HOLE,
+ #ifdef CONFIG_HIGHMEM
+ 	FIX_KMAP_BEGIN,	/* reserved pte's for temporary kernel mappings */
+-	FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_TYPE_NR * num_possible_cpus()) - 1,
++	FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * num_possible_cpus()) - 1,
  #endif
  	__end_of_fixed_addresses
  };
---- a/arch/xtensa/include/asm/highmem.h
-+++ b/arch/xtensa/include/asm/highmem.h
-@@ -16,9 +16,8 @@
- #include <linux/pgtable.h>
- #include <asm/cacheflush.h>
+--- a/arch/microblaze/include/asm/highmem.h
++++ b/arch/microblaze/include/asm/highmem.h
+@@ -25,7 +25,6 @@
+ #include <linux/uaccess.h>
  #include <asm/fixmap.h>
--#include <asm/kmap_types.h>
  
--#define PKMAP_BASE		((FIXADDR_START - \
-+#define PKMAP_BASE		((FIXADDR_START -			\
- 				  (LAST_PKMAP + 1) * PAGE_SIZE) & PMD_MASK)
- #define LAST_PKMAP		(PTRS_PER_PTE * DCACHE_N_COLORS)
- #define LAST_PKMAP_MASK		(LAST_PKMAP - 1)
-@@ -68,6 +67,15 @@ static inline void flush_cache_kmaps(voi
- 	flush_cache_all();
- }
+-extern pte_t *kmap_pte;
+ extern pte_t *pkmap_page_table;
  
-+enum fixed_addresses kmap_local_map_idx(int type, unsigned long pfn);
-+#define arch_kmap_local_map_idx		kmap_local_map_idx
-+
-+enum fixed_addresses kmap_local_unmap_idx(int type, unsigned long addr);
-+#define arch_kmap_local_unmap_idx	kmap_local_unmap_idx
-+
+ /*
+@@ -52,6 +51,11 @@ extern pte_t *pkmap_page_table;
+ 
+ #define flush_cache_kmaps()	{ flush_icache(); flush_dcache(); }
+ 
++#define arch_kmap_local_post_map(vaddr, pteval)	\
++	local_flush_tlb_page(NULL, vaddr);
 +#define arch_kmap_local_post_unmap(vaddr)	\
-+	local_flush_tlb_kernel_range(vaddr, vaddr + PAGE_SIZE)
++	local_flush_tlb_page(NULL, vaddr);
 +
- void kmap_init(void);
+ #endif /* __KERNEL__ */
  
- #endif
---- a/arch/xtensa/mm/highmem.c
-+++ b/arch/xtensa/mm/highmem.c
-@@ -12,8 +12,6 @@
- #include <linux/highmem.h>
- #include <asm/tlbflush.h>
+ #endif /* _ASM_HIGHMEM_H */
+--- a/arch/microblaze/mm/Makefile
++++ b/arch/microblaze/mm/Makefile
+@@ -6,4 +6,3 @@
+ obj-y := consistent.o init.o
  
--static pte_t *kmap_pte;
+ obj-$(CONFIG_MMU) += pgtable.o mmu_context.o fault.o
+-obj-$(CONFIG_HIGHMEM) += highmem.o
+--- a/arch/microblaze/mm/highmem.c
++++ /dev/null
+@@ -1,78 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- * highmem.c: virtual kernel memory mappings for high memory
+- *
+- * PowerPC version, stolen from the i386 version.
+- *
+- * Used in CONFIG_HIGHMEM systems for memory pages which
+- * are not addressable by direct kernel virtual addresses.
+- *
+- * Copyright (C) 1999 Gerhard Wichert, Siemens AG
+- *		      Gerhard.Wichert@pdb.siemens.de
+- *
+- *
+- * Redesigned the x86 32-bit VM architecture to deal with
+- * up to 16 Terrabyte physical memory. With current x86 CPUs
+- * we now support up to 64 Gigabytes physical RAM.
+- *
+- * Copyright (C) 1999 Ingo Molnar <mingo@redhat.com>
+- *
+- * Reworked for PowerPC by various contributors. Moved from
+- * highmem.h by Benjamin Herrenschmidt (c) 2009 IBM Corp.
+- */
 -
- #if DCACHE_WAY_SIZE > PAGE_SIZE
- unsigned int last_pkmap_nr_arr[DCACHE_N_COLORS];
- wait_queue_head_t pkmap_map_wait_arr[DCACHE_N_COLORS];
-@@ -33,59 +31,25 @@ static inline void kmap_waitqueues_init(
- 
- static inline enum fixed_addresses kmap_idx(int type, unsigned long color)
- {
--	return (type + KM_TYPE_NR * smp_processor_id()) * DCACHE_N_COLORS +
-+	return (type + KM_MAX_IDX * smp_processor_id()) * DCACHE_N_COLORS +
- 		color;
- }
- 
+-#include <linux/export.h>
+-#include <linux/highmem.h>
+-
+-/*
+- * The use of kmap_atomic/kunmap_atomic is discouraged - kmap/kunmap
+- * gives a more generic (and caching) interface. But kmap_atomic can
+- * be used in IRQ contexts, so in some (very limited) cases we need
+- * it.
+- */
+-#include <asm/tlbflush.h>
+-
 -void *kmap_atomic_high_prot(struct page *page, pgprot_t prot)
-+enum fixed_addresses kmap_local_map_idx(int type, unsigned long pfn)
- {
--	enum fixed_addresses idx;
--	unsigned long vaddr;
+-{
 -
--	idx = kmap_idx(kmap_atomic_idx_push(),
--		       DCACHE_ALIAS(page_to_phys(page)));
+-	unsigned long vaddr;
+-	int idx, type;
+-
+-	type = kmap_atomic_idx_push();
+-	idx = type + KM_TYPE_NR*smp_processor_id();
 -	vaddr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
 -#ifdef CONFIG_DEBUG_HIGHMEM
--	BUG_ON(!pte_none(*(kmap_pte + idx)));
+-	BUG_ON(!pte_none(*(kmap_pte-idx)));
 -#endif
--	set_pte(kmap_pte + idx, mk_pte(page, prot));
+-	set_pte_at(&init_mm, vaddr, kmap_pte-idx, mk_pte(page, prot));
+-	local_flush_tlb_page(NULL, vaddr);
 -
--	return (void *)vaddr;
-+	return kmap_idx(type, DCACHE_ALIAS(pfn << PAGE_SHIFT));
- }
+-	return (void *) vaddr;
+-}
 -EXPORT_SYMBOL(kmap_atomic_high_prot);
- 
+-
 -void kunmap_atomic_high(void *kvaddr)
-+enum fixed_addresses kmap_local_unmap_idx(int type, unsigned long addr)
- {
--	if (kvaddr >= (void *)FIXADDR_START &&
--	    kvaddr < (void *)FIXADDR_TOP) {
--		int idx = kmap_idx(kmap_atomic_idx(),
--				   DCACHE_ALIAS((unsigned long)kvaddr));
+-{
+-	unsigned long vaddr = (unsigned long) kvaddr & PAGE_MASK;
+-	int type;
+-	unsigned int idx;
 -
--		/*
--		 * Force other mappings to Oops if they'll try to access this
--		 * pte without first remap it.  Keeping stale mappings around
--		 * is a bad idea also, in case the page changes cacheability
--		 * attributes or becomes a protected page in a hypervisor.
--		 */
--		pte_clear(&init_mm, kvaddr, kmap_pte + idx);
--		local_flush_tlb_kernel_range((unsigned long)kvaddr,
--					     (unsigned long)kvaddr + PAGE_SIZE);
+-	if (vaddr < __fix_to_virt(FIX_KMAP_END))
+-		return;
 -
--		kmap_atomic_idx_pop();
--	}
-+	return kmap_idx(type, DCACHE_ALIAS(addr));
- }
+-	type = kmap_atomic_idx();
+-
+-	idx = type + KM_TYPE_NR * smp_processor_id();
+-#ifdef CONFIG_DEBUG_HIGHMEM
+-	BUG_ON(vaddr != __fix_to_virt(FIX_KMAP_BEGIN + idx));
+-#endif
+-	/*
+-	 * force other mappings to Oops if they'll try to access
+-	 * this pte without first remap it
+-	 */
+-	pte_clear(&init_mm, vaddr, kmap_pte-idx);
+-	local_flush_tlb_page(NULL, vaddr);
+-
+-	kmap_atomic_idx_pop();
+-}
 -EXPORT_SYMBOL(kunmap_atomic_high);
+--- a/arch/microblaze/mm/init.c
++++ b/arch/microblaze/mm/init.c
+@@ -49,17 +49,11 @@ unsigned long lowmem_size;
+ EXPORT_SYMBOL(min_low_pfn);
+ EXPORT_SYMBOL(max_low_pfn);
  
- void __init kmap_init(void)
- {
--	unsigned long kmap_vstart;
+-#ifdef CONFIG_HIGHMEM
+-pte_t *kmap_pte;
+-EXPORT_SYMBOL(kmap_pte);
 -
- 	/* Check if this memory layout is broken because PKMAP overlaps
- 	 * page table.
- 	 */
- 	BUILD_BUG_ON(PKMAP_BASE < TLBTEMP_BASE_1 + TLBTEMP_SIZE);
--	/* cache the first kmap pte */
--	kmap_vstart = __fix_to_virt(FIX_KMAP_BEGIN);
--	kmap_pte = virt_to_kpte(kmap_vstart);
- 	kmap_waitqueues_init();
+ static void __init highmem_init(void)
+ {
+ 	pr_debug("%x\n", (u32)PKMAP_BASE);
+ 	map_page(PKMAP_BASE, 0, 0);	/* XXX gross */
+ 	pkmap_page_table = virt_to_kpte(PKMAP_BASE);
+-
+-	kmap_pte = virt_to_kpte(__fix_to_virt(FIX_KMAP_BEGIN));
  }
+ 
+ static void highmem_setup(void)
 

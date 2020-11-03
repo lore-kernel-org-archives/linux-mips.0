@@ -7,42 +7,42 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9037BC82604
-	for <linux-mips@archiver.kernel.org>; Tue,  3 Nov 2020 10:35:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 720DCC64E8A
+	for <linux-mips@archiver.kernel.org>; Tue,  3 Nov 2020 10:35:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3D7D521D40
-	for <linux-mips@archiver.kernel.org>; Tue,  3 Nov 2020 10:35:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1819F2242C
+	for <linux-mips@archiver.kernel.org>; Tue,  3 Nov 2020 10:35:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UCiLeToK";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iNcZKx8F"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Jq8gfXxC";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hHhfjzsH"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728717AbgKCKfS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 3 Nov 2020 05:35:18 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:40032 "EHLO
+        id S1728518AbgKCKeF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 3 Nov 2020 05:34:05 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:39610 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728416AbgKCKeG (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 3 Nov 2020 05:34:06 -0500
-Message-Id: <20201103095859.538827102@linutronix.de>
+        with ESMTP id S1728479AbgKCKeB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 3 Nov 2020 05:34:01 -0500
+Message-Id: <20201103095859.132846644@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604399639;
+        s=2020; t=1604399634;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=37l2/9hMoX995irJwwZT0VNkjmk/OwZo72GhT72QTX4=;
-        b=UCiLeToK4AIC+9Dmx7LG5rV2mjuvYVd6Coif2Sdjhi7Si2K86UL165usKvCu+1M57a5ZTs
-        3lGdAzYJonKcTuvyMgrOXNx+UrIY8LVcTVNso2JLtpbkE1oygEe/wl748JnAW6AS6EsTrD
-        c2VWZi0Trd4Jp1S58g19SzXtzA+u8eA2qRCth6y4qBL25KfIk14Y8/pIC7Pk9xx9opLe+Y
-        fYTupCtZR4FQC2/b1qBabqi8Jfeh2ZKqUrq+V0zmNc17uiUhxxjlvxwBR152OCIcLA02mF
-        vb+4tkvTlRO1TXdeUxGxjDkLW4Yer0R+EYHQyA+pAWiyVIPp/wbrw75o+T0ZJw==
+        bh=KHv8YrvJ4tkhO+6KhBO6Ws+mj44XOrWxRR2MIQ6sqkY=;
+        b=Jq8gfXxChBjZhD3AOqdMUe01tZh/sJo2B79/wRerMfFXNzYc3FxlQqqhhWoKEyzEnavpy/
+        c4I7i4J0s2yg5HNqyEFRyaIIbznGLkA5r+MV4j55el4mWnym900Xp7OjCTsnXkI0TsIxEg
+        EV0trFCr23UgNTh5IjbkxjnrZQJOsGoLS1AFtDB3rcgXWHs8wC80JGgogftibxEdTV2en9
+        X0dOUqavXqBu7ZXvusmu+7uRS8uvIrOdGhzOc55o28oi/z4lvDPSQnWVXFWgcnZCoxznDK
+        +F1J4liAs4f0IbdUne8kTrdI0J0UDDt2IlHgcmZmybJVT+/K5kkkviDLwQCeWQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604399639;
+        s=2020e; t=1604399634;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=37l2/9hMoX995irJwwZT0VNkjmk/OwZo72GhT72QTX4=;
-        b=iNcZKx8Fg9QYlTcIp7Z3u6IBgHA5T+EwXNMLuSSTvrJb/3r4DH72OAUwbFyp58bawCPYfQ
-        dJ5wikkjaG3JOhAw==
-Date:   Tue, 03 Nov 2020 10:27:41 +0100
+        bh=KHv8YrvJ4tkhO+6KhBO6Ws+mj44XOrWxRR2MIQ6sqkY=;
+        b=hHhfjzsH/LuWLCxgzabqCGZa+/JVJg4HWhAgqhFWQ0YxJy2t0XpS0Q2KnfH0QQr7mvyj21
+        yS0QhwZxRNWSG3CA==
+Date:   Tue, 03 Nov 2020 10:27:37 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
@@ -50,8 +50,6 @@ Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
         Paul McKenney <paulmck@kernel.org>,
         Christoph Hellwig <hch@lst.de>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         Benjamin LaHaise <bcrl@kvack.org>,
@@ -59,8 +57,11 @@ Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
         Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
         x86@kernel.org, Vineet Gupta <vgupta@synopsys.com>,
-        linux-snps-arc@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>,
-        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        linux-snps-arc@lists.infradead.org,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        Michal Simek <monstr@monstr.eu>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
         Greentime Hu <green.hu@gmail.com>,
@@ -94,7 +95,7 @@ Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
         Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
         Rodrigo Vivi <rodrigo.vivi@intel.com>,
         intel-gfx@lists.freedesktop.org
-Subject: [patch V3 29/37] ARM: mm: Replace kmap_atomic_pfn()
+Subject: [patch V3 25/37] mm/highmem: Provide kmap_local*
 References: <20201103092712.714480842@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -103,63 +104,200 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There is no requirement to disable pagefaults and preemption for these
-cache management mappings.
+Now that the kmap atomic index is stored in task struct provide a
+preemptible variant. On context switch the maps of an outgoing task are
+removed and the map of the incoming task are restored. That's obviously
+slow, but highmem is slow anyway.
 
-Replace kmap_atomic_pfn() with kmap_local_pfn(). This allows to remove
-kmap_atomic_pfn() in the next step.
+The kmap_local.*() functions can be invoked from both preemptible and
+atomic context. kmap local sections disable migration to keep the resulting
+virtual mapping address correct, but disable neither pagefaults nor
+preemption.
+
+A wholesale conversion of kmap_atomic to be fully preemptible is not
+possible because some of the usage sites might rely on the preemption
+disable for serialization or on the implicit pagefault disable. Needs to be
+done on a case by case basis.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: linux-arm-kernel@lists.infradead.org
 ---
-V3: New patch
+V3: Move migrate disable into the actual highmem mapping code so it only
+    affects real highmem mappings.
+   
+V2: Make it more consistent and add commentry
 ---
- arch/arm/mm/cache-feroceon-l2.c |    6 +++---
- arch/arm/mm/cache-xsc3l2.c      |    4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ include/linux/highmem-internal.h |   48 +++++++++++++++++++++++++++++++++++++++
+ include/linux/highmem.h          |   43 +++++++++++++++++++++-------------
+ mm/highmem.c                     |    6 ++++
+ 3 files changed, 81 insertions(+), 16 deletions(-)
 
---- a/arch/arm/mm/cache-feroceon-l2.c
-+++ b/arch/arm/mm/cache-feroceon-l2.c
-@@ -49,9 +49,9 @@ static inline unsigned long l2_get_va(un
- 	 * we simply install a virtual mapping for it only for the
- 	 * TLB lookup to occur, hence no need to flush the untouched
- 	 * memory mapping afterwards (note: a cache flush may happen
--	 * in some circumstances depending on the path taken in kunmap_atomic).
-+	 * in some circumstances depending on the path taken in kunmap_local).
- 	 */
--	void *vaddr = kmap_atomic_pfn(paddr >> PAGE_SHIFT);
-+	void *vaddr = kmap_local_pfn(paddr >> PAGE_SHIFT);
- 	return (unsigned long)vaddr + (paddr & ~PAGE_MASK);
- #else
- 	return __phys_to_virt(paddr);
-@@ -61,7 +61,7 @@ static inline unsigned long l2_get_va(un
- static inline void l2_put_va(unsigned long vaddr)
+--- a/include/linux/highmem-internal.h
++++ b/include/linux/highmem-internal.h
+@@ -69,6 +69,26 @@ static inline void kmap_flush_unused(voi
+ 	__kmap_flush_unused();
+ }
+ 
++static inline void *kmap_local_page(struct page *page)
++{
++	return __kmap_local_page_prot(page, kmap_prot);
++}
++
++static inline void *kmap_local_page_prot(struct page *page, pgprot_t prot)
++{
++	return __kmap_local_page_prot(page, prot);
++}
++
++static inline void *kmap_local_pfn(unsigned long pfn)
++{
++	return __kmap_local_pfn_prot(pfn, kmap_prot);
++}
++
++static inline void __kunmap_local(void *vaddr)
++{
++	kunmap_local_indexed(vaddr);
++}
++
+ static inline void *kmap_atomic_prot(struct page *page, pgprot_t prot)
  {
- #ifdef CONFIG_HIGHMEM
--	kunmap_atomic((void *)vaddr);
-+	kunmap_local((void *)vaddr);
+ 	preempt_disable();
+@@ -141,6 +161,28 @@ static inline void kunmap(struct page *p
  #endif
  }
  
---- a/arch/arm/mm/cache-xsc3l2.c
-+++ b/arch/arm/mm/cache-xsc3l2.c
-@@ -59,7 +59,7 @@ static inline void l2_unmap_va(unsigned
++static inline void *kmap_local_page(struct page *page)
++{
++	return page_address(page);
++}
++
++static inline void *kmap_local_page_prot(struct page *page, pgprot_t prot)
++{
++	return kmap_local_page(page);
++}
++
++static inline void *kmap_local_pfn(unsigned long pfn)
++{
++	return kmap_local_page(pfn_to_page(pfn));
++}
++
++static inline void __kunmap_local(void *addr)
++{
++#ifdef ARCH_HAS_FLUSH_ON_KUNMAP
++	kunmap_flush_on_unmap(addr);
++#endif
++}
++
+ static inline void *kmap_atomic(struct page *page)
  {
- #ifdef CONFIG_HIGHMEM
- 	if (va != -1)
--		kunmap_atomic((void *)va);
-+		kunmap_local((void *)va);
- #endif
- }
+ 	preempt_disable();
+@@ -182,4 +224,10 @@ do {								\
+ 	__kunmap_atomic(__addr);				\
+ } while (0)
  
-@@ -75,7 +75,7 @@ static inline unsigned long l2_map_va(un
- 		 * in place for it.
- 		 */
- 		l2_unmap_va(prev_va);
--		va = (unsigned long)kmap_atomic_pfn(pa >> PAGE_SHIFT);
-+		va = (unsigned long)kmap_local_pfn(pa >> PAGE_SHIFT);
- 	}
- 	return va + (pa_offset >> (32 - PAGE_SHIFT));
- #else
++#define kunmap_local(__addr)					\
++do {								\
++	BUILD_BUG_ON(__same_type((__addr), struct page *));	\
++	__kunmap_local(__addr);					\
++} while (0)
++
+ #endif
+--- a/include/linux/highmem.h
++++ b/include/linux/highmem.h
+@@ -60,24 +60,22 @@ static inline struct page *kmap_to_page(
+ static inline void kmap_flush_unused(void);
+ 
+ /**
+- * kmap_atomic - Atomically map a page for temporary usage
++ * kmap_local_page - Map a page for temporary usage
+  * @page:	Pointer to the page to be mapped
+  *
+  * Returns: The virtual address of the mapping
+  *
+- * Side effect: On return pagefaults and preemption are disabled.
+- *
+  * Can be invoked from any context.
+  *
+  * Requires careful handling when nesting multiple mappings because the map
+  * management is stack based. The unmap has to be in the reverse order of
+  * the map operation:
+  *
+- * addr1 = kmap_atomic(page1);
+- * addr2 = kmap_atomic(page2);
++ * addr1 = kmap_local_page(page1);
++ * addr2 = kmap_local_page(page2);
+  * ...
+- * kunmap_atomic(addr2);
+- * kunmap_atomic(addr1);
++ * kunmap_local(addr2);
++ * kunmap_local(addr1);
+  *
+  * Unmapping addr1 before addr2 is invalid and causes malfunction.
+  *
+@@ -88,10 +86,26 @@ static inline void kmap_flush_unused(voi
+  * virtual address of the direct mapping. Only real highmem pages are
+  * temporarily mapped.
+  *
+- * While it is significantly faster than kmap() it comes with restrictions
+- * about the pointer validity and the side effects of disabling page faults
+- * and preemption. Use it only when absolutely necessary, e.g. from non
+- * preemptible contexts.
++ * While it is significantly faster than kmap() for the higmem case it
++ * comes with restrictions about the pointer validity. Only use when really
++ * necessary.
++ *
++ * On HIGHMEM enabled systems mapping a highmem page has the side effect of
++ * disabling migration in order to keep the virtual address stable across
++ * preemption. No caller of kmap_local_page() can rely on this side effect.
++ */
++static inline void *kmap_local_page(struct page *page);
++
++/**
++ * kmap_atomic - Atomically map a page for temporary usage - Deprecated!
++ * @page:	Pointer to the page to be mapped
++ *
++ * Returns: The virtual address of the mapping
++ *
++ * Effectively a wrapper around kmap_local_page() which disables pagefaults
++ * and preemption.
++ *
++ * Do not use in new code. Use kmap_local_page() instead.
+  */
+ static inline void *kmap_atomic(struct page *page);
+ 
+@@ -101,12 +115,9 @@ static inline void *kmap_atomic(struct p
+  *
+  * Counterpart to kmap_atomic().
+  *
+- * Undoes the side effects of kmap_atomic(), i.e. reenabling pagefaults and
++ * Effectively a wrapper around kunmap_local() which additionally undoes
++ * the side effects of kmap_atomic(), i.e. reenabling pagefaults and
+  * preemption.
+- *
+- * Other than that a NOOP for CONFIG_HIGHMEM=n and for mappings of pages
+- * in the low memory area. For real highmen pages the mapping which was
+- * established with kmap_atomic() is destroyed.
+  */
+ 
+ /* Highmem related interfaces for management code */
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -450,6 +450,11 @@ void *__kmap_local_pfn_prot(unsigned lon
+ 	unsigned long vaddr;
+ 	int idx;
+ 
++	/*
++	 * Disable migration so resulting virtual address is stable
++	 * accross preemption.
++	 */
++	migrate_disable();
+ 	preempt_disable();
+ 	idx = arch_kmap_local_map_idx(kmap_local_idx_push(), pfn);
+ 	vaddr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
+@@ -505,6 +510,7 @@ void kunmap_local_indexed(void *vaddr)
+ 	current->kmap_ctrl.pteval[kmap_local_idx()] = __pte(0);
+ 	kmap_local_idx_pop();
+ 	preempt_enable();
++	migrate_enable();
+ }
+ EXPORT_SYMBOL(kunmap_local_indexed);
+ 
 

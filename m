@@ -7,42 +7,42 @@ X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67828C64E75
-	for <linux-mips@archiver.kernel.org>; Tue,  3 Nov 2020 10:33:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CDBFC64E7A
+	for <linux-mips@archiver.kernel.org>; Tue,  3 Nov 2020 10:34:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0972022409
-	for <linux-mips@archiver.kernel.org>; Tue,  3 Nov 2020 10:33:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D9C4521D40
+	for <linux-mips@archiver.kernel.org>; Tue,  3 Nov 2020 10:34:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1s+HyF/F";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="pmC0VAx7"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qh+T7IZJ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="r11Fcy33"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728463AbgKCKdw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 3 Nov 2020 05:33:52 -0500
+        id S1728514AbgKCKeE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 3 Nov 2020 05:34:04 -0500
 Received: from Galois.linutronix.de ([193.142.43.55]:38330 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728251AbgKCKdu (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 3 Nov 2020 05:33:50 -0500
-Message-Id: <20201103095858.422094352@linutronix.de>
+        with ESMTP id S1728485AbgKCKeB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 3 Nov 2020 05:34:01 -0500
+Message-Id: <20201103095859.228149242@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604399625;
+        s=2020; t=1604399635;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=smrPH5soON645xyx9VRl+21drBOTiCV7paBhp6VDF7c=;
-        b=1s+HyF/FYJ/rgPZaWI+m83inHucd+bq/quSZGod6llIFmqowzQ5Uj534Dp2bA5XqxHpczy
-        5PbeanQRfDz1AuX8kinkfWMXcS8BmJk+fThow4mOsKbqg60U1tglzYZirczwEafzmV304k
-        vWL7Lw90rdS3zi+ezQm23RGH6jkCbJwsDDz9S70OXSyQOVtLVy3YhkIhceubZ5L2mtPL5D
-        XeFeNSZCmuHE7+4H3i4/EJ1oonlJIFtOzN4einmFJgZE+tRVlreGH2pa/fMfqFTEA+imSe
-        wIFE4YW6BPWkrcSVgyukWdBcDSRT5ns4ro16iCnklveIoZw2mTe9Ka8l6/ODCA==
+        bh=tAqolpusecj6Rd5JZ2LrxoX+tAqXPkBXuxrNCgE7FCw=;
+        b=qh+T7IZJ6XcRj8DNIDr8HGAfo5YvTmXHwq7DmzffZLhC0V3WhpCRSbpdXm7hhOxtFFuwbX
+        wcbVZVYetZLaKe7fxMMqkbtdTm/GbTXib0BTsgIk5kSnOSw9pXw7dXdWDZHGLuLfD8o7J5
+        iC45ybMzMZHPHXGAY6pKU82Xsx4uzeXlXRI1QCfZtr2oUImFGtEYcJEW2pZcbSXkaBhDfz
+        vpMVSLl8t8kbeOeTl0nQMa9QXaNtYJbeM0FUqyI7W0BkGez+lZ161K3tVZxVFnDyF0wgMR
+        3UtPYUbq3j37JroTzUdlG8e/Z5n94SJYzJZktKJf9b+cElB2OmZliJy+9HhbJw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604399625;
+        s=2020e; t=1604399635;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=smrPH5soON645xyx9VRl+21drBOTiCV7paBhp6VDF7c=;
-        b=pmC0VAx7QxdaAMBVLJ1q/DEtO4tuXlK2LCYdUzolfC2B3Ot24ygRPNuRwFLcA00qeEWN6y
-        xpi9fS63JrzH88CQ==
-Date:   Tue, 03 Nov 2020 10:27:30 +0100
+        bh=tAqolpusecj6Rd5JZ2LrxoX+tAqXPkBXuxrNCgE7FCw=;
+        b=r11Fcy33cu1nvwv6ClgNjFFAD2Uh7JIIgyfidherdoguvpBCo73VaZrmwbm0NX6rZ9Kudo
+        xO58/+jD1GK3/sBA==
+Date:   Tue, 03 Nov 2020 10:27:38 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
@@ -95,7 +95,7 @@ Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
         Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
         Rodrigo Vivi <rodrigo.vivi@intel.com>,
         intel-gfx@lists.freedesktop.org
-Subject: [patch V3 18/37] highmem: Get rid of kmap_types.h
+Subject: [patch V3 26/37] io-mapping: Provide iomap_local variant
 References: <20201103092712.714480842@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -104,155 +104,174 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The header is not longer used and on alpha, ia64, openrisc, parisc and um
-it was completely unused anyway as these architectures have no highmem
-support.
+Similar to kmap local provide a iomap local variant which only disables
+migration, but neither disables pagefaults nor preemption.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V3: New patch
----
- arch/alpha/include/asm/kmap_types.h  |   15 ---------------
- arch/ia64/include/asm/kmap_types.h   |   13 -------------
- arch/openrisc/mm/init.c              |    1 -
- arch/openrisc/mm/ioremap.c           |    1 -
- arch/parisc/include/asm/kmap_types.h |   13 -------------
- arch/um/include/asm/fixmap.h         |    1 -
- arch/um/include/asm/kmap_types.h     |   13 -------------
- include/asm-generic/Kbuild           |    1 -
- include/asm-generic/kmap_types.h     |   11 -----------
- include/linux/highmem.h              |    2 --
- 10 files changed, 71 deletions(-)
+V3: Restrict migrate disable to the 32bit mapping case and update documentation.
 
---- a/arch/alpha/include/asm/kmap_types.h
-+++ /dev/null
-@@ -1,15 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_KMAP_TYPES_H
--#define _ASM_KMAP_TYPES_H
--
--/* Dummy header just to define km_type. */
--
--#ifdef CONFIG_DEBUG_HIGHMEM
--#define  __WITH_KM_FENCE
--#endif
--
--#include <asm-generic/kmap_types.h>
--
--#undef __WITH_KM_FENCE
--
--#endif
---- a/arch/ia64/include/asm/kmap_types.h
-+++ /dev/null
-@@ -1,13 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_IA64_KMAP_TYPES_H
--#define _ASM_IA64_KMAP_TYPES_H
--
--#ifdef CONFIG_DEBUG_HIGHMEM
--#define  __WITH_KM_FENCE
--#endif
--
--#include <asm-generic/kmap_types.h>
--
--#undef __WITH_KM_FENCE
--
--#endif /* _ASM_IA64_KMAP_TYPES_H */
---- a/arch/openrisc/mm/init.c
-+++ b/arch/openrisc/mm/init.c
-@@ -33,7 +33,6 @@
- #include <asm/io.h>
- #include <asm/tlb.h>
- #include <asm/mmu_context.h>
--#include <asm/kmap_types.h>
- #include <asm/fixmap.h>
- #include <asm/tlbflush.h>
- #include <asm/sections.h>
---- a/arch/openrisc/mm/ioremap.c
-+++ b/arch/openrisc/mm/ioremap.c
-@@ -15,7 +15,6 @@
- #include <linux/io.h>
- #include <linux/pgtable.h>
- #include <asm/pgalloc.h>
--#include <asm/kmap_types.h>
- #include <asm/fixmap.h>
- #include <asm/bug.h>
- #include <linux/sched.h>
---- a/arch/parisc/include/asm/kmap_types.h
-+++ /dev/null
-@@ -1,13 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_KMAP_TYPES_H
--#define _ASM_KMAP_TYPES_H
--
--#ifdef CONFIG_DEBUG_HIGHMEM
--#define  __WITH_KM_FENCE
--#endif
--
--#include <asm-generic/kmap_types.h>
--
--#undef __WITH_KM_FENCE
--
--#endif
---- a/arch/um/include/asm/fixmap.h
-+++ b/arch/um/include/asm/fixmap.h
-@@ -3,7 +3,6 @@
- #define __UM_FIXMAP_H
+V2: Split out from the large combo patch and add the !IOMAP_ATOMIC variants
+---
+ Documentation/driver-api/io-mapping.rst |   76 +++++++++++++++++++-------------
+ include/linux/io-mapping.h              |   30 +++++++++++-
+ 2 files changed, 74 insertions(+), 32 deletions(-)
+
+--- a/Documentation/driver-api/io-mapping.rst
++++ b/Documentation/driver-api/io-mapping.rst
+@@ -20,55 +20,71 @@ as it would consume too much of the kern
+ mappable, while 'size' indicates how large a mapping region to
+ enable. Both are in bytes.
  
- #include <asm/processor.h>
--#include <asm/kmap_types.h>
- #include <asm/archparam.h>
- #include <asm/page.h>
- #include <linux/threads.h>
---- a/arch/um/include/asm/kmap_types.h
-+++ /dev/null
-@@ -1,13 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/* 
-- * Copyright (C) 2002 Jeff Dike (jdike@karaya.com)
-- */
+-This _wc variant provides a mapping which may only be used
+-with the io_mapping_map_atomic_wc or io_mapping_map_wc.
++This _wc variant provides a mapping which may only be used with
++io_mapping_map_atomic_wc(), io_mapping_map_local_wc() or
++io_mapping_map_wc().
++
++With this mapping object, individual pages can be mapped either temporarily
++or long term, depending on the requirements. Of course, temporary maps are
++more efficient. They come in two flavours::
+ 
+-With this mapping object, individual pages can be mapped either atomically
+-or not, depending on the necessary scheduling environment. Of course, atomic
+-maps are more efficient::
++	void *io_mapping_map_local_wc(struct io_mapping *mapping,
++				      unsigned long offset)
+ 
+ 	void *io_mapping_map_atomic_wc(struct io_mapping *mapping,
+ 				       unsigned long offset)
+ 
+-'offset' is the offset within the defined mapping region.
+-Accessing addresses beyond the region specified in the
+-creation function yields undefined results. Using an offset
+-which is not page aligned yields an undefined result. The
+-return value points to a single page in CPU address space.
 -
--#ifndef __UM_KMAP_TYPES_H
--#define __UM_KMAP_TYPES_H
+-This _wc variant returns a write-combining map to the
+-page and may only be used with mappings created by
+-io_mapping_create_wc
++'offset' is the offset within the defined mapping region.  Accessing
++addresses beyond the region specified in the creation function yields
++undefined results. Using an offset which is not page aligned yields an
++undefined result. The return value points to a single page in CPU address
++space.
+ 
+-Note that the task may not sleep while holding this page
+-mapped.
++This _wc variant returns a write-combining map to the page and may only be
++used with mappings created by io_mapping_create_wc()
+ 
+-::
++Temporary mappings are only valid in the context of the caller. The mapping
++is not guaranteed to be globaly visible.
+ 
+-	void io_mapping_unmap_atomic(void *vaddr)
++io_mapping_map_local_wc() has a side effect on X86 32bit as it disables
++migration to make the mapping code work. No caller can rely on this side
++effect.
++
++io_mapping_map_atomic_wc() has the side effect of disabling preemption and
++pagefaults. Don't use in new code. Use io_mapping_map_local_wc() instead.
+ 
+-'vaddr' must be the value returned by the last
+-io_mapping_map_atomic_wc call. This unmaps the specified
+-page and allows the task to sleep once again.
++Nested mappings need to be undone in reverse order because the mapping
++code uses a stack for keeping track of them::
+ 
+-If you need to sleep while holding the lock, you can use the non-atomic
+-variant, although they may be significantly slower.
++ addr1 = io_mapping_map_local_wc(map1, offset1);
++ addr2 = io_mapping_map_local_wc(map2, offset2);
++ ...
++ io_mapping_unmap_local(addr2);
++ io_mapping_unmap_local(addr1);
+ 
+-::
++The mappings are released with::
++
++	void io_mapping_unmap_local(void *vaddr)
++	void io_mapping_unmap_atomic(void *vaddr)
++
++'vaddr' must be the value returned by the last io_mapping_map_local_wc() or
++io_mapping_map_atomic_wc() call. This unmaps the specified mapping and
++undoes the side effects of the mapping functions.
++
++If you need to sleep while holding a mapping, you can use the regular
++variant, although this may be significantly slower::
+ 
+ 	void *io_mapping_map_wc(struct io_mapping *mapping,
+ 				unsigned long offset)
+ 
+-This works like io_mapping_map_atomic_wc except it allows
+-the task to sleep while holding the page mapped.
 -
--/* No more #include "asm/arch/kmap_types.h" ! */
--
--#define KM_TYPE_NR 14
--
--#endif
---- a/include/asm-generic/Kbuild
-+++ b/include/asm-generic/Kbuild
-@@ -30,7 +30,6 @@ mandatory-y += irq.h
- mandatory-y += irq_regs.h
- mandatory-y += irq_work.h
- mandatory-y += kdebug.h
--mandatory-y += kmap_types.h
- mandatory-y += kmap_size.h
- mandatory-y += kprobes.h
- mandatory-y += linkage.h
---- a/include/asm-generic/kmap_types.h
-+++ /dev/null
-@@ -1,11 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_GENERIC_KMAP_TYPES_H
--#define _ASM_GENERIC_KMAP_TYPES_H
--
--#ifdef __WITH_KM_FENCE
--# define KM_TYPE_NR 41
--#else
--# define KM_TYPE_NR 20
--#endif
--
--#endif
---- a/include/linux/highmem.h
-+++ b/include/linux/highmem.h
-@@ -29,8 +29,6 @@ static inline void invalidate_kernel_vma
++This works like io_mapping_map_atomic/local_wc() except it has no side
++effects and the pointer is globaly visible.
+ 
+-::
++The mappings are released with::
+ 
+ 	void io_mapping_unmap(void *vaddr)
+ 
+-This works like io_mapping_unmap_atomic, except it is used
+-for pages mapped with io_mapping_map_wc.
++Use for pages mapped with io_mapping_map_wc().
+ 
+ At driver close time, the io_mapping object must be freed::
+ 
+--- a/include/linux/io-mapping.h
++++ b/include/linux/io-mapping.h
+@@ -83,6 +83,21 @@ io_mapping_unmap_atomic(void __iomem *va
  }
- #endif
  
--#include <asm/kmap_types.h>
--
- /*
-  * Outside of CONFIG_HIGHMEM to support X86 32bit iomap_atomic() cruft.
-  */
+ static inline void __iomem *
++io_mapping_map_local_wc(struct io_mapping *mapping, unsigned long offset)
++{
++	resource_size_t phys_addr;
++
++	BUG_ON(offset >= mapping->size);
++	phys_addr = mapping->base + offset;
++	return __iomap_local_pfn_prot(PHYS_PFN(phys_addr), mapping->prot);
++}
++
++static inline void io_mapping_unmap_local(void __iomem *vaddr)
++{
++	kunmap_local_indexed((void __force *)vaddr);
++}
++
++static inline void __iomem *
+ io_mapping_map_wc(struct io_mapping *mapping,
+ 		  unsigned long offset,
+ 		  unsigned long size)
+@@ -101,7 +116,7 @@ io_mapping_unmap(void __iomem *vaddr)
+ 	iounmap(vaddr);
+ }
+ 
+-#else
++#else  /* HAVE_ATOMIC_IOMAP */
+ 
+ #include <linux/uaccess.h>
+ 
+@@ -166,7 +181,18 @@ io_mapping_unmap_atomic(void __iomem *va
+ 	preempt_enable();
+ }
+ 
+-#endif /* HAVE_ATOMIC_IOMAP */
++static inline void __iomem *
++io_mapping_map_local_wc(struct io_mapping *mapping, unsigned long offset)
++{
++	return io_mapping_map_wc(mapping, offset, PAGE_SIZE);
++}
++
++static inline void io_mapping_unmap_local(void __iomem *vaddr)
++{
++	io_mapping_unmap(vaddr);
++}
++
++#endif /* !HAVE_ATOMIC_IOMAP */
+ 
+ static inline struct io_mapping *
+ io_mapping_create_wc(resource_size_t base,
 

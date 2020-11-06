@@ -2,30 +2,31 @@ Return-Path: <SRS0=ffv7=EM=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD9F9C2D0A3
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Nov 2020 10:24:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0719C55178
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Nov 2020 10:26:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 62AF120691
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Nov 2020 10:24:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5A2572087E
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Nov 2020 10:26:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgKFKYk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 6 Nov 2020 05:24:40 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:42834 "EHLO
+        id S1727141AbgKFK0K (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 6 Nov 2020 05:26:10 -0500
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:44582 "EHLO
         mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726830AbgKFKYk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 6 Nov 2020 05:24:40 -0500
+        with ESMTP id S1727134AbgKFK0J (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 6 Nov 2020 05:26:09 -0500
 Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 12F243B0CC7
-        for <linux-mips@vger.kernel.org>; Fri,  6 Nov 2020 10:09:16 +0000 (UTC)
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 810EC3A1378
+        for <linux-mips@vger.kernel.org>; Fri,  6 Nov 2020 10:09:22 +0000 (UTC)
 X-Originating-IP: 91.175.115.186
 Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
         (Authenticated sender: gregory.clement@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 2C44FFF80F;
-        Fri,  6 Nov 2020 10:08:53 +0000 (UTC)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 5CB71FF81C;
+        Fri,  6 Nov 2020 10:08:59 +0000 (UTC)
 From:   Gregory CLEMENT <gregory.clement@bootlin.com>
 To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
@@ -36,75 +37,90 @@ Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         Lars Povlsen <lars.povlsen@microchip.com>,
         <Steen.Hegelund@microchip.com>,
         Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH 0/9] MIPS: Add support for more mscc SoCs: Luton, Serval and Jaguar2
-Date:   Fri,  6 Nov 2020 11:08:39 +0100
-Message-Id: <20201106100849.969240-1-gregory.clement@bootlin.com>
+Subject: [PATCH 3/9] MIPS: mscc: Prepare configuration to handle more SoCs
+Date:   Fri,  6 Nov 2020 11:08:43 +0100
+Message-Id: <20201106100849.969240-5-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201106100849.969240-1-gregory.clement@bootlin.com>
+References: <20201106100849.969240-1-gregory.clement@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello,
+Ocelot belongs to a family of SoC named the VCore III. In order to add
+these new Soc, use the new symbol SOC_VCOREIII instead of a one
+dedicated to Ocelot.
 
-Ocelot SoC belongs to a larger family of SoCs called VCoreIII. Luton,
-Serval and Jaguar2 are part of this family and are added with this
-series.
+In order to avoid regression on driver building, the MSCC_OCELOT
+configuration symbol is kept until the driver will be converted.
 
-To be able to run a linux kernel the irqchip support and the pinctrl
-support are needed. Two series of patches adding this support has been
-posted to their subsystem. However there is no build dependency
-between them.
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+---
+ arch/mips/boot/dts/Makefile      |  2 +-
+ arch/mips/boot/dts/mscc/Makefile |  2 +-
+ arch/mips/generic/Kconfig        | 11 ++++++++---
+ 3 files changed, 10 insertions(+), 5 deletions(-)
 
-Gregory
-
-Gregory CLEMENT (9):
-  dt-bindings: mips: Add Luton
-  dt-bindings: mips: Add Serval and Jaguar2
-  MIPS: mscc: Prepare configuration to handle more SoCs
-  MIPS: mscc: Fix configuration name for ocelot legacy boards
-  MIPS: mscc: Add luton dtsi
-  MIPS: mscc: Add luton PC0B91 device tree
-  MIPS: mscc: build FIT image for Luton
-  MIPS: mscc: Add jaguar2 support
-  MIPS: mscc: Add serval support
-
- .../devicetree/bindings/mips/mscc.txt         |   2 +-
- arch/mips/boot/dts/Makefile                   |   2 +-
- arch/mips/boot/dts/mscc/Makefile              |  11 +-
- arch/mips/boot/dts/mscc/jaguar2.dtsi          | 167 +++++++++++
- arch/mips/boot/dts/mscc/jaguar2_common.dtsi   |  25 ++
- arch/mips/boot/dts/mscc/jaguar2_pcb110.dts    | 273 ++++++++++++++++++
- arch/mips/boot/dts/mscc/jaguar2_pcb111.dts    | 109 +++++++
- arch/mips/boot/dts/mscc/jaguar2_pcb118.dts    |  59 ++++
- arch/mips/boot/dts/mscc/luton.dtsi            | 116 ++++++++
- arch/mips/boot/dts/mscc/luton_pcb091.dts      |  30 ++
- arch/mips/boot/dts/mscc/serval.dtsi           | 153 ++++++++++
- arch/mips/boot/dts/mscc/serval_common.dtsi    | 127 ++++++++
- arch/mips/boot/dts/mscc/serval_pcb105.dts     |  17 ++
- arch/mips/boot/dts/mscc/serval_pcb106.dts     |  17 ++
- arch/mips/generic/Kconfig                     |  37 ++-
- arch/mips/generic/Platform                    |   3 +
- arch/mips/generic/board-jaguar2.its.S         |  40 +++
- arch/mips/generic/board-luton.its.S           |  23 ++
- arch/mips/generic/board-serval.its.S          |  24 ++
- 19 files changed, 1228 insertions(+), 7 deletions(-)
- create mode 100644 arch/mips/boot/dts/mscc/jaguar2.dtsi
- create mode 100644 arch/mips/boot/dts/mscc/jaguar2_common.dtsi
- create mode 100644 arch/mips/boot/dts/mscc/jaguar2_pcb110.dts
- create mode 100644 arch/mips/boot/dts/mscc/jaguar2_pcb111.dts
- create mode 100644 arch/mips/boot/dts/mscc/jaguar2_pcb118.dts
- create mode 100644 arch/mips/boot/dts/mscc/luton.dtsi
- create mode 100644 arch/mips/boot/dts/mscc/luton_pcb091.dts
- create mode 100644 arch/mips/boot/dts/mscc/serval.dtsi
- create mode 100644 arch/mips/boot/dts/mscc/serval_common.dtsi
- create mode 100644 arch/mips/boot/dts/mscc/serval_pcb105.dts
- create mode 100644 arch/mips/boot/dts/mscc/serval_pcb106.dts
- create mode 100644 arch/mips/generic/board-jaguar2.its.S
- create mode 100644 arch/mips/generic/board-luton.its.S
- create mode 100644 arch/mips/generic/board-serval.its.S
-
+diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
+index 19027129add8..0259238d7a2e 100644
+--- a/arch/mips/boot/dts/Makefile
++++ b/arch/mips/boot/dts/Makefile
+@@ -6,7 +6,7 @@ subdir-$(CONFIG_FIT_IMAGE_FDT_BOSTON)	+= img
+ subdir-$(CONFIG_MACH_INGENIC)		+= ingenic
+ subdir-$(CONFIG_LANTIQ)			+= lantiq
+ subdir-$(CONFIG_MACH_LOONGSON64)	+= loongson
+-subdir-$(CONFIG_MSCC_OCELOT)		+= mscc
++subdir-$(CONFIG_SOC_VCOREIII)		+= mscc
+ subdir-$(CONFIG_MIPS_MALTA)		+= mti
+ subdir-$(CONFIG_LEGACY_BOARD_SEAD3)	+= mti
+ subdir-$(CONFIG_NLM_XLP_BOARD)		+= netlogic
+diff --git a/arch/mips/boot/dts/mscc/Makefile b/arch/mips/boot/dts/mscc/Makefile
+index eb71515871f6..5015ccbbfb23 100644
+--- a/arch/mips/boot/dts/mscc/Makefile
++++ b/arch/mips/boot/dts/mscc/Makefile
+@@ -1,4 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-dtb-$(CONFIG_MSCC_OCELOT)	+= ocelot_pcb123.dtb ocelot_pcb120.dtb
++dtb-$(CONFIG_SOC_VCOREIII)	+= ocelot_pcb123.dtb ocelot_pcb120.dtb
+ 
+ obj-$(CONFIG_BUILTIN_DTB)	+= $(addsuffix .o, $(dtb-y))
+diff --git a/arch/mips/generic/Kconfig b/arch/mips/generic/Kconfig
+index 55d9aed7ced9..45431b88dded 100644
+--- a/arch/mips/generic/Kconfig
++++ b/arch/mips/generic/Kconfig
+@@ -34,14 +34,19 @@ config LEGACY_BOARD_OCELOT
+ 	bool "Support MSCC Ocelot boards"
+ 	depends on LEGACY_BOARD_SEAD3=n
+ 	select LEGACY_BOARDS
+-	select MSCC_OCELOT
++	select SOC_VCOREIII
+ 	select SYS_HAS_EARLY_PRINTK
+ 	select USE_GENERIC_EARLY_PRINTK_8250
+ 
+-config MSCC_OCELOT
++config SOC_VCOREIII
+ 	bool
+ 	select GPIOLIB
+ 	select MSCC_OCELOT_IRQ
++	select MSCC_OCELOT #will be removed when driver no more use it
++
++#Will be removed when the driver using it will be converted to SOC_VCOREIII
++config MSCC_OCELOT
++	bool
+ 
+ comment "FIT/UHI Boards"
+ 
+@@ -67,7 +72,7 @@ config FIT_IMAGE_FDT_XILFPGA
+ 
+ config FIT_IMAGE_FDT_OCELOT
+ 	bool "Include FDT for Microsemi Ocelot development platforms"
+-	select MSCC_OCELOT
++	select SOC_VCOREIII
+ 	help
+ 	  Enable this to include the FDT for the Ocelot development platforms
+ 	  from Microsemi in the FIT kernel image.
 -- 
 2.28.0
 

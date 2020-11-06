@@ -7,26 +7,26 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE9E0C2D0A3
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Nov 2020 10:17:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DFE2C388F2
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Nov 2020 10:21:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 563A0206DC
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Nov 2020 10:17:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 201DA20691
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Nov 2020 10:21:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbgKFKRM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 6 Nov 2020 05:17:12 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:33008 "EHLO
+        id S1726646AbgKFKVd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 6 Nov 2020 05:21:33 -0500
+Received: from mslow2.mail.gandi.net ([217.70.178.242]:39002 "EHLO
         mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbgKFKRM (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 6 Nov 2020 05:17:12 -0500
-Received: from relay1-d.mail.gandi.net (unknown [217.70.183.193])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id C0B223B4D43
-        for <linux-mips@vger.kernel.org>; Fri,  6 Nov 2020 10:09:26 +0000 (UTC)
+        with ESMTP id S1726942AbgKFKVc (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 6 Nov 2020 05:21:32 -0500
+Received: from relay8-d.mail.gandi.net (unknown [217.70.183.201])
+        by mslow2.mail.gandi.net (Postfix) with ESMTP id 4A52F3A1802
+        for <linux-mips@vger.kernel.org>; Fri,  6 Nov 2020 10:09:20 +0000 (UTC)
 X-Originating-IP: 91.175.115.186
 Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
         (Authenticated sender: gregory.clement@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 022AC240003;
-        Fri,  6 Nov 2020 10:09:03 +0000 (UTC)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id AF75F1BF20E;
+        Fri,  6 Nov 2020 10:08:57 +0000 (UTC)
 From:   Gregory CLEMENT <gregory.clement@bootlin.com>
 To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
@@ -37,9 +37,9 @@ Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         Lars Povlsen <lars.povlsen@microchip.com>,
         <Steen.Hegelund@microchip.com>,
         Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH 6/9] MIPS: mscc: Add luton PC0B91 device tree
-Date:   Fri,  6 Nov 2020 11:08:46 +0100
-Message-Id: <20201106100849.969240-8-gregory.clement@bootlin.com>
+Subject: [PATCH 2/9] dt-bindings: mips: Add Serval and Jaguar2
+Date:   Fri,  6 Nov 2020 11:08:42 +0100
+Message-Id: <20201106100849.969240-4-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201106100849.969240-1-gregory.clement@bootlin.com>
 References: <20201106100849.969240-1-gregory.clement@bootlin.com>
@@ -49,66 +49,26 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add a device tree for the Microsemi Luton PCB091 evaluation board.
-
-It is based on the work of Lars Povlsen <lars.povlsen@microchip.com>.
+Serval and Jaguar2 SoCs belong to the same family as Ocelot and Luton.
 
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/boot/dts/mscc/Makefile         |  5 +++-
- arch/mips/boot/dts/mscc/luton_pcb091.dts | 30 ++++++++++++++++++++++++
- 2 files changed, 34 insertions(+), 1 deletion(-)
- create mode 100644 arch/mips/boot/dts/mscc/luton_pcb091.dts
+ Documentation/devicetree/bindings/mips/mscc.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/boot/dts/mscc/Makefile b/arch/mips/boot/dts/mscc/Makefile
-index 5015ccbbfb23..40699b44ed50 100644
---- a/arch/mips/boot/dts/mscc/Makefile
-+++ b/arch/mips/boot/dts/mscc/Makefile
-@@ -1,4 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
--dtb-$(CONFIG_SOC_VCOREIII)	+= ocelot_pcb123.dtb ocelot_pcb120.dtb
-+dtb-$(CONFIG_SOC_VCOREIII)	+= \
-+	luton_pcb091.dtb \
-+	ocelot_pcb120.dtb \
-+	ocelot_pcb123.dtb
+diff --git a/Documentation/devicetree/bindings/mips/mscc.txt b/Documentation/devicetree/bindings/mips/mscc.txt
+index cc93fd302553..bdbebb525393 100644
+--- a/Documentation/devicetree/bindings/mips/mscc.txt
++++ b/Documentation/devicetree/bindings/mips/mscc.txt
+@@ -4,7 +4,7 @@ Boards with a SoC of the Microsemi MIPS family shall have the following
+ properties:
  
- obj-$(CONFIG_BUILTIN_DTB)	+= $(addsuffix .o, $(dtb-y))
-diff --git a/arch/mips/boot/dts/mscc/luton_pcb091.dts b/arch/mips/boot/dts/mscc/luton_pcb091.dts
-new file mode 100644
-index 000000000000..26ef6285d71d
---- /dev/null
-+++ b/arch/mips/boot/dts/mscc/luton_pcb091.dts
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2020 Microsemi Corporation
-+ */
-+
-+/dts-v1/;
-+
-+#include "luton.dtsi"
-+
-+/ {
-+	model = "Luton10 PCB091 Reference Board";
-+	compatible = "mscc,luton-pcb091", "mscc,luton";
-+
-+	aliases {
-+		serial0 = &uart0;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+};
-+
-+&uart0 {
-+	status = "okay";
-+};
-+
-+&i2c0 {
-+	status = "okay";
-+	i2c-sda-hold-time-ns = <300>;
-+};
+ Required properties:
+-- compatible: "mscc,ocelot" or "mscc,luton"
++- compatible: "mscc,ocelot", "mscc,luton", "mscc,serval" or "mscc,jaguar2"
+ 
+ 
+ * Other peripherals:
 -- 
 2.28.0
 

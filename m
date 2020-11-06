@@ -2,111 +2,72 @@ Return-Path: <SRS0=ffv7=EM=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED39CC2D0A3
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Nov 2020 08:24:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26A1CC55178
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Nov 2020 10:09:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9023B20B80
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Nov 2020 08:24:57 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RIKXreLQ"
+	by mail.kernel.org (Postfix) with ESMTP id CE5AA221FA
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Nov 2020 10:09:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbgKFIY5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 6 Nov 2020 03:24:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726447AbgKFIY4 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 6 Nov 2020 03:24:56 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CDC2C0613CF;
-        Fri,  6 Nov 2020 00:24:56 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id v144so700410lfa.13;
-        Fri, 06 Nov 2020 00:24:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UYP35iddIaMkoZd1YlyOIfHup33hDp22BB3c4frWXy0=;
-        b=RIKXreLQfPQCv3XE7eqVofzW4L3flinxkd3LI74WnGyJ5z3digeZXVgC+kUW0v5izl
-         +CKik/eO4SFcGavw3GCPe7rkgyflAc37d8yb8mxZ0B0CBANtaeSAgYUz/i0tFIYr0wQF
-         4X/VkNENNihess+nD1v6kZStIzERBL9yLO36RnaS4BM82+JcS0yIlrUV/Fp6zNF25sUO
-         y30QfEI997XXOt+Wx//gOSzEBzAw5xJyOYZK7GyzyLq0dT/FLLafNDRU1MI29NDSpbDF
-         58aUxK2Wu27Fh7kLcJi68dZ0qctARSr4llP8Hl/f5Izu/HIuo1w28jOnfcF2ORKBr9Ff
-         pptw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=UYP35iddIaMkoZd1YlyOIfHup33hDp22BB3c4frWXy0=;
-        b=CEaInOcIoUkhZXJVCK2SzcPqzngyPpDC/KO8E1u/t2P6IG0q93R07K8W/CJ8sBTe4m
-         J5yhFm828zrfjNcC8dv+2BbYxN9C1fzrk3DKp3toBDMnQFZxUt1fIAo0BYrlnKH6/AkS
-         Wh45qqgyxhbf/hf0rqIYF6gKO4/jBhjOtVq6E50WGlMBXsEEqsK5pzDMZzaOHYofHRI7
-         FcD4MAPXfoV4ANgHXwwNWoUvZdZdMCYILaUdXBP8XZulLw129D6mNLZb7R/42LKGJiyK
-         4l8TmL/gCa8O5EdNPYSKXtpv3NB0DPRChAsDaG2bZCVc1Zv2NQP3ur68EFaMJK1/5j1R
-         4XPg==
-X-Gm-Message-State: AOAM533QralQ39nQfEQr4fZvis77n+whEcSC+3WRmk+YoAyJjW4mo3y0
-        /JkCypZp8PgP+ESsjIQcxyo=
-X-Google-Smtp-Source: ABdhPJyOuj0E9VYTPmfhTp7NzPvRTi7AobjrfccJ1r3z8sGiXu+Gpvrn45SyPufinTYr14MA7yITPg==
-X-Received: by 2002:ac2:52b9:: with SMTP id r25mr417616lfm.274.1604651094952;
-        Fri, 06 Nov 2020 00:24:54 -0800 (PST)
-Received: from ?IPv6:2a00:1fa0:283:c116:6015:e10f:1dc8:3b0? ([2a00:1fa0:283:c116:6015:e10f:1dc8:3b0])
-        by smtp.gmail.com with ESMTPSA id u24sm74728lfq.240.2020.11.06.00.24.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Nov 2020 00:24:54 -0800 (PST)
-Subject: Re: [PATCH] MIPS: BMC47xx: fix kconfig dependency bug for BCM47XX_SSB
-To:     Necip Fazil Yildiran <fazilyildiran@gmail.com>, hauke@hauke-m.de
-Cc:     szajec5@gmail.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu
-References: <20201104164126.36399-1-fazilyildiran@gmail.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <547e42cd-f39b-1128-4836-82891dd770d1@gmail.com>
-Date:   Fri, 6 Nov 2020 11:24:41 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726765AbgKFKJD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 6 Nov 2020 05:09:03 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:48811 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726422AbgKFKJD (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 6 Nov 2020 05:09:03 -0500
+X-Originating-IP: 91.175.115.186
+Received: from localhost (91-175-115-186.subs.proxad.net [91.175.115.186])
+        (Authenticated sender: gregory.clement@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 7701760009;
+        Fri,  6 Nov 2020 10:09:00 +0000 (UTC)
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        <Steen.Hegelund@microchip.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH 4/9] MIPS: mscc: Fix configuration name for ocelot legacy boards
+Date:   Fri,  6 Nov 2020 11:08:44 +0100
+Message-Id: <20201106100849.969240-6-gregory.clement@bootlin.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201106100849.969240-1-gregory.clement@bootlin.com>
+References: <20201106100849.969240-1-gregory.clement@bootlin.com>
 MIME-Version: 1.0
-In-Reply-To: <20201104164126.36399-1-fazilyildiran@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello!
+Ocelots is supported by the generic MIPS build so make it clears that
+LEGACY_BOARD_OCELOT is only needed for legacy boards which didn't have
+bootloader supporting device tree.
 
-On 04.11.2020 19:41, Necip Fazil Yildiran wrote:
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+---
+ arch/mips/generic/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> When BCM47XX_SSB is enabled and SSB_PCIHOST is disabled, it results in the
-> following Kbuild warning:
-> 
-> WARNING: unmet direct dependencies detected for SSB_B43_PCI_BRIDGE
->    Depends on [n]: SSB [=y] && SSB_PCIHOST [=n]
->    Selected by [y]:
->    - BCM47XX_SSB [=y] && BCM47XX [=y] && PCI [=y]
-> 
-> The reason is that BCM47XX_SSB selects SSB_B43_PCI_BRIDGE without
-> depending on or selecting SSB_PCIHOST while SSB_B43_PCI_BRIDGE depends on
-> SSB_PCIHOST. This can also fail building the kernel as demonstrated in a
-> bug report.
-> 
-> Honor the kconfig dependency to remove unmet direct dependency warnings
-> and avoid any potential build failures.
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=210051
+diff --git a/arch/mips/generic/Kconfig b/arch/mips/generic/Kconfig
+index 45431b88dded..eb2a3fa9fcd7 100644
+--- a/arch/mips/generic/Kconfig
++++ b/arch/mips/generic/Kconfig
+@@ -31,7 +31,7 @@ comment "MSCC Ocelot doesn't work with SEAD3 enabled"
+ 	depends on LEGACY_BOARD_SEAD3
+ 
+ config LEGACY_BOARD_OCELOT
+-	bool "Support MSCC Ocelot boards"
++	bool "Legacy support for Ocelot based boards"
+ 	depends on LEGACY_BOARD_SEAD3=n
+ 	select LEGACY_BOARDS
+ 	select SOC_VCOREIII
+-- 
+2.28.0
 
-    Isn't that tag supposed to be used for the patch mail itself? At least
-that's what I'm seeing in the USB patches where it points to the msg with
-a patch...
-
-> Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
-[...]
-
-MBR, Sergei

@@ -4,23 +4,23 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1824EC4741F
-	for <linux-mips@archiver.kernel.org>; Mon,  9 Nov 2020 23:30:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93B37C2D0A3
+	for <linux-mips@archiver.kernel.org>; Mon,  9 Nov 2020 23:43:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ADBB0206ED
-	for <linux-mips@archiver.kernel.org>; Mon,  9 Nov 2020 23:30:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 45CE4206ED
+	for <linux-mips@archiver.kernel.org>; Mon,  9 Nov 2020 23:43:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729243AbgKIXaW convert rfc822-to-8bit (ORCPT
+        id S1729661AbgKIXna convert rfc822-to-8bit (ORCPT
         <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 9 Nov 2020 18:30:22 -0500
-Received: from aposti.net ([89.234.176.197]:56870 "EHLO aposti.net"
+        Mon, 9 Nov 2020 18:43:30 -0500
+Received: from aposti.net ([89.234.176.197]:57560 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727070AbgKIXaW (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 9 Nov 2020 18:30:22 -0500
-Date:   Mon, 09 Nov 2020 23:30:03 +0000
+        id S1729243AbgKIXn3 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 9 Nov 2020 18:43:29 -0500
+Date:   Mon, 09 Nov 2020 23:37:05 +0000
 From:   Paul Cercueil <paul@crapouillou.net>
 Subject: Re: [PATCH 1/2] MIPS: Ingenic: Add missing nodes for Ingenic SoCs and
  boards.
@@ -33,7 +33,7 @@ Cc:     tsbogend@alpha.franken.de, robh+dt@kernel.org,
         dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
         rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
         sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Message-Id: <3MYJJQ.CUZTUWS1VW6P1@crapouillou.net>
+Message-Id: <TXYJJQ.TVQC48S8AVLH@crapouillou.net>
 In-Reply-To: <20201107115251.86182-2-zhouyanjie@wanyeetech.com>
 References: <20201107115251.86182-1-zhouyanjie@wanyeetech.com>
         <20201107115251.86182-2-zhouyanjie@wanyeetech.com>
@@ -44,7 +44,7 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Zhou,
+
 
 Le sam. 7 nov. 2020 à 19:52, 周琰杰 (Zhou Yanjie) 
 <zhouyanjie@wanyeetech.com> a écrit :
@@ -100,17 +100,6 @@ Le sam. 7 nov. 2020 à 19:52, 周琰杰 (Zhou Yanjie)
 > +
 > +	assigned-clocks = <&cgu JZ4780_CLK_OTGPHY>;
 > +	assigned-clock-rates = <48000000>;
-
-I think you should put these two lines inside &cgu. While it will also 
-work here, the assigned-clocks / assigned-clock-rates are defined 
-Device Tree properties only for clock controller nodes, and so "make 
-dtbs_check" will complain:
-
-ci20.dt.yaml: usb@13500000: 'assigned-clock-rates', 'assigned-clocks' 
-do not match any of the regexes: 'pinctrl-[0-9]+'
-
-Same in the Neo .dts files.
-
 > +};
 > +
 >  &pinctrl {
@@ -182,13 +171,6 @@ Same in the Neo .dts files.
 >  };
 > 
 > +&ssi {
-
-"ssi" is defined right above, you can put the expander node and 
-properties directly there.
-
-Cheers,
--Paul
-
 > +	status = "okay";
 > +
 > +	spi-max-frequency = <50000000>;
@@ -362,6 +344,12 @@ Cheers,
 > +			clocks = <&cgu JZ4780_CLK_OTG1>;
 > +
 > +			#phy-cells = <0>;
+
+Something I missed in my first email: you lack the "vcc-supply" 
+required property here. But I'm not sure what it should be linked to.
+
+-Paul
+
 > +		};
 > +
 > +		rng: rng@d8 {

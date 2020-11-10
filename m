@@ -7,23 +7,23 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 17409C388F7
-	for <linux-mips@archiver.kernel.org>; Tue, 10 Nov 2020 11:45:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15BD4C4742C
+	for <linux-mips@archiver.kernel.org>; Tue, 10 Nov 2020 11:45:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A8F16207E8
-	for <linux-mips@archiver.kernel.org>; Tue, 10 Nov 2020 11:45:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BA96220781
+	for <linux-mips@archiver.kernel.org>; Tue, 10 Nov 2020 11:45:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729772AbgKJLpX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 10 Nov 2020 06:45:23 -0500
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:35727 "EHLO
+        id S1727698AbgKJLpZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 10 Nov 2020 06:45:25 -0500
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:42955 "EHLO
         relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgKJLpW (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 10 Nov 2020 06:45:22 -0500
+        with ESMTP id S1729484AbgKJLpY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 10 Nov 2020 06:45:24 -0500
 X-Originating-IP: 82.65.9.182
 Received: from localhost (82-65-9-182.subs.proxad.net [82.65.9.182])
         (Authenticated sender: gregory.clement@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id D23F640008;
-        Tue, 10 Nov 2020 11:45:18 +0000 (UTC)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 8D16C40016;
+        Tue, 10 Nov 2020 11:45:21 +0000 (UTC)
 From:   Gregory CLEMENT <gregory.clement@bootlin.com>
 To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
@@ -34,9 +34,9 @@ Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         Lars Povlsen <lars.povlsen@microchip.com>,
         <Steen.Hegelund@microchip.com>,
         Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v2 5/9] MIPS: mscc: Add luton dtsi
-Date:   Tue, 10 Nov 2020 12:45:04 +0100
-Message-Id: <20201110114508.1197652-6-gregory.clement@bootlin.com>
+Subject: [PATCH v2 7/9] MIPS: mscc: build FIT image for Luton
+Date:   Tue, 10 Nov 2020 12:45:06 +0100
+Message-Id: <20201110114508.1197652-8-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201110114508.1197652-1-gregory.clement@bootlin.com>
 References: <20201110114508.1197652-1-gregory.clement@bootlin.com>
@@ -46,136 +46,71 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add a device tree include file for the Microsemi Luton SoC which
-belongs to same family of the Ocelot SoC.
-
-It is based on the work of Lars Povlsen <lars.povlsen@microchip.com>.
+Luton now has already an u-boot port so let's build FIT images.
 
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/boot/dts/mscc/luton.dtsi | 116 +++++++++++++++++++++++++++++
- 1 file changed, 116 insertions(+)
- create mode 100644 arch/mips/boot/dts/mscc/luton.dtsi
+ arch/mips/generic/Kconfig           |  8 ++++++++
+ arch/mips/generic/Platform          |  1 +
+ arch/mips/generic/board-luton.its.S | 23 +++++++++++++++++++++++
+ 3 files changed, 32 insertions(+)
+ create mode 100644 arch/mips/generic/board-luton.its.S
 
-diff --git a/arch/mips/boot/dts/mscc/luton.dtsi b/arch/mips/boot/dts/mscc/luton.dtsi
+diff --git a/arch/mips/generic/Kconfig b/arch/mips/generic/Kconfig
+index eb2a3fa9fcd7..e5a7a1314e71 100644
+--- a/arch/mips/generic/Kconfig
++++ b/arch/mips/generic/Kconfig
+@@ -78,6 +78,14 @@ config FIT_IMAGE_FDT_OCELOT
+ 	  from Microsemi in the FIT kernel image.
+ 	  This requires u-boot on the platform.
+ 
++config FIT_IMAGE_FDT_LUTON
++	bool "Include FDT for Microsemi Luton development platforms"
++	select SOC_VCOREIII
++	help
++	  Enable this to include the FDT for the Luton development platforms
++	  from Microsemi in the FIT kernel image.
++	  This requires u-boot on the platform.
++
+ config BOARD_INGENIC
+ 	bool "Support boards based on Ingenic SoCs"
+ 	select MACH_INGENIC_GENERIC
+diff --git a/arch/mips/generic/Platform b/arch/mips/generic/Platform
+index f8ef2f9d107e..4b6905daa39c 100644
+--- a/arch/mips/generic/Platform
++++ b/arch/mips/generic/Platform
+@@ -20,4 +20,5 @@ its-y					:= vmlinux.its.S
+ its-$(CONFIG_FIT_IMAGE_FDT_BOSTON)	+= board-boston.its.S
+ its-$(CONFIG_FIT_IMAGE_FDT_NI169445)	+= board-ni169445.its.S
+ its-$(CONFIG_FIT_IMAGE_FDT_OCELOT)	+= board-ocelot.its.S
++its-$(CONFIG_FIT_IMAGE_FDT_LUTON)	+= board-luton.its.S
+ its-$(CONFIG_FIT_IMAGE_FDT_XILFPGA)	+= board-xilfpga.its.S
+diff --git a/arch/mips/generic/board-luton.its.S b/arch/mips/generic/board-luton.its.S
 new file mode 100644
-index 000000000000..2a170b84c5a9
+index 000000000000..39a543f62f25
 --- /dev/null
-+++ b/arch/mips/boot/dts/mscc/luton.dtsi
-@@ -0,0 +1,116 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/* Copyright (c) 2020 Microsemi Corporation */
-+
++++ b/arch/mips/generic/board-luton.its.S
+@@ -0,0 +1,23 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
 +/ {
-+	#address-cells = <1>;
-+	#size-cells = <1>;
-+	compatible = "mscc,luton";
-+
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu@0 {
-+			compatible = "mips,mips24KEc";
-+			device_type = "cpu";
-+			clocks = <&cpu_clk>;
-+			reg = <0>;
-+		};
-+	};
-+
-+	aliases {
-+		serial0 = &uart0;
-+	};
-+
-+	cpuintc: interrupt-controller {
-+		#address-cells = <0>;
-+		#interrupt-cells = <1>;
-+		interrupt-controller;
-+		compatible = "mti,cpu-interrupt-controller";
-+	};
-+
-+	cpu_clk: cpu-clock {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <416666666>;
-+	};
-+
-+	ahb_clk: ahb-clk {
-+		compatible = "fixed-factor-clock";
-+		#clock-cells = <0>;
-+		clocks = <&cpu_clk>;
-+		clock-div = <2>;
-+		clock-mult = <1>;
-+	};
-+
-+	ahb@60000000 {
-+		compatible = "simple-bus";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges = <0 0x60000000 0x20000000>;
-+
-+		interrupt-parent = <&intc>;
-+
-+		cpu_ctrl: syscon@10000000 {
-+			compatible = "mscc,ocelot-cpu-syscon", "syscon";
-+			reg = <0x10000000 0x2c>;
-+		};
-+
-+		intc: interrupt-controller@10000084 {
-+			compatible = "mscc,luton-icpu-intr";
-+			reg = <0x10000084 0x70>;
-+			#interrupt-cells = <1>;
-+			interrupt-controller;
-+			interrupt-parent = <&cpuintc>;
-+			interrupts = <2>;
-+		};
-+
-+		uart0: serial@10100000 {
-+			pinctrl-0 = <&uart_pins>;
-+			pinctrl-names = "default";
-+			compatible = "ns16550a";
-+			reg = <0x10100000 0x20>;
-+			interrupts = <6>;
-+			clocks = <&ahb_clk>;
-+			reg-io-width = <4>;
-+			reg-shift = <2>;
-+
-+			status = "disabled";
-+		};
-+
-+		i2c0: i2c@10100400 {
-+			compatible = "mscc,ocelot-i2c", "snps,designware-i2c";
-+			pinctrl-0 = <&i2c_pins>;
-+			pinctrl-names = "default";
-+			reg = <0x10100400 0x100>, <0x100002a4 0x8>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			interrupts = <11>;
-+			clocks = <&ahb_clk>;
-+
-+			status = "disabled";
-+		};
-+
-+		gpio: pinctrl@70068 {
-+			compatible = "mscc,luton-pinctrl";
-+			reg = <0x70068 0x28>;
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			gpio-ranges = <&gpio 0 0 32>;
-+			interrupt-controller;
-+			interrupts = <13>;
-+			#interrupt-cells = <2>;
-+
-+			i2c_pins: i2c-pins {
-+				pins = "GPIO_5", "GPIO_6";
-+				function = "twi";
++	images {
++		fdt@luton_pcb091 {
++			description = "MSCC Luton PCB091 Device Tree";
++			data = /incbin/("boot/dts/mscc/luton_pcb091.dtb");
++			type = "flat_dt";
++			arch = "mips";
++			compression = "none";
++			hash@0 {
++				algo = "sha1";
 +			};
++		};
++	};
 +
-+			uart_pins: uart-pins {
-+				pins = "GPIO_30", "GPIO_31";
-+				function = "uart";
-+			};
-+
++	configurations {
++		pcb091 {
++			description = "Luton Linux kernel";
++			kernel = "kernel@0";
++			fdt = "fdt@luton_pcb091";
 +		};
 +	};
 +};

@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB95FC4742C
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:10:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AC2EC4742C
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:11:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 686C0206FB
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:10:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C6322221E2
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:11:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbgKKJKx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1726820AbgKKJKx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 11 Nov 2020 04:10:53 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:39418 "EHLO
+Received: from mail.baikalelectronics.com ([87.245.175.226]:39437 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726727AbgKKJJr (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Nov 2020 04:09:47 -0500
+        with ESMTP id S1726710AbgKKJJp (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Nov 2020 04:09:45 -0500
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 63F9D803017F;
-        Wed, 11 Nov 2020 09:09:10 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 1BC71803202B;
+        Wed, 11 Nov 2020 09:09:13 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id EBsdZG-suDPl; Wed, 11 Nov 2020 12:09:09 +0300 (MSK)
+        with ESMTP id 8YDGWa54opJ6; Wed, 11 Nov 2020 12:09:12 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
@@ -50,11 +50,10 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
         Rob Herring <robh@kernel.org>
-Subject: [PATCH v4 08/18] dt-bindings: usb: xhci: Add Broadcom STB v2 compatible device
-Date:   Wed, 11 Nov 2020 12:08:43 +0300
-Message-ID: <20201111090853.14112-9-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v4 11/18] dt-bindings: usb: dwc3: Add interrupt-names property support
+Date:   Wed, 11 Nov 2020 12:08:46 +0300
+Message-ID: <20201111090853.14112-12-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201111090853.14112-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201111090853.14112-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -65,32 +64,50 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-For some reason the "brcm,xhci-brcm-v2" compatible string has been missing
-in the original bindings file. Add it to the Generic xHCI Controllers DT
-schema since the controller driver expects it to be supported.
+The controller driver supports two types of DWC USB3 devices: with a
+common interrupt lane and with individual interrupts for each mode. Add
+support for both these cases to the DWC USB3 DT schema.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 Reviewed-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/usb/generic-xhci.yaml | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/generic-xhci.yaml b/Documentation/devicetree/bindings/usb/generic-xhci.yaml
-index 1ea1d49a8175..23d73df96ea3 100644
---- a/Documentation/devicetree/bindings/usb/generic-xhci.yaml
-+++ b/Documentation/devicetree/bindings/usb/generic-xhci.yaml
-@@ -26,7 +26,9 @@ properties:
-               - marvell,armada-8k-xhci
-           - const: generic-xhci
-       - description: Broadcom STB SoCs with xHCI
--        const: brcm,bcm7445-xhci
-+        enum:
-+          - brcm,xhci-brcm-v2
-+          - brcm,bcm7445-xhci
-       - description: Generic xHCI device
-         const: xhci-platform
-         deprecated: true
+---
+
+Changelog v2:
+- Grammar fix: "s/both of these cases support/support for both these cases"
+- Drop quotes from around the string constants.
+
+Changelog v4:
+- Discard the block scalar style modifier "|" from the interrupts property
+  description.
+---
+ Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+index 079617891da6..c205afd66b7c 100644
+--- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
++++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+@@ -31,8 +31,19 @@ properties:
+       const: snps,dwc3
+ 
+   interrupts:
++    description:
++      It's either a single common DWC3 interrupt (dwc_usb3) or individual
++      interrupts for the host, gadget and DRD modes.
++    minItems: 1
++    maxItems: 3
++
++  interrupt-names:
+     minItems: 1
+     maxItems: 3
++    oneOf:
++      - const: dwc_usb3
++      - items:
++          enum: [host, peripheral, otg]
+ 
+   clocks:
+     description:
 -- 
 2.28.0
 

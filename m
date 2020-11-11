@@ -7,25 +7,25 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08771C56201
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB95FC4742C
 	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:10:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A9452206FB
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:10:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 686C0206FB
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:10:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726235AbgKKJKw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 11 Nov 2020 04:10:52 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:39446 "EHLO
+        id S1726810AbgKKJKx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 11 Nov 2020 04:10:53 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:39418 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726742AbgKKJJs (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Nov 2020 04:09:48 -0500
+        with ESMTP id S1726727AbgKKJJr (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Nov 2020 04:09:47 -0500
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id AE59C803073D;
-        Wed, 11 Nov 2020 09:09:07 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 63F9D803017F;
+        Wed, 11 Nov 2020 09:09:10 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 2wsDKerN1vQE; Wed, 11 Nov 2020 12:09:07 +0300 (MSK)
+        with ESMTP id EBsdZG-suDPl; Wed, 11 Nov 2020 12:09:09 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
@@ -50,10 +50,11 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Rob Herring <robh@kernel.org>
-Subject: [PATCH v4 06/18] dt-bindings: usb: Add generic "usb-phy" property
-Date:   Wed, 11 Nov 2020 12:08:41 +0300
-Message-ID: <20201111090853.14112-7-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v4 08/18] dt-bindings: usb: xhci: Add Broadcom STB v2 compatible device
+Date:   Wed, 11 Nov 2020 12:08:43 +0300
+Message-ID: <20201111090853.14112-9-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201111090853.14112-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201111090853.14112-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -64,49 +65,32 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Even though the Generic PHY framework is the more preferable way of
-setting the USB PHY up, there are still many dts-files and DT bindings
-which rely on having the legacy "usb-phy" specified to attach particular
-USB PHYs to USB cores. Let's have the "usb-phy" property described in
-the generic USB HCD binding file so it would be validated against the
-nodes in which it's specified. Mark the property as deprecated to
-discourage the developers from using it.
+For some reason the "brcm,xhci-brcm-v2" compatible string has been missing
+in the original bindings file. Add it to the Generic xHCI Controllers DT
+schema since the controller driver expects it to be supported.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 Reviewed-by: Rob Herring <robh@kernel.org>
-
 ---
+ Documentation/devicetree/bindings/usb/generic-xhci.yaml | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Changelog v2:
-- Discard '|' from the property description, since we don't need to
-  preserve the text formatting.
-
-Changelog v4:
-- Move the "usb-phy" property definition into the usb.yaml schema where
-  all generic USB properties are now defined.
----
- Documentation/devicetree/bindings/usb/usb.yaml | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/usb/usb.yaml b/Documentation/devicetree/bindings/usb/usb.yaml
-index 6dc4821e63c3..5400893d693e 100644
---- a/Documentation/devicetree/bindings/usb/usb.yaml
-+++ b/Documentation/devicetree/bindings/usb/usb.yaml
-@@ -24,6 +24,13 @@ properties:
-     description:
-       Name specifier for the USB PHY
- 
-+  usb-phy:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description:
-+      List of all the USB PHYs on this HCD to be accepted by the legacy USB
-+      Physical Layer subsystem.
-+    deprecated: true
-+
-   phy_type:
-     description:
-       Tells USB controllers that we want to configure the core to support a
+diff --git a/Documentation/devicetree/bindings/usb/generic-xhci.yaml b/Documentation/devicetree/bindings/usb/generic-xhci.yaml
+index 1ea1d49a8175..23d73df96ea3 100644
+--- a/Documentation/devicetree/bindings/usb/generic-xhci.yaml
++++ b/Documentation/devicetree/bindings/usb/generic-xhci.yaml
+@@ -26,7 +26,9 @@ properties:
+               - marvell,armada-8k-xhci
+           - const: generic-xhci
+       - description: Broadcom STB SoCs with xHCI
+-        const: brcm,bcm7445-xhci
++        enum:
++          - brcm,xhci-brcm-v2
++          - brcm,bcm7445-xhci
+       - description: Generic xHCI device
+         const: xhci-platform
+         deprecated: true
 -- 
 2.28.0
 

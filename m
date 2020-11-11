@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEF58C56202
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:10:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08771C56201
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:10:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9A27220709
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:10:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A9452206FB
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:10:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgKKJJt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 11 Nov 2020 04:09:49 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:38834 "EHLO
+        id S1726235AbgKKJKw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 11 Nov 2020 04:10:52 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:39446 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726644AbgKKJJL (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Nov 2020 04:09:11 -0500
+        with ESMTP id S1726742AbgKKJJs (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Nov 2020 04:09:48 -0500
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 8B0B98030171;
-        Wed, 11 Nov 2020 09:09:04 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id AE59C803073D;
+        Wed, 11 Nov 2020 09:09:07 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id TZS9AUp4z0AJ; Wed, 11 Nov 2020 12:09:03 +0300 (MSK)
+        with ESMTP id 2wsDKerN1vQE; Wed, 11 Nov 2020 12:09:07 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
@@ -49,10 +49,11 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 01/18] dt-bindings: usb: usb-hcd: Detach generic USB controller properties
-Date:   Wed, 11 Nov 2020 12:08:36 +0300
-Message-ID: <20201111090853.14112-2-Sergey.Semin@baikalelectronics.ru>
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v4 06/18] dt-bindings: usb: Add generic "usb-phy" property
+Date:   Wed, 11 Nov 2020 12:08:41 +0300
+Message-ID: <20201111090853.14112-7-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201111090853.14112-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201111090853.14112-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -63,94 +64,49 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There can be three distinctive types of the USB controllers: USB hosts,
-USB peripherals/gadgets and USB OTG, which can switch from one role to
-another. In order to have that hierarchy handled in the DT binding files,
-we need to collect common properties in a common DT schema and specific
-properties in dedicated schemas. Seeing the usb-hcd.yaml DT schema is
-dedicated for the USB host controllers only, let's move some common
-properties from there into the usb.yaml schema. So the later would be
-available to evaluate all currently supported types of the USB
-controllers.
-
-While at it add an explicit "additionalProperties: true" into the
-usb-hcd.yaml as setting the additionalProperties/unevaluateProperties
-properties is going to be get mandatory soon.
+Even though the Generic PHY framework is the more preferable way of
+setting the USB PHY up, there are still many dts-files and DT bindings
+which rely on having the legacy "usb-phy" specified to attach particular
+USB PHYs to USB cores. Let's have the "usb-phy" property described in
+the generic USB HCD binding file so it would be validated against the
+nodes in which it's specified. Mark the property as deprecated to
+discourage the developers from using it.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 ---
+
+Changelog v2:
+- Discard '|' from the property description, since we don't need to
+  preserve the text formatting.
 
 Changelog v4:
-- This is a new patch created as a result of the comment left
-  by Chunfeng Yun in v3
+- Move the "usb-phy" property definition into the usb.yaml schema where
+  all generic USB properties are now defined.
 ---
- .../devicetree/bindings/usb/usb-hcd.yaml      | 14 ++-------
- .../devicetree/bindings/usb/usb.yaml          | 29 +++++++++++++++++++
- 2 files changed, 32 insertions(+), 11 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/usb/usb.yaml
+ Documentation/devicetree/bindings/usb/usb.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-index 7263b7f2b510..81f3ad1419d8 100644
---- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-+++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-@@ -9,18 +9,10 @@ title: Generic USB Host Controller Device Tree Bindings
- maintainers:
-   - Greg Kroah-Hartman <gregkh@linuxfoundation.org>
- 
--properties:
--  $nodename:
--    pattern: "^usb(@.*)?"
-+allOf:
-+  - $ref: usb.yaml#
- 
--  phys:
--    $ref: /schemas/types.yaml#/definitions/phandle-array
--    description:
--      List of all the USB PHYs on this HCD
--
--  phy-names:
--    description:
--      Name specifier for the USB PHY
-+additionalProperties: true
- 
- examples:
-   - |
 diff --git a/Documentation/devicetree/bindings/usb/usb.yaml b/Documentation/devicetree/bindings/usb/usb.yaml
-new file mode 100644
-index 000000000000..941ad59fbac5
---- /dev/null
+index 6dc4821e63c3..5400893d693e 100644
+--- a/Documentation/devicetree/bindings/usb/usb.yaml
 +++ b/Documentation/devicetree/bindings/usb/usb.yaml
-@@ -0,0 +1,29 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/usb/usb.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Generic USB Controller Device Tree Bindings
-+
-+maintainers:
-+  - Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-+
-+select: false
-+
-+properties:
-+  $nodename:
-+    pattern: "^usb(@.*)?"
-+
-+  phys:
+@@ -24,6 +24,13 @@ properties:
+     description:
+       Name specifier for the USB PHY
+ 
++  usb-phy:
 +    $ref: /schemas/types.yaml#/definitions/phandle-array
 +    description:
-+      List of all the USB PHYs on this HCD
++      List of all the USB PHYs on this HCD to be accepted by the legacy USB
++      Physical Layer subsystem.
++    deprecated: true
 +
-+  phy-names:
-+    description:
-+      Name specifier for the USB PHY
-+
-+additionalProperties: true
-+
-+...
+   phy_type:
+     description:
+       Tells USB controllers that we want to configure the core to support a
 -- 
 2.28.0
 

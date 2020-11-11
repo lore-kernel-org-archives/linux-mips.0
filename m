@@ -7,31 +7,31 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08BACC4742C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFAFFC388F9
 	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:12:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BBE552072C
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:12:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 73A81206E3
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:12:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbgKKJMC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 11 Nov 2020 04:12:02 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:38934 "EHLO
+        id S1726337AbgKKJMB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 11 Nov 2020 04:12:01 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:39420 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726655AbgKKJJK (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Nov 2020 04:09:10 -0500
+        with ESMTP id S1726685AbgKKJJ2 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Nov 2020 04:09:28 -0500
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id CD16F803073E;
-        Wed, 11 Nov 2020 09:09:05 +0000 (UTC)
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id F12128001383;
+        Wed, 11 Nov 2020 09:09:17 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id qU-jSI3SHFlp; Wed, 11 Nov 2020 12:09:05 +0300 (MSK)
+        with ESMTP id 02Cuf__8BCZN; Wed, 11 Nov 2020 12:09:17 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>
+        Rob Herring <robh+dt@kernel.org>, Roger Quadros <rogerq@ti.com>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
@@ -39,7 +39,6 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Manu Gautam <mgautam@codeaurora.org>,
-        Roger Quadros <rogerq@ti.com>,
         Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
         Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
@@ -51,9 +50,9 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Rob Herring <robh@kernel.org>
-Subject: [PATCH v4 03/18] dt-bindings: usb: usb-drd: Add "otg-rev" property constraints
-Date:   Wed, 11 Nov 2020 12:08:38 +0300
-Message-ID: <20201111090853.14112-4-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v4 17/18] dt-bindings: usb: keystone-dwc3: Validate DWC3 sub-node
+Date:   Wed, 11 Nov 2020 12:08:52 +0300
+Message-ID: <20201111090853.14112-18-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201111090853.14112-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201111090853.14112-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -64,34 +63,37 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There are only four OTG revisions are currently supported by the kernel:
-0x0100, 0x0120, 0x0130, 0x0200. Any another value is considered as
-invalid.
+TI Keystone DWC3 compatible DT node is supposed to have a DWC USB3
+compatible sub-node to describe a fully functioning USB interface.
+Since DWC USB3 has now got a DT schema describing its DT node, let's make
+sure the TI Keystone DWC3 sub-node passes validation against it.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Reviewed-by: Rob Herring <robh@kernel.org>
 
 ---
 
-Changelog v4:
-- Move the constraints to the usb-drd.yaml schema where the otg-rev
-  property is now defined.
+Changelog v2:
+- Grammar fix: "s/it'/its"
 ---
- Documentation/devicetree/bindings/usb/usb-drd.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/usb-drd.yaml b/Documentation/devicetree/bindings/usb/usb-drd.yaml
-index f3a64c46dcd0..f229fc8068d9 100644
---- a/Documentation/devicetree/bindings/usb/usb-drd.yaml
-+++ b/Documentation/devicetree/bindings/usb/usb-drd.yaml
-@@ -18,6 +18,7 @@ properties:
-       features (HNP/SRP/ADP) is enabled. If ADP is required, otg-rev should be
-       0x0200 or above.
-     $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0x0100, 0x0120, 0x0130, 0x0200]
+diff --git a/Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml b/Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml
+index c1b19fc5d0a2..ca7fbe3ed22e 100644
+--- a/Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml
++++ b/Documentation/devicetree/bindings/usb/ti,keystone-dwc3.yaml
+@@ -64,9 +64,7 @@ properties:
  
-   dr_mode:
-     description:
+ patternProperties:
+   "usb@[a-f0-9]+$":
+-    type: object
+-    description: This is the node representing the DWC3 controller instance
+-      Documentation/devicetree/bindings/usb/dwc3.txt
++    $ref: snps,dwc3.yaml#
+ 
+ required:
+   - compatible
 -- 
 2.28.0
 

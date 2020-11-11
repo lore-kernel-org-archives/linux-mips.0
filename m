@@ -7,42 +7,40 @@ X-Spam-Status: No, score=-9.8 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7539C388F9
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:17:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08F46C63699
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:17:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 757A620797
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:17:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CCF95206FB
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Nov 2020 09:17:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgKKJRE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1726736AbgKKJRE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 11 Nov 2020 04:17:04 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:39700 "EHLO
+Received: from mail.baikalelectronics.com ([87.245.175.226]:39692 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726460AbgKKJQI (ORCPT
+        with ESMTP id S1726506AbgKKJQI (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Nov 2020 04:16:08 -0500
 Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id A96E080305E2;
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 34806803016F;
         Wed, 11 Nov 2020 09:16:05 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at baikalelectronics.ru
 Received: from mail.baikalelectronics.ru ([127.0.0.1])
         by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Sz2gSEV3FcJn; Wed, 11 Nov 2020 12:16:05 +0300 (MSK)
+        with ESMTP id u5SEvu3guARK; Wed, 11 Nov 2020 12:16:04 +0300 (MSK)
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Felipe Balbi <balbi@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>
+        Paul Cercueil <paul@crapouillou.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         <devicetree@vger.kernel.org>, <linux-mips@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 09/18] mips: dts: ralink: mt7628a: Harmonize EHCI/OHCI DT nodes name
-Date:   Wed, 11 Nov 2020 12:15:43 +0300
-Message-ID: <20201111091552.15593-10-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v2 07/18] mips: dts: jz47x: Harmonize EHCI/OHCI DT nodes name
+Date:   Wed, 11 Nov 2020 12:15:41 +0300
+Message-ID: <20201111091552.15593-8-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -60,23 +58,38 @@ requires the USB nodes to have the name acceptable by the regexp:
 nodes are correctly named.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Acked-by: Paul Cercueil <paul@crapouillou.net>
 Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/mips/boot/dts/ralink/mt7628a.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/boot/dts/ingenic/jz4740.dtsi | 2 +-
+ arch/mips/boot/dts/ingenic/jz4770.dtsi | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/boot/dts/ralink/mt7628a.dtsi b/arch/mips/boot/dts/ralink/mt7628a.dtsi
-index 892e8ab863c5..45bf96a3d17a 100644
---- a/arch/mips/boot/dts/ralink/mt7628a.dtsi
-+++ b/arch/mips/boot/dts/ralink/mt7628a.dtsi
-@@ -275,7 +275,7 @@ usb_phy: usb-phy@10120000 {
- 		reset-names = "host", "device";
+diff --git a/arch/mips/boot/dts/ingenic/jz4740.dtsi b/arch/mips/boot/dts/ingenic/jz4740.dtsi
+index 1520585c235c..b989ff62ffbc 100644
+--- a/arch/mips/boot/dts/ingenic/jz4740.dtsi
++++ b/arch/mips/boot/dts/ingenic/jz4740.dtsi
+@@ -281,7 +281,7 @@ dmac: dma-controller@13020000 {
+ 		clocks = <&cgu JZ4740_CLK_DMA>;
  	};
  
--	ehci@101c0000 {
-+	usb@101c0000 {
- 		compatible = "generic-ehci";
- 		reg = <0x101c0000 0x1000>;
+-	uhc: uhc@13030000 {
++	uhc: usb@13030000 {
+ 		compatible = "ingenic,jz4740-ohci", "generic-ohci";
+ 		reg = <0x13030000 0x1000>;
+ 
+diff --git a/arch/mips/boot/dts/ingenic/jz4770.dtsi b/arch/mips/boot/dts/ingenic/jz4770.dtsi
+index fa11ac950499..e45c03038826 100644
+--- a/arch/mips/boot/dts/ingenic/jz4770.dtsi
++++ b/arch/mips/boot/dts/ingenic/jz4770.dtsi
+@@ -417,7 +417,7 @@ dmac1: dma-controller@13420100 {
+ 		interrupts = <23>;
+ 	};
+ 
+-	uhc: uhc@13430000 {
++	uhc: usb@13430000 {
+ 		compatible = "generic-ohci";
+ 		reg = <0x13430000 0x1000>;
  
 -- 
 2.28.0

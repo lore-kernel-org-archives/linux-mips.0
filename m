@@ -2,70 +2,121 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCF7DC63699
-	for <linux-mips@archiver.kernel.org>; Thu, 12 Nov 2020 22:50:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A09D1C6369E
+	for <linux-mips@archiver.kernel.org>; Thu, 12 Nov 2020 22:50:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8E1D420A8B
-	for <linux-mips@archiver.kernel.org>; Thu, 12 Nov 2020 22:50:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5B52B2225D
+	for <linux-mips@archiver.kernel.org>; Thu, 12 Nov 2020 22:50:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727898AbgKLWuV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1727895AbgKLWuV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Thu, 12 Nov 2020 17:50:21 -0500
-Received: from elvis.franken.de ([193.175.24.41]:57131 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:57122 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727216AbgKLWuU (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1726437AbgKLWuU (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Thu, 12 Nov 2020 17:50:20 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kdLQ2-0005gc-02; Thu, 12 Nov 2020 23:50:18 +0100
+        id 1kdLQ2-0005gc-00; Thu, 12 Nov 2020 23:50:18 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 9DFAEC4DE1; Thu, 12 Nov 2020 23:41:05 +0100 (CET)
-Date:   Thu, 12 Nov 2020 23:41:05 +0100
+        id A2334C4DE0; Thu, 12 Nov 2020 23:38:05 +0100 (CET)
+Date:   Thu, 12 Nov 2020 23:38:05 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 07/18] mips: dts: jz47x: Harmonize EHCI/OHCI DT nodes
- name
-Message-ID: <20201112224105.GC19695@alpha.franken.de>
-References: <20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru>
- <20201111091552.15593-8-Sergey.Semin@baikalelectronics.ru>
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        linux-mips@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen.Hegelund@microchip.com
+Subject: Re: [PATCH v2 0/9] MIPS: Add support for more mscc SoCs: Luton,
+ Serval and Jaguar2
+Message-ID: <20201112223805.GA19695@alpha.franken.de>
+References: <20201110114508.1197652-1-gregory.clement@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201111091552.15593-8-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20201110114508.1197652-1-gregory.clement@bootlin.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 12:15:41PM +0300, Serge Semin wrote:
-> In accordance with the Generic EHCI/OHCI bindings the corresponding node
-> name is suppose to comply with the Generic USB HCD DT schema, which
-> requires the USB nodes to have the name acceptable by the regexp:
-> "^usb(@.*)?" . Make sure the "generic-ehci" and "generic-ohci"-compatible
-> nodes are correctly named.
+On Tue, Nov 10, 2020 at 12:44:59PM +0100, Gregory CLEMENT wrote:
+> Hello,
 > 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Acked-by: Paul Cercueil <paul@crapouillou.net>
-> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/mips/boot/dts/ingenic/jz4740.dtsi | 2 +-
->  arch/mips/boot/dts/ingenic/jz4770.dtsi | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+> Ocelot SoC belongs to a larger family of SoCs called VCoreIII. Luton,
+> Serval and Jaguar2 are part of this family and are added with this
+> series.
+> 
+> This the second version with a few changes in device tree.
+> 
+> To be able to run a linux kernel the irqchip support and the pinctrl
+> support are needed. Two series of patches adding this support has been
+> posted to their subsystem. However there is no build dependency
+> between them.
+> 
+> Changelog:
+> v1 -> v2
+>  - Moved the changes in binding documentation from patch 8 to 2
+>  - Fixed i2c devices node name in jaguar2 device tree files
+>  - Added Acked-by from Rob Herring
+>  - Fixes few more devices tree nodes, now there is no more warning when
+>    running "make W=1 dtbs"
+> 
+> Gregory
+> 
+> Gregory CLEMENT (9):
+>   dt-bindings: mips: Add Luton
+>   dt-bindings: mips: Add Serval and Jaguar2
+>   MIPS: mscc: Prepare configuration to handle more SoCs
+>   MIPS: mscc: Fix configuration name for ocelot legacy boards
+>   MIPS: mscc: Add luton dtsi
+>   MIPS: mscc: Add luton PC0B91 device tree
+>   MIPS: mscc: build FIT image for Luton
+>   MIPS: mscc: Add jaguar2 support
+>   MIPS: mscc: Add serval support
+> 
+>  .../devicetree/bindings/mips/mscc.txt         |   2 +-
+>  arch/mips/boot/dts/Makefile                   |   2 +-
+>  arch/mips/boot/dts/mscc/Makefile              |  11 +-
+>  arch/mips/boot/dts/mscc/jaguar2.dtsi          | 167 +++++++++++
+>  arch/mips/boot/dts/mscc/jaguar2_common.dtsi   |  25 ++
+>  arch/mips/boot/dts/mscc/jaguar2_pcb110.dts    | 267 ++++++++++++++++++
+>  arch/mips/boot/dts/mscc/jaguar2_pcb111.dts    | 107 +++++++
+>  arch/mips/boot/dts/mscc/jaguar2_pcb118.dts    |  57 ++++
+>  arch/mips/boot/dts/mscc/luton.dtsi            | 116 ++++++++
+>  arch/mips/boot/dts/mscc/luton_pcb091.dts      |  30 ++
+>  arch/mips/boot/dts/mscc/serval.dtsi           | 153 ++++++++++
+>  arch/mips/boot/dts/mscc/serval_common.dtsi    | 127 +++++++++
+>  arch/mips/boot/dts/mscc/serval_pcb105.dts     |  17 ++
+>  arch/mips/boot/dts/mscc/serval_pcb106.dts     |  17 ++
+>  arch/mips/generic/Kconfig                     |  37 ++-
+>  arch/mips/generic/Platform                    |   3 +
+>  arch/mips/generic/board-jaguar2.its.S         |  40 +++
+>  arch/mips/generic/board-luton.its.S           |  23 ++
+>  arch/mips/generic/board-serval.its.S          |  24 ++
+>  19 files changed, 1218 insertions(+), 7 deletions(-)
+>  create mode 100644 arch/mips/boot/dts/mscc/jaguar2.dtsi
+>  create mode 100644 arch/mips/boot/dts/mscc/jaguar2_common.dtsi
+>  create mode 100644 arch/mips/boot/dts/mscc/jaguar2_pcb110.dts
+>  create mode 100644 arch/mips/boot/dts/mscc/jaguar2_pcb111.dts
+>  create mode 100644 arch/mips/boot/dts/mscc/jaguar2_pcb118.dts
+>  create mode 100644 arch/mips/boot/dts/mscc/luton.dtsi
+>  create mode 100644 arch/mips/boot/dts/mscc/luton_pcb091.dts
+>  create mode 100644 arch/mips/boot/dts/mscc/serval.dtsi
+>  create mode 100644 arch/mips/boot/dts/mscc/serval_common.dtsi
+>  create mode 100644 arch/mips/boot/dts/mscc/serval_pcb105.dts
+>  create mode 100644 arch/mips/boot/dts/mscc/serval_pcb106.dts
+>  create mode 100644 arch/mips/generic/board-jaguar2.its.S
+>  create mode 100644 arch/mips/generic/board-luton.its.S
+>  create mode 100644 arch/mips/generic/board-serval.its.S
 
-applied to mips-next.
+series applied to mips-next.
 
 Thomas.
 

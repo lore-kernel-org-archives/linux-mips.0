@@ -2,158 +2,169 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MSGID_FROM_MTA_HEADER,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1A27C4742C
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Nov 2020 09:11:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4FD7C388F7
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Nov 2020 09:18:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A30082145D
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Nov 2020 09:11:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 614E2221EB
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Nov 2020 09:18:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="p+wo7/Nh"
+	dkim=pass (1024-bit key) header.d=nokia.onmicrosoft.com header.i=@nokia.onmicrosoft.com header.b="EiJVXy1q"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726377AbgKMJLO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 13 Nov 2020 04:11:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726237AbgKMJKy (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 13 Nov 2020 04:10:54 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DACC0617A6;
-        Fri, 13 Nov 2020 01:10:53 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id s8so8904540wrw.10;
-        Fri, 13 Nov 2020 01:10:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uXUhRC0bzFN/HRAL+GRqiPIYgHVbUUJIYHsBN5DjgE0=;
-        b=p+wo7/Nh9m0XD80r2XzZFAO2DoBlDI3I3Gwa5Wa0yeFs/dYULZfgxHkx6cgHdxgI2+
-         5Kr82F3xNySOQNZ8mKdMrXrEkjKrvsj7e0tXRB63cdKKLUi84f5rCmp0Y6h7TtrIwPT9
-         77/hGyVSIeKTBqnfZ5ss6df4CgeksOHY661OwCO8+8+fMKHFRqbGCskSIe0f9CC8FlnF
-         7h11lYiuhKZmV9VbaLu3IPCaVymRZijU6PVxd+Fqkat5bzZ6v4yHn3bBYmdPZysQJBjV
-         PnVOX+35Y4aEUSynuQsu3/oxnUKkSAMM+G7k+8qu51loTdPFhqNkc5jVSSuXsTIquY7+
-         9BKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uXUhRC0bzFN/HRAL+GRqiPIYgHVbUUJIYHsBN5DjgE0=;
-        b=C+f2/44puF1dXrqGXx+Y9ZIZTV1V5no0YgutQOXaqg2Nzd+ckoTS17IwLiHAhwa4gP
-         d3vi6giOwKd9vxQUoeoSwWfjz1ssBpipSkBE1Dq9JdDPbfT8hv8h0qB6RmA4AuKi4hvX
-         Ypwt3eNYNyBmGzvNtJqxe1/k3/IAo6iIsgmTzVbfM9sZ5aJ3Mrwao1eqt88oIOGy+0o9
-         fbGtty0bfTGfHEkWnBjO8RM16MNKbAZDFD99ltGGNygN5aA815Mbdf28yVWuCqYtBr24
-         wLPIRqYnKlm7hj1LDUWG90VCEMT/5kStqHPRkcCsxRPmX1fiXzFBVspCAdy405KXwk7O
-         sKfw==
-X-Gm-Message-State: AOAM532zIKjcIBo3SQWXyU9oHevLao0/oI0se1Tn/kh1+hCKZ03Mi1Um
-        kgcGWj175pj0vFUzk5MJmrs=
-X-Google-Smtp-Source: ABdhPJy78tIVcu9O8hPMJPNHMHhf81xjTO9shxwjozOIdS3Zfp89GDfAFI3eGuTojYv6UjeLyBwBbA==
-X-Received: by 2002:adf:d4c6:: with SMTP id w6mr2226862wrk.71.1605258652025;
-        Fri, 13 Nov 2020 01:10:52 -0800 (PST)
-Received: from localhost.localdomain (245.red-79-158-78.dynamicip.rima-tde.net. [79.158.78.245])
-        by smtp.gmail.com with ESMTPSA id 15sm9266183wmg.1.2020.11.13.01.10.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 13 Nov 2020 01:10:51 -0800 (PST)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     mturquette@baylibre.com
-Cc:     sboyd@kernel.org, robh+dt@kernel.org, tsbogend@alpha.franken.de,
-        john@phrozen.org, gregkh@linuxfoundation.org, gch981213@gmail.com,
-        hackpascal@gmail.com, jiaxun.yang@flygoat.com,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        devel@driverdev.osuosl.org, neil@brown.name
-Subject: [PATCH v2 2/5] dt: bindings: add mt7621-clk device tree binding documentation
-Date:   Fri, 13 Nov 2020 10:10:43 +0100
-Message-Id: <20201113091046.30964-3-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201113091046.30964-1-sergio.paracuellos@gmail.com>
-References: <20201113091046.30964-1-sergio.paracuellos@gmail.com>
+        id S1726301AbgKMJSN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 13 Nov 2020 04:18:13 -0500
+Received: from mail-eopbgr130120.outbound.protection.outlook.com ([40.107.13.120]:15110
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726200AbgKMJSM (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 13 Nov 2020 04:18:12 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZrnH1U3DS696WB+mt0oGfx6fjHWPO1HhjUhZcCy3NbpB9zlPNkcatyjByEdI1Fbh/5O2K+shRJ5/1YnoHCzr5SCH6uLsc3l7DZ8e0jXGzAdTqnHXPE6Ggr2OIVh0wRabZ15jDxyuy181IIAycKUXCBmvqGs1ylfgSwesQq3t3MScpULEXkFmlOw1ouYUyr0f3p4bt/Ou+1IArGh5ceb4B7isQ4oiGNbZIWsSAH4xI4Yt+1OaFH22gR0Iuo4WZsO9A/P03MRsyHg8ogPojV1s1JhTGZ3wcsfsxdMOegOvCms787NxjYGgIBEP1jivheWuPp8M1rSPq2kAwO3ZxzIYIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JTQXUBfgPgEEro2fPl6SoqVmvBAUC3Q/+5z/jDrhClY=;
+ b=FwJ3PY0iKNrHBmse4aEhWW/Iia8j7nxc7JHk/0Z8fk0hz/Jim/LR0FvdJY3olhYLqrxd1a2hfnBY+vja+3rhO4doRVsXlrrRrnOQ3NghpRe/mfm9MqsiH7FgGSDuan8Y2Ek3PrnvPhAlcooo4U9mgka1RGm+qNS8AFnieH2lPewu//lPWYe5UzTB0ZPQ3Eh8Ay4XpluMXXcaCHcBOGAiWHxm17+opSKpAFAByfxjvozqvNLFzaYzHXSQ7dMv/B+43YvT+XrHl80K50IigeyuNgysM+a7Bus7w9hwlUTXuzKAuChE1XeW5U4+TiQ4UyqdeF65XSItkoSUK2fSxr3MmA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JTQXUBfgPgEEro2fPl6SoqVmvBAUC3Q/+5z/jDrhClY=;
+ b=EiJVXy1qwIL2LGijuW1cMta5d7HZDhEn8BBeGh6zEFt3B9i7Wpig+l6JyzNcgVMMsXwybVPbaLvhGdFVtu5iE6mc4wYD704a1wzaYg6QiNgwNLqC+zO+32wjEny3yvw6eQdsknIyuyUayGmbVfRy2XZ1ff04tffYrvVGfNC+LGg=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nokia.com;
+Received: from AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
+ by AM0PR07MB6001.eurprd07.prod.outlook.com (2603:10a6:208:113::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.15; Fri, 13 Nov
+ 2020 09:18:05 +0000
+Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
+ ([fe80::d527:e75b:546c:a85b]) by AM0PR07MB4531.eurprd07.prod.outlook.com
+ ([fe80::d527:e75b:546c:a85b%6]) with mapi id 15.20.3564.021; Fri, 13 Nov 2020
+ 09:18:05 +0000
+Subject: Re: [PATCH] MIPS: reserve the memblock right after the kernel
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20201106141001.57637-1-alexander.sverdlin@nokia.com>
+ <20201107094028.GA4918@alpha.franken.de>
+ <1d6a424e-944e-7f21-1f30-989fb61018a8@nokia.com>
+ <20201110095503.GA10357@alpha.franken.de>
+ <c435b3df-4e82-7c10-366a-5a3d1543c73f@nokia.com>
+ <20201111145240.lok3q5g3pgcvknqr@mobilestation>
+From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Message-ID: <4c58b551-b07f-d217-c683-615f7b54ea30@nokia.com>
+Date:   Fri, 13 Nov 2020 10:17:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+In-Reply-To: <20201111145240.lok3q5g3pgcvknqr@mobilestation>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [131.228.32.166]
+X-ClientProxiedBy: AM0PR10CA0003.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:17c::13) To AM0PR07MB4531.eurprd07.prod.outlook.com
+ (2603:10a6:208:6e::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.166) by AM0PR10CA0003.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:17c::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Fri, 13 Nov 2020 09:18:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d147f0d9-eb3f-451d-ef7b-08d887b50725
+X-MS-TrafficTypeDiagnostic: AM0PR07MB6001:
+X-Microsoft-Antispam-PRVS: <AM0PR07MB600111562D6761BA7AB063AB88E60@AM0PR07MB6001.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dClwJctBkwrIJQs8lUy223ztRJOzrTjNYOdCiwcxeJAuhtFw8OrBHw2gFiU65MxnZV3ApjEivpy1t8Lfy14QvHgnwjAA5fJsLTjOEgOW+XC2mpOtpvpYsvd7rtAFy2pqB67cSzlQtzu5w46ZHb06I2dLsbjympA+InXv8I3u3BTbBnYq1RT282XlLCH13lwGS8pmV0U9W3QUe8rvrCGYEKAAUwAZsv/lqrE8S8GaDDq6jkkElkM6JZ2bq8yHb9MbWm/MP3l0qcdkbukipC4Dp4MutgInDn24KHxmS9I26O2rF6EeTTOs3bEzMW61ux6q/fHVHC1JFtCiKUUKmNSZ9WLAKHDxIc9dV5ra0CGYxodbRhHa144iWYzG4VXPmnas
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(366004)(346002)(39860400002)(54906003)(478600001)(4326008)(66556008)(6512007)(83380400001)(2616005)(31686004)(8936002)(6506007)(86362001)(53546011)(66476007)(26005)(186003)(316002)(16526019)(5660300002)(8676002)(44832011)(2906002)(6666004)(66946007)(52116002)(956004)(6486002)(36756003)(6916009)(31696002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: P/k5bNHQcZHSb8sQso72R4+eZDC+VJ8FU0P/iv8DHHdsMo+YVfRWRW7FZ+3qbYjUgxa6b9aRCJRDnwTUkFVvFbnXUVJvsXuniQztWGwW4K2RzQAni3v9+CMjj0FyjakoFoK1cxwEcGMwkDGawgIKptrNK09cGfyEOXugA4WHW/a1LQschOrckuHRiIsxL4S2CcIMqOZjjbnJD69paArgfi86LV/zl6JvdKmyDp8zQmib3a+J28sqOrZVYT2YAY0ht5DItYYGFvtxvQCc11/MFzznPcdFWY6nSJTbyx+lB2uObpyHowsGfBqQOpbBXT47pv5PoJ7WodYIBHRk/urhzHR56ltEzqcnmWG3/ycVPFsfFTT5FSNnAl8tVxz7LHxXAvhxfPjZGKi0cPgPibgwNidjravG1xjkrw76OAlqhAchrn31m2M1RAEUZd6wm59ZNrpBAeyU92+YvqEL0GRLowq6KbikDD7TThvZcaAO51HGovUZ0oqlmAj0cJ8Rxa1TjmYMsvhdOs2kkqOerWq/rlfb/lUCwxI0tV5Sscd4Uf225lv35kTmU+oHEmMFqoJa4LCdTSDlmHpFfAPvWqmUBDwbsM8rkRptzkqh3VoAquJNEP1jQ9kUAuKB66ADS6AlnasgN1D6p7bau6RI7Np+k8r5M6IsABzYwQmRPv44Tvapmhpuc8VxjARTirrIFfWqjHFWPNIhcVZJtyXYDp7Mh1jPb1ev9yYtmFD5hZjg1sXaGtV9hDkovK2P7prs3nwn0QlnpoC7+G6z4DZMu4v351Bz/7CyIrMsrX/tsr5pxZdGOAXhoRMME2CpGLbFVGmKsfvnxiOaGgzHPbq0xNG2qKjwQxeHRinOxjYxkTtOOgPLY6dRcnS4llixq7nIQ9tJmLv6XmYURo0LoWgUjQH4rw==
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d147f0d9-eb3f-451d-ef7b-08d887b50725
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2020 09:18:05.3309
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ynq0xcR42G4IE6FUnQMw2P4qElXAIfoP5lXuhrYNFrXoN8BanlTl6K1e4VA3Und7wX2JK+uLbIV4a/q7QUhdN0rmwb0C+mFSpJqyKS9+mng=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR07MB6001
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Adds device tree binding documentation for clocks in the
-MT7621 SOC.
+Hello Serge, Thomas,
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- .../bindings/clock/mediatek,mt7621-clk.yaml   | 61 +++++++++++++++++++
- 1 file changed, 61 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
+On 11/11/2020 15:52, Serge Semin wrote:
+>>> Could you send a patch, which removes check_kernel_section_mem completly ?
 
-diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-new file mode 100644
-index 000000000000..363bd9880e29
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-@@ -0,0 +1,61 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/mediatek,mt7621-clk.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MT7621 Clock Device Tree Bindings
-+
-+maintainers:
-+  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
-+
-+description: |
-+  The MT7621 has a PLL controller from where the cpu clock is provided
-+  as well as derived clocks for the bus and the peripherals. It also
-+  can gate SoC device clocks.
-+
-+  Each clock is assigned an identifier and client nodes use this identifier
-+  to specify the clock which they consume.
-+
-+  All these identifiers could be found in:
-+  [1]: <include/dt-bindings/clock/mt7621-clk.h>.
-+
-+properties:
-+  compatible:
-+    const: mediatek,mt7621-clk
-+
-+  ralink,sysctl:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      phandle to the syscon which is in the same address area with syscon
-+      device.
-+
-+  "#clock-cells":
-+    description:
-+      The first cell indicates the clock gate number, see [1] for available
-+      clocks.
-+    const: 1
-+
-+  clock-output-names:
-+    maxItems: 8
-+
-+required:
-+  - compatible
-+  - ralink,sysctl
-+  - '#clock-cells'
-+  - clock-output-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/mt7621-clk.h>
-+
-+    pll {
-+      compatible = "mediatek,mt7621-clk";
-+      ralink,sysctl = <&sysc>;
-+      #clock-cells = <1>;
-+      clock-output-names = "xtal", "cpu", "bus",
-+                           "50m", "125m", "150m",
-+                           "225m", "250m";
-+    };
+finally I think you are right and this would be the right way.
+
+>> this will expose one issue:
+>> platforms usually do it in a sane way, like it was done last 15 years, namely
+>> add kernel image without non-complete pages on the boundaries.
+>> This will lead to the situation, that request_resource() will fail at least
+>> for .bss section of the kernel and it will not be properly displayed under
+>> /proc/iomem (and probably same problem will appear, which initially motivated
+>> the creation of check_kernel_section_mem()).
+> 
+> Are you saying that some old platforms rely on the
+> check_kernel_section_mem() method adding the memory occupied by the
+> kernel to the system? If so, do you have an example of such?
+
+Initially I was confused why the below patch didn't solve the issue on Octeon:
+
+@@ -532,8 +532,8 @@ static void __init request_crashkernel(struct resource *res)
+ 
+ static void __init check_kernel_sections_mem(void)
+ {
+-       phys_addr_t start = PFN_PHYS(PFN_DOWN(__pa_symbol(&_text)));
+-       phys_addr_t size = PFN_PHYS(PFN_UP(__pa_symbol(&_end))) - start;
++       phys_addr_t start = __pa_symbol(&_text);
++       phys_addr_t size = __pa_symbol(&_end) - start;
+
+... and finally I understood, that the reason was in fact that I tested on Linux
+v5.4, which still had this code to reserve RAM resources:
+
+        for_each_memblock(memory, region) {                                                                                                                                                                        
+                phys_addr_t start = PFN_PHYS(memblock_region_memory_base_pfn(region));                                                                                                                             
+                phys_addr_t end = PFN_PHYS(memblock_region_memory_end_pfn(region)) - 1;                                                                                                                            
+                struct resource *res;                                                                                                                                                                              
+                                                                                                                                                                                                                   
+                ...
+	
+                res->start = start;                                                                                                                                                                                
+                res->end = end;                                                                                                                                                                                    
+                res->flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;                                                                                                                                              
+                res->name = "System RAM";                                                                                                                                                                          
+                                                                                                                                                                                                                   
+                request_resource(&iomem_resource, res);                                                                                                                                                            
+ 
+so I suppose that's where this evil truncation happened. Nowdays this is different
+and I believe we can try to remove check_kernel_sections_mem() completely and
+this will solve the memory corruption on Octeon.
+
+> So IMHO what could be the best conclusion in the framework of this patch:
+> 1) As Thomas said any platform-specific reservation should be done in the
+> platform-specific code. That means if octeon needs some memory behind
+> the kernel being reserved, then it should be done for example in
+> prom_init().
+> 2) The check_kernel_sections_mem() method can be removed. But it
+> should be done carefully. We at least need to try to find all the
+> platforms, which rely on its functionality.
+
+Thanks for looking into this! I agree with your analysis, I'll try to rework,
+removing check_kernel_sections_mem().
+
 -- 
-2.25.1
-
+Best regards,
+Alexander Sverdlin.

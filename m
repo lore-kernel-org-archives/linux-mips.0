@@ -5,59 +5,59 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B085C55ABD
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Nov 2020 15:46:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A5B9C63697
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Nov 2020 15:46:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C4ED622201
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Nov 2020 15:46:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C8A2122201
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Nov 2020 15:46:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pIEp+e4q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WE/2sCiU"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgKMPqo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 13 Nov 2020 10:46:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42904 "EHLO
+        id S1726855AbgKMPqs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 13 Nov 2020 10:46:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgKMPqn (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 13 Nov 2020 10:46:43 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41096C0613D1;
-        Fri, 13 Nov 2020 07:46:42 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id j7so10410128wrp.3;
-        Fri, 13 Nov 2020 07:46:42 -0800 (PST)
+        with ESMTP id S1726851AbgKMPqs (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 13 Nov 2020 10:46:48 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94924C0617A6;
+        Fri, 13 Nov 2020 07:46:47 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id d12so10360096wrr.13;
+        Fri, 13 Nov 2020 07:46:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=H75jGjzD/BZomDbFJbk8FfNvVtCaaCciMBYbMeB6+AM=;
-        b=pIEp+e4qRW1bcXHLhMC4WLZxWBYDzi1kXNOvn6LdQANLChDlwkQ/LTmhDKJXlgQRzd
-         maD18WBmu/megHU3egk9hRL/axFexdQgcVlX9rOqth+iM/PEEu1SYoRpkl5/Xb2gv+hc
-         BlTgT44yyD3QFBG6YoYzXWJ7uO37ERgeDgyEdIlyZIgQZBrxGMNgKrjm9iQ+En/q59Fe
-         v8VoDIuxQDQtW+69o7zoNjaLKR5bRAEQnGbBg8jIuQqhBmRNJ0VRwwWXTMQ8nGNblMmm
-         CwtsljYHlmQ4BRTmfL/ZCXwfFPn5HQ2IxuWQh3biJ4HLqjLn07NW0vuX1MQHpV+FSuXw
-         xTOA==
+        bh=g0CHHJRFLkJgpWDc0kWpwLPadBEpgRbUEt1rTCDH2OM=;
+        b=WE/2sCiUyHHpl2DCayvAvp1Q9QJYgwqI4FwsibXZlztfRyBbUpMrNWkHA3z6iwQqkR
+         HoddFL2fOr54FKpcRYZzcb//tSZXbgohEG9DJJFenYRMymUytedCM67GQtsdvKgpE8Sr
+         zN9YASR+Ako77qHf0zkdHPSTu2BAlHEr0k2JTvela1wbnEu30dmFgZOyKpYbejoW2iGv
+         tR7Qwrz+Gf5XbNNN3ECnJqtWnBa/W5r5SaIga5n9y31XWV47MFF668u5CMIsh70Y4Zaw
+         yH6EPuFgXrQCxD1Lc0BvD8HwK1ifUIX2KP8zn09Sx5eoBhM2EIAur3xbnBW9U5fZUesQ
+         s0hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=H75jGjzD/BZomDbFJbk8FfNvVtCaaCciMBYbMeB6+AM=;
-        b=dDXBdAVrxSqjNh6nLcv03zs29iDChRo5MNIVuwsw6aQeaoc47yNJdzXYJHSCkelrvA
-         XcwBopHZydw9uv85RxhJSoB/l06yyHALb+N5K8VnHiwiE8Fz6B0b4xhmYTd/joSfm6nt
-         e2W0jd5oaBdccOROqAJo4SJQIMKzmDe9+XkisuHWhMEQvKmjXXPUelwJPf5jCkTJLZcS
-         Xp8VGegd6zNSJR+QSmkhdgfucRN2X7LoQehOJvpyOvFZpFjldsuCVdmEJuUWnvkjY//P
-         hV2gAHY7Tp30YPE1Q4kvGmC/ONUbSWxx/m/KzEjRdFPW7TnVi7f0RuYmSl4GBRjBo9TT
-         ciMQ==
-X-Gm-Message-State: AOAM532x/J5b9pqg44OuSV2SBXmfyM6hb3q3jFVfXA95CF8wMT5eKc7G
-        VHypCYh8yr3s5EPLmBNmF28=
-X-Google-Smtp-Source: ABdhPJz9kQiQQSKrVzFJVkJxDPfqcOwqABAvoja70EZ0kYZC/N8ZzSpXc+26M8unJdnQ8Af9+F5Ryw==
-X-Received: by 2002:adf:9e48:: with SMTP id v8mr4529777wre.55.1605282396077;
-        Fri, 13 Nov 2020 07:46:36 -0800 (PST)
+        bh=g0CHHJRFLkJgpWDc0kWpwLPadBEpgRbUEt1rTCDH2OM=;
+        b=jTdGLiP38WZN63CgI99FyRW26b47ClqiDCXOtHTcM9CdVHUej61FbnNHPRvjic99cq
+         U+0VCzgSP76xuoRS5FrBXCQYt9fKlOx8vNL797IHPqaV/pAAz2h+7Plx6aZWmA6gdLKc
+         PGY3a2Mo69KG5Lr7MyReXXyfqWZvkGPjqDBqzzXJQ5HFPj9c2vngKCYNJ0uqU1cWjH8R
+         bWHgRGdHqXz0V1xznpoldkLtxnnB0GYW2VC+v8+Do0dcvYfmoLH1APasblNGLVSrJ1qC
+         saYen5+K944xL1uIfcBUltKCJq07p9aVZsk8WFR5OehWZ+/GN6NAMSbAd6YWO5reUDc6
+         A+Fg==
+X-Gm-Message-State: AOAM531bWmxGsOAUnc0Mu7XBNKNs8YRdlo8ta8Msi1fAepMY175B3SDd
+        rkS9SKWec7tzdSark6HFRhQ=
+X-Google-Smtp-Source: ABdhPJz9j68J/Z6s0zkPSGiUQMUc6/sZUF+65tbax/nZ6bjF8k29PJm5B+vvORjHAu8OtqGiGTUuXA==
+X-Received: by 2002:adf:f083:: with SMTP id n3mr4231239wro.391.1605282401419;
+        Fri, 13 Nov 2020 07:46:41 -0800 (PST)
 Received: from localhost.localdomain (245.red-79-158-78.dynamicip.rima-tde.net. [79.158.78.245])
-        by smtp.gmail.com with ESMTPSA id n15sm11727978wrq.48.2020.11.13.07.46.34
+        by smtp.gmail.com with ESMTPSA id n15sm11727978wrq.48.2020.11.13.07.46.40
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 13 Nov 2020 07:46:35 -0800 (PST)
+        Fri, 13 Nov 2020 07:46:40 -0800 (PST)
 From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
 To:     mturquette@baylibre.com
 Cc:     sboyd@kernel.org, robh+dt@kernel.org, tsbogend@alpha.franken.de,
@@ -66,9 +66,9 @@ Cc:     sboyd@kernel.org, robh+dt@kernel.org, tsbogend@alpha.franken.de,
         linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
         devel@driverdev.osuosl.org, neil@brown.name
-Subject: [PATCH v3 1/5] dt-bindings: clock: add dt binding header for mt7621 clocks
-Date:   Fri, 13 Nov 2020 16:46:28 +0100
-Message-Id: <20201113154632.24973-2-sergio.paracuellos@gmail.com>
+Subject: [PATCH v3 5/5] MAINTAINERS: add MT7621 CLOCK maintainer
+Date:   Fri, 13 Nov 2020 16:46:32 +0100
+Message-Id: <20201113154632.24973-6-sergio.paracuellos@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201113154632.24973-1-sergio.paracuellos@gmail.com>
 References: <20201113154632.24973-1-sergio.paracuellos@gmail.com>
@@ -78,61 +78,30 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Adds dt binding header for 'mediatek,mt7621-clk' clocks.
+Adding myself as maintainer for mt7621 clock driver.
 
 Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
- include/dt-bindings/clock/mt7621-clk.h | 41 ++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
- create mode 100644 include/dt-bindings/clock/mt7621-clk.h
+ MAINTAINERS | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/include/dt-bindings/clock/mt7621-clk.h b/include/dt-bindings/clock/mt7621-clk.h
-new file mode 100644
-index 000000000000..1422badcf9de
---- /dev/null
-+++ b/include/dt-bindings/clock/mt7621-clk.h
-@@ -0,0 +1,41 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Author: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-+ */
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f1f088a29bc2..30822ad6837c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11142,6 +11142,12 @@ L:	linux-wireless@vger.kernel.org
+ S:	Maintained
+ F:	drivers/net/wireless/mediatek/mt7601u/
+ 
++MEDIATEK MT7621 CLOCK DRIVER
++M:	Sergio Paracuellos <sergio.paracuellos@gmail.com>
++S:	Maintained
++F:	Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
++F:	drivers/clk/ralink/clk-mt7621.c
 +
-+#ifndef _DT_BINDINGS_CLK_MT7621_H
-+#define _DT_BINDINGS_CLK_MT7621_H
-+
-+#define MT7621_CLK_XTAL		0
-+#define MT7621_CLK_CPU		1
-+#define MT7621_CLK_BUS		2
-+#define MT7621_CLK_50M		3
-+#define MT7621_CLK_125M		4
-+#define MT7621_CLK_150M		5
-+#define MT7621_CLK_250M		6
-+#define MT7621_CLK_270M		7
-+
-+#define MT7621_CLK_HSDMA	8
-+#define MT7621_CLK_FE		9
-+#define MT7621_CLK_SP_DIVTX	10
-+#define MT7621_CLK_TIMER	11
-+#define MT7621_CLK_PCM		12
-+#define MT7621_CLK_PIO		13
-+#define MT7621_CLK_GDMA		14
-+#define MT7621_CLK_NAND		15
-+#define MT7621_CLK_I2C		16
-+#define MT7621_CLK_I2S		17
-+#define MT7621_CLK_SPI		18
-+#define MT7621_CLK_UART1	19
-+#define MT7621_CLK_UART2	20
-+#define MT7621_CLK_UART3	21
-+#define MT7621_CLK_ETH		22
-+#define MT7621_CLK_PCIE0	23
-+#define MT7621_CLK_PCIE1	24
-+#define MT7621_CLK_PCIE2	25
-+#define MT7621_CLK_CRYPTO	26
-+#define MT7621_CLK_SHXC		27
-+
-+#define MT7621_CLK_MAX		28
-+
-+#endif /* _DT_BINDINGS_CLK_MT7621_H */
+ MEDIATEK MT7621/28/88 I2C DRIVER
+ M:	Stefan Roese <sr@denx.de>
+ L:	linux-i2c@vger.kernel.org
 -- 
 2.25.1
 

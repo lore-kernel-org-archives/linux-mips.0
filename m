@@ -7,63 +7,130 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51844C4742C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A789C388F7
 	for <linux-mips@archiver.kernel.org>; Fri, 13 Nov 2020 11:11:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 196DB20709
+	by mail.kernel.org (Postfix) with ESMTP id 51D3B20797
 	for <linux-mips@archiver.kernel.org>; Fri, 13 Nov 2020 11:11:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726455AbgKMLLi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1726492AbgKMLLi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Fri, 13 Nov 2020 06:11:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33006 "EHLO mx2.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:33046 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726588AbgKMLKP (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1726625AbgKMLKP (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Fri, 13 Nov 2020 06:10:15 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6B804AED6;
-        Fri, 13 Nov 2020 11:10:11 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id A204DAF0C;
+        Fri, 13 Nov 2020 11:10:12 +0000 (UTC)
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] MIPS: vdso: Use vma page protection for remapping
-Date:   Fri, 13 Nov 2020 12:09:49 +0100
-Message-Id: <20201113110952.68086-1-tsbogend@alpha.franken.de>
+Subject: [PATCH 4/4] MIPS: mm: Clean up setup of protection map
+Date:   Fri, 13 Nov 2020 12:09:52 +0100
+Message-Id: <20201113110952.68086-4-tsbogend@alpha.franken.de>
 X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20201113110952.68086-1-tsbogend@alpha.franken.de>
+References: <20201113110952.68086-1-tsbogend@alpha.franken.de>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-MIPS protection bits are setup during runtime so using defines like
-PAGE_READONLY ignores these runtime changes. To fix this we simply
-use the page protection of the setup vma.
+Protection map difference between RIXI and non RIXI cpus is _PAGE_NO_EXEC
+and _PAGE_NO_READ usage. Both already take care of cpu_has_rixi while
+setting up the page bits. So we just need one setup of protection map
+and can drop the now unused (and broken for RIXI) PAGE_* defines.
 
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 ---
- arch/mips/kernel/vdso.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/mips/include/asm/pgtable.h |  8 ------
+ arch/mips/mm/cache.c            | 55 ++++++++++++++---------------------------
+ 2 files changed, 18 insertions(+), 45 deletions(-)
 
-diff --git a/arch/mips/kernel/vdso.c b/arch/mips/kernel/vdso.c
-index 242dc5e83847..7d0b91ad2581 100644
---- a/arch/mips/kernel/vdso.c
-+++ b/arch/mips/kernel/vdso.c
-@@ -161,7 +161,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 		gic_pfn = virt_to_phys(mips_gic_base + MIPS_GIC_USER_OFS) >> PAGE_SHIFT;
+diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
+index e5ef0fdd4838..158ba3aa3bf1 100644
+--- a/arch/mips/include/asm/pgtable.h
++++ b/arch/mips/include/asm/pgtable.h
+@@ -25,14 +25,6 @@
+ struct mm_struct;
+ struct vm_area_struct;
  
- 		ret = io_remap_pfn_range(vma, base, gic_pfn, gic_size,
--					 pgprot_noncached(PAGE_READONLY));
-+					 pgprot_noncached(vma->vm_page_prot));
- 		if (ret)
- 			goto out;
- 	}
-@@ -169,7 +169,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 	/* Map data page. */
- 	ret = remap_pfn_range(vma, data_addr,
- 			      virt_to_phys(vdso_data) >> PAGE_SHIFT,
--			      PAGE_SIZE, PAGE_READONLY);
-+			      PAGE_SIZE, vma->vm_page_prot);
- 	if (ret)
- 		goto out;
+-#define PAGE_NONE	__pgprot(_PAGE_PRESENT | _PAGE_NO_READ | \
+-				 _page_cachable_default)
+-#define PAGE_SHARED	__pgprot(_PAGE_PRESENT | _PAGE_WRITE | \
+-				 _page_cachable_default)
+-#define PAGE_COPY	__pgprot(_PAGE_PRESENT | _PAGE_NO_EXEC | \
+-				 _page_cachable_default)
+-#define PAGE_READONLY	__pgprot(_PAGE_PRESENT | \
+-				 _page_cachable_default)
+ #define PAGE_KERNEL	__pgprot(_PAGE_PRESENT | __READABLE | __WRITEABLE | \
+ 				 _PAGE_GLOBAL | _page_cachable_default)
+ #define PAGE_KERNEL_NC	__pgprot(_PAGE_PRESENT | __READABLE | __WRITEABLE | \
+diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
+index f66a8bfc030e..36bcf4e955e8 100644
+--- a/arch/mips/mm/cache.c
++++ b/arch/mips/mm/cache.c
+@@ -159,43 +159,24 @@ EXPORT_SYMBOL(_page_cachable_default);
  
+ static inline void setup_protection_map(void)
+ {
+-	if (cpu_has_rixi) {
+-		protection_map[0]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+-		protection_map[1]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
+-		protection_map[2]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+-		protection_map[3]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
+-		protection_map[4]  = PM(_PAGE_PRESENT);
+-		protection_map[5]  = PM(_PAGE_PRESENT);
+-		protection_map[6]  = PM(_PAGE_PRESENT);
+-		protection_map[7]  = PM(_PAGE_PRESENT);
+-
+-		protection_map[8]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+-		protection_map[9]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
+-		protection_map[10] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE | _PAGE_NO_READ);
+-		protection_map[11] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
+-		protection_map[12] = PM(_PAGE_PRESENT);
+-		protection_map[13] = PM(_PAGE_PRESENT);
+-		protection_map[14] = PM(_PAGE_PRESENT | _PAGE_WRITE);
+-		protection_map[15] = PM(_PAGE_PRESENT | _PAGE_WRITE);
+-
+-	} else {
+-		protection_map[0] = PAGE_NONE;
+-		protection_map[1] = PAGE_READONLY;
+-		protection_map[2] = PAGE_COPY;
+-		protection_map[3] = PAGE_COPY;
+-		protection_map[4] = PAGE_READONLY;
+-		protection_map[5] = PAGE_READONLY;
+-		protection_map[6] = PAGE_COPY;
+-		protection_map[7] = PAGE_COPY;
+-		protection_map[8] = PAGE_NONE;
+-		protection_map[9] = PAGE_READONLY;
+-		protection_map[10] = PAGE_SHARED;
+-		protection_map[11] = PAGE_SHARED;
+-		protection_map[12] = PAGE_READONLY;
+-		protection_map[13] = PAGE_READONLY;
+-		protection_map[14] = PAGE_SHARED;
+-		protection_map[15] = PAGE_SHARED;
+-	}
++	protection_map[0]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
++	protection_map[1]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
++	protection_map[2]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
++	protection_map[3]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
++	protection_map[4]  = PM(_PAGE_PRESENT);
++	protection_map[5]  = PM(_PAGE_PRESENT);
++	protection_map[6]  = PM(_PAGE_PRESENT);
++	protection_map[7]  = PM(_PAGE_PRESENT);
++
++	protection_map[8]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
++	protection_map[9]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
++	protection_map[10] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
++				_PAGE_NO_READ);
++	protection_map[11] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
++	protection_map[12] = PM(_PAGE_PRESENT);
++	protection_map[13] = PM(_PAGE_PRESENT);
++	protection_map[14] = PM(_PAGE_PRESENT | _PAGE_WRITE);
++	protection_map[15] = PM(_PAGE_PRESENT | _PAGE_WRITE);
+ }
+ 
+ #undef PM
 -- 
 2.16.4
 

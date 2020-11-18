@@ -2,80 +2,116 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B46EEC6379D
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Nov 2020 10:26:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACE44C56201
+	for <linux-mips@archiver.kernel.org>; Wed, 18 Nov 2020 21:42:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2BE8A22227
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Nov 2020 10:26:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 51ECD246C0
+	for <linux-mips@archiver.kernel.org>; Wed, 18 Nov 2020 21:42:22 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V58gjjNx"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727599AbgKRK0A (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 18 Nov 2020 05:26:00 -0500
-Received: from elvis.franken.de ([193.175.24.41]:41015 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726077AbgKRK0A (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 18 Nov 2020 05:26:00 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kfKer-00027K-00; Wed, 18 Nov 2020 11:25:49 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 03591C021C; Wed, 18 Nov 2020 09:55:57 +0100 (CET)
-Date:   Wed, 18 Nov 2020 09:55:57 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     robh+dt@kernel.org, paul@crapouillou.net,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, ak@linux.intel.com, krzk@kernel.org,
-        ebiederm@xmission.com, hns@goldelico.com, paulburton@kernel.org,
-        nixiaoming@huawei.com, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-Subject: Re: [PATCH v2 0/2] Add missing nodes and refresh defconfig for
- Ingenic SoCs based boards.
-Message-ID: <20201118085557.GA8140@alpha.franken.de>
-References: <20201116175508.51943-1-zhouyanjie@wanyeetech.com>
+        id S1726938AbgKRVlv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 18 Nov 2020 16:41:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726136AbgKRVlv (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 18 Nov 2020 16:41:51 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A12C0613D4;
+        Wed, 18 Nov 2020 13:41:50 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id c17so3640722wrc.11;
+        Wed, 18 Nov 2020 13:41:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=gjo4l7jEqfgUaEJTViB3FcmDbvAZcSujHdYlxEFDeHw=;
+        b=V58gjjNxTRjOOuSvM8oz4SRLNgcz4ELwhVa98lKi2j3r85iTchKqAqJ7jjMxZ41ghU
+         x+bNr55IxJVzPNY/MNtidNvHFZ0m0/YkoKT2o2tNXXOgaeytt9Bt4E37pnGchcEZo5jB
+         C0X2qxWBM2CqNwXITyXH+I/c5Ohnu/XcYDewKkgfi6884iBxsZX64DaNDf9EpQosqGU1
+         nqyElaNhkBToPJUpS8HOOs6uyESJZR0cbyTQrN5fOEVvaT0znpW5DYQypXJWOg6jzOBZ
+         gg7/XBGdyPYCzyG6gWFq9iCCUg4RJ9xmvo36VftyP2LbgmcPAb+8pg9M+ap5jcTqElfe
+         Tr/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gjo4l7jEqfgUaEJTViB3FcmDbvAZcSujHdYlxEFDeHw=;
+        b=TYu1f03C17HlAGTxcqZcWJPl4YcbFkMAuJsnmrRrjDrIPo9nF53MwDMh1zpfjk9eGm
+         d+Gg7rR+G360PYwPeby+S9zWlG6q79qW9YHafUxLJ1edoHY6/D1V3TJ8LmimASv30PA3
+         p/KQpWsdZ4rkXiDU3uoXshrDfZRDTFUHB4oZJZoD5IeADwR9AYnAMx1vDVWyhEqq2iU3
+         fl/J+BOE57CPWqEMIFIpqz1/6D0OwvesVnN+iLHqhD6YGz4d5E4zurY7BZe9R4LsiWjn
+         wVuO1nfp89KOM3FU6IruKBwEJst3iCCOi6gPVSFrLdg/9T8Pho0H/ZFZt/A6ug8zsezX
+         wtBQ==
+X-Gm-Message-State: AOAM533TFvQV6v2DpzJ/VgmPP98u832ynb/uZmpFfmZmySplIpwngmBf
+        KFqbiQDXrsZ+F3DdfTbtZpc=
+X-Google-Smtp-Source: ABdhPJy9ee/dgg3f2T9n0yWRJmyR6W8Gb0KA8VeUzMnlnShqSnAd5OFBZpApYyKOM58j9YFclFZQbA==
+X-Received: by 2002:adf:eb47:: with SMTP id u7mr6678174wrn.163.1605735709702;
+        Wed, 18 Nov 2020 13:41:49 -0800 (PST)
+Received: from debian (host-92-5-241-147.as43234.net. [92.5.241.147])
+        by smtp.gmail.com with ESMTPSA id o197sm5480589wme.17.2020.11.18.13.41.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 18 Nov 2020 13:41:49 -0800 (PST)
+Date:   Wed, 18 Nov 2020 21:41:47 +0000
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Thomas Bogendoerfer <tbogendoerfer@suse.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org
+Subject: Re: [PATCH 5.4 140/203] MIPS: PCI: remember nasid changed by set
+ interrupt affinity
+Message-ID: <20201118214147.5ghn6gtzu3jlksre@debian>
+References: <20200116231745.218684830@linuxfoundation.org>
+ <20200116231757.243032912@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201116175508.51943-1-zhouyanjie@wanyeetech.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200116231757.243032912@linuxfoundation.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 01:55:06AM +0800, 周琰杰 (Zhou Yanjie) wrote:
-> v1->v2:
-> 1.Add the otg_power node for otg_phy's vcc_supply.
-> 2.Move assigned-clocks in the otg node into the cgu node.
-> 3.Move the position of the SSI node.
-> 4.Select CONFIG_JZ4780_EFUSE as default.
-> 
-> 周琰杰 (Zhou Yanjie) (2):
->   MIPS: Ingenic: Add missing nodes for Ingenic SoCs and boards.
->   MIPS: Ingenic: Refresh defconfig for Ingenic SoCs based boards.
-> 
->  arch/mips/boot/dts/ingenic/ci20.dts       | 45 +++++++++++++++++++--
->  arch/mips/boot/dts/ingenic/cu1000-neo.dts | 62 ++++++++++++++++++++++++++---
->  arch/mips/boot/dts/ingenic/cu1830-neo.dts | 66 ++++++++++++++++++++++++++++---
->  arch/mips/boot/dts/ingenic/jz4780.dtsi    | 45 ++++++++++++++++++++-
->  arch/mips/boot/dts/ingenic/x1000.dtsi     | 56 +++++++++++++++++++++++++-
->  arch/mips/boot/dts/ingenic/x1830.dtsi     | 58 ++++++++++++++++++++++++++-
->  arch/mips/configs/ci20_defconfig          | 15 ++++++-
->  arch/mips/configs/cu1000-neo_defconfig    | 28 ++++++++++---
->  arch/mips/configs/cu1830-neo_defconfig    | 32 +++++++++++----
->  9 files changed, 374 insertions(+), 33 deletions(-)
+Hi Greg,
 
-series applied to mips-next.
+On Fri, Jan 17, 2020 at 12:17:37AM +0100, Greg Kroah-Hartman wrote:
+> From: Thomas Bogendoerfer <tbogendoerfer@suse.de>
+> 
+> commit 37640adbefd66491cb8083a438f7bf366ac09bc7 upstream.
+> 
 
-Thomas.
+<snip>
+
+> 
+> ---
+>  arch/mips/pci/pci-xtalk-bridge.c |    5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> --- a/arch/mips/pci/pci-xtalk-bridge.c
+> +++ b/arch/mips/pci/pci-xtalk-bridge.c
+> @@ -279,16 +279,15 @@ static int bridge_set_affinity(struct ir
+>  	struct bridge_irq_chip_data *data = d->chip_data;
+>  	int bit = d->parent_data->hwirq;
+>  	int pin = d->hwirq;
+> -	nasid_t nasid;
+>  	int ret, cpu;
+>  
+>  	ret = irq_chip_set_affinity_parent(d, mask, force);
+>  	if (ret >= 0) {
+>  		cpu = cpumask_first_and(mask, cpu_online_mask);
+> -		nasid = COMPACT_TO_NASID_NODEID(cpu_to_node(cpu));
+> +		data->nnasid = COMPACT_TO_NASID_NODEID(cpu_to_node(cpu));
+
+This will be 'data->nasid' and its causing mips builds to fail.
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Regards
+Sudip

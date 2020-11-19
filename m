@@ -2,56 +2,51 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 045ABC6379D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CFF0C64E69
 	for <linux-mips@archiver.kernel.org>; Thu, 19 Nov 2020 12:55:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A9B07246F3
+	by mail.kernel.org (Postfix) with ESMTP id D8131246B8
 	for <linux-mips@archiver.kernel.org>; Thu, 19 Nov 2020 12:55:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727379AbgKSMza (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 19 Nov 2020 07:55:30 -0500
-Received: from elvis.franken.de ([193.175.24.41]:43165 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727216AbgKSMz3 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1727353AbgKSMz3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Thu, 19 Nov 2020 07:55:29 -0500
+Received: from elvis.franken.de ([193.175.24.41]:43169 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727291AbgKSMz2 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 19 Nov 2020 07:55:28 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kfjTD-00054t-00; Thu, 19 Nov 2020 13:55:27 +0100
+        id 1kfjTD-00054t-03; Thu, 19 Nov 2020 13:55:27 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 1A6C5C020B; Thu, 19 Nov 2020 13:53:14 +0100 (CET)
-Date:   Thu, 19 Nov 2020 13:53:14 +0100
+        id 0E437C0259; Thu, 19 Nov 2020 13:54:21 +0100 (CET)
+Date:   Thu, 19 Nov 2020 13:54:21 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH 0/2] Clean up and fix up cpu_cache_init()
-Message-ID: <20201119125314.GA6314@alpha.franken.de>
-References: <1605772381-25535-1-git-send-email-yangtiezhu@loongson.cn>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] MIPS: mm: shorten lines by using macro
+Message-ID: <20201119125420.GD6314@alpha.franken.de>
+References: <20201113110952.68086-1-tsbogend@alpha.franken.de>
+ <20201113110952.68086-3-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1605772381-25535-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <20201113110952.68086-3-tsbogend@alpha.franken.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 03:52:59PM +0800, Tiezhu Yang wrote:
-> Tiezhu Yang (2):
->   MIPS: Remove cpu_has_6k_cache and cpu_has_8k_cache in cpu_cache_init()
->   MIPS: Loongson64: Fix wrong scache size when execute lscpu
+On Fri, Nov 13, 2020 at 12:09:51PM +0100, Thomas Bogendoerfer wrote:
+> Introduce helper macro to make lines shorter.
 > 
->  arch/mips/include/asm/cpu-features.h |  2 --
->  arch/mips/mm/c-r4k.c                 | 10 ++++------
->  arch/mips/mm/cache.c                 | 10 ----------
->  3 files changed, 4 insertions(+), 18 deletions(-)
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> ---
+>  arch/mips/mm/cache.c | 38 +++++++++++++++++++++-----------------
+>  1 file changed, 21 insertions(+), 17 deletions(-)
 
 applied to mips-next.
 

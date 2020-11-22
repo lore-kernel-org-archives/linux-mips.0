@@ -2,241 +2,637 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCB94C63697
-	for <linux-mips@archiver.kernel.org>; Sat, 21 Nov 2020 16:23:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E8E2C64E69
+	for <linux-mips@archiver.kernel.org>; Sun, 22 Nov 2020 09:56:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7A56E2224C
-	for <linux-mips@archiver.kernel.org>; Sat, 21 Nov 2020 16:23:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 25D1520936
+	for <linux-mips@archiver.kernel.org>; Sun, 22 Nov 2020 09:56:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kIH+iFQ3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LCDJ4mWG"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbgKUQXL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 21 Nov 2020 11:23:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45664 "EHLO
+        id S1727589AbgKVJ4G (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 22 Nov 2020 04:56:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgKUQXK (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 21 Nov 2020 11:23:10 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E60C0613CF;
-        Sat, 21 Nov 2020 08:23:10 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id y24so6263376otk.3;
-        Sat, 21 Nov 2020 08:23:10 -0800 (PST)
+        with ESMTP id S1727517AbgKVJ4E (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 22 Nov 2020 04:56:04 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A03C0613D2;
+        Sun, 22 Nov 2020 01:56:04 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id s13so14468120wmh.4;
+        Sun, 22 Nov 2020 01:56:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Vtqi5ij/e5CH5+ZSs3AhBza3/9+Xfa/5fcKnLK+RPrA=;
-        b=kIH+iFQ3BUUlg+tlGd6B2l+hKxKVyuNrTGmH7ZplX/4YI3bLDPBG+pPEzpS1JmX5ra
-         kWucpgdF77cerMO2nidi832uxf5heJTbjCINUKtV2KwgIgPV/JTfBO5cC8XdDxICzOOe
-         oY8Za9uwR+hf2YiMarDaacIQ05CIMs4U+H73saGY6crN20QArp60mJmhVCpJp5fuvcST
-         eyN1qO8TyraFDOdelomYyLkAohbWu/hooAqGtnwvSP2U+45r8L5vbZxHMVGlfcUSAtQ3
-         uHr+GdAclrYIpLBUONIZ7CXOqvweqhr01AZbmj1NGhhH0PPLgaWMO8t4ZOptUREd/+F2
-         FRNA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+y5YB6JXd29L54/5VsYH+43g+RS6v+u8YYmdDmRnWgA=;
+        b=LCDJ4mWG9cg8cFa9XdrllVCCZ95cG7iIffCbXTkKuBxEAh4WllGJeR3ktgjTRyJ2lN
+         0tAs8iRyyLSnaDBU1NX6GF99WRDkkeNcZDZILgUYzyWwAToknV5xsnTrK2YiIIO1ZE99
+         QNt/bCBGgmwMf38Jpzh/zqCm9qxWYF/GFrlcdRUrqYoFYHYc7+m93Jz7AtiWQxMfvuYY
+         OzU7khoF5vrIgZvleGPiaqXW57cvpy3p+CUtKXGnilY8/Pwb4JtTbN4FKHB8YueSVTrI
+         cICF+DniGZRv8kzja0DDwRCMApI+bJ584L63OcolawYtKKYT0Xg022aXArzwZPoFqTt6
+         zSpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Vtqi5ij/e5CH5+ZSs3AhBza3/9+Xfa/5fcKnLK+RPrA=;
-        b=gSBnlc90MA3Sz1ZOuCREvXqBXNjraAh6Dnm+EoYJWE6Azxue9/Vo7tS0MJ3xp2ynWR
-         9mX+LLqAwfAAWG9cKf/pBwnY+7T0WQicqENQbfZmv9PuNabT5PbbqmR7Tn0gzAITvb2A
-         d6gB1b6uL7mLftTv/oY5IY6QU+BvxRDKADZWv48KxkTN7QgfvoCWAnGBSruEZVpnId0q
-         IJtXuWvcLJ4/shuVlivwK/pNfAUMtO2IzdcNK+6n3vxOg8oltc1yPlObXkUNusiv6ad1
-         8D9yYOJ1HenrGEn0WYrRj5fynKC4ZXeWk8Qsgmjprg9709rRBhBZ5E9jqq68cYDbuxze
-         KQTQ==
-X-Gm-Message-State: AOAM530DCY1jIfKFCxp2x4y6hRvr5BthQQi1hhua7qRJQiMMzspQBF/M
-        yksdJ1MjyPAbcOa3ya2sE8DoLgscdPOpWJuYs08=
-X-Google-Smtp-Source: ABdhPJy8urnKhAW4YsIazNFzsark40KJjqxtfB85kGu9EHtyM8tHCU7JMU3OzFlZfGtRgtq6e2t1fXXP0fPdR2VsiL4=
-X-Received: by 2002:a05:6830:160d:: with SMTP id g13mr6763788otr.74.1605975789695;
- Sat, 21 Nov 2020 08:23:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20201113154632.24973-1-sergio.paracuellos@gmail.com>
- <20201113154632.24973-3-sergio.paracuellos@gmail.com> <20201121133432.GA2130098@robh.at.kernel.org>
- <CAMhs-H9JORHgPmq0-n=hx=yRo0SCT33mP_quxZoRtKYkiVDy_Q@mail.gmail.com>
-In-Reply-To: <CAMhs-H9JORHgPmq0-n=hx=yRo0SCT33mP_quxZoRtKYkiVDy_Q@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+y5YB6JXd29L54/5VsYH+43g+RS6v+u8YYmdDmRnWgA=;
+        b=Waspsk7Lb+c3iQ4HNWIfmLMSRt08iAqHaSSokC+ff0Dg4xhtW71K86bqUOMNaOn1Ir
+         jC5WlPEUn95V24jPVwA5QVTS6i09Izabz92UUhRMIO8daWGNVdnk2CpMlBvluVtvWnnY
+         VGKVSPkTYdOZviI3TWwn4t70b3h/uMI0uJr5orAT8lC7rlOZ+sn6oudrDnWXUo4w4aY9
+         ZSDPGXslLCd3pFPyK4g/CCfyFKgtxbk53ql4AtHd2dmmcdMTKkJoUyonlpURkjoy+MK2
+         QmtXVv9OMbNv0GKSza4/sh3rto2Zvn09/10XiYGTkI5Ld3vemwC76iOv0jHPLVEjj5KI
+         Jp9A==
+X-Gm-Message-State: AOAM531tzxye1H9aBlZuhaZHhBrvZCdHq1oniqBsc7JKk2b1Id0bGPbP
+        oCVeF2IGhZyT7unF8btQnKs=
+X-Google-Smtp-Source: ABdhPJwootAGbojo5uXAgFWbWT7xx0D6n/YQdcLRUb/XYXnxDPbMtewn9itil7ByFlhMNeBF40m3EA==
+X-Received: by 2002:a1c:9652:: with SMTP id y79mr19015952wmd.71.1606038962872;
+        Sun, 22 Nov 2020 01:56:02 -0800 (PST)
+Received: from localhost.localdomain (196.red-83-40-48.dynamicip.rima-tde.net. [83.40.48.196])
+        by smtp.gmail.com with ESMTPSA id p21sm10593570wma.41.2020.11.22.01.56.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 22 Nov 2020 01:56:02 -0800 (PST)
 From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Sat, 21 Nov 2020 17:22:58 +0100
-Message-ID: <CAMhs-H8j+OYmBuj-ZzTUr7jFYokS0H4+DSa-QCa4R=Fm00aagw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/5] dt: bindings: add mt7621-clk device tree binding documentation
-To:     Rob Herring <robh@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        John Crispin <john@phrozen.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        Weijie Gao <hackpascal@gmail.com>, jiaxun.yang@flygoat.com,
-        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        NeilBrown <neil@brown.name>
-Content-Type: text/plain; charset="UTF-8"
+To:     mturquette@baylibre.com
+Cc:     sboyd@kernel.org, robh+dt@kernel.org, john@phrozen.org,
+        tsbogend@alpha.franken.de, gregkh@linuxfoundation.org,
+        gch981213@gmail.com, hackpascal@gmail.com,
+        linux-clk@vger.kernel.org, evicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        devel@driverdev.osuosl.org, neil@brown.name
+Subject: [PATCH v4 3/6] clk: ralink: add clock driver for mt7621 SoC
+Date:   Sun, 22 Nov 2020 10:55:53 +0100
+Message-Id: <20201122095556.21597-4-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201122095556.21597-1-sergio.paracuellos@gmail.com>
+References: <20201122095556.21597-1-sergio.paracuellos@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Nov 21, 2020 at 3:50 PM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
->
-> Hi Rob,
->
-> Thanks for the review.
->
-> On Sat, Nov 21, 2020 at 2:34 PM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Fri, Nov 13, 2020 at 04:46:29PM +0100, Sergio Paracuellos wrote:
-> > > Adds device tree binding documentation for clocks in the
-> > > MT7621 SOC.
-> > >
-> > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > > ---
-> > >  .../bindings/clock/mediatek,mt7621-clk.yaml   | 61 +++++++++++++++++++
-> > >  1 file changed, 61 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-> > > new file mode 100644
-> > > index 000000000000..363bd9880e29
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-> > > @@ -0,0 +1,61 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/clock/mediatek,mt7621-clk.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: MT7621 Clock Device Tree Bindings
-> > > +
-> > > +maintainers:
-> > > +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > > +
-> > > +description: |
-> > > +  The MT7621 has a PLL controller from where the cpu clock is provided
-> > > +  as well as derived clocks for the bus and the peripherals. It also
-> > > +  can gate SoC device clocks.
-> > > +
-> > > +  Each clock is assigned an identifier and client nodes use this identifier
-> > > +  to specify the clock which they consume.
-> > > +
-> > > +  All these identifiers could be found in:
-> > > +  [1]: <include/dt-bindings/clock/mt7621-clk.h>.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: mediatek,mt7621-clk
-> > > +
-> > > +  ralink,sysctl:
-> > > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > > +    description:
-> > > +      phandle to the syscon which is in the same address area with syscon
-> > > +      device.
-> > > +
-> > > +  "#clock-cells":
-> > > +    description:
-> > > +      The first cell indicates the clock gate number, see [1] for available
-> > > +      clocks.
-> > > +    const: 1
-> > > +
-> > > +  clock-output-names:
-> > > +    maxItems: 8
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - ralink,sysctl
-> > > +  - '#clock-cells'
-> > > +  - clock-output-names
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    #include <dt-bindings/clock/mt7621-clk.h>
-> > > +
-> > > +    pll {
-> > > +      compatible = "mediatek,mt7621-clk";
-> > > +      ralink,sysctl = <&sysc>;
-> >
-> > If this is the only control interface, then make this a child of 'sysc'.
-> > And use 'reg' if there's a dedicated range of registers.
->
-> This is the only one now in the device tree which is still in staging
-> but there are several places where this sys control registers are
-> accessed from. In the case of the clocks we need:
->
-> #define SYSC_REG_SYSTEM_CONFIG0         0x10
-> #define SYSC_REG_SYSTEM_CONFIG1         0x14
-> #define SYSC_REG_CLKCFG0                0x2c
-> #define SYSC_REG_CLKCFG1                0x30
-> #define SYSC_REG_CUR_CLK_STS            0x44
->
-> where there is not a range as it is but several different registers
-> from where we need to read or write things. I wrote the driver using
-> syscon and regmap because I thought in that way it might be more
-> maintainable but this architecture also has operations to read and
-> write registers from sysc and not using regmap at all. This operations
-> are defined in arch/mips/include/asm/mach-ralink/ralink_regs.h. But
-> because this sysc is currently mapped I cannot request its registers
-> using reg in the device tree. If you prefer me to avoid the use of
-> this syscon and regmap and use operations defined in ralink_regs.h,
-> this will become in a node without "regs" or  "ralink,sysctl"
-> property:
->
-> pll {
->     compatible = "mediatek,mt7621-clk";
->     #clock-cells = <1>;
->     clock-output-names = "xtal", "cpu", "bus",
->                       "50m", "125m", "150m",
->                        "250m", "270m";
-> };
->
-> What should I do then?
+The documentation for this SOC only talks about two
+registers regarding to the clocks:
+* SYSC_REG_CPLL_CLKCFG0 - provides some information about
+boostrapped refclock. PLL and dividers used for CPU and some
+sort of BUS.
+* SYSC_REG_CPLL_CLKCFG1 - a banch of gates to enable/disable
+clocks for all or some ip cores.
 
-Ok, I think I understand now what you are saying. You meant just move
-this as a child if 'sysc' and
-avoid the phandle:
+Looking into driver code, and some openWRT patched there are
+another frequences which are used in some drivers (uart, sd...).
+According to all of this information the clock plan for this
+SoC is set as follows:
+- Main top clock "xtal" from where all the rest of the world is
+derived.
+- CPU clock "cpu" derived from "xtal" frequencies and a bunch of
+register reads and predividers.
+- BUS clock "bus" derived from "cpu" and with (cpu / 4) MHz.
+- Fixed clocks from "xtal":
+    * "50m": 50 MHz.
+    * "125m": 125 MHz.
+    * "150m": 150 MHz.
+    * "250m": 250 MHz.
+    * "270m": 270 MHz.
 
-    sysc: sysc@0 {
-            compatible = "mtk,mt7621-sysc", "syscon";
-            reg = <0x0 0x100>;
+We also have a buch of gate clocks with their parents:
+  * "hsdma": "150m"
+  * "fe": "250m"
+  * "sp_divtx": "270m"
+  * "timer": "50m"
+  * "pcm": "270m"
+  * "pio": "50m"
+  * "gdma": "bus"
+  * "nand": "125m"
+  * "i2c": "50m"
+  * "i2s": "270m"
+  * "spi": "bus"
+  * "uart1": "50m"
+  * "uart2": "50m"
+  * "uart3": "50m"
+  * "eth": "50m"
+  * "pcie0": "125m"
+  * "pcie1": "125m"
+  * "pcie2": "125m"
+  * "crypto": "250m"
+  * "shxc": "50m"
 
-            pll: pll {
-                compatible = "mediatek,mt7621-clk";
-                #clock-cells = <1>;
-                clock-output-names = "xtal", "cpu", "bus",
-                                  "50m", "125m", "150m",
-                                 "250m", "270m";
-            };
-        };
+With this information the clk driver will provide clock and gates
+functionality from a a set of hardcoded clocks allowing to define
+a nice device tree without fixed clocks.
 
-And because there is not a range of registers 'reg' property is not
-needed, right?
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+---
+ drivers/clk/Kconfig             |   1 +
+ drivers/clk/Makefile            |   1 +
+ drivers/clk/ralink/Kconfig      |  14 +
+ drivers/clk/ralink/Makefile     |   2 +
+ drivers/clk/ralink/clk-mt7621.c | 435 ++++++++++++++++++++++++++++++++
+ 5 files changed, 453 insertions(+)
+ create mode 100644 drivers/clk/ralink/Kconfig
+ create mode 100644 drivers/clk/ralink/Makefile
+ create mode 100644 drivers/clk/ralink/clk-mt7621.c
 
-And in the driver side make use of 'syscon_node_to_regmap(node->parent)' instead
-of 'syscon_regmap_lookup_by_phandle(node, "ralink,sysctl")'.
+diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+index c715d4681a0b..5f94c4329033 100644
+--- a/drivers/clk/Kconfig
++++ b/drivers/clk/Kconfig
+@@ -372,6 +372,7 @@ source "drivers/clk/mediatek/Kconfig"
+ source "drivers/clk/meson/Kconfig"
+ source "drivers/clk/mvebu/Kconfig"
+ source "drivers/clk/qcom/Kconfig"
++source "drivers/clk/ralink/Kconfig"
+ source "drivers/clk/renesas/Kconfig"
+ source "drivers/clk/rockchip/Kconfig"
+ source "drivers/clk/samsung/Kconfig"
+diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+index da8fcf147eb1..6578e167b047 100644
+--- a/drivers/clk/Makefile
++++ b/drivers/clk/Makefile
+@@ -100,6 +100,7 @@ obj-$(CONFIG_COMMON_CLK_NXP)		+= nxp/
+ obj-$(CONFIG_MACH_PISTACHIO)		+= pistachio/
+ obj-$(CONFIG_COMMON_CLK_PXA)		+= pxa/
+ obj-$(CONFIG_COMMON_CLK_QCOM)		+= qcom/
++obj-y					+= ralink/
+ obj-y					+= renesas/
+ obj-$(CONFIG_ARCH_ROCKCHIP)		+= rockchip/
+ obj-$(CONFIG_COMMON_CLK_SAMSUNG)	+= samsung/
+diff --git a/drivers/clk/ralink/Kconfig b/drivers/clk/ralink/Kconfig
+new file mode 100644
+index 000000000000..7e8697327e0c
+--- /dev/null
++++ b/drivers/clk/ralink/Kconfig
+@@ -0,0 +1,14 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# MediaTek Mt7621 Clock Driver
++#
++menu "Clock driver for mediatek mt7621 SoC"
++	depends on SOC_MT7621 || COMPILE_TEST
++
++config CLK_MT7621
++	bool "Clock driver for MediaTek MT7621"
++	depends on SOC_MT7621 || COMPILE_TEST
++	default SOC_MT7621
++	help
++	  This driver supports MediaTek MT7621 basic clocks.
++endmenu
+diff --git a/drivers/clk/ralink/Makefile b/drivers/clk/ralink/Makefile
+new file mode 100644
+index 000000000000..cf6f9216379d
+--- /dev/null
++++ b/drivers/clk/ralink/Makefile
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0
++obj-$(CONFIG_CLK_MT7621) += clk-mt7621.o
+diff --git a/drivers/clk/ralink/clk-mt7621.c b/drivers/clk/ralink/clk-mt7621.c
+new file mode 100644
+index 000000000000..4e929f13fe7c
+--- /dev/null
++++ b/drivers/clk/ralink/clk-mt7621.c
+@@ -0,0 +1,435 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Mediatek MT7621 Clock Driver
++ * Author: Sergio Paracuellos <sergio.paracuellos@gmail.com>
++ */
++
++#include <linux/bitops.h>
++#include <linux/clk-provider.h>
++#include <linux/mfd/syscon.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/regmap.h>
++#include <asm/mach-ralink/ralink_regs.h>
++#include <dt-bindings/clock/mt7621-clk.h>
++
++/* Configuration registers */
++#define SYSC_REG_SYSTEM_CONFIG0         0x10
++#define SYSC_REG_SYSTEM_CONFIG1         0x14
++#define SYSC_REG_CLKCFG0		0x2c
++#define SYSC_REG_CLKCFG1		0x30
++#define SYSC_REG_CUR_CLK_STS		0x44
++
++#define MEMC_REG_CPU_PLL		0x648
++#define XTAL_MODE_SEL_MASK		0x7
++#define XTAL_MODE_SEL_SHIFT		6
++
++#define CPU_CLK_SEL_MASK		0x3
++#define CPU_CLK_SEL_SHIFT		30
++
++#define CUR_CPU_FDIV_MASK		0x1f
++#define CUR_CPU_FDIV_SHIFT		8
++#define CUR_CPU_FFRAC_MASK		0x1f
++#define CUR_CPU_FFRAC_SHIFT		0
++
++#define CPU_PLL_PREDIV_MASK		0x3
++#define CPU_PLL_PREDIV_SHIFT		12
++#define CPU_PLL_FBDIV_MASK		0x7f
++#define CPU_PLL_FBDIV_SHIFT		4
++
++#define MHZ(x) ((x) * 1000 * 1000)
++
++struct mt7621_clk_provider {
++	struct device_node *node;
++	struct regmap *syscon_regmap;
++	struct clk_hw_onecell_data *clk_data;
++};
++
++struct mt7621_clk {
++	struct mt7621_clk_provider *clk_prov;
++	struct clk_hw hw;
++};
++
++struct mt7621_fixed_clk {
++	u8 idx;
++	const char *name;
++	const char *parent_name;
++	struct mt7621_clk_provider *clk_prov;
++	unsigned long rate;
++	struct clk_hw *hw;
++};
++
++struct mt7621_gate {
++	u8 idx;
++	const char *name;
++	const char *parent_name;
++	struct mt7621_clk_provider *clk_prov;
++	u32 bit_idx;
++	struct clk_hw hw;
++};
++
++#define GATE(_id, _name, _pname, _shift)	\
++	{					\
++		.idx		= _id,		\
++		.name		= _name,	\
++		.parent_name	= _pname,	\
++		.clk_prov	= NULL,		\
++		.bit_idx	= _shift	\
++	}
++
++static struct mt7621_gate mt7621_gates[] = {
++	GATE(MT7621_CLK_HSDMA, "hsdma", "150m", BIT(5)),
++	GATE(MT7621_CLK_FE, "fe", "250m", BIT(6)),
++	GATE(MT7621_CLK_SP_DIVTX, "sp_divtx", "270m", BIT(7)),
++	GATE(MT7621_CLK_TIMER, "timer", "50m", BIT(8)),
++	GATE(MT7621_CLK_PCM, "pcm", "270m", BIT(11)),
++	GATE(MT7621_CLK_PIO, "pio", "50m", BIT(13)),
++	GATE(MT7621_CLK_GDMA, "gdma", "bus", BIT(14)),
++	GATE(MT7621_CLK_NAND, "nand", "125m", BIT(15)),
++	GATE(MT7621_CLK_I2C, "i2c", "50m", BIT(16)),
++	GATE(MT7621_CLK_I2S, "i2s", "270m", BIT(17)),
++	GATE(MT7621_CLK_SPI, "spi", "bus", BIT(18)),
++	GATE(MT7621_CLK_UART1, "uart1", "50m", BIT(19)),
++	GATE(MT7621_CLK_UART2, "uart2", "50m", BIT(20)),
++	GATE(MT7621_CLK_UART3, "uart3", "50m", BIT(21)),
++	GATE(MT7621_CLK_ETH, "eth", "50m", BIT(23)),
++	GATE(MT7621_CLK_PCIE0, "pcie0", "125m", BIT(24)),
++	GATE(MT7621_CLK_PCIE1, "pcie1", "125m", BIT(25)),
++	GATE(MT7621_CLK_PCIE2, "pcie2", "125m", BIT(26)),
++	GATE(MT7621_CLK_CRYPTO, "crypto", "250m", BIT(29)),
++	GATE(MT7621_CLK_SHXC, "shxc", "50m", BIT(30))
++};
++
++static inline struct mt7621_gate *to_mt7621_gate(struct clk_hw *hw)
++{
++	return container_of(hw, struct mt7621_gate, hw);
++}
++
++static int mt7621_gate_enable(struct clk_hw *hw)
++{
++	struct mt7621_gate *clk_gate = to_mt7621_gate(hw);
++	struct regmap *scon = clk_gate->clk_prov->syscon_regmap;
++
++	return regmap_update_bits(scon, SYSC_REG_CLKCFG1,
++				  clk_gate->bit_idx, clk_gate->bit_idx);
++}
++
++static void mt7621_gate_disable(struct clk_hw *hw)
++{
++	struct mt7621_gate *clk_gate = to_mt7621_gate(hw);
++	struct regmap *scon = clk_gate->clk_prov->syscon_regmap;
++
++	regmap_update_bits(scon, SYSC_REG_CLKCFG1, clk_gate->bit_idx, 0);
++}
++
++static int mt7621_gate_is_enabled(struct clk_hw *hw)
++{
++	struct mt7621_gate *clk_gate = to_mt7621_gate(hw);
++	struct regmap *scon = clk_gate->clk_prov->syscon_regmap;
++	unsigned int val;
++
++	if (regmap_read(scon, SYSC_REG_CLKCFG1, &val))
++		return 0;
++
++	return val & clk_gate->bit_idx;
++}
++
++static const struct clk_ops mt7621_gate_ops = {
++	.enable = mt7621_gate_enable,
++	.disable = mt7621_gate_disable,
++	.is_enabled = mt7621_gate_is_enabled,
++};
++
++static int mt7621_gate_ops_init(struct device_node *np,
++				 struct mt7621_gate *sclk)
++{
++	struct clk_init_data init = {
++		.flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
++		.num_parents = 1,
++		.parent_names = &sclk->parent_name,
++		.ops = &mt7621_gate_ops,
++		.name = sclk->name,
++	};
++
++	sclk->hw.init = &init;
++	return of_clk_hw_register(np, &sclk->hw);
++}
++
++static int mt7621_register_gates(struct mt7621_clk_provider *clk_prov)
++{
++	struct clk_hw_onecell_data **clk_data = &clk_prov->clk_data;
++	struct clk_hw **hws = (*clk_data)->hws;
++	int ret, i;
++
++	for (i = 0; i < ARRAY_SIZE(mt7621_gates); i++) {
++		struct mt7621_gate *sclk = &mt7621_gates[i];
++
++		sclk->clk_prov = clk_prov;
++		ret = mt7621_gate_ops_init(clk_prov->node, sclk);
++		if (ret) {
++			pr_err("Couldn't register clock %s\n", sclk->name);
++			goto err_clk_unreg;
++		}
++
++		hws[sclk->idx] = &sclk->hw;
++		(*clk_data)->num++;
++	}
++
++	return 0;
++
++err_clk_unreg:
++	while (--i >= 0) {
++		struct mt7621_gate *sclk = &mt7621_gates[i];
++
++		clk_hw_unregister(&sclk->hw);
++	}
++	return ret;
++}
++
++#define FIXED(_id, _name, _pname, _rate)        \
++	{					\
++		.idx		= _id,		\
++		.name		= _name,	\
++		.parent_name	= _pname,	\
++		.clk_prov	= NULL,		\
++		.rate		= _rate		\
++	}
++
++static struct mt7621_fixed_clk mt7621_fixed_clks[] = {
++	FIXED(MT7621_CLK_50M, "50m", "xtal", MHZ(50)),
++	FIXED(MT7621_CLK_125M, "125m", "xtal", MHZ(125)),
++	FIXED(MT7621_CLK_150M, "150m", "xtal", MHZ(150)),
++	FIXED(MT7621_CLK_250M, "250m", "xtal", MHZ(250)),
++	FIXED(MT7621_CLK_270M, "270m", "xtal", MHZ(270)),
++};
++
++static int mt7621_register_fixed_clocks(struct mt7621_clk_provider *clk_prov)
++{
++	struct clk_hw_onecell_data **clk_data = &clk_prov->clk_data;
++	struct clk_hw **hws = (*clk_data)->hws;
++	int ret, i;
++
++	for (i = 0; i < ARRAY_SIZE(mt7621_fixed_clks); i++) {
++		struct mt7621_fixed_clk *sclk = &mt7621_fixed_clks[i];
++
++		sclk->clk_prov = clk_prov;
++		sclk->hw = clk_hw_register_fixed_rate(NULL, sclk->name,
++						      sclk->parent_name, 0,
++						      sclk->rate);
++		if (IS_ERR(sclk->hw)) {
++			pr_err("Couldn't register clock %s\n", sclk->name);
++			ret = PTR_ERR(sclk->hw);
++			goto err_clk_unreg;
++		}
++
++		hws[sclk->idx] = sclk->hw;
++		(*clk_data)->num++;
++	}
++
++	return 0;
++
++err_clk_unreg:
++	while (--i >= 0) {
++		struct mt7621_fixed_clk *sclk = &mt7621_fixed_clks[i];
++
++		clk_hw_unregister_fixed_rate(sclk->hw);
++	}
++	return ret;
++}
++
++static inline struct mt7621_clk *to_mt7621_clk(struct clk_hw *hw)
++{
++	return container_of(hw, struct mt7621_clk, hw);
++}
++
++static unsigned long mt7621_xtal_recalc_rate(struct clk_hw *hw,
++					     unsigned long parent_rate)
++{
++	struct mt7621_clk *clk = to_mt7621_clk(hw);
++	struct regmap *scon = clk->clk_prov->syscon_regmap;
++	u32 val;
++
++	regmap_read(scon, SYSC_REG_SYSTEM_CONFIG0, &val);
++	val = (val >> XTAL_MODE_SEL_SHIFT) & XTAL_MODE_SEL_MASK;
++
++	if (val <= 2)
++		return MHZ(20);
++	else if (val <= 5)
++		return MHZ(40);
++
++	return MHZ(25);
++}
++
++static unsigned long mt7621_cpu_recalc_rate(struct clk_hw *hw,
++					    unsigned long xtal_clk)
++{
++	static const u32 prediv_tbl[] = { 0, 1, 2, 2 };
++	struct mt7621_clk *clk = to_mt7621_clk(hw);
++	struct regmap *scon = clk->clk_prov->syscon_regmap;
++	u32 clkcfg, clk_sel, curclk, ffiv, ffrac;
++	u32 pll, prediv, fbdiv;
++	unsigned long cpu_clk;
++
++	regmap_read(scon, SYSC_REG_CLKCFG0, &clkcfg);
++	clk_sel = (clkcfg >> CPU_CLK_SEL_SHIFT) & CPU_CLK_SEL_MASK;
++
++	regmap_read(scon, SYSC_REG_CUR_CLK_STS, &curclk);
++	ffiv = (curclk >> CUR_CPU_FDIV_SHIFT) & CUR_CPU_FDIV_MASK;
++	ffrac = (curclk >> CUR_CPU_FFRAC_SHIFT) & CUR_CPU_FFRAC_MASK;
++
++	switch (clk_sel) {
++	case 0:
++		cpu_clk = MHZ(500);
++		break;
++	case 1:
++		pll = rt_memc_r32(MEMC_REG_CPU_PLL);
++		fbdiv = (pll >> CPU_PLL_FBDIV_SHIFT) & CPU_PLL_FBDIV_MASK;
++		prediv = (pll >> CPU_PLL_PREDIV_SHIFT) & CPU_PLL_PREDIV_MASK;
++		cpu_clk = ((fbdiv + 1) * xtal_clk) >> prediv_tbl[prediv];
++		break;
++	default:
++		cpu_clk = xtal_clk;
++	}
++
++	return cpu_clk / ffiv * ffrac;
++}
++
++static unsigned long mt7621_bus_recalc_rate(struct clk_hw *hw,
++					    unsigned long parent_rate)
++{
++	return parent_rate / 4;
++}
++
++#define CLK_BASE(_name, _parent, _recalc) {				\
++	.init = &(struct clk_init_data) {				\
++		.name = _name,						\
++		.ops = &(const struct clk_ops) {			\
++			.recalc_rate = _recalc,				\
++		},							\
++		.parent_names = (const char *const[]) { _parent },	\
++		.num_parents = _parent ? 1 : 0				\
++	},								\
++}
++
++static struct mt7621_clk mt7621_clks_base[] = {
++	{ NULL, CLK_BASE("xtal", NULL, mt7621_xtal_recalc_rate) },
++	{ NULL, CLK_BASE("cpu", "xtal", mt7621_cpu_recalc_rate) },
++	{ NULL, CLK_BASE("bus", "cpu", mt7621_bus_recalc_rate) },
++};
++
++static int mt7621_register_top_clocks(struct mt7621_clk_provider *clk_prov)
++{
++	struct clk_hw_onecell_data **clk_data = &clk_prov->clk_data;
++	struct clk_hw **hws = (*clk_data)->hws;
++	int ret, i;
++
++	for (i = 0; i < ARRAY_SIZE(mt7621_clks_base); i++) {
++		struct mt7621_clk *sclk = &mt7621_clks_base[i];
++
++		sclk->clk_prov = clk_prov;
++		ret = of_clk_hw_register(clk_prov->node, &sclk->hw);
++		if (ret) {
++			pr_err("Couldn't register top clock %i\n", i);
++			goto err_clk_unreg;
++		}
++
++		hws[i] = &sclk->hw;
++		(*clk_data)->num++;
++	}
++
++	return 0;
++
++err_clk_unreg:
++	while (--i >= 0) {
++		struct mt7621_clk *sclk = &mt7621_clks_base[i];
++
++		clk_hw_unregister(&sclk->hw);
++	}
++	return ret;
++}
++
++static void __init mt7621_clk_init(struct device_node *node)
++{
++	struct mt7621_clk_provider *clk_prov;
++	struct clk_hw_onecell_data **clk_data;
++	int i, ret, count;
++
++	clk_prov = kzalloc(sizeof(*clk_prov), GFP_KERNEL);
++	if (!clk_prov)
++		return;
++
++	clk_prov->syscon_regmap = syscon_node_to_regmap(node->parent);
++	if (IS_ERR(clk_prov->syscon_regmap)) {
++		pr_err("Could not get syscon regmap\n");
++		goto free_clk_prov;
++	}
++
++	clk_prov->node = node;
++
++	clk_data = &clk_prov->clk_data;
++	count = ARRAY_SIZE(mt7621_clks_base) +
++		ARRAY_SIZE(mt7621_fixed_clks) + ARRAY_SIZE(mt7621_gates);
++	*clk_data = kzalloc(struct_size(*clk_data, hws, count), GFP_KERNEL);
++	if (!*clk_data)
++		goto free_clk_prov;
++
++	ret = mt7621_register_top_clocks(clk_prov);
++	if (ret) {
++		pr_err("Couldn't register top clocks\n");
++		goto free_clk_data;
++	}
++
++	ret = mt7621_register_fixed_clocks(clk_prov);
++	if (ret) {
++		pr_err("Couldn't register fixed clocks\n");
++		goto unreg_clk_top;
++	}
++
++	ret = mt7621_register_gates(clk_prov);
++	if (ret) {
++		pr_err("Couldn't register fixed clock gates\n");
++		goto unreg_clk_fixed;
++	}
++
++	ret = of_clk_add_hw_provider(node, of_clk_hw_onecell_get,
++				     clk_prov->clk_data);
++	if (ret) {
++		pr_err("Couldn't add clk hw provider\n");
++		goto unreg_clk_gates;
++	}
++
++	return;
++
++unreg_clk_gates:
++	for (i = 0; i < ARRAY_SIZE(mt7621_gates); i++) {
++		struct mt7621_gate *sclk = &mt7621_gates[i];
++
++		clk_hw_unregister(&sclk->hw);
++	}
++
++unreg_clk_fixed:
++	for (i = 0; i < ARRAY_SIZE(mt7621_fixed_clks); i++) {
++		struct mt7621_fixed_clk *sclk = &mt7621_fixed_clks[i];
++
++		clk_hw_unregister_fixed_rate(sclk->hw);
++	}
++
++unreg_clk_top:
++	for (i = 0; i < ARRAY_SIZE(mt7621_clks_base); i++) {
++		struct mt7621_clk *sclk = &mt7621_clks_base[i];
++
++		clk_hw_unregister(&sclk->hw);
++	}
++
++free_clk_data:
++	kfree(clk_prov->clk_data);
++
++free_clk_prov:
++	kfree(clk_prov);
++}
++
++CLK_OF_DECLARE(mt7621_clk, "mediatek,mt7621-clk", mt7621_clk_init);
++
++MODULE_AUTHOR("Sergio Paracuellos <sergio.paracuellos@gmail.com>");
++MODULE_DESCRIPTION("Mediatek Mt7621 clock driver");
++MODULE_LICENSE("GPL v2");
+-- 
+2.25.1
 
-Ok, thanks for the clarification. Will change when v4 is sent.
-
-Best regards,
-    Sergio Paracuellos
->
-> Best regards,
->     Sergio Paracuellos
->
-> >
-> > > +      #clock-cells = <1>;
-> > > +      clock-output-names = "xtal", "cpu", "bus",
-> > > +                           "50m", "125m", "150m",
-> > > +                           "250m", "270m";
-> > > +    };
-> > > --
-> > > 2.25.1
-> > >

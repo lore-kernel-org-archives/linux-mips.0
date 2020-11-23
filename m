@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 089BAC388F9
-	for <linux-mips@archiver.kernel.org>; Mon, 23 Nov 2020 12:27:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 574F1C388F9
+	for <linux-mips@archiver.kernel.org>; Mon, 23 Nov 2020 12:38:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A8C2D20857
-	for <linux-mips@archiver.kernel.org>; Mon, 23 Nov 2020 12:27:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0B2FA2076E
+	for <linux-mips@archiver.kernel.org>; Mon, 23 Nov 2020 12:38:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="he2CNP2J"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="PbYyFxYx"
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730142AbgKWM03 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 23 Nov 2020 07:26:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36272 "EHLO mail.kernel.org"
+        id S1731997AbgKWMhq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 23 Nov 2020 07:37:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730146AbgKWM02 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 23 Nov 2020 07:26:28 -0500
+        id S1731987AbgKWMhn (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 23 Nov 2020 07:37:43 -0500
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 743BB2076E;
-        Mon, 23 Nov 2020 12:26:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B62BC22203;
+        Mon, 23 Nov 2020 12:37:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1606134387;
-        bh=frCVka9YuGqxr2RrDANFnW8tkhiq/VbNt2PTcU9GSGs=;
+        s=korg; t=1606135063;
+        bh=CNiP+4Hj3vw6UmF5OummcB34I0ZbFbNNqimg2SA/Qck=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=he2CNP2JfSz3SRBG9V7gwEOPOCXY5CvTJCTBpfjMPVN1bbMSkLAwiYPL/3k3FqxmF
-         ICfkFkdY3JWioWoTZQMBC1Yc4y7wlrHkxM4Y5eXIiagCDWy5N+Ii0qv5y3S8VIf705
-         hSI0ex9rdXllik1LxtJRREQaskl6Wk0bMWGWh3is=
+        b=PbYyFxYx9zsF9B7BazhOEw5ZmzNUEg4LHSgHjn/D/1zs2tg84HMNVKljwA+Pxvi7F
+         uuK1nnGcUBLz8TeSK30E2PfHXdFGXQq4dH8EEq9qAX20/8lO/Hj/lpJdAFSLx0DPVp
+         Frg3dgdHs0n6cV+wsvdbInhJ6MK49xAQ5ADobgTA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -46,12 +46,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Hugh Dickins <hughd@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 23/47] MIPS: export has_transparent_hugepage() for modules
-Date:   Mon, 23 Nov 2020 13:22:09 +0100
-Message-Id: <20201123121806.663159108@linuxfoundation.org>
+Subject: [PATCH 5.4 061/158] MIPS: export has_transparent_hugepage() for modules
+Date:   Mon, 23 Nov 2020 13:21:29 +0100
+Message-Id: <20201123121822.882979950@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201123121805.530891002@linuxfoundation.org>
-References: <20201123121805.530891002@linuxfoundation.org>
+In-Reply-To: <20201123121819.943135899@linuxfoundation.org>
+References: <20201123121819.943135899@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -88,10 +88,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/mips/mm/tlb-r4k.c b/arch/mips/mm/tlb-r4k.c
-index 0596505770dba..11985399c4695 100644
+index c13e46ced4252..60046445122b3 100644
 --- a/arch/mips/mm/tlb-r4k.c
 +++ b/arch/mips/mm/tlb-r4k.c
-@@ -424,6 +424,7 @@ int has_transparent_hugepage(void)
+@@ -437,6 +437,7 @@ int has_transparent_hugepage(void)
  	}
  	return mask == PM_HUGE_MASK;
  }

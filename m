@@ -2,138 +2,65 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 978EFC83014
-	for <linux-mips@archiver.kernel.org>; Thu,  3 Dec 2020 08:58:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04DFAC83013
+	for <linux-mips@archiver.kernel.org>; Thu,  3 Dec 2020 08:58:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5BB6C2223C
+	by mail.kernel.org (Postfix) with ESMTP id 88DEB2065E
 	for <linux-mips@archiver.kernel.org>; Thu,  3 Dec 2020 08:58:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387756AbgLCI6f (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S2387559AbgLCI6f (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Thu, 3 Dec 2020 03:58:35 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:33520 "EHLO loongson.cn"
+Received: from mail.loongson.cn ([114.242.206.163]:33500 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728037AbgLCI6e (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1726316AbgLCI6e (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Thu, 3 Dec 2020 03:58:34 -0500
 Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx73+LqMhf01sZAA--.41290S4;
-        Thu, 03 Dec 2020 16:57:49 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx73+LqMhf01sZAA--.41290S2;
+        Thu, 03 Dec 2020 16:57:48 +0800 (CST)
 From:   Jinyang He <hejinyang@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Huacai Chen <chenhc@lemote.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] MIPS: Add fix_range_node after parse "mem=" parameter
-Date:   Thu,  3 Dec 2020 16:57:47 +0800
-Message-Id: <1606985867-9791-3-git-send-email-hejinyang@loongson.cn>
+Subject: [PATCH 0/2]  memory node
+Date:   Thu,  3 Dec 2020 16:57:45 +0800
+Message-Id: <1606985867-9791-1-git-send-email-hejinyang@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1606985867-9791-1-git-send-email-hejinyang@loongson.cn>
-References: <1606985867-9791-1-git-send-email-hejinyang@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx73+LqMhf01sZAA--.41290S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxZrW5Zr1rWr1kXr18AryDAwb_yoW5Wry3pa
-        9rAas5Gr4DWFn7Za4ft348urWrAws5KFWfuay7Cr95Z3ZIqr9rJr4SqF15Zr1jqrWrK3WF
-        vF10g3y29a12kaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBYb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF
-        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcV
-        CY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv
-        6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c
-        02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE
-        4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r43MxAIw28IcxkI7V
-        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6x
-        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
-        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUY8sqtUUUUU==
+X-CM-TRANSID: AQAAf9Dx73+LqMhf01sZAA--.41290S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY07k0a2IF6w4xM7kC6x804xWl14x267AK
+        xVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGw
+        A2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj
+        6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26F
+        4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAa
+        Y2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4
+        A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Av
+        z4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
+        jsHUhUUUUU=
 X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This problem may only occur on NUMA platforms. When machine start
-with the "mem=" parameter on Loongson64, it cannot boot. When parsing the
-"mem=" parameter, first all the RAM was removed, and then the memory was
-not added by memblock_add_node(), which caused the newly added memory to
-be on MAX_NUMNODES. The key to solve this problem is to fix these memory
-nodes through memblock_set_node() before bootmem_init() or earlier. So
-it would be better to fix it before check_kernel_sections_mem().
-The check_kernel_sections_mem() will check whether the current RAM can be
-used by the kernel. If this fix is added after that, it will do a redundant
-memblock_add operation. Adding the fixup_region_node() function can also
-provide a reference for future platforms using NUMA when encountering
-such problems.
+*** BLURB HERE ***
 
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
----
+Jinyang He (2):
+  MIPS: Remove unused memblock_set_node
+  MIPS: Add fix_range_node after parse "mem=" parameter
+
  arch/mips/include/asm/bootinfo.h |  1 +
- arch/mips/kernel/setup.c         |  6 +++++-
+ arch/mips/kernel/setup.c         |  9 +++++----
  arch/mips/loongson64/numa.c      | 11 +++++++++++
- 3 files changed, 17 insertions(+), 1 deletion(-)
+ 3 files changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
-index aa03b12..ddc17b1 100644
---- a/arch/mips/include/asm/bootinfo.h
-+++ b/arch/mips/include/asm/bootinfo.h
-@@ -91,6 +91,7 @@ const char *get_system_type(void);
- extern unsigned long mips_machtype;
- 
- extern void detect_memory_region(phys_addr_t start, phys_addr_t sz_min,  phys_addr_t sz_max);
-+extern void fixup_region_node(void);
- 
- extern void prom_init(void);
- extern void prom_free_prom_memory(void);
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index b3a711e..fe93882 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -110,6 +110,8 @@ void __init detect_memory_region(phys_addr_t start, phys_addr_t sz_min, phys_add
- 	memblock_add(start, size);
- }
- 
-+void __weak fixup_region_node(void) {}
-+
- /*
-  * Manage initrd
-  */
-@@ -631,8 +633,10 @@ static void __init arch_mem_init(char **cmdline_p)
- 
- 	parse_early_param();
- 
--	if (usermem)
-+	if (usermem) {
- 		pr_info("User-defined physical RAM map overwrite\n");
-+		fixup_region_node();
-+	}
- 
- 	check_kernel_sections_mem();
- 
-diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
-index c6f0c48..d8661cc 100644
---- a/arch/mips/loongson64/numa.c
-+++ b/arch/mips/loongson64/numa.c
-@@ -220,6 +220,17 @@ void __init mem_init(void)
- 	mem_init_print_info(NULL);
- }
- 
-+void __init fixup_region_node(void)
-+{
-+	phys_addr_t start, end;
-+	u64 i;
-+
-+	for_each_mem_range(i, &start, &end) {
-+		memblock_set_node(start, end - start,
-+				  &memblock.memory, pa_to_nid(start));
-+	}
-+}
-+
- /* All PCI device belongs to logical Node-0 */
- int pcibus_to_node(struct pci_bus *bus)
- {
 -- 
 2.1.0
 

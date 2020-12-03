@@ -2,120 +2,69 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 432C4C433FE
-	for <linux-mips@archiver.kernel.org>; Thu,  3 Dec 2020 21:46:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A7E6C4361A
+	for <linux-mips@archiver.kernel.org>; Thu,  3 Dec 2020 21:47:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E6590221E3
-	for <linux-mips@archiver.kernel.org>; Thu,  3 Dec 2020 21:46:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 22C58221E3
+	for <linux-mips@archiver.kernel.org>; Thu,  3 Dec 2020 21:47:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727274AbgLCVqR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 3 Dec 2020 16:46:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51524 "EHLO
+        id S1729556AbgLCVrY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 3 Dec 2020 16:47:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726917AbgLCVqQ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 3 Dec 2020 16:46:16 -0500
+        with ESMTP id S1728675AbgLCVrY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 3 Dec 2020 16:47:24 -0500
 Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1B7C061A4F;
-        Thu,  3 Dec 2020 13:45:36 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C4DCC061A55;
+        Thu,  3 Dec 2020 13:46:44 -0800 (PST)
 Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkwPp-00GJPP-Nl; Thu, 03 Dec 2020 21:45:29 +0000
-Date:   Thu, 3 Dec 2020 21:45:29 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
+        id 1kkwR0-00GJSe-IQ; Thu, 03 Dec 2020 21:46:42 +0000
+From:   Al Viro <viro@ZenIV.linux.org.uk>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
         linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCHSET] saner elf compat
-Message-ID: <20201203214529.GB3579531@ZenIV.linux.org.uk>
+Subject: [PATCH 08/10] mips: don't bother with ELF_CORE_EFLAGS
+Date:   Thu,  3 Dec 2020 21:46:39 +0000
+Message-Id: <20201203214641.3887979-8-viro@ZenIV.linux.org.uk>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20201203214641.3887979-1-viro@ZenIV.linux.org.uk>
+References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
+ <20201203214641.3887979-1-viro@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-	This series deals with the warts in ELF compat on triarch
-architectures (x86_64 and mips64, that is).
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-	x86_64 at least does use compat_binfmt_elf.c for both
-32bit ABIs; the way it is done is ugly as hell, though, and more
-than slightly brittle (see asm/compat.h for PRSTATUS_SIZE and SET_PR_FPVALID
-definitions - IMO that kind of magic is too ugly to live).
+mips coredumps are regset-based, so ELF_CORE_EFLAGS is not used at all -
+user_..._view.e_flags is.
 
-	mips64, OTOH, does not use compat_binfmt_elf.c for either of its
-32bit ABIs.  It has a couple of analogues (each with include of
-../../../fs/binfmt_elf.c, BTW), with quite a bit of ancient cruft
-accumulated in those.
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ arch/mips/kernel/binfmt_elfn32.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-	Fortunately, cleanup of i386/x32 mess (first 3 commits in
-the series) provides a fairly straightforward way for mips64 to use
-fs/compat_binfmt_elf.c for both n32 and o32.
+diff --git a/arch/mips/kernel/binfmt_elfn32.c b/arch/mips/kernel/binfmt_elfn32.c
+index 10fa9ccd92b7..1aa32570fa9b 100644
+--- a/arch/mips/kernel/binfmt_elfn32.c
++++ b/arch/mips/kernel/binfmt_elfn32.c
+@@ -52,8 +52,6 @@ struct elf_prstatus32
+ 
+ #define init_elf_binfmt init_elfn32_binfmt
+ 
+-#define ELF_CORE_EFLAGS EF_MIPS_ABI2
+-
+ #undef ns_to_kernel_old_timeval
+ #define ns_to_kernel_old_timeval ns_to_old_timeval32
+ 
+-- 
+2.11.0
 
-	That stuff had been sitting around since June; lately rdd has
-spotted Kconfig problems around COMPAT_BINFMT_ELF selects.  All of them
-had been on configs that had COMPAT_BINFMT_ELF != COMPAT && BINFMT_ELF.
-For most of the architectures that's impossible to achieve, but some
-(sparc, e.g.) can end up with that.  Randy posted a patch adding
-if BINFMT_ELF to selects that lacked it, but that looked wrong to me -
-why not centralize that logics into fs/Kconfig.binfmt?  IOW, what's
-the point of having any such selects in arch/*/Kconfig?
-
-	The answer (for mainline) is that mips compat does *NOT* want
-COMPAT_BINFMT_ELF.  Not a problem with that series, though, so I'd
-retested it (seems to work, both for x86_64 and mips64, execs and
-coredumps for all ABIs alike), with centralization of Kconfig logics
-thrown in.
-
-	It's based at 5.10-rc1 and lives in
-git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git#work.elf-compat
-I'll post the individual patches in followups.
-
-Shortlog:
-      binfmt_elf: partially sanitize PRSTATUS_SIZE and SET_PR_FPVALID
-      elf_prstatus: collect the common part (everything before pr_reg) into a struct
-      [elfcore-compat][amd64] clean PRSTATUS_SIZE/SET_PR_FPVALID up properly
-      mips binfmt_elf*32.c: use elfcore-compat.h
-      mips: kill unused definitions in binfmt_elf[on]32.c
-      mips: KVM_GUEST makes no sense for 64bit builds...
-      mips compat: don't bother with ELF_ET_DYN_BASE
-      mips: don't bother with ELF_CORE_EFLAGS
-      mips compat: switch to compat_binfmt_elf.c
-      Kconfig: regularize selection of CONFIG_BINFMT_ELF
-
-Diffstat:
- arch/Kconfig                               |   3 +
- arch/arm64/Kconfig                         |   1 -
- arch/ia64/kernel/crash.c                   |   2 +-
- arch/mips/Kconfig                          |   8 +--
- arch/mips/include/asm/elf.h                |  56 +++++----------
- arch/mips/include/asm/elfcore-compat.h     |  29 ++++++++
- arch/mips/kernel/Makefile                  |   4 +-
- arch/mips/kernel/binfmt_elfn32.c           | 106 ----------------------------
- arch/mips/kernel/binfmt_elfo32.c           | 109 -----------------------------
- arch/mips/kernel/scall64-n64.S             |   2 +-
- arch/parisc/Kconfig                        |   1 -
- arch/powerpc/Kconfig                       |   1 -
- arch/powerpc/platforms/powernv/opal-core.c |   6 +-
- arch/s390/Kconfig                          |   1 -
- arch/s390/kernel/crash_dump.c              |   2 +-
- arch/sparc/Kconfig                         |   1 -
- arch/x86/Kconfig                           |   2 +-
- arch/x86/include/asm/compat.h              |  11 ---
- arch/x86/include/asm/elfcore-compat.h      |  31 ++++++++
- fs/Kconfig.binfmt                          |   2 +-
- fs/binfmt_elf.c                            |  19 +++--
- fs/binfmt_elf_fdpic.c                      |  22 ++----
- fs/compat_binfmt_elf.c                     |   1 +
- include/linux/elfcore-compat.h             |  15 +++-
- include/linux/elfcore.h                    |   7 +-
- kernel/kexec_core.c                        |   2 +-
- 26 files changed, 127 insertions(+), 317 deletions(-)
- create mode 100644 arch/mips/include/asm/elfcore-compat.h
- delete mode 100644 arch/mips/kernel/binfmt_elfn32.c
- delete mode 100644 arch/mips/kernel/binfmt_elfo32.c
- create mode 100644 arch/x86/include/asm/elfcore-compat.h

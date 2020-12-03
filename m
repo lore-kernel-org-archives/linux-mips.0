@@ -2,68 +2,97 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F128AC433FE
-	for <linux-mips@archiver.kernel.org>; Thu,  3 Dec 2020 21:48:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BDB1C4361A
+	for <linux-mips@archiver.kernel.org>; Thu,  3 Dec 2020 22:10:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 99FE62223E
-	for <linux-mips@archiver.kernel.org>; Thu,  3 Dec 2020 21:48:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D73292223E
+	for <linux-mips@archiver.kernel.org>; Thu,  3 Dec 2020 22:10:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502139AbgLCVrr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 3 Dec 2020 16:47:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51716 "EHLO
+        id S1727003AbgLCWKC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 3 Dec 2020 17:10:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729550AbgLCVrY (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 3 Dec 2020 16:47:24 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D4FC061A54;
-        Thu,  3 Dec 2020 13:46:43 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kkwR0-00GJSS-6u; Thu, 03 Dec 2020 21:46:42 +0000
-From:   Al Viro <viro@ZenIV.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH 06/10] mips: KVM_GUEST makes no sense for 64bit builds...
-Date:   Thu,  3 Dec 2020 21:46:37 +0000
-Message-Id: <20201203214641.3887979-6-viro@ZenIV.linux.org.uk>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20201203214641.3887979-1-viro@ZenIV.linux.org.uk>
-References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
- <20201203214641.3887979-1-viro@ZenIV.linux.org.uk>
+        with ESMTP id S1726530AbgLCWKC (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 3 Dec 2020 17:10:02 -0500
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F19C061A51
+        for <linux-mips@vger.kernel.org>; Thu,  3 Dec 2020 14:09:22 -0800 (PST)
+Received: by mail-il1-x143.google.com with SMTP id p5so3395732iln.8
+        for <linux-mips@vger.kernel.org>; Thu, 03 Dec 2020 14:09:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y4lfXn4NQgT9AE+pcfanwBv5gymGOELzS9Yoccfg59M=;
+        b=USeKbzyXElX2nDf8oeE1czUwhUCqMWIJR4/vvITllJucNT3FEMQFe2e2F+MtmZugQC
+         uAoXsCagTylA+9/st75P/loFx12vESCpg98HsnoRcTk192ILskFmELosw3FjFV6G9zET
+         hf6QA0wWaehLhuOrjatkgjvZt2W5JO6XlaJK8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y4lfXn4NQgT9AE+pcfanwBv5gymGOELzS9Yoccfg59M=;
+        b=F8i16W6ciC0u14+UHOOoqHPYITdMowCvKjNkr/IoyNH9PGyQwznm7fcO6jV/YK+IqH
+         FTCOuDCbncYHGl4D8tBaor8UPcpRnXBhwFXpWi2hpBDfWaXji2AE08Y/aiMhxVeYxdXO
+         FQJy7wOjXSi1oXWsa0xQLtCPaxRP2TFSSjYJGIVgQ1tYbXRaLzzx0Ck6nYUVTXJZw22x
+         Anch8C1wJCQF91mrHeEPCYmB1Fn5PQMKEyE/3f3FgkLLOZcnMweAFhRgJb44wbL33H2X
+         SEXUfieGHA7fqxQDiaeRAm04o/WIybk0/Mi93jO3laPcU2s1A1Dcu0NMzzdzn+2WNkkT
+         W4zg==
+X-Gm-Message-State: AOAM530MCIFMRc3itvJYFyxp/OFTMjUUo4dCAIhc6c9WBtfB/73Rg8ws
+        X/prZWt75qU0J7GJpNJEjHUG1ZWagW0k3Q==
+X-Google-Smtp-Source: ABdhPJy9iXMtVx74w/GCVRj4a426Lewc7ZHxVEtsgiddyn6TkiCJcfrngEEHMLFmwSZD3cJKO+gt4A==
+X-Received: by 2002:a05:6e02:1805:: with SMTP id a5mr1714469ilv.170.1607033361282;
+        Thu, 03 Dec 2020 14:09:21 -0800 (PST)
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com. [209.85.166.52])
+        by smtp.gmail.com with ESMTPSA id u1sm315982ilb.74.2020.12.03.14.09.20
+        for <linux-mips@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Dec 2020 14:09:20 -0800 (PST)
+Received: by mail-io1-f52.google.com with SMTP id 81so3707938ioc.13
+        for <linux-mips@vger.kernel.org>; Thu, 03 Dec 2020 14:09:20 -0800 (PST)
+X-Received: by 2002:a02:830f:: with SMTP id v15mr1698948jag.12.1607033360437;
+ Thu, 03 Dec 2020 14:09:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
+In-Reply-To: <20201203214529.GB3579531@ZenIV.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 3 Dec 2020 14:09:04 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
+Message-ID: <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
+Subject: Re: [PATCHSET] saner elf compat
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+On Thu, Dec 3, 2020 at 1:46 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+>  The answer (for mainline) is that mips compat does *NOT* want
+> COMPAT_BINFMT_ELF.  Not a problem with that series, though, so I'd
+> retested it (seems to work, both for x86_64 and mips64, execs and
+> coredumps for all ABIs alike), with centralization of Kconfig logics
+> thrown in.
 
-it's always been about MIPS32
+Well, the diffstat looks nice:
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
- arch/mips/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>  26 files changed, 127 insertions(+), 317 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 2000bb2b0220..32ce052aa3b4 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -2179,7 +2179,7 @@ endchoice
- config KVM_GUEST
- 	bool "KVM Guest Kernel"
- 	depends on CPU_MIPS32_R2
--	depends on BROKEN_ON_SMP
-+	depends on !64BIT && BROKEN_ON_SMP
- 	help
- 	  Select this option if building a guest kernel for KVM (Trap & Emulate)
- 	  mode.
--- 
-2.11.0
+and the patches didn't trigger anything for me, but how much did this
+get tested? Do you actually have both kinds of 32-bit elf mips
+binaries around and a machine to test on?
 
+Linux-mips was cc'd, but I'm adding Thomas B to the cc here explicitly
+just so that he has a heads-up on this thing and can go and look at
+the mailing list in case it goes to a separate mailbox for him..
+
+               Linus

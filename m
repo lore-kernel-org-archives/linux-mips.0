@@ -7,59 +7,57 @@ X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B049C2BBCA
-	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 12:11:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB73BC2BB3F
+	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 12:11:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B1FD622A84
+	by mail.kernel.org (Postfix) with ESMTP id 8D61A22795
 	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 12:11:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729906AbgLDMKy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1729968AbgLDMKy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Fri, 4 Dec 2020 07:10:54 -0500
-Received: from elvis.franken.de ([193.175.24.41]:48099 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:48103 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728666AbgLDMKy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1728773AbgLDMKy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Fri, 4 Dec 2020 07:10:54 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kl9ud-0005Nb-03; Fri, 04 Dec 2020 13:10:11 +0100
+        id 1kl9ue-0005Nb-01; Fri, 04 Dec 2020 13:10:12 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 21ACDC02E5; Fri,  4 Dec 2020 13:08:37 +0100 (CET)
-Date:   Fri, 4 Dec 2020 13:08:37 +0100
+        id E1ACFC02E5; Fri,  4 Dec 2020 13:09:47 +0100 (CET)
+Date:   Fri, 4 Dec 2020 13:09:47 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Wei Li <liwei391@huawei.com>
-Cc:     Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yangyingliang@huawei.com,
-        guohanjun@huawei.com
-Subject: Re: [PATCH] MIPS: SMP-CPS: Add support for irq migration when CPU
- offline
-Message-ID: <20201204120837.GD10011@alpha.franken.de>
-References: <20201203065443.11263-1-liwei391@huawei.com>
+To:     Alexander A Sverdlin <alexander.sverdlin@nokia.com>
+Cc:     linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
+        Leonid Rosenboim <lrosenboim@caviumnetworks.com>,
+        Corey Minyard <cminyard@mvista.com>,
+        linux-kernel@vger.kernel.org,
+        Serge Semin <fancer.lancer@gmail.com>,
+        "Maciej W . Rozycki" <macro@linux-mips.org>,
+        Jinyang He <hejinyang@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH 2/2] MIPS: OCTEON: Don't add kernel sections into
+ memblock allocator
+Message-ID: <20201204120947.GG10011@alpha.franken.de>
+References: <20201203123649.44046-1-alexander.sverdlin@nokia.com>
+ <20201203123649.44046-2-alexander.sverdlin@nokia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201203065443.11263-1-liwei391@huawei.com>
+In-Reply-To: <20201203123649.44046-2-alexander.sverdlin@nokia.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 02:54:43PM +0800, Wei Li wrote:
-> Currently we won't migrate irqs when offline CPUs, which has been
-> implemented on most architectures. That will lead to some devices work
-> incorrectly if the bound cores are offline.
+On Thu, Dec 03, 2020 at 01:36:49PM +0100, Alexander A Sverdlin wrote:
+> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 > 
-> While that can be easily supported by enabling GENERIC_IRQ_MIGRATION.
-> But i don't pretty known the reason it was not supported on all MIPS
-> platforms.
+> Because check_kernel_sections_mem() does exactly this for all platforms.
 > 
-> This patch add the support for irq migration on MIPS CPS platform, and
-> it's tested on the interAptiv processor.
-> 
-> Signed-off-by: Wei Li <liwei391@huawei.com>
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 > ---
->  arch/mips/Kconfig          | 1 +
->  arch/mips/kernel/smp-cps.c | 2 ++
->  2 files changed, 3 insertions(+)
+>  arch/mips/cavium-octeon/setup.c | 9 ---------
+>  1 file changed, 9 deletions(-)
 
 applied to mips-next.
 

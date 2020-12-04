@@ -2,82 +2,77 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46642C1B0E3
-	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 12:11:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0186C433FE
+	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 12:11:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0EE6622795
-	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 12:11:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6B117229F0
+	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 12:11:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725999AbgLDMLA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 4 Dec 2020 07:11:00 -0500
-Received: from elvis.franken.de ([193.175.24.41]:48129 "EHLO elvis.franken.de"
+        id S1730144AbgLDMLJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 4 Dec 2020 07:11:09 -0500
+Received: from elvis.franken.de ([193.175.24.41]:48093 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730122AbgLDMK7 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:10:59 -0500
+        id S1728110AbgLDMKy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 4 Dec 2020 07:10:54 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kl9ud-0005Nb-00; Fri, 04 Dec 2020 13:10:11 +0100
+        id 1kl9ud-0005Nb-02; Fri, 04 Dec 2020 13:10:11 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 596D6C02CF; Fri,  4 Dec 2020 13:06:32 +0100 (CET)
-Date:   Fri, 4 Dec 2020 13:06:32 +0100
+        id 0226DC02E5; Fri,  4 Dec 2020 13:08:16 +0100 (CET)
+Date:   Fri, 4 Dec 2020 13:08:16 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-List-Id: <soc.lore.kernel.org>
-Cc:     linux@armlinux.org.uk, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
-        tony@atomide.com, mripard@kernel.org, wens@csie.org,
-        jernej.skrabec@siol.net, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, catalin.marinas@arm.com, will@kernel.org,
-        James.Bottomley@HansenPartnership.com, deller@gmx.de,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        lee.jones@linaro.org, sam@ravnborg.org, emil.l.velikov@gmail.com,
-        daniel.thompson@linaro.org, krzk@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, soc@kernel.org
-Subject: Re: [PATCH v2 3/5] MIPS: configs: drop unused BACKLIGHT_GENERIC
- option
-Message-ID: <20201204120632.GA10011@alpha.franken.de>
-References: <20201201222922.3183-1-andrey.zhizhikin@leica-geosystems.com>
- <20201201222922.3183-4-andrey.zhizhikin@leica-geosystems.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH 2/2] MIPS: Select ARCH_KEEP_MEMBLOCK to enable sysfs
+ memblock debug
+Message-ID: <20201204120816.GC10011@alpha.franken.de>
+References: <1606965544-22611-1-git-send-email-yangtiezhu@loongson.cn>
+ <1606965544-22611-3-git-send-email-yangtiezhu@loongson.cn>
+ <9c9af0de-387b-f113-b0a2-c5767c31c16d@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201201222922.3183-4-andrey.zhizhikin@leica-geosystems.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9c9af0de-387b-f113-b0a2-c5767c31c16d@flygoat.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Dec 01, 2020 at 10:29:20PM +0000, Andrey Zhizhikin wrote:
-> Commit 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it is
-> unused") removed geenric_bl driver from the tree, together with
-> corresponding config option.
+On Thu, Dec 03, 2020 at 11:58:51AM +0800, Jiaxun Yang wrote:
 > 
-> Remove BACKLIGHT_GENERIC config item from all MIPS configurations.
 > 
-> Fixes: 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it is unused")
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
-> ---
->  arch/mips/configs/gcw0_defconfig      | 1 -
->  arch/mips/configs/gpr_defconfig       | 1 -
->  arch/mips/configs/lemote2f_defconfig  | 1 -
->  arch/mips/configs/loongson3_defconfig | 1 -
->  arch/mips/configs/mtx1_defconfig      | 1 -
->  arch/mips/configs/rs90_defconfig      | 1 -
->  6 files changed, 6 deletions(-)
+> 在 2020/12/3 上午11:19, Tiezhu Yang 写道:
+> > In the current code, CONFIG_ARCH_KEEP_MEMBLOCK is not set for MIPS arch,
+> > memblock_discard() will discard memory and reserved arrays if they were
+> > allocated, select ARCH_KEEP_MEMBLOCK to give a chance to track "memory"
+> > and "reserved" memblocks after early boot, with this patch, we can see
+> > the following two sysfs interfaces under DEBUG_FS.
+> > 
+> > /sys/kernel/debug/memblock/memory
+> > /sys/kernel/debug/memblock/reserved
+> 
+> Is this really necessary?
+> memblock data is not really necessary after boot for non-debug purpose.
+> 
+> Given that MIPS is widely used in embedded systems which doesn't have much
+> memory, keeping unused data after boot is kinda unconvincing.
 
-applied to mips-next.
+about how much memory are talking here ?
+
+> 
+> If you intend to debug that please do it locally.
+
+maybe we can add a
+
+if DEBUG_KERNEL 
+
+since enabling DEBUG_KERNEL will cost already some memory...
 
 Thomas.
 

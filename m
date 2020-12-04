@@ -4,60 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB73BC2BB3F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46642C1B0E3
 	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 12:11:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8D61A22795
-	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 12:11:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0EE6622795
+	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 12:11:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729968AbgLDMKy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 4 Dec 2020 07:10:54 -0500
-Received: from elvis.franken.de ([193.175.24.41]:48103 "EHLO elvis.franken.de"
+        id S1725999AbgLDMLA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 4 Dec 2020 07:11:00 -0500
+Received: from elvis.franken.de ([193.175.24.41]:48129 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728773AbgLDMKy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:10:54 -0500
+        id S1730122AbgLDMK7 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 4 Dec 2020 07:10:59 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kl9ue-0005Nb-01; Fri, 04 Dec 2020 13:10:12 +0100
+        id 1kl9ud-0005Nb-00; Fri, 04 Dec 2020 13:10:11 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id E1ACFC02E5; Fri,  4 Dec 2020 13:09:47 +0100 (CET)
-Date:   Fri, 4 Dec 2020 13:09:47 +0100
+        id 596D6C02CF; Fri,  4 Dec 2020 13:06:32 +0100 (CET)
+Date:   Fri, 4 Dec 2020 13:06:32 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Alexander A Sverdlin <alexander.sverdlin@nokia.com>
-Cc:     linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
-        Leonid Rosenboim <lrosenboim@caviumnetworks.com>,
-        Corey Minyard <cminyard@mvista.com>,
-        linux-kernel@vger.kernel.org,
-        Serge Semin <fancer.lancer@gmail.com>,
-        "Maciej W . Rozycki" <macro@linux-mips.org>,
-        Jinyang He <hejinyang@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH 2/2] MIPS: OCTEON: Don't add kernel sections into
- memblock allocator
-Message-ID: <20201204120947.GG10011@alpha.franken.de>
-References: <20201203123649.44046-1-alexander.sverdlin@nokia.com>
- <20201203123649.44046-2-alexander.sverdlin@nokia.com>
+To:     Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+List-Id: <soc.lore.kernel.org>
+Cc:     linux@armlinux.org.uk, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
+        tony@atomide.com, mripard@kernel.org, wens@csie.org,
+        jernej.skrabec@siol.net, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, catalin.marinas@arm.com, will@kernel.org,
+        James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        lee.jones@linaro.org, sam@ravnborg.org, emil.l.velikov@gmail.com,
+        daniel.thompson@linaro.org, krzk@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, soc@kernel.org
+Subject: Re: [PATCH v2 3/5] MIPS: configs: drop unused BACKLIGHT_GENERIC
+ option
+Message-ID: <20201204120632.GA10011@alpha.franken.de>
+References: <20201201222922.3183-1-andrey.zhizhikin@leica-geosystems.com>
+ <20201201222922.3183-4-andrey.zhizhikin@leica-geosystems.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201203123649.44046-2-alexander.sverdlin@nokia.com>
+In-Reply-To: <20201201222922.3183-4-andrey.zhizhikin@leica-geosystems.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 01:36:49PM +0100, Alexander A Sverdlin wrote:
-> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+On Tue, Dec 01, 2020 at 10:29:20PM +0000, Andrey Zhizhikin wrote:
+> Commit 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it is
+> unused") removed geenric_bl driver from the tree, together with
+> corresponding config option.
 > 
-> Because check_kernel_sections_mem() does exactly this for all platforms.
+> Remove BACKLIGHT_GENERIC config item from all MIPS configurations.
 > 
-> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> Fixes: 7ecdea4a0226 ("backlight: generic_bl: Remove this driver as it is unused")
+> Cc: Sam Ravnborg <sam@ravnborg.org>
+> Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
 > ---
->  arch/mips/cavium-octeon/setup.c | 9 ---------
->  1 file changed, 9 deletions(-)
+>  arch/mips/configs/gcw0_defconfig      | 1 -
+>  arch/mips/configs/gpr_defconfig       | 1 -
+>  arch/mips/configs/lemote2f_defconfig  | 1 -
+>  arch/mips/configs/loongson3_defconfig | 1 -
+>  arch/mips/configs/mtx1_defconfig      | 1 -
+>  arch/mips/configs/rs90_defconfig      | 1 -
+>  6 files changed, 6 deletions(-)
 
 applied to mips-next.
 

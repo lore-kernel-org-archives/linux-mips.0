@@ -2,65 +2,55 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5840CC19437
-	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 13:41:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95F2FC4361A
+	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 14:58:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3D9EE22A99
-	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 13:41:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5F42522571
+	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 14:58:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730278AbgLDNk7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 4 Dec 2020 08:40:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
+        id S2388207AbgLDO5Y (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 4 Dec 2020 09:57:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730286AbgLDNk6 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 4 Dec 2020 08:40:58 -0500
+        with ESMTP id S2388150AbgLDO5Y (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 4 Dec 2020 09:57:24 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0653DC061A53
-        for <linux-mips@vger.kernel.org>; Fri,  4 Dec 2020 05:40:18 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4CDC061A54
+        for <linux-mips@vger.kernel.org>; Fri,  4 Dec 2020 06:56:34 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1klBJi-0005IX-If; Fri, 04 Dec 2020 14:40:10 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        id 1klCVY-0005Ej-KY; Fri, 04 Dec 2020 15:56:28 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1klBJh-0004az-2O; Fri, 04 Dec 2020 14:40:09 +0100
-Date:   Fri, 4 Dec 2020 14:40:09 +0100
+        id 1klCVV-000342-IY; Fri, 04 Dec 2020 15:56:25 +0100
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+To:     Andrew Lunn <andrew@lunn.ch>,
         Vivien Didelot <vivien.didelot@gmail.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org
-Subject: Re: [PATCH v3 net-next 2/2] net: dsa: qca: ar9331: export stats64
-Message-ID: <20201204134009.q6alw6t2pk22saak@pengutronix.de>
-References: <20201202140904.24748-1-o.rempel@pengutronix.de>
- <20201202140904.24748-3-o.rempel@pengutronix.de>
- <20201202104207.697cfdbb@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <20201203085011.GA3606@pengutronix.de>
- <20201203083517.3b616782@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
- <20201203175320.f3fmyaqoxifydwzv@pengutronix.de>
- <20201203180140.4puwxgailw2iysxz@skbuf>
+Subject: [PATCH v4 net-next 1/2] net: dsa: add optional stats64 support
+Date:   Fri,  4 Dec 2020 15:56:23 +0100
+Message-Id: <20201204145624.11713-2-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201204145624.11713-1-o.rempel@pengutronix.de>
+References: <20201204145624.11713-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201203180140.4puwxgailw2iysxz@skbuf>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 14:32:17 up 2 days,  3:38, 24 users,  load average: 0.01, 0.02, 0.00
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
 X-SA-Exim-Mail-From: ore@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mips@vger.kernel.org
@@ -68,41 +58,61 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 08:01:40PM +0200, Vladimir Oltean wrote:
-> On Thu, Dec 03, 2020 at 06:53:20PM +0100, Oleksij Rempel wrote:
-> > It is possible to poll it more frequently, but  it make no reals sense
-> > on this low power devices.
-> 
-> Frankly I thought you understood the implications of periodic polling
-> and you're ok with them,
+Allow DSA drivers to export stats64
 
-I added polling to read out small counters to avoid overflow.
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+---
+ include/net/dsa.h |  3 +++
+ net/dsa/slave.c   | 14 +++++++++++++-
+ 2 files changed, 16 insertions(+), 1 deletion(-)
 
-> just wanting to have _something_.
-
-Having something is good, but making it good is better :D
-
-> But fine,
-> welcome to my world, happy to have you onboard...
-> 
-> > What kind of options do we have?
-> 
-> https://www.spinics.net/lists/netdev/msg703774.html
-> https://www.spinics.net/lists/netdev/msg704370.html
-> 
-> Unfortunately I've been absolutely snowed under with work lately. I hope
-> to be able to come back to that during the weekend or something like that.
-
-Ok, so the strategy is to fix the original issue. Sound good.
-
-For now I'll resend this patches without accessing mdio regs from the
-stats64 callback. It will give initial play ground, so we can see what
-else should be done for DSA specific use case.
-
-Regards,
-Oleksij
+diff --git a/include/net/dsa.h b/include/net/dsa.h
+index 4e60d2610f20..457b89143875 100644
+--- a/include/net/dsa.h
++++ b/include/net/dsa.h
+@@ -655,6 +655,9 @@ struct dsa_switch_ops {
+ 	int	(*port_change_mtu)(struct dsa_switch *ds, int port,
+ 				   int new_mtu);
+ 	int	(*port_max_mtu)(struct dsa_switch *ds, int port);
++
++	void	(*get_stats64)(struct dsa_switch *ds, int port,
++				   struct rtnl_link_stats64 *s);
+ };
+ 
+ #define DSA_DEVLINK_PARAM_DRIVER(_id, _name, _type, _cmodes)		\
+diff --git a/net/dsa/slave.c b/net/dsa/slave.c
+index ff2266d2b998..6e1a4dc18a97 100644
+--- a/net/dsa/slave.c
++++ b/net/dsa/slave.c
+@@ -1602,6 +1602,18 @@ static struct devlink_port *dsa_slave_get_devlink_port(struct net_device *dev)
+ 	return dp->ds->devlink ? &dp->devlink_port : NULL;
+ }
+ 
++static void dsa_slave_get_stats64(struct net_device *dev,
++				  struct rtnl_link_stats64 *s)
++{
++	struct dsa_port *dp = dsa_slave_to_port(dev);
++	struct dsa_switch *ds = dp->ds;
++
++	if (!ds->ops->get_stats64)
++		return dev_get_tstats64(dev, s);
++
++	return ds->ops->get_stats64(ds, dp->index, s);
++}
++
+ static const struct net_device_ops dsa_slave_netdev_ops = {
+ 	.ndo_open	 	= dsa_slave_open,
+ 	.ndo_stop		= dsa_slave_close,
+@@ -1621,7 +1633,7 @@ static const struct net_device_ops dsa_slave_netdev_ops = {
+ #endif
+ 	.ndo_get_phys_port_name	= dsa_slave_get_phys_port_name,
+ 	.ndo_setup_tc		= dsa_slave_setup_tc,
+-	.ndo_get_stats64	= dev_get_tstats64,
++	.ndo_get_stats64	= dsa_slave_get_stats64,
+ 	.ndo_get_port_parent_id	= dsa_slave_get_port_parent_id,
+ 	.ndo_vlan_rx_add_vid	= dsa_slave_vlan_rx_add_vid,
+ 	.ndo_vlan_rx_kill_vid	= dsa_slave_vlan_rx_kill_vid,
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.29.2
+

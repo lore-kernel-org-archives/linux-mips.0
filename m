@@ -2,58 +2,86 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91916C4361A
-	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 12:11:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7FE7C0018C
+	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 12:55:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 46479225A9
-	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 12:11:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7B57F22AB9
+	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 12:55:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730147AbgLDMLJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 4 Dec 2020 07:11:09 -0500
-Received: from elvis.franken.de ([193.175.24.41]:48092 "EHLO elvis.franken.de"
+        id S1728668AbgLDMzH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 4 Dec 2020 07:55:07 -0500
+Received: from elvis.franken.de ([193.175.24.41]:48216 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728297AbgLDMKy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 4 Dec 2020 07:10:54 -0500
+        id S1730173AbgLDMzH (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 4 Dec 2020 07:55:07 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kl9ud-0005Nb-01; Fri, 04 Dec 2020 13:10:11 +0100
+        id 1klAbR-0005vN-00; Fri, 04 Dec 2020 13:54:25 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 6A294C02E5; Fri,  4 Dec 2020 13:07:05 +0100 (CET)
-Date:   Fri, 4 Dec 2020 13:07:05 +0100
+        id 2AE1CC02E5; Fri,  4 Dec 2020 13:14:56 +0100 (CET)
+Date:   Fri, 4 Dec 2020 13:14:56 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH 1/2] MIPS: Move memblock_dump_all() to the end of
- setup_arch()
-Message-ID: <20201204120705.GB10011@alpha.franken.de>
-References: <1606965544-22611-1-git-send-email-yangtiezhu@loongson.cn>
- <1606965544-22611-2-git-send-email-yangtiezhu@loongson.cn>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Jinyang He <hejinyang@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: KASLR: Fix sync_icache() trapped in loop when
+ synci_step is zero
+Message-ID: <20201204121456.GA10990@alpha.franken.de>
+References: <1606878005-11427-1-git-send-email-hejinyang@loongson.cn>
+ <20201202103943.GA9065@alpha.franken.de>
+ <b6e97d2f-6d5a-1dbb-3701-b238709b7345@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1606965544-22611-2-git-send-email-yangtiezhu@loongson.cn>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b6e97d2f-6d5a-1dbb-3701-b238709b7345@flygoat.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 11:19:03AM +0800, Tiezhu Yang wrote:
-> In order to get more memblock configuration with memblock=debug in the boot
-> cmdline, move memblock_dump_all() to the end of setup_arch(), this can help
-> us to get dmi_setup() and resource_init() memblock info, at least for now.
+On Thu, Dec 03, 2020 at 12:02:10PM +0800, Jiaxun Yang wrote:
 > 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  arch/mips/kernel/setup.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> 在 2020/12/2 下午6:39, Thomas Bogendoerfer 写道:
+> > On Wed, Dec 02, 2020 at 11:00:05AM +0800, Jinyang He wrote:
+> > > Reading synci_step by using rdhwr instruction may return zero if no cache
+> > > need be synchronized. On the one hand, to make sure all load operation and
+> > > store operation finished we do __sync() for every platform. On the other
+> > > hand, some platform need operate synci one time although step is zero.
+> > Should this be someting like: Avoid endless loop, if no synci is needed ?
+> > 
+> > > diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
+> > > index 57bdd276..47aeb33 100644
+> > > --- a/arch/mips/kernel/relocate.c
+> > > +++ b/arch/mips/kernel/relocate.c
+> > > @@ -64,7 +64,7 @@ static void __init sync_icache(void *kbase, unsigned long kernel_length)
+> > >   			: "r" (kbase));
+> > >   		kbase += step;
+> > > -	} while (kbase < kend);
+> > > +	} while (step && kbase < kend);
+> > why not do a
+> > 
+> > 	if (step == 0)
+> > 		return;
+> > 
+> > before entering the loop ? According to MIPS32PRA no synci is needed,
+> > if stepi value is zero.
+> > 
+> > Thomas.
+> > 
+> > PS: Does anybody know a reason, why this code doesn't use an old fashioned
+> > dache/icache flushing, which might be slower but would work also on
+> > legecy cores ?
+> 
+> I thought that's because legacy flush requires much more cares.
 
-applied to mips-next.
+that's true. It shouldn't be that hard, but probably has to wait until
+someone needs it.
 
 Thomas.
 

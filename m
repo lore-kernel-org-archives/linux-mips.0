@@ -7,18 +7,18 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 484BDC4167B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D750C4361B
 	for <linux-mips@archiver.kernel.org>; Sat,  5 Dec 2020 18:37:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0EBDC2251D
+	by mail.kernel.org (Postfix) with ESMTP id 3153F22838
 	for <linux-mips@archiver.kernel.org>; Sat,  5 Dec 2020 18:37:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbgLESTc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1727381AbgLESTc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Sat, 5 Dec 2020 13:19:32 -0500
-Received: from ns2.chip.baikal.ru ([94.125.187.42]:53276 "EHLO
+Received: from mx.baikalelectronics.com ([94.125.187.42]:53290 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727099AbgLERkK (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 5 Dec 2020 12:40:10 -0500
+        by vger.kernel.org with ESMTP id S1727558AbgLERoE (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 5 Dec 2020 12:44:04 -0500
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
@@ -44,10 +44,11 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Rob Herring <robh@kernel.org>
-Subject: [PATCH v5 05/19] dt-bindings: usb: usb-hcd: Add "tpl-support" property
-Date:   Sat, 5 Dec 2020 18:24:12 +0300
-Message-ID: <20201205152427.29537-6-Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH v5 08/19] dt-bindings: usb: xhci: Add Broadcom STB v2 compatible device
+Date:   Sat, 5 Dec 2020 18:24:15 +0300
+Message-ID: <20201205152427.29537-9-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -58,40 +59,32 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The host controller device might be designed to work for the particular
-products or applications. In that case its DT node is supposed to be
-equipped with the tpl-support property.
+For some reason the "brcm,xhci-brcm-v2" compatible string has been missing
+in the original bindings file. Add it to the Generic xHCI Controllers DT
+schema since the controller driver expects it to be supported.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 Reviewed-by: Rob Herring <robh@kernel.org>
-
 ---
+ Documentation/devicetree/bindings/usb/generic-xhci.yaml | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Changelog v2:
-- Grammar fix: "s/it'/its"
-- Discard '|' from the property description, since we don't need to preserve
-  the text formatting.
----
- Documentation/devicetree/bindings/usb/usb-hcd.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-index 52cc84c400c0..9881ac10380d 100644
---- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-+++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-@@ -17,6 +17,12 @@ properties:
-     description: Phandle of a companion device
-     $ref: /schemas/types.yaml#/definitions/phandle
- 
-+  tpl-support:
-+    description:
-+      Indicates if the Targeted Peripheral List is supported for given
-+      targeted hosts (non-PC hosts).
-+    type: boolean
-+
- additionalProperties: true
- 
- examples:
+diff --git a/Documentation/devicetree/bindings/usb/generic-xhci.yaml b/Documentation/devicetree/bindings/usb/generic-xhci.yaml
+index 1ea1d49a8175..23d73df96ea3 100644
+--- a/Documentation/devicetree/bindings/usb/generic-xhci.yaml
++++ b/Documentation/devicetree/bindings/usb/generic-xhci.yaml
+@@ -26,7 +26,9 @@ properties:
+               - marvell,armada-8k-xhci
+           - const: generic-xhci
+       - description: Broadcom STB SoCs with xHCI
+-        const: brcm,bcm7445-xhci
++        enum:
++          - brcm,xhci-brcm-v2
++          - brcm,bcm7445-xhci
+       - description: Generic xHCI device
+         const: xhci-platform
+         deprecated: true
 -- 
 2.29.2
 

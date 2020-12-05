@@ -2,82 +2,100 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E96C7C433FE
-	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 22:14:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38D7AC4361A
+	for <linux-mips@archiver.kernel.org>; Sat,  5 Dec 2020 05:06:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AA6D022CB3
-	for <linux-mips@archiver.kernel.org>; Fri,  4 Dec 2020 22:14:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F402A22D07
+	for <linux-mips@archiver.kernel.org>; Sat,  5 Dec 2020 05:06:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725933AbgLDWNr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 4 Dec 2020 17:13:47 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:39450 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgLDWNr (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 4 Dec 2020 17:13:47 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1klJJx-00AGxT-JU; Fri, 04 Dec 2020 23:12:57 +0100
-Date:   Fri, 4 Dec 2020 23:12:57 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     George McCollister <george.mccollister@gmail.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v4 net-next 2/2] net: dsa: qca: ar9331: export stats64
-Message-ID: <20201204221257.GH2400258@lunn.ch>
-References: <20201204145624.11713-1-o.rempel@pengutronix.de>
- <20201204145624.11713-3-o.rempel@pengutronix.de>
- <CAFSKS=Pq9=mNXGeTbcTOL-=rp8wWCS2qtHF38eD1HiN=EK0DOQ@mail.gmail.com>
+        id S1726146AbgLEFGF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 5 Dec 2020 00:06:05 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:33558 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725770AbgLEFGF (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 5 Dec 2020 00:06:05 -0500
+Received: from [10.130.0.80] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxutACFctfM90ZAA--.42419S3;
+        Sat, 05 Dec 2020 13:05:06 +0800 (CST)
+Subject: Re: [PATCH 2/2] MIPS: Select ARCH_KEEP_MEMBLOCK to enable sysfs
+ memblock debug
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+References: <1606965544-22611-1-git-send-email-yangtiezhu@loongson.cn>
+ <1606965544-22611-3-git-send-email-yangtiezhu@loongson.cn>
+ <9c9af0de-387b-f113-b0a2-c5767c31c16d@flygoat.com>
+ <20201204120816.GC10011@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <727e9b94-0a22-189f-4c65-4a6e8504013f@loongson.cn>
+Date:   Sat, 5 Dec 2020 13:05:06 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFSKS=Pq9=mNXGeTbcTOL-=rp8wWCS2qtHF38eD1HiN=EK0DOQ@mail.gmail.com>
+In-Reply-To: <20201204120816.GC10011@alpha.franken.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9AxutACFctfM90ZAA--.42419S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrtr43AFWxCw1xZF13KFWUtwb_yoWktFb_Wr
+        4jkFnrK3WrJFWqka1vqw4fZFn0g3y0qFy8ury3Wr4Svw18JFW3Gw1kKa93Xrn5Way8Grsx
+        Xr90vr13Krn8KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbV8FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Jr0_
+        Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CE
+        bIxvr21lc2xSY4AK67AK6r4rMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JUhdbbUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-> > +struct ar9331_sw_stats {
-> > +       u64 rxbroad;
-> > +       u64 rxpause;
-> > +       u64 rxmulti;
-> > +};
+On 12/04/2020 08:08 PM, Thomas Bogendoerfer wrote:
+> On Thu, Dec 03, 2020 at 11:58:51AM +0800, Jiaxun Yang wrote:
+>>
+>> 在 2020/12/3 上午11:19, Tiezhu Yang 写道:
+>>> In the current code, CONFIG_ARCH_KEEP_MEMBLOCK is not set for MIPS arch,
+>>> memblock_discard() will discard memory and reserved arrays if they were
+>>> allocated, select ARCH_KEEP_MEMBLOCK to give a chance to track "memory"
+>>> and "reserved" memblocks after early boot, with this patch, we can see
+>>> the following two sysfs interfaces under DEBUG_FS.
+>>>
+>>> /sys/kernel/debug/memblock/memory
+>>> /sys/kernel/debug/memblock/reserved
+>> Is this really necessary?
+>> memblock data is not really necessary after boot for non-debug purpose.
+>>
+>> Given that MIPS is widely used in embedded systems which doesn't have much
+>> memory, keeping unused data after boot is kinda unconvincing.
+> about how much memory are talking here ?
+>
+>> If you intend to debug that please do it locally.
+> maybe we can add a
+>
+> if DEBUG_KERNEL
+>
+> since enabling DEBUG_KERNEL will cost already some memory...
 
-7> > +struct ar9331_sw_port {
-> > +       int idx;
-> > +       struct ar9331_sw_priv *priv;
-> > +       struct delayed_work mib_read;
-> > +       struct ar9331_sw_stats stats;
+Yes, that makes sense.
 
+If nobody has any objections, I will send v2 in the next week.
 
-> > +static void ar9331_stats_update(struct ar9331_sw_port *port,
-> > +                               struct rtnl_link_stats64 *stats)
-> > +{
-> > +       struct ar9331_sw_stats *s = &port->stats;
-> > +
-> > +       stats->rx_packets = s->rxbroad + s->rxmulti + s->rx64byte +
-> > +               s->rx128byte + s->rx256byte + s->rx512byte + s->rx1024byte +
-> > +               s->rx1518byte + s->rxmaxbyte;
-> 
-> Are all of these port->stats accesses always atomic? I'll need to do
-> something similar in my xrs700x driver and want to make sure there
-> doesn't need to be a lock between here and where they're updated in
-> the delayed work.
+Thanks,
+Tiezhu
 
-Since these are u64, they are not atomic on 32 bit systems.
+>
+> Thomas.
+>
 
-Take a look at
-
-include/linux/u64_stats_sync.h
-
-	Andrewu

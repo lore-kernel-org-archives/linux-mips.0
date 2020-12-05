@@ -7,26 +7,25 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85B2CC433FE
-	for <linux-mips@archiver.kernel.org>; Sat,  5 Dec 2020 18:37:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 484BDC4167B
+	for <linux-mips@archiver.kernel.org>; Sat,  5 Dec 2020 18:37:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4D25522CF6
-	for <linux-mips@archiver.kernel.org>; Sat,  5 Dec 2020 18:37:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0EBDC2251D
+	for <linux-mips@archiver.kernel.org>; Sat,  5 Dec 2020 18:37:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727185AbgLESTc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1727991AbgLESTc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Sat, 5 Dec 2020 13:19:32 -0500
-Received: from ns2.chip.baikal.ru ([94.125.187.42]:53298 "EHLO
+Received: from ns2.chip.baikal.ru ([94.125.187.42]:53276 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727605AbgLERoE (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 5 Dec 2020 12:44:04 -0500
+        by vger.kernel.org with ESMTP id S1727099AbgLERkK (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 5 Dec 2020 12:40:10 -0500
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
 CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
@@ -40,13 +39,15 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Neil Armstrong <narmstrong@baylibre.com>,
         Kevin Hilman <khilman@baylibre.com>,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 19/19] dt-bindings: usb: intel,keembay-dwc3: Validate DWC3 sub-node
-Date:   Sat, 5 Dec 2020 18:24:26 +0300
-Message-ID: <20201205152427.29537-20-Sergey.Semin@baikalelectronics.ru>
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v5 05/19] dt-bindings: usb: usb-hcd: Add "tpl-support" property
+Date:   Sat, 5 Dec 2020 18:24:12 +0300
+Message-ID: <20201205152427.29537-6-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -57,53 +58,40 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Intel Keem Bay DWC3 compatible DT nodes are supposed to have a DWC USB3
-compatible sub-node to describe a fully functioning USB interface. Let's
-use the available DWC USB3 DT schema to validate the Qualcomm DWC3
-sub-nodes.
-
-Note since the generic DWC USB3 DT node is supposed to be named as generic
-USB HCD ("^usb(@.*)?") one we have to accordingly fix the sub-nodes name
-regexp and fix the DT node example.
+The host controller device might be designed to work for the particular
+products or applications. In that case its DT node is supposed to be
+equipped with the tpl-support property.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 ---
 
-Changelog v5:
-- This is a new patch created for the new Intel Keem Bay bindings file,
-  which has been added just recently.
+Changelog v2:
+- Grammar fix: "s/it'/its"
+- Discard '|' from the property description, since we don't need to preserve
+  the text formatting.
 ---
- .../devicetree/bindings/usb/intel,keembay-dwc3.yaml      | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ Documentation/devicetree/bindings/usb/usb-hcd.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/intel,keembay-dwc3.yaml b/Documentation/devicetree/bindings/usb/intel,keembay-dwc3.yaml
-index dd32c10ce6c7..43b91ab62004 100644
---- a/Documentation/devicetree/bindings/usb/intel,keembay-dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/intel,keembay-dwc3.yaml
-@@ -34,11 +34,8 @@ properties:
- # Required child node:
+diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+index 52cc84c400c0..9881ac10380d 100644
+--- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
++++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
+@@ -17,6 +17,12 @@ properties:
+     description: Phandle of a companion device
+     $ref: /schemas/types.yaml#/definitions/phandle
  
- patternProperties:
--  "^dwc3@[0-9a-f]+$":
--    type: object
--    description:
--      A child node must exist to represent the core DWC3 IP block.
--      The content of the node is defined in dwc3.txt.
-+  "^usb@[0-9a-f]+$":
-+    $ref: snps,dwc3.yaml#
++  tpl-support:
++    description:
++      Indicates if the Targeted Peripheral List is supported for given
++      targeted hosts (non-PC hosts).
++    type: boolean
++
+ additionalProperties: true
  
- required:
-   - compatible
-@@ -68,7 +65,7 @@ examples:
-           #address-cells = <1>;
-           #size-cells = <1>;
- 
--          dwc3@34000000 {
-+          usb@34000000 {
-                 compatible = "snps,dwc3";
-                 reg = <0x34000000 0x10000>;
-                 interrupts = <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>;
+ examples:
 -- 
 2.29.2
 

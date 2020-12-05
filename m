@@ -7,18 +7,18 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D750C4361B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9E00C1B0D9
 	for <linux-mips@archiver.kernel.org>; Sat,  5 Dec 2020 18:37:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3153F22838
+	by mail.kernel.org (Postfix) with ESMTP id B7D3E22838
 	for <linux-mips@archiver.kernel.org>; Sat,  5 Dec 2020 18:37:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727381AbgLESTc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1727847AbgLESTc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Sat, 5 Dec 2020 13:19:32 -0500
-Received: from mx.baikalelectronics.com ([94.125.187.42]:53290 "EHLO
+Received: from mx.chip.baikal.ru ([94.125.187.42]:53266 "EHLO
         mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727558AbgLERoE (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 5 Dec 2020 12:44:04 -0500
+        by vger.kernel.org with ESMTP id S1727169AbgLERkK (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 5 Dec 2020 12:40:10 -0500
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
@@ -43,12 +43,10 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v5 08/19] dt-bindings: usb: xhci: Add Broadcom STB v2 compatible device
-Date:   Sat, 5 Dec 2020 18:24:15 +0300
-Message-ID: <20201205152427.29537-9-Sergey.Semin@baikalelectronics.ru>
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 12/19] dt-bindings: usb: dwc3: Add synopsys,dwc3 compatible string
+Date:   Sat, 5 Dec 2020 18:24:19 +0300
+Message-ID: <20201205152427.29537-13-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -59,32 +57,42 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-For some reason the "brcm,xhci-brcm-v2" compatible string has been missing
-in the original bindings file. Add it to the Generic xHCI Controllers DT
-schema since the controller driver expects it to be supported.
+The DWC USB3 driver and some DTS files like Exynos 5250, Keystone k2e, etc
+expects the DWC USB3 DT node to have the compatible string with the
+"synopsys" vendor prefix. Let's add the corresponding compatible string to
+the controller DT schema, but mark it as deprecated seeing the Synopsys,
+Inc. is presented with just "snps" vendor prefix.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/usb/generic-xhci.yaml | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/generic-xhci.yaml b/Documentation/devicetree/bindings/usb/generic-xhci.yaml
-index 1ea1d49a8175..23d73df96ea3 100644
---- a/Documentation/devicetree/bindings/usb/generic-xhci.yaml
-+++ b/Documentation/devicetree/bindings/usb/generic-xhci.yaml
-@@ -26,7 +26,9 @@ properties:
-               - marvell,armada-8k-xhci
-           - const: generic-xhci
-       - description: Broadcom STB SoCs with xHCI
--        const: brcm,bcm7445-xhci
-+        enum:
-+          - brcm,xhci-brcm-v2
-+          - brcm,bcm7445-xhci
-       - description: Generic xHCI device
-         const: xhci-platform
-         deprecated: true
+---
+
+Changelog v2:
+- Drop quotes from around the compat string constant.
+
+Changelog v4:
+- Get the patch back, since we can't discard the deprecated prefix from the
+  driver.
+---
+ Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+index 94ede43586f7..b1890558affe 100644
+--- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
++++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+@@ -31,7 +31,10 @@ allOf:
+ properties:
+   compatible:
+     contains:
+-      const: snps,dwc3
++      oneOf:
++        - const: snps,dwc3
++        - const: synopsys,dwc3
++          deprecated: true
+ 
+   interrupts:
+     description:
 -- 
 2.29.2
 

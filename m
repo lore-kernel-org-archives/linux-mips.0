@@ -7,18 +7,18 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 496A6C4361A
-	for <linux-mips@archiver.kernel.org>; Sat,  5 Dec 2020 16:28:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 913B6C433FE
+	for <linux-mips@archiver.kernel.org>; Sat,  5 Dec 2020 17:04:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 17AF023339
-	for <linux-mips@archiver.kernel.org>; Sat,  5 Dec 2020 16:28:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4A1AE2311D
+	for <linux-mips@archiver.kernel.org>; Sat,  5 Dec 2020 17:04:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgLEPhm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 5 Dec 2020 10:37:42 -0500
-Received: from mx.baikalelectronics.com ([94.125.187.42]:52298 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726934AbgLEP3q (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 5 Dec 2020 10:29:46 -0500
+        id S1727482AbgLERAw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 5 Dec 2020 12:00:52 -0500
+Received: from mx.baikalchip.ru ([94.125.187.42]:53200 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727099AbgLEQzv (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 5 Dec 2020 11:55:51 -0500
 From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
 To:     Mathias Nyman <mathias.nyman@intel.com>,
         Felipe Balbi <balbi@kernel.org>,
@@ -43,10 +43,11 @@ CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 01/19] dt-bindings: usb: usb-hcd: Detach generic USB controller properties
-Date:   Sat, 5 Dec 2020 18:24:08 +0300
-Message-ID: <20201205152427.29537-2-Sergey.Semin@baikalelectronics.ru>
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v5 03/19] dt-bindings: usb: usb-drd: Add "otg-rev" property constraints
+Date:   Sat, 5 Dec 2020 18:24:10 +0300
+Message-ID: <20201205152427.29537-4-Sergey.Semin@baikalelectronics.ru>
 In-Reply-To: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
 References: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
@@ -57,96 +58,34 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There can be three distinctive types of the USB controllers: USB hosts,
-USB peripherals/gadgets and USB OTG, which can switch from one role to
-another. In order to have that hierarchy handled in the DT binding files,
-we need to collect common properties in a common DT schema and specific
-properties in dedicated schemas. Seeing the usb-hcd.yaml DT schema is
-dedicated for the USB host controllers only, let's move some common
-properties from there into the usb.yaml schema. So the later would be
-available to evaluate all currently supported types of the USB
-controllers.
-
-While at it add an explicit "additionalProperties: true" into the
-usb-hcd.yaml as setting the additionalProperties/unevaluateProperties
-properties is going to be get mandatory soon.
+There are only four OTG revisions are currently supported by the kernel:
+0x0100, 0x0120, 0x0130, 0x0200. Any another value is considered as
+invalid.
 
 Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 ---
 
 Changelog v4:
-- This is a new patch created as a result of the comment left
-  by Chunfeng Yun in v3
-
-Changelog v5:
-- Discard duplicated additionalProperties property definition.
+- Move the constraints to the usb-drd.yaml schema where the otg-rev
+  property is now defined.
 ---
- .../devicetree/bindings/usb/usb-hcd.yaml      | 14 ++-------
- .../devicetree/bindings/usb/usb.yaml          | 29 +++++++++++++++++++
- 2 files changed, 31 insertions(+), 12 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/usb/usb.yaml
+ Documentation/devicetree/bindings/usb/usb-drd.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-index b545b087b342..81f3ad1419d8 100644
---- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-+++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-@@ -9,18 +9,8 @@ title: Generic USB Host Controller Device Tree Bindings
- maintainers:
-   - Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+diff --git a/Documentation/devicetree/bindings/usb/usb-drd.yaml b/Documentation/devicetree/bindings/usb/usb-drd.yaml
+index f3a64c46dcd0..f229fc8068d9 100644
+--- a/Documentation/devicetree/bindings/usb/usb-drd.yaml
++++ b/Documentation/devicetree/bindings/usb/usb-drd.yaml
+@@ -18,6 +18,7 @@ properties:
+       features (HNP/SRP/ADP) is enabled. If ADP is required, otg-rev should be
+       0x0200 or above.
+     $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [0x0100, 0x0120, 0x0130, 0x0200]
  
--properties:
--  $nodename:
--    pattern: "^usb(@.*)?"
--
--  phys:
--    $ref: /schemas/types.yaml#/definitions/phandle-array
--    description:
--      List of all the USB PHYs on this HCD
--
--  phy-names:
--    description:
--      Name specifier for the USB PHY
-+allOf:
-+  - $ref: usb.yaml#
- 
- additionalProperties: true
- 
-diff --git a/Documentation/devicetree/bindings/usb/usb.yaml b/Documentation/devicetree/bindings/usb/usb.yaml
-new file mode 100644
-index 000000000000..941ad59fbac5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/usb/usb.yaml
-@@ -0,0 +1,29 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/usb/usb.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Generic USB Controller Device Tree Bindings
-+
-+maintainers:
-+  - Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-+
-+select: false
-+
-+properties:
-+  $nodename:
-+    pattern: "^usb(@.*)?"
-+
-+  phys:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description:
-+      List of all the USB PHYs on this HCD
-+
-+  phy-names:
-+    description:
-+      Name specifier for the USB PHY
-+
-+additionalProperties: true
-+
-+...
+   dr_mode:
+     description:
 -- 
 2.29.2
 

@@ -2,56 +2,116 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0600C433FE
-	for <linux-mips@archiver.kernel.org>; Sat,  5 Dec 2020 18:49:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A5B9C4361B
+	for <linux-mips@archiver.kernel.org>; Sun,  6 Dec 2020 04:18:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ABF8222E00
-	for <linux-mips@archiver.kernel.org>; Sat,  5 Dec 2020 18:49:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0BD6C23104
+	for <linux-mips@archiver.kernel.org>; Sun,  6 Dec 2020 04:18:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725976AbgLEStm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 5 Dec 2020 13:49:42 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:40438 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbgLEStl (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 5 Dec 2020 13:49:41 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1klYdY-00AMjb-SF; Sat, 05 Dec 2020 15:34:12 +0100
-Date:   Sat, 5 Dec 2020 15:34:12 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v4 net-next 1/2] net: dsa: add optional stats64 support
-Message-ID: <20201205143412.GJ2420376@lunn.ch>
-References: <20201204145624.11713-1-o.rempel@pengutronix.de>
- <20201204145624.11713-2-o.rempel@pengutronix.de>
+        id S1727080AbgLFESY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 5 Dec 2020 23:18:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727071AbgLFESX (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 5 Dec 2020 23:18:23 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6CFC0613D0;
+        Sat,  5 Dec 2020 20:17:43 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1klkdd-00Gpbw-Nh; Sun, 06 Dec 2020 03:23:05 +0000
+Date:   Sun, 6 Dec 2020 03:23:05 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCHSET] saner elf compat
+Message-ID: <20201206032305.GD3579531@ZenIV.linux.org.uk>
+References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
+ <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
+ <20201203230336.GC3579531@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201204145624.11713-2-o.rempel@pengutronix.de>
+In-Reply-To: <20201203230336.GC3579531@ZenIV.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 03:56:23PM +0100, Oleksij Rempel wrote:
-> Allow DSA drivers to export stats64
+On Thu, Dec 03, 2020 at 11:03:36PM +0000, Al Viro wrote:
+> > >  The answer (for mainline) is that mips compat does *NOT* want
+> > > COMPAT_BINFMT_ELF.  Not a problem with that series, though, so I'd
+> > > retested it (seems to work, both for x86_64 and mips64, execs and
+> > > coredumps for all ABIs alike), with centralization of Kconfig logics
+> > > thrown in.
+> > 
+> > Well, the diffstat looks nice:
+> > 
+> > >  26 files changed, 127 insertions(+), 317 deletions(-)
+> > 
+> > and the patches didn't trigger anything for me, but how much did this
+> > get tested? Do you actually have both kinds of 32-bit elf mips
+> > binaries around and a machine to test on?
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+> Yes (aptitude install gcc-multilib on debian mips64el/stretch sets the toolchain
+> and libraries just fine, and then it's just a matter of -mabi=n32 passed
+> to gcc).  "Machine" is qemu-system-mips64el -machine malta -m 1024 -cpu 5KEc
+> and the things appear to work; I hadn't tried that on the actual hardware.
+> I do have a Loongson-2 box, but it would take a while to dig it out and
+> get it up-to-date.
+> 
+> > Linux-mips was cc'd, but I'm adding Thomas B to the cc here explicitly
+> > just so that he has a heads-up on this thing and can go and look at
+> > the mailing list in case it goes to a separate mailbox for him..
+> 
+> I would certainly appreciate review and testing - this branch sat
+> around in the "should post it someday" state since June (it was
+> one of the followups grown from regset work back then), and I'm
+> _not_ going to ask pulling it without an explicit OK from mips
+> folks.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+BTW, there's something curious going on in ELF binary recognition for
+x32.  Unlike other 64bit architectures, here we have a 32bit binary
+that successfully passes the native elf_check_arch().  Usually we
+either have different EM_... values for 64bit and 32bit (e.g. for ppc
+and sparc) or we have an explicit check for ->e_ident[EI_CLASS]
+having the right value (ELFCLASS32 or ELFCLASS64 for 32bit and 64bit
+binaries resp.)
 
-    Andrew
+For x32 that's not true - we use EM_X86_64 for ->e_machine and that's
+the only thing the native elf_check_arch() is looking at.  IOW,
+it looks like amd64 elf_load_binary() progresses past elf_check_arch()
+for x32 binaries.  And gets to load_elf_phdrs(), which would appear
+to have a check of its own that should reject the sucker:
+        /*
+         * If the size of this structure has changed, then punt, since
+         * we will be doing the wrong thing.
+         */
+        if (elf_ex->e_phentsize != sizeof(struct elf_phdr))
+                goto out;
+After all, ->e_phentsize is going to be 32 (sizeof(struct elf32_phdr)
+rather than expected 56 (sizeof(struct elf64_phdr)) and off we bugger,
+even though it happens at slightly later point than usual.  Except that
+we are looking at struct elf64_hdr ->e_phentsize - in struct elf32_hdr.
+I.e. at offset 54, two bytes past the end of in-file struct elf32_hdr.
+
+Usually we won't find 0x38 0x00 in that location, so everything works,
+but IMO that's too convoluted.
+
+Peter, is there any reason not to check ->ei_ident[EI_CLASS] in
+amd64 elf_check_arch()?  It's a 1-byte load from hot cacheline
+(offset 4 and we'd just read the 4 bytes at offsets 0..3) +
+compare + branch not taken, so performance impact is pretty much
+nil.  I'm not saying it's a security problem or anything of that
+sort, just that it makes the analysis more subtle than it ought
+to be...
+
+Is it about some malformed homegrown 64bit binaries with BS value
+at offset 4?  Confused...

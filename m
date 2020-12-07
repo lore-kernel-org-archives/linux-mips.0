@@ -2,175 +2,133 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.3 required=3.0 tests=BAYES_00,DATE_IN_PAST_96_XX,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+	URIBL_BLOCKED,USER_AGENT_SANE_2 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67A74C433FE
-	for <linux-mips@archiver.kernel.org>; Mon,  7 Dec 2020 07:46:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B4D4C4167B
+	for <linux-mips@archiver.kernel.org>; Mon,  7 Dec 2020 09:36:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2FED3225A9
-	for <linux-mips@archiver.kernel.org>; Mon,  7 Dec 2020 07:46:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 38DC123123
+	for <linux-mips@archiver.kernel.org>; Mon,  7 Dec 2020 09:36:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725918AbgLGHqG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 7 Dec 2020 02:46:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgLGHqF (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 7 Dec 2020 02:46:05 -0500
-X-Greylist: delayed 79644 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 06 Dec 2020 23:45:25 PST
-Received: from orcam.me.uk (unknown [IPv6:2001:4190:8020::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6F49DC0613D0
-        for <linux-mips@vger.kernel.org>; Sun,  6 Dec 2020 23:45:25 -0800 (PST)
-Received: from bugs.linux-mips.org (eddie.linux-mips.org [IPv6:2a01:4f8:201:92aa::3])
-        by orcam.me.uk (Postfix) with ESMTPS id 1CD242BE0EC
-        for <linux-mips@vger.kernel.org>; Mon,  7 Dec 2020 07:45:24 +0000 (GMT)
-Date:   Thu, 19 Nov 2020 13:28:00 +0000 (GMT)
-From:   "Maciej W. Rozycki" <macro@linux-mips.org>
-To:     =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <f4bug@amsat.org>
-cc:     Fredrik Noring <noring@nocrew.org>, linux-mips@vger.kernel.org,
-        Andreas Jaeger <aj@suse.de>, Nick Clifton <nickc@redhat.com>,
-        =?UTF-8?Q?J=C3=BCrgen_Urban?= <JuergenUrban@gmx.de>,
-        libc-help@sourceware.org
-Subject: Re: [PATCH 002/120] MIPS: R5900: Trap the RDHWR instruction as an
- SQ address exception
-In-Reply-To: <2767f5c3-4e89-6543-34f7-6cd1a1be8c23@amsat.org>
-Message-ID: <alpine.LFD.2.21.2011191241410.656242@eddie.linux-mips.org>
-References: <cover.1567326213.git.noring@nocrew.org> <4f856a5ea2c039c6639df875d11b5bff1bf7ecd2.1567326213.git.noring@nocrew.org> <2767f5c3-4e89-6543-34f7-6cd1a1be8c23@amsat.org>
+        id S1726576AbgLGJgC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 7 Dec 2020 04:36:02 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:43645 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726552AbgLGJgC (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 7 Dec 2020 04:36:02 -0500
+X-UUID: 348010998e2e43548394d21504c14202-20201207
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=PzXAt74ogdSVvHGMlNFXOX2qEwkVCLrOs16Lzlq64es=;
+        b=k+X/1rFfwFpZMAEkah4MgD2ZeqokyvLAqLUlDsnktgKdMIFqmyWKKApTNu1IkqPaLWkLsNc4f0fKD8WblYkfaMXzMOTj/ZcnDNYcI11UhYC3jSPH91n/jrYR8nekYgyYlcfm182nv7PpIhXgPUisc2iSYsZLJRu82iIyxXGXF4o=;
+X-UUID: 348010998e2e43548394d21504c14202-20201207
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1053587091; Mon, 07 Dec 2020 17:35:09 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32N2.mediatek.inc
+ (172.27.4.72) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 7 Dec
+ 2020 17:35:08 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 7 Dec 2020 17:35:05 +0800
+Message-ID: <1607333707.18575.4.camel@mhfsdcap03>
+Subject: Re: [PATCH v5 10/19] dt-bindings: usb: Convert DWC USB3 bindings to
+ DT schema
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+CC:     Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        "Martin Blumenstingl" <martin.blumenstingl@googlemail.com>,
+        Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Date:   Mon, 7 Dec 2020 17:35:07 +0800
+In-Reply-To: <20201205152427.29537-11-Sergey.Semin@baikalelectronics.ru>
+References: <20201205152427.29537-1-Sergey.Semin@baikalelectronics.ru>
+         <20201205152427.29537-11-Sergey.Semin@baikalelectronics.ru>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+X-TM-SNTS-SMTP: AEB5FF3D303205152315F12801E2B2247DEE288D20E6EED68AE982586109AE1D2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, 19 Nov 2020, Philippe Mathieu-Daudé wrote:
-
-> > On the R5900, the RDHWR instruction is interpreted as the R5900 specific
-> > SQ instruction[1] that traps into a zero page address exception. Hence
-> > RDHWR can be emulated by emulate_load_store_insn().
-> 
-> Please bare with me because this is not my area, but this does
-> not look the correct way to fix this problem to me.
-> 
-> The R5900 is a MIPS-III, so I don't understand why we have to care
-> about RDHWR.
-
- The use of RDHWR, actual or emulated, is a part of the MIPS TLS psABI, 
-see: <https://www.linux-mips.org/wiki/NPTL>, in particular starting from: 
-<https://www.linux-mips.org/wiki/NPTL#Design_Choices> and throughout (the 
-expired certificate of the web site is a known issue, but there is 
-currently no way to get it fixed as nobody knows where Ralf Baechle has 
-gone).
-
-> IIRC MIPS TLS support has been added in glibc with MIPS32 ISA in
-> mind in 2005:
-> https://sourceware.org/git/?p=glibc.git;a=commit;h=f850220be6
-> 
-> MIPS16 is handled differently:
-> https://sourceware.org/git/?p=glibc.git;a=blobdiff;f=ports/sysdeps/mips/tls-macros.h;h=3e87e42ea;hp=8fe2e4a150d;hb=43301bd3c2;hpb=85bd816a60
-> 
-> Shouldn't we have a similar set of macros for the R5900?
-
- The macros are there to support different instructions used to access 
-data within TLS.  However the TLS pointer still has to be fetched with 
-RDHWR, and READ_THREAD_POINTER does exactly that, by calling the 
-`__builtin_thread_pointer' intrinsic in the MIPS16 case.  How it works is 
-explained in GCC sources, in gcc/config/mips/mips.md:
-
-;; In MIPS16 mode, the TLS base pointer is accessed by a
-;; libgcc helper function __mips16_rdhwr(), as 'rdhwr' is not
-;; accessible in MIPS16.
-;;
-;; This is not represented as a call insn, to avoid the
-;; unnecesarry clobbering of caller-save registers by a
-;; function consisting only of: "rdhwr $3,$29; j $31; nop;"
-;;
-;; A $25 clobber is added to cater for a $25 load stub added by the
-;; linker to __mips16_rdhwr when the call is made from non-PIC code.
-
--- that is a small piece of regular MIPS code is called, which executes 
-RDHWR.
-
-> The problem I have is this break running the binaries built
-> by the Sony Linux Toolkit for Playstation 2 which use the
-> LQ/SQ instruction:
-> 
->  1b00d5c:       0c6c00d4        jal     0x1b00350
->  1b00d60:       7fa90020        sq      t1,32(sp)
->  1b00d64:       a2710000        sb      s1,0(s3)
->  1b00d68:       26730001        addiu   s3,s3,1
->  1b00d6c:       10000004        b       0x1b00d80
->  1b00d70:       7ba90020        lq      t1,32(sp)
->  1b00d74:       00000000        nop
->  1b00d78:       2617ffff        addiu   s7,s0,-1
->  1b00d7c:       25360001        addiu   s6,t1,1
->  1b00d80:       91220000        lbu     v0,0(t1)
->  1b00d84:       02e0802d        move    s0,s7
->  1b00d88:       02c0482d        move    t1,s6
->  1b00d8c:       a2620000        sb      v0,0(s3)
->  1b00d90:       1600fff9        bnez    s0,0x1b00d78
->  1b00d94:       26730001        addiu   s3,s3,1
->  1b00d98:       10000003        b       0x1b00da8
->  1b00d9c:       01342026        xor     a0,t1,s4
->  1b00da0:       253e0003        addiu   s8,t1,3
->  1b00da4:       01342026        xor     a0,t1,s4
->  1b00da8:       7fa90020        sq      t1,32(sp)
->  1b00dac:       2c840001        sltiu   a0,a0,1
->  1b00db0:       0c6c00d4        jal     0x1b00350
-
- Where exactly do you see a problem, what are the symptoms?  A bug in the 
-emulation cannot be ruled out of course.
-
- While there indeed is an unfortunate opcode overlap between RDHWR and SQ, 
-the encoding of the specific operands chosen for TLS pointer access is 
-luckily guaranteed to always trap in the user mode, because the address 
-requested when the encoding is interpreted as SQ rather than RDHWR is 
-within the kernel KSEG2 segment:
-
-$ cat rdhwr.s
-	rdhwr	$3, $29
-$ gcc -march=mips32r2 -c rdhwr.s
-$ objdump -d rdhwr.o
-rdhwr.o:     file format elf32-tradlittlemips
-
-
-Disassembly of section .text:
-
-00000000 <.text>:
-   0:	7c03e83b 	rdhwr	v1,$29
-	...
-$ objdump -m mips:5900 -d rdhwr.o
-
-rdhwr.o:     file format elf32-tradlittlemips
-
-
-Disassembly of section .text:
-
-00000000 <.text>:
-   0:	7c03e83b 	sq	v1,-6085(zero)
-	...
-$ 
-
-This is because the HWR read is encoded in bits 15:11 of the instruction 
-word and $29 has the highest bit set, which lands in bit 15 of the 
-instruction word, meaning that the offset encoded in bits 15:0 used where 
-the instruction word is interpreted as SQ is negative.  And then bits 
-25:21 are hardwired to 0 in the encoding of RDHWR and they correspond to 
-the base register encoding with SQ, meaning that it will be interpreted as 
-$zero.  So the address ultimately requested is -6085 => 0xffffffffffffe83b 
-(the R5900 uses 32-bit addressing and ignores address bits 63:32, but that 
-does not matter here; this is KSEG2 either way).
-
- Consequently an AdES exception is triggered which we can trap and handle, 
-reinterpreting the encoding according to our needs and return the TLS 
-pointer in $v1 rather than issuing a SIGBUS.  So you are not expected to 
-see any issue unless there is a security erratum in the R5900 as well and 
-the encoding does not cause an exception for some reason.
-
- This of course disagrees with what Fredrik wrote in the quotation above, 
-as it's the last page rather than the zeroth that is accessed, but the net 
-effect is the same, or even better.
-
-  Maciej
+T24gU2F0LCAyMDIwLTEyLTA1IGF0IDE4OjI0ICswMzAwLCBTZXJnZSBTZW1pbiB3cm90ZToNCj4g
+RFdDIFVTQjMgRFQgbm9kZSBpcyBzdXBwb3NlZCB0byBiZSBjb21wbGlhbnQgd2l0aCB0aGUgR2Vu
+ZXJpYyB4SENJDQo+IENvbnRyb2xsZXIgc2NoZW1hLCBidXQgd2l0aCBhZGRpdGlvbmFsIHZlbmRv
+ci1zcGVjaWZpYyBwcm9wZXJ0aWVzLCB0aGUNCj4gY29udHJvbGxlci1zcGVjaWZpYyByZWZlcmVu
+Y2UgY2xvY2tzIGFuZCBQSFlzLiBTbyBsZXQncyBjb252ZXJ0IHRoZQ0KPiBjdXJyZW50bHkgYXZh
+aWxhYmxlIGxlZ2FjeSB0ZXh0LWJhc2VkIERXQyBVU0IzIGJpbmRpbmdzIHRvIHRoZSBEVCBzY2hl
+bWENCj4gYW5kIG1ha2Ugc3VyZSB0aGUgRFdDIFVTQjMgbm9kZXMgYXJlIGFsc28gdmFsaWRhdGVk
+IGFnYWluc3QgdGhlDQo+IHVzYi14aGNpLnlhbWwgc2NoZW1hLg0KPiANCj4gTm90ZSAxLiB3ZSBo
+YXZlIHRvIGRpc2NhcmQgdGhlIG5vZGVuYW1lIHJlc3RyaWN0aW9uIG9mIGJlaW5nIHByZWZpeGVk
+IHdpdGgNCj4gImR3YzNAIiBzdHJpbmcsIHNpbmNlIGluIGFjY29yZGFuY2Ugd2l0aCB0aGUgdXNi
+LWhjZC55YW1sIHNjaGVtYSBVU0Igbm9kZXMNCj4gYXJlIHN1cHBvc2VkIHRvIGJlIG5hbWVkIGFz
+ICJedXNiKEAuKikiLg0KPiANCj4gTm90ZSAyLiBUaGUgY2xvY2stcmVsYXRlZCBwcm9wZXJ0aWVz
+IGFyZSBtYXJrZWQgYXMgb3B0aW9uYWwgdG8gbWF0Y2ggdGhlDQo+IERXQyBVU0IzIGRyaXZlciBl
+eHBlY3RhdGlvbiBhbmQgdG8gaW1wcm92ZSB0aGUgYmluZGluZ3MgbWFpbmFpbmFiaWxpdHkNCj4g
+c28gaW4gY2FzZSBpZiB0aGVyZSBpcyBhIGdsdWUtbm9kZSBpdCB3b3VsZCB0aGUgcmVzcG9uc2li
+bGUgZm9yIHRoZQ0KPiBjbG9ja3MgaW5pdGlhbGl6YXRpb24uDQo+IA0KPiBTaWduZWQtb2ZmLWJ5
+OiBTZXJnZSBTZW1pbiA8U2VyZ2V5LlNlbWluQGJhaWthbGVsZWN0cm9uaWNzLnJ1Pg0KPiANCj4g
+LS0tDQo+IA0KPiBDaGFuZ2Vsb2cgdjI6DQo+IC0gRGlzY2FyZCAnfCcgZnJvbSB0aGUgZGVzY3Jp
+cHRpb25zLCBzaW5jZSB3ZSBkb24ndCBuZWVkIHRvIHByZXNlcnZlDQo+ICAgdGhlIHRleHQgZm9y
+bWF0dGluZyBpbiBhbnkgb2YgdGhlbS4NCj4gLSBEcm9wIHF1b3RlcyBmcm9tIGFyb3VuZCB0aGUg
+c3RyaW5nIGNvbnN0YW50cy4NCj4gLSBGaXggdGhlICJjbG9jay1uYW1lcyIgcHJvcCBkZXNjcmlw
+dGlvbiB0byBiZSByZWZlcnJpbmcgdGhlIGVudW1lcmF0ZWQNCj4gICBjbG9jay1uYW1lcyBpbnN0
+ZWFkIG9mIHRoZSBvbmVzIGZyb20gdGhlIERhdGFib29rLg0KPiANCj4gQ2hhbmdlbG9nIHYzOg0K
+PiAtIEFwcGx5IHVzYi14aGNpLnlhbWwjIHNjaGVtYSBvbmx5IGlmIHRoZSBjb250cm9sbGVyIGlz
+IHN1cHBvc2VkIHRvIHdvcmsNCj4gICBhcyBlaXRoZXIgaG9zdCBvciBvdGcuDQo+IA0KPiBDaGFu
+Z2Vsb2cgdjQ6DQo+IC0gQXBwbHkgdXNiLWRyZC55YW1sIHNjaGVtYSBmaXJzdC4gSWYgdGhlIGNv
+bnRyb2xsZXIgaXMgY29uZmlndXJlZA0KPiAgIHRvIHdvcmsgaW4gYSBnYWRnZXQgbW9kZSBvbmx5
+LCB0aGVuIGFwcGx5IHRoZSB1c2IueWFtbCBzY2hlbWEgdG9vLA0KPiAgIG90aGVyd2lzZSBhcHBs
+eSB0aGUgdXNiLXhoY2kueWFtbCBzY2hlbWEuDQo+IC0gRGlzY2FyZCB0aGUgUm9iJ2VzIFJldmll
+d2VkLWJ5IHRhZy4gUGxlYXNlIHJldmlldyB0aGUgcGF0Y2ggb25lIG1vcmUNCj4gICB0aW1lLg0K
+PiANCj4gQ2hhbmdlbG9nIHY1Og0KPiAtIEFkZCAic25wcyxkaXMtc3BsaXQtcXVpcmsiIHByb3Bl
+cnR5IHRvIHRoZSBEV0MgVVNCMyBEVCBzY2hlbWEuDQo+IC0gQWRkIGEgY29tbWl0IGxvZyB0ZXh0
+IGFib3V0IHRoZSBjbG9jay1yZWxhdGVkIHByb3BlcnR5IGNoYW5nZXMuDQo+IC0gTWFrZSBzdXJl
+IGRyX21vZGUgZXhpc3QgdG8gYXBwbHkgdGhlIFVTQi1nYWRnZXQtb25seSBzY2hlbWEuDQo+IC0t
+LQ0KPiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3MvdXNiL2R3YzMudHh0ICAgICAgICAgIHwgMTI4
+IC0tLS0tLS0NCj4gIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3VzYi9zbnBzLGR3YzMueWFtbCAg
+ICB8IDMxMiArKysrKysrKysrKysrKysrKysNCj4gIDIgZmlsZXMgY2hhbmdlZCwgMzEyIGluc2Vy
+dGlvbnMoKyksIDEyOCBkZWxldGlvbnMoLSkNCj4gIGRlbGV0ZSBtb2RlIDEwMDY0NCBEb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdXNiL2R3YzMudHh0DQo+ICBjcmVhdGUgbW9kZSAx
+MDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3VzYi9zbnBzLGR3YzMueWFt
+bA0KPiANCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy91
+c2IvZHdjMy50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdXNiL2R3YzMu
+dHh0DQo+IGRlbGV0ZWQgZmlsZSBtb2RlIDEwMDY0NA0KPiBpbmRleCAxYWFlMmI2MTYwYzEuLjAw
+MDAwMDAwMDAwMA0KPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdXNi
+L2R3YzMudHh0DQo+ICsrKyAvZGV2L251bGwNCj4gQEAgLTEsMTI4ICswLDAgQEANCj4gLXN5bm9w
+c3lzIERXQzMgQ09SRQ0KPiAtDQpbLi4uXQ0KPiArDQo+ICsgIGNsb2NrLW5hbWVzOg0KPiArICAg
+IGNvbnRhaW5zOg0KPiArICAgICAgYW55T2Y6DQo+ICsgICAgICAgIC0gZW51bTogW2J1c19lYXJs
+eSwgcmVmLCBzdXNwZW5kXQ0KPiArICAgICAgICAtIHRydWUNCj4gKw0KPiArICB1c2ItcGh5Og0K
+PiArICAgbWluSXRlbXM6IDENCmluZGVudGF0aW9uOiBleHBlY3RlZCA0DQo+ICsgICBpdGVtczoN
+Cj4gKyAgICAgLSBkZXNjcmlwdGlvbjogVVNCMi9IUyBQSFkNCj4gKyAgICAgLSBkZXNjcmlwdGlv
+bjogVVNCMy9TUyBQSFkNCj4gKw0KPiArICBwaHlzOg0KPiArICAgIG1pbkl0ZW1zOiAxDQo+ICsg
+ICAgaXRlbXM6DQo+ICsgICAgICAtIGRlc2NyaXB0aW9uOiBVU0IyL0hTIFBIWQ0KPiArICAgICAg
+LSBkZXNjcmlwdGlvbjogVVNCMy9TUyBQSFkNCj4gKw0KPiArICBwaHktbmFtZXM6DQo+ICsgICAg
+bWluSXRlbXM6IDENCj4gKyAgICBpdGVtczoNCj4gKyAgICAgIC0gY29uc3Q6IHVzYjItcGh5DQo+
+ICsgICAgICAtIGNvbnN0OiB1c2IzLXBoeQ0KWy4uLl0NCg0K
 

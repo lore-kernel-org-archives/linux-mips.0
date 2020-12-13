@@ -2,108 +2,122 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 324AEC4167B
-	for <linux-mips@archiver.kernel.org>; Sun, 13 Dec 2020 19:13:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12DA2C4361B
+	for <linux-mips@archiver.kernel.org>; Sun, 13 Dec 2020 19:58:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 03A0523A04
-	for <linux-mips@archiver.kernel.org>; Sun, 13 Dec 2020 19:13:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C707C207AC
+	for <linux-mips@archiver.kernel.org>; Sun, 13 Dec 2020 19:58:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727764AbgLMTNU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 13 Dec 2020 14:13:20 -0500
-Received: from out28-98.mail.aliyun.com ([115.124.28.98]:45169 "EHLO
-        out28-98.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726973AbgLMTNN (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 13 Dec 2020 14:13:13 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07921612|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.180487-0.000463275-0.81905;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.J6g39E6_1607886743;
-Received: from 192.168.10.152(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.J6g39E6_1607886743)
-          by smtp.aliyun-inc.com(10.147.40.2);
-          Mon, 14 Dec 2020 03:12:24 +0800
+        id S1730488AbgLMT6d convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 13 Dec 2020 14:58:33 -0500
+Received: from aposti.net ([89.234.176.197]:58054 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728530AbgLMT6Y (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 13 Dec 2020 14:58:24 -0500
+Date:   Sun, 13 Dec 2020 19:57:25 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
 Subject: Re: [PATCH] MIPS: Ingenic: Disable HPTLB for D0 XBurst CPUs too
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Zhou Yanjie <zhouyanjie@zoho.com>, od@zcrc.me,
+To:     Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Zhou Yanjie <zhouyanjie@zoho.com>, od@zcrc.me,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         stable@vger.kernel.org
+Message-Id: <PFNALQ.MDZT5ZA4HQDS3@crapouillou.net>
+In-Reply-To: <b5c0677a-fb8c-f5e8-b0f5-5bcaab00d921@wanyeetech.com>
 References: <20201212000354.291665-1-paul@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <b5c0677a-fb8c-f5e8-b0f5-5bcaab00d921@wanyeetech.com>
-Date:   Mon, 14 Dec 2020 03:12:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        <b5c0677a-fb8c-f5e8-b0f5-5bcaab00d921@wanyeetech.com>
 MIME-Version: 1.0
-In-Reply-To: <20201212000354.291665-1-paul@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Paul,
+Hi Zhou,
 
-On 2020/12/12 上午8:03, Paul Cercueil wrote:
-> The JZ4760 has the HPTLB as well, but has a XBurst CPU with a D0 CPUID.
->
-> Disable the HPTLB for all XBurst CPUs with a D0 CPUID. In the case where
-> there is no HPTLB (e.g. for older SoCs), this won't have any side
-> effect.
->
-> Fixes: b02efeb05699 ("MIPS: Ingenic: Disable abandoned HPTLB function.")
-> Cc: <stable@vger.kernel.org> # 5.4
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->   arch/mips/kernel/cpu-probe.c | 15 ++++++++-------
->   1 file changed, 8 insertions(+), 7 deletions(-)
->
-> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-> index e6853697a056..31cb9199197c 100644
-> --- a/arch/mips/kernel/cpu-probe.c
-> +++ b/arch/mips/kernel/cpu-probe.c
-> @@ -1830,16 +1830,17 @@ static inline void cpu_probe_ingenic(struct cpuinfo_mips *c, unsigned int cpu)
->   		 */
->   		case PRID_COMP_INGENIC_D0:
->   			c->isa_level &= ~MIPS_CPU_ISA_M32R2;
-> -			break;
-> +			fallthrough;
->   
->   		/*
->   		 * The config0 register in the XBurst CPUs with a processor ID of
-> -		 * PRID_COMP_INGENIC_D1 has an abandoned huge page tlb mode, this
-> -		 * mode is not compatible with the MIPS standard, it will cause
-> -		 * tlbmiss and into an infinite loop (line 21 in the tlb-funcs.S)
-> -		 * when starting the init process. After chip reset, the default
-> -		 * is HPTLB mode, Write 0xa9000000 to cp0 register 5 sel 4 to
+Le lun. 14 déc. 2020 à 3:12, Zhou Yanjie <zhouyanjie@wanyeetech.com> 
+a écrit :
+> Hi Paul,
+> 
+> On 2020/12/12 上午8:03, Paul Cercueil wrote:
+>> The JZ4760 has the HPTLB as well, but has a XBurst CPU with a D0 
+>> CPUID.
+>> 
+>> Disable the HPTLB for all XBurst CPUs with a D0 CPUID. In the case 
+>> where
+>> there is no HPTLB (e.g. for older SoCs), this won't have any side
+>> effect.
+>> 
+>> Fixes: b02efeb05699 ("MIPS: Ingenic: Disable abandoned HPTLB 
+>> function.")
+>> Cc: <stable@vger.kernel.org> # 5.4
+>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>> ---
+>>   arch/mips/kernel/cpu-probe.c | 15 ++++++++-------
+>>   1 file changed, 8 insertions(+), 7 deletions(-)
+>> 
+>> diff --git a/arch/mips/kernel/cpu-probe.c 
+>> b/arch/mips/kernel/cpu-probe.c
+>> index e6853697a056..31cb9199197c 100644
+>> --- a/arch/mips/kernel/cpu-probe.c
+>> +++ b/arch/mips/kernel/cpu-probe.c
+>> @@ -1830,16 +1830,17 @@ static inline void cpu_probe_ingenic(struct 
+>> cpuinfo_mips *c, unsigned int cpu)
+>>   		 */
+>>   		case PRID_COMP_INGENIC_D0:
+>>   			c->isa_level &= ~MIPS_CPU_ISA_M32R2;
+>> -			break;
+>> +			fallthrough;
+>>     		/*
+>>   		 * The config0 register in the XBurst CPUs with a processor ID of
+>> -		 * PRID_COMP_INGENIC_D1 has an abandoned huge page tlb mode, this
+>> -		 * mode is not compatible with the MIPS standard, it will cause
+>> -		 * tlbmiss and into an infinite loop (line 21 in the tlb-funcs.S)
+>> -		 * when starting the init process. After chip reset, the default
+>> -		 * is HPTLB mode, Write 0xa9000000 to cp0 register 5 sel 4 to
+> 
+> 
+> I just noticed that I mistakenly wrote a capital 'W' in the original 
+> version.
+> 
+> with that fixed:
+> 
+> Reviewed-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+
+Sure, thanks.
+
+If both D0 and D1 CPUs need the fix then I probably should move it 
+outside the switch, that would make the code a bit cleaner. I'll V2.
+
+> BTW: Are you planning to add support for JZ4760 recently? I am 
+> currently writing the CGU driver for JZ4775 and X2000. If you plan to 
+> add support for JZ4760, I can also write the CGU driver for JZ4760 by 
+> the way.
+
+Yes, we're working on it, all the core drivers are working (CGU, 
+pinctrl, timers, display, USB), it boots to userspace and allows to 
+telnet. The actual diff is very small, most of the changes were the 
+addition of the ingenic,jz4760-* compatible strings.
+
+Cheers,
+-Paul
+
+>> -		 * switch back to VTLB mode to prevent getting stuck.
+>> +		 * PRID_COMP_INGENIC_D0 or PRID_COMP_INGENIC_D1 has an abandoned
+>> +		 * huge page tlb mode, this mode is not compatible with the MIPS
+>> +		 * standard, it will cause tlbmiss and into an infinite loop
+>> +		 * (line 21 in the tlb-funcs.S) when starting the init process.
+>> +		 * After chip reset, the default is HPTLB mode, Write 0xa9000000
+>> +		 * to cp0 register 5 sel 4 to switch back to VTLB mode to prevent
+>> +		 * getting stuck.
+>>   		 */
+>>   		case PRID_COMP_INGENIC_D1:
+>>   			write_c0_page_ctrl(XBURST_PAGECTRL_HPTLB_DIS);
 
 
-I just noticed that I mistakenly wrote a capital 'W' in the original 
-version.
-
-with that fixed:
-
-Reviewed-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-
-
-BTW: Are you planning to add support for JZ4760 recently? I am currently 
-writing the CGU driver for JZ4775 and X2000. If you plan to add support 
-for JZ4760, I can also write the CGU driver for JZ4760 by the way.
-
-
-Thanks and best regards!
-
-
-> -		 * switch back to VTLB mode to prevent getting stuck.
-> +		 * PRID_COMP_INGENIC_D0 or PRID_COMP_INGENIC_D1 has an abandoned
-> +		 * huge page tlb mode, this mode is not compatible with the MIPS
-> +		 * standard, it will cause tlbmiss and into an infinite loop
-> +		 * (line 21 in the tlb-funcs.S) when starting the init process.
-> +		 * After chip reset, the default is HPTLB mode, Write 0xa9000000
-> +		 * to cp0 register 5 sel 4 to switch back to VTLB mode to prevent
-> +		 * getting stuck.
->   		 */
->   		case PRID_COMP_INGENIC_D1:
->   			write_c0_page_ctrl(XBURST_PAGECTRL_HPTLB_DIS);

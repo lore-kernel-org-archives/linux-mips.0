@@ -7,72 +7,59 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DD59C4361B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC689C2BB48
 	for <linux-mips@archiver.kernel.org>; Mon, 14 Dec 2020 15:28:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 44C6C22B2C
+	by mail.kernel.org (Postfix) with ESMTP id 673AC22B47
 	for <linux-mips@archiver.kernel.org>; Mon, 14 Dec 2020 15:28:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731528AbgLNP2H (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S2406508AbgLNP2H (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Mon, 14 Dec 2020 10:28:07 -0500
-Received: from elvis.franken.de ([193.175.24.41]:40266 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:40271 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406208AbgLNP2G (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1732397AbgLNP2G (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Mon, 14 Dec 2020 10:28:06 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kopkv-0006Cf-02; Mon, 14 Dec 2020 16:27:21 +0100
+        id 1kopkv-0006Cf-00; Mon, 14 Dec 2020 16:27:21 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 60377C037B; Mon, 14 Dec 2020 16:24:47 +0100 (CET)
-Date:   Mon, 14 Dec 2020 16:24:47 +0100
+        id A40ECC0375; Mon, 14 Dec 2020 16:19:25 +0100 (CET)
+Date:   Mon, 14 Dec 2020 16:19:25 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     natechancellor@gmail.com, ndesaulniers@google.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v2] mips: lib: uncached: fix non-standard usage of
- variable 'sp'
-Message-ID: <20201214152447.GC9149@alpha.franken.de>
-References: <20201211102437.3929348-1-anders.roxell@linaro.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v2] MIPS: Select ARCH_KEEP_MEMBLOCK if DEBUG_KERNEL to
+ enable sysfs memblock debug
+Message-ID: <20201214151925.GA9149@alpha.franken.de>
+References: <1607343702-28318-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201211102437.3929348-1-anders.roxell@linaro.org>
+In-Reply-To: <1607343702-28318-1-git-send-email-yangtiezhu@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 11:24:37AM +0100, Anders Roxell wrote:
-> When building mips tinyconfig with clang the following warning show up:
+On Mon, Dec 07, 2020 at 08:21:42PM +0800, Tiezhu Yang wrote:
+> In the current code, CONFIG_ARCH_KEEP_MEMBLOCK is not set for MIPS arch,
+> memblock_discard() will discard memory and reserved arrays if they were
+> allocated, select ARCH_KEEP_MEMBLOCK if DEBUG_KERNEL to give a chance to
+> track "memory" and "reserved" memblocks after early boot, with this patch,
+> we can see the following two sysfs interfaces under DEBUG_FS.
 > 
-> arch/mips/lib/uncached.c:45:6: warning: variable 'sp' is uninitialized when used here [-Wuninitialized]
->         if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
->             ^~
-> arch/mips/lib/uncached.c:40:18: note: initialize the variable 'sp' to silence this warning
->         register long sp __asm__("$sp");
->                         ^
->                          = 0
-> 1 warning generated.
+> /sys/kernel/debug/memblock/memory
+> /sys/kernel/debug/memblock/reserved
 > 
-> Rework to make an explicit inline move, instead of the non-standard use
-> of specifying registers for local variables. This is what's written
-> from the gcc-10 manual [1] about specifying registers for local
-> variables:
-> 
-> "6.47.5.2 Specifying Registers for Local Variables
-> .................................................
-> [...]
-> 
-> "The only supported use for this feature is to specify registers for
-> input and output operands when calling Extended 'asm' (*note Extended
-> Asm::).  [...]".
-> 
-> [1] https://docs.w3cub.com/gcc~10/local-register-variables
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 > ---
->  arch/mips/lib/uncached.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> v2:
+>   - select ARCH_KEEP_MEMBLOCK only if DEBUG_KERNEL
+> 
+>  arch/mips/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
 applied to mips-next.
 

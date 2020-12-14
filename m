@@ -4,119 +4,150 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D95B5C2BB40
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Dec 2020 15:28:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35F0AC4361B
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Dec 2020 15:55:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8CF3522B51
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Dec 2020 15:28:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0327A2253D
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Dec 2020 15:55:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407036AbgLNP2I (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 14 Dec 2020 10:28:08 -0500
-Received: from elvis.franken.de ([193.175.24.41]:40263 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731884AbgLNP2G (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 14 Dec 2020 10:28:06 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kopkv-0006Cf-01; Mon, 14 Dec 2020 16:27:21 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A5C8EC037B; Mon, 14 Dec 2020 16:20:40 +0100 (CET)
-Date:   Mon, 14 Dec 2020 16:20:40 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Alexander A Sverdlin <alexander.sverdlin@nokia.com>
-Cc:     linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Octeon: irq: Alloc desc before configuring IRQ
-Message-ID: <20201214152040.GB9149@alpha.franken.de>
-References: <20201127111355.28601-1-alexander.sverdlin@nokia.com>
+        id S1731429AbgLNPzq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 14 Dec 2020 10:55:46 -0500
+Received: from out28-122.mail.aliyun.com ([115.124.28.122]:58442 "EHLO
+        out28-122.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729091AbgLNPzq (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 14 Dec 2020 10:55:46 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07439697|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0789955-0.000352892-0.920652;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.J733Ogu_1607961298;
+Received: from 192.168.10.152(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.J733Ogu_1607961298)
+          by smtp.aliyun-inc.com(10.147.40.2);
+          Mon, 14 Dec 2020 23:54:59 +0800
+Subject: Re: [PATCH] MIPS: Ingenic: Disable HPTLB for D0 XBurst CPUs too
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Zhou Yanjie <zhouyanjie@zoho.com>, od@zcrc.me,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20201212000354.291665-1-paul@crapouillou.net>
+ <b5c0677a-fb8c-f5e8-b0f5-5bcaab00d921@wanyeetech.com>
+ <PFNALQ.MDZT5ZA4HQDS3@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <353d36d6-0aae-6dfa-dbf3-60552cf46d12@wanyeetech.com>
+Date:   Mon, 14 Dec 2020 23:54:58 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201127111355.28601-1-alexander.sverdlin@nokia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <PFNALQ.MDZT5ZA4HQDS3@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 12:13:55PM +0100, Alexander A Sverdlin wrote:
-> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-> 
-> Allocate the IRQ descriptors where necessary before configuring them via
-> irq_set_chip_and_handler(). Fixes the following soft lockup:
-> 
-> watchdog: BUG: soft lockup - CPU#5 stuck for 22s! [modprobe:72]
-> Modules linked in:
-> irq event stamp: 33288
-> hardirqs last  enabled at (33287): [<ffffffff8012e680>] restore_partial+0x74/0x150
-> hardirqs last disabled at (33288): [<ffffffff8012e9e8>] handle_int+0x128/0x178
-> softirqs last  enabled at (33284): [<ffffffff80859c4c>] __do_softirq+0x5c4/0x6d0
-> softirqs last disabled at (33279): [<ffffffff80164018>] irq_exit+0xe8/0xf0
-> CPU: 5 PID: 72 Comm: modprobe Not tainted 4.19.80-... #1
-> $ 0   : 0000000000000000 0000000000000001 0000000000000003 8000000002bdc640
-> $ 4   : 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> $ 8   : 0000000000000001 0000000000000001 0000000000000000 ffffffff803076cc
-> $12   : 0000000000000000 0000000000000000 ffffffff817f0000 0000000008000000
-> $16   : ffffffff80a96d10 ffffffff80a90000 8000000002c41780 8000000002c41788
-> $20   : 0000000000000001 ffffffff8013b248 800000008ef28080 ffffffff80bb8700
-> $24   : 0000000003bf0000 ffffffff802d0610
-> $28   : 800000008ef20000 800000008ef23bd0 0000000000000006 ffffffff8020d6f8
-> Hi    : 0000000000000160
-> Lo    : 0000000000000014
-> epc   : ffffffff8020d72c smp_call_function_many+0x2f4/0x370
-> ra    : ffffffff8020d6f8 smp_call_function_many+0x2c0/0x370
-> Status: 10008ce3 KX SX UX KERNEL EXL IE
-> Cause : 40808000 (ExcCode 00)
-> PrId  : 000d900a (Cavium Octeon II)
-> CPU: 5 PID: 72 Comm: modprobe Not tainted 4.19.80-... #1
-> Stack : ffffffff80ab0000 00000051801c0da0 0000000010000ce0 5e70a8a65518aeac
->         5e70a8a65518aeac 0000000000000000 800000008e0cfb48 ffffffff81820000
->         800000008e0cfad4 00000000f0ce6f64 0000000000000001 0000000000000000
->         ffffffff801ccfb8 0000000000000000 0000000000000000 ffffffff817f0000
->         800000008531d840 ffffffff80a90000 fffe000000000000 0000000000000000
->         ffffffff80b20000 ffffffffffffffff ffffffff80bb3980 ffffffff80bb3980
->         ffffffff80a90000 00000000fffffffe ffffffff8057a760 0000000000000028
->         ffffffff80c50028 800000008ef20000 800000008e0cfb40 ffffffff80b20000
->         ffffffff80835d6c 0000000000000000 800000008e0cfc78 5e70a8a65518aeac
->         ffffffff80a9dbf7 ffffffff80835c2c ffffffff801357a4 ffffffff809bdd50
->         ...
-> Call Trace:
-> [<ffffffff801357a4>] show_stack+0x9c/0x130
-> [<ffffffff80835d6c>] dump_stack+0xdc/0x140
-> [<ffffffff8023d490>] watchdog_timer_fn+0x3e8/0x478
-> [<ffffffff801f43e4>] __hrtimer_run_queues+0x18c/0x6d8
-> [<ffffffff801f507c>] hrtimer_interrupt+0x104/0x2e8
-> [<ffffffff801391a8>] c0_compare_interrupt+0x60/0x90
-> [<ffffffff801d0fcc>] __handle_irq_event_percpu+0xb4/0x4a0
-> [<ffffffff801d13ec>] handle_irq_event_percpu+0x34/0x90
-> [<ffffffff801d6b24>] handle_percpu_irq+0x9c/0xe0
-> [<ffffffff801d01f4>] generic_handle_irq+0x34/0x50
-> [<ffffffff80859678>] do_IRQ+0x18/0x28
-> [<ffffffff80107548>] plat_irq_dispatch+0x90/0x128
-> [<ffffffff8012ea2c>] handle_int+0x16c/0x178
-> [<ffffffff8020d72c>] smp_call_function_many+0x2f4/0x370
-> [<ffffffff8020d7e8>] smp_call_function+0x40/0xa0
-> [<ffffffff8013bc1c>] flush_tlb_mm+0x44/0x140
-> [<ffffffff802d50b0>] tlb_flush_mmu+0x38/0x90
-> [<ffffffff802d5154>] arch_tlb_finish_mmu+0x4c/0x88
-> [<ffffffff802d52bc>] tlb_finish_mmu+0x24/0x50
-> [<ffffffff802e0c54>] exit_mmap+0x11c/0x1b8
-> [<ffffffff80157bb4>] mmput+0x84/0x138
-> [<ffffffff80160ad4>] do_exit+0x314/0xc88
-> [<ffffffff801628e0>] do_group_exit+0x48/0xb0
-> [<ffffffff80162958>] __wake_up_parent+0x0/0x18
-> 
-> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-> ---
->  arch/mips/cavium-octeon/octeon-irq.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
+Hi Paul,
 
-applied to mips-next.
+On 2020/12/14 上午3:57, Paul Cercueil wrote:
+> Hi Zhou,
+>
+> Le lun. 14 déc. 2020 à 3:12, Zhou Yanjie <zhouyanjie@wanyeetech.com> a 
+> écrit :
+>> Hi Paul,
+>>
+>> On 2020/12/12 上午8:03, Paul Cercueil wrote:
+>>> The JZ4760 has the HPTLB as well, but has a XBurst CPU with a D0 CPUID.
+>>>
+>>> Disable the HPTLB for all XBurst CPUs with a D0 CPUID. In the case 
+>>> where
+>>> there is no HPTLB (e.g. for older SoCs), this won't have any side
+>>> effect.
+>>>
+>>> Fixes: b02efeb05699 ("MIPS: Ingenic: Disable abandoned HPTLB 
+>>> function.")
+>>> Cc: <stable@vger.kernel.org> # 5.4
+>>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>> ---
+>>>   arch/mips/kernel/cpu-probe.c | 15 ++++++++-------
+>>>   1 file changed, 8 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/arch/mips/kernel/cpu-probe.c 
+>>> b/arch/mips/kernel/cpu-probe.c
+>>> index e6853697a056..31cb9199197c 100644
+>>> --- a/arch/mips/kernel/cpu-probe.c
+>>> +++ b/arch/mips/kernel/cpu-probe.c
+>>> @@ -1830,16 +1830,17 @@ static inline void cpu_probe_ingenic(struct 
+>>> cpuinfo_mips *c, unsigned int cpu)
+>>>            */
+>>>           case PRID_COMP_INGENIC_D0:
+>>>               c->isa_level &= ~MIPS_CPU_ISA_M32R2;
+>>> -            break;
+>>> +            fallthrough;
+>>>             /*
+>>>            * The config0 register in the XBurst CPUs with a 
+>>> processor ID of
+>>> -         * PRID_COMP_INGENIC_D1 has an abandoned huge page tlb 
+>>> mode, this
+>>> -         * mode is not compatible with the MIPS standard, it will 
+>>> cause
+>>> -         * tlbmiss and into an infinite loop (line 21 in the 
+>>> tlb-funcs.S)
+>>> -         * when starting the init process. After chip reset, the 
+>>> default
+>>> -         * is HPTLB mode, Write 0xa9000000 to cp0 register 5 sel 4 to
+>>
+>>
+>> I just noticed that I mistakenly wrote a capital 'W' in the original 
+>> version.
+>>
+>> with that fixed:
+>>
+>> Reviewed-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>
+> Sure, thanks.
+>
+> If both D0 and D1 CPUs need the fix then I probably should move it 
+> outside the switch, that would make the code a bit cleaner. I'll V2.
+>
 
-Thomas.
+This is a good idea, but it should be noted that it still needs to be 
+placed in XBURST_REV1, because XBURST_REV2 processors (such as X1830) 
+also use the ID of D0, but they do not have the problem of HPTLB.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+
+>> BTW: Are you planning to add support for JZ4760 recently? I am 
+>> currently writing the CGU driver for JZ4775 and X2000. If you plan to 
+>> add support for JZ4760, I can also write the CGU driver for JZ4760 by 
+>> the way.
+>
+> Yes, we're working on it, all the core drivers are working (CGU, 
+> pinctrl, timers, display, USB), it boots to userspace and allows to 
+> telnet. The actual diff is very small, most of the changes were the 
+> addition of the ingenic,jz4760-* compatible strings.
+>
+
+Good to hear that.
+
+Thanks and best regards!
+
+
+> Cheers,
+> -Paul
+>
+>>> -         * switch back to VTLB mode to prevent getting stuck.
+>>> +         * PRID_COMP_INGENIC_D0 or PRID_COMP_INGENIC_D1 has an 
+>>> abandoned
+>>> +         * huge page tlb mode, this mode is not compatible with the 
+>>> MIPS
+>>> +         * standard, it will cause tlbmiss and into an infinite loop
+>>> +         * (line 21 in the tlb-funcs.S) when starting the init 
+>>> process.
+>>> +         * After chip reset, the default is HPTLB mode, Write 
+>>> 0xa9000000
+>>> +         * to cp0 register 5 sel 4 to switch back to VTLB mode to 
+>>> prevent
+>>> +         * getting stuck.
+>>>            */
+>>>           case PRID_COMP_INGENIC_D1:
+>>>               write_c0_page_ctrl(XBURST_PAGECTRL_HPTLB_DIS);
+>

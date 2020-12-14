@@ -2,122 +2,99 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12DA2C4361B
-	for <linux-mips@archiver.kernel.org>; Sun, 13 Dec 2020 19:58:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D30DC4361B
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Dec 2020 06:00:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C707C207AC
-	for <linux-mips@archiver.kernel.org>; Sun, 13 Dec 2020 19:58:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 408FD229C7
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Dec 2020 06:00:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730488AbgLMT6d convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 13 Dec 2020 14:58:33 -0500
-Received: from aposti.net ([89.234.176.197]:58054 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728530AbgLMT6Y (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 13 Dec 2020 14:58:24 -0500
-Date:   Sun, 13 Dec 2020 19:57:25 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] MIPS: Ingenic: Disable HPTLB for D0 XBurst CPUs too
-To:     Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Zhou Yanjie <zhouyanjie@zoho.com>, od@zcrc.me,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Message-Id: <PFNALQ.MDZT5ZA4HQDS3@crapouillou.net>
-In-Reply-To: <b5c0677a-fb8c-f5e8-b0f5-5bcaab00d921@wanyeetech.com>
-References: <20201212000354.291665-1-paul@crapouillou.net>
-        <b5c0677a-fb8c-f5e8-b0f5-5bcaab00d921@wanyeetech.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+        id S2392056AbgLNGAC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 14 Dec 2020 01:00:02 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:43412 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388417AbgLNGAB (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 14 Dec 2020 01:00:01 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_38l_9ZfFUodAA--.52092S4;
+        Mon, 14 Dec 2020 13:59:04 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 3/4] MIPS: Loongson64: DTS: Add SPI support to LS7A
+Date:   Mon, 14 Dec 2020 13:58:53 +0800
+Message-Id: <1607925534-8312-3-git-send-email-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1607925534-8312-1-git-send-email-zhangqing@loongson.cn>
+References: <1607925534-8312-1-git-send-email-zhangqing@loongson.cn>
+X-CM-TRANSID: AQAAf9Dx_38l_9ZfFUodAA--.52092S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrtFWDWF1rKFyDKw48Gry8Krg_yoW3KFb_J3
+        ZrKws3GrWrJF9ru3ykZr4DCFW7u3ykua4rC3WkJr1DW3sYyrnxJFW8C3yDZ34UurWYvrZY
+        qrs5WF4kCw1xKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbS8YjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
+        IE14v26r15M28IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kIII0Yj41l84x0c7CE
+        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6x
+        kF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280
+        aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzV
+        Aqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S
+        6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8WwCF04k20xvY0x
+        0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+        7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
+        C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
+        04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
+        CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jf8n5UUUUU=
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Zhou,
+add spi support.
 
-Le lun. 14 déc. 2020 à 3:12, Zhou Yanjie <zhouyanjie@wanyeetech.com> 
-a écrit :
-> Hi Paul,
-> 
-> On 2020/12/12 上午8:03, Paul Cercueil wrote:
->> The JZ4760 has the HPTLB as well, but has a XBurst CPU with a D0 
->> CPUID.
->> 
->> Disable the HPTLB for all XBurst CPUs with a D0 CPUID. In the case 
->> where
->> there is no HPTLB (e.g. for older SoCs), this won't have any side
->> effect.
->> 
->> Fixes: b02efeb05699 ("MIPS: Ingenic: Disable abandoned HPTLB 
->> function.")
->> Cc: <stable@vger.kernel.org> # 5.4
->> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->> ---
->>   arch/mips/kernel/cpu-probe.c | 15 ++++++++-------
->>   1 file changed, 8 insertions(+), 7 deletions(-)
->> 
->> diff --git a/arch/mips/kernel/cpu-probe.c 
->> b/arch/mips/kernel/cpu-probe.c
->> index e6853697a056..31cb9199197c 100644
->> --- a/arch/mips/kernel/cpu-probe.c
->> +++ b/arch/mips/kernel/cpu-probe.c
->> @@ -1830,16 +1830,17 @@ static inline void cpu_probe_ingenic(struct 
->> cpuinfo_mips *c, unsigned int cpu)
->>   		 */
->>   		case PRID_COMP_INGENIC_D0:
->>   			c->isa_level &= ~MIPS_CPU_ISA_M32R2;
->> -			break;
->> +			fallthrough;
->>     		/*
->>   		 * The config0 register in the XBurst CPUs with a processor ID of
->> -		 * PRID_COMP_INGENIC_D1 has an abandoned huge page tlb mode, this
->> -		 * mode is not compatible with the MIPS standard, it will cause
->> -		 * tlbmiss and into an infinite loop (line 21 in the tlb-funcs.S)
->> -		 * when starting the init process. After chip reset, the default
->> -		 * is HPTLB mode, Write 0xa9000000 to cp0 register 5 sel 4 to
-> 
-> 
-> I just noticed that I mistakenly wrote a capital 'W' in the original 
-> version.
-> 
-> with that fixed:
-> 
-> Reviewed-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+---
 
-Sure, thanks.
+v2:
+- Add spi about pci device DT
 
-If both D0 and D1 CPUs need the fix then I probably should move it 
-outside the switch, that would make the code a bit cleaner. I'll V2.
+v3:
+- Remove spiflash node
 
-> BTW: Are you planning to add support for JZ4760 recently? I am 
-> currently writing the CGU driver for JZ4775 and X2000. If you plan to 
-> add support for JZ4760, I can also write the CGU driver for JZ4760 by 
-> the way.
+---
+ arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Yes, we're working on it, all the core drivers are working (CGU, 
-pinctrl, timers, display, USB), it boots to userspace and allows to 
-telnet. The actual diff is very small, most of the changes were the 
-addition of the ingenic,jz4760-* compatible strings.
-
-Cheers,
--Paul
-
->> -		 * switch back to VTLB mode to prevent getting stuck.
->> +		 * PRID_COMP_INGENIC_D0 or PRID_COMP_INGENIC_D1 has an abandoned
->> +		 * huge page tlb mode, this mode is not compatible with the MIPS
->> +		 * standard, it will cause tlbmiss and into an infinite loop
->> +		 * (line 21 in the tlb-funcs.S) when starting the init process.
->> +		 * After chip reset, the default is HPTLB mode, Write 0xa9000000
->> +		 * to cp0 register 5 sel 4 to switch back to VTLB mode to prevent
->> +		 * getting stuck.
->>   		 */
->>   		case PRID_COMP_INGENIC_D1:
->>   			write_c0_page_ctrl(XBURST_PAGECTRL_HPTLB_DIS);
-
+diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+index f99a7a1..d91857c 100644
+--- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
++++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+@@ -405,6 +405,18 @@
+ 				interrupt-map-mask = <0 0 0 0>;
+ 				interrupt-map = <0 0 0 0 &pic 39 IRQ_TYPE_LEVEL_HIGH>;
+ 			};
++
++			spi@16,0 {
++				compatible = "pci0014,7a0b.0",
++						"pci0014,7a0b",
++						"pciclass088000",
++						"pciclass0880";
++
++				reg = <0xb000 0x0 0x0 0x0 0x0>;
++				#address-cells = <1>;
++				#size-cells = <0>;
++				num-chipselects = <0>;
++			};
+ 		};
+ 
+ 		isa {
+-- 
+2.1.0
 

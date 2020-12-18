@@ -2,93 +2,114 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F3F5C4361B
-	for <linux-mips@archiver.kernel.org>; Fri, 18 Dec 2020 09:59:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3709C2D0E4
+	for <linux-mips@archiver.kernel.org>; Fri, 18 Dec 2020 14:35:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 44332233E2
-	for <linux-mips@archiver.kernel.org>; Fri, 18 Dec 2020 09:59:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9E10A23A84
+	for <linux-mips@archiver.kernel.org>; Fri, 18 Dec 2020 14:35:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725897AbgLRJ7a (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 18 Dec 2020 04:59:30 -0500
-Received: from mout.gmx.net ([212.227.17.20]:60145 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725884AbgLRJ73 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 18 Dec 2020 04:59:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608285474;
-        bh=Poe+I/uv1HXYH34rR5R0KfS808Uj3LLB3gp9Re3QXqU=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=MtF7hSB+mz/+3K+MzUxZWtvXfV3o7WlP+T6Y93wb4tQeodfGIeYauRjNOXLq6dk+x
-         sPHfuyGVd0y4ThDa9UfIOpGmCriMohgEb49G/SLWQ+0YQfZkbvpPEMqlupEbhVufab
-         iAKoKmmU/WNu0O5npVFUtgBENBX/J2Hq0KmyEbpM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.44] ([95.91.192.147]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M1Ygt-1koooL1KW3-0032Nh; Fri, 18
- Dec 2020 10:57:54 +0100
-Subject: Re: [PATCH] Add support for Realtek RTL838x/RTL839x switch SoCs
-To:     Bert Vermeulen <bert@biot.com>, tsbogend@alpha.franken.de,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201215183557.646034-1-bert@biot.com>
- <fbd86bc4-5826-5b2b-5818-3ccd39a090fb@rempel-privat.de>
- <a4d89688-347b-21af-ef29-a28cd480d2d9@biot.com>
-From:   Oleksij Rempel <linux@rempel-privat.de>
-Message-ID: <2d39c09d-6665-091c-be8f-7793b4e75ab6@rempel-privat.de>
-Date:   Fri, 18 Dec 2020 10:57:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <a4d89688-347b-21af-ef29-a28cd480d2d9@biot.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:HKnE9tzMC2kxZyQFxCTudHQnCXL3zuRxEutJQTkvS0LMg9jHq0w
- nDZ63H92xGCTZjs2mTrTEZQDByu0BOqthBDr8vvvdQx7XQBSnhZXlIiQ4PVlvFTqO1ZWiHx
- 9tAkdSEmgIvY+TVXUO/Diip9xPoMpnHa7Oc4CorXFfvdnCr1wTvcAromGCZVRspruWpJXkn
- zzeGtFpbD1RbzIQLbN7TA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:SchKDOQKVyg=:8mfaSQAL41OQdWB663A7d/
- G+X2ObdCXbOkqScqfnJTGd4W45vKVxgs8JgZyekzRvUlJ2BBjzkknopCOh9ZBaQ+QkvmQukJZ
- Ev8wqdiaBgKiv1FutS8RoYtIz3s14bhaAp9gcT0Ua2zOE5cbfDe/14YaUGNU/6Zr68EUpb/30
- 1A4A+eSBebXOSpkaKi6UBaKSvzNp46EVuZkciQr/Qzi7ucK6orS+BQ6DcAJAMaNlSrmkYUE0T
- PB4QSRpFdotqNTszZqq/jnSKb5Z4DYEiiedRXE39vaz6smrg8J2Br7hM1uVfZnr7IayFbbkiA
- +9jiSZ+AVGhFssZcK4SEeoV3mWP25S9UuMaUh0bdcA/ndNsMJ+WVluVJBX3/Ez+Pm8ktddQHL
- yQgO5bua0Dk+gUl9nG5DBuJymzc4nn72t9aeXo4jCUJFSxurl9ziiAV6Krd6eQZHcSPp/EfaJ
- in0LM3NltLLPOgmKoobNKpdOapnblNMYY/OBaODNW4Pn7RWx8c2/cwGSgfKmkaEp7gz1b7aHD
- 7057aR3gAyu7/COpFH7a6MYshVFZLPFYNGW+twTGkWb7BgrfYxUDYxuBYzevIVG8n+/JsldhQ
- yGkfP2j3wB8lMMz/5Ajn3SzIqJn7kdaAnZH0FFwu07qkzegqJjEojs8Gr6dd7iB1cLMNfL6WN
- DCCmWVPtle3L7UnZQDQCYBdRk6T9axIG4zJktP+JvDrSdVHyHbfPjEOYpwyZdnBsgCJMLkjWZ
- 5ZzeYLTwCW7M6GWQgrxJsgX0zmMgZixEu/IA/GqKqXbtjXd+Zdu4NO0s73ZPk9MUtii8qpe9M
- qq/knpB2ehVkSZplnrKjUuC1xwAaK1pfSWvoGlj3nzkp4GFPWkbzf6kqOT4WgNWYOfAN15gFr
- tZbUxyaKAwkBnnq9FcjA==
+        id S1727967AbgLROfK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 18 Dec 2020 09:35:10 -0500
+Received: from mout.kundenserver.de ([212.227.126.187]:56373 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727662AbgLROfJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 18 Dec 2020 09:35:09 -0500
+Received: from orion.localdomain ([95.115.54.243]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1N5G1V-1k7L7Y3etB-0116tK; Fri, 18 Dec 2020 15:31:50 +0100
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, msalter@redhat.com, jacquiot.aurelien@gmail.com,
+        gerg@linux-m68k.org, geert@linux-m68k.org,
+        tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
+        deller@gmx.de, benh@kernel.crashing.org, paulus@samba.org,
+        ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
+        tglx@linutronix.de, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        maz@kernel.org, tony@atomide.com, arnd@arndb.de,
+        linux-alpha@vger.kernel.org, linux-c6x-dev@linux-c6x.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: [PATCH 05/23] arch: ia64: drop misleading warning on spurious IRQ
+Date:   Fri, 18 Dec 2020 15:31:04 +0100
+Message-Id: <20201218143122.19459-6-info@metux.net>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20201218143122.19459-1-info@metux.net>
+References: <20201218143122.19459-1-info@metux.net>
+X-Provags-ID: V03:K1:qnMCRRlYz3iyZZIxed2PdpOh9lZoshxB8GShF8Dv5f884PMzhlA
+ rgGET+r1LOZnPvEOElYtWvVtMeqma1PT6MAm+LyDreI+nOr4o8KfnR1Sfy8JSaEoh/faF3N
+ mrLr75Iv7ypE9eo+ty0Tfs5nujHLVGldONLbTa7Q1Q55yE3p4fTjay0i5z65zYWsxWyrY8j
+ wdxS9QtIcELSO8KinnzKQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:hEIvj0u6eNU=:Fotl5KfVQ9DkUfRBzyG236
+ z/v5oxv76HGlDvlwKxUPTZ+J/aiWp+XWF/kaGHdjv+IJqG/iu5JTRILDf5Pp0Pe6m9rrmBgTa
+ BPn3060l3hEUj0pTfRb4kiaMAWT36TdQ0WLNOR0ZvhV5jSOO2SuKAuO/9yDCHul1P56WocZYQ
+ m6ozUElHwYzMrzcxMhmoQuIiNyMlmYjhOh3JpzTxU0C1lYVRoaYbJUB3y8SQ1D82iuBockN+X
+ rZRUjOoIzpyBbSrmqY8qUbR75erprCtatSW2DOY8E+1PAHqBJLrkVo4+/8p33VW41Yz1GwNGK
+ iO4xjTuivZQWUc700sPaIwQbgYC9G9nXOOEowcnoPyrv3Xko+pWDDZ2KXSvjx9QKu46KRvRfZ
+ 7FnsAYtylPkalUN295WkJKOHMC4I5hj63PTgpeme12O4Qn6Yb/gw3f/VhkYyT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Am 18.12.20 um 00:27 schrieb Bert Vermeulen:
-> On 12/15/20 11:11 PM, Oleksij Rempel wrote:
->> Hello Bert,
->>
->> thank you for your work. Here are some comments..
->
-> Thanks for reviewing. I will send in a V2 with your comments all handled=
-.
->
->> I assume, after applying all needed changes, there will be no files
->> within
->> arch/mips/include/asm/mach-realtek :)
->
-> I wish! Unfortunately I need somewhere to put the early printk init
-> call, and the SoC family ID checks -- as they are heavily used in
-> various drivers.
+The warning in ack_bad_irq() is misleading in several ways:
+* the term "vector" isn't quite correct
+* the printing format isn't consistent across the archs: some print decimal,
+  some hex, some hex w/o "0x" prefix.
+* the printed linux irq isn't meaningful in all cases - we actually would
+  want it to print the hw irq.
 
-I would recommend you to use generic and exact SoC compatible string in
-the devicetree. It will save you and the subsystem maintainers some pain
-later. Please do not make drivers depend on the arch/* code.
+Since all call sites already print out more detailed and correct information,
+we just don't need to duplicate this in each single arch. So just drop it.
 
-=2D-
-Regards,
-Oleksij
+Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+---
+ arch/ia64/include/asm/hardirq.h | 2 +-
+ arch/ia64/kernel/irq.c          | 9 ---------
+ 2 files changed, 1 insertion(+), 10 deletions(-)
+
+diff --git a/arch/ia64/include/asm/hardirq.h b/arch/ia64/include/asm/hardirq.h
+index ccde7c2ba00f..dddaafaf84e0 100644
+--- a/arch/ia64/include/asm/hardirq.h
++++ b/arch/ia64/include/asm/hardirq.h
+@@ -22,6 +22,6 @@
+ 
+ extern void __iomem *ipi_base_addr;
+ 
+-void ack_bad_irq(unsigned int irq);
++#define ack_bad_irq(irq)
+ 
+ #endif /* _ASM_IA64_HARDIRQ_H */
+diff --git a/arch/ia64/kernel/irq.c b/arch/ia64/kernel/irq.c
+index ecef17c7c35b..1365c7cf2095 100644
+--- a/arch/ia64/kernel/irq.c
++++ b/arch/ia64/kernel/irq.c
+@@ -28,15 +28,6 @@
+ #include <asm/xtp.h>
+ 
+ /*
+- * 'what should we do if we get a hw irq event on an illegal vector'.
+- * each architecture has to answer this themselves.
+- */
+-void ack_bad_irq(unsigned int irq)
+-{
+-	printk(KERN_ERR "Unexpected irq vector 0x%x on CPU %u!\n", irq, smp_processor_id());
+-}
+-
+-/*
+  * Interrupt statistics:
+  */
+ 
+-- 
+2.11.0
+

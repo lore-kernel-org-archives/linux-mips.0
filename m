@@ -7,21 +7,21 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1597EC35296
-	for <linux-mips@archiver.kernel.org>; Fri, 18 Dec 2020 14:37:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11BD5C2BBD5
+	for <linux-mips@archiver.kernel.org>; Fri, 18 Dec 2020 15:01:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E432423AC1
-	for <linux-mips@archiver.kernel.org>; Fri, 18 Dec 2020 14:37:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E1FCF23AFD
+	for <linux-mips@archiver.kernel.org>; Fri, 18 Dec 2020 15:01:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729165AbgLROhO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 18 Dec 2020 09:37:14 -0500
-Received: from mout.kundenserver.de ([212.227.126.135]:59215 "EHLO
+        id S1728328AbgLRPBV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 18 Dec 2020 10:01:21 -0500
+Received: from mout.kundenserver.de ([212.227.126.133]:45275 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727842AbgLROfK (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 18 Dec 2020 09:35:10 -0500
+        with ESMTP id S1726247AbgLRPBT (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 18 Dec 2020 10:01:19 -0500
 Received: from orion.localdomain ([95.115.54.243]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MIMXE-1ktVvH3Qeq-00EO5n; Fri, 18 Dec 2020 15:31:52 +0100
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MZCrZ-1kdKnx3N4r-00V4mg; Fri, 18 Dec 2020 15:58:09 +0100
 From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
 To:     linux-kernel@vger.kernel.org
 Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
@@ -41,23 +41,25 @@ Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-gpio@vger.kernel.org, linux-omap@vger.kernel.org,
         linux-arch@vger.kernel.org
-Subject: [PATCH 06/23] arch: mips: drop misleading warning on spurious IRQ
-Date:   Fri, 18 Dec 2020 15:31:05 +0100
-Message-Id: <20201218143122.19459-7-info@metux.net>
+Subject: [PATCH 04/23] arch: c6x: drop misleading warning on spurious IRQ
+Date:   Fri, 18 Dec 2020 15:57:27 +0100
+Message-Id: <20201218145746.24205-5-info@metux.net>
 X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201218143122.19459-1-info@metux.net>
-References: <20201218143122.19459-1-info@metux.net>
-X-Provags-ID: V03:K1:FGKFVpjRm8i7alCduF6w5xVQ9QBhhI+BcbMoR2xYuHsBqi3HW+a
- zuZ/nO0yECgUh91EZuccQMI4v9u0fvgFaaXDlnfpg4pNnW+9YPm0m6vFzoP8y3nI/L80U2q
- tOYG+TtPDtewTmWoSaBjj031Z1xtRhX13X03Cj1R8WbJJ6hRxdjlasrHGXlgq0z0XRCY/7R
- 7bMVFVy/AwQ9G65ocohFQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5QbacgAAcV8=:SjlVoKIRpMoJbMDin1Wxmv
- r7hX0/Hb1uQQh9DWyGtQ4hJ/O7UuoWSZBLXqv3HLbGuwbraALbYBJaVDC8hOM6Rc34+eN5uUd
- VRtPdFPKbEXn7MPrknDfMOMfZmLIdjknTzIWTnexfB4JFPWnpLPS2uCDscdMklO+Ww0/aBe30
- WK8pshbeLhGqWu+4zq5EeVvhjKHOayfwPjMJnG0vngvQQxPP1BmzSm0fNQLZTEARXdkwu2pqE
- Eear9qZL5q1/abLp+4Wu/OabD7PVErjHqqBocNxuGjo1pGM2bAzuyckbJ44wcZDSvUGHf7l2D
- ou8BxCqHc2Ss6RnvX/JERqSHQ55352dSyIVht/cmKR8eT9fg35ihrPgOO9fzNj7XQUWwawJOh
- HR9IQlONZti0Q4+USJXCQTytoyovM/QCwtkXcmv3mUZpColG/mUlBGm0hTFRX
+In-Reply-To: <20201218145746.24205-1-info@metux.net>
+References: <20201218145746.24205-1-info@metux.net>
+X-Provags-ID: V03:K1:gDN+tfC1WayznC4KJBWf12CrfD19o/lE/XbtVVLhscNrRB7gWg1
+ Vds4YKpH0BcdAUFWRKPE6U7CB0zNVoGprjXD0HNU5mY/cL9JZ2C61KcLtCHdMtMeKmRsK2u
+ sGPBLqMBMF2UQuyDRRjLhSWq2H4N16poMBoiqVCf58AwRx2yU2Cy6diDJO0RxTO+LKhZ3Dc
+ U+V3J7YKyzDx9EkuuDsIQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:vrGjq169sr0=:3ZxaxoQ6clszTP12SF+WrC
+ nuEktM8jCWgAyBbSFvd8SZ2xXR5h7hBFwAt6Nn/tOtXnniRqw2R1B0ufcHnwcGupEGCxID1PR
+ wFPWGj8k/UadYQIC0dfKEWumuas4Jh1HQSpOCbunHMLWRy3guj1zFYnYyRPqfA/TCvUja7Klu
+ zyIjniE9DSd7NwlZ/JC6Fj0xGQKv0RQpRT1CJXJVRauwjlbuf0gUiFq49rnAJfZhAzNgXmoH3
+ oJofeVSlgEr4B5TvyIeJyQu5JVTfvQW/pyUwKxsI8IhmO8rAOGqiQEs69Ssd6zV3HQK6wgPaL
+ Pq/ckWUmavU5mDpIbmxQEwd+bzV6ZJrrQxSIHbZBEJ26Fzle21T0BUUvefu5kpPTZbcarrfSD
+ DkeHLzlxH4h/BadwHPzZEA07v+i9rkiXIBNNvv+/oimjY9xQ7eRGQesMLqSJjf7uS65HScJRz
+ tkpPz3EK/TfYQIc6ZZ+L4E0G4A+sM2vlQeDBFg7xGOjuwz2cOKBLYYiNVOVrZixIDRAox5mon
+ PMc+LqQAuN9+TADEDDmbp8=
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -74,44 +76,21 @@ we just don't need to duplicate this in each single arch. So just drop it.
 
 Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
 ---
- arch/mips/include/asm/hardirq.h | 3 +--
- arch/mips/kernel/irq.c          | 9 ---------
- 2 files changed, 1 insertion(+), 11 deletions(-)
+ arch/c6x/kernel/irq.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/hardirq.h b/arch/mips/include/asm/hardirq.h
-index c977a86c2c65..75444120e6cb 100644
---- a/arch/mips/include/asm/hardirq.h
-+++ b/arch/mips/include/asm/hardirq.h
-@@ -10,8 +10,7 @@
- #ifndef _ASM_HARDIRQ_H
- #define _ASM_HARDIRQ_H
+diff --git a/arch/c6x/kernel/irq.c b/arch/c6x/kernel/irq.c
+index e4c53d185b62..b9f7cfa2ed21 100644
+--- a/arch/c6x/kernel/irq.c
++++ b/arch/c6x/kernel/irq.c
+@@ -116,7 +116,6 @@ void __init init_IRQ(void)
  
--extern void ack_bad_irq(unsigned int irq);
--#define ack_bad_irq ack_bad_irq
-+#define ack_bad_irq(irq)
+ void ack_bad_irq(int irq)
+ {
+-	printk(KERN_ERR "IRQ: spurious interrupt %d\n", irq);
+ 	irq_err_count++;
+ }
  
- #include <asm-generic/hardirq.h>
- 
-diff --git a/arch/mips/kernel/irq.c b/arch/mips/kernel/irq.c
-index 85b6c60f285d..c98be305fab6 100644
---- a/arch/mips/kernel/irq.c
-+++ b/arch/mips/kernel/irq.c
-@@ -27,15 +27,6 @@
- 
- void *irq_stack[NR_CPUS];
- 
--/*
-- * 'what should we do if we get a hw irq event on an illegal vector'.
-- * each architecture has to answer this themselves.
-- */
--void ack_bad_irq(unsigned int irq)
--{
--	printk("unexpected IRQ # %d\n", irq);
--}
--
- atomic_t irq_err_count;
- 
- int arch_show_interrupts(struct seq_file *p, int prec)
 -- 
 2.11.0
 

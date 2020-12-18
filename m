@@ -2,25 +2,26 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6A8FC4743B
-	for <linux-mips@archiver.kernel.org>; Fri, 18 Dec 2020 14:37:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0601AC2D0E4
+	for <linux-mips@archiver.kernel.org>; Fri, 18 Dec 2020 14:37:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8D7D423AC0
-	for <linux-mips@archiver.kernel.org>; Fri, 18 Dec 2020 14:37:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CE59923AAA
+	for <linux-mips@archiver.kernel.org>; Fri, 18 Dec 2020 14:37:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727978AbgLROfL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 18 Dec 2020 09:35:11 -0500
-Received: from mout.kundenserver.de ([212.227.126.187]:46385 "EHLO
+        id S1729088AbgLROgz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 18 Dec 2020 09:36:55 -0500
+Received: from mout.kundenserver.de ([212.227.126.187]:50289 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727810AbgLROfJ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 18 Dec 2020 09:35:09 -0500
+        with ESMTP id S1727843AbgLROfL (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 18 Dec 2020 09:35:11 -0500
 Received: from orion.localdomain ([95.115.54.243]) by mrelayeu.kundenserver.de
  (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1M2wCi-1kmxPC1v92-003Pjz; Fri, 18 Dec 2020 15:31:38 +0100
+ 1MORN0-1kRYuy1Knu-00PuPN; Fri, 18 Dec 2020 15:32:02 +0100
 From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
 To:     linux-kernel@vger.kernel.org
 Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
@@ -40,62 +41,71 @@ Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-gpio@vger.kernel.org, linux-omap@vger.kernel.org,
         linux-arch@vger.kernel.org
-Subject: cleanup handling of bad IRQs
-Date:   Fri, 18 Dec 2020 15:30:59 +0100
-Message-Id: <20201218143122.19459-1-info@metux.net>
+Subject: [PATCH 11/23] arch: sparc: drop misleading warning on spurious IRQ
+Date:   Fri, 18 Dec 2020 15:31:10 +0100
+Message-Id: <20201218143122.19459-12-info@metux.net>
 X-Mailer: git-send-email 2.11.0
-X-Provags-ID: V03:K1:GCc9gbsI9eyOCfdNmRX4o9bXX1pOCTy0AyznDchDYs0oM1Puh0V
- HaUshqI/aGp8nZ32pIa3W6umlwkDU/2qcylknjRG07xPj3Phd4Hi7sPh0w6jCYT7br8wP9r
- fsQ6guhbrEZJsPZNI8LuMeU1nvpg4pLhQC4hxQMx4DspP5teK6wAXTnJgWzY/Mk0t7irqLX
- kur37BKvbPWU7xvonpMrg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/sbNIRVafqs=:7E0S8ysTyADzbE8lkSM6eP
- 3TWEq16dIlocEj3ixPEv4zX+3uTZPLFNfZxuuLVDe5vQethUoPCGbLrF+TJzqQS6i9ZiPDOWV
- +MEyUwQsMabb9a7q9A0f4yZPbmnRvOUDPtXYvFQYiaQf8++meO3+CL9+AQCaHZpZU5Lu4zk3h
- DHvOcIL0N3IkgsS8EOQdWctpP0notp1p3/QtKqWrA0uwnQO8udkYh4oSleqescXu70z7m0miq
- aQx+1M87gYUAFYOUnCysSU1ZhyZRm3NivHaA+X1Bi0lbdEx0v1kCrv+PamjVlz+r4tOy1m2VO
- 7GBJGicMrEiBxqRit0qr0sJg1PjhIfT/u0Up/KxPuvMs/TGlnv05ySaqY98K0u1+80NKHB60f
- iftFYU5etid5UzRqKbNb+YFzN9b3C5t5lHQzh4h/GALhKjmHZEoAm9bm1bb//
+In-Reply-To: <20201218143122.19459-1-info@metux.net>
+References: <20201218143122.19459-1-info@metux.net>
+X-Provags-ID: V03:K1:vpXcdJ5flfT9UMPnHgs6T5l9jtGqBDr3f0tC6p5Rjwsvidh10dx
+ d0ToT43G0U3IwpJaBGtCswd9oef4Qd4eA0CAixsHtd5euXXJNxA9w1nGeD2/Gx6uxbiGLS0
+ tGewaqJssGqjA707NEZ8gDxxCE6ENgCktLf2r4JFNKn28o5k4rGK9s6JDW+QdfaOEf7J3lv
+ xxUqavLjRvPdJSifMz8RA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FAaCbJXPe/U=:euCZpYb16hzPdr0rOmUHvc
+ Mbl+JbbJacqEK9NS1X93hWQ41jQUrJHb+lZ1iEOJt9HdnBQK73zA80gWDm5dUlkD4XzE25f4y
+ iZAdXdl5Ah1QrxTSxe1Y9y9A+egjNscrkz9H9OjKHRyGuUxTp8qXnHzfp2syekussaP0P6Z2a
+ gK3PCoS98+1XjVpv1rbiX7wTafMlpOeqHCPCX7GADLBTi797dxPRr9WMG/Fbu+uKKqXyJkHah
+ jk51z873TwfbS+nMdLwkCU7zed0CiUFDHQ4QQUj0LFQxO1Hff0WZ447MWp3VaDYP+tDznjwrf
+ Cf8Msp2xoXen16t6PctzlKTRT0MuKxO0wNlYwE+AwG2kgMTqJuSnpzJKj8Amk6YSEoRB0LaJO
+ M2X2I0yt2w7VdDkA4pX0Tq421hrWkI6UhRpBP480D9vrnUkMmL2ONPeAnwhyx
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello friends,
+The warning in ack_bad_irq() is misleading in several ways:
+* the term "vector" isn't quite correct
+* the printing format isn't consistent across the archs: some print decimal,
+  some hex, some hex w/o 0x prefix.
+* the printed linux irq isn't meaningful in all cases - we actually would
+  want it to print the hw irq.
 
+Since all call sites already print out more detailed and correct information,
+we just don't need to duplicate this in each single arch. So just drop it.
 
-here's a patch queue for cleaning up the IRQ handling. Inspired by a
-discussion we had on a previous patch of mine:
+Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+---
+ arch/sparc/include/asm/hardirq_64.h | 2 +-
+ arch/sparc/kernel/irq_64.c          | 5 -----
+ 2 files changed, 1 insertion(+), 6 deletions(-)
 
-    "arch: fix 'unexpected IRQ trap at vector' warnings"
-    https://www.spinics.net/lists/kernel/msg3763137.html
-
-Turned out that the whole message, as it is right now, doesn't make much
-sense at at all - not just incorrect wording, but also not quite useful
-information. And the whole ack_bad_irq() thing deserves a cleanup anyways.
-
-So, I've had a closer look and came to these conclusions:
-
-1. The warning message doesn't need to be duplicated in the per architecture
-   ack_bad_irq() functions. All, but one callers already do their own warning.
-   Thus just adding a pr_warn() call there, printing out more useful data
-   like the hardware IRQ number, and dropping all warnings from all the
-   ack_bad_irq() functions.
-
-2. Many of the ack_bad_irq()'s count up the spurious interrupts - lots of
-   duplications over the various archs. Some of them using atomic_t, some
-   just plain ints. Consolidating this by introducing a global counter
-   with inline'd accessors and doing the upcounting in the (currently 3)
-   call sites of ack_bad_irq(). After that, step by step changing all
-   archs to use the new counter.
-
-3. For all but one arch (x86), ack_bad_irq() became a no-op.
-
-   On x86, it's just a call to ack_APIC_irq(), in order to prevent lockups
-   when IRQs missed to be ack'ed on the APIC. Could we perhaps do this in
-   some better place ? In that case, ack_bad_irq() could easily be removed
-   entirely.
-
-have fun,
-
---mtx
-
+diff --git a/arch/sparc/include/asm/hardirq_64.h b/arch/sparc/include/asm/hardirq_64.h
+index 75b92bfe04b5..874151f520de 100644
+--- a/arch/sparc/include/asm/hardirq_64.h
++++ b/arch/sparc/include/asm/hardirq_64.h
+@@ -14,6 +14,6 @@
+ #define local_softirq_pending_ref \
+ 	__cpu_data.__softirq_pending
+ 
+-void ack_bad_irq(unsigned int irq);
++#define ack_bad_irq(irq)
+ 
+ #endif /* !(__SPARC64_HARDIRQ_H) */
+diff --git a/arch/sparc/kernel/irq_64.c b/arch/sparc/kernel/irq_64.c
+index 3ec9f1402aad..ea2a52f7fe53 100644
+--- a/arch/sparc/kernel/irq_64.c
++++ b/arch/sparc/kernel/irq_64.c
+@@ -284,11 +284,6 @@ static unsigned int sysino_exists(u32 devhandle, unsigned int devino)
+ 	return irq;
+ }
+ 
+-void ack_bad_irq(unsigned int irq)
+-{
+-	pr_crit("BAD IRQ ack %d\n", irq);
+-}
+-
+ void irq_install_pre_handler(int irq,
+ 			     void (*func)(unsigned int, void *, void *),
+ 			     void *arg1, void *arg2)
+-- 
+2.11.0
 

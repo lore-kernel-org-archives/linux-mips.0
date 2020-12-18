@@ -7,21 +7,21 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 89E4FC4743C
-	for <linux-mips@archiver.kernel.org>; Fri, 18 Dec 2020 14:36:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5434CC49EBB
+	for <linux-mips@archiver.kernel.org>; Fri, 18 Dec 2020 14:36:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7622023AC0
-	for <linux-mips@archiver.kernel.org>; Fri, 18 Dec 2020 14:36:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 359DA23AC0
+	for <linux-mips@archiver.kernel.org>; Fri, 18 Dec 2020 14:36:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728583AbgLROfn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 18 Dec 2020 09:35:43 -0500
-Received: from mout.kundenserver.de ([212.227.126.134]:48969 "EHLO
+        id S1728261AbgLROfX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 18 Dec 2020 09:35:23 -0500
+Received: from mout.kundenserver.de ([212.227.126.134]:41181 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728196AbgLROfX (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 18 Dec 2020 09:35:23 -0500
+        with ESMTP id S1728111AbgLROfV (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 18 Dec 2020 09:35:21 -0500
 Received: from orion.localdomain ([95.115.54.243]) by mrelayeu.kundenserver.de
  (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MO9qz-1kSO7t2hRp-00OXUo; Fri, 18 Dec 2020 15:32:16 +0100
+ 1N5mOZ-1k2N2Y27Wl-017Bhg; Fri, 18 Dec 2020 15:31:45 +0100
 From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
 To:     linux-kernel@vger.kernel.org
 Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
@@ -41,95 +41,54 @@ Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-gpio@vger.kernel.org, linux-omap@vger.kernel.org,
         linux-arch@vger.kernel.org
-Subject: [PATCH 19/23] arch: c6x: use generic irq error counter
-Date:   Fri, 18 Dec 2020 15:31:18 +0100
-Message-Id: <20201218143122.19459-20-info@metux.net>
+Subject: [PATCH 03/23] arch: arm: drop misleading warning on spurious IRQ
+Date:   Fri, 18 Dec 2020 15:31:02 +0100
+Message-Id: <20201218143122.19459-4-info@metux.net>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20201218143122.19459-1-info@metux.net>
 References: <20201218143122.19459-1-info@metux.net>
-X-Provags-ID: V03:K1:bUKbPuD/IE863dGqQP/aUVD3gMjanOmJq5smfk4HYWrMLwZeTSB
- k45+tw0yA/1Jgzwos83k90orLCs83aroaMpeBB39uP1uMMStvQ9QhtXMH4BYz0IipHOkY0v
- kH2GQ3WJCiarTYQXG5Q2sadZG2E46xZvuqbjZ+YUOPphysIBTTbyIiz3i3rbydpQdeWrHaA
- LVhGNnbvccZshL+Bhd3sQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vf+aytBGJWs=:r2eZwHED7IQmg6gl03ucQ8
- l/17rxJDH3Q0EehshvVMk0IPYVvjvVR1C65/GN46yrjD3HCMOP/rrIcikwR5HIgVGjphssKtc
- o1lv+fPa0+Hc94H5Hrr/VIr7xmqV3jwm/vnqCzDlsUPvneuBzmfR3qpEB8UAYM1h9ScjXoC2l
- MKQTwfAiMlD7plZW+Ee/8vfC1criUczadakTuunPoNaWsDY1eyC+81GByepRkc1iQUKybJcMl
- ZfT5eVrVcfhx4kg56Z6SbUPfyHAapCnNNYUJo0WSq16JFSLA6qZunWCcuhqFj0NJmHWstMF+B
- 1mDqxGu7XYmAbhrPklXsi0ZwpczbVtKfKbBJMPT4YOecjG+Y3G6ewvh1UD6PrIxn5E5d54uln
- v2eQWiQMuctBB13Iev8txxMZUc5iK4R0+3okQnQhFKSsiqpo7859MSe15Do6+
+X-Provags-ID: V03:K1:Q7YF/PDtGFAPMnh/5r0ZcLG8kqJyVdYcOY3wH4BQkuTsF8QHL41
+ DCK1dWguFjXEIBUIwp3QoH++xWCXqbCcXeccPyM3aqFPYRuuO4i2de6zlsd0NdKRK6xqQe0
+ DxEPxyjeex1FejnEM+tWJsPdCp7wf1aQCsUU8mqsEGpqfqArLSlUHMjgsFfrUtSNuDwRwmK
+ ehfpOzK01Tstvxp3exzFQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:R0+M41aEnoc=:MlPinXXglCsnz7BD8P5+AK
+ Bf8FW1qIyEMRI3yOO7X4hZh4eGnYkeqxF0vIZQB8sPQv36r/4ZOnU0W0NbI0AYmgMdGGTmbSm
+ RIcVcFL36u9jXTkDcbXQzYZ+qXEl5tksfc+jHgTnw7lmcKiiuwNFAi5FTX9kzqd/SdaWXmVNZ
+ 8S9b0y80hqhU+aC9WxZyIQ7rJKpgEvl6rMjms0f4I9M+WcTQun1DawRDXknlACxYw6+1YY4Ci
+ 1MC4DHt2THw66SrSXn+9/lBKldI4B1X/+IPQHVjATmNGwUPeiRn64WHNUgFlPQdbNaFGttID8
+ /B62Km5PVaXNS3CGWm2FG02ibnpqTrFeuyzGWvBUlTr3SLdMGY2J9Ll+PXF/hyRIerL4LdhEP
+ YD1JxyYn3zCjDwXDkZzs2swPEA2+jPQ0Spg4LpXs6/PuUvJTscbUYOm5K9TSI
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Use the newly introduced irq error counter, that's already maintained
-by all callers of ack_bad_irq(), in order to remove duplicate code.
+The warning in ack_bad_irq() is misleading in several ways:
+* the term "vector" isn't quite correct
+* the printing format isn't consistent across the archs: some print decimal,
+  some hex, some hex w/o 0x prefix.
+* the printed linux irq isn't meaningful in all cases - we actually would
+  want it to print the hw irq.
+
+Since all call sites already print out more detailed and correct information,
+we just don't need to duplicate this in each single arch. So just drop it.
 
 Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
 ---
- arch/c6x/include/asm/hardirq.h |  3 ---
- arch/c6x/include/asm/irq.h     |  2 --
- arch/c6x/kernel/irq.c          | 11 ++---------
- 3 files changed, 2 insertions(+), 14 deletions(-)
+ arch/arm/include/asm/hw_irq.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/c6x/include/asm/hardirq.h b/arch/c6x/include/asm/hardirq.h
-index f37d07d31040..f70f6113e53a 100644
---- a/arch/c6x/include/asm/hardirq.h
-+++ b/arch/c6x/include/asm/hardirq.h
-@@ -9,9 +9,6 @@
- #ifndef _ASM_C6X_HARDIRQ_H
- #define _ASM_C6X_HARDIRQ_H
- 
--extern void ack_bad_irq(int irq);
--#define ack_bad_irq ack_bad_irq
--
- #include <asm-generic/hardirq.h>
- 
- #endif /* _ASM_C6X_HARDIRQ_H */
-diff --git a/arch/c6x/include/asm/irq.h b/arch/c6x/include/asm/irq.h
-index 9da4d1afd0d7..f42c5747c3ee 100644
---- a/arch/c6x/include/asm/irq.h
-+++ b/arch/c6x/include/asm/irq.h
-@@ -45,6 +45,4 @@ struct pt_regs;
- 
- extern asmlinkage void c6x_do_IRQ(unsigned int prio, struct pt_regs *regs);
- 
--extern unsigned long irq_err_count;
--
- #endif /* _ASM_C6X_IRQ_H */
-diff --git a/arch/c6x/kernel/irq.c b/arch/c6x/kernel/irq.c
-index b9f7cfa2ed21..9f9d798925de 100644
---- a/arch/c6x/kernel/irq.c
-+++ b/arch/c6x/kernel/irq.c
-@@ -21,12 +21,10 @@
- #include <linux/of_irq.h>
- #include <linux/interrupt.h>
- #include <linux/kernel_stat.h>
--
-+#include <asm-generic/irq-err.h>
- #include <asm/megamod-pic.h>
- #include <asm/special_insns.h>
- 
--unsigned long irq_err_count;
--
- static DEFINE_RAW_SPINLOCK(core_irq_lock);
- 
- static void mask_core_irq(struct irq_data *data)
-@@ -114,13 +112,8 @@ void __init init_IRQ(void)
- 	set_creg(ICR, 0xfff0);
- }
- 
--void ack_bad_irq(int irq)
--{
--	irq_err_count++;
--}
--
- int arch_show_interrupts(struct seq_file *p, int prec)
+diff --git a/arch/arm/include/asm/hw_irq.h b/arch/arm/include/asm/hw_irq.h
+index cecc13214ef1..5305c7e33aee 100644
+--- a/arch/arm/include/asm/hw_irq.h
++++ b/arch/arm/include/asm/hw_irq.h
+@@ -9,7 +9,6 @@ static inline void ack_bad_irq(int irq)
  {
--	seq_printf(p, "%*s: %10lu\n", prec, "Err", irq_err_count);
-+	seq_printf(p, "%*s: %10lu\n", prec, "Err", irq_err_get());
- 	return 0;
+ 	extern unsigned long irq_err_count;
+ 	irq_err_count++;
+-	pr_crit("unexpected IRQ trap at vector %02x\n", irq);
  }
+ 
+ #define ARCH_IRQ_INIT_FLAGS	(IRQ_NOREQUEST | IRQ_NOPROBE)
 -- 
 2.11.0
 

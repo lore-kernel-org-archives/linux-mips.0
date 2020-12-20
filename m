@@ -8,54 +8,54 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83C2BC3526E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD9C1C35270
 	for <linux-mips@archiver.kernel.org>; Sun, 20 Dec 2020 09:39:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5BD8F233A0
+	by mail.kernel.org (Postfix) with ESMTP id B7B15233CE
 	for <linux-mips@archiver.kernel.org>; Sun, 20 Dec 2020 09:39:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727671AbgLTJiY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 20 Dec 2020 04:38:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59920 "EHLO
+        id S1727258AbgLTJi5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 20 Dec 2020 04:38:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727381AbgLTJiP (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 20 Dec 2020 04:38:15 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7815C0617B0;
-        Sun, 20 Dec 2020 01:37:29 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id r7so7641770wrc.5;
-        Sun, 20 Dec 2020 01:37:29 -0800 (PST)
+        with ESMTP id S1727231AbgLTJi5 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 20 Dec 2020 04:38:57 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24422C061257;
+        Sun, 20 Dec 2020 01:37:35 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id n16so8408633wmc.0;
+        Sun, 20 Dec 2020 01:37:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0Ub3gKGJwLJRaryXIKn0038/d6bzjLaWe3sRPb09LY0=;
-        b=VfMBy8EPG6RvxCBAgnCZOkK2qcvr5RE7DBjohJgy11br2mAxsIyJaVtF3e1UMn3r4s
-         QjPqLqDXX/d3ESZBlGAS97d/GkwTOEkXKIQfe8m7FXPKn3cALGdrGNN6lw4avRWS90h6
-         NNuEbKfJdPgbxBQ+9s053yhsFTvXwOxNVRoBXLvPyS9XP7o7Nk3mEciO1LfcMFmWJv/D
-         k9QjGKqKNS/nVoij9Y65hyU3FvU9EhIumqkMTSzfZbCJhpgdJEiqi/fy9BKJoRS5Csv7
-         pyQh1hnBUX7UxfNxw5I+JeMnNmQEvj4Bun933Wg0S78FoU+VppwwBr1zPfk8r1YuBwHv
-         5jNw==
+        bh=nmBdTpjz9wyfDCBLaCOK+MVTcCIjG0wuVatvuQrHLh0=;
+        b=hHxTqzTZtdDDisKS42/bNVJrE79sguhbyvtueMjgufTH/aQhzSv63iNDkN+61FuTuC
+         H13c1Lak0LCp4QBPOfHBjkEpeV6WoAGua5k+mojV02fAu0wWd/EecKAteWf0ySkBpCIZ
+         Gd4vvg5IG7qRmzI8lM+Fs87V5r8SgaE8rr8FdIF90xuhB5xqNxDG9vx95pc7xGq2eMZX
+         XEG068qVHXDvdBScQstNurNYq425pBpae8cG0hxQrGFT3Ds+gyPv3w2TPPG7RWoFMMQ6
+         SQseNoUb/054brzDFb07gjSTRireZiuCbELUf1ZbPioNkvBlpnI41NdbsEDcQJuzZU8n
+         vl0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0Ub3gKGJwLJRaryXIKn0038/d6bzjLaWe3sRPb09LY0=;
-        b=TkAhODnZUzVyNeFxdN4WZDdsanKkJpHJhr/7qru2wgMu4+t3wdNwwtuYOHPsxz54rM
-         7MWk+qNYac8x8q4igJjcp6DwP7mpgHAUeCNEKbKHTLF/QZ7622Uz4NW3enY21BnSozwe
-         NwCaNOGUn2wL1C+1sI0QHv6noWXCQwosJzQ3vA/7lL4Mv2HS3ZDZyJmdY+jYJpVjPzpU
-         s4isKQSbRfifw2brR7TsxqB76sdXSE+sKUyaJQvejxOP3AaXOXnVcxRbB0xOieJg+2cL
-         cWtUQRs9UMs6pbtxlb9zKXziQYoD6HxaDpvKofGuHvkOw4J0Nr2WhMRCsIRs8Qhfl0Zd
-         XGDA==
-X-Gm-Message-State: AOAM532lyucnkyMKAADsjVvzmuYRzxM8kwbdiXH42L3j+loPirml/xZl
-        pXkQPFJcrSQBja9+YLOiTmf8+d/TNQ5e3w==
-X-Google-Smtp-Source: ABdhPJxo7whrIhIY3LnX3OTkJw2kWi+TmCCzk4Nvbg8t4Sfv7m6plhdXmqv2bz9TMXL6snvzGyiYAg==
-X-Received: by 2002:a5d:68c9:: with SMTP id p9mr12848401wrw.139.1608457048501;
-        Sun, 20 Dec 2020 01:37:28 -0800 (PST)
+        bh=nmBdTpjz9wyfDCBLaCOK+MVTcCIjG0wuVatvuQrHLh0=;
+        b=J5X5KfenuNMaPoNn+jvR+ZDCXFzL7prHt/9QEwqnWJSS0i9eVCZsLUKU5RgoeXm5So
+         K0U1kzLzmGlrUNMAqdm4zi3NMKtbVb5JEBZmgFNa2Vbsv5QxtqymV+rZz2EKt4JTFYQG
+         yEnSgW/jr6QHRT8R2z4Hka2cpvf3VoQ1mFWS8b1jFHKLfv/XupPxlVUFykK79YOPou9c
+         VDfoPOdOf17GUx91lD0BeHod+7D2KkMcLIGeqv0IRaB2RyLnBDsaa1jf6fHigf0kxoxJ
+         VU3z+ZLl+jjf7iNcU0rhlJgEqw2bw2sbU3re1E7IagLjCZEjrkahCwXkIe4g6KmqPF2F
+         ch9A==
+X-Gm-Message-State: AOAM530aatCPd177hXIV2vOGHr/jFgk3hDegF9IeCVvOXBf8VJtmcnM8
+        SMS6zCMxpke17UELV5pOuZc=
+X-Google-Smtp-Source: ABdhPJzXNSbGyyxH2QUCsydgEVzSAIoD95iLKqaAEBXA7Fg21klbRnfWVC4RsVh4Vw2y21yXrFY7WA==
+X-Received: by 2002:a1c:4184:: with SMTP id o126mr11051268wma.107.1608457053803;
+        Sun, 20 Dec 2020 01:37:33 -0800 (PST)
 Received: from localhost.localdomain (188.red-81-44-87.dynamicip.rima-tde.net. [81.44.87.188])
-        by smtp.gmail.com with ESMTPSA id o8sm21288819wrm.17.2020.12.20.01.37.27
+        by smtp.gmail.com with ESMTPSA id o8sm21288819wrm.17.2020.12.20.01.37.32
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 20 Dec 2020 01:37:27 -0800 (PST)
+        Sun, 20 Dec 2020 01:37:33 -0800 (PST)
 From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
 To:     sboyd@kernel.org
 Cc:     robh+dt@kernel.org, john@phrozen.org, tsbogend@alpha.franken.de,
@@ -63,10 +63,10 @@ Cc:     robh+dt@kernel.org, john@phrozen.org, tsbogend@alpha.franken.de,
         hackpascal@gmail.com, linux-clk@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org, devel@driverdev.osuosl.org,
-        neil@brown.name, Rob Herring <robh@kernel.org>
-Subject: [PATCH v5 1/6] dt-bindings: clock: add dt binding header for mt7621 clocks
-Date:   Sun, 20 Dec 2020 10:37:19 +0100
-Message-Id: <20201220093724.4906-2-sergio.paracuellos@gmail.com>
+        neil@brown.name
+Subject: [PATCH v5 5/6] staging: mt7621-dts: use valid vendor 'mediatek' instead of invalid 'mtk'
+Date:   Sun, 20 Dec 2020 10:37:23 +0100
+Message-Id: <20201220093724.4906-6-sergio.paracuellos@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201220093724.4906-1-sergio.paracuellos@gmail.com>
 References: <20201220093724.4906-1-sergio.paracuellos@gmail.com>
@@ -76,62 +76,97 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Adds dt binding header for 'mediatek,mt7621-clk' clocks.
+Vendor listed for mediatek in kernel vendor file 'vendor-prefixes.yaml'
+contains 'mediatek' as a valid vendor string. Some nodes in the device
+tree are using an invalid vendor string vfor 'mtk' instead. Fix all of
+them in dts file. Update also ralink mt7621 related code to properly
+match new strings. Even there are used in the device tree there are
+some strings that are not referred anywhere but have been also updated
+with new vendor name. These are 'mtk,mt7621-wdt', 'mtk,mt7621-nand',
+'mtk,mt7621-mc', and 'mtk,mt7621-cpc'.
 
-Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
- include/dt-bindings/clock/mt7621-clk.h | 41 ++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
- create mode 100644 include/dt-bindings/clock/mt7621-clk.h
+ arch/mips/ralink/mt7621.c              |  6 +++---
+ drivers/staging/mt7621-dts/mt7621.dtsi | 12 ++++++------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/include/dt-bindings/clock/mt7621-clk.h b/include/dt-bindings/clock/mt7621-clk.h
-new file mode 100644
-index 000000000000..1422badcf9de
---- /dev/null
-+++ b/include/dt-bindings/clock/mt7621-clk.h
-@@ -0,0 +1,41 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Author: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-+ */
-+
-+#ifndef _DT_BINDINGS_CLK_MT7621_H
-+#define _DT_BINDINGS_CLK_MT7621_H
-+
-+#define MT7621_CLK_XTAL		0
-+#define MT7621_CLK_CPU		1
-+#define MT7621_CLK_BUS		2
-+#define MT7621_CLK_50M		3
-+#define MT7621_CLK_125M		4
-+#define MT7621_CLK_150M		5
-+#define MT7621_CLK_250M		6
-+#define MT7621_CLK_270M		7
-+
-+#define MT7621_CLK_HSDMA	8
-+#define MT7621_CLK_FE		9
-+#define MT7621_CLK_SP_DIVTX	10
-+#define MT7621_CLK_TIMER	11
-+#define MT7621_CLK_PCM		12
-+#define MT7621_CLK_PIO		13
-+#define MT7621_CLK_GDMA		14
-+#define MT7621_CLK_NAND		15
-+#define MT7621_CLK_I2C		16
-+#define MT7621_CLK_I2S		17
-+#define MT7621_CLK_SPI		18
-+#define MT7621_CLK_UART1	19
-+#define MT7621_CLK_UART2	20
-+#define MT7621_CLK_UART3	21
-+#define MT7621_CLK_ETH		22
-+#define MT7621_CLK_PCIE0	23
-+#define MT7621_CLK_PCIE1	24
-+#define MT7621_CLK_PCIE2	25
-+#define MT7621_CLK_CRYPTO	26
-+#define MT7621_CLK_SHXC		27
-+
-+#define MT7621_CLK_MAX		28
-+
-+#endif /* _DT_BINDINGS_CLK_MT7621_H */
+diff --git a/arch/mips/ralink/mt7621.c b/arch/mips/ralink/mt7621.c
+index ca0ac607b0f3..5d74fc1c96ac 100644
+--- a/arch/mips/ralink/mt7621.c
++++ b/arch/mips/ralink/mt7621.c
+@@ -112,8 +112,8 @@ phys_addr_t mips_cpc_default_phys_base(void)
+ 
+ void __init ralink_of_remap(void)
+ {
+-	rt_sysc_membase = plat_of_remap_node("mtk,mt7621-sysc");
+-	rt_memc_membase = plat_of_remap_node("mtk,mt7621-memc");
++	rt_sysc_membase = plat_of_remap_node("mediatek,mt7621-sysc");
++	rt_memc_membase = plat_of_remap_node("mediatek,mt7621-memc");
+ 
+ 	if (!rt_sysc_membase || !rt_memc_membase)
+ 		panic("Failed to remap core resources");
+@@ -181,7 +181,7 @@ void prom_soc_init(struct ralink_soc_info *soc_info)
+ 
+ 	if (n0 == MT7621_CHIP_NAME0 && n1 == MT7621_CHIP_NAME1) {
+ 		name = "MT7621";
+-		soc_info->compatible = "mtk,mt7621-soc";
++		soc_info->compatible = "mediatek,mt7621-soc";
+ 	} else {
+ 		panic("mt7621: unknown SoC, n0:%08x n1:%08x\n", n0, n1);
+ 	}
+diff --git a/drivers/staging/mt7621-dts/mt7621.dtsi b/drivers/staging/mt7621-dts/mt7621.dtsi
+index 51d83cb3b4ee..ba113e5ced51 100644
+--- a/drivers/staging/mt7621-dts/mt7621.dtsi
++++ b/drivers/staging/mt7621-dts/mt7621.dtsi
+@@ -56,7 +56,7 @@ palmbus: palmbus@1E000000 {
+ 		#size-cells = <1>;
+ 
+ 		sysc: sysc@0 {
+-			compatible = "mtk,mt7621-sysc";
++			compatible = "mediatek,mt7621-sysc";
+ 			reg = <0x0 0x100>;
+ 		};
+ 
+@@ -69,7 +69,7 @@ pll: pll {
+ 		};
+ 
+ 		wdt: wdt@100 {
+-			compatible = "mtk,mt7621-wdt";
++			compatible = "mediatek,mt7621-wdt";
+ 			reg = <0x100 0x100>;
+ 		};
+ 
+@@ -126,17 +126,17 @@ i2s: i2s@a00 {
+ 		};
+ 
+ 		memc: memc@5000 {
+-			compatible = "mtk,mt7621-memc";
++			compatible = "mediatek,mt7621-memc";
+ 			reg = <0x5000 0x1000>;
+ 		};
+ 
+ 		cpc: cpc@1fbf0000 {
+-			     compatible = "mtk,mt7621-cpc";
++			     compatible = "mediatek,mt7621-cpc";
+ 			     reg = <0x1fbf0000 0x8000>;
+ 		};
+ 
+ 		mc: mc@1fbf8000 {
+-			    compatible = "mtk,mt7621-mc";
++			    compatible = "mediatek,mt7621-mc";
+ 			    reg = <0x1fbf8000 0x8000>;
+ 		};
+ 
+@@ -369,7 +369,7 @@ timer {
+ 	nand: nand@1e003000 {
+ 		status = "disabled";
+ 
+-		compatible = "mtk,mt7621-nand";
++		compatible = "mediatek,mt7621-nand";
+ 		bank-width = <2>;
+ 		reg = <0x1e003000 0x800
+ 			0x1e003800 0x800>;
 -- 
 2.25.1
 

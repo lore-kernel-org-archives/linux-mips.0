@@ -2,91 +2,107 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F87EC3526E
-	for <linux-mips@archiver.kernel.org>; Sat, 19 Dec 2020 20:00:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA0AEC4361B
+	for <linux-mips@archiver.kernel.org>; Sun, 20 Dec 2020 04:08:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3E7EA23131
-	for <linux-mips@archiver.kernel.org>; Sat, 19 Dec 2020 20:00:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7B419205CA
+	for <linux-mips@archiver.kernel.org>; Sun, 20 Dec 2020 04:08:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgLSUAW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 19 Dec 2020 15:00:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48292 "EHLO
+        id S1726985AbgLTEIF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 19 Dec 2020 23:08:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727608AbgLSUAW (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 19 Dec 2020 15:00:22 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E993BC0611CA
-        for <linux-mips@vger.kernel.org>; Sat, 19 Dec 2020 11:59:02 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kqiNA-0001pg-SN; Sat, 19 Dec 2020 20:58:36 +0100
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kqiN8-0007bp-7j; Sat, 19 Dec 2020 20:58:34 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: [PATCH v6 net-next 0/2] net: dsa: add stats64 support 
-Date:   Sat, 19 Dec 2020 20:58:31 +0100
-Message-Id: <20201219195833.29197-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
+        with ESMTP id S1726815AbgLTEIE (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 19 Dec 2020 23:08:04 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C9BC0617B0
+        for <linux-mips@vger.kernel.org>; Sat, 19 Dec 2020 20:07:24 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id y24so5733272edt.10
+        for <linux-mips@vger.kernel.org>; Sat, 19 Dec 2020 20:07:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wOf8+A262GmOiEINk0rmRSARiAG9AAz8GlRftMSrMUg=;
+        b=tVIzn00AiVt6Z+BacumkSdrwTo41xF8yNb7ZGnIZO3w9rJE83Qqz2LnkKGAa528x/Z
+         dgszo95Fb6joP2TWI8VUxnWtJqJSv92TGc4vmg0ebzD2gs+OuxAjPCyp7drmqcNM7d1m
+         ElfTE3vxYNDNeTWZDC3na+/iJHRLkP56afQ6SDZaoVXGDLUcok8pLZkhp7MP4ofmNyQH
+         cp9jiILsSeuiDaFHIOiKNOVW8ut61NFRh7gLq+wqab88zn3ECbBM9zswKBzm1VVR+kQe
+         9zGUn4b5wdLdsLOkpVgZNQ7T9mXSWdWoUKQsjZlxUQrZJ3p30ZcCv4Jk2pOSStzqGlyG
+         cKdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wOf8+A262GmOiEINk0rmRSARiAG9AAz8GlRftMSrMUg=;
+        b=elgibuGoEZ04CpY2ra5/L0SjpKw8co3L6546Z3WAQwixqaT+xXG93S8x0p1ddXuysS
+         sUK0i0hcCLWaLP7ydZn97eFhA7kFLs/VfFTcM3a8LTQMtkfkj6bljsyunfmtUdfcOMKW
+         bjdokYS99YrQrMPuwbaa/JOQ3IY6bnUuuzkY+fwKgdd4wRqv1fdBAUfTfUd9mPhUziFh
+         Qwfdup4R/T9RNVMdCEBIbpR2UWldRH1RKYs51FhjzviYSAj5EBpvgR/Nyl1F1WL5q6VY
+         aduh7dzH3PM/6l9+1YL/apwxp0uWF9tPF8IWwRYdbOCjSbnN8XjjZ8513/CFGN4KQzK4
+         SiVQ==
+X-Gm-Message-State: AOAM531hlAGIgZjKCHwGyEdcGkpjeXbv43qAJWOwtTacVTJCj0h+L/Gj
+        MB4AL20qtwWcgIqUtY+UBsTZxVCM1xl3Pf8fM3M0cQ==
+X-Google-Smtp-Source: ABdhPJyFCkCTDMEKhRzBCZSvwPxUNNzCRb89KLm4awpKTLrq05HwzS1MDuXkyvhQB1RJW2ONi4lcVB3kzVan50pORdw=
+X-Received: by 2002:aa7:cdc3:: with SMTP id h3mr10998852edw.52.1608437242889;
+ Sat, 19 Dec 2020 20:07:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mips@vger.kernel.org
+References: <20201211102437.3929348-1-anders.roxell@linaro.org> <20201214152447.GC9149@alpha.franken.de>
+In-Reply-To: <20201214152447.GC9149@alpha.franken.de>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sun, 20 Dec 2020 09:37:11 +0530
+Message-ID: <CA+G9fYuyq8da6oF-6KaVHmA2TpT7fOG5F4ZDbK=MpzYMg_ufAw@mail.gmail.com>
+Subject: Re: [PATCH v2] mips: lib: uncached: fix non-standard usage of
+ variable 'sp'
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Anders Roxell <anders.roxell@linaro.org>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-mips@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-changes v6:
-- move stats64 callback to ethtool section
-- ar9331: diff. fixes
-- ar9331: move stats calculation to the worker
-- ar9331: extend rx/tx error counters
-- use spin lock instead of u64_stats*
+On Mon, 14 Dec 2020 at 21:05, Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> On Fri, Dec 11, 2020 at 11:24:37AM +0100, Anders Roxell wrote:
+> > When building mips tinyconfig with clang the following warning show up:
+> >
+> > arch/mips/lib/uncached.c:45:6: warning: variable 'sp' is uninitialized when used here [-Wuninitialized]
+> >         if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
+> >             ^~
+> > arch/mips/lib/uncached.c:40:18: note: initialize the variable 'sp' to silence this warning
+> >         register long sp __asm__("$sp");
+> >                         ^
+> >                          = 0
+> > 1 warning generated.
 
-changes v5:
-- read all stats in one regmap_bulk_read() request
-- protect stats with u64_stats* helpers.
+<trimp>
 
-changes v4:
-- do no read MIBs withing stats64 call
-- change polling frequency to 0.3Hz
+> > [1] https://docs.w3cub.com/gcc~10/local-register-variables
+> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> > ---
+> >  arch/mips/lib/uncached.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> applied to mips-next.
 
-changes v3:
-- fix wrong multiplication
-- cancel port workers on remove
+We have noticed these build failures on stable tree also.
+May I request you to initiate the process to get into the stable tree
+and for the following branches.
+ - linux-5.10.y
+ - linux-5.9.y
+ - linux-5.4.y
+ - linux-4.19.y
 
-changes v2:
-- use stats64 instead of get_ethtool_stats
-- add worked to poll for the stats
-
-Oleksij Rempel (2):
-  net: dsa: add optional stats64 support
-  net: dsa: qca: ar9331: export stats64
-
- drivers/net/dsa/qca/ar9331.c | 163 ++++++++++++++++++++++++++++++++++-
- include/net/dsa.h            |   4 +-
- net/dsa/slave.c              |  14 ++-
- 3 files changed, 178 insertions(+), 3 deletions(-)
-
--- 
-2.29.2
-
+- Naresh

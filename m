@@ -2,113 +2,151 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFA5AC433E0
-	for <linux-mips@archiver.kernel.org>; Mon, 21 Dec 2020 00:39:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB811C433E9
+	for <linux-mips@archiver.kernel.org>; Mon, 21 Dec 2020 05:16:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 77F56225AA
-	for <linux-mips@archiver.kernel.org>; Mon, 21 Dec 2020 00:39:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B046022BEA
+	for <linux-mips@archiver.kernel.org>; Mon, 21 Dec 2020 05:16:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgLUAjQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 20 Dec 2020 19:39:16 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:55377 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725272AbgLUAjP (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 20 Dec 2020 19:39:15 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 2DE8B5803F2;
-        Sun, 20 Dec 2020 19:38:09 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Sun, 20 Dec 2020 19:38:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        subject:to:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=V
-        ebSOKJOTjgaSNitGFxute0whnLIjuICjIxh5PngH4I=; b=iL6DgZ97JhOEot1/I
-        e9AJ8wTCmP8yB6UK5kByRx32wDO+L+gyVxFmF6dcwgfUwkNKsa3dQDhpT6hxoml4
-        mldZuoW8edXLAwbQqoeFRqvCXTjDPx86HV9MwFEJY+MqUAbV91nM4rgH0D1AChDg
-        f6HEjlxl7sA9AChi9vcbbkIUKiTjAWBFmuq7v7hctHdJ0ToTnTjmLBNMCZg2Y5Wk
-        goCiXRcN+FMJlexZ/EI0GpgntqeFAPjwFCSS8QFPQumnS2wqfw/vS9nQYOPoaJkC
-        AZMJ7DTgEJjhx6jjE75lGONmAKexhx76RkKrX1rugCZnHhp4S3JEQc7QaocDV187
-        GBcAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=VebSOKJOTjgaSNitGFxute0whnLIjuICjIxh5PngH
-        4I=; b=FcoyUwNGvm+AB862qiALXjXNQ1Qwr/VPAq9BzorEj1PBmW5GLL5j8IOvb
-        CXF1mqb7jUAtyOFUXqLCrxI2e5MlkzgGROhEQ6w+673iXr/6aCogp4nwfhSgCJrK
-        9uTjbcOlm7TBN9Y4bcofYDtp3PcHvPTE+++nWmZ34KJx3cJEx42QsFm4VtxifRxb
-        d9J7xLy+aBXLXDx61tM9UwNQOIWMftNtOspUMqL0vxASVgvJtazs7Jt91wGlMpAA
-        Q084KmQyYzRGlEY/VPVREbdYSql3GWA9I8pRnfmI28/fMmktKILnsZCmX1mVhI67
-        OyfcQ2+bTwqsCkhBT9oK96CKvPahA==
-X-ME-Sender: <xms:cO7fXyq-r32f4H2JjiC5COKUDMvZFuB_BcW02QIgh9CfkG0yam2n7Q>
-    <xme:cO7fXwrQW2u6eWbWAWWzbp_MLhLMS0gbq4zJohmpd4Sp506RmagSWkOG5Gkf531F-
-    BiwL_kjlKtXWEgW5Lw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddtuddgvdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdeftfenucfhrhhomheplfhirgig
-    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpeefleduiedtvdekffeggfeukeejgeeffeetlefghfekffeuteei
-    jeeghefhueffvdenucfkphepgeehrdeffedrhedtrddvheegnecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhl
-    hihgohgrthdrtghomh
-X-ME-Proxy: <xmx:cO7fX3PomJ_K55AYDJbvLc-NGkvt8PJ1Qp63SyxVA0mW3vpvvv6bnw>
-    <xmx:cO7fXx632Z0QdCHp7rQqLrNl441EUP6atulpGxx-8yywPAQVyAWjNw>
-    <xmx:cO7fXx6wI-DNSNWed4PBka8KzBFV5ahyULBfDFVRC9Os8E5Cuv9PMQ>
-    <xmx:cO7fXzEEJnlwdZsYEMnpUcvnPLFWE6hit4cP6Fkdr5afnoyjYYzjneyMMyU>
-Received: from [0.0.0.0] (li1000-254.members.linode.com [45.33.50.254])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 5CCBC24005B;
-        Sun, 20 Dec 2020 19:38:07 -0500 (EST)
-Subject: Re: CPUs with EVA support
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-References: <20201220193201.GA3184@alpha.franken.de>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <d45cb374-f3dc-8c26-6b0f-27bec45854a9@flygoat.com>
-Date:   Mon, 21 Dec 2020 08:38:00 +0800
+        id S1728021AbgLUFQK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 21 Dec 2020 00:16:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725849AbgLUFQJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 21 Dec 2020 00:16:09 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E533C0613D3;
+        Sun, 20 Dec 2020 21:15:29 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id x22so8715108wmc.5;
+        Sun, 20 Dec 2020 21:15:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TPubNB4+o76pxV2jUsQ6FWuL944gZMCTKS2ZqkAshzg=;
+        b=RoHWJA1AJ6mNViQl3u4462wV12SBTvCbZ32NzEy47tEk/PNyZm1QyISrphfNTSZMIF
+         bs/j0XuXlETtcogZUEBTWXpHuCsAM0ZCReFahn+sQi8DXrqkMilVyh9m96Ol4bzmqMVs
+         vhSiCc0Ypwr6kz/xxI0kKrqlZx5XRUqvg9HYLdzfIRntWV5RTSPlQR3I45Dk9Sum5mxt
+         ZrQcCQ+eAYX+IlWb09PUIC6WtL+r0nvuRXUHZ8bDCX09HmTaWYVG1dC3Sv54+IJ2bDRk
+         1tvSZW1qw4Y4+dw2/zYGupCh4Ld5PmkKbFXulXDJj0y6fE3m9NihWxw420iT80xgOPYj
+         u/FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TPubNB4+o76pxV2jUsQ6FWuL944gZMCTKS2ZqkAshzg=;
+        b=i8SzjEz+igZraBY4OusQzMHuPoxwuiVfvf4rK3ID8NfIEs2cCzYYGfOUxsUuwrH7z2
+         2JfHTb9qwgTcrAbghkh16dLseTi0Il/yXEkdlkq/Bw45bjAQm+Y45yrBRzij0/8LDF/k
+         +fwPJtxzaZYOWkoKS5dCpOqyTzlA06DH5hOPxa+DB5REoL8GpMkHL48hzW4iOV9n41e7
+         1Xti+N7ZtGfCJ9ksNP4Li4XYktXGZ9/YsOXgwI1fKSPDxu00o18VZAozZk4plYYDADCy
+         q/DZRu6W20c0Az4pdVTeSGIZ/N7T39VW+31B9t/viVgkPBcIfq4Jpjw40rGuvInmmNWe
+         CnKg==
+X-Gm-Message-State: AOAM533j7DejIX18Du1YV2I9KLzq+zGrG584akqmFA//0cdGXex5YeLI
+        ktI0B4ZaE3ODKoyFFhgHU58hUuWurweKUQ==
+X-Google-Smtp-Source: ABdhPJyFZ1y1fQoUFEQgChpe5AV9GnxIBBOW/0NVsMBb8a2iZBbXpetzu/KkPLQanNekpScVM9jCHQ==
+X-Received: by 2002:a7b:ce14:: with SMTP id m20mr13509768wmc.149.1608497330655;
+        Sun, 20 Dec 2020 12:48:50 -0800 (PST)
+Received: from ?IPv6:2001:a61:2467:2f01:faca:3d43:5e40:30d1? ([2001:a61:2467:2f01:faca:3d43:5e40:30d1])
+        by smtp.gmail.com with ESMTPSA id z8sm20051199wmg.17.2020.12.20.12.48.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 20 Dec 2020 12:48:49 -0800 (PST)
+Cc:     mtk.manpages@gmail.com, Vineet Gupta <vgupta@synopsys.com>,
+        linux-snps-arc@lists.infradead.org, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>, gcc-patches@gcc.gnu.org,
+        cfe-users@lists.llvm.org, cfe-dev@lists.llvm.org
+Subject: Re: [PATCH v6] cacheflush.2: Document __builtin___clear_cache() as a
+ more portable alternative
+To:     Alejandro Colomar <alx.manpages@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        linux-man@vger.kernel.org, Martin Sebor <msebor@redhat.com>
+References: <e2424619-2a5a-a44a-2dc0-a16310725250@gmail.com>
+ <20201215133019.14411-1-alx.manpages@gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <924d4de5-5191-26fc-a040-2501d4c74f10@gmail.com>
+Date:   Sun, 20 Dec 2020 21:48:46 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20201220193201.GA3184@alpha.franken.de>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201215133019.14411-1-alx.manpages@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-ÔÚ 2020/12/21 ÉÏÎç3:32, Thomas Bogendoerfer Ð´µÀ:
-> Hi;
->
-> I've started looking how to get rid of get_fs/set_fs for MIPS and
-> my current obstacle is EVA support.
->
-> Looking for CPUs supporting EVA I only found P5600, are there more ?
+On 12/15/20 2:30 PM, Alejandro Colomar wrote:
+> Reported-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+> Cc: Martin Sebor <msebor@redhat.com>
+> Cc: Dave Martin <Dave.Martin@arm.com>
+> ---
+> 
+> v6:
+> - GCC has always exposed 'void *', as Martin Sebor noted.
+>   It's Clang (and maybe others) that (following GCC's docs)
+>   exposed 'char *'.
 
-Hi Thomas,
+Thanks, Alex. Patch applied.
 
-It is a optional feature for M14k but nobody enabled it :-(
+Cheers,
 
->
-> Does someone sell boards with an EVA enabled CPU ?
+Michael
 
-Baikal-T1 supports EVA.
+>  man2/cacheflush.2 | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/man2/cacheflush.2 b/man2/cacheflush.2
+> index aba625721..7a2eed506 100644
+> --- a/man2/cacheflush.2
+> +++ b/man2/cacheflush.2
+> @@ -86,6 +86,30 @@ On Linux, this call first appeared on the MIPS architecture,
+>  but nowadays, Linux provides a
+>  .BR cacheflush ()
+>  system call on some other architectures, but with different arguments.
+> +.SH NOTES
+> +Unless you need the finer grained control that this system call provides,
+> +you probably want to use the GCC built-in function
+> +.BR __builtin___clear_cache (),
+> +which provides a portable interface
+> +across platforms supported by GCC and compatible compilers:
+> +.PP
+> +.in +4n
+> +.EX
+> +.BI "void __builtin___clear_cache(void *" begin ", void *" end );
+> +.EE
+> +.in
+> +.PP
+> +On platforms that don't require instruction cache flushes,
+> +.BR __builtin___clear_cache ()
+> +has no effect.
+> +.PP
+> +.IR Note :
+> +On some GCC-compatible compilers,
+> +the prototype for this built-in function uses
+> +.I char *
+> +instead of
+> +.I void *
+> +for the parameters.
+>  .SH BUGS
+>  Linux kernels older than version 2.6.11 ignore the
+>  .I addr
+> 
 
->
-> How good is EVA support in qemu ?
 
-EVA is functional in QEMU.
-I had tested it with P5600 malta system.
-
-- Jiaxun
-
->
-> Thomas.
->
-
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/

@@ -2,54 +2,113 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.6 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13BE2C4361B
-	for <linux-mips@archiver.kernel.org>; Sun, 20 Dec 2020 19:33:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFA5AC433E0
+	for <linux-mips@archiver.kernel.org>; Mon, 21 Dec 2020 00:39:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C59EC23106
-	for <linux-mips@archiver.kernel.org>; Sun, 20 Dec 2020 19:33:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 77F56225AA
+	for <linux-mips@archiver.kernel.org>; Mon, 21 Dec 2020 00:39:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727130AbgLTTcw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 20 Dec 2020 14:32:52 -0500
-Received: from elvis.franken.de ([193.175.24.41]:52271 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726623AbgLTTcw (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 20 Dec 2020 14:32:52 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kr4R8-0007EH-00
-        for linux-mips@vger.kernel.org; Sun, 20 Dec 2020 20:32:10 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 697A1C0279; Sun, 20 Dec 2020 20:32:01 +0100 (CET)
-Date:   Sun, 20 Dec 2020 20:32:01 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org
-Subject: CPUs with EVA support
-Message-ID: <20201220193201.GA3184@alpha.franken.de>
+        id S1726504AbgLUAjQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 20 Dec 2020 19:39:16 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:55377 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725272AbgLUAjP (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 20 Dec 2020 19:39:15 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 2DE8B5803F2;
+        Sun, 20 Dec 2020 19:38:09 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Sun, 20 Dec 2020 19:38:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=V
+        ebSOKJOTjgaSNitGFxute0whnLIjuICjIxh5PngH4I=; b=iL6DgZ97JhOEot1/I
+        e9AJ8wTCmP8yB6UK5kByRx32wDO+L+gyVxFmF6dcwgfUwkNKsa3dQDhpT6hxoml4
+        mldZuoW8edXLAwbQqoeFRqvCXTjDPx86HV9MwFEJY+MqUAbV91nM4rgH0D1AChDg
+        f6HEjlxl7sA9AChi9vcbbkIUKiTjAWBFmuq7v7hctHdJ0ToTnTjmLBNMCZg2Y5Wk
+        goCiXRcN+FMJlexZ/EI0GpgntqeFAPjwFCSS8QFPQumnS2wqfw/vS9nQYOPoaJkC
+        AZMJ7DTgEJjhx6jjE75lGONmAKexhx76RkKrX1rugCZnHhp4S3JEQc7QaocDV187
+        GBcAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=VebSOKJOTjgaSNitGFxute0whnLIjuICjIxh5PngH
+        4I=; b=FcoyUwNGvm+AB862qiALXjXNQ1Qwr/VPAq9BzorEj1PBmW5GLL5j8IOvb
+        CXF1mqb7jUAtyOFUXqLCrxI2e5MlkzgGROhEQ6w+673iXr/6aCogp4nwfhSgCJrK
+        9uTjbcOlm7TBN9Y4bcofYDtp3PcHvPTE+++nWmZ34KJx3cJEx42QsFm4VtxifRxb
+        d9J7xLy+aBXLXDx61tM9UwNQOIWMftNtOspUMqL0vxASVgvJtazs7Jt91wGlMpAA
+        Q084KmQyYzRGlEY/VPVREbdYSql3GWA9I8pRnfmI28/fMmktKILnsZCmX1mVhI67
+        OyfcQ2+bTwqsCkhBT9oK96CKvPahA==
+X-ME-Sender: <xms:cO7fXyq-r32f4H2JjiC5COKUDMvZFuB_BcW02QIgh9CfkG0yam2n7Q>
+    <xme:cO7fXwrQW2u6eWbWAWWzbp_MLhLMS0gbq4zJohmpd4Sp506RmagSWkOG5Gkf531F-
+    BiwL_kjlKtXWEgW5Lw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddtuddgvdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdeftfenucfhrhhomheplfhirgig
+    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeefleduiedtvdekffeggfeukeejgeeffeetlefghfekffeuteei
+    jeeghefhueffvdenucfkphepgeehrdeffedrhedtrddvheegnecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhl
+    hihgohgrthdrtghomh
+X-ME-Proxy: <xmx:cO7fX3PomJ_K55AYDJbvLc-NGkvt8PJ1Qp63SyxVA0mW3vpvvv6bnw>
+    <xmx:cO7fXx632Z0QdCHp7rQqLrNl441EUP6atulpGxx-8yywPAQVyAWjNw>
+    <xmx:cO7fXx6wI-DNSNWed4PBka8KzBFV5ahyULBfDFVRC9Os8E5Cuv9PMQ>
+    <xmx:cO7fXzEEJnlwdZsYEMnpUcvnPLFWE6hit4cP6Fkdr5afnoyjYYzjneyMMyU>
+Received: from [0.0.0.0] (li1000-254.members.linode.com [45.33.50.254])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5CCBC24005B;
+        Sun, 20 Dec 2020 19:38:07 -0500 (EST)
+Subject: Re: CPUs with EVA support
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+References: <20201220193201.GA3184@alpha.franken.de>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <d45cb374-f3dc-8c26-6b0f-27bec45854a9@flygoat.com>
+Date:   Mon, 21 Dec 2020 08:38:00 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201220193201.GA3184@alpha.franken.de>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi;
+ÔÚ 2020/12/21 ÉÏÎç3:32, Thomas Bogendoerfer Ð´µÀ:
+> Hi;
+>
+> I've started looking how to get rid of get_fs/set_fs for MIPS and
+> my current obstacle is EVA support.
+>
+> Looking for CPUs supporting EVA I only found P5600, are there more ?
 
-I've started looking how to get rid of get_fs/set_fs for MIPS and
-my current obstacle is EVA support.
+Hi Thomas,
 
-Looking for CPUs supporting EVA I only found P5600, are there more ?
+It is a optional feature for M14k but nobody enabled it :-(
 
-Does someone sell boards with an EVA enabled CPU ?
+>
+> Does someone sell boards with an EVA enabled CPU ?
 
-How good is EVA support in qemu ?
+Baikal-T1 supports EVA.
 
-Thomas.
+>
+> How good is EVA support in qemu ?
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+EVA is functional in QEMU.
+I had tested it with P5600 malta system.
+
+- Jiaxun
+
+>
+> Thomas.
+>
+

@@ -7,38 +7,38 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7702C433DB
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 02:50:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29D05C4332B
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 02:51:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 868B62256F
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 02:50:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E0F77225AC
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 02:51:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729536AbgLWCWC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 22 Dec 2020 21:22:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45448 "EHLO mail.kernel.org"
+        id S1730038AbgLWCuI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 22 Dec 2020 21:50:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727919AbgLWCWB (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:22:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF8F32256F;
-        Wed, 23 Dec 2020 02:21:44 +0000 (UTC)
+        id S1729520AbgLWCV6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:21:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35622225AA;
+        Wed, 23 Dec 2020 02:21:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690105;
-        bh=0cjWunkOrS5N82H+bVlL4sE7+9kDOA3T9tRz41FU7J8=;
+        s=k20201202; t=1608690077;
+        bh=1Z2xeE+FnzBDMyXOFEAoZYKo8qjmxghSfR+XpgDDBdM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lsW50qKIcv+WpkcKz6GuaSXwzr3WyPdQm2MpIXKkirZLIKgdzk4QUtd+4O9z8XCXy
-         IqV9L0FUGqbIpfDG0TZQRabuBF9CNeavLUisbR24DqIqpZfKvgDZ6LTedtvjyK/H4R
-         hhcrrL3wLJvVF/5evY4UyP9TYyxs3oLc31J3Dx5MBlvZnwndPX9+UH2AXfFBEX61Rs
-         vfcJJkK2xRwGk8y6bx1IVsuquNMCZNCvv1rxFzZezWijy4jpHMgMS9NtrZRp1drpKp
-         7Kwrjr+DpJPBoV59/+GEQXbBJwTGrZapJsady3YUvcFr/srUyI/09zC7kGMMYM+DzF
-         hQ6iNZPlvPxHA==
+        b=enDZRBW8CulfSkgZVwkGy2VOT09GG1hDx1f4PKuPS1nSxjwW78ojZmt1tB5qJIQcI
+         yH1/tqSRjicZU8omuNtsZB3EUiBuOQW3Yh1biwuGe8FSuFhO67DfLJ/o+aTNaFnLzf
+         45JBvDT09jzEd70saF09ebvRmpY+AU6OyohuSzs8B5kPZvWo/cIDZc/V4oTO942NSl
+         oQ+qlON1BH+YOuz5ojbhlcAHfx+/caPbdq3XJmXMcCYitLMjsf53ztYK+YQ+HZ8VXL
+         ElPPfVeL0W9MAErHi0PvBeXKSsJdt0fRJ1+DZMgpSkVEmUh1RjymJRGIgSrAao5ssM
+         FvmcBKrYUA7EQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 34/87] MIPS: kvm: Use vm_get_page_prot to get protection bits
-Date:   Tue, 22 Dec 2020 21:20:10 -0500
-Message-Id: <20201223022103.2792705-34-sashal@kernel.org>
+Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 11/87] mips: cm: add missing iounmap() on error in mips_cm_probe()
+Date:   Tue, 22 Dec 2020 21:19:47 -0500
+Message-Id: <20201223022103.2792705-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
 References: <20201223022103.2792705-1-sashal@kernel.org>
@@ -50,42 +50,32 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-[ Upstream commit 411406a8c758d9ad6f908fab3a6cf1d3d89e1d08 ]
+[ Upstream commit 2673ecf9586551c5bcee499c1cc1949f6f7cc9a1 ]
 
-MIPS protection bits are setup during runtime so using defines like
-PAGE_SHARED ignores this runtime changes. Using vm_get_page_prot
-to get correct page protection fixes this.
+Add the missing iounmap() of iounmap(mips_gcr_base) before
+return from mips_cm_probe() in the error handling case.
 
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kvm/mmu.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/mips/kernel/mips-cm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
-index 098a7afd4d384..5631d6aee1a70 100644
---- a/arch/mips/kvm/mmu.c
-+++ b/arch/mips/kvm/mmu.c
-@@ -1099,6 +1099,7 @@ int kvm_mips_handle_commpage_tlb_fault(unsigned long badvaddr,
- {
- 	kvm_pfn_t pfn;
- 	pte_t *ptep;
-+	pgprot_t prot;
- 
- 	ptep = kvm_trap_emul_pte_for_gva(vcpu, badvaddr);
- 	if (!ptep) {
-@@ -1108,7 +1109,8 @@ int kvm_mips_handle_commpage_tlb_fault(unsigned long badvaddr,
- 
- 	pfn = PFN_DOWN(virt_to_phys(vcpu->arch.kseg0_commpage));
- 	/* Also set valid and dirty, so refill handler doesn't have to */
--	*ptep = pte_mkyoung(pte_mkdirty(pfn_pte(pfn, PAGE_SHARED)));
-+	prot = vm_get_page_prot(VM_READ|VM_WRITE|VM_SHARED);
-+	*ptep = pte_mkyoung(pte_mkdirty(pfn_pte(pfn, prot)));
- 
- 	/* Invalidate this entry in the TLB, guest kernel ASID only */
- 	kvm_mips_host_tlb_inv(vcpu, badvaddr, false, true);
+diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
+index 50d3d74001cbe..aedd353b9b925 100644
+--- a/arch/mips/kernel/mips-cm.c
++++ b/arch/mips/kernel/mips-cm.c
+@@ -228,6 +228,7 @@ int mips_cm_probe(void)
+ 	if ((base_reg & CM_GCR_BASE_GCRBASE) != addr) {
+ 		pr_err("GCRs appear to have been moved (expected them at 0x%08lx)!\n",
+ 		       (unsigned long)addr);
++		iounmap(mips_gcr_base);
+ 		mips_gcr_base = NULL;
+ 		return -ENODEV;
+ 	}
 -- 
 2.27.0
 

@@ -7,38 +7,38 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16B36C43331
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 03:04:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 201B5C4321A
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 03:04:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E3A1E20705
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 03:04:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E5F8420789
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 03:04:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731455AbgLWDDN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 22 Dec 2020 22:03:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45510 "EHLO mail.kernel.org"
+        id S1728603AbgLWDEf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 22 Dec 2020 22:04:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728645AbgLWCT3 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:19:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DC7422285;
-        Wed, 23 Dec 2020 02:18:56 +0000 (UTC)
+        id S1728594AbgLWCTU (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:19:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3CE223341;
+        Wed, 23 Dec 2020 02:18:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689936;
-        bh=0MXOZf7yd2wC/JO392G22Rc0EIixdSQRG1LJ3EE8zhk=;
+        s=k20201202; t=1608689917;
+        bh=I7LqFMNCjfFmLfJCVKzzcGtnmG3sTxorI68QB658CFM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gkoRmc7fwe+1VnxmFRUlQTeTJ/1GBNkSuR1rzvg8gBTJ97lNPNv/EfhcWWTC8eVMN
-         MBrBqZ44/2dPhxKfaTEDGS5rUXwhEHl+sq0JKHMuNgX0gX5DW40kHcJ8Q6rXmBKyCd
-         0kfmuWwZxwl8FxDI6MLmCQtB7kSforZorKehhkrsoOu2hthWGgREFWsEaGMRLf1Ysw
-         7eGJt5qmora1yMTGt6sWLGBlTG3hLYb9f1f6GAMmnAEBr9Xp9jSCeWxnsLnjoKz55o
-         shzQ/cGuF3Ih46+Y6xIROxNDD/b+HteLeNNPCU+z88BqvIBR+/5KBfJhiYItVnqdxe
-         94jSv002zHYiA==
+        b=LWPg/adnh+3H/z0f4oZ1i/SxTAIXbA+V/r11qyhxKGOCWGhjICZXwSwNxmaDVKwcy
+         a9mc14lyXTVk0KMU00YQ7Xtsj7voFLSkS/n7gTo0WxC4QN3J5ceE4QuBqzNJmOBdkQ
+         82Vxdn3iV0Vw4/CIWTvbeep/h3a+tPxQbgLlcSlNHaeHnTi0izJ9wIyWxFJtXPloE7
+         R1NKeKkULpmkSSHmNDOZTRtXGBc82sjn5o/1diZv706D2inGzrpFQYGYh1RplDDJSG
+         MVfAAnedibizaxNVS9SFWM0KlXC+FwdNIALUcXM8KkEJYiaFLvwGJ5xh2UhVeS4vb/
+         EISL8R2nHgfcw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 033/130] MIPS: BMC47xx: fix kconfig dependency bug for BCM47XX_SSB
-Date:   Tue, 22 Dec 2020 21:16:36 -0500
-Message-Id: <20201223021813.2791612-33-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 018/130] mips: ar7: add missing iounmap() on error in ar7_gpio_init
+Date:   Tue, 22 Dec 2020 21:16:21 -0500
+Message-Id: <20201223021813.2791612-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -50,46 +50,32 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-[ Upstream commit 09a48cbcd7af9203296938044f1100bb113ce01a ]
+[ Upstream commit 5a5aa912f687204d50455d0db36f94dd8de601c2 ]
 
-When BCM47XX_SSB is enabled and SSB_PCIHOST is disabled, it results in the
-following Kbuild warning:
+Add the missing iounmap() of gpch->regs before return from
+ar7_gpio_init() in the error handling case.
 
-WARNING: unmet direct dependencies detected for SSB_B43_PCI_BRIDGE
-  Depends on [n]: SSB [=y] && SSB_PCIHOST [=n]
-  Selected by [y]:
-  - BCM47XX_SSB [=y] && BCM47XX [=y] && PCI [=y]
-
-The reason is that BCM47XX_SSB selects SSB_B43_PCI_BRIDGE without
-depending on or selecting SSB_PCIHOST while SSB_B43_PCI_BRIDGE depends on
-SSB_PCIHOST. This can also fail building the kernel as demonstrated in a
-bug report.
-
-Honor the kconfig dependency to remove unmet direct dependency warnings
-and avoid any potential build failures.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=210051
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/bcm47xx/Kconfig | 1 +
+ arch/mips/ar7/gpio.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/bcm47xx/Kconfig b/arch/mips/bcm47xx/Kconfig
-index 6889f74e06f54..40876654423c6 100644
---- a/arch/mips/bcm47xx/Kconfig
-+++ b/arch/mips/bcm47xx/Kconfig
-@@ -9,6 +9,7 @@ config BCM47XX_SSB
- 	select SSB_DRIVER_MIPS
- 	select SSB_DRIVER_EXTIF
- 	select SSB_EMBEDDED
-+	select SSB_PCIHOST if PCI
- 	select SSB_B43_PCI_BRIDGE if PCI
- 	select SSB_DRIVER_PCICORE if PCI
- 	select SSB_PCICORE_HOSTMODE if PCI
+diff --git a/arch/mips/ar7/gpio.c b/arch/mips/ar7/gpio.c
+index 2292e55c12e23..b7ad7a3ecb6d7 100644
+--- a/arch/mips/ar7/gpio.c
++++ b/arch/mips/ar7/gpio.c
+@@ -319,6 +319,7 @@ int __init ar7_gpio_init(void)
+ 	if (ret) {
+ 		printk(KERN_ERR "%s: failed to add gpiochip\n",
+ 					gpch->chip.label);
++		iounmap(gpch->regs);
+ 		return ret;
+ 	}
+ 	printk(KERN_INFO "%s: registered %d GPIOs\n",
 -- 
 2.27.0
 

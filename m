@@ -7,41 +7,41 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA97DC43603
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 03:04:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14644C433E0
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 03:11:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CE47920705
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 03:04:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CFC1C207B5
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 03:11:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgLWCTV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 22 Dec 2020 21:19:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46354 "EHLO mail.kernel.org"
+        id S1728009AbgLWCSZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 22 Dec 2020 21:18:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728597AbgLWCTV (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:19:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A3B322955;
-        Wed, 23 Dec 2020 02:18:38 +0000 (UTC)
+        id S1727990AbgLWCSY (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:18:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5112C2222D;
+        Wed, 23 Dec 2020 02:17:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689918;
-        bh=/miiF3NYHv/ngXlvYwmcgZu50Pq/GYCPZDKS7OIoEeo=;
+        s=k20201202; t=1608689841;
+        bh=ujoq2AeYSKSnolLItAFtjYIMJgf20e1hS9qUJL0oRQE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZAb+U/xBclSpDDgBqwSNZFUF3qMWYEkrpmGhbnjiXbmOmrCZWMdHtVg78Tw3BleAC
-         8Tg0c12zu9Ei3iXboSPLcjTJLxNsa4SQ374e1N2bb2Rg+nxbNE207/2LEMP6EZ1BZp
-         eM47rjEGhtemDtLBPdlAP0Jh1sWK1ehHjlUjO+kUyydgGsxOIdG0x4JEIAvIiQItWW
-         WT9GwTPjg84RDRAKTG0Ai/LOJZQl1Qzvd2HLTw/ignZ86rsU6UFJaRCs+EUZnvSKCt
-         CiJgRmkbHKhg/HkC04uIu8efibLN8fBBGNv30PeHDYlq7XnxuDbr+Nnbi4j2KLeqBt
-         2LHTFir/dHQ5w==
+        b=X5ePFQ9IM75n1poMgGWoVTK7bk1LRWc2TRa/hlu8OP5+xOF9hyHaz6BQ8t2IXFXkR
+         kuRK6JhqVrIKr0Ng3qTB40QX9WHG5fxSUgR2RLxVcY+jEQx347MA+a9EyqWr1sdYK/
+         B5yTPJupNXHnOTxFPNvarBtbE/gwR/6Lsq1myMhfN1nFRR27juAyf8DjAQipn00UNV
+         2r/Bo6KWQGyVpC++6qvky2dQ7rSsFBuI/m8e5reTaSZqUyDllJy9MMMfzcZN4lkqgF
+         E+wsstU7WaMGcmcMFz79G3qqqdontgPxO/1Pi26cN8YejIaCy6PviOmySbOdHgWg6V
+         3s3Ln7Fj/SI6Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 019/130] mips: cm: add missing iounmap() on error in mips_cm_probe()
-Date:   Tue, 22 Dec 2020 21:16:22 -0500
-Message-Id: <20201223021813.2791612-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 041/217] mips: cm: add missing iounmap() on error in mips_cm_probe()
+Date:   Tue, 22 Dec 2020 21:13:30 -0500
+Message-Id: <20201223021626.2790791-41-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
-References: <20201223021813.2791612-1-sashal@kernel.org>
+In-Reply-To: <20201223021626.2790791-1-sashal@kernel.org>
+References: <20201223021626.2790791-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -65,10 +65,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
-index a9eab83d9148d..f6a82ad010603 100644
+index f60af512c8773..90f1c3df1f0e4 100644
 --- a/arch/mips/kernel/mips-cm.c
 +++ b/arch/mips/kernel/mips-cm.c
-@@ -224,6 +224,7 @@ int mips_cm_probe(void)
+@@ -266,6 +266,7 @@ int mips_cm_probe(void)
  	if ((base_reg & CM_GCR_BASE_GCRBASE) != addr) {
  		pr_err("GCRs appear to have been moved (expected them at 0x%08lx)!\n",
  		       (unsigned long)addr);

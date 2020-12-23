@@ -7,38 +7,38 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02E94C43381
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 02:57:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F6F4C43333
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 03:02:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ABFEC206F6
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 02:57:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EB883206F6
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 03:02:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729078AbgLWCUp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 22 Dec 2020 21:20:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49532 "EHLO mail.kernel.org"
+        id S1728737AbgLWDBz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 22 Dec 2020 22:01:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729070AbgLWCUo (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:20:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C00822573;
-        Wed, 23 Dec 2020 02:20:03 +0000 (UTC)
+        id S1728734AbgLWCTn (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:19:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FC1022248;
+        Wed, 23 Dec 2020 02:19:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690004;
-        bh=EsNvLFz5OMm3fi/Rz/8846BS5lwNO6VkQMdzcAwBS5Y=;
+        s=k20201202; t=1608689956;
+        bh=8jNY02AooCi6/6ckcF69nXo7LysvusQFUDNXyXdmPDE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hpAJM4JT5lPTuYnu/gsebWwGLlHT7w7iR8p5KGBdsRm8y09az0TVrKr5thdqPPa2E
-         DqK73g4OIiOSfYkOp96qE0QxFn2OfQsGQtNxN8jMnS7EszCcu0lEfaYGknalRZ/HCO
-         sJxYe7BqYg3e1vVMaJZzokLG+3i76lMQ86ip0ZjyaK2nm9yXTpqSm82gmA77USk+9p
-         oeIQPB9fvhxjXdTzfh/akHAENeEf1bfDPkI6svXc4L08xvQUnqQyWBA8JM2O/Gp+jI
-         mmk6bzEiC2Q46Z7Z/m+WYJDizak9i8XZttPrlQ5KKesTJ7lysxB35Xgur3Skac9k6h
-         B0xaFxsi3eZDA==
+        b=u+9DgwOKCRXm2sLmpUi33Dorlfl5nvkIS7jiw8DDoSnRFW8Xd9g13bHn7KZeU2pSh
+         RGyzBanRukRIXqjvLn2cux3NRyFYs14Y6Ujk2UP4fGJnZGKYxG08gQ0/InKD6xe/nj
+         exM4a+P2tY0DEniRhFp0+XwkicB7J5YwLwNM7qLdTUbuNOVf19P2DC8frVuo9opk5L
+         CZPfkOzrqxK05EUdcYs/6Eplh18Kzj/jaUzMgeO7hbQzMuwrr9FqY+4OQZzg/vF1RJ
+         J+901a/apQP0FPpj32a6AKt31GEnZfgvoWy+TXp/TkqOc+jgxnCDdwaPgKuqLuPvr9
+         4GP4+X/OR0WUQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jinyang He <hejinyang@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 085/130] MIPS: KASLR: Avoid endless loop in sync_icache if synci_step is zero
-Date:   Tue, 22 Dec 2020 21:17:28 -0500
-Message-Id: <20201223021813.2791612-85-sashal@kernel.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 049/130] MIPS: kvm: Use vm_get_page_prot to get protection bits
+Date:   Tue, 22 Dec 2020 21:16:52 -0500
+Message-Id: <20201223021813.2791612-49-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -50,42 +50,42 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Jinyang He <hejinyang@loongson.cn>
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-[ Upstream commit c0aac3a51cb6364bed367ee3e1a96ed414f386b4 ]
+[ Upstream commit 411406a8c758d9ad6f908fab3a6cf1d3d89e1d08 ]
 
-Most platforms do not need to do synci instruction operations when
-synci_step is 0. But for example, the synci implementation on Loongson64
-platform has some changes. On the one hand, it ensures that the memory
-access instructions have been completed. On the other hand, it guarantees
-that all prefetch instructions need to be fetched again. And its address
-information is useless. Thus, only one synci operation is required when
-synci_step is 0 on Loongson64 platform. I guess that some other platforms
-have similar implementations on synci, so add judgment conditions in
-`while` to ensure that at least all platforms perform synci operations
-once. For those platforms that do not need synci, they just do one more
-operation similar to nop.
+MIPS protection bits are setup during runtime so using defines like
+PAGE_SHARED ignores this runtime changes. Using vm_get_page_prot
+to get correct page protection fixes this.
 
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kernel/relocate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/kvm/mmu.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
-index 3d80a51256de6..cf92196ab6145 100644
---- a/arch/mips/kernel/relocate.c
-+++ b/arch/mips/kernel/relocate.c
-@@ -64,7 +64,7 @@ static void __init sync_icache(void *kbase, unsigned long kernel_length)
- 			: "r" (kbase));
+diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
+index 97f63a84aa51f..b5974ff2d9162 100644
+--- a/arch/mips/kvm/mmu.c
++++ b/arch/mips/kvm/mmu.c
+@@ -1100,6 +1100,7 @@ int kvm_mips_handle_commpage_tlb_fault(unsigned long badvaddr,
+ {
+ 	kvm_pfn_t pfn;
+ 	pte_t *ptep;
++	pgprot_t prot;
  
- 		kbase += step;
--	} while (kbase < kend);
-+	} while (step && kbase < kend);
+ 	ptep = kvm_trap_emul_pte_for_gva(vcpu, badvaddr);
+ 	if (!ptep) {
+@@ -1109,7 +1110,8 @@ int kvm_mips_handle_commpage_tlb_fault(unsigned long badvaddr,
  
- 	/* Completion barrier */
- 	__sync();
+ 	pfn = PFN_DOWN(virt_to_phys(vcpu->arch.kseg0_commpage));
+ 	/* Also set valid and dirty, so refill handler doesn't have to */
+-	*ptep = pte_mkyoung(pte_mkdirty(pfn_pte(pfn, PAGE_SHARED)));
++	prot = vm_get_page_prot(VM_READ|VM_WRITE|VM_SHARED);
++	*ptep = pte_mkyoung(pte_mkdirty(pfn_pte(pfn, prot)));
+ 
+ 	/* Invalidate this entry in the TLB, guest kernel ASID only */
+ 	kvm_mips_host_tlb_inv(vcpu, badvaddr, false, true);
 -- 
 2.27.0
 

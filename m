@@ -5,43 +5,43 @@ X-Spam-Level:
 X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15400C43603
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 02:30:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95F75C4332B
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 02:33:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DB9BA23159
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 02:30:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 675F722257
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Dec 2020 02:33:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729725AbgLWC3t (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 22 Dec 2020 21:29:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52102 "EHLO mail.kernel.org"
+        id S1730202AbgLWCcx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 22 Dec 2020 21:32:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730577AbgLWCZm (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:25:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BD3123343;
-        Wed, 23 Dec 2020 02:25:25 +0000 (UTC)
+        id S1728868AbgLWCZQ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:25:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56D922333D;
+        Wed, 23 Dec 2020 02:25:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690326;
-        bh=GHzkwRB+x0w1z+Lqje1Hki/1o6nhFMA6Lqty3Byc4UY=;
+        s=k20201202; t=1608690301;
+        bh=q486Ccf37EISGzSH2d4Tt5pJpsZ9Y1IrmDAlGJlUEaA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MNXzboE6rFXFizGF4GmVYqXEkgC0y/J/ZiqfkN17unZQLu/t5OOyZde0m9mJO71fF
-         MKqdq/XhfsuC+9oPCqfff0/qmfVfajgwo3BnYzovs3T/LPs7cY6ifLT7HmhWOidamI
-         PThtGrFf++35RR6sC+gLIDEOE75oca1jnLZ8X7/mXLUYa5oU1jt0ApCMU0LzuYfRTu
-         ZlRg3RRZeyAx0XHsdges0kbV09NyuBdTDeshFfh3AAmCyuzwJimw/rLNjzmOqhAAxI
-         cYHhA+njwI+oMGdVeCLx6jzYzgUfrXKdHBgU4CyrxeX4O4vp9I0G2AzBT8THnDC9s4
-         yZeRGY7I658YQ==
+        b=atIL0AdnFa/2z8ewEG0zPBwZGVqtGPC6YJYpMPDAvVXTU/Pb5PGaAbDApaC/fLeno
+         H3CXbg2eofBEWS9ILnpZI9d/RB4NNeDbwf5PRaPQkbBbbiI5YRTJoa4diLh5yE6hw9
+         mRihWJqbCEEz7YOVUwTXGu0ZenG2PhSxZbDby+6L6CQUBNxiVljWDjzrO6NqkyS6I6
+         zYv5ysf2efgnNwa1bBeE7rJRtrxziduGDc5qVCbCtGioaNdmwPfM80u4i+NC9bEVcD
+         oWgkxSpcMPukiz6Dhhw/pb960/BC6hfMJ1T1d/cx1VaPpn6rbEaDK82Viy/5Urunuy
+         BX6kTyzgjHppg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
+Cc:     Jinyang He <hejinyang@loongson.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 07/38] mips: ar7: add missing iounmap() on error in ar7_gpio_init
-Date:   Tue, 22 Dec 2020 21:24:45 -0500
-Message-Id: <20201223022516.2794471-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 36/48] MIPS: KASLR: Avoid endless loop in sync_icache if synci_step is zero
+Date:   Tue, 22 Dec 2020 21:24:04 -0500
+Message-Id: <20201223022417.2794032-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201223022516.2794471-1-sashal@kernel.org>
-References: <20201223022516.2794471-1-sashal@kernel.org>
+In-Reply-To: <20201223022417.2794032-1-sashal@kernel.org>
+References: <20201223022417.2794032-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -50,32 +50,42 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Jinyang He <hejinyang@loongson.cn>
 
-[ Upstream commit 5a5aa912f687204d50455d0db36f94dd8de601c2 ]
+[ Upstream commit c0aac3a51cb6364bed367ee3e1a96ed414f386b4 ]
 
-Add the missing iounmap() of gpch->regs before return from
-ar7_gpio_init() in the error handling case.
+Most platforms do not need to do synci instruction operations when
+synci_step is 0. But for example, the synci implementation on Loongson64
+platform has some changes. On the one hand, it ensures that the memory
+access instructions have been completed. On the other hand, it guarantees
+that all prefetch instructions need to be fetched again. And its address
+information is useless. Thus, only one synci operation is required when
+synci_step is 0 on Loongson64 platform. I guess that some other platforms
+have similar implementations on synci, so add judgment conditions in
+`while` to ensure that at least all platforms perform synci operations
+once. For those platforms that do not need synci, they just do one more
+operation similar to nop.
 
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Signed-off-by: Jinyang He <hejinyang@loongson.cn>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/ar7/gpio.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/kernel/relocate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/ar7/gpio.c b/arch/mips/ar7/gpio.c
-index f4930456eb8e8..f7b9c8002d1ca 100644
---- a/arch/mips/ar7/gpio.c
-+++ b/arch/mips/ar7/gpio.c
-@@ -339,6 +339,7 @@ int __init ar7_gpio_init(void)
- 	if (ret) {
- 		printk(KERN_ERR "%s: failed to add gpiochip\n",
- 					gpch->chip.label);
-+		iounmap(gpch->regs);
- 		return ret;
- 	}
- 	printk(KERN_INFO "%s: registered %d GPIOs\n",
+diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
+index 1958910b75c07..f759aae1e1f3d 100644
+--- a/arch/mips/kernel/relocate.c
++++ b/arch/mips/kernel/relocate.c
+@@ -52,7 +52,7 @@ static void __init sync_icache(void *kbase, unsigned long kernel_length)
+ 			: "r" (kbase));
+ 
+ 		kbase += step;
+-	} while (kbase < kend);
++	} while (step && kbase < kend);
+ 
+ 	/* Completion barrier */
+ 	__sync();
 -- 
 2.27.0
 

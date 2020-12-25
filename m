@@ -2,314 +2,338 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8113BC4332B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 391A1C433E9
 	for <linux-mips@archiver.kernel.org>; Fri, 25 Dec 2020 17:05:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5F80722795
+	by mail.kernel.org (Postfix) with ESMTP id 1147B22512
 	for <linux-mips@archiver.kernel.org>; Fri, 25 Dec 2020 17:05:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725953AbgLYRFr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 25 Dec 2020 12:05:47 -0500
-Received: from mout.gmx.net ([212.227.17.22]:41023 "EHLO mout.gmx.net"
+        id S1726150AbgLYRFp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 25 Dec 2020 12:05:45 -0500
+Received: from mout.gmx.net ([212.227.15.18]:39507 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726164AbgLYRFr (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 25 Dec 2020 12:05:47 -0500
+        id S1725910AbgLYRFo (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 25 Dec 2020 12:05:44 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608915854;
-        bh=w7OHd5Xbuoj7IWGUrgbsqC8PhQlGXU05DPLOUYyzVNY=;
+        s=badeba3b8450; t=1608915850;
+        bh=L3RQrOGSQQMeJpdUKYFS+8IVZLlMP5S50DxJVxCDMS0=;
         h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
-        b=AYwAfuEpORCp9riZdJQh3JVzQaXmYLASVV0wMVHaSG/Wmcn7ktf+VWXoJKsDaNt+3
-         8KVAFLPhGjd82/+IcsNS4iafp3WRhzrpVBNgqusVgVpHLtnsCfU39dbM3M7UmhvrT7
-         c5ghuTCavLTfF81FlRV+zEqFwUWaIJhGCPOrSdIw=
+        b=As0vPpO0kUAiPUS9kk8PdtZq8PvENphLt/HoZuLJpsE24ikOm9oegngRQcmuh8FCe
+         qAgWgyC1xe3DdMbZmlkvTh+b7ZHLcZV3YZHcjySskCSJX8cDnzpJOY+vIqL0O7j61X
+         oCmyGOHsRn39fe5qS8nUNp1bevh4OUR/dkfj/qsQ=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from Valinor ([82.128.181.212]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MoO24-1kHatS186i-00onyF; Fri, 25
- Dec 2020 18:04:14 +0100
-Date:   Fri, 25 Dec 2020 19:01:58 +0200
+Received: from Valinor ([82.128.181.212]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MrhUE-1kEJ6k0ClY-00nf9S; Fri, 25
+ Dec 2020 18:04:10 +0100
+Date:   Fri, 25 Dec 2020 19:00:48 +0200
 From:   Lauri Kasanen <cand@gmx.com>
 To:     linux-mips@vger.kernel.org
 Cc:     tsbogend@alpha.franken.de
-Subject: [PATCH 6/6] block: Add n64 cart driver
-Message-Id: <20201225190158.f94c679d21c4a2020c40adb4@gmx.com>
+Subject: [PATCH 3/6] fbdev: Add n64rdp driver
+Message-Id: <20201225190048.776de55443fd4c953e797d8e@gmx.com>
 X-Mailer: Sylpheed 3.5.0 (GTK+ 2.18.6; x86_64-unknown-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:93oi1qlI6UdnzR+iv441jF7MCBTNdhKfi5vxx/zPfFCFA1vF7GY
- 6Aeh1E54yGJ4/QPuFpiX68BfqgJdE2IyezInq6cTmqt4/fngNWzF2AlU9nVvsgnWymbdVcF
- IwfTjkj6bD4jB7QJEMaK8LX5qr3W39MbL0oYhxYVOjwXAX2U8sW9RdxrwIXrnsl3S38JHRA
- bvVB5uBOpi2tpeUsLuFpw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:rgijOwOeQfc=:WeDJkhdfYQGsXwo57ruFjw
- AOMNYwkfG92lg2XaBgNPXPqgBFhTWPDSTBx5tGhp9afxEfT8mWWHl1AemcyIOrMkXF6btBWlv
- Egj2vgVe/DeN8wVuId1ZUDs1K+xud9KQsTpPwHDRSFuNXclVcfAdwxrnuB7Zmx90NUTc6Dulm
- YT9DlOgkttVScMu+D3XwtSv4uxdn0WSE4OtjWOLijr6vABiglO1SjP4HR7yrODH7GNuGnQB9R
- 2W2Y69UOC2yWtu6GZAmqXGyMXQWgj15aLJ9w4kTBsbMFDf6/oL07h2+HcZ1ZsNlfu/guB3AcE
- BTfG/3njf72TMJc5ND0HXqRlydtfjDCMfZUDREJV2AthkleQOCaWU9mIObCtBITY4COzT4WxP
- 66q2OZhsYjLbPqxw/XUYeSRz7CZYAFEr7aaFH/48Bm9bz9kgXzC3h4BYP+4G5R9VaymxKlQfG
- p9ALe9D0UJaIQm1ARi5jNkb2PVjARejWjwVA8YocQGYSoDcb2T89+lZL6j/FqmhTlNZyLioMp
- Ivo0VMHBAGCgodecQVDtVZiWn0LjU9SfYIcO47uswnKaHh4xapaBzeQvx+oAmQ8FLbmQbY1tu
- otUsPYQmVhLR35/JARS457NKMgRw3PLn2BYzfVJw/srNTAeHtQdsOwSWie1Bm7DZu2lcmzgm5
- S9dum8YktNDAoQJMMGT47AkU7KT0GRhBuPP4olw4oe5wRilYQJcGuZ6xz5TzpPy0IdxuIzD0y
- JIhNSl7VCiPNiFYm9DOHhQydtXJROYQrIIhiX1mVYhz3IXC+lYleYwcQuuLcSSOsaMTmA3QwU
- 3Ukldx0GbXf527V+0hp29qalmArLRapjCm8qo8STEvOGTV1CXcCIhLSkKy7rj0NHAKbdhbHZr
- 3LhIv1cvcWoXZMbzB6Kg==
+X-Provags-ID: V03:K1:ZRMwGMAHQsqRuY82UxZB/VlykgMPbRnq9wccQKDEM5TgK5iEGa+
+ 7sCfr5R5smGyhZXlxKea3rzG3zXolFuqxSgM9tM6zQMyBkeVAxvN/Ck8m4pltJWPXnnRRRe
+ XM268PgzxAK8EebA30UgmRmx25p+IYA0ePJBi6VtwLyLyJgbCRJyLtYuGMuvR60HmR/LXKI
+ uksVQeQDe3eI35adN+TIg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:CPWejgR/RmM=:s3YXtOQtYlA+q63j5tYdtB
+ 6CCdVkl5Hvz9N0mpgs0Xbj4/kmYQKzUWbXXTibzoIJpsp1lytdl/G/gRWHvzd2dpTTBgAKAgQ
+ 0WxLV8oeRIQ4tAYSIqzs2BR063JQMANHn56IDz0T9+F11ZLu+3v4yT+iujf8IYVJ3/OPl272I
+ IfLaA65YRgXECprjWm2RKVEXb9c53amB1yb4b0UMRdE+MRQHzixVu2A2R8OZmaPWOqNEnQ++3
+ 2/afNYPihBLX7n1XjpPLA4C8nfYD4ivDDT31+XnOKC9SptEixsrPL6iV3iSQ9htUV/SxEQr5G
+ l7wtjfJUJl+gcxfdUdhBV10W8p2sNkIDvKXFH/HIqFs3p7S/vWdNRQP7fQTNewIaTdWocpWhW
+ GxzG64pRv4wX/q36qIH6Yqw5dfq5HPrs6Q/J5faF2dcwgHlrl8Cz9hBkyMen1VYcr0qoJNffz
+ ewaMZHFDyTIQWAFel5slVnm6HTkWghykOLa5yTojOPxVvxZah84PhZUzk1gWaJvEMQ64AEtRC
+ hpz3yzvV9qm7xmYu6AzFJq7k6m3fWzRXm34OiLZ2VpBaCZWiEp9aRO1sJwepJwHQzyiNHnqb7
+ 6WMDkSiezbCGAy1hF5ExrvBjLLlTqTdWgGED80KAcpXDtvwbHEe4U8bBQ5vxfvbwEoUdyKKtT
+ 2ULJm0TqoY4bv52mFWwTpz6YH5vCsYvHuuiVfKqsGAE4y7Gs8jDaDBtg2cIcE4vGiGdfRJ1U2
+ XPVLmt3PEt0GTHmmqPqntGe2hHVgcu9hcVIg8DBUCM0gW+ozD1SdYdLzBl1m6NJozxt6wM52N
+ VY9aZ8HLn9eDSKZqtJn5ZZhbr4ar6CZ+pDtPkQcdGOxKgpwEVcOGl2oyqG2nIJqG7K2o+E1pU
+ 8aZUUfLo8nhf6v6gIJGQ==
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+I'm aware of the drm-fbdev resolution, but CONFIG_DRM adds 100kb, which
+is a complete blocker on a system with 8mb RAM.
+
 Signed-off-by: Lauri Kasanen <cand@gmx.com>
 =2D--
- drivers/block/Kconfig   |   6 ++
- drivers/block/Makefile  |   1 +
- drivers/block/n64cart.c | 203 +++++++++++++++++++++++++++++++++++++++++++=
+ arch/mips/n64/init.c         |  10 +++
+ drivers/video/fbdev/Kconfig  |   9 ++
+ drivers/video/fbdev/Makefile |   1 +
+ drivers/video/fbdev/n64rdp.c | 190 ++++++++++++++++++++++++++++++++++++++=
 +++++
- 3 files changed, 210 insertions(+)
- create mode 100644 drivers/block/n64cart.c
+ 4 files changed, 210 insertions(+)
+ create mode 100644 drivers/video/fbdev/n64rdp.c
 
-diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
-index ecceaaa..28a0bad 100644
-=2D-- a/drivers/block/Kconfig
-+++ b/drivers/block/Kconfig
-@@ -72,6 +72,12 @@ config AMIGA_Z2RAM
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called z2ram.
+diff --git a/arch/mips/n64/init.c b/arch/mips/n64/init.c
+index 6fb622d..635e9ef 100644
+=2D-- a/arch/mips/n64/init.c
++++ b/arch/mips/n64/init.c
+@@ -8,6 +8,7 @@
+ #include <linux/ioport.h>
+ #include <linux/irq.h>
+ #include <linux/memblock.h>
++#include <linux/platform_device.h>
+ #include <linux/string.h>
 
-+config N64CART
-+	bool "N64 cart support"
-+	depends on MIPS_N64
-+	help
-+	  Support for the N64 cart.
+ #include <asm/bootinfo.h>
+@@ -46,6 +47,15 @@ void __init prom_free_prom_memory(void)
+ {
+ }
+
++static int __init n64_platform_init(void)
++{
++	platform_device_register_simple("n64rdp", -1, NULL, 0);
 +
- config CDROM
- 	tristate
- 	select BLK_SCSI_REQUEST
-diff --git a/drivers/block/Makefile b/drivers/block/Makefile
-index e1f6311..b9642cf 100644
-=2D-- a/drivers/block/Makefile
-+++ b/drivers/block/Makefile
-@@ -17,6 +17,7 @@ obj-$(CONFIG_PS3_DISK)		+=3D ps3disk.o
- obj-$(CONFIG_PS3_VRAM)		+=3D ps3vram.o
- obj-$(CONFIG_ATARI_FLOPPY)	+=3D ataflop.o
- obj-$(CONFIG_AMIGA_Z2RAM)	+=3D z2ram.o
-+obj-$(CONFIG_N64CART)		+=3D n64cart.o
- obj-$(CONFIG_BLK_DEV_RAM)	+=3D brd.o
- obj-$(CONFIG_BLK_DEV_LOOP)	+=3D loop.o
- obj-$(CONFIG_XILINX_SYSACE)	+=3D xsysace.o
-diff --git a/drivers/block/n64cart.c b/drivers/block/n64cart.c
++	return 0;
++}
++
++arch_initcall(n64_platform_init);
++
+ void __init plat_mem_setup(void)
+ {
+ 	iomem_resource_init();
+diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
+index cfb7f56..4dde2c7 100644
+=2D-- a/drivers/video/fbdev/Kconfig
++++ b/drivers/video/fbdev/Kconfig
+@@ -2206,6 +2206,15 @@ config FB_SIMPLE
+ 	  Configuration re: surface address, size, and format must be provided
+ 	  through device tree, or plain old platform data.
+
++config FB_N64RDP
++	bool "Nintendo 64 RDP support"
++	depends on (FB =3D y) && MIPS_N64
++	select FB_CFB_FILLRECT
++	select FB_CFB_COPYAREA
++	select FB_CFB_IMAGEBLIT
++	help
++	  Driver for the N64's display.
++
+ config FB_SSD1307
+ 	tristate "Solomon SSD1307 framebuffer support"
+ 	depends on FB && I2C
+diff --git a/drivers/video/fbdev/Makefile b/drivers/video/fbdev/Makefile
+index 477b962..86f1e22 100644
+=2D-- a/drivers/video/fbdev/Makefile
++++ b/drivers/video/fbdev/Makefile
+@@ -129,6 +129,7 @@ obj-$(CONFIG_FB_MX3)		  +=3D mx3fb.o
+ obj-$(CONFIG_FB_DA8XX)		  +=3D da8xx-fb.o
+ obj-$(CONFIG_FB_SSD1307)	  +=3D ssd1307fb.o
+ obj-$(CONFIG_FB_SIMPLE)           +=3D simplefb.o
++obj-$(CONFIG_FB_N64RDP)           +=3D n64rdp.o
+
+ # the test framebuffer is last
+ obj-$(CONFIG_FB_VIRTUAL)          +=3D vfb.o
+diff --git a/drivers/video/fbdev/n64rdp.c b/drivers/video/fbdev/n64rdp.c
 new file mode 100644
-index 0000000..83acfe2
+index 0000000..e5456b6
 =2D-- /dev/null
-+++ b/drivers/block/n64cart.c
-@@ -0,0 +1,203 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/drivers/video/fbdev/n64rdp.c
+@@ -0,0 +1,190 @@
++// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * Support for the N64 cart.
++ * DRM driver for the N64's RDP
 + *
 + * Copyright (c) 2020 Lauri Kasanen
++ *
++ * Based on simplefb.c, which was:
++ * Copyright (c) 2013, Stephen Warren
++ *
++ * Based on q40fb.c, which was:
++ * Copyright (C) 2001 Richard Zidlicky <rz@linux-m68k.org>
++ *
++ * Also based on offb.c, which was:
++ * Copyright (C) 1997 Geert Uytterhoeven
++ * Copyright (C) 1996 Paul Mackerras
 + */
 +
-+#include <linux/bitops.h>
-+#include <linux/blk-mq.h>
 +#include <linux/dma-mapping.h>
-+#include <linux/init.h>
-+#include <linux/major.h>
++#include <linux/errno.h>
++#include <linux/fb.h>
++#include <linux/io.h>
 +#include <linux/module.h>
-+#include <linux/spinlock.h>
++#include <linux/platform_device.h>
++#include <linux/parser.h>
 +
 +#include <asm/addrspace.h>
-+#include <asm/io.h>
 +
-+MODULE_AUTHOR("Lauri Kasanen <cand@gmx.com>");
-+MODULE_DESCRIPTION("Driver for the N64 cart");
-+MODULE_LICENSE("GPL");
++static const struct fb_fix_screeninfo n64rdp_fix =3D {
++	.id		=3D "default",
++	.type		=3D FB_TYPE_PACKED_PIXELS,
++	.visual		=3D FB_VISUAL_TRUECOLOR,
++	.accel		=3D FB_ACCEL_NONE,
++};
 +
-+#define BUFSIZE (64 * 1024)
++static const struct fb_var_screeninfo n64rdp_var =3D {
++	.height		=3D -1,
++	.width		=3D -1,
++	.activate	=3D FB_ACTIVATE_NOW,
++	.vmode		=3D FB_VMODE_NONINTERLACED,
++};
 +
-+static unsigned int start, size;
-+static int major;
-+static struct request_queue *queue;
-+static struct blk_mq_tag_set tag_set;
-+static struct gendisk *disk;
++#define PSEUDO_PALETTE_SIZE 16
 +
-+static void *buf;
-+static dma_addr_t dma_addr;
++static int n64rdp_setcolreg(u_int regno, u_int red, u_int green, u_int bl=
+ue,
++			      u_int transp, struct fb_info *info)
++{
++	u32 *pal =3D info->pseudo_palette;
++	u32 cr =3D red >> (16 - info->var.red.length);
++	u32 cg =3D green >> (16 - info->var.green.length);
++	u32 cb =3D blue >> (16 - info->var.blue.length);
++	u32 value;
 +
-+static DEFINE_SPINLOCK(n64cart_lock);
++	if (regno >=3D PSEUDO_PALETTE_SIZE)
++		return -EINVAL;
 +
-+#define REG_BASE ((u32 *) CKSEG1ADDR(0xA4600000))
++	value =3D (cr << info->var.red.offset) |
++		(cg << info->var.green.offset) |
++		(cb << info->var.blue.offset);
++	if (info->var.transp.length > 0) {
++		u32 mask =3D (1 << info->var.transp.length) - 1;
++		mask <<=3D info->var.transp.offset;
++		value |=3D mask;
++	}
++	pal[regno] =3D value;
 +
-+#define PI_DRAM_REG 0
-+#define PI_CART_REG 1
-+#define PI_READ_REG 2
-+#define PI_WRITE_REG 3
-+#define PI_STATUS_REG 4
++	return 0;
++}
 +
-+#define PI_STATUS_DMA_BUSY (1 << 0)
-+#define PI_STATUS_IO_BUSY (1 << 1)
++static const struct fb_ops n64rdp_ops =3D {
++	.owner		=3D THIS_MODULE,
++	.fb_setcolreg	=3D n64rdp_setcolreg,
++	.fb_fillrect	=3D cfb_fillrect,
++	.fb_copyarea	=3D cfb_copyarea,
++	.fb_imageblit	=3D cfb_imageblit,
++};
 +
-+static void n64cart_write_reg(const u8 reg, const u32 value)
++struct n64rdp_par {
++	u32 palette[PSEUDO_PALETTE_SIZE];
++	dma_addr_t physaddr;
++};
++
++#define REG_BASE ((u32 *) CKSEG1ADDR(0xA4400000))
++
++static void n64rdp_write_reg(const u8 reg, const u32 value)
 +{
 +	__raw_writel(value, REG_BASE + reg);
 +}
 +
-+static u32 n64cart_read_reg(const u8 reg)
-+{
-+	return __raw_readl(REG_BASE + reg);
-+}
++#define W 320
++#define H 240
 +
-+static void n64cart_wait_dma(void)
-+{
-+	while (n64cart_read_reg(PI_STATUS_REG) &
-+		(PI_STATUS_DMA_BUSY | PI_STATUS_IO_BUSY))
-+		;
-+}
-+
-+static blk_status_t get_seg(struct request *req)
-+{
-+	u32 bstart =3D blk_rq_pos(req) * 512;
-+	u32 len =3D blk_rq_cur_bytes(req);
-+	void *dst =3D bio_data(req->bio);
-+
-+	if (bstart + len > size || rq_data_dir(req) =3D=3D WRITE)
-+		return BLK_STS_IOERR;
-+
-+	bstart +=3D start;
-+
-+	while (len) {
-+		const u32 curlen =3D len < BUFSIZE ? len : BUFSIZE;
-+
-+		dma_cache_inv((unsigned long) buf, curlen);
-+
-+		n64cart_wait_dma();
-+
-+		barrier();
-+		n64cart_write_reg(PI_DRAM_REG, dma_addr);
-+		barrier();
-+		n64cart_write_reg(PI_CART_REG, (bstart | 0x10000000) & 0x1FFFFFFF);
-+		barrier();
-+		n64cart_write_reg(PI_WRITE_REG, curlen - 1);
-+		barrier();
-+
-+		n64cart_wait_dma();
-+
-+		memcpy(dst, buf, curlen);
-+
-+		len -=3D curlen;
-+		dst +=3D curlen;
-+		bstart +=3D curlen;
-+	}
-+
-+	return BLK_STS_OK;
-+}
-+
-+static blk_status_t n64cart_queue_rq(struct blk_mq_hw_ctx *hctx,
-+				     const struct blk_mq_queue_data *bd)
-+{
-+	unsigned long flags;
-+	struct request *req =3D bd->rq;
-+	blk_status_t err;
-+
-+	blk_mq_start_request(req);
-+
-+	spin_lock_irqsave(&n64cart_lock, flags);
-+
-+	do {
-+		err =3D get_seg(req);
-+	} while (blk_update_request(req, err, blk_rq_cur_bytes(req)));
-+
-+	spin_unlock_irqrestore(&n64cart_lock, flags);
-+	blk_mq_end_request(req, BLK_STS_OK);
-+	return BLK_STS_OK;
-+}
-+
-+static const struct blk_mq_ops n64cart_mq_ops =3D {
-+	.queue_rq =3D n64cart_queue_rq,
++static const u32 ntsc_320[] __initconst =3D {
++	0x00013212, 0x00000000, 0x00000140, 0x00000200,
++	0x00000000, 0x03e52239, 0x0000020d, 0x00000c15,
++	0x0c150c15, 0x006c02ec, 0x002501ff, 0x000e0204,
++	0x00000200, 0x00000400
 +};
 +
-+static const struct block_device_operations n64cart_fops =3D {
-+	.owner		=3D THIS_MODULE,
-+};
-+
-+static int __init n64cart_init(void)
++static int __init n64rdp_probe(struct platform_device *pdev)
 +{
-+	int err;
++	int ret;
++	u32 i;
++	struct fb_info *info;
++	struct n64rdp_par *par;
++	dma_addr_t addr;
 +
-+	if (!start || !size) {
-+		pr_err("n64cart: start and size not specified\n");
-+		return -ENODEV;
++	info =3D framebuffer_alloc(sizeof(struct n64rdp_par), &pdev->dev);
++	if (!info)
++		return -ENOMEM;
++	platform_set_drvdata(pdev, info);
++
++	par =3D info->par;
++
++	info->fix =3D n64rdp_fix;
++	info->screen_base =3D dma_alloc_coherent(&pdev->dev, W * H * 2, &addr,
++					       GFP_DMA | GFP_KERNEL);
++	if (!info->screen_base)
++		return -ENOMEM;
++
++	info->fix.smem_start =3D par->physaddr =3D addr;
++	info->fix.smem_len =3D W * H * 2;
++	info->fix.line_length =3D W * 2;
++
++	info->var =3D n64rdp_var;
++	info->var.xres =3D W;
++	info->var.yres =3D H;
++	info->var.xres_virtual =3D W;
++	info->var.yres_virtual =3D H;
++	info->var.bits_per_pixel =3D 16;
++	info->var.red =3D (struct fb_bitfield) {11, 5};
++	info->var.green =3D (struct fb_bitfield) {6, 5};
++	info->var.blue =3D (struct fb_bitfield) {1, 5};
++	info->var.transp =3D (struct fb_bitfield) {0, 1};
++
++	info->apertures =3D alloc_apertures(1);
++	if (!info->apertures) {
++		ret =3D -ENOMEM;
++		goto error_fb_release;
++	}
++	info->apertures->ranges[0].base =3D info->fix.smem_start;
++	info->apertures->ranges[0].size =3D info->fix.smem_len;
++
++	info->fbops =3D &n64rdp_ops;
++	info->flags =3D FBINFO_DEFAULT;
++	info->pseudo_palette =3D par->palette;
++
++	dev_info(&pdev->dev, "framebuffer at 0x%lx, 0x%x bytes, mapped to 0x%p\n=
+",
++			     info->fix.smem_start, info->fix.smem_len,
++			     info->screen_base);
++
++	ret =3D register_framebuffer(info);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "Unable to register n64rdp: %d\n", ret);
++		goto error_fb_release;
 +	}
 +
-+	if (size & 4095) {
-+		pr_err("n64cart: size must be a multiple of 4K\n");
-+		return -ENODEV;
++	for (i =3D 0; i < ARRAY_SIZE(ntsc_320); i++) {
++		if (i =3D=3D 1)
++			n64rdp_write_reg(i, par->physaddr);
++		else
++			n64rdp_write_reg(i, ntsc_320[i]);
 +	}
-+
-+	major =3D register_blkdev(0, "n64cart");
-+	if (major <=3D 0) {
-+		pr_err("n64cart: unable to get major number\n");
-+		return -EBUSY;
-+	}
-+
-+	queue =3D blk_mq_init_sq_queue(&tag_set, &n64cart_mq_ops, 16,
-+				     BLK_MQ_F_SHOULD_MERGE);
-+	if (IS_ERR(queue)) {
-+		err =3D PTR_ERR(queue);
-+		goto fail_reg;
-+	}
-+
-+	buf =3D kmalloc(BUFSIZE, GFP_DMA | GFP_KERNEL);
-+	if (!buf) {
-+		err =3D -ENOMEM;
-+		goto fail_queue;
-+	}
-+	dma_addr =3D virt_to_phys(buf);
-+
-+	disk =3D alloc_disk(1);
-+	if (!disk) {
-+		err =3D -ENOMEM;
-+		goto fail_dma;
-+	}
-+
-+	disk->major =3D major;
-+	disk->first_minor =3D 0;
-+	disk->queue =3D queue;
-+	disk->flags =3D GENHD_FL_NO_PART_SCAN;
-+	disk->fops =3D &n64cart_fops;
-+	strcpy(disk->disk_name, "n64cart");
-+
-+	set_capacity(disk, size / 512);
-+
-+	blk_queue_flag_set(QUEUE_FLAG_NONROT, queue);
-+	blk_queue_physical_block_size(queue, 4096);
-+	blk_queue_logical_block_size(queue, 4096);
-+
-+	add_disk(disk);
-+
-+	pr_info("n64cart: %u kb disk\n", size / 1024);
 +
 +	return 0;
-+fail_dma:
-+	kfree(buf);
-+fail_queue:
-+	blk_cleanup_queue(queue);
-+fail_reg:
-+	unregister_blkdev(major, "n64cart");
-+	return err;
++
++error_fb_release:
++	framebuffer_release(info);
++	return ret;
 +}
 +
-+module_param(start, uint, 0);
-+MODULE_PARM_DESC(start, "Start address of the cart block data");
++static struct platform_driver n64rdp_driver =3D {
++	.driver =3D {
++		.name =3D "n64rdp",
++	},
++};
 +
-+module_param(size, uint, 0);
-+MODULE_PARM_DESC(size, "Size of the cart block data, in bytes");
++static int __init n64rdp_init(void)
++{
++	int ret;
 +
-+module_init(n64cart_init);
++	ret =3D platform_driver_probe(&n64rdp_driver, n64rdp_probe);
++
++	return ret;
++}
++
++fs_initcall(n64rdp_init);
++
++MODULE_AUTHOR("Lauri Kasanen <cand@gmx.com>");
++MODULE_DESCRIPTION("Driver for the N64's display");
++MODULE_LICENSE("GPL v2");
 =2D-
 2.6.2
 

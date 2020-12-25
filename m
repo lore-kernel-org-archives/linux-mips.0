@@ -2,420 +2,314 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-7.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56589C433E6
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8113BC4332B
 	for <linux-mips@archiver.kernel.org>; Fri, 25 Dec 2020 17:05:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 28F3D22285
+	by mail.kernel.org (Postfix) with ESMTP id 5F80722795
 	for <linux-mips@archiver.kernel.org>; Fri, 25 Dec 2020 17:05:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725910AbgLYRFq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 25 Dec 2020 12:05:46 -0500
-Received: from mout.gmx.net ([212.227.15.19]:45269 "EHLO mout.gmx.net"
+        id S1725953AbgLYRFr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 25 Dec 2020 12:05:47 -0500
+Received: from mout.gmx.net ([212.227.17.22]:41023 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726091AbgLYRFo (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 25 Dec 2020 12:05:44 -0500
+        id S1726164AbgLYRFr (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 25 Dec 2020 12:05:47 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608915851;
-        bh=cr4PYSAp9GNLzC9cvI+9A9WkW5Oj5yyyqtCSrYvHJoQ=;
+        s=badeba3b8450; t=1608915854;
+        bh=w7OHd5Xbuoj7IWGUrgbsqC8PhQlGXU05DPLOUYyzVNY=;
         h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
-        b=K5ENOiohs1X0ljV2EfqLL9EOw76/TIUXJHDhi4pXCf1+m7GfI7oCLfR9m+YclCCSl
-         o5rvAiiL4fdsEiP8WA+ObTwdvHHbpiBriSjrm4qRVVAwvl+0SiW8Pf1Yor8rTm4/1J
-         DtJvISC/xwnDlNvb/H6jBRoDw3+xfDM7LsnjhjmE=
+        b=AYwAfuEpORCp9riZdJQh3JVzQaXmYLASVV0wMVHaSG/Wmcn7ktf+VWXoJKsDaNt+3
+         8KVAFLPhGjd82/+IcsNS4iafp3WRhzrpVBNgqusVgVpHLtnsCfU39dbM3M7UmhvrT7
+         c5ghuTCavLTfF81FlRV+zEqFwUWaIJhGCPOrSdIw=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from Valinor ([82.128.181.212]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MbAcs-1kLyb51Unw-00bYEm; Fri, 25
- Dec 2020 18:04:11 +0100
-Date:   Fri, 25 Dec 2020 19:01:15 +0200
+Received: from Valinor ([82.128.181.212]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MoO24-1kHatS186i-00onyF; Fri, 25
+ Dec 2020 18:04:14 +0100
+Date:   Fri, 25 Dec 2020 19:01:58 +0200
 From:   Lauri Kasanen <cand@gmx.com>
 To:     linux-mips@vger.kernel.org
 Cc:     tsbogend@alpha.franken.de
-Subject: [PATCH 4/6] input: Add N64 controller driver
-Message-Id: <20201225190115.efa38e5a0107bec09f993ed6@gmx.com>
+Subject: [PATCH 6/6] block: Add n64 cart driver
+Message-Id: <20201225190158.f94c679d21c4a2020c40adb4@gmx.com>
 X-Mailer: Sylpheed 3.5.0 (GTK+ 2.18.6; x86_64-unknown-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Gj308YDFf3ZDvf+pOrLf+ZRZpCoDJGnmjSzwSCAKGlNBUmoNMq9
- AU093vdgZG0gTHdeyCR6ZwAlYfYFWnG1MImEaBJhk+qD6PliyGHmgviNjDx7IWLcDE7utHy
- Il2W0nzTdtxI7IKJh7qyi/AuSeXKA730dm6QsFhSrx+0sY8YR4Jjf9tstSNI/GHK/ituVOx
- rp1MoHPxwtT5LlX6MA2Rw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:MvLAmSbye9Y=:dIEloSbCkJusoICh7x3IVO
- vdBM8Lcfc/lpobzWNuzku8Tpz/PXhIRi+uenO1zI/lfMiFIcjSUz3H/ug9adwHM6+bYrmJc+c
- +9okggipaGtooLvW47GjfgZwYZiIrL4GOzHT+8UU9cGleRJ8+RnWwL6U2m4D5VLUAdv9PSNF4
- 0dz2lnlC6dv1j4ZJ+36iOlzJMTg021mjkg9OLb2Iz0r6NsoUXsJlujK1EKCSfI/m4dsvgfGZ3
- fz3vz28pSzd2b7vC9NHuTm1IrnKkx6QZz7wh8ymxSeuk4bOMdRg7awn0CRbLar+o0rOiSAN/h
- k0m6QZWNa2B0KZJtlYpN84gZfwjafHQUqAsnSi42zWhCkYBoWImbIuK5WWZt0fU47daM8L8RK
- nAxFaUH1ye18HCc3iBYizSwATojbMKYJxEnFH+3QvDFk3R83jjeT1EhtM8Faz28IK7GlYnrZ8
- /dmZ0U17IUql2J9qxtE2/hUDdSousYzpl1Yd6a73oXMKcAlHaHnE9iEzV+DcrfO7KxpyjcAJA
- Mg9TC8iVdn6rKT+cfBYgP/k3wMSIToYEku6VPo2LExJbBE+H0ujN9XOPBz/vsH6Afrs8Ouiit
- 4Rh9qrhgjDdJINWR7ZOV9z4nqByf3X+yFy5O3s5K2lgFiPNSCejU5DfeoZ2lhFI6gQqk1dD1u
- v4hsJh79Gy/cXOnboIDzMJ5Lqms8UR4fI/BJrwLf5+KTvbyZ/IwOgX1gQb8rXnRqiB9sEbvD7
- cNrus1jYI9M0eZuH985U3W9+Tjcm6UodDWzoGS5ROlvCdy1ty2GelO++EQhobsVr8TcG35FSf
- EycbG1mLgxtHAob57O1q3N8sqhIR0oQFNrxsrS32P+7HWhIDqb/SwRS0F/1FEQVggU9UqRD2i
- sdEBChQbwDdyb9l6Q2vg==
+X-Provags-ID: V03:K1:93oi1qlI6UdnzR+iv441jF7MCBTNdhKfi5vxx/zPfFCFA1vF7GY
+ 6Aeh1E54yGJ4/QPuFpiX68BfqgJdE2IyezInq6cTmqt4/fngNWzF2AlU9nVvsgnWymbdVcF
+ IwfTjkj6bD4jB7QJEMaK8LX5qr3W39MbL0oYhxYVOjwXAX2U8sW9RdxrwIXrnsl3S38JHRA
+ bvVB5uBOpi2tpeUsLuFpw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:rgijOwOeQfc=:WeDJkhdfYQGsXwo57ruFjw
+ AOMNYwkfG92lg2XaBgNPXPqgBFhTWPDSTBx5tGhp9afxEfT8mWWHl1AemcyIOrMkXF6btBWlv
+ Egj2vgVe/DeN8wVuId1ZUDs1K+xud9KQsTpPwHDRSFuNXclVcfAdwxrnuB7Zmx90NUTc6Dulm
+ YT9DlOgkttVScMu+D3XwtSv4uxdn0WSE4OtjWOLijr6vABiglO1SjP4HR7yrODH7GNuGnQB9R
+ 2W2Y69UOC2yWtu6GZAmqXGyMXQWgj15aLJ9w4kTBsbMFDf6/oL07h2+HcZ1ZsNlfu/guB3AcE
+ BTfG/3njf72TMJc5ND0HXqRlydtfjDCMfZUDREJV2AthkleQOCaWU9mIObCtBITY4COzT4WxP
+ 66q2OZhsYjLbPqxw/XUYeSRz7CZYAFEr7aaFH/48Bm9bz9kgXzC3h4BYP+4G5R9VaymxKlQfG
+ p9ALe9D0UJaIQm1ARi5jNkb2PVjARejWjwVA8YocQGYSoDcb2T89+lZL6j/FqmhTlNZyLioMp
+ Ivo0VMHBAGCgodecQVDtVZiWn0LjU9SfYIcO47uswnKaHh4xapaBzeQvx+oAmQ8FLbmQbY1tu
+ otUsPYQmVhLR35/JARS457NKMgRw3PLn2BYzfVJw/srNTAeHtQdsOwSWie1Bm7DZu2lcmzgm5
+ S9dum8YktNDAoQJMMGT47AkU7KT0GRhBuPP4olw4oe5wRilYQJcGuZ6xz5TzpPy0IdxuIzD0y
+ JIhNSl7VCiPNiFYm9DOHhQydtXJROYQrIIhiX1mVYhz3IXC+lYleYwcQuuLcSSOsaMTmA3QwU
+ 3Ukldx0GbXf527V+0hp29qalmArLRapjCm8qo8STEvOGTV1CXcCIhLSkKy7rj0NHAKbdhbHZr
+ 3LhIv1cvcWoXZMbzB6Kg==
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 Signed-off-by: Lauri Kasanen <cand@gmx.com>
 =2D--
- drivers/input/joystick/Kconfig  |   6 +
- drivers/input/joystick/Makefile |   2 +-
- drivers/input/joystick/n64joy.c | 300 +++++++++++++++++++++++++++++++++++=
+ drivers/block/Kconfig   |   6 ++
+ drivers/block/Makefile  |   1 +
+ drivers/block/n64cart.c | 203 +++++++++++++++++++++++++++++++++++++++++++=
 +++++
- 3 files changed, 307 insertions(+), 1 deletion(-)
- create mode 100644 drivers/input/joystick/n64joy.c
+ 3 files changed, 210 insertions(+)
+ create mode 100644 drivers/block/n64cart.c
 
-diff --git a/drivers/input/joystick/Kconfig b/drivers/input/joystick/Kconf=
-ig
-index b080f0c..b5098fb 100644
-=2D-- a/drivers/input/joystick/Kconfig
-+++ b/drivers/input/joystick/Kconfig
-@@ -382,4 +382,10 @@ config JOYSTICK_FSIA6B
+diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
+index ecceaaa..28a0bad 100644
+=2D-- a/drivers/block/Kconfig
++++ b/drivers/block/Kconfig
+@@ -72,6 +72,12 @@ config AMIGA_Z2RAM
  	  To compile this driver as a module, choose M here: the
- 	  module will be called fsia6b.
+ 	  module will be called z2ram.
 
-+config JOYSTICK_N64
-+	bool "N64 controller"
++config N64CART
++	bool "N64 cart support"
 +	depends on MIPS_N64
 +	help
-+	  Support for the four N64 controllers.
++	  Support for the N64 cart.
 +
- endif
-diff --git a/drivers/input/joystick/Makefile b/drivers/input/joystick/Make=
-file
-index 58232b3..31d720c 100644
-=2D-- a/drivers/input/joystick/Makefile
-+++ b/drivers/input/joystick/Makefile
-@@ -24,6 +24,7 @@ obj-$(CONFIG_JOYSTICK_INTERACT)		+=3D interact.o
- obj-$(CONFIG_JOYSTICK_JOYDUMP)		+=3D joydump.o
- obj-$(CONFIG_JOYSTICK_MAGELLAN)		+=3D magellan.o
- obj-$(CONFIG_JOYSTICK_MAPLE)		+=3D maplecontrol.o
-+obj-$(CONFIG_JOYSTICK_N64)		+=3D n64joy.o
- obj-$(CONFIG_JOYSTICK_PSXPAD_SPI)	+=3D psxpad-spi.o
- obj-$(CONFIG_JOYSTICK_PXRC)		+=3D pxrc.o
- obj-$(CONFIG_JOYSTICK_SIDEWINDER)	+=3D sidewinder.o
-@@ -37,4 +38,3 @@ obj-$(CONFIG_JOYSTICK_WARRIOR)		+=3D warrior.o
- obj-$(CONFIG_JOYSTICK_WALKERA0701)	+=3D walkera0701.o
- obj-$(CONFIG_JOYSTICK_XPAD)		+=3D xpad.o
- obj-$(CONFIG_JOYSTICK_ZHENHUA)		+=3D zhenhua.o
--
-diff --git a/drivers/input/joystick/n64joy.c b/drivers/input/joystick/n64j=
-oy.c
+ config CDROM
+ 	tristate
+ 	select BLK_SCSI_REQUEST
+diff --git a/drivers/block/Makefile b/drivers/block/Makefile
+index e1f6311..b9642cf 100644
+=2D-- a/drivers/block/Makefile
++++ b/drivers/block/Makefile
+@@ -17,6 +17,7 @@ obj-$(CONFIG_PS3_DISK)		+=3D ps3disk.o
+ obj-$(CONFIG_PS3_VRAM)		+=3D ps3vram.o
+ obj-$(CONFIG_ATARI_FLOPPY)	+=3D ataflop.o
+ obj-$(CONFIG_AMIGA_Z2RAM)	+=3D z2ram.o
++obj-$(CONFIG_N64CART)		+=3D n64cart.o
+ obj-$(CONFIG_BLK_DEV_RAM)	+=3D brd.o
+ obj-$(CONFIG_BLK_DEV_LOOP)	+=3D loop.o
+ obj-$(CONFIG_XILINX_SYSACE)	+=3D xsysace.o
+diff --git a/drivers/block/n64cart.c b/drivers/block/n64cart.c
 new file mode 100644
-index 0000000..fbf3686
+index 0000000..83acfe2
 =2D-- /dev/null
-+++ b/drivers/input/joystick/n64joy.c
-@@ -0,0 +1,300 @@
++++ b/drivers/block/n64cart.c
+@@ -0,0 +1,203 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Support for the four N64 controllers.
++ * Support for the N64 cart.
 + *
 + * Copyright (c) 2020 Lauri Kasanen
 + */
 +
-+#include <linux/errno.h>
++#include <linux/bitops.h>
++#include <linux/blk-mq.h>
++#include <linux/dma-mapping.h>
 +#include <linux/init.h>
-+#include <linux/input.h>
-+#include <linux/limits.h>
-+#include <linux/kernel.h>
++#include <linux/major.h>
 +#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/timer.h>
++#include <linux/spinlock.h>
 +
 +#include <asm/addrspace.h>
 +#include <asm/io.h>
 +
 +MODULE_AUTHOR("Lauri Kasanen <cand@gmx.com>");
-+MODULE_DESCRIPTION("Driver for N64 controllers");
++MODULE_DESCRIPTION("Driver for the N64 cart");
 +MODULE_LICENSE("GPL");
 +
-+#define PIF_RAM 0x1fc007c0
-+#define REG_BASE ((u32 *) CKSEG1ADDR(0xa4800000))
++#define BUFSIZE (64 * 1024)
 +
-+#define SI_DRAM_REG 0
-+#define SI_READ_REG 1
-+#define SI_WRITE_REG 4
-+#define SI_STATUS_REG 6
++static unsigned int start, size;
++static int major;
++static struct request_queue *queue;
++static struct blk_mq_tag_set tag_set;
++static struct gendisk *disk;
 +
-+#define SI_STATUS_DMA_BUSY  (1 << 0)
-+#define SI_STATUS_IO_BUSY   (1 << 1)
++static void *buf;
++static dma_addr_t dma_addr;
 +
-+#define N64_CONTROLLER_ID 0x0500
++static DEFINE_SPINLOCK(n64cart_lock);
 +
-+static struct input_dev *n64joy_dev[4];
-+static const char *n64joy_phys[4] =3D {
-+	"n64joy/port0",
-+	"n64joy/port1",
-+	"n64joy/port2",
-+	"n64joy/port3",
-+};
++#define REG_BASE ((u32 *) CKSEG1ADDR(0xA4600000))
 +
-+static u8 n64joy_opened;
-+static DEFINE_MUTEX(n64joy_mutex);
-+static struct timer_list timer;
++#define PI_DRAM_REG 0
++#define PI_CART_REG 1
++#define PI_READ_REG 2
++#define PI_WRITE_REG 3
++#define PI_STATUS_REG 4
 +
-+static u64 si_buf[8] ____cacheline_aligned;
++#define PI_STATUS_DMA_BUSY (1 << 0)
++#define PI_STATUS_IO_BUSY (1 << 1)
 +
-+struct joydata {
-+	unsigned: 16; // unused
-+	unsigned err: 2;
-+	unsigned: 14; // unused
-+
-+	union {
-+		u32 data;
-+
-+		struct {
-+			unsigned a: 1;
-+			unsigned b: 1;
-+			unsigned z: 1;
-+			unsigned start: 1;
-+			unsigned up: 1;
-+			unsigned down: 1;
-+			unsigned left: 1;
-+			unsigned right: 1;
-+			unsigned: 2; // unused
-+			unsigned l: 1;
-+			unsigned r: 1;
-+			unsigned c_up: 1;
-+			unsigned c_down: 1;
-+			unsigned c_left: 1;
-+			unsigned c_right: 1;
-+			signed x: 8;
-+			signed y: 8;
-+		};
-+	};
-+};
-+
-+static void n64joy_write_reg(const u8 reg, const u32 value)
++static void n64cart_write_reg(const u8 reg, const u32 value)
 +{
 +	__raw_writel(value, REG_BASE + reg);
 +}
 +
-+static u32 n64joy_read_reg(const u8 reg)
++static u32 n64cart_read_reg(const u8 reg)
 +{
 +	return __raw_readl(REG_BASE + reg);
 +}
 +
-+static void n64joy_wait_si_dma(void)
++static void n64cart_wait_dma(void)
 +{
-+	while (n64joy_read_reg(SI_STATUS_REG) & (SI_STATUS_DMA_BUSY | SI_STATUS_=
-IO_BUSY))
++	while (n64cart_read_reg(PI_STATUS_REG) &
++		(PI_STATUS_DMA_BUSY | PI_STATUS_IO_BUSY))
 +		;
 +}
 +
-+static void n64joy_exec_pif(const u64 in[8])
++static blk_status_t get_seg(struct request *req)
 +{
-+	unsigned long flags;
++	u32 bstart =3D blk_rq_pos(req) * 512;
++	u32 len =3D blk_rq_cur_bytes(req);
++	void *dst =3D bio_data(req->bio);
 +
-+	dma_cache_wback_inv((unsigned long) in, 8 * 8);
-+	dma_cache_inv((unsigned long) si_buf, 8 * 8);
++	if (bstart + len > size || rq_data_dir(req) =3D=3D WRITE)
++		return BLK_STS_IOERR;
 +
-+	local_irq_save(flags);
++	bstart +=3D start;
 +
-+	n64joy_wait_si_dma();
++	while (len) {
++		const u32 curlen =3D len < BUFSIZE ? len : BUFSIZE;
 +
-+	barrier();
-+	n64joy_write_reg(SI_DRAM_REG, virt_to_phys(in));
-+	barrier();
-+	n64joy_write_reg(SI_WRITE_REG, PIF_RAM);
-+	barrier();
++		dma_cache_inv((unsigned long) buf, curlen);
 +
-+	n64joy_wait_si_dma();
++		n64cart_wait_dma();
 +
-+	barrier();
-+	n64joy_write_reg(SI_DRAM_REG, virt_to_phys(si_buf));
-+	barrier();
-+	n64joy_write_reg(SI_READ_REG, PIF_RAM);
-+	barrier();
++		barrier();
++		n64cart_write_reg(PI_DRAM_REG, dma_addr);
++		barrier();
++		n64cart_write_reg(PI_CART_REG, (bstart | 0x10000000) & 0x1FFFFFFF);
++		barrier();
++		n64cart_write_reg(PI_WRITE_REG, curlen - 1);
++		barrier();
 +
-+	n64joy_wait_si_dma();
++		n64cart_wait_dma();
 +
-+	local_irq_restore(flags);
-+}
++		memcpy(dst, buf, curlen);
 +
-+static const u64 polldata[] ____cacheline_aligned =3D {
-+	0xff010401ffffffff,
-+	0xff010401ffffffff,
-+	0xff010401ffffffff,
-+	0xff010401ffffffff,
-+	0xfe00000000000000,
-+	0,
-+	0,
-+	1
-+};
-+
-+static void n64joy_poll(struct timer_list *t)
-+{
-+	const struct joydata *data;
-+	u32 i;
-+
-+	n64joy_exec_pif(polldata);
-+
-+	data =3D (struct joydata *) si_buf;
-+
-+	for (i =3D 0; i < 4; i++) {
-+		if (!n64joy_dev[i])
-+			continue;
-+
-+		// d-pad
-+		input_report_key(n64joy_dev[i], BTN_DPAD_UP, data[i].up);
-+		input_report_key(n64joy_dev[i], BTN_DPAD_DOWN, data[i].down);
-+		input_report_key(n64joy_dev[i], BTN_DPAD_LEFT, data[i].left);
-+		input_report_key(n64joy_dev[i], BTN_DPAD_RIGHT, data[i].right);
-+
-+		// c buttons
-+		input_report_key(n64joy_dev[i], BTN_FORWARD, data[i].c_up);
-+		input_report_key(n64joy_dev[i], BTN_BACK, data[i].c_down);
-+		input_report_key(n64joy_dev[i], BTN_LEFT, data[i].c_left);
-+		input_report_key(n64joy_dev[i], BTN_RIGHT, data[i].c_right);
-+
-+		// matching buttons
-+		input_report_key(n64joy_dev[i], BTN_START, data[i].start);
-+		input_report_key(n64joy_dev[i], BTN_Z, data[i].z);
-+
-+		// remaining ones: a, b, l, r
-+		input_report_key(n64joy_dev[i], BTN_0, data[i].a);
-+		input_report_key(n64joy_dev[i], BTN_1, data[i].b);
-+		input_report_key(n64joy_dev[i], BTN_2, data[i].l);
-+		input_report_key(n64joy_dev[i], BTN_3, data[i].r);
-+
-+		input_report_abs(n64joy_dev[i], ABS_X, data[i].x);
-+		input_report_abs(n64joy_dev[i], ABS_Y, data[i].y);
-+
-+		input_sync(n64joy_dev[i]);
++		len -=3D curlen;
++		dst +=3D curlen;
++		bstart +=3D curlen;
 +	}
 +
-+	mod_timer(&timer, jiffies + msecs_to_jiffies(16));
++	return BLK_STS_OK;
 +}
 +
-+static int n64joy_open(struct input_dev *dev)
++static blk_status_t n64cart_queue_rq(struct blk_mq_hw_ctx *hctx,
++				     const struct blk_mq_queue_data *bd)
++{
++	unsigned long flags;
++	struct request *req =3D bd->rq;
++	blk_status_t err;
++
++	blk_mq_start_request(req);
++
++	spin_lock_irqsave(&n64cart_lock, flags);
++
++	do {
++		err =3D get_seg(req);
++	} while (blk_update_request(req, err, blk_rq_cur_bytes(req)));
++
++	spin_unlock_irqrestore(&n64cart_lock, flags);
++	blk_mq_end_request(req, BLK_STS_OK);
++	return BLK_STS_OK;
++}
++
++static const struct blk_mq_ops n64cart_mq_ops =3D {
++	.queue_rq =3D n64cart_queue_rq,
++};
++
++static const struct block_device_operations n64cart_fops =3D {
++	.owner		=3D THIS_MODULE,
++};
++
++static int __init n64cart_init(void)
 +{
 +	int err;
 +
-+	err =3D mutex_lock_interruptible(&n64joy_mutex);
-+	if (err)
-+		return err;
-+
-+	if (!n64joy_opened) {
-+		// Could use the vblank irq, but it's not important if the poll
-+		// point slightly changes.
-+		timer_setup(&timer, n64joy_poll, 0);
-+		mod_timer(&timer, jiffies + msecs_to_jiffies(16));
-+	}
-+
-+	n64joy_opened++;
-+
-+	mutex_unlock(&n64joy_mutex);
-+	return err;
-+}
-+
-+static void n64joy_close(struct input_dev *dev)
-+{
-+	mutex_lock(&n64joy_mutex);
-+	if (!--n64joy_opened)
-+		del_timer_sync(&timer);
-+	mutex_unlock(&n64joy_mutex);
-+}
-+
-+static const u64 __initconst scandata[] ____cacheline_aligned =3D {
-+	0xff010300ffffffff,
-+	0xff010300ffffffff,
-+	0xff010300ffffffff,
-+	0xff010300ffffffff,
-+	0xfe00000000000000,
-+	0,
-+	0,
-+	1
-+};
-+
-+static int __init n64joy_init(void)
-+{
-+	const struct joydata *data;
-+	int err =3D 0;
-+	u32 i, j, found =3D 0;
-+
-+	// The controllers are not hotpluggable, so we can scan in init
-+	n64joy_exec_pif(scandata);
-+
-+	data =3D (struct joydata *) si_buf;
-+
-+	memset(n64joy_dev, 0, 4 * sizeof(void *));
-+
-+	for (i =3D 0; i < 4; i++) {
-+		if (!data[i].err && data[i].data >> 16 =3D=3D N64_CONTROLLER_ID) {
-+			found++;
-+
-+			n64joy_dev[i] =3D input_allocate_device();
-+			if (!n64joy_dev[i]) {
-+				err =3D -ENOMEM;
-+				goto fail;
-+			}
-+
-+			n64joy_dev[i]->name =3D "N64 controller";
-+			n64joy_dev[i]->phys =3D n64joy_phys[i];
-+			n64joy_dev[i]->id.bustype =3D BUS_HOST;
-+			n64joy_dev[i]->id.vendor =3D 0;
-+			n64joy_dev[i]->id.product =3D data[i].data >> 16;
-+			n64joy_dev[i]->id.version =3D 0;
-+
-+			n64joy_dev[i]->open =3D n64joy_open;
-+			n64joy_dev[i]->close =3D n64joy_close;
-+
-+			n64joy_dev[i]->evbit[0] =3D BIT_MASK(EV_KEY) | BIT_MASK(EV_ABS);
-+			n64joy_dev[i]->absbit[0] =3D BIT_MASK(ABS_X) | BIT_MASK(ABS_Y);
-+
-+			// d-pad
-+			n64joy_dev[i]->keybit[BIT_WORD(BTN_DPAD_UP)] =3D BIT_MASK(BTN_DPAD_UP)=
- |
-+				BIT_MASK(BTN_DPAD_DOWN) | BIT_MASK(BTN_DPAD_LEFT) |
-+				BIT_MASK(BTN_DPAD_RIGHT);
-+			// c buttons
-+			n64joy_dev[i]->keybit[BIT_WORD(BTN_LEFT)] |=3D BIT_MASK(BTN_LEFT) |
-+				BIT_MASK(BTN_RIGHT) | BIT_MASK(BTN_FORWARD) | BIT_MASK(BTN_BACK);
-+			// matching buttons
-+			n64joy_dev[i]->keybit[BIT_WORD(BTN_GAMEPAD)] |=3D BIT_MASK(BTN_START) =
-|
-+				BIT_MASK(BTN_Z);
-+			// remaining ones: a, b, l, r
-+			n64joy_dev[i]->keybit[BIT_WORD(BTN_0)] |=3D BIT_MASK(BTN_0) |
-+				BIT_MASK(BTN_1) | BIT_MASK(BTN_2) | BIT_MASK(BTN_3);
-+
-+			for (j =3D 0; j < 2; j++) {
-+				input_set_abs_params(n64joy_dev[i], ABS_X + j,
-+						     S8_MIN, S8_MAX, 0, 0);
-+			}
-+
-+			err =3D input_register_device(n64joy_dev[i]);
-+			if (err) {
-+				input_free_device(n64joy_dev[i]);
-+				goto fail;
-+			}
-+		}
-+	}
-+
-+	pr_info("n64joy: %u controller(s) connected\n", found);
-+
-+	if (!found)
++	if (!start || !size) {
++		pr_err("n64cart: start and size not specified\n");
 +		return -ENODEV;
++	}
++
++	if (size & 4095) {
++		pr_err("n64cart: size must be a multiple of 4K\n");
++		return -ENODEV;
++	}
++
++	major =3D register_blkdev(0, "n64cart");
++	if (major <=3D 0) {
++		pr_err("n64cart: unable to get major number\n");
++		return -EBUSY;
++	}
++
++	queue =3D blk_mq_init_sq_queue(&tag_set, &n64cart_mq_ops, 16,
++				     BLK_MQ_F_SHOULD_MERGE);
++	if (IS_ERR(queue)) {
++		err =3D PTR_ERR(queue);
++		goto fail_reg;
++	}
++
++	buf =3D kmalloc(BUFSIZE, GFP_DMA | GFP_KERNEL);
++	if (!buf) {
++		err =3D -ENOMEM;
++		goto fail_queue;
++	}
++	dma_addr =3D virt_to_phys(buf);
++
++	disk =3D alloc_disk(1);
++	if (!disk) {
++		err =3D -ENOMEM;
++		goto fail_dma;
++	}
++
++	disk->major =3D major;
++	disk->first_minor =3D 0;
++	disk->queue =3D queue;
++	disk->flags =3D GENHD_FL_NO_PART_SCAN;
++	disk->fops =3D &n64cart_fops;
++	strcpy(disk->disk_name, "n64cart");
++
++	set_capacity(disk, size / 512);
++
++	blk_queue_flag_set(QUEUE_FLAG_NONROT, queue);
++	blk_queue_physical_block_size(queue, 4096);
++	blk_queue_logical_block_size(queue, 4096);
++
++	add_disk(disk);
++
++	pr_info("n64cart: %u kb disk\n", size / 1024);
 +
 +	return 0;
-+fail:
-+	for (i =3D 0; i < 4; i++) {
-+		if (!n64joy_dev[i])
-+			continue;
-+		input_unregister_device(n64joy_dev[i]);
-+	}
++fail_dma:
++	kfree(buf);
++fail_queue:
++	blk_cleanup_queue(queue);
++fail_reg:
++	unregister_blkdev(major, "n64cart");
 +	return err;
 +}
 +
-+module_init(n64joy_init);
++module_param(start, uint, 0);
++MODULE_PARM_DESC(start, "Start address of the cart block data");
++
++module_param(size, uint, 0);
++MODULE_PARM_DESC(size, "Size of the cart block data, in bytes");
++
++module_init(n64cart_init);
 =2D-
 2.6.2
 

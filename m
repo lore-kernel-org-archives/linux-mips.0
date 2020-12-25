@@ -2,100 +2,154 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45AD6C433DB
-	for <linux-mips@archiver.kernel.org>; Fri, 25 Dec 2020 10:37:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F217C433E6
+	for <linux-mips@archiver.kernel.org>; Fri, 25 Dec 2020 12:20:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 12428230FA
-	for <linux-mips@archiver.kernel.org>; Fri, 25 Dec 2020 10:37:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4B5B8230FA
+	for <linux-mips@archiver.kernel.org>; Fri, 25 Dec 2020 12:20:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729231AbgLYKgp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 25 Dec 2020 05:36:45 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:42928 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729222AbgLYKgp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 25 Dec 2020 05:36:45 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxKcmKwOVfqhwFAA--.6966S4;
-        Fri, 25 Dec 2020 18:35:57 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        id S1729098AbgLYMUm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 25 Dec 2020 07:20:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727426AbgLYMUm (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 25 Dec 2020 07:20:42 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99BD5C061573;
+        Fri, 25 Dec 2020 04:20:01 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id m25so9782861lfc.11;
+        Fri, 25 Dec 2020 04:20:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NikotG70jV13TXNsF314W0wEbJexz4D5n/k+PZhYUC8=;
+        b=izB5uNyY73TR2b/1o2JN3Wac1R9e4hAoCuxwZkAa0QsyVQ+Ryo66kT61xgr+kiEoSA
+         2+uyLlgux4D72idT/jhtUkkHfl9zMnk67DqqgeoCredoN/G+pcKoCleLeGcpsE76cpr/
+         rwUrOkNPL6G6k/gSEjb1TWN490UdkdREgzEgyMyN5cWJM/56zz2+K05iqCwPGiEpIMLp
+         0w9OO4/jkeXD6Shr0TJ9tw/SsdjL/huK9qs5TiolEgNQCrou5cHleZEX5lHbLAOfo/pM
+         LMtiM4+FM9kEs1k7DOewMjrsimgmkepZoxnGoCGpeUSn6h59gKxYJMHkzZC0dLpCSlx8
+         B+SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NikotG70jV13TXNsF314W0wEbJexz4D5n/k+PZhYUC8=;
+        b=FqJTe49+MyU9xnhVEDPwB/ru2TThESzcMn/7I9DoPstxTXynB8hAg55vPGoVCK7HaY
+         +pBs12m53UAbymPNE6m5fqZhXE7L6QDXVYxXkzdn6DOXDRvejhcEUK1AN0jC47S219xE
+         nRyVsNGmiExS6ElvMJGa3OKBzD/Hh4LGfu9Til0CFVdTxAERRid7PWClwt6Rv9i9qJbX
+         6AWbFtw1JjBh5I0UEXNYmFFaBfpHzrowBQFM/A0mWs+gp9+yBjxEauP4RC7UkDz+5UV1
+         TtBGsWTRiI/GsKidcHY/kje3YuH4Su+Li5C7vdfF5nMbNiZuE3U9INc/wy6I+gaUhaJV
+         +fWw==
+X-Gm-Message-State: AOAM5303b/gOzbpm7s8Fyq2K/awgD4wjKAKELsaxkPDHkGtYJHnqJM6/
+        wUxGzN9ZnJjUMrzZpjGOLAtQ81WBrQ1ILA==
+X-Google-Smtp-Source: ABdhPJx8zUkdiLAPi5Ra5IczX7Wdza6GkCUdYzI+Rx0SyB/axqnTm7VTcLjnQUUcZtzodklo8YajRg==
+X-Received: by 2002:a2e:8113:: with SMTP id d19mr14821087ljg.303.1608898799585;
+        Fri, 25 Dec 2020 04:19:59 -0800 (PST)
+Received: from [192.168.1.101] ([31.173.81.155])
+        by smtp.gmail.com with ESMTPSA id i18sm4533873lja.102.2020.12.25.04.19.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Dec 2020 04:19:59 -0800 (PST)
+Subject: Re: [PATCH v4 2/4] spi: ls7a: Add YAML schemas
+To:     Qing Zhang <zhangqing@loongson.cn>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         ThomasBogendoerfer <tsbogend@alpha.franken.de>
 Cc:     linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 3/4] MIPS: Loongson64: DTS: Add SPI support to LS7A 
-Date:   Fri, 25 Dec 2020 18:35:51 +0800
-Message-Id: <1608892552-15457-3-git-send-email-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1608892552-15457-1-git-send-email-zhangqing@loongson.cn>
 References: <1608892552-15457-1-git-send-email-zhangqing@loongson.cn>
-X-CM-TRANSID: AQAAf9AxKcmKwOVfqhwFAA--.6966S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrtFW3WF1kCr4fKF1kJFWrKrg_yoW3trg_J3
-        ZFy393WrWfJFyUZ397Zr4DCFW7urWku34rCF1kJr1DW3sYyrnxJFW8C3yDZ34UurWYvrZY
-        qrZYgF4UCr4xKjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbfxYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
-        IE14v26r15M28IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kIII0Yj41l84x0c7CE
-        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6x
-        kF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY
-        1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4
-        xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCa
-        FVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8twCF04k20xvY0x0EwI
-        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
-        IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
-        6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jcGYLUUUUU=
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+ <1608892552-15457-2-git-send-email-zhangqing@loongson.cn>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <99ab96cc-6169-19c2-04ef-d023d4427f55@gmail.com>
+Date:   Fri, 25 Dec 2020 15:19:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <1608892552-15457-2-git-send-email-zhangqing@loongson.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-add spi support.
+On 12/25/20 1:35 PM, Qing Zhang wrote:
 
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
----
+> Switch the DT binding to a YAML schema to enable the DT validation.
+> 
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> ---
+> 
+> v4: fix warnings/errors about running 'make dt_binding_check'
+> 
+> ---
+>  .../devicetree/bindings/spi/loongson,spi-ls7a.yaml | 46 ++++++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml b/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
+> new file mode 100644
+> index 0000000..8cc9bc5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
+> @@ -0,0 +1,46 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/loongson,spi-ls7a.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Loongson LS7A PCH SPI Controller
+> +
+> +maintainers:
+> +  - Qing Zhang <zhangqing@loongson.cn>
+> +
+> +description: |
+> +  This controller can be found in Loongson-3 systems with LS7A PCH.
+> +
+> +properties:
+> +  compatible:
+> +    const: loongson,ls7a-spi
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - num-chipselects
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    pci {
+> +        #address-cells = <3>;
+> +        #size-cells = <2>;
+> +
+> +        spi@16,0 {
+> +        compatible = "pci0014,7a0b.0",
+> +                        "pci0014,7a0b",
+> +                        "pciclass088000",
+> +                        "pciclass0800";
+> +
+> +        reg = <0xb000 0x0 0x0 0x0 0x0>;
+> +        num-chipselects = <0>;
 
-v2:
-- Add spi about pci device DT
+    The above lines after { need extra indentation level.
 
-v3:
-- Remove spiflash node
+> +        };
+> +    };
+> +
+> +...
 
-v4:
-- Remove useless compatible
-
----
- arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-index f99a7a1..f4919c3 100644
---- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-+++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-@@ -405,6 +405,16 @@
- 				interrupt-map-mask = <0 0 0 0>;
- 				interrupt-map = <0 0 0 0 &pic 39 IRQ_TYPE_LEVEL_HIGH>;
- 			};
-+
-+			spi@16,0 {
-+				compatible = "pci0014,7a0b.0",
-+						"pci0014,7a0b",
-+						"pciclass088000",
-+						"pciclass0880";
-+
-+				reg = <0xb000 0x0 0x0 0x0 0x0>;
-+				num-chipselects = <0>;
-+			};
- 		};
- 
- 		isa {
--- 
-2.1.0
-
+MBR, Sergei

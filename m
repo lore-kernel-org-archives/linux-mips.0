@@ -2,267 +2,125 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8DF9C433DB
-	for <linux-mips@archiver.kernel.org>; Thu, 24 Dec 2020 19:46:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4348AC4332E
+	for <linux-mips@archiver.kernel.org>; Fri, 25 Dec 2020 10:37:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7F071227BF
-	for <linux-mips@archiver.kernel.org>; Thu, 24 Dec 2020 19:46:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0F80E230FA
+	for <linux-mips@archiver.kernel.org>; Fri, 25 Dec 2020 10:37:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728679AbgLXTpq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 24 Dec 2020 14:45:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728266AbgLXTpq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 24 Dec 2020 14:45:46 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B394C061573;
-        Thu, 24 Dec 2020 11:45:02 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ksWXP-003sWr-0X; Thu, 24 Dec 2020 19:44:39 +0000
-Date:   Thu, 24 Dec 2020 19:44:38 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Denys Vlasenko <dvlasenk@redhat.com>
-Subject: [RFC][PATCH] NT_FILE/NT_SIGINFO breakage on mips compat coredumps
-Message-ID: <20201224194438.GY3579531@ZenIV.linux.org.uk>
-References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
- <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
- <20201203230336.GC3579531@ZenIV.linux.org.uk>
- <alpine.LFD.2.21.2012071741280.2104409@eddie.linux-mips.org>
- <20201216030154.GL3579531@ZenIV.linux.org.uk>
- <alpine.LFD.2.21.2012160924010.2104409@eddie.linux-mips.org>
- <20201223070320.GW3579531@ZenIV.linux.org.uk>
- <20201223071213.GX3579531@ZenIV.linux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201223071213.GX3579531@ZenIV.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+        id S1729295AbgLYKgr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 25 Dec 2020 05:36:47 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:42924 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728667AbgLYKgq (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 25 Dec 2020 05:36:46 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxKcmKwOVfqhwFAA--.6966S3;
+        Fri, 25 Dec 2020 18:35:56 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        ThomasBogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 2/4] spi: ls7a: Add YAML schemas
+Date:   Fri, 25 Dec 2020 18:35:50 +0800
+Message-Id: <1608892552-15457-2-git-send-email-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1608892552-15457-1-git-send-email-zhangqing@loongson.cn>
+References: <1608892552-15457-1-git-send-email-zhangqing@loongson.cn>
+X-CM-TRANSID: AQAAf9AxKcmKwOVfqhwFAA--.6966S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF15Cw13CFWxKF4DJF43KFg_yoW8Xw48pF
+        17C3sxta1IgF1xCw4fta48C3W5Xr9Yk3ZxtFZrtw1UKas8Ka90vw43Kw15Z3W7JF48JFy7
+        XFWkWr4rKF10yaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUB0b7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
+        8067AKxVWUGwA2048vs2IY020Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF
+        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcV
+        CY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIE
+        c7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I
+        8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCF
+        s4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gw1l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
+        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I
+        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4s2aDUUUU
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 07:12:13AM +0000, Al Viro wrote:
-> On Wed, Dec 23, 2020 at 07:03:20AM +0000, Al Viro wrote:
-> 
-> 	Argh....  Wrong commit blamed - the parent of the correct one.
-> It's actually 2aa362c49c31 ("coredump: extend core dump note section to
-> contain file names of mapped files").  My apologies - fat-fingered
-> cut'n'paste...
-> 
-> 	siginfo commit does suffer the same problem, but it becomes an issue
-> only for 32bit processes under mips64 big-endian kernel (there it yields
-> e.g. zero .__sigfault.si_addr in $_siginfo when using gdb with a coredump
-> of 32bit process, whatever the actual faulting address had been).  And
-> b-e mips64 is rather uncommon, so that's less of an issue.
+Switch the DT binding to a YAML schema to enable the DT validation.
 
-	FWIW, here's debian/mips image (stretch) booted with
-qemu-system-mips64 -M malta -cpu 5KEc:
-root@mips:~# uname -a
-Linux mips 4.9.0-13-5kc-malta #1 Debian 4.9.228-1 (2020-07-05) mips64 GNU/Linux
-root@mips:~# cat a.c
-main()
-{
-        *(char *)0x0123 = 0;
-}
-root@mips:~# gcc a.c 
-a.c:1:1: warning: return type defaults to ‘int’ [-Wimplicit-int]
- main()
- ^~~~
-root@mips:~# ulimit -c unlimited
-root@mips:~# ./a.out 
-[  519.744983] do_page_fault(): sending SIGSEGV to a.out for invalid write access to 0000000000000123
-[  519.746735] epc = 00000000558477c0 in a.out[55847000+1000]
-[  519.747758] ra  = 000000007792f4a8 in libc-2.24.so[77916000+16a000]
-Segmentation fault (core dumped)
-root@mips:~# gdb a.out core 
-GNU gdb (Debian 7.12-6) 7.12.0.20161007-git
-Copyright (C) 2016 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
-and "show warranty" for details.
-This GDB was configured as "mips-linux-gnu".
-Type "show configuration" for configuration details.
-For bug reporting instructions, please see:
-<http://www.gnu.org/software/gdb/bugs/>.
-Find the GDB manual and other documentation resources online at:
-<http://www.gnu.org/software/gdb/documentation/>.
-For help, type "help".
-Type "apropos word" to search for commands related to "word"...
-Reading symbols from a.out...(no debugging symbols found)...done.
-[New LWP 1202]
-Core was generated by `./a.out'.
-Program terminated with signal SIGSEGV, Segmentation fault.
-#0  0x55dde7c0 in main ()
-(gdb) print $_siginfo
-$1 = {si_signo = 11, si_errno = 1, si_code = 0, _sifields = {_pad = {0, 0, 
-      291, 0 <repeats 26 times>}, _kill = {si_pid = 0, si_uid = 0}, _timer = {
-      si_tid = 0, si_overrun = 0, si_sigval = {sival_int = 291, 
-        sival_ptr = 0x123}}, _rt = {si_pid = 0, si_uid = 0, si_sigval = {
-        sival_int = 291, sival_ptr = 0x123}}, _sigchld = {si_pid = 0, 
-      si_uid = 0, si_status = 291, si_utime = 0, si_stime = 0}, _sigfault = {
-      si_addr = 0x0}, _sigpoll = {si_band = 0, si_fd = 0}}}
-(gdb) quit
-
-
-Note the wrong value in _sigfault.si_addr - it should've been 0x123, not 0.
-
-root@mips:~# readelf -n core
-
-Displaying notes found at file offset 0x00000234 with length 0x000005f4:
-  Owner                 Data size       Description
-  CORE                 0x00000100       NT_PRSTATUS (prstatus structure)
-  CORE                 0x00000080       NT_PRPSINFO (prpsinfo structure)
-  CORE                 0x00000080       NT_SIGINFO (siginfo_t data)
-  CORE                 0x00000090       NT_AUXV (auxiliary vector)
-  CORE                 0x000001e1       NT_FILE (mapped files)
-    Page size: 9
-         Start         End Page Offset
-  CORE                 0x00000108       NT_FPREGSET (floating point registers)
-
-For comparison, exact same image booted with qemu-system-mips -M malta:
-
-root@mips:~# uname -a
-Linux mips 4.9.0-13-4kc-malta #1 Debian 4.9.228-1 (2020-07-05) mips GNU/Linux
-root@mips:~# ulimit -c unlimited
-root@mips:~# ./a.out
-[   83.380870] do_page_fault(): sending SIGSEGV to a.out for invalid write access to 00000123
-[   83.390678] epc = 55e0e7c0 in a.out[55e0e000+1000]
-[   83.391525] ra  = 76f644a8 in libc-2.24.so[76f4b000+16a000]
-Segmentation fault (core dumped)
-root@mips:~# gdb a.out core
-GNU gdb (Debian 7.12-6) 7.12.0.20161007-git
-Copyright (C) 2016 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
-and "show warranty" for details.
-This GDB was configured as "mips-linux-gnu".
-Type "show configuration" for configuration details.
-For bug reporting instructions, please see:
-<http://www.gnu.org/software/gdb/bugs/>.
-Find the GDB manual and other documentation resources online at:
-<http://www.gnu.org/software/gdb/documentation/>.
-For help, type "help".
-Type "apropos word" to search for commands related to "word"...
-Reading symbols from a.out...(no debugging symbols found)...done.
-[New LWP 1184]
-Core was generated by `./a.out'.
-Program terminated with signal SIGSEGV, Segmentation fault.
-#0  0x55e0e7c0 in main ()
-(gdb) print $_siginfo
-$1 = {si_signo = 11, si_errno = 1, si_code = 0, _sifields = {_pad = {291, 
-      0 <repeats 28 times>}, _kill = {si_pid = 291, si_uid = 0}, _timer = {
-      si_tid = 291, si_overrun = 0, si_sigval = {sival_int = 0, 
-        sival_ptr = 0x0}}, _rt = {si_pid = 291, si_uid = 0, si_sigval = {
-        sival_int = 0, sival_ptr = 0x0}}, _sigchld = {si_pid = 291, 
-      si_uid = 0, si_status = 0, si_utime = 0, si_stime = 0}, _sigfault = {
-      si_addr = 0x123}, _sigpoll = {si_band = 291, si_fd = 0}}}
-(gdb) quit
-root@mips:~# readelf -n core
-
-Displaying notes found at file offset 0x00000234 with length 0x00000580:
-  Owner                 Data size       Description
-  CORE                 0x00000100       NT_PRSTATUS (prstatus structure)
-  CORE                 0x00000080       NT_PRPSINFO (prpsinfo structure)
-  CORE                 0x00000080       NT_SIGINFO (siginfo_t data)
-  CORE                 0x00000090       NT_AUXV (auxiliary vector)
-  CORE                 0x0000016d       NT_FILE (mapped files)
-    Page size: 4096
-         Start         End Page Offset
-    0x55e0e000  0x55e0f000  0x00000000
-        /root/a.out
-    0x55e1e000  0x55e1f000  0x00000000
-        /root/a.out
-    0x76f4b000  0x770b5000  0x00000000
-        /lib/mips-linux-gnu/libc-2.24.so
-    0x770b5000  0x770c5000  0x0000016a
-        /lib/mips-linux-gnu/libc-2.24.so
-    0x770c5000  0x770c8000  0x0000016a
-        /lib/mips-linux-gnu/libc-2.24.so
-    0x770c8000  0x770cb000  0x0000016d
-        /lib/mips-linux-gnu/libc-2.24.so
-    0x770cd000  0x770f0000  0x00000000
-        /lib/mips-linux-gnu/ld-2.24.so
-    0x770ff000  0x77100000  0x00000022
-        /lib/mips-linux-gnu/ld-2.24.so
-    0x77100000  0x77101000  0x00000023
-        /lib/mips-linux-gnu/ld-2.24.so
-  CORE                 0x00000108       NT_FPREGSET (floating point registers)
-
-So that's not so theoretical - big-endian mips64 userland is unsupported,
-but booting the big-endian mips32 userland on mips64 hardware is clearly
-meant to work - they even ship a 64bit kernel built for that.
-
-IOW, both O32 and N32 coredumps in 64bit mips kernels have broken
-NT_FILE and NT_SIGINFO.  And while NT_SIGINFO breakage is really
-visible only on b-e, NT_FILE one is common to b-e and l-e.  One of
-the effects of the latter is that current gdb fails to work with
-threaded coredumps of 32bit processes produced on boxen with 64bit
-kernels.  Coredumps generated by gcore(1) are fine...
-
-I think the following ought to be applied.  Comments?
-
-[mips] fix malformed NT_FILE and NT_SIGINFO in 32bit coredumps
-
-	Patches that introduced NT_FILE and NT_SIGINFO notes back in 2012
-had taken care of native (fs/binfmt_elf.c) and compat (fs/compat_binfmt_elf.c)
-coredumps; unfortunately, compat on mips (which does not go through the
-usual compat_binfmt_elf.c) had not been noticed.
-
-	As the result, both N32 and O32 coredumps on 64bit mips kernels
-have those sections malformed enough to confuse the living hell out of
-all gdb and readelf versions (up to and including the tip of binutils-gdb.git).
-
-	Longer term solution is to make both O32 and N32 compat use the
-regular compat_binfmt_elf.c, but that's too much for backports.  The minimal
-solution is to do in arch/mips/kernel/binfmt_elf[on]32.c the same thing
-those patches have done in fs/compat_binfmt_elf.c
-
-Cc: stable@kernel.org # v3.7+
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
 ---
-diff --git a/arch/mips/kernel/binfmt_elfn32.c b/arch/mips/kernel/binfmt_elfn32.c
-index 6ee3f7218c67..c4441416e96b 100644
---- a/arch/mips/kernel/binfmt_elfn32.c
-+++ b/arch/mips/kernel/binfmt_elfn32.c
-@@ -103,4 +103,11 @@ jiffies_to_old_timeval32(unsigned long jiffies, struct old_timeval32 *value)
- #undef ns_to_kernel_old_timeval
- #define ns_to_kernel_old_timeval ns_to_old_timeval32
- 
-+/*
-+ * Some data types as stored in coredump.
-+ */
-+#define user_long_t             compat_long_t
-+#define user_siginfo_t          compat_siginfo_t
-+#define copy_siginfo_to_external        copy_siginfo_to_external32
+
+v4: fix warnings/errors about running 'make dt_binding_check'
+
+---
+ .../devicetree/bindings/spi/loongson,spi-ls7a.yaml | 46 ++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
+
+diff --git a/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml b/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
+new file mode 100644
+index 0000000..8cc9bc5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
+@@ -0,0 +1,46 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/loongson,spi-ls7a.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- #include "../../../fs/binfmt_elf.c"
-diff --git a/arch/mips/kernel/binfmt_elfo32.c b/arch/mips/kernel/binfmt_elfo32.c
-index 6dd103d3cebb..7b2a23f48c1a 100644
---- a/arch/mips/kernel/binfmt_elfo32.c
-+++ b/arch/mips/kernel/binfmt_elfo32.c
-@@ -106,4 +106,11 @@ jiffies_to_old_timeval32(unsigned long jiffies, struct old_timeval32 *value)
- #undef ns_to_kernel_old_timeval
- #define ns_to_kernel_old_timeval ns_to_old_timeval32
- 
-+/*
-+ * Some data types as stored in coredump.
-+ */
-+#define user_long_t             compat_long_t
-+#define user_siginfo_t          compat_siginfo_t
-+#define copy_siginfo_to_external        copy_siginfo_to_external32
++title: Loongson LS7A PCH SPI Controller
 +
- #include "../../../fs/binfmt_elf.c"
++maintainers:
++  - Qing Zhang <zhangqing@loongson.cn>
++
++description: |
++  This controller can be found in Loongson-3 systems with LS7A PCH.
++
++properties:
++  compatible:
++    const: loongson,ls7a-spi
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - num-chipselects
++
++additionalProperties: false
++
++examples:
++  - |
++    pci {
++        #address-cells = <3>;
++        #size-cells = <2>;
++
++        spi@16,0 {
++        compatible = "pci0014,7a0b.0",
++                        "pci0014,7a0b",
++                        "pciclass088000",
++                        "pciclass0800";
++
++        reg = <0xb000 0x0 0x0 0x0 0x0>;
++        num-chipselects = <0>;
++        };
++    };
++
++...
+-- 
+2.1.0
+

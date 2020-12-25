@@ -2,227 +2,423 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-7.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2123FC433DB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73337C43381
 	for <linux-mips@archiver.kernel.org>; Fri, 25 Dec 2020 17:05:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D3C4022285
-	for <linux-mips@archiver.kernel.org>; Fri, 25 Dec 2020 17:05:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 48AB822512
+	for <linux-mips@archiver.kernel.org>; Fri, 25 Dec 2020 17:05:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726082AbgLYRFk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 25 Dec 2020 12:05:40 -0500
-Received: from mout.gmx.net ([212.227.17.21]:41009 "EHLO mout.gmx.net"
+        id S1725856AbgLYRFq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 25 Dec 2020 12:05:46 -0500
+Received: from mout.gmx.net ([212.227.17.20]:40137 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725995AbgLYRFj (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 25 Dec 2020 12:05:39 -0500
+        id S1726126AbgLYRFp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 25 Dec 2020 12:05:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608915847;
-        bh=3lrL2kD5QITsCXXonPHpntTbamWvnsVUUWloW0XvODk=;
+        s=badeba3b8450; t=1608915853;
+        bh=CdGhIVN4H+toUYIqPzciwcfWUin4ZDY4mVXlCIALtzw=;
         h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
-        b=Qk0fRjU8bW9uSrip85EMhYJFWNPy5dBqvfhyV4tBtp4LrgBrAqr66clxBfxIo54/r
-         VzcR9RtRiLVVvWUtmrYMi3z0sNjCe4/ydkJg3sk/z05fqH/gl9JqLyZaggyUH23pFp
-         3z2UpOsz/puk8UDwi1mT+CbuxqgDWy/qIpWX8YG8=
+        b=YtO7l4l3QOw+G44mg+FFGjS45tMg6PnHGqAEXLPfvBpE8q6y9VgteGOAZiCOBkRCy
+         WDNzuvHwRZRJSWYE3GToHejLmNCtMnfQCuooPoe5lCimsqJjhs411hQVgEmNJHpkyM
+         cepxzpVNEPjTIf0zezHzsh5JdvXUN0obxbCwc1h8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from Valinor ([82.128.181.212]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MOA3F-1kiADn3O4P-00OZGk; Fri, 25
- Dec 2020 18:04:06 +0100
-Date:   Fri, 25 Dec 2020 18:59:46 +0200
+Received: from Valinor ([82.128.181.212]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MkHMP-1kDU9d3sev-00kfXM; Fri, 25
+ Dec 2020 18:04:13 +0100
+Date:   Fri, 25 Dec 2020 19:01:38 +0200
 From:   Lauri Kasanen <cand@gmx.com>
 To:     linux-mips@vger.kernel.org
 Cc:     tsbogend@alpha.franken.de
-Subject: [PATCH 1/6] Revert "MIPS: Remove unused R4300 CPU support"
-Message-Id: <20201225185946.d67607fe16e324c56f9a2f46@gmx.com>
+Subject: [PATCH 5/6] sound: Add n64 driver
+Message-Id: <20201225190138.82003a392c86f08352aca998@gmx.com>
 X-Mailer: Sylpheed 3.5.0 (GTK+ 2.18.6; x86_64-unknown-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:VI7Mn/LMsDzqQ2ZY6gB48XhjLQRFSL5W14/uOZEdG1xZWK3Uf7G
- uvOD3hrpLj2qsgtfYaXJYPlndbF4sULHq026MuKM+gA0VEyPFaMqOsIkZOtRrjsWBH/ssXj
- l/KPcGE0GnExzypYpXYOu6zwrhMSFrkPIZdfVhTPZMS5jURixyzYes1qSwvHyasZdX9G15N
- ghyXQilBZrm2V09GxS83Q==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kiSofw0U+bs=:/EONNZnPzgJ9nzqaIgMVb3
- T2zwGz35JiE9XAu26NeMlvq+SbkW6GStwDmCq4zG25uhCwhwBymDvZ1WcSv4KH7BD3IcFNmC4
- jREU9sHpvjvdtVHJY65GifXoiRDO9LPDnY+/AZevFf7EhDemBxy3uSUDhagIfLeP7vaPlgPqF
- twe93KL6zfQjLCE+pWIQsJ5pEdsrNrSufh13iZhcBgRYjnAaa7CIcghPh7Wvlj8+xNaf8DYAB
- cJ4r6YQm1bh7g8PtFUMmJmSCrS40BrJQd0S8Zdk709SD9vQW77hvoUT1RxDUo7JF1UZQaVex9
- jFssT2VxpQg6ERKboV2redHWWJz0Brh5AZtspA5MhlKr9GT5Cg7WC4D8VnbOUKtVKFFJ3rztk
- R+tWLz/OXGfcqWxuQ7BGeX7/n8ydAlSjujxGJXmxb9Q2IyUfHFZWQpmQAUqwnnOjtOT8SdWa6
- VDHVKmPSeYVtSjCH/ftbnO9VL0Pkca1onYqhcvsgeIP3TYq997kf9ZrasJ1Cxc14oj1tlog9C
- h0phFg4BdXGS3/v4lOiwZd4kjGJK5duKI7kFF/Nz+WNNepL/7AiLpiU5ajDM02MF3g//+87qu
- Hj90AsHJUVmfPQu+4BmjBV+CcRQlJeYk32bz6/pdxka0Tu24Q3syH0StZ4tnLmeAVVcSxVIie
- CS4FRAfg/wsws9+w0HVOJAmOkqXNUxGQJ2RaKxxahiv/aj5+QiWI3gDa29yUqVrd7MaMO2qon
- f1kbKJ8oIzKKACwpnlS0QzLil0nS1IGXuO1jYC657qzT3hj5P2B8L8tXBuagi/qP8ScDWKSv4
- c/7A2Bx8AXu6ykaAD/q3RMzxhxGyKUsce+khQZFChN9Sytg5xoE2PM2YJqcOmUqWfVNtS1cWK
- DZa1+rpmC81det08tPqg==
+X-Provags-ID: V03:K1:iVoOWWqbE8f8atITOkrrG8wSmh8NKnwG+0wD4op+RB/Kl8YUSzO
+ Bqmbk8k3SNY1muESztmqU8eFTMcOc0BPvlrI+BELQmqhg3gA5qv+zWaBbt0qzokZqM4KOyO
+ 96AIzfxBJ+ZgCnZDc8+jUoH9qUWnKj/dtOf+99fWvT4zbsq/4DC6EJAxpKCRuaUyNYq5MtL
+ dkPFQ77+uH/YvWk/XAgVQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LV2Mw2j7hCQ=:Rr7KA8oCGV0dJWHv14blyT
+ TGAg6ZMGd0OTbBBZxTU88X885N6tyk/tDKCQq3XzyAXjPqGleGNMZoCaF7zmBlvdqyRBTYh8L
+ 4K5hM59jB4kt/GTcbjH6sYodT8IEStBOhBM036uf+gn5jea0FBT6Ia+tVNu4dN2/5D+sVaOqY
+ rLtlgbLqHYK9gnzUXt0Rx9G8wY1eL06snQd+d3e5Ex8Hb3TMo5BFBLGEh1Gq3bP5Ktz0cI79R
+ 8EwNRPbHMiBs9sAXPIKBaDDYyqNElDZQt+gwaMHgHfilsXNdm7w+txoCYIh3KJIEpYq52DICY
+ l2M+yDF5nTI90C1yIohH1PXamxN/3rvVxW7k1I69UvTcOSQIa1wT7ac5xBAvhpF29d6t3h47o
+ 3aFV2WVvx+v0CR409eMa3JbjSb7fOCejdf3JoeOFLH9K8S41zjRsXITFulBGCVevx9dOKK7In
+ VDteu388zFLo0YOOjnJyFSRN56iYIEHJdqf6vUr9TPqxmtyEc7vmg7hfNUJF90UyEacv+He3P
+ ffhYduiINghbeXoWTmc92v3+C0CZ42eFUTzkAj4Gfdcj5zzvvFU0ZXul4BllfdRmFoic0IQgC
+ cYfiHpa5wTRJXT3gJzf1pwOWwJfvuCmXq/Lb+no/dcw4nssYSBtJLesmj7AScmuFxfcStGiX6
+ 08VJ2e8Mf7RIiNUCzFRicAJZ1Y6WVGOyzVTZ/qs8XYyTQsJ93ijk8Xw/2D24ZMjgZ+cPAO3OP
+ aZLLJugvXMVUDQCKEtnzGmPugR/7bXYtPedsfQd/SdFLvFKfOvyW01rgXwsPcFbQewPPTfZSh
+ H7Kx/iO8FsmjvN5IjgBJezFA+jmIyINe3zkVa6LgitUKMz5tzCX884vRyQYqXeu9rD/p/QYka
+ tOnSWN2mpLYOk5p1t9MA==
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This reverts commit f9065b54d437c4660e3d974ad9ce5188c068cd76.
+The sound DMA unit has errata on certain alignments, which is why
+we can't use alsa's DMA buffer directly.
 
 Signed-off-by: Lauri Kasanen <cand@gmx.com>
 =2D--
- arch/mips/Kconfig                | 12 ++++++++++++
- arch/mips/Makefile               |  1 +
- arch/mips/include/asm/cpu-type.h |  5 +++++
- arch/mips/include/asm/cpu.h      |  2 +-
- arch/mips/include/asm/vermagic.h |  2 ++
- arch/mips/kernel/cpu-probe.c     |  9 +++++++++
- arch/mips/kernel/idle.c          |  1 +
- arch/mips/mm/c-r4k.c             |  1 +
- arch/mips/mm/tlbex.c             |  1 +
- 9 files changed, 33 insertions(+), 1 deletion(-)
+ arch/mips/n64/init.c |   1 +
+ sound/mips/Kconfig   |   7 ++
+ sound/mips/Makefile  |   1 +
+ sound/mips/snd-n64.c | 297 ++++++++++++++++++++++++++++++++++++++++++++++=
++++++
+ 4 files changed, 306 insertions(+)
+ create mode 100644 sound/mips/snd-n64.c
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 2000bb2..4b52588 100644
-=2D-- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1661,6 +1661,15 @@ config CPU_VR41XX
- 	  kernel built with this option will not run on any other type of
- 	  processor or vice versa.
+diff --git a/arch/mips/n64/init.c b/arch/mips/n64/init.c
+index 635e9ef..0f82a409 100644
+=2D-- a/arch/mips/n64/init.c
++++ b/arch/mips/n64/init.c
+@@ -50,6 +50,7 @@ void __init prom_free_prom_memory(void)
+ static int __init n64_platform_init(void)
+ {
+ 	platform_device_register_simple("n64rdp", -1, NULL, 0);
++	platform_device_register_simple("n64audio", -1, NULL, 0);
 
-+config CPU_R4300
-+	bool "R4300"
-+	depends on SYS_HAS_CPU_R4300
-+	select CPU_SUPPORTS_32BIT_KERNEL
-+	select CPU_SUPPORTS_64BIT_KERNEL
-+	select CPU_HAS_LOAD_STORE_LR
+ 	return 0;
+ }
+diff --git a/sound/mips/Kconfig b/sound/mips/Kconfig
+index b497b80..f37ad92 100644
+=2D-- a/sound/mips/Kconfig
++++ b/sound/mips/Kconfig
+@@ -24,5 +24,12 @@ config SND_SGI_HAL2
+ 	help
+ 	  Sound support for the SGI Indy and Indigo2 Workstation.
+
++config SND_N64
++	bool "N64 Audio"
++	depends on MIPS_N64
++	select SND_PCM
 +	help
-+	  MIPS Technologies R4300-series processors.
++	  Sound support for the N64.
 +
- config CPU_R4X00
- 	bool "R4x00"
- 	depends on SYS_HAS_CPU_R4X00
-@@ -1995,6 +2004,9 @@ config SYS_HAS_CPU_TX39XX
- config SYS_HAS_CPU_VR41XX
- 	bool
+ endif	# SND_MIPS
 
-+config SYS_HAS_CPU_R4300
-+	bool
+diff --git a/sound/mips/Makefile b/sound/mips/Makefile
+index ccc364e..7c86268 100644
+=2D-- a/sound/mips/Makefile
++++ b/sound/mips/Makefile
+@@ -9,3 +9,4 @@ snd-sgi-hal2-objs :=3D hal2.o
+ # Toplevel Module Dependency
+ obj-$(CONFIG_SND_SGI_O2) +=3D snd-sgi-o2.o
+ obj-$(CONFIG_SND_SGI_HAL2) +=3D snd-sgi-hal2.o
++obj-$(CONFIG_SND_N64) +=3D snd-n64.o
+diff --git a/sound/mips/snd-n64.c b/sound/mips/snd-n64.c
+new file mode 100644
+index 0000000..84fa752
+=2D-- /dev/null
++++ b/sound/mips/snd-n64.c
+@@ -0,0 +1,297 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *   Sound driver for Nintendo 64.
++ *
++ *   Copyright 2020 Lauri Kasanen
++ */
 +
- config SYS_HAS_CPU_R4X00
- 	bool
-
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index 0d0f29d..d7d8c20 100644
-=2D-- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -141,6 +141,7 @@ cflags-y +=3D -fno-stack-check
- #
- cflags-$(CONFIG_CPU_R3000)	+=3D -march=3Dr3000
- cflags-$(CONFIG_CPU_TX39XX)	+=3D -march=3Dr3900
-+cflags-$(CONFIG_CPU_R4300)	+=3D -march=3Dr4300 -Wa,--trap
- cflags-$(CONFIG_CPU_VR41XX)	+=3D -march=3Dr4100 -Wa,--trap
- cflags-$(CONFIG_CPU_R4X00)	+=3D -march=3Dr4600 -Wa,--trap
- cflags-$(CONFIG_CPU_TX49XX)	+=3D -march=3Dr4600 -Wa,--trap
-diff --git a/arch/mips/include/asm/cpu-type.h b/arch/mips/include/asm/cpu-=
-type.h
-index 3288cef..2be5d7b 100644
-=2D-- a/arch/mips/include/asm/cpu-type.h
-+++ b/arch/mips/include/asm/cpu-type.h
-@@ -122,6 +122,11 @@ static inline int __pure __get_cpu_type(const int cpu=
-_type)
- 	case CPU_VR4181A:
- #endif
-
-+#ifdef CONFIG_SYS_HAS_CPU_R4300
-+	case CPU_R4300:
-+	case CPU_R4310:
-+#endif
++#include <linux/init.h>
++#include <linux/spinlock.h>
++#include <linux/interrupt.h>
++#include <linux/dma-mapping.h>
++#include <linux/platform_device.h>
++#include <linux/io.h>
++#include <linux/module.h>
 +
- #ifdef CONFIG_SYS_HAS_CPU_R4X00
- 	case CPU_R4000PC:
- 	case CPU_R4000SC:
-diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-index c9222cc..9e6211e 100644
-=2D-- a/arch/mips/include/asm/cpu.h
-+++ b/arch/mips/include/asm/cpu.h
-@@ -302,7 +302,7 @@ enum cpu_type_enum {
- 	/*
- 	 * R4000 class processors
- 	 */
--	CPU_R4000PC, CPU_R4000SC, CPU_R4000MC, CPU_R4200,
-+	CPU_R4000PC, CPU_R4000SC, CPU_R4000MC, CPU_R4200, CPU_R4300, CPU_R4310,
- 	CPU_R4400PC, CPU_R4400SC, CPU_R4400MC, CPU_R4600, CPU_R4640, CPU_R4650,
- 	CPU_R4700, CPU_R5000, CPU_R5500, CPU_NEVADA, CPU_R10000,
- 	CPU_R12000, CPU_R14000, CPU_R16000, CPU_VR41XX, CPU_VR4111, CPU_VR4121,
-diff --git a/arch/mips/include/asm/vermagic.h b/arch/mips/include/asm/verm=
-agic.h
-index 4d2dae0..371c187 100644
-=2D-- a/arch/mips/include/asm/vermagic.h
-+++ b/arch/mips/include/asm/vermagic.h
-@@ -26,6 +26,8 @@
- #define MODULE_PROC_FAMILY "TX39XX "
- #elif defined CONFIG_CPU_VR41XX
- #define MODULE_PROC_FAMILY "VR41XX "
-+#elif defined CONFIG_CPU_R4300
-+#define MODULE_PROC_FAMILY "R4300 "
- #elif defined CONFIG_CPU_R4X00
- #define MODULE_PROC_FAMILY "R4X00 "
- #elif defined CONFIG_CPU_TX49XX
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index e685369..84f7034 100644
-=2D-- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -1154,6 +1154,15 @@ static inline void cpu_probe_legacy(struct cpuinfo_=
-mips *c, unsigned int cpu)
- 			break;
- 		}
- 		break;
-+	case PRID_IMP_R4300:
-+		c->cputype =3D CPU_R4300;
-+		__cpu_name[cpu] =3D "R4300";
-+		set_isa(c, MIPS_CPU_ISA_III);
-+		c->fpu_msk31 |=3D FPU_CSR_CONDX;
-+		c->options =3D R4K_OPTS | MIPS_CPU_FPU | MIPS_CPU_32FPR |
-+			     MIPS_CPU_LLSC;
-+		c->tlbsize =3D 32;
++#include <sound/core.h>
++#include <sound/control.h>
++#include <sound/pcm.h>
++#include <sound/initval.h>
++
++#include <asm/addrspace.h>
++#include <asm/n64/irq.h>
++
++MODULE_AUTHOR("Lauri Kasanen <cand@gmx.com>");
++MODULE_DESCRIPTION("N64 Audio");
++MODULE_LICENSE("GPL");
++
++#define AI_NTSC_DACRATE 48681812
++#define AI_STATUS_BUSY  (1 << 30)
++#define AI_STATUS_FULL  (1 << 31)
++
++#define REG_BASE ((u32 *) CKSEG1ADDR(0xa4500000))
++
++#define AI_ADDR_REG 0
++#define AI_LEN_REG 1
++#define AI_CONTROL_REG 2
++#define AI_STATUS_REG 3
++#define AI_RATE_REG 4
++#define AI_BITCLOCK_REG 5
++
++#define MI_REG_BASE ((u32 *) CKSEG1ADDR(0xa4300000))
++
++#define MI_INTR_REG 2
++#define MI_MASK_REG 3
++
++#define MI_INTR_AI 0x04
++
++#define MI_MASK_CLR_AI 0x0010
++#define MI_MASK_SET_AI 0x0020
++
++
++struct n64audio_t {
++	struct snd_card *card;
++
++	void *ring_base;
++	dma_addr_t ring_base_dma;
++
++	struct {
++		struct snd_pcm_substream *substream;
++		int pos, nextpos;
++		u32 writesize;
++		u32 bufsize;
++		spinlock_t lock;
++	} chan;
++};
++
++static void n64audio_write_reg(const u8 reg, const u32 value)
++{
++	__raw_writel(value, REG_BASE + reg);
++}
++
++static void n64mi_write_reg(const u8 reg, const u32 value)
++{
++	__raw_writel(value, MI_REG_BASE + reg);
++}
++
++static u32 n64mi_read_reg(const u8 reg)
++{
++	return __raw_readl(MI_REG_BASE + reg);
++}
++
++static void n64audio_push(struct n64audio_t *priv, uint8_t irq)
++{
++	struct snd_pcm_runtime *runtime =3D priv->chan.substream->runtime;
++	unsigned long flags;
++	u32 count;
++
++	count =3D priv->chan.writesize;
++	count &=3D ~7;
++
++	spin_lock_irqsave(&priv->chan.lock, flags);
++
++	memcpy(priv->ring_base, runtime->dma_area + priv->chan.nextpos, count);
++
++	n64audio_write_reg(AI_ADDR_REG, priv->ring_base_dma);
++	n64audio_write_reg(AI_LEN_REG, count);
++
++	priv->chan.nextpos +=3D count;
++	priv->chan.nextpos %=3D priv->chan.bufsize;
++	if (irq)
++		priv->chan.pos =3D priv->chan.nextpos;
++
++	spin_unlock_irqrestore(&priv->chan.lock, flags);
++}
++
++static irqreturn_t n64audio_isr(int irq, void *dev_id)
++{
++	struct n64audio_t *priv =3D dev_id;
++
++	// Check it's ours
++	const u32 intrs =3D n64mi_read_reg(MI_INTR_REG);
++	if (!(intrs & MI_INTR_AI))
++		return IRQ_NONE;
++
++	n64audio_write_reg(AI_STATUS_REG, 1);
++
++	n64audio_push(priv, 1);
++	snd_pcm_period_elapsed(priv->chan.substream);
++
++	return IRQ_HANDLED;
++}
++
++static const struct snd_pcm_hardware n64audio_pcm_hw =3D {
++	.info =3D (SNDRV_PCM_INFO_MMAP |
++		 SNDRV_PCM_INFO_MMAP_VALID |
++		 SNDRV_PCM_INFO_INTERLEAVED |
++		 SNDRV_PCM_INFO_BLOCK_TRANSFER),
++	.formats =3D          SNDRV_PCM_FMTBIT_S16_BE,
++	.rates =3D            SNDRV_PCM_RATE_8000_48000,
++	.rate_min =3D         8000,
++	.rate_max =3D         48000,
++	.channels_min =3D     2,
++	.channels_max =3D     2,
++	.buffer_bytes_max =3D 32768,
++	.period_bytes_min =3D 1024,
++	.period_bytes_max =3D 32768,
++	.periods_min =3D      1,
++	.periods_max =3D      128,
++};
++
++static int n64audio_pcm_open(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime =3D substream->runtime;
++
++	runtime->hw =3D n64audio_pcm_hw;
++	return 0;
++}
++
++static int n64audio_pcm_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime =3D substream->runtime;
++	struct n64audio_t *priv =3D substream->pcm->private_data;
++	unsigned long flags;
++	u32 rate;
++
++	rate =3D ((2 * AI_NTSC_DACRATE / runtime->rate) + 1) / 2 - 1;
++
++	n64audio_write_reg(AI_RATE_REG, rate);
++
++	rate /=3D 66;
++	if (rate > 16)
++		rate =3D 16;
++	n64audio_write_reg(AI_BITCLOCK_REG, rate - 1);
++
++	spin_lock_irqsave(&priv->chan.lock, flags);
++
++	/* Setup the pseudo-dma transfer pointers.  */
++	priv->chan.pos =3D 0;
++	priv->chan.nextpos =3D 0;
++	priv->chan.substream =3D substream;
++	priv->chan.writesize =3D snd_pcm_lib_period_bytes(substream);
++	priv->chan.bufsize =3D snd_pcm_lib_buffer_bytes(substream);
++
++	spin_unlock_irqrestore(&priv->chan.lock, flags);
++	return 0;
++}
++
++static int n64audio_pcm_trigger(struct snd_pcm_substream *substream,
++				int cmd)
++{
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		n64audio_push(substream->pcm->private_data, 0);
++		n64audio_write_reg(AI_CONTROL_REG, 1);
++		n64mi_write_reg(MI_MASK_REG, MI_MASK_SET_AI);
 +		break;
- 	case PRID_IMP_R4600:
- 		c->cputype =3D CPU_R4600;
- 		__cpu_name[cpu] =3D "R4600";
-diff --git a/arch/mips/kernel/idle.c b/arch/mips/kernel/idle.c
-index 18e69eb..1aca3b4 100644
-=2D-- a/arch/mips/kernel/idle.c
-+++ b/arch/mips/kernel/idle.c
-@@ -151,6 +151,7 @@ void __init check_wait(void)
- 		cpu_wait =3D r39xx_wait;
- 		break;
- 	case CPU_R4200:
-+/*	case CPU_R4300: */
- 	case CPU_R4600:
- 	case CPU_R4640:
- 	case CPU_R4650:
-diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-index 9cede7c..da7796e 100644
-=2D-- a/arch/mips/mm/c-r4k.c
-+++ b/arch/mips/mm/c-r4k.c
-@@ -1164,6 +1164,7 @@ static void probe_pcache(void)
- 	case CPU_R4400PC:
- 	case CPU_R4400SC:
- 	case CPU_R4400MC:
-+	case CPU_R4300:
- 		icache_size =3D 1 << (12 + ((config & CONF_IC) >> 9));
- 		c->icache.linesz =3D 16 << ((config & CONF_IB) >> 5);
- 		c->icache.ways =3D 1;
-diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
-index a7521b8..0fb1db8 100644
-=2D-- a/arch/mips/mm/tlbex.c
-+++ b/arch/mips/mm/tlbex.c
-@@ -549,6 +549,7 @@ void build_tlb_write_entry(u32 **p, struct uasm_label =
-**l,
- 		tlbw(p);
- 		break;
-
-+	case CPU_R4300:
- 	case CPU_5KC:
- 	case CPU_TX49XX:
- 	case CPU_PR4450:
++	case SNDRV_PCM_TRIGGER_STOP:
++		n64audio_write_reg(AI_CONTROL_REG, 0);
++		n64mi_write_reg(MI_MASK_REG, MI_MASK_CLR_AI);
++		break;
++	default:
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static snd_pcm_uframes_t n64audio_pcm_pointer(struct snd_pcm_substream *s=
+ubstream)
++{
++	struct n64audio_t *priv =3D substream->pcm->private_data;
++
++	return bytes_to_frames(substream->runtime,
++			       priv->chan.pos);
++}
++
++static int n64audio_pcm_close(struct snd_pcm_substream *substream)
++{
++	return 0; // Nothing to do, but the kernel crashes if close() doesn't ex=
+ist
++}
++
++static const struct snd_pcm_ops n64audio_pcm_ops =3D {
++	.open =3D		n64audio_pcm_open,
++	.prepare =3D	n64audio_pcm_prepare,
++	.trigger =3D	n64audio_pcm_trigger,
++	.pointer =3D	n64audio_pcm_pointer,
++	.close =3D	n64audio_pcm_close,
++};
++
++static int __init n64audio_probe(struct platform_device *pdev)
++{
++	struct snd_card *card;
++	struct snd_pcm *pcm;
++	struct n64audio_t *priv;
++	int err;
++
++	err =3D snd_card_new(&pdev->dev, SNDRV_DEFAULT_IDX1,
++			   SNDRV_DEFAULT_STR1,
++			   THIS_MODULE, 0, &card);
++	if (err < 0)
++		return err;
++
++	priv =3D kzalloc(sizeof(*priv), GFP_KERNEL);
++	if (priv =3D=3D NULL) {
++		err =3D -ENOMEM;
++		goto fail_card;
++	}
++
++	priv->card =3D card;
++	priv->ring_base =3D dma_alloc_coherent(card->dev, 32 * 1024,
++					     &priv->ring_base_dma,
++					     GFP_DMA | GFP_KERNEL);
++	if (!priv->ring_base)
++		goto fail_alloc;
++
++	if (request_irq(RCP_IRQ, n64audio_isr,
++				IRQF_SHARED, "N64 Audio", priv)) {
++		err =3D -EBUSY;
++		goto fail_alloc;
++	}
++
++	spin_lock_init(&priv->chan.lock);
++
++	err =3D snd_pcm_new(card, "N64 Audio", 0, 1, 0, &pcm);
++	if (err < 0)
++		goto fail_alloc;
++
++	pcm->private_data =3D priv;
++	strcpy(pcm->name, "N64 Audio");
++
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &n64audio_pcm_ops);
++	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_VMALLOC, NULL, 0, 0);
++
++	strcpy(card->driver, "N64 Audio");
++	strcpy(card->shortname, "N64 Audio");
++	strcpy(card->longname, "N64 Audio");
++
++	err =3D snd_card_register(card);
++	if (err < 0)
++		goto fail_alloc;
++
++	platform_set_drvdata(pdev, priv);
++
++	return 0;
++
++fail_alloc:
++	kfree(priv);
++
++fail_card:
++	snd_card_free(card);
++	return err;
++}
++
++static struct platform_driver n64audio_driver =3D {
++	.driver =3D {
++		.name =3D "n64audio",
++	},
++};
++
++static int __init n64audio_init(void)
++{
++	int ret;
++
++	ret =3D platform_driver_probe(&n64audio_driver, n64audio_probe);
++
++	return ret;
++}
++
++fs_initcall(n64audio_init);
 =2D-
 2.6.2
 

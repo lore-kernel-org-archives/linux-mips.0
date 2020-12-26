@@ -2,88 +2,127 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B94C4C433DB
-	for <linux-mips@archiver.kernel.org>; Sat, 26 Dec 2020 07:41:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 765C0C433E0
+	for <linux-mips@archiver.kernel.org>; Sat, 26 Dec 2020 09:13:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 75C73221EA
-	for <linux-mips@archiver.kernel.org>; Sat, 26 Dec 2020 07:41:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3DD66221FB
+	for <linux-mips@archiver.kernel.org>; Sat, 26 Dec 2020 09:13:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725979AbgLZHlf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 26 Dec 2020 02:41:35 -0500
-Received: from mout.gmx.net ([212.227.15.19]:50979 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725809AbgLZHle (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 26 Dec 2020 02:41:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608968400;
-        bh=aJ029Kf/BwD1o5JDn4C3BBQIw3TZg8P2sPjSc5XidwA=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=ERma6e+iPeeWg6UuoAL0wa3yCjtBQaJ8z8QEoKHkaVM6bFYDPcvVhvPEJt2t42jHo
-         FApYiaUM8r1V0zzRX5DIvJAGeFp/b/vZtaWgnNToSQylYes/Kzz8yngdIfsce1pU8M
-         a0q515NUKY4zfCesvWkbhZBtMZeqWgvLISyHRBuY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from Valinor ([82.128.181.212]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MQ5rO-1kfoch3xEO-00M5aQ; Sat, 26
- Dec 2020 08:40:00 +0100
-Date:   Sat, 26 Dec 2020 09:41:36 +0200
-From:   Lauri Kasanen <cand@gmx.com>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de
-Subject: Re: [PATCH 4/6] input: Add N64 controller driver
-Message-Id: <20201226094136.0559ef9741d95bab38da04f6@gmx.com>
-In-Reply-To: <c1d5fdff-cfee-5252-a9f4-7ea6806a1113@flygoat.com>
-References: <20201225190115.efa38e5a0107bec09f993ed6@gmx.com>
-        <c1d5fdff-cfee-5252-a9f4-7ea6806a1113@flygoat.com>
-X-Mailer: Sylpheed 3.5.0 (GTK+ 2.18.6; x86_64-unknown-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7YQwsBx/KHl2BYzesc8dTVcFqzVecjpKYj3TvVY15fzKAOHhQXC
- NrIp/wKEV16UDJ+ynbEVjxwGddJP+nvpgcaRzi5pjVz5aowdkZxmqjlbQBh7eVCPzQ4YGvk
- Gdm88POUsLvo1pG5Ucoh6Ay3y/bAqt0gD0t414aLHLEV6sTMIDqI8SD1SG6nAVUVYzSEev/
- rML4SyOWGlR+Z4o/dV2lA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:u472f+5Mau0=:1sWB+IdUdnNkwdZw94TWQf
- 5h8VZN+run0fmT8pD6CTpc17v4GCM2dyKeyWWRIjhgXNey5CceImoBvlcVDnzpiyg1rnI0TVV
- miiELbW0EnFQwOFF357ShlaxOWrRhqtSezxhu7WH4+ZZ7O8tg3SywtfVWPmvFnDBw1S7ZzQnN
- AUXi+3pWjn9OFujybF6gIhoG7DDYjgIqRgKjSIatFAAD9APV40KNABChkzK3LcwoIBxdOxc8w
- 4CnRhJnxwO9KFA2enXai8qwnWAggi6vLWpcHGdiNxCrMhGkvrmeNmrKNdMB/AFrKHW54PZgqi
- PEquPk9UcdlvsTo+ZdBvGTj14lz9hBqMC7psqq8xQrnhw5t0FVXAAE2l1vR8AeWktEufL1WyT
- OFproIrvsEXOR1GImKMcb4UVz79JOXpEaEdVu9IOQU2dDwgfNb0FgHUlC3QW3m+k3vBaGB5Ng
- OOB1ND1WoxmDRuNj8mFf7zKkbFdU/rWYZftIQ4nuXtMUZWX5tOuIq6p7/gaiT16BLmunEqKsA
- ryCfwIN8yqiu+eoippxsp4sr4gyXU72S9emAGj+2e0GH3ATptGlm743hkyoee6XRAj+E1Lawv
- w3u6sN/N3Hg2FpPsn1DfDENeJb8cmHfdHrsyMxEWBbYk+p2jQQlL0L0peB0v97rRlWTqrsbVl
- ov5Q1nxvsUoDC1ezj/LvPH7YUKaHflWJLxk2nW61rtgEzQU6yMcDcH49WUieS6te060R9IC1O
- yQ40/mDob7+vS1/kih6timFikkIhf9rsDzp+YF0mBS8HuL8E2VZUmScvkiH8o2hVUdStBjGgr
- A+09ik9kCPo3FVGPkxzPkGWtM/3DXinyOQQgoX+CdtF8PB9IuY3zQtJcP8j/SaFJdsdEDz+5x
- 4J0JkaVNPMwai+ScTjZA==
+        id S1725968AbgLZJMz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 26 Dec 2020 04:12:55 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:48856 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725865AbgLZJMy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 26 Dec 2020 04:12:54 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Axmclj_uZfGJQFAA--.14125S3;
+        Sat, 26 Dec 2020 17:12:04 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        ThomasBogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 2/4] spi: ls7a: Add YAML schemas
+Date:   Sat, 26 Dec 2020 17:12:01 +0800
+Message-Id: <1608973923-8328-2-git-send-email-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1608973923-8328-1-git-send-email-zhangqing@loongson.cn>
+References: <1608973923-8328-1-git-send-email-zhangqing@loongson.cn>
+X-CM-TRANSID: AQAAf9Axmclj_uZfGJQFAA--.14125S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF18CFyrJr4xGrW8KFyUWrg_yoW8XFWDpF
+        17C3sxta1IgF1xC3yfta48A3W5Xr9Yk3ZxtFZrKwnrKas8Ka90vw43Kw15Z3W7JF48JFyx
+        XFWkWr4rKF10yaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBFb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
+        8067AKxVWUGwA2048vs2IY020Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF
+        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcV
+        CY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv
+        6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzV
+        Aqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S
+        6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8uwCF04k20xvY0x
+        0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+        7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
+        C0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
+        04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
+        CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jrF4_UUUUU=
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, 26 Dec 2020 11:25:49 +0800
-Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+Switch the DT binding to a YAML schema to enable the DT validation.
 
-> > +#define PIF_RAM 0x1fc007c0
-> > +#define REG_BASE ((u32 *) CKSEG1ADDR(0xa4800000))
->
-> 0xa4800000 sounds like a KSEG1 addr, I think phys should be 0x14800000?
-> For driver it is common to use ioremap, or at least TO_UNCAC.
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+---
 
-TO_UNCAC looks like it wouldn't work for vr4300, the manual says
-uncached 64-bit space is 0xffff ffff a000 0000, when
-include/asm/mach-generic/spaces.h puts the 64bit space start at
-0x9000 0000 0000 0000.
+v4:
+ - fix warnings/errors about running 'make dt_binding_check'
 
-ioremap - it looked like needless overhead. Is this a blocker?
+v5:
+ - remove num-chipelects
 
-The 0xa uncached prefix being in the address already is harmless, it is
-the same on both 32-bit and 64-bit on this cpu. I left it in because it
-makes it clear to me what kind of address it is, coming from the N64
-side.
+---
+ .../devicetree/bindings/spi/loongson,spi-ls7a.yaml | 44 ++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
 
-- Lauri
+diff --git a/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml b/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
+new file mode 100644
+index 0000000..b90b28b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
+@@ -0,0 +1,44 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/loongson,spi-ls7a.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Loongson LS7A PCH SPI Controller
++
++maintainers:
++  - Qing Zhang <zhangqing@loongson.cn>
++
++description: |
++  This controller can be found in Loongson-3 systems with LS7A PCH.
++
++properties:
++  compatible:
++    const: loongson,ls7a-spi
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    pci {
++        #address-cells = <3>;
++        #size-cells = <2>;
++
++        spi@16,0 {
++            compatible = "pci0014,7a0b.0",
++                             "pci0014,7a0b",
++                             "pciclass088000",
++                             "pciclass0800";
++
++            reg = <0xb000 0x0 0x0 0x0 0x0>;
++        };
++    };
++
++...
+-- 
+2.1.0
+

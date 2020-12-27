@@ -2,103 +2,65 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAFBEC433E0
-	for <linux-mips@archiver.kernel.org>; Sun, 27 Dec 2020 17:34:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 383B3C433E0
+	for <linux-mips@archiver.kernel.org>; Sun, 27 Dec 2020 22:27:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 802CD206DC
-	for <linux-mips@archiver.kernel.org>; Sun, 27 Dec 2020 17:34:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 033F1224F9
+	for <linux-mips@archiver.kernel.org>; Sun, 27 Dec 2020 22:27:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726087AbgL0Res (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 27 Dec 2020 12:34:48 -0500
-Received: from mail-m971.mail.163.com ([123.126.97.1]:52324 "EHLO
-        mail-m971.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726065AbgL0Rer (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 27 Dec 2020 12:34:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=9UBbU
-        UXlO3sE92vjyKPWDgov2Z/zk5/Sljqb/Cc2CYs=; b=gowCZMtaoFW8tr9uccXd2
-        l4rcAvWq0O0wUL2eROnaYZS2JnhVMj1vbr5NwkTMfYTSRXLs8ZHtOIeW2vsGetmz
-        b2WFah4Lid1g+7P7WdAyUmFXyx816NqATUEukxKVGLKZkDwmeJpGxo7E6TGg3M3b
-        ugoXjBOuE9wZga4e76wB6U=
-Received: from JiadeiMac-Pro.lan (unknown [112.64.60.201])
-        by smtp1 (Coremail) with SMTP id GdxpCgD3MCjKoOhfoDD_Ag--.52426S2;
-        Sun, 27 Dec 2020 22:57:15 +0800 (CST)
-From:   jiaqingtong97@163.com
-To:     tsbogend@alpha.franken.de, mark.tomlinson@alliedtelesis.co.nz,
-        paulburton@kernel.org, jiaxun.yang@flygoat.com
-Cc:     linux-mips@vger.kernel.org, Jia Qingtong <jiaqingtong97@163.com>
-Subject: [PATCH v2] MIPS: OCTEON: Add WAR_OCTEON_BARRIER workaround config
-Date:   Sun, 27 Dec 2020 22:56:51 +0800
-Message-Id: <20201227145651.4513-1-jiaqingtong97@163.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201219153957.GB5012@alpha.franken.de>
-References: <20201219153957.GB5012@alpha.franken.de>
+        id S1726204AbgL0W1g (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 27 Dec 2020 17:27:36 -0500
+Received: from elvis.franken.de ([193.175.24.41]:42241 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726194AbgL0W1g (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 27 Dec 2020 17:27:36 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kteV4-00005l-00; Sun, 27 Dec 2020 23:26:54 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 0D310C04EC; Sun, 27 Dec 2020 23:26:44 +0100 (CET)
+Date:   Sun, 27 Dec 2020 23:26:43 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org
+Subject: Re: CPUs with EVA support
+Message-ID: <20201227222643.GA5249@alpha.franken.de>
+References: <20201220193201.GA3184@alpha.franken.de>
+ <d45cb374-f3dc-8c26-6b0f-27bec45854a9@flygoat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GdxpCgD3MCjKoOhfoDD_Ag--.52426S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tF4ftw1kWw1fWF1DJw4DCFg_yoW8AF1kpa
-        yqkw4kGr4kWFyfJ39xC3s7W3s3Jan5Grya9Fyj9r1jq3W5uasrZrZ3tr98t348Ww4DAayr
-        uF93W3WUJFn7AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jP9N3UUUUU=
-X-Originating-IP: [112.64.60.201]
-X-CM-SenderInfo: 5mld1xpqjw00rjzxqiywtou0bp/1tbiKAsIb17WDo2-4QAAsR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d45cb374-f3dc-8c26-6b0f-27bec45854a9@flygoat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Jia Qingtong <jiaqingtong97@163.com>
+On Mon, Dec 21, 2020 at 08:38:00AM +0800, Jiaxun Yang wrote:
+> > How good is EVA support in qemu ?
+> 
+> EVA is functional in QEMU.
+> I had tested it with P5600 malta system.
 
-Some Cavium Octeon CPUs(Octeon & Octeon Plus) suffer from a bug that
-causes a single wmb ordering barrier to be ineffective, requiring
-the use of 2 in sequence to provide an effective barrier.
-This patch make workaroud as a config for CPUs who didn't suffer
-from that bug.
+and it's working for you ? I've setup a qemu malta system running
+debian buster. It boots fine when CPU is != P5600, but as soon as
+I enable -cpu P5600 it stops booting:
 
-Signed-off-by: Jia Qingtong <jiaqingtong97@163.com>
----
- arch/mips/cavium-octeon/Kconfig | 9 +++++++++
- arch/mips/include/asm/sync.h    | 2 +-
- 2 files changed, 10 insertions(+), 1 deletion(-)
+Run /bin/bash as init process
+request_module: kmod_concurrent_max (0) close to 0 (max_modprobes: 50), for module binfmt-464c, throttling...
+request_module: modprobe binfmt-464c cannot be processed, kmod busy with 50 threads for more than 5 seconds now
+Kernel panic - not syncing: Requested init /bin/bash failed (error -8).
 
-diff --git a/arch/mips/cavium-octeon/Kconfig b/arch/mips/cavium-octeon/Kconfig
-index 4984e462be30..0dc910683df9 100644
---- a/arch/mips/cavium-octeon/Kconfig
-+++ b/arch/mips/cavium-octeon/Kconfig
-@@ -1,6 +1,15 @@
- # SPDX-License-Identifier: GPL-2.0
- if CPU_CAVIUM_OCTEON
- 
-+config WAR_OCTEON_BARRIER
-+	bool "Enable Octeon & Octeon Plus barrier workaround"
-+	default "y"
-+	help
-+	  Some Cavium Octeon CPUs(Octeon & Octeon Plus)
-+	  suffer from a bug that causes a single wmb ordering barrier
-+	  to be ineffective, requiring the use of 2 in sequence
-+	  to provide an effective barrier.
-+
- config CAVIUM_CN63XXP1
- 	bool "Enable CN63XXP1 errata workarounds"
- 	default "n"
-diff --git a/arch/mips/include/asm/sync.h b/arch/mips/include/asm/sync.h
-index aabd097933fe..b24a2f82ef19 100644
---- a/arch/mips/include/asm/sync.h
-+++ b/arch/mips/include/asm/sync.h
-@@ -158,7 +158,7 @@
-  * Note that this expression is evaluated by the assembler (not the compiler),
-  * and that the assembler evaluates '==' as 0 or -1, not 0 or 1.
-  */
--#ifdef CONFIG_CPU_CAVIUM_OCTEON
-+#ifdef CONFIG_WAR_OCTEON_BARRIER
- # define __SYNC_rpt(type)	(1 - (type == __SYNC_wmb))
- #else
- # define __SYNC_rpt(type)	1
+This happens independant whether EVA enabled or disabled.
+
+Has anybody seen this ?
+
+Thomas.
+
 -- 
-2.28.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

@@ -2,673 +2,247 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A163C4332B
-	for <linux-mips@archiver.kernel.org>; Sun, 27 Dec 2020 14:05:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74C66C433E6
+	for <linux-mips@archiver.kernel.org>; Sun, 27 Dec 2020 17:28:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EBDE62250F
-	for <linux-mips@archiver.kernel.org>; Sun, 27 Dec 2020 14:05:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4AC4122513
+	for <linux-mips@archiver.kernel.org>; Sun, 27 Dec 2020 17:28:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbgL0OFl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 27 Dec 2020 09:05:41 -0500
-Received: from mout.kundenserver.de ([217.72.192.75]:44941 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726230AbgL0OFj (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 27 Dec 2020 09:05:39 -0500
-Received: from orion.localdomain ([95.114.11.119]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MybbH-1k6EDg42CD-00z0ya; Sun, 27 Dec 2020 15:01:42 +0100
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, msalter@redhat.com,
-        jacquiot.aurelien@gmail.com, ysato@users.sourceforge.jp,
-        geert@linux-m68k.org, tsbogend@alpha.franken.de,
-        ley.foon.tan@intel.com, jonas@southpole.se,
-        stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
-        James.Bottomley@HansenPartnership.com, deller@gmx.de,
-        benh@kernel.crashing.org, paulus@samba.org, dalias@libc.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, sstabellini@kernel.org, chris@zankel.net,
-        jcmvbkbc@gmail.com, christian@brauner.io,
-        linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-pm@vger.kernel.org
-Subject: [PATCH v2] arch: consolidate pm_power_off callback
-Date:   Sun, 27 Dec 2020 15:01:28 +0100
-Message-Id: <20201227140129.19932-1-info@metux.net>
-X-Mailer: git-send-email 2.11.0
-X-Provags-ID: V03:K1:22PqiqwOpZh8agmKGH43iqfV1GmeR3GHk4Eu0lKnKo5JMKrP/aH
- u6CpYumM0T5GEJc7rS0tq9Bg/xKyr3+o2Gr9fCdB7eUMKG8cgMD+PLKrI3zI7Q0DCYL27l3
- yH5+7F3cR/5fzfUvsAuPUn4aJ8uyhb1112UFNfkozaNc26eeXZ/L/GwCHQqRBlVeFU8zCCP
- eqdvizyW0mf1u3JeKbaqQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:O0FFj0hCZoY=:x53KUPu82U2t0h9Swai2he
- lJu6z7JrQ2ajJ7Biw9aCJWIXep50l37kuwjhiKNoZ58f5TNa1h8D6bBFHpGD3l0T+XZczwfZP
- PRR0dq3RS/1FxJyg9u7iSK9/SQWqPP5W6goYk6XEzx1ZPvLqD3m8VCkKhsyBcwlkPXyOzIRqB
- HWiu765XCoqo2gaekI+DYkSsNmFI38ts+WUN/lsqkv52c4URoP3FOWGxWIuz9TJGUnsowE16a
- kLWxSjuHU26gtfeLm9j51Y64NizikF+f5c1PXKKAJi87bHJCYlAVBWwbroMHDLefhwzfpptKk
- PeeXh25kKN/pV9C8nVxrq7G17nLr/W0Wj462mR1vFEs1iAOfq4qcd7ryhbs5g1z2xFWBiSOmI
- 2a9XQfV2f7DbA3NpANvxnGujgcJ9mUoDBWSZpfPxUhsAoxeezSjV5/l8g1mMl
+        id S1726314AbgL0R2h (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 27 Dec 2020 12:28:37 -0500
+Received: from mail-m975.mail.163.com ([123.126.97.5]:58852 "EHLO
+        mail-m975.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726463AbgL0R2g (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 27 Dec 2020 12:28:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ItJdw
+        Ha/xBb2E0WdvUWjPTOrT99PTYL9nuANszvM5PI=; b=KoVCdO7IeLudJwYM5f585
+        e7qHQETbkq94lvi+RRVpBBuZ+FNn75WkU8T6bSVDZ8+K336SP73pAr6pZhh36IjE
+        O++6P4G+eokIb8Ok7JjPNVeg2c62Uu3yDSugUYf5HyA5S3G2WuvEuc1S0TxpKj6b
+        Aqr5CqXdqMdBpMULlKeoOs=
+Received: from JiadeiMac-Pro.lan (unknown [112.64.60.201])
+        by smtp5 (Coremail) with SMTP id HdxpCgC37xr0w+hfeGmrAQ--.48331S2;
+        Mon, 28 Dec 2020 01:27:17 +0800 (CST)
+From:   jiaqingtong97@163.com
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Jia Qingtong <jiaqingtong97@163.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: OCTEON: Make PCIe work with Little Endian kernel
+Date:   Mon, 28 Dec 2020 01:27:12 +0800
+Message-Id: <20201227172713.16848-1-jiaqingtong97@163.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: HdxpCgC37xr0w+hfeGmrAQ--.48331S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW3ArWxCr47uFW7uFWxXr43ZFb_yoW3ArWDp3
+        yrJrZFyFyxKFyfJws5tFy7Xr45Casay347Cw1xGw42va18WrnYyFWjvrnxCr45WFsxta4a
+        gryv9r47Grn0vrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jJ_-QUUUUU=
+X-Originating-IP: [112.64.60.201]
+X-CM-SenderInfo: 5mld1xpqjw00rjzxqiywtou0bp/1tbiWBYIb1uHu61HYAAAsE
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move the pm_power_off callback into one global place and also add an
-function for conditionally calling it (when not NULL), in order to remove
-code duplication in all individual archs.
+From: Jia Qingtong <jiaqingtong97@163.com>
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+Supply little-endian address bit definitions as well as
+set proper endian swapping modes.
 
-----
-
-changes v2:
-  * fix forgotten removal of pm_power_off in arch/powerpc, as reported by lkp
+Signed-off-by: Jia Qingtong <jiaqingtong97@163.com>
 ---
- arch/alpha/kernel/process.c        |  6 ------
- arch/arc/kernel/reset.c            |  3 ---
- arch/arm/kernel/reboot.c           |  6 ++----
- arch/arm64/kernel/process.c        |  6 +-----
- arch/c6x/kernel/process.c          | 10 ++--------
- arch/csky/kernel/power.c           | 10 +++-------
- arch/h8300/kernel/process.c        |  3 ---
- arch/hexagon/kernel/reset.c        |  3 ---
- arch/ia64/kernel/process.c         |  5 +----
- arch/m68k/kernel/process.c         |  3 ---
- arch/microblaze/kernel/process.c   |  3 ---
- arch/mips/kernel/reset.c           |  6 +-----
- arch/nds32/kernel/process.c        |  7 ++-----
- arch/nios2/kernel/process.c        |  3 ---
- arch/openrisc/kernel/process.c     |  3 ---
- arch/parisc/kernel/process.c       |  9 +++------
- arch/powerpc/kernel/setup-common.c |  8 ++------
- arch/powerpc/xmon/xmon.c           |  4 ++--
- arch/riscv/kernel/reset.c          |  9 ++++-----
- arch/s390/kernel/setup.c           |  3 ---
- arch/sh/kernel/reboot.c            |  6 +-----
- arch/x86/kernel/reboot.c           | 15 ++++-----------
- arch/x86/xen/enlighten_pv.c        |  4 ++--
- arch/xtensa/kernel/process.c       |  4 ----
- include/linux/pm.h                 |  2 ++
- kernel/reboot.c                    | 10 ++++++++++
- 26 files changed, 42 insertions(+), 109 deletions(-)
+fix pcie setup error when Octeon in little-endian mode
 
-diff --git a/arch/alpha/kernel/process.c b/arch/alpha/kernel/process.c
-index 6c71554206cc..df0df869751d 100644
---- a/arch/alpha/kernel/process.c
-+++ b/arch/alpha/kernel/process.c
-@@ -43,12 +43,6 @@
- #include "proto.h"
- #include "pci_impl.h"
+[<ffffffff81bee02c>] octeon_pcie_setup+0x264/0x4e8
+[<ffffffff81100514>] do_one_initcall+0x54/0x190
+[<ffffffff81bbee7c>] kernel_init_freeable+0x1bc/0x230
+[<ffffffff8188b674>] kernel_init+0x10/0x104
+[<ffffffff81115350>] ret_from_kernel_thread+0x14/0x1c
+
+ arch/mips/pci/pcie-octeon.c | 85 +++++++++++++++++++++++++++++++------
+ 1 file changed, 73 insertions(+), 12 deletions(-)
+
+diff --git a/arch/mips/pci/pcie-octeon.c b/arch/mips/pci/pcie-octeon.c
+index d919a0d813a1..512df1e0063a 100644
+--- a/arch/mips/pci/pcie-octeon.c
++++ b/arch/mips/pci/pcie-octeon.c
+@@ -39,6 +39,7 @@ static int enable_pcie_bus_num_war[2];
  
--/*
-- * Power off function, if any
-- */
--void (*pm_power_off)(void) = machine_power_off;
--EXPORT_SYMBOL(pm_power_off);
--
- #ifdef CONFIG_ALPHA_WTINT
- /*
-  * Sleep the CPU.
-diff --git a/arch/arc/kernel/reset.c b/arch/arc/kernel/reset.c
-index fd6c3eb930ba..3a27b6a202d4 100644
---- a/arch/arc/kernel/reset.c
-+++ b/arch/arc/kernel/reset.c
-@@ -26,6 +26,3 @@ void machine_power_off(void)
- 	/* FIXME ::  power off ??? */
- 	machine_halt();
- }
--
--void (*pm_power_off) (void) = NULL;
--EXPORT_SYMBOL(pm_power_off);
-diff --git a/arch/arm/kernel/reboot.c b/arch/arm/kernel/reboot.c
-index 0ce388f15422..9e1bf0e9b3e0 100644
---- a/arch/arm/kernel/reboot.c
-+++ b/arch/arm/kernel/reboot.c
-@@ -6,6 +6,7 @@
- #include <linux/cpu.h>
- #include <linux/delay.h>
- #include <linux/reboot.h>
-+#include <linux/pm.h>
+ union cvmx_pcie_address {
+ 	uint64_t u64;
++#ifdef __BIG_ENDIAN_BITFIELD
+ 	struct {
+ 		uint64_t upper:2;	/* Normally 2 for XKPHYS */
+ 		uint64_t reserved_49_61:13;	/* Must be zero */
+@@ -90,8 +91,68 @@ union cvmx_pcie_address {
+ 		uint64_t reserved_36_39:4;	/* Must be zero */
+ 		uint64_t address:36;	/* PCIe Mem address */
+ 	} mem;
++#else
++	struct {
++		/*
++		 * Selects a register in the configuration space of
++		 * the target.
++		 */
++		uint64_t reg:12;
++		/* Target function number sent in the ID in the request. */
++		uint64_t func:3;
++		/*
++		 * Target device number sent in the ID in the
++		 * request. Note that Dev must be zero for type 0
++		 * configuration requests.
++		 */
++		uint64_t dev:5;
++		/* Target bus number sent in the ID in the request. */
++		uint64_t bus:8;
++		/*
++		 * Selects the type of the configuration request (0 = type 0,
++		 * 1 = type 1).
++		 */
++		uint64_t ty:1;
++		uint64_t reserved_29_31:3;	/* Must be zero */
++		uint64_t port:2;	/* PCIe port 0,1 */
++		uint64_t es:2;	/* Endian swap = 1 */
++		uint64_t reserved_36_39:4;	/* Must be zero */
++		uint64_t subdid:3;	/* PCIe SubDID = 1 */
++		uint64_t did:5; /* PCIe DID = 3 */
++		uint64_t io:1;	/* 1 for IO space access */
++		uint64_t reserved_49_61:13;	/* Must be zero */
++		uint64_t upper:2;	/* Normally 2 for XKPHYS */
++	} config;
++	struct {
++		uint64_t address:32;	/* PCIe IO address */
++		uint64_t port:2;	/* PCIe port 0,1 */
++		uint64_t es:2;	/* Endian swap = 1 */
++		uint64_t reserved_36_39:4;	/* Must be zero */
++		uint64_t subdid:3;	/* PCIe SubDID = 2 */
++		uint64_t did:5; /* PCIe DID = 3 */
++		uint64_t io:1;	/* 1 for IO space access */
++		uint64_t reserved_49_61:13;	/* Must be zero */
++		uint64_t upper:2;	/* Normally 2 for XKPHYS */
++	} io;
++	struct {
++		uint64_t address:36;	/* PCIe Mem address */
++		uint64_t reserved_36_39:4;	/* Must be zero */
++		uint64_t subdid:3;	/* PCIe SubDID = 3-6 */
++		uint64_t did:5; /* PCIe DID = 3 */
++		uint64_t io:1;	/* 1 for IO space access */
++		uint64_t reserved_49_61:13;	/* Must be zero */
++		uint64_t upper:2;	/* Normally 2 for XKPHYS */
++	} mem;
++#endif
+ };
  
- #include <asm/cacheflush.h>
- #include <asm/idmap.h>
-@@ -19,8 +20,6 @@ typedef void (*phys_reset_t)(unsigned long, bool);
-  * Function pointers to optional machine specific functions
-  */
- void (*arm_pm_restart)(enum reboot_mode reboot_mode, const char *cmd);
--void (*pm_power_off)(void);
--EXPORT_SYMBOL(pm_power_off);
- 
- /*
-  * A temporary stack to use for CPU reset. This is static so that we
-@@ -118,8 +117,7 @@ void machine_power_off(void)
- 	local_irq_disable();
- 	smp_send_stop();
- 
--	if (pm_power_off)
--		pm_power_off();
-+	do_power_off();
- }
- 
- /*
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index 6616486a58fe..a5d4c1e80abd 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -67,9 +67,6 @@ EXPORT_SYMBOL(__stack_chk_guard);
- /*
-  * Function pointers to optional machine specific functions
-  */
--void (*pm_power_off)(void);
--EXPORT_SYMBOL_GPL(pm_power_off);
--
- void (*arm_pm_restart)(enum reboot_mode reboot_mode, const char *cmd);
- 
- static void noinstr __cpu_do_idle(void)
-@@ -172,8 +169,7 @@ void machine_power_off(void)
- {
- 	local_irq_disable();
- 	smp_send_stop();
--	if (pm_power_off)
--		pm_power_off();
-+	do_power_off();
- }
- 
- /*
-diff --git a/arch/c6x/kernel/process.c b/arch/c6x/kernel/process.c
-index 9f4fd6a40a10..8b4b24476162 100644
---- a/arch/c6x/kernel/process.c
-+++ b/arch/c6x/kernel/process.c
-@@ -15,6 +15,7 @@
- #include <linux/reboot.h>
- #include <linux/sched/task.h>
- #include <linux/sched/task_stack.h>
-+#include <linux/pm.h>
- 
- #include <asm/syscalls.h>
- 
-@@ -25,12 +26,6 @@ void	(*c6x_halt)(void);
- extern asmlinkage void ret_from_fork(void);
- extern asmlinkage void ret_from_kernel_thread(void);
- 
--/*
-- * power off function, if any
-- */
--void (*pm_power_off)(void);
--EXPORT_SYMBOL(pm_power_off);
--
- void arch_cpu_idle(void)
- {
- 	unsigned long tmp;
-@@ -71,8 +66,7 @@ void machine_halt(void)
- 
- void machine_power_off(void)
- {
--	if (pm_power_off)
--		pm_power_off();
-+	do_power_off();
- 	halt_loop();
- }
- 
-diff --git a/arch/csky/kernel/power.c b/arch/csky/kernel/power.c
-index 923ee4e381b8..c702e66ce03a 100644
---- a/arch/csky/kernel/power.c
-+++ b/arch/csky/kernel/power.c
-@@ -2,23 +2,19 @@
- // Copyright (C) 2018 Hangzhou C-SKY Microsystems co.,ltd.
- 
- #include <linux/reboot.h>
--
--void (*pm_power_off)(void);
--EXPORT_SYMBOL(pm_power_off);
-+#include <linux/pm.h>
- 
- void machine_power_off(void)
- {
- 	local_irq_disable();
--	if (pm_power_off)
--		pm_power_off();
-+	do_power_off();
- 	asm volatile ("bkpt");
- }
- 
- void machine_halt(void)
- {
- 	local_irq_disable();
--	if (pm_power_off)
--		pm_power_off();
-+	do_power_off();
- 	asm volatile ("bkpt");
- }
- 
-diff --git a/arch/h8300/kernel/process.c b/arch/h8300/kernel/process.c
-index bc1364db58fe..020bf78a779c 100644
---- a/arch/h8300/kernel/process.c
-+++ b/arch/h8300/kernel/process.c
-@@ -46,9 +46,6 @@
- #include <asm/traps.h>
- #include <asm/setup.h>
- 
--void (*pm_power_off)(void) = NULL;
--EXPORT_SYMBOL(pm_power_off);
--
- asmlinkage void ret_from_fork(void);
- asmlinkage void ret_from_kernel_thread(void);
- 
-diff --git a/arch/hexagon/kernel/reset.c b/arch/hexagon/kernel/reset.c
-index da36114d928f..8370ddbcdfd9 100644
---- a/arch/hexagon/kernel/reset.c
-+++ b/arch/hexagon/kernel/reset.c
-@@ -19,6 +19,3 @@ void machine_halt(void)
- void machine_restart(char *cmd)
- {
- }
--
--void (*pm_power_off)(void) = NULL;
--EXPORT_SYMBOL(pm_power_off);
-diff --git a/arch/ia64/kernel/process.c b/arch/ia64/kernel/process.c
-index 4ebbfa076a26..72104b967668 100644
---- a/arch/ia64/kernel/process.c
-+++ b/arch/ia64/kernel/process.c
-@@ -57,8 +57,6 @@ void (*ia64_mark_idle)(int);
- 
- unsigned long boot_option_idle_override = IDLE_NO_OVERRIDE;
- EXPORT_SYMBOL(boot_option_idle_override);
--void (*pm_power_off) (void);
--EXPORT_SYMBOL(pm_power_off);
- 
- static void
- ia64_do_show_stack (struct unw_frame_info *info, void *arg)
-@@ -602,8 +600,7 @@ machine_halt (void)
- void
- machine_power_off (void)
- {
--	if (pm_power_off)
--		pm_power_off();
-+	do_power_off()
- 	machine_halt();
- }
- 
-diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-index 08359a6e058f..b8dc10a630e1 100644
---- a/arch/m68k/kernel/process.c
-+++ b/arch/m68k/kernel/process.c
-@@ -72,9 +72,6 @@ void machine_power_off(void)
- 	for (;;);
- }
- 
--void (*pm_power_off)(void) = machine_power_off;
--EXPORT_SYMBOL(pm_power_off);
--
- void show_regs(struct pt_regs * regs)
- {
- 	pr_info("Format %02x  Vector: %04x  PC: %08lx  Status: %04x    %s\n",
-diff --git a/arch/microblaze/kernel/process.c b/arch/microblaze/kernel/process.c
-index 657c2beb665e..f1dd66a14ab6 100644
---- a/arch/microblaze/kernel/process.c
-+++ b/arch/microblaze/kernel/process.c
-@@ -46,9 +46,6 @@ void show_regs(struct pt_regs *regs)
- 				regs->msr, regs->ear, regs->esr, regs->fsr);
- }
- 
--void (*pm_power_off)(void) = NULL;
--EXPORT_SYMBOL(pm_power_off);
--
- void flush_thread(void)
- {
- }
-diff --git a/arch/mips/kernel/reset.c b/arch/mips/kernel/reset.c
-index 6288780b779e..73e32eba422f 100644
---- a/arch/mips/kernel/reset.c
-+++ b/arch/mips/kernel/reset.c
-@@ -25,9 +25,6 @@
-  */
- void (*_machine_restart)(char *command);
- void (*_machine_halt)(void);
--void (*pm_power_off)(void);
--
--EXPORT_SYMBOL(pm_power_off);
- 
- static void machine_hang(void)
- {
-@@ -114,8 +111,7 @@ void machine_halt(void)
- 
- void machine_power_off(void)
- {
--	if (pm_power_off)
--		pm_power_off();
-+	do_power_off();
- 
- #ifdef CONFIG_SMP
- 	preempt_disable();
-diff --git a/arch/nds32/kernel/process.c b/arch/nds32/kernel/process.c
-index e01ad5d17224..624e2a563082 100644
---- a/arch/nds32/kernel/process.c
-+++ b/arch/nds32/kernel/process.c
-@@ -12,6 +12,7 @@
- #include <asm/fpu.h>
- #include <linux/ptrace.h>
- #include <linux/reboot.h>
-+#include <linux/pm.h>
- 
- #if IS_ENABLED(CONFIG_LAZY_FPU)
- struct task_struct *last_task_used_math;
-@@ -27,9 +28,6 @@ extern inline void arch_reset(char mode)
- 	}
- }
- 
--void (*pm_power_off) (void);
--EXPORT_SYMBOL(pm_power_off);
--
- static char reboot_mode_nds32 = 'h';
- 
- int __init reboot_setup(char *str)
-@@ -54,8 +52,7 @@ EXPORT_SYMBOL(machine_halt);
- 
- void machine_power_off(void)
- {
--	if (pm_power_off)
--		pm_power_off();
-+	do_power_off();
- }
- 
- EXPORT_SYMBOL(machine_power_off);
-diff --git a/arch/nios2/kernel/process.c b/arch/nios2/kernel/process.c
-index 50b4eb19a6cc..a6195cc02ea4 100644
---- a/arch/nios2/kernel/process.c
-+++ b/arch/nios2/kernel/process.c
-@@ -28,9 +28,6 @@
- asmlinkage void ret_from_fork(void);
- asmlinkage void ret_from_kernel_thread(void);
- 
--void (*pm_power_off)(void) = NULL;
--EXPORT_SYMBOL(pm_power_off);
--
- void arch_cpu_idle(void)
- {
- 	raw_local_irq_enable();
-diff --git a/arch/openrisc/kernel/process.c b/arch/openrisc/kernel/process.c
-index 3c98728cce24..c02343bacf59 100644
---- a/arch/openrisc/kernel/process.c
-+++ b/arch/openrisc/kernel/process.c
-@@ -84,9 +84,6 @@ void arch_cpu_idle(void)
- 		mtspr(SPR_PMR, mfspr(SPR_PMR) | SPR_PMR_DME);
- }
- 
--void (*pm_power_off) (void) = machine_power_off;
--EXPORT_SYMBOL(pm_power_off);
--
- /*
-  * When a process does an "exec", machine state like FPU and debug
-  * registers need to be reset.  This is a hook function for that.
-diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
-index a92a23d6acd9..8b94599c9480 100644
---- a/arch/parisc/kernel/process.c
-+++ b/arch/parisc/kernel/process.c
-@@ -41,6 +41,7 @@
- #include <linux/rcupdate.h>
- #include <linux/random.h>
- #include <linux/nmi.h>
-+#include <linux/pm.h>
- 
- #include <asm/io.h>
- #include <asm/asm-offsets.h>
-@@ -117,9 +118,8 @@ void machine_power_off(void)
- 	pdc_chassis_send_status(PDC_CHASSIS_DIRECT_SHUTDOWN);
- 
- 	/* ipmi_poweroff may have been installed. */
--	if (pm_power_off)
--		pm_power_off();
--		
-+	do_power_off();
++/* Endian swap mode. */
++#ifdef __BIG_ENDIAN_BITFIELD
++#define _CVMX_PCIE_ES 1
++#else
++#define _CVMX_PCIE_ES 0
++#endif
 +
- 	/* It seems we have no way to power the system off via
- 	 * software. The user has to press the button himself. */
+ static int cvmx_pcie_rc_initialize(int pcie_port);
  
-@@ -132,9 +132,6 @@ void machine_power_off(void)
- 	for (;;);
- }
- 
--void (*pm_power_off)(void);
--EXPORT_SYMBOL(pm_power_off);
--
- void machine_halt(void)
- {
- 	machine_power_off();
-diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
-index 71f38e9248be..3ed44b6ee232 100644
---- a/arch/powerpc/kernel/setup-common.c
-+++ b/arch/powerpc/kernel/setup-common.c
-@@ -32,6 +32,7 @@
- #include <linux/of_platform.h>
- #include <linux/hugetlb.h>
- #include <linux/pgtable.h>
-+#include <linux/pm.h>
- #include <asm/debugfs.h>
- #include <asm/io.h>
- #include <asm/paca.h>
-@@ -163,18 +164,13 @@ void machine_restart(char *cmd)
- void machine_power_off(void)
- {
- 	machine_shutdown();
--	if (pm_power_off)
--		pm_power_off();
--
-+	do_power_off();
- 	smp_send_stop();
- 	machine_hang();
- }
- /* Used by the G5 thermal driver */
- EXPORT_SYMBOL_GPL(machine_power_off);
- 
--void (*pm_power_off)(void);
--EXPORT_SYMBOL_GPL(pm_power_off);
--
- void machine_halt(void)
- {
- 	machine_shutdown();
-diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
-index dcd817ca2edf..38d76c283412 100644
---- a/arch/powerpc/xmon/xmon.c
-+++ b/arch/powerpc/xmon/xmon.c
-@@ -26,6 +26,7 @@
- #include <linux/ctype.h>
- #include <linux/highmem.h>
- #include <linux/security.h>
-+#include <linux/pm.h>
- 
- #include <asm/debugfs.h>
- #include <asm/ptrace.h>
-@@ -1237,8 +1238,7 @@ static void bootcmds(void)
- 	} else if (cmd == 'h') {
- 		ppc_md.halt();
- 	} else if (cmd == 'p') {
--		if (pm_power_off)
--			pm_power_off();
-+		do_power_off();
- 	}
- }
- 
-diff --git a/arch/riscv/kernel/reset.c b/arch/riscv/kernel/reset.c
-index ee5878d968cc..f8bcf4d8b19b 100644
---- a/arch/riscv/kernel/reset.c
-+++ b/arch/riscv/kernel/reset.c
-@@ -12,9 +12,6 @@ static void default_power_off(void)
- 		wait_for_interrupt();
- }
- 
--void (*pm_power_off)(void) = default_power_off;
--EXPORT_SYMBOL(pm_power_off);
--
- void machine_restart(char *cmd)
- {
- 	do_kernel_restart(cmd);
-@@ -23,10 +20,12 @@ void machine_restart(char *cmd)
- 
- void machine_halt(void)
- {
--	pm_power_off();
-+	do_power_off();
-+	default_power_off();
- }
- 
- void machine_power_off(void)
- {
--	pm_power_off();
-+	do_power_off();
-+	default_power_off();
- }
-diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-index 1fbed91c73bc..4e348d3b711f 100644
---- a/arch/s390/kernel/setup.c
-+++ b/arch/s390/kernel/setup.c
-@@ -302,9 +302,6 @@ void machine_power_off(void)
- /*
-  * Dummy power off function.
-  */
--void (*pm_power_off)(void) = machine_power_off;
--EXPORT_SYMBOL_GPL(pm_power_off);
--
- void *restart_stack;
- 
- unsigned long stack_alloc(void)
-diff --git a/arch/sh/kernel/reboot.c b/arch/sh/kernel/reboot.c
-index 5c33f036418b..8c9b63e1dbba 100644
---- a/arch/sh/kernel/reboot.c
-+++ b/arch/sh/kernel/reboot.c
-@@ -10,9 +10,6 @@
- #include <asm/tlbflush.h>
- #include <asm/traps.h>
- 
--void (*pm_power_off)(void);
--EXPORT_SYMBOL(pm_power_off);
--
- static void watchdog_trigger_immediate(void)
- {
- 	sh_wdt_write_cnt(0xFF);
-@@ -46,8 +43,7 @@ static void native_machine_shutdown(void)
- 
- static void native_machine_power_off(void)
- {
--	if (pm_power_off)
--		pm_power_off();
-+	do_power_off();
- }
- 
- static void native_machine_halt(void)
-diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-index db115943e8bd..cddf9ca4e6f6 100644
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -34,12 +34,6 @@
- #include <asm/efi.h>
- 
- /*
-- * Power off function, if any
-- */
--void (*pm_power_off)(void);
--EXPORT_SYMBOL(pm_power_off);
--
--/*
-  * This is set if we need to go through the 'emergency' path.
-  * When machine_emergency_restart() is called, we may be on
-  * an inconsistent state and won't be able to do a clean cleanup
-@@ -747,11 +741,10 @@ static void native_machine_halt(void)
- 
- static void native_machine_power_off(void)
- {
--	if (pm_power_off) {
--		if (!reboot_force)
--			machine_shutdown();
--		pm_power_off();
--	}
-+	if (!reboot_force)
-+		machine_shutdown();
-+	do_power_off();
-+
- 	/* A fallback in case there is no PM info available */
- 	tboot_shutdown(TB_SHUTDOWN_HALT);
- }
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 4409306364dc..7e5416c316d3 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -33,6 +33,7 @@
- #include <linux/gfp.h>
- #include <linux/edd.h>
- #include <linux/objtool.h>
-+#include <linux/pm.h>
- 
- #include <xen/xen.h>
- #include <xen/events.h>
-@@ -1084,8 +1085,7 @@ static void xen_machine_halt(void)
- 
- static void xen_machine_power_off(void)
- {
--	if (pm_power_off)
--		pm_power_off();
-+	do_power_off();
- 	xen_reboot(SHUTDOWN_poweroff);
- }
- 
-diff --git a/arch/xtensa/kernel/process.c b/arch/xtensa/kernel/process.c
-index 397a7de56377..fb8d5e9829ba 100644
---- a/arch/xtensa/kernel/process.c
-+++ b/arch/xtensa/kernel/process.c
-@@ -51,10 +51,6 @@
- extern void ret_from_fork(void);
- extern void ret_from_kernel_thread(void);
- 
--void (*pm_power_off)(void) = NULL;
--EXPORT_SYMBOL(pm_power_off);
--
--
- #ifdef CONFIG_STACKPROTECTOR
- #include <linux/stackprotector.h>
- unsigned long __stack_chk_guard __read_mostly;
-diff --git a/include/linux/pm.h b/include/linux/pm.h
-index 47aca6bac1d6..78627c970be0 100644
---- a/include/linux/pm.h
-+++ b/include/linux/pm.h
-@@ -22,6 +22,8 @@
- extern void (*pm_power_off)(void);
- extern void (*pm_power_off_prepare)(void);
- 
-+extern void do_power_off(void);
-+
- struct device; /* we have a circular dep with device.h */
- #ifdef CONFIG_VT_CONSOLE_SLEEP
- extern void pm_vt_switch_required(struct device *dev, bool required);
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index eb1b15850761..ec4cd66dd1ae 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -53,6 +53,16 @@ int reboot_force;
- void (*pm_power_off_prepare)(void);
- EXPORT_SYMBOL_GPL(pm_power_off_prepare);
- 
-+void (*pm_power_off)(void);
-+EXPORT_SYMBOL_GPL(pm_power_off);
-+
-+void do_power_off(void)
-+{
-+	if (pm_power_off)
-+		pm_power_off();
-+}
-+EXPORT_SYMBOL_GPL(do_power_off);
-+
  /**
-  *	emergency_restart - reboot the system
+@@ -102,7 +163,7 @@ static int cvmx_pcie_rc_initialize(int pcie_port);
   *
+  * Returns 64bit Octeon IO base address for read/write
+  */
+-static inline uint64_t cvmx_pcie_get_io_base_address(int pcie_port)
++static uint64_t cvmx_pcie_get_io_base_address(int pcie_port)
+ {
+ 	union cvmx_pcie_address pcie_addr;
+ 	pcie_addr.u64 = 0;
+@@ -110,7 +171,7 @@ static inline uint64_t cvmx_pcie_get_io_base_address(int pcie_port)
+ 	pcie_addr.io.io = 1;
+ 	pcie_addr.io.did = 3;
+ 	pcie_addr.io.subdid = 2;
+-	pcie_addr.io.es = 1;
++	pcie_addr.io.es = _CVMX_PCIE_ES;
+ 	pcie_addr.io.port = pcie_port;
+ 	return pcie_addr.u64;
+ }
+@@ -241,7 +302,7 @@ static inline uint64_t __cvmx_pcie_build_config_addr(int pcie_port, int bus,
+ 	pcie_addr.config.io = 1;
+ 	pcie_addr.config.did = 3;
+ 	pcie_addr.config.subdid = 1;
+-	pcie_addr.config.es = 1;
++	pcie_addr.config.es = _CVMX_PCIE_ES;
+ 	pcie_addr.config.port = pcie_port;
+ 	pcie_addr.config.ty = (bus > pciercx_cfg006.s.pbnum);
+ 	pcie_addr.config.bus = bus;
+@@ -889,8 +950,8 @@ static int __cvmx_pcie_rc_initialize_gen1(int pcie_port)
+ 	mem_access_subid.u64 = 0;
+ 	mem_access_subid.s.port = pcie_port; /* Port the request is sent to. */
+ 	mem_access_subid.s.nmerge = 1;	/* Due to an errata on pass 1 chips, no merging is allowed. */
+-	mem_access_subid.s.esr = 1;	/* Endian-swap for Reads. */
+-	mem_access_subid.s.esw = 1;	/* Endian-swap for Writes. */
++	mem_access_subid.s.esr = _CVMX_PCIE_ES;	/* Endian-swap for Reads. */
++	mem_access_subid.s.esw = _CVMX_PCIE_ES;	/* Endian-swap for Writes. */
+ 	mem_access_subid.s.nsr = 0;	/* Enable Snooping for Reads. Octeon doesn't care, but devices might want this more conservative setting */
+ 	mem_access_subid.s.nsw = 0;	/* Enable Snoop for Writes. */
+ 	mem_access_subid.s.ror = 0;	/* Disable Relaxed Ordering for Reads. */
+@@ -925,7 +986,7 @@ static int __cvmx_pcie_rc_initialize_gen1(int pcie_port)
+ 	bar1_index.u32 = 0;
+ 	bar1_index.s.addr_idx = (CVMX_PCIE_BAR1_PHYS_BASE >> 22);
+ 	bar1_index.s.ca = 1;	   /* Not Cached */
+-	bar1_index.s.end_swp = 1;  /* Endian Swap mode */
++	bar1_index.s.end_swp = _CVMX_PCIE_ES;  /* Endian Swap mode */
+ 	bar1_index.s.addr_v = 1;   /* Valid entry */
+ 
+ 	base = pcie_port ? 16 : 0;
+@@ -965,7 +1026,7 @@ static int __cvmx_pcie_rc_initialize_gen1(int pcie_port)
+ 		union cvmx_npei_ctl_port1 npei_ctl_port;
+ 		npei_ctl_port.u64 = cvmx_read_csr(CVMX_PEXP_NPEI_CTL_PORT1);
+ 		npei_ctl_port.s.bar2_enb = 1;
+-		npei_ctl_port.s.bar2_esx = 1;
++		npei_ctl_port.s.bar2_esx = _CVMX_PCIE_ES;
+ 		npei_ctl_port.s.bar2_cax = 0;
+ 		npei_ctl_port.s.ptlp_ro = 1;
+ 		npei_ctl_port.s.ctlp_ro = 1;
+@@ -976,7 +1037,7 @@ static int __cvmx_pcie_rc_initialize_gen1(int pcie_port)
+ 		union cvmx_npei_ctl_port0 npei_ctl_port;
+ 		npei_ctl_port.u64 = cvmx_read_csr(CVMX_PEXP_NPEI_CTL_PORT0);
+ 		npei_ctl_port.s.bar2_enb = 1;
+-		npei_ctl_port.s.bar2_esx = 1;
++		npei_ctl_port.s.bar2_esx = _CVMX_PCIE_ES;
+ 		npei_ctl_port.s.bar2_cax = 0;
+ 		npei_ctl_port.s.ptlp_ro = 1;
+ 		npei_ctl_port.s.ctlp_ro = 1;
+@@ -1341,8 +1402,8 @@ static int __cvmx_pcie_rc_initialize_gen2(int pcie_port)
+ 	mem_access_subid.u64 = 0;
+ 	mem_access_subid.s.port = pcie_port; /* Port the request is sent to. */
+ 	mem_access_subid.s.nmerge = 0;	/* Allow merging as it works on CN6XXX. */
+-	mem_access_subid.s.esr = 1;	/* Endian-swap for Reads. */
+-	mem_access_subid.s.esw = 1;	/* Endian-swap for Writes. */
++	mem_access_subid.s.esr = _CVMX_PCIE_ES;	/* Endian-swap for Reads. */
++	mem_access_subid.s.esw = _CVMX_PCIE_ES;	/* Endian-swap for Writes. */
+ 	mem_access_subid.s.wtype = 0;	/* "No snoop" and "Relaxed ordering" are not set */
+ 	mem_access_subid.s.rtype = 0;	/* "No snoop" and "Relaxed ordering" are not set */
+ 	/* PCIe Adddress Bits <63:34>. */
+@@ -1392,7 +1453,7 @@ static int __cvmx_pcie_rc_initialize_gen2(int pcie_port)
+ 	pemx_bar_ctl.u64 = cvmx_read_csr(CVMX_PEMX_BAR_CTL(pcie_port));
+ 	pemx_bar_ctl.s.bar1_siz = 3;  /* 256MB BAR1*/
+ 	pemx_bar_ctl.s.bar2_enb = 1;
+-	pemx_bar_ctl.s.bar2_esx = 1;
++	pemx_bar_ctl.s.bar2_esx = _CVMX_PCIE_ES;
+ 	pemx_bar_ctl.s.bar2_cax = 0;
+ 	cvmx_write_csr(CVMX_PEMX_BAR_CTL(pcie_port), pemx_bar_ctl.u64);
+ 	sli_ctl_portx.u64 = cvmx_read_csr(CVMX_PEXP_SLI_CTL_PORTX(pcie_port));
+@@ -1408,7 +1469,7 @@ static int __cvmx_pcie_rc_initialize_gen2(int pcie_port)
+ 	bar1_index.u64 = 0;
+ 	bar1_index.s.addr_idx = (CVMX_PCIE_BAR1_PHYS_BASE >> 22);
+ 	bar1_index.s.ca = 1;	   /* Not Cached */
+-	bar1_index.s.end_swp = 1;  /* Endian Swap mode */
++	bar1_index.s.end_swp = _CVMX_PCIE_ES;  /* Endian Swap mode */
+ 	bar1_index.s.addr_v = 1;   /* Valid entry */
+ 
+ 	for (i = 0; i < 16; i++) {
 -- 
-2.11.0
+2.28.0
 

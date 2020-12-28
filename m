@@ -2,90 +2,99 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4094C04EBC
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AED7C04E87
 	for <linux-mips@archiver.kernel.org>; Mon, 28 Dec 2020 23:13:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A34EF223E8
+	by mail.kernel.org (Postfix) with ESMTP id 79C70223E8
 	for <linux-mips@archiver.kernel.org>; Mon, 28 Dec 2020 23:13:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730813AbgL1Wzz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1730822AbgL1Wzz convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
         Mon, 28 Dec 2020 17:55:55 -0500
-Received: from elvis.franken.de ([193.175.24.41]:43952 "EHLO elvis.franken.de"
+Received: from aposti.net ([89.234.176.197]:37250 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729632AbgL1W0V (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 28 Dec 2020 17:26:21 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1ku0xP-00069Q-00; Mon, 28 Dec 2020 23:25:39 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 8475EC05C4; Mon, 28 Dec 2020 23:25:32 +0100 (CET)
-Date:   Mon, 28 Dec 2020 23:25:32 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Paul Cercueil <paul@crapouillou.net>
+        id S1729641AbgL1Wb3 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 28 Dec 2020 17:31:29 -0500
+Date:   Mon, 28 Dec 2020 22:30:36 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] MIPS: boot: Fix unaligned access =?UTF-8?Q?with=0D=0A?=
+ CONFIG_MIPS_RAW_APPENDED_DTB
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc:     Nathan Chancellor <natechancellor@gmail.com>,
         Nick Desaulniers <ndesaulniers@google.com>, od@zcrc.me,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         clang-built-linux@googlegroups.com, stable@vger.kernel.org
-Subject: Re: [PATCH] MIPS: boot: Fix unaligned access with
- CONFIG_MIPS_RAW_APPENDED_DTB
-Message-ID: <20201228222532.GA24926@alpha.franken.de>
+Message-Id: <0JM2MQ.PMKIEAOX7SCZ@crapouillou.net>
+In-Reply-To: <20201228222532.GA24926@alpha.franken.de>
 References: <20201216233956.280068-1-paul@crapouillou.net>
+        <20201228222532.GA24926@alpha.franken.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201216233956.280068-1-paul@crapouillou.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 11:39:56PM +0000, Paul Cercueil wrote:
-> The compressed payload is not necesarily 4-byte aligned, at least when
-> compiling with Clang. In that case, the 4-byte value appended to the
-> compressed payload that corresponds to the uncompressed kernel image
-> size must be read using get_unaligned_le().
+Hi Thomas,
+
+Le lun. 28 déc. 2020 à 23:25, Thomas Bogendoerfer 
+<tsbogend@alpha.franken.de> a écrit :
+> On Wed, Dec 16, 2020 at 11:39:56PM +0000, Paul Cercueil wrote:
+>>  The compressed payload is not necesarily 4-byte aligned, at least 
+>> when
+>>  compiling with Clang. In that case, the 4-byte value appended to the
+>>  compressed payload that corresponds to the uncompressed kernel image
+>>  size must be read using get_unaligned_le().
+>> 
+>>  This fixes Clang-built kernels not booting on MIPS (tested on a 
+>> Ingenic
+>>  JZ4770 board).
+>> 
+>>  Fixes: b8f54f2cde78 ("MIPS: ZBOOT: copy appended dtb to the end of 
+>> the kernel")
+>>  Cc: <stable@vger.kernel.org> # v4.7
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  ---
+>>   arch/mips/boot/compressed/decompress.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>>  diff --git a/arch/mips/boot/compressed/decompress.c 
+>> b/arch/mips/boot/compressed/decompress.c
+>>  index c61c641674e6..47c07990432b 100644
+>>  --- a/arch/mips/boot/compressed/decompress.c
+>>  +++ b/arch/mips/boot/compressed/decompress.c
+>>  @@ -117,7 +117,7 @@ void decompress_kernel(unsigned long 
+>> boot_heap_start)
+>>   		dtb_size = fdt_totalsize((void *)&__appended_dtb);
+>> 
+>>   		/* last four bytes is always image size in little endian */
+>>  -		image_size = le32_to_cpup((void *)&__image_end - 4);
+>>  +		image_size = get_unaligned_le32((void *)&__image_end - 4);
 > 
-> This fixes Clang-built kernels not booting on MIPS (tested on a Ingenic
-> JZ4770 board).
+> gives me following error
 > 
-> Fixes: b8f54f2cde78 ("MIPS: ZBOOT: copy appended dtb to the end of the kernel")
-> Cc: <stable@vger.kernel.org> # v4.7
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  arch/mips/boot/compressed/decompress.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> arch/mips/boot/compressed/decompress.c:120:16: error: implicit 
+> declaration of function ‘get_unaligned_le32’ 
+> [-Werror=implicit-function-declaration]
+>    image_size = get_unaligned_le32((void *)&__image_end - 4);
 > 
-> diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
-> index c61c641674e6..47c07990432b 100644
-> --- a/arch/mips/boot/compressed/decompress.c
-> +++ b/arch/mips/boot/compressed/decompress.c
-> @@ -117,7 +117,7 @@ void decompress_kernel(unsigned long boot_heap_start)
->  		dtb_size = fdt_totalsize((void *)&__appended_dtb);
->  
->  		/* last four bytes is always image size in little endian */
-> -		image_size = le32_to_cpup((void *)&__image_end - 4);
-> +		image_size = get_unaligned_le32((void *)&__image_end - 4);
+> I've added
+> 
+> #include <asm/unaligned.h>
+> 
+> which fixes the compile error, but I'm wondering why the patch 
+> compiled
+> for you ?
 
-gives me following error
+No idea - but it does compile fine without the include here. Probably a 
+defconfig difference.
 
-arch/mips/boot/compressed/decompress.c:120:16: error: implicit declaration of function ‘get_unaligned_le32’ [-Werror=implicit-function-declaration]
-   image_size = get_unaligned_le32((void *)&__image_end - 4);
+Cheers,
+-Paul
 
-I've added
 
-#include <asm/unaligned.h>
-
-which fixes the compile error, but I'm wondering why the patch compiled
-for you ?
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]

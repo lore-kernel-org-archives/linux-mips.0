@@ -2,110 +2,111 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF391C43381
-	for <linux-mips@archiver.kernel.org>; Tue, 29 Dec 2020 15:10:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 868A2C433DB
+	for <linux-mips@archiver.kernel.org>; Tue, 29 Dec 2020 16:40:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CAD8D223C8
-	for <linux-mips@archiver.kernel.org>; Tue, 29 Dec 2020 15:10:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 36DC720867
+	for <linux-mips@archiver.kernel.org>; Tue, 29 Dec 2020 16:40:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726678AbgL2PKZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 29 Dec 2020 10:10:25 -0500
-Received: from elvis.franken.de ([193.175.24.41]:45047 "EHLO elvis.franken.de"
+        id S1726126AbgL2QkJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 29 Dec 2020 11:40:09 -0500
+Received: from elvis.franken.de ([193.175.24.41]:45176 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726664AbgL2PKY (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 29 Dec 2020 10:10:24 -0500
+        id S1726114AbgL2QkI (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 29 Dec 2020 11:40:08 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kuGd4-0006mx-00; Tue, 29 Dec 2020 16:09:42 +0100
+        id 1kuI1p-0007OT-00; Tue, 29 Dec 2020 17:39:21 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 5A6EEC076D; Tue, 29 Dec 2020 16:08:10 +0100 (CET)
-Date:   Tue, 29 Dec 2020 16:08:10 +0100
+        id 9CCF2C07BF; Tue, 29 Dec 2020 17:39:07 +0100 (CET)
+Date:   Tue, 29 Dec 2020 17:39:07 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>, od@zcrc.me,
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, stable@vger.kernel.org
-Subject: Re: [PATCH] MIPS: boot: Fix unaligned access with??
- CONFIG_MIPS_RAW_APPENDED_DTB
-Message-ID: <20201229150810.GA7832@alpha.franken.de>
-References: <20201216233956.280068-1-paul@crapouillou.net>
- <20201228222532.GA24926@alpha.franken.de>
- <0JM2MQ.PMKIEAOX7SCZ@crapouillou.net>
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Youling Tang <tangyouling@loongson.cn>,
+        Jinyang He <hejinyang@loongson.cn>
+Subject: Re: [PATCH] MIPS: Loongson64: Give chance to build under
+ !CONFIG_NUMA and !CONFIG_SMP
+Message-ID: <20201229163907.GA8519@alpha.franken.de>
+References: <1606998772-5904-1-git-send-email-yangtiezhu@loongson.cn>
+ <20201215132123.GA9201@alpha.franken.de>
+ <3eb215e2-82ae-2834-2837-55f429027840@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <0JM2MQ.PMKIEAOX7SCZ@crapouillou.net>
+In-Reply-To: <3eb215e2-82ae-2834-2837-55f429027840@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 10:30:36PM +0000, Paul Cercueil wrote:
-> Le lun. 28 déc. 2020 à 23:25, Thomas Bogendoerfer
-> <tsbogend@alpha.franken.de> a écrit :
-> > On Wed, Dec 16, 2020 at 11:39:56PM +0000, Paul Cercueil wrote:
-> > >  The compressed payload is not necesarily 4-byte aligned, at least
-> > > when
-> > >  compiling with Clang. In that case, the 4-byte value appended to the
-> > >  compressed payload that corresponds to the uncompressed kernel image
-> > >  size must be read using get_unaligned_le().
-> > > 
-> > >  This fixes Clang-built kernels not booting on MIPS (tested on a
-> > > Ingenic
-> > >  JZ4770 board).
-> > > 
-> > >  Fixes: b8f54f2cde78 ("MIPS: ZBOOT: copy appended dtb to the end of
-> > > the kernel")
-> > >  Cc: <stable@vger.kernel.org> # v4.7
-> > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> > >  ---
-> > >   arch/mips/boot/compressed/decompress.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > >  diff --git a/arch/mips/boot/compressed/decompress.c
-> > > b/arch/mips/boot/compressed/decompress.c
-> > >  index c61c641674e6..47c07990432b 100644
-> > >  --- a/arch/mips/boot/compressed/decompress.c
-> > >  +++ b/arch/mips/boot/compressed/decompress.c
-> > >  @@ -117,7 +117,7 @@ void decompress_kernel(unsigned long
-> > > boot_heap_start)
-> > >   		dtb_size = fdt_totalsize((void *)&__appended_dtb);
-> > > 
-> > >   		/* last four bytes is always image size in little endian */
-> > >  -		image_size = le32_to_cpup((void *)&__image_end - 4);
-> > >  +		image_size = get_unaligned_le32((void *)&__image_end - 4);
-> > 
-> > gives me following error
-> > 
-> > arch/mips/boot/compressed/decompress.c:120:16: error: implicit
-> > declaration of function ‘get_unaligned_le32’
-> > [-Werror=implicit-function-declaration]
-> >    image_size = get_unaligned_le32((void *)&__image_end - 4);
-> > 
-> > I've added
-> > 
-> > #include <asm/unaligned.h>
-> > 
-> > which fixes the compile error, but I'm wondering why the patch compiled
-> > for you ?
+On Wed, Dec 16, 2020 at 10:44:23AM +0800, Tiezhu Yang wrote:
+> I have tested the following three configs on the Loongson platform:
+> (1) !NUMA and !SMP,
+> (2) !NUMA and SMP,
+> (3) NUMA and SMP,
+> everything is all right.
 > 
-> No idea - but it does compile fine without the include here. Probably a
-> defconfig difference.
+> But there exists the following build error under NUMA and !SMP:
+> 
+>   CC      arch/mips/kernel/asm-offsets.s
+> In file included from ./include/linux/gfp.h:9:0,
+>                  from ./include/linux/xarray.h:14,
+>                  from ./include/linux/radix-tree.h:19,
+>                  from ./include/linux/fs.h:15,
+>                  from ./include/linux/compat.h:17,
+>                  from arch/mips/kernel/asm-offsets.c:12:
+> ./include/linux/topology.h: In function ‘numa_node_id’:
+> ./include/linux/topology.h:119:2: error: implicit declaration of function
+> ‘cpu_logical_map’ [-Werror=implicit-function-declaration]
+>   return cpu_to_node(raw_smp_processor_id());
+>   ^
+> cc1: some warnings being treated as errors
+> scripts/Makefile.build:117: recipe for target
+> 'arch/mips/kernel/asm-offsets.s' failed
+> make[1]: *** [arch/mips/kernel/asm-offsets.s] Error 1
+> arch/mips/Makefile:396: recipe for target 'archprepare' failed
+> make: *** [archprepare] Error 2
+> 
+> I find a patch to fix this kind of build errors [1], but it seems
+> meaningless.
+> 
+> According to the NUMA and SMP description in arch/mips/Kconfig,
+> we will use only one CPU of a multiprocessor machine if !SMP,
+> on single node systems leave NUMA disabled.
+> 
+> So I think there is no need to use NUMA if !SMP, and also we should
+> make NUMA depend on SMP to avoid build errors.
 
-# CONFIG_KERNEL_LZO is not set
-# CONFIG_KERNEL_LZ4 is not set
+ok, but compiling IP27 with your patch gives
 
-this makes the difference. Both decompress.c files include asm/unaligned.h.
+WARNING: unmet direct dependencies detected for NUMA
+  Depends on [n]: SYS_SUPPORTS_NUMA [=y] && SMP [=n]
+  Selected by [y]:
+  - SGI_IP27 [=y] && <choice>
 
-I've added the #include, fixed the get_unaligned_le32 in the description
-and applied it to mips-fixes.
+WARNING: unmet direct dependencies detected for NUMA
+  Depends on [n]: SYS_SUPPORTS_NUMA [=y] && SMP [=n]
+  Selected by [y]:
+  - SGI_IP27 [=y] && <choice>
+
+WARNING: unmet direct dependencies detected for NUMA
+  Depends on [n]: SYS_SUPPORTS_NUMA [=y] && SMP [=n]
+  Selected by [y]:
+  - SGI_IP27 [=y] && <choice>
+
+If I use "select SMP" instead both ip27 and loongson64 compile.
+
+If you are ok with this change, I'll change it while appling your
+patch.
 
 Thomas.
 

@@ -7,33 +7,33 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30AD2C433DB
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Dec 2020 21:23:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 750A7C433E0
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Dec 2020 21:23:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E961E206CB
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Dec 2020 21:23:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4B945206F1
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Dec 2020 21:23:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbgL3VXJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Dec 2020 16:23:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60292 "EHLO
+        id S1726197AbgL3VX1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Dec 2020 16:23:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgL3VXJ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Dec 2020 16:23:09 -0500
+        with ESMTP id S1726463AbgL3VX0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Dec 2020 16:23:26 -0500
 Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07BC4C061573
-        for <linux-mips@vger.kernel.org>; Wed, 30 Dec 2020 13:22:28 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD76C06179C
+        for <linux-mips@vger.kernel.org>; Wed, 30 Dec 2020 13:22:46 -0800 (PST)
 Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
         (envelope-from <bert@biot.com>)
-        id 1kuivK-00AlvG-US
-        for linux-mips@vger.kernel.org; Wed, 30 Dec 2020 22:22:27 +0100
+        id 1kuivc-00Alwl-Kh
+        for linux-mips@vger.kernel.org; Wed, 30 Dec 2020 22:22:44 +0100
 Received: from [2a02:578:460c:1:ae1f:6bff:fed1:9ca8] (helo=sumner.biot.com)
         by yawp.biot.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <bert@biot.com>)
-        id 1kuivB-00Alub-8g; Wed, 30 Dec 2020 22:22:17 +0100
+        id 1kuiv9-00Alu9-OF; Wed, 30 Dec 2020 22:22:15 +0100
 Received: from bert by sumner.biot.com with local (Exim 4.93)
         (envelope-from <bert@biot.com>)
-        id 1kuivA-00Avne-ON; Wed, 30 Dec 2020 22:22:16 +0100
+        id 1kuiv9-00AvnY-Ah; Wed, 30 Dec 2020 22:22:15 +0100
 From:   Bert Vermeulen <bert@biot.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Rob Herring <robh+dt@kernel.org>,
@@ -41,9 +41,9 @@ To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org
 Cc:     Bert Vermeulen <bert@biot.com>
-Subject: [PATCH v3 4/4] dts: Add support for Cisco SG220-26 switch
-Date:   Wed, 30 Dec 2020 22:22:05 +0100
-Message-Id: <20201230212205.2605383-4-bert@biot.com>
+Subject: [PATCH v3 2/4] MIPS: Add Realtek RTL838x/RTL839x support as generic MIPS system
+Date:   Wed, 30 Dec 2020 22:22:03 +0100
+Message-Id: <20201230212205.2605383-2-bert@biot.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201230212205.2605383-1-bert@biot.com>
 References: <20201230212205.2605383-1-bert@biot.com>
@@ -53,132 +53,96 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+This is just enough system to boot the kernel with earlycon working.
+
 Signed-off-by: Bert Vermeulen <bert@biot.com>
 Signed-off-by: Sander Vanheule <sander@svanheule.net>
 ---
- arch/mips/Kconfig                             | 10 +++
- arch/mips/boot/dts/realtek/Makefile           |  2 +
- arch/mips/boot/dts/realtek/cisco_sg220-26.dts | 81 +++++++++++++++++++
- 3 files changed, 93 insertions(+)
- create mode 100644 arch/mips/boot/dts/realtek/Makefile
- create mode 100644 arch/mips/boot/dts/realtek/cisco_sg220-26.dts
+ arch/mips/Kconfig                       | 21 ++++++++++++++++++
+ arch/mips/generic/Platform              |  1 +
+ arch/mips/include/asm/realtek/ioremap.h | 29 +++++++++++++++++++++++++
+ 3 files changed, 51 insertions(+)
+ create mode 100644 arch/mips/include/asm/realtek/ioremap.h
 
 diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 0986d0c4405f..a398416842ca 100644
+index 0a17bedf4f0d..0986d0c4405f 100644
 --- a/arch/mips/Kconfig
 +++ b/arch/mips/Kconfig
-@@ -1055,6 +1055,16 @@ config NLM_XLP_BOARD
+@@ -627,6 +627,27 @@ config RALINK
+ 	select ARCH_HAS_RESET_CONTROLLER
+ 	select RESET_CONTROLLER
  
- endchoice
++config MACH_REALTEK_RTL
++	bool "Realtek RTL838x/RTL839x based machines"
++	select MIPS_GENERIC
++	select DMA_NONCOHERENT
++	select IRQ_MIPS_CPU
++	select CSRC_R4K
++	select CEVT_R4K
++	select SYS_HAS_CPU_MIPS32_R1
++	select SYS_HAS_CPU_MIPS32_R2
++	select SYS_SUPPORTS_BIG_ENDIAN
++	select SYS_SUPPORTS_32BIT_KERNEL
++	select SYS_SUPPORTS_MIPS16
++	select SYS_SUPPORTS_MULTITHREADING
++	select SYS_SUPPORTS_VPE_LOADER
++	select SYS_HAS_EARLY_PRINTK
++	select SYS_HAS_EARLY_PRINTK_8250
++	select USE_GENERIC_EARLY_PRINTK_8250
++	select BOOT_RAW
++	select PINCTRL
++	select USE_OF
++
+ config SGI_IP22
+ 	bool "SGI IP22 (Indy/Indigo2)"
+ 	select ARC_MEMORY
+diff --git a/arch/mips/generic/Platform b/arch/mips/generic/Platform
+index b871af16b5b6..5dff52295b0a 100644
+--- a/arch/mips/generic/Platform
++++ b/arch/mips/generic/Platform
+@@ -10,6 +10,7 @@
  
-+if MACH_REALTEK_RTL
-+choice
-+	prompt "Realtek RTL838x/RTL839x-based switch"
-+	optional
-+
-+	config DT_CISCO_SG220_26
-+		bool "Cisco SG220-26"
-+endchoice
-+endif
-+
- source "arch/mips/alchemy/Kconfig"
- source "arch/mips/ath25/Kconfig"
- source "arch/mips/ath79/Kconfig"
-diff --git a/arch/mips/boot/dts/realtek/Makefile b/arch/mips/boot/dts/realtek/Makefile
+ # Note: order matters, keep the asm/mach-generic include last.
+ cflags-$(CONFIG_MACH_INGENIC_SOC)	+= -I$(srctree)/arch/mips/include/asm/mach-ingenic
++cflags-$(CONFIG_MACH_REALTEK_RTL)	+= -I$(srctree)/arch/mips/include/asm/realtek
+ cflags-$(CONFIG_MIPS_GENERIC)	+= -I$(srctree)/arch/mips/include/asm/mach-generic
+ 
+ load-$(CONFIG_MIPS_GENERIC)	+= 0xffffffff80100000
+diff --git a/arch/mips/include/asm/realtek/ioremap.h b/arch/mips/include/asm/realtek/ioremap.h
 new file mode 100644
-index 000000000000..f0a3e5816767
+index 000000000000..ea51af023e26
 --- /dev/null
-+++ b/arch/mips/boot/dts/realtek/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0
-+dtb-$(CONFIG_DT_CISCO_SG220_26)		+= cisco_sg220-26.dtb
-diff --git a/arch/mips/boot/dts/realtek/cisco_sg220-26.dts b/arch/mips/boot/dts/realtek/cisco_sg220-26.dts
-new file mode 100644
-index 000000000000..5d8ba3df95aa
---- /dev/null
-+++ b/arch/mips/boot/dts/realtek/cisco_sg220-26.dts
-@@ -0,0 +1,81 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause
++++ b/arch/mips/include/asm/realtek/ioremap.h
+@@ -0,0 +1,29 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef _REALTEK_RTL_IOREMAP_H_
++#define _REALTEK_RTL_IOREMAP_H_
 +
-+/dts-v1/;
++static inline int is_rtl8380_internal_registers(phys_addr_t offset)
++{
++	/* IO Block */
++	if (offset >= 0xb8000000 && offset < 0xb9000000)
++		return 1;
++	/* Switch block */
++	if (offset >= 0xbb000000 && offset < 0xbc000000)
++		return 1;
++	return 0;
++}
 +
-+#include "rtl83xx.dtsi"
-+#include "rtl838x.dtsi"
++static inline void __iomem *plat_ioremap(phys_addr_t offset, unsigned long size,
++					 unsigned long flags)
++{
++	if (is_rtl8380_internal_registers(offset))
++		return (void __iomem *)offset;
++	return NULL;
++}
 +
-+/ {
-+	model = "Cisco SG220-26";
-+	compatible = "cisco,sg220-26", "realtek,rtl8382-soc";
++static inline int plat_iounmap(const volatile void __iomem *addr)
++{
++	return is_rtl8380_internal_registers((unsigned long)addr);
++}
 +
-+	chosen {
-+		stdout-path = "serial0:9600n8";
-+		bootargs = "earlycon console=ttyS0,9600";
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x8000000>;
-+	};
-+};
-+
-+&uart0 {
-+	status = "okay";
-+};
-+
-+&spi {
-+	status = "okay";
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		spi-max-frequency = <10000000>;
-+		reg = <0>;
-+		m25p,fast-read;
-+		broken-flash-reset;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			loader: partition@0 {
-+				label = "boot";
-+				reg = <0x0 0x80000>;
-+				read-only;
-+			};
-+
-+			bdinfo: partition@80000 {
-+				label = "bdinfo";
-+				reg = <0x80000 0x10000>;
-+				read-only;
-+			};
-+
-+			sysinfo: partition@90000 {
-+				label = "sysinfo";
-+				reg = <0x90000 0x10000>;
-+				read-only;
-+			};
-+
-+			jffs2_cfg: partition@a0000 {
-+				label = "jffs2 cfg";
-+				reg = <0xa0000 0x400000>;
-+			};
-+
-+			jffs2_log: partition@4a0000 {
-+				label = "jffs2 log";
-+				reg = <0x4a0000 0x100000>;
-+			};
-+
-+			runtime: partition@5a0000 {
-+				label = "runtime";
-+				reg = <0x5a0000 0xd30000>;
-+			};
-+
-+			runtime2: partition@12d0000 {
-+				label = "runtime2";
-+				reg = <0x12d0000 0xd30000>;
-+			};
-+		};
-+	};
-+};
++#endif /* _REALTEK_RTL_IOREMAP_H_ */
 -- 
 2.25.1
 

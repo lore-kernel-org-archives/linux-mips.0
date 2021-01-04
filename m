@@ -4,31 +4,31 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90074C433DB
-	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 12:21:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2499C43381
+	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 12:21:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5F5542075B
-	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 12:21:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6FC6321E92
+	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 12:21:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726246AbhADMVg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 4 Jan 2021 07:21:36 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:14856 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbhADMVf (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 4 Jan 2021 07:21:35 -0500
-Date:   Mon, 04 Jan 2021 12:20:40 +0000
+        id S1726661AbhADMVm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 4 Jan 2021 07:21:42 -0500
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:26930 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726325AbhADMVm (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 4 Jan 2021 07:21:42 -0500
+Date:   Mon, 04 Jan 2021 12:20:57 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1609762851; bh=hjIccLTNrNOzUNrqAIbTw81FXVcf6wB+LAQsEABOGxY=;
+        t=1609762860; bh=FmvdsZCHCCE79sjLAYIX/gq7paKAr3hB9iXFALHlrb4=;
         h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=RQmaKRugTD/OeHYkAjO46QoqnmWf4vDA/hVurOPWLM43feFjotxLEqLXf4SIdbdY0
-         GM0Jwqw3IuoKAmy8SPIi1f0sIA4ErhYws50NCN9yDJMeMAcGZwgyiODtDsVS1YDmVs
-         uFPIxJoU0niqPvOVZJQS84du1doJ9mYeFrwoKTVXk8PIk85flTUYliB03ITyCuQm0f
-         gSN00ogvn1rI7qWL1Ysru2P0GnpUAIboZt8Mm7TyhMmTke1erjEuujESu0p+1AfWy6
-         7Bg61m3T1YxJdawcNIyh3QZSCJmDSDmZVnWN8TjJ9Q0bvaCxDN1/rlVFI3PEfcwK2R
-         Ikszf/9yWBGVQ==
+        b=iA7fIKU+iUGl8//KALpAwglGMr5bbfoGRBV0KXWxYGgiY+xJfFF0Uu/ZnFJ3d9zf6
+         F5IzM9pVLffdB9/RrvxNF75hHhZUmHIEDUD4TdEGjqZcwtsgkaMGT/QiwlgjlQz11n
+         WD2k0M/tQeEc6eQZ84AT41ZjdG9o9VQOxJYDkH+unsRuZnRCeJQT4vaBjW80qIFhRZ
+         nvVb1CbKri8IbpOKf6CCbrrvZdGlFuhC3mYue+leQ72E3cAcutiyYjVguTNtb19gOU
+         dzpj9taWqP1L0j8ex9aoneS99+iQixpcPcuzZJ31ZI5wzLlxmkoIUxrKlxnrhtuumv
+         e1Wm73KNVeLcw==
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 From:   Alexander Lobakin <alobakin@pm.me>
 Cc:     Alexander Lobakin <alobakin@pm.me>,
@@ -42,10 +42,10 @@ Cc:     Alexander Lobakin <alobakin@pm.me>,
         linux-mips@vger.kernel.org, stable@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH mips-next 1/4] MIPS: vmlinux.lds.S: add missing PAGE_ALIGNED_DATA() section
-Message-ID: <20210104122016.47308-1-alobakin@pm.me>
-In-Reply-To: <20210104121729.46981-1-alobakin@pm.me>
-References: <20210104121729.46981-1-alobakin@pm.me>
+Subject: [PATCH mips-next 4/4] MIPS: select ARCH_WANT_LD_ORPHAN_WARN
+Message-ID: <20210104122016.47308-4-alobakin@pm.me>
+In-Reply-To: <20210104122016.47308-1-alobakin@pm.me>
+References: <20210104121729.46981-1-alobakin@pm.me> <20210104122016.47308-1-alobakin@pm.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -53,62 +53,27 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-MIPS uses its own declaration of rwdata, and thus it should be kept
-in sync with the asm-generic one. Currently PAGE_ALIGNED_DATA() is
-missing from the linker script, which emits the following ld
-warnings:
+Now, after that all the sections are explicitly described and
+declared in vmlinux.lds.S, we can enable ld orphan warnings to
+prevent from missing any new sections in future.
 
-mips-alpine-linux-musl-ld: warning: orphan section
-`.data..page_aligned' from `arch/mips/kernel/vdso.o' being placed
-in section `.data..page_aligned'
-mips-alpine-linux-musl-ld: warning: orphan section
-`.data..page_aligned' from `arch/mips/vdso/vdso-image.o' being placed
-in section `.data..page_aligned'
-
-Add the necessary declaration, so the mentioned structures will be
-placed in vmlinux as intended:
-
-ffffffff80630580 D __end_once
-ffffffff80630580 D __start___dyndbg
-ffffffff80630580 D __start_once
-ffffffff80630580 D __stop___dyndbg
-ffffffff80634000 d mips_vdso_data
-ffffffff80638000 d vdso_data
-ffffffff80638580 D _gp
-ffffffff8063c000 T __init_begin
-ffffffff8063c000 D _edata
-ffffffff8063c000 T _sinittext
-
-->
-
-ffffffff805a4000 D __end_init_task
-ffffffff805a4000 D __nosave_begin
-ffffffff805a4000 D __nosave_end
-ffffffff805a4000 d mips_vdso_data
-ffffffff805a8000 d vdso_data
-ffffffff805ac000 D mmlist_lock
-ffffffff805ac080 D tasklist_lock
-
-Fixes: ebb5e78cc634 ("MIPS: Initial implementation of a VDSO")
-Cc: stable@vger.kernel.org # 4.4+
 Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 ---
- arch/mips/kernel/vmlinux.lds.S | 1 +
+ arch/mips/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.=
-S
-index 5e97e9d02f98..83e27a181206 100644
---- a/arch/mips/kernel/vmlinux.lds.S
-+++ b/arch/mips/kernel/vmlinux.lds.S
-@@ -90,6 +90,7 @@ SECTIONS
-=20
- =09=09INIT_TASK_DATA(THREAD_SIZE)
- =09=09NOSAVE_DATA
-+=09=09PAGE_ALIGNED_DATA(PAGE_SIZE)
- =09=09CACHELINE_ALIGNED_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
- =09=09READ_MOSTLY_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
- =09=09DATA_DATA
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index d68df1febd25..d3e64cc0932b 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -18,6 +18,7 @@ config MIPS
+ =09select ARCH_USE_QUEUED_SPINLOCKS
+ =09select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
+ =09select ARCH_WANT_IPC_PARSE_VERSION
++=09select ARCH_WANT_LD_ORPHAN_WARN
+ =09select BUILDTIME_TABLE_SORT
+ =09select CLONE_BACKWARDS
+ =09select CPU_NO_EFFICIENT_FFS if (TARGET_ISA_REV < 1)
 --=20
 2.30.0
 

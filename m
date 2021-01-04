@@ -2,92 +2,100 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 786F7C433DB
-	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 15:43:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85A2DC433E0
+	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 15:43:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 34A8422286
-	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 15:43:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 570C222286
+	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 15:43:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727231AbhADPnn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 4 Jan 2021 10:43:43 -0500
-Received: from mout.gmx.net ([212.227.15.15]:37107 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727166AbhADPnm (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 4 Jan 2021 10:43:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1609774930;
-        bh=FRmB1lcrJAP/pEZFGwDlULCix3fF+Jo/5C+FYatJ8nw=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=TOvmoBfdyiDBHEwG2uY5+FKnn9hvKK1MUaXPuBMOy9iEa2xaB+sEP8AUpFXM+GaVO
-         Rr9RjK3m1r7KzxV5fb7GPEERPGt74ril9Odbn3lpb5GakZBMSkWV5sDMw37p2n9PFk
-         V9PoIuKb4n+GFwjjTO503Mkl3evG+FSOaFjnCTWg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from Valinor ([82.128.181.212]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MRTRH-1kbK4d17sj-00NTPi; Mon, 04
- Jan 2021 16:42:10 +0100
-Date:   Mon, 4 Jan 2021 17:43:48 +0200
-From:   Lauri Kasanen <cand@gmx.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
-        linux-block@vger.kernel.org
-Subject: Re: [PATCH 6/6] block: Add n64 cart driver
-Message-Id: <20210104174348.cda010a3af0ec3d989732b37@gmx.com>
-In-Reply-To: <944dd5af-c5d0-b37c-29ca-0213ea6081db@kernel.dk>
-References: <20210104155031.9b4e39ff48a6d7accc93461d@gmx.com>
-        <944dd5af-c5d0-b37c-29ca-0213ea6081db@kernel.dk>
-X-Mailer: Sylpheed 3.5.0 (GTK+ 2.18.6; x86_64-unknown-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:QzGaGxwZ4fq0LsWu3EYfTufwbnPeMnjmK2Izen2G/pHkzrCd2+G
- J64M42i2u5p4iUcaJV0yDKeE/vnVZq6U/SyJZiAlfwXK8RX4VKyfCVD9VtkBZT8RJymY0jE
- YU/9Lo9SmFJpM01s9IWkeVp1mRVdvqPzCnyW5J9KNyYt0Oa5LI2Pzm4dlS9/Qcz+T7NJJ4N
- ZJ5yInggJf33C3TRjrU6A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:d9ES2pwKw/0=:ibFDeBhvVRFztqhy75w6F8
- XADsMtIdnCPFdrt+Gjplh1ejWPoPc9c/y4PHRkg5w88Nm86bUZ4RdGxbtSN/anKYLef0H63zH
- lKCyjS/F88t2mJhbjW8Lx9eOjVUBfWKm5DARsGvpiO9pDKT4OOTPcncqh0SYhCcvoaNCptaWM
- 70pKXKB4JhalzGHXqmqZ5dRIUIXBq5Oq4M6G3iajTYpt5Q/mTlR6wzEbQpbDKuNYQsHoPqYnk
- xCTF4RRRTTpvraHASRzH1251yY2uu1WcXnCMdwH72LvfpxjlxtE9o9lEKNZPZjJrm5Q6v4m3B
- 8zMuQ0nx1M/RUco1ZtWh7acC0Rz5hxo6ZK6CTLT6cjv53rIcqHt1s9nVhCQW6yLqotvkPHRIx
- DIVSW26Wk44rYkdrOYi6prUZLWeL0ahZs2QUrQ2BfBYmQ2poC5ppurgza37hnFPNKAy9NqI7f
- VfMgHKYFlY+rX5qV0GMiTUHyHjb7IAir8P93XcfBg4M6DD4XJ+s/g58ziYEzYu2zeYa7fKXpo
- 2dfppA/Et1br+VXA3pMWJZoRiJdIsUk0nzVZdjcoqkMJa2xAHxX7mFYQR4m0BP1IeiL8T378W
- mu2rXmHCS/cGfx/3yk0r8BXo0UKPii6HNipgX9adykCCTjUwfgzN+FurpBCUdijbuVEUw7Uvv
- siuwvYFTlunrh6D8wVNDwk0BdBn0BxLD0Yy9pG0HmFj4DJk3ZXt/6eYWuWO74AsybQYZ4WSYy
- muBh/A6am3QczJLcR2iOf3MlTF0RkJgCrmeDikUozUpEoSLrLNMwTQ4Ywl2E1Fn1RFYWbm3Os
- agtEEfeKDVi7WMtb/cBrViS+zCfvebZWkliQ7NMuxqMKvk1l6klpbbBljz3qZgmRJrQqhl4VM
- +U8o3hKme6KI+TORqShA==
+        id S1727182AbhADPnr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 4 Jan 2021 10:43:47 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:50167 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727407AbhADPnr (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 4 Jan 2021 10:43:47 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 2453A60005;
+        Mon,  4 Jan 2021 15:43:04 +0000 (UTC)
+Date:   Mon, 4 Jan 2021 16:43:03 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH 1/2] rtc: goldfish: Remove GOLDFISH dependency
+Message-ID: <20210104154303.GD3313@piout.net>
+References: <20201114130921.651882-1-jiaxun.yang@flygoat.com>
+ <20201114130921.651882-2-jiaxun.yang@flygoat.com>
+ <CAMuHMdXo9o9af-YBt5g53QHRhuLxdSy_C9n4wdEEh7yzDidr-w@mail.gmail.com>
+ <20210104144841.GC3313@piout.net>
+ <CAMuHMdWGnBcYvXLnydSnkxcmG6GksZLfq1aWADuWg8ibZ3V8Lg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWGnBcYvXLnydSnkxcmG6GksZLfq1aWADuWg8ibZ3V8Lg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, 4 Jan 2021 08:40:10 -0700
-Jens Axboe <axboe@kernel.dk> wrote:
-
-> On 1/4/21 6:50 AM, Lauri Kasanen wrote:
-> > Signed-off-by: Lauri Kasanen <cand@gmx.com>
-> > ---
-> >  drivers/block/Kconfig   |   6 ++
-> >  drivers/block/Makefile  |   1 +
-> >  drivers/block/n64cart.c | 203 +++++++++++++++++++++++++++++++++++++++=
-+++++++++
-> >  3 files changed, 210 insertions(+)
-> >  create mode 100644 drivers/block/n64cart.c
+On 04/01/2021 16:21:31+0100, Geert Uytterhoeven wrote:
+> Hi Alexandre,
+> 
+> On Mon, Jan 4, 2021 at 3:48 PM Alexandre Belloni
+> <alexandre.belloni@bootlin.com> wrote:
+> > On 04/01/2021 14:28:26+0100, Geert Uytterhoeven wrote:
+> > > On Sat, Nov 14, 2020 at 2:20 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+> > > > Goldfish platform is covered with dust.
+> > > > However the goldfish-rtc had been used as virtualized RTC
+> > > > in QEMU for RISC-V virt hw and MIPS loongson3-virt hw, thus
+> > > > we can drop other parts of goldfish but leave goldfish-rtc here.
+> > > >
+> > > > Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> > >
+> > > Thanks for your patch!
+> > >
+> > > > --- a/drivers/rtc/Kconfig
+> > > > +++ b/drivers/rtc/Kconfig
+> > > > @@ -1935,7 +1935,6 @@ config RTC_DRV_HID_SENSOR_TIME
+> > > >  config RTC_DRV_GOLDFISH
+> > > >         tristate "Goldfish Real Time Clock"
+> > > >         depends on OF && HAS_IOMEM
+> > > > -       depends on GOLDFISH || COMPILE_TEST
+> > > >         help
+> > > >           Say yes to enable RTC driver for the Goldfish based virtual platform.
+> > >
+> > > I was just looking to see if someone had already sent a patch to add
+> > > "depends on GOLDFISH || COMPILE_TEST", before sending one myself, when I
+> > > noticed your patch had removed it...
+> > >
+> > > What about
+> > >
+> > >     depends on CPU_LOONGSON64 || GOLDFISH || RISCV || COMPILE_TEST
+> > >
+> > > instead?
+> > >
 > >
-> > block folks: rest of the series is on linux-mips. Being a
-> > mips-specific driver, not sure which tree it should go to.
->
-> It should definitely get reviewed first. One easy question - there's no
-> commit message in this one. It's a new driver, it should include some
-> documentation on what it is, etc.
+> > But this driver also works on ARM, is it really important to restrict to
+> > a few architectures ?
+> 
+> Is it used on ARM platforms?
+> qemu:hw/riscv/Kconfig selects GOLDFISH_RTC, but that's it?
+> 
 
-It's already had one (rfc) round on linux-mips. Or do you mean by
-others (who?)
+My understanding is that this was used on the original ARM based goldfish
+android emulator but I don't think this was ever upstreamed.
 
-- Lauri
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com

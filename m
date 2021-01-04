@@ -2,100 +2,105 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85A2DC433E0
-	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 15:43:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78AC4C43381
+	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 15:49:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 570C222286
-	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 15:43:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 46A0420735
+	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 15:49:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727182AbhADPnr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 4 Jan 2021 10:43:47 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:50167 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727407AbhADPnr (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 4 Jan 2021 10:43:47 -0500
-X-Originating-IP: 86.202.109.140
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 2453A60005;
-        Mon,  4 Jan 2021 15:43:04 +0000 (UTC)
-Date:   Mon, 4 Jan 2021 16:43:03 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH 1/2] rtc: goldfish: Remove GOLDFISH dependency
-Message-ID: <20210104154303.GD3313@piout.net>
-References: <20201114130921.651882-1-jiaxun.yang@flygoat.com>
- <20201114130921.651882-2-jiaxun.yang@flygoat.com>
- <CAMuHMdXo9o9af-YBt5g53QHRhuLxdSy_C9n4wdEEh7yzDidr-w@mail.gmail.com>
- <20210104144841.GC3313@piout.net>
- <CAMuHMdWGnBcYvXLnydSnkxcmG6GksZLfq1aWADuWg8ibZ3V8Lg@mail.gmail.com>
+        id S1727310AbhADPtp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 4 Jan 2021 10:49:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727391AbhADPtp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 4 Jan 2021 10:49:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C7452245C;
+        Mon,  4 Jan 2021 15:49:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609775344;
+        bh=DDZiFQjgBagC83hsc5nY6Bb6Qby4XeHxkTeVloPqZpE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nPi8BB28PMPqD8H82FQrBA9sORa5t997Ak9Fe5ZT2ZbT8dkr/6DEn16IU/hBXNT7K
+         AAjoQpEZgH7WM++Fm5dtG7u+VD3WGnHaZ4FAWxFNIwhj70L27G/tB/N2jt+DItBdJW
+         T07iwwUAZ8xA0n1vwdUHl+mr9IzwaXU4CBnsTaeKdqd0SP8VVpTybixb77/N6Sdi6Z
+         UqYnb5gGQtPDQbvrUu3bUAzEU8C0clgvOa3tt49YT7eruOmWQIFWwD6FJZ4nfBSDyx
+         HSoW1uk9c3WDu/ZZK+Pe8/homGkS1HCmdicHDPdZgaRbkrRWCM0DWCmgJzjWb44rHt
+         v02VzyyTaStBg==
+Date:   Mon, 4 Jan 2021 07:49:02 -0800
+From:   Keith Busch <kbusch@kernel.org>
+To:     Lauri Kasanen <cand@gmx.com>
+Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
+        axboe@kernel.dk, linux-block@vger.kernel.org
+Subject: Re: [PATCH 6/6] block: Add n64 cart driver
+Message-ID: <20210104154902.GA1024941@dhcp-10-100-145-180.wdc.com>
+References: <20210104155031.9b4e39ff48a6d7accc93461d@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdWGnBcYvXLnydSnkxcmG6GksZLfq1aWADuWg8ibZ3V8Lg@mail.gmail.com>
+In-Reply-To: <20210104155031.9b4e39ff48a6d7accc93461d@gmx.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 04/01/2021 16:21:31+0100, Geert Uytterhoeven wrote:
-> Hi Alexandre,
-> 
-> On Mon, Jan 4, 2021 at 3:48 PM Alexandre Belloni
-> <alexandre.belloni@bootlin.com> wrote:
-> > On 04/01/2021 14:28:26+0100, Geert Uytterhoeven wrote:
-> > > On Sat, Nov 14, 2020 at 2:20 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
-> > > > Goldfish platform is covered with dust.
-> > > > However the goldfish-rtc had been used as virtualized RTC
-> > > > in QEMU for RISC-V virt hw and MIPS loongson3-virt hw, thus
-> > > > we can drop other parts of goldfish but leave goldfish-rtc here.
-> > > >
-> > > > Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> > >
-> > > Thanks for your patch!
-> > >
-> > > > --- a/drivers/rtc/Kconfig
-> > > > +++ b/drivers/rtc/Kconfig
-> > > > @@ -1935,7 +1935,6 @@ config RTC_DRV_HID_SENSOR_TIME
-> > > >  config RTC_DRV_GOLDFISH
-> > > >         tristate "Goldfish Real Time Clock"
-> > > >         depends on OF && HAS_IOMEM
-> > > > -       depends on GOLDFISH || COMPILE_TEST
-> > > >         help
-> > > >           Say yes to enable RTC driver for the Goldfish based virtual platform.
-> > >
-> > > I was just looking to see if someone had already sent a patch to add
-> > > "depends on GOLDFISH || COMPILE_TEST", before sending one myself, when I
-> > > noticed your patch had removed it...
-> > >
-> > > What about
-> > >
-> > >     depends on CPU_LOONGSON64 || GOLDFISH || RISCV || COMPILE_TEST
-> > >
-> > > instead?
-> > >
-> >
-> > But this driver also works on ARM, is it really important to restrict to
-> > a few architectures ?
-> 
-> Is it used on ARM platforms?
-> qemu:hw/riscv/Kconfig selects GOLDFISH_RTC, but that's it?
-> 
+On Mon, Jan 04, 2021 at 03:50:31PM +0200, Lauri Kasanen wrote:
+> block folks: rest of the series is on linux-mips. Being a mips-specific driver,
+> not sure which tree it should go to.
 
-My understanding is that this was used on the original ARM based goldfish
-android emulator but I don't think this was ever upstreamed.
+Probably through mips.
+ 
+> +static void n64cart_wait_dma(void)
+> +{
+> +	while (n64cart_read_reg(PI_STATUS_REG) &
+> +		(PI_STATUS_DMA_BUSY | PI_STATUS_IO_BUSY))
+> +		;
+> +}
 
+These sorts of loops generally call cpu_relax().
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> +static blk_status_t get_seg(struct request *req)
+> +{
+> +	u32 bstart = blk_rq_pos(req) * 512;
+> +	u32 len = blk_rq_cur_bytes(req);
+> +	void *dst = bio_data(req->bio);
+> +
+> +	if (bstart + len > size || rq_data_dir(req) == WRITE)
+> +		return BLK_STS_IOERR;
+
+If you don't support writes (is that limitation temporary?), then you
+can prevent such operations from reaching the driver by setting the
+"disk" to read-only during initialization with set_disk_ro(disk, true).
+
+> +static blk_status_t n64cart_queue_rq(struct blk_mq_hw_ctx *hctx,
+> +				     const struct blk_mq_queue_data *bd)
+> +{
+> +	unsigned long flags;
+> +	struct request *req = bd->rq;
+> +	blk_status_t err;
+> +
+> +	blk_mq_start_request(req);
+> +
+> +	spin_lock_irqsave(&n64cart_lock, flags);
+
+The .queue_rq() isn't called from an interrupts disabled context, so
+there should be no need to save the flags. And since you're not taking
+this lock from an interrupt context anywhere else, I don't think you
+need to use the spin_lock_irq() variant either.
+
+But since you just want to single-thread all IO, you could get that by
+setting your tagset queue_depth to 1 and remove the spinlock entirely.
+
+> +static int __init n64cart_init(void)
+> +{
+> +	int err;
+> +
+> +	if (!start || !size) {
+> +		pr_err("n64cart: start and size not specified\n");
+> +		return -ENODEV;
+> +	}
+
+Just curious, is it not possible to discover these values from the
+installed cart? Requiring module parameters seems a bit fragile.

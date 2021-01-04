@@ -2,143 +2,92 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22FABC433E6
-	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 15:42:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 786F7C433DB
+	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 15:43:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E73A722286
-	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 15:42:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 34A8422286
+	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 15:43:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727453AbhADPml (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 4 Jan 2021 10:42:41 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:25825 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727317AbhADPml (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 4 Jan 2021 10:42:41 -0500
-Date:   Mon, 04 Jan 2021 15:41:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1609774914; bh=n+CrnFEd2Lw5K6HjyRrpeVi2Si8UENB1mJAwqXegCSA=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=aKt1KmZa7kkUKj6U02aWZirM/7iOS7atgvVWoGItBvC8Y3iWGLj0EkW1nPS2UhntN
-         Q2cSQ1LB9UhKPc7zbIBWGlbbAKIdvpu4kEJhp5a9jj3W/mQhCYvoMpXNHQFdXhfWcj
-         kaNUWtSEKi2Ka9Uc3GrXQuErigvz6sxzezNlcLO/T4WySD8ee6Pep+hc2oogRB8CTI
-         1q9MFQzSId3PfVVa7xSskSP/jEhgYs7JbrvjTk8xhtlDCRRFz3G6CTS7jduaepK1N9
-         RC/yxjA0TMyNGto98WOuhd8deYmYcVbuXk3Lae94W6L/EpXTcI5VEjy3bRZ0SfmPhx
-         pTEqNdgh2osqA==
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Paul Burton <paulburton@kernel.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH mips-next] MIPS: UAPI: unexport unistd_nr_{n32,n64,o32}.h
-Message-ID: <20210104154115.213029-1-alobakin@pm.me>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1727231AbhADPnn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 4 Jan 2021 10:43:43 -0500
+Received: from mout.gmx.net ([212.227.15.15]:37107 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727166AbhADPnm (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 4 Jan 2021 10:43:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1609774930;
+        bh=FRmB1lcrJAP/pEZFGwDlULCix3fF+Jo/5C+FYatJ8nw=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=TOvmoBfdyiDBHEwG2uY5+FKnn9hvKK1MUaXPuBMOy9iEa2xaB+sEP8AUpFXM+GaVO
+         Rr9RjK3m1r7KzxV5fb7GPEERPGt74ril9Odbn3lpb5GakZBMSkWV5sDMw37p2n9PFk
+         V9PoIuKb4n+GFwjjTO503Mkl3evG+FSOaFjnCTWg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from Valinor ([82.128.181.212]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MRTRH-1kbK4d17sj-00NTPi; Mon, 04
+ Jan 2021 16:42:10 +0100
+Date:   Mon, 4 Jan 2021 17:43:48 +0200
+From:   Lauri Kasanen <cand@gmx.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
+        linux-block@vger.kernel.org
+Subject: Re: [PATCH 6/6] block: Add n64 cart driver
+Message-Id: <20210104174348.cda010a3af0ec3d989732b37@gmx.com>
+In-Reply-To: <944dd5af-c5d0-b37c-29ca-0213ea6081db@kernel.dk>
+References: <20210104155031.9b4e39ff48a6d7accc93461d@gmx.com>
+        <944dd5af-c5d0-b37c-29ca-0213ea6081db@kernel.dk>
+X-Mailer: Sylpheed 3.5.0 (GTK+ 2.18.6; x86_64-unknown-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:QzGaGxwZ4fq0LsWu3EYfTufwbnPeMnjmK2Izen2G/pHkzrCd2+G
+ J64M42i2u5p4iUcaJV0yDKeE/vnVZq6U/SyJZiAlfwXK8RX4VKyfCVD9VtkBZT8RJymY0jE
+ YU/9Lo9SmFJpM01s9IWkeVp1mRVdvqPzCnyW5J9KNyYt0Oa5LI2Pzm4dlS9/Qcz+T7NJJ4N
+ ZJ5yInggJf33C3TRjrU6A==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:d9ES2pwKw/0=:ibFDeBhvVRFztqhy75w6F8
+ XADsMtIdnCPFdrt+Gjplh1ejWPoPc9c/y4PHRkg5w88Nm86bUZ4RdGxbtSN/anKYLef0H63zH
+ lKCyjS/F88t2mJhbjW8Lx9eOjVUBfWKm5DARsGvpiO9pDKT4OOTPcncqh0SYhCcvoaNCptaWM
+ 70pKXKB4JhalzGHXqmqZ5dRIUIXBq5Oq4M6G3iajTYpt5Q/mTlR6wzEbQpbDKuNYQsHoPqYnk
+ xCTF4RRRTTpvraHASRzH1251yY2uu1WcXnCMdwH72LvfpxjlxtE9o9lEKNZPZjJrm5Q6v4m3B
+ 8zMuQ0nx1M/RUco1ZtWh7acC0Rz5hxo6ZK6CTLT6cjv53rIcqHt1s9nVhCQW6yLqotvkPHRIx
+ DIVSW26Wk44rYkdrOYi6prUZLWeL0ahZs2QUrQ2BfBYmQ2poC5ppurgza37hnFPNKAy9NqI7f
+ VfMgHKYFlY+rX5qV0GMiTUHyHjb7IAir8P93XcfBg4M6DD4XJ+s/g58ziYEzYu2zeYa7fKXpo
+ 2dfppA/Et1br+VXA3pMWJZoRiJdIsUk0nzVZdjcoqkMJa2xAHxX7mFYQR4m0BP1IeiL8T378W
+ mu2rXmHCS/cGfx/3yk0r8BXo0UKPii6HNipgX9adykCCTjUwfgzN+FurpBCUdijbuVEUw7Uvv
+ siuwvYFTlunrh6D8wVNDwk0BdBn0BxLD0Yy9pG0HmFj4DJk3ZXt/6eYWuWO74AsybQYZ4WSYy
+ muBh/A6am3QczJLcR2iOf3MlTF0RkJgCrmeDikUozUpEoSLrLNMwTQ4Ywl2E1Fn1RFYWbm3Os
+ agtEEfeKDVi7WMtb/cBrViS+zCfvebZWkliQ7NMuxqMKvk1l6klpbbBljz3qZgmRJrQqhl4VM
+ +U8o3hKme6KI+TORqShA==
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-unistd_nr_{n32,n64,o32}.h are needed only by include/asm/unistd.h,
-which is a kernel-side header file, and their contents is generally
-not for userland use.
-Move their target destination from include/generated/uapi/asm/ to
-include/generated/asm/ to disable exporting them as UAPI headers.
+On Mon, 4 Jan 2021 08:40:10 -0700
+Jens Axboe <axboe@kernel.dk> wrote:
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- arch/mips/include/asm/Kbuild       |  4 ++++
- arch/mips/include/uapi/asm/Kbuild  |  3 ---
- arch/mips/kernel/syscalls/Makefile | 16 ++++++++--------
- 3 files changed, 12 insertions(+), 11 deletions(-)
+> On 1/4/21 6:50 AM, Lauri Kasanen wrote:
+> > Signed-off-by: Lauri Kasanen <cand@gmx.com>
+> > ---
+> >  drivers/block/Kconfig   |   6 ++
+> >  drivers/block/Makefile  |   1 +
+> >  drivers/block/n64cart.c | 203 +++++++++++++++++++++++++++++++++++++++=
++++++++++
+> >  3 files changed, 210 insertions(+)
+> >  create mode 100644 drivers/block/n64cart.c
+> >
+> > block folks: rest of the series is on linux-mips. Being a
+> > mips-specific driver, not sure which tree it should go to.
+>
+> It should definitely get reviewed first. One easy question - there's no
+> commit message in this one. It's a new driver, it should include some
+> documentation on what it is, etc.
 
-diff --git a/arch/mips/include/asm/Kbuild b/arch/mips/include/asm/Kbuild
-index 198b3bafdac9..9040ff0b3a14 100644
---- a/arch/mips/include/asm/Kbuild
-+++ b/arch/mips/include/asm/Kbuild
-@@ -4,6 +4,10 @@ generated-y +=3D syscall_table_32_o32.h
- generated-y +=3D syscall_table_64_n32.h
- generated-y +=3D syscall_table_64_n64.h
- generated-y +=3D syscall_table_64_o32.h
-+generated-y +=3D unistd_nr_n32.h
-+generated-y +=3D unistd_nr_n64.h
-+generated-y +=3D unistd_nr_o32.h
-+
- generic-y +=3D export.h
- generic-y +=3D kvm_para.h
- generic-y +=3D local64.h
-diff --git a/arch/mips/include/uapi/asm/Kbuild b/arch/mips/include/uapi/asm=
-/Kbuild
-index 6db08385d3d8..fdb9c5412cd9 100644
---- a/arch/mips/include/uapi/asm/Kbuild
-+++ b/arch/mips/include/uapi/asm/Kbuild
-@@ -2,8 +2,5 @@
- generated-y +=3D unistd_n32.h
- generated-y +=3D unistd_n64.h
- generated-y +=3D unistd_o32.h
--generated-y +=3D unistd_nr_n32.h
--generated-y +=3D unistd_nr_n64.h
--generated-y +=3D unistd_nr_o32.h
-=20
- generic-y +=3D kvm_para.h
-diff --git a/arch/mips/kernel/syscalls/Makefile b/arch/mips/kernel/syscalls=
-/Makefile
-index 6efb2f6889a7..a1ce8b7dbcfa 100644
---- a/arch/mips/kernel/syscalls/Makefile
-+++ b/arch/mips/kernel/syscalls/Makefile
-@@ -44,17 +44,17 @@ $(uapi)/unistd_o32.h: $(syscallo32) $(syshdr)
-=20
- sysnr_pfx_unistd_nr_n32 :=3D N32
- sysnr_offset_unistd_nr_n32 :=3D 6000
--$(uapi)/unistd_nr_n32.h: $(syscalln32) $(sysnr)
-+$(kapi)/unistd_nr_n32.h: $(syscalln32) $(sysnr)
- =09$(call if_changed,sysnr)
-=20
- sysnr_pfx_unistd_nr_n64 :=3D 64
- sysnr_offset_unistd_nr_n64 :=3D 5000
--$(uapi)/unistd_nr_n64.h: $(syscalln64) $(sysnr)
-+$(kapi)/unistd_nr_n64.h: $(syscalln64) $(sysnr)
- =09$(call if_changed,sysnr)
-=20
- sysnr_pfx_unistd_nr_o32 :=3D O32
- sysnr_offset_unistd_nr_o32 :=3D 4000
--$(uapi)/unistd_nr_o32.h: $(syscallo32) $(sysnr)
-+$(kapi)/unistd_nr_o32.h: $(syscallo32) $(sysnr)
- =09$(call if_changed,sysnr)
-=20
- systbl_abi_syscall_table_32_o32 :=3D 32_o32
-@@ -79,14 +79,14 @@ $(kapi)/syscall_table_64_o32.h: $(syscallo32) $(systbl)
-=20
- uapisyshdr-y=09=09+=3D unistd_n32.h=09=09=09\
- =09=09=09   unistd_n64.h=09=09=09\
--=09=09=09   unistd_o32.h=09=09=09\
--=09=09=09   unistd_nr_n32.h=09=09\
--=09=09=09   unistd_nr_n64.h=09=09\
--=09=09=09   unistd_nr_o32.h
-+=09=09=09   unistd_o32.h
- kapisyshdr-y=09=09+=3D syscall_table_32_o32.h=09\
- =09=09=09   syscall_table_64_n32.h=09\
- =09=09=09   syscall_table_64_n64.h=09\
--=09=09=09   syscall_table_64_o32.h
-+=09=09=09   syscall_table_64_o32.h=09\
-+=09=09=09   unistd_nr_n32.h=09=09\
-+=09=09=09   unistd_nr_n64.h=09=09\
-+=09=09=09   unistd_nr_o32.h
-=20
- targets=09+=3D $(uapisyshdr-y) $(kapisyshdr-y)
-=20
---=20
-2.30.0
+It's already had one (rfc) round on linux-mips. Or do you mean by
+others (who?)
 
-
+- Lauri

@@ -2,85 +2,98 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFD04C433E0
-	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 12:22:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED283C43331
+	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 13:29:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BB83C207B1
-	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 12:22:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B41C7221F9
+	for <linux-mips@archiver.kernel.org>; Mon,  4 Jan 2021 13:29:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726148AbhADMWY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 4 Jan 2021 07:22:24 -0500
-Received: from mail-03.mail-europe.com ([91.134.188.129]:56026 "EHLO
-        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725840AbhADMWX (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 4 Jan 2021 07:22:23 -0500
-Date:   Mon, 04 Jan 2021 12:20:52 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1609762853; bh=SIcv4XaKrE3sjxZfC8U6t0751adTjmCuETpzD6NuSCs=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=bPMmaBiAOhYlDJK/WP/HejMz608GEwc4rUQd3zhL6wzuyuY7BGoviLNtY/TRG/QQj
-         1Lnm8VO6jaYUmvQ5BukLRA3Vgto2s225dVo/Fl/MiYpv5SLQCn0KFpJPOFuk2Pnk5K
-         VHt/G6EpflXQo3uLKWn3FCgetsywnCUs43v4X7Nn/cbODlUwyFk/TAHUrTZxClz21S
-         S9GzydYwIHrYfY79v/ECshGODjFcK034OAOPbp09euD4AEW09WryoI8RAecgCpNY6T
-         77E4PkMd3S41J9sz9k02re5tp/UwsYms57WlZOn0V11NIDhmlSiqfTTLMu61PBFs49
-         L+kNdYA80BOZA==
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Kees Cook <keescook@chromium.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Alex Smith <alex.smith@imgtec.com>,
-        Markos Chandras <markos.chandras@imgtec.com>,
-        linux-mips@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH mips-next 3/4] MIPS: vmlinux.lds.S: add ".gnu.attributes" to DISCARDS
-Message-ID: <20210104122016.47308-3-alobakin@pm.me>
-In-Reply-To: <20210104122016.47308-1-alobakin@pm.me>
-References: <20210104121729.46981-1-alobakin@pm.me> <20210104122016.47308-1-alobakin@pm.me>
+        id S1727250AbhADN3S (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 4 Jan 2021 08:29:18 -0500
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:36877 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726640AbhADN3S (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 4 Jan 2021 08:29:18 -0500
+Received: by mail-oi1-f178.google.com with SMTP id l207so32092168oib.4;
+        Mon, 04 Jan 2021 05:29:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6T4y+ecTYYYZDM41o/baqi/IkEVhIrJtoe7kFNSajtM=;
+        b=d3OGSDBlUP+1Sam+7Ckl/TZT0pxQessM5UYQUViK865476rnSsL8VurbISEPWHI7/W
+         0VUkpaYPHekOxwJblhnII79QH6Xhcs2/6T8+Z6w66Q0nCzqKGsPa6ip/2IIQVLbZEykK
+         GVGzd1BWFFVExTDjil38HZqyrvkcxpxk2Y6eXXXpIcgsUcSY0NqrpiZORSisTdodRf2x
+         cQwB8UVx6ihQ3OCmNeW2albV5HcFieI+QtrgIV8HWNIyHDYr2TMG2DRvL0lT2f9ge0XB
+         a8/r1i3RzLf+dEMSBFtCX/8i8CTFG43Vh56Nu7J5N1aWGe4jEzikvMNgNIJGXKWZ+9uh
+         i9aw==
+X-Gm-Message-State: AOAM530Hsefis+SNcCAl2C7LWQWLdCVbQP7tkZpL5sg/76NZvGnm45uu
+        5JLTsb9Fl65fHFng0a+Mj0qNEnxAWQ9L1P40S9gyL9gzjv0=
+X-Google-Smtp-Source: ABdhPJzWxDoDdBzpXC3HBt74lcMfT4hgBAR6jPj17GX1lTVdRegfSw2xQy1X8CwJYbTueBtkN9J6R9g7hLcyiq5h49g=
+X-Received: by 2002:aca:4b16:: with SMTP id y22mr17758048oia.148.1609766917308;
+ Mon, 04 Jan 2021 05:28:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20201114130921.651882-1-jiaxun.yang@flygoat.com> <20201114130921.651882-2-jiaxun.yang@flygoat.com>
+In-Reply-To: <20201114130921.651882-2-jiaxun.yang@flygoat.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 4 Jan 2021 14:28:26 +0100
+Message-ID: <CAMuHMdXo9o9af-YBt5g53QHRhuLxdSy_C9n4wdEEh7yzDidr-w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] rtc: goldfish: Remove GOLDFISH dependency
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rtc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Discard GNU attributes at link time as kernel doesn't use it at all.
-Solves a dozen of the following ld warnings (one per every file):
+Hi Jiaxun,
 
-mips-alpine-linux-musl-ld: warning: orphan section `.gnu.attributes'
-from `arch/mips/kernel/head.o' being placed in section
-`.gnu.attributes'
-mips-alpine-linux-musl-ld: warning: orphan section `.gnu.attributes'
-from `init/main.o' being placed in section `.gnu.attributes'
+On Sat, Nov 14, 2020 at 2:20 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+> Goldfish platform is covered with dust.
+> However the goldfish-rtc had been used as virtualized RTC
+> in QEMU for RISC-V virt hw and MIPS loongson3-virt hw, thus
+> we can drop other parts of goldfish but leave goldfish-rtc here.
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- arch/mips/kernel/vmlinux.lds.S | 1 +
- 1 file changed, 1 insertion(+)
+Thanks for your patch!
 
-diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.=
-S
-index 1c3c2e903062..8ac95269124a 100644
---- a/arch/mips/kernel/vmlinux.lds.S
-+++ b/arch/mips/kernel/vmlinux.lds.S
-@@ -222,6 +222,7 @@ SECTIONS
- =09=09*(.MIPS.abiflags)
- =09=09*(.MIPS.options)
- =09=09*(.eh_frame)
-+=09=09*(.gnu.attributes)
- =09=09*(.options)
- =09=09*(.pdr)
- =09=09*(.reginfo)
---=20
-2.30.0
+> --- a/drivers/rtc/Kconfig
+> +++ b/drivers/rtc/Kconfig
+> @@ -1935,7 +1935,6 @@ config RTC_DRV_HID_SENSOR_TIME
+>  config RTC_DRV_GOLDFISH
+>         tristate "Goldfish Real Time Clock"
+>         depends on OF && HAS_IOMEM
+> -       depends on GOLDFISH || COMPILE_TEST
+>         help
+>           Say yes to enable RTC driver for the Goldfish based virtual platform.
 
+I was just looking to see if someone had already sent a patch to add
+"depends on GOLDFISH || COMPILE_TEST", before sending one myself, when I
+noticed your patch had removed it...
 
+What about
+
+    depends on CPU_LOONGSON64 || GOLDFISH || RISCV || COMPILE_TEST
+
+instead?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

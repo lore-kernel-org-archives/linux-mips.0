@@ -2,104 +2,114 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1633C433E6
-	for <linux-mips@archiver.kernel.org>; Tue,  5 Jan 2021 10:32:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97B78C43381
+	for <linux-mips@archiver.kernel.org>; Tue,  5 Jan 2021 14:04:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AA9D922A84
-	for <linux-mips@archiver.kernel.org>; Tue,  5 Jan 2021 10:32:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6DB6122AAE
+	for <linux-mips@archiver.kernel.org>; Tue,  5 Jan 2021 14:04:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729177AbhAEKcT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 5 Jan 2021 05:32:19 -0500
-Received: from elvis.franken.de ([193.175.24.41]:59098 "EHLO elvis.franken.de"
+        id S1729885AbhAEOEY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 5 Jan 2021 09:04:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56788 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728462AbhAEKcT (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:32:19 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kwjcm-0004XL-00; Tue, 05 Jan 2021 11:31:36 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 5A3EFC0808; Tue,  5 Jan 2021 11:20:30 +0100 (CET)
-Date:   Tue, 5 Jan 2021 11:20:30 +0100
+        id S1727289AbhAEOEY (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 5 Jan 2021 09:04:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 34C54AD57;
+        Tue,  5 Jan 2021 14:03:41 +0000 (UTC)
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Bert Vermeulen <bert@biot.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sander Vanheule <sander@svanheule.net>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 2/4] MIPS: Add Realtek RTL838x/RTL839x support as
- generic MIPS system
-Message-ID: <20210105102030.GA7323@alpha.franken.de>
-References: <20201230212205.2605383-1-bert@biot.com>
- <20201230212205.2605383-2-bert@biot.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: [PATCH 02/10] net: tc35815: Drop support for TX49XX boards
+Date:   Tue,  5 Jan 2021 15:02:47 +0100
+Message-Id: <20210105140305.141401-3-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210105140305.141401-1-tsbogend@alpha.franken.de>
+References: <20210105140305.141401-1-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201230212205.2605383-2-bert@biot.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 10:22:03PM +0100, Bert Vermeulen wrote:
-> This is just enough system to boot the kernel with earlycon working.
-> 
-> Signed-off-by: Bert Vermeulen <bert@biot.com>
-> Signed-off-by: Sander Vanheule <sander@svanheule.net>
-> ---
->  arch/mips/Kconfig                       | 21 ++++++++++++++++++
->  arch/mips/generic/Platform              |  1 +
->  arch/mips/include/asm/realtek/ioremap.h | 29 +++++++++++++++++++++++++
->  3 files changed, 51 insertions(+)
->  create mode 100644 arch/mips/include/asm/realtek/ioremap.h
-> [..]
-> diff --git a/arch/mips/include/asm/realtek/ioremap.h b/arch/mips/include/asm/realtek/ioremap.h
-> new file mode 100644
-> index 000000000000..ea51af023e26
-> --- /dev/null
-> +++ b/arch/mips/include/asm/realtek/ioremap.h
-> @@ -0,0 +1,29 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +#ifndef _REALTEK_RTL_IOREMAP_H_
-> +#define _REALTEK_RTL_IOREMAP_H_
-> +
-> +static inline int is_rtl8380_internal_registers(phys_addr_t offset)
-> +{
-> +	/* IO Block */
-> +	if (offset >= 0xb8000000 && offset < 0xb9000000)
-> +		return 1;
-> +	/* Switch block */
-> +	if (offset >= 0xbb000000 && offset < 0xbc000000)
-> +		return 1;
-> +	return 0;
-> +}
-> +
-> +static inline void __iomem *plat_ioremap(phys_addr_t offset, unsigned long size,
-> +					 unsigned long flags)
-> +{
-> +	if (is_rtl8380_internal_registers(offset))
-> +		return (void __iomem *)offset;
-> +	return NULL;
-> +}
-> +
-> +static inline int plat_iounmap(const volatile void __iomem *addr)
-> +{
-> +	return is_rtl8380_internal_registers((unsigned long)addr);
-> +}
-> +
-> +#endif /* _REALTEK_RTL_IOREMAP_H_ */
+CPU support for TX49xx is getting removed, so remove support in network
+drivers for it.
 
-this looks like papering over using KSEG1 addresses instead of
-physical addresses in your DT. You should be able to drop this file
-and use 0x18000000/0x1B000000 instead of 0xb8000000/0xbb000000
-in the DT file.
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ drivers/net/ethernet/toshiba/tc35815.c | 29 --------------------------
+ 1 file changed, 29 deletions(-)
 
-Thomas.
-
+diff --git a/drivers/net/ethernet/toshiba/tc35815.c b/drivers/net/ethernet/toshiba/tc35815.c
+index 7a6e5ff8e5d4..d4712cd2e28c 100644
+--- a/drivers/net/ethernet/toshiba/tc35815.c
++++ b/drivers/net/ethernet/toshiba/tc35815.c
+@@ -687,39 +687,10 @@ static int tc_mii_init(struct net_device *dev)
+ 	return err;
+ }
+ 
+-#ifdef CONFIG_CPU_TX49XX
+-/*
+- * Find a platform_device providing a MAC address.  The platform code
+- * should provide a "tc35815-mac" device with a MAC address in its
+- * platform_data.
+- */
+-static int tc35815_mac_match(struct device *dev, const void *data)
+-{
+-	struct platform_device *plat_dev = to_platform_device(dev);
+-	const struct pci_dev *pci_dev = data;
+-	unsigned int id = pci_dev->irq;
+-	return !strcmp(plat_dev->name, "tc35815-mac") && plat_dev->id == id;
+-}
+-
+ static int tc35815_read_plat_dev_addr(struct net_device *dev)
+ {
+-	struct tc35815_local *lp = netdev_priv(dev);
+-	struct device *pd = bus_find_device(&platform_bus_type, NULL,
+-					    lp->pci_dev, tc35815_mac_match);
+-	if (pd) {
+-		if (pd->platform_data)
+-			memcpy(dev->dev_addr, pd->platform_data, ETH_ALEN);
+-		put_device(pd);
+-		return is_valid_ether_addr(dev->dev_addr) ? 0 : -ENODEV;
+-	}
+ 	return -ENODEV;
+ }
+-#else
+-static int tc35815_read_plat_dev_addr(struct net_device *dev)
+-{
+-	return -ENODEV;
+-}
+-#endif
+ 
+ static int tc35815_init_dev_addr(struct net_device *dev)
+ {
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.29.2
+

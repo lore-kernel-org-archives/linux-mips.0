@@ -7,28 +7,28 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA7B7C43381
-	for <linux-mips@archiver.kernel.org>; Wed,  6 Jan 2021 20:09:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32FD0C43381
+	for <linux-mips@archiver.kernel.org>; Wed,  6 Jan 2021 20:09:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8E5EA23136
-	for <linux-mips@archiver.kernel.org>; Wed,  6 Jan 2021 20:09:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 01DF723132
+	for <linux-mips@archiver.kernel.org>; Wed,  6 Jan 2021 20:09:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbhAFUJF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 6 Jan 2021 15:09:05 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:63970 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726831AbhAFUJF (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 6 Jan 2021 15:09:05 -0500
-Date:   Wed, 06 Jan 2021 20:08:19 +0000
+        id S1727237AbhAFUJi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 6 Jan 2021 15:09:38 -0500
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:21079 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727202AbhAFUJh (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 6 Jan 2021 15:09:37 -0500
+Date:   Wed, 06 Jan 2021 20:08:46 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1609963703; bh=gVx8E+xZ9lrHiS0GOCboaARCIQvynUD7BXGkbX/mth4=;
+        t=1609963734; bh=FmvdsZCHCCE79sjLAYIX/gq7paKAr3hB9iXFALHlrb4=;
         h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=D5BR4ONH0+Jq/LU0r/+wUjKpN7kzcWdAhFr9x7aMgFdq26mi41Ql2zYLn3g4AuR7y
-         /LrjwC+6fobtndVgofP13pV8AsRd5qvnyTf/EMj71FnmDVTDO7MDk1O3T+Y4BNnyxo
-         CSh1T5hd9CvPzhYWfS37WM829VOabqEnMxuz4ROjYgyG7ovyA3bp/6B1LB4rvxOKet
-         UlyHGyu9IXcwWAqczIjrmR9pVtNTCzL1Qs4SuMN8kSiMgRm4yCX5FeCgufBxYrZIrp
-         AfpxXUy5EWWVVuO24Qqga4QaKpYiWWbWYUzF89n+Cht+IGJn/tNQeKSn+XZeEDNz5+
-         v+0bgIMZtAblg==
+        b=gt36kiA0CRoN8rChYplX9XqLtn9UKfAR9usnM1uWIFAHUshGzRBlLI+zwggTmGMTj
+         JGbxJM4w/rbrz6YpzayyOgJDU3WL9EPMzb0fdstFh7URQ0qsVgdyosMuc8I2kr6ZLK
+         N+/yCp4qh0juzn28oXa86sRonFMHbUw24GUwou1j1osqEgAqV/hnswyuNFZF9ksmvv
+         JuaB+wbuFWd84McudMSzsxDvg5RiznS19PwJATCwjKJ2ltv4q/FhugFRPtJEl/7voc
+         mV/t33M0CBHvU2KPJcsIFKdJ9yNmLzMYWgRX9Fym1bWK8jyjcr4d62mSdCFvcMKAyp
+         44mx+EOvo34pw==
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 From:   Alexander Lobakin <alobakin@pm.me>
 Cc:     Alexander Lobakin <alobakin@pm.me>,
@@ -42,8 +42,8 @@ Cc:     Alexander Lobakin <alobakin@pm.me>,
         linux-mips@vger.kernel.org, stable@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v2 mips-next 2/4] MIPS: vmlinux.lds.S: add ".gnu.attributes" to DISCARDS
-Message-ID: <20210106200801.31993-2-alobakin@pm.me>
+Subject: [PATCH v2 mips-next 4/4] MIPS: select ARCH_WANT_LD_ORPHAN_WARN
+Message-ID: <20210106200801.31993-4-alobakin@pm.me>
 In-Reply-To: <20210106200801.31993-1-alobakin@pm.me>
 References: <20210106200713.31840-1-alobakin@pm.me> <20210106200801.31993-1-alobakin@pm.me>
 MIME-Version: 1.0
@@ -53,39 +53,27 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Discard GNU attributes at link time as kernel doesn't use it at all.
-Solves a dozen of the following ld warnings (one per every file):
-
-mips-alpine-linux-musl-ld: warning: orphan section `.gnu.attributes'
-from `arch/mips/kernel/head.o' being placed in section
-`.gnu.attributes'
-mips-alpine-linux-musl-ld: warning: orphan section `.gnu.attributes'
-from `init/main.o' being placed in section `.gnu.attributes'
-
-Misc: sort DISCARDS section entries alphabetically.
+Now, after that all the sections are explicitly described and
+declared in vmlinux.lds.S, we can enable ld orphan warnings to
+prevent from missing any new sections in future.
 
 Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 ---
- arch/mips/kernel/vmlinux.lds.S | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.=
-S
-index 83e27a181206..5d6563970ab2 100644
---- a/arch/mips/kernel/vmlinux.lds.S
-+++ b/arch/mips/kernel/vmlinux.lds.S
-@@ -221,9 +221,10 @@ SECTIONS
- =09=09/* ABI crap starts here */
- =09=09*(.MIPS.abiflags)
- =09=09*(.MIPS.options)
-+=09=09*(.eh_frame)
-+=09=09*(.gnu.attributes)
- =09=09*(.options)
- =09=09*(.pdr)
- =09=09*(.reginfo)
--=09=09*(.eh_frame)
- =09}
- }
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index d68df1febd25..d3e64cc0932b 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -18,6 +18,7 @@ config MIPS
+ =09select ARCH_USE_QUEUED_SPINLOCKS
+ =09select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
+ =09select ARCH_WANT_IPC_PARSE_VERSION
++=09select ARCH_WANT_LD_ORPHAN_WARN
+ =09select BUILDTIME_TABLE_SORT
+ =09select CLONE_BACKWARDS
+ =09select CPU_NO_EFFICIENT_FFS if (TARGET_ISA_REV < 1)
 --=20
 2.30.0
 

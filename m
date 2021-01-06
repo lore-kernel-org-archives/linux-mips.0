@@ -2,89 +2,114 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4413EC433E0
-	for <linux-mips@archiver.kernel.org>; Wed,  6 Jan 2021 07:26:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06347C433DB
+	for <linux-mips@archiver.kernel.org>; Wed,  6 Jan 2021 08:38:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DEE7E23104
-	for <linux-mips@archiver.kernel.org>; Wed,  6 Jan 2021 07:26:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BD4A123107
+	for <linux-mips@archiver.kernel.org>; Wed,  6 Jan 2021 08:38:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725788AbhAFH0J (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 6 Jan 2021 02:26:09 -0500
-Received: from mout.gmx.net ([212.227.17.22]:46247 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725562AbhAFH0J (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 6 Jan 2021 02:26:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1609917876;
-        bh=qmv55JTidpW9XDoGGDekeDfrI3zhxboXsDWJ5aX4p2E=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=L8hP8Kqlnrs7yL5pugy11G/4gcPTmEZ/hcnhv3msOKA0JiLLrwCL9UuKh+7l/iDKZ
-         JLhEjMjiLQKg+Ds5LWgrmu4SWwmesibhWWOsIDdXFyiEsr68TSGVEYRWZC9IOB1L90
-         oU9ZDMzWD9mdYCztBLoPEy4asQYG95CgN+jukFjY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from Valinor ([82.128.181.212]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N95eJ-1jsHGV2B7f-016Bhn; Wed, 06
- Jan 2021 08:24:36 +0100
-Date:   Wed, 6 Jan 2021 09:26:15 +0200
-From:   Lauri Kasanen <cand@gmx.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
-        linux-input@vger.kernel.org
-Subject: Re: [PATCH 4/6] input: Add N64 controller driver
-Message-Id: <20210106092615.e72e715bd3817e2f1dc6d55c@gmx.com>
-In-Reply-To: <X/Tk/ZrqyPlGriiZ@google.com>
-References: <20210104154811.ced3a894cddc4d309827307c@gmx.com>
-        <X/Tk/ZrqyPlGriiZ@google.com>
-X-Mailer: Sylpheed 3.5.0 (GTK+ 2.18.6; x86_64-unknown-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:NhCbZQ8m3X67A4wNfTQbid/oDanPpAoTsdF86+bpsFRGdaxzJCS
- haHq+tKc2CwlAMyHCwfBBmT/7nHa3hLM/O0InlYAVdytuQJ0DNRCusl6eNswY/YSK9oXkGF
- zDAVbVvbGllZgc8MfDMjfnvt+b5umzwJYZdyNzGdy/P8e2IR8JPEJ0S9N5p79GmLjKRI9aK
- xP4qURdEILTCP4Uc1VUYA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:SSoQi+2wYBo=:ME7flNZpn52wNW0anOYc4Z
- 3oDlWMVCuBrya5AtBhIc6zSjkm23LYd5GOd0i6WYf2ht7QK/vom2bHc+q0qEi9GGPru/qpzEr
- MBKqQh+3wT61GwnDLeEfhMzCIJErDmJsjPVsbAzUuQd+yGoLqQjU9I20cRgpqsZr8FtmSEjV1
- XBSRf2rhlaEoRYXhvMl7mWMnSgDltN3OnwEpWpYVfmwHtG/q5SiMYKwegUxO34tavQRzDwH67
- XVPzw5Kh+lmylD3Q4edcNd6kIBUfdcu/S4FccwU/ndS+2oScOq5sdvR+CScakE1iU5lcaKJtb
- 3nHVJ1AT8vjBr8RZls0FEUkh7HG6wizvXGch2W2XHivawR5laBniBla9s+X3/cQBUxzJkLeJr
- e+J9NAzx/LnZOTpzyPDSH5w1Jwt8eBXoae+kC77jeh+KXU+Nq+gx8V1fsHohMa8yJvkWWE8/h
- eUqd2lUhAn1lC9xkUutPaSux0QSJO8H2+JZds9Ql1bqBorKaF4bUa5sVaiqvr/nd+yS2vV4la
- nKTbWK5QHvtuD9wFLh4p8z1axZfn4Npl30LmnWC8lOSqfsi1Utsyh1itr4UhF1yH0zq3u7wdX
- vwsdwK2CIkLz+aF5c4JP56vD59sAJYXvhEVzfDSdbwvDpS+hzr7hGczIoDaTz2QkWAItjuJE+
- FyHguceQ7dAfdqz913HQ6EzApn9+pV8hIzlYg/C1eM7xbGObdjDaqTmHEcmfrYIt2+Em99X6i
- ylyM0RnfyjMXwF3ETI8m2xaHLzmV9diVfuHGI7yEr/uxmuD5nyBo4q1SBZmV2hW5J5p6fZNE6
- qGaDk5SbF4XW6d73MQQGw/LS5arog2JONpaA3qeLsdbmUtlUoOnWbPJmKKHwAwNWpjaXbEZfv
- DMMYDwXxzUkAXarG3Hgg==
+        id S1726641AbhAFIiE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 6 Jan 2021 03:38:04 -0500
+Received: from mail-oo1-f48.google.com ([209.85.161.48]:42963 "EHLO
+        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726074AbhAFIiE (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 6 Jan 2021 03:38:04 -0500
+Received: by mail-oo1-f48.google.com with SMTP id x203so586896ooa.9;
+        Wed, 06 Jan 2021 00:37:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7OzcDXMwatEtiJomNBi1fhi3zuuxEWhyROAP2OwThNY=;
+        b=EQ71xKWn6jEzk16xLKPw5tpURAioSNiH1WBf7m9kaDOShUYzWqDQ2s2wBGAg4P9H3J
+         Mn4cea36V3yDJZZrvHcNzPWnFPRSJt/NLvTmeFnFgsH0whYPMW6IM5yqwm8jTr01KMl9
+         ZZEi8CE6gy5fRn7AkvD+pvWO05miEnxQilI78QQh7PLj6v+I+0jCuNrUcUv+dhGZEZiv
+         v0c6RD3T94Qw07f4jhO5ADNuzjlIEToYcUiiqj4wivYB6ei9N9PpupqdcyyFF4eRsE0X
+         6gjpUPUB00Jm1SxknefDlc66XhPGX55zcpbDjCYhJR+gAdb4eHo6ri1rjep5ilymjGKm
+         mnxQ==
+X-Gm-Message-State: AOAM530lsAiSTA+Tt8ZbOkvKTVNeR7z6UzFGVNcIKOS+9jJv/Yr6Dj3n
+        xMVsCDhZjaRef2yEGQJb1xW7zzukJ5CfJtulSPc=
+X-Google-Smtp-Source: ABdhPJz+riLQ42T+q9EFB1XsbUqjCK7bS2nCYCFI4IXj5lNnjzpQBlfNrLzEuiXe37snmeLQrap5l7udgxcoLsEDH3o=
+X-Received: by 2002:a4a:8353:: with SMTP id q19mr2071403oog.40.1609922242555;
+ Wed, 06 Jan 2021 00:37:22 -0800 (PST)
+MIME-Version: 1.0
+References: <20210105140305.141401-1-tsbogend@alpha.franken.de>
+In-Reply-To: <20210105140305.141401-1-tsbogend@alpha.franken.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 6 Jan 2021 09:37:11 +0100
+Message-ID: <CAMuHMdX=trGqj8RzV7r1iTneqDjWOc4e1T-X+R_B34rxxhJpbg@mail.gmail.com>
+Subject: Re: [PATCH 00/10] Remove support for TX49xx
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        dmaengine <dmaengine@vger.kernel.org>, linux-ide@vger.kernel.org,
+        MTD Maling List <linux-mtd@lists.infradead.org>,
+        netdev <netdev@vger.kernel.org>, linux-rtc@vger.kernel.org,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, 5 Jan 2021 14:15:25 -0800
-Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
+Hi Thomas,
 
-> > +config JOYSTICK_N64
-> > +	bool "N64 controller"
-> > +	depends on MACH_NINTENDO64
-> > +	help
-> > +	  Support for the four N64 controllers.
-> > +
->
-> "To compile this driver as a module..."
-...
-> No option to unload the driver?
+CC Nemoto-san (de-facto TX49XX maintainer)
 
-Yes, no option to build as a module or to unload, on purpose. The target
-system has 8mb RAM, and this is the only input system. It saves RAM,
-and makes no sense to unload your only input possibility.
+On Tue, Jan 5, 2021 at 3:03 PM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+> I couldn't find any buyable product other than reference boards using
+> TX49xx CPUs. And since nobody showed interest in keeping support for
+> it, it's time to remove it.
 
-The driver is specific to the N64. It can't be used on other systems,
-mips or otherwise.
+I have an RBTX4927 development board in my board farm, boot-test every
+bi-weekly renesas-drivers release on it, and fix kernel issues when they
+appear.
 
-- Lauri
+Is that sufficient to keep it?
+
+TX49xx SoCs were used in Sony LocationFree base stations, running
+VxWorks. You can no longer buy them.
+I'm not aware of anyone ever porting Linux to them.
+https://en.wikipedia.org/wiki/LocationFree_Player
+
+>   spi: txx9: Remove driver
+
+I only noticed the planned removal when I saw the SPI patch was applied.
+Doesn't matter for me, as SPI is only present on TX4938, not on TX4927 ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

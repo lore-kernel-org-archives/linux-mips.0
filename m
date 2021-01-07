@@ -2,77 +2,63 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.3 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 459ABC433E0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91E7FC433E9
 	for <linux-mips@archiver.kernel.org>; Thu,  7 Jan 2021 16:30:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 04BD423428
-	for <linux-mips@archiver.kernel.org>; Thu,  7 Jan 2021 16:30:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6BA9423428
+	for <linux-mips@archiver.kernel.org>; Thu,  7 Jan 2021 16:30:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728601AbhAGQ3q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 7 Jan 2021 11:29:46 -0500
-Received: from elvis.franken.de ([193.175.24.41]:34729 "EHLO elvis.franken.de"
+        id S1728142AbhAGQaC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 7 Jan 2021 11:30:02 -0500
+Received: from elvis.franken.de ([193.175.24.41]:34741 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727753AbhAGQ3q (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1727994AbhAGQ3q (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Thu, 7 Jan 2021 11:29:46 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kxY9o-0000Mi-01; Thu, 07 Jan 2021 17:29:04 +0100
+        id 1kxY9o-0000Mi-06; Thu, 07 Jan 2021 17:29:04 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A44DEC080E; Thu,  7 Jan 2021 17:26:40 +0100 (CET)
-Date:   Thu, 7 Jan 2021 17:26:40 +0100
+        id 7721AC080E; Thu,  7 Jan 2021 17:28:32 +0100 (CET)
+Date:   Thu, 7 Jan 2021 17:28:32 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     John Crispin <john@phrozen.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Dmitry Golovin <dima@golovin.in>
-Subject: Re: [PATCH] MIPS: lantiq: Explicitly compare LTQ_EBU_PCC_ISTAT
- against 0
-Message-ID: <20210107162640.GB11882@alpha.franken.de>
-References: <20210105201548.50920-1-natechancellor@gmail.com>
+To:     Yanteng Si <siyanteng@loongson.cn>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, Yanteng Si <siyanteng01@gmail.com>
+Subject: Re: [PATCH] MIPS: init: move externs to header file
+Message-ID: <20210107162832.GG11882@alpha.franken.de>
+References: <20210107030645.1844215-1-siyanteng@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210105201548.50920-1-natechancellor@gmail.com>
+In-Reply-To: <20210107030645.1844215-1-siyanteng@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 01:15:48PM -0700, Nathan Chancellor wrote:
-> When building xway_defconfig with clang:
+On Thu, Jan 07, 2021 at 11:06:45AM +0800, Yanteng Si wrote:
+>     This commit fixes the following checkpatch warnings:
 > 
-> arch/mips/lantiq/irq.c:305:48: error: use of logical '&&' with constant
-> operand [-Werror,-Wconstant-logical-operand]
->         if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
->                                                       ^ ~~~~~~~~~~~~~~~~~
-> arch/mips/lantiq/irq.c:305:48: note: use '&' for a bitwise operation
->         if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
->                                                       ^~
->                                                       &
-> arch/mips/lantiq/irq.c:305:48: note: remove constant to silence this
-> warning
->         if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
->                                                      ~^~~~~~~~~~~~~~~~~~~~
-> 1 error generated.
+>     WARNING: externs should be avoided in .c files
 > 
-> Explicitly compare the constant LTQ_EBU_PCC_ISTAT against 0 to fix the
-> warning. Additionally, remove the unnecessary parentheses as this is a
-> simple conditional statement and shorthand '== 0' to '!'.
+>     This is a warning for placing declarations in a ".c" file.
+>     This fix removes the declaration in ".c" and adds it to
+>     the common header file.
 > 
-> Fixes: 3645da0276ae ("OF: MIPS: lantiq: implement irq_domain support")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/807
-> Reported-by: Dmitry Golovin <dima@golovin.in>
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
 > ---
->  arch/mips/lantiq/irq.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/mips/include/asm/traps.h       | 1 +
+>  arch/mips/loongson2ef/common/init.c | 1 -
+>  arch/mips/loongson64/init.c         | 1 -
+>  arch/mips/mti-malta/malta-init.c    | 1 -
+>  arch/mips/pistachio/init.c          | 1 -
+>  5 files changed, 1 insertion(+), 4 deletions(-)
 
 applied to mips-next.
 

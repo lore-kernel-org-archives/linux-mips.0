@@ -2,83 +2,120 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F255DC4332E
-	for <linux-mips@archiver.kernel.org>; Fri,  8 Jan 2021 09:23:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E994CC433DB
+	for <linux-mips@archiver.kernel.org>; Fri,  8 Jan 2021 10:08:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C610E22BEA
-	for <linux-mips@archiver.kernel.org>; Fri,  8 Jan 2021 09:23:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A4788235FF
+	for <linux-mips@archiver.kernel.org>; Fri,  8 Jan 2021 10:08:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727706AbhAHJWs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 8 Jan 2021 04:22:48 -0500
-Received: from elvis.franken.de ([193.175.24.41]:35839 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727073AbhAHJWr (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 8 Jan 2021 04:22:47 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kxny9-0008TB-00; Fri, 08 Jan 2021 10:22:05 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 2C506C081D; Fri,  8 Jan 2021 09:40:51 +0100 (CET)
-Date:   Fri, 8 Jan 2021 09:40:51 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Lauri Kasanen <cand@gmx.com>
-Cc:     linux-mips@vger.kernel.org
-Subject: Re: [PATCH 2/6] mips: Add N64 machine type
-Message-ID: <20210108084051.GA6710@alpha.franken.de>
-References: <20210104154357.6cf126150407ba4839630177@gmx.com>
- <20210107171035.GA13117@alpha.franken.de>
- <20210108090434.d404fe2dfa604542d8c88a05@gmx.com>
+        id S1727040AbhAHKIl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 8 Jan 2021 05:08:41 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:44520 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726795AbhAHKIl (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 8 Jan 2021 05:08:41 -0500
+Received: from [10.130.0.55] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx6L3rLvhf5S4BAA--.2716S3;
+        Fri, 08 Jan 2021 18:07:40 +0800 (CST)
+From:   Jinyang He <hejinyang@loongson.cn>
+Subject: Re: [PATCH V3] MIPS: Loongson64: Add kexec/kdump support
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhuacai@kernel.org>
+References: <20201221120220.3186744-1-chenhuacai@kernel.org>
+ <a671a323-768b-b461-2ce4-ecc1e92d4cc6@loongson.cn>
+ <CAAhV-H4GDxhg1YqWy-g7VuCeE7BZ0ibaVSr1ibzJqXjuaBn3_w@mail.gmail.com>
+ <20210107172620.GA13201@alpha.franken.de>
+Cc:     Eric Biederman <ebiederm@xmission.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        kexec@lists.infradead.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Youling Tang <tangyouling@loongson.cn>
+Message-ID: <1085845b-2c5a-dbb6-62b7-28b55aeacb4c@loongson.cn>
+Date:   Fri, 8 Jan 2021 18:07:39 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108090434.d404fe2dfa604542d8c88a05@gmx.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210107172620.GA13201@alpha.franken.de>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Dx6L3rLvhf5S4BAA--.2716S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr47Ar1UtryftryrGrW5GFg_yoW8uF18pa
+        15Ca15AF4kCF12yw1qywsrAayFv345WrW5KFyDKr98X3s0qF1Ygr4jvF1I9rn7AFWFgw42
+        vrWjqa1a93yYvFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9E14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_Gw1l42xK82IYc2Ij64vIr4
+        1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
+        67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
+        8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAv
+        wI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+        AFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbo5l5UUUUU==
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 09:04:34AM +0200, Lauri Kasanen wrote:
-> On Thu, 7 Jan 2021 18:10:35 +0100
-> Thomas Bogendoerfer <tsbogend@alpha.franken.de> wrote:
-> 
-> > 32BIT kernel don't compile, because you use TO_UNCAC which only
-> > exists for 64bit kernels. One solution would be to use CKSEG1 to
-> > convert from physical to an uncached address. But I'd prefer if
-> > you add resources to your platform device and do ioremap in device
-> > drivers. This way there is also no need to export the interrupt
-> > defines outside.
-> 
-> :( Jiaxun told me to use TO_UNCAC because CKSEG1 was unclear to him...
-> 
-> I will change back to CKSEG1. ioremap seems much needless overhead.
+Hi, Thomas,
 
-ok, let me put it that way: Using ioremap is not a wish. To get your code
-integrated use ioremap and platform resources. IMHO driver maintainers
-will appreciate that as well. 
+On 01/08/2021 01:26 AM, Thomas Bogendoerfer wrote:
+>>>> --- a/arch/mips/kernel/relocate_kernel.S
+>>>> +++ b/arch/mips/kernel/relocate_kernel.S
+>>>> @@ -6,6 +6,7 @@
+>>>>
+>>>>    #include <asm/asm.h>
+>>>>    #include <asm/asmmacro.h>
+>>>> +#include <asm/cpu.h>
+>>>>    #include <asm/regdef.h>
+>>>>    #include <asm/mipsregs.h>
+>>>>    #include <asm/stackframe.h>
+>>>> @@ -133,6 +134,33 @@ LEAF(kexec_smp_wait)
+>>>>    #else
+>>>>        sync
+>>>>    #endif
+>>>> +
+>>>> +#ifdef CONFIG_CPU_LOONGSON64
+> Is there a reason why you can't use the already existing infrastructure
+> the way cavium-octeon is doing it ? If you can't please explain why
+> so we can find a way to extend it. But having some sort of poking
+> loongson registers in generic MIPS code is a non starter.
+>
+> Thomas.
+>
 
-> > > +#define RCP_IRQ			MIPS_CPU_IRQ(2)
-> > > +#define CART_IRQ		MIPS_CPU_IRQ(3)
-> > > +#define PRENMI_IRQ		MIPS_CPU_IRQ(4)
-> > > +#define RDBR_IRQ		MIPS_CPU_IRQ(5)
-> > > +#define RDBW_IRQ		MIPS_CPU_IRQ(6)
-> > > +#define TIMER_IRQ		MIPS_CPU_IRQ(7)
-> >
-> > and this IMHO also unsed, so no need to define it.
-> 
-> The sound driver uses the RCP IRQ; the machine-specific names are
-> defined because they're much more clear.
+Unlike the cavium-octeon platform, the Loongson64 platform needs some 
+changes. Before the kernel starts, (before entering the kernel_entry), 
+each CPU has its own state (the SMP system). For Loongson64, only the 
+boot CPU will enter the kernel_entry, and other CPUs will query their 
+mailbox value in a loop. This is what the BIOS does for the CPU. Here is 
+different from cavium-octeon. All CPUs will enter the kernel_entry on 
+cavium-octeon platform. Then the kernel_entry_setup, the co-CPUs will 
+enter the query loop. I saw the kernel_entry_setup of other platforms, 
+such as ip27, malta, and generic. They are not like cavium-octeon and 
+the co-CPUs entering the loop may be earlier than entering kernel_entry. 
+So I have reason to guess that most SMP system platform CPUs are similar 
+to Loongson64.
 
-you can keep the defines, but no need to have it in an #include when
-you move it to n64/init.c. From there you pass it via platform irq
-resource to drivers. Background is that I want to keep stuff in
-mach-xxx at the bear minimum.
+relocate_kernel.S is like BIOS doing s omething for the CPU. It allows 
+the boot CPU to start from the new kernel_entry and makes the co-CPUs 
+enter a loop. The already existing infrastructure may be more suitable 
+for non-smp platforms. Although we can do something with 
+plat_smp_ops.kexec_nonboot_cpu, more new problems will arise in that 
+case. The kexec process actually runs on a copy of relocate_kernel.S, 
+which will bring a lot of problems...
 
-Thomas.
+Above all just my personal thoughts.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Thanks,
+Jinyang
+

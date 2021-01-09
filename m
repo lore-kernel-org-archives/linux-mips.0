@@ -2,143 +2,126 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CBB7C433E6
-	for <linux-mips@archiver.kernel.org>; Sat,  9 Jan 2021 17:51:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FEBBC433E0
+	for <linux-mips@archiver.kernel.org>; Sat,  9 Jan 2021 18:18:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2484523A03
-	for <linux-mips@archiver.kernel.org>; Sat,  9 Jan 2021 17:51:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C969123A01
+	for <linux-mips@archiver.kernel.org>; Sat,  9 Jan 2021 18:18:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725999AbhAIRvg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 9 Jan 2021 12:51:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725951AbhAIRvg (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 9 Jan 2021 12:51:36 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0BBC06179F
-        for <linux-mips@vger.kernel.org>; Sat,  9 Jan 2021 09:50:56 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id i5so9782196pgo.1
-        for <linux-mips@vger.kernel.org>; Sat, 09 Jan 2021 09:50:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rz+U26z6jIIN1uPsEdI8MtvxyqTX3edy55x6DrScyKg=;
-        b=c4bK3l0yv3gmB2uDggyRYvZ392JRXxNpt6ffWyyp/6G1wJPeDMGpurfYs7It0uM9uX
-         0rbU6k8DigmpdRHD2ncyKGQ0y4QPAoW6EZ/ZBwLJKVdODkTf0cM/ifGELos2JR28VEPs
-         ZbpGlwQQzLfB0UKEUQoeYKrXrLKgKUGQS+7Ftnh0Cw6WReD+962gWI4p50Sli1lShulk
-         zDXEekr3MqZBaGgiBbxZ2pmiq33azvRRFcMJe3KhGfONRUVPrZRBaX/FjYzoQBDXXQHZ
-         yAocCh0ukK+nqdnGi+i/NwddPD3WhvVJRi8EB5puWwgflLnc0YnBtYJGSkpAFXVwzRbE
-         8ehA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rz+U26z6jIIN1uPsEdI8MtvxyqTX3edy55x6DrScyKg=;
-        b=D4BhZkNBXhg6jeawH4it/JUl/jqO/1T5gI84HBYcAyr9ruoaleRz16fknbDb3Ep3Ig
-         qtuQ0V8ZgFKwHDypjrfTZWBfFTeB2oPoENnjZMvSUUx/cd6X3IC/AlbZyc0z5umN/8aa
-         XJmiVTUouSTHBS628Meyhmix4iDAXA3WZ69hebIlk2GtLwCaIlub7NcuDLAZ+Yp+0AgB
-         oc8P/gut9RbmJcESlMGhKRLRWPuFmZnSSHBdT2u8gXVBzft9WopCgoa6iUK1r8yZJqvR
-         FqYI/8wypZJIpC8v3tG0egUQwZZDe/smn0nnhj7PEjmvnMw35teFDFUuU64tPP/qiiP8
-         DySQ==
-X-Gm-Message-State: AOAM530altv0jNhU0JyjGKalk2Rpco1lOD235IqlThEgUCsE7pWmadD5
-        DmYzR+vWTZEO7GyCQrs9zRCyfQ5eHjJGlyY2b5jP0w==
-X-Google-Smtp-Source: ABdhPJyJP3tazaWOmwaeqbiNSqIF4LtHAbHFNqsY7t9yn3KE2WlrRzEN5UBeo4m5E5d/MzfFWhSdDcnkddpynrl5QIs=
-X-Received: by 2002:a63:1142:: with SMTP id 2mr12540451pgr.263.1610214655571;
- Sat, 09 Jan 2021 09:50:55 -0800 (PST)
-MIME-Version: 1.0
-References: <20210109171058.497636-1-alobakin@pm.me>
-In-Reply-To: <20210109171058.497636-1-alobakin@pm.me>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Sat, 9 Jan 2021 09:50:44 -0800
-Message-ID: <CAKwvOdmV2tj4Uyz1iDkqCj+snWPpnnAmxJyN+puL33EpMRPzUw@mail.gmail.com>
-Subject: Re: [BUG mips llvm] MIPS: malformed R_MIPS_{HI16,LO16} with LLVM
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-mips@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1725999AbhAISR6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 9 Jan 2021 13:17:58 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43828 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725956AbhAISR6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 9 Jan 2021 13:17:58 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7A660AED0;
+        Sat,  9 Jan 2021 18:17:16 +0000 (UTC)
+Date:   Sat, 09 Jan 2021 19:17:16 +0100
+Message-ID: <s5ha6tivutv.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Lauri Kasanen <cand@gmx.com>
+Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
+        perex@perex.cz
+Subject: Re: [PATCH 5/6 v2] sound: Add n64 driver
+In-Reply-To: <20210109194601.f94ca38b2b99ddeb15705993@gmx.com>
+References: <20210108103513.336e6eb9ad323feff6758e20@gmx.com>
+        <s5hsg7byezb.wl-tiwai@suse.de>
+        <20210109092303.b9a2a2f678a5d1b19b7f27f3@gmx.com>
+        <s5him86wmnr.wl-tiwai@suse.de>
+        <20210109194601.f94ca38b2b99ddeb15705993@gmx.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 9:11 AM Alexander Lobakin <alobakin@pm.me> wrote:
->
-> Machine: MIPS32 R2 Big Endian (interAptiv (multi))
->
-> While testing MIPS with LLVM, I found a weird and very rare bug with
-> MIPS relocs that LLVM emits into kernel modules. It happens on both
-> 11.0.0 and latest git snapshot and applies, as I can see, only to
-> references to static symbols.
->
-> When the kernel loads the module, it allocates a space for every
-> section and then manually apply the relocations relative to the
-> new address.
->
-> Let's say we have a function phy_probe() in drivers/net/phy/libphy.ko.
-> It's static and referenced only in phy_register_driver(), where it's
-> used to fill callback pointer in a structure.
->
-> The real function address after module loading is 0xc06c1444, that
-> is observed in its ELF st_value field.
-> There are two relocs related to this usage in phy_register_driver():
->
-> R_MIPS_HI16 refers to 0x3c010000
-> R_MIPS_LO16 refers to 0x24339444
->
-> The address of .text is 0xc06b8000. So the destination is calculated
-> as follows:
->
-> 0x00000000 from hi16;
-> 0xffff9444 from lo16 (sign extend as it's always treated as signed);
-> 0xc06b8000 from base.
->
-> = 0xc06b1444. The value is lower than the real phy_probe() address
-> (0xc06c1444) by 0x10000 and is lower than the base address of
-> module's .text, so it's 100% incorrect.
->
-> This results in:
->
-> [    2.204022] CPU 3 Unable to handle kernel paging request at virtual
-> address c06b1444, epc == c06b1444, ra == 803f1090
->
-> The correct instructions should be:
->
-> R_MIPS_HI16 0x3c010001
-> R_MIPS_LO16 0x24339444
->
-> so there'll be 0x00010000 from hi16.
->
-> I tried to catch those bugs in arch/mips/kernel/module.c (by checking
-> if the destination is lower than the base address, which should never
-> happen), and seems like I have only 3 such places in libphy.ko (and
-> one in nf_tables.ko).
-> I don't think it should be handled somehow in mentioned source code
-> as it would look rather ugly and may break kernels build with GNU
-> stack, which seems to not produce such bad codes.
->
-> If I should report this to any other resources, please let me know.
-> I chose clang-built-linux and LKML as it may not happen with userland
-> (didn't tried to catch).
+On Sat, 09 Jan 2021 18:46:01 +0100,
+Lauri Kasanen wrote:
+> 
+> On Sat, 09 Jan 2021 09:16:08 +0100
+> Takashi Iwai <tiwai@suse.de> wrote:
+> 
+> > > > > +static const struct snd_pcm_hardware n64audio_pcm_hw = {
+> > > > > +	.info = (SNDRV_PCM_INFO_MMAP |
+> > > > > +		 SNDRV_PCM_INFO_MMAP_VALID |
+> > > > > +		 SNDRV_PCM_INFO_INTERLEAVED |
+> > > > > +		 SNDRV_PCM_INFO_BLOCK_TRANSFER),
+> > > > > +	.formats =          SNDRV_PCM_FMTBIT_S16_BE,
+> > > > > +	.rates =            SNDRV_PCM_RATE_8000_48000,
+> > > > > +	.rate_min =         8000,
+> > > > > +	.rate_max =         48000,
+> > > > > +	.channels_min =     2,
+> > > > > +	.channels_max =     2,
+> > > > > +	.buffer_bytes_max = 32768,
+> > > > > +	.period_bytes_min = 1024,
+> > > > > +	.period_bytes_max = 32768,
+> > > > > +	.periods_min =      1,
+> > > >
+> > > > periods_min=1 makes little sense for this driver.
+> > >
+> > > I have some questions about this.
+> > >
+> > > When I had periods_min = 128, OSS apps were broken. I mean simple ones,
+> > > open /dev/dsp, ioctl the format/rate/stereo, write data. They got an IO
+> > > error errno IIRC, and no clarifying error in dmesg.
+> > >
+> > > I tried following the error with printks, several levels deep. I gave
+> > > up when it got to the constraint resolving function, and there was no
+> > > good way to print and track which constraint failed, why, and who set
+> > > the constraint.
+> >
+> > Did you try to set up the hw constraint for the integer PERIODS like
+> > below at open?
+> >   snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS)
+> >
+> > Without this, it'd allow inconsistent buffer/period set up in your
+> > case.
+> 
+> No, not yet. But surely an inconsistent buffer size would still play
+> something, instead of immediately erroring out?
 
-Thanks for the report.  Sounds like we may indeed be producing an
-incorrect relocation.  This is only seen for big endian triples?
+In some cases, it's possible.  PCM OSS translation has some special
+way depending on the period ("fragment" in OSS) setup...
 
-Getting a way for us to deterministically reproduce would be a good
-first step.  Which config or configs beyond defconfig, and which
-relocations specifically are you observing this with?
--- 
-Thanks,
-~Nick Desaulniers
+> > > Only through blind guessing did I stumble upon periods_min.
+> >
+> > The periods_min usually defines the hardware/software limit of the
+> > interrupt transfer.
+> 
+> Why do you say periods_min=1 makes little sense? At 44.1 khz, that'd be
+> 172 interrupts per second, which is a lot but workable? There is no hw
+> limit against 172 irqs/s.
+
+Well, it's not about the sample rate or the process speed.  You need
+to know what periods=1 means.  periods=1 is a VERY special usage.  No
+double buffering and the driver has to report the precise accurate
+position without period updates; i.e. it's almost for free-wheeling
+DMA transfer.  Hence periods_min=1 makes sense if the driver may
+behave like that.
+
+> > > - why was there no clarifying error in dmesg? Just an errno that means
+> > > a million things makes it impossible for the userspace app writer to
+> > > know why it's not working
+> >
+> > Did you check the debug messages with dyndbg enabled?
+> 
+> No, CONFIG_DYNAMIC_DEBUG, CONFIG_DEBUG_FS and CONFIG_SND_DEBUG are all
+> disabled because this is a memory-constrained platform. Surely "why my
+> app is not producing sound" is not something that needs several
+> different kernel debug options enabled (+ root perms b/c debugfs).
+
+But you are debugging the *kernel* problem, not the application.
+I agree that debugfs isn't always needed for hunting application bugs,
+yeah.
+
+
+Takashi

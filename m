@@ -4,66 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 219FCC4332B
-	for <linux-mips@archiver.kernel.org>; Wed, 13 Jan 2021 10:45:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7AF7C433E6
+	for <linux-mips@archiver.kernel.org>; Wed, 13 Jan 2021 10:45:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DD5D123102
-	for <linux-mips@archiver.kernel.org>; Wed, 13 Jan 2021 10:45:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A20E722D58
+	for <linux-mips@archiver.kernel.org>; Wed, 13 Jan 2021 10:45:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727721AbhAMKou (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 13 Jan 2021 05:44:50 -0500
-Received: from elvis.franken.de ([193.175.24.41]:47762 "EHLO elvis.franken.de"
+        id S1727633AbhAMKor (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 13 Jan 2021 05:44:47 -0500
+Received: from elvis.franken.de ([193.175.24.41]:47752 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727655AbhAMKos (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:44:48 -0500
+        id S1727324AbhAMKoq (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 13 Jan 2021 05:44:46 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kzddE-00021m-00; Wed, 13 Jan 2021 11:44:04 +0100
+        id 1kzddE-00021m-04; Wed, 13 Jan 2021 11:44:04 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id DD936C029F; Wed, 13 Jan 2021 11:07:22 +0100 (CET)
-Date:   Wed, 13 Jan 2021 11:07:22 +0100
+        id E3415C02B1; Wed, 13 Jan 2021 11:09:16 +0100 (CET)
+Date:   Wed, 13 Jan 2021 11:09:16 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     menglong8.dong@gmail.com
-Cc:     alexander.sverdlin@nokia.com, paulburton@kernel.org,
-        gustavo@embeddedor.com, dong.menglong@zte.com.cn,
-        colin.king@canonical.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] MIPS: OCTEON: fix unreachable code in
- octeon_irq_init_ciu
-Message-ID: <20210113100722.GA10351@alpha.franken.de>
-References: <20210111132725.4513-1-dong.menglong@zte.com.cn>
+To:     Aleksander Jan Bajkowski <olek2@wp.pl>
+Cc:     robh+dt@kernel.org, john@phrozen.org, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mips: lantiq: Document Lantiq Xway PMU
+ bindings
+Message-ID: <20210113100916.GE10351@alpha.franken.de>
+References: <20201231163153.4512-1-olek2@wp.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210111132725.4513-1-dong.menglong@zte.com.cn>
+In-Reply-To: <20201231163153.4512-1-olek2@wp.pl>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 05:27:25AM -0800, menglong8.dong@gmail.com wrote:
-> From: Menglong Dong <dong.menglong@zte.com.cn>
+On Thu, Dec 31, 2020 at 05:31:53PM +0100, Aleksander Jan Bajkowski wrote:
+> Document the Lantiq Xway SoC series Power Management Unit (PMU) bindings.
 > 
-> The type of 'r' in octeon_irq_init_ciu is 'unsigned int', so 'r < 0'
-> can't be true.
-> 
-> Fix this by change the type of 'r' and 'i' from 'unsigned int'
-> to 'int'. As 'i' won't be negative, this change works.
-> 
-> Fixes: 99fbc70f8547 ("MIPS: Octeon: irq: Alloc desc before configuring IRQ")
-> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
-> Reviewed-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
 > ---
-> v2:
-> - change 'Fixes' from 64b139f97c01 to 99fbc70f8547
-> ---
->  arch/mips/cavium-octeon/octeon-irq.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../bindings/mips/lantiq/lantiq,pmu.yaml      | 32 +++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mips/lantiq/lantiq,pmu.yaml
 
-applied to mips-fixes.
+applied to mips-next.
 
 Thomas.
 

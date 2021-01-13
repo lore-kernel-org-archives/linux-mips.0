@@ -4,68 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0790EC43381
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 219FCC4332B
 	for <linux-mips@archiver.kernel.org>; Wed, 13 Jan 2021 10:45:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B74B523136
+	by mail.kernel.org (Postfix) with ESMTP id DD5D123102
 	for <linux-mips@archiver.kernel.org>; Wed, 13 Jan 2021 10:45:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727738AbhAMKox (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 13 Jan 2021 05:44:53 -0500
-Received: from elvis.franken.de ([193.175.24.41]:47768 "EHLO elvis.franken.de"
+        id S1727721AbhAMKou (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 13 Jan 2021 05:44:50 -0500
+Received: from elvis.franken.de ([193.175.24.41]:47762 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727655AbhAMKox (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:44:53 -0500
+        id S1727655AbhAMKos (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 13 Jan 2021 05:44:48 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kzddE-00021m-06; Wed, 13 Jan 2021 11:44:04 +0100
+        id 1kzddE-00021m-00; Wed, 13 Jan 2021 11:44:04 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id EDBF6C02B1; Wed, 13 Jan 2021 11:43:54 +0100 (CET)
-Date:   Wed, 13 Jan 2021 11:43:54 +0100
+        id DD936C029F; Wed, 13 Jan 2021 11:07:22 +0100 (CET)
+Date:   Wed, 13 Jan 2021 11:07:22 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jinyang He <hejinyang@loongson.cn>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Matt Redfearn <matt.redfearn@mips.com>,
-        linux-mips@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH mips-fixes] MIPS: relocatable: fix possible boot hangup
- with KASLR enabled
-Message-ID: <20210113104354.GA10505@alpha.franken.de>
-References: <20210110142023.185275-1-alobakin@pm.me>
+To:     menglong8.dong@gmail.com
+Cc:     alexander.sverdlin@nokia.com, paulburton@kernel.org,
+        gustavo@embeddedor.com, dong.menglong@zte.com.cn,
+        colin.king@canonical.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] MIPS: OCTEON: fix unreachable code in
+ octeon_irq_init_ciu
+Message-ID: <20210113100722.GA10351@alpha.franken.de>
+References: <20210111132725.4513-1-dong.menglong@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210110142023.185275-1-alobakin@pm.me>
+In-Reply-To: <20210111132725.4513-1-dong.menglong@zte.com.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 02:21:05PM +0000, Alexander Lobakin wrote:
-> LLVM-built Linux triggered a boot hangup with KASLR enabled.
+On Mon, Jan 11, 2021 at 05:27:25AM -0800, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <dong.menglong@zte.com.cn>
 > 
-> arch/mips/kernel/relocate.c:get_random_boot() uses linux_banner,
-> which is a string constant, as a random seed, but accesses it
-> as an array of unsigned long (in rotate_xor()).
-> When the address of linux_banner is not aligned to sizeof(long),
-> such access emits unaligned access exception and hangs the kernel.
+> The type of 'r' in octeon_irq_init_ciu is 'unsigned int', so 'r < 0'
+> can't be true.
 > 
-> Use PTR_ALIGN() to align input address to sizeof(long) and also
-> align down the input length to prevent possible access-beyond-end.
+> Fix this by change the type of 'r' and 'i' from 'unsigned int'
+> to 'int'. As 'i' won't be negative, this change works.
 > 
-> Fixes: 405bc8fd12f5 ("MIPS: Kernel: Implement KASLR using CONFIG_RELOCATABLE")
-> Cc: stable@vger.kernel.org # 4.7+
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> Fixes: 99fbc70f8547 ("MIPS: Octeon: irq: Alloc desc before configuring IRQ")
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+> Reviewed-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 > ---
->  arch/mips/kernel/relocate.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
+> v2:
+> - change 'Fixes' from 64b139f97c01 to 99fbc70f8547
+> ---
+>  arch/mips/cavium-octeon/octeon-irq.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 applied to mips-fixes.
 

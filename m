@@ -2,59 +2,79 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 263A1C43332
-	for <linux-mips@archiver.kernel.org>; Wed, 13 Jan 2021 10:45:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA84BC4332E
+	for <linux-mips@archiver.kernel.org>; Wed, 13 Jan 2021 10:58:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DC63523102
-	for <linux-mips@archiver.kernel.org>; Wed, 13 Jan 2021 10:45:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 94A4823159
+	for <linux-mips@archiver.kernel.org>; Wed, 13 Jan 2021 10:58:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727589AbhAMKoq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 13 Jan 2021 05:44:46 -0500
-Received: from elvis.franken.de ([193.175.24.41]:47746 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727398AbhAMKoq (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:44:46 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kzddE-00021m-03; Wed, 13 Jan 2021 11:44:04 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 83345C02B1; Wed, 13 Jan 2021 11:09:00 +0100 (CET)
-Date:   Wed, 13 Jan 2021 11:09:00 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Aleksander Jan Bajkowski <olek2@wp.pl>
-Cc:     robh+dt@kernel.org, john@phrozen.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: mips: lantiq: Document Lantiq Xway CGU
- bindings
-Message-ID: <20210113100900.GD10351@alpha.franken.de>
-References: <20210101180118.2496-1-olek2@wp.pl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210101180118.2496-1-olek2@wp.pl>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726665AbhAMK6d (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 13 Jan 2021 05:58:33 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:54188 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726463AbhAMK6c (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 13 Jan 2021 05:58:32 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxr78d0v5fhLMDAA--.6498S2;
+        Wed, 13 Jan 2021 18:57:34 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     linux-sparse@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH 0/2] Fix build errors and warnings when make M=samples/bpf
+Date:   Wed, 13 Jan 2021 18:57:31 +0800
+Message-Id: <1610535453-2352-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxr78d0v5fhLMDAA--.6498S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY67AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2js
+        IEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE
+        5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26F4j6r4UJwAm72
+        CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7
+        M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVAFwVW8twCF04k20xvY0x0EwIxGrwCFx2
+        IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
+        6r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
+        AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
+        s7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxV
+        W8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU14rW7UUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Jan 01, 2021 at 07:01:18PM +0100, Aleksander Jan Bajkowski wrote:
-> Document the Lantiq Xway SoC series Clock Generation Unit (CGU) bindings.
-> 
-> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
-> ---
->  .../bindings/mips/lantiq/lantiq,cgu.yaml      | 32 +++++++++++++++++++
->  1 file changed, 32 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mips/lantiq/lantiq,cgu.yaml
+There exists many build errors and warnings when make M=samples/bpf,
+this patch series fix some of them, I will submit some other patches
+related with MIPS later.
 
-applied to mips-next.
+Tiezhu Yang (2):
+  samples/bpf: Set flag __SANE_USERSPACE_TYPES__ for MIPS to fix build
+    warnings
+  compiler.h: Include asm/rwonce.h under ARM64 and ALPHA to fix build
+    errors
 
-Thomas.
+ include/linux/compiler.h    | 6 ++++++
+ samples/bpf/Makefile        | 4 ++++
+ tools/include/linux/types.h | 3 +++
+ 3 files changed, 13 insertions(+)
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.1.0
+

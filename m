@@ -2,66 +2,80 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90DACC433E0
-	for <linux-mips@archiver.kernel.org>; Fri, 15 Jan 2021 14:59:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECBAFC4332D
+	for <linux-mips@archiver.kernel.org>; Fri, 15 Jan 2021 17:05:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 63CDC23877
-	for <linux-mips@archiver.kernel.org>; Fri, 15 Jan 2021 14:59:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C67A723136
+	for <linux-mips@archiver.kernel.org>; Fri, 15 Jan 2021 17:05:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbhAOO7J (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 Jan 2021 09:59:09 -0500
-Received: from elvis.franken.de ([193.175.24.41]:53975 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726918AbhAOO7I (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:59:08 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l0QYS-0006iT-00; Fri, 15 Jan 2021 15:58:24 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id CD94AC057E; Fri, 15 Jan 2021 15:58:12 +0100 (CET)
-Date:   Fri, 15 Jan 2021 15:58:12 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bibo Mao <maobibo@loongson.cn>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Guoyun Sun <sunguoyun@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH mips-next 0/2] MIPS: fix -Wshadow in include files
-Message-ID: <20210115145812.GA15745@alpha.franken.de>
-References: <20210114182905.110574-1-alobakin@pm.me>
+        id S1728529AbhAOREu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 Jan 2021 12:04:50 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10664 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727973AbhAOREu (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 15 Jan 2021 12:04:50 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DHSDH3K0Kz15t3w;
+        Sat, 16 Jan 2021 01:02:55 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 16 Jan 2021 01:03:48 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>, <arnd@arndb.de>,
+        <akpm@linux-foundation.org>, <xuwei5@hisilicon.com>,
+        <lorenzo.pieralisi@arm.com>, <helgaas@kernel.org>,
+        <jiaxun.yang@flygoat.com>, <song.bao.hua@hisilicon.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-mips@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linuxarm@openeuler.org>, John Garry <john.garry@huawei.com>
+Subject: [PATCH RFC 3/4] kernel/resource: Make ioport_resource.start configurable
+Date:   Sat, 16 Jan 2021 00:58:48 +0800
+Message-ID: <1610729929-188490-4-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1610729929-188490-1-git-send-email-john.garry@huawei.com>
+References: <1610729929-188490-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210114182905.110574-1-alobakin@pm.me>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 06:29:26PM +0000, Alexander Lobakin wrote:
-> Fix two -Wshadow warnings coming from the include files and thus
-> repetitive and very annoying when building lots of sources.
-> 
-> Alexander Lobakin (2):
->   MIPS: bitops: fix -Wshadow in asm/bitops.h
->   MIPS: pgtable: fix -Wshadow in asm/pgtable.h
-> 
->  arch/mips/include/asm/bitops.h  | 10 +++++-----
->  arch/mips/include/asm/pgtable.h | 12 ++++++------
->  2 files changed, 11 insertions(+), 11 deletions(-)
+Make IO space base address to be configurable through IO_SPACE_BASE.
 
-applied to mips-next.
+This will allow architectures which do not natively support IO ports -
+like arm64 - to harden against legacy ISA-based drivers which use
+hardcoded addresses to access IO ports.
 
-Thomas.
+Any attempts for these drivers to request a resource region will now fail
+for architectures with set IO_SPACE_BASE above legacy ISA IO port region
+(0xffff).
 
+Signed-off-by: John Garry <john.garry@huawei.com>
+---
+ kernel/resource.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/resource.c b/kernel/resource.c
+index 3ae2f56cc79d..d191c4d796c7 100644
+--- a/kernel/resource.c
++++ b/kernel/resource.c
+@@ -29,7 +29,7 @@
+ 
+ struct resource ioport_resource = {
+ 	.name	= "PCI IO",
+-	.start	= 0,
++	.start	= IO_SPACE_BASE,
+ 	.end	= IO_SPACE_LIMIT,
+ 	.flags	= IORESOURCE_IO,
+ };
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.26.2
+

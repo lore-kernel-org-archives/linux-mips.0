@@ -2,78 +2,126 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F838C433DB
-	for <linux-mips@archiver.kernel.org>; Fri, 15 Jan 2021 14:19:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0873C433E6
+	for <linux-mips@archiver.kernel.org>; Fri, 15 Jan 2021 14:48:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 09F1923772
-	for <linux-mips@archiver.kernel.org>; Fri, 15 Jan 2021 14:19:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9CD8923359
+	for <linux-mips@archiver.kernel.org>; Fri, 15 Jan 2021 14:48:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730741AbhAOOTw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 Jan 2021 09:19:52 -0500
-Received: from elvis.franken.de ([193.175.24.41]:53867 "EHLO elvis.franken.de"
+        id S1732123AbhAOOry (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 Jan 2021 09:47:54 -0500
+Received: from elvis.franken.de ([193.175.24.41]:53938 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730027AbhAOOTw (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:19:52 -0500
+        id S1732175AbhAOOry (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 15 Jan 2021 09:47:54 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l0PwU-0006ED-00; Fri, 15 Jan 2021 15:19:10 +0100
+        id 1l0QNY-0006aU-02; Fri, 15 Jan 2021 15:47:08 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id B1F1FC0325; Fri, 15 Jan 2021 15:19:03 +0100 (CET)
-Date:   Fri, 15 Jan 2021 15:19:03 +0100
+        id CCB8EC057E; Fri, 15 Jan 2021 15:40:37 +0100 (CET)
+Date:   Fri, 15 Jan 2021 15:40:37 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     torvalds@linux-foundation.org
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] MIPS fixes for v5.11
-Message-ID: <20210115141903.GA13991@alpha.franken.de>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Pei Huang <huangpei@loongson.cn>,
+        Kees Cook <keescook@chromium.org>,
+        Fangrui Song <maskray@google.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, stable@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v5 mips-next 0/9] MIPS: vmlinux.lds.S sections fixes &
+ cleanup
+Message-ID: <20210115144037.GC15166@alpha.franken.de>
+References: <20210110115245.30762-1-alobakin@pm.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210110115245.30762-1-alobakin@pm.me>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+On Sun, Jan 10, 2021 at 11:53:50AM +0000, Alexander Lobakin wrote:
+> This series hunts the problems discovered after manual enabling of
+> ARCH_WANT_LD_ORPHAN_WARN. Notably:
+>  - adds the missing PAGE_ALIGNED_DATA() section affecting VDSO
+>    placement (marked for stable);
+>  - stops blind catching of orphan text sections with .text.*
+>    directive;
+>  - properly stops .eh_frame section generation.
+> 
+> Compile and runtime tested on MIPS32R2 CPS board with no issues
+> using two different toolkits:
+>  - Binutils 2.35.1, GCC 10.2.1 (with Alpine patches);
+>  - LLVM stack: 11.0.0 and from latest Git snapshot.
+> 
+> Since v4 [3]:
+>  - new: drop redundant .text.cps-vec creation and blind inclusion
+>    of orphan text sections via .text.* directive in vmlinux.lds.S;
+>  - don't assert SIZEOF(.rel.dyn) as it's reported that it may be not
+>    empty on certain machines and compilers (Thomas);
+>  - align GOT table like it's done for ARM64;
+>  - new: catch UBSAN's "unnamed data" sections in generic definitions
+>    when building with LD_DEAD_CODE_DATA_ELIMINATION;
+>  - collect Reviewed-bys (Kees, Nathan).
+> 
+> Since v3 [2]:
+>  - fix the third patch as GNU stack emits .rel.dyn into VDSO for
+>    some reason if .cfi_sections is specified.
+> 
+> Since v2 [1]:
+>  - stop discarding .eh_frame and just prevent it from generating
+>    (Kees);
+>  - drop redundant sections assertions (Fangrui);
+>  - place GOT table in .text instead of asserting as it's not empty
+>    when building with LLVM (Nathan);
+>  - catch compound literals in generic definitions when building with
+>    LD_DEAD_CODE_DATA_ELIMINATION (Kees);
+>  - collect two Reviewed-bys (Kees).
+> 
+> Since v1 [0]:
+>  - catch .got entries too as LLD may produce it (Nathan);
+>  - check for unwanted sections to be zero-sized instead of
+>    discarding (Fangrui).
+> 
+> [0] https://lore.kernel.org/linux-mips/20210104121729.46981-1-alobakin@pm.me
+> [1] https://lore.kernel.org/linux-mips/20210106200713.31840-1-alobakin@pm.me
+> [2] https://lore.kernel.org/linux-mips/20210107115120.281008-1-alobakin@pm.me
+> [3] https://lore.kernel.org/linux-mips/20210107123331.354075-1-alobakin@pm.me
+> 
+> Alexander Lobakin (9):
+>   MIPS: vmlinux.lds.S: add missing PAGE_ALIGNED_DATA() section
+>   MIPS: CPS: don't create redundant .text.cps-vec section
+>   MIPS: vmlinux.lds.S: add ".gnu.attributes" to DISCARDS
+>   MIPS: properly stop .eh_frame generation
+>   MIPS: vmlinux.lds.S: explicitly catch .rel.dyn symbols
+>   MIPS: vmlinux.lds.S: explicitly declare .got table
+>   vmlinux.lds.h: catch compound literals into data and BSS
+>   vmlinux.lds.h: catch UBSAN's "unnamed data" into data
+>   MIPS: select ARCH_WANT_LD_ORPHAN_WARN
+> 
+>  arch/mips/Kconfig                 |  1 +
+>  arch/mips/include/asm/asm.h       | 18 ++++++++++++++++++
+>  arch/mips/kernel/cps-vec.S        |  1 -
+>  arch/mips/kernel/vmlinux.lds.S    | 11 +++++++++--
+>  include/asm-generic/vmlinux.lds.h |  6 +++---
+>  5 files changed, 31 insertions(+), 6 deletions(-)
 
-  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+applied to mips-next.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_fixes_5.11.1
-
-for you to fetch changes up to 7b490a8ab0f2d3ab8d838a4ff22ae86edafd34a1:
-
-  MIPS: OCTEON: fix unreachable code in octeon_irq_init_ciu (2021-01-13 10:59:32 +0100)
-
-----------------------------------------------------------------
-- fix coredumps on 64bit kernels
-- fix for alignment bugs preventing booting
-- fix checking for failed irq_alloc_desc calls
-
-----------------------------------------------------------------
-Al Viro (1):
-      MIPS: Fix malformed NT_FILE and NT_SIGINFO in 32bit coredumps
-
-Alexander Lobakin (1):
-      MIPS: relocatable: fix possible boot hangup with KASLR enabled
-
-Menglong Dong (1):
-      MIPS: OCTEON: fix unreachable code in octeon_irq_init_ciu
-
-Paul Cercueil (1):
-      MIPS: boot: Fix unaligned access with CONFIG_MIPS_RAW_APPENDED_DTB
-
- arch/mips/boot/compressed/decompress.c |  3 ++-
- arch/mips/cavium-octeon/octeon-irq.c   |  2 +-
- arch/mips/kernel/binfmt_elfn32.c       |  7 +++++++
- arch/mips/kernel/binfmt_elfo32.c       |  7 +++++++
- arch/mips/kernel/relocate.c            | 10 ++++++++--
- 5 files changed, 25 insertions(+), 4 deletions(-)
+Thoomas.
 
 -- 
 Crap can work. Given enough thrust pigs will fly, but it's not necessarily a

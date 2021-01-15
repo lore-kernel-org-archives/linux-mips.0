@@ -2,126 +2,53 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0873C433E6
-	for <linux-mips@archiver.kernel.org>; Fri, 15 Jan 2021 14:48:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18733C4332B
+	for <linux-mips@archiver.kernel.org>; Fri, 15 Jan 2021 14:48:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9CD8923359
+	by mail.kernel.org (Postfix) with ESMTP id E89DD239E5
 	for <linux-mips@archiver.kernel.org>; Fri, 15 Jan 2021 14:48:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732123AbhAOOry (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 Jan 2021 09:47:54 -0500
-Received: from elvis.franken.de ([193.175.24.41]:53938 "EHLO elvis.franken.de"
+        id S1731805AbhAOOrv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 Jan 2021 09:47:51 -0500
+Received: from elvis.franken.de ([193.175.24.41]:53932 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732175AbhAOOry (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 15 Jan 2021 09:47:54 -0500
+        id S1728586AbhAOOru (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 15 Jan 2021 09:47:50 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l0QNY-0006aU-02; Fri, 15 Jan 2021 15:47:08 +0100
+        id 1l0QNY-0006aU-04; Fri, 15 Jan 2021 15:47:08 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id CCB8EC057E; Fri, 15 Jan 2021 15:40:37 +0100 (CET)
-Date:   Fri, 15 Jan 2021 15:40:37 +0100
+        id 0D7CAC057E; Fri, 15 Jan 2021 15:46:32 +0100 (CET)
+Date:   Fri, 15 Jan 2021 15:46:31 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Pei Huang <huangpei@loongson.cn>,
-        Kees Cook <keescook@chromium.org>,
-        Fangrui Song <maskray@google.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, stable@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v5 mips-next 0/9] MIPS: vmlinux.lds.S sections fixes &
- cleanup
-Message-ID: <20210115144037.GC15166@alpha.franken.de>
-References: <20210110115245.30762-1-alobakin@pm.me>
+To:     Jinyang He <hejinyang@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Burton <paulburton@kernel.org>,
+        Jun-Ru Chang <jrjang@realtek.com>
+Subject: Re: [PATCH 1/4] MIPS: process: Reorder header files
+Message-ID: <20210115144631.GE15166@alpha.franken.de>
+References: <1610454557-25867-1-git-send-email-hejinyang@loongson.cn>
+ <1610454557-25867-2-git-send-email-hejinyang@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210110115245.30762-1-alobakin@pm.me>
+In-Reply-To: <1610454557-25867-2-git-send-email-hejinyang@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 11:53:50AM +0000, Alexander Lobakin wrote:
-> This series hunts the problems discovered after manual enabling of
-> ARCH_WANT_LD_ORPHAN_WARN. Notably:
->  - adds the missing PAGE_ALIGNED_DATA() section affecting VDSO
->    placement (marked for stable);
->  - stops blind catching of orphan text sections with .text.*
->    directive;
->  - properly stops .eh_frame section generation.
-> 
-> Compile and runtime tested on MIPS32R2 CPS board with no issues
-> using two different toolkits:
->  - Binutils 2.35.1, GCC 10.2.1 (with Alpine patches);
->  - LLVM stack: 11.0.0 and from latest Git snapshot.
-> 
-> Since v4 [3]:
->  - new: drop redundant .text.cps-vec creation and blind inclusion
->    of orphan text sections via .text.* directive in vmlinux.lds.S;
->  - don't assert SIZEOF(.rel.dyn) as it's reported that it may be not
->    empty on certain machines and compilers (Thomas);
->  - align GOT table like it's done for ARM64;
->  - new: catch UBSAN's "unnamed data" sections in generic definitions
->    when building with LD_DEAD_CODE_DATA_ELIMINATION;
->  - collect Reviewed-bys (Kees, Nathan).
-> 
-> Since v3 [2]:
->  - fix the third patch as GNU stack emits .rel.dyn into VDSO for
->    some reason if .cfi_sections is specified.
-> 
-> Since v2 [1]:
->  - stop discarding .eh_frame and just prevent it from generating
->    (Kees);
->  - drop redundant sections assertions (Fangrui);
->  - place GOT table in .text instead of asserting as it's not empty
->    when building with LLVM (Nathan);
->  - catch compound literals in generic definitions when building with
->    LD_DEAD_CODE_DATA_ELIMINATION (Kees);
->  - collect two Reviewed-bys (Kees).
-> 
-> Since v1 [0]:
->  - catch .got entries too as LLD may produce it (Nathan);
->  - check for unwanted sections to be zero-sized instead of
->    discarding (Fangrui).
-> 
-> [0] https://lore.kernel.org/linux-mips/20210104121729.46981-1-alobakin@pm.me
-> [1] https://lore.kernel.org/linux-mips/20210106200713.31840-1-alobakin@pm.me
-> [2] https://lore.kernel.org/linux-mips/20210107115120.281008-1-alobakin@pm.me
-> [3] https://lore.kernel.org/linux-mips/20210107123331.354075-1-alobakin@pm.me
-> 
-> Alexander Lobakin (9):
->   MIPS: vmlinux.lds.S: add missing PAGE_ALIGNED_DATA() section
->   MIPS: CPS: don't create redundant .text.cps-vec section
->   MIPS: vmlinux.lds.S: add ".gnu.attributes" to DISCARDS
->   MIPS: properly stop .eh_frame generation
->   MIPS: vmlinux.lds.S: explicitly catch .rel.dyn symbols
->   MIPS: vmlinux.lds.S: explicitly declare .got table
->   vmlinux.lds.h: catch compound literals into data and BSS
->   vmlinux.lds.h: catch UBSAN's "unnamed data" into data
->   MIPS: select ARCH_WANT_LD_ORPHAN_WARN
-> 
->  arch/mips/Kconfig                 |  1 +
->  arch/mips/include/asm/asm.h       | 18 ++++++++++++++++++
->  arch/mips/kernel/cps-vec.S        |  1 -
->  arch/mips/kernel/vmlinux.lds.S    | 11 +++++++++--
->  include/asm-generic/vmlinux.lds.h |  6 +++---
->  5 files changed, 31 insertions(+), 6 deletions(-)
+On Tue, Jan 12, 2021 at 08:29:14PM +0800, Jinyang He wrote:
+> Just reorder the header files.
 
-applied to mips-next.
+This alone isn't worth a commit, IMHO. I bet there are lots of includes
+no longer needed, so removing and sorting them is ok for me.
 
-Thoomas.
+Thomas.
 
 -- 
 Crap can work. Given enough thrust pigs will fly, but it's not necessarily a

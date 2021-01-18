@@ -2,81 +2,111 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5388C433E0
-	for <linux-mips@archiver.kernel.org>; Mon, 18 Jan 2021 13:21:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59C28C433E0
+	for <linux-mips@archiver.kernel.org>; Mon, 18 Jan 2021 14:45:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 915D72073C
-	for <linux-mips@archiver.kernel.org>; Mon, 18 Jan 2021 13:21:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2BA3422C7E
+	for <linux-mips@archiver.kernel.org>; Mon, 18 Jan 2021 14:45:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404344AbhARNVE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 18 Jan 2021 08:21:04 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:35658 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730443AbhARNU6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:20:58 -0500
-Received: from localhost.localdomain (unknown [112.3.198.184])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxe+T2igVgYswGAA--.10336S2;
-        Mon, 18 Jan 2021 21:19:51 +0800 (CST)
-From:   Yanteng Si <siyanteng@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Yanteng Si <siyanteng01@gmail.com>, linux-mips@vger.kernel.org,
-        Yanteng Si <siyanteng@loongson.cn>
-Subject: [PATCH] MIPS: IRQ: Add prototype for function init_IRQ
-Date:   Mon, 18 Jan 2021 21:20:09 +0800
-Message-Id: <20210118132009.2642893-1-siyanteng@loongson.cn>
-X-Mailer: git-send-email 2.27.0
+        id S2405137AbhAROow (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 18 Jan 2021 09:44:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405143AbhAROor (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 Jan 2021 09:44:47 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C9CC0613C1
+        for <linux-mips@vger.kernel.org>; Mon, 18 Jan 2021 06:43:59 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id n6so2772442edt.10
+        for <linux-mips@vger.kernel.org>; Mon, 18 Jan 2021 06:43:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eDEr8EsYnN9j0p1ty6nt7x7JGOwdRnEpsAX+fmWuDF0=;
+        b=aQgerXn24odrgBCC86uWNOviYMcYgNvr7tE7Xqw5uuPm8c1rxQNPC8/8BkbWMRjFzt
+         pc0R6UFMJokRIPGgA56/aahSC3XWOcpmbTJ6PGnat42xz3olUkB4t7apb1kKWIwiy/5c
+         V6ZpsXJNMa9al1E+PoiPpMmVncrM9W4mdKZCCykGe/r/1A6cNq+qWvmwLQBl1keHzo/z
+         xRS+APY8QmFPPbLQOVijpSY97G051Z5umOPcIWdjJewVZb7wZtlVvl+6KSg/uhZggEYJ
+         Ht1FSh60xUKakB2kAOKdrg6mN3rrgeQ5VbDKTKEDKqI3S21VRr2o4xJ/5VqvJtzeFVPg
+         5lSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eDEr8EsYnN9j0p1ty6nt7x7JGOwdRnEpsAX+fmWuDF0=;
+        b=QtjBHGHiPpVGvX+OpRBAwufNeSbcZ1uAplgHsA9YbZFdJ4QsbWogkKXHpydtCBpdBn
+         g0s+FCBERMZhMEJIw6iLjjbvJ6e+npBOqYvVz190EzEwPcmpTiNdLYmVUY6oKdHrUcpZ
+         D1jLK24nkZV0Y6GuUtOZf7s/80DdI+Xj6IaSFNAfb8V8ntU5QVpnOme3htitegb0K15/
+         mQ3U7NHBKOqT9aaD2+gev2U7ixIAGoIBU/CTsz8enimGa15/CgLqRiOxFBDiuDt3a+sr
+         6V6iE+Rccd9wAEGn9tA4bd0StNVv3XHqvBbzGVS4GqUqOBmVwmcko1UoWgT010Zz3eog
+         CQDg==
+X-Gm-Message-State: AOAM533p7+M4Cj3wAPZytzE9iAnmu0qx/g6Ld9x1q0zpt3MHF0J5vG/h
+        4c5OJ8GsJFZd9xzG8150tWbveVoe023nhQrm/c9nXw==
+X-Google-Smtp-Source: ABdhPJxQBu6TOGumUHE5+jC5O+0aDfrNuJjdy1ExMZJN5AVO/xtQoOyXHSNPQAkyWHGnJ8ss4eEX3jA/Nr3T+FpNy1g=
+X-Received: by 2002:aa7:da8f:: with SMTP id q15mr19327452eds.239.1610981038464;
+ Mon, 18 Jan 2021 06:43:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxe+T2igVgYswGAA--.10336S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtr1rAw43XF4fCFW8KFWUCFg_yoWxZFXEk3
-        42ya18Wr1rWr4avr9xXa95JFyF934rWa9xKrn5ZFnxAr95Ar45tay8JryrXrsYkr1qyr4v
-        9FZ5G3s0k3ZrKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbwkFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
-        1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
-        cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8Jw
-        ACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l
-        4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
-        AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
-        cVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
-        8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
-        wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbrMaUUUUUU==
-X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
+References: <20210118113340.984217512@linuxfoundation.org>
+In-Reply-To: <20210118113340.984217512@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 18 Jan 2021 20:13:47 +0530
+Message-ID: <CA+G9fYvMxJgZERbpiHzz+kf4aNHAf5DYg3uQGfksL-wN8huUiw@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/76] 5.4.91-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-mips@vger.kernel.org,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paul.burton@mips.com>,
+        James Hogan <jhogan@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This commit adds a prototype to fix error at W=1:
+On Mon, 18 Jan 2021 at 17:09, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.91 release.
+> There are 76 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 20 Jan 2021 11:33:23 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.91-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-arch/mips/kernel/irq.c:52:13: error: no previous prototype for
-'init_IRQ' [-Werror=missing-prototypes]
 
-Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
----
- arch/mips/include/asm/irq.h | 1 +
- 1 file changed, 1 insertion(+)
+MIPS: cavium_octeon_defconfig and nlm_xlp_defconfig builds breaks
+due to this patch on stable-rc 4.19 and stable-rc 5.4 branches.
 
-diff --git a/arch/mips/include/asm/irq.h b/arch/mips/include/asm/irq.h
-index c5d351786416..f021de661c3a 100644
---- a/arch/mips/include/asm/irq.h
-+++ b/arch/mips/include/asm/irq.h
-@@ -20,6 +20,7 @@
- #define IRQ_STACK_SIZE			THREAD_SIZE
- #define IRQ_STACK_START			(IRQ_STACK_SIZE - 16)
- 
-+extern void __init init_IRQ(void);
- extern void *irq_stack[NR_CPUS];
- 
- /*
+> Al Viro <viro@zeniv.linux.org.uk>
+>     MIPS: Fix malformed NT_FILE and NT_SIGINFO in 32bit coredumps
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+
 -- 
-2.27.0
-
+Linaro LKFT
+https://lkft.linaro.org

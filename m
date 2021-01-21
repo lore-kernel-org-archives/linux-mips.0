@@ -7,79 +7,90 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DB4CC4332E
-	for <linux-mips@archiver.kernel.org>; Thu, 21 Jan 2021 03:37:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54413C433DB
+	for <linux-mips@archiver.kernel.org>; Thu, 21 Jan 2021 05:33:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 75D2A238D7
-	for <linux-mips@archiver.kernel.org>; Thu, 21 Jan 2021 03:37:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F220B2389F
+	for <linux-mips@archiver.kernel.org>; Thu, 21 Jan 2021 05:33:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726997AbhAUDfb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 20 Jan 2021 22:35:31 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:53874 "EHLO loongson.cn"
+        id S1726048AbhAUFdn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 21 Jan 2021 00:33:43 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:47444 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388454AbhAUBm1 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 20 Jan 2021 20:42:27 -0500
-Received: from localhost.localdomain (unknown [112.3.198.184])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxS+Qb2ghg7lgIAA--.13363S3;
-        Thu, 21 Jan 2021 09:34:20 +0800 (CST)
-From:   Yanteng Si <siyanteng@loongson.cn>
+        id S1726885AbhAUFcp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 21 Jan 2021 00:32:45 -0500
+Received: from loongson.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxeL7GEQlgHXEIAA--.13206S4;
+        Thu, 21 Jan 2021 13:31:52 +0800 (CST)
+From:   Jinyang He <hejinyang@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, siyanteng01@gmail.com,
-        Yanteng Si <siyanteng@loongson.cn>
-Subject: [PATCH 2/2] MIPS: mm: Add prototype for function __uncached_access
-Date:   Thu, 21 Jan 2021 09:34:35 +0800
-Message-Id: <20210121013435.450471-2-siyanteng@loongson.cn>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210121013435.450471-1-siyanteng@loongson.cn>
-References: <20210121013435.450471-1-siyanteng@loongson.cn>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9DxS+Qb2ghg7lgIAA--.13363S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrZr1fAr48Kr1DuFyUZF1UJrb_yoW3KFc_u3
-        W7ta18urZYqFsxZry7Xan3GFW0g348Wa4q9F1qqwnIvas5Ar4UAay0q34fXrsY9asFyF4f
-        XF95Xr1rGFnrKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbhxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGwA2048vs2IY02
-        0Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM2
-        8EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1U
-        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
-        v20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
-        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVWkMxAIw2
-        8IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4l
-        x2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrw
-        CI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI
-        42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z2
-        80aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXAw3UUUUU==
-X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
+        Jun-Ru Chang <jrjang@realtek.com>
+Subject: [PATCH v2 2/4] MIPS: microMIPS: Fix the judgment of mm_jr16_op and mm_jalr_op
+Date:   Thu, 21 Jan 2021 13:31:36 +0800
+Message-Id: <1611207098-11381-3-git-send-email-hejinyang@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1611207098-11381-1-git-send-email-hejinyang@loongson.cn>
+References: <1611207098-11381-1-git-send-email-hejinyang@loongson.cn>
+X-CM-TRANSID: AQAAf9DxeL7GEQlgHXEIAA--.13206S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7tw1DCFy3tr4UXF1rtF4fKrg_yoW8Gw4fpF
+        4UZ3yvkr4rJFn5JaykGaykWa43Aan0g3yfJa4Yqry5ZwnxWry7ZryfGr4Iy34Igr4Yk3WI
+        vFW3Zr4UCa1xZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBYb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
+        8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF
+        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcV
+        CY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv
+        6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c
+        02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE
+        4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r4rMxAIw28IcxkI7V
+        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
+        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6x
+        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
+        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUYj1v3UUUUU==
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This commit adds a prototype to fix error at W=1:
+mm16_r5_format.rt is 5 bits, so directly judge the value if equal or not.
+mm_jalr_op requires 7th to 16th bits. These 10 which bits generated by
+shifting u_format.uimmediate by 6 may be affected by sign extension.
+Thus, take out the 10 bits for comparison.
 
-arch/mips/mm/cache.c:211:12: error: no previous prototype
-for '__uncached_access' [-Werror=missing-prototypes]
+Without this patch, errors may occur, such as these bits are all ones.
 
-Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
+Signed-off-by: Jinyang He <hejinyang@loongson.cn>
 ---
- arch/mips/include/asm/pgtable.h | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/kernel/process.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index 804889b70965..76d36484a0ad 100644
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -65,6 +65,7 @@ struct vm_area_struct;
- 
- extern unsigned long _page_cachable_default;
- extern void __update_cache(unsigned long address, pte_t pte);
-+extern int __weak __uncached_access(struct file *file, unsigned long addr);
- 
- /*
-  * ZERO_PAGE is a global shared page that is always zero; used
+diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
+index d737234..74d7fd8 100644
+--- a/arch/mips/kernel/process.c
++++ b/arch/mips/kernel/process.c
+@@ -292,8 +292,8 @@ static inline int is_jump_ins(union mips_instruction *ip)
+ 	 * microMIPS is kind of more fun...
+ 	 */
+ 	if (mm_insn_16bit(ip->word >> 16)) {
+-		if ((ip->mm16_r5_format.opcode == mm_pool16c_op &&
+-		    (ip->mm16_r5_format.rt & mm_jr16_op) == mm_jr16_op))
++		if (ip->mm16_r5_format.opcode == mm_pool16c_op &&
++		    ip->mm16_r5_format.rt == mm_jr16_op)
+ 			return 1;
+ 		return 0;
+ 	}
+@@ -305,7 +305,7 @@ static inline int is_jump_ins(union mips_instruction *ip)
+ 	if (ip->r_format.opcode != mm_pool32a_op ||
+ 			ip->r_format.func != mm_pool32axf_op)
+ 		return 0;
+-	return ((ip->u_format.uimmediate >> 6) & mm_jalr_op) == mm_jalr_op;
++	return ((ip->u_format.uimmediate >> 6) & GENMASK(9, 0)) == mm_jalr_op;
+ #else
+ 	if (ip->j_format.opcode == j_op)
+ 		return 1;
 -- 
-2.27.0
+2.1.0
 

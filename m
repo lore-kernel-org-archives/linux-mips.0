@@ -2,103 +2,141 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAB82C433DB
-	for <linux-mips@archiver.kernel.org>; Thu, 21 Jan 2021 05:56:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BB22C433E0
+	for <linux-mips@archiver.kernel.org>; Thu, 21 Jan 2021 09:39:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 904E42389E
-	for <linux-mips@archiver.kernel.org>; Thu, 21 Jan 2021 05:56:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C67A223977
+	for <linux-mips@archiver.kernel.org>; Thu, 21 Jan 2021 09:39:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725933AbhAUDcA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 20 Jan 2021 22:32:00 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:52118 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387713AbhAUBgV (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 20 Jan 2021 20:36:21 -0500
-Received: from localhost.localdomain (unknown [112.3.198.184])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxS+Qb2ghg7lgIAA--.13363S2;
-        Thu, 21 Jan 2021 09:34:19 +0800 (CST)
-From:   Yanteng Si <siyanteng@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, siyanteng01@gmail.com,
-        Yanteng Si <siyanteng@loongson.cn>
-Subject: [PATCH 1/2] MIPS: mm: Add prototype for function __update_cache
-Date:   Thu, 21 Jan 2021 09:34:34 +0800
-Message-Id: <20210121013435.450471-1-siyanteng@loongson.cn>
-X-Mailer: git-send-email 2.27.0
+        id S1728621AbhAUJaA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 21 Jan 2021 04:30:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728438AbhAUJ3Z (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 21 Jan 2021 04:29:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1E362399A;
+        Thu, 21 Jan 2021 09:28:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611221324;
+        bh=HQrbdL46xbmrXqY5Sn9AuthJJHzeZplEaDeVBqkSS9s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PYAoAnYl/ogmB0L2v2av2+IJ+DNweurLMJGzGmiS1ATJo0e324yn9v4djWyEd0v94
+         fYqE4UmevN8N/idAQuYe94u0NTJzfp//WTcMgEpeyiIEskaz9r+FBrftqpVRUAsTJs
+         MnixBE67TvK/U3bLpIeKGiJAx2RYFJYlEp1RlZoOtsZ1j/FIVQUaw0SWjEy6pzZIU7
+         MNbv4Rsuzz+kNfzDiENAXoqTJ5QTcR1sqAMBt66ntq5RROSDGgMelZd+ww5e/CaUbw
+         2On5EmFyQZuJSRe9Cy8DpmyMccSO1tJxVOCsytu7TiGs2+jHBdGpmrEi/bXOmxMoMr
+         eTs8NnSAb+XSQ==
+Received: by mail-io1-f44.google.com with SMTP id h11so2630631ioh.11;
+        Thu, 21 Jan 2021 01:28:43 -0800 (PST)
+X-Gm-Message-State: AOAM533zTeNNiwyXzryAwCzxStDsaMzDQK1ko5uPuk8nPXSKzK66G1PX
+        ilHOHJnrZ0ilfjXDRobQAU0Nae6Np7Gm9LxqJEk=
+X-Google-Smtp-Source: ABdhPJxkmQnE9ksuZg96yY6jApvsmnRY012dtIpZ0KN4SFvG9MwmPSiiSxpFY6tNYykhwYwYgFXk2N4awTlZuAwOies=
+X-Received: by 2002:a02:c76b:: with SMTP id k11mr7077843jao.57.1611221321317;
+ Thu, 21 Jan 2021 01:28:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9DxS+Qb2ghg7lgIAA--.13363S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ww4kWF13ZryUWFyDZw1DZFb_yoW8XF4xpF
-        ZrC3Z7JrW5Ww1IyFy5Ar9Fvr4fJa98Kayav3y2yry0v3Wag3W8XF93Gwn8Ary8XFWvya1x
-        urWYqry5Xr4Syr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkG14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
-        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_
-        KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr
-        0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdb18UUU
-        UU=
-X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
+References: <1611207098-11381-1-git-send-email-hejinyang@loongson.cn> <1611207098-11381-2-git-send-email-hejinyang@loongson.cn>
+In-Reply-To: <1611207098-11381-2-git-send-email-hejinyang@loongson.cn>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Thu, 21 Jan 2021 17:28:31 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6vvnMqW_xCgUDFiT2mpntY5SFT4M-6jZQ714FabbckQg@mail.gmail.com>
+Message-ID: <CAAhV-H6vvnMqW_xCgUDFiT2mpntY5SFT4M-6jZQ714FabbckQg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] MIPS: process: Remove unnecessary headers inclusion
+To:     Jinyang He <hejinyang@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Jun-Ru Chang <jrjang@realtek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This commit adds a prototype to fix error at W=1:
+Reviewed-by: Huacai Chen <chenhuacai@kernel.org>
 
-arch/mips/mm/cache.c:129:6: error: no previous prototype
-for '__update_cache' [-Werror=missing-prototypes]
-
-Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
----
- arch/mips/include/asm/pgtable.h | 2 +-
- arch/mips/mm/cache.c            | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
-index 4d3ab682d093..804889b70965 100644
---- a/arch/mips/include/asm/pgtable.h
-+++ b/arch/mips/include/asm/pgtable.h
-@@ -64,6 +64,7 @@ struct vm_area_struct;
- #define __S111 __pgprot(0)
- 
- extern unsigned long _page_cachable_default;
-+extern void __update_cache(unsigned long address, pte_t pte);
- 
- /*
-  * ZERO_PAGE is a global shared page that is always zero; used
-@@ -224,7 +225,6 @@ static inline void pte_clear(struct mm_struct *mm, unsigned long addr, pte_t *pt
- static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
- 			      pte_t *ptep, pte_t pteval)
- {
--	extern void __update_cache(unsigned long address, pte_t pte);
- 
- 	if (!pte_present(pteval))
- 		goto cache_sync_done;
-diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
-index 23b16bfd97b2..27f4228dd24e 100644
---- a/arch/mips/mm/cache.c
-+++ b/arch/mips/mm/cache.c
-@@ -21,6 +21,7 @@
- #include <asm/cpu.h>
- #include <asm/cpu-features.h>
- #include <asm/setup.h>
-+#include <asm/pgtable.h>
- 
- /* Cache operations. */
- void (*flush_cache_all)(void);
--- 
-2.27.0
-
+On Thu, Jan 21, 2021 at 1:44 PM Jinyang He <hejinyang@loongson.cn> wrote:
+>
+> Some headers are not necessary, remove them and sort includes.
+>
+> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+> ---
+> v2:
+> - Remove useless header inclusion.
+>
+>  arch/mips/kernel/process.c | 39 ++++++++++-----------------------------
+>  1 file changed, 10 insertions(+), 29 deletions(-)
+>
+> diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
+> index d7e288f..d737234 100644
+> --- a/arch/mips/kernel/process.c
+> +++ b/arch/mips/kernel/process.c
+> @@ -9,50 +9,31 @@
+>   * Copyright (C) 2004 Thiemo Seufer
+>   * Copyright (C) 2013  Imagination Technologies Ltd.
+>   */
+> +#include <linux/cpu.h>
+>  #include <linux/errno.h>
+> -#include <linux/sched.h>
+> -#include <linux/sched/debug.h>
+> -#include <linux/sched/task.h>
+> -#include <linux/sched/task_stack.h>
+> -#include <linux/tick.h>
+> -#include <linux/kernel.h>
+> -#include <linux/mm.h>
+> -#include <linux/stddef.h>
+> -#include <linux/unistd.h>
+> -#include <linux/export.h>
+> -#include <linux/ptrace.h>
+> -#include <linux/mman.h>
+> -#include <linux/personality.h>
+> -#include <linux/sys.h>
+>  #include <linux/init.h>
+> -#include <linux/completion.h>
+>  #include <linux/kallsyms.h>
+> -#include <linux/random.h>
+> -#include <linux/prctl.h>
+> +#include <linux/kernel.h>
+>  #include <linux/nmi.h>
+> -#include <linux/cpu.h>
+> +#include <linux/personality.h>
+> +#include <linux/prctl.h>
+> +#include <linux/sched.h>
+> +#include <linux/sched/debug.h>
+> +#include <linux/sched/task_stack.h>
+>
+>  #include <asm/abi.h>
+>  #include <asm/asm.h>
+> -#include <asm/bootinfo.h>
+> -#include <asm/cpu.h>
+>  #include <asm/dsemul.h>
+>  #include <asm/dsp.h>
+>  #include <asm/fpu.h>
+> +#include <asm/inst.h>
+>  #include <asm/irq.h>
+> -#include <asm/mips-cps.h>
+> +#include <asm/irq_regs.h>
+> +#include <asm/isadep.h>
+>  #include <asm/msa.h>
+>  #include <asm/mipsregs.h>
+>  #include <asm/processor.h>
+>  #include <asm/reg.h>
+> -#include <linux/uaccess.h>
+> -#include <asm/io.h>
+> -#include <asm/elf.h>
+> -#include <asm/isadep.h>
+> -#include <asm/inst.h>
+> -#include <asm/stacktrace.h>
+> -#include <asm/irq_regs.h>
+> -#include <asm/exec.h>
+>
+>  #ifdef CONFIG_HOTPLUG_CPU
+>  void arch_cpu_idle_dead(void)
+> --
+> 2.1.0
+>

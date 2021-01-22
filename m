@@ -2,67 +2,86 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-6.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CB1CC4332E
-	for <linux-mips@archiver.kernel.org>; Fri, 22 Jan 2021 17:21:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44B87C433E0
+	for <linux-mips@archiver.kernel.org>; Fri, 22 Jan 2021 17:26:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0BAFA23A9C
-	for <linux-mips@archiver.kernel.org>; Fri, 22 Jan 2021 17:21:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0199223A9A
+	for <linux-mips@archiver.kernel.org>; Fri, 22 Jan 2021 17:25:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729626AbhAVQ4a (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 22 Jan 2021 11:56:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729504AbhAVQTO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 22 Jan 2021 11:19:14 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FCAC0613D6;
-        Fri, 22 Jan 2021 08:18:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UjJ6kxc55YH2vlKrgOGDEBcQx9lEFDcVHbyNVK56NIw=; b=Nlz6o4LImTvlsn+z1TO6pUtyvD
-        FNEX8XAsCmh1Zl4sTwL8+8u/+DRMS9EJZVVoToIGgcz+uQtXgMZUEwJkMsWcwvI3drtnyIrnwxqLY
-        94ubEE+XvxNTbdVaqlP1SlAirtZ2YflFtxnnXsMs0fCIge1roOcJ4hnouQM9YVnM9jm5ghleQYcc6
-        Q3XVRuCiLv2v75dF4Unw38V9fXiO5yq/mpqFVvNzZZqrpPkaVXCICdDmVqUInRcfeX3SgyzjGqFHP
-        Q+YlHeuYu00cGjkK9nTYr+Mip1M5TeU0mHWfNDoRZ9J3xYcfecIYj+R0bm0r3KcJ6PK5HqiJRee7e
-        wzAAAW6w==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l2z8O-000wzc-5N; Fri, 22 Jan 2021 16:18:12 +0000
-Date:   Fri, 22 Jan 2021 16:18:04 +0000
-From:   Christoph Hellwig <hch@infradead.org>
+        id S1729388AbhAVRZZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 22 Jan 2021 12:25:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728996AbhAVRMD (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 22 Jan 2021 12:12:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FD56233FA;
+        Fri, 22 Jan 2021 17:11:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611335482;
+        bh=0XIyyg4LOxNrer6F5QQYteZcaKAJap8zqz/sF3g3bUU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O6mHpXMzH3/bRn5H1clkBsP+H1i46DrSdrROkK77olwJj6xOYIdEP0RZZ6W4M/U5k
+         Y/KWdXeweeLFswfslNaSDLeQpCQCWQxYWkaLjou/e/146ExLQ6RP5q9yXX/6QISrnr
+         A4cJ3JLk9mjMf9OS60c2ol+T8xCBwmlgk0kV1Npwd8EN2/9wIMohQTM0uWn32KYzYU
+         w2JhqbyG4q+NOKOJ9okwqFR+bbkbovdOBcEhFhTPDdEXV3fuB3ijuGWde7WRO9Vr4S
+         FlV4jX9+3CMvrb6XMVOgt29IbVfj2Yx2fo0FwjiiS1ggInQwzn3Ks5HSgVn8cpfayZ
+         ZT4KhfKlYctQg==
+Date:   Fri, 22 Jan 2021 09:11:20 -0800
+From:   Keith Busch <kbusch@kernel.org>
 To:     Lauri Kasanen <cand@gmx.com>
 Cc:     Christoph Hellwig <hch@infradead.org>, linux-mips@vger.kernel.org,
         tsbogend@alpha.franken.de, axboe@kernel.dk,
-        linux-block@vger.kernel.org, Keith Busch <kbusch@kernel.org>
+        linux-block@vger.kernel.org
 Subject: Re: [PATCH v9] block: Add n64 cart driver
-Message-ID: <20210122161804.GA225607@infradead.org>
+Message-ID: <20210122171120.GA1728441@dhcp-10-100-145-180.wdc.com>
 References: <20210122110043.f36cd22df1233754753518c1@gmx.com>
  <20210122111727.GA161970@infradead.org>
  <20210122155801.a24c328b7aefdcffb7d68576@gmx.com>
+ <20210122161804.GA225607@infradead.org>
+ <20210122182349.c98d8599f7593afefa43c9dd@gmx.com>
+ <20210122163913.GA227449@infradead.org>
+ <20210122185619.980fa4f713b8f57528c3af9e@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210122155801.a24c328b7aefdcffb7d68576@gmx.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210122185619.980fa4f713b8f57528c3af9e@gmx.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 03:58:01PM +0200, Lauri Kasanen wrote:
-> On Fri, 22 Jan 2021 11:17:27 +0000
+On Fri, Jan 22, 2021 at 06:56:19PM +0200, Lauri Kasanen wrote:
+> On Fri, 22 Jan 2021 16:39:13 +0000
 > Christoph Hellwig <hch@infradead.org> wrote:
 > 
-> > Sorry for not noticing this earlier, but why do you need the bounce
-> > buffer vs just mapping the data buffer?
+> > On Fri, Jan 22, 2021 at 06:23:49PM +0200, Lauri Kasanen wrote:
+> > > > Your driver can communicate the required alignment using the
+> > > > blk_queue_update_dma_alignment API.
+> > >
+> > > Is it guaranteed to be physically contiguous?
+> >
+> > The alignment requirement applies to each bio_vec.
+> >
+> > What alignment does the hardware require?
 > 
-> I think I've answered this once already a few iterations before. DMA
-> alignment restrictions, not sure what guarantees the bio buffer has.
+> It requires 8-byte alignment, but the buffer must also be physically
+> contiguous.
 
-Your driver can communicate the required alignment using the
-blk_queue_update_dma_alignment API.
+Each bio_vec segment is physically contiguous.
+
+> I grepped around, but apparently no driver under drivers/block does
+> direct DMA to the bio buffer. They all use their own buffer and memcpy,
+> like this patch. ps3vram, ps3disk, amiflop, etc etc.
+
+block/brd.c
+ 
+> If all existing drivers use their own buffer, why is a different
+> approach required for new drivers?
+
+It's certainly more efficient to send the data directly to the
+destination without an unnecessary middle-man. And 64k seems like quite
+a lot of memory to sequestor considering how little you have to start
+with.

@@ -5,61 +5,65 @@ X-Spam-Level:
 X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62744C433DB
-	for <linux-mips@archiver.kernel.org>; Fri, 22 Jan 2021 12:05:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A8FFC433E6
+	for <linux-mips@archiver.kernel.org>; Fri, 22 Jan 2021 12:08:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 34CE823122
-	for <linux-mips@archiver.kernel.org>; Fri, 22 Jan 2021 12:05:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 36A7423444
+	for <linux-mips@archiver.kernel.org>; Fri, 22 Jan 2021 12:08:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727746AbhAVMEw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 22 Jan 2021 07:04:52 -0500
-Received: from elvis.franken.de ([193.175.24.41]:42476 "EHLO elvis.franken.de"
+        id S1727807AbhAVME2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 22 Jan 2021 07:04:28 -0500
+Received: from elvis.franken.de ([193.175.24.41]:42480 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727820AbhAVKyi (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S1727823AbhAVKyi (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Fri, 22 Jan 2021 05:54:38 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l2u4i-0006yq-03; Fri, 22 Jan 2021 11:53:56 +0100
+        id 1l2u4h-0006yq-02; Fri, 22 Jan 2021 11:53:55 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 04761C0BF1; Fri, 22 Jan 2021 11:52:25 +0100 (CET)
-Date:   Fri, 22 Jan 2021 11:52:25 +0100
+        id 5D1DCC0BF1; Fri, 22 Jan 2021 11:49:48 +0100 (CET)
+Date:   Fri, 22 Jan 2021 11:49:48 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Lauri Kasanen <cand@gmx.com>
-Cc:     linux-mips@vger.kernel.org
-Subject: Re: [PATCH 2/6 v6] mips: Add N64 machine type
-Message-ID: <20210122105225.GF8146@alpha.franken.de>
-References: <20210113171123.7c819ee9cb9f07f0a4e80e5a@gmx.com>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH] MIPS: mm: abort uaccess retries upon fatal signal
+Message-ID: <20210122104948.GB8146@alpha.franken.de>
+References: <20210121160416.111298-1-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210113171123.7c819ee9cb9f07f0a4e80e5a@gmx.com>
+In-Reply-To: <20210121160416.111298-1-tsbogend@alpha.franken.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 05:11:23PM +0200, Lauri Kasanen wrote:
-> Add support for the Nintendo 64.
+On Thu, Jan 21, 2021 at 05:04:16PM +0100, Thomas Bogendoerfer wrote:
+> When there's a fatal signal pending, MIPS's do_page_fault()
+> implementation returns. The intent is that we'll return to the
+> faulting userspace instruction, delivering the signal on the way.
 > 
-> Signed-off-by: Lauri Kasanen <cand@gmx.com>
+> However, if we take a fatal signal during fixing up a uaccess, this
+> results in a return to the faulting kernel instruction, which will be
+> instantly retried, resulting in the same fault being taken forever. As
+> the task never reaches userspace, the signal is not delivered, and the
+> task is left unkillable. While the task is stuck in this state, it can
+> inhibit the forward progress of the system.
+> 
+> To avoid this, we must ensure that when a fatal signal is pending, we
+> apply any necessary fixup for a faulting kernel instruction. Thus we
+> will return to an error path, and it is up to that code to make forward
+> progress towards delivering the fatal signal.
+> 
+> [ Description taken from commit 746a272e4414 ("ARM: 8692/1: mm: abort
+>    uaccess retries upon fatal signal") ]
+> 
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 > ---
->  arch/mips/Kbuild.platforms               |   1 +
->  arch/mips/Kconfig                        |  12 +++
->  arch/mips/include/asm/mach-n64/irq.h     |   9 ++
->  arch/mips/include/asm/mach-n64/kmalloc.h |   8 ++
->  arch/mips/n64/Makefile                   |   6 ++
->  arch/mips/n64/Platform                   |   7 ++
->  arch/mips/n64/init.c                     | 164 +++++++++++++++++++++++++++++++
->  arch/mips/n64/irq.c                      |  16 +++
->  8 files changed, 223 insertions(+)
->  create mode 100644 arch/mips/include/asm/mach-n64/irq.h
->  create mode 100644 arch/mips/include/asm/mach-n64/kmalloc.h
->  create mode 100644 arch/mips/n64/Makefile
->  create mode 100644 arch/mips/n64/Platform
->  create mode 100644 arch/mips/n64/init.c
->  create mode 100644 arch/mips/n64/irq.c
+>  arch/mips/mm/fault.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 
 applied to mips-next.
 

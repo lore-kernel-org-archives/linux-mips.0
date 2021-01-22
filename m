@@ -2,65 +2,96 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 617C6C4332D
-	for <linux-mips@archiver.kernel.org>; Fri, 22 Jan 2021 16:46:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6BACC433E0
+	for <linux-mips@archiver.kernel.org>; Fri, 22 Jan 2021 17:08:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4660223A9A
-	for <linux-mips@archiver.kernel.org>; Fri, 22 Jan 2021 16:46:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 69F4D23A9A
+	for <linux-mips@archiver.kernel.org>; Fri, 22 Jan 2021 17:08:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728718AbhAVQlq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 22 Jan 2021 11:41:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728487AbhAVQlC (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 22 Jan 2021 11:41:02 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9690CC06178B;
-        Fri, 22 Jan 2021 08:40:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SMuI+JN9JhZogfIpHxGQxmytOjKEK/WColKvy7oEXQQ=; b=nmTtkyET+pvLqy6/pX4Mw7VEXF
-        Nr5ItHGqVtReKAA/2SgWLq9UdDXSG2E0EQI3nOSy/hCI5iBt5hy6VqUOXI3gqWJLDkgCrCdJZow8f
-        +jk35Dlp3GtzuTbOdwuMcQ5Bs2dwYKGmnoKqKSEfXFR9c9I35Z5D3TjKTpZCF91kwq7e1RGkB20Y/
-        nGNLg9zqOzex53rNNcYXQGMTvBkvul+Gk6QIkQhHn0mWI60yC/evpD6NfgApzTuUt6NiFmo6UdT8z
-        luZJHrFTFrIDvYW/Fju+kJhJPtM5AHNKQQKwbgw7PHSnX2dPkGyudksTf+iCkLmr3V53J0yr61AVo
-        qMPJfGug==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l2zSr-000y3v-In; Fri, 22 Jan 2021 16:39:29 +0000
-Date:   Fri, 22 Jan 2021 16:39:13 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Lauri Kasanen <cand@gmx.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-mips@vger.kernel.org,
-        tsbogend@alpha.franken.de, axboe@kernel.dk,
-        linux-block@vger.kernel.org, Keith Busch <kbusch@kernel.org>
+        id S1729307AbhAVRIA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 22 Jan 2021 12:08:00 -0500
+Received: from mout.gmx.net ([212.227.15.15]:35695 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729702AbhAVRGp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 22 Jan 2021 12:06:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1611335099;
+        bh=i8AlmvmcFI/Qxol88A5rstmImds1ILCafn76AKz1rmk=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=iPdz6ZBLx1aaFHlruqxbx4cmxhs/pncvAV2mbVg93qH3XR/hft7NphQNN67HZ/4Mz
+         lr/xa/AZOixzcEHzM9cOafB1Gvc9sONcqV8+dNydZrnJFG811lQHek6eKVAtSIeAdE
+         b1YmYSWXHHPwi+wM53w7UcunDjmSrzwNGOq2vY10=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from Valinor ([82.203.161.65]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MQMuR-1lOnok1IXJ-00MIyE; Fri, 22
+ Jan 2021 17:54:39 +0100
+Date:   Fri, 22 Jan 2021 18:56:19 +0200
+From:   Lauri Kasanen <cand@gmx.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
+        axboe@kernel.dk, linux-block@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>
 Subject: Re: [PATCH v9] block: Add n64 cart driver
-Message-ID: <20210122163913.GA227449@infradead.org>
+Message-Id: <20210122185619.980fa4f713b8f57528c3af9e@gmx.com>
+In-Reply-To: <20210122163913.GA227449@infradead.org>
 References: <20210122110043.f36cd22df1233754753518c1@gmx.com>
- <20210122111727.GA161970@infradead.org>
- <20210122155801.a24c328b7aefdcffb7d68576@gmx.com>
- <20210122161804.GA225607@infradead.org>
- <20210122182349.c98d8599f7593afefa43c9dd@gmx.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210122182349.c98d8599f7593afefa43c9dd@gmx.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        <20210122111727.GA161970@infradead.org>
+        <20210122155801.a24c328b7aefdcffb7d68576@gmx.com>
+        <20210122161804.GA225607@infradead.org>
+        <20210122182349.c98d8599f7593afefa43c9dd@gmx.com>
+        <20210122163913.GA227449@infradead.org>
+X-Mailer: Sylpheed 3.5.0 (GTK+ 2.18.6; x86_64-unknown-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:bofvDUa1+ADtnwXPN2gUPtk9nO6HaejYTkDzW1g61mubgB3ZES6
+ Bx+4qEwjvSy+lzUwU7SkI+i2DKXsOdFD2Kv2ZiCNMny8jqQYkMz/0/a1HtASHvebbfy1T8F
+ jV02A6oHiF+fOtj6VgCy68pSY05z1NDHThixga5on9ttAhzfhzq4NFr6qXwD4BNogIWbrDe
+ nhC5CLX2y9Y9dwClhRaRw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RevUbB9Rk7s=:tci408hxeQHFdyODg61svc
+ TS1NrNTh7pz5NTzHGOhQhbdiNQi8yN7W8RDkJ0fU4aDdY5DjMSTTxQAM6Qn9o92yc/9yilrdv
+ 58o3WF3Bi4+IcP2tzQrExWr2tp3Kl2WFtWAqsYin2qUrktAlniVBnY/0fMl/1H9P809b4uU7z
+ hT9Nup7LRraRIBXCLcA8uySB69T/EdmP1GjbnJiXbuUC5EfwQBrqTCWCH5zrN7cR+vCfecvK1
+ O0yQSne0pCy6wfnb4U+xI9SmQyNRgWflg36OsIgqcmCA3n5WPosn6v+wRXNSWJoB6E/86x2kS
+ qw+9njuj05tO46trCtxJg+EC73OfDILhnvDEV/B4jeTcyA0zFnDxAcFlUVOlUc8iUV040Wvpj
+ YCFRrVLN5q7onkNqHJv875SltqYO8zAU6k5SNaPwwOfhW1xCvjLedqwSRTLottQQ7aG4QQzYy
+ pJAAzKHOXWd2U5SLBRxjCn8NMLJRKTMARxl0d4Tbz2XUKrkjJ5Y2VVHZTUaaSIMBzanx3AVJR
+ mgivyBe1Zj3KxG4WzO9LQnznvAV/RS+d6fSm21T/wUypUXhOZyr1IYyRcql4l0KOIlbsQU4Id
+ IhSqwuBo7JRaFeHe/uf1NQj+FQCWF0z809zjKy69Hr2tvSG5GaethtE9ld5MnizTPrI2CdPlD
+ Hw7oTd05TQ3QLOvyIqqeMmSuDt9knc4hi8MPpiiwuq9wz9BrwUtDFp1iVWqJvQecdFIQ8e2wp
+ gOZI+iXDpOyjmWxa1MviMxrD5sZO4iTwBCAecUsO4iwVU7zDj5gS5nnuOMFgnYm+vaTp3eNY9
+ lreA/dv4kf4+dyjDkZ1GtBsK+i1AiOklTn4rvnsyZ4vjOflp8szgd+R4gXXGSmc5lnyx7B4TM
+ I/6pgWdPCDgIMLpUo3Uw==
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 06:23:49PM +0200, Lauri Kasanen wrote:
-> > Your driver can communicate the required alignment using the
-> > blk_queue_update_dma_alignment API.
-> 
-> Is it guaranteed to be physically contiguous?
+On Fri, 22 Jan 2021 16:39:13 +0000
+Christoph Hellwig <hch@infradead.org> wrote:
 
-The alignment requirement applies to each bio_vec.
+> On Fri, Jan 22, 2021 at 06:23:49PM +0200, Lauri Kasanen wrote:
+> > > Your driver can communicate the required alignment using the
+> > > blk_queue_update_dma_alignment API.
+> >
+> > Is it guaranteed to be physically contiguous?
+>
+> The alignment requirement applies to each bio_vec.
+>
+> What alignment does the hardware require?
 
-What alignment does the hardware require?
+It requires 8-byte alignment, but the buffer must also be physically
+contiguous.
+
+I grepped around, but apparently no driver under drivers/block does
+direct DMA to the bio buffer. They all use their own buffer and memcpy,
+like this patch. ps3vram, ps3disk, amiflop, etc etc.
+
+If all existing drivers use their own buffer, why is a different
+approach required for new drivers?
+
+- Lauri

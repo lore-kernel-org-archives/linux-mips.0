@@ -5,65 +5,65 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77D23C43381
-	for <linux-mips@archiver.kernel.org>; Mon, 25 Jan 2021 23:35:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1200BC433E0
+	for <linux-mips@archiver.kernel.org>; Mon, 25 Jan 2021 23:35:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5575322AAA
-	for <linux-mips@archiver.kernel.org>; Mon, 25 Jan 2021 23:35:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CD2D522AAA
+	for <linux-mips@archiver.kernel.org>; Mon, 25 Jan 2021 23:35:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732613AbhAYXfB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 25 Jan 2021 18:35:01 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:31536 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732754AbhAYXeq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 25 Jan 2021 18:34:46 -0500
+        id S1732756AbhAYXfV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 25 Jan 2021 18:35:21 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:5580 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732913AbhAYXej (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 25 Jan 2021 18:34:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1611617685; x=1643153685;
+  t=1611617679; x=1643153679;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=0k5bSmKlMDaTbEC9mr9VlyhcPgLOqERH/sYvhfMb1dM=;
-  b=QWPJ4yWfzqFtHnlass7+XdlE2zmKXJvi/1IRE68baHvPoJm/Whml12hT
-   QSPIfL4js52IyBl48d4XuAX/PrapAJXPd2HfhYepgBHx1gFDXhacnuIF1
-   ETFwyb3KpctYld/XbVl5eal6FF9UcEiKJAgo6Y17lhXrMJowzDXuGPjDz
-   4fX5gGgsk0HU1ZUCgopt10U8DfCE1S2DJPAATquz40+43R5JaTfXowWxy
-   em2wORS11Nxvyue1nZA5KNSNZwXfRtOiwsY/amaG7rpgJ1ZMaOzMe1EU4
-   IXEybD8psTCC1vNISVBFkZZxicFuHb6gYVuBIrfS0QhvVQkyw8aOUow5A
-   w==;
-IronPort-SDR: 2zDq5lCjnjQ59eHoVKLoc8bS+DT5k38nB1U648wEHzNBFDgBeEwCWPxkmRJA/SA/m+FzAmEFgB
- zDl4Lj8TKnrZcBylvlDBEDuznJZpC1mcSUhSKqX1nZFQgxNgBqWzPQUFYTTIrJHaNAwcChy1mU
- kWEOolu+ndoqy3uTjA6mjbzB0FYT2TfZirbatMXcxmi6ioy6yybU2VhDshUpySgByYJIWwJqZT
- jSaOOOe/IwC7/5AanLZLSx5qjNUPP9LrNOmvh7GW49bhCVASbo/Kscp4K67ydJIEQSXm8hLYLQ
- P2c=
+  bh=Lq+Okxl3S0+ZzfUmJqwSdxWxDX6euQesnVDFdpzNkYc=;
+  b=F/R6vZCZX2bxkTgq1hg9NQB2PGZThgs3ms2x4BEOaJRX86jy5bVI7L9S
+   jtsZKqPFhKJLsjxMtV0VV6zFV3IcyA4C70rvWR4bePcJrC+6dr51kuz7J
+   bmyOLn5+Wf1bfPEVMQ/tAe+dbNpt+zLdz7+ohcT47fMfsFRFzoemCmzpq
+   SXPc5wDyNP+g+DVcsn7tML4O8mLp36bzPlTWmaa1pbNJakj4rbgW9N2BG
+   NK61TCRcqvcOnKhvL7w48gZvFEoPqzjtIq0o0BL3eG/u0PJhEg+qQ6bsl
+   H8QztMAMPsRUanJvemXitjGDQ5WYc5o3i/m40DRRpFyU7j0OF1/k5p8TD
+   g==;
+IronPort-SDR: WZnOysLRWdZ/8Iai+rfa0ugk/GGRIS65uYQeSyuvr/TgFXPuHw6XTTNjdPrCVyopPd0ZJTtz6V
+ siMC2N6nLxUTdD3P3QQzGDAv+Ekcqy+elFu4o54t+XtwQRrN1TmCSJqA8y2abKgsUBzOScwj9M
+ uUPjBvFZCiqSU/9psAiz0Cq6+L8NoDISJANC1wJFZ56m1hotPlRXu1qwxIArSVmqU899QjJZtc
+ LE2/Q2y5oIA/vFGXgj/M96lDPIE9N8hnaZXjWA58Ywaydv4jE93AVNEuBrYyDllcFJDXQJIPkN
+ YJE=
 X-IronPort-AV: E=Sophos;i="5.79,374,1602518400"; 
-   d="scan'208";a="162741776"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 26 Jan 2021 07:33:22 +0800
-IronPort-SDR: YdO9rMxUmp1u3kHtkNALnzFZHdOjqqy9oJSpox7vA+OQJa7uORqblGaqLu8dJpI5gmerm2Niuy
- ovYTvBS3z1Qd1BNFooMz2n9AIz0KmWBlYSXXh48C6y/zGffkwTPeqXZPnntb4EqdPziKUNnFyu
- sVUuMXh0Lu0545rtyF4VTwFvlZLWsz7rFoKwZWE3kx+0/4uHWga47sltRSarRmN77RlNPJsPEt
- FWNjtxlfS+M8FES4tl3GTh33iPh9UeRY4ezX0G230vTzdVf11EN7JSo9kzDNNZ23rgeZr8fR44
- +gcj1qN1O4wTm9/trXswccR6
+   d="scan'208";a="159472146"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 26 Jan 2021 07:32:50 +0800
+IronPort-SDR: HJr4c4HFO0S3fPHrqjA232p3wABtmewJ2I1IyCSqm+eUY9bnjmY4GOz91IyDwsJC79UjyB7LJk
+ Kvs0DIf+XHmwYuM/k9XLnuRviEPo7tolP1dN2CtVGYnz7GuHbs48N/FspvpUf8OB7NieJBWY7x
+ olpQN6FyMZnyq8E45ZyORmtpnRjV2a1d9bkeALzEekA752fkZzbfy82H8z178Qgx4DXctA9ixl
+ TI7XXrHisJGhtbEvAwyLvwNgBGoAwIj+GMtczmZWJ352Q54HMHX9weFXyo9gF1lNpYGCEnctt6
+ ZQmXIzjPEZOErUlmk5sOzG18
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 15:17:49 -0800
-IronPort-SDR: i7/cMYd+hocFNqXoNg50Q+gNh2mAUaB2Xz9Hk9stP9jTQ17ckpizvgtuG3p2+B/L7fNDjc3Q3c
- 7yJjlixVeeRL5GIsDOkNgwBxbCBYrbgKfL11kaFamhL88LU84SuMfCdY3e2OLD0hFTVTv1k7KP
- iHd2QLpDDJT6rD0G/1nBekfkAJjkNMVyXgOuX85CwxRYQ94Vur+25aXYKZQvC+BQ+K2PkbscUb
- q65ZKm6GWdsKTUwk2oQsUOxylzXnAN3xFtNUoXlASpyv6ROcjOWfVpfAmlNjx/EXEL0r9y9XUV
- wI8=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 15:15:17 -0800
+IronPort-SDR: 6r1N4OgNjwfs/47sjUscH0fEuDfb4rPU7oQh6vecOxKfn/NvAX36oBYWIHVBP9XeOk9i4wRFOG
+ OsOYqj1PWr/JzFN5AnLit1JrusMPRBtvUKPNsl991nN5yl7efQ0j+YiDJFBFjfJRDr9/TF0wIF
+ YS9rXV51a4F/HAmgoqcufAYqbswJaTCajU/07zTyFAY9fpz5RKIESFOmY3fosx0FzGiGzHjkCq
+ GxDJ1LHWVkq/xLRkEqN3auKp95OpN19DWGRC/iEGmf4a+wmLgcJOMnK0Fy0A62Yjv3Xe2Pdn81
+ +ls=
 WDCIronportException: Internal
 Received: from vm.labspan.wdc.com (HELO vm.sc.wdc.com) ([10.6.137.102])
-  by uls-op-cesaip02.wdc.com with ESMTP; 25 Jan 2021 15:33:22 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 25 Jan 2021 15:32:50 -0800
 From:   Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 To:     linux-mips@vger.kernel.org
 Cc:     tsbogend@alpha.franken.de, axboe@kernel.dk,
         linux-block@vger.kernel.org, cand@gmx.com,
         Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Subject: [PATCH 7/9] n64: cosmetics changes
-Date:   Mon, 25 Jan 2021 15:32:41 -0800
-Message-Id: <20210125233243.5982-8-chaitanya.kulkarni@wdc.com>
+Subject: [PATCH 1/9] n64: use pr_fmt to avoid duplicate string
+Date:   Mon, 25 Jan 2021 15:32:35 -0800
+Message-Id: <20210125233243.5982-2-chaitanya.kulkarni@wdc.com>
 X-Mailer: git-send-email 2.22.1
 In-Reply-To: <20210125233243.5982-1-chaitanya.kulkarni@wdc.com>
 References: <20210125233243.5982-1-chaitanya.kulkarni@wdc.com>
@@ -73,41 +73,43 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Make the variable declaration ascending order and initialize the
-variables at the time of declaration when possible.
+Instead of repeating the n64cart string all over the module use pr_fmt
+macro and remove the duplicate string. Also, replace and with or in the
+one of the error message.
 
 Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 Reviewed-by: Lauri Kasanen <cand@gmx.com>
 ---
- drivers/block/n64cart.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/block/n64cart.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/block/n64cart.c b/drivers/block/n64cart.c
-index 7906b5b2f12e..3bfb010402e3 100644
+index e76722acba46..8c7c9249071b 100644
 --- a/drivers/block/n64cart.c
 +++ b/drivers/block/n64cart.c
-@@ -88,10 +88,8 @@ static bool n64cart_do_bvec(struct device *dev, struct bio_vec *bv, u32 pos)
- static blk_qc_t n64cart_submit_bio(struct bio *bio)
- {
- 	struct bio_vec bvec;
--	u32 pos;
- 	struct bvec_iter iter;
--
--	pos = bio->bi_iter.bi_sector << SECTOR_SHIFT;
-+	u32 pos = bio->bi_iter.bi_sector << SECTOR_SHIFT;
+@@ -5,6 +5,7 @@
+  * Copyright (c) 2021 Lauri Kasanen
+  */
  
- 	bio_for_each_segment(bvec, bio, iter) {
- 		if (!n64cart_do_bvec(dev, &bvec, pos))
-@@ -119,8 +117,8 @@ static const struct block_device_operations n64cart_fops = {
- static int __init n64cart_probe(struct platform_device *pdev)
- {
- 	int err;
--	struct request_queue *queue;
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ #include <linux/bitops.h>
+ #include <linux/blkdev.h>
+ #include <linux/dma-mapping.h>
+@@ -117,12 +118,12 @@ static int __init n64cart_probe(struct platform_device *pdev)
  	struct gendisk *disk;
-+	struct request_queue *queue;
  
  	if (!start || !size) {
- 		pr_err("start or size not specified\n");
+-		pr_err("n64cart: start and size not specified\n");
++		pr_err("start or size not specified\n");
+ 		return -ENODEV;
+ 	}
+ 
+ 	if (size & 4095) {
+-		pr_err("n64cart: size must be a multiple of 4K\n");
++		pr_err("size must be a multiple of 4K\n");
+ 		return -ENODEV;
+ 	}
+ 
 -- 
 2.22.1
 

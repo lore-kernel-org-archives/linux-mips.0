@@ -2,83 +2,164 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64B7DC433E0
-	for <linux-mips@archiver.kernel.org>; Tue, 26 Jan 2021 06:02:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46B48C433E0
+	for <linux-mips@archiver.kernel.org>; Tue, 26 Jan 2021 13:36:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 363E222AAC
-	for <linux-mips@archiver.kernel.org>; Tue, 26 Jan 2021 06:02:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 19F7522B2C
+	for <linux-mips@archiver.kernel.org>; Tue, 26 Jan 2021 13:36:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729634AbhAZGCH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 26 Jan 2021 01:02:07 -0500
-Received: from elvis.franken.de ([193.175.24.41]:33849 "EHLO elvis.franken.de"
+        id S2404571AbhAZNfz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 26 Jan 2021 08:35:55 -0500
+Received: from mga06.intel.com ([134.134.136.31]:48273 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728349AbhAYMth (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:49:37 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l403i-0008Aa-01; Mon, 25 Jan 2021 12:29:26 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 21CA0C090C; Mon, 25 Jan 2021 12:25:12 +0100 (CET)
-Date:   Mon, 25 Jan 2021 12:25:12 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Update my e-mail address throughout
-Message-ID: <20210125112512.GB5436@alpha.franken.de>
-References: <alpine.DEB.2.21.2101220142550.35623@angie.orcam.me.uk>
+        id S2392005AbhAZN0n (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 26 Jan 2021 08:26:43 -0500
+IronPort-SDR: Ksr2gGZ7dn03b/85c1HgNMlPduJ5NJC4EiCDNMkUNQVcrdHtToYzTjEMhgvdUx+T9+FNarGHaf
+ N+TpHz0X3cag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="241429103"
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="241429103"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 05:24:53 -0800
+IronPort-SDR: g4Zswe3qz4zMid/EyEG5xz4WWhFPriWd/t2t5KrG0ShP0j9WNEEJayXNCJQTEkRkM2/IHRNzgx
+ zk+bb8SSGplQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="369103591"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by orsmga002.jf.intel.com with SMTP; 26 Jan 2021 05:24:36 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Tue, 26 Jan 2021 15:24:35 +0200
+Date:   Tue, 26 Jan 2021 15:24:35 +0200
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        dri-devel@lists.freedesktop.org, Sandy Huang <hjc@rock-chips.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-tegra@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Marek Vasut <marex@denx.de>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        linux-samsung-soc@vger.kernel.org,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        linux-rockchip@lists.infradead.org,
+        Alexey Brodkin <abrodkin@synopsys.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        freedreno@lists.freedesktop.org,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-msm@vger.kernel.org,
+        Philippe Cornu <philippe.cornu@st.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        virtualization@lists.linux-foundation.org,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Alison Wang <alison.wang@nxp.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        linux-renesas-soc@vger.kernel.org, linux-mips@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-mediatek@lists.infradead
+Subject: Re: [PATCH v2 10/11] drm: Use state helper instead of the plane
+ state pointer
+Message-ID: <YBAYE4YH4bgURmuf@intel.com>
+References: <20210121163537.1466118-1-maxime@cerno.tech>
+ <20210121163537.1466118-10-maxime@cerno.tech>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2101220142550.35623@angie.orcam.me.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210121163537.1466118-10-maxime@cerno.tech>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 03:15:07AM +0100, Maciej W. Rozycki wrote:
-> I find linux-mips.org too unreliable to rely on, so move to a place
-> I have proper control over.
+On Thu, Jan 21, 2021 at 05:35:35PM +0100, Maxime Ripard wrote:
+> Many drivers reference the plane->state pointer in order to get the
+> current plane state in their atomic_update or atomic_disable hooks,
+> which would be the new plane state in the global atomic state since
+> _swap_state happened when those hooks are run.
 > 
-> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-> ---
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA512
+> Use the drm_atomic_get_new_plane_state helper to get that state to make it
+> more obvious.
 > 
-> Hi,
+> This was made using the coccinelle script below:
 > 
->  My address is now <macro@orcam.me.uk>.  Please apply.
+> @ plane_atomic_func @
+> identifier helpers;
+> identifier func;
+> @@
 > 
->   Maciej
-> -----BEGIN PGP SIGNATURE-----
+> (
+>  static const struct drm_plane_helper_funcs helpers = {
+>  	...,
+>  	.atomic_disable = func,
+> 	...,
+>  };
+> |
+>  static const struct drm_plane_helper_funcs helpers = {
+>  	...,
+>  	.atomic_update = func,
+> 	...,
+>  };
+> )
 > 
-> iQIzBAEBCgAdFiEEgfGIKCQicRu6B1jhJOnOXtp7XhMFAmAKKWIACgkQJOnOXtp7
-> XhMOuQ/+IaTFVmbQ5/NIn9z6qosTxclne8x1q6aUhnvA6yZYd/e06bFF5UWL3wRf
-> V9pPpYTGynJtzeZ9G7DjfRumuMsewA0f6tTGpR75MhM8jjga/5lhWIpETK7mfyBC
-> k3LOFdV7gAHqY3OtDKcmGDlRd8mcQYv2DdM+FLArK1tY+Fg2QJc/BGv4t9Jq9Gnl
-> rC+bAsvMftc+WVgMoMdsZ2yImJZWX2bVnUDgNi2+sWvqnv5jN43MtlqLnmFBq66Y
-> vwWZ1B3mxXTnS8GTd6v3VwHge+qRQCS0cGIqFHBK/VDHizVCJ9lqjva30Y2N+L4H
-> YyZUyxWJFDB4RoMcln8W7fN8wBrJolRRfUCYCMR80DuxvRg8Lf3DEVtmi54kV0kl
-> A/csM/MOBv2H3I4vbynmbDFTumrmDTjRphhf3lDOCJSFIAZ+QxyEUK9T2l90U3H/
-> DvwYOLZ+i5hsoeoxbtlzhtimFdFlSTG0+uYTYnorR/A3wnOUiTeDS5UpNAvGpXBa
-> x6u1z0NtVeyBh7A5qkt0545p0MIFYEdEwVsAg6iIILPS8CFcaK/r2djqTwrc3aKP
-> O3kynqdgyY5DW/3E14YZBWcUpzJHgkW1zOycEbT54rwmrsbfmDRvWNxqIK5VCEKR
-> dtpL1wEvwZftAtNfTfWEnmd/JJeYKnGUToscyfG+4fQWFH2L1fg=
-> =ak03
-> -----END PGP SIGNATURE-----
-> ---
->  .mailmap    |  1 +
->  MAINTAINERS | 12 ++++++------
->  2 files changed, 7 insertions(+), 6 deletions(-)
+> @ adds_new_state @
+> identifier plane_atomic_func.func;
+> identifier plane, state;
+> identifier new_state;
+> @@
+> 
+>  func(struct drm_plane *plane, struct drm_atomic_state *state)
+>  {
+>  	...
+> -	struct drm_plane_state *new_state = plane->state;
+> +	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state, plane);
+> 	...
+>  }
+> 
+> @ include depends on adds_new_state @
+> @@
+> 
+>  #include <drm/drm_atomic.h>
+> 
+> @ no_include depends on !include && adds_new_state @
+> @@
+> 
+> + #include <drm/drm_atomic.h>
+>   #include <drm/...>
+> 
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-applied to mips-next.
+Looks great.
 
-Thomas.
+Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Ville Syrjälä
+Intel

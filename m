@@ -7,54 +7,55 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87080C433E9
-	for <linux-mips@archiver.kernel.org>; Wed, 27 Jan 2021 21:12:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 271C8C433DB
+	for <linux-mips@archiver.kernel.org>; Wed, 27 Jan 2021 21:12:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5754964DCE
-	for <linux-mips@archiver.kernel.org>; Wed, 27 Jan 2021 21:12:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D5F3B64DCC
+	for <linux-mips@archiver.kernel.org>; Wed, 27 Jan 2021 21:12:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbhA0VMF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 27 Jan 2021 16:12:05 -0500
-Received: from elvis.franken.de ([193.175.24.41]:60512 "EHLO elvis.franken.de"
+        id S233276AbhA0VMc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 27 Jan 2021 16:12:32 -0500
+Received: from elvis.franken.de ([193.175.24.41]:60507 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233907AbhA0VLw (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S233908AbhA0VLw (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Wed, 27 Jan 2021 16:11:52 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l4s5l-0003cQ-04; Wed, 27 Jan 2021 22:11:09 +0100
+        id 1l4s5l-0003cQ-00; Wed, 27 Jan 2021 22:11:09 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id CA230C0AAF; Wed, 27 Jan 2021 22:07:36 +0100 (CET)
-Date:   Wed, 27 Jan 2021 22:07:36 +0100
+        id 4EA99C0A9B; Wed, 27 Jan 2021 22:05:32 +0100 (CET)
+Date:   Wed, 27 Jan 2021 22:05:32 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Yanteng Si <siyanteng@loongson.cn>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@gmail.com>, siyanteng01@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] MIPS: mm:remove function __uncached_access()
-Message-ID: <20210127210736.GE21002@alpha.franken.de>
-References: <20210127023806.3753812-1-siyanteng@loongson.cn>
- <20210127023806.3753812-2-siyanteng@loongson.cn>
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     jiaxun.yang@flygoat.com, yangtiezhu@loongson.cn,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mips: cacheinfo: Remove unnecessary increment of level
+Message-ID: <20210127210532.GA21002@alpha.franken.de>
+References: <1610786400-3629-1-git-send-email-jrdr.linux@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210127023806.3753812-2-siyanteng@loongson.cn>
+In-Reply-To: <1610786400-3629-1-git-send-email-jrdr.linux@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 10:38:06AM +0800, Yanteng Si wrote:
-> MIPS can now use the default uncached_access like other archs.
+On Sat, Jan 16, 2021 at 02:10:00PM +0530, Souptick Joarder wrote:
+> kernel test robot throws below warning ->
 > 
-> Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
+> arch/mips/kernel/cacheinfo.c:112:3: warning: Variable 'level' is
+> modified but its new value is never used. [unreadVariable]
+> 
+> Remove unnecessary increment of level at the end.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
 > ---
->  arch/mips/mm/cache.c | 8 --------
->  drivers/char/mem.c   | 7 -------
->  2 files changed, 15 deletions(-)
+>  arch/mips/kernel/cacheinfo.c | 1 -
+>  1 file changed, 1 deletion(-)
 
-applied to mips-next.
+applied to mips-next with braces removed.
 
 Thomas.
 

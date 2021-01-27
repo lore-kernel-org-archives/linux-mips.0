@@ -2,108 +2,96 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02940C433DB
-	for <linux-mips@archiver.kernel.org>; Wed, 27 Jan 2021 21:16:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65A2AC433E0
+	for <linux-mips@archiver.kernel.org>; Wed, 27 Jan 2021 22:55:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B00B264DA1
-	for <linux-mips@archiver.kernel.org>; Wed, 27 Jan 2021 21:16:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1F27564DE0
+	for <linux-mips@archiver.kernel.org>; Wed, 27 Jan 2021 22:55:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbhA0VQc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 27 Jan 2021 16:16:32 -0500
-Received: from elvis.franken.de ([193.175.24.41]:60530 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231927AbhA0VQb (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 27 Jan 2021 16:16:31 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l4s9k-0003fj-00; Wed, 27 Jan 2021 22:15:16 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id F222CC0AAF; Wed, 27 Jan 2021 22:15:06 +0100 (CET)
-Date:   Wed, 27 Jan 2021 22:15:06 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        David Daney <david.daney@cavium.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Archer Yan <ayan@wavecomp.com>, x86@kernel.org
-Subject: Re: [PATCH 1/3] MIPS: kernel: Support extracting off-line stack
- traces from user-space with perf
-Message-ID: <20210127211506.GA21163@alpha.franken.de>
-References: <1609246561-5474-1-git-send-email-yangtiezhu@loongson.cn>
- <1609246561-5474-2-git-send-email-yangtiezhu@loongson.cn>
- <20210104105904.GK3021@hirez.programming.kicks-ass.net>
- <0712b131-715a-a83a-bc9e-61405824ff0e@flygoat.com>
- <20210105101806.GG3040@hirez.programming.kicks-ass.net>
+        id S231785AbhA0WzP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 27 Jan 2021 17:55:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231749AbhA0WzK (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Jan 2021 17:55:10 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84A7C06178A;
+        Wed, 27 Jan 2021 14:35:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lByFNuR88RDNsuzHcedrvnGTtel5nV7mTgNs/bJdJiQ=; b=PwAq2xuFOaHMMyzEakUXaEWjR9
+        dFVNMxUZg71O5aUOYVYFV4dTjFpyI18evbjPpGixHqE9Wuwtj493M/L+ip6qc1psfG4C59DnYY9dT
+        BkprR1G9U3kKCVHUuQwhlX0uB+a7jCw6J1q/SRHd5ohDfMfsE4eIO6TK0OzTsCuHaDXPnRVT3t8Ic
+        W7OttOZbBOlOdj2+9qUpE1EUlWVjqPoVJ7+0LJQlKF2sY91gazRBCcfQl+iXaO+osxZ6To3GME31O
+        ZKgL119TLMK1HxgW+0WDyJ5QDolDR6YUU5XdJa/L9tnTbbZdgR7Dixyb5+X+toHkmeDefbsGYrdDQ
+        Tdg0neDw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l4tOU-007bNn-Ch; Wed, 27 Jan 2021 22:34:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B1FF23010C8;
+        Wed, 27 Jan 2021 23:34:33 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 99E132073198D; Wed, 27 Jan 2021 23:34:33 +0100 (CET)
+Date:   Wed, 27 Jan 2021 23:34:33 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexander A Sverdlin <alexander.sverdlin@nokia.com>
+Cc:     Paul Burton <paul.burton@imgtec.com>, linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] MIPS: Octeon: qspinlock: Flush write buffer
+Message-ID: <YBHqeXPMILg+352D@hirez.programming.kicks-ass.net>
+References: <20210127203627.47510-1-alexander.sverdlin@nokia.com>
+ <20210127203627.47510-4-alexander.sverdlin@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210105101806.GG3040@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210127203627.47510-4-alexander.sverdlin@nokia.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 11:18:06AM +0100, Peter Zijlstra wrote:
-> On Tue, Jan 05, 2021 at 11:45:37AM +0800, Jiaxun Yang wrote:
-> > 在 2021/1/4 下午6:59, Peter Zijlstra 写道:
-> > > On Tue, Dec 29, 2020 at 08:55:59PM +0800, Tiezhu Yang wrote:
-> > > > +u64 perf_reg_abi(struct task_struct *tsk)
-> > > > +{
-> > > > +	if (test_tsk_thread_flag(tsk, TIF_32BIT_REGS))
-> > > > +		return PERF_SAMPLE_REGS_ABI_32;
-> > > > +	else
-> > > > +		return PERF_SAMPLE_REGS_ABI_64;
-> > > > +}
-> > > So we recently changed this on x86 to not rely on TIF flags. IIRC the
-> > > problem is that on x86 you can change the mode of a task without the
-> > > kernel being aware of it. Is something like that possible on MIPS as
-> > > well?
-> > 
-> > Hi all,
-> > 
-> > In MIPS world it's impossible to raise a thread to 64bit without kernel
-> > aware.
-> > Without STATUS.UX set it will trigger reserved instruction exception when
-> > trying
-> > to run 64bit instructions.
+On Wed, Jan 27, 2021 at 09:36:24PM +0100, Alexander A Sverdlin wrote:
+> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 > 
-> The other way around is the case on x86, a 64bit program can create and
-> execute 32bit code sections without the kernel being aware. But if
-> clearing STATUS.UX has the same issue as setting it, that should not be
-> a problem for you.
-> 
-> > However it may be possible to run with 32bit ABI without
-> > TIF_32BIT_REGS if user program didn't get ELF ABI right. I think
-> > that's out of our current consideration.
-> 
-> Fair enough.
-> 
-> > > The thing x86 does today is look at it's pt_regs state to determine the
-> > > actual state.
-> > It is possible to look at pt_regs Status.UX bit on MIPS. But it seems
-> > unnecessary
-> > as user can't change it.
-> 
-> Ok, good. Then no objection, proceed! :-)
+> Flushing the write buffer brings aroung 10% performace on the tight
+> uncontended spinlock loops on Octeon. Refer to commit 500c2e1fdbcc
+> ("MIPS: Optimize spinlocks.").
 
-this patch aims more to mips-next, while patch 2 and 3 are targeting
-tools/perf. Should I take them into mips-next, too ?
+No objection to the patch, but I don't find the above referenced commit
+to be enlightening wrt nudge_writes(). The best it has to offer is the
+comment that's already in the code.
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> ---
+>  arch/mips/include/asm/spinlock.h | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/arch/mips/include/asm/spinlock.h b/arch/mips/include/asm/spinlock.h
+> index 8a88eb2..0a707f3 100644
+> --- a/arch/mips/include/asm/spinlock.h
+> +++ b/arch/mips/include/asm/spinlock.h
+> @@ -24,6 +24,9 @@ static inline void queued_spin_unlock(struct qspinlock *lock)
+>  	/* This could be optimised with ARCH_HAS_MMIOWB */
+>  	mmiowb();
+>  	smp_store_release(&lock->locked, 0);
+> +#ifdef CONFIG_CPU_CAVIUM_OCTEON
+> +	nudge_writes();
+> +#endif
+>  }
+>  
+>  #include <asm/qspinlock.h>
+> -- 
+> 2.10.2
+> 

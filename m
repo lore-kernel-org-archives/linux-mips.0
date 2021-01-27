@@ -2,265 +2,129 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-23.2 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-17.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C4B3C433E0
-	for <linux-mips@archiver.kernel.org>; Wed, 27 Jan 2021 18:24:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91502C433E0
+	for <linux-mips@archiver.kernel.org>; Wed, 27 Jan 2021 20:37:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2E9D064DA5
-	for <linux-mips@archiver.kernel.org>; Wed, 27 Jan 2021 18:24:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 49DA364DE1
+	for <linux-mips@archiver.kernel.org>; Wed, 27 Jan 2021 20:37:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236079AbhA0SYD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 27 Jan 2021 13:24:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236035AbhA0SYC (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Jan 2021 13:24:02 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E9CC061573
-        for <linux-mips@vger.kernel.org>; Wed, 27 Jan 2021 10:23:22 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id v19so2130279pgj.12
-        for <linux-mips@vger.kernel.org>; Wed, 27 Jan 2021 10:23:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jJRPrAWF7MFclOHB2Lr1Il6UnBQA+yMSwpuT+dr3FeE=;
-        b=p+JOm0MaAq0DKLuPmm62TKPoLEb63Ivgqxil78dFCdEx4sz1UgEhA/sr1202i1f6fO
-         gP7dBosWqWE8SEl5Q9bXMvRttmO8MBkch9w74sMo3b4uL32ehzuvDUOBIATwr0R0jhK0
-         wGRAbqIP9ZOtS4RGRPo2nOos/oPULUsm4x6AllyAgIBAyWdz6upYM6KonsT6v1VM7h02
-         rCbHzpgKaZvHxKNM2a0EAofk1HjicEqG+hgMq7srXFKGVCqhp+ey+fC+nLuHf0PTADwe
-         rQtWBV+yPvFIpO4pNyMKRoWlZirWQrvsMnCt7yvFN3uXHS8Umhyg+bkawtJCTQvJHdiF
-         ARtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jJRPrAWF7MFclOHB2Lr1Il6UnBQA+yMSwpuT+dr3FeE=;
-        b=iHwu8Dpjp5ojPHy1jg2oq8B8hnFG5mZ/CoSp42Z1kQ5SykiEfiK/CCR8Rt/4Jm3F6V
-         1BkBNg1Jr7AHx22rnYIHaWu4r3UwCXbwLQzMXqz2sQy+uxWuciNTwpAPtaoT+mVTZ2At
-         ttYgg6nxh/XtIDB5GAAbmQMFCWUHiSzPRhW2vU1Q3WS/GL6XFdI3qx2QLkeeOFOgjVqy
-         96UPNsnkFFgDErJO41J/q+E63P7Su9d4EzKGttlf2ewjrD4CPcit4DCViK4YaspWjXb0
-         9Olw0yFnlW9Z9QIBSREhHJp+W58LiOXPTcyahPsll1rYzFIdSXnM5Z2mJXP+Zkqtm8pf
-         LQtQ==
-X-Gm-Message-State: AOAM530rZx9ItmDumN8NOmZz14i1y1ti+/S7DHMaf2kSJN2tNpUs4ftI
-        sAGhdm532MaPsLMN2On94G+gVg==
-X-Google-Smtp-Source: ABdhPJwSTnTQ18ANJPAv6GUZl6bhKkOAA3IiPI3vNrcPn/QyI7/VnJlki21EIEAx7yZmuM3T0cOiNg==
-X-Received: by 2002:a63:5459:: with SMTP id e25mr1610122pgm.403.1611771801851;
-        Wed, 27 Jan 2021 10:23:21 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id m73sm3022198pga.25.2021.01.27.10.23.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 10:23:21 -0800 (PST)
-Date:   Wed, 27 Jan 2021 10:23:14 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Stevens <stevensd@chromium.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
-        kvm-ppc@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: Re: [PATCH v2] KVM: x86/mmu: consider the hva in mmu_notifier retry
-Message-ID: <YBGvku1KUUk6LPAj@google.com>
-References: <20210127024504.613844-1-stevensd@google.com>
+        id S233039AbhA0UhZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 27 Jan 2021 15:37:25 -0500
+Received: from mail-eopbgr150090.outbound.protection.outlook.com ([40.107.15.90]:29088
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232972AbhA0UhW (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 27 Jan 2021 15:37:22 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dSB6Dkk+vYx8TmdHHp4ie3236eld5qZgZOCncuLzwzS5g2F4aqW1jxwuhtxB4KX2FmDKyscPXeFRKE6flYRkXHsRoxc1++w0eDXONWLmDxo0Kb+J1n27LFaEJSUYfxEnnfOPwElK4OGdsFFE/3UfBT+9o2v0FAFoXWhAhFpTHllBQfRGwUh+WU5pJA4/8I9jSxO0FmyNwQ53fPnOd78rROFsODQoi+YnfuiepqsWAtwvQ8ehQQ89AJgTHLhwmlKKVcH3YZW3vT1BAlTYRnh9bEchuaAy7e0hAzFLhVYF7OMoKlVgPQCqIrP8Cm/s/ryhdhLj+YTOdhCEQnF1TiqGhA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hv5sxBfY+E03ThtPYiZDyZSqf6P6M9iWhyNQlTHrAIc=;
+ b=oecoGLMyAxptkYNXRiFz/icl0el2QnVxz6PewtFIlcX9kB2YDoLIvMgSkru7CQIweBaOb0far16fgche0C7KxePw69LYnsnEzpwXT8crdY41iBqlxH2VOnlg7+C1F2VuJJRpkeY4vzBbyPehXztjfBZx0BZfDH9TlkhmXjG+2kd1jM/olPj5WStJt/CdCx45sRIwUe2PWSEmR9wdYZ3OZ5R9x9Wb8WcVpmOd6ZMKeqVgG9ln3oKAeWTPsfijZQ8RFCLzW/WO9W9DYnF1dNmay4YcEH4QWYs2pejNChtZ+i4aDmdolf7RQoZyUDCB7/m18IsEDJXAqm8qEjwixuqLDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 131.228.2.8) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nokia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nokia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hv5sxBfY+E03ThtPYiZDyZSqf6P6M9iWhyNQlTHrAIc=;
+ b=U8FsWakgrowyQtA/4xxP55IaK4+3CpP7jIVcExXeITo+A65wnuUB+N8YErK9R6KUMy1OdwHWmRsG2auOEnVfJKYaudz6edeG7ROZ6/hbLchNsoP8lPOzCXBll0K4Z+PFH+mNVA7WnT/GGyqr/FZkX4ePTofqjeocj6Pd3J1aoD8=
+Received: from DB6PR0301CA0077.eurprd03.prod.outlook.com (2603:10a6:6:30::24)
+ by AM6PR07MB4104.eurprd07.prod.outlook.com (2603:10a6:209:32::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.5; Wed, 27 Jan
+ 2021 20:36:33 +0000
+Received: from DB5EUR03FT064.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:6:30:cafe::4e) by DB6PR0301CA0077.outlook.office365.com
+ (2603:10a6:6:30::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend
+ Transport; Wed, 27 Jan 2021 20:36:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 131.228.2.8)
+ smtp.mailfrom=nokia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nokia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nokia.com designates
+ 131.228.2.8 as permitted sender) receiver=protection.outlook.com;
+ client-ip=131.228.2.8; helo=fihe3nok0734.emea.nsn-net.net;
+Received: from fihe3nok0734.emea.nsn-net.net (131.228.2.8) by
+ DB5EUR03FT064.mail.protection.outlook.com (10.152.21.199) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3784.11 via Frontend Transport; Wed, 27 Jan 2021 20:36:33 +0000
+Received: from ulegcparamis.emea.nsn-net.net (ulegcparamis.emea.nsn-net.net [10.151.74.146])
+        by fihe3nok0734.emea.nsn-net.net (GMO) with ESMTP id 10RKaU58012891;
+        Wed, 27 Jan 2021 20:36:31 GMT
+From:   Alexander A Sverdlin <alexander.sverdlin@nokia.com>
+To:     Paul Burton <paul.burton@imgtec.com>, linux-mips@vger.kernel.org
+Cc:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 3/6] MIPS: Octeon: qspinlock: Flush write buffer
+Date:   Wed, 27 Jan 2021 21:36:24 +0100
+Message-Id: <20210127203627.47510-4-alexander.sverdlin@nokia.com>
+X-Mailer: git-send-email 2.10.2
+In-Reply-To: <20210127203627.47510-1-alexander.sverdlin@nokia.com>
+References: <20210127203627.47510-1-alexander.sverdlin@nokia.com>
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MkeFThl52DvUx8zi"
-Content-Disposition: inline
-In-Reply-To: <20210127024504.613844-1-stevensd@google.com>
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: aa150b75-3079-4491-a426-08d8c3033c50
+X-MS-TrafficTypeDiagnostic: AM6PR07MB4104:
+X-Microsoft-Antispam-PRVS: <AM6PR07MB41046BB960BD377B9DE131DF88BB0@AM6PR07MB4104.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7zpVYX7PRjqP2UeSHoRahVgmeFwnDJn5D7hb71GhHE/4x6R3mybqa/8lcnv5b65JVRaJHXXz609sEFMa6RLZnT/ZBiHHYnycHbULHtYB4cHrSz3gsWm3oEhy5aB4iuzmBqbTzor97+7i7v+iH8W4cJrqk+k2jMKNbifAfZfWIy1juau7BZmQVz7StJF85Fi1sWu9E8odAxkOUVtCxvVQ6ix1BdGcIcgfNBz6RgXWsAhiI/65gprkNbgnVtT1Y05gnWBX/DXO3htsP+JubpomspyDZT74M8SMIKeSRJnelQK2TV4+PFErN2wStABCMUFIZ1DRkMfPyTstiEmr9zyXZaGEsv/flZgTQGn/bO+zsxveYTBVDgEEMojRNYYQGmzO659VTNtBPnFrKwmN604dx4D3tI47BLM9tH5btKMiJ60misu55s3SQiQ6dki3jQZtJb94neI3T8Mx3T10+VKkEZbbCmu+niXPuTZx4b6S0knvW6hoIG1qxheS3p3Si7wrs8Pc7h8OQ82HeHgvXtjYCTyYq5A+7uPsXvRfUo/BL4ZAhf6FN0ZBWxg3PM+PzJPcy+braHJ8c5qDuWcscgapdcDzOafFyPCJt8o9OG6MSZfiGbwHDCd0FMcqmwgw3EMZ
+X-Forefront-Antispam-Report: CIP:131.228.2.8;CTRY:FI;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:fihe3nok0734.emea.nsn-net.net;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(396003)(346002)(46966006)(2616005)(26005)(81166007)(4744005)(82310400003)(36756003)(4326008)(8936002)(336012)(356005)(186003)(2906002)(83380400001)(70206006)(5660300002)(82740400003)(478600001)(6666004)(70586007)(86362001)(47076005)(54906003)(1076003)(316002)(8676002)(36610700001);DIR:OUT;SFP:1102;
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 20:36:33.6197
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: aa150b75-3079-4491-a426-08d8c3033c50
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=5d471751-9675-428d-917b-70f44f9630b0;Ip=[131.228.2.8];Helo=[fihe3nok0734.emea.nsn-net.net]
+X-MS-Exchange-CrossTenant-AuthSource: DB5EUR03FT064.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR07MB4104
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 
---MkeFThl52DvUx8zi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Flushing the write buffer brings aroung 10% performace on the tight
+uncontended spinlock loops on Octeon. Refer to commit 500c2e1fdbcc
+("MIPS: Optimize spinlocks.").
 
-On Wed, Jan 27, 2021, David Stevens wrote:
-> From: David Stevens <stevensd@chromium.org>
-> 
-> Track the range being invalidated by mmu_notifier and skip page fault
-> retries if the fault address is not affected by the in-progress
-> invalidation. Handle concurrent invalidations by finding the minimal
-> range which includes all ranges being invalidated. Although the combined
-> range may include unrelated addresses and cannot be shrunk as individual
-> invalidation operations complete, it is unlikely the marginal gains of
-> proper range tracking are worth the additional complexity.
-> 
-> The primary benefit of this change is the reduction in the likelihood of
-> extreme latency when handing a page fault due to another thread having
-> been preempted while modifying host virtual addresses.
-> 
-> Signed-off-by: David Stevens <stevensd@chromium.org>
-> ---
-> v1 -> v2:
->  - improve handling of concurrent invalidation requests by unioning
->    ranges, instead of just giving up and using [0, ULONG_MAX).
-
-Ooh, even better.
-
->  - add lockdep check
->  - code comments and formatting
-> 
->  arch/powerpc/kvm/book3s_64_mmu_hv.c    |  2 +-
->  arch/powerpc/kvm/book3s_64_mmu_radix.c |  2 +-
->  arch/x86/kvm/mmu/mmu.c                 | 16 ++++++++------
->  arch/x86/kvm/mmu/paging_tmpl.h         |  7 ++++---
->  include/linux/kvm_host.h               | 27 +++++++++++++++++++++++-
->  virt/kvm/kvm_main.c                    | 29 ++++++++++++++++++++++----
->  6 files changed, 67 insertions(+), 16 deletions(-)
-> 
-
-...
-
-> @@ -3717,7 +3720,8 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
->  	mmu_seq = vcpu->kvm->mmu_notifier_seq;
->  	smp_rmb();
->  
-> -	if (try_async_pf(vcpu, prefault, gfn, gpa, &pfn, write, &map_writable))
-> +	if (try_async_pf(vcpu, prefault, gfn, gpa, &pfn, &hva,
-> +			 write, &map_writable))
->  		return RET_PF_RETRY;
->  
->  	if (handle_abnormal_pfn(vcpu, is_tdp ? 0 : gpa, gfn, pfn, ACC_ALL, &r))
-> @@ -3725,7 +3729,7 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
->  
->  	r = RET_PF_RETRY;
->  	spin_lock(&vcpu->kvm->mmu_lock);
-> -	if (mmu_notifier_retry(vcpu->kvm, mmu_seq))
-> +	if (mmu_notifier_retry_hva(vcpu->kvm, mmu_seq, hva))
-
-'hva' will be uninitialized at this point if the gfn did not resolve to a
-memslot, i.e. when handling an MMIO page fault.  On the plus side, that's an
-opportunity for another optimization as there is no need to retry MMIO page
-faults on mmu_notifier invalidations.  Including the attached patch as a preqreq
-to this will avoid consuming an uninitialized 'hva'.
-
-
->  		goto out_unlock;
->  	r = make_mmu_pages_available(vcpu);
->  	if (r)
-
-...
-
->  void kvm_release_pfn_clean(kvm_pfn_t pfn);
->  void kvm_release_pfn_dirty(kvm_pfn_t pfn);
-> @@ -1203,6 +1206,28 @@ static inline int mmu_notifier_retry(struct kvm *kvm, unsigned long mmu_seq)
->  		return 1;
->  	return 0;
->  }
-> +
-> +static inline int mmu_notifier_retry_hva(struct kvm *kvm,
-> +					 unsigned long mmu_seq,
-> +					 unsigned long hva)
-> +{
-> +#ifdef CONFIG_LOCKDEP
-> +	lockdep_is_held(&kvm->mmu_lock);
-
-No need to manually do the #ifdef, just use lockdep_assert_held instead of
-lockdep_is_held.
-
-> +#endif
-> +	/*
-> +	 * If mmu_notifier_count is non-zero, then the range maintained by
-> +	 * kvm_mmu_notifier_invalidate_range_start contains all addresses that
-> +	 * might be being invalidated. Note that it may include some false
-> +	 * positives, due to shortcuts when handing concurrent invalidations.
-> +	 */
-> +	if (unlikely(kvm->mmu_notifier_count) &&
-> +	    kvm->mmu_notifier_range_start <= hva &&
-> +	    hva < kvm->mmu_notifier_range_end)
-
-Uber nit: I find this easier to read if 'hva' is on the left-hand side for both
-checks, i.e.
-
-	if (unlikely(kvm->mmu_notifier_count) &&
-	    hva >= kvm->mmu_notifier_range_start &&
-	    hva < kvm->mmu_notifier_range_end)
-
-> +		return 1;
-> +	if (kvm->mmu_notifier_seq != mmu_seq)
-> +		return 1;
-> +	return 0;
-> +}
->  #endif
->  
->  #ifdef CONFIG_HAVE_KVM_IRQ_ROUTING
-
---MkeFThl52DvUx8zi
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-KVM-x86-mmu-Skip-mmu_notifier-check-when-handling-MM.patch"
-
-From a1bfdc6fe16582440815cfecc656313dff993003 Mon Sep 17 00:00:00 2001
-From: Sean Christopherson <seanjc@google.com>
-Date: Wed, 27 Jan 2021 10:04:45 -0800
-Subject: [PATCH] KVM: x86/mmu: Skip mmu_notifier check when handling MMIO page
- fault
-
-Don't retry a page fault due to an mmu_notifier invalidation when
-handling a page fault for a GPA that did not resolve to a memslot, i.e.
-an MMIO page fault.  Invalidations from the mmu_notifier signal a change
-in a host virtual address (HVA) mapping; without a memslot, there is no
-HVA and thus no possibility that the invalidation is relevant to the
-page fault being handled.
-
-Note, the MMIO vs. memslot generation checks handle the case where a
-pending memslot will create a memslot overlapping the faulting GPA.  The
-mmu_notifier checks are orthogonal to memslot updates.
-
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 ---
- arch/x86/kvm/mmu/mmu.c         | 2 +-
- arch/x86/kvm/mmu/paging_tmpl.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/mips/include/asm/spinlock.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 6d16481aa29d..9ac0a727015d 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3725,7 +3725,7 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+diff --git a/arch/mips/include/asm/spinlock.h b/arch/mips/include/asm/spinlock.h
+index 8a88eb2..0a707f3 100644
+--- a/arch/mips/include/asm/spinlock.h
++++ b/arch/mips/include/asm/spinlock.h
+@@ -24,6 +24,9 @@ static inline void queued_spin_unlock(struct qspinlock *lock)
+ 	/* This could be optimised with ARCH_HAS_MMIOWB */
+ 	mmiowb();
+ 	smp_store_release(&lock->locked, 0);
++#ifdef CONFIG_CPU_CAVIUM_OCTEON
++	nudge_writes();
++#endif
+ }
  
- 	r = RET_PF_RETRY;
- 	spin_lock(&vcpu->kvm->mmu_lock);
--	if (mmu_notifier_retry(vcpu->kvm, mmu_seq))
-+	if (!is_noslot_pfn(pfn) && mmu_notifier_retry(vcpu->kvm, mmu_seq))
- 		goto out_unlock;
- 	r = make_mmu_pages_available(vcpu);
- 	if (r)
-diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-index 50e268eb8e1a..ab54263d857c 100644
---- a/arch/x86/kvm/mmu/paging_tmpl.h
-+++ b/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -869,7 +869,7 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
- 
- 	r = RET_PF_RETRY;
- 	spin_lock(&vcpu->kvm->mmu_lock);
--	if (mmu_notifier_retry(vcpu->kvm, mmu_seq))
-+	if (!is_noslot_pfn(pfn) && mmu_notifier_retry(vcpu->kvm, mmu_seq))
- 		goto out_unlock;
- 
- 	kvm_mmu_audit(vcpu, AUDIT_PRE_PAGE_FAULT);
+ #include <asm/qspinlock.h>
 -- 
-2.30.0.280.ga3ce27912f-goog
+2.10.2
 
-
---MkeFThl52DvUx8zi--

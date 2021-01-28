@@ -4,37 +4,37 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAAEBC433E0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED3AAC433E6
 	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 01:08:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6FB1A64DDA
+	by mail.kernel.org (Postfix) with ESMTP id ACA8C60C40
 	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 01:08:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbhA1BIJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 27 Jan 2021 20:08:09 -0500
-Received: from condef-08.nifty.com ([202.248.20.73]:30343 "EHLO
-        condef-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbhA1BFt (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Jan 2021 20:05:49 -0500
-Received: from conuserg-12.nifty.com ([10.126.8.75])by condef-08.nifty.com with ESMTP id 10S10Aer026966;
-        Thu, 28 Jan 2021 10:00:10 +0900
+        id S231672AbhA1BIL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 27 Jan 2021 20:08:11 -0500
+Received: from condef-01.nifty.com ([202.248.20.66]:33588 "EHLO
+        condef-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231444AbhA1BGH (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Jan 2021 20:06:07 -0500
+Received: from conuserg-12.nifty.com ([10.126.8.75])by condef-01.nifty.com with ESMTP id 10S0xjKh005034;
+        Thu, 28 Jan 2021 09:59:45 +0900
 Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 10S0pjIl024172;
-        Thu, 28 Jan 2021 09:52:06 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10S0pjIl024172
+        by conuserg-12.nifty.com with ESMTP id 10S0pjIi024172;
+        Thu, 28 Jan 2021 09:52:02 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10S0pjIi024172
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611795127;
-        bh=mFt0p+z8EW+dT9qV8axQed/XiMVfL+Ih2Q3EFxha4pQ=;
+        s=dec2015msa; t=1611795123;
+        bh=8LKOeh8wDSb8BIof2AfD5uB6wjyW5KsgSaXh3UzQGfw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=whY5ouWcabgT0DRuYEmHgaTDjyR45j2QGgl6+9/D8UinPwm3JUi+rW557NM+7/aD6
-         +Br74WkoYkuWhyN1pA0Fbc3YR4IFO4XdZoozuVJbSavIjebfrhjHaNA/orZqWxh/fp
-         vJtw5zXNoPVFsY4sVXaDPxjddbQgPgqtqOCklYzCuSvUmH7ZQ8FNqOWOgg4FkVaCDv
-         2n7lLj5KIDKyqVTRDiVR7DBM5cCG1vicaCTwYtTBDneKU3Phg0X33SVyqPs8dC2JQA
-         l6HdguSfwfHyXYl15cKLOXbWbk0MM8NZQZzaNpSr3I/5qXzf0GTULdLrMeBYypNAy8
-         +GbnGLx/uNnYQ==
+        b=htPDLFVT7not9OIuRM8Kjohlj92lfUtnbdhEW6VzKx0VFC8HiM8Rq9o7l3aX0IEw+
+         M7xgK2j911+JdwM6qhXKVoW0nNsXY+JOPUSzkC1MayyWjx84O8FOBbbtliysKYFdAz
+         N0aoPM1TUzftvX0G3FbNm6c9YhkP9Fs4Hoegcz5iRyZP+5skPM9IK9BApMFTLYQ71x
+         jxsA8v77jwtjW7v82lcmEClQ7TTz/gEzUDyrL1FJMzPtLBWN0MqR3TOGr5CSQpbKd9
+         4BT+aD+caamfV6skUJH96yjSo/GFairUwhYTqK91JYxXyZaDahld2KKqEd6owy2+mt
+         P8X/wxmEaopmA==
 X-Nifty-SrcIP: [126.26.94.251]
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-arch@vger.kernel.org, x86@kernel.org
@@ -45,9 +45,9 @@ Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
         linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
         sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 16/27] mips: syscalls: switch to generic syscalltbl.sh
-Date:   Thu, 28 Jan 2021 09:50:58 +0900
-Message-Id: <20210128005110.2613902-17-masahiroy@kernel.org>
+Subject: [PATCH 13/27] microblaze: add missing FORCE and fix 'targets' to make if_changed work
+Date:   Thu, 28 Jan 2021 09:50:55 +0900
+Message-Id: <20210128005110.2613902-14-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
 References: <20210128005110.2613902-1-masahiroy@kernel.org>
@@ -57,210 +57,50 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-As of v5.11-rc1, 12 architectures duplicate similar shell scripts in
-order to generate syscall table headers. My goal is to unify them into
-the single scripts/syscalltbl.sh.
+The rules in this Makefile cannot detect the command line change because
+the prerequisite 'FORCE' is missing.
 
-This commit converts mips to use scripts/syscalltbl.sh. This also
-unifies syscall_table_32_o32.h and syscall_table_64_o32.h into
-syscall_table_o32.h.
+Adding 'FORCE' will result in the headers being rebuilt every time
+because the 'targets' addition is also wrong; the file paths in
+'targets' must be relative to the current Makefile.
+
+Fix all of them so the if_changed rules work correctly.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- arch/mips/include/asm/Kbuild            |  7 +++--
- arch/mips/kernel/scall32-o32.S          |  4 +--
- arch/mips/kernel/scall64-n32.S          |  3 +--
- arch/mips/kernel/scall64-n64.S          |  3 +--
- arch/mips/kernel/scall64-o32.S          |  4 +--
- arch/mips/kernel/syscalls/Makefile      | 34 ++++++++---------------
- arch/mips/kernel/syscalls/syscalltbl.sh | 36 -------------------------
- 7 files changed, 20 insertions(+), 71 deletions(-)
- delete mode 100644 arch/mips/kernel/syscalls/syscalltbl.sh
+ arch/microblaze/kernel/syscalls/Makefile | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/arch/mips/include/asm/Kbuild b/arch/mips/include/asm/Kbuild
-index 95b4fa7bd0d1..70b15857369d 100644
---- a/arch/mips/include/asm/Kbuild
-+++ b/arch/mips/include/asm/Kbuild
-@@ -1,9 +1,8 @@
- # SPDX-License-Identifier: GPL-2.0
- # MIPS headers
--generated-y += syscall_table_32_o32.h
--generated-y += syscall_table_64_n32.h
--generated-y += syscall_table_64_n64.h
--generated-y += syscall_table_64_o32.h
-+generated-y += syscall_table_n32.h
-+generated-y += syscall_table_n64.h
-+generated-y += syscall_table_o32.h
- generic-y += export.h
- generic-y += kvm_para.h
- generic-y += mcs_spinlock.h
-diff --git a/arch/mips/kernel/scall32-o32.S b/arch/mips/kernel/scall32-o32.S
-index b449b68662a9..84e8624e83a2 100644
---- a/arch/mips/kernel/scall32-o32.S
-+++ b/arch/mips/kernel/scall32-o32.S
-@@ -217,9 +217,9 @@ einval: li	v0, -ENOSYS
- #define sys_sched_getaffinity	mipsmt_sys_sched_getaffinity
- #endif /* CONFIG_MIPS_MT_FPAFF */
+diff --git a/arch/microblaze/kernel/syscalls/Makefile b/arch/microblaze/kernel/syscalls/Makefile
+index 659faefdcb1d..1c42d2d2926d 100644
+--- a/arch/microblaze/kernel/syscalls/Makefile
++++ b/arch/microblaze/kernel/syscalls/Makefile
+@@ -21,18 +21,19 @@ quiet_cmd_systbl = SYSTBL  $@
+ 		   '$(systbl_abi_$(basetarget))'		\
+ 		   '$(systbl_offset_$(basetarget))'
  
-+#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
- #define __SYSCALL(nr, entry) 	PTR entry
- 	.align	2
- 	.type	sys_call_table, @object
- EXPORT(sys_call_table)
--#include <asm/syscall_table_32_o32.h>
--#undef __SYSCALL
-+#include <asm/syscall_table_o32.h>
-diff --git a/arch/mips/kernel/scall64-n32.S b/arch/mips/kernel/scall64-n32.S
-index 35d8c86b160e..f650c55a17dc 100644
---- a/arch/mips/kernel/scall64-n32.S
-+++ b/arch/mips/kernel/scall64-n32.S
-@@ -104,5 +104,4 @@ not_n32_scall:
- #define __SYSCALL(nr, entry)	PTR entry
- 	.type	sysn32_call_table, @object
- EXPORT(sysn32_call_table)
--#include <asm/syscall_table_64_n32.h>
--#undef __SYSCALL
-+#include <asm/syscall_table_n32.h>
-diff --git a/arch/mips/kernel/scall64-n64.S b/arch/mips/kernel/scall64-n64.S
-index 23b2e2b1609c..c71c13f9fcbc 100644
---- a/arch/mips/kernel/scall64-n64.S
-+++ b/arch/mips/kernel/scall64-n64.S
-@@ -113,5 +113,4 @@ illegal_syscall:
- 	.align	3
- 	.type	sys_call_table, @object
- EXPORT(sys_call_table)
--#include <asm/syscall_table_64_n64.h>
--#undef __SYSCALL
-+#include <asm/syscall_table_n64.h>
-diff --git a/arch/mips/kernel/scall64-o32.S b/arch/mips/kernel/scall64-o32.S
-index 50c9a57e0d3a..cedc8bd88804 100644
---- a/arch/mips/kernel/scall64-o32.S
-+++ b/arch/mips/kernel/scall64-o32.S
-@@ -213,9 +213,9 @@ einval: li	v0, -ENOSYS
- 	jr	ra
- 	END(sys32_syscall)
+-$(uapi)/unistd_32.h: $(syscall) $(syshdr)
++$(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
  
-+#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, compat)
- #define __SYSCALL(nr, entry)	PTR entry
- 	.align	3
- 	.type	sys32_call_table,@object
- EXPORT(sys32_call_table)
--#include <asm/syscall_table_64_o32.h>
--#undef __SYSCALL
-+#include <asm/syscall_table_o32.h>
-diff --git a/arch/mips/kernel/syscalls/Makefile b/arch/mips/kernel/syscalls/Makefile
-index f15842bda464..265dab4253ab 100644
---- a/arch/mips/kernel/syscalls/Makefile
-+++ b/arch/mips/kernel/syscalls/Makefile
-@@ -10,7 +10,7 @@ syscalln64 := $(srctree)/$(src)/syscall_n64.tbl
- syscallo32 := $(srctree)/$(src)/syscall_o32.tbl
- syshdr := $(srctree)/$(src)/syscallhdr.sh
- sysnr := $(srctree)/$(src)/syscallnr.sh
--systbl := $(srctree)/$(src)/syscalltbl.sh
-+systbl := $(srctree)/scripts/syscalltbl.sh
- 
- quiet_cmd_syshdr = SYSHDR  $@
-       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
-@@ -25,10 +25,7 @@ quiet_cmd_sysnr = SYSNR   $@
- 		  '$(sysnr_offset_$(basetarget))'
- 
- quiet_cmd_systbl = SYSTBL  $@
--      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
--		   '$(systbl_abis_$(basetarget))'		\
--		   '$(systbl_abi_$(basetarget))'		\
--		   '$(systbl_offset_$(basetarget))'
-+      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@ "" $(offset)
- 
- syshdr_offset_unistd_n32 := __NR_Linux
- $(uapi)/unistd_n32.h: $(syscalln32) $(syshdr) FORCE
-@@ -57,24 +54,16 @@ sysnr_offset_unistd_nr_o32 := 4000
- $(uapi)/unistd_nr_o32.h: $(syscallo32) $(sysnr) FORCE
- 	$(call if_changed,sysnr)
- 
--systbl_abi_syscall_table_32_o32 := 32_o32
--systbl_offset_syscall_table_32_o32 := 4000
--$(kapi)/syscall_table_32_o32.h: $(syscallo32) $(systbl) FORCE
-+$(kapi)/syscall_table_n32.h: offset := 6000
-+$(kapi)/syscall_table_n32.h: $(syscalln32) $(systbl) FORCE
+-$(kapi)/syscall_table.h: $(syscall) $(systbl)
++$(kapi)/syscall_table.h: $(syscall) $(systbl) FORCE
  	$(call if_changed,systbl)
  
--systbl_abi_syscall_table_64_n32 := 64_n32
--systbl_offset_syscall_table_64_n32 := 6000
--$(kapi)/syscall_table_64_n32.h: $(syscalln32) $(systbl) FORCE
-+$(kapi)/syscall_table_n64.h: offset := 5000
-+$(kapi)/syscall_table_n64.h: $(syscalln64) $(systbl) FORCE
- 	$(call if_changed,systbl)
+ uapisyshdr-y		+= unistd_32.h
+ kapisyshdr-y		+= syscall_table.h
  
--systbl_abi_syscall_table_64_n64 := 64_n64
--systbl_offset_syscall_table_64_n64 := 5000
--$(kapi)/syscall_table_64_n64.h: $(syscalln64) $(systbl) FORCE
--	$(call if_changed,systbl)
--
--systbl_abi_syscall_table_64_o32 := 64_o32
--systbl_offset_syscall_table_64_o32 := 4000
--$(kapi)/syscall_table_64_o32.h: $(syscallo32) $(systbl) FORCE
-+$(kapi)/syscall_table_o32.h: offset := 4000
-+$(kapi)/syscall_table_o32.h: $(syscallo32) $(systbl) FORCE
- 	$(call if_changed,systbl)
+-targets	+= $(uapisyshdr-y) $(kapisyshdr-y)
++uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
++kapisyshdr-y	:= $(addprefix $(kapi)/, $(kapisyshdr-y))
++targets		+= $(addprefix ../../../../, $(uapisyshdr-y) $(kapisyshdr-y))
  
- uapisyshdr-y		+= unistd_n32.h			\
-@@ -83,10 +72,9 @@ uapisyshdr-y		+= unistd_n32.h			\
- 			   unistd_nr_n32.h		\
- 			   unistd_nr_n64.h		\
- 			   unistd_nr_o32.h
--kapisyshdr-y		+= syscall_table_32_o32.h	\
--			   syscall_table_64_n32.h	\
--			   syscall_table_64_n64.h	\
--			   syscall_table_64_o32.h
-+kapisyshdr-y		+= syscall_table_n32.h		\
-+			   syscall_table_n64.h		\
-+			   syscall_table_o32.h
- 
- uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
- kapisyshdr-y	:= $(addprefix $(kapi)/, $(kapisyshdr-y))
-diff --git a/arch/mips/kernel/syscalls/syscalltbl.sh b/arch/mips/kernel/syscalls/syscalltbl.sh
-deleted file mode 100644
-index 1e2570740c20..000000000000
---- a/arch/mips/kernel/syscalls/syscalltbl.sh
-+++ /dev/null
-@@ -1,36 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--in="$1"
--out="$2"
--my_abis=`echo "($3)" | tr ',' '|'`
--my_abi="$4"
--offset="$5"
--
--emit() {
--	t_nxt="$1"
--	t_nr="$2"
--	t_entry="$3"
--
--	while [ $t_nxt -lt $t_nr ]; do
--		printf "__SYSCALL(%s,sys_ni_syscall)\n" "${t_nxt}"
--		t_nxt=$((t_nxt+1))
--	done
--	printf "__SYSCALL(%s,%s)\n" "${t_nxt}" "${t_entry}"
--}
--
--grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--	nxt=0
--	if [ -z "$offset" ]; then
--		offset=0
--	fi
--
--	while read nr abi name entry compat ; do
--		if [ "$my_abi" = "64_o32" ] && [ ! -z "$compat" ]; then
--			emit $((nxt+offset)) $((nr+offset)) $compat
--		else
--			emit $((nxt+offset)) $((nr+offset)) $entry
--		fi
--		nxt=$((nr+1))
--	done
--) > "$out"
+ PHONY += all
+-all: $(addprefix $(uapi)/,$(uapisyshdr-y))
+-all: $(addprefix $(kapi)/,$(kapisyshdr-y))
++all: $(uapisyshdr-y) $(kapisyshdr-y)
+ 	@:
 -- 
 2.27.0
 

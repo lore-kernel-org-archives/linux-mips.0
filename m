@@ -2,105 +2,227 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C20EC433E9
-	for <linux-mips@archiver.kernel.org>; Wed, 27 Jan 2021 23:25:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FB80C433E6
+	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 01:05:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4382860C41
-	for <linux-mips@archiver.kernel.org>; Wed, 27 Jan 2021 23:25:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CAAC764DDA
+	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 01:05:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235729AbhA0XZI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 27 Jan 2021 18:25:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232351AbhA0W41 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Jan 2021 17:56:27 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DD9C06178C;
-        Wed, 27 Jan 2021 14:37:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cvlrAJZnq6IX7KNiUIZWjYdQaLq5TVfCb9k0Y04B5QA=; b=mdyb7VqWn5FMZa/1xxFmi9xuhx
-        XNFizrhQnqrgpWOKZGAF/GUyQ/IcM8+ejDoA4tWBkRuLFJSsF/MGr81LOuekbRSNQ6dHn9hererlK
-        WtCxjnJthi1v/PmX52wi1lMxHuuMlJoggW7hfp4oYJgHQfELT4W2Cupzds5JqKAvdBn+HKDoXR/U2
-        X+Q6lQ+P7bwEJ4muUXonrRF62gx1thcujMZbIldCeHubMPpMgF7ksmw/hlJ/UQAFTZpPVyEQg/Jqx
-        t0t+Z+7qTJ16LYMVOXnXbtvPbIMifaduR33PM5c5CyF49dNdndy+zY2X0bkVMrIGy8D5pUiNgGa6f
-        5WB3wihw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l4tR9-007bYi-Vq; Wed, 27 Jan 2021 22:37:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AC7823010C8;
-        Wed, 27 Jan 2021 23:37:19 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 990062BDDF79D; Wed, 27 Jan 2021 23:37:19 +0100 (CET)
-Date:   Wed, 27 Jan 2021 23:37:19 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexander A Sverdlin <alexander.sverdlin@nokia.com>
-Cc:     Paul Burton <paul.burton@imgtec.com>, linux-mips@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] MIPS: cmpxchg: Use cmpxchg_local() for
- {cmp_}xchg_small()
-Message-ID: <YBHrH1Rw/nQqgDK4@hirez.programming.kicks-ass.net>
-References: <20210127203627.47510-1-alexander.sverdlin@nokia.com>
- <20210127203627.47510-7-alexander.sverdlin@nokia.com>
+        id S231300AbhA1BEz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 27 Jan 2021 20:04:55 -0500
+Received: from condef-03.nifty.com ([202.248.20.68]:64982 "EHLO
+        condef-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231439AbhA1BCw (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Jan 2021 20:02:52 -0500
+X-Greylist: delayed 303 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Jan 2021 20:02:16 EST
+Received: from conuserg-12.nifty.com ([10.126.8.75])by condef-03.nifty.com with ESMTP id 10S0weWH009443;
+        Thu, 28 Jan 2021 09:58:40 +0900
+Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
+        by conuserg-12.nifty.com with ESMTP id 10S0pjIn024172;
+        Thu, 28 Jan 2021 09:52:08 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10S0pjIn024172
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611795129;
+        bh=auDYMtfQRatUyx1FfAGRVS/QREy59NpDWkhykhL36rE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=udcM4bOLBJAMbKMrr5JXrO26aR5LC0c8THByBm+aM0I5LEm9ynkcoxbPSoCAyI89L
+         UxT9f3oRi263fLwnUCUL/PB4ejBqB0Gpr7QKIKb0c1Rl3XodCCv/QKBKoQUCK6mkfR
+         7NlRwEDcnZuLc1CPYqIjusbU09YQBETP1YndCccFm7T7mD5vSelRMoGad0isz+egmV
+         sQ4Kc//6jzNZjjPYKAhcfzXj9d9vK+/ZevUevxBeWVJ0APrujY3q7hliD7dkbYT8tE
+         tzh/Zjeo0/YR/m4BnncO14PhAJP5zhxSIlftLmDV+rT9YY8slKkZPX/HCdKW2QflYv
+         kHLMoOFjHO1qg==
+X-Nifty-SrcIP: [126.26.94.251]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-arch@vger.kernel.org, x86@kernel.org
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 18/27] parisc: syscalls: switch to generic syscalltbl.sh
+Date:   Thu, 28 Jan 2021 09:51:00 +0900
+Message-Id: <20210128005110.2613902-19-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
+References: <20210128005110.2613902-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210127203627.47510-7-alexander.sverdlin@nokia.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 09:36:27PM +0100, Alexander A Sverdlin wrote:
-> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-> 
-> It makes no sense to fold smp_mb__before_llsc()/smp_llsc_mb() again and
-> again, leave only one barrier pair in the outer function.
-> 
-> This removes one SYNCW from __xchg_small() and brings around 10%
-> performance improvement in a tight spinlock loop with 6 threads on a 6 core
-> Octeon.
-> 
-> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-> ---
->  arch/mips/kernel/cmpxchg.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/mips/kernel/cmpxchg.c b/arch/mips/kernel/cmpxchg.c
-> index 89107de..122e85f 100644
-> --- a/arch/mips/kernel/cmpxchg.c
-> +++ b/arch/mips/kernel/cmpxchg.c
-> @@ -41,7 +41,7 @@ unsigned long __xchg_small(volatile void *ptr, unsigned long val, unsigned int s
->  	do {
->  		old32 = load32;
->  		new32 = (load32 & ~mask) | (val << shift);
-> -		load32 = cmpxchg(ptr32, old32, new32);
-> +		load32 = cmpxchg_local(ptr32, old32, new32);
->  	} while (load32 != old32);
->  
->  	return (load32 & mask) >> shift;
-> @@ -97,7 +97,7 @@ unsigned long __cmpxchg_small(volatile void *ptr, unsigned long old,
->  		 */
->  		old32 = (load32 & ~mask) | (old << shift);
->  		new32 = (load32 & ~mask) | (new << shift);
-> -		load32 = cmpxchg(ptr32, old32, new32);
-> +		load32 = cmpxchg_local(ptr32, old32, new32);
->  		if (load32 == old32)
->  			return old;
->  	}
+As of v5.11-rc1, 12 architectures duplicate similar shell scripts in
+order to generate syscall table headers. My goal is to unify them into
+the single scripts/syscalltbl.sh.
 
-This is wrong, please use cmpxchg_relaxed() which you've just
-introduced. cmpxchg_local() need not be cross-cpu atomic at all (it is
-on mips by accident of implementation).
+This commit converts parisc to use scripts/syscalltbl.sh. This also
+unifies syscall_table_64.h and syscall_table_c32.h.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ arch/parisc/include/asm/Kbuild            |  1 -
+ arch/parisc/kernel/syscall.S              | 16 +++++-----
+ arch/parisc/kernel/syscalls/Makefile      | 19 ++++--------
+ arch/parisc/kernel/syscalls/syscalltbl.sh | 36 -----------------------
+ 4 files changed, 12 insertions(+), 60 deletions(-)
+ delete mode 100644 arch/parisc/kernel/syscalls/syscalltbl.sh
+
+diff --git a/arch/parisc/include/asm/Kbuild b/arch/parisc/include/asm/Kbuild
+index 4406475a2304..e6e7f74c8ac9 100644
+--- a/arch/parisc/include/asm/Kbuild
++++ b/arch/parisc/include/asm/Kbuild
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ generated-y += syscall_table_32.h
+ generated-y += syscall_table_64.h
+-generated-y += syscall_table_c32.h
+ generic-y += kvm_para.h
+ generic-y += mcs_spinlock.h
+ generic-y += user.h
+diff --git a/arch/parisc/kernel/syscall.S b/arch/parisc/kernel/syscall.S
+index 322503780db6..3f24a0af1e04 100644
+--- a/arch/parisc/kernel/syscall.S
++++ b/arch/parisc/kernel/syscall.S
+@@ -919,24 +919,24 @@ ENTRY(lws_table)
+ END(lws_table)
+ 	/* End of lws table */
+ 
++#ifdef CONFIG_64BIT
++#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, compat)
++#else
++#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
++#endif
+ #define __SYSCALL(nr, entry)	ASM_ULONG_INSN entry
+ 	.align 8
+ ENTRY(sys_call_table)
+ 	.export sys_call_table,data
+-#ifdef CONFIG_64BIT
+-#include <asm/syscall_table_c32.h>   /* Compat syscalls */
+-#else
+-#include <asm/syscall_table_32.h>    /* 32-bit native syscalls */
+-#endif
++#include <asm/syscall_table_32.h>    /* 32-bit syscalls */
+ END(sys_call_table)
+ 
+ #ifdef CONFIG_64BIT
+ 	.align 8
+ ENTRY(sys_call_table64)
+-#include <asm/syscall_table_64.h>    /* 64-bit native syscalls */
++#include <asm/syscall_table_64.h>    /* 64-bit syscalls */
+ END(sys_call_table64)
+ #endif
+-#undef __SYSCALL
+ 
+ 	/*
+ 		All light-weight-syscall atomic operations 
+@@ -961,5 +961,3 @@ END(lws_lock_start)
+ 	.previous
+ 
+ .end
+-
+-
+diff --git a/arch/parisc/kernel/syscalls/Makefile b/arch/parisc/kernel/syscalls/Makefile
+index 556fe30a6c8f..77fea5beb9be 100644
+--- a/arch/parisc/kernel/syscalls/Makefile
++++ b/arch/parisc/kernel/syscalls/Makefile
+@@ -7,7 +7,7 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
+ 
+ syscall := $(srctree)/$(src)/syscall.tbl
+ syshdr := $(srctree)/$(src)/syscallhdr.sh
+-systbl := $(srctree)/$(src)/syscalltbl.sh
++systbl := $(srctree)/scripts/syscalltbl.sh
+ 
+ quiet_cmd_syshdr = SYSHDR  $@
+       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
+@@ -16,10 +16,7 @@ quiet_cmd_syshdr = SYSHDR  $@
+ 		   '$(syshdr_offset_$(basetarget))'
+ 
+ quiet_cmd_systbl = SYSTBL  $@
+-      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
+-		   '$(systbl_abis_$(basetarget))'		\
+-		   '$(systbl_abi_$(basetarget))'		\
+-		   '$(systbl_offset_$(basetarget))'
++      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@ $(abis)
+ 
+ syshdr_abis_unistd_32 := common,32
+ $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
+@@ -29,23 +26,17 @@ syshdr_abis_unistd_64 := common,64
+ $(uapi)/unistd_64.h: $(syscall) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
+ 
+-systbl_abis_syscall_table_32 := common,32
++$(kapi)/syscall_table_32.h: abis := common,32
+ $(kapi)/syscall_table_32.h: $(syscall) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+-systbl_abis_syscall_table_64 := common,64
++$(kapi)/syscall_table_64.h: abis := common,64
+ $(kapi)/syscall_table_64.h: $(syscall) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+-systbl_abis_syscall_table_c32 := common,32
+-systbl_abi_syscall_table_c32 := c32
+-$(kapi)/syscall_table_c32.h: $(syscall) $(systbl) FORCE
+-	$(call if_changed,systbl)
+-
+ uapisyshdr-y		+= unistd_32.h unistd_64.h
+ kapisyshdr-y		+= syscall_table_32.h		\
+-			   syscall_table_64.h		\
+-			   syscall_table_c32.h
++			   syscall_table_64.h
+ 
+ uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
+ kapisyshdr-y	:= $(addprefix $(kapi)/, $(kapisyshdr-y))
+diff --git a/arch/parisc/kernel/syscalls/syscalltbl.sh b/arch/parisc/kernel/syscalls/syscalltbl.sh
+deleted file mode 100644
+index f7393a7b18aa..000000000000
+--- a/arch/parisc/kernel/syscalls/syscalltbl.sh
++++ /dev/null
+@@ -1,36 +0,0 @@
+-#!/bin/sh
+-# SPDX-License-Identifier: GPL-2.0
+-
+-in="$1"
+-out="$2"
+-my_abis=`echo "($3)" | tr ',' '|'`
+-my_abi="$4"
+-offset="$5"
+-
+-emit() {
+-	t_nxt="$1"
+-	t_nr="$2"
+-	t_entry="$3"
+-
+-	while [ $t_nxt -lt $t_nr ]; do
+-		printf "__SYSCALL(%s,sys_ni_syscall)\n" "${t_nxt}"
+-		t_nxt=$((t_nxt+1))
+-	done
+-	printf "__SYSCALL(%s,%s)\n" "${t_nxt}" "${t_entry}"
+-}
+-
+-grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
+-	nxt=0
+-	if [ -z "$offset" ]; then
+-		offset=0
+-	fi
+-
+-	while read nr abi name entry compat ; do
+-		if [ "$my_abi" = "c32" ] && [ ! -z "$compat" ]; then
+-			emit $((nxt+offset)) $((nr+offset)) $compat
+-		else
+-			emit $((nxt+offset)) $((nr+offset)) $entry
+-		fi
+-		nxt=$((nr+1))
+-	done
+-) > "$out"
+-- 
+2.27.0
+

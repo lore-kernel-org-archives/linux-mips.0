@@ -2,106 +2,135 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28FFBC433E0
-	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 01:17:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8589C433E0
+	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 06:06:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E0E3964DD1
-	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 01:17:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A6D3664DD8
+	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 06:06:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbhA1BRv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 27 Jan 2021 20:17:51 -0500
-Received: from condef-07.nifty.com ([202.248.20.72]:51254 "EHLO
-        condef-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231687AbhA1BFb (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Jan 2021 20:05:31 -0500
-X-Greylist: delayed 421 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Jan 2021 20:05:06 EST
-Received: from conuserg-12.nifty.com ([10.126.8.75])by condef-07.nifty.com with ESMTP id 10S0xhE3016321;
-        Thu, 28 Jan 2021 09:59:43 +0900
-Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 10S0pjIo024172;
-        Thu, 28 Jan 2021 09:52:09 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10S0pjIo024172
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611795130;
-        bh=edevBHAxEzu6xl1QGcyiq00K/wGWzk2RE79/Nm9uSCk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GcbQa/gZGdyeTcoX0fmprTeNm9FdiiNR5G0s+N2bP8NmsJiASMuqzD9tL2q+Gmj8S
-         Uhqu8Mg4ylarW3iioQwp5LzwhmSOrGOkvZ5ceWa0tVafxsQDmF46iGC9xmLeExGaeK
-         ZNpvPL0fDNzaocwpOYWAY+jyJoy3RN+XsmT9EkNa90QEmafES6drwXSsnLgBbcKPtt
-         ZzqZ5uTDBDTjwY0Iaww6eiK/GTE/bKJIylZwrI9/OH2thONBnLJV5UOIUxFKyRVZ3H
-         FcqKGcpzptz2A9gNWTZcJQPV7APUeHKqMS23BZYvl/p3AxnZfV1S7r6OoBe2g0YC5X
-         Lb3Q0X2ukKftQ==
-X-Nifty-SrcIP: [126.26.94.251]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-arch@vger.kernel.org, x86@kernel.org
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
-        sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 19/27] sh: add missing FORCE and fix 'targets' to make if_changed work
-Date:   Thu, 28 Jan 2021 09:51:01 +0900
-Message-Id: <20210128005110.2613902-20-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
-References: <20210128005110.2613902-1-masahiroy@kernel.org>
+        id S231317AbhA1GGR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 28 Jan 2021 01:06:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229786AbhA1GGQ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 Jan 2021 01:06:16 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12760C0613D6
+        for <linux-mips@vger.kernel.org>; Wed, 27 Jan 2021 22:05:36 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id j12so3304236pfj.12
+        for <linux-mips@vger.kernel.org>; Wed, 27 Jan 2021 22:05:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=UygKOqEf59SFJHMhhfR+HLz4CGF5Uv9S4hRfcJbt+yk=;
+        b=Qh8VODAieLH4894A4MDu3uPPXE5kLO4XxZpYmBxJ82EmJjvCd38+PvJXeC7WfYCIBI
+         64aPWxpI+2Wuja2TEV1w1O7J/k/33st78VPhJvOw7GI1Ov6clXkA1iu5LQJ5MR4dUH8V
+         v91cI0vNifEcoZnWwsn/8BSJmyZEYnqUhOWFg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=UygKOqEf59SFJHMhhfR+HLz4CGF5Uv9S4hRfcJbt+yk=;
+        b=nPNCpunmuYgapK5B8HLotizSyyo+TRVrp/wWndsSa1IPEDZZX0P+5+p+ERf/Xw5rsi
+         K63Dpcd7sveqJdNb2ULW4vyfhLk027TrXsccpNZMYHueLqnT6nkgc8pSH5bB9dHH1V9h
+         P06w66993U5Ux+iPdAw+IkD7gqBLwZ5uXUHyOfY/PBzhvfRqEOdDtgHEJgSDfP9s/2kb
+         kNlpC4BG1C4OeEDuL49iwyvTrYERReGU8X+jLW14VyHhQvPUWZfVTCOB3jAbsAqhMt1i
+         iBjNnOIT/+jpH2CUEkBcfdCHrAusIxiC/6UkWJxxE8cHMaiYlVtGGrXuHX1rASTny/Tx
+         404g==
+X-Gm-Message-State: AOAM532VhEZx0gDSpKKMlddWmiUfdqwIuo+NHPc5CDenKtSZDEYjl3Fu
+        jm2GbbormaWg+jb/1t4+RIxkbg==
+X-Google-Smtp-Source: ABdhPJx6bZB3eesMD+UMxqDOEfHH1P0CPHJvUJWhsABLqESuXZOj3BsZQpCR3iBz434VwICAw3KJ+g==
+X-Received: by 2002:a62:bd05:0:b029:1ab:6d2:5edf with SMTP id a5-20020a62bd050000b02901ab06d25edfmr14361887pff.32.1611813935673;
+        Wed, 27 Jan 2021 22:05:35 -0800 (PST)
+Received: from localhost ([2401:fa00:8f:203:919f:d6:7815:52bc])
+        by smtp.gmail.com with ESMTPSA id s73sm4388027pgc.46.2021.01.27.22.05.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Jan 2021 22:05:35 -0800 (PST)
+From:   David Stevens <stevensd@chromium.org>
+X-Google-Original-From: David Stevens <stevensd@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
+        kvm-ppc@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Subject: [PATCH v3 1/2] KVM: x86/mmu: Skip mmu_notifier check when handling MMIO page fault
+Date:   Thu, 28 Jan 2021 15:05:14 +0900
+Message-Id: <20210128060515.1732758-2-stevensd@google.com>
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+In-Reply-To: <20210128060515.1732758-1-stevensd@google.com>
+References: <20210128060515.1732758-1-stevensd@google.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The rules in this Makefile cannot detect the command line change because
-the prerequisite 'FORCE' is missing.
+From: Sean Christopherson <seanjc@google.com>
 
-Adding 'FORCE' will result in the headers being rebuilt every time
-because the 'targets' addition is also wrong; the file paths in
-'targets' must be relative to the current Makefile.
+Don't retry a page fault due to an mmu_notifier invalidation when
+handling a page fault for a GPA that did not resolve to a memslot, i.e.
+an MMIO page fault.  Invalidations from the mmu_notifier signal a change
+in a host virtual address (HVA) mapping; without a memslot, there is no
+HVA and thus no possibility that the invalidation is relevant to the
+page fault being handled.
 
-Fix all of them so the if_changed rules work correctly.
+Note, the MMIO vs. memslot generation checks handle the case where a
+pending memslot will create a memslot overlapping the faulting GPA.  The
+mmu_notifier checks are orthogonal to memslot updates.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
+ arch/x86/kvm/mmu/mmu.c         | 2 +-
+ arch/x86/kvm/mmu/paging_tmpl.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
- arch/sh/kernel/syscalls/Makefile | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/arch/sh/kernel/syscalls/Makefile b/arch/sh/kernel/syscalls/Makefile
-index 659faefdcb1d..1c42d2d2926d 100644
---- a/arch/sh/kernel/syscalls/Makefile
-+++ b/arch/sh/kernel/syscalls/Makefile
-@@ -21,18 +21,19 @@ quiet_cmd_systbl = SYSTBL  $@
- 		   '$(systbl_abi_$(basetarget))'		\
- 		   '$(systbl_offset_$(basetarget))'
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 6d16481aa29d..9ac0a727015d 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -3725,7 +3725,7 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
  
--$(uapi)/unistd_32.h: $(syscall) $(syshdr)
-+$(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
+ 	r = RET_PF_RETRY;
+ 	spin_lock(&vcpu->kvm->mmu_lock);
+-	if (mmu_notifier_retry(vcpu->kvm, mmu_seq))
++	if (!is_noslot_pfn(pfn) && mmu_notifier_retry(vcpu->kvm, mmu_seq))
+ 		goto out_unlock;
+ 	r = make_mmu_pages_available(vcpu);
+ 	if (r)
+diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+index 50e268eb8e1a..ab54263d857c 100644
+--- a/arch/x86/kvm/mmu/paging_tmpl.h
++++ b/arch/x86/kvm/mmu/paging_tmpl.h
+@@ -869,7 +869,7 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
  
--$(kapi)/syscall_table.h: $(syscall) $(systbl)
-+$(kapi)/syscall_table.h: $(syscall) $(systbl) FORCE
- 	$(call if_changed,systbl)
+ 	r = RET_PF_RETRY;
+ 	spin_lock(&vcpu->kvm->mmu_lock);
+-	if (mmu_notifier_retry(vcpu->kvm, mmu_seq))
++	if (!is_noslot_pfn(pfn) && mmu_notifier_retry(vcpu->kvm, mmu_seq))
+ 		goto out_unlock;
  
- uapisyshdr-y		+= unistd_32.h
- kapisyshdr-y		+= syscall_table.h
- 
--targets	+= $(uapisyshdr-y) $(kapisyshdr-y)
-+uapisyshdr-y	:= $(addprefix $(uapi)/, $(uapisyshdr-y))
-+kapisyshdr-y	:= $(addprefix $(kapi)/, $(kapisyshdr-y))
-+targets		+= $(addprefix ../../../../, $(uapisyshdr-y) $(kapisyshdr-y))
- 
- PHONY += all
--all: $(addprefix $(uapi)/,$(uapisyshdr-y))
--all: $(addprefix $(kapi)/,$(kapisyshdr-y))
-+all: $(uapisyshdr-y) $(kapisyshdr-y)
- 	@:
+ 	kvm_mmu_audit(vcpu, AUDIT_PRE_PAGE_FAULT);
 -- 
-2.27.0
+2.30.0.280.ga3ce27912f-goog
 

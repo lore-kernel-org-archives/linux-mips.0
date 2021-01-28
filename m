@@ -4,37 +4,37 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B884DC433DB
-	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 01:10:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DC15C433DB
+	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 01:10:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8B17D64DE0
-	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 01:10:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3E97964DDF
+	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 01:10:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbhA1BKh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 27 Jan 2021 20:10:37 -0500
-Received: from condef-02.nifty.com ([202.248.20.67]:25130 "EHLO
+        id S231972AbhA1BKl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 27 Jan 2021 20:10:41 -0500
+Received: from condef-02.nifty.com ([202.248.20.67]:25119 "EHLO
         condef-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231683AbhA1BHV (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Jan 2021 20:07:21 -0500
-Received: from conuserg-12.nifty.com ([10.126.8.75])by condef-02.nifty.com with ESMTP id 10S0sP2g002694;
-        Thu, 28 Jan 2021 09:54:25 +0900
+        with ESMTP id S229769AbhA1BHO (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Jan 2021 20:07:14 -0500
+Received: from conuserg-12.nifty.com ([10.126.8.75])by condef-02.nifty.com with ESMTP id 10S0vN73003061;
+        Thu, 28 Jan 2021 09:57:23 +0900
 Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 10S0pjIX024172;
-        Thu, 28 Jan 2021 09:51:48 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10S0pjIX024172
+        by conuserg-12.nifty.com with ESMTP id 10S0pjIf024172;
+        Thu, 28 Jan 2021 09:51:58 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10S0pjIf024172
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611795109;
-        bh=gbMbtPrd1uw4SfvZtDPN5tcO1lAksGEXidy2tzv1gck=;
+        s=dec2015msa; t=1611795119;
+        bh=rBLp71LtjpuuJPTZfY8wyXr/eNgPWxVdIzAA/RbYs94=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SWxDVkAFQuRWzyvDXKhEirM3GO9HVgiEkoPwsziGrvA7UHp95u8zOvl2m3BNNeRcn
-         v0X+PTytGRvV0KXggsA0+sczavCS/X8fsffUaDv+X+yehtphUYPdkwYjeipobfCz/a
-         8pZmwG/BWtM/M2zhRXbfxUnzxSPcifSt4r5t5+vqnrh+liLvpH4qIj+8b5xaZCodWY
-         l9jrY+Drka/f4haON0F/9+X4wb+aJTiV2DF+HEhY0UEXW6HzAPz/KVjoBqfgvW8k5Z
-         +l+UHueS+m36Ex3b3/IZtMxZgI7SdQL2BTY2S5lFJxEGaNwIun784zcwCV86iKsFLo
-         sXJ9FgfjTFX7g==
+        b=ncmaBvIdvqCtN37U8UilCIrLG5daIG+MpFyR0DOzscMmQhXASvCj2Ve/Y+J+efscl
+         wknNeFIzr8RuBoBmpcuEDisXwXqK8AKVkge6et4MSslEx8cU26I9R56kxfyT8K+TJm
+         BX2rBEuM64LRbu6Nb70V2XfOX5OUqnyDJo6L0ibHK/kvaocSMuYTM14N5gpssXYPFd
+         DKXhpUuqI05Jv+mwacNLSA1T3ioDONJ7L5x4bPukIbs4kFMhHw47qBhwreq0jyWw9R
+         m1G3adstD3R/OymtgbTjouC66AUUW64KI6eYXlvQgpfIH7bCEBXfv6Ei4GI7ZiK2oB
+         BzKWztL08/vFQ==
 X-Nifty-SrcIP: [126.26.94.251]
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-arch@vger.kernel.org, x86@kernel.org
@@ -45,9 +45,9 @@ Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
         linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
         sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 02/27] x86/syscalls: fix -Wmissing-prototypes warnings from COND_SYSCALL()
-Date:   Thu, 28 Jan 2021 09:50:44 +0900
-Message-Id: <20210128005110.2613902-3-masahiroy@kernel.org>
+Subject: [PATCH 10/27] ia64: syscalls: switch to generic syscalltbl.sh
+Date:   Thu, 28 Jan 2021 09:50:52 +0900
+Message-Id: <20210128005110.2613902-11-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
 References: <20210128005110.2613902-1-masahiroy@kernel.org>
@@ -57,61 +57,106 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Building kernel/sys_ni.c with W=1 omits tons of -Wmissing-prototypes
-warnings.
+As of v5.11-rc1, 12 architectures duplicate similar shell scripts in
+order to generate syscall table headers. My goal is to unify them into
+the single scripts/syscalltbl.sh.
 
-$ make W=1 kernel/sys_ni.o
-  [ snip ]
-  CC      kernel/sys_ni.o
-In file included from kernel/sys_ni.c:10:
-./arch/x86/include/asm/syscall_wrapper.h:83:14: warning: no previous prototype for '__x64_sys_io_setup' [-Wmissing-prototypes]
-   83 |  __weak long __##abi##_##name(const struct pt_regs *__unused) \
-      |              ^~
-./arch/x86/include/asm/syscall_wrapper.h:100:2: note: in expansion of macro '__COND_SYSCALL'
-  100 |  __COND_SYSCALL(x64, sys_##name)
-      |  ^~~~~~~~~~~~~~
-./arch/x86/include/asm/syscall_wrapper.h:256:2: note: in expansion of macro '__X64_COND_SYSCALL'
-  256 |  __X64_COND_SYSCALL(name)     \
-      |  ^~~~~~~~~~~~~~~~~~
-kernel/sys_ni.c:39:1: note: in expansion of macro 'COND_SYSCALL'
-   39 | COND_SYSCALL(io_setup);
-      | ^~~~~~~~~~~~
-./arch/x86/include/asm/syscall_wrapper.h:83:14: warning: no previous prototype for '__ia32_sys_io_setup' [-Wmissing-prototypes]
-   83 |  __weak long __##abi##_##name(const struct pt_regs *__unused) \
-      |              ^~
-./arch/x86/include/asm/syscall_wrapper.h:120:2: note: in expansion of macro '__COND_SYSCALL'
-  120 |  __COND_SYSCALL(ia32, sys_##name)
-      |  ^~~~~~~~~~~~~~
-./arch/x86/include/asm/syscall_wrapper.h:257:2: note: in expansion of macro '__IA32_COND_SYSCALL'
-  257 |  __IA32_COND_SYSCALL(name)
-      |  ^~~~~~~~~~~~~~~~~~~
-kernel/sys_ni.c:39:1: note: in expansion of macro 'COND_SYSCALL'
-   39 | COND_SYSCALL(io_setup);
-      | ^~~~~~~~~~~~
-  ...
-
-__SYS_STUB0() and __SYS_STUBx() defined a few lines above have forward
-declarations. Let's do likewise for __COND_SYSCALL() to fix the
-warnings.
+This commit converts ia64 to use scripts/syscalltbl.sh.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- arch/x86/include/asm/syscall_wrapper.h | 1 +
- 1 file changed, 1 insertion(+)
+ arch/ia64/kernel/entry.S                |  3 +--
+ arch/ia64/kernel/syscalls/Makefile      |  8 ++-----
+ arch/ia64/kernel/syscalls/syscalltbl.sh | 32 -------------------------
+ 3 files changed, 3 insertions(+), 40 deletions(-)
+ delete mode 100644 arch/ia64/kernel/syscalls/syscalltbl.sh
 
-diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
-index a84333adeef2..80c08c7d5e72 100644
---- a/arch/x86/include/asm/syscall_wrapper.h
-+++ b/arch/x86/include/asm/syscall_wrapper.h
-@@ -80,6 +80,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
- 	}
+diff --git a/arch/ia64/kernel/entry.S b/arch/ia64/kernel/entry.S
+index e98e3dafffd8..5eba3fb2e311 100644
+--- a/arch/ia64/kernel/entry.S
++++ b/arch/ia64/kernel/entry.S
+@@ -1420,10 +1420,9 @@ END(ftrace_stub)
  
- #define __COND_SYSCALL(abi, name)					\
-+	__weak long __##abi##_##name(const struct pt_regs *__unused);	\
- 	__weak long __##abi##_##name(const struct pt_regs *__unused)	\
- 	{								\
- 		return sys_ni_syscall();				\
+ #endif /* CONFIG_FUNCTION_TRACER */
+ 
+-#define __SYSCALL(nr, entry, nargs) data8 entry
++#define __SYSCALL(nr, entry) data8 entry
+ 	.rodata
+ 	.align 8
+ 	.globl sys_call_table
+ sys_call_table:
+ #include <asm/syscall_table.h>
+-#undef __SYSCALL
+diff --git a/arch/ia64/kernel/syscalls/Makefile b/arch/ia64/kernel/syscalls/Makefile
+index b9bfd186295f..3f7e0bfae7e3 100644
+--- a/arch/ia64/kernel/syscalls/Makefile
++++ b/arch/ia64/kernel/syscalls/Makefile
+@@ -7,7 +7,7 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
+ 
+ syscall := $(srctree)/$(src)/syscall.tbl
+ syshdr := $(srctree)/$(src)/syscallhdr.sh
+-systbl := $(srctree)/$(src)/syscalltbl.sh
++systbl := $(srctree)/scripts/syscalltbl.sh
+ 
+ quiet_cmd_syshdr = SYSHDR  $@
+       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
+@@ -16,16 +16,12 @@ quiet_cmd_syshdr = SYSHDR  $@
+ 		   '$(syshdr_offset_$(basetarget))'
+ 
+ quiet_cmd_systbl = SYSTBL  $@
+-      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
+-		   '$(systbl_abis_$(basetarget))'		\
+-		   '$(systbl_abi_$(basetarget))'		\
+-		   '$(systbl_offset_$(basetarget))'
++      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@ "" 1024
+ 
+ syshdr_offset_unistd_64 := __NR_Linux
+ $(uapi)/unistd_64.h: $(syscall) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
+ 
+-systbl_offset_syscall_table := 1024
+ $(kapi)/syscall_table.h: $(syscall) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+diff --git a/arch/ia64/kernel/syscalls/syscalltbl.sh b/arch/ia64/kernel/syscalls/syscalltbl.sh
+deleted file mode 100644
+index 85d78d9309ad..000000000000
+--- a/arch/ia64/kernel/syscalls/syscalltbl.sh
++++ /dev/null
+@@ -1,32 +0,0 @@
+-#!/bin/sh
+-# SPDX-License-Identifier: GPL-2.0
+-
+-in="$1"
+-out="$2"
+-my_abis=`echo "($3)" | tr ',' '|'`
+-my_abi="$4"
+-offset="$5"
+-
+-emit() {
+-	t_nxt="$1"
+-	t_nr="$2"
+-	t_entry="$3"
+-
+-	while [ $t_nxt -lt $t_nr ]; do
+-		printf "__SYSCALL(%s, sys_ni_syscall, )\n" "${t_nxt}"
+-		t_nxt=$((t_nxt+1))
+-	done
+-	printf "__SYSCALL(%s, %s, )\n" "${t_nxt}" "${t_entry}"
+-}
+-
+-grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
+-	nxt=0
+-	if [ -z "$offset" ]; then
+-		offset=0
+-	fi
+-
+-	while read nr abi name entry ; do
+-		emit $((nxt+offset)) $((nr+offset)) $entry
+-		nxt=$((nr+1))
+-	done
+-) > "$out"
 -- 
 2.27.0
 

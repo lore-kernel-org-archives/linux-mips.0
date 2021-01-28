@@ -2,163 +2,153 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0ECA8C433DB
-	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 07:32:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC825C433E6
+	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 08:03:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B777664DD6
-	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 07:32:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AF0E064DDB
+	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 08:03:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231924AbhA1Hca (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 28 Jan 2021 02:32:30 -0500
-Received: from mail-eopbgr80133.outbound.protection.outlook.com ([40.107.8.133]:57316
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231963AbhA1Har (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 28 Jan 2021 02:30:47 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OB1tudRuwpcyk8zI69o1KKGJW5j6WPHOLcFGrJyjunklvFBZkC81WOwszh/cHaPZWoGY/7YKTQMjmKSPeoRKWu75llRAJ8UX3cORo12MBVoASTN73yb0F93gpgLl8lJ5MTv/eAmxsoUb78II246BgffndNIAC+tVMzafgvPjaeflUy+rlYLo0wgRqkQiXzYzqAs6KfAGj+Q4WPWqEQkYmZUP0soroLC+fT9MA4QKAqA+S5yeH76cLS0LYK2/5kKqJtNQmcxPSPD2RzqoUM6vG667YSDDvwrd6QCMwfb2afPENoZalqF9ollGKxCBgsENB5otk0mdhopjAjvRUNZ+Yg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X6f1DBwdal0UwIiItGPzGZVS0cC5CdJRE2GKdfP8TGw=;
- b=binO9FACULZNGc+ZUm9/iuQuw17ofyEmnQNXd6kBsWeUNob9FfXfauVqdRlrNI32LeyZRQBwSLZM0SOHptuX0a8q7kUSb52YXhkYhbgsMjq1aK0kZJ3XoAWuMWc6j4p1NPFW76xNWNGq0ihuaWDs+C7Zv5PexDWWVYl3gglQQN8FmIu/yurgL8xpr31KqQ7HrsguP6HmxEmUmdKGXMYU3nHI8+OvCtHFxZrf/ILof0hXz6C3OemFYW2pyMs22VVoutyPm9qfoRuxLQoqRzbPoJlmbGH4tU0Z74G4qVtmpZc+NNudkBUcjHoP99jmWf+ha25Bk8AxYe1p01z4P9iUhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X6f1DBwdal0UwIiItGPzGZVS0cC5CdJRE2GKdfP8TGw=;
- b=OEDqkq1SqKL577GljI6pc90zyUYo+xBueAZlfCmXcHFCEDnDdcUpxDWVmqPsHfOdXU7uUi4GCdFwi0MnfISEYzO8f582N4ige/JgYSLOXl9Jp4WYcAUuew0g1vfmc3ICOeSSsXXJ8UsRN30OS4XKzSLBBzevRv6uygc8v/FnR2k=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nokia.com;
-Received: from (2603:10a6:208:6e::15) by
- AM0PR07MB4468.eurprd07.prod.outlook.com (2603:10a6:208:7a::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3805.6; Thu, 28 Jan 2021 07:30:01 +0000
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::e965:2884:260b:b29a]) by AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::e965:2884:260b:b29a%3]) with mapi id 15.20.3825.008; Thu, 28 Jan 2021
- 07:30:01 +0000
-Subject: Re: [PATCH 3/6] MIPS: Octeon: qspinlock: Flush write buffer
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Paul Burton <paul.burton@imgtec.com>, linux-mips@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-References: <20210127203627.47510-1-alexander.sverdlin@nokia.com>
- <20210127203627.47510-4-alexander.sverdlin@nokia.com>
- <YBHqeXPMILg+352D@hirez.programming.kicks-ass.net>
-From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Message-ID: <f492b29b-32a4-b4d4-a5d3-0d0dd8a56b5a@nokia.com>
-Date:   Thu, 28 Jan 2021 08:29:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-In-Reply-To: <YBHqeXPMILg+352D@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
+        id S232227AbhA1ICo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 28 Jan 2021 03:02:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232194AbhA1IAI (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 Jan 2021 03:00:08 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDD3C061574;
+        Wed, 27 Jan 2021 23:59:21 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id l12so5212385ljc.3;
+        Wed, 27 Jan 2021 23:59:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZhLAAud3HvOatZc8bWa160+GGDrtwAXLfmrfPeaVYS8=;
+        b=iipPbsfxZVCoeVKuars96HlwaPhNMoxff6kXibVhpITK1M6liR5Y9O7+S15Bs18l09
+         qlUtM1wTfg9Ou6I6g23AZm7cVsi8afl9ywua8K9yMdO5bZr9nt5kjWGTXEGzGKuOa9/g
+         1XUmU2pb08XIkn2+EUpygz+rpS2BWuStq+kp1Z0L+RWjtUcubBnlDUTz5WKp9v7710os
+         SLNWgHiJ3JIV+8IAHjWh/nhAgSk/YRdA5r5xJzX10KabfIVPeT0lFPft9QR1HE2XX97r
+         YL6s2qMMPrVFtgVS0PASinY6oq3v5br43OEKFxy7K4ebWVUxXV6rGDy0rY0fMsVaCwye
+         p0Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=ZhLAAud3HvOatZc8bWa160+GGDrtwAXLfmrfPeaVYS8=;
+        b=pN7U5ayKK/5sWgKJajDwgbMe8oZmnkj5Fp3s/iZsY8CifS6Me08uX7SipdDw7CeoaR
+         VNhn9E8cDytM0IiGEhtWtbZQ3AZHvUBjewbZI/W2/DiGl6yTN+tkIFu5DH3YyCu9+hh7
+         gYwRud3ruesYNpda2PE4F5GUgYufPY36wAuJHucDDYEOj9iA9jf0gZwuvIdEh5lMRoFu
+         XsyVOFe0TZfOgVYTZSeasCbEMasthSzVQKCYq67+0Zw622MibMPyXxLYsPF0lPSr8nny
+         ACdv1rCn5x1fzDLWnCQq8SH8N71clIGzP2IsncPEASzOippulsQn2V6yADX/lq+HRxhJ
+         4k1w==
+X-Gm-Message-State: AOAM531I4BQCnba6xiWms7ArJFMKyRLi6vQyzQ6xe9GguVVj3rr1bglc
+        SKZRRshpTzk13W+xiVHNGFXC9zXZSYhsgQ==
+X-Google-Smtp-Source: ABdhPJyNhfosDqTVmWD8kXJOJ9HDxIw2bv3pFQwo469kI3mpp/ZSh90Ay+X1biZCj8UPTr2AxhJ8ug==
+X-Received: by 2002:a2e:b6cc:: with SMTP id m12mr7769208ljo.401.1611820759903;
+        Wed, 27 Jan 2021 23:59:19 -0800 (PST)
+Received: from [192.168.1.100] ([178.176.79.159])
+        by smtp.gmail.com with ESMTPSA id z23sm1635056ljj.25.2021.01.27.23.59.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Jan 2021 23:59:19 -0800 (PST)
+Subject: Re: [PATCH 02/27] x86/syscalls: fix -Wmissing-prototypes warnings
+ from COND_SYSCALL()
+To:     Masahiro Yamada <masahiroy@kernel.org>, linux-arch@vger.kernel.org,
+        x86@kernel.org
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org
+References: <20210128005110.2613902-1-masahiroy@kernel.org>
+ <20210128005110.2613902-3-masahiroy@kernel.org>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <dd37a7f2-55e1-2e96-0c93-4a40980b8ef2@gmail.com>
+Date:   Thu, 28 Jan 2021 10:59:07 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <20210128005110.2613902-3-masahiroy@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [131.228.32.169]
-X-ClientProxiedBy: AM0PR10CA0021.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:17c::31) To AM0PR07MB4531.eurprd07.prod.outlook.com
- (2603:10a6:208:6e::15)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.169) by AM0PR10CA0021.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:17c::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend Transport; Thu, 28 Jan 2021 07:29:59 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: beb783a9-6e67-4cc3-650f-08d8c35e85b0
-X-MS-TrafficTypeDiagnostic: AM0PR07MB4468:
-X-Microsoft-Antispam-PRVS: <AM0PR07MB44681AA0FE369680C48C9FF288BA9@AM0PR07MB4468.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nY53DwnAu9j7XlP8KZH2qu94SinSF+v67nJC9QQTS8am1B6o63o4kiFL4ZdnLlw7IhBEmUfwII0+voOE7ZaldVQWGR0BB9HnuzIzXGB9XcHdd8mk/DaArHES6QZ4yy84xZKXK2Y5a/9rYXKYYhEHBzxzPiAqs5VYtEgGmfEPe7UH6Kf6p2XR8KZTajTnBmibW7GgZZUjGQ287ODdqRQotEO6HzOb59C9HaFTvxNm31RANpfiF6eM0RSPxAk8SWRBbPlDIzwGgAg3zM2fxBVJygd4ySz0dB5YZkCDMfQwRhwq1O4MUYA4CJzIcW1nQg+a1bKhUnajI4+O6YUIBdsrEHRaTvFgMJaR58UWlZG4HoeG23cNaU2ZRoaLj8Od2shVpUhLB5oaQRwRdEE6/zv6vi7XvGiYwgzGE4aV0Z2QmufPFgwacmcyjENvBybJAx9jtcDYXWLOTcQMAStU51YRiSNAZNX+A3MAKdRbfrJFzwduDga+BN6VNE1G4KhTZi1CAUZyv/RnIG+0OVK2H8iIo4RC0DUr7OYl8O+8pHXZ9325HJD+hdzXI0GrYi3WKQ6Hufgr+RafOUNFhOaznQr/3mn3k8SaBancam71WfPGe94=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(366004)(376002)(346002)(52116002)(6486002)(956004)(2906002)(186003)(8936002)(2616005)(53546011)(26005)(66556008)(478600001)(66476007)(44832011)(6916009)(316002)(6506007)(31686004)(31696002)(36756003)(5660300002)(66946007)(54906003)(16526019)(86362001)(8676002)(83380400001)(6512007)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UmpMYzgwcXl1TTl5SXpMN2c3bTBmU21Xd3lDWlNOeUdPZmUzV1hYdTM4YTBI?=
- =?utf-8?B?Q05FeTdVejdtU0FaNFpwdUlUREZwRGtBUUlRMDZlYzAxVDV0MWJmdm9Pd2Iz?=
- =?utf-8?B?TTFwWFdIWmF4aDAzNmp5bFAwR0dnTHVwWENKME1jU29uNmg1bFJsckFuVDRE?=
- =?utf-8?B?S3VkK1RZeExmcFhtMWxqUHZ0V2xJM3V3T2dQUmZUTk9vQmdPeHpnNDJqYURq?=
- =?utf-8?B?dzdEYzNieUVEQzBTZ0YyZitmbWhvbUlDTnliTUxLemE4MW1XOXlnT3lOQy9R?=
- =?utf-8?B?Yk5jNWpjWi9iRy9maXVjU21PSGlKaGdWM0NQeFV0K3ZPTFZJRElpL2dWVnNP?=
- =?utf-8?B?TldTbnNrODh0N0x3bk9KNVdFWHdmUjh6Q01LZ0N6aGRTMjhhVmlQdXZtcm90?=
- =?utf-8?B?MmxadlM2eEhIelJ6SU9LMURkYmp3a3V5MS9EL095YmZwdUJLS0hzRXNzUEJs?=
- =?utf-8?B?Z2Nvbk1FcDJ1bkRqbDRCMXQ1M2VBa3VNQTA3c2h4RkduWHhlR1NGOXE2a3Fl?=
- =?utf-8?B?TWFITFpFUEp6Q1N6aVYwcXRxdldkbkQ2dW1Zai8wMXEreHdYb0sxTnVtaFAz?=
- =?utf-8?B?UUtkUkF4MkovT1pDYmtXcSt1dGxKeGV4LzE3YjZxR3A2Y2FYa1dkNm56R2Zu?=
- =?utf-8?B?RE16SmhhTEFNZUNvWmU4SjIzeU5sTG52WlRkU1FwWkNqOVQrWlpLaTZQVm9V?=
- =?utf-8?B?K3A4Ti9aVFNlRTJDY2szODViVUJLNHkzazNUVkwyYUlraHBiTFNyRndUcjAx?=
- =?utf-8?B?bmM2Rjd4dmFvNmFOKzIramROdFRTbHBCOTBJK1BMUVZNbWl4Q1dkbjJUSkIx?=
- =?utf-8?B?MjlwMjhLYURyWHBjRnBWQndRWlVLVWhLWmFueGpUR1FhdmZxME1taDV4Q1ZT?=
- =?utf-8?B?TnV3RWc3NVNoZVJCRXpkRUgxaFVQcnVMMmpkNmpENk9xdUJBMXhoWEJBZklV?=
- =?utf-8?B?a3J6bFYxemJ2bmFzWU1sbjBjZks3NFNsR05jOEpTU0RtdUMyc3FveXErZFFC?=
- =?utf-8?B?VHNsYlRneDV3T01uUE9Wa1lpWDVhWlZEdGs4NFZPMjBPdm1BYlZiMENvWDFE?=
- =?utf-8?B?UFNTVnBWUHg3WGFCYS9PM0J3Q2YydE1xYldxMFJWU3dmaUF5RVRGZUNuWWFE?=
- =?utf-8?B?M3hsd2pOSnV4YUxKNFJCRmhuNHhMdVdBMkFhWGJmMzMyeE5aaTZubExrdHYr?=
- =?utf-8?B?VnVPRzd3S1NjTTdHNldqQzBuTkFqQUN6ZmVTNWZvVEpVNys3Yjg2V0xsV1R3?=
- =?utf-8?B?T1Q4UWpmNUJ4Q285MWJlU3owenZPM25KRWxGOVZPWVkwNjFPc2NWb1VrdHEw?=
- =?utf-8?B?a05XWUJOd2ZYdTFMdGdFUG9vK0xDeVRRNVN0RTN3WTVWSExrN2lPeDBiOVBl?=
- =?utf-8?B?RXFpbGpJZUZoY1k2cUNPQng3alVSRGJlOTM0L3ZQZVpuekpvZUhKMmRZMFN0?=
- =?utf-8?Q?B4HF8v5F?=
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: beb783a9-6e67-4cc3-650f-08d8c35e85b0
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jan 2021 07:30:01.3775
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Pb/qUQXn16xai7oZdeDDqHpQmulSKkJf3aZ1cBX6zSHBN6RPeQx8HTM5B9xGcP1VsW859MMLQq1Z2L4RBYmyM9t0U4nERpA3WaXkLnHNXRk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR07MB4468
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi!
+Hello!
 
-On 27/01/2021 23:34, Peter Zijlstra wrote:
-> On Wed, Jan 27, 2021 at 09:36:24PM +0100, Alexander A Sverdlin wrote:
->> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
->>
->> Flushing the write buffer brings aroung 10% performace on the tight
->> uncontended spinlock loops on Octeon. Refer to commit 500c2e1fdbcc
->> ("MIPS: Optimize spinlocks.").
-> No objection to the patch, but I don't find the above referenced commit
-> to be enlightening wrt nudge_writes(). The best it has to offer is the
-> comment that's already in the code.
+On 28.01.2021 3:50, Masahiro Yamada wrote:
 
-My point was that original MIPS spinlocks had this write-buffer-flush and
-it got lost on the conversion to qspinlocks. The referenced commit just
-allows to see the last MIPS-specific implementation before deletion.
+> Building kernel/sys_ni.c with W=1 omits tons of -Wmissing-prototypes
 
->> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
->> ---
->>  arch/mips/include/asm/spinlock.h | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/arch/mips/include/asm/spinlock.h b/arch/mips/include/asm/spinlock.h
->> index 8a88eb2..0a707f3 100644
->> --- a/arch/mips/include/asm/spinlock.h
->> +++ b/arch/mips/include/asm/spinlock.h
->> @@ -24,6 +24,9 @@ static inline void queued_spin_unlock(struct qspinlock *lock)
->>  	/* This could be optimised with ARCH_HAS_MMIOWB */
->>  	mmiowb();
->>  	smp_store_release(&lock->locked, 0);
->> +#ifdef CONFIG_CPU_CAVIUM_OCTEON
->> +	nudge_writes();
->> +#endif
->>  }
->>  
->>  #include <asm/qspinlock.h>
+    Emits?
 
--- 
-Best regards,
-Alexander Sverdlin.
+> warnings.
+> 
+> $ make W=1 kernel/sys_ni.o
+>    [ snip ]
+>    CC      kernel/sys_ni.o
+> In file included from kernel/sys_ni.c:10:
+> ./arch/x86/include/asm/syscall_wrapper.h:83:14: warning: no previous prototype for '__x64_sys_io_setup' [-Wmissing-prototypes]
+>     83 |  __weak long __##abi##_##name(const struct pt_regs *__unused) \
+>        |              ^~
+> ./arch/x86/include/asm/syscall_wrapper.h:100:2: note: in expansion of macro '__COND_SYSCALL'
+>    100 |  __COND_SYSCALL(x64, sys_##name)
+>        |  ^~~~~~~~~~~~~~
+> ./arch/x86/include/asm/syscall_wrapper.h:256:2: note: in expansion of macro '__X64_COND_SYSCALL'
+>    256 |  __X64_COND_SYSCALL(name)     \
+>        |  ^~~~~~~~~~~~~~~~~~
+> kernel/sys_ni.c:39:1: note: in expansion of macro 'COND_SYSCALL'
+>     39 | COND_SYSCALL(io_setup);
+>        | ^~~~~~~~~~~~
+> ./arch/x86/include/asm/syscall_wrapper.h:83:14: warning: no previous prototype for '__ia32_sys_io_setup' [-Wmissing-prototypes]
+>     83 |  __weak long __##abi##_##name(const struct pt_regs *__unused) \
+>        |              ^~
+> ./arch/x86/include/asm/syscall_wrapper.h:120:2: note: in expansion of macro '__COND_SYSCALL'
+>    120 |  __COND_SYSCALL(ia32, sys_##name)
+>        |  ^~~~~~~~~~~~~~
+> ./arch/x86/include/asm/syscall_wrapper.h:257:2: note: in expansion of macro '__IA32_COND_SYSCALL'
+>    257 |  __IA32_COND_SYSCALL(name)
+>        |  ^~~~~~~~~~~~~~~~~~~
+> kernel/sys_ni.c:39:1: note: in expansion of macro 'COND_SYSCALL'
+>     39 | COND_SYSCALL(io_setup);
+>        | ^~~~~~~~~~~~
+>    ...
+> 
+> __SYS_STUB0() and __SYS_STUBx() defined a few lines above have forward
+> declarations. Let's do likewise for __COND_SYSCALL() to fix the
+> warnings.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>   arch/x86/include/asm/syscall_wrapper.h | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
+> index a84333adeef2..80c08c7d5e72 100644
+> --- a/arch/x86/include/asm/syscall_wrapper.h
+> +++ b/arch/x86/include/asm/syscall_wrapper.h
+> @@ -80,6 +80,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+>   	}
+>   
+>   #define __COND_SYSCALL(abi, name)					\
+> +	__weak long __##abi##_##name(const struct pt_regs *__unused);	\
+>   	__weak long __##abi##_##name(const struct pt_regs *__unused)	\
+
+    Aren't these two lines identical?
+
+[...]
+
+MBR, Sergei

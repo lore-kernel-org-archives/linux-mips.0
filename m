@@ -2,223 +2,163 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2053EC433E0
-	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 01:09:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48C0FC433E6
+	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 01:09:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E392760C40
-	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 01:09:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1DF0564DEA
+	for <linux-mips@archiver.kernel.org>; Thu, 28 Jan 2021 01:09:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbhA1BJL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 27 Jan 2021 20:09:11 -0500
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:34320 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbhA1BHD (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Jan 2021 20:07:03 -0500
-X-Greylist: delayed 596 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Jan 2021 20:03:33 EST
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 10S12TSn031297;
-        Thu, 28 Jan 2021 10:02:29 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 10S12TSn031297
+        id S231911AbhA1BJF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 27 Jan 2021 20:09:05 -0500
+Received: from condef-04.nifty.com ([202.248.20.69]:40863 "EHLO
+        condef-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhA1BG5 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Jan 2021 20:06:57 -0500
+Received: from conuserg-12.nifty.com ([10.126.8.75])by condef-04.nifty.com with ESMTP id 10S0sJlx003447;
+        Thu, 28 Jan 2021 09:54:20 +0900
+Received: from oscar.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
+        by conuserg-12.nifty.com with ESMTP id 10S0pjIZ024172;
+        Thu, 28 Jan 2021 09:51:50 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10S0pjIZ024172
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611795750;
-        bh=kQBsC8DD1I5pmWkAr2jPmQQNw1PckPFdZPVIdpQVYdo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=X2YfGmKV6JyqV6skhwNlBN5EndPUYjWcNkOTo404Y6vE/VjuzQzR3Hwre1o9jMX7P
-         t3pE8Eb/agEN1+SaB5WdhX3qLWKgeotk+EENxzm+2r79cEMgEquohGT/DZdc81+USy
-         n577YnXPqvQTSLbcIfGIwlXir96y4XYna6GbZ8JMehDKy3q1du6FKs+xB6Ee7gryFW
-         8fZJW0K2rhzEg2LE1IdBsw1wzN8ed4VgNVCiOpTvAQkAVq2uvVboz8HiD/Bu/u7vRJ
-         Dx8w8fXdYSaprH/rcXQNKd/WA9Z42fXEQaKNyPcCBPduv5pMUUnZ/FcS8rZF2bdrdk
-         Arf+3kYeRwbDg==
-X-Nifty-SrcIP: [209.85.215.180]
-Received: by mail-pg1-f180.google.com with SMTP id o63so3128254pgo.6;
-        Wed, 27 Jan 2021 17:02:29 -0800 (PST)
-X-Gm-Message-State: AOAM533NiyidxTcQRno3xFKXmT4J72EvPvtC6QBfPw/D/lsRzvvE3KZI
-        npM5tlDCLeHTVzX6nFJRn71lR0FVvwTVxuNSo2o=
-X-Google-Smtp-Source: ABdhPJx2qrnkZf85rd51ifbo3/yHH3r4r1ZqUYd8szq6YngeUvtL91K9BCWmJopJwX8xwD3QAcfaeKREyWnPk27LDQ4=
-X-Received: by 2002:a63:575e:: with SMTP id h30mr13844879pgm.7.1611795748589;
- Wed, 27 Jan 2021 17:02:28 -0800 (PST)
-MIME-Version: 1.0
-References: <20210128005110.2613902-1-masahiroy@kernel.org> <20210128005110.2613902-2-masahiroy@kernel.org>
-In-Reply-To: <20210128005110.2613902-2-masahiroy@kernel.org>
+        s=dec2015msa; t=1611795111;
+        bh=xfUMpPHMW1i+7E5Ee4SBhF1anYC2XCsj+hKMg2Rt8Gk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=F+klgDhGqjPkW0iyljZtDS/UVVookoKMar9wbf4BweDN3xyA6byQpu9mcEEUtCPXr
+         5Em1w71Sr4WmKw8UMJaHxg3Y6MP5Hquxu+aJ6aDLe5mi0bJllocGuR5nubDzp89f1N
+         ZTIUFIoM/8w9fZDq6mot9Gvb+SafgOabPs5htRub+OqIYi3STKdebYBgO4x7pbnHe2
+         VZkfgtX2BHgbXDMMLkA9iKXN+H+PrVkaYfjLsYCMZ8fIDFjrqpY19b9ztBNvyLQV23
+         e08U3RVcWC+e2J6L6nyDK/8a+LetbQM5v4IzJ4hvr77kc/bebiilTElVi1wC1EWUl2
+         gFfoK2caGKw7Q==
+X-Nifty-SrcIP: [126.26.94.251]
 From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 28 Jan 2021 10:01:50 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASxQkX9R3g+r2mwKGE11oFLkNVPwsTezgHFzLgHjzcjdw@mail.gmail.com>
-Message-ID: <CAK7LNASxQkX9R3g+r2mwKGE11oFLkNVPwsTezgHFzLgHjzcjdw@mail.gmail.com>
-Subject: Re: [PATCH 01/27] scripts: add generic syscalltbl.sh
-To:     linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-alpha@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-ia64@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+To:     linux-arch@vger.kernel.org, x86@kernel.org
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
         linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-um@lists.infradead.org,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        sparclinux <sparclinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-sh@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 04/27] x86/entry/x32: rename __x32_compat_sys_* to __x64_compat_sys_*
+Date:   Thu, 28 Jan 2021 09:50:46 +0900
+Message-Id: <20210128005110.2613902-5-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210128005110.2613902-1-masahiroy@kernel.org>
+References: <20210128005110.2613902-1-masahiroy@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 9:51 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Most of architectures generate syscall headers at the compile time
-> in the almost same way.
->
-> The syscall table has the same format for all architectures. Each line
-> has 3, 4 or 5 fields; syscall number, ABI, syscall name, native entry
-> point, and compat entry point. The syscall table is processed by
-> syscalltbl.sh script into header files.
->
-> Despite the same pattern, scripts are maintained per architecture,
-> which results in code duplication and bad maintainability.
->
-> As of v5.11-rc1, 12 architectures duplicate similar shell scripts:
->
->   $ find arch -name syscalltbl.sh | sort
->   arch/alpha/kernel/syscalls/syscalltbl.sh
->   arch/arm/tools/syscalltbl.sh
->   arch/ia64/kernel/syscalls/syscalltbl.sh
->   arch/m68k/kernel/syscalls/syscalltbl.sh
->   arch/microblaze/kernel/syscalls/syscalltbl.sh
->   arch/mips/kernel/syscalls/syscalltbl.sh
->   arch/parisc/kernel/syscalls/syscalltbl.sh
->   arch/powerpc/kernel/syscalls/syscalltbl.sh
->   arch/sh/kernel/syscalls/syscalltbl.sh
->   arch/sparc/kernel/syscalls/syscalltbl.sh
->   arch/x86/entry/syscalls/syscalltbl.sh
->   arch/xtensa/kernel/syscalls/syscalltbl.sh
->
-> My goal is to unify them into a single file, scripts/syscalltbl.sh.
->
-> For example, the i386 syscall table looks like this:
->
->   0  i386  restart_syscall  sys_restart_syscall
->   1  i386  exit             sys_exit
->   2  i386  fork             sys_fork
->   3  i386  read             sys_read
->   4  i386  write            sys_write
->   5  i386  open             sys_open              compat_sys_open
->   ...
->
-> scripts/syscalltbl.sh generates the following code:
->
->   __SYSCALL(0, sys_restart_syscall)
->   __SYSCALL(1, sys_exit)
->   __SYSCALL(2, sys_fork)
->   __SYSCALL(3, sys_read)
->   __SYSCALL(4, sys_write)
->   __SYSCALL_WITH_COMPAT(5, sys_open, compat_sys_open)
->   ...
->
-> Then, the i386 kernel will do:
->
->   #define __SYSCALL_WITH_COMPAT(nr, native, compat) __SYSCALL(nr, native)
->
-> and the x86_64 kernel will do:
->
->   #define __SYSCALL_WITH_COMPAT(nr, native, compat) __SYSCALL(nr, compat)
->
-> I noticed all 32/64 bit architectures can be covered by the same
-> pattern. Having an arch-specific script is fine if there is a good
-> reason to do so, but a single generic script should work for this case.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->
->  scripts/syscalltbl.sh | 52 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 52 insertions(+)
->  create mode 100644 scripts/syscalltbl.sh
->
-> diff --git a/scripts/syscalltbl.sh b/scripts/syscalltbl.sh
-> new file mode 100644
-> index 000000000000..15bf4e09f88c
-> --- /dev/null
-> +++ b/scripts/syscalltbl.sh
-> @@ -0,0 +1,52 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +# Usage:
-> +#  scripts/syscalltbl.sh INFILE OUTFILE [ABIS] [OFFSET]
-> +#
-> +# INFILE: input syscall table
-> +# OUTFILE: output file
-> +# ABIS (optional): specify the ABIs to handle.
-> +#                  If omitted, all lines are handled.
-> +# OFFSET (optinal): spefify the offset of the syscall numbers.
-> +#                   If omitted, the offset is zero.
-> +#
-> +# The syscall table format:
-> +# nr abi name native [compat]
+In arch/x86/entry/syscall_x32.c, the macros are mapped to symbols
+as follows:
 
+  __SYSCALL_COMMON(nr, sym)  -->  __x64_<sym>
+  __SYSCALL_X32(nr, sym)     -->  __x32_<sym>
 
-This line should be
+Originally, the syscalls in the x32 special range (512-547) were all
+compat.
 
- nr abi name [native] [compat]
+This assumption is now broken after the following commits:
 
+  55db9c0e8534 ("net: remove compat_sys_{get,set}sockopt")
+  5f764d624a89 ("fs: remove the compat readv/writev syscalls")
+  598b3cec831f ("fs: remove compat_sys_vmsplice")
+  c3973b401ef2 ("mm: remove compat_process_vm_{readv,writev}")
 
-because the native entry point is also optional.
-(if it is missing, sys_ni_syscall is used)
+Those commits redefined __x32_sys_* to __x64_sys_* because there is
+no stub like __x32_sys_*.
 
+I think defining as follows is sensible and cleaner.
 
+  __SYSCALL_COMMON(nr, sym)  -->  __x64_<sym>
+  __SYSCALL_X32(nr, sym)     -->  __x64_<sym>
 
+The ugly #define __x32_sys_* will go away.
 
-> +#
-> +# nr: syscall number
-> +# abi: ABI name
-> +# name: syscall name
-> +# native: native entry point
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-native (optional): native entry point
+ arch/x86/entry/syscall_x32.c           | 16 ++--------------
+ arch/x86/include/asm/syscall_wrapper.h | 10 +++++-----
+ 2 files changed, 7 insertions(+), 19 deletions(-)
 
-
-> +# compat (optional): compat entry point
-> +
-> +set -e
-> +
-> +in="$1"
-> +out="$2"
-> +abis=$(echo "($3)" | tr ',' '|')
-> +offset="${4:-0}"
-> +
-> +nxt=$offset
-> +
-> +grep -E "^[0-9]+[[:space:]]+${abis}" "$in" | sort -n | {
-> +
-> +       while read nr abi name native compat ; do
-> +
-> +               nr=$((nr + $offset))
-> +
-> +               while [ $nxt -lt $nr ]; do
-> +                       echo "__SYSCALL($nxt, sys_ni_syscall)"
-> +                       nxt=$((nxt + 1))
-> +               done
-> +
-> +               if [ -n "$compat" ]; then
-> +                       echo "__SYSCALL_WITH_COMPAT($nr, $native, $compat)"
-> +               elif [ -n "$native" ]; then
-> +                       echo "__SYSCALL($nr, $native)"
-> +               else
-> +                       echo "__SYSCALL($nr, sys_ni_syscall)"
-> +               fi
-> +               nxt=$((nr + 1))
-> +       done
-> +} > "$out"
-> --
-> 2.27.0
->
-
-
+diff --git a/arch/x86/entry/syscall_x32.c b/arch/x86/entry/syscall_x32.c
+index f2fe0a33bcfd..3fea8fb9cd6a 100644
+--- a/arch/x86/entry/syscall_x32.c
++++ b/arch/x86/entry/syscall_x32.c
+@@ -8,27 +8,15 @@
+ #include <asm/unistd.h>
+ #include <asm/syscall.h>
+ 
+-/*
+- * Reuse the 64-bit entry points for the x32 versions that occupy different
+- * slots in the syscall table.
+- */
+-#define __x32_sys_readv		__x64_sys_readv
+-#define __x32_sys_writev	__x64_sys_writev
+-#define __x32_sys_getsockopt	__x64_sys_getsockopt
+-#define __x32_sys_setsockopt	__x64_sys_setsockopt
+-#define __x32_sys_vmsplice	__x64_sys_vmsplice
+-#define __x32_sys_process_vm_readv	__x64_sys_process_vm_readv
+-#define __x32_sys_process_vm_writev	__x64_sys_process_vm_writev
+-
+ #define __SYSCALL_64(nr, sym)
+ 
+-#define __SYSCALL_X32(nr, sym) extern long __x32_##sym(const struct pt_regs *);
++#define __SYSCALL_X32(nr, sym) extern long __x64_##sym(const struct pt_regs *);
+ #define __SYSCALL_COMMON(nr, sym) extern long __x64_##sym(const struct pt_regs *);
+ #include <asm/syscalls_64.h>
+ #undef __SYSCALL_X32
+ #undef __SYSCALL_COMMON
+ 
+-#define __SYSCALL_X32(nr, sym) [nr] = __x32_##sym,
++#define __SYSCALL_X32(nr, sym) [nr] = __x64_##sym,
+ #define __SYSCALL_COMMON(nr, sym) [nr] = __x64_##sym,
+ 
+ asmlinkage const sys_call_ptr_t x32_sys_call_table[__NR_x32_syscall_max+1] = {
+diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
+index 80c08c7d5e72..6a2827d0681f 100644
+--- a/arch/x86/include/asm/syscall_wrapper.h
++++ b/arch/x86/include/asm/syscall_wrapper.h
+@@ -17,7 +17,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+  * __x64_sys_*()         - 64-bit native syscall
+  * __ia32_sys_*()        - 32-bit native syscall or common compat syscall
+  * __ia32_compat_sys_*() - 32-bit compat syscall
+- * __x32_compat_sys_*()  - 64-bit X32 compat syscall
++ * __x64_compat_sys_*()  - 64-bit X32 compat syscall
+  *
+  * The registers are decoded according to the ABI:
+  * 64-bit: RDI, RSI, RDX, R10, R8, R9
+@@ -166,17 +166,17 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+  * with x86_64 obviously do not need such care.
+  */
+ #define __X32_COMPAT_SYS_STUB0(name)					\
+-	__SYS_STUB0(x32, compat_sys_##name)
++	__SYS_STUB0(x64, compat_sys_##name)
+ 
+ #define __X32_COMPAT_SYS_STUBx(x, name, ...)				\
+-	__SYS_STUBx(x32, compat_sys##name,				\
++	__SYS_STUBx(x64, compat_sys##name,				\
+ 		    SC_X86_64_REGS_TO_ARGS(x, __VA_ARGS__))
+ 
+ #define __X32_COMPAT_COND_SYSCALL(name)					\
+-	__COND_SYSCALL(x32, compat_sys_##name)
++	__COND_SYSCALL(x64, compat_sys_##name)
+ 
+ #define __X32_COMPAT_SYS_NI(name)					\
+-	__SYS_NI(x32, compat_sys_##name)
++	__SYS_NI(x64, compat_sys_##name)
+ #else /* CONFIG_X86_X32 */
+ #define __X32_COMPAT_SYS_STUB0(name)
+ #define __X32_COMPAT_SYS_STUBx(x, name, ...)
 -- 
-Best Regards
-Masahiro Yamada
+2.27.0
+

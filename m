@@ -2,84 +2,109 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADEC2C433E6
-	for <linux-mips@archiver.kernel.org>; Mon,  1 Feb 2021 14:00:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69DF2C433DB
+	for <linux-mips@archiver.kernel.org>; Mon,  1 Feb 2021 14:03:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7DF4D64E94
-	for <linux-mips@archiver.kernel.org>; Mon,  1 Feb 2021 14:00:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2BB8964EA2
+	for <linux-mips@archiver.kernel.org>; Mon,  1 Feb 2021 14:03:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232157AbhBAN7l (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 1 Feb 2021 08:59:41 -0500
-Received: from elvis.franken.de ([193.175.24.41]:43717 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232031AbhBAN7i (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:59:38 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l6ZjC-0001Qe-00; Mon, 01 Feb 2021 14:58:54 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 57C92C0D38; Mon,  1 Feb 2021 13:50:28 +0100 (CET)
-Date:   Mon, 1 Feb 2021 13:50:28 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jinyang He <hejinyang@loongson.cn>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: relocatable: Provide kaslr_offset() to get the
- kernel offset
-Message-ID: <20210201125028.GA8621@alpha.franken.de>
-References: <1611720745-8256-1-git-send-email-hejinyang@loongson.cn>
+        id S232235AbhBAODA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 1 Feb 2021 09:03:00 -0500
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:35338 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231916AbhBAOC7 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 1 Feb 2021 09:02:59 -0500
+Received: by mail-oi1-f174.google.com with SMTP id w8so18862534oie.2;
+        Mon, 01 Feb 2021 06:02:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PjQ2aAipDSaq5oC4lmBya+0Rk1klXjpSSVN7GA5y3Ng=;
+        b=tx1hsv+UOTZdkmkVsqprjcwNkmce1Z7Kmpr6pVGux/5cntzJ2+koInp0Of+ZT8GbbJ
+         f3no2hLMfDxlojDrrdwgtfwFA6sAas2+nDMYMC546L4Z8+f92+XKR22Qlb3hW1/+2BAv
+         76dK4TmaINCX7ABBvHZg24xqVRXC8AD2P/utJ7FAE8L6wkIbLHagITuqyVexyf86y4F/
+         Va/7SNL6sHQ8wCtMJ9e1gKNSkdXTCPiB6beau2M09LDn6m9XuoLgwrbtD4FpLGHzZGNN
+         s3knvojLv0oj72LR3mYLtGCf5T3JEUq9yYXkAIIDbByxu581gckufiBS4DsT+Z8bYH61
+         JAaA==
+X-Gm-Message-State: AOAM530BfBbSKtSkkefXKOXXPVRSEzvV8tY62vmTkcJsCkEFM4iAsNdQ
+        kaJtlvfZA5wjvJZfRLdbuv3h08tQCLymoFSMxXWOs7q1
+X-Google-Smtp-Source: ABdhPJw1DQOtXQiOfLob/rMGpYwphh6HqBDyeQVpm2HarfCzjirlfFQpNkL8KnEPZ6WvYaJWPQuOJUtbJQHKhwp2iUI=
+X-Received: by 2002:aca:fc84:: with SMTP id a126mr11038406oii.71.1612188138028;
+ Mon, 01 Feb 2021 06:02:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1611720745-8256-1-git-send-email-hejinyang@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <377d2e2d328276070ae2f26c65daa1497bb3c3cf.1612166647.git.viresh.kumar@linaro.org>
+ <YBfNb91psVcf3TAS@light.dominikbrodowski.net> <20210201100502.xluaj5rpqosqsq7b@vireshk-i7>
+In-Reply-To: <20210201100502.xluaj5rpqosqsq7b@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 1 Feb 2021 15:02:06 +0100
+Message-ID: <CAJZ5v0iowSHeie2HLPjHUftBDVBQXi30O1Kfk3Kxchc0K=gYag@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: Remove CPUFREQ_STICKY flag
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Dominik Brodowski <linux@dominikbrodowski.net>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Keguang Zhang <keguang.zhang@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mips@vger.kernel.org,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Samsung SoC <linux-samsung-soc@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 12:12:25PM +0800, Jinyang He wrote:
-> Use kimage_vaddr to indicate kernel start address. Provide kaslr_offset()
-> to get the kernel offset when KASLR is enabled. Error may occur before
-> update_kimage_vaddr(), so put it at the end of the offset branch.
-> 
-> Fixes: a307a4ce9ecd ("MIPS: Loongson64: Add KASLR support")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
-> ---
->  arch/mips/include/asm/page.h |  6 ++++++
->  arch/mips/kernel/relocate.c  | 12 ++++++++++++
->  arch/mips/kernel/setup.c     |  3 +++
->  3 files changed, 21 insertions(+)
-> 
-> diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
-> index 6a77bc4..9429520 100644
-> --- a/arch/mips/include/asm/page.h
-> +++ b/arch/mips/include/asm/page.h
-> @@ -255,6 +255,12 @@ extern bool __virt_addr_valid(const volatile void *kaddr);
->  
->  #define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
->  
-> +extern unsigned long kimage_vaddr;
-> +static inline unsigned long kaslr_offset(void)
-> +{
-> +	return kimage_vaddr - VMLINUX_LOAD_ADDRESS;
-> +}
+On Mon, Feb 1, 2021 at 11:06 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 01-02-21, 10:44, Dominik Brodowski wrote:
+> > IIRC, it was required on various ARM systems,[*] as CPUs were registered as
+> > subsys_initcall(), while cpufreq used to be initialized only later, as an
+>
+> s/later/earlier ? arch happens before subsys not at least and that is
+> the only way we can break cpufreq here, i.e. when the driver comes up
+> before the CPUs are registered.
+>
+> > arch_initcall(). If the ordering is opposite now on all architectures (it
+> > wasn't on ARM back then), we should be fine.
+> >
+> > [*] https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/commit/arch/arm/mach-sa1100/cpu-sa1100.c?id=f59d3bbe35f6268d729f51be82af8325d62f20f5
+>
+> Thanks for your reply, it made me look at that aspect in some more
+> detail to confirm I don't end up breaking anything. Unless I am making
+> a mistake in reading the code, this is the code flow that we have
+> right now:
+>
+> start_kernel()
+> -> kernel_init()
+>    -> kernel_init_freeable()
+>       -> do_basic_setup()
+>          -> driver_init()
+>             -> cpu_dev_init()
+>                -> subsys_system_register(for-CPUs)
+>
+>          -> do_initcalls()
+>             -> register-cpufreq-driver from any level
+>
+> And so CPUs should always be there for a cpufreq driver.
+>
+> Makes sense ?
 
-this breaks for 32bit kernels:
-
-<command-line>:0:22: error: large integer implicitly truncated to unsigned type [-Werror=overflow]
-/local/tbogendoerfer/korg/linux/arch/mips/kernel/setup.c:87:41: note: in expansion of macro ‘VMLINUX_LOAD_ADDRESS’
- unsigned long kimage_vaddr __initdata = VMLINUX_LOAD_ADDRESS;
-                                         ^~~~~~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+It does to me, but can you update the changelog, please?

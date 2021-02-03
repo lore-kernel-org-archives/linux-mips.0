@@ -2,88 +2,106 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8FA9C433E6
-	for <linux-mips@archiver.kernel.org>; Tue,  2 Feb 2021 22:41:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6946EC433E6
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Feb 2021 09:31:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 313DE64DDD
-	for <linux-mips@archiver.kernel.org>; Tue,  2 Feb 2021 22:41:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1542B64F50
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Feb 2021 09:31:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235451AbhBBWks (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 2 Feb 2021 17:40:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43216 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235317AbhBBWkr (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:40:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id F376164F77;
-        Tue,  2 Feb 2021 22:40:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612305607;
-        bh=kIpNVZMOWYIogyH+CabwMWi2G3OEMriGjSqtRrXODYQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=DZ+HnyW7kjSmLQuVykV9fot0z4Z21QfpSs/VuOK/Yvh4D10DwaU/Ib+3o1hEPEmlA
-         xmKIzNcJDJBNbhg85X10laALUS1aslvc1UCCD8EuTYn2pSEF35mAFffGeZ2Irh/oz/
-         BIPgKZueCiuVYLdu+WSsdiA+qSbBFcoUrbc4IJ7gCwiZsxQVOFdwyx8XxJU/80BLXR
-         f80/YQFDIa7qh9mEbRnYpeu0riunBUnoApUIQ4Pvc+3ny5yWy9RF3j2mGpAAEHbQm4
-         l2X0rSZToUc2nIo/Sm4d6sqeq91Q+N2MO0B9MUZ5wj5eODWZrdxf1f2p4YMF9pYV/U
-         0vn9/KcPmbETQ==
-Content-Type: text/plain; charset="utf-8"
+        id S233215AbhBCJbS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Feb 2021 04:31:18 -0500
+Received: from polaris.svanheule.net ([84.16.241.116]:59660 "EHLO
+        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233500AbhBCJag (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Feb 2021 04:30:36 -0500
+Received: from terra.local.svanheule.net (unknown [IPv6:2a02:a03f:eaff:9701:9f3c:99a2:7251:cce9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id E09C21C8C19;
+        Wed,  3 Feb 2021 10:23:45 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1612344226;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=72bGU27IKTK7uzsu+gYNWJLAfcIFrJlPlB1wOH6GCHs=;
+        b=QLydjcwv3LnxbcHoWxeTSZN2VJ6PmyY4JcYu0MJeX+x17kufLQVFzC8fxEDO6XiQKlgc4t
+        ss7e9+q9AGdQX7SpNDh6VVo2nN4IQK+bd3IkspqxKAZ8Ec4EseREIHhHGjTwjdsHzKqDua
+        jQwigajQakMcSHK/nkKd2RCDps350e25801J8ltzfLGlx7wdOsov1kIkZBvj8OJWTyqkxC
+        Ho0nIXSfweO3DronbGZaDq7Ynd8YETgv08F980/KiTD67Q+TgwLehUl42RigXZ7DBHPj/K
+        6rbwm0z7mjQM7IAlQJCOjqHyPYaaeYMc6HXAFurYgRkEsZiH1dbbDyuvUHbVEw==
+From:   Sander Vanheule <sander@svanheule.net>
+To:     linux-mips@vger.kernel.org
+Cc:     John Crispin <john@phrozen.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-kernel@vger.kernel.org,
+        Sander Vanheule <sander@svanheule.net>
+Subject: [PATCH] MIPS: ralink: manage low reset lines
+Date:   Wed,  3 Feb 2021 10:21:41 +0100
+Message-Id: <20210203092140.12458-1-sander@svanheule.net>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] samples/bpf: Add include dir for MIPS Loongson64 to
- fix build errors
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161230560690.17917.396207762953039292.git-patchwork-notify@kernel.org>
-Date:   Tue, 02 Feb 2021 22:40:06 +0000
-References: <1611669925-25315-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1611669925-25315-1-git-send-email-yangtiezhu@loongson.cn>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lixuefeng@loongson.cn
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello:
+Reset lines with indices smaller than 8 are currently considered invalid
+by the rt2880-reset reset controller.
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+The MT7621 SoC uses a number of these low reset lines. The DTS defines
+reset lines "hsdma", "fe", and "mcm" with respective values 5, 6, and 2.
+As a result of the above restriction, these resets cannot be asserted or
+de-asserted by the reset controller. In cases where the bootloader does
+not de-assert these lines, this results in e.g. the MT7621's internal
+switch staying in reset.
 
-On Tue, 26 Jan 2021 22:05:25 +0800 you wrote:
-> There exists many build errors when make M=samples/bpf on the Loongson
-> platform, this issue is MIPS related, x86 compiles just fine.
-> 
-> Here are some errors:
-> 
->   CLANG-bpf  samples/bpf/sockex2_kern.o
-> In file included from samples/bpf/sockex2_kern.c:2:
-> In file included from ./include/uapi/linux/in.h:24:
-> In file included from ./include/linux/socket.h:8:
-> In file included from ./include/linux/uio.h:8:
-> In file included from ./include/linux/kernel.h:11:
-> In file included from ./include/linux/bitops.h:32:
-> In file included from ./arch/mips/include/asm/bitops.h:19:
-> In file included from ./arch/mips/include/asm/barrier.h:11:
-> ./arch/mips/include/asm/addrspace.h:13:10: fatal error: 'spaces.h' file not found
->          ^~~~~~~~~~
-> 1 error generated.
-> 
-> [...]
+Change the reset controller to only ignore the system reset, so all
+reset lines with index greater than 0 are considered valid.
 
-Here is the summary with links:
-  - [bpf-next] samples/bpf: Add include dir for MIPS Loongson64 to fix build errors
-    https://git.kernel.org/bpf/bpf-next/c/058107abafc7
+Signed-off-by: Sander Vanheule <sander@svanheule.net>
+---
+This patch was tested on a TP-Link EAP235-Wall, with an MT7621DA SoC.
+The bootloader on this device would leave reset line 2 ("mcm") asserted,
+which caused the internal switch to be unresponsive on an uninterrupted
+boot from flash.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+When tftpboot was used in the bootloader to load an initramfs, it did
+initialise the internal switch, and cleared the mcm reset line. In this
+case the switch could be used from the OS. With this patch applied, the
+switch works both in an initramfs, and when (cold) booting from flash.
 
+ arch/mips/ralink/reset.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/ralink/reset.c b/arch/mips/ralink/reset.c
+index 8126f1260407..274d33078c5e 100644
+--- a/arch/mips/ralink/reset.c
++++ b/arch/mips/ralink/reset.c
+@@ -27,7 +27,7 @@ static int ralink_assert_device(struct reset_controller_dev *rcdev,
+ {
+ 	u32 val;
+ 
+-	if (id < 8)
++	if (id == 0)
+ 		return -1;
+ 
+ 	val = rt_sysc_r32(SYSC_REG_RESET_CTRL);
+@@ -42,7 +42,7 @@ static int ralink_deassert_device(struct reset_controller_dev *rcdev,
+ {
+ 	u32 val;
+ 
+-	if (id < 8)
++	if (id == 0)
+ 		return -1;
+ 
+ 	val = rt_sysc_r32(SYSC_REG_RESET_CTRL);
+-- 
+2.29.2
 

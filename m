@@ -2,68 +2,75 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D26D5C433E0
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Feb 2021 08:41:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74DD7C433DB
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Feb 2021 10:38:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9E3D560234
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Feb 2021 08:41:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 298E364F4E
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Feb 2021 10:38:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234912AbhBDIlL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 4 Feb 2021 03:41:11 -0500
-Received: from verein.lst.de ([213.95.11.211]:54996 "EHLO verein.lst.de"
+        id S235525AbhBDKiL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 4 Feb 2021 05:38:11 -0500
+Received: from elvis.franken.de ([193.175.24.41]:51664 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234897AbhBDIlK (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 4 Feb 2021 03:41:10 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 77E4067373; Thu,  4 Feb 2021 09:40:23 +0100 (CET)
-Date:   Thu, 4 Feb 2021 09:40:23 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Dongli Zhang <dongli.zhang@oracle.com>
-Cc:     dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        iommu@lists.linux-foundation.org, linux-mips@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-pci@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, nouveau@lists.freedesktop.org,
-        x86@kernel.org, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
-        akpm@linux-foundation.org, benh@kernel.crashing.org,
-        bskeggs@redhat.com, bhelgaas@google.com, bp@alien8.de,
-        boris.ostrovsky@oracle.com, hch@lst.de, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, hpa@zytor.com, mingo@kernel.org,
-        mingo@redhat.com, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, jgross@suse.com,
-        konrad.wilk@oracle.com, m.szyprowski@samsung.com,
-        matthew.auld@intel.com, mpe@ellerman.id.au, rppt@kernel.org,
-        paulus@samba.org, peterz@infradead.org, robin.murphy@arm.com,
-        rodrigo.vivi@intel.com, sstabellini@kernel.org,
-        bauerman@linux.ibm.com, tsbogend@alpha.franken.de,
-        tglx@linutronix.de, ulf.hansson@linaro.org, joe.jin@oracle.com,
-        thomas.lendacky@amd.com
-Subject: Re: [PATCH RFC v1 5/6] xen-swiotlb: convert variables to arrays
-Message-ID: <20210204084023.GA32328@lst.de>
-References: <20210203233709.19819-1-dongli.zhang@oracle.com> <20210203233709.19819-6-dongli.zhang@oracle.com>
+        id S235343AbhBDKiI (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 4 Feb 2021 05:38:08 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1l7c0m-0002Oa-00; Thu, 04 Feb 2021 11:37:20 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id DF6BFC0D52; Thu,  4 Feb 2021 11:34:59 +0100 (CET)
+Date:   Thu, 4 Feb 2021 11:34:59 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     ambrosehua@gmail.com, Huang Pei <huangpei@loongson.cn>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Huacai Chen <chenhc@lemote.com>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-arch@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, Li Xuefeng <lixuefeng@loongson.cn>,
+        Bibo Mao <maobibo@loongson.cn>,
+        Paul Burton <paulburton@kernel.org>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Fuxin Zhang <zhangfx@lemote.com>
+Subject: Re: [PATCH] MIPS: make userspace mapping young by default
+Message-ID: <20210204103459.GA10558@alpha.franken.de>
+References: <20210204013942.8398-1-huangpei@loongson.cn>
+ <1612409285.q4gi3x2bhk.astroid@bobo.none>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210203233709.19819-6-dongli.zhang@oracle.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <1612409285.q4gi3x2bhk.astroid@bobo.none>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-So one thing that has been on my mind for a while:  I'd really like
-to kill the separate dma ops in Xen swiotlb.  If we compare xen-swiotlb
-to swiotlb the main difference seems to be:
+On Thu, Feb 04, 2021 at 01:29:26PM +1000, Nicholas Piggin wrote:
+> Excerpts from Huang Pei's message of February 4, 2021 11:39 am:
+> > MIPS page fault path(except huge page) takes 3 exceptions (1 TLB Miss
+> > + 2 TLB Invalid), butthe second TLB Invalid exception is just
+> > triggered by __update_tlb from do_page_fault writing tlb without
+> > _PAGE_VALID set. With this patch, user space mapping prot is made
+> > young by default (with both _PAGE_VALID and _PAGE_YOUNG set),
+> > and it only take 1 TLB Miss + 1 TLB Invalid exception
+> > 
+> > Remove pte_sw_mkyoung without polluting MM code and make page fault
+> > delay of MIPS on par with other architecture
+> > 
+> > Signed-off-by: Huang Pei <huangpei@loongson.cn>
+> 
+> Could we merge this? For the core code,
 
- - additional reasons to bounce I/O vs the plain DMA capable
- - the possibility to do a hypercall on arm/arm64
- - an extra translation layer before doing the phys_to_dma and vice
-   versa
- - an special memory allocator
+sure, but IMHO I should only merge the MIPS part, correct ?
 
-I wonder if inbetween a few jump labels or other no overhead enablement
-options and possibly better use of the dma_range_map we could kill
-off most of swiotlb-xen instead of maintaining all this code duplication?
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

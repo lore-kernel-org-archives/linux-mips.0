@@ -2,110 +2,178 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84608C433DB
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Feb 2021 14:15:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F372C433E0
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Feb 2021 15:32:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4B1CB64F51
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Feb 2021 14:15:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3F6E964F44
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Feb 2021 15:32:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236381AbhBDOPB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 4 Feb 2021 09:15:01 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:17018 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236558AbhBDOA1 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 Feb 2021 09:00:27 -0500
-Date:   Thu, 04 Feb 2021 13:59:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1612447179; bh=rmmBjANsrPQKuDrbBEFPqO9DZ+qrmSLUVcFP//W9JMY=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=mm4htUZOTZY1dDsuJF1AVE430nlfigwx7F231kg4S+Hg6lHSY1F5qiZWEoGiPvTit
-         JXvjOW5G4pscwjHm579c3AGSBDnzGbCFuh2HOsAjcue3g3IcNEgmB7tFrfO2asqH4w
-         SXTEp3dp4+jyr/0Yax/7MlLHnDr2dTun1UbYvLRgJX8X10yS1c+yn2ZbheZ+bdgcKJ
-         ohoBqgUCFZlW6Zhc2nQSsav/jgXiguAvQ/qRz8ufEDk66knTaNF1jN779Cb+XwQeT5
-         9cvE5+LAanB9sqWoqN76zPSmtg9V3SMG9utUqhmSp3L5kLZ8CrNCKKfR52bYxw4gq7
-         SNuiLH9yN2OBA==
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     James Hartley <james.hartley@sondrel.com>,
-        bibo mao <maobibo@loongson.cn>,
-        Alexander Lobakin <alobakin@pm.me>,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH mips-next] MIPS: pistachio: remove obsolete include/asm/mach-pistachio
-Message-ID: <20210204135902.10361-1-alobakin@pm.me>
+        id S237161AbhBDPcq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 4 Feb 2021 10:32:46 -0500
+Received: from elvis.franken.de ([193.175.24.41]:52299 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237307AbhBDPXy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 4 Feb 2021 10:23:54 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1l7gTM-0005ko-00; Thu, 04 Feb 2021 16:23:08 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id C994EC0D54; Thu,  4 Feb 2021 16:22:39 +0100 (CET)
+Date:   Thu, 4 Feb 2021 16:22:39 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Huang Pei <huangpei@loongson.cn>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     ambrosehua@gmail.com, Bibo Mao <maobibo@loongson.cn>,
+        linux-mips@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Fuxin Zhang <zhangfx@lemote.com>,
+        Huacai Chen <chenhc@lemote.com>
+Subject: Re: [PATCH] MIPS: make userspace mapping young by default
+Message-ID: <20210204152239.GA14292@alpha.franken.de>
+References: <20210204013942.8398-1-huangpei@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204013942.8398-1-huangpei@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Since commit 02bd530f888c ("MIPS: generic: Increase NR_IRQS to 256")
-include/asm/mach-pistachio/irq.h just does nothing.
-Remove the file along with mach-pistachio folder and include compiler
-directive.
+On Thu, Feb 04, 2021 at 09:39:42AM +0800, Huang Pei wrote:
+> MIPS page fault path(except huge page) takes 3 exceptions (1 TLB Miss
+> + 2 TLB Invalid), butthe second TLB Invalid exception is just
+> triggered by __update_tlb from do_page_fault writing tlb without
+> _PAGE_VALID set. With this patch, user space mapping prot is made
+> young by default (with both _PAGE_VALID and _PAGE_YOUNG set),
+> and it only take 1 TLB Miss + 1 TLB Invalid exception
+> 
+> Remove pte_sw_mkyoung without polluting MM code and make page fault
+> delay of MIPS on par with other architecture
+> 
+> Signed-off-by: Huang Pei <huangpei@loongson.cn>
+> ---
+>  arch/mips/mm/cache.c    | 30 ++++++++++++++++--------------
+>  include/linux/pgtable.h |  8 --------
+>  mm/memory.c             |  3 ---
+>  3 files changed, 16 insertions(+), 25 deletions(-)
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- MAINTAINERS                                |  1 -
- arch/mips/include/asm/mach-pistachio/irq.h | 15 ---------------
- arch/mips/pistachio/Platform               |  2 --
- 3 files changed, 18 deletions(-)
- delete mode 100644 arch/mips/include/asm/mach-pistachio/irq.h
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6add29cb2060..3e58787907d4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14099,7 +14099,6 @@ L:=09linux-mips@vger.kernel.org
- S:=09Odd Fixes
- F:=09arch/mips/boot/dts/img/pistachio*
- F:=09arch/mips/configs/pistachio*_defconfig
--F:=09arch/mips/include/asm/mach-pistachio/
- F:=09arch/mips/pistachio/
-=20
- PKTCDVD DRIVER
-diff --git a/arch/mips/include/asm/mach-pistachio/irq.h b/arch/mips/include=
-/asm/mach-pistachio/irq.h
-deleted file mode 100644
-index 74ac016503ad..000000000000
---- a/arch/mips/include/asm/mach-pistachio/irq.h
-+++ /dev/null
-@@ -1,15 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * Pistachio IRQ setup
-- *
-- * Copyright (C) 2014 Google, Inc.
-- */
--
--#ifndef __ASM_MACH_PISTACHIO_IRQ_H
--#define __ASM_MACH_PISTACHIO_IRQ_H
--
--#define NR_IRQS 256
--
--#include <asm/mach-generic/irq.h>
--
--#endif /* __ASM_MACH_PISTACHIO_IRQ_H */
-diff --git a/arch/mips/pistachio/Platform b/arch/mips/pistachio/Platform
-index f73a1a929965..c59de86dbddf 100644
---- a/arch/mips/pistachio/Platform
-+++ b/arch/mips/pistachio/Platform
-@@ -1,8 +1,6 @@
- #
- # IMG Pistachio SoC
- #
--cflags-$(CONFIG_MACH_PISTACHIO)=09=09+=3D=09=09=09=09\
--=09=09-I$(srctree)/arch/mips/include/asm/mach-pistachio
- load-$(CONFIG_MACH_PISTACHIO)=09=09+=3D 0xffffffff80400000
- zload-$(CONFIG_MACH_PISTACHIO)=09=09+=3D 0xffffffff81000000
- all-$(CONFIG_MACH_PISTACHIO)=09=09:=3D uImage.gz
---=20
-2.30.0
+Andrew, can you take this patch through your tree ?
 
+Thomas.
 
+> 
+> diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
+> index 23b16bfd97b2..e19cf424bb39 100644
+> --- a/arch/mips/mm/cache.c
+> +++ b/arch/mips/mm/cache.c
+> @@ -156,29 +156,31 @@ unsigned long _page_cachable_default;
+>  EXPORT_SYMBOL(_page_cachable_default);
+>  
+>  #define PM(p)	__pgprot(_page_cachable_default | (p))
+> +#define PVA(p)	PM(_PAGE_VALID | _PAGE_ACCESSED | (p))
+>  
+>  static inline void setup_protection_map(void)
+>  {
+>  	protection_map[0]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+> -	protection_map[1]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
+> -	protection_map[2]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+> -	protection_map[3]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
+> -	protection_map[4]  = PM(_PAGE_PRESENT);
+> -	protection_map[5]  = PM(_PAGE_PRESENT);
+> -	protection_map[6]  = PM(_PAGE_PRESENT);
+> -	protection_map[7]  = PM(_PAGE_PRESENT);
+> +	protection_map[1]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
+> +	protection_map[2]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+> +	protection_map[3]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
+> +	protection_map[4]  = PVA(_PAGE_PRESENT);
+> +	protection_map[5]  = PVA(_PAGE_PRESENT);
+> +	protection_map[6]  = PVA(_PAGE_PRESENT);
+> +	protection_map[7]  = PVA(_PAGE_PRESENT);
+>  
+>  	protection_map[8]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+> -	protection_map[9]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
+> -	protection_map[10] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
+> +	protection_map[9]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
+> +	protection_map[10] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
+>  				_PAGE_NO_READ);
+> -	protection_map[11] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
+> -	protection_map[12] = PM(_PAGE_PRESENT);
+> -	protection_map[13] = PM(_PAGE_PRESENT);
+> -	protection_map[14] = PM(_PAGE_PRESENT | _PAGE_WRITE);
+> -	protection_map[15] = PM(_PAGE_PRESENT | _PAGE_WRITE);
+> +	protection_map[11] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
+> +	protection_map[12] = PVA(_PAGE_PRESENT);
+> +	protection_map[13] = PVA(_PAGE_PRESENT);
+> +	protection_map[14] = PVA(_PAGE_PRESENT);
+> +	protection_map[15] = PVA(_PAGE_PRESENT);
+>  }
+>  
+> +#undef _PVA
+>  #undef PM
+>  
+>  void cpu_cache_init(void)
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index 8fcdfa52eb4b..8c042627399a 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -432,14 +432,6 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addres
+>   * To be differentiate with macro pte_mkyoung, this macro is used on platforms
+>   * where software maintains page access bit.
+>   */
+> -#ifndef pte_sw_mkyoung
+> -static inline pte_t pte_sw_mkyoung(pte_t pte)
+> -{
+> -	return pte;
+> -}
+> -#define pte_sw_mkyoung	pte_sw_mkyoung
+> -#endif
+> -
+>  #ifndef pte_savedwrite
+>  #define pte_savedwrite pte_write
+>  #endif
+> diff --git a/mm/memory.c b/mm/memory.c
+> index feff48e1465a..95718a623884 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -2890,7 +2890,6 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
+>  		}
+>  		flush_cache_page(vma, vmf->address, pte_pfn(vmf->orig_pte));
+>  		entry = mk_pte(new_page, vma->vm_page_prot);
+> -		entry = pte_sw_mkyoung(entry);
+>  		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
+>  
+>  		/*
+> @@ -3548,7 +3547,6 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+>  	__SetPageUptodate(page);
+>  
+>  	entry = mk_pte(page, vma->vm_page_prot);
+> -	entry = pte_sw_mkyoung(entry);
+>  	if (vma->vm_flags & VM_WRITE)
+>  		entry = pte_mkwrite(pte_mkdirty(entry));
+>  
+> @@ -3824,7 +3822,6 @@ vm_fault_t alloc_set_pte(struct vm_fault *vmf, struct page *page)
+>  
+>  	flush_icache_page(vma, page);
+>  	entry = mk_pte(page, vma->vm_page_prot);
+> -	entry = pte_sw_mkyoung(entry);
+>  	if (write)
+>  		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
+>  	/* copy-on-write page */
+> -- 
+> 2.17.1
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

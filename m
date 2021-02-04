@@ -2,95 +2,93 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4F3AC433E6
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Feb 2021 21:01:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60641C433E0
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Feb 2021 21:02:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A584064F9D
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Feb 2021 21:01:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1BEA664F10
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Feb 2021 21:02:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbhBDVBO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 4 Feb 2021 16:01:14 -0500
-Received: from elvis.franken.de ([193.175.24.41]:52892 "EHLO elvis.franken.de"
+        id S229832AbhBDVBq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 4 Feb 2021 16:01:46 -0500
+Received: from elvis.franken.de ([193.175.24.41]:52905 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229537AbhBDVBM (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 4 Feb 2021 16:01:12 -0500
+        id S229511AbhBDVBp (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 4 Feb 2021 16:01:45 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l7ljq-0002rO-00; Thu, 04 Feb 2021 22:00:30 +0100
+        id 1l7ljq-0002rO-02; Thu, 04 Feb 2021 22:00:30 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 9AC80C0D5E; Thu,  4 Feb 2021 21:57:33 +0100 (CET)
-Date:   Thu, 4 Feb 2021 21:57:33 +0100
+        id F1755C0D71; Thu,  4 Feb 2021 21:59:45 +0100 (CET)
+Date:   Thu, 4 Feb 2021 21:59:45 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Bert Vermeulen <bert@biot.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sander Vanheule <sander@svanheule.net>,
-        John Crispin <john@phrozen.org>,
-        Birger Koblitz <mail@birger-koblitz.de>
-Subject: Re: [PATCH v4 0/5] Add support for Realtek RTL838x/RTL839x switch
- SoCs
-Message-ID: <20210204205733.GA19460@alpha.franken.de>
-References: <20210119092109.185282-1-bert@biot.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Juxin Gao <gaojuxin@loongson.cn>,
+        David Daney <david.daney@cavium.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Archer Yan <ayan@wavecomp.com>
+Subject: Re: [PATCH v2 1/3] MIPS: kernel: Support extracting off-line stack
+ traces from user-space with perf
+Message-ID: <20210204205945.GC19460@alpha.franken.de>
+References: <1612409724-3516-1-git-send-email-yangtiezhu@loongson.cn>
+ <1612409724-3516-2-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210119092109.185282-1-bert@biot.com>
+In-Reply-To: <1612409724-3516-2-git-send-email-yangtiezhu@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 10:21:04AM +0100, Bert Vermeulen wrote:
-> v4:
-> - Device tree bindings for SoC in separate patch.
-> - Removed ioremap.h, and declare physical address bases in device tree.
+On Thu, Feb 04, 2021 at 11:35:22AM +0800, Tiezhu Yang wrote:
+> Add perf_event_mips_regs/perf_reg_value/perf_reg_validate to support
+> features HAVE_PERF_REGS/HAVE_PERF_USER_STACK_DUMP in kernel.
 > 
-> v3:
-> - all code removed, the base system is now only device tree files and docs
->    and some build config.
-> - ioremap.h restored to the v1 version, with hardcoded I/O ranges, since I
->    got flak on changing that as suggested. This brings it in line with other
->    systems in arch/mips/generic.
+> [ayan@wavecomp.com: Repick this patch for unwinding userstack backtrace
+>  by perf and libunwind on MIPS based CPU.]
 > 
-> v2:
-> - Removed all new arch/mips/ code, using arch/mips/generic/ instead.
-> - Use device tree ranges instead of hardcoded addresses for ioremap.
-> - Moved IRQ driver to drivers/irqchip/
-> - Removed reset handling code, will be replaced by device tree config.
-> - All SoC family id code moved to new soc driver.
-> - Header moved to realtek/ instead of mach-realtek/
-> - As more of the base system now depends on device tree, a sample
->   dts for the Cisco SG220-26 switch is included. This will be further
->   filled out, and bindings documented, as drivers get merged.
+> [ralf@linux-mips.org: Add perf_get_regs_user() which is required after
+> 'commit 88a7c26af8da ("perf: Move task_pt_regs sampling into arch code")'.]
 > 
-> Bert Vermeulen (5):
->   dt-bindings: mips: Add support for RTL83xx SoC series
->   Add support for Realtek RTL838x/RTL839x switch SoCs
->   MIPS: Add Realtek RTL838x/RTL839x support as generic MIPS system
->   dt-bindings: Add Cisco prefix to vendor list
->   mips: dts: Add support for Cisco SG220-26 switch
+> [yangtiezhu@loongson.cn: Fix build error about perf_get_regs_user() after
+> commit 76a4efa80900 ("perf/arch: Remove perf_sample_data::regs_user_copy"),
+> and also separate the original patches into two parts (MIPS kernel and perf
+> tools) to merge easily.]
 > 
->  .../devicetree/bindings/mips/realtek-rtl.yaml | 24 ++++++++
->  .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
->  arch/mips/Kconfig                             | 31 ++++++++++
->  arch/mips/boot/dts/Makefile                   |  1 +
->  arch/mips/boot/dts/realtek/Makefile           |  2 +
->  arch/mips/boot/dts/realtek/cisco_sg220-26.dts | 25 ++++++++
->  arch/mips/boot/dts/realtek/rtl838x.dtsi       | 21 +++++++
->  arch/mips/boot/dts/realtek/rtl83xx.dtsi       | 59 +++++++++++++++++++
->  8 files changed, 165 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mips/realtek-rtl.yaml
->  create mode 100644 arch/mips/boot/dts/realtek/Makefile
->  create mode 100644 arch/mips/boot/dts/realtek/cisco_sg220-26.dts
->  create mode 100644 arch/mips/boot/dts/realtek/rtl838x.dtsi
->  create mode 100644 arch/mips/boot/dts/realtek/rtl83xx.dtsi
+> The original patches:
+> https://lore.kernel.org/patchwork/patch/1126521/
+> https://lore.kernel.org/patchwork/patch/1126520/
+> 
+> Signed-off-by: David Daney <david.daney@cavium.com>
+> Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
+> Signed-off-by: Archer Yan <ayan@wavecomp.com>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+> 
+> v2: add R26 and R27 to the enum perf_event_mips_regs
+> 
+>  arch/mips/Kconfig                      |  2 +
+>  arch/mips/include/uapi/asm/perf_regs.h | 40 ++++++++++++++++++++
+>  arch/mips/kernel/Makefile              |  2 +-
+>  arch/mips/kernel/perf_regs.c           | 68 ++++++++++++++++++++++++++++++++++
+>  4 files changed, 111 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/mips/include/uapi/asm/perf_regs.h
+>  create mode 100644 arch/mips/kernel/perf_regs.c
 
-series applied to mips-next.
+applied to mips-next.
 
 Thomas.
 

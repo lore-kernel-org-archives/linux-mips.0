@@ -5,59 +5,77 @@ X-Spam-Level:
 X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B64C2C433DB
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Feb 2021 21:01:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BAEC1C43381
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Feb 2021 21:01:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6AC0C64FA4
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Feb 2021 21:01:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8CB8C64F10
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Feb 2021 21:01:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229581AbhBDVBN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 4 Feb 2021 16:01:13 -0500
-Received: from elvis.franken.de ([193.175.24.41]:52900 "EHLO elvis.franken.de"
+        id S229813AbhBDVBO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 4 Feb 2021 16:01:14 -0500
+Received: from elvis.franken.de ([193.175.24.41]:52893 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhBDVBM (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S229511AbhBDVBM (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Thu, 4 Feb 2021 16:01:12 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l7ljq-0002rO-03; Thu, 04 Feb 2021 22:00:30 +0100
+        id 1l7ljq-0002rO-01; Thu, 04 Feb 2021 22:00:30 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id E3A3CC0D71; Thu,  4 Feb 2021 22:00:14 +0100 (CET)
-Date:   Thu, 4 Feb 2021 22:00:14 +0100
+        id 4D99BC0D71; Thu,  4 Feb 2021 21:59:13 +0100 (CET)
+Date:   Thu, 4 Feb 2021 21:59:13 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     James Hartley <james.hartley@sondrel.com>,
-        bibo mao <maobibo@loongson.cn>, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH mips-next] MIPS: pistachio: remove obsolete
- include/asm/mach-pistachio
-Message-ID: <20210204210014.GD19460@alpha.franken.de>
-References: <20210204135902.10361-1-alobakin@pm.me>
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sander Vanheule <sander@svanheule.net>,
+        John Crispin <john@phrozen.org>,
+        Birger Koblitz <mail@birger-koblitz.de>
+Subject: Re: [PATCH v4 5/5] mips: dts: Add support for Cisco SG220-26 switch
+Message-ID: <20210204205913.GB19460@alpha.franken.de>
+References: <20210119092109.185282-1-bert@biot.com>
+ <20210119092109.185282-6-bert@biot.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210204135902.10361-1-alobakin@pm.me>
+In-Reply-To: <20210119092109.185282-6-bert@biot.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 01:59:29PM +0000, Alexander Lobakin wrote:
-> Since commit 02bd530f888c ("MIPS: generic: Increase NR_IRQS to 256")
-> include/asm/mach-pistachio/irq.h just does nothing.
-> Remove the file along with mach-pistachio folder and include compiler
-> directive.
-> 
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+On Tue, Jan 19, 2021 at 10:21:09AM +0100, Bert Vermeulen wrote:
+> Signed-off-by: Bert Vermeulen <bert@biot.com>
 > ---
->  MAINTAINERS                                |  1 -
->  arch/mips/include/asm/mach-pistachio/irq.h | 15 ---------------
->  arch/mips/pistachio/Platform               |  2 --
->  3 files changed, 18 deletions(-)
->  delete mode 100644 arch/mips/include/asm/mach-pistachio/irq.h
+>  arch/mips/Kconfig                             | 10 ++++++++
+>  arch/mips/boot/dts/realtek/Makefile           |  2 ++
+>  arch/mips/boot/dts/realtek/cisco_sg220-26.dts | 25 +++++++++++++++++++
+>  3 files changed, 37 insertions(+)
+>  create mode 100644 arch/mips/boot/dts/realtek/Makefile
+>  create mode 100644 arch/mips/boot/dts/realtek/cisco_sg220-26.dts
+> 
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 0986d0c4405f..a398416842ca 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -1055,6 +1055,16 @@ config NLM_XLP_BOARD
+>  
+>  endchoice
+>  
+> +if MACH_REALTEK_RTL
+> +choice
+> +	prompt "Realtek RTL838x/RTL839x-based switch"
+> +	optional
+> +
+> +	config DT_CISCO_SG220_26
+> +		bool "Cisco SG220-26"
+> +endchoice
+> +endif
+> +
 
-applied to mips-next.
+I've dropped that while applying, because it's just one DT so far and if
+there are more of them, please move to arch/mips/realtek/Kconfig
 
 Thomas.
 

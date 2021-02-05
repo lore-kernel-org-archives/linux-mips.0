@@ -7,133 +7,83 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1797C433E0
-	for <linux-mips@archiver.kernel.org>; Fri,  5 Feb 2021 09:37:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C470C433DB
+	for <linux-mips@archiver.kernel.org>; Fri,  5 Feb 2021 10:14:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 84B7E64FB2
-	for <linux-mips@archiver.kernel.org>; Fri,  5 Feb 2021 09:37:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AEDEF64FF0
+	for <linux-mips@archiver.kernel.org>; Fri,  5 Feb 2021 10:14:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhBEJgm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 5 Feb 2021 04:36:42 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:57206 "EHLO loongson.cn"
+        id S230043AbhBEKOZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 5 Feb 2021 05:14:25 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:40700 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230202AbhBEJeY (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:34:24 -0500
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT_MjDh1gETYFAA--.6719S2;
-        Fri, 05 Feb 2021 17:21:40 +0800 (CST)
-From:   Youling Tang <tangyouling@loongson.cn>
+        id S230377AbhBEKMR (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 5 Feb 2021 05:12:17 -0500
+Received: from loongson.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxadXPGR1gjT0FAA--.6705S3;
+        Fri, 05 Feb 2021 18:11:28 +0800 (CST)
+From:   Jinyang He <hejinyang@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tangyouling@loongson.cn
-Subject: [PATCH] MIPS: crash_dump.c: Simplify copy_oldmem_page()
-Date:   Fri,  5 Feb 2021 17:21:39 +0800
-Message-Id: <1612516899-31285-1-git-send-email-tangyouling@loongson.cn>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/2] MIPS: relocatable: Use __kaslr_offset in show_kernel_relocation
+Date:   Fri,  5 Feb 2021 18:11:22 +0800
+Message-Id: <1612519882-16480-2-git-send-email-hejinyang@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxT_MjDh1gETYFAA--.6719S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zr4fAryfuFWrWr1DZrWDurg_yoW8KF1rpr
-        sIk39Fkr45K3WUJwsFvwnFka4rJwn7Ca18GrZrC3W8uw1S9rnFvFykJ3Z2qrWUtry5KF4r
-        AFZ8Gr45Cr4UZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26F4j6r4UJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
-        uwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUgJ5OUUUUU=
-X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+In-Reply-To: <1612519882-16480-1-git-send-email-hejinyang@loongson.cn>
+References: <1612519882-16480-1-git-send-email-hejinyang@loongson.cn>
+X-CM-TRANSID: AQAAf9AxadXPGR1gjT0FAA--.6705S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7XryrAw4kur13GFW5Ar1xuFg_yoWkWwc_G3
+        Z0qw1DGa4rt3yjkwn0vws3XFyj9w15KFWfC3WvqrWYva9xAryj9FWfJrWFgrnxXrZ5Cry3
+        Xr98uFsxKw4IkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbfkYjsxI4VWkKwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
+        IE14v26r18M28IrcIa0xkI8VCY1x0267AKxVWUXVWUCwA2ocxC64kIII0Yj41l84x0c7CE
+        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6x
+        kF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY
+        1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4
+        xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Cr0_Gr1UMcvjeVCF
+        s4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gw1l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
+        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUqF1vDUUUU
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Replace kmap_atomic_pfn() with kmap_local_pfn() which is preemptible and
-can take page faults.
+The type of the VMLINUX_LOAD_ADDRESS macro is the (unsigned long long)
+in 32bits kernel but (unsigned long) in the 64-bit kernel. Although there
+is no error here, avoid using it to calculate kaslr_offset.
 
-Remove the indirection of the dump page and the related cruft which is not
-longer required.
-
-Remove unused or redundant header files.
-
-Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+Signed-off-by: Jinyang He <hejinyang@loongson.cn>
 ---
- arch/mips/kernel/crash_dump.c | 42 ++++++------------------------------------
- 1 file changed, 6 insertions(+), 36 deletions(-)
+ arch/mips/kernel/relocate.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/arch/mips/kernel/crash_dump.c b/arch/mips/kernel/crash_dump.c
-index 01b2bd9..f2eb91c 100644
---- a/arch/mips/kernel/crash_dump.c
-+++ b/arch/mips/kernel/crash_dump.c
-@@ -1,11 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <linux/highmem.h>
--#include <linux/memblock.h>
--#include <linux/crash_dump.h>
--#include <linux/uaccess.h>
--#include <linux/slab.h>
--
--static void *kdump_buf_page;
- 
- /**
-  * copy_oldmem_page - copy one page from "oldmem"
-@@ -19,10 +13,6 @@ static void *kdump_buf_page;
-  *
-  * Copy a page from "oldmem". For this page, there is no pte mapped
-  * in the current kernel.
-- *
-- * Calling copy_to_user() in atomic context is not desirable. Hence first
-- * copying the data to a pre-allocated kernel page and then copying to user
-- * space in non-atomic context.
+diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
+index 95abb9c..52018a3 100644
+--- a/arch/mips/kernel/relocate.c
++++ b/arch/mips/kernel/relocate.c
+@@ -430,13 +430,9 @@ void *__init relocate_kernel(void)
   */
- ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
- 			 size_t csize, unsigned long offset, int userbuf)
-@@ -32,36 +22,16 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
- 	if (!csize)
- 		return 0;
- 
--	vaddr = kmap_atomic_pfn(pfn);
-+	vaddr = kmap_local_pfn(pfn);
- 
- 	if (!userbuf) {
--		memcpy(buf, (vaddr + offset), csize);
--		kunmap_atomic(vaddr);
-+		memcpy(buf, vaddr + offset, csize);
- 	} else {
--		if (!kdump_buf_page) {
--			pr_warn("Kdump: Kdump buffer page not allocated\n");
+ static void show_kernel_relocation(const char *level)
+ {
+-	unsigned long offset;
 -
--			return -EFAULT;
--		}
--		copy_page(kdump_buf_page, vaddr);
--		kunmap_atomic(vaddr);
--		if (copy_to_user(buf, (kdump_buf_page + offset), csize))
--			return -EFAULT;
-+		if (copy_to_user(buf, vaddr + offset, csize))
-+			csize = -EFAULT;
- 	}
- 
--	return csize;
--}
+-	offset = __pa_symbol(_text) - __pa_symbol(VMLINUX_LOAD_ADDRESS);
 -
--static int __init kdump_buf_page_init(void)
--{
--	int ret = 0;
-+	kunmap_local(vaddr);
- 
--	kdump_buf_page = kmalloc(PAGE_SIZE, GFP_KERNEL);
--	if (!kdump_buf_page) {
--		pr_warn("Kdump: Failed to allocate kdump buffer page\n");
--		ret = -ENOMEM;
--	}
--
--	return ret;
-+	return csize;
- }
--arch_initcall(kdump_buf_page_init);
+-	if (IS_ENABLED(CONFIG_RELOCATABLE) && offset > 0) {
++	if (__kaslr_offset > 0) {
+ 		printk(level);
+-		pr_cont("Kernel relocated by 0x%pK\n", (void *)offset);
++		pr_cont("Kernel relocated by 0x%pK\n", (void *)__kaslr_offset);
+ 		pr_cont(" .text @ 0x%pK\n", _text);
+ 		pr_cont(" .data @ 0x%pK\n", _sdata);
+ 		pr_cont(" .bss  @ 0x%pK\n", __bss_start);
 -- 
 2.1.0
 

@@ -7,21 +7,21 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5938C4332B
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 09:36:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 016BEC4332D
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 09:36:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B0CFA64E87
+	by mail.kernel.org (Postfix) with ESMTP id CE71064E75
 	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 09:36:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhBIJfz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 9 Feb 2021 04:35:55 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:34844 "EHLO loongson.cn"
+        id S230116AbhBIJgI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 9 Feb 2021 04:36:08 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:34830 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230261AbhBIJdb (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 9 Feb 2021 04:33:31 -0500
+        id S229824AbhBIJda (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 9 Feb 2021 04:33:30 -0500
 Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxSdSoViJgw40IAA--.11028S7;
-        Tue, 09 Feb 2021 17:32:35 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxSdSoViJgw40IAA--.11028S3;
+        Tue, 09 Feb 2021 17:32:30 +0800 (CST)
 From:   Qing Zhang <zhangqing@loongson.cn>
 To:     Rob Herring <robh+dt@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -32,179 +32,339 @@ Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Xingxing Su <suxingxing@loongson.cn>
-Subject: [PATCH 5/6] irqchip/loongson-liointc: irqchip add 2.0 version.
-Date:   Tue,  9 Feb 2021 17:32:23 +0800
-Message-Id: <20210209093224.7085-6-zhangqing@loongson.cn>
+Subject: [PATCH 1/6] MIPS: Loongson64: DeviceTree for 2K1000
+Date:   Tue,  9 Feb 2021 17:32:19 +0800
+Message-Id: <20210209093224.7085-2-zhangqing@loongson.cn>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210209093224.7085-1-zhangqing@loongson.cn>
 References: <20210209093224.7085-1-zhangqing@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxSdSoViJgw40IAA--.11028S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxWr4kJr17tr1DKFW7Gr1xZrb_yoWruw13pa
-        y8C395KFn8GFy7ur4ftFW8Za4avr1S9rsrWa4fCF17CFnxA3s5Aa1rCF1UAr4fC348JFWY
-        yrWrKa4UGF45C3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUm014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE
-        3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
-        x0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8
-        JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2
-        ka0xkIwI1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
-        6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
-        AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE
-        2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
-        vEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVj
-        vjDU0xZFpf9x0JUT5l8UUUUU=
+X-CM-TRANSID: AQAAf9AxSdSoViJgw40IAA--.11028S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3WFW5Cw4fGrWUAr1rAry5urg_yoW3KFWkpF
+        12kw4DGr48Wr15Cw45JFyqyF1UCa95CF95Ww1DJFW8ArWkK34jvr47tFyrJrn3GrWDXw1I
+        qFZY9ry8KF17Jw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUPG14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
+        8EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
+        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+        IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
+        xKxwCY02Avz4vE14v_GFWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l
+        x2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14
+        v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IY
+        x2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUCVW8JwCI42IY6I8E87
+        Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIF
+        yTuYvjfU8BMKDUUUU
 X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add IO interrupt controller support for Loongson 2k1000, different
-from the 3a series is that 2K1000 has 64 interrupt sources, 0-31
-correspond to the device tree liointc0 device node, and the other
-correspond to liointc1 node.
+Add DeviceTree files for Loongson 2K1000 processor,currently only
+supports single-core boot.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
 Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
 ---
- drivers/irqchip/irq-loongson-liointc.c | 55 +++++++++++++++++++++-----
- 1 file changed, 46 insertions(+), 9 deletions(-)
+ arch/mips/boot/dts/loongson/Makefile          |   1 +
+ .../boot/dts/loongson/loongson64-2k1000.dtsi  | 243 ++++++++++++++++++
+ .../dts/loongson/loongson64_2core_2k1000.dts  |  10 +
+ .../asm/mach-loongson64/builtin_dtbs.h        |   1 +
+ 4 files changed, 255 insertions(+)
+ create mode 100644 arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+ create mode 100644 arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dts
 
-diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
-index 9ed1bc473663..496e73bde597 100644
---- a/drivers/irqchip/irq-loongson-liointc.c
-+++ b/drivers/irqchip/irq-loongson-liointc.c
-@@ -20,6 +20,7 @@
- 
- #define LIOINTC_CHIP_IRQ	32
- #define LIOINTC_NUM_PARENT 4
-+#define LIOINTC_NUM_CORES	4
- 
- #define LIOINTC_INTC_CHIP_START	0x20
- 
-@@ -42,6 +43,7 @@ struct liointc_handler_data {
- struct liointc_priv {
- 	struct irq_chip_generic		*gc;
- 	struct liointc_handler_data	handler[LIOINTC_NUM_PARENT];
-+	void __iomem			*core_isr[LIOINTC_NUM_CORES];
- 	u8				map_cache[LIOINTC_CHIP_IRQ];
- 	bool				has_lpc_irq_errata;
- };
-@@ -51,11 +53,12 @@ static void liointc_chained_handle_irq(struct irq_desc *desc)
- 	struct liointc_handler_data *handler = irq_desc_get_handler_data(desc);
- 	struct irq_chip *chip = irq_desc_get_chip(desc);
- 	struct irq_chip_generic *gc = handler->priv->gc;
-+	int core = get_ebase_cpunum() % LIOINTC_NUM_CORES;
- 	u32 pending;
- 
- 	chained_irq_enter(chip, desc);
- 
--	pending = readl(gc->reg_base + LIOINTC_REG_INTC_STATUS);
-+	pending = readl(handler->priv->core_isr[core]);
- 
- 	if (!pending) {
- 		/* Always blame LPC IRQ if we have that bug */
-@@ -141,6 +144,15 @@ static void liointc_resume(struct irq_chip_generic *gc)
- }
- 
- static const char * const parent_names[] = {"int0", "int1", "int2", "int3"};
-+static const char * const core_reg_names[] = {"isr0", "isr1", "isr2", "isr3"};
+diff --git a/arch/mips/boot/dts/loongson/Makefile b/arch/mips/boot/dts/loongson/Makefile
+index 8fd0efb37423..72267bfda9b4 100644
+--- a/arch/mips/boot/dts/loongson/Makefile
++++ b/arch/mips/boot/dts/loongson/Makefile
+@@ -1,4 +1,5 @@
+ # SPDX_License_Identifier: GPL_2.0
++dtb-$(CONFIG_MACH_LOONGSON64)	+= loongson64_2core_2k1000.dtb
+ dtb-$(CONFIG_MACH_LOONGSON64)	+= loongson64c_4core_ls7a.dtb
+ dtb-$(CONFIG_MACH_LOONGSON64)	+= loongson64c_4core_rs780e.dtb
+ dtb-$(CONFIG_MACH_LOONGSON64)	+= loongson64c_8core_rs780e.dtb
+diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+new file mode 100644
+index 000000000000..fd0e99bfe57b
+--- /dev/null
++++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+@@ -0,0 +1,243 @@
++// SPDX-License-Identifier: GPL-3.0
 +
-+static void __iomem *liointc_get_reg_byname(struct device_node *node,
-+						const char *name)
-+{
-+	int index = of_property_match_string(node, "reg-names", name);
++/dts-v1/;
 +
-+	return of_iomap(node, index);
-+}
++#include <dt-bindings/interrupt-controller/irq.h>
++
++/ {
++	compatible = "loongson,loongson2k1000";
++
++	#address-cells = <2>;
++	#size-cells = <2>;
++
++	cpus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		cpu0: cpu@0 {
++			device_type = "cpu";
++			compatible = "loongson,gs264";
++			reg = <0x0>;
++			#clock-cells = <1>;
++			clocks = <&cpu_clk>;
++		};
++	};
++
++	memory {
++		compatible = "memory";
++		device_type = "memory";
++		reg = <0x00000000 0x00200000 0x00000000 0x0ee00000>, /* 238 MB at 2 MB */
++			<0x00000000 0x20000000 0x00000000 0x1f000000>, /* 496 MB at 512 MB */
++			<0x00000001 0x10000000 0x00000001 0xb0000000>; /* 6912 MB at 4352MB */
++	};
++
++	cpu_clk: cpu_clk {
++		#clock-cells = <0>;
++		compatible = "fixed-clock";
++		clock-frequency = <800000000>;
++	};
++
++	cpuintc: interrupt-controller {
++		#address-cells = <0>;
++		#interrupt-cells = <1>;
++		interrupt-controller;
++		compatible = "mti,cpu-interrupt-controller";
++	};
++
++	package0: bus@10000000 {
++		compatible = "simple-bus";
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges = <0 0x10000000 0 0x10000000 0 0x10000000 /* ioports */
++			0 0x40000000 0 0x40000000 0 0x40000000
++			0xfe 0x00000000 0xfe 0x00000000 0 0x40000000>;
++
++		liointc0: interrupt-controller@1fe11400 {
++			compatible = "loongson,liointc-2.0";
++			reg = <0 0x1fe11400 0 0x40>,
++				<0 0x1fe11040 0 0x8>,
++				<0 0x1fe11140 0 0x8>;
++			reg-names = "main", "isr0", "isr1";
++
++			interrupt-controller;
++			#interrupt-cells = <2>;
++
++			interrupt-parent = <&cpuintc>;
++			interrupts = <2>;
++			interrupt-names = "int0";
++
++			loongson,parent_int_map = <0xffffffff>, /* int0 */
++						<0x00000000>, /* int1 */
++						<0x00000000>, /* int2 */
++						<0x00000000>; /* int3 */
++		};
++
++		liointc1: interrupt-controller@1fe11440 {
++			compatible = "loongson,liointc-2.0";
++			reg = <0 0x1fe11440 0 0x40>,
++				<0 0x1fe11048 0 0x8>,
++				<0 0x1fe11148 0 0x8>;
++			reg-names = "main", "isr0", "isr1";
++
++			interrupt-controller;
++			#interrupt-cells = <2>;
++
++			interrupt-parent = <&cpuintc>;
++			interrupts = <3>;
++			interrupt-names = "int1";
++
++			loongson,parent_int_map = <0x00000000>, /* int0 */
++						<0xffffffff>, /* int1 */
++						<0x00000000>, /* int2 */
++						<0x00000000>; /* int3 */
++		};
++
++		uart0: serial@1fe00000 {
++			compatible = "ns16550a";
++			reg = <0 0x1fe00000 0 0x8>;
++			clock-frequency = <125000000>;
++			interrupt-parent = <&liointc0>;
++			interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
++			no-loopback-test;
++		};
++
++		pci@1a000000 {
++			compatible = "loongson,ls2k-pci";
++			device_type = "pci";
++			#address-cells = <3>;
++			#size-cells = <2>;
++			#interrupt-cells = <2>;
++
++			reg = <0 0x1a000000 0 0x02000000>,
++				<0xfe 0x00000000 0 0x20000000>;
++
++			ranges = <0x01000000 0x0 0x00000000 0x0 0x18000000  0x0 0x00010000>,
++				 <0x02000000 0x0 0x40000000 0x0 0x40000000  0x0 0x40000000>;
++
++			ehci@4,1 {
++				compatible = "pci0014,7a14.0",
++						   "pci0014,7a14",
++						   "pciclass0c0320",
++						   "pciclass0c03";
++
++				reg = <0x2100 0x0 0x0 0x0 0x0>;
++				interrupts = <18 IRQ_TYPE_LEVEL_LOW>;
++				interrupt-parent = <&liointc1>;
++			};
++
++			ehci@4,2 {
++				compatible = "pci0014,7a24.0",
++						   "pci0014,7a24",
++						   "pciclass0c0310",
++						   "pciclass0c03";
++
++				reg = <0x2200 0x0 0x0 0x0 0x0>;
++				interrupts = <17 IRQ_TYPE_LEVEL_LOW>;
++				interrupt-parent = <&liointc1>;
++			};
++
++			sata@8,0 {
++				compatible = "pci0014,7a08.0",
++						   "pci0014,7a08",
++						   "pciclass010601",
++						   "pciclass0106";
++
++				reg = <0x4000 0x0 0x0 0x0 0x0>;
++				interrupts = <19 IRQ_TYPE_LEVEL_LOW>;
++				interrupt-parent = <&liointc0>;
++			};
++
++			pci_bridge@9,0 {
++				compatible = "pci0014,7a19.0",
++						   "pci0014,7a19",
++						   "pciclass060400",
++						   "pciclass0604";
++
++				reg = <0x4800 0x0 0x0 0x0 0x0>;
++				#interrupt-cells = <1>;
++				interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
++				interrupt-parent = <&liointc1>;
++				interrupt-map-mask = <0 0 0 0>;
++				interrupt-map = <0 0 0 0 &liointc1 0 IRQ_TYPE_LEVEL_LOW>;
++				external-facing;
++			};
++
++			pci_bridge@a,0 {
++				compatible = "pci0014,7a19.0",
++						   "pci0014,7a19",
++						   "pciclass060400",
++						   "pciclass0604";
++
++				reg = <0x5000 0x0 0x0 0x0 0x0>;
++				#interrupt-cells = <1>;
++				interrupts = <1 IRQ_TYPE_LEVEL_LOW>;
++				interrupt-parent = <&liointc1>;
++				interrupt-map-mask = <0 0 0 0>;
++				interrupt-map = <0 0 0 0 &liointc1 1 IRQ_TYPE_LEVEL_LOW>;
++				external-facing;
++			};
++
++			pci_bridge@b,0 {
++				compatible = "pci0014,7a19.0",
++						   "pci0014,7a19",
++						   "pciclass060400",
++						   "pciclass0604";
++
++				reg = <0x5800 0x0 0x0 0x0 0x0>;
++				#interrupt-cells = <1>;
++				interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
++				interrupt-parent = <&liointc1>;
++				interrupt-map-mask = <0 0 0 0>;
++				interrupt-map = <0 0 0 0 &liointc1 2 IRQ_TYPE_LEVEL_LOW>;
++				external-facing;
++			};
++
++			pci_bridge@c,0 {
++				compatible = "pci0014,7a19.0",
++						   "pci0014,7a19",
++						   "pciclass060400",
++						   "pciclass0604";
++
++				reg = <0x6000 0x0 0x0 0x0 0x0>;
++				#interrupt-cells = <1>;
++				interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
++				interrupt-parent = <&liointc1>;
++				interrupt-map-mask = <0 0 0 0>;
++				interrupt-map = <0 0 0 0 &liointc1 3 IRQ_TYPE_LEVEL_LOW>;
++				external-facing;
++			};
++
++			pci_bridge@d,0 {
++				compatible = "pci0014,7a19.0",
++						   "pci0014,7a19",
++						   "pciclass060400",
++						   "pciclass0604";
++
++				reg = <0x6800 0x0 0x0 0x0 0x0>;
++				#interrupt-cells = <1>;
++				interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
++				interrupt-parent = <&liointc1>;
++				interrupt-map-mask = <0 0 0 0>;
++				interrupt-map = <0 0 0 0 &liointc1 4 IRQ_TYPE_LEVEL_LOW>;
++				external-facing;
++			};
++
++			pci_bridge@e,0 {
++				compatible = "pci0014,7a19.0",
++						   "pci0014,7a19",
++						   "pciclass060400",
++						   "pciclass0604";
++
++				reg = <0x7000 0x0 0x0 0x0 0x0>;
++				#interrupt-cells = <1>;
++				interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
++				interrupt-parent = <&liointc1>;
++				interrupt-map-mask = <0 0 0 0>;
++				interrupt-map = <0 0 0 0 &liointc1 5 IRQ_TYPE_LEVEL_LOW>;
++				external-facing;
++			};
++
++		};
++	};
++};
++
+diff --git a/arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dts b/arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dts
+new file mode 100644
+index 000000000000..e31d2ee65cd5
+--- /dev/null
++++ b/arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dts
+@@ -0,0 +1,10 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/dts-v1/;
++
++#include "loongson64-2k1000.dtsi"
++
++/ {
++	compatible = "loongson,loongson64-2core-2k1000";
++};
++
+diff --git a/arch/mips/include/asm/mach-loongson64/builtin_dtbs.h b/arch/mips/include/asm/mach-loongson64/builtin_dtbs.h
+index 839410cda621..8be710557bdb 100644
+--- a/arch/mips/include/asm/mach-loongson64/builtin_dtbs.h
++++ b/arch/mips/include/asm/mach-loongson64/builtin_dtbs.h
+@@ -8,6 +8,7 @@
+ #ifndef __ASM_MACH_LOONGSON64_BUILTIN_DTBS_H_
+ #define __ASM_MACH_LOONGSON64_BUILTIN_DTBS_H_
  
- int __init liointc_of_init(struct device_node *node,
- 				struct device_node *parent)
-@@ -159,10 +171,28 @@ int __init liointc_of_init(struct device_node *node,
- 	if (!priv)
- 		return -ENOMEM;
- 
--	base = of_iomap(node, 0);
--	if (!base) {
--		err = -ENODEV;
--		goto out_free_priv;
-+	if (of_device_is_compatible(node, "loongson,liointc-2.0")) {
-+		base = liointc_get_reg_byname(node, "main");
-+		if (!base) {
-+			err = -ENODEV;
-+			goto out_free_priv;
-+		}
-+		for (i = 0; i < LIOINTC_NUM_CORES; i++) {
-+			priv->core_isr[i] =
-+				liointc_get_reg_byname(node, core_reg_names[i]);
-+		}
-+		if (!priv->core_isr[0]) {
-+			err = -ENODEV;
-+			goto out_iounmap_base;
-+		}
-+	} else {
-+		base = of_iomap(node, 0);
-+		if (!base) {
-+			err = -ENODEV;
-+			goto out_free_priv;
-+		}
-+		for (i = 0; i < LIOINTC_NUM_CORES; i++)
-+			priv->core_isr[i] = base + LIOINTC_REG_INTC_STATUS;
- 	}
- 
- 	for (i = 0; i < LIOINTC_NUM_PARENT; i++) {
-@@ -172,7 +202,7 @@ int __init liointc_of_init(struct device_node *node,
- 	}
- 	if (!have_parent) {
- 		err = -ENODEV;
--		goto out_iounmap;
-+		goto out_iounmap_isr;
- 	}
- 
- 	sz = of_property_read_variable_u32_array(node,
-@@ -183,7 +213,7 @@ int __init liointc_of_init(struct device_node *node,
- 	if (sz < 4) {
- 		pr_err("loongson-liointc: No parent_int_map\n");
- 		err = -ENODEV;
--		goto out_iounmap;
-+		goto out_iounmap_isr;
- 	}
- 
- 	for (i = 0; i < LIOINTC_NUM_PARENT; i++)
-@@ -195,7 +225,7 @@ int __init liointc_of_init(struct device_node *node,
- 	if (!domain) {
- 		pr_err("loongson-liointc: cannot add IRQ domain\n");
- 		err = -EINVAL;
--		goto out_iounmap;
-+		goto out_iounmap_isr;
- 	}
- 
- 	err = irq_alloc_domain_generic_chips(domain, 32, 1,
-@@ -260,7 +290,13 @@ int __init liointc_of_init(struct device_node *node,
- 
- out_free_domain:
- 	irq_domain_remove(domain);
--out_iounmap:
-+out_iounmap_isr:
-+	for (i = 0; i < LIOINTC_NUM_CORES; i++) {
-+		if (!priv->core_isr[i])
-+			continue;
-+		iounmap(priv->core_isr[i]);
-+	}
-+out_iounmap_base:
- 	iounmap(base);
- out_free_priv:
- 	kfree(priv);
-@@ -270,3 +306,4 @@ int __init liointc_of_init(struct device_node *node,
- 
- IRQCHIP_DECLARE(loongson_liointc_1_0, "loongson,liointc-1.0", liointc_of_init);
- IRQCHIP_DECLARE(loongson_liointc_1_0a, "loongson,liointc-1.0a", liointc_of_init);
-+IRQCHIP_DECLARE(loongson_liointc_2_0, "loongson,liointc-2.0", liointc_of_init);
++extern u32 __dtb_loongson64_2core_2k1000_begin[];
+ extern u32 __dtb_loongson64c_4core_ls7a_begin[];
+ extern u32 __dtb_loongson64c_4core_rs780e_begin[];
+ extern u32 __dtb_loongson64c_8core_rs780e_begin[];
 -- 
 2.20.1
 

@@ -2,92 +2,62 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98E06C433DB
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 12:40:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2633C433E6
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 12:40:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 69F1864E50
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 12:40:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C45A164E50
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 12:40:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbhBIMkb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 9 Feb 2021 07:40:31 -0500
-Received: from elvis.franken.de ([193.175.24.41]:36515 "EHLO elvis.franken.de"
+        id S230090AbhBIMke (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 9 Feb 2021 07:40:34 -0500
+Received: from elvis.franken.de ([193.175.24.41]:36514 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230222AbhBIMj6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:39:58 -0500
+        id S230217AbhBIMj7 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:39:59 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l9SIV-0003IE-00; Tue, 09 Feb 2021 13:39:15 +0100
+        id 1l9SIV-0003IE-04; Tue, 09 Feb 2021 13:39:15 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 980DAC0DB9; Tue,  9 Feb 2021 13:11:24 +0100 (CET)
-Date:   Tue, 9 Feb 2021 13:11:24 +0100
+        id 02E75C0DBF; Tue,  9 Feb 2021 13:37:46 +0100 (CET)
+Date:   Tue, 9 Feb 2021 13:37:46 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH v2] MIPS: Make check condition for SDBBP consistent with
- EJTAG spec
-Message-ID: <20210209121124.GA11134@alpha.franken.de>
-References: <1612847125-3141-1-git-send-email-yangtiezhu@loongson.cn>
+To:     Jinyang He <hejinyang@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: process: Fix no previous prototype warning
+Message-ID: <20210209123746.GD11264@alpha.franken.de>
+References: <1612687956-28075-1-git-send-email-hejinyang@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1612847125-3141-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1612687956-28075-1-git-send-email-hejinyang@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 01:05:25PM +0800, Tiezhu Yang wrote:
-> According to MIPS EJTAG Specification [1], a Debug Breakpoint
-> exception occurs when an SDBBP instruction is executed, the
-> CP0_DEBUG bit DBp indicates that a Debug Breakpoint exception
-> occurred, just check bit DBp for SDBBP is more accurate.
+On Sun, Feb 07, 2021 at 04:52:36PM +0800, Jinyang He wrote:
+> unwind_stack_by_address and unwind_stack need <asm/stacktrace.h>.
+> arch_align_stack needs <asm/exec.h>
 > 
-> [1] http://www.t-es-t.hu/download/mips/md00047f.pdf
-> 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
-> 
-> v2: add MIPS_DEBUG_DBP definition
-> 
->  arch/mips/include/asm/mipsregs.h | 4 ++++
->  arch/mips/kernel/genex.S         | 4 ++--
->  2 files changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-> index a0e8ae5..9c8099a 100644
-> --- a/arch/mips/include/asm/mipsregs.h
-> +++ b/arch/mips/include/asm/mipsregs.h
-> @@ -1085,6 +1085,10 @@
->  #define CVMVMCONF_RMMUSIZEM1_S	0
->  #define CVMVMCONF_RMMUSIZEM1	(_U64CAST_(0xff) << CVMVMCONF_RMMUSIZEM1_S)
->  
-> +/* Debug register field definitions */
-> +#define MIPS_DEBUG_DBP_SHIFT	1
-> +#define MIPS_DEBUG_DBP		(_ULCAST_(1) << MIPS_DEBUG_DBP_SHIFT)
-> +
->  /*
->   * Coprocessor 1 (FPU) register names
->   */
-> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
-> index bcce32a..743d759 100644
-> --- a/arch/mips/kernel/genex.S
-> +++ b/arch/mips/kernel/genex.S
-> @@ -349,8 +349,8 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
->  	MTC0	k0, CP0_DESAVE
->  	mfc0	k0, CP0_DEBUG
->  
-> -	sll	k0, k0, 30	# Check for SDBBP.
-> -	bgez	k0, ejtag_return
-> +	andi	k0, k0, MIPS_DEBUG_DBP	# Check for SDBBP.
-> +	beqz	k0, ejtag_return
+> link: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/ZPL2RRA6RZKRQZI5IGOVLFXN2GVZBN3L/
+> Fixes: ("MIPS: process: Remove unnecessary headers inclusion")
 
-IMHO both implementations are doing the same thing.
+this Fixes is broken, it's missing a git hash. But there is no reason
+for a fixes tag, because it "only" removed a warning, but doesn't fix
+a bug. So I've removed it while applying the patch.
+
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+> ---
+>  arch/mips/kernel/process.c | 2 ++
+>  1 file changed, 2 insertions(+)
+
+applied to mips-next.
 
 Thomas.
 

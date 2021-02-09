@@ -2,61 +2,84 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 715AFC433E6
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 11:25:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E999C433DB
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 12:40:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1D93864E8B
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 11:25:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 30A4A64EB4
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 12:40:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229581AbhBILZd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 9 Feb 2021 06:25:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbhBILYT (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 9 Feb 2021 06:24:19 -0500
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A4908C061794;
-        Tue,  9 Feb 2021 03:23:19 -0800 (PST)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 053939200B4; Tue,  9 Feb 2021 12:23:11 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id F37559200B3;
-        Tue,  9 Feb 2021 12:23:11 +0100 (CET)
-Date:   Tue, 9 Feb 2021 12:23:11 +0100 (CET)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Christoph Hellwig <hch@lst.de>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org
-Subject: Re: [PATCH 5/6] driver core: lift dma_default_coherent into common
- code
-In-Reply-To: <20210208161043.GA14083@lst.de>
-Message-ID: <alpine.DEB.2.21.2102091213070.35623@angie.orcam.me.uk>
-References: <20210208145024.3320420-1-hch@lst.de> <20210208145024.3320420-6-hch@lst.de> <alpine.DEB.2.21.2102081654060.35623@angie.orcam.me.uk> <20210208161043.GA14083@lst.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S229783AbhBIMka (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 9 Feb 2021 07:40:30 -0500
+Received: from elvis.franken.de ([193.175.24.41]:36506 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229601AbhBIMj5 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:39:57 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1l9SIV-0003IE-06; Tue, 09 Feb 2021 13:39:15 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 24C2EC0DBF; Tue,  9 Feb 2021 13:38:34 +0100 (CET)
+Date:   Tue, 9 Feb 2021 13:38:34 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Paul Burton <paulburton@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "mips: Manually call fdt_init_reserved_mem()
+ method"
+Message-ID: <20210209123834.GF11264@alpha.franken.de>
+References: <20210208134614.5585-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210208134614.5585-1-Sergey.Semin@baikalelectronics.ru>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, 8 Feb 2021, Christoph Hellwig wrote:
-
-> >  Do you need to have this verified anyhow?  I only have a non-coherent 5Kc 
-> > Malta though.
+On Mon, Feb 08, 2021 at 04:46:14PM +0300, Serge Semin wrote:
+> This reverts commit 3751cbda8f223549d7ea28803cbec8ac87e43ed2.
 > 
-> If you get a chance to test this logic, that would be great.
+> Originally the patch was created to fix the reserved-memory DT-node
+> parsing failure on the early stages of the platform memory initialization.
+> That happened due to the two early memory allocators utilization that
+> time: bootmem and memblock. At first the platform-specific memory mapping
+> array was initialized. Then the early_init_fdt_scan_reserved_mem() was
+> called, which couldn't fully parse the "reserved-memory" DT-node since
+> neither memblock nor bootmem allocators hadn't been initialized at that
+> stage, so the fdt_init_reserved_mem() method failed on the memory
+> allocation calls. Only after that the platform-specific memory mapping
+> were used to create proper bootmem and memblock structures and let the
+> early memory allocations work.  That's why we had to call the
+> fdt_init_reserved_mem() method one more time to retry the initialization
+> of the features like CMA.
+> 
+> The necessity to have that fix was disappeared after the full memblock
+> support had been added to the MIPS kernel and all plat_mem_setup() had
+> been fixed to add the memory regions right into the memblock memory pool.
+> Let's revert that patch then especially after having Paul reported that
+> the second fdt_init_reserved_mem() call causes the reserved memory pool
+> being created twice bigger than implied.
+> 
+> Fixes: a94e4f24ec83 ("MIPS: init: Drop boot_mem_map")
+> Reported-by: Paul Cercueil <paul@crapouillou.net>
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> ---
+>  arch/mips/kernel/setup.c | 3 ---
+>  1 file changed, 3 deletions(-)
 
- I'll try to give it a hit in the next few days then.  Installed in my 
-Malta I have a DEFPA, which is about as serious a DMA user as a piece of 
-classic PCI hardware could be.  I need to debug the issue of another DEFPA 
-not working with my POWER9 system, possibly due to an IOMMU handling bug 
-(hopefully not broken host hardware), so I'll take the opportunity and do 
-it all at once.
+applied to mips-next.
 
-  Maciej
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

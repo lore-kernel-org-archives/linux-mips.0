@@ -2,60 +2,80 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE3CDC433E0
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 12:40:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AE18C433E9
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 12:40:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BAFF664EB1
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 12:40:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4361B64EB1
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 12:40:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhBIMki (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 9 Feb 2021 07:40:38 -0500
-Received: from elvis.franken.de ([193.175.24.41]:36516 "EHLO elvis.franken.de"
+        id S230262AbhBIMkk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 9 Feb 2021 07:40:40 -0500
+Received: from elvis.franken.de ([193.175.24.41]:36528 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230223AbhBIMj7 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S230228AbhBIMj7 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Tue, 9 Feb 2021 07:39:59 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l9SIV-0003IE-01; Tue, 09 Feb 2021 13:39:15 +0100
+        id 1l9SIV-0003IE-05; Tue, 09 Feb 2021 13:39:15 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id CB415C0DBF; Tue,  9 Feb 2021 13:34:40 +0100 (CET)
-Date:   Tue, 9 Feb 2021 13:34:40 +0100
+        id 37F2FC0DBF; Tue,  9 Feb 2021 13:38:17 +0100 (CET)
+Date:   Tue, 9 Feb 2021 13:38:17 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jinyang He <hejinyang@loongson.cn>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Youling Tang <tangyouling@loongson.cn>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] MIPS: relocatable: Provide kaslr_offset() to get
- the kernel offset
-Message-ID: <20210209123440.GA11264@alpha.franken.de>
-References: <1612519882-16480-1-git-send-email-hejinyang@loongson.cn>
+        Xingxing Su <suxingxing@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Hassan Naveed <hnaveed@wavecomp.com>,
+        linux-mips@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH mips-fixes] MIPS: compressed: fix build with enabled UBSAN
+Message-ID: <20210209123817.GE11264@alpha.franken.de>
+References: <20210208123645.101354-1-alobakin@pm.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1612519882-16480-1-git-send-email-hejinyang@loongson.cn>
+In-Reply-To: <20210208123645.101354-1-alobakin@pm.me>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 06:11:21PM +0800, Jinyang He wrote:
-> Provide kaslr_offset() to get the kernel offset when KASLR is enabled.
-> Error may occur before update_kaslr_offset(), so put it at the end of
-> the offset branch.
+On Mon, Feb 08, 2021 at 12:37:42PM +0000, Alexander Lobakin wrote:
+> Commit 1e35918ad9d1 ("MIPS: Enable Undefined Behavior Sanitizer
+> UBSAN") added a possibility to build the entire kernel with UBSAN
+> instrumentation for MIPS, with the exception for VDSO.
+> However, self-extracting head wasn't been added to exceptions, so
+> this occurs:
 > 
-> Fixes: a307a4ce9ecd ("MIPS: Loongson64: Add KASLR support")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+> mips-alpine-linux-musl-ld: arch/mips/boot/compressed/decompress.o:
+> in function `FSE_buildDTable_wksp':
+> decompress.c:(.text.FSE_buildDTable_wksp+0x278): undefined reference
+> to `__ubsan_handle_shift_out_of_bounds'
+> mips-alpine-linux-musl-ld: decompress.c:(.text.FSE_buildDTable_wksp+0x2a8):
+> undefined reference to `__ubsan_handle_shift_out_of_bounds'
+> mips-alpine-linux-musl-ld: decompress.c:(.text.FSE_buildDTable_wksp+0x2c4):
+> undefined reference to `__ubsan_handle_shift_out_of_bounds'
+> mips-alpine-linux-musl-ld: arch/mips/boot/compressed/decompress.o:
+> decompress.c:(.text.FSE_buildDTable_raw+0x9c): more undefined references
+> to `__ubsan_handle_shift_out_of_bounds' follow
+> 
+> Add UBSAN_SANITIZE := n to mips/boot/compressed/Makefile to exclude
+> it from instrumentation scope and fix this issue.
+> 
+> Fixes: 1e35918ad9d1 ("MIPS: Enable Undefined Behavior Sanitizer UBSAN")
+> Cc: stable@vger.kernel.org # 5.0+
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 > ---
->  arch/mips/include/asm/page.h |  6 ++++++
->  arch/mips/kernel/relocate.c  | 10 ++++++++++
->  arch/mips/kernel/setup.c     |  3 +++
->  3 files changed, 19 insertions(+)
+>  arch/mips/boot/compressed/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
 
 applied to mips-next.
 

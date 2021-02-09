@@ -2,81 +2,92 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E999C433DB
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 12:40:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98E06C433DB
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 12:40:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 30A4A64EB4
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 12:40:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 69F1864E50
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 12:40:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbhBIMka (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 9 Feb 2021 07:40:30 -0500
-Received: from elvis.franken.de ([193.175.24.41]:36506 "EHLO elvis.franken.de"
+        id S230006AbhBIMkb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 9 Feb 2021 07:40:31 -0500
+Received: from elvis.franken.de ([193.175.24.41]:36515 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229601AbhBIMj5 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 9 Feb 2021 07:39:57 -0500
+        id S230222AbhBIMj6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 9 Feb 2021 07:39:58 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l9SIV-0003IE-06; Tue, 09 Feb 2021 13:39:15 +0100
+        id 1l9SIV-0003IE-00; Tue, 09 Feb 2021 13:39:15 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 24C2EC0DBF; Tue,  9 Feb 2021 13:38:34 +0100 (CET)
-Date:   Tue, 9 Feb 2021 13:38:34 +0100
+        id 980DAC0DB9; Tue,  9 Feb 2021 13:11:24 +0100 (CET)
+Date:   Tue, 9 Feb 2021 13:11:24 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Paul Burton <paulburton@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "mips: Manually call fdt_init_reserved_mem()
- method"
-Message-ID: <20210209123834.GF11264@alpha.franken.de>
-References: <20210208134614.5585-1-Sergey.Semin@baikalelectronics.ru>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v2] MIPS: Make check condition for SDBBP consistent with
+ EJTAG spec
+Message-ID: <20210209121124.GA11134@alpha.franken.de>
+References: <1612847125-3141-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210208134614.5585-1-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <1612847125-3141-1-git-send-email-yangtiezhu@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 04:46:14PM +0300, Serge Semin wrote:
-> This reverts commit 3751cbda8f223549d7ea28803cbec8ac87e43ed2.
+On Tue, Feb 09, 2021 at 01:05:25PM +0800, Tiezhu Yang wrote:
+> According to MIPS EJTAG Specification [1], a Debug Breakpoint
+> exception occurs when an SDBBP instruction is executed, the
+> CP0_DEBUG bit DBp indicates that a Debug Breakpoint exception
+> occurred, just check bit DBp for SDBBP is more accurate.
 > 
-> Originally the patch was created to fix the reserved-memory DT-node
-> parsing failure on the early stages of the platform memory initialization.
-> That happened due to the two early memory allocators utilization that
-> time: bootmem and memblock. At first the platform-specific memory mapping
-> array was initialized. Then the early_init_fdt_scan_reserved_mem() was
-> called, which couldn't fully parse the "reserved-memory" DT-node since
-> neither memblock nor bootmem allocators hadn't been initialized at that
-> stage, so the fdt_init_reserved_mem() method failed on the memory
-> allocation calls. Only after that the platform-specific memory mapping
-> were used to create proper bootmem and memblock structures and let the
-> early memory allocations work.  That's why we had to call the
-> fdt_init_reserved_mem() method one more time to retry the initialization
-> of the features like CMA.
+> [1] http://www.t-es-t.hu/download/mips/md00047f.pdf
 > 
-> The necessity to have that fix was disappeared after the full memblock
-> support had been added to the MIPS kernel and all plat_mem_setup() had
-> been fixed to add the memory regions right into the memblock memory pool.
-> Let's revert that patch then especially after having Paul reported that
-> the second fdt_init_reserved_mem() call causes the reserved memory pool
-> being created twice bigger than implied.
-> 
-> Fixes: a94e4f24ec83 ("MIPS: init: Drop boot_mem_map")
-> Reported-by: Paul Cercueil <paul@crapouillou.net>
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 > ---
->  arch/mips/kernel/setup.c | 3 ---
->  1 file changed, 3 deletions(-)
+> 
+> v2: add MIPS_DEBUG_DBP definition
+> 
+>  arch/mips/include/asm/mipsregs.h | 4 ++++
+>  arch/mips/kernel/genex.S         | 4 ++--
+>  2 files changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
+> index a0e8ae5..9c8099a 100644
+> --- a/arch/mips/include/asm/mipsregs.h
+> +++ b/arch/mips/include/asm/mipsregs.h
+> @@ -1085,6 +1085,10 @@
+>  #define CVMVMCONF_RMMUSIZEM1_S	0
+>  #define CVMVMCONF_RMMUSIZEM1	(_U64CAST_(0xff) << CVMVMCONF_RMMUSIZEM1_S)
+>  
+> +/* Debug register field definitions */
+> +#define MIPS_DEBUG_DBP_SHIFT	1
+> +#define MIPS_DEBUG_DBP		(_ULCAST_(1) << MIPS_DEBUG_DBP_SHIFT)
+> +
+>  /*
+>   * Coprocessor 1 (FPU) register names
+>   */
+> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+> index bcce32a..743d759 100644
+> --- a/arch/mips/kernel/genex.S
+> +++ b/arch/mips/kernel/genex.S
+> @@ -349,8 +349,8 @@ NESTED(ejtag_debug_handler, PT_SIZE, sp)
+>  	MTC0	k0, CP0_DESAVE
+>  	mfc0	k0, CP0_DEBUG
+>  
+> -	sll	k0, k0, 30	# Check for SDBBP.
+> -	bgez	k0, ejtag_return
+> +	andi	k0, k0, MIPS_DEBUG_DBP	# Check for SDBBP.
+> +	beqz	k0, ejtag_return
 
-applied to mips-next.
+IMHO both implementations are doing the same thing.
 
 Thomas.
 

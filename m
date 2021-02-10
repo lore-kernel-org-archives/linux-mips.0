@@ -2,108 +2,102 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8496BC433DB
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 16:16:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EF82C433DB
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Feb 2021 05:31:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3F60864E99
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Feb 2021 16:16:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C4E6564E45
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Feb 2021 05:31:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbhBIQP7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 9 Feb 2021 11:15:59 -0500
-Received: from elvis.franken.de ([193.175.24.41]:37111 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232412AbhBIQPh (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 9 Feb 2021 11:15:37 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l9VfC-0005wN-00; Tue, 09 Feb 2021 17:14:54 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id AB7E0C0E00; Tue,  9 Feb 2021 17:14:20 +0100 (CET)
-Date:   Tue, 9 Feb 2021 17:14:20 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Jinyang He <hejinyang@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Burton <paulburton@kernel.org>,
-        Jun-Ru Chang <jrjang@realtek.com>
-Subject: Re: [PATCH v2 2/4] MIPS: microMIPS: Fix the judgment of mm_jr16_op
- and mm_jalr_op
-Message-ID: <20210209161420.GA15428@alpha.franken.de>
-References: <1611207098-11381-1-git-send-email-hejinyang@loongson.cn>
- <1611207098-11381-3-git-send-email-hejinyang@loongson.cn>
- <alpine.DEB.2.21.2102072200300.35623@angie.orcam.me.uk>
+        id S231191AbhBJFbF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 10 Feb 2021 00:31:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230043AbhBJFbE (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 10 Feb 2021 00:31:04 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 785EFC061756
+        for <linux-mips@vger.kernel.org>; Tue,  9 Feb 2021 21:30:24 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id y9so1701810ejp.10
+        for <linux-mips@vger.kernel.org>; Tue, 09 Feb 2021 21:30:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=MICJlJ29tnK0OfCyoQ6hy5raS8MLx1t0pMdT44oGdyg=;
+        b=nfbBML/4y70ovJ2kiP9RG4GcxYkTO+D3LyhbGrYmbdYX7rKrIpX6minKQOhPHiNfVf
+         ycrDDxo78Yn4BzEYDPu66bkXO+MyRZ+XJfiIEX6eAmCK7Ubo6u6uU+pkzcufzqcgX5HL
+         jsHZlagsshooCK1KC0HIgZYZkvmlZOsbBwCzbrl/ixW7WlnNGy5dGyqqRgjcUdhVmmkT
+         tCQ0O1OyhgTyBA7T9xH1+ABwCHlABqisavBE7ffDIVSYjpOSJWwFBYTyx6g+uvGHkYsu
+         d1Pecs/8/PGPQC06MBB9T1yLCJZ7/KNGEZXAKroDC1N1+fTESJhsrqouMLi+mC/80Pzs
+         DCWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=MICJlJ29tnK0OfCyoQ6hy5raS8MLx1t0pMdT44oGdyg=;
+        b=aKCw0XoYyrOHOEsLg6J8Gie4vsYHPxlW2OLnow3F07Of8MhjVuMNLSe4h6tKz6cboh
+         oHuBhkj//saVYgU/X+km0jrpVAGuYOE1rugBR/K2R6c2ri1ZVLwxpPNkh4lANG/bmpm4
+         lN74tRzp3Rj1KB3MplGA4Haz3T6qz8NawDPaz0EAU5z0ADeZ67Nrc6RH6Qg9vtGYms49
+         4qdLAwyzevbTr4Eym+qa9ptQ46CSGAFT5KZTwKV1EEBx+IRbksH78YEbGbK9ORjCARkb
+         PhaSJPjDLJr3iSSl1Vo8hJwWzEjD/JHuncEG8Fr2r3EoFW520RwtoEu5Sm3b39mYhgT1
+         6OCg==
+X-Gm-Message-State: AOAM533RtwqjTnp8myvbb5NJ+zXaoNs7Sekr2MaA/Lz6dGlZE+oMcU6A
+        /xwOrvpz6dD+kfnRWUEup0ZuJLUy+U3bAPZ0EMHlzOpeC28TtYRT
+X-Google-Smtp-Source: ABdhPJxEoJqFS1/67jseq2Ryw8nAFmbH3a+Jxs2FDMzSngVK9VYGXMqwMiOfqb1G8wgBu2idtECavM8knM8Y8m+9beE=
+X-Received: by 2002:a17:906:a153:: with SMTP id bu19mr1269611ejb.287.1612935022534;
+ Tue, 09 Feb 2021 21:30:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2102072200300.35623@angie.orcam.me.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 10 Feb 2021 11:00:11 +0530
+Message-ID: <CA+G9fYtkWdeL7-nfXW8+VbaCK7swinU_Ksn67RW4FFD+cx8VYg@mail.gmail.com>
+Subject: [next] [mips] spinlock.h:17:28: error: redefinition of 'queued_spin_unlock'
+To:     linux-mips@vger.kernel.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Cc:     Paul Burton <paul.burton@mips.com>, Will Deacon <will@kernel.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Feb 07, 2021 at 10:31:38PM +0100, Maciej W. Rozycki wrote:
-> On Thu, 21 Jan 2021, Jinyang He wrote:
-> 
-> > mm16_r5_format.rt is 5 bits, so directly judge the value if equal or not.
-> > mm_jalr_op requires 7th to 16th bits. These 10 which bits generated by
-> 
->  The minor opcode extension field is comprised of bits 15:6, not 16:7 as 
-> your description suggests.  Please be accurate with statements.
-> 
-> > shifting u_format.uimmediate by 6 may be affected by sign extension.
-> 
->  Why?  The `uimmediate' bit-field member is unsigned for a reason.  No 
-> sign-extension is made on unsigned data with the right-shift operation.
-> 
-> > Thus, take out the 10 bits for comparison.
-> > 
-> > Without this patch, errors may occur, such as these bits are all ones.
-> 
->  How did you come to this conclusion?
-> 
-> > diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-> > index d737234..74d7fd8 100644
-> > --- a/arch/mips/kernel/process.c
-> > +++ b/arch/mips/kernel/process.c
-> > @@ -292,8 +292,8 @@ static inline int is_jump_ins(union mips_instruction *ip)
-> >  	 * microMIPS is kind of more fun...
-> >  	 */
-> >  	if (mm_insn_16bit(ip->word >> 16)) {
-> > -		if ((ip->mm16_r5_format.opcode == mm_pool16c_op &&
-> > -		    (ip->mm16_r5_format.rt & mm_jr16_op) == mm_jr16_op))
-> > +		if (ip->mm16_r5_format.opcode == mm_pool16c_op &&
-> > +		    ip->mm16_r5_format.rt == mm_jr16_op)
-> >  			return 1;
-> >  		return 0;
-> >  	}
-> 
->  Code style changes should be submitted on their own as separate patches.
-> 
-> > @@ -305,7 +305,7 @@ static inline int is_jump_ins(union mips_instruction *ip)
-> >  	if (ip->r_format.opcode != mm_pool32a_op ||
-> >  			ip->r_format.func != mm_pool32axf_op)
-> >  		return 0;
-> > -	return ((ip->u_format.uimmediate >> 6) & mm_jalr_op) == mm_jalr_op;
-> > +	return ((ip->u_format.uimmediate >> 6) & GENMASK(9, 0)) == mm_jalr_op;
-> 
->  You've now excluded JALR.HB, JALRS, and JALRS.HB instructions.  The mask 
-> was there for a reason.  If you can't be bothered to verify microMIPS 
-> changes say with QEMU, then at the very least please check documentation.  
-> The intent of this code is clear and these instructions are even spelled 
-> out explicitly in the comment at the top.
-> 
->  Thomas, please revert this change as I can see you've already taken it.  
-> It's plain wrong.
+While building Linux next tag 20210209 mips uImage.gz failed with below configs
 
-It's now reverted in mips-next.
+  - mips (cavium_octeon_defconfig) with gcc-8, gcc-9 and gcc-10 - FAILED
+  - mips (malta_defconfig) with gcc-8, gcc-9 and gcc-10 - FAILED
+  - mips (nlm_xlp_defconfig) with gcc-8, gcc-9 and gcc-10 - FAILED
+  - mips (defconfig) with gcc-8, gcc-9 and gcc-10 - FAILED
 
-Thomas.
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=mips
+CROSS_COMPILE=mips-linux-gnu- 'CC=sccache mips-linux-gnu-gcc'
+'HOSTCC=sccache gcc' uImage.gz
+In file included from /include/linux/spinlock.h:90,
+                 from /include/linux/ipc.h:5,
+                 from /include/uapi/linux/sem.h:5,
+                 from /include/linux/sem.h:5,
+                 from /include/linux/compat.h:14,
+                 from /arch/mips/kernel/asm-offsets.c:12:
+/arch/mips/include/asm/spinlock.h:17:28: error: redefinition of
+'queued_spin_unlock'
+   17 | #define queued_spin_unlock queued_spin_unlock
+      |                            ^~~~~~~~~~~~~~~~~~
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+build link,
+https://builds.tuxbuild.com/1oF9lkBAeWM2WvR11O2Yun8ERNT/
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Linaro LKFT
+https://lkft.linaro.org

@@ -2,62 +2,63 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE5BFC433E0
-	for <linux-mips@archiver.kernel.org>; Thu, 11 Feb 2021 10:35:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 120BCC433E9
+	for <linux-mips@archiver.kernel.org>; Thu, 11 Feb 2021 10:35:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A1EF664E8B
-	for <linux-mips@archiver.kernel.org>; Thu, 11 Feb 2021 10:35:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D5D8964E95
+	for <linux-mips@archiver.kernel.org>; Thu, 11 Feb 2021 10:35:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbhBKKen (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 11 Feb 2021 05:34:43 -0500
-Received: from elvis.franken.de ([193.175.24.41]:44670 "EHLO elvis.franken.de"
+        id S229559AbhBKKfC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 11 Feb 2021 05:35:02 -0500
+Received: from elvis.franken.de ([193.175.24.41]:44677 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230046AbhBKKbm (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S230138AbhBKKbm (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Thu, 11 Feb 2021 05:31:42 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lA9FS-0005LQ-03; Thu, 11 Feb 2021 11:30:58 +0100
+        id 1lA9FS-0005LQ-00; Thu, 11 Feb 2021 11:30:58 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id AA6C0C0E70; Thu, 11 Feb 2021 11:23:14 +0100 (CET)
-Date:   Thu, 11 Feb 2021 11:23:14 +0100
+        id 0D5B9C0E41; Thu, 11 Feb 2021 11:20:08 +0100 (CET)
+Date:   Thu, 11 Feb 2021 11:20:07 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Lauri Kasanen <cand@gmx.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-mips@vger.kernel.org,
-        axboe@kernel.dk, linux-block@vger.kernel.org,
-        Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH v11] block: Add n64 cart driver
-Message-ID: <20210211102314.GD7985@alpha.franken.de>
-References: <20210123095327.58e5ab6c05f38e9080a79bd3@gmx.com>
- <20210123124210.GB458363@infradead.org>
- <20210206192837.5ecec54cc5ac120ade1d5060@gmx.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>,
+        Jinyang He <hejinyang@loongson.cn>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Liangliang Huang <huanglllzu@gmail.com>,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH] mips: Replace lkml.org links with lore
+Message-ID: <20210211102007.GA7985@alpha.franken.de>
+References: <20210210235025.3072842-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210206192837.5ecec54cc5ac120ade1d5060@gmx.com>
+In-Reply-To: <20210210235025.3072842-1-keescook@chromium.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Feb 06, 2021 at 07:28:37PM +0200, Lauri Kasanen wrote:
-> On Sat, 23 Jan 2021 12:42:10 +0000
-> Christoph Hellwig <hch@infradead.org> wrote:
+On Wed, Feb 10, 2021 at 03:50:25PM -0800, Kees Cook wrote:
+> As started by commit 05a5f51ca566 ("Documentation: Replace lkml.org
+> links with lore"), replace lkml.org links with lore to better use a
+> single source that's more likely to stay available long-term.
 > 
-> > Looks good,
-> >
-> > Reviewed-by: Christoph Hellwig <hch@lst.de>
-> 
-> Hi,
-> 
-> Ping on this patch. Thomas, do you want to pick it up?
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+> This patch may make more sense if this entire comment and the related
+> code is fixed instead (gcc 3.x has been quite retired...)
+> ---
+>  arch/mips/include/asm/page.h | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
 
-well that's up to the block maintainer. I'm open to take it
-trhough mips-next, but then I need an acked-by for it.
+applied to mips-next.
 
 Thomas.
 

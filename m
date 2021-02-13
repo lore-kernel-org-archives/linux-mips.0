@@ -2,132 +2,63 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88DEFC433DB
-	for <linux-mips@archiver.kernel.org>; Sat, 13 Feb 2021 09:22:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 890C5C433DB
+	for <linux-mips@archiver.kernel.org>; Sat, 13 Feb 2021 14:03:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 502FB64DFF
-	for <linux-mips@archiver.kernel.org>; Sat, 13 Feb 2021 09:22:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4A6E664DBA
+	for <linux-mips@archiver.kernel.org>; Sat, 13 Feb 2021 14:03:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbhBMJVI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 13 Feb 2021 04:21:08 -0500
-Received: from elvis.franken.de ([193.175.24.41]:52753 "EHLO elvis.franken.de"
+        id S229693AbhBMODY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 13 Feb 2021 09:03:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43440 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229671AbhBMJVF (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 13 Feb 2021 04:21:05 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lAr4j-0003E3-00; Sat, 13 Feb 2021 10:18:49 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 789BCC02AC; Sat, 13 Feb 2021 10:05:22 +0100 (CET)
-Date:   Sat, 13 Feb 2021 10:05:22 +0100
+        id S229672AbhBMODX (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 13 Feb 2021 09:03:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6100FAE19;
+        Sat, 13 Feb 2021 14:02:40 +0000 (UTC)
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <kernelpatch@126.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        kernel test robot <lkp@intel.com>,
-        Xingxing Su <suxingxing@loongson.cn>
-Subject: Re: [PATCH v2 RESEND] MIPS: Add basic support for ptrace single step
-Message-ID: <20210213090522.GA4330@alpha.franken.de>
-References: <fb37951.4.177977952f5.Coremail.kernelpatch@126.com>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: kernel: Drop kgdb_call_nmi_hook
+Date:   Sat, 13 Feb 2021 15:02:31 +0100
+Message-Id: <20210213140231.23985-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fb37951.4.177977952f5.Coremail.kernelpatch@126.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 02:20:46AM +0800, Tiezhu Yang wrote:
-> From: Tiezhu Yang <yangtiezhu@loongson.cn>
-> 
-> In the current code, arch_has_single_step() is not defined on MIPS,
-> that means MIPS does not support instruction single-step for user mode.
-> 
-> Delve is a debugger for the Go programming language, the ptrace syscall
-> PtraceSingleStep() failed [1] on MIPS and then the single step function
-> can not work well, we can see that PtraceSingleStep() definition returns
-> ptrace(PTRACE_SINGLESTEP) [2].
-> 
-> So it is necessary to support ptrace single step on MIPS.
-> 
-> At the beginning, we try to use the Debug Single Step exception on the
-> Loongson 3A4000 platform, but it has no effect when set CP0_DEBUG SSt
-> bit, this is because CP0_DEBUG NoSSt bit is 1 which indicates no
-> single-step feature available [3], so this way which is dependent on the
-> hardware is almost impossible.
-> 
-> With further research, we find out there exists a common way used with
-> break instruction in arch/alpha/kernel/ptrace.c, it is workable.
-> 
-> For the above analysis, define arch_has_single_step(), add the common
-> function user_enable_single_step() and user_disable_single_step(), set
-> flag TIF_SINGLESTEP for child process, use break instruction to set
-> breakpoint.
-> 
-> We can use the following testcase to test it:
-> tools/testing/selftests/breakpoints/step_after_suspend_test.c
-> 
->  $ make -C tools/testing/selftests TARGETS=breakpoints
->  $ cd tools/testing/selftests/breakpoints
-> 
-> Without this patch:
-> 
->  $ ./step_after_suspend_test -n
->  TAP version 13
->  1..4
->  # ptrace(PTRACE_SINGLESTEP) not supported on this architecture: Input/output error
->  ok 1 # SKIP CPU 0
->  # ptrace(PTRACE_SINGLESTEP) not supported on this architecture: Input/output error
->  ok 2 # SKIP CPU 1
->  # ptrace(PTRACE_SINGLESTEP) not supported on this architecture: Input/output error
->  ok 3 # SKIP CPU 2
->  # ptrace(PTRACE_SINGLESTEP) not supported on this architecture: Input/output error
->  ok 4 # SKIP CPU 3
->  # Totals: pass:0 fail:0 xfail:0 xpass:0 skip:4 error:0
-> 
-> With this patch:
-> 
->  $ ./step_after_suspend_test -n
->  TAP version 13
->  1..4
->  ok 1 CPU 0
->  ok 2 CPU 1
->  ok 3 CPU 2
->  ok 4 CPU 3
->  # Totals: pass:4 fail:0 xfail:0 xpass:0 skip:0 error:0
-> 
-> [1] https://github.com/go-delve/delve/blob/master/pkg/proc/native/threads_linux.go#L50
-> [2] https://github.com/go-delve/delve/blob/master/vendor/golang.org/x/sys/unix/syscall_linux.go#L1573
-> [3] http://www.t-es-t.hu/download/mips/md00047f.pdf
-> 
-> Reported-by: Guoqi Chen <chenguoqi@loongson.cn>
-> Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
-> 
-> RESEND due to send to mail list failed, sorry for that.
-> 
-> v2: make union mips_instruction mips_insn = { 0 };
->     to fix uninitialized build warning used with clang
->     reported by kernel test robot.
-> 
->  arch/mips/include/asm/ptrace.h      |   2 +
->  arch/mips/include/asm/thread_info.h |   5 ++
->  arch/mips/kernel/ptrace.c           | 108 ++++++++++++++++++++++++++++++++++++
->  arch/mips/kernel/signal.c           |   2 +-
->  4 files changed, 116 insertions(+), 1 deletion(-)
+With the removal of set_fs() calls kgdb_call_nmi_hook() is now the same as
+the default implementation, so we can remove it.
 
-applied to mips-next.
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ arch/mips/kernel/kgdb.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Thomas.
-
+diff --git a/arch/mips/kernel/kgdb.c b/arch/mips/kernel/kgdb.c
+index de779e23faf2..09a2d7bb9eef 100644
+--- a/arch/mips/kernel/kgdb.c
++++ b/arch/mips/kernel/kgdb.c
+@@ -207,11 +207,6 @@ void arch_kgdb_breakpoint(void)
+ 		".set\treorder");
+ }
+ 
+-void kgdb_call_nmi_hook(void *ignored)
+-{
+-	kgdb_nmicallback(raw_smp_processor_id(), get_irq_regs());
+-}
+-
+ static int compute_signal(int tt)
+ {
+ 	struct hard_trap_info *ht;
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.29.2
+

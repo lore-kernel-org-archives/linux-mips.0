@@ -2,56 +2,106 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94DDEC433E0
-	for <linux-mips@archiver.kernel.org>; Mon, 15 Feb 2021 14:42:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39373C433E0
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Feb 2021 08:56:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5DF5164E26
-	for <linux-mips@archiver.kernel.org>; Mon, 15 Feb 2021 14:42:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E0D4764DF0
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Feb 2021 08:56:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbhBOOmO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 15 Feb 2021 09:42:14 -0500
-Received: from elvis.franken.de ([193.175.24.41]:56950 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229779AbhBOOmM (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 15 Feb 2021 09:42:12 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lBf42-0000J2-00; Mon, 15 Feb 2021 15:41:26 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 0A40BC0344; Mon, 15 Feb 2021 14:19:06 +0100 (CET)
-Date:   Mon, 15 Feb 2021 14:19:05 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: kernel: Drop kgdb_call_nmi_hook
-Message-ID: <20210215131905.GA3307@alpha.franken.de>
-References: <20210213140231.23985-1-tsbogend@alpha.franken.de>
+        id S229771AbhBPI40 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 16 Feb 2021 03:56:26 -0500
+Received: from mail2.protonmail.ch ([185.70.40.22]:64502 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhBPI40 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 16 Feb 2021 03:56:26 -0500
+Date:   Tue, 16 Feb 2021 08:55:25 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1613465743; bh=Z1B3dJxurktF44XrKPp/L6aM/W1WYsFcVWu3eznTvaw=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=XoH45ZIlE9KmzLuba90pWudggzbMSyC/rqULk0uCPZXV91Qj4Nkx45usHN1gE3m9e
+         XnUyQp2RXSVRhiPrrdzDIzTGRQzeof3nTw2deqUyZ2A3mc9H9RcnITfzsGy+3AawHh
+         RwKxVATRQsTcOWC25zFl+UdlexCfH8zgHmjhPpxPa7stDs6FcNjsmkhKul5s2XBjvg
+         /7VvXCn1U9gQtpKtkgJxbaUIwOtj8FoPSKQHm3yUlF5Zwsd4+VY0K2IG702UYztvKW
+         PrNsDvZbU4BHCabfjSB43UlkMrnc3ihEC+Og4ignXhSnP+E35f0y87AY7NE3wAWgRc
+         icxXlzsRVboHw==
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Pei Huang <huangpei@loongson.cn>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Fangrui Song <maskray@google.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        kernel test robot <lkp@intel.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, clang-built-linux@googlegroups.com
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH mips-next] vmlinux.lds.h: catch more UBSAN symbols into .data
+Message-ID: <20210216085442.2967-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210213140231.23985-1-tsbogend@alpha.franken.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 03:02:31PM +0100, Thomas Bogendoerfer wrote:
-> With the removal of set_fs() calls kgdb_call_nmi_hook() is now the same as
-> the default implementation, so we can remove it.
-> 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
->  arch/mips/kernel/kgdb.c | 5 -----
->  1 file changed, 5 deletions(-)
+LKP triggered lots of LD orphan warnings [0]:
 
-applied to mips-next.
+mipsel-linux-ld: warning: orphan section `.data.$Lubsan_data299' from
+`init/do_mounts_rd.o' being placed in section `.data.$Lubsan_data299'
+mipsel-linux-ld: warning: orphan section `.data.$Lubsan_data183' from
+`init/do_mounts_rd.o' being placed in section `.data.$Lubsan_data183'
+mipsel-linux-ld: warning: orphan section `.data.$Lubsan_type3' from
+`init/do_mounts_rd.o' being placed in section `.data.$Lubsan_type3'
+mipsel-linux-ld: warning: orphan section `.data.$Lubsan_type2' from
+`init/do_mounts_rd.o' being placed in section `.data.$Lubsan_type2'
+mipsel-linux-ld: warning: orphan section `.data.$Lubsan_type0' from
+`init/do_mounts_rd.o' being placed in section `.data.$Lubsan_type0'
 
-Thomas.
+[...]
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Seems like "unnamed data" isn't the only type of symbols that UBSAN
+instrumentation can emit.
+Catch these into .data with the wildcard as well.
+
+[0] https://lore.kernel.org/linux-mm/202102160741.k57GCNSR-lkp@intel.com
+
+Fixes: f41b233de0ae ("vmlinux.lds.h: catch UBSAN's "unnamed data" into data=
+")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ include/asm-generic/vmlinux.lds.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinu=
+x.lds.h
+index cc659e77fcb0..83537e5ee78f 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -95,7 +95,7 @@
+  */
+ #ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
+ #define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
+-#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundliter=
+al* .data.$__unnamed_*
++#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundliter=
+al* .data.$__unnamed_* .data.$Lubsan_*
+ #define SDATA_MAIN .sdata .sdata.[0-9a-zA-Z_]*
+ #define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]* .rodata..L*
+ #define BSS_MAIN .bss .bss.[0-9a-zA-Z_]* .bss..compoundliteral*
+--=20
+2.30.1
+
+

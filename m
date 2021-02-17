@@ -5,113 +5,132 @@ X-Spam-Level:
 X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36421C433DB
-	for <linux-mips@archiver.kernel.org>; Wed, 17 Feb 2021 09:28:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9E72C433DB
+	for <linux-mips@archiver.kernel.org>; Wed, 17 Feb 2021 11:43:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D150164E42
-	for <linux-mips@archiver.kernel.org>; Wed, 17 Feb 2021 09:28:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 98C4964E24
+	for <linux-mips@archiver.kernel.org>; Wed, 17 Feb 2021 11:43:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232115AbhBQJ2c (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 17 Feb 2021 04:28:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40530 "EHLO
+        id S230389AbhBQLnJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 17 Feb 2021 06:43:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232099AbhBQJ21 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 17 Feb 2021 04:28:27 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 539A5C061756;
-        Wed, 17 Feb 2021 01:27:47 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id a4so6536389pgc.11;
-        Wed, 17 Feb 2021 01:27:47 -0800 (PST)
+        with ESMTP id S232111AbhBQLkw (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 17 Feb 2021 06:40:52 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06455C061756;
+        Wed, 17 Feb 2021 03:40:06 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id v1so17035137wrd.6;
+        Wed, 17 Feb 2021 03:40:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XDTZ33fjLbE2/tgGk4BUqIi9+Z24fcyTW3i1iRPooGA=;
-        b=Ld0WwizmpD7lkB5v0XnKm0pdkBTvqxe1CslPGmlNzbaaRqkyFyoUX2kesGJ36BA6z7
-         Ysrabp/0efKfwbvhhCXSVybDL5IX5AU6vUDEGtgzq4OrPetR9F0r/MKoyWflRbxcGT9J
-         1USK/CgYONRDBZV1ssg9i+bmDFB8li16XdTW5DfHL86hy23KYS/7yrLFyDsviv76MI1z
-         LVTnzpzh69P16eh/XVZC9NNoxXJPL9CJ2Ioqr33MD0h7TBwTx6F0tA0VJsuICKZ3hbhe
-         UOtnu9j7SR3cMy27sjJ9dM2CCvVc50OHQEGEUVw+2nLSuDHMhnuIdPoWJCd74MVYM1RO
-         zlZQ==
+        bh=0Ub3gKGJwLJRaryXIKn0038/d6bzjLaWe3sRPb09LY0=;
+        b=DT5YyN1MOvKp2WuAgEYIlR4ajbLPAmzH8CueHGYC6nk8Xn8oz+MgtOH9LJI/Ptgo+a
+         iv0wBtsjV/NINYVMTY0I2UZ6KaFbgb/kkpWwg50vfmNUbG0VXUAxpIDqwmGsf7uTT9MU
+         dzzxwcaYJ8qRByQsqALtL9jP1ZidNrraUtKtDWaGZrBF0nh5Yg/efaebvZX8FH+3KlS4
+         j1myj9gs82TAASf+YCECDYCpDjJhGsW9pu/TG9Uavm3dFEf1li6DNkjcGMiJPxYC/MEO
+         fllzQFRsvy/3DjMnkvBgAaT876WxFRjk196510alcNpJV59Z690xDGW6id7tb72US0Oh
+         FqFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XDTZ33fjLbE2/tgGk4BUqIi9+Z24fcyTW3i1iRPooGA=;
-        b=oXAO0Q4OzyLE5SuBRQhuIF14npO1Jkc9JEOiEe2Sk7J0A/p4QKezVz1EF4IN9+A5YG
-         B9u98LAnshq5Tf7PvWeLO1GaEbUv8bVicbfHSGWHj4hUz1U/FFSGBOFqTdHMsB9Vt0am
-         765b1uspwu1X/ayN4/1An8nRefvGiPKq8hvpklTMp+1QtwA1H4cq+wIRAjLgE3FIo/gA
-         PBEaT9TIaQIw5lSHbuow254yOQR0UeDS+HaRNQmvoombmFvdztl1Fl2XvZkkmddDUX+d
-         cjF6BL6WTBxV6/4d48bvKQmoOXlalQd9GDDZFIbOVVrm4VJXOrjGV06CrXlRDuYAKf4x
-         Fxyg==
-X-Gm-Message-State: AOAM530L5GXxj8OrmtxTWpG2UKn6WbFPnWRWJDA8SIuKjTwOZ/62gETg
-        WXLZeOGZtuUuo6RioFlk09s=
-X-Google-Smtp-Source: ABdhPJwP3og/7cpycHbb2mVi4WugURi5kSRz3GA4T88CGQzNlXA4uXbxU5eg8fYWsCFMjlwM2JxnMg==
-X-Received: by 2002:a63:515a:: with SMTP id r26mr23471747pgl.257.1613554066999;
-        Wed, 17 Feb 2021 01:27:46 -0800 (PST)
-Received: from localhost.localdomain ([49.207.204.196])
-        by smtp.gmail.com with ESMTPSA id n11sm1571412pjk.38.2021.02.17.01.27.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 01:27:46 -0800 (PST)
-From:   Allen Pais <allen.lkml@gmail.com>
-To:     jens.wiklander@linaro.org, zajec5@gmail.com
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org,
-        Allen Pais <apais@linux.microsoft.com>
-Subject: [PATCH 2/2] firmware: tee_bnxt: implement shutdown method to handle kexec reboots
-Date:   Wed, 17 Feb 2021 14:57:14 +0530
-Message-Id: <20210217092714.121297-3-allen.lkml@gmail.com>
+        bh=0Ub3gKGJwLJRaryXIKn0038/d6bzjLaWe3sRPb09LY0=;
+        b=HhMutll4R9YiHaHWVV/4jKHAQjJahdOkL+O0lvIAgerNqKWnlyMnML1JFPPIu4Qk/J
+         OIUmRRW0qlUQYVqXn7I02f73c0QsHPDDj0dvSME63tSxntbL6+FZKgXH69C0ONpzUTF4
+         6vFSHwBBFBY6KceGJQPU0yDUrp2dsRB1FYFzpZNBwpxQv8bV04t7vhOReT2x0EOoEDDc
+         /MB5FuXrhbKghSdXAztywOpm9JkNsUZg6kmEBFbtUqyHfEtrmmIBiNE851Jg7T6TmGiU
+         wTLGy1tOFaLlv6cV7WrcOAlDQ7EBCquDQrTZb9Vt1+TWAF888tGmUsZwhEykZqk0891k
+         eGTw==
+X-Gm-Message-State: AOAM530wXBftYs4/Xs53q7m3zKpNvf1wRIUYSI3MAMJQlKa2sLHGiXUK
+        L2+Bvojt+53KZFf8ubjBOkI=
+X-Google-Smtp-Source: ABdhPJzduoPzl6qqnC0sKdwQMRl++JTO9gIqK1bXITzDft6XpAaJ5pRosTgHGQ+BZ2EeLgp5iZol+A==
+X-Received: by 2002:adf:edc8:: with SMTP id v8mr28901840wro.330.1613562004775;
+        Wed, 17 Feb 2021 03:40:04 -0800 (PST)
+Received: from localhost.localdomain (67.red-83-54-30.dynamicip.rima-tde.net. [83.54.30.67])
+        by smtp.gmail.com with ESMTPSA id q140sm3600813wme.0.2021.02.17.03.40.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 17 Feb 2021 03:40:04 -0800 (PST)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     sboyd@kernel.org
+Cc:     robh+dt@kernel.org, john@phrozen.org, tsbogend@alpha.franken.de,
+        gregkh@linuxfoundation.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        neil@brown.name, Rob Herring <robh@kernel.org>
+Subject: [PATCH v7 1/6] dt-bindings: clock: add dt binding header for mt7621 clocks
+Date:   Wed, 17 Feb 2021 12:39:55 +0100
+Message-Id: <20210217114000.19571-2-sergio.paracuellos@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210217092714.121297-1-allen.lkml@gmail.com>
-References: <20210217092714.121297-1-allen.lkml@gmail.com>
+In-Reply-To: <20210217114000.19571-1-sergio.paracuellos@gmail.com>
+References: <20210217114000.19571-1-sergio.paracuellos@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Allen Pais <apais@linux.microsoft.com>
+Adds dt binding header for 'mediatek,mt7621-clk' clocks.
 
- On kexec reboot the firmware driver fails to deallocate
-shm memory leading to a memory leak. Implement .shutdown()
-method to handle kexec reboots and to release shm buffers
-correctly.
-
-Signed-off-by: Allen Pais <apais@linux.microsoft.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
- drivers/firmware/broadcom/tee_bnxt_fw.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ include/dt-bindings/clock/mt7621-clk.h | 41 ++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+ create mode 100644 include/dt-bindings/clock/mt7621-clk.h
 
-diff --git a/drivers/firmware/broadcom/tee_bnxt_fw.c b/drivers/firmware/broadcom/tee_bnxt_fw.c
-index ed10da5313e8..4c62e044a99f 100644
---- a/drivers/firmware/broadcom/tee_bnxt_fw.c
-+++ b/drivers/firmware/broadcom/tee_bnxt_fw.c
-@@ -242,6 +242,14 @@ static int tee_bnxt_fw_remove(struct device *dev)
- 	return 0;
- }
- 
-+static void tee_bnxt_fw_shutdown(struct device *dev)
-+{
-+	tee_shm_free(pvt_data.fw_shm_pool);
-+	tee_client_close_session(pvt_data.ctx, pvt_data.session_id);
-+	tee_client_close_context(pvt_data.ctx);
-+	pvt_data.ctx = NULL;
-+}
+diff --git a/include/dt-bindings/clock/mt7621-clk.h b/include/dt-bindings/clock/mt7621-clk.h
+new file mode 100644
+index 000000000000..1422badcf9de
+--- /dev/null
++++ b/include/dt-bindings/clock/mt7621-clk.h
+@@ -0,0 +1,41 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Author: Sergio Paracuellos <sergio.paracuellos@gmail.com>
++ */
 +
- static const struct tee_client_device_id tee_bnxt_fw_id_table[] = {
- 	{UUID_INIT(0x6272636D, 0x2019, 0x0716,
- 		    0x42, 0x43, 0x4D, 0x5F, 0x53, 0x43, 0x48, 0x49)},
-@@ -257,6 +265,7 @@ static struct tee_client_driver tee_bnxt_fw_driver = {
- 		.bus		= &tee_bus_type,
- 		.probe		= tee_bnxt_fw_probe,
- 		.remove		= tee_bnxt_fw_remove,
-+		.shutdown	= tee_bnxt_fw_shutdown,
- 	},
- };
- 
++#ifndef _DT_BINDINGS_CLK_MT7621_H
++#define _DT_BINDINGS_CLK_MT7621_H
++
++#define MT7621_CLK_XTAL		0
++#define MT7621_CLK_CPU		1
++#define MT7621_CLK_BUS		2
++#define MT7621_CLK_50M		3
++#define MT7621_CLK_125M		4
++#define MT7621_CLK_150M		5
++#define MT7621_CLK_250M		6
++#define MT7621_CLK_270M		7
++
++#define MT7621_CLK_HSDMA	8
++#define MT7621_CLK_FE		9
++#define MT7621_CLK_SP_DIVTX	10
++#define MT7621_CLK_TIMER	11
++#define MT7621_CLK_PCM		12
++#define MT7621_CLK_PIO		13
++#define MT7621_CLK_GDMA		14
++#define MT7621_CLK_NAND		15
++#define MT7621_CLK_I2C		16
++#define MT7621_CLK_I2S		17
++#define MT7621_CLK_SPI		18
++#define MT7621_CLK_UART1	19
++#define MT7621_CLK_UART2	20
++#define MT7621_CLK_UART3	21
++#define MT7621_CLK_ETH		22
++#define MT7621_CLK_PCIE0	23
++#define MT7621_CLK_PCIE1	24
++#define MT7621_CLK_PCIE2	25
++#define MT7621_CLK_CRYPTO	26
++#define MT7621_CLK_SHXC		27
++
++#define MT7621_CLK_MAX		28
++
++#endif /* _DT_BINDINGS_CLK_MT7621_H */
 -- 
 2.25.1
 

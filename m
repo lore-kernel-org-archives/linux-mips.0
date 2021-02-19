@@ -2,172 +2,312 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A23E2C433DB
-	for <linux-mips@archiver.kernel.org>; Fri, 19 Feb 2021 11:12:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AC9AC433E0
+	for <linux-mips@archiver.kernel.org>; Fri, 19 Feb 2021 12:02:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 42B3264E77
-	for <linux-mips@archiver.kernel.org>; Fri, 19 Feb 2021 11:12:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 22C1A64EC4
+	for <linux-mips@archiver.kernel.org>; Fri, 19 Feb 2021 12:02:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbhBSLMH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 19 Feb 2021 06:12:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38114 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230124AbhBSLMB (ORCPT
+        id S230213AbhBSMBs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 19 Feb 2021 07:01:48 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:45287 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229524AbhBSMBj (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 19 Feb 2021 06:12:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613733035;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5AVjhEI1tw86vUOw/9aIZh6BTcpMrggeQLiNZ3oUAgQ=;
-        b=W5XZ6CFykvo+6PQCpO2TiEfraObaY4Eu8uwP6ccGWYFhl1ikBjB/qkesABANjrSDJazNVy
-        7D88NT879qj8wu67pdRmqNGvNGky4L2eVtopq3a0t9wMSw9M73Qu6rYI3pAIbnT4lCvq8a
-        o0lGi2P6KTbdvaeaqAeyINsIpib6Llc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-476--rl0D7HYOzaShKF10--1KQ-1; Fri, 19 Feb 2021 06:10:31 -0500
-X-MC-Unique: -rl0D7HYOzaShKF10--1KQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDCBD835E2C;
-        Fri, 19 Feb 2021 11:10:27 +0000 (UTC)
-Received: from [10.36.113.117] (ovpn-113-117.ams2.redhat.com [10.36.113.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CEB7310027A5;
-        Fri, 19 Feb 2021 11:10:05 +0000 (UTC)
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
- prefault/prealloc memory
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-References: <20210217154844.12392-1-david@redhat.com>
- <YC+UaTVUn0o4Zynz@dhcp22.suse.cz>
- <6e5a5bde-cedb-9d0a-f8c1-22406085b6b9@redhat.com>
- <YC+bKSQdepXhqo0T@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <472f3bf1-595e-54e7-3022-0562cb6b3eb2@redhat.com>
-Date:   Fri, 19 Feb 2021 12:10:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Fri, 19 Feb 2021 07:01:39 -0500
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 632BE5803B6;
+        Fri, 19 Feb 2021 07:00:52 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Fri, 19 Feb 2021 07:00:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-type:content-transfer-encoding; s=fm2; bh=
+        8SiuRJvmDBxHkppOl7XNYlYL81u802Dvun023WYT7VU=; b=DkpTg+I/R5IM2VIh
+        8GygxQO13JiX997ohIsmFTIRfQc/Lr+CdTruqK9Tuio5Wlt3jLTl2uT9LFjjIbV+
+        OXtBQUs+gNKLIaauIYxjTxP3ycl9/p5yf2TBjELUHjaToybW9/qfdwZqGzQhpD/3
+        75GQeuOAwVZFsxS9KsxQ6ScJJyJflOekOx3dub61BVGYMZW6nv3V7AvjKhAwI1Ne
+        CBZAM4HVofYyjfrnPkcq0MpUvXoIGu/sWj+EcTWLZqRHPSUmjEv6UmxFixb1HrIn
+        4KZH4uCJlRTsDk3e8gDomQZQpD5Ps34C0YtmjVWDJK+4s0ZP7xalRo6vZDkKvF74
+        T1qYwQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=8SiuRJvmDBxHkppOl7XNYlYL81u802Dvun023WYT7
+        VU=; b=t892QCGn2e6UUSzmdd7un9ZIOVN5CgA5ztWWMEBViq1lrSuxl+D/s0T/c
+        SM6X88okWpW8C98rXzRbUiYUSGtMJWquGH8P+bIGDj1F1T/YZADWEIPrqTYMiIBl
+        mPJSjkJNUAe48RCrs/MoRej/mkkaU8l3k92QZLOgTwaZaYFnSSB6wc28DGhOW5pl
+        gvo1PlxLeJ89lyHiwGlJoJQqJhUSnc/Z9uKUEmsGiYzSR79L37seZ0i+4BHvOvHt
+        JB/Kbdq637ySFJbF4WZK4SjRKagzs0WC59KFgh6SgyaiWTMj2jrX2vh4kreDGCSb
+        kbZamBKzoUH/eD4uXcQiIgZsXfbwQ==
+X-ME-Sender: <xms:c6gvYCQQvnhiuX7Zibxn9J6U1wRvLRuRq8Ho_Z5Xi40PEbt0xmVcMw>
+    <xme:c6gvYNlJ9onAXWsP1qDHrIfuBMhtM6FZgxpLYG8AXJazRucYDpF-Kwez5M7fvOTbl
+    YVsc9X2gc1p8QtZ-qg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrjeeigdefhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgjfhggtgfgsehtkeertdertdejnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepjeeugfegkeffgfeuvedtvddufffhjeffjeejvddvudduteehhfefhfefgeei
+    keeknecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:c6gvYFKhwo1DrLPmgO7-C4lqhYNj2h9OtGL4f90gq5ae06m_dAkykA>
+    <xmx:c6gvYIWhQc-YMc79ikXcGdleik9v8qaAp5ia0_D2QQXwXbxvbfBggA>
+    <xmx:c6gvYCE6Chv_wrU0-s5YlnEVK-bpOkwrjOA120QQeN2oCKutBtgR-A>
+    <xmx:dKgvYIXFbFyZbCuC88G8wrZiDwCXiiXXP6m__kSRrc7O50J9L_xmZA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id DF7651080057;
+        Fri, 19 Feb 2021 07:00:50 -0500 (EST)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>
+Cc:     dri-devel@lists.freedesktop.org,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        Tomi Valkeinen <tomba@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org
+Subject: [PATCH v3 06/11] drm: Use state helper instead of plane state pointer in atomic_check
+Date:   Fri, 19 Feb 2021 13:00:26 +0100
+Message-Id: <20210219120032.260676-6-maxime@cerno.tech>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210219120032.260676-1-maxime@cerno.tech>
+References: <20210219120032.260676-1-maxime@cerno.tech>
 MIME-Version: 1.0
-In-Reply-To: <YC+bKSQdepXhqo0T@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 19.02.21 12:04, Michal Hocko wrote:
-> On Fri 19-02-21 11:43:48, David Hildenbrand wrote:
->> On 19.02.21 11:35, Michal Hocko wrote:
->>> On Wed 17-02-21 16:48:44, David Hildenbrand wrote:
->>> [...]
->>>
->>> I only got  to the implementation now.
->>>
->>>> +static long madvise_populate(struct vm_area_struct *vma,
->>>> +			     struct vm_area_struct **prev,
->>>> +			     unsigned long start, unsigned long end)
->>>> +{
->>>> +	struct mm_struct *mm = vma->vm_mm;
->>>> +	unsigned long tmp_end;
->>>> +	int locked = 1;
->>>> +	long pages;
->>>> +
->>>> +	*prev = vma;
->>>> +
->>>> +	while (start < end) {
->>>> +		/*
->>>> +		 * We might have temporarily dropped the lock. For example,
->>>> +		 * our VMA might have been split.
->>>> +		 */
->>>> +		if (!vma || start >= vma->vm_end) {
->>>> +			vma = find_vma(mm, start);
->>>> +			if (!vma)
->>>> +				return -ENOMEM;
->>>> +		}
->>>
->>> Why do you need to find a vma when you already have one. do_madvise will
->>> give you your vma already. I do understand that you want to finish the
->>> vma for some errors but that shouldn't require handling vmas. You should
->>> be in the shope of one here unless I miss anything.
->>
->> See below, we might temporary drop the lock while not having processed all
->> pages
->>
->>>
->>>> +
->>>> +		/* Bail out on incompatible VMA types. */
->>>> +		if (vma->vm_flags & (VM_IO | VM_PFNMAP) ||
->>>> +		    !vma_is_accessible(vma)) {
->>>> +			return -EINVAL;
->>>> +		}
->>>> +
->>>> +		/*
->>>> +		 * Populate pages and take care of VM_LOCKED: simulate user
->>>> +		 * space access.
->>>> +		 *
->>>> +		 * For private, writable mappings, trigger a write fault to
->>>> +		 * break COW (i.e., shared zeropage). For other mappings (i.e.,
->>>> +		 * read-only, shared), trigger a read fault.
->>>> +		 */
->>>> +		tmp_end = min_t(unsigned long, end, vma->vm_end);
->>>> +		pages = populate_vma_page_range(vma, start, tmp_end, &locked);
->>>> +		if (!locked) {
->>>> +			mmap_read_lock(mm);
->>>> +			*prev = NULL;
->>>> +			vma = NULL;
->>
->> ^ here
->>
->> so, the VMA might have been replaced/split/... in the meantime.
->>
->> So to make forward progress, I have to lookup again. (similar. but different
->> to madvise_dontneed_free()).
-> 
-> Right. Missed that.
+Many drivers reference the plane->state pointer in order to get the
+current plane state in their atomic_check hook, which would be the old
+plane state in the global atomic state since _swap_state hasn't happened
+when atomic_check is run.
 
-It would look more natural if we'd just be processing the whole range - 
-but then it would not fit into the generic infrastructure and would 
-result in even more code.
+Use the drm_atomic_get_old_plane_state helper to get that state to make
+it more obvious.
 
-I decided to go with "process the passed range and treat the given VMA 
-as an initial VMA that is invalidated as soon as we drop the lock".
+This was made using the coccinelle script below:
 
+@ plane_atomic_func @
+identifier helpers;
+identifier func;
+@@
 
+static struct drm_plane_helper_funcs helpers = {
+	...,
+	.atomic_check = func,
+	...,
+};
+
+@ replaces_old_state @
+identifier plane_atomic_func.func;
+identifier plane, state, plane_state;
+@@
+
+ func(struct drm_plane *plane, struct drm_atomic_state *state) {
+ 	...
+-	struct drm_plane_state *plane_state = plane->state;
++	struct drm_plane_state *plane_state = drm_atomic_get_old_plane_state(state, plane);
+ 	...
+ }
+
+@@
+identifier plane_atomic_func.func;
+identifier plane, state, plane_state;
+@@
+
+ func(struct drm_plane *plane, struct drm_atomic_state *state) {
+ 	struct drm_plane_state *plane_state = drm_atomic_get_old_plane_state(state, plane);
+ 	<...
+-	plane->state
++	plane_state
+ 	...>
+ }
+
+@ adds_old_state @
+identifier plane_atomic_func.func;
+identifier plane, state;
+@@
+
+ func(struct drm_plane *plane, struct drm_atomic_state *state) {
++	struct drm_plane_state *old_plane_state = drm_atomic_get_old_plane_state(state, plane);
+ 	<...
+-	plane->state
++	old_plane_state
+ 	...>
+ }
+
+@ include depends on adds_old_state || replaces_old_state @
+@@
+
+ #include <drm/drm_atomic.h>
+
+@ no_include depends on !include && (adds_old_state || replaces_old_state) @
+@@
+
++ #include <drm/drm_atomic.h>
+  #include <drm/...>
+
+Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+
+---
+
+Changes from v2:
+  - s/.../<.../ in the coccinelle script as suggested by Ville
+---
+ drivers/gpu/drm/imx/ipuv3-plane.c          |  3 ++-
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c  | 16 +++++++++-------
+ drivers/gpu/drm/ingenic/ingenic-ipu.c      |  8 +++++---
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c |  4 +++-
+ drivers/gpu/drm/tilcdc/tilcdc_plane.c      |  3 ++-
+ 5 files changed, 21 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/gpu/drm/imx/ipuv3-plane.c b/drivers/gpu/drm/imx/ipuv3-plane.c
+index b5f6123850bb..6484592e3f86 100644
+--- a/drivers/gpu/drm/imx/ipuv3-plane.c
++++ b/drivers/gpu/drm/imx/ipuv3-plane.c
+@@ -341,7 +341,8 @@ static int ipu_plane_atomic_check(struct drm_plane *plane,
+ {
+ 	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
+ 									   plane);
+-	struct drm_plane_state *old_state = plane->state;
++	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state,
++									   plane);
+ 	struct drm_crtc_state *crtc_state;
+ 	struct device *dev = plane->dev->dev;
+ 	struct drm_framebuffer *fb = new_state->fb;
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+index e6d7d0a04ddb..c022d9f1e737 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -361,11 +361,13 @@ static void ingenic_drm_crtc_atomic_flush(struct drm_crtc *crtc,
+ static int ingenic_drm_plane_atomic_check(struct drm_plane *plane,
+ 					  struct drm_atomic_state *state)
+ {
++	struct drm_plane_state *old_plane_state = drm_atomic_get_old_plane_state(state,
++										 plane);
+ 	struct drm_plane_state *new_plane_state = drm_atomic_get_new_plane_state(state,
+ 										 plane);
+ 	struct ingenic_drm *priv = drm_device_get_priv(plane->dev);
+ 	struct drm_crtc_state *crtc_state;
+-	struct drm_crtc *crtc = new_plane_state->crtc ?: plane->state->crtc;
++	struct drm_crtc *crtc = new_plane_state->crtc ?: old_plane_state->crtc;
+ 	int ret;
+ 
+ 	if (!crtc)
+@@ -399,12 +401,12 @@ static int ingenic_drm_plane_atomic_check(struct drm_plane *plane,
+ 	 * its position, size or depth.
+ 	 */
+ 	if (priv->soc_info->has_osd &&
+-	    (!plane->state->fb || !new_plane_state->fb ||
+-	     plane->state->crtc_x != new_plane_state->crtc_x ||
+-	     plane->state->crtc_y != new_plane_state->crtc_y ||
+-	     plane->state->crtc_w != new_plane_state->crtc_w ||
+-	     plane->state->crtc_h != new_plane_state->crtc_h ||
+-	     plane->state->fb->format->format != new_plane_state->fb->format->format))
++	    (!old_plane_state->fb || !new_plane_state->fb ||
++	     old_plane_state->crtc_x != new_plane_state->crtc_x ||
++	     old_plane_state->crtc_y != new_plane_state->crtc_y ||
++	     old_plane_state->crtc_w != new_plane_state->crtc_w ||
++	     old_plane_state->crtc_h != new_plane_state->crtc_h ||
++	     old_plane_state->fb->format->format != new_plane_state->fb->format->format))
+ 		crtc_state->mode_changed = true;
+ 
+ 	return 0;
+diff --git a/drivers/gpu/drm/ingenic/ingenic-ipu.c b/drivers/gpu/drm/ingenic/ingenic-ipu.c
+index 1e1b0fe095bd..3d072b25e1c4 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
++++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
+@@ -516,11 +516,13 @@ static void ingenic_ipu_plane_atomic_update(struct drm_plane *plane,
+ static int ingenic_ipu_plane_atomic_check(struct drm_plane *plane,
+ 					  struct drm_atomic_state *state)
+ {
++	struct drm_plane_state *old_plane_state = drm_atomic_get_old_plane_state(state,
++										 plane);
+ 	struct drm_plane_state *new_plane_state = drm_atomic_get_new_plane_state(state,
+ 										 plane);
+ 	unsigned int num_w, denom_w, num_h, denom_h, xres, yres, max_w, max_h;
+ 	struct ingenic_ipu *ipu = plane_to_ingenic_ipu(plane);
+-	struct drm_crtc *crtc = new_plane_state->crtc ?: plane->state->crtc;
++	struct drm_crtc *crtc = new_plane_state->crtc ?: old_plane_state->crtc;
+ 	struct drm_crtc_state *crtc_state;
+ 
+ 	if (!crtc)
+@@ -531,7 +533,7 @@ static int ingenic_ipu_plane_atomic_check(struct drm_plane *plane,
+ 		return -EINVAL;
+ 
+ 	/* Request a full modeset if we are enabling or disabling the IPU. */
+-	if (!plane->state->crtc ^ !new_plane_state->crtc)
++	if (!old_plane_state->crtc ^ !new_plane_state->crtc)
+ 		crtc_state->mode_changed = true;
+ 
+ 	if (!new_plane_state->crtc ||
+@@ -552,7 +554,7 @@ static int ingenic_ipu_plane_atomic_check(struct drm_plane *plane,
+ 	if (((new_plane_state->src_w >> 16) & 1) || (new_plane_state->crtc_w & 1))
+ 		return -EINVAL;
+ 
+-	if (!osd_changed(new_plane_state, plane->state))
++	if (!osd_changed(new_plane_state, old_plane_state))
+ 		return 0;
+ 
+ 	crtc_state->mode_changed = true;
+diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c b/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
+index 4aac6217a5ad..6ce6ce09fecc 100644
+--- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
++++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
+@@ -406,12 +406,14 @@ static int mdp5_plane_atomic_check_with_state(struct drm_crtc_state *crtc_state,
+ static int mdp5_plane_atomic_check(struct drm_plane *plane,
+ 				   struct drm_atomic_state *state)
+ {
++	struct drm_plane_state *old_plane_state = drm_atomic_get_old_plane_state(state,
++										 plane);
+ 	struct drm_plane_state *new_plane_state = drm_atomic_get_new_plane_state(state,
+ 										 plane);
+ 	struct drm_crtc *crtc;
+ 	struct drm_crtc_state *crtc_state;
+ 
+-	crtc = new_plane_state->crtc ? new_plane_state->crtc : plane->state->crtc;
++	crtc = new_plane_state->crtc ? new_plane_state->crtc : old_plane_state->crtc;
+ 	if (!crtc)
+ 		return 0;
+ 
+diff --git a/drivers/gpu/drm/tilcdc/tilcdc_plane.c b/drivers/gpu/drm/tilcdc/tilcdc_plane.c
+index ebdd42dcaf82..c86258132432 100644
+--- a/drivers/gpu/drm/tilcdc/tilcdc_plane.c
++++ b/drivers/gpu/drm/tilcdc/tilcdc_plane.c
+@@ -26,7 +26,8 @@ static int tilcdc_plane_atomic_check(struct drm_plane *plane,
+ 	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
+ 									   plane);
+ 	struct drm_crtc_state *crtc_state;
+-	struct drm_plane_state *old_state = plane->state;
++	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state,
++									   plane);
+ 	unsigned int pitch;
+ 
+ 	if (!new_state->crtc)
 -- 
-Thanks,
-
-David / dhildenb
+2.29.2
 

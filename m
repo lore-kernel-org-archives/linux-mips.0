@@ -2,174 +2,125 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 39752C43381
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Feb 2021 11:54:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB8F9C433E6
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Feb 2021 14:20:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E230664DF3
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Feb 2021 11:54:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6110B64ECE
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Feb 2021 14:20:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235126AbhBXLyH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 24 Feb 2021 06:54:07 -0500
-Received: from mail1.protonmail.ch ([185.70.40.18]:43633 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233674AbhBXLxr (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 24 Feb 2021 06:53:47 -0500
-Date:   Wed, 24 Feb 2021 11:52:55 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1614167582; bh=rmj4Lly7e2yo/vYcUEKGFZzDAc6rnvVPqHCHhRIbwaY=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=PHXSzMSxRmaLS7MFt4ays/6/dt4JDFe5JXd4QbAhZJD6fATGc+zxzepIz+xytiIiY
-         7fbgrezmNQVEUiH3H+5zFFsddUnnkbvoHRxiz73XXXcXb0ntv7dtlonrzeA7j8ro7P
-         NvllO0TctJngE0dpAOynsPLIvyZr1QeLx1zOZbEd6l+Y2aY3FaTcJAKkA0FzuO2iHp
-         rdubg4dtxfLOUKpAVyjsQvKCIGcwGSlQS/CwMz+99nwW7j5jADkmM/AHhMYifIPjCf
-         CNSs2nfPmijLAAFSg9AW1X+D4djCWNncusfMIusXRcIG4OT8pSC3eJ0dKjv2iC+XBM
-         quf+AFX18tPPw==
-To:     Yury Norov <yury.norov@gmail.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mips@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH] arm64: enable  GENERIC_FIND_FIRST_BIT
-Message-ID: <20210224115247.1618-1-alobakin@pm.me>
-In-Reply-To: <20201205165406.108990-1-yury.norov@gmail.com>
-References: <20201205165406.108990-1-yury.norov@gmail.com>
+        id S234521AbhBXOTs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 24 Feb 2021 09:19:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234545AbhBXNSk (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 24 Feb 2021 08:18:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DB7664E02;
+        Wed, 24 Feb 2021 13:16:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614172618;
+        bh=1OYA70c3B5fW2I4c9I6qukLQFWmQmyDKzf/6xmqd7yw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DunTstwYrC0zZRkwW7RIhvcIx30okzmVYogmvnpPP/VSr7XU3sKC2WtP11a3YXy/9
+         ZTG1jfQUzBnt8Fxg6v4tRNhMUVMDtVUWolzKmFTNIJiAmxlnqQDmbeZ/9tgpHSpr0I
+         fg0N0iH1yxP7Ye/+UxPaQJDiX7KCTW5f8i5hXFumNjuTRUQv3iIRcWw6SXnYaFQH1e
+         BArz1E+Roti2GhLu4psN7VCctp1U8Z3Y/QOERK48TI1PSCirPE/r/e5w91BtuNUI/Z
+         glWLBagHjOVswV65v18gWtS+/hdp6EZVaoKaoAT4wuKCkgS3MB6rPQzKtnfhfZ+yeG
+         HbGMS1DAHq0Bg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 489B240CD9; Wed, 24 Feb 2021 10:16:55 -0300 (-03)
+Date:   Wed, 24 Feb 2021 10:16:55 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Juxin Gao <gaojuxin@loongson.cn>
+Subject: Re: [PATCH v2 0/3] Add some perf support for mips
+Message-ID: <YDZRxz1yRwgWc47F@kernel.org>
+References: <1612409724-3516-1-git-send-email-yangtiezhu@loongson.cn>
+ <1d3c4abd-4b14-90e3-6528-457a8248cb52@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1d3c4abd-4b14-90e3-6528-457a8248cb52@loongson.cn>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Yury Norov <yury.norov@gmail.com>
-Date: Sat, 5 Dec 2020 08:54:06 -0800
+Em Mon, Feb 22, 2021 at 02:43:39PM +0800, Tiezhu Yang escreveu:
+> On 02/04/2021 11:35 AM, Tiezhu Yang wrote:
+> > v2: add R26 and R27 to the enum perf_event_mips_regs in patch #1
+> > 
+> > Tiezhu Yang (3):
+> >    MIPS: kernel: Support extracting off-line stack traces from user-space
+> >      with perf
+> >    perf tools: Support mips unwinding and dwarf-regs
+> >    perf tools: Generate mips syscalls_n64.c syscall table
+> 
+> Hi Arnaldo,
+> 
+> The kernel part patch #1 has been merged.
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1ddc96bd42da
+> 
+> Could the perf tool patches #2 and #3 have a chance to be merged before
+> 5.12-rc1?
+> If yes, we can use this feature in 5.12-rc1.
 
-Hi,
+Thanks, applied, should make it into 5.12-rc1.
 
-> ARM64 doesn't implement find_first_{zero}_bit in arch code and doesn't
-> enable it in config. It leads to using find_next_bit() which is less
-> efficient:
->
-> 0000000000000000 <find_first_bit>:
->    0:=09aa0003e4 =09mov=09x4, x0
->    4:=09aa0103e0 =09mov=09x0, x1
->    8:=09b4000181 =09cbz=09x1, 38 <find_first_bit+0x38>
->    c:=09f9400083 =09ldr=09x3, [x4]
->   10:=09d2800802 =09mov=09x2, #0x40                  =09// #64
->   14:=0991002084 =09add=09x4, x4, #0x8
->   18:=09b40000c3 =09cbz=09x3, 30 <find_first_bit+0x30>
->   1c:=0914000008 =09b=093c <find_first_bit+0x3c>
->   20:=09f8408483 =09ldr=09x3, [x4], #8
->   24:=0991010045 =09add=09x5, x2, #0x40
->   28:=09b50000c3 =09cbnz=09x3, 40 <find_first_bit+0x40>
->   2c:=09aa0503e2 =09mov=09x2, x5
->   30:=09eb02001f =09cmp=09x0, x2
->   34:=0954ffff68 =09b.hi=0920 <find_first_bit+0x20>  // b.pmore
->   38:=09d65f03c0 =09ret
->   3c:=09d2800002 =09mov=09x2, #0x0                   =09// #0
->   40:=09dac00063 =09rbit=09x3, x3
->   44:=09dac01063 =09clz=09x3, x3
->   48:=098b020062 =09add=09x2, x3, x2
->   4c:=09eb02001f =09cmp=09x0, x2
->   50:=099a829000 =09csel=09x0, x0, x2, ls  // ls =3D plast
->   54:=09d65f03c0 =09ret
->
->   ...
->
-> 0000000000000118 <_find_next_bit.constprop.1>:
->  118:=09eb02007f =09cmp=09x3, x2
->  11c:=09540002e2 =09b.cs=09178 <_find_next_bit.constprop.1+0x60>  // b.hs=
-, b.nlast
->  120:=09d346fc66 =09lsr=09x6, x3, #6
->  124:=09f8667805 =09ldr=09x5, [x0, x6, lsl #3]
->  128:=09b4000061 =09cbz=09x1, 134 <_find_next_bit.constprop.1+0x1c>
->  12c:=09f8667826 =09ldr=09x6, [x1, x6, lsl #3]
->  130:=098a0600a5 =09and=09x5, x5, x6
->  134:=09ca0400a6 =09eor=09x6, x5, x4
->  138:=0992800005 =09mov=09x5, #0xffffffffffffffff    =09// #-1
->  13c:=099ac320a5 =09lsl=09x5, x5, x3
->  140:=09927ae463 =09and=09x3, x3, #0xffffffffffffffc0
->  144:=09ea0600a5 =09ands=09x5, x5, x6
->  148:=0954000120 =09b.eq=0916c <_find_next_bit.constprop.1+0x54>  // b.no=
-ne
->  14c:=091400000e =09b=09184 <_find_next_bit.constprop.1+0x6c>
->  150:=09d346fc66 =09lsr=09x6, x3, #6
->  154:=09f8667805 =09ldr=09x5, [x0, x6, lsl #3]
->  158:=09b4000061 =09cbz=09x1, 164 <_find_next_bit.constprop.1+0x4c>
->  15c:=09f8667826 =09ldr=09x6, [x1, x6, lsl #3]
->  160:=098a0600a5 =09and=09x5, x5, x6
->  164:=09eb05009f =09cmp=09x4, x5
->  168:=09540000c1 =09b.ne=09180 <_find_next_bit.constprop.1+0x68>  // b.an=
-y
->  16c:=0991010063 =09add=09x3, x3, #0x40
->  170:=09eb03005f =09cmp=09x2, x3
->  174:=0954fffee8 =09b.hi=09150 <_find_next_bit.constprop.1+0x38>  // b.pm=
-ore
->  178:=09aa0203e0 =09mov=09x0, x2
->  17c:=09d65f03c0 =09ret
->  180:=09ca050085 =09eor=09x5, x4, x5
->  184:=09dac000a5 =09rbit=09x5, x5
->  188:=09dac010a5 =09clz=09x5, x5
->  18c:=098b0300a3 =09add=09x3, x5, x3
->  190:=09eb03005f =09cmp=09x2, x3
->  194:=099a839042 =09csel=09x2, x2, x3, ls  // ls =3D plast
->  198:=09aa0203e0 =09mov=09x0, x2
->  19c:=09d65f03c0 =09ret
->
->  ...
->
-> 0000000000000238 <find_next_bit>:
->  238:=09a9bf7bfd =09stp=09x29, x30, [sp, #-16]!
->  23c:=09aa0203e3 =09mov=09x3, x2
->  240:=09d2800004 =09mov=09x4, #0x0                   =09// #0
->  244:=09aa0103e2 =09mov=09x2, x1
->  248:=09910003fd =09mov=09x29, sp
->  24c:=09d2800001 =09mov=09x1, #0x0                   =09// #0
->  250:=0997ffffb2 =09bl=09118 <_find_next_bit.constprop.1>
->  254:=09a8c17bfd =09ldp=09x29, x30, [sp], #16
->  258:=09d65f03c0 =09ret
->
-> Enabling this functions would also benefit for_each_{set,clear}_bit().
-> Would it make sense to enable this config for all such architectures by
-> default?
+- Arnaldo
+ 
+> https://lore.kernel.org/patchwork/patch/1375476/
+> https://lore.kernel.org/patchwork/patch/1375475/
+> 
+> 
+> Thanks,
+> Tiezhu
+> 
+> > 
+> >   arch/mips/Kconfig                                  |   2 +
+> >   arch/mips/include/uapi/asm/perf_regs.h             |  40 +++
+> >   arch/mips/kernel/Makefile                          |   2 +-
+> >   arch/mips/kernel/perf_regs.c                       |  68 ++++
+> >   tools/perf/Makefile.config                         |   9 +-
+> >   tools/perf/arch/mips/Makefile                      |  22 ++
+> >   tools/perf/arch/mips/entry/syscalls/mksyscalltbl   |  32 ++
+> >   .../perf/arch/mips/entry/syscalls/syscall_n64.tbl  | 358 +++++++++++++++++++++
+> >   tools/perf/arch/mips/include/dwarf-regs-table.h    |  31 ++
+> >   tools/perf/arch/mips/include/perf_regs.h           |  84 +++++
+> >   tools/perf/arch/mips/util/Build                    |   3 +
+> >   tools/perf/arch/mips/util/dwarf-regs.c             |  38 +++
+> >   tools/perf/arch/mips/util/perf_regs.c              |   6 +
+> >   tools/perf/arch/mips/util/unwind-libunwind.c       |  22 ++
+> >   tools/perf/check-headers.sh                        |   1 +
+> >   tools/perf/util/dwarf-regs.c                       |   3 +
+> >   tools/perf/util/syscalltbl.c                       |   4 +
+> >   17 files changed, 723 insertions(+), 2 deletions(-)
+> >   create mode 100644 arch/mips/include/uapi/asm/perf_regs.h
+> >   create mode 100644 arch/mips/kernel/perf_regs.c
+> >   create mode 100644 tools/perf/arch/mips/Makefile
+> >   create mode 100644 tools/perf/arch/mips/entry/syscalls/mksyscalltbl
+> >   create mode 100644 tools/perf/arch/mips/entry/syscalls/syscall_n64.tbl
+> >   create mode 100644 tools/perf/arch/mips/include/dwarf-regs-table.h
+> >   create mode 100644 tools/perf/arch/mips/include/perf_regs.h
+> >   create mode 100644 tools/perf/arch/mips/util/Build
+> >   create mode 100644 tools/perf/arch/mips/util/dwarf-regs.c
+> >   create mode 100644 tools/perf/arch/mips/util/perf_regs.c
+> >   create mode 100644 tools/perf/arch/mips/util/unwind-libunwind.c
+> > 
+> 
 
-I confirm that GENERIC_FIND_FIRST_BIT also produces more optimized and
-fast code on MIPS (32 R2) where there is also no architecture-specific
-bitsearching routines.
-So, if it's okay for other folks, I'd suggest to go for it and enable
-for all similar arches.
+-- 
 
-(otherwise, I'll publish a separate entry for mips-next after 5.12-rc1
- release and mention you in "Suggested-by:")
-
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
->
-> ---
->  arch/arm64/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 1515f6f153a0..2b90ef1f548e 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -106,6 +106,7 @@ config ARM64
->  =09select GENERIC_CPU_AUTOPROBE
->  =09select GENERIC_CPU_VULNERABILITIES
->  =09select GENERIC_EARLY_IOREMAP
-> +=09select GENERIC_FIND_FIRST_BIT
->  =09select GENERIC_IDLE_POLL_SETUP
->  =09select GENERIC_IRQ_IPI
->  =09select GENERIC_IRQ_MULTI_HANDLER
-> --
-> 2.25.1
-
-Thanks,
-Al
-
+- Arnaldo

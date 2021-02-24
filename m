@@ -2,181 +2,114 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14764C433DB
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Feb 2021 07:58:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED754C433DB
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Feb 2021 08:00:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B2B0F64DF5
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Feb 2021 07:58:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9DFD964ED6
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Feb 2021 08:00:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233625AbhBXH55 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 24 Feb 2021 02:57:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56040 "EHLO
+        id S233939AbhBXH7t (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 24 Feb 2021 02:59:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232164AbhBXH5Z (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 24 Feb 2021 02:57:25 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F64C06178A;
-        Tue, 23 Feb 2021 23:56:45 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id r3so904964wro.9;
-        Tue, 23 Feb 2021 23:56:45 -0800 (PST)
+        with ESMTP id S234002AbhBXH72 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 24 Feb 2021 02:59:28 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B00C061574;
+        Tue, 23 Feb 2021 23:58:47 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id l13so960339wmg.5;
+        Tue, 23 Feb 2021 23:58:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=+YN7Bc5pB2WEQ1yJoqO0rNS97fCF9BNOChHdZpj7P+c=;
-        b=W2qCYlG6qxiSFTw6eXLvAyxB3shzU8qiD36vJ2zVdvPRzcgDq16TEcazS09xpp5VR1
-         q6Mk43zlSiJwFy3unwjW322SMBAZbjYT7J+O+Cq/tgPBHim4Bb3C8uDAL7xMfGyz+u0T
-         vWxPumVmtT6dg7nwjz0b4xp3waBlrmFRM+o6N5dHvsynJZClMswVEs1lmqWo4/X6Quoi
-         JlHNU3MsHGg+2AVZA9a7w+N12YVJ/E/olZcEuU1s1csGxxL5TVsn/QUokFO+E8YcpQmh
-         +Sr5KHkzIZUVqW4YN3Epbndd/x2NEHi0712MB+hsDdf1+ZAe71LUqOv1XH2VuRIHZBMA
-         2suA==
+        h=from:content-transfer-encoding:mime-version:subject:date:references
+         :to:in-reply-to:message-id;
+        bh=x1jxjjLDASCMlTc1udMdVoMLB+6UDTS14GcvKV5F870=;
+        b=EUJXnHT4N8+s9AlEtT4XP7Nbn+2XCqpqJSey5pyJ7c9VV4a7B6dzMa1Z3pIbeexsVu
+         r26rT5BkAGT2MX9LvmqggEIpuowICAfVB4KlVVinNS+NU8TWQTRNCGUnFtPnU3cvYgWb
+         hoDNT35+2z8u7x6GnnPFvn1mKCRc41Zs9+zFrGYHU2YAveemABnOmEQ8Dw5iGkjc309A
+         YkxtZYKH9HlLkaNL4UxNkdtz9cjU3I6YqQB5ha7cOohLLw8sQUiUahszhwamCANvGA92
+         ApqJjJNMmF0657q3o8XcvFyo4Fe2uZHSu1V6TNaQ2JZdL7JvvYvVO+wT++AUc57jJ4Ng
+         i/zA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+YN7Bc5pB2WEQ1yJoqO0rNS97fCF9BNOChHdZpj7P+c=;
-        b=QrHjz1QhauR7C0zt+tc77kqJs69KnGWTNwAifYaI057Vx5mXh2be9j9lJBeFkfeoCk
-         wx8p9tSM3YsAY71QvBkDd2UoTpZ/AnbKICKuCmYzSc1WXlrTq87kOQYp1x03UJTT+WJC
-         sF6yDO92WP/+iC6oiYVr4ftz0+mOTKcoXxmb6hbW6LC/A03T4GtWektFLrdYKStIIOpr
-         fR0eT1vopHLenFsvtYMO99JY6wpsQl1dtVHyFVBwmmblaXehbtKd7S8Y/F4+LlWLYq3T
-         Nc0JcSjqjUFojHuD+Epag0JU22IMq6dZMETJnWA0zNBDFAhtFdVP0YobMlesjuHPOg13
-         Pcmw==
-X-Gm-Message-State: AOAM533dbKWfUJhGqRWIOFFvywwQcOWJ2MuNoNDd2Y7qv8x6opYGATMD
-        ajRDj72TK017M8jrU7YxHK0=
-X-Google-Smtp-Source: ABdhPJyHvaxP0k4Imi07xm3ejDISkZyQxpndcRvFhBl9o+pxRbnM7JqT5x4WdsayxITrniTNxGkZKg==
-X-Received: by 2002:a05:6000:188b:: with SMTP id a11mr29814959wri.151.1614153404063;
-        Tue, 23 Feb 2021 23:56:44 -0800 (PST)
-Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id u7sm1954033wrt.67.2021.02.23.23.56.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 23:56:43 -0800 (PST)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
+        h=x-gm-message-state:from:content-transfer-encoding:mime-version
+         :subject:date:references:to:in-reply-to:message-id;
+        bh=x1jxjjLDASCMlTc1udMdVoMLB+6UDTS14GcvKV5F870=;
+        b=sXZp7xCZCeSHIYEYi0HH2YGgEaEl6zHAE5JcTjpsLOo9/H3oEPSJIIzDl0EeYRaOPN
+         4RA1mHSKgxo4MUGfQSjugNwU9nJ66evqLnSP0UPlL+gkeFzqa1y3s6vsHSsA7obBYUQS
+         Ee6gthmhdpxQ/UDV12fAo1GLK0LoQtH175l2WrMsXhq4ca5tS7Lac5H7+grSJjctvOPm
+         Cij98uGN2QrAKTXHkM8Woq1sEdFPd8E8ZBm1Jiy4gt+FFK4Tn+Bh7xNr7d6UI5tKzW+q
+         0JjVC6TOkfi1053aNxhiQDSrsE07U1rlewlqnCJnFjGBsNnMhtzfohjPKxp0838JIgRR
+         50qA==
+X-Gm-Message-State: AOAM533HZB0YzlXr6YVTOE5ZtL/gMVyDmpwoQDNWyd/2wn5yxDJ81lSL
+        aLBp+xpyPHNY4l01Gmn+qkgKrwmApOCuHk7/
+X-Google-Smtp-Source: ABdhPJwocmDHjsMb/bjg/PqDqbyy7KyVYGgYrogiTBCQkLsjFb0n1e/uOT81cP3Yjm50WxCfDzr4Kg==
+X-Received: by 2002:a7b:c5d6:: with SMTP id n22mr2421297wmk.70.1614153526385;
+        Tue, 23 Feb 2021 23:58:46 -0800 (PST)
+Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id t23sm1531021wmn.13.2021.02.23.23.58.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Feb 2021 23:58:45 -0800 (PST)
+From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v2 0/2] irqchip: add support for BCM6345 interrupt
+ controller
+Date:   Wed, 24 Feb 2021 08:58:44 +0100
+References: <20210223204340.312-1-noltari@gmail.com>
+ <20210224075640.20465-1-noltari@gmail.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Marc Zyngier <maz@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
-        =?UTF-8?q?Fern=C3=A1ndez=20Rojas?= <noltari@gmail.com>,
+        =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>,
         Jonas Gorski <jonas.gorski@gmail.com>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org
-Subject: [PATCH v2 1/2] dt-bindings: interrupt-controller: document BCM6345 external interrupt controller
-Date:   Wed, 24 Feb 2021 08:56:39 +0100
-Message-Id: <20210224075640.20465-2-noltari@gmail.com>
-X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210224075640.20465-1-noltari@gmail.com>
-References: <20210223204340.312-1-noltari@gmail.com>
- <20210224075640.20465-1-noltari@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Message-Id: <D10F711C-ECEF-4F8B-AA0A-7DACFFDD1FEB@gmail.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Document the binding for the BCM6345 external interrupt controller.
+This is supposed to be v3=E2=80=A6
+Sorry for that. Should I resend?
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
----
- v3: pass dt_binding_check.
- v2: fix title typo.
-
- .../brcm,bcm6345-ext-intc.yaml                | 78 +++++++++++++++++++
- 1 file changed, 78 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-intc.yaml
-
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-intc.yaml b/Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-intc.yaml
-new file mode 100644
-index 000000000000..a691510e78b7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-intc.yaml
-@@ -0,0 +1,78 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/interrupt-controller/brcm,bcm6345-ext-intc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Broadcom BCM6345 external interrupt controller
-+
-+maintainers:
-+  - Álvaro Fernández Rojas <noltari@gmail.com>
-+  - Jonas Gorski <jonas.gorski@gmail.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - brcm,bcm6318-ext-intc
-+      - brcm,bcm6345-ext-intc
-+
-+  "#interrupt-cells":
-+    const: 2
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#address-cells":
-+    const: 0
-+
-+  interrupt-controller: true
-+
-+  interrupts:
-+    description: Specifies the interrupt line(s) in the interrupt-parent
-+      controller node. Valid values depend on the type of parent interrupt
-+      controller.
-+    maxItems: 4
-+
-+  brcm,field-width:
-+    description: Interrupt controller field width (the default is 4).
-+    maxItems: 1
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+
-+required:
-+  - "#address-cells"
-+  - compatible
-+  - reg
-+  - "#interrupt-cells"
-+  - interrupt-controller
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    interrupt-controller@10000018 {
-+      #address-cells = <0>;
-+      compatible = "brcm,bcm6345-ext-intc";
-+      reg = <0x10000018 0x4>;
-+
-+      interrupt-parent = <&periph_intc>;
-+      #interrupt-cells = <2>;
-+
-+      interrupt-controller;
-+      interrupts = <24>, <25>, <26>, <27>;
-+    };
-+
-+  - |
-+    interrupt-controller@fffe0014 {
-+      #address-cells = <0>;
-+      compatible = "brcm,bcm6345-ext-intc";
-+      reg = <0xfffe0014 0x4>;
-+
-+      interrupt-controller;
-+      #interrupt-cells = <2>;
-+
-+      interrupt-parent = <&cpu_intc>;
-+      interrupts = <3>, <4>, <5>, <6>;
-+
-+      brcm,field-width = <5>;
-+    };
--- 
-2.20.1
+> El 24 feb 2021, a las 8:56, =C3=81lvaro Fern=C3=A1ndez Rojas =
+<noltari@gmail.com> escribi=C3=B3:
+>=20
+> This interrupt controller is present on bcm63xx SoCs in order to =
+generate
+> interrupts based on GPIO status changes.
+>=20
+> v3: pass dt_binding_check.
+> v2: fix documentation title typo.
+>=20
+> =C3=81lvaro Fern=C3=A1ndez Rojas (2):
+>  dt-bindings: interrupt-controller: document BCM6345 external =
+interrupt
+>    controller
+>  irqchip: add support for BCM6345 external interrupt controller
+>=20
+> .../brcm,bcm6345-ext-intc.yaml                |  78 +++++
+> drivers/irqchip/Kconfig                       |   4 +
+> drivers/irqchip/Makefile                      |   1 +
+> drivers/irqchip/irq-bcm6345-ext.c             | 271 ++++++++++++++++++
+> 4 files changed, 354 insertions(+)
+> create mode 100644 =
+Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-in=
+tc.yaml
+> create mode 100644 drivers/irqchip/irq-bcm6345-ext.c
+>=20
+> --=20
+> 2.20.1
+>=20
 

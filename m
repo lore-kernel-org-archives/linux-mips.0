@@ -2,74 +2,91 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2015FC433E0
-	for <linux-mips@archiver.kernel.org>; Thu, 25 Feb 2021 16:57:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28ABFC433E0
+	for <linux-mips@archiver.kernel.org>; Thu, 25 Feb 2021 22:31:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D660E64EDB
-	for <linux-mips@archiver.kernel.org>; Thu, 25 Feb 2021 16:57:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E015464EB7
+	for <linux-mips@archiver.kernel.org>; Thu, 25 Feb 2021 22:31:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232711AbhBYQ5Z (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 25 Feb 2021 11:57:25 -0500
-Received: from mout.kundenserver.de ([212.227.126.133]:56103 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233396AbhBYQ45 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Feb 2021 11:56:57 -0500
-Received: from buildfff.adridolf.com ([178.26.242.49]) by
- mrelayeu.kundenserver.de (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis)
- id 1MYNeM-1lJ7Fy0K0Y-00VNeJ; Thu, 25 Feb 2021 17:54:24 +0100
-From:   Adrian Schmutzler <freifunk@adrianschmutzler.de>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Subject: [PATCH] MIPS: octeon: add explicit interface setup on E200
-Date:   Thu, 25 Feb 2021 17:52:58 +0100
-Message-Id: <20210225165258.43995-1-freifunk@adrianschmutzler.de>
-X-Mailer: git-send-email 2.20.1
+        id S231414AbhBYWbg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 25 Feb 2021 17:31:36 -0500
+Received: from angie.orcam.me.uk ([157.25.102.26]:36966 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231326AbhBYWbf (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Feb 2021 17:31:35 -0500
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 8C1A792009C; Thu, 25 Feb 2021 23:30:52 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 84DEF92009B;
+        Thu, 25 Feb 2021 23:30:52 +0100 (CET)
+Date:   Thu, 25 Feb 2021 23:30:52 +0100 (CET)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+cc:     Jim Wilson <jimw@sifive.com>, GCC Development <gcc@gcc.gnu.org>,
+        syq@debian.org,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        Matthew Fortune <mfortune@gmail.com>,
+        Binutils <binutils@sourceware.org>
+Subject: Re: HELP: MIPS PC Relative Addressing
+In-Reply-To: <9f1b8ad3-77cc-468c-8f95-28af52616756@www.fastmail.com>
+Message-ID: <alpine.DEB.2.21.2102252301540.44210@angie.orcam.me.uk>
+References: <3ddc0595-c443-868e-c0a4-08ae8934f116@flygoat.com> <CAFyWVab4Z4BH5RxZWXJnxerjAYDNnCndMvksCHsKkFUU1q1w9g@mail.gmail.com> <db8c2df9-9487-8bfd-e205-3f88854dfa12@flygoat.com> <alpine.DEB.2.21.2102250344270.1900@angie.orcam.me.uk>
+ <9f1b8ad3-77cc-468c-8f95-28af52616756@www.fastmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:Bq0NhoEmY4IF9mQbFZdBTY2JQr1e0sRIwTsPSglfhisrKh62pME
- 30wOtsyhzrmZ1a+zOrOPIa77DJIqC+7dBdflMOi9xsdmKdpq0FPTS/KKo/Q5oVTAacBwpce
- EbSnkiU8Hpnz0s1o+mvC9JuIEFOOHmzUAup2dMdxkFChQ6TyR/Sjno6coLP3D2ZwKE1dVq6
- IiqJvynyvIx9Oa8s1w23A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Bzp0z3NFj3M=:36xXva32cM5BJPv4XWKhFf
- DlSs/FgP+EkCLbr5XsiXpgkencXwSqCV+GdYPiHmDBNL9B89mA3tipggMlDw71ntJZCVpuX59
- rH34X7nEwmWbcZgbl6/k3dJ8eukTH+ZTqm4ijmFf0EEhI3PdQEsEbZeSOlVCHKv34tSz+6Xap
- lT9AakYh2jIrsnFJSOvFyw4hehP/IPTe3i/SREndygp3dbd9QUiD665TKYeF69QREjXUjoswv
- aT/mcZ92uFuw1bQsd2oYVCFJCmt6RXssGvHQQxvOtajBHoBPCD7efmNbztmK581R6/qcp/vYk
- rKdIx29GeuJqqKmLkj/ZS3UAYVibmIc7LZ/rw+6M/Lc//CaiirTcJa4Cz7ogDBgKEu0515p+4
- nrFKrF6ClGUW17wuQOJsCKf2nsaaQyGtMi3JYjStlHalij7UZciIMttGwSWLOWxomw3FZO7pt
- yOyseV2eKg==
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Define the device explicitly instead of having it fall into the
-"unknown board" default.
+On Thu, 25 Feb 2021, Jiaxun Yang wrote:
 
-The board is already present in cvmx-bootinfo.h.
+> > > I'll take this approach first, add "lla, dlla" pseudo-instructions to
+> > > assembler and seeking optimization
+> > > in future.
+> > 
+> >  The DLA and LA macros are supposed to do that already, no need to invent 
+> > new names.
+> 
+> Hmm, how could we tell if the symbol is local?
+> Global symbols still needs to be load from GOT.
 
-Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.de>
----
- arch/mips/cavium-octeon/executive/cvmx-helper-board.c | 2 ++
- 1 file changed, 2 insertions(+)
+ Just do what all the other MIPS/GAS macros do in this situation.  GAS 
+knows whether a given symbol is local or external.
 
-diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper-board.c b/arch/mips/cavium-octeon/executive/cvmx-helper-board.c
-index abd11b7af22f..ce9d2553537e 100644
---- a/arch/mips/cavium-octeon/executive/cvmx-helper-board.c
-+++ b/arch/mips/cavium-octeon/executive/cvmx-helper-board.c
-@@ -174,6 +174,8 @@ int cvmx_helper_board_get_mii_address(int ipd_port)
- 			return 7 - ipd_port;
- 		else
- 			return -1;
-+	case CVMX_BOARD_TYPE_UBNT_E200:
-+		return -1;
- 	case CVMX_BOARD_TYPE_KONTRON_S1901:
- 		if (ipd_port == CVMX_HELPER_BOARD_MGMT_IPD_PORT)
- 			return 1;
--- 
-2.20.1
+> I saw RISC-V dealt that by “lla” pesudo-op which indicate the symbol is local.
 
+ But RISC-V is not MIPS.  Despite the similarities in the ISA its assembly 
+language and psABI conventions are subtly different throughout.
+
+> > > Btw I found we don't have any document for MIPS pseudo-instructions. RISC-V
+> > > put them in ISA manual
+> > > but it is not the case for MIPS. Is it possible to have one in binutils?
+> > 
+> >  There are MIPS assembly language books available; I'm fairly sure Dominic 
+> > Sweetman's "See MIPS Run" has a chapter (I don't have the book at hand).  
+> > I don't think GNU binutils documentation is supposed to describe the 
+> > assembly dialects supported, except maybe for GNU extensions (pseudo-ops).
+> 
+> Yeah I saw See MIPS Run, but it's not a mandatory specification.
+> Without a specification we may have different implementation across 
+> toolchains and trouble users.
+
+ I do not oppose a normative document, though there are ISAs for which 
+several independently developed assembly dialects exist (e.g. x86).
+
+ Traditionally GAS was meant as an assembler solely for GCC output, so it 
+used to be adapted as a need arose.  Having a formal specification would 
+hinder such quick adaptation.  I think we need to weigh pros and cons 
+carefully.
+
+ NB most macros date back to the IRIX if not MIPSCO compiler.  Semantics 
+has been documented in books and is pretty straightforward to apply in a 
+mechanical manner to new machine instructions that need macroisation.
+
+  Maciej

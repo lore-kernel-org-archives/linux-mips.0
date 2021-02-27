@@ -2,196 +2,145 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBDA0C433DB
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Feb 2021 23:50:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94777C433E0
+	for <linux-mips@archiver.kernel.org>; Sat, 27 Feb 2021 06:21:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7CA7664F14
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Feb 2021 23:50:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5363B64EB3
+	for <linux-mips@archiver.kernel.org>; Sat, 27 Feb 2021 06:21:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbhBZXuP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 26 Feb 2021 18:50:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230010AbhBZXuN (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 26 Feb 2021 18:50:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14E2964F0D;
-        Fri, 26 Feb 2021 23:49:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614383372;
-        bh=FJfO+W8fyUECYOdGIep5b4LImXRbOi0Z1NVltz2ti4s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rz2NZaYc4EGL6UjobhkxzdEbib/UErIdpjVVIgR7/PaCmVEpIn7vexehAOO9DBWgO
-         mx+/FSmHekA3u1juygm16M3Aa4i9FbdSGVTQrK5L+FLUQWtzY3hGdLSwSxdh5OteR+
-         4yfcW71HeYDkUG91CmtRncQwkX19EvdZu8PkdzcP/KCTVLPumKuwYvVIPnz99MHLGF
-         IM4v15AuWS9lzqldeUjjT02K6iKDCR4RuYdIqVmyYFejOwOCavqWyMsmg+3ZpiqWRa
-         s41SSiBflWbx0QG0FCabWeU90uXiMdi5dzhsETvHRELgQOx0XlxyRToWYEcvQkO3LJ
-         Pv9j9eogJgyIw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D5CF940CD9; Fri, 26 Feb 2021 20:49:29 -0300 (-03)
-Date:   Fri, 26 Feb 2021 20:49:29 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Juxin Gao <gaojuxin@loongson.cn>
-Subject: Re: [PATCH v2 0/3] Add some perf support for mips
-Message-ID: <YDmJCTxOBb7TGhqw@kernel.org>
-References: <1612409724-3516-1-git-send-email-yangtiezhu@loongson.cn>
- <1d3c4abd-4b14-90e3-6528-457a8248cb52@loongson.cn>
- <YDZRxz1yRwgWc47F@kernel.org>
- <YDec9LIikZ9EVufH@kernel.org>
- <YDehtDi4q+lFO2l6@kernel.org>
- <YDeiR66J0ohidVSq@kernel.org>
- <8894bb31-ec2b-7324-9c7f-6820d12d951e@loongson.cn>
+        id S229795AbhB0GVP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 27 Feb 2021 01:21:15 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:50100 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229751AbhB0GVN (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 27 Feb 2021 01:21:13 -0500
+Received: from localhost.localdomain (unknown [182.149.162.140])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxTeyQ5DlgFIwQAA--.4572S3;
+        Sat, 27 Feb 2021 14:20:13 +0800 (CST)
+From:   Huang Pei <huangpei@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        ambrosehua@gmail.com
+Cc:     Bibo Mao <maobibo@loongson.cn>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mips@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Fuxin Zhang <zhangfx@lemote.com>,
+        Huacai Chen <chenhc@lemote.com>
+Subject: [PATCH] MIPS: clean up CONFIG_MIPS_PGD_C0_CONTEXT handling
+Date:   Sat, 27 Feb 2021 06:19:44 +0000
+Message-Id: <20210227061944.266415-2-huangpei@loongson.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210227061944.266415-1-huangpei@loongson.cn>
+References: <20210227061944.266415-1-huangpei@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <8894bb31-ec2b-7324-9c7f-6820d12d951e@loongson.cn>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9BxTeyQ5DlgFIwQAA--.4572S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZrWrtw15KF4kWr4fArWfAFb_yoW5JFy5pa
+        srJ3WDGr4Uur15ury5AFWkWF4rtayDAa98ZFsrK3sI9FWjqF109w1xGrs0yF1DCFZ7AF4x
+        Wr4YgFyYyFnFkw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUPK14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84
+        ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1U
+        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+        v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
+        IY04v7MxkIecxEwVAFwVW8AwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8
+        JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1V
+        AFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4
+        A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU
+        0xZFpf9x0JUjD73UUUUU=
+X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Em Fri, Feb 26, 2021 at 09:11:17AM +0800, Tiezhu Yang escreveu:
-> On 02/25/2021 09:12 PM, Arnaldo Carvalho de Melo wrote:
-> > Em Thu, Feb 25, 2021 at 10:10:12AM -0300, Arnaldo Carvalho de Melo escr=
-eveu:
-> > > Em Thu, Feb 25, 2021 at 09:49:56AM -0300, Arnaldo Carvalho de Melo es=
-creveu:
-> > > > Em Wed, Feb 24, 2021 at 10:16:55AM -0300, Arnaldo Carvalho de Melo =
-escreveu:
-> > > > > Em Mon, Feb 22, 2021 at 02:43:39PM +0800, Tiezhu Yang escreveu:
-> > > > > > On 02/04/2021 11:35 AM, Tiezhu Yang wrote:
-> > > > > > > v2: add R26 and R27 to the enum perf_event_mips_regs in patch=
- #1
-> > > > > > >=20
-> > > > > > > Tiezhu Yang (3):
-> > > > > > >     MIPS: kernel: Support extracting off-line stack traces fr=
-om user-space
-> > > > > > >       with perf
-> > > > > > >     perf tools: Support mips unwinding and dwarf-regs
-> > > > > > >     perf tools: Generate mips syscalls_n64.c syscall table
-> > > > > > Hi Arnaldo,
-> > > > > >=20
-> > > > > > The kernel part patch #1 has been merged.
-> > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
-git/commit/?id=3D1ddc96bd42da
-> > > > > >=20
-> > > > > > Could the perf tool patches #2 and #3 have a chance to be merge=
-d before
-> > > > > > 5.12-rc1?
-> > > > > > If yes, we can use this feature in 5.12-rc1.
-> > > > > Thanks, applied, should make it into 5.12-rc1.
-> > > > First we'll have to fix this problem:
-> > > >=20
-> > > >    28    12.45 debian:experimental-x-mips64  : FAIL gcc version 10.=
-2.1 20201224 (Debian 10.2.1-3)
-> > > >                       from builtin-diff.c:12:
-> > > >      /git/linux/tools/perf/arch/mips/include/perf_regs.h:7:10: fata=
-l error: asm/perf_regs.h: No such file or directory
-> > > >          7 | #include <asm/perf_regs.h>
-> > > >            |          ^~~~~~~~~~~~~~~~~
-> > > >      compilation terminated.
-> > > >      In file included from util/perf_regs.h:30,
-> > > >                       from util/event.h:15,
-> > > >                       from util/branch.h:15,
-> > > >                       from util/callchain.h:8,
-> > > >                       from builtin-record.c:16:
-> > > >      /git/linux/tools/perf/arch/mips/include/perf_regs.h:7:10: fata=
-l error: asm/perf_regs.h: No such file or directory
->=20
-> Sorry for the late reply. I asked for a leave yesterday.
->=20
-> asm/perf_regs.h is a new added file in the patch #1,
-> the patch link is:
-> https://lore.kernel.org/patchwork/patch/1375477/
-> the commit is:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/a=
-rch/mips/include/uapi/asm/perf_regs.h?id=3D1ddc96bd42da
->=20
-> So we should build patch #2 based on patch #1.
+CP0 Context has enough room for wraping pgd into its 41-bit PTEBase field.
 
-yeah, my bad, since perf wasn't supported on MIPS, how could cross build
-environments have the needed files? Stooooopid me, sorry. :-) I'll
-retest after adding the needed files to my test containers.
++. For XPHYS, the trick is that pgd is 4kB aligned, and the PABITS <= 48,
+only save 48 - 12 + 5(for bit[63:59]) = 41 bits, aka. :
 
-- Arnaldo
-=20
-> Thanks,
-> Tiezhu
->=20
-> > > I'm not finding it in the debian cross build packages:
-> > >=20
-> > > root@d77a78c0aa1c:/# apt-file find perf_regs.h | grep cross
-> > > linux-libc-dev-amd64-cross: /usr/x86_64-linux-gnu/include/asm/perf_re=
-gs.h
-> > > linux-libc-dev-arm64-cross: /usr/aarch64-linux-gnu/include/asm/perf_r=
-egs.h
-> > > linux-libc-dev-armel-cross: /usr/arm-linux-gnueabi/include/asm/perf_r=
-egs.h
-> > > linux-libc-dev-armhf-cross: /usr/arm-linux-gnueabihf/include/asm/perf=
-_regs.h
-> > > linux-libc-dev-i386-cross: /usr/i686-linux-gnu/include/asm/perf_regs.h
-> > > linux-libc-dev-powerpc-cross: /usr/powerpc-linux-gnu/include/asm/perf=
-_regs.h
-> > > linux-libc-dev-ppc64-cross: /usr/powerpc64-linux-gnu/include/asm/perf=
-_regs.h
-> > > linux-libc-dev-ppc64el-cross: /usr/powerpc64le-linux-gnu/include/asm/=
-perf_regs.h
-> > > linux-libc-dev-riscv64-cross: /usr/riscv64-linux-gnu/include/asm/perf=
-_regs.h
-> > > linux-libc-dev-s390x-cross: /usr/s390x-linux-gnu/include/asm/perf_reg=
-s.h
-> > > linux-libc-dev-x32-cross: /usr/x86_64-linux-gnux32/include/asm/perf_r=
-egs.h
-> > > root@d77a78c0aa1c:/#
-> > >=20
-> > > Ideas?
-> > Trying with:
-> >=20
-> > [perfbuilder@five x-mips]$ db
-> > acmel/linux-perf-tools-build-ubuntu:19.10-x-mips
-> > STEP 1: FROM ubuntu:21.04
-> > STEP 2: MAINTAINER Arnaldo Carvalho de Melo <acme@kernel.org>
-> > STEP 3: ENV ARCH mips
-> > STEP 4: ENV TARGET mips-linux-gnu
-> > STEP 5: ENV CROSS_COMPILE=3D${TARGET}-
-> > STEP 6: RUN apt-get -y update &&     apt-get -y install make gcc-${TARG=
-ET} g++-${TARGET} flex bison git python3 &&     apt-get -y install curl wge=
-t bzip2 xz-utils file &&     export ELFUTILS_VER=3D0.173 &&     export ZLIB=
-_VER=3D1.2.11 &&     export INSTALLDIR=3D/usr/${TARGET} &&     export PATH=
-=3D$INSTALLDIR/bin:$PATH &&     export TARGETMACH=3D${TARGET} &&     export=
- CROSS=3D${TARGET}- &&     export CC=3D${CROSS}gcc &&     export LD=3D${CRO=
-SS}ld &&     export AS=3D${CROSS}as &&     wget -q http://zlib.net/zlib-${Z=
-LIB_VER}.tar.gz &&     wget -q https://fedorahosted.org/releases/e/l/elfuti=
-ls/${ELFUTILS_VER}/elfutils-${ELFUTILS_VER}.tar.bz2 &&     tar xf zlib-${ZL=
-IB_VER}.tar.gz &&     cd zlib-${ZLIB_VER} &&     ./configure --prefix=3D${I=
-NSTALLDIR} &&     make &&     make install &&     cd .. &&     rm -rf zlib-=
-${ZLIB_VER} &&     rm -f zlib-${ZLIB_VER}.tar.gz &&     tar xf elfutils-${E=
-LFUTILS_VER}.tar.bz2 &&     cd elfutils-${ELFUTILS_VER} &&     ./configure =
---host=3D${TARGET} --prefix=3D${INSTALLDIR} &&     make &&     make install=
- &&     cd .. &&     rm -rf elfutils-${ELFUTILS_VER}* &&     git clone http=
-s://github.com/Linaro/OpenCSD.git &&     make -C OpenCSD/decoder/build/linu=
-x/ CROSS_COMPILE=3D${CROSS} install &&     rm -rf OpenCSD &&     apt-get -y=
- remove wget bzip2 &&     apt-get -y clean &&     unset TARGET INSTALLDIR T=
-ARGETMACH CROSS CC LD AS &&     mkdir -m 777 -p /git /tmp/build/perf /tmp/b=
-uild/objtool /tmp/build/linux &&     groupadd -r perfbuilder &&     useradd=
- -m -r -g perfbuilder perfbuilder &&     chown -R perfbuilder.perfbuilder /=
-tmp/build/ /git/
->=20
+   bit[63:59] | 0000 0000 000 |  bit[47:12] | 0000 0000 0000
 
---=20
++. for CKSEG0, only save 29 - 12 = 17 bits
 
-- Arnaldo
++. use CAC_BASE for accessing bit[63:59] of pgd
+
++. let CONFIG_MIPS_PGD_C0_CONTEXT depend on 64bit, and protect
+build_fast_mips_refill_handler from 32bit building
+
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
+---
+ arch/mips/Kconfig    |  1 +
+ arch/mips/mm/tlbex.c | 11 ++++++-----
+ 2 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 2000bb2b0220..517509ad8596 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2142,6 +2142,7 @@ config CPU_SUPPORTS_HUGEPAGES
+ 	depends on !(32BIT && (ARCH_PHYS_ADDR_T_64BIT || EVA))
+ config MIPS_PGD_C0_CONTEXT
+ 	bool
++	depends on 64BIT
+ 	default y if 64BIT && (CPU_MIPSR2 || CPU_MIPSR6) && !CPU_XLP
+ 
+ #
+diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
+index a7521b8f7658..5bb9724578f7 100644
+--- a/arch/mips/mm/tlbex.c
++++ b/arch/mips/mm/tlbex.c
+@@ -848,8 +848,8 @@ void build_get_pmde64(u32 **p, struct uasm_label **l, struct uasm_reloc **r,
+ 		/* Clear lower 23 bits of context. */
+ 		uasm_i_dins(p, ptr, 0, 0, 23);
+ 
+-		/* 1 0	1 0 1  << 6  xkphys cached */
+-		uasm_i_ori(p, ptr, ptr, 0x540);
++		/* insert bit[63:59] of CAC_BASE into bit[11:6] of ptr */
++		uasm_i_ori(p, ptr, ptr, (CAC_BASE >> 53));
+ 		uasm_i_drotr(p, ptr, ptr, 11);
+ #elif defined(CONFIG_SMP)
+ 		UASM_i_CPUID_MFC0(p, ptr, SMP_CPUID_REG);
+@@ -1106,6 +1106,7 @@ struct mips_huge_tlb_info {
+ 	bool need_reload_pte;
+ };
+ 
++#ifdef CONFIG_64BIT
+ static struct mips_huge_tlb_info
+ build_fast_tlb_refill_handler (u32 **p, struct uasm_label **l,
+ 			       struct uasm_reloc **r, unsigned int tmp,
+@@ -1164,8 +1165,8 @@ build_fast_tlb_refill_handler (u32 **p, struct uasm_label **l,
+ 
+ 	if (pgd_reg == -1) {
+ 		vmalloc_branch_delay_filled = 1;
+-		/* 1 0	1 0 1  << 6  xkphys cached */
+-		uasm_i_ori(p, ptr, ptr, 0x540);
++		/* insert bit[63:59] of CAC_BASE into bit[11:6] of ptr */
++		uasm_i_ori(p, ptr, ptr, (CAC_BASE >> 53));
+ 		uasm_i_drotr(p, ptr, ptr, 11);
+ 	}
+ 
+@@ -1292,7 +1293,7 @@ build_fast_tlb_refill_handler (u32 **p, struct uasm_label **l,
+ 
+ 	return rv;
+ }
+-
++#endif
+ /*
+  * For a 64-bit kernel, we are using the 64-bit XTLB refill exception
+  * because EXL == 0.  If we wrap, we can also use the 32 instruction
+-- 
+2.25.1
+

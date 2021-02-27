@@ -2,85 +2,78 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41001C433E0
-	for <linux-mips@archiver.kernel.org>; Sat, 27 Feb 2021 12:33:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5295FC433E0
+	for <linux-mips@archiver.kernel.org>; Sat, 27 Feb 2021 13:41:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 11C7264EC4
-	for <linux-mips@archiver.kernel.org>; Sat, 27 Feb 2021 12:33:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 179C764EB3
+	for <linux-mips@archiver.kernel.org>; Sat, 27 Feb 2021 13:41:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhB0Mdf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 27 Feb 2021 07:33:35 -0500
-Received: from mail.zx2c4.com ([104.131.123.232]:48494 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229946AbhB0Mdf (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 27 Feb 2021 07:33:35 -0500
-X-Greylist: delayed 398 seconds by postgrey-1.27 at vger.kernel.org; Sat, 27 Feb 2021 07:33:34 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1614428772;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Ry9CguLjSJN7rtJ7Hd6Rr3nL04/AvoiTOVx4rEJ21ko=;
-        b=URHv/HGpZCNCeT9v0Xb+hk3oGa/hUU4metdTP7iFC0LoZVhxkBbDzpbBE6uUpB9mlBcEsl
-        pHk/Xhrh3+ZFstBRXYo3L3C2muKVTYtzTAZsIhDjG5bNOuZpNKTN5qk7xtRpRkG5YX+ekm
-        kpebwYGo27ADsXRKm1aq2rRSTDgkZlY=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 4d9fd2bb (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Sat, 27 Feb 2021 12:26:11 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        id S229953AbhB0Nlh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 27 Feb 2021 08:41:37 -0500
+Received: from angie.orcam.me.uk ([157.25.102.26]:36996 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhB0Nlg (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 27 Feb 2021 08:41:36 -0500
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 1379E92009C; Sat, 27 Feb 2021 14:40:55 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 06EF692009B;
+        Sat, 27 Feb 2021 14:40:55 +0100 (CET)
+Date:   Sat, 27 Feb 2021 14:40:54 +0100 (CET)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Ralf Baechle <ralf@linux-mips.org>,
         George Cherian <gcherian@marvell.com>,
         Huacai Chen <chenhuacai@kernel.org>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH] MIPS: select CPU_MIPS64 for remaining MIPS64 CPUs
-Date:   Sat, 27 Feb 2021 13:26:05 +0100
-Message-Id: <20210227122605.2680138-1-Jason@zx2c4.com>
+Subject: Re: [PATCH] MIPS: select CPU_MIPS64 for remaining MIPS64 CPUs
+In-Reply-To: <20210227122605.2680138-1-Jason@zx2c4.com>
+Message-ID: <alpine.DEB.2.21.2102271424100.44210@angie.orcam.me.uk>
+References: <20210227122605.2680138-1-Jason@zx2c4.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The CPU_MIPS64 and CPU_MIPS32 variables are supposed to be able to
-distinguish broadly between 64-bit and 32-bit MIPS CPUs. However, they
-weren't selected by the specialty CPUs, Octeon and Loongson, which meant
-it was possible to hit a weird state of:
+On Sat, 27 Feb 2021, Jason A. Donenfeld wrote:
 
-    MIPS=y, CONFIG_64BIT=y, CPU_MIPS64=n
+> The CPU_MIPS64 and CPU_MIPS32 variables are supposed to be able to
+> distinguish broadly between 64-bit and 32-bit MIPS CPUs. However, they
 
-This commit rectifies the issue by having CPU_MIPS64 be selected when
-the missing Octeon or Loongson models are selected.
+ That is not true.  The purpose of these options is to identify MIPS64 and 
+MIPS32 ISA processors respectively (and the generic features these ISAs 
+imply).  There are 64-bit and 32-bit MIPS processors which do not qualify, 
+specifically all MIPS I, MIPS II, MIPS III, and MIPS IV implementations.
 
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: George Cherian <gcherian@marvell.com>
-Cc: Huacai Chen <chenhuacai@kernel.org>
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- arch/mips/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> weren't selected by the specialty CPUs, Octeon and Loongson, which meant
+> it was possible to hit a weird state of:
+> 
+>     MIPS=y, CONFIG_64BIT=y, CPU_MIPS64=n
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index d89efba3d8a4..3e0e8f1d2e82 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -2118,7 +2118,7 @@ config CPU_MIPS32
- config CPU_MIPS64
- 	bool
- 	default y if CPU_MIPS64_R1 || CPU_MIPS64_R2 || CPU_MIPS64_R5 || \
--		     CPU_MIPS64_R6
-+		     CPU_MIPS64_R6 || CPU_LOONGSON64 || CPU_CAVIUM_OCTEON
- 
- #
- # These indicate the revision of the architecture
--- 
-2.30.1
+ This is a correct combination for MIPS III and MIPS IV processors.
 
+> This commit rectifies the issue by having CPU_MIPS64 be selected when
+> the missing Octeon or Loongson models are selected.
+
+ From the description and/or other options selected by CPU_LOONGSON64 and 
+CPU_CAVIUM_OCTEON I infer the change itself is correct, so you only need 
+to rewrite the change description.
+
+ Though overall it seems we have quite a mess here, several other CPUs, 
+such as at the very least CPU_XLR and CPU_XLP, do not select this option 
+either, and then we have say CPU_MIPSR2 that is selected by some CPUs 
+while being conditional on other ones.  All this stuff asks for being 
+rewritten in a consistent manner.
+
+ In any case your change may have to be run-time verified though with the 
+respective processors.
+
+  Maciej

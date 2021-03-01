@@ -7,65 +7,52 @@ X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAF0AC433E6
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2706C4332B
 	for <linux-mips@archiver.kernel.org>; Mon,  1 Mar 2021 15:04:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 907C864DF5
+	by mail.kernel.org (Postfix) with ESMTP id B595D64DEF
 	for <linux-mips@archiver.kernel.org>; Mon,  1 Mar 2021 15:04:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236880AbhCAPEQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 1 Mar 2021 10:04:16 -0500
-Received: from elvis.franken.de ([193.175.24.41]:33717 "EHLO elvis.franken.de"
+        id S236895AbhCAPEV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 1 Mar 2021 10:04:21 -0500
+Received: from elvis.franken.de ([193.175.24.41]:33721 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236855AbhCAPEB (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S236876AbhCAPEB (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Mon, 1 Mar 2021 10:04:01 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lGk4r-00041h-00; Mon, 01 Mar 2021 16:03:17 +0100
+        id 1lGk4s-00041h-03; Mon, 01 Mar 2021 16:03:18 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id B6038C0193; Mon,  1 Mar 2021 15:48:00 +0100 (CET)
-Date:   Mon, 1 Mar 2021 15:48:00 +0100
+        id 516F0C03C2; Mon,  1 Mar 2021 15:51:01 +0100 (CET)
+Date:   Mon, 1 Mar 2021 15:51:01 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Adrian Schmutzler <freifunk@adrianschmutzler.de>
-Cc:     linux-mips@vger.kernel.org
-Subject: Re: [PATCH] MIPS: octeon: add explicit interface setup on E200
-Message-ID: <20210301144800.GA11261@alpha.franken.de>
-References: <20210225165258.43995-1-freifunk@adrianschmutzler.de>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mips: cavium: Replace DEFINE_SIMPLE_ATTRIBUTE with
+ DEFINE_DEBUGFS_ATTRIBUTE
+Message-ID: <20210301145101.GF11261@alpha.franken.de>
+References: <1614154206-19069-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210225165258.43995-1-freifunk@adrianschmutzler.de>
+In-Reply-To: <1614154206-19069-1-git-send-email-yang.lee@linux.alibaba.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 05:52:58PM +0100, Adrian Schmutzler wrote:
-> Define the device explicitly instead of having it fall into the
-> "unknown board" default.
+On Wed, Feb 24, 2021 at 04:10:06PM +0800, Yang Li wrote:
+> Fix the following coccicheck warning:
+> ./arch/mips/cavium-octeon/oct_ilm.c:65:0-23: WARNING:
+> reset_statistics_ops should be defined with DEFINE_DEBUGFS_ATTRIBUTE
 > 
-> The board is already present in cvmx-bootinfo.h.
-> 
-> Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.de>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 > ---
->  arch/mips/cavium-octeon/executive/cvmx-helper-board.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper-board.c b/arch/mips/cavium-octeon/executive/cvmx-helper-board.c
-> index abd11b7af22f..ce9d2553537e 100644
-> --- a/arch/mips/cavium-octeon/executive/cvmx-helper-board.c
-> +++ b/arch/mips/cavium-octeon/executive/cvmx-helper-board.c
-> @@ -174,6 +174,8 @@ int cvmx_helper_board_get_mii_address(int ipd_port)
->  			return 7 - ipd_port;
->  		else
->  			return -1;
-> +	case CVMX_BOARD_TYPE_UBNT_E200:
-> +		return -1;
->  	case CVMX_BOARD_TYPE_KONTRON_S1901:
->  		if (ipd_port == CVMX_HELPER_BOARD_MGMT_IPD_PORT)
->  			return 1;
+>  arch/mips/cavium-octeon/oct_ilm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-why doesn't the device tree provide the phy address ?
+applied to mips-next.
 
 Thomas.
 

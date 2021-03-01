@@ -4,53 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2706C4332B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF19DC4332D
 	for <linux-mips@archiver.kernel.org>; Mon,  1 Mar 2021 15:04:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B595D64DEF
+	by mail.kernel.org (Postfix) with ESMTP id C827664DAF
 	for <linux-mips@archiver.kernel.org>; Mon,  1 Mar 2021 15:04:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236895AbhCAPEV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 1 Mar 2021 10:04:21 -0500
-Received: from elvis.franken.de ([193.175.24.41]:33721 "EHLO elvis.franken.de"
+        id S236891AbhCAPEX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 1 Mar 2021 10:04:23 -0500
+Received: from elvis.franken.de ([193.175.24.41]:33733 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236876AbhCAPEB (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S236883AbhCAPEB (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Mon, 1 Mar 2021 10:04:01 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lGk4s-00041h-03; Mon, 01 Mar 2021 16:03:18 +0100
+        id 1lGk4s-00041h-00; Mon, 01 Mar 2021 16:03:18 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 516F0C03C2; Mon,  1 Mar 2021 15:51:01 +0100 (CET)
-Date:   Mon, 1 Mar 2021 15:51:01 +0100
+        id 2FAB8C03C2; Mon,  1 Mar 2021 15:49:08 +0100 (CET)
+Date:   Mon, 1 Mar 2021 15:49:08 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mips: cavium: Replace DEFINE_SIMPLE_ATTRIBUTE with
- DEFINE_DEBUGFS_ATTRIBUTE
-Message-ID: <20210301145101.GF11261@alpha.franken.de>
-References: <1614154206-19069-1-git-send-email-yang.lee@linux.alibaba.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Alexey Klimov <aklimov@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH 2/2] MIPS: enable GENERIC_FIND_FIRST_BIT
+Message-ID: <20210301144908.GC11261@alpha.franken.de>
+References: <20210225135700.1381396-1-yury.norov@gmail.com>
+ <20210225135700.1381396-3-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1614154206-19069-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <20210225135700.1381396-3-yury.norov@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 04:10:06PM +0800, Yang Li wrote:
-> Fix the following coccicheck warning:
-> ./arch/mips/cavium-octeon/oct_ilm.c:65:0-23: WARNING:
-> reset_statistics_ops should be defined with DEFINE_DEBUGFS_ATTRIBUTE
+On Thu, Feb 25, 2021 at 05:57:00AM -0800, Yury Norov wrote:
+> From: Alexander Lobakin <alobakin@pm.me>
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> MIPS doesn't have architecture-optimized bitsearching functions,
+> like find_{first,next}_bit() etc.
+> It's absolutely harmless to enable GENERIC_FIND_FIRST_BIT as this
+> functionality is not new at all and well-tested. It provides more
+> optimized code and saves some .text memory (32 R2):
+> 
+> add/remove: 4/1 grow/shrink: 1/53 up/down: 216/-372 (-156)
+> 
+> Users of for_each_set_bit() like hotpath gic_handle_shared_int()
+> will also benefit from this.
+> 
+> Suggested-by: Yury Norov <yury.norov@gmail.com>
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
 > ---
->  arch/mips/cavium-octeon/oct_ilm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/mips/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
 applied to mips-next.
 

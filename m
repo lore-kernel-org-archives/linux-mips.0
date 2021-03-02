@@ -2,136 +2,158 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57A28C433DB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9256C433E9
 	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 00:36:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2822264FB2
+	by mail.kernel.org (Postfix) with ESMTP id 751D564FCA
 	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 00:36:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237521AbhCCAYB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 2 Mar 2021 19:24:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376386AbhCBH4G (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 2 Mar 2021 02:56:06 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2AAC061788;
-        Mon,  1 Mar 2021 23:44:41 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id r25so21736735ljk.11;
-        Mon, 01 Mar 2021 23:44:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3TtSrnXBguUPTi71hdOlnm4h8qMyGVSuM0R08lOrQW4=;
-        b=uots3Sxm9SoiIi+QE2AQP6TZSdeyhTt/s5Xh/05aX+PTwfgq0Mm1+r1XygmqDKXg1v
-         aidObKrhOU7m/gSqHRqUjOcBYCbjrn8SQUlhIRKPehAaZmxR7phXvLt3XAYGwhciak5m
-         3rrbNzKEDtMxygnR+Nao6WjEd9Z3xyW8eQXz9oLuE0NGqphifmyVF2jd6fcT2Usom8kB
-         mYhRpgnGbB4oanr4KvJdBRxA/yoprN29gi7c8H3tMJRw20ONETkNSjRBeff/Inke4jWl
-         o5XpzcwvReYXJ0sjZmIjb1FermlSQX4tAdZ/b7CcyxlxgnGJwC30JCXMPKyWXcAZdsDA
-         gkyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3TtSrnXBguUPTi71hdOlnm4h8qMyGVSuM0R08lOrQW4=;
-        b=af7RAlnBp01/VPfLscy+GShMwDdCsAZKN4+H+xQcR1oF09EUInV4BARFoGvf6ViDDh
-         xJ0iK90s6MedkjWBqPE0vDSTg5DNPCEorl9EwkCxE+gzDv/Y1IxZpPlD6/E79HfFFO/A
-         G1vCi95XYVi0dA4O3mIzm1zzN3RO1VvCofqeGao9Xes69HN9YhZKnEviiZzCngr/Rcqj
-         BrsgMsr4eeiu009VD8nXgmcXV1dzIM7q6cuQm2hI96AKSYIa3C5IPX5chMARb0/FhfDo
-         8D/YcbeazpogLnfLP4PUPXEiYpNRZLNMocBVlrNCsefP7kVqXaB5uonJN0hDw/P6T+La
-         2W6A==
-X-Gm-Message-State: AOAM531DuDhuF20TXX33+zCj0Na17c6m+qpji2/rP9jTQ1e9ovI9ad5s
-        t2B8LO6i9F6wyZQQVXHLT4U=
-X-Google-Smtp-Source: ABdhPJzj5bJtO4TF9wl6Qz1I7getHrofm1x9Oh+YQo5fkpbR6AtYw3Jw8p0DBAzHIs5abIwxraiWwQ==
-X-Received: by 2002:a05:651c:1022:: with SMTP id w2mr10340293ljm.455.1614671080079;
-        Mon, 01 Mar 2021 23:44:40 -0800 (PST)
-Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.gmail.com with ESMTPSA id e15sm2552600lfs.83.2021.03.01.23.44.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 23:44:39 -0800 (PST)
-From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Vivek Unune <npcomplete13@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH stblinux.git 1/2] dt-bindings: firmware: add Broadcom's NVRAM memory mapping
-Date:   Tue,  2 Mar 2021 08:44:04 +0100
-Message-Id: <20210302074405.18998-1-zajec5@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S237562AbhCCAYc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 2 Mar 2021 19:24:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236028AbhCBILu (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 2 Mar 2021 03:11:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 315116146D;
+        Tue,  2 Mar 2021 08:09:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614672569;
+        bh=b7MRmgm5OlBAwHlkF3g3dXoVjRXEXsxIMOfK1akZc6A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LeOStWJeirYyUSKXEVj1C91TXQyyc75dmOuQ+MqpKvL9FsqFUdgTDwc1ZJrMr4j0X
+         +mNjdNVL0vI0a4Kpl4Z5vmsdixvN2SUnzRRTlaU4Fh+4GUTFh7cb7gmeN2j9YCRC8m
+         cWqV23ljMqm3tnYs+ZM3LzIPFWtNZxu4DfdOzLx1cYJ+WiCGCfJyWMGFtmp1SLo+zN
+         MUmafnfGuOgldn/WPPRsGCJ13XvNHyQMEom0RCEvLJ9DpzUFVcXKM8vxFSoNhWVeL/
+         yRHjzCBB82l9t1sQCEoOcU8PrKlYb1h60hS0/EBacHb+1k6iXi0HfbzwEh8NrPkfaC
+         cfuhc/uaWAljA==
+Date:   Tue, 2 Mar 2021 10:09:20 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-mips@vger.kernel.org, fancer.lancer@gmail.com, guro@fb.com,
+        akpm@linux-foundation.org, paul@crapouillou.net,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MIPS: BMIPS: Reserve exception base to prevent corruption
+Message-ID: <YD3ysGd86zRjOLQa@kernel.org>
+References: <20210301092241.i7dxo7zbg3ar55d6@mobilestation>
+ <20210302041940.3663823-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302041940.3663823-1-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+On Mon, Mar 01, 2021 at 08:19:38PM -0800, Florian Fainelli wrote:
+> BMIPS is one of the few platforms that do change the exception base.
+> After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
+> with kernel_end") we started seeing BMIPS boards fail to boot with the
+> built-in FDT being corrupted.
+> 
+> Before the cited commit, early allocations would be in the [kernel_end,
+> RAM_END] range, but after commit they would be within [RAM_START +
+> PAGE_SIZE, RAM_END].
+> 
+> The custom exception base handler that is installed by
+> bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
+> memory region allocated by unflatten_and_copy_device_tree() thus
+> corrupting the FDT used by the kernel.
+> 
+> To fix this, we need to perform an early reservation of the custom
+> exception that is going to be installed and this needs to happen at
+> plat_mem_setup() time to ensure that unflatten_and_copy_device_tree()
+> finds a space that is suitable, away from reserved memory.
+> 
+> Huge thanks to Serget for analysing and proposing a solution to this
+> issue.
+> 
+> Fixes: Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
+> Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 
-NVRAM structure contains device data and can be accessed using MMIO.
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- .../bindings/firmware/brcm,nvram.yaml         | 41 +++++++++++++++++++
- 1 file changed, 41 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/firmware/brcm,nvram.yaml
+> ---
+> Thomas,
+> 
+> This is intended as a stop-gap solution for 5.12-rc1 and to be picked up
+> by the stable team for 5.11. We should find a safer way to avoid these
+> problems for 5.13 maybe.
+> 
+>  arch/mips/bmips/setup.c       | 22 ++++++++++++++++++++++
+>  arch/mips/include/asm/traps.h |  2 ++
+>  2 files changed, 24 insertions(+)
+> 
+> diff --git a/arch/mips/bmips/setup.c b/arch/mips/bmips/setup.c
+> index 31bcfa4e08b9..0088bd45b892 100644
+> --- a/arch/mips/bmips/setup.c
+> +++ b/arch/mips/bmips/setup.c
+> @@ -149,6 +149,26 @@ void __init plat_time_init(void)
+>  	mips_hpt_frequency = freq;
+>  }
+>  
+> +static void __init bmips_ebase_reserve(void)
+> +{
+> +	phys_addr_t base, size = VECTORSPACING * 64;
+> +
+> +	switch (current_cpu_type()) {
+> +	default:
+> +	case CPU_BMIPS4350:
+> +		return;
+> +	case CPU_BMIPS3300:
+> +	case CPU_BMIPS4380:
+> +		base = 0x0400;
+> +		break;
+> +	case CPU_BMIPS5000:
+> +		base = 0x1000;
+> +		break;
+> +	}
+> +
+> +	memblock_reserve(base, size);
+> +}
+> +
+>  void __init plat_mem_setup(void)
+>  {
+>  	void *dtb;
+> @@ -169,6 +189,8 @@ void __init plat_mem_setup(void)
+>  
+>  	__dt_setup_arch(dtb);
+>  
+> +	bmips_ebase_reserve();
+> +
+>  	for (q = bmips_quirk_list; q->quirk_fn; q++) {
+>  		if (of_flat_dt_is_compatible(of_get_flat_dt_root(),
+>  					     q->compatible)) {
+> diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
+> index 6aa8f126a43d..0ba6bb7f9618 100644
+> --- a/arch/mips/include/asm/traps.h
+> +++ b/arch/mips/include/asm/traps.h
+> @@ -14,6 +14,8 @@
+>  #define MIPS_BE_FIXUP	1		/* return to the fixup code */
+>  #define MIPS_BE_FATAL	2		/* treat as an unrecoverable error */
+>  
+> +#define VECTORSPACING 0x100	/* for EI/VI mode */
+> +
+>  extern void (*board_be_init)(void);
+>  extern int (*board_be_handler)(struct pt_regs *regs, int is_fixup);
+>  
+> -- 
+> 2.25.1
+> 
 
-diff --git a/Documentation/devicetree/bindings/firmware/brcm,nvram.yaml b/Documentation/devicetree/bindings/firmware/brcm,nvram.yaml
-new file mode 100644
-index 000000000000..12af8e2e7c9c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/firmware/brcm,nvram.yaml
-@@ -0,0 +1,41 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/firmware/brcm,nvram.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Broadcom's NVRAM
-+
-+maintainers:
-+  - Rafał Miłecki <rafal@milecki.pl>
-+
-+description: |
-+  NVRAM is a structure containing device specific environment variables.
-+  It is used for storing device configuration, booting parameters and
-+  calibration data.
-+
-+  It's required very early in booting process and so is made available
-+  using memory mapping.
-+
-+  NVRAM can be found on Broadcom BCM47xx MIPS, Northstar ARM Cortex-A9
-+  and some more devices.
-+
-+properties:
-+  compatible:
-+    const: brcm,nvram
-+
-+  reg:
-+    description: memory region with NVRAM data
-+    maxItems: 1
-+
-+required:
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    nvram@1e000000 {
-+         compatible = "brcm,nvram";
-+         reg = <0x1e000000 0x10000>;
-+    };
 -- 
-2.26.2
-
+Sincerely yours,
+Mike.

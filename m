@@ -2,95 +2,158 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F24E9C4360C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62FB6C43333
 	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 00:36:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CF9A164FC8
+	by mail.kernel.org (Postfix) with ESMTP id 21F6164FBC
 	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 00:36:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237960AbhCCAZ7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 2 Mar 2021 19:25:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1446811AbhCBQPt (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 2 Mar 2021 11:15:49 -0500
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 057FEC06178A;
-        Tue,  2 Mar 2021 08:14:02 -0800 (PST)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 13B8A92009C; Tue,  2 Mar 2021 17:14:01 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 05E9692009B;
-        Tue,  2 Mar 2021 17:14:00 +0100 (CET)
-Date:   Tue, 2 Mar 2021 17:14:00 +0100 (CET)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     YunQiang Su <yunqiang.su@cipunited.com>
-cc:     tsbogend@alpha.franken.de, jiaxun.yang@flygoat.com,
-        linux-mips@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v6] MIPS: force use FR=0 for FPXX binary
-In-Reply-To: <20210302022907.1835-1-yunqiang.su@cipunited.com>
-Message-ID: <alpine.DEB.2.21.2103021645120.19637@angie.orcam.me.uk>
-References: <20210302022907.1835-1-yunqiang.su@cipunited.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S237842AbhCCAZa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 2 Mar 2021 19:25:30 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:46002 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1448083AbhCBNzK (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 2 Mar 2021 08:55:10 -0500
+Date:   Tue, 2 Mar 2021 16:54:25 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>, <linux-mips@vger.kernel.org>,
+        <guro@fb.com>, <akpm@linux-foundation.org>, <paul@crapouillou.net>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MIPS: BMIPS: Reserve exception base to prevent corruption
+Message-ID: <20210302135425.xjvagpjxx57kdruj@mobilestation>
+References: <20210301092241.i7dxo7zbg3ar55d6@mobilestation>
+ <20210302041940.3663823-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210302041940.3663823-1-f.fainelli@gmail.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, 2 Mar 2021, YunQiang Su wrote:
-
-> The MIPS FPU may have 2 mode:
->   FR=0: MIPS I style, odd-FPR can only be single,
->         and even-FPR can be double.
-
- Depending on the ISA level FR=0 may or may not allow single arithmetic 
-with odd-numbered FPRs.  Compare the FP64A ABI.
-
->   FR=1: all 32 FPR can be double.
-
- I think it's best to describe the FR=0 mode as one where the FP registers 
-are 32-bit and the FR=1 mode as one where the FP registers are 64-bit 
-(this mode is also needed for the paired-single format).  See:
-
-<https://dmz-portal.mips.com/wiki/MIPS_O32_ABI_-_FR0_and_FR1_Interlinking#1._Introduction>
-
-> The binary may have 3 mode:
->   FP32: can only work with FR=0 mode
->   FPXX: can work with both FR=0 and FR=1 mode.
->   FP64: can only work with FR=1 mode
+On Mon, Mar 01, 2021 at 08:19:38PM -0800, Florian Fainelli wrote:
+> BMIPS is one of the few platforms that do change the exception base.
+> After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
+> with kernel_end") we started seeing BMIPS boards fail to boot with the
+> built-in FDT being corrupted.
 > 
-> Some binary, for example the output of golang, may be mark as FPXX,
-> while in fact they are FP32.
+> Before the cited commit, early allocations would be in the [kernel_end,
+> RAM_END] range, but after commit they would be within [RAM_START +
+> PAGE_SIZE, RAM_END].
 > 
-> Currently, FR=1 mode is used for all FPXX binary, it makes some wrong
-> behivour of the binaries. Since FPXX binary can work with both FR=1 and FR=0,
-> we force it to use FR=0.
+> The custom exception base handler that is installed by
+> bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
+> memory region allocated by unflatten_and_copy_device_tree() thus
+> corrupting the FDT used by the kernel.
+> 
+> To fix this, we need to perform an early reservation of the custom
+> exception that is going to be installed and this needs to happen at
+> plat_mem_setup() time to ensure that unflatten_and_copy_device_tree()
+> finds a space that is suitable, away from reserved memory.
+> 
+> Huge thanks to Serget for analysing and proposing a solution to this
+> issue.
+> 
+> Fixes: Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
 
- I think you need to document here what we discussed, that is the linker 
-bug exposed in the context of FPXX annotation by legacy modules that lack 
-FP mode annotation, which is the underlying problem.
+> Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
 
-> v5->v6:
-> 	Rollback to V3, aka remove config option.
+I'd change the order of these two tags... 
 
- You can't reuse v3 as it stands because it breaks R6 as we previously 
-discussed.  You need to tell R6 and earlier ISAs apart and set the FR bit 
-accordingly.
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
 
- It would be more proper I suppose if we actually checked at the boot time 
-whether the bit is writable, just like we handle NAN2008, but I don't see 
-it as a prerequisite for this workaround since we currently don't do this 
-either (it would also be good to check if the FP emulation code gets the 
-read-only FR bit right for R6 for FPU-less operation).
+> Thomas,
+> 
+> This is intended as a stop-gap solution for 5.12-rc1 and to be picked up
+> by the stable team for 5.11. We should find a safer way to avoid these
+> problems for 5.13 maybe.
 
- Also you need to put the history in the comment section and not the 
-commit description, so that the change can be directly applied and does 
-not have to be hand-edited by the maintainer.  You don't want to overload 
-him with mechanical work.
+Thomas, could you join the discussion? If we had a more clever
+solution to reserve the exceptions table for each possibly affected
+platform this patch could have been omitted.
 
-  Maciej
+> 
+>  arch/mips/bmips/setup.c       | 22 ++++++++++++++++++++++
+>  arch/mips/include/asm/traps.h |  2 ++
+>  2 files changed, 24 insertions(+)
+> 
+> diff --git a/arch/mips/bmips/setup.c b/arch/mips/bmips/setup.c
+> index 31bcfa4e08b9..0088bd45b892 100644
+> --- a/arch/mips/bmips/setup.c
+> +++ b/arch/mips/bmips/setup.c
+> @@ -149,6 +149,26 @@ void __init plat_time_init(void)
+>  	mips_hpt_frequency = freq;
+>  }
+>  
+> +static void __init bmips_ebase_reserve(void)
+> +{
+> +	phys_addr_t base, size = VECTORSPACING * 64;
+> +
+> +	switch (current_cpu_type()) {
+> +	default:
+> +	case CPU_BMIPS4350:
+> +		return;
+> +	case CPU_BMIPS3300:
+> +	case CPU_BMIPS4380:
+> +		base = 0x0400;
+> +		break;
+> +	case CPU_BMIPS5000:
+> +		base = 0x1000;
+> +		break;
+> +	}
+> +
+> +	memblock_reserve(base, size);
+> +}
+> +
+>  void __init plat_mem_setup(void)
+>  {
+>  	void *dtb;
+> @@ -169,6 +189,8 @@ void __init plat_mem_setup(void)
+>  
+>  	__dt_setup_arch(dtb);
+>  
+> +	bmips_ebase_reserve();
+> +
+>  	for (q = bmips_quirk_list; q->quirk_fn; q++) {
+>  		if (of_flat_dt_is_compatible(of_get_flat_dt_root(),
+>  					     q->compatible)) {
+> diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
+> index 6aa8f126a43d..0ba6bb7f9618 100644
+> --- a/arch/mips/include/asm/traps.h
+> +++ b/arch/mips/include/asm/traps.h
+> @@ -14,6 +14,8 @@
+>  #define MIPS_BE_FIXUP	1		/* return to the fixup code */
+>  #define MIPS_BE_FATAL	2		/* treat as an unrecoverable error */
+>  
+
+> +#define VECTORSPACING 0x100	/* for EI/VI mode */
+
+What about the same macro declared in arch/mips/kernel/traps.c? I'd suggest
+to remove it from there and explicitly #include this header file into
+the arch/mips/bmips/setup.c file.
+
+-Sergey
+
+> +
+>  extern void (*board_be_init)(void);
+>  extern int (*board_be_handler)(struct pt_regs *regs, int is_fixup);
+>  
+> -- 
+> 2.25.1
+> 

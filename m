@@ -2,81 +2,150 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04E4BC433DB
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 00:36:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D0D3C4361A
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 00:37:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C479E64FB5
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 00:36:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6EFB664FB5
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 00:37:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238188AbhCCA0x (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 2 Mar 2021 19:26:53 -0500
-Received: from mail.zx2c4.com ([104.131.123.232]:38382 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235839AbhCCAGH (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 2 Mar 2021 19:06:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1614729918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hu5rUdRCpl3115tdjb2CXsKF42860nLKk28rIF3vUvs=;
-        b=jRZDHLjoRhck+DeCo78Rt8LrGhOqqldho5jWpiiwaIK9YhLZBOSjv96gFSyxER7ESdcnLg
-        tvpQDv/TUUhtH7NLFCkPEq/FiracSSS80eifegT84GgDTv7V/bkTFf0YyiAwz/8sFoz34c
-        MQytqb5HNjtMeq+8RnsQiRQjEUAjCv0=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 5ab4cd11 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Wed, 3 Mar 2021 00:05:17 +0000 (UTC)
-Received: by mail-yb1-f171.google.com with SMTP id u3so22612663ybk.6;
-        Tue, 02 Mar 2021 16:05:17 -0800 (PST)
-X-Gm-Message-State: AOAM531GAnx46veUNdY6JZYUCGiMZo4HBntws4bo0o5i9p95ULySfTjL
-        q05SCNjGeGtu3WG/d/pRwYXktMhA+/ooiswqFIg=
-X-Google-Smtp-Source: ABdhPJwL9CtL0mwwiNNbS3nzTWS8KvgaQ8m0SkTxt76PNVzGYNFLaBC5zXXA/CQhfgLaKBlzeZzkLexlw1ZImmpXRd0=
-X-Received: by 2002:a25:1442:: with SMTP id 63mr25858496ybu.123.1614729917061;
- Tue, 02 Mar 2021 16:05:17 -0800 (PST)
+        id S237180AbhCCAWG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 2 Mar 2021 19:22:06 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:59013 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1837117AbhCBHZE (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 2 Mar 2021 02:25:04 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id E47CC1012;
+        Tue,  2 Mar 2021 02:23:47 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 02 Mar 2021 02:23:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=Q
+        UkkO+HUiTfmvEyeYQhKr2uoeDkoPgcnYhHr2cEfPXA=; b=Cc5HaU7R3g6VjxLuG
+        +JprjgLje7gFtX/yfFXjY9DBvWZ5jzcFfb6nA0A4DPTbwE1z8HfpmIgZErUxmW+u
+        5Utpnt5bS3wxZHtFmFdo6UoA8IAPJiNsiFDF6yaMziph2Kn+a5C7Yap4Qt3Ycl3h
+        AV6Ahd7xKBwu/gqvTCbdKEjRybWiNgaxqVkICn+34tXcwyFxzFN47XGTwQWD8Aas
+        5F+1bCev1cw6z/dqAP739dqdljWtC6KKQH/lFKIFKhQgPmUpFIP0Y34SBVC6HCBw
+        9f8o15aYVBD8yEh+0t+IkbQXYgVSXUucXOz2gZ0+DSf/gLX9nYiiCQY+T6evYk/F
+        IdIkQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=QUkkO+HUiTfmvEyeYQhKr2uoeDkoPgcnYhHr2cEfP
+        XA=; b=j1pH85GaFMTdCywjPQBLushGk6qOSC1OPiItzyt3JBmOZI8Ze/f1roeAr
+        lDS4au5JRb4vEitGSLT2QYouANq9Do6qPTVKYWA2C3/MuzC+ZUWAJpIY1waH/T+2
+        jRl2fkSeAqIpoUGAX3UrDLHRPf2+1yC0jJDnzujstn+zvgpBA5BKMC9Q8+DNDpCO
+        0kHqfxs0aArptHtXZ3uo4UgSTSTD5PIQSfJMWzEXhWUMQIk1gTPjGGy25XNFvN4W
+        rmQNbPXkncHW0aUfVGEWbeg4RfVii7FbYsz7eAww53lWn0MqpU7EgMUgd0cwmhK3
+        ygSc/J7kLtV5FmMPxa8OR6Lo0yXvg==
+X-ME-Sender: <xms:A-g9YNwPuJfVkrHIaara2nn92HxpMQMSyvAsTALOFLNzP8XkiBm7oQ>
+    <xme:A-g9YNSEZKbA-YamUePkCkOOneLRuxdwPZYKXc23AeMZhnACUV_Q0_fB8RieKav9T
+    jeiZ7uklYt6pTYBP5U>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrleelgddutdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheplfhirgig
+    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeeihffghfeikedugeejvefgffevgeevgeehfffhudeiieffffev
+    ffeugeevfefgfeenucfkphepgeehrdeffedrhedtrddvheegnecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhl
+    hihgohgrthdrtghomh
+X-ME-Proxy: <xmx:A-g9YHVe82pGwHdnCHF2dPwdXgthb39O2pkqKH4whhhh_ZHs_nbbTw>
+    <xmx:A-g9YPjBO__Qcm22dmfYrnexKfONBXb8QnujKklniJdhPV1g8qU3pA>
+    <xmx:A-g9YPAqmnlb8gEc6JI8O43WlWGjkF-7S-ma0fJL4-TnHuNyP4MbBA>
+    <xmx:A-g9YGM47ulyk4SdtMByHND1qTb8sYSmufD4v8bLWcLj1LW6Mks9DQ>
+Received: from [127.0.0.1] (li1000-254.members.linode.com [45.33.50.254])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 01895108005F;
+        Tue,  2 Mar 2021 02:23:44 -0500 (EST)
+Subject: Re: HELP: MIPS PC Relative Addressing
+To:     Jim Wilson <jimw@sifive.com>
+Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Binutils <binutils@sourceware.org>,
+        GCC Development <gcc@gcc.gnu.org>, mfortune@gmail.com,
+        syq@debian.org
+References: <3ddc0595-c443-868e-c0a4-08ae8934f116@flygoat.com>
+ <CAFyWVab4Z4BH5RxZWXJnxerjAYDNnCndMvksCHsKkFUU1q1w9g@mail.gmail.com>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <7494335f-703e-f9f8-30dd-6e41249c3873@flygoat.com>
+Date:   Tue, 2 Mar 2021 15:23:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Received: by 2002:a05:7110:9041:b029:35:5678:14a0 with HTTP; Tue, 2 Mar 2021
- 16:05:16 -0800 (PST)
-In-Reply-To: <20210302230338.GB3808@alpha.franken.de>
-References: <CAHmME9ohOsdAwGaqCQZKDynNoC2k=14g9VSFP2mTUA7txf_Ssw@mail.gmail.com>
- <20210227230236.3234498-1-Jason@zx2c4.com> <20210301144946.GD11261@alpha.franken.de>
- <CAHmME9qw4VSgjAugYdms7j32A0TU_2C2EFMufsjc1LfYnczZEA@mail.gmail.com> <20210302230338.GB3808@alpha.franken.de>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Wed, 3 Mar 2021 01:05:16 +0100
-X-Gmail-Original-Message-ID: <CAHmME9r+gmLO0TBQEVH173vE2uXcVBYKi56Hgd=5_C7tLNkYaw@mail.gmail.com>
-Message-ID: <CAHmME9r+gmLO0TBQEVH173vE2uXcVBYKi56Hgd=5_C7tLNkYaw@mail.gmail.com>
-Subject: Re: [PATCH v2] MIPS: select CPU_MIPS64 for remaining MIPS64 CPUs
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        George Cherian <gcherian@marvell.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAFyWVab4Z4BH5RxZWXJnxerjAYDNnCndMvksCHsKkFUU1q1w9g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 3/3/21, Thomas Bogendoerfer <tsbogend@alpha.franken.de> wrote:
-> On Mon, Mar 01, 2021 at 05:27:46PM +0100, Jason A. Donenfeld wrote:
->> Hey Thomas,
->>
->> Would you mind sending this for 5.12 in an rc at some point, rather
->> than waiting for 5.13? I'd like to see this backported to 5.10 and 5.4
->> for OpenWRT.
->
-> why is this so important for OpenWRT ? Just to select CRYPTO_POLY1305_MIPS
-> ?
 
-Yes. The performance boost on Octeon is significant for WireGuard users.
 
-And it becomes incredibly frustrating to bifurcate packaging into
-"mips64 where the config is right" vs "mips64 where the config is
-borked." This saves us a lot of trouble.
+在 2021/2/25 上午5:40, Jim Wilson 写道:
+> On Wed, Feb 24, 2021 at 6:18 AM Jiaxun Yang <jiaxun.yang@flygoat.com 
+> <mailto:jiaxun.yang@flygoat.com>> wrote:
+> 
+>     I found it's very difficult for GCC to generate this kind of pcrel_lo
+>     expression,
+>     RTX label_ref can't be lower into such LOW_SUM expression.
+> 
+> 
+> Yes, it is difficult.  You need to generate a label, and put the label 
+> number in an unspec in the auipc pattern, and then create a label_ref to 
+> put in the addi.  The fact that we have an unspec and a label_ref means 
+> a number of optimizations get disabled, like basic block duplication and 
+> loop unrolling, because they can't make a copy of an instruction that 
+> uses a label as data, as they have no way to know how to duplicate the 
+> label itself.  Or at least RISC-V needs to create one label.  You 
+> probably need to create two labels.
+> 
+> There is a far easier way to do this, which is to just emit an assembler 
+> macro, and let the assembler generate the labels and relocs.  This is 
+> what the RISC-V GCC port does by default.  This prevents some 
+> optimizations like scheduling the two instructions, but enables some 
+> other optimizations like loop unrolling.  So it is a tossup.  Sometimes 
+> we get better code with the assembler macro, and sometimes we get better 
+> code by emitting the auipc and addi separately.
+> 
+> The RISC-V gcc port can emit the auipc/addi with 
+> -mexplicit-relocs -mcode-model=medany, but this is known to sometimes 
+> fail.  The problem is that if you have an 8-byte variable with 8-byte 
+> alignment, and try to load it with 2 4-byte loads, gcc knows that 
+> offset+4 must be safe from overflow because the data is 8-byte aligned.  
+> However, when you use a pc-relative offset that is data address-code 
+> address, the offset is only as aligned as the code is.  RISC-V has 
+> 2-byte instruction alignment with the C extension.  So if you have 
+> offset+4 and offset is only 2-byte aligned, it is possible that offset+4 
+> may overflow the add immediate field.  The same thing can happen with 
+> 16-byte data that is 16-byte aligned, accessed with two 8-byte loads.  
+> There is no easy software solution.  We just emit a linker error in that 
+> case as we can't do anything else.  I think this would work better if 
+> auipc cleared some low bits of the result, in which case the pc-relative 
+> offset would have enough alignment to prevent overflow when adding small 
+> offsets, but it is far too late to change how the RISC-V auipc works.
+> 
 
-Plus the patch is trivial.
+Hi all,
+
+After spending days poking with AUIPC, I suddenly found we indeed have 
+ALUIPC
+instruction in MIPS R6, which will clear low 16bit of AUIPC result.
+
+So the whole thing now looks easier, we can have R_MIPS_PC_PAGE and 
+R_MIPS_PC_OFST and avoid  all mess we met in RISC-V.
+
+A pcrel loading could be as simple as:
+aluipc     a0, %pcrel_page(sym)
+addiu      a0, %pcrel_ofst(sym)
+
+Thanks.
+
+- Jiaxun
+

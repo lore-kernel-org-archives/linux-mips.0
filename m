@@ -2,186 +2,292 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A79DC28CC4
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 00:36:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1EB71C28CC5
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 00:36:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 435C964FB2
+	by mail.kernel.org (Postfix) with ESMTP id 0410E64FC8
 	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 00:36:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238082AbhCCA0U (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 2 Mar 2021 19:26:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377883AbhCBRAw (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 2 Mar 2021 12:00:52 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F3DC061224;
-        Tue,  2 Mar 2021 08:59:55 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id u11so12349942plg.13;
-        Tue, 02 Mar 2021 08:59:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8gWR6Kzn0jIzbRxXpdexC7ibHjhyEDkp0W0OIrKhXEc=;
-        b=o6XlXwN1v88Z0tSTaNO+BQHhbdwTQX1muwWIziOK7MBW2Rb4+d9FIA2S65BcI1JW3X
-         PYKXnkIElFOgmHscqU3e37aRvt9udtmTP8t4hdPcpu6Exvm8tbZ/CyFUBs20nECy3xiA
-         c2h8pr1Tfkzp/arbNTLLO2rtMscbogJGp6fZNw/gvW9axhqvzZF4AFLl99CgADL7/rtN
-         7JI9SmbFoTAfsQuyjeNLcWrAnY5Utff+yVrNjsMjs7x/bo6J2hc9ZOMD9tHla1tqNuiE
-         R5EMm7USjhP/op2UQX9RxyvYpYjr52eM2YeW/VWuJ/om0g4p1L2jXXGaRsmkHd6cqhuC
-         pKMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8gWR6Kzn0jIzbRxXpdexC7ibHjhyEDkp0W0OIrKhXEc=;
-        b=ePOKKd6y46S2D6v2xlkcjsp27r5K9Jc0EvlT0f99xft42e27/1PzgsAJR2pR61ja83
-         e31mRpbOU/tWvT6gCPnHLlAbyUa/ANHjKaTWPYNKnDqVUW5asdY9xeWyb6lTeyUqz2uV
-         Q+30HwnE53kRAiUQzGjEeiIugqj+LAY6eGcSIqiEAF4WDZ+a4ZF0L18UxS1+zqiAI0ut
-         ZZb7pKwjcjFwKQAiYD8zFzVaUADBhaNTk+WHGEkyfF1YV2KgdzjgFd2xeBxrQsBP5+TG
-         5Bg12AtnJKBozeWgW0dByRVbJvS+FYqAxy7wSP0fOGhko+EDVzxLHaSCz5pVOwYi/qwq
-         S6wA==
-X-Gm-Message-State: AOAM533Dfk+jld4Fkj3wpXbJtaQy2jYcALnyutkb577/byyXdtusmKWJ
-        MZ5C7DEiHR3pWgHOa4HhYEM=
-X-Google-Smtp-Source: ABdhPJy/K3LJ51GTWDq7qpDJOrZxjdxqcSaGAtmMTjQI0JfpGe4SbVnnHCGRJzPoZe45H60K4Zxkng==
-X-Received: by 2002:a17:90a:f18d:: with SMTP id bv13mr5484609pjb.13.1614704394617;
-        Tue, 02 Mar 2021 08:59:54 -0800 (PST)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id p184sm21144278pgp.13.2021.03.02.08.59.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Mar 2021 08:59:54 -0800 (PST)
-Subject: Re: [PATCH stblinux.git 2/2] firmware: bcm47xx_nvram: support
- platform device "brcm,nvram"
-To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Vivek Unune <npcomplete13@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20210302074405.18998-1-zajec5@gmail.com>
- <20210302074405.18998-2-zajec5@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <8e17b978-a527-97df-3f31-1fb2123a23e9@gmail.com>
-Date:   Tue, 2 Mar 2021 08:59:52 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S238139AbhCCA0e (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 2 Mar 2021 19:26:34 -0500
+Received: from elvis.franken.de ([193.175.24.41]:37893 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233745AbhCBXzQ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 2 Mar 2021 18:55:16 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lHEqL-00081Z-02; Wed, 03 Mar 2021 00:54:21 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 458A4C0477; Wed,  3 Mar 2021 00:54:11 +0100 (CET)
+Date:   Wed, 3 Mar 2021 00:54:11 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-mips@vger.kernel.org, rppt@kernel.org,
+        fancer.lancer@gmail.com, guro@fb.com, akpm@linux-foundation.org,
+        paul@crapouillou.net,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MIPS: BMIPS: Reserve exception base to prevent corruption
+Message-ID: <20210302235411.GA3897@alpha.franken.de>
+References: <20210301092241.i7dxo7zbg3ar55d6@mobilestation>
+ <20210302041940.3663823-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210302074405.18998-2-zajec5@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302041940.3663823-1-f.fainelli@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 3/1/21 11:44 PM, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On Mon, Mar 01, 2021 at 08:19:38PM -0800, Florian Fainelli wrote:
+> BMIPS is one of the few platforms that do change the exception base.
+> After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
+> with kernel_end") we started seeing BMIPS boards fail to boot with the
+> built-in FDT being corrupted.
 > 
-> Add support for platform device providing mapping resource. This allows
-> reading NVRAM based on DT mapping binding. It's required for devices
-> that boot depending on NVRAM stored setup and provides early access to
-> NVRAM data.
+> Before the cited commit, early allocations would be in the [kernel_end,
+> RAM_END] range, but after commit they would be within [RAM_START +
+> PAGE_SIZE, RAM_END].
 > 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> The custom exception base handler that is installed by
+> bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
+> memory region allocated by unflatten_and_copy_device_tree() thus
+> corrupting the FDT used by the kernel.
+> 
+> To fix this, we need to perform an early reservation of the custom
+> exception that is going to be installed and this needs to happen at
+> plat_mem_setup() time to ensure that unflatten_and_copy_device_tree()
+> finds a space that is suitable, away from reserved memory.
+> 
+> Huge thanks to Serget for analysing and proposing a solution to this
+> issue.
+> 
+> Fixes: Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
+> Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 > ---
-> bcm47xx_nvram driver was originally added through MIPS tree, but this
-> change doesn't affect BCM47XX (MIPS) as it doesn't use DT. It targets
-> ARCH_BCM_5301X so I suggest this goes through the stblinux.git tree.
-
-Can you see if this change can be replaced by the nvmem-rmem work that
-Nicolas recently did to support something similar for the Raspberry Pi 4:
-
-https://lkml.org/lkml/2021/1/29/235
-
-> ---
->  drivers/firmware/broadcom/bcm47xx_nvram.c | 55 +++++++++++++++++++++++
->  1 file changed, 55 insertions(+)
+> Thomas,
 > 
-> diff --git a/drivers/firmware/broadcom/bcm47xx_nvram.c b/drivers/firmware/broadcom/bcm47xx_nvram.c
-> index 835ece9c00f1..d5d19dd1b9e1 100644
-> --- a/drivers/firmware/broadcom/bcm47xx_nvram.c
-> +++ b/drivers/firmware/broadcom/bcm47xx_nvram.c
-> @@ -13,6 +13,7 @@
->  #include <linux/kernel.h>
->  #include <linux/string.h>
->  #include <linux/mtd/mtd.h>
-> +#include <linux/platform_device.h>
->  #include <linux/bcm47xx_nvram.h>
->  
->  #define NVRAM_MAGIC			0x48534C46	/* 'FLSH' */
-> @@ -162,6 +163,60 @@ static int nvram_init(void)
->  	return -ENXIO;
->  }
->  
-> +static int brcm_nvram_probe(struct platform_device *pdev)
-> +{
-> +	struct nvram_header __iomem *header;
-> +	struct device *dev = &pdev->dev;
-> +	struct resource *res;
-> +	void __iomem *mmio;
-> +	size_t copy_len;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		dev_err(dev, "Failed to get resource\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	mmio = ioremap(res->start, resource_size(res));
-> +	if (!mmio)
-> +		return -ENOMEM;
-> +
-> +	header = (struct nvram_header *)mmio;
-> +	copy_len = DIV_ROUND_UP(sizeof(*header) + header->len, 4);
-> +	if (header->magic != NVRAM_MAGIC) {
-> +		dev_err(dev, "No NVRAM found at %pR\n", res);
-> +		return -EPROTO;
-> +	} else if (copy_len > resource_size(res)) {
-> +		dev_err(dev, "NVRAM size exceeds %pR\n", res);
-> +		return -ERANGE;
-> +	} else if (copy_len >= NVRAM_SPACE) {
-> +		dev_err(dev, "NVRAM size exceeds buffer size %d\n", NVRAM_SPACE);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	__ioread32_copy(nvram_buf, mmio, copy_len);
-> +	nvram_buf[NVRAM_SPACE - 1] = '\0';
-> +
-> +	iounmap(mmio);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id brcm_nvram_of_match[] = {
-> +	{ .compatible = "brcm,nvram "},
-> +	{},
-> +};
-> +
-> +static struct platform_driver brcm_nvram_driver = {
-> +	.driver = {
-> +		.name = "brcm_nvram",
-> +		.of_match_table = brcm_nvram_of_match,
-> +	},
-> +	.probe	= brcm_nvram_probe,
-> +};
-> +
-> +module_platform_driver(brcm_nvram_driver);
-> +
->  int bcm47xx_nvram_getenv(const char *name, char *val, size_t val_len)
->  {
->  	char *var, *value, *end, *eq;
-> 
+> This is intended as a stop-gap solution for 5.12-rc1 and to be picked up
+> by the stable team for 5.11. We should find a safer way to avoid these
+> problems for 5.13 maybe.
+
+let's try to make it in one ago. Hwo about reserving vector space in
+cpu_probe, if it's known there and leave the rest to trap_init() ?
+
+Below patch got a quick test on IP22 (real hardware) and malta (qemu).
+Not sure, if I got all BMIPS parts correct, so please check/test.
+BTW. do we really need to EXPORT_SYMBOL ebase ?
+
+Thomas,
+
+
+diff --git a/arch/mips/include/asm/setup.h b/arch/mips/include/asm/setup.h
+index bb36a400203d..3ef62c23c34f 100644
+--- a/arch/mips/include/asm/setup.h
++++ b/arch/mips/include/asm/setup.h
+@@ -23,7 +23,7 @@ typedef void (*vi_handler_t)(void);
+ extern void *set_vi_handler(int n, vi_handler_t addr);
+ 
+ extern void *set_except_vector(int n, void *addr);
+-extern unsigned long ebase;
++extern unsigned long ebase, ebase_size;
+ extern unsigned int hwrena;
+ extern void per_cpu_trap_init(bool);
+ extern void cpu_cache_init(void);
+diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
+index 6aa8f126a43d..f7d59831aae3 100644
+--- a/arch/mips/include/asm/traps.h
++++ b/arch/mips/include/asm/traps.h
+@@ -26,6 +26,8 @@ extern void (*board_cache_error_setup)(void);
+ extern int register_nmi_notifier(struct notifier_block *nb);
+ extern char except_vec_nmi[];
+ 
++#define VECTORSPACING 0x100	/* for EI/VI mode */
++
+ #define nmi_notifier(fn, pri)						\
+ ({									\
+ 	static struct notifier_block fn##_nb = {			\
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index 9a89637b4ecf..eef1a4e304da 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -13,6 +13,7 @@
+ #include <linux/smp.h>
+ #include <linux/stddef.h>
+ #include <linux/export.h>
++#include <linux/memblock.h>
+ 
+ #include <asm/bugs.h>
+ #include <asm/cpu.h>
+@@ -25,7 +26,9 @@
+ #include <asm/watch.h>
+ #include <asm/elf.h>
+ #include <asm/pgtable-bits.h>
++#include <asm/setup.h>
+ #include <asm/spram.h>
++#include <asm/traps.h>
+ #include <linux/uaccess.h>
+ 
+ #include "fpu-probe.h"
+@@ -1628,6 +1631,8 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+ 		c->cputype = CPU_BMIPS3300;
+ 		__cpu_name[cpu] = "Broadcom BMIPS3300";
+ 		set_elf_platform(cpu, "bmips3300");
++		ebase = 0x80000400;
++		ebase_size = VECTORSPACING * 64;
+ 		break;
+ 	case PRID_IMP_BMIPS43XX: {
+ 		int rev = c->processor_id & PRID_REV_MASK;
+@@ -1638,6 +1643,8 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+ 			__cpu_name[cpu] = "Broadcom BMIPS4380";
+ 			set_elf_platform(cpu, "bmips4380");
+ 			c->options |= MIPS_CPU_RIXI;
++			ebase = 0x80000400;
++			ebase_size = VECTORSPACING * 64;
+ 		} else {
+ 			c->cputype = CPU_BMIPS4350;
+ 			__cpu_name[cpu] = "Broadcom BMIPS4350";
+@@ -1654,6 +1661,8 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+ 			__cpu_name[cpu] = "Broadcom BMIPS5000";
+ 		set_elf_platform(cpu, "bmips5000");
+ 		c->options |= MIPS_CPU_ULRI | MIPS_CPU_RIXI;
++		ebase = 0x80001000;
++		ebase_size = VECTORSPACING * 64;
+ 		break;
+ 	}
+ }
+@@ -2133,6 +2142,13 @@ void cpu_probe(void)
+ 	if (cpu == 0)
+ 		__ua_limit = ~((1ull << cpu_vmbits) - 1);
+ #endif
++
++	if (ebase_size == 0 && !cpu_has_mips_r2_r6) {
++		ebase = CAC_BASE;
++		ebase_size = 0x400;
++	}
++	if (ebase_size)
++		memblock_reserve(__pa((void *)ebase), ebase_size);
+ }
+ 
+ void cpu_report(void)
+diff --git a/arch/mips/kernel/smp-bmips.c b/arch/mips/kernel/smp-bmips.c
+index b6ef5f7312cf..ad3f2282a65a 100644
+--- a/arch/mips/kernel/smp-bmips.c
++++ b/arch/mips/kernel/smp-bmips.c
+@@ -528,10 +528,6 @@ static void bmips_set_reset_vec(int cpu, u32 val)
+ 
+ void bmips_ebase_setup(void)
+ {
+-	unsigned long new_ebase = ebase;
+-
+-	BUG_ON(ebase != CKSEG0);
+-
+ 	switch (current_cpu_type()) {
+ 	case CPU_BMIPS4350:
+ 		/*
+@@ -554,7 +550,6 @@ void bmips_ebase_setup(void)
+ 		 * 0x8000_0000: reset/NMI (initially in kseg1)
+ 		 * 0x8000_0400: normal vectors
+ 		 */
+-		new_ebase = 0x80000400;
+ 		bmips_set_reset_vec(0, RESET_FROM_KSEG0);
+ 		break;
+ 	case CPU_BMIPS5000:
+@@ -562,16 +557,14 @@ void bmips_ebase_setup(void)
+ 		 * 0x8000_0000: reset/NMI (initially in kseg1)
+ 		 * 0x8000_1000: normal vectors
+ 		 */
+-		new_ebase = 0x80001000;
+ 		bmips_set_reset_vec(0, RESET_FROM_KSEG0);
+-		write_c0_ebase(new_ebase);
++		write_c0_ebase(ebase);
+ 		break;
+ 	default:
+ 		return;
+ 	}
+ 
+ 	board_nmi_handler_setup = &bmips_nmi_handler_setup;
+-	ebase = new_ebase;
+ }
+ 
+ asmlinkage void __weak plat_wired_tlb_setup(void)
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index e0352958e2f7..21ba9d04683e 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -2009,10 +2009,10 @@ void __noreturn nmi_exception_handler(struct pt_regs *regs)
+ 	nmi_exit();
+ }
+ 
+-#define VECTORSPACING 0x100	/* for EI/VI mode */
+-
+ unsigned long ebase;
+ EXPORT_SYMBOL_GPL(ebase);
++unsigned long ebase_size;
++EXPORT_SYMBOL_GPL(ebase_size);
+ unsigned long exception_handlers[32];
+ unsigned long vi_handlers[64];
+ 
+@@ -2360,27 +2360,22 @@ void __init trap_init(void)
+ 	extern char except_vec3_generic;
+ 	extern char except_vec4;
+ 	extern char except_vec3_r4000;
+-	unsigned long i, vec_size;
+ 	phys_addr_t ebase_pa;
++	unsigned long i;
+ 
+ 	check_wait();
+ 
+-	if (!cpu_has_mips_r2_r6) {
+-		ebase = CAC_BASE;
+-		ebase_pa = virt_to_phys((void *)ebase);
+-		vec_size = 0x400;
+-
+-		memblock_reserve(ebase_pa, vec_size);
+-	} else {
++	if (cpu_has_mips_r2_r6) {
+ 		if (cpu_has_veic || cpu_has_vint)
+-			vec_size = 0x200 + VECTORSPACING*64;
++			ebase_size = 0x200 + VECTORSPACING*64;
+ 		else
+-			vec_size = PAGE_SIZE;
++			ebase_size = PAGE_SIZE;
+ 
+-		ebase_pa = memblock_phys_alloc(vec_size, 1 << fls(vec_size));
++		ebase_pa = memblock_phys_alloc(ebase_size,
++					       1 << fls(ebase_size));
+ 		if (!ebase_pa)
+ 			panic("%s: Failed to allocate %lu bytes align=0x%x\n",
+-			      __func__, vec_size, 1 << fls(vec_size));
++			      __func__, ebase_size, 1 << fls(ebase_size));
+ 
+ 		/*
+ 		 * Try to ensure ebase resides in KSeg0 if possible.
+@@ -2534,7 +2529,7 @@ void __init trap_init(void)
+ 	else
+ 		set_handler(0x080, &except_vec3_generic, 0x80);
+ 
+-	local_flush_icache_range(ebase, ebase + vec_size);
++	local_flush_icache_range(ebase, ebase + ebase_size);
+ 
+ 	sort_extable(__start___dbe_table, __stop___dbe_table);
+ 
+
 
 
 -- 
-Florian
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

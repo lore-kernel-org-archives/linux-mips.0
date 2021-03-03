@@ -2,100 +2,73 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2F61C433E6
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E369FC4332E
 	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B2B3364F6B
+	by mail.kernel.org (Postfix) with ESMTP id C6F9064EBB
 	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239385AbhCDAuq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Mar 2021 19:50:46 -0500
-Received: from 3.mo3.mail-out.ovh.net ([46.105.44.175]:58907 "EHLO
-        3.mo3.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230430AbhCCSTg (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 13:19:36 -0500
-X-Greylist: delayed 22190 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Mar 2021 13:19:35 EST
-Received: from player739.ha.ovh.net (unknown [10.108.35.103])
-        by mo3.mail-out.ovh.net (Postfix) with ESMTP id 84CD827C877
-        for <linux-mips@vger.kernel.org>; Wed,  3 Mar 2021 12:44:18 +0100 (CET)
-Received: from milecki.pl (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
-        (Authenticated sender: rafal@milecki.pl)
-        by player739.ha.ovh.net (Postfix) with ESMTPSA id 4FE5D1798D8E0;
-        Wed,  3 Mar 2021 11:44:07 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-103G0058af54b4d-f3b4-44dc-ac9e-34a2a880a68e,
-                    26C1B780A21ED05C344A0C24DEC46BA2B7EA0698) smtp.auth=rafal@milecki.pl
-X-OVh-ClientIp: 194.187.74.233
-Subject: Re: [PATCH stblinux.git 2/2] firmware: bcm47xx_nvram: support
- platform device "brcm,nvram"
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Vivek Unune <npcomplete13@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org
-References: <20210302074405.18998-1-zajec5@gmail.com>
- <20210302074405.18998-2-zajec5@gmail.com>
- <8e17b978-a527-97df-3f31-1fb2123a23e9@gmail.com>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Message-ID: <d09c9e49-d7c7-cc71-1437-48d82e14843b@milecki.pl>
-Date:   Wed, 3 Mar 2021 12:44:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S230430AbhCDAus (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Mar 2021 19:50:48 -0500
+Received: from elvis.franken.de ([193.175.24.41]:40114 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1579159AbhCCSad (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 3 Mar 2021 13:30:33 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lHWFq-0003ZZ-00; Wed, 03 Mar 2021 19:29:50 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id BE979C0D74; Wed,  3 Mar 2021 19:15:41 +0100 (CET)
+Date:   Wed, 3 Mar 2021 19:15:41 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-mips@vger.kernel.org, rppt@kernel.org,
+        fancer.lancer@gmail.com, guro@fb.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        paul@crapouillou.net,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MIPS: BMIPS: Reserve exception base to prevent corruption
+Message-ID: <20210303181541.GA25675@alpha.franken.de>
+References: <20210301092241.i7dxo7zbg3ar55d6@mobilestation>
+ <20210302041940.3663823-1-f.fainelli@gmail.com>
+ <20210302235411.GA3897@alpha.franken.de>
+ <4e3640d4-7fc2-96dc-de00-599b3ac80757@gmail.com>
+ <20210303094134.GA18354@alpha.franken.de>
+ <alpine.DEB.2.21.2103031844510.19637@angie.orcam.me.uk>
 MIME-Version: 1.0
-In-Reply-To: <8e17b978-a527-97df-3f31-1fb2123a23e9@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 8543891444003212823
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtvddgfeegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepvedttefgueffvefgvdejleeivddvjefhkeffgeeugeelieefteevffdvuedvgfefnecuffhomhgrihhnpehlkhhmlhdrohhrghenucfkpheptddrtddrtddrtddpudelgedrudekjedrjeegrddvfeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeefledrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehrrghfrghlsehmihhlvggtkhhirdhplhdprhgtphhtthhopehlihhnuhigqdhmihhpshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2103031844510.19637@angie.orcam.me.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 02.03.2021 17:59, Florian Fainelli wrote:
-> On 3/1/21 11:44 PM, Rafał Miłecki wrote:
->> From: Rafał Miłecki <rafal@milecki.pl>
->>
->> Add support for platform device providing mapping resource. This allows
->> reading NVRAM based on DT mapping binding. It's required for devices
->> that boot depending on NVRAM stored setup and provides early access to
->> NVRAM data.
->>
->> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->> ---
->> bcm47xx_nvram driver was originally added through MIPS tree, but this
->> change doesn't affect BCM47XX (MIPS) as it doesn't use DT. It targets
->> ARCH_BCM_5301X so I suggest this goes through the stblinux.git tree.
+On Wed, Mar 03, 2021 at 06:45:52PM +0100, Maciej W. Rozycki wrote:
+> On Wed, 3 Mar 2021, Thomas Bogendoerfer wrote:
 > 
-> Can you see if this change can be replaced by the nvmem-rmem work that
-> Nicolas recently did to support something similar for the Raspberry Pi 4:
+> > perfect, I only forgot about R3k... I'll submit a formal patch submission
+> > later today.
 > 
-> https://lkml.org/lkml/2021/1/29/235
+>  What's up with the R3k (the usual trigger for me) here?
 
-I don't think it fits my case.
+I've moved r3k cpu_probe() to it's own file and when moving ebase
+reservation to cpu_probe(), I need to add it there as well. So just
+a mechanic step, I've missed.
 
-It's a reserved memory binding/driver which refers to the system memory.
-In NVRAM case we need to do a mapping. I think it's different?
+Thomas.
 
-nvmem-rmem registers NVMEM device without providing any cells. It also
-doesn't understand NVRAM data structure. I guess nvmem-rmem only exposes
-NVMEM for user-space access. I need to access NVRAM to e.g. detect boot
-parameters in kernel code.
-
-I was thinking for a moment about treating NVRAM like a NVMEM but NVRAM
-doesn't seem to fit current design and kernel API. NVMEM assumes that
-every cell has a specific offset and size. Reading NVRAM should be
-based on string keys (nof offsets). See nvmem_reg_read_t for details.
-
-This won't make a huge difference I think, but for a slightly cleaner
-design I could probably have NVRAM devices without cells and make it
-setup NVRAM. Let me see if I can code that.
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

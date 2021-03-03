@@ -2,93 +2,127 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B58D3C4332D
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4977BC43331
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 82CEE64F92
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2A4DE64F92
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239768AbhCDAus (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Mar 2021 19:50:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237139AbhCCSjF (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 13:39:05 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724FCC061756;
-        Wed,  3 Mar 2021 10:37:19 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id r25so29029318ljk.11;
-        Wed, 03 Mar 2021 10:37:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=pt7Qq84uJD3NGZlgPolPLzdJ6R6eL8iRHjw/6ejjjHY=;
-        b=p4X5lvKDf27wpgOK3gj/2aFrVa7ILrUdNWOJa9IXI8ZMcsi3kCqTNE6PJwsCdiYZ5c
-         TxwU/hjZrTPfXuDK9xR4eROq3Ag62nxq3uMZPqNT2NZ6nD0dCHOvs1HOvX7FFabbpLm+
-         8WVGmI3y0+cTrG8DHNXrs5IkEL3Gc3CL8TNbW2T5fZW/+yz3Y/Nma4xMF0th4+I9lXUo
-         uX8gcolDO+D5n6BGVrYewUa2ki8EGjvNYZfhMeWxD7/6V5Y6GTG9G7We/CUHnHUoGO3e
-         6ISb/xL0U9Q8zpxkghTx8wO9CWlb/gEG+p2jL4HRZOKybs7i5eAsHgqTbsu0Zxa0iACn
-         NdqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pt7Qq84uJD3NGZlgPolPLzdJ6R6eL8iRHjw/6ejjjHY=;
-        b=tKIjty6a/t8zLOeOT4ryC32xNDyOD8Dek1WDdnVl7uo2r8aJy7wDFqjI6sarFOcUxa
-         dhsqGpCY59fvTEbESkorkJODl+ywaLefZjf9u1tIuOn7LahTq5HD4sZsKb34kFEYxl3U
-         xXY8FdXdph0TL3VvYkjTh4Ptx3Y2SJ2gg5mlwW6foz/OPJMc9aNa7H3WqiusQgPYdwYG
-         /hDxZZDiCBS5rGFnHGFZtpN7QnNTsLRa1O3lxCCaY1q4n5YCska9QK+9dIB/eK6g5tKi
-         hhBx2HLVSFGwbLsHYnAceHbVDrA8oPkxVjMdra3cVteMp6qbyBhnUEyqtAsSNUg68vEo
-         r5DQ==
-X-Gm-Message-State: AOAM532h0GOEzdskK7uMXyOR8tAZRKE6gk7j2SxQw14rEEGmILI0Lapg
-        mo1gBlYo/l0d5OzqVhWJlB5zof8IYRM=
-X-Google-Smtp-Source: ABdhPJz505TqHNlMWfMFMAWKMEVxII5n2Q4NZ2CI5tAncJnkZa1uHynNA+yYAJDm5fqRS/LCuKsL7g==
-X-Received: by 2002:a2e:8596:: with SMTP id b22mr151467lji.482.1614796637760;
-        Wed, 03 Mar 2021 10:37:17 -0800 (PST)
-Received: from [192.168.1.101] ([178.176.73.79])
-        by smtp.gmail.com with ESMTPSA id q3sm3226649ljb.64.2021.03.03.10.37.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Mar 2021 10:37:17 -0800 (PST)
-Subject: Re: Toshiba TC86C001 support
-To:     Christoph Hellwig <hch@lst.de>, linux-ide@vger.kernel.org,
-        linux-mips@vger.kernel.org
-References: <20210303072708.GA8575@lst.de>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <98fb1689-0ae4-96a2-9e21-3d4178d5337d@gmail.com>
-Date:   Wed, 3 Mar 2021 21:37:15 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S238703AbhCDAup (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Mar 2021 19:50:45 -0500
+Received: from angie.orcam.me.uk ([157.25.102.26]:37282 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242964AbhCCRai (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 12:30:38 -0500
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 84E5292009C; Wed,  3 Mar 2021 18:29:52 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 7703292009B;
+        Wed,  3 Mar 2021 18:29:52 +0100 (CET)
+Date:   Wed, 3 Mar 2021 18:29:52 +0100 (CET)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     yunqiang.su@cipunited.com
+cc:     'Thomas Bogendoerfer' <tsbogend@alpha.franken.de>,
+        jiaxun.yang@flygoat.com, linux-mips@vger.kernel.org
+Subject: =?UTF-8?Q?Re=3A_=E5=9B=9E=E5=A4=8D=3A_=E5=9B=9E=E5=A4=8D=3A_=5BPATC?=
+ =?UTF-8?Q?H_v6=5D_MIPS=3A_force_use_FR=3D0_for_FPXX_binar?=
+ =?UTF-8?Q?y?=
+In-Reply-To: <000b01d70fdb$c7b74450$5725ccf0$@cipunited.com>
+Message-ID: <alpine.DEB.2.21.2103031800130.19637@angie.orcam.me.uk>
+References: <20210302022907.1835-1-yunqiang.su@cipunited.com> <alpine.DEB.2.21.2103021645120.19637@angie.orcam.me.uk> <000701d70fd0$ecbb21a0$c63164e0$@cipunited.com> <alpine.DEB.2.21.2103030321240.19637@angie.orcam.me.uk>
+ <000b01d70fdb$c7b74450$5725ccf0$@cipunited.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20210303072708.GA8575@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 3/3/21 10:27 AM, Christoph Hellwig wrote:
+On Wed, 3 Mar 2021, yunqiang.su@cipunited.com wrote:
 
-> a lot of te mips defconfig enable CONFIG_BLK_DEV_TC86C001, which is
+> >  The FRE mode causes a severe performance regression for single FP
+> > operations, so we shouldn't use it for FPXX software.
+> > 
+> 
+> If we need to run pre-R6 FPXX/FP32 app on r6 CPU, it may be the only choice
+> for us.
 
-   Well, grep'ping in arch/mips/configs/ gave me a surprise! TC86C001
-is enabled in couple Malta configs and even in the Big Sur config, and
-not enabled in any TX39 or TX49 configs... :-/
+ Nope, FPXX doesn't require FRE, and FPXX is all this change is about.
 
-> a legacy ide driver that has no libata equivalent.  We plan to
-> phase out the legacy ide driver this year, so I'm wondering if this
-> hardware is still in use by anyone, and if yes how we can get a libata
-> driver for it?
+> Any way, in this case we need lots of T&E, the problem of FRE won't be a big
+> problem.
 
-   There's hardly a lot of sense in using the Toshiba's PCI card on those
-platforms, so I think these configs should be easy to clean up of the TC86C001
-IDE option. :-)
+ The R6 instruction set has been designed such as to minimise traps and 
+emulations, so there is no point to make it worse for everyone for the 
+sake of a broken corner case.
 
-MBR, Sergei
+> >  As a matter of interest: do you have figures available as to how many
+> > software packages are affected in Debian?
+> > 
+> 
+> Almost all packages built with Golang in buster.
+
+ How many is that though?  Two?  Ten?  A thousand?
+
+> >  Also it has now struck me that another userland workaround should be
+> > possible, by setting LD_PRELOAD in the environment system-wide to a
+> > dummy FR=0 DSO (e.g. via /etc/environment or /etc/initscript; I reckon
+> > systemd has its own way too), which will force the right mode the normal
+> way.
+> > All the distribution has been built for FPXX I presume, right?
+> > 
+> 
+> It is not acceptable for "stable" branch of distributions.
+
+ I'd say the chosen policy of any distribution is said distribution's 
+problem, not the upstream kernel's.  You can have a local patch for the 
+kernel too if you consider a kernel solution the only one that works for 
+you.  From the discussion so far it looks to me like the least involving 
+solution which will make everyone happy.
+
+> >  Or I guess you could just rebuild libc as FR=0 instead, or is there a
+> Golang
+> > standard library that every Golang program uses?  And then have people
+> > upgrade that package instead.
+> > 
+> 
+> Rebuiding libc to FP32 is not acceptable, since we want to do is to support
+> MSA,
+> Which require FR=1 and all the result is FP64.
+
+ Do you have any software build for MSA with your distribution already, 
+or do you just plan it?  How is it expected work with non-MSA hardware, 
+which I believe is still predominant?
+
+ Also I'll repeat myself: is there a Golang standard library that every 
+Golang program uses?
+
+> In fact we found this problem when we try to enable MIPS_O32_FP64_SUPPORT,
+> Without this option is enabled, all FPXX binaries are still use FR=0 mode:
+> See: function mips_set_personality_fp()
+> 
+> So, here, we doesn't introduce the rollback to FR=0.
+
+ So keep MIPS_O32_FP64_SUPPORT disabled then until the environment has 
+been fixed?
+
+> >  It seems to me like there are still a couple of alternatives available.
+> > You might be able to come up with yet more if you continued looking for
+> them.
+> > I consider putting any workaround into the kernel the last resort really.
+> The
+> > problem is in the userland, so let's try hard to deal with it there.
+> > 
+> 
+> Yes. It is problem of userland, while it has no way to fix in for the
+> pre-exist binaries in userland.
+
+ I gave you examples.  It appears the problem instead is with the 
+distribution's policy, and the kernel is not there to work it around, 
+sorry.
+
+  Maciej

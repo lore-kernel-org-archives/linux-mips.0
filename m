@@ -2,78 +2,62 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31040C4332B
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6322C433DB
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E91A064FBE
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ACC0A64FB1
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239874AbhCDAuu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Mar 2021 19:50:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1388048AbhCCUit (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 3 Mar 2021 15:38:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FECA64F02;
-        Wed,  3 Mar 2021 20:38:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614803889;
-        bh=Yx0ufyFxY9FEVTOvRklHzuQiZwftomZEk2i7KboNUjY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ilTahbzufAnF5wfy/PgI1ddWsd7Yf90mAJ/nLrg2RSpQiLoe2ArW5xIlQlwCKNcyS
-         HJh4NX38StO3Ro89EqnLc+xybyoVUedyVSRf1t2au0zNzcFEs3lRi896xRI/DTp1zl
-         wJdhWF7hlVUtYtgNsRjw3p7WWU5Kk4fAk9tYd5gx5s5yKuT8+/zzBhYxkJjgqCzh9e
-         3oMnv5ifzYCjHxDxr0BckBELUnEcpE3KiUZqwRWHvGcoqiFpFMAcZJVriCGVK3NG8I
-         4RPxqKuR+OH7yrfuWASADO55aMgYu6/CubG9+x+Yyg+FG/y7v89WfIwuSwg/nQ6Vt9
-         6m8t/n7w9N0jw==
-Received: by mail-ed1-f50.google.com with SMTP id d13so26827921edp.4;
-        Wed, 03 Mar 2021 12:38:09 -0800 (PST)
-X-Gm-Message-State: AOAM533hwoBr0h6Q+rBl3dU4aD9hZZvBZeY9p4Lrks1+/LOL+DKfiOz8
-        juu8ELNXdahk8SwcdbRqf5RWtXYGofP3WmED4w==
-X-Google-Smtp-Source: ABdhPJyt8H5oaA7Fb+xnaivE+CON3fkXfFE8XTR08BqQdAHbVRd+J5a1jbJ76U9wAaGYN0pXBLFCMlBw7AuHdjSNbZk=
-X-Received: by 2002:aa7:d3d8:: with SMTP id o24mr1029734edr.165.1614803887618;
- Wed, 03 Mar 2021 12:38:07 -0800 (PST)
+        id S238764AbhCDAuq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Mar 2021 19:50:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1386150AbhCCRqs (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 12:46:48 -0500
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D5DD7C0613DD;
+        Wed,  3 Mar 2021 09:45:55 -0800 (PST)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 5731792009C; Wed,  3 Mar 2021 18:45:52 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 4E6A992009B;
+        Wed,  3 Mar 2021 18:45:52 +0100 (CET)
+Date:   Wed, 3 Mar 2021 18:45:52 +0100 (CET)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-mips@vger.kernel.org, rppt@kernel.org,
+        fancer.lancer@gmail.com, guro@fb.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        paul@crapouillou.net,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MIPS: BMIPS: Reserve exception base to prevent
+ corruption
+In-Reply-To: <20210303094134.GA18354@alpha.franken.de>
+Message-ID: <alpine.DEB.2.21.2103031844510.19637@angie.orcam.me.uk>
+References: <20210301092241.i7dxo7zbg3ar55d6@mobilestation> <20210302041940.3663823-1-f.fainelli@gmail.com> <20210302235411.GA3897@alpha.franken.de> <4e3640d4-7fc2-96dc-de00-599b3ac80757@gmail.com> <20210303094134.GA18354@alpha.franken.de>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <20210303193305.924384-1-paul@crapouillou.net>
-In-Reply-To: <20210303193305.924384-1-paul@crapouillou.net>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 3 Mar 2021 14:37:55 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLfkjC4c4PYfm6yJLZMH-5WaKA_mr9ziJ1J63UohcgRCw@mail.gmail.com>
-Message-ID: <CAL_JsqLfkjC4c4PYfm6yJLZMH-5WaKA_mr9ziJ1J63UohcgRCw@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: boot/compressed: Copy DTB to aligned address
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>, od@zcrc.me,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 1:33 PM Paul Cercueil <paul@crapouillou.net> wrote:
->
-> Since 5.12-rc1, the Device Tree blob must now be properly aligned.
+On Wed, 3 Mar 2021, Thomas Bogendoerfer wrote:
 
-I had checked the other built-in cases as microblaze broke too, but
-missed some of the many ways MIPS can have a dtb. Appended and
-built-in DTBs were supposed to be temporary. :(
+> perfect, I only forgot about R3k... I'll submit a formal patch submission
+> later today.
 
-> Therefore, the decompress routine must be careful to copy the blob at
-> the next aligned address after the kernel image.
->
-> This commit fixes the kernel sometimes not booting with a Device Tree
-> blob appended to it.
->
-> Fixes: c4d5e638d6e9 ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  arch/mips/boot/compressed/decompress.c | 8 ++++++++
->  arch/mips/kernel/vmlinux.lds.S         | 2 ++
->  2 files changed, 10 insertions(+)
+ What's up with the R3k (the usual trigger for me) here?
 
-Acked-by: Rob Herring <robh@kernel.org>
+  Maciej

@@ -2,82 +2,439 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UPPERCASE_75_100,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EC77C4161F
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EE76C433E0
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7254164EDB
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1359B601FD
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346265AbhCCQRs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Mar 2021 11:17:48 -0500
-Received: from mail-vs1-f43.google.com ([209.85.217.43]:33174 "EHLO
-        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231712AbhCCKa1 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 05:30:27 -0500
-Received: by mail-vs1-f43.google.com with SMTP id b189so6357126vsd.0;
-        Wed, 03 Mar 2021 02:30:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RWLoJKrST9SY284XzyZhaHgjO9L3hwsdopDdAp6+Qlo=;
-        b=chrzGNYs5n+BOENUpuq53FK1a4WsBrOMAbWQ+Ifa1JKwKwd/nvyBpa0Aeh6NtzTNtw
-         yeNd3PEFRhedZFzITcSitEIu+S31J0oOhkpafz02v+ZeF4zF650o76nIw/KqQ4Pg0KU+
-         miH4Ovs6Y2v+Azse5vv/zMTGxCz1eq7m1sAAe8Kf/2Lmls597/H8Lp76J79B/35FsnYq
-         DN4HWRwQOOAPuerh25BPxnRq19k57UqjosCHk0NhzgRXytzmAwdQXcncER9p7jh8VpSt
-         KCqfNugeefDDT7io+V2W6th+tKk7azLfDvQ766LaLEyFVnfHma6vX2yIqhb0k/0bTBRt
-         ia9w==
-X-Gm-Message-State: AOAM533QvLhBAfrHpNxXGurkWEJTPYfVSYqGW0lk7EMrT37QFjr976yh
-        LYeN8KwkD33BXvRMtYH/OeVISGCy8gcIYDzgp5ODce8HueI=
-X-Google-Smtp-Source: ABdhPJzpzQ3O9SZyCnmbtWEbsFfvCEjIhxXr0EwZ57EjV3/sxsysE7w38CMuqEzZWCrIK6RNljiUJq2fg3z/4NKTStE=
-X-Received: by 2002:a67:fb86:: with SMTP id n6mr5477431vsr.3.1614767385754;
- Wed, 03 Mar 2021 02:29:45 -0800 (PST)
+        id S239890AbhCCQPg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Mar 2021 11:15:36 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:47268 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1355134AbhCCG0I (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 3 Mar 2021 01:26:08 -0500
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxOdSiKz9gd7ATAA--.25147S9;
+        Wed, 03 Mar 2021 14:24:44 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xingxing Su <suxingxing@loongson.cn>
+Subject: [PATCH v2 7/7] MIPS: Loongson64: Add a Loongson-2k default config file
+Date:   Wed,  3 Mar 2021 14:24:34 +0800
+Message-Id: <20210303062434.22280-8-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210303062434.22280-1-zhangqing@loongson.cn>
+References: <20210303062434.22280-1-zhangqing@loongson.cn>
 MIME-Version: 1.0
-References: <20210303074107.GA8880@lst.de> <20210303.173122.1467075982540149385.anemo@mba.ocn.ne.jp>
-In-Reply-To: <20210303.173122.1467075982540149385.anemo@mba.ocn.ne.jp>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 3 Mar 2021 11:29:34 +0100
-Message-ID: <CAMuHMdXwD6Oi1a6mmrPUA20vMPd6jQ1816vtc_WxobX3TW3y4g@mail.gmail.com>
-Subject: Re: tx4938 and tx4939 ide drivers
-To:     Atsushi Nemoto <anemo@mba.ocn.ne.jp>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     linux-ide@vger.kernel.org,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9AxOdSiKz9gd7ATAA--.25147S9
+X-Coremail-Antispam: 1UD129KBjvJXoW3uw1kZr43JF4DKrWUAr1rtFb_yoWkGFWfpr
+        n7GrWkJ3y8Jr17trW2yryDGr90qr1DJa9rGF17Ar1UXw1kJa13Xrn0yr1UJr1DXF1UXr48
+        X3Z3Gwn3AFn8A37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUm014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
+        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
+        z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
+        4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE
+        3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
+        x0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8
+        JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2
+        ka0xkIwI1lc2xSY4AK67AK6r47MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
+        6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
+        AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE
+        2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
+        vEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVj
+        vjDU0xZFpf9x0JUwNVkUUUUU=
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Nemoto-san, Christoph,
+Add default config for 2K1000.
 
-On Wed, Mar 3, 2021 at 9:31 AM Atsushi Nemoto <anemo@mba.ocn.ne.jp> wrote:
->
-> On Wed, 3 Mar 2021 08:41:07 +0100, Christoph Hellwig <hch@lst.de> wrote:
-> > the tx4938 and tx4939 legacy ide drivers are some of the few that do
-> > not have libata equivalents, which is a bad thing given that CONFIG_IDE
-> > is planned to go away this year.  Are there any users of this hardware
-> > left, and if yes willing to help with the move to libata?
->
-> I think nobody use these drivers now.
->
-> As I wrote in
-> https://lore.kernel.org/lkml/20210107.101729.1936921832901251107.anemo@mba.ocn.ne.jp/
-> removal of these drivers does not break the only known user of TX49
-> boards. (i.e. Mr. Geert Uytterhoeven)
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
+---
 
-Right. Feel free to remove tx4938ide support.
+v2:
+- No changes
 
-Gr{oetje,eeting}s,
+ arch/mips/configs/loongson2k_defconfig | 353 +++++++++++++++++++++++++
+ 1 file changed, 353 insertions(+)
+ create mode 100644 arch/mips/configs/loongson2k_defconfig
 
-                        Geert
-
+diff --git a/arch/mips/configs/loongson2k_defconfig b/arch/mips/configs/loongson2k_defconfig
+new file mode 100644
+index 000000000000..e948ca487e2d
+--- /dev/null
++++ b/arch/mips/configs/loongson2k_defconfig
+@@ -0,0 +1,353 @@
++# CONFIG_LOCALVERSION_AUTO is not set
++CONFIG_KERNEL_LZMA=y
++CONFIG_SYSVIPC=y
++CONFIG_POSIX_MQUEUE=y
++CONFIG_AUDIT=y
++CONFIG_NO_HZ=y
++CONFIG_HIGH_RES_TIMERS=y
++CONFIG_PREEMPT=y
++CONFIG_BSD_PROCESS_ACCT=y
++CONFIG_BSD_PROCESS_ACCT_V3=y
++CONFIG_TASKSTATS=y
++CONFIG_TASK_DELAY_ACCT=y
++CONFIG_TASK_XACCT=y
++CONFIG_TASK_IO_ACCOUNTING=y
++CONFIG_MEMCG=y
++CONFIG_BLK_CGROUP=y
++CONFIG_SCHED_AUTOGROUP=y
++CONFIG_SYSFS_DEPRECATED=y
++CONFIG_RELAY=y
++CONFIG_BLK_DEV_INITRD=y
++CONFIG_EMBEDDED=y
++CONFIG_MACH_LOONGSON64=y
++# CONFIG_CPU_LOONGSON3_CPUCFG_EMULATION is not set
++CONFIG_HZ_256=y
++CONFIG_MIPS32_O32=y
++CONFIG_MIPS32_N32=y
++CONFIG_MODULES=y
++CONFIG_MODULE_FORCE_LOAD=y
++CONFIG_MODULE_UNLOAD=y
++CONFIG_MODULE_FORCE_UNLOAD=y
++CONFIG_MODVERSIONS=y
++CONFIG_PARTITION_ADVANCED=y
++CONFIG_MQ_IOSCHED_DEADLINE=m
++CONFIG_IOSCHED_BFQ=y
++CONFIG_BFQ_GROUP_IOSCHED=y
++CONFIG_BINFMT_MISC=m
++CONFIG_KSM=y
++CONFIG_NET=y
++CONFIG_PACKET=y
++CONFIG_UNIX=y
++CONFIG_XFRM_USER=y
++CONFIG_NET_KEY=y
++CONFIG_INET=y
++CONFIG_IP_MULTICAST=y
++CONFIG_IP_ADVANCED_ROUTER=y
++CONFIG_IP_MULTIPLE_TABLES=y
++CONFIG_IP_ROUTE_MULTIPATH=y
++CONFIG_IP_ROUTE_VERBOSE=y
++CONFIG_NETFILTER=y
++CONFIG_NETFILTER_NETLINK_LOG=m
++CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
++CONFIG_NETFILTER_XT_TARGET_MARK=m
++CONFIG_NETFILTER_XT_TARGET_NFQUEUE=m
++CONFIG_NETFILTER_XT_MATCH_COMMENT=m
++CONFIG_NETFILTER_XT_MATCH_DCCP=m
++CONFIG_NETFILTER_XT_MATCH_ESP=m
++CONFIG_NETFILTER_XT_MATCH_LENGTH=m
++CONFIG_NETFILTER_XT_MATCH_LIMIT=m
++CONFIG_NETFILTER_XT_MATCH_MAC=m
++CONFIG_NETFILTER_XT_MATCH_MARK=m
++CONFIG_NETFILTER_XT_MATCH_MULTIPORT=m
++CONFIG_NETFILTER_XT_MATCH_PKTTYPE=m
++CONFIG_NETFILTER_XT_MATCH_QUOTA=m
++CONFIG_NETFILTER_XT_MATCH_REALM=m
++CONFIG_NETFILTER_XT_MATCH_STATISTIC=m
++CONFIG_NETFILTER_XT_MATCH_STRING=m
++CONFIG_NETFILTER_XT_MATCH_TCPMSS=m
++CONFIG_IP_VS=m
++CONFIG_IP_NF_IPTABLES=m
++CONFIG_IP_NF_MATCH_AH=m
++CONFIG_IP_NF_MATCH_ECN=m
++CONFIG_IP_NF_MATCH_TTL=m
++CONFIG_IP_NF_FILTER=m
++CONFIG_IP_NF_TARGET_REJECT=m
++CONFIG_IP_NF_MANGLE=m
++CONFIG_IP_NF_TARGET_ECN=m
++CONFIG_IP_NF_TARGET_TTL=m
++CONFIG_IP_NF_RAW=m
++CONFIG_IP_NF_ARPTABLES=m
++CONFIG_IP_NF_ARPFILTER=m
++CONFIG_IP_NF_ARP_MANGLE=m
++CONFIG_IP_SCTP=m
++CONFIG_L2TP=m
++CONFIG_BRIDGE=m
++CONFIG_CFG80211=m
++CONFIG_CFG80211_WEXT=y
++CONFIG_MAC80211=m
++CONFIG_RFKILL=m
++CONFIG_RFKILL_INPUT=y
++CONFIG_PCIEPORTBUS=y
++CONFIG_HOTPLUG_PCI_PCIE=y
++CONFIG_PCIEASPM_PERFORMANCE=y
++CONFIG_HOTPLUG_PCI=y
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
++CONFIG_MTD=m
++CONFIG_BLK_DEV_LOOP=y
++CONFIG_BLK_DEV_CRYPTOLOOP=y
++CONFIG_BLK_DEV_RAM=y
++CONFIG_BLK_DEV_RAM_SIZE=8192
++CONFIG_RAID_ATTRS=m
++CONFIG_BLK_DEV_SD=y
++CONFIG_BLK_DEV_SR=y
++CONFIG_CHR_DEV_SG=y
++CONFIG_CHR_DEV_SCH=m
++CONFIG_SCSI_CONSTANTS=y
++CONFIG_SCSI_LOGGING=y
++CONFIG_SCSI_SPI_ATTRS=m
++CONFIG_SCSI_FC_ATTRS=m
++CONFIG_ISCSI_TCP=m
++CONFIG_MEGARAID_NEWGEN=y
++CONFIG_MEGARAID_MM=y
++CONFIG_MEGARAID_MAILBOX=y
++CONFIG_MEGARAID_LEGACY=y
++CONFIG_MEGARAID_SAS=y
++CONFIG_ATA=y
++CONFIG_SATA_AHCI=y
++CONFIG_PATA_ATIIXP=y
++CONFIG_MD=y
++CONFIG_BLK_DEV_MD=m
++CONFIG_MD_LINEAR=m
++CONFIG_MD_RAID0=m
++CONFIG_MD_RAID1=m
++CONFIG_MD_RAID10=m
++CONFIG_MD_RAID456=m
++CONFIG_MD_MULTIPATH=m
++CONFIG_BLK_DEV_DM=m
++CONFIG_DM_CRYPT=m
++CONFIG_DM_SNAPSHOT=m
++CONFIG_DM_MIRROR=m
++CONFIG_DM_ZERO=m
++CONFIG_TARGET_CORE=m
++CONFIG_TCM_IBLOCK=m
++CONFIG_TCM_FILEIO=m
++CONFIG_TCM_PSCSI=m
++CONFIG_LOOPBACK_TARGET=m
++CONFIG_ISCSI_TARGET=m
++CONFIG_NETDEVICES=y
++CONFIG_TUN=m
++# CONFIG_NET_VENDOR_3COM is not set
++# CONFIG_NET_VENDOR_ADAPTEC is not set
++# CONFIG_NET_VENDOR_ALTEON is not set
++# CONFIG_NET_VENDOR_AMD is not set
++# CONFIG_NET_VENDOR_ARC is not set
++# CONFIG_NET_VENDOR_ATHEROS is not set
++# CONFIG_NET_VENDOR_BROADCOM is not set
++# CONFIG_NET_VENDOR_BROCADE is not set
++# CONFIG_NET_VENDOR_CHELSIO is not set
++# CONFIG_NET_VENDOR_CIRRUS is not set
++# CONFIG_NET_VENDOR_CISCO is not set
++# CONFIG_NET_VENDOR_DEC is not set
++# CONFIG_NET_VENDOR_DLINK is not set
++# CONFIG_NET_VENDOR_EMULEX is not set
++# CONFIG_NET_VENDOR_I825XX is not set
++CONFIG_E1000=y
++CONFIG_E1000E=y
++CONFIG_IGB=y
++CONFIG_IXGB=y
++CONFIG_IXGBE=y
++# CONFIG_NET_VENDOR_MARVELL is not set
++# CONFIG_NET_VENDOR_MELLANOX is not set
++# CONFIG_NET_VENDOR_MICREL is not set
++# CONFIG_NET_VENDOR_MICROCHIP is not set
++# CONFIG_NET_VENDOR_MICROSEMI is not set
++# CONFIG_NET_VENDOR_MYRI is not set
++# CONFIG_NET_VENDOR_NATSEMI is not set
++# CONFIG_NET_VENDOR_NETERION is not set
++# CONFIG_NET_VENDOR_NETRONOME is not set
++# CONFIG_NET_VENDOR_NI is not set
++# CONFIG_NET_VENDOR_NVIDIA is not set
++# CONFIG_NET_VENDOR_OKI is not set
++# CONFIG_NET_VENDOR_PACKET_ENGINES is not set
++# CONFIG_NET_VENDOR_PENSANDO is not set
++# CONFIG_NET_VENDOR_QLOGIC is not set
++# CONFIG_NET_VENDOR_QUALCOMM is not set
++# CONFIG_NET_VENDOR_RDC is not set
++CONFIG_8139CP=y
++CONFIG_8139TOO=y
++# CONFIG_8139TOO_PIO is not set
++CONFIG_R8169=y
++# CONFIG_NET_VENDOR_RENESAS is not set
++# CONFIG_NET_VENDOR_ROCKER is not set
++# CONFIG_NET_VENDOR_SAMSUNG is not set
++# CONFIG_NET_VENDOR_SEEQ is not set
++# CONFIG_NET_VENDOR_SOLARFLARE is not set
++# CONFIG_NET_VENDOR_SILAN is not set
++# CONFIG_NET_VENDOR_SIS is not set
++# CONFIG_NET_VENDOR_SMSC is not set
++CONFIG_STMMAC_ETH=y
++# CONFIG_NET_VENDOR_SUN is not set
++# CONFIG_NET_VENDOR_TEHUTI is not set
++# CONFIG_NET_VENDOR_TI is not set
++# CONFIG_NET_VENDOR_TOSHIBA is not set
++# CONFIG_NET_VENDOR_VIA is not set
++# CONFIG_NET_VENDOR_WIZNET is not set
++CONFIG_PPP=m
++CONFIG_PPP_BSDCOMP=m
++CONFIG_PPP_DEFLATE=m
++CONFIG_PPP_FILTER=y
++CONFIG_PPP_MPPE=m
++CONFIG_PPP_MULTILINK=y
++CONFIG_PPPOE=m
++CONFIG_PPPOL2TP=m
++CONFIG_PPP_ASYNC=m
++CONFIG_PPP_SYNC_TTY=m
++CONFIG_ATH9K=m
++CONFIG_HOSTAP=m
++CONFIG_INPUT_LEDS=m
++CONFIG_INPUT_SPARSEKMAP=y
++CONFIG_INPUT_EVDEV=y
++# CONFIG_KEYBOARD_ATKBD is not set
++CONFIG_KEYBOARD_XTKBD=m
++# CONFIG_MOUSE_PS2 is not set
++CONFIG_INPUT_MISC=y
++CONFIG_INPUT_UINPUT=m
++# CONFIG_SERIO_I8042 is not set
++CONFIG_SERIO_SERPORT=m
++CONFIG_SERIO_LIBPS2=y
++CONFIG_SERIO_RAW=m
++CONFIG_LEGACY_PTY_COUNT=16
++CONFIG_SERIAL_8250=y
++# CONFIG_SERIAL_8250_16550A_VARIANTS is not set
++CONFIG_SERIAL_8250_CONSOLE=y
++CONFIG_SERIAL_8250_NR_UARTS=16
++CONFIG_SERIAL_8250_EXTENDED=y
++CONFIG_SERIAL_8250_MANY_PORTS=y
++CONFIG_SERIAL_8250_SHARE_IRQ=y
++CONFIG_SERIAL_8250_RSA=y
++CONFIG_SERIAL_OF_PLATFORM=y
++CONFIG_SERIAL_NONSTANDARD=y
++CONFIG_HW_RANDOM=y
++CONFIG_RAW_DRIVER=m
++CONFIG_I2C_CHARDEV=y
++CONFIG_I2C_PIIX4=y
++CONFIG_GPIO_LOONGSON=y
++CONFIG_SENSORS_LM75=m
++CONFIG_SENSORS_LM93=m
++CONFIG_SENSORS_W83627HF=m
++# CONFIG_MEDIA_CEC_SUPPORT is not set
++CONFIG_MEDIA_SUPPORT=m
++# CONFIG_MEDIA_CONTROLLER is not set
++CONFIG_MEDIA_USB_SUPPORT=y
++CONFIG_USB_VIDEO_CLASS=m
++CONFIG_DRM=y
++CONFIG_DRM_RADEON=y
++CONFIG_FB_RADEON=y
++CONFIG_LCD_CLASS_DEVICE=y
++CONFIG_LCD_PLATFORM=m
++# CONFIG_VGA_CONSOLE is not set
++CONFIG_FRAMEBUFFER_CONSOLE=y
++CONFIG_FRAMEBUFFER_CONSOLE_ROTATION=y
++CONFIG_LOGO=y
++CONFIG_SOUND=y
++CONFIG_SND=y
++CONFIG_SND_VERBOSE_PRINTK=y
++CONFIG_SND_SEQUENCER=y
++CONFIG_SND_SEQ_DUMMY=m
++# CONFIG_SND_ISA is not set
++CONFIG_SND_HDA_INTEL=y
++CONFIG_SND_HDA_HWDEP=y
++CONFIG_SND_HDA_PATCH_LOADER=y
++CONFIG_SND_HDA_CODEC_REALTEK=y
++CONFIG_SND_HDA_CODEC_ANALOG=y
++CONFIG_SND_HDA_CODEC_SIGMATEL=y
++CONFIG_SND_HDA_CODEC_VIA=y
++CONFIG_SND_HDA_CODEC_CONEXANT=y
++# CONFIG_SND_USB is not set
++CONFIG_SND_SOC=y
++CONFIG_HID_A4TECH=m
++CONFIG_HID_SUNPLUS=m
++CONFIG_USB=y
++CONFIG_USB_MON=y
++CONFIG_USB_XHCI_HCD=y
++CONFIG_USB_EHCI_HCD=y
++CONFIG_USB_EHCI_ROOT_HUB_TT=y
++CONFIG_USB_OHCI_HCD=y
++CONFIG_USB_UHCI_HCD=m
++CONFIG_USB_STORAGE=y
++CONFIG_USB_SERIAL=m
++CONFIG_USB_SERIAL_OPTION=m
++CONFIG_RTC_CLASS=y
++CONFIG_RTC_DRV_CMOS=y
++CONFIG_DMADEVICES=y
++# CONFIG_CPU_HWMON is not set
++CONFIG_PM_DEVFREQ=y
++CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
++CONFIG_DEVFREQ_GOV_PERFORMANCE=y
++CONFIG_DEVFREQ_GOV_POWERSAVE=y
++CONFIG_DEVFREQ_GOV_USERSPACE=y
++CONFIG_EXT2_FS=y
++CONFIG_EXT2_FS_XATTR=y
++CONFIG_EXT2_FS_POSIX_ACL=y
++CONFIG_EXT2_FS_SECURITY=y
++CONFIG_EXT3_FS=y
++CONFIG_EXT3_FS_POSIX_ACL=y
++CONFIG_EXT3_FS_SECURITY=y
++CONFIG_XFS_FS=y
++CONFIG_XFS_QUOTA=y
++CONFIG_XFS_POSIX_ACL=y
++CONFIG_QUOTA=y
++# CONFIG_PRINT_QUOTA_WARNING is not set
++CONFIG_AUTOFS4_FS=y
++CONFIG_FUSE_FS=m
++CONFIG_ISO9660_FS=m
++CONFIG_JOLIET=y
++CONFIG_MSDOS_FS=y
++CONFIG_VFAT_FS=y
++CONFIG_FAT_DEFAULT_CODEPAGE=936
++CONFIG_FAT_DEFAULT_IOCHARSET="gb2312"
++CONFIG_PROC_KCORE=y
++CONFIG_TMPFS=y
++CONFIG_TMPFS_POSIX_ACL=y
++CONFIG_CONFIGFS_FS=y
++CONFIG_CRAMFS=m
++CONFIG_SQUASHFS=y
++CONFIG_SQUASHFS_XATTR=y
++CONFIG_NFS_FS=m
++CONFIG_NFS_V3_ACL=y
++CONFIG_NFS_V4=m
++CONFIG_NFSD=m
++CONFIG_NFSD_V3_ACL=y
++CONFIG_NFSD_V4=y
++CONFIG_CIFS=m
++CONFIG_NLS_CODEPAGE_437=y
++CONFIG_NLS_CODEPAGE_936=y
++CONFIG_NLS_ASCII=y
++CONFIG_NLS_UTF8=y
++CONFIG_SECURITY=y
++CONFIG_SECURITYFS=y
++CONFIG_SECURITY_NETWORK=y
++CONFIG_SECURITY_PATH=y
++CONFIG_SECURITY_SELINUX=y
++CONFIG_SECURITY_SELINUX_BOOTPARAM=y
++CONFIG_SECURITY_SELINUX_DISABLE=y
++CONFIG_DEFAULT_SECURITY_DAC=y
++CONFIG_CRYPTO_SEQIV=m
++CONFIG_CRYPTO_HMAC=y
++CONFIG_CRYPTO_MD5=y
++CONFIG_CRYPTO_TGR192=m
++CONFIG_CRYPTO_WP512=m
++CONFIG_CRYPTO_BLOWFISH=m
++CONFIG_CRYPTO_CAST5=m
++CONFIG_CRYPTO_CAST6=m
++CONFIG_CRYPTO_SERPENT=m
++CONFIG_CRYPTO_TWOFISH=m
++CONFIG_CRYPTO_DEFLATE=m
++CONFIG_PRINTK_TIME=y
++CONFIG_FRAME_WARN=1024
++CONFIG_STRIP_ASM_SYMS=y
++CONFIG_MAGIC_SYSRQ=y
++# CONFIG_SCHED_DEBUG is not set
++# CONFIG_DEBUG_PREEMPT is not set
++# CONFIG_FTRACE is not set
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.20.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds

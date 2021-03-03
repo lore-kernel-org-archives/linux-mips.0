@@ -2,85 +2,94 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23F91C4160E
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34537C28CC5
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EBC23601FD
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DEF1864EE4
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346178AbhCCQRk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Mar 2021 11:17:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37796 "EHLO
+        id S1346451AbhCCQRy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Mar 2021 11:17:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1842978AbhCCKXR (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 05:23:17 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E127C0698C9
-        for <linux-mips@vger.kernel.org>; Wed,  3 Mar 2021 01:08:15 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id 2so23140575ljr.5
-        for <linux-mips@vger.kernel.org>; Wed, 03 Mar 2021 01:08:15 -0800 (PST)
+        with ESMTP id S233310AbhCCMcX (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 07:32:23 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 299B5C06178A
+        for <linux-mips@vger.kernel.org>; Wed,  3 Mar 2021 04:31:39 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id m22so36830373lfg.5
+        for <linux-mips@vger.kernel.org>; Wed, 03 Mar 2021 04:31:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VgVOuS1QdOahuh5eYdd3kUCTER6wTGX5ASCqQ/qR98c=;
-        b=PV84WwDH6AoIAOjPzcHF9gE4Neg+FF/n1iEVa9iM65O+VfmQa9SUJspvze3Ds0xmtY
-         VNut1Zk3DzlViqxwSvsvuf2JVU9tvSiu8Jd7xGnmvLBgUU3puYPJhikl0UX+4XXieKWa
-         0rBqqTyvMMomXbLELCv8FgnG/eoUUWmsOtdry2CoDH+WMqGh6PqtEV4hXY+zKsXY4MnH
-         jlaX4DJR0JZO3wuG0cuLJAjfoZFo9/JgjIpSy3d5HhWgLztRgRmdt/Tf3ka3ih1qDVBg
-         0Lfnm/rCtgSa17A7JRAqFsZsNDEhZYxVttvZ2/NEaXX+V2IObPQuwhqk1B/N3edNREZt
-         vxRw==
+        d=cryptogams.org; s=gmail;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZJ9YmLXJMRVQqrwkPYggJ4USyGQCg6hVZAYYYHZZaEU=;
+        b=MWJkz0uD17Lw3eji41KWwp0FylL3T5nJxo2U+RLrwvXXqlhNLse+/0bWk0aNwXUqV7
+         saBPb7htZMAuiq6p8XhVNm6E0rgd4Qv0eh005gx/kQ1hXr4iayiqP5i+IPlcOzRX2fYr
+         VUVCo1KhBnjurTJQxaUD5D2tivjt86O9HXzNlL6FUz4NVsuButIecXpV7TJkFLPVIZBg
+         G5BIm0Pn10kur0d97H2qByacL3lFgKCrPPMvICA30Ndv8Ovbs+wi6yJYBOjGGVumzc/i
+         8lSLZofvAszqGUoWiKTXaRgIrrp3xv3NuKvQAcq5HLdoUs1bUYOKyJUTNtgC+kU/tIHt
+         FYug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VgVOuS1QdOahuh5eYdd3kUCTER6wTGX5ASCqQ/qR98c=;
-        b=bd4VKrcgIaAAcpLAJ0WkzUImCNtLPDMyKNUF+ttHQ99WeiNUwJkpjpVSgb7XgQou5T
-         my+9Hz5/nSInvfEQlmSo3DvmVrGRNIOOyO1+FOLYri6CQTWZPD+zxucJkN2wDstvquFp
-         FuawNBa3zEyynNzTQ0yIaRwRZloKshCjPsArptMYiERshc1+iB2uBMMgAo1k5+pfVi+h
-         8XRHpmv8Mo4f+AVfM8NDrg7QSHh4WoZZjsGF3gB+oIc5f9DZkMd4YIUvOcxBnf0OEnNW
-         xlCEPr93En6Zs9ZM2+FujG9UZ53LqoMGFNP3ypVGo6zKzcUK1vmb/CK4qRBIR3XfLVz9
-         xQ3g==
-X-Gm-Message-State: AOAM5309Pu7AMxx/TCeJYFkZORwftQu5oZAiDjG6539co5t7EkAg/Qk5
-        4FIebLTYUZO0IOr4U3HKv1g6/5WCIUu4kyJDiz8FdOGl/ki8AA==
-X-Google-Smtp-Source: ABdhPJzxigEaNt73mce53qjrn+MUEA/hhuJIqtZPEfomrycZI5NTqHmk7gTM6ml+qt1aKlxGUv4AZijNTpYhNfnk8J0=
-X-Received: by 2002:a2e:7001:: with SMTP id l1mr1351194ljc.200.1614762493875;
- Wed, 03 Mar 2021 01:08:13 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZJ9YmLXJMRVQqrwkPYggJ4USyGQCg6hVZAYYYHZZaEU=;
+        b=hyyw7iBt0EqkMnwjtau8l3v/6xZq2QLntBBYOTMSzVVTI+tq4EYy84zftydETc0Y1X
+         VmEXeUoYSoiiVpGjzWAz+HfDkyvWMyAat/TB/PnAKmRkYKZ+A5lCW118MQjBhUjjBPFH
+         Am+6WcllX6LnHHiH0p3XoDh8Fu6s/1FbXpfNvmBRDlgxI83uIo7cht0w4dCRUuBqHPi2
+         Kmc7oFVvjN9U1tsTWOp9Hgwoz4ia3gFPaymy7KpJnQZ55zzDFijUxYHKltNeoE76gUqJ
+         NU8N9OCag77KA+k8dqFtmALj4lXZ2ijQkkS1AF72tV5OP6AZavwxFVpzbbHQz4UoBGIH
+         qXTA==
+X-Gm-Message-State: AOAM530odIaW0QAIwOk8gjYzqddrafrPedWG2gVgH+G4WkvDtoKR1HPs
+        0BrO5wVPhoh/XAGbA4ndCkTJdg==
+X-Google-Smtp-Source: ABdhPJzBp29wZ23xRTdlJ6SJxcClcWGV+ftIYsJQv0I4D1aUw/Ib+kVod1DBPXa00vWtZZxdP9GKNQ==
+X-Received: by 2002:ac2:4144:: with SMTP id c4mr15145307lfi.549.1614774697571;
+        Wed, 03 Mar 2021 04:31:37 -0800 (PST)
+Received: from [10.0.1.129] (c-0f3be255.012-217-67626713.bbcust.telenor.se. [85.226.59.15])
+        by smtp.gmail.com with ESMTPSA id x27sm2935199lfu.151.2021.03.03.04.31.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Mar 2021 04:31:37 -0800 (PST)
+Subject: Re: [PATCH] crypto: mips/poly1305 - enable for all MIPS processors
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        George Cherian <gcherian@marvell.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        stable <stable@vger.kernel.org>
+References: <alpine.DEB.2.21.2103030122010.19637@angie.orcam.me.uk>
+ <CAHmME9qgEMdcVgkBkvBZ9Du=ae=wEyQ4uPa+Au8+LEs5ZQCzAg@mail.gmail.com>
+From:   Andy Polyakov <appro@cryptogams.org>
+Message-ID: <70eb96e1-3243-105c-b52e-c9bd3239a263@cryptogams.org>
+Date:   Wed, 3 Mar 2021 13:31:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <1614303297-24178-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1614303297-24178-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 3 Mar 2021 10:08:03 +0100
-Message-ID: <CACRpkdbC9FZgj-VkZ3hMuKCEsFVfYoBm-OWG2WK2WbubmK=ALw@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: ingenic: add missing call to of_node_put()
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>, linux-mips@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHmME9qgEMdcVgkBkvBZ9Du=ae=wEyQ4uPa+Au8+LEs5ZQCzAg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 2:35 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
+Hi,
 
-> In one of the error paths of the for_each_child_of_node() loop in
-> ingenic_gpio_probe, add missing call to of_node_put().
->
-> Fix the following coccicheck warning:
-> ./drivers/pinctrl/pinctrl-ingenic.c:2485:1-23: WARNING: Function
-> "for_each_child_of_node" should have of_node_put() before return around
-> line 2489.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> I'm also CC'ing Andy on this, who wrote the original assembly, in case
+> he has some last minute objection.
 
-Oops applied this rather than v1.
+Just "what took you so long":-) On potentially related note cryptogams
+chacha-mips is as universal as poly1305-mips. "Universal" in sense that
+it can be compiled for all MIPS stripes.
 
-Yours,
-Linus Walleij
+Cheers.

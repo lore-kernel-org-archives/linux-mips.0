@@ -2,94 +2,82 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08A0EC432C3
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EC77C4161F
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DF87164EDB
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7254164EDB
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345647AbhCCQRD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Mar 2021 11:17:03 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:47210 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1353365AbhCCG0I (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 3 Mar 2021 01:26:08 -0500
-Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxOdSiKz9gd7ATAA--.25147S2;
-        Wed, 03 Mar 2021 14:24:34 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/7] Add basic support for Loongson-2K1000
-Date:   Wed,  3 Mar 2021 14:24:27 +0800
-Message-Id: <20210303062434.22280-1-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.20.1
+        id S1346265AbhCCQRs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Mar 2021 11:17:48 -0500
+Received: from mail-vs1-f43.google.com ([209.85.217.43]:33174 "EHLO
+        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231712AbhCCKa1 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 05:30:27 -0500
+Received: by mail-vs1-f43.google.com with SMTP id b189so6357126vsd.0;
+        Wed, 03 Mar 2021 02:30:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RWLoJKrST9SY284XzyZhaHgjO9L3hwsdopDdAp6+Qlo=;
+        b=chrzGNYs5n+BOENUpuq53FK1a4WsBrOMAbWQ+Ifa1JKwKwd/nvyBpa0Aeh6NtzTNtw
+         yeNd3PEFRhedZFzITcSitEIu+S31J0oOhkpafz02v+ZeF4zF650o76nIw/KqQ4Pg0KU+
+         miH4Ovs6Y2v+Azse5vv/zMTGxCz1eq7m1sAAe8Kf/2Lmls597/H8Lp76J79B/35FsnYq
+         DN4HWRwQOOAPuerh25BPxnRq19k57UqjosCHk0NhzgRXytzmAwdQXcncER9p7jh8VpSt
+         KCqfNugeefDDT7io+V2W6th+tKk7azLfDvQ766LaLEyFVnfHma6vX2yIqhb0k/0bTBRt
+         ia9w==
+X-Gm-Message-State: AOAM533QvLhBAfrHpNxXGurkWEJTPYfVSYqGW0lk7EMrT37QFjr976yh
+        LYeN8KwkD33BXvRMtYH/OeVISGCy8gcIYDzgp5ODce8HueI=
+X-Google-Smtp-Source: ABdhPJzpzQ3O9SZyCnmbtWEbsFfvCEjIhxXr0EwZ57EjV3/sxsysE7w38CMuqEzZWCrIK6RNljiUJq2fg3z/4NKTStE=
+X-Received: by 2002:a67:fb86:: with SMTP id n6mr5477431vsr.3.1614767385754;
+ Wed, 03 Mar 2021 02:29:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxOdSiKz9gd7ATAA--.25147S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7urykAr1DAw4DKryfXFWDJwb_yoW8Wr4kpw
-        43Cw15KF45Cry3Crn3JryUWr1rArWfJrZrWF47Xr15GasIqa4Yvr1fJFs8Jr42vrykta4j
-        9ry8WFW7GFnrC37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk2b7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8AwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUxPl1DUUUU
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+References: <20210303074107.GA8880@lst.de> <20210303.173122.1467075982540149385.anemo@mba.ocn.ne.jp>
+In-Reply-To: <20210303.173122.1467075982540149385.anemo@mba.ocn.ne.jp>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 3 Mar 2021 11:29:34 +0100
+Message-ID: <CAMuHMdXwD6Oi1a6mmrPUA20vMPd6jQ1816vtc_WxobX3TW3y4g@mail.gmail.com>
+Subject: Re: tx4938 and tx4939 ide drivers
+To:     Atsushi Nemoto <anemo@mba.ocn.ne.jp>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-ide@vger.kernel.org,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-These patches support single-core DTS boot to the serial port login
-interface, which can be operated using conventional commands.
+Hi Nemoto-san, Christoph,
 
-I have successfully tested it on the Loongson 2K1000 machine.
-pmon: http://cgit.loongnix.org/cgit/pmon-loongson3/
+On Wed, Mar 3, 2021 at 9:31 AM Atsushi Nemoto <anemo@mba.ocn.ne.jp> wrote:
+>
+> On Wed, 3 Mar 2021 08:41:07 +0100, Christoph Hellwig <hch@lst.de> wrote:
+> > the tx4938 and tx4939 legacy ide drivers are some of the few that do
+> > not have libata equivalents, which is a bad thing given that CONFIG_IDE
+> > is planned to go away this year.  Are there any users of this hardware
+> > left, and if yes willing to help with the move to libata?
+>
+> I think nobody use these drivers now.
+>
+> As I wrote in
+> https://lore.kernel.org/lkml/20210107.101729.1936921832901251107.anemo@mba.ocn.ne.jp/
+> removal of these drivers does not break the only known user of TX49
+> boards. (i.e. Mr. Geert Uytterhoeven)
 
-Qing Zhang (7):
-  MIPS: Loongson64: DeviceTree for 2K1000
-  MIPS: Loongson64: Distinguish firmware dependencies DTB/LEFI
-  MIPS: Loongson64: Add support for the 2K1000 to get cpu_clock_freq
-  MIPS: Loongson64: Add 2K1000 early_printk_port
-  irqchip/loongson-liointc: irqchip add 2.0 version
-  dt-bindings: interrupt-controller: Add Loongson-2K1000 LIOINTC
-  MIPS: Loongson64: Add a Loongson-2k default config file
+Right. Feel free to remove tx4938ide support.
 
- .../loongson,liointc.yaml                     |   9 +-
- arch/mips/boot/dts/loongson/Makefile          |   1 +
- .../boot/dts/loongson/loongson64-2k1000.dtsi  | 243 ++++++++++++
- .../dts/loongson/loongson64_2core_2k1000.dts  |  10 +
- arch/mips/configs/loongson2k_defconfig        | 353 ++++++++++++++++++
- .../include/asm/mach-loongson64/boot_param.h  |   6 +
- .../asm/mach-loongson64/builtin_dtbs.h        |   1 +
- .../include/asm/mach-loongson64/loongson.h    |   3 +-
- arch/mips/loongson64/env.c                    |  13 +-
- arch/mips/loongson64/init.c                   |  21 +-
- arch/mips/loongson64/time.c                   |  14 +
- drivers/irqchip/irq-loongson-liointc.c        |  55 ++-
- 12 files changed, 711 insertions(+), 18 deletions(-)
- create mode 100644 arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
- create mode 100644 arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dts
- create mode 100644 arch/mips/configs/loongson2k_defconfig
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-2.20.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

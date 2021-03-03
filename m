@@ -2,311 +2,100 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EF42C43332
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2F61C433E6
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2F51764EBB
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B2B3364F6B
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240126AbhCDAuv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Mar 2021 19:50:51 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:48796 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1581486AbhCCVP5 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 16:15:57 -0500
-Date:   Thu, 4 Mar 2021 00:14:55 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: Re: [PATCH] MIPS: kernel: Reserve exception base early to prevent
- corruption
-Message-ID: <20210303211455.5d3vedv7ewk2d4ns@mobilestation>
-References: <20210303185713.122531-1-tsbogend@alpha.franken.de>
+        id S239385AbhCDAuq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Mar 2021 19:50:46 -0500
+Received: from 3.mo3.mail-out.ovh.net ([46.105.44.175]:58907 "EHLO
+        3.mo3.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230430AbhCCSTg (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 13:19:36 -0500
+X-Greylist: delayed 22190 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Mar 2021 13:19:35 EST
+Received: from player739.ha.ovh.net (unknown [10.108.35.103])
+        by mo3.mail-out.ovh.net (Postfix) with ESMTP id 84CD827C877
+        for <linux-mips@vger.kernel.org>; Wed,  3 Mar 2021 12:44:18 +0100 (CET)
+Received: from milecki.pl (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
+        (Authenticated sender: rafal@milecki.pl)
+        by player739.ha.ovh.net (Postfix) with ESMTPSA id 4FE5D1798D8E0;
+        Wed,  3 Mar 2021 11:44:07 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-103G0058af54b4d-f3b4-44dc-ac9e-34a2a880a68e,
+                    26C1B780A21ED05C344A0C24DEC46BA2B7EA0698) smtp.auth=rafal@milecki.pl
+X-OVh-ClientIp: 194.187.74.233
+Subject: Re: [PATCH stblinux.git 2/2] firmware: bcm47xx_nvram: support
+ platform device "brcm,nvram"
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Vivek Unune <npcomplete13@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org
+References: <20210302074405.18998-1-zajec5@gmail.com>
+ <20210302074405.18998-2-zajec5@gmail.com>
+ <8e17b978-a527-97df-3f31-1fb2123a23e9@gmail.com>
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Message-ID: <d09c9e49-d7c7-cc71-1437-48d82e14843b@milecki.pl>
+Date:   Wed, 3 Mar 2021 12:44:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210303185713.122531-1-tsbogend@alpha.franken.de>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <8e17b978-a527-97df-3f31-1fb2123a23e9@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 8543891444003212823
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtvddgfeegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepvedttefgueffvefgvdejleeivddvjefhkeffgeeugeelieefteevffdvuedvgfefnecuffhomhgrihhnpehlkhhmlhdrohhrghenucfkpheptddrtddrtddrtddpudelgedrudekjedrjeegrddvfeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeefledrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehrrghfrghlsehmihhlvggtkhhirdhplhdprhgtphhtthhopehlihhnuhigqdhmihhpshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello  Thomas,
-Thanks for the patch. My comments are below.
-
-On Wed, Mar 03, 2021 at 07:57:13PM +0100, Thomas Bogendoerfer wrote:
-> BMIPS is one of the few platforms that do change the exception base.
-> After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
-> with kernel_end") we started seeing BMIPS boards fail to boot with the
-> built-in FDT being corrupted.
+On 02.03.2021 17:59, Florian Fainelli wrote:
+> On 3/1/21 11:44 PM, Rafał Miłecki wrote:
+>> From: Rafał Miłecki <rafal@milecki.pl>
+>>
+>> Add support for platform device providing mapping resource. This allows
+>> reading NVRAM based on DT mapping binding. It's required for devices
+>> that boot depending on NVRAM stored setup and provides early access to
+>> NVRAM data.
+>>
+>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+>> ---
+>> bcm47xx_nvram driver was originally added through MIPS tree, but this
+>> change doesn't affect BCM47XX (MIPS) as it doesn't use DT. It targets
+>> ARCH_BCM_5301X so I suggest this goes through the stblinux.git tree.
 > 
-> Before the cited commit, early allocations would be in the [kernel_end,
-> RAM_END] range, but after commit they would be within [RAM_START +
-> PAGE_SIZE, RAM_END].
+> Can you see if this change can be replaced by the nvmem-rmem work that
+> Nicolas recently did to support something similar for the Raspberry Pi 4:
 > 
-> The custom exception base handler that is installed by
-> bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
-> memory region allocated by unflatten_and_copy_device_tree() thus
-> corrupting the FDT used by the kernel.
-> 
-> To fix this, we need to perform an early reservation of the custom
-> exception space. So we reserve it already in cpu_probe() for the CPUs
-> where this is fixed. For CPU with an ebase config register allocation
-> of exception space will be done in trap_init().
-> 
-> Huge thanks to Serget for analysing and proposing a solution to this
-> issue.
-> 
+> https://lkml.org/lkml/2021/1/29/235
 
-> Fixes: Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
+I don't think it fits my case.
 
-Fixes tag is used twice.
+It's a reserved memory binding/driver which refers to the system memory.
+In NVRAM case we need to do a mapping. I think it's different?
 
-> Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
+nvmem-rmem registers NVMEM device without providing any cells. It also
+doesn't understand NVRAM data structure. I guess nvmem-rmem only exposes
+NVMEM for user-space access. I need to access NVRAM to e.g. detect boot
+parameters in kernel code.
 
-I'd switch these tags order. First it was reported, then the
-problem was debugged. I suppose it would be also nice to add
-Florian under the second Reported-by tag if he doesn't mind. I haven't
-seen any Kamal' email message, but a report posted by Florian only.
+I was thinking for a moment about treating NVRAM like a NVMEM but NVRAM
+doesn't seem to fit current design and kernel API. NVMEM assumes that
+every cell has a specific offset and size. Reading NVRAM should be
+based on string keys (nof offsets). See nvmem_reg_read_t for details.
 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
->  arch/mips/include/asm/traps.h    |  4 ++++
->  arch/mips/kernel/cpu-probe.c     |  7 +++++++
->  arch/mips/kernel/cpu-r3k-probe.c |  3 +++
->  arch/mips/kernel/smp-bmips.c     |  9 +--------
->  arch/mips/kernel/traps.c         | 31 ++++++++++++++++---------------
->  5 files changed, 31 insertions(+), 23 deletions(-)
-> 
-> diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
-> index 6aa8f126a43d..d74d829e1655 100644
-> --- a/arch/mips/include/asm/traps.h
-> +++ b/arch/mips/include/asm/traps.h
-> @@ -24,7 +24,11 @@ extern void (*board_ebase_setup)(void);
->  extern void (*board_cache_error_setup)(void);
->  
->  extern int register_nmi_notifier(struct notifier_block *nb);
-> +extern void reserve_exception_space(unsigned long addr, unsigned long size);
->  extern char except_vec_nmi[];
-> +extern unsigned long ebase_size;
-> +
-> +#define VECTORSPACING 0x100	/* for EI/VI mode */
->  
->  #define nmi_notifier(fn, pri)						\
->  ({									\
-> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-> index 9a89637b4ecf..effc45cbb351 100644
-> --- a/arch/mips/kernel/cpu-probe.c
-> +++ b/arch/mips/kernel/cpu-probe.c
-> @@ -26,6 +26,7 @@
->  #include <asm/elf.h>
->  #include <asm/pgtable-bits.h>
->  #include <asm/spram.h>
-> +#include <asm/traps.h>
->  #include <linux/uaccess.h>
->  
->  #include "fpu-probe.h"
-> @@ -1628,6 +1629,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
->  		c->cputype = CPU_BMIPS3300;
->  		__cpu_name[cpu] = "Broadcom BMIPS3300";
->  		set_elf_platform(cpu, "bmips3300");
-> +		reserve_exception_space(0x80000400, VECTORSPACING * 64);
->  		break;
->  	case PRID_IMP_BMIPS43XX: {
->  		int rev = c->processor_id & PRID_REV_MASK;
-> @@ -1638,6 +1640,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
->  			__cpu_name[cpu] = "Broadcom BMIPS4380";
->  			set_elf_platform(cpu, "bmips4380");
->  			c->options |= MIPS_CPU_RIXI;
-> +			reserve_exception_space(0x80000400, VECTORSPACING * 64);
->  		} else {
->  			c->cputype = CPU_BMIPS4350;
->  			__cpu_name[cpu] = "Broadcom BMIPS4350";
-> @@ -1654,6 +1657,7 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
->  			__cpu_name[cpu] = "Broadcom BMIPS5000";
->  		set_elf_platform(cpu, "bmips5000");
->  		c->options |= MIPS_CPU_ULRI | MIPS_CPU_RIXI;
-> +		reserve_exception_space(0x80001000, VECTORSPACING * 64);
->  		break;
->  	}
->  }
-> @@ -2133,6 +2137,9 @@ void cpu_probe(void)
->  	if (cpu == 0)
->  		__ua_limit = ~((1ull << cpu_vmbits) - 1);
->  #endif
-> +
-> +	if (ebase_size == 0 && !cpu_has_mips_r2_r6)
-> +		reserve_exception_space(CAC_BASE, 0x400);
->  }
->  
->  void cpu_report(void)
-> diff --git a/arch/mips/kernel/cpu-r3k-probe.c b/arch/mips/kernel/cpu-r3k-probe.c
-> index abdbbe8c5a43..6e3f4c17b810 100644
-> --- a/arch/mips/kernel/cpu-r3k-probe.c
-> +++ b/arch/mips/kernel/cpu-r3k-probe.c
-> @@ -21,6 +21,7 @@
->  #include <asm/fpu.h>
->  #include <asm/mipsregs.h>
->  #include <asm/elf.h>
-> +#include <asm/traps.h>
->  
->  #include "fpu-probe.h"
->  
-> @@ -158,6 +159,8 @@ void cpu_probe(void)
->  		cpu_set_fpu_opts(c);
->  	else
->  		cpu_set_nofpu_opts(c);
-> +
-> +	reserve_exception_space(CAC_BASE, 0x400);
->  }
->  
->  void cpu_report(void)
-> diff --git a/arch/mips/kernel/smp-bmips.c b/arch/mips/kernel/smp-bmips.c
-> index b6ef5f7312cf..ad3f2282a65a 100644
-> --- a/arch/mips/kernel/smp-bmips.c
-> +++ b/arch/mips/kernel/smp-bmips.c
-> @@ -528,10 +528,6 @@ static void bmips_set_reset_vec(int cpu, u32 val)
->  
->  void bmips_ebase_setup(void)
->  {
-> -	unsigned long new_ebase = ebase;
-> -
-> -	BUG_ON(ebase != CKSEG0);
-> -
->  	switch (current_cpu_type()) {
->  	case CPU_BMIPS4350:
->  		/*
-
-> @@ -554,7 +550,6 @@ void bmips_ebase_setup(void)
->  		 * 0x8000_0000: reset/NMI (initially in kseg1)
->  		 * 0x8000_0400: normal vectors
->  		 */
-> -		new_ebase = 0x80000400;
->  		bmips_set_reset_vec(0, RESET_FROM_KSEG0);
->  		break;
->  	case CPU_BMIPS5000:
-> @@ -562,16 +557,14 @@ void bmips_ebase_setup(void)
->  		 * 0x8000_0000: reset/NMI (initially in kseg1)
->  		 * 0x8000_1000: normal vectors
->  		 */
-> -		new_ebase = 0x80001000;
->  		bmips_set_reset_vec(0, RESET_FROM_KSEG0);
-> -		write_c0_ebase(new_ebase);
-> +		write_c0_ebase(ebase);
->  		break;
->  	default:
->  		return;
->  	}
->  
->  	board_nmi_handler_setup = &bmips_nmi_handler_setup;
-
-I've just realized that Broadcom MIPS actually needs to reserve a
-space above 0x80000000 too. See the in-situ comment here, 0x8000_0000
-is said to be a space for reset/NMI. That space is then rewritten by
-the method bmips_nmi_handler_setup() called in trap_init(). Of course
-memblock allocates a memory starting from PAGE_SIZE so we are on safe
-side at boot-stage. At the same time memblock doesn't mark the lowest
-region as reserved. Thus we can't be sure that the buddy allocator
-won't ever try to use that physical memory. AFAICS bcm63xx
-also copies some vector to 0xa0000200.
-
-Similar thing concerns all the platforms, which initialize the
-pointers: board_nmi_handler_setup and board_ejtag_handler_setup. All
-of them rewrite some lowest memory space with NMI/eJTAG vectors and
-most likely expects that data being left unchanged too.
-
-I am a bit surprised we haven't got any bug report in that matter so
-far, because AFAIR the MIPS arch's stopped reserving memory below the
-kernel since bootmem allocator was removed. Anyway at least for the
-sake of consistency the lowest page should be reserved in the affected
-platforms.
-
--Sergey
-
-> -	ebase = new_ebase;
->  }
->  
->  asmlinkage void __weak plat_wired_tlb_setup(void)
-> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-> index e0352958e2f7..670b824b05a0 100644
-> --- a/arch/mips/kernel/traps.c
-> +++ b/arch/mips/kernel/traps.c
-> @@ -2009,13 +2009,19 @@ void __noreturn nmi_exception_handler(struct pt_regs *regs)
->  	nmi_exit();
->  }
->  
-> -#define VECTORSPACING 0x100	/* for EI/VI mode */
-> -
->  unsigned long ebase;
->  EXPORT_SYMBOL_GPL(ebase);
-> +unsigned long ebase_size;
->  unsigned long exception_handlers[32];
->  unsigned long vi_handlers[64];
->  
-> +void reserve_exception_space(unsigned long addr, unsigned long size)
-> +{
-> +	ebase = addr;
-> +	ebase_size = size;
-> +	memblock_reserve(__pa((void *)ebase), ebase_size);
-> +}
-> +
->  void __init *set_except_vector(int n, void *addr)
->  {
->  	unsigned long handler = (unsigned long) addr;
-> @@ -2360,27 +2366,22 @@ void __init trap_init(void)
->  	extern char except_vec3_generic;
->  	extern char except_vec4;
->  	extern char except_vec3_r4000;
-> -	unsigned long i, vec_size;
->  	phys_addr_t ebase_pa;
-> +	unsigned long i;
->  
->  	check_wait();
->  
-> -	if (!cpu_has_mips_r2_r6) {
-> -		ebase = CAC_BASE;
-> -		ebase_pa = virt_to_phys((void *)ebase);
-> -		vec_size = 0x400;
-> -
-> -		memblock_reserve(ebase_pa, vec_size);
-> -	} else {
-> +	if (cpu_has_mips_r2_r6) {
->  		if (cpu_has_veic || cpu_has_vint)
-> -			vec_size = 0x200 + VECTORSPACING*64;
-> +			ebase_size = 0x200 + VECTORSPACING*64;
->  		else
-> -			vec_size = PAGE_SIZE;
-> +			ebase_size = PAGE_SIZE;
->  
-> -		ebase_pa = memblock_phys_alloc(vec_size, 1 << fls(vec_size));
-> +		ebase_pa = memblock_phys_alloc(ebase_size,
-> +					       1 << fls(ebase_size));
->  		if (!ebase_pa)
->  			panic("%s: Failed to allocate %lu bytes align=0x%x\n",
-> -			      __func__, vec_size, 1 << fls(vec_size));
-> +			      __func__, ebase_size, 1 << fls(ebase_size));
->  
->  		/*
->  		 * Try to ensure ebase resides in KSeg0 if possible.
-> @@ -2534,7 +2535,7 @@ void __init trap_init(void)
->  	else
->  		set_handler(0x080, &except_vec3_generic, 0x80);
->  
-> -	local_flush_icache_range(ebase, ebase + vec_size);
-> +	local_flush_icache_range(ebase, ebase + ebase_size);
->  
->  	sort_extable(__start___dbe_table, __stop___dbe_table);
->  
-> -- 
-> 2.29.2
-> 
+This won't make a huge difference I think, but for a slightly cleaner
+design I could probably have NVRAM devices without cells and make it
+setup NVRAM. Let me see if I can code that.

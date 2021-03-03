@@ -1,73 +1,107 @@
 Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-X-Spam-Level: **
-X-Spam-Status: No, score=2.6 required=3.0 tests=BAYES_50,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,PDS_TONAME_EQ_TOLOCAL_SHORT,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Level: 
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29502C43333
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9DCEC4332D
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0229D64F04
+	by mail.kernel.org (Postfix) with ESMTP id 8FB0F601FD
 	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345619AbhCCQRI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Mar 2021 11:17:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1841789AbhCCGhz (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 01:37:55 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE46C061756
-        for <linux-mips@vger.kernel.org>; Tue,  2 Mar 2021 22:37:15 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id dj14so3616592qvb.1
-        for <linux-mips@vger.kernel.org>; Tue, 02 Mar 2021 22:37:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=JjUdrjSLFwwkPO2DClC/3ru6MIfKJMQn3mwQy3ShDfM=;
-        b=aa3UGmWRyiyDxBQ9ooJTUmC99nDe+8Hwfr+NOUWc0p3QwMGWCAmMu9igovWBIWgIqO
-         T4KIVAMCsmCRaJRVgtlUP7HQ4XJpKWEZ/X0g2V6BwYKXPgK42TYaZ66aW+iiXI2JDTbz
-         7Mst0LHf/n0k5wBnko2idMC0KUTLejqkv2BnUTkUYuEWi6blA4jLwXv2Lae+Rwhu9UrB
-         zpXS+/GNntEZlHK0GVa/KC+zo6q9c1ckIiChXi+Kpt4OybwoyL1HMgCpyIfjCVboTcJd
-         o7xnASbyt2KCezjTQhNdJRFBLjyqDLsNZSt6c/To6OAuhg/m5JEDAepC5YrkER0+Gyde
-         E31w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=JjUdrjSLFwwkPO2DClC/3ru6MIfKJMQn3mwQy3ShDfM=;
-        b=lzzLtK/jcyM5sIKRtLMQ224Ym4RY6o/VJoEHxCBhcXopUIkRjpyWM0EM9Rm8KI0xxe
-         7BaqDtCwOAOsg+K51vW2a4DOJnK4tXa5Pca42BXCnT62jDu18U80QrWunye9xoiMDG67
-         +RTRDdr1OdRdNRkj4nw8QjkRb0xMuAmOaU2nc4fT9ZvwizDqmUe86iQ8c7KzcIJsDeE5
-         sY9YTHBe+MgEFMVmHmX8T1O5triloJEyXeERxV9UcR/qZi3SDd3ItOPEEPq6AC8uZr38
-         QOBPeGLdB5pFs3FapqQZUgz4i7qlai/3ay1s/DX/HTolCRMhxnVtNaBQ07ZWO0/OHeFU
-         9Ydw==
-X-Gm-Message-State: AOAM5316PHXGufkefYajLeOrVqRKBb3XVl9iCn3Yg2/9gdbVP7KQyYhY
-        QoHL4Igq7s8eKIQFF4yi366RdrZm6sImJn0PTMCQyuKgjzI9QA==
-X-Google-Smtp-Source: ABdhPJyjekH/eEH56MfI4To2uCrLCGF7huej18lfPTkS/Gdchhv6HMUVl7U+mrE++ueuixTWoMfpufA1+HxTsx2n9So=
-X-Received: by 2002:a05:6214:d84:: with SMTP id e4mr23083199qve.26.1614753433844;
- Tue, 02 Mar 2021 22:37:13 -0800 (PST)
+        id S1345498AbhCCQQo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Mar 2021 11:16:44 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:47270 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1355136AbhCCG0I (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 3 Mar 2021 01:26:08 -0500
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxOdSiKz9gd7ATAA--.25147S8;
+        Wed, 03 Mar 2021 14:24:43 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 6/7] dt-bindings: interrupt-controller: Add Loongson-2K1000 LIOINTC
+Date:   Wed,  3 Mar 2021 14:24:33 +0800
+Message-Id: <20210303062434.22280-7-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210303062434.22280-1-zhangqing@loongson.cn>
+References: <20210303062434.22280-1-zhangqing@loongson.cn>
 MIME-Version: 1.0
-From:   YunQiang Su <wzssyqa@gmail.com>
-Date:   Wed, 3 Mar 2021 14:37:03 +0800
-Message-ID: <CAKcpw6WDfdDDX_zsETX1VYnZtxA1uu3NOgdYsfWBxGq-Wvpy3A@mail.gmail.com>
-Subject: QUESTION: why mail always delayed with 1 day?
-To:     linux-mips <linux-mips@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9AxOdSiKz9gd7ATAA--.25147S8
+X-Coremail-Antispam: 1UD129KBjvJXoW7Aw47JF18XrW3trW3uFWkCrg_yoW8XFWxpF
+        srCanIgF4jqF13uay8ta40ka15Zr98AwnrGwsFy3y7GFnrtw4jqw4agF1kJayYkFWIqa4q
+        vryF9a10gasIyF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBSb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
+        8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28C
+        jxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI
+        8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2
+        z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0V
+        AKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1l
+        Ox8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8AwCF04k20x
+        vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
+        3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIx
+        AIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF
+        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
+        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIhiSDUUUU
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Recently, I send some patches to linux-mips, while it always cost almost one day
-before they appears on
+Add liointc-2.0 properties support, so update the maxItems and description.
 
-https://patchwork.kernel.org/project/linux-mips/list/
-https://lore.kernel.org/linux-mips/
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+---
 
-I guess it is due to something wrong with my mail account and or client.
-Any idea about it?
+v2:
+- Add new patch
 
+ .../bindings/interrupt-controller/loongson,liointc.yaml  | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+index f38e0113f360..96162b9d227c 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+@@ -10,9 +10,9 @@ maintainers:
+   - Jiaxun Yang <jiaxun.yang@flygoat.com>
+ 
+ description: |
+-  This interrupt controller is found in the Loongson-3 family of chips as the primary
+-  package interrupt controller which can route local I/O interrupt to interrupt lines
+-  of cores.
++  This interrupt controller is found in the Loongson-3 family of chips and
++  Loongson-2K1000 chip, as the primary package interrupt controller which
++  can route local I/O interrupt to interrupt lines of cores.
+ 
+ allOf:
+   - $ref: /schemas/interrupt-controller.yaml#
+@@ -22,9 +22,10 @@ properties:
+     oneOf:
+       - const: loongson,liointc-1.0
+       - const: loongson,liointc-1.0a
++      - const: loongson,liointc-2.0
+ 
+   reg:
+-    maxItems: 1
++    maxItems: 3
+ 
+   interrupt-controller: true
+ 
 -- 
-YunQiang Su
+2.20.1
+

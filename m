@@ -2,106 +2,161 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9DCEC4332D
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0B95C4361B
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8FB0F601FD
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8705664E6F
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345498AbhCCQQo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Mar 2021 11:16:44 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:47270 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1355136AbhCCG0I (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 3 Mar 2021 01:26:08 -0500
-Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxOdSiKz9gd7ATAA--.25147S8;
-        Wed, 03 Mar 2021 14:24:43 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        id S1345621AbhCCQRV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Mar 2021 11:17:21 -0500
+Received: from mail.zx2c4.com ([104.131.123.232]:53080 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1357109AbhCCISX (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 3 Mar 2021 03:18:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1614759455;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZLtfv7liP9sheIHc8guHWd/rOX+DY0HjRXJO3iGx6Ls=;
+        b=Z4Q66JixWSvL71IvK1qW7OAR4IaSQ/LKHwRQKdJJTkNP3U0P5XiKwfSSTrKw7AjHvv4JAZ
+        tVfjdNBydM7/ZLyDkd177/7lKeyeQ3ZvtC/Uo8AoWsnb+4CZMjXfrBB7fI63lqFQjjwfqz
+        o4q8iRuMfVTh4jxex8jMH2mYFuy2vrg=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id a882ebe5 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Wed, 3 Mar 2021 08:17:35 +0000 (UTC)
+Received: by mail-yb1-f173.google.com with SMTP id l8so23582875ybe.12;
+        Wed, 03 Mar 2021 00:17:35 -0800 (PST)
+X-Gm-Message-State: AOAM533Mv4FzRoZ/z385EeP1c2A3mD1NEN66753+QORL+MFmYNs0ObTY
+        gs8fREIB+IQtL3TWLClSBTT2jeBXQx/8o4WISQU=
+X-Google-Smtp-Source: ABdhPJz93Q3Jv/QF50GXR2Bhsjbv0T4QxtNh0FljLixDFb+T83c3Ipyvu3CjU+MwvyJ0LwA2MDPxk+24giyiM3mePv8=
+X-Received: by 2002:a25:2d1f:: with SMTP id t31mr38765162ybt.239.1614759454472;
+ Wed, 03 Mar 2021 00:17:34 -0800 (PST)
+MIME-Version: 1.0
+References: <alpine.DEB.2.21.2103030122010.19637@angie.orcam.me.uk>
+In-Reply-To: <alpine.DEB.2.21.2103030122010.19637@angie.orcam.me.uk>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Wed, 3 Mar 2021 09:17:23 +0100
+X-Gmail-Original-Message-ID: <CAHmME9qgEMdcVgkBkvBZ9Du=ae=wEyQ4uPa+Au8+LEs5ZQCzAg@mail.gmail.com>
+Message-ID: <CAHmME9qgEMdcVgkBkvBZ9Du=ae=wEyQ4uPa+Au8+LEs5ZQCzAg@mail.gmail.com>
+Subject: Re: [PATCH] crypto: mips/poly1305 - enable for all MIPS processors
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        George Cherian <gcherian@marvell.com>,
         Huacai Chen <chenhuacai@kernel.org>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/7] dt-bindings: interrupt-controller: Add Loongson-2K1000 LIOINTC
-Date:   Wed,  3 Mar 2021 14:24:33 +0800
-Message-Id: <20210303062434.22280-7-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210303062434.22280-1-zhangqing@loongson.cn>
-References: <20210303062434.22280-1-zhangqing@loongson.cn>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxOdSiKz9gd7ATAA--.25147S8
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw47JF18XrW3trW3uFWkCrg_yoW8XFWxpF
-        srCanIgF4jqF13uay8ta40ka15Zr98AwnrGwsFy3y7GFnrtw4jqw4agF1kJayYkFWIqa4q
-        vryF9a10gasIyF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBSb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28C
-        jxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI
-        8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2
-        z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0V
-        AKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1l
-        Ox8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8AwCF04k20x
-        vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
-        3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIx
-        AIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
-        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIhiSDUUUU
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+        stable <stable@vger.kernel.org>,
+        Andy Polyakov <appro@cryptogams.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add liointc-2.0 properties support, so update the maxItems and description.
+Hi Maciej,
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
----
+On Wed, Mar 3, 2021 at 2:16 AM Maciej W. Rozycki <macro@orcam.me.uk> wrote:
+>
+> The MIPS Poly1305 implementation is generic MIPS code written such as to
+> support down to the original MIPS I and MIPS III ISA for the 32-bit and
+> 64-bit variant respectively.  Lift the current limitation then to enable
+> code for MIPSr1 ISA or newer processors only and have it available for
+> all MIPS processors.
 
-v2:
-- Add new patch
+That sounds like a good solution to me. Thanks for doing the research
+on it. Assuming your findings hold up:
 
- .../bindings/interrupt-controller/loongson,liointc.yaml  | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Acked-by: Jason A. Donenfeld <Jason@zx2c4.com>
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
-index f38e0113f360..96162b9d227c 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
-@@ -10,9 +10,9 @@ maintainers:
-   - Jiaxun Yang <jiaxun.yang@flygoat.com>
- 
- description: |
--  This interrupt controller is found in the Loongson-3 family of chips as the primary
--  package interrupt controller which can route local I/O interrupt to interrupt lines
--  of cores.
-+  This interrupt controller is found in the Loongson-3 family of chips and
-+  Loongson-2K1000 chip, as the primary package interrupt controller which
-+  can route local I/O interrupt to interrupt lines of cores.
- 
- allOf:
-   - $ref: /schemas/interrupt-controller.yaml#
-@@ -22,9 +22,10 @@ properties:
-     oneOf:
-       - const: loongson,liointc-1.0
-       - const: loongson,liointc-1.0a
-+      - const: loongson,liointc-2.0
- 
-   reg:
--    maxItems: 1
-+    maxItems: 3
- 
-   interrupt-controller: true
- 
--- 
-2.20.1
+I'm also CC'ing Andy on this, who wrote the original assembly, in case
+he has some last minute objection.
 
+Jason
+
+>
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> Fixes: a11d055e7a64 ("crypto: mips/poly1305 - incorporate OpenSSL/CRYPTOGAMS optimized implementation")
+> Cc: stable@vger.kernel.org # v5.5+
+> ---
+> On Wed, 3 Mar 2021, Jason A. Donenfeld wrote:
+>
+> > >> Would you mind sending this for 5.12 in an rc at some point, rather
+> > >> than waiting for 5.13? I'd like to see this backported to 5.10 and 5.4
+> > >> for OpenWRT.
+> > >
+> > > why is this so important for OpenWRT ? Just to select CRYPTO_POLY1305_MIPS
+> > > ?
+> >
+> > Yes. The performance boost on Octeon is significant for WireGuard users.
+>
+>  But that's the wrong fix for that purpose.  I've skimmed over that module
+> and there's nothing MIPS64-specific there.  In fact it's plain generic
+> MIPS assembly, with some R2 optimisations enabled where applicable but not
+> necessary (and then R6 tweaks, but that's irrelevant here).
+>
+>  As a matter of interest I have just built it successfully for a MIPS I
+> DECstation configuration:
+>
+> $ file arch/mips/crypto/poly1305-mips.ko
+> arch/mips/crypto/poly1305-mips.ko: ELF 32-bit LSB relocatable, MIPS, MIPS-I version 1 (SYSV), BuildID[sha1]=d36384d94f60ba7deff638ca8a24500120b45b56, not stripped
+> $
+>
+> Patch included, please apply.
+>
+>  So while your change is surely right, what you want is this really.
+>
+>   Maciej
+> ---
+>  arch/mips/crypto/Makefile |    4 ++--
+>  crypto/Kconfig            |    2 +-
+>  drivers/net/Kconfig       |    2 +-
+>  3 files changed, 4 insertions(+), 4 deletions(-)
+>
+> Index: linux/arch/mips/crypto/Makefile
+> ===================================================================
+> --- linux.orig/arch/mips/crypto/Makefile
+> +++ linux/arch/mips/crypto/Makefile
+> @@ -12,8 +12,8 @@ AFLAGS_chacha-core.o += -O2 # needed to
+>  obj-$(CONFIG_CRYPTO_POLY1305_MIPS) += poly1305-mips.o
+>  poly1305-mips-y := poly1305-core.o poly1305-glue.o
+>
+> -perlasm-flavour-$(CONFIG_CPU_MIPS32) := o32
+> -perlasm-flavour-$(CONFIG_CPU_MIPS64) := 64
+> +perlasm-flavour-$(CONFIG_32BIT) := o32
+> +perlasm-flavour-$(CONFIG_64BIT) := 64
+>
+>  quiet_cmd_perlasm = PERLASM $@
+>        cmd_perlasm = $(PERL) $(<) $(perlasm-flavour-y) $(@)
+> Index: linux/crypto/Kconfig
+> ===================================================================
+> --- linux.orig/crypto/Kconfig
+> +++ linux/crypto/Kconfig
+> @@ -772,7 +772,7 @@ config CRYPTO_POLY1305_X86_64
+>
+>  config CRYPTO_POLY1305_MIPS
+>         tristate "Poly1305 authenticator algorithm (MIPS optimized)"
+> -       depends on CPU_MIPS32 || (CPU_MIPS64 && 64BIT)
+> +       depends on MIPS
+>         select CRYPTO_ARCH_HAVE_LIB_POLY1305
+>
+>  config CRYPTO_MD4
+> Index: linux/drivers/net/Kconfig
+> ===================================================================
+> --- linux.orig/drivers/net/Kconfig
+> +++ linux/drivers/net/Kconfig
+> @@ -92,7 +92,7 @@ config WIREGUARD
+>         select CRYPTO_POLY1305_ARM if ARM
+>         select CRYPTO_CURVE25519_NEON if ARM && KERNEL_MODE_NEON
+>         select CRYPTO_CHACHA_MIPS if CPU_MIPS32_R2
+> -       select CRYPTO_POLY1305_MIPS if CPU_MIPS32 || (CPU_MIPS64 && 64BIT)
+> +       select CRYPTO_POLY1305_MIPS if MIPS
+>         help
+>           WireGuard is a secure, fast, and easy to use replacement for IPSec
+>           that uses modern cryptography and clever networking tricks. It's

@@ -2,66 +2,74 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E9DEC433E0
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A105AC433DB
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EAD9964F1D
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7280E64F1D
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240398AbhCDAuv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S240052AbhCDAuv convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 3 Mar 2021 19:50:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234271AbhCCWH3 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 17:07:29 -0500
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3DCAFC061763;
-        Wed,  3 Mar 2021 13:54:39 -0800 (PST)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 69B8E92009C; Wed,  3 Mar 2021 22:50:56 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 5B28392009B;
-        Wed,  3 Mar 2021 22:50:56 +0100 (CET)
-Date:   Wed, 3 Mar 2021 22:50:56 +0100 (CET)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-mips@vger.kernel.org, rppt@kernel.org,
-        fancer.lancer@gmail.com, guro@fb.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        paul@crapouillou.net,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MIPS: BMIPS: Reserve exception base to prevent
- corruption
-In-Reply-To: <20210303181541.GA25675@alpha.franken.de>
-Message-ID: <alpine.DEB.2.21.2103032249550.19637@angie.orcam.me.uk>
-References: <20210301092241.i7dxo7zbg3ar55d6@mobilestation> <20210302041940.3663823-1-f.fainelli@gmail.com> <20210302235411.GA3897@alpha.franken.de> <4e3640d4-7fc2-96dc-de00-599b3ac80757@gmail.com> <20210303094134.GA18354@alpha.franken.de>
- <alpine.DEB.2.21.2103031844510.19637@angie.orcam.me.uk> <20210303181541.GA25675@alpha.franken.de>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+Received: from aposti.net ([89.234.176.197]:46706 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245604AbhCCVAz (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 3 Mar 2021 16:00:55 -0500
+Date:   Wed, 03 Mar 2021 20:57:56 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] MIPS: boot/compressed: Copy DTB to aligned address
+To:     Rob Herring <robh@kernel.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>, od@zcrc.me,
+        MIPS <linux-mips@vger.kernel.org>, linux-kernel@vger.kernel.org
+Message-Id: <KKVEPQ.TT4PXOZ85QWA1@crapouillou.net>
+In-Reply-To: <CAL_JsqLfkjC4c4PYfm6yJLZMH-5WaKA_mr9ziJ1J63UohcgRCw@mail.gmail.com>
+References: <20210303193305.924384-1-paul@crapouillou.net>
+        <CAL_JsqLfkjC4c4PYfm6yJLZMH-5WaKA_mr9ziJ1J63UohcgRCw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, 3 Mar 2021, Thomas Bogendoerfer wrote:
+Hi Rob,
 
-> >  What's up with the R3k (the usual trigger for me) here?
+Le mer. 3 mars 2021 à 14:37, Rob Herring <robh@kernel.org> a écrit :
+> On Wed, Mar 3, 2021 at 1:33 PM Paul Cercueil <paul@crapouillou.net> 
+> wrote:
+>> 
+>>  Since 5.12-rc1, the Device Tree blob must now be properly aligned.
 > 
-> I've moved r3k cpu_probe() to it's own file and when moving ebase
-> reservation to cpu_probe(), I need to add it there as well. So just
-> a mechanic step, I've missed.
+> I had checked the other built-in cases as microblaze broke too, but
+> missed some of the many ways MIPS can have a dtb. Appended and
+> built-in DTBs were supposed to be temporary. :(
 
- Ah, right, I didn't notice the split.  Thanks for taking care of it!
+Actually I'm glad these options are here, they make debugging much 
+easier, when working on new SoCs.
 
-  Maciej
+-Paul
+
+>>  Therefore, the decompress routine must be careful to copy the blob 
+>> at
+>>  the next aligned address after the kernel image.
+>> 
+>>  This commit fixes the kernel sometimes not booting with a Device 
+>> Tree
+>>  blob appended to it.
+>> 
+>>  Fixes: c4d5e638d6e9 ("scripts/dtc: Update to upstream version 
+>> v1.6.0-51-g183df9e9c2b9")
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  ---
+>>   arch/mips/boot/compressed/decompress.c | 8 ++++++++
+>>   arch/mips/kernel/vmlinux.lds.S         | 2 ++
+>>   2 files changed, 10 insertions(+)
+> 
+> Acked-by: Rob Herring <robh@kernel.org>
+
+

@@ -2,107 +2,101 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9FB9C282E0
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF6A9C4332E
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 99663601FD
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A7F2264F1D
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346281AbhCCQRv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Mar 2021 11:17:51 -0500
-Received: from elvis.franken.de ([193.175.24.41]:39192 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349800AbhCCLfS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:35:18 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lHO0q-0005hN-00; Wed, 03 Mar 2021 10:41:48 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 4E8B9C0477; Wed,  3 Mar 2021 10:41:34 +0100 (CET)
-Date:   Wed, 3 Mar 2021 10:41:34 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-mips@vger.kernel.org, rppt@kernel.org,
-        fancer.lancer@gmail.com, guro@fb.com, akpm@linux-foundation.org,
-        paul@crapouillou.net,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MIPS: BMIPS: Reserve exception base to prevent corruption
-Message-ID: <20210303094134.GA18354@alpha.franken.de>
-References: <20210301092241.i7dxo7zbg3ar55d6@mobilestation>
- <20210302041940.3663823-1-f.fainelli@gmail.com>
- <20210302235411.GA3897@alpha.franken.de>
- <4e3640d4-7fc2-96dc-de00-599b3ac80757@gmail.com>
+        id S240454AbhCDAuw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Mar 2021 19:50:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1390880AbhCCWSY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 17:18:24 -0500
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFA6C061764;
+        Wed,  3 Mar 2021 14:17:43 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id n79so14194531qke.3;
+        Wed, 03 Mar 2021 14:17:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=F+DfskWs3VLBseDXeXC3pvAy/cUkavN22n3rVw/q6VA=;
+        b=VOEsiTE+wYmonPb9dLZ6uXp9SsbWfVePmK1H0UozjpdPD7luFAwgAR3z14UoYr8i2t
+         vcl0QJz6HTaSYgIt3e7FgKz7XDxEM43iMSwRP80CM0/ldqhw9XGOV03Wgio2EvwmyJpL
+         WDH1gxCmy9M1ZpRXMri6VWQTv1o0npXOpDMuGIJZ5BCE1l+q42RRgtBxI7ClgcD+d+2H
+         VNuqFTDlZdPZ68ubDLAOXH2hGzI/RlZ0kKliGdlfUuLMgVqkbQ13c5pt52sIrRdliQQV
+         A8ALT92ZrkUrM+5/qvYt6uOW6PEVP0S0tKD5tCYVdpWibi36rKNJ3QJA5K0FHe7vB23o
+         ca0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F+DfskWs3VLBseDXeXC3pvAy/cUkavN22n3rVw/q6VA=;
+        b=HU0vnzQdI+i+dp1iKwdOHp7AmoHIWgLWmBQYulGMZ57S5/SZ3rWvpr9ULjxg7FaLkN
+         fk/0kRBE4rAGew7uNJ7Ug3bwWP8hirhJtfEVu4grXXWxDNJsSCqCIvJVQIV3JuLg7rD4
+         wRrClXcebnOdf5zzgJx7f74JS8vn1Er0lNRWFhqUMns04nzGn6jIxsiYOgZ4E9iaivEk
+         XOteqzAAy3XDy8EVSXGybKXkWXDPSnfwiB+bhM1G3f+uwdzvrek14/6fTfJwGhqVCcHN
+         BwF8i92N0ypLyYYCRcKSXLkbNg8oncjFhXZv71ko8B5YEOz5NnYcudCDmfk+Iio1FKSf
+         i8Cg==
+X-Gm-Message-State: AOAM533peBQKzS05FzoHtaTK7I+Np/En2+yBHbCZPHj2NLVYl0BkQAY3
+        cwpQXowx5Et/mKOAwjV3hhifxkuI0gY=
+X-Google-Smtp-Source: ABdhPJwUGaxbBpfrRs/6hYOb4muFNXNpylJrvUpk7d1r1icNmdvfR1Ft/bl/0LxT3qr3mFWRVYG8AQ==
+X-Received: by 2002:a37:ef15:: with SMTP id j21mr1219197qkk.385.1614809863097;
+        Wed, 03 Mar 2021 14:17:43 -0800 (PST)
+Received: from localhost ([76.73.146.210])
+        by smtp.gmail.com with ESMTPSA id g186sm17728405qke.0.2021.03.03.14.17.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 14:17:42 -0800 (PST)
+Date:   Wed, 3 Mar 2021 14:17:41 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Alexey Klimov <aklimov@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [RESEND PATCH 1/2] ARM64: enable GENERIC_FIND_FIRST_BIT
+Message-ID: <20210303221741.GA2013084@yury-ThinkPad>
+References: <20210225135700.1381396-1-yury.norov@gmail.com>
+ <20210225135700.1381396-2-yury.norov@gmail.com>
+ <20210225140205.GA13297@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4e3640d4-7fc2-96dc-de00-599b3ac80757@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210225140205.GA13297@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 05:30:18PM -0800, Florian Fainelli wrote:
+On Thu, Feb 25, 2021 at 02:02:06PM +0000, Will Deacon wrote:
+> On Thu, Feb 25, 2021 at 05:56:59AM -0800, Yury Norov wrote:
+> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > index 31bd885b79eb..5596eab04092 100644
+> > --- a/arch/arm64/Kconfig
+> > +++ b/arch/arm64/Kconfig
+> > @@ -108,6 +108,7 @@ config ARM64
+> >  	select GENERIC_CPU_AUTOPROBE
+> >  	select GENERIC_CPU_VULNERABILITIES
+> >  	select GENERIC_EARLY_IOREMAP
+> > +	select GENERIC_FIND_FIRST_BIT
+> >  	select GENERIC_IDLE_POLL_SETUP
+> >  	select GENERIC_IRQ_IPI
+> >  	select GENERIC_IRQ_MULTI_HANDLER
 > 
+> Acked-by: Will Deacon <will@kernel.org>
 > 
-> On 3/2/2021 3:54 PM, Thomas Bogendoerfer wrote:
-> > On Mon, Mar 01, 2021 at 08:19:38PM -0800, Florian Fainelli wrote:
-> >> BMIPS is one of the few platforms that do change the exception base.
-> >> After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
-> >> with kernel_end") we started seeing BMIPS boards fail to boot with the
-> >> built-in FDT being corrupted.
-> >>
-> >> Before the cited commit, early allocations would be in the [kernel_end,
-> >> RAM_END] range, but after commit they would be within [RAM_START +
-> >> PAGE_SIZE, RAM_END].
-> >>
-> >> The custom exception base handler that is installed by
-> >> bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
-> >> memory region allocated by unflatten_and_copy_device_tree() thus
-> >> corrupting the FDT used by the kernel.
-> >>
-> >> To fix this, we need to perform an early reservation of the custom
-> >> exception that is going to be installed and this needs to happen at
-> >> plat_mem_setup() time to ensure that unflatten_and_copy_device_tree()
-> >> finds a space that is suitable, away from reserved memory.
-> >>
-> >> Huge thanks to Serget for analysing and proposing a solution to this
-> >> issue.
-> >>
-> >> Fixes: Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
-> >> Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> >> Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
-> >> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> >> ---
-> >> Thomas,
-> >>
-> >> This is intended as a stop-gap solution for 5.12-rc1 and to be picked up
-> >> by the stable team for 5.11. We should find a safer way to avoid these
-> >> problems for 5.13 maybe.
-> > 
-> > let's try to make it in one ago. Hwo about reserving vector space in
-> > cpu_probe, if it's known there and leave the rest to trap_init() ?
-> > 
-> > Below patch got a quick test on IP22 (real hardware) and malta (qemu).
-> > Not sure, if I got all BMIPS parts correct, so please check/test.
+> Catalin can pick this up later in the cycle.
 > 
-> Works for me here:
+> Will
 
-perfect, I only forgot about R3k... I'll submit a formal patch submission
-later today.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Ping?

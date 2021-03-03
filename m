@@ -2,76 +2,67 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C8DAC41621
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01B4FC28CFA
 	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 11838601FD
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C24F464E6F
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346466AbhCCQR7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Mar 2021 11:17:59 -0500
-Received: from mail.zx2c4.com ([104.131.123.232]:33552 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233647AbhCCMf0 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 3 Mar 2021 07:35:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1614774775;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0GYsQt7abDs101BMQCcdgkKHn6RTbgjyDaRxE3tihio=;
-        b=FqOoTvC8T43dYz/spYl2gbbca1X1jYgkzOsLQjCHgbFtkFSMwIUY9v5JTRbjpIhtlpgzsG
-        +BK6Lq7Kz2CANFUaKQAnWRpVa6uEymoujPmMel+gua/gTYEJ1RKKOT/6PNkdvccRCCLToU
-        pUIHWvZQO+yppaOee2S8JSglTuR27s0=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 1095f862 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Wed, 3 Mar 2021 12:32:55 +0000 (UTC)
-Received: by mail-yb1-f176.google.com with SMTP id u3so24333988ybk.6;
-        Wed, 03 Mar 2021 04:32:55 -0800 (PST)
-X-Gm-Message-State: AOAM533WT63gZ04TEi1CcyleIrGab2UhdNBLTqXUvTi8thUevKPGZqIj
-        dfrred9xO27YUL4eVea1C75JXUJd8odwaPDu/rQ=
-X-Google-Smtp-Source: ABdhPJxG8CT1k3qC7poGwRgw+CZq5L2/qRXBeHg3lraz8t+vyF6HwVi5pC8pvdEkvSrZMqV34W472scNppsHe4LbQgU=
-X-Received: by 2002:a25:c090:: with SMTP id c138mr36691226ybf.279.1614774774461;
- Wed, 03 Mar 2021 04:32:54 -0800 (PST)
-MIME-Version: 1.0
-References: <alpine.DEB.2.21.2103030122010.19637@angie.orcam.me.uk>
- <CAHmME9qgEMdcVgkBkvBZ9Du=ae=wEyQ4uPa+Au8+LEs5ZQCzAg@mail.gmail.com> <70eb96e1-3243-105c-b52e-c9bd3239a263@cryptogams.org>
-In-Reply-To: <70eb96e1-3243-105c-b52e-c9bd3239a263@cryptogams.org>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Wed, 3 Mar 2021 13:32:43 +0100
-X-Gmail-Original-Message-ID: <CAHmME9omx45G_UtnTnyt7LFr70Uou0JM8vboF-C=ZdD1ttBQoQ@mail.gmail.com>
-Message-ID: <CAHmME9omx45G_UtnTnyt7LFr70Uou0JM8vboF-C=ZdD1ttBQoQ@mail.gmail.com>
-Subject: Re: [PATCH] crypto: mips/poly1305 - enable for all MIPS processors
-To:     Andy Polyakov <appro@cryptogams.org>
-Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        George Cherian <gcherian@marvell.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1346309AbhCCQRv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Mar 2021 11:17:51 -0500
+Received: from mfdf0291.ocn.ad.jp ([153.149.228.243]:45903 "EHLO
+        mfdf0291.ocn.ad.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356489AbhCCMN3 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 07:13:29 -0500
+X-Greylist: delayed 4673 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Mar 2021 07:13:27 EST
+Received: from mogw1703.ocn.ad.jp (mogw1703.ocn.ad.jp [211.16.13.4])
+        by mfdf0291.ocn.ad.jp (Postfix) with ESMTP id 4771C1C029D;
+        Wed,  3 Mar 2021 17:31:27 +0900 (JST)
+Received: from mf-smf-ucb027c1.ocn.ad.jp (mf-smf-ucb027c1.ocn.ad.jp [153.153.66.169])
+        by mogw1703.ocn.ad.jp (Postfix) with ESMTP id EBE848020B;
+        Wed,  3 Mar 2021 17:31:25 +0900 (JST)
+Received: from ocn-vc-mts-101c1.ocn.ad.jp ([153.153.66.78])
+        by mf-smf-ucb027c1.ocn.ad.jp with ESMTP
+        id HMs0lzJ7DKuQ1HMujlHq5g; Wed, 03 Mar 2021 17:31:25 +0900
+Received: from smtp.ocn.ne.jp ([153.149.227.133])
+        by ocn-vc-mts-101c1.ocn.ad.jp with ESMTP
+        id HMujldhAFH2w3HMujllNzQ; Wed, 03 Mar 2021 17:31:25 +0900
+Received: from localhost (p1601136-ipoe.ipoe.ocn.ne.jp [114.172.254.135])
+        by smtp.ocn.ne.jp (Postfix) with ESMTPA;
+        Wed,  3 Mar 2021 17:31:25 +0900 (JST)
+Date:   Wed, 03 Mar 2021 17:31:22 +0900 (JST)
+Message-Id: <20210303.173122.1467075982540149385.anemo@mba.ocn.ne.jp>
+To:     hch@lst.de
+Cc:     linux-ide@vger.kernel.org, linux-mips@vger.kernel.org,
+        geert@linux-m68k.org
+Subject: Re: tx4938 and tx4939 ide drivers
+From:   Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <20210303074107.GA8880@lst.de>
+References: <20210303074107.GA8880@lst.de>
+X-Mailer: Mew version 6.7 on Emacs 24.5 / Mule 6.0 (HANACHIRUSATO)
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 1:31 PM Andy Polyakov <appro@cryptogams.org> wrote:
->
-> Hi,
->
-> > I'm also CC'ing Andy on this, who wrote the original assembly, in case
-> > he has some last minute objection.
->
-> Just "what took you so long":-) On potentially related note cryptogams
-> chacha-mips is as universal as poly1305-mips. "Universal" in sense that
-> it can be compiled for all MIPS stripes.
+On Wed, 3 Mar 2021 08:41:07 +0100, Christoph Hellwig <hch@lst.de> wrote:
+> the tx4938 and tx4939 legacy ide drivers are some of the few that do
+> not have libata equivalents, which is a bad thing given that CONFIG_IDE
+> is planned to go away this year.  Are there any users of this hardware
+> left, and if yes willing to help with the move to libata?
 
-Oh great. I didn't realize you had a ChaCha mips implementation. I'll
-look into having that replace my junky mips32r2 one.
+I think nobody use these drivers now.
 
-Jason
+As I wrote in
+https://lore.kernel.org/lkml/20210107.101729.1936921832901251107.anemo@mba.ocn.ne.jp/
+removal of these drivers does not break the only known user of TX49
+boards. (i.e. Mr. Geert Uytterhoeven)
+
+---
+Atsushi Nemoto

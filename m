@@ -2,90 +2,107 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53B30C433E6
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F391FC43332
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 201FC64EE4
-	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BD99364EE4
+	for <linux-mips@archiver.kernel.org>; Wed,  3 Mar 2021 16:21:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346207AbhCCQRm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Mar 2021 11:17:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843023AbhCCKYd (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 05:24:33 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40E9C0611C2;
-        Wed,  3 Mar 2021 00:39:56 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id q14so27575000ljp.4;
-        Wed, 03 Mar 2021 00:39:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:organization:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UA1aKK/fRs4m/xf5JpwLYyb5RS0D/JsZVdjnQfO+6qg=;
-        b=rVf6BQqDdDevA3A9eN6Rdxnlo1WXarKhnXs7egnAc+Xtk2FNgvOpp0rNYSkkmYJnIw
-         iLPIZg0XiTkIg5miyxobje+pw7A/7Rqd+VYORMBGrDnQE5AtOruduzeB9BS7yUCqu/jv
-         zbaPAZq1qJBBvMRNZ//UYKb0k4j1J6Al3RZq3vNEK+w2+pEetsHTq/fS4KrlLcTjAAT7
-         iX8GAKSUI4LqecLu7QGBf76e4kI8BmoZOVD3Z/ZNqXDgsoqQZZ8jb3H74/paojcjT4i/
-         dDn8P+9vm6eksihveT4Hz2BQ3ESVAFOObXKos3TFyK410gaVBoep0Ky/e5eaY52UZEbz
-         sl1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=UA1aKK/fRs4m/xf5JpwLYyb5RS0D/JsZVdjnQfO+6qg=;
-        b=N1zWKaxhpX/4dPXITl+A6JODjWI/bcWaudj9OTd3CI1gEPWVybtOHfVNtRFTUaHMoh
-         CB2yqUxzbCJNximOxAPDrxXx/Nf1uptWBgIUD8UlTJU3HiCDQLzWQwI3VYI/xQWIJNpN
-         ucf0B4gWL3iBLT0h4c9BtVZgcjWJEcfK58Fyxai32esmCrDDi/9BfPOJAoXcKXlZqyRT
-         SeNNw1LDU4eyH5aCn/l/6OdvuLbqk20EjKPKoKuSI0bqELJ0PUYccdCs4jTrW9q+KVln
-         tKfyC1ieotpBxa2z2mohXXMBssuVkYU2DUMonq5b+qPeG9OqdvHoBcF0Rudtv3GvAMAW
-         gLTQ==
-X-Gm-Message-State: AOAM532M+nBZ0H6LjZ8mGuEgyRgJGp5XaLt6dYOz+tFXxBq/KkVKAveL
-        LnLQyXLdGRaH2FKiUWg28ynhRPEY088=
-X-Google-Smtp-Source: ABdhPJyR42jNsrIDLz1cVQ4OzYfNr99ht41Jnmd5a4XQLKQzeR6KGgQ+qRuX8msnfCCl6m1GgDTvKg==
-X-Received: by 2002:a2e:2f05:: with SMTP id v5mr15093700ljv.114.1614760794909;
-        Wed, 03 Mar 2021 00:39:54 -0800 (PST)
-Received: from [192.168.1.100] ([178.176.72.224])
-        by smtp.gmail.com with ESMTPSA id k18sm2892027lfm.88.2021.03.03.00.39.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Mar 2021 00:39:54 -0800 (PST)
-Subject: Re: Toshiba TC86C001 support
-To:     Christoph Hellwig <hch@lst.de>, linux-ide@vger.kernel.org,
-        linux-mips@vger.kernel.org
-References: <20210303072708.GA8575@lst.de>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <af1953de-d1d4-9573-2c3a-08da9ced429e@gmail.com>
-Date:   Wed, 3 Mar 2021 11:39:44 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S1345540AbhCCQQv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Mar 2021 11:16:51 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:47260 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1354868AbhCCG0I (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 3 Mar 2021 01:26:08 -0500
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxOdSiKz9gd7ATAA--.25147S5;
+        Wed, 03 Mar 2021 14:24:41 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xingxing Su <suxingxing@loongson.cn>
+Subject: [PATCH v2 3/7] MIPS: Loongson64: Add support for the 2K1000 to get cpu_clock_freq
+Date:   Wed,  3 Mar 2021 14:24:30 +0800
+Message-Id: <20210303062434.22280-4-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210303062434.22280-1-zhangqing@loongson.cn>
+References: <20210303062434.22280-1-zhangqing@loongson.cn>
 MIME-Version: 1.0
-In-Reply-To: <20210303072708.GA8575@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9AxOdSiKz9gd7ATAA--.25147S5
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xr1UGr13CF1kJryrtw1kKrg_yoWDGwb_Ka
+        4Iy3y8GryfJa1IkrW7Wrs8Xry293y8CF4xuFnIyr1Sqas2v3sIga1kJw17GF43Cw4FkrWr
+        WFZ5Ar48Cr47GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbyxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWwA2048vs2IY02
+        0Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
+        wVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM2
+        8EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
+        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+        IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
+        xKxwCY02Avz4vE14v_GF1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l
+        x2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14
+        v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IY
+        x2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87
+        Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIF
+        yTuYvjfU85rcDUUUU
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello!
+Get the fixed-clock from the CPU0 node of the device tree.
 
-On 03.03.2021 10:27, Christoph Hellwig wrote:
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+Signed-off-by: Xingxing Su <suxingxing@loongson.cn>
+---
 
-> a lot of te mips defconfig enable CONFIG_BLK_DEV_TC86C001, which is
-> a legacy ide driver that has no libata equivalent.  We plan to
-> phase out the legacy ide driver this year, so I'm wondering if this
-> hardware is still in use by anyone, and if yes how we can get a libata
-> driver for it?
+v2:
+- No changes
 
-    I used to have this piece of hardware while working for MontaVista 
-(2004-2013), and I have long lost any access to it...
+ arch/mips/loongson64/time.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-MBR, Sergei
+diff --git a/arch/mips/loongson64/time.c b/arch/mips/loongson64/time.c
+index 91e842b58365..45698b18f4ae 100644
+--- a/arch/mips/loongson64/time.c
++++ b/arch/mips/loongson64/time.c
+@@ -11,9 +11,23 @@
+ #include <asm/hpet.h>
+ 
+ #include <loongson.h>
++#include <linux/clk.h>
++#include <linux/of_clk.h>
+ 
+ void __init plat_time_init(void)
+ {
++	struct clk *clk = NULL;
++	struct device_node *np;
++
++	of_clk_init(NULL);
++
++	np = of_get_cpu_node(0, NULL);
++	clk = of_clk_get(np, 0);
++	if (clk) {
++		cpu_clock_freq = clk_get_rate(clk);
++		clk_put(clk);
++	}
++
+ 	/* setup mips r4k timer */
+ 	mips_hpt_frequency = cpu_clock_freq / 2;
+ 
+-- 
+2.20.1
+

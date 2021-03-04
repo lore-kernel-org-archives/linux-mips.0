@@ -2,127 +2,132 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4977BC43331
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4811C433E0
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 01:16:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2A4DE64F92
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 00:51:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A7C9765009
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 01:16:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238703AbhCDAup (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Mar 2021 19:50:45 -0500
-Received: from angie.orcam.me.uk ([157.25.102.26]:37282 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242964AbhCCRai (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 12:30:38 -0500
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 84E5292009C; Wed,  3 Mar 2021 18:29:52 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 7703292009B;
-        Wed,  3 Mar 2021 18:29:52 +0100 (CET)
-Date:   Wed, 3 Mar 2021 18:29:52 +0100 (CET)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     yunqiang.su@cipunited.com
-cc:     'Thomas Bogendoerfer' <tsbogend@alpha.franken.de>,
-        jiaxun.yang@flygoat.com, linux-mips@vger.kernel.org
-Subject: =?UTF-8?Q?Re=3A_=E5=9B=9E=E5=A4=8D=3A_=E5=9B=9E=E5=A4=8D=3A_=5BPATC?=
- =?UTF-8?Q?H_v6=5D_MIPS=3A_force_use_FR=3D0_for_FPXX_binar?=
- =?UTF-8?Q?y?=
-In-Reply-To: <000b01d70fdb$c7b74450$5725ccf0$@cipunited.com>
-Message-ID: <alpine.DEB.2.21.2103031800130.19637@angie.orcam.me.uk>
-References: <20210302022907.1835-1-yunqiang.su@cipunited.com> <alpine.DEB.2.21.2103021645120.19637@angie.orcam.me.uk> <000701d70fd0$ecbb21a0$c63164e0$@cipunited.com> <alpine.DEB.2.21.2103030321240.19637@angie.orcam.me.uk>
- <000b01d70fdb$c7b74450$5725ccf0$@cipunited.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S239808AbhCDBPW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Mar 2021 20:15:22 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:35286 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1450754AbhCDBHY (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 3 Mar 2021 20:07:24 -0500
+Received: from ambrosehua-HP-xw6600-Workstation (unknown [182.149.162.140])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax6dWPMkBg7hMUAA--.6296S2;
+        Thu, 04 Mar 2021 09:06:25 +0800 (CST)
+Date:   Thu, 4 Mar 2021 09:06:23 +0800
+From:   Huang Pei <huangpei@loongson.cn>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        ambrosehua@gmail.com, Bibo Mao <maobibo@loongson.cn>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mips@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Fuxin Zhang <zhangfx@lemote.com>,
+        Huacai Chen <chenhc@lemote.com>
+Subject: Re: [PATCH] MIPS: clean up CONFIG_MIPS_PGD_C0_CONTEXT handling
+Message-ID: <20210304010623.4tyzpzgllsdy3ssg@ambrosehua-HP-xw6600-Workstation>
+References: <20210227061944.266415-1-huangpei@loongson.cn>
+ <20210227061944.266415-2-huangpei@loongson.cn>
+ <alpine.DEB.2.21.2102282346400.44210@angie.orcam.me.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2102282346400.44210@angie.orcam.me.uk>
+User-Agent: NeoMutt/20171215
+X-CM-TRANSID: AQAAf9Ax6dWPMkBg7hMUAA--.6296S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFyxXrWUXFW8ZryxCr1xXwb_yoW8ur1xpa
+        95t3WkGr4jvryjgrZIvFZ8Xr4Fqw4qk3s0vFnFqF9xtFWjgFyrGFs7Gr1S9rn8AFs2ya17
+        WryYgFy5uF1Iyw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
+        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUbLiSPUUUUU==
+X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, 3 Mar 2021, yunqiang.su@cipunited.com wrote:
-
-> >  The FRE mode causes a severe performance regression for single FP
-> > operations, so we shouldn't use it for FPXX software.
-> > 
+Hi, 
+On Mon, Mar 01, 2021 at 12:00:28AM +0100, Maciej W. Rozycki wrote:
+> On Sat, 27 Feb 2021, Huang Pei wrote:
 > 
-> If we need to run pre-R6 FPXX/FP32 app on r6 CPU, it may be the only choice
-> for us.
-
- Nope, FPXX doesn't require FRE, and FPXX is all this change is about.
-
-> Any way, in this case we need lots of T&E, the problem of FRE won't be a big
-> problem.
-
- The R6 instruction set has been designed such as to minimise traps and 
-emulations, so there is no point to make it worse for everyone for the 
-sake of a broken corner case.
-
-> >  As a matter of interest: do you have figures available as to how many
-> > software packages are affected in Debian?
-> > 
+> > index 2000bb2b0220..517509ad8596 100644
+> > --- a/arch/mips/Kconfig
+> > +++ b/arch/mips/Kconfig
+> > @@ -2142,6 +2142,7 @@ config CPU_SUPPORTS_HUGEPAGES
+> >  	depends on !(32BIT && (ARCH_PHYS_ADDR_T_64BIT || EVA))
+> >  config MIPS_PGD_C0_CONTEXT
+> >  	bool
+> > +	depends on 64BIT
+> >  	default y if 64BIT && (CPU_MIPSR2 || CPU_MIPSR6) && !CPU_XLP
 > 
-> Almost all packages built with Golang in buster.
-
- How many is that though?  Two?  Ten?  A thousand?
-
-> >  Also it has now struck me that another userland workaround should be
-> > possible, by setting LD_PRELOAD in the environment system-wide to a
-> > dummy FR=0 DSO (e.g. via /etc/environment or /etc/initscript; I reckon
-> > systemd has its own way too), which will force the right mode the normal
-> way.
-> > All the distribution has been built for FPXX I presume, right?
-> > 
+>  I guess you want:
 > 
-> It is not acceptable for "stable" branch of distributions.
-
- I'd say the chosen policy of any distribution is said distribution's 
-problem, not the upstream kernel's.  You can have a local patch for the 
-kernel too if you consider a kernel solution the only one that works for 
-you.  From the discussion so far it looks to me like the least involving 
-solution which will make everyone happy.
-
-> >  Or I guess you could just rebuild libc as FR=0 instead, or is there a
-> Golang
-> > standard library that every Golang program uses?  And then have people
-> > upgrade that package instead.
-> > 
+> 	default y if (CPU_MIPSR2 || CPU_MIPSR6) && !CPU_XLP
 > 
-> Rebuiding libc to FP32 is not acceptable, since we want to do is to support
-> MSA,
-> Which require FR=1 and all the result is FP64.
-
- Do you have any software build for MSA with your distribution already, 
-or do you just plan it?  How is it expected work with non-MSA hardware, 
-which I believe is still predominant?
-
- Also I'll repeat myself: is there a Golang standard library that every 
-Golang program uses?
-
-> In fact we found this problem when we try to enable MIPS_O32_FP64_SUPPORT,
-> Without this option is enabled, all FPXX binaries are still use FR=0 mode:
-> See: function mips_set_personality_fp()
+> at the same time too.  Otherwise you have cruft left behind.
 > 
-> So, here, we doesn't introduce the rollback to FR=0.
-
- So keep MIPS_O32_FP64_SUPPORT disabled then until the environment has 
-been fixed?
-
-> >  It seems to me like there are still a couple of alternatives available.
-> > You might be able to come up with yet more if you continued looking for
-> them.
-> > I consider putting any workaround into the kernel the last resort really.
-> The
-> > problem is in the userland, so let's try hard to deal with it there.
-> > 
+Yes, it is much better
+> > diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
+> > index a7521b8f7658..5bb9724578f7 100644
+> > --- a/arch/mips/mm/tlbex.c
+> > +++ b/arch/mips/mm/tlbex.c
+> > @@ -1106,6 +1106,7 @@ struct mips_huge_tlb_info {
+> >  	bool need_reload_pte;
+> >  };
+> >  
+> > +#ifdef CONFIG_64BIT
+> >  static struct mips_huge_tlb_info
+> >  build_fast_tlb_refill_handler (u32 **p, struct uasm_label **l,
+> >  			       struct uasm_reloc **r, unsigned int tmp,
 > 
-> Yes. It is problem of userland, while it has no way to fix in for the
-> pre-exist binaries in userland.
+>  Does it actually build without a warning for !CONFIG_64BIT given the 
+> reference below?
 
- I gave you examples.  It appears the problem instead is with the 
-distribution's policy, and the kernel is not there to work it around, 
-sorry.
+No, my bad, my first reaction when seeing "IS_ENABLED(CONFIG_64BIT)" is
+"#ifdef CONFIG_64BIT"
+> 
+> > @@ -1164,8 +1165,8 @@ build_fast_tlb_refill_handler (u32 **p, struct uasm_label **l,
+> >  
+> >  	if (pgd_reg == -1) {
+> >  		vmalloc_branch_delay_filled = 1;
+> > -		/* 1 0	1 0 1  << 6  xkphys cached */
+> > -		uasm_i_ori(p, ptr, ptr, 0x540);
+> > +		/* insert bit[63:59] of CAC_BASE into bit[11:6] of ptr */
+> > +		uasm_i_ori(p, ptr, ptr, (CAC_BASE >> 53));
+> 
+>  Instead I'd paper the issue over by casting the constant to `s64'.
+> 
+>  Or better yet fixed it properly by defining CAC_BASE, etc. as `unsigned
+> long long' long rather than `unsigned long' to stop all this nonsense 
+> (e.g. PHYS_TO_XKPHYS already casts the result to `s64').  Thomas, WDYT?
+Sorry, I do not get it , on MIPS32, how can CAC_BASE be unsigned long
+long ?
 
-  Maciej
+
+If this did not work, how about one step back, just explicit comment
+wihtout "(CAC_BASE << 53)" ?
+> 
+>   Maciej
+

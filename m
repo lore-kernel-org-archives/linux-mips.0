@@ -8,48 +8,52 @@ X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	URIBL_BLOCKED,USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DACEC433DB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76201C433E0
 	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 04:58:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5EC3764EC0
+	by mail.kernel.org (Postfix) with ESMTP id 46DDB64EED
 	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 04:58:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234094AbhCDE57 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S233906AbhCDE57 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 3 Mar 2021 23:57:59 -0500
-Received: from rcdn-iport-3.cisco.com ([173.37.86.74]:26213 "EHLO
-        rcdn-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234075AbhCDE5x (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 23:57:53 -0500
-X-Greylist: delayed 540 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Mar 2021 23:57:52 EST
+Received: from rcdn-iport-7.cisco.com ([173.37.86.78]:55470 "EHLO
+        rcdn-iport-7.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234089AbhCDE56 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 23:57:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=6395; q=dns/txt; s=iport;
-  t=1614833872; x=1616043472;
+  d=cisco.com; i=@cisco.com; l=5087; q=dns/txt; s=iport;
+  t=1614833878; x=1616043478;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=nvJpEND9kOGoIR+3S0EgBmAZax9IS2XBul8csiRffVQ=;
-  b=RDRO0Wkx/DUuzFRwT2OtqcHI2gNl/OjlxkmBmYuK66aH9WRJ8ruSWgwG
-   s03+DpfuOfP2+Rco6bF3KcNfrhZ6SKcUZK11yY+scFdjAyLfz2gIfBGmw
-   EO3br9c5uLLWEVcADM2Ja/Lv+Q0oh7g2Rq6ViY/9otHqw+3n6qUi8v65s
-   w=;
+  bh=B7rBp+oAV8HchVJuk5DlnTjEjxhKnuSRrXyBU5WGoEc=;
+  b=TVS+IoXa4aQQfH3H2OEzXE1hkcN6V0HB17XEqxhkPzupDOAb1c8JbARD
+   WUGDlP6yR281/K6kh7xb9Se5XtxgIl3AwUztVwejTmCSuaP9FPh7WHArr
+   M2qEHzpT6Ah5wknvhstV05mqfKeLzcJVXHgoQVqrdGUsMmOS/eipMd5xN
+   0=;
 X-IronPort-AV: E=Sophos;i="5.81,221,1610409600"; 
-   d="scan'208";a="843437001"
+   d="scan'208";a="855206698"
 Received: from alln-core-8.cisco.com ([173.36.13.141])
-  by rcdn-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 04 Mar 2021 04:48:10 +0000
+  by rcdn-iport-7.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 04 Mar 2021 04:48:11 +0000
 Received: from zorba.cisco.com ([10.24.7.178])
-        by alln-core-8.cisco.com (8.15.2/8.15.2) with ESMTP id 1244m4Wv015988;
-        Thu, 4 Mar 2021 04:48:07 GMT
+        by alln-core-8.cisco.com (8.15.2/8.15.2) with ESMTP id 1244m4Wx015988;
+        Thu, 4 Mar 2021 04:48:10 GMT
 From:   Daniel Walker <danielwa@cisco.com>
 To:     Will Deacon <will@kernel.org>,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
         ob Herring <robh@kernel.org>,
         Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
         Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Cc:     xe-linux-external@cisco.com, Ruslan Bilovol <rbilovol@cisco.com>,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     xe-linux-external@cisco.com,
+        Ruslan Ruslichenko <rruslich@cisco.com>,
+        Ruslan Bilovol <rbilovol@cisco.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/5] CMDLINE: add generic builtin command line
-Date:   Wed,  3 Mar 2021 20:47:58 -0800
-Message-Id: <20210304044803.812204-1-danielwa@cisco.com>
+Subject: [PATCH 3/5] CMDLINE: powerpc: convert to generic builtin command line
+Date:   Wed,  3 Mar 2021 20:48:00 -0800
+Message-Id: <20210304044803.812204-3-danielwa@cisco.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -60,186 +64,156 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This code allows architectures to use a generic builtin command line.
-The state of the builtin command line options across architecture is
-diverse. On x86 and mips they have pretty much the same code and the
-code prepends the builtin command line onto the boot loader provided
-one. On powerpc there is only a builtin override and nothing else.
-
-The code in this commit unifies the code into a generic
-header file under the CONFIG_GENERIC_CMDLINE option. When this
-option is enabled the architecture can call the cmdline_add_builtin()
-to add the builtin command line.
+This updates the powerpc code to use the CONFIG_GENERIC_CMDLINE
+option.
 
 Cc: xe-linux-external@cisco.com
+Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
 Signed-off-by: Ruslan Bilovol <rbilovol@cisco.com>
 Signed-off-by: Daniel Walker <danielwa@cisco.com>
 ---
- include/linux/cmdline.h | 75 +++++++++++++++++++++++++++++++++++++++++
- init/Kconfig            | 68 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 143 insertions(+)
- create mode 100644 include/linux/cmdline.h
+ arch/powerpc/Kconfig            | 37 +--------------------------------
+ arch/powerpc/kernel/prom.c      |  1 +
+ arch/powerpc/kernel/prom_init.c | 31 +++++++++++++++------------
+ 3 files changed, 20 insertions(+), 49 deletions(-)
 
-diff --git a/include/linux/cmdline.h b/include/linux/cmdline.h
-new file mode 100644
-index 000000000000..f44011d1a9ee
---- /dev/null
-+++ b/include/linux/cmdline.h
-@@ -0,0 +1,75 @@
-+#ifndef _LINUX_CMDLINE_H
-+#define _LINUX_CMDLINE_H
-+
-+/*
-+ *
-+ * Copyright (C) 2006,2021. Cisco Systems, Inc.
-+ *
-+ * Generic Append/Prepend cmdline support.
-+ */
-+
-+#if defined(CONFIG_GENERIC_CMDLINE) && defined(CONFIG_CMDLINE_BOOL)
-+
-+#ifndef CONFIG_CMDLINE_OVERRIDE
-+/*
-+ * This function will append or prepend a builtin command line to the command
-+ * line provided by the bootloader. Kconfig options can be used to alter
-+ * the behavior of this builtin command line.
-+ * @dest: The destination of the final appended/prepended string
-+ * @src: The starting string or NULL if there isn't one.
-+ * @tmp: temporary space used for prepending
-+ * @length: the maximum length of the strings above.
-+ */
-+static inline void
-+__cmdline_add_builtin(char *dest, const char *src, char *tmp, unsigned long length,
-+		size_t (*strlcpy)(char *dest, const char *src, size_t size),
-+		size_t (*strlcat)(char *dest, const char *src, size_t count)
-+		)
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 107bb4319e0e..276b06d5c961 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -167,6 +167,7 @@ config PPC
+ 	select EDAC_SUPPORT
+ 	select GENERIC_ATOMIC64			if PPC32
+ 	select GENERIC_CLOCKEVENTS_BROADCAST	if SMP
++	select GENERIC_CMDLINE
+ 	select GENERIC_CMOS_UPDATE
+ 	select GENERIC_CPU_AUTOPROBE
+ 	select GENERIC_CPU_VULNERABILITIES	if PPC_BARRIER_NOSPEC
+@@ -906,42 +907,6 @@ config PPC_DENORMALISATION
+ 	  Add support for handling denormalisation of single precision
+ 	  values.  Useful for bare metal only.  If unsure say Y here.
+ 
+-config CMDLINE
+-	string "Initial kernel command string"
+-	default ""
+-	help
+-	  On some platforms, there is currently no way for the boot loader to
+-	  pass arguments to the kernel. For these platforms, you can supply
+-	  some command-line options at build time by entering them here.  In
+-	  most cases you will need to specify the root device here.
+-
+-choice
+-	prompt "Kernel command line type" if CMDLINE != ""
+-	default CMDLINE_FROM_BOOTLOADER
+-
+-config CMDLINE_FROM_BOOTLOADER
+-	bool "Use bootloader kernel arguments if available"
+-	help
+-	  Uses the command-line options passed by the boot loader. If
+-	  the boot loader doesn't provide any, the default kernel command
+-	  string provided in CMDLINE will be used.
+-
+-config CMDLINE_EXTEND
+-	bool "Extend bootloader kernel arguments"
+-	help
+-	  The command-line arguments provided by the boot loader will be
+-	  appended to the default kernel command string.
+-
+-config CMDLINE_FORCE
+-	bool "Always use the default kernel command string"
+-	help
+-	  Always use the default kernel command string, even if the boot
+-	  loader passes other arguments to the kernel.
+-	  This is useful if you cannot or don't want to change the
+-	  command-line options your boot loader passes to the kernel.
+-
+-endchoice
+-
+ config EXTRA_TARGETS
+ 	string "Additional default image types"
+ 	help
+diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+index ae3c41730367..96d0a01be1b4 100644
+--- a/arch/powerpc/kernel/prom.c
++++ b/arch/powerpc/kernel/prom.c
+@@ -27,6 +27,7 @@
+ #include <linux/irq.h>
+ #include <linux/memblock.h>
+ #include <linux/of.h>
++#include <linux/cmdline.h>
+ #include <linux/of_fdt.h>
+ #include <linux/libfdt.h>
+ #include <linux/cpu.h>
+diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
+index e9d4eb6144e1..d752be688b62 100644
+--- a/arch/powerpc/kernel/prom_init.c
++++ b/arch/powerpc/kernel/prom_init.c
+@@ -27,6 +27,7 @@
+ #include <linux/initrd.h>
+ #include <linux/bitops.h>
+ #include <linux/pgtable.h>
++#include <linux/cmdline.h>
+ #include <asm/prom.h>
+ #include <asm/rtas.h>
+ #include <asm/page.h>
+@@ -242,15 +243,6 @@ static int __init prom_strcmp(const char *cs, const char *ct)
+ 	return 0;
+ }
+ 
+-static char __init *prom_strcpy(char *dest, const char *src)
+-{
+-	char *tmp = dest;
+-
+-	while ((*dest++ = *src++) != '\0')
+-		/* nothing */;
+-	return tmp;
+-}
+-
+ static int __init prom_strncmp(const char *cs, const char *ct, size_t count)
+ {
+ 	unsigned char c1, c2;
+@@ -276,6 +268,19 @@ static size_t __init prom_strlen(const char *s)
+ 	return sc - s;
+ }
+ 
++static size_t __init prom_strlcpy(char *dest, const char *src, size_t size)
 +{
-+	if (src != dest && src != NULL) {
-+		strlcpy(dest, " ", length);
-+		strlcat(dest, src, length);
++	size_t ret = prom_strlen(src);
++
++	if (size) {
++		size_t len = (ret >= size) ? size - 1 : ret;
++		memcpy(dest, src, len);
++		dest[len] = '\0';
 +	}
-+
-+	if (sizeof(CONFIG_CMDLINE_APPEND) > 1)
-+		strlcat(dest, " " CONFIG_CMDLINE_APPEND, length);
-+
-+	if (sizeof(CONFIG_CMDLINE_PREPEND) > 1) {
-+		strlcpy(tmp, CONFIG_CMDLINE_PREPEND " ", length);
-+		strlcat(tmp, dest, length);
-+		strlcpy(dest, tmp, length);
-+	}
++	return ret;
 +}
 +
-+#define cmdline_add_builtin_custom(dest, src, length, label, strlcpy, strlcat) 			\
-+{ 												\
-+	if (sizeof(CONFIG_CMDLINE_PREPEND) > 1) { 						\
-+		static label char cmdline_tmp_space[length]; 					\
-+		__cmdline_add_builtin(dest, src, cmdline_tmp_space, length, strlcpy, strlcat); 	\
-+	} else if (sizeof(CONFIG_CMDLINE_APPEND) > 1) { 					\
-+		__cmdline_add_builtin(dest, src, NULL, length, strlcpy, strlcat); 		\
-+	} 											\
-+}
-+#define cmdline_add_builtin(dest, src, length)	                           \
-+	cmdline_add_builtin_custom(dest, src, length, __initdata, &strlcpy, &strlcat)
-+#else
-+#define cmdline_add_builtin(dest, src, length)				   \
-+{								  	   \
-+	strlcpy(dest, CONFIG_CMDLINE_PREPEND " " CONFIG_CMDLINE_APPEND,    \
-+		length);		   				   \
-+}
-+#endif /* !CONFIG_CMDLINE_OVERRIDE */
 +
-+#else
-+#define cmdline_add_builtin_custom(dest, src, length, label, strlcpy, strlcat) { \
-+	if (src != NULL) 							 \
-+		strlcpy(dest, src, length);	 				 \
-+}
-+
-+#define cmdline_add_builtin(dest, src, length) { 				\
-+	cmdline_add_builtin_custom(dest, src, length, strlcpy, strlcat); 	\
-+}
-+#endif /* CONFIG_GENERIC_CMDLINE */
-+
-+
-+#endif /* _LINUX_CMDLINE_H */
-diff --git a/init/Kconfig b/init/Kconfig
-index 29ad68325028..28363ab07cd4 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -2032,6 +2032,74 @@ config PROFILING
- config TRACEPOINTS
- 	bool
+ static int __init prom_memcmp(const void *cs, const void *ct, size_t count)
+ {
+ 	const unsigned char *su1, *su2;
+@@ -778,9 +783,9 @@ static void __init early_cmdline_parse(void)
+ 	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && (long)prom.chosen > 0)
+ 		l = prom_getprop(prom.chosen, "bootargs", p, COMMAND_LINE_SIZE-1);
  
-+config GENERIC_CMDLINE
-+	bool
-+
-+if GENERIC_CMDLINE
-+
-+config CMDLINE_BOOL
-+	bool "Built-in kernel command line"
-+	help
-+	  Allow for specifying boot arguments to the kernel at
-+	  build time.  On some systems (e.g. embedded ones), it is
-+	  necessary or convenient to provide some or all of the
-+	  kernel boot arguments with the kernel itself (that is,
-+	  to not rely on the boot loader to provide them.)
-+
-+	  To compile command line arguments into the kernel,
-+	  set this option to 'Y', then fill in the
-+	  the boot arguments in CONFIG_CMDLINE.
-+
-+	  Systems with fully functional boot loaders (i.e. non-embedded)
-+	  should leave this option set to 'N'.
-+
-+config CMDLINE_APPEND
-+	string "Built-in kernel command string append"
-+	depends on CMDLINE_BOOL
-+	default ""
-+	help
-+	  Enter arguments here that should be compiled into the kernel
-+	  image and used at boot time.  If the boot loader provides a
-+	  command line at boot time, this string is appended to it to
-+	  form the full kernel command line, when the system boots.
-+
-+	  However, you can use the CONFIG_CMDLINE_OVERRIDE option to
-+	  change this behavior.
-+
-+	  In most cases, the command line (whether built-in or provided
-+	  by the boot loader) should specify the device for the root
-+	  file system.
-+
-+config CMDLINE_PREPEND
-+	string "Built-in kernel command string prepend"
-+	depends on CMDLINE_BOOL
-+	default ""
-+	help
-+	  Enter arguments here that should be compiled into the kernel
-+	  image and used at boot time.  If the boot loader provides a
-+	  command line at boot time, this string is prepended to it to
-+	  form the full kernel command line, when the system boots.
-+
-+	  However, you can use the CONFIG_CMDLINE_OVERRIDE option to
-+	  change this behavior.
-+
-+	  In most cases, the command line (whether built-in or provided
-+	  by the boot loader) should specify the device for the root
-+	  file system.
-+
-+config CMDLINE_OVERRIDE
-+	bool "Built-in command line overrides boot loader arguments"
-+	depends on CMDLINE_BOOL
-+	help
-+	  Set this option to 'Y' to have the kernel ignore the boot loader
-+	  command line, and use ONLY the built-in command line. In this case
-+	  append and prepend strings are concatenated to form the full
-+	  command line.
-+
-+	  This is used to work around broken boot loaders.  This should
-+	  be set to 'N' under normal conditions.
-+endif
-+
- endmenu		# General setup
+-	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) || l <= 0 || p[0] == '\0')
+-		prom_strlcat(prom_cmd_line, " " CONFIG_CMDLINE,
+-			     sizeof(prom_cmd_line));
++	if (l <= 0 || p[0] == '\0') /* dbl check */
++		cmdline_add_builtin_custom(prom_cmd_line, NULL, sizeof(prom_cmd_line),
++					__prombss, &prom_strlcpy, &prom_strlcat);
  
- source "arch/Kconfig"
+ 	prom_printf("command line: %s\n", prom_cmd_line);
+ 
+@@ -2706,7 +2711,7 @@ static void __init flatten_device_tree(void)
+ 
+ 	/* Add "phandle" in there, we'll need it */
+ 	namep = make_room(&mem_start, &mem_end, 16, 1);
+-	prom_strcpy(namep, "phandle");
++	prom_strlcpy(namep, "phandle", 8);
+ 	mem_start = (unsigned long)namep + prom_strlen(namep) + 1;
+ 
+ 	/* Build string array */
 -- 
 2.25.1
 

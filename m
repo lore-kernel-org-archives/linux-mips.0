@@ -2,236 +2,131 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A89B0C43381
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 04:59:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EE10C433E0
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 05:20:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 826DC64F02
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 04:59:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4F20F64EF8
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 05:20:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234017AbhCDE6b (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Mar 2021 23:58:31 -0500
-Received: from rcdn-iport-8.cisco.com ([173.37.86.79]:46713 "EHLO
-        rcdn-iport-8.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233884AbhCDE6A (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Mar 2021 23:58:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=6247; q=dns/txt; s=iport;
-  t=1614833880; x=1616043480;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=uPHyrqhndx2XuHWJn770Fcm2MeEJLaI/H/apMZaWTS4=;
-  b=ksWo79qRGjVZtsOhsmE7heAOJ4qlebf5Gq62FM90NU15/Un+EDTGoIya
-   8PsyYJJF+2+nJmpM84ZgTfDzhq8cPnpK2rvsSIf0akEdfXrIvnok2XcYy
-   SfuhpEMayh646uLrBoMD8ziBTSMUCMMP3xve8ythylSoHC1AJjv5Fl18r
-   0=;
-X-IronPort-AV: E=Sophos;i="5.81,221,1610409600"; 
-   d="scan'208";a="868193947"
-Received: from alln-core-8.cisco.com ([173.36.13.141])
-  by rcdn-iport-8.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 04 Mar 2021 04:48:13 +0000
-Received: from zorba.cisco.com ([10.24.7.178])
-        by alln-core-8.cisco.com (8.15.2/8.15.2) with ESMTP id 1244m4X0015988;
-        Thu, 4 Mar 2021 04:48:12 GMT
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        ob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     xe-linux-external@cisco.com,
-        Ruslan Ruslichenko <rruslich@cisco.com>,
-        Ruslan Bilovol <rbilovol@cisco.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/5] CMDLINE: mips: convert to generic builtin command line
-Date:   Wed,  3 Mar 2021 20:48:01 -0800
-Message-Id: <20210304044803.812204-4-danielwa@cisco.com>
-X-Mailer: git-send-email 2.25.1
+        id S234095AbhCDFTv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 4 Mar 2021 00:19:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58560 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234076AbhCDFTh (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 4 Mar 2021 00:19:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAA6964EE1;
+        Thu,  4 Mar 2021 05:18:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614835137;
+        bh=ks396mxGbJMDwWqDM77TaVb8yzjRnPxdJhthci3VPbk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cfhmrj4+vqKGW5GDt2BkhI6povBO+2MCsBi0yGxi3sIo4iCIaBED9PpT9H+e9+Sjw
+         18EDHsRpCWUxblIOEQBG3YoK0CwQ4S5yg3jGakpRXzobsW4DonxGRu+Fg4pS3c09py
+         zUryEzu4Elq+LGHXUhTG0xi6Hgoof4c2aNSAZmIOvFDtR/pw7UGW0DfOPzMR1hPQFb
+         7D2uIUwghEvyMB0rDlhRFTpSJWwjxTu8UKMSpUaSNbib0z1R3OfdaBhcoq3HZQu8Yq
+         0I4A+N+lB8zh09X38nWyDSt8owVluIIDjhppRtQmUDKcolcSVE8s6csleQdSwLcOD7
+         zEdFsLRSK2eAA==
+Date:   Wed, 3 Mar 2021 22:18:52 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH] MIPS: Add comment about CONFIG_MIPS32_O32 in
+ loongson3_defconfig when build with Clang
+Message-ID: <20210304051852.6gf7ry26n3fct3ud@archlinux-ax161>
+References: <1614820544-10686-1-git-send-email-yangtiezhu@loongson.cn>
+ <20210304020244.pza6xd4ixziysrom@archlinux-ax161>
+ <958c5df5-76aa-9161-9519-07a03ee864a0@loongson.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.7.178, [10.24.7.178]
-X-Outbound-Node: alln-core-8.cisco.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <958c5df5-76aa-9161-9519-07a03ee864a0@loongson.cn>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This updates the mips code to use the CONFIG_GENERIC_CMDLINE
-option.
+On Thu, Mar 04, 2021 at 11:48:09AM +0800, Tiezhu Yang wrote:
+> On 03/04/2021 10:02 AM, Nathan Chancellor wrote:
+> > On Thu, Mar 04, 2021 at 09:15:44AM +0800, Tiezhu Yang wrote:
+> > > When build kernel with Clang [1]:
+> > > 
+> > > $ make CC=clang loongson3_defconfig
+> > > $ make CC=clang
+> 
+> [snip]
+> 
+> > I think this might be a better solution. I know that I personally never
+> > read defconfig files if a build fails.
+> > 
+> > If CONFIG_MIPS32_O32 is broken with clang and the MIPS backend
+> > maintainer has said that it will not be supported due to lack of
+> > resources, then the config should not even be selectable in my opinion.
+> > 
+> > Cheers,
+> > Nathan
+> > 
+> > diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> > index d89efba3d8a4..ed35318a759d 100644
+> > --- a/arch/mips/Kconfig
+> > +++ b/arch/mips/Kconfig
+> > @@ -3315,6 +3315,8 @@ config SYSVIPC_COMPAT
+> >   config MIPS32_O32
+> >   	bool "Kernel support for o32 binaries"
+> >   	depends on 64BIT
+> > +	# https://bugs.llvm.org/show_bug.cgi?id=38063
+> > +	depends on $(success,$(CC) $(CLANG_FLAGS) -march=mips64 -o32 -c -x c /dev/null -o /dev/null)
+> >   	select ARCH_WANT_OLD_COMPAT_IPC
+> >   	select COMPAT
+> >   	select MIPS32_COMPAT
+> 
+> Hi Nathan,
+> 
+> Thank you very much for your reply and suggestion, maybe the following
+> change is simple, clear and better? If yes, I will send v2 later.
 
-This deletes the option for MIPS_CMDLINE_BUILTIN_EXTEND
-and replaces the functionality with generic code.
+Hi Tiezhu,
 
-Cc: xe-linux-external@cisco.com
-Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
-Signed-off-by: Ruslan Bilovol <rbilovol@cisco.com>
-Signed-off-by: Daniel Walker <danielwa@cisco.com>
----
- arch/mips/Kconfig        |  4 +---
- arch/mips/Kconfig.debug  | 44 ----------------------------------------
- arch/mips/kernel/setup.c | 37 +++++----------------------------
- 3 files changed, 6 insertions(+), 79 deletions(-)
+I think that the change is simpler but better is subjective. I tend to
+prefer tests like mine so that it is not dependent on someone going "oh
+hey, this LLVM bug has been fixed so we can turn this config on!".
+Instead, the config will just turn on automatically as soon as that bug
+is fixed.
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 0a17bedf4f0d..7c07b3bca9fc 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -23,6 +23,7 @@ config MIPS
- 	select CPU_NO_EFFICIENT_FFS if (TARGET_ISA_REV < 1)
- 	select CPU_PM if CPU_IDLE
- 	select GENERIC_ATOMIC64 if !64BIT
-+	select GENERIC_CMDLINE
- 	select GENERIC_CMOS_UPDATE
- 	select GENERIC_CPU_AUTOPROBE
- 	select GENERIC_GETTIMEOFDAY
-@@ -3171,9 +3172,6 @@ choice
- 	config MIPS_CMDLINE_FROM_BOOTLOADER
- 		bool "Bootloader kernel arguments if available"
- 
--	config MIPS_CMDLINE_BUILTIN_EXTEND
--		depends on CMDLINE_BOOL
--		bool "Extend builtin kernel arguments with bootloader arguments"
- endchoice
- 
- endmenu
-diff --git a/arch/mips/Kconfig.debug b/arch/mips/Kconfig.debug
-index 7a8d94cdd493..b5a099c74eb6 100644
---- a/arch/mips/Kconfig.debug
-+++ b/arch/mips/Kconfig.debug
-@@ -30,50 +30,6 @@ config EARLY_PRINTK_8250
- config USE_GENERIC_EARLY_PRINTK_8250
- 	bool
- 
--config CMDLINE_BOOL
--	bool "Built-in kernel command line"
--	help
--	  For most systems, it is firmware or second stage bootloader that
--	  by default specifies the kernel command line options.  However,
--	  it might be necessary or advantageous to either override the
--	  default kernel command line or add a few extra options to it.
--	  For such cases, this option allows you to hardcode your own
--	  command line options directly into the kernel.  For that, you
--	  should choose 'Y' here, and fill in the extra boot arguments
--	  in CONFIG_CMDLINE.
--
--	  The built-in options will be concatenated to the default command
--	  line if CMDLINE_OVERRIDE is set to 'N'. Otherwise, the default
--	  command line will be ignored and replaced by the built-in string.
--
--	  Most MIPS systems will normally expect 'N' here and rely upon
--	  the command line from the firmware or the second-stage bootloader.
--
--config CMDLINE
--	string "Default kernel command string"
--	depends on CMDLINE_BOOL
--	help
--	  On some platforms, there is currently no way for the boot loader to
--	  pass arguments to the kernel.  For these platforms, and for the cases
--	  when you want to add some extra options to the command line or ignore
--	  the default command line, you can supply some command-line options at
--	  build time by entering them here.  In other cases you can specify
--	  kernel args so that you don't have to set them up in board prom
--	  initialization routines.
--
--	  For more information, see the CMDLINE_BOOL and CMDLINE_OVERRIDE
--	  options.
--
--config CMDLINE_OVERRIDE
--	bool "Built-in command line overrides firmware arguments"
--	depends on CMDLINE_BOOL
--	help
--	  By setting this option to 'Y' you will have your kernel ignore
--	  command line arguments from firmware or second stage bootloader.
--	  Instead, the built-in command line will be used exclusively.
--
--	  Normally, you will choose 'N' here.
--
- config SB1XXX_CORELIS
- 	bool "Corelis Debugger"
- 	depends on SIBYTE_SB1xxx_SOC
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 7e1f8e277437..b7e9c1ffffc9 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -23,6 +23,7 @@
- #include <linux/debugfs.h>
- #include <linux/kexec.h>
- #include <linux/sizes.h>
-+#include <linux/cmdline.h>
- #include <linux/device.h>
- #include <linux/dma-map-ops.h>
- #include <linux/decompress/generic.h>
-@@ -67,12 +68,6 @@ EXPORT_SYMBOL(mips_machtype);
- static char __initdata command_line[COMMAND_LINE_SIZE];
- char __initdata arcs_cmdline[COMMAND_LINE_SIZE];
- 
--#ifdef CONFIG_CMDLINE_BOOL
--static const char builtin_cmdline[] __initconst = CONFIG_CMDLINE;
--#else
--static const char builtin_cmdline[] __initconst = "";
--#endif
--
- /*
-  * mips_io_port_base is the begin of the address space to which x86 style
-  * I/O ports are mapped.
-@@ -546,27 +541,7 @@ static void __init bootcmdline_init(void)
- {
- 	bool dt_bootargs = false;
- 
--	/*
--	 * If CMDLINE_OVERRIDE is enabled then initializing the command line is
--	 * trivial - we simply use the built-in command line unconditionally &
--	 * unmodified.
--	 */
--	if (IS_ENABLED(CONFIG_CMDLINE_OVERRIDE)) {
--		strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
--		return;
--	}
--
--	/*
--	 * If the user specified a built-in command line &
--	 * MIPS_CMDLINE_BUILTIN_EXTEND, then the built-in command line is
--	 * prepended to arguments from the bootloader or DT so we'll copy them
--	 * to the start of boot_command_line here. Otherwise, empty
--	 * boot_command_line to undo anything early_init_dt_scan_chosen() did.
--	 */
--	if (IS_ENABLED(CONFIG_MIPS_CMDLINE_BUILTIN_EXTEND))
--		strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
--	else
--		boot_command_line[0] = 0;
-+	boot_command_line[0] = 0;
- 
- #ifdef CONFIG_OF_EARLY_FLATTREE
- 	/*
-@@ -589,12 +564,9 @@ static void __init bootcmdline_init(void)
- 		bootcmdline_append(arcs_cmdline, COMMAND_LINE_SIZE);
- 
- 	/*
--	 * If the user specified a built-in command line & we didn't already
--	 * prepend it, we append it to boot_command_line here.
-+	 * Use the generic system for builtin prepend and append.
- 	 */
--	if (IS_ENABLED(CONFIG_CMDLINE_BOOL) &&
--	    !IS_ENABLED(CONFIG_MIPS_CMDLINE_BUILTIN_EXTEND))
--		bootcmdline_append(builtin_cmdline, COMMAND_LINE_SIZE);
-+	cmdline_add_builtin(boot_command_line, NULL, COMMAND_LINE_SIZE);
- }
- 
- /*
-@@ -626,6 +598,7 @@ static void __init arch_mem_init(char **cmdline_p)
- 	memblock_set_bottom_up(true);
- 
- 	bootcmdline_init();
-+
- 	strlcpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
- 	*cmdline_p = command_line;
- 
--- 
-2.25.1
+However, in this particular case, it does not seem like that will happen
+unless someone steps but there have been times where an independent
+party will implement some change that benefits them and nobody notices
+for a while. Plus, I periodically grep the tree for CC_IS_CLANG to see
+if there are any configuration options that can be re-enabled..
 
+Regardless, if Thomas is happy with the below change, so am I, as it
+will allow us to test more 64-bit MIPS configurations. I can add an ack
+or review at that point in time.
+
+Cheers,
+Nathan
+
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 3a38d27..f6ba59f 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -3318,6 +3318,8 @@ config SYSVIPC_COMPAT
+>  config MIPS32_O32
+>         bool "Kernel support for o32 binaries"
+>         depends on 64BIT
+> +       # https://bugs.llvm.org/show_bug.cgi?id=38063
+> +       depends on !CC_IS_CLANG
+>         select ARCH_WANT_OLD_COMPAT_IPC
+>         select COMPAT
+>         select MIPS32_COMPAT
+> 
+> Thanks,
+> Tiezhu
+> 

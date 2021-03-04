@@ -2,217 +2,132 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B0CCC43332
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 11:03:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFEB9C433E6
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 14:34:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 184EC64F57
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 11:03:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7DA8464F52
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 14:34:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239323AbhCDLCZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 4 Mar 2021 06:02:25 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:59822 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239167AbhCDLBv (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 4 Mar 2021 06:01:51 -0500
-Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn_DpvUBgUFAUAA--.3851S3;
-        Thu, 04 Mar 2021 19:01:00 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] MIPS: Loongson64: Remove unused sysconf members
-Date:   Thu,  4 Mar 2021 19:00:56 +0800
-Message-Id: <20210304110057.22144-2-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210304110057.22144-1-zhangqing@loongson.cn>
-References: <20210304110057.22144-1-zhangqing@loongson.cn>
+        id S229499AbhCDOd4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 4 Mar 2021 09:33:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52812 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230390AbhCDOdf (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 4 Mar 2021 09:33:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFD2164F2C;
+        Thu,  4 Mar 2021 14:32:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614868375;
+        bh=tXeyflvi5gXEFLfWrEhyPYpQ9H6G+alEokJ1yiiFZAs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SUFTMJXCghhXPTfTU7DVatK7XQYGDso/6+901ptTAr+6UkFzvVY3LMy1bIBwg4Q82
+         isDF6GXrYzW1tsDNFKNmrnfQGi9Pq81iowaq3SFhnU9RUHy15KF384r3EJ495u9xU3
+         NCq881YQgUwtaNX3jPN2E0VR267kElrANWeJxmprwDTzSzDN1p8sT8jooPzXarYvDy
+         mtBUdM42PWgJcC5evM+Re9wAYHKdY7ascu2Ek0ewIpvA8DtzgZz7SB9ab2syZ5KtWl
+         VoNwX5CEdlZXGVJHEGyKYrWFY4mx9bYABQrAxfY4zQG8EPOnKH7l5Y26oldHmtbElN
+         VJRGrvRWooQLg==
+Received: by mail-ed1-f46.google.com with SMTP id b7so21610116edz.8;
+        Thu, 04 Mar 2021 06:32:54 -0800 (PST)
+X-Gm-Message-State: AOAM532ouOycI6Al4VVty7+nROx9MFQaXnS2SEq10S8e1r/sQNZ+NUmk
+        hUrNWqVfSCerICKJTKdw8eKxm37z7v1HctTmIQ==
+X-Google-Smtp-Source: ABdhPJzabdQJ8ncT4i9Jv5kLvVwXJ4FdjdlgX7bAUmE7phJTm1J2xtfPKQoM5FboSII3Jp66Lb89kLcDHwPLvNaueFU=
+X-Received: by 2002:aa7:c403:: with SMTP id j3mr4615939edq.137.1614868373460;
+ Thu, 04 Mar 2021 06:32:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxn_DpvUBgUFAUAA--.3851S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3WFWrGr45tFy5tFWktFy7Wrg_yoW7uFWfp3
-        y3Aw1xWrs5Wr1xZr95JrWjkr15Ca9xtFs7tF42qw4j93srXryjqFZ5GF18JF47Ar1DG3W8
-        ZrySgrs3GF4rGwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBYb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUGwA2048vs2IY020Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF
-        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcV
-        CY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIE
-        c7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I
-        8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCF
-        s4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gw4l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWxJVW8Jr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8E38UUUUUU==
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+References: <20210304044803.812204-2-danielwa@cisco.com>
+In-Reply-To: <20210304044803.812204-2-danielwa@cisco.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 4 Mar 2021 08:32:37 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKnAMp0bkXzU-B8b8xx5fPC1R1NdOBn9Kpk=SONJL5paQ@mail.gmail.com>
+Message-ID: <CAL_JsqKnAMp0bkXzU-B8b8xx5fPC1R1NdOBn9Kpk=SONJL5paQ@mail.gmail.com>
+Subject: Re: [PATCH 2/5] CMDLINE: drivers: of: ifdef out cmdline section
+To:     Daniel Walker <danielwa@cisco.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        X86 ML <x86@kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        xe-linux-external@cisco.com,
+        Ruslan Ruslichenko <rruslich@cisco.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-We don't need them anymore, They are uniform on all Loongson64 systems
-and have been fixed in DeviceTree.loongson3_platform_init is replaced
-with DTS + driver.
+On Wed, Mar 3, 2021 at 10:48 PM Daniel Walker <danielwa@cisco.com> wrote:
+>
+> It looks like there's some seepage of cmdline stuff into
+> the generic device tree code. This conflicts with the
+> generic cmdline implementation so I remove it in the case
+> when that's enabled.
+>
+> Cc: xe-linux-external@cisco.com
+> Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
+> Signed-off-by: Daniel Walker <danielwa@cisco.com>
+> ---
+>  drivers/of/fdt.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>
+> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+> index feb0f2d67fc5..cfe4f8d3c9f5 100644
+> --- a/drivers/of/fdt.c
+> +++ b/drivers/of/fdt.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/serial_core.h>
+>  #include <linux/sysfs.h>
+>  #include <linux/random.h>
+> +#include <linux/cmdline.h>
+>
+>  #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
+>  #include <asm/page.h>
+> @@ -1048,8 +1049,18 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+>
+>         early_init_dt_check_for_initrd(node);
+>
+> +#ifdef CONFIG_GENERIC_CMDLINE
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
----
- .../include/asm/mach-loongson64/boot_param.h  |  9 ----
- arch/mips/loongson64/Makefile                 |  2 +-
- arch/mips/loongson64/env.c                    | 20 ---------
- arch/mips/loongson64/platform.c               | 42 -------------------
- 4 files changed, 1 insertion(+), 72 deletions(-)
- delete mode 100644 arch/mips/loongson64/platform.c
+What I like about Christophe's version is it removes the old DT
+implementation. Who's going to convert the rest of the DT based
+arches? That's arm, arm64, hexagon, microblaze, nios2, openrisc,
+riscv, sh, and xtensa. Either separate the common code from the config
+like Christophe's version or these all need converting. Though it's
+fine to hash out patch 1 with a couple of arches first.
 
-diff --git a/arch/mips/include/asm/mach-loongson64/boot_param.h b/arch/mips/include/asm/mach-loongson64/boot_param.h
-index 4592841b6b0c..1c1cdf57137e 100644
---- a/arch/mips/include/asm/mach-loongson64/boot_param.h
-+++ b/arch/mips/include/asm/mach-loongson64/boot_param.h
-@@ -207,20 +207,11 @@ struct loongson_system_configuration {
- 	u16 reserved_cpus_mask;
- 	enum loongson_cpu_type cputype;
- 	enum loongson_bridge_type bridgetype;
--	u64 ht_control_base;
--	u64 pci_mem_start_addr;
--	u64 pci_mem_end_addr;
--	u64 pci_io_base;
- 	u64 restart_addr;
- 	u64 poweroff_addr;
- 	u64 suspend_addr;
- 	u64 vgabios_addr;
- 	u32 dma_mask_bits;
--	char ecname[32];
--	u32 nr_uarts;
--	struct uart_device uarts[MAX_UARTS];
--	u32 nr_sensors;
--	struct sensor_device sensors[MAX_SENSORS];
- 	u64 workarounds;
- 	void (*early_config)(void);
- };
-diff --git a/arch/mips/loongson64/Makefile b/arch/mips/loongson64/Makefile
-index cc76944b1a9d..e806280bbb85 100644
---- a/arch/mips/loongson64/Makefile
-+++ b/arch/mips/loongson64/Makefile
-@@ -2,7 +2,7 @@
- #
- # Makefile for Loongson-3 family machines
- #
--obj-$(CONFIG_MACH_LOONGSON64) += cop2-ex.o platform.o dma.o \
-+obj-$(CONFIG_MACH_LOONGSON64) += cop2-ex.o dma.o \
- 				setup.o init.o env.o time.o reset.o \
- 
- obj-$(CONFIG_SMP)	+= smp.o
-diff --git a/arch/mips/loongson64/env.c b/arch/mips/loongson64/env.c
-index 51a5d050a94c..1821d461b606 100644
---- a/arch/mips/loongson64/env.c
-+++ b/arch/mips/loongson64/env.c
-@@ -95,7 +95,6 @@ void __init prom_init_env(void)
- 		loongson_freqctrl[1] = 0x900010001fe001d0;
- 		loongson_freqctrl[2] = 0x900020001fe001d0;
- 		loongson_freqctrl[3] = 0x900030001fe001d0;
--		loongson_sysconf.ht_control_base = 0x90000EFDFB000000;
- 		loongson_sysconf.workarounds = WORKAROUND_CPUFREQ;
- 		break;
- 	case Legacy_3B:
-@@ -118,7 +117,6 @@ void __init prom_init_env(void)
- 		loongson_freqctrl[1] = 0x900020001fe001d0;
- 		loongson_freqctrl[2] = 0x900040001fe001d0;
- 		loongson_freqctrl[3] = 0x900060001fe001d0;
--		loongson_sysconf.ht_control_base = 0x90001EFDFB000000;
- 		loongson_sysconf.workarounds = WORKAROUND_CPUHOTPLUG;
- 		break;
- 	default:
-@@ -136,9 +134,6 @@ void __init prom_init_env(void)
- 		loongson_sysconf.cores_per_node - 1) /
- 		loongson_sysconf.cores_per_node;
- 
--	loongson_sysconf.pci_mem_start_addr = eirq_source->pci_mem_start_addr;
--	loongson_sysconf.pci_mem_end_addr = eirq_source->pci_mem_end_addr;
--	loongson_sysconf.pci_io_base = eirq_source->pci_io_start_addr;
- 	loongson_sysconf.dma_mask_bits = eirq_source->dma_mask_bits;
- 	if (loongson_sysconf.dma_mask_bits < 32 ||
- 		loongson_sysconf.dma_mask_bits > 64)
-@@ -153,23 +148,8 @@ void __init prom_init_env(void)
- 		loongson_sysconf.poweroff_addr, loongson_sysconf.restart_addr,
- 		loongson_sysconf.vgabios_addr);
- 
--	memset(loongson_sysconf.ecname, 0, 32);
--	if (esys->has_ec)
--		memcpy(loongson_sysconf.ecname, esys->ec_name, 32);
- 	loongson_sysconf.workarounds |= esys->workarounds;
- 
--	loongson_sysconf.nr_uarts = esys->nr_uarts;
--	if (esys->nr_uarts < 1 || esys->nr_uarts > MAX_UARTS)
--		loongson_sysconf.nr_uarts = 1;
--	memcpy(loongson_sysconf.uarts, esys->uarts,
--		sizeof(struct uart_device) * loongson_sysconf.nr_uarts);
--
--	loongson_sysconf.nr_sensors = esys->nr_sensors;
--	if (loongson_sysconf.nr_sensors > MAX_SENSORS)
--		loongson_sysconf.nr_sensors = 0;
--	if (loongson_sysconf.nr_sensors)
--		memcpy(loongson_sysconf.sensors, esys->sensors,
--			sizeof(struct sensor_device) * loongson_sysconf.nr_sensors);
- 	pr_info("CpuClock = %u\n", cpu_clock_freq);
- 
- 	/* Read the ID of PCI host bridge to detect bridge type */
-diff --git a/arch/mips/loongson64/platform.c b/arch/mips/loongson64/platform.c
-deleted file mode 100644
-index 9674ae1361a8..000000000000
---- a/arch/mips/loongson64/platform.c
-+++ /dev/null
-@@ -1,42 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Copyright (C) 2009 Lemote Inc.
-- * Author: Wu Zhangjin, wuzhangjin@gmail.com
-- *         Xiang Yu, xiangy@lemote.com
-- *         Chen Huacai, chenhc@lemote.com
-- */
--
--#include <linux/err.h>
--#include <linux/slab.h>
--#include <linux/platform_device.h>
--#include <asm/bootinfo.h>
--#include <boot_param.h>
--#include <loongson_hwmon.h>
--#include <workarounds.h>
--
--static int __init loongson3_platform_init(void)
--{
--	int i;
--	struct platform_device *pdev;
--
--	if (loongson_sysconf.ecname[0] != '\0')
--		platform_device_register_simple(loongson_sysconf.ecname, -1, NULL, 0);
--
--	for (i = 0; i < loongson_sysconf.nr_sensors; i++) {
--		if (loongson_sysconf.sensors[i].type > SENSOR_FAN)
--			continue;
--
--		pdev = kzalloc(sizeof(struct platform_device), GFP_KERNEL);
--		if (!pdev)
--			return -ENOMEM;
--
--		pdev->name = loongson_sysconf.sensors[i].name;
--		pdev->id = loongson_sysconf.sensors[i].id;
--		pdev->dev.platform_data = &loongson_sysconf.sensors[i];
--		platform_device_register(pdev);
--	}
--
--	return 0;
--}
--
--arch_initcall(loongson3_platform_init);
--- 
-2.20.1
+>         /* Retrieve command line */
+>         p = of_get_flat_dt_prop(node, "bootargs", &l);
 
+This needs to be outside the ifdef.
+
+> +
+> +       /*
+> +        * The builtin command line will be added here, or it can override
+> +        * with the DT bootargs.
+> +        */
+> +       cmdline_add_builtin(data,
+> +                           ((p != NULL && l > 0) ? p : NULL), /* This is sanity checking */
+> +                           COMMAND_LINE_SIZE);
+> +#else
+>         if (p != NULL && l > 0)
+>                 strlcpy(data, p, min(l, COMMAND_LINE_SIZE));
+>
+> @@ -1070,6 +1081,7 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+>                 strlcpy(data, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+>  #endif
+>  #endif /* CONFIG_CMDLINE */
+> +#endif /* CONFIG_GENERIC_CMDLINE */
+>
+>         pr_debug("Command line is: %s\n", (char *)data);
+>
+> --
+> 2.25.1
+>

@@ -2,73 +2,38 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C52ABC433E9
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 14:43:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADC67C433E6
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 14:50:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9C8A964F3D
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 14:43:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7FC8064F6B
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Mar 2021 14:50:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232312AbhCDOnA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 4 Mar 2021 09:43:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
+        id S232788AbhCDOtY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 4 Mar 2021 09:49:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232278AbhCDOmf (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 Mar 2021 09:42:35 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0628C061756;
-        Thu,  4 Mar 2021 06:41:54 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id m11so32772980lji.10;
-        Thu, 04 Mar 2021 06:41:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FpcwYQmI/lKBKHdSQPNb+1D36/BM9oOnf1w3DpKpMkg=;
-        b=jQ+Ey2tH/MuMgfd8CXvjrXuoo6ALqf9EtobLv4HCxR31631DlYZazL9DW5M13cycz2
-         Pp38JJMjkkpAN69SZqIRHLpTBV8U8TO+8ZGlio14du8Ofl+w8YPBT9M/R430NgSYmiOA
-         Ne2MUDbzq4NWL/TLYpInEh971tvE6X7Tt36NQtEUxg6mIU45c3d5/nFO8JMt0w5LsZC5
-         HhjZ0RXSIpiuHE6wxF+ndMkYJYLeiFZuRg2UNeF86v89QKLdscrN7fxb0GzSO6Or49QF
-         0dues1KkX7xUGs7t9fCxsG8dpOhFvfq5tT289tV47hGfobkydloIbM9Q4NL0WzTZbI8Y
-         ho6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FpcwYQmI/lKBKHdSQPNb+1D36/BM9oOnf1w3DpKpMkg=;
-        b=ucfOPc+jmfb34SSuGu8VrhEBwwx+5l24d9HifFKVGSCmDvQsENVhyqOXvFimdrltLy
-         Cqx/PkzxzfFG6JgE0ehoxkzvU72V44tHsg4C20PKo3iByVhS/6nDeGe0h92Yb1pd1qHi
-         Inp00zbl+wIYiCUYQ9SwmLTodg9EwB5t5ztTz7oqnQuxtkBRx6VV3dlG2a7A+JiIYvZ4
-         /3GVL1+mBQ4cBO7QcsyNitAZVU5UcvLs1ROOaYquAkMzWiSfsb++rDzcv8hOqrmMH3/x
-         /tz2mbF6KLfPy2vsQlHbBr8pSqAegXmG9f/hkttyEubHmHVNBhGU2NPHTjiTMPcNCUun
-         AITQ==
-X-Gm-Message-State: AOAM5318gXg8hzL/ZsxBk3Pl8dKUWM7yHQXh5WS/6NuVM2GlsoTmalxh
-        +nOCWGk9rPQJHqaMczfv9yIy1P6NBhA=
-X-Google-Smtp-Source: ABdhPJya984/mYknU+zboD+nnBmFKvUw2Py1czSP15A8ynWdG0zvYYco3ueeNacxRE6ptzgVxV5Rnw==
-X-Received: by 2002:a2e:3608:: with SMTP id d8mr2393855lja.21.1614868913549;
-        Thu, 04 Mar 2021 06:41:53 -0800 (PST)
-Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.gmail.com with ESMTPSA id t17sm1396694lft.224.2021.03.04.06.41.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 06:41:52 -0800 (PST)
-From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivek Unune <npcomplete13@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 1/2] dt-bindings: nvmem: add binding for I/O mapped NVMEM
-Date:   Thu,  4 Mar 2021 15:41:31 +0100
-Message-Id: <20210304144132.24098-1-zajec5@gmail.com>
+        with ESMTP id S232786AbhCDOtW (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 Mar 2021 09:49:22 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD789C061574;
+        Thu,  4 Mar 2021 06:48:41 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1lHpHH-00014W-VI; Thu, 04 Mar 2021 15:48:35 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     stable@vger.kernel.org
+Cc:     Paul Burton <paul.burton@mips.com>,
+        Alexander Lobakin <alobakin@dlink.ru>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
+        linux-mips@vger.kernel.org, Florian Westphal <fw@strlen.de>
+Subject: [PATCH 5.4.y] MIPS: Drop 32-bit asm string functions
+Date:   Thu,  4 Mar 2021 15:48:14 +0100
+Message-Id: <20210304144814.14131-1-fw@strlen.de>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -77,53 +42,179 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Paul Burton <paul.burton@mips.com>
 
-NVMEM on some devices can be accessed using I/O mapping. For example on
-Broadcom MIPS and ARM Northstar platforms NVRAM can be accessed that
-way.
+commit 3c0be5849259b729580c23549330973a2dd513a2 upstream.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+We have assembly implementations of strcpy(), strncpy(), strcmp() &
+strncmp() which:
+
+ - Are simple byte-at-a-time loops with no particular optimizations. As
+   a comment in the code describes, they're "rather naive".
+
+ - Offer no clear performance advantage over the generic C
+   implementations - in microbenchmarks performed by Alexander Lobakin
+   the asm functions sometimes win & sometimes lose, but generally not
+   by large margins in either direction.
+
+ - Don't support 64-bit kernels, where we already make use of the
+   generic C implementations.
+
+ - Tend to bloat kernel code size due to inlining.
+
+ - Don't support CONFIG_FORTIFY_SOURCE.
+
+ - Won't support nanoMIPS without rework.
+
+For all of these reasons, delete the asm implementations & make use of
+the generic C implementations for 32-bit kernels just like we already do
+for 64-bit kernels.
+
+[ stable note: mips32 strncpy does not pad remaining dest buf which causes
+  nftables iifname compare failures ].
+
+Signed-off-by: Paul Burton <paul.burton@mips.com>
+URL: https://lore.kernel.org/linux-mips/a2a35f1cf58d6db19eb4af9b4ae21e35@dlink.ru/
+Cc: Alexander Lobakin <alobakin@dlink.ru>
+Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
+Cc: linux-mips@vger.kernel.org
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- .../devicetree/bindings/nvmem/iomap.yaml      | 29 +++++++++++++++++++
- 1 file changed, 29 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/nvmem/iomap.yaml
+ arch/mips/include/asm/string.h | 121 ---------------------------------
+ 1 file changed, 121 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/nvmem/iomap.yaml b/Documentation/devicetree/bindings/nvmem/iomap.yaml
-new file mode 100644
-index 000000000000..ec8764598061
---- /dev/null
-+++ b/Documentation/devicetree/bindings/nvmem/iomap.yaml
-@@ -0,0 +1,29 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/nvmem/iomap.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: I/O mapped NVMEM
-+
-+maintainers:
-+  - Rafał Miłecki <rafal@milecki.pl>
-+
-+allOf:
-+  - $ref: "nvmem.yaml#"
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - brcm,nvram
-+      - const: nvmem-iomap
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    nvram@1eff0000 {
-+            compatible = "brcm,nvram", "nvmem-iomap";
-+            reg = <0x1eff0000 0x10000>;
-+    };
+diff --git a/arch/mips/include/asm/string.h b/arch/mips/include/asm/string.h
+index 29030cb398ee..1de3bbce8e88 100644
+--- a/arch/mips/include/asm/string.h
++++ b/arch/mips/include/asm/string.h
+@@ -10,127 +10,6 @@
+ #ifndef _ASM_STRING_H
+ #define _ASM_STRING_H
+ 
+-
+-/*
+- * Most of the inline functions are rather naive implementations so I just
+- * didn't bother updating them for 64-bit ...
+- */
+-#ifdef CONFIG_32BIT
+-
+-#ifndef IN_STRING_C
+-
+-#define __HAVE_ARCH_STRCPY
+-static __inline__ char *strcpy(char *__dest, __const__ char *__src)
+-{
+-  char *__xdest = __dest;
+-
+-  __asm__ __volatile__(
+-	".set\tnoreorder\n\t"
+-	".set\tnoat\n"
+-	"1:\tlbu\t$1,(%1)\n\t"
+-	"addiu\t%1,1\n\t"
+-	"sb\t$1,(%0)\n\t"
+-	"bnez\t$1,1b\n\t"
+-	"addiu\t%0,1\n\t"
+-	".set\tat\n\t"
+-	".set\treorder"
+-	: "=r" (__dest), "=r" (__src)
+-	: "0" (__dest), "1" (__src)
+-	: "memory");
+-
+-  return __xdest;
+-}
+-
+-#define __HAVE_ARCH_STRNCPY
+-static __inline__ char *strncpy(char *__dest, __const__ char *__src, size_t __n)
+-{
+-  char *__xdest = __dest;
+-
+-  if (__n == 0)
+-    return __xdest;
+-
+-  __asm__ __volatile__(
+-	".set\tnoreorder\n\t"
+-	".set\tnoat\n"
+-	"1:\tlbu\t$1,(%1)\n\t"
+-	"subu\t%2,1\n\t"
+-	"sb\t$1,(%0)\n\t"
+-	"beqz\t$1,2f\n\t"
+-	"addiu\t%0,1\n\t"
+-	"bnez\t%2,1b\n\t"
+-	"addiu\t%1,1\n"
+-	"2:\n\t"
+-	".set\tat\n\t"
+-	".set\treorder"
+-	: "=r" (__dest), "=r" (__src), "=r" (__n)
+-	: "0" (__dest), "1" (__src), "2" (__n)
+-	: "memory");
+-
+-  return __xdest;
+-}
+-
+-#define __HAVE_ARCH_STRCMP
+-static __inline__ int strcmp(__const__ char *__cs, __const__ char *__ct)
+-{
+-  int __res;
+-
+-  __asm__ __volatile__(
+-	".set\tnoreorder\n\t"
+-	".set\tnoat\n\t"
+-	"lbu\t%2,(%0)\n"
+-	"1:\tlbu\t$1,(%1)\n\t"
+-	"addiu\t%0,1\n\t"
+-	"bne\t$1,%2,2f\n\t"
+-	"addiu\t%1,1\n\t"
+-	"bnez\t%2,1b\n\t"
+-	"lbu\t%2,(%0)\n\t"
+-#if defined(CONFIG_CPU_R3000)
+-	"nop\n\t"
+-#endif
+-	"move\t%2,$1\n"
+-	"2:\tsubu\t%2,$1\n"
+-	"3:\t.set\tat\n\t"
+-	".set\treorder"
+-	: "=r" (__cs), "=r" (__ct), "=r" (__res)
+-	: "0" (__cs), "1" (__ct));
+-
+-  return __res;
+-}
+-
+-#endif /* !defined(IN_STRING_C) */
+-
+-#define __HAVE_ARCH_STRNCMP
+-static __inline__ int
+-strncmp(__const__ char *__cs, __const__ char *__ct, size_t __count)
+-{
+-	int __res;
+-
+-	__asm__ __volatile__(
+-	".set\tnoreorder\n\t"
+-	".set\tnoat\n"
+-	"1:\tlbu\t%3,(%0)\n\t"
+-	"beqz\t%2,2f\n\t"
+-	"lbu\t$1,(%1)\n\t"
+-	"subu\t%2,1\n\t"
+-	"bne\t$1,%3,3f\n\t"
+-	"addiu\t%0,1\n\t"
+-	"bnez\t%3,1b\n\t"
+-	"addiu\t%1,1\n"
+-	"2:\n\t"
+-#if defined(CONFIG_CPU_R3000)
+-	"nop\n\t"
+-#endif
+-	"move\t%3,$1\n"
+-	"3:\tsubu\t%3,$1\n\t"
+-	".set\tat\n\t"
+-	".set\treorder"
+-	: "=r" (__cs), "=r" (__ct), "=r" (__count), "=r" (__res)
+-	: "0" (__cs), "1" (__ct), "2" (__count));
+-
+-	return __res;
+-}
+-#endif /* CONFIG_32BIT */
+-
+ #define __HAVE_ARCH_MEMSET
+ extern void *memset(void *__s, int __c, size_t __count);
+ 
 -- 
 2.26.2
 

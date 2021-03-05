@@ -2,93 +2,74 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A250DC433DB
-	for <linux-mips@archiver.kernel.org>; Fri,  5 Mar 2021 10:53:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24B8FC433DB
+	for <linux-mips@archiver.kernel.org>; Fri,  5 Mar 2021 11:21:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 68E7F65020
-	for <linux-mips@archiver.kernel.org>; Fri,  5 Mar 2021 10:53:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D216065018
+	for <linux-mips@archiver.kernel.org>; Fri,  5 Mar 2021 11:21:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbhCEKw3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 5 Mar 2021 05:52:29 -0500
-Received: from 3.mo4.mail-out.ovh.net ([46.105.57.129]:59607 "EHLO
-        3.mo4.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbhCEKwP (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 5 Mar 2021 05:52:15 -0500
-X-Greylist: delayed 1205 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Mar 2021 05:52:14 EST
-Received: from player728.ha.ovh.net (unknown [10.108.35.211])
-        by mo4.mail-out.ovh.net (Postfix) with ESMTP id D1F7E26B2FB
-        for <linux-mips@vger.kernel.org>; Fri,  5 Mar 2021 11:16:50 +0100 (CET)
-Received: from milecki.pl (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
-        (Authenticated sender: rafal@milecki.pl)
-        by player728.ha.ovh.net (Postfix) with ESMTPSA id B27BF1BA2AFF5;
-        Fri,  5 Mar 2021 10:16:41 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-104R0053d2b67e1-52e4-4304-9239-db9d36a7935d,
-                    4F7D11A3904BD8E553EC742B87CBB6774FEDAA0F) smtp.auth=rafal@milecki.pl
-X-OVh-ClientIp: 194.187.74.233
-Subject: Re: [PATCH V2 mips/linux.git] firmware: bcm47xx_nvram: refactor
- finding & reading NVRAM
-To:     =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivek Unune <npcomplete13@gmail.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-References: <20210304072357.31108-1-zajec5@gmail.com>
- <20210305055501.13099-1-zajec5@gmail.com>
- <CAAdtpL7iWiumiOwMOH1xiBZvyOB0HB7W-9MMHoPPxkb3Srme=w@mail.gmail.com>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Message-ID: <f4045af5-4866-6fc9-f34a-d789a7febb77@milecki.pl>
-Date:   Fri, 5 Mar 2021 11:16:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S229562AbhCELVA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 5 Mar 2021 06:21:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229494AbhCELUy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 5 Mar 2021 06:20:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5E8B65015;
+        Fri,  5 Mar 2021 11:20:52 +0000 (UTC)
+Date:   Fri, 5 Mar 2021 11:20:49 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Alexey Klimov <aklimov@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [RESEND PATCH 1/2] ARM64: enable GENERIC_FIND_FIRST_BIT
+Message-ID: <20210305112049.GB23855@arm.com>
+References: <20210225135700.1381396-1-yury.norov@gmail.com>
+ <20210225135700.1381396-2-yury.norov@gmail.com>
+ <20210225140205.GA13297@willie-the-truck>
+ <20210303221741.GA2013084@yury-ThinkPad>
 MIME-Version: 1.0
-In-Reply-To: <CAAdtpL7iWiumiOwMOH1xiBZvyOB0HB7W-9MMHoPPxkb3Srme=w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 365354524052524656
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtiedgudefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepkeduheejheffudefhffghfegjeejleetkeevueelveegkefhhfffieehleelgfevnecukfhppedtrddtrddtrddtpdduleegrddukeejrdejgedrvdeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejvdekrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheprhgrfhgrlhesmhhilhgvtghkihdrphhlpdhrtghpthhtoheplhhinhhugidqmhhiphhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210303221741.GA2013084@yury-ThinkPad>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi,
-
-On 05.03.2021 10:58, Philippe Mathieu-Daudé wrote:
-> On Fri, Mar 5, 2021 at 6:55 AM Rafał Miłecki <zajec5@gmail.com> wrote:
->>
->> From: Rafał Miłecki <rafal@milecki.pl>
->>
->> 1. Use meaningful variable names (e.g. "flash_start", "res_size" instead
->>     of e.g. "iobase", "end")
->> 2. Always operate on "offset" instead of mix of start, end, size, etc.
+On Wed, Mar 03, 2021 at 02:17:41PM -0800, Yury Norov wrote:
+> On Thu, Feb 25, 2021 at 02:02:06PM +0000, Will Deacon wrote:
+> > On Thu, Feb 25, 2021 at 05:56:59AM -0800, Yury Norov wrote:
+> > > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > > index 31bd885b79eb..5596eab04092 100644
+> > > --- a/arch/arm64/Kconfig
+> > > +++ b/arch/arm64/Kconfig
+> > > @@ -108,6 +108,7 @@ config ARM64
+> > >  	select GENERIC_CPU_AUTOPROBE
+> > >  	select GENERIC_CPU_VULNERABILITIES
+> > >  	select GENERIC_EARLY_IOREMAP
+> > > +	select GENERIC_FIND_FIRST_BIT
+> > >  	select GENERIC_IDLE_POLL_SETUP
+> > >  	select GENERIC_IRQ_IPI
+> > >  	select GENERIC_IRQ_MULTI_HANDLER
+> > 
+> > Acked-by: Will Deacon <will@kernel.org>
+> > 
+> > Catalin can pick this up later in the cycle.
+> > 
+> > Will
 > 
-> "instead of a mix"
-> 
->> 3. Add helper checking for NVRAM to avoid duplicating code
->> 4. Use "found" variable instead of goto
->> 5. Use simpler checking of offsets and sizes (2 nested loops with
->>     trivial check instead of extra function)
-> 
-> This could be a series of trivial patches, why did you choose to make a mixed
-> bag harder to review?
+> Ping?
 
-It's a subjective thing and often a matter of maintainer taste. I can
-say that after contributing to various Linux subsystems. If you split a
-similar patch for MTD subsystem you'll get complains about making
-changes too small & too hard to review (sic!).
+It's on my list for 5.13 but I'll only start queuing patches after -rc3.
 
-This isn't a bomb really: 63 insertions(+), 48 deletions(-)
-
-That said I admit I don't know MIPS tree habits. Thomas: do you prefer
-smaller patches in case like this?
+-- 
+Catalin
